@@ -3,11 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiFiles, 0.6.2, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiFiles, 0.6.3, [tilp-users@lists.sourceforge.net])
 
 MAJOR_VERSION=0
 MINOR_VERSION=6
-MICRO_VERSION=2
+MICRO_VERSION=3
 
 LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
 LT_REVISION=$MICRO_VERSION
@@ -121,6 +121,28 @@ case $host_os in
   fi
   ;;
 esac
+
+# Check for the new -fvisibility flag introduced in gcc 4.0
+# Allow to reduce shared library size and avoid symbol clash
+if test x$GCC = xyes; then
+   visibility_flag=''
+   AC_MSG_CHECKING([whether -fvisibility flag is supported])
+   if test -z "$ac_cv_prog_CC"; then
+      our_gcc="$CC"
+   else
+      our_gcc="$ac_cv_prog_CC"
+   fi
+   if $our_gcc -v --help 2>/dev/null | grep fvisibility >/dev/null; then
+      visibility_flag='-fvisibility'
+   fi
+   if test x"$visibility_flag" = x ; then
+      AC_MSG_RESULT([no])
+   else
+      CFLAGS="$CFLAGS $visibility_flag"
+      AC_MSG_RESULT([${visibility_flag}])
+      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility flag])
+    fi
+fi
 
 # Output.
 AC_OUTPUT
