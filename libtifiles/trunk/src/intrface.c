@@ -132,12 +132,16 @@ TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
     break;
   case CALC_TI83P:
     break;
+  case CALC_TI84P:
+	break;
   case CALC_TI85:
     break;
   case CALC_TI86:
     break;
   case CALC_TI89:
     break;
+  case CALC_TI89T:
+	break;
   case CALC_TI92:
     break;
   case CALC_TI92P:

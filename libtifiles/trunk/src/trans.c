@@ -335,11 +335,13 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname,
   case CALC_TI82:
   case CALC_TI83:
   case CALC_TI83P:
+  case CALC_TI84P:
     return ti8x_detokenize_varname(varname, translate, vartype);
     break;
   case CALC_TI85:
   case CALC_TI86:
   case CALC_TI89:
+  case CALC_TI89T:
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
@@ -838,6 +840,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
     case CALC_TI86:  f = transcode_from_ti85_charset_to_ascii; 
       break;
     case CALC_TI89:
+    case CALC_TI89T:
     case CALC_TI92:
     case CALC_TI92P:
     case CALC_V200:  f = transcode_from_ti9x_charset_to_ascii; 
@@ -875,6 +878,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
     case CALC_TI86:  f = transcode_from_ti85_charset_to_latin1; 
       break;
     case CALC_TI89:
+    case CALC_TI89T:
     case CALC_TI92:
     case CALC_TI92P:
     case CALC_V200:  f = transcode_from_ti9x_charset_to_latin1; 

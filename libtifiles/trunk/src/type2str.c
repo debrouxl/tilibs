@@ -33,9 +33,11 @@ TIEXPORT const char *TICALL tifiles_calctype_to_string(TicalcType type)
   	case CALC_V200:  return "V200";
   	case CALC_TI92P: return "TI92+";
   	case CALC_TI92:  return "TI92";
+	case CALC_TI89T: return "TI89t";
   	case CALC_TI89:  return "TI89";
   	case CALC_TI86:  return "TI86";
   	case CALC_TI85:  return "TI85";
+	case CALC_TI84P: return "TI84+";
   	case CALC_TI83P: return "TI83+";
   	case CALC_TI83:  return "TI83";
   	case CALC_TI82:  return "TI82";
@@ -54,12 +56,16 @@ TIEXPORT TicalcType TICALL tifiles_string_to_calctype(const char *str)
 		return CALC_TI83;
 	else if(!strcmp(str, "TI83+"))
 		return CALC_TI83P;
+	else if(!strcmp(str, "TI84+"))
+		return CALC_TI84P;
 	else if(!strcmp(str, "TI85"))
 		return CALC_TI85;
 	else if(!strcmp(str, "TI86"))
 		return CALC_TI86;
 	else if(!strcmp(str, "TI89"))
 		return CALC_TI89;
+	else if(!strcmp(str, "TI89t"))
+		return CALC_TI89T;
 	else if(!strcmp(str, "TI92"))
 		return CALC_TI92;
 	else if(!strcmp(str, "TI92+"))

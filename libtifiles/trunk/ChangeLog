@@ -5,6 +5,10 @@ To do:
 
 Log:
 
+- 18/09/2004, version 0.6.1: roms
+	Added TI89 Titanium support. File format seems to be the same as TI89.
+	Added TI84+ (SE) support. File format seems to be the same as TI83+.
+
 - 02/07/2004, version 0.6.0: roms
 	Loading of TI9x flash upgrades is less restrictive now. It can accept badly
 	formatted files.

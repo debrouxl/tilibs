@@ -73,7 +73,7 @@ const char *TI89_CONST[TI89_MAXTYPES + 1][4] = {
   {"", "89?", "Unknown", N_("Unknown")},
   {"RDIR", "89?", "Unknown", N_("Unknown")},
   {"LDIR", "89?", "Unknown", N_("Unknown")},
-  {"ZIP", "89y", "Zipped", N_("Zipped")},
+  {"STDY", "89y", "Zipped", N_("Zipped")},
   {"BKUP", "89g", "Backup", N_("Backup")},
   {"", "89?", "Unknown", N_("Unknown")},
   {"DIR", "89?", "Unknown", N_("Unknown")},

@@ -122,6 +122,10 @@ SOURCE=..\..\src\types89.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\types89t.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\types92.c
 # End Source File
 # Begin Source File
