@@ -470,28 +470,6 @@ int ti73_send_flash(const char *filename, int mask_mode)
   sprintf(update->label_text, ("Sending FLASH OS/App..."));
   update_label();
 
-  if (mask_mode & MODE_APPS) {	// inform TI that a FLASH app is about to be sent
-    uint16_t length;
-    uint8_t buffer[16];
-
-    TRYF(ti73_send_FLSH());
-    TRYF(ti73_recv_ACK(NULL));
-
-    TRYF(ti73_send_CTS());
-    TRYF(ti73_recv_ACK(NULL));
-
-    TRYF(ti73_recv_XDP(&length, (uint8_t *) buffer));	// ??
-    TRYF(ti73_send_ACK());
-
-    //TRYF(ti73_send_RDY());
-    //TRYF(ti73_recv_ACK(NULL));
-  }
-  else if(ticalcs_calc_type == CALC_TI84P)
-	  {
-		  UNLOCK_TRANSFER();
-		  return ERR_VOID_FUNCTION;
-	  }
-
   TRYF(ti8x_read_flash_file(filename, &content));
 
   for (i = 0; i < content.num_pages; i++) {
@@ -507,10 +485,13 @@ int ti73_send_flash(const char *filename, int mask_mode)
     TRYF(ti73_send_XDP(fp->length, fp->data));
     TRYF(ti73_recv_ACK(NULL));
 
-    if (i == 1)
-      PAUSE(1000);		// This pause is NEEDED !
-    if (i == content.num_pages - 2)
-      PAUSE(2500);		// This pause is NEEDED !
+	if(ticalcs_calc_type != CALC_TI84P)
+	{
+		if (i == 1)
+		  PAUSE(1000);		// This pause is NEEDED !
+		if (i == content.num_pages - 2)
+		  PAUSE(2500);		// This pause is NEEDED !
+	}
 
     update->main_percentage = (float) i / content.num_pages;
     if (update->cancel)
