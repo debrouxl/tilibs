@@ -107,6 +107,10 @@ struct usb_device *dev = NULL;
 struct usb_device *tigl_dev = NULL;
 usb_dev_handle *tigl_han = NULL;
 
+/* Helpers */
+
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+
 static void find_tigl_device(void)
 {
   	/* loop taken from testlibusb.c */
@@ -181,24 +185,13 @@ static int enumerate_tigl_device(void)
   	return 0;
 }
 
-int slv_init2()
+static int reset_pipes(void)
 {
-  	START_LOGGING();
+	int ret;
 
-  	return enumerate_tigl_device();
-}
+	printf("resetting pipes... ");
 
-int slv_open2()
-{
-  	int ret = 0;
-
-  	if (tigl_han == NULL) {
-    		if (slv_init2() != 0)
-      			return ERR_LIBUSB_OPEN;
-  	}
-
-#if !defined(__BSD__)
-  	/* Reset out pipe */
+  	// Reset out pipe
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   	if (ret < 0) {
     		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
@@ -215,7 +208,7 @@ int slv_open2()
     		}
   	}
   	
-	/* Reset in pipe */
+	// Reset in pipe
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   	if (ret < 0) {
     		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
@@ -231,6 +224,68 @@ int slv_open2()
 	      		}
 	    	}
   	}
+
+	printf("done !\n");
+
+	return 0;
+}
+
+static int send_fblock2(uint8_t *data, int length)
+{
+	int ret;
+
+	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
+
+	if(ret == -ETIMEDOUT) {
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_TIMEOUT;
+	} else if(ret == -EPIPE) {
+		printf("ret = %i\n", ret);
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_ERROR;
+	} else if(ret < 0) {
+		printf("ret = %i\n", ret);
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_ERROR;
+	}
+
+	return 0;
+}
+
+static int send_pblock2(uint8_t *data, int length)
+{
+	int i;
+
+	for(i=0; i<length; i++) {
+		int ret = send_fblock2(&data[i], 1);
+		if(ret) return ret;
+	}
+
+	return 0;
+}
+
+/* */
+
+int slv_init2()
+{
+  	START_LOGGING();
+
+  	return enumerate_tigl_device();
+}
+
+int slv_open2()
+{
+  	if (tigl_han == NULL) {
+    		if (slv_init2() != 0)
+      			return ERR_LIBUSB_OPEN;
+  	}
+
+#if !defined(__BSD__)
+	{
+		/* Reset both endpoints */
+		int ret = reset_pipes();
+		if(ret) return ret;
+	}
 #endif
 
   	/* Clear buffers */
@@ -264,11 +319,9 @@ static int send_pblock2(uint8_t *data, int length);
 int slv_close2()
 {
 #if defined( BUFFERED_W )
-	int ret;
-
 	/* Flush write buffer byte per byte (last command) */
 	if (nBytesWrite2 > 0) {
-		ret = send_pblock2(wBuf2, nBytesWrite2);
+		int ret = send_pblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
 	}
@@ -279,8 +332,6 @@ int slv_close2()
 
 int slv_put2(uint8_t data)
 {
-  	int ret = 0;
-
   	tdr.count++;
   	LOG_DATA(data);
 
@@ -293,7 +344,7 @@ int slv_put2(uint8_t data)
 
 	/* Buffer full? Send the whole buffer at once */
   	if (nBytesWrite2 == MAX_PACKET_SIZE) {
-		ret = send_fblock2(wBuf2, nBytesWrite2);
+		int ret = send_fblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
   	}
@@ -336,8 +387,12 @@ int slv_get2(uint8_t * data)
 	    	if(ret == -ETIMEDOUT) {
 			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
 			return ERR_WRITE_TIMEOUT;
-		}
-		if(ret < 0) {
+		} else if(ret == -EPIPE) {
+			printf("ret = %i\n", ret);
+			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+			return ERR_WRITE_ERROR;
+		} else if(ret < 0) {
+			printf("ret = %i\n", ret);
 			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
 			return ERR_WRITE_ERROR;
 		}
@@ -448,36 +503,4 @@ int slv_register_cable_2(TicableLinkCable * lc)
   lc->get_white_wire = NULL;
 
   return 0;
-}
-
-/***/
-
-static int send_fblock2(uint8_t *data, int length)
-{
-	int ret;
-
-	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
-
-	if(ret == -ETIMEDOUT) {
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-		return ERR_WRITE_TIMEOUT;
-	}
-	if(ret < 0) {
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-		return ERR_WRITE_ERROR;
-	}
-
-	return 0;
-}
-
-static int send_pblock2(uint8_t *data, int length)
-{
-	int i, ret;
-
-	for(i=0; i<length; i++) {
-		ret = send_fblock2(&data[i], 1);
-		if(ret) return ret;
-	}
-
-	return 0;
 }

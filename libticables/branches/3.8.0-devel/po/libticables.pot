@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-22 22:12+0200\n"
+"POT-Creation-Date: 2004-04-24 15:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -717,7 +717,7 @@ msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:232
+#: src/linux/slv_link.c:227
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""
@@ -737,7 +737,7 @@ msgstr ""
 msgid "usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:341
+#: src/linux/slv_link2.c:334
 msgid ""
 "\n"
 "weird, usb_bulk_read returns without any data & error; retrying...\n"
