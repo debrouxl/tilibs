@@ -37,7 +37,7 @@
    Print to stdout as default behaviour unless changed by tifiles_set_print 
    Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-static int default_printl(int level, const char *format, ...)
+static int default_ticables_printl(int level, const char *format, ...)
 {	
 	int ret = 0;
 #ifndef __WIN32__
@@ -55,7 +55,7 @@ static int default_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICABLES_PRINTL printl = default_printl;
+TICABLES_PRINTL printl = default_ticables_printl;
 
 /*
 	Change print behaviour (callback).

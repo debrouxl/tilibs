@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 22:11+0200\n"
+"POT-Creation-Date: 2004-04-10 09:48+0200\n"
 "PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -664,49 +664,52 @@ msgid "closed"
 msgstr "Ferme le dossier\r\n"
 
 #: src/bsd/bsd_detect.c:59
-msgid "Getting OS type...\r\n"
+#, fuzzy
+msgid "Getting OS type...\n"
 msgstr "Détermination du type de système d'exploitation... \r\n"
 
 #: src/bsd/bsd_detect.c:60
-#, c-format
-msgid "  System name: %s\r\n"
+#, fuzzy, c-format
+msgid "  System name: %s\n"
 msgstr " Nom du système: %s\r\n"
 
 #: src/bsd/bsd_detect.c:61
-#, c-format
-msgid "  Node name: %s\r\n"
+#, fuzzy, c-format
+msgid "  Node name: %s\n"
 msgstr " Nom du noeud: %s\r\n"
 
 #: src/bsd/bsd_detect.c:62
-#, c-format
-msgid "  Release: %s\r\n"
+#, fuzzy, c-format
+msgid "  Release: %s\n"
 msgstr " Version du noyau: %s\r\n"
 
 #: src/bsd/bsd_detect.c:63
-#, c-format
-msgid "  Version: %s\r\n"
+#, fuzzy, c-format
+msgid "  Version: %s\n"
 msgstr " Version: %s\r\n"
 
 #: src/bsd/bsd_detect.c:64
-#, c-format
-msgid "  Machine: %s\r\n"
+#, fuzzy, c-format
+msgid "  Machine: %s\n"
 msgstr "  Machine: %s\r\n"
 
-#: src/bsd/bsd_detect.c:65
-msgid "Done.\r\n"
+#: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:106
+#: src/linux/linux_detect.c:193
+#, fuzzy
+msgid "Done.\n"
 msgstr "Fait. \r\n"
 
-#: src/bsd/bsd_detect.c:79 src/win32/win32_detect.c:78
+#: src/bsd/bsd_detect.c:79
 #, fuzzy
-msgid "checking resources...\r\n"
+msgid "checking resources...\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/bsd/bsd_detect.c:86
-msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
+#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:252
+msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88
-msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:254
+msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:262
@@ -714,9 +717,9 @@ msgstr ""
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104
+#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:292
 #, c-format
-msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
+msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:77
@@ -819,7 +822,7 @@ msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 msgid "error: %s\n"
 msgstr "Erreur: %s\n"
 
-#: src/linux/linux_detect.c:61
+#: src/linux/linux_detect.c:61 src/win32/win32_detect.c:43
 #, fuzzy
 msgid "getting OS type:\n"
 msgstr "Détermination du type de système d'exploitation... \r\n"
@@ -868,11 +871,6 @@ msgid ""
 msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
 "la recherche des ports séries.\r\n"
-
-#: src/linux/linux_detect.c:106 src/linux/linux_detect.c:193
-#, fuzzy
-msgid "Done.\n"
-msgstr "Fait. \r\n"
 
 #: src/linux/linux_detect.c:113
 #, fuzzy
@@ -942,18 +940,10 @@ msgstr "ok"
 msgid "nok"
 msgstr "échec"
 
-#: src/linux/linux_detect.c:245
+#: src/linux/linux_detect.c:245 src/win32/win32_detect.c:78
 #, fuzzy
 msgid "checking resources:\n"
 msgstr "Libticables: vérification des ressources...\r\n"
-
-#: src/linux/linux_detect.c:252
-msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
-msgstr ""
-
-#: src/linux/linux_detect.c:254
-msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
-msgstr ""
 
 #: src/linux/linux_detect.c:270
 #, c-format
@@ -970,11 +960,6 @@ msgstr ""
 msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:292
-#, c-format
-msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
-msgstr ""
-
 #: src/linux/linux_ioports.c:84
 #, fuzzy
 msgid "ioctl failed in linux_ioctl_read_io !\n"
@@ -985,12 +970,12 @@ msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 msgid "ioctl failed in linux_ioctl_write_io !\n"
 msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 
-#: src/linux/linux_mapping.c:66
+#: src/linux/linux_mapping.c:66 src/win32/win32_mapping.c:47
 #, fuzzy
 msgid "getting method from resources (automatic):\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/linux/linux_mapping.c:68
+#: src/linux/linux_mapping.c:68 src/win32/win32_mapping.c:49
 #, fuzzy
 msgid "getting method from resources (user-forced):\n"
 msgstr "Libticables: vérification des ressources...\r\n"
@@ -1023,18 +1008,18 @@ msgstr ""
 msgid "  warning: can't use IO_LIBUSB\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:120
+#: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:118
 #, fuzzy
 msgid "mapping I/O...\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
 #. set the link cable
-#: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:195
+#: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:193
 #, fuzzy
 msgid "registering cable...\n"
 msgstr "Libticables: réglages actuels...\n"
 
-#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:278
+#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:276
 msgid "invalid argument (bad cable)."
 msgstr ""
 
@@ -1316,19 +1301,14 @@ msgid ""
 "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:43
-#, fuzzy
-msgid "getting OS type...\r\n"
-msgstr "Détermination du type de système d'exploitation... \r\n"
-
 #: src/win32/win32_detect.c:48
 #, fuzzy, c-format
-msgid "  operating System: %s\r\n"
+msgid "  operating System: %s\n"
 msgstr " Système d'exploitation: %s\r\n"
 
 #: src/win32/win32_detect.c:51
 #, fuzzy, c-format
-msgid "  version: %i.%i\r\n"
+msgid "  version: %i.%i\n"
 msgstr " Version: %s\r\n"
 
 #: src/win32/win32_detect.c:92
@@ -1345,13 +1325,13 @@ msgid "  IO_ASM: not available (WinNT).\n"
 msgstr ""
 
 #: src/win32/win32_detect.c:139
-#, c-format
-msgid "  IO_DLL: %s (PortTalk)\r\n"
+#, fuzzy, c-format
+msgid "  IO_DLL: %s (PortTalk)\n"
 msgstr "  IO_DLL: %s (PortTalk)\r\n"
 
 #: src/win32/win32_detect.c:152
 #, fuzzy, c-format
-msgid "  IO_USB: %s (TiglUsb)\r\n"
+msgid "  IO_USB: %s (TiglUsb)\n"
 msgstr "  IO_TIUSB: %s (TiglUsb)\r\n"
 
 #: src/win32/win32_ioports.c:155
@@ -1376,18 +1356,16 @@ msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d\n"
 msgid "serial port %s successfully reconfigured.\n"
 msgstr "Libticables: port série %s reconfiguré avec succès.\n"
 
-#: src/win32/win32_mapping.c:43
+#~ msgid "Done.\r\n"
+#~ msgstr "Fait. \r\n"
+
 #, fuzzy
-msgid "getting method from resources"
-msgstr "Libticables: vérification des ressources...\r\n"
+#~ msgid "getting OS type...\r\n"
+#~ msgstr "Détermination du type de système d'exploitation... \r\n"
 
-#: src/win32/win32_mapping.c:49
-msgid " (automatic)...\n"
-msgstr ""
-
-#: src/win32/win32_mapping.c:51
-msgid " (user-forced)...\n"
-msgstr ""
+#, fuzzy
+#~ msgid "getting method from resources"
+#~ msgstr "Libticables: vérification des ressources...\r\n"
 
 #~ msgid "libticables error: unknown cable type !\n"
 #~ msgstr "libticables erreur: type de câble inconnu !\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 22:11+0200\n"
+"POT-Creation-Date: 2004-04-10 09:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -605,48 +605,49 @@ msgid "closed"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:59
-msgid "Getting OS type...\r\n"
+msgid "Getting OS type...\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:60
 #, c-format
-msgid "  System name: %s\r\n"
+msgid "  System name: %s\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:61
 #, c-format
-msgid "  Node name: %s\r\n"
+msgid "  Node name: %s\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:62
 #, c-format
-msgid "  Release: %s\r\n"
+msgid "  Release: %s\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:63
 #, c-format
-msgid "  Version: %s\r\n"
+msgid "  Version: %s\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:64
 #, c-format
-msgid "  Machine: %s\r\n"
+msgid "  Machine: %s\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:65
-msgid "Done.\r\n"
+#: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:106
+#: src/linux/linux_detect.c:193
+msgid "Done.\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:79 src/win32/win32_detect.c:78
-msgid "checking resources...\r\n"
+#: src/bsd/bsd_detect.c:79
+msgid "checking resources...\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:86
-msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
+#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:252
+msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88
-msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:254
+msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:262
@@ -654,9 +655,9 @@ msgstr ""
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104
+#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:292
 #, c-format
-msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
+msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:77
@@ -751,7 +752,7 @@ msgstr ""
 msgid "error: %s\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:61
+#: src/linux/linux_detect.c:61 src/win32/win32_detect.c:43
 msgid "getting OS type:\n"
 msgstr ""
 
@@ -794,10 +795,6 @@ msgstr ""
 #: src/linux/linux_detect.c:105
 msgid ""
 "The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
-msgstr ""
-
-#: src/linux/linux_detect.c:106 src/linux/linux_detect.c:193
-msgid "Done.\n"
 msgstr ""
 
 #: src/linux/linux_detect.c:113
@@ -861,16 +858,8 @@ msgstr ""
 msgid "nok"
 msgstr ""
 
-#: src/linux/linux_detect.c:245
+#: src/linux/linux_detect.c:245 src/win32/win32_detect.c:78
 msgid "checking resources:\n"
-msgstr ""
-
-#: src/linux/linux_detect.c:252
-msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
-msgstr ""
-
-#: src/linux/linux_detect.c:254
-msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
 #: src/linux/linux_detect.c:270
@@ -888,11 +877,6 @@ msgstr ""
 msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:292
-#, c-format
-msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
-msgstr ""
-
 #: src/linux/linux_ioports.c:84
 msgid "ioctl failed in linux_ioctl_read_io !\n"
 msgstr ""
@@ -901,11 +885,11 @@ msgstr ""
 msgid "ioctl failed in linux_ioctl_write_io !\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:66
+#: src/linux/linux_mapping.c:66 src/win32/win32_mapping.c:47
 msgid "getting method from resources (automatic):\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:68
+#: src/linux/linux_mapping.c:68 src/win32/win32_mapping.c:49
 msgid "getting method from resources (user-forced):\n"
 msgstr ""
 
@@ -937,16 +921,16 @@ msgstr ""
 msgid "  warning: can't use IO_LIBUSB\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:120
+#: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:118
 msgid "mapping I/O...\n"
 msgstr ""
 
 #. set the link cable
-#: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:195
+#: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:193
 msgid "registering cable...\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:278
+#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:276
 msgid "invalid argument (bad cable)."
 msgstr ""
 
@@ -1219,18 +1203,14 @@ msgid ""
 "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:43
-msgid "getting OS type...\r\n"
-msgstr ""
-
 #: src/win32/win32_detect.c:48
 #, c-format
-msgid "  operating System: %s\r\n"
+msgid "  operating System: %s\n"
 msgstr ""
 
 #: src/win32/win32_detect.c:51
 #, c-format
-msgid "  version: %i.%i\r\n"
+msgid "  version: %i.%i\n"
 msgstr ""
 
 #: src/win32/win32_detect.c:92
@@ -1248,12 +1228,12 @@ msgstr ""
 
 #: src/win32/win32_detect.c:139
 #, c-format
-msgid "  IO_DLL: %s (PortTalk)\r\n"
+msgid "  IO_DLL: %s (PortTalk)\n"
 msgstr ""
 
 #: src/win32/win32_detect.c:152
 #, c-format
-msgid "  IO_USB: %s (TiglUsb)\r\n"
+msgid "  IO_USB: %s (TiglUsb)\n"
 msgstr ""
 
 #: src/win32/win32_ioports.c:155
@@ -1274,16 +1254,4 @@ msgstr ""
 #: src/win32/win32_ioports.c:272
 #, c-format
 msgid "serial port %s successfully reconfigured.\n"
-msgstr ""
-
-#: src/win32/win32_mapping.c:43
-msgid "getting method from resources"
-msgstr ""
-
-#: src/win32/win32_mapping.c:49
-msgid " (automatic)...\n"
-msgstr ""
-
-#: src/win32/win32_mapping.c:51
-msgid " (user-forced)...\n"
 msgstr ""
