@@ -260,7 +260,7 @@ byte ti92p_fext2byte(char *s)
 
 // General functions
 
-int ti92p_send_key(int key)
+int ti92p_send_key(word key)
 {
   TRY(cable->open());
   TRY(cable->put(PC_TI92p));
@@ -1541,6 +1541,10 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   sprintf(update->label_text, "Launching...");
   update->label();
 
+  TRY(ti92p_send_key(KEY92p_CLEAR));
+  PAUSE(50);
+  TRY(ti92p_send_key(KEY92p_CLEAR));
+  PAUSE(50);
   TRY(ti92p_send_key(KEY92p_m));
   TRY(ti92p_send_key(KEY92p_a));
   TRY(ti92p_send_key(KEY92p_i));

@@ -117,11 +117,11 @@ ticalc_get_error(int err_num, char *error_msg)
 		break;
 
     default: strcpy(error_msg, _("Error code not found. This is a bug. Please report it.\n")); 
-		UNLOCK_TRANSFER
+		UNLOCK_TRANSFER()
       return err_num;
       break;
     }
-  UNLOCK_TRANSFER
+  UNLOCK_TRANSFER();
 
   return 0;
 }

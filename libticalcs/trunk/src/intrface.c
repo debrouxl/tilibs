@@ -191,7 +191,6 @@ void TICALL ticalc_set_calc(int type,
       calc->byte2fext = ti89_byte2fext;
       calc->fext2byte = ti89_fext2byte;
 
-	  //DISPLAY("lib: ticalc=%p, isready=%p, set_calc=%p, init=%p\n", calc, ti89_isready, ticalc_set_calc, ticalc_init);
       calc->isready=ti89_isready;
       calc->send_key=ti89_send_key;
       calc->remote_control=ti89_remote_control;
@@ -274,11 +273,11 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
       break;
-  case CALC_TI83P:
-    calc->byte2type = ti83p_byte2type;
-    calc->type2byte = ti83p_type2byte;
-    calc->byte2fext = ti83p_byte2fext;
-    calc->fext2byte = ti83p_fext2byte;
+    case CALC_TI83P:
+      calc->byte2type = ti83p_byte2type;
+      calc->type2byte = ti83p_type2byte;
+      calc->byte2fext = ti83p_byte2fext;
+      calc->fext2byte = ti83p_fext2byte;
     
       calc->isready=ti83p_isready;
       calc->send_key=ti83p_send_key;
@@ -295,13 +294,13 @@ void TICALL ticalc_set_calc(int type,
       calc->recv_flash=ti83p_recv_flash;
       calc->get_idlist=ti83p_get_idlist;
     
-    calc->translate_varname = ti83_translate_varname;
-    calc->ascii2ti_key = ti92_keys;
-    calc->generate_single_file_header
-      = generate_82_83_85_86_single_file_header;
-    calc->generate_group_file_header
-      = generate_82_83_85_86_group_file_header_from_varlist;
-    break;
+      calc->translate_varname = ti83_translate_varname;
+      calc->ascii2ti_key = ti92_keys;
+      calc->generate_single_file_header
+	= generate_82_83_85_86_single_file_header;
+      calc->generate_group_file_header
+	= generate_82_83_85_86_group_file_header_from_varlist;
+      break;
     case CALC_TI83:
       calc->byte2type = ti83_byte2type;
       calc->type2byte = ti83_type2byte;
@@ -358,7 +357,35 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
       break;
-  default:
+    case CALC_TI73:
+      calc->byte2type = ti73_byte2type;
+      calc->type2byte = ti73_type2byte;
+      calc->byte2fext = ti73_byte2fext;
+      calc->fext2byte = ti73_fext2byte;
+      
+      calc->isready=ti73_isready;
+      calc->send_key=ti73_send_key;
+      calc->remote_control=ti73_remote_control;
+      calc->screendump=ti73_screendump;
+      calc->recv_backup=ti73_recv_backup;
+      calc->send_backup=ti73_send_backup;
+      calc->directorylist=ti73_directorylist;
+      calc->recv_var=ti73_recv_var;
+      calc->send_var=ti73_send_var;
+      calc->dump_rom=ti73_dump_rom;
+      calc->get_rom_version=ti73_get_rom_version;
+      calc->send_flash=ti73_send_flash;
+      calc->recv_flash=ti73_recv_flash;
+      calc->get_idlist=ti73_get_idlist;
+    
+      calc->translate_varname = ti83_translate_varname;
+      calc->ascii2ti_key = ti92_keys;
+      calc->generate_single_file_header
+	= generate_82_83_85_86_single_file_header;
+      calc->generate_group_file_header
+	= generate_82_83_85_86_group_file_header_from_varlist;
+      break;
+    default:
     fprintf(stderr, "Function not implemented. This is a bug. Please report it.");
     fprintf(stderr, "Informations:\n");
     fprintf(stderr, "Calc: %i\n", type);

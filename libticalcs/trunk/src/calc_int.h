@@ -62,7 +62,8 @@ extern "C" {
   
   int TICALL detect_calc(int *calc_type);
   int TICALL ti89_92_92p_isready(int *calc_type);
-  int TICALL ti83p_89_92_92p_isready(int *calc_type);
+  #define ticalc_89_92_92p_isready	ti89_92_92p_isready
+  int TICALL ticalc_83p_89_92p_isready(int *calc_type);
   
   int TICALL ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
   int TICALL ticalc_close_ti_file();

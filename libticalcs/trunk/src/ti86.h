@@ -29,7 +29,7 @@ const char *ti86_byte2fext(byte data);
 byte ti86_fext2byte(char *s);
 
 int ti86_isready(void);
-int ti86_send_key(int key);
+int ti86_send_key(word key);
 int ti86_remote_control(void);
 int ti86_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
@@ -40,7 +40,7 @@ int ti86_recv_var(FILE *file, int mask_mode,
 		      char *varname, byte vartype, byte varlock);
 int ti86_send_var(FILE *file, int mask_mode);
 int ti86_send_flash(FILE *file, int mask_mode);
-int ti86_recv_flash(FILE *file, int mask_mode, char *appname);
+int ti86_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
 int ti86_dump_rom(FILE *file, int mask_mode);
 int ti86_get_rom_version(char *version);
 int ti86_get_idlist(char *idlist);

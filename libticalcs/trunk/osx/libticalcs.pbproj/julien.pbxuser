@@ -107,4 +107,9 @@
 	0867D69CFE84028FC02AAC07 = {
 		activeExec = 0;
 	};
+	F50CA7FB01FC268901000102 = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{61, 197}, {750, 502}}";
+		};
+	};
 }

@@ -16,37 +16,32 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TI92_H
-#define TI92_H
+#ifndef TI73_H
+#define TI73_H
 
 #include <stdio.h>
-
 #include "calc_ext.h"
 
-const char *ti92_byte2type(byte data);
-byte ti92_type2byte(char *s);
-const char *ti92_byte2fext(byte data);
-byte ti92_fext2byte(char *s);
+const char *ti73_byte2type(byte data);
+byte ti73_type2byte(char *s);
+const char *ti73_byte2fext(byte data);
+byte ti73_fext2byte(char *s);
 
-int ti92_isready(void);
-int ti92_send_key(word key);
-int ti92_remote_control(void);
-int ti92_screendump(byte **bitmap, int mask_mode,
+int ti73_isready(void);
+int ti73_send_key(word key);
+int ti73_remote_control(void);
+int ti73_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
-int ti92_directorylist(struct varinfo *list, int *n_elts);
-int ti92_recv_backup(FILE *file, int mask_mode, longword *version);
-int ti92_send_backup(FILE *file, int mask_mode);
-int ti92_recv_var(FILE *file, int mask_mode, 
+int ti73_directorylist(struct varinfo *list, int *n_elts);
+int ti73_recv_backup(FILE *file, int mask_mode, longword *version);
+int ti73_send_backup(FILE *file, int mask_mode);
+int ti73_recv_var(FILE *file, int mask_mode, 
 		      char *varname, byte vartype, byte varlock);
-int ti92_send_var(FILE *file, int mask_mode);
-int ti92_send_flash(FILE *file, int mask_mode);
-int ti92_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
-int ti92_dump_rom(FILE *file, int mask_mode);
-int ti92_get_rom_version(char *version);
-int ti92_get_idlist(char *idlist);
+int ti73_send_var(FILE *file, int mask_mode);
+int ti73_send_flash(FILE *file, int mask_mode);
+int ti73_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
+int ti73_dump_rom(FILE *file, int mask_mode);
+int ti73_get_rom_version(char *version);
+int ti73_get_idlist(char *idlist);
 
 #endif
-
-
-
-

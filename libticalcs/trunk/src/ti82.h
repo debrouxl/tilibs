@@ -28,7 +28,7 @@ const char *ti82_byte2fext(byte data);
 byte ti82_fext2byte(char *s);
 
 int ti82_isready(void);
-int ti82_send_key(int key);
+int ti82_send_key(word key);
 int ti82_remote_control(void);
 int ti82_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
@@ -39,7 +39,7 @@ int ti82_recv_var(FILE *file, int mask_mode,
 		      char *varname, byte vartype, byte varlock);
 int ti82_send_var(FILE *file, int mask_mode);
 int ti82_send_flash(FILE *file, int mask_mode);
-int ti82_recv_flash(FILE *file, int mask_mode, char *appname);
+int ti82_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
 int ti82_dump_rom(FILE *file, int mask_mode);
 int ti82_get_rom_version(char *version);
 int ti82_get_idlist(char *idlist);

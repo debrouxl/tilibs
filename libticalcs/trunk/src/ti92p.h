@@ -29,7 +29,7 @@ const char *ti92p_byte2fext(byte data);
 byte ti92p_fext2byte(char *s);
 
 int ti92p_isready(void);
-int ti92p_send_key(int key);
+int ti92p_send_key(word key);
 int ti92p_remote_control(void);
 int ti92p_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
@@ -40,7 +40,7 @@ int ti92p_recv_var(FILE *file, int mask_mode,
 		      char *varname, byte vartype, byte varlock);
 int ti92p_send_var(FILE *file, int mask_mode);
 int ti92p_send_flash(FILE *file, int mask_mode);
-int ti92p_recv_flash(FILE *file, int mask_mode, char *appname);
+int ti92p_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
 int ti92p_dump_rom(FILE *file, int mask_mode);
 int ti92p_get_rom_version(char *version);
 int ti92p_get_idlist(char *idlist);

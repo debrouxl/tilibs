@@ -144,18 +144,24 @@ struct ticalc_fncts
   /* TI routines, defined in the tiXX.c files */
   int (*isready)         (void);
 
-  int (*send_key)        (int key);
+  int (*send_key)        (word key);
+  int (*recv_key)        (byte ** answer);
   int (*remote_control)  (void);
+
   int (*screendump)      (byte **bitmap, int mask_mode, 
 			  ScrCoord *sc);
   int (*directorylist)   (struct varinfo *list, int *n_elts);
+
   int (*recv_backup)     (FILE *file, int mask_mode, longword *version);
   int (*send_backup)     (FILE *file, int mask_mode);
+
   int (*recv_var)        (FILE *file, int mask_mode, char *varname, 
-			  byte vartype, byte varlock);
+							byte vartype, byte varlock);
   int (*send_var)        (FILE *file, int mask_mode); 
+
   int (*send_flash)      (FILE *file, int mask_mode);
-  int (*recv_flash)      (FILE *file, int mask_mode, char *appname);
+  int (*recv_flash)      (FILE *file, int mask_mode, 
+							char *appname, int appsize);
   int (*dump_rom)        (FILE *file, int mask_mode);
   int (*get_rom_version) (char *version);
   int (*get_idlist)      (char *idlist);

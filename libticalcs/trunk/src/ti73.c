@@ -25,21 +25,21 @@
 #include <string.h>
 
 #include "calc_err.h"
-#include "defs83p.h"
+#include "defs73.h"
 #include "calc_ext.h"
 #include "trans.h"
 #include "pause.h"
-#include "rom83p.h"
+//#include "rom73.h"
 #include "update.h"
 
 /* Functions used by TI_PC functions */
 
 // The PC indicates that is OK
 // 23 56 00 00
-static int PC_replyOK_83p(void)
+static int PC_replyOK_73(void)
 {
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_TI_OK));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_TI_OK));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   DISPLAY("The computer reply OK.\n");
@@ -47,10 +47,10 @@ static int PC_replyOK_83p(void)
   return 0;
 }
 
-int PC_replyCONT_83p(void)
+int PC_replyCONT_73(void)
 {
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_CONTINUE));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_CONTINUE));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   DISPLAY("The computer reply OK.\n");
@@ -60,10 +60,10 @@ int PC_replyCONT_83p(void)
 
 // The PC indicates that it is ready or wait data
 // 23 09 00 00
-static int PC_waitdata_83p(void)
+static int PC_waitdata_73(void)
 {
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_WAIT_DATA));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_WAIT_DATA));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   DISPLAY("The computer wait data.\n");
@@ -73,7 +73,7 @@ static int PC_waitdata_83p(void)
 
 // Check whether the TI reply OK
 // 73 56 00 00
-static int ti83p_isOK_id(byte id)
+static int ti73_isOK_id(byte id)
 {
   byte data;
 
@@ -83,11 +83,11 @@ static int ti83p_isOK_id(byte id)
       return ERR_NOT_REPLY;
     }
   TRY(cable->get(&data));
-  if(data != CMD83p_TI_OK)
+  if(data != CMD73_TI_OK)
     { 
-      if(data==CMD83p_CHK_ERROR) 
+      if(data==CMD73_CHK_ERROR) 
 	return ERR_CHECKSUM;
-      else  if(data==CMD83p_REJECTED)
+      else  if(data==CMD73_REJECTED)
 		  return ERR_VAR_REFUSED;
 	return ERR_NOT_REPLY;
     }
@@ -107,22 +107,22 @@ static int ti83p_isOK_id(byte id)
   return 0;
 }
 
-#define ti83p_isOK() ti83p_isOK_id(TI83p_PC)
+#define ti73_isOK() ti73_isOK_id(TI73_PC)
 
 // Check whether the TI reply OK with packet length
 // 73 56 LL HH
 /*
-static int ti83p_isPacketOK(word length)
+static int ti73_isPacketOK(word length)
 {
   byte data;
   word w;
 
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_TI_OK)
+  if(data != CMD73_TI_OK)
     {
-      if(data==CMD83p_CHK_ERROR)
+      if(data==CMD73_CHK_ERROR)
         return ERR_CHECKSUM;
       else
         return ERR_INVALID_BYTE;
@@ -140,7 +140,7 @@ static int ti83p_isPacketOK(word length)
 
 // The TI indicates that it is ready or wait data
 // 73 09 00 00
-static int ti83p_waitdata(byte id, word length)
+static int ti73_waitdata(byte id, word length)
 {
   byte data;
   word w;
@@ -148,7 +148,7 @@ static int ti83p_waitdata(byte id, word length)
   TRY(cable->get(&data));
   if(data != id) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_WAIT_DATA) return ERR_INVALID_BYTE;
+  if(data != CMD73_WAIT_DATA) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   w=data;
   TRY(cable->get(&data));
@@ -160,16 +160,16 @@ static int ti83p_waitdata(byte id, word length)
 }
 
 // Check whether the TI reply that it is ready
-int ti83p_isready(void)
+int ti73_isready(void)
 {
 	LOCK_TRANSFER()
   TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_ISREADY));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_ISREADY));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   DISPLAY("The calculator is ready.\n");
   TRY(cable->close());
   UNLOCK_TRANSFER()
@@ -194,10 +194,10 @@ static int sendstring8(char *s, word *checksum)
   
   return 0;    
 }
-#define ti83p_sendstring8 sendstring8
+#define ti73_sendstring8 sendstring8
 
-#define TI83p_MAXTYPES 48
-const char *TI83p_TYPES[TI83p_MAXTYPES]=
+#define TI73_MAXTYPES 48
+const char *TI73_TYPES[TI73_MAXTYPES]=
 {
   "REAL", "LIST", "MATRX", "Y-VAR", "STRNG", "PRGM", "ASM", "PIC", 
   "GDB", "??", "??", "WDW", "CPLX", "??", "??", "WDW",
@@ -206,21 +206,20 @@ const char *TI83p_TYPES[TI83p_MAXTYPES]=
   "??", "??", "??", "AMS", "APPL", "??", "??", "??"
 };
 
-const char *TI83p_EXT[TI83p_MAXTYPES]=
+const char *TI73_EXT[TI73_MAXTYPES]=
 {
-  "8Xn", "8Xl", "8Xm", "8Xy", "8Xs", "8Xp", "8Xp", "8Xi",
-  "8Xd", "8??", "8??", "8Xw", "8Xc", "8??", "8??", "8Xw",
-  "8Xz", "8Xt", "8??", "8??", "8??", "8??", "8??", "8??",
-  "8??", "8??", "8??", "8??", "8??", "8??", "8??", "8??",
-  "8??", "8??", "8??", "8Xu", "8Xk", "8??", "8??", "8??"
+  "73n", "73l", "73m", "73y", "73s", "73p", "73p", "73i",
+  "73d", "7??", "7??", "73w", "73c", "7??", "7??", "73w",
+  "73z", "73t", "7??", "7??", "7??", "7??", "7??", "7??",
+  "7??", "7??", "7??", "7??", "7??", "7??", "7??", "7??",
+  "7??", "7??", "7??", "73u", "7Xk", "7??", "7??", "7??"
 };
-/* "82w", "82z", "82t" */
 
 // Return the type corresponding to the value
-const char *ti83p_byte2type(byte data)
+const char *ti73_byte2type(byte data)
 {
-  if(data==TI83p_DIR) return "DIR";
-  else if(data>=TI83p_MAXTYPES)
+  if(data==TI73_DIR) return "DIR";
+  else if(data>=TI73_MAXTYPES)
     {
       printf("Type: %02X\n", data);
       printf("Warning: unknown type. It is a bug. Please report this information.\n");
@@ -228,20 +227,20 @@ const char *ti83p_byte2type(byte data)
     }
   else 
     {
-      return TI83p_TYPES[data];
+      return TI73_TYPES[data];
     }
 }
 
 // Return the value corresponding to the type
-byte ti83p_type2byte(char *s)
+byte ti73_type2byte(char *s)
 {
   int i;
   
-  for(i=0; i<TI83p_MAXTYPES; i++)
+  for(i=0; i<TI73_MAXTYPES; i++)
     {
-      if(!strcmp(TI83p_TYPES[i], s)) break;
+      if(!strcmp(TI73_TYPES[i], s)) break;
     }
-  if(i >= TI83p_MAXTYPES)
+  if(i >= TI73_MAXTYPES)
     {
       printf("Warning: unknown type. It is a bug. Please report this information.\n");
       return 0;
@@ -251,9 +250,9 @@ byte ti83p_type2byte(char *s)
 }
 
 // Return the file extension corresponding to the value
-const char *ti83p_byte2fext(byte data)
+const char *ti73_byte2fext(byte data)
 {
-  if(data >= TI83p_MAXTYPES)
+  if(data >= TI73_MAXTYPES)
     {
       printf("Type: %02X\n", data);
       printf("Warning: unknown type. It is a bug. Please report this information.\n");
@@ -261,20 +260,20 @@ const char *ti83p_byte2fext(byte data)
     }
   else 
     {
-      return TI83p_EXT[data];
+      return TI73_EXT[data];
     }
 }
 
 // Return the value corresponding to the file extension
-byte ti83p_fext2byte(char *s)
+byte ti73_fext2byte(char *s)
 {
   int i;
 
-  for(i=0; i<TI83p_MAXTYPES; i++)
+  for(i=0; i<TI73_MAXTYPES; i++)
     {
-      if(!strcmp(TI83p_EXT[i], s)) break;
+      if(!strcmp(TI73_EXT[i], s)) break;
     }
-  if(i>=TI83p_MAXTYPES)
+  if(i>=TI73_MAXTYPES)
     {
       printf("Warning: unknown type. It is a bug. Please report this information.\n");
       return 0;
@@ -291,8 +290,8 @@ static int send_request(word size, byte type, char *string)
   word sum;
 
   sum=0;
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_REQUEST));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_REQUEST));
   TRY(cable->put(0x0D));
   TRY(cable->put(0x00));
   data=LSB(size);
@@ -323,10 +322,10 @@ static int recv_var_header(word *size, byte *type, byte *attr, char *string)
 
   sum=0;
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data == CMD83p_EOT) return ERR_DISCONTINUE;
-  else if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
+  if(data == CMD73_EOT) return ERR_DISCONTINUE;
+  else if(data != CMD73_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   j=data;
   TRY(cable->get(&data));
@@ -361,19 +360,19 @@ static int recv_var_header(word *size, byte *type, byte *attr, char *string)
 
 /* General functions */
 
-int ti83p_send_key(word key)
+int ti73_send_key(word key)
 {
   /* This function does not exist */
   return ERR_VOID_FUNCTION;
 }
 
-int ti83p_remote_control(void)
+int ti73_remote_control(void)
 {
   /* This function does not exist */
   return ERR_VOID_FUNCTION;
 }
 
-int ti83p_screendump(byte **bitmap, int mask_mode,
+int ti73_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc)
 {
   byte data;
@@ -385,13 +384,13 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   LOCK_TRANSFER()
   TRY(cable->open());
   update_start();
-  sc->width=TI83p_COLS;
-  sc->height=TI83p_ROWS;
-  sc->clipped_width = TI83p_COLS;
-  sc->clipped_height = TI83p_ROWS;
+  sc->width=TI73_COLS;
+  sc->height=TI73_ROWS;
+  sc->clipped_width = TI73_COLS;
+  sc->clipped_height = TI73_ROWS;
   if(*bitmap != NULL)
     free(*bitmap);
-  (*bitmap)=(byte *)malloc(TI83p_COLS*TI83p_ROWS*sizeof(byte)/8);
+  (*bitmap)=(byte *)malloc(TI73_COLS*TI73_ROWS*sizeof(byte)/8);
   if((*bitmap) == NULL)
     {
       fprintf(stderr, "Unable to allocate memory.\n");
@@ -400,16 +399,16 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
 
   sum=0;
   DISPLAY("Request screendump.\n");
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_SCREEN_DUMP));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+  if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   max_cnt=data;
   TRY(cable->get(&data));
@@ -434,7 +433,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   TRY(cable->get(&data));
   checksum += (data << 8);
   if(sum != checksum) return ERR_CHECKSUM;
-  TRY(PC_replyOK_83p());
+  TRY(PC_replyOK_73());
   DISPLAY("\n");
 
   update_start();
@@ -444,7 +443,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   return 0;
 }
 
-int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
+int ti73_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte header[9];
   word block_size;
@@ -472,14 +471,14 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
 
   DISPLAY("Request backup...\n");
   for(i=0; i<8; i++) { header[i]=0x00; }
-  TRY(send_request(0x0000, TI83p_BKUP, header));
-  TRY(ti83p_isOK());
+  TRY(send_request(0x0000, TI73_BKUP, header));
+  TRY(ti73_isOK());
 
   DISPLAY("Receiving backup...\n");  
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
+  if(data != CMD73_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   j=data; /* j should be equal to 0x09 but to be the safe side ... */
@@ -503,17 +502,17 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
 
-  TRY(PC_replyOK_83p());
-  TRY(PC_waitdata_83p());
-  TRY(ti83p_isOK());
+  TRY(PC_replyOK_73());
+  TRY(PC_waitdata_73());
+  TRY(ti73_isOK());
   for(i=0; i<3; i++)
     {
       (update->main_percentage)=(float)i/3;
       DISPLAY("Receiving part %i\n", i+1);
       TRY(cable->get(&data));
-      if(data != TI83p_PC) return ERR_INVALID_BYTE;
+      if(data != TI73_PC) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
-      if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+      if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
       block_size=data;
       fprintf(file, "%c", data);
@@ -543,7 +542,7 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
       checksum += (data << 8);
       if(sum != checksum) return ERR_CHECKSUM;
 
-      TRY(PC_replyOK_83p());
+      TRY(PC_replyOK_73());
       update_pbar();
       if(update->cancel) return ERR_ABORT;
     }
@@ -562,7 +561,7 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
   return 0;
 }
 
-int ti83p_send_backup(FILE *file, int mask_mode)
+int ti73_send_backup(FILE *file, int mask_mode)
 {
   byte data;
   char str[128];
@@ -609,8 +608,8 @@ int ti83p_send_backup(FILE *file, int mask_mode)
 
   sum=0;
   DISPLAY("Sending header.\n");
-  TRY(cable->put(TI83p_PC));
-  TRY(cable->put(CMD83p_VAR_HEADER2));
+  TRY(cable->put(TI73_PC));
+  TRY(cable->put(CMD73_VAR_HEADER2));
   data=fgetc(file);
   TRY(cable->put(data));
   block_size=data;
@@ -626,10 +625,10 @@ int ti83p_send_backup(FILE *file, int mask_mode)
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
 
-  TRY(ti83p_isOK());
-  TRY(ti83p_waitdata(TI83p_PC, block_size)); 
+  TRY(ti73_isOK());
+  TRY(ti73_waitdata(TI73_PC, block_size)); 
 
-  TRY(PC_replyOK_83p());
+  TRY(PC_replyOK_73());
   for(i=0; i<3; i++)
     {
       (update->main_percentage)=(float)i/3;
@@ -637,8 +636,8 @@ int ti83p_send_backup(FILE *file, int mask_mode)
       if(update->cancel) return ERR_ABORT;
       DISPLAY("Sending part %i...\n", i+1);
       sum=0;
-      TRY(cable->put(TI83p_PC));
-      TRY(cable->put(CMD83p_DATA_PART));
+      TRY(cable->put(TI73_PC));
+      TRY(cable->put(CMD73_DATA_PART));
             
       data=fgetc(file);
       block_size=data;
@@ -661,9 +660,9 @@ int ti83p_send_backup(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
       
-      TRY(ti83p_isOK());
+      TRY(ti73_isOK());
     }
-  TRY(PC_replyOK_83p());
+  TRY(PC_replyOK_73());
   DISPLAY("\n");
 
   update_start();
@@ -674,7 +673,7 @@ int ti83p_send_backup(FILE *file, int mask_mode)
 }
 
 // Current directory list format
-int ti83p_directorylist(struct varinfo *list, int *n_elts)
+int ti73_directorylist(struct varinfo *list, int *n_elts)
 {
   byte data;
   int i;
@@ -701,15 +700,15 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 
     DISPLAY("Request directory list (dir)...\n");
     for(i=0; i<8; i++) { var_name[i]=0x00; }
-    TRY(send_request(0x0000, TI83p_DIR, var_name));
+    TRY(send_request(0x0000, TI73_DIR, var_name));
 
-    TRY(ti83p_isOK());
+    TRY(ti73_isOK());
 
     sum=0;
     TRY(cable->get(&data));
-    if(data != TI83p_PC) return ERR_INVALID_BYTE;
+    if(data != TI73_PC) return ERR_INVALID_BYTE;
     TRY(cable->get(&data));
-    if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+    if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
     TRY(cable->get(&data));
     TRY(cable->get(&data));
     TRY(cable->get(&data));
@@ -724,7 +723,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     checksum += (data << 8);
     if(checksum != sum) return ERR_CHECKSUM;
 
-    TRY(PC_replyOK_83p());
+    TRY(PC_replyOK_73());
 
     for( ; ; )
       {
@@ -751,12 +750,12 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 	ti83_translate_varname(p->varname, p->translate, p->vartype);
 	
 	DISPLAY("Name: %8s | ", p->translate);
-	DISPLAY("Type: %8s | ", ti83p_byte2type(p->vartype));
+	DISPLAY("Type: %8s | ", ti73_byte2type(p->vartype));
 	DISPLAY("Attr: %i | ", p->varlocked);
 	DISPLAY("Size: %08X\n", p->varsize);
 
-	TRY(PC_replyOK_83p());
-	sprintf(update->label_text, "Reading of: TI83p/%s", p->translate);
+	TRY(PC_replyOK_73());
+	sprintf(update->label_text, "Reading of: TI73/%s", p->translate);
 	update_label();
 	if(update->cancel) return ERR_ABORT;
       }
@@ -764,7 +763,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     TRY(cable->get(&data));
     TRY(cable->get(&data));
 
-    TRY(PC_replyOK_83p());
+    TRY(PC_replyOK_73());
     DISPLAY("\n");
     TRY(cable->close());
     UNLOCK_TRANSFER()
@@ -772,7 +771,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
   return 0;
 }
 
-int ti83p_recv_var(FILE *file, int mask_mode, 
+int ti73_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {  
   byte data;
@@ -811,15 +810,15 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   DISPLAY("Variable requested: %s\n", varname);
   TRY(send_request(0x0000, vartype, varname));
 
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   
   DISPLAY("Receiving variable(s)...\n");  
   sum=0;
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data == CMD83p_EOT) return ERR_ABORT; //break;
-  else if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
+  if(data == CMD73_EOT) return ERR_ABORT; //break;
+  else if(data != CMD73_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   if(data != 0x0D) return ERR_INVALID_BYTE;
   fprintf(file, "%c", data);
@@ -841,7 +840,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   var_type=data;
-  DISPLAY("-> Type: %s\n", ti83p_byte2type(data));
+  DISPLAY("-> Type: %s\n", ti73_byte2type(data));
   sum+=data;
   for(i=0; i<8; i++)
     {
@@ -872,16 +871,16 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
   
-  TRY(PC_replyOK_83p());
-  TRY(PC_waitdata_83p());
+  TRY(PC_replyOK_73());
+  TRY(PC_waitdata_73());
   DISPLAY("The calculator wants to continue.\n");
   
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   DISPLAY("Receiving variable...\n");
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+  if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   sum+=data;
@@ -907,7 +906,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
   
-  TRY(PC_replyOK_83p());
+  TRY(PC_replyOK_73());
 
   if( (mask_mode & MODE_RECEIVE_SINGLE_VAR) || 
       (mask_mode & MODE_RECEIVE_LAST_VAR) )
@@ -938,7 +937,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
  * fichiers est gérée  (mais de manière laxiste:
  * la détection 0x0D / 0x0B se fait au niveau
  * de l'en tête **TI83** / **TI83F* */
-int ti83p_send_var(FILE *file, int mask_mode)
+int ti73_send_var(FILE *file, int mask_mode)
 {
   byte data;
   word sum;
@@ -947,7 +946,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
   char varname[9];
   byte vartype;
   int i;
-  char trans[9]; int fti83p = 0;
+  char trans[9]; int fti73 = 0;
   byte varattr = VARATTR_NONE;
   
   LOCK_TRANSFER()
@@ -985,7 +984,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
     {
       data=fgetc(file);
 	  if(feof(file)) break;
-      if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
+      if(data == 0x0d) fti73 = 1; else if(data == 0x0b) fti73 = 0;
       else break;
       data=fgetc(file);
 	  if(feof(file)) break;
@@ -996,7 +995,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
       vartype=fgetc(file);
       for(i=0; i<8; i++) varname[i]=fgetc(file);
       varname[i]='\0';
-	  if(fti83p) { 
+	  if(fti73) { 
 		  data = fgetc(file);
 		  varattr = fgetc(file);
 	  }
@@ -1010,11 +1009,11 @@ int ti83p_send_var(FILE *file, int mask_mode)
       DISPLAY("-> Translated name: %s\n", 
 	      ti83_translate_varname(varname, trans, vartype));
       DISPLAY("-> Size: %08X\n", varsize);
-      DISPLAY("-> Type: %s\n", ti83p_byte2type(vartype));
+      DISPLAY("-> Type: %s\n", ti73_byte2type(vartype));
       sum=0;
-      TRY(cable->put(PC_TI83p));
-      TRY(cable->put(CMD83p_VAR_HEADER2));
-      if(fti83p) block_size=0x0D; else block_size=0x0B;
+      TRY(cable->put(PC_TI73));
+      TRY(cable->put(CMD73_VAR_HEADER2));
+      if(fti73) block_size=0x0D; else block_size=0x0B;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       data=LSB(varsize);
@@ -1042,13 +1041,13 @@ int ti83p_send_var(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
 
-      TRY(ti83p_isOK());
-      TRY(ti83p_waitdata(TI83p_PC, block_size));
+      TRY(ti73_isOK());
+      TRY(ti73_waitdata(TI73_PC, block_size));
 
       sum=0;
-      TRY(PC_replyOK_83p());
-      TRY(cable->put(TI83p_PC));
-      TRY(cable->put(CMD83p_DATA_PART));
+      TRY(PC_replyOK_73());
+      TRY(cable->put(TI73_PC));
+      TRY(cable->put(CMD73_DATA_PART));
       block_size=(word)varsize;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
@@ -1067,10 +1066,10 @@ int ti83p_send_var(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
 
-      TRY(ti83p_isOK());
+      TRY(ti73_isOK());
 
-      TRY(cable->put(PC_TI83p));
-      TRY(cable->put(CMD83p_EOT));
+      TRY(cable->put(PC_TI73));
+      TRY(cable->put(CMD73_EOT));
       TRY(cable->put(0x00));
       TRY(cable->put(0x00));
   }
@@ -1084,9 +1083,9 @@ int ti83p_send_var(FILE *file, int mask_mode)
   return 0;
 }
 
-#define DUMP_ROM83p_FILE "dumprom.83p"
+#define DUMP_ROM73_FILE "dumprom.73"
 
-int ti83p_dump_rom(FILE *file, int mask_mode)
+int ti73_dump_rom(FILE *file, int mask_mode)
 {
   int i, j;
   int total;
@@ -1107,22 +1106,22 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
 
   /* Open connection and check */
   TRY(cable->open());
-  //TRY(ti83p_isready());
+  //TRY(ti73_isready());
   TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update_label();
 
   /* Transfer ROM dump program from lib to calc */
-  f = fopen(DUMP_ROM83p_FILE, "wb");
+  f = fopen(DUMP_ROM73_FILE, "wb");
   if(f == NULL)
     return -1;
-  fwrite(romDump83p, sizeof(unsigned char),
-         romDumpSize83p, f);
+  //fwrite(romDump73, sizeof(unsigned char),
+  //       romDumpSize73, f);
   fclose(f);
-  f = fopen(DUMP_ROM83p_FILE, "rb");
-  TRY(ti83p_send_var(f, MODE_NORMAL));
+  f = fopen(DUMP_ROM73_FILE, "rb");
+  TRY(ti73_send_var(f, MODE_NORMAL));
   fclose(f);
-  //unlink(DUMP_ROM83p_FILE);
+  //unlink(DUMP_ROM73_FILE);
 
   /* As we can not launch program by remote control, we wait user do that */
   sprintf(update->label_text, "Launch from calc...");
@@ -1186,7 +1185,7 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
   return 0;
 }
 
-int ti83p_get_rom_version(char *version)
+int ti73_get_rom_version(char *version)
 {
   return ERR_VOID_FUNCTION;
 }
@@ -1325,7 +1324,7 @@ static int read_data_block(FILE *f, word *page_address, word *page_number,
 	return ret;
 }
 
-int ti83p_send_flash(FILE *file, int mask_mode)
+int ti73_send_flash(FILE *file, int mask_mode)
 {
   byte data;
   word sum, checksum;
@@ -1348,7 +1347,7 @@ int ti83p_send_flash(FILE *file, int mask_mode)
   TRY(cable->open());
   update_start();
   fgets(str, 128, file);
-  if(strstr(str, "**TIFL**") == NULL) // is a .83pu file
+  if(strstr(str, "**TIFL**") == NULL) // is a .73u file
     {
       for(i=0, j=0; i<127; i++) // is a .tib file
 	{
@@ -1483,20 +1482,20 @@ int ti83p_send_flash(FILE *file, int mask_mode)
   if(mask_mode & MODE_APPS)
   {
 	  // send FLASH app
-	TRY(cable->put(PC_TI83p));
-	TRY(cable->put(CMD83p_SEND_FLASH));
+	TRY(cable->put(PC_TI73));
+	TRY(cable->put(CMD73_SEND_FLASH));
 	TRY(cable->put(0x00));
 	TRY(cable->put(0x00));
   
-	TRY(ti83p_isOK());
-	TRY(PC_waitdata_83p());
-	TRY(ti83p_isOK());
+	TRY(ti73_isOK());
+	TRY(PC_waitdata_73());
+	TRY(ti73_isOK());
   
 	sum=0;
 	TRY(cable->get(&data));
-	if(data != TI83p_PC) return ERR_INVALID_BYTE;
+	if(data != TI73_PC) return ERR_INVALID_BYTE;
 	TRY(cable->get(&data));
-	if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+	if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
 	TRY(cable->get(&data));
 	if(data != 0x0B) return ERR_INVALID_BYTE;
 	TRY(cable->get(&data));
@@ -1517,7 +1516,7 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 	checksum += (data << 8);
 	if(checksum != sum) return ERR_CHECKSUM;
   
-	TRY(PC_replyOK_83p());
+	TRY(PC_replyOK_73());
   }
  
   read_data_block(file, &page_offset, &page_number, NULL, 0);	// reset block reader
@@ -1552,8 +1551,8 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 		DISPLAY("Sending block %i.\n", i);
       
 		sum=0;
-		TRY(cable->put(PC_TI83p));
-		TRY(cable->put(CMD83p_VAR_HEADER));
+		TRY(cable->put(PC_TI73));
+		TRY(cable->put(CMD73_VAR_HEADER));
 		TRY(cable->put(LSB(0x000A)));
 		TRY(cable->put(MSB(0x000A)));
 		data=block_size & 0x000000FF;
@@ -1564,9 +1563,9 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 		TRY(cable->put(data));
       
       if(mask_mode & MODE_AMS)
-		data = TI83p_AMS;
+		data = TI73_AMS;
       else
-		data = TI83p_FLASH;
+		data = TI73_FLASH;
       TRY(cable->put(data));
       sum+=data;
       
@@ -1606,14 +1605,14 @@ int ti83p_send_flash(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
       
-      TRY(ti83p_isOK());
-      TRY(ti83p_waitdata(TI83p_PC, 0x000A));
+      TRY(ti73_isOK());
+      TRY(ti73_waitdata(TI73_PC, 0x000A));
       
-      TRY(PC_replyOK_83p());
+      TRY(PC_replyOK_73());
       
       sum=0;
-      TRY(cable->put(PC_TI83p));
-      TRY(cable->put(CMD83p_DATA_PART));
+      TRY(cable->put(PC_TI73));
+      TRY(cable->put(CMD73_DATA_PART));
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       DISPLAY("Transmitting data.\n");
@@ -1632,19 +1631,19 @@ int ti83p_send_flash(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
       
-      TRY(ti83p_isOK());
+      TRY(ti73_isOK());
       
       ((update->main_percentage))=(float)i/num_blocks;
       update_pbar();
       if(update->cancel) return ERR_ABORT;
     }
   
-  TRY(cable->put(PC_TI83p));
-  TRY(cable->put(CMD83p_EOT));
+  TRY(cable->put(PC_TI73));
+  TRY(cable->put(CMD73_EOT));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   if(mask_mode & MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
   else if(mask_mode & MODE_AMS)
@@ -1736,7 +1735,7 @@ static int write_data_block(FILE *f, word page_address, word page_number,
 	return ret;
 }
 
-int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
+int ti73_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
 {
   byte data;
   word sum;
@@ -1774,8 +1773,8 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   sum=0;
   DISPLAY("Request FLASH application: %s\n", varname);
 
-  TRY(cable->put(TI83p_PC));
-  TRY(cable->put(CMD83p_REQUEST));
+  TRY(cable->put(TI73_PC));
+  TRY(cable->put(CMD73_REQUEST));
   block_size=0x000B;
   data=LSB(block_size);
   TRY(cable->put(data));
@@ -1783,14 +1782,14 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   TRY(cable->put(data));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
-  data=TI83p_FLASH;
+  data=TI73_FLASH;
   TRY(cable->put(data));
   sum+=data;
-  TRY(ti83p_sendstring8(varname, &sum));
+  TRY(ti73_sendstring8(varname, &sum));
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
   
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
 
   DISPLAY("Receiving application...\n");
   update->total = 5*appsize;
@@ -1799,10 +1798,10 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   {
 	sum=0;
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data == CMD83p_EOT) break;
-  else if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
+  if(data == CMD73_EOT) break;
+  else if(data != CMD73_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   j=data;
   TRY(cable->get(&data));
@@ -1840,18 +1839,18 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
 
-      TRY(PC_replyOK_83p());
-      TRY(PC_waitdata_83p());
+      TRY(PC_replyOK_73());
+      TRY(PC_waitdata_73());
       DISPLAY("The calculator want to continue.\n");
       
-      TRY(ti83p_isOK());
+      TRY(ti73_isOK());
 
       DISPLAY("Receiving block (page_offset=%04X, page_number=%04X)...\n", 
 		  page_address, page_number);
       TRY(cable->get(&data));
-      if(data != TI83p_PC) return ERR_INVALID_BYTE;
+      if(data != TI73_PC) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
-      if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+      if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
       block_size = data;
       TRY(cable->get(&data));
@@ -1877,13 +1876,13 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
 
 	  write_data_block(file, page_address, page_number & 0x00ff, buffer, 0);
       
-      TRY(PC_replyOK_83p());
+      TRY(PC_replyOK_73());
  
       ((update->main_percentage))=(float)k/(update->total);
       update_pbar();
       if(update->cancel) return ERR_ABORT;
     }
-      TRY(PC_replyOK_83p());
+      TRY(PC_replyOK_73());
       DISPLAY("\n");
 
 	  write_data_block(file, page_address, page_number & 0x00ff, buffer, !0);
@@ -1906,7 +1905,7 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   return 0;
 }
 
-int ti83p_get_idlist(char *id)
+int ti73_get_idlist(char *id)
 {
   byte data;
   word sum;
@@ -1922,8 +1921,8 @@ int ti83p_get_idlist(char *id)
   update_start();
   sum=0;
   DISPLAY("Request IDlist...\n");
-  TRY(cable->put(TI83p_PC));
-  TRY(cable->put(CMD83p_REQUEST));
+  TRY(cable->put(TI73_PC));
+  TRY(cable->put(CMD73_REQUEST));
   block_size=0x0B;
   data=LSB(block_size);
   TRY(cable->put(data));
@@ -1931,7 +1930,7 @@ int ti83p_get_idlist(char *id)
   TRY(cable->put(data));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
-  data=TI83p_IDLIST;
+  data=TI73_IDLIST;
   TRY(cable->put(data));
   sum+=data;
   for(j=0; j<8; j++) TRY(cable->put(0x00)); // null padded name
@@ -1940,18 +1939,18 @@ int ti83p_get_idlist(char *id)
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
   
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   sum=0;
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_VAR_HEADER) 
+  if(data != CMD73_VAR_HEADER) 
   {
-	  if(data != CMD83p_REJECTED)
+	  if(data != CMD73_REJECTED)
 		return ERR_INVALID_BYTE;
 	  else
 	  {
-		  byte rej_code = CMD83p_REJ_NONE;
+		  byte rej_code = CMD73_REJ_NONE;
 			DISPLAY("Var rejected... ");
 		TRY(cable->get(&data));
 		TRY(cable->get(&data));
@@ -1984,7 +1983,7 @@ int ti83p_get_idlist(char *id)
   sum+=data;
   DISPLAY("Size of the IDlist: 0x%08X = %i.\n", var_size-2, var_size-2);
   TRY(cable->get(&data));
-  DISPLAY("Type of the variable: %s\n", ti83p_byte2type(data));
+  DISPLAY("Type of the variable: %s\n", ti73_byte2type(data));
   sum+=data;
   TRY(cable->get(&data));
   name_length=data;
@@ -2009,16 +2008,16 @@ int ti83p_get_idlist(char *id)
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
 
-  TRY(PC_replyOK_83p());
-  TRY(PC_waitdata_83p());
+  TRY(PC_replyOK_73());
+  TRY(PC_waitdata_73());
   DISPLAY("The calculator want continue.\n");
 
-  TRY(ti83p_isOK());
+  TRY(ti73_isOK());
   DISPLAY("Receiving IDlist...\n");
   TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+  if(data != CMD73_DATA_PART) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   TRY(cable->get(&data));
   sum=0;
@@ -2054,7 +2053,7 @@ int ti83p_get_idlist(char *id)
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
 
-  TRY(PC_replyOK_83p());
+  TRY(PC_replyOK_73());
   DISPLAY("\n");
   (update->percentage)=0.0;
   TRY(cable->close());

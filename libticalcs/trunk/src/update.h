@@ -28,8 +28,8 @@
  * a transfer while another is in progress
  */
 extern int lock;
-#define LOCK_TRANSFER   TRYV(lock);  lock = ERR_PENDING_TRANSFER;
-#define UNLOCK_TRANSFER lock = 0;
+#define LOCK_TRANSFER()   TRYV(lock);  lock = ERR_PENDING_TRANSFER;
+#define UNLOCK_TRANSFER() lock = 0;
 
 /* 
  * Functions for updating 

@@ -352,7 +352,7 @@ static int recv_var_header(word *size, byte *type, char *string)
 
 /* General functions */
 
-int ti83_send_key(int key)
+int ti83_send_key(word key)
 {
   /* This function does not exist */
   return ERR_VOID_FUNCTION;

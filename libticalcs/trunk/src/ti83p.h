@@ -28,7 +28,7 @@ const char *ti83p_byte2fext(byte data);
 byte ti83p_fext2byte(char *s);
 
 int ti83p_isready(void);
-int ti83p_send_key(int key);
+int ti83p_send_key(word key);
 int ti83p_remote_control(void);
 int ti83p_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
@@ -39,7 +39,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
 		      char *varname, byte vartype, byte varlock);
 int ti83p_send_var(FILE *file, int mask_mode);
 int ti83p_send_flash(FILE *file, int mask_mode);
-int ti83p_recv_flash(FILE *file, int mask_mode, char *appname);
+int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
 int ti83p_dump_rom(FILE *file, int mask_mode);
 int ti83p_get_rom_version(char *version);
 int ti83p_get_idlist(char *idlist);

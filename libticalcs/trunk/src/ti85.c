@@ -261,7 +261,7 @@ byte ti85_fext2byte(char *s)
 
 // General functions
 
-int ti85_send_key(int key)
+int ti85_send_key(word key)
 {
   return ERR_VOID_FUNCTION;
 }

@@ -830,6 +830,7 @@
 		04DE224D017240245041E0CA = {
 			children = (
 				0127D13101738AAA5041E0CA,
+				F50CA7FB01FC268901000102,
 				0127D0C7017389D15041E0CA,
 				0127D0C8017389D15041E0CA,
 				0127D0C9017389D15041E0CA,
@@ -843,6 +844,7 @@
 				0127D0D1017389D15041E0CA,
 				0127D0D2017389D15041E0CA,
 				0127D0D3017389D15041E0CA,
+				F50CA7FC01FC268901000102,
 				0127D0D4017389D15041E0CA,
 				0127D0D5017389D15041E0CA,
 				0127D0D6017389D15041E0CA,
@@ -885,6 +887,7 @@
 				0127D11A017389DF5041E0CA,
 				0127D11B017389DF5041E0CA,
 				0127D11C017389DF5041E0CA,
+				F50CA7FF01FC269301000102,
 				0127D11D017389DF5041E0CA,
 				0127D11E017389DF5041E0CA,
 				0127D11F017389DF5041E0CA,
@@ -993,11 +996,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.5-osx0.1.0</string>
+	<string>3.0.7-osx0.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.0.5-osx0.1.0</string>
+	<string>3.0.7-osx0.1.0</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -1048,6 +1051,8 @@
 				0127D113017389D15041E0CA,
 				0127D114017389D15041E0CA,
 				0127D13201738AAA5041E0CA,
+				F50CA7FD01FC268901000102,
+				F50CA7FE01FC268901000102,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1077,6 +1082,7 @@
 				0127D12F017389DF5041E0CA,
 				0127D130017389DF5041E0CA,
 				F54393FF01A995F901000102,
+				F50CA80001FC269401000102,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -1162,6 +1168,42 @@
 //F52
 //F53
 //F54
+		F50CA7FB01FC268901000102 = {
+			isa = PBXFileReference;
+			name = defs73.h;
+			path = ../src/defs73.h;
+			refType = 2;
+		};
+		F50CA7FC01FC268901000102 = {
+			isa = PBXFileReference;
+			name = ti73.h;
+			path = ../src/ti73.h;
+			refType = 2;
+		};
+		F50CA7FD01FC268901000102 = {
+			fileRef = F50CA7FC01FC268901000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50CA7FE01FC268901000102 = {
+			fileRef = F50CA7FB01FC268901000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50CA7FF01FC269301000102 = {
+			isa = PBXFileReference;
+			name = ti73.c;
+			path = ../src/ti73.c;
+			refType = 2;
+		};
+		F50CA80001FC269401000102 = {
+			fileRef = F50CA7FF01FC269301000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F54393FF01A995F901000102 = {
 			fileRef = 0127D11E017389DF5041E0CA;
 			isa = PBXBuildFile;

@@ -23,6 +23,10 @@
 #include "calc_err.h"
 #include "calc_int.h"
 
+#include "defs83p.h"
+#include "defs92p.h"
+#include "defs89.h"
+
 /* 
    PC: 08 6D 00 00		PC request a screen dump
    TI: 98 56 00 00		TI reply OK 
@@ -226,7 +230,7 @@ int ticalc_get_calc(void); // defined in intrface.c
 
 /*
   Check if the calculator is ready and detect the type.
-  Works only with TI83+/TI89/92/92+ calculators (TI83+ to do).
+  Works only with TI89/92/92+ calculators.
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise
 */
@@ -334,18 +338,17 @@ TIEXPORT int TICALL ti89_92_92p_isready(int *calc_type)
 
 /*
   Check if the calculator is ready and detect the type.
-  Works only with TI83+/89/92+ calculators (FLASH support ?!).
+  Works only with TI83+/89/92+ calculators.
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise
 */
-TIEXPORT int TICALL ti83p_89_92_92p_isready(int *calc_type)
+TIEXPORT int TICALL ti83p_89_92p_isready(int *calc_type)
 {
   byte data;
   int ct;
 
   ct = ticalc_get_calc();
-  if( (ct != CALC_TI89) && (ct != CALC_TI92) && 
-      (ct != CALC_TI92P) && (ct != CALC_TI83P) )
+  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && (ct != CALC_TI83P) )
     return 0;
   
   TRY(cable->open());
@@ -354,14 +357,25 @@ TIEXPORT int TICALL ti83p_89_92_92p_isready(int *calc_type)
   TRY(cable->put(CMD89_ISREADY));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
+
+  TRY(cable->get(&data));		// 0x98: TI89, 0x88: TI92+, 0x73: TI83+
+  //DISPLAY("isOK_1: 0x%02X\n", data);
+  switch(data)
+  {
+  case TI89_PC: *calc_type = CALC_TI89; break;
+  case TI92p_PC: *calc_type = CALC_TI92P; break;
+  case TI83p_PC: *calc_type = CALC_TI83P; break;
+  default: *calc_type = CALC_NONE; return ERR_INVALID_BYTE; break;
+  }
+  TRY(cable->get(&data)); 
+  if(data != CMD89_TI_OK) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  DISPLAY("isOK_1: 0x%02X\n", data);
-  TRY(cable->get(&data)); // 0x98: TI89, 0x88: TI92+, 0x73: TI83+
-  DISPLAY("isOK_2: 0x%02X\n", data);
   TRY(cable->get(&data));
-  DISPLAY("isOK_3: 0x%02X\n", data);
-  TRY(cable->get(&data));
-  DISPLAY("isOK_4: 0x%02X\n", data);
+  if((data&1) != 0)
+      return ERR_NOT_READY;
+
+  DISPLAY("The calculator is ready.\n");
+  DISPLAY("Calculator type: %s\n", (*calc_type==CALC_TI83P)?"TI83+":(*calc_type==CALC_TI89)?"TI89":"TI92+");
 
   return 0;
 }

@@ -27,6 +27,7 @@
 #include "ti83p.h"
 #include "ti83.h"
 #include "ti82.h"
+#include "ti73.h"
 
 #endif
 

@@ -399,7 +399,7 @@ static int recv_var_header(word *size, byte *type, char *string)
 
 /* General functions */
 
-int ti86_send_key(int key)
+int ti86_send_key(word key)
 {
   return ERR_VOID_FUNCTION;
 }

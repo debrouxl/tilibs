@@ -262,7 +262,7 @@ byte ti89_fext2byte(char *s)
 
 // General functions
 
-int ti89_send_key(int key)
+int ti89_send_key(word key)
 {
   //LOCK_TRANSFER
   TRY(cable->open());
@@ -276,6 +276,38 @@ int ti89_send_key(int key)
 
   return 0;
 }
+
+int ti89_recv_key(byte **answer)
+{
+  /*
+  int err;
+  int status;
+  byte data;
+  byte *buf;
+  int i = 0;
+
+  (*answer)=(byte *)malloc(256*sizeof(byte));
+  if((*answer) == NULL)
+    {
+      dERROR("Unable to allocate memory.\n");
+      exit(0);
+    }
+  buf = *answer;
+  
+  TRY(lc.check_port(&status));
+  if(status & STATUS_RX)
+    {
+      err=lc.get(&data);
+      buf[1] = data;
+      i++;
+    }
+  else
+    return -1;
+  buf[0] = i;
+  */
+  return ERR_VOID_FUNCTION;
+}
+
 
 int ti89_remote_control(void)
 {
@@ -429,7 +461,7 @@ int ti89_remote_control(void)
 
   return 0;
 #else
-  return 25;
+  return ERR_VOID_FUNCTION;
 #endif
 }
 
@@ -454,7 +486,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
   (*bitmap)=(byte *)malloc(TI89_COLS*TI89_ROWS*sizeof(byte)/8);
   if((*bitmap) == NULL)
     {
-      fprintf(stderr, "Unable to allocate memory.\n");
+      dERROR("Unable to allocate memory.\n");
       exit(0);
     }
 
@@ -1538,6 +1570,10 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   sprintf(update->label_text, "Launching...");
   update->label();
 
+  TRY(ti89_send_key(KEY89_CLEAR));
+  PAUSE(50);
+  TRY(ti89_send_key(KEY89_CLEAR));
+  PAUSE(50);
   TRY(ti89_send_key(KEY89_m));
   TRY(ti89_send_key(KEY89_a));
   TRY(ti89_send_key(KEY89_i));
@@ -2100,6 +2136,7 @@ int ti89_recv_flash(FILE *file, int mask_mode, char *appname)
   fprintf(file, "%s", appname);
   for(i=16+strlen(appname)+1; i<0x4A; i++)
     fputc(0x00, file);
+
   TRY(cable->open());
   update->start();
   sprintf(update->label_text, "Application: %s", varname);
