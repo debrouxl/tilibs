@@ -197,7 +197,6 @@ libticables_la_SOURCES = *.h \
 	link_slv.c link_tie.c link_tig.c link_vti.c link_vtl.c \
 	logging.c \
 	mapping.c \
-	porttalk.c \
 	none.c \
 	printl.c \
 	type2str.c \
@@ -925,39 +924,6 @@ libticables_la-mapping.lo: mapping.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-mapping.Plo' tmpdepfile='$(DEPDIR)/libticables_la-mapping.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-mapping.lo `test -f 'mapping.c' || echo '$(srcdir)/'`mapping.c
-
-libticables_la-porttalk.o: porttalk.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-porttalk.o -MD -MP -MF "$(DEPDIR)/libticables_la-porttalk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-porttalk.o `test -f 'porttalk.c' || echo '$(srcdir)/'`porttalk.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-porttalk.Tpo" "$(DEPDIR)/libticables_la-porttalk.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-porttalk.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='porttalk.c' object='libticables_la-porttalk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-porttalk.Po' tmpdepfile='$(DEPDIR)/libticables_la-porttalk.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-porttalk.o `test -f 'porttalk.c' || echo '$(srcdir)/'`porttalk.c
-
-libticables_la-porttalk.obj: porttalk.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-porttalk.obj -MD -MP -MF "$(DEPDIR)/libticables_la-porttalk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-porttalk.obj `if test -f 'porttalk.c'; then $(CYGPATH_W) 'porttalk.c'; else $(CYGPATH_W) '$(srcdir)/porttalk.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-porttalk.Tpo" "$(DEPDIR)/libticables_la-porttalk.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-porttalk.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='porttalk.c' object='libticables_la-porttalk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-porttalk.Po' tmpdepfile='$(DEPDIR)/libticables_la-porttalk.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-porttalk.obj `if test -f 'porttalk.c'; then $(CYGPATH_W) 'porttalk.c'; else $(CYGPATH_W) '$(srcdir)/porttalk.c'; fi`
-
-libticables_la-porttalk.lo: porttalk.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-porttalk.lo -MD -MP -MF "$(DEPDIR)/libticables_la-porttalk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-porttalk.lo `test -f 'porttalk.c' || echo '$(srcdir)/'`porttalk.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-porttalk.Tpo" "$(DEPDIR)/libticables_la-porttalk.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-porttalk.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='porttalk.c' object='libticables_la-porttalk.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-porttalk.Plo' tmpdepfile='$(DEPDIR)/libticables_la-porttalk.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-porttalk.lo `test -f 'porttalk.c' || echo '$(srcdir)/'`porttalk.c
 
 libticables_la-none.o: none.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-none.o -MD -MP -MF "$(DEPDIR)/libticables_la-none.Tpo" \

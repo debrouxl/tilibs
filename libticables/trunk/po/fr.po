@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables 3.8.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2004-05-11 23:34+0200\n"
+"POT-Creation-Date: 2004-06-29 18:11+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.1\n"
 
-#: src/detect.c:67 src/type2str.c:150 src/win32/win32_detect.c:61
+#: src/detect.c:67 src/type2str.c:150 src/win32/win32_detect.c:65
 msgid "unknown"
 msgstr "inconnu"
 
@@ -457,71 +457,71 @@ msgstr ""
 "Ceci est un bogue. Veuillez le signaler.\n"
 "."
 
-#: src/intrface.c:94
+#: src/intrface.c:98
 #, c-format
 msgid "ticables library version %s\n"
 msgstr "librairie ticables version %s\n"
 
-#: src/intrface.c:105
+#: src/intrface.c:109
 #, c-format
 msgid "built for %s target.\n"
 msgstr "Compilé pour %s.\n"
 
-#: src/intrface.c:347
+#: src/intrface.c:351
 msgid "list of settings:\n"
 msgstr "liste des réglages :\n"
 
-#: src/intrface.c:349
+#: src/intrface.c:353
 #, c-format
 msgid "  cable: %s\n"
 msgstr "  câble : %s\n"
 
-#: src/intrface.c:352
+#: src/intrface.c:356
 #, c-format
 msgid "  port: %s\n"
 msgstr "  port : %s\n"
 
-#: src/intrface.c:354
+#: src/intrface.c:358
 #, c-format
 msgid "  method: %s\n"
 msgstr "  méthode : %s\n"
 
-#: src/intrface.c:357
+#: src/intrface.c:361
 #, c-format
 msgid "  baud-rate: %i\n"
 msgstr "  débit (bits/s) : %i\n"
 
-#: src/intrface.c:358
+#: src/intrface.c:362
 #, c-format
 msgid "  hardware flow control: %s\n"
 msgstr "  contrôle de flux matériel : %s\n"
 
-#: src/intrface.c:359 src/type2str.c:92 src/type2str.c:100 src/type2str.c:172
+#: src/intrface.c:363 src/type2str.c:92 src/type2str.c:100 src/type2str.c:172
 #: src/type2str.c:182
 msgid "on"
 msgstr "activé"
 
-#: src/intrface.c:359 src/type2str.c:94 src/type2str.c:170 src/type2str.c:176
+#: src/intrface.c:363 src/type2str.c:94 src/type2str.c:170 src/type2str.c:176
 #: src/type2str.c:184
 msgid "off"
 msgstr "désactivé"
 
-#: src/intrface.c:364
+#: src/intrface.c:368
 #, c-format
 msgid "  address: 0x%03x\n"
 msgstr "  adresse : 0x%03x\n"
 
-#: src/intrface.c:366
+#: src/intrface.c:370
 #, c-format
 msgid "  device name: %s\n"
 msgstr "  nom du périphérique : %s\n"
 
-#: src/intrface.c:369
+#: src/intrface.c:373
 #, c-format
 msgid "  timeout value: %i\n"
 msgstr "  limite de temps : %i\n"
 
-#: src/intrface.c:371
+#: src/intrface.c:375
 #, c-format
 msgid "  delay value: %i\n"
 msgstr "  délai : %i\n"
@@ -535,12 +535,12 @@ msgstr "Journalisation démarrée.\n"
 msgid "Unable to open <%s> for logging.\n"
 msgstr "Impossible d'ouvrir <%s> comme fichier de journalisation.\n"
 
-#: src/printl.c:47
+#: src/printl.c:49
 #, c-format
 msgid "wrn: "
 msgstr "avr : "
 
-#: src/printl.c:48
+#: src/printl.c:50 src/verbose.c:74
 #, c-format
 msgid "err: "
 msgstr "err : "
@@ -702,8 +702,7 @@ msgstr "  Version : %s\n"
 msgid "  Machine: %s\n"
 msgstr "  Machine : %s\n"
 
-#: src/bsd/bsd_detect.c:67 src/linux/linux_detect.c:108
-#: src/linux/linux_detect.c:195
+#: src/bsd/bsd_detect.c:67 src/linux/linux_detect.c:113
 msgid "Done.\n"
 msgstr "Fait.\n"
 
@@ -711,20 +710,20 @@ msgstr "Fait.\n"
 msgid "checking resources...\n"
 msgstr "vérification des ressources...\n"
 
-#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:254
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:233
 msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
 msgstr "  IO_API : trouvé lors de la compilation (HAVE_TERMIOS_H)\n"
 
-#: src/bsd/bsd_detect.c:90 src/linux/linux_detect.c:256
+#: src/bsd/bsd_detect.c:90 src/linux/linux_detect.c:235
 msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
 msgstr "  IO_API : introuvable lors de la compilation (HAVE_TERMIOS_H)\n"
 
-#: src/bsd/bsd_detect.c:98 src/linux/linux_detect.c:264
+#: src/bsd/bsd_detect.c:98 src/linux/linux_detect.c:243
 #, c-format
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr "  IO_ASM : %s trouvé lors de la compilation (HAVE_ASM_IO_H).\n"
 
-#: src/bsd/bsd_detect.c:106 src/linux/linux_detect.c:294
+#: src/bsd/bsd_detect.c:106 src/linux/linux_detect.c:273
 #, c-format
 msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
 msgstr "  IO_LIBUSB : %s trouvé lors de la compilation (HAVE_LIBUSB).\n"
@@ -738,13 +737,13 @@ msgid "ioctl failed in bsd_ioctl_write_io !\n"
 msgstr "échec de ioctl dans bsd_ioctl_write_io.\n"
 
 #: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:75 src/linux/tig_link.c:71
-#: src/linux/linux_ioports.c:124
+#: src/linux/linux_ioports.c:130
 #, c-format
 msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr "impossible d'ouvrir ce port série : %s (permissions insuffisantes).\n"
 
 #: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:77 src/linux/tig_link.c:73
-#: src/linux/linux_ioports.c:126
+#: src/linux/linux_ioports.c:132
 #, c-format
 msgid "unable to open this serial port: %s\n"
 msgstr "impossible d'ouvrir ce port série : %s\n"
@@ -857,36 +856,36 @@ msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 msgid "error: %s\n"
 msgstr "Erreur : %s\n"
 
-#: src/linux/linux_detect.c:63 src/win32/win32_detect.c:45
+#: src/linux/linux_detect.c:66 src/win32/win32_detect.c:49
 msgid "getting OS type:\n"
 msgstr "Détermination du système d'exploitation :\n"
 
-#: src/linux/linux_detect.c:64
+#: src/linux/linux_detect.c:67
 #, c-format
 msgid "  system name: %s\n"
 msgstr "  nom du système : %s\n"
 
-#: src/linux/linux_detect.c:65
+#: src/linux/linux_detect.c:68
 #, c-format
 msgid "  node name: %s\n"
 msgstr "  nom du nœud : %s\n"
 
-#: src/linux/linux_detect.c:66
+#: src/linux/linux_detect.c:69
 #, c-format
 msgid "  release: %s\n"
 msgstr "  version du noyau : %s\n"
 
-#: src/linux/linux_detect.c:67
+#: src/linux/linux_detect.c:70
 #, c-format
 msgid "  version: %s\n"
 msgstr "  version : %s\n"
 
-#: src/linux/linux_detect.c:68
+#: src/linux/linux_detect.c:71
 #, c-format
 msgid "  machine: %s\n"
 msgstr "  machine : %s\n"
 
-#: src/linux/linux_detect.c:96
+#: src/linux/linux_detect.c:101
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
@@ -894,103 +893,90 @@ msgstr ""
 "Le dossier virtuel \"proc\" n'existe pas. Montez-le avec \"mount -t proc /"
 "proc proc\".\n"
 
-#: src/linux/linux_detect.c:102
+#: src/linux/linux_detect.c:107
 msgid "quick search for parallel/serial ports:\n"
 msgstr "recherche rapide des ports série/parallèle :\n"
 
-#: src/linux/linux_detect.c:107
+#: src/linux/linux_detect.c:112
 msgid ""
 "The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
 msgstr ""
 "Le dossier virtuel \"/proc/ioports\" n'existe pas. Impossible de poursuivre "
 "la recherche des ports.\n"
 
-#: src/linux/linux_detect.c:115
+#: src/linux/linux_detect.c:120
 msgid "Unable to open /proc/ioports.\n"
 msgstr "Impossible d'ouvrir /proc/ioports.\n"
 
-#: src/linux/linux_detect.c:128
+#: src/linux/linux_detect.c:133
 #, c-format
 msgid "  serial port found at 0x%03x\n"
 msgstr "  port série trouvé à l'adresse 0x%03x\n"
 
-#: src/linux/linux_detect.c:130
+#: src/linux/linux_detect.c:135
 #, c-format
 msgid "  parallel port found at 0x%03x\n"
 msgstr "  port parallèle trouvé à l'adresse 0x%03x\n"
 
-#: src/linux/linux_detect.c:138
+#: src/linux/linux_detect.c:143
 msgid "search for all ports:\n"
 msgstr "recherche de tous les ports :\n"
 
-#: src/linux/linux_detect.c:145
+#: src/linux/linux_detect.c:150
 msgid "Unable to open '/proc/sys/dev/parport/'.\n"
 msgstr "Impossible d'ouvrir \"/proc/sys/dev/parport/\".\n"
 
-#: src/linux/linux_detect.c:171
+#: src/linux/linux_detect.c:176
 #, c-format
 msgid "unable to open this entry: <%s>\n"
 msgstr "Impossible d'ouvrir cette entrée : <%s>\n"
 
-#: src/linux/linux_detect.c:174
+#: src/linux/linux_detect.c:179
 #, c-format
 msgid "  %s at 0x%03x\n"
 msgstr "  %s à l'adresse 0x%03x\n"
 
-#: src/linux/linux_detect.c:180
+#: src/linux/linux_detect.c:185
 #, c-format
 msgid "Invalid parport entry: <%s>.\n"
 msgstr "Entrée parport non valide : <%s>.\n"
 
-#: src/linux/linux_detect.c:186
+#: src/linux/linux_detect.c:191
 msgid "Closedir\n"
 msgstr "Ferme le dossier\n"
 
-#: src/linux/linux_detect.c:194
-msgid ""
-"The file '/proc/tty/driver/serial' does not exist or is not accessible. "
-"Unable to probe serial ports.\n"
-msgstr ""
-"Le fichier \"/proc/tty/driver/serial\" n'existe pas ou n'est pas accessible. "
-"Impossible de poursuivre la recherche des ports séries.\n"
-
-#: src/linux/linux_detect.c:202
-#, c-format
-msgid "Unable to open this entry: <%s>\n"
-msgstr "Impossible d'ouvrir cette entrée : <%s>\n"
-
-#: src/linux/linux_detect.c:242
+#: src/linux/linux_detect.c:221
 msgid "ok"
 msgstr "ok"
 
-#: src/linux/linux_detect.c:242
+#: src/linux/linux_detect.c:221
 msgid "nok"
 msgstr "échec"
 
-#: src/linux/linux_detect.c:247 src/win32/win32_detect.c:80
+#: src/linux/linux_detect.c:226 src/win32/win32_detect.c:84
 msgid "checking resources:\n"
 msgstr "vérification des ressources :\n"
 
-#: src/linux/linux_detect.c:272
+#: src/linux/linux_detect.c:251
 #, c-format
 msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
 msgstr "  IO_TIPAR : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
 
-#: src/linux/linux_detect.c:279
+#: src/linux/linux_detect.c:258
 #, c-format
 msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
 msgstr "  IO_TISER : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
 
-#: src/linux/linux_detect.c:286
+#: src/linux/linux_detect.c:265
 #, c-format
 msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
 msgstr "  IO_TIUSB : %s trouvé lors de la compilation (HAVE_LINUX_TIGLUSB_H)\n"
 
-#: src/linux/linux_ioports.c:84
+#: src/linux/linux_ioports.c:86
 msgid "ioctl failed in linux_ioctl_read_io !\n"
 msgstr "échec de ioctl dans linux_ioctl_read_io.\n"
 
-#: src/linux/linux_ioports.c:100
+#: src/linux/linux_ioports.c:102
 msgid "ioctl failed in linux_ioctl_write_io !\n"
 msgstr "échec de ioctl dans linux_ioctl_write_io.\n"
 
@@ -1329,35 +1315,35 @@ msgstr ""
 "PortTalk : Est-ce que le fichier PortTalk.SYS figure bien dans le dossier "
 "\"\\System32\\Drivers\" ?\n"
 
-#: src/win32/win32_detect.c:50
+#: src/win32/win32_detect.c:54
 #, c-format
 msgid "  operating System: %s\n"
 msgstr "  système d'exploitation : %s\n"
 
-#: src/win32/win32_detect.c:53
+#: src/win32/win32_detect.c:57
 #, c-format
 msgid "  version: %i.%i\n"
 msgstr "  version : %i.%i\n"
 
-#: src/win32/win32_detect.c:94
+#: src/win32/win32_detect.c:98
 #, c-format
 msgid "  IO_API: %sfound at compile time.\n"
 msgstr "  IO_API : %s trouvé lors de la compilation.\n"
 
-#: src/win32/win32_detect.c:101
+#: src/win32/win32_detect.c:105
 msgid "  IO_ASM: available (Win9x).\n"
 msgstr "  IO_ASM : disponible (Win9x).\n"
 
-#: src/win32/win32_detect.c:103
+#: src/win32/win32_detect.c:107
 msgid "  IO_ASM: not available (WinNT).\n"
 msgstr "  IO_ASM : indisponible (WinNT).\n"
 
-#: src/win32/win32_detect.c:141
+#: src/win32/win32_detect.c:145
 #, c-format
 msgid "  IO_DLL: %s (PortTalk)\n"
 msgstr "  IO_DLL : %s (PortTalk)\n"
 
-#: src/win32/win32_detect.c:152
+#: src/win32/win32_detect.c:156
 #, c-format
 msgid "  IO_USB: %s (TiglUsb)\n"
 msgstr "  IO_TIUSB : %s (TiglUsb)\n"
@@ -1383,6 +1369,16 @@ msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d.\n"
 #, c-format
 msgid "serial port %s successfully reconfigured.\n"
 msgstr "Le port série %s a été reconfiguré avec succès.\n"
+
+#~ msgid ""
+#~ "The file '/proc/tty/driver/serial' does not exist or is not accessible. "
+#~ "Unable to probe serial ports.\n"
+#~ msgstr ""
+#~ "Le fichier \"/proc/tty/driver/serial\" n'existe pas ou n'est pas "
+#~ "accessible. Impossible de poursuivre la recherche des ports séries.\n"
+
+#~ msgid "Unable to open this entry: <%s>\n"
+#~ msgstr "Impossible d'ouvrir cette entrée : <%s>\n"
 
 #~ msgid ""
 #~ "Cause: This error may have some causes. See the previous error message "
