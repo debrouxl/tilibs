@@ -127,7 +127,7 @@ int win32_detect_resources(void)
 
 			if (PortTalk_Handle == INVALID_HANDLE_VALUE) {
 	  			printl1(2, "PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
-	  			return -1;
+	  			//return -1;
 			}
       		}
 
