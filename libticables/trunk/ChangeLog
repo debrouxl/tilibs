@@ -48,6 +48,7 @@
 	* USB fixup, link seem to be stable now.
 * 20020214 : v3.1.4
 	* Final merge with Romain, first step.
+	* Removed O_NDELAY in tig_link.c.
 	
 
 
