@@ -90,7 +90,7 @@ int bsd_detect_resources(void)
 
 	/* ASM: for use with low-level I/O */
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
+#if defined(__I386__)
 	resources |= IO_ASM;
 #endif
 	DISPLAY(_("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),

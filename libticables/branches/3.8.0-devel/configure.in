@@ -166,6 +166,7 @@ AC_EXEEXT
 
 # detect system type
 case "$host" in
+	i386-*-*bsd*)          ARCH="-D__BSD__ -D__I386__" ;;
 	*-*-*bsd*)             ARCH="-D__BSD__" ;;
 	alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
 	alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;

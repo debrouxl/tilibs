@@ -100,13 +100,17 @@ static void bsd_ioctl_write_io(unsigned int address, int data)
 
 int io_open(unsigned long from, unsigned long num)
 {
+#if defined(__I386__)
 	if (method & IOM_ASM) {
     		io_rd = bsd_asm_read_io;
     		io_wr = bsd_asm_write_io;
 
 		return (i386_set_ioperm(from, num, 1) ? ERR_ROOT : 0);
 	}
-  	else if (method & IOM_IOCTL) {
+	else if (method & IOM_IOCTL) {
+#else
+	if (method & IOM_IOCTL) {
+#endif
 		struct termios termset;
 
     		if (tty_use)
@@ -137,10 +141,14 @@ int io_open(unsigned long from, unsigned long num)
 
 int io_close(unsigned long from, unsigned long num)
 {
+#if defined(__I386__)
 	if (method & IOM_ASM) {
     		return (i386_set_ioperm(from, num, 0) ? ERR_ROOT : 0);
     	}
     	else if (method & IOM_IOCTL) {
+#else
+    	if (method & IOM_IOCTL) {
+#endif
     		if (tty_use) {
       			close(dev_fd);
       			tty_use--;
