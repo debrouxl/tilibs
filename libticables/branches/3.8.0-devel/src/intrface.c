@@ -24,7 +24,7 @@
 #include <string.h>
 #include <errno.h>
 #if defined(__WIN32__)
-# include <windows.h>
+#include <windows.h>
 #endif
 
 #include "intl.h"
@@ -116,9 +116,10 @@ TICALL ticable_init()
 #endif
 		);
 
-	// check I/O resources
+	// get available I/O resources
   	detect_resources();
 
+	// list I/O ports
 	ticable_detect_port(&pi);
 
   	return 0;
@@ -370,8 +371,6 @@ TIEXPORT int
 TICALL ticable_set_cable(int type, TicableLinkCable * lc)
 {
 	int ret;
-
-  	cable_type = type;
 
 	// remove link cable
 	mapping_unregister_cable(lc);

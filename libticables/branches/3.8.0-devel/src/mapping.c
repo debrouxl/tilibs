@@ -94,7 +94,7 @@ int mapping_register_cable(TicableType type, TicableLinkCable *lc)
 
 int dfl_register_cable(TicableLinkCable * lc);
 
-void mapping_unregister_cable(TicableLinkCable *lc)
+int mapping_unregister_cable(TicableLinkCable *lc)
 {
 	dfl_register_cable(lc);	
 }
