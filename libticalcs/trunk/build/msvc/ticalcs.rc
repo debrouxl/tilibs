@@ -52,7 +52,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 1999-2003, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "ti_calcs.dll\0"
-            VALUE "PrivateBuild", "\0"
+            VALUE "PrivateBuild", "$Id$\0"
             VALUE "ProductName", "TI calculator library for Linux & Windows9x/NT4\0"
             VALUE "ProductVersion", "4.4.6\0"
             VALUE "SpecialBuild", "Windows9x/NT4 version\0"
