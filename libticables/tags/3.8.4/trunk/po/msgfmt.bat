@@ -1,0 +1,1 @@
+C:\Gtk2Dev\bin\msgfmt fr.po -o fr.mo

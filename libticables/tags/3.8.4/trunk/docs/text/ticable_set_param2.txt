@@ -1,0 +1,18 @@
+[Main]
+Name=ticable_set_param2
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_set_param2(@TicableLinkParam@ lp);
+
+[Parameters]
+lp : the link cable parameters.
+
+[Summary]
+Set parameters to use for the link cable.
+
+[Description]
+This function is obsolete and should not be used in new code.
+Use @ticable_set_param instead@.
+
+[See also]
+@ticable_set_param@, @ticable_get_param@

@@ -1,0 +1,17 @@
+[Main]
+Name=get
+Type=Function
+Header=cabl_int.h
+Definition=int (*probe) (void);
+
+[Parameters]
+Return value : 0 if successful, an error code otherwise.
+
+[Summary]
+Check whether the link cable is present on the port.
+
+[Description]
+The function attempt to detect link cable presence. The test is done for the
+link cable and the port you have chosen.
+
+Error codes are listed in cabl_err.h.
