@@ -3,7 +3,7 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 3.8.5, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiCables, 3.8.6, [tilp-users@lists.sourceforge.net])
 
 MAJOR_VERSION=3
 MINOR_VERSION=8
@@ -75,6 +75,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS([asm/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h])
 AC_CHECK_HEADERS([linux/ticable.h linux/tiglusb.h])
+AC_CHECK_HEADERS([sys/utsname.h pwd.h grp.h linux/serial.h sys/ioctl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UID_T

@@ -41,6 +41,9 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
+#include <linux/serial.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #include "../gettext.h"
 
@@ -84,7 +87,9 @@ int linux_detect_port(TicablePortInfo * pi)
 	DIR *dir;
         struct dirent *file;
         int res;
-        char path[25];
+        char path[256];
+	char *sports[] = { SP1_NAME, SP2_NAME, SP3_NAME, SP4_NAME };
+	struct serial_struct serinfo;
 
 	// clear structure
 	bzero(pi, sizeof(TicablePortInfo));
@@ -138,7 +143,7 @@ int linux_detect_port(TicablePortInfo * pi)
 	printl1(0, _("search for all ports:\n"));
 
 	/* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
-	   to get infos on parallel ports */
+	   to get infos on parallel ports. There is no other way to do that */
 
 	// open /proc/sys/dev/parport/ directory
 	if ((dir = opendir("/proc/sys/dev/parport/")) == NULL) {
@@ -185,50 +190,23 @@ int linux_detect_port(TicablePortInfo * pi)
 	if (closedir(dir) == -1) {
 		printl1(2, _("Closedir\n"));
 	}
+
+	/* Use ttySx to get infos on serial ports */
 	
-	/* Use '/var/log/dmesg' to get infos on serial ports */
-
-	// test for file access
-	fd = access("/var/log/dmesg", F_OK);
-	if (fd < 0) {
-		printl1(2, _("The file '/proc/tty/driver/serial' does not exist or is not accessible. Unable to probe serial ports.\n"));
-		printl1(0, _("Done.\n"));
-		return -1;
-	}
-
-	// open it
-	f = fopen("/var/log/dmesg", "rt");
-	if (f == NULL) {
-		printl1(2, _("Unable to open this entry: <%s>\n"),
-			      "/var/log/dmesg");
-		return -1;
-	}
-	
-	// read entries
-	/*
-	 * WARNING: THIS CODE IS FUCKING BROKEN (JB)
-	 */
-	while(fgets(buffer, MAXCHARS, f) != NULL) {
-		// Form: 'ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A'
-                nargs = sscanf(buffer, "%s at I/O %x", name, &sa);
-                if(nargs < 2)
-                        continue;
-
-                if(strstr(name, "ttyS")) {
-			i = name[4] - '0';
-
-			if (i >= MAX_LPT_PORTS - 1)
-				break;
-
-			sprintf(pi->com_name[i], "/dev/ttyS%i", i);
-			(pi->com_addr)[i] = sa;
-			printl1(0, "  /dev/ttyS%i at 0x%03X\n", 
-				i, pi->com_addr[i]);
+	for(i = 0; i < sizeof(sports) / sizeof(char*); i++) {
+		if ((fd = open(sports[i], O_RDWR | O_NONBLOCK)) < 0)
+			break;
+		
+		if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0) {
+			close(fd);
+			break;
 		}
-	}
 
-	// close
-	fclose(f);
+		sprintf(pi->com_name[i], "/dev/ttyS%i", i);
+		(pi->com_addr)[i] = serinfo.port;
+		printl1(0, "  /dev/ttyS%i at 0x%03x\n",
+			i, pi->com_addr[i]);
+	}
 
 	/* Use '/proc/bus/usb/devices' to get infos on usb ports */
 
