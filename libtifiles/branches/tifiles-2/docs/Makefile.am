@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = gen_doc.c
+EXTRA_DIST = gen_doc.c api.txt
 
 all:
 	cp ./tmpl/*.html ./html

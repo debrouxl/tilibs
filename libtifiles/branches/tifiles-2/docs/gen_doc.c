@@ -52,7 +52,7 @@ static int get_list_of_functions(const char *filename, GList **fncts)
 	return 0;
 }
 
-static int write_api_index(FILE *fo)
+static int write_api_toc(FILE *fo)
 {
 	GList *l, *m;
 	
@@ -62,13 +62,35 @@ static int write_api_index(FILE *fo)
 		topic *t = (topic *)l->data;
 		GList *fncts = t->fncts;
 		
-		fprintf(fo, "<span style=\"font-weight:bold;\">\%s</span><br>\n", t->title);
+		fprintf(fo, "<span style=\"font-weight:bold;\">%s</span><br>\n", t->title);
 		fprintf(fo, "<ul>\n");
 		for(m = fncts; m != NULL; m = g_list_next(m))
 			fprintf(fo, "<li><a href=\"%s.htm#%s\">%s</a></li>\n", 
 				t->basename, (char *)m->data, (char *)m->data);
 		fprintf(fo, "</ul>\n");
 	}
+
+	return 0;
+}
+
+static int write_topic_header(FILE *f, const char *topic_name)
+{
+	fprintf(f, "<html>\n");
+	fprintf(f, "<head>\n");
+	fprintf(f, "<title>Header File Index</title>\n");
+	fprintf(f, "<link rel=\"STYLESHEET\" type=\"TEXT/CSS\" href=\"style.css\">\n");
+	fprintf(f, "</head>\n");
+	fprintf(f, "<body bgcolor=\"#fffff8\">\n");
+	fprintf(f, "<table class=\"INVTABLE\" width=\"100%\">\n");
+	fprintf(f, "<tbody>\n");
+	fprintf(f, "<tr>\n");
+	fprintf(f, "<td class=\"NOBORDER\" width=\"40\"><img src=\"info.gif\" border=\"0\"\n");
+	fprintf(f, "height=\"32\" width=\"32\"> </td>\n");
+	fprintf(f, "<td class=\"TITLE\">%s<br>\n", topic_name);
+	fprintf(f, "</td>\n");
+	fprintf(f, "</tr>\n");
+	fprintf(f, "</tbody>\n");
+	fprintf(f, "</table>\n");
 
 	return 0;
 }
@@ -94,15 +116,20 @@ int main(int argc, char **argv)
 	src_folder = argv[2];
 #else
 	// test
-	//doc_folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
-
+#ifdef __WIN32__
+	src_folder = "C:\\sources\\roms\\tifiles-2\\src\\";
+	doc_folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
+#else
 	src_folder = "/home/devel/tilp_project/libs/files-2/src";
 	doc_folder = "/home/devel/tilp_project/libs/files-2/docs";
+#endif
 #endif
 	printf("Doc folder: <%s>\n", doc_folder);
 	printf("Src folder: <%s>\n", src_folder);
 
-	/* Part 1: get list of topics */
+	/* 
+		Part 1: get list of topics 
+	*/
 
 	// Open list of topics ("api.txt")
 	txt_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
@@ -136,7 +163,10 @@ int main(int argc, char **argv)
 	// Close file
 	fclose(f);
 
-	/* Part 2: get list of functions from topics */
+	/* 
+		Part 2: get list of functions from topics 
+	*/
+
 	printf("Get lists of functions from topics.\n");
 	for(l = topics; l != NULL; l = g_list_next(l))
 	{
@@ -149,7 +179,9 @@ int main(int argc, char **argv)
 		g_free(path);
 	}
 
-	/* Part 3: write API index */
+	/* 
+		Part 3: write API index 
+	*/
 
 	// Open "api.html" file
 	src_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
@@ -181,7 +213,7 @@ int main(int argc, char **argv)
 		if(strstr(line, TOKEN1))
 		{
 			// parse topics and functions
-			write_api_index(fo);
+			write_api_toc(fo);
 
 			// skip </p>
 			fgets(line, sizeof(line), fi);
@@ -193,6 +225,23 @@ int main(int argc, char **argv)
 	// Close files
 	fclose(fi);
 	fclose(fo);
+
+	/* 
+		Part 4: write files by topics 
+	*/
+
+	printf("Write help per topics.\n");
+	for(l = topics; l != NULL; l = g_list_next(l))
+	{
+		topic *t = (topic *)l->data;
+		gchar *path;
+		
+		
+	}
+
+	/* 
+		Part 5: release memory
+	*/
 
 	// Free memory
 	for(l = topics; l != NULL; l = g_list_next(l))
