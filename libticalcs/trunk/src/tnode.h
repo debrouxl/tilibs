@@ -34,13 +34,17 @@
 #define __T_NODE_H__
 
 // by roms (start)
+#include "export.h"
+
 typedef char         tchar;
 typedef	int	     tint;
 typedef unsigned int tuint;
 typedef int          tboolean;
 typedef void*	     tpointer;
 
+#ifndef FALSE
 #define FALSE   0
+#endif
 #ifndef TRUE
 #define TRUE    (!FALSE)
 #endif
@@ -150,8 +154,8 @@ void	 t_node_children_foreach (TNode		  *node,
 				  TNodeForeachFunc func,
 				  tpointer	   data);
 void	 t_node_reverse_children (TNode		  *node);
-tuint	 t_node_n_children	 (TNode		  *node);
-TNode*	 t_node_nth_child	 (TNode		  *node,
+TIEXPORT tuint TICALL	 t_node_n_children	 (TNode		  *node);
+TIEXPORT TNode* TICALL	 t_node_nth_child	 (TNode		  *node,
 				  tuint		   n);
 TNode*	 t_node_last_child	 (TNode		  *node);
 TNode*	 t_node_find_child	 (TNode		  *node,

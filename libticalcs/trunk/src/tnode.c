@@ -31,6 +31,7 @@
 #include <stdlib.h>
 
 #include "tnode.h"
+#include "export.h"
 
 // glib allocators
 #define t_new0(struct_type, n_structs)		\
@@ -721,8 +722,8 @@ t_node_last_child (TNode *node)
   return node;
 }
 
-TNode*
-t_node_nth_child (TNode *node,
+TIEXPORT  TNode*
+TICALL t_node_nth_child (TNode *node,
 		  tuint	 n)
 {
   t_return_val_if_fail (node != NULL, NULL);
@@ -735,8 +736,8 @@ t_node_nth_child (TNode *node,
   return node;
 }
 
-tuint
-t_node_n_children (TNode *node)
+TIEXPORT tuint
+TICALL t_node_n_children (TNode *node)
 {
   tuint n = 0;
   

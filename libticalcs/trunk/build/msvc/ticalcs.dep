@@ -35,6 +35,7 @@
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
@@ -116,6 +117,7 @@
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
@@ -158,6 +160,7 @@
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
@@ -200,6 +203,7 @@
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
@@ -243,6 +247,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd73.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -289,6 +294,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd82.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -334,6 +340,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd82.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -380,6 +387,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd85.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -426,6 +434,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd85.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -473,6 +482,7 @@
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd89.h"\
 	"..\..\src\dirlist.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -521,6 +531,7 @@
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd92.h"\
 	"..\..\src\dirlist.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
@@ -566,6 +577,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
 	
@@ -604,6 +616,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
 	
@@ -642,6 +655,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
 	
@@ -680,6 +694,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
 	
@@ -718,6 +733,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\keys73.h"\
 	"..\..\src\keys83p.h"\
@@ -761,6 +777,7 @@
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
@@ -838,6 +855,7 @@
 	"..\..\..\files\src\typesv2.h"\
 	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\tnode.h"\
@@ -918,6 +936,7 @@
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\Calc_ver.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\ti73.h"\
@@ -978,5 +997,6 @@
 	
 
 ..\..\src\tnode.c : \
+	"..\..\src\export.h"\
 	"..\..\src\tnode.h"\
 	
