@@ -44,6 +44,7 @@ typedef enum {
   LINK_NONE,
   LINK_TGL, LINK_SER, LINK_PAR, LINK_AVR,
   LINK_VTL, LINK_TIE, LINK_VTI, LINK_TPU, LINK_SLV,
+  TICABLETYPE_MAX
 } TicableType;
 
 #define LINK_UGL LINK_SLV
@@ -60,6 +61,7 @@ typedef enum {
 /* Values returned by the check function */
 typedef enum {
   STATUS_NONE, STATUS_RX, STATUS_TX
+  TICABLESTATUS_MAX
 } TicableStatus;
 
 /* Hardware flow control (RTS/CTS) */
@@ -84,6 +86,7 @@ typedef enum {
   VIRTUAL_PORT_1, VIRTUAL_PORT_2,
   USB_PORT_1, USB_PORT_2, USB_PORT_3, USB_PORT_4,
   OSX_SERIAL_PORT, OSX_USB_PORT
+  TICABLE_PORT_MAX
 } TicablePort;
 
 /* I/O method to use */
@@ -94,6 +97,7 @@ typedef enum {
 /* Verbosity level for DISPLAY function */
 typedef enum {
   DSP_OFF, DSP_ON, DSP_CLOSE
+  TICABLEDISPLAY_MAX
 } TicableDisplay;
 
 /* OS probing */

@@ -26,23 +26,37 @@
 #include "cabl_def.h"
 #include "verbose.h"
 
+static const char *TICABLETYPE[TICABLETYPE_MAX] = {
+  "none", "GrayLink", "BlackLink", "ParallelLink", "AVRlink", "virtual", "TiEMu",
+  "VTi", "obsolete", "SilverLink",
+};
+
 TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
+{	
+	int v;
+
+	if (type >= TICABLETYPE_MAX)
+    		v = TICABLETYPE_MAX-1;
+  	else
+    		v = 0;
+
+  	return TICABLE_TYPE[v];
+}
+
+
+TIEXPORT TicableType TICALL ticable_string_to_cabletype(const char *str)
 {
-  	switch (type) {
-  	case LINK_NONE: return "none";
-  	case LINK_TGL: return "Gray TIGraphLink";
-  	case LINK_SER: return "Black TIGraphLink";
-  	case LINK_PAR: return "home-made parallel";
-  	case LINK_AVR: return "AVRlink";
-  	case LINK_VTL: return "unused";
-  	case LINK_TIE: return "TiEmu";
-  	case LINK_VTI: return "VTi";
-  	case LINK_TPU: return "unused";
-  	case LINK_SLV: return "SilverLink";
-  	default:
-  		DISPLAY_ERROR(_("libticables error: unknown cable type !\n"));
-    		return "unknown";
+  	int i;
+
+  	for (i = 0; i < TICABLETYPE_MAX; i++) {
+    		if (!strcasecmp(TICABLETYPE[i], str))
+      			break;
   	}
+  
+  	if (i == TICABLETYPE_MAX)
+    		return 0;
+
+  	return i;
 }
 
 
@@ -56,64 +70,75 @@ TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br)
   	default:
   	    	DISPLAY_ERROR(_("libticables error: unknown baud rate !\n"));
     		return "unknown";
-  }
+  	}
+}
+
+
+TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str)
+{
+	if(!strcmp(str, "9600 bauds"))
+		return BR9600;
+  	else if(!strcmp(str, "19200 bauds"))
+  		return BR19200;
+  	else if(!strcmp(str, "38400 bauds"))
+  		return BR38400;
+  	else if(!strcmp(str, "57600 bauds"))
+  		return BR57600;
+  	else
+  		return "";
 }
 
 
 TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc)
 {
-	switch (hfc) {
-	case HFC_OFF:
-		return "off";
-	case HFC_ON:
+	if(hfc == HFC_ON)
 		return "on";
-	default:
-		DISPLAY_ERROR(_("libticables error: unknown flow type !\n"));
-		return "unknown";
-	}
+	else
+		return "off";
 }
 
 
-TIEXPORT 
-const char *TICALL ticable_port_to_string(TicablePort port)
+TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str)
 {
-	switch (port) {
-	case USER_PORT:
-		return "user defined";
-	case PARALLEL_PORT_1:
-		return "parallel port #1";
-	case PARALLEL_PORT_2:
-		return "parallel port #2";
-	case PARALLEL_PORT_3:
-		return "parallel port #3";
-	case SERIAL_PORT_1:
-		return "serial port #1";
-	case SERIAL_PORT_2:
-		return "serial port #2";
-	case SERIAL_PORT_3:
-		return "serial port #3";
-	case SERIAL_PORT_4:
-		return "serial port #4";
-	case VIRTUAL_PORT_1:
-		return "virtual port #1";
-	case VIRTUAL_PORT_2:
-		return "virtual port #2";
-	case USB_PORT_1:
-		return "USB port #1";
-	case USB_PORT_2:
-		return "USB port #2";
-	case USB_PORT_3:
-		return "USB port #3";
-	case USB_PORT_4:
-		return "USB port #4";
-	case OSX_SERIAL_PORT:
-		return "serial port";
-	case OSX_USB_PORT:
-		return "USB port";
-	default:
-		DISPLAY_ERROR(_("libticables error: unknown port !\n"));
-		return "unknown";
-	}
+	if(!strcmp(str, "on"))
+		return HFC_ON;
+	else
+		return HFC_OFF;
+}
+
+static const char *TICABLEPORT[TICABLEPORT_MAX] = {
+  "custom", "parallel port #1", "parallel port #2", "parallel port #3", 
+  "serial port #1", "serial port #2", "serial port #3", "serial port #4", 
+  "virtual port #1", "virtual port #2", 
+  "USB port #1", "USB port #2", "USB port #3", "USB port #4", 
+  "serial port", "USB port"
+};
+
+TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)
+{
+	int v;
+
+	if (type >= TICABLEPORT_MAX)
+    		v = 0;
+  	else
+    		v = value;
+
+  	return TICABLEPORT[v];
+}
+
+TIEXPORT TicablePort TICALL ticable_string_to_port(const char *str)
+{
+	int i;
+
+  	for (i = 0; i < TICABLEPORT_MAX; i++) {
+    		if (!strcasecmp(TICABLEPORT[i], str))
+      			break;
+  	}
+  
+  	if (i == TICABLEPORT_MAX)
+    		return 0;
+
+  	return i;
 }
 
 
@@ -121,20 +146,39 @@ TIEXPORT
 const char *TICALL ticable_method_to_string(TicableMethod method)
 {
 	static char buffer[33];
-	char *p2 = "";
 
-	p2 = "unknown";
+	strcpy(buffer, "unknown");
 	
 	if (method & IOM_ASM)
-		p2 = "direct access (asm)";
+		strcpy(buffer, "direct access (asm)");
 	if (method & IOM_API)
-		p2 = "direct access (api)";
+		strcpy(buffer, "direct access (api)");
 	if (method & IOM_DRV)
-		p2 = "kernel mode (module)";
+		strcpy(buffer, "kernel mode (module)");
 	if (method & IOM_IOCTL)
-		p2 = "user mode (ioctl)";
-	
-	strcpy(buffer, p2);
+		strcpy(buffer, "user mode (ioctl)");
 
 	return buffer;
+}
+
+
+TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp)
+{
+	if(disp == DSP_OK)
+		return "off";
+	else if(disp == DSP_ON)
+		return "on";
+	else if(disp == DSP_CLOSE)
+		return "closed";
+}
+
+
+TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str)
+{
+	if(!strcmp(str, "on"))
+		return DSP_ON;
+	else if(!strcmp(str, "off"))
+		return DSP_OFF;
+	else if(!strcmp(str, "closed"))
+		return DSP_CLOSE;
 }
