@@ -5,6 +5,14 @@ dnl $Id$
 AC_PREREQ(2.57)
 AC_INIT(libTiCalcs, 4.5.3, [tilp-users@lists.sourceforge.net])
 
+MAJOR_VERSION=4
+MINOR_VERSION=5
+MICRO_VERSION=3
+
+LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
+LT_REVISION=$MICRO_VERSION
+LT_AGE=$MINOR_VERSION
+
 dnl Library version.
 dnl current:revision:age
 dnl  * On a new release, increment 'revision'.
@@ -12,7 +20,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-AC_SUBST(LT_LIBVERSION, 9:3:0)
+AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
