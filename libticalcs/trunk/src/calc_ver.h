@@ -23,10 +23,10 @@
 #  include <config.h>
 #endif
 
-#define LIB_FILES_VERSION_REQUIRED  "0.3.9"	// useless with pkg-config
+#define LIB_FILES_VERSION_REQUIRED  "0.5.6"	// useless with pkg-config
 
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.4.6"
+# define LIBTICALCS_VERSION "4.4.9"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif
