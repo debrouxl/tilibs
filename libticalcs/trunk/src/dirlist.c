@@ -57,9 +57,9 @@ static void dirlist_display_vars(TNode * tree)
   int i, j, k;
   TNode *vars = tree;
 
-  printl(0,   "+------------------+----------+----+----+----------+----------+\n");
-  printl(0, _("| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"));
-  printl(0,   "+------------------+----------+----+----+----------+----------+\n");
+  printl2(0,   "+------------------+----------+----+----+----------+----------+\n");
+  printl2(0, _("| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"));
+  printl2(0,   "+------------------+----------+----+----+----------+----------+\n");
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
@@ -67,20 +67,20 @@ static void dirlist_display_vars(TNode * tree)
     TiVarEntry *fe = (TiVarEntry *) (parent->data);
 
     if (fe != NULL) {
-      printl(0, "| ");
+      printl2(0, "| ");
       for (k = 0; k < 8; k++)
-	printl(0, "%02X", (uint8_t) (fe->name)[k]);
-      printl(0, " | ");	
-      printl(0, "%8s", fe->trans);
-      printl(0, " | ");
-      printl(0, "%2i", fe->attr);
-      printl(0, " | ");
-      printl(0, "%02X", fe->type);
-      printl(0, " | ");
-      printl(0, "%08X", fe->size);
-      printl(0, " | ");
-      printl(0, "%8s", fe->folder);
-      printl(0, " |\n");
+	printl2(0, "%02X", (uint8_t) (fe->name)[k]);
+      printl2(0, " | ");	
+      printl2(0, "%8s", fe->trans);
+      printl2(0, " | ");
+      printl2(0, "%2i", fe->attr);
+      printl2(0, " | ");
+      printl2(0, "%02X", fe->type);
+      printl2(0, " | ");
+      printl2(0, "%08X", fe->size);
+      printl2(0, " | ");
+      printl2(0, "%8s", fe->folder);
+      printl2(0, " |\n");
     }
 
     for (j = 0; j < t_node_n_children(parent); j++)	//parse variables
@@ -88,27 +88,27 @@ static void dirlist_display_vars(TNode * tree)
       TNode *child = t_node_nth_child(parent, j);
       TiVarEntry *ve = (TiVarEntry *) (child->data);
 
-      printl(0, "| ");
+      printl2(0, "| ");
       for (k = 0; k < 8; k++) {
-	printl(0, "%02X", (uint8_t) (ve->name)[k]);
+	printl2(0, "%02X", (uint8_t) (ve->name)[k]);
       }
-      printl(0, " | ");
-      printl(0, "%8s", ve->trans);
-      printl(0, " | ");
-      printl(0, "%2i", ve->attr);
-      printl(0, " | ");
-      printl(0, "%02X", ve->type);
-      printl(0, " | ");
-      printl(0, "%08X", ve->size);
-      printl(0, " | ");
-      printl(0, "%8s", ve->folder);
-      printl(0, " |\n");
+      printl2(0, " | ");
+      printl2(0, "%8s", ve->trans);
+      printl2(0, " | ");
+      printl2(0, "%2i", ve->attr);
+      printl2(0, " | ");
+      printl2(0, "%02X", ve->type);
+      printl2(0, " | ");
+      printl2(0, "%08X", ve->size);
+      printl2(0, " | ");
+      printl2(0, "%8s", ve->folder);
+      printl2(0, " |\n");
     }
   }
   if (!i)
-    printl(0, _("  No variables\n"));
+    printl2(0, _("  No variables\n"));
 
-  printl(0, _
+  printl2(0, _
 	  ("+------------------+----------+----+----+----------+----------+\n"));
 }
 
@@ -117,34 +117,34 @@ static void dirlist_display_apps(TNode * tree)
   int i, k;
   TNode *apps = tree;
 
-  printl(0,   "+------------------+----------+----+----+----------+\n");
-  printl(0, _("| B. name          | T. name  |Attr|Type| Size     |\n"));
-  printl(0,   "+------------------+----------+----+----+----------+\n");
+  printl2(0,   "+------------------+----------+----+----+----------+\n");
+  printl2(0, _("| B. name          | T. name  |Attr|Type| Size     |\n"));
+  printl2(0,   "+------------------+----------+----+----+----------+\n");
 
   for (i = 0; i < t_node_n_children(apps); i++) {
     TNode *child = t_node_nth_child(apps, i);
 
     TiVarEntry *ve = (TiVarEntry *) (child->data);
 
-    printl(0, "| ");
+    printl2(0, "| ");
     for (k = 0; k < 8; k++) {
-      printl(0, "%02X", (uint8_t) (ve->name)[k]);
+      printl2(0, "%02X", (uint8_t) (ve->name)[k]);
     }
-    printl(0, " | ");
-    printl(0, "%8s", ve->trans);
-    printl(0, " | ");
-    printl(0, "%2i", ve->attr);
-    printl(0, " | ");
-    printl(0, "%02X", ve->type);
-    printl(0, " | ");
-    printl(0, "%08X", ve->size);
-    printl(0, " |\n");
+    printl2(0, " | ");
+    printl2(0, "%8s", ve->trans);
+    printl2(0, " | ");
+    printl2(0, "%2i", ve->attr);
+    printl2(0, " | ");
+    printl2(0, "%02X", ve->type);
+    printl2(0, " | ");
+    printl2(0, "%08X", ve->size);
+    printl2(0, " |\n");
   }
   if (!i)
-    printl(0, _("  No applications\n"));
+    printl2(0, _("  No applications\n"));
 
-  printl(0, "+------------------+----------+----+----+----------+\n");
-  printl(0, "\n");
+  printl2(0, "+------------------+----------+----+----+----------+\n");
+  printl2(0, "\n");
 }
 
 
@@ -178,20 +178,20 @@ TIEXPORT void TICALL ticalc_dirlist_display(TNode * tree)
 
   // Determine tree format
   if (tree->data == NULL) {
-    printl(0, "dirlist form #1: vars & apps\n");
+    printl2(0, "dirlist form #1: vars & apps\n");
     dirlist_display1(tree);
   } else {
     char *node_name = (char *) tree->data;
 
     if (!strcmp(node_name, VAR_NODE_NAME)) {
-	    printl(0, "dirlist form #2: vars\n");
+	    printl2(0, "dirlist form #2: vars\n");
 	    dirlist_display_vars(tree);
     } else if (!strcmp(node_name, APP_NODE_NAME)) {
-	    printl(0, "dirlist form #2: apps\n");
+	    printl2(0, "dirlist form #2: apps\n");
 	    dirlist_display_apps(tree);
     } else {
-      printl(2, "invalid tree !\n");
-      printl(2, "Program halted before crashing...\n");
+      printl2(2, "invalid tree !\n");
+      printl2(2, "Program halted before crashing...\n");
       exit(-1);
     }
   }

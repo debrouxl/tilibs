@@ -73,7 +73,7 @@ int ti82_screendump(uint8_t ** bitmap, int mask_mode,
   uint16_t max_cnt;
 
 
-  printl(0, _("Receiving screendump...\n"));
+  printl2(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -89,7 +89,7 @@ int ti82_screendump(uint8_t ** bitmap, int mask_mode,
   (*bitmap) =
       (uint8_t *) malloc(TI82_COLS * TI82_ROWS * sizeof(uint8_t) / 8);
   if ((*bitmap) == NULL) {
-    printl(2, "Unable to allocate memory.\n");
+    printl2(2, "Unable to allocate memory.\n");
     exit(0);
   }
 
@@ -100,7 +100,7 @@ int ti82_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(ti82_recv_XDP(&max_cnt, *bitmap));
   TRYF(ti82_send_ACK());
 
-  printl(0, _("Done.\n"));
+  printl2(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -114,7 +114,7 @@ int ti82_recv_backup(const char *filename, int mask_mode)
   Ti8xBackup *content;
   uint8_t varname[9] = { 0 };
 
-  printl(0, _("Receiving backup...\n"));
+  printl2(0, _("Receiving backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -167,7 +167,7 @@ int ti82_send_backup(const char *filename, int mask_mode)
   uint8_t rej_code;
   uint16_t status;
 
-  printl(0, _("Sending backup...\n"));
+  printl2(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -237,7 +237,7 @@ int ti82_recv_var(char *filename, int mask_mode, TiVarEntry * unused)
   int err = 0;
   char *fn = NULL;
 
-  printl(0, _("Receiving variable(s)...\n"));
+  printl2(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -311,7 +311,7 @@ int ti82_send_var(const char *filename, int mask_mode)
   uint8_t rej_code;
   uint16_t status;
 
-  printl(0, _("Sending variable(s)...\n"));
+  printl2(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -358,7 +358,7 @@ int ti82_send_var(const char *filename, int mask_mode)
     TRYF(ti82_send_XDP(entry->size, entry->data));
     TRYF(ti82_recv_ACK(&status));
 
-    printl(0, "\n");
+    printl2(0, "\n");
   }
 
   if ((mask_mode & MODE_SEND_ONE_VAR) || (mask_mode & MODE_SEND_LAST_VAR)) {
@@ -400,7 +400,7 @@ int ti82_dump_rom(const char *filename, int mask_mode)
   int err;
   int b = 0;
 
-  printl(0, _("ROM dumping...\n"));
+  printl2(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM82_FILE, "wb");

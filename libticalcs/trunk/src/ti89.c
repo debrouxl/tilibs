@@ -64,7 +64,7 @@ int ti89_isready(void)
 {
   uint16_t status;
 
-  printl(0, _("Is calculator ready ?\n"));
+  printl2(0, _("Is calculator ready ?\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -99,7 +99,7 @@ int ti89_screendump(uint8_t ** bitmap, int mask_mode,
   uint32_t max_cnt;
   int err;
 
-  printl(0, _("Receiving screendump...\n"));
+  printl2(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -124,7 +124,7 @@ int ti89_screendump(uint8_t ** bitmap, int mask_mode,
   (*bitmap) =
       (uint8_t *) malloc(TI89_COLS * TI89_ROWS * sizeof(uint8_t) / 8);
   if ((*bitmap) == NULL) {
-    printl(2, "Unable to allocate memory.\n");
+    printl2(2, "Unable to allocate memory.\n");
     exit(0);
   }
 
@@ -136,7 +136,7 @@ int ti89_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(err)};
   TRYF(ti89_send_ACK());
 
-  printl(0, _("Done.\n"));
+  printl2(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -167,7 +167,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
   TRYF(cable->open());
   update_start();
 
-  printl(0, _("Directory listing...\n"));
+  printl2(0, _("Directory listing...\n"));
 
   TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
   TRYF(ti89_recv_ACK(NULL));
@@ -206,10 +206,10 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
     tifiles_translate_varname(fe->name, fe->trans, fe->type);
     node = t_node_new(fe);
 
-    printl(0, _("Name: %8s | "), fe->name);
-    printl(0, _("Type: %8s | "), tifiles_vartype2string(fe->type));
-    printl(0, _("Attr: %i  | "), fe->attr);
-    printl(0, _("Size: %08X\n"), fe->size);
+    printl2(0, _("Name: %8s | "), fe->name);
+    printl2(0, _("Type: %8s | "), tifiles_vartype2string(fe->type));
+    printl2(0, _("Attr: %i  | "), fe->attr);
+    printl2(0, _("Size: %08X\n"), fe->size);
 
     if (fe->type == TI89_DIR)
       t_node_append(vars, node);
@@ -222,7 +222,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
     TNode *folder = t_node_nth_child(vars, i);
     char *folder_name = ((TiVarEntry *) (folder->data))->name;
 
-    printl(0, _("Directory listing in %8s...\n"), folder_name);
+    printl2(0, _("Directory listing in %8s...\n"), folder_name);
 
     TRYF(ti89_send_REQ(TI89_LDIR << 24, TI89_RDIR, folder_name));
     TRYF(ti89_recv_ACK(NULL));
@@ -254,10 +254,10 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
       tifiles_translate_varname(ve->name, ve->trans, ve->type);
       node = t_node_new(ve);
 
-      printl(0, _("Name: %8s | "), ve->trans);
-      printl(0, _("Type: %8s | "), tifiles_vartype2string(ve->type));
-      printl(0, _("Attr: %i  | "), ve->attr);
-      printl(0, _("Size: %08X\n"), ve->size);
+      printl2(0, _("Name: %8s | "), ve->trans);
+      printl2(0, _("Type: %8s | "), tifiles_vartype2string(ve->type));
+      printl2(0, _("Attr: %i  | "), ve->attr);
+      printl2(0, _("Size: %08X\n"), ve->size);
 
       sprintf(update->label_text, _("Reading of '%s/%s'"),
 	      ((TiVarEntry *) (folder->data))->trans, ve->trans);
@@ -273,7 +273,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
       } else
 	t_node_append(folder, node);
     }
-    printl(0, "\n");
+    printl2(0, "\n");
   }
 
   *memory = ticalc_dirlist_memused(*tree);
@@ -296,7 +296,7 @@ int ti89_recv_backup(const char *filename, int mask_mode)
   int nvars, ivars = 0;
   int b;
 
-  printl(0, _("Receiving backup...\n"));
+  printl2(0, _("Receiving backup...\n"));
 
   // Do a directory list and check for something to backup
   TRYF(ti89_directorylist(&tree, &mem));
@@ -350,7 +350,7 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions);
 
 int ti89_send_backup(const char *filename, int mask_mode)
 {
-  printl(0, _("Sending backup...\n"));
+  printl2(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -386,7 +386,7 @@ int ti89_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   uint32_t unused;
   uint8_t varname[20], utf8[35];
 
-  printl(0, _("Receiving variable(s)...\n"));
+  printl2(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -463,7 +463,7 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
   int i;
   uint16_t status;
 
-  printl(0, _("Sending variable(s)...\n"));
+  printl2(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -483,7 +483,7 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
     if (actions == NULL)	// backup or old behaviour
       strcpy(varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
-      printl(0, _(" '%s' has been skipped !\n"), entry->name);
+      printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
       strcpy(varname, actions[i] + 1);
@@ -552,7 +552,7 @@ int ti89_send_flash(const char *filename, int mask_mode)
   int i, nblocks;
   int nheaders = 0;
 
-  printl(0, _("Sending FLASH app/os...\n"));
+  printl2(0, _("Sending FLASH app/os...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -571,8 +571,8 @@ int ti89_send_flash(const char *filename, int mask_mode)
   for (i = 0, ptr = &content; i < nheaders - 1; i++)
     ptr = ptr->next;
 
-  printl(0, _("FLASH app/os name: \"%s\"\n"), ptr->name);
-  printl(0, _("FLASH app/os size: %i bytes.\n"), ptr->data_length);
+  printl2(0, _("FLASH app/os name: \"%s\"\n"), ptr->name);
+  printl2(0, _("FLASH app/os size: %i bytes.\n"), ptr->data_length);
 
   if (ptr->data_type == TI89_AMS) {
     TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ""));
@@ -606,7 +606,7 @@ int ti89_send_flash(const char *filename, int mask_mode)
   if (ptr->data_type == TI89_AMS)
     TRYF(ti89_recv_ACK(NULL));
 
-  printl(0, _("Flash application/os sent completely.\n"));
+  printl2(0, _("Flash application/os sent completely.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -619,7 +619,7 @@ int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
   Ti9xFlash *content;
   int i;
 
-  printl(0, _("Receiving FLASH application...\n"));
+  printl2(0, _("Receiving FLASH application...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -689,7 +689,7 @@ int ti89_dump_rom(const char *filename, int mask_mode)
   FILE *f, *file;
   uint16_t checksum, sum;
 
-  printl(0, _("ROM dumping...\n"));
+  printl2(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM89_FILE, "wb");
@@ -794,7 +794,7 @@ int ti89_get_idlist(char *id)
   uint8_t vartype;
   uint8_t varname[9];
 
-  printl(0, _("Getting ID list...\n"));
+  printl2(0, _("Getting ID list...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -832,7 +832,7 @@ int ti89_get_clock(TicalcClock * clock, int mode)
   uint8_t varname[9];
   uint8_t buffer[32];
 
-  printl(0, _("Getting clock...\n"));
+  printl2(0, _("Getting clock...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -887,7 +887,7 @@ int ti89_set_clock(const TicalcClock * clock, int mode)
   buffer[14] = clock->time_format;
   buffer[15] = 0xff;
 
-  printl(0, _("Setting clock...\n"));
+  printl2(0, _("Setting clock...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());

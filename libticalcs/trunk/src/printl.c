@@ -54,20 +54,20 @@ static int default_ticalcs_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICALC_PRINTL printl = default_ticalcs_printl;
+TICALC_PRINTL printl2 = default_ticalcs_printl;
 
 /*
 	Change print behaviour (callback).
 */
 TIEXPORT TICALC_PRINTL TICALL ticalc_set_printl(TICALC_PRINTL new_printl)
 {
-  TICALC_PRINTL old_printl = printl;
+  TICALC_PRINTL old_printl = printl2;
 
   //printf("printl = %p\n", printl);
   //printf("old_printl = %p\n", old_printl);
   //printf("new_printl = %p\n", new_printl);
 
-  printl = new_printl;
+  printl2 = new_printl;
 
   return old_printl;
 }

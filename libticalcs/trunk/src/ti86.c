@@ -79,7 +79,7 @@ int ti86_directorylist(TNode ** tree, uint32_t * memory)
   uint8_t *mem = (uint8_t *) memory;
   uint8_t hl, ll, lh;
 
-  printl(0, _("Directory listing...\n"));
+  printl2(0, _("Directory listing...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -140,7 +140,7 @@ int ti86_screendump(uint8_t ** bitmap, int mask_mode,
   uint16_t max_cnt;
   int err;
 
-  printl(0, _("Receiving screendump...\n"));
+  printl2(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -156,7 +156,7 @@ int ti86_screendump(uint8_t ** bitmap, int mask_mode,
   (*bitmap) =
       (uint8_t *) malloc(TI86_COLS * TI86_ROWS * sizeof(uint8_t) / 8);
   if ((*bitmap) == NULL) {
-    printl(2, "Unable to allocate memory.\n");
+    printl2(2, "Unable to allocate memory.\n");
     exit(0);
   }
 
@@ -168,7 +168,7 @@ int ti86_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(err)};
   TRYF(ti85_send_ACK());
 
-  printl(0, _("Done.\n"));
+  printl2(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -182,7 +182,7 @@ int ti86_recv_backup(const char *filename, int mask_mode)
   Ti8xBackup *content;
   uint8_t varname[9] = { 0 };
 
-  printl(0, _("Receiving backup...\n"));
+  printl2(0, _("Receiving backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -243,7 +243,7 @@ int ti86_send_backup(const char *filename, int mask_mode)
   uint8_t rej_code;
   uint16_t status;
 
-  printl(0, _("Sending backup...\n"));
+  printl2(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -319,7 +319,7 @@ int ti86_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   char *fn;
   static int nvar = 0;
 
-  printl(0, _("Receiving variable(s)...\n"));
+  printl2(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -389,7 +389,7 @@ int ti86_send_var(const char *filename, int mask_mode, char **actions)
   uint8_t rej_code;
   uint16_t status;
 
-  printl(0, _("Sending variable(s)...\n"));
+  printl2(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -407,7 +407,7 @@ int ti86_send_var(const char *filename, int mask_mode, char **actions)
     if (actions == NULL)	// backup or old behaviour
       strcpy(varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
-      printl(0, _(" '%s' has been skipped !\n"), entry->name);
+      printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
       strcpy(varname, actions[i] + 1);
@@ -438,7 +438,7 @@ int ti86_send_var(const char *filename, int mask_mode, char **actions)
     TRYF(ti85_send_XDP(entry->size, entry->data));
     TRYF(ti85_recv_ACK(&status));
 
-    printl(0, "\n");
+    printl2(0, "\n");
   }
 
   TRYF(cable->close());
@@ -475,7 +475,7 @@ int ti86_dump_rom(const char *filename, int mask_mode)
   int err;
   int b = 0;;
 
-  printl(0, _("ROM dumping...\n"));
+  printl2(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM86_FILE, "wb");

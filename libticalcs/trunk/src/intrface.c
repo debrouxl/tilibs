@@ -76,25 +76,24 @@ TIEXPORT int TICALL ticalc_init()
 
 	if (ticalcs_instance)
 		return (++ticalcs_instance);
-	printf("printl = %p\n", printl);
-	printl(0, _("ticalcs library version %s\n"), LIBTICALCS_VERSION);
+	printl2(0, _("ticalcs library version %s\n"), LIBTICALCS_VERSION);
 
 #if defined(ENABLE_NLS)
 	// Init i18n support
-	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	printl(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	printl2(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	printl2(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
+  	printl2(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
 	// Check version
 	if (strcmp(tifiles_get_version(), LIBCALCS_REQUIRES_LIBFILES_VERSION) < 0) {
-    		printl(0, _("Libtifiles: version mismatches. Library version >= <%s> is required.\n"),
+    		printl2(0, _("Libtifiles: version mismatches. Library version >= <%s> is required.\n"),
 	    		LIBCALCS_REQUIRES_LIBFILES_VERSION);
     		exit(-1);
 	}	
 	if (strcmp(ticable_get_version(), LIBCALCS_REQUIRES_LIBCABLES_VERSION) < 0) {
-    		printl(0, _("Libticables: version mismatches. Library version >= <%s> is required.\n"),
+    		printl2(0, _("Libticables: version mismatches. Library version >= <%s> is required.\n"),
 	    		LIBCALCS_REQUIRES_LIBCABLES_VERSION);
     		exit(-1);
 	}
@@ -174,8 +173,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
 #endif
 #endif
 
-  printl(0, _("settings:\n"));
-  printl(0, _("  calc type: %s\n"),
+  printl2(0, _("settings:\n"));
+  printl2(0, _("  calc type: %s\n"),
 	  tifiles_calctype_to_string(ticalcs_calc_type));
 
   tcf = calc;
@@ -337,10 +336,10 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     break;
 
   default:
-    printl(2, _("Function not implemented. This is a bug. Please report it."));
-    printl(2, _("Informations:\n"));
-    printl(2, _("Calc: %i\n"), type);
-    printl(2, _("Program halted before crashing...\n"));
+    printl2(2, _("Function not implemented. This is a bug. Please report it."));
+    printl2(2, _("Informations:\n"));
+    printl2(2, _("Calc: %i\n"), type);
+    printl2(2, _("Program halted before crashing...\n"));
     exit(-1);
     break;
   }

@@ -38,7 +38,7 @@ int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
   uint8_t trans[9];
 
   tifiles_translate_varname(varname, trans, vartype);
-  printl(0, " PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  printl2(0, " PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)\n",
 	  varsize, varsize, vartype, trans);
 
   buffer[0] = LSB(LSW(varsize));
@@ -56,7 +56,7 @@ int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
 
 int ti92_send_CTS(void)
 {
-  printl(0, " PC->TI: CTS\n");
+  printl2(0, " PC->TI: CTS\n");
   TRYF(send_packet(PC_TI92, CMD_CTS, 2, NULL));
 
   return 0;
@@ -64,7 +64,7 @@ int ti92_send_CTS(void)
 
 int ti92_send_XDP(uint32_t length, uint8_t * data)
 {
-  printl(0, " PC->TI: XDP (0x%04X = %i bytes)\n", length, length);
+  printl2(0, " PC->TI: XDP (0x%04X = %i bytes)\n", length, length);
   TRYF(send_packet(PC_TI92, CMD_XDP, length, data));
 
   return 0;
@@ -77,16 +77,16 @@ int ti92_send_XDP(uint32_t length, uint8_t * data)
  */
 int ti92_send_SKIP(uint8_t rej_code)
 {
-  printl(0, " PC->TI: SKIP");
+  printl2(0, " PC->TI: SKIP");
   TRYF(send_packet(PC_TI92, CMD_SKIP, 1, &rej_code));
-  printl(0, " (rejection code = %i)\n", rej_code);
+  printl2(0, " (rejection code = %i)\n", rej_code);
 
   return 0;
 }
 
 int ti92_send_ACK(void)
 {
-  printl(0, " PC->TI: ACK\n");
+  printl2(0, " PC->TI: ACK\n");
   TRYF(send_packet(PC_TI92, CMD_ACK, 2, NULL));
 
   return 0;
@@ -94,7 +94,7 @@ int ti92_send_ACK(void)
 
 int ti92_send_ERR(void)
 {
-  printl(0, " PC->TI: ERR\n");
+  printl2(0, " PC->TI: ERR\n");
   TRYF(send_packet(PC_TI92, CMD_ERR, 2, NULL));
 
   return 0;
@@ -102,7 +102,7 @@ int ti92_send_ERR(void)
 
 int ti92_send_RDY(void)
 {
-  printl(0, " PC->TI: RDY?\n");
+  printl2(0, " PC->TI: RDY?\n");
   TRYF(send_packet(PC_TI92, CMD_RDY, 2, NULL));
 
   return 0;
@@ -110,7 +110,7 @@ int ti92_send_RDY(void)
 
 int ti92_send_SCR(void)
 {
-  printl(0, " PC->TI: SCR\n");
+  printl2(0, " PC->TI: SCR\n");
   TRYF(send_packet(PC_TI92, CMD_SCR, 2, NULL));
 
   return 0;
@@ -118,7 +118,7 @@ int ti92_send_SCR(void)
 
 int ti92_send_CONT(void)
 {
-  printl(0, " PC->TI: CONT\n");
+  printl2(0, " PC->TI: CONT\n");
   TRYF(send_packet(PC_TI92, CMD_CONT, 2, NULL));
 
   return 0;
@@ -128,7 +128,7 @@ int ti92_send_CONT(void)
 
 int ti92_send_KEY(uint16_t scancode)
 {
-  printl(0, " PC->TI: KEY\n");
+  printl2(0, " PC->TI: KEY\n");
   TRYF(cable->put(PC_TI92));
   TRYF(cable->put(CMD_KEY));
   TRYF(cable->put(LSB(scancode)));
@@ -139,7 +139,7 @@ int ti92_send_KEY(uint16_t scancode)
 
 int ti92_send_EOT(void)
 {
-  printl(0, " PC->TI: EOT\n");
+  printl2(0, " PC->TI: EOT\n");
   TRYF(send_packet(PC_TI92, CMD_EOT, 2, NULL));
 
   return 0;
@@ -149,7 +149,7 @@ int ti92_send_REQ(uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
 
-  printl(0, " PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  printl2(0, " PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)\n",
 	  varsize, varsize, vartype, varname);
 
   buffer[0] = 0;
@@ -169,7 +169,7 @@ int ti92_send_RTS(uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
 
-  printl(0, " PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  printl2(0, " PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)\n",
 	  varsize, varsize, vartype, varname);
 
   buffer[0] = 0;
@@ -194,7 +194,7 @@ int ti92_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
   uint16_t length;
   uint8_t strl;
 
-  printl(0, " TI->PC: VAR");
+  printl2(0, " TI->PC: VAR");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
@@ -213,9 +213,9 @@ int ti92_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  printl(0, " (size=0x%08X=%i, id=%02X, name=<%s>)",
+  printl2(0, " (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, varname);
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -226,7 +226,7 @@ int ti92_recv_CTS(void)
   uint16_t length;
   uint8_t buffer[5];
 
-  printl(0, " TI->PC: CTS");
+  printl2(0, " TI->PC: CTS");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
   if (cmd == CMD_SKIP)
     return ERR_VAR_REJECTED;
@@ -234,7 +234,7 @@ int ti92_recv_CTS(void)
     return ERR_INVALID_CMD;
   if (length != 0x0000)
     return ERR_CTS_ERROR;
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -246,16 +246,16 @@ int ti92_recv_SKIP(uint8_t * rej_code)
   uint8_t buffer[5];
   *rej_code = 0;
 
-  printl(0, " TI->PC: SKIP");
+  printl2(0, " TI->PC: SKIP");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
   if (cmd == CMD_CTS) {
-    printl(0, "CTS");
+    printl2(0, "CTS");
     return 0;
   }
   if (cmd != CMD_SKIP)
     return ERR_INVALID_CMD;
-  printl(0, " (rejection code = %i)", *rej_code = buffer[0]);
-  printl(0, ".\n");
+  printl2(0, " (rejection code = %i)", *rej_code = buffer[0]);
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -265,13 +265,13 @@ int ti92_recv_XDP(uint32_t * length, uint8_t * data)
   uint8_t host, cmd;
   int err;
 
-  printl(0, " TI->PC: XDP");
+  printl2(0, " TI->PC: XDP");
   err = recv_packet(&host, &cmd, (uint16_t *) length, data);
   fixup(*length);
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
-  printl(0, " (%04X=%i bytes)", *length, *length);
-  printl(0, ".\n");
+  printl2(0, " (%04X=%i bytes)", *length, *length);
+  printl2(0, ".\n");
   TRYF(err);
 
   return 0;
@@ -289,7 +289,7 @@ int ti92_recv_ACK(uint16_t * status)
   uint16_t length;
   uint8_t buffer[5];
 
-  printl(0, " TI->PC: ACK");
+  printl2(0, " TI->PC: ACK");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
   if (status != NULL)
     *status = length;
@@ -298,7 +298,7 @@ int ti92_recv_ACK(uint16_t * status)
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
 
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -309,13 +309,13 @@ int ti92_recv_CONT(void)
   uint16_t sts;
 
 
-  printl(0, " TI->PC: CONT");
+  printl2(0, " TI->PC: CONT");
   TRYF(recv_packet(&host, &cmd, &sts, NULL));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
   if (cmd != CMD_CONT)
     return ERR_INVALID_CMD;
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -325,11 +325,11 @@ int ti92_recv_EOT(void)
   uint8_t host, cmd;
   uint16_t length;
 
-  printl(0, " TI->PC: EOT");
+  printl2(0, " TI->PC: EOT");
   TRYF(recv_packet(&host, &cmd, &length, NULL));
   if (cmd != CMD_EOT)
     return ERR_INVALID_CMD;
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
@@ -341,7 +341,7 @@ int ti92_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname)
   uint16_t length;
   uint8_t strl;
 
-  printl(0, " TI->PC: VAR");
+  printl2(0, " TI->PC: VAR");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
@@ -360,9 +360,9 @@ int ti92_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname)
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  printl(0, " (size=0x%08X=%i, id=%02X, name=<%s>)",
+  printl2(0, " (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, varname);
-  printl(0, ".\n");
+  printl2(0, ".\n");
 
   return 0;
 }
