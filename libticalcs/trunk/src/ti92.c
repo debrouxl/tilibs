@@ -417,7 +417,7 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
   for (i = 0; i < content.num_entries; i++) {
     TiVarEntry *entry = &(content.entries[i]);
     uint8_t buffer[65536 + 4] = { 0 };
-    uint8_t full_name[18], varname[18];
+    uint8_t full_name[18], varname[18], utf8[35];
 
     if (actions == NULL)	// backup or old behaviour
       strcpy(varname, entry->name);
