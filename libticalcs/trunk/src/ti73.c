@@ -27,6 +27,7 @@
 #include "pause.h"
 //#include "rom73.h"
 #include "update.h"
+#include "intelhexa.h"
 
 /* Functions used by TI_PC functions */
 
@@ -1121,16 +1122,6 @@ int ti73_get_rom_version(char *version)
   return ERR_VOID_FUNCTION;
 }
 
-/*
-  Read a data block from FLASH file
-  - addr: the address of block
-  - data: the buffer where data are placed, eventually completed with 0x00
-  - mode: App or Os. A null value reset internal values.
-  Return a negative value if error, a positive value (the same as read_intel_packet).
-*/
-extern int read_data_block(FILE *f, word *page_address, word *page_number, 
-			   byte *data, int mode);
-
 int ti73_send_flash(FILE *file, int mask_mode)
 {
   byte data;
@@ -1463,17 +1454,6 @@ int ti73_send_flash(FILE *file, int mask_mode)
 
   return 0;
 }
-
-/*
-	Write a data block to FLASH file
-	- page_address: the address of the FLASH page
-	- page_number: the index of the FLASH page
-	- data: the buffer where data are placed
-	- mode: used for telling end of file
-	Return a negative value if error, 0 otherwise.
-*/
-extern int write_data_block(FILE *f, word page_address, word page_number, 
-						   byte *data, int mode);
 
 int ti73_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
 {

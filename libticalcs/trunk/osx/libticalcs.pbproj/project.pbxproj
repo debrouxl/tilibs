@@ -812,6 +812,7 @@
 		04DE224D017240245041E0CA = {
 			children = (
 				0127D13101738AAA5041E0CA,
+				F50EF841021BFC6E01041594,
 				F50CA7FB01FC268901000102,
 				0127D0C7017389D15041E0CA,
 				0127D0C8017389D15041E0CA,
@@ -863,6 +864,7 @@
 		04DE224E017240965041E0CA = {
 			children = (
 				0127D115017389DF5041E0CA,
+				F50EF83F021BFC5801041594,
 				0127D116017389DF5041E0CA,
 				0127D117017389DF5041E0CA,
 				0127D118017389DF5041E0CA,
@@ -980,11 +982,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.7</string>
+	<string>3.1.8</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.1.7</string>
+	<string>3.1.8</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -1038,6 +1040,7 @@
 				F50DEC1502197FBC01041594,
 				F50DEC160219806501041594,
 				F509D4EC021AC7CA01041594,
+				F50EF842021BFC6E01041594,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1068,6 +1071,7 @@
 				0127D130017389DF5041E0CA,
 				F54393FF01A995F901000102,
 				F50CA80001FC269401000102,
+				F50EF840021BFC5801041594,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -1226,6 +1230,30 @@
 				ATTRIBUTES = (
 					Public,
 				);
+			};
+		};
+		F50EF83F021BFC5801041594 = {
+			isa = PBXFileReference;
+			name = intelhexa.c;
+			path = /Users/julien/devel/libticalcs/src/intelhexa.c;
+			refType = 0;
+		};
+		F50EF840021BFC5801041594 = {
+			fileRef = F50EF83F021BFC5801041594;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50EF841021BFC6E01041594 = {
+			isa = PBXFileReference;
+			name = intelhexa.h;
+			path = ../src/intelhexa.h;
+			refType = 2;
+		};
+		F50EF842021BFC6E01041594 = {
+			fileRef = F50EF841021BFC6E01041594;
+			isa = PBXBuildFile;
+			settings = {
 			};
 		};
 		F54393FF01A995F901000102 = {
