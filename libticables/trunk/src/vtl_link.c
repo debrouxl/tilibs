@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 static int p;
 static int ref_cnt = 0; // Counter of library instances
@@ -72,8 +73,7 @@ static struct cs
   int available;
 } cs;
 
-DLLEXPORT
-int vtl_init_port()
+int vtl_init()
 {
   /* Init some internal variables */
   cs.available = 0; 
@@ -121,8 +121,7 @@ int vtl_init_port()
   return 0;
 }
 
-DLLEXPORT
-int vtl_open_port()
+int vtl_open()
 {
   byte d;
   int n;
@@ -137,7 +136,6 @@ int vtl_open_port()
   return 0;
 }
 
-DLLEXPORT
 int vtl_put(byte data)
 {
   int n = 0;
@@ -178,7 +176,6 @@ int vtl_put(byte data)
   return 0;
 }
 
-DLLEXPORT
 int vtl_get(byte *data)
 {
   static int n=0;
@@ -210,20 +207,17 @@ int vtl_get(byte *data)
   return 0;
 }
 
-DLLEXPORT
-int vtl_probe_port()
+int vtl_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_close_port()
+int vtl_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_term_port()
+int vtl_exit()
 {
   if(rd[p-1])
     {
@@ -248,8 +242,7 @@ int vtl_term_port()
   return 0;
 }
 
-DLLEXPORT
-int vtl_check_port(int *status)
+int vtl_check(int *status)
 {
   int n = 0;
   
@@ -277,8 +270,7 @@ int vtl_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 vtl_supported()
+int vtl_supported()
 {
   return SUPPORT_OFF;
 }
@@ -313,8 +305,7 @@ static struct cs
   int available;
 } cs;
 
-DLLEXPORT
-int vtl_init_port(uint io_addr, char *dev)
+int vtl_init(uint io_addr, char *dev)
 {
 	/* Check if valid argument */
 	if(io_addr > 2)
@@ -336,8 +327,7 @@ int vtl_init_port(uint io_addr, char *dev)
   return 0;
 }
 
-DLLEXPORT
-int vtl_open_port()
+int vtl_open()
 {
 	BOOL fSuccess;
 	DWORD i;
@@ -353,7 +343,6 @@ int vtl_open_port()
   return 0;
 }
 
-DLLEXPORT
 int vtl_put(byte data)
 {
 	DWORD i;
@@ -375,7 +364,6 @@ int vtl_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int vtl_get(byte *data)
 {
 	DWORD i;
@@ -403,14 +391,12 @@ int vtl_get(byte *data)
 	return 0;
 }
 
-DLLEXPORT
-int vtl_close_port()
+int vtl_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_term_port()
+int vtl_exit()
 {
 	if(hPipe)
 	{
@@ -421,14 +407,12 @@ int vtl_term_port()
 	return 0;
 }
 
-DLLEXPORT
-int vtl_probe_port()
+int vtl_probe()
 {
 	return 0;
 }
 
-DLLEXPORT
-int vtl_check_port(int *status)
+int vtl_check(int *status)
 {
 	int n = 0;
 	DWORD i;
@@ -458,8 +442,7 @@ int vtl_check_port(int *status)
 	return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 vtl_supported()
+int vtl_supported()
 {
   return SUPPORT_ON;
 }
@@ -470,50 +453,42 @@ int DLLEXPORT2 vtl_supported()
 /* Unsupported platform */
 /************************/
 
-DLLEXPORT
-int vtl_init_port()
+int vtl_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_open_port()
+int vtl_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int vtl_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int vtl_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_probe_port()
+int vtl_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_close_port()
+int vtl_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_term_port()
+int vtl_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int vtl_check_port(int *status)
+int vtl_check(int *status)
 {
   return 0;
 }
@@ -540,7 +515,6 @@ int vtl_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int vtl_supported()
 {
   return SUPPORT_OFF;

@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 
 #include "typedefs.h"
 
-int dfl_init_port();
-int dfl_open_port();
+int dfl_init();
+int dfl_open();
 int dfl_put(byte data);
 int dfl_get(byte *data);
-int dfl_probe_port();
-int dfl_close_port();
-int dfl_term_port();
-int dfl_check_port(int *status);
+int dfl_probe();
+int dfl_close();
+int dfl_exit();
+int dfl_check(int *status);
 
 int dfl_set_red_wire(int b);
 int dfl_set_white_wire(int b);

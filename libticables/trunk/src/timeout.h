@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
   A great thanks to Timothy Singer <tsinger@uoregon.gladstone.edu>, the
   FastLink's developer. He sent to me her routines so that I can compare with
-  mine.
+  mine. This allowed me to find why my routines was so slow !
 */
 
 #ifndef __TIMEOUT_H__

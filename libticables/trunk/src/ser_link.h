@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,14 @@
 #include "typedefs.h"
 
 /* I/O mode (Linux & Win32) */
-int ser_init_port();
-int ser_open_port();
+int ser_init();
+int ser_open();
 int ser_put(byte data);
 int ser_get(byte *data);
-int ser_probe_port();
-int ser_close_port();
-int ser_term_port();
-int ser_check_port(int *status);
+int ser_probe();
+int ser_close();
+int ser_exit();
+int ser_check(int *status);
 
 int ser_set_red_wire(int b);
 int ser_set_white_wire(int b);
@@ -39,14 +39,14 @@ int ser_get_white_wire();
 int ser_supported();
 
 /* DCB mode (Win32 only) */
-int ser_init_port2();
-int ser_open_port2();
+int ser_init2();
+int ser_open2();
 int ser_put2(byte data);
 int ser_get2(byte *data);
-int ser_probe_port2();
-int ser_close_port2();
-int ser_term_port2();
-int ser_check_port2(int *status);
+int ser_probe2();
+int ser_close2();
+int ser_exit2();
+int ser_check2(int *status);
 
 int ser_set_red_wire2(int b);
 int ser_set_white_wire2(int b);

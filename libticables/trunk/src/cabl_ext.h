@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,14 +25,21 @@
 extern "C" {
 #endif
 
-extern int time_out;                // Timeout value for cables in 0.10 seconds
-extern int delay;                   // Time between 2 bits (home-made cables)
-extern int baud_rate;               // Baud rate setting for serial port
-extern uint io_address;             // I/O port base address
-extern char device[MAXCHARS];       // The character device
-extern const char *err_msg;         // The error message (last error occured)
+extern int time_out;
+extern int delay;
+extern int baud_rate;
 extern int hfc;
+extern int port;
+extern int resources;
 extern int method;
+
+extern uint io_address;
+extern char device[MAXCHARS];
+
+extern char *os;
+extern PortInfo pi;
+
+extern const char *err_msg;
 
 #ifdef __cplusplus
 }

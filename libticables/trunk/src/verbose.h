@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __VERBOSE1_H__
-#define __VERBOSE1_H__
+#ifndef __CABLES_VERBOSE_H__
+#define __CABLES_VERBOSE_H__
 
 #include <stdio.h>
 #include "export.h"
@@ -26,7 +26,8 @@
 #define DSP_ON    1
 #define DSP_CLOSE 2
 
-DLLEXPORT int DLLEXPORT2 DISPLAY(const char *format, ...);
-DLLEXPORT int DLLEXPORT2 ticable_DISPLAY_settings(int op);
+TIEXPORT int TICALL DISPLAY(const char *format, ...);
+TIEXPORT int TICALL dERROR(const char *format, ...);
+TIEXPORT int TICALL ticable_DISPLAY_settings(int op);
 
 #endif

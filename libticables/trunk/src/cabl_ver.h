@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #endif
 
 #ifdef __WIN32__
-# define LIBTICABLES_VERSION "2.0.9"
+# define LIBTICABLES_VERSION "3.0.2"
 #else
 # define LIBTICABLES_VERSION VERSION
 #endif

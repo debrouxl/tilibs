@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,12 @@ int start_logging();
 int log_data(int data);
 int stop_logging();
 
-//#define LOGGING // enable logging facilities
+int start_void();
+int log_void();
+int stop_void();
+
+/* uncomment it for enabling logging facilities */
+//#define LOGGING
 
 #ifdef LOGGING
 # define START_LOGGING(); start_logging();

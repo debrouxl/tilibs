@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,44 +18,51 @@
 
 #ifndef __TICABLES_EXPORT__
 #define __TICABLES_EXPORT__
+
 /*
- * For exporting function in a Windows DLL
+ * Defines this if you want use this library with Visual Basic.
+ * VB & Delphi also requires the __stdcall calling convention
  */
-#if defined(__WIN32__) // MSVC 5.0 mini
-# define DLLEXPORT __declspec(dllexport)
-# define DLLIMPORT __declspec(dllimport)
-# define DLLEXPORT2
-#elif defined(__LINUX__)
-# define DLLEXPORT
-# define DLLIMPORT
-# define DLLEXPORT2
-#elif defined(__WIN16__) // Borland 4.5 mini
-# define DLLEXPORT
-# define DLLIMPORT
-# define DLLEXPORT2 __export // int far __export myfunc
-#else
-# define DLLEXPORT
-# define DLLIMPORT
-# define DLLEXPORT2
-#endif
+//#define VB
 
 /*
  *  BCC32 v5.x (or C++Builder)
  *  (C) 2001 Thomas Wolf (two@chello.at)
  */
-#ifdef __WIN32__
-# ifdef __BORLANDC__
+#if defined(__WIN32__)
+# ifdef __BORLANDC__				// Borland
 #  if __BORLANDC__ >= 0x0500
-#   define TIEXPORT __stdcall
-#  else
 #   define TIEXPORT
+#   define TICALL  __stdcall
+#  else
+#   define TICALL
+#   define TICALL
 #  endif
-# else
+/*
+ * MSVC 5.0 mini
+ */
+# elif defined(_MSC_VER) && !defined(VB)	// Microsoft
+#  ifdef TICABLES_EXPORTS
+#   define TIEXPORT __declspec(dllexport)
+#   define TICALL
+#  else
+#   define TIEXPORT __declspec(dllexport)       //__declspec(dllimport)
+#   define TICALL
+#  endif
+# elif defined(VB)
 #  define TIEXPORT
-# endif // __BORLANDC__
-#else
-# define TIEXPORT
-#endif // __WIN32__
+#  define TICALL  __stdcall			// VB
+# endif
 
+#elif defined(__LINUX__)			// GNU
+# define TIEXPORT extern
+# define TICALL
+#else
+# define TIEXPORT				// default
+# define TICALL
 #endif
 
+// Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
+// .def file; MSVC uses _cdecl by default (__declspec)
+
+#endif

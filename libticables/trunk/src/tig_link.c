@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 #include <time.h>
@@ -44,6 +45,7 @@
 #include "cabl_ext.h"
 #include "timeout.h"
 #include "verbose.h"
+#include "logging.h"
 
 static char tty_dev[MAXCHARS];
 static int dev_fd = 0;
@@ -59,14 +61,13 @@ static struct cs
 /* Linux part */
 /**************/
 
-int tig_close_port();
+int tig_close();
 
 static unsigned int com_addr;
 # define com_out (com_addr+4)
 # define com_in  (com_addr+6)
 
-DLLEXPORT
-int tig_init_port()
+int tig_init()
 {
   /* Init some internal variables */
   memset((void *)&cs, 0, sizeof(cs));
@@ -80,10 +81,10 @@ int tig_init_port()
 #ifndef __MACOSX__
   if( (dev_fd = open(device, O_RDWR | O_SYNC )) == -1 )
 #else
-  if( (dev_fd = open(device, O_RDWR | O_NDELAY)) == -1 )
+  if((dev_fd = open(device, O_RDWR | O_NDELAY)) == -1)
 #endif
     {
-      fprintf(stderr, "Unable to open this serial port: %s\n", device);
+      DISPLAY("unable to open this serial port: %s\n", device);
       return ERR_OPEN_SER_DEV;
     }
 
@@ -101,11 +102,12 @@ int tig_init_port()
   cfsetispeed(&termset, B9600);
   cfsetospeed(&termset, B9600);
 
+  START_LOGGING();
+
   return 0;
 }
 
-DLLEXPORT
-int tig_open_port()
+int tig_open()
 {
   byte d;
   int n;
@@ -127,20 +129,20 @@ int tig_open_port()
   return 0;
 }
 
-DLLEXPORT
 int tig_put(byte data)
 {
   int err;
 
+  LOG_DATA(data);
   err=write(dev_fd, (void *)(&data), 1);
   switch(err)
     {
     case -1: //error
-      tig_close_port();
+      tig_close();
       return ERR_SND_BYT;
       break;
     case 0: // timeout
-      tig_close_port();
+      tig_close();
       return ERR_SND_BYT_TIMEOUT;
       break;
     }
@@ -148,7 +150,6 @@ int tig_put(byte data)
   return 0;
 }
 
-DLLEXPORT
 int tig_get(byte *data)
 {
   static int n=0;
@@ -173,57 +174,59 @@ int tig_get(byte *data)
 
   if(n == -1)
     return ERR_RCV_BYT;
+
+  LOG_DATA(*data);
   
   return 0;
 }
 
-DLLEXPORT
-int tig_probe_port()
+// Migrate these functions into ioports.c
+static int dcb_read_io()
 {
+  unsigned int flags;
+
+  if(ioctl(dev_fd, TIOCMGET, &flags) == -1)
+    return ERR_IOCTL;
   /*
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)    
-  int status;
-
-  if(open_io(com_out, 1))
-    return ERR_ROOT;
-  if(open_io(com_in, 1))
-    return ERR_ROOT;
-
-  wr_io(com_out, 3); // power supply for GreyTIGL (DTR line)
-
-  status = rd_io(com_in);
-  DISPLAY("status: %i\n", status);
-  if(status != 32) return ERR_ABORT;
-
-  wr_io(com_out, 1);
-  status = rd_io(com_in);
-  DISPLAY("status: %i\n", status);
-  if(status != 32) return ERR_ABORT;
-
-  wr_io(com_out, 0);
-  status = rd_io(com_in);
-  DISPLAY("status: %i\n", status);
-  if(status != 0) return ERR_ABORT;
-     
-  wr_io(com_out, 2);
-  status = rd_io(com_in);
-  DISPLAY("status: %i\n", status);
-  if(status != 0) return ERR_ABORT;
-    
-  wr_io(com_out, 3); // power supply for GreyTIGL (DTR line)
-  status = rd_io(com_in);
-  DISPLAY("status: %i\n", status);
-  if(status != 32) return ERR_ABORT;
-#else
-  return ERR_ABORT;
-#endif
-return 0;
+  printf("flags: rts=%i dtr=%i cts=%i dsr=%i\n",
+         (flags & TIOCM_RTS) >> 2, (flags & TIOCM_DTR) >> 1,
+         (flags & TIOCM_CTS) >> 5, (flags & TIOCM_DSR) >> 8);
   */
-  return ERR_ABORT;
+  return (flags&TIOCM_CTS?1:0) | (flags&TIOCM_DSR?2:0);
 }
 
-DLLEXPORT
-int tig_close_port()
+static int dcb_write_io(int data)
+{
+  unsigned int flags=0;
+
+  flags |= (data&2)?TIOCM_RTS:0;
+  flags |= (data&1)?TIOCM_DTR:0;
+  if(ioctl(dev_fd, TIOCMSET, &flags) == -1)
+    return ERR_IOCTL;
+  return 0;
+}
+
+int tig_probe()
+{
+  int i;
+  int seq[]={ 0x0, 0x2, 0x0, 0x2 };
+
+  dcb_write_io(3);
+  for(i=3; i>=0; i--)
+    {
+      dcb_write_io(i);
+      if( (dcb_read_io() & 0x3) != seq[i])
+        {
+          dcb_write_io(3);
+          return ERR_PROBE_FAILED;
+        }
+    }
+  dcb_write_io(3);
+
+  return 0;
+}
+
+int tig_close()
 {
   /* Do not close the port else the communication will not work fine */
   /* Don't ask me why, I don't know ! */
@@ -237,15 +240,14 @@ int tig_close_port()
   return 0;
 }
 
-DLLEXPORT
-int tig_term_port()
+int tig_exit()
 {
+  STOP_LOGGING();
   close(dev_fd);
   return 0;
 }
 
-DLLEXPORT
-int tig_check_port(int *status)
+int tig_check(int *status)
 {
   int n = 0;
 
@@ -273,8 +275,7 @@ int tig_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 tig_supported()
+int tig_supported()
 {
   return SUPPORT_ON;
 }
@@ -300,6 +301,7 @@ int DLLEXPORT2 tig_supported()
 #include "cabl_err.h"
 #include "plerror.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 #define BUFFER_SIZE 1024
 
@@ -314,8 +316,7 @@ static struct cs
   int available;
 } cs;
 
-DLLEXPORT
-int tig_init_port()
+int tig_init()
 {
 	DCB dcb;
 	BOOL fSuccess;
@@ -405,13 +406,12 @@ int tig_init_port()
 		return ERR_SET_COMMTIMEOUT;
 	}
 
-	//DISPLAY("Serial port %s successfully reconfigured.\n", comPort);
+	START_LOGGING();
 
 	return 0;
 }
 
-DLLEXPORT
-int tig_open_port()
+int tig_open()
 {
 	BOOL fSuccess;
 
@@ -426,12 +426,12 @@ int tig_open_port()
 	return 0;
 }
 
-DLLEXPORT
 int tig_put(byte data)
 {
 	DWORD i;
 	BOOL fSuccess;
 
+	LOG_DATA(data);
 	// Write the data
 	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
 	if(!fSuccess)
@@ -448,7 +448,6 @@ int tig_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int tig_get(byte *data)
 {
 	DWORD i;
@@ -471,18 +470,20 @@ int tig_get(byte *data)
     }
 	while(i != 1);
 
+	LOG_DATA(*data);
+
 	return 0;
 }
 
-DLLEXPORT
-int tig_close_port()
+int tig_close()
 {
 	return 0;
 }
 
-DLLEXPORT
-int tig_term_port()
+int tig_exit()
 {
+  STOP_LOGGING();
+
 	if(hCom)
 	{
 		CloseHandle(hCom);
@@ -494,46 +495,44 @@ int tig_term_port()
 
 #define MS_ON (MS_CTS_ON | MS_DTR_ON)
 
-DLLEXPORT
-int tig_probe_port()
+int tig_probe()
 {
-	DWORD status;						//MS_CTS_ON or MS_DTR_ON
+	DWORD status;				//MS_CTS_ON or MS_DTR_ON
 
-	EscapeCommFunction(hCom, SETDTR);	// Power supply for GreyTIGL (DTR line)
+	EscapeCommFunction(hCom, SETDTR);
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);	// Get MCR values
 	//DISPLAY("status: %i\n", status);
-	if(status != 32) return ERR_ABORT;
+	if(status != 0x20) return ERR_ABORT;
 
 	EscapeCommFunction(hCom, SETDTR);
 	EscapeCommFunction(hCom, CLRRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 32) return ERR_ABORT;
+	if(status != 0x20) return ERR_ABORT;
 
 	EscapeCommFunction(hCom, CLRDTR);
 	EscapeCommFunction(hCom, CLRRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0) return ERR_ABORT;
+	if(status != 0x00) return ERR_ABORT;
 
 	EscapeCommFunction(hCom, CLRDTR);
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0) return ERR_ABORT;
+	if(status != 0x00) return ERR_ABORT;
 
 	EscapeCommFunction(hCom, SETDTR);
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 32) return ERR_ABORT;
+	if(status != 0x20) return ERR_ABORT;
 
 	return 0;
 }
 
-DLLEXPORT
-int tig_check_port(int *status)
+int tig_check(int *status)
 {
 	int n = 0;
 	DWORD i;
@@ -563,8 +562,7 @@ int tig_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 tig_supported()
+int tig_supported()
 {
   return SUPPORT_ON;
 }
@@ -575,53 +573,42 @@ int DLLEXPORT2 tig_supported()
 /* Unsupported platform */
 /************************/
 
-/* you'll probably need the following variable */
-/* static unsigned int com_addr; */
- 
-DLLEXPORT
-int tig_init_port()
+int tig_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int tig_open_port()
+int tig_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int tig_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int tig_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int tig_probe_port()
+int tig_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int tig_close_port()
+int tig_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tig_term_port()
+int tig_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int tig_check_port(int *status)
+int tig_check(int *status)
 {
   return 0;
 }
@@ -648,7 +635,6 @@ int tig_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int tig_supported()
 {
   return SUPPORT_OFF;
@@ -658,8 +644,7 @@ int tig_supported()
 
 /* Old code, up to libticables v1.7.1 */
 /*
-DLLEXPORT
-int tig_init_port()
+int tig_init()
 {
 	DCB dcb;
 	BOOL fSuccess;

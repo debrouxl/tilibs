@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 static int p;
 static int ref_cnt = 0; // Counter of library instances
@@ -75,8 +76,7 @@ static struct cs
   int available;
 } cs;
 
-DLLEXPORT
-int tie_init_port()
+int tie_init()
 {
   /* Init some internal variables */
   cs.available = 0; 
@@ -118,12 +118,12 @@ int tie_init_port()
       return ERR_OPEN_PIPE;
     }
   ref_cnt++;
+  START_LOGGING();
 
   return 0;
 }
 
-DLLEXPORT
-int tie_open_port()
+int tie_open()
 {
   byte d;
   int n;
@@ -138,7 +138,6 @@ int tie_open_port()
   return 0;
 }
 
-DLLEXPORT
 int tie_put(byte data)
 {
   int n = 0;
@@ -151,6 +150,7 @@ int tie_put(byte data)
     return ERR_OPP_NOT_AVAIL;
   */
 
+  LOG_DATA(data);
   /* Transfer rate modulation */
   tSTART(clk);
   do
@@ -176,7 +176,6 @@ int tie_put(byte data)
   return 0;
 }
 
-DLLEXPORT
 int tie_get(byte *data)
 {
   static int n=0;
@@ -203,24 +202,25 @@ int tie_get(byte *data)
       return ERR_RCV_BYT;
     }
 
+  LOG_DATA(*data);
+
   return 0;
 }
 
-DLLEXPORT
-int tie_probe_port()
+int tie_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_close_port()
+int tie_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_term_port()
+int tie_exit()
 {
+  STOP_LOGGING();
+
   if(rd[p])
     {
       /* Close the pipe */
@@ -244,8 +244,7 @@ int tie_term_port()
   return 0;
 }
 
-DLLEXPORT
-int tie_check_port(int *status)
+int tie_check(int *status)
 {
   int n = 0;
   
@@ -273,8 +272,7 @@ int tie_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 tie_supported()
+int tie_supported()
 {
   return SUPPORT_OFF;
 }
@@ -295,6 +293,7 @@ int DLLEXPORT2 tie_supported()
 #include "cabl_ext.h"
 #include "export.h"
 #include "plerror.h"
+#include "logging.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -321,13 +320,12 @@ typedef struct
 static HANDLE hSendBuf, hRecvBuf;
 static LinkBuffer *pSendBuf, *pRecvBuf;
 
-DLLEXPORT
-int tie_init_port(void)
+int tie_init(void)
 {
 	/* Check if valid argument */
 	if( (io_address < 1) || (io_address > 2))
 	{
-		fprintf(stderr, "Invalid io_address parameter passed to libticables.\n");
+		dERROR("invalid io_address parameter passed to libticables.\n");
 		io_address = 2;
 	}
 	else
@@ -366,11 +364,12 @@ int tie_init_port(void)
 		return ERR_OPP_NOT_AVAIL;
 	}
 
+	START_LOGGING();
+
   return 0;
 }
 
-DLLEXPORT
-int tie_open_port()
+int tie_open()
 {
 	pSendBuf->tSTART = pSendBuf->end = 0;
 	pRecvBuf->tSTART = pRecvBuf->end = 0;
@@ -378,7 +377,6 @@ int tie_open_port()
 	return 0;
 }
 
-DLLEXPORT
 int tie_put(byte data)
 {
 	TIME clk;
@@ -386,6 +384,7 @@ int tie_put(byte data)
 	//if(!hMap)
 	//	return ERR_OPEN_FILE_MAP;
 
+	LOG_DATA(data);
 	tSTART(clk);
 	  do 
 	  { 
@@ -399,7 +398,6 @@ int tie_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int tie_get(byte *data)
 {
 	TIME clk;
@@ -421,19 +419,19 @@ int tie_get(byte *data)
 	*data = pRecvBuf->buf[pRecvBuf->tSTART];
     pRecvBuf->tSTART = (pRecvBuf->tSTART+1) & 255;
 	//DISPLAY("get: 0x%02x\n", *data);
+    LOG_DATA(*data);
 
   return 0;	
 }
 
-DLLEXPORT
-int tie_close_port()
+int tie_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_term_port()
+int tie_exit()
 {	
+  STOP_LOGGING();
 	/* Close the shared buffer */
 	if(hSendBuf)
 	{
@@ -447,14 +445,12 @@ int tie_term_port()
 	return 0;
 }
 
-DLLEXPORT
-int tie_probe_port()
+int tie_probe()
 {
 	return 0;
 }
 
-DLLEXPORT
-int tie_check_port(int *status)
+int tie_check(int *status)
 {
 	/* Check if positions are the same */
 	if(pRecvBuf->tSTART == pRecvBuf->end)
@@ -465,8 +461,7 @@ int tie_check_port(int *status)
 	return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 tie_supported()
+int tie_supported()
 {
   return SUPPORT_ON;
 }
@@ -477,50 +472,42 @@ int DLLEXPORT2 tie_supported()
 /* Unsupported platform */
 /************************/
 
-DLLEXPORT
-int tie_init_port()
+int tie_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_open_port()
+int tie_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int tie_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int tie_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_probe_port()
+int tie_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_close_port()
+int tie_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_term_port()
+int tie_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int tie_check_port(int *status)
+int tie_check(int *status)
 {
   return 0;
 }
@@ -547,7 +534,6 @@ int tie_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int tie_supported()
 {
   return SUPPORT_OFF;

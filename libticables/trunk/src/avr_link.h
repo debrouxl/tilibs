@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 
 #include "typedefs.h"
 
-int avr_init_port();
-int avr_open_port();
+int avr_init();
+int avr_open();
 int avr_put(byte data);
 int avr_get(byte *data);
-int avr_probe_port();
-int avr_close_port();
-int avr_term_port();
-int avr_check_port(int *status);
+int avr_probe();
+int avr_close();
+int avr_exit();
+int avr_check(int *status);
 
 int avr_set_red_wire(int b);
 int avr_set_white_wire(int b);

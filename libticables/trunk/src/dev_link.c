@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@
 #include "timeout.h"
 #include "export.h"
 #include "verbose.h"
+#include "logging.h"
 
 //#define TI_DEV_FILE "/dev/ti" /* Removed by roms */
 extern const char * ti_dev_file;
@@ -70,7 +71,7 @@ static struct cs
   int available;
 } cs;
 
-int dev_init_port()
+int dev_init()
 {
 #if defined(HAVE_TI_TIPAR_H) || defined(HAVE_TI_TISER_H)
   int value;
@@ -85,8 +86,8 @@ int dev_init_port()
   mask = O_RDWR | O_NONBLOCK | O_SYNC;
   if( (dev_fd = open(device, mask)) == -1)
     {
-      fprintf(stderr, "Unable to open this device: %s\n", device);
-      DISPLAY("Is the module loaded ?\n");
+      DISPLAY("unable to open this device: <%s>\n", device);
+      DISPLAY("is the module loaded ?\n");
       return ERR_OPEN_TIDEV_DEV;
     }
 
@@ -100,10 +101,12 @@ int dev_init_port()
     {}
 #endif
 
+  START_LOGGING();
+
   return 0;
 }
 
-int dev_open_port(void)
+int dev_open(void)
 {
   /* Flush */
 
@@ -114,6 +117,7 @@ int dev_put(byte data)
 {
   int err;
 
+  LOG_DATA(data);
   err = write(dev_fd, (void *)(&data), 1);
   switch(err)
     {
@@ -153,22 +157,24 @@ int dev_get(byte *data)
     {
       return ERR_RCV_BYT;
     }
+  LOG_DATA(*data);
 
   return 0;
 }
 
-int dev_probe_port(void)
+int dev_probe(void)
 {
   return 0;
 }
 
-int dev_close_port(void)
+int dev_close(void)
 {
   return 0;
 }
 
-int dev_term_port()
+int dev_exit()
 {
+  STOP_LOGGING();
   if(dev_fd)
     {
       close(dev_fd);
@@ -178,7 +184,7 @@ int dev_term_port()
   return 0;
 }
 
-int dev_check_port(int *status)
+int dev_check(int *status)
 {
   int n = 0;
 
@@ -206,8 +212,7 @@ int dev_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dev_supported()
+int dev_supported()
 {
 #if defined(HAVE_TI_TIPAR_H) 
   return SUPPORT_ON | SUPPORT_TIPAR;
@@ -224,50 +229,42 @@ int DLLEXPORT2 dev_supported()
 /* Unsupported platform */
 /************************/
 
-DLLEXPORT
-int dev_init_port()
+int dev_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int dev_open_port()
+int dev_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int dev_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int dev_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int dev_probe_port()
+int dev_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int dev_close_port()
+int dev_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int dev_term_port()
+int dev_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int dev_check_port(int *status)
+int dev_check(int *status)
 {
   return 0;
 }
@@ -294,7 +291,6 @@ int dev_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int dev_supported()
 {
   return SUPPORT_OFF;

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,13 @@
    the GtkTiEmu virtual link since they are very similar (shm).
 */
 
-#if !defined(__WIN32__)
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#include "cabl_def.h"
+#include "export.h"
+
+#if defined(__LINUX__)
 
 /**************/
 /* Linux part */
@@ -71,6 +77,7 @@
 #include "cabl_def.h"
 #include "cabl_ext.h"
 #include "verbose.h"
+#include "logging.h"
 
 /* Circular buffer (O: TIEmu, 1: TiLP) */
 #define BUF_SIZE 1*1024 
@@ -93,10 +100,9 @@ vti_buf *send_buf[2], *recv_buf[2]; // Swapped buffer
 static int p = 0; // a shortcut
 
 /*
-  The first call to init_port open the 2 shm
+  The first call to init open the 2 shm
 */
-DLLEXPORT
-int vti_init_port()
+int vti_init()
 {
 #ifdef USE_SHM
   int i;
@@ -114,7 +120,7 @@ int vti_init_port()
       if((ipc_key[i] = ftok("/tmp", i)) == -1)
 	{
 	  fprintf(stderr, "ftok\n");
-	  return ERR_IPC_KEY;
+	  return ERR__IPC_KEY;
 	}
       //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
     }
@@ -126,7 +132,7 @@ int vti_init_port()
 			    IPC_CREAT | 0666)) == -1)
 	{
 	  fprintf(stderr, "ftok\n");    
-	  return ERR_SHM_GET;
+	  return ERR__SHM_GET;
 	}
       //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
     }
@@ -137,7 +143,7 @@ int vti_init_port()
       if((shm[i] = shmat(shmid[i], NULL, 0)) == NULL)
 	{
 	  fprintf(stderr, "shmat\n");
-	  return ERR_SHM_ATT;
+	  return ERR__SHM_ATT;
 	}
     }
 
@@ -147,11 +153,13 @@ int vti_init_port()
   send_buf[1] = shm[1]; // 1 -> 0: writing
   recv_buf[1] = shm[0]; // 1 <- 0: reading
 #endif
+
+  START_LOGGING();
+
   return 0;
 }
 
-DLLEXPORT
-int vti_open_port()
+int vti_open()
 {
 #ifdef USE_SHM
   int i;
@@ -165,12 +173,12 @@ int vti_open_port()
   return 0;
 }
 
-DLLEXPORT
 int vti_put(byte data)
 {
 #ifdef USE_SHM
   TIME clk;
 
+  LOG_DATA(data);
   //fprintf(stderr, "put: p=%i, tSTART=%i, end=%i\n", p, send_buf[p]->tSTART, send_buf[p]->end);
   tSTART(clk);
   do
@@ -185,7 +193,6 @@ int vti_put(byte data)
   return 0;
 }
 
-DLLEXPORT
 int vti_get(byte *data)
 {
 #ifdef USE_SHM
@@ -203,50 +210,48 @@ int vti_get(byte *data)
   /* And retrieve the data from the circular buffer */
   *data = recv_buf[p]->buf[recv_buf[p]->tSTART];
   recv_buf[p]->tSTART = (recv_buf[p]->tSTART+1) & 255;
+  LOG_DATA(*data);
 #endif
   return 0;
 }
 
-DLLEXPORT
-int vti_probe_port()
+int vti_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_close_port()
+int vti_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_term_port()
+int vti_exit()
 {
 #ifdef USE_SHM
   int i;
 
-  //DISPLAY("term_port\n");
+  STOP_LOGGING();
+  //DISPLAY("exit\n");
   /* Detach segment */
   for(i=0; i<2; i++)
     {
       if(shmdt(shm[i]) == -1)
 	{
 	  fprintf(stderr, "shmdt\n");
-	  return ERR_SHM_DTCH;
+	  return ERR__SHM_DTCH;
 	}
       /* and destroy it */
       if(shmctl(shmid[i], IPC_RMID, NULL) == -1)
 	{
 	  fprintf(stderr, "shmctl\n");
-	  return ERR_SHM_RMID;
+	  return ERR__SHM_RMID;
 	}
     }
 #endif  
   return 0;
 }
 
-DLLEXPORT
-int vti_check_port(int *status)
+int vti_check(int *status)
 {
 #ifdef USE_SHM
   *status = STATUS_NONE;
@@ -266,8 +271,7 @@ int vti_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 vti_supported()
+int vti_supported()
 {
 #ifdef USE_SHM
   return SUPPORT_ON;
@@ -291,6 +295,7 @@ int DLLEXPORT2 vti_supported()
 #include "cabl_def.h"
 #include "cabl_err.h"
 #include "export.h"
+#include "logging.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -315,8 +320,7 @@ static LinkBuffer *vSendBuf, *vRecvBuf;	//
 static HANDLE hMap = NULL;				// Handle on
 static HWND otherWnd = NULL;			// Handle on the VTi window
 
-DLLEXPORT
-int vti_init_port(uint io_addr, char *dev)
+int vti_init(uint io_addr, char *dev)
 {
 	char name[32];
 	char vLinkFileName[32];
@@ -385,11 +389,12 @@ int vti_init_port(uint io_addr, char *dev)
 	if (otherWnd)
 		SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
 
+	START_LOGGING();
+
   return 0;
 }
 
-DLLEXPORT
-int vti_open_port()
+int vti_open()
 {
 	//vSendBuf->tSTART = vSendBuf->end = 0;
 	//vRecvBuf->tSTART = vRecvBuf->end = 0;
@@ -397,7 +402,6 @@ int vti_open_port()
   return 0;
 }
 
-DLLEXPORT
 int vti_put(byte data)
 {
 	TIME clk;
@@ -405,6 +409,7 @@ int vti_put(byte data)
 	if(!hMap)
 		return ERR_OPEN_FILE_MAP;
 
+	LOG_DATA(data);
 	tSTART(clk);
 	  do 
 	  { 
@@ -418,7 +423,6 @@ int vti_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int vti_get(byte *data)
 {
 	TIME clk;
@@ -440,20 +444,20 @@ int vti_get(byte *data)
 	*data = vRecvBuf->buf[vRecvBuf->tSTART];
     vRecvBuf->tSTART = (vRecvBuf->tSTART+1) & 255;
 	//DISPLAY("get: 0x%02x\n", *data);
+    LOG_DATA(*data);
 
   return 0;
 }
 
-DLLEXPORT
-int vti_close_port()
+int vti_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_term_port()
+int vti_exit()
 {
 	/* Send an atom */
+  STOP_LOGGING();
 	if (otherWnd)
 	{
 		SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
@@ -471,14 +475,12 @@ int vti_term_port()
 	return 0;
 }
 
-DLLEXPORT
-int vti_probe_port()
+int vti_probe()
 {
 	return 0;
 }
 
-DLLEXPORT
-int vti_check_port(int *status)
+int vti_check(int *status)
 {
 	if(!hMap)
 		return ERR_OPEN_FILE_MAP;
@@ -489,8 +491,7 @@ int vti_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 vti_supported()
+int vti_supported()
 {
   return SUPPORT_ON;
 }
@@ -501,50 +502,42 @@ int DLLEXPORT2 vti_supported()
 /* Unsupported platform */
 /************************/
 
-DLLEXPORT
-int vti_init_port()
+int vti_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_open_port()
+int vti_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int vti_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int vti_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_probe_port()
+int vti_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_close_port()
+int vti_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_term_port()
+int vti_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int vti_check_port(int *status)
+int vti_check(int *status)
 {
   return 0;
 }
@@ -571,7 +564,6 @@ int vti_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int vti_supported()
 {
   return SUPPORT_OFF;

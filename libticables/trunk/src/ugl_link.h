@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,15 @@
 
 #include "typedefs.h"
 
-int ugl_init_port();
-int ugl_open_port();
+// USB through kernel module or device driver
+int ugl_init();
+int ugl_open();
 int ugl_put(byte data);
 int ugl_get(byte *data);
-int ugl_probe_port();
-int ugl_close_port();
-int ugl_term_port();
-int ugl_check_port(int *status);
+int ugl_probe();
+int ugl_close();
+int ugl_exit();
+int ugl_check(int *status);
 
 int ugl_set_red_wire(int b);
 int ugl_set_white_wire(int b);
@@ -36,6 +37,23 @@ int ugl_get_red_wire();
 int ugl_get_white_wire();
 
 int ugl_supported();
+
+// USB through LIBUSB
+int ugl_init2();
+int ugl_open2();
+int ugl_put2(byte data);
+int ugl_get2(byte *data);
+int ugl_probe2();
+int ugl_close2();
+int ugl_exit2();
+int ugl_check2(int *status);
+
+int ugl_set_red_wire2(int b);
+int ugl_set_white_wire2(int b);
+int ugl_get_red_wire2();
+int ugl_get_white_wire2();
+
+int ugl_supported2();
 
 #endif
 

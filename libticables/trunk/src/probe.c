@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
 /*
   This unit performs some auto-detection for:
   - Operating System
@@ -28,11 +29,9 @@
 #include <unistd.h>
 #include "str.h"
 #include "intl.h"
-#if defined(__LINUX__)
+#if defined(__LINUX__) || defined(__MACOSX__)
 # include <dirent.h>
 # include <sys/utsname.h> // for uname()
-#endif
-#if defined(__LINUX__)
 #elif defined(__WIN32__)
 # include <windows.h>
 # include <malloc.h>
@@ -40,6 +39,7 @@
 #endif
 
 #include "cabl_def.h"
+#include "cabl_err.h"
 #include "export.h"
 #include "typedefs.h"
 #include "cabl_ext.h"
@@ -70,13 +70,14 @@ void clear_portinfo_struct(PortInfo *pi)
   This function tries to detect the Operating System type.
   The returned value can be:
   - "Linux"
+  - "Mac OS X"
   - "Windows9x" for Windows95, 98 or Me
   - "WindowsNT" for WindowsNT4 or 2000 or XP
   - "unknown" if failed
 */
-DLLEXPORT int DLLEXPORT2 ticable_detect_os(char **os_type)
+TIEXPORT int TICALL ticable_detect_os(char **os_type)
 {
-#if defined(__LINUX__) // Linux
+#if defined(__LINUX__) || defined(__MACOSX__)
   struct utsname buf;
 
   DISPLAY(_("Getting OS type...\n"));
@@ -86,7 +87,11 @@ DLLEXPORT int DLLEXPORT2 ticable_detect_os(char **os_type)
   DISPLAY(_("  Release: %s\n"), buf.release);
   DISPLAY(_("  Version: %s\n"), buf.version);
   DISPLAY(_("  Machine: %s\n"), buf.machine);
+#ifdef __LINUX__
   *os_type = "Linux";
+#else
+  *os_type = "Mac OS X";
+#endif
   DISPLAY(_("Done.\n"));
 
   return 0;
@@ -136,23 +141,29 @@ DLLEXPORT int DLLEXPORT2 ticable_detect_os(char **os_type)
 /* Described further in the source code */
 int DetectPortsLinux(PortInfo *pi);
 int DetectPortsWindows(PortInfo *pi);
+static int ticable_detect_mouse(PortInfo *pi);
 
 /* 
    This function detects which ports are available according to
    the operating system type.
    It detects parallel and serial ports.
 */
-DLLEXPORT int DLLEXPORT2 ticable_detect_port(PortInfo *pi)
+TIEXPORT int TICALL ticable_detect_port(PortInfo *pi)
 {
+  int ret = 0;
+
   clear_portinfo_struct(pi);
+
 #if defined(__LINUX__)
-  return DetectPortsLinux(pi);
+  ret = DetectPortsLinux(pi);
 #elif defined(__WIN32__)
-  return DetectPortsWindows(pi);
+  ret = DetectPortsWindows(pi);
 #else
-  return -1;
+  ret = -1;
 #endif
-  return 0;
+  ticable_detect_mouse(pi);
+
+  return ret;
 }
 
 /*
@@ -921,6 +932,47 @@ int DetectPortsWindows(PortInfo *pi)
    return 0;
 }
 
+/*
+  Try to detect a mouse. This avoid to hang up it when we try to detect
+  a link cable.
+ */
+static int ticable_detect_mouse(PortInfo *pi)
+{
+#ifdef __LINUX__
+  FILE *f;
+  char buffer[MAXCHARS];
+  int found = 0;
+
+  f = fopen("/proc/devices", "rt");
+  if(f == NULL)
+    {
+      return -1;
+    }
+  while(!feof(f))
+    {
+      fscanf(f, "%s", buffer);
+      if(strstr(buffer, "ps2"))
+	{
+	  found = 1;
+	}
+    }
+  fclose(f);
+  found = 1; // to improve...
+  if(found)
+    DISPLAY(_("A PS/2 mouse has been found, no serial port used.\n"));
+  else
+    {
+      DISPLAY(_("No PS/2 mouse found, the first serial port may be used by mouse.\n"));
+      pi->com_addr[0] = 0;
+    }
+
+  return 0;
+
+#endif
+
+  return 0;
+}
+
 char* result(int i)
 {
   return ((i == 0) ? _("ok") : _("nok"));
@@ -930,74 +982,228 @@ char* result(int i)
   This function tries to detect a link cable on the listed ports.
   The returned value is placed in pi.
   
-  Beware: this routine can hang up your mouse if connected on a serial port
-  (under Linux or Windows9x, not NT4/2000)
+  Beware: this routine can hang up your mouse if you have a mouse connected 
+  on a serial port other than the first one (under Linux or Windows9x, 
+  not NT4/2000)
 */
-DLLEXPORT int DLLEXPORT2 ticable_detect_cable(PortInfo *pi)
+TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
 {
   int i;
   int res;
   
-  fprintf(stdout, _("Probing link cables on each port...\n"));
+  //tcl.exit();
+  DISPLAY(_("Probing link cables on each port...\n"));
   for(i=0; i<MAX_LPT_PORTS; i++)
     {
       if(pi->lpt_addr[i] != 0)
 	{
-	  fprintf(stdout, "  Probing on %s at 0x%03x :\n",
+	  DISPLAY("  Probing on %s at 0x%03x :\n",
 		  pi->lpt_name[i], pi->lpt_addr[i]);
 	  
 	  io_address = pi->lpt_addr[i];
-	  par_init_port();
-	  res = par_probe_port();
+	  par_init();
+	  res = par_probe();
 	  pi->lpt_mode[i]=LINK_PAR;
-	  fprintf(stdout, "    parallel cable (%s)\n", result(res));
-	  //_getch();
+	  DISPLAY("    parallel cable (%s)\n", result(res));
 	}
     }
   for(i=0; i<MAX_COM_PORTS; i++)
     {
-      if( (pi->com_addr[i] != 0) && (i!=0))
+      if( (pi->com_addr[i] != 0))
 	{
-	  fprintf(stdout, "  Probing on %s at 0x%03x :\n",
+	  DISPLAY("  Probing on %s at 0x%03x :\n",
 		  pi->com_name[i], pi->com_addr[i]);
 
 	  io_address = pi->com_addr[i];
-	  ser_init_port();
-	  res = ser_probe_port();
+	  ser_init(); ser_open();
+	  res = ser_probe();
 	  pi->com_mode[i]=LINK_SER;
-	  fprintf(stdout, "    serial cable (%s)\n", result(res));
-	  //_getch();
+	  ser_close(); ser_exit();
+	  DISPLAY("    serial cable (%s)\n", result(res));
 	  
 	  strcpy(device, pi->com_name[i]);
-	  tig_init_port();
-	  res = tig_probe_port();
+	  tig_init(); tig_open();
+	  res = tig_probe();
 	  pi->com_mode[i]=LINK_TGL;
-	  fprintf(stdout, "    GreyTIGL cable (%s)\n", result(res));
-	  //_getch();
+	  tig_close(); tig_exit();
+	  DISPLAY("    GreyTIGL cable (%s)\n", result(res));
 	  
 	  strcpy(device, pi->com_name[i]);
-	  avr_init_port();
-	  res = avr_probe_port();
+	  avr_init(); avr_open();
+	  res = avr_probe();
 	  pi->com_mode[i]=LINK_AVR;
-	  fprintf(stdout, "    AVRlink cable (%s)\n", result(res));
-	  //_getch();
+	  avr_close(); avr_exit();
+	  DISPLAY("    AVRlink cable (%s)\n", result(res));
 	}
     }
+
+  return 0;
+}
+
+/*
+  This function tries to detect a link cable.
+  The returned value is placed in os and pi.
+*/
+int TICALL ticable_detect_all(char **os, PortInfo *pi)
+{
+  if(!ticable_detect_os(os))
+    { if(!ticable_detect_port(pi))
+      { if(!ticable_detect_mouse(pi))
+	{ if(!ticable_detect_cable(pi))
+	  { return 0;
+	  }
+	}
+      }
+    }
+  else
+    return -1;
+
+  return 0;
+}
+
+
+/******************/
+/* Misc functions */
+/******************/
+
+#ifdef __LINUX__
+
+/*
+  Internal use.
+  Try to find a specific string in /proc (vfs)
+ */
+static int find_string_in_proc(char *entry, char *str)
+{
+  FILE *f;
+  char buffer[MAXCHARS];
+  int found = 0;
+
+  f = fopen(entry, "rt");
+  if(f == NULL)
+    {
+      return -1;
+    }
+  while(!feof(f))
+    {
+      fscanf(f, "%s", buffer);
+      if(strstr(buffer, str))
+	{
+	  found = 1;
+	}
+    }
+  fclose(f);
+
+  return found;
+}
+
+#endif
+
+extern int resources; // defined in intrface.c
+
+int list_io_resources(void)
+{
+    /* Windows part */
+  
+#ifdef __WIN32__
+  {
+    HINSTANCE hDLL = NULL;
     
-    /*
-      io_address = 0x278;
-      par_init_port();
-      fprintf(stdout, _("Returned: %i\n"), par_probe_port());
-      
-      io_address = 0x2f8;
-      ser_init_port();
-      fprintf(stdout, _("Returned: %i\n"), ser_probe_port());
-      
-      io_address = 0x2f8;
-      strcpy(device, TTY1);
-      tig_init_port();
-      fprintf(stdout, _("Returned: %i\n"), tig_probe_port());	
-      fprintf(stdout, _("Done.\n"));
-  */  
+    if(!strcmp(os, "Windows9x"))
+      resources = IO_WIN9X;
+    else if(!strcmp(os, "WindowsNT"))
+      resources = IO_WINNT;
+    else return ERR_NO_RESOURCES;
+    
+    DISPLAY(_("Libticables: checking resources...\n"));
+    
+    resources |= (IO_API | IO_DCB);
+    DISPLAY(_("  IO_API: ok\n"));
+    DISPLAY(_("  IO_DCB: ok\n"));
+    if(!strcmp(os, "Windows9x"))
+      resources |= IO_ASM;
+    DISPLAY(_("  IO_ASM: %s\n"), resources & IO_ASM ? "ok" : "nok");
+    
+    // Open PortTalk Driver
+    hDLL = CreateFile("\\\\.\\PortTalk", 
+		      GENERIC_READ, 
+		      0, 
+		      NULL,
+		      OPEN_EXISTING, 
+		      FILE_ATTRIBUTE_NORMAL, 
+		      NULL);
+
+    if(hDLL != INVALID_HANDLE_VALUE) 
+      {
+	resources |= IO_DLL;
+	CloseHandle(hDLL);
+      }
+    DISPLAY(_("  IO_DLL: %s (PortTalk)\n"), resources & IO_DLL ? "ok" : "nok");
+    
+    // Open TiglUsb Driver
+    hDLL = LoadLibrary("TiglUsb.DLL");
+    if (hDLL != NULL)
+      {
+	resources |= IO_LIBUSB;
+	CloseHandle(hDLL);
+      }
+    DISPLAY(_("  IO_LIBUSB: %s (TiglUsb)\n"), resources & IO_LIBUSB ? "ok" : "nok");
+    
+  }
+#endif
+
+  /* Linux part */
+
+#ifdef __LINUX__
+  DISPLAY(_("Libticables: checking resources...\n"));
+
+  resources = IO_LINUX;
+  resources |= IO_API;  
+  DISPLAY(_("  IO_API: ok\n"));
+
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
+  { // check super or normal user
+    uid_t uid = getuid();
+    if(uid != 0)
+      {
+	DISPLAY(_("  IO_ASM: nok (normal user -> kernel module)\n"));
+	resources &= ~IO_ASM;
+      }
+    else
+      {
+	DISPLAY(_("  IO_ASM: ok (super user)\n"));
+	resources |= IO_ASM;
+      }
+  }
+#endif
+  
+  if(find_string_in_proc("/proc/devices", "tipar") ||
+     find_string_in_proc("/proc/modules", "tipar"))
+    resources |= IO_TIPAR;
+    DISPLAY(_("  IO_TIPAR: %s\n"), resources & IO_TIPAR ? "ok" : "nok");
+
+  if(find_string_in_proc("/proc/devices", "tiser") ||
+     find_string_in_proc("/proc/modules", "tiser"))
+    resources |= IO_TISER;
+  DISPLAY(_("  IO_TISER: %s\n"), resources & IO_TISER ? "ok" : "nok");
+
+  if(find_string_in_proc("/proc/devices", "tiusb") ||
+     find_string_in_proc("/proc/modules", "tiusb"))
+    resources |= IO_TIUSB;
+  DISPLAY(_("  IO_TIUSB: %s\n"), resources & IO_TIUSB ? "ok" : "nok");
+  
+#ifdef HAVE_LIBUSB
+  resources |= IO_LIBUSB;
+#endif
+  DISPLAY(_("  IO_LIBUSB: %s\n"), resources & IO_LIBUSB ? "ok" : "nok");
+#endif
+
+#ifdef __MACOSX__
+  DISPLAY(_("Libticables: checking resources...\n"));
+
+  resources = IO_OSX;
+#endif
+
+  DISPLAY(_("Done.\n"));
+
   return 0;
 }

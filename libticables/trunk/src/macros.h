@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,16 +23,16 @@
 #define TILP_MACROS
 /* Macros, part 1 */
 // extract a word from a longword
-#  define LSW(l) (unsigned int) ((l) & 0x0000FFFF)
-#  define MSW(l) (unsigned int)(((l) & 0xFFFF0000) >> 16)
+# define LSW(l) (unsigned int) ((l) & 0x0000FFFF)
+# define MSW(l) (unsigned int)(((l) & 0xFFFF0000) >> 16)
 // extract a byte from a word
-#  define LSB(w) (unsigned char) ((w) & 0x00FF)
-#  define MSB(w) (unsigned char)(((w) & 0xFF00) >> 8)
+# define LSB(w) (unsigned char) ((w) & 0x00FF)
+# define MSB(w) (unsigned char)(((w) & 0xFF00) >> 8)
 // extract a nibble from a byte
-#  define LSN(b)  ((b) & 0x0F)
-#  define MSN(b) (((b) & 0xF0) >> 4)
+# define LSN(b)  ((b) & 0x0F)
+# define MSN(b) (((b) & 0xF0) >> 4)
 // convert 2 nibbles into a BCD byte
-#  define BCD(b) (10*MSN(b)+LSN(b))
+# define BCD(b) (10*MSN(b)+LSN(b))
 #endif
 
 /* Macros, part 2 */
@@ -62,8 +62,8 @@
    A very very useful macro ! 
    Used to propagate an error code when a function returns.
 */
-#define CHECK(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; } //obsolete
 #define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; } 
 
 /*
   The directory separator depending on the platform

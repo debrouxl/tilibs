@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* This unit allow to trace bytes which are transferred between PC
+/* This unit allows to trace bytes which are transferred between PC
    and TI calculator.
 */
 
@@ -97,3 +97,12 @@ int stop_logging()
   
   return 0;
 }
+
+int start_void()
+{ return 0; }
+
+int log_void(int d)
+{ return 0; }
+
+int stop_void()
+{ return 0; }

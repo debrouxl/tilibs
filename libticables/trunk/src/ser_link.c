@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,8 +54,7 @@ static int io_permitted = 0;
 /* Multi-platform part (trough low-level I/O) */
 /**********************************************/
 
-DLLEXPORT
-int DLLEXPORT2 ser_init_port()
+int ser_init()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
   com_addr = io_address;
@@ -74,8 +73,7 @@ int DLLEXPORT2 ser_init_port()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_open_port()
+int ser_open()
 {
   if(io_permitted)
     return 0;
@@ -83,8 +81,7 @@ int DLLEXPORT2 ser_open_port()
     return ERR_ROOT;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_put(byte data)
+int ser_put(byte data)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
   int bit;
@@ -136,8 +133,7 @@ int DLLEXPORT2 ser_put(byte data)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_get(byte *ch)
+int ser_get(byte *ch)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
 	
@@ -177,36 +173,35 @@ int DLLEXPORT2 ser_get(byte *ch)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_probe_port()
+int ser_probe()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
 	
   int i, j;
-  int seq[]={ 0x00, 0x20, 0x10, 0x30 };
+  int seq[]={ 0x00, 0x20, 0x00, 0x20 };
+  int data;
 
   for(i=3; i>=0; i--)
     {
       wr_io(com_out, 3);
       wr_io(com_out, i);
-	  for(j=0; j<10; j++) rd_io(com_in);
-	  //DISPLAY("%i %02X %02X %02X\n", i, rd_io(com_in), rd_io(com_in) & 0x30, seq[i]);
-      if( (rd_io(com_in) & 0x30) != seq[i])
+      for(j=0; j<10; j++) data = rd_io(com_in);
+      //DISPLAY("%i: 0x%02x 0x%02x\n", i, data, seq[i]);
+      if( (data & 0x30) != seq[i])
 	{
 	  wr_io(com_out, 3);
-	  return ERR_ROOT;
+	  return ERR_PROBE_FAILED;
 	}
     }
   wr_io(com_out, 3);
 #else
-  return ERR_ABORT;   
+  return ERR_PROBE_FAILED;   
 #endif
   
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_close_port()
+int ser_close()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
 	
@@ -217,21 +212,20 @@ int DLLEXPORT2 ser_close_port()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_term_port()
+int ser_exit()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__) 
-  STOP_LOGGING();
   TRY(close_io(com_out, 1));
   io_permitted--;
   TRY(close_io(com_in, 1));
   io_permitted--;
 #endif
+  STOP_LOGGING();
+
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_check_port(int *status)
+int ser_check(int *status)
 {
   *status = STATUS_NONE;
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
@@ -291,8 +285,7 @@ int ser_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_supported()
+int ser_supported()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
   return SUPPORT_ON | ((method & IOM_DCB) ? SUPPORT_DCB : SUPPORT_IO);
@@ -310,8 +303,7 @@ int DLLEXPORT2 ser_supported()
  */
 
 #ifdef __WIN32__
-DLLEXPORT
-int DLLEXPORT2 ser_init_port2()
+int ser_init2()
 {
   TRY(open_io(com_out, 1));
   io_permitted++;
@@ -325,14 +317,12 @@ int DLLEXPORT2 ser_init_port2()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_open_port2()
+int ser_open2()
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_put2(byte data)
+int ser_put2(byte data)
 {
   int i;
   TIME clk;
@@ -359,8 +349,7 @@ int DLLEXPORT2 ser_put2(byte data)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_get2(byte *ch)
+int ser_get2(byte *ch)
 {
   int bit;
   byte data=0;
@@ -396,8 +385,7 @@ int DLLEXPORT2 ser_get2(byte *ch)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_probe_port2()
+int ser_probe2()
 {
   int i, j;
   int seq[]={ 0x00, 0x20, 0x10, 0x30 };
@@ -419,8 +407,7 @@ int DLLEXPORT2 ser_probe_port2()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_close_port2()
+int ser_close2()
 {
   if(io_permitted == 2)
     wr_io(com_out, 3);
@@ -428,8 +415,7 @@ int DLLEXPORT2 ser_close_port2()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_term_port2()
+int ser_exit2()
 {
   TRY(close_io(com_out, 1));
   io_permitted--;
@@ -439,8 +425,7 @@ int DLLEXPORT2 ser_term_port2()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_check_port2(int *status)
+int ser_check2(int *status)
 {
   *status = STATUS_NONE;
   
@@ -490,8 +475,7 @@ int ser_get_white_wire2()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 ser_supported2()
+int ser_supported2()
 {
   return SUPPORT_ON | ((method & IOM_DCB) ? SUPPORT_DCB : SUPPORT_IO);
 }

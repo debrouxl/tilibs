@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* "fastAVRlink" link cable unit (one of my own link cables) */
+/* "fastAVRlink" link cable unit (my own link cables) */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -41,6 +41,8 @@
 #include "typedefs.h"
 #include "cabl_err.h"
 #include "cabl_ext.h"
+#include "logging.h"
+#include "verbose.h"
 
 static char tty_dev[MAXCHARS];
 static int dev_fd = 0;
@@ -56,10 +58,9 @@ static struct cs
 /* Linux part */
 /**************/
 
-int avr_close_port();
+int avr_close();
 
-DLLEXPORT
-int avr_init_port()
+int avr_init()
 {
   int br = BR9600;
 
@@ -74,7 +75,7 @@ int avr_init_port()
   /* Open the device */
   if( (dev_fd = open(device, O_RDWR | O_SYNC )) == -1 )
     {
-      fprintf(stderr, "Unable to open this serial port: %s\n", device);
+      dERROR("unable to open this serial port: %s\n", device);
       return ERR_OPEN_SER_DEV;
     }
   /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
@@ -110,12 +111,12 @@ int avr_init_port()
     br = B9600;
   cfsetispeed(&termset, br);
   cfsetospeed(&termset, br);
+  START_LOGGING();
 
   return 0;
 }
 
-DLLEXPORT
-int avr_open_port()
+int avr_open()
 {
   byte d;
   int n;
@@ -137,20 +138,20 @@ int avr_open_port()
   return 0;
 }
 
-DLLEXPORT
 int avr_put(byte data)
 {
   int err;
 
+  LOG_DATA(data);
   err=write(dev_fd, (void *)(&data), 1);
   switch(err)
     {
     case -1: //error
-      avr_close_port();
+      avr_close();
       return ERR_SND_BYT;
       break;
     case 0: // timeout
-      avr_close_port();
+      avr_close();
       return ERR_SND_BYT_TIMEOUT;
       break;
     }
@@ -158,7 +159,6 @@ int avr_put(byte data)
   return 0;
 }
 
-DLLEXPORT
 int avr_get(byte *data)
 {
   int n=0;
@@ -184,17 +184,17 @@ int avr_get(byte *data)
   if(n == -1)
     return ERR_RCV_BYT;
 
+  LOG_DATA(*data);
+
   return 0;
 }
 
-DLLEXPORT
-int avr_probe_port()
+int avr_probe()
 {
-  return ERR_ABORT;
+  return 0;
 }
 
-DLLEXPORT
-int avr_close_port()
+int avr_close()
 {
   /* Do not close the port else the communication will not work fine */
   /* Don't ask me why, I don't know ! */
@@ -208,15 +208,14 @@ int avr_close_port()
   return 0;
 }
 
-DLLEXPORT
-int avr_term_port()
+int avr_exit()
 {
+  STOP_LOGGING();
   close(dev_fd);
   return 0;
 }
 
-DLLEXPORT
-int avr_check_port(int *status)
+int avr_check(int *status)
 {
   int n = 0;
 
@@ -244,8 +243,7 @@ int avr_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 avr_supported()
+int avr_supported()
 {
   return SUPPORT_ON;
 }
@@ -272,6 +270,7 @@ int DLLEXPORT2 avr_supported()
 #include "cabl_err.h"
 #include "plerror.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 #define BUFFER_SIZE 1024
 
@@ -287,8 +286,7 @@ static struct cs
   int available;
 } cs;
 
-DLLEXPORT
-int avr_init_port()
+int avr_init()
 {
 	DCB dcb;
 	COMMTIMEOUTS cto;
@@ -352,12 +350,13 @@ int avr_init_port()
     cto.WriteTotalTimeoutMultiplier = 0;
     cto.WriteTotalTimeoutConstant = 0;
     SetCommTimeouts(hCom, &cto);
+
+    START_LOGGING();
 	
 	return 0;
 }
 
-DLLEXPORT
-int avr_open_port()
+int avr_open()
 {
 	BOOL fSuccess;
 
@@ -373,12 +372,12 @@ int avr_open_port()
 	return 0;
 }
 
-DLLEXPORT
 int avr_put(byte data)
 {
 	DWORD i;
 	BOOL fSuccess;
 
+	LOG_DATA(data);
 	// Write the data
 	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
 	if(!fSuccess)
@@ -395,7 +394,6 @@ int avr_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int avr_get(byte *data)
 {
 	DWORD i;
@@ -418,39 +416,19 @@ int avr_get(byte *data)
     }
 	while(i != 1);
 
-/*
-	if(n == -1)
-    {
-      return ERR_RCV_BYT;
-    }
+	LOG_DATA(*data);
 
-
-	// Read the data: return 0 if error and i contains 1 or 0 (timeout)
-	fSuccess = ReadFile(hCom,data,1,&i,NULL);
-	if(!fSuccess)
-	{
-		fprintf(stderr, "ReadFile failed with error %d.\n", 
-			GetLastError());
-		return ERR_READ_FILE;
-	}
-	if( fSuccess & (i == 0) )
-	{
-		//printf("Timeout\n");
-		return ERR_RCV_BYT_TIMEOUT;
-	}
-*/
 	return 0;
 }
 
-DLLEXPORT
-int avr_close_port()
+int avr_close()
 {
 	return 0;
 }
 
-DLLEXPORT
-int avr_term_port()
+int avr_exit()
 {
+  STOP_LOGGING();
 	if(hCom)
 	{
 		CloseHandle(hCom);
@@ -460,14 +438,12 @@ int avr_term_port()
 	return 0;
 }
 
-DLLEXPORT
-int avr_probe_port()
+int avr_probe()
 {
 	return 0;
 }
 
-DLLEXPORT
-int avr_check_port(int *status)
+int avr_check(int *status)
 {
 	int n = 0;
 	DWORD i;
@@ -497,8 +473,7 @@ int avr_check_port(int *status)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 avr_supported()
+int avr_supported()
 {
   return SUPPORT_ON | SUPPORT_DCB;
 }
@@ -509,53 +484,42 @@ int DLLEXPORT2 avr_supported()
 /* Unsupported platform */
 /************************/
 
-/* you'll probably need the following variable */
-/* static unsigned int com_addr; */
-
-DLLEXPORT
-int avr_init_port()
+int avr_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int avr_open_port()
+int avr_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int avr_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int avr_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int avr_probe_port()
+int avr_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int avr_close_port()
+int avr_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int avr_term_port()
+int avr_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int avr_check_port(int *status)
+int avr_check(int *status)
 {
   return 0;
 }
@@ -582,7 +546,6 @@ int avr_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int avr_supported()
 {
   return SUPPORT_OFF;

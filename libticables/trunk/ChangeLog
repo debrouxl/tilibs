@@ -26,7 +26,19 @@
 	* Grey TIGL support modifications
 * 20011218 : v2.2.0-osx0.0.6
 	* Grey TIGL support, again.
-	
+* 20020106 : v3.0.8-osx0.0.7
+	* Happy new year !
+	    => Copyright 1999-2002
+	* Merged in libticables v3
+	* Bumped version to B (equivalent to soname++)
+	* SilverLink (tm) handling
+	    => ResetPipe() on both IN and OUT in ugl_open()
+	    => incorrect behaviour on ReadPipeTO() due to the
+	    link itself ; handle a timeout and retry until either
+	    we get some data, an error is returned or the timeout
+	    elapses.
+* 20020112 : v3.0.8-osx0.1.0
+	* Functionnal libticables v3
 
 
 

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* Initialize the LINK_CABLE structure with default functions */
+/* Initialize the LinkCable structure with default functions */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -32,50 +32,42 @@
 #include "logging.h"
 #include "cabl_ext.h"
 
-DLLEXPORT
-int DLLEXPORT2 dfl_init_port()
+int dfl_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_open_port()
+int dfl_open()
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_put(byte data)
+int dfl_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_get(byte *d)
+int dfl_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_probe_port()
+int dfl_probe()
 { 
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_close_port()
+int dfl_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_term_port()
+int dfl_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_check_port(int *status)
+int dfl_check(int *status)
 {
   *status = STATUS_NONE;
   return 0;
@@ -101,22 +93,21 @@ int dfl_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 dfl_supported()
+int dfl_supported()
 {
   return SUPPORT_OFF;
 }
 
 int set_default_cable(LINK_CABLE *lc)
 {
-  lc->init_port  = dfl_init_port;
-  lc->open_port  = dfl_open_port;
+  lc->init  = dfl_init;
+  lc->open  = dfl_open;
   lc->put        = dfl_put;
   lc->get        = dfl_get;
-  lc->close_port = dfl_close_port;
-  lc->term_port  = dfl_term_port;
-  lc->probe_port = dfl_probe_port;
-  lc->check_port = dfl_check_port;
+  lc->close = dfl_close;
+  lc->exit  = dfl_exit;
+  lc->probe = dfl_probe;
+  lc->check = dfl_check;
   
   lc->set_red_wire   = dfl_set_red_wire;
   lc->set_white_wire = dfl_set_white_wire;

@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,63 +45,55 @@
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 /**************/
 /* Linux part */
 /**************/
 
-int tpu_close_port();
+int tpu_close();
 
-DLLEXPORT
-int tpu_init_port()
+int tpu_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_open_port()
+int tpu_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int tpu_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int tpu_get(byte *data)
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_probe_port()
+int tpu_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_close_port()
+int tpu_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_term_port()
+int tpu_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_check_port(int *status)
+int tpu_check(int *status)
 {
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 tpu_supported()
+int tpu_supported()
 {
   return SUPPORT_OFF;
 }
@@ -140,8 +132,7 @@ static HANDLE hDevice = 0;
 static unsigned char getb ();
 static void putb (unsigned char value);
 
-DLLEXPORT
-int tpu_init_port(uint io_addr, char *dev)
+int tpu_init(uint io_addr, char *dev)
 {
 	// Open the USB device
 	hDevice = CreateFile(USB_DEVICE_FILENAME, 
@@ -159,15 +150,13 @@ int tpu_init_port(uint io_addr, char *dev)
 	return 0;
 }
 
-DLLEXPORT
-int tpu_open_port()
+int tpu_open()
 {
 	putb(3);
 	
 	return 0;
 }
 
-DLLEXPORT
 int tpu_put(byte data)
 {
   int bit;
@@ -223,7 +212,6 @@ int tpu_put(byte data)
 	return 0;
 }
 
-DLLEXPORT
 int tpu_get(byte *d)
 {
   int bit;
@@ -262,8 +250,7 @@ int tpu_get(byte *d)
   return 0;
 }
 
-DLLEXPORT
-int tpu_close_port()
+int tpu_close()
 {
 	putb(3);
 	//putb(0);
@@ -272,20 +259,17 @@ int tpu_close_port()
 	return 0;
 }
 
-DLLEXPORT
-int tpu_term_port()
+int tpu_exit()
 {
 	return 0;
 }
 
-DLLEXPORT
-int tpu_probe_port()
+int tpu_probe()
 {
 	return 0;
 }
 
-DLLEXPORT
-int tpu_check_port(int *status)
+int tpu_check(int *status)
 {
 
 
@@ -335,8 +319,7 @@ void putb (unsigned char value)
 	}
 }
 
-DLLEXPORT
-int DLLEXPORT2 tpu_supported()
+int tpu_supported()
 {
   return SUPPORT_ON;
 }
@@ -347,53 +330,42 @@ int DLLEXPORT2 tpu_supported()
 /* Unsupported platform */
 /************************/
 
-/* you'll probably need the following variable */
-/* static unsigned int com_addr; */
-
-DLLEXPORT
-int tpu_init_port()
+int tpu_init()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_open_port()
+int tpu_open()
 {
   return 0;
 }
 
-DLLEXPORT
 int tpu_put(byte data)
 {
   return 0;
 }
 
-DLLEXPORT
 int tpu_get(byte *d)
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_probe_port()
+int tpu_probe()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_close_port()
+int tpu_close()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_term_port()
+int tpu_exit()
 {
   return 0;
 }
 
-DLLEXPORT
-int tpu_check_port(int *status)
+int tpu_check(int *status)
 {
   return 0;
 }
@@ -420,7 +392,6 @@ int tpu_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
 int tpu_supported()
 {
   return SUPPORT_OFF;

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,8 +38,7 @@ static unsigned int lpt_adr;
 
 static int io_permitted = 0;
 
-DLLEXPORT
-int DLLEXPORT2 par_init_port()
+int par_init()
 {
   lpt_adr = io_address;
   
@@ -54,8 +53,7 @@ int DLLEXPORT2 par_init_port()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_open_port()
+int par_open()
 {
   if(io_permitted)
     return 0;
@@ -63,8 +61,7 @@ int DLLEXPORT2 par_open_port()
     return ERR_ROOT;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_put(byte data)
+int par_put(byte data)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
@@ -115,8 +112,7 @@ int DLLEXPORT2 par_put(byte data)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_get(byte *d)
+int par_get(byte *d)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
@@ -155,35 +151,34 @@ int DLLEXPORT2 par_get(byte *d)
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_probe_port()
+int par_probe()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int i, j;
   int seq[]={ 0x00, 0x20, 0x10, 0x30 };
+  byte data;
 
   for(i=3; i>=0; i--)
     {
       wr_io(lpt_out, 3);
       wr_io(lpt_out, i);
-	  for(j=0; j<10; j++) rd_io(lpt_in);
-      //fprintf(stdout, "%i %02X %02X %02X\n", i, rd_io(lpt_in), rd_io(lpt_in) & 0x30, seq[i]);
-      if( (rd_io(lpt_in) & 0x30) != seq[i]) 
+      for(j=0; j<10; j++) data = rd_io(lpt_in);
+	  //DISPLAY("%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
+      if( (data & 0x30) != seq[i]) 
 	{
 	  wr_io(lpt_out, 3);  
-	  return ERR_ROOT;
+	  return ERR_PROBE_FAILED;
 	}
     } 
   wr_io(lpt_out, 3);
 #else
-  return ERR_ABORT;
+  return ERR_PROBE_FAILED;
 #endif
  
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_close_port()
+int par_close()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   if(io_permitted)
@@ -193,8 +188,7 @@ int DLLEXPORT2 par_close_port()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_term_port()
+int par_exit()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   TRY(close_io(lpt_adr, 2));
@@ -206,8 +200,7 @@ int DLLEXPORT2 par_term_port()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_check_port(int *status)
+int par_check(int *status)
 {
   *status = STATUS_NONE;
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
@@ -266,8 +259,7 @@ int par_get_white_wire()
   return 0;
 }
 
-DLLEXPORT
-int DLLEXPORT2 par_supported()
+int par_supported()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
   return SUPPORT_ON | SUPPORT_IO;

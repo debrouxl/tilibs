@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 
 #include "typedefs.h"
 
-int tpu_init_port();
-int tpu_open_port();
+int tpu_init();
+int tpu_open();
 int tpu_put(byte data);
 int tpu_get(byte *data);
-int tpu_probe_port();
-int tpu_close_port();
-int tpu_term_port();
-int tpu_check_port(int *status);
+int tpu_probe();
+int tpu_close();
+int tpu_exit();
+int tpu_check(int *status);
 
 int tpu_set_red_wire(int b);
 int tpu_set_white_wire(int b);

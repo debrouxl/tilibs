@@ -1,5 +1,5 @@
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 
 #include "typedefs.h"
 
-int par_init_port();
-int par_open_port();
+int par_init();
+int par_open();
 int par_put(byte data);
 int par_get(byte *data);
-int par_probe_port();
-int par_close_port();
-int par_term_port();
-int par_check_port(int *status);
+int par_probe();
+int par_close();
+int par_exit();
+int par_check(int *status);
 
 int par_set_red_wire(int b);
 int par_set_white_wire(int b);
