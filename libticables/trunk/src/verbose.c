@@ -22,6 +22,10 @@
 /* 
    Allow to display or not some informations depending on the
    verbosity level.
+   
+   Note: this module is completely deprecated (replaced by a more convenient 
+   module: printl). But, it can be used as sample code for overriding printl
+   callback.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +40,70 @@
 
 #include "export.h"
 #include "verbose.h"
+#include "printl.h"
+
+// for compatibility
+TIEXPORT int TICALL DISPLAY(const char *format, ...)
+{
+	va_list ap;
+	int ret;
+		
+	va_start(ap, format);
+    	ret = printl1(0, format, ap);
+    	va_end(ap);
+	
+	return ret;
+}
+
+// for compatibility
+TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
+{
+	va_list ap;
+	int ret;
+		
+	va_start(ap, format);
+    	ret = printl1(2, format, ap);
+    	va_end(ap);
+	
+	return ret;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
+{
+  	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_flush_file(void)
+{
+	return 0;
+}
+
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_stream(FILE * stream)
+{
+	return NULL;
+}
+
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_file(char *filename)
+{
+	 return NULL;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_close_file()
+{
+  	return 0;
+}
+
+#if 0
 
 // Display output in console
 #ifdef __WIN32__
@@ -52,38 +120,48 @@ static int verbosity = 0;
 
 
 static FILE *flog = NULL;
+static char *fname = NULL;
 
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...)
 {
-  int ret = 0;
-  va_list ap;
+  	int ret = 0;
+  	va_list ap;
 
-  if (verbosity) {
+  	if (verbosity) {
+#if defined(__WIN32__)
+                char buffer[128];
+                int cnt;
+                DWORD nWritten;
 
-#if defined(__WIN32__)		// redirect stdout to the console
-    if (alloc_console_called == FALSE) {
-      AllocConsole();
-      alloc_console_called = TRUE;
-      hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-      freopen("CONOUT$", "w", stdout);
-    }
+    	        if (alloc_console_called == FALSE) {
+      		        AllocConsole();
+      		        alloc_console_called = TRUE;
+      		        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+      		        //freopen("CONOUT$", "w", stdout);
+    	        }
+
+                va_start(ap, format);
+                cnt = _vsnprintf(buffer, 128, format, ap);
+                WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
+                va_end(ap);
+#else
+                va_start(ap, format);
+    	        ret = vfprintf(stdout, format, ap);
+    	        va_end(ap);
 #endif
-    va_start(ap, format);
-    ret = vfprintf(stdout, format, ap);
-    va_end(ap);
-  }
+  	}
 
-  if (flog == NULL)
-    flog = fopen(DISP_FILE, "wt");
-  else {
-    va_start(ap, format);
-    if (flog)
-      vfprintf(flog, format, ap);
-    va_end(ap);
-  }
+        if (flog == NULL) {
+    		flog = fopen(DISP_FILE, "wt");
+        } else {
+    		va_start(ap, format);
+    		if (flog)
+      			vfprintf(flog, format, ap);
+    		va_end(ap);
+  	}
 
-  return ret;
+  	return ret;
 }
 
 
@@ -93,36 +171,45 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 */
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
-  int ret = 0;
-  va_list ap;
+        int ret = 0;
+  	va_list ap;
 
-  if (verbosity) {
-#if defined(__WIN32__)		// redirect stderr to the console
-    if (alloc_console_called == FALSE) {
-      AllocConsole();
-      alloc_console_called = TRUE;
-      hConsole = GetStdHandle(STD_ERROR_HANDLE);
-      freopen("CONERR$", "w", stderr);
-    }
+  	if (verbosity) {
+#if defined(__WIN32__)
+                char buffer[128];
+                int cnt;
+                DWORD nWritten;
+
+    		if (alloc_console_called == FALSE) {
+      			AllocConsole();
+      			alloc_console_called = TRUE;
+      			hConsole = GetStdHandle(STD_ERROR_HANDLE);
+      			//freopen("CONERR$", "w", stderr);
+    		}
+
+                va_start(ap, format);
+                cnt = _vsnprintf(buffer, 128, format, ap);
+                WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
+                va_end(ap);
 #endif
-    va_start(ap, format);
-    fprintf(stderr, "Error: ");
-    ret = vfprintf(stderr, format, ap);
-    va_end(ap);
-  }
+    		va_start(ap, format);
+    		fprintf(stderr, "Error: ");
+    		ret = vfprintf(stderr, format, ap);
+    		va_end(ap);
+  	}
 
-  if (flog == NULL)
-    flog = fopen(DISP_FILE, "wt");
-  else {
-    va_start(ap, format);
-    if (flog)
-      fprintf(flog, "Error: ");
-    if (flog)
-      vfprintf(flog, format, ap);
-    va_end(ap);
-  }
+  	if (flog == NULL)
+    		flog = fopen(DISP_FILE, "wt");
+  	else {
+    		va_start(ap, format);
+    		if (flog)
+      			fprintf(flog, "Error: ");
+    		if (flog)
+      			vfprintf(flog, format, ap);
+    		va_end(ap);
+  	}
 
-  return ret;
+  	return ret;
 }
 
 
@@ -131,28 +218,31 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 */
 TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op)
 {
-  switch (op) {
-  case DSP_OFF:
-    verbosity = 0;
-    break;
-  case DSP_ON:
-    verbosity = 1;
-    break;
-  case DSP_CLOSE:
+  	switch (op) {
+  	case DSP_OFF:
+    		verbosity = 0;
+    	break;
+    	
+  	case DSP_ON:
+    		verbosity = 1;
+    	break;
+  	
+  	case DSP_CLOSE:
 #ifdef __WIN32__
-    FreeConsole();
+    		FreeConsole();
 #endif
-    break;
-  default:
-    break;
-  }
+    	break;
+    	
+  	default:
+    	break;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
 {
-  return ticable_DISPLAY_settings(op);
+  	return ticable_DISPLAY_settings(op);
 }
 
 /*
@@ -160,16 +250,31 @@ TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
 */
 TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
 {
-  if (flog != NULL) {
-    fflush(flog);
-    fclose(flog);
-  }
+  	if (flog != NULL) {
+    		fclose(flog);
+    		free(fname);
+	}
 
-  flog = fopen(filename, "wt");
-  if (flog != NULL)
-    return -1;
+	fname = strdup(filename);
+  	flog = fopen(filename, "wt");
+  	if (flog != NULL) {
+  		DISPLAY("flushing error (%s).\n", strerror(errno));
+    		return -1;
+	}
 
-  return 0;
+  	return 0;
+}
+
+/*
+  Flush file
+*/
+TIEXPORT int TICALL ticable_verbose_flush_file(void)
+{
+	// fflush does not work under win32
+	fflush(stdout);
+	fflush(flog);
+
+	return 0;
 }
 
 /************ Unused/Obsoleted *****************/
@@ -201,3 +306,5 @@ TIEXPORT int TICALL ticable_DISPLAY_close_file()
 {
   return fclose(f);
 }
+
+#endif

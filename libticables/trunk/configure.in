@@ -9,8 +9,8 @@ AC_INIT(src/intrface.c)
 
 # set library version number
 MAJOR_VERSION=3
-MINOR_VERSION=7
-MICRO_VERSION=7
+MINOR_VERSION=8
+MICRO_VERSION=3
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
 
 AC_SUBST(MAJOR_VERSION)
@@ -67,6 +67,10 @@ AC_PROG_LN_S
 AC_ISC_POSIX
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_AWK
+
+# gettext support (must be set here; before libti* dependancy checks)
+ALL_LINGUAS="fr"
+AM_GNU_GETTEXT
 
 # find pkg-config
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
@@ -160,12 +164,12 @@ if test x"$ticables_native_win32" = xyes; then
   fi
 fi
 
-AC_CYGWIN32
-AC_MINGW32
-AC_EXEEXT
+#AC_MINGW32
+#AC_EXEEXT
 
 # detect system type
 case "$host" in
+	i386-*-*bsd*)          ARCH="-D__BSD__ -D__I386__" ;;
 	*-*-*bsd*)             ARCH="-D__BSD__" ;;
 	alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
 	alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;
@@ -204,10 +208,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# gettext support
-ALL_LINGUAS="fr"
-AM_GNU_GETTEXT
-
+# locale installation
 locale_dir='${prefix}/share/locale'
 AC_SUBST(locale_dir)
 
@@ -222,6 +223,7 @@ AC_SUBST(LDFLAGS)
 # output files
 AC_OUTPUT([
 Makefile 
+build/Makefile
 docs/Makefile 
 macros/Makefile 
 man/Makefile

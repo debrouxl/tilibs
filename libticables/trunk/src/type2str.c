@@ -22,144 +22,164 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "intl.h"
+#include "intl1.h"
 #include "cabl_def.h"
-#include "verbose.h"
+
+static const char *TICABLETYPE[TICABLETYPE_MAX] = {
+  N_("none"), N_("GrayLink"), N_("BlackLink"), N_("ParallelLink"), N_("AVRlink"), N_("virtual"), N_("TiEMu"),
+  N_("VTi"), N_("obsolete"), N_("SilverLink"),
+};
 
 TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
+{	
+	int v;
+
+	if (type < TICABLETYPE_MAX)
+    		v = type;
+  	else
+    		v = 0;
+
+  	return TICABLETYPE[v];
+}
+
+
+TIEXPORT TicableType TICALL ticable_string_to_cabletype(const char *str)
 {
-  switch (type) {
-  case LINK_NONE:
-    return "none";
-  case LINK_TGL:
-    return "Gray TIGraphLink";
-  case LINK_SER:
-    return "Black TIGraphLink";
-  case LINK_PAR:
-    return "home-made parallel";
-  case LINK_AVR:
-    return "AVRlink";
-  case LINK_VTL:
-    return "unused";
-  case LINK_TIE:
-    return "TiEmu";
-  case LINK_VTI:
-    return "VTi";
-  case LINK_TPU:
-    return "unused";
-  case LINK_SLV:
-    return "SilverLink";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown cable type !\n"));
-    return "unknown";
-  }
+  	int i;
+
+  	for (i = 0; i < TICABLETYPE_MAX; i++) {
+    		if (!strcmp(TICABLETYPE[i], str))
+      			break;
+  	}
+  
+  	if (i == TICABLETYPE_MAX)
+    		return 0;
+
+  	return i;
 }
 
 
 TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br)
 {
-  switch (br) {
-  case BR9600:
-    return "9600 bauds";
-  case BR19200:
-    return "19200 bauds";
-  case BR38400:
-    return "38400 bauds";
-  case BR57600:
-    return "57600 bauds";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown baud rate !\n"));
-    return "unknown";
-  }
+  	switch (br) {
+  	case BR9600:  return "9600 bauds";
+  	case BR19200: return "19200 bauds";
+  	case BR38400: return "38400 bauds";
+  	case BR57600: return "57600 bauds";
+  	default: return "unknown";
+  	}
+}
+
+
+TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str)
+{
+	if(!strcmp(str, "9600 bauds"))
+		return BR9600;
+  	else if(!strcmp(str, "19200 bauds"))
+  		return BR19200;
+  	else if(!strcmp(str, "38400 bauds"))
+  		return BR38400;
+  	else if(!strcmp(str, "57600 bauds"))
+  		return BR57600;
+
+  		return BR9600;
 }
 
 
 TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc)
 {
-  switch (hfc) {
-  case HFC_OFF:
-    return "off";
-  case HFC_ON:
-    return "on";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown flow type !\n"));
-    return "unknown";
-  }
+	if(hfc == HFC_ON)
+		return _("on");
+	else
+		return _("off");
 }
 
+
+TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str)
+{
+	if(!strcmp(str, _("on")))
+		return HFC_ON;
+	else
+		return HFC_OFF;
+}
+
+static const char *TICABLEPORT[TICABLEPORT_MAX] = {
+  N_("custom"), N_("parallel port #1"), N_("parallel port #2"), N_("parallel port #3"), 
+  N_("serial port #1"), N_("serial port #2"), N_("serial port #3"), N_("serial port #4"), 
+  N_("virtual port #1"), N_("virtual port #2"), 
+  N_("USB port #1"), N_("USB port #2"), N_("USB port #3"), N_("USB port #4"), 
+  N_("serial port"), N_("USB port")
+};
 
 TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)
 {
-  switch (port) {
-  case USER_PORT:
-    return "user defined";
-  case PARALLEL_PORT_1:
-    return "parallel port #1";
-  case PARALLEL_PORT_2:
-    return "parallel port #2";
-  case PARALLEL_PORT_3:
-    return "parallel port #3";
-  case SERIAL_PORT_1:
-    return "serial port #1";
-  case SERIAL_PORT_2:
-    return "serial port #2";
-  case SERIAL_PORT_3:
-    return "serial port #3";
-  case SERIAL_PORT_4:
-    return "serial port #4";
-  case VIRTUAL_PORT_1:
-    return "virtual port #1";
-  case VIRTUAL_PORT_2:
-    return "virtual port #2";
-  case USB_PORT_1:
-    return "USB port #1";
-  case USB_PORT_2:
-    return "USB port #2";
-  case USB_PORT_3:
-    return "USB port #3";
-  case USB_PORT_4:
-    return "USB port #4";
-  case OSX_SERIAL_PORT:
-    return "serial port";
-  case OSX_USB_PORT:
-    return "USB port";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown port !\n"));
-    return "unknown";
-  }
+	int v;
+
+	if (port < TICABLEPORT_MAX)
+    		v = port;
+  	else
+    		v = 0;
+
+  	return TICABLEPORT[v];
+}
+
+TIEXPORT TicablePort TICALL ticable_string_to_port(const char *str)
+{
+	int i;
+
+  	for (i = 0; i < TICABLEPORT_MAX; i++) {
+    		if (!strcmp(TICABLEPORT[i], str))
+      			break;
+  	}
+  
+  	if (i == TICABLEPORT_MAX)
+    		return 0;
+
+  	return i;
 }
 
 
-TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod method)
+TIEXPORT 
+const char *TICALL ticable_method_to_string(TicableMethod method)
 {
-  char *p1 = "";
-  char *p2 = "internal";
-  char *p3 = "";
-  static char buffer[64];
+	static char buffer[33];
 
-  strcpy(buffer, "");
+	strcpy(buffer, _("unknown"));
+	
+	if (method & IOM_ASM)
+		strcpy(buffer, _("direct access (asm)"));
+	if (method & IOM_API)
+		strcpy(buffer, _("direct access (api)"));
+	if (method & IOM_DRV)
+		strcpy(buffer, _("kernel mode (module)"));
+	if (method & IOM_IOCTL)
+		strcpy(buffer, _("user mode (ioctl)"));
 
-  if (method & IOM_AUTO)
-    p1 = "automatic";
-  if (method & IOM_ASM)
-    p2 = "direct access with ASM";
-  if (method & IOM_API)
-    p2 = "direct access thru API";
-#if defined(__LINUX__)
-  if (method & IOM_DRV)
-    p2 = "kernel module";
-#elif defined(__WIN32__)
-  if (method & IOM_DRV)
-    p2 = "PortTalk/TiglUsb driver";
-#endif
+	return buffer;
+}
 
-  strcat(buffer, p1);
-  strcat(buffer, " (");
-  strcat(buffer, p2);
-  if (strcmp(p2, "") && strcmp(p3, ""))
-    strcat(buffer, " + ");
-  strcat(buffer, p3);
-  strcat(buffer, ")");
 
-  return buffer;
+TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp)
+{
+	if(disp == DSP_OFF)
+		return _("off");
+	else if(disp == DSP_ON)
+		return _("on");
+	else if(disp == DSP_CLOSE)
+		return _("closed");
+
+	return _("off");
+}
+
+
+TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str)
+{
+	if(!strcmp(str, _("on")))
+		return DSP_ON;
+	else if(!strcmp(str, _("off")))
+		return DSP_OFF;
+	else if(!strcmp(str, _("closed")))
+		return DSP_CLOSE;
+
+	return DSP_OFF;
 }

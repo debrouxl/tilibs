@@ -26,12 +26,7 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
-
+#include "stdints.h"
 #include "export.h"
 #include "timeout.h"
 
@@ -49,6 +44,7 @@ typedef enum {
   LINK_NONE,
   LINK_TGL, LINK_SER, LINK_PAR, LINK_AVR,
   LINK_VTL, LINK_TIE, LINK_VTI, LINK_TPU, LINK_SLV,
+  TICABLETYPE_MAX
 } TicableType;
 
 #define LINK_UGL LINK_SLV
@@ -64,7 +60,8 @@ typedef enum {
 
 /* Values returned by the check function */
 typedef enum {
-  STATUS_NONE, STATUS_RX, STATUS_TX
+  STATUS_NONE, STATUS_RX, STATUS_TX,
+  TICABLESTATUS_MAX
 } TicableStatus;
 
 /* Hardware flow control (RTS/CTS) */
@@ -88,17 +85,21 @@ typedef enum {
   SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4,
   VIRTUAL_PORT_1, VIRTUAL_PORT_2,
   USB_PORT_1, USB_PORT_2, USB_PORT_3, USB_PORT_4,
-  OSX_SERIAL_PORT, OSX_USB_PORT
+  OSX_SERIAL_PORT, OSX_USB_PORT,
+  TICABLEPORT_MAX
 } TicablePort;
+
+#define USB_PORT	USB_PORT_1
 
 /* I/O method to use */
 typedef enum {
-  IOM_AUTO = 1, IOM_ASM = 2, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
+  IOM_AUTO = 1, IOM_ASM = 2, IOM_IOCTL = 4, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
 } TicableMethod;
 
 /* Verbosity level for DISPLAY function */
 typedef enum {
-  DSP_OFF, DSP_ON, DSP_CLOSE
+  DSP_OFF, DSP_ON, DSP_CLOSE,
+  TICABLEDISPLAY_MAX,
 } TicableDisplay;
 
 /* OS probing */
@@ -108,6 +109,9 @@ typedef enum {
 #define OS_MACOS "Mac OS X"
 #define OS_BSD   "*BSD"
 #define OS_NONE  "unknown"
+
+/* Callback */
+typedef int (*TICABLES_PRINTL) (int level, const char *format, ...);
 
 /********************/
 /* Type definitions */
@@ -147,16 +151,20 @@ typedef struct {
 // for probe.c
 #define MAX_LPT_PORTS	3	// up to 3
 #define MAX_COM_PORTS	4	// up to 4
-typedef struct {
-  int lpt_count;		// Current number of printer port, default=1
-  int lpt_addr[MAX_LPT_PORTS + 1];
-  int lpt_mode[MAX_LPT_PORTS + 1];
-  char lpt_name[MAX_LPT_PORTS + 1][17];
 
-  int com_count;		// Current number of serial port, default=1
-  int com_addr[MAX_COM_PORTS + 1];
-  int com_mode[MAX_COM_PORTS + 1];
-  char com_name[MAX_COM_PORTS + 1][17];
+typedef struct {
+	int lpt_count;		// Current number of parallel ports
+	int lpt_addr[MAX_LPT_PORTS];
+	int lpt_mode[MAX_LPT_PORTS];
+	char lpt_name[MAX_LPT_PORTS][17];
+	
+	int com_count;		// Current number of serial ports
+	int com_addr[MAX_COM_PORTS];
+	int com_mode[MAX_COM_PORTS];
+	char com_name[MAX_COM_PORTS][17];
+	
+	int usb_count;          // Current number of usb ports
+	//...
 } TicablePortInfo;
 
 typedef struct {
@@ -171,15 +179,15 @@ typedef struct {
 /****************/
 
 /* Parallel Port addresses */
-#define PP3_ADDR 0x3bc
 #define PP1_ADDR 0x378
 #define PP2_ADDR 0x278
+#define PP3_ADDR 0x3bc
 
 /* Parallel port devices */
 #if defined(__LINUX__)
-# define PP1_NAME "/dev/lp0"
-# define PP2_NAME "/dev/lp1"
-# define PP3_NAME "/dev/lp2"
+# define PP1_NAME "/dev/parport0"
+# define PP2_NAME "/dev/parport1"
+# define PP3_NAME "/dev/parport2"
 #elif defined(__WIN32__)
 # define PP1_NAME "LPT1"
 # define PP2_NAME "LPT2"
@@ -224,35 +232,22 @@ typedef struct {
 #endif
 
 /* USB port devices */
-#if defined(__LINUX__) && !defined(HAVE_LIBUSB)
+#if defined(__LINUX__)
 # define UP1_NAME "/dev/tiusb0"
 # define UP2_NAME "/dev/tiusb1"
 # define UP3_NAME "/dev/tiusb2"
 # define UP4_NAME "/dev/tiusb3"
-#elif defined(__LINUX__) && defined(HAVE_LIBUSB)
-# define UP1_NAME ""
-# define UP2_NAME ""
-# define UP3_NAME ""
-# define UP4_NAME ""
+#elif defined(__WIN32__)
+# define UP1_NAME "//./TiglUsb0"
+# define UP2_NAME "//./TiglUsb0"
+# define UP3_NAME "//./TiglUsb0"
+# define UP4_NAME "//./TiglUsb0"
 #else				// default
 # define UP1_NAME ""
 # define UP2_NAME ""
 # define UP3_NAME ""
 # define UP4_NAME ""
 #endif
-
-/* Characters devices of the 'tidev' kernel module (obsolete) */
-/* See timodules.c instead */
-#define TIDEV	 "/dev/ti"	/* Symbolic link to one of the folowing devices */
-#define TIDEV_P0 "/dev/tiP0"	/* TI device for parallel link at 0x3BC */
-#define TIDEV_P1 "/dev/tiP1"	/* TI device for parallel link at 0x378 */
-#define TIDEV_P2 "/dev/tiP2"	/* TI device for parallel link at 0x278 */
-#define TIDEV_S0 "/dev/tiS0"	/* TI device for serial link at 0x3F8 (COM1) */
-#define TIDEV_S1 "/dev/tiS1"	/* TI device for serial link at 0x2F8 (COM2) */
-#define TIDEV_S2 "/dev/tiS2"	/* TI device for serial link at 0x3E8 (COM3) */
-#define TIDEV_S3 "/dev/tiS3"	/* TI device for serial link at 0x3E8 (COM4) */
-#define TIDEV_V0 "/dev/ti0"	/* Virtual link device (compl. to /dev/ti1) */
-#define TIDEV_V1 "/dev/ti1"	/* Virtual link device (compl. to /dev/ti0) */
 
 /* Virtual link devices */
 #define VLINK0 1		/* Virtual link (complementary to VL1) */
@@ -265,8 +260,9 @@ typedef struct {
 #define IO_DLL    (1<<3)	/* PortTalk device driver (NT4/2000/XP)     */
 #define IO_TIPAR  (1<<4)	/* tipar kernel module (Linux)              */
 #define IO_TISER  (1<<5)	/* tiser kernel module (Linux)              */
-#define IO_TIUSB  (1<<6)	/* tiglusb kernel module (Linux/Win32)      */
-#define IO_LIBUSB (1<<7)	/* libusb (Linux/Win32)                     */
+#define IO_TIUSB  (1<<6)	/* tiglusb kernel module (Linux)            */
+#define IO_LIBUSB (1<<7)	/* libusb (Linux)	                    */
+#define IO_USB	  (1<<8)	/* tiglusb (Win32)			    */ 
 
 #define IO_BSD   (1<<11)	/* Any *BSD platform                        */
 #define IO_LINUX (1<<12)	/* Any Linux platform                       */

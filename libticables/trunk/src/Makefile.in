@@ -139,16 +139,16 @@ libticables_la_LDFLAGS =  	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) 
 
 
 # ticables header files for public installation (non-generated)
-libticablesinclude_HEADERS =  	cabl_def.h 	cabl_err.h 	cabl_int.h 	cabl_ver.h 	export.h 	intl.h 	timeout.h 	ticables.h
+libticablesinclude_HEADERS =  	cabl_def.h 	cabl_err.h 	cabl_int.h 	cabl_ver.h 	export.h 	timeout.h 	ticables.h
 
 
 # setup source file variables
-libticables_la_SOURCES =  	ioports.c 	avr_link.c 	dev_link.c 	dfl_link.c 	par_link.c 	ser_link.c 	slv_link.c 	tie_link.c 	tig_link.c 	vti_link.c 	vtl_link.c 	error.c intrface.c type2str.c 	logging.c probe.c verbose.c 	direct.c 	timodules.c
+libticables_la_SOURCES =  	detect.c 	direct.c 	error.c 	ioports.c 	intrface.c 	link_avr.c 	link_dev.c 	link_dfl.c 	link_par.c 	link_ser.c 	link_slv.c 	link_tie.c 	link_tig.c 	link_vti.c 	link_vtl.c 	logging.c 	mapping.c 	none.c 	printl.c 	type2str.c 	verbose.c
 
 
 MAINTAINERCLEANFILES = 
 EXTRA_HEADERS = 
-EXTRA_DIST =  	*.h 	porttalk.c
+EXTRA_DIST =  	*.h 	bsd linux macos win32
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -158,10 +158,10 @@ LTLIBRARIES =  $(lib_LTLIBRARIES)
 CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libticables_la_LIBADD = 
-libticables_la_OBJECTS =  ioports.lo avr_link.lo dev_link.lo dfl_link.lo \
-par_link.lo ser_link.lo slv_link.lo tie_link.lo tig_link.lo vti_link.lo \
-vtl_link.lo error.lo intrface.lo type2str.lo logging.lo probe.lo \
-verbose.lo direct.lo timodules.lo
+libticables_la_OBJECTS =  detect.lo direct.lo error.lo ioports.lo \
+intrface.lo link_avr.lo link_dev.lo link_dfl.lo link_par.lo link_ser.lo \
+link_slv.lo link_tie.lo link_tig.lo link_vti.lo link_vtl.lo logging.lo \
+mapping.lo none.lo printl.lo type2str.lo verbose.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -175,11 +175,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/avr_link.P .deps/dev_link.P .deps/dfl_link.P \
-.deps/direct.P .deps/error.P .deps/intrface.P .deps/ioports.P \
-.deps/logging.P .deps/par_link.P .deps/probe.P .deps/ser_link.P \
-.deps/slv_link.P .deps/tie_link.P .deps/tig_link.P .deps/timodules.P \
-.deps/type2str.P .deps/verbose.P .deps/vti_link.P .deps/vtl_link.P
+DEP_FILES =  .deps/detect.P .deps/direct.P .deps/error.P \
+.deps/intrface.P .deps/ioports.P .deps/link_avr.P .deps/link_dev.P \
+.deps/link_dfl.P .deps/link_par.P .deps/link_ser.P .deps/link_slv.P \
+.deps/link_tie.P .deps/link_tig.P .deps/link_vti.P .deps/link_vtl.P \
+.deps/logging.P .deps/mapping.P .deps/none.P .deps/printl.P \
+.deps/type2str.P .deps/verbose.P
 SOURCES = $(libticables_la_SOURCES)
 OBJECTS = $(libticables_la_OBJECTS)
 

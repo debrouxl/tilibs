@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: ioports.h 391 2004-03-29 11:49:18Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -20,28 +20,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
-  This file redirects low-level I/O functions according to the architecture
-  and/or the platform
- */
+/* This file redirects low-level I/O functions according to the architecture. */
 
-#ifndef __TICABLE_IO__
-#define __TICABLE_IO__
+#ifndef __IOPORTS_H__
+#define __IOPORTS_H__
 
-/* I/O abstraction */
-int io_open(unsigned long from, unsigned long num);
-extern int (*io_rd) (unsigned int addr);
-extern void (*io_wr) (unsigned int addr, int data);
+
+int io_open (unsigned long from, unsigned long num);
 int io_close(unsigned long from, unsigned long num);
 
-#ifdef __WIN32__		// used by ser_link.c
-int io_open_comport(char *comPort, PHANDLE hCom);
-int io_close_comport(PHANDLE hCom);
-#endif
+extern int  (*io_rd)  (unsigned int addr);
+extern void (*io_wr)  (unsigned int addr, int data);
 
-#if defined(__BORLANDC__) || defined(__MINGW32__)
-# define _inp  inp_
-# define _outp outp_
-#endif
 
 #endif

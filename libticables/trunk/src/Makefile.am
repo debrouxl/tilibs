@@ -26,33 +26,38 @@ libticablesinclude_HEADERS = \
 	cabl_int.h \
 	cabl_ver.h \
 	export.h \
-	intl.h \
 	timeout.h \
 	ticables.h
 
 # setup source file variables
 libticables_la_SOURCES = \
-	ioports.c \
-	avr_link.c \
-	dev_link.c \
-	dfl_link.c \
-	par_link.c \
-	ser_link.c \
-	slv_link.c \
-	tie_link.c \
-	tig_link.c \
-	vti_link.c \
-	vtl_link.c \
-	error.c intrface.c type2str.c \
-	logging.c probe.c verbose.c \
+	detect.c \
 	direct.c \
-	timodules.c
+	error.c \
+	ioports.c \
+	intrface.c \
+	link_avr.c \
+	link_dev.c \
+	link_dfl.c \
+	link_par.c \
+	link_ser.c \
+	link_slv.c \
+	link_tie.c \
+	link_tig.c \
+	link_vti.c \
+	link_vtl.c \
+	logging.c \
+	mapping.c \
+	none.c \
+	printl.c \
+	type2str.c \
+	verbose.c
 
 MAINTAINERCLEANFILES =
 EXTRA_HEADERS =
 EXTRA_DIST = \
 	*.h \
-	porttalk.c
+	bsd linux macos win32
 
 dos2unix:
 	dos2unix

@@ -27,11 +27,7 @@
 #endif
 
 #include <stdio.h>
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
+#include "stdints.h"
 
 #include "export.h"
 #include "cabl_def.h"
@@ -41,14 +37,14 @@ extern "C" {
 #endif
 
 	/****************/
-  /* Entry points */
+  	/* Entry points */
 	/****************/
 
   TIEXPORT int TICALL ticable_init(void);
   TIEXPORT int TICALL ticable_exit(void);
 
 	/*********************/
-  /* General functions */
+  	/* General functions */
 	/*********************/
 
   TIEXPORT const char *TICALL ticable_get_version(void);
@@ -67,7 +63,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_get_datarate(TicableDataRate ** ptdr);
 
 	/*********************/
-  /* Set/Get functions */
+  	/* Set/Get functions */
 	/*********************/
 
   TIEXPORT void TICALL ticable_set_timeout(int timeout_v);
@@ -95,7 +91,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_get_method(void);
 
 	/*******************/
-  /* Probe functions */
+  	/* Probe functions */
 	/*******************/
 
   TIEXPORT int TICALL ticable_detect_os(char **os_type);
@@ -104,16 +100,14 @@ extern "C" {
   TIEXPORT int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
 
 	/***********************/
-  /* Verbosity functions */
+  	/* Verbosity functions */
 	/***********************/
 
-  TIEXPORT int TICALL DISPLAY(const char *format, ...);
-  TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
-  TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
-  TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
+  // printl.c
+  TIEXPORT TICABLES_PRINTL ticable_set_printl(TICABLES_PRINTL new_printl);
 
 	/**************************************/
-  /* Direct access functions (reserved) */
+  	/* Direct access functions (reserved) */
 	/**************************************/
 
   TIEXPORT int TICALL ticable_link_init(void);
@@ -133,22 +127,37 @@ extern "C" {
   TIEXPORT int TICALL ticable_link_set_cable(TicableType type);
 
 	/************************/
-  /* Deprecated functions */
+  	/* Deprecated functions */
 	/************************/
 
   TIEXPORT int TICALL ticable_set_param2(TicableLinkParam lp);
   TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay);
+  
+  TIEXPORT int TICALL DISPLAY(const char *format, ...);
+  TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
+  TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
+  TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
+  TIEXPORT int TICALL ticable_verbose_flush_file(void);
 
 	/****************************/
-  /* Type to String functions */
+  	/* Type to String functions */
 	/****************************/
 
-  TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType
-							  type);
-  TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate
-							 br);
+  TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type);
+  TIEXPORT TicableType TICALL ticable_string_to_cabletype(const char *str);
+  
+  TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br);
+  TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str);
+  
   TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc);
+  TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str);
+  
   TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port);
+  TIEXPORT TicablePort TICALL ticable_string_to_port(const char *str);
+  
+  TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp);
+  TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str);
+  
   TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod
 						       method);
 

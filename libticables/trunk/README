@@ -26,17 +26,18 @@ Requirements
 --------------------------------------------------------------------------
 
   - A UNIX computer and C compiler (gcc) for the Linux version
-
-  - A Windows9x (95/98/Me) or NT (NT4/2000/XP) computer for 
-	the Windows version
+or
+  - A *BSD (FreeBSD) computer and C compiler (gcc)
 
   - the 'tipar' kernel module if you have an home-made link cable and want to
 	use it without super-user privileges (required with GTK+ >1.2.9).
+	Provided as separate module or built-in kernel 2.4 & 2.6.
   - the 'tiser' kernel module if you have a serial/BlackLink cable for the
 	same reasons as above.
+	Provided only as separate module for kernel 2.4 & 2.6.
   - the 'tiusb' kernel module or the libusb if you have a TI-GRAPH LINK USB
 	(SilverLink) cable.
-  - the DLportIO NT driver is no longer needed. PortTalk is used instead.
+	Provided as separate module or built-in kernel 2.4 & 2.6.
 
 All of these modules can be found on the LPG (http://lpg.ticalc.org) and
 must be installed BEFORE compiling the library.
@@ -65,7 +66,7 @@ Availability
 Copyright
 --------------------------------------------------------------------------
 
-ticables library is Copyright (C) 1999-2002 by the TiLP team: 
+ticables library is Copyright (C) 1999-2004 by the TiLP team: 
 <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public

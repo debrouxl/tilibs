@@ -54,15 +54,24 @@
 #define ERR_LIBUSB_RESET    27
 #define ERR_FREELIBRARY     28
 #define ERR_IPC_KEY         29
-#define ERR_SHM_GET         30
-#define ERR_SHM_ATTACH      31
-#define ERR_SHM_DETACH      32
-#define ERR_SHM_RMID        33
-#define ERR_OPEN_FILE_MAP   34
-#define ERR_ILLEGAL_ARG     35
-#define ERR_NO_RESOURCES    36
-#define ERR_INVALID_PORT    37
-#define ERR_PORTTALK_NOT_FOUND 38
-#define ERR_TIGLUSB_VERSION 39
+#define ERR_SHM_GET         	30
+#define ERR_SHM_ATTACH      	31
+#define ERR_SHM_DETACH      	32
+#define ERR_SHM_RMID        	33
+#define ERR_OPEN_FILE_MAP   	34
+#define ERR_ILLEGAL_ARG     	35
+#define ERR_NO_RESOURCES    	36
+#define ERR_INVALID_PORT    	37
+#define ERR_PORTTALK_NOT_FOUND	38
+#define ERR_TIGLUSB_VERSION 	39
+
+#define ERR_NODE_NONEXIST	40
+#define ERR_NODE_PERMS		41
+#define ERR_NOTLOADED		42
+#define ERR_NOTMOUNTED		43
+
+#define ERR_TIGLUSB_FLUSH   45
+#define ERR_TIGLUSB_RESET   46
+
 
 #endif
