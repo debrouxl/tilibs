@@ -68,12 +68,20 @@ extern "C" {
   extern int (*tifiles_printf) (const char *format, ...);
 
   // trans.c
+  TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
+						   char *translate,
+						   uint8_t vartype, 
+						   TicalcType calc_type);
+
+  TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, 
+						   const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, 
+						    const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_unicode(char* dst, 
+						     const char *src);
+
   TIEXPORT void TICALL tifiles_translate_set_encoding(TifileEncoding encoding);
   TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void);
-
-  TIEXPORT char* TICALL tifiles_convert_to_ascii(char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_convert_to_latin1(char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_convert_to_unicode(char* dst, const char *src);
 
   TIEXPORT char *TICALL tifiles_translate_varname(const char *varname, 
 						  char *translate, 
