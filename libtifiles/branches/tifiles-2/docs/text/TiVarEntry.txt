@@ -1,0 +1,19 @@
+[Main]
+Name=TiVarEntry
+Type=Structure
+Header=file_def.h (filesxx.h)
+Definition=struct TiVarEntry
+
+[Fields]
+folder : the folder where variable is stored (TI9x only)
+name : the 'binary' name
+trans : the translated name (human readable)
+type : the variable type
+attr : the variable attribute (FLASH calc only)
+data : the variable content
+
+[Summary]
+A generic structure used to describe a variable entry in a file.
+
+[See also]
+

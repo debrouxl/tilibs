@@ -1,0 +1,31 @@
+[Main]
+Name=TRY
+Type=Macro
+Header=macros.h
+Definition=# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }
+
+[Parameters]
+x : a function which returns a value
+Returns : the error code and go out of the program flow
+
+[Summary]
+This function check the value returned by the function.
+
+[Explanation]
+This function is used to make code clearer.
+Example:
+int err;
+
+do_something;
+
+if(err=function(...)) {
+		      return err;
+}
+
+do_something_else;
+
+is replaced by: 
+
+do_something;
+TRY(function());
+do_something_else;

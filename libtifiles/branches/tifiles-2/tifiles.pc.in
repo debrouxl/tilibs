@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: TiFiles
+Description: TI file format management library
+Version: @VERSION@
+Requires:
+Libs: -L${libdir} -ltifiles
+Cflags: -I${includedir}/tilp
+
