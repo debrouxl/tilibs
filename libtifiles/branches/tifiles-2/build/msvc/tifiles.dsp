@@ -146,7 +146,107 @@ SOURCE=..\..\src\typesv2.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\tifiles.h
+SOURCE=..\..\src\error.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\export.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\files8x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\files9x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\gettext.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\grouped.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\intelhex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\logging.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\macros.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\rwfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\stdints.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tifiles.h~
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\transcode.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types73.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types82.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types83.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types83p.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types84p.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types85.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types86.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types89.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types89t.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types92.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types92p.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\typesv2.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\typesxx.h
 # End Source File
 # End Group
 # Begin Group "TI files"
@@ -198,11 +298,19 @@ SOURCE=..\..\src\grouped.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\malloc.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\misc.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\tifiles.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tifiles.h
 # End Source File
 # Begin Source File
 

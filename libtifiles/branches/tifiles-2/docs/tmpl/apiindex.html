@@ -8,8 +8,8 @@
 <table class="INVTABLE" width="100%">
   <tbody>
     <tr>
-      <td class="NOBORDER" width="40"><img src="info.gif" width="32"
- height="32" border="0"> </td>
+      <td class="NOBORDER" width="40"><img src="info.gif" border="0"
+ height="32" width="32"> </td>
       <td class="TITLE">TiFiles Library API</td>
     </tr>
   </tbody>
@@ -19,190 +19,90 @@
 Interface) &nbsp;which makes use of TI files easy and transparent. <br>
 <br>
 Functions and data types are grouped in different topics, depending on
-their purpose. Click on a topic for the description of all functions and
+their purpose. Click on a topic for the description of all functions
+and
 data types defined in this topic.<br>
 </p>
-<h3 class="H3IND"><a name="#contents">Macros</a></h3>
+<h3 class="H3IND"><a name="#contents">Entry points (tifiles.c)<br>
+</a></h3>
 <b>
 <ul>
-  <li><a href="LSN.html">LSN/MSN</a></li>
-  <li><a href="LSB.html">LSB/MSB</a></li>
-  <li><a href="LSW.html">LSW/MSW</a></li>
-  <li><a href="BCD.html">BCD</a></li>
-  <li><a href="TRY.html">TRY</a></li>
-  <li><a href="DIR_SEPARATOR_S.html">DIR_SEPARATOR_S</a></li>
-  <li><a href="DIR_SEPARATOR_C.html">DIR_SEPARATOR_C<br>
+  <li><a href="tifiles_init.html">to complete<br>
     </a></li>
 </ul>
 </b>
-<h3 class="H3IND"><a name="#contents">Entry points</a></h3>
+<h3 class="H3IND"><a name="#contents">General functions (error.c)<br>
+</a></h3>
 <b>
 <ul>
-  <li><a href="tifiles_init.html">tifiles_init</a></li>
-  <li><a href="tifiles_exit.html">tifiles_exit</a></li>
+  <li><a href="tifiles_get_version.html"><b><a href="tifiles_init.html">to
+complete</a></b></a></li>
 </ul>
 </b>
-<h3 class="H3IND"><a name="#contents">General functions</a></h3>
+<h3 class="H3IND"><a name="#contents">Memory allocation (malloc.c)<br>
+</a></h3>
 <b>
 <ul>
-  <li><a href="tifiles_get_version.html">tifiles_get_version</a></li>
-  <li><a href="tifiles_get_error.html">tifiles_get_error</a></li>
-  <li><a href="tifiles_set_calc.html">tifiles_set_calc</a><br>
+  <li><a href="tifiles_realloc.html">to complete</a><br>
   </li>
-  <li><a href="tifiles_get_calc.html">tifiles_get_calc</a></li>
 </ul>
 </b>
-<h3 class="H3IND"><a name="#contents">Memory management functions</a></h3>
+<h3 class="H3IND"><a name="#contents">Types to string conversions
+(type2str.c)<br>
+</a></h3>
 <b>
 <ul>
-  <li><a href="tifiles_calloc.html">tifiles_calloc</a></li>
-  <li><a href="tifiles_malloc.html">tifiles_malloc</a></li>
-  <li><a href="tifiles_realloc.html">tifiles_realloc</a></li>
-  <li><a href="tifiles_free.html">tifiles_free</a></li>
-</ul>
-</b>
-<h3 class="H3IND"><a name="#contents">Variable name translation</a></h3>
-<b>
-<ul>
-  <li><a href="tifiles_translate_varname.html">tifiles_translate_varname</a></li>
-  <li><a href="tifiles_translate_varname2.html">tifiles_translate_varname2</a></li>
-</ul>
-</b>
-<h3 class="H3IND"><a name="#contents">Type management</a><br>
-</h3>
-<b>
-<ul>
-  <li><a href="tifiles_vartype2string.html">tifiles_vartype2string</a></li>
-  <li><a href="tifiles_string2vartype.html">tifiles_string2vartype</a><br>
-  </li>
-  <li><a href="tifiles_vartype2file">tifiles_vartype2file</a></li>
-  <li><a href="tifiles_file2vartype.html">tifiles_file2vartype</a></li>
-  <li><b><b><b><a href="tifiles_vartype2desc.html">tifiles_vartype2desc</a></b></b></b></li>
-  <b><b><b> </b></b></b>
-</ul>
-</b>
-<h3 class="H3IND"><a name="#contents">Generic types</a></h3>
-<ul>
-  <li><b><b><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_folder_type.html">tifiles_folder_type</a></b></b></li>
-  <b><b> <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_flash_type.html">tifiles_flash_type</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_idlist_type.html">tifiles_idlist_type</a></li>
-  </b></b>
-</ul>
-<h3 class="H3IND"><a name="#contents">Miscellaneous</a></h3>
-<ul>
-  <li><b><b><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_calc_type_to_string.html">tifiles_calc_type_to_string</a></b></b></li>
-  <b><b> <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_attribute_to_string.html">tifiles_attribute_to_string</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_vartype_to_file_extension.html">tifiles_vartype_to_file_extension</a></li>
-  <li><b><b><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_file_descriptive.html">tifiles_file_descriptive</a></b></b></li>
-  </b></b>
-</ul>
-<b><b> </b></b>
-<h3 class="H3IND"><a name="#contents">File checking</a></h3>
-<ul>
-  <li><b><b><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_ti_file.html"><b><b><b>tifiles_is_a_ti_file</b></b></b></a></b></b></li>
-  <b><b> <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_single_file.html">tifiles_is_a_single_file</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_group_file.html">tifiles_is_a_group_file</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_regular_file.html">tifiles_is_a_regular_file</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_backup_file.html">tifiles_is_a_backup_file</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_flash_file.html">tifiles_is_a_flash_file</a></li>
-  </b></b>
-</ul>
-<b><b> </b></b>
-<h3 class="H3IND"><a name="#contents">Type extraction</a></h3>
-<ul>
-  <li><b><b><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_which_calc_type.html">tifiles_which_calc_type</a></b></b></li>
-  <b><b> <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_which_file_type.html">tifiles_which_file_type</a></li>
-  </b></b>
-</ul>
-<h3 class="H3IND"><a name="#contents">Type checking</a></h3>
-<ul>
-  <b><b> <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_ti8x.html">tifiles_is_ti8x</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_ti9x.html">tifiles_is_ti9x</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_silent.html">tifiles_is_silent</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_has_folder.html">tifiles_has_folder</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_flash.html">tifiles_is_flash</a></li>
-  </b></b>
-</ul>
-<h3 class="H3IND"><a name="#contents">File signature</a></h3>
-<b>
-<ul>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_calctype2signature.html">tifiles_calctype2signature</a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_signature2calctype.html">tifiles_signature2calctype</a></li>
-</ul>
-</b><b>
-<ul>
-</ul>
-</b>
-<h3 class="H3IND"><a name="#contents">Utilities</a></h3>
-<b>
-<ul>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_get_extension.html"><b><b><b>tifiles_get_extension</b></b></b></a></li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_dup_extension.html"><b><b><b>tifiles_dup_extension</b></b></b></a><br>
-  </li>
-  <li><a
- href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_compute_checksum.html"><b><b><b>tifiles_compute_checksum</b></b></b></a><br>
+  <li><a href="tifiles_calloc.html">to_complete</a><br>
   </li>
 </ul>
 </b><b></b>
-<h3 class="H3IND"><a name="#contents">Variable name and path</a></h3>
+<h3 class="H3IND"><a name="#contents">Variable name translation
+(transcode.c)<br>
+</a></h3>
 <b>
 <ul>
-  <li><a href="tifiles_get_varname.html"><b><b><b>tifiles_get_varname</b></b></b></a></li>
-  <li><a href="tifiles_get_fldname.html"><b><b><b>tifiles_get_fldname</b></b></b></a></li>
-  <li><a href="tifiles_build_fullname.html"><b><b><b>tifiles_build_fullname</b></b></b></a></li>
+  <li><a href="tifiles_translate_varname.html">to_complete</a></li>
 </ul>
 </b>
-<h3 class="H3IND"><a name="#contents">Operations on regular files</a></h3>
+<h3 class="H3IND"><a name="#contents">File checking (filetypes.c)<br>
+</a></h3>
+<ul>
+  <li><b><b><a
+ href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_is_a_ti_file.html"><b><b><b>to_complete</b></b></b></a></b></b></li>
+</ul>
+<h3 class="H3IND"><a name="#contents">Type management (typesxx.c)</a><br>
+</h3>
 <b>
 <ul>
-  <li><a href="tifiles_create_regular_content.html">tifiles_create_regular_content</a><br>
-  </li>
-  <li><a href="tifiles_free_regular_content.html">tifiles_free_regular_content</a></li>
-  <li><a href="tifiles_read_regular_file.html">tifiles_read_regular_file</a></li>
-  <li><a href="tifiles_write_regular_file.html">tifiles_write_regular_file</a></li>
-  <li><a href="tifiles_write_regular_file.html">tifiles_display_file</a></li>
-  <li><a href="tifiles_create_table_of_entries.html">tifiles_create_table_of_entries</a></li>
+  <li><a href="tifiles_vartype2string.html">to_complete</a></li>
+  <b><b><b> </b></b></b>
 </ul>
 </b>
-<h3 class="H3IND"><a name="#contents">Operations on group files</a></h3>
-<b>
+<h3 class="H3IND"><a name="#contents">Misc stuffs (misc.c)<br>
+</a></h3>
 <ul>
-  <li><a href="tifiles_group_content.html">tifiles_group_content</a></li>
-  <li><a href="tifiles_ungroup_content.html">tifiles_ungroup_content</a></li>
-  <li><a href="tifiles_group_files.html">tifiles_group_files</a></li>
-  <li><a href="tifiles_ungroup_files.html">tifiles_ungroup_files</a><br>
+  <li><b><b><a
+ href="file:///home/devel/tilp_project/libs/files/docs/tmpl/tifiles_folder_type.html">to_complete</a></b></b><br>
   </li>
 </ul>
-</b><br>
-<b><br>
-Note:</b> some functions are contextual (that is to say they work with a
-currently set calculator type) whereas some others are calculator
-dependant. <br>
-<br>
+<b></b>
+<h3 class="H3IND"><a name="#contents">Operations on regular files
+(filesXX.c)<br>
+</a></h3>
+<b>
+<ul>
+  <li><b><a href="tifiles_create_table_of_entries.html">to_complete</a></b></li>
+</ul>
+</b>
+<h3 class="H3IND"><a name="#contents">Operations on group files
+(grouped.c)<br>
+</a></h3>
+<b>
+<ul>
+  <li><a href="tifiles_ungroup_files.html">to_complete</a><br>
+  </li>
+</ul>
+</b><b></b><br>
 <h3> <a
  href="file:///home/devel/tilp_project/libs/cables/docs/hand/index.html">Return
 to the main index</a> </h3>
