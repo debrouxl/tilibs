@@ -1,0 +1,9 @@
+[Main]
+Name=AUTO_ADDR
+Type=Define
+Header=cabl_def.h
+Definition=#define AUTO_ADDR 0x000
+
+[Summary]
+Used by some functions or the developer to specify auto-assigning of an I/O 
+address in the in TicableLinkParam.io_addr field.

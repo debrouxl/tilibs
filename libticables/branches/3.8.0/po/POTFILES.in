@@ -1,0 +1,23 @@
+# List of source files containing translatable strings.
+
+src/direct.c
+src/error.c
+src/intrface.c
+src/ioports.c
+src/logging.c
+src/porttalk.c
+src/probe.c
+src/timodules.c
+src/type2str.c
+src/verbose.c
+
+src/avr_link.c
+src/dev_link.c
+src/dfl_link.c
+src/par_link.c
+src/ser_link.c
+src/slv_link.c
+src/tie_link.c
+src/tig_link.c
+src/vti_link.c
+src/vtl_link.c
