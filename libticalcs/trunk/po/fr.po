@@ -1,20 +1,21 @@
+# traduction de ticalcs.po en Français
 # French locale for libticalcs.
 # Copyright (C) 2003
 # This file is distributed under the same license as the libticalcs package.
-# Sylvain Garsault <sylvain.garsault@freesbee.fr>, 2003.
+# Sylvain Garsault <sylvain.garsault@freesbee.fr>, 2003,2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libticalcs-4.4.7\n"
+"Project-Id-Version: ticalcs\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-04-10 17:30+0200\n"
-"PO-Revision-Date: 2003-05-07 13:40GMT\n"
-"Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
-"Language-Team: FRENCH <fr@li.org>\n"
+"PO-Revision-Date: 2004-04-14 09:16+0000\n"
+"Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
+"Language-Team: Français <kde-francophone@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
+"X-Generator: KBabel 1.0.1\n"
 
 #: src/dirlist.c:61
 msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
@@ -69,20 +70,16 @@ msgid "Msg: This function does not exist for this calculator."
 msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 
 #: src/error.c:71
-msgid ""
-"Cause: the operation you attempted is not supported by your calculator model."
-msgstr ""
-"Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
+msgid "Cause: the operation you attempted is not supported by your calculator model."
+msgstr "Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
 
 #: src/error.c:75
 msgid "Msg: Calculator out of memory."
 msgstr "Msg: Votre calculatrice n'a plus de mémoire libre."
 
 #: src/error.c:79
-msgid ""
-"Cause: the calculator does not have memory enough for doing the operation."
-msgstr ""
-"Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
+msgid "Cause: the calculator does not have memory enough for doing the operation."
+msgstr "Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
 
 #: src/error.c:83
 msgid "Msg: Unable to open (reading) the file."
@@ -211,9 +208,9 @@ msgid "Error code not found. This is a bug. Please report it.\n"
 msgstr "Code d'erreur inexistant. C'est un bug. Reportez-le s'il vous plaît.\n"
 
 #: src/intrface.c:79
-#, fuzzy, c-format
+#, c-format
 msgid "ticalcs library version %s\n"
-msgstr "Libticalcs: version %s\n"
+msgstr "librairie ticalcs version %s\n"
 
 #: src/intrface.c:91
 #, c-format
@@ -221,16 +218,16 @@ msgid "Libtifiles: version mismatches. Library version >= <%s> is required.\n"
 msgstr "Libtifiles: mauvaise version. La version >= <%s> est nécessaire.\n"
 
 #: src/intrface.c:96
-#, fuzzy, c-format
+#, c-format
 msgid "Libticables: version mismatches. Library version >= <%s> is required.\n"
-msgstr "Libtifiles: mauvaise version. La version >= <%s> est nécessaire.\n"
+msgstr "Libticables: mauvaise version. La version >= <%s> est nécessaire.\n"
 
 #: src/intrface.c:176
 msgid "settings:\n"
-msgstr ""
+msgstr "réglages :\n"
 
 #: src/intrface.c:177
-#, fuzzy, c-format
+#, c-format
 msgid "  calc type: %s\n"
 msgstr " Type de calculatrice: %s\n"
 
@@ -254,12 +251,12 @@ msgstr "Le programme s'est arrêté avant de se terminer anormalement...\n"
 #: src/printl.c:46
 #, c-format
 msgid "wrn: "
-msgstr ""
+msgstr "avr : "
 
 #: src/printl.c:47
 #, c-format
 msgid "err: "
-msgstr ""
+msgstr "err : "
 
 #: src/probe.c:73
 msgid "Probing calculator...\n"
@@ -267,27 +264,23 @@ msgstr "Recherche calculatrice...\n"
 
 #. Test for a TI 89 or a TI92+
 #: src/probe.c:76
-#, fuzzy
 msgid "Trying TI89/TI92+... "
-msgstr "Essai avec TI82..."
+msgstr "Essai avec TI89/TI92+... "
 
 #. Test for a TI92
 #: src/probe.c:101
-#, fuzzy
 msgid "Trying TI92... "
-msgstr "Essai avec TI82..."
+msgstr "Essai avec TI92... "
 
 #. Test for a TI86 before a TI85
 #: src/probe.c:118
-#, fuzzy
 msgid "Trying TI86... "
-msgstr "Essai avec TI83..."
+msgstr "Essai avec TI86... "
 
 #. Test for a TI85
 #: src/probe.c:136
-#, fuzzy
 msgid "Trying TI85... "
-msgstr "Essai avec TI83..."
+msgstr "Essai avec TI85... "
 
 #. Test for a TI83 before a TI82
 #: src/probe.c:154
@@ -552,27 +545,13 @@ msgstr "inconnu"
 
 #: src/type2str.c:53 src/type2str.c:62
 msgid "local"
-msgstr ""
+msgstr "local"
 
 #: src/type2str.c:74
 msgid "skip"
-msgstr ""
+msgstr "ignorer"
 
 #: src/type2str.c:75
 msgid "overwrite"
-msgstr ""
+msgstr "écraser"
 
-#~ msgid "Libticalcs settings...\n"
-#~ msgstr "Libticalcs réglages...\n"
-
-#~ msgid "perc = %1.2f \n"
-#~ msgstr "pourcent = %1.2f \n"
-
-#~ msgid "libticalcs error: unknown screen format !\n"
-#~ msgstr "libticalcs erreur: format d'écran inconnu !\n"
-
-#~ msgid "libticalcs error: unknown path type !\n"
-#~ msgstr "libticalcs erreur: type de chemin inconnu !\n"
-
-#~ msgid "libticalcs error: unknown action !\n"
-#~ msgstr "libticalcs erreur: action inconnue !\n"
