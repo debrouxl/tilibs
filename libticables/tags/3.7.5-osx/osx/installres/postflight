@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ -e /System/Library/Frameworks/libticables.framework ]; then
+    rm -rf /System/Library/Frameworks/libticables.framework
+fi
+
