@@ -70,4 +70,8 @@
 #define ERR_NOTLOADED		42
 #define ERR_NOTMOUNTED		43
 
+#define ERR_TIGLUSB_FLUSH   45
+#define ERR_TIGLUSB_RESET   46
+
+
 #endif

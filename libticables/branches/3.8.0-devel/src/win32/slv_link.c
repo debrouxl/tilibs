@@ -36,7 +36,7 @@
 
 /* 
    This part talk with the USB device driver through the TiglUsb library.
-   There are 2 other files: TiglUsb.h (interface) & TiglUsb.lib (linkage).
+   This module need TiglUsb.h (interface) but does not need TiglUsb.lib (linkage).
 */
 
 #include <stdio.h>
@@ -44,19 +44,25 @@
 
 #include "tiglusb.h"
 
-#define MIN_VERSION "2.2"
+#define MIN_VERSION "3.0"
 
 static HINSTANCE hDLL = NULL;	// DLL handle on TiglUsb.dll
-static dllOk = FALSE;			// Dll loading is OK
+static dllOk = FALSE;		// Dll loading is OK
 
-TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for 
-TIGLUSB_OPEN dynTiglUsbOpen = NULL;			// dynamic loading
+TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic loading
+
+TIGLUSB_OPEN dynTiglUsbOpen = NULL;
+TIGLUSB_CLOSE dynTiglUsbClose = NULL;
+
 TIGLUSB_FLUSH dynTiglUsbFlush = NULL;
+TIGLUSB_RESET dynTiglUsbReset = NULL;
+
+TIGLUSB_CHECK dynTiglUsbCheck = NULL;
 TIGLUSB_READ dynTiglUsbRead = NULL;
 TIGLUSB_WRITE dynTiglUsbWrite = NULL;
-TIGLUSB_CLOSE dynTiglUsbClose = NULL;
+
 TIGLUSB_SETTIMEOUT dynTiglUsbSetTimeout = NULL;
-TIGLUSB_CHECK dynTiglUsbCheck = NULL;
+TIGLUSB_GETTIMEOUT dynTiglUsbGetTimeout = NULL;
 
 extern int time_out;			// Timeout value for cables in 0.10 seconds
 
@@ -90,9 +96,30 @@ int slv_init()
 		return ERR_FREELIBRARY;
 	}
 
+    dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
+	if (!dynTiglUsbClose) {
+		printl1(2, _("Unable to load TiglUsbClose symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
 	dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
 	if (!dynTiglUsbOpen) {
 	    printl1(2, _("Unable to load TiglUsbFlush symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
+    dynTiglUsbReset = (TIGLUSB_RESET) GetProcAddress(hDLL, "TiglUsbReset");
+	if (!dynTiglUsbOpen) {
+	    printl1(2, _("Unable to load TiglUsbFlush symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
+    dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
+	if (!dynTiglUsbCheck) {
+		printl1(2, _("Unable to load TiglUsbCheck symbol.\n"));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
@@ -111,13 +138,6 @@ int slv_init()
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
-	if (!dynTiglUsbClose) {
-		printl1(2, _("Unable to load TiglUsbClose symbol.\n"));
-		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
-	}
-
 	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL, "TiglUsbSetTimeout");
 	if (!dynTiglUsbSetTimeout) {
 		printl1(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
@@ -125,9 +145,9 @@ int slv_init()
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
-	if (!dynTiglUsbCheck) {
-		printl1(2, _("Unable to load TiglUsbCheck symbol.\n"));
+    dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT) GetProcAddress(hDLL, "TiglUsbGetTimeout");
+	if (!dynTiglUsbSetTimeout) {
+		printl1(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
@@ -152,88 +172,116 @@ int slv_init()
 
 int slv_exit()
 {
-  int ret;
+    int ret;
 
-  STOP_LOGGING();
+    STOP_LOGGING();
 
-  ret = dynTiglUsbClose();
+    ret = dynTiglUsbClose();
 
-  /* Free library handle */
-  if (hDLL != NULL)
-    FreeLibrary(hDLL);
-  hDLL = NULL;
+    /* Free library handle */
+    if (hDLL != NULL)
+        FreeLibrary(hDLL);
+    hDLL = NULL;
 
-  dllOk = FALSE;
+    dllOk = FALSE;
 
-  return 0;
+    return 0;
 }
 
 int slv_open()
 {
-  int ret;
+    int ret;
 
-  if (!hDLL)
-    ERR_TIGLUSB_VERSION;
+    if (!hDLL)
+        ERR_TIGLUSB_VERSION;
 
-  dynTiglUsbSetTimeout(time_out);
-  ret = dynTiglUsbFlush();
-  switch (ret) {
-  case TIGLERR_FLUSH_FAILED:
-    return ERR_IOCTL;
-  default:
-    break;
-  }
+    dynTiglUsbSetTimeout(time_out);
 
-  tdr.count = 0;
-  toSTART(tdr.start);
+    ret = dynTiglUsbReset();
+    if(ret == TIGLERR_RESET_FAILED)
+        return ERR_TIGLUSB_RESET;
 
-  return 0;
+    tdr.count = 0;
+    toSTART(tdr.start);
+
+    return 0;
 }
 
 int slv_close()
 {
-  return 0;
+    int ret;
+
+    if (!hDLL)
+        ERR_TIGLUSB_VERSION;
+
+    ret = dynTiglUsbFlush();
+
+    switch (ret) {
+    case TIGLERR_WRITE_TIMEOUT:
+        return ERR_WRITE_TIMEOUT;
+    case TIGLERR_WRITE_ERROR:
+        return ERR_WRITE_ERROR;
+    default:
+        break;
+    }
+
+    return 0;
 }
 
 int slv_put(uint8_t data)
 {
-  int ret;
+    int ret;
 
-  tdr.count++;
-  LOG_DATA(data);
+    tdr.count++;
+    LOG_DATA(data);
 
-  ret = dynTiglUsbWrite(data);
-  switch (ret) {
-  case TIGLERR_WRITE_TIMEOUT:
-    return ERR_WRITE_TIMEOUT;
-  default:
-    break;
-  }
+    ret = dynTiglUsbWrite(data);
 
-  return 0;
+    switch (ret) {
+    case TIGLERR_WRITE_TIMEOUT:
+        return ERR_WRITE_TIMEOUT;
+    case TIGLERR_WRITE_ERROR:
+        return ERR_WRITE_ERROR;
+    default:
+        break;
+    }
+
+    return 0;
 }
 
 int slv_get(uint8_t * data)
 {
-  int ret;
+    int ret;
 
-  ret = dynTiglUsbRead(data);
-  switch (ret) {
-  case TIGLERR_READ_TIMEOUT:
-    return ERR_READ_TIMEOUT;
-  default:
-    break;
-  }
+    ret = dynTiglUsbRead(data);
 
-  tdr.count++;
-  LOG_DATA(*data);
+    switch (ret) {
+    case TIGLERR_READ_TIMEOUT:
+        return ERR_READ_TIMEOUT;
+    case TIGLERR_READ_ERROR:
+        return ERR_READ_ERROR;
+    default:
+        break;
+    }
 
-  return 0;
+    tdr.count++;
+    LOG_DATA(*data);
+
+    return 0;
 }
 
 int slv_check(int *status)
 {
-  return dynTiglUsbCheck(status);
+    int ret = dynTiglUsbCheck(status);
+
+    switch (ret) {
+    case TIGLERR_READ_TIMEOUT:
+        return ERR_READ_TIMEOUT;
+    case TIGLERR_READ_ERROR:
+        return ERR_READ_ERROR;
+    default:
+        break;
+    }
 }
 
 int slv_probe()

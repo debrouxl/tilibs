@@ -353,6 +353,12 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
     	strcat(error_msg, _("Cause: your kernel does not have usbfs support or it is not mounted by your /etc/fstab."));
 	break;
 
+    case ERR_TIGLUSB_RESET:
+	strcpy(error_msg, _("Msg: failed to reset USB endpoints."));
+    	strcat(error_msg, "\n");
+    	strcat(error_msg, _("Cause: your SilverLink cable may be stalled. Try to unplug/plug it."));
+	break;
+
   	default:
     		strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
     		return err_num;
