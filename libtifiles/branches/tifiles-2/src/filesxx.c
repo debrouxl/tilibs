@@ -34,24 +34,26 @@
 #include "files9x.h"
 
 // allocating
-TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
+TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
 {
-  return ti9x_content_create_regular();
+    return ti9x_content_create_regular();
 }
 
 // freeing
-TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
+TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
 {
   if (tifiles_calc_is_ti8x(content->model))
-    return ti8x_content_free_regular(content);
+    ti8x_content_free_regular(content);
   else if (tifiles_calc_is_ti9x(content->model))
-    return ti9x_content_free_regular(content);
+    ti9x_content_free_regular(content);
   else
     return ERR_BAD_CALC;
+
+  return 0;
 }
 
 // reading
-TIEXPORT int tifiles_read_regular_file(const char *filename,
+TIEXPORT int tifiles_file_read_regular(const char *filename,
                                        TiRegular *content)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -65,8 +67,8 @@ TIEXPORT int tifiles_read_regular_file(const char *filename,
 }
 
 // writing
-TIEXPORT int tifiles_write_regular_file(const char *filename,
-                                        TiRegular * content,
+TIEXPORT int tifiles_file_write_regular(const char *filename,
+                                        TiRegular *content,
                                         char **real_fname)
 {
   if (tifiles_calc_is_ti8x(content->model))
@@ -80,7 +82,7 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
 }
 
 // displaying
-TIEXPORT int TICALL tifiles_display_file(const char *filename)
+TIEXPORT int TICALL tifiles_file_display(const char *filename)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
     return ti8x_file_display(filename);
@@ -110,7 +112,7 @@ TIEXPORT int TICALL tifiles_display_file(const char *filename)
   This function may be difficult to understand but it avoids to use trees (and
   linked list) which will require an implementation.
  */
-TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular * content,
+TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
 						    int ***tabl,
 						    int *nfolders)
 {

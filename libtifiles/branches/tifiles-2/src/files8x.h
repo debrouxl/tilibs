@@ -140,9 +140,9 @@ TIEXPORT Ti8xRegular* TICALL ti8x_content_create_regular(void);
 TIEXPORT Ti8xBackup*  TICALL ti8x_content_create_backup(void);
 TIEXPORT Ti8xFlash*   TICALL ti8x_content_create_flash(void);
 // freeing
-TIEXPORT int TICALL ti8x_content_free_regular(Ti8xRegular *content);
-TIEXPORT int TICALL ti8x_content_free_backup(Ti8xBackup *content);
-TIEXPORT int TICALL ti8x_content_free_flash(Ti8xFlash *content);
+TIEXPORT void TICALL ti8x_content_free_regular(Ti8xRegular *content);
+TIEXPORT void TICALL ti8x_content_free_backup(Ti8xBackup *content);
+TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content);
 // displaying
 TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular *content);
 TIEXPORT int TICALL ti8x_content_display_backup(Ti8xBackup *content);

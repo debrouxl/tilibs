@@ -260,6 +260,10 @@ SOURCE=..\..\src\files9X.c
 
 SOURCE=..\..\src\filesxx.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\grouped.c
+# End Source File
 # End Group
 # Begin Group "Others"
 
@@ -287,10 +291,6 @@ SOURCE=..\..\src\error.c
 # Begin Source File
 
 SOURCE=..\..\src\filetypes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\grouped.c
 # End Source File
 # Begin Source File
 

@@ -9,4 +9,6 @@ misc.c : Miscelaneous
 filesxx.c : Operations on TI files (single/group only)
 grouped.c : Grouping/Ungrouping of TI files
 files9x.h: Structure definitions for TI9x support
+files9x.c: TI9x variables and files manipulation
 files8x.h: Structure definitions for TI8x support
+files8x.c: TI8x variables and files manipulation

@@ -1,8 +1,5 @@
 SubVersion: $Id$
 
-To do: 
-  - pre-init structs (ti9x_create_regular_content) rather than bzeros them.
-
 Log:
 
 - 26/03/2005, version 0.0.1: roms
@@ -14,7 +11,8 @@ Log:
 	- use strong type such as TiCalcModel, ...
 	- glib is heavily used (strings, logging, ...)
 	- documentation system has been changed
-	- functions pointers have been removed	
+	- functions pointers have been removed
+	* tifiles_calc_type to remove !
 
 ====[ Version II ]====
 

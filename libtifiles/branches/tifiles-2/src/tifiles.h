@@ -239,24 +239,17 @@ extern "C" {
 					     const char *varname);
 
   // filesXX.c: layer built on files8x/9x
-  TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void);
-  TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content);
-  TIEXPORT int TICALL tifiles_read_regular_file(const char *filename,
-						TiRegular * content);
-  TIEXPORT int TICALL tifiles_write_regular_file(const char *filename,
-						 TiRegular * content,
-						 char **filename2);
+  TIEXPORT TiRegular* TICALL tifiles_content_create_regular(void);
+  TIEXPORT int        TICALL tifiles_content_free_regular(TiRegular *content);
+  TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, TiRegular *content);
+  TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, TiRegular *content, char **filename2);
   TIEXPORT int TICALL tifiles_display_file(const char *filename);
 
-  TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
-						      int ***tabl,
-						      int *nfolders);
+  TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content, int ***tabl, int *nfolders);
 
   // grouped.c
-  TIEXPORT int TICALL tifiles_group_contents(TiRegular ** src_contents,
-											 TiRegular ** dst_content);
-  TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src_content,
-											  TiRegular *** dst_contents);
+  TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular **dst_content);
+  TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src_content, TiRegular ***dst_contents);
 
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames,
 									const char *dst_filename);

@@ -21,7 +21,7 @@
 
 /*
   Grouping/Ungrouping routines
-  Calcs: 73/82/83/83+/85/86 & 89/92/92+
+  Calcs: 73/82/83/83+/84+/85/86 & 89/89tm/92/92+/V200
 */
 
 #include "tifiles.h"
@@ -46,26 +46,26 @@ int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_group_contents(TiRegular **srcs, TiRegular **dest)
+TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular **dst_content)
 {
   TiRegular *dst;
-  int i;
-  int n;
+  int i, n;
 
-  for (n = 0; srcs[n] != NULL; n++);
+  for (n = 0; src_contents[n] != NULL; n++);
 
-  dst = *dest = (TiRegular *) calloc(1, sizeof(TiRegular));
+  dst = *dst_content = (TiRegular *) calloc(1, sizeof(TiRegular));
   if (dst == NULL)
     return ERR_MALLOC;
-  memcpy(dst, srcs[0], sizeof(TiRegular));
+  memcpy(dst, src_contents[0], sizeof(TiRegular));
 
   dst->num_entries = n;
   dst->entries = (TiVarEntry *) calloc(n, sizeof(TiVarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
-  for (i = 0; i < n; i++) {
-    TiRegular *src = srcs[i];
+  for (i = 0; i < n; i++) 
+  {
+    TiRegular *src = src_contents[i];
 
     TRY(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
   }
@@ -84,7 +84,7 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **srcs, TiRegular **dest)
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular *** dest)
+TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular ***dest)
 {
   int i;
   TiRegular **dst;
@@ -154,19 +154,19 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
     if (src[i] == NULL)
       return ERR_MALLOC;
 
-    TRY(tifiles_read_regular_file(src_filenames[i], src[i]));
+    TRY(tifiles_file_read_regular(src_filenames[i], src[i]));
   }
   src[i] = NULL;
 
   TRY(tifiles_group_contents(src, &dst));
 
   for (i = 0; i < n; i++) {
-    TRY(tifiles_free_regular_content(src[i]));
+    TRY(tifiles_content_free_regular(src[i]));
     free(src[i]);
   }
   free(src);
 
-  TRY(tifiles_write_regular_file(dst_filename, dst, &unused));
+  TRY(tifiles_file_write_regular(dst_filename, dst, &unused));
 
   return 0;
 }
@@ -188,12 +188,12 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename)
   TiRegular **ptr;
   char *real_name;
 
-  TRY(tifiles_read_regular_file(src_filename, &src));
+  TRY(tifiles_file_read_regular(src_filename, &src));
 
   TRY(tifiles_ungroup_content(&src, &dst));
 
   for (ptr = dst; *ptr != NULL; ptr++)
-    TRY(tifiles_write_regular_file(NULL, *ptr, &real_name));
+    TRY(tifiles_file_write_regular(NULL, *ptr, &real_name));
 
   return 0;
 }
