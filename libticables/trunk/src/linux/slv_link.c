@@ -99,7 +99,7 @@ static int dev_fd = 0;
 int slv_init()
 {
 	int mask = O_RDWR | O_NONBLOCK | O_SYNC;
-	int arg;
+	int arg = arg;
 	
 	if ((dev_fd = open(io_device, mask)) == -1) {
 		printl1(2, _("unable to open this device: %s.\n"), 

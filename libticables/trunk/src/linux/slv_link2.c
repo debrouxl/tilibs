@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TI-GRAPH LINK USB support (lib-usb) */
+/* TI-GRAPH LINK USB and direct USB cable support (lib-usb) */
 
 /*********************************/
 /* Linux   : libusb support      */
@@ -86,44 +86,66 @@
 #define BUFFERED_W    /* enable buffered write operations	  */ 
 #define BUFFERED_R    /* enable buffered read operations (always) */
 
-#define MAX_PACKET_SIZE 32	// 32 bytes max per packet
-static int nBytesWrite2 = 0;
-#ifdef BUFFERED_W
-static uint8_t wBuf2[MAX_PACKET_SIZE];
-#endif
-static int nBytesRead2 = 0;
-static uint8_t rBuf2[MAX_PACKET_SIZE];
+#define VID_TIGLUSB  0x0451     /* Texas Instruments, Inc.            */
+#define PID_TIGLUSB  0xE001     /* TI-GRAPH LINK USB (SilverLink)     */
+#define PID_TI89TM   0xE004     /* TI89 Titanium w/ embedded USB port */
+#define PID_TI84P    0xE008     /* TI84+ w/ embedded USB port         */
 
-#define TIGL_VENDOR_ID  0x0451	/* Texas Instruments, Inc.        */
-#define TIGL_PRODUCT_ID 0xE001	/* TI-GRAPH LINK USB (SilverLink) */
-
-#define TIGL_BULK_IN    0x81	// 0x81?
+#define TIGL_BULK_IN    0x81
 #define TIGL_BULK_OUT   0x02
 
-#define to	(100 * time_out)	// in ms
+#define to      (100 * time_out)        // in ms
+
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+
+typedef struct {
+	uint16_t vid;
+	uint16_t pid;
+	char*    str;
+} usb_dev_infos;
+
+static usb_dev_infos tiglusb_infos[] = {
+        {0x0451, 0xe001, "SilverLink"},
+        {0x0451, 0xe004, "TI89 Titanium"},
+        {0x0451, 0xe008, "TI84 Plus"},
+        {}
+};
+
+//static int max_ps = 32;  // max packet size (32 ot 64)
+
+static int nBytesWrite2 = 0;
+static uint8_t *wBuf2 = NULL;
+static int nBytesRead2 = 0;
+static uint8_t *rBuf2 = NULL;
+
+/* Helpers */
 
 struct usb_bus *bus = NULL;
 struct usb_device *dev = NULL;
 struct usb_device *tigl_dev = NULL;
 usb_dev_handle *tigl_han = NULL;
 
-/* Helpers */
-
-#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-
 static void find_tigl_device(void)
 {
+	int i;
+
   	/* loop taken from testlibusb.c */
   	for (bus = usb_busses; bus; bus = bus->next) {
     		for (dev = bus->devices; dev; dev = dev->next) {
-      			if ((dev->descriptor.idVendor == TIGL_VENDOR_ID) &&
-	  			(dev->descriptor.idProduct==TIGL_PRODUCT_ID)) {
-				/* keep track of the TIGL device */
-				printl1(0, _("TIGL-USB found.\n"));
-		
-				tigl_dev = dev;
-				break;
-      			}
+      			if ((dev->descriptor.idVendor == VID_TIGLUSB)) {
+				for(i = 0; i < sizeof(tiglusb_infos) / 
+					    sizeof(usb_dev_infos); i++)
+				{
+					if(dev->descriptor.idProduct == 
+					   tiglusb_infos[i].pid) {
+						/* keep track of the TIGL device */
+						printl1(0, _("Found <%s>.\n"), 
+							     tiglusb_infos[i].str);
+						tigl_dev = dev;
+						return;
+					}
+				}
+			}
     		}
 
     		/* if we found the device, then stop... */
@@ -268,9 +290,22 @@ static int send_pblock2(uint8_t *data, int length)
 
 int slv_init2()
 {
+	int ret = 0;
+
   	START_LOGGING();
 
-  	return enumerate_tigl_device();
+  	ret = enumerate_tigl_device();
+
+	wBuf2 = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+        rBuf2 = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+        if((wBuf2 == NULL) || (rBuf2 == NULL))
+        {
+                free(wBuf2);
+                free(rBuf2);
+                return ERR_OPEN_USB_DEV;
+        }
+
+	return ret;
 }
 
 int slv_open2()
@@ -300,6 +335,9 @@ int slv_open2()
 
 int slv_exit2()
 {
+	free(wBuf2); wBuf2 = NULL;
+        free(rBuf2); rBuf2 = NULL;
+
   	tigl_dev = NULL;
 
 	STOP_LOGGING();
@@ -343,7 +381,7 @@ int slv_put2(uint8_t data)
   	wBuf2[nBytesWrite2++] = data;
 
 	/* Buffer full? Send the whole buffer at once */
-  	if (nBytesWrite2 == MAX_PACKET_SIZE) {
+  	if (nBytesWrite2 == max_ps) {
 		int ret = send_fblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
@@ -375,7 +413,7 @@ int slv_get2(uint8_t * data)
 	    	toSTART(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-					    MAX_PACKET_SIZE, to);
+					    max_ps, to);
 					    
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
@@ -436,7 +474,7 @@ int slv_check2(int *status)
 	    	toSTART(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-					    MAX_PACKET_SIZE, to);
+					    max_ps, to);
 					    
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
