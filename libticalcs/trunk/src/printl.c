@@ -37,7 +37,7 @@
    Print to stdout as default behaviour unless changed by tifiles_set_print 
    Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-static int default_printl(int level, const char *format, ...)
+static int default_ticalcs_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret = 0;
@@ -54,7 +54,7 @@ static int default_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICALC_PRINTL printl = default_printl;
+TICALC_PRINTL printl = default_ticalcs_printl;
 
 /*
 	Change print behaviour (callback).

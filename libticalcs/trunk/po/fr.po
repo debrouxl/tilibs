@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs-4.4.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 22:21+0200\n"
+"POT-Creation-Date: 2004-04-10 09:55+0200\n"
 "PO-Revision-Date: 2003-05-07 13:40GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -345,11 +345,11 @@ msgid "Done.\n"
 msgstr "Fait.\n"
 
 #: src/ti73.c:201 src/ti82.c:117 src/ti83.c:171 src/ti85.c:118 src/ti86.c:185
-#: src/ti89.c:299 src/ti92.c:225
+#: src/ti89.c:299 src/ti92.c:226
 msgid "Receiving backup...\n"
 msgstr "Réception de la sauvegarde...\n"
 
-#: src/ti73.c:209 src/ti83.c:179 src/ti92.c:232
+#: src/ti73.c:209 src/ti83.c:179 src/ti92.c:233
 #, c-format
 msgid "Receiving backup..."
 msgstr "Réception de la suavegarde..."

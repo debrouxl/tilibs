@@ -76,6 +76,7 @@ TIEXPORT int TICALL ticalc_init()
 
 	if (ticalcs_instance)
 		return (++ticalcs_instance);
+	printf("printl = %p\n", printl);
 	printl(0, _("ticalcs library version %s\n"), LIBTICALCS_VERSION);
 
 #if defined(ENABLE_NLS)

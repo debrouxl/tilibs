@@ -220,6 +220,7 @@ int ti92_recv_backup(const char *filename, int mask_mode)
   uint32_t block_size;
   int block, err;
   uint32_t unused;
+  uint16_t unused2;
   uint8_t *ptr;
 
   printl(0, _("Receiving backup...\n"));
@@ -234,8 +235,7 @@ int ti92_recv_backup(const char *filename, int mask_mode)
 
   // silent request
   TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\backup"));
-  printf("filename = <%s>\n", filename);
-  TRYF(ti92_recv_ACK((uint16_t *) & unused));
+  TRYF(ti92_recv_ACK(&unused2));
 
   content.data_part = (uint8_t *) tifiles_calloc(128 * 1024, 1);
   content.type = TI92_BKUP;

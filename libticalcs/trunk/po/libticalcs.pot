@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-09 22:21+0200\n"
+"POT-Creation-Date: 2004-04-10 09:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -323,11 +323,11 @@ msgid "Done.\n"
 msgstr ""
 
 #: src/ti73.c:201 src/ti82.c:117 src/ti83.c:171 src/ti85.c:118 src/ti86.c:185
-#: src/ti89.c:299 src/ti92.c:225
+#: src/ti89.c:299 src/ti92.c:226
 msgid "Receiving backup...\n"
 msgstr ""
 
-#: src/ti73.c:209 src/ti83.c:179 src/ti92.c:232
+#: src/ti73.c:209 src/ti83.c:179 src/ti92.c:233
 #, c-format
 msgid "Receiving backup..."
 msgstr ""
