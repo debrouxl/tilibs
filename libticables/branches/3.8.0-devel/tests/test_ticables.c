@@ -24,7 +24,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <unistd.h>
+#ifndef __WIN32__
+#include <unistd.h>
+#endif
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>

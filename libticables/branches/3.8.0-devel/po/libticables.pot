@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-14 19:46+0200\n"
+"POT-Creation-Date: 2004-04-17 12:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -712,12 +712,12 @@ msgstr ""
 msgid "unable to set timeout (ioctl).\n"
 msgstr ""
 
-#: src/linux/slv_link.c:124
+#: src/linux/slv_link.c:125
 msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:194
+#: src/linux/slv_link.c:195
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""

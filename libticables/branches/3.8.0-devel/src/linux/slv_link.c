@@ -108,7 +108,6 @@ int slv_open(void)
   {
     int arg = time_out;
 
-    printf("ioctl !\n");
     if (ioctl(dev_fd, IOCTL_TIUSB_TIMEOUT, arg) == -1) {
 	    printl1(2, _("unable to set timeout (ioctl).\n"));
 	    //return ERR_IOCTL;
@@ -120,7 +119,8 @@ int slv_open(void)
 #ifdef HAVE_LINUX_TICABLE_H
  {
     int arg = 0;
-    
+
+    fprintf(stdout, "reset pipes !\n");
     if (ioctl(dev_fd, IOCTL_TIUSB_RESET_PIPES, arg) == -1) {
 	    printl1(2, _("unable to reset pipes (ioctl).\n"));
       //return ERR_IOCTL;

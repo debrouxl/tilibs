@@ -11,7 +11,7 @@ Log:
 	Redirection of stdout/stderr.
 	Weird: we were using tilp/ticable.h. It should be linux/ticable.h.
 	In fact, modules use tilp/ but built-in uses linux/.
-	Modules will be modified to linux/
+	Modules will be modified to linux/.
 	
 - 22/03/2004, version 3.8.0: roms
 	Splitted sources according to target and cables.

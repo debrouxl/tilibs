@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ticables\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-10 17:30+0200\n"
+"POT-Creation-Date: 2004-04-17 12:55+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -56,7 +56,8 @@ msgid "Msg: Timeout occured while writing to the device."
 msgstr "Msg : Limite de temps dépassée en écrivant sur le périphérique."
 
 #: src/error.c:72 src/error.c:82
-msgid "Cause: Check that your link cable is plugged and/or the calculator is ready."
+msgid ""
+"Cause: Check that your link cable is plugged and/or the calculator is ready."
 msgstr ""
 "Cause : Vérifiez que le câble est connecté et/ou que la calculatrice est "
 "prête."
@@ -90,8 +91,8 @@ msgid ""
 "Cause:Check that the node exists. Check your devfs. Check that you have "
 "installed the driver."
 msgstr ""
-"Cause : Vérifiez que le noeud existe et que vous avez installé le pilote approprié. "
-"Vérifiez également le fichier devfs."
+"Cause : Vérifiez que le noeud existe et que vous avez installé le pilote "
+"approprié. Vérifiez également le fichier devfs."
 
 #: src/error.c:105 src/error.c:109
 msgid "Msg: Unable to use parallel/serial port: access refused."
@@ -271,7 +272,8 @@ msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
 
 #: src/error.c:236
 msgid "Cause: Your cable may be stalled. Unplug and replug it !."
-msgstr "Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le."
+msgstr ""
+"Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le."
 
 #: src/error.c:241
 msgid "Msg: FreeLibrary error. Unable to release the DLL."
@@ -286,8 +288,8 @@ msgid ""
 "Cause: Check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
-"Cause : Vérifiez que vous disposez de suffisamment de mémoire pour allouer un "
-"segment de mémoire partagée."
+"Cause : Vérifiez que vous disposez de suffisamment de mémoire pour allouer "
+"un segment de mémoire partagée."
 
 #: src/error.c:257
 msgid "Msg: Unable to open a shared memory segment."
@@ -393,7 +395,9 @@ msgstr "Msg : La librairie SilverLink a un numéro de version insuffisant."
 msgid ""
 "Cause: the SilverLink driver currently installed has a wrong version. Please "
 "upgrade !"
-msgstr "Cause : Une mauvaise version du pilote SilverLink a été installée. Veuillez la mettre à jour."
+msgstr ""
+"Cause : Une mauvaise version du pilote SilverLink a été installée. Veuillez "
+"la mettre à jour."
 
 #: src/error.c:333
 msgid "Msg: the node does not exists."
@@ -409,7 +413,9 @@ msgstr "Msg : vous n'avez pas les permissions de lecture/écriture sur le nœud
 
 #: src/error.c:341
 msgid "Cause: others does not have r/w access or you are not in the group."
-msgstr "Cause : les utilisateurs normaux n'ont pas l'accès en lecture/écriture ou vous n'appartenez pas à ce groupe."
+msgstr ""
+"Cause : les utilisateurs normaux n'ont pas l'accès en lecture/écriture ou "
+"vous n'appartenez pas à ce groupe."
 
 #: src/error.c:345
 msgid "Msg: module not loaded."
@@ -428,8 +434,8 @@ msgid ""
 "Cause: your kernel does not have usbfs support or it is not mounted by your /"
 "etc/fstab."
 msgstr ""
-"Cause : votre noyau ne prend pas en charge usbfs, ou le système de fichier n'a pas "
-"été monté par /etc/fstab."
+"Cause : votre noyau ne prend pas en charge usbfs, ou le système de fichier "
+"n'a pas été monté par /etc/fstab."
 
 #: src/error.c:357
 msgid ""
@@ -738,7 +744,9 @@ msgstr "impossible d'ouvrir ce périphérique de type caractère : %s.\n"
 #: src/linux/dev_link.c:82
 #, c-format
 msgid "unable to open character device: %s (wrong permissions).\n"
-msgstr "impossible d'ouvrir ce périphérique de type caractère : %s (permissions insuffisantes).\n"
+msgstr ""
+"impossible d'ouvrir ce périphérique de type caractère : %s (permissions "
+"insuffisantes).\n"
 
 #: src/linux/dev_link.c:83
 #, c-format
@@ -758,17 +766,18 @@ msgstr "impossible de définir la limite de temps.\n"
 msgid "unable to open this device: %s.\n"
 msgstr "impossible d'ouvrir ce périphérique : %s.\n"
 
-#: src/linux/slv_link.c:111
+#: src/linux/slv_link.c:112
 msgid "unable to set timeout (ioctl).\n"
 msgstr "impossible de définir la limite de temps (ioctl).\n"
 
-#: src/linux/slv_link.c:122
+#: src/linux/slv_link.c:125
 msgid "unable to reset pipes (ioctl).\n"
 msgstr "impossible d'initialiser les tubes (ioctl).\n"
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:192
-msgid "weird, read returns without any data; retrying to circumvent the quirk...\n"
+#: src/linux/slv_link.c:195
+msgid ""
+"weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr "la lecture n'a retourné aucune donnée. Nouvel essai...\n"
 
 #. keep track of the TIGL device
@@ -834,7 +843,9 @@ msgstr "  machine : %s\n"
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
-msgstr "Le dossier virtuel \"proc\" n'existe pas. Montez-le avec \"mount -t proc /proc proc\".\n"
+msgstr ""
+"Le dossier virtuel \"proc\" n'existe pas. Montez-le avec \"mount -t proc /"
+"proc proc\".\n"
 
 #. Do a first/rapid checking with /proc/ioports
 #: src/linux/linux_detect.c:100
@@ -842,8 +853,11 @@ msgid "quick search for parallel/serial ports:\n"
 msgstr "recherche rapide des ports série/parallèle :\n"
 
 #: src/linux/linux_detect.c:105
-msgid "The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
-msgstr "Le dossier virtuel \"/proc/ioports\" n'existe pas. Impossible de poursuivre la recherche des ports.\n"
+msgid ""
+"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
+msgstr ""
+"Le dossier virtuel \"/proc/ioports\" n'existe pas. Impossible de poursuivre "
+"la recherche des ports.\n"
 
 #: src/linux/linux_detect.c:113
 msgid "Unable to open /proc/ioports.\n"
@@ -892,8 +906,8 @@ msgid ""
 "The file '/proc/tty/driver/serial' does not exist or is not accessible. "
 "Unable to probe serial ports.\n"
 msgstr ""
-"Le fichier \"/proc/tty/driver/serial\" n'existe pas ou n'est pas accessible. Impossible de poursuivre "
-"la recherche des ports séries.\n"
+"Le fichier \"/proc/tty/driver/serial\" n'existe pas ou n'est pas accessible. "
+"Impossible de poursuivre la recherche des ports séries.\n"
 
 #: src/linux/linux_detect.c:200
 #, c-format
@@ -1009,19 +1023,25 @@ msgstr "    permissions /user/group :%s%s %s\n"
 
 #: src/linux/linux_mapping.c:554
 msgid "    is user can r/w on device: yes\n"
-msgstr "    l'utilisateur a le droit de lecture/écriture sur le périphérique : oui\n"
+msgstr ""
+"    l'utilisateur a le droit de lecture/écriture sur le périphérique : oui\n"
 
 #: src/linux/linux_mapping.c:557
 msgid "    is user can r/w on device: no\n"
-msgstr "    l'utilisateur a le droit de lecture/écriture sur le périphérique : non\n"
+msgstr ""
+"    l'utilisateur a le droit de lecture/écriture sur le périphérique : non\n"
 
 #: src/linux/linux_mapping.c:561
 msgid "    are others can r/w on device: yes\n"
-msgstr "    les autres utilisateurs ont le droit de lecture/écriture sur le périphérique : oui\n"
+msgstr ""
+"    les autres utilisateurs ont le droit de lecture/écriture sur le "
+"périphérique : oui\n"
 
 #: src/linux/linux_mapping.c:565
 msgid "    are others can r/w on device: no\n"
-msgstr "    les autres utilisateurs ont le droit de lecture/écriture sur le périphérique : non\n"
+msgstr ""
+"    les autres utilisateurs ont le droit de lecture/écriture sur le "
+"périphérique : non\n"
 
 #: src/linux/linux_mapping.c:571
 #, c-format
@@ -1036,7 +1056,9 @@ msgstr "    l'utilisateur \"%s\" est dans le groupe \"%s\" : non\n"
 #: src/linux/linux_mapping.c:574
 #, c-format
 msgid "    => you should add your username at the group '%s' in '/etc/group'\n"
-msgstr "    => vous devriez ajouter votre nom d'utilisateur au groupe \"%s\" dans \"/etc/group\"\n"
+msgstr ""
+"    => vous devriez ajouter votre nom d'utilisateur au groupe \"%s\" dans \"/"
+"etc/group\"\n"
 
 #: src/linux/linux_mapping.c:575
 msgid "    => you will have to restart you session, too\n"
@@ -1070,11 +1092,15 @@ msgstr "      module : non chargé\n"
 
 #: src/linux/linux_mapping.c:631 src/linux/linux_mapping.c:695
 msgid "    => check the module exists (either as module, either as built-in)\n"
-msgstr "    => vérifiez que le module existe (comme module ou directement intégré au noyau)\n"
+msgstr ""
+"    => vérifiez que le module existe (comme module ou directement intégré au "
+"noyau)\n"
 
 #: src/linux/linux_mapping.c:632 src/linux/linux_mapping.c:696
 msgid "    => add an entry into your modutils file to automatically load it\n"
-msgstr "    => ajoutez une ligne dans le fichier modutils pour le charger automatiquement.\n"
+msgstr ""
+"    => ajoutez une ligne dans le fichier modutils pour le charger "
+"automatiquement.\n"
 
 #: src/linux/linux_mapping.c:645
 msgid "  check for tiser usability:\n"
@@ -1099,7 +1125,9 @@ msgstr "    => vérifiez que le module existe (compilé comme module)\n"
 
 #: src/linux/linux_mapping.c:664
 msgid "    => add an entry into your modutils file to automatically load it.\n"
-msgstr "    => ajoutez une ligne dans le fichier modutils pour le charger automatiquement.\n"
+msgstr ""
+"    => ajoutez une ligne dans le fichier modutils pour le charger "
+"automatiquement.\n"
 
 #: src/linux/linux_mapping.c:677
 msgid "  check for tiusb usability:\n"
@@ -1115,16 +1143,23 @@ msgid "    usb filesystem (/proc/bus/usb): %s\n"
 msgstr "    système de fichiers usb (/proc/bus/usb) : %s\n"
 
 #: src/linux/linux_mapping.c:715
-msgid "    => the usbfs must be supported by your kernel and you have to mount it\n"
-msgstr "    => usbfs doit être pris en charge par votre noyau et doit être préalablement monté\n"
+msgid ""
+"    => the usbfs must be supported by your kernel and you have to mount it\n"
+msgstr ""
+"    => usbfs doit être pris en charge par votre noyau et doit être "
+"préalablement monté\n"
 
 #: src/linux/linux_mapping.c:716
-msgid "    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
-msgstr "    => ajoutez \"none /proc/bus/usb usbfs defaults 0 0\" dans le fichier \"/etc/fstab\"\n"
+msgid ""
+"    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
+msgstr ""
+"    => ajoutez \"none /proc/bus/usb usbfs defaults 0 0\" dans le fichier \"/"
+"etc/fstab\"\n"
 
 #: src/win32/slv_link.c:90
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
-msgstr "Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
+msgstr ""
+"Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
 
 #: src/win32/slv_link.c:100
 #, c-format
@@ -1132,35 +1167,40 @@ msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
 "Please download the latest release on <http://ti-lpg.org/prj_usb>."
 msgstr ""
-"TiglUsb.dll: la version %s au minimum est nécessaire, vous utilisez la version %s.\n"
-"Veuillez télécharger la dernière version sur <http://ti-lpg.org/"
-"prj_usb>."
+"TiglUsb.dll: la version %s au minimum est nécessaire, vous utilisez la "
+"version %s.\n"
+"Veuillez télécharger la dernière version sur <http://ti-lpg.org/prj_usb>."
 
-#: src/win32/slv_link.c:110
+#: src/win32/slv_link.c:107
+#, fuzzy, c-format
+msgid "using TiglUsb.dll version %s\n"
+msgstr "  version : %s\n"
+
+#: src/win32/slv_link.c:111
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsb.\n"
 
-#: src/win32/slv_link.c:117
+#: src/win32/slv_link.c:118
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbFlush.\n"
 
-#: src/win32/slv_link.c:124
+#: src/win32/slv_link.c:125
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbRead.\n"
 
-#: src/win32/slv_link.c:131
+#: src/win32/slv_link.c:132
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbWrite.\n"
 
-#: src/win32/slv_link.c:138
+#: src/win32/slv_link.c:139
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbClose.\n"
 
-#: src/win32/slv_link.c:146
+#: src/win32/slv_link.c:147
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbSetTimeout.\n"
 
-#: src/win32/slv_link.c:153
+#: src/win32/slv_link.c:154
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
 
@@ -1191,9 +1231,10 @@ msgid ""
 "Characters?\n"
 "PortTalk: Please manually copy driver to your system32/driver directory.\n"
 msgstr ""
-"PortTalk : Impossible de trouver le répertoire système. Le chemin d'accès fait-il plus de "
-"55 caractères ?\n"
-"PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/driver.\n"
+"PortTalk : Impossible de trouver le répertoire système. Le chemin d'accès "
+"fait-il plus de 55 caractères ?\n"
+"PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/"
+"driver.\n"
 
 #: src/win32/porttalk.c:64
 #, c-format
@@ -1206,8 +1247,11 @@ msgid "PortTalk: Failed to copy driver to %s\n"
 msgstr "PortTalk : Impossible de copier le pilote dans %s\n"
 
 #: src/win32/porttalk.c:71
-msgid "PortTalk: Please manually copy driver to your system32/driver directory.\n"
-msgstr "PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/driver.\n"
+msgid ""
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+"PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/"
+"driver.\n"
 
 #: src/win32/porttalk.c:101
 msgid "PortTalk: Driver already exists. No action taken.\n"
@@ -1215,7 +1259,8 @@ msgstr "PortTalk : Le pilote existe déjà. Aucun changement n'a été fait.\n"
 
 #: src/win32/porttalk.c:103
 msgid "PortTalk: Unknown error while creating Service.\n"
-msgstr "PortTalk : Une erreur inconnue est survenue lors de la création du service.\n"
+msgstr ""
+"PortTalk : Une erreur inconnue est survenue lors de la création du service.\n"
 
 #: src/win32/porttalk.c:105
 msgid "PortTalk: Driver successfully installed.\n"
@@ -1228,12 +1273,15 @@ msgid ""
 "PortTalk: your administrator to install the driver on your behalf.\n"
 msgstr ""
 "PortTalk : Vous n'avez pas les droits d'accès au Service Control Manager et\n"
-"PortTalk : le pilote PortTalk n'est pas installé ou démarré. Veuillez demander\n"
+"PortTalk : le pilote PortTalk n'est pas installé ou démarré. Veuillez "
+"demander\n"
 "PortTalk : à votre administrateur d'installer le pilote en votre nom.\n"
 
 #: src/win32/porttalk.c:143
 msgid "PortTalk: You do not have rights to the PortTalk service database\n"
-msgstr "PortTalk : Vous n'avez pas les droits d'accès à la base de données du service PortTalk.\n"
+msgstr ""
+"PortTalk : Vous n'avez pas les droits d'accès à la base de données du "
+"service PortTalk.\n"
 
 #: src/win32/porttalk.c:146
 msgid "PortTalk: The specified service name is invalid.\n"
@@ -1244,7 +1292,8 @@ msgid ""
 "PortTalk: The PortTalk driver does not exist. Installing driver.\n"
 "PortTalk: This can take up to 30 seconds on some machines . .\n"
 msgstr ""
-"PortTalk : Le pilote PortTalk n'existe pas. Installation du pilote en cours.\n"
+"PortTalk : Le pilote PortTalk n'existe pas. Installation du pilote en "
+"cours.\n"
 "PortTalk : Cela peut prendre près de 30 secondes sur certaines machines.\n"
 
 #: src/win32/porttalk.c:164
@@ -1260,7 +1309,8 @@ msgid ""
 "PortTalk: Unknown error while starting PortTalk driver service.\n"
 "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
 msgstr ""
-"PortTalk : Une erreur inconnue est survenue lors du démarrage du service PortTalk.\n"
+"PortTalk : Une erreur inconnue est survenue lors du démarrage du service "
+"PortTalk.\n"
 "PortTalk : Est-ce que le fichier PortTalk.SYS figure bien dans le dossier "
 "\"\\System32\\Drivers\" ?\n"
 
@@ -1292,13 +1342,14 @@ msgstr "  IO_ASM : indisponible (WinNT).\n"
 msgid "  IO_DLL: %s (PortTalk)\n"
 msgstr "  IO_DLL : %s (PortTalk)\n"
 
-#: src/win32/win32_detect.c:152
+#: src/win32/win32_detect.c:150
 #, c-format
 msgid "  IO_USB: %s (TiglUsb)\n"
 msgstr "  IO_TIUSB : %s (TiglUsb)\n"
 
 #: src/win32/win32_ioports.c:155
-msgid "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
+msgid ""
+"couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 "Impossible d'accéder au pilote PortTalk. Veuillez vérifier qu'il est "
 "installé/chargé.\n"
@@ -1317,4 +1368,3 @@ msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d.\n"
 #, c-format
 msgid "serial port %s successfully reconfigured.\n"
 msgstr "Le port série %s a été reconfiguré avec succès.\n"
-
