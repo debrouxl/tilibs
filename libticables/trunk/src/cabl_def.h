@@ -94,7 +94,7 @@ typedef struct port_info_ PortInfo;
 #define DFLT_DELAY    10 /* 10 micro-seconds */
 
 /* Link type */
-#define LINK_TGL 1	/* Gray TI Graph Link */
+#define LINK_TGL 1	/* Grey TI Graph Link */
 #define LINK_SER 2	/* Home-made serial link or Black TI Graph Link */
 #define LINK_PAR 3	/* Home-made parallel link */
 #define LINK_AVR 4	/* My link cable: the AVRlink */
@@ -157,6 +157,11 @@ typedef struct port_info_ PortInfo;
 # define SP2_NAME "/dev/cua/b"
 # define SP3_NAME "/dev/cua/a"
 # define SP4_NAME "/dev/cua/b"
+#elif defined(__MACOSX__) // FIXME OS X
+# define SP1_NAME "/dev"
+# define SP2_NAME "/dev"
+# define SP3_NAME "/dev"
+# define SP4_NAME "/dev"
 #else // default
 # define SP1_NAME "/dev/ttyS0"
 # define SP2_NAME "/dev/ttyS1"

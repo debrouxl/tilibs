@@ -299,22 +299,6 @@ void DLLEXPORT2 ticable_set_cable(int typ, LinkCable *lc)
 	      lc->get_white_wire = ser_get_white_wire2;
 	    }
 	  break;
-	case LINK_TGL:
-	  if( (port != SERIAL_PORT_1) &&
-              (port != SERIAL_PORT_2) &&
-              (port != SERIAL_PORT_3) &&
-              (port != SERIAL_PORT_4))
-            DISPLAY(_("libticables error: port incompatible with cable.\n"));
-
-	  lc->init_port  = tig_init_port;
-	  lc->open_port  = tig_open_port;
-	  lc->put        = tig_put;
-	  lc->get        = tig_get;
-	  lc->close_port = tig_close_port;
-	  lc->term_port  = tig_term_port;
-	  lc->probe_port = tig_probe_port;
-	  lc->check_port = tig_check_port;
-	  break;
 	case LINK_AVR:
 	  if( (port != SERIAL_PORT_1) &&
               (port != SERIAL_PORT_2) &&
@@ -371,6 +355,22 @@ void DLLEXPORT2 ticable_set_cable(int typ, LinkCable *lc)
 	  break;
 
 #endif /* !__MACOSX__ */
+	case LINK_TGL:
+	  if( (port != SERIAL_PORT_1) &&
+              (port != SERIAL_PORT_2) &&
+              (port != SERIAL_PORT_3) &&
+              (port != SERIAL_PORT_4))
+            DISPLAY(_("libticables error: port incompatible with cable.\n"));
+
+	  lc->init_port  = tig_init_port;
+	  lc->open_port  = tig_open_port;
+	  lc->put        = tig_put;
+	  lc->get        = tig_get;
+	  lc->close_port = tig_close_port;
+	  lc->term_port  = tig_term_port;
+	  lc->probe_port = tig_probe_port;
+	  lc->check_port = tig_check_port;
+	  break;
 	case LINK_VTI:
 	  if( (port != VIRTUAL_PORT_1) &&
               (port != VIRTUAL_PORT_2))
@@ -618,6 +618,7 @@ static int convert_port_into_device(LinkParam lp)
           strcpy(device, PP3_NAME);
         }
       break;
+#endif /* !__MACOSX__ */
     case SERIAL_PORT_1:
       if((lp.method & IOM_DRV) && lx)
         strcpy(device, TIDEV_S0);
@@ -654,7 +655,6 @@ static int convert_port_into_device(LinkParam lp)
           strcpy(device, SP4_NAME);
         }
       break;
-#endif /* !__MACOSX__ */
     case VIRTUAL_PORT_1:
       if((lp.method & IOM_DRV) && lx)
         strcpy(device, TIDEV_V0);
