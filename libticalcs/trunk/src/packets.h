@@ -19,6 +19,12 @@
 #ifndef __CALCS_PACKETS__
 #define __CALCS_PACKETS__
 
+#ifndef __MACOSX__
+# include <glib.h>
+#else
+# include <glib/glib.h>
+#endif /* !__MACOSX__ */
+
 /*************/
 /* Constants */
 /*************/
@@ -98,6 +104,9 @@ int recv_packet(uint8_t * host, uint8_t * cmd, uint16_t * length,
 
 void pad_buffer(char *varname, uint8_t value);
 
-#define fixup(x) (x &= 0x0000ffff)
-
+#if G_BYTE_ORDER != G_BIG_ENDIAN
+# define fixup(x) (x &= 0x0000ffff)
+#else
+# define fixup(x) (x >>= 16)
+#endif /* !G_BIG_ENDIAN */
 #endif
