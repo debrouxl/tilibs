@@ -119,15 +119,13 @@ int SendBlock(char *ptr)
     return 0;
 }
 
-//									 								 TI89   ,  TI92+  ,    , V200
-const unsigned long rom_sizes[4] = { 2097152,  2097152,  -1, 4194304  };
-const unsigned long rom_bases[4] = { 0x200000, 0x400000, -1, 0x200000 };
+#define ROM_size (0x200000 << (V200 || (ROM_base == 0x800000)))
 
 // Main Function
 void _main(void)
 {
-	unsigned long rom_size = rom_sizes[CALCULATOR];
-	unsigned long rom_base = rom_bases[CALCULATOR];
+	unsigned long rom_size = (unsigned long)ROM_size;
+	unsigned long rom_base = (unsigned long)ROM_base;
 	
   unsigned long i;
   unsigned char *p;
