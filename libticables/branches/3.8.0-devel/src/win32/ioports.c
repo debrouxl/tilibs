@@ -1,4 +1,4 @@
-/* Hey EMACS -*- linux-c -*- */
+/* Hey EMACS -*- win32-c -*- */
 /* $Id: ioports.c 370 2004-03-22 18:47:32Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
@@ -33,29 +33,11 @@
 #include <config.h>
 #endif
 
-#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
-# include <unistd.h>
-# include <sys/types.h>
-# include <termios.h>
-# include <sys/ioctl.h>
-# include <fcntl.h>
-#endif
-
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-#  include <sys/perm.h>
-#  include <asm/io.h>
-#elif defined(__BSD__)
-#  include <machine/sysarch.h>
-#  include <machine/cpufunc.h>
-#elif defined(__WIN32__)
-#  include <stdio.h>
-#  include <windows.h>
-#  include <process.h>		// getpid
-#  include <winioctl.h>		// PortTalk
-#  include "porttalk_IOCTL.h"	// PortTalk
-#elif defined(__ALPHA__)
-#  include <sys/io.h>
-#endif
+#include <stdio.h>
+#include <windows.h>
+#include <process.h>		// getpid
+#include <winioctl.h>		// PortTalk
+#include "porttalk_IOCTL.h"	// PortTalk
 
 #include "cabl_err.h"
 #include "cabl_def.h"
@@ -67,20 +49,17 @@
 #include "externs.h"
 
 /* Variables */
-#ifdef __WIN32__
+
 static HINSTANCE hDLL = NULL;	// Handle for PortTalk Driver
 static HANDLE hCom = 0;		// COM port handle for Win32 DCB (API)
 static int iDcbUse = 0;		// Internal use
-#endif
-#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
-static int dev_fd;		// TTY handle for Linux ioctl calls (API)
-static int tty_use = 0;
-#endif
-
 
 /* Function pointers */
+
 int (*io_rd) (unsigned int addr);
 void (*io_wr) (unsigned int addr, int data);
+
+/* Error helper */
 
 #ifdef __WIN32__
 static void print_last_error(char *s)
@@ -97,38 +76,8 @@ static void print_last_error(char *s)
 }
 #endif				//__WIN32__
 
-//#ifdef __MACOSX__
-#if 0 /* keep that for now, until I'm sure it Works (tm) */
-static int null_read_io(unsigned int addr)
-{
-  return -1;
-}
+/* I/O thru assembly code */
 
-static void null_write_io(unsigned int addr, int data)
-{
-  return;
-}
-#endif /* 0 */ /* __MACOSX__ */
-
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__)
-static int linux_asm_read_io(unsigned int addr)
-{
-  return inb(addr);
-}
-
-static void linux_asm_write_io(unsigned int addr, int data)
-{
-#ifndef __BSD__
-  outb(data, addr);
-#else
-  outb(addr, data);
-#endif
-}
-
-#endif				//__LINUX__
-
-
-#if defined(__WIN32__)
 static int win32_asm_read_io(unsigned int addr)
 {
   int c;
@@ -158,8 +107,9 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 	  out dx, al}
 #endif
 }
-#endif				//__WIN32__
-#if defined(__WIN32__)
+
+/* I/O thru ioctl() calls */
+
 static int win32_dcb_read_io(unsigned int addr)
 {
   DWORD s;
@@ -173,95 +123,11 @@ static void win32_dcb_write_io(unsigned int address, int data)
   EscapeCommFunction(hCom, (data & 2) ? SETRTS : CLRRTS);
   EscapeCommFunction(hCom, (data & 1) ? SETDTR : CLRDTR);
 }
-#endif				//__WIN32__
 
-
-#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
-static int linux_ioctl_read_io(unsigned int addr)
-{
-  unsigned int flags;
-
-  if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    DISPLAY_ERROR("linux_ioctl_read_io: ioctl failed !\n");
-    return ERR_IOCTL;
-  }
-
-  return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
-}
-
-static void linux_ioctl_write_io(unsigned int address, int data)
-{
-  unsigned int flags = 0;
-
-  flags |= (data & 2) ? TIOCM_RTS : 0;
-  flags |= (data & 1) ? TIOCM_DTR : 0;
-  if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    DISPLAY_ERROR("linux_ioctl_write_io: ioctl failed !\n");
-    return /*ERR_IOCTL */ ;
-  }
-}
-#endif
-
-
-/****************************************************/
 /* Functions used for initializing the I/O routines */
-/****************************************************/
 
 int io_open(unsigned long from, unsigned long num)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__) || defined(__MACOSX__)
-
-#ifndef __MACOSX__
-  if (method & IOM_ASM) {
-    io_rd = linux_asm_read_io;
-    io_wr = linux_asm_write_io;
-
-#ifndef __BSD__
-    return (ioperm(from, num, 1) ? ERR_ROOT : 0);
-#else
-    return (i386_set_ioperm(from, num, 1) ? ERR_ROOT : 0);
-#endif
-  } else if (method & IOM_API) {
-#else /* __MACOSX__ */
-    if (method & IOM_API) {
-#endif /* !__MACOSX__ */
-    struct termios termset;
-    int flags = 0;
-
-    if (tty_use)
-      return 0;
-
-#if !defined(__BSD__) && !defined(__MACOSX__)
-    flags = O_RDWR | O_SYNC;
-#else
-    flags = O_RDWR | O_FSYNC;
-#endif
-    if ((dev_fd = open(io_device, flags)) == -1) {
-      DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
-      return ERR_OPEN_SER_DEV;
-    }
-
-    tcgetattr(dev_fd, &termset);
-    cfmakeraw(&termset);
-
-    io_rd = linux_ioctl_read_io;
-    io_wr = linux_ioctl_write_io;
-
-    tty_use++;
-
-    return 0;
-  } else
-    return ERR_ROOT;
-#endif
-
-//#ifdef __MACOSX__
-#if 0 /* keep that for now until I'm sure it Works (tm) */
-  io_rd = null_read_io;
-  io_wr = null_write_io;
-  return -1; // low-level not supported
-#endif /* 0 */ /* __MACOSX__ */
-
-#if defined(__WIN32__)
   DWORD BytesReturned;		// Bytes Returned for DeviceIoControl()
   int offset;			// Offset for IOPM
   int iError;			// Error Handling for DeviceIoControl()
@@ -276,8 +142,9 @@ int io_open(unsigned long from, unsigned long num)
     io_rd = win32_asm_read_io;
     io_wr = win32_asm_write_io;
   }
+  
 #ifndef __MINGW32__
-  if (method & IOM_DRV) {
+  else if (method & IOM_DRV) {
     // At this point, the driver should have been installed 
     // and started in probe.c
     hDLL = CreateFile("\\\\.\\PortTalk",
@@ -333,7 +200,7 @@ int io_open(unsigned long from, unsigned long num)
   }
 #endif
 
-  if (method & IOM_API) {
+  else if (method & IOM_API) {
     if (iDcbUse > 0)
       return 0;
     iDcbUse++;
@@ -409,48 +276,22 @@ int io_open(unsigned long from, unsigned long num)
 
     io_rd = win32_dcb_read_io;
     io_wr = win32_dcb_write_io;
+  } else {
+		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+                return ERR_ILLEGAL_ARG;
   }
-
-  return 0;
-#endif
 
   return 0;
 }
 
 int io_close(unsigned long from, unsigned long num)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__) || defined(__MACOSX__)
-#ifndef __MACOSX__
-  if (method & IOM_ASM)
-#ifndef __BSD__
-    return (ioperm(from, num, 0) ? ERR_ROOT : 0);
-#else
-    return (i386_set_ioperm(from, num, 0) ? ERR_ROOT : 0);
-#endif
-  else if (method & IOM_API) {
-#else /* __MACOSX__ */
-  if (method & IOM_API) {
-#endif /* !__MACOSX__ */
-    if (tty_use) {
-      close(dev_fd);
-      tty_use--;
-    }
-  } else
-    return -1;
-#endif
-
-//#ifdef __MACOSX__
-#if 0 /* keep that for now until I'm sure it Works (tm) */
-  return -1; // low-level not supported
-#endif /* 0 */ /* __MACOSX__ */
-  
-#if defined(__WIN32__)
   if (method & IOM_DRV) {
     if (hDLL != NULL)
       CloseHandle(hDLL);
   }
 
-  if (method & IOM_API) {
+  else if (method & IOM_API) {
     if (iDcbUse == 0)
       return 0;
 
@@ -462,10 +303,11 @@ int io_close(unsigned long from, unsigned long num)
       hCom = 0;
       iDcbUse = 0;
     }
-  }
+  }  else {
+		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+                return ERR_ILLEGAL_ARG;
+	}
 
-  return 0;
-#endif
   return 0;
 }
 
