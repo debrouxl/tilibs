@@ -205,9 +205,10 @@ int DLLEXPORT2 ugl_supported()
 
 #define TIGL_BULK_ENDPOINT_OUT 2
 #define TIGL_BULK_ENDPOINT_IN 1
+#define TIGL_MAXPACKETSIZE 32
 
 // uncomment to add some tests
-#define OSX_UGL_DEBUG
+//#define OSX_UGL_DEBUG
 
 // globals
 
@@ -218,7 +219,10 @@ static struct cs
 } cs;
 
 IOUSBDeviceInterface **dev = NULL;
-IOUSBInterfaceInterface **intf = NULL;
+IOUSBInterfaceInterface182 **intf = NULL;
+char rcv_buffer[4 * TIGL_MAXPACKETSIZE];
+int rcv_pos = 0;
+int read_pos = 0;
 
 // specific functions
 
@@ -526,7 +530,10 @@ DLLEXPORT
 int ugl_open_port()
 {
     // if already open, then close...
-    // releasing the interface should flush the buffers
+
+    read_pos = 0;
+    rcv_pos = 0;
+
     if (intf != NULL)
         {
             (void) (*intf)->USBInterfaceClose(intf);
@@ -562,6 +569,9 @@ int ugl_close_port()
             intf = NULL;
         }
         
+    read_pos = 0;
+    rcv_pos = 0;
+        
   return 0;
 }
 
@@ -582,12 +592,15 @@ int ugl_term_port()
 DLLEXPORT
 int ugl_put(byte data)
 {
+    extern int	time_out;
+    
     IOReturn	kr;
+    UInt32	timeout = time_out;
     
     if (intf == NULL)
         return ERR_SND_BYT;
         
-    kr = (*intf)->WritePipe(intf, TIGL_BULK_ENDPOINT_OUT, &data, 1);
+    kr = (*intf)->WritePipeTO(intf, TIGL_BULK_ENDPOINT_OUT, &data, 1, timeout, timeout);
     if (kIOReturnSuccess != kr)
         {
             printf("unable to do bulk write (%08x)\n", kr);
@@ -603,31 +616,55 @@ int ugl_put(byte data)
 DLLEXPORT
 int ugl_get(byte *d)
 {
-    char	rcv_buffer[2];
-    UInt32	numBytesRead = 1;
+    extern int 	time_out;
+
+    char	buffer[TIGL_MAXPACKETSIZE + 1];
+    int		i;
+    UInt32	numBytesRead = TIGL_MAXPACKETSIZE;
+    UInt32	timeout = time_out;
     IOReturn	kr;
+
+    fprintf(stderr, "IN UGL_GET\n");
 
     if (intf == NULL)
         return ERR_RCV_BYT;
 
-    if(cs.available)
+    if (read_pos == rcv_pos) // we're at the end of the buffer
         {
-            *d = cs.data;
-            cs.available = 0;
-            return 0;
+            printf("rcv_buffer empty, reading bulk pipe...\n");
+            kr = (*intf)->ReadPipeTO(intf, TIGL_BULK_ENDPOINT_IN, buffer, &numBytesRead, timeout, timeout);
+    
+            if (kIOReturnSuccess != kr)
+                {
+                    printf("unable to do bulk read (0x%x)\n", kr);
+                    ugl_close_port();
+                    return ERR_RCV_BYT;
+                }
+                
+            printf("Buffer is %ld bytes, copying to rcv_buffer\n", strlen(buffer));
+
+            printf("Buffer content:");
+
+            for (i = 0; i < strlen(buffer); i++)
+                {
+                    if (rcv_pos == (4 * TIGL_MAXPACKETSIZE))
+                        rcv_pos = 0;
+                        
+                    printf(" 0x%x", buffer[i]);
+                        
+                    memcpy(&rcv_buffer[rcv_pos], &buffer[i], 1);
+                    rcv_pos++;
+                }
+            printf("\n");
         }
-
-    kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead);
-    if (kIOReturnSuccess != kr)
-    {
-        printf("unable to do bulk read (%08x)\n", kr);
-        ugl_close_port();
-        return ERR_RCV_BYT;
-    }
      
-    printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buffer[0], TIGL_BULK_ENDPOINT_IN);
+    printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buffer[read_pos], TIGL_BULK_ENDPOINT_IN);
 
-    memcpy(d, &rcv_buffer, 1);
+    memcpy(d, &rcv_buffer[read_pos], 1);
+    read_pos++;
+    
+    if (read_pos == (4 * TIGL_MAXPACKETSIZE))
+        read_pos = 0;
 
     return 0;
 }
@@ -636,8 +673,9 @@ DLLEXPORT
 int ugl_check_port(int *status)
 {
     IOReturn	kr;
-    char	rcv_buffer[2];
-    UInt32	numBytesRead = 1;
+    int		i;
+    char	buffer[TIGL_MAXPACKETSIZE + 1];
+    UInt32	numBytesRead = TIGL_MAXPACKETSIZE;
     
     // we cannot use select() nor poll()
     // so...
@@ -645,16 +683,22 @@ int ugl_check_port(int *status)
     *status = STATUS_NONE;
     if(intf != NULL)
         {
-            kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead);
+            kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, buffer, &numBytesRead);
             if(kr = kIOReturnSuccess)
                 {
-                    if(cs.available == 1)
-                    return ERR_BYTE_LOST;
-
-                    memcpy(&cs.data, &rcv_buffer, 1);
-
-                    cs.available = 1;
+                    printf("In ugl_check_port: buffer is %ld bytes, copying to rcv_buffer\n", strlen(buffer));
+        
+                    for (i = 0; i < strlen(buffer); i++)
+                        {
+                            if (rcv_pos == (4 * TIGL_MAXPACKETSIZE))
+                                rcv_pos = 0;
+                        
+                            memcpy(&rcv_buffer[rcv_pos], &buffer[i], 1);
+                            rcv_pos++;
+                        }
+                    
                     *status = STATUS_RX;
+
                     return 0;
                 }
             else

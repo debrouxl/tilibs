@@ -2,4 +2,6 @@
 	* cvs import
 	* Fixed DISPLAY()
 	* Fixed ugl_open_port() when (dev == NULL)
+* 20011119 : V2.0.6-osx0.0.3
+	* working USB support
 	

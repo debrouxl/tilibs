@@ -6,6 +6,8 @@
 		addToTargets = (
 			0867D69CFE84028FC02AAC07,
 		);
+		breakpoints = (
+		);
 		perUserDictionary = {
 			PBXWorkspaceConfiguration = {
 				ContentSize = "{886, 588}";
@@ -14,9 +16,9 @@
 					Frame = "{{0, 23}, {886, 565}}";
 					Split0 = {
 						ActiveTab = 2;
-						Frame = "{{225, 0}, {661, 565}}";
+						Frame = "{{241, 0}, {645, 565}}";
 						Split0 = {
-							Frame = "{{0, 118}, {661, 447}}";
+							Frame = "{{0, 118}, {645, 447}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -52,9 +54,9 @@
 							};
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {663, 53}}";
-							BuildTranscriptFrame = "{{0, 62}, {663, 33}}";
-							Frame = "{{0, 0}, {661, 93}}";
+							BuildMessageFrame = "{{0, 0}, {647, 54}}";
+							BuildTranscriptFrame = "{{0, 63}, {647, 32}}";
+							Frame = "{{0, 0}, {645, 93}}";
 						};
 						Tab3 = {
 							Frame = "{{0, 0}, {612, 295}}";
@@ -63,7 +65,7 @@
 					};
 					SplitCount = 1;
 					Tab0 = {
-						Frame = "{{0, 0}, {200, 565}}";
+						Frame = "{{0, 0}, {216, 565}}";
 					};
 					Tab1 = {
 						ClassesFrame = "{{0, 0}, {202, 56}}";
@@ -85,7 +87,7 @@
 						SplitCount = 2;
 					};
 					Tab4 = {
-						Frame = "{{0, 0}, {250, 100}}";
+						Frame = "{{0, 0}, {250, 565}}";
 					};
 					TabCount = 5;
 				};
@@ -96,5 +98,10 @@
 	};
 	0867D69CFE84028FC02AAC07 = {
 		activeExec = 0;
+	};
+	18D1B3CE0170FD845041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{8, 161}, {750, 502}}";
+		};
 	};
 }
