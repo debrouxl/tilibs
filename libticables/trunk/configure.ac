@@ -29,7 +29,7 @@ AC_PREFIX_DEFAULT(/usr)
 
 dnl Files to configure.
 AC_CONFIG_SRCDIR([src/intrface.c])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
