@@ -94,7 +94,10 @@ TIEXPORT char* TICALL tifiles_convert_to_unicode(char* dst, const char *src)
     if((uint8_t)*src < 0x80) // ASCII part
       wchar = *src;
     else if((uint8_t)*src >= 0xA0) // ISO8859-1 part
-      wchar = *src & 0xff;
+      switch((uint8_t)*src) {
+      case 0xb5: wchar = 0x03bc; break; // mu
+      default:   wchar = *src & 0xff; break;
+      }
     else 
       { // greek characters
 	switch((uint8_t)*src) {
@@ -422,21 +425,36 @@ char *ti89_translate_varname(const char *varname, char *translate,
 char *ti92_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
-  strcpy(translate, varname);
+  switch(encoding) {
+  case ENCODING_ASCII: return tifiles_convert_to_ascii(translate, varname);
+  case ENCODING_LATIN1: return tifiles_convert_to_latin1(translate, varname);
+  case ENCODING_UNICODE: return tifiles_convert_to_unicode(translate, varname);
+  }
+
   return translate;
 }
 
 char *ti92p_translate_varname(const char *varname, char *translate,
 			      uint8_t vartype)
 {
-  strcpy(translate, varname);
+  switch(encoding) {
+  case ENCODING_ASCII: return tifiles_convert_to_ascii(translate, varname);
+  case ENCODING_LATIN1: return tifiles_convert_to_latin1(translate, varname);
+  case ENCODING_UNICODE: return tifiles_convert_to_unicode(translate, varname);
+  }
+
   return translate;
 }
 
 char *v200_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
-  strcpy(translate, varname);
+  switch(encoding) {
+  case ENCODING_ASCII: return tifiles_convert_to_ascii(translate, varname);
+  case ENCODING_LATIN1: return tifiles_convert_to_latin1(translate, varname);
+  case ENCODING_UNICODE: return tifiles_convert_to_unicode(translate, varname);
+  }
+
   return translate;
 }
 

@@ -255,14 +255,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-test_tifiles.o: test_tifiles.c ../config.h ../src/file_int.h \
-	../src/stdints.h ../src/export.h ../src/file_def.h \
-	../src/typesxx.h ../src/types73.h ../src/types82.h \
-	../src/types83.h ../src/types83p.h ../src/types85.h \
-	../src/types86.h ../src/types89.h ../src/types92.h \
-	../src/types92p.h ../src/typesv2.h ../src/filesxx.h \
-	../src/files8x.h ../src/files9x.h
-
 info-am:
 info: info-am
 dvi-am:

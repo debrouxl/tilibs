@@ -304,69 +304,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-error.lo error.o : error.c intl.h ../config.h export.h file_err.h
-files8x.lo files8x.o : files8x.c file_int.h stdints.h ../config.h \
-	export.h file_def.h typesxx.h types73.h types82.h types83.h \
-	types83p.h types85.h types86.h types89.h types92.h types92p.h \
-	typesv2.h filesxx.h files8x.h files9x.h file_err.h misc.h \
-	intelhex.h macros.h trans.h
-files9x.lo files9x.o : files9x.c file_int.h stdints.h ../config.h \
-	export.h file_def.h typesxx.h types73.h types82.h types83.h \
-	types83p.h types85.h types86.h types89.h types92.h types92p.h \
-	typesv2.h filesxx.h files8x.h files9x.h file_err.h misc.h \
-	macros.h trans.h
-filesxx.lo filesxx.o : filesxx.c file_int.h stdints.h ../config.h \
-	export.h file_def.h typesxx.h types73.h types82.h types83.h \
-	types83p.h types85.h types86.h types89.h types92.h types92p.h \
-	typesv2.h filesxx.h files8x.h files9x.h file_err.h
-grp_ops.lo grp_ops.o : grp_ops.c file_int.h stdints.h ../config.h \
-	export.h file_def.h typesxx.h types73.h types82.h types83.h \
-	types83p.h types85.h types86.h types89.h types92.h types92p.h \
-	typesv2.h filesxx.h files8x.h files9x.h file_err.h macros.h
-intelhex.lo intelhex.o : intelhex.c stdints.h ../config.h macros.h \
-	intelhex.h
-intrface.lo intrface.o : intrface.c intl.h ../config.h export.h \
-	file_ver.h file_int.h stdints.h file_def.h typesxx.h types73.h \
-	types82.h types83.h types83p.h types85.h types86.h types89.h \
-	types92.h types92p.h typesv2.h filesxx.h files8x.h files9x.h \
-	trans.h grp_ops.h
-misc.lo misc.o : misc.c stdints.h ../config.h export.h file_int.h \
-	file_def.h typesxx.h types73.h types82.h types83.h types83p.h \
-	types85.h types86.h types89.h types92.h types92p.h typesv2.h \
-	filesxx.h files8x.h files9x.h
-trans.lo trans.o : trans.c stdints.h ../config.h typesxx.h types73.h \
-	types82.h types83.h types83p.h types85.h types86.h types89.h \
-	types92.h types92p.h typesv2.h file_int.h export.h file_def.h \
-	filesxx.h files8x.h files9x.h
-type2str.lo type2str.o : type2str.c intl.h ../config.h file_def.h \
-	typesxx.h types73.h stdints.h types82.h types83.h types83p.h \
-	types85.h types86.h types89.h types92.h types92p.h typesv2.h \
-	filesxx.h files8x.h export.h files9x.h
-types73.lo types73.o : types73.c intl.h ../config.h export.h types73.h \
-	stdints.h
-types82.lo types82.o : types82.c intl.h ../config.h export.h types82.h \
-	stdints.h
-types83.lo types83.o : types83.c intl.h ../config.h export.h types83.h \
-	stdints.h
-types83p.lo types83p.o : types83p.c intl.h ../config.h export.h \
-	types83p.h stdints.h
-types85.lo types85.o : types85.c intl.h ../config.h export.h types85.h \
-	stdints.h
-types86.lo types86.o : types86.c intl.h ../config.h export.h types86.h \
-	stdints.h
-types89.lo types89.o : types89.c intl.h ../config.h export.h types89.h \
-	stdints.h
-types92.lo types92.o : types92.c intl.h ../config.h export.h types92.h \
-	stdints.h
-types92p.lo types92p.o : types92p.c intl.h ../config.h export.h \
-	types92p.h stdints.h
-typesv2.lo typesv2.o : typesv2.c intl.h ../config.h export.h typesv2.h \
-	stdints.h
-typesxx.lo typesxx.o : typesxx.c intl.h ../config.h file_int.h stdints.h \
-	export.h file_def.h typesxx.h types73.h types82.h types83.h \
-	types83p.h types85.h types86.h types89.h types92.h types92p.h \
-	typesv2.h filesxx.h files8x.h files9x.h file_err.h misc.h
-
 info-am:
 info: info-am
 dvi-am:
