@@ -76,7 +76,7 @@ int win32_detect_resources(void)
     HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
 	char *os;
     	
-	printl(0, _("libticables: checking resources...\r\n"));
+	printl(0, _("checking resources...\r\n"));
 	win32_detect_os(&os);
 	
 	/* Windows NT need permissions */

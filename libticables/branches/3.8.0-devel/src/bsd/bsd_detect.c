@@ -76,7 +76,7 @@ int bsd_detect_port(TicablePortInfo * pi)
 
 int bsd_detect_resources(void)
 {
-	printl(0, _("libticables: checking resources...\r\n"));
+	printl(0, _("checking resources...\r\n"));
 	resources = IO_BSD;
 
 	/* API: for use with ttySx */

@@ -94,7 +94,7 @@ int vti_init()
   int i;
 
   if ((io_address < 1) || (io_address > 2)) {
-    printl(2, "libticables: invalid io_address (bad port).\n");
+    printl(2, "invalid io_address (bad port).\n");
     return ERR_ILLEGAL_ARG;
     io_address = 2;
   }
@@ -103,7 +103,7 @@ int vti_init()
   /* Get a unique (if possible) key */
   for (i = 0; i < 2; i++) {
     if ((ipc_key[i] = ftok("/tmp", i)) == -1) {
-      printl(2, "libticables: unable to get unique key (ftok).\n");
+      printl(2, "unable to get unique key (ftok).\n");
       return ERR_IPC_KEY;
     }
     //printl(0, "ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
@@ -113,7 +113,7 @@ int vti_init()
   for (i = 0; i < 2; i++) {
     if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf),
 			   IPC_CREAT | 0666)) == -1) {
-      printl(2, "libticables: unable to open shared memory (shmget).\n");
+      printl(2, "unable to open shared memory (shmget).\n");
       return ERR_SHM_GET;
     }
     //printl(0, "shmid[%i] = %i\n", i, shmid[i]);
@@ -122,7 +122,7 @@ int vti_init()
   /* Attach the shm */
   for (i = 0; i < 2; i++) {
     if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) {
-      printl(2, "libticables: unable to attach shared memory (shmat).\n");
+      printl(2, "unable to attach shared memory (shmat).\n");
       return ERR_SHM_ATTACH;
     }
   }

@@ -98,7 +98,7 @@ int linux_detect_port(TicablePortInfo * pi)
 
 	/* Do a first/rapid checking with /proc/ioports */
 	
-	printl(0, _("libticables: quick search for parallel/serial ports...\r\n"));
+	printl(0, _("quick search for parallel/serial ports...\r\n"));
 	
 	// check for existence
 	fd = access("/proc/ioports", F_OK);
@@ -134,7 +134,7 @@ int linux_detect_port(TicablePortInfo * pi)
 
 	/* Do a thorough check */
 
-	printl(0, _("libticables: search for all ports...\r\n"));
+	printl(0, _("search for all ports...\r\n"));
 
 	/* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
 	   to get infos on parallel ports */
@@ -243,7 +243,7 @@ char *result(int i)
 
 int linux_detect_resources(void)
 {
-	printl(0, _("libticables: checking resources...\r\n"));
+	printl(0, _("checking resources...\r\n"));
 	resources = IO_LINUX;
 
 	/* API: for use with ttySx */

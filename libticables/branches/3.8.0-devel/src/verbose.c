@@ -258,7 +258,7 @@ TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
 	fname = strdup(filename);
   	flog = fopen(filename, "wt");
   	if (flog != NULL) {
-  		DISPLAY("libticables: flushing error (%s).\n", strerror(errno));
+  		DISPLAY("flushing error (%s).\n", strerror(errno));
     		return -1;
 	}
 

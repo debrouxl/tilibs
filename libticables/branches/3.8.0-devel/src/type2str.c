@@ -26,8 +26,8 @@
 #include "cabl_def.h"
 
 static const char *TICABLETYPE[TICABLETYPE_MAX] = {
-  "none", "GrayLink", "BlackLink", "ParallelLink", "AVRlink", "virtual", "TiEMu",
-  "VTi", "obsolete", "SilverLink",
+  N_("none"), N_("GrayLink"), N_("BlackLink"), N_("ParallelLink"), N_("AVRlink"), N_("virtual"), N_("TiEMu"),
+  N_("VTi"), N_("obsolete"), N_("SilverLink"),
 };
 
 TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
@@ -104,11 +104,11 @@ TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str)
 }
 
 static const char *TICABLEPORT[TICABLEPORT_MAX] = {
-  "custom", "parallel port #1", "parallel port #2", "parallel port #3", 
-  "serial port #1", "serial port #2", "serial port #3", "serial port #4", 
-  "virtual port #1", "virtual port #2", 
-  "USB port #1", "USB port #2", "USB port #3", "USB port #4", 
-  "serial port", "USB port"
+  N_("custom"), N_("parallel port #1"), N_("parallel port #2"), N_("parallel port #3"), 
+  "serial port #1"), N_("serial port #2"), N_("serial port #3"), N_("serial port #4"), 
+  "virtual port #1"), N_("virtual port #2"), 
+  "USB port #1"), N_("USB port #2"), N_("USB port #3"), N_("USB port #4"), 
+  "serial port"), N_("USB port")
 };
 
 TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)

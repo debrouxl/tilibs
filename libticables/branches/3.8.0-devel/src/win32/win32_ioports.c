@@ -152,8 +152,7 @@ int io_open(unsigned long from, unsigned long num)
 		      0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hDll == INVALID_HANDLE_VALUE) {
-      printl(2, _
-		    ("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
+      printl(2, _("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
       return ERR_PORTTALK_NOT_FOUND;
     } else {
       io_rd = win32_asm_read_io;
@@ -270,14 +269,14 @@ int io_open(unsigned long from, unsigned long num)
     }
 
     printl(0, _
-	    ("Libticables: serial port %s successfully reconfigured.\n"),
+	    ("serial port %s successfully reconfigured.\n"),
 	    comPort);
     iDcbUse++;
 
     io_rd = win32_dcb_read_io;
     io_wr = win32_dcb_write_io;
   } else {
-		printl(2, "libticables: bad argument (invalid method).\n");
+		printl(2, "bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
   }
 
@@ -305,7 +304,7 @@ int io_close(unsigned long from, unsigned long num)
       iDcbUse = 0;
     }
   }  else {
-		printl(2, "libticables: bad argument (invalid method).\n");
+		printl(2, "bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
 	}
 

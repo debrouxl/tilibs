@@ -8,6 +8,7 @@ src/ioports.c
 src/logging.c
 src/mapping.c
 src/none.c
+src/printl.c
 src/type2str.c
 src/verbose.c
 

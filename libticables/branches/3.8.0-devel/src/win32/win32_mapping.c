@@ -40,7 +40,7 @@
 
 int win32_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	printl(0, _("libticables: getting method from resources"));
+	printl(0, _("getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;
@@ -101,13 +101,13 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		printl(2, "libticables: bad argument (invalid link cable).\n");
+		printl(2, "bad argument (invalid link cable).\n");
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
-    		printl(2, "libticables: unable to find an I/O method.\n");
+    		printl(2, "unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
 	}
 	
@@ -117,7 +117,7 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 // Bind the right I/O address & device according to I/O method
 static int win32_map_io(TicableMethod method, TicablePort port)
 {
-	printl(0, _("libticables: mapping I/O...\n"));
+	printl(0, _("mapping I/O...\n"));
 	
 	switch (port) {
   	case USER_PORT:
@@ -173,7 +173,7 @@ static int win32_map_io(TicableMethod method, TicablePort port)
 	break;
 
   	default:
-    		printl(2, "libticables: bad argument (invalid port).\n");
+    		printl(2, "bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
 	break;
 	}
@@ -192,7 +192,7 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 			return ret;
 	
 	// set the link cable
-	printl(0, _("libticables: registering cable...\n"));
+	printl(0, _("registering cable...\n"));
     	switch (type) {
     	case LINK_PAR:
       		if ((port != PARALLEL_PORT_1) &&
@@ -275,7 +275,7 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	default:
-	      	printl(2, _("libticables: invalid argument (bad cable)."));
+	      	printl(2, _("invalid argument (bad cable)."));
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}

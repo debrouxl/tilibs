@@ -64,7 +64,7 @@ int macos_detect_port(TicablePortInfo * pi)
 
 int macos_detect_resources(void)
 {
-	printl(0, _("libticables: checking resources...\r\n"));
+	printl(0, _("checking resources...\r\n"));
 	resources = IO_OSX;
 	
 	/* API: for use with all */

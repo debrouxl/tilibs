@@ -108,7 +108,7 @@ int slv_open(void)
   {
     int arg = time_out;
     if (ioctl(dev_fd, IOCTL_TIUSB_TIMEOUT, arg) == -1) {
-      printl(2, _("libticables: unable to set timeout (ioctl).\n"));
+      printl(2, _("unable to set timeout (ioctl).\n"));
       return ERR_IOCTL;
     }
   }
@@ -119,7 +119,7 @@ int slv_open(void)
   {
     int arg = 0;
     if (ioctl(dev_fd, IOCTL_TIUSB_RESET_PIPES, arg) == -1) {
-      printl(0, _("libticables: unable to reset pipes (ioctl).\n"));
+      printl(0, _("unable to reset pipes (ioctl).\n"));
       //return ERR_IOCTL;
     }
   }
@@ -189,7 +189,7 @@ int slv_get(uint8_t * data)
       			if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
       			if (ret == 0)		// quirk (seems to be due to Cypress components)
-				printl(2, _("libticables: weird, read returns without any data; retrying to circumvent the quirk...\n"));
+				printl(2, _("weird, read returns without any data; retrying to circumvent the quirk...\n"));
     		}
     		while (!ret);
 
