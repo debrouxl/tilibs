@@ -1,0 +1,257 @@
+# Microsoft Developer Studio Generated Dependency File, included by ticables.mak
+
+..\..\src\win32\ioports.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Cabl_int.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\ioports.h"\
+	"..\..\src\win32\porttalk_ioctl.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_avr.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\avr_link.c"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_dev.c : \
+	"..\..\src\none.c"\
+	
+
+..\..\src\link_dfl.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_par.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\linux\ioports.h"\
+	"..\..\src\linux\par_link.c"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_ser.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\linux\ioports.h"\
+	"..\..\src\linux\ser_link.c"\
+	"..\..\src\linux\ser_link2.c"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_slv.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\slv_link.c"\
+	"..\..\src\win32\tiglusb.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_tie.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\tie_link.c"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_tig.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\tig_link.c"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_vti.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Logging.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\vti_link.c"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\link_vtl.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\vtl_link.c"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\win32\porttalk.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\detect.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\win32\win32_detect.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\direct.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_int.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Timeout.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\error.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\intrface.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_ver.h"\
+	"..\..\src\detect.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\mapping.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\type2str.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\logging.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\mapping.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\win32\win32_mapping.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\type2str.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\verbose.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\win32\win32_detect.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\porttalk.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
+
+..\..\src\win32\win32_mapping.c : \
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\externs.h"\
+	"..\..\src\Intl.h"\
+	"..\..\src\Timeout.h"\
+	"..\..\src\type2str.h"\
+	"..\..\src\Verbose.h"\
+	"..\..\src\win32\links.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
+	
