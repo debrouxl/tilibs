@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dfl_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id: nul_link.c 370 2004-03-22 18:47:32Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -38,87 +38,87 @@
 #include "externs.h"
 
 
-int dfl_init()
+int nul_init()
 {
   return 0;
 }
 
-int dfl_open()
+int nul_open()
 {
   return 0;
 }
 
-int dfl_put(uint8_t data)
+int nul_put(uint8_t data)
 {
   return 0;
 }
 
-int dfl_get(uint8_t * d)
+int nul_get(uint8_t * d)
 {
   return 0;
 }
 
-int dfl_probe()
+int nul_probe()
 {
   return 0;
 }
 
-int dfl_close()
+int nul_close()
 {
   return 0;
 }
 
-int dfl_exit()
+int nul_exit()
 {
   return 0;
 }
 
-int dfl_check(int *status)
+int nul_check(int *status)
 {
   *status = STATUS_NONE;
   return 0;
 }
 
-int dfl_set_red_wire(int b)
+int nul_set_red_wire(int b)
 {
   return 0;
 }
 
-int dfl_set_white_wire(int b)
+int nul_set_white_wire(int b)
 {
   return 0;
 }
 
-int dfl_get_red_wire()
+int nul_get_red_wire()
 {
   return 0;
 }
 
-int dfl_get_white_wire()
+int nul_get_white_wire()
 {
   return 0;
 }
 
-int dfl_supported()
+int nul_supported()
 {
   return SUPPORT_OFF;
 }
 
-int dfl_register_cable(TicableLinkCable * lc, TicableMethod method)
+int nul_register_cable(TicableLinkCable * lc, TicableMethod method)
 {
-  lc->init = dfl_init;
-  lc->open = dfl_open;
-  lc->put = dfl_put;
-  lc->get = dfl_get;
-  lc->close = dfl_close;
-  lc->exit = dfl_exit;
-  lc->probe = dfl_probe;
-  lc->check = dfl_check;
+  lc->init = nul_init;
+  lc->open = nul_open;
+  lc->put = nul_put;
+  lc->get = nul_get;
+  lc->close = nul_close;
+  lc->exit = nul_exit;
+  lc->probe = nul_probe;
+  lc->check = nul_check;
 
-  lc->set_red_wire = dfl_set_red_wire;
-  lc->set_white_wire = dfl_set_white_wire;
-  lc->get_red_wire = dfl_get_red_wire;
-  lc->get_white_wire = dfl_get_white_wire;
+  lc->set_red_wire = nul_set_red_wire;
+  lc->set_white_wire = nul_set_white_wire;
+  lc->get_red_wire = nul_get_red_wire;
+  lc->get_white_wire = nul_get_white_wire;
 
   return 0;
 }

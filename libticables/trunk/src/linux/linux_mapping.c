@@ -39,13 +39,11 @@
 #include "externs.h"
 #include "type2str.h"
 #include "printl.h"
-
 #include "links.h"
 
 #include "linux_detect.h"
 
 static int warning;
-
 static int devfs = 0;
 
 static int check_for_root(void);
@@ -72,6 +70,10 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	// depending on link type, do some checks
 	switch(type)
 	{
+	case LINK_NUL:
+		*method |= IOM_NULL | IOM_OK;
+		break;
+
 	case LINK_TGL:
 		if(resources & IO_API) {
 			if(check_for_tty())
@@ -200,8 +202,13 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 	
 	switch (port) {
   	case USER_PORT:
-    	break;
-
+		break;
+		
+	case NULL_PORT:
+		strcpy(io_device, "/dev/null");
+		io_address = 0;
+		break;
+		
 	case PARALLEL_PORT_1:
 		if(method & IOM_DRV)
     			strcpy(io_device, tipar_node_names[devfs][0]);
@@ -288,7 +295,6 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 	return 0;
 }
 
-
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	int ret;
@@ -301,6 +307,10 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
     	switch (type) {
+	case LINK_NUL:
+		nul_register_cable(lc);
+		break;
+
     	case LINK_PAR:
       		if ((port != PARALLEL_PORT_1) &&
 		    (port != PARALLEL_PORT_2) &&

@@ -41,7 +41,7 @@
 
 /* Link type */
 typedef enum {
-  LINK_NONE,
+  LINK_NUL,
   LINK_TGL, LINK_SER, LINK_PAR, LINK_AVR,
   LINK_VTL, LINK_TIE, LINK_VTI, LINK_TPU, LINK_SLV,
   TICABLETYPE_MAX
@@ -86,6 +86,7 @@ typedef enum {
   VIRTUAL_PORT_1, VIRTUAL_PORT_2,
   USB_PORT_1, USB_PORT_2, USB_PORT_3, USB_PORT_4,
   OSX_SERIAL_PORT, OSX_USB_PORT,
+  NULL_PORT,
   TICABLEPORT_MAX
 } TicablePort;
 
@@ -93,7 +94,8 @@ typedef enum {
 
 /* I/O method to use */
 typedef enum {
-  IOM_AUTO = 1, IOM_ASM = 2, IOM_IOCTL = 4, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
+  IOM_AUTO = 1, IOM_ASM = 2, IOM_IOCTL = 4, IOM_DRV = 8, IOM_API = 32, 
+  IOM_NULL = 64, IOM_OK = (1 << 15)
 } TicableMethod;
 
 /* Verbosity level for DISPLAY function */

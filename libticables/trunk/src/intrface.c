@@ -46,11 +46,7 @@ int time_out = DFLT_TIMEOUT; // Timeout value for cables in 0.10 seconds
 int delay = DFLT_DELAY;      // Time between 2 bits (home-made cables only)
 int baud_rate = BR9600;      // Baud rate setting for serial port
 int hfc = HFC_ON;            // Hardware flow control for fastAVRlink
-#ifdef __MACOSX__
-int port = OSX_USB_PORT;     // Use USB by default, handled through the IOKit
-#else
-int port = SERIAL_PORT_2;    // Use COM2 by default
-#endif
+int port = NULL_PORT;        // No port and null cable
 int resources = IO_NONE;     // I/O resources detected
 TicableMethod method = IOM_AUTO;      // I/O methods useable
 

@@ -67,11 +67,11 @@ int main(int argc, char **argv)
 	ticable_get_default_param(&lp);
 	lp.delay = 10;
 	lp.timeout = 20;
-	lp.port = USB_PORT_1;
+	lp.port = DEFAULT_PORT;
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	if((err=ticable_set_cable(LINK_SLV, &lc))) {
+	if((err=ticable_set_cable(LINK_NONE, &lc))) {
 		print_lc_error(err);
                 return -1;
 	}

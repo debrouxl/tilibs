@@ -11,6 +11,9 @@ Log:
 	Bug fix in the verbose.c compatibility support (DISPLAY).
 	Merged Tijl's patch: does not build or use libusb support if libusb
 	not detected.
+	link_dfl changed into link_nul (null cable). Added null method and null
+	port in order to implement a pure null cable.
+	Default settings are now set to a null cable/port.
 	
 - 24/04/2004, version 3.8.4: roms
 	Added buffered write support to the SilverLink / Win32 module. 
