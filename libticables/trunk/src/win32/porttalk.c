@@ -161,7 +161,7 @@ unsigned char PortTalkStartDriver(void)
 		     NULL);	/* pointer to arguments */
 
   if (ret)
-    printl1(2, _("PortTalk: The PortTalk driver has been successfully started.\n"));
+    printl1(0, _("PortTalk: The PortTalk driver has been successfully started.\n"));
   else {
     err = GetLastError();
     if (err == ERROR_SERVICE_ALREADY_RUNNING)
