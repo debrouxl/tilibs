@@ -8,236 +8,236 @@
 		0127D0C7017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defsxx.h;
-			path = /Users/julien/devel/libticalcs/src/defsxx.h;
-			refType = 0;
+			path = ../src/defsxx.h;
+			refType = 2;
 		};
 		0127D0C8017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs92.h;
-			path = /Users/julien/devel/libticalcs/src/defs92.h;
-			refType = 0;
+			path = ../src/defs92.h;
+			refType = 2;
 		};
 		0127D0C9017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs89.h;
-			path = /Users/julien/devel/libticalcs/src/defs89.h;
-			refType = 0;
+			path = ../src/defs89.h;
+			refType = 2;
 		};
 		0127D0CA017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs86.h;
-			path = /Users/julien/devel/libticalcs/src/defs86.h;
-			refType = 0;
+			path = ../src/defs86.h;
+			refType = 2;
 		};
 		0127D0CB017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs85.h;
-			path = /Users/julien/devel/libticalcs/src/defs85.h;
-			refType = 0;
+			path = ../src/defs85.h;
+			refType = 2;
 		};
 		0127D0CC017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs83p.h;
-			path = /Users/julien/devel/libticalcs/src/defs83p.h;
-			refType = 0;
+			path = ../src/defs83p.h;
+			refType = 2;
 		};
 		0127D0CD017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs83.h;
-			path = /Users/julien/devel/libticalcs/src/defs83.h;
-			refType = 0;
+			path = ../src/defs83.h;
+			refType = 2;
 		};
 		0127D0CE017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs82.h;
-			path = /Users/julien/devel/libticalcs/src/defs82.h;
-			refType = 0;
+			path = ../src/defs82.h;
+			refType = 2;
 		};
 		0127D0CF017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = const.h;
-			path = /Users/julien/devel/libticalcs/src/const.h;
-			refType = 0;
+			path = ../src/const.h;
+			refType = 2;
 		};
 		0127D0D0017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = calc_ver.h;
-			path = /Users/julien/devel/libticalcs/src/calc_ver.h;
-			refType = 0;
+			path = ../src/calc_ver.h;
+			refType = 2;
 		};
 		0127D0D1017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = calc_int.h;
-			path = /Users/julien/devel/libticalcs/src/calc_int.h;
-			refType = 0;
+			path = ../src/calc_int.h;
+			refType = 2;
 		};
 		0127D0D2017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = calc_ext.h;
-			path = /Users/julien/devel/libticalcs/src/calc_ext.h;
-			refType = 0;
+			path = ../src/calc_ext.h;
+			refType = 2;
 		};
 		0127D0D3017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = calc_err.h;
-			path = /Users/julien/devel/libticalcs/src/calc_err.h;
-			refType = 0;
+			path = ../src/calc_err.h;
+			refType = 2;
 		};
 		0127D0D4017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti82.h;
-			path = /Users/julien/devel/libticalcs/src/ti82.h;
-			refType = 0;
+			path = ../src/ti82.h;
+			refType = 2;
 		};
 		0127D0D5017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom92f2.h;
-			path = /Users/julien/devel/libticalcs/src/rom92f2.h;
-			refType = 0;
+			path = ../src/rom92f2.h;
+			refType = 2;
 		};
 		0127D0D6017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom89.h;
-			path = /Users/julien/devel/libticalcs/src/rom89.h;
-			refType = 0;
+			path = ../src/rom89.h;
+			refType = 2;
 		};
 		0127D0D7017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom86.h;
-			path = /Users/julien/devel/libticalcs/src/rom86.h;
-			refType = 0;
+			path = ../src/rom86.h;
+			refType = 2;
 		};
 		0127D0D8017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom85z.h;
-			path = /Users/julien/devel/libticalcs/src/rom85z.h;
-			refType = 0;
+			path = ../src/rom85z.h;
+			refType = 2;
 		};
 		0127D0D9017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom85u.h;
-			path = /Users/julien/devel/libticalcs/src/rom85u.h;
-			refType = 0;
+			path = ../src/rom85u.h;
+			refType = 2;
 		};
 		0127D0DA017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom83p.h;
-			path = /Users/julien/devel/libticalcs/src/rom83p.h;
-			refType = 0;
+			path = ../src/rom83p.h;
+			refType = 2;
 		};
 		0127D0DB017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom83.h;
-			path = /Users/julien/devel/libticalcs/src/rom83.h;
-			refType = 0;
+			path = ../src/rom83.h;
+			refType = 2;
 		};
 		0127D0DC017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = rom82.h;
-			path = /Users/julien/devel/libticalcs/src/rom82.h;
-			refType = 0;
+			path = ../src/rom82.h;
+			refType = 2;
 		};
 		0127D0DD017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = pause.h;
-			path = /Users/julien/devel/libticalcs/src/pause.h;
-			refType = 0;
+			path = ../src/pause.h;
+			refType = 2;
 		};
 		0127D0DE017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = keys92.h;
-			path = /Users/julien/devel/libticalcs/src/keys92.h;
-			refType = 0;
+			path = ../src/keys92.h;
+			refType = 2;
 		};
 		0127D0DF017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = keys89.h;
-			path = /Users/julien/devel/libticalcs/src/keys89.h;
-			refType = 0;
+			path = ../src/keys89.h;
+			refType = 2;
 		};
 		0127D0E0017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = intl2.h;
-			path = /Users/julien/devel/libticalcs/src/intl2.h;
-			refType = 0;
+			path = ../src/intl2.h;
+			refType = 2;
 		};
 		0127D0E1017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = group.h;
-			path = /Users/julien/devel/libticalcs/src/group.h;
-			refType = 0;
+			path = ../src/group.h;
+			refType = 2;
 		};
 		0127D0E2017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = update.h;
-			path = /Users/julien/devel/libticalcs/src/update.h;
-			refType = 0;
+			path = ../src/update.h;
+			refType = 2;
 		};
 		0127D0E3017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = trans.h;
-			path = /Users/julien/devel/libticalcs/src/trans.h;
-			refType = 0;
+			path = ../src/trans.h;
+			refType = 2;
 		};
 		0127D0E4017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = tixx.h;
-			path = /Users/julien/devel/libticalcs/src/tixx.h;
-			refType = 0;
+			path = ../src/tixx.h;
+			refType = 2;
 		};
 		0127D0E5017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti92p.h;
-			path = /Users/julien/devel/libticalcs/src/ti92p.h;
-			refType = 0;
+			path = ../src/ti92p.h;
+			refType = 2;
 		};
 		0127D0E6017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti92.h;
-			path = /Users/julien/devel/libticalcs/src/ti92.h;
-			refType = 0;
+			path = ../src/ti92.h;
+			refType = 2;
 		};
 		0127D0E7017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti89.h;
-			path = /Users/julien/devel/libticalcs/src/ti89.h;
-			refType = 0;
+			path = ../src/ti89.h;
+			refType = 2;
 		};
 		0127D0E8017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti86.h;
-			path = /Users/julien/devel/libticalcs/src/ti86.h;
-			refType = 0;
+			path = ../src/ti86.h;
+			refType = 2;
 		};
 		0127D0E9017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti85.h;
-			path = /Users/julien/devel/libticalcs/src/ti85.h;
-			refType = 0;
+			path = ../src/ti85.h;
+			refType = 2;
 		};
 		0127D0EA017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti83p.h;
-			path = /Users/julien/devel/libticalcs/src/ti83p.h;
-			refType = 0;
+			path = ../src/ti83p.h;
+			refType = 2;
 		};
 		0127D0EB017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti83.h;
-			path = /Users/julien/devel/libticalcs/src/ti83.h;
-			refType = 0;
+			path = ../src/ti83.h;
+			refType = 2;
 		};
 		0127D0EC017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = defs92p.h;
-			path = /Users/julien/devel/libticalcs/src/defs92p.h;
-			refType = 0;
+			path = ../src/defs92p.h;
+			refType = 2;
 		};
 		0127D0ED017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = calc_def.h;
-			path = /Users/julien/devel/libticalcs/src/calc_def.h;
-			refType = 0;
+			path = ../src/calc_def.h;
+			refType = 2;
 		};
 		0127D0EE017389D15041E0CA = {
 			fileRef = 0127D0C7017389D15041E0CA;
@@ -593,86 +593,86 @@
 		0127D115017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = group.c;
-			path = /Users/julien/devel/libticalcs/src/group.c;
-			refType = 0;
+			path = ../src/group.c;
+			refType = 2;
 		};
 		0127D116017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = error.c;
-			path = /Users/julien/devel/libticalcs/src/error.c;
-			refType = 0;
+			path = ../src/error.c;
+			refType = 2;
 		};
 		0127D117017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = const.c;
-			path = /Users/julien/devel/libticalcs/src/const.c;
-			refType = 0;
+			path = ../src/const.c;
+			refType = 2;
 		};
 		0127D118017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti83.c;
-			path = /Users/julien/devel/libticalcs/src/ti83.c;
-			refType = 0;
+			path = ../src/ti83.c;
+			refType = 2;
 		};
 		0127D119017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti82.c;
-			path = /Users/julien/devel/libticalcs/src/ti82.c;
-			refType = 0;
+			path = ../src/ti82.c;
+			refType = 2;
 		};
 		0127D11A017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = probe.c;
-			path = /Users/julien/devel/libticalcs/src/probe.c;
-			refType = 0;
+			path = ../src/probe.c;
+			refType = 2;
 		};
 		0127D11B017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = intrface.c;
-			path = /Users/julien/devel/libticalcs/src/intrface.c;
-			refType = 0;
+			path = ../src/intrface.c;
+			refType = 2;
 		};
 		0127D11C017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = trans.c;
-			path = /Users/julien/devel/libticalcs/src/trans.c;
-			refType = 0;
+			path = ../src/trans.c;
+			refType = 2;
 		};
 		0127D11D017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti92p.c;
-			path = /Users/julien/devel/libticalcs/src/ti92p.c;
-			refType = 0;
+			path = ../src/ti92p.c;
+			refType = 2;
 		};
 		0127D11E017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti92.c;
-			path = /Users/julien/devel/libticalcs/src/ti92.c;
-			refType = 0;
+			path = ../src/ti92.c;
+			refType = 2;
 		};
 		0127D11F017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti89.c;
-			path = /Users/julien/devel/libticalcs/src/ti89.c;
-			refType = 0;
+			path = ../src/ti89.c;
+			refType = 2;
 		};
 		0127D120017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti86.c;
-			path = /Users/julien/devel/libticalcs/src/ti86.c;
-			refType = 0;
+			path = ../src/ti86.c;
+			refType = 2;
 		};
 		0127D121017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti85.c;
-			path = /Users/julien/devel/libticalcs/src/ti85.c;
-			refType = 0;
+			path = ../src/ti85.c;
+			refType = 2;
 		};
 		0127D122017389DF5041E0CA = {
 			isa = PBXFileReference;
 			name = ti83p.c;
-			path = /Users/julien/devel/libticalcs/src/ti83p.c;
-			refType = 0;
+			path = ../src/ti83p.c;
+			refType = 2;
 		};
 		0127D123017389DF5041E0CA = {
 			fileRef = 0127D115017389DF5041E0CA;
@@ -755,7 +755,7 @@
 		0127D13101738AAA5041E0CA = {
 			isa = PBXFileReference;
 			path = config.h;
-			refType = 4;
+			refType = 2;
 		};
 		0127D13201738AAA5041E0CA = {
 			fileRef = 0127D13101738AAA5041E0CA;
@@ -873,7 +873,7 @@
 			isa = PBXGroup;
 			name = Headers;
 			path = "";
-			refType = 4;
+			refType = 2;
 		};
 		04DE224E017240965041E0CA = {
 			children = (
@@ -895,7 +895,7 @@
 			isa = PBXGroup;
 			name = Sources;
 			path = "";
-			refType = 4;
+			refType = 2;
 		};
 //040
 //041
@@ -1102,7 +1102,8 @@
 			);
 			isa = PBXGroup;
 			name = Resources;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		089C1666FE841158C02AAC07 = {
 			children = (
@@ -1110,14 +1111,15 @@
 			);
 			isa = PBXVariantGroup;
 			name = InfoPlist.strings;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		089C1667FE841158C02AAC07 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
-			refType = 4;
+			refType = 2;
 		};
 		089C1668FE841158C02AAC07 = {
 			fileRef = 089C1666FE841158C02AAC07;
