@@ -41,14 +41,14 @@ extern "C" {
 #endif
 
 	/****************/
-  /* Entry points */
+  	/* Entry points */
 	/****************/
 
   TIEXPORT int TICALL ticable_init(void);
   TIEXPORT int TICALL ticable_exit(void);
 
 	/*********************/
-  /* General functions */
+  	/* General functions */
 	/*********************/
 
   TIEXPORT const char *TICALL ticable_get_version(void);
@@ -67,7 +67,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_get_datarate(TicableDataRate ** ptdr);
 
 	/*********************/
-  /* Set/Get functions */
+  	/* Set/Get functions */
 	/*********************/
 
   TIEXPORT void TICALL ticable_set_timeout(int timeout_v);
@@ -95,7 +95,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_get_method(void);
 
 	/*******************/
-  /* Probe functions */
+  	/* Probe functions */
 	/*******************/
 
   TIEXPORT int TICALL ticable_detect_os(char **os_type);
@@ -104,7 +104,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
 
 	/***********************/
-  /* Verbosity functions */
+  	/* Verbosity functions */
 	/***********************/
 
   TIEXPORT int TICALL DISPLAY(const char *format, ...);
@@ -113,7 +113,7 @@ extern "C" {
   TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
 
 	/**************************************/
-  /* Direct access functions (reserved) */
+  	/* Direct access functions (reserved) */
 	/**************************************/
 
   TIEXPORT int TICALL ticable_link_init(void);
@@ -133,14 +133,14 @@ extern "C" {
   TIEXPORT int TICALL ticable_link_set_cable(TicableType type);
 
 	/************************/
-  /* Deprecated functions */
+  	/* Deprecated functions */
 	/************************/
 
   TIEXPORT int TICALL ticable_set_param2(TicableLinkParam lp);
   TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay);
 
 	/****************************/
-  /* Type to String functions */
+  	/* Type to String functions */
 	/****************************/
 
   TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType

@@ -38,7 +38,7 @@
 #include "intl.h"
 #include "verbose.h"
 
-#define LOG_FILE "libticables.log"
+#define LOG_FILE  "libticables.log"
 #define TIME_FILE "libticables.time"
 
 static char *fn1 = NULL;
@@ -46,7 +46,6 @@ static char *fn2 = NULL;
 
 static FILE *log1 = NULL;
 static FILE *log2 = NULL;
-static int i = 0;
 
 #ifndef __WIN32__
 static struct timeval tv_start;
@@ -57,111 +56,111 @@ int start_logging()
 {
   // build filenames
 #ifdef __WIN32__
-  fn1 = (char *) malloc(strlen(LOG_FILE) + strlen("C:\\"));
-  fn2 = (char *) malloc(strlen(TIME_FILE) + strlen("C:\\"));
+  	fn1 = (char *) malloc(strlen(LOG_FILE) + strlen("C:\\"));
+  	fn2 = (char *) malloc(strlen(TIME_FILE) + strlen("C:\\"));
 
-  strcpy(fn1, "C:\\" LOG_FILE);
-  strcpy(fn2, "C:\\" TIME_FILE);
+  	strcpy(fn1, "C:\\" LOG_FILE);
+  	strcpy(fn2, "C:\\" TIME_FILE);
 #else
-  char *home_dir = getenv("HOME");
+  	char *home_dir = getenv("HOME");
 
-  fn1 = (char *) malloc(strlen(home_dir) + strlen(LOG_FILE) + 2);
-  fn2 = (char *) malloc(strlen(home_dir) + strlen(TIME_FILE) + 2);
+  	fn1 = (char *) malloc(strlen(home_dir) + strlen(LOG_FILE) + 2);
+  	fn2 = (char *) malloc(strlen(home_dir) + strlen(TIME_FILE) + 2);
 
-  strcpy(fn1, home_dir);
-  strcat(fn1, "/");
-  strcat(fn1, LOG_FILE);
-  strcpy(fn2, home_dir);
-  strcat(fn2, "/");
-  strcat(fn2, TIME_FILE);
+  	strcpy(fn1, home_dir);
+  	strcat(fn1, "/");
+  	strcat(fn1, LOG_FILE);
+  	strcpy(fn2, home_dir);
+  	strcat(fn2, "/");
+  	strcat(fn2, TIME_FILE);
 #endif
 
-  DISPLAY("Logging STARTED.\n");
+  	DISPLAY("Logging STARTED.\n");
 
-  log1 = fopen(fn1, "wt");
-  if (log1 == NULL) {
-    DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn1);
-    return -1;
-  }
+  	log1 = fopen(fn1, "wt");
+  	if (log1 == NULL) {
+    		DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn1);
+    		return -1;
+  	}
 
-  log2 = fopen(fn2, "wt");
-  if (log2 == NULL) {
-    DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn2);
-    return -1;
-  }
+  	log2 = fopen(fn2, "wt");
+  	if (log2 == NULL) {
+    		DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn2);
+    		return -1;
+  	}
 #ifndef __WIN32__
-  memset((void *) (&tz), 0, sizeof(tz));
-  gettimeofday(&tv_start, &tz);
+  	memset((void *) (&tz), 0, sizeof(tz));
+  	gettimeofday(&tv_start, &tz);
 #endif
 
-  return 0;
+  	return 0;
 }
 
 int log_data(int d)
 {
-  static int array[16];
-  int j;
-  int c;
+  	static int array[16];
+  	static int i = 0;
+  	int j;
+  	int c;
 #ifndef __WIN32__
-  struct timeval tv;
-  static int k = 0;
+  	struct timeval tv;
+  	static int k = 0;
 #endif
 
-  if (log1 == NULL)
-    return -1;
+  	if (log1 == NULL)
+    		return -1;
+  	array[i++] = d;
 
-  array[i++] = d;
-
-  fprintf(log1, "%02X ", d);
-  if (!(i % 16) && (i > 1)) {
-    fprintf(log1, "| ");
-    for (j = 0; j < 16; j++) {
-      c = array[j];
-      if ((c < 32) || (c > 127))
-	fprintf(log1, " ");
-      else
-	fprintf(log1, "%c", c);
-    }
-    fprintf(log1, "\n");
-    i = 0;
-  }
+  	fprintf(log1, "%02X ", d);
+  	if (!(i % 16) && (i > 1)) {
+    		fprintf(log1, "| ");
+    		for (j = 0; j < 16; j++) {
+      			c = array[j];
+      			if ((c < 32) || (c > 127))
+				fprintf(log1, " ");
+      			else
+				fprintf(log1, "%c", c);
+    		}
+    		fprintf(log1, "\n");
+    		i = 0;
+  	}
 #ifndef __WIN32__
-  gettimeofday(&tv, &tz);
-  k++;
-  fprintf(log2, "%i: %i.%2i\n", k,
+  	gettimeofday(&tv, &tz);
+  	k++;
+  	fprintf(log2, "%i: %i.%2i\n", k,
 	  (int) (tv.tv_sec - tv_start.tv_sec),
 	  (int) (tv.tv_usec - tv_start.tv_usec));
 #endif
 
-  return 0;
+  	return 0;
 }
 
 int stop_logging()
 {
-  DISPLAY("Logging stopped.\n");
+  	DISPLAY("Logging stopped.\n");
 
-  if (log1 != NULL)
-    fclose(log1);
-  if (log2 != NULL)
-    fclose(log2);
+  	if (log1 != NULL)
+    		fclose(log1);
+  	if (log2 != NULL)
+    		fclose(log2);
 
-  free(fn1);
-  free(fn2);
+  	free(fn1);
+  	free(fn2);
 
-  return 0;
+  	return 0;
 }
 
 int start_void()
 {
-  return 0;
+  	return 0;
 }
 
 int log_void(int d)
 {
-  return 0;
+  	return 0;
 }
 
 int stop_void()
 {
-  return 0;
+  	return 0;
 }

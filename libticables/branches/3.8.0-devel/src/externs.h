@@ -49,6 +49,7 @@ extern "C" {
   extern const char *err_msg;
 
   extern TicableDataRate tdr;
+  extern TicablePortInfo pi;
 
 #ifdef __cplusplus
 }

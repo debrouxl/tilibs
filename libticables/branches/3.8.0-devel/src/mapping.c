@@ -49,10 +49,7 @@
 #include "linux/linux_mapping.c"
 #endif
 
-/*
-	This function attempts to determine the best way to use a given link
-	cable by providing a single I/O method from detected resources.
-*/
+
 int mapping_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	int ret;
@@ -68,10 +65,8 @@ int mapping_get_method(TicableType type, int resources, TicableMethod *method)
 #else
 	ret = 0;
 #endif
-
   	return ret;
 }
-
 
 int mapping_register_cable(TicableType type, TicableLinkCable *lc)
 {
@@ -88,7 +83,6 @@ int mapping_register_cable(TicableType type, TicableLinkCable *lc)
 #else
 	ret = 0;
 #endif
-	
   	return ret;
 }
 

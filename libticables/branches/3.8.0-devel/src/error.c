@@ -62,102 +62,79 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
     		strcat(error_msg, _("Cause: Check that the device is not used/locked by another application (modem ?)."));
     	break;
 
-  case ERR_WRITE_ERROR:
-    strcpy(error_msg,
-	   _("Msg: Error occured while writing to the device."));
-    break;
+  	case ERR_WRITE_ERROR:
+    		strcpy(error_msg, _("Msg: Error occured while writing to the device."));
+    	break;
 
-  case ERR_WRITE_TIMEOUT:
-    strcpy(error_msg,
-	   _("Msg: Timeout occured while writing to the device."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that your link cable is plugged and/or the calculator is ready."));
-    break;
+  	case ERR_WRITE_TIMEOUT:
+    		strcpy(error_msg, _("Msg: Timeout occured while writing to the device."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Check that your link cable is plugged and/or the calculator is ready."));
+    	break;
 
-  case ERR_READ_ERROR:
-    strcpy(error_msg,
-	   _("Msg: Error occured while reading to the device."));
-    break;
+  	case ERR_READ_ERROR:
+    		strcpy(error_msg, _("Msg: Error occured while reading to the device."));
+    	break;
 
-  case ERR_READ_TIMEOUT:
-    strcpy(error_msg,
-	   _("Msg: Timeout occured while reading to the device."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that your link cable is plugged and/or the calculator is ready."));
-    break;
+  	case ERR_READ_TIMEOUT:
+    		strcpy(error_msg, _("Msg: Timeout occured while reading to the device."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Check that your link cable is plugged and/or the calculator is ready."));
+    	break;
 
-  case ERR_BYTE_LOST:
-    strcpy(error_msg, _("Msg: A uint8_t have been lost."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: Application too slow."));
-    break;
+  	case ERR_BYTE_LOST:
+    		strcpy(error_msg, _("Msg: A uint8_t have been lost."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Application too slow."));
+    	break;
 
-  case ERR_CREATE_FILE:
-    strcpy(error_msg, _("Msg: CreateFile error."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that the device is not used/locked by another application (modem ?)."));
-    break;
+  	case ERR_CREATE_FILE:
+    		strcpy(error_msg, _("Msg: CreateFile error."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Check that the device is not used/locked by another application (modem ?)."));
+    	break;
 
-  case ERR_OPEN_TIDEV:
-    strcpy(error_msg, _("Msg: Unable to open a node in /dev."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause:Check that the node exists. Check your devfs. Check that you have installed the driver."));
-    break;
+  	case ERR_OPEN_TIDEV:
+    		strcpy(error_msg, _("Msg: Unable to open a node in /dev."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause:Check that the node exists. Check your devfs. Check that you have installed the driver."));
+    	break;
 
-  case ERR_ROOT:
+  	case ERR_ROOT:
 #if defined(__LINUX__) || defined(__BSD__)
-    strcpy(error_msg,
-	   _("Msg: Unable to use parallel/serial port: access refused."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that you have needed permissions (super user privileges). Else, you will need to use a kernel module (tipar/tiser)."));
+	    	strcpy(error_msg, _("Msg: Unable to use parallel/serial port: access refused."));
+	    	strcat(error_msg, "\n");
+	    	strcat(error_msg, _("Cause: Check that you have needed permissions (super user privileges). Else, you will need to use a kernel module (tipar/tiser)."));
 #elif defined(__WIN32__)
-    strcpy(error_msg,
-	   _("Msg: Unable to use parallel/serial port: access refused."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Is PortTalk installed/started ? You may have to install TiLP with administrator privileges."));
+	    	strcpy(error_msg, _("Msg: Unable to use parallel/serial port: access refused."));
+	    	strcat(error_msg, "\n");
+	    	strcat(error_msg, _("Cause: Is PortTalk installed/started ? You may have to install TiLP with administrator privileges."));
 #endif
-    break;
+    	break;
 
-  case ERR_PROBE_FAILED:
-    strcpy(error_msg,
-	   _("Msg: No link cable has been found on the scanned port."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: ??"));
-    break;
+  	case ERR_PROBE_FAILED:
+	    	strcpy(error_msg, _("Msg: No link cable has been found on the scanned port."));
+	    	strcat(error_msg, "\n");
+	    	strcat(error_msg, _("Cause: ??"));
+    	break;
 
-  case ERR_OPEN_PIPE:
-    strcpy(error_msg, _("Msg: Unable to open pipes for virtual linking."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that you have permissions to create a pipe in the /tmp directory."));
-    break;
+  	case ERR_OPEN_PIPE:
+    		strcpy(error_msg, _("Msg: Unable to open pipes for virtual linking."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Check that you have permissions to create a pipe in the /tmp directory."));
+    	break;
 
-  case ERR_CLOSE_PIPE:
-    strcpy(error_msg, _("Msg: Unable to close pipes."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: System error ?!"));
-    break;
+  	case ERR_CLOSE_PIPE:
+    		strcpy(error_msg, _("Msg: Unable to close pipes."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: System error ?!"));
+    	break;
 
-  case ERR_OPP_NOT_AVAIL:
-    strcpy(error_msg, _("Msg: CreateFileMapping error."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Trying to communicate without correspondent. Did you launch the emulator before running TiLP ?"));
-    break;
+  	case ERR_OPP_NOT_AVAIL:
+    		strcpy(error_msg, _("Msg: CreateFileMapping error."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Trying to communicate without correspondent. Did you launch the emulator before running TiLP ?"));
+    	break;
 
   case ERR_IOCTL:
     strcpy(error_msg, _("Msg: IOCTL error."));

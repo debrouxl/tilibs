@@ -21,6 +21,7 @@ Log:
 	has not been compiled !!!
 
 	Bug in serial link support (mode asm: no timeout on ser_get).
+	Bug in parallel link support (mode asm: no timeout on par_get).
 	
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables

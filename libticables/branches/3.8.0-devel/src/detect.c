@@ -68,11 +68,10 @@ TIEXPORT int TICALL ticable_detect_os(char **os_type)
 #elif defined(__WIN32__)
 	win32_detect_os(os_type);
 #else
-  *os_type = _("unknown");
-  return -1;
+  	*os_type = _("unknown");
+  	return -1;
 #endif
-
-  return 0;
+  	return 0;
 }
 
 

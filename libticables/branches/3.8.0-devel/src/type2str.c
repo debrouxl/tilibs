@@ -28,48 +28,34 @@
 
 TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
 {
-  switch (type) {
-  case LINK_NONE:
-    return "none";
-  case LINK_TGL:
-    return "Gray TIGraphLink";
-  case LINK_SER:
-    return "Black TIGraphLink";
-  case LINK_PAR:
-    return "home-made parallel";
-  case LINK_AVR:
-    return "AVRlink";
-  case LINK_VTL:
-    return "unused";
-  case LINK_TIE:
-    return "TiEmu";
-  case LINK_VTI:
-    return "VTi";
-  case LINK_TPU:
-    return "unused";
-  case LINK_SLV:
-    return "SilverLink";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown cable type !\n"));
-    return "unknown";
-  }
+  	switch (type) {
+  	case LINK_NONE: return "none";
+  	case LINK_TGL: return "Gray TIGraphLink";
+  	case LINK_SER: return "Black TIGraphLink";
+  	case LINK_PAR: return "home-made parallel";
+  	case LINK_AVR: return "AVRlink";
+  	case LINK_VTL: return "unused";
+  	case LINK_TIE: return "TiEmu";
+  	case LINK_VTI: return "VTi";
+  	case LINK_TPU: return "unused";
+  	case LINK_SLV: return "SilverLink";
+  	default:
+  		DISPLAY_ERROR(_("libticables error: unknown cable type !\n"));
+    		return "unknown";
+  	}
 }
 
 
 TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br)
 {
-  switch (br) {
-  case BR9600:
-    return "9600 bauds";
-  case BR19200:
-    return "19200 bauds";
-  case BR38400:
-    return "38400 bauds";
-  case BR57600:
-    return "57600 bauds";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown baud rate !\n"));
-    return "unknown";
+  	switch (br) {
+  	case BR9600:  return "9600 bauds";
+  	case BR19200: return "19200 bauds";
+  	case BR38400: return "38400 bauds";
+  	case BR57600: return "57600 bauds";
+  	default:
+  	    	DISPLAY_ERROR(_("libticables error: unknown baud rate !\n"));
+    		return "unknown";
   }
 }
 
@@ -134,10 +120,10 @@ const char *TICALL ticable_port_to_string(TicablePort port)
 TIEXPORT 
 const char *TICALL ticable_method_to_string(TicableMethod method)
 {
-	static char buffer[64];
+	static char buffer[33];
 	char *p2 = "";
 
-	strcpy(buffer, "unknown");
+	p2 = "unknown";
 	
 	if (method & IOM_ASM)
 		p2 = "direct access (asm)";

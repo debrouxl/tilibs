@@ -61,7 +61,7 @@ const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
 
 TicableDataRate tdr;         // Data rate during transfers
-TicablePortInfo pi;
+TicablePortInfo pi;	     // I/O ports detected
 
 /****************/
 /* Entry points */
