@@ -203,7 +203,7 @@ typedef enum {
 
 // ROM size for the ROM dump function
 typedef enum {
-  ROM_1MB = 1, ROM_2MB
+  ROM_1MB = 1, ROM_2MB, ROM_SE,
 } TicalcRomSize;
 
 // Shell to use with ROM dumping

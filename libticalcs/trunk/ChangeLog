@@ -2,13 +2,18 @@ SubVersion: $Id$
 
 Log:
 
+- 28/02/2005, version 4.5.7: roms
+	Removed JB testing code in TI92 is_ready. 
+	Fixed TI89 Titanium ROM size in the progress bar.
+	Fixed ROM dumping support for TI83+/84+ Silver Edition but still unusable.
+
 - 29/01/2005, version 4.5.6: roms
 	Fixed TI89 unit to support Titanium FLASH transfers.
 	Fixed TI73 unit to support TI84+ FLASH transfers.
 
 - 02/10/2004, version 4.5.5: roms
 	Replaced VTi's TI83+ ROM dumper by a new one developped by 	
-	"Benjamin Moody" <bmoody@WPI.EDU>. Works with 83+(SE)/84+(SE).
+	"Benjamin Moody" <bmoody@WPI.EDU>. Works with 83+/84+.
 
 - 18/09/2004, version 4.5.4: roms
 	Added TI89 Titanium support. File format seems to be the same as TI89.
