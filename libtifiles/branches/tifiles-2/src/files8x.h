@@ -136,34 +136,27 @@ struct ti8x_flash
 /* Functions */
 
 // allocating
-TIEXPORT Ti8xRegular *TICALL ti8x_create_regular_content(void);
-TIEXPORT Ti8xBackup *TICALL ti8x_create_backup_content(void);
-TIEXPORT Ti8xFlash *TICALL ti8x_create_flash_content(void);
+TIEXPORT Ti8xRegular* TICALL ti8x_content_create_regular(void);
+TIEXPORT Ti8xBackup*  TICALL ti8x_content_create_backup(void);
+TIEXPORT Ti8xFlash*   TICALL ti8x_content_create_flash(void);
 // freeing
-TIEXPORT int TICALL ti8x_free_regular_content(Ti8xRegular * content);
-TIEXPORT int TICALL ti8x_free_backup_content(Ti8xBackup * content);
-TIEXPORT int TICALL ti8x_free_flash_content(Ti8xFlash * content);
-// reading
-TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
-					   Ti8xRegular * content);
-TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
-					  Ti8xBackup * content);
-TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
-					 Ti8xFlash * content);
-// writing
-TIEXPORT int TICALL ti8x_write_regular_file(const char *filename,
-					    Ti8xRegular * content,
-					    char **filename2);
-TIEXPORT int TICALL ti8x_write_backup_file(const char *filename,
-					   Ti8xBackup * content);
-TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
-					  Ti8xFlash * content);
+TIEXPORT int TICALL ti8x_content_free_regular(Ti8xRegular *content);
+TIEXPORT int TICALL ti8x_content_free_backup(Ti8xBackup *content);
+TIEXPORT int TICALL ti8x_content_free_flash(Ti8xFlash *content);
 // displaying
-TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content);
-TIEXPORT int TICALL ti8x_display_backup_content(Ti8xBackup * content);
-TIEXPORT int TICALL ti8x_display_flash_content(Ti8xFlash * content);
-TIEXPORT int TICALL ti8x_display_file(const char *filename);
+TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular *content);
+TIEXPORT int TICALL ti8x_content_display_backup(Ti8xBackup *content);
+TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash *content);
 
-int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
+// reading
+TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, Ti8xRegular *content);
+TIEXPORT int TICALL ti8x_file_read_backup(const char *filename, Ti8xBackup *content);
+TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *content);
+// writing
+TIEXPORT int TICALL ti8x_file_write_regular(const char *filename, Ti8xRegular *content, char **filename2);
+TIEXPORT int TICALL ti8x_file_write_backup(const char *filename, Ti8xBackup *content);
+TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *content);
+// displaying
+TIEXPORT int TICALL ti8x_file_display(const char *filename);
 
 #endif

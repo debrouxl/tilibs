@@ -36,16 +36,16 @@
 // allocating
 TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
 {
-  return ti9x_create_regular_content();
+  return ti9x_content_create_regular();
 }
 
 // freeing
 TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
 {
   if (tifiles_calc_is_ti8x(content->model))
-    return ti8x_free_regular_content(content);
+    return ti8x_content_free_regular(content);
   else if (tifiles_calc_is_ti9x(content->model))
-    return ti9x_free_regular_content(content);
+    return ti9x_content_free_regular(content);
   else
     return ERR_BAD_CALC;
 }
@@ -55,9 +55,9 @@ TIEXPORT int tifiles_read_regular_file(const char *filename,
                                        TiRegular *content)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-    return ti8x_read_regular_file(filename, content);
+    return ti8x_file_read_regular(filename, content);
   else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-    return ti9x_read_regular_file(filename, content);
+    return ti9x_file_read_regular(filename, content);
   else
     return ERR_BAD_CALC;
 
@@ -70,9 +70,9 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
                                         char **real_fname)
 {
   if (tifiles_calc_is_ti8x(content->model))
-    return ti8x_write_regular_file(filename, content, real_fname);
+    return ti8x_file_write_regular(filename, content, real_fname);
   else if (tifiles_calc_is_ti9x(content->model))
-    return ti9x_write_regular_file(filename, content, real_fname);
+    return ti9x_file_write_regular(filename, content, real_fname);
   else
     return ERR_BAD_CALC;
 
@@ -83,9 +83,9 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
 TIEXPORT int TICALL tifiles_display_file(const char *filename)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-    return ti8x_display_file(filename);
+    return ti8x_file_display(filename);
   else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-    return ti9x_display_file(filename);
+    return ti9x_file_display(filename);
   else
     return ERR_BAD_CALC;
 

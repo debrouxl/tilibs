@@ -151,7 +151,7 @@ int ti8x_dup_Backup(Ti8xBackup * dst, Ti8xBackup * src)
 /*
   Free the content of a Ti8xRegular structure
 */
-TIEXPORT int TICALL ti8x_free_regular_content(Ti8xRegular * content)
+TIEXPORT int TICALL ti8x_content_free_regular(Ti8xRegular * content)
 {
   int i;
 
@@ -167,7 +167,7 @@ TIEXPORT int TICALL ti8x_free_regular_content(Ti8xRegular * content)
 /*
   Same as above
 */
-TIEXPORT int TICALL ti8x_free_backup_content(Ti8xBackup * content)
+TIEXPORT int TICALL ti8x_content_free_backup(Ti8xBackup * content)
 {
   free(content->data_part1);
   free(content->data_part2);
@@ -177,7 +177,7 @@ TIEXPORT int TICALL ti8x_free_backup_content(Ti8xBackup * content)
   return 0;
 }
 
-TIEXPORT int TICALL ti8x_free_flash_content(Ti8xFlash * content)
+TIEXPORT int TICALL ti8x_content_free_flash(Ti8xFlash * content)
 {
   free(content->pages);
   return 0;
@@ -194,7 +194,7 @@ TIEXPORT int TICALL ti8x_free_flash_content(Ti8xFlash * content)
   will be stored
   - int [out]: an error code
  */
-TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
+TIEXPORT int TICALL ti8x_file_read_regular(const char *filename,
 					   Ti8xRegular * content)
 {
   FILE *f;
@@ -327,7 +327,7 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
   will be stored
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
+TIEXPORT int TICALL ti8x_file_read_backup(const char *filename,
 					  Ti8xBackup * content)
 {
   FILE *f;
@@ -410,7 +410,7 @@ TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
   return 0;
 }
 
-TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
+TIEXPORT int TICALL ti8x_file_read_flash(const char *filename,
 					 Ti8xFlash * content)
 {
   FILE *f, *file;
@@ -529,7 +529,7 @@ TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
   - content [in]: the address of a structure
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
+TIEXPORT int TICALL ti8x_file_write_regular(const char *fname,
 					    Ti8xRegular * content,
 					    char **real_fname)
 {
@@ -642,7 +642,7 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
   - content [in]: the address of a structure
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_write_backup_file(const char *filename,
+TIEXPORT int TICALL ti8x_file_write_backup(const char *filename,
 					   Ti8xBackup * content)
 {
   FILE *f;
@@ -729,7 +729,7 @@ TIEXPORT int TICALL ti8x_write_backup_file(const char *filename,
   return 0;
 }
 
-TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
+TIEXPORT int TICALL ti8x_file_write_flash(const char *filename,
 					  Ti8xFlash * content)
 {
   FILE *f, *file;
@@ -777,7 +777,7 @@ TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
    - content [in]: the content to show
    - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
+TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular * content)
 {
   int i;
   char trans[17];
@@ -814,7 +814,7 @@ TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
   - content [in]: the content to show
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_display_backup_content(Ti8xBackup * content)
+TIEXPORT int TICALL ti8x_content_display_backup(Ti8xBackup * content)
 {
   tifiles_info("Signature:      <%s>\n",
 	  tifiles_calctype2signature(content->model));
@@ -847,7 +847,7 @@ TIEXPORT int TICALL ti8x_display_backup_content(Ti8xBackup * content)
   - content [in]: the content to show
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_display_flash_content(Ti8xFlash * content)
+TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash * content)
 {
   Ti8xFlash *ptr = content;
 
@@ -891,25 +891,32 @@ TIEXPORT int TICALL ti8x_display_flash_content(Ti8xFlash * content)
   - filename [in]: the file to stat
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti8x_display_file(const char *filename)
+TIEXPORT int TICALL ti8x_file_display(const char *filename)
 {
   Ti8xRegular content1;
   Ti8xBackup content2;
   Ti8xFlash content3;
 
-  if (tifiles_file_is_flash(filename)) {
-    ti8x_read_flash_file(filename, &content3);
-    ti8x_display_flash_content(&content3);
-    ti8x_free_flash_content(&content3);
-  } else if (tifiles_file_is_backup(filename)) {
-    ti8x_read_backup_file(filename, &content2);
-    ti8x_display_backup_content(&content2);
-    ti8x_free_backup_content(&content2);
-  } else if (tifiles_file_is_regular(filename)) {
-    ti8x_read_regular_file(filename, &content1);
-    ti8x_display_regular_content(&content1);
-    ti8x_free_regular_content(&content1);
-  } else {
+  if (tifiles_file_is_flash(filename)) 
+  {
+    ti8x_file_read_flash(filename, &content3);
+    ti8x_content_display_flash(&content3);
+    ti8x_content_free_flash(&content3);
+  } 
+  else if (tifiles_file_is_backup(filename)) 
+  {
+    ti8x_file_read_backup(filename, &content2);
+    ti8x_content_display_backup(&content2);
+    ti8x_content_free_backup(&content2);
+  } 
+  else if (tifiles_file_is_regular(filename)) 
+  {
+    ti8x_file_read_regular(filename, &content1);
+    ti8x_content_display_regular(&content1);
+    ti8x_content_free_regular(&content1);
+  } 
+  else 
+  {
     tifiles_info("Unknwon file type !\n");
     return ERR_BAD_FILE;
   }

@@ -34,6 +34,8 @@
 /* (Un)grouping content */
 /************************/
 
+int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
+
 /**
  * tifiles_group_contents:
  * @src_contents: a pointer on an array of #TiRegular structures. The array must be terminated by NULL.

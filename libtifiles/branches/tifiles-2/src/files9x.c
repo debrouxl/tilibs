@@ -46,21 +46,21 @@ extern int tifiles_calc_type;
 /* Allocating */
 /**************/
 
-TIEXPORT Ti9xRegular *TICALL ti9x_create_regular_content(void)
+TIEXPORT Ti9xRegular *TICALL ti9x_content_create_regular(void)
 {
   Ti9xRegular *content = (Ti9xRegular *) calloc(1, sizeof(Ti9xRegular));
 
   return content;
 }
 
-TIEXPORT Ti9xBackup *TICALL ti9x_create_backup_content(void)
+TIEXPORT Ti9xBackup *TICALL ti9x_content_create_backup(void)
 {
   Ti9xBackup *content = (Ti9xBackup *) calloc(1, sizeof(Ti9xBackup));
 
   return content;
 }
 
-TIEXPORT Ti9xFlash *TICALL ti9x_create_flash_content(void)
+TIEXPORT Ti9xFlash *TICALL ti9x_content_create_flash(void)
 {
   Ti9xFlash *content = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
   time_t tt;
@@ -152,7 +152,7 @@ int ti9x_dup_Flash(Ti9xFlash * dst, Ti9xFlash * src)
 /*
   Free the content of a Ti9xRegular structure
 */
-TIEXPORT int TICALL ti9x_free_regular_content(Ti9xRegular * content)
+TIEXPORT int TICALL ti9x_content_free_regular(Ti9xRegular *content)
 {
   int i;
 
@@ -165,13 +165,13 @@ TIEXPORT int TICALL ti9x_free_regular_content(Ti9xRegular * content)
   return 0;
 }
 
-TIEXPORT int TICALL ti9x_free_backup_content(Ti9xBackup * content)
+TIEXPORT int TICALL ti9x_content_free_backup(Ti9xBackup *content)
 {
   free(content->data_part);
   return 0;
 }
 
-TIEXPORT int TICALL ti9x_free_flash_content(Ti9xFlash * content)
+TIEXPORT int TICALL ti9x_content_free_flash(Ti9xFlash *content)
 {
   Ti9xFlash *ptr;
 
@@ -201,8 +201,7 @@ TIEXPORT int TICALL ti9x_free_flash_content(Ti9xFlash * content)
   will be stored
   - int [out]: an error code
  */
-TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
-					   Ti9xRegular * content)
+TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 {
   FILE *f;
   long cur_pos = 0;
@@ -295,8 +294,7 @@ TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
   will be stored
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
-					  Ti9xBackup * content)
+TIEXPORT int TICALL ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 {
   FILE *f;
   uint32_t file_size;
@@ -344,8 +342,7 @@ TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
   return 0;
 }
 
-TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
-					 Ti9xFlash * head)
+TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 {
   int tib = 0;
   FILE *f;
@@ -460,9 +457,7 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
   - content [in]: the address of a structure
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
-					    Ti9xRegular * content,
-					    char **real_fname)
+TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real_fname)
 {
   FILE *f;
   int i;
@@ -577,8 +572,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
   - content [in]: the address of a structure
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_write_backup_file(const char *filename,
-					   Ti9xBackup * content)
+TIEXPORT int TICALL ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 {
   FILE *f;
 
@@ -611,8 +605,7 @@ TIEXPORT int TICALL ti9x_write_backup_file(const char *filename,
   return 0;
 }
 
-TIEXPORT int TICALL ti9x_write_flash_file(const char *filename,
-					  Ti9xFlash * head)
+TIEXPORT int TICALL ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
 {
   FILE *f;
   Ti9xFlash *content = head;
@@ -654,7 +647,7 @@ TIEXPORT int TICALL ti9x_write_flash_file(const char *filename,
    - content [in]: the content to show
    - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content)
+TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content)
 {
   int i;
   char trans[17];
@@ -691,7 +684,7 @@ TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content)
   - content [in]: the content to show
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_display_backup_content(Ti9xBackup * content)
+TIEXPORT int TICALL ti9x_content_display_backup(Ti9xBackup *content)
 {
   tifiles_info("signature:      <%s>\n",
 	  tifiles_calctype2signature(content->model));
@@ -713,7 +706,7 @@ TIEXPORT int TICALL ti9x_display_backup_content(Ti9xBackup * content)
   - content [in]: the content to show
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_display_flash_content(Ti9xFlash * content)
+TIEXPORT int TICALL ti9x_content_display_flash(Ti9xFlash *content)
 {
   Ti9xFlash *ptr;
 
@@ -761,26 +754,32 @@ TIEXPORT int TICALL ti9x_display_flash_content(Ti9xFlash * content)
   - filename [in]: the file to stat
   - int [out]: an error code
 */
-TIEXPORT int TICALL ti9x_display_file(const char *filename)
+TIEXPORT int TICALL ti9x_file_display(const char *filename)
 {
   Ti9xRegular content1;
   Ti9xBackup content2;
   Ti9xFlash content3;
 
   // the testing order is important: regular before backup (due to TI89/92+)
-  if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) {
-    ti9x_read_flash_file(filename, &content3);
-    ti9x_display_flash_content(&content3);
-    ti9x_free_flash_content(&content3);
-  } else if (tifiles_file_is_regular(filename)) {
-    ti9x_read_regular_file(filename, &content1);
-    ti9x_display_regular_content(&content1);
-    ti9x_free_regular_content(&content1);
-  } else if (tifiles_file_is_backup(filename)) {
-    ti9x_read_backup_file(filename, &content2);
-    ti9x_display_backup_content(&content2);
-    ti9x_free_backup_content(&content2);
-  } else
+  if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) 
+  {
+    ti9x_file_read_flash(filename, &content3);
+    ti9x_content_display_flash(&content3);
+    ti9x_content_free_flash(&content3);
+  } 
+  else if (tifiles_file_is_regular(filename)) 
+  {
+    ti9x_file_read_regular(filename, &content1);
+    ti9x_content_display_regular(&content1);
+    ti9x_content_free_regular(&content1);
+  } 
+  else if (tifiles_file_is_backup(filename)) 
+  {
+    ti9x_file_read_backup(filename, &content2);
+    ti9x_content_display_backup(&content2);
+    ti9x_content_free_backup(&content2);
+  } 
+  else
     tifiles_info("Unknwon file type !\n");
 
   return 0;
