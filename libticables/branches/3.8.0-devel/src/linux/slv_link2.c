@@ -48,11 +48,13 @@
    data byte per byte (latency ?!). But, this make data-rate significantly 
    decrease (1KB/s instead of 5KB/s).
    Another way is to use partially buffered write operations: send consecutive
-   blocks as a whole but partial block byte per byte. This is the best compromise.
+   blocks as a whole but partial block byte per byte. This is the best 
+   compromise.
 
    - another particular effect (quirk): sometimes (usually when calc need to 
-   reply and takes a while), a read call can returns with neither data nor timeout. 
-   Simply retry a read call and it works fine. The best example is to get IDLIST.
+   reply and takes a while), a read call can returns with neither data 
+   nor timeout. Simply retry a read call and it works fine. The best example 
+   is to get IDLIST.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -111,7 +113,7 @@ static void find_tigl_device(void)
   	for (bus = usb_busses; bus; bus = bus->next) {
     		for (dev = bus->devices; dev; dev = dev->next) {
       			if ((dev->descriptor.idVendor == TIGL_VENDOR_ID) &&
-	  			(dev->descriptor.idProduct == TIGL_PRODUCT_ID)) {
+	  			(dev->descriptor.idProduct==TIGL_PRODUCT_ID)) {
 				/* keep track of the TIGL device */
 				printl1(0, _("TIGL-USB found.\n"));
 		
@@ -333,7 +335,7 @@ int slv_get2(uint8_t * data)
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
-				printl1(2, _("weird, usb_bulk_read returns without any data; retrying for circumventing the quirk...\n"));
+				printl1(2, _("\nweird, usb_bulk_read returns without any data & error; retrying...\n"));
 	    	}
 		while(!ret);
 
