@@ -721,6 +721,7 @@ TICALL ticable_get_support(int type)
 /* Utility functions */
 /*********************/
 
+extern const char *search_for_tiser_node(int minor);
 extern const char *search_for_tipar_node(int minor);
 
 static int convert_port_into_device(void)

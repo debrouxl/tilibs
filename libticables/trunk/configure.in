@@ -165,7 +165,7 @@ AC_EXEEXT
 
 # detect system type
 case "$host" in
-#	alpha-*-*bsd*)         ARCH="-D__FBSD__" ;;
+	*-*-*bsd*)             ARCH="-D__BSD__" ;;
 	alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
 	alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;
 	arm*-*-linux-*)        ARCH="-D__ARM__ -D__LINUX__" ;;
@@ -174,7 +174,6 @@ case "$host" in
 	i[[3456]]86-*-hurd-*)  ARCH="-D__LINUX__" ;;
 	i[[3456]]86-*-mingw*)  ARCH="-D__WIN32__ -D__MINGW32__ -Os -s" ;;
 	i[[3456]]86-*-cygwin)  ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
-	i[[3456]]86-*-*bsd*)   ARCH="-D__BSD__" ;;
 	ia64-*-linux-*)        ARCH="-D__LINUX__" ;;
 	m68k-*-linux-*)        ARCH="-D__M68K__ -D__LINUX__" ;;
 	mips-*-linux-*)        ARCH="-D__MIPS__ -D__LINUX__" ;;
@@ -191,14 +190,6 @@ AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_PROG_LIBTOOL
-
-# some extra flags
-CFLAGS="$CFLAGS $ARCH -Wall -D_REENTRANT $LIBUSB_CFLAGS"
-LDFLAGS="$LDFLAGS $LIBUSB_LDFLAGS"
-
-# pass flags
-AC_SUBST(CFLAGS)
-AC_SUBST(LDFLAGS)
 
 # logging facilities
 AC_ARG_ENABLE(logging, [  --enable-logging        enables logging facilites [default=no]],,enable_logging=no)
@@ -218,6 +209,14 @@ AM_GNU_GETTEXT
 
 locale_dir='${prefix}/share/locale'
 AC_SUBST(locale_dir)
+
+# some extra flags
+CFLAGS="$CFLAGS $ARCH -Wall -D_REENTRANT $LIBUSB_CFLAGS"
+LDFLAGS="$LDFLAGS $LIBUSB_LDFLAGS $INTLLIBS"
+
+# pass flags
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
 
 # output files
 AC_OUTPUT([

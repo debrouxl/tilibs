@@ -1426,7 +1426,7 @@ int slv_open2()
   /* Reset endpoints */
   ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   if (ret < 0) {
-    DISPLAY_ERR("usb_resetep: %s\n", usb_strerror());
+    DISPLAY_ERR("usb_clear_halt: %s\n", usb_strerror());
 
     ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     if (ret < 0) {
@@ -1442,7 +1442,7 @@ int slv_open2()
 
   ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   if (ret < 0) {
-    DISPLAY_ERR("usb_resetep: %s\n", usb_strerror());
+    DISPLAY_ERR("usb_clear_halt: %s\n", usb_strerror());
 
     ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     if (ret < 0) {
