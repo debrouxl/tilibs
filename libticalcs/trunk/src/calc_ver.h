@@ -29,7 +29,7 @@
 #define LIB_FILES_VERSION_REQUIRED  "0.5.6"	// useless with pkg-config
 
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.5.0"
+# define LIBTICALCS_VERSION "4.5.2"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif

@@ -41,7 +41,9 @@ typedef int          tboolean;
 typedef void*	     tpointer;
 
 #define FALSE   0
+#ifndef TRUE
 #define TRUE    (!FALSE)
+#endif
 // by roms (end)
 
 

@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /w /W0 /GX /ZI /Od /I "../../../files/src" /I "../../../cables/src/" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "WIN32" /D "_WINDOWS" /D "__WIN32__" /D "ENABLE_NLS" /FD /c
+# ADD CPP /nologo /MTd /w /W0 /GX /ZI /Od /I "../../files/src" /I "../../cables/src/" /I "../../../libticables/src" /I "../../../libtifiles/src" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "WIN32" /D "_WINDOWS" /D "__WIN32__" /D "ENABLE_NLS" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -199,6 +199,10 @@ SOURCE=..\..\src\Intrface.c
 # Begin Source File
 
 SOURCE=..\..\src\Probe.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tnode.c
 # End Source File
 # End Group
 # Begin Group "Headers"
@@ -330,6 +334,10 @@ SOURCE=..\..\src\Tixx.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\tnode.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\update.h
 # End Source File
 # End Group
@@ -380,10 +388,6 @@ SOURCE=..\..\ChangeLog
 # Begin Source File
 
 SOURCE=.\ticalcs.rc
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\win32_libs\glib\glib-src-20001226\src\glib\glib_dynamic\glib-1.3.lib"
 # End Source File
 # End Target
 # End Project
