@@ -107,6 +107,18 @@ int slv_init()
 	return 0;
 }
 
+int slv_exit()
+{
+  	if (dev_fd) {
+    		close(dev_fd);
+    		dev_fd = 0;
+  	}
+
+  	STOP_LOGGING();
+
+  	return 0;
+}
+
 int slv_open(void)
 {
 #ifdef HAVE_LINUX_TICABLE_H
@@ -161,18 +173,6 @@ int slv_close(void)
   	return 0;
 }
 
-int slv_exit()
-{
-  	if (dev_fd) {
-    		close(dev_fd);
-    		dev_fd = 0;
-  	}
-
-  	STOP_LOGGING();
-
-  	return 0;
-}
-
 int slv_put(uint8_t data)
 {
   	int ret;
@@ -183,21 +183,20 @@ int slv_put(uint8_t data)
 #if !defined( BUFFERED_W )
   	/* Byte per uint8_t */
   	ret = write(dev_fd, (void *) (&data), 1);
+  	
   	if(ret == -1)
   		return ERR_WRITE_ERROR;
   	if(!ret)
   		return ERR_WRITE_TIMEOUT;
 #else
-  	/* Packets (up to 32 bytes) */
+  	/* Fill buffer (up to 32 bytes) */
   	wBuf[nBytesWrite++] = data;
+  	
+  	/* Buffer full? Send the whole buffer at once */
   	if (nBytesWrite == MAX_PACKET_SIZE) {
-    		ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);
+    		ret = send_fblock(wBuf2, nBytesWrite2);
     		nBytesWrite = 0;
-
-    		if(ret == -1)
-    			return ERR_WRITE_ERROR;
-		if(!ret)
-			return ERR_WRITE_TIMEOUT;
+		if(ret) return ret;
   	}
 #endif
 
@@ -206,30 +205,27 @@ int slv_put(uint8_t data)
 
 int slv_get(uint8_t * data)
 {
+	int ret;
   	tiTIME clk;
   	static uint8_t *rBufPtr;
-  	int ret;
 
 #if defined( BUFFERED_W )
-  	/* Flush write buffer */
+  	/* Flush write buffer byte per byte (more reliable) */
   	if (nBytesWrite > 0) {
-    		ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);
-    		nBytesWrite = 0;
-    		
-    		if(ret == -1)
-    			return ERR_READ_ERROR;
-    		if(!ret)
-    			return ERR_READ_TIMEOUT;
-  	}
+    		ret = send_pblock(wBuf2, nBytesWrite2);
+		nBytesWrite2 = 0;
+		if(ret) return ret;
+	}
 #endif
 
 #ifdef BUFFERED_R
-  	/* This routine try to read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
-     	store them in a buffer for subsequent accesses */
-  	if (nBytesRead == 0) {
+  	/* Read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
+     		store them in a buffer for subsequent accesses */
+  	if (nBytesRead <= 0) {
     		toSTART(clk);
     		do {
       			ret = read(dev_fd, (void *) rBuf, MAX_PACKET_SIZE);
+      			
       			if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
       			if (ret == 0)		// quirk (seems to be due to Cypress components)
@@ -248,12 +244,6 @@ int slv_get(uint8_t * data)
 
   	*data = *rBufPtr++;
   	nBytesRead--;
-#else
-  	nBytesRead = read(dev_fd, (void *) data, 1);
-  	if (nBytesRead == -1)
-    		return ERR_READ_ERROR;
-  	if (nBytesRead == 0)
-    		return ERR_READ_TIMEOUT;
 #endif
 
   	tdr.count++;
@@ -318,3 +308,33 @@ int slv_register_cable_1(TicableLinkCable * lc)
 
   return 0;
 }
+
+/***/
+
+#if defined( BUFFERED_W )
+static int send_fblock(uint8_t *data, int length)
+{
+	int ret;
+	
+	ret = write(dev_fd, (void *) (&data), length);
+  	
+  	if(!ret)
+  		return ERR_WRITE_TIMEOUT;
+  	if(ret == -1)
+  		return ERR_WRITE_ERROR;
+
+	return 0;
+}
+
+static int send_pblock(uint8_t *data, int length)
+{
+	int i, ret;
+
+	for(i=0; i<length; i++) {
+		ret = send_fblock(&wBuf2[i], 1);
+		if(ret) return ret;
+	}
+
+	return 0;
+}
+#endif

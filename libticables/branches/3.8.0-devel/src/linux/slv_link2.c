@@ -243,6 +243,21 @@ int slv_open2()
   	return 0;
 }
 
+int slv_exit2()
+{
+  	tigl_dev = NULL;
+
+	STOP_LOGGING();
+
+  	if (tigl_han != NULL) {
+    		usb_release_interface(tigl_han, 0);
+    		usb_close(tigl_han);
+    		tigl_han = NULL;
+  	}
+
+  	return 0;
+}
+
 static int send_fblock(uint8_t *data, int length);
 static int send_pblock(uint8_t *data, int length);
 
@@ -258,21 +273,6 @@ int slv_close2()
 		if(ret) return ret;
 	}
 #endif
-
-  	return 0;
-}
-
-int slv_exit2()
-{
-  	tigl_dev = NULL;
-
-	STOP_LOGGING();
-
-  	if (tigl_han != NULL) {
-    		usb_release_interface(tigl_han, 0);
-    		usb_close(tigl_han);
-    		tigl_han = NULL;
-  	}
 
   	return 0;
 }
@@ -317,8 +317,6 @@ int slv_get2(uint8_t * data)
   	tiTIME clk;
   	static uint8_t *rBuf2Ptr;
 
-  	tdr.count++;
-
 #if defined( BUFFERED_W )
         /* Flush write buffer byte per byte (more reliable) */
   	if (nBytesWrite2 > 0) {
@@ -328,11 +326,15 @@ int slv_get2(uint8_t * data)
 	}
 #endif
 
+#ifdef BUFFERED_R
+	/* Read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
+     		store them in a buffer for subsequent accesses */
   	if (nBytesRead2 <= 0) {
 	    	toSTART(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
 					    MAX_PACKET_SIZE, to);
+					    
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
@@ -355,6 +357,9 @@ int slv_get2(uint8_t * data)
 	
   	*data = *rBuf2Ptr++;
   	nBytesRead2--;
+#endif
+  	
+  	tdr.count++;
   	LOG_DATA(*data);
 
   	return 0;
@@ -386,6 +391,7 @@ int slv_check2(int *status)
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
 					    MAX_PACKET_SIZE, to);
+					    
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
