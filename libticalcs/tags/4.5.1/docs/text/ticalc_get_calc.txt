@@ -1,0 +1,15 @@
+[Main]
+Name=ticalc_get_calc
+Type=Function
+Header=calc_int.h
+Definition=int ticalc_get_calc (int *type);
+
+[Parameters]
+type : put the currently set calculator type in this variable.
+Returns : always 0.
+
+[Summary]
+Returns the calculator previously set with @ticalc_set_calc@.
+
+[See also]
+@ticalc_set_calc@, @ticalc_return_calc@

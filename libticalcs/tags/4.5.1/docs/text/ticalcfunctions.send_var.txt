@@ -1,0 +1,23 @@
+[Main]
+Name=send_var
+Type=Function
+Header=calc_int.h
+Definition=int (*send_var) (const char *filename, int mode, char **actions);
+
+[Parameters]
+filename : a single or group file
+mode : a set of @TicalcMaskMode@ flags
+actions : an array of action.
+Returns : always 0.
+
+[Summary]
+Send the whole file content to the calculator.
+
+[Description]
+This function send the variable(s) stored into the file to the calculator.
+Depending on the mode, attributes and folder can be kept.
+
+Depending of the actions array, variables can be skipped/renamed/overwritten.
+
+[See also]
+@ticalcfunctions.recv_var@

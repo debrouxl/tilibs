@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: TiCalcs
+Description: TI's calculator management library
+Version: @VERSION@
+Requires: ticables,tifiles,glib
+Libs: -L${libdir} -lticalcs
+Cflags: -I${includedir}/tilp
+

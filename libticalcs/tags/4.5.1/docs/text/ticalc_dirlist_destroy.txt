@@ -1,0 +1,14 @@
+[Main]
+Name=ticalc_dirlist_destroy
+Type=Function
+Header=calc_int.h
+Definition=void ticalc_dirlist_destroy (@TNode@ **tree)
+
+[Parameters]
+tree : the address of a tree.
+
+[Summary]
+Destroy (free) the tree got with @ticalcfunctions.directorylist@.
+
+[See also]
+@ticalc_dirlist_display@, @ticalcfunctions.directorylist@
