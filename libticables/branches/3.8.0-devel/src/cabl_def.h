@@ -147,16 +147,20 @@ typedef struct {
 // for probe.c
 #define MAX_LPT_PORTS	3	// up to 3
 #define MAX_COM_PORTS	4	// up to 4
-typedef struct {
-  int lpt_count;		// Current number of printer port, default=1
-  int lpt_addr[MAX_LPT_PORTS + 1];
-  int lpt_mode[MAX_LPT_PORTS + 1];
-  char lpt_name[MAX_LPT_PORTS + 1][17];
 
-  int com_count;		// Current number of serial port, default=1
-  int com_addr[MAX_COM_PORTS + 1];
-  int com_mode[MAX_COM_PORTS + 1];
-  char com_name[MAX_COM_PORTS + 1][17];
+typedef struct {
+	int lpt_count;		// Current number of parallel ports
+	int lpt_addr[MAX_LPT_PORTS];
+	int lpt_mode[MAX_LPT_PORTS];
+	char lpt_name[MAX_LPT_PORTS][17];
+	
+	int com_count;		// Current number of serial ports
+	int com_addr[MAX_COM_PORTS];
+	int com_mode[MAX_COM_PORTS];
+	char com_name[MAX_COM_PORTS][17];
+	
+	int usb_count;          // Current number of usb ports
+	//...
 } TicablePortInfo;
 
 typedef struct {

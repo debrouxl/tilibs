@@ -61,7 +61,7 @@ const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
 
 TicableDataRate tdr;         // Data rate during transfers
-
+TicablePortInfo pi;
 
 /****************/
 /* Entry points */
@@ -97,10 +97,10 @@ TICALL ticable_init()
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	textdomain(PACKAGE);
 #endif
-  	DISPLAY(_("Libticables: version %s\n"), LIBTICABLES_VERSION);
+  	DISPLAY(_("libticables: version %s\n"), LIBTICABLES_VERSION);
 
 	// list built-in compiled options...
-	DISPLAY(_("Libticables: built for %s target.\n"), 
+	DISPLAY(_("libticables: built for %s target.\n"), 
 #if defined(__LINUX__)
 		"__LINUX__"
 #elif defined(__BSD__)
@@ -118,7 +118,9 @@ TICALL ticable_init()
 
 	// check I/O resources
   	detect_resources();
-  	
+
+	ticable_detect_port(&pi);
+
   	return 0;
 }
 
@@ -337,7 +339,7 @@ extern TicableLinkCable *tcl;
 
 static void print_settings(void)
 {
-  	DISPLAY(_("Libticables: list of settings...\n"));
+  	DISPLAY(_("libticables: list of settings...\n"));
   	
   	DISPLAY(_("  Link cable: %s\n"), 
 		ticable_cabletype_to_string(cable_type));

@@ -71,97 +71,162 @@ int linux_detect_os(char **os_type)
 	return 0;
 }
 
-
 int linux_detect_port(TicablePortInfo * pi)
 {
-  int fd;
-  FILE *f;
-  char buffer[MAXCHARS];
-  char info[MAXCHARS];
-  int i, j;
-  DIR *dir;
-  struct dirent *file;
-  int res;
-  char path[MAXCHARS] = "/proc/sys/dev/parport/";
+	int fd;
+	FILE *f;
+        int i, j;
+        int sa, ea;
+        char name[10];
+        int nargs;
+        char buffer[MAXCHARS];
+        char info[MAXCHARS];
+        DIR *dir;
+        struct dirent *file;
+        int res;
+        char path[25];
 
-  bzero(pi, sizeof(TicablePortInfo));
-  
-  /* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ... */
-  DISPLAY(_("Probing parallel ports...\r\n"));
-  if ((dir = opendir("/proc/sys/dev/parport/")) == NULL) {
-    DISPLAY_ERROR(_
-		  ("Unable to open this directory: '/proc/sys/dev/parport/'.\r\n"));
-    return -1;
-  }
+	// clear structure
+	bzero(pi, sizeof(TicablePortInfo));
 
-  while ((file = readdir(dir)) != NULL) {
-    if (!strcmp(file->d_name, "."))
-      continue;
-    if (!strcmp(file->d_name, ".."))
-      continue;
+	/* Ensure /proc is mounted */
 
-    if (strstr(file->d_name, "parport")) {
-      res = sscanf(file->d_name, "parport%i", &i);
-      if (res == 1) {
-	if (i >= MAX_LPT_PORTS - 1)
-	  break;
-	strcpy(path, "/proc/sys/dev/parport/");
-	strcat(path, file->d_name);
-	strcat(path, "/");
-	strcat(path, "base-addr");
-	sprintf(pi->lpt_name[i], "/dev/par%i", i);
-	f = fopen(path, "rt");
-	if (f == NULL) {
-	  DISPLAY_ERROR(_("unable to open this entry: <%s>\r\n"), path);
-	} else {
-	  fscanf(f, "%i", &(pi->lpt_addr[i]));
-	  DISPLAY(_
-		  ("  %s at address 0x%03x\r\n"),
-		  pi->lpt_name[i], pi->lpt_addr[i]);
-	  fclose(f);
+	fd = access("/proc/", F_OK);
+        if (fd < 0) {
+                DISPLAY_ERROR(_("The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc proc'.\n"));
+		return -1;
 	}
-      } else {
-	DISPLAY_ERROR(_("Invalid parport entry: <%s>.\r\n"), file->d_name);
-      }
-    }
-  }
 
-  if (closedir(dir) == -1) {
-    DISPLAY_ERROR(_("Closedir\r\n"));
-  }
-  DISPLAY(_("Done.\r\n"));
+	/* Do a first/rapid checking with /proc/ioports */
+	
+	DISPLAY(_("libticables: quick search for parallel/serial ports...\r\n"));
+	
+	// check for existence
+	fd = access("/proc/ioports", F_OK);
+	if (fd < 0) {
+		DISPLAY_ERROR(_("The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"));
+		DISPLAY(_("Done.\r\n"));
+		return -1;
+	}
+	
+	// open file
+	f = fopen("/proc/ioports", "rt");
+	if (f == NULL) {
+		DISPLAY_ERROR(_("Unable to open /proc/ioports.\r\n"));
+		return -1;
+	}
 
-  /* Use /proc/tty/driver/serial */
-  DISPLAY(_("Probing serial ports...\r\n"));
-  fd = access("/proc/tty/driver/serial", F_OK);
-  if (fd < 0) {
-    DISPLAY_ERROR(_
-		  ("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\r\n"));
-    DISPLAY(_("Done.\r\n"));
-    return -1;
-  }
+	// parses all entries
+	while(!feof(f)) {
+		fgets(buffer, 256, f);
+		// Form: '03f8-03ff : serial' or '0378-037a : parport'
+		nargs = sscanf(buffer, "%x-%x : %s", &sa, &ea, name);
+		if(nargs < 3)
+			continue;
+		
+		if(strstr(name, "serial"))
+			DISPLAY(_("  serial port found at 0x%03x\n"), sa);
+		if(strstr(name, "parport"))
+			DISPLAY(_("  parallel port found at 0x%03x\n"), sa);
+	}
 
-  f = fopen("/proc/tty/driver/serial", "rt");
-  if (f == NULL) {
-    DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
-		  "/proc/tty/driver/serial");
-    return -1;
-  }
+	// close file
+	fclose(f);
 
-  fgets(buffer, 256, f);
-  for (i = 0; i < MAX_COM_PORTS; i++) {
-    fgets(buffer, 256, f);
-    sscanf(buffer, "%i: uart:%s port:%03X ", &j, info,
-	   &((pi->com_addr)[i]));
-    if (strcmp(info, "unknown")) {
-      sprintf(pi->com_name[i], "/dev/ttyS%i", j);
-      DISPLAY("  /dev/ttyS%i: %8s adr:%03X\r\n", j, info, pi->com_addr[i]);
-    } else
-      pi->com_addr[i] = 0;
-  }
-  DISPLAY(_("Done.\r\n"));
+	/* Do a thorough check */
 
-  return 0;
+	DISPLAY(_("libticables: search for all ports...\r\n"));
+
+	/* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
+	   to get infos on parallel ports */
+
+	// open /proc/sys/dev/parport/ directory
+	if ((dir = opendir("/proc/sys/dev/parport/")) == NULL) {
+		DISPLAY_ERROR(_("Unable to open '/proc/sys/dev/parport/'.\n"));
+		return -1;
+	}
+
+	// parse for sub-directories
+	while ((file = readdir(dir)) != NULL) {
+		if (!strcmp(file->d_name, "."))
+			continue;
+		if (!strcmp(file->d_name, ".."))
+			continue;
+		
+		// sub-dir such as parport0 ?
+		if (strstr(file->d_name, "parport")) {
+			res = sscanf(file->d_name, "parport%i", &i);
+			if (res == 1) {
+				if (i >= MAX_LPT_PORTS - 1)
+					break;
+
+				// yes, open base-addr file
+				strcpy(path, "/proc/sys/dev/parport/");
+				strcat(path, file->d_name);
+				strcat(path, "/");
+				strcat(path, "base-addr");
+				sprintf(pi->lpt_name[i], "/dev/parport%i", i);
+				f = fopen(path, "rt");
+				if (f == NULL) {
+					DISPLAY_ERROR(_("unable to open this entry: <%s>\r\n"), path);
+				} else {
+					fscanf(f, "%i", &(pi->lpt_addr[i]));
+					DISPLAY(_("  %s at 0x%03x\n"),
+						pi->lpt_name[i], 
+						pi->lpt_addr[i]);
+					fclose(f);
+				}
+			} else {
+				DISPLAY_ERROR(_("Invalid parport entry: <%s>.\r\n"), file->d_name);
+			}
+		}
+	}
+	
+	if (closedir(dir) == -1) {
+		DISPLAY_ERROR(_("Closedir\r\n"));
+	}
+	
+	/* Use '/proc/tty/driver/serial' to get infos on serial ports */
+
+	// test for file access
+	fd = access("/proc/tty/driver/serial", F_OK);
+	if (fd < 0) {
+		DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\r\n"));
+		DISPLAY(_("Done.\r\n"));
+		return -1;
+	}
+
+	// open it
+	f = fopen("/proc/tty/driver/serial", "rt");
+	if (f == NULL) {
+		DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
+			      "/proc/tty/driver/serial");
+		return -1;
+	}
+	
+	// skip first line ('serinfo:1.0 driver revision:')
+	fgets(buffer, 256, f);
+
+	// read entries: '0: uart:16550A port:000003F8 irq:4 tx:0 rx:0'
+	for (i = 0; i < MAX_COM_PORTS; i++) {
+		fgets(buffer, 256, f);
+		sscanf(buffer, "%i: uart:%s port:%x ", 
+		       &j, info, &((pi->com_addr)[i]));
+		if (strcmp(info, "unknown")) {
+			sprintf(pi->com_name[i], "/dev/ttyS%i", j);
+			DISPLAY("  ttyS%i at 0x%03X\r\n", j, pi->com_addr[i]);
+		} else
+			pi->com_addr[i] = 0;
+	}
+
+	// close
+	fclose(f);
+
+	/* Use '/proc/bus/usb/devices' to get infos on usb ports */
+
+	// to do...
+
+	return 0;
 }
 
 
@@ -170,243 +235,9 @@ char *result(int i)
   return ((i == 0) ? _("ok") : _("nok"));
 }
 
-/*
-  Returns mode string from mode value.
-*/
-const char *get_attributes(mode_t attrib)
-{
-	static char s[13] = " ---------- ";
-      
-        if (attrib & S_IRUSR)
-                s[2] = 'r';
-        if (attrib & S_IWUSR)
-                s[3] = 'w';
-        if (attrib & S_ISUID) {
-                if (attrib & S_IXUSR)
-                        s[4] = 's';
-		else
-                        s[4] = 'S';
-        }
-        else if (attrib & S_IXUSR)
-                s[4] = 'x';
-        if (attrib & S_IRGRP)
-                s[5] = 'r';
-        if (attrib & S_IWGRP)
-                s[6] = 'w';
-        if (attrib & S_ISGID) {
-                if (attrib & S_IXGRP)
-			s[7] = 's';
-		else
-                        s[7] = 'S';
-        }
-        else if (attrib & S_IXGRP)
-                s[7] = 'x';
-	if (attrib & S_IROTH)
-                s[8] = 'r';
-        if (attrib & S_IWOTH)
-                s[9] = 'w';
-        if (attrib & S_ISVTX) {
-                if (attrib & S_IXOTH)
-                        s[10] = 't';
-                else
-                        s[10] = 'T';
-        }
-	return s;
-}
-
-/*
-   Returns user name from id.
-*/
-const char *get_user_name(uid_t uid)
-{
-	struct passwd *pwuid;
-
-        if((pwuid = getpwuid(uid)) != NULL)
-		return pwuid->pw_name;
-
-	return "root";
-}
-
-/*
-  Returns group name from id.
-*/
-const char *get_group_name(uid_t uid)
-{
-	struct group *grpid;
-        
-	if ((grpid = getgrgid(uid)) != NULL)
-                return grpid->gr_name;
-
-	return "root";
-}
-
-/* 
-   Attempt to find a specific string in /proc (vfs) 
-   - entry [in] : an entry such as '/proc/devices'
-   - str [in) : an occurence to find (such as 'tipar')
-*/
-static int find_string_in_proc(char *entry, char *str)
-{
-	FILE *f;
-	char buffer[MAXCHARS];
-	int found = 0;
-	
-	f = fopen(entry, "rt");
-	if (f == NULL) {
-		return -1;
-	}
-	while (!feof(f)) {
-		fscanf(f, "%s", buffer);
-		if (strstr(buffer, str)) {
-			found = 1;
-		}
-	}
-	fclose(f);
-	
-	return found;
-}
-
-static void check_for_tipar_module(void)
-{
-	int devfs = 0;
-	struct stat st;
-	char name[15];
-	int ret = !0;
-
-#ifndef HAVE_LINUX_TICABLE_H
-	DISPLAY(_("  IO_TIPAR: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TIPAR: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-
-	if(!access("/dev/.devfs", F_OK))
-		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
-
-	if(!devfs)
-		strcpy(name, "/dev/tipar0");
-	else
-		strcpy(name, "/dev/ticables/par/0");
-
-	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
-	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
-}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
-                        get_attributes(st.st_mode),
-                        get_user_name(st.st_uid),
-                        get_group_name(st.st_gid));
-	}
- 
-	if (find_string_in_proc("/proc/devices", "tipar") ||
-            find_string_in_proc("/proc/modules", "tipar"))
-		DISPLAY(_("      module: loaded\r\n"));
-	else
-		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TIPAR : 0;
- #endif
-}
-
-static void check_for_tiser_module(void)
-{
-	int devfs = 0;
-	struct stat st;
-	char name[15];
-	int ret = !0;
-
-#ifndef HAVE_LINUX_TICABLE_H
-	DISPLAY(_("  IO_TISER: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TISER: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-
-	if(!access("/dev/.devfs", F_OK))
-		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
-
-	if(!devfs)
-		strcpy(name, "/dev/tiser0");
-	else
-		strcpy(name, "/dev/ticables/par/0");
-
-	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
-	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
-}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
-                        get_attributes(st.st_mode),
-                        get_user_name(st.st_uid),
-                        get_group_name(st.st_gid));
-	}
- 
-	if (find_string_in_proc("/proc/devices", "tiser") ||
-            find_string_in_proc("/proc/modules", "tiser"))
-		DISPLAY(_("      module: loaded\r\n"));
-	else
-		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TISER : 0;
-#endif
-}
-
-static void check_for_tiusb_module(void)
-{
-	int devfs = 0;
-	struct stat st;
-	char name[15];
-	int ret = !0;
-
-#ifndef HAVE_LINUX_TIGLUSB_H
-	DISPLAY(_("  IO_TIUSB: not found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TIUSB: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
-
-	if(!access("/dev/.devfs", F_OK))
-		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
-
-	if(!devfs)
-		strcpy(name, "/dev/tiusb0");
-	else
-		strcpy(name, "/dev/ticables/usb/0");
-
-	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
-	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
-}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
-			get_attributes(st.st_mode),
-			get_user_name(st.st_uid),
-			get_group_name(st.st_gid));
-	}
- 
-	if (find_string_in_proc("/proc/devices", "tiglusb") ||
-            find_string_in_proc("/proc/modules", "tiglusb"))
-		DISPLAY(_("      module: loaded\r\n"));
-	else
-		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TIUSB : 0;
-#endif
-}
-
 int linux_detect_resources(void)
 {
-	DISPLAY(_("Libticables: checking resources...\r\n"));
+	DISPLAY(_("libticables: checking resources...\r\n"));
 	resources = IO_LINUX;
 
 	/* API: for use with ttySx */
@@ -437,21 +268,31 @@ int linux_detect_resources(void)
 
 	/* TIPAR: tipar kernel module */ 
 
-	check_for_tipar_module();
+#ifdef HAVE_LINUX_TICABLE_H
+        resources |= IO_TIPAR;
+#endif
+        DISPLAY(_("  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"), resources & IO_TIPAR ? "" : "not ");
 	
-	/* TISER: tiser kernel module */ 
+	/* TISER: tiser kernel module */
 
-	check_for_tiser_module();
+#ifdef HAVE_LINUX_TICABLE_H
+	resources |= IO_TISER;
+#endif
+        DISPLAY(_("  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"), resources & IO_TISER ? "" : "not ");
 	
 	/* TIGLUSB: tiglusb kernel module */ 
-
-	check_for_tiusb_module();
+	
+#ifdef HAVE_LINUX_TIGLUSB_H
+	resources |= IO_TIUSB;
+#endif
+	DISPLAY(_("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"),
+		resources & IO_TIUSB ? "" : "not ");
 
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB).\r\n"),
-	resources & IO_LIBUSB ? "" : "not ");
+	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
+		resources & IO_LIBUSB ? "" : "not ");
 
   return 0;
 }

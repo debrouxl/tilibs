@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: probe.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
