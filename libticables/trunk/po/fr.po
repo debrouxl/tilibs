@@ -7,24 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
 "POT-Creation-Date: 2003-05-03 11:42+0200\n"
-"PO-Revision-Date: 2003-04-05 21:14+0100\n"
+"PO-Revision-Date: 2003-05-04 21:18GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
-"Language-Team: FRENCH <FR@li.org>\n"
+"Language-Team: FRENCH <fr@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: src/error.c:52
 msgid "Msg: Unable to open serial device."
-msgstr "Msg : Impossible d'ouvrir le périphérique série."
+msgstr "Msg : Impossible d'ouvrir le pÃ©riphÃ©rique sÃ©rie."
 
 #: src/error.c:56
 msgid ""
 "Cause: check that you have required rights on the node. Check that the "
 "device is not locked by another application (modem ?)."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions nécessaires sur ce noeud. "
-"Vérifiez que le périphérique n'est pas bloqué par une autre application "
+"Cause: VÃ©rifiez que vous avez les permissions nÃ©cessaires sur ce noeud. "
+"VÃ©rifiez que le pÃ©riphÃ©rique n'est pas bloquÃ© par une autre application "
 "(modem?)."
 
 #: src/error.c:60
@@ -36,35 +37,34 @@ msgid ""
 "Cause: Check that the device is not used/locked by another application "
 "(modem ?)."
 msgstr ""
-"Cause: Vérifiez que le périphérique n'est pas utilisé/bloqué par une autre "
+"Cause: VÃ©rifiez que le pÃ©riphÃ©rique n'est pas utilisÃ©/bloquÃ© par une autre "
 "application (modem?)."
 
 #: src/error.c:69
 msgid "Msg: Error occured while writing to the device."
-msgstr "Msg: Erreur en écrivant sur le périphérique."
+msgstr "Msg: Erreur en Ã©crivant sur le pÃ©riphÃ©rique."
 
 #: src/error.c:74
 msgid "Msg: Timeout occured while writing to the device."
-msgstr "Msg: Limite de temps dépassée en écrivant sur le périphérique."
+msgstr "Msg: Limite de temps dÃ©passÃ©e en Ã©crivant sur le pÃ©riphÃ©rique."
 
 #: src/error.c:78 src/error.c:92
-msgid ""
-"Cause: Check that your link cable is plugged and/or the calculator is ready."
+msgid "Cause: Check that your link cable is plugged and/or the calculator is ready."
 msgstr ""
-"Cause: Vérifiez que le câble est connecté et/ou que la calculatrice est "
-"prête."
+"Cause: VÃ©rifiez que le cÃ¢ble est connectÃ© et/ou que la calculatrice est "
+"prÃªte."
 
 #: src/error.c:83
 msgid "Msg: Error occured while reading to the device."
-msgstr "Msg: Erreur de lecture du périphérique."
+msgstr "Msg: Erreur de lecture du pÃ©riphÃ©rique."
 
 #: src/error.c:88
 msgid "Msg: Timeout occured while reading to the device."
-msgstr "Msg: Limite de temps dépassée en lisant le périphérique."
+msgstr "Msg: Limite de temps dÃ©passÃ©e en lisant le pÃ©riphÃ©rique."
 
 #: src/error.c:96
 msgid "Msg: A uint8_t have been lost."
-msgstr "Msg: Une donnée a été perdue."
+msgstr "Msg: Une donnÃ©e a Ã©tÃ© perdue."
 
 #: src/error.c:98
 msgid "Cause: Application too slow."
@@ -72,7 +72,7 @@ msgstr "Cause: Application trop lente."
 
 #: src/error.c:102
 msgid "Msg: CreateFile error."
-msgstr "Msg: Fichier d'erreur créé."
+msgstr "Msg: Fichier d'erreur crÃ©Ã©."
 
 #: src/error.c:110
 msgid "Msg: Unable to open a node in /dev."
@@ -83,19 +83,19 @@ msgid ""
 "Cause:Check that the node exists. Check your devfs. Check that you have "
 "installed the driver."
 msgstr ""
-"Cause: Vérifiez que le noeud existe. Vérifiez le fichier devfs. Vérifiez que "
-"vous avez installé le pilote approprié."
+"Cause: VÃ©rifiez que le noeud existe. VÃ©rifiez le fichier devfs. VÃ©rifiez que "
+"vous avez installÃ© le pilote appropriÃ©."
 
 #: src/error.c:120 src/error.c:127
 msgid "Msg: Unable to use parallel/serial port: access refused."
-msgstr "Msg: Impossible d'utiliser le port parallèle/série : accès refusé."
+msgstr "Msg: Impossible d'utiliser le port parallÃ¨le/sÃ©rie : accÃ¨s refusÃ©."
 
 #: src/error.c:124
 msgid ""
 "Cause: Check that you have needed permissions (super user privileges). Else, "
 "you will need to use a kernel module (tipar/tiser)."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions nécessaires (privilèges super "
+"Cause: VÃ©rifiez que vous avez les permissions nÃ©cessaires (privilÃ¨ges super "
 "utilisateur). Sinon, vous devrez utiliser un module du noyau (tipar/tiser)."
 
 #: src/error.c:131
@@ -103,28 +103,27 @@ msgid ""
 "Cause: Is PortTalk installed/started ? You may have to install TiLP with "
 "administrator privileges."
 msgstr ""
-"Cause: Est-ce que PortTalk est installé/démarré ? Vous devrez peut-être "
-"installer TiLP avec les privilèges d'administrateur."
+"Cause: Est-ce que PortTalk est installÃ©/dÃ©marrÃ© ? Vous devrez peut-Ãªtre "
+"installer TiLP avec les privilÃ¨ges d'administrateur."
 
 #: src/error.c:137
 msgid "Msg: No link cable has been found on the scanned port."
-msgstr "Msg: Aucun câble n'a été trouvé sur le port scanné."
+msgstr "Msg: Aucun cÃ¢ble n'a Ã©tÃ© trouvÃ© sur le port scannÃ©."
 
 #: src/error.c:139 src/error.c:268
 msgid "Cause: ??"
 msgstr "Cause: ??"
 
 #: src/error.c:143
-#, fuzzy
 msgid "Msg: Unable to open pipes for virtual linking."
-msgstr "Msg: Impossible d'ouvrir un fichier d'allocation."
+msgstr "Msg: Impossible d'ouvrir les tubes pour la liaison virtuelle."
 
 #: src/error.c:147
 msgid ""
 "Cause: Check that you have permissions to create a pipe in the /tmp "
 "directory."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions de céer un tube (pipe) dans le "
+"Cause: VÃ©rifiez que vous avez les permissions de cÃ©er un tube (pipe) dans le "
 "dossier /tmp."
 
 #: src/error.c:151
@@ -133,19 +132,19 @@ msgstr "Msg: Impossible de fermer les tubes (pipes)."
 
 #: src/error.c:153
 msgid "Cause: System error ?!"
-msgstr "Cause: Erreur du système ?!"
+msgstr "Cause: Erreur du systÃ¨me ?!"
 
 #: src/error.c:157
 msgid "Msg: CreateFileMapping error."
-msgstr "Msg: Fichier MappingError créé."
+msgstr "Msg: Fichier MappingError crÃ©Ã©."
 
 #: src/error.c:161
 msgid ""
 "Cause: Trying to communicate without correspondent. Did you launch the "
 "emulator before running TiLP ?"
 msgstr ""
-"Cause: Communication sans correspondant. Avez-vous lancé l'émulateur avant "
-"de démarrer TiLP ?"
+"Cause: Communication sans correspondant. Avez-vous lancÃ© l'Ã©mulateur avant "
+"de dÃ©marrer TiLP ?"
 
 #: src/error.c:165
 msgid "Msg: IOCTL error."
@@ -156,41 +155,41 @@ msgid ""
 "Cause: Check that you have required rights on the node and/or your kernel "
 "module is loaded."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions nécessaires sur le noeud et/ou "
-"que le module du noyau est chargé."
+"Cause: VÃ©rifiez que vous avez les permissions nÃ©cessaires sur le noeud et/ou "
+"que le module du noyau est chargÃ©."
 
 #: src/error.c:173
 msgid "Msg: SetupComm error."
-msgstr "Msg: Erreur à l'établissement de la communication."
+msgstr "Msg: Erreur Ã  l'Ã©tablissement de la communication."
 
 #: src/error.c:175 src/error.c:181 src/error.c:187 src/error.c:193
 #: src/error.c:199
 msgid "Cause: Internal Win32 error."
-msgstr "Cause: Erreur interne à Win32."
+msgstr "Cause: Erreur interne Ã  Win32."
 
 #: src/error.c:179
 msgid "Msg: SetCommState error."
-msgstr "Msg: Erreur à l'établissement de l'état de la communication."
+msgstr "Msg: Erreur Ã  l'Ã©tablissement de l'Ã©tat de la communication."
 
 #: src/error.c:185
 msgid "Msg: GetCommState error."
-msgstr "Msg: Erreur à la réception de l'état de la communication."
+msgstr "Msg: Erreur Ã  la rÃ©ception de l'Ã©tat de la communication."
 
 #: src/error.c:191
 msgid "Msg: GetCommTimeouts error."
-msgstr "Msg: Erreur à la réception de l'état de la communication."
+msgstr "Msg: Erreur Ã  la rÃ©ception de l'Ã©tat de la communication."
 
 #: src/error.c:197
 msgid "Msg: SetCommTimeouts error."
-msgstr "Msg: Erreur à l'établissement des limites de temps."
+msgstr "Msg: Erreur Ã  l'Ã©tablissement des limites de temps."
 
 #: src/error.c:203
 msgid "Msg: Error while flushing the buffer(s)."
-msgstr "Msg: Erreur en libérant le(s) buffer(s)."
+msgstr "Msg: Erreur en libÃ©rant le(s) buffer(s)."
 
 #: src/error.c:205
 msgid "Cause: Internal Win32 error"
-msgstr "Cause: Erreur interne à Win32."
+msgstr "Cause: Erreur interne Ã  Win32."
 
 #: src/error.c:209
 msgid "Msg: IOCTL code unsuccessful."
@@ -198,19 +197,19 @@ msgstr "Msg: Echec du code IOTCL."
 
 #: src/error.c:211
 msgid "Cause: Internal device driver error."
-msgstr "Cause: Erreur interne au pilote du périphérique."
+msgstr "Cause: Erreur interne au pilote du pÃ©riphÃ©rique."
 
 #: src/error.c:216 src/error.c:222 src/error.c:228
 msgid "Msg: Unable to open the USB device."
-msgstr "Msg: Impossible d'ouvrir le périphérique USB."
+msgstr "Msg: Impossible d'ouvrir le pÃ©riphÃ©rique USB."
 
 #: src/error.c:220
 msgid ""
 "Cause: Check that you have required rights on the node and/or your driver is "
 "loaded."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions nécessaires sur le noeud et/ou "
-"que le pilote est chargé."
+"Cause: VÃ©rifiez que vous avez les permissions nÃ©cessaires sur le noeud et/ou "
+"que le pilote est chargÃ©."
 
 #: src/error.c:226
 msgid ""
@@ -218,75 +217,74 @@ msgid ""
 "Panel. The ticables library need a specific driver for this cable. You will "
 "find it on http://lpg.ticalc.org/prj_usb."
 msgstr ""
-"Cause: Vérifez que votre SilverLink est correctement installé dans le "
+"Cause: VÃ©rifez que votre SilverLink est correctement installÃ© dans le "
 "panneau de configuration Windows. La librairie ticables a besoin d'un pilote "
-"spécifique pour ce câble. Vous le trouverez sur http://lpg.ticalc.org/"
+"spÃ©cifique pour ce cÃ¢ble. Vous le trouverez sur http://lpg.ticalc.org/"
 "prj_usb."
 
 #: src/error.c:230
 msgid "Cause: Your cable is not connected or stalled."
-msgstr "Cause: Votre câble est figé ou n'est pas connecté."
+msgstr "Cause: Votre cÃ¢ble est figÃ© ou n'est pas connectÃ©."
 
 #: src/error.c:237
 msgid "Msg: Error occurred while initializing the libusb."
-msgstr "Msg: Erreur à l'initialisation de libusb."
+msgstr "Msg: Erreur Ã  l'initialisation de libusb."
 
 #: src/error.c:241
 msgid ""
 "Cause: Check that your cable is connected or not stalled. Check your libusb "
 "and usbfs, too."
 msgstr ""
-"Cause: Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
-"Vérifez également libusb et usbfs."
+"Cause: VÃ©rifiez que votre cÃ¢ble est connectÃ© et qu'il n'est pas figÃ©. "
+"VÃ©rifez Ã©galement libusb et usbfs."
 
 #: src/error.c:243
 msgid "Msg: Unable to initialize the USB device."
-msgstr "Msg: Impossible d'initialiser le périphérique USB."
+msgstr "Msg: Impossible d'initialiser le pÃ©riphÃ©rique USB."
 
 #: src/error.c:245
 msgid "Cause: Your cable is probably not connected."
-msgstr "Cause: Votre câble est probablement déconnecté."
+msgstr "Cause: Votre cÃ¢ble est probablement dÃ©connectÃ©."
 
 #: src/error.c:250
 msgid "Msg: Unable to open/find a USB device."
-msgstr "Msg: Impossible d'ouvrir/trouver un périphérique USB."
+msgstr "Msg: Impossible d'ouvrir/trouver un pÃ©riphÃ©rique USB."
 
 #: src/error.c:254
 msgid ""
 "Cause: Check that your cable is connected or not stalled. Check you rlibusb "
 "and usbfs, too."
 msgstr ""
-"Cause: Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
-"Vérifiez également libusb et usbfs."
+"Cause: VÃ©rifiez que votre cÃ¢ble est connectÃ© et qu'il n'est pas figÃ©. "
+"VÃ©rifiez Ã©galement libusb et usbfs."
 
 #: src/error.c:258
 msgid "Msg: Error while reseting USB endpoints."
-msgstr "Msg: Erreur à la ré-initialisation des endpoints USB."
+msgstr "Msg: Erreur Ã  la rÃ©-initialisation des endpoints USB."
 
 #: src/error.c:261
 msgid "Cause: Your cable may be stalled. Unplug and replug it !."
-msgstr ""
-"Cause: Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le !"
+msgstr "Cause: Votre cÃ¢ble est peut-Ãªtre figÃ©/bloquÃ©. DÃ©connectez et reconnectez-le !"
 
 #: src/error.c:266
 msgid "Msg: FreeLibrary error. Unable to release the DLL."
-msgstr "Msg: Erreur FreeLibrary. Impossible de libérer la DLL."
+msgstr "Msg: Erreur FreeLibrary. Impossible de libÃ©rer la DLL."
 
 #: src/error.c:274
 msgid "Msg: Unable to get a unique IPC (Inter Process Communication) key."
-msgstr "Msg: Impossible d'obtenir une CIP (Clé Inter Processus) unique."
+msgstr "Msg: Impossible d'obtenir une CIP (ClÃ© Inter Processus) unique."
 
 #: src/error.c:278
 msgid ""
 "Cause: Check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
-"Cause: Vérifiez que vous diposez de suffisamment de mémoire pour allouer un "
-"segment de mémoire partagée."
+"Cause: VÃ©rifiez que vous diposez de suffisamment de mÃ©moire pour allouer un "
+"segment de mÃ©moire partagÃ©e."
 
 #: src/error.c:282
 msgid "Msg: Unable to open a shared memory segment."
-msgstr "Msg: Impossible d'ouvrir un segment de mémoire partagée."
+msgstr "Msg: Impossible d'ouvrir un segment de mÃ©moire partagÃ©e."
 
 #: src/error.c:284
 msgid "Cause: Do you have any resources ?"
@@ -294,7 +292,7 @@ msgstr "Cause: Disposez-vous de suffisamment de ressources ?"
 
 #: src/error.c:288
 msgid "Msg: Unable to attach shared memory segment."
-msgstr "Msg: Impossible de lier un segment de mémoire partagée."
+msgstr "Msg: Impossible de lier un segment de mÃ©moire partagÃ©e."
 
 #: src/error.c:290
 msgid "Cause: Too many attachements ?"
@@ -302,19 +300,19 @@ msgstr "Cause: Trop de liens ?"
 
 #: src/error.c:295
 msgid "Msg: Unable to detach the shared memory segment."
-msgstr "Msg: Impossible de libérer un segment de mémoire partagée."
+msgstr "Msg: Impossible de libÃ©rer un segment de mÃ©moire partagÃ©e."
 
 #: src/error.c:297
 msgid "Cause: Is segment locked ?"
-msgstr "Cause: Le segment est-il vérouillé ?"
+msgstr "Cause: Le segment est-il vÃ©rouillÃ© ?"
 
 #: src/error.c:302
 msgid "Msg: Unable to destroy the shared memory segment."
-msgstr "Msg: Impossible de supprimer le segment de mémoire partagée."
+msgstr "Msg: Impossible de supprimer le segment de mÃ©moire partagÃ©e."
 
 #: src/error.c:306
 msgid "Cause: Check that no applications are still attached on it."
-msgstr "Cause: Vérifiez qu'aucune application n'y est attachée."
+msgstr "Cause: VÃ©rifiez qu'aucune application n'y est attachÃ©e."
 
 #: src/error.c:310
 msgid "Msg: Unable to open a file mapping."
@@ -322,19 +320,19 @@ msgstr "Msg: Impossible d'ouvrir un fichier d'allocation."
 
 #: src/error.c:312
 msgid "Cause: VTi seems to be not launched yet."
-msgstr "Cause: VTi semble ne pas être encore lancé. "
+msgstr "Cause: VTi semble ne pas Ãªtre encore lancÃ©. "
 
 #: src/error.c:316
 msgid "Msg: Illegal operation or argument."
-msgstr "Msg: Opération ou argument illégal."
+msgstr "Msg: OpÃ©ration ou argument illÃ©gal."
 
 #: src/error.c:318
 msgid "Cause: A bug in TiLP, mail to: roms@tilp.info."
-msgstr "Cause: C'est un bug de TiLP, signalez-le à: roms@tilp.info."
+msgstr "Cause: C'est un bug de TiLP, signalez-le Ã : roms@tilp.info."
 
 #: src/error.c:322
 msgid "Msg: No I/O resource available !"
-msgstr "Msg: Pas de ressource entrée/sortie disponible !"
+msgstr "Msg: Pas de ressource entrÃ©e/sortie disponible !"
 
 #: src/error.c:326
 msgid ""
@@ -344,28 +342,28 @@ msgid ""
 "- device driver (parallel/serial cable under Win NT4/2000/XP or USB)\n"
 "- kernel module (parallel/serial or USB under Linux."
 msgstr ""
-"Cause: Cette erreur peut avoir plusieurs causes. Se référer aux messages "
-"d'erreur précédents pour plus d'information. Vérifiez :\n"
-"- les permissions d'entrée/sortie (câble parallèle/série)\n"
-"- le pilote du périphérique (câble parallèle/série sous Win NT4/2000/XP ou "
+"Cause: Cette erreur peut avoir plusieurs causes. Se rÃ©fÃ©rer aux messages "
+"d'erreur prÃ©cÃ©dents pour plus d'information. VÃ©rifiez :\n"
+"- les permissions d'entrÃ©e/sortie (cÃ¢ble parallÃ¨le/sÃ©rie)\n"
+"- le pilote du pÃ©riphÃ©rique (cÃ¢ble parallÃ¨le/sÃ©rie sous Win NT4/2000/XP ou "
 "USB)\n"
-"- le module du noyau (parallèle/série ou USB sous Linux)."
+"- le module du noyau (parallÃ¨le/sÃ©rie ou USB sous Linux)."
 
 #: src/error.c:332
 msgid ""
 "Msg: Invalid port: try to use an I/O port device which is incompatible with "
 "the link cable."
 msgstr ""
-"Msg: Port non-valide: vous essayez d'utiliser un port d'entrée/sortie "
-"incompatible avec le câble de liaison."
+"Msg: Port non-valide: vous essayez d'utiliser un port d'entrÃ©e/sortie "
+"incompatible avec le cÃ¢ble de liaison."
 
 #: src/error.c:336
 msgid ""
 "Cause: It's due to a misuse of library, probably a TiLP bug. Mail to: "
 "roms@tilp.info"
 msgstr ""
-"Cause: Ceci est dû à une mauvaise utilisation de la librairie, certainement "
-"un bug de TiLP. Signalez-le à: roms@tilp.info"
+"Cause: Ceci est dÃ» Ã  une mauvaise utilisation de la librairie, certainement "
+"un bug de TiLP. Signalez-le Ã : roms@tilp.info"
 
 #: src/error.c:340
 msgid "Msg: PortTalk driver and/or library not found."
@@ -376,21 +374,21 @@ msgid ""
 "Cause: TiLP should start this driver automagically through the SCM. Check "
 "that it's loaded and TiLP as been installed with admin privileges !"
 msgstr ""
-"Cause: TiLP devrait lancer automatiquement ce pilote à travers SCM. "
-"Vérifiez  qu'il est chargé et que TiLP a bien été installé avec les "
-"privilèges d'administrateur."
+"Cause: TiLP devrait lancer automatiquement ce pilote Ã  travers SCM. "
+"VÃ©rifiez  qu'il est chargÃ© et que TiLP a bien Ã©tÃ© installÃ© avec les "
+"privilÃ¨ges d'administrateur."
 
 #: src/error.c:350
 msgid "Msg: SilverLink library has an insufficient version number."
-msgstr "Msg: La librairie SilverLink a un numéro de version insuffisant."
+msgstr "Msg: La librairie SilverLink a un numÃ©ro de version insuffisant."
 
 #: src/error.c:354
 msgid ""
 "Cause: the SilverLink driver currently installed has a wrong version. Please "
 "upgrade !"
 msgstr ""
-"Cause: Une mauvaise version du pilote SilverLink a été installée. S'il vous "
-"plaît : mettez-la à jour !"
+"Cause: Une mauvaise version du pilote SilverLink a Ã©tÃ© installÃ©e. S'il vous "
+"plaÃ®t : mettez-la Ã  jour !"
 
 #: src/error.c:360
 msgid ""
@@ -399,7 +397,7 @@ msgid ""
 "."
 msgstr ""
 "Code d'erreur inexistant dans la liste.\n"
-"C'est un bug. Reportez-le, s'il vous plaît.\n"
+"C'est un bug. Reportez-le, s'il vous plaÃ®t.\n"
 "."
 
 #: src/intrface.c:109
@@ -409,8 +407,7 @@ msgstr "Libticables: version %s\n"
 
 #: src/intrface.c:578 src/intrface.c:628
 msgid "Function not implemented. This is a bug. Please report it."
-msgstr ""
-"Fonction non implémentée. Ceci est un bug. Reportez-le s'il vous plaît."
+msgstr "Fonction non implÃ©mentÃ©e. Ceci est un bug. Reportez-le s'il vous plaÃ®t."
 
 #: src/intrface.c:579 src/intrface.c:629
 msgid "Informations:\n"
@@ -419,20 +416,20 @@ msgstr "Informations:\n"
 #: src/intrface.c:580 src/intrface.c:630
 #, c-format
 msgid "Cable: %i\n"
-msgstr "Câble: %i\n"
+msgstr "CÃ¢ble: %i\n"
 
 #: src/intrface.c:581 src/intrface.c:631
 msgid "Program halted before crashing...\n"
-msgstr "Le programme s'est arrêté avant de se terminer anormalement...\n"
+msgstr "Le programme s'est arrÃªtÃ© avant de se terminer anormalement...\n"
 
 #: src/intrface.c:645
 msgid "Libticables: current settings...\n"
-msgstr "Libticables: réglages actuels...\n"
+msgstr "Libticables: rÃ©glages actuels...\n"
 
 #: src/intrface.c:647
 #, c-format
 msgid "  Link cable: %s\n"
-msgstr " Câble de liaison: %s\n"
+msgstr " CÃ¢ble de liaison: %s\n"
 
 #: src/intrface.c:649
 #, c-format
@@ -442,7 +439,7 @@ msgstr "  Port: %s\n"
 #: src/intrface.c:650
 #, c-format
 msgid "  Method: %s\n"
-msgstr " Méthode: %s\n"
+msgstr " MÃ©thode: %s\n"
 
 #: src/intrface.c:651
 #, c-format
@@ -452,7 +449,7 @@ msgstr " Limite de temps: %i\n"
 #: src/intrface.c:652
 #, c-format
 msgid "  Delay value: %i\n"
-msgstr " Délai: %i\n"
+msgstr " DÃ©lai: %i\n"
 
 #: src/intrface.c:653
 #, c-format
@@ -462,56 +459,55 @@ msgstr " Vitesse de transmission en Bauds: %i\n"
 #: src/intrface.c:654
 #, c-format
 msgid "  Hardware flow control: %s\n"
-msgstr " Contrôle du flux matériel: %s\n"
+msgstr " ContrÃ´le du flux matÃ©riel: %s\n"
 
 #: src/intrface.c:654
 msgid "on"
-msgstr "activé"
+msgstr "activÃ©"
 
 #: src/intrface.c:654
 msgid "off"
-msgstr "désactivé"
+msgstr "dÃ©sactivÃ©"
 
 #: src/intrface.c:655
 #, c-format
 msgid "  I/O address: 0x%03x\n"
-msgstr " Adresse d'entrée/sortie: 0x%03x\n"
+msgstr " Adresse d'entrÃ©e/sortie: 0x%03x\n"
 
 #: src/intrface.c:656
 #, c-format
 msgid "  Device name: %s\n"
-msgstr " Nom du périphérique: %s\n"
+msgstr " Nom du pÃ©riphÃ©rique: %s\n"
 
 #: src/intrface.c:839
 #, c-format
 msgid "libticables error: port value is illegal (%i) !\n"
-msgstr "libticables erreur: valeur de port illégale (%i) !\n"
+msgstr "libticables erreur: valeur de port illÃ©gale (%i) !\n"
 
 #: src/intrface.c:840
 msgid "Exiting...\n"
 msgstr "Sortie...\n"
 
 #: src/ioports.c:276
-msgid ""
-"couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
+msgid "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
-"Impossible d'accéder au pilote PortTalk. Vérifiez s'il vous plaît qu'il est "
-"installé/chargé.\n"
+"Impossible d'accÃ©der au pilote PortTalk. VÃ©rifiez s'il vous plaÃ®t qu'il est "
+"installÃ©/chargÃ©.\n"
 
 #: src/ioports.c:301
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
-msgstr "L'accès à l'adresse 0x%03X (IOPM Offset 0x%02X) a été accordé.\n"
+msgstr "L'accÃ¨s Ã  l'adresse 0x%03X (IOPM Offset 0x%02X) a Ã©tÃ© accordÃ©.\n"
 
 #: src/ioports.c:316
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
-msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d\n"
+msgstr "Le pilote du pÃ©riphÃ©rique PortTalk a lancÃ© IOPM avec l'ID %d\n"
 
 #: src/ioports.c:393
 #, c-format
 msgid "Libticables: serial port %s successfully reconfigured.\n"
-msgstr "Libticables: port série %s reconfiguré avec succès.\n"
+msgstr "Libticables: port sÃ©rie %s reconfigurÃ© avec succÃ¨s.\n"
 
 #: src/logging.c:81 src/logging.c:87
 #, c-format
@@ -520,12 +516,12 @@ msgstr "Impossible d'ouvrir <%s> pour se connecter.\n"
 
 #: src/probe.c:98 src/probe.c:120
 msgid "Getting OS type...\r\n"
-msgstr "Détermination du type de système d'exploitation... \r\n"
+msgstr "DÃ©termination du type de systÃ¨me d'exploitation... \r\n"
 
 #: src/probe.c:100
 #, c-format
 msgid "  System name: %s\r\n"
-msgstr " Nom du système: %s\r\n"
+msgstr " Nom du systÃ¨me: %s\r\n"
 
 #: src/probe.c:101
 #, c-format
@@ -555,7 +551,7 @@ msgstr "Fait. \r\n"
 #: src/probe.c:124
 #, c-format
 msgid "  Operating System: %s\r\n"
-msgstr " Système d'exploitation: %s\r\n"
+msgstr " SystÃ¨me d'exploitation: %s\r\n"
 
 #: src/probe.c:127
 #, c-format
@@ -569,26 +565,26 @@ msgstr "inconnu"
 #. Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
 #: src/probe.c:199
 msgid "Probing parallel ports...\r\n"
-msgstr "Recherche des ports parallèles...\r\n"
+msgstr "Recherche des ports parallÃ¨les...\r\n"
 
 #: src/probe.c:202
 msgid "Unable to open this directory: '/proc/sys/dev/parport/'.\r\n"
 msgstr "Impossible d'ouvrir ce dossier: '/proc/sys/dev/parport/'.\r\n"
 
 #: src/probe.c:224
-#, fuzzy, c-format
+#, c-format
 msgid "unable to open this entry: <%s>\r\n"
-msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
+msgstr "Impossible d'ouvrir cette entrÃ©e: <%s>\r\n"
 
 #: src/probe.c:228
 #, c-format
 msgid "  %s at address 0x%03x\r\n"
-msgstr " %s à l'adresse 0x%03x\r\n"
+msgstr " %s Ã  l'adresse 0x%03x\r\n"
 
 #: src/probe.c:233
 #, c-format
 msgid "Invalid parport entry: <%s>.\r\n"
-msgstr "Entrée parport non valide: <%s>.\r\n"
+msgstr "EntrÃ©e parport non valide: <%s>.\r\n"
 
 #: src/probe.c:239
 msgid "Closedir\r\n"
@@ -597,7 +593,7 @@ msgstr "Ferme le dossier\r\n"
 #. Use /proc/tty/driver/serial
 #: src/probe.c:244
 msgid "Probing serial ports...\r\n"
-msgstr "Recherche des ports séries...\r\n"
+msgstr "Recherche des ports sÃ©ries...\r\n"
 
 #: src/probe.c:248
 msgid ""
@@ -605,12 +601,12 @@ msgid ""
 "port.\r\n"
 msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
-"la recherche des ports séries.\r\n"
+"la recherche des ports sÃ©ries.\r\n"
 
 #: src/probe.c:255
 #, c-format
 msgid "Unable to open this entry: <%s>\r\n"
-msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
+msgstr "Impossible d'ouvrir cette entrÃ©e: <%s>\r\n"
 
 #: src/probe.c:877
 msgid "Probing ports...\r\n"
@@ -623,12 +619,12 @@ msgstr "Fait\r\n"
 
 #: src/probe.c:919
 msgid "A PS/2 mouse has been found, no serial port used.\r\n"
-msgstr "Une souris PS/2 a été trouvée, pas de port série utilisé.\r\n"
+msgstr "Une souris PS/2 a Ã©tÃ© trouvÃ©e, pas de port sÃ©rie utilisÃ©.\r\n"
 
 #: src/probe.c:922
 msgid "No PS/2 mouse found, the first serial port may be used by mouse.\r\n"
 msgstr ""
-"Pas de souris PS/2 trouvée, le premier port série est peut-être utilisé par "
+"Pas de souris PS/2 trouvÃ©e, le premier port sÃ©rie est peut-Ãªtre utilisÃ© par "
 "la souris.\r\n"
 
 #: src/probe.c:935
@@ -637,16 +633,16 @@ msgstr "ok"
 
 #: src/probe.c:935
 msgid "nok"
-msgstr "échec"
+msgstr "Ã©chec"
 
 #. tcl.exit();
 #: src/probe.c:952
 msgid "Probing link cables on each port...\r\n"
-msgstr "Recherche des câbles sur chaque port...\r\n"
+msgstr "Recherche des cÃ¢bles sur chaque port...\r\n"
 
 #: src/probe.c:1074 src/probe.c:1134 src/probe.c:1179 src/probe.c:1186
 msgid "Libticables: checking resources...\r\n"
-msgstr "Libticables: vérification des ressources...\r\n"
+msgstr "Libticables: vÃ©rification des ressources...\r\n"
 
 #: src/probe.c:1078 src/probe.c:1138 src/probe.c:1189
 msgid "  IO_API: ok\r\n"
@@ -669,7 +665,7 @@ msgstr "  IO_TIUSB: %s (TiglUsb)\r\n"
 
 #: src/probe.c:1144
 msgid "  IO_ASM: nok (a kernel module is needed)\r\n"
-msgstr " IO_ASM: échec (un module du noyau est nécessaire)\r\n"
+msgstr " IO_ASM: Ã©chec (un module du noyau est nÃ©cessaire)\r\n"
 
 #: src/probe.c:1147 src/probe.c:1197
 msgid "  IO_ASM: ok (super user)\r\n"
@@ -697,7 +693,7 @@ msgstr "  IO_LIBUSB: %s\r\n"
 
 #: src/probe.c:1194
 msgid "  IO_ASM: nok\r\n"
-msgstr "  IO_ASM: échec\r\n"
+msgstr "  IO_ASM: Ã©chec\r\n"
 
 #: src/timodules.c:72 src/timodules.c:89 src/timodules.c:106
 msgid "not found"
@@ -705,7 +701,7 @@ msgstr "introuvable"
 
 #: src/type2str.c:51
 msgid "libticables error: unknown cable type !\n"
-msgstr "libticables erreur: type de câble inconnu !\n"
+msgstr "libticables erreur: type de cÃ¢ble inconnu !\n"
 
 #: src/type2str.c:69
 msgid "libticables error: unknown baud rate !\n"
@@ -722,25 +718,25 @@ msgstr "libticables erreur: port inconnu !\n"
 #: src/avr_link.c:79
 #, c-format
 msgid "unable to open this serial port: %s\n"
-msgstr "Impossible d'ouvrir ce port série: %s\n"
+msgstr "Impossible d'ouvrir ce port sÃ©rie: %s\n"
 
 #: src/dev_link.c:80
 #, c-format
 msgid "unable to open this device: <%s>\n"
-msgstr "Impossible d'ouvrir ce périphérique: <%s>\n"
+msgstr "Impossible d'ouvrir ce pÃ©riphÃ©rique: <%s>\n"
 
 #: src/dev_link.c:81
 msgid "is the module loaded ?\n"
-msgstr "le module est-il chargé ?\n"
+msgstr "le module est-il chargÃ© ?\n"
 
 #: src/slv_link.c:101
 #, c-format
 msgid "Unable to open this device: %s\n"
-msgstr "Impossible d'ouvrir ce périphérique: %s\n"
+msgstr "Impossible d'ouvrir ce pÃ©riphÃ©rique: %s\n"
 
 #: src/slv_link.c:102
 msgid "Is the tiusb.c module loaded ?\n"
-msgstr "Le module tiusb.c est-il chargé ?\n"
+msgstr "Le module tiusb.c est-il chargÃ© ?\n"
 
 #: src/slv_link.c:121 src/slv_link.c:132
 msgid "Unable to use IOCTL codes.\n"
@@ -748,11 +744,11 @@ msgstr "Impossible d'utiliser les codes IOCTL.\n"
 
 #: src/slv_link.c:215
 msgid "read returns without any data. Retrying for circumventing quirk...\n"
-msgstr "La lecture n'a retourné aucune donnée. Nouvel essai...\n"
+msgstr "La lecture n'a retournÃ© aucune donnÃ©e. Nouvel essai...\n"
 
 #: src/slv_link.c:340
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
-msgstr ""
+msgstr "Librairie TiglUsb introuvable. Avez-vous installÃ© le pilote TiglUsb ?\n"
 
 #: src/slv_link.c:350
 #, c-format
@@ -760,8 +756,8 @@ msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
 "Please download the latest release on <http://ti-lpg.org/prj_usb>."
 msgstr ""
-"TiglUsb.dll: la version %s au minimum est nécessaire, version %s utilisée.\n"
-"Téléchargez s'il vous plaît la dernière version sur <http://ti-lpg.org/"
+"TiglUsb.dll: la version %s au minimum est nÃ©cessaire, version %s utilisÃ©e.\n"
+"TÃ©lÃ©chargez s'il vous plaÃ®t la derniÃ¨re version sur <http://ti-lpg.org/"
 "prj_usb>."
 
 #: src/slv_link.c:360
@@ -795,7 +791,7 @@ msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
 #. keep track of the TIGL device
 #: src/slv_link.c:1339
 msgid "TIGL-USB found with libusb.\n"
-msgstr "TIGL-USB trouvé avec libusb.\n"
+msgstr "TIGL-USB trouvÃ© avec libusb.\n"
 
 #: src/slv_link.c:1362
 #, c-format
@@ -808,13 +804,12 @@ msgid "usb_find_devices: %s\n"
 msgstr "usb_find_devices: %s\n"
 
 #: src/slv_link.c:1553
-msgid ""
-"usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
-msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"
+msgid "usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
+msgstr "usb_bulk_read n'a retournÃ© aucune donnÃ©e. Nouvel essai...\n"
 
 #: src/tie_link.c:76
 msgid "Invalid io_address parameter passed to libticables.\n"
-msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
+msgstr "Un paramÃ¨tre io_address non valide a Ã©tÃ© passÃ© Ã  libticables.\n"
 
 #: src/tie_link.c:90
 #, c-format
@@ -823,12 +818,12 @@ msgstr "Erreur: %s\n"
 
 #: src/tie_link.c:300
 msgid "invalid io_address parameter passed to libticables.\n"
-msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
+msgstr "Un paramÃ¨tre io_address non valide a Ã©tÃ© passÃ© Ã  libticables.\n"
 
 #: src/tig_link.c:75
 #, c-format
 msgid "unable to open the <%s> serial port.\n"
-msgstr "Impossible d'ouvrir le port série <%s>.\n"
+msgstr "Impossible d'ouvrir le port sÃ©rie <%s>.\n"
 
 #: src/vti_link.c:341
 msgid "Unable to get an handle on the libTIcables.\n"
@@ -836,13 +831,14 @@ msgstr "Impossible de mettre la main sur libTIcables.\n"
 
 #: src/vti_link.c:342
 msgid "Did you rename the library ?!\n"
-msgstr "Avez-vous renommé la librairie ?!\n"
+msgstr "Avez-vous renommÃ© la librairie ?!\n"
 
 #: src/vti_link.c:343
 msgid "Fatal error. Program terminated.\n"
-msgstr "Erreur fatale. Programme terminé.\n"
+msgstr "Erreur fatale. Programme terminÃ©.\n"
 
 #: src/vti_link.c:359
 #, c-format
 msgid "Opened %s\n"
-msgstr "%s a été ouvert\n"
+msgstr "%s a Ã©tÃ© ouvert\n"
+
