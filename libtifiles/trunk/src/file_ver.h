@@ -27,7 +27,7 @@
 #endif
 
 #ifdef __WIN32__
-# define LIBTIFILES_VERSION "0.5.8"
+# define LIBTIFILES_VERSION "0.5.9"
 #else
 # define LIBTIFILES_VERSION VERSION
 #endif
