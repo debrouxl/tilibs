@@ -394,15 +394,61 @@ int main(int argc, char **argv)
 
 	printf("<%s> <%s>\n", "foo.bar", tifiles_fext_get("foo.bar"));
 
-	ret = tifiles_file_is_ti(""); 
+	ret = tifiles_file_is_ti("misc/str.92s"); 
 	printf("tifiles_file_is_ti: %i\n", ret);
 
+	ret = tifiles_file_is_single("misc/str.92s");
+	printf("tifiles_file_is_single: %i\n", ret);
+
+	ret = tifiles_file_is_group("misc/group.92g");
+        printf("tifiles_file_is_group: %i\n", ret);
+
+	ret = tifiles_file_is_regular("misc/str.92s");
+        printf("tifiles_file_is_regular: %i\n", ret);
+
+	ret = tifiles_file_is_regular("misc/group.92g");
+        printf("tifiles_file_is_regular: %i\n", ret);
+
+	ret = tifiles_file_is_backup("misc/backup.83b");
+	printf("tifiles_file_is_backup: %i\n", ret);
+
+	ret = tifiles_file_is_flash("misc/ticabfra.89k");
+        printf("tifiles_file_is_flash: %i\n", ret);
+
+	ret = tifiles_file_is_flash("misc/TI73_OS160.73U");
+        printf("tifiles_file_is_flash: %i\n", ret);
+
+	ret = tifiles_file_is_tib("misc/ams100.tib");
+        printf("tifiles_file_is_tib: %i\n", ret);
+
 	// test typesxx.c
+	printf("tifiles_file_get_model: %s\n", 
+         tifiles_model_to_string(tifiles_file_get_model("misc/str.92s")));
+
+	printf("tifiles_file_get_class: %s\n",
+         tifiles_class_to_string(tifiles_file_get_class("misc/group.92g")));
+
+	printf("tifiles_file_get_type: %s\n",
+	       tifiles_file_get_type("misc/TI73_OS160.73U"));
+	printf("tifiles_file_get_icon: %s\n",
+	       tifiles_file_get_icon("misc/str.92s"));
 
 	// test misc.c
-	return 0;
+
+	printf("tifiles_calc_is_ti8x: %i\n", tifiles_calc_is_ti8x(CALC_TI83));
+	printf("tifiles_calc_is_ti9x: %i\n", tifiles_calc_is_ti9x(CALC_TI89));
+
+	printf("tifiles_has_folder: %i\n", tifiles_has_folder(CALC_TI92));
+	printf("tifiles_is_flash: %i\n", tifiles_is_flash(CALC_TI73));
+
+	printf("tifiles_get_varname: <%s>\n", tifiles_get_varname("fld\\var"));
+	printf("tifiles_get_fldname: <%s>\n", tifiles_get_fldname("fld\\var"));
+	tifiles_build_fullname(CALC_TI89, buffer, "fld", "var");
+	printf("tifiles_build_fullname: <%s>\n", buffer);
+
 	// test filesxx.c
 
+	return 0;
 	// test grouped.c
 /*
 	// test OS file
