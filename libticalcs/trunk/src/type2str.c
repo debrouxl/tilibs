@@ -35,11 +35,11 @@ TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat format)
   	}
 }
 
-TIEXPORT TicalcScreenFormat TICALL ticalc_screen_to_string(const char *str)
+TIEXPORT TicalcScreenFormat TICALL ticalc_string_to_screen(const char *str)
 {
-  	if(!strcasecmp(str, _("full"))
+  	if(!strcmp(str, _("full")))
   		return SCREEN_FULL;
-  	else if(!strcasecmp(str, _("clipped"))
+  	else if(!strcmp(str, _("clipped")))
   		return SCREEN_CLIPPED;
   		
   	return SCREEN_CLIPPED;
@@ -57,9 +57,9 @@ TIEXPORT const char *TICALL ticalc_path_to_string(TicalcPathType type)
 
 TIEXPORT TicalcPathType TICALL ticalc_string_to_path(const char *str)
 {
-  	if(!strcasecmp(str, _("full")))
+  	if(!strcmp(str, _("full")))
   		return PATH_FULL;
-  	else if(!strcasecmp(str, _("local")))
+  	else if(!strcmp(str, _("local")))
   		return PATH_LOCAL;
   	
   	return PATH_FULL;

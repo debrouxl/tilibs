@@ -163,7 +163,7 @@ typedef enum {
   SCREEN_FULL, SCREEN_CLIPPED
 } TicalcScreenFormat;
 
-#define FULL_SCREEN	SCREEN_FULL
+#define FULL_SCREEN		SCREEN_FULL
 #define CLIPPED_SCREEN	SCREEN_CLIPPED
 
 typedef enum {

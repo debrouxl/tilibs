@@ -204,6 +204,10 @@ SOURCE=..\..\src\Probe.c
 
 SOURCE=..\..\src\tnode.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\type2str.c
+# End Source File
 # End Group
 # Begin Group "Headers"
 
