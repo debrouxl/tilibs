@@ -67,11 +67,10 @@ TIEXPORT int TICALL ticalc_init()
 #endif
 
 #if defined(ENABLE_NLS)
-  setlocale(LC_ALL, "");
-  bindtextdomain(PACKAGE, LOCALEDIR);
-  DISPLAY("%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
-  //bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
-  textdomain(PACKAGE);
+	DISPLAY("libticalcs: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	DISPLAY("libticalcs: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+  	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+  	DISPLAY("libticalcs: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   tifiles_init();

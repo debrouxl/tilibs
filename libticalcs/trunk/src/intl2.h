@@ -23,8 +23,8 @@
   Contains the right headers for the internationalization library
 */
 
-#ifndef __TICALCS_INTL2__
-#define __TICALCS_INTL2__
+#ifndef __TICALCS_INTL__
+#define __TICALCS_INTL__
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
