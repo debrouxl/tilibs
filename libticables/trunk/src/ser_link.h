@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,13 +20,11 @@
 #ifndef SERLINK_H
 #define SERLINK_H
 
-//#include <stdint.h>
-
 /* I/O mode (Linux & Win32) */
 int ser_init();
 int ser_open();
 int ser_put(uint8_t data);
-int ser_get(uint8_t *data);
+int ser_get(uint8_t * data);
 int ser_probe();
 int ser_close();
 int ser_exit();
@@ -42,7 +41,7 @@ int ser_supported();
 int ser_init2();
 int ser_open2();
 int ser_put2(uint8_t data);
-int ser_get2(uint8_t *data);
+int ser_get2(uint8_t * data);
 int ser_probe2();
 int ser_close2();
 int ser_exit2();
@@ -56,4 +55,3 @@ int ser_get_white_wire2();
 int ser_supported2();
 
 #endif
-

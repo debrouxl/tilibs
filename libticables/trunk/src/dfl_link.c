@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +24,12 @@
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
+
 
 #include "timeout.h"
 #include "ioports.h"
@@ -48,13 +54,13 @@ int dfl_put(uint8_t data)
   return 0;
 }
 
-int dfl_get(uint8_t *d)
+int dfl_get(uint8_t * d)
 {
   return 0;
 }
 
 int dfl_probe()
-{ 
+{
   return 0;
 }
 
@@ -99,22 +105,21 @@ int dfl_supported()
   return SUPPORT_OFF;
 }
 
-int set_default_cable(TicableLinkCable *lc)
+int set_default_cable(TicableLinkCable * lc)
 {
-  lc->init  = dfl_init;
-  lc->open  = dfl_open;
-  lc->put        = dfl_put;
-  lc->get        = dfl_get;
+  lc->init = dfl_init;
+  lc->open = dfl_open;
+  lc->put = dfl_put;
+  lc->get = dfl_get;
   lc->close = dfl_close;
-  lc->exit  = dfl_exit;
+  lc->exit = dfl_exit;
   lc->probe = dfl_probe;
   lc->check = dfl_check;
-  
-  lc->set_red_wire   = dfl_set_red_wire;
+
+  lc->set_red_wire = dfl_set_red_wire;
   lc->set_white_wire = dfl_set_white_wire;
-  lc->get_red_wire   = dfl_get_red_wire;
+  lc->get_red_wire = dfl_get_red_wire;
   lc->get_white_wire = dfl_get_white_wire;
 
   return 0;
 }
-

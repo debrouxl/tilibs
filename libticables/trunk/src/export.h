@@ -1,5 +1,6 @@
-/*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/*  libticables - link cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,49 +17,63 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFILES_EXPORT__
-#define __TIFILES_EXPORT__
+#ifndef __TICABLES_EXPORT__
+#define __TICABLES_EXPORT__
 
 /*
- * Defines this if you want to use this library with Visual Basic.
- * VB & Delphi require the __stdcall calling convention, too.
+ * Choose one of these calling conventions (override compiler settings)
  */
-//#define __BORLANDC__
-//#define __WIN32__
+//#define FORCE_STDCALL
+//#define FORCE_C_CALL
+//#define FORCE_FASTCALL
+//#define FORCE_NONE
 
 /*
- *  BCC32 v5.x (or C++Builder)
- *  (C) 2001 Thomas Wolf (two@chello.at)
+ * Defines one of the previous definitions for forcing a calling convention.
+ * VB & Delphi users will enable FORCE_STDCALL.
  */
 #if defined(__WIN32__)
-# ifdef __BORLANDC__				// Borland
-#  if __BORLANDC__ >= 0x0500
-#   define TIEXPORT
-#   define TICALL  __stdcall
-#  else
-#   define TICALL
-#   define TICALL
-#  endif
+# if defined(FORCE_STDCALL)
+#  define TICALL    __stdcall
+
+# elif defined(FORCE_C_CALL)
+#  define TICALL    __cdecl
+
+# elif defined(FORCE_FASTCALL)
+#  define TICALL    __fastcall
+
+# else
+#  define TICALL
 # endif
-/*
- * MSVC 5.0 mini
- */
-# elif defined(_MSC_VER) && !defined(VB)	// Microsoft
-#  ifdef TICABLES_EXPORTS
+
+# if defined(__BORLANDC__)	// BCC32 v5.x (or C++Builder)
+#  if __BORLANDC__ >= 0x0500	// (c) 2001 Thomas Wolf (two@chello.at)
+#   define TIEXPORT
+#  else
+#   define TIEXPORT
+#  endif
+
+# elif defined(_MSC_VER)	// MSVC 5.0 mini
+#  if defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
 #   define TIEXPORT __declspec(dllexport)
-#   define TICALL
 #  else
 #   define TIEXPORT __declspec(dllimport)
-#   define TICALL
 #  endif
-/*
- * Linux
- */
-#elif defined(__LINUX__)			// GNU
+
+# elif defined(__MINGW32__)	// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
+#  if defined(DLL_EXPORT)	// defined by the configure script
+#   define TIEXPORT __declspec(dllexport)
+#  else
+#   define TIEXPORT extern	//__declspec(dllimport)
+#  endif
+# endif
+
+#elif defined(__LINUX__) || defined(__BSD__)	// GNU
 # define TIEXPORT extern
 # define TICALL
+
 #else
-# define TIEXPORT				// default
+# define TIEXPORT		// default
 # define TICALL
 #endif
 
@@ -66,6 +81,3 @@
 // .def file; MSVC uses _cdecl by default (__declspec)
 
 #endif
-
-
-

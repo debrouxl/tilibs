@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,8 +29,6 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "export.h"
-#include "cabl_def.h"
 
 #if defined(__LINUX__)
 
@@ -47,6 +46,7 @@
 # include <sys/ioctl.h>
 #endif
 
+#include "intl.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
@@ -56,13 +56,12 @@
 #include "verbose.h"
 #include "logging.h"
 
-extern const char * ti_dev_file;
+extern const char *ti_dev_file;
 extern int time_out;
 
 static int dev_fd = 0;
 
-static struct cs
-{
+static struct cs {
   uint8_t data;
   int available;
 } cs;
@@ -76,13 +75,12 @@ int dev_init()
   cs.data = 0;
 
   /* Open the device */
-  mask = O_RDWR | /*O_NONBLOCK |*/ O_SYNC;
-  if( (dev_fd = open(io_device, mask)) == -1)
-    {
-      DISPLAY_ERROR("unable to open this device: <%s>\n", io_device);
-      DISPLAY_ERROR("is the module loaded ?\n");
-      return ERR_OPEN_TIDEV;
-    }
+  mask = O_RDWR | /*O_NONBLOCK | */ O_SYNC;
+  if ((dev_fd = open(io_device, mask)) == -1) {
+    DISPLAY_ERROR(_("unable to open this device: <%s>\n"), io_device);
+    DISPLAY_ERROR(_("is the module loaded ?\n"));
+    return ERR_OPEN_TIDEV;
+  }
 
   /* Set timeout and inter-bit delay */
 #if defined(HAVE_TILP_TICABLE_H)
@@ -112,39 +110,36 @@ int dev_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
-  err = write(dev_fd, (void *)(&data), 1);
-  if(err <= 0)
-    {
-      if(errno == ETIMEDOUT)
-        return ERR_WRITE_TIMEOUT;
-      else
-        return ERR_WRITE_ERROR;      
-    }
+  err = write(dev_fd, (void *) (&data), 1);
+  if (err <= 0) {
+    if (errno == ETIMEDOUT)
+      return ERR_WRITE_TIMEOUT;
+    else
+      return ERR_WRITE_ERROR;
+  }
 
   return 0;
 }
 
-int dev_get(uint8_t *data)
+int dev_get(uint8_t * data)
 {
-  int err=0;
+  int err = 0;
 
   tdr.count++;
   /* If the dev_check function was previously called, retrieve the uint8_t */
-  if(cs.available)
-    {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
-    }
+  if (cs.available) {
+    *data = cs.data;
+    cs.available = 0;
+    return 0;
+  }
 
-  err = read(dev_fd, (void *)data, 1);
-  if(err <= 0)
-    {
-      if(errno == ETIMEDOUT)
-	return ERR_READ_TIMEOUT;
-      else
-	return ERR_READ_ERROR;
-    }
+  err = read(dev_fd, (void *) data, 1);
+  if (err <= 0) {
+    if (errno == ETIMEDOUT)
+      return ERR_READ_TIMEOUT;
+    else
+      return ERR_READ_ERROR;
+  }
   LOG_DATA(*data);
 
   return 0;
@@ -163,11 +158,10 @@ int dev_close(void)
 int dev_exit()
 {
   STOP_LOGGING();
-  if(dev_fd)
-    {
-      close(dev_fd);
-      dev_fd=0;
-    }
+  if (dev_fd) {
+    close(dev_fd);
+    dev_fd = 0;
+  }
 
   return 0;
 }
@@ -178,24 +172,20 @@ int dev_check(int *status)
 
   /* Since the select function does not work, I do it myself ! */
   *status = STATUS_NONE;
-  if(dev_fd)
-    {
-      n = read(dev_fd, (void *) (&cs.data), 1);
-      if(n > 0)
-	{
-	  if(cs.available == 1)
-	    return ERR_BYTE_LOST;
+  if (dev_fd) {
+    n = read(dev_fd, (void *) (&cs.data), 1);
+    if (n > 0) {
+      if (cs.available == 1)
+	return ERR_BYTE_LOST;
 
-	  cs.available = 1;
-	  *status = STATUS_RX;
-	  return 0;
-	}
-      else
-	{
-	  *status = STATUS_NONE;
-	  return 0;
-	}
+      cs.available = 1;
+      *status = STATUS_RX;
+      return 0;
+    } else {
+      *status = STATUS_NONE;
+      return 0;
     }
+  }
 
   return 0;
 }
@@ -215,6 +205,8 @@ int dev_supported()
 /* Unsupported platform */
 /************************/
 
+#include "cabl_def.h"
+
 int dev_init()
 {
   return 0;
@@ -230,7 +222,7 @@ int dev_put(uint8_t data)
   return 0;
 }
 
-int dev_get(uint8_t *d)
+int dev_get(uint8_t * d)
 {
   return 0;
 }
@@ -255,7 +247,7 @@ int dev_check(int *status)
   return 0;
 }
 
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int dev_set_red_wire(int b)
 {

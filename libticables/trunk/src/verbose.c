@@ -1,5 +1,5 @@
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,120 +34,55 @@
 #include "export.h"
 #include "verbose.h"
 
-// Not all UNIXes have the vprintf function
-#ifndef HAVE_VPRINTF
-# undef VERBOSE
-#else
-# define VERBOSE
+// Display output in console
+#ifdef __WIN32__
+static BOOL alloc_console_called = FALSE;
+HANDLE hConsole;
 #endif
 
-// Display informations in a console
-#if defined(__WIN32__) 
-# define VERBOSE
-  static int alloc_console_called = FALSE;
-  HANDLE hConsole;
-#elif defined(__LINUX__)
-# define VERBOSE
-#endif
-
-// Default verbosity
-#if defined(__LINUX__)
-  static int verbosity = 1;
+// Default verbosity level (on for UNIXes, off for Windows)
+#if defined(__LINUX__) || defined(__BSD__)
+static int verbosity = 1;
 #elif defined(__WIN32__) || defined(__MACOSX__)
-  static int verbosity = 1;
+static int verbosity = 0;
 #endif
 
-// Store in a file what is displayed in the console
-#ifdef __LINUX__
-# define LOG_FILE "/tmp/console.log"
-#else
-# define LOG_FILE "C:\\console.log"
-#endif
+
 static FILE *flog = NULL;
 
-#if defined(__LINUX__)
-#elif defined(__WIN32__)
-# define STDIN_FILENO  0//(fileno(CONIN$))
-# define STDOUT_FILENO 1//(fileno(CONOUT$))
-# define STDERR_FILENO 2//(fileno(CONOUT$))
-#endif
-
-/* 
-   This function is equivalent to 'fprintf(out, ...)'
-   if the VERBOSE constant is defined.
-   Default behaviour: out = stdout;
-*/
-static FILE* out = NULL; // stdout by default
-static FILE* old = NULL; // old stream pointer
-static FILE *f = NULL;
-
-TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream)
-{
-  old = out;
-  out = stream;
-  return old;
-}
-
-TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename)
-{
-  f = fopen(filename, "wb");
-  return f;
-}
-
-TIEXPORT int TICALL ticable_DISPLAY_close_file()
-{
-  return fclose(f);
-}
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...)
 {
   int ret = 0;
   va_list ap;
-  
-  if(verbosity)
-    {
-      if(out == NULL)  out = stdout;
-      if(flog == NULL) flog = fopen(LOG_FILE, "wt");
-      
-      // Under Win32, we redirect stdout to the console
-#if defined(__WIN32__)				
-      if (!alloc_console_called)
-	{
-	  hConsole = GetStdHandle (STD_OUTPUT_HANDLE);
-	  
-	  if (hConsole == INVALID_HANDLE_VALUE)
-	    {
-	      AllocConsole ();
-	      alloc_console_called = TRUE;
-	      freopen ("CONOUT$", "w", out);
-	    }
-	}
-#endif
-#ifdef VERBOSE
-      va_start(ap, format);
-      ret = vfprintf(out, format, ap);
-      va_end(ap);
 
-      //
-      fflush(out);
+  if (verbosity) {
 
-      va_start(ap, format);
-      if(flog) vfprintf(flog, format, ap);
-      va_end(ap);
-#endif
+#if defined(__WIN32__)		// redirect stdout to the console
+    if (alloc_console_called == FALSE) {
+      AllocConsole();
+      alloc_console_called = TRUE;
+      hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+      freopen("CONOUT$", "w", stdout);
     }
-
-  if(f != NULL)
-    {
-#ifdef VERBOSE
-      va_start(ap, format);
-      ret = vfprintf(f, format, ap);
-      va_end(ap);
 #endif
-    }
+    va_start(ap, format);
+    ret = vfprintf(stdout, format, ap);
+    va_end(ap);
+  }
+
+  if (flog == NULL)
+    flog = fopen(DISP_FILE, "wt");
+  else {
+    va_start(ap, format);
+    if (flog)
+      vfprintf(flog, format, ap);
+    va_end(ap);
+  }
 
   return ret;
 }
+
 
 /* 
    This function is equivalent to 'DISPLAY_ERROR(...)' but 
@@ -157,39 +92,32 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
   int ret = 0;
   va_list ap;
-  
-  if(verbosity)
-    {
-      if(flog == NULL)
-	{
-	  flog = fopen(LOG_FILE, "wt");
-	}
-      
-      // Under Win32, we redirect stderr to the console
-#if defined(__WIN32__)				
-      if (!alloc_console_called)
-	{
-	  hConsole = GetStdHandle (STD_ERROR_HANDLE);
-	  
-	  if (hConsole == INVALID_HANDLE_VALUE)
-	    {
-	      AllocConsole ();
-	      alloc_console_called = TRUE;
-	      freopen ("CONERR$", "w", stderr);
-	    }
-	}
-#endif
-#ifdef VERBOSE
-      va_start(ap, format);
-      fprintf(stderr, "Error: ");
-      ret=vfprintf(stderr, format, ap);
-      va_end(ap);
-      va_start(ap, format);
-      if(flog)  fprintf(flog, "Error: ");
-      if(flog) vfprintf(flog, format, ap);
-      va_end(ap);
-#endif
+
+  if (verbosity) {
+#if defined(__WIN32__)		// redirect stderr to the console
+    if (alloc_console_called == FALSE) {
+      AllocConsole();
+      alloc_console_called = TRUE;
+      hConsole = GetStdHandle(STD_ERROR_HANDLE);
+      freopen("CONERR$", "w", stderr);
     }
+#endif
+    va_start(ap, format);
+    fprintf(stderr, "Error: ");
+    ret = vfprintf(stderr, format, ap);
+    va_end(ap);
+  }
+
+  if (flog == NULL)
+    flog = fopen(DISP_FILE, "wt");
+  else {
+    va_start(ap, format);
+    if (flog)
+      fprintf(flog, "Error: ");
+    if (flog)
+      vfprintf(flog, format, ap);
+    va_end(ap);
+  }
 
   return ret;
 }
@@ -198,26 +126,75 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 /* 
    Set the verbosity level
 */
-TIEXPORT int TICALL ticable_DISPLAY_settings(int op)
+TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op)
 {
-  switch(op)
-    {
-    case DSP_OFF:
-      verbosity = 0;
-      break;
-    case DSP_ON:
-      verbosity = 1;
-      break;
-    case DSP_CLOSE:
+  switch (op) {
+  case DSP_OFF:
+    verbosity = 0;
+    break;
+  case DSP_ON:
+    verbosity = 1;
+    break;
+  case DSP_CLOSE:
 #ifdef __WIN32__
-      FreeConsole();
+    FreeConsole();
 #endif
-      break;
-    default:
-      break;
-    }
-
-  verbosity = 1;
+    break;
+  default:
+    break;
+  }
 
   return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
+{
+  return ticable_DISPLAY_settings(op);
+}
+
+/*
+	Change the log file
+*/
+TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
+{
+  if (flog != NULL) {
+    fflush(flog);
+    fclose(flog);
+  }
+
+  flog = fopen(filename, "wt");
+  if (flog != NULL)
+    return -1;
+
+  return 0;
+}
+
+/************ Unused/Obsoleted *****************/
+
+
+static FILE *old = NULL;	// old stream pointer
+static FILE *f = NULL;
+
+
+/* 
+   This function is equivalent to 'fprintf(out, ...)'
+   if the VERBOSE constant is defined.
+   Default behaviour: out = stdout;
+*/
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_stream(FILE * stream)
+{
+//      old = out;
+  //out = stream;
+  return old;
+}
+
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_file(char *filename)
+{
+  f = fopen(filename, "wb");
+  return f;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_close_file()
+{
+  return fclose(f);
 }

@@ -1,5 +1,5 @@
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,18 +40,17 @@
 
 #if defined(__WIN32__)
 # include <windows.h>
-  typedef DWORD                         TIME;
+typedef DWORD tiTIME;
 # define  toSTART(ref)          { (ref)=GetTickCount(); }
 # define  toELAPSED(ref, max)   ( (int)(GetTickCount()-(ref)) > (100*max) )
 # define  toCURRENT(ref)        ( (float)(GetTickCount()-(ref)) / 1000 )
 
-#elif defined(__LINUX__) || defined(__MACOSX__)
+#else
 # include <time.h>
-  typedef clock_t			TIME;
+typedef clock_t tiTIME;
 # define  toSTART(ref)		{ (ref)=clock(); }
-# define  toELAPSED(ref, max)	((clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
+# define  toELAPSED(ref, max)	( (clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
 # define  toCURRENT(ref)        ( (float)(clock()-(ref))/CLOCKS_PER_SEC )
 #endif
 
 #endif
-

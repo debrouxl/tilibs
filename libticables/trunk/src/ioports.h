@@ -1,14 +1,14 @@
-/*  IOPorts - I/O low-level port access routines for Linux, Windows9x,
- *		NT4/2000, DOS.
- *	A part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/*  libticables - link cables library, a part of the TiLP project
+ *  Copyright (C) 1999-2003  Romain Lievin
+ *  Copyright (c) 2002, Kevin Kofler for the __MINGW32__ & __GNUC__ extensions.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributelabeld in the hope that it will be useful,
+ *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
@@ -23,49 +23,23 @@
   and/or the platform
  */
 
-#ifndef IOPORTS_H
-#define IOPORTS_H
+#ifndef __TICABLE_IO__
+#define __TICABLE_IO__
 
-extern int io_mode;
+/* I/O abstraction */
+int io_open(unsigned long from, unsigned long num);
+extern int (*io_rd) (unsigned int addr);
+extern void (*io_wr) (unsigned int addr, int data);
+int io_close(unsigned long from, unsigned long num);
 
-/* General function of this IOPort module */
-extern int open_io(unsigned long from, unsigned long num);
-extern int (*rd_io) (unsigned int addr);
-extern int (*wr_io) (unsigned int addr, int data);
-extern int close_io(unsigned long from, unsigned long num);
+#ifdef __WIN32__		// used by ser_link.c
+int io_open_comport(char *comPort, PHANDLE hCom);
+int io_close_comport(PHANDLE hCom);
+#endif
 
-
-/* ASM functions */
-#if defined(__WIN32__) || defined(__DOS__)
-__inline int inp_ (unsigned short addr)
-{ 
-  int c;
-  
-  __asm 
-    { 
-      mov eax, 0
-	mov dx, addr
-	in al, dx
-	mov c, eax
-	}
-  
-  return c;
-}
-
-__inline void outp_ (unsigned short addr, short data)
-{ 
-  __asm 
-    { 
-      mov dx, addr
-	mov ax, data
-	out dx, al
-	}
-}
-#endif // Win32
-
-#ifdef __WIN32__
-int open_com_port(char *comPort, PHANDLE hCom);
-int close_com_port(PHANDLE hCom);
+#if defined(__BORLANDC__) || defined(__MINGW32__)
+# define _inp  inp_
+# define _outp outp_
 #endif
 
 #endif

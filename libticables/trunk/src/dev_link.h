@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,12 +23,10 @@
 #ifndef DEVLINK_H
 #define DEVLINK_H
 
-//#include <stdint.h>
-
 int dev_init(void);
 int dev_open(void);
 int dev_put(uint8_t data);
-int dev_get(uint8_t *data);
+int dev_get(uint8_t * data);
 int dev_probe(void);
 int dev_close(void);
 int dev_exit(void);
@@ -41,4 +40,3 @@ int dev_get_white_wire();
 int dev_supported();
 
 #endif
-

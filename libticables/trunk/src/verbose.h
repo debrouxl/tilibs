@@ -1,5 +1,5 @@
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,17 +21,23 @@
 
 #include <stdio.h>
 #include "export.h"
+#include "cabl_def.h"
 
-#define DSP_OFF   0
-#define DSP_ON    1
-#define DSP_CLOSE 2
+// Store in a file what is displayed in the console
+#if defined(__LINUX__) || defined(__BSD__)
+# define DISP_FILE "/tmp/verbose.log"
+#else
+# define DISP_FILE "C:\\verbose.log"
+#endif
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...);
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
-TIEXPORT int TICALL ticable_DISPLAY_settings(int op);
+TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op);
+TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
 
-TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream);
-TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename);
-TIEXPORT int   TICALL ticable_DISPLAY_close_file();
+/* Deprecated */
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_stream(FILE * stream);
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_file(char *filename);
+TIEXPORT int TICALL ticable_DISPLAY_close_file();
 
 #endif

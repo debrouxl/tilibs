@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,40 +23,37 @@
 //#include <stdint.h>
 
 // USB through kernel module or device driver
-int ugl_init();
-int ugl_open();
-int ugl_put(uint8_t data);
-int ugl_get(uint8_t *data);
-int ugl_probe();
-int ugl_close();
-int ugl_exit();
-int ugl_check(int *status);
+int slv_init();
+int slv_open();
+int slv_put(uint8_t data);
+int slv_get(uint8_t * data);
+int slv_probe();
+int slv_close();
+int slv_exit();
+int slv_check(int *status);
 
-int ugl_set_red_wire(int b);
-int ugl_set_white_wire(int b);
-int ugl_get_red_wire();
-int ugl_get_white_wire();
+int slv_set_red_wire(int b);
+int slv_set_white_wire(int b);
+int slv_get_red_wire();
+int slv_get_white_wire();
 
-int ugl_supported();
+int slv_supported();
 
 // USB through LIBUSB
-int ugl_init2();
-int ugl_open2();
-int ugl_put2(uint8_t data);
-int ugl_get2(uint8_t *data);
-int ugl_probe2();
-int ugl_close2();
-int ugl_exit2();
-int ugl_check2(int *status);
+int slv_init2();
+int slv_open2();
+int slv_put2(uint8_t data);
+int slv_get2(uint8_t * data);
+int slv_probe2();
+int slv_close2();
+int slv_exit2();
+int slv_check2(int *status);
 
-int ugl_set_red_wire2(int b);
-int ugl_set_white_wire2(int b);
-int ugl_get_red_wire2();
-int ugl_get_white_wire2();
+int slv_set_red_wire2(int b);
+int slv_set_white_wire2(int b);
+int slv_get_red_wire2();
+int slv_get_white_wire2();
 
-int ugl_supported2();
+int slv_supported2();
 
 #endif
-
-
-

@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,38 +23,36 @@
 #include <config.h>
 #endif
 
-#include "export.h"
-#include "cabl_def.h"
+#if defined(__LINUX__) || defined(__SPARC__) || defined(__BSD__)
 
-#if defined(__LINUX__) || defined(__SPARC__)
-
-#include <stdio.h>
 #include <fcntl.h>
-#include <strings.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/time.h>
+#include <sys/ioctl.h>
 #include <termios.h>
-#include <unistd.h>
 #include <time.h>
-#include <stdint.h>
+#include <unistd.h>
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
 
-#include "timeout.h"
+#include "intl.h"
+#include "export.h"
 #include "cabl_err.h"
+#include "cabl_def.h"
 #include "externs.h"
-#include "logging.h"
+#include "timeout.h"
 #include "verbose.h"
+#include "logging.h"
 
 static char tty_dev[1024];
 static int dev_fd = 0;
 static struct termios termset;
-
-static struct cs
-{
-  uint8_t data;
-  int available;
-} cs;
 
 /**************/
 /* Linux part */
@@ -64,54 +63,58 @@ int avr_close();
 int avr_init()
 {
   int br = BR9600;
+  int flags = 0;
 
-  /* Init some internal variables */
-  cs.available = 0;
-  cs.data = 0;
   strcpy(tty_dev, io_device);
 
-  /* Give some perm for the probe function */
-  // nothing for the moment
+#if defined(__MACOSX__)
+  flags = O_RDWR | O_NDELAY;
+#elif defined(__BSD__)
+  flags = O_RDWR | O_FSYNC;
+#else
+  flags = O_RDWR | O_SYNC;
+#endif
 
-  /* Open the device */
-  if( (dev_fd = open(io_device, O_RDWR | O_SYNC )) == -1 )
-    {
-      DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
-      return ERR_OPEN_SER_DEV;
-    }
-  /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
+  if ((dev_fd = open(io_device, flags)) == -1) {
+    DISPLAY_ERROR(_("unable to open this serial port: %s\n"), io_device);
+    return ERR_OPEN_SER_DEV;
+  }
+
+  /* Initialize it: 9600,8,N,1 */
   tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
-  //cfmakeraw(&termset);
-  termset.c_iflag=0;
-  termset.c_oflag=0;
-  if(hfc == HFC_ON)
-    termset.c_cflag=CS8|CLOCAL|CREAD|CRTSCTS;
+  cfmakeraw(&termset);
+  termset.c_iflag = 0;
+  termset.c_oflag = 0;
+  if (hfc == HFC_ON)
+    termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
   else
-    termset.c_cflag=CS8|CLOCAL|CREAD;
-  termset.c_lflag=0;
+    termset.c_cflag = CS8 | CLOCAL | CREAD;
+  termset.c_lflag = 0;
 #else
-  termset.c_iflag=0;
-  termset.c_oflag=0;
-  if(hfc == HFC_ON)
-    termset.c_cflag=CS8|CLOCAL|CREAD|CRTSCTS;
+  termset.c_iflag = 0;
+  termset.c_oflag = 0;
+  if (hfc == HFC_ON)
+    termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
   else
-    termset.c_cflag=CS8|CLOCAL|CREAD;
-  termset.c_lflag=0;
+    termset.c_cflag = CS8 | CLOCAL | CREAD;
+  termset.c_lflag = 0;
 #endif
-  //DISPLAY("fastAVRlink baud-rate: %i\n", baud_rate);
-  if(baud_rate == 9600)
+
+  if (baud_rate == 9600)
     br = B9600;
-  else if(baud_rate == 19200)
+  else if (baud_rate == 19200)
     br = B19200;
-  else if(baud_rate == 38400)
+  else if (baud_rate == 38400)
     br = B38400;
-  else if(baud_rate == 57600)
+  else if (baud_rate == 57600)
     br = B57600;
   else
     br = B9600;
+
   cfsetispeed(&termset, br);
   cfsetospeed(&termset, br);
+
   START_LOGGING();
 
   return 0;
@@ -119,21 +122,19 @@ int avr_init()
 
 int avr_open()
 {
-  uint8_t d;
+  uint8_t unused[1024];
   int n;
 
   /* Flush the input */
-  termset.c_cc[VMIN]=0;
-  termset.c_cc[VTIME]=1;
+  termset.c_cc[VMIN] = 0;
+  termset.c_cc[VTIME] = 0;
   tcsetattr(dev_fd, TCSANOW, &termset);
-  do
-    {
-      n=read(dev_fd, (void *)(&d), 1);
-      //printf("Flushing...\n");
-    }
-  while(n!=0 && n!=-1);
-  /* and set the timeout */
-  termset.c_cc[VTIME] = 0; //time_out;
+  do {
+    n = read(dev_fd, (void *) unused, 1024);
+  } while ((n != 0) && (n != -1));
+
+  /* and set/restore the timeout */
+  termset.c_cc[VTIME] = time_out;
   tcsetattr(dev_fd, TCSANOW, &termset);
 
   tdr.count = 0;
@@ -148,48 +149,41 @@ int avr_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
-  err=write(dev_fd, (void *)(&data), 1);
-  switch(err)
-    {
-    case -1: //error
-      avr_close();
-      return ERR_WRITE_ERROR;
-      break;
-    case 0: // timeout
-      avr_close();
-      return ERR_WRITE_TIMEOUT;
-      break;
-    }
+
+  err = write(dev_fd, (void *) (&data), 1);
+  switch (err) {
+  case -1:			//error
+    avr_close();
+    return ERR_WRITE_ERROR;
+    break;
+  case 0:			// timeout
+    avr_close();
+    return ERR_WRITE_TIMEOUT;
+    break;
+  }
 
   return 0;
 }
 
-int avr_get(uint8_t *data)
+int avr_get(uint8_t * data)
 {
-  int n=0;
-  TIME clk;
+  int err;
+
+  tcdrain(dev_fd);		// waits for all output written
+
+  err = read(dev_fd, (void *) data, 1);
+  switch (err) {
+  case -1:			//error
+    avr_close();
+    return ERR_READ_ERROR;
+    break;
+  case 0:			// timeout
+    avr_close();
+    return ERR_READ_TIMEOUT;
+    break;
+  }
 
   tdr.count++;
-  /* If the avr_check function was previously called, retrieve the uint8_t */
-  if(cs.available)
-    {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
-    }
-
-  tcdrain(dev_fd); //waits until all output written
-  toSTART(clk);
-  do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-      n = read(dev_fd, (void *)data, 1);
-    }
-  while(n == 0);
-
-  if(n == -1)
-    return ERR_READ_ERROR;
-
   LOG_DATA(*data);
 
   return 0;
@@ -202,15 +196,6 @@ int avr_probe()
 
 int avr_close()
 {
-  /* Do not close the port else the communication will not work fine */
-  /* Don't ask me why, I don't know ! */
-  /*
-  if(dev_fd)
-    {
-      close(dev_fd);
-      dev_fd=0;
-    }
-  */
   return 0;
 }
 
@@ -223,28 +208,27 @@ int avr_exit()
 
 int avr_check(int *status)
 {
-  int n = 0;
+  fd_set rdfs;
+  struct timeval tv;
+  int retval;
 
-  /* Since the select function does not work, I do it myself ! */
   *status = STATUS_NONE;
-  if(dev_fd)
-    {
-      n = read(dev_fd, (void *) (&cs.data), 1);
-      if(n > 0)
-	{
-	  if(cs.available == 1)
-	    return ERR_BYTE_LOST;
 
-	  cs.available = 1;
-	  *status = STATUS_RX;
-	  return 0;
-	}
-      else
-	{
-	  *status = STATUS_NONE;
-	  return 0;
-	}
-    }
+  FD_ZERO(&rdfs);
+  FD_SET(dev_fd, &rdfs);
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+
+  retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+  switch (retval) {
+  case -1:			//error
+    return ERR_READ_ERROR;
+  case 0:			//no data
+    return 0;
+  default:			// data available
+    *status = STATUS_RX;
+    break;
+  }
 
   return 0;
 }
@@ -268,218 +252,230 @@ int avr_supported()
 
 #include <stdio.h>
 #include <windows.h>
-#include <time.h>
 
 #include "timeout.h"
 #include "cabl_def.h"
 #include "export.h"
 #include "cabl_err.h"
-#include "plerror.h"
 #include "externs.h"
+#include "logging.h"
+#include "verbose.h"
 #include "logging.h"
 
 #define BUFFER_SIZE 1024
 
-extern int time_out; // Timeout value for cables in 0.10 seconds
+extern int time_out;		// Timeout value for cables in 0.10 seconds
 
-static HANDLE hCom=0;
-static char comPort[MAXCHARS];
-static int uint8_t_count = 0;
-
-static struct cs
-{
+static HANDLE hCom = 0;
+static char comPort[1024];
+static struct cs {
   uint8_t data;
-  int available;
+  int avail;
 } cs;
 
 int avr_init()
 {
-	DCB dcb;
-	COMMTIMEOUTS cto;
-	int br;
-	char str[128];
-	int graphLink = 1;
+  DCB dcb;
+  COMMTIMEOUTS cto;
+  int br;
+  BOOL fSuccess;
 
-	cs.available = 0;
-	cs.data = 0;
-	strcpy(comPort, io_device);
+  strcpy(comPort, io_device);
 
-	// Open COM port
-	hCom=CreateFile(comPort,GENERIC_READ|GENERIC_WRITE,0,NULL,
-        OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-	if(hCom == INVALID_HANDLE_VALUE)
-	{
-		DISPLAY_ERROR("CreateFile\n");
-		print_last_error();
-		return ERR_OPEN_SER_COMM;
-	}
+  // Open COM port
+  hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, NULL,
+		    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (hCom == INVALID_HANDLE_VALUE) {
+    DISPLAY_ERROR("CreateFile\n");
+    return ERR_OPEN_SER_COMM;
+  }
+  // Setup buffer size
+  fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetupComm\n");
+    return ERR_SETUP_COMM;
+  }
+  // Retrieve config structure
+  fSuccess = GetCommState(hCom, &dcb);
+  if (!fSuccess) {
+    DISPLAY_ERROR("GetCommState\n");
+    return ERR_GET_COMMSTATE;
+  }
+  // select baud-rate
+  if (baud_rate == 9600)
+    br = CBR_9600;
+  else if (baud_rate == 19200)
+    br = CBR_19200;
+  else if (baud_rate == 38400)
+    br = CBR_38400;
+  else if (baud_rate == 57600)
+    br = CBR_57600;
+  else
+    br = CBR_38400;
 
-	if(baud_rate == 9600)
-	  br = CBR_9600;
-	else if(baud_rate == 19200)
-	  br = CBR_19200;
-	else if(baud_rate == 38400)
-	  br = CBR_38400;
-	else if(baud_rate == 57600)
-	  br = CBR_57600;
-	else
-	  br = CBR_38400;
+  // Fills the structure with config
+  dcb.BaudRate = br;		// 9600 bauds
+  dcb.fBinary = TRUE;		// Binary mode
+  dcb.fParity = FALSE;		// Parity checking disabled
+  dcb.fOutxCtsFlow = FALSE;	// No output flow control
+  dcb.fOutxDsrFlow = FALSE;	// Idem
+  dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
+  dcb.fDsrSensitivity = FALSE;	// ignore DSR status
+  dcb.fOutX = FALSE;		// no XON/XOFF flow control
+  dcb.fInX = FALSE;		// idem
+  dcb.fErrorChar = FALSE;	// no replacement
+  dcb.fNull = FALSE;		// don't discard null chars
+  if (hfc == HFC_ON)
+    dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
+  else
+    dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Hardware flow control
+  dcb.fAbortOnError = FALSE;	// do not report errors
 
-	// Fills the structure with config
-	dcb.DCBlength=sizeof(DCB);
-    dcb.BaudRate = br; 
-	dcb.ByteSize = 8; 
-	dcb.Parity = 0;
-    dcb.StopBits=graphLink?0:1;
-    dcb.fNull = 0; 
-	dcb.fBinary = 1; 
-	dcb.fParity = 0;
-    dcb.fOutxCtsFlow = 1; 
-	dcb.fOutxDsrFlow = 1;
-    dcb.fDtrControl = 0;
-    dcb.fOutX = 0; 
-	dcb.fInX = 0;
-    dcb.fErrorChar = 0; 
-	if(hfc == HFC_ON)
-	dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
-	else
-	  dcb.fRtsControl = RTS_CONTROL_ENABLE;
-    SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
-    GetCommState(hCom,&dcb);
-    sprintf(str,"%s: baud=%i parity=N data=8 stop=1", comPort, baud_rate);
-    BuildCommDCB(str, &dcb);
-    dcb.fNull=0;
-    SetCommState(hCom, &dcb);
-    cto.ReadIntervalTimeout = MAXDWORD;
-    cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 100 * time_out;
-    cto.WriteTotalTimeoutMultiplier = 0;
-    cto.WriteTotalTimeoutConstant = 0;
-    SetCommTimeouts(hCom, &cto);
+  dcb.ByteSize = 8;		// 8 bits
+  dcb.Parity = NOPARITY;	// no parity checking
+  dcb.StopBits = ONESTOPBIT;	// 1 stop bit
 
-    START_LOGGING();
-	
-	return 0;
+  // Config COM port
+  fSuccess = SetCommState(hCom, &dcb);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetCommState\n");
+    return ERR_SET_COMMSTATE;
+  }
+
+  fSuccess = GetCommTimeouts(hCom, &cto);
+  if (!fSuccess) {
+    DISPLAY_ERROR("GetCommTimeouts\n");
+    return ERR_GET_COMMTIMEOUT;
+  }
+
+  cto.ReadIntervalTimeout = MAXDWORD;
+  cto.ReadTotalTimeoutMultiplier = 0;
+  cto.ReadTotalTimeoutConstant = 0;	//100 * time_out;      
+  cto.WriteTotalTimeoutMultiplier = 0;
+  cto.WriteTotalTimeoutConstant = 100 * time_out;	// A value of 0 make non-blocking
+
+  fSuccess = SetCommTimeouts(hCom, &cto);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetCommTimeouts\n");
+    return ERR_SET_COMMTIMEOUT;
+  }
+
+  START_LOGGING();
+
+  return 0;
 }
 
 int avr_open()
 {
-	BOOL fSuccess;
+  BOOL fSuccess;
 
-	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("PurgeComm\n");
-		print_last_error();
-		return ERR_FLUSH_COMM;
-	}
-	uint8_t_count = 0;
+  memset((void *) (&cs), 0, sizeof(cs));
 
-	tdr.count = 0;
-	toSTART(tdr.start);
+  fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
+  if (!fSuccess) {
+    DISPLAY_ERROR("PurgeComm\n");
+    //print_last_error();
+    return ERR_FLUSH_COMM;
+  }
 
-	return 0;
+  tdr.count = 0;
+  toSTART(tdr.start);
+
+  return 0;
 }
 
 int avr_put(uint8_t data)
 {
-	DWORD i;
-	BOOL fSuccess;
+  DWORD i;
+  BOOL fSuccess;
 
-	tdr.count++;
-	LOG_DATA(data);
-	// Write the data
-	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("WriteFile\n");
-		print_last_error();
-		return ERR_WRITE_ERROR;
-	}
-	else if(i == 0)
-	{
-		return ERR_WRITE_TIMEOUT;
-	}
+  tdr.count++;
+  LOG_DATA(data);
 
-	return 0;
+  fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
+  if (!fSuccess) {
+    DISPLAY_ERROR("WriteFile\n");
+    return ERR_WRITE_ERROR;
+  } else if (i == 0) {
+    DISPLAY_ERROR("WriteFile\n");
+    return ERR_WRITE_TIMEOUT;
+  }
+
+  return 0;
 }
 
-int avr_get(uint8_t *data)
+int avr_get(uint8_t * data)
 {
-	DWORD i;
-	BOOL fSuccess;
-	TIME clk;
+  BOOL fSuccess;
+  DWORD i;
+  tiTIME clk;
 
-	tdr.count++;
-	/* If the avr_check function was previously called, retrieve the uint8_t */
-	if(cs.available)
-    {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
-    }
+  if (cs.avail) {
+    *data = cs.data;
+    cs.avail = FALSE;
+    return 0;
+  }
 
-	toSTART(clk);
-	do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
-    }
-	while(i != 1);
+  toSTART(clk);
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_READ_TIMEOUT;
+    fSuccess = ReadFile(hCom, data, 1, &i, NULL);
+  }
+  while (i != 1);
+  if (!fSuccess) {
+    DISPLAY_ERROR("ReadFile\n");
+    return ERR_READ_ERROR;
+  }
 
-	LOG_DATA(*data);
+  tdr.count++;
+  LOG_DATA(*data);
 
-	return 0;
+  return 0;
 }
 
 int avr_close()
 {
-	return 0;
+  return 0;
 }
 
 int avr_exit()
 {
   STOP_LOGGING();
-	if(hCom)
-	{
-		CloseHandle(hCom);
-		hCom=0;
-	}
+  if (hCom) {
+    CloseHandle(hCom);
+    hCom = 0;
+  }
 
-	return 0;
+  return 0;
 }
 
 int avr_probe()
 {
-	return 0;
+  return 0;
 }
 
 int avr_check(int *status)
 {
-	int n = 0;
-	DWORD i;
-	BOOL fSuccess;
+  DWORD i;
+  BOOL fSuccess;
 
-	*status = STATUS_NONE;
-	if(hCom)
-	 {
-		 // Read the data: return 0 if error and i contains 1 or 0 (timeout)
-		fSuccess = ReadFile(hCom, (&cs.data), 1, &i, NULL);
-		if(fSuccess && (i==1))
-		{
-			if(cs.available == 1)
-				return ERR_BYTE_LOST;
+  *status = STATUS_NONE;
+  if (hCom) {
+    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
+    fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
+    if (fSuccess && (i == 1)) {
+      if (cs.avail == TRUE)
+	return ERR_BYTE_LOST;
 
-			cs.available = 1;
-			*status = STATUS_RX;
-			return 0;
-		}
-		else
-		{
-			*status = STATUS_NONE;
-			return 0;
-		}
-	 }
+      cs.avail = TRUE;
+      *status = STATUS_RX;
+      return 0;
+    } else {
+      *status = STATUS_NONE;
+      return 0;
+    }
+  }
 
   return 0;
 }
@@ -489,11 +485,19 @@ int avr_supported()
   return SUPPORT_ON | SUPPORT_DCB;
 }
 
-#else // unsupported platforms
+#else				// unsupported platforms
 
 /************************/
 /* Unsupported platform */
 /************************/
+
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# error You need stdint.h or something similar
+#endif /* HAVE_STDINT_H */
+
+#include "cabl_def.h"
 
 int avr_init()
 {
@@ -510,7 +514,7 @@ int avr_put(uint8_t data)
   return 0;
 }
 
-int avr_get(uint8_t *d)
+int avr_get(uint8_t * d)
 {
   return 0;
 }
@@ -535,7 +539,7 @@ int avr_check(int *status)
   return 0;
 }
 
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int avr_set_red_wire(int b)
 {

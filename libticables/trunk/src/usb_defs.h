@@ -38,7 +38,7 @@
 	lIn:  0x16, address (0..255)
 	lOut: status, value
 */
-#define DC_WRITE_RAM	0x17	// Write the RAM 
+#define DC_WRITE_RAM	0x17	// Write the RAM
 /*
 	lIn:  0x17, address (0..255), value (0..255)
 	lOut: statui
@@ -58,20 +58,18 @@
 //
 // Buffer for the Device I/O functions
 //
-struct _lIn
-{
-	BYTE bFunction;
-	BYTE bValue1;
-	BYTE bValue2;
-	BYTE bValue3;
+struct _lIn {
+  BYTE bFunction;
+  BYTE bValue1;
+  BYTE bValue2;
+  BYTE bValue3;
 };
 
-struct _lOut
-{
-	BYTE bAck;
-	BYTE bValue1;
-	BYTE bValue2;
-	BYTE bValue3;
+struct _lOut {
+  BYTE bAck;
+  BYTE bValue1;
+  BYTE bValue2;
+  BYTE bValue3;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,12 +19,10 @@
 #ifndef VTLLINK_H
 #define VTLLINK_H
 
-//#include <stdint.h>
-
 int vtl_init();
 int vtl_open();
 int vtl_put(uint8_t data);
-int vtl_get(uint8_t *data);
+int vtl_get(uint8_t * data);
 int vtl_probe();
 int vtl_close();
 int vtl_exit();

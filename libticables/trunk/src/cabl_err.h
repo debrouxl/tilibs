@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,8 +22,8 @@
 
 /* Error codes ERR_...  */
 /* Error codes must begin at 0 up to 255 */
-#define ERR_ABORT           -1  // Operation aborted
-#define ERR_NO_ERROR         0  // No error (returns 0)
+#define ERR_ABORT           -1	// Operation aborted
+#define ERR_NO_ERROR         0	// No error (returns 0)
 #define ERR_OPEN_SER_DEV     1
 #define ERR_OPEN_SER_COMM    2
 #define ERR_WRITE_ERROR      3
@@ -32,7 +33,7 @@
 #define ERR_BYTE_LOST        7
 #define ERR_CREATE_FILE      8
 #define ERR_OPEN_TIDEV       9
-#define ERR_ROOT            10  // Root permissions required
+#define ERR_ROOT            10	// Root permissions required
 #define ERR_PROBE_FAILED    11
 #define ERR_OPEN_PIPE       12
 #define ERR_CLOSE_PIPE      13
@@ -42,7 +43,7 @@
 #define ERR_SET_COMMSTATE   17
 #define ERR_GET_COMMSTATE   18
 #define ERR_GET_COMMTIMEOUT 19
-#define ERR_SET_COMMTIMEOUT 20 
+#define ERR_SET_COMMTIMEOUT 20
 #define ERR_FLUSH_COMM      21
 #define ERR_OPEN_USB_DEV    22
 #define ERR_USB_DEVICE_CMD  23
@@ -60,8 +61,6 @@
 #define ERR_NO_RESOURCES    36
 #define ERR_INVALID_PORT    37
 #define ERR_PORTTALK_NOT_FOUND 38
-  
+#define ERR_TIGLUSB_VERSION 39
+
 #endif
-
-
-

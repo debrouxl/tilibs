@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +20,10 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
 
 int start_logging();
@@ -29,10 +34,7 @@ int start_void();
 int log_void();
 int stop_void();
 
-/* uncomment it for enabling logging facilities */
-#define ALLOW_LOGGING
-
-#ifdef ALLOW_LOGGING
+#ifdef LOGGING_ENABLED
 # define START_LOGGING(); start_logging();
 # define LOG_DATA(d);     log_data(d);
 # define STOP_LOGGING();  stop_logging();

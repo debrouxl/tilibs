@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +20,16 @@
 #ifndef __TICABLE_INTERFACE__
 #define __TICABLE_INTERFACE__
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <stdio.h>
-#include <stdint.h>
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
 
 #include "export.h"
 #include "cabl_def.h"
@@ -29,76 +38,119 @@
 extern "C" {
 #endif
 
-  /****************/
+	/****************/
   /* Entry points */
-  /****************/
-  int TICALL ticable_init(void);
-  int TICALL ticable_exit(void);
+	/****************/
 
-  /*********************/  
+  TIEXPORT int TICALL ticable_init(void);
+  TIEXPORT int TICALL ticable_exit(void);
+
+	/*********************/
   /* General functions */
-  /*********************/
+	/*********************/
 
-  const char* TICALL ticable_get_version(void);
-  
-  int  TICALL ticable_get_error(int err_num, char *error_msg);
-  int  TICALL ticable_set_param2(TicableLinkParam lp); // deprecated !
-  int  TICALL ticable_set_param(const TicableLinkParam *lp);
-  int  TICALL ticable_get_param(TicableLinkParam *lp);
-  int  TICALL ticable_get_default_param(TicableLinkParam *lp);
-  int  TICALL ticable_get_support(int cable_type);
-  int  TICALL ticable_set_cable(int type, TicableLinkCable *lc);
+  TIEXPORT const char *TICALL ticable_get_version(void);
 
-  int  TICALL ticable_get_datarate(TicableDataRate **ptdr);
-  
-  /*********************/
+  TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg);
+
+  TIEXPORT int TICALL ticable_get_default_param(TicableLinkParam * lp);
+  TIEXPORT int TICALL ticable_set_param(const TicableLinkParam * lp);
+  TIEXPORT int TICALL ticable_get_param(TicableLinkParam * lp);
+
+  TIEXPORT int TICALL ticable_set_cable(TicableType type,
+					TicableLinkCable * lc);
+
+  TIEXPORT int TICALL ticable_get_support(TicableType cable_type);
+
+  TIEXPORT int TICALL ticable_get_datarate(TicableDataRate ** ptdr);
+
+	/*********************/
   /* Set/Get functions */
-  /*********************/
-  void  TICALL ticable_set_timeout(int timeout_v);
-  int   TICALL ticable_get_timeout(void);
+	/*********************/
 
-  void  TICALL ticable_set_delay(int delay_v);
-  int   TICALL ticable_get_delay(void);
+  TIEXPORT void TICALL ticable_set_timeout(int timeout_v);
+  TIEXPORT int TICALL ticable_get_timeout(void);
 
-  void  TICALL ticable_set_baudrate(int br);
-  int   TICALL ticable_get_baudrate(void);
+  TIEXPORT void TICALL ticable_set_delay(int delay_v);
+  TIEXPORT int TICALL ticable_get_delay(void);
 
-  void  TICALL ticable_set_io_address(unsigned int io_addr);
-  unsigned int TICALL ticable_get_io_address(void);
+  TIEXPORT void TICALL ticable_set_baudrate(TicableBaudRate br);
+  TIEXPORT int TICALL ticable_get_baudrate(void);
 
-  void  TICALL ticable_set_io_device(char *dev);
-  char* TICALL ticable_get_io_device(void);
+  TIEXPORT void TICALL ticable_set_io_address(unsigned int io_addr);
+  TIEXPORT unsigned int TICALL ticable_get_io_address(void);
 
-  void  TICALL ticable_set_hfc(int action);
-  int   TICALL ticable_get_hfc(void);
+  TIEXPORT void TICALL ticable_set_io_device(char *dev);
+  TIEXPORT char *TICALL ticable_get_io_device(void);
 
-  void  TICALL ticable_set_port(int port);
-  int   TICALL ticable_get_port(void);
+  TIEXPORT void TICALL ticable_set_hfc(TicableHfc hfc);
+  TIEXPORT int TICALL ticable_get_hfc(void);
 
-  void  TICALL ticable_set_method(int method);
-  int   TICALL ticable_get_method(void);
+  TIEXPORT void TICALL ticable_set_port(TicablePort port);
+  TIEXPORT int TICALL ticable_get_port(void);
 
-  /*******************/
+  TIEXPORT void TICALL ticable_set_method(TicableMethod method);
+  TIEXPORT int TICALL ticable_get_method(void);
+
+	/*******************/
   /* Probe functions */
-  /*******************/
-  int TICALL ticable_detect_os(char **os_type);
-  int TICALL ticable_detect_port(TicablePortInfo *pi);
-  int TICALL ticable_detect_cable(TicablePortInfo *pi);
-  int TICALL ticable_detect_all(char **os, TicablePortInfo *pi);
+	/*******************/
 
-  /***********************/
+  TIEXPORT int TICALL ticable_detect_os(char **os_type);
+  TIEXPORT int TICALL ticable_detect_port(TicablePortInfo * pi);
+  TIEXPORT int TICALL ticable_detect_cable(TicablePortInfo * pi);
+  TIEXPORT int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
+
+	/***********************/
   /* Verbosity functions */
-  /***********************/
-  int TICALL DISPLAY(const char *format, ...);
-  int TICALL ticable_DISPLAY_settings(int op);
-  int TICALL DISPLAY_ERROR(const char *format, ...);
-  FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream);
-  FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename);
-  int TICALL ticable_DISPLAY_close_file();
+	/***********************/
+
+  TIEXPORT int TICALL DISPLAY(const char *format, ...);
+  TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
+  TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
+  TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
+
+	/**************************************/
+  /* Direct access functions (reserved) */
+	/**************************************/
+
+  TIEXPORT int TICALL ticable_link_init(void);
+  TIEXPORT int TICALL ticable_link_open(void);
+  TIEXPORT int TICALL ticable_link_put(uint8_t data);
+  TIEXPORT int TICALL ticable_link_get(uint8_t * data);
+  TIEXPORT int TICALL ticable_link_probe(void);
+  TIEXPORT int TICALL ticable_link_close(void);
+  TIEXPORT int TICALL ticable_link_exit(void);
+  TIEXPORT int TICALL ticable_link_check(int *status);
+
+  TIEXPORT int TICALL ticable_link_set_red(int w);
+  TIEXPORT int TICALL ticable_link_set_white(int w);
+  TIEXPORT int TICALL ticable_link_get_red(void);
+  TIEXPORT int TICALL ticable_link_get_white(void);
+
+  TIEXPORT int TICALL ticable_link_set_cable(TicableType type);
+
+	/************************/
+  /* Deprecated functions */
+	/************************/
+
+  TIEXPORT int TICALL ticable_set_param2(TicableLinkParam lp);
+  TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay);
+
+	/****************************/
+  /* Type to String functions */
+	/****************************/
+
+  TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType
+							  type);
+  TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate
+							 br);
+  TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc);
+  TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port);
+  TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod
+						       method);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif
-

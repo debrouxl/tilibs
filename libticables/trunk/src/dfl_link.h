@@ -1,5 +1,6 @@
-/*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+/* Hey EMACS -*- linux-c -*- */
+/*  ti_link - link program for TI calculators
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,23 +17,27 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES_STR__
-#define __TICABLES_STR__
+#ifndef DEFAULT_LINK_H
+#define DEFAULT_LINK_H
 
-#if defined(__UNIX__) || defined(__LINUX__)
-# include <string.h>
-#elif defined(__WIN32__)
-//# include <strings.h>
-#include <string.h>
-#elif defined(__WIN16__)
-# include <strings.h>
-#elif defined(__DOS__)
-# include <strings.h>
-#else
-# include <string.h>
+//#include <stdint.h>
+
+int dfl_init();
+int dfl_open();
+int dfl_put(uint8_t data);
+int dfl_get(uint8_t * data);
+int dfl_probe();
+int dfl_close();
+int dfl_exit();
+int dfl_check(int *status);
+
+int dfl_set_red_wire(int b);
+int dfl_set_white_wire(int b);
+int dfl_get_red_wire();
+int dfl_get_white_wire();
+
+int dfl_supported();
+
+int set_default_cable(TicableLinkCable * lc);
+
 #endif
-
-#endif
-
-
-

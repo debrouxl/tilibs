@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,6 +17,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+  This file is for internal library use only.
+*/
+
 #ifndef __CABLE_EXTERN__
 #define __CABLE_EXTERN__
 
@@ -24,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
   extern int time_out;
   extern int delay;
   extern int baud_rate;
@@ -32,19 +37,18 @@ extern "C" {
   extern int port;
   extern int resources;
   extern int method;
-  
+
   extern unsigned int io_address;
   extern char io_device[1024];
-  
+
   extern char *os;
   extern TicablePortInfo pi;
-  
+
   extern const char *err_msg;
-  
+
   extern TicableDataRate tdr;
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

@@ -1,5 +1,5 @@
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,9 +35,6 @@
 #include <config.h>
 #endif
 
-#include "cabl_def.h"
-#include "export.h"
-
 #if defined(__LINUX__)
 
 /**************/
@@ -67,6 +64,7 @@
 #include <sys/shm.h>
 #endif
 
+#include "intl.h"
 #include "timeout.h"
 #include "export.h"
 #include "cabl_err.h"
@@ -76,24 +74,23 @@
 #include "logging.h"
 
 /* Circular buffer (O: TIEmu, 1: TiLP) */
-#define BUF_SIZE 1*1024 
-struct _vti_buf
-{
+#define BUF_SIZE 1*1024
+struct _vti_buf {
   uint8_t buf[BUF_SIZE];
-  int toSTART;
+  int start;
   int end;
 };
 typedef struct _vti_buf vti_buf;
 
 /* Shm variables */
 #ifdef USE_SHM
-key_t ipc_key[2];     // IPC key
-int shmid[2];         // Shm ID
-vti_buf *shm[2];      // Shm address
-vti_buf *send_buf[2], *recv_buf[2]; // Swapped buffer
+key_t ipc_key[2];		// IPC key
+int shmid[2];			// Shm ID
+vti_buf *shm[2];		// Shm address
+vti_buf *send_buf[2], *recv_buf[2];	// Swapped buffer
 #endif
 
-static int p = 0; // a shortcut
+static int p = 0;		// a shortcut
 
 /*
   The first call to init open the 2 shm
@@ -103,52 +100,45 @@ int vti_init()
 #ifdef USE_SHM
   int i;
 
-  if( (io_address < 1) || (io_address > 2))
-    {
-      DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
-	  return ERR_ILLEGAL_ARG;
-      io_address = 2;
-    }
+  if ((io_address < 1) || (io_address > 2)) {
+    DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
+    return ERR_ILLEGAL_ARG;
+    io_address = 2;
+  }
   p = io_address - 1;
 
   /* Get a unique (if possible) key */
-  for(i=0; i<2; i++)
-    {
-      if((ipc_key[i] = ftok("/tmp", i)) == -1)
-	{
-	  DISPLAY_ERROR("ftok\n");
-	  return ERR_IPC_KEY;
-	}
-      //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
+  for (i = 0; i < 2; i++) {
+    if ((ipc_key[i] = ftok("/tmp", i)) == -1) {
+      DISPLAY_ERROR("ftok\n");
+      return ERR_IPC_KEY;
     }
+    //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
+  }
 
   /* Open a shared memory segment */
-  for(i=0; i<2; i++)
-    {
-      if((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf), 
-			    IPC_CREAT | 0666)) == -1)
-	{
-	  DISPLAY_ERROR("ftok\n");    
-	  return ERR_SHM_GET;
-	}
-      //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
+  for (i = 0; i < 2; i++) {
+    if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf),
+			   IPC_CREAT | 0666)) == -1) {
+      DISPLAY_ERROR("ftok\n");
+      return ERR_SHM_GET;
     }
+    //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
+  }
 
   /* Attach the shm */
-  for(i=0; i<2; i++)
-    {
-      if((shm[i] = shmat(shmid[i], NULL, 0)) == NULL)
-	{
-	  DISPLAY_ERROR("shmat\n");
-	  return ERR_SHM_ATTACH;
-	}
+  for (i = 0; i < 2; i++) {
+    if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) {
+      DISPLAY_ERROR("shmat\n");
+      return ERR_SHM_ATTACH;
     }
+  }
 
   /* Swap shm */
-  send_buf[0] = shm[0]; // 0 -> 1: writing
-  recv_buf[0] = shm[1]; // 0 <- 1: reading
-  send_buf[1] = shm[1]; // 1 -> 0: writing
-  recv_buf[1] = shm[0]; // 1 <- 0: reading
+  send_buf[0] = shm[0];		// 0 -> 1: writing
+  recv_buf[0] = shm[1];		// 0 <- 1: reading
+  send_buf[1] = shm[1];		// 1 -> 0: writing
+  recv_buf[1] = shm[0];		// 1 <- 0: reading
 #endif
 
   START_LOGGING();
@@ -162,10 +152,9 @@ int vti_open()
   int i;
 
   /* Init buffers */
-  for(i=0; i<2; i++)
-    {
-      shm[i]->toSTART = shm[i]->end = 0;
-    }
+  for (i = 0; i < 2; i++) {
+    shm[i]->start = shm[i]->end = 0;
+  }
 #endif
 
   tdr.count = 0;
@@ -177,40 +166,40 @@ int vti_open()
 int vti_put(uint8_t data)
 {
 #ifdef USE_SHM
-  TIME clk;
+  tiTIME clk;
 
   tdr.count++;
   LOG_DATA(data);
   toSTART(clk);
-  do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-    }
-  while(((send_buf[p]->end + 1) & 255) == send_buf[p]->toSTART);
-  
-  send_buf[p]->buf[send_buf[p]->end] = data;       // put data in buffer
-  send_buf[p]->end = (send_buf[p]->end+1) & 255;   // update circular buffer
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_WRITE_TIMEOUT;
+  }
+  while (((send_buf[p]->end + 1) & 255) == send_buf[p]->start);
+
+  send_buf[p]->buf[send_buf[p]->end] = data;	// put data in buffer
+  send_buf[p]->end = (send_buf[p]->end + 1) & 255;	// update circular buffer
 #endif
   return 0;
 }
 
-int vti_get(uint8_t *data)
+int vti_get(uint8_t * data)
 {
 #ifdef USE_SHM
-  TIME clk;
+  tiTIME clk;
 
   tdr.count++;
   /* Wait that the buffer has been filled */
   toSTART(clk);
-  do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-    }
-  while(recv_buf[p]->toSTART == recv_buf[p]->end);
-  
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_READ_TIMEOUT;
+  }
+  while (recv_buf[p]->start == recv_buf[p]->end);
+
   /* And retrieve the data from the circular buffer */
-  *data = recv_buf[p]->buf[recv_buf[p]->toSTART];
-  recv_buf[p]->toSTART = (recv_buf[p]->toSTART+1) & 255;
+  *data = recv_buf[p]->buf[recv_buf[p]->start];
+  recv_buf[p]->start = (recv_buf[p]->start + 1) & 255;
   LOG_DATA(*data);
 #endif
   return 0;
@@ -234,21 +223,18 @@ int vti_exit()
   STOP_LOGGING();
   //DISPLAY("exit\n");
   /* Detach segment */
-  for(i=0; i<2; i++)
-    {
-      if(shmdt(shm[i]) == -1)
-	{
-	  DISPLAY_ERROR("shmdt\n");
-	  return ERR_SHM_DETACH;
-	}
-      /* and destroy it */
-      if(shmctl(shmid[i], IPC_RMID, NULL) == -1)
-	{
-	  DISPLAY_ERROR("shmctl\n");
-	  return ERR_SHM_RMID;
-	}
+  for (i = 0; i < 2; i++) {
+    if (shmdt(shm[i]) == -1) {
+      DISPLAY_ERROR("shmdt\n");
+      return ERR_SHM_DETACH;
     }
-#endif  
+    /* and destroy it */
+    if (shmctl(shmid[i], IPC_RMID, NULL) == -1) {
+      DISPLAY_ERROR("shmctl\n");
+      return ERR_SHM_RMID;
+    }
+  }
+#endif
   return 0;
 }
 
@@ -258,16 +244,13 @@ int vti_check(int *status)
   *status = STATUS_NONE;
 
   /* Check if positions are the same */
-  if(recv_buf[p]->toSTART == recv_buf[p]->end)
-    {
-      *status = STATUS_NONE;
-      return 0;
-    }
-  else
-    {
-      *status = STATUS_RX;
-      return 0;
-    }
+  if (recv_buf[p]->start == recv_buf[p]->end) {
+    *status = STATUS_NONE;
+    return 0;
+  } else {
+    *status = STATUS_RX;
+    return 0;
+  }
 #endif
   return 0;
 }
@@ -292,15 +275,17 @@ int vti_supported()
 #include <windows.h>
 #include <time.h>
 
+#include "intl.h"
 #include "timeout.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
 #include "export.h"
 #include "logging.h"
 #include "externs.h"
+#include "verbose.h"
 
-extern int time_out; // Timeout value for cables in 0.10 seconds
-extern int delay;    // Time between 2 bits (home-made cables only)
+extern int time_out;		// Timeout value for cables in 0.10 seconds
+extern int delay;		// Time between 2 bits (home-made cables only)
 
 #define WM_HELLO WM_USER+101
 #define WM_GOODBYE WM_USER+102
@@ -311,95 +296,91 @@ extern int delay;    // Time between 2 bits (home-made cables only)
 #define WM_EXIT_DEBUG WM_USER+131
 
 /* VTi's LinkBuffer structure */
-typedef struct
-{
-    BYTE buf[256];
-    int toSTART;
-    int end;
+typedef struct {
+  BYTE buf[256];
+  int start;
+  int end;
 } LinkBuffer;
 
 static LinkBuffer *vSendBuf, *vRecvBuf;	//
-static HANDLE hMap = NULL;				// Handle on
-static HWND otherWnd = NULL;			// Handle on the VTi window
+static HANDLE hMap = NULL;	// Handle on
+static HWND otherWnd = NULL;	// Handle on the VTi window
 
-int vti_init(uint io_addr, char *dev)
+int vti_init(unsigned int io_addr, char *dev)
 {
-	char name[32];
-	char vLinkFileName[32];
-	HANDLE hVLinkFileMap = NULL;		// Handle on the 
-	HANDLE Handle;
-	int i;
-	ATOM a;
+  char name[32];
+  char vLinkFileName[32];
+  HANDLE hVLinkFileMap = NULL;	// Handle on the 
+  HANDLE Handle;
+  int i;
+  ATOM a;
 
-	/* Create a file mapping handle for the 'lib->VTi' communication channel */
-	for (i=0;;i++)
-    {
-        sprintf(vLinkFileName,"Virtual Link %d", i);
-        hVLinkFileMap = CreateFileMapping((HANDLE)-1, NULL,
-            PAGE_READWRITE,0,sizeof(LinkBuffer), vLinkFileName);
-        if (GetLastError() != ERROR_ALREADY_EXISTS)
-            break;
-    }
-	//DISPLAY("Virtual Link L->V %i\n", i);
-    vSendBuf = (LinkBuffer*)MapViewOfFile(hVLinkFileMap,
-        FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+  /* Create a file mapping handle for the 'lib->VTi' communication channel */
+  for (i = 0;; i++) {
+    sprintf(vLinkFileName, "Virtual Link %d", i);
+    hVLinkFileMap = CreateFileMapping((HANDLE) - 1, NULL,
+				      PAGE_READWRITE, 0,
+				      sizeof(LinkBuffer), vLinkFileName);
+    if (GetLastError() != ERROR_ALREADY_EXISTS)
+      break;
+  }
+  //DISPLAY("Virtual Link L->V %i\n", i);
+  vSendBuf = (LinkBuffer *) MapViewOfFile(hVLinkFileMap,
+					  FILE_MAP_ALL_ACCESS, 0, 0,
+					  sizeof(LinkBuffer));
 
-	/* Get an handle on the VTi window */
-	otherWnd = FindWindow("TEmuWnd", NULL);
-	//DISPLAY("otherWnd: %p\n", otherWnd);
-	if(!otherWnd)
-		return ERR_OPP_NOT_AVAIL;
+  /* Get an handle on the VTi window */
+  otherWnd = FindWindow("TEmuWnd", NULL);
+  //DISPLAY("otherWnd: %p\n", otherWnd);
+  if (!otherWnd)
+    return ERR_OPP_NOT_AVAIL;
 
-	/* Get the current DLL handle */
-	Handle = GetModuleHandle("libticables.dll");
-	if(!Handle)
-	{
-		DISPLAY_ERROR("Unable to get an handle on the libTIcables.\n");
-		DISPLAY_ERROR("Did you rename the library ?!\n");
-		DISPLAY_ERROR("Fatal error. Program terminated.\n");
-		exit(-1);
-	}
+  /* Get the current DLL handle */
+  Handle = GetModuleHandle("ticables.dll");
+  if (!Handle) {
+    DISPLAY_ERROR(_("Unable to get an handle on the libTIcables.\n"));
+    DISPLAY_ERROR(_("Did you rename the library ?!\n"));
+    DISPLAY_ERROR(_("Fatal error. Program terminated.\n"));
+    exit(-1);
+  }
+  // Inform VTi of our virtual link so that it can enable it. It should returns 
+  // its virtual link name in a message.
+  SendMessage(otherWnd, WM_HELLO, 0, (LPARAM) Handle);
 
-	// Inform VTi of our virtual link so that it can enable it. It should returns 
-	// its virtual link name in a message.
-	SendMessage(otherWnd, WM_HELLO, 0, (LPARAM)Handle);	
-	
-	/* Retrieve the VTi virtual link name */
-	//b = GetMessage(&msg, NULL, WM_HELLO, WM_SEND_BUFFER);
-	//WaitMessage();										// Waits VTi answer
-	//printf("waitmessage: %i\n", b);
+  /* Retrieve the VTi virtual link name */
+  //b = GetMessage(&msg, NULL, WM_HELLO, WM_SEND_BUFFER);
+  //WaitMessage();                                                                                // Waits VTi answer
 
-	/* Create a file mapping handle for the 'Vti->lib' communication channel */
-	//DISPLAY("Virtual Link V->L %i\n", i-1);
-	sprintf(name,"Virtual Link %d", i-1);
-	hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
-	if(hMap) 
-	{
-		DISPLAY_ERROR("Opened %s\n", name);
-		vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
-			0, 0, sizeof(LinkBuffer));
-	}
-	else
-		return ERR_OPEN_FILE_MAP;
-	
-	/* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
-    a = GlobalAddAtom(vLinkFileName);
-    SendMessage(otherWnd, WM_SEND_BUFFER, 0, (LPARAM)a);
-    GlobalDeleteAtom(a);
+  /* Create a file mapping handle for the 'Vti->lib' communication channel */
+  //DISPLAY("Virtual Link V->L %i\n", i-1);
+  sprintf(name, "Virtual Link %d", i - 1);
+  hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
+  if (hMap) {
+    DISPLAY_ERROR(_("Opened %s\n"), name);
+    vRecvBuf =
+	(LinkBuffer *) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
+				     0, 0, sizeof(LinkBuffer));
+  } else
+    return ERR_OPEN_FILE_MAP;
 
-	/* Enable linking (check the VTi's Virtual Link|Enable cable link' item) */
-	if (otherWnd)
-		SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
+  /* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
+  a = GlobalAddAtom(vLinkFileName);
+  SendMessage(otherWnd, WM_SEND_BUFFER, 0, (LPARAM) a);
+  GlobalDeleteAtom(a);
 
-	START_LOGGING();
+  /* Enable linking (check the VTi's Virtual Link|Enable cable link' item) */
+  if (otherWnd)
+    SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
+
+  START_LOGGING();
 
   return 0;
 }
 
 int vti_open()
 {
-  //vSendBuf->toSTART = vSendBuf->end = 0;
-  //vRecvBuf->toSTART = vRecvBuf->end = 0;
+  //vSendBuf->start = vSendBuf->end = 0;
+  //vRecvBuf->start = vRecvBuf->end = 0;
 
   tdr.count = 0;
   toSTART(tdr.start);
@@ -409,49 +390,48 @@ int vti_open()
 
 int vti_put(uint8_t data)
 {
-	TIME clk;
+  tiTIME clk;
 
-	if(!hMap)
-		return ERR_OPEN_FILE_MAP;
+  if (!hMap)
+    return ERR_OPEN_FILE_MAP;
 
-	tdr.count++;
-	LOG_DATA(data);
-	toSTART(clk);
-	  do 
-	  { 
-		  if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-	  }
-	while(((vSendBuf->end + 1) & 255) == vSendBuf->toSTART);
+  tdr.count++;
+  LOG_DATA(data);
 
-    vSendBuf->buf[vSendBuf->end] = data;		// put data in buffer
-    vSendBuf->end = (vSendBuf->end+1) & 255;	// update circular buffer
+  toSTART(clk);
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_WRITE_TIMEOUT;
+  }
+  while (((vSendBuf->end + 1) & 255) == vSendBuf->start);
 
-	return 0;
+  vSendBuf->buf[vSendBuf->end] = data;	// put data in buffer
+  vSendBuf->end = (vSendBuf->end + 1) & 255;	// update circular buffer
+
+  return 0;
 }
 
-int vti_get(uint8_t *data)
+int vti_get(uint8_t * data)
 {
-	TIME clk;
+  tiTIME clk;
 
-	if(!hMap)
-		return ERR_OPEN_FILE_MAP;
+  if (!hMap)
+    return ERR_OPEN_FILE_MAP;
 
-	tdr.count++;
-	//DISPLAY("s: %i, e: %i\n", vSendBuf->toSTART, vSendBuf->end);
+  /* Wait that the buffer has been filled */
+  toSTART(clk);
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_READ_TIMEOUT;
+  }
+  while (vRecvBuf->start == vRecvBuf->end);
 
-	/* Wait that the buffer has been filled */
-	toSTART(clk);
-	do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-    }
-	while(vRecvBuf->toSTART == vRecvBuf->end);
-	
-	/* And retrieve the data from the circular buffer */
-	*data = vRecvBuf->buf[vRecvBuf->toSTART];
-    vRecvBuf->toSTART = (vRecvBuf->toSTART+1) & 255;
-	//DISPLAY("get: 0x%02x\n", *data);
-    LOG_DATA(*data);
+  /* And retrieve the data from the circular buffer */
+  *data = vRecvBuf->buf[vRecvBuf->start];
+  vRecvBuf->start = (vRecvBuf->start + 1) & 255;
+
+  tdr.count++;
+  LOG_DATA(*data);
 
   return 0;
 }
@@ -463,37 +443,35 @@ int vti_close()
 
 int vti_exit()
 {
-	/* Send an atom */
+  /* Send an atom */
   STOP_LOGGING();
-	if (otherWnd)
-	{
-		SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
-        SendMessage(otherWnd, WM_GOODBYE, 0, 0);
-	}
+  if (otherWnd) {
+    SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
+    SendMessage(otherWnd, WM_GOODBYE, 0, 0);
+  }
 
-	/* Close the shared buffer */
-	if(hMap)
-	{
-		UnmapViewOfFile(vSendBuf);
-		UnmapViewOfFile(vRecvBuf);
-		CloseHandle(hMap);
-	}
+  /* Close the shared buffer */
+  if (hMap) {
+    UnmapViewOfFile(vSendBuf);
+    UnmapViewOfFile(vRecvBuf);
+    CloseHandle(hMap);
+  }
 
-	return 0;
+  return 0;
 }
 
 int vti_probe()
 {
-	return 0;
+  return 0;
 }
 
 int vti_check(int *status)
 {
-	if(!hMap)
-		return ERR_OPEN_FILE_MAP;
+  if (!hMap)
+    return ERR_OPEN_FILE_MAP;
 
-	/* Check if positions are the same */
-	*status = !(vRecvBuf->toSTART == vRecvBuf->end);
+  /* Check if positions are the same */
+  *status = !(vRecvBuf->start == vRecvBuf->end);
 
   return 0;
 }
@@ -508,6 +486,8 @@ int vti_supported()
 /************************/
 /* Unsupported platform */
 /************************/
+
+#include "cabl_def.h"
 
 int vti_init()
 {
@@ -524,7 +504,7 @@ int vti_put(uint8_t data)
   return 0;
 }
 
-int vti_get(uint8_t *d)
+int vti_get(uint8_t * d)
 {
   return 0;
 }
@@ -549,7 +529,7 @@ int vti_check(int *status)
   return 0;
 }
 
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int vti_set_red_wire(int b)
 {

@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,14 +23,15 @@
 #include <config.h>
 #endif
 
-#include "cabl_def.h"
-#include "export.h"
-
-#if defined(__LINUX__) || defined(__SPARC__) || defined(__MACOSX__)
+#if defined(__LINUX__) || defined(__SPARC__) || defined(__MACOSX__) || defined(__BSD__)
 
 #include <fcntl.h>
 #include <stdio.h>
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
 #include <strings.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -39,6 +41,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "intl.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
@@ -47,15 +50,8 @@
 #include "verbose.h"
 #include "logging.h"
 
-static char tty_dev[1024];
 static int dev_fd = 0;
 static struct termios termset;
-
-static struct cs
-{
-  uint8_t data;
-  int available;
-} cs;
 
 /**************/
 /* Linux part */
@@ -63,40 +59,31 @@ static struct cs
 
 int tig_close();
 
-static unsigned int com_addr;
-# define com_out (com_addr+4)
-# define com_in  (com_addr+6)
-
 int tig_init()
 {
-  /* Init some internal variables */
-  memset((void *)&cs, 0, sizeof(cs));
-  strcpy(tty_dev, io_device);
-  com_addr = io_address;
+  int flags = 0;
 
-  /* Give some perm for the probe function */
-  // nothing for the moment
-
-  /* Open the device */
-#ifndef __MACOSX__
-  if((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1 )
+#if defined(__MACOSX__)
+  flags = O_RDWR | O_NDELAY;
+#elif defined(__BSD__)
+  flags = O_RDWR | O_FSYNC;
 #else
-  if((dev_fd = open(io_device, O_RDWR | O_NDELAY)) == -1)
+  flags = O_RDWR | O_SYNC;
 #endif
-    {
-      DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
-      return ERR_OPEN_SER_DEV;
-    }
 
-  /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
+  if ((dev_fd = open(io_device, flags)) == -1) {
+    DISPLAY_ERROR(_("unable to open the <%s> serial port.\n"), io_device);
+    return ERR_OPEN_SER_DEV;
+  }
+  // Initialize it: 9600,8,N,1
   tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
   cfmakeraw(&termset);
 #else
-  termset.c_iflag=0;
-  termset.c_oflag=0;
-  termset.c_cflag=CS8|CLOCAL|CREAD;
-  termset.c_lflag=0;
+  termset.c_iflag = 0;
+  termset.c_oflag = 0;
+  termset.c_cflag = CS8 | CLOCAL | CREAD;
+  termset.c_lflag = 0;
 #endif
 
   cfsetispeed(&termset, B9600);
@@ -109,21 +96,19 @@ int tig_init()
 
 int tig_open()
 {
-  uint8_t d;
+  uint8_t unused[1024];
   int n;
 
   /* Flush the input */
-  termset.c_cc[VMIN]=0;
-  termset.c_cc[VTIME]=1;
+  termset.c_cc[VMIN] = 0;
+  termset.c_cc[VTIME] = 0;
   tcsetattr(dev_fd, TCSANOW, &termset);
-  do
-    {
-      n=read(dev_fd, (void *)(&d), 1);
-    }
-  while(n!=0 && n!=-1);
+  do {
+    n = read(dev_fd, (void *) unused, 1024);
+  } while ((n != 0) && (n != -1));
 
-  /* and set the timeout */
-  termset.c_cc[VTIME] = 0; //time_out;
+  /* and set/restore the timeout */
+  termset.c_cc[VTIME] = time_out;
   tcsetattr(dev_fd, TCSANOW, &termset);
 
   tdr.count = 0;
@@ -138,50 +123,43 @@ int tig_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
-  err=write(dev_fd, (void *)(&data), 1);
-  switch(err)
-    {
-    case -1: //error
-      tig_close();
-      return ERR_WRITE_ERROR;
-      break;
-    case 0: // timeout
-      tig_close();
-      return ERR_WRITE_TIMEOUT;
-      break;
-    }
+
+  err = write(dev_fd, (void *) (&data), 1);
+  switch (err) {
+  case -1:			//error
+    tig_close();
+    return ERR_WRITE_ERROR;
+    break;
+  case 0:			// timeout
+    tig_close();
+    return ERR_WRITE_TIMEOUT;
+    break;
+  }
 
   return 0;
 }
 
-int tig_get(uint8_t *data)
+int tig_get(uint8_t * data)
 {
-  static int n=0;
-  TIME clk;
+  int err;
+
+  tcdrain(dev_fd);		// waits for all output written
+
+  err = read(dev_fd, (void *) data, 1);
+  switch (err) {
+  case -1:			//error
+    tig_close();
+    return ERR_READ_ERROR;
+    break;
+  case 0:			// timeout
+    tig_close();
+    return ERR_READ_TIMEOUT;
+    break;
+  }
 
   tdr.count++;
-  /* If the tig_check function was previously called, retrieve the uint8_t */
-  if(cs.available)
-    {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
-    }
-
-  tcdrain(dev_fd); //waits until all output written
-  toSTART(clk);
-  do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-      n = read(dev_fd, (void *)data, 1);
-    }
-  while(n == 0);
-
-  if(n == -1)
-    return ERR_READ_ERROR;
-
   LOG_DATA(*data);
-  
+
   return 0;
 }
 
@@ -190,42 +168,37 @@ static int dcb_read_io()
 {
   unsigned int flags;
 
-  if(ioctl(dev_fd, TIOCMGET, &flags) == -1)
+  if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
     return ERR_IOCTL;
-  /*
-  DISPLAY("flags: rts=%i dtr=%i cts=%i dsr=%i\n",
-         (flags & TIOCM_RTS) >> 2, (flags & TIOCM_DTR) >> 1,
-         (flags & TIOCM_CTS) >> 5, (flags & TIOCM_DSR) >> 8);
-  */
-  return (flags&TIOCM_CTS?1:0) | (flags&TIOCM_DSR?2:0);
+
+  return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
 }
 
 static int dcb_write_io(int data)
 {
-  unsigned int flags=0;
+  unsigned int flags = 0;
 
-  flags |= (data&2)?TIOCM_RTS:0;
-  flags |= (data&1)?TIOCM_DTR:0;
-  if(ioctl(dev_fd, TIOCMSET, &flags) == -1)
+  flags |= (data & 2) ? TIOCM_RTS : 0;
+  flags |= (data & 1) ? TIOCM_DTR : 0;
+  if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
     return ERR_IOCTL;
+
   return 0;
 }
 
 int tig_probe()
 {
   int i;
-  int seq[]={ 0x0, 0x2, 0x0, 0x2 };
+  int seq[] = { 0x0, 0x2, 0x0, 0x2 };
 
   dcb_write_io(3);
-  for(i=3; i>=0; i--)
-    {
-      dcb_write_io(i);
-      if( (dcb_read_io() & 0x3) != seq[i])
-        {
-          dcb_write_io(3);
-          return ERR_PROBE_FAILED;
-        }
+  for (i = 3; i >= 0; i--) {
+    dcb_write_io(i);
+    if ((dcb_read_io() & 0x3) != seq[i]) {
+      dcb_write_io(3);
+      return ERR_PROBE_FAILED;
     }
+  }
   dcb_write_io(3);
 
   return 0;
@@ -233,15 +206,6 @@ int tig_probe()
 
 int tig_close()
 {
-  /* Do not close the port else the communication will not work fine */
-  /* Don't ask me why, I don't know ! */
-  /*
-  if(dev_fd)
-    {
-      close(dev_fd);
-      dev_fd=0;
-    }
-  */
   return 0;
 }
 
@@ -254,28 +218,27 @@ int tig_exit()
 
 int tig_check(int *status)
 {
-  int n = 0;
+  fd_set rdfs;
+  struct timeval tv;
+  int retval;
 
-  /* Since the select function does not work, I do it myself ! */
   *status = STATUS_NONE;
-  if(dev_fd)
-    {
-      n = read(dev_fd, (void *) (&cs.data), 1);
-      if(n > 0)
-	{
-	  if(cs.available == 1)
-	    return ERR_BYTE_LOST;
 
-	  cs.available = 1;
-	  *status = STATUS_RX;
-	  return 0;
-	}
-		else
-	{
-	  *status = STATUS_NONE;
-	  return 0;
-	}
-    }
+  FD_ZERO(&rdfs);
+  FD_SET(dev_fd, &rdfs);
+  tv.tv_sec = 0;
+  tv.tv_usec = 0;
+
+  retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+  switch (retval) {
+  case -1:			//error
+    return ERR_READ_ERROR;
+  case 0:			//no data
+    return 0;
+  default:			// data available
+    *status = STATUS_RX;
+    break;
+  }
 
   return 0;
 }
@@ -291,12 +254,6 @@ int tig_supported()
 /* Windows 32 bits part */
 /************************/
 
-/*
-	Thanks to Laurent Goujon for the exhaustive documentation who sent
-	to me about the use of COM ports under Windows.
-	A great thanks !!!
- */
-
 #include <stdio.h>
 #include <windows.h>
 
@@ -304,269 +261,247 @@ int tig_supported()
 #include "cabl_def.h"
 #include "export.h"
 #include "cabl_err.h"
-#include "plerror.h"
 #include "externs.h"
 #include "logging.h"
+#include "verbose.h"
 
 #define BUFFER_SIZE 1024
 
-extern int time_out; // Timeout value for cables in 0.10 seconds
+extern int time_out;		// Timeout value for cables in 0.10 seconds
 
-static HANDLE hCom=0;
-static char comPort[MAXCHARS];
-
-static struct cs
-{
+static char comPort[1024];
+static HANDLE hCom = 0;
+static struct cs {
   uint8_t data;
-  int available;
+  BOOL avail;
 } cs;
+
 
 int tig_init()
 {
-	DCB dcb;
-	BOOL fSuccess;
-	COMMTIMEOUTS cto;
-	int graphLink = 1;
+  DCB dcb;
+  BOOL fSuccess;
+  COMMTIMEOUTS cto;
 
-	/* Init some internal variables */
-	memset((void *)(&cs), 0, sizeof(cs));
-	strcpy(comPort, io_device);
+  strcpy(comPort, io_device);
 
-	/* Open COM port */
-	hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
-		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if(hCom == INVALID_HANDLE_VALUE)
-	{
-		DISPLAY_ERROR("CreateFile\n");
-		print_last_error();
-		return ERR_OPEN_SER_COMM;
-	}
+  hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0,
+		    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (hCom == INVALID_HANDLE_VALUE) {
+    DISPLAY_ERROR("CreateFile\n");
+    return ERR_OPEN_SER_COMM;
+  }
+  // Setup buffer size
+  fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetupComm\n");
+    return ERR_SETUP_COMM;
+  }
+  // Retrieve config structure
+  fSuccess = GetCommState(hCom, &dcb);
+  if (!fSuccess) {
+    DISPLAY_ERROR("GetCommState\n");
+    return ERR_GET_COMMSTATE;
+  }
+  // Fills the structure with config
+  dcb.BaudRate = CBR_9600;	// 9600 bauds
+  dcb.fBinary = TRUE;		// Binary mode
+  dcb.fParity = FALSE;		// Parity checking disabled
+  dcb.fOutxCtsFlow = FALSE;	// No output flow control
+  dcb.fOutxDsrFlow = FALSE;	// Idem
+  dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
+  dcb.fDsrSensitivity = FALSE;	// ignore DSR status
+  dcb.fOutX = FALSE;		// no XON/XOFF flow control
+  dcb.fInX = FALSE;		// idem
+  dcb.fErrorChar = FALSE;	// no replacement
+  dcb.fNull = FALSE;		// don't discard null chars
+  dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
+  dcb.fAbortOnError = FALSE;	// do not report errors
 
-	// Setup buffer size
-	fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("SetupComm\n");
-		print_last_error();
-		return ERR_SETUP_COMM;
-	}
+  dcb.ByteSize = 8;		// 8 bits
+  dcb.Parity = NOPARITY;	// no parity checking
+  dcb.StopBits = ONESTOPBIT;	// 1 stop bit
 
-	// Retrieve config structure
-	fSuccess = GetCommState(hCom, &dcb);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("GetCommState\n");
-		print_last_error();
-		return ERR_GET_COMMSTATE;
-	}
+  // Config COM port
+  fSuccess = SetCommState(hCom, &dcb);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetCommState\n");
+    return ERR_SET_COMMSTATE;
+  }
 
-	// Fills the structure with config
-	dcb.BaudRate = CBR_9600;				// 9600 bauds
-	dcb.fBinary = TRUE;						// Binary mode
-	dcb.fParity = FALSE;					// Parity checking disabled
-	dcb.fOutxCtsFlow = FALSE;				// No output flow control
-	dcb.fOutxDsrFlow = FALSE;				// Idem
-	dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
-	dcb.fDsrSensitivity = FALSE;			// ignore DSR status
-	dcb.fOutX = FALSE;						// no XON/XOFF flow control
-	dcb.fInX = FALSE;						// idem
-	dcb.fErrorChar = FALSE;					// no replacement
-	dcb.fNull = FALSE;						// don't discard null chars
-	dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
-	dcb.fAbortOnError = FALSE;				// do not report errors
+  fSuccess = GetCommTimeouts(hCom, &cto);
+  if (!fSuccess) {
+    DISPLAY_ERROR("GetCommTimeouts\n");
+    return ERR_GET_COMMTIMEOUT;
+  }
 
-	dcb.ByteSize = 8;						// 8 bits
-	dcb.Parity = NOPARITY;					// no parity checking
-	dcb.StopBits = ONESTOPBIT;				// 1 stop bit
+  cto.ReadIntervalTimeout = MAXDWORD;
+  cto.ReadTotalTimeoutMultiplier = 0;
+  cto.ReadTotalTimeoutConstant = 0;	//100 * time_out;      
+  cto.WriteTotalTimeoutMultiplier = 0;
+  cto.WriteTotalTimeoutConstant = 100 * time_out;	// A value of 0 make non-blocking
 
-	// Config COM port
-	fSuccess = SetCommState(hCom, &dcb);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("SetCommState\n");
-		print_last_error();
-		return ERR_SET_COMMSTATE;
-	}
+  fSuccess = SetCommTimeouts(hCom, &cto);
+  if (!fSuccess) {
+    DISPLAY_ERROR("SetCommTimeouts\n");
+    return ERR_SET_COMMTIMEOUT;
+  }
 
-    fSuccess=GetCommTimeouts(hCom,&cto);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("GetCommTimeouts\n");
-		print_last_error();
-		return ERR_GET_COMMTIMEOUT;
-	}
-    
-	cto.ReadIntervalTimeout = MAXDWORD;
-    cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 100 * time_out;	
-    cto.WriteTotalTimeoutMultiplier = 0;
-    cto.WriteTotalTimeoutConstant = 0;	// A value of 0 make non-blocking
+  START_LOGGING();
 
-    fSuccess=SetCommTimeouts(hCom,&cto);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("SetCommTimeouts\n");
-		print_last_error();
-		return ERR_SET_COMMTIMEOUT;
-	}
-
-	START_LOGGING();
-
-	return 0;
+  return 0;
 }
 
 int tig_open()
 {
-	BOOL fSuccess;
+  BOOL fSuccess;
 
-	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("PurgeComm\n");
-		print_last_error();
-		return ERR_FLUSH_COMM;
-	}
+  memset((void *) (&cs), 0, sizeof(cs));
 
-	tdr.count = 0;
-	toSTART(tdr.start);
+  fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
+  if (!fSuccess) {
+    DISPLAY_ERROR("PurgeComm\n");
+    return ERR_FLUSH_COMM;
+  }
 
-	return 0;
+  tdr.count = 0;
+  toSTART(tdr.start);
+
+  return 0;
 }
 
 int tig_put(uint8_t data)
 {
-	DWORD i;
-	BOOL fSuccess;
+  DWORD i;
+  BOOL fSuccess;
 
-	tdr.count++;
-	LOG_DATA(data);
-	// Write the data
-	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
-	if(!fSuccess)
-	{
-		DISPLAY_ERROR("WriteFile\n");
-		print_last_error();
-		return ERR_WRITE_ERROR;
-	}
-	else if(i == 0)
-	{
-		return ERR_WRITE_TIMEOUT;
-	}
+  tdr.count++;
+  LOG_DATA(data);
 
-	return 0;
+  fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
+  if (!fSuccess) {
+    DISPLAY_ERROR("WriteFile\n");
+    return ERR_WRITE_ERROR;
+  } else if (i == 0) {
+    DISPLAY_ERROR("WriteFile\n");
+    return ERR_WRITE_TIMEOUT;
+  }
+
+  return 0;
 }
 
-int tig_get(uint8_t *data)
+int tig_get(uint8_t * data)
 {
-	DWORD i;
-	BOOL fSuccess;
-	TIME clk;
+  BOOL fSuccess;
+  DWORD i;
+  tiTIME clk;
 
-	tdr.count++;
-	/* If the tig_check function was previously called, retrieve the uint8_t */
-	if(cs.available)
-    {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
-    }
+  if (cs.avail) {
+    *data = cs.data;
+    cs.avail = FALSE;
+    return 0;
+  }
 
-	toSTART(clk);
-	do
-    {
-      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
-    }
-	while(i != 1);
+  toSTART(clk);
+  do {
+    if (toELAPSED(clk, time_out))
+      return ERR_READ_TIMEOUT;
+    fSuccess = ReadFile(hCom, data, 1, &i, NULL);
+  }
+  while (i != 1);
 
-	LOG_DATA(*data);
+  if (!fSuccess) {
+    DISPLAY_ERROR("ReadFile\n");
+    return ERR_READ_ERROR;
+  }
 
-	return 0;
+  tdr.count++;
+  LOG_DATA(*data);
+
+  return 0;
 }
 
 int tig_close()
 {
-	return 0;
+  return 0;
 }
 
 int tig_exit()
 {
   STOP_LOGGING();
+  if (hCom) {
+    CloseHandle(hCom);
+    hCom = 0;
+  }
 
-	if(hCom)
-	{
-		CloseHandle(hCom);
-		hCom=0;
-	}
-
-	return 0;
+  return 0;
 }
 
 #define MS_ON (MS_CTS_ON | MS_DTR_ON)
 
 int tig_probe()
 {
-	DWORD status;				//MS_CTS_ON or MS_DTR_ON
+  DWORD status;			//MS_CTS_ON or MS_DTR_ON
 
-	EscapeCommFunction(hCom, SETDTR);
-	EscapeCommFunction(hCom, SETRTS);
-	GetCommModemStatus(hCom, &status);	// Get MCR values
-	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_PROBE_FAILED;
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);	// Get MCR values
+  //DISPLAY("status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
 
-	EscapeCommFunction(hCom, SETDTR);
-	EscapeCommFunction(hCom, CLRRTS);
-	GetCommModemStatus(hCom, &status);
-	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_PROBE_FAILED;
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, CLRRTS);
+  GetCommModemStatus(hCom, &status);
+  //DISPLAY("status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
 
-	EscapeCommFunction(hCom, CLRDTR);
-	EscapeCommFunction(hCom, CLRRTS);
-	GetCommModemStatus(hCom, &status);
-	//DISPLAY("status: %i\n", status);
-	if(status != 0x00) return ERR_PROBE_FAILED;
+  EscapeCommFunction(hCom, CLRDTR);
+  EscapeCommFunction(hCom, CLRRTS);
+  GetCommModemStatus(hCom, &status);
+  //DISPLAY("status: %i\n", status);
+  if (status != 0x00)
+    return ERR_PROBE_FAILED;
 
-	EscapeCommFunction(hCom, CLRDTR);
-	EscapeCommFunction(hCom, SETRTS);
-	GetCommModemStatus(hCom, &status);
-	//DISPLAY("status: %i\n", status);
-	if(status != 0x00) return ERR_PROBE_FAILED;
+  EscapeCommFunction(hCom, CLRDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);
+  //DISPLAY("status: %i\n", status);
+  if (status != 0x00)
+    return ERR_PROBE_FAILED;
 
-	EscapeCommFunction(hCom, SETDTR);
-	EscapeCommFunction(hCom, SETRTS);
-	GetCommModemStatus(hCom, &status);
-	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_PROBE_FAILED;
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);
+  //DISPLAY("status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
 
-	return 0;
+  return 0;
 }
 
 int tig_check(int *status)
 {
-	int n = 0;
-	DWORD i;
-	BOOL fSuccess;
+  DWORD i;
+  BOOL fSuccess;
 
-	*status = STATUS_NONE;
-	if(hCom)
-    {
-	    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
-		fSuccess = ReadFile(hCom, (&cs.data), 1, &i, NULL);
-		if(fSuccess && (i==1))
-		{
-			if(cs.available == 1)
-				return ERR_BYTE_LOST;
+  *status = STATUS_NONE;
+  if (hCom) {
+    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
+    fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
+    if (fSuccess && (i == 1)) {
+      if (cs.avail == TRUE)
+	return ERR_BYTE_LOST;
 
-			cs.available = 1;
-			*status = STATUS_RX;
-			return 0;
-		}
-		else
-		{
-			*status = STATUS_NONE;
-			return 0;
-		}
+      cs.avail = TRUE;
+      *status = STATUS_RX;
+      return 0;
+    } else {
+      *status = STATUS_NONE;
+      return 0;
     }
+  }
 
   return 0;
 }
@@ -576,7 +511,7 @@ int tig_supported()
   return SUPPORT_ON;
 }
 
-#else // unsupported platforms
+#else				// unsupported platforms
 
 /************************/
 /* Unsupported platform */
@@ -597,7 +532,7 @@ int tig_put(uint8_t data)
   return 0;
 }
 
-int tig_get(uint8_t *d)
+int tig_get(uint8_t * d)
 {
   return 0;
 }
@@ -622,7 +557,7 @@ int tig_check(int *status)
   return 0;
 }
 
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int tig_set_red_wire(int b)
 {
@@ -669,7 +604,7 @@ int tig_init()
 	if(hCom == INVALID_HANDLE_VALUE)
 	{
 		DISPLAY_ERROR("CreateFile\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_CREATE_FILE;
 	}
 
@@ -678,7 +613,7 @@ int tig_init()
 	if(!fSuccess)
 	{
 		DISPLAY_ERROR("SetupComm\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_SETUP_COMM;
 	}
 
@@ -687,7 +622,7 @@ int tig_init()
 	if(!fSuccess)
 	{
 		DISPLAY_ERROR("GetCommState\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_GET_COMMSTATE;
 	}
 
@@ -714,7 +649,7 @@ int tig_init()
 	if(!fSuccess)
 	{
 		DISPLAY_ERROR("SetCommState\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_SET_COMMSTATE;
 	}
 
@@ -722,7 +657,7 @@ int tig_init()
 	if(!fSuccess)
 	{
 		DISPLAY_ERROR("GetCommTimeouts\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_GET_COMMTIMEOUT;
 	}
     
@@ -736,7 +671,7 @@ int tig_init()
 	if(!fSuccess)
 	{
 		DISPLAY_ERROR("SetCommTimeouts\n");
-		print_last_error();
+		//print_last_error();
 		return ERR_SET_COMMTIMEOUT;
 	}
 

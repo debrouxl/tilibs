@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  ti_link - link program for TI calculators
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,12 +20,10 @@
 #ifndef PARLINK_H
 #define PARLINK_H
 
-//#include <stdint.h>
-
 int par_init();
 int par_open();
 int par_put(uint8_t data);
-int par_get(uint8_t *data);
+int par_get(uint8_t * data);
 int par_probe();
 int par_close();
 int par_exit();

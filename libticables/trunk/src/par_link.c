@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +24,11 @@
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
 
 #include "timeout.h"
 #include "ioports.h"
@@ -32,27 +37,34 @@
 #include "cabl_def.h"
 #include "logging.h"
 #include "externs.h"
+#include "verbose.h"
 
 static unsigned int lpt_adr;
-#define lpt_out lpt_adr
-#define lpt_in (lpt_adr+1)
+#define lpt_out  lpt_adr
+#define lpt_in   (lpt_adr+1)
+#define lpt_ctl  (lpt_adr+2)
 
 static int io_permitted = 0;
 
 int par_init()
 {
   lpt_adr = io_address;
-  
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  if(open_io(lpt_adr, 2))
+
+  if (io_open(lpt_adr, 3))
     return ERR_ROOT;
-  // required for circumenting a strange problem with PortTalk & Win2k
-  if(open_io(lpt_adr, 2))
+#ifdef __WIN32__
+  // needed for circumventing a strange problem with PortTalk & Win2k
+  if (io_open(lpt_adr, 3))
     return ERR_ROOT;
-  
-  io_permitted = 1;
-  wr_io(lpt_out, 3);
 #endif
+
+  io_permitted = 1;
+  io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
+
+  io_wr(lpt_out, 3);		// wake-up calculator
+  io_wr(lpt_out, 0);
+  io_wr(lpt_out, 3);
+
   START_LOGGING();
 
   return 0;
@@ -63,7 +75,7 @@ int par_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
-  if(io_permitted)
+  if (io_permitted)
     return 0;
   else
     return ERR_ROOT;
@@ -71,141 +83,125 @@ int par_open()
 
 int par_put(uint8_t data)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
   int i;
-  TIME clk;
+  tiTIME clk;
 
   tdr.count++;
   LOG_DATA(data);
-  for(bit=0; bit<8; bit++)
-    {
-      if(data & 1)
-	{
-	  wr_io(lpt_out, 2);
-	  toSTART(clk);
-	  do
-	    {
-	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-	    }
-	  while((rd_io(lpt_in) & 0x10));
-	  wr_io(lpt_out, 3);
-	  toSTART(clk);
-	  do
-	    {
-	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-	    }
-	  while((rd_io(lpt_in) & 0x10)==0x00);
-	}
-      else
-	{
-	  wr_io(lpt_out, 1);
-	  toSTART(clk);
-	  do
-	    {
-	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-	    }
-	  while(rd_io(lpt_in) & 0x20);
-	  wr_io(lpt_out, 3);
-	  toSTART(clk);
-	  do
-	    {
-	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
-	    }
-	  while((rd_io(lpt_in) & 0x20)==0x00);
-	}
-      data>>=1;
-      for(i=0; i<delay; i++) rd_io(lpt_in);
+
+  for (bit = 0; bit < 8; bit++) {
+    if (data & 1) {
+      io_wr(lpt_out, 2);
+      toSTART(clk);
+      do {
+	if (toELAPSED(clk, time_out))
+	  return ERR_WRITE_TIMEOUT;
+      }
+      while ((io_rd(lpt_in) & 0x10));
+      io_wr(lpt_out, 3);
+      toSTART(clk);
+      do {
+	if (toELAPSED(clk, time_out))
+	  return ERR_WRITE_TIMEOUT;
+      }
+      while (!(io_rd(lpt_in) & 0x10));
+    } else {
+      io_wr(lpt_out, 1);
+      toSTART(clk);
+      do {
+	if (toELAPSED(clk, time_out))
+	  return ERR_WRITE_TIMEOUT;
+      }
+      while (io_rd(lpt_in) & 0x20);
+      io_wr(lpt_out, 3);
+      toSTART(clk);
+      do {
+	if (toELAPSED(clk, time_out))
+	  return ERR_WRITE_TIMEOUT;
+      }
+      while (!(io_rd(lpt_in) & 0x20));
     }
-#endif
+    data >>= 1;
+    for (i = 0; i < delay; i++)
+      io_rd(lpt_in);
+  }
+
   return 0;
 }
 
-int par_get(uint8_t *d)
+int par_get(uint8_t * d)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
-  uint8_t data=0;
+  uint8_t data = 0;
   uint8_t v;
   int i;
-  TIME clk;
+  tiTIME clk;
 
   tdr.count++;
-  for(bit=0; bit<8; bit++)
-    {
-      toSTART(clk);
-      while((v=rd_io(lpt_in) & 0x30)==0x30)
-	{
-	  if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
-	}
-      if(v==0x10)
-	{
-	  data=(data >> 1) | 0x80;
-	  wr_io(lpt_out, 1);
-	  while((rd_io(lpt_in) & 0x20)==0x00);
-	  wr_io(lpt_out, 3);
-	}
-      else
-	{
-	  data=(data >> 1) & 0x7F;
-	  wr_io(lpt_out, 2);
-	  while((rd_io(lpt_in) & 0x10)==0x00);
-	  wr_io(lpt_out, 3);
-	}
-      for(i=0; i<delay; i++) rd_io(lpt_in);
+  for (bit = 0; bit < 8; bit++) {
+    toSTART(clk);
+    while ((v = io_rd(lpt_in) & 0x30) == 0x30) {
+      if (toELAPSED(clk, time_out))
+	return ERR_READ_TIMEOUT;
     }
-  *d=data;
+    if (v == 0x10) {
+      data = (data >> 1) | 0x80;
+      io_wr(lpt_out, 1);
+      while ((io_rd(lpt_in) & 0x20) == 0x00);
+      io_wr(lpt_out, 3);
+    } else {
+      data = (data >> 1) & 0x7F;
+      io_wr(lpt_out, 2);
+      while ((io_rd(lpt_in) & 0x10) == 0x00);
+      io_wr(lpt_out, 3);
+    }
+    for (i = 0; i < delay; i++)
+      io_rd(lpt_in);
+  }
+  *d = data;
   LOG_DATA(data);
 
-#endif
   return 0;
 }
 
 int par_probe()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int i, j;
-  int seq[]={ 0x00, 0x20, 0x10, 0x30 };
+  int seq[] = { 0x00, 0x20, 0x10, 0x30 };
   uint8_t data;
 
-  for(i=3; i>=0; i--)
-    {
-      wr_io(lpt_out, 3);
-      wr_io(lpt_out, i);
-      for(j=0; j<10; j++) data = rd_io(lpt_in);
-	  //DISPLAY("%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
-      if( (data & 0x30) != seq[i]) 
-	{
-	  wr_io(lpt_out, 3);  
-	  return ERR_PROBE_FAILED;
-	}
-    } 
-  wr_io(lpt_out, 3);
-#else
-  return ERR_PROBE_FAILED;
-#endif
- 
+  for (i = 3; i >= 0; i--) {
+    io_wr(lpt_out, 3);
+    io_wr(lpt_out, i);
+    for (j = 0; j < 10; j++)
+      data = io_rd(lpt_in);
+    //DISPLAY("%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
+    if ((data & 0x30) != seq[i]) {
+      io_wr(lpt_out, 3);
+      return ERR_PROBE_FAILED;
+    }
+  }
+  io_wr(lpt_out, 3);
+
   return 0;
 }
 
 int par_close()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  if(io_permitted)
-    wr_io(lpt_out, 3);
-#endif
+  if (io_permitted)
+    io_wr(lpt_out, 3);
 
   return 0;
 }
 
 int par_exit()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  if(close_io(lpt_adr, 2))
+  if (io_close(lpt_adr, 2))
     return ERR_ROOT;
-    
+
   io_permitted = 0;
-#endif
+
   STOP_LOGGING();
 
   return 0;
@@ -214,70 +210,53 @@ int par_exit()
 int par_check(int *status)
 {
   *status = STATUS_NONE;
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  if(!( (rd_io(lpt_in) & 0x30) == 0x30 ))
-    {
-      *status = STATUS_RX | STATUS_TX;
-    }
-#endif
-  
+  if (!((io_rd(lpt_in) & 0x30) == 0x30)) {
+    *status = STATUS_RX | STATUS_TX;
+  }
+
   return 0;
 }
 
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int par_set_red_wire(int b)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  int v = swap_bits(rd_io(lpt_in) >> 4);
-  if(b)
-    wr_io(lpt_out, v | 0x02);
+  int v = swap_bits(io_rd(lpt_in) >> 4);
+
+  if (b)
+    io_wr(lpt_out, v | 0x02);
   else
-    wr_io(lpt_out, v & ~0x02);
-#endif
+    io_wr(lpt_out, v & ~0x02);
 
   return 0;
 }
 
 int par_set_white_wire(int b)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  int v = swap_bits(rd_io(lpt_in) >> 4);
-  if(b)
-    wr_io(lpt_out, v | 0x01);
+  int v = swap_bits(io_rd(lpt_in) >> 4);
+
+  if (b)
+    io_wr(lpt_out, v | 0x01);
   else
-    wr_io(lpt_out, v & ~0x01);
-#endif
+    io_wr(lpt_out, v & ~0x01);
 
   return 0;
 }
 
 int par_get_red_wire()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  return (0x10 & rd_io(lpt_in)) ? 1 : 0;
-#endif
-
-  return 0;
+  return (0x10 & io_rd(lpt_in)) ? 1 : 0;
 }
 
 int par_get_white_wire()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  return (0x20 & rd_io(lpt_in)) ? 1 : 0;
-#endif
-
-  return 0;
+  return (0x20 & io_rd(lpt_in)) ? 1 : 0;
 }
 
 int par_supported()
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__WIN32__) || defined(__WIN16__)
-  return SUPPORT_ON | SUPPORT_IO;
-#else
-  return SUPPORT_OFF;
-#endif
+  if (method & IOM_OK)
+    return SUPPORT_ON | SUPPORT_IO;
+  else
+    return SUPPORT_OFF;
 }
-
-
-

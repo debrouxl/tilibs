@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +19,8 @@
 
 #ifndef LINKS_H
 #define LINKS_H
+
+#include "dfl_link.h"
 
 #include "par_link.h"
 #include "ser_link.h"
