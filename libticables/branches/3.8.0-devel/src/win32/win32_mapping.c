@@ -40,15 +40,13 @@
 
 int win32_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	printl(0, _("getting method from resources"));
-	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV | IOM_IOCTL);
-		printl(0, _(" (automatic)...\n"));
+		printl(0, _("getting method from resources (automatic):\n"));
   	} else
-		printl(0, _(" (user-forced)...\n"));
+		printl(0, _("getting method from resources (user-forced):\n"));
 
 	// depending on link type, do some checks
 	switch(type)

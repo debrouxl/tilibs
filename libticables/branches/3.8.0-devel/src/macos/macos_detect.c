@@ -43,13 +43,13 @@ int macos_detect_os(char **os_type)
 	struct utsname buf;
 
 	uname(&buf);
-  	printl(0, _("Getting OS type...\r\n"));
-  	printl(0, _("  System name: %s\r\n"), buf.sysname);
-  	printl(0, _("  Node name: %s\r\n"), buf.nodename);
-  	printl(0, _("  Release: %s\r\n"), buf.release);
-  	printl(0, _("  Version: %s\r\n"), buf.version);
-  	printl(0, _("  Machine: %s\r\n"), buf.machine);
-	printl(0, _("Done.\r\n"));
+  	printl(0, _("Getting OS type...\n"));
+  	printl(0, _("  System name: %s\n"), buf.sysname);
+  	printl(0, _("  Node name: %s\n"), buf.nodename);
+  	printl(0, _("  Release: %s\n"), buf.release);
+  	printl(0, _("  Version: %s\n"), buf.version);
+  	printl(0, _("  Machine: %s\n"), buf.machine);
+	printl(0, _("Done.\n"));
 	*os_type = OS_MACOS;
 
 	return 0;
@@ -64,7 +64,7 @@ int macos_detect_port(TicablePortInfo * pi)
 
 int macos_detect_resources(void)
 {
-	printl(0, _("checking resources...\r\n"));
+	printl(0, _("checking resources...\n"));
 	resources = IO_OSX;
 	
 	/* API: for use with all */

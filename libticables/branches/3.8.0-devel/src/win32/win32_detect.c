@@ -40,15 +40,15 @@ int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
 
-  	printl(0, _("getting OS type...\r\n"));
+  	printl(0, _("getting OS type:\n"));
   	
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
-  	printl(0, _("  operating System: %s\r\n"),
+  	printl(0, _("  operating System: %s\n"),
 	  (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?
 	  "Windows9x" : "WindowsNT");
-  	printl(0, _("  version: %i.%i\r\n"),
+  	printl(0, _("  version: %i.%i\n"),
 	  os.dwMajorVersion, os.dwMinorVersion);
   
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -75,7 +75,7 @@ int win32_detect_resources(void)
 	char *os;
     	
 	win32_detect_os(&os);
-	printl(0, _("checking resources...\r\n"));
+	printl(0, _("checking resources:\n"));
 	
 	/* Windows NT need permissions */
 	
@@ -136,7 +136,7 @@ int win32_detect_resources(void)
 			CloseHandle(PortTalk_Handle);
       		}
       
-      		printl(0, _("  IO_DLL: %s (PortTalk)\r\n"),
+      		printl(0, _("  IO_DLL: %s (PortTalk)\n"),
 	      		resources & IO_DLL ? "available" : "not available");
     	}
     
@@ -149,7 +149,7 @@ int win32_detect_resources(void)
       		CloseHandle(hDLL);
 #endif
     	}
-    	printl(0, _("  IO_USB: %s (TiglUsb)\r\n"),
+    	printl(0, _("  IO_USB: %s (TiglUsb)\n"),
 	    resources & IO_USB ? "available" : "not available");
 
 	return 0;

@@ -56,13 +56,13 @@ int bsd_detect_os(char **os_type)
 	struct utsname buf;
 
 	uname(&buf);
-  	printl(0, _("Getting OS type...\r\n"));
-  	printl(0, _("  System name: %s\r\n"), buf.sysname);
-  	printl(0, _("  Node name: %s\r\n"), buf.nodename);
-  	printl(0, _("  Release: %s\r\n"), buf.release);
-  	printl(0, _("  Version: %s\r\n"), buf.version);
-  	printl(0, _("  Machine: %s\r\n"), buf.machine);
-	printl(0, _("Done.\r\n"));
+  	printl(0, _("Getting OS type...\n"));
+  	printl(0, _("  System name: %s\n"), buf.sysname);
+  	printl(0, _("  Node name: %s\n"), buf.nodename);
+  	printl(0, _("  Release: %s\n"), buf.release);
+  	printl(0, _("  Version: %s\n"), buf.version);
+  	printl(0, _("  Machine: %s\n"), buf.machine);
+	printl(0, _("Done.\n"));
 #endif
 	*os_type = OS_BSD;
 
@@ -76,16 +76,16 @@ int bsd_detect_port(TicablePortInfo * pi)
 
 int bsd_detect_resources(void)
 {
-	printl(0, _("checking resources...\r\n"));
+	printl(0, _("checking resources...\n"));
 	resources = IO_BSD;
 
 	/* API: for use with ttySx */
 
 #if defined(HAVE_TERMIOS_H)
   	resources |= IO_API;
-  	printl(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
+  	printl(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\n"));
 #else
-	printl(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
+	printl(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"));
 #endif
 
 	/* ASM: for use with low-level I/O */
@@ -101,7 +101,7 @@ int bsd_detect_resources(void)
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	printl(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
+	printl(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"),
 		resources & IO_LIBUSB ? "" : "not ");
 
   	return 0;
