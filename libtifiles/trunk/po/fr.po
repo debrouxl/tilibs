@@ -7,20 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles-0.5.1\n"
 "POT-Creation-Date: 2003-05-04 10:39+0200\n"
-"PO-Revision-Date: 2003-04-05 21:47+0100\n"
+"PO-Revision-Date: 2003-05-07 13:38GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
-"Language-Team: FRENCH <FR@li.org>\n"
+"Language-Team: FRENCH <fr@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: src/error.c:41
 msgid "Msg: unable to allocate memory (malloc)."
-msgstr "Msg: impossible d'allouer de la mémoire (malloc)."
+msgstr "Msg: impossible d'allouer de la mÃ©moire (malloc)."
 
 #: src/error.c:43
 msgid "Cause: memory too low ?"
-msgstr "Cause: pas assez de mémoire ?"
+msgstr "Cause: pas assez de mÃ©moire ?"
 
 #: src/error.c:47
 msgid "Msg: unable to open file."
@@ -28,7 +29,7 @@ msgstr "Msg: impossible d'ouvrir le fichier."
 
 #: src/error.c:50
 msgid "either the file does not exist, either there is no room."
-msgstr "Cause: le fichier n'existe pas, ou il n'est pas dans ce répertoire."
+msgstr "Cause: le fichier n'existe pas, ou il n'est pas dans ce rÃ©pertoire."
 
 #: src/error.c:54
 msgid "Msg: unable to close file."
@@ -36,15 +37,15 @@ msgstr "Msg: impossible de fermer le fichier."
 
 #: src/error.c:58
 msgid "Cause: either the file does not exist, either there is no room."
-msgstr "Cause: le fichier n'existe pas, ou il n'est pas dans ce répertoire."
+msgstr "Cause: le fichier n'existe pas, ou il n'est pas dans ce rÃ©pertoire."
 
 #: src/error.c:63
 msgid "Msg: the size of a group file can not exceed 64KB."
-msgstr "Msg: la taille d'un groupe ne peut pas dépasser 64Ko."
+msgstr "Msg: la taille d'un groupe ne peut pas dÃ©passer 64Ko."
 
 #: src/error.c:65
 msgid "Cause: too many variables/data."
-msgstr "Cause: trop de variables/données."
+msgstr "Cause: trop de variables/donnÃ©es."
 
 #: src/error.c:69
 msgid "Msg: Unknown calculator type."
@@ -53,7 +54,7 @@ msgstr "Msg: Type de calculatrice inconnu."
 #: src/error.c:73
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
-"Cause: il s'agit probablement d'un bug, signalez-le à tilp-users@lists.sf."
+"Cause: il s'agit probablement d'un bug, signalez-le Ã  tilp-users@lists.sf."
 "net."
 
 #: src/error.c:78
@@ -66,12 +67,12 @@ msgstr "Cause: il ne s'agit probablement pas d'un fichier TI."
 
 #: src/error.c:84
 msgid "Msg: checksum error."
-msgstr "Msg: erreur de somme de contrôle (checksum)."
+msgstr "Msg: erreur de somme de contrÃ´le (checksum)."
 
 #: src/error.c:88
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
-"Cause: le fichier a une somme de contrôle incorrecte et peut être corrompu."
+"Cause: le fichier a une somme de contrÃ´le incorrecte et peut Ãªtre corrompu."
 
 #: src/error.c:94
 msgid ""
@@ -80,17 +81,17 @@ msgid ""
 "."
 msgstr ""
 "Code d'erreur inexistant dans la liste.\n"
-"C'est un bug. Signalez-le s'il vous plaît.\n"
+"C'est un bug. Signalez-le s'il vous plaÃ®t.\n"
 "."
 
 #: src/intrface.c:79
 #, c-format
 msgid "Libtifiles: version %s\n"
-msgstr "Libtifles: version %s\n"
+msgstr "Libtifiles: version %s\n"
 
 #: src/intrface.c:139
 msgid "Function not implemented. This is a bug. Please report it."
-msgstr "Fonction non implémentée. C'est un bug. Signalez-le s'il vous plaît."
+msgstr "Fonction non implÃ©mentÃ©e. C'est un bug. Signalez-le s'il vous plaÃ®t."
 
 #: src/intrface.c:140
 msgid "Informations:\n"
@@ -103,11 +104,11 @@ msgstr "Calculatrice: %i\n"
 
 #: src/intrface.c:142
 msgid "Program halted before crashing...\n"
-msgstr "Le programme s'est arrêté pour ne pas se terminer anormalement...\n"
+msgstr "Le programme s'est arrÃªtÃ© pour ne pas se terminer anormalement...\n"
 
 #: src/intrface.c:155
 msgid "Libtifiles settings...\n"
-msgstr "Libtifles réglages...\n"
+msgstr "Libtifiles rÃ©glages...\n"
 
 #: src/intrface.c:159 src/intrface.c:162 src/intrface.c:165 src/intrface.c:168
 #: src/intrface.c:171 src/intrface.c:174 src/intrface.c:177 src/intrface.c:180
@@ -124,7 +125,7 @@ msgstr "Oups, ceci est un bug. Calculatrice inconnue.\n"
 #: src/types73.c:41 src/types82.c:36 src/types83.c:36 src/types83p.c:36
 #: src/types85.c:36 src/types86.c:36
 msgid "Real"
-msgstr "Réel"
+msgstr "RÃ©el"
 
 #: src/types73.c:42 src/types82.c:37 src/types83.c:37 src/types83p.c:37
 #: src/types85.c:40 src/types86.c:40 src/types89.c:48 src/types92.c:48
@@ -140,13 +141,13 @@ msgstr "Matrice"
 
 #: src/types73.c:44 src/types83p.c:39 src/types85.c:46 src/types86.c:46
 msgid "Equation"
-msgstr "Equation"
+msgstr "Ã‰quation"
 
 #: src/types73.c:45 src/types83.c:40 src/types83p.c:40 src/types85.c:48
 #: src/types86.c:48 src/types89.c:56 src/types92.c:56 src/types92p.c:56
 #: src/typesv2.c:55
 msgid "String"
-msgstr "Chaîne"
+msgstr "ChaÃ®ne"
 
 #: src/types73.c:46 src/types82.c:41 src/types83.c:41 src/types83p.c:41
 #: src/types85.c:54 src/types86.c:54 src/types89.c:62 src/types92.c:62
@@ -251,7 +252,7 @@ msgstr "Inconnu"
 
 #: src/types73.c:52 src/types82.c:47 src/types83p.c:51 src/types85.c:59
 msgid "Window Setup"
-msgstr "Config fenêtre"
+msgstr "Config fenÃªtre"
 
 #: src/types73.c:53 src/types83.c:48 src/types83p.c:48 src/types85.c:37
 #: src/types86.c:37
@@ -260,7 +261,7 @@ msgstr "Nombre complexe"
 
 #: src/types73.c:56 src/types83p.c:47
 msgid "Window"
-msgstr "Fenêtre"
+msgstr "FenÃªtre"
 
 #: src/types73.c:57 src/types82.c:48 src/types83.c:49 src/types83p.c:52
 #: src/types85.c:63 src/types86.c:63
@@ -298,7 +299,7 @@ msgstr "Variable Y"
 
 #: src/types82.c:42
 msgid "Protected Program"
-msgstr "Programme Protégé"
+msgstr "Programme ProtÃ©gÃ©"
 
 #: src/types82.c:50
 msgid "LCD"
@@ -342,11 +343,11 @@ msgstr "Intervalle"
 
 #: src/types85.c:56 src/types86.c:56
 msgid "Screen"
-msgstr "Ecran"
+msgstr "Ã‰cran"
 
 #: src/types85.c:57 src/types86.c:57
 msgid "Directory"
-msgstr "Répertoire"
+msgstr "RÃ©pertoire"
 
 #: src/types85.c:60 src/types86.c:60
 msgid "Polar"
@@ -354,7 +355,7 @@ msgstr "Polaire"
 
 #: src/types85.c:61 src/types86.c:61
 msgid "Parametric"
-msgstr "Paramétrique"
+msgstr "ParamÃ©trique"
 
 #: src/types85.c:62 src/types86.c:62
 msgid "Diff Equ"
@@ -366,7 +367,7 @@ msgstr "Expression"
 
 #: src/types89.c:54 src/types92.c:54 src/types92p.c:54 src/typesv2.c:53
 msgid "Data"
-msgstr "Donnée"
+msgstr "DonnÃ©e"
 
 #: src/types89.c:55 src/types92.c:55 src/types92p.c:55 src/typesv2.c:54
 msgid "Text"
@@ -386,7 +387,7 @@ msgstr "Macro"
 
 #: src/types89.c:72 src/types92.c:72 src/types92p.c:72 src/typesv2.c:71
 msgid "Zipped"
-msgstr "Compressé"
+msgstr "CompressÃ©"
 
 #: src/types89.c:78 src/types92p.c:78 src/typesv2.c:77
 msgid "ID-LIST"
@@ -401,7 +402,7 @@ msgstr "Prog Asm"
 msgid ""
 "Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
 msgstr ""
-"Erreur fatale dans '%s': type de calculatrice inconnu. Programme arrêté...\n"
+"Erreur fatale dans '%s': type de calculatrice inconnu. Programme arrÃªtÃ©...\n"
 
 #: src/typesxx.c:932
 msgid "Group/Backup"
@@ -418,16 +419,3 @@ msgstr "libtifiles erreur: type de calculatrice inconnu !\n"
 #: src/type2str.c:71
 msgid "libtifiles error: unknown attribute !\n"
 msgstr "libtifiles erreur: attribut inconnu !\n"
-
-#~ msgid ""
-#~ "Warning: unknown type. It is a bug. Please report this information.\n"
-#~ msgstr ""
-#~ "Attention: type inconnu. C'est un bug. Signalez-le s'il vous plaît.\n"
-
-#~ msgid "Warning: unknown type. It is a bug. Please report this information."
-#~ msgstr "Attention: type inconnu. C'est un bug. Signalez-le s'il vous plaît."
-
-#~ msgid ""
-#~ "Warning: Unknown type. It is a bug. Please report this information.\n"
-#~ msgstr ""
-#~ "Attention: type inconnu. C'est un bug. Signalez-le s'il vous plaît.\n"
