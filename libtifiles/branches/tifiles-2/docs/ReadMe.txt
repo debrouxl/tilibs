@@ -21,11 +21,17 @@ Each function or definition starts with a specific comment header like this:
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
+TIEXPORT int TICALL function
  
 @parameter: this is a parameter
 #function: html link to function
 %name: report to parameter (written in italic)
 
+Current restrictions: the documentation generator is not very well protected
+against syntax errors. You must follow these rules:
+- line with @ must be on 1 line (wrapping is allowed).
+- function declaration must be on 1 line (same as above).
+- the '*' _must_ be placed as showed.
 
 3) About doc:
 -------------

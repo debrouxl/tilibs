@@ -33,6 +33,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
+  docs/Makefile
   intl/Makefile
   po/Makefile.in
   src/Makefile

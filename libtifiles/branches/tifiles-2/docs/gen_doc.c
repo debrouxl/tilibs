@@ -6,53 +6,137 @@
 
 GList *topics = NULL;
 
+// Used to describe a topic (read from api.txt)
 typedef struct
 {
-	gchar*	filename;
-	gchar*  basename;
-	gchar*	title;
-	GList*  fncts;
+	gchar*	filename;  // such as error.c
+	gchar*  basename;  // such as error.c.html
+	gchar*	title;     // such as "General Functions"
+	GList*  fncts;     // a linked list of fnct structure
 } topic;
+
+// Used to describe a comment entry before a function
+typedef struct
+{
+	gchar* title;       // such as " * tifiles_get_error:"
+	gchar* declaration; // such as "TIEXPORT int TICALL tifiles_error_get("
+	GList* args;        // such as " * @number: error number"
+	gchar* comment;     // such as "Attempt to match the..."
+	gchar* returns;     // such as "Return value: 0 if error"
+} fnct;
+
+// Used to describe a comment entry on an argument
+typedef struct
+{
+	gchar *name;     // such as "number"
+	gchar *comment; // such as "error number"
+} arg;
 
 // Open a C or H file and search for comment on function.
 static int get_list_of_functions(const char *filename, GList **fncts)
 {
-	FILE *f;
+	FILE *fi;
 	char line[65536];
-	
-	f = fopen(filename, "rt");
-	if(f == NULL)
+
+// open file	
+	fi = fopen(filename, "rt");
+	if(fi == NULL)
 	{
 		printf("Can't open this file: <%s>\n", filename);
 		return -1;
 	}
 
-	while(!feof(f))
+// process
+	while(!feof(fi))
 	{
-		fgets(line, sizeof(line), f);
-		if(line[0] == '/' && line[1] == '*' && line[2] == '*' &&
-			line[3] != '*')
+		fgets(line, sizeof(line), fi);
+		if(line[0] == '/' && line[1] == '*' && 
+		   line[2] == '*' && line[3] != '*')
 		{
 			char *d;
-			gchar *s;
+			fnct *f;
 
-			fgets(line, sizeof(line), f);
+			// get title
+			fgets(line, sizeof(line), fi);
 			d = strrchr(line, ':');
 			if(d != NULL)
 				*d = '\0';
 			
-			s = g_strdup(line+3);
+			f = g_malloc0(sizeof(fnct));
+			f->title = g_strdup(line+3);
 			//printf("[%s]\n", s);
-			*fncts = g_list_append(*fncts, s);
+
+			// check for arguments
+			do
+			{
+				arg *a;
+				gchar **str_array;
+
+				fgets(line, sizeof(line), fi);
+				if(line[3] != '@')
+					break;
+				//printf("<%s>\n", line);
+				
+				a = g_malloc0(sizeof(arg));
+				str_array = g_strsplit(line, ": ", 2);
+				a->name = g_strdup(str_array[0]+4);
+				a->comment = g_strdup(str_array[1]);
+				g_strfreev(str_array);
+				//printf("<%s %s>\n", a->name, a->comment);
+
+				f->args = g_list_append(f->args, a);
+			} while(!feof(fi));
+
+			// get comment
+			f->comment = g_strdup("");
+			do
+			{
+				gchar *tmp;
+
+				fgets(line, sizeof(line), fi);
+		
+				tmp = g_strconcat(f->comment, line+3, NULL);
+				g_free(f->comment);
+				f->comment = tmp;
+				//printf("%s", line);
+			} while(strcmp(line, " *") <= 0);
+			//printf("[%s]\n", f->comment);
+
+                        // get return value
+			fgets(line, sizeof(line), fi);
+			f->returns = g_strdup("");
+			do
+			{
+				gchar *tmp;
+				
+				fgets(line, sizeof(line), fi);
+				if(strcmp(line, " **/") > 0)
+					break;
+
+				tmp = g_strconcat(f->returns, line+3, NULL);
+				g_free(f->returns);
+				f->returns = tmp;
+			} while(!feof(fi));
+			
+			d = strchr(f->returns, ':');
+			if(d != NULL)
+				memmove(f->returns, d+2, strlen(d));
+
+			// get function declaration
+			fgets(line, sizeof(line), fi);
+			f->declaration = g_strdup(line);
+			//printf("[%s]", line);
+
+			*fncts = g_list_append(*fncts, f);
 		}
 	}
 
-	fclose(f);
-
+// close file
+	fclose(fi);
 	return 0;
 }
 
-static int write_api_toc(FILE *fo)
+static void write_api_toc(FILE *fo)
 {
 	GList *l, *m;
 	
@@ -65,34 +149,99 @@ static int write_api_toc(FILE *fo)
 		fprintf(fo, "<span style=\"font-weight:bold;\">%s</span><br>\n", t->title);
 		fprintf(fo, "<ul>\n");
 		for(m = fncts; m != NULL; m = g_list_next(m))
-			fprintf(fo, "<li><a href=\"%s.htm#%s\">%s</a></li>\n", 
-				t->basename, (char *)m->data, (char *)m->data);
+		{
+			fnct *f = (fnct *)m->data;
+			fprintf(fo, "<li><a href=\"%s#%s\">%s</a></li>\n", 
+				t->basename, f->title, f->title);
+		}
 		fprintf(fo, "</ul>\n");
 	}
-
-	return 0;
 }
 
-static int write_topic_header(FILE *f, const char *topic_name)
+static void write_topic_header(FILE *fo, const char *topic_name)
 {
-	fprintf(f, "<html>\n");
-	fprintf(f, "<head>\n");
-	fprintf(f, "<title>Header File Index</title>\n");
-	fprintf(f, "<link rel=\"STYLESHEET\" type=\"TEXT/CSS\" href=\"style.css\">\n");
-	fprintf(f, "</head>\n");
-	fprintf(f, "<body bgcolor=\"#fffff8\">\n");
-	fprintf(f, "<table class=\"INVTABLE\" width=\"100%\">\n");
-	fprintf(f, "<tbody>\n");
-	fprintf(f, "<tr>\n");
-	fprintf(f, "<td class=\"NOBORDER\" width=\"40\"><img src=\"info.gif\" border=\"0\"\n");
-	fprintf(f, "height=\"32\" width=\"32\"> </td>\n");
-	fprintf(f, "<td class=\"TITLE\">%s<br>\n", topic_name);
-	fprintf(f, "</td>\n");
-	fprintf(f, "</tr>\n");
-	fprintf(f, "</tbody>\n");
-	fprintf(f, "</table>\n");
+	fprintf(fo, "<html>\n");
+	fprintf(fo, "<head>\n");
+	fprintf(fo, "<title>Header File Index</title>\n");
+	fprintf(fo, "<link rel=\"STYLESHEET\" type=\"TEXT/CSS\" href=\"style.css\">\n");
+	fprintf(fo, "</head>\n");
+	fprintf(fo, "<body bgcolor=\"#fffff8\">\n");
+	fprintf(fo, "<table class=\"INVTABLE\" width=\"100%%\">\n");
+	fprintf(fo, "<tbody>\n");
+	fprintf(fo, "<tr>\n");
+	fprintf(fo, "<td class=\"NOBORDER\" width=\"40\"><img src=\"info.gif\" border=\"0\"\n");
+	fprintf(fo, "height=\"32\" width=\"32\"> </td>\n");
+	fprintf(fo, "<td class=\"TITLE\">%s<br>\n", topic_name);
+	fprintf(fo, "</td>\n");
+	fprintf(fo, "</tr>\n");
+	fprintf(fo, "</tbody>\n");
+	fprintf(fo, "</table>\n");
+	fprintf(fo, "<hr>\n");
+}
 
-	return 0;
+static void write_topic_end(FILE *fo)
+{
+	fprintf(fo, "<h3><a href=\"file:index.html\">Return to the main index</a> </h3>");
+	fprintf(fo, "<br>");
+	fprintf(fo, "<br>");
+	fprintf(fo, "<br>");
+	fprintf(fo, "</body>\n");
+	fprintf(fo, "</html>\n");
+}
+
+static void write_fncts_content(FILE *fo, GList *fncts)
+{
+	GList *l, *m;
+
+	for(l = fncts; l != NULL; l = g_list_next(l))
+        {
+		fnct *f = l->data;
+
+                // title
+		fprintf(fo, "<h3><a name=\"%s\"></a>%s</h3>\n", 
+			f->title, f->title);
+
+		// declaration
+		fprintf(fo, "<table style=\"width: 100%%; text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\">\n");
+		fprintf(fo, "<tbody>\n");
+		fprintf(fo, "<tr>\n");
+		fprintf(fo, "<td style=\"vertical-align: top;\">%s</td>\n", f->declaration);
+		fprintf(fo, "</tr>\n");
+		fprintf(fo, "</tbody>\n");
+		fprintf(fo, "</table>\n");
+		fprintf(fo, "<br>\n");
+
+		// how function work
+		fprintf(fo, "%s<br>\n", f->comment);
+		fprintf(fo, "<br>\n");
+
+		// table begin
+		fprintf(fo, "<table style=\"width: 100%%; text-align: left;\" border=\"0\" cellpadding=\"2\" cellspacing=\"2\">\n");
+		fprintf(fo, "<tbody>\n");
+
+		// write table with arguments
+		for(m = f->args; m != NULL; m = g_list_next(m))
+		{
+			arg *a = m->data;
+
+			//printf("<%s %s>\n", a->name, a->comment);
+
+			fprintf(fo, "<tr>\n");
+			fprintf(fo, "<td style=\"vertical-align: top;\">%s :<br></td>\n", a->name);
+			fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", a->comment);
+			fprintf(fo, "</tr>\n");
+		}
+
+		fprintf(fo, "<tr>\n");
+		fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", "Return value :");
+		fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", f->returns);
+		fprintf(fo, "</tr>\n");
+
+		// table end
+		fprintf(fo, "</tbody>\n");
+		fprintf(fo, "</table>\n");
+		fprintf(fo, "<br>\n");
+	}
 }
 
 int main(int argc, char **argv)
@@ -133,7 +282,6 @@ int main(int argc, char **argv)
 
 	// Open list of topics ("api.txt")
 	txt_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
-			       "tmpl", G_DIR_SEPARATOR_S, 
 			       "api.txt", NULL);
 	printf("Read list of topic from <%s>.\n", txt_file);
 	f = fopen(txt_file, "rt");
@@ -148,15 +296,17 @@ int main(int argc, char **argv)
 	{
 		gchar **str_array;
 		topic *t;
-
+	
 		fgets(line, sizeof(line), f);
 		str_array = g_strsplit(line, " : ", 2);
-
+		
+		// fill structure
 		t = g_malloc0(sizeof(topic));
 		t->filename = str_array[0];
-		t->basename = g_strdup("foobar");
+		t->basename = g_strconcat(str_array[0], ".html", NULL);
 		t->title = str_array[1];
 
+		// add to linked list
 		topics = g_list_append(topics, t);
 	}
 
@@ -164,7 +314,7 @@ int main(int argc, char **argv)
 	fclose(f);
 
 	/* 
-		Part 2: get list of functions from topics 
+		Part 2: get list of functions and comments from topics 
 	*/
 
 	printf("Get lists of functions from topics.\n");
@@ -234,9 +384,32 @@ int main(int argc, char **argv)
 	for(l = topics; l != NULL; l = g_list_next(l))
 	{
 		topic *t = (topic *)l->data;
-		gchar *path;
+		GList *fncts = t->fncts;
+		gchar *filename;
 		
+		// Open an html file
+		filename = g_strconcat(doc_folder, G_DIR_SEPARATOR_S,
+				       "html", G_DIR_SEPARATOR_S, 
+				       t->basename, NULL);
+		f = fopen(filename, "wt");
+		if(f == NULL)
+		{
+			printf("Can't open this file: <%s>.\n", filename);
+			return -1;
+		}
+
+		// Write topic header
+		write_topic_header(f, t->title);
 		
+		// Write function title and description
+		write_fncts_content(f, fncts);
+
+		// Write topic epilog
+		write_topic_end(f);
+
+		// Close file
+		g_free(filename);
+		fclose(f);
 	}
 
 	/* 
