@@ -554,7 +554,7 @@ TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename)
   else
     type = CALC_NONE;
 
-  g_free(ext);
+  free(ext);
 
   return type;
 }

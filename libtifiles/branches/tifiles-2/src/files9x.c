@@ -257,7 +257,7 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
   f = fopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>\n", filename);
+    tifiles_info( "Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -353,7 +353,7 @@ TIEXPORT int TICALL ti9x_file_read_backup(const char *filename, Ti9xBackup *cont
   f = fopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>\n", filename);
+    tifiles_info( "Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -417,7 +417,7 @@ TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
   f = fopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>\n", filename);
+    tifiles_info( "Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }  
 
@@ -550,7 +550,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2type(content->model, content->entries[0].type));
+    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0].type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -558,7 +558,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
   f = fopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>\n", filename);
+    tifiles_info( "Unable to open this file: <%s>", filename);
     free(filename);
     return ERR_FILE_OPEN;
   }
@@ -575,7 +575,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
   if (content->num_entries == 1)	// folder entry for single var is placed here
     strcpy(content->default_folder, content->entries[0].fld_name);
   fwrite_8_chars(f, content->default_folder);
-  fwrite_n_chars(f, 40, content->comment);
+  fwrite_n_bytes(f, 40, content->comment);
   if (content->num_entries > 1) 
   {
     fwrite_word(f, (uint16_t) (content->num_entries + num_folders));
@@ -663,14 +663,14 @@ TIEXPORT int TICALL ti9x_file_write_backup(const char *filename, Ti9xBackup *con
   f = fopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>\n", filename);
+    tifiles_info("Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
 
   fwrite_8_chars(f, tifiles_calctype2signature(content->model));
   fwrite(fsignature, 1, 2, f);
   fwrite_8_chars(f, "");
-  fwrite_n_chars(f, 40, content->comment);
+  fwrite_n_bytes(f, 40, content->comment);
   fwrite_word(f, 1);
   fwrite_long(f, 0x52);
   fwrite_8_chars(f, content->rom_version);
@@ -707,7 +707,7 @@ TIEXPORT int TICALL ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
   f = fopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>\n", filename);
+    tifiles_info("Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -751,29 +751,29 @@ TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content)
   int i;
   char trans[17];
 
-  tifiles_info("Signature:         <%s>\n",
+  tifiles_info("Signature:         <%s>",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("Comment:           <%s>\n", content->comment);
-  tifiles_info("Default folder:    <%s>\n", content->default_folder);
-  tifiles_info("Number of entries: %i\n", content->num_entries);
+  tifiles_info("Comment:           <%s>", content->comment);
+  tifiles_info("Default folder:    <%s>", content->default_folder);
+  tifiles_info("Number of entries: %i", content->num_entries);
 
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) 
   {
-    tifiles_info("Entry #%i\n", i);
-    tifiles_info("  folder:    <%s>\n", content->entries[i].fld_name);
-    tifiles_info("  name:      <%s>\n",
+    tifiles_info("Entry #%i", i);
+    tifiles_info("  folder:    <%s>", content->entries[i].fld_name);
+    tifiles_info("  name:      <%s>",
 	    tifiles_transcode_varname(content->model, trans, content->entries[i].name,
 				   content->entries[i].type));
-    tifiles_info("  type:      %02X (%s)\n",
+    tifiles_info("  type:      %02X (%s)",
 	    content->entries[i].type,
 	    tifiles_vartype2string(content->model, content->entries[i].type));
-    tifiles_info("  attr:      %s\n",
+    tifiles_info("  attr:      %s",
 	    tifiles_attribute_to_string(content->entries[i].attr));
-    tifiles_info("  length:    %04X (%i)\n",
+    tifiles_info("  length:    %04X (%i)",
 	    content->entries[i].size, content->entries[i].size);
   }
 
-  tifiles_info("Checksum:    %04X (%i) \n", content->checksum,
+  tifiles_info("Checksum:    %04X (%i) ", content->checksum,
 	  content->checksum);
 
   return 0;
@@ -789,16 +789,16 @@ TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content)
  **/
 TIEXPORT int TICALL ti9x_content_display_backup(Ti9xBackup *content)
 {
-  tifiles_info("signature:      <%s>\n",
+  tifiles_info("signature:      <%s>",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("comment:        <%s>\n", content->comment);
-  tifiles_info("ROM version:    <%s>\n", content->rom_version);
-  tifiles_info("type:           %02X (%s)\n",
+  tifiles_info("comment:        <%s>", content->comment);
+  tifiles_info("ROM version:    <%s>", content->rom_version);
+  tifiles_info("type:           %02X (%s)",
 	  content->type, tifiles_vartype2string(content->model, content->type));
-  tifiles_info("data length:    %08X (%i)\n",
+  tifiles_info("data length:    %08X (%i)",
 	  content->data_length, content->data_length);
 
-  tifiles_info("checksum:       %04X (%i) \n", content->checksum,
+  tifiles_info("checksum:       %04X (%i) ", content->checksum,
 	  content->checksum);
 
   return 0;
@@ -818,40 +818,40 @@ TIEXPORT int TICALL ti9x_content_display_flash(Ti9xFlash *content)
 
   for (ptr = content; ptr != NULL; ptr = ptr->next) 
   {
-    tifiles_info("Signature:      <%s>\n",
+    tifiles_info("Signature:      <%s>",
 	    tifiles_calctype2signature(ptr->model));
-    tifiles_info("Revision:       %i.%i\n",
+    tifiles_info("Revision:       %i.%i",
 	    ptr->revision_major, ptr->revision_minor);
-    tifiles_info("Flags:          %02X\n", ptr->flags);
-    tifiles_info("Object type:    %02X\n", ptr->object_type);
-    tifiles_info("Date:           %02X/%02X/%02X%02X\n",
+    tifiles_info("Flags:          %02X", ptr->flags);
+    tifiles_info("Object type:    %02X", ptr->object_type);
+    tifiles_info("Date:           %02X/%02X/%02X%02X",
 	    ptr->revision_day, ptr->revision_month,
 	    ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-    tifiles_info("Name:           <%s>\n", ptr->name);
-    tifiles_info("Device type:    %s\n",
+    tifiles_info("Name:           <%s>", ptr->name);
+    tifiles_info("Device type:    %s",
 	    ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
     tifiles_info("Data type:      ");
     switch (ptr->data_type) 
 	{
     case 0x23:
-      tifiles_info("OS data\n");
+      tifiles_info("OS data");
       break;
     case 0x24:
-      tifiles_info("APP data\n");
+      tifiles_info("APP data");
       break;
     case 0x25:
-      tifiles_info("certificate\n");
+      tifiles_info("certificate");
       break;
     case 0x3E:
-      tifiles_info("license\n");
+      tifiles_info("license");
       break;
     default:
-      tifiles_info("Unknown (mailto roms@lpg.ticalc.org)\n");
+      tifiles_info("Unknown (mailto roms@lpg.ticalc.org)");
       break;
     }
-    tifiles_info("Length:         %08X (%i)\n", ptr->data_length,
+    tifiles_info("Length:         %08X (%i)", ptr->data_length,
 	    ptr->data_length);
-    tifiles_info("\n");
+    tifiles_info("");
   }
 
   return 0;
@@ -891,7 +891,7 @@ TIEXPORT int TICALL ti9x_file_display(const char *filename)
     ti9x_content_free_backup(&content2);
   } 
   else
-    tifiles_info("Unknwon file type !\n");
+    tifiles_info("Unknwon file type !");
 
   return 0;
 }

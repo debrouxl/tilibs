@@ -98,7 +98,8 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular ***dest)
     return ERR_MALLOC;
 
   // parse each entry and duplicate it into a single content  
-  for (i = 0; i < src->num_entries; i++) {
+  for (i = 0; i < src->num_entries; i++) 
+  {
     TiVarEntry *src_entry = &(src->entries[i]);
     TiVarEntry *dst_entry = NULL;
 
@@ -151,7 +152,8 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   if (src == NULL)
     return ERR_MALLOC;
 
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; i++) 
+  {
     src[i] = (TiRegular *) calloc(1, sizeof(TiRegular));
     if (src[i] == NULL)
       return ERR_MALLOC;
@@ -162,7 +164,8 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
 
   TRY(tifiles_group_contents(src, &dst));
 
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; i++) 
+  {
     TRY(tifiles_content_free_regular(src[i]));
     free(src[i]);
   }

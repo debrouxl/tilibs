@@ -54,19 +54,22 @@ int hexdump(uint8_t * ptr, int len)
 /**********************/
 
 /*
-   Read a string of 'n' chars from a file
-   - s [out]: a buffer for storing the string
+   Read a block of 'n' n bytes from a file
+   - s [out]: a buffer for storing the data
    - f [in]: a file descriptor
    - [out]: the result of the operation (0 if failed)
 */
-int fread_n_chars(FILE * f, int n, char *s)
+int fread_n_bytes(FILE * f, int n, char *s)
 {
   int i;
 
-  if (s == NULL) {
+  if (s == NULL) 
+  {
     for (i = 0; i < n; i++)
       fgetc(f);
-  } else {
+  } 
+  else 
+  {
     for (i = 0; i < n; i++)
       s[i] = 0xff & fgetc(f);
     s[i] = '\0';
@@ -76,7 +79,34 @@ int fread_n_chars(FILE * f, int n, char *s)
 }
 
 /*
-  Write a string of 'n' chars (NULL padded) to a file
+  Write a string of 'n' chars max (NULL padded) to a file
+  - s [in]: a string
+  - f [in]: a file descriptor
+  - [out]: always different of 0
+*/
+int fwrite_n_bytes(FILE * f, int n, const char *s)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    fputc(s[i], f);
+
+  return 0;
+}
+
+/*
+   Read a string of 'n' chars max from a file
+   - s [out]: a buffer for storing the string
+   - f [in]: a file descriptor
+   - [out]: the result of the operation (0 if failed)
+*/
+int fread_n_chars(FILE * f, int n, char *s)
+{
+	return fread_n_bytes(f, n, s);
+}
+
+/*
+  Write a string of 'n' chars max (NULL padded) to a file
   - s [in]: a string
   - f [in]: a file descriptor
   - [out]: always different of 0
@@ -87,7 +117,8 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
   int l = n;
 
   l = strlen(s);
-  if (l > n) {
+  if (l > n) 
+  {
     tifiles_error("string passed in 'write_string8' is too long (>n chars).\n");
     tifiles_error( "s = <%s>, len(s) = %i\n", s, strlen(s));
     hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
@@ -96,9 +127,9 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
   for (i = 0; i < l; i++)
     fputc(s[i], f);
-  for (i = l; i < n; i++) {
+  for (i = l; i < n; i++) 
     fputc(0x00, f);
-  }
+
   return 0;
 }
 
