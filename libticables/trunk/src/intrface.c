@@ -352,6 +352,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
   else if ((type == LINK_TGL) && (resources & IO_OSX))
     method |= IOM_API | IOM_OK;
 
+#ifndef __MACOSX__
   if ((type == LINK_AVR) && (resources & IO_API))
     method |= IOM_API | IOM_OK;
 
@@ -370,6 +371,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
     method |= IOM_ASM | IOM_OK;
   else if ((type == LINK_PAR) && (resources & IO_DLL))
     method |= IOM_DRV | IOM_OK;
+#endif /* !__MACOSX__ */
 
   if ((type == LINK_SLV) && (resources & IO_TIUSB))
     method |= IOM_DRV | IOM_OK;
@@ -550,7 +552,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
 	return ERR_INVALID_PORT;
 #endif
 
-#ifdef __WIN32__		// IOM_TIUSB
+#if defined(__WIN32__) || defined(__MACOSX__)		// IOM_TIUSB
       lc->init = slv_init;
       lc->open = slv_open;
       lc->put = slv_put;

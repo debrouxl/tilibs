@@ -190,7 +190,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				FRAMEWORK_VERSION = B;
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = /System/Library/Frameworks;
+				INSTALL_PATH = /Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O2";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
@@ -205,7 +205,7 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = libticables;
-			productInstallPath = /System/Library/Frameworks;
+			productInstallPath = /Library/Frameworks;
 			productName = libticables;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>

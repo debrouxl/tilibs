@@ -1,4 +1,6 @@
-* 20030416 : v3.7.5 ($Rev$)
+* 20030419 : v3.7.5 ($Rev$)
+	* src/intrface.c : fix SilverLink wrt Mac OS X.
+* 20030416 : v3.7.5 (Rev: 245)
 	* Merge up to 3.7.5.
 * 20020919 : v3.4.6
 	* Merge up to 3.4.6.
