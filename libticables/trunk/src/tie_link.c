@@ -29,6 +29,7 @@
 #endif
 #include "cabl_def.h"
 #include "export.h"
+#include "verbose.h"
 
 #define BUFFER_SIZE 256
 #define HIGH 666 // upper limit (used for avoiding 'byte timeout')

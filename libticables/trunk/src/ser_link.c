@@ -83,13 +83,13 @@ int ser_init()
 
 int ser_open()
 {
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   if(io_permitted)
     return 0;
   else
     return ERR_ROOT;
-
-  tdr.count = 0;
-  toSTART(tdr.start);
 }
 
 int ser_put(byte data)
@@ -336,6 +336,9 @@ int ser_init2()
 
 int ser_open2()
 {
+	tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -344,6 +347,7 @@ int ser_put2(byte data)
   int i;
   TIME clk;
 
+  tdr.count++;
   toSTART(clk);
   for (i=0;i<8;i++)
     {
@@ -373,6 +377,7 @@ int ser_get2(byte *ch)
   int i, j;
   TIME clk;
 
+  tdr.count++;
   toSTART(clk);
   for (i=0,bit=1,*ch=0;i<8;i++)
     {

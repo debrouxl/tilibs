@@ -14,7 +14,6 @@
 				18D1B3AA0170FD5A5041E0CA,
 				18D1B3AB0170FD5A5041E0CA,
 				18D1B3AC0170FD5A5041E0CA,
-				18D1B3AD0170FD5A5041E0CA,
 				18D1B3AE0170FD5A5041E0CA,
 				18D1B3AF0170FD5A5041E0CA,
 				18D1B3B00170FD5A5041E0CA,
@@ -236,11 +235,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.4</string>
+	<string>3.1.5</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.1.4</string>
+	<string>3.1.5</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -269,7 +268,6 @@
 				18D1B3BD0170FD5A5041E0CA,
 				18D1B3BE0170FD5A5041E0CA,
 				18D1B3BF0170FD5A5041E0CA,
-				18D1B3C00170FD5A5041E0CA,
 				18D1B3C10170FD5A5041E0CA,
 				18D1B3C20170FD5A5041E0CA,
 				18D1B3C30170FD5A5041E0CA,
@@ -604,12 +602,6 @@
 			path = ../src/ioports.h;
 			refType = 2;
 		};
-		18D1B3AD0170FD5A5041E0CA = {
-			isa = PBXFileReference;
-			name = iocompat.h;
-			path = ../src/iocompat.h;
-			refType = 2;
-		};
 		18D1B3AE0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = ugl_link.h;
@@ -729,15 +721,6 @@
 		};
 		18D1B3BF0170FD5A5041E0CA = {
 			fileRef = 18D1B3AC0170FD5A5041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		18D1B3C00170FD5A5041E0CA = {
-			fileRef = 18D1B3AD0170FD5A5041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 				ATTRIBUTES = (

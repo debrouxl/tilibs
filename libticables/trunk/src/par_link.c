@@ -55,13 +55,13 @@ int par_init()
 
 int par_open()
 {
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   if(io_permitted)
     return 0;
   else
     return ERR_ROOT;
-
-  tdr.count = 0;
-  toSTART(tdr.start);
 }
 
 int par_put(byte data)

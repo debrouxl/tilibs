@@ -43,7 +43,7 @@
   typedef DWORD                         TIME;
 # define  toSTART(ref)          { (ref)=GetTickCount(); }
 # define  toELAPSED(ref, max)   ( (int)(GetTickCount()-(ref)) > (100*max) )
-# define  toCURRENT(ref)        ( 1000 * (float)(GetTickCount()-(ref)) )
+# define  toCURRENT(ref)        ( (float)(GetTickCount()-(ref)) / 1000 )
 
 #elif defined(__LINUX__) || defined(__MACOSX__)
 # include <time.h>
