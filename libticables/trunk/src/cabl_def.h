@@ -157,11 +157,6 @@ typedef struct port_info_ PortInfo;
 # define SP2_NAME "/dev/cua/b"
 # define SP3_NAME "/dev/cua/a"
 # define SP4_NAME "/dev/cua/b"
-#elif defined(__MACOSX__) // FIXME OS X
-# define SP1_NAME "/dev"
-# define SP2_NAME "/dev"
-# define SP3_NAME "/dev"
-# define SP4_NAME "/dev"
 #else // default
 # define SP1_NAME "/dev/ttyS0"
 # define SP2_NAME "/dev/ttyS1"
@@ -256,6 +251,7 @@ typedef struct port_info_ PortInfo;
 #define USB_PORT_2      11 /* USB port #1 */
 #define USB_PORT_3      12 /* USB port #2 */
 #define USB_PORT_4      13 /* USB port #3 */
+#define OSX_SERIAL_PORT 14 /* serial port handled by Mac OS X */
 
 /* I/O method to use */
 #define IOM_AUTO      0  /* Automagically choose the I/O method to use */

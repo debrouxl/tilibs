@@ -356,10 +356,14 @@ void DLLEXPORT2 ticable_set_cable(int typ, LinkCable *lc)
 
 #endif /* !__MACOSX__ */
 	case LINK_TGL:
+#ifndef __MACOSX__
 	  if( (port != SERIAL_PORT_1) &&
               (port != SERIAL_PORT_2) &&
               (port != SERIAL_PORT_3) &&
               (port != SERIAL_PORT_4))
+#else
+          if (port != OSX_SERIAL_PORT)
+#endif
             DISPLAY(_("libticables error: port incompatible with cable.\n"));
 
 	  lc->init_port  = tig_init_port;
@@ -435,6 +439,7 @@ static char* convert_port[] = {
   "USB port #2",
   "USB port #3",
   "USB port #4",
+  "Handled through Preferences",
 };
 
 static char* convert_method(int v);
@@ -618,7 +623,6 @@ static int convert_port_into_device(LinkParam lp)
           strcpy(device, PP3_NAME);
         }
       break;
-#endif /* !__MACOSX__ */
     case SERIAL_PORT_1:
       if((lp.method & IOM_DRV) && lx)
         strcpy(device, TIDEV_S0);
@@ -655,6 +659,7 @@ static int convert_port_into_device(LinkParam lp)
           strcpy(device, SP4_NAME);
         }
       break;
+#endif /* __MACOSX__ */
     case VIRTUAL_PORT_1:
       if((lp.method & IOM_DRV) && lx)
         strcpy(device, TIDEV_V0);

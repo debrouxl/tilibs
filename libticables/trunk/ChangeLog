@@ -24,6 +24,8 @@
 	* Fixed timeout value handling, back to tenth of second in ugl_link.c,
 	due to enabling the Grey TIGL support.
 	* Grey TIGL support modifications
+* 20011218 : v2.2.0-osx0.0.6
+	* Grey TIGL support, again.
 	
 
 
