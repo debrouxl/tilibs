@@ -105,9 +105,7 @@ uint8_t ti83_type2byte(const char *s)
   }
 
   if (i == TI83_MAXTYPES)
-    printf
-	(_
-	 ("Warning: unknown type. It is a bug. Please report this information.\n"));
+    printl(1, _("unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -129,9 +127,7 @@ uint8_t ti83_fext2byte(const char *s)
   }
 
   if (i == TI83_MAXTYPES)
-    printf
-	(_
-	 ("Warning: unknown type. It is a bug. Please report this information.\n"));
+    printl(1, _("unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }

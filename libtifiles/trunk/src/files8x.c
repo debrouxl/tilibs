@@ -207,7 +207,7 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
 
   f = fopen(filename, "rb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -301,7 +301,7 @@ TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
 
   f = fopen(filename, "rb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -396,7 +396,7 @@ TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
   content->calc_type = tifiles_which_calc_type(filename);
   f = fopen(filename, "rb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
   file = f;
@@ -520,7 +520,7 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
 
   f = fopen(filename, "wb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     free(filename);
     return ERR_FILE_OPEN;
   }
@@ -607,7 +607,7 @@ TIEXPORT int TICALL ti8x_write_backup_file(const char *filename,
 
   f = fopen(filename, "wb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
   // write header
@@ -693,7 +693,7 @@ TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
 
   f = fopen(filename, "wb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
   file = f;

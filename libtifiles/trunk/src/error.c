@@ -49,21 +49,17 @@ TIEXPORT int TICALL tifiles_get_error(int err_num, char *error_msg)
   case ERR_FILE_OPEN:
     strcpy(error_msg, _("Msg: unable to open file."));
     strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _("either the file does not exist, either there is no room."));
+    strcat(error_msg, _("either the file does not exist, either there is no room."));
     break;
 
   case ERR_FILE_CLOSE:
     strcpy(error_msg, _("Msg: unable to close file."));
     strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: either the file does not exist, either there is no room."));
+    strcat(error_msg, _("Cause: either the file does not exist, either there is no room."));
     break;
 
   case ERR_GROUP_SIZE:
-    strcpy(error_msg,
-	   _("Msg: the size of a group file can not exceed 64KB."));
+    strcpy(error_msg, _("Msg: the size of a group file can not exceed 64KB."));
     strcat(error_msg, "\n");
     strcat(error_msg, _("Cause: too many variables/data."));
     break;
@@ -71,9 +67,7 @@ TIEXPORT int TICALL tifiles_get_error(int err_num, char *error_msg)
   case ERR_BAD_CALC:
     strcpy(error_msg, _("Msg: Unknown calculator type."));
     strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."));
+    strcat(error_msg, _("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."));
     break;
 
   case ERR_INVALID_FILE:
@@ -86,15 +80,11 @@ TIEXPORT int TICALL tifiles_get_error(int err_num, char *error_msg)
   case ERR_FILE_CHECKSUM:
     strcpy(error_msg, _("Msg: checksum error."));
     strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: the file has an incorrect checksum and may be corrupted."));
+    strcat(error_msg, _("Cause: the file has an incorrect checksum and may be corrupted."));
     break;
 
   default:
-    strcpy(error_msg,
-	   _
-	   ("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+    strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
     return err_num;
     break;
   }
