@@ -4,7 +4,12 @@ To do:
 	- USB pass-thru support
 	- bug with API mode (Linux & Windows): may not work with some calcs ?!
 	- ioports.c to improve
-	
+
+- 27/08/2003, version 3.7.7: Maintenance release by JB.
+	Upgraded to libtool 1.5
+	Upgraded to automake 1.7
+	Use AM_MAINTAINER_MODE
+
 - 21/04/2003, version 3.7.6:
         logging support added into the second serial link support.
 
