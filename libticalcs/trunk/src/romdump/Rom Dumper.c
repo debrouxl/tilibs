@@ -34,25 +34,28 @@
 
 int SendByte(BYTE c)
 {
-    while (transmit(&c,1))
-    {
-//        if (keyPressedFlag)
-//            return 0;
+	while(OSWriteLinkBlock(&c, 1))
+	{
+		if(kbhit())
+			return 0;
     }
+    
     return 1;
 }
 
-BYTE GetByte(void)
+int GetByte(BYTE *c)
 {
     BYTE c;
     
-    for (;;)
+    while(1)
     {
-        if (receive(&c,1))
-            break;
-//        if (keyPressedFlag)
-//            return 0xcc;
+        if(OSReadLinkBlock(c, 1))
+            return 1;
+            
+        if(kbhit())
+        	return 0;	//0xcc
     }
+    
     return c;
 }
 
@@ -62,23 +65,30 @@ int SendSegment(char *ptr)
     int i;
     BYTE c;
 
-    for (;;)
-    {
-        for (i=0,csum=0;i<1024;i++)
+        for (i = 0, csum = 0; i < 1024; i++)
         {
-            BYTE ch=ptr[i];
-            if (!SendByte(ch)) return 0;
-            csum+=(WORD)((BYTE)(ch));
+            BYTE ch = ptr[i];
+            
+            if(!SendByte(ch)) 
+            	return 0;
+            csum += (WORD)((BYTE)(ch));
         }
-        if (!SendByte(csum>>8)) return 0;
-        if (!SendByte(csum&0xff)) return 0;
-        c=GetByte();
-        if (c==0xda)
-            break;
-        if (c==0xcc)
+        
+        if(!SendByte(csum >> 8)) 
+        	return 0;
+        if(!SendByte(csum & 0xff)) 
+        	return 0;
+        	
+        i = GetByte(&c);
+  
+        if (!i)
             return 0;
-    }
-    return 1;
+            
+        if (c == 0xda)
+            return 1;
+        
+    
+    return 0;
 }
 
 
