@@ -75,18 +75,18 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
     case 0x5C:			/* Matrix: [A] to [E]/[J] */
       switch(tok2)
 	{
-	case 0x00: sprintf(translate, "[A]"); break;
-	case 0x01: sprintf(translate, "[B]"); break;
-	case 0x02: sprintf(translate, "[C]"); break;
-	case 0x03: sprintf(translate, "[D]"); break;
-	case 0x04: sprintf(translate, "[E]"); break;
-	case 0x05: sprintf(translate, "[F]"); break;
-	case 0x06: sprintf(translate, "[G]"); break;
-	case 0x07: sprintf(translate, "[H]"); break;
-	case 0x08: sprintf(translate, "[I]"); break;
-	case 0x09: sprintf(translate, "[J]"); break;
+	case 0x00: sprintf(translate, "%cA]", '\xc1'); break;
+	case 0x01: sprintf(translate, "%cB]", '\xc1'); break;
+	case 0x02: sprintf(translate, "%cC]", '\xc1'); break;
+	case 0x03: sprintf(translate, "%cD]", '\xc1'); break;
+	case 0x04: sprintf(translate, "%cE]", '\xc1'); break;
+	case 0x05: sprintf(translate, "%cF]", '\xc1'); break;
+	case 0x06: sprintf(translate, "%cG]", '\xc1'); break;
+	case 0x07: sprintf(translate, "%cH]", '\xc1'); break;
+	case 0x08: sprintf(translate, "%cI]", '\xc1'); break;
+	case 0x09: sprintf(translate, "%cJ]", '\xc1'); break;
 
-	default:   sprintf(translate, "[?]"); break;
+	default:   sprintf(translate, "%c?]", '\xc1'); break;
 	}
       break;
     case 0x5D:			/* List: L1 to L6/L0 */
@@ -148,8 +148,24 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
 	case 0x44: sprintf(translate, "r%c", '\x85'); break;
 	case 0x45: sprintf(translate, "r%c", '\x86'); break;
 
-	case 0x80: sprintf(translate, "U%c", '\xd7'); break;
-	case 0x81: sprintf(translate, "V%c", '\xd7'); break;
+	case 0x80: 
+	  if(tifiles_calc_type == CALC_TI82)
+	    sprintf(translate, "U%c", '\xd7'); 
+	  else
+	    sprintf(translate, "u");
+	  break;
+	case 0x81:
+	  if(tifiles_calc_type == CALC_TI82)
+	    sprintf(translate, "V%c", '\xd7'); 
+	  else
+	    sprintf(translate, "v");
+	  break;
+	case 0x82:
+	  if(tifiles_calc_type == CALC_TI82)
+	    sprintf(translate, "W%c", '\xd7'); 
+	  else
+	    sprintf(translate, "w");
+	  break; 
 	
 	default: sprintf(translate, "_"); break;
     }
