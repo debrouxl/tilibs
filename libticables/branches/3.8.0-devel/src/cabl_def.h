@@ -60,7 +60,7 @@ typedef enum {
 
 /* Values returned by the check function */
 typedef enum {
-  STATUS_NONE, STATUS_RX, STATUS_TX
+  STATUS_NONE, STATUS_RX, STATUS_TX,
   TICABLESTATUS_MAX
 } TicableStatus;
 
@@ -85,8 +85,8 @@ typedef enum {
   SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4,
   VIRTUAL_PORT_1, VIRTUAL_PORT_2,
   USB_PORT_1, USB_PORT_2, USB_PORT_3, USB_PORT_4,
-  OSX_SERIAL_PORT, OSX_USB_PORT
-  TICABLE_PORT_MAX
+  OSX_SERIAL_PORT, OSX_USB_PORT,
+  TICABLEPORT_MAX
 } TicablePort;
 
 /* I/O method to use */
@@ -96,8 +96,8 @@ typedef enum {
 
 /* Verbosity level for DISPLAY function */
 typedef enum {
-  DSP_OFF, DSP_ON, DSP_CLOSE
-  TICABLEDISPLAY_MAX
+  DSP_OFF, DSP_ON, DSP_CLOSE,
+  TICABLEDISPLAY_MAX,
 } TicableDisplay;
 
 /* OS probing */

@@ -40,7 +40,7 @@ TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
   	else
     		v = 0;
 
-  	return TICABLE_TYPE[v];
+  	return TICABLETYPE[v];
 }
 
 
@@ -49,7 +49,7 @@ TIEXPORT TicableType TICALL ticable_string_to_cabletype(const char *str)
   	int i;
 
   	for (i = 0; i < TICABLETYPE_MAX; i++) {
-    		if (!strcasecmp(TICABLETYPE[i], str))
+    		if (!strcmp(TICABLETYPE[i], str))
       			break;
   	}
   
@@ -84,8 +84,8 @@ TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str)
   		return BR38400;
   	else if(!strcmp(str, "57600 bauds"))
   		return BR57600;
-  	else
-  		return "";
+
+  		return BR9600;
 }
 
 
@@ -118,10 +118,10 @@ TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)
 {
 	int v;
 
-	if (type >= TICABLEPORT_MAX)
+	if (port >= TICABLEPORT_MAX)
     		v = 0;
   	else
-    		v = value;
+    		v = port;
 
   	return TICABLEPORT[v];
 }
@@ -131,7 +131,7 @@ TIEXPORT TicablePort TICALL ticable_string_to_port(const char *str)
 	int i;
 
   	for (i = 0; i < TICABLEPORT_MAX; i++) {
-    		if (!strcasecmp(TICABLEPORT[i], str))
+    		if (!strcmp(TICABLEPORT[i], str))
       			break;
   	}
   
@@ -164,12 +164,14 @@ const char *TICALL ticable_method_to_string(TicableMethod method)
 
 TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp)
 {
-	if(disp == DSP_OK)
+	if(disp == DSP_OFF)
 		return _("off");
 	else if(disp == DSP_ON)
 		return _("on");
 	else if(disp == DSP_CLOSE)
 		return _("closed");
+
+	return _("off");
 }
 
 
@@ -181,4 +183,6 @@ TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str)
 		return DSP_OFF;
 	else if(!strcmp(str, _("closed")))
 		return DSP_CLOSE;
+
+	return _("off");
 }
