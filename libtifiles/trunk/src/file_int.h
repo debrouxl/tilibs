@@ -50,7 +50,7 @@ extern "C" {
   TIEXPORT void TICALL tifiles_set_calc(TicalcType type);
   TIEXPORT TicalcType TICALL tifiles_get_calc(void);
 
-  TIEXPORT TIFILES_PRINTF tifiles_set_printf(TIFILES_PRINTF);
+  TIEXPORT TIFILES_PRINTL tifiles_set_printl(TIFILES_PRINTL new_printl);
 
   // for win32 (DLL partition -> memory violation)
 #ifdef __WIN32__
