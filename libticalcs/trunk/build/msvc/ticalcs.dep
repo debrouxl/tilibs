@@ -1,7 +1,7 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticalcs.mak
 
 ..\..\src\cmd73.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -44,7 +44,7 @@
 	
 
 ..\..\src\cmd82.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -86,7 +86,7 @@
 	
 
 ..\..\src\cmd85.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -129,7 +129,7 @@
 	
 
 ..\..\src\cmd89.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -172,7 +172,7 @@
 	
 
 ..\..\src\cmd92.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -215,7 +215,8 @@
 	
 
 ..\..\src\ti73.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -262,7 +263,8 @@
 	
 
 ..\..\src\Ti82.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -308,7 +310,8 @@
 	
 
 ..\..\src\Ti83.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -355,7 +358,8 @@
 	
 
 ..\..\src\Ti85.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -402,7 +406,8 @@
 	
 
 ..\..\src\Ti86.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -449,7 +454,8 @@
 	
 
 ..\..\src\Ti89.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -498,7 +504,8 @@
 	
 
 ..\..\src\Ti92.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -547,7 +554,7 @@
 	
 
 ..\..\src\keys73.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -585,7 +592,7 @@
 	
 
 ..\..\src\keys83p.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -623,7 +630,7 @@
 	
 
 ..\..\src\keys89.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -661,7 +668,7 @@
 	
 
 ..\..\src\keys92p.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -699,7 +706,7 @@
 	
 
 ..\..\src\tikeys.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -741,7 +748,7 @@
 	
 
 ..\..\src\packets.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -783,7 +790,7 @@
 	
 
 ..\..\src\clock.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -818,7 +825,8 @@
 	
 
 ..\..\src\dirlist.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -858,7 +866,8 @@
 	
 
 ..\..\src\Error.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -896,7 +905,8 @@
 	
 
 ..\..\src\Intrface.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -947,7 +957,8 @@
 	
 
 ..\..\src\printl.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -986,7 +997,8 @@
 	
 
 ..\..\src\Probe.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -1036,7 +1048,8 @@
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
