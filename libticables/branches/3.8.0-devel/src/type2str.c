@@ -140,9 +140,9 @@ const char *TICALL ticable_method_to_string(TicableMethod method)
 	strcpy(buffer, "unknown");
 	
 	if (method & IOM_ASM)
-		p2 = "direct access (ASM)";
+		p2 = "direct access (asm)";
 	if (method & IOM_API)
-		p2 = "direct access (API)";
+		p2 = "direct access (api)";
 	if (method & IOM_DRV)
 		p2 = "kernel mode (module)";
 	if (method & IOM_IOCTL)

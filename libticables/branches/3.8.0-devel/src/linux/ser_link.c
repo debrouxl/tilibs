@@ -58,7 +58,6 @@ int ser_init()
   // motherboard. Are some port broken ?
   TRYC(io_open_comport(io_device, &hCom));
 #endif
-
   com_addr = io_address;
 
   TRYC(io_open(com_out, 1));

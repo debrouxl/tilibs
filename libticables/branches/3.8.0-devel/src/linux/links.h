@@ -35,7 +35,8 @@ int par_register_cable(TicableLinkCable * lc);
 int ser_register_cable_1(TicableLinkCable * lc);
 int ser_register_cable_2(TicableLinkCable * lc);
 
-int slv_register_cable(TicableLinkCable * lc);
+int slv_register_cable_1(TicableLinkCable * lc);
+int slv_register_cable_2(TicableLinkCable * lc);
 
 int tie_register_cable(TicableLinkCable * lc);
 

@@ -79,7 +79,7 @@ int dev_init()
   	if ((dev_fd = open(io_device, mask)) == -1) {
   		switch(errno) {
   		case ENODEV: DISPLAY_ERROR(_("libticables: unable to open character device: %s.\n"), io_device); break;
-  		case EACCESS: DISPLAY_ERROR(_("libticables: unable to open character device: %s (wrong permissions).\n"), io_device); break;
+  		case EACCES: DISPLAY_ERROR(_("libticables: unable to open character device: %s (wrong permissions).\n"), io_device); break;
 		default: DISPLAY_ERROR(_("libticables: unable to open character device: %s\n"), io_device); break;
 		}
     	return ERR_OPEN_TIDEV;

@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,183 +59,183 @@ int avr_close();
 
 int avr_init()
 {
-  int br = BR9600;
-  int flags = 0;
-
-  strcpy(tty_dev, io_device);
-
+	int br = BR9600;
+	int flags = 0;
+	
+	strcpy(tty_dev, io_device);
+	
 #if defined(__MACOSX__)
-  flags = O_RDWR | O_NDELAY;
+	flags = O_RDWR | O_NDELAY;
 #elif defined(__BSD__)
-  flags = O_RDWR | O_FSYNC;
-#elif defied(__LINUX__)
-  flags = O_RDWR | O_SYNC;
+	flags = O_RDWR | O_FSYNC;
+#elif defined(__LINUX__)
+	flags = O_RDWR | O_SYNC;
 #endif
-
-  if ((dev_fd = open(io_device, flags)) == -1) {
-    if(errno == EACCESS)
-      		DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
-    else
-    		DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
-    return ERR_OPEN_SER_DEV;
-  }
-
-  /* Initialize it: 9600,8,N,1 */
-  tcgetattr(dev_fd, &termset);
+	
+	if ((dev_fd = open(io_device, flags)) == -1) {
+		if(errno == EACCES)
+			DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+		else
+			DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
+		return ERR_OPEN_SER_DEV;
+	}
+	
+	/* Initialize it: 9600,8,N,1 */
+	tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
-  cfmakeraw(&termset);
-  termset.c_iflag = 0;
-  termset.c_oflag = 0;
-  if (hfc == HFC_ON)
-    termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
-  else
-    termset.c_cflag = CS8 | CLOCAL | CREAD;
-  termset.c_lflag = 0;
+	cfmakeraw(&termset);
+	termset.c_iflag = 0;
+	termset.c_oflag = 0;
+	if (hfc == HFC_ON)
+		termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
+	else
+		termset.c_cflag = CS8 | CLOCAL | CREAD;
+	termset.c_lflag = 0;
 #else
-  termset.c_iflag = 0;
-  termset.c_oflag = 0;
-  if (hfc == HFC_ON)
-    termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
-  else
-    termset.c_cflag = CS8 | CLOCAL | CREAD;
-  termset.c_lflag = 0;
+	termset.c_iflag = 0;
+	termset.c_oflag = 0;
+	if (hfc == HFC_ON)
+		termset.c_cflag = CS8 | CLOCAL | CREAD | CRTSCTS;
+	else
+		termset.c_cflag = CS8 | CLOCAL | CREAD;
+	termset.c_lflag = 0;
 #endif
-
-  if (baud_rate == 9600)
-    br = B9600;
-  else if (baud_rate == 19200)
-    br = B19200;
-  else if (baud_rate == 38400)
-    br = B38400;
-  else if (baud_rate == 57600)
-    br = B57600;
-  else
-    br = B9600;
-
-  cfsetispeed(&termset, br);
-  cfsetospeed(&termset, br);
-
-  START_LOGGING();
-
-  return 0;
+	
+	if (baud_rate == 9600)
+		br = B9600;
+	else if (baud_rate == 19200)
+		br = B19200;
+	else if (baud_rate == 38400)
+		br = B38400;
+	else if (baud_rate == 57600)
+		br = B57600;
+	else
+		br = B9600;
+	
+	cfsetispeed(&termset, br);
+	cfsetospeed(&termset, br);
+	
+	START_LOGGING();
+	
+	return 0;
 }
 
 int avr_open()
 {
-  uint8_t unused[1024];
-  int n;
-
-  /* Flush the input */
-  termset.c_cc[VMIN] = 0;
-  termset.c_cc[VTIME] = 0;
-  tcsetattr(dev_fd, TCSANOW, &termset);
-  do {
-    n = read(dev_fd, (void *) unused, 1024);
-  } while ((n != 0) && (n != -1));
-
-  /* and set/restore the timeout */
-  termset.c_cc[VTIME] = time_out;
-  tcsetattr(dev_fd, TCSANOW, &termset);
-
-  tdr.count = 0;
-  toSTART(tdr.start);
-
-  return 0;
+	uint8_t unused[1024];
+	int n;
+	
+	/* Flush the input */
+	termset.c_cc[VMIN] = 0;
+	termset.c_cc[VTIME] = 0;
+	tcsetattr(dev_fd, TCSANOW, &termset);
+	do {
+		n = read(dev_fd, (void *) unused, 1024);
+	} while ((n != 0) && (n != -1));
+	
+	/* and set/restore the timeout */
+	termset.c_cc[VTIME] = time_out;
+	tcsetattr(dev_fd, TCSANOW, &termset);
+	
+	tdr.count = 0;
+	toSTART(tdr.start);
+	
+	return 0;
 }
 
 int avr_put(uint8_t data)
 {
-  int err;
-
-  tdr.count++;
-  LOG_DATA(data);
-
-  err = write(dev_fd, (void *) (&data), 1);
-  switch (err) {
-  case -1:			//error
-    avr_close();
-    return ERR_WRITE_ERROR;
-    break;
-  case 0:			// timeout
-    avr_close();
-    return ERR_WRITE_TIMEOUT;
-    break;
-  }
-
-  return 0;
+	int err;
+	
+	tdr.count++;
+	LOG_DATA(data);
+	
+	err = write(dev_fd, (void *) (&data), 1);
+	switch (err) {
+	case -1:			//error
+		avr_close();
+		return ERR_WRITE_ERROR;
+		break;
+	case 0:			// timeout
+		avr_close();
+		return ERR_WRITE_TIMEOUT;
+		break;
+	}
+	
+	return 0;
 }
 
 int avr_get(uint8_t * data)
 {
-  int err;
-
-  tcdrain(dev_fd);		// waits for all output written
-
-  err = read(dev_fd, (void *) data, 1);
-  switch (err) {
-  case -1:			//error
-    avr_close();
-    return ERR_READ_ERROR;
-    break;
-  case 0:			// timeout
-    avr_close();
-    return ERR_READ_TIMEOUT;
-    break;
-  }
-
-  tdr.count++;
-  LOG_DATA(*data);
-
-  return 0;
+	int err;
+	
+	tcdrain(dev_fd);		// waits for all output written
+	
+	err = read(dev_fd, (void *) data, 1);
+	switch (err) {
+	case -1:			//error
+		avr_close();
+		return ERR_READ_ERROR;
+		break;
+	case 0:			        // timeout
+		avr_close();
+		return ERR_READ_TIMEOUT;
+		break;
+	}
+	
+	tdr.count++;
+	LOG_DATA(*data);
+	
+	return 0;
 }
 
 int avr_probe()
 {
-  return 0;
+	return 0;
 }
 
 int avr_close()
 {
-  return 0;
+	return 0;
 }
 
 int avr_exit()
 {
-  STOP_LOGGING();
-  close(dev_fd);
-  return 0;
+	STOP_LOGGING();
+	close(dev_fd);
+	return 0;
 }
 
 int avr_check(int *status)
 {
-  fd_set rdfs;
-  struct timeval tv;
-  int retval;
-
-  *status = STATUS_NONE;
-
-  FD_ZERO(&rdfs);
-  FD_SET(dev_fd, &rdfs);
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
-
-  retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
-  switch (retval) {
-  case -1:			//error
-    return ERR_READ_ERROR;
-  case 0:			//no data
-    return 0;
-  default:			// data available
-    *status = STATUS_RX;
-    break;
-  }
-
-  return 0;
+	fd_set rdfs;
+	struct timeval tv;
+	int retval;
+	
+	*status = STATUS_NONE;
+	
+	FD_ZERO(&rdfs);
+	FD_SET(dev_fd, &rdfs);
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	
+	retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+	switch (retval) {
+	case -1:			//error
+		return ERR_READ_ERROR;
+	case 0:			        //no data
+		return 0;
+	default:			// data available
+		*status = STATUS_RX;
+		break;
+	}
+	
+	return 0;
 }
 
 int avr_supported()
 {
-  return SUPPORT_ON;
+	return SUPPORT_ON;
 }
 
 int avr_register_cable(TicableLinkCable * lc, TicableMethod method)

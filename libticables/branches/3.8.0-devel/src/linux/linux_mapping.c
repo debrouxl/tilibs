@@ -25,12 +25,18 @@
 # include <config.h>
 #endif
 #include <stdlib.h>
+#include <string.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "intl.h"
 
 #include "cabl_def.h"
 #include "cabl_err.h"
 #include "externs.h"
+#include "type2str.h"
 #include "verbose.h"
 
 #include "links.h"
@@ -38,29 +44,27 @@
 #define TRYR(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 #define TRYB(x) { int aaa_; if((aaa_ = (x))) break; }
 
-extern int resources, method;
 static int devfs = 0;
 
 static int check_for_root(void);
 static int check_for_tty(void);
-static void check_for_tipar(void);
-static void check_for_tiser(void);
-static void check_for_tiusb(void);
-static void check_for_libusb(void);
+static int check_for_tipar(void);
+static int check_for_tiser(void);
+static int check_for_tiusb(void);
+static int check_for_libusb(void);
+
 
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources & cable...\n"));
-
-	DISPLAY(_("  link cable: %s\n"), ticable_cabletype_to_string(type));
+	DISPLAY(_("libticables: getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV);
-		DISPLAY(_("  mode: automatic\n"));
+		DISPLAY(_(" (automatic)...\n"));
   	} else
-		DISPLAY(_("  mode: user-forced\n"));
+		DISPLAY(_(" (user-forced)...\n"));
 
 	// depending on link type, do some checks
 	switch(type)
@@ -68,70 +72,108 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_TGL:
 		if(resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY("  warning, IO_API problem."));
+				DISPLAY(_("  warning, can't use IO_API.\n"));
 			*method |= IOM_API | IOM_OK;
 		}
 		break;
+
 	case LINK_AVR:
 		if(resources & IO_API) {
-			if(check_for_tty())
-				DISPLAY("  warning: IO_API problem."));
-                        *method |= IOM_API | IOM_OK;
+			if(!check_for_tty())
+				*method |= IOM_API | IOM_OK;	
+			else
+				DISPLAY(_("  warning: can't use IO_API.\n"));
+                        
+		}
 		break;
+
 	case LINK_SER:
 		if(resources & IO_TISER) {
 			if(check_for_tiser())
-				DISPLAY("  warning: IO_TISER problem."));
-			*method |= IOM_DRV | IOM_OK;
-		} else if (resources & IO_ASM) {
+				DISPLAY(_("  warning: can't use IO_TISER.\n"));
+			else {
+				*method |= IOM_DRV | IOM_OK;
+				break;
+			}
+		}
+		       
+		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY("  warning: IO_ASM problem."));
-			*method |= IOM_ASM | IOM_OK;
-		} else if (resources & IO_API)
+				DISPLAY(_("  warning: can't use IO_ASM.\n"));
+			else {
+				*method |= IOM_ASM | IOM_OK;
+				break;
+			}
+		}
+		
+		if (resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY("  warning: IO_API problem."));
-			*method |= IOM_IOCTL | IOM_OK;
+				DISPLAY(_("  warning: can't use IO_API.\n"));
+			else {
+				*method |= IOM_IOCTL | IOM_OK;
+				break;
+			}
+		}
 		break;
+
 	case LINK_PAR:
 		if(resources & IO_TIPAR) {
 			if(check_for_tipar())
-				DISPLAY("  warning: IO_TIPAR problem."));
-			*method |= IOM_DRV | IOM_OK;
-		} else if (resources & IO_ASM) {
+				DISPLAY(_("  warning: can't use IO_TIPAR.\n"));
+			else {
+				*method |= IOM_DRV | IOM_OK;
+				break;
+			}
+		}
+		
+		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY("  warning: IO_ASM problem."));
-			*method |= IOM_ASM | IOM_OK;
+				DISPLAY(_("  warning: can't use IO_ASM.\n"));
+			else {
+				*method |= IOM_ASM | IOM_OK;
+				break;
+			}
 		}
 		break;
+
 	case LINK_SLV:
 		if (resources & IO_TIUSB) {
 			if(check_for_tiusb())
-				DISPLAY("  warning: IO_TIUSB problem."));
-			*method |= IOM_DRV | IOM_OK;
+				DISPLAY(_("  warning: can't use IO_TIUSB.\n"));
+			else {
+				*method |= IOM_DRV | IOM_OK;
+				break;
+			}
 		}
-		else if (resources & IO_LIBUSB) {
+		
+		if (resources & IO_LIBUSB) {
 			if(check_for_libusb())
-				DISPLAY("  warning: IO_LIBUSB problem."));
-			*method |= IOM_IOCTL | IOM_OK;
+				DISPLAY(_("  warning: can't use IO_LIBUSB.\n"));
+			else {
+				*method |= IOM_IOCTL | IOM_OK;
+				break;
+			}
 		}
 		break;
+
 	case LINK_TIE:
 	case LINK_VTI:
  		*method |= IOM_API | IOM_OK;
 		break;
+
 	default:
 		DISPLAY_ERROR("libticables: bad argument (invalid link cable).\n");
-		return ERR_NONE;
+		return ERR_ILLEGAL_ARG;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
     		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
-	} else {
+	}/* else {
 		DISPLAY(_("  method: %s\n"), 
 			ticable_method_to_string(*method));
-	}
+			}*/
 	
 	return 0;
 }
@@ -179,7 +221,7 @@ static int linux_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	case PARALLEL_PORT_3:
-    		if (method & IOM_DRV))
+    		if (method & IOM_DRV)
       			strcpy(io_device, tipar_node_names[devfs][3]);
     		else {
       			io_address = PP3_ADDR;
@@ -239,32 +281,36 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 
   	default:
     		DISPLAY_ERROR("libticables: bad argument (invalid port).\n");
-		return ERR_NONE;
+		return ERR_ILLEGAL_ARG;
 	break;
 	}
 	
 	return 0;
 }
 
+
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	// map I/O
-	TRYC(linux_map_io(method, port));
+	DISPLAY(_("libticables: mapping I/O...\n"));
+	TRYR(linux_map_io((TicableMethod)method, port));
 	
 	// set the link cable
+	DISPLAY(_("libticables: registering cable...\n"));
     	switch (type) {
     	case LINK_PAR:
-      		if ((port != PARALLEL_PORT_1) &&
-	  		(port != PARALLEL_PORT_2) &&
-	  		(port != PARALLEL_PORT_3) && (port != USER_PORT))
-		return ERR_INVALID_PORT;
 
+      		if ((port != PARALLEL_PORT_1) &&
+		    (port != PARALLEL_PORT_2) &&
+		    (port != PARALLEL_PORT_3) && (port != USER_PORT))
+			return ERR_INVALID_PORT;
+		
 		if(method & IOM_ASM)
 			par_register_cable(lc);
 		else if(method & IOM_DRV)
 			dev_register_cable(lc);
-      	break;
-
+		break;
+		
     	case LINK_SER:
       		if ((port != SERIAL_PORT_1) &&
 	  		(port != SERIAL_PORT_2) &&
@@ -279,8 +325,7 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 			ser_register_cable_2(lc);
 		else if(method & IOM_DRV)
 			dev_register_cable(lc);
-		
-      	break;
+		break;
 
     	case LINK_AVR:
       		if ((port != SERIAL_PORT_1) &&
@@ -290,21 +335,21 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		avr_register_cable(lc);
-      	break;
+		break;
 
     	case LINK_VTL:
       		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
 		return ERR_INVALID_PORT;
 
       		vtl_register_cable(lc);
-      	break;
+		break;
 
     	case LINK_TIE:
       		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
 			return ERR_INVALID_PORT;
 
       		tie_register_cable(lc);
-      	break;
+		break;
 
     	case LINK_TGL:
 	      	if ((port != SERIAL_PORT_1) &&
@@ -314,14 +359,14 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		tig_register_cable(lc);
-      	break;
+		break;
 
     	case LINK_VTI:
       		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
 		return ERR_INVALID_PORT;
 	
       		vti_register_cable(lc);
-      	break;
+		break;
 
     	case LINK_SLV:
       		if ((port != USB_PORT_1) &&
@@ -333,28 +378,22 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		if(method & IOM_IOCTL)
 			slv_register_cable_1(lc);
 		else if(method & IOM_DRV)
-			slv_register_cable_2(lc);
-	break;
+			slv_register_cable_1/*2*/(lc);
+		break;
 
     	default:
 	      	DISPLAY_ERROR(_("libticables: invalid argument (bad cable)."));
-	      	return ERR_NONE;
-	break;
+	      	return ERR_ILLEGAL_ARG;
+		break;
     	}
+
+	return 0;
 }
 
 
 /***********/
 /* Helpers */
 /***********/
-
-
-static int check_for_root(void);
-static int check_for_tty(void);
-static void check_for_tipar(void);
-static void check_for_tiser(void);
-static void check_for_tiusb(void);
-static void check_for_libusb(void);
 
 /*
   Returns mode string from mode value.
@@ -434,13 +473,14 @@ static const char *get_group_name(uid_t uid)
 static int find_string_in_proc(char *entry, char *str)
 {
 	FILE *f;
-	char buffer[MAXCHARS];
+	char buffer[80];
 	int found = 0;
 	
 	f = fopen(entry, "rt");
 	if (f == NULL) {
 		return -1;
 	}
+
 	while (!feof(f)) {
 		fscanf(f, "%s", buffer);
 		if (strstr(buffer, str)) {
@@ -456,36 +496,43 @@ static int check_for_root(void)
 {
 	uid_t uid = getuid();
     	
-    	DISPLAY(_("  check for root: %s\n"), uid ? "no" : "yes");
+    	DISPLAY(_("  check for asm usability: %s\n"), uid ? "no" : "yes");
+
+	return (uid ? -1 : 0);
 }
 
 static int check_for_tty(void)
 {
+	struct stat st;	
+	char name[15];
+	
 	DISPLAY(_("  check for tty usability:\n"));
 	
 	if(!access("/dev/ttyS0", F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), "/dev/ttySx");
+		DISPLAY(_("    node %s: exists\n"), "/dev/ttySx");
 	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
+		DISPLAY(_("    node %s: does not exists\n"), name);
 		return -1;
 	}
 
 	if(!stat("/dev/ttyS0", &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
                         get_attributes(st.st_mode),
                         get_user_name(st.st_uid),
                         get_group_name(st.st_gid));
-	} else
+	} else {
 		return -1;
-	
+	}	
+
 	return 0;
 }
 
-static void check_for_tipar(void)
+static int check_for_tipar(void)
 {
 	struct stat st;
 	char name[15];
-	int ret = !0;
+
+	DISPLAY(_("  check for tipar usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
@@ -497,10 +544,10 @@ static void check_for_tipar(void)
 		strcpy(name, "/dev/ticables/par/0");
 
 	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
+		DISPLAY(_("      node %s: exists\n"), name);
 	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
+		DISPLAY(_("      node %s: does not exists\n"), name);
+		return -1;
 	}
 
 	if(!stat(name, &st)) {
@@ -510,22 +557,26 @@ static void check_for_tipar(void)
                         get_group_name(st.st_gid));
 	}
  
-	if (find_string_in_proc("/proc/devices", "tipar") ||
-            find_string_in_proc("/proc/modules", "tipar"))
+	if (find_string_in_proc("/proc/devices", "tipar"))
 		DISPLAY(_("      module: loaded\r\n"));
-	else
+	else {
 		DISPLAY(_("      module: not loaded\r\n"));
+		return -1;
+	}
+
+	return 0;
 }
 
-static void check_for_tiser(void)
+static int check_for_tiser(void)
 {
 	struct stat st;
 	char name[15];
-	int ret = !0;
+
+	DISPLAY(_("  check for tiser usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+	DISPLAY(_("    using devfs: %s\r\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiser0");
@@ -533,31 +584,35 @@ static void check_for_tiser(void)
 		strcpy(name, "/dev/ticables/par/0");
 
 	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
+		DISPLAY(_("    node %s: exists\n"), name);
 	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
+		DISPLAY(_("    node %s: does not exists\n"), name);
+		return -1;
 	}
 
 	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
                         get_attributes(st.st_mode),
                         get_user_name(st.st_uid),
                         get_group_name(st.st_gid));
 	}
  
-	if (find_string_in_proc("/proc/devices", "tiser") ||
-            find_string_in_proc("/proc/modules", "tiser"))
-		DISPLAY(_("      module: loaded\r\n"));
-	else
-		DISPLAY(_("      module: not loaded\r\n"));
+	if (find_string_in_proc("/proc/devices", "tiser"))
+		DISPLAY(_("    module: loaded\r\n"));
+	else {
+		DISPLAY(_("    module: not loaded\r\n"));
+		return -1;
+	}
+
+	return 0;
 }
 
-static void check_for_tiusb(void)
+static int check_for_tiusb(void)
 {
 	struct stat st;
 	char name[15];
-	int ret = !0;
+
+	DISPLAY(_("  check for tiusb usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
@@ -569,10 +624,10 @@ static void check_for_tiusb(void)
 		strcpy(name, "/dev/ticables/usb/0");
 
 	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists.\r\n"), name);
+		DISPLAY(_("      node %s: exists\n"), name);
 	else {
-		DISPLAY(_("      node %s: does not exists.\r\n"), name);
-		ret = 0;
+		DISPLAY(_("      node %s: does not exists\n"), name);
+		return -1;
 	}
 
 	if(!stat(name, &st)) {
@@ -582,19 +637,22 @@ static void check_for_tiusb(void)
 			get_group_name(st.st_gid));
 	}
  
-	if (find_string_in_proc("/proc/devices", "tiglusb") ||
-            find_string_in_proc("/proc/modules", "tiglusb"))
+	if (find_string_in_proc("/proc/devices", "tiglusb"))
 		DISPLAY(_("      module: loaded\r\n"));
-	else
+	else {
 		DISPLAY(_("      module: not loaded\r\n"));
+		return -1;
+	}
+
+	return 0;
 }
 
-static void check_for_libusb(void)
+static int check_for_libusb(void)
 {
 	if(!access("/proc/bus/usb", F_OK))
-		DISPLAY(_("      usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
+		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
-		DISPLAY(_("      usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
+		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
 		return -1;
 	}
 	

@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
-"POT-Creation-Date: 2003-05-11 11:24+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-07 19:12+0100\n"
 "PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -402,113 +403,113 @@ msgstr ""
 "C'est un bug. Reportez-le, s'il vous plaît.\n"
 "."
 
-#: src/intrface.c:109
+#: src/intrface.c:108
 #, c-format
 msgid "Libticables: version %s\n"
 msgstr "Libticables: version %s\n"
 
-#: src/intrface.c:578 src/intrface.c:628
+#: src/intrface.c:593 src/intrface.c:643
 msgid "Function not implemented. This is a bug. Please report it."
 msgstr ""
 "Fonction non implémentée. Ceci est un bug. Reportez-le s'il vous plaît."
 
-#: src/intrface.c:579 src/intrface.c:629
+#: src/intrface.c:594 src/intrface.c:644
 msgid "Informations:\n"
 msgstr "Informations:\n"
 
-#: src/intrface.c:580 src/intrface.c:630
+#: src/intrface.c:595 src/intrface.c:645
 #, c-format
 msgid "Cable: %i\n"
 msgstr "Câble: %i\n"
 
-#: src/intrface.c:581 src/intrface.c:631
+#: src/intrface.c:596 src/intrface.c:646
 msgid "Program halted before crashing...\n"
 msgstr "Le programme s'est arrêté avant de se terminer anormalement...\n"
 
-#: src/intrface.c:645
+#: src/intrface.c:660
 msgid "Libticables: current settings...\n"
 msgstr "Libticables: réglages actuels...\n"
 
-#: src/intrface.c:647
+#: src/intrface.c:662
 #, c-format
 msgid "  Link cable: %s\n"
 msgstr " Câble de liaison: %s\n"
 
-#: src/intrface.c:649
+#: src/intrface.c:664
 #, c-format
 msgid "  Port: %s\n"
 msgstr "  Port: %s\n"
 
-#: src/intrface.c:650
+#: src/intrface.c:665
 #, c-format
 msgid "  Method: %s\n"
 msgstr " Méthode: %s\n"
 
-#: src/intrface.c:651
+#: src/intrface.c:666
 #, c-format
 msgid "  Timeout value: %i\n"
 msgstr " Limite de temps: %i\n"
 
-#: src/intrface.c:652
+#: src/intrface.c:667
 #, c-format
 msgid "  Delay value: %i\n"
 msgstr " Délai: %i\n"
 
-#: src/intrface.c:653
+#: src/intrface.c:668
 #, c-format
 msgid "  Baud-rate: %i\n"
 msgstr " Vitesse de transmission en Bauds: %i\n"
 
-#: src/intrface.c:654
+#: src/intrface.c:669
 #, c-format
 msgid "  Hardware flow control: %s\n"
 msgstr " Contrôle du flux matériel: %s\n"
 
-#: src/intrface.c:654
+#: src/intrface.c:669
 msgid "on"
 msgstr "activé"
 
-#: src/intrface.c:654
+#: src/intrface.c:669
 msgid "off"
 msgstr "désactivé"
 
-#: src/intrface.c:655
+#: src/intrface.c:670
 #, c-format
 msgid "  I/O address: 0x%03x\n"
 msgstr " Adresse d'entrée/sortie: 0x%03x\n"
 
-#: src/intrface.c:656
+#: src/intrface.c:671
 #, c-format
 msgid "  Device name: %s\n"
 msgstr " Nom du périphérique: %s\n"
 
-#: src/intrface.c:839
+#: src/intrface.c:855
 #, c-format
 msgid "libticables error: port value is illegal (%i) !\n"
 msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 
-#: src/intrface.c:840
+#: src/intrface.c:856
 msgid "Exiting...\n"
 msgstr "Sortie...\n"
 
-#: src/ioports.c:281
+#: src/ioports.c:286
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 "Impossible d'accéder au pilote PortTalk. Vérifiez s'il vous plaît qu'il est "
 "installé/chargé.\n"
 
-#: src/ioports.c:306
+#: src/ioports.c:311
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr "L'accès à l'adresse 0x%03X (IOPM Offset 0x%02X) a été accordé.\n"
 
-#: src/ioports.c:321
+#: src/ioports.c:326
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d\n"
 
-#: src/ioports.c:398
+#: src/ioports.c:403
 #, c-format
 msgid "Libticables: serial port %s successfully reconfigured.\n"
 msgstr "Libticables: port série %s reconfiguré avec succès.\n"
@@ -808,7 +809,7 @@ msgstr "usb_find_busses: %s\n"
 msgid "usb_find_devices: %s\n"
 msgstr "usb_find_devices: %s\n"
 
-#: src/slv_link.c:1553
+#: src/slv_link.c:1555
 msgid ""
 "usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
 msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"

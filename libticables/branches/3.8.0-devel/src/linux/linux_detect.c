@@ -252,19 +252,10 @@ int linux_detect_resources(void)
 	/* ASM: for use with low-level I/O */
 
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
-	DISPLAY(_("  IO_ASM: found at compile time (HAVE_ASM_IO_H), "));
-    	uid_t uid = getuid();
-
-    	if (uid != 0) {
-      		DISPLAY(_("but unuseable (non root)\r\n"));
-      		resources &= ~IO_ASM;
-    	} else {
-      		DISPLAY(_("and useable (root)\r\n"));
-      		resources |= IO_ASM;
-    	}
-#else
-	DISPLAY(_("  IO_ASM: not found at compile time (HAVE_ASM_IO_H), "));
+	resources |= IO_ASM;
 #endif
+	DISPLAY(_("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),
+		resources & IO_ASM ? "" : "not ");
 
 	/* TIPAR: tipar kernel module */ 
 

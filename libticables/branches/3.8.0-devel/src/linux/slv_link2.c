@@ -421,7 +421,7 @@ int slv_supported2()
   return SUPPORT_ON;
 }
 
-int slv_register_cable2(TicableLinkCable * lc)
+int slv_register_cable_2(TicableLinkCable * lc)
 {
   lc->init = slv_init2;
   lc->open = slv_open2;

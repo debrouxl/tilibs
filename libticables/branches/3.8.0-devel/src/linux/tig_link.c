@@ -25,6 +25,7 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #ifdef HAVE_STDINT_H
@@ -68,7 +69,7 @@ int tig_init()
 #endif
 
   	if ((dev_fd = open(io_device, flags)) == -1) {
-    		if(errno == EACCESS)
+    		if(errno == EACCES)
       				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
       			else
       				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);

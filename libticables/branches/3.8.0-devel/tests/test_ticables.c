@@ -75,6 +75,7 @@ int main(int argc, char **argv)
 		print_lc_error(err);
 		return -1;
 	}
+
 	// open it (usually before each set of transfer)
 	if ((err = lc.open())) {
 		print_lc_error(err);

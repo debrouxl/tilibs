@@ -29,14 +29,15 @@
 #include <config.h>
 #endif
 
-# include <unistd.h>
-# include <termios.h>
-# include <sys/ioctl.h>
-# include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
 
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-# include <sys/perm.h>
-# include <asm/io.h>
+#include <sys/perm.h>
+#include <asm/io.h>
 #endif
 
 #include "intl.h"
@@ -97,7 +98,7 @@ static void linux_ioctl_write_io(unsigned int address, int data)
   	flags |= (data & 1) ? TIOCM_DTR : 0;
   	if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
     		DISPLAY_ERROR(_("libticables: ioctl failed in linux_ioctl_write_io !\n"));
-    		return ERR_IOCTL;
+    		//return ERR_IOCTL;
   	}
 #endif
 }
@@ -109,17 +110,17 @@ int io_open(unsigned long from, unsigned long num)
 	if (method & IOM_ASM) {
     		io_rd = linux_asm_read_io;
     		io_wr = linux_asm_write_io;
-    		
+
 		return (ioperm(from, num, 1) ? ERR_ROOT : 0);
 	}
-  	else if (method & IOM_API) {
+  	else if (method & IOM_IOCTL) {
 		struct termios termset;
 
     		if (tty_use)
       			return 0;
-      			
+
 		if ((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1) {
-      			if(errno == EACCESS)
+      			if(errno == EACCES)
       				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
       			else
       				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
@@ -133,6 +134,9 @@ int io_open(unsigned long from, unsigned long num)
     		io_wr = linux_ioctl_write_io;
 
     		tty_use++;
+	} else {
+		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+                return ERR_ILLEGAL_ARG;
 	}
 
 	return 0;
@@ -148,9 +152,10 @@ int io_close(unsigned long from, unsigned long num)
       			close(dev_fd);
       			tty_use--;
     		}
-  	} else {
-		return -1;
-	}
+	} else {
+                DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+                return ERR_ILLEGAL_ARG;
+        }
 	
 	return 0;
 }

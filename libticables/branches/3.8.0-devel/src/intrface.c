@@ -342,28 +342,28 @@ static void print_settings(void)
 {
   	DISPLAY(_("libticables: list of settings...\n"));
   	
-  	DISPLAY(_("  Link cable: %s\n"), 
+  	DISPLAY(_("  cable: %s\n"), 
 		ticable_cabletype_to_string(cable_type));
   	
-  	DISPLAY(_("  Port: %s\n"), ticable_port_to_string(port));
+  	DISPLAY(_("  port: %s\n"), ticable_port_to_string(port));
   	
-  	DISPLAY(_("  Method: %s\n"), ticable_method_to_string(method));
-  	
-  	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-		DISPLAY(_("  Timeout value: %i\n"), time_out);
-	
-  	DISPLAY(_("  Delay value: %i\n"), delay);
-  	
+  	DISPLAY(_("  method: %s\n"), ticable_method_to_string(method));
+  	  	
   	if(cable_type == LINK_AVR) {
-		DISPLAY(_("  Baud-rate: %i\n"), baud_rate);
-		DISPLAY(_("  Hardware flow control: %s\n"), 
+		DISPLAY(_("  baud-rate: %i\n"), baud_rate);
+		DISPLAY(_("  hardware flow control: %s\n"), 
 			hfc ? _("on") : _("off"));
 	}
 
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-		DISPLAY(_("  I/O address: 0x%03x\n"), io_address);
+		DISPLAY(_("  address: 0x%03x\n"), io_address);
 	
-	DISPLAY(_("  Device name: %s\n"), io_device);
+	DISPLAY(_("  device name: %s\n"), io_device);
+
+	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
+                DISPLAY(_("  timeout value: %i\n"), time_out);
+
+        DISPLAY(_("  delay value: %i\n"), delay);
 }
 
 
@@ -374,6 +374,7 @@ TICALL ticable_set_cable(int type, TicableLinkCable * lc)
 
 	// remove link cable
 	mapping_unregister_cable(lc);
+	cable_type = type;
 
 	// compile informations (I/O resources & OS platform) in order to 
   	// determine the best I/O method to use.
