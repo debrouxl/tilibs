@@ -1,0 +1,1097 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 34;
+	objects = {
+		0127DA220170EE495041E0CA = {
+			children = (
+				18D1B3A70170FD5A5041E0CA,
+				18D1B3A80170FD5A5041E0CA,
+				18D1B3A90170FD5A5041E0CA,
+				18D1B3AA0170FD5A5041E0CA,
+				18D1B3AB0170FD5A5041E0CA,
+				18D1B3AC0170FD5A5041E0CA,
+				18D1B3AD0170FD5A5041E0CA,
+				18D1B3AE0170FD5A5041E0CA,
+				18D1B3AF0170FD5A5041E0CA,
+				18D1B3B00170FD5A5041E0CA,
+				18D1B3B10170FD5A5041E0CA,
+				18D1B3B20170FD5A5041E0CA,
+				18D1B3B30170FD5A5041E0CA,
+				18D1B3B40170FD5A5041E0CA,
+				18D1B3B50170FD5A5041E0CA,
+				18D1B3B60170FD5A5041E0CA,
+				18D1B3B70170FD5A5041E0CA,
+				18D1B3B80170FD5A5041E0CA,
+				18D1B3B90170FD5A5041E0CA,
+				18D1B3A30170FD395041E0CA,
+				18D1B3A40170FD395041E0CA,
+				18D1B3A10170FD2A5041E0CA,
+				18D1B39F0170FD245041E0CA,
+				18D1B3910170FD1C5041E0CA,
+				18D1B3920170FD1C5041E0CA,
+				18D1B3930170FD1C5041E0CA,
+				18D1B3940170FD1C5041E0CA,
+				18D1B3950170FD1C5041E0CA,
+				18D1B3960170FD1C5041E0CA,
+				18D1B3970170FD1C5041E0CA,
+				0127DA230170FC105041E0CA,
+			);
+			isa = PBXGroup;
+			name = Headers;
+			path = "";
+			refType = 4;
+		};
+		0127DA230170FC105041E0CA = {
+			isa = PBXFileReference;
+			path = config.h;
+			refType = 4;
+		};
+		0127DA240170FC105041E0CA = {
+			fileRef = 0127DA230170FC105041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		014CEA440018CDF011CA2923 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		014CEA450018CDF011CA2923 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//010
+//011
+//012
+//013
+//014
+//030
+//031
+//032
+//033
+//034
+		034768DFFF38A50411DB9C8B = {
+			children = (
+				034768E0FF38A50411DB9C8B,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+		034768E0FF38A50411DB9C8B = {
+			isa = PBXFrameworkReference;
+			path = libticables.framework;
+			refType = 3;
+		};
+//030
+//031
+//032
+//033
+//034
+//040
+//041
+//042
+//043
+//044
+		04DE22B7017249745041E0CA = {
+			children = (
+				18D1B3CD0170FD845041E0CA,
+				18D1B3CE0170FD845041E0CA,
+				18D1B3CF0170FD845041E0CA,
+				18D1B3D00170FD845041E0CA,
+				18D1B3D10170FD845041E0CA,
+				18D1B3D20170FD845041E0CA,
+				18D1B3D30170FD845041E0CA,
+				18D1B3D40170FD845041E0CA,
+				18D1B3D50170FD845041E0CA,
+				18D1B3D60170FD845041E0CA,
+				18D1B3D70170FD845041E0CA,
+				18D1B3D80170FD845041E0CA,
+				18D1B3D90170FD845041E0CA,
+				18D1B3DA0170FD845041E0CA,
+				18D1B3DB0170FD845041E0CA,
+				18D1B3DC0170FD845041E0CA,
+				18D1B3DD0170FD845041E0CA,
+				18D1B3DE0170FD845041E0CA,
+			);
+			isa = PBXGroup;
+			name = Sources;
+			path = "";
+			refType = 4;
+		};
+//040
+//041
+//042
+//043
+//044
+//080
+//081
+//082
+//083
+//084
+		0867D690FE84028FC02AAC07 = {
+			buildStyles = (
+				014CEA440018CDF011CA2923,
+				014CEA450018CDF011CA2923,
+			);
+			isa = PBXProject;
+			mainGroup = 0867D691FE84028FC02AAC07;
+			productRefGroup = 034768DFFF38A50411DB9C8B;
+			projectDirPath = "";
+			targets = (
+				0867D69CFE84028FC02AAC07,
+			);
+		};
+		0867D691FE84028FC02AAC07 = {
+			children = (
+				04DE22B7017249745041E0CA,
+				0127DA220170EE495041E0CA,
+				089C1665FE841158C02AAC07,
+				0867D69AFE84028FC02AAC07,
+				034768DFFF38A50411DB9C8B,
+			);
+			isa = PBXGroup;
+			name = libticables;
+			refType = 4;
+		};
+		0867D69AFE84028FC02AAC07 = {
+			children = (
+				1058C7B0FEA5585E11CA2CBB,
+				1058C7B2FEA5585E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+		};
+		0867D69CFE84028FC02AAC07 = {
+			buildPhases = (
+				0867D69DFE84028FC02AAC07,
+				0867D69EFE84028FC02AAC07,
+				0867D69FFE84028FC02AAC07,
+				0867D6A0FE84028FC02AAC07,
+				0867D6A2FE84028FC02AAC07,
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = libticables;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXFrameworkTarget;
+			name = libticables;
+			productName = libticables;
+			productReference = 034768E0FF38A50411DB9C8B;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">
+<plist version=\"0.9\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>libticables</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Copyright (C) 1998-2001 Romain LIEVIN, Julien BLACHE</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>net.sf.tilp.libticables</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>libTIcables for OS X</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0.6-osx0.0.1</string>
+	<key>CFBundleSignature</key>
+	<string>JBRL</string>
+	<key>CFBundleVersion</key>
+	<string>2.0.6</string>
+	<key>NSPrincipalClass</key>
+	<string></string>
+</dict>
+</plist>
+";
+			shouldUseHeadermap = 1;
+		};
+		0867D69DFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				0127DA240170FC105041E0CA,
+				18D1B3980170FD1C5041E0CA,
+				18D1B3990170FD1C5041E0CA,
+				18D1B39A0170FD1C5041E0CA,
+				18D1B39B0170FD1C5041E0CA,
+				18D1B39C0170FD1C5041E0CA,
+				18D1B39D0170FD1C5041E0CA,
+				18D1B39E0170FD1C5041E0CA,
+				18D1B3A00170FD245041E0CA,
+				18D1B3A20170FD2A5041E0CA,
+				18D1B3A50170FD395041E0CA,
+				18D1B3A60170FD395041E0CA,
+				18D1B3BA0170FD5A5041E0CA,
+				18D1B3BB0170FD5A5041E0CA,
+				18D1B3BC0170FD5A5041E0CA,
+				18D1B3BD0170FD5A5041E0CA,
+				18D1B3BE0170FD5A5041E0CA,
+				18D1B3BF0170FD5A5041E0CA,
+				18D1B3C00170FD5A5041E0CA,
+				18D1B3C10170FD5A5041E0CA,
+				18D1B3C20170FD5A5041E0CA,
+				18D1B3C30170FD5A5041E0CA,
+				18D1B3C40170FD5A5041E0CA,
+				18D1B3C50170FD5A5041E0CA,
+				18D1B3C60170FD5A5041E0CA,
+				18D1B3C70170FD5A5041E0CA,
+				18D1B3C80170FD5A5041E0CA,
+				18D1B3C90170FD5A5041E0CA,
+				18D1B3CA0170FD5A5041E0CA,
+				18D1B3CB0170FD5A5041E0CA,
+				18D1B3CC0170FD5A5041E0CA,
+			);
+			isa = PBXHeadersBuildPhase;
+			name = Headers;
+		};
+		0867D69EFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				089C1668FE841158C02AAC07,
+			);
+			isa = PBXResourcesBuildPhase;
+			name = "Bundle Resources";
+		};
+		0867D69FFE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				18D1B3DF0170FD845041E0CA,
+				18D1B3E00170FD845041E0CA,
+				18D1B3E10170FD845041E0CA,
+				18D1B3E20170FD845041E0CA,
+				18D1B3E30170FD845041E0CA,
+				18D1B3E40170FD845041E0CA,
+				18D1B3E50170FD845041E0CA,
+				18D1B3E60170FD845041E0CA,
+				18D1B3E70170FD845041E0CA,
+				18D1B3E80170FD845041E0CA,
+				18D1B3E90170FD845041E0CA,
+				18D1B3EA0170FD845041E0CA,
+				18D1B3EB0170FD845041E0CA,
+				18D1B3EC0170FD845041E0CA,
+				18D1B3ED0170FD845041E0CA,
+				18D1B3EE0170FD845041E0CA,
+				18D1B3EF0170FD845041E0CA,
+				18D1B3F00170FD845041E0CA,
+			);
+			isa = PBXSourcesBuildPhase;
+			name = Sources;
+		};
+		0867D6A0FE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+				F50B12CF01A8303B01000102,
+				F50B12D001A8303B01000102,
+			);
+			isa = PBXFrameworksBuildPhase;
+			name = "Frameworks & Libraries";
+		};
+		0867D6A2FE84028FC02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			name = "ResourceManager Resources";
+		};
+		089C1665FE841158C02AAC07 = {
+			children = (
+				089C1666FE841158C02AAC07,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			refType = 4;
+		};
+		089C1666FE841158C02AAC07 = {
+			children = (
+				089C1667FE841158C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+		};
+		089C1667FE841158C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+		};
+		089C1668FE841158C02AAC07 = {
+			fileRef = 089C1666FE841158C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//080
+//081
+//082
+//083
+//084
+//100
+//101
+//102
+//103
+//104
+		1058C7B0FEA5585E11CA2CBB = {
+			children = (
+				F50B12CD01A8303B01000102,
+				F50B12CE01A8303B01000102,
+			);
+			isa = PBXGroup;
+			name = "Linked Frameworks";
+			refType = 4;
+		};
+		1058C7B2FEA5585E11CA2CBB = {
+			children = (
+			);
+			isa = PBXGroup;
+			name = "Other Frameworks";
+			refType = 4;
+		};
+//100
+//101
+//102
+//103
+//104
+//180
+//181
+//182
+//183
+//184
+		18D1B3910170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = compat.h;
+			path = /Users/julien/devel/libticables/src/compat.h;
+			refType = 0;
+		};
+		18D1B3920170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = cabl_ver.h;
+			path = /Users/julien/devel/libticables/src/cabl_ver.h;
+			refType = 0;
+		};
+		18D1B3930170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = cabl_int.h;
+			path = /Users/julien/devel/libticables/src/cabl_int.h;
+			refType = 0;
+		};
+		18D1B3940170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = cabl_ext.h;
+			path = /Users/julien/devel/libticables/src/cabl_ext.h;
+			refType = 0;
+		};
+		18D1B3950170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = cabl_err.h;
+			path = /Users/julien/devel/libticables/src/cabl_err.h;
+			refType = 0;
+		};
+		18D1B3960170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = cabl_def.h;
+			path = /Users/julien/devel/libticables/src/cabl_def.h;
+			refType = 0;
+		};
+		18D1B3970170FD1C5041E0CA = {
+			isa = PBXFileReference;
+			name = avr_link.h;
+			path = /Users/julien/devel/libticables/src/avr_link.h;
+			refType = 0;
+		};
+		18D1B3980170FD1C5041E0CA = {
+			fileRef = 18D1B3910170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3990170FD1C5041E0CA = {
+			fileRef = 18D1B3920170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39A0170FD1C5041E0CA = {
+			fileRef = 18D1B3930170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39B0170FD1C5041E0CA = {
+			fileRef = 18D1B3940170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39C0170FD1C5041E0CA = {
+			fileRef = 18D1B3950170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39D0170FD1C5041E0CA = {
+			fileRef = 18D1B3960170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39E0170FD1C5041E0CA = {
+			fileRef = 18D1B3970170FD1C5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B39F0170FD245041E0CA = {
+			isa = PBXFileReference;
+			name = default.h;
+			path = /Users/julien/devel/libticables/src/default.h;
+			refType = 0;
+		};
+		18D1B3A00170FD245041E0CA = {
+			fileRef = 18D1B39F0170FD245041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3A10170FD2A5041E0CA = {
+			isa = PBXFileReference;
+			name = dev_link.h;
+			path = /Users/julien/devel/libticables/src/dev_link.h;
+			refType = 0;
+		};
+		18D1B3A20170FD2A5041E0CA = {
+			fileRef = 18D1B3A10170FD2A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3A30170FD395041E0CA = {
+			isa = PBXFileReference;
+			name = export.h;
+			path = /Users/julien/devel/libticables/src/export.h;
+			refType = 0;
+		};
+		18D1B3A40170FD395041E0CA = {
+			isa = PBXFileReference;
+			name = intl.h;
+			path = /Users/julien/devel/libticables/src/intl.h;
+			refType = 0;
+		};
+		18D1B3A50170FD395041E0CA = {
+			fileRef = 18D1B3A30170FD395041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3A60170FD395041E0CA = {
+			fileRef = 18D1B3A40170FD395041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3A70170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = plerror.h;
+			path = /Users/julien/devel/libticables/src/plerror.h;
+			refType = 0;
+		};
+		18D1B3A80170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = par_link.h;
+			path = /Users/julien/devel/libticables/src/par_link.h;
+			refType = 0;
+		};
+		18D1B3A90170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = macros.h;
+			path = /Users/julien/devel/libticables/src/macros.h;
+			refType = 0;
+		};
+		18D1B3AA0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = logging.h;
+			path = /Users/julien/devel/libticables/src/logging.h;
+			refType = 0;
+		};
+		18D1B3AB0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = links.h;
+			path = /Users/julien/devel/libticables/src/links.h;
+			refType = 0;
+		};
+		18D1B3AC0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = ioports.h;
+			path = /Users/julien/devel/libticables/src/ioports.h;
+			refType = 0;
+		};
+		18D1B3AD0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = iocompat.h;
+			path = /Users/julien/devel/libticables/src/iocompat.h;
+			refType = 0;
+		};
+		18D1B3AE0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = ugl_link.h;
+			path = /Users/julien/devel/libticables/src/ugl_link.h;
+			refType = 0;
+		};
+		18D1B3AF0170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = typedefs.h;
+			path = /Users/julien/devel/libticables/src/typedefs.h;
+			refType = 0;
+		};
+		18D1B3B00170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = vtl_link.h;
+			path = /Users/julien/devel/libticables/src/vtl_link.h;
+			refType = 0;
+		};
+		18D1B3B10170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = vti_link.h;
+			path = /Users/julien/devel/libticables/src/vti_link.h;
+			refType = 0;
+		};
+		18D1B3B20170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = verbose.h;
+			path = /Users/julien/devel/libticables/src/verbose.h;
+			refType = 0;
+		};
+		18D1B3B30170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = usb_defs.h;
+			path = /Users/julien/devel/libticables/src/usb_defs.h;
+			refType = 0;
+		};
+		18D1B3B40170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = tpu_link.h;
+			path = /Users/julien/devel/libticables/src/tpu_link.h;
+			refType = 0;
+		};
+		18D1B3B50170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = timeout.h;
+			path = /Users/julien/devel/libticables/src/timeout.h;
+			refType = 0;
+		};
+		18D1B3B60170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = tig_link.h;
+			path = /Users/julien/devel/libticables/src/tig_link.h;
+			refType = 0;
+		};
+		18D1B3B70170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = tie_link.h;
+			path = /Users/julien/devel/libticables/src/tie_link.h;
+			refType = 0;
+		};
+		18D1B3B80170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = str.h;
+			path = /Users/julien/devel/libticables/src/str.h;
+			refType = 0;
+		};
+		18D1B3B90170FD5A5041E0CA = {
+			isa = PBXFileReference;
+			name = ser_link.h;
+			path = /Users/julien/devel/libticables/src/ser_link.h;
+			refType = 0;
+		};
+		18D1B3BA0170FD5A5041E0CA = {
+			fileRef = 18D1B3A70170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3BB0170FD5A5041E0CA = {
+			fileRef = 18D1B3A80170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3BC0170FD5A5041E0CA = {
+			fileRef = 18D1B3A90170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3BD0170FD5A5041E0CA = {
+			fileRef = 18D1B3AA0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3BE0170FD5A5041E0CA = {
+			fileRef = 18D1B3AB0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3BF0170FD5A5041E0CA = {
+			fileRef = 18D1B3AC0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C00170FD5A5041E0CA = {
+			fileRef = 18D1B3AD0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C10170FD5A5041E0CA = {
+			fileRef = 18D1B3AE0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C20170FD5A5041E0CA = {
+			fileRef = 18D1B3AF0170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C30170FD5A5041E0CA = {
+			fileRef = 18D1B3B00170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C40170FD5A5041E0CA = {
+			fileRef = 18D1B3B10170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C50170FD5A5041E0CA = {
+			fileRef = 18D1B3B20170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C60170FD5A5041E0CA = {
+			fileRef = 18D1B3B30170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C70170FD5A5041E0CA = {
+			fileRef = 18D1B3B40170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C80170FD5A5041E0CA = {
+			fileRef = 18D1B3B50170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3C90170FD5A5041E0CA = {
+			fileRef = 18D1B3B60170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3CA0170FD5A5041E0CA = {
+			fileRef = 18D1B3B70170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3CB0170FD5A5041E0CA = {
+			fileRef = 18D1B3B80170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3CC0170FD5A5041E0CA = {
+			fileRef = 18D1B3B90170FD5A5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		18D1B3CD0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = verbose.c;
+			path = /Users/julien/devel/libticables/src/verbose.c;
+			refType = 0;
+		};
+		18D1B3CE0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = ugl_link.c;
+			path = /Users/julien/devel/libticables/src/ugl_link.c;
+			refType = 0;
+		};
+		18D1B3CF0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = tpu_link.c;
+			path = /Users/julien/devel/libticables/src/tpu_link.c;
+			refType = 0;
+		};
+		18D1B3D00170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = avr_link.c;
+			path = /Users/julien/devel/libticables/src/avr_link.c;
+			refType = 0;
+		};
+		18D1B3D10170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = intrface.c;
+			path = /Users/julien/devel/libticables/src/intrface.c;
+			refType = 0;
+		};
+		18D1B3D20170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = probe.c;
+			path = /Users/julien/devel/libticables/src/probe.c;
+			refType = 0;
+		};
+		18D1B3D30170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = par_link.c;
+			path = /Users/julien/devel/libticables/src/par_link.c;
+			refType = 0;
+		};
+		18D1B3D40170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = logging.c;
+			path = /Users/julien/devel/libticables/src/logging.c;
+			refType = 0;
+		};
+		18D1B3D50170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = ioports.c;
+			path = /Users/julien/devel/libticables/src/ioports.c;
+			refType = 0;
+		};
+		18D1B3D60170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = default.c;
+			path = /Users/julien/devel/libticables/src/default.c;
+			refType = 0;
+		};
+		18D1B3D70170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = error.c;
+			path = /Users/julien/devel/libticables/src/error.c;
+			refType = 0;
+		};
+		18D1B3D80170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = dev_link.c;
+			path = /Users/julien/devel/libticables/src/dev_link.c;
+			refType = 0;
+		};
+		18D1B3D90170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = detect.c;
+			path = /Users/julien/devel/libticables/src/detect.c;
+			refType = 0;
+		};
+		18D1B3DA0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = vtl_link.c;
+			path = /Users/julien/devel/libticables/src/vtl_link.c;
+			refType = 0;
+		};
+		18D1B3DB0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = vti_link.c;
+			path = /Users/julien/devel/libticables/src/vti_link.c;
+			refType = 0;
+		};
+		18D1B3DC0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = tig_link.c;
+			path = /Users/julien/devel/libticables/src/tig_link.c;
+			refType = 0;
+		};
+		18D1B3DD0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = tie_link.c;
+			path = /Users/julien/devel/libticables/src/tie_link.c;
+			refType = 0;
+		};
+		18D1B3DE0170FD845041E0CA = {
+			isa = PBXFileReference;
+			name = ser_link.c;
+			path = /Users/julien/devel/libticables/src/ser_link.c;
+			refType = 0;
+		};
+		18D1B3DF0170FD845041E0CA = {
+			fileRef = 18D1B3CD0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E00170FD845041E0CA = {
+			fileRef = 18D1B3CE0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E10170FD845041E0CA = {
+			fileRef = 18D1B3CF0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E20170FD845041E0CA = {
+			fileRef = 18D1B3D00170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E30170FD845041E0CA = {
+			fileRef = 18D1B3D10170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E40170FD845041E0CA = {
+			fileRef = 18D1B3D20170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E50170FD845041E0CA = {
+			fileRef = 18D1B3D30170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E60170FD845041E0CA = {
+			fileRef = 18D1B3D40170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E70170FD845041E0CA = {
+			fileRef = 18D1B3D50170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E80170FD845041E0CA = {
+			fileRef = 18D1B3D60170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3E90170FD845041E0CA = {
+			fileRef = 18D1B3D70170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3EA0170FD845041E0CA = {
+			fileRef = 18D1B3D80170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3EB0170FD845041E0CA = {
+			fileRef = 18D1B3D90170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3EC0170FD845041E0CA = {
+			fileRef = 18D1B3DA0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3ED0170FD845041E0CA = {
+			fileRef = 18D1B3DB0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3EE0170FD845041E0CA = {
+			fileRef = 18D1B3DC0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3EF0170FD845041E0CA = {
+			fileRef = 18D1B3DD0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		18D1B3F00170FD845041E0CA = {
+			fileRef = 18D1B3DE0170FD845041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//180
+//181
+//182
+//183
+//184
+//F50
+//F51
+//F52
+//F53
+//F54
+		F50B12CD01A8303B01000102 = {
+			isa = PBXFrameworkReference;
+			name = CoreFoundation.framework;
+			path = ../../../../../System/Library/Frameworks/CoreFoundation.framework;
+			refType = 2;
+		};
+		F50B12CE01A8303B01000102 = {
+			isa = PBXFrameworkReference;
+			name = IOKit.framework;
+			path = ../../../../../System/Library/Frameworks/IOKit.framework;
+			refType = 2;
+		};
+		F50B12CF01A8303B01000102 = {
+			fileRef = F50B12CD01A8303B01000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50B12D001A8303B01000102 = {
+			fileRef = F50B12CE01A8303B01000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 0867D690FE84028FC02AAC07;
+}
