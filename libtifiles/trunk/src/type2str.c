@@ -63,7 +63,7 @@ TIEXPORT TicalcType TICALL tifiles_string_to_calctype(const char *str)
 	else if(!strcmp(str, "TI92"))
 		return CALC_TI92;
 	else if(!strcmp(str, "TI92+"))
-		return CALC_TI92+;
+		return CALC_TI92P;
 	else if(!strcmp(str, "V200"))
 		return CALC_V200;
 		
@@ -83,13 +83,13 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(TifileAttr atrb)
 
 TIEXPORT TifileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
-	if(!strcmp(str, _("none     "))
+	if(!strcmp(str, _("none     ")))
 		return ATTRB_NONE;
-	else if(!strcmp(str, _("locked   "))
+	else if(!strcmp(str, _("locked   ")))
 		return ATTRB_LOCKED;
-	else if(!strcmp(str, _("archived "))
+	else if(!strcmp(str, _("archived ")))
 		return ATTRB_ARCHIVED;
-	else if(!strcmp(str, _("protected"))
+	else if(!strcmp(str, _("protected")))
 		return ATTRB_PROTECTED;
 	
 	return ATTRB_NONE;
@@ -100,7 +100,7 @@ TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type)
   	switch (type) {
   	case TIFILE_SINGLE: return _("single");
   	case TIFILE_GROUP:  return _("group");
-  	case TIFILE_BACKUP: return _("backup)";
+  	case TIFILE_BACKUP: return _("backup");
   	case TIFILE_FLASH:  return _("flash");
   	default: return _("unknown");
   	}
@@ -108,13 +108,13 @@ TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type)
 
 TIEXPORT TifileType TICALL tifiles_string_to_filetype(const char *str)
 {
-	if(!strcmp(str, _("single"))
+	if(!strcmp(str, _("single")))
 		return TIFILE_SINGLE;
-	else if(!strcmp(str, _("group"))
+	else if(!strcmp(str, _("group")))
 		return TIFILE_GROUP;
-	else if(!strcmp(str, _("backup"))
+	else if(!strcmp(str, _("backup")))
 		return TIFILE_BACKUP;
-	else if(!strcmp(str, _("flash"))
+	else if(!strcmp(str, _("flash")))
 		return TIFILE_FLASH;
 		
 	return TIFILE_SINGLE;
