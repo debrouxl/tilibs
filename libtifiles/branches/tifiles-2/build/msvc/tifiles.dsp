@@ -150,103 +150,7 @@ SOURCE=..\..\src\typesXX.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\error.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\export.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\files8X.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\files9X.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\filesXX.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\gettext.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\grp_ops.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\intelhex.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\logging.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\macros.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\stdints.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\tifiles.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types73.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types82.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types83.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types83p.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types84p.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types85.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types86.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types89.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types89t.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types92.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\types92p.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\typesv2.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\typesXX.h
 # End Source File
 # End Group
 # Begin Group "TI files"
@@ -316,10 +220,6 @@ SOURCE=..\..\src\type2str.c
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\file_ver.h
 # End Source File
 # Begin Source File
 

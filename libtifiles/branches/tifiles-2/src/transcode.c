@@ -28,13 +28,7 @@
   - TI-charset to user-defined charset (ASCII/Latin1/Unicode) conversion
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "stdints.h"
-
 #include "gettext.h"
-#include "typesxx.h"
 #include "tifiles.h"
 #include "macros.h"
 #include "logging.h"
@@ -323,8 +317,19 @@ static char *ti8x_detokenize_varname(TiCalcType model, const char *src, char *ds
     return dst;
 }
 
-
-TIEXPORT char* TICALL tixx_detokenize_varname(TiCalcType model, 
+/**
+ * tifiles_detokenize_varname:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize.
+ * @dst: a buffer of 20 chars to contain the detokenized name.
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI83) does not returns real name of the variable (like List1) but
+ * in a specially encoded way. This functions expands the name like it should do.
+ *
+ * Return value: the detokenized name (same as dst).
+ **/
+TIEXPORT char* TICALL tifiles_detokenize_varname(TiCalcType model, 
 												 const char *src, 
 												 char *dst,
 												 uint8_t vartype)
@@ -817,10 +822,17 @@ typedef char     (*TRANSCODE_TO_ASCII)   (const char c);
 typedef char     (*TRANSCODE_TO_LATIN1)  (const char c);
 typedef uint16_t (*TRANSCODE_TO_UNICODE) (const char c);
 
-/*
-  Convert string to pure ASCII.
-  Note: src & dst will have the same length.
-*/
+/**
+ * tifiles_transcode_to_ascii:
+ * @model: a calculator model.
+ * @src: a name of variable to convert.
+ * @dst: a buffer which will contains the detokenized name.
+ *
+ * It attempts to convert the string passed as %src into the destination charset (pure ascii here).
+ * Characters which can be converted will be replaced by the '_' character.
+ *
+ * Return value: the converted name (same as %dst).
+ **/
 TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
@@ -860,10 +872,17 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcType model, char* dst, co
   return dest;
 }
 
-/*
-  Convert string to the ISO8859-1 charset (aka Latin1).
-  Note: src & dst will have the same length.
-*/
+/**
+ * tifiles_transcode_to_latin1:
+ * @model: a calculator model.
+ * @src: a name of variable to convert.
+ * @dst: a buffer which will contains the detokenized name.
+ *
+ * It attempts to convert the string passed as %src into the destination charset (ISO8859-1 charset (aka Latin1) here).
+ * Characters which can be converted will be replaced by the '_' character.
+ *
+ * Return value: the converted name (same as %dst).
+ **/
 TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
@@ -903,11 +922,19 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcType model, char* dst, c
   return dest;
 }
 
-/*
-  Convert string to the UTF-8 charset (Unicode).
-  See: www.unicode.org/charts & www.czyborra.com/utf
-  Note: dst may be up to twice the length of src.
-*/
+// See: www.unicode.org/charts & www.czyborra.com/utf
+/**
+ * tifiles_transcode_to_utf8:
+ * @model: a calculator model.
+ * @src: a name of variable to convert.
+ * @dst: a buffer which will contains the detokenized name.
+ *
+ * It attempts to convert the string passed as %src into the destination charset (UTF-8 charset (aka Unicode) here).
+ * Characters which can be converted will be replaced by the '_' character.
+ * Note: %dst may be up to twice the length of %src.
+ *
+ * Return value: the converted name (same as %dst).
+ **/
 TIEXPORT char* TICALL tifiles_transcode_to_utf8(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
@@ -962,20 +989,34 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(TiCalcType model, char* dst, con
   Set/Get encoding methods
 */
 
-
 // set to ISO8859-1 for compatibility with previous releases
 static TiFileEncoding tifiles_encoding = ENCODING_LATIN1;
 
+/**
+ * tifiles_translate_set_encoding:
+ * @encoding: an encoding space.
+ *
+ * Set the default encoding method for #tifiles_transcode_varname. The method is taken in the
+ * #TiFileEncoding enumeration.
+ *
+ * Return value: none.
+ **/
 TIEXPORT void TICALL tifiles_translate_set_encoding(TiFileEncoding encoding)
 {
   tifiles_encoding = encoding;
 }
 
+/**
+ * tifiles_translate_get_encoding:
+ *
+ * Returns the encoding method used by #tifiles_transcode_varname.
+ *
+ * Return value: a value taken in #TiFileEncoding.
+ **/
 TIEXPORT TiFileEncoding TICALL tifiles_translate_get_encoding(void)
 {
   return tifiles_encoding;
 }
-
 
 /* 
    Variable name translation: detokenization + charset transcoding.
@@ -985,7 +1026,7 @@ char *tixx_translate_varname(TiCalcType model, char *dst, const char *src, uint8
 {
   char detokenized[18];
 
-  tixx_detokenize_varname(model, src, detokenized, vartype);
+  ti_detokenize_varname(model, src, detokenized, vartype);
 
   switch(tifiles_encoding)
   {
@@ -997,12 +1038,36 @@ char *tixx_translate_varname(TiCalcType model, char *dst, const char *src, uint8
   return dst;
 }
 
-TIEXPORT char *TICALL tifiles_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype)
+/**
+ * tifiles_transcode_varname:
+ * @model: a calculator model taken in #TiCalcType.
+ * @dst: a buffer to place result of transcoding.
+ * @src: the name of variable to convert.
+ * @vartype: the type of variable to convert
+ *
+ * Convenient function which do #tifiles_transcode_detokenize and 
+ * #tifiles_transcode_to_ascii/#tifiles_transcode_to_latin1/#tifiles_transcode_to_unicode 
+ * next 'depending on which encoding has been set with #tifiles_transcoding_set).
+ *
+ * Return value: %dst.
+ **/
+TIEXPORT char *TICALL tifiles_transcode_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype)
 {
 	return tixx_translate_varname(model, dst, src, vartype);
 }
 
-TIEXPORT char *TICALL tifiles_translate_varname_static(TiCalcType model, const char *src, uint8_t vartype)
+/**
+ * tifiles_transcode_varname_static:
+ * @model: a calculator model taken in #TiCalcType.
+ * @dst: a buffer to place result of transcoding.
+ * @src: the name of variable to convert.
+ * @vartype: the type of variable to convert
+ *
+ * Same function as #tifiles_transcode_varname but it uses an internal static buffer to return result.
+ *
+ * Return value: a statically allocated string.
+ **/
+TIEXPORT char *TICALL tifiles_transcode_varname_static(TiCalcType model, const char *src, uint8_t vartype)
 {
   static char trans[18];
   

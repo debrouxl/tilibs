@@ -22,10 +22,17 @@
 #include "gettext.h"
 #include "tifiles.h"
 
-
-TIEXPORT const char *TICALL tifiles_calctype_to_string(TiCalcType type)
+/**
+ * tifiles_model_to_string:
+ * @model: a calculator model taken in a #TiCalcModel enumeration.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "TI92+".
+ **/
+TIEXPORT const char *TICALL tifiles_model_to_string(TiCalcModel model)
 {
-  	switch (type) 
+  	switch (model) 
 	{
   	case CALC_NONE:  return "none";
   	case CALC_V200:  return "V200";
@@ -44,7 +51,15 @@ TIEXPORT const char *TICALL tifiles_calctype_to_string(TiCalcType type)
   	}
 }
 
-TIEXPORT TiCalcType TICALL tifiles_string_to_calctype(const char *str)
+/**
+ * tifiles_string_to_model:
+ * @str: a calculator model as string like "TI92".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a model taken in the #TiCalcModel enumeration .
+ **/
+TIEXPORT TiCalcModel TICALL tifiles_string_to_model(const char *str)
 {
 	if(!strcmp(str, "TI73"))
 		return CALC_TI73;
@@ -74,6 +89,14 @@ TIEXPORT TiCalcType TICALL tifiles_string_to_calctype(const char *str)
 	return CALC_NONE;
 }
 
+/**
+ * tifiles_attribute_to_string:
+ * @attrib: a variable attribute taken in a TiFileAttr enumeration.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "archived".
+ **/
 TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
 {
   	switch (atrb) 
@@ -86,6 +109,14 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
   	}
 }
 
+/**
+ * tifiles_string_to_attribute:
+ * @str: a variable attribute string like "protected".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a variable attribute taken in the TiFileAttr enumeration .
+ **/
 TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
 	if(!strcmp(str, _("none     ")))
@@ -100,9 +131,17 @@ TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 	return ATTRB_NONE;
 }
 
-TIEXPORT const char *TICALL tifiles_filetype_to_string(TiFileType type)
+/**
+ * tifiles_class_to_string:
+ * @klass: a file class taken in a TiFileClass enumeration.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "backup".
+ **/
+TIEXPORT const char *TICALL tifiles_class_to_string(TiFileClass klass)
 {
-  	switch (type) 
+  	switch (klass) 
 	{
   	case TIFILE_SINGLE: return _("single");
   	case TIFILE_GROUP:  return _("group");
@@ -112,7 +151,15 @@ TIEXPORT const char *TICALL tifiles_filetype_to_string(TiFileType type)
   	}
 }
 
-TIEXPORT TiFileType TICALL tifiles_string_to_filetype(const char *str)
+/**
+ * tifiles_string_to_class:
+ * @str: a file class string like "backup".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a file class taken in the TiFileClass enumeration .
+ **/
+TIEXPORT TiFileClass TICALL tifiles_string_to_class(const char *str)
 {
 	if(!strcmp(str, _("single")))
 		return TIFILE_SINGLE;

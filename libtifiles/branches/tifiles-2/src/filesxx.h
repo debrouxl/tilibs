@@ -22,35 +22,11 @@
 #ifndef __TIFILES_FILESXX__
 #define __TIFILES_FILESXX__
 
+#include "stdints.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/* Structures (common to all calcs) */
-
-typedef struct {
-
-  char folder[9];		// TI9x only
-  char name[9];			// binary name
-  char trans[18];		// translated name (human readable)
-  uint8_t type;
-  uint8_t attr;			// TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
-  uint32_t size;		// uint16_t for TI8x
-  uint8_t *data;
-
-} TiVarEntry;
-
-typedef struct {
-  TiCalcModel calc_type;
-
-  char default_folder[9];	// TI9x only
-  char comment[43];		// Ti8x: 41 max
-  int num_entries;
-  TiVarEntry *entries;
-  uint16_t checksum;
-
-} TiRegular;
-
 
 #include "files8x.h"
 #include "files9x.h"

@@ -24,6 +24,7 @@
 
 #include "export.h"
 #include "stdints.h"
+#include "files8x.h"
 
 /* Structures */
 

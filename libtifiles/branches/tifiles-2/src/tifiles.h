@@ -23,6 +23,7 @@
 #define __TIFILES_H__
 
 #include "export.h"
+#include "stdints.h"
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -36,31 +37,56 @@
 # define LIBTIFILES_VERSION VERSION
 #endif
 
-/* Definitions */
+/* Types */
 
 #define VARNAME_MAX		18	// group/name: 8 + 1 + 8 + 1
 #define TIFILES_NCALCS	12	// # of supported calcs
 
-typedef enum {
+typedef enum 
+{
 	CALC_NONE = 0,
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 } TiCalcModel;
 
-typedef enum {
+typedef enum 
+{
   ATTRB_NONE = 0, ATTRB_LOCKED = 1, ATTRB_PROTECTED, ATTRB_ARCHIVED = 3
 } TiFileAttr;
 
-typedef enum {
+typedef enum 
+{
   TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
 } TiFileClass;
 
-typedef enum {
+typedef enum 
+{
   ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE
 } TiFileEncoding;
 
-#include "typesxx.h"
-#include "filesxx.h"
+/* Structures (common to all calcs) */
+
+typedef struct 
+{
+  char		folder[9];		// TI9x only
+  char		name[9];		// binary name
+  char		trans[18];		// translated name (human readable)
+  uint8_t	type;
+  uint8_t	attr;			// TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
+  uint32_t	size;			// uint16_t for TI8x
+  uint8_t*	data;
+} TiVarEntry;
+
+typedef struct 
+{
+  TiCalcModel calc_type;
+
+  char default_folder[9];	// TI9x only
+  char comment[43];			// Ti8x: 41 max
+  int num_entries;
+  TiVarEntry *entries;
+  uint16_t checksum;
+} TiRegular;
 
 /* Functions */
 
@@ -98,7 +124,7 @@ extern "C" {
   TIEXPORT TiFileClass TICALL tifiles_string_to_class(const char *str);
 
   // transcode.c
-  TIEXPORT char* TICALL tixx_transcode_detokenize(TiCalcModel model, const char *src, char *dst, uint8_t vartype);
+  TIEXPORT char* TICALL tifiles_transcode_detokenize(TiCalcModel model, const char *src, char *dst, uint8_t vartype);
 
   TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcModel model, char* dst, const char *src);
   TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcModel model, char* dst, const char *src);
