@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles 0.5.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2004-06-29 18:07+0200\n"
+"POT-Creation-Date: 2004-05-11 23:01+0200\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -86,33 +86,33 @@ msgstr ""
 "Ceci est un bogue. Signalez-le s'il vous plaît.\n"
 "."
 
-#: src/intrface.c:84
+#: src/intrface.c:78
 #, c-format
 msgid "tifiles library version %s\n"
 msgstr "librairie tifiles version %s\n"
 
-#: src/intrface.c:148
+#: src/intrface.c:142
 msgid "Function not implemented. There is a bug. Please report it."
 msgstr "Fonction non implémentée. Ceci est un bogue. Veuillez le signaler."
 
-#: src/intrface.c:149
+#: src/intrface.c:143
 msgid "Informations:\n"
 msgstr "Informations :\n"
 
-#: src/intrface.c:150
+#: src/intrface.c:144
 #, c-format
 msgid "Calc: %i\n"
 msgstr "Calculatrice : %i\n"
 
-#: src/intrface.c:151
+#: src/intrface.c:145
 msgid "Program halted before crashing...\n"
 msgstr "Le programme s'est terminé anormalement...\n"
 
-#: src/intrface.c:164
+#: src/intrface.c:158
 msgid "settings:\n"
 msgstr "réglages :\n"
 
-#: src/intrface.c:165
+#: src/intrface.c:159
 #, c-format
 msgid "  calc type: %s\n"
 msgstr "  type de calculatrice : %s\n"
