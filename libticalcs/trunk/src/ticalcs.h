@@ -22,9 +22,17 @@
 #ifndef __TICALCS__
 #define __TICALCS__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "calc_def.h"
 #include "calc_int.h"
 #include "calc_err.h"
 #include "calc_ver.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
