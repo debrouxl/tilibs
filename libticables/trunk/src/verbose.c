@@ -38,6 +38,7 @@
 # include <windows.h>
 #endif
 
+#include "gettext.h"
 #include "export.h"
 #include "verbose.h"
 #include "printl.h"
@@ -54,8 +55,9 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 	char buf[256];
 		
 	va_start(ap, format);
-	ret = vsnprintf(buf, 256, format, ap);
-    	ret = printl1(0, "%s", buf);
+	//ret = vsnprintf(buf, 256, format, ap);
+    	//ret = printl1(0, "%s", buf);
+	ret = vprintf(format, ap);
     	va_end(ap);
 	
 	return ret;
@@ -69,9 +71,11 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 	char buf[256];
 		
 	va_start(ap, format);
-	ret = vsnprintf(buf, 256, format, ap);
-    	ret = printl1(2, "%s", buf);
-    	va_end(ap);
+	//ret = vsnprintf(buf, 256, format, ap);
+    	//ret = printl1(2, "%s", buf);
+    	printf(_("err: "));
+	ret = vprintf(format, ap);
+	va_end(ap);
 	
 	return ret;
 }
