@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: tig_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -57,191 +57,199 @@ int tig_close();
 
 int tig_init()
 {
-  int flags = 0;
+  	int flags = 0;
 
 #if defined(__MACOSX__)
-  flags = O_RDWR | O_NDELAY;
+  	flags = O_RDWR | O_NDELAY;
 #elif defined(__BSD__)
-  flags = O_RDWR | O_FSYNC;
-#else
-  flags = O_RDWR | O_SYNC;
+  	flags = O_RDWR | O_FSYNC;
+#elif defined(__LINUX__)
+  	flags = O_RDWR | O_SYNC;
 #endif
 
-  if ((dev_fd = open(io_device, flags)) == -1) {
-    DISPLAY_ERROR(_("unable to open the <%s> serial port.\n"), io_device);
-    return ERR_OPEN_SER_DEV;
-  }
-  // Initialize it: 9600,8,N,1
-  tcgetattr(dev_fd, &termset);
+  	if ((dev_fd = open(io_device, flags)) == -1) {
+    		if(errno == EACCESS)
+      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+      			else
+      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
+    		return ERR_OPEN_SER_DEV;
+  	}
+  
+  	// Initialize it: 9600,8,N,1
+  	tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
-  cfmakeraw(&termset);
+  	cfmakeraw(&termset);
 #else
-  termset.c_iflag = 0;
-  termset.c_oflag = 0;
-  termset.c_cflag = CS8 | CLOCAL | CREAD;
-  termset.c_lflag = 0;
+  	termset.c_iflag = 0;
+  	termset.c_oflag = 0;
+  	termset.c_cflag = CS8 | CLOCAL | CREAD;
+  	termset.c_lflag = 0;
 #endif
 
-  cfsetispeed(&termset, B9600);
-  cfsetospeed(&termset, B9600);
+  	cfsetispeed(&termset, B9600);
+  	cfsetospeed(&termset, B9600);
 
-  START_LOGGING();
+  	START_LOGGING();
 
-  return 0;
+  	return 0;
 }
 
 int tig_open()
 {
-  uint8_t unused[1024];
-  int n;
+  	uint8_t unused[1024];
+  	int n;
 
-  /* Flush the input */
-  termset.c_cc[VMIN] = 0;
-  termset.c_cc[VTIME] = 0;
-  tcsetattr(dev_fd, TCSANOW, &termset);
-  do {
-    n = read(dev_fd, (void *) unused, 1024);
-  } while ((n != 0) && (n != -1));
+  	/* Flush the input */
+  	termset.c_cc[VMIN] = 0;
+  	termset.c_cc[VTIME] = 0;
+  	tcsetattr(dev_fd, TCSANOW, &termset);
+  	do {
+    		n = read(dev_fd, (void *) unused, 1024);
+  	} while ((n != 0) && (n != -1));
 
-  /* and set/restore the timeout */
-  termset.c_cc[VTIME] = time_out;
-  tcsetattr(dev_fd, TCSANOW, &termset);
+  	/* and set/restore the timeout */
+  	termset.c_cc[VTIME] = time_out;
+  	tcsetattr(dev_fd, TCSANOW, &termset);
 
-  tdr.count = 0;
-  toSTART(tdr.start);
+  	tdr.count = 0;
+  	toSTART(tdr.start);
 
-  return 0;
+  	return 0;
 }
 
 int tig_put(uint8_t data)
 {
-  int err;
+  	int err;
 
-  tdr.count++;
-  LOG_DATA(data);
+  	tdr.count++;
+  	LOG_DATA(data);
 
-  err = write(dev_fd, (void *) (&data), 1);
-  switch (err) {
-  case -1:			//error
-    tig_close();
-    return ERR_WRITE_ERROR;
-    break;
-  case 0:			// timeout
-    tig_close();
-    return ERR_WRITE_TIMEOUT;
-    break;
-  }
+  	err = write(dev_fd, (void *) (&data), 1);
+  	switch (err) {
+  	case -1:		//error
+    		tig_close();
+    		return ERR_WRITE_ERROR;
+    	break;
+  	case 0:			// timeout
+    		tig_close();
+    		return ERR_WRITE_TIMEOUT;
+    	break;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int tig_get(uint8_t * data)
 {
-  int err;
+  	int err;
 
-  tcdrain(dev_fd);		// waits for all output written
+  	tcdrain(dev_fd);	// waits for all output written
 
-  err = read(dev_fd, (void *) data, 1);
-  switch (err) {
-  case -1:			//error
-    tig_close();
-    return ERR_READ_ERROR;
-    break;
-  case 0:			// timeout
-    tig_close();
-    return ERR_READ_TIMEOUT;
-    break;
-  }
+  	err = read(dev_fd, (void *) data, 1);
+  	switch (err) {
+  	case -1:		//error
+    		tig_close();
+    		return ERR_READ_ERROR;
+    	break;
+  	case 0:			// timeout
+    		tig_close();
+    		return ERR_READ_TIMEOUT;
+    	break;
+  	}
 
-  tdr.count++;
-  LOG_DATA(*data);
+  	tdr.count++;
+  	LOG_DATA(*data);
 
-  return 0;
+  	return 0;
 }
 
 // Migrate these functions into ioports.c
 static int dcb_read_io()
 {
-  unsigned int flags;
+#ifdef HAVE_TERMIOS_H	
+  	unsigned int flags;
 
-  if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
-    return ERR_IOCTL;
+  	if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
+    		return ERR_IOCTL;
 
-  return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+  	return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+#endif
 }
 
 static int dcb_write_io(int data)
 {
-  unsigned int flags = 0;
+#ifdef HAVE_TERMIOS_H
+  	unsigned int flags = 0;
 
-  flags |= (data & 2) ? TIOCM_RTS : 0;
-  flags |= (data & 1) ? TIOCM_DTR : 0;
-  if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
-    return ERR_IOCTL;
+  	flags |= (data & 2) ? TIOCM_RTS : 0;
+  	flags |= (data & 1) ? TIOCM_DTR : 0;
+  	if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
+    		return ERR_IOCTL;
 
-  return 0;
+  	return 0;
+#endif
 }
 
 int tig_probe()
 {
-  int i;
-  int seq[] = { 0x0, 0x2, 0x0, 0x2 };
+  	int i;
+  	int seq[] = { 0x0, 0x2, 0x0, 0x2 };
 
-  dcb_write_io(3);
-  for (i = 3; i >= 0; i--) {
-    dcb_write_io(i);
-    if ((dcb_read_io() & 0x3) != seq[i]) {
-      dcb_write_io(3);
-      return ERR_PROBE_FAILED;
-    }
-  }
-  dcb_write_io(3);
+  	dcb_write_io(3);
+  	for (i = 3; i >= 0; i--) {
+    		dcb_write_io(i);
+    		if ((dcb_read_io() & 0x3) != seq[i]) {
+      			dcb_write_io(3);
+      		return ERR_PROBE_FAILED;
+    		}
+  	}
+  	dcb_write_io(3);
 
-  return 0;
+  	return 0;
 }
 
 int tig_close()
 {
-  return 0;
+  	return 0;
 }
 
 int tig_exit()
 {
-  STOP_LOGGING();
-  close(dev_fd);
-  return 0;
+  	STOP_LOGGING();
+  	close(dev_fd);
+  	return 0;
 }
 
 int tig_check(int *status)
 {
-  fd_set rdfs;
-  struct timeval tv;
-  int retval;
+  	fd_set rdfs;
+  	struct timeval tv;
+  	int retval;
 
-  *status = STATUS_NONE;
+  	*status = STATUS_NONE;
 
-  FD_ZERO(&rdfs);
-  FD_SET(dev_fd, &rdfs);
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
+  	FD_ZERO(&rdfs);
+  	FD_SET(dev_fd, &rdfs);
+  	tv.tv_sec = 0;
+  	tv.tv_usec = 0;
 
-  retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
-  switch (retval) {
-  case -1:			//error
-    return ERR_READ_ERROR;
-  case 0:			//no data
-    return 0;
-  default:			// data available
-    *status = STATUS_RX;
-    break;
-  }
+  	retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+  	switch (retval) {
+  	case -1:			//error
+    		return ERR_READ_ERROR;
+  	case 0:				//no data
+    		return 0;
+  	default:			// data available
+    		*status = STATUS_RX;
+    	break;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int tig_supported()
 {
-  return SUPPORT_ON;
+  	return SUPPORT_ON;
 }
 
 int tig_register_cable(TicableLinkCable * lc, TicableMethod method)
