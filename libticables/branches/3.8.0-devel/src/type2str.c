@@ -92,15 +92,15 @@ TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str)
 TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc)
 {
 	if(hfc == HFC_ON)
-		return "on";
+		return _("on");
 	else
-		return "off";
+		return _("off");
 }
 
 
 TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str)
 {
-	if(!strcmp(str, "on"))
+	if(!strcmp(str, _("on")))
 		return HFC_ON;
 	else
 		return HFC_OFF;
@@ -147,16 +147,16 @@ const char *TICALL ticable_method_to_string(TicableMethod method)
 {
 	static char buffer[33];
 
-	strcpy(buffer, "unknown");
+	strcpy(buffer, _("unknown"));
 	
 	if (method & IOM_ASM)
-		strcpy(buffer, "direct access (asm)");
+		strcpy(buffer, _("direct access (asm)"));
 	if (method & IOM_API)
-		strcpy(buffer, "direct access (api)");
+		strcpy(buffer, _("direct access (api)"));
 	if (method & IOM_DRV)
-		strcpy(buffer, "kernel mode (module)");
+		strcpy(buffer, _("kernel mode (module)"));
 	if (method & IOM_IOCTL)
-		strcpy(buffer, "user mode (ioctl)");
+		strcpy(buffer, _("user mode (ioctl)"));
 
 	return buffer;
 }
@@ -165,20 +165,20 @@ const char *TICALL ticable_method_to_string(TicableMethod method)
 TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp)
 {
 	if(disp == DSP_OK)
-		return "off";
+		return _("off");
 	else if(disp == DSP_ON)
-		return "on";
+		return _("on");
 	else if(disp == DSP_CLOSE)
-		return "closed";
+		return _("closed");
 }
 
 
 TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str)
 {
-	if(!strcmp(str, "on"))
+	if(!strcmp(str, _("on")))
 		return DSP_ON;
-	else if(!strcmp(str, "off"))
+	else if(!strcmp(str, _("off")))
 		return DSP_OFF;
-	else if(!strcmp(str, "closed"))
+	else if(!strcmp(str, _("closed")))
 		return DSP_CLOSE;
 }
