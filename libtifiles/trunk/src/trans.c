@@ -356,7 +356,7 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname,
    - ASCII charset,
    - ISO8859-1 charset (aka Latin1),
    - UTF-8 charset (Unicode).
-  See: www.unicode.org/charts & www.czyborra.com/utf
+   See: www.unicode.org/charts & www.czyborra.com/utf
 */
 
 /* TI82 */
@@ -839,11 +839,14 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
     case CALC_TI92P:
     case CALC_V200:  f = transcode_from_ti9x_charset_to_ascii; 
       break;
+	default:
+		fprintf(stderr, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+		exit(-1);
     }
 
   while(*src)
-    *dst++ = f(*src++);
-  *dst = '\0';
+    *dest++ = f(*src++);
+  *dest = '\0';
 
   return dest;
 }
@@ -873,6 +876,10 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
     case CALC_TI92P:
     case CALC_V200:  f = transcode_from_ti9x_charset_to_latin1; 
       break;
+	default:
+	  fprintf(stderr, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+		exit(-1);
+	break;
     }
 
   while(*src)
@@ -909,6 +916,10 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
     case CALC_TI92P:
     case CALC_V200:  f = transcode_from_ti9x_charset_to_utf8; 
       break;
+	default:
+	  fprintf(stderr, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+		exit(-1);
+	break;
     }
 
   while(*src) {
@@ -954,9 +965,9 @@ TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void)
 char *tixx_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype, TicalcType calc_type)
 {
-  char detokenized[9];
+  char detokenized[18];
   char *src = detokenized;
-  char dst[18];
+  char dst[18] = { 0 };
 
   tixx_detokenize_varname(varname, detokenized, vartype, calc_type);
 
@@ -976,14 +987,14 @@ TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
 						char *translate,
 						uint8_t vartype)
 {
-  return tixx_translate_varname(varname, translate, vartype, 
+	return tixx_translate_varname(varname, translate, vartype, 
 				tifiles_calc_type);
 }
 
 TIEXPORT char *TICALL tifiles_translate_varname_static(const char *varname,
 						       uint8_t vartype)
 {
-  static char trans[17];
+  static char trans[18];
   
   return tifiles_translate_varname(varname, trans, vartype);
 }

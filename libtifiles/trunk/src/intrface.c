@@ -54,6 +54,8 @@ TIFILES_PRINTF tifiles_printf = printf;
  */
 TIEXPORT int TICALL tifiles_init()
 {
+	int fd;
+
 #ifdef __WIN32__
   HANDLE hDll;
   char LOCALEDIR[65536];
@@ -72,6 +74,7 @@ TIEXPORT int TICALL tifiles_init()
 #if defined(ENABLE_NLS)
   setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, LOCALEDIR);
+
   fprintf(stdout, "%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
   //bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
   textdomain(PACKAGE);
