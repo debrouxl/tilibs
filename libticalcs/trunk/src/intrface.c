@@ -67,18 +67,18 @@ TIEXPORT int TICALL ticalc_init()
 #endif
 
 #if defined(ENABLE_NLS)
-	DISPLAY("libticalcs: setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	DISPLAY("libticalcs: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	printl(0, "libticalcs: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	printl(0, "libticalcs: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	DISPLAY("libticalcs: textdomain: <%s>\n", textdomain(PACKAGE));
+  	printl(0, "libticalcs: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   tifiles_init();
 
-  DISPLAY(_("Libticalcs: version %s\n"), LIBTICALCS_VERSION);
+  printl(0, _("Libticalcs: version %s\n"), LIBTICALCS_VERSION);
 
   if (strcmp(tifiles_get_version(), LIB_FILES_VERSION_REQUIRED) < 0) {
-    DISPLAY(_
+    printl(0, _
 	    ("Libtifiles: version mismatches. Library version >= <%s> is required.\n"),
 	    LIB_FILES_VERSION_REQUIRED);
     exit(-1);
@@ -154,8 +154,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
 #endif
 #endif
 
-  DISPLAY(_("Libticalcs settings...\n"));
-  DISPLAY(_("  Calc type: %s\n"),
+  printl(0, _("Libticalcs settings...\n"));
+  printl(0, _("  Calc type: %s\n"),
 	  tifiles_calctype_to_string(ticalcs_calc_type));
 
   tcf = calc;
@@ -320,9 +320,9 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     fprintf(stderr,
 	    _
 	    ("Function not implemented. This is a bug. Please report it."));
-    DISPLAY_ERROR(_("Informations:\n"));
-    DISPLAY_ERROR(_("Calc: %i\n"), type);
-    DISPLAY_ERROR(_("Program halted before crashing...\n"));
+    printl(2, _("Informations:\n"));
+    printl(2, _("Calc: %i\n"), type);
+    printl(2, _("Program halted before crashing...\n"));
     exit(-1);
     break;
   }

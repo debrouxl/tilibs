@@ -153,6 +153,10 @@ typedef struct {
 } TicalcFunctions;
 typedef TicalcFunctions TicalcFncts;
 
+/* 
+	Callback 
+*/
+typedef int (*TICALC_PRINT) (int level, const char *format, ...);
 
 /*********************/
 /* Macro definitions */

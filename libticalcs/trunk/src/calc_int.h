@@ -99,6 +99,9 @@ extern "C" {
   TIEXPORT TicalcPathType TICALL ticalc_string_to_path(const char *str);
   
   TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action);
+  
+  // printl.c
+  TIEXPORT TICALC_PRINT ticalc_set_printl(TICALC_PRINT new_printl);
 
 	/**************/
 	/* Deprecated */

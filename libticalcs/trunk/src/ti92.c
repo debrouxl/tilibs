@@ -59,7 +59,7 @@ int ti92_isready(void)
 {
   uint16_t status;
 
-  DISPLAY(_("Is calculator ready ?\n"));
+  printl(0, _("Is calculator ready ?\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -94,7 +94,7 @@ int ti92_screendump(uint8_t ** bitmap, int mask_mode,
   uint32_t max_cnt;
   int err;
 
-  DISPLAY(_("Receiving screendump...\n"));
+  printl(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -122,7 +122,7 @@ int ti92_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(err)};
   TRYF(ti92_send_ACK());
 
-  DISPLAY(_("Done.\n"));
+  printl(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -144,7 +144,7 @@ int ti92_directorylist(TNode ** tree, uint32_t * memory)
   TRYF(cable->open());
   update_start();
 
-  DISPLAY(_("Directory listing...\n"));
+  printl(0, _("Directory listing...\n"));
 
   TRYF(ti92_send_REQ(0, TI92_RDIR, ""));
   TRYF(ti92_recv_ACK(NULL));
@@ -185,10 +185,10 @@ int ti92_directorylist(TNode ** tree, uint32_t * memory)
       t_node_append(folder, node);
     }
 
-    DISPLAY(_("Name: %8s | "), ve->name);
-    DISPLAY(_("Type: %8s | "), tifiles_vartype2string(ve->type));
-    DISPLAY(_("Attr: %i  | "), ve->attr);
-    DISPLAY(_("Size: %08X\n"), ve->size);
+    printl(0, _("Name: %8s | "), ve->name);
+    printl(0, _("Type: %8s | "), tifiles_vartype2string(ve->type));
+    printl(0, _("Attr: %i  | "), ve->attr);
+    printl(0, _("Size: %08X\n"), ve->size);
 
     TRYF(ti92_send_ACK());
     err = ti92_recv_CONT();
@@ -221,7 +221,7 @@ int ti92_recv_backup(const char *filename, int mask_mode)
   uint32_t unused;
   uint8_t *ptr;
 
-  DISPLAY(_("Receiving backup...\n"));
+  printl(0, _("Receiving backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -276,7 +276,7 @@ int ti92_send_backup(const char *filename, int mask_mode)
   Ti9xBackup content = { 0 };
   int i, nblocks;
 
-  DISPLAY(_("Sending backup...\n"));
+  printl(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -329,7 +329,7 @@ int ti92_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   uint32_t unused;
   uint8_t varname[18], utf8[35];
 
-  DISPLAY(_("Receiving variable(s)...\n"));
+  printl(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -406,7 +406,7 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
   int i;
   uint16_t status;
 
-  DISPLAY(_("Sending variable(s)...\n"));
+  printl(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -425,7 +425,7 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
     if (actions == NULL)	// backup or old behaviour
       strcpy(varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
-      DISPLAY(_(" '%s' has been skipped !\n"), entry->name);
+      printl(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
       strcpy(varname, actions[i] + 1);
@@ -455,7 +455,7 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
     TRYF(ti92_send_EOT());
     TRYF(ti92_recv_ACK(NULL));
 
-    DISPLAY("\n");
+    printl(0, "\n");
   }
 
   ti9x_free_regular_content(&content);
@@ -490,7 +490,7 @@ int ti92_dump_rom(const char *filename, int mask_mode)
   FILE *f, *file;
   uint16_t checksum, sum;
 
-  DISPLAY(_("ROM dumping...\n"));
+  printl(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM92_FILE, "wb");

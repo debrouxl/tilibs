@@ -73,7 +73,7 @@ int ti82_screendump(uint8_t ** bitmap, int mask_mode,
   uint16_t max_cnt;
 
 
-  DISPLAY(_("Receiving screendump...\n"));
+  printl(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -100,7 +100,7 @@ int ti82_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(ti82_recv_XDP(&max_cnt, *bitmap));
   TRYF(ti82_send_ACK());
 
-  DISPLAY(_("Done.\n"));
+  printl(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -114,7 +114,7 @@ int ti82_recv_backup(const char *filename, int mask_mode)
   Ti8xBackup *content;
   uint8_t varname[9] = { 0 };
 
-  DISPLAY(_("Receiving backup...\n"));
+  printl(0, _("Receiving backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -167,7 +167,7 @@ int ti82_send_backup(const char *filename, int mask_mode)
   uint8_t rej_code;
   uint16_t status;
 
-  DISPLAY(_("Sending backup...\n"));
+  printl(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -237,7 +237,7 @@ int ti82_recv_var(char *filename, int mask_mode, TiVarEntry * unused)
   int err = 0;
   char *fn = NULL;
 
-  DISPLAY(_("Receiving variable(s)...\n"));
+  printl(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -311,7 +311,7 @@ int ti82_send_var(const char *filename, int mask_mode)
   uint8_t rej_code;
   uint16_t status;
 
-  DISPLAY(_("Sending variable(s)...\n"));
+  printl(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -358,7 +358,7 @@ int ti82_send_var(const char *filename, int mask_mode)
     TRYF(ti82_send_XDP(entry->size, entry->data));
     TRYF(ti82_recv_ACK(&status));
 
-    DISPLAY("\n");
+    printl(0, "\n");
   }
 
   if ((mask_mode & MODE_SEND_ONE_VAR) || (mask_mode & MODE_SEND_LAST_VAR)) {
@@ -400,7 +400,7 @@ int ti82_dump_rom(const char *filename, int mask_mode)
   int err;
   int b = 0;
 
-  DISPLAY(_("ROM dumping...\n"));
+  printl(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM82_FILE, "wb");

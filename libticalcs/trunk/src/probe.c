@@ -42,7 +42,7 @@ int tixx_recv_ACK(uint8_t * mid)
   uint8_t host, cmd;
   uint16_t status;
 
-  DISPLAY(" TI->PC: ACK");
+  printl(0, " TI->PC: ACK");
   TRYF(recv_packet(&host, &cmd, &status, NULL));
 
   *mid = host;
@@ -69,120 +69,120 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
   int err;
   uint8_t data;
 
-  DISPLAY(_("Probing calculator...\n"));
+  printl(0, _("Probing calculator...\n"));
 
   /* Test for a TI 89 or a TI92+ */
-  DISPLAY("Trying TI89/TI92+... ");
+  printl(0, "Trying TI89/TI92+... ");
   TRYF(cable->open());
 
-  DISPLAY(" PC->TI: SCR\n");
+  printl(0, " PC->TI: SCR\n");
   TRYF(send_packet(PC_TI89, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X/%02X> ", PC_TI89, data);
+  printl(0, "<%02X/%02X> ", PC_TI89, data);
   TRYF(cable->close());
 
   if (!err && (data == TI89_PC)) {
-    DISPLAY("OK (TI89) !\n");
+    printl(0, "OK (TI89) !\n");
     *calc_type = CALC_TI89;
 
     return 0;
   } else if (!err && (data == TI92p_PC)) {
-    DISPLAY("OK (TI92+) !\n");
+    printl(0, "OK (TI92+) !\n");
     *calc_type = CALC_TI92P;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
 
   /* Test for a TI92 */
-  DISPLAY("Trying TI92... ");
+  printl(0, "Trying TI92... ");
   TRYF(send_packet(PC_TI92, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X/%02X> ", PC_TI92, data);
+  printl(0, "<%02X/%02X> ", PC_TI92, data);
   TRYF(cable->close());
 
   if (!err && (data == TI92_PC)) {
-    DISPLAY("OK !\n");
+    printl(0, "OK !\n");
     *calc_type = CALC_TI92;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
 
   /* Test for a TI86 before a TI85 */
-  DISPLAY("Trying TI86... ");
+  printl(0, "Trying TI86... ");
   TRYF(cable->open());
   TRYF(send_packet(PC_TI86, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X/%02X> ", PC_TI86, data);
+  printl(0, "<%02X/%02X> ", PC_TI86, data);
   TRYF(cable->close());
 
   if (!err && (data == TI86_PC)) {
-    DISPLAY("OK !\n");
+    printl(0, "OK !\n");
     *calc_type = CALC_TI86;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
 
   /* Test for a TI85 */
-  DISPLAY("Trying TI85... ");
+  printl(0, "Trying TI85... ");
   TRYF(cable->open());
   TRYF(send_packet(PC_TI85, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X/%02X> ", PC_TI85, data);
+  printl(0, "<%02X/%02X> ", PC_TI85, data);
   TRYF(cable->close());
 
   if (!err && (data == TI85_PC)) {
-    DISPLAY("OK !\n");
+    printl(0, "OK !\n");
     *calc_type = CALC_TI85;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
 
   /* Test for a TI83 before a TI82 */
-  DISPLAY(_("Trying TI83... "));
+  printl(0, _("Trying TI83... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI83, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X/%02X> ", PC_TI82, data);
+  printl(0, "<%02X/%02X> ", PC_TI82, data);
   TRYF(cable->close());
 
   if (!err && (data == TI83_PC)) {
-    DISPLAY("OK !\n");
+    printl(0, "OK !\n");
     *calc_type = CALC_TI83;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
 
   /* Test for a TI82 */
-  DISPLAY(_("Trying TI82... "));
+  printl(0, _("Trying TI82... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI83, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
-  DISPLAY("<%02X> ", data);
+  printl(0, "<%02X> ", data);
   TRYF(cable->close());
 
   if (!err && (data == TI82_PC)) {
-    DISPLAY("OK !\n");
+    printl(0, "OK !\n");
     *calc_type = CALC_TI82;
 
     return 0;
   } else {
-    DISPLAY("NOK.\n");
+    printl(0, "NOK.\n");
   }
   /* Next calc */
 
@@ -193,7 +193,7 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
 /*
   Check if the calculator is ready and detect the type.
   Works only with TI73/83+/89/92+ calculators (FLASH). It could work with an 
-  V200 but it returns the same ID as V200...
+  V200 but it returns the same ID as TI92+...
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise.
 */
@@ -209,12 +209,12 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
     return 0;
 
   TRYF(cable->open());
-  DISPLAY(_("Is calculator ready (and check type) ?\n"));
+  printl(0, _("Is calculator ready (and check type) ?\n"));
 
-  DISPLAY(" PC->TI: RDY?\n");
+  printl(0, " PC->TI: RDY?\n");
   TRYF(send_packet(PC_TIXX, CMD_RDY, 2, NULL));
 
-  DISPLAY(" TI->PC: ACK");
+  printl(0, " TI->PC: ACK");
   TRYF(cable->get(&host));
   TRYF(cable->get(&cmd));
   TRYF(cable->get(&st1));
@@ -222,7 +222,7 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
   status = (st1 << 8) | st2;
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
-  DISPLAY(_("\nStatus = %04X\n"), status);
+  printl(0, _("\nStatus = %04X\n"), status);
 
   // 0x98: TI89, 0x88: TI92+/V200, 0x73: TI83+, 0x74: TI73
   switch (host) {
@@ -250,8 +250,8 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
   if ((status & 1) != 0)
     return ERR_NOT_READY;
 
-  DISPLAY(_("The calculator is ready.\n"));
-  DISPLAY(_("Calculator type: %s\n"),
+  printl(0, _("The calculator is ready.\n"));
+  printl(0, _("Calculator type: %s\n"),
 	  (*calc_type == CALC_TI83P) ? "TI83+" :
 	  (*calc_type == CALC_TI89) ? "TI89" :
 	  (*calc_type == CALC_TI92P) ? "TI92+" :

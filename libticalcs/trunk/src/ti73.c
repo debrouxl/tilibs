@@ -58,7 +58,7 @@ int ti73_isready(void)
 {
   uint16_t status;
 
-  DISPLAY(_("Is calculator ready ?\n"));
+  printl(0, _("Is calculator ready ?\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -92,7 +92,7 @@ int ti73_directorylist(TNode ** tree, uint32_t * memory)
   uint16_t unused;
   TNode *vars, *apps, *folder;
 
-  DISPLAY(_("Directory listing...\n"));
+  printl(0, _("Directory listing...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -154,7 +154,7 @@ int ti73_screendump(uint8_t ** bitmap, int mask_mode,
   uint16_t max_cnt;
   int err;
 
-  DISPLAY(_("Receiving screendump...\n"));
+  printl(0, _("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -182,7 +182,7 @@ int ti73_screendump(uint8_t ** bitmap, int mask_mode,
   TRYF(err)};
   TRYF(ti73_send_ACK());
 
-  DISPLAY(_("Done.\n"));
+  printl(0, _("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -197,7 +197,7 @@ int ti73_recv_backup(const char *filename, int mask_mode)
   uint8_t varname[9] = { 0 };
   uint8_t attr;
 
-  DISPLAY(_("Receiving backup...\n"));
+  printl(0, _("Receiving backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -254,7 +254,7 @@ int ti73_send_backup(const char *filename, int mask_mode)
   uint8_t varname[9];
   uint8_t rej_code;
 
-  DISPLAY(_("Sending backup...\n"));
+  printl(0, _("Sending backup...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -317,7 +317,7 @@ int ti73_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   char *fn;
   static int nvar = 0;
 
-  DISPLAY(_("Receiving variable(s)...\n"));
+  printl(0, _("Receiving variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -388,7 +388,7 @@ int ti73_send_var(const char *filename, int mask_mode, char **actions)
   uint8_t rej_code;
   uint8_t attrb;
 
-  DISPLAY(_("Sending variable(s)...\n"));
+  printl(0, _("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -406,7 +406,7 @@ int ti73_send_var(const char *filename, int mask_mode, char **actions)
     if (actions == NULL)	// backup or old behaviour
       strcpy(varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
-      DISPLAY(_(" '%s' has been skipped !\n"), entry->name);
+      printl(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
       strcpy(varname, actions[i] + 1);
@@ -439,7 +439,7 @@ int ti73_send_var(const char *filename, int mask_mode, char **actions)
     TRYF(ti73_send_XDP(entry->size, entry->data));
     TRYF(ti73_recv_ACK(NULL));
 
-    DISPLAY("\n");
+    printl(0, "\n");
   }
 
   TRYF(ti73_send_EOT());
@@ -455,7 +455,7 @@ int ti73_send_flash(const char *filename, int mask_mode)
   Ti8xFlash content = { 0 };
   int i;
 
-  DISPLAY(_("Sending FLASH app/os...\n"));
+  printl(0, _("Sending FLASH app/os...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -521,7 +521,7 @@ int ti73_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
   int npages;
   uint32_t size = 0;
 
-  DISPLAY(_("Receiving FLASH application...\n"));
+  printl(0, _("Receiving FLASH application...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
@@ -596,7 +596,7 @@ int ti73_dump_rom(const char *filename, int mask_mode)
   int err;
   int b = 0;;
 
-  DISPLAY(_("ROM dumping...\n"));
+  printl(0, _("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM73_FILE, "wb");
@@ -694,7 +694,7 @@ int ti73_get_idlist(char *id)
   uint8_t varname[9];
   uint8_t varattr;
 
-  DISPLAY(_("Getting ID list...\n"));
+  printl(0, _("Getting ID list...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
