@@ -128,13 +128,13 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 locale_dir = @locale_dir@
 
-SUBDIRS = . docs macros man src tests win32 po intl
+SUBDIRS = . docs intl macros man po src tests #win32
 
 # Script to install
 bin_SCRIPTS = ticalcs-config
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO docs osx
+EXTRA_DIST = LOGO build docs
 
 #distclean:
 #	rm -f *.log *.scan log
@@ -150,10 +150,10 @@ ticalcs.pc
 SCRIPTS =  $(bin_SCRIPTS)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
-INSTALL Makefile.am Makefile.in aclocal.m4 config.guess config.h.in \
-config.sub configure configure.in install-sh libticalcs.lsm.in \
-libticalcs.spec.in ltmain.sh missing mkinstalldirs ticalcs-config.in \
-ticalcs.pc.in
+INSTALL Makefile.am Makefile.in NEWS aclocal.m4 config.guess \
+config.h.in config.sub configure configure.in install-sh \
+libticalcs.lsm.in libticalcs.spec.in ltmain.sh missing mkinstalldirs \
+ticalcs-config.in ticalcs.pc.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

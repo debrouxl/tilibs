@@ -27009,7 +27009,7 @@ LDFLAGS="$LDFLAGS $INTLLIBS -g"
 
 
 
-                                                                                                                                            ac_config_files="$ac_config_files Makefile docs/Makefile macros/Makefile man/Makefile man/ticalcs-config.1 src/Makefile tests/Makefile win32/Makefile intl/Makefile po/Makefile.in ticalcs-config libticalcs.lsm libticalcs.spec ticalcs.pc"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile docs/Makefile macros/Makefile man/Makefile man/ticalcs-config.1 src/Makefile tests/Makefile intl/Makefile po/Makefile.in ticalcs-config libticalcs.lsm libticalcs.spec ticalcs.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -27559,7 +27559,6 @@ do
   "man/ticalcs-config.1" ) CONFIG_FILES="$CONFIG_FILES man/ticalcs-config.1" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "win32/Makefile" ) CONFIG_FILES="$CONFIG_FILES win32/Makefile" ;;
   "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
   "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "ticalcs-config" ) CONFIG_FILES="$CONFIG_FILES ticalcs-config" ;;

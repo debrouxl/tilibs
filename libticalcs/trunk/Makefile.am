@@ -1,13 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = . docs macros man src tests win32 po intl
+SUBDIRS = . docs intl macros man po src tests #win32
 
 # Script to install
 bin_SCRIPTS = ticalcs-config
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO docs osx
+EXTRA_DIST = LOGO build docs
 
 if OS_BSD
  pkgconfigdir = $(prefix)/libdata/pkgconfig
