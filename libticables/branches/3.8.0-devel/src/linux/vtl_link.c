@@ -108,6 +108,29 @@ int vtl_init()
   	return 0;
 }
 
+int vtl_exit()
+{
+  	if (rd[p - 1]) {
+    		/* Close the pipe */
+    		if (close(rd[p - 1]) == -1) {
+      			return ERR_CLOSE_PIPE;
+  	  	}
+    		rd[p - 1] = 0;
+  	}
+  	
+  	if (wr[p - 1]) {
+    		/* Close the pipe */
+    		if (close(wr[p - 1]) == -1) {
+      			return ERR_CLOSE_PIPE;
+    		}
+    		wr[p - 1] = 0;
+  	}
+  	
+  	ref_cnt--;
+
+  	return 0;
+}
+
 int vtl_open()
 {
   	uint8_t d;
@@ -122,6 +145,11 @@ int vtl_open()
   	tdr.count = 0;
   	toSTART(tdr.start);
 
+  	return 0;
+}
+
+int vtl_close()
+{
   	return 0;
 }
 
@@ -191,39 +219,6 @@ int vtl_get(uint8_t * data)
   	return 0;
 }
 
-int vtl_probe()
-{
-  	return 0;
-}
-
-int vtl_close()
-{
-  	return 0;
-}
-
-int vtl_exit()
-{
-  	if (rd[p - 1]) {
-    		/* Close the pipe */
-    		if (close(rd[p - 1]) == -1) {
-      			return ERR_CLOSE_PIPE;
-  	  	}
-    		rd[p - 1] = 0;
-  	}
-  	
-  	if (wr[p - 1]) {
-    		/* Close the pipe */
-    		if (close(wr[p - 1]) == -1) {
-      			return ERR_CLOSE_PIPE;
-    		}
-    		wr[p - 1] = 0;
-  	}
-  	
-  	ref_cnt--;
-
-  	return 0;
-}
-
 int vtl_check(int *status)
 {
   	int n = 0;
@@ -246,6 +241,11 @@ int vtl_check(int *status)
     		}
   	}
 
+  	return 0;
+}
+
+int vtl_probe()
+{
   	return 0;
 }
 

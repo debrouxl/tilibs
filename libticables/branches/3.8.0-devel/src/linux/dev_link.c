@@ -116,11 +116,27 @@ int dev_init()
   	return 0;
 }
 
+int dev_exit()
+{
+  	STOP_LOGGING();
+  	if (dev_fd) {
+    		close(dev_fd);
+    		dev_fd = 0;
+  	}
+
+  	return 0;
+}
+
 int dev_open(void)
 {
   	tdr.count = 0;
   	toSTART(tdr.start);
 
+  	return 0;
+}
+
+int dev_close(void)
+{
   	return 0;
 }
 
@@ -165,27 +181,6 @@ int dev_get(uint8_t * data)
   	return 0;
 }
 
-int dev_probe(void)
-{
-  	return 0;
-}
-
-int dev_close(void)
-{
-  	return 0;
-}
-
-int dev_exit()
-{
-  	STOP_LOGGING();
-  	if (dev_fd) {
-    		close(dev_fd);
-    		dev_fd = 0;
-  	}
-
-  	return 0;
-}
-
 int dev_check(int *status)
 {
   	int n = 0;
@@ -207,6 +202,11 @@ int dev_check(int *status)
     		}
   	}
 
+  	return 0;
+}
+
+int dev_probe(void)
+{
   	return 0;
 }
 

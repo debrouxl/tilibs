@@ -49,7 +49,7 @@
    decrease (1KB/s instead of 5KB/s).
    Another way is to use partially buffered write operations: send consecutive
    blocks as a whole but partial block byte per byte. This is the best 
-   compromise.
+   compromise and it works fine !
 
    - another particular effect (quirk): sometimes (usually when calc need to 
    reply and takes a while), a read call can returns with neither data 
@@ -198,7 +198,7 @@ int slv_open2()
   	}
 
 #if !defined(__BSD__)
-  	/* Reset endpoints */
+  	/* Reset out pipe */
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   	if (ret < 0) {
     		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
@@ -214,7 +214,8 @@ int slv_open2()
       			}
     		}
   	}
-
+  	
+	/* Reset in pipe */
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   	if (ret < 0) {
     		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
@@ -232,7 +233,7 @@ int slv_open2()
   	}
 #endif
 
-  	/* Reset buffers */
+  	/* Clear buffers */
   	nBytesRead2 = 0;
   	nBytesWrite2 = 0;
 
@@ -250,7 +251,7 @@ int slv_close2()
 #if defined( BUFFERED_W )
 	int ret;
 
-	/* Flush buffer (last command) */
+	/* Flush write buffer byte per byte (last command) */
 	if (nBytesWrite2 > 0) {
 		ret = send_pblock(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;

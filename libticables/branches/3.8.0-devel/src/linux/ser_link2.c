@@ -74,10 +74,28 @@ int ser_init2()
   	return 0;
 }
 
+int ser_exit2()
+{
+  	TRYC(io_close(com_out, 1));
+  	io_permitted2--;
+  	TRYC(io_close(com_in, 1));
+  	io_permitted2--;
+
+  	return 0;
+}
+
 int ser_open2()
 {
   	tdr.count = 0;
   	toSTART(tdr.start);
+
+  	return 0;
+}
+
+int ser_close2()
+{
+  	if (io_permitted2 == 2)
+    		io_wr(com_out, 3);
 
   	return 0;
 }
@@ -152,6 +170,17 @@ int ser_get2(uint8_t * ch)
   	return 0;
 }
 
+int ser_check2(int *status)
+{
+  	*status = STATUS_NONE;
+
+  	if (!((io_rd(com_in) & 0x30) == 0x30)) {
+    		*status = (STATUS_RX | STATUS_TX);
+  	}
+
+  	return 0;
+}
+
 int ser_probe2()
 {
   	int i, j;
@@ -171,35 +200,6 @@ int ser_probe2()
 	    	}
   	}
   	io_wr(com_out, 3);
-
-  	return 0;
-}
-
-int ser_close2()
-{
-  	if (io_permitted2 == 2)
-    		io_wr(com_out, 3);
-
-  	return 0;
-}
-
-int ser_exit2()
-{
-  	TRYC(io_close(com_out, 1));
-  	io_permitted2--;
-  	TRYC(io_close(com_in, 1));
-  	io_permitted2--;
-
-  	return 0;
-}
-
-int ser_check2(int *status)
-{
-  	*status = STATUS_NONE;
-
-  	if (!((io_rd(com_in) & 0x30) == 0x30)) {
-    		*status = (STATUS_RX | STATUS_TX);
-  	}
 
   	return 0;
 }

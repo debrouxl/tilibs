@@ -54,8 +54,6 @@
 static int dev_fd = 0;
 static struct termios termset;
 
-int tig_close();
-
 int tig_init()
 {
   	int flags = 0;
@@ -95,6 +93,13 @@ int tig_init()
   	return 0;
 }
 
+int tig_exit()
+{
+  	STOP_LOGGING();
+  	close(dev_fd);
+  	return 0;
+}
+
 int tig_open()
 {
   	uint8_t unused[1024];
@@ -118,6 +123,11 @@ int tig_open()
   	return 0;
 }
 
+int tig_close()
+{
+  	return 0;
+}
+
 int tig_put(uint8_t data)
 {
   	int err;
@@ -128,11 +138,9 @@ int tig_put(uint8_t data)
   	err = write(dev_fd, (void *) (&data), 1);
   	switch (err) {
   	case -1:		//error
-    		tig_close();
     		return ERR_WRITE_ERROR;
     	break;
   	case 0:			// timeout
-    		tig_close();
     		return ERR_WRITE_TIMEOUT;
     	break;
   	}
@@ -149,17 +157,42 @@ int tig_get(uint8_t * data)
   	err = read(dev_fd, (void *) data, 1);
   	switch (err) {
   	case -1:		//error
-    		tig_close();
     		return ERR_READ_ERROR;
     	break;
   	case 0:			// timeout
-    		tig_close();
     		return ERR_READ_TIMEOUT;
     	break;
   	}
 
   	tdr.count++;
   	LOG_DATA(*data);
+
+  	return 0;
+}
+
+int tig_check(int *status)
+{
+  	fd_set rdfs;
+  	struct timeval tv;
+  	int retval;
+
+  	*status = STATUS_NONE;
+
+  	FD_ZERO(&rdfs);
+  	FD_SET(dev_fd, &rdfs);
+  	tv.tv_sec = 0;
+  	tv.tv_usec = 0;
+
+  	retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+  	switch (retval) {
+  	case -1:			//error
+    		return ERR_READ_ERROR;
+  	case 0:				//no data
+    		return 0;
+  	default:			// data available
+    		*status = STATUS_RX;
+    	break;
+  	}
 
   	return 0;
 }
@@ -205,45 +238,6 @@ int tig_probe()
     		}
   	}
   	dcb_write_io(3);
-
-  	return 0;
-}
-
-int tig_close()
-{
-  	return 0;
-}
-
-int tig_exit()
-{
-  	STOP_LOGGING();
-  	close(dev_fd);
-  	return 0;
-}
-
-int tig_check(int *status)
-{
-  	fd_set rdfs;
-  	struct timeval tv;
-  	int retval;
-
-  	*status = STATUS_NONE;
-
-  	FD_ZERO(&rdfs);
-  	FD_SET(dev_fd, &rdfs);
-  	tv.tv_sec = 0;
-  	tv.tv_usec = 0;
-
-  	retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
-  	switch (retval) {
-  	case -1:			//error
-    		return ERR_READ_ERROR;
-  	case 0:				//no data
-    		return 0;
-  	default:			// data available
-    		*status = STATUS_RX;
-    	break;
-  	}
 
   	return 0;
 }

@@ -77,6 +77,26 @@ int ser_init()
   	return 0;
 }
 
+int ser_exit()
+{
+  	TRYC(io_close(com_out, 1));
+  	io_permitted--;
+  	TRYC(io_close(com_in, 1));
+  	io_permitted--;
+
+#ifdef __WIN32__
+  	//extern int win32_comport_close(PHANDLE hCom);
+#pragma warning( push )
+#pragma warning( disable : 4013 )
+        TRYC(win32_comport_close(&hCom));
+#pragma warning( pop ) 
+#endif
+
+  	STOP_LOGGING();
+
+  	return 0;
+}
+
 int ser_open()
 {
   	tdr.count = 0;
@@ -86,6 +106,14 @@ int ser_open()
     		return 0;
   	else
     		return ERR_ROOT;
+}
+
+int ser_close()
+{
+  	if (io_permitted == 2)
+    		io_wr(com_out, 3);
+
+  	return 0;
 }
 
 int ser_put(uint8_t data)
@@ -182,6 +210,17 @@ int ser_get(uint8_t * ch)
   	return 0;
 }
 
+int ser_check(int *status)
+{
+  	*status = STATUS_NONE;
+
+  	if (!((io_rd(com_in) & 0x30) == 0x30)) {
+    		*status = (STATUS_RX | STATUS_TX);
+  	}
+
+  	return 0;
+}
+
 int ser_probe()
 {
   	int i, j;
@@ -202,45 +241,6 @@ int ser_probe()
     		}
   	}
   	io_wr(com_out, 3);
-
-  	return 0;
-}
-
-int ser_close()
-{
-  	if (io_permitted == 2)
-    		io_wr(com_out, 3);
-
-  	return 0;
-}
-
-int ser_exit()
-{
-  	TRYC(io_close(com_out, 1));
-  	io_permitted--;
-  	TRYC(io_close(com_in, 1));
-  	io_permitted--;
-
-#ifdef __WIN32__
-  	//extern int win32_comport_close(PHANDLE hCom);
-#pragma warning( push )
-#pragma warning( disable : 4013 )
-        TRYC(win32_comport_close(&hCom));
-#pragma warning( pop ) 
-#endif
-
-  	STOP_LOGGING();
-
-  	return 0;
-}
-
-int ser_check(int *status)
-{
-  	*status = STATUS_NONE;
-
-  	if (!((io_rd(com_in) & 0x30) == 0x30)) {
-    		*status = (STATUS_RX | STATUS_TX);
-  	}
 
   	return 0;
 }

@@ -139,6 +139,29 @@ int vti_init()
   return 0;
 }
 
+int vti_exit()
+{
+#ifdef USE_SHM
+  int i;
+
+  STOP_LOGGING();
+  //printl1(0, "exit\n");
+  /* Detach segment */
+  for (i = 0; i < 2; i++) {
+    if (shmdt(shm[i]) == -1) {
+      printl1(2, "shmdt\n");
+      return ERR_SHM_DETACH;
+    }
+    /* and destroy it */
+    if (shmctl(shmid[i], IPC_RMID, NULL) == -1) {
+      printl1(2, "shmctl\n");
+      return ERR_SHM_RMID;
+    }
+  }
+#endif
+  return 0;
+}
+
 int vti_open()
 {
 #ifdef USE_SHM
@@ -153,6 +176,11 @@ int vti_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int vti_close()
+{
   return 0;
 }
 
@@ -198,39 +226,6 @@ int vti_get(uint8_t * data)
   return 0;
 }
 
-int vti_probe()
-{
-  return 0;
-}
-
-int vti_close()
-{
-  return 0;
-}
-
-int vti_exit()
-{
-#ifdef USE_SHM
-  int i;
-
-  STOP_LOGGING();
-  //printl1(0, "exit\n");
-  /* Detach segment */
-  for (i = 0; i < 2; i++) {
-    if (shmdt(shm[i]) == -1) {
-      printl1(2, "shmdt\n");
-      return ERR_SHM_DETACH;
-    }
-    /* and destroy it */
-    if (shmctl(shmid[i], IPC_RMID, NULL) == -1) {
-      printl1(2, "shmctl\n");
-      return ERR_SHM_RMID;
-    }
-  }
-#endif
-  return 0;
-}
-
 int vti_check(int *status)
 {
 #ifdef USE_SHM
@@ -246,6 +241,15 @@ int vti_check(int *status)
   }
 #endif
   return 0;
+}
+
+int vti_probe()
+{
+#ifdef USE_SHM
+	return !0;
+else
+  	return 0;
+#endif
 }
 
 int vti_supported()

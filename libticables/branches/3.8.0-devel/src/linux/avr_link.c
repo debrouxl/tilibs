@@ -55,8 +55,6 @@ static char tty_dev[1024];
 static int dev_fd = 0;
 static struct termios termset;
 
-int avr_close();
-
 int avr_init()
 {
 	int br = BR9600;
@@ -120,6 +118,13 @@ int avr_init()
 	return 0;
 }
 
+int avr_exit()
+{
+	STOP_LOGGING();
+	close(dev_fd);
+	return 0;
+}
+
 int avr_open()
 {
 	uint8_t unused[1024];
@@ -140,6 +145,11 @@ int avr_open()
 	tdr.count = 0;
 	toSTART(tdr.start);
 	
+	return 0;
+}
+
+int avr_close()
+{
 	return 0;
 }
 
@@ -189,23 +199,6 @@ int avr_get(uint8_t * data)
 	return 0;
 }
 
-int avr_probe()
-{
-	return 0;
-}
-
-int avr_close()
-{
-	return 0;
-}
-
-int avr_exit()
-{
-	STOP_LOGGING();
-	close(dev_fd);
-	return 0;
-}
-
 int avr_check(int *status)
 {
 	fd_set rdfs;
@@ -230,6 +223,11 @@ int avr_check(int *status)
 		break;
 	}
 	
+	return 0;
+}
+
+int avr_probe()
+{
 	return 0;
 }
 

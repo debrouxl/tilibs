@@ -99,6 +99,29 @@ int tie_init()
   return 0;
 }
 
+int tie_exit()
+{
+  STOP_LOGGING();
+
+  if (rd[p]) {
+    /* Close the pipe */
+    if (close(rd[p]) == -1) {
+      return ERR_CLOSE_PIPE;
+    }
+    rd[p] = 0;
+  }
+  if (wr[p]) {
+    /* Close the pipe */
+    if (close(wr[p]) == -1) {
+      return ERR_CLOSE_PIPE;
+    }
+    wr[p] = 0;
+  }
+  ref_cnt--;
+
+  return 0;
+}
+
 int tie_open()
 {
   uint8_t d;
@@ -112,6 +135,11 @@ int tie_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int tie_close()
+{
   return 0;
 }
 
@@ -177,39 +205,6 @@ int tie_get(uint8_t * data)
   return 0;
 }
 
-int tie_probe()
-{
-  return 0;
-}
-
-int tie_close()
-{
-  return 0;
-}
-
-int tie_exit()
-{
-  STOP_LOGGING();
-
-  if (rd[p]) {
-    /* Close the pipe */
-    if (close(rd[p]) == -1) {
-      return ERR_CLOSE_PIPE;
-    }
-    rd[p] = 0;
-  }
-  if (wr[p]) {
-    /* Close the pipe */
-    if (close(wr[p]) == -1) {
-      return ERR_CLOSE_PIPE;
-    }
-    wr[p] = 0;
-  }
-  ref_cnt--;
-
-  return 0;
-}
-
 int tie_check(int *status)
 {
   fd_set rdfs;
@@ -234,6 +229,11 @@ int tie_check(int *status)
     break;
   }
 
+  return 0;
+}
+
+int tie_probe()
+{
   return 0;
 }
 

@@ -70,6 +70,18 @@ int par_init()
   	return 0;
 }
 
+int par_exit()
+{
+  	if (io_close(lpt_adr, 2))
+    		return ERR_ROOT;
+
+  	io_permitted = 0;
+
+  	STOP_LOGGING();
+
+  	return 0;
+}
+
 int par_open()
 {
   	tdr.count = 0;
@@ -79,6 +91,14 @@ int par_open()
     		return 0;
   	else
     		return ERR_ROOT;
+}
+
+int par_close()
+{
+  	if (io_permitted)
+    		io_wr(lpt_out, 3);
+
+  	return 0;
 }
 
 int par_put(uint8_t data)
@@ -179,6 +199,16 @@ int par_get(uint8_t * d)
   	return 0;
 }
 
+int par_check(int *status)
+{
+  	*status = STATUS_NONE;
+  	if (!((io_rd(lpt_in) & 0x30) == 0x30)) {
+    		*status = STATUS_RX | STATUS_TX;
+  	}
+
+  	return 0;
+}
+
 int par_probe()
 {
   	int i, j;
@@ -199,36 +229,6 @@ int par_probe()
     		}
   	}
   	io_wr(lpt_out, 3);
-
-  	return 0;
-}
-
-int par_close()
-{
-  	if (io_permitted)
-    		io_wr(lpt_out, 3);
-
-  	return 0;
-}
-
-int par_exit()
-{
-  	if (io_close(lpt_adr, 2))
-    		return ERR_ROOT;
-
-  	io_permitted = 0;
-
-  	STOP_LOGGING();
-
-  	return 0;
-}
-
-int par_check(int *status)
-{
-  	*status = STATUS_NONE;
-  	if (!((io_rd(lpt_in) & 0x30) == 0x30)) {
-    		*status = STATUS_RX | STATUS_TX;
-  	}
 
   	return 0;
 }

@@ -74,8 +74,8 @@
 #include "externs.h"
 #include "timeout.h"
 
-//#define BUFFERED_W	/* enable buffered write operations         */	     
-#define BUFFERED_R      /* enable buffered read operations (always) */
+#define BUFFERED_W    /* enable buffered write operations	  */ 
+#define BUFFERED_R    /* enable buffered read operations (always) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
 static int nBytesWrite = 0;
@@ -132,7 +132,7 @@ int slv_open(void)
   }
 #endif
 
-	/* Reset buffers */
+	/* Clear buffers */
 	nBytesRead = 0;
 	nBytesWrite = 0;
 
@@ -140,6 +140,37 @@ int slv_open(void)
 	toSTART(tdr.start);
 
   return 0;
+}
+
+static int send_fblock(uint8_t *data, int length);
+static int send_pblock(uint8_t *data, int length);
+
+int slv_close(void)
+{
+#if defined( BUFFERED_W )
+	int ret;
+
+	/* Flush write buffer byte per byte (last command) */
+	if (nBytesWrite2 > 0) {
+		ret = send_pblock(wBuf2, nBytesWrite2);
+		nBytesWrite2 = 0;
+		if(ret) return ret;
+	}
+#endif	
+	
+  	return 0;
+}
+
+int slv_exit()
+{
+  	if (dev_fd) {
+    		close(dev_fd);
+    		dev_fd = 0;
+  	}
+
+  	STOP_LOGGING();
+
+  	return 0;
 }
 
 int slv_put(uint8_t data)
@@ -233,23 +264,7 @@ int slv_get(uint8_t * data)
 
 int slv_probe(void)
 {
-  	return 0;
-}
-
-int slv_close(void)
-{
-  	return 0;
-}
-
-int slv_exit()
-{
-  	if (dev_fd) {
-    		close(dev_fd);
-    		dev_fd = 0;
-  	}
-
-  	STOP_LOGGING();
-
+	// could be done by parsing /proc/bus/usb/devices but usbfs must be mounted
   	return 0;
 }
 
