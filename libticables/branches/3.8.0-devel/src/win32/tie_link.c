@@ -122,6 +122,20 @@ int tie_init(void)
   return 0;
 }
 
+int tie_exit()
+{
+  STOP_LOGGING();
+  /* Close the shared buffer */
+  if (hSendBuf) {
+    UnmapViewOfFile(pSendBuf);
+  }
+  if (hRecvBuf) {
+    UnmapViewOfFile(pRecvBuf);
+  }
+
+  return 0;
+}
+
 int tie_open()
 {
   pSendBuf->start = pSendBuf->end = 0;
@@ -130,6 +144,11 @@ int tie_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int tie_close()
+{
   return 0;
 }
 
@@ -182,30 +201,6 @@ int tie_get(uint8_t * data)
   return 0;
 }
 
-int tie_close()
-{
-  return 0;
-}
-
-int tie_exit()
-{
-  STOP_LOGGING();
-  /* Close the shared buffer */
-  if (hSendBuf) {
-    UnmapViewOfFile(pSendBuf);
-  }
-  if (hRecvBuf) {
-    UnmapViewOfFile(pRecvBuf);
-  }
-
-  return 0;
-}
-
-int tie_probe()
-{
-  return 0;
-}
-
 int tie_check(int *status)
 {
   /* Check if positions are the same */
@@ -214,6 +209,11 @@ int tie_check(int *status)
   else
     *status = STATUS_RX;
 
+  return 0;
+}
+
+int tie_probe()
+{
   return 0;
 }
 

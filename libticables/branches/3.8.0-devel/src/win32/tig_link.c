@@ -123,6 +123,17 @@ int tig_init()
   return 0;
 }
 
+int tig_exit()
+{
+  STOP_LOGGING();
+  if (hCom) {
+    CloseHandle(hCom);
+    hCom = 0;
+  }
+
+  return 0;
+}
+
 int tig_open()
 {
   BOOL fSuccess;
@@ -138,6 +149,11 @@ int tig_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int tig_close()
+{
   return 0;
 }
 
@@ -192,17 +208,26 @@ int tig_get(uint8_t * data)
   return 0;
 }
 
-int tig_close()
+int tig_check(int *status)
 {
-  return 0;
-}
+  DWORD i;
+  BOOL fSuccess;
 
-int tig_exit()
-{
-  STOP_LOGGING();
+  *status = STATUS_NONE;
   if (hCom) {
-    CloseHandle(hCom);
-    hCom = 0;
+    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
+    fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
+    if (fSuccess && (i == 1)) {
+      if (cs.avail == TRUE)
+	return ERR_BYTE_LOST;
+
+      cs.avail = TRUE;
+      *status = STATUS_RX;
+      return 0;
+    } else {
+      *status = STATUS_NONE;
+      return 0;
+    }
   }
 
   return 0;
@@ -248,31 +273,6 @@ int tig_probe()
   //printl1(0, "status: %i\n", status);
   if (status != 0x20)
     return ERR_PROBE_FAILED;
-
-  return 0;
-}
-
-int tig_check(int *status)
-{
-  DWORD i;
-  BOOL fSuccess;
-
-  *status = STATUS_NONE;
-  if (hCom) {
-    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
-    fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
-    if (fSuccess && (i == 1)) {
-      if (cs.avail == TRUE)
-	return ERR_BYTE_LOST;
-
-      cs.avail = TRUE;
-      *status = STATUS_RX;
-      return 0;
-    } else {
-      *status = STATUS_NONE;
-      return 0;
-    }
-  }
 
   return 0;
 }

@@ -139,6 +139,25 @@ int vti_init(unsigned int io_addr, char *dev)
   return 0;
 }
 
+int vti_exit()
+{
+  /* Send an atom */
+  STOP_LOGGING();
+  if (otherWnd) {
+    SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
+    SendMessage(otherWnd, WM_GOODBYE, 0, 0);
+  }
+
+  /* Close the shared buffer */
+  if (hMap) {
+    UnmapViewOfFile(vSendBuf);
+    UnmapViewOfFile(vRecvBuf);
+    CloseHandle(hMap);
+  }
+
+  return 0;
+}
+
 int vti_open()
 {
   //vSendBuf->start = vSendBuf->end = 0;
@@ -147,6 +166,11 @@ int vti_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int vti_close()
+{
   return 0;
 }
 
@@ -198,35 +222,6 @@ int vti_get(uint8_t * data)
   return 0;
 }
 
-int vti_close()
-{
-  return 0;
-}
-
-int vti_exit()
-{
-  /* Send an atom */
-  STOP_LOGGING();
-  if (otherWnd) {
-    SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
-    SendMessage(otherWnd, WM_GOODBYE, 0, 0);
-  }
-
-  /* Close the shared buffer */
-  if (hMap) {
-    UnmapViewOfFile(vSendBuf);
-    UnmapViewOfFile(vRecvBuf);
-    CloseHandle(hMap);
-  }
-
-  return 0;
-}
-
-int vti_probe()
-{
-  return 0;
-}
-
 int vti_check(int *status)
 {
   if (!hMap)
@@ -235,6 +230,11 @@ int vti_check(int *status)
   /* Check if positions are the same */
   *status = !(vRecvBuf->start == vRecvBuf->end);
 
+  return 0;
+}
+
+int vti_probe()
+{
   return 0;
 }
 

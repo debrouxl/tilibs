@@ -140,6 +140,17 @@ int avr_init()
   return 0;
 }
 
+int avr_exit()
+{
+  STOP_LOGGING();
+  if (hCom) {
+    CloseHandle(hCom);
+    hCom = 0;
+  }
+
+  return 0;
+}
+
 int avr_open()
 {
   BOOL fSuccess;
@@ -156,6 +167,11 @@ int avr_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int avr_close()
+{
   return 0;
 }
 
@@ -209,27 +225,6 @@ int avr_get(uint8_t * data)
   return 0;
 }
 
-int avr_close()
-{
-  return 0;
-}
-
-int avr_exit()
-{
-  STOP_LOGGING();
-  if (hCom) {
-    CloseHandle(hCom);
-    hCom = 0;
-  }
-
-  return 0;
-}
-
-int avr_probe()
-{
-  return 0;
-}
-
 int avr_check(int *status)
 {
   DWORD i;
@@ -252,6 +247,11 @@ int avr_check(int *status)
     }
   }
 
+  return 0;
+}
+
+int avr_probe()
+{
   return 0;
 }
 

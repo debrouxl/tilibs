@@ -67,6 +67,16 @@ int vtl_init(unsigned int io_addr, char *dev)
   return 0;
 }
 
+int vtl_exit()
+{
+  if (hPipe) {
+    CloseHandle(hPipe);
+    hPipe = 0;
+  }
+
+  return 0;
+}
+
 int vtl_open()
 {
   BOOL fSuccess;
@@ -82,6 +92,11 @@ int vtl_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int vtl_close()
+{
   return 0;
 }
 
@@ -129,26 +144,6 @@ int vtl_get(uint8_t * data)
   return 0;
 }
 
-int vtl_close()
-{
-  return 0;
-}
-
-int vtl_exit()
-{
-  if (hPipe) {
-    CloseHandle(hPipe);
-    hPipe = 0;
-  }
-
-  return 0;
-}
-
-int vtl_probe()
-{
-  return 0;
-}
-
 int vtl_check(int *status)
 {
   DWORD i;
@@ -171,6 +166,11 @@ int vtl_check(int *status)
     }
   }
 
+  return 0;
+}
+
+int vtl_probe()
+{
   return 0;
 }
 

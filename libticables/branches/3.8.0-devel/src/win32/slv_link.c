@@ -35,26 +35,6 @@
 #include "timeout.h"
 
 /* 
-   Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
-   
-   This link cable use Bulk mode with packets. The max size of a packet is 
-   32 bytes (MAX_PACKET_SIZE/BULKUSB_MAX_TRANSFER_SIZE). 
-   
-   This is transparent for the user because the driver manages all these 
-   things for us. Nethertheless, this fact has some consequences:
-   - it is better (for USB & OS performances) to read/write a set of bytes 
-   rather than byte per byte.
-   - for reading, we have to read up to 32 bytes at a time (even if we need 
-   only 1 byte) and to store them in a buffer for subsequent acesses. 
-   In fact, if we try and get byte per byte, it will not work.
-   - for writing, we don't store bytes in a buffer. It seems better to send
-   data byte per byte (latency ?!).
-   - another particular effect (quirk): sometimes (usually when calc need to 
-   reply and takes a while), a read call can returns with no data or timeout. 
-   Simply retry a read call and it works fine.
-*/
-
-/* 
    This part talk with the USB device driver through the TiglUsb library.
    There are 2 other files: TiglUsb.h (interface) & TiglUsb.lib (linkage).
 */
@@ -170,6 +150,24 @@ int slv_init()
 	return 0;
 }
 
+int slv_exit()
+{
+  int ret;
+
+  STOP_LOGGING();
+
+  ret = dynTiglUsbClose();
+
+  /* Free library handle */
+  if (hDLL != NULL)
+    FreeLibrary(hDLL);
+  hDLL = NULL;
+
+  dllOk = FALSE;
+
+  return 0;
+}
+
 int slv_open()
 {
   int ret;
@@ -189,6 +187,11 @@ int slv_open()
   tdr.count = 0;
   toSTART(tdr.start);
 
+  return 0;
+}
+
+int slv_close()
+{
   return 0;
 }
 
@@ -228,27 +231,9 @@ int slv_get(uint8_t * data)
   return 0;
 }
 
-int slv_close()
+int slv_check(int *status)
 {
-  return 0;
-}
-
-int slv_exit()
-{
-  int ret;
-
-  STOP_LOGGING();
-
-  ret = dynTiglUsbClose();
-
-  /* Free library handle */
-  if (hDLL != NULL)
-    FreeLibrary(hDLL);
-  hDLL = NULL;
-
-  dllOk = FALSE;
-
-  return 0;
+  return dynTiglUsbCheck(status);
 }
 
 int slv_probe()
@@ -268,11 +253,6 @@ int slv_probe()
    */
 
   return 0;
-}
-
-int slv_check(int *status)
-{
-  return dynTiglUsbCheck(status);
 }
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
