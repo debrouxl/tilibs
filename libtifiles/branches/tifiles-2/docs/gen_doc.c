@@ -3,41 +3,112 @@
 #include <string.h>
 
 #define TOKEN1	"==========[ List of entries ]=========="
-#define TOKEN2	"==========[end of list]=========="
 
 GList *topics = NULL;
 
 typedef struct
 {
 	gchar*	filename;
+	gchar*  basename;
 	gchar*	title;
+	GList*  fncts;
 } topic;
+
+// Open a C or H file and search for comment on function.
+static int get_list_of_functions(const char *filename, GList **fncts)
+{
+	FILE *f;
+	char line[65536];
+	
+	f = fopen(filename, "rt");
+	if(f == NULL)
+	{
+		printf("Can't open this file: <%s>\n", filename);
+		return -1;
+	}
+
+	while(!feof(f))
+	{
+		fgets(line, sizeof(line), f);
+		if(line[0] == '/' && line[1] == '*' && line[2] == '*' &&
+			line[3] != '*')
+		{
+			char *d;
+			gchar *s;
+
+			fgets(line, sizeof(line), f);
+			d = strrchr(line, ':');
+			if(d != NULL)
+				*d = '\0';
+			
+			s = g_strdup(line+3);
+			//printf("[%s]\n", s);
+			*fncts = g_list_append(*fncts, s);
+		}
+	}
+
+	fclose(f);
+
+	return 0;
+}
+
+static int write_api_index(FILE *fo)
+{
+	GList *l, *m;
+	
+	// parse topics and functions
+	for(l = topics; l != NULL; l = g_list_next(l))
+	{
+		topic *t = (topic *)l->data;
+		GList *fncts = t->fncts;
+		
+		fprintf(fo, "<span style=\"font-weight:bold;\">\%s</span><br>\n", t->title);
+		fprintf(fo, "<ul>\n");
+		for(m = fncts; m != NULL; m = g_list_next(m))
+			fprintf(fo, "<li><a href=\"%s.htm#%s\">%s</a></li>\n", 
+				t->basename, (char *)m->data, (char *)m->data);
+		fprintf(fo, "</ul>\n");
+	}
+
+	return 0;
+}
 
 int main(int argc, char **argv)
 {
-	char *folder;
+	char *src_folder;
+	char *doc_folder;
 	char *txt_file;
 	char *src_file;
 	char *dst_file;
 	FILE *f;
 	FILE *fi, *fo;
 	char line[65536];
-	int skip = 0;
+	GList *l, *l2;
 
 	// Check and get program arguments
 #if 0
-	if(argc < 2)
+	if(argc < 3)
 		return -1;
 
-	folder = argv[1];
+	doc_folder = argv[1];
+	src_folder = argv[2];
 #else
 	// test
-	folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
+	//doc_folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
+
+	src_folder = "/home/devel/tilp_project/libs/files-2/src";
+	doc_folder = "/home/devel/tilp_project/libs/files-2/docs";
 #endif
-	printf("Base folder: <%s>\n", folder);
+	printf("Doc folder: <%s>\n", doc_folder);
+	printf("Src folder: <%s>\n", src_folder);
+
+	/* Part 1: get list of topics */
 
 	// Open list of topics ("api.txt")
-	txt_file = g_strconcat(folder, G_DIR_SEPARATOR_S, "api", NULL);
+	txt_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
+			       "tmpl", G_DIR_SEPARATOR_S, 
+			       "api.txt", NULL);
+	printf("Read list of topic from <%s>.\n", txt_file);
 	f = fopen(txt_file, "rt");
 	if(f == NULL)
 	{
@@ -52,10 +123,11 @@ int main(int argc, char **argv)
 		topic *t;
 
 		fgets(line, sizeof(line), f);
-		str_array = g_strsplit(line, ":", 2);
+		str_array = g_strsplit(line, " : ", 2);
 
 		t = g_malloc0(sizeof(topic));
 		t->filename = str_array[0];
+		t->basename = g_strdup("foobar");
 		t->title = str_array[1];
 
 		topics = g_list_append(topics, t);
@@ -64,10 +136,25 @@ int main(int argc, char **argv)
 	// Close file
 	fclose(f);
 
-	//===
+	/* Part 2: get list of functions from topics */
+	printf("Get lists of functions from topics.\n");
+	for(l = topics; l != NULL; l = g_list_next(l))
+	{
+		topic *t = (topic *)l->data;
+		gchar *path;
+		
+		path = g_strconcat(src_folder, G_DIR_SEPARATOR_S,
+				   t->filename, NULL);
+		get_list_of_functions(path, &t->fncts);
+		g_free(path);
+	}
+
+	/* Part 3: write API index */
 
 	// Open "api.html" file
-	src_file = g_strconcat(folder, G_DIR_SEPARATOR_S, "\\tmpl\\api.html", NULL);
+	src_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
+			       "tmpl", G_DIR_SEPARATOR_S, "api.html", 
+			       NULL);
 	fi = fopen(src_file, "rt");
 	if(fi == NULL)
 	{
@@ -75,7 +162,10 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	dst_file = g_strconcat(folder, G_DIR_SEPARATOR_S, "\\html\\api.html", NULL);
+	dst_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
+			       "html", G_DIR_SEPARATOR_S, "api.html", 
+			       NULL);
+	printf("Write API index in <%s>.\n", dst_file);
 	fo = fopen(dst_file, "wt");
 	if(fo == NULL)
 	{
@@ -83,25 +173,40 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	// Search for list of topics
+	// Insert list of topics and functions
 	while(!feof(fi))
 	{
 		fgets(line, sizeof(line), fi);
 
 		if(strstr(line, TOKEN1))
-			skip = !0;
+		{
+			// parse topics and functions
+			write_api_index(fo);
 
-		if(!skip)
-			fputs(line, fo);
+			// skip </p>
+			fgets(line, sizeof(line), fi);
+		}
 
-		if(strstr(line, TOKEN2))
-			skip = 0;
+		fputs(line, fo);
 	}
 
 	// Close files
 	fclose(fi);
 	fclose(fo);
-	
+
+	// Free memory
+	for(l = topics; l != NULL; l = g_list_next(l))
+        {
+                topic *t = (topic *)l->data;
+
+		g_free(t->filename);
+		g_free(t->title);
+		
+		for(l2 = t->fncts; l2 != NULL; l2 = g_list_next(l2))
+			g_free(l2->data);
+		g_list_free(t->fncts);
+        }
+	g_list_free(topics);
 	
 	return 0;
 }

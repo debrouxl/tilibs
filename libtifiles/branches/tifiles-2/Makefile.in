@@ -180,7 +180,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = intl/Makefile libtifiles.lsm libtifiles.spec \
-	tifiles.pc
+	tifiles-2.pc
 DIST_SOURCES =
 DATA = $(pkgconfig_DATA)
 
@@ -195,7 +195,7 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
 	aclocal.m4 config.guess config.h.in config.rpath config.sub \
 	configure configure.ac depcomp install-sh libtifiles.lsm.in \
 	libtifiles.spec.in ltmain.sh missing mkinstalldirs \
-	tifiles.pc.in
+	tifiles-2.pc.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -240,7 +240,7 @@ libtifiles.lsm: $(top_builddir)/config.status libtifiles.lsm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libtifiles.spec: $(top_builddir)/config.status libtifiles.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-tifiles.pc: $(top_builddir)/config.status tifiles.pc.in
+tifiles-2.pc: $(top_builddir)/config.status tifiles-2.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:

@@ -3,10 +3,11 @@
 EXTRA_DIST = gen_doc.c
 
 all:
+	cp ./tmpl/*.html ./html
 #  gen_doc .
 
 gen_doc: gen_doc
-	gcc `pkg-config glib-2.0 --cflags --libs` gen_doc.c -o gen_doc
+	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
 
 clean:
 	rm -f ./text/*~ ./html/*.*

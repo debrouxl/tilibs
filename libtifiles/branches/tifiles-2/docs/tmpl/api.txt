@@ -6,5 +6,5 @@ type2str.c : Types <=> Strings conversions
 transcode.c : Variable name translation and charsets
 filetypes.c : File type checking
 misc.c : Miscelaneous
-filesXX.c : Operations on TI files (single/group only)
+filesxx.c : Operations on TI files (single/group only)
 grouped.c : Grouping/Ungrouping of TI files

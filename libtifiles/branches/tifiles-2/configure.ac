@@ -28,7 +28,7 @@ AM_MAINTAINER_MODE
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/intrface.c])
+AC_CONFIG_SRCDIR([src/tifiles.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
@@ -39,7 +39,7 @@ AC_CONFIG_FILES([
   tests/Makefile
   libtifiles.lsm
   libtifiles.spec
-  tifiles.pc
+  tifiles-2.pc
 ])
 
 # Setup libtool.
