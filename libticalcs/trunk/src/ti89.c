@@ -785,7 +785,7 @@ int ti89_dump_rom(const char *filename, int mask_mode)
       return -1;
 
     elapsed = (long) difftime(time(NULL), start);
-    estimated = (long) (elapsed * (float) (1024 * 2) / i);
+    estimated = (long) (elapsed * (float) (ROMSIZE) / i);
     remaining = (long) difftime(estimated, elapsed);
     sprintf(buffer, "%s", ctime(&remaining));
     sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
