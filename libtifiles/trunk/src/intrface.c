@@ -47,7 +47,8 @@ TicalcType tifiles_calc_type = CALC_NONE;	// current calc type (context)
 /* Entry points */
 /****************/
 
-static int tifiles_instance = 0;	// counts # of instances
+// not static, must be shared between instances
+int tifiles_instance = 0;	// counts # of instances
 
 /*
   This function should be the first one to call (or the
@@ -56,8 +57,6 @@ static int tifiles_instance = 0;	// counts # of instances
  */
 TIEXPORT int TICALL tifiles_init()
 {
-	int fd;
-
 #ifdef __WIN32__
   	HANDLE hDll;
   	char LOCALEDIR[65536];
@@ -156,8 +155,8 @@ TIEXPORT TicalcType TICALL tifiles_get_calc(void)
 
 static void print_informations(void)
 {
-  printl(0, _("Libtifiles settings...\n"));
-  printl(0, _("  Calc type: %s\n"), 
+  printl(0, _("settings:\n"));
+  printl(0, _("  calc type: %s\n"), 
   	tifiles_calctype_to_string(tifiles_calc_type));
 }
 

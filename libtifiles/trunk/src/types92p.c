@@ -29,6 +29,7 @@
 
 #include "export.h"
 #include "types92p.h"
+#include "printl.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp

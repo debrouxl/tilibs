@@ -29,6 +29,7 @@
 
 #include "export.h"
 #include "types73.h"
+#include "printl.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp

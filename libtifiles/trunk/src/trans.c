@@ -29,9 +29,11 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "stdints.h"
 
+#include "intl3.h"
 #include "typesxx.h"
 #include "file_int.h"
 #include "macros.h"
@@ -841,7 +843,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_ascii; 
       break;
 	default:
-		printf("error", "libtifiles error: unknown calc type. Program halted before crashing !\n");
+		printl(2, _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
 		exit(-1);
     }
 

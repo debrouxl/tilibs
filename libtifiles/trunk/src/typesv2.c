@@ -29,6 +29,7 @@
 
 #include "export.h"
 #include "typesv2.h"
+#include "printl.h"
 
 #ifdef __WIN32__
 # define strcasecmp _stricmp
