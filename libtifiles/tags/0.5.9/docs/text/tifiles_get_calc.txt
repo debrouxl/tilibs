@@ -1,0 +1,17 @@
+[Main]
+Name=tifiles_get_calc
+Type=Function
+Header=file_int.h
+Definition=int tifiles_get_calc (void);
+
+[Parameters]
+Returns : a calculator model
+
+[Summary]
+Get the calculator used as a current context.
+
+[Explanation]
+...
+
+[See also]
+tifiles_set_calc

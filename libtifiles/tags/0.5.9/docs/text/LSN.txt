@@ -1,0 +1,15 @@
+[Main]
+Name=LSN
+Type=Macro
+Header=macros.h
+Definition=# define LSN(b)
+
+[Parameters]
+b : a byte (8 bits)
+Returns : a nibble (4 bits)
+
+[Summary]
+Returns the least significant nibble.
+
+[See also]
+@MSN@

@@ -1,0 +1,15 @@
+[Main]
+Name=MSW
+Type=Macro
+Header=macros.h
+Definition=# define MSW(l)
+
+[Parameters]
+l : a longword (32 bits)
+Returns : a word (16 bits)
+
+[Summary]
+Returns the most significant word.
+
+[See also]
+@LSW@

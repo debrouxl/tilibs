@@ -1,0 +1,13 @@
+[Main]
+Name=BCD
+Type=Macro
+Header=macros.h
+Definition=# define BCD(b)
+
+[Parameters]
+b : a BCD encoded byte (8 bits)
+Returns : a byte (8 bits)
+
+[Summary]
+Converts the BCD value into a pure binary value.
+Example: 0x13 (13d) -> 0x0D (13d)
