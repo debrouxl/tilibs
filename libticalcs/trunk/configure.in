@@ -17,8 +17,14 @@ AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(VERSION)
 
+AC_ARG_ENABLE(glib2, [  --disable-glib2        use GLib 1.2 instead of 2.0 [default=no]],,disable_glib2=no)
+
 # libtool versioning
-ABI_VERSION=0
+if test "x$disable_glib2" = "xno"; then
+    ABI_VERSION=4
+else
+    ABI_VERSION=0
+fi
 LT_RELEASE=$ABI_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MINOR_VERSION + $ABI_VERSION`
 LT_REVISION=$MICRO_VERSION
@@ -67,7 +73,6 @@ AC_PROG_GCC_TRADITIONAL
 AC_PROG_AWK
 
 # manage different versions of GLib for backward compatibility
-AC_ARG_ENABLE(glib2, [  --disable-glib2        use GLib 1.2 instead of 2.0 [default=no]],,disable_glib2=no)
 
 AC_MSG_CHECKING(whether using GLib2)
 if test "x$disable_glib2" = "xno"; then
