@@ -2,7 +2,7 @@
 Archive=0
 Pack=0
 Packed Variable=
-Project Name=Progress
+Project Name=RomDumper
 GCC Switches=-Os -Wall -W -Wwrite-strings
 GNU Assembler Switches=
 Assembler Switches=-g -t
@@ -51,6 +51,6 @@ Use Return Value=0
 Enable Error Return=0
 Save Screen=0
 [File Editing]
-Open File=C:\Program Files\TIGCC\Projects\Rom Dumper.c
+Open File=
 [Included Files]
 C File 1=Rom Dumper.c
