@@ -35,8 +35,8 @@ TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type)
 {	
 	int v;
 
-	if (type >= TICABLETYPE_MAX)
-    		v = TICABLETYPE_MAX-1;
+	if (type < TICABLETYPE_MAX)
+    		v = type;
   	else
     		v = 0;
 
@@ -118,10 +118,10 @@ TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)
 {
 	int v;
 
-	if (port >= TICABLEPORT_MAX)
-    		v = 0;
-  	else
+	if (port < TICABLEPORT_MAX)
     		v = port;
+  	else
+    		v = 0;
 
   	return TICABLEPORT[v];
 }
