@@ -953,7 +953,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "";
-				FRAMEWORK_VERSION = A;
+				FRAMEWORK_VERSION = B;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /System/Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
@@ -981,7 +981,7 @@
 	<key>CFBundleExecutable</key>
 	<string>libticalcs</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Copyright (C) 1999-2001 Romain LIEVIN, Julien BLACHE</string>
+	<string>Copyright (C) 1999-2002 Romain LIEVIN, Julien BLACHE</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
@@ -993,11 +993,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.7-osx0.0.4</string>
+	<string>3.0.2-osx0.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.7-osx0.0.4</string>
+	<string>3.0.2-osx0.1.0</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

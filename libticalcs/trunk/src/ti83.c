@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -306,7 +306,7 @@ static int send_request(word size, byte type, char *string)
 
 
 
-static int receive_var_header(word *size, byte *type, char *string)
+static int recv_var_header(word *size, byte *type, char *string)
 {
   byte data;
   word sum;
@@ -373,7 +373,7 @@ int ti83_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sc->width=TI83_COLS;
   sc->height=TI83_ROWS;
@@ -428,12 +428,12 @@ int ti83_screendump(byte **bitmap, int mask_mode,
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti83_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti83_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte header[9];
   word block_size;
@@ -446,7 +446,7 @@ int ti83_receive_backup(FILE *file, int mask_mode, longword *version)
   char desc[43]="Backup file received by TiLP";
   long offset;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   file_checksum=0;
   fprintf(file, "**TI83**");
@@ -544,7 +544,7 @@ int ti83_receive_backup(FILE *file, int mask_mode, longword *version)
   fseek(file, 0L, SEEK_END);
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   DISPLAY("\n");
 
   return 0;
@@ -559,7 +559,7 @@ int ti83_send_backup(FILE *file, int mask_mode)
   int j;
   word block_size;
 
-  TRY(cable->open_port());  
+  TRY(cable->open());  
   update_start();
   DISPLAY("Sending backup...\n");
   fgets(str, 9, file);
@@ -653,7 +653,7 @@ int ti83_send_backup(FILE *file, int mask_mode)
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
     
   return 0;
 }
@@ -669,7 +669,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
     word size;
     int err;
 
-    TRY(cable->open_port());
+    TRY(cable->open());
     update_start();
     *n_elts=0;
     p=list;
@@ -702,7 +702,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
 
     for( ; ; )
       {
-	err = receive_var_header(&size, &var_type, var_name);
+	err = recv_var_header(&size, &var_type, var_name);
 	if(err == ERR_DISCONTINUE) break;
 
 	if( (p->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
@@ -740,12 +740,12 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
 
     TRY(PC_replyOK_83());
     DISPLAY("\n");
-    TRY(cable->close_port());
+    TRY(cable->close());
     
   return 0;
 }
 
-int ti83_receive_var(FILE *file, int mask_mode, 
+int ti83_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {  
   byte data;
@@ -763,7 +763,7 @@ int ti83_receive_var(FILE *file, int mask_mode,
   int k;
 
   update_start();
-  TRY(cable->open_port());
+  TRY(cable->open());
   if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
       (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
     {
@@ -889,7 +889,7 @@ int ti83_receive_var(FILE *file, int mask_mode,
     }  
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   PAUSE(pause_between_vars);
   
   return 0;
@@ -907,7 +907,7 @@ int ti83_send_var(FILE *file, int mask_mode)
   char trans[9];
   char str[9];
  
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(str, 9, file);
 
@@ -1015,7 +1015,7 @@ int ti83_send_var(FILE *file, int mask_mode)
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
     
   return 0;
 }
@@ -1041,9 +1041,9 @@ int ti83_dump_rom(FILE *file, int mask_mode)
   update_label();
 
   /* Open connection and check */
-  TRY(cable->open_port());
+  TRY(cable->open());
   //TRY(ti83_isready());
-  TRY(cable->close_port());
+  TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update_label();
 
@@ -1115,7 +1115,7 @@ int ti83_dump_rom(FILE *file, int mask_mode)
       update_label();
     }
   /* Close connection */
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1126,6 +1126,16 @@ int ti83_get_rom_version(char *version)
 }
 
 int ti83_send_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti83_recv_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti83_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
 }

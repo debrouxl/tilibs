@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -278,7 +278,7 @@ int ti82_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sc->width=TI82_COLS;
   sc->height=TI82_ROWS;
@@ -338,12 +338,12 @@ int ti82_screendump(byte **bitmap, int mask_mode,
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti82_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti82_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte data;
   word sum;
@@ -354,7 +354,7 @@ int ti82_receive_backup(FILE *file, int mask_mode, longword *version)
   char desc[43]="Backup file received by TiLP";
   long offset;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Waiting backup...");
   update_label();
@@ -451,7 +451,7 @@ int ti82_receive_backup(FILE *file, int mask_mode, longword *version)
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -467,7 +467,7 @@ int ti82_send_backup(FILE *file, int mask_mode)
   word block_size;
   byte rej_code = CMD82_REJ_NONE;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Sending...");
   update_label();
@@ -536,17 +536,17 @@ int ti82_send_backup(FILE *file, int mask_mode)
 	  switch(rej_code)
 	    {
 	    case CMD82_REJ_SKIP:
-	      fprintf(stderr, "Variable skipped by user\n");
+	      DISPLAY("Variable skipped by user\n");
 	      //for(i=0; i<varsize; i++) fgetc(file); // read file anyway
 	      TRY(PC_replyOK_82());
 	      goto label_skip;
 	      break;
 	    case CMD82_REJ_EXIT:
-	      fprintf(stderr, "Transfer cancelled by user\n");
+	      DISPLAY("Transfer cancelled by user\n");
 	      goto label_exit;
 	      break;
 	    case CMD82_REJ_OUTOFMEM:
-	      fprintf(stderr, "Out of mem\n");
+	      DISPLAY("Out of mem\n");
 	      return ERR_OUT_OF_MEMORY;
 	      break;
 	    default:
@@ -602,7 +602,7 @@ int ti82_send_backup(FILE *file, int mask_mode)
  label_skip:
  label_exit:
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   
   return 0;
 }
@@ -619,7 +619,7 @@ int ti82_directorylist(struct varinfo *list, int *n_elts)
    Receive one or more variables: if varname[0]='\0' -> 
    group file else single file 
 */
-int ti82_receive_var(FILE *file, int mask_mode, 
+int ti82_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {
   byte data;
@@ -637,7 +637,7 @@ int ti82_receive_var(FILE *file, int mask_mode,
   word allvars_size;	// This limits the size of a TIGL file to 64 Kb */
   int k;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Waiting var(s)...");
   update_label();
@@ -762,7 +762,7 @@ int ti82_receive_var(FILE *file, int mask_mode,
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -781,7 +781,7 @@ int ti82_send_var(FILE *file, int mask_mode)
   byte rej_code = CMD82_REJ_NONE;
   char str[9];
  
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
@@ -931,7 +931,7 @@ int ti82_send_var(FILE *file, int mask_mode)
   DISPLAY("\n");
  label_exit:
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -949,6 +949,16 @@ int ti82_get_rom_version(char *version)
 }
 
 int ti82_send_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti82_recv_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti82_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
 }

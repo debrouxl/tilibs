@@ -1,6 +1,5 @@
-/*
- *  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,15 +53,8 @@ struct varinfo
 
   int is_folder;          // 1 if folder, 0 if variable
 
-  struct varinfo *folder; // Points to the parent folder (current format)
-  struct varinfo *next;   // Next variable (current format)
-
-  /*
-  struct varinfo *next_folder; // Next folder (new format)
-  struct varinfo *next_var;    // Next var (new format)
-  It may be more interessant to store the folder as well as a pointer on this 
-  folder ? I am thinking about this... To be or not to be, that's question !
-  */
+  struct varinfo *folder; // Points to the parent folder
+  struct varinfo *next;   // Next variable
 };
 typedef struct varinfo VAR_INFO;
 //typedef struct varinfo VarInfo; //conflict with TiFFEP: to fix...
@@ -140,34 +132,37 @@ typedef struct ticalc_info_update InfoUpdate;
 struct ticalc_fncts
 {
   /* TI byte <-> type conversion functions, defined in the tiXX.c files */
-  const char * (*byte2type) (byte data);
-  byte         (*type2byte) (char *s);
-  const char * (*byte2fext) (byte data);
-  byte         (*fext2byte) (char *s);
+  const char* (*byte2type) (byte data);
+  byte        (*type2byte) (char *s);
+  const char* (*byte2fext) (byte data);
+  byte        (*fext2byte) (char *s);
 
   /* TI routines, defined in the tiXX.c files */
   int (*isready)         (void);
+
   int (*send_key)        (int key);
   int (*remote_control)  (void);
   int (*screendump)      (byte **bitmap, int mask_mode, 
-			  struct screen_coord *sc);
-  int (*receive_backup)  (FILE *file, int mask_mode, longword *version);
-  int (*send_backup)     (FILE *file, int mask_mode);
+			  ScrCoord *sc);
   int (*directorylist)   (struct varinfo *list, int *n_elts);
-  int (*receive_var)     (FILE *file, int mask_mode, 
-			  char *varname, byte vartype, byte varlock);
+  int (*recv_backup)     (FILE *file, int mask_mode, longword *version);
+  int (*send_backup)     (FILE *file, int mask_mode);
+  int (*recv_var)        (FILE *file, int mask_mode, char *varname, 
+			  byte vartype, byte varlock);
   int (*send_var)        (FILE *file, int mask_mode); 
+  int (*send_flash)      (FILE *file, int mask_mode);
+  int (*recv_flash)      (FILE *file, int mask_mode, char *appname);
   int (*dump_rom)        (FILE *file, int mask_mode);
   int (*get_rom_version) (char *version);
-  int (*send_flash)      (FILE *file, int mask_mode);
+  int (*get_idlist)      (char *idlist);
 
   /* General purpose routines, calc independant */
   char* (*translate_varname) (char *varname, char *translate, byte vartype);
   const struct ti_key (*ascii2ti_key) (unsigned char ascii_code);
   void  (*generate_single_file_header) (FILE *file, 
-					     int mask_mode,
-					     const char *id, 
-					     struct varinfo *v);
+					int mask_mode,
+					const char *id, 
+					struct varinfo *v);
   void  (*generate_group_file_header) (FILE *file,
 				       int mask_mode,
 				       const char *id,
@@ -188,6 +183,7 @@ typedef struct ticalc_fncts TicalcFncts;
 
 /* 
    Calculator functions: check whether a function is supported by a calc
+   Not used yet.
 */
 struct ticalc_supp_fncts
 {
@@ -195,10 +191,10 @@ struct ticalc_supp_fncts
   int (*send_key)       (void);
   int (*remote_control) (void);
   int (*screendump)     (void);
-  int (*receive_backup) (void);
+  int (*recv_backup) (void);
   int (*send_backup)    (void);
   int (*directorylist)  (void);
-  int (*receive_var)    (void);
+  int (*recv_var)    (void);
   int (*send_var)       (void);
   int (*dump_rom)       (void);
   int (*get_rom_version)(void);
@@ -249,34 +245,36 @@ typedef struct ticalc_supp_fncts TicalcSuppFncts;
    Some masks for the send/receive functions (mask_mode) 
 */
 // No mask
-#define MODE_NORMAL             0 // No mode
+#define MODE_NORMAL              0 // No mode
 // For receiving vars
-#define MODE_RECEIVE_SINGLE_VAR 1 // Receive a single var
-#define MODE_RECEIVE_FIRST_VAR  2 // Recv the first var of a group file
-#define MODE_RECEIVE_VARS       4 // Recv var of a group file
-#define MODE_RECEIVE_LAST_VAR   8 // Recv the last var of a group file
+#define MODE_RECEIVE_SINGLE_VAR  1 // Receive a single var
+#define MODE_RECEIVE_FIRST_VAR   2 // Recv the first var of a group file
+#define MODE_RECEIVE_VARS        4 // Recv var of a group file
+#define MODE_RECEIVE_LAST_VAR    8 // Recv the last var of a group file
 // For sending vars
 #define MODE_SEND_ONE_VAR       16 // Send a single var or the first var (grp)
 #define MODE_SEND_LAST_VAR      32 // Send the last var of a group file
 #define MODE_SEND_VARS          64 // Send var of a group file
 // Miscellaneous
-#define MODE_LOCAL_PATH         128 // Local path (full by default)
-#define MODE_KEEP_ARCH_ATTRIB   256 // Keep archive attribute (89/92+)
-#define MODE_USE_2ND_HEADER     512 // Use 0xC9 instead of 0x06
-// For requesting an IDlist
-#define MODE_IDLIST             1024 // Get the IDlist (89/92+)
+#define MODE_LOCAL_PATH        128 // Local path (full by default)
+#define MODE_KEEP_ARCH_ATTRIB  256 // Keep archive attribute (89/92+)
+#define MODE_USE_2ND_HEADER    512 // Use 0xC9 instead of 0x06
+// For requesting an IDlist thru the recv_var function
+#define MODE_IDLIST           1024 // Get the IDlist (89/92+)
 // For sending FLASH (apps/AMS)
-#define MODE_APPS		2048 // Send a (free) FLASH application
-#define MODE_AMS		4096 // Send an Operating System (AMS)
+#define MODE_APPS	      2048 // Send a (free) FLASH application
+#define MODE_AMS	      4096 // Send an Operating System (AMS)
 // For file checking
-#define MODE_FILE_CHK_NONE      8192  // Do no file checking (dangerous !)
-#define MODE_FILE_CHK_MID       16384 // Do a simple file checking
-#define MODE_FILE_CHK_ALL       32768 // Do a restrictive file checking
-#define MODE_DIRLIST            65536 // Do a dirlist before sending vars
+#define MODE_FILE_CHK_NONE    8192 // Do no file checking (dangerous !)
+#define MODE_FILE_CHK_MID    16384 // Do a simple file checking
+#define MODE_FILE_CHK_ALL    32768 // Do a restrictive file checking
+#define MODE_DIRLIST         65536 // Do a dirlist before sending vars
 
 // ROM size for the ROM dump function
-#define ROM_1MB 1 // 1 MegaBytes
-#define ROM_2MB 2 // 2 MegaBytes
+#define ROM_1MB      1 // 1 MegaBytes
+#define ROM_2MB      2 // 2 MegaBytes
+
+// Shell to use with ROM dumping
 #define SHELL_NONE   4
 #define SHELL_USGARD 5
 #define SHELL_ZSHELL 6
@@ -286,16 +284,6 @@ typedef struct ticalc_supp_fncts TicalcSuppFncts;
 #define ACTION_SKIP      1
 #define ACTION_OVERWRITE 2
 #define ACTION_RENAME    4
-
-/* 
-   Some macros (old macros)
-*/
-/*
-#define LSB(w) (unsigned char)((w) & 0x00FF)
-#define MSB(w) (unsigned char)(((w) & 0xFF00) >> 8)
-#define LSB(b) ((b) & 0x0F)
-#define MSB(b) (((b) & 0xF0) >> 4)
-*/
 
 /* 
    Key codes of PC's keyboard 

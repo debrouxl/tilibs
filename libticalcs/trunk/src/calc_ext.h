@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,13 +35,13 @@
 #endif
 #include "calc_def.h"
 
-/*********************************************************/
-/* Global variables: must be defined in the main program */
-/*********************************************************/
+/*
+ * These variables are internally used. This header must not be included
+ * by a program which uses this library.
+ */
 
-//extern struct ti_calc      ti_calc;
-extern struct ticalc_info_update *update; // Internally used
-extern struct ticable_link  *cable; // Internally used
+extern InfoUpdate *update; // Internally used
+extern LinkCable  *cable;  // Internally used
 
 #endif
 

@@ -1,5 +1,15 @@
 // !$*UTF8*$!
 {
+	0127D0DE017389D15041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{153, 113}, {750, 502}}";
+		};
+	};
+	0127D0E2017389D15041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{176, 92}, {750, 502}}";
+		};
+	};
 	0867D690FE84028FC02AAC07 = {
 		activeBuildStyle = 014CEA450018CDF011CA2923;
 		activeTarget = 0867D69CFE84028FC02AAC07;
@@ -14,9 +24,9 @@
 					Frame = "{{0, 23}, {886, 562}}";
 					Split0 = {
 						ActiveTab = 2;
-						Frame = "{{225, 0}, {661, 562}}";
+						Frame = "{{224, 0}, {662, 562}}";
 						Split0 = {
-							Frame = "{{0, 100}, {661, 462}}";
+							Frame = "{{0, 150}, {662, 412}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -52,9 +62,9 @@
 							};
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {663, 27}}";
-							BuildTranscriptFrame = "{{0, 36}, {663, 41}}";
-							Frame = "{{0, 0}, {661, 75}}";
+							BuildMessageFrame = "{{0, 0}, {664, 60}}";
+							BuildTranscriptFrame = "{{0, 69}, {664, 59}}";
+							Frame = "{{0, 0}, {662, 126}}";
 						};
 						Tab3 = {
 							Frame = "{{0, 0}, {661, 295}}";

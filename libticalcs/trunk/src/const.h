@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,15 +21,18 @@
 
 #include "calc_ext.h"
 
-const char *group_file_ext(int calc_type);
-const char *backup_file_ext(int calc_type);
+const char* group_file_ext(int calc_type);
+const char* backup_file_ext(int calc_type);
 const int   tixx_dir(int calc_type);
 const int   tixx_flash(int calc_type);
-const char *pak_name(int calc_type);
-const char *flash_app_file_ext(int calc_type);
-const char *flash_os_file_ext(int calc_type);
+const char* pak_name(int calc_type);
+const char* flash_app_file_ext(int calc_type);
+const char* flash_os_file_ext(int calc_type);
 
 const struct ti_key ti89_keys(unsigned char ascii_code);
 const struct ti_key ti92_keys(unsigned char ascii_code);
 
 #endif
+
+
+

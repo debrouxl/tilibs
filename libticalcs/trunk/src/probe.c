@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@
 #include "calc_err.h"
 #include "calc_int.h"
 
-/* PC: 08 6D 00 00		PC request a screen dump
-   TI: 98 56 00 00		TI reply OK */
+/* 
+   PC: 08 6D 00 00		PC request a screen dump
+   TI: 98 56 00 00		TI reply OK 
+*/
+
 static int tiXX_isOK(byte *d);
 
 /* 
@@ -34,8 +37,7 @@ static int tiXX_isOK(byte *d);
 /*
   Beware: the call sequence is very important: 89, 92+, 92, 86, 85, 83, 82 !!!
 */
-DLLEXPORT
-int detect_calc(int *calc_type)
+TIEXPORT int TICALL detect_calc(int *calc_type)
 {
   int err;
   byte data;
@@ -47,14 +49,14 @@ int detect_calc(int *calc_type)
 
   /* Test for a TI 89 or a TI92+ */
   DISPLAY("Trying TI89/TI92+... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI89));
   TRY(cable->put(CMD89_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X/%02X> ", PC_TI89, data);
-  TRY(cable->close_port());
+  TRY(cable->close());
   if( !err && (data == TI89_PC) )
     {
       DISPLAY("OK (TI89) !\n");
@@ -77,14 +79,14 @@ int detect_calc(int *calc_type)
   
   /* Test for a TI92 */
   DISPLAY("Trying TI92... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI92));
   TRY(cable->put(CMD92_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X/%02X> ", PC_TI92, data);
-  TRY(cable->close_port())
+  TRY(cable->close())
   if( !err && (data == TI92_PC) )
     {
       DISPLAY("OK !\n");
@@ -99,14 +101,14 @@ int detect_calc(int *calc_type)
   
   /* Test for a TI86 before a TI85 */
   DISPLAY("Trying TI86... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI86));
   TRY(cable->put(CMD86_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X/%02X> ", PC_TI86, data);
-  TRY(cable->close_port());
+  TRY(cable->close());
   if( !err && (data == TI86_PC) )
     {
       DISPLAY("OK !\n");
@@ -121,14 +123,14 @@ int detect_calc(int *calc_type)
   
   /* Test for a TI85 */
   DISPLAY("Trying TI85... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI85));
   TRY(cable->put(CMD85_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X/%02X> ", PC_TI85, data);
-  TRY(cable->close_port());
+  TRY(cable->close());
   if( !err && (data == TI85_PC) )
     {
       DISPLAY("OK !\n");
@@ -143,14 +145,14 @@ int detect_calc(int *calc_type)
   
   /* Test for a TI83 before a TI82 */
   DISPLAY("Trying TI83... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI83));
   TRY(cable->put(CMD83_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X/%02X> ", PC_TI82, data);
-  TRY(cable->close_port());
+  TRY(cable->close());
   if( !err && (data == TI83_PC) )
     {
       DISPLAY("OK !\n");
@@ -165,14 +167,14 @@ int detect_calc(int *calc_type)
   
   /* Test for a TI82 */
   DISPLAY("Trying TI82... ");
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI82));
   TRY(cable->put(CMD82_SCREEN_DUMP));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   err=tiXX_isOK(&data);
   DISPLAY("<%02X> ", data);
-  TRY(cable->close_port());
+  TRY(cable->close());
   if( !err && (data == TI82_PC) )
     {
       DISPLAY("OK !\n");
@@ -220,11 +222,11 @@ static int tiXX_isOK(byte *d)
   return 0;
 }
 
-int ticalc_get_calc(int *type); // defined in intrface.c
+int ticalc_get_calc(void); // defined in intrface.c
 
 /*
   Check if the calculator is ready and detect the type.
-  Works only with TI89/92/92+ calculators.
+  Works only with TI83+/TI89/92/92+ calculators (TI83+ to do).
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise
 */
@@ -236,17 +238,17 @@ int ticalc_get_calc(int *type); // defined in intrface.c
   - send a TI89_isOK: 08 68 00 00
   - received answer: 98 56 xx xx for a TI89, 88 56 xx xx for a TI92+
 */
-DLLEXPORT
-int ti89_92_92p_isready(int *calc_type)
+TIEXPORT int TICALL ti89_92_92p_isready(int *calc_type)
 {
   byte data;
   int ct;
 
-  ticalc_get_calc(&ct);
+  ct = ticalc_get_calc();
+
   if( (ct != CALC_TI89) && (ct != CALC_TI92) && (ct != CALC_TI92P) )
     return 0;
   
-  TRY(cable->open_port());
+  TRY(cable->open());
   // Suppose that calc is a TI92
   DISPLAY("Is calculator ready (and check type) ?\n");
   TRY(cable->put(PC_TI92));
@@ -309,7 +311,7 @@ int ti89_92_92p_isready(int *calc_type)
 
       DISPLAY("The calculator is ready.\n");
       DISPLAY("Calculator type: %s\n", (*calc_type==CALC_TI89)?"TI89":"TI92+");
-      TRY(cable->close_port());
+      TRY(cable->close());
       
     }
   else
@@ -321,10 +323,45 @@ int ti89_92_92p_isready(int *calc_type)
       *calc_type = CALC_TI92;
       DISPLAY("The calculator is ready.\n");
       DISPLAY("Calculator type: TI92\n");
-      TRY(cable->close_port());
+      TRY(cable->close());
       
       return 0;
     }
+
+  return 0;
+}
+
+
+/*
+  Check if the calculator is ready and detect the type.
+  Works only with TI83+/89/92+ calculators (FLASH support ?!).
+  Practically, call this function first, and call tixx_isready next.
+  Return 0 if successful, 0 otherwise
+*/
+TIEXPORT int TICALL ti83p_89_92_92p_isready(int *calc_type)
+{
+  byte data;
+  int ct;
+
+  ct = ticalc_get_calc();
+  if( (ct != CALC_TI89) && (ct != CALC_TI92) && 
+      (ct != CALC_TI92P) && (ct != CALC_TI83P) )
+    return 0;
+  
+  TRY(cable->open());
+  DISPLAY("Is calculator ready (and check type) ?\n");
+  TRY(cable->put(0x00));
+  TRY(cable->put(CMD89_ISREADY));
+  TRY(cable->put(0x00));
+  TRY(cable->put(0x00));
+  TRY(cable->get(&data));
+  DISPLAY("isOK_1: 0x%02X\n", data);
+  TRY(cable->get(&data)); // 0x98: TI89, 0x88: TI92+, 0x73: TI83+
+  DISPLAY("isOK_2: 0x%02X\n", data);
+  TRY(cable->get(&data));
+  DISPLAY("isOK_3: 0x%02X\n", data);
+  TRY(cable->get(&data));
+  DISPLAY("isOK_4: 0x%02X\n", data);
 
   return 0;
 }

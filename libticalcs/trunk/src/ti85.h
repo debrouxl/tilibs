@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,14 +32,16 @@ int ti85_send_key(int key);
 int ti85_remote_control(void);
 int ti85_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
-int ti85_receive_backup(FILE *file, int mask_mode, longword *version);
-int ti85_send_backup(FILE *file, int mask_mode);
 int ti85_directorylist(struct varinfo *list, int *n_elts);
-int ti85_receive_var(FILE *file, int mask_mode, 
-		     char *varname, byte vartype, byte varlock);
+int ti85_recv_backup(FILE *file, int mask_mode, longword *version);
+int ti85_send_backup(FILE *file, int mask_mode);
+int ti85_recv_var(FILE *file, int mask_mode, 
+		      char *varname, byte vartype, byte varlock);
 int ti85_send_var(FILE *file, int mask_mode);
+int ti85_send_flash(FILE *file, int mask_mode);
+int ti85_recv_flash(FILE *file, int mask_mode, char *appname);
 int ti85_dump_rom(FILE *file, int mask_mode);
 int ti85_get_rom_version(char *version);
-int ti85_send_flash(FILE *file, int mask_mode);
+int ti85_get_idlist(char *idlist);
 
 #endif

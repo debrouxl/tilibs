@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,14 +32,16 @@ int ti83p_send_key(int key);
 int ti83p_remote_control(void);
 int ti83p_screendump(byte **bitmap, int mask_mode,
                          struct screen_coord *sc);
-int ti83p_receive_backup(FILE *file, int mask_mode, longword *version);
-int ti83p_send_backup(FILE *file, int mask_mode);
 int ti83p_directorylist(struct varinfo *list, int *n_elts);
-int ti83p_receive_var(FILE *file, int mask_mode, 
-		     char *varname, byte vartype, byte varlock);
+int ti83p_recv_backup(FILE *file, int mask_mode, longword *version);
+int ti83p_send_backup(FILE *file, int mask_mode);
+int ti83p_recv_var(FILE *file, int mask_mode, 
+		      char *varname, byte vartype, byte varlock);
 int ti83p_send_var(FILE *file, int mask_mode);
+int ti83p_send_flash(FILE *file, int mask_mode);
+int ti83p_recv_flash(FILE *file, int mask_mode, char *appname);
 int ti83p_dump_rom(FILE *file, int mask_mode);
 int ti83p_get_rom_version(char *version);
-int ti83p_send_flash(FILE *file, int mask_mode);
+int ti83p_get_idlist(char *idlist);
 
 #endif

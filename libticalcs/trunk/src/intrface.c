@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,18 +34,37 @@
 /*****************/
 /* Internal data */
 /*****************/
-struct ticable_link        *cable;
-struct ticalc_info_update  *update;
-//struct ti_calc           calc;
+LinkCable  *cable;
+InfoUpdate *update;
 static int calc_type;
+
+/****************/
+/* Entry points */
+/****************/
+
+/*
+  This function should be the first one to call.
+*/
+TIEXPORT int TICALL ticalc_init()
+{
+  return 0;
+}
+
+/*
+  This function should be called when the libticalcs library is
+  no longer used.
+*/
+TIEXPORT int TICALL ticalc_exit()
+{
+  return 0;
+}
 
 /***********/
 /* Methods */
 /***********/
 
 /* Return the version number of the library */
-DLLEXPORT
-const char* DLLEXPORT2 ticalc_get_version()
+TIEXPORT const char* TICALL ticalc_get_version()
 {
   return LIBTICALCS_VERSION;
 }
@@ -53,16 +72,16 @@ const char* DLLEXPORT2 ticalc_get_version()
 /* 
    Set up the update functions in order to be independant of the GUI
 */
-DLLEXPORT
-void DLLEXPORT2 ticalc_set_update(struct ticalc_info_update *iu,
-                                 void (*start)   (void),
-                                 void (*stop)    (void),
-                                 void (*refresh) (void),
-                                 void (*msg_box) (const char *t, char *s),
-                                 void (*pbar)    (void),
-                                 void (*label)   (void),
-                                 int  (*choose)  (char *cur_name, 
-                                                  char *new_name))
+TIEXPORT
+void TICALL ticalc_set_update(InfoUpdate *iu,
+			      void (*start)   (void),
+			      void (*stop)    (void),
+			      void (*refresh) (void),
+			      void (*msg_box) (const char *t, char *s),
+			      void (*pbar)    (void),
+			      void (*label)   (void),
+			      int  (*choose)  (char *cur_name, 
+					       char *new_name))
 {
   iu->cancel  = 0;
   iu->start   = start;
@@ -80,10 +99,10 @@ static void print_informations();
 /*
   Set up the calculator functions according to the calculator type
 */
-DLLEXPORT
-void DLLEXPORT2 ticalc_set_calc(int type,
-				struct ticalc_fncts *calc,
-				struct ticable_link *lc)
+TIEXPORT
+void TICALL ticalc_set_calc(int type,
+			    TicalcFncts *calc,
+			    LinkCable *lc)
 {
   cable = lc;
   calc_type = type;
@@ -117,14 +136,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti92p_send_key;
       calc->remote_control=ti92p_remote_control;
       calc->screendump=ti92p_screendump;
-      calc->receive_backup=ti92p_receive_backup;
+      calc->recv_backup=ti92p_recv_backup;
       calc->send_backup=ti92p_send_backup;
       calc->directorylist=ti92p_directorylist;
-      calc->receive_var=ti92p_receive_var;
+      calc->recv_var=ti92p_recv_var;
       calc->send_var=ti92p_send_var;
       calc->dump_rom=ti92p_dump_rom;
       calc->get_rom_version=ti92p_get_rom_version;
       calc->send_flash=ti92p_send_flash;
+      calc->recv_flash=ti92p_recv_flash;
+      calc->get_idlist=ti92p_get_idlist;
 
       calc->translate_varname = ti92p_translate_varname;
       calc->ascii2ti_key = ti92_keys;
@@ -144,14 +165,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti92_send_key;
       calc->remote_control=ti92_remote_control;
       calc->screendump=ti92_screendump;
-      calc->receive_backup=ti92_receive_backup;
+      calc->recv_backup=ti92_recv_backup;
       calc->send_backup=ti92_send_backup;
-		calc->directorylist=ti92_directorylist;
-      calc->receive_var=ti92_receive_var;
+      calc->directorylist=ti92_directorylist;
+      calc->recv_var=ti92_recv_var;
       calc->send_var=ti92_send_var;
       calc->dump_rom=ti92_dump_rom;
       calc->get_rom_version=ti92_get_rom_version;
       calc->send_flash=ti92_send_flash;
+      calc->recv_flash=ti92_recv_flash;
+      calc->get_idlist=ti92_get_idlist;
 
       calc->translate_varname = ti92_translate_varname;
       calc->ascii2ti_key = ti92_keys;
@@ -171,14 +194,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti89_send_key;
       calc->remote_control=ti89_remote_control;
       calc->screendump=ti89_screendump;
-      calc->receive_backup=ti89_receive_backup;
+      calc->recv_backup=ti89_recv_backup;
       calc->send_backup=ti89_send_backup;
       calc->directorylist=ti89_directorylist;
-		calc->receive_var=ti89_receive_var;
+      calc->recv_var=ti89_recv_var;
       calc->send_var=ti89_send_var;
       calc->dump_rom=ti89_dump_rom;
       calc->get_rom_version=ti89_get_rom_version;
       calc->send_flash=ti89_send_flash;
+      calc->recv_flash=ti89_recv_flash;
+      calc->get_idlist=ti89_get_idlist;
 
       calc->translate_varname = ti89_translate_varname;
       calc->ascii2ti_key = ti89_keys;
@@ -199,14 +224,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti86_send_key;
       calc->remote_control=ti86_remote_control;
       calc->screendump=ti86_screendump;
-      calc->receive_backup=ti86_receive_backup;
+      calc->recv_backup=ti86_recv_backup;
       calc->send_backup=ti86_send_backup;
       calc->directorylist=ti86_directorylist;
-		calc->receive_var=ti86_receive_var;
+      calc->recv_var=ti86_recv_var;
       calc->send_var=ti86_send_var;
       calc->dump_rom=ti86_dump_rom;
       calc->get_rom_version=ti86_get_rom_version;
       calc->send_flash=ti86_send_flash;
+      calc->recv_flash=ti86_recv_flash;
+      calc->get_idlist=ti86_get_idlist;
 
       calc->translate_varname = ti86_translate_varname;
       calc->ascii2ti_key = ti92_keys;
@@ -227,14 +254,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti85_send_key;
       calc->remote_control=ti85_remote_control;
       calc->screendump=ti85_screendump;
-      calc->receive_backup=ti85_receive_backup;
+      calc->recv_backup=ti85_recv_backup;
       calc->send_backup=ti85_send_backup;
       calc->directorylist=ti85_directorylist;
-		calc->receive_var=ti85_receive_var;
+      calc->recv_var=ti85_recv_var;
       calc->send_var=ti85_send_var;
       calc->dump_rom=ti85_dump_rom;
       calc->get_rom_version=ti85_get_rom_version;
       calc->send_flash=ti85_send_flash;
+      calc->recv_flash=ti85_recv_flash;
+      calc->get_idlist=ti85_get_idlist;
 
       calc->translate_varname = ti85_translate_varname;
       calc->ascii2ti_key = ti92_keys;
@@ -249,18 +278,20 @@ void DLLEXPORT2 ticalc_set_calc(int type,
     calc->byte2fext = ti83p_byte2fext;
     calc->fext2byte = ti83p_fext2byte;
     
-    calc->isready=ti83p_isready;
-    calc->send_key=ti83p_send_key;
-    calc->remote_control=ti83p_remote_control;
-    calc->screendump=ti83p_screendump;
-    calc->receive_backup=ti83p_receive_backup;
-    calc->send_backup=ti83p_send_backup;
-    calc->directorylist=ti83p_directorylist;
-    calc->receive_var=ti83p_receive_var;
-    calc->send_var=ti83p_send_var;
-	 calc->dump_rom=ti83p_dump_rom;
-    calc->get_rom_version=ti83p_get_rom_version;
-    calc->send_flash=ti83p_send_flash;
+      calc->isready=ti83p_isready;
+      calc->send_key=ti83p_send_key;
+      calc->remote_control=ti83p_remote_control;
+      calc->screendump=ti83p_screendump;
+      calc->recv_backup=ti83p_recv_backup;
+      calc->send_backup=ti83p_send_backup;
+      calc->directorylist=ti83p_directorylist;
+      calc->recv_var=ti83p_recv_var;
+      calc->send_var=ti83p_send_var;
+      calc->dump_rom=ti83p_dump_rom;
+      calc->get_rom_version=ti83p_get_rom_version;
+      calc->send_flash=ti83p_send_flash;
+      calc->recv_flash=ti83p_recv_flash;
+      calc->get_idlist=ti83p_get_idlist;
     
     calc->translate_varname = ti83_translate_varname;
     calc->ascii2ti_key = ti92_keys;
@@ -279,14 +310,16 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti83_send_key;
       calc->remote_control=ti83_remote_control;
       calc->screendump=ti83_screendump;
-      calc->receive_backup=ti83_receive_backup;
+      calc->recv_backup=ti83_recv_backup;
       calc->send_backup=ti83_send_backup;
       calc->directorylist=ti83_directorylist;
-      calc->receive_var=ti83_receive_var;
+      calc->recv_var=ti83_recv_var;
       calc->send_var=ti83_send_var;
       calc->dump_rom=ti83_dump_rom;
       calc->get_rom_version=ti83_get_rom_version;
-		calc->send_flash=ti83_send_flash;
+      calc->send_flash=ti83_send_flash;
+      calc->recv_flash=ti83_recv_flash;
+      calc->get_idlist=ti83_get_idlist;
 
       calc->translate_varname = ti83_translate_varname;
       calc->ascii2ti_key = ti92_keys;
@@ -305,16 +338,18 @@ void DLLEXPORT2 ticalc_set_calc(int type,
       calc->send_key=ti82_send_key;
       calc->remote_control=ti82_remote_control;
       calc->screendump=ti82_screendump;
-      calc->receive_backup=ti82_receive_backup;
+      calc->recv_backup=ti82_recv_backup;
       calc->send_backup=ti82_send_backup;
       calc->directorylist=ti82_directorylist;
-      calc->receive_var=ti82_receive_var;
+      calc->recv_var=ti82_recv_var;
       calc->send_var=ti82_send_var;
       calc->dump_rom=ti82_dump_rom;
       calc->get_rom_version=ti82_get_rom_version;
       calc->send_flash=ti82_send_flash;
+      calc->recv_flash=ti82_recv_flash;
+      calc->get_idlist=ti82_get_idlist;
       
-		calc->translate_varname = ti82_translate_varname;
+      calc->translate_varname = ti82_translate_varname;
       calc->ascii2ti_key = ti92_keys;
       calc->generate_single_file_header
         = generate_82_83_85_86_single_file_header;
@@ -334,11 +369,10 @@ void DLLEXPORT2 ticalc_set_calc(int type,
 /*
   Set up the calculator functions according to the calculator type
 */
-DLLEXPORT
-int DLLEXPORT2 ticalc_get_calc(int *type)
+TIEXPORT
+int TICALL ticalc_get_calc(void)
 {
-  *type = calc_type;
-  return 0;
+  return calc_type;
 }
 
 static FILE* ti_file = NULL;
@@ -346,7 +380,7 @@ static FILE* ti_file = NULL;
 /*
   Open a file to use with the TI calc general functions
 */
-DLLEXPORT int DLLEXPORT2
+TIEXPORT int TICALL
 ticalc_open_ti_file(char *filename, char *mode, FILE **fd)
 {
   if((ti_file = fopen(filename, mode)) == NULL)
@@ -363,7 +397,7 @@ ticalc_open_ti_file(char *filename, char *mode, FILE **fd)
 /*
   Close the file previously opened
 */
-DLLEXPORT int DLLEXPORT2
+TIEXPORT int TICALL
 ticalc_close_ti_file()
 {
   fclose(ti_file);
@@ -419,20 +453,17 @@ BOOL WINAPI DllMain(  HINSTANCE hinstDLL,  // handle to DLL module
 		      LPVOID lpvReserved)   // reserved);
 {
 #ifdef ENABLE_NLS
-	char buffer[65536];
-	HINSTANCE hDLL = hinstDLL;
-	int i=0;
+  char buffer[65536];
+  HINSTANCE hDLL = hinstDLL;
+  int i=0;
 
-	GetModuleFileName(hinstDLL, (LPTSTR)&buffer, 65535);
-    //fprintf(stderr, "libticables, filename: <%s>\n", buffer);
-
-	for(i=strlen(buffer); i>=0; i--) { if(buffer[i]=='\\') break; }
-	buffer[i]='\0';
-	strcat(buffer, "\\locale\\");
-	//fprintf(stderr, "libticalcs, locale_dir: <%s>\n", buffer);
-
-	bindtextdomain (PACKAGE, buffer);	
-	textdomain (PACKAGE);
+  GetModuleFileName(hinstDLL, buffer, 65535);
+  for(i=strlen(buffer); i>=0; i--) { if(buffer[i]=='\\') break; }
+  buffer[i]='\0';
+  strcat(buffer, "\\locale\\");
+  
+  bindtextdomain (PACKAGE, buffer);	
+  //textdomain (PACKAGE);
 #endif
 }
 #endif

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 #ifndef TRANS_H
 #define TRANS_H
 
-char *ti82_translate_varname(char *varname, char *translate, byte vartype);
-char *ti83_translate_varname(char *varname, char *translate, byte vartype);
+char *ti82_translate_varname (char *varname, char *translate, byte vartype);
+char *ti83_translate_varname (char *varname, char *translate, byte vartype);
 char *ti83p_translate_varname(char *varname, char *translate, byte vartype);
-char *ti85_translate_varname(char *varname, char *translate, byte vartype);
-char *ti86_translate_varname(char *varname, char *translate, byte vartype);
-char *ti89_translate_varname(char *varname, char *translate, byte vartype);
-char *ti92_translate_varname(char *varname, char *translate, byte vartype);
+char *ti85_translate_varname (char *varname, char *translate, byte vartype);
+char *ti86_translate_varname (char *varname, char *translate, byte vartype);
+char *ti89_translate_varname (char *varname, char *translate, byte vartype);
+char *ti92_translate_varname (char *varname, char *translate, byte vartype);
 char *ti92p_translate_varname(char *varname, char *translate, byte vartype);
 
 #endif

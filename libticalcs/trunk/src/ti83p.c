@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *  Copyright (C) 2000 Mikael Magnusson
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ static int PC_waitdata_83p(void)
 
 // Check whether the TI reply OK
 // 83 56 00 00
-static int ti83p_isOK(byte id)
+static int ti83p_isOK_id(byte id)
 {
   byte data;
 
@@ -93,6 +93,8 @@ static int ti83p_isOK(byte id)
   return 0;
 }
 
+#define ti83p_isOK() ti83p_isOK_id(TI83p_PC)
+
 // The TI indicates that it is ready or wait data
 // 83 09 00 00
 static int ti83p_waitdata(byte id, word length)
@@ -117,8 +119,18 @@ static int ti83p_waitdata(byte id, word length)
 // Check whether the TI reply that it is ready
 int ti83p_isready(void)
 {
-  /* This function does not exist */
-  return ERR_VOID_FUNCTION;
+  return 0;
+  TRY(cable->open());
+  DISPLAY("Is calculator ready ?\n");
+  TRY(cable->put(PC_TI83p));
+  TRY(cable->put(CMD83p_ISREADY));
+  TRY(cable->put(0x00));
+  TRY(cable->put(0x00));
+  TRY(ti83p_isOK());
+  DISPLAY("The calculator is ready.\n");
+  TRY(cable->close());
+
+  return 0;
 }
 
 // Send a string of 8 characters
@@ -236,7 +248,7 @@ static int send_request(word size, byte type, char *string)
   sum=0;
   TRY(cable->put(PC_TI83p));
   TRY(cable->put(CMD83p_REQUEST));
-  TRY(cable->put(0x0b));
+  TRY(cable->put(0x0D));
   TRY(cable->put(0x00));
   data=LSB(size);
   sum+=data;
@@ -248,39 +260,15 @@ static int send_request(word size, byte type, char *string)
   sum+=data;
   TRY(cable->put(type));
   sendstring8(string, &sum);
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  return 0;
-}
-
-static int send_request_73(word size, byte type, char *string)
-{
-  byte data;
-  word sum;
-
-  sum=0;
-  TRY(cable->put(TI83p_PC2));
-  TRY(cable->put(CMD83p_REQUEST));
-  TRY(cable->put(0x04));
+  TRY(cable->put(0x00)); // extra bytes with TI83+ protocol
   TRY(cable->put(0x00));
-  data=LSB(size);
-  sum+=data;
-  TRY(cable->put(data));
-  data=MSB(size);
-  sum+=data;
-  TRY(cable->put(data));
-  data=type;
-  sum+=data;
-  TRY(cable->put(type));
-  TRY(cable->put(0));
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
 
   return 0;
 }
 
-static int receive_var_header(word *size, byte *type, char *string)
+static int recv_var_header(word *size, byte *type, char *string)
 {
   byte data;
   word sum;
@@ -307,7 +295,7 @@ static int receive_var_header(word *size, byte *type, char *string)
   TRY(cable->get(&data));
   (*type)=data;
   sum+=data;
-  for(i=0; i<j-3; i++)
+  for(i=0; i<j-5; i++)
     {
       TRY(cable->get(&data));
       string[i]=data;
@@ -315,6 +303,8 @@ static int receive_var_header(word *size, byte *type, char *string)
       sum+=data;
     }
   string[i]='\0';
+  TRY(cable->get(&data)); // 2 extra bytes
+  TRY(cable->get(&data));
   TRY(cable->get(&data));
   checksum=data;
   TRY(cable->get(&data));
@@ -347,7 +337,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sc->width=TI83p_COLS;
   sc->height=TI83p_ROWS;
@@ -369,7 +359,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   
-  TRY(ti83p_isOK(TI83p_PC));
+  TRY(ti83p_isOK());
   TRY(cable->get(&data));
   if(data != TI83p_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
@@ -402,12 +392,12 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti83p_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte header[9];
   word block_size;
@@ -420,7 +410,7 @@ int ti83p_receive_backup(FILE *file, int mask_mode, longword *version)
   char desc[43]="Backup file received by TiLP";
   long offset;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   file_checksum=0;
   fprintf(file, "**TI83F*");
@@ -433,22 +423,20 @@ int ti83p_receive_backup(FILE *file, int mask_mode, longword *version)
 
   DISPLAY("Request backup...\n");
   for(i=0; i<8; i++) { header[i]=0x00; }
-  TRY(send_request_73(0x0000, TI83p_BKUP, header));
-  TRY(ti83p_isOK(TI83p_PC2));
+  TRY(send_request(0x0000, TI83p_BKUP, header));
+  TRY(ti83p_isOK());
 
   DISPLAY("Receiving backup...\n");  
   TRY(cable->get(&data));
-  if(data != TI83p_PC2) return ERR_INVALID_BYTE;
+  if(data != TI83p_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  file_checksum+=data;
   j=data; /* j should be equal to 0x09 but to be the safe side ... */
   if(data != 0x09) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  file_checksum+=data;
   j|=(data << 8);
   if(data != 0x00) return ERR_INVALID_BYTE;
 
@@ -468,13 +456,13 @@ int ti83p_receive_backup(FILE *file, int mask_mode, longword *version)
 
   TRY(PC_replyOK_83p());
   TRY(PC_waitdata_83p());
-  TRY(ti83p_isOK(TI83p_PC2));
+  TRY(ti83p_isOK());
   for(i=0; i<3; i++)
     {
       (update->main_percentage)=(float)i/3;
       DISPLAY("Receiving part %i\n", i+1);
       TRY(cable->get(&data));
-      if(data != TI83p_PC2) return ERR_INVALID_BYTE;
+      if(data != TI83p_PC) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
       if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
@@ -518,7 +506,7 @@ int ti83p_receive_backup(FILE *file, int mask_mode, longword *version)
   fseek(file, 0L, SEEK_END);
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   DISPLAY("\n");
 
   return 0;
@@ -533,7 +521,7 @@ int ti83p_send_backup(FILE *file, int mask_mode)
   int j;
   word block_size;
 
-  TRY(cable->open_port());  
+  TRY(cable->open());  
   update_start();
   DISPLAY("Sending backup...\n");
   fgets(str, 9, file);
@@ -563,14 +551,14 @@ int ti83p_send_backup(FILE *file, int mask_mode)
     fgetc(file);
   }
   data=fgetc(file);
-  //printf("%02X\n", data);
+  printf("data=0x%02x\n", data);
   data=fgetc(file);
-  //printf("%02X\n", data);
+  printf("data=0x%02x\n", data);
 
   sum=0;
   DISPLAY("Sending header.\n");
-  TRY(cable->put(TI83p_PC2));
-  TRY(cable->put(CMD83p_VAR_HEADER));
+  TRY(cable->put(TI83p_PC));
+  TRY(cable->put(CMD83p_VAR_HEADER2));
   data=fgetc(file);
   TRY(cable->put(data));
   block_size=data;
@@ -586,8 +574,8 @@ int ti83p_send_backup(FILE *file, int mask_mode)
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
 
-  TRY(ti83p_isOK(TI83p_PC2));
-  TRY(ti83p_waitdata(TI83p_PC2, block_size)); 
+  TRY(ti83p_isOK());
+  TRY(ti83p_waitdata(TI83p_PC, block_size)); 
 
   TRY(PC_replyOK_83p());
   for(i=0; i<3; i++)
@@ -597,7 +585,7 @@ int ti83p_send_backup(FILE *file, int mask_mode)
       if(update->cancel) return ERR_ABORT;
       DISPLAY("Sending part %i...\n", i+1);
       sum=0;
-      TRY(cable->put(TI83p_PC2));
+      TRY(cable->put(TI83p_PC));
       TRY(cable->put(CMD83p_DATA_PART));
             
       data=fgetc(file);
@@ -621,13 +609,13 @@ int ti83p_send_backup(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
       
-      TRY(ti83p_isOK(TI83p_PC2));
+      TRY(ti83p_isOK());
     }
   TRY(PC_replyOK_83p());
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
     
   return 0;
 }
@@ -643,8 +631,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     word size;
     int err;
 
-	fprintf(stderr, "start !\n");
-    TRY(cable->open_port());
+    TRY(cable->open());
     update_start();
     *n_elts=0;
     p=list;
@@ -660,7 +647,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     for(i=0; i<8; i++) { var_name[i]=0x00; }
     TRY(send_request(0x0000, TI83p_DIR, var_name));
 
-    TRY(ti83p_isOK(TI83p_PC));
+    TRY(ti83p_isOK());
 
     TRY(cable->get(&data));
     if(data != TI83p_PC) return ERR_INVALID_BYTE;
@@ -672,12 +659,11 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     TRY(cable->get(&data));
     TRY(cable->get(&data));
     TRY(cable->get(&data));
-
     TRY(PC_replyOK_83p());
 
     for( ; ; )
       {
-	err=receive_var_header(&size, &var_type, var_name);
+	err=recv_var_header(&size, &var_type, var_name);
 	if(err == ERR_DISCONTINUE) break;
 
 	if( (p->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
@@ -715,13 +701,14 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 
     TRY(PC_replyOK_83p());
     DISPLAY("\n");
-    TRY(cable->close_port());
-	fprintf(stderr, "end !\n");
+    TRY(cable->close());
     
   return 0;
 }
 
-int ti83p_receive_var(FILE *file, int mask_mode, 
+int ti83p_receive_IDlist(char *id);
+
+int ti83p_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {  
   byte data;
@@ -738,8 +725,14 @@ int ti83p_receive_var(FILE *file, int mask_mode,
   static word allvars_size;	// This limits the size of a TIGL file to 64 Kb */
   int k;
 
+  if(mask_mode & MODE_IDLIST) 
+    {
+      TRY(ti83p_receive_IDlist(varname));
+      return 0;
+    }
+
   update_start();
-  TRY(cable->open_port());
+  TRY(cable->open());
   if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
       (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
     {
@@ -755,11 +748,11 @@ int ti83p_receive_var(FILE *file, int mask_mode,
   sprintf(update->label_text, "Reading of: TI83+/%s", 
 	   ti83_translate_varname(varname, trans, vartype));
   update_label();
-/* [X91] anglais: inversion */
+  /* [X91] anglais: inversion */
   DISPLAY("Variable requested: %s\n", varname);
   TRY(send_request(0x0000, vartype, varname));
 
-  TRY(ti83p_isOK(TI83p_PC));
+  TRY(ti83p_isOK());
   
   DISPLAY("Receiving variable(s)...\n");  
   sum=0;
@@ -769,24 +762,11 @@ int ti83p_receive_var(FILE *file, int mask_mode,
   if(data == CMD83p_EOT) return ERR_ABORT; //break;
   else if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != 0x0B) return ERR_INVALID_BYTE;
-/* [X91] C'est bien 0x0B que tu recois car tu t'est identifié comme
- * un graph link 83 et non 83+, sinon tu recevrais un 0x0D
- * pour l'instant, cela ne pose pas de problèmes, mais dès que TI
- * augmentera le numero de version de leur système de fichiers
- * la calculatrice refusera de t'envoyer les variables
- * ---
- * dans la fichier c'est 0x0D qu'il faut écrire */
-
-/* [X91] fprintf(file, "%c", data); */
-	fprintf(file, "%c", 0x0D);
-/* [X91] file_checksum+=data; */
-	file_checksum += 0x0D;
-
+  if(data != 0x0D) return ERR_INVALID_BYTE;
+  fprintf(file, "%c", data);
   TRY(cable->get(&data));
   if(data != 0x00) return ERR_INVALID_BYTE;
   fprintf(file, "%c", data);
-  file_checksum+=data;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   var_size=data;
@@ -811,19 +791,22 @@ int ti83p_receive_var(FILE *file, int mask_mode,
       sum+=data;
       name[i]=data;
     }
-/* [X91] C'est ici que les deux octets de plus vont, c'est le numero
- * de compatibilité du système de fichiers, pour le moment, c'est 00 00
- * (ROM v1.12) */
-  	fprintf(file, "%c", 0x00);
-  	fprintf(file, "%c", 0x00);
-  
   name[i]='\0';
   strcpy(varname, name);
   DISPLAY("-> Name: %s <", varname);
   for(k=0; k<8; k++) DISPLAY("%02X", varname[k]);
   DISPLAY(">\n");
   DISPLAY("-> Translated name: %s\n", ti83_translate_varname(varname, trans, var_type));
-  file_checksum+=sum;
+  /* [X91] C'est ici que les deux octets de plus vont, c'est le numero
+   * de compatibilité du système de fichiers, pour le moment, c'est 00 00
+   * (ROM v1.12) */
+  TRY(cable->get(&data));
+  sum+=data;
+  fprintf(file, "%c", data);
+  TRY(cable->get(&data));
+  sum+=data;
+  fprintf(file, "%c", data);
+
   TRY(cable->get(&data));
   checksum=data;
   TRY(cable->get(&data));
@@ -832,13 +815,9 @@ int ti83p_receive_var(FILE *file, int mask_mode,
   
   TRY(PC_replyOK_83p());
   TRY(PC_waitdata_83p());
-/* [X91] faute d'anglais courant pour les français: traduction mot à mot
- * un peut drole de personifier la calculatrice, 'la calculatrice veut 
- * continuer', sous entendu 'ne l'empechez pas de continuer sinon...' ;)
- * mieux vaut quelque chose du genre 'Aknowloedged, continuing...' enfin IMHO */
-	DISPLAY("The calculator wants to continue.\n");
+  DISPLAY("The calculator wants to continue.\n");
   
-  TRY(ti83p_isOK(TI83p_PC));
+  TRY(ti83p_isOK());
   DISPLAY("Receiving variable...\n");
   TRY(cable->get(&data));
   if(data != TI83p_PC) return ERR_INVALID_BYTE;
@@ -846,10 +825,10 @@ int ti83p_receive_var(FILE *file, int mask_mode,
   if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  file_checksum+=data;
+  sum+=data;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  file_checksum+=data;
+  sum+=data;
   sum=0;
   update->total = var_size;
   for(i=0; i<var_size; i++)
@@ -863,7 +842,6 @@ int ti83p_receive_var(FILE *file, int mask_mode,
       update_pbar();
       if(update->cancel) return ERR_ABORT;
     }
-  file_checksum+=sum;
   TRY(cable->get(&data));
   checksum=data;
   TRY(cable->get(&data));
@@ -878,8 +856,8 @@ int ti83p_receive_var(FILE *file, int mask_mode,
       fprintf(file, "%c%c", LSB(file_checksum), MSB(file_checksum));
       fseek(file, offset, SEEK_SET);
       if(mask_mode & MODE_RECEIVE_SINGLE_VAR)
-/* [X91] les deux octets de compatibilité se repercutent ici */
-/* [X91] fprintf(file, "%c%c", LSB(var_size+15), MSB(var_size+15));*/
+	/* [X91] les deux octets de compatibilité se repercutent ici */
+	/* [X91] fprintf(file, "%c%c", LSB(var_size+15), MSB(var_size+15));*/
 	fprintf(file, "%c%c", LSB(var_size+17), MSB(var_size+17));
       else
 	if(mask_mode & MODE_RECEIVE_LAST_VAR)
@@ -889,7 +867,7 @@ int ti83p_receive_var(FILE *file, int mask_mode,
     }  
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   PAUSE(pause_between_vars);
   
   return 0;
@@ -912,7 +890,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
   char trans[9]; int fti83p = 0;
   long lastpos;
   
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(trans, 9, file);
   
@@ -949,14 +927,11 @@ int ti83p_send_var(FILE *file, int mask_mode)
     {
       //DISPLAY("Reading header...%d %d\n", ftell(file), lastpos);
       data=fgetc(file);
-      if(data == 0x0d)
-	fti83p = 1;
-      else if(data == 0x0b)
-	fti83p = 0;
-      else
-	return ERR_INVALID_BYTE;
+      if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
+      else return ERR_INVALID_BYTE;
       data=fgetc(file);
       if(data != 0) return ERR_INVALID_BYTE;
+      if(feof(file)) break;
       varsize=fgetc(file);
       varsize+=fgetc(file) << 8;
       vartype=fgetc(file);
@@ -973,10 +948,8 @@ int ti83p_send_var(FILE *file, int mask_mode)
       DISPLAY("-> Type: %s\n", ti83p_byte2type(vartype));
       sum=0;
       TRY(cable->put(PC_TI83p));
-/* [X91] 0xC9 est le seul identifiant à marcher avec
- * mon model, i.e. ROM v1.12 */
-	  TRY(cable->put(CMD83p_VAR_HEADER2));
-      block_size=0x0B;
+      TRY(cable->put(CMD83p_VAR_HEADER2));
+      if(fti83p) block_size=0x0D; else block_size=0x0B;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       data=LSB(varsize);
@@ -989,14 +962,16 @@ int ti83p_send_var(FILE *file, int mask_mode)
       sum+=data;
       TRY(cable->put(data));
       TRY(sendstring8(varname, &sum));
+      TRY(cable->put(0x00));
+      TRY(cable->put(0x00));
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
-      TRY(ti83p_isOK(TI83p_PC));
+      TRY(ti83p_isOK());
       TRY(ti83p_waitdata(TI83p_PC, block_size));
 
       sum=0;
       TRY(PC_replyOK_83p());
-      TRY(cable->put(TI83p_PC2));
+      TRY(cable->put(TI83p_PC));
       TRY(cable->put(CMD83p_DATA_PART));
       block_size=(word)varsize;
       TRY(cable->put(LSB(block_size)));
@@ -1015,7 +990,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
 
-      TRY(ti83p_isOK(TI83p_PC));
+      TRY(ti83p_isOK());
       //DISPLAY("Reading header...%d %d\n", ftell(file), lastpos);
     }
 
@@ -1027,17 +1002,13 @@ int ti83p_send_var(FILE *file, int mask_mode)
       TRY(cable->put(0x00));
       TRY(cable->put(0x00));
 
-/* [X91] Inutile, la calculatrice ne répond pas */  
-/*      TRY(ti83p_isOK(TI83p_PC)); */
-
-	DISPLAY("Transfer Acomplished!\n");
-      //TRY(ti83p_isOK());
-      //DISPLAY("\n");
+      DISPLAY("Transfer Acomplished!\n");
+      DISPLAY("\n");
     }
 
   (update->main_percentage)=0.0;
   (update->percentage)=0.0;
-  TRY(cable->close_port());
+  TRY(cable->close());
     
   return 0;
 }
@@ -1063,9 +1034,9 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
   update_label();
 
   /* Open connection and check */
-  TRY(cable->open_port());
+  TRY(cable->open());
   //TRY(ti83p_isready());
-  TRY(cable->close_port());
+  TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update_label();
 
@@ -1137,7 +1108,7 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
       update_label();
     }
   /* Close connection */
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1147,7 +1118,150 @@ int ti83p_get_rom_version(char *version)
   return ERR_VOID_FUNCTION;
 }
 
+int ti83p_receive_IDlist(char *id)
+{
+  byte data;
+  word sum;
+  word checksum;
+  word block_size;
+  int i, j;
+  longword var_size;
+  byte name_length;
+  char name[9];
+
+  TRY(cable->open());
+  update_start();
+  sum=0;
+  DISPLAY("Request IDlist...\n");
+  TRY(cable->put(PC_TI83p));
+  TRY(cable->put(CMD83p_REQUEST));
+  block_size=0x0D;
+  data=LSB(block_size);
+  TRY(cable->put(data));
+  data=MSB(block_size);
+  TRY(cable->put(data));
+  TRY(cable->put(0x00));
+  TRY(cable->put(0x00));
+  data=TI83p_IDLIST;
+  TRY(cable->put(data));
+  sum+=data;
+  for(j=0; j<8; j++) TRY(cable->put(0x00)); // null padded name
+  TRY(cable->put(0x00)); // 2 extra bytes
+  TRY(cable->put(0x00));
+  TRY(cable->put(LSB(sum)));
+  TRY(cable->put(MSB(sum)));
+  
+  TRY(ti83p_isOK());
+  sum=0;
+  TRY(cable->get(&data));
+  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  TRY(cable->get(&data));
+  if(data != CMD83p_VAR_HEADER) return ERR_INVALID_BYTE;
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  var_size=data;
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 8);
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 16);
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 24);
+  sum+=data;
+  DISPLAY("Size of the IDlist: 0x%08X = %i.\n", var_size-2, var_size-2);
+  TRY(cable->get(&data));
+  DISPLAY("Type of the variable: %s\n", ti83p_byte2type(data));
+  sum+=data;
+  TRY(cable->get(&data));
+  name_length=data;
+  sum+=data;
+  DISPLAY("Variable name: ");
+  for(i=0; i<name_length; i++)
+    {
+      TRY(cable->get(&data));
+      name[i]=data;
+      DISPLAY("%c", data);
+      sum+=data;
+    }
+  name[i]='\0';
+  DISPLAY("\n");
+  TRY(cable->get(&data));
+  sum+=data;
+  TRY(cable->get(&data)); // 2 extra bytes
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  checksum=data;
+  TRY(cable->get(&data));
+  checksum += (data << 8);
+  if(checksum != sum) return ERR_CHECKSUM;
+
+  TRY(PC_replyOK_83p());
+  TRY(PC_waitdata_83p());
+  DISPLAY("The calculator want continue.\n");
+
+  TRY(ti83p_isOK());
+  DISPLAY("Receiving IDlist...\n");
+  TRY(cable->get(&data));
+  if(data != TI83p_PC) return ERR_INVALID_BYTE;
+  TRY(cable->get(&data));
+  if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  sum=0;
+  for(i=0; i<4; i++)
+    {
+      TRY(cable->get(&data));
+      sum+=data;
+    }
+  TRY(cable->get(&data));
+  block_size = (data << 8);
+  sum+=data;
+  TRY(cable->get(&data));
+  block_size |= data;
+  sum+=data;
+  DISPLAY("block_size=%x, var_size=%x\n", block_size, var_size);
+  block_size=var_size-2; //diff here
+  for(i=0, j=0; i<block_size; i++, j++)
+    {
+      TRY(cable->get(&data));
+      sum+=data;
+      if( (j == 7) || (j == 13) )
+	{
+	  id[j]='-';
+	  j++;
+	}
+      id[j]=data;
+    }
+  id[j]='\0';
+  DISPLAY("IDlist: <%s>\n", id+2);
+  TRY(cable->get(&data));
+  checksum=data;
+  TRY(cable->get(&data));
+  checksum += (data << 8);
+  if(checksum != sum) return ERR_CHECKSUM;
+
+  TRY(PC_replyOK_83p());
+  DISPLAY("\n");
+  (update->percentage)=0.0;
+  TRY(cable->close());
+
+  return 0;
+}
+
 int ti83p_send_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti83p_recv_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti83p_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
 }

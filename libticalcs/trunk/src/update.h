@@ -1,5 +1,5 @@
-/*
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@
 #ifndef __TICALCS_UPDATE__
 #define __TICALCS_UPDATE__
 
-/* Functions for updating */
+/* 
+ * Functions for updating 
+ */
+
 /*
   void (*start)   (void);                   // Init internal variables
   void (*msg_box) (const char *t, char *s); // Display a message box
@@ -35,19 +38,34 @@
    Macros: they check that function pointer is good and then
    call the pointer itself 
 */
-#define update_start()      if(update && update->start)   update->start()
-#define update_msgbox(t, s) if(update && update->msgbox)  update->msg_box(t, s)
-#define update_pbar()       if(update && update->pbar)    update->pbar()
-#define update_label()      if(update && update->label)   update->label()
-#define update_refresh()    if(update && update->refresh) update->refresh()
-#define update_stop()       if(update && update->stop)    update->stop()
+#ifdef CHECK_UPDATE
+# define update_start()      if(update && update->start)   update->start()
+# define update_msgbox(t, s) if(update && update->msgbox) update->msg_box(t, s)
+# define update_pbar()       if(update && update->pbar)    update->pbar()
+# define update_label()      if(update && update->label)   update->label()
+# define update_refresh()    if(update && update->refresh) update->refresh()
+# define update_stop()       if(update && update->stop)    update->stop()
 /*
-#ifndef UPDATE_INLINE
-# define UPDATE_INLINE
+# ifndef UPDATE_INLINE
+#  define UPDATE_INLINE
 int inline update_choose(char* c, char* n)
 { if(update && update->choose) return update->choose(c, n); else return 0; }
-#endif
+# endif
 */
-#define update_choose(c, n)                     update->choose(c, n)
+# define update_choose(c, n) update->choose(c, n)
+#else
+# define update_start()      update->start()
+# define update_msgbox(t, s) update->msg_box(t, s)
+# define update_pbar()       update->pbar()
+# define update_label()      update->label()
+# define update_refresh()    update->refresh()
+# define update_stop()       update->stop()
+# define update_choose(c, n) update->choose(c, n)
+#endif
 
 #endif
+
+
+
+
+

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,16 +18,13 @@
 
 #include <stdio.h>
 #include <string.h>
-#ifdef GTK
-#include <gtk/gtk.h>
-#endif
 
 #include "calc_ext.h"
 #include "const.h"
 
 /* 
-   This function generates the header for single variable files 
-*/
+ *   This function generates the header for single variable files 
+ */
 void generate_89_92_92p_single_file_header(FILE *file, int mask_mode, 
 					   const char *id, struct varinfo *v)
 {
@@ -63,6 +60,7 @@ void generate_89_92_92p_single_file_header(FILE *file, int mask_mode,
 
   return;
 }
+
 
 void generate_89_92_92p_group_file_header_from_varlist(FILE *file, 
 						       int mask_mode, 
@@ -171,11 +169,13 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
   return;
 }
 
+
 void generate_82_83_85_86_single_file_header(FILE *file, int mask_mode,
                                            const char *id, struct varinfo *v)
 {
   return;
 }
+
 
 void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
                                                        int mask_mode,
@@ -187,9 +187,9 @@ void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
 }
 
 /*
-  Check whether a given variable exists in the directory list
-  - vi [in]: a linked list of vars/folders such as one provided by a dirlist
-  - vn [in]: the varname to search (local or full)
+ * Check whether a given variable exists in the directory list
+ * - vi [in]: a linked list of vars/folders such as one provided by a dirlist
+ * - vn [in]: the varname to search (local or full)
  */
 int check_if_var_exist(VAR_INFO *vi, char *vn)
 {

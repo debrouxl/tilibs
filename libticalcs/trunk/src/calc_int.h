@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,35 +27,46 @@
 extern "C" {
 #endif
 
-/***********/
-/* Methods */
-/***********/
+  /****************/
+  /* Entry points */
+  /****************/
+  int TICALL ticalc_init(void);
+  int TICALL ticalc_exit(void);
+  
+  /***********/
+  /* Methods */
+  /***********/
+  
+  const char TICALL *ticalc_get_version();
+  
+  void TICALL ticalc_set_update(struct ticalc_info_update *iu,
+				void (*start)   (void),
+				void (*stop)    (void),
+				void (*refresh) (void),
+				void (*msg_box) (const char *t, char *s),
+				void (*pbar)    (void),
+				void (*label)   (void),
+				int  (*choose)  (char *cur_name, 
+						 char *new_name));
 
-const char *ticalc_get_version();
+  // obsolete, use the 2 functions below  
+  void TICALL ticalc_set_calc(int type, 
+			      TicalcFncts *calc, 
+			      LinkCable *link);
+  void TICALL ticalc_set_cable(LinkCable *lc);
+  void TICALL ticalc_set_calc2(int type, TicalcFncts *calc);
 
-void ticalc_set_update(struct ticalc_info_update *iu,
-                       void (*start)   (void),
-                       void (*stop)    (void),
-                       void (*refresh) (void),
-                       void (*msg_box) (const char *t, char *s),
-                       void (*pbar)    (void),
-                       void (*label)   (void),
-                       int  (*choose)  (char *cur_name, 
-                                        char *new_name));
-
-void ticalc_set_calc(int type, 
-		     struct ticalc_fncts *calc, 
-		     struct ticable_link *link);
-int ticalc_get_calc(int *type);
-
-int ticalc_get_error(int err_num, char *error_msg);
-
-int detect_calc(int *calc_type);
-int ti89_92_92p_isready(int *calc_type);
-
-int ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
-int ticalc_close_ti_file();
-
+  int TICALL ticalc_get_calc(void);
+  
+  int TICALL ticalc_get_error(int err_num, char *error_msg);
+  
+  int TICALL detect_calc(int *calc_type);
+  int TICALL ti89_92_92p_isready(int *calc_type);
+  int TICALL ti83p_89_92_92p_isready(int *calc_type);
+  
+  int TICALL ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
+  int TICALL ticalc_close_ti_file();
+  
 #ifdef __cplusplus
 }
 #endif

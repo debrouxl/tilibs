@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ static int ti92_waitdata(void)
 // Check whether the TI reply that it is ready
 int ti92_isready(void)
 {
-  TRY(cable->open_port());
+  TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI92));
   TRY(cable->put(CMD92_ISREADY));
@@ -125,7 +125,7 @@ int ti92_isready(void)
   TRY(cable->put(0x00));
   TRY(ti92_isOK());
   DISPLAY("The calculator is ready.\n");
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -176,7 +176,6 @@ const char *ti92_byte2type(byte data)
 }
 
 // Return the value corresponding to the type
-DLLEXPORT
 byte ti92_type2byte(char *s)
 {
   int i;
@@ -195,7 +194,6 @@ byte ti92_type2byte(char *s)
 }
 
 // Return the file extension corresponding to the value
-DLLEXPORT
 const char *ti92_byte2fext(byte data)
 {
   if(data>TI92_MAXTYPES)
@@ -211,7 +209,6 @@ const char *ti92_byte2fext(byte data)
 }
 
 // Return the value corresponding to the file extension
-DLLEXPORT
 byte ti92_fext2byte(char *s)
 {
   int i;
@@ -230,16 +227,15 @@ byte ti92_fext2byte(char *s)
 }
 
 // General functions
-DLLEXPORT
 int ti92_send_key(int key)
 {
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI92));
   TRY(cable->put(CMD92_DIRECT_CMD));
   TRY(cable->put(LSB(key)));
   TRY(cable->put(MSB(key)));
   TRY(ti92_isOK());
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -253,7 +249,7 @@ int ti92_remote_control(void)
   char skey[10];
   int b;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   d=0;
   DISPLAY("\n");
   DISPLAY("Remote control: press any key but for:\n");
@@ -392,7 +388,7 @@ int ti92_remote_control(void)
   endwin();
   DISPLAY("Remote control finished.\n");
   DISPLAY("\n");
-  TRY(cable->close_port());
+  TRY(cable->close());
   
   return 0;
 #else
@@ -409,7 +405,7 @@ int ti92_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   update->prev_percentage = update->percentage = 0.0;
   sc->width=TI92_COLS;
@@ -472,12 +468,12 @@ int ti92_screendump(byte **bitmap, int mask_mode,
   DISPLAY("PC reply OK.\n");
   update_stop();
   DISPLAY("\n");
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti92_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti92_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte data;
   word sum;
@@ -492,7 +488,7 @@ int ti92_receive_backup(FILE *file, int mask_mode, longword *version)
   longword index;
   int block;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fprintf(file, "**TI92**");
   fprintf(file, "%c%c", 0x01, 0x00);
@@ -634,7 +630,7 @@ int ti92_receive_backup(FILE *file, int mask_mode, longword *version)
   fseek(file, 0L, SEEK_END);
   DISPLAY("\n");
   update_stop();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -652,7 +648,7 @@ int ti92_send_backup(FILE *file, int mask_mode)
   word last_block;
   longword index;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
@@ -851,7 +847,7 @@ int ti92_send_backup(FILE *file, int mask_mode)
   DISPLAY("Backup sent completely.\n");
   DISPLAY("\n");
   update_stop();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -870,7 +866,7 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
   char var_name[9];
   struct varinfo *p, *f;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   *n_elts=0;
   update_start();
   p=list;
@@ -1043,12 +1039,12 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
   TRY(PC_replyOK_92());
   DISPLAY("\n");
   update_stop();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti92_receive_var(FILE *file, int mask_mode, 
+int ti92_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {
   byte data;
@@ -1061,7 +1057,7 @@ int ti92_receive_var(FILE *file, int mask_mode,
   char name[9];
 
   update_stop();
-  TRY(cable->open_port());
+  TRY(cable->open());
   sprintf(update->label_text, "Variable: %s", varname);
   update_label();
   sum=0;
@@ -1191,7 +1187,7 @@ int ti92_receive_var(FILE *file, int mask_mode,
   DISPLAY("\n");
 
   update_stop();
-  TRY(cable->close_port());
+  TRY(cable->close());
   PAUSE(pause_between_vars);
 
   return 0;
@@ -1242,7 +1238,7 @@ int ti92_send_var(FILE *file, int mask_mode)
     }
   num_vars=0;
   var_index=0;
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
@@ -1475,7 +1471,7 @@ int ti92_send_var(FILE *file, int mask_mode)
       PAUSE(pause_between_vars);
     }
   update_stop();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1499,9 +1495,9 @@ int ti92_dump_rom(FILE *file, int mask_mode)
   update_label();
 
   /* Open connection and check */
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(ti92_isready());
-  TRY(cable->close_port());
+  TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update_label();
 
@@ -1582,7 +1578,7 @@ int ti92_dump_rom(FILE *file, int mask_mode)
     }
 
   /* Close connection */
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1597,7 +1593,7 @@ int ti92_get_rom_version(char *version)
   word block_size;
   word num_bytes;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
 
   /* Check if TI is ready*/
@@ -1681,12 +1677,22 @@ int ti92_get_rom_version(char *version)
   
   DISPLAY("\n");
   update_stop();
-  TRY(cable->close_port());	
+  TRY(cable->close());	
   
   return 0;
 }
 
 int ti92_send_flash(FILE *file, int mask_mode)
 {
-  return 0;
+  return ERR_VOID_FUNCTION;
+}
+
+int ti92_recv_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti92_get_idlist(char *id)
+{
+  return ERR_VOID_FUNCTION;
 }

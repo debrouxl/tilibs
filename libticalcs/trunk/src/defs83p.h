@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,9 +21,10 @@
 
 // Devicetype
 
-#define PC_TI83p 0x03
-#define TI83p_PC 0x83
-#define TI83p_PC2 0x73
+#define PC_TI83  0x03
+#define PC_TI83p 0x73
+#define TI83p_PC 0x73
+#define TI83_PC  0x83
 
 // Commands
 
@@ -42,18 +43,19 @@
 
 // Types of variable
 
-#define TI83p_REAL  0x00
-#define TI83p_LIST  0x01
-#define TI83p_MATRX 0x02
-#define TI83p_EQU   0x03
-#define TI83p_STRNG 0x04
-#define TI83p_PRGM  0x05
-#define TI83p_PIC   0x07
-#define TI83p_GDB   0x08
-#define TI83p_CPLX  0x0C
+#define TI83p_REAL   0x00
+#define TI83p_LIST   0x01
+#define TI83p_MATRX  0x02
+#define TI83p_EQU    0x03
+#define TI83p_STRNG  0x04
+#define TI83p_PRGM   0x05
+#define TI83p_PIC    0x07
+#define TI83p_GDB    0x08
+#define TI83p_CPLX   0x0C
 
-#define TI83p_BKUP 0x13
-#define TI83p_DIR  0x19
+#define TI83p_BKUP   0x13
+#define TI83p_DIR    0x19
+#define TI83p_IDLIST 0x26
 
 // Screen coordinates of the TI83+
 

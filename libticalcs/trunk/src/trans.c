@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
    Some varnames have to be translated in a more useable name.
    See the protocol doc for more informations
 */
-DLLEXPORT
 char *ti82_translate_varname(char *varname, char *translate, byte vartype)
 {
   int i;
@@ -103,7 +102,6 @@ char *ti82_translate_varname(char *varname, char *translate, byte vartype)
   return translate;
 }
 
-DLLEXPORT
 char *ti83_translate_varname(char *varname, char *translate, byte vartype)
 {
   int i;

@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include "group.h"
 #include "pause.h"
 #include "rom89.h"
-
+#include "update.h"
 
 #ifdef HAVE_CURSES_H
 #include <curses.h>
@@ -114,11 +114,28 @@ int ti92p_waitdata(void)
   TRY(cable->get(&data));
   if(data != TI92p_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != CMD92p_WAIT_DATA) return ERR_INVALID_BYTE;
+  if(data != CMD92p_WAIT_DATA)
+    {
+      if(data != CMD92p_REFUSED)
+        {
+          DISPLAY("Data: %02X\n", data);
+          return ERR_INVALID_BYTE;
+        }
+      else
+        {
+          DISPLAY("Command rejected... ");  
+          TRY(cable->get(&data));
+          TRY(cable->get(&data));
+          TRY(cable->get(&data));
+          //*rej_code = data;
+          DISPLAY("Rejection code: %02X\n", data);
+          TRY(cable->get(&data));
+          TRY(cable->get(&data));
+          return ERR_VAR_REFUSED;
+        }
+    }
   TRY(cable->get(&data));
-  if(data != 0x00) return ERR_NOT_REPLY;
   TRY(cable->get(&data));
-  if(data != 0x00) return ERR_NOT_REPLY;
   DISPLAY("The calculator wait data.\n");
 
   return 0;
@@ -127,7 +144,7 @@ int ti92p_waitdata(void)
 // Check whether the TI reply that it is ready
 int ti92p_isready(void)
 {
-  TRY(cable->open_port());
+  TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI92p));
   TRY(cable->put(CMD92p_ISREADY));
@@ -136,7 +153,7 @@ int ti92p_isready(void)
   TRY(ti92p_isOK());
   DISPLAY("The calculator is ready.\n");
   DISPLAY("\n");
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -162,7 +179,7 @@ const char *TI92p_TYPES[TI92p_MAXTYPES]=
 "UNKNOW", "UNKNOWN", "DATA", "TEXT", "STR", "GDB", "FIG", "UNKNOWN",
 "PIC", "UNKNOWN", "PRGM", "FUNC", "MAC", "UNKNOWN", "UNKNOWN", "UNKNOWN",
 "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "ZIP", "BACKUP", "UNKNOWN", "DIR",
-"ASM", "UNKNOWN", "UNKNOWN", "UNKNOWN", "FLASH", "UNKNOWN", "LOCKED", "ARCHIVED",
+"UNKNOW", "ASM", "IDLIST", "UNKNOWN", "FLASH", "UNKNOWN", "LOCKED", "ARCHIVED",
 "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"
 };
 const char *TI92p_EXT[TI92p_MAXTYPES]=
@@ -171,7 +188,7 @@ const char *TI92p_EXT[TI92p_MAXTYPES]=
 "unknown", "unknown", "9Xc", "9Xt", "9Xs", "9Xd", "9Xa", "unknown",
 "9Xi", "unknown", "9Xp", "9Xf", "9Xx", "unknown", "unknown", "unknown", 
 "unknown", "unknown", "unknown", "unknown", "unknown", "9Xb", "unknown", "unknown",
-"9Xz", "unknown", "unknown", "unknown", "9Xk", "unknown", "unknown", "unknown",
+"unknown", "9Xz", "unknown", "unknown", "9Xk", "unknown", "unknown", "unknown",
 "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"
 };
 
@@ -245,13 +262,13 @@ byte ti92p_fext2byte(char *s)
 
 int ti92p_send_key(int key)
 {
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(cable->put(PC_TI92p));
   TRY(cable->put(CMD92p_DIRECT_CMD));
   TRY(cable->put(LSB(key)));
   TRY(cable->put(MSB(key)));
   TRY(ti92p_isOK());
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -265,7 +282,7 @@ int ti92p_remote_control(void)
   char skey[10];
   int b;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   d=0;
   DISPLAY("\n");
   DISPLAY("Remote control: press any key but for:\n");
@@ -402,7 +419,7 @@ int ti92p_remote_control(void)
   while(c!=END);
   noraw();
   endwin();
-  TRY(cable->close_port());
+  TRY(cable->close());
   
   return 0;
 #else  
@@ -419,7 +436,7 @@ int ti92p_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
 
   update->start();
   sc->width=TI92p_COLS;
@@ -483,7 +500,7 @@ int ti92p_screendump(byte **bitmap, int mask_mode,
   DISPLAY("PC reply OK.\n");
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -504,7 +521,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   struct varinfo *q, *tmp;
   byte num_var;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   *n_elts=0;
   update->start();
   p=list;
@@ -847,15 +864,13 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   while(q != NULL);
   DISPLAY("\n");
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti92p_receive_IDlist(char *id);
-
-int ti92p_receive_var(FILE *file, int mask_mode, 
-		      char *varname, byte vartype, byte varlock)
+int ti92p_recv_var(FILE *file, int mask_mode, 
+		   char *varname, byte vartype, byte varlock)
 {
   byte data;
   word sum;
@@ -866,13 +881,7 @@ int ti92p_receive_var(FILE *file, int mask_mode,
   byte name_length;
   char name[9];
 
-  if(mask_mode & MODE_IDLIST) 
-    {
-      TRY(ti92p_receive_IDlist(varname));
-      return 0;
-    }
-
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
   sprintf(update->label_text, "Variable: %s", varname);
   update->label();
@@ -1005,7 +1014,7 @@ int ti92p_receive_var(FILE *file, int mask_mode,
   DISPLAY("\n");
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   PAUSE(pause_between_vars);
 
   return 0;
@@ -1058,7 +1067,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
     }
   num_vars=0;
   var_index=0;
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
@@ -1320,19 +1329,19 @@ int ti92p_send_var(FILE *file, int mask_mode)
     }
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti92p_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   struct varinfo dirlist, *ptr, *ptr2;
   int n;
   int i=0;
   char varname[20];
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
 
   /* Do a directory list to cable->get variables entries */
@@ -1372,7 +1381,7 @@ int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
       strcpy(varname, (ptr->folder)->varname);
       strcat(varname, "\\");
       strcat(varname, ptr->varname);
-      TRY(ti92p_receive_var(file, mask_mode, 
+      TRY(ti92p_recv_var(file, mask_mode, 
 			    varname, ptr->vartype, ptr->varlocked));
 
       ptr=ptr->next;
@@ -1391,7 +1400,7 @@ int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
   while(ptr != NULL);  
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1436,7 +1445,7 @@ int ti92p_send_backup(FILE *file, int mask_mode)
   word block_size;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
   DISPLAY("Sending backup...\n");
 
@@ -1477,7 +1486,7 @@ int ti92p_send_backup(FILE *file, int mask_mode)
 		     ~MODE_LOCAL_PATH & ~MODE_DIRLIST));
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1501,9 +1510,9 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   update->label();
 
   /* Open connection and check */
-  TRY(cable->open_port());
+  TRY(cable->open());
   TRY(ti92p_isready());
-  TRY(cable->close_port());
+  TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update->label();
 
@@ -1581,12 +1590,111 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
     }
 
   /* Close connection */
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti92p_receive_IDlist(char *id)
+int ti92p_get_rom_version(char *version)
+{
+  byte data;
+  word sum;
+  word checksum;
+  int i;
+  int b;
+  word block_size;
+  word num_bytes;
+
+  TRY(cable->open());
+  update->start();
+
+  /* Check if TI is ready*/
+  TRY(ti92p_isready());  
+  
+  sum=0;
+  num_bytes=0;
+  DISPLAY("Request backup...\n");
+  /* Request a backup */
+  TRY(cable->put(PC_TI92p));
+  TRY(cable->put(CMD92p_REQUEST));
+  TRY(cable->put(0x12));
+  TRY(cable->put(0x00));
+  for(i=0; i<4; i++) { TRY(cable->put(0x00)); }
+  TRY(cable->put(TI92p_BKUP));
+  sum+=0x1D;
+  TRY(cable->put(0x0C));
+  sum+=0x0C;
+  TRY(ti92p_sendstring("main\\version", &sum));
+  TRY(cable->put(LSB(sum)));
+  TRY(cable->put(MSB(sum)));
+
+  /* Check if TI replies OK */
+  TRY(ti92p_isOK());
+  
+  /* Receive the ROM version */
+  sum=0;
+  TRY(cable->get(&data));
+  if(data != TI92p_PC) return 8;
+  TRY(cable->get(&data));
+  
+  if(data != CMD92p_VAR_HEADER) return 8;
+  
+  TRY(cable->get(&data));
+  if(data == 0x09) { b=0; } else { b=1; }
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  block_size=data;
+  sum+=data;
+  TRY(cable->get(&data));
+  block_size += (data << 8);
+  sum+=data;
+  for(i=0; i<4; i++)
+    {
+      TRY(cable->get(&data));
+      sum+=data;
+    }
+  TRY(cable->get(&data));
+  version[0]=data;
+  sum+=data;
+  TRY(cable->get(&data));
+  version[1]=data;
+  sum+=data;
+  TRY(cable->get(&data));
+  version[2]=data;
+  version[3]='\0';
+  sum+=data;
+  if(b == 1)
+    {
+      TRY(cable->get(&data));
+      version[3]=data;
+      version[4]='\0';
+      sum+=data;
+    }
+  TRY(cable->get(&data));
+  checksum=data;
+  TRY(cable->get(&data));
+  checksum += (data << 8);
+  if(checksum != sum) return 9;
+  
+  /* Abort transfer */  
+  TRY(cable->put(PC_TI92p));
+  TRY(cable->put(CMD92p_CHK_ERROR));
+  TRY(cable->put(0x00));
+  TRY(cable->put(0x00));
+  TRY(cable->put(PC_TI92p));
+  TRY(cable->put(CMD92p_CHK_ERROR));
+  TRY(cable->put(0x00));
+  TRY(cable->put(0x00));
+  DISPLAY("ROM version %s\n", version);
+  
+  DISPLAY("\n");
+  update->start();
+  TRY(cable->close());	
+  
+  return 0;
+}
+
+int ti92p_get_idlist(char *id)
 {
   byte data;
   word sum;
@@ -1597,7 +1705,7 @@ int ti92p_receive_IDlist(char *id)
   byte name_length;
   char name[9];
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
   sum=0;
   DISPLAY("Request IDlist...\n");
@@ -1723,107 +1831,8 @@ int ti92p_receive_IDlist(char *id)
   TRY(cable->put(0x00));
   DISPLAY("\n");
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
-  return 0;
-}
-
-int ti92p_get_rom_version(char *version)
-{
-  byte data;
-  word sum;
-  word checksum;
-  int i;
-  int b;
-  word block_size;
-  word num_bytes;
-
-  TRY(cable->open_port());
-  update->start();
-
-  /* Check if TI is ready*/
-  TRY(ti92p_isready());  
-  
-  sum=0;
-  num_bytes=0;
-  DISPLAY("Request backup...\n");
-  /* Request a backup */
-  TRY(cable->put(PC_TI92p));
-  TRY(cable->put(CMD92p_REQUEST));
-  TRY(cable->put(0x12));
-  TRY(cable->put(0x00));
-  for(i=0; i<4; i++) { TRY(cable->put(0x00)); }
-  TRY(cable->put(TI92p_BKUP));
-  sum+=0x1D;
-  TRY(cable->put(0x0C));
-  sum+=0x0C;
-  TRY(ti92p_sendstring("main\\version", &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  /* Check if TI replies OK */
-  TRY(ti92p_isOK());
-  
-  /* Receive the ROM version */
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI92p_PC) return 8;
-  TRY(cable->get(&data));
-  
-  if(data != CMD92p_VAR_HEADER) return 8;
-  
-  TRY(cable->get(&data));
-  if(data == 0x09) { b=0; } else { b=1; }
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  block_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  block_size += (data << 8);
-  sum+=data;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-    }
-  TRY(cable->get(&data));
-  version[0]=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  version[1]=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  version[2]=data;
-  version[3]='\0';
-  sum+=data;
-  if(b == 1)
-    {
-      TRY(cable->get(&data));
-      version[3]=data;
-      version[4]='\0';
-      sum+=data;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return 9;
-  
-  /* Abort transfer */  
-  TRY(cable->put(PC_TI92p));
-  TRY(cable->put(CMD92p_CHK_ERROR));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(cable->put(PC_TI92p));
-  TRY(cable->put(CMD92p_CHK_ERROR));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("ROM version %s\n", version);
-  
-  DISPLAY("\n");
-  update->start();
-  TRY(cable->close_port());	
-  
   return 0;
 }
 
@@ -1845,7 +1854,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
 
   //DISPLAY("timeout: %i\n", ticable_get_timeout());  
   /* Read the file header and initialize some variables */
-  TRY(cable->open_port());
+  TRY(cable->open());
   update->start();
   fgets(str, 128, file);
   if(strstr(str, "**TIFL**") == NULL) // is a .89u file
@@ -2048,7 +2057,168 @@ int ti92p_send_flash(FILE *file, int mask_mode)
   DISPLAY("\n");
 
   update->start();
-  TRY(cable->close_port());
+  TRY(cable->close());
+
+  return 0;
+}
+
+int ti92p_recv_flash(FILE *file, int mask_mode, char *appname)
+{
+  byte data;
+  word sum;
+  word checksum;
+  word block_size;
+  int i,j;
+  longword var_size;
+  byte name_length;
+  char name[9];
+  char *varname = appname;
+
+  fprintf(file, "**TIFL**");
+  for(i=0; i<4; i++)
+    fputc(0x00, file);
+  for(i=0; i<4; i++) //date: 24 01 2000
+    fputc(0x00, file);
+  fputc(strlen(appname), file);
+  fprintf(file, "%s", appname);
+  for(i=16+strlen(appname)+1; i<0x4A; i++)
+    fputc(0x00, file);
+  TRY(cable->open());
+  update->start();
+  sprintf(update->label_text, "Application: %s", varname);
+  update->label();
+  sum=0;
+  DISPLAY("Request FLASH application: %s\n", varname);
+  TRY(cable->put(PC_TI92p));
+  TRY(cable->put(CMD92p_REQUEST));
+  block_size=4+2+strlen(varname);
+  data=LSB(block_size);
+  TRY(cable->put(data));
+  data=MSB(block_size);
+  TRY(cable->put(data));
+  for(i=0; i<4; i++)
+    {
+      TRY(cable->put(0x00));
+    }
+  data=TI92p_FLASH;
+  TRY(cable->put(data));
+  sum+=data;
+  data=strlen(varname);
+  TRY(cable->put(data));
+  sum+=data;
+  TRY(ti92p_sendstring(varname, &sum));
+  TRY(cable->put(LSB(sum)));
+  TRY(cable->put(MSB(sum)));
+  
+  TRY(ti92p_isOK());
+  sum=0;
+  TRY(cable->get(&data));
+  if(data != TI92p_PC) return ERR_INVALID_BYTE;
+  TRY(cable->get(&data));
+  if(data != CMD92p_VAR_HEADER) return ERR_PACKET;
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  TRY(cable->get(&data));
+  var_size=data;
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 8);
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 16);
+  sum+=data;
+  TRY(cable->get(&data));
+  var_size |= (data << 24);
+  sum+=data;
+  DISPLAY("Size of the app in memory: 0x%08X = %i.\n", var_size, var_size);
+  fputc(LSB(LSW(var_size)), file);
+  fputc(MSB(LSW(var_size)), file);
+  fputc(LSB(MSW(var_size)), file);
+  fputc(MSB(MSW(var_size)), file);
+  TRY(cable->get(&data));
+  DISPLAY("Type of the application: %s\n", ti92p_byte2type(data));
+  sum+=data;
+  TRY(cable->get(&data));
+  name_length=data;
+  sum+=data;
+  DISPLAY("Application name: ");
+  for(i=0; i<name_length; i++)
+    {
+      TRY(cable->get(&data));
+      name[i]=data;
+      DISPLAY("%c", data);
+      sum+=data;
+    }
+  name[i]='\0';
+  DISPLAY("\n");
+  TRY(cable->get(&data)); // It's the only difference with the 92
+  sum+=data;
+  TRY(cable->get(&data));
+  checksum=data;
+  TRY(cable->get(&data));
+  checksum += (data << 8);
+  if(checksum != sum) return ERR_CHECKSUM;
+
+  DISPLAY("Receiving application...\n");
+  for(i=0, block_size=0; i<var_size; i+=block_size)
+    {
+      TRY(PC_replyOK_92p());
+      TRY(PC_waitdata_92p());
+      DISPLAY("The calculator want continue.\n");
+      
+      TRY(ti92p_isOK());
+      DISPLAY("Receiving block");
+      TRY(cable->get(&data));
+      if(data != TI92p_PC) return ERR_INVALID_BYTE;
+      TRY(cable->get(&data));
+      if(data != CMD92p_DATA_PART) return ERR_INVALID_BYTE;
+      TRY(cable->get(&data));
+      block_size = data;
+      TRY(cable->get(&data));
+      block_size |= (data << 8);
+      update->total = block_size;
+      DISPLAY(", size = 0x%04x...\n", block_size);
+      sum=0;
+      for(j=0; j<block_size; j++)
+	{
+	  TRY(cable->get(&data));
+	  sum+=data;
+	  fprintf(file, "%c", data);
+	  
+	  update->count = j;
+	  update->percentage = (float)j/block_size;
+	  update->pbar();
+	  if(update->cancel) return ERR_ABORT;
+	}
+      TRY(cable->get(&data));
+      checksum=data;
+      TRY(cable->get(&data));
+      checksum += (data << 8);
+      if(checksum != sum) return ERR_CHECKSUM;
+      
+      TRY(PC_replyOK_92p());
+      TRY(cable->get(&data));
+      if(data != TI92p_PC) return ERR_INVALID_BYTE;
+      TRY(cable->get(&data));
+      if(data == CMD92p_CONTINUE)
+	DISPLAY("The calculator wants to continue.\n");
+      else if(data == CMD92p_EOT)
+	DISPLAY("The calculator does not want to continue.\n");
+      else
+	return ERR_INVALID_BYTE;
+      TRY(cable->get(&data));
+      TRY(cable->get(&data));
+      
+      ((update->main_percentage))=(float)i/var_size;
+      update_pbar();
+      if(update->cancel) return ERR_ABORT;
+    }
+      TRY(PC_replyOK_92p());
+      DISPLAY("\n");
+
+  update->start();
+  TRY(cable->close());
+  PAUSE(pause_between_vars);
 
   return 0;
 }

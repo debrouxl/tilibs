@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -281,7 +281,7 @@ int ti85_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sc->width=TI85_COLS;
   sc->height=TI85_ROWS;
@@ -341,12 +341,12 @@ int ti85_screendump(byte **bitmap, int mask_mode,
   DISPLAY("\n");
   
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
 
-int ti85_receive_backup(FILE *file, int mask_mode, longword *version)
+int ti85_recv_backup(FILE *file, int mask_mode, longword *version)
 {
   byte data;
   word sum;
@@ -357,7 +357,7 @@ int ti85_receive_backup(FILE *file, int mask_mode, longword *version)
   char desc[43]="Backup file received by TiLP";
   long offset;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Waiting backup...");
   update_label();
@@ -454,7 +454,7 @@ int ti85_receive_backup(FILE *file, int mask_mode, longword *version)
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -470,7 +470,7 @@ int ti85_send_backup(FILE *file, int mask_mode)
   word block_size;
   byte rej_code = CMD85_REJ_NONE;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Sending...");
   update_label();
@@ -606,7 +606,7 @@ int ti85_send_backup(FILE *file, int mask_mode)
  label_skip:
  label_exit:
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -623,7 +623,7 @@ int ti85_directorylist(struct varinfo *list, int *n_elts)
    Receive one or more variables: if varname[0]='\0' ->
    group file else single file
 */
-int ti85_receive_var(FILE *file, int mask_mode, 
+int ti85_recv_var(FILE *file, int mask_mode, 
 		     char *varname, byte vartype, byte varlock)
 {
   byte data;
@@ -641,7 +641,7 @@ int ti85_receive_var(FILE *file, int mask_mode,
   word allvars_size;	// This limits the size of a TIGL file to 64 Kb */
   byte name_length=0;
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Waiting var(s)...");
   update_label();
@@ -770,7 +770,7 @@ int ti85_receive_var(FILE *file, int mask_mode,
   DISPLAY("\n");
 
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
   
   return 0;
 }
@@ -788,7 +788,7 @@ int ti85_send_var(FILE *file, int mask_mode)
   byte name_length, rej_code = CMD85_REJ_NONE;
   char str[9];
 
-  TRY(cable->open_port());
+  TRY(cable->open());
   update_start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
@@ -939,7 +939,7 @@ int ti85_send_var(FILE *file, int mask_mode)
   DISPLAY("\n");
  label_exit:
   update_start();
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -965,9 +965,9 @@ int ti85_dump_rom(FILE *file, int mask_mode)
   update_label();
 
   /* Open connection and check */
-  TRY(cable->open_port());
+  TRY(cable->open());
   //TRY(ti85_isready());
-  TRY(cable->close_port());
+  TRY(cable->close());
   sprintf(update->label_text, "Yes !");
   update_label();
 
@@ -988,7 +988,7 @@ int ti85_dump_rom(FILE *file, int mask_mode)
   //unlink(DUMP_ROM85_FILE);
 
   /* As we can not launch program by remote control, we wait user do that */
-  TRY(cable->open_port());
+  TRY(cable->open());
   sprintf(update->label_text, "Launch from calc...");
   update_label();
   PAUSE(500);
@@ -1045,7 +1045,7 @@ int ti85_dump_rom(FILE *file, int mask_mode)
       update_label();
     }
   /* Close connection */
-  TRY(cable->close_port());
+  TRY(cable->close());
 
   return 0;
 }
@@ -1056,6 +1056,16 @@ int ti85_get_rom_version(char *version)
 }
 
 int ti85_send_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti85_recv_flash(FILE *file, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti85_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
 }

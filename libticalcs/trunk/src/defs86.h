@@ -1,4 +1,4 @@
-/*  tilp - link program for TI calculators
+/*  libticalcs - calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2000, Romain Lievin, David Kuder
  *
  *  This program is free software; you can redistribute it and/or modify

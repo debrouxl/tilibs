@@ -1,5 +1,5 @@
-/*  tilp - link program for TI calculators
- *  Copyright (C) 1999-2001  Romain Lievin
+/*  libticalcs - calculator library, a part of the TiLP project
+ *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
 #define CMD92p_WAIT_DATA   0x09
 #define CMD92p_SEND        0x0D
 #define CMD92p_DATA_PART   0x15
+#define CMD92p_REFUSED     0x36
+#define CMD92p_REJECTED    0x36
 #define CMD92p_TI_OK       0x56
 #define CMD92p_PC_OK       0x56
 #define CMD92p_CHK_ERROR   0x5A
