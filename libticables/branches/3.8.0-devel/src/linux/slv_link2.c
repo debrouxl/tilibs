@@ -258,8 +258,8 @@ int slv_exit2()
   	return 0;
 }
 
-static int send_fblock(uint8_t *data, int length);
-static int send_pblock(uint8_t *data, int length);
+static int send_fblock2(uint8_t *data, int length);
+static int send_pblock2(uint8_t *data, int length);
 
 int slv_close2()
 {
@@ -268,7 +268,7 @@ int slv_close2()
 
 	/* Flush write buffer byte per byte (last command) */
 	if (nBytesWrite2 > 0) {
-		ret = send_pblock(wBuf2, nBytesWrite2);
+		ret = send_pblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
 	}
@@ -286,23 +286,14 @@ int slv_put2(uint8_t data)
 
 #if !defined( BUFFERED_W )
   	/* Byte per byte */
-  	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, to);
-
-	if(ret == -ETIMEDOUT) {
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-  		return ERR_WRITE_TIMEOUT;
-	}
-	if(ret < 0) {
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-  		return ERR_WRITE_ERROR;
-	}
+	return send_pblock2(&data, 1);
 #else
   	/* Fill buffer (up to 32 bytes) */
   	wBuf2[nBytesWrite2++] = data;
 
 	/* Buffer full? Send the whole buffer at once */
   	if (nBytesWrite2 == MAX_PACKET_SIZE) {
-		ret = send_fblock(wBuf2, nBytesWrite2);
+		ret = send_fblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
   	}
@@ -320,7 +311,7 @@ int slv_get2(uint8_t * data)
 #if defined( BUFFERED_W )
         /* Flush write buffer byte per byte (more reliable) */
   	if (nBytesWrite2 > 0) {
-		ret = send_pblock(wBuf2, nBytesWrite2);
+		ret = send_pblock2(wBuf2, nBytesWrite2);
 		nBytesWrite2 = 0;
 		if(ret) return ret;
 	}
@@ -461,8 +452,7 @@ int slv_register_cable_2(TicableLinkCable * lc)
 
 /***/
 
-#if defined( BUFFERED_W )
-static int send_fblock(uint8_t *data, int length)
+static int send_fblock2(uint8_t *data, int length)
 {
 	int ret;
 
@@ -480,15 +470,14 @@ static int send_fblock(uint8_t *data, int length)
 	return 0;
 }
 
-static int send_pblock(uint8_t *data, int length)
+static int send_pblock2(uint8_t *data, int length)
 {
 	int i, ret;
 
 	for(i=0; i<length; i++) {
-		ret = send_fblock(&wBuf2[i], 1);
+		ret = send_fblock2(&data[i], 1);
 		if(ret) return ret;
 	}
 
 	return 0;
 }
-#endif

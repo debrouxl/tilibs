@@ -163,9 +163,9 @@ int slv_close(void)
 	int ret;
 
 	/* Flush write buffer byte per byte (last command) */
-	if (nBytesWrite2 > 0) {
-		ret = send_pblock(wBuf2, nBytesWrite2);
-		nBytesWrite2 = 0;
+	if (nBytesWrite > 0) {
+		ret = send_pblock(wBuf, nBytesWrite);
+		nBytesWrite = 0;
 		if(ret) return ret;
 	}
 #endif	
@@ -181,20 +181,15 @@ int slv_put(uint8_t data)
   	LOG_DATA(data);
 
 #if !defined( BUFFERED_W )
-  	/* Byte per uint8_t */
-  	ret = write(dev_fd, (void *) (&data), 1);
-  	
-  	if(ret == -1)
-  		return ERR_WRITE_ERROR;
-  	if(!ret)
-  		return ERR_WRITE_TIMEOUT;
+  	/* Byte per byte */
+	return send_pblock(&data, 1);
 #else
   	/* Fill buffer (up to 32 bytes) */
   	wBuf[nBytesWrite++] = data;
   	
   	/* Buffer full? Send the whole buffer at once */
   	if (nBytesWrite == MAX_PACKET_SIZE) {
-    		ret = send_fblock(wBuf2, nBytesWrite2);
+    		ret = send_fblock(wBuf, nBytesWrite);
     		nBytesWrite = 0;
 		if(ret) return ret;
   	}
@@ -212,8 +207,8 @@ int slv_get(uint8_t * data)
 #if defined( BUFFERED_W )
   	/* Flush write buffer byte per byte (more reliable) */
   	if (nBytesWrite > 0) {
-    		ret = send_pblock(wBuf2, nBytesWrite2);
-		nBytesWrite2 = 0;
+    		ret = send_pblock(wBuf, nBytesWrite);
+		nBytesWrite = 0;
 		if(ret) return ret;
 	}
 #endif
@@ -311,12 +306,11 @@ int slv_register_cable_1(TicableLinkCable * lc)
 
 /***/
 
-#if defined( BUFFERED_W )
 static int send_fblock(uint8_t *data, int length)
 {
 	int ret;
 	
-	ret = write(dev_fd, (void *) (&data), length);
+	ret = write(dev_fd, (void *)data, length);
   	
   	if(!ret)
   		return ERR_WRITE_TIMEOUT;
@@ -331,10 +325,9 @@ static int send_pblock(uint8_t *data, int length)
 	int i, ret;
 
 	for(i=0; i<length; i++) {
-		ret = send_fblock(&wBuf2[i], 1);
+		ret = send_fblock(&data[i], 1);
 		if(ret) return ret;
 	}
 
 	return 0;
 }
-#endif

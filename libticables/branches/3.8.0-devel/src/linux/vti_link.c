@@ -247,7 +247,7 @@ int vti_probe()
 {
 #ifdef USE_SHM
 	return !0;
-else
+#else
   	return 0;
 #endif
 }

@@ -12,6 +12,8 @@ Log:
 	both worlds ! Tested with group, idlist, clock, backup, 
 	FLASH apps (s/r), ROM dump and FLASH os.
 	This really speed-up FLASH app transfer (sending).
+	Done the same work for tiglusb support. Will be moved into the module
+	later...
 	
 - 17/04/2004, version 3.8.2: roms
 	Bug in lib-usb support: wrong timeout passed to libusb (1/10 of

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-21 22:58+0200\n"
+"POT-Creation-Date: 2004-04-22 22:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -668,13 +668,13 @@ msgstr ""
 msgid "ioctl failed in bsd_ioctl_write_io !\n"
 msgstr ""
 
-#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:77 src/linux/tig_link.c:73
+#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:75 src/linux/tig_link.c:71
 #: src/linux/linux_ioports.c:124
 #, c-format
 msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr ""
 
-#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:79 src/linux/tig_link.c:75
+#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:77 src/linux/tig_link.c:73
 #: src/linux/linux_ioports.c:126
 #, c-format
 msgid "unable to open this serial port: %s\n"
@@ -708,39 +708,39 @@ msgstr ""
 msgid "unable to open this device: %s.\n"
 msgstr ""
 
-#: src/linux/slv_link.c:117
+#: src/linux/slv_link.c:129
 msgid "unable to set timeout (ioctl).\n"
 msgstr ""
 
-#: src/linux/slv_link.c:129
+#: src/linux/slv_link.c:141
 msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:205
+#: src/linux/slv_link.c:232
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""
 
 #. keep track of the TIGL device
-#: src/linux/slv_link2.c:116
+#: src/linux/slv_link2.c:118
 msgid "TIGL-USB found.\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:139
+#: src/linux/slv_link2.c:141
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:146
+#: src/linux/slv_link2.c:148
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:336
+#: src/linux/slv_link2.c:341
 msgid ""
-"weird, usb_bulk_read returns without any data; retrying for circumventing "
-"the quirk...\n"
+"\n"
+"weird, usb_bulk_read returns without any data & error; retrying...\n"
 msgstr ""
 
 #: src/linux/tie_link.c:72
@@ -1074,47 +1074,47 @@ msgid ""
 "    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
 msgstr ""
 
-#: src/win32/slv_link.c:90
+#: src/win32/slv_link.c:70
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
 msgstr ""
 
-#: src/win32/slv_link.c:97
+#: src/win32/slv_link.c:77
 #, c-format
 msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
 "Please download the latest release on <http://ti-lpg.org/prj_usb>."
 msgstr ""
 
-#: src/win32/slv_link.c:104
+#: src/win32/slv_link.c:84
 #, c-format
 msgid "using TiglUsb.dll version %s\n"
 msgstr ""
 
-#: src/win32/slv_link.c:108
+#: src/win32/slv_link.c:88
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:115
+#: src/win32/slv_link.c:95
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:122
+#: src/win32/slv_link.c:102
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:129
+#: src/win32/slv_link.c:109
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:136
+#: src/win32/slv_link.c:116
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:143
+#: src/win32/slv_link.c:123
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:150
+#: src/win32/slv_link.c:130
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr ""
 
