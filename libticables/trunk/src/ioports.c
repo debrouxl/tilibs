@@ -134,8 +134,11 @@ static int win32_asm_read_io(unsigned int addr)
 asm("movl $0,%%eax \n movw %1,%%dx \n inb %%dx,%%al \n movl %%eax,%0": "=g"(c): "g"(addr):"eax",
       "dx");
 #else
-  __asm {
-  mov eax, 0 mov edx, addr in al, dx mov c, eax}
+ __asm {
+	 mov eax, 0 
+	 mov edx, addr 
+	 in al, dx 
+	 mov c, eax}
 #endif
   return c;
 }
@@ -147,7 +150,9 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
       "dx");
 #else
   __asm {
-  mov edx, addr mov eax, data out dx, al}
+	  mov edx, addr 
+	  mov eax, data 
+	  out dx, al}
 #endif
 }
 #endif				//__WIN32__
