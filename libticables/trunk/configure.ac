@@ -3,11 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 3.8.7, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiCables, 3.8.8, [tilp-users@lists.sourceforge.net])
 
 MAJOR_VERSION=3
 MINOR_VERSION=8
-MICRO_VERSION=7
+MICRO_VERSION=8
 
 LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
 LT_REVISION=$MICRO_VERSION
