@@ -210,6 +210,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
   case CALC_V200:
   case CALC_TI92P:
   case CALC_TI89:
+  case CALC_TI89T:
     calc->supported_operations = ti89_supported_operations;
     calc->is_silent = !0;
     calc->has_folder = !0;

@@ -97,6 +97,7 @@ static uint8_t host_ids()
     return TI86_PC;
     break;
   case CALC_TI89:
+  case CALC_TI89T:
     return TI89_PC;
     break;
   case CALC_TI92:

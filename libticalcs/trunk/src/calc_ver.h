@@ -30,7 +30,7 @@
 #define LIBCALCS_REQUIRES_LIBCABLES_VERSION "3.8.1"	// useless with pkg-config
 
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.5.3"
+# define LIBTICALCS_VERSION "4.5.4"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif

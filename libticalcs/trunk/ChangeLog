@@ -1,6 +1,11 @@
 SubVersion: $Id$
 
 Log:
+
+- 18/09/2004, version 4.5.4: roms
+	Added TI89 Titanium support. File format seems to be the same as TI89.
+	Added TI84+ (SE) support. File format seems to be the same as TI83+.
+
 - 08/04/2004, version 4.5.3: roms
 	Redirection of stdout/stderr.
 	Fixed problem of i18n support: AM_GNU_GETTEXT must be put before

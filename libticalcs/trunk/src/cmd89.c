@@ -43,6 +43,7 @@ static uint8_t pc_ti9x(void)
 {
   switch (ticalcs_calc_type) {
   case CALC_TI89:
+  case CALC_TI89T:
     return PC_TI89;
     break;
   case CALC_TI92P:

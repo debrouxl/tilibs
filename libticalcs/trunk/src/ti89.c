@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit provides TI89/TI92+/V200 support.
+  This unit provides TI89/TI92+/V200/TI89 Titanium support.
 */
 
 #include <stdio.h>
@@ -110,6 +110,7 @@ int ti89_screendump(uint8_t ** bitmap, int mask_mode,
   sc->height = TI89_ROWS;
   switch (ticalcs_calc_type) {
   case CALC_TI89:
+  case CALC_TI89T:
     sc->clipped_width = TI89_COLS_VISIBLE;
     sc->clipped_height = TI89_ROWS_VISIBLE;
     break;
@@ -143,7 +144,7 @@ int ti89_screendump(uint8_t ** bitmap, int mask_mode,
   UNLOCK_TRANSFER();
 
   // Clip the unused part of the screen (nethertheless useable witha asm prog)
-  if ((ticalcs_calc_type == CALC_TI89)
+  if (((ticalcs_calc_type == CALC_TI89) || (ticalcs_calc_type == CALC_TI89T))
       && (mask_mode == CLIPPED_SCREEN)) {
     int i, j, k;
 
@@ -677,7 +678,7 @@ int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
 }
 
 #define DUMP_ROM89_FILE "dumprom.89z"
-#define ROMSIZE (2*1024)	// 2MB
+#define ROMSIZE (2*1024)	// 2MB or 4MB (Titanium)
 
 int ti89_dump_rom(const char *filename, int mask_mode)
 {
