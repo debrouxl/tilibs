@@ -66,8 +66,6 @@ TIEXPORT int TICALL ticalc_init()
   strcat(LOCALEDIR, "\\locale");
 #endif
 
-  tifiles_init();
-
 #if defined(ENABLE_NLS)
   setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, LOCALEDIR);
@@ -75,6 +73,8 @@ TIEXPORT int TICALL ticalc_init()
   //bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
   textdomain(PACKAGE);
 #endif
+
+  tifiles_init();
 
   DISPLAY(_("Libticalcs: version %s\n"), LIBTICALCS_VERSION);
 

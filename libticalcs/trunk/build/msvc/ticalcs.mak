@@ -70,6 +70,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ticalcs.res"
 	-@erase "$(INTDIR)\tikeys.obj"
 	-@erase "$(INTDIR)\tnode.obj"
+	-@erase "$(INTDIR)\type2str.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(OUTDIR)\ticalcs.exp"
 	-@erase "$(OUTDIR)\ticalcs.lib"
@@ -146,6 +147,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\Intrface.obj" \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
+	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\ticalcs.res" \
 	".\intl.lib" \
 	"..\..\..\ticables\build\msvc\ticables.lib" \
@@ -204,6 +206,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ticalcs.res"
 	-@erase "$(INTDIR)\tikeys.obj"
 	-@erase "$(INTDIR)\tnode.obj"
+	-@erase "$(INTDIR)\type2str.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(OUTDIR)\ticalcs.dll"
@@ -286,6 +289,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\Intrface.obj" \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
+	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\ticalcs.res" \
 	".\intl.lib" \
 	"$(OUTDIR)\ticables.lib" \
@@ -450,6 +454,12 @@ SOURCE=..\..\src\Probe.c
 SOURCE=..\..\src\tnode.c
 
 "$(INTDIR)\tnode.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\..\src\type2str.c
+
+"$(INTDIR)\type2str.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

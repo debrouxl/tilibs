@@ -383,7 +383,7 @@ int ti89_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   char *fn;
   static int nvar = 0;
   uint32_t unused;
-  uint8_t varname[18], utf8[35];
+  uint8_t varname[20], utf8[35];
 
   DISPLAY(_("Receiving variable(s)...\n"));
 
