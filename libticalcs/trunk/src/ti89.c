@@ -29,9 +29,22 @@
 #include "rom89.h"
 #include "pause.h"
 #include "update.h"
+//#include "struct.h"
 
 #ifdef HAVE_CURSES_H
 #include <curses.h>
+#endif
+
+#ifndef __WIN32__
+static uint32_t bswap_32(uint32_t a)
+{
+  return (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8;
+}
+#else
+static DWORD bswap_32(DWORD a)
+{
+  return (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8;
+}
 #endif
 
 /* Functions used by TI_PC functions */
@@ -273,8 +286,6 @@ int ti89_send_key(word key)
   TRY(ti89_isOK());
   TRY(cable->close());
   //UNLOCK_TRANSFER();
-
-  fprintf(stderr, "DEBUG: key %d (0x%x LSB: 0x%x MSB: 0x%x)\n", key, key, LSB(key), MSB(key));
 
   return 0;
 }
@@ -1757,62 +1768,31 @@ int ti89_get_idlist(char *id)
   return 0;
 }
 
-static int search_for_string(FILE *f, char *token)
-{
-  long pos;
-  int i, n;
-  int j, k;
-  char buffer[65536];
-  
-  pos = ftell(f);
-  n = fread(buffer, sizeof(char), 65536*sizeof(char), f);
-  
-  // scan for token in the file
-  for(i=0; i<n-strlen(token); i++) {
-    for(j=0, k=0; j<strlen(token); j++) {
-      if(buffer[i+j] == token[j]) {
-	k++;
-      }
-    }
-    
-    if(k==strlen(token)) {
-      //printf("offset = %i = 0x%04x\n", i+pos, i+pos);
-      fseek(f, pos, SEEK_SET);
-      return !0;
-    }
-  }
-
-  fseek(f, pos, SEEK_SET);
-  return 0;
-}
-
 int ti89_send_flash(FILE *file, int mask_mode)
 {
   byte data;
   word sum;
-  char str[128];
-  char *flash_name = str;
-  longword flash_size;
+  char flash_name[128];
+  longword flash_size=0;
   longword block_size;
   int i, j;
   int num_blocks;
   word last_block;
-  byte str_size;
-  char date[5];
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
-  int quirk = 0;
+  Ti89FlashHeader header;
+  long file_size, offset, pos=0;
 
   //LOCK_TRANSFER();
   /* Read the file header and initialize some variables */
   TRY(cable->open());
   update_start();
-  fgets(str, 128, file);
-  if(strstr(str, "**TIFL**") == NULL) // is a .89u file
+  fgets(flash_name, 128, file);
+  if(strstr(flash_name, "**TIFL**") == NULL) // is a .89u file
     {
       for(i=0, j=0; i<127; i++) // is a .tib file
 	{
-	  if(str[i] == signature[j])
+	  if(flash_name[i] == signature[j])
 	    {
 	      j++;
 	      if(j==strlen(signature))
@@ -1828,91 +1808,58 @@ int ti89_send_flash(FILE *file, int mask_mode)
     }
 
   rewind(file);
-  if(!tib)
-    {
-      fgets(str, 9, file);
-      
-      for(i=0; i<4; i++) 
-	fgetc(file);
-      
-      for(i=0; i<4; i++)
-	date[i] = fgetc(file);
-      DISPLAY("Date of the FLASHapp or License or Certificate: %02X/%02X/%02X%02X\n", 
-	      date[0], date[1], date[2], 0xff & date[3]);
-      str_size=fgetc(file);
-      for(i=0; i<str_size; i++)
-	str[i]=fgetc(file);
-      str[i]='\0';
-      for(i=16+str_size+1; i<0x4A; i++)
-	fgetc(file);
-      flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
-	(LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-      
-      // Quirk workaround: some FLASH apps (usually not developped by TI) 
-      // replace the 'License' string by their FLASH app name.
-      quirk = search_for_string(file, str);
-      printf("quirk = %i\n", quirk);
-
-      if(!strcmp(str, "License") || quirk)
-	{
-	  DISPLAY("There is a license header: skipped.\n");
-	  for(i=0; i<flash_size; i++)
-	    fgetc(file);
-	  
-	  fgets(str, 9, file);
-	  if(strcmp(str, "**TIFL**"))
-	    return ERR_INVALID_FLASH_FILE;
-	  for(i=0; i<4; i++) fgetc(file);
-	  for(i=0; i<4; i++)
-	    date[i] = 0xff & fgetc(file);
-	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
-		  date[0], date[1], date[2], 0xff & date[3]);
-	  str_size=fgetc(file);
-	  for(i=0; i<str_size; i++)
-	    str[i]=fgetc(file);
-	  str[i]='\0';
-	  for(i=16+str_size+1; i<0x4A; i++)
-	    fgetc(file);	
-	  flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
-	    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-	} 
-      
-      if(!strcmp(str, ""))
-	{
-	  DISPLAY("There is a certificate: skipped (TiLP can not handle certificates).\n");
-	  for(i=0; i<flash_size; i++)
-	    fgetc(file);
-	  
-	  fgets(str, 9, file);
-	  if(strcmp(str, "**TIFL**"))
-	    return ERR_INVALID_FLASH_FILE;
-	  for(i=0; i<4; i++) fgetc(file);
-	  for(i=0; i<4; i++)
-	    date[i] = 0xff & fgetc(file);
-	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
-		  date[0], date[1], date[2], 0xff & date[3]);
-	  str_size=fgetc(file);
-	  for(i=0; i<str_size; i++)
-	    str[i]=fgetc(file);
-	  str[i]='\0';
-	  for(i=16+str_size+1; i<0x4A; i++)
-	    fgetc(file);
-	  flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
-	    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-	} 
+  
+  if(tib)
+    { // tib is an old format
+      fseek(file, 0, SEEK_END);
+      flash_size = ftell(file);
+      fseek(file, 0, SEEK_SET);
+      strcpy(flash_name, "basecode");
     }
   else
     {
       fseek(file, 0, SEEK_END);
-      flash_size = ftell(file);
+      file_size = ftell(file);
       fseek(file, 0, SEEK_SET);
-      strcpy(str, "basecode");
-    }      
+      
+      for(i=0, offset=2*sizeof(Ti89FlashHeader); offset<file_size; i++)
+	{
+	  fread(&header, sizeof(Ti89FlashHeader), 1, file);
+	  flash_size = header.data_length[0] + (header.data_length[1] << 8) +
+	    (header.data_length[2] << 16) + (header.data_length[3] << 24);
+	  
+	  if(memcmp(header.id, "**TIFL**", 8))
+	    return ERR_INVALID_FLASH_FILE;
 
+	  DISPLAY("Header #%i\n", i);
+	  DISPLAY(" id = <%s>\n", header.id);
+	  DISPLAY(" revision = %i.%i\n", LSB(header.revision), 
+		  MSB(header.revision));
+	  DISPLAY(" flags = %i\n", header.flags);
+	  DISPLAY(" type = %i\n", header.object_type);
+	  DISPLAY(" date : %02X/%02X/%02X%02X\n", 
+		  header.revision_day, header.revision_month, 
+		  LSB(header.revision_year), MSB(header.revision_year));
+	  DISPLAY(" name = <%s>\n", header.name);
+	  DISPLAY(" device_type = %02X\n", header.device_type);
+	  DISPLAY(" data_type = %02X\n", header.data_type);
+	  DISPLAY(" size = %i\n", flash_size);
+	  DISPLAY("\n");
+
+	  pos = ftell(file);
+	  fseek(file, flash_size, SEEK_CUR);
+	  offset += flash_size;
+	}
+
+      fseek(file, pos, SEEK_SET);
+      strcpy(flash_name, header.name);
+    }
+
+  
   DISPLAY("\n");
-  DISPLAY("Sending FLASH application...\n");
-  DISPLAY("FLASH application name: \"%s\"\n", str);
-  DISPLAY("FLASH application/Operating System size: %i bytes.\n", flash_size);
+  DISPLAY("Sending FLASH app/os...\n");
+  DISPLAY("FLASH app/os name: \"%s\"\n", flash_name);
+  DISPLAY("FLASH app/os size: %i bytes.\n", flash_size);
 
   /* Now, read data from the file and send them by block */
   sum=0;
@@ -2028,6 +1975,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
   TRY(cable->put(CMD89_EOT));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
+
   if(mask_mode != MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
   if(mask_mode == MODE_AMS)

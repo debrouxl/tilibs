@@ -34,7 +34,7 @@
 		breakpoints = (
 		);
 		perUserDictionary = {
-			PBXPerProjectTemplateStateSaveDate = 42925756;
+			PBXPerProjectTemplateStateSaveDate = 44702856;
 			"PBXTemplateGeometry-F5CA7ECB015C094F0DCA290F" = {
 				ContentSize = "{668, 621}";
 				LeftSlideOut = {
@@ -184,16 +184,16 @@
 						Split0 = {
 							Split0 = {
 								NavContent0 = {
-									bookmark = F5337D91028EFF6C01041594;
+									bookmark = F5027E8702A962FA01C02345;
 									history = (
 										F5337D8B028EFF6C01041594,
-										F5337D8C028EFF6C01041594,
-										F5337D8D028EFF6C01041594,
+										F5268CF5028FFCDE01041594,
+										F5027E8602A962FA01C02345,
 									);
 									prevStack = (
 										F5337D8E028EFF6C01041594,
 										F5337D8F028EFF6C01041594,
-										F5337D90028EFF6C01041594,
+										F5268CF7028FFCDE01041594,
 									);
 								};
 								NavCount = 1;
@@ -378,16 +378,16 @@
 					WindowLocation = "{150, 85}";
 				},
 			);
-			PBXWorkspaceStateSaveDate = 42925756;
+			PBXWorkspaceStateSaveDate = 44702856;
 		};
 		perUserProjectItems = {
+			F5027E8602A962FA01C02345 = F5027E8602A962FA01C02345;
+			F5027E8702A962FA01C02345 = F5027E8702A962FA01C02345;
+			F5268CF5028FFCDE01041594 = F5268CF5028FFCDE01041594;
+			F5268CF7028FFCDE01041594 = F5268CF7028FFCDE01041594;
 			F5337D8B028EFF6C01041594 = F5337D8B028EFF6C01041594;
-			F5337D8C028EFF6C01041594 = F5337D8C028EFF6C01041594;
-			F5337D8D028EFF6C01041594 = F5337D8D028EFF6C01041594;
 			F5337D8E028EFF6C01041594 = F5337D8E028EFF6C01041594;
 			F5337D8F028EFF6C01041594 = F5337D8F028EFF6C01041594;
-			F5337D90028EFF6C01041594 = F5337D90028EFF6C01041594;
-			F5337D91028EFF6C01041594 = F5337D91028EFF6C01041594;
 		};
 		projectwideBuildSettings = {
 		};
@@ -397,10 +397,50 @@
 	0867D69CFE84028FC02AAC07 = {
 		activeExec = 0;
 	};
+	F5027E8602A962FA01C02345 = {
+		fRef = 0127D11F017389DF5041E0CA;
+		isa = PBXTextBookmark;
+		name = "ti89.c: ti89_send_flash";
+		rLen = 0;
+		rLoc = 44009;
+		rType = 0;
+		vrLen = 748;
+		vrLoc = 43862;
+	};
+	F5027E8702A962FA01C02345 = {
+		fRef = 0127D11F017389DF5041E0CA;
+		isa = PBXTextBookmark;
+		name = "ti89.c: ti89_send_key";
+		rLen = 0;
+		rLoc = 6641;
+		rType = 0;
+		vrLen = 517;
+		vrLoc = 6408;
+	};
 	F50CA7FB01FC268901000102 = {
 		uiCtxt = {
 			sepNavWindowFrame = "{{61, 197}, {750, 502}}";
 		};
+	};
+	F5268CF5028FFCDE01041594 = {
+		fRef = 0127D13101738AAA5041E0CA;
+		isa = PBXTextBookmark;
+		name = "config.h: VERSION";
+		rLen = 0;
+		rLoc = 65;
+		rType = 0;
+		vrLen = 151;
+		vrLoc = 0;
+	};
+	F5268CF7028FFCDE01041594 = {
+		fRef = 0127D13101738AAA5041E0CA;
+		isa = PBXTextBookmark;
+		name = "config.h: VERSION";
+		rLen = 0;
+		rLoc = 65;
+		rType = 0;
+		vrLen = 151;
+		vrLoc = 0;
 	};
 	F5337D8B028EFF6C01041594 = {
 		fRef = 089C1667FE841158C02AAC07;
@@ -410,53 +450,6 @@
 		rLoc = 180;
 		rType = 0;
 		vrLen = 312;
-		vrLoc = 0;
-	};
-	F5337D8C028EFF6C01041594 = {
-		isa = PBXTargetBookmark;
-		trg = 0867D69CFE84028FC02AAC07;
-		uiCtxt = {
-			buildPhasesExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-			);
-			buildPhasesVisRect = "{{0, 0}, {626, 474}}";
-			buildSettingsExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				8,
-			);
-			buildSettingsVisRect = "{{0, 0}, {626, 474}}";
-			expertProductSettingsVisRect = "{{0, 0}, {464, 403}}";
-			guiProductSettingsExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				6,
-			);
-			guiProductSettingsVisRect = "{{0, 0}, {642, 443}}";
-			productSettingsIsSimple = YES;
-			selectedTab = productSettings;
-		};
-	};
-	F5337D8D028EFF6C01041594 = {
-		fRef = 0127D13101738AAA5041E0CA;
-		isa = PBXTextBookmark;
-		name = "config.h: 4";
-		rLen = 0;
-		rLoc = 65;
-		rType = 0;
-		vrLen = 151;
 		vrLoc = 0;
 	};
 	F5337D8E028EFF6C01041594 = {
@@ -473,53 +466,6 @@
 		fRef = 0127D13101738AAA5041E0CA;
 		isa = PBXTextBookmark;
 		name = "config.h: 4";
-		rLen = 0;
-		rLoc = 65;
-		rType = 0;
-		vrLen = 151;
-		vrLoc = 0;
-	};
-	F5337D90028EFF6C01041594 = {
-		isa = PBXTargetBookmark;
-		trg = 0867D69CFE84028FC02AAC07;
-		uiCtxt = {
-			buildPhasesExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-			);
-			buildPhasesVisRect = "{{0, 0}, {626, 474}}";
-			buildSettingsExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				8,
-			);
-			buildSettingsVisRect = "{{0, 0}, {626, 474}}";
-			expertProductSettingsVisRect = "{{0, 0}, {464, 403}}";
-			guiProductSettingsExpandedSubviews = (
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				6,
-			);
-			guiProductSettingsVisRect = "{{0, 0}, {642, 443}}";
-			productSettingsIsSimple = YES;
-			selectedTab = productSettings;
-		};
-	};
-	F5337D91028EFF6C01041594 = {
-		fRef = 0127D13101738AAA5041E0CA;
-		isa = PBXTextBookmark;
-		name = "config.h: VERSION";
 		rLen = 0;
 		rLoc = 65;
 		rType = 0;

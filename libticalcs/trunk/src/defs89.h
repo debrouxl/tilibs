@@ -138,4 +138,29 @@
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
 
+// FLASH support
+#include "calc_def.h"
+
+struct ti89_flash_header
+{
+  byte id[8];
+  word revision;
+  byte flags;
+  byte object_type;
+  byte revision_day;
+  byte revision_month;
+  word revision_year;
+  byte name_length;
+  byte name[8];
+  byte filler[23];
+  byte device_type;
+  byte data_type;
+  byte filler2[24];
+  byte data_length[4]; //longword removed: problem of data alignment ?!
+};
+typedef struct ti89_flash_header Ti89FlashHeader;
+
+#define DEVICE_TYPE_89 0x98
+#define DEVICE_TYPE_92 0x88
+
 #endif
