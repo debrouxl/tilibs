@@ -1,0 +1,22 @@
+[Main]
+Name=init
+Type=Function
+Header=cabl_int.h
+Definition=int (*init) (void);
+
+[Parameters]
+Return value : 0 if successful, an error code otherwise.
+
+[Summary]
+Open a link cable for the first time.
+
+[Description]
+It open a link cable access: permissions are granted, I/O accesses are open,
+logging is enabled.
+You have to call it at program startup or whenever you change the link cable
+model. Typically after a call to @ticable_set_cable@.
+
+Error codes are listed in cabl_err.h.
+
+[See also]
+@TicableLinkCable@, @ticablelinkcable.exit@

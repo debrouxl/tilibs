@@ -1,0 +1,18 @@
+[Main]
+Name=get
+Type=Function
+Header=cabl_int.h
+Definition=int (*get_white_wire) (void);
+
+[Parameters]
+Return value : the electrical state.
+
+[Summary]
+Get the electrical state of the 'white' wire.
+
+[Description]
+This function is for use with emulators.
+It returns 1 if the wire is at logical '1', 0 otherwise.
+
+[See also]
+@get_white_wire@, @get_red_wire@, @set_red_wire@
