@@ -630,8 +630,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall-recursive
 
 
-$(pkgconfig_DATA): config.status
-
 dos2unix:
 	dos2unix
 	lowercase
