@@ -1,0 +1,17 @@
+[Main]
+Name=ticable_get_support
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_get_support(@TicableLinkType@ *cable_type);
+
+[Parameters]
+cable_type : a link cable model.
+Returns : the kind of support provided by the link cable
+
+[Summary]
+Check whether the link cable is currently supported (useable) by the library.
+
+[Description]
+This function allow to know if the link cable is supported by the library and if yes, which I/O method the link cable is using.
+
+Note that a link cable must be set before calling this generic function (link cable independant function).

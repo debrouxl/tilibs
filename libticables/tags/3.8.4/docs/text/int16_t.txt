@@ -1,0 +1,11 @@
+[Main]
+Name=int16_t
+Type=Define
+Header=stdint.h
+Definition=typedef int16_t
+
+[Summary]
+A ISO C99 normalized type.
+
+[Description]
+A signed 16-bits value.
