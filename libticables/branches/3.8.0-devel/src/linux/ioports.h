@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ioports.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin

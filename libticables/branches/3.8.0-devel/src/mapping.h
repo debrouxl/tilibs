@@ -27,7 +27,8 @@
 #include "cabl_def.h"
 
 int mapping_get_method(TicableType type, int resources, TicableMethod *method);
+
 int mapping_register_cable(TicableType type, TicableLinkCable *lc);
-void mapping_unregister_cable(TicableLinkCable *lc);
+int mapping_unregister_cable(TicableLinkCable *lc);
 
 #endif
