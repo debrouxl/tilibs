@@ -1,7 +1,7 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticables.mak
 
 ..\..\src\link_avr.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -18,7 +18,7 @@
 	
 
 ..\..\src\link_dfl.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -29,7 +29,7 @@
 	
 
 ..\..\src\link_par.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -43,7 +43,7 @@
 	
 
 ..\..\src\link_ser.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -57,7 +57,7 @@
 	
 
 ..\..\src\link_slv.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -72,7 +72,7 @@
 	
 
 ..\..\src\link_tie.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -86,7 +86,7 @@
 	
 
 ..\..\src\link_tig.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -99,7 +99,7 @@
 	
 
 ..\..\src\link_vti.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -113,7 +113,7 @@
 	
 
 ..\..\src\link_vtl.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -125,7 +125,7 @@
 	
 
 ..\..\src\win32\porttalk.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl1.h"\
@@ -135,7 +135,7 @@
 	
 
 ..\..\src\detect.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\stdints.h"\
@@ -144,7 +144,7 @@
 	
 
 ..\..\src\direct.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_int.h"\
 	"..\..\src\export.h"\
@@ -154,7 +154,7 @@
 	
 
 ..\..\src\error.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -164,7 +164,7 @@
 	
 
 ..\..\src\intrface.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_ver.h"\
 	"..\..\src\detect.h"\
@@ -178,7 +178,7 @@
 	
 
 ..\..\src\logging.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl1.h"\
@@ -188,7 +188,7 @@
 	
 
 ..\..\src\mapping.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\stdints.h"\
@@ -197,7 +197,7 @@
 	
 
 ..\..\src\printl.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl1.h"\
@@ -206,7 +206,7 @@
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl1.h"\
@@ -215,7 +215,7 @@
 	
 
 ..\..\src\verbose.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\printl.h"\
@@ -225,7 +225,7 @@
 	
 
 ..\..\src\win32\win32_detect.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -238,7 +238,7 @@
 	
 
 ..\..\src\win32\win32_ioports.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\Cabl_int.h"\
@@ -253,7 +253,7 @@
 	
 
 ..\..\src\win32\win32_mapping.c : \
-	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\

@@ -40,7 +40,7 @@
 static int default_ticables_printl(int level, const char *format, ...)
 {	
 	int ret = 0;
-#ifndef __WIN32__
+//#ifndef __WIN32__
 	va_list ap;
 
 	switch(level) {
@@ -51,7 +51,7 @@ static int default_ticables_printl(int level, const char *format, ...)
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
-#endif
+//#endif
 	return ret;
 }
 
