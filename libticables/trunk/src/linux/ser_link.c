@@ -50,6 +50,11 @@ static unsigned int com_addr;
 
 static int io_permitted = 0;
 
+#ifdef __WIN32__
+extern int win32_comport_open(char *comPort, PHANDLE hCom);
+extern int win32_comport_close(PHANDLE hCom);
+#endif
+
 int ser_init()
 {
 #ifdef __WIN32__
@@ -58,7 +63,6 @@ int ser_init()
   // This problem exists with Win2k and some UARTs.
   // It seems I got the same problem as FlashZ when I changed my 
   // motherboard. Are some port broken ?
-	extern int win32_comport_open(char *comPort, PHANDLE hCom);
   	TRYC(win32_comport_open(io_device, &hCom));
 #endif
   	com_addr = io_address;
@@ -85,12 +89,8 @@ int ser_exit()
   	TRYC(io_close(com_in, 1));
   	io_permitted--;
 
-#ifdef __WIN32__
-  	//extern int win32_comport_close(PHANDLE hCom);
-#pragma warning( push )
-#pragma warning( disable : 4013 )
-        TRYC(win32_comport_close(&hCom));
-#pragma warning( pop ) 
+#if defined(__WIN32__)
+    TRYC(win32_comport_close(&hCom));
 #endif
 
   	STOP_LOGGING();
