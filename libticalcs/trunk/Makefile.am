@@ -7,7 +7,7 @@ SUBDIRS = build intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ticables.pc
+pkgconfig_DATA = ticalcs.pc
 
 $(pkgconfig_DATA): config.status
 
