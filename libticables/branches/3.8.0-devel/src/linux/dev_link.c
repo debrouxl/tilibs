@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: dev_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -62,144 +62,164 @@ extern int time_out;
 static int dev_fd = 0;
 
 static struct cs {
-  uint8_t data;
-  int available;
+  	uint8_t data;
+  	int available;
 } cs;
 
 int dev_init()
 {
-  int mask;
+  	int mask;
 
-  /* Init some internal variables */
-  cs.available = 0;
-  cs.data = 0;
+  	/* Init some internal variables */
+  	cs.available = 0;
+  	cs.data = 0;
 
-  /* Open the device */
-  mask = O_RDWR | /*O_NONBLOCK | */ O_SYNC;
-  if ((dev_fd = open(io_device, mask)) == -1) {
-    DISPLAY_ERROR(_("unable to open this device: <%s>\n"), io_device);
-    DISPLAY_ERROR(_("is the module loaded ?\n"));
-    return ERR_OPEN_TIDEV;
-  }
+  	/* Open the device */
+  	mask = O_RDWR | /*O_NONBLOCK | */ O_SYNC;
+  	if ((dev_fd = open(io_device, mask)) == -1) {
+  		switch(errno) {
+  		case ENODEV: DISPLAY_ERROR(_("libticables: unable to open character device: %s.\n"), io_device); break;
+  		case EACCESS: DISPLAY_ERROR(_("libticables: unable to open character device: %s (wrong permissions).\n"), io_device); break;
+		default: DISPLAY_ERROR(_("libticables: unable to open character device: %s\n"), io_device); break;
+		}
+    	return ERR_OPEN_TIDEV;
+	}
 
-  /* Set timeout and inter-bit delay */
+  	/* Set timeout and inter-bit delay */
 #if defined(HAVE_TILP_TICABLE_H)
-  ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay);
-  ioctl(dev_fd, IOCTL_TIPAR_TIMEOUT, time_out);
-
-  ioctl(dev_fd, IOCTL_TISER_DELAY, delay);
-  ioctl(dev_fd, IOCTL_TISER_TIMEOUT, time_out);
+	
+	if((port == PARALLEL_PORT_1) || (port == PARALLEL_PORT_2) || (port == PARALLEL_PORT_3)) {
+	  	if (ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay) == -1) {
+	    		DISPLAY_ERROR(_("libticables: failed to set delay.\n"));
+	    		return ERR_IOCTL;
+	  	}
+	  	if (ioctl(dev_fd, IOCTL_TIPAR_TIMEOUT, time_out) == -1) {
+	    		DISPLAY_ERROR(_("libticables: failed to set timeout.\n"));
+	    		return ERR_IOCTL;
+	  	}
+	}
+  	
+  	if((port == SERIAL_PORT_1) || (port == SERIAL_PORT_2) || (port == SERIAL_PORT_3) || (port == SERIAL_PORT_4)) {
+	  	if (ioctl(dev_fd, IOCTL_TISER_DELAY, delay) == -1) {
+	    		DISPLAY_ERROR(_("libticables: failed to set delay.\n"));
+	    		return ERR_IOCTL;
+	  	}
+	  	if (ioctl(dev_fd, IOCTL_TISER_TIMEOUT, time_out) == -1) {
+	    		DISPLAY_ERROR(_("libticables: failed to set timeout.\n"));
+	    		return ERR_IOCTL;
+	  	}
+	}
 #endif
 
-  START_LOGGING();
+  	START_LOGGING();
 
-  return 0;
+  	return 0;
 }
 
 int dev_open(void)
 {
-  tdr.count = 0;
-  toSTART(tdr.start);
+  	tdr.count = 0;
+  	toSTART(tdr.start);
 
-  return 0;
+  	return 0;
 }
 
 int dev_put(uint8_t data)
 {
-  int err;
+  	int err;
 
-  tdr.count++;
-  LOG_DATA(data);
-  err = write(dev_fd, (void *) (&data), 1);
-  if (err <= 0) {
-    if (errno == ETIMEDOUT)
-      return ERR_WRITE_TIMEOUT;
-    else
-      return ERR_WRITE_ERROR;
-  }
+  	tdr.count++;
+  	LOG_DATA(data);
+  	err = write(dev_fd, (void *) (&data), 1);
+  	if (err <= 0) {
+    		if (errno == ETIMEDOUT)
+      		return ERR_WRITE_TIMEOUT;
+    	else
+      		return ERR_WRITE_ERROR;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int dev_get(uint8_t * data)
 {
-  int err = 0;
+  	int err = 0;
 
-  tdr.count++;
-  /* If the dev_check function was previously called, retrieve the uint8_t */
-  if (cs.available) {
-    *data = cs.data;
-    cs.available = 0;
-    return 0;
-  }
+  	tdr.count++;
+  	/* If the dev_check function was previously called, retrieve the uint8_t */
+  	if (cs.available) {
+    		*data = cs.data;
+    		cs.available = 0;
+    		return 0;
+  	}
 
-  err = read(dev_fd, (void *) data, 1);
-  if (err <= 0) {
-    if (errno == ETIMEDOUT)
-      return ERR_READ_TIMEOUT;
-    else
-      return ERR_READ_ERROR;
-  }
-  LOG_DATA(*data);
+  	err = read(dev_fd, (void *) data, 1);
+  	if (err <= 0) {
+    		if (errno == ETIMEDOUT)
+      			return ERR_READ_TIMEOUT;
+    		else
+      			return ERR_READ_ERROR;
+  	}
+  	LOG_DATA(*data);
 
-  return 0;
+  	return 0;
 }
 
 int dev_probe(void)
 {
-  return 0;
+  	return 0;
 }
 
 int dev_close(void)
 {
-  return 0;
+  	return 0;
 }
 
 int dev_exit()
 {
-  STOP_LOGGING();
-  if (dev_fd) {
-    close(dev_fd);
-    dev_fd = 0;
-  }
+  	STOP_LOGGING();
+  	if (dev_fd) {
+    		close(dev_fd);
+    		dev_fd = 0;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int dev_check(int *status)
 {
-  int n = 0;
+  	int n = 0;
 
-  /* Since the select function does not work, I do it myself ! */
-  *status = STATUS_NONE;
-  if (dev_fd) {
-    n = read(dev_fd, (void *) (&cs.data), 1);
-    if (n > 0) {
-      if (cs.available == 1)
-	return ERR_BYTE_LOST;
+  	/* Since the select function does not work, I do it myself ! */
+  	*status = STATUS_NONE;
+  	if (dev_fd) {
+    		n = read(dev_fd, (void *) (&cs.data), 1);
+    		if (n > 0) {
+      			if (cs.available == 1)
+				return ERR_BYTE_LOST;
 
-      cs.available = 1;
-      *status = STATUS_RX;
-      return 0;
-    } else {
-      *status = STATUS_NONE;
-      return 0;
-    }
-  }
+      			cs.available = 1;
+      			*status = STATUS_RX;
+      			return 0;
+    		} else {
+      			*status = STATUS_NONE;
+      			return 0;
+    		}
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int dev_supported()
 {
 #if defined(HAVE_TILP_TICABLE_H)
-  return SUPPORT_ON | SUPPORT_TIPAR | SUPPORT_TISER;
+  	return SUPPORT_ON | SUPPORT_TIPAR | SUPPORT_TISER;
 #else
-  return SUPPORT_ON;
+  	return SUPPORT_ON;
 #endif
 }
 
-int dev_register_cable(TicableLinkCable * lc, TicableMethod method)
+int dev_register_cable(TicableLinkCable * lc)
 {
   lc->init = dev_init;
   lc->open = dev_open;
