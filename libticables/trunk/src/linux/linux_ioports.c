@@ -62,6 +62,8 @@ static int linux_asm_read_io(unsigned int addr)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
 	return inb(addr);
+#else
+	return 0;
 #endif
 }
 
@@ -108,10 +110,14 @@ static void linux_ioctl_write_io(unsigned int address, int data)
 int io_open(unsigned long from, unsigned long num)
 {
 	if (method & IOM_ASM) {
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
     		io_rd = linux_asm_read_io;
     		io_wr = linux_asm_write_io;
 
 		return (ioperm(from, num, 1) ? ERR_ROOT : 0);
+#else
+		return ERR_ROOT;
+#endif
 	}
   	else if (method & IOM_IOCTL) {
 		struct termios termset;
@@ -145,7 +151,11 @@ int io_open(unsigned long from, unsigned long num)
 int io_close(unsigned long from, unsigned long num)
 {
 	if (method & IOM_ASM) {
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
     		return (ioperm(from, num, 0) ? ERR_ROOT : 0);
+#else
+		return 0;
+#endif
     	}
     	else if (method & IOM_IOCTL) {
     		if (tty_use) {

@@ -28,7 +28,8 @@
 
 // Store in a file what is displayed in the console
 #if defined(__LINUX__) || defined(__BSD__)
-# define DISP_FILE "/tmp/verbose.log"
+//# define DISP_FILE "/tmp/verbose.log"
+# define DISP_FILE "/dev/null"
 #else
 # define DISP_FILE "C:\\verbose.log"
 #endif

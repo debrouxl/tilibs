@@ -43,12 +43,13 @@ static int default_ticables_printl(int level, const char *format, ...)
 //#ifndef __WIN32__
 	va_list ap;
 
+	va_start(ap, format);
+
 	switch(level) {
 		case 1: fprintf(stdout, _("wrn: ")); break;
 		case 2: fprintf(stdout, _("err: ")); break;
 	}
 	
-	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
 //#endif
