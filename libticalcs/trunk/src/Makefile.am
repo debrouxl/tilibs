@@ -17,7 +17,7 @@ libticalcsinclude_HEADERS = \
 	update.h
 
 # build instructions
-libticalcs_la_CPPFLAGS = -DLOCALEDIR=\"$(DESTDIR)$(datadir)/locale\" \
+libticalcs_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
 libticalcs_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
 libticalcs_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@

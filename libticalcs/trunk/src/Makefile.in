@@ -183,7 +183,7 @@ libticalcsinclude_HEADERS = \
 
 
 # build instructions
-libticalcs_la_CPPFLAGS = -DLOCALEDIR=\"$(DESTDIR)$(datadir)/locale\" \
+libticalcs_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
 
 libticalcs_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
