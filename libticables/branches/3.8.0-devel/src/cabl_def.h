@@ -89,6 +89,8 @@ typedef enum {
   TICABLEPORT_MAX
 } TicablePort;
 
+#define USB_PORT	USB_PORT_1
+
 /* I/O method to use */
 typedef enum {
   IOM_AUTO = 1, IOM_ASM = 2, IOM_IOCTL = 4, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
