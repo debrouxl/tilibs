@@ -63,9 +63,10 @@ int par_init()
   io_permitted = 1;
   io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
 
-  io_wr(lpt_out, 3);		// wake-up calculator
-  io_wr(lpt_out, 0);
-  io_wr(lpt_out, 3);
+  // removed: this perturbates communication start-up
+  //io_wr(lpt_out, 3);		// wake-up calculator
+  //io_wr(lpt_out, 0);
+  //io_wr(lpt_out, 3);
 
   START_LOGGING();
 

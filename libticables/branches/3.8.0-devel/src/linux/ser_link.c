@@ -65,9 +65,10 @@ int ser_init()
   TRYC(io_open(com_in, 1));
   io_permitted++;
 
-  io_wr(com_out, 3);		// wake-up calculator
-  io_wr(com_out, 0);
-  io_wr(com_out, 3);
+  // removed: this perturbates communication start-up
+  //io_wr(com_out, 3);		// wake-up calculator
+  //io_wr(com_out, 0);
+  //io_wr(com_out, 3);
 
   START_LOGGING();
 

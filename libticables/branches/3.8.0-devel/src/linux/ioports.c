@@ -147,7 +147,7 @@ int io_close(unsigned long from, unsigned long num)
 	if (method & IOM_ASM) {
     		return (ioperm(from, num, 0) ? ERR_ROOT : 0);
     	}
-    	else if (method & IOM_API) {
+    	else if (method & IOM_IOCTL) {
     		if (tty_use) {
       			close(dev_fd);
       			tty_use--;

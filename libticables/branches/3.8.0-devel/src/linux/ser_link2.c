@@ -68,9 +68,10 @@ int ser_init2()
   TRYC(io_open(com_in, 1));
   io_permitted2++;
 
-  io_wr(com_out, 3);
-  io_wr(com_out, 0);
-  io_wr(com_out, 3);
+  // removed: this perturbates communication start-up
+  //io_wr(com_out, 3);
+  //io_wr(com_out, 0);
+  //io_wr(com_out, 3);
 
   START_LOGGING();
 
