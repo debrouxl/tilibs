@@ -70,7 +70,7 @@ int win32_detect_port(TicablePortInfo * pi)
 
 int win32_detect_resources(void)
 {
-	HINSTANCE hDLL = NULL;	/* Handle for TiglUsb driver */
+	HINSTANCE hDll = NULL;	/* Handle for TiglUsb driver */
     HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
 	char *os;
     	
@@ -142,12 +142,10 @@ int win32_detect_resources(void)
     
     	/* TIUSB: for use with my SilverLink driver */
     
-	hDLL = LoadLibrary("TiglUsb.DLL");
-    	if (hDLL != NULL) {
+	hDll = LoadLibrary("TiglUsb.DLL");
+    	if (hDll != NULL) {
       		resources |= IO_USB;
-#if !defined(__BORLANDC__) && !defined(__WIN32__)	// why ?
-      		CloseHandle(hDLL);
-#endif
+                FreeLibrary(hDll);
     	}
     	printl1(0, _("  IO_USB: %s (TiglUsb)\n"),
 	    resources & IO_USB ? "available" : "not available");

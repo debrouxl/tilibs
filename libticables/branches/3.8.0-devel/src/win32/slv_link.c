@@ -104,6 +104,7 @@ int slv_init()
     FreeLibrary(hDLL);
     return ERR_TIGLUSB_VERSION;
   }
+  printl1(0, _("using TiglUsb.dll version %s\n"), dynTiglUsbVersion());
 
   dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
   if (!dynTiglUsbOpen) {
