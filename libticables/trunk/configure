@@ -28998,7 +28998,6 @@ case "$host" in
   i[3456]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
   i[3456]86-*-hurd-*)  ARCH="-D__LINUX__" ;;
   i[3456]86-*-mingw*)  ARCH="-D__WIN32__ -D__MINGW32__" ;;
-  i[3456]86-*-cygwin)  ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
   x86_64-*-linux-*)      ARCH="-D__LINUX__" ;;
   ia64-*-linux-*)        ARCH="-D__LINUX__" ;;
   m68k-*-linux-*)        ARCH="-D__M68K__ -D__LINUX__" ;;
