@@ -1,6 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/*  libticables - link cables library, a part of the TiLP project
- *  Copyright (C) 1999-2003  Romain Lievin
+/* $Id$ */
+
+/*  libticables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2004  Romain Lievin
  *  Copyright (c) 2002, Kevin Kofler for the __MINGW32__ & __GNUC__ extensions.
  *
  *  This program is free software; you can redistribute it and/or modify

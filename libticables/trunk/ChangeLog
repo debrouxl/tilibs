@@ -1,10 +1,11 @@
-Log:
+SubVersion: $Id$
 
 To do: 
 	- USB pass-thru support
 	- bug with API mode (Linux & Windows): may not work with some calcs ?!
 	- ioports.c to improve
 
+Log:
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables
 

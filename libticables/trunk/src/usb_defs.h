@@ -1,4 +1,3 @@
-#ifndef USB_DEFS_H
 #define USB_DEFS_H
 
 #include <windows.h>
