@@ -1,6 +1,7 @@
 # Microsoft Developer Studio Generated Dependency File, included by tifiles.mak
 
 ..\..\src\types73.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -9,6 +10,7 @@
 	
 
 ..\..\src\types82.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -17,6 +19,7 @@
 	
 
 ..\..\src\types83.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -25,6 +28,7 @@
 	
 
 ..\..\src\types83p.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -33,6 +37,7 @@
 	
 
 ..\..\src\types85.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -41,6 +46,7 @@
 	
 
 ..\..\src\types86.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -49,6 +55,7 @@
 	
 
 ..\..\src\types89.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -57,6 +64,7 @@
 	
 
 ..\..\src\types92.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -65,6 +73,7 @@
 	
 
 ..\..\src\types92p.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -73,6 +82,7 @@
 	
 
 ..\..\src\typesv2.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\intl.h"\
@@ -81,6 +91,7 @@
 	
 
 ..\..\src\typesXX.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\file_def.h"\
@@ -213,12 +224,14 @@
 	
 
 ..\..\src\error.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\src\export.h"\
 	"..\..\src\file_err.h"\
 	"..\..\src\intl.h"\
 	
 
 ..\..\src\intrface.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\file_def.h"\
@@ -290,6 +303,7 @@
 	
 
 ..\..\src\type2str.c : \
+	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\export.h"\
 	"..\..\src\file_def.h"\
