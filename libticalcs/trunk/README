@@ -26,13 +26,11 @@ Requirements
 --------------------------------------------------------------------------
 
   - A UNIX computer and C compiler (gcc) for the Linux version
+or
+  - A *BSD (FreeBSD) computer and C compiler (gcc)
 
-  - A Windows9x (95/98/Me) or NT (NT4/2000/XP) computer for 
-	the Windows version
-
-  - the libticables library
-  - the libtifiles  library
-  - the GLib library
+  - the ticables library
+  - the tifiles  library
 
 --------------------------------------------------------------------------
 Compilation
@@ -55,7 +53,7 @@ Availability
 Copyright
 --------------------------------------------------------------------------
 
-ticalcs library is Copyright (C) 1999-2002 by the TiLP team 
+ticalcs library is Copyright (C) 1999-2004 by the TiLP team 
 <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public
