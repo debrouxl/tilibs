@@ -582,9 +582,9 @@ static struct cs
 
 IOUSBDeviceInterface **dev = NULL;
 IOUSBInterfaceInterface182 **intf = NULL;
-char rcv_buffer[4 * TIGL_MAXPACKETSIZE];
-int rcv_pos = 0;
-int read_pos = 0;
+static char rcv_buffer[TIGL_MAXPACKETSIZE + 1];
+static UInt32 numBytesRead = 0;
+static byte *rcv_buf_ptr;
 
 // specific functions
 
@@ -892,9 +892,8 @@ DLLEXPORT
 int ugl_open_port()
 {
     // if already open, then close...
-
-    read_pos = 0;
-    rcv_pos = 0;
+    numBytesRead = 0;
+    rcv_buf_ptr = rcv_buffer;
 
     if (intf != NULL)
         {
@@ -931,8 +930,8 @@ int ugl_close_port()
             intf = NULL;
         }
         
-    read_pos = 0;
-    rcv_pos = 0;
+  numBytesRead = 0;
+  rcv_buf_ptr = rcv_buffer;
         
   return 0;
 }
@@ -980,9 +979,7 @@ int ugl_get(byte *d)
 {
     extern int 	time_out;
 
-    char	buffer[TIGL_MAXPACKETSIZE + 1];
     int		i;
-    UInt32	numBytesRead = TIGL_MAXPACKETSIZE;
     UInt32	timeout = time_out;
     IOReturn	kr;
 
@@ -991,10 +988,12 @@ int ugl_get(byte *d)
     if (intf == NULL)
         return ERR_RCV_BYT;
 
-    if (read_pos == rcv_pos) // we're at the end of the buffer
+    if (numBytesRead == 0) // we're at the end of the buffer
         {
             printf("rcv_buffer empty, reading bulk pipe...\n");
-            kr = (*intf)->ReadPipeTO(intf, TIGL_BULK_ENDPOINT_IN, buffer, &numBytesRead, timeout, timeout);
+         
+            numBytesRead = TIGL_MAXPACKETSIZE;    
+            kr = (*intf)->ReadPipeTO(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead, timeout, timeout);
     
             if (kIOReturnSuccess != kr)
                 {
@@ -1003,31 +1002,25 @@ int ugl_get(byte *d)
                     return ERR_RCV_BYT;
                 }
                 
-            printf("Buffer is %ld bytes, copying to rcv_buffer\n", strlen(buffer));
+            rcv_buf_ptr = rcv_buffer;
+            numBytesRead = strlen(rcv_buffer);
+
+            printf("numBytesRead : %ld\n", numBytesRead);
 
             printf("Buffer content:");
 
-            for (i = 0; i < strlen(buffer); i++)
+            for (i = 0; i < numBytesRead; i++)
                 {
-                    if (rcv_pos == (4 * TIGL_MAXPACKETSIZE))
-                        rcv_pos = 0;
-                        
-                    printf(" 0x%x", buffer[i]);
-                        
-                    memcpy(&rcv_buffer[rcv_pos], &buffer[i], 1);
-                    rcv_pos++;
+                    printf(" 0x%x", rcv_buffer[i]);
                 }
             printf("\n");
         }
      
-    printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buffer[read_pos], TIGL_BULK_ENDPOINT_IN);
+    printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buf_ptr[0], TIGL_BULK_ENDPOINT_IN);
 
-    memcpy(d, &rcv_buffer[read_pos], 1);
-    read_pos++;
-    
-    if (read_pos == (4 * TIGL_MAXPACKETSIZE))
-        read_pos = 0;
-
+    *d = *rcv_buf_ptr++;
+    numBytesRead--;
+ 
     return 0;
 }
 
@@ -1035,36 +1028,34 @@ DLLEXPORT
 int ugl_check_port(int *status)
 {
     IOReturn	kr;
-    int		i;
-    char	buffer[TIGL_MAXPACKETSIZE + 1];
-    UInt32	numBytesRead = TIGL_MAXPACKETSIZE;
-    
+
     // we cannot use select() nor poll()
     // so...
     
     *status = STATUS_NONE;
     if(intf != NULL)
         {
-            kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, buffer, &numBytesRead);
+            if (numBytesRead > 0)
+                {
+                    *status = STATUS_RX;
+                    
+                    return 0;
+                }
+        
+            numBytesRead = TIGL_MAXPACKETSIZE;
+            
+            kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead);
             if(kr = kIOReturnSuccess)
                 {
-                    printf("In ugl_check_port: buffer is %ld bytes, copying to rcv_buffer\n", strlen(buffer));
-        
-                    for (i = 0; i < strlen(buffer); i++)
-                        {
-                            if (rcv_pos == (4 * TIGL_MAXPACKETSIZE))
-                                rcv_pos = 0;
-                        
-                            memcpy(&rcv_buffer[rcv_pos], &buffer[i], 1);
-                            rcv_pos++;
-                        }
-                    
+                    printf("In ugl_check_port: numBytesRead = %ld\n", numBytesRead);
+                            
                     *status = STATUS_RX;
 
                     return 0;
                 }
             else
                 {
+                    numBytesRead = 0;
                     *status = STATUS_NONE;
                     return 0;
                 }
