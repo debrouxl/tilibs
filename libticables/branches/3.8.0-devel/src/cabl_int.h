@@ -104,7 +104,7 @@ extern "C" {
 	/***********************/
 
   // printl.c
-  TIEXPORT TICABLES_PRINT ticable_set_print(TICABLES_PRINT new_printf);
+  TIEXPORT TICABLES_PRINTL ticable_set_printl(TICABLES_PRINTL new_printl);
 
 	/**************************************/
   	/* Direct access functions (reserved) */

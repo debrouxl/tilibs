@@ -24,7 +24,7 @@
 
 #include "cabl_def.h"
 
-extern TICABLES_PRINT printl;
+extern TICABLES_PRINTL printl;
 
 #define	PRINT_STD	0
 #define PRINT_WRN	1
