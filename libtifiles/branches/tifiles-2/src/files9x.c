@@ -226,8 +226,8 @@ TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
   }
 
   fread_8_chars(f, signature);
-  content->calc_type = tifiles_signature2calctype(signature);
-  if (content->calc_type == CALC_NONE)
+  content->model = tifiles_signature2calctype(signature);
+  if (content->model == CALC_NONE)
     return ERR_INVALID_FILE;
   fread_word(f, NULL);
   fread_8_chars(f, content->default_folder);
@@ -247,18 +247,18 @@ TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
     Ti9xVarEntry *entry = &((content->entries)[j]);
 
     fread_long(f, &curr_offset);
-    fread_8_chars(f, entry->name);
-    tifiles_transcode_varname(content->calc_type, entry->trans, entry->name, entry->type);
+    fread_8_chars(f, entry->var_name);
+    tifiles_transcode_varname(content->model, entry->name, entry->var_name, entry->type);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
     fread_word(f, NULL);
 
     if (entry->type == tifiles_folder_type(tifiles_calc_type)) {
-      strcpy(current_folder, entry->name);
+      strcpy(current_folder, entry->var_name);
       continue;			// folder: skip entry
     } else {
       j++;
-      strcpy(entry->folder, current_folder);
+      strcpy(entry->fld_name, current_folder);
       cur_pos = ftell(f);
       fread_long(f, &next_offset);
       entry->size = next_offset - curr_offset - 4 - 2;
@@ -314,8 +314,8 @@ TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
   }
 
   fread_8_chars(f, signature);
-  content->calc_type = tifiles_signature2calctype(signature);
-  if (content->calc_type == CALC_NONE)
+  content->model = tifiles_signature2calctype(signature);
+  if (content->model == CALC_NONE)
     return ERR_INVALID_FILE;
   fread_word(f, NULL);
   fread_8_chars(f, NULL);
@@ -403,7 +403,7 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
 
     for (content = head;; content = content->next) {
       fread_8_chars(f, signature);
-      content->calc_type = tifiles_file_get_model(filename);
+      content->model = tifiles_file_get_model(filename);
       fread_byte(f, &(content->revision_major));
       fread_byte(f, &(content->revision_minor));
       fread_byte(f, &(content->flags));
@@ -477,7 +477,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
     if (filename == NULL)
       return ERR_MALLOC;
   } else {
-    tifiles_transcode_varname(content->calc_type, trans, content->entries[0].name, 
+    tifiles_transcode_varname(content->model, trans, content->entries[0].name, 
 			   content->entries[0].type);
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
@@ -500,10 +500,10 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
   TRY(tifiles_create_table_of_entries(content, &table, &num_folders));
 
   // write header
-  fwrite_8_chars(f, tifiles_calctype2signature(content->calc_type));
+  fwrite_8_chars(f, tifiles_calctype2signature(content->model));
   fwrite(fsignature, 1, 2, f);
   if (content->num_entries == 1)	// folder entry for single var is placed here
-    strcpy(content->default_folder, content->entries[0].folder);
+    strcpy(content->default_folder, content->entries[0].fld_name);
   fwrite_8_chars(f, content->default_folder);
   fwrite_n_chars(f, 40, content->comment);
   if (content->num_entries > 1) {
@@ -521,7 +521,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
     if (content->num_entries > 1)	// single var does not have folder entry
     {
       fwrite_long(f, offset);
-      fwrite_8_chars(f, fentry->folder);
+      fwrite_8_chars(f, fentry->fld_name);
       fwrite_byte(f, (uint8_t)tifiles_folder_type(tifiles_calc_type));
       fwrite_byte(f, 0x00);
       for (j = 0; table[i][j] != -1; j++);
@@ -533,7 +533,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
       Ti9xVarEntry *entry = &(content->entries[index]);
 
       fwrite_long(f, offset);
-      fwrite_8_chars(f, entry->name);
+      fwrite_8_chars(f, entry->var_name);
       fwrite_byte(f, entry->type);
       fwrite_byte(f, entry->attr);
       fwrite_word(f, 0);
@@ -588,7 +588,7 @@ TIEXPORT int TICALL ti9x_write_backup_file(const char *filename,
     return ERR_FILE_OPEN;
   }
 
-  fwrite_8_chars(f, tifiles_calctype2signature(content->calc_type));
+  fwrite_8_chars(f, tifiles_calctype2signature(content->model));
   fwrite(fsignature, 1, 2, f);
   fwrite_8_chars(f, "");
   fwrite_n_chars(f, 40, content->comment);
@@ -660,16 +660,16 @@ TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content)
   char trans[17];
 
   tifiles_info("Signature:         <%s>\n",
-	  tifiles_calctype2signature(content->calc_type));
+	  tifiles_calctype2signature(content->model));
   tifiles_info("Comment:           <%s>\n", content->comment);
   tifiles_info("Default folder:    <%s>\n", content->default_folder);
   tifiles_info("Number of entries: %i\n", content->num_entries);
 
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) {
     tifiles_info("Entry #%i\n", i);
-    tifiles_info("  folder:    <%s>\n", content->entries[i].folder);
+    tifiles_info("  folder:    <%s>\n", content->entries[i].fld_name);
     tifiles_info("  name:      <%s>\n",
-	    tifiles_transcode_varname(content->calc_type, trans, content->entries[i].name,
+	    tifiles_transcode_varname(content->model, trans, content->entries[i].name,
 				   content->entries[i].type));
     tifiles_info("  type:      %02X (%s)\n",
 	    content->entries[i].type,
@@ -694,7 +694,7 @@ TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content)
 TIEXPORT int TICALL ti9x_display_backup_content(Ti9xBackup * content)
 {
   tifiles_info("signature:      <%s>\n",
-	  tifiles_calctype2signature(content->calc_type));
+	  tifiles_calctype2signature(content->model));
   tifiles_info("comment:        <%s>\n", content->comment);
   tifiles_info("ROM version:    <%s>\n", content->rom_version);
   tifiles_info("type:           %02X (%s)\n",
@@ -719,7 +719,7 @@ TIEXPORT int TICALL ti9x_display_flash_content(Ti9xFlash * content)
 
   for (ptr = content; ptr != NULL; ptr = ptr->next) {
     tifiles_info("Signature:      <%s>\n",
-	    tifiles_calctype2signature(ptr->calc_type));
+	    tifiles_calctype2signature(ptr->model));
     tifiles_info("Revision:       %i.%i\n",
 	    ptr->revision_major, ptr->revision_minor);
     tifiles_info("Flags:          %02X\n", ptr->flags);

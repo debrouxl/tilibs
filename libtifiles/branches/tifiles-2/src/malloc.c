@@ -24,6 +24,7 @@
 */
 
 #include <stdlib.h>
+#include "export.h"
 
 #ifdef __WIN32__
 /**
@@ -31,7 +32,7 @@
  *
  * Replacement of callc for Win32 platform.
  *
- * Return value: a void pointer.
+ * Return value: a void* pointer.
  **/
 TIEXPORT void *TICALL tifiles_calloc(size_t nmemb, size_t size)
 {
@@ -43,7 +44,7 @@ TIEXPORT void *TICALL tifiles_calloc(size_t nmemb, size_t size)
  *
  * Replacement of malloc for Win32 platform.
  *
- * Return value: a void pointer.
+ * Return value: a void* pointer.
  **/
 TIEXPORT void *TICALL tifiles_malloc(size_t size)
 {
@@ -67,7 +68,7 @@ TIEXPORT void TICALL tifiles_free(void *ptr)
  *
  * Replacement of realloc for Win32 platform.
  *
- * Return value: a void pointer.
+ * Return value: a void* pointer.
  **/
 TIEXPORT void *TICALL tifiles_realloc(void *ptr, size_t size)
 {

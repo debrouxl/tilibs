@@ -6,19 +6,15 @@ To do:
 Log:
 
 - 26/03/2005, version 0.0.1: roms
-	* error management left untouched
-	* logging reworked (use glib)
+	- error management left untouched
+	- logging reworked (use glib)
 	- use dynamic buffer rather static ones
-	* a single public header with functions & defs, others are private
-	* slightly fixed namespace sheme
-	* use strong type such as TiCalcModel, ...
-	* glib is heavily used (strings, logging, ...)
-	- documentation system will be changed
-
-Planning:
-	
-	- functions pointers will be removed	
-	
+	- a single public header with functions & defs, others are private
+	- slightly fixed namespace sheme
+	- use strong type such as TiCalcModel, ...
+	- glib is heavily used (strings, logging, ...)
+	- documentation system has been changed
+	- functions pointers have been removed	
 
 ====[ Version II ]====
 

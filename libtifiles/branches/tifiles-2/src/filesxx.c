@@ -42,9 +42,9 @@ TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
 // freeing
 TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
 {
-  if (tifiles_calc_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->model))
     return ti8x_free_regular_content(content);
-  else if (tifiles_calc_is_ti9x(content->calc_type))
+  else if (tifiles_calc_is_ti9x(content->model))
     return ti9x_free_regular_content(content);
   else
     return ERR_BAD_CALC;
@@ -69,9 +69,9 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
                                         TiRegular * content,
                                         char **real_fname)
 {
-  if (tifiles_calc_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->model))
     return ti8x_write_regular_file(filename, content, real_fname);
-  else if (tifiles_calc_is_ti9x(content->calc_type))
+  else if (tifiles_calc_is_ti9x(content->model))
     return ti9x_write_regular_file(filename, content, real_fname);
   else
     return ERR_BAD_CALC;
@@ -129,21 +129,21 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular * content,
 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) {
-      if (!strcmp(*ptr, entry->folder)) {
-	//printf("break: <%s>\n", entry->folder);
+      if (!strcmp(*ptr, entry->fld_name)) {
+	//printf("break: <%s>\n", entry->fld_name);
 	break;
       }
     }
     if (*ptr == NULL) {		// add new folder entry
       folder_list[num_folders] = (char *) calloc(9, sizeof(char));
-      //printf("%i: adding '%s'\n", num_folders, entry->folder);
-      strcpy(folder_list[num_folders], entry->folder);
+      //printf("%i: adding '%s'\n", num_folders, entry->fld_name);
+      strcpy(folder_list[num_folders], entry->fld_name);
       folder_list[num_folders + 1] = NULL;
       num_folders++;
       assert(num_folders <= content->num_entries);
     }
   }
-  if (tifiles_calc_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->model))
     num_folders++;
   *nfolders = num_folders;
 
@@ -159,7 +159,7 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular * content,
     for (i = 0, k = 0; i < content->num_entries; i++) {
       Ti9xVarEntry *entry = &(content->entries[i]);
 
-      if (!strcmp(folder_list[j], entry->folder)) {
+      if (!strcmp(folder_list[j], entry->fld_name)) {
 	table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
 	table[j][k] = i;
 	//printf("%i %i: adding %i\n", j, k, i); 

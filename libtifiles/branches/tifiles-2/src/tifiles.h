@@ -88,9 +88,9 @@ typedef enum
 
 /**
  * TiVarEntry:
- * @folder: name of folder (TI9x only) or ""
- * @name: binary name of variable
- * @trans: detokenized name (human-readable)
+ * @fld_name: name of folder (TI9x only) or ""
+ * @var_name: name of variable (binary, on-calc)
+ * @name: name of variable (detokenized, human-readable)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @size: size of data (uint16_t for TI8x)
@@ -100,9 +100,10 @@ typedef enum
  **/
 typedef struct 
 {
-  char		folder[9];
-  char		name[9];
-  char		trans[18];
+  char		fld_name[9];
+  char		var_name[9];
+
+  char		name[18];
   uint8_t	type;
   uint8_t	attr;
   uint32_t	size;
@@ -111,8 +112,9 @@ typedef struct
 
 /**
  * TiRegular:
- * @calc_type: calculator model
+ * @model: calculator model
  * @default_folder: name of the default folder (TI9x only)
+ * @comment: comment aembedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
  * @entries: an array of #TiVarEntry structures which contains data
  * @checksum: checksum of file
@@ -121,13 +123,15 @@ typedef struct
  **/
 typedef struct 
 {
-  TiCalcModel calc_type;
+  TiCalcModel	model;
 
-  char default_folder[9];	// TI9x only
-  char comment[43];			// Ti8x: 41 max
-  int num_entries;
-  TiVarEntry *entries;
-  uint16_t checksum;
+  char			default_folder[9];	// TI9x only
+  char			comment[43];		// Ti8x: 41 max
+
+  int			num_entries;		// use GList ?
+  TiVarEntry*	entries;
+
+  uint16_t		checksum;
 } TiRegular;
 
 /* Functions */

@@ -33,7 +33,7 @@ typedef TiVarEntry Ti8xVarEntry;
 typedef TiRegular Ti8xRegular;
 
 typedef struct {
-  TiCalcModel calc_type;
+  TiCalcModel model;
 
   char comment[43];
   uint8_t type;
@@ -63,7 +63,7 @@ typedef struct {
 
 typedef struct ti8x_flash Ti8xFlash;
 struct ti8x_flash {
-  TiCalcModel calc_type;
+  TiCalcModel model;
 
   uint8_t revision_major;
   uint8_t revision_minor;
