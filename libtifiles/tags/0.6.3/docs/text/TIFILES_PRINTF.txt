@@ -1,0 +1,20 @@
+[Main]
+Name=TIFILES_PRINTF
+Type=Define
+Header=file_def.h
+Definition=typedef int (*TIFILES_PRINTF) (const char *format, ...);
+
+[Parameters]
+format : a format specifiers string
+... :  a variable argument list
+Returns : the number of arguments correctly processed.
+
+[Summary]
+A function type similar to the printf function.
+
+[Explanation]
+This type defines a function pointer which takes the same arguments than printf
+and return the same one.
+
+[See also]
+tifiles_set_printf

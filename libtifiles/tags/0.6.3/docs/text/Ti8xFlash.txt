@@ -1,0 +1,27 @@
+[Main]
+Name=Ti8xFlash
+Type=Structure
+Header=file_def.h (files8x.h)
+Definition=struct Ti8xFlash
+
+[Fields]
+  int              calc_type : a calculator model
+  @uint8_t@        revision_major : 
+  @uint8_t@        revision_minor :
+  @uint8_t@        flags :
+  @uint8_t@        object_type :
+  @uint8_t@        revision_day :
+  @uint8_t@        revision_month :
+  @uint16_t@       revision_year :
+  char             name[9] :
+  @uint8_t@        device_type :
+  @uint8_t@        data_type :
+
+  int              num_pages : the number of FLASH pages
+  @Ti8xFlashPage@* pages : the FLASH pages
+
+[Summary]
+A generic structure used to store a file which contains data for FLASH.
+
+[See also]
+@Ti8xFlashPage@
