@@ -79,7 +79,7 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "TICALCS_EXPORTS" /D "WIN32" /D "_WINDOWS" /D "__WIN32__" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -147,6 +147,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
 	"$(INTDIR)\ticalcs.res" \
+	".\intl.lib" \
 	"..\..\..\ticables\build\msvc\ticables.lib" \
 	"..\..\..\tifiles\build\msvc\tifiles.lib"
 
@@ -218,7 +219,7 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "WIN32" /D "_WINDOWS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -286,6 +287,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
 	"$(INTDIR)\ticalcs.res" \
+	".\intl.lib" \
 	"$(OUTDIR)\ticables.lib" \
 	"$(OUTDIR)\tifiles.lib"
 
