@@ -356,7 +356,8 @@ static void print_settings(void)
 	}
 
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-		DISPLAY(_("  address: 0x%03x\n"), io_address);
+		if(io_address != 0x000)
+			DISPLAY(_("  address: 0x%03x\n"), io_address);
 	
 	DISPLAY(_("  device name: %s\n"), io_device);
 

@@ -119,7 +119,7 @@ int ser_put(uint8_t data)
       } while (io_rd(com_in) & 0x20);
       io_wr(com_out, 3);
       toSTART(clk);
-      do {
+      do {	     
 	if (toELAPSED(clk, time_out))
 	  return ERR_WRITE_TIMEOUT;
       } while ((io_rd(com_in) & 0x20) == 0x00);

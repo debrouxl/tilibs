@@ -1,4 +1,4 @@
-EXTRA_DIST = mingw
+EXTRA_DIST = mingw #msvc
 
 exports:
 	./scan.sh

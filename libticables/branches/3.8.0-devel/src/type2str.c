@@ -135,7 +135,7 @@ TIEXPORT
 const char *TICALL ticable_method_to_string(TicableMethod method)
 {
 	static char buffer[64];
-	char *p2;
+	char *p2 = "";
 
 	strcpy(buffer, "unknown");
 	

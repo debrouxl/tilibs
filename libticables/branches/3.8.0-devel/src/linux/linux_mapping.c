@@ -42,7 +42,7 @@
 
 #include "links.h"
 
-static int warning = ERR_NONE;
+static int warning;
 
 static int devfs = 0;
 
@@ -57,7 +57,7 @@ static int check_for_libusb(void);
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	DISPLAY(_("libticables: getting method from resources"));
-	warning = ERR_NONE;
+	warning = ERR_NO_ERROR;
 	
 	// reset method
 	*method &= ~IOM_OK;
@@ -73,7 +73,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_TGL:
 		if(resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning, can't use IO_API.\n"));
+				DISPLAY(_("  warning, can't use IO_API\n"));
 			*method |= IOM_API | IOM_OK;
 		}
 		break;
@@ -81,7 +81,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_AVR:
 		if(resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning: can't use IO_API.\n"));
+				DISPLAY(_("  warning: can't use IO_API\n"));
 			*method |= IOM_API | IOM_OK;	
 		}
 		break;
@@ -89,7 +89,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_SER:
 		if(resources & IO_TISER) {
 			if(check_for_tiser())
-				DISPLAY(_("  warning: can't use IO_TISER.\n"));
+				DISPLAY(_("  warning: can't use IO_TISER\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -98,7 +98,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		       
 		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY(_("  warning: can't use IO_ASM.\n"));
+				DISPLAY(_("  warning: can't use IO_ASM\n"));
 			else {
 				*method |= IOM_ASM | IOM_OK;
 				break;
@@ -107,7 +107,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning: can't use IO_API.\n"));
+				DISPLAY(_("  warning: can't use IO_API\n"));
 			else {
 				*method |= IOM_IOCTL | IOM_OK;
 				break;
@@ -118,7 +118,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_PAR:
 		if(resources & IO_TIPAR) {
 			if(check_for_tipar())
-				DISPLAY(_("  warning: can't use IO_TIPAR.\n"));
+				DISPLAY(_("  warning: can't use IO_TIPAR\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -127,7 +127,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY(_("  warning: can't use IO_ASM.\n"));
+				DISPLAY(_("  warning: can't use IO_ASM\n"));
 			else {
 				*method |= IOM_ASM | IOM_OK;
 				break;
@@ -138,7 +138,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_SLV:
 		if (resources & IO_TIUSB) {
 			if(check_for_tiusb())
-				DISPLAY(_("  warning: can't use IO_TIUSB.\n"));
+				DISPLAY(_("  warning: can't use IO_TIUSB\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -147,7 +147,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_LIBUSB) {
 			if(check_for_libusb())
-				DISPLAY(_("  warning: can't use IO_LIBUSB.\n"));
+				DISPLAY(_("  warning: can't use IO_LIBUSB\n"));
 			else {
 				*method |= IOM_IOCTL | IOM_OK;
 				break;
@@ -378,7 +378,7 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		if(method & IOM_IOCTL)
 			slv_register_cable_2(lc);
 		else if(method & IOM_DRV)
-			slv_register_cable_2(lc);
+			slv_register_cable_1(lc);
 		break;
 
     	default:
@@ -504,30 +504,37 @@ static int search_for_user_in_group(const char *user, const char *group)
 	
 	f = fopen("/etc/group", "rt");
 	if (f == NULL) {
+		DISPLAY_ERROR(_("Unable to open the '/etc/group' file\n"));
 		return -1;
 	}
 
 	while (!feof(f)) {
-		fgets(buffer, 128, f);
+		fgets(buffer, 129, f);
 		
-		if (strstr(buffer, group))
+		if (strstr(buffer, group)) {
 			if(strstr(buffer, user)) {
 				fclose(f);
 				return 0;
+			} else {
+				fclose(f);
+				return -1;
 			}
+		}
 	}
-	
+
 	fclose(f);
 	return -1;
 }
 
 static int check_for_node_usability(const char *pathname)
 {
+	struct stat st;
+
 	if(!access(pathname, F_OK))
 		DISPLAY(_("    node %s: exists\n"), pathname);
 	else {
 		DISPLAY(_("    node %s: does not exists\n"), pathname);
-		DISPLAY(_("    => you will have to create the node."));
+		DISPLAY(_("    => you will have to create the node.\n"));
 		
 		warning = ERR_NODE_NONEXIST;
 		
@@ -542,22 +549,30 @@ static int check_for_node_usability(const char *pathname)
 	} else {
 		return -1;
 	}	
-	
-	if(st.st_mode & 0006)
+
+	if(getuid() == st.st_uid) {
+		DISPLAY(_("    is user can r/w on device: yes\n"));
+		return 0;
+	} else {
+		DISPLAY(_("    is user can r/w on device: no\n"));
+	}
+
+	if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
 		DISPLAY(_("    are others can r/w on device: yes\n"));
 	else {
 		char *user, *group;
 		
+		DISPLAY(_("    are others can r/w on device: no\n"));
+
 		user = strdup(get_user_name(getuid()));
 		group = strdup(get_group_name(st.st_gid));
 		
-		DISPLAY(_("    are others can r/w on device: no\n"));
 		if(!search_for_user_in_group(user, group))
-			DISPLAY(_("    is the user %s in the group %s: yes")); 
+			DISPLAY(_("    is the user '%s' in the group '%s': yes\n"), user, group); 
 		else {
-			DISPLAY(_("    is the user %s in the group %s: no"));
-			DISPLAY(_("    => you should add your username in the group %s of the '/etc/group' file."), group);
-			DISPLAY(_("    => you will have to restart you session, too."), group);
+			DISPLAY(_("    is the user '%s' in the group '%s': no\n"), user, group);
+			DISPLAY(_("    => you should add your username at the group '%s' in '/etc/group'\n"), group);
+			DISPLAY(_("    => you will have to restart you session, too\n"), group);
 			free(user); free(group);
 			
 			warning = ERR_NODE_PERMS;
@@ -568,6 +583,8 @@ static int check_for_node_usability(const char *pathname)
 		free(user); 
 		free(group);
 	}	
+
+	return 0;
 }
 
 static int check_for_root(void)
@@ -583,8 +600,6 @@ static int check_for_root(void)
 
 static int check_for_tty(void)
 {
-	struct stat st;	
-	
 	DISPLAY(_("  check for tty usability:\n"));
 	return check_for_node_usability(SP1_NAME);	
 
@@ -593,7 +608,6 @@ static int check_for_tty(void)
 
 static int check_for_tipar(void)
 {
-	struct stat st;
 	char name[15];
 
 	DISPLAY(_("  check for tipar usability:\n"));
@@ -614,8 +628,8 @@ static int check_for_tipar(void)
 		DISPLAY(_("      module: loaded\r\n"));
 	else {
 		DISPLAY(_("      module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (either as module, either as built-in)"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		DISPLAY(_("    => check the module exists (either as module, either as built-in)\n"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it\n"));
 		
 		warning = ERR_NOTLOADED;		
 		return -1;
@@ -626,7 +640,6 @@ static int check_for_tipar(void)
 
 static int check_for_tiser(void)
 {
-	struct stat st;
 	char name[15];
 
 	DISPLAY(_("  check for tiser usability:\n"));
@@ -647,8 +660,8 @@ static int check_for_tiser(void)
 		DISPLAY(_("    module: loaded\r\n"));
 	else {
 		DISPLAY(_("    module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (compiled as module)"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		DISPLAY(_("    => check the module exists (compiled as module)\n"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it.\n"));
 		
 		warning = ERR_NOTLOADED;
 		return -1;
@@ -659,7 +672,6 @@ static int check_for_tiser(void)
 
 static int check_for_tiusb(void)
 {
-	struct stat st;
 	char name[15];
 
 	DISPLAY(_("  check for tiusb usability:\n"));
@@ -680,8 +692,8 @@ static int check_for_tiusb(void)
 		DISPLAY(_("    module: loaded\r\n"));
 	else {
 		DISPLAY(_("    module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (either as module, either as built-in)"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		DISPLAY(_("    => check the module exists (either as module, either as built-in)\n"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it\n"));
 		
 		warning = ERR_NOTLOADED;
 		return -1;
@@ -696,12 +708,12 @@ static int check_for_libusb(void)
 {
 	DISPLAY(_("  check for lib-usb usability:\n"));
 
-	if(!access(UBSFS, F_OK))
+	if(!access(USBFS, F_OK))
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
-		DISPLAY(_("    => the usbfs must be supported by your kernel and you have to mount it"));
-		DISPLAY(_("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'"));
+		DISPLAY(_("    => the usbfs must be supported by your kernel and you have to mount it\n"));
+		DISPLAY(_("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"));
 		
 		warning = ERR_NOTMOUNTED;
 		return -1;

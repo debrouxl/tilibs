@@ -51,9 +51,9 @@ typedef DWORD tiTIME;
 #else
 # include <time.h>
 typedef clock_t tiTIME;
-# define  toSTART(ref)		{ (ref)=clock(); }
-# define  toELAPSED(ref, max)	( (clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
-# define  toCURRENT(ref)        ( (float)(clock()-(ref))/CLOCKS_PER_SEC )
+# define  toSTART(ref)	       { (ref)=clock(); }
+# define  toELAPSED(ref, max)  ( (clock()-(ref)) > ((max)/10.0*CLOCKS_PER_SEC))
+# define  toCURRENT(ref)       ( (float)(clock()-(ref))/CLOCKS_PER_SEC )
 #endif
 
 #endif

@@ -68,7 +68,10 @@ int main(int argc, char **argv)
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	ticable_set_cable(LINK_SLV, &lc);
+	if((err=ticable_set_cable(LINK_SLV, &lc))) {
+		print_lc_error(err);
+                return -1;
+	}
 
 	// Init port (usually at program startup)
 	if ((err = lc.init())) {
