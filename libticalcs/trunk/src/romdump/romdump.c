@@ -119,12 +119,12 @@ int SendBlock(char *ptr)
     return 0;
 }
 
-#define ROM_size (0x200000 << (V200 || (ROM_base == 0x800000)))
+#define ROM_size (0x200000 << (V200 || ((unsigned long)ROM_base == 0x800000)))
 
 // Main Function
 void _main(void)
 {
-	unsigned long rom_size = (unsigned long)ROM_size;
+	unsigned long rom_size = ROM_size;
 	unsigned long rom_base = (unsigned long)ROM_base;
 	
   unsigned long i;
