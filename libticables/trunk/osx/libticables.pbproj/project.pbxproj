@@ -28,6 +28,8 @@
 				18D1B3B80170FD5A5041E0CA,
 				18D1B3B90170FD5A5041E0CA,
 				18D1B3A30170FD395041E0CA,
+				F50A59B00202AEB701000102,
+				F50A59B10202AEB701000102,
 				18D1B3A40170FD395041E0CA,
 				18D1B3A10170FD2A5041E0CA,
 				18D1B39F0170FD245041E0CA,
@@ -279,6 +281,8 @@
 				18D1B3CA0170FD5A5041E0CA,
 				18D1B3CB0170FD5A5041E0CA,
 				18D1B3CC0170FD5A5041E0CA,
+				F50A59B20202AEB701000102,
+				F50A59B30202AEB701000102,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1059,6 +1063,36 @@
 //F52
 //F53
 //F54
+		F50A59B00202AEB701000102 = {
+			isa = PBXFileReference;
+			name = probe.h;
+			path = ../src/probe.h;
+			refType = 2;
+		};
+		F50A59B10202AEB701000102 = {
+			isa = PBXFileReference;
+			name = pause.h;
+			path = ../src/pause.h;
+			refType = 2;
+		};
+		F50A59B20202AEB701000102 = {
+			fileRef = F50A59B00202AEB701000102;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F50A59B30202AEB701000102 = {
+			fileRef = F50A59B10202AEB701000102;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
 		F50B12CD01A8303B01000102 = {
 			isa = PBXFrameworkReference;
 			name = CoreFoundation.framework;
