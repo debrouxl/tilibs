@@ -73,7 +73,7 @@ TIEXPORT int TICALL ticalc_init()
   	printl(0, "libticalcs: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
-  tifiles_init();
+  //tifiles_init();
 
   printl(0, _("Libticalcs: version %s\n"), LIBTICALCS_VERSION);
 

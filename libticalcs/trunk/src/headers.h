@@ -34,7 +34,7 @@
 # include <libticables/ticables.h>
 #else
 # include "ticables.h"
-# include "intl.h"
+//# include "intl1.h"
 #endif
 
 //#define HAVE_TILP_TIFILES_H

@@ -156,7 +156,7 @@ typedef TicalcFunctions TicalcFncts;
 /* 
 	Callback 
 */
-typedef int (*TICALC_PRINT) (int level, const char *format, ...);
+typedef int (*TICALC_PRINTL) (int level, const char *format, ...);
 
 /*********************/
 /* Macro definitions */

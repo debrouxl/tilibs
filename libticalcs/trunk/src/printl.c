@@ -36,10 +36,10 @@
 	Print to stdout as default behaviour unless changed by tifiles_set_print 
 	Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-int default_printl(int level, const char *format, ...)
+static int default_printl(int level, const char *format, ...)
 {
+        int ret = 0;
 	va_list ap;
-	int ret;
 
 	fprintf(stdout, "ticalc ");
 	if(level != 0)
@@ -51,14 +51,14 @@ int default_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICALC_PRINT printl = default_printl;
+TICALC_PRINTL printl = default_printl;
 
 /*
 	Change print behaviour (callback).
 */
-TIEXPORT TICALC_PRINT ticalc_set_printl(TICALC_PRINT new_printl)
+TIEXPORT TICALC_PRINTL TICALL ticalc_set_printl(TICALC_PRINTL new_printl)
 {
-  TICALC_PRINT old_printl = printl;
+  TICALC_PRINTL old_printl = printl;
 
   printf("printl = %p\n", printl);
   printf("old_printl = %p\n", old_printl);
