@@ -788,6 +788,9 @@ TIEXPORT int TICALL tifiles_is_a_group_file(const char *filename)
   int i;
   char *e = tifiles_get_extension(filename);
 
+  if (e == NULL)
+    return 0;
+
   if (!tifiles_is_a_ti_file(filename))
     return 0;
 
@@ -823,6 +826,9 @@ TIEXPORT int TICALL tifiles_is_a_backup_file(const char *filename)
   int i;
   char *e = tifiles_get_extension(filename);
 
+  if (e == NULL)
+    return 0;
+
   if (!tifiles_is_a_ti_file(filename))
     return 0;
 
@@ -844,6 +850,9 @@ TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename)
   int i;
   char *e = tifiles_get_extension(filename);
 
+  if (e == NULL)
+    return 0;
+
   if (!tifiles_is_a_ti_file(filename))
     return 0;
 
@@ -864,6 +873,9 @@ TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename)
 TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename)
 {
 	char *e = tifiles_get_extension(filename);
+
+	if (e == NULL)
+	  return 0;
 
 	if (!tifiles_is_a_ti_file(filename))
 		return 0;

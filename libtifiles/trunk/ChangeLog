@@ -7,6 +7,8 @@ Log:
 - 22/04/2004, version 0.5.9: roms
 	Patch from Adrian Mettler <amettler@hmc.edu> merged. His patch fixes
 	  some TI85/86 file handling issues about varname (padded, not padded).
+	Patch from Benjamin Moody <> merged. His patch fixes a crash when TiLP
+	is parsing a file which contains the TI signature but has no extension.
 
 - 08/04/2004, version 0.5.8: roms
 	Redirection of stdout/stderr.
