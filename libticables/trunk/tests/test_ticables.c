@@ -64,7 +64,9 @@ int main(int argc, char **argv)
 	// set cable
 	ticable_init();
 
+	// get default params
 	ticable_get_default_param(&lp);
+	// or set your own ones
 	lp.delay = 10;
 	lp.timeout = 20;
 	lp.port = SERIAL_PORT_2;

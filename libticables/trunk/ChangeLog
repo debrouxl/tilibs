@@ -7,6 +7,10 @@ To do:
 
 Log:
 
+- 22/05/2004, version 3.8.6: roms
+	Bug fixes from JB: buffer overflow in linux_detect.c, NULL functions
+	with direct link support.
+	
 - 05/05/2004, version 3.8.5: roms
 	Bug fix in the verbose.c compatibility support (DISPLAY).
 	Merged Tijl's patch: does not build or use libusb support if libusb
@@ -59,6 +63,8 @@ Log:
 	Bug in parallel link support (mode asm: no timeout on par_get).
 
 	Added ability to immediately flush log file to disk.
+
+-- version 4.x.x ?
 	
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables
