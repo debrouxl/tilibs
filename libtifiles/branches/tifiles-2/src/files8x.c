@@ -45,7 +45,9 @@
 /* Misc */
 /********/
 
-static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
+static uint8_t fsignature85[3] = { 0x1A, 0x0C, 0x00 };	//TI85
+static uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI82, 83, 86
+
 
 static int is_ti8586(TiCalcModel model)
 {
@@ -637,7 +639,7 @@ TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, Ti8xRegular *cont
 
   // write header
   fwrite_8_chars(f, tifiles_calctype2signature(content->model));
-  fwrite(fsignature, 1, 3, f);
+  fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f);
   fwrite_n_bytes(f, 42, content->comment);
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
@@ -733,7 +735,7 @@ TIEXPORT int TICALL ti8x_file_write_backup(const char *filename, Ti8xBackup *con
   }
   // write header
   fwrite_8_chars(f, tifiles_calctype2signature(content->model));
-  fwrite(fsignature, 1, 3, f);
+  fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f);
   fwrite_n_bytes(f, 42, content->comment);
   data_length =
       content->data_length1 + content->data_length2 +
