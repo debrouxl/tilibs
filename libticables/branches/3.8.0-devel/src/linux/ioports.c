@@ -57,42 +57,49 @@ void (*io_wr) (unsigned int addr, int data);
 
 /* I/O thru assembly code */
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
 static int linux_asm_read_io(unsigned int addr)
 {
-  return inb(addr);
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
+	return inb(addr);
+#endif
 }
 
 static void linux_asm_write_io(unsigned int addr, int data)
 {
-  outb(data, addr);
-}
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
+	outb(data, addr);
 #endif
+}
+
 
 /* I/O thru ioctl() calls */
 
 static int linux_ioctl_read_io(unsigned int addr)
 {
+#ifdef HAVE_TERMIOS_H
 	unsigned int flags;
 
   	if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    		DISPLAY_ERROR(_("linux_ioctl_read_io: ioctl failed !\n"));
+    		DISPLAY_ERROR(_("libticables: ioctl failed in linux_ioctl_read_io !\n"));
     		return ERR_IOCTL;
   	}
 
   	return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+#endif
 }
 
 static void linux_ioctl_write_io(unsigned int address, int data)
 {
+#ifdef HAVE_TERMIOS_H
 	unsigned int flags = 0;
 
   	flags |= (data & 2) ? TIOCM_RTS : 0;
   	flags |= (data & 1) ? TIOCM_DTR : 0;
   	if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    		DISPLAY_ERROR(_("linux_ioctl_write_io: ioctl failed !\n"));
-    		return /*ERR_IOCTL */ ;
+    		DISPLAY_ERROR(_("libticables: ioctl failed in linux_ioctl_write_io !\n"));
+    		return ERR_IOCTL;
   	}
+#endif
 }
 
 /* Functions used for initializing the I/O routines */
@@ -112,7 +119,10 @@ int io_open(unsigned long from, unsigned long num)
       			return 0;
       			
 		if ((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1) {
-      			DISPLAY_ERROR(_("unable to open this serial port: %s\n"), io_device);
+      			if(errno == EACCESS)
+      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+      			else
+      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
       			return ERR_OPEN_SER_DEV;
     		}
 

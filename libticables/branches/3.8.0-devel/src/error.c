@@ -55,7 +55,7 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
     strcat(error_msg, "\n");
     strcat(error_msg,
 	   _
-	   ("Cause: check that you have required rights on the node. Check that the device is not locked by another application (modem ?)."));
+	   ("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."));
     break;
 
   case ERR_OPEN_SER_COMM:

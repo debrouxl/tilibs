@@ -20,19 +20,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
-  This file redirects low-level I/O functions according to the architecture
-  and/or the platform
- */
+/* This file redirects low-level I/O functions according to the architecture. */
 
 #ifndef __IOPORTS_H__
 #define __IOPORTS_H__
 
-/* I/O abstraction */
-int io_open(unsigned long from, unsigned long num);
-extern int (*io_rd) (unsigned int addr);
-extern void (*io_wr) (unsigned int addr, int data);
+
+int io_open (unsigned long from, unsigned long num);
 int io_close(unsigned long from, unsigned long num);
+
+extern int  (*io_rd)  (unsigned int addr);
+extern void (*io_wr)  (unsigned int addr, int data);
 
 
 #endif
