@@ -1,12 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-19 18:51+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-19 23:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,23 +16,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/dirlist.c:57
+#: src/dirlist.c:58
 msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
 msgstr ""
 
-#: src/dirlist.c:105
+#: src/dirlist.c:106
 msgid "  No variables\n"
 msgstr ""
 
-#: src/dirlist.c:108
+#: src/dirlist.c:109
 msgid "+------------------+----------+----+----+----------+----------+\n"
 msgstr ""
 
-#: src/dirlist.c:117
+#: src/dirlist.c:118
 msgid "| B. name          | T. name  |Attr|Type| Size     |\n"
 msgstr ""
 
-#: src/dirlist.c:140
+#: src/dirlist.c:141
 msgid "  No applications\n"
 msgstr ""
 
@@ -212,6 +214,7 @@ msgid "  Calc type: %s\n"
 msgstr ""
 
 #: src/intrface.c:321
+#, c-format
 msgid "Function not implemented. This is a bug. Please report it."
 msgstr ""
 
@@ -291,6 +294,7 @@ msgid "Receiving backup...\n"
 msgstr ""
 
 #: src/ti73.c:205 src/ti83.c:175 src/ti92.c:228
+#, c-format
 msgid "Receiving backup..."
 msgstr ""
 
@@ -302,6 +306,7 @@ msgstr ""
 #: src/ti73.c:260 src/ti73.c:394 src/ti82.c:173 src/ti82.c:209 src/ti82.c:317
 #: src/ti83.c:229 src/ti83.c:363 src/ti85.c:173 src/ti85.c:209 src/ti85.c:317
 #: src/ti86.c:248 src/ti86.c:284 src/ti86.c:394
+#, c-format
 msgid "Sending..."
 msgstr ""
 
@@ -349,11 +354,13 @@ msgstr ""
 #. Wait for user's action (execing program)
 #: src/ti73.c:620 src/ti82.c:188 src/ti82.c:328 src/ti82.c:424 src/ti83.c:472
 #: src/ti85.c:188 src/ti85.c:328 src/ti85.c:426 src/ti86.c:264 src/ti86.c:503
+#, c-format
 msgid "Waiting user's action..."
 msgstr ""
 
 #: src/ti73.c:634 src/ti82.c:438 src/ti83.c:486 src/ti85.c:440 src/ti86.c:517
 #: src/ti89.c:734 src/ti92.c:540
+#, c-format
 msgid "Receiving..."
 msgstr ""
 
@@ -368,18 +375,22 @@ msgid "Getting ID list...\n"
 msgstr ""
 
 #: src/ti73.c:700 src/ti89.c:796
+#, c-format
 msgid "Getting variable..."
 msgstr ""
 
 #: src/ti82.c:122 src/ti85.c:122
+#, c-format
 msgid "Waiting for backup..."
 msgstr ""
 
 #: src/ti82.c:243 src/ti85.c:243
+#, c-format
 msgid "Waiting var(s)..."
 msgstr ""
 
 #: src/ti86.c:189
+#, c-format
 msgid "Waiting backup..."
 msgstr ""
 
@@ -414,10 +425,12 @@ msgid "Reading of '%s/%s'"
 msgstr ""
 
 #: src/ti89.c:356 src/ti92.c:282
+#, c-format
 msgid "Sending backup..."
 msgstr ""
 
 #: src/ti89.c:469 src/ti92.c:412
+#, c-format
 msgid "Sending variable(s)..."
 msgstr ""
 
@@ -427,6 +440,7 @@ msgid "perc = %1.2f \n"
 msgstr ""
 
 #: src/ti89.c:556
+#, c-format
 msgid "Sending FLASH OS/App..."
 msgstr ""
 
@@ -446,6 +460,7 @@ msgstr ""
 
 #. Launch calculator program by remote control
 #: src/ti89.c:700 src/ti92.c:506
+#, c-format
 msgid "Launching..."
 msgstr ""
 
@@ -454,6 +469,7 @@ msgid "Getting clock...\n"
 msgstr ""
 
 #: src/ti89.c:834
+#, c-format
 msgid "Getting clock..."
 msgstr ""
 
@@ -462,6 +478,7 @@ msgid "Setting clock...\n"
 msgstr ""
 
 #: src/ti89.c:889
+#, c-format
 msgid "Setting clock..."
 msgstr ""
 

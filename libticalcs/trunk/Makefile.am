@@ -1,31 +1,20 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-if LIBGLIB2
- SRCDIR = src
-else
- SRCDIR = src12
-endif
-SUBDIRS = . docs macros man $(SRCDIR) tests win32 po intl
+SUBDIRS = . docs macros man src tests win32 po intl
 
 # Script to install
-#bin_SCRIPTS = ticalcs-config
+bin_SCRIPTS = ticalcs-config
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO docs osx src12
+EXTRA_DIST = LOGO docs osx
 
 if OS_BSD
  pkgconfigdir = $(prefix)/libdata/pkgconfig
 else
  pkgconfigdir = $(libdir)/pkgconfig
 endif
-
-if LIBGLIB2
- pkgconfig_DATA = ticalcs-4.pc
-else
- pkgconfig_DATA = ticalcs.pc
- bin_SCRIPTS = ticalcs-config
-endif
+#pkgconfig_DATA = ticalcs.pc
 
 $(pkgconfig_DATA): config.status
 

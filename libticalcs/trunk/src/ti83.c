@@ -77,14 +77,14 @@ int ti83_directorylist(TNode ** tree, uint32_t * memory)
   fixup(*memory);
   TRYF(ti82_send_ACK());
 
-  *tree = g_node_new(NULL);
-  vars = g_node_new(NULL);
-  apps = g_node_new(NULL);
-  g_node_append(*tree, vars);
-  g_node_append(*tree, apps);
+  *tree = t_node_new(NULL);
+  vars = t_node_new(NULL);
+  apps = t_node_new(NULL);
+  t_node_append(*tree, vars);
+  t_node_append(*tree, apps);
 
-  folder = g_node_new(NULL);
-  g_node_append(vars, folder);
+  folder = t_node_new(NULL);
+  t_node_append(vars, folder);
 
   for (;;) {
     TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
@@ -100,8 +100,8 @@ int ti83_directorylist(TNode ** tree, uint32_t * memory)
       return err;
 
     tifiles_translate_varname(ve->name, ve->trans, ve->type);
-    node = g_node_new(ve);
-    g_node_append(folder, node);
+    node = t_node_new(ve);
+    t_node_append(folder, node);
 
     sprintf(update->label_text, _("Reading of '%s'"), ve->trans);
     update_label();

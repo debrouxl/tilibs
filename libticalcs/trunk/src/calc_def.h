@@ -35,12 +35,8 @@
 /* 
    A structure for creating a dirlist tree 
 */
-#ifndef __MACOSX__
-#include <glib.h>
-#else
-#include <glib/glib.h>
-#endif
 
+#include "tnode.h"
 typedef GNode TNode;
 
 

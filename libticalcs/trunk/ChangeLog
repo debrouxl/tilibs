@@ -3,6 +3,14 @@ Log:
 Todo:
      ticalcs-config pour le so.4 (ainsi que le man)
 
+- 19/03/2004, version 4.5.2: roms
+	Added tree management (hacked from GLib) for future use.
+	This will remove GLib dependancies as well as multiple llibraries
+	version (GLib 1.2 & 2.0).
+	Not tested yet.
+	Added endianess check in configure for Mac OS.
+	Tested with TiEmu: ok.
+	
 - 27/08/2003, version 4.5.1: Maintenance release by JB.
 	Upgraded to libtool 1.5
 	Upgraded to automake 1.7

@@ -9,8 +9,4 @@ INCLUDES = -I$(top_srcdir)/src
 noinst_PROGRAMS = test_ticalcs
 
 test_ticalcs_LDFLAGS = $(no_undefined)
-if LIBGLIB2
- test_ticalcs_LDADD = $(top_builddir)/src/libticalcs-4.la
-else
- test_ticalcs_LDADD = $(top_builddir)/src12/libticalcs.la
-endif
+test_ticalcs_LDADD = $(top_builddir)/src/libticalcs.la

@@ -182,11 +182,11 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
   TRYF(ti89_send_ACK());
 
   // get list of folders & FLASH apps
-  *tree = g_node_new(NULL);
-  vars = g_node_new(NULL);
-  apps = g_node_new(NULL);
-  g_node_append(*tree, vars);
-  g_node_append(*tree, apps);
+  *tree = t_node_new(NULL);
+  vars = t_node_new(NULL);
+  apps = t_node_new(NULL);
+  t_node_append(*tree, vars);
+  t_node_append(*tree, apps);
 
   for (j = 4; j < block_size;) {
     TiVarEntry *fe = calloc(1, sizeof(TiVarEntry));
@@ -201,7 +201,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
     strcpy(fe->folder, "");
 
     tifiles_translate_varname(fe->name, fe->trans, fe->type);
-    node = g_node_new(fe);
+    node = t_node_new(fe);
 
     DISPLAY(_("Name: %8s | "), fe->name);
     DISPLAY(_("Type: %8s | "), tifiles_vartype2string(fe->type));
@@ -209,14 +209,14 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
     DISPLAY(_("Size: %08X\n"), fe->size);
 
     if (fe->type == TI89_DIR)
-      g_node_append(vars, node);
+      t_node_append(vars, node);
     else if (fe->type == TI89_APPL)
       continue;			// AMS<2.08 returns FLASH apps
   }
 
   // get list of variables into each folder
-  for (i = 0; i < g_node_n_children(vars); i++) {
-    TNode *folder = g_node_nth_child(vars, i);
+  for (i = 0; i < t_node_n_children(vars); i++) {
+    TNode *folder = t_node_nth_child(vars, i);
     char *folder_name = ((TiVarEntry *) (folder->data))->name;
 
     DISPLAY(_("Directory listing in %8s...\n"), folder_name);
@@ -249,7 +249,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
       strcpy(ve->folder, folder_name);
 
       tifiles_translate_varname(ve->name, ve->trans, ve->type);
-      node = g_node_new(ve);
+      node = t_node_new(ve);
 
       DISPLAY(_("Name: %8s | "), ve->trans);
       DISPLAY(_("Type: %8s | "), tifiles_vartype2string(ve->type));
@@ -264,11 +264,11 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
 
       if (ve->type == TI89_APPL) {
 	if (!ticalc_check_if_app_exists(*tree, ve->name))
-	  g_node_append(apps, node);
+	  t_node_append(apps, node);
 	else
-	  g_free(ve);
+	  free(ve);
       } else
-	g_node_append(folder, node);
+	t_node_append(folder, node);
     }
     DISPLAY("\n");
   }
@@ -302,18 +302,18 @@ int ti89_recv_backup(const char *filename, int mask_mode)
     return ERR_NO_VARS;
 
   // Check whether the last folder is empty
-  vars = g_node_nth_child(tree, 0);
-  b = g_node_n_children(g_node_nth_child(vars,
-					 g_node_n_children(vars) - 1));
+  vars = t_node_nth_child(tree, 0);
+  b = t_node_n_children(t_node_nth_child(vars,
+					 t_node_n_children(vars) - 1));
 
   // Receive all variables, except FLASH apps
-  i_max = g_node_n_children(vars);
+  i_max = t_node_n_children(vars);
   for (i = 0; i < i_max; i++) {
-    GNode *parent = g_node_nth_child(vars, i);
+    GNode *parent = t_node_nth_child(vars, i);
 
-    j_max = g_node_n_children(parent);
+    j_max = t_node_n_children(parent);
     for (j = 0; j < j_max; j++) {
-      GNode *node = g_node_nth_child(parent, j);
+      GNode *node = t_node_nth_child(parent, j);
 
       TiVarEntry *ve = (TiVarEntry *) (node->data);
 

@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs-4.4.7\n"
-"POT-Creation-Date: 2003-05-19 18:51+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-03-19 23:06+0100\n"
 "PO-Revision-Date: 2003-05-07 13:40GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -15,23 +16,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: src/dirlist.c:57
+#: src/dirlist.c:58
 msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
-#: src/dirlist.c:105
+#: src/dirlist.c:106
 msgid "  No variables\n"
 msgstr " Pas de variable\n"
 
-#: src/dirlist.c:108
+#: src/dirlist.c:109
 msgid "+------------------+----------+----+----+----------+----------+\n"
 msgstr "+------------------+----------+----+----+----------+----------+\n"
 
-#: src/dirlist.c:117
+#: src/dirlist.c:118
 msgid "| B. name          | T. name  |Attr|Type| Size     |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille    |\n"
 
-#: src/dirlist.c:140
+#: src/dirlist.c:141
 msgid "  No applications\n"
 msgstr " Pas d'application\n"
 
@@ -229,6 +230,7 @@ msgid "  Calc type: %s\n"
 msgstr " Type de calculatrice: %s\n"
 
 #: src/intrface.c:321
+#, c-format
 msgid "Function not implemented. This is a bug. Please report it."
 msgstr "Fonction non implémentée. C'est un bug. Reportez-le s'il vous plaît."
 
@@ -310,6 +312,7 @@ msgid "Receiving backup...\n"
 msgstr "Réception de la sauvegarde...\n"
 
 #: src/ti73.c:205 src/ti83.c:175 src/ti92.c:228
+#, c-format
 msgid "Receiving backup..."
 msgstr "Réception de la suavegarde..."
 
@@ -321,6 +324,7 @@ msgstr "Envoi de la sauvegarde...\n"
 #: src/ti73.c:260 src/ti73.c:394 src/ti82.c:173 src/ti82.c:209 src/ti82.c:317
 #: src/ti83.c:229 src/ti83.c:363 src/ti85.c:173 src/ti85.c:209 src/ti85.c:317
 #: src/ti86.c:248 src/ti86.c:284 src/ti86.c:394
+#, c-format
 msgid "Sending..."
 msgstr "Envoi..."
 
@@ -368,11 +372,13 @@ msgstr "Copie de ROM...\n"
 #. Wait for user's action (execing program)
 #: src/ti73.c:620 src/ti82.c:188 src/ti82.c:328 src/ti82.c:424 src/ti83.c:472
 #: src/ti85.c:188 src/ti85.c:328 src/ti85.c:426 src/ti86.c:264 src/ti86.c:503
+#, c-format
 msgid "Waiting user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
 #: src/ti73.c:634 src/ti82.c:438 src/ti83.c:486 src/ti85.c:440 src/ti86.c:517
 #: src/ti89.c:734 src/ti92.c:540
+#, c-format
 msgid "Receiving..."
 msgstr "Réception..."
 
@@ -387,18 +393,22 @@ msgid "Getting ID list...\n"
 msgstr "Réception de l'ID de la liste...\n"
 
 #: src/ti73.c:700 src/ti89.c:796
+#, c-format
 msgid "Getting variable..."
 msgstr "Réception de la variable..."
 
 #: src/ti82.c:122 src/ti85.c:122
+#, c-format
 msgid "Waiting for backup..."
 msgstr "En attente pour sauvegarder..."
 
 #: src/ti82.c:243 src/ti85.c:243
+#, c-format
 msgid "Waiting var(s)..."
 msgstr "Attente de variable(s)..."
 
 #: src/ti86.c:189
+#, c-format
 msgid "Waiting backup..."
 msgstr "Attente de la sauvegarde..."
 
@@ -433,10 +443,12 @@ msgid "Reading of '%s/%s'"
 msgstr "Lecture de '%s/%s'"
 
 #: src/ti89.c:356 src/ti92.c:282
+#, c-format
 msgid "Sending backup..."
 msgstr "Envoi de la sauvegarde..."
 
 #: src/ti89.c:469 src/ti92.c:412
+#, c-format
 msgid "Sending variable(s)..."
 msgstr "Envoi de variable(s)..."
 
@@ -446,6 +458,7 @@ msgid "perc = %1.2f \n"
 msgstr "pourcent = %1.2f \n"
 
 #: src/ti89.c:556
+#, c-format
 msgid "Sending FLASH OS/App..."
 msgstr "Envoi d' OS/App FLASH..."
 
@@ -465,6 +478,7 @@ msgstr "Envoi de l'application/os FLASH complet.\n"
 
 #. Launch calculator program by remote control
 #: src/ti89.c:700 src/ti92.c:506
+#, c-format
 msgid "Launching..."
 msgstr "Chargement..."
 
@@ -473,6 +487,7 @@ msgid "Getting clock...\n"
 msgstr "Réception de l'horloge...\n"
 
 #: src/ti89.c:834
+#, c-format
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
@@ -481,6 +496,7 @@ msgid "Setting clock...\n"
 msgstr "Mise à jour de l'horloge...\n"
 
 #: src/ti89.c:889
+#, c-format
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 

@@ -11,11 +11,11 @@ INCLUDES = -I$(top_srcdir) -I$(includedir) \
         -DPREFIX=\"${prefix}\" -I.
 
 # libraries to compile and install
-lib_LTLIBRARIES = libticalcs-4.la
+lib_LTLIBRARIES = libticalcs.la
 
 # libtool stuff: set version and export symbols for resolving
 libticalcsincludedir = $(includedir)/tilp
-libticalcs_4_la_LDFLAGS = \
+libticalcs_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
 	-export-dynamic $(no_undefined)
 
@@ -34,10 +34,11 @@ libticalcsinclude_HEADERS = \
 	pause.h \
 	update.h \
 	ticalcs.h \
-	tikeys.h
+	tikeys.h \
+	tnode.h
 
 # setup source file variables
-libticalcs_4_la_SOURCES = \
+libticalcs_la_SOURCES = \
 	clock.c \
 	cmd73.c \
 	cmd82.c \
@@ -61,11 +62,8 @@ libticalcs_4_la_SOURCES = \
 	ti89.c \
 	ti92.c \
 	tikeys.c \
+	tnode.c \
 	type2str.c
-
-# objects
-libticalcs_4_OBJECTS = \
-        error.o
 
 MAINTAINERCLEANFILES =
 EXTRA_HEADERS =
