@@ -9,12 +9,13 @@ bin_SCRIPTS = ticables-config
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO build docs
 
+pkgconfigdir = $(libdir)/pkgconfig
 if OS_BSD
  pkgconfigdir = $(prefix)/libdata/pkgconfig
 else
  pkgconfigdir = $(libdir)/pkgconfig
 endif
-#pkgconfig_DATA = ticables.pc
+pkgconfig_DATA = ticables.pc
 
 $(pkgconfig_DATA): config.status
 
