@@ -41,7 +41,7 @@ static int default_tifiles_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret = 0;
-#ifndef __WIN32__	
+//#ifndef __WIN32__	
 	switch(level) {
 		case 1: fprintf(stdout, _("wrn: ")); break;
 		case 2: fprintf(stdout, _("err: ")); break;
@@ -50,7 +50,7 @@ static int default_tifiles_printl(int level, const char *format, ...)
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
-#endif
+//#endif
 	return ret;
 }
 

@@ -370,10 +370,22 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
   }  
 
   if (tib) {			// tib is an old format but still in use (by developers)
+	memset(content, 0, sizeof(Ti9xFlash));
     fseek(f, 0, SEEK_END);
     content->data_length = (uint32_t) ftell(f);
     fseek(f, 0, SEEK_SET);
+
     strcpy(content->name, "basecode");
+	content->data_type = 0x23;	// FLASH os
+
+	content->data_part = (uint8_t *) calloc(content->data_length, 1);
+    if (content->data_part == NULL) {
+		fclose(f);
+		return ERR_MALLOC;
+    }
+    fread(content->data_part, content->data_length, 1, f);
+
+    content->next = NULL;
   } else {
     long file_size;
 
@@ -745,7 +757,7 @@ TIEXPORT int TICALL ti9x_display_file(const char *filename)
   Ti9xFlash content3;
 
   // the testing order is important: regular before backup (due to TI89/92+)
-  if (tifiles_is_a_flash_file(filename)) {
+  if (tifiles_is_a_flash_file(filename) || tifiles_is_a_tib_file(filename)) {
     ti9x_read_flash_file(filename, &content3);
     ti9x_display_flash_content(&content3);
     ti9x_free_flash_content(&content3);

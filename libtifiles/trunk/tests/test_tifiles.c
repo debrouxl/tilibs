@@ -342,10 +342,21 @@ static int test_v200_regular_support()
 */
 int main(int argc, char **argv)
 {
+//	Ti9xFlash content = { 0 };
+
   tifiles_init();
+/*
+	// test OS file
+	tifiles_set_calc(CALC_TI89);
+	ti9x_display_file("c:\\msvc\\tilp\\os.89u");
+	ti9x_read_flash_file("c:\\msvc\\tilp\\os.89u", &content);
 
-  fprintf(stdout, "coucou !\n");
-
+	// test TIB file
+	memset(&content, 0, sizeof(content));
+	ti9x_display_file("c:\\msvc\\tilp\\os.tib");
+	ti9x_read_flash_file("c:\\msvc\\tilp\\os.tib", &content);
+*/
+  
   goto ti83p;
 
   // TI82 support

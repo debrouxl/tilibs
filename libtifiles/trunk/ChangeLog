@@ -7,7 +7,7 @@ Log:
 - 08/04/2004, version 0.5.8: roms
 	Redirection of stdout/stderr.
 	Fixed TI85/TI86 varname encoding bug.
-	
+	Added/improved TIB file support.
 
 - 27/08/2003, version 0.5.7: maintenance release by JB.
 	Use AM_MAINTAINER_MODE in configure.in
