@@ -69,7 +69,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "NDEBUG" 
 BSC32=bscmake.exe
