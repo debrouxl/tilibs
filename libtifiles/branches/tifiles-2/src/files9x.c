@@ -563,7 +563,9 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
   free(filename);
 
   // build the table of folder & variable entries  
-  TRY(tifiles_create_table_of_entries(content, &table, &num_folders));
+  table = tifiles_create_table_of_entries(content, &num_folders);
+  if (table == NULL)
+	  return ERR_MALLOC;
 
   // write header
   fwrite_8_chars(f, tifiles_calctype2signature(content->model));

@@ -135,29 +135,26 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
 
 /**
  * tifiles_create_table_of_entries:
- * @filename: a TI file.
+ * @content: a TI file content structure.
+ * @nfolders: returns the number of folders in the file.
  *
- * Determine file class and display internal content.
+ * The goal of this function is to parse the file content structure in order to build
+ * a table of entries so that it's easy to write it just after the header in a group
+ * file. Mainly used as an helper.
+ * The returned 'table' is an NULL-terminated array of int* pointers.
+ * Each pointers points on an integer array. Each cell are an index on the 'Ti9xVarEntry*  
+ * entries' array.
+ * 
+ * In fact, this array represents a kind of tree. The array of pointer is the folder list
+ * and each pointer is the variable list for each folder.
+ * For accessing the entry, we use the index.
  *
- * Return value: an error code, 0 otherwise.
+ * This function may be difficult to understand but it avoids to use trees (and
+ * linked list) which will require an implementation.
+ *
+ * Return value: a 2-dimensions allocated integer array.
  **/
-/*
-  This function needs some explanations...
-  Its goal is to parse the file content in order to build a table of
-  entries so that it's easy to write it after the header in a group file.
-  Our 'table' is an array of pointers terminated by NULL.
-  Each pointer points on an array of integer. Theses integers are an index
-  in the 'Ti9xVarEntry*  entries' array.
-  This array represents a kind of tree. The array of pointer is the folder list
-  and each pointer is the var list for each folder.
-  For accessing the entry, we use the index.
-
-  This function may be difficult to understand but it avoids to use trees (and
-  linked list) which will require an implementation.
- */
-TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
-						    int ***tabl,
-						    int *nfolders)
+TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *nfolders)
 {
   int num_folders = 0;
   int i, j;
@@ -169,17 +166,21 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
   folder_list[1] = NULL;
 
   // determine how many folders we have
-  for (i = 0; i < content->num_entries; i++) {
+  for (i = 0; i < content->num_entries; i++) 
+  {
     TiVarEntry *entry = &(content->entries[i]);
 
     // scan for an existing folder entry
-    for (ptr = folder_list; *ptr != NULL; ptr++) {
-      if (!strcmp(*ptr, entry->fld_name)) {
-	//printf("break: <%s>\n", entry->fld_name);
-	break;
+    for (ptr = folder_list; *ptr != NULL; ptr++) 
+	{
+      if (!strcmp(*ptr, entry->fld_name)) 
+	  {
+		//printf("break: <%s>\n", entry->fld_name);
+		break;
       }
     }
-    if (*ptr == NULL) {		// add new folder entry
+    if (*ptr == NULL) 
+	{		// add new folder entry
       folder_list[num_folders] = (char *) calloc(9, sizeof(char));
       //printf("%i: adding '%s'\n", num_folders, entry->fld_name);
       strcpy(folder_list[num_folders], entry->fld_name);
@@ -193,23 +194,26 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
   *nfolders = num_folders;
 
   // allocate the folder list
-  table = *tabl = (int **) calloc((num_folders + 1), sizeof(int *));
+  table = (int **) calloc((num_folders + 1), sizeof(int *));
   table[num_folders] = NULL;
 
   // for each folder, determine how many variables we have
   // and allocate array with indexes
-  for (j = 0; j < num_folders; j++) {
+  for (j = 0; j < num_folders; j++) 
+  {
     int k;
 
-    for (i = 0, k = 0; i < content->num_entries; i++) {
+    for (i = 0, k = 0; i < content->num_entries; i++) 
+	{
       Ti9xVarEntry *entry = &(content->entries[i]);
 
-      if (!strcmp(folder_list[j], entry->fld_name)) {
-	table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
-	table[j][k] = i;
-	//printf("%i %i: adding %i\n", j, k, i); 
-	table[j][k + 1] = -1;
-	k++;
+      if (!strcmp(folder_list[j], entry->fld_name)) 
+	  {
+		table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
+		table[j][k] = i;
+		//printf("%i %i: adding %i\n", j, k, i); 
+		table[j][k + 1] = -1;
+		k++;
       }
     }
   }
@@ -218,5 +222,5 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
   for (j = 0; j < num_folders + 1; j++)
     free(folder_list[j]);
 
-  return 0;
+  return table;
 }

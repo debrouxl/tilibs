@@ -28,21 +28,15 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-#include "../src/file_int.h"
-#include "../src/file_def.h"
-
-#undef VERSION
-#define VERSION "Test program"
-
-char *unused;
+#include "../src/tifiles.h"
+#include "../src/files8x.h"
+#include "../src/files9x.h"
 
 /*
-  Compare 2 files bytes per bytes
+  Compare 2 files bytes per bytes and show differences
 */
 static int compare_files(char *src, char *dst)
 {
@@ -90,9 +84,9 @@ static int test_ti82_backup_support()
   Ti8xBackup content;
 
   printf("--> Testing backup support...\n");
-  ti8x_display_file("./ti82/backup.82b");
-  ti8x_read_backup_file("./ti82/backup.82b", &content);
-  ti8x_write_backup_file("./ti82/backup.82b_", &content);
+  ti8x_file_display("./ti82/backup.82b");
+  ti8x_file_read_backup("./ti82/backup.82b", &content);
+  ti8x_file_write_backup("./ti82/backup.82b_", &content);
   compare_files("./ti82/backup.82b", "./ti82/backup.82b_");
 
   return 0;
@@ -101,19 +95,20 @@ static int test_ti82_backup_support()
 static int test_ti82_regular_support()
 {
   Ti8xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (single)...\n");
-  ti8x_display_file("./ti82/math.82p");
-  ti8x_read_regular_file("./ti82/math.82p", &content);
-  ti8x_write_regular_file("./ti82/math.82p_", &content, &unused);
+  ti8x_file_display("./ti82/math.82p");
+  ti8x_file_read_regular("./ti82/math.82p", &content);
+  ti8x_file_write_regular("./ti82/math.82p_", &content, &unused);
   compare_files("./ti82/math.82p", "./ti82/math.82p_");
 
   printf("\n");
 
   printf("--> Testing regular support (group)...\n");
-  ti8x_display_file("./ti82/group.82g");  
-  ti8x_read_regular_file("./ti82/group.82g", &content);
-  ti8x_write_regular_file("./ti82/group.82g_", &content, &unused);
+  ti8x_file_display("./ti82/group.82g");  
+  ti8x_file_read_regular("./ti82/group.82g", &content);
+  ti8x_file_write_regular("./ti82/group.82g_", &content, &unused);
   compare_files("./ti82/group.82g", "./ti82/group.82g_");
 
   return 0;
@@ -125,7 +120,7 @@ static int test_ti82_group_support()
   
   printf("--> Testing grouping of files...\n");
   tifiles_group_files(array, "./ti82/aabb.82g_");
-  tifiles_display_file("./ti82/aabb.82g_");
+  tifiles_file_display("./ti82/aabb.82g_");
   compare_files("./ti82/group.82g", "./ti82/aabb.82g_");
   
   return 0;
@@ -164,19 +159,20 @@ static int test_ti82_group_ungroup_support()
 static int test_ti83p_regular_support()
 {
   Ti8xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (group)...\n");
-  ti8x_display_file("./ti83+/group.8xg");
-  ti8x_read_regular_file("./ti83+/group.8xg", &content);
-  ti8x_write_regular_file("./ti83+/group.8xg_", &content, &unused);
+  ti8x_file_display("./ti83+/group.8xg");
+  ti8x_file_read_regular("./ti83+/group.8xg", &content);
+  ti8x_file_write_regular("./ti83+/group.8xg_", &content, &unused);
   compare_files("./ti83+/group.8xg", "./ti83+/group.8xg_");
   
   return 0;
   printf("\n");
 
-  ti8x_display_file("./ti83+/group.8xg");
-  ti8x_read_regular_file("./ti83+/group.8xg", &content);
-  ti8x_write_regular_file("./ti83+/group.8xg_", &content, &unused);
+  ti8x_file_display("./ti83+/group.8xg");
+  ti8x_file_read_regular("./ti83+/group.8xg", &content);
+  ti8x_file_write_regular("./ti83+/group.8xg_", &content, &unused);
   compare_files("./ti83+/group.8xg", "./ti83+/group.8xg_");
 
   return 0;
@@ -187,9 +183,9 @@ static int test_ti86_backup_support()
   Ti8xBackup content;
 
   printf("--> Testing backup support...\n");
-  ti8x_display_file("./ti86/backup.86b");
-  ti8x_read_backup_file("./ti86/backup.86b", &content);
-  ti8x_write_backup_file("./ti86/backup.86b_", &content);
+  ti8x_file_display("./ti86/backup.86b");
+  ti8x_file_read_backup("./ti86/backup.86b", &content);
+  ti8x_file_write_backup("./ti86/backup.86b_", &content);
   compare_files("./ti86/backup.86b", "./ti86/backup.86b_");
 
   return 0;
@@ -198,19 +194,20 @@ static int test_ti86_backup_support()
 static int test_ti86_regular_support()
 {
   Ti8xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (single)...\n");
-  ti8x_display_file("./ti86/x.86n");
-  ti8x_read_regular_file("./ti86/x.86n", &content);
-  ti8x_write_regular_file("./ti86/x.86n_", &content, &unused);
+  ti8x_file_display("./ti86/x.86n");
+  ti8x_file_read_regular("./ti86/x.86n", &content);
+  ti8x_file_write_regular("./ti86/x.86n_", &content, &unused);
   compare_files("./ti86/x.86n", "./ti86/x.86n_");
 
   printf("\n");
 
   printf("--> Testing regular support (group)...\n");
-  ti8x_display_file("./ti86/group.86g");
-  ti8x_read_regular_file("./ti86/group.86g", &content);
-  ti8x_write_regular_file("./ti86/group.86g_", &content, &unused);
+  ti8x_file_display("./ti86/group.86g");
+  ti8x_file_read_regular("./ti86/group.86g", &content);
+  ti8x_file_write_regular("./ti86/group.86g_", &content, &unused);
   compare_files("./ti86/group.86g", "./ti86/group.86g_");
 
   return 0;
@@ -219,11 +216,12 @@ static int test_ti86_regular_support()
 static int test_ti89_regular_support()
 {
   Ti9xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (group)...\n");
-  ti9x_display_file("./ti89/group.89g");
-  ti9x_read_regular_file("./ti89/group.89g", &content);
-  ti9x_write_regular_file("./ti89/group.89g_", &content, &unused);
+  ti9x_file_display("./ti89/group.89g");
+  ti9x_file_read_regular("./ti89/group.89g", &content);
+  ti9x_file_write_regular("./ti89/group.89g_", &content, &unused);
   compare_files("./ti89/group.89g", "./ti89/group.89g_");
 
   return 0;
@@ -234,9 +232,9 @@ static int test_ti92_backup_support()
   Ti9xBackup content;
 
   printf("--> Testing backup support...\n");
-  ti9x_display_file("./ti92/backup.92b");
-  ti9x_read_backup_file("./ti92/backup.92b", &content);
-  ti9x_write_backup_file("./ti92/backup.92b_", &content);
+  ti9x_file_display("./ti92/backup.92b");
+  ti9x_file_read_backup("./ti92/backup.92b", &content);
+  ti9x_file_write_backup("./ti92/backup.92b_", &content);
   compare_files("./ti92/backup.92b", "./ti92/backup.92b_");
 
   return 0;
@@ -245,19 +243,20 @@ static int test_ti92_backup_support()
 static int test_ti92_regular_support()
 {
   Ti9xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (single)...\n");
-  ti9x_display_file("./ti92/str.92s");
-  ti9x_read_regular_file("./ti92/str.92s", &content);
-  ti9x_write_regular_file("./ti92/str.92s_", &content, &unused);
+  ti9x_file_display("./ti92/str.92s");
+  ti9x_file_read_regular("./ti92/str.92s", &content);
+  ti9x_file_write_regular("./ti92/str.92s_", &content, &unused);
   //compare_files("./ti92/str.92s", "./ti92/str.92s_");
 
   printf("\n");
   
   printf("--> --> Testing regular support (group)...\n");
-  ti9x_display_file("./ti92/group.92g");  
-  ti9x_read_regular_file("./ti92/group.92g", &content);
-  ti9x_write_regular_file("./ti92/group.92g_", &content, &unused);
+  ti9x_file_display("./ti92/group.92g");  
+  ti9x_file_read_regular("./ti92/group.92g", &content);
+  ti9x_file_write_regular("./ti92/group.92g_", &content, &unused);
   //compare_files("./ti92/group.92g", "./ti92/group.92g_");
 
   return 0;
@@ -269,7 +268,7 @@ static int test_ti92_group_support()
   
   printf("--> Testing grouping of files...\n");
   tifiles_group_files(array, "./ti92/xxyyzz.92g_");
-  tifiles_display_file("./ti92/xxyyzz.92g_");
+  tifiles_file_display("./ti92/xxyyzz.92g_");
   compare_files("./ti92/group.92g", "./ti92/xxyyzz.92g_");
   
   return 0;
@@ -292,9 +291,9 @@ static int test_ti89_flash_support()
   Ti9xFlash content;
 
   printf("--> Testing flash support...\n");
-  ti9x_display_file("./ti89/ticabfra.89k");
-  ti9x_read_flash_file("./ti89/ticabfra.89k", &content);
-  ti9x_write_flash_file("./ti89/ticabfra.89k_", &content);
+  ti9x_file_display("./ti89/ticabfra.89k");
+  ti9x_file_read_flash("./ti89/ticabfra.89k", &content);
+  ti9x_file_write_flash("./ti89/ticabfra.89k_", &content);
   compare_files("./ti89/ticabfra.89k", "./ti89/ticabfra.89k_");
 
   return 0;
@@ -306,7 +305,7 @@ static int test_ti83p_flash_support()
 
   printf("--> Testing flash support...\n");
 
-  ti8x_display_file("./ti83+/base112.8Xu");
+  ti8x_file_display("./ti83+/base112.8Xu");
   //ti8x_read_flash_file("./ti83+/base112.8Xu", &content);
   //hexdump(content.pages[0].data, 256);
   //hexdump(content.pages[content.num_pages-1].data, 256);
@@ -315,9 +314,9 @@ static int test_ti83p_flash_support()
 
   return 0;
 
-  ti8x_display_file("./ti83+/chembio.8Xk");
-  ti8x_read_flash_file("./ti83+/chembio.8Xk", &content);
-  ti8x_write_flash_file("./ti83+/chembio.8Xk_", &content);
+  ti8x_file_display("./ti83+/chembio.8Xk");
+  ti8x_file_read_flash("./ti83+/chembio.8Xk", &content);
+  ti8x_file_write_flash("./ti83+/chembio.8Xk_", &content);
   compare_files("./ti83+/chembio.8Xk", "./ti83+/chembio.8Xk_");
 
   return 0;
@@ -326,11 +325,12 @@ static int test_ti83p_flash_support()
 static int test_v200_regular_support()
 {
   Ti9xRegular content;
+  char *unused;
 
   printf("--> Testing regular support (group)...\n");
-  ti9x_display_file("./v200/xy.v2g");
-  ti9x_read_regular_file("./v200/xy.v2g", &content);
-  ti9x_write_regular_file("./v200/xy.v2g_", &content, &unused);
+  ti9x_file_display("./v200/xy.v2g");
+  ti9x_file_read_regular("./v200/xy.v2g", &content);
+  ti9x_file_write_regular("./v200/xy.v2g_", &content, &unused);
   compare_files("./v200/xy.v2g", "./v200/xy.v2g_");
 
   return 0;
@@ -342,9 +342,34 @@ static int test_v200_regular_support()
 */
 int main(int argc, char **argv)
 {
+	char *msg;
 //	Ti9xFlash content = { 0 };
 
-  tifiles_init();
+	// init library
+	tifiles_library_init();
+
+	// test tifiles.c
+	printf("Library version : <%s>\n", tifiles_version_get());
+
+	// test error.c
+	tifiles_error_get(515, &msg);
+	printf("Error message: <%s>\n", msg);
+	free(msg);
+	return 0;
+
+	// test type2str.c
+
+	// test transcode.c
+
+	// test filetypes.c
+
+	// test typesxx.c
+
+	// test misc.c
+
+	// test filesxx.c
+
+	// test grouped.c
 /*
 	// test OS file
 	tifiles_set_calc(CALC_TI89);
@@ -361,7 +386,6 @@ int main(int argc, char **argv)
 
   // TI82 support
  ti82:
-  tifiles_set_calc(CALC_TI82);
   test_ti82_backup_support();
   test_ti82_regular_support();
   test_ti82_group_support();
@@ -370,20 +394,17 @@ int main(int argc, char **argv)
 
   // TI83+ support
  ti83p:
-  tifiles_set_calc(CALC_TI83P);
   test_ti83p_regular_support();
   //test_ti83p_flash_support();  
   goto end;
 
  ti86:
-  tifiles_set_calc(CALC_TI86);
   //test_ti86_backup_support();
   test_ti86_regular_support();
   goto end;
 
   // TI92 support
  ti92:
-  tifiles_set_calc(CALC_TI92);
   test_ti92_backup_support();
   test_ti92_regular_support();
   test_ti92_group_support();
@@ -391,19 +412,17 @@ int main(int argc, char **argv)
   goto end;
 
  ti89:
-  tifiles_set_calc(CALC_TI89);
   test_ti89_flash_support();
   // test_ti89_regular_support();
   goto end;
 
   // V200 support
  v200:
-  tifiles_set_calc(CALC_V200);
   test_v200_regular_support();
   goto end;
 
  end:
-  tifiles_exit();
+  tifiles_library_exit();
 
   return 0;
 }

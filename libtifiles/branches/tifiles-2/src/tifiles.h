@@ -128,7 +128,7 @@ typedef struct
   char			default_folder[9];	// TI9x only
   char			comment[43];		// Ti8x: 41 max
 
-  int			num_entries;		// use GList ?
+  int			num_entries;
   TiVarEntry*	entries;
 
   uint16_t		checksum;
@@ -243,9 +243,9 @@ extern "C" {
   TIEXPORT int        TICALL tifiles_content_free_regular(TiRegular *content);
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, TiRegular *content);
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, TiRegular *content, char **filename2);
-  TIEXPORT int TICALL tifiles_display_file(const char *filename);
+  TIEXPORT int TICALL tifiles_file_display(const char *filename);
 
-  TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content, int ***tabl, int *nfolders);
+  TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *nfolders);
 
   // grouped.c
   TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular **dst_content);
