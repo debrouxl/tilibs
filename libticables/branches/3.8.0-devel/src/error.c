@@ -47,24 +47,20 @@ TicableLinkCable *tcl;
 */
 TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
 {
-  char buf[256];
+  	char buf[256];
 
-  switch (err_num) {
-  case ERR_OPEN_SER_DEV:
-    strcpy(error_msg, _("Msg: Unable to open serial device."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."));
-    break;
+  	switch (err_num) {
+  	case ERR_OPEN_SER_DEV:
+    		strcpy(error_msg, _("Msg: Unable to open serial device."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."));
+    	break;
 
-  case ERR_OPEN_SER_COMM:
-    strcpy(error_msg, _("Msg: Unable to open COM port."));
-    strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: Check that the device is not used/locked by another application (modem ?)."));
-    break;
+  	case ERR_OPEN_SER_COMM:
+    		strcpy(error_msg, _("Msg: Unable to open COM port."));
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, _("Cause: Check that the device is not used/locked by another application (modem ?)."));
+    	break;
 
   case ERR_WRITE_ERROR:
     strcpy(error_msg,
@@ -355,46 +351,68 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
 	   _
 	   ("Cause: the SilverLink driver currently installed has a wrong version. Please upgrade !"));
     break;
+    
+    	case ERR_NODE_NONEXIST:
+    	strcpy(error_msg, _("Msg: the node does not exists."));
+    	strcat(error_msg, "\n");
+    	strcat(error_msg, _("Cause: the node has not been created by the module."));
+    	break;
+    	
+	case ERR_NODE_PERMS:
+	strcpy(error_msg, _("Msg: you don't have permissions for reading/writing the node."));
+    	strcat(error_msg, "\n");
+    	strcat(error_msg, _("Cause: others does not have r/w access or you are not in the group."));
+	break;
+	
+	case ERR_NOTLOADED:
+	strcpy(error_msg, _("Msg: module not loaded."));
+    	strcat(error_msg, "\n");
+    	strcat(error_msg, _("Cause: the module does not exist or has not been loaded."));
+	break;
+	
+	case ERR_NOTMOUNTED:
+	strcpy(error_msg, _("Msg: the usb pseudo-filesystem is not mounted."));
+    	strcat(error_msg, "\n");
+    	strcat(error_msg, _("Cause: your kernel does not have usbfs support or it is not mounted by your /etc/fstab."));
+	break;
 
-  default:
-    strcpy(error_msg,
-	   _
-	   ("Error code not found in the list.\nThis is a bug. Please report it.\n."));
-    return err_num;
-    break;
-  }
+  	default:
+    		strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+    		return err_num;
+    	break;
+  	}
 
 #ifndef __WIN32__
-  if (errno != 0) {
-    strcat(error_msg, "\n");
-    strcat(error_msg, "System: ");
-    strcat(error_msg, strerror(errno));
-    snprintf(buf, 256, " (errno = %i)", errno);
-    strcat(error_msg, buf);
-    strcat(error_msg, "\n");
-  }
+  	if (errno != 0) {
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, "System: ");
+    		strcat(error_msg, strerror(errno));
+    		snprintf(buf, 256, " (errno = %i)", errno);
+    		strcat(error_msg, buf);
+    		strcat(error_msg, "\n");
+  	}
 #else
-  if (GetLastError()) {
-    LPVOID lpMsgBuf;
+  	if (GetLastError()) {
+    		LPVOID lpMsgBuf;
 
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+    		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		  FORMAT_MESSAGE_FROM_SYSTEM |
 		  FORMAT_MESSAGE_IGNORE_INSERTS,
 		  NULL, GetLastError(),
 		  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		  (LPTSTR) & lpMsgBuf, 0, NULL);
-    strcat(error_msg, "\n");
-    strcat(error_msg, "System: ");
-    //snprintf(buf, 256, "GetLastError = %i -> ", GetLastError());
-    sprintf(buf, "GetLastError = %li -> ", GetLastError());
-    strcat(error_msg, buf);
-    strcat(error_msg, lpMsgBuf);
-    strcat(error_msg, "\n");
-  }
+    		strcat(error_msg, "\n");
+    		strcat(error_msg, "System: ");
+    		//snprintf(buf, 256, "GetLastError = %i -> ", GetLastError());
+    		sprintf(buf, "GetLastError = %li -> ", GetLastError());
+    		strcat(error_msg, buf);
+    		strcat(error_msg, lpMsgBuf);
+    		strcat(error_msg, "\n");
+  	}
 #endif
 
-  if (tcl != NULL)
-    tcl->close();		// Close the connection
+  	if (tcl != NULL)
+    		tcl->close();		// Close the connection
 
-  return 0;
+	return 0;
 }

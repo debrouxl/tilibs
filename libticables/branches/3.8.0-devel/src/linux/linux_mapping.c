@@ -42,8 +42,7 @@
 
 #include "links.h"
 
-#define TRYR(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-#define TRYB(x) { int aaa_; if((aaa_ = (x))) break; }
+static int warning = ERR_NONE;
 
 static int devfs = 0;
 
@@ -58,6 +57,7 @@ static int check_for_libusb(void);
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	DISPLAY(_("libticables: getting method from resources"));
+	warning = ERR_NONE;
 	
 	// reset method
 	*method &= ~IOM_OK;
@@ -168,7 +168,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
   	if (!(*method & IOM_OK)) {
     		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
-		return ERR_NO_RESOURCES;
+		return warning;	//ERR_NO_RESOURCES;
 	}
 	
 	return 0;
@@ -289,8 +289,12 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
+	int ret;
+	
 	// map I/O
-	TRYR(linux_map_io((TicableMethod)method, port));
+	ret = linux_map_io((TicableMethod)method, port);
+	if(ret)
+		return ret;
 	
 	// set the link cable
 	DISPLAY(_("libticables: registering cable...\n"));
@@ -523,6 +527,10 @@ static int check_for_node_usability(const char *pathname)
 		DISPLAY(_("    node %s: exists\n"), pathname);
 	else {
 		DISPLAY(_("    node %s: does not exists\n"), pathname);
+		DISPLAY(_("    => you will have to create the node."));
+		
+		warning = ERR_NODE_NONEXIST;
+		
 		return -1;
 	}
 
@@ -547,8 +555,13 @@ static int check_for_node_usability(const char *pathname)
 		if(!search_for_user_in_group(user, group))
 			DISPLAY(_("    is the user %s in the group %s: yes")); 
 		else {
-			DISPLAY(_("    is the user %s in the group %s: no")); 
+			DISPLAY(_("    is the user %s in the group %s: no"));
+			DISPLAY(_("    => you should add your username in the group %s of the '/etc/group' file."), group);
+			DISPLAY(_("    => you will have to restart you session, too."), group);
 			free(user); free(group);
+			
+			warning = ERR_NODE_PERMS;
+			
 			return -1;	
 		}
 		
@@ -562,6 +575,8 @@ static int check_for_root(void)
 	uid_t uid = getuid();
     	
     	DISPLAY(_("  check for asm usability: %s\n"), uid ? "no" : "yes");
+    	
+    	warning = ERR_ROOT;
 
 	return (uid ? -1 : 0);
 }
@@ -599,6 +614,10 @@ static int check_for_tipar(void)
 		DISPLAY(_("      module: loaded\r\n"));
 	else {
 		DISPLAY(_("      module: not loaded\r\n"));
+		DISPLAY(_("    => check the module exists (either as module, either as built-in)"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		
+		warning = ERR_NOTLOADED;		
 		return -1;
 	}
 
@@ -628,6 +647,10 @@ static int check_for_tiser(void)
 		DISPLAY(_("    module: loaded\r\n"));
 	else {
 		DISPLAY(_("    module: not loaded\r\n"));
+		DISPLAY(_("    => check the module exists (compiled as module)"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		
+		warning = ERR_NOTLOADED;
 		return -1;
 	}
 
@@ -657,6 +680,10 @@ static int check_for_tiusb(void)
 		DISPLAY(_("    module: loaded\r\n"));
 	else {
 		DISPLAY(_("    module: not loaded\r\n"));
+		DISPLAY(_("    => check the module exists (either as module, either as built-in)"));
+		DISPLAY(_("    => add an entry into your modutils file to automatically load it."));
+		
+		warning = ERR_NOTLOADED;
 		return -1;
 	}
 
@@ -673,6 +700,10 @@ static int check_for_libusb(void)
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
+		DISPLAY(_("    => the usbfs must be supported by your kernel and you have to mount it"));
+		DISPLAY(_("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'"));
+		
+		warning = ERR_NOTMOUNTED;
 		return -1;
 	}
 	
