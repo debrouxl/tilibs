@@ -127,7 +127,7 @@ static int ti73_waitdata(byte id, word length)
 // Check whether the TI reply that it is ready
 int ti73_isready(void)
 {
-	LOCK_TRANSFER()
+  LOCK_TRANSFER()
   TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI73));

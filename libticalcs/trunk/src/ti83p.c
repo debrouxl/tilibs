@@ -969,7 +969,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
       if(feof(file)) break;
       if(!strcmp(trans,  "**TI82**") || 
 		  !strcmp(trans, "**TI83**") ||
-		  !strcmp(trans, "**TI85**")) fti83p = 1; else fti83p = 0;
+		  !strcmp(trans, "**TI85**")) fti83p = 0; else fti83p = 1;
       //if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
       //else break;
       data=fgetc(file);

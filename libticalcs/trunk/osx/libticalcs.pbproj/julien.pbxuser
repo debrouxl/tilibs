@@ -20,6 +20,11 @@
 			sepNavWindowFrame = "{{379, 100}, {750, 502}}";
 		};
 	};
+	0127D13101738AAA5041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{15, 239}, {750, 502}}";
+		};
+	};
 	0867D690FE84028FC02AAC07 = {
 		activeBuildStyle = 014CEA450018CDF011CA2923;
 		activeTarget = 0867D69CFE84028FC02AAC07;
@@ -79,7 +84,7 @@
 							Frame = "{{0, 0}, {780, 130}}";
 						};
 						Tab3 = {
-							Frame = "{{0, 0}, {661, 295}}";
+							Frame = "{{0, 0}, {780, 295}}";
 						};
 						TabCount = 4;
 					};

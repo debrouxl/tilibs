@@ -357,7 +357,7 @@ TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
 
-  TRY(cable->get(&data));		// 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
+  TRY(cable->get(&data));	// 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
   //DISPLAY("isOK_1: 0x%02X\n", data);
   switch(data)
   {

@@ -274,8 +274,6 @@ int ti89_send_key(word key)
   TRY(cable->close());
   //UNLOCK_TRANSFER();
 
-  fprintf(stderr, "DEBUG: key %d (0x%x LSB: 0x%x MSB: 0x%x)\n", key, key, LSB(key), MSB(key));
-
   return 0;
 }
 
