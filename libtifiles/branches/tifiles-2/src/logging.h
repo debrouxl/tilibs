@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: print.h 522 2004-04-08 10:12:55Z roms $ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,20 +19,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFILES_DEFSXX__
-#define __TIFILES_DEFSXX__
+#ifndef __TIFILES_LOGGING_H__
+#define __TIFILES_LOGGING_H__
 
-#include "types73.h"
-#include "types82.h"
-#include "types83.h"
-#include "types83p.h"
-#include "types84p.h"
-#include "types85.h"
-#include "types86.h"
-#include "types89.h"
-#include "types89t.h"
-#include "types92.h"
-#include "types92p.h"
-#include "typesv2.h"
+#include <glib.h>
+
+#define LOG_DOMAIN	"tifiles"
+
+void tifiles_debug(const gchar *format, ...);
+void tifiles_info(const gchar *format, ...);
+void tifiles_message(const gchar *format, ...);
+void tifiles_warning(const gchar *format, ...);
+void tifiles_critical(const gchar *format, ...);
+void tifiles_error(const gchar *format, ...);
 
 #endif

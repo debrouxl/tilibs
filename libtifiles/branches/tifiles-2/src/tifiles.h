@@ -38,9 +38,8 @@
 
 /* Definitions */
 
-#define VARNAME_MAX	18	// group/name: 8 + 1 + 8 + 1
-
-#define TIFILES_NCALCS 10	// # of supported calcs
+#define VARNAME_MAX	18		// group/name: 8 + 1 + 8 + 1
+#define TIFILES_NCALCS 12	// # of supported calcs
 
 typedef enum {
 	CALC_NONE = 0,

@@ -59,12 +59,12 @@
 
 extern const char *TI89t_CONST[TI89t_MAXTYPES + 1][4];
 
-const char *TI89t_byte2type(uint8_t data);
-uint8_t TI89t_type2byte(const char *s);
-const char *TI89t_byte2fext(uint8_t data);
-uint8_t TI89t_fext2byte(const char *s);
+const char *ti89t_byte2type(uint8_t data);
+uint8_t ti89t_type2byte(const char *s);
+const char *ti89t_byte2fext(uint8_t data);
+uint8_t ti89t_fext2byte(const char *s);
 
-const char *TI89t_byte2desc(uint8_t data);
-const char *TI89t_byte2icon(uint8_t data);
+const char *ti89t_byte2desc(uint8_t data);
+const char *ti89t_byte2icon(uint8_t data);
 
 #endif
