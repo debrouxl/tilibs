@@ -35,7 +35,7 @@
 #include <config.h>
 #endif
 
-#include "intl.h"
+#include "intl1.h"
 #include "printl.h"
 
 #define LOG_FILE  "libticables.log"

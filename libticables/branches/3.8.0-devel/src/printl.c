@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "intl.h"
+#include "intl1.h"
 
 #include "export.h"
 #include "cabl_def.h"
@@ -56,7 +56,7 @@ TICABLES_PRINT printl = default_printl;
 /*
 	Change print behaviour (callback).
 */
-TIEXPORT TICABLES_PRINT tifiles_set_printl(TICABLES_PRINT new_printl)
+TIEXPORT TICABLES_PRINT ticable_set_printl(TICABLES_PRINT new_printl)
 {
   TICABLES_PRINT old_printl = printl;
 

@@ -46,14 +46,14 @@
 # include <sys/ioctl.h>
 #endif
 
-#include "intl.h"
+#include "intl1.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "externs.h"
 #include "timeout.h"
 #include "export.h"
-#include "printl.h"
+#include "printl1.h"
 #include "logging.h"
 
 extern const char *ti_dev_file;

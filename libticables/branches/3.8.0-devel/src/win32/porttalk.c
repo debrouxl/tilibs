@@ -27,8 +27,8 @@
 
 #include <windows.h>
 
-#include "../intl.h"
-#include "../printl.h"
+#include "../intl1.h"
+#include "../printl1.h"
 
 /****************************************************/
 /* Utility functions for PortTalk driver	    */

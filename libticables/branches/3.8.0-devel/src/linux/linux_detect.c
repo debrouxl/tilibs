@@ -42,13 +42,13 @@
 #include <grp.h>
 #include <sys/types.h>
 
-#include "intl.h"
+#include "intl1.h"
 
 #include "cabl_def.h"
 #include "cabl_err.h"
 #include "export.h"
 #include "externs.h"
-#include "printl.h"
+#include "printl1.h"
 
 #define MAXCHARS 1024
 

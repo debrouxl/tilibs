@@ -56,7 +56,7 @@
 #include <sys/shm.h>
 #endif
 
-#include "intl.h"
+#include "intl1.h"
 #include "timeout.h"
 #include "export.h"
 #include "cabl_err.h"

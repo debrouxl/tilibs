@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "intl.h"
+#include "intl1.h"
 #include "cabl_def.h"
 
 static const char *TICABLETYPE[TICABLETYPE_MAX] = {

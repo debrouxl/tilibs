@@ -35,7 +35,7 @@
 #include "cabl_def.h"
 #include "logging.h"
 #include "externs.h"
-#include "printl.h"
+#include "printl1.h"
 
 static unsigned int lpt_adr;
 

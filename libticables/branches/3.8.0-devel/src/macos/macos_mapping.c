@@ -28,13 +28,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../intl.h"
+#include "../intl1.h"
 
 #include "../cabl_def.h"
 #include "../cabl_err.h"
 #include "../externs.h"
 #include "../type2str.h"
-#include "../printl.h"
+#include "../printl1.h"
 
 #include "links.h"
 

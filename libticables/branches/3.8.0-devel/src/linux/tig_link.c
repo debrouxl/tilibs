@@ -42,7 +42,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "intl.h"
+#include "intl1.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
