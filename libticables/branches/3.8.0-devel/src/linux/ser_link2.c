@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ser_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -246,7 +246,7 @@ int ser_get_white_wire2()
 
 int ser_supported2()
 {
-  return SUPPORT_ON | ((methods & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
+  return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
 int ser_register_cable_2(TicableLinkCable * lc, TicableMethod method)

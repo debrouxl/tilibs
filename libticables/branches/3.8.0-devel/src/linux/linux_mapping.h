@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: probe.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -26,7 +26,7 @@
 
 #include "cabl_def.h"
 
-TicableMethod linux_get_methods(TicableType type, int resources);
+int linux_get_method(TicableType type, int resources, TicableMethod *method);
 int linux_register_cable(TicableType type, TicableLinkCable *lc);
 
 #endif

@@ -51,20 +51,20 @@
 
 /*
 	This function attempts to determine the best way to use a given link
-	cable by providing one or more I/O methods from detected resources.
+	cable by providing a single I/O method from detected resources.
 */
-TicableMethod mapping_get_methods(TicableType type, int resources)
+int mapping_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	int ret;
 	
 #if defined(__LINUX__)
-	ret = linux_get_methods(type, resources);
+	ret = linux_get_method(type, resources, method);
 #elif defined(__BSD__)
-	ret = bsd_get_methods(type, resources);
+	ret = bsd_get_method(type, resources);
 #elif defined(__WIN32__)
-	ret = win32_get_methods(type, resources);
+	ret = win32_get_method(type, resources);
 #elif defined(__MACOSX__)
-	ret = macos_get_methods(type, resources);
+	ret = macos_get_method(type, resources);
 #else
 	ret = 0;
 #endif

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ioports.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -99,13 +99,13 @@ static void linux_ioctl_write_io(unsigned int address, int data)
 
 int io_open(unsigned long from, unsigned long num)
 {
-	if (methods & IOM_ASM) {
+	if (method & IOM_ASM) {
     		io_rd = linux_asm_read_io;
     		io_wr = linux_asm_write_io;
     		
 		return (ioperm(from, num, 1) ? ERR_ROOT : 0);
 	}
-  	else if (methods & IOM_API) {
+  	else if (method & IOM_API) {
 		struct termios termset;
 
     		if (tty_use)
@@ -130,10 +130,10 @@ int io_open(unsigned long from, unsigned long num)
 
 int io_close(unsigned long from, unsigned long num)
 {
-	if (methods & IOM_ASM) {
+	if (method & IOM_ASM) {
     		return (ioperm(from, num, 0) ? ERR_ROOT : 0);
     	}
-    	else if (methods & IOM_API) {
+    	else if (method & IOM_API) {
     		if (tty_use) {
       			close(dev_fd);
       			tty_use--;

@@ -52,7 +52,7 @@ int port = OSX_USB_PORT;     // Use USB by default, handled through the IOKit
 int port = SERIAL_PORT_2;    // Use COM2 by default
 #endif
 int resources = IO_NONE;     // I/O resources detected
-int methods = IOM_AUTO;      // I/O methods useable
+TicableMethod method = IOM_AUTO;      // I/O methods useable
 
 unsigned int io_address = 0; // I/O port base address
 char io_device[256] = "";    // The character device (COMx, ttySx, ...)
@@ -247,14 +247,14 @@ TICALL ticable_get_port(void)
 TIEXPORT void
 TICALL ticable_set_method(int m)
 {
-  	methods = m;
+  	method = m;
 }
 
 
 TIEXPORT int
 TICALL ticable_get_method(void)
 {
-  	return methods;
+  	return method;
 }
 
 TIEXPORT int
@@ -272,7 +272,7 @@ TICALL ticable_set_param2(TicableLinkParam lp)
   	baud_rate = lp.baud_rate;
   	hfc = lp.hfc;
   	port = lp.port;
-  	methods = lp.method;
+  	method = lp.method;
 
   	if ((port == USER_PORT) || (port == OSX_SERIAL_PORT))	// force args
   	{
@@ -302,7 +302,7 @@ TICALL ticable_get_param(TicableLinkParam * lp)
   	strcpy(lp->device, io_device);
 
   	lp->port = port;
-  	lp->method = methods;
+  	lp->method = method;
 
   	return 0;
 }
@@ -346,7 +346,7 @@ static void print_settings(void)
   	
   	DISPLAY(_("  Port: %s\n"), ticable_port_to_string(port));
   	
-  	DISPLAY(_("  Method: %s\n"), ticable_method_to_string(methods));
+  	DISPLAY(_("  Method: %s\n"), ticable_method_to_string(method));
   	
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
 		DISPLAY(_("  Timeout value: %i\n"), time_out);
@@ -369,6 +369,8 @@ static void print_settings(void)
 TIEXPORT int
 TICALL ticable_set_cable(int type, TicableLinkCable * lc)
 {
+	int ret;
+
   	cable_type = type;
 
 	// remove link cable
@@ -376,11 +378,15 @@ TICALL ticable_set_cable(int type, TicableLinkCable * lc)
 
 	// compile informations (I/O resources & OS platform) in order to 
   	// determine the best I/O method to use.
-	methods = mapping_get_methods(type, resources);
+	ret = mapping_get_method(type, resources, &method);
+	if(ret)
+		return ret;
 
   	// set the link cable
-  	mapping_register_cable(type, lc);
-  	
+  	ret = mapping_register_cable(type, lc);
+  	if(ret)
+		return ret;
+
   	// displays useful infos
   	print_settings();
   	

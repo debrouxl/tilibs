@@ -257,7 +257,7 @@ int par_get_white_wire()
 
 int par_supported()
 {
-  if (methods & IOM_OK)
+  if (method & IOM_OK)
     return SUPPORT_ON | SUPPORT_IO;
   else
     return SUPPORT_OFF;

@@ -76,90 +76,79 @@ TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br)
 
 TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc)
 {
-  switch (hfc) {
-  case HFC_OFF:
-    return "off";
-  case HFC_ON:
-    return "on";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown flow type !\n"));
-    return "unknown";
-  }
+	switch (hfc) {
+	case HFC_OFF:
+		return "off";
+	case HFC_ON:
+		return "on";
+	default:
+		DISPLAY_ERROR(_("libticables error: unknown flow type !\n"));
+		return "unknown";
+	}
 }
 
 
-TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port)
+TIEXPORT 
+const char *TICALL ticable_port_to_string(TicablePort port)
 {
-  switch (port) {
-  case USER_PORT:
-    return "user defined";
-  case PARALLEL_PORT_1:
-    return "parallel port #1";
-  case PARALLEL_PORT_2:
-    return "parallel port #2";
-  case PARALLEL_PORT_3:
-    return "parallel port #3";
-  case SERIAL_PORT_1:
-    return "serial port #1";
-  case SERIAL_PORT_2:
-    return "serial port #2";
-  case SERIAL_PORT_3:
-    return "serial port #3";
-  case SERIAL_PORT_4:
-    return "serial port #4";
-  case VIRTUAL_PORT_1:
-    return "virtual port #1";
-  case VIRTUAL_PORT_2:
-    return "virtual port #2";
-  case USB_PORT_1:
-    return "USB port #1";
-  case USB_PORT_2:
-    return "USB port #2";
-  case USB_PORT_3:
-    return "USB port #3";
-  case USB_PORT_4:
-    return "USB port #4";
-  case OSX_SERIAL_PORT:
-    return "serial port";
-  case OSX_USB_PORT:
-    return "USB port";
-  default:
-    DISPLAY_ERROR(_("libticables error: unknown port !\n"));
-    return "unknown";
-  }
+	switch (port) {
+	case USER_PORT:
+		return "user defined";
+	case PARALLEL_PORT_1:
+		return "parallel port #1";
+	case PARALLEL_PORT_2:
+		return "parallel port #2";
+	case PARALLEL_PORT_3:
+		return "parallel port #3";
+	case SERIAL_PORT_1:
+		return "serial port #1";
+	case SERIAL_PORT_2:
+		return "serial port #2";
+	case SERIAL_PORT_3:
+		return "serial port #3";
+	case SERIAL_PORT_4:
+		return "serial port #4";
+	case VIRTUAL_PORT_1:
+		return "virtual port #1";
+	case VIRTUAL_PORT_2:
+		return "virtual port #2";
+	case USB_PORT_1:
+		return "USB port #1";
+	case USB_PORT_2:
+		return "USB port #2";
+	case USB_PORT_3:
+		return "USB port #3";
+	case USB_PORT_4:
+		return "USB port #4";
+	case OSX_SERIAL_PORT:
+		return "serial port";
+	case OSX_USB_PORT:
+		return "USB port";
+	default:
+		DISPLAY_ERROR(_("libticables error: unknown port !\n"));
+		return "unknown";
+	}
 }
 
 
-TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod method)
+TIEXPORT 
+const char *TICALL ticable_method_to_string(TicableMethod method)
 {
-  char *p1 = "";
-  char *p2 = "internal";
-  char *p3 = "";
-  static char buffer[64];
+	static char buffer[64];
+	char *p2;
 
-  strcpy(buffer, "");
+	strcpy(buffer, "unknown");
+	
+	if (method & IOM_ASM)
+		p2 = "direct access (ASM)";
+	if (method & IOM_API)
+		p2 = "direct access (API)";
+	if (method & IOM_DRV)
+		p2 = "kernel mode (module)";
+	if (method & IOM_IOCTL)
+		p2 = "user mode (ioctl)";
+	
+	strcpy(buffer, p2);
 
-  if (method & IOM_AUTO)
-    p1 = "automatic";
-  if (method & IOM_ASM)
-    p2 = "direct access with ASM";
-  if (method & IOM_API)
-    p2 = "direct access thru API";
-#if defined(__LINUX__)
-  if (method & IOM_DRV)
-    p2 = "kernel module";
-#elif defined(__WIN32__)
-  if (method & IOM_DRV)
-    p2 = "PortTalk/TiglUsb driver";
-#endif
-
-  strcat(buffer, p1);
-  strcat(buffer, " (");
-  strcat(buffer, p2);
-  if (strcmp(p2, "") && strcmp(p3, ""))
-    strcat(buffer, " + ");
-  strcat(buffer, p3);
-  strcat(buffer, ")");
-
-  return buffer;
+	return buffer;
 }
