@@ -1,14 +1,12 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticalcs.mak
 
 ..\..\src\cmd73.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -40,19 +38,18 @@
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\cmd82.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -78,21 +75,23 @@
 	"..\..\..\tifiles\src\types92p.h"\
 	"..\..\..\tifiles\src\typesv2.h"\
 	"..\..\..\tifiles\src\typesXX.h"\
+	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\cmd85.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -124,19 +123,18 @@
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\cmd89.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -168,19 +166,18 @@
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\cmd92.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -212,19 +209,18 @@
 	"..\..\src\externs.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\ti73.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -259,20 +255,19 @@
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\rom83p.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Ti82.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -306,20 +301,19 @@
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\rom82.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Ti83.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -354,20 +348,19 @@
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\rom83.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Ti85.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -401,6 +394,7 @@
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\rom85u.h"\
 	"..\..\src\rom85z.h"\
 	"..\..\src\tnode.h"\
@@ -408,14 +402,12 @@
 	
 
 ..\..\src\Ti86.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -450,20 +442,19 @@
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\rom86.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Ti89.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -500,20 +491,19 @@
 	"..\..\src\Keys89.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\Rom89.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Ti92.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -550,20 +540,19 @@
 	"..\..\src\keys92p.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\Rom92f2.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\keys73.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -596,14 +585,12 @@
 	
 
 ..\..\src\keys83p.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -636,14 +623,12 @@
 	
 
 ..\..\src\keys89.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -676,14 +661,12 @@
 	
 
 ..\..\src\keys92p.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -716,14 +699,12 @@
 	
 
 ..\..\src\tikeys.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -760,14 +741,12 @@
 	
 
 ..\..\src\packets.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -804,14 +783,12 @@
 	
 
 ..\..\src\clock.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -841,14 +818,12 @@
 	
 
 ..\..\src\dirlist.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -878,18 +853,17 @@
 	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	
 
 ..\..\src\Error.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -922,14 +896,12 @@
 	
 
 ..\..\src\Intrface.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -961,6 +933,7 @@
 	"..\..\src\export.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\ti73.h"\
 	"..\..\src\Ti82.h"\
 	"..\..\src\Ti83.h"\
@@ -973,15 +946,52 @@
 	"..\..\src\type2str.h"\
 	
 
-..\..\src\Probe.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+..\..\src\printl.c : \
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
+	"..\..\..\ticables\src\stdints.h"\
+	"..\..\..\ticables\src\ticables.h"\
+	"..\..\..\ticables\src\Timeout.h"\
+	"..\..\..\tifiles\src\export.h"\
+	"..\..\..\tifiles\src\file_def.h"\
+	"..\..\..\tifiles\src\file_err.h"\
+	"..\..\..\tifiles\src\file_int.h"\
+	"..\..\..\tifiles\src\file_ver.h"\
+	"..\..\..\tifiles\src\files8X.h"\
+	"..\..\..\tifiles\src\files9X.h"\
+	"..\..\..\tifiles\src\filesXX.h"\
+	"..\..\..\tifiles\src\macros.h"\
+	"..\..\..\tifiles\src\stdints.h"\
+	"..\..\..\tifiles\src\tifiles.h"\
+	"..\..\..\tifiles\src\types73.h"\
+	"..\..\..\tifiles\src\types82.h"\
+	"..\..\..\tifiles\src\types83.h"\
+	"..\..\..\tifiles\src\types83p.h"\
+	"..\..\..\tifiles\src\types85.h"\
+	"..\..\..\tifiles\src\types86.h"\
+	"..\..\..\tifiles\src\types89.h"\
+	"..\..\..\tifiles\src\types92.h"\
+	"..\..\..\tifiles\src\types92p.h"\
+	"..\..\..\tifiles\src\typesv2.h"\
+	"..\..\..\tifiles\src\typesXX.h"\
+	"..\..\src\Calc_def.h"\
+	"..\..\src\export.h"\
+	"..\..\src\headers.h"\
+	"..\..\src\Intl2.h"\
+	"..\..\src\tnode.h"\
+	
+
+..\..\src\Probe.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\ticables\src\Cabl_def.h"\
+	"..\..\..\ticables\src\Cabl_err.h"\
+	"..\..\..\ticables\src\Cabl_int.h"\
+	"..\..\..\ticables\src\Cabl_ver.h"\
+	"..\..\..\ticables\src\export.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\
@@ -1015,6 +1025,7 @@
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
 	
@@ -1025,14 +1036,12 @@
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
 	"..\..\..\ticables\src\Cabl_ver.h"\
 	"..\..\..\ticables\src\export.h"\
-	"..\..\..\ticables\src\Intl.h"\
 	"..\..\..\ticables\src\stdints.h"\
 	"..\..\..\ticables\src\ticables.h"\
 	"..\..\..\ticables\src\Timeout.h"\

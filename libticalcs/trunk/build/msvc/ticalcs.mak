@@ -63,6 +63,7 @@ CLEAN :
 	-@erase "$(INTDIR)\keys89.obj"
 	-@erase "$(INTDIR)\keys92p.obj"
 	-@erase "$(INTDIR)\packets.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\Probe.obj"
 	-@erase "$(INTDIR)\ti73.obj"
 	-@erase "$(INTDIR)\Ti82.obj"
@@ -83,7 +84,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticalcs.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -115,11 +116,12 @@ LINK32_OBJS= \
 	"$(INTDIR)\dirlist.obj" \
 	"$(INTDIR)\Error.obj" \
 	"$(INTDIR)\Intrface.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\ticalcs.res" \
-	".\intl.lib" \
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib" \
 	"..\..\..\ticables\build\msvc\ticables.lib" \
 	"..\..\..\tifiles\build\msvc\tifiles.lib"
 
@@ -165,6 +167,7 @@ CLEAN :
 	-@erase "$(INTDIR)\keys89.obj"
 	-@erase "$(INTDIR)\keys92p.obj"
 	-@erase "$(INTDIR)\packets.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\Probe.obj"
 	-@erase "$(INTDIR)\ti73.obj"
 	-@erase "$(INTDIR)\Ti82.obj"
@@ -191,7 +194,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "_CONSOLE" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticalcs.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -199,7 +202,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ticalcs.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib intl.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ticalcs.pdb" /debug /machine:I386 /out:"$(OUTDIR)\ticalcs.dll" /implib:"$(OUTDIR)\ticalcs.lib" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ticalcs.pdb" /debug /machine:I386 /out:"$(OUTDIR)\ticalcs.dll" /implib:"$(OUTDIR)\ticalcs.lib" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\cmd73.obj" \
 	"$(INTDIR)\cmd82.obj" \
@@ -223,11 +226,12 @@ LINK32_OBJS= \
 	"$(INTDIR)\dirlist.obj" \
 	"$(INTDIR)\Error.obj" \
 	"$(INTDIR)\Intrface.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\Probe.obj" \
 	"$(INTDIR)\tnode.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\ticalcs.res" \
-	".\intl.lib" \
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib" \
 	"$(OUTDIR)\ticables.lib" \
 	"$(OUTDIR)\tifiles.lib"
 
@@ -408,6 +412,12 @@ SOURCE=..\..\src\Error.c
 SOURCE=..\..\src\Intrface.c
 
 "$(INTDIR)\Intrface.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\..\src\printl.c
+
+"$(INTDIR)\printl.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
