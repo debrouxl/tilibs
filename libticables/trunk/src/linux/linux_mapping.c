@@ -377,9 +377,12 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		  	(port != USB_PORT_4) && (port != USER_PORT))
 		return ERR_INVALID_PORT;
 
+#ifdef HAVE_LIBUSB
 		if(method & IOM_IOCTL)
 			slv_register_cable_2(lc);
-		else if(method & IOM_DRV)
+		else
+#endif
+		if(method & IOM_DRV)
 			slv_register_cable_1(lc);
 		break;
 

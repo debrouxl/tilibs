@@ -36,7 +36,9 @@ int ser_register_cable_1(TicableLinkCable * lc);
 int ser_register_cable_2(TicableLinkCable * lc);
 
 int slv_register_cable_1(TicableLinkCable * lc);
+#ifdef HAVE_LIBUSB
 int slv_register_cable_2(TicableLinkCable * lc);
+#endif
 
 int tie_register_cable(TicableLinkCable * lc);
 
