@@ -38,6 +38,7 @@
 #define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 #if defined(__WIN32__)
+#include <windows.h>
 #define BUFFER_SIZE 1024
 static HANDLE hCom = 0;
 #endif

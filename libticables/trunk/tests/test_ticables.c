@@ -91,10 +91,10 @@ int main(int argc, char **argv)
 	}
 
 	DISPLAY("Wait 1 second...\n");
-#ifndef __WIN32__
-	sleep(1);
-#else
+#if defined(__WIN32__) && !defined(__MINGW32__)
 	Sleep(1000);
+#else
+	sleep(1);
 #endif
 
 	/* 
