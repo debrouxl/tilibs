@@ -282,6 +282,8 @@ int slv_check(int *status)
     default:
         break;
     }
+
+    return 0;
 }
 
 int slv_probe()

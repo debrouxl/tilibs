@@ -296,9 +296,12 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
   case ERR_NO_RESOURCES:
     strcpy(error_msg, _("Msg: No I/O resource available !"));
     strcat(error_msg, "\n");
-    strcat(error_msg,
-	   _
-	   ("Cause: This error may have some causes. See the previous error message for more complete informations. Check for:\n- I/O permissions (parallel/serial link cable)\n- device driver (parallel/serial cable under Win NT4/2000/XP or USB)\n- kernel module (parallel/serial or USB under Linux."));
+#ifdef __WIN32__
+    strcat(error_msg, _("Cause: several ways. Check for:\n- PortTalk device driver (parallel/serial cable under Win NT4/2000/XP)\n- TiglUsb device driver (SilverLink)."));
+#else
+    strcat(error_msg, _
+	   ("Cause: several ways. Check for:\n- I/O permissions (parallel/serial link cable)\n- kernel module (tipar/tiser/tiusb)."));
+#endif
     break;
 
   case ERR_INVALID_PORT:
