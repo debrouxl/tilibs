@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-04 15:34+0200\n"
+"POT-Creation-Date: 2004-04-06 20:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/detect.c:71 src/win32/win32_detect.c:63
+#: src/detect.c:71 src/type2str.c:150 src/win32/win32_detect.c:59
 msgid "unknown"
 msgstr ""
 
@@ -431,11 +431,13 @@ msgstr ""
 msgid "  hardware flow control: %s\n"
 msgstr ""
 
-#: src/intrface.c:355
+#: src/intrface.c:355 src/type2str.c:95 src/type2str.c:103 src/type2str.c:170
+#: src/type2str.c:180
 msgid "on"
 msgstr ""
 
-#: src/intrface.c:355
+#: src/intrface.c:355 src/type2str.c:97 src/type2str.c:168 src/type2str.c:174
+#: src/type2str.c:182
 msgid "off"
 msgstr ""
 
@@ -464,24 +466,32 @@ msgstr ""
 msgid "Unable to open <%s> for logging.\n"
 msgstr ""
 
-#: src/type2str.c:43
-msgid "libticables error: unknown cable type !\n"
-msgstr ""
-
-#: src/type2str.c:57
+#: src/type2str.c:71
 msgid "libticables error: unknown baud rate !\n"
 msgstr ""
 
-#: src/type2str.c:71
-msgid "libticables error: unknown flow type !\n"
+#: src/type2str.c:153
+msgid "direct access (asm)"
 msgstr ""
 
-#: src/type2str.c:114
-msgid "libticables error: unknown port !\n"
+#: src/type2str.c:155
+msgid "direct access (api)"
+msgstr ""
+
+#: src/type2str.c:157
+msgid "kernel mode (module)"
+msgstr ""
+
+#: src/type2str.c:159
+msgid "user mode (ioctl)"
+msgstr ""
+
+#: src/type2str.c:172 src/type2str.c:184
+msgid "closed"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:59 src/linux/linux_detect.c:61
-#: src/win32/win32_detect.c:47
+#: src/win32/win32_detect.c:43
 msgid "Getting OS type...\r\n"
 msgstr ""
 
@@ -511,30 +521,30 @@ msgid "  Machine: %s\r\n"
 msgstr ""
 
 #: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:67
-#: src/linux/linux_detect.c:108 src/linux/linux_detect.c:195
-#: src/win32/win32_detect.c:65
+#: src/linux/linux_detect.c:107 src/linux/linux_detect.c:194
+#: src/win32/win32_detect.c:61
 msgid "Done.\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:240
-#: src/win32/win32_detect.c:83
+#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:246
+#: src/win32/win32_detect.c:79
 msgid "libticables: checking resources...\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:247
+#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:253
 msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:249
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:255
 msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:257
+#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:263
 #, c-format
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:287
+#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:293
 #, c-format
 msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
 msgstr ""
@@ -547,13 +557,13 @@ msgstr ""
 msgid "libticables: ioctl failed in bsd_ioctl_write_io !\n"
 msgstr ""
 
-#: src/bsd/bsd_ioports.c:117 src/linux/avr_link.c:77 src/linux/tig_link.c:73
+#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:77 src/linux/tig_link.c:73
 #: src/linux/linux_ioports.c:124
 #, c-format
 msgid "libticables: unable to open this serial port: %s (wrong permissions).\n"
 msgstr ""
 
-#: src/bsd/bsd_ioports.c:119 src/linux/avr_link.c:79 src/linux/tig_link.c:75
+#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:79 src/linux/tig_link.c:75
 #: src/linux/linux_ioports.c:126
 #, c-format
 msgid "libticables: unable to open this serial port: %s\n"
@@ -632,94 +642,94 @@ msgstr ""
 msgid "error: %s\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:96
+#: src/linux/linux_detect.c:95
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
 msgstr ""
 
 #. Do a first/rapid checking with /proc/ioports
-#: src/linux/linux_detect.c:102
+#: src/linux/linux_detect.c:101
 msgid "libticables: quick search for parallel/serial ports...\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:107
+#: src/linux/linux_detect.c:106
 msgid ""
 "The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:115
+#: src/linux/linux_detect.c:114
 msgid "Unable to open /proc/ioports.\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:128
+#: src/linux/linux_detect.c:127
 #, c-format
 msgid "  serial port found at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:130
+#: src/linux/linux_detect.c:129
 #, c-format
 msgid "  parallel port found at 0x%03x\n"
 msgstr ""
 
 #. Do a thorough check
-#: src/linux/linux_detect.c:138
+#: src/linux/linux_detect.c:137
 msgid "libticables: search for all ports...\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:145
+#: src/linux/linux_detect.c:144
 msgid "Unable to open '/proc/sys/dev/parport/'.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:171
+#: src/linux/linux_detect.c:170
 #, c-format
 msgid "unable to open this entry: <%s>\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:174
+#: src/linux/linux_detect.c:173
 #, c-format
 msgid "  %s at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:180
+#: src/linux/linux_detect.c:179
 #, c-format
 msgid "Invalid parport entry: <%s>.\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:186
+#: src/linux/linux_detect.c:185
 msgid "Closedir\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:194
+#: src/linux/linux_detect.c:193
 msgid ""
-"The file '/proc/tty/driver/serial' does not exist. Unable to probe serial "
-"port.\r\n"
+"The file '/proc/tty/driver/serial' does not exist or is not accessible. "
+"Unable to probe serial ports.\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:202
+#: src/linux/linux_detect.c:201
 #, c-format
 msgid "Unable to open this entry: <%s>\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:235
+#: src/linux/linux_detect.c:241
 msgid "ok"
 msgstr ""
 
-#: src/linux/linux_detect.c:235
+#: src/linux/linux_detect.c:241
 msgid "nok"
 msgstr ""
 
-#: src/linux/linux_detect.c:265
+#: src/linux/linux_detect.c:271
 #, c-format
 msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:272
+#: src/linux/linux_detect.c:278
 #, c-format
 msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:279
+#: src/linux/linux_detect.c:285
 #, c-format
 msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"
 msgstr ""
@@ -985,35 +995,35 @@ msgstr ""
 msgid "Opened %s\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:52
+#: src/win32/win32_detect.c:48
 #, c-format
 msgid "  operating System: %s\r\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:55
+#: src/win32/win32_detect.c:51
 #, c-format
-msgid "  version: major=%i, minor=%i\r\n"
+msgid "  version: %i.%i\r\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:98
+#: src/win32/win32_detect.c:94
 #, c-format
 msgid "  IO_API: %sfound at compile time.\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:105
+#: src/win32/win32_detect.c:101
 msgid "  IO_ASM: available (Win9x).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:107
+#: src/win32/win32_detect.c:103
 msgid "  IO_ASM: not available (WinNT).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:145
+#: src/win32/win32_detect.c:141
 #, c-format
 msgid "  IO_DLL: %s (PortTalk)\r\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:158
+#: src/win32/win32_detect.c:154
 #, c-format
 msgid "  IO_USB: %s (TiglUsb)\r\n"
 msgstr ""

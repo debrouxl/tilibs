@@ -184,5 +184,5 @@ TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str)
 	else if(!strcmp(str, _("closed")))
 		return DSP_CLOSE;
 
-	return _("off");
+	return DSP_OFF;
 }

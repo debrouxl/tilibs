@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-04 15:34+0200\n"
+"POT-Creation-Date: 2004-04-04 16:12+0200\n"
 "PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -564,31 +564,31 @@ msgid "  Machine: %s\r\n"
 msgstr "  Machine: %s\r\n"
 
 #: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:67
-#: src/linux/linux_detect.c:108 src/linux/linux_detect.c:195
+#: src/linux/linux_detect.c:107 src/linux/linux_detect.c:194
 #: src/win32/win32_detect.c:65
 msgid "Done.\r\n"
 msgstr "Fait. \r\n"
 
-#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:240
+#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:246
 #: src/win32/win32_detect.c:83
 #, fuzzy
 msgid "libticables: checking resources...\r\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:247
+#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:253
 msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:249
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:255
 msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:257
+#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:263
 #, c-format
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:287
+#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:293
 #, c-format
 msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
 msgstr ""
@@ -690,18 +690,18 @@ msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 msgid "error: %s\n"
 msgstr "Erreur: %s\n"
 
-#: src/linux/linux_detect.c:96
+#: src/linux/linux_detect.c:95
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
 msgstr ""
 
 #. Do a first/rapid checking with /proc/ioports
-#: src/linux/linux_detect.c:102
+#: src/linux/linux_detect.c:101
 msgid "libticables: quick search for parallel/serial ports...\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:107
+#: src/linux/linux_detect.c:106
 #, fuzzy
 msgid ""
 "The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"
@@ -709,83 +709,84 @@ msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
 "la recherche des ports séries.\r\n"
 
-#: src/linux/linux_detect.c:115
+#: src/linux/linux_detect.c:114
 #, fuzzy
 msgid "Unable to open /proc/ioports.\r\n"
 msgstr "Msg: Impossible d'ouvrir le port COM."
 
-#: src/linux/linux_detect.c:128
+#: src/linux/linux_detect.c:127
 #, c-format
 msgid "  serial port found at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:130
+#: src/linux/linux_detect.c:129
 #, c-format
 msgid "  parallel port found at 0x%03x\n"
 msgstr ""
 
 #. Do a thorough check
-#: src/linux/linux_detect.c:138
+#: src/linux/linux_detect.c:137
 #, fuzzy
 msgid "libticables: search for all ports...\r\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/linux/linux_detect.c:145
+#: src/linux/linux_detect.c:144
 #, fuzzy
 msgid "Unable to open '/proc/sys/dev/parport/'.\n"
 msgstr "Impossible d'ouvrir ce dossier: '/proc/sys/dev/parport/'.\r\n"
 
-#: src/linux/linux_detect.c:171
+#: src/linux/linux_detect.c:170
 #, c-format
 msgid "unable to open this entry: <%s>\r\n"
 msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
 
-#: src/linux/linux_detect.c:174
+#: src/linux/linux_detect.c:173
 #, fuzzy, c-format
 msgid "  %s at 0x%03x\n"
 msgstr " %s à l'adresse 0x%03x\r\n"
 
-#: src/linux/linux_detect.c:180
+#: src/linux/linux_detect.c:179
 #, c-format
 msgid "Invalid parport entry: <%s>.\r\n"
 msgstr "Entrée parport non valide: <%s>.\r\n"
 
-#: src/linux/linux_detect.c:186
+#: src/linux/linux_detect.c:185
 msgid "Closedir\r\n"
 msgstr "Ferme le dossier\r\n"
 
-#: src/linux/linux_detect.c:194
+#: src/linux/linux_detect.c:193
+#, fuzzy
 msgid ""
-"The file '/proc/tty/driver/serial' does not exist. Unable to probe serial "
-"port.\r\n"
+"The file '/proc/tty/driver/serial' does not exist or is not accessible. "
+"Unable to probe serial ports.\r\n"
 msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
 "la recherche des ports séries.\r\n"
 
-#: src/linux/linux_detect.c:202
+#: src/linux/linux_detect.c:201
 #, c-format
 msgid "Unable to open this entry: <%s>\r\n"
 msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
 
-#: src/linux/linux_detect.c:235
+#: src/linux/linux_detect.c:241
 msgid "ok"
 msgstr "ok"
 
-#: src/linux/linux_detect.c:235
+#: src/linux/linux_detect.c:241
 msgid "nok"
 msgstr "échec"
 
-#: src/linux/linux_detect.c:265
+#: src/linux/linux_detect.c:271
 #, c-format
 msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:272
+#: src/linux/linux_detect.c:278
 #, c-format
 msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:279
+#: src/linux/linux_detect.c:285
 #, c-format
 msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"
 msgstr ""
