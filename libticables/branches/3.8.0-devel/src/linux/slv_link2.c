@@ -70,12 +70,12 @@
 #define BUFFERED_R		/* enable buffered read operations (default) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
-static int nBytesWrite = 0;
+static int nBytesWrite2 = 0;
 #ifdef BUFFERED_W
-static uint8_t wBuf[MAX_PACKET_SIZE];
+static uint8_t wBuf2[MAX_PACKET_SIZE];
 #endif
-static int nBytesRead = 0;
-static uint8_t rBuf[MAX_PACKET_SIZE];
+static int nBytesRead2 = 0;
+static uint8_t rBuf2[MAX_PACKET_SIZE];
 
 /*********************************/
 /* Linux   : libusb support      */
@@ -190,7 +190,7 @@ int slv_open2()
 
   /* Flush buffer */
   /*
-     ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf, 
+     ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
      MAX_PACKET_SIZE, (time_out * 10));
    */
 
@@ -230,8 +230,8 @@ int slv_open2()
 #endif
 
   /* Reset buffers */
-  nBytesRead = 0;
-  nBytesWrite = 0;
+  nBytesRead2 = 0;
+  nBytesWrite2 = 0;
 
   tdr.count = 0;
   toSTART(tdr.start);
@@ -274,16 +274,16 @@ int slv_put2(uint8_t data)
   }
 #else
   /* Packets (up to 32 bytes) */
-  wBuf[nBytesWrite++] = data;
-  if (nBytesWrite == MAX_PACKET_SIZE) {
+  wBuf2[nBytesWrite2++] = data;
+  if (nBytesWrite2 == MAX_PACKET_SIZE) {
     ret =
-	usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf,
-		       nBytesWrite, (time_out * 10));
+	usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
+		       nBytesWrite2, (time_out * 10));
     if (ret <= 0) {
       DISPLAY_ERR("libticables: usb_bulk_write (%s).\n", usb_strerror());
       return ERR_WRITE_ERROR;
     }
-    nBytesWrite = 0;
+    nBytesWrite2 = 0;
   }
 #endif
 
@@ -294,18 +294,18 @@ int slv_get2(uint8_t * data)
 {
   int ret = 0;
   tiTIME clk;
-  static uint8_t *rBufPtr;
+  static uint8_t *rBuf2Ptr;
 
   //printf(".");
 
   tdr.count++;
 #ifdef BUFFERED_W
   /* Flush write buffer */
-  if (nBytesWrite > 0) {
+  if (nBytesWrite2 > 0) {
     ret =
-	usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf,
-		       nBytesWrite, (time_out * 10));
-    nBytesWrite = 0;
+	usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
+		       nBytesWrite2, (time_out * 10));
+    nBytesWrite2 = 0;
     if (ret <= 0) {
       DISPLAY_ERR("libticables: usb_bulk_write (%s).\n", usb_strerror());
       return ERR_WRITE_ERROR;
@@ -313,10 +313,10 @@ int slv_get2(uint8_t * data)
   }
 #endif
 
-  if (nBytesRead <= 0) {
+  if (nBytesRead2 <= 0) {
     toSTART(clk);
     do {
-      ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf,
+      ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
 			  MAX_PACKET_SIZE, (time_out * 10));
       if (toELAPSED(clk, time_out))
 	return ERR_READ_TIMEOUT;
@@ -329,15 +329,15 @@ int slv_get2(uint8_t * data)
 
     if (ret < 0) {
       DISPLAY_ERR("libticables: usb_bulk_read (%s).\n", usb_strerror());
-      nBytesRead = 0;
+      nBytesRead2 = 0;
       return ERR_READ_ERROR;
     }
-    nBytesRead = ret;
-    rBufPtr = rBuf;
+    nBytesRead2 = ret;
+    rBuf2Ptr = rBuf2;
   }
 
-  *data = *rBufPtr++;
-  nBytesRead--;
+  *data = *rBuf2Ptr++;
+  nBytesRead2--;
   LOG_DATA(*data);
 
   return 0;
@@ -360,14 +360,14 @@ int slv_check2(int *status)
   *status = STATUS_NONE;
 
   if (tigl_han != NULL) {
-    if (nBytesRead > 0) {
+    if (nBytesRead2 > 0) {
       *status = STATUS_RX;
       return 0;
     }
 
     toSTART(clk);
     do {
-      ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf,
+      ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
 			  MAX_PACKET_SIZE, (time_out * 10));
       if (toELAPSED(clk, time_out))
 	return ERR_READ_TIMEOUT;
@@ -378,11 +378,11 @@ int slv_check2(int *status)
     while (!ret);
 
     if (ret > 0) {
-      nBytesRead = ret;
+      nBytesRead2 = ret;
       *status = STATUS_RX;
       return 0;
     } else {
-      nBytesRead = 0;
+      nBytesRead2 = 0;
       *status = STATUS_NONE;
       return 0;
     }

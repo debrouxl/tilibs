@@ -35,7 +35,7 @@
 #include "linux/ser_link2.c"
 
 #elif defined(__WIN32__)
-#include "win32/ser_link.c"
+#include "linux/ser_link.c"
 #include "linux/ser_link2.c"
 
 #elif defined(__MACOSX__)
