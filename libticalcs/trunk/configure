@@ -28257,34 +28257,40 @@ echo "${ECHO_T}${msnative_struct}" >&6
   ;;
 esac
 
-# Check for the new -fvisibility flag introduced in gcc 4.0
+# Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
-if test x$GCC = xyes; then
-   visibility_flag=''
-   echo "$as_me:$LINENO: checking whether -fvisibility flag is supported" >&5
-echo $ECHO_N "checking whether -fvisibility flag is supported... $ECHO_C" >&6
-   if test -z "$ac_cv_prog_CC"; then
-      our_gcc="$CC"
-   else
-      our_gcc="$ac_cv_prog_CC"
-   fi
-   if $our_gcc -v --help 2>/dev/null | grep fvisibility >/dev/null; then
-      visibility_flag='-fvisibility'
-   fi
-   if test x"$visibility_flag" = x ; then
-      echo "$as_me:$LINENO: result: no" >&5
+case $host_os in
+*mingw*)
+  ;;
+*)
+	if test x$GCC = xyes; then
+	   visibility_flag=''
+	   echo "$as_me:$LINENO: checking whether gcc accepts -fvisibility" >&5
+echo $ECHO_N "checking whether gcc accepts -fvisibility... $ECHO_C" >&6
+	   if test -z "$ac_cv_prog_CC"; then
+	      our_gcc="$CC"
+	   else
+	      our_gcc="$ac_cv_prog_CC"
+	   fi
+	   if $our_gcc -v --help 2>/dev/null | grep "fvisibility" >/dev/null; then
+	      visibility_flag='-fvisibility=hidden'
+	   fi
+	   if test x"$visibility_flag" = x ; then
+	      echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-   else
-      CFLAGS="$CFLAGS $visibility_flag"
-      echo "$as_me:$LINENO: result: ${visibility_flag}" >&5
+	   else
+	      CFLAGS="$CFLAGS $visibility_flag"
+	      echo "$as_me:$LINENO: result: ${visibility_flag}" >&5
 echo "${ECHO_T}${visibility_flag}" >&6
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_FVISIBILITY 1
 _ACEOF
 
-    fi
-fi
+	    fi
+	fi
+	;;
+esac
 
 # Output.
 cat >confcache <<\_ACEOF
