@@ -428,7 +428,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
 	  (port != SERIAL_PORT_4) &&
 	  (port != USER_PORT))
 #else
-      if (port != OS_SERIAL_PORT)
+      if (port != OSX_SERIAL_PORT)
 #endif /* !__MACOSX__ */
 	return ERR_INVALID_PORT;
 

@@ -233,7 +233,7 @@
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.7.5</string>
+	<string>3.7.6</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -310,8 +310,8 @@
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
-				F50B12CF01A8303B01000102,
-				F50B12D001A8303B01000102,
+				F7366F4204E130C301000306,
+				F7366F4304E130C301000306,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,8 +366,8 @@
 //104
 		1058C7B0FEA5585E11CA2CBB = {
 			children = (
-				F50B12CD01A8303B01000102,
-				F50B12CE01A8303B01000102,
+				F73669B904E130C101000306,
+				F73669BA04E130C101000306,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -913,30 +913,6 @@
 				);
 			};
 		};
-		F50B12CD01A8303B01000102 = {
-			isa = PBXFrameworkReference;
-			name = CoreFoundation.framework;
-			path = ../../../../../System/Library/Frameworks/CoreFoundation.framework;
-			refType = 2;
-		};
-		F50B12CE01A8303B01000102 = {
-			isa = PBXFrameworkReference;
-			name = IOKit.framework;
-			path = ../../../../../System/Library/Frameworks/IOKit.framework;
-			refType = 2;
-		};
-		F50B12CF01A8303B01000102 = {
-			fileRef = F50B12CD01A8303B01000102;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F50B12D001A8303B01000102 = {
-			fileRef = F50B12CE01A8303B01000102;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F50DD16F01A9553A01000102 = {
 			fileRef = 18D1B3D70170FD845041E0CA;
 			isa = PBXBuildFile;
@@ -953,6 +929,30 @@
 //F72
 //F73
 //F74
+		F73669B904E130C101000306 = {
+			isa = PBXFrameworkReference;
+			name = CoreFoundation.framework;
+			path = /System/Library/Frameworks/CoreFoundation.framework;
+			refType = 0;
+		};
+		F73669BA04E130C101000306 = {
+			isa = PBXFrameworkReference;
+			name = IOKit.framework;
+			path = /System/Library/Frameworks/IOKit.framework;
+			refType = 0;
+		};
+		F7366F4204E130C301000306 = {
+			fileRef = F73669B904E130C101000306;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F7366F4304E130C301000306 = {
+			fileRef = F73669BA04E130C101000306;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		F7C1970504499F1901000306 = {
 			isa = PBXFileReference;
 			name = ticables.h;
