@@ -979,7 +979,6 @@ TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash *content)
   return 0;
 }
 
-
 /**
  * ti8x_file_display:
  * @filename: a TI file.

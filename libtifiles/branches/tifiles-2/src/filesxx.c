@@ -25,7 +25,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 
 #include "tifiles.h"
@@ -33,13 +32,25 @@
 #include "files8x.h"
 #include "files9x.h"
 
-// allocating
+/**
+ * tifiles_content_create_regular:
+ *
+ * Allocates a #TiRegular structure.
+ *
+ * Return value: the allocated block.
+ **/
 TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
 {
     return ti9x_content_create_regular();
 }
 
-// freeing
+/**
+ * tifiles_content_free_regular:
+ *
+ * Free the whole content of a #TiRegular structure.
+ *
+ * Return value: none.
+ **/
 TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
 {
   if (tifiles_calc_is_ti8x(content->model))
@@ -52,9 +63,16 @@ TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
   return 0;
 }
 
-// reading
-TIEXPORT int tifiles_file_read_regular(const char *filename,
-                                       TiRegular *content)
+/**
+ * tifiles_file_read_regular:
+ * @filename: name of single/group file to open.
+ * @content: where to store the file content.
+ *
+ * Load the single/group file into a TiRegular structure.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
     return ti8x_file_read_regular(filename, content);
@@ -66,10 +84,19 @@ TIEXPORT int tifiles_file_read_regular(const char *filename,
   return 0;
 }
 
-// writing
-TIEXPORT int tifiles_file_write_regular(const char *filename,
-                                        TiRegular *content,
-                                        char **real_fname)
+/**
+ * tifiles_file_write_regular:
+ * @filename: name of single/group file where to write or NULL.
+ * @content: the file content to write.
+ * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ *
+ * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
+ * the function build a filename from varname and allocates resulting filename in %real_fname.
+ * One of filename and real_filename can be NULL but not both !
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_write_regular(const char *filename, TiRegular *content, char **real_fname)
 {
   if (tifiles_calc_is_ti8x(content->model))
     return ti8x_file_write_regular(filename, content, real_fname);
@@ -81,7 +108,14 @@ TIEXPORT int tifiles_file_write_regular(const char *filename,
   return 0;
 }
 
-// displaying
+/**
+ * tifiles_file_display:
+ * @filename: a TI file.
+ *
+ * Determine file class and display internal content.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
 TIEXPORT int TICALL tifiles_file_display(const char *filename)
 {
   if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -98,6 +132,14 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
 /* Miscellaneous */
 /*****************/
 
+/**
+ * tifiles_create_table_of_entries:
+ * @filename: a TI file.
+ *
+ * Determine file class and display internal content.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
 /*
   This function needs some explanations...
   Its goal is to parse the file content in order to build a table of
