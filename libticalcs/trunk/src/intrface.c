@@ -317,7 +317,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->get_idlist = ti82_get_idlist;
     break;
 
-  case CALC_TI83P:
+  case CALC_TI84P:
+  case CALC_TI83P:  
   case CALC_TI73:
     calc->supported_operations = ti73_supported_operations;
     calc->is_silent = !0;

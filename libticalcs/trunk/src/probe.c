@@ -208,8 +208,8 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
   ticalc_get_calc(&ct);
   if (
 	  (ct != CALC_TI73) && (ct != CALC_TI83P) && (ct != CALC_TI84P) &&
-	  (ct != CALC_TI89) && (ct != CALC_TI89T) && 
-	  (ct != CALC_TI92P) && (ct != CALC_V200)
+	  (ct != CALC_TI89) && (ct != CALC_TI89T) && (ct != CALC_TI92P) && 
+	  (ct != CALC_V200)
 	 )
     return 0;
 
@@ -258,7 +258,9 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
   printl2(0, _("The calculator is ready.\n"));
   printl2(0, _("Calculator type: %s\n"),
 	  (*calc_type == CALC_TI83P) ? "TI83+" :
+	  (*calc_type == CALC_TI84P) ? "TI84+" :
 	  (*calc_type == CALC_TI89) ? "TI89" :
+	  (*calc_type == CALC_TI89T) ? "TI89t" :
 	  (*calc_type == CALC_TI92P) ? "TI92+" :
 	  (*calc_type == CALC_V200) ? "V200" : "???");
 

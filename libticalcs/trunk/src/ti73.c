@@ -486,6 +486,11 @@ int ti73_send_flash(const char *filename, int mask_mode)
     //TRYF(ti73_send_RDY());
     //TRYF(ti73_recv_ACK(NULL));
   }
+  else if(ticalcs_calc_type == CALC_TI84P)
+	  {
+		  UNLOCK_TRANSFER();
+		  return ERR_VOID_FUNCTION;
+	  }
 
   TRYF(ti8x_read_flash_file(filename, &content));
 

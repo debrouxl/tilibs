@@ -577,6 +577,11 @@ int ti89_send_flash(const char *filename, int mask_mode)
   printl2(0, _("FLASH app/os size: %i bytes.\n"), ptr->data_length);
 
   if (ptr->data_type == TI89_AMS) {
+	  if(ticalcs_calc_type == CALC_TI89T)
+	  {
+		  UNLOCK_TRANSFER();
+		  return ERR_VOID_FUNCTION;
+	  }
     TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ""));
   } else {
     TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ptr->name));

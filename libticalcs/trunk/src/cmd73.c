@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit handles TI73 & TI83+ commands.
+  This unit handles TI73 & TI83+ & TI84+ commands.
 */
 
 #include <stdio.h>
@@ -36,11 +36,11 @@
 #pragma warning( disable : 4761 )
 #endif
 
-// Shares some commands between TI73 & 83+
+// Shares some commands between TI73 & 83+ & 84+
 extern int ticalcs_calc_type;
 #define PC_TI7383 ((ticalcs_calc_type == CALC_TI73) ? PC_TI73 : PC_TI83p)
 #define TI7383_BKUP ((ticalcs_calc_type == CALC_TI73) ? TI73_BKUP : TI83p_BKUP)
-#define EXTRAS ((ticalcs_calc_type == CALC_TI83P) ? 2 : 0)
+#define EXTRAS ((ticalcs_calc_type == CALC_TI83P) || (ticalcs_calc_type == CALC_TI84P) ? 2 : 0)
 
 /* Variable (std var header: NUL padded, fixed length) */
 int ti73_send_VAR(uint16_t varsize, uint8_t vartype, char *varname,
