@@ -1,8 +1,9 @@
-/* Hey EMACS -*- linux-c -*- */
-/* $Id: probe.h 370 2004-03-22 18:47:32Z roms $ */
+/* Hey EMACS -*- macos-c -*- */
+/* $Id: ioports.h 391 2004-03-29 11:49:18Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (c) 2002, Kevin Kofler for the __MINGW32__ & __GNUC__ extensions.
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,17 +20,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PROBE_H__
-#define __PROBE_H__
+/* This file redirects low-level I/O functions according to the architecture. */
 
-#include <stdio.h>
-#include "export.h"
+#ifndef __IOPORTS_H__
+#define __IOPORTS_H__
 
-int TICALL ticable_detect_os(char **os_type);
-int TICALL ticable_detect_port(TicablePortInfo * pi);
-int TICALL ticable_detect_cable(TicablePortInfo * pi);
-int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
 
-int probe_io_resources(void);
+int io_open (unsigned long from, unsigned long num);
+int io_close(unsigned long from, unsigned long num);
+
+extern int  (*io_rd)  (unsigned int addr);
+extern void (*io_wr)  (unsigned int addr, int data);
+
 
 #endif
