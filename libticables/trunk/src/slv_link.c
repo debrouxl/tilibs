@@ -1423,6 +1423,7 @@ int slv_open2()
      MAX_PACKET_SIZE, (time_out * 10));
    */
 
+#if !defined(__BSD__)
   /* Reset endpoints */
   ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   if (ret < 0) {
@@ -1455,6 +1456,7 @@ int slv_open2()
       }
     }
   }
+#endif
 
   /* Reset buffers */
   nBytesRead = 0;

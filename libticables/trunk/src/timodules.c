@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <fcntl.h>
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 # include <unistd.h>		// access
 #else
 # include <io.h>
