@@ -51,7 +51,7 @@ libticables_la_SOURCES = \
 MAINTAINERCLEANFILES =
 EXTRA_HEADERS =
 EXTRA_DIST = \
-	*.h
+	*.h \
 	porttalk.c
 
 dos2unix:

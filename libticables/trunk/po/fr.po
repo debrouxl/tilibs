@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
-"POT-Creation-Date: 2003-05-03 11:42+0200\n"
+"POT-Creation-Date: 2003-05-11 11:24+0200\n"
 "PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -491,24 +491,24 @@ msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 msgid "Exiting...\n"
 msgstr "Sortie...\n"
 
-#: src/ioports.c:276
+#: src/ioports.c:281
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 "Impossible d'accéder au pilote PortTalk. Vérifiez s'il vous plaît qu'il est "
 "installé/chargé.\n"
 
-#: src/ioports.c:301
+#: src/ioports.c:306
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr "L'accès à l'adresse 0x%03X (IOPM Offset 0x%02X) a été accordé.\n"
 
-#: src/ioports.c:316
+#: src/ioports.c:321
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d\n"
 
-#: src/ioports.c:393
+#: src/ioports.c:398
 #, c-format
 msgid "Libticables: serial port %s successfully reconfigured.\n"
 msgstr "Libticables: port série %s reconfiguré avec succès.\n"

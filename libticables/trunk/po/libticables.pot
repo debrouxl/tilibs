@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-03 11:42+0200\n"
+"POT-Creation-Date: 2003-05-11 11:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -440,22 +440,22 @@ msgstr ""
 msgid "Exiting...\n"
 msgstr ""
 
-#: src/ioports.c:276
+#: src/ioports.c:281
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 
-#: src/ioports.c:301
+#: src/ioports.c:306
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr ""
 
-#: src/ioports.c:316
+#: src/ioports.c:321
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr ""
 
-#: src/ioports.c:393
+#: src/ioports.c:398
 #, c-format
 msgid "Libticables: serial port %s successfully reconfigured.\n"
 msgstr ""
