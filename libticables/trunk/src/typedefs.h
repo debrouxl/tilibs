@@ -22,7 +22,9 @@
 #define MAXCHARS 256  // Size max for strings
 
 #include <sys/types.h>
-#include <stdint.h>
+#ifndef __WIN32__
+# include <stdint.h>
+#endif
 
 #ifndef TILP_TYPES
 #define TILP_TYPES
@@ -32,14 +34,22 @@
 #ifndef _BYTE_DEFINED
 #define _BYTE_DEFINED
 # ifndef byte
-typedef uint8_t byte;      /* One byte */
+#  ifdef __WIN32__
+    typedef unsigned char  byte;      /* One byte */
+#  else
+    typedef uint8_t byte;
+#  endif
 # endif
 #endif // !_BYTE_DEFINED
 
 #ifndef _WORD_DEFINED
 #define _WORD_DEFINED
 # ifndef word
-typedef uint16_t word;      /* Two bytes */
+#  ifdef __WIN32__
+    typedef unsigned short word;      /* Two bytes */
+#  else
+	typedef uint16_t word;
+#  endif
 # endif
 #endif // !_WORD_DEFINED
 
@@ -54,6 +64,7 @@ typedef uint16_t word;      /* Two bytes */
 #else //if defined(__LINUX__)
 # ifndef longword
    typedef uint32_t longword;
+//typedef unsigned int longword;
 # endif
 #endif
 #endif //TILP_TYPES

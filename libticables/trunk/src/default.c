@@ -98,7 +98,7 @@ int dfl_supported()
   return SUPPORT_OFF;
 }
 
-int set_default_cable(LINK_CABLE *lc)
+int set_default_cable(TicableLinkCable *lc)
 {
   lc->init  = dfl_init;
   lc->open  = dfl_open;

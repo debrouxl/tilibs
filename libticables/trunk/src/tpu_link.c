@@ -141,7 +141,7 @@ int tpu_init(uint io_addr, char *dev)
 						NULL, OPEN_EXISTING, 0, 0);
 	if(!hDevice)
 	{
-		fprintf(stderr, "CreateFile\n");
+		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
 		return ERR_CREATE_FILE;
 	}
@@ -153,6 +153,9 @@ int tpu_init(uint io_addr, char *dev)
 int tpu_open()
 {
 	putb(3);
+
+	tdr.count = 0;
+	toSTART(tdr.start);
 	
 	return 0;
 }
@@ -160,56 +163,53 @@ int tpu_open()
 int tpu_put(byte data)
 {
   int bit;
-  clock_t clk;
+  TIME clk;
   int b;
 
+  tdr.count++;
   for(bit=0; bit<8; bit++)
     {
       if(data & 1)
 	{
 	  putb(1);
-	  clk=clock();
+	  toSTART(clk);
 	  do 
 	    { 
-	      b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-	      if(!b) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((getb() & 1));
 	  putb(3);
-	  clk=clock();
+	  toSTART(clk);
 	  do 
 	    { 
-	      b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-	      if(!b) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((getb() & 1)==0x00);
 	}
       else
 	{
 	  putb(2);
-	  clk=clock();
+	  toSTART(clk);
           do 
-		 {
-	      b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-	      if(!b) return ERR_SND_BIT_TIMEOUT;
+	    {
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while(getb() & 2);
 	  putb(3);
 	  // I commented it but this part is necessary in normal function
 	  /*
-	  clk=clock();
-          do 
+	    toSTART(clk);
+	    do 
 	    { 
-	      b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC; 
-	      if(!b) return ERR_SND_BIT_TIMEOUT;
+	    if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
-	  while((getb() & 2)==0x00);
+	    while((getb() & 2)==0x00);
 	  */
         }
       data>>=1;
     }
-
-	return 0;
+  
+  return 0;
 }
 
 int tpu_get(byte *d)
@@ -218,15 +218,15 @@ int tpu_get(byte *d)
   byte data=0;
   byte v;
   int b;
-  clock_t clk;
+  TIME clk;
 
+  tdr.count++;
   for(bit=0; bit<8; bit++)
     {
-      clk=clock();
+      toSTART(clk);
       while((v=getb() & 3) == 3)
 	{
-	  b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-	  if(!b) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
 	}
       if(v == 1)
 	{
@@ -252,27 +252,25 @@ int tpu_get(byte *d)
 
 int tpu_close()
 {
-	putb(3);
-	//putb(0);
-	//DISPLAY("Port 1: 0x%02x\n", getb());
-
-	return 0;
+  putb(3);
+  //putb(0);
+  //DISPLAY("Port 1: 0x%02x\n", getb());
+  
+  return 0;
 }
 
 int tpu_exit()
 {
-	return 0;
+  return 0;
 }
 
 int tpu_probe()
 {
-	return 0;
+  return 0;
 }
 
 int tpu_check(int *status)
 {
-
-
   return 0;
 }
 
@@ -289,7 +287,7 @@ unsigned char getb ()
 						&nBytes, NULL);
 	if(!b)
 	{
-		fprintf(stderr, "DeviceIoControl\n");
+		DISPLAY_ERROR("DeviceIoControl\n");
 		print_last_error();
 		//return ERR_USB_DEVICE_CMD;
 	}
@@ -313,7 +311,7 @@ void putb (unsigned char value)
 						&nBytes, NULL);
 	if(!b)
 	{
-		fprintf(stderr, "DeviceIoControl\n");
+		DISPLAY_ERROR("DeviceIoControl\n");
 		print_last_error();
 		//return ERR_USB_DEVICE_CMD;
 	}

@@ -108,7 +108,8 @@ int dev_init()
 
 int dev_open(void)
 {
-  /* Flush */
+  tdr.count = 0;
+  toSTART(tdr.start);
 
   return 0;
 }
@@ -117,6 +118,7 @@ int dev_put(byte data)
 {
   int err;
 
+  tdr.count++;
   LOG_DATA(data);
   err = write(dev_fd, (void *)(&data), 1);
   switch(err)
@@ -137,6 +139,7 @@ int dev_get(byte *data)
   static int n=0;
   TIME clk;
 
+  tdr.count++;
   /* If the dev_check function was previously called, retrieve the byte */
   if(cs.available)
     {
@@ -145,10 +148,10 @@ int dev_get(byte *data)
       return 0;
     }
 
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);

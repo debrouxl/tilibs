@@ -52,7 +52,7 @@
 #endif
 
 // Default verbosity
-#if defined(__LINUX__) || defined(__WIN32__) && defined(_DEBUG)
+#if defined(__LINUX__)
   static int verbosity = 1;
 #elif defined(__WIN32__) || defined(__MACOSX__)
   static int verbosity = 0;
@@ -104,7 +104,7 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 }
 
 /* 
-   This function is equivalent to 'fprintf(stderr, ...)' but 
+   This function is equivalent to 'DISPLAY_ERROR(...)' but 
    if the VERBOSE constant is defined.
 */
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
@@ -135,8 +135,8 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 #endif
 #ifdef VERBOSE
       va_start(ap, format);
-      fprintf(stderr, "libticables error: ");
-      if(flog) fprintf(flog, "libticables error: ");
+      fprintf(stderr, "Error: ");
+      if(flog) fprintf(flog, "Error: ");
       ret=vfprintf(stderr, format, ap);
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
@@ -155,11 +155,7 @@ TIEXPORT int TICALL ticable_DISPLAY_settings(int op)
   switch(op)
     {
     case DSP_OFF:
-#if defined(__WIN32__) && defined(_DEBUG)
-		verbosity = 1;
-#else
       verbosity = 0;
-#endif
       break;
     case DSP_ON:
       verbosity = 1;

@@ -390,7 +390,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hCom == INVALID_HANDLE_VALUE)
 	{
-		fprintf(stderr, "CreateFile\n");
+		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
 		return ERR_CREATE_FILE;
 	}
@@ -399,7 +399,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
 	fSuccess = SetupComm(*hCom, BUFFER_SIZE, BUFFER_SIZE);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetupComm\n");
+		DISPLAY_ERROR("SetupComm\n");
 		print_last_error();
 		return ERR_SETUP_COMM;
 	}
@@ -408,7 +408,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
 	fSuccess = GetCommState(*hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommState\n");
+		DISPLAY_ERROR("GetCommState\n");
 		print_last_error();
 		return ERR_GET_COMMSTATE;
 	}
@@ -436,7 +436,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
 	fSuccess = SetCommState(*hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommState\n");
+		DISPLAY_ERROR("SetCommState\n");
 		print_last_error();
 		return ERR_SET_COMMSTATE;
 	}
@@ -444,7 +444,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
     fSuccess=GetCommTimeouts(*hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommTimeouts\n");
+		DISPLAY_ERROR("GetCommTimeouts\n");
 		print_last_error();
 		return ERR_GET_COMMTIMEOUT;
 	}
@@ -458,7 +458,7 @@ int open_com_port(char *comPort, PHANDLE hCom)
     fSuccess=SetCommTimeouts(*hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommTimeouts\n");
+		DISPLAY_ERROR("SetCommTimeouts\n");
 		print_last_error();
 		return ERR_SET_COMMTIMEOUT;
 	}

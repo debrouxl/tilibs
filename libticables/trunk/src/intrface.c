@@ -58,8 +58,10 @@ char io_device[MAXCHARS]=""; // The character device (COMx, ttySx, ...)
 const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
 
-char *os;			     // Operating System type
-PortInfo pinfo;			     // Informations on I/O ports
+char *os;		     // Operating System type
+TicablePortInfo pinfo;	     // Informations on I/O ports
+TicableDataRate tdr;         // Data rate during transfers
+
 
 /****************/
 /* Entry points */
@@ -196,6 +198,12 @@ TIEXPORT void TICALL ticable_set_method(int m)
 TIEXPORT int TICALL ticable_get_method(void)
 {
   return method;
+}
+
+TIEXPORT int TICALL ticable_get_datarate(TicableDataRate **ptdr)
+{
+  *ptdr = &tdr;
+  return tdr.count;
 }
 
 static int convert_port_into_device(void);

@@ -126,6 +126,9 @@ int tig_open()
   termset.c_cc[VTIME] = 0; //time_out;
   tcsetattr(dev_fd, TCSANOW, &termset);
 
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -133,6 +136,7 @@ int tig_put(byte data)
 {
   int err;
 
+  tdr.count++;
   LOG_DATA(data);
   err=write(dev_fd, (void *)(&data), 1);
   switch(err)
@@ -155,6 +159,7 @@ int tig_get(byte *data)
   static int n=0;
   TIME clk;
 
+  tdr.count++;
   /* If the tig_check function was previously called, retrieve the byte */
   if(cs.available)
     {
@@ -164,10 +169,10 @@ int tig_get(byte *data)
     }
 
   tcdrain(dev_fd); //waits until all output written
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);
@@ -332,7 +337,7 @@ int tig_init()
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hCom == INVALID_HANDLE_VALUE)
 	{
-		fprintf(stderr, "CreateFile\n");
+		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
 		return ERR_CREATE_FILE;
 	}
@@ -341,7 +346,7 @@ int tig_init()
 	fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetupComm\n");
+		DISPLAY_ERROR("SetupComm\n");
 		print_last_error();
 		return ERR_SETUP_COMM;
 	}
@@ -350,7 +355,7 @@ int tig_init()
 	fSuccess = GetCommState(hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommState\n");
+		DISPLAY_ERROR("GetCommState\n");
 		print_last_error();
 		return ERR_GET_COMMSTATE;
 	}
@@ -378,7 +383,7 @@ int tig_init()
 	fSuccess = SetCommState(hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommState\n");
+		DISPLAY_ERROR("SetCommState\n");
 		print_last_error();
 		return ERR_SET_COMMSTATE;
 	}
@@ -386,7 +391,7 @@ int tig_init()
     fSuccess=GetCommTimeouts(hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommTimeouts\n");
+		DISPLAY_ERROR("GetCommTimeouts\n");
 		print_last_error();
 		return ERR_GET_COMMTIMEOUT;
 	}
@@ -400,7 +405,7 @@ int tig_init()
     fSuccess=SetCommTimeouts(hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommTimeouts\n");
+		DISPLAY_ERROR("SetCommTimeouts\n");
 		print_last_error();
 		return ERR_SET_COMMTIMEOUT;
 	}
@@ -417,10 +422,13 @@ int tig_open()
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "PurgeComm\n");
+		DISPLAY_ERROR("PurgeComm\n");
 		print_last_error();
 		return ERR_FLUSH;
 	}
+
+	tdr.count = 0;
+	toSTART(tdr.start);
 
 	return 0;
 }
@@ -430,12 +438,13 @@ int tig_put(byte data)
 	DWORD i;
 	BOOL fSuccess;
 
+	tdr.count++;
 	LOG_DATA(data);
 	// Write the data
 	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "WriteFile\n");
+		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
 		return ERR_SND_BYT;
 	}
@@ -453,6 +462,7 @@ int tig_get(byte *data)
 	BOOL fSuccess;
 	TIME clk;
 
+	tdr.count++;
 	/* If the tig_check function was previously called, retrieve the byte */
 	if(cs.available)
     {
@@ -461,10 +471,10 @@ int tig_get(byte *data)
       return 0;
     }
 
-	tSTART(clk);
+	toSTART(clk);
 	do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
     }
 	while(i != 1);
@@ -658,7 +668,7 @@ int tig_init()
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hCom == INVALID_HANDLE_VALUE)
 	{
-		fprintf(stderr, "CreateFile\n");
+		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
 		return ERR_CREATE_FILE;
 	}
@@ -667,7 +677,7 @@ int tig_init()
 	fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetupComm\n");
+		DISPLAY_ERROR("SetupComm\n");
 		print_last_error();
 		return ERR_SETUP_COMM;
 	}
@@ -676,7 +686,7 @@ int tig_init()
 	fSuccess = GetCommState(hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommState\n");
+		DISPLAY_ERROR("GetCommState\n");
 		print_last_error();
 		return ERR_GET_COMMSTATE;
 	}
@@ -703,7 +713,7 @@ int tig_init()
 	fSuccess = SetCommState(hCom, &dcb);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommState\n");
+		DISPLAY_ERROR("SetCommState\n");
 		print_last_error();
 		return ERR_SET_COMMSTATE;
 	}
@@ -711,7 +721,7 @@ int tig_init()
     fSuccess=GetCommTimeouts(hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "GetCommTimeouts\n");
+		DISPLAY_ERROR("GetCommTimeouts\n");
 		print_last_error();
 		return ERR_GET_COMMTIMEOUT;
 	}
@@ -725,7 +735,7 @@ int tig_init()
     fSuccess=SetCommTimeouts(hCom,&cto);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "SetCommTimeouts\n");
+		DISPLAY_ERROR("SetCommTimeouts\n");
 		print_last_error();
 		return ERR_SET_COMMTIMEOUT;
 	}

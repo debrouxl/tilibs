@@ -84,7 +84,7 @@ int tie_init()
 
     if( (io_address < 1) || (io_address > 2))
     {
-      fprintf(stderr, "Invalid io_address parameter passed to libticables.\n");
+      DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
       io_address = 2;
     }
 	p = io_address - 1;
@@ -102,7 +102,7 @@ int tie_init()
   if((rd[p] = open(fifo_names[2*(p)+0], 
 		     O_RDONLY | O_NONBLOCK)) == -1)
     {
-      fprintf(stderr, "error: %s\n", strerror(errno));
+      DISPLAY_ERROR("error: %s\n", strerror(errno));
       return ERR_OPEN_PIPE;
     }
   
@@ -135,6 +135,9 @@ int tie_open()
     }
   while(n > 0);
 
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -144,6 +147,7 @@ int tie_put(byte data)
   TIME clk;
   struct stat s;
 
+  tdr.count++;
   /* Check if the other pipe is used */
   /*
   if(ref_cnt < 2)
@@ -152,10 +156,10 @@ int tie_put(byte data)
 
   LOG_DATA(data);
   /* Transfer rate modulation */
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
       fstat(wr[p], &s);
       if(s.st_size > HIGH)
 	n = 0;
@@ -165,10 +169,10 @@ int tie_put(byte data)
   while(n <= 0);
 
   /* Write the data in a defined delay */
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = write(wr[p], (void *)(&data), 1);
     }
   while(n <= 0);
@@ -181,6 +185,7 @@ int tie_get(byte *data)
   static int n=0;
   TIME clk;
 
+  tdr.count++;
   if(cs.available)
     {
       *data = cs.data;
@@ -189,10 +194,10 @@ int tie_get(byte *data)
     }
 
   // Read the byte in a defined delay
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = read(rd[p], (void *)data, 1);
     }
   while(n <= 0);
@@ -313,7 +318,7 @@ static int ref_cnt = 0;		// Counter of library instances
 typedef struct
 {
     BYTE buf[BUFFER_SIZE];
-    int tSTART;
+    int toSTART;
     int end;
 } LinkBuffer;
 
@@ -371,8 +376,11 @@ int tie_init(void)
 
 int tie_open()
 {
-	pSendBuf->tSTART = pSendBuf->end = 0;
-	pRecvBuf->tSTART = pRecvBuf->end = 0;
+	pSendBuf->toSTART = pSendBuf->end = 0;
+	pRecvBuf->toSTART = pRecvBuf->end = 0;
+
+	tdr.count = 0;
+	toSTART(tdr.start);
 
 	return 0;
 }
@@ -384,13 +392,14 @@ int tie_put(byte data)
 	//if(!hMap)
 	//	return ERR_OPEN_FILE_MAP;
 
+	tdr.count++;
 	LOG_DATA(data);
-	tSTART(clk);
+	toSTART(clk);
 	  do 
 	  { 
-		  if(tELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+		  if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
 	  }
-	while(((pSendBuf->end + 1) & 255) == pSendBuf->tSTART);
+	while(((pSendBuf->end + 1) & 255) == pSendBuf->toSTART);
 
     pSendBuf->buf[pSendBuf->end] = data;		// put data in buffer
     pSendBuf->end = (pSendBuf->end+1) & 255;	// update circular buffer
@@ -405,19 +414,20 @@ int tie_get(byte *data)
 	//if(!hMap)
 	//	return ERR_OPEN_FILE_MAP;
 
-	//DISPLAY("s: %i, e: %i\n", pSendBuf->tSTART, pSendBuf->end);
+	//DISPLAY("s: %i, e: %i\n", pSendBuf->toSTART, pSendBuf->end);
 
+	tdr.count++;
 	/* Wait that the buffer has been filled */
-	tSTART(clk);
+	toSTART(clk);
 	do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
     }
-	while(pRecvBuf->tSTART == pRecvBuf->end);
+	while(pRecvBuf->toSTART == pRecvBuf->end);
 	
 	/* And retrieve the data from the circular buffer */
-	*data = pRecvBuf->buf[pRecvBuf->tSTART];
-    pRecvBuf->tSTART = (pRecvBuf->tSTART+1) & 255;
+	*data = pRecvBuf->buf[pRecvBuf->toSTART];
+    pRecvBuf->toSTART = (pRecvBuf->toSTART+1) & 255;
 	//DISPLAY("get: 0x%02x\n", *data);
     LOG_DATA(*data);
 
@@ -453,7 +463,7 @@ int tie_probe()
 int tie_check(int *status)
 {
 	/* Check if positions are the same */
-	if(pRecvBuf->tSTART == pRecvBuf->end)
+	if(pRecvBuf->toSTART == pRecvBuf->end)
 		*status = STATUS_NONE;
 	else
 		*status = STATUS_RX;

@@ -20,26 +20,29 @@
 #define __CABLE_EXTERN__
 
 #include "typedefs.h"
+#include "cabl_def.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-extern int time_out;
-extern int delay;
-extern int baud_rate;
-extern int hfc;
-extern int port;
-extern int resources;
-extern int method;
-
-extern uint io_address;
-extern char io_device[MAXCHARS];
-
-extern char *os;
-extern PortInfo pi;
-
-extern const char *err_msg;
+  
+  extern int time_out;
+  extern int delay;
+  extern int baud_rate;
+  extern int hfc;
+  extern int port;
+  extern int resources;
+  extern int method;
+  
+  extern uint io_address;
+  extern char io_device[MAXCHARS];
+  
+  extern char *os;
+  extern TicablePortInfo pi;
+  
+  extern const char *err_msg;
+  
+  extern TicableDataRate tdr;
 
 #ifdef __cplusplus
 }

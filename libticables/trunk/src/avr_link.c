@@ -135,6 +135,9 @@ int avr_open()
   termset.c_cc[VTIME] = 0; //time_out;
   tcsetattr(dev_fd, TCSANOW, &termset);
 
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -142,6 +145,7 @@ int avr_put(byte data)
 {
   int err;
 
+  tdr.count++;
   LOG_DATA(data);
   err=write(dev_fd, (void *)(&data), 1);
   switch(err)
@@ -164,6 +168,7 @@ int avr_get(byte *data)
   int n=0;
   TIME clk;
 
+  tdr.count++;
   /* If the avr_check function was previously called, retrieve the byte */
   if(cs.available)
     {
@@ -173,10 +178,10 @@ int avr_get(byte *data)
     }
 
   tcdrain(dev_fd); //waits until all output written
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);
@@ -303,7 +308,7 @@ int avr_init()
         OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
 	if(hCom == INVALID_HANDLE_VALUE)
 	{
-		fprintf(stderr, "CreateFile\n");
+		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
 		return ERR_CREATE_FILE;
 	}
@@ -363,11 +368,14 @@ int avr_open()
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "PurgeComm\n");
+		DISPLAY_ERROR("PurgeComm\n");
 		print_last_error();
 		return ERR_FLUSH;
 	}
 	byte_count = 0;
+
+	tdr.count = 0;
+	toSTART(tdr.start);
 
 	return 0;
 }
@@ -377,12 +385,13 @@ int avr_put(byte data)
 	DWORD i;
 	BOOL fSuccess;
 
+	tdr.count++;
 	LOG_DATA(data);
 	// Write the data
 	fSuccess=WriteFile(hCom, &data, 1, &i, NULL);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "WriteFile\n");
+		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
 		return ERR_SND_BYT;
 	}
@@ -400,6 +409,7 @@ int avr_get(byte *data)
 	BOOL fSuccess;
 	TIME clk;
 
+	tdr.count++;
 	/* If the avr_check function was previously called, retrieve the byte */
 	if(cs.available)
     {
@@ -408,10 +418,10 @@ int avr_get(byte *data)
       return 0;
     }
 
-	tSTART(clk);
+	toSTART(clk);
 	do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
     }
 	while(i != 1);

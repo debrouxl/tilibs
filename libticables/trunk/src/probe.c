@@ -210,7 +210,7 @@ int DetectPortsLinux(PortInfo *pi)
 	      f = fopen(path, "rt");
 	      if(f == NULL)
 		{
-		  fprintf(stderr, _("Unable to open this entry: <%s>\n"),
+		  DISPLAY_ERROR(_("Unable to open this entry: <%s>\n"),
 			  path);
 		}
 	      else
@@ -224,7 +224,7 @@ int DetectPortsLinux(PortInfo *pi)
 	    }
 	  else 
 	    {
-	      fprintf(stderr, _("Invalid parport entry: <%s>.\n"), 
+	      DISPLAY_ERROR(_("Invalid parport entry: <%s>.\n"), 
 				file->d_name);
 	    }
 	}
@@ -241,7 +241,7 @@ int DetectPortsLinux(PortInfo *pi)
   fd=access("/proc/tty/driver/serial", F_OK);
   if(fd<0)
     {
-      fprintf(stderr, _("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\n"));
+      DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\n"));
       DISPLAY(_("Done.\n"));
       return -1;
     }
@@ -249,7 +249,7 @@ int DetectPortsLinux(PortInfo *pi)
   f=fopen("/proc/tty/driver/serial", "rt");
   if(f == NULL)
     {
-      fprintf(stderr, _("Unable to open this entry: <%s>\n"),
+      DISPLAY_ERROR(_("Unable to open this entry: <%s>\n"),
 	      "/proc/tty/driver/serial");
       return -1;
     }

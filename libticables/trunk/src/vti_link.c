@@ -84,7 +84,7 @@
 struct _vti_buf
 {
   byte buf[BUF_SIZE];
-  int tSTART;
+  int toSTART;
   int end;
 };
 typedef struct _vti_buf vti_buf;
@@ -109,7 +109,7 @@ int vti_init()
 
   if( (io_address < 1) || (io_address > 2))
     {
-      fprintf(stderr, "Invalid io_address parameter passed to libticables.\n");
+      DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
       io_address = 2;
     }
   p = io_address - 1;
@@ -119,7 +119,7 @@ int vti_init()
     {
       if((ipc_key[i] = ftok("/tmp", i)) == -1)
 	{
-	  fprintf(stderr, "ftok\n");
+	  DISPLAY_ERROR("ftok\n");
 	  return ERR__IPC_KEY;
 	}
       //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
@@ -131,7 +131,7 @@ int vti_init()
       if((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf), 
 			    IPC_CREAT | 0666)) == -1)
 	{
-	  fprintf(stderr, "ftok\n");    
+	  DISPLAY_ERROR("ftok\n");    
 	  return ERR__SHM_GET;
 	}
       //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
@@ -142,7 +142,7 @@ int vti_init()
     {
       if((shm[i] = shmat(shmid[i], NULL, 0)) == NULL)
 	{
-	  fprintf(stderr, "shmat\n");
+	  DISPLAY_ERROR("shmat\n");
 	  return ERR__SHM_ATT;
 	}
     }
@@ -167,9 +167,13 @@ int vti_open()
   /* Init buffers */
   for(i=0; i<2; i++)
     {
-      shm[i]->tSTART = shm[i]->end = 0;
+      shm[i]->toSTART = shm[i]->end = 0;
     }
 #endif
+
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -178,14 +182,14 @@ int vti_put(byte data)
 #ifdef USE_SHM
   TIME clk;
 
+  tdr.count++;
   LOG_DATA(data);
-  //fprintf(stderr, "put: p=%i, tSTART=%i, end=%i\n", p, send_buf[p]->tSTART, send_buf[p]->end);
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
     }
-  while(((send_buf[p]->end + 1) & 255) == send_buf[p]->tSTART);
+  while(((send_buf[p]->end + 1) & 255) == send_buf[p]->toSTART);
   
   send_buf[p]->buf[send_buf[p]->end] = data;       // put data in buffer
   send_buf[p]->end = (send_buf[p]->end+1) & 255;   // update circular buffer
@@ -198,18 +202,18 @@ int vti_get(byte *data)
 #ifdef USE_SHM
   TIME clk;
 
-  //fprintf(stderr, "get: p=%i, tSTART=%i, end=%i\n", p, recv_buf[p]->tSTART, recv_buf[p]->end);
+  tdr.count++;
   /* Wait that the buffer has been filled */
-  tSTART(clk);
+  toSTART(clk);
   do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
     }
-  while(recv_buf[p]->tSTART == recv_buf[p]->end);
+  while(recv_buf[p]->toSTART == recv_buf[p]->end);
   
   /* And retrieve the data from the circular buffer */
-  *data = recv_buf[p]->buf[recv_buf[p]->tSTART];
-  recv_buf[p]->tSTART = (recv_buf[p]->tSTART+1) & 255;
+  *data = recv_buf[p]->buf[recv_buf[p]->toSTART];
+  recv_buf[p]->toSTART = (recv_buf[p]->toSTART+1) & 255;
   LOG_DATA(*data);
 #endif
   return 0;
@@ -237,13 +241,13 @@ int vti_exit()
     {
       if(shmdt(shm[i]) == -1)
 	{
-	  fprintf(stderr, "shmdt\n");
+	  DISPLAY_ERROR("shmdt\n");
 	  return ERR__SHM_DTCH;
 	}
       /* and destroy it */
       if(shmctl(shmid[i], IPC_RMID, NULL) == -1)
 	{
-	  fprintf(stderr, "shmctl\n");
+	  DISPLAY_ERROR("shmctl\n");
 	  return ERR__SHM_RMID;
 	}
     }
@@ -257,7 +261,7 @@ int vti_check(int *status)
   *status = STATUS_NONE;
 
   /* Check if positions are the same */
-  if(recv_buf[p]->tSTART == recv_buf[p]->end)
+  if(recv_buf[p]->toSTART == recv_buf[p]->end)
     {
       *status = STATUS_NONE;
       return 0;
@@ -296,6 +300,7 @@ int vti_supported()
 #include "cabl_err.h"
 #include "export.h"
 #include "logging.h"
+#include "cabl_ext.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -312,7 +317,7 @@ extern int delay;    // Time between 2 bits (home-made cables only)
 typedef struct
 {
     BYTE buf[256];
-    int tSTART;
+    int toSTART;
     int end;
 } LinkBuffer;
 
@@ -352,9 +357,9 @@ int vti_init(uint io_addr, char *dev)
 	Handle = GetModuleHandle("libticables.dll");
 	if(!Handle)
 	{
-		fprintf(stderr, "Unable to get an handle on the libTIcables.\n");
-		fprintf(stderr, "Did you rename the library ?!\n");
-		fprintf(stderr, "Fatal error. Program terminated.\n");
+		DISPLAY_ERROR("Unable to get an handle on the libTIcables.\n");
+		DISPLAY_ERROR("Did you rename the library ?!\n");
+		DISPLAY_ERROR("Fatal error. Program terminated.\n");
 		exit(-1);
 	}
 
@@ -373,7 +378,7 @@ int vti_init(uint io_addr, char *dev)
 	hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
 	if(hMap) 
 	{
-		fprintf(stderr, "Opened %s\n", name);
+		DISPLAY_ERROR("Opened %s\n", name);
 		vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
 			0, 0, sizeof(LinkBuffer));
 	}
@@ -396,8 +401,11 @@ int vti_init(uint io_addr, char *dev)
 
 int vti_open()
 {
-	//vSendBuf->tSTART = vSendBuf->end = 0;
-	//vRecvBuf->tSTART = vRecvBuf->end = 0;
+  //vSendBuf->toSTART = vSendBuf->end = 0;
+  //vRecvBuf->toSTART = vRecvBuf->end = 0;
+
+  tdr.count = 0;
+  toSTART(tdr.start);
 
   return 0;
 }
@@ -409,13 +417,14 @@ int vti_put(byte data)
 	if(!hMap)
 		return ERR_OPEN_FILE_MAP;
 
+	tdr.count++;
 	LOG_DATA(data);
-	tSTART(clk);
+	toSTART(clk);
 	  do 
 	  { 
-		  if(tELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+		  if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
 	  }
-	while(((vSendBuf->end + 1) & 255) == vSendBuf->tSTART);
+	while(((vSendBuf->end + 1) & 255) == vSendBuf->toSTART);
 
     vSendBuf->buf[vSendBuf->end] = data;		// put data in buffer
     vSendBuf->end = (vSendBuf->end+1) & 255;	// update circular buffer
@@ -430,19 +439,20 @@ int vti_get(byte *data)
 	if(!hMap)
 		return ERR_OPEN_FILE_MAP;
 
-	//DISPLAY("s: %i, e: %i\n", vSendBuf->tSTART, vSendBuf->end);
+	tdr.count++;
+	//DISPLAY("s: %i, e: %i\n", vSendBuf->toSTART, vSendBuf->end);
 
 	/* Wait that the buffer has been filled */
-	tSTART(clk);
+	toSTART(clk);
 	do
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
     }
-	while(vRecvBuf->tSTART == vRecvBuf->end);
+	while(vRecvBuf->toSTART == vRecvBuf->end);
 	
 	/* And retrieve the data from the circular buffer */
-	*data = vRecvBuf->buf[vRecvBuf->tSTART];
-    vRecvBuf->tSTART = (vRecvBuf->tSTART+1) & 255;
+	*data = vRecvBuf->buf[vRecvBuf->toSTART];
+    vRecvBuf->toSTART = (vRecvBuf->toSTART+1) & 255;
 	//DISPLAY("get: 0x%02x\n", *data);
     LOG_DATA(*data);
 
@@ -486,7 +496,7 @@ int vti_check(int *status)
 		return ERR_OPEN_FILE_MAP;
 
 	/* Check if positions are the same */
-	*status = !(vRecvBuf->tSTART == vRecvBuf->end);
+	*status = !(vRecvBuf->toSTART == vRecvBuf->end);
 
   return 0;
 }

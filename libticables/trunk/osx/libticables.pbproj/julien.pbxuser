@@ -16,9 +16,9 @@
 					Frame = "{{0, 23}, {974, 572}}";
 					Split0 = {
 						ActiveTab = 2;
-						Frame = "{{192, 0}, {782, 572}}";
+						Frame = "{{220, 0}, {754, 572}}";
 						Split0 = {
-							Frame = "{{0, 115}, {782, 457}}";
+							Frame = "{{0, 139}, {754, 433}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -54,9 +54,9 @@
 							};
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {784, 38}}";
-							BuildTranscriptFrame = "{{0, 47}, {784, 46}}";
-							Frame = "{{0, 0}, {782, 91}}";
+							BuildMessageFrame = "{{0, 0}, {756, 79}}";
+							BuildTranscriptFrame = "{{0, 88}, {756, 29}}";
+							Frame = "{{0, 0}, {754, 115}}";
 						};
 						Tab3 = {
 							Frame = "{{0, 0}, {612, 295}}";
@@ -65,7 +65,7 @@
 					};
 					SplitCount = 1;
 					Tab0 = {
-						Frame = "{{0, 0}, {168, 572}}";
+						Frame = "{{0, 0}, {196, 572}}";
 					};
 					Tab1 = {
 						ClassesFrame = "{{0, 0}, {202, 56}}";
@@ -122,6 +122,11 @@
 	18D1B3DC0170FD845041E0CA = {
 		uiCtxt = {
 			sepNavWindowFrame = "{{38, 218}, {750, 502}}";
+		};
+	};
+	18D1B3DE0170FD845041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{15, 239}, {750, 502}}";
 		};
 	};
 }

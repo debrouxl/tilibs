@@ -53,7 +53,7 @@
 
 /* Taken from Gimp Win32 */
 /*
-#define INIT_LOCALE( domain )	G_STMT_tSTART{	\
+#define INIT_LOCALE( domain )	G_STMT_toSTART{	\
 	gtk_set_locale ();			\
 	setlocale (LC_NUMERIC, "C");		\
 	bindtextdomain (domain, LOCALEDIR);	\

@@ -24,7 +24,7 @@
 #include "export.h"
 #include "cabl_def.h"
 
-LINK_CABLE *tcl;
+TicableLinkCable *tcl;
 
 /* 
    This function put in err_msg the error message corresponding to the 

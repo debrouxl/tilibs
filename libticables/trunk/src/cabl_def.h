@@ -23,6 +23,7 @@
 #include "typedefs.h"
 #include "macros.h"
 #include "compat.h"
+#include "timeout.h"
 
 /********************/
 /* Type definitions */
@@ -46,8 +47,8 @@ struct ticable_link
   int (*get_red_wire)   ();
   int (*get_white_wire) ();
 };
-typedef struct ticable_link LINK_CABLE;
-typedef struct ticable_link LinkCable;
+typedef struct ticable_link LinkCable;  // obsolete
+typedef struct ticable_link TicableLinkCable;
 
 struct ticable_param
 {
@@ -64,8 +65,8 @@ struct ticable_param
   int port;
   int method;
 };
-typedef struct ticable_param LINK_PARAM;
-typedef struct ticable_param LinkParam;
+typedef struct ticable_param LinkParam;  // obsolete
+typedef struct ticable_param TicableLinkParam;
 
 // for probe.c
 #define MAX_LPT_PORTS	3	// up to 3
@@ -82,8 +83,16 @@ struct port_info_
   int com_mode[MAX_COM_PORTS+1];
   char com_name[MAX_COM_PORTS+1][17];
 };
-typedef struct port_info_ PortInfo;
+typedef struct port_info_ PortInfo; // obsolete
+typedef struct port_info_ TicablePortInfo;
 
+struct data_rate
+{
+  int count;         // Number of bytes exchanged
+  TIME start;        // Time when transfer has begun
+  TIME current;      // Current time (free for use)
+};
+typedef struct data_rate TicableDataRate;
 
 /*********************/
 /* Macro definitions */

@@ -46,6 +46,8 @@
 * 20020213 : v3.1.2-osx0.2.0
 	* Merge up to libticables 3.1.2.
 	* USB fixup, link seem to be stable now.
+* 20020214 : v3.1.4
+	* Final merge with Romain, first step.
 	
 
 

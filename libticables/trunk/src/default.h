@@ -37,6 +37,6 @@ int dfl_get_white_wire();
 
 int dfl_supported();
 
-int set_default_cable(LINK_CABLE *lc);
+int set_default_cable(TicableLinkCable *lc);
 
 #endif

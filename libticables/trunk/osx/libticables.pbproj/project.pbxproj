@@ -236,11 +236,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.2-osx0.2.0</string>
+	<string>3.1.4</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.1.2-osx0.2.0</string>
+	<string>3.1.4</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

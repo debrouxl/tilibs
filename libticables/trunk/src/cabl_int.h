@@ -46,6 +46,8 @@ extern "C" {
   int  TICALL ticable_get_default_param(LinkParam *lp);
   int  TICALL ticable_get_support(int cable_type);
   int  TICALL ticable_set_cable(int type, LinkCable *lc);
+
+  int  TICALL ticable_get_datarate(TicableDataRate **ptdr);
   
   /*********************/
   /* Set/Get functions */

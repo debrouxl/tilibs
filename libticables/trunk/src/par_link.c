@@ -59,6 +59,9 @@ int par_open()
     return 0;
   else
     return ERR_ROOT;
+
+  tdr.count = 0;
+  toSTART(tdr.start);
 }
 
 int par_put(byte data)
@@ -68,40 +71,41 @@ int par_put(byte data)
   int i;
   TIME clk;
 
+  tdr.count++;
   LOG_DATA(data);
   for(bit=0; bit<8; bit++)
     {
       if(data & 1)
 	{
 	  wr_io(lpt_out, 2);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do
 	    {
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x10));
 	  wr_io(lpt_out, 3);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do
 	    {
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x10)==0x00);
 	}
       else
 	{
 	  wr_io(lpt_out, 1);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do
 	    {
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while(rd_io(lpt_in) & 0x20);
 	  wr_io(lpt_out, 3);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do
 	    {
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x20)==0x00);
 	}
@@ -121,12 +125,13 @@ int par_get(byte *d)
   int i;
   TIME clk;
 
+  tdr.count++;
   for(bit=0; bit<8; bit++)
     {
-      tSTART(clk);
+      toSTART(clk);
       while((v=rd_io(lpt_in) & 0x30)==0x30)
 	{
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
 	}
       if(v==0x10)
 	{

@@ -31,24 +31,26 @@
 #ifndef __TIMEOUT_H__
 #define __TIMEOUT_H__
 
-#if defined(__LINUX__)
+/*
+  Platform independant time measurement & timeout management
+  - toSTART: init variable
+  - toELAPSED: return TRUE if max tenth of seconds have elapsed
+  - toCURRENT: return the number of elapsed seconds
+*/
+
+#if defined(__WIN32__)
+# include <windows.h>
+  typedef DWORD                         TIME;
+# define  toSTART(ref)          { (ref)=GetTickCount(); }
+# define  toELAPSED(ref, max)   ( (int)(GetTickCount()-(ref)) > (100*max) )
+# define  toCURRENT(ref)        ( 1000 * (float)(GetTickCount()-(ref)) )
+
+#elif defined(__LINUX__) || defined(__MACOSX__)
 # include <time.h>
   typedef clock_t			TIME;
-# define  tSTART(ref)		{ (ref)=clock(); }
-# define  tELAPSED(ref, max)	((clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
-
-#elif defined(__WIN32__)
-# include <windows.h>
-  typedef DWORD				TIME;
-# define  tSTART(ref)		{ (ref)=GetTickCount(); }
-# define  tELAPSED(ref, max)	( (int)(GetTickCount()-(ref)) > (100*max) )
-
-#else
-# include <time.h>
-typedef clock_t                       TIME;
-# define  tSTART(ref)           { (ref)=clock(); }
-# define  tELAPSED(ref, max)    ((clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
-
+# define  toSTART(ref)		{ (ref)=clock(); }
+# define  toELAPSED(ref, max)	((clock()-(ref)) > (max/10.0*CLOCKS_PER_SEC))
+# define  toCURRENT(ref)        ( (float)(clock()-(ref))/CLOCKS_PER_SEC )
 #endif
 
 #endif

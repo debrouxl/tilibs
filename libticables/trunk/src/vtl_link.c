@@ -45,12 +45,14 @@
 #include <errno.h>
 #include "str.h"
 
+#include "timeout.h"
 #include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "cabl_ext.h"
 #include "logging.h"
+#include "verbose.h"
 
 static int p;
 static int ref_cnt = 0; // Counter of library instances
@@ -87,7 +89,7 @@ int vtl_init()
   */
   
   p = io_address;
-  //fprintf(stderr, "io_address: %i\n", io_address);
+  //DISPLAY_ERROR("io_address: %i\n", io_address);
 
   /* Check if the pipes already exist else create them */
   if(access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK))
@@ -101,7 +103,7 @@ int vtl_init()
   if((rd[p-1] = open(fifo_names[2*(p-1)+0], 
 		     O_RDONLY | O_NONBLOCK)) == -1)
     {
-      fprintf(stderr, "error: %s\n", strerror(errno));
+      DISPLAY_ERROR("error: %s\n", strerror(errno));
       return ERR_OPEN_PIPE;
     }
   
@@ -133,14 +135,16 @@ int vtl_open()
     }
   while(n > 0);
 
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
 int vtl_put(byte data)
 {
   int n = 0;
-  clock_t clk;
-  int b;
+  TIME clk;
   struct stat s;
 
   /* Check if the other pipe is used */
@@ -149,12 +153,12 @@ int vtl_put(byte data)
     return ERR_OPP_NOT_AVAIL;
   */
 
+  tdr.count++;
   /* Transfer rate modulation */
-  clk=clock();
+  toSTART(clk);
   do
     {
-      b = (clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-      if(!b) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
       fstat(wr[p-1], &s);
       if(s.st_size > HIGH)
 	n = 0;
@@ -164,11 +168,10 @@ int vtl_put(byte data)
   while(n <= 0);
 
   /* Write the data in a defined delay */
-  clk=clock();
+  toSTART(clk);
   do
     {
-      b = (clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-      if(!b) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
       n = write(wr[p-1], (void *)(&data), 1);
     }
   while(n <= 0);
@@ -179,9 +182,9 @@ int vtl_put(byte data)
 int vtl_get(byte *data)
 {
   static int n=0;
-  clock_t clk;
-  int b;
+  TIME clk;
 
+  tdr.count++;
   if(cs.available)
     {
       *data = cs.data;
@@ -190,11 +193,10 @@ int vtl_get(byte *data)
     }
 
   // Read the byte in a defined delay
-  clk=clock();
+  toSTART(clk);
   do
     {
-      b = (clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-		if(!b) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
       n = read(rd[p-1], (void *)data, 1);
     }
   while(n <= 0);
@@ -289,6 +291,7 @@ int vtl_supported()
 #include "cabl_err.h"
 #include "export.h"
 #include "plerror.h"
+#include "cabl_ext.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -319,7 +322,7 @@ int vtl_init(uint io_addr, char *dev)
 			0 * time_out, NULL);	// 100 * time_out
 	if(hPipe == INVALID_HANDLE_VALUE)
 	{
-		fprintf(stderr, "CreateNamedPipe\n");
+		DISPLAY_ERROR("CreateNamedPipe\n");
 		print_last_error();
 		return ERR_OPEN_PIPE;
 	}
@@ -340,6 +343,9 @@ int vtl_open()
     }
 	while(i > 0);
 
+	tdr.count = 0;
+	toSTART(tdr.start);
+
   return 0;
 }
 
@@ -348,11 +354,12 @@ int vtl_put(byte data)
 	DWORD i;
 	BOOL fSuccess;
 
+	tdr.count++;
 	// Write the data
 	fSuccess=WriteFile(hPipe, &data, 1, &i, NULL);
 	if(!fSuccess)
 	{
-		fprintf(stderr, "WriteFile\n");
+		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
 		return ERR_SND_BYT;
 	}
@@ -368,9 +375,10 @@ int vtl_get(byte *data)
 {
 	DWORD i;
 	BOOL fSuccess;
-	clock_t clk;
+	TIME clk;
 	int b;
 
+	tdr.count++;
 	/* If the tig_check function was previously called, retrieve the byte */
 	if(cs.available)
     {
@@ -379,11 +387,10 @@ int vtl_get(byte *data)
       return 0;
     }
 
-	clk=clock();
+	toSTART(clk);
 	do
     {
-      b=(clock()-clk) < time_out/10.0*CLOCKS_PER_SEC;
-      if(!b) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  fSuccess = ReadFile(hPipe,data,1,&i,NULL);
     }
 	while(i != 1);

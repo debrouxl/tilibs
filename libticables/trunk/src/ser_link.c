@@ -87,6 +87,9 @@ int ser_open()
     return 0;
   else
     return ERR_ROOT;
+
+  tdr.count = 0;
+  toSTART(tdr.start);
 }
 
 int ser_put(byte data)
@@ -96,40 +99,41 @@ int ser_put(byte data)
   int i;
   TIME clk;
 
+  tdr.count++;
   LOG_DATA(data);
   for(bit=0; bit<8; bit++)
     {
       if(data & 1)
 	{
 	  wr_io(com_out, 2);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do 
 	    { 
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x10));
 	  wr_io(com_out, 3);
-	  tSTART(clk);
+	  toSTART(clk);
 	  do 
 	    { 
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x10)==0x00);
 	}
       else
 	{
 	  wr_io(com_out, 1);
-	  tSTART(clk);
+	  toSTART(clk);
           do 
 	    { 
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while(rd_io(com_in) & 0x20);
 	  wr_io(com_out, 3);
-	  tSTART(clk);
+	  toSTART(clk);
           do 
 	    { 
-	      if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x20)==0x00);
         }
@@ -144,19 +148,19 @@ int ser_put(byte data)
 int ser_get(byte *ch)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
-	
   int bit;
   byte data=0;
   byte v;
   int i;
   TIME clk;
 
+  tdr.count++;
   for(bit=0; bit<8; bit++)
     {
-      tSTART(clk);
+      toSTART(clk);
       while((v=rd_io(com_in) & 0x30)==0x30)
 	{
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
 	}
       if(v==0x10)
 	{
@@ -340,7 +344,7 @@ int ser_put2(byte data)
   int i;
   TIME clk;
 
-  tSTART(clk);
+  toSTART(clk);
   for (i=0;i<8;i++)
     {
       if (data&1)
@@ -349,12 +353,12 @@ int ser_put2(byte data)
 	wr_io(com_out, 1);
       while(rd_io(com_in)!=0)
         {
-	  if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
         }
       wr_io(com_out, 3);
       while(rd_io(com_in)!=3)
         {
-	  if(tELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
         }
       data>>=1;
     }
@@ -369,12 +373,12 @@ int ser_get2(byte *ch)
   int i, j;
   TIME clk;
 
-  tSTART(clk);
+  toSTART(clk);
   for (i=0,bit=1,*ch=0;i<8;i++)
     {
       while ((j=rd_io(com_in))==3)
         {
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
         }
       if (j==1)
         {
@@ -389,7 +393,7 @@ int ser_get2(byte *ch)
         }
       while ((rd_io(com_in)&j)==0)
         {
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
         }
       wr_io(com_out, 3);
       bit<<=1;

@@ -142,6 +142,8 @@ int ugl_open(void)
       }
   }
 #endif
+  tdr.count = 0;
+  toSTART(tdr.start);
 
   return 0;
 }
@@ -150,6 +152,7 @@ int ugl_put(byte data)
 {
   int err;
 
+  tdr.count++;
   LOG_DATA(data);
 #ifndef BUFFERED_W
   /* Byte per byte */
@@ -193,6 +196,7 @@ int ugl_get(byte *data)
   static byte *rBufPtr;
   int ret;
 
+  tdr.count++;
 #ifdef BUFFERED_W
   /* Flush write buffer */
   if(nBytesWrite > 0)
@@ -216,11 +220,11 @@ int ugl_get(byte *data)
      store them in a buffer for subsequent accesses */
   if(nBytesRead == 0)
     {
-      tSTART(clk);
+      toSTART(clk);
       do 
 	{ 
 	  ret = read(dev_fd, (void *)rBuf, MAX_PACKET_SIZE);
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
 	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
 	} 
@@ -443,6 +447,9 @@ int ugl_open2()
   nBytesRead = 0;
   nBytesWrite = 0;
 
+  tdr.count = 0;
+  toSTART(tdr.start);
+
   return 0;
 }
 
@@ -471,6 +478,7 @@ int ugl_put2(byte data)
 {
   int ret = 0;
 
+  tdr.count++;
   LOG_DATA(data);
 #ifndef BUFFERED_W
   /* Byte per byte */
@@ -505,6 +513,7 @@ int ugl_get2(byte *data)
   TIME clk;
   static byte *rBufPtr;
 
+  tdr.count++;
 #ifdef BUFFERED_W
   /* Flush write buffer */
   if(nBytesWrite > 0)
@@ -522,12 +531,12 @@ int ugl_get2(byte *data)
 
   if (nBytesRead <= 0)
     {
-      tSTART(clk);
+      toSTART(clk);
       do
 	{
 	  ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf, 
 			      MAX_PACKET_SIZE, (time_out * 10));
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
 	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
 	}
@@ -574,12 +583,12 @@ int ugl_check2(int *status)
 	  return 0;
 	}
       
-      tSTART(clk);
+      toSTART(clk);
       do
 	{
 	  ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf, 
 			      MAX_PACKET_SIZE, (time_out * 10));
-	  if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
 	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
 	}
@@ -841,6 +850,9 @@ int ugl_open()
 	nBytesRead = 0;
 	nBytesWrite = 0;
 
+	tdr.count = 0;
+	toSTART(tdr.start);
+
 	return 0;
 }
 
@@ -851,6 +863,7 @@ int ugl_put(byte data)
 	int nBytesWritten;
 	TIME clk;
 
+	tdr.count++;
 	LOG_DATA(data);
 #ifndef BUFFERED_W
 	fSuccess=WriteFile(hWrite, &data, 1, &nBytesWritten, NULL);
@@ -885,6 +898,7 @@ int ugl_get(byte *data)
 	int j;
 	int nBytesWritten;
 
+	tdr.count++;
 #ifdef BUFFERED_W
 	/* Flush write buffer */
 	fSuccess=WriteFile(hWrite, &wBuf, nBytesWrite, &nBytesWritten, NULL);
@@ -895,11 +909,11 @@ int ugl_get(byte *data)
 	in a buffer for subsequent accesses */
 	if(nBytesRead == 0)
 	{
-		tSTART(clk);
+		toSTART(clk);
 		do	// it seems that ReadFile sometimes returns with no data...
 		{
 			fSuccess = ReadFile(hRead, rBuf, TIGLUSB_MAX_PACKET_SIZE, &nBytesRead, NULL);
-			if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+			if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 		}
 		while(!nBytesRead);
 		rBufPtr = rBuf;
@@ -1123,6 +1137,7 @@ int ugl_supported2()
 #include <IOKit/usb/IOUSBLib.h>
 
 #include "timeout.h"
+#include "cabl_ext.h"
 
 #define kTIGLVendorID		0x0451  // Texas Instruments Inc.
 #define kTIGLProductID		0xe001  // TI GraphLink USB
@@ -1531,6 +1546,9 @@ int ugl_open()
                 return ERR_USB_OPEN;
         }
         
+    tdr.count = 0;
+    toSTART(tdr.start);
+
     return 0;
 }
 
@@ -1581,8 +1599,6 @@ int ugl_put(byte data)
             
             IOKIT_ERROR(kr);
 #endif
-            (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_OUT);
-
             ugl_close();
             return ERR_SND_BYT;
         }
@@ -1590,6 +1606,8 @@ int ugl_put(byte data)
 #ifdef OSX_DEBUG
     printf("Wrote 0x%x to bulk endpoint %d\n", data, TIGL_BULK_ENDPOINT_OUT);
 #endif
+
+    tdr.count++;
 
     return 0;
 }
@@ -1621,7 +1639,7 @@ int ugl_get(byte *d)
 
             memset(rcv_buffer, 0, TIGL_MAXPACKETSIZE + 1);
 
-            tSTART(clk);
+            toSTART(clk);
 
             do {
                     // Use ReadPipe(), not ReadPipeTO() (trouble with FLASHing)
@@ -1637,9 +1655,9 @@ int ugl_get(byte *d)
                         {
                             if (numBytesRead > 0) // regardless of the timeout, we HAVE DATA !
                                 break;
-                            else if ((numBytesRead == 0) && !(tELAPSED(clk, time_out)))
+                            else if ((numBytesRead == 0) && !(toELAPSED(clk, time_out)))
                                 fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
-                            else if ((numBytesRead == 0) && (tELAPSED(clk, time_out)))
+                            else if ((numBytesRead == 0) && (toELAPSED(clk, time_out)))
                                 return ERR_RCV_BYT_TIMEOUT;
                         }
                     else // There was an error, let's see what happened
@@ -1680,6 +1698,8 @@ int ugl_get(byte *d)
     printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buf_ptr[0], TIGL_BULK_ENDPOINT_IN);
 #endif
 
+    tdr.count++;
+
     *d = *rcv_buf_ptr++;
     numBytesRead--;
  
@@ -1711,7 +1731,7 @@ int ugl_check(int *status)
         
             numBytesRead = TIGL_MAXPACKETSIZE;
             
-            tSTART(clk);
+            toSTART(clk);
             
             do {
                     // Use ReadPipeTO(), it handles the timeout itself
@@ -1724,9 +1744,9 @@ int ugl_check(int *status)
                         {
                             if (numBytesRead > 0) // regardless of the timeout, we HAVE DATA !
                                 break;
-                            else if ((numBytesRead == 0) && !(tELAPSED(clk, time_out)))
+                            else if ((numBytesRead == 0) && !(toELAPSED(clk, time_out)))
                                 fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
-                            else if ((numBytesRead == 0) && (tELAPSED(clk, time_out)))
+                            else if ((numBytesRead == 0) && (toELAPSED(clk, time_out)))
                                 return ERR_RCV_BYT_TIMEOUT;
                         }
                     else // There was an error, let's see what happened
