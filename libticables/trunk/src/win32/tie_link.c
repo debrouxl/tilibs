@@ -115,8 +115,6 @@ int tie_exit()
 {
   STOP_LOGGING();
 
-  printf("tie_exit!\n");
-
   /* Close the shared buffer */
   if (hSendBuf) 
     UnmapViewOfFile(pSendBuf);

@@ -103,7 +103,6 @@ int vti_init()
   Handle = GetModuleHandle("ticables.dll");
   if(!Handle)
 	  Handle = GetModuleHandle("libticables-3.dll");
-  printf("h = %08x\n", Handle);
 
   if (!Handle) 
   {
