@@ -24,7 +24,7 @@
 
 #include "calc_def.h"
 
-extern TICALC_PRINT printl;
+extern TICALC_PRINTL printl;
 
 #define	PRINT_STD	0
 #define PRINT_WRN	1

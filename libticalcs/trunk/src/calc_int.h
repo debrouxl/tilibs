@@ -101,7 +101,7 @@ extern "C" {
   TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action);
   
   // printl.c
-  TIEXPORT TICALC_PRINT ticalc_set_printl(TICALC_PRINT new_printl);
+  TIEXPORT TICALC_PRINTL ticalc_set_printl(TICALC_PRINTL new_printl);
 
 	/**************/
 	/* Deprecated */
