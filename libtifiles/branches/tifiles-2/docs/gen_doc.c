@@ -18,6 +18,7 @@ typedef struct
 // Used to describe a comment entry before a function
 typedef struct
 {
+	gint   type;        // structure/enumeration (1) or function (0)
 	gchar* title;       // such as " * tifiles_get_error:"
 	gchar* declaration; // such as "TIEXPORT int TICALL tifiles_error_get("
 	GList* args;        // such as " * @number: error number"
@@ -105,19 +106,19 @@ static int get_list_of_functions(const char *filename, GList **fncts)
                         // get return value
 			fgets(line, sizeof(line), fi);
 			f->returns = g_strdup("");
-			do
+			while(!feof(fi) && strncmp(line, " **/", 4))
 			{
 				gchar *tmp;
 				
 				fgets(line, sizeof(line), fi);
-				if(strcmp(line, " **/") > 0)
+				if(strncmp(line, " **/", 4) > 0)
 					break;
 
 				tmp = g_strconcat(f->returns, line+3, NULL);
 				g_free(f->returns);
 				f->returns = tmp;
-			} while(!feof(fi));
-			
+			};
+
 			d = strchr(f->returns, ':');
 			if(d != NULL)
 				memmove(f->returns, d+2, strlen(d));
@@ -126,6 +127,23 @@ static int get_list_of_functions(const char *filename, GList **fncts)
 			fgets(line, sizeof(line), fi);
 			f->declaration = g_strdup(line);
 			//printf("[%s]", line);
+			if(strstr(line, "tifiles_"))
+				f->type = 0;
+			else if(strstr(line, "enum"))
+			{
+				f->type = 1;
+				
+				while(!feof(fi) && line[0] != '}')
+				{
+					gchar *tmp;
+					
+					fgets(line, sizeof(line), fi);
+					tmp = g_strconcat(f->declaration, 
+							  line, NULL);
+					g_free(f->declaration);
+					f->declaration = tmp;
+				};
+			}
 
 			*fncts = g_list_append(*fncts, f);
 		}
@@ -232,10 +250,13 @@ static void write_fncts_content(FILE *fo, GList *fncts)
 			fprintf(fo, "</tr>\n");
 		}
 
-		fprintf(fo, "<tr>\n");
-		fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", "Return value :");
-		fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", f->returns);
-		fprintf(fo, "</tr>\n");
+		if(f->type == 0)
+		{
+			fprintf(fo, "<tr>\n");
+			fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", "Return value :");
+			fprintf(fo, "<td style=\"vertical-align: top;\">%s<br></td>\n", f->returns);
+			fprintf(fo, "</tr>\n");
+		}
 
 		// table end
 		fprintf(fo, "</tbody>\n");
