@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 03/11/2004, version 0.6.2: roms
+	Fixed and tested TIB file support (read only).
+
 - 18/09/2004, version 0.6.1: roms
 	Added TI89 Titanium support. File format seems to be the same as TI89.
 	Added TI84+ (SE) support. File format seems to be the same as TI83+.

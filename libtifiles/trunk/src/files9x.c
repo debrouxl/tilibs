@@ -344,7 +344,6 @@ TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
   return 0;
 }
 
-// tib support not tested yet
 TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
 					 Ti9xFlash * head)
 {
@@ -384,11 +383,13 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
     }
     fread(content->data_part, content->data_length, 1, f);
 
-    switch(content->data_part[0x05] >> 4)
+    switch(content->data_part[8])
     {
-    case 2:	content->device_type = DEVICE_TYPE_89; break;	// TI89 or V200
-    case 4: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
-    case 8: content->device_type = DEVICE_TYPE_89; break;   // TI89 Titanium
+	case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
+	case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
+		// can't distinguish from other calcs :-(
+	//case 8: content->device_type = DEVICE_TYPE_V200; break;	// V200PLT
+	//case 9: content->device_type = DEVICE_TYPE_89T; break;	// Titanium
     }
 
     content->next = NULL;
