@@ -87,7 +87,6 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   *-*-*bsd*)  ARCH="-D__BSD__" ;;
   *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__" ;;
-  *-*-cygwin) ARCH="-D__WIN32__ -D__CYGWIN__ -mno-cygwin" ;;
   *)          ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
