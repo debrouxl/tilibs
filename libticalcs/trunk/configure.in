@@ -9,7 +9,7 @@ AC_INIT(src/intrface.c)
 # Set library version number (API)
 MAJOR_VERSION=4
 MINOR_VERSION=5
-MICRO_VERSION=0
+MICRO_VERSION=1
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
 
 AC_SUBST(MAJOR_VERSION)
@@ -21,9 +21,9 @@ AC_ARG_ENABLE(glib2, [  --disable-glib2        use GLib 1.2 instead of 2.0 [defa
 
 # libtool versioning
 if test "x$disable_glib2" = "xno"; then
-    ABI_VERSION=4
-else
     ABI_VERSION=0
+else
+    ABI_VERSION=4
 fi
 LT_RELEASE=$ABI_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MINOR_VERSION + $ABI_VERSION`
@@ -39,6 +39,8 @@ AC_SUBST(PACKAGE)
 
 # specify a config file
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+AM_MAINTAINER_MODE
+
 AM_CONFIG_HEADER(config.h)
 
 # Run test in a subshell; some versions of sh will print an error if

@@ -21,47 +21,47 @@ libticalcs_la_LDFLAGS = \
 
 # ticalcs header files for public installation (non-generated)
 libticalcsinclude_HEADERS = \
-	calc_def.h \
-	calc_err.h \
-	calc_int.h \
-	calc_ver.h \
-	headers.h \
-	intl2.h \
-	keys73.h \
-	keys83p.h \
-	keys89.h \
-	keys92p.h \
-	pause.h \
-	update.h \
-	ticalcs.h \
-	tikeys.h
+	../src/calc_def.h \
+	../src/calc_err.h \
+	../src/calc_int.h \
+	../src/calc_ver.h \
+	../src/headers.h \
+	../src/intl2.h \
+	../src/keys73.h \
+	../src/keys83p.h \
+	../src/keys89.h \
+	../src/keys92p.h \
+	../src/pause.h \
+	../src/update.h \
+	../src/ticalcs.h \
+	../src/tikeys.h
 
 # setup source file variables
 libticalcs_la_SOURCES = \
-	clock.c \
-	cmd73.c \
-	cmd82.c \
-	cmd85.c \
-	cmd89.c \
-	cmd92.c \
-	dirlist.c \
-	error.c \
-	intrface.c \
-	keys73.c \
-	keys83p.c \
-	keys89.c \
-	keys92p.c \
-	packets.c \
-	probe.c \
-	ti73.c \
-	ti82.c \
-	ti83.c \
-	ti85.c \
-	ti86.c \
-	ti89.c \
-	ti92.c \
-	tikeys.c \
-	type2str.c
+	../src/clock.c \
+	../src/cmd73.c \
+	../src/cmd82.c \
+	../src/cmd85.c \
+	../src/cmd89.c \
+	../src/cmd92.c \
+	../src/dirlist.c \
+	../src/error.c \
+	../src/intrface.c \
+	../src/keys73.c \
+	../src/keys83p.c \
+	../src/keys89.c \
+	../src/keys92p.c \
+	../src/packets.c \
+	../src/probe.c \
+	../src/ti73.c \
+	../src/ti82.c \
+	../src/ti83.c \
+	../src/ti85.c \
+	../src/ti86.c \
+	../src/ti89.c \
+	../src/ti92.c \
+	../src/tikeys.c \
+	../src/type2str.c
 
 # objects
 libticalcs_OBJECTS = \
@@ -69,7 +69,7 @@ libticalcs_OBJECTS = \
 
 MAINTAINERCLEANFILES =
 EXTRA_HEADERS =
-EXTRA_DIST = *.h
+EXTRA_DIST = ../src/*.h
 
 dos2unix:
 	dos2unix

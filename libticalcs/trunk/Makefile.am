@@ -1,9 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SRCDIR = src12
 if LIBGLIB2
  SRCDIR = src
+else
+ SRCDIR = src12
 endif
 SUBDIRS = . docs macros man $(SRCDIR) tests win32 po intl
 
@@ -13,14 +14,12 @@ SUBDIRS = . docs macros man $(SRCDIR) tests win32 po intl
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO docs osx src12
 
-pkgconfigdir = $(libdir)/pkgconfig
 if OS_BSD
  pkgconfigdir = $(prefix)/libdata/pkgconfig
 else
  pkgconfigdir = $(libdir)/pkgconfig
 endif
 
-pkgconfig_DATA = ticalcs.pc
 if LIBGLIB2
  pkgconfig_DATA = ticalcs-4.pc
 else

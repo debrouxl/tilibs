@@ -1,7 +1,12 @@
 Log:
 
 Todo:
-     ticalcs-config pour le so.4 (ainsiq ue le man)
+     ticalcs-config pour le so.4 (ainsi que le man)
+
+- 27/08/2003, version 4.5.1: Maintenance release by JB.
+	Upgraded to libtool 1.5
+	Upgraded to automake 1.7
+	Fixed src12/Makefile.am
 
 - 10/05/2003, version 4.5.0:
 	Variable name is now translated for all calcs (charsets and tokens).
