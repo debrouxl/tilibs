@@ -151,12 +151,20 @@ int ser_get(uint8_t * ch)
     if (v == 0x10) {
       data = (data >> 1) | 0x80;
       io_wr(com_out, 1);
-      while ((io_rd(com_in) & 0x20) == 0x00);
+      toSTART(clk);
+      while ((io_rd(com_in) & 0x20) == 0x00) {
+	      if (toELAPSED(clk, time_out))
+		      return ERR_READ_TIMEOUT;
+      }
       io_wr(com_out, 3);
     } else {
       data = (data >> 1) & 0x7F;
       io_wr(com_out, 2);
-      while ((io_rd(com_in) & 0x10) == 0x00);
+      toSTART(clk);
+      while ((io_rd(com_in) & 0x10) == 0x00) {
+	      if (toELAPSED(clk, time_out))
+                      return ERR_READ_TIMEOUT;
+      }
       io_wr(com_out, 3);
     }
     for (i = 0; i < delay; i++)
