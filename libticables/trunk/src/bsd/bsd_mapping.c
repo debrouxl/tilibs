@@ -63,6 +63,10 @@ int bsd_get_method(TicableType type, int resources, TicableMethod *method)
 	// depending on link type, do some checks
 	switch(type)
 	{
+	case LINK_NUL:
+		*method |= IOM_NULL | IOM_OK;
+		break;
+		
 	case LINK_TGL:
 		if(resources & IO_API) {
 			*method |= IOM_API | IOM_OK;
@@ -134,6 +138,11 @@ static int bsd_map_io(TicableMethod method, TicablePort port)
 	printl1(0, _("mapping I/O...\n"));
 	
 	switch (port) {
+	case NULL_PORT:
+		strcpy(io_device, "/dev/null");
+		io_address = 0;
+		break;
+		
   	case USER_PORT:
     	break;
 
@@ -207,6 +216,10 @@ int bsd_register_cable(TicableType type, TicableLinkCable *lc)
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
     	switch (type) {
+    	case LINK_NUL:
+		nul_register_cable(lc);
+		break;
+    		
     	case LINK_PAR:
       		if ((port != PARALLEL_PORT_1) &&
 		    (port != PARALLEL_PORT_2) &&
