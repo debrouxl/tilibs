@@ -50,7 +50,7 @@
 
 /* Variables */
 
-static HINSTANCE hDLL = NULL;	// Handle for PortTalk Driver
+static HINSTANCE hDll = NULL;	// Handle for PortTalk Driver
 static HANDLE hCom = 0;		// COM port handle for Win32 DCB (API)
 static int iDcbUse = 0;		// Internal use
 
@@ -64,15 +64,15 @@ void (*io_wr) (unsigned int addr, int data);
 #ifdef __WIN32__
 static void print_last_error(char *s)
 {
-  LPVOID lpMsgBuf;
+        LPVOID lpMsgBuf;
 
-  FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL, GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) & lpMsgBuf, 0, NULL);
-  DISPLAY("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+        DISPLAY("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
 }
 #endif				//__WIN32__
 
@@ -80,19 +80,19 @@ static void print_last_error(char *s)
 
 static int win32_asm_read_io(unsigned int addr)
 {
-  int c;
+        int c;
 
 #ifdef __GNUC__
 asm("movl $0,%%eax \n movw %1,%%dx \n inb %%dx,%%al \n movl %%eax,%0": "=g"(c): "g"(addr):"eax",
       "dx");
 #else
- __asm {
+        __asm {
 	 mov eax, 0 
 	 mov edx, addr 
 	 in al, dx 
 	 mov c, eax}
 #endif
-  return c;
+        return c;
 }
 
 static void win32_asm_write_io(unsigned int addr, int data)
@@ -101,7 +101,7 @@ static void win32_asm_write_io(unsigned int addr, int data)
 asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
       "dx");
 #else
-  __asm {
+        __asm {
 	  mov edx, addr 
 	  mov eax, data 
 	  out dx, al}
@@ -112,16 +112,16 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 
 static int win32_dcb_read_io(unsigned int addr)
 {
-  DWORD s;
+        DWORD s;
 
-  GetCommModemStatus(hCom, &s);
-  return (s & MS_CTS_ON ? 1 : 0) | (s & MS_DSR_ON ? 2 : 0);
+        GetCommModemStatus(hCom, &s);
+        return (s & MS_CTS_ON ? 1 : 0) | (s & MS_DSR_ON ? 2 : 0);
 }
 
 static void win32_dcb_write_io(unsigned int address, int data)
 {
-  EscapeCommFunction(hCom, (data & 2) ? SETRTS : CLRRTS);
-  EscapeCommFunction(hCom, (data & 1) ? SETDTR : CLRDTR);
+        EscapeCommFunction(hCom, (data & 2) ? SETRTS : CLRRTS);
+        EscapeCommFunction(hCom, (data & 1) ? SETDTR : CLRDTR);
 }
 
 /* Functions used for initializing the I/O routines */
@@ -147,11 +147,11 @@ int io_open(unsigned long from, unsigned long num)
   else if (method & IOM_DRV) {
     // At this point, the driver should have been installed 
     // and started in probe.c
-    hDLL = CreateFile("\\\\.\\PortTalk",
+    hDll = CreateFile("\\\\.\\PortTalk",
 		      GENERIC_READ,
 		      0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-    if (hDLL == INVALID_HANDLE_VALUE) {
+    if (hDll == INVALID_HANDLE_VALUE) {
       DISPLAY_ERROR(_
 		    ("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
       return ERR_PORTTALK_NOT_FOUND;
@@ -161,7 +161,7 @@ int io_open(unsigned long from, unsigned long num)
     }
 
     // Turn off all access
-    iError = DeviceIoControl(hDLL,
+    iError = DeviceIoControl(hDll,
 			     IOCTL_IOPM_RESTRICT_ALL_ACCESS,
 			     NULL, 0, NULL, 0, &BytesReturned, NULL);
 
@@ -171,7 +171,7 @@ int io_open(unsigned long from, unsigned long num)
 
     // Turn on some access
     offset = from / 8;
-    iError = DeviceIoControl(hDLL,
+    iError = DeviceIoControl(hDll,
 			     IOCTL_SET_IOPM,
 			     &offset, 3, NULL, 0, &BytesReturned, NULL);
     if (!iError)
@@ -184,7 +184,7 @@ int io_open(unsigned long from, unsigned long num)
     // Pass PID
     pid = getpid();
 
-    iError = DeviceIoControl(hDLL,
+    iError = DeviceIoControl(hDll,
 			     IOCTL_ENABLE_IOPM_ON_PROCESSID,
 			     &pid, 4, NULL, 0, &BytesReturned, NULL);
 
@@ -196,7 +196,7 @@ int io_open(unsigned long from, unsigned long num)
 	      ("PortTalk Device Driver has set IOPM for ProcessID %d.\n"),
 	      pid);
 
-    //CloseHandle(hDLL);
+    //CloseHandle(hDll);
   }
 #endif
 
@@ -287,8 +287,9 @@ int io_open(unsigned long from, unsigned long num)
 int io_close(unsigned long from, unsigned long num)
 {
   if (method & IOM_DRV) {
-    if (hDLL != NULL)
-      CloseHandle(hDLL);
+    if (hDll != NULL)
+      CloseHandle(hDll);
+		hDll = NULL;
   }
 
   else if (method & IOM_API) {

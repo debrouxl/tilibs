@@ -61,22 +61,32 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
   	va_list ap;
 
   	if (verbosity) {
-#if defined(__WIN32__)		// redirect stdout to the console
-    	if (alloc_console_called == FALSE) {
-      		AllocConsole();
-      		alloc_console_called = TRUE;
-      		hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-      		freopen("CONOUT$", "w", stdout);
-    	}
+#if defined(__WIN32__)
+                char buffer[128];
+                int cnt;
+                DWORD nWritten;
+
+    	        if (alloc_console_called == FALSE) {
+      		        AllocConsole();
+      		        alloc_console_called = TRUE;
+      		        hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+      		        //freopen("CONOUT$", "w", stdout);
+    	        }
+
+                va_start(ap, format);
+                cnt = _vsnprintf(buffer, 128, format, ap);
+                WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
+                va_end(ap);
+#else
+                va_start(ap, format);
+    	        ret = vfprintf(stdout, format, ap);
+    	        va_end(ap);
 #endif
-    	va_start(ap, format);
-    	ret = vfprintf(stdout, format, ap);
-    	va_end(ap);
   	}
 
-  	if (flog == NULL)
+        if (flog == NULL) {
     		flog = fopen(DISP_FILE, "wt");
-  	else {
+        } else {
     		va_start(ap, format);
     		if (flog)
       			vfprintf(flog, format, ap);
@@ -93,17 +103,26 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 */
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
-  	int ret = 0;
+        int ret = 0;
   	va_list ap;
 
   	if (verbosity) {
-#if defined(__WIN32__)		// redirect stderr to the console
+#if defined(__WIN32__)
+                char buffer[128];
+                int cnt;
+                DWORD nWritten;
+
     		if (alloc_console_called == FALSE) {
       			AllocConsole();
       			alloc_console_called = TRUE;
       			hConsole = GetStdHandle(STD_ERROR_HANDLE);
-      			freopen("CONERR$", "w", stderr);
+      			//freopen("CONERR$", "w", stderr);
     		}
+
+                va_start(ap, format);
+                cnt = _vsnprintf(buffer, 128, format, ap);
+                WriteConsole(hConsole, buffer, cnt, &nWritten, NULL);
+                va_end(ap);
 #endif
     		va_start(ap, format);
     		fprintf(stderr, "Error: ");
