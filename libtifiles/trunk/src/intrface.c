@@ -163,10 +163,14 @@ static void print_informations(void)
 /* deprecated */
 TIEXPORT TIFILES_PRINTF tifiles_set_printf(TIFILES_PRINTF new_printf)
 {
+#ifdef __WIN32__
 #pragma warning( push )
 #pragma warning( disable : 4550 )
         return printf;
 #pragma warning( pop ) 
+#else
+	return printf;
+#endif
 }
 
 #ifdef __WIN32__
