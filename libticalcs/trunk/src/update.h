@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __UPDATE__
-#define __UPDATE__
+#ifndef __TICALCS_UPDATE__
+#define __TICALCS_UPDATE__
 
 /* Functions for updating */
 /*
@@ -35,13 +35,19 @@
    Macros: they check that function pointer is good and then
    call the pointer itself 
 */
-#define update_start()      if(update->start)   update->start()
-#define update_msgbox(t, s) if(update->msgbox)  update->msg_box(t, s)
-#define update_pbar()       if(update->pbar)    update->pbar()
-#define update_label()      if(update->label)   update->label()
-#define update_refresh()    if(update->refresh) update->refresh()
-//#define update_choose(c, n) if(update->choose)  update->choose(c, n)
+#define update_start()      if(update && update->start)   update->start()
+#define update_msgbox(t, s) if(update && update->msgbox)  update->msg_box(t, s)
+#define update_pbar()       if(update && update->pbar)    update->pbar()
+#define update_label()      if(update && update->label)   update->label()
+#define update_refresh()    if(update && update->refresh) update->refresh()
+#define update_stop()       if(update && update->stop)    update->stop()
+/*
+#ifndef UPDATE_INLINE
+# define UPDATE_INLINE
+int inline update_choose(char* c, char* n)
+{ if(update && update->choose) return update->choose(c, n); else return 0; }
+#endif
+*/
 #define update_choose(c, n)                     update->choose(c, n)
-#define update_stop()       if(update->stop)    update->stop()
 
 #endif

@@ -20,8 +20,8 @@
   Contains the right headers for the internationalization library
 */
 
-#ifndef CALCS_INTL2_H
-#define CALCS_INTL2_H
+#ifndef __TICALCS_INTL__
+#define __TICALCS_INTL__
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

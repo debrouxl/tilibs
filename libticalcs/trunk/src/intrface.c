@@ -55,22 +55,23 @@ const char* DLLEXPORT2 ticalc_get_version()
 */
 DLLEXPORT
 void DLLEXPORT2 ticalc_set_update(struct ticalc_info_update *iu,
-				  void (*f1) (void),
-				  void (*f2) (void),
-				  void (*f3) (void),
-				  void (*f4) (const char *t, char *s),
-				  void (*f5) (void),
-				  void (*f6) (void),
-				  int  (*f7) (char *cur_name, char *new_name))
+                                 void (*start)   (void),
+                                 void (*stop)    (void),
+                                 void (*refresh) (void),
+                                 void (*msg_box) (const char *t, char *s),
+                                 void (*pbar)    (void),
+                                 void (*label)   (void),
+                                 int  (*choose)  (char *cur_name, 
+                                                  char *new_name))
 {
   iu->cancel  = 0;
-  iu->start   = f1;
-  iu->stop    = f2;
-  iu->refresh = f3;
-  iu->msg_box = f4;
-  iu->pbar    = f5;
-  iu->label   = f6;
-  iu->choose  = f7;
+  iu->start   = start;
+  iu->stop    = stop;
+  iu->refresh = refresh;
+  iu->msg_box = msg_box;
+  iu->pbar    = pbar;
+  iu->label   = label;
+  iu->choose  = choose;
 
   update = iu;
 }

@@ -955,6 +955,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /System/Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
@@ -968,6 +969,7 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = libticalcs;
+			productInstallPath = /System/Library/Frameworks;
 			productName = libticalcs;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -987,15 +989,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>libTIcalcs for OS X</string>
+	<string>libTIcalcs for Mac OS X</string>
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.4-osx0.0.3</string>
+	<string>2.0.7-osx0.0.4</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.4-osx0.0.3</string>
+	<string>2.0.7-osx0.0.4</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

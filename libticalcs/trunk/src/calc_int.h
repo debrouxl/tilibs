@@ -34,13 +34,14 @@ extern "C" {
 const char *ticalc_get_version();
 
 void ticalc_set_update(struct ticalc_info_update *iu,
-		       void (*f1) (void),
-		       void (*f2) (void),
-		       void (*f3) (void),
-		       void (*f4) (const char *t, char *s),
-		       void (*f5) (void),
-		       void (*f6) (void),
-		       int  (*f7) (char *cur_name, char *new_name));
+                       void (*start)   (void),
+                       void (*stop)    (void),
+                       void (*refresh) (void),
+                       void (*msg_box) (const char *t, char *s),
+                       void (*pbar)    (void),
+                       void (*label)   (void),
+                       int  (*choose)  (char *cur_name, 
+                                        char *new_name));
 
 void ticalc_set_calc(int type, 
 		     struct ticalc_fncts *calc, 
