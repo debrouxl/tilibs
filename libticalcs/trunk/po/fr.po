@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs-4.4.7\n"
-"POT-Creation-Date: 2003-05-03 11:56+0200\n"
+"POT-Creation-Date: 2003-05-10 11:29+0200\n"
 "PO-Revision-Date: 2003-05-07 13:40GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -331,37 +331,37 @@ msgstr "Réception de variable(s)...\n"
 
 #. 2MB max
 #: src/ti73.c:337 src/ti73.c:534 src/ti82.c:275 src/ti83.c:307 src/ti85.c:275
-#: src/ti86.c:338 src/ti89.c:410 src/ti89.c:623 src/ti92.c:353
+#: src/ti86.c:338 src/ti89.c:411 src/ti89.c:625 src/ti92.c:354
 #, c-format
 msgid "Receiving '%s'"
 msgstr "Réception de '%s'"
 
 #: src/ti73.c:388 src/ti82.c:311 src/ti83.c:357 src/ti85.c:311 src/ti86.c:388
-#: src/ti89.c:462 src/ti92.c:405
+#: src/ti89.c:463 src/ti92.c:406
 msgid "Sending variable(s)...\n"
 msgstr "Envoi de variable(s)...\n"
 
-#: src/ti73.c:406 src/ti83.c:375 src/ti86.c:406 src/ti89.c:482 src/ti92.c:424
+#: src/ti73.c:406 src/ti83.c:375 src/ti86.c:406 src/ti89.c:483 src/ti92.c:425
 #, c-format
 msgid " '%s' has been skipped !\n"
 msgstr " '%s' a été ignoré !\n"
 
 #: src/ti73.c:432 src/ti82.c:351 src/ti83.c:399 src/ti85.c:351 src/ti86.c:430
-#: src/ti89.c:495 src/ti92.c:437
+#: src/ti89.c:497 src/ti92.c:439
 #, c-format
 msgid "Sending '%s'"
 msgstr "Envoi de '%s'"
 
-#: src/ti73.c:455 src/ti89.c:548
+#: src/ti73.c:455 src/ti89.c:550
 msgid "Sending FLASH app/os...\n"
 msgstr "Envoi d'app/os FLASH...\n"
 
-#: src/ti73.c:521 src/ti89.c:613
+#: src/ti73.c:521 src/ti89.c:615
 msgid "Receiving FLASH application...\n"
 msgstr "Réception d'une application FLASH...\n"
 
 #: src/ti73.c:596 src/ti82.c:400 src/ti83.c:443 src/ti85.c:398 src/ti86.c:474
-#: src/ti89.c:683 src/ti92.c:488
+#: src/ti89.c:685 src/ti92.c:490
 msgid "ROM dumping...\n"
 msgstr "Copie de ROM...\n"
 
@@ -372,21 +372,21 @@ msgid "Waiting user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
 #: src/ti73.c:634 src/ti82.c:438 src/ti83.c:486 src/ti85.c:440 src/ti86.c:517
-#: src/ti89.c:732 src/ti92.c:538
+#: src/ti89.c:734 src/ti92.c:540
 msgid "Receiving..."
 msgstr "Réception..."
 
 #: src/ti73.c:674 src/ti82.c:478 src/ti83.c:526 src/ti85.c:480 src/ti86.c:557
-#: src/ti89.c:769 src/ti92.c:576
+#: src/ti89.c:771 src/ti92.c:578
 #, c-format
 msgid "Remaining (mm:ss): %s"
 msgstr "Restant (min:sec): %s"
 
-#: src/ti73.c:694 src/ti89.c:788
+#: src/ti73.c:694 src/ti89.c:790
 msgid "Getting ID list...\n"
 msgstr "Réception de l'ID de la liste...\n"
 
-#: src/ti73.c:700 src/ti89.c:794
+#: src/ti73.c:700 src/ti89.c:796
 msgid "Getting variable..."
 msgstr "Réception de la variable..."
 
@@ -436,51 +436,51 @@ msgstr "Lecture de '%s/%s'"
 msgid "Sending backup..."
 msgstr "Envoi de la sauvegarde..."
 
-#: src/ti89.c:468 src/ti92.c:411
+#: src/ti89.c:469 src/ti92.c:412
 msgid "Sending variable(s)..."
 msgstr "Envoi de variable(s)..."
 
-#: src/ti89.c:529
+#: src/ti89.c:531
 #, c-format
 msgid "perc = %1.2f \n"
 msgstr "pourcent = %1.2f \n"
 
-#: src/ti89.c:554
+#: src/ti89.c:556
 msgid "Sending FLASH OS/App..."
 msgstr "Envoi d' OS/App FLASH..."
 
-#: src/ti89.c:567
+#: src/ti89.c:569
 #, c-format
 msgid "FLASH app/os name: \"%s\"\n"
 msgstr "Nom de l'app/os:  \"%s\"\n"
 
-#: src/ti89.c:568
+#: src/ti89.c:570
 #, c-format
 msgid "FLASH app/os size: %i bytes.\n"
 msgstr "Taille de l'app/os FLASH: %i octets.\n"
 
-#: src/ti89.c:600
+#: src/ti89.c:602
 msgid "Flash application/os sent completely.\n"
 msgstr "Envoi de l'application/os FLASH complet.\n"
 
 #. Launch calculator program by remote control
-#: src/ti89.c:698 src/ti92.c:504
+#: src/ti89.c:700 src/ti92.c:506
 msgid "Launching..."
 msgstr "Chargement..."
 
-#: src/ti89.c:826
+#: src/ti89.c:828
 msgid "Getting clock...\n"
 msgstr "Réception de l'horloge...\n"
 
-#: src/ti89.c:832
+#: src/ti89.c:834
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/ti89.c:881
+#: src/ti89.c:883
 msgid "Setting clock...\n"
 msgstr "Mise à jour de l'horloge...\n"
 
-#: src/ti89.c:887
+#: src/ti89.c:889
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 

@@ -324,7 +324,7 @@ int ti92_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   char *fn;
   static int nvar = 0;
   uint32_t unused;
-  uint8_t varname[18];
+  uint8_t varname[18], utf8[35];
 
   DISPLAY(_("Receiving variable(s)...\n"));
 
@@ -350,7 +350,8 @@ int ti92_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   strcat(varname, "\\");
   strcat(varname, entry->name);
 
-  sprintf(update->label_text, _("Receiving '%s'"), varname);
+  tifiles_translate_varname(varname, utf8, entry->type);
+  sprintf(update->label_text, _("Receiving '%s'"), utf8);
   update_label();
 
   TRYF(ti92_send_REQ(0, entry->type, varname));
@@ -434,7 +435,8 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
       strcat(full_name, varname);
     }
 
-    sprintf(update->label_text, _("Sending '%s'"), full_name);
+    tifiles_translate_varname(full_name, utf8, entry->type);
+    sprintf(update->label_text, _("Sending '%s'"), utf8);
     update_label();
 
     TRYF(ti92_send_VAR(entry->size, entry->type, varname));

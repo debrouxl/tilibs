@@ -3,6 +3,9 @@ Log:
 Todo:
      ticalcs-config pour le so.4 (ainsiq ue le man)
 
+- 10/05/2003, version 4.5.0:
+	Variable name is now translated for all calcs (charsets and tokens).
+	
 - 15/04/2003, version 4.4.9:
 	Added is_flash field (for consistency).
 	
