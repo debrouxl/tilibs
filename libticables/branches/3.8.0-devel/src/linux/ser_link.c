@@ -43,6 +43,7 @@ static HANDLE hCom = 0;
 #endif
 
 static unsigned int com_addr;
+
 #define com_out (com_addr+4)
 #define com_in  (com_addr+6)
 
@@ -57,223 +58,229 @@ int ser_init()
   // It seems I got the same problem as FlashZ when I changed my 
   // motherboard. Are some port broken ?
 	extern int win32_comport_open(char *comPort, PHANDLE hCom);
-  TRYC(win32_comport_open(io_device, &hCom));
+  	TRYC(win32_comport_open(io_device, &hCom));
 #endif
-  com_addr = io_address;
+  	com_addr = io_address;
 
-  TRYC(io_open(com_out, 1));
-  io_permitted++;
-  TRYC(io_open(com_in, 1));
-  io_permitted++;
+  	TRYC(io_open(com_out, 1));
+  	io_permitted++;
+  	TRYC(io_open(com_in, 1));
+  	io_permitted++;
 
-  // removed: this perturbates communication start-up
-  //io_wr(com_out, 3);		// wake-up calculator
-  //io_wr(com_out, 0);
-  //io_wr(com_out, 3);
+  	// removed: this perturbates communication start-up
+  	//io_wr(com_out, 3);		// wake-up calculator
+  	//io_wr(com_out, 0);
+  	//io_wr(com_out, 3);
 
-  START_LOGGING();
+  	START_LOGGING();
 
-  return 0;
+  	return 0;
 }
 
 int ser_open()
 {
-  tdr.count = 0;
-  toSTART(tdr.start);
+  	tdr.count = 0;
+  	toSTART(tdr.start);
 
-  if (io_permitted)
-    return 0;
-  else
-    return ERR_ROOT;
+  	if (io_permitted)
+    		return 0;
+  	else
+    		return ERR_ROOT;
 }
 
 int ser_put(uint8_t data)
 {
-  int bit;
-  int i;
-  tiTIME clk;
+  	int bit;
+  	int i;
+  	tiTIME clk;
 
-  tdr.count++;
-  LOG_DATA(data);
+  	tdr.count++;
+  	LOG_DATA(data);
 
-  for (bit = 0; bit < 8; bit++) {
-    if (data & 1) {
-      io_wr(com_out, 2);
-      toSTART(clk);
-      do {
-	if (toELAPSED(clk, time_out))
-	  return ERR_WRITE_TIMEOUT;
-      } while ((io_rd(com_in) & 0x10));
-      io_wr(com_out, 3);
-      toSTART(clk);
-      do {
-	if (toELAPSED(clk, time_out))
-	  return ERR_WRITE_TIMEOUT;
-      } while ((io_rd(com_in) & 0x10) == 0x00);
-    } else {
-      io_wr(com_out, 1);
-      toSTART(clk);
-      do {
-	if (toELAPSED(clk, time_out))
-	  return ERR_WRITE_TIMEOUT;
-      } while (io_rd(com_in) & 0x20);
-      io_wr(com_out, 3);
-      toSTART(clk);
-      do {	     
-	if (toELAPSED(clk, time_out))
-	  return ERR_WRITE_TIMEOUT;
-      } while ((io_rd(com_in) & 0x20) == 0x00);
-    }
+  	for (bit = 0; bit < 8; bit++) {
+    	if (data & 1) {
+      		io_wr(com_out, 2);
+      		toSTART(clk);
+      		do {
+			if (toELAPSED(clk, time_out))
+	  		return ERR_WRITE_TIMEOUT;
+      		} while ((io_rd(com_in) & 0x10));
+      		
+      		io_wr(com_out, 3);
+      		toSTART(clk);
+      		do {
+			if (toELAPSED(clk, time_out))
+	  		return ERR_WRITE_TIMEOUT;
+      		} while ((io_rd(com_in) & 0x10) == 0x00);
+    	} else {
+      		io_wr(com_out, 1);
+      		toSTART(clk);
+      		do {
+			if (toELAPSED(clk, time_out))
+	  		return ERR_WRITE_TIMEOUT;
+      		} while (io_rd(com_in) & 0x20);
+      	
+      		io_wr(com_out, 3);
+      		toSTART(clk);
+      		do {	     
+			if (toELAPSED(clk, time_out))
+	  		return ERR_WRITE_TIMEOUT;
+      		} while ((io_rd(com_in) & 0x20) == 0x00);
+    	}
 
-    data >>= 1;
-    for (i = 0; i < delay; i++)
-      io_rd(com_in);
-  }
+    	data >>= 1;
+    	for (i = 0; i < delay; i++)
+      		io_rd(com_in);
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int ser_get(uint8_t * ch)
 {
-  int bit;
-  uint8_t data = 0;
-  uint8_t v;
-  int i;
-  tiTIME clk;
+  	int bit;
+  	uint8_t data = 0;
+  	uint8_t v;
+  	int i;
+  	tiTIME clk;
 
-  tdr.count++;
-  for (bit = 0; bit < 8; bit++) {
-    toSTART(clk);
-    while ((v = io_rd(com_in) & 0x30) == 0x30) {
-      if (toELAPSED(clk, time_out))
-	return ERR_READ_TIMEOUT;
-    }
-    if (v == 0x10) {
-      data = (data >> 1) | 0x80;
-      io_wr(com_out, 1);
-      toSTART(clk);
-      while ((io_rd(com_in) & 0x20) == 0x00) {
-	      if (toELAPSED(clk, time_out))
-		      return ERR_READ_TIMEOUT;
-      }
-      io_wr(com_out, 3);
-    } else {
-      data = (data >> 1) & 0x7F;
-      io_wr(com_out, 2);
-      toSTART(clk);
-      while ((io_rd(com_in) & 0x10) == 0x00) {
-	      if (toELAPSED(clk, time_out))
-                      return ERR_READ_TIMEOUT;
-      }
-      io_wr(com_out, 3);
-    }
-    for (i = 0; i < delay; i++)
-      io_rd(com_in);
-  }
+  	tdr.count++;
+  	for (bit = 0; bit < 8; bit++) {
+    		toSTART(clk);
+    		while ((v = io_rd(com_in) & 0x30) == 0x30) {
+      			if (toELAPSED(clk, time_out))
+			return ERR_READ_TIMEOUT;
+    		}
+    		
+    		if (v == 0x10) {
+	      		data = (data >> 1) | 0x80;
+	      		io_wr(com_out, 1);
+	      		toSTART(clk);
+	      		while ((io_rd(com_in) & 0x20) == 0x00) {
+		      		if (toELAPSED(clk, time_out))
+			      	return ERR_READ_TIMEOUT;
+	      		}
+	      		io_wr(com_out, 3);
+    		} else {
+	      		data = (data >> 1) & 0x7F;
+	      		io_wr(com_out, 2);
+	      		toSTART(clk);
+	      		while ((io_rd(com_in) & 0x10) == 0x00) {
+		      		if (toELAPSED(clk, time_out))
+	                      	return ERR_READ_TIMEOUT;
+	      		}
+	      		io_wr(com_out, 3);
+    		}
+    	
+		for (i = 0; i < delay; i++)
+      			io_rd(com_in);
+  	}
 
-  *ch = data;
-  LOG_DATA(data);
+  	*ch = data;
+  	LOG_DATA(data);
 
-  return 0;
+  	return 0;
 }
 
 int ser_probe()
 {
-  int i, j;
-  int seq[] = { 0x00, 0x20, 0x00, 0x20 };
-  int data;
+  	int i, j;
+  	int seq[] = { 0x00, 0x20, 0x00, 0x20 };
+  	int data;
 
-  for (i = 3; i >= 0; i--) {
-    io_wr(com_out, 3);
-    io_wr(com_out, i);
-    for (j = 0; j < 10; j++)
-      data = io_rd(com_in);
-    //DISPLAY("%i: 0x%02x 0x%02x\n", i, data, seq[i]);
-    if ((data & 0x30) != seq[i]) {
-      io_wr(com_out, 3);
-      return ERR_PROBE_FAILED;
-    }
-  }
-  io_wr(com_out, 3);
+  	for (i = 3; i >= 0; i--) {
+    		io_wr(com_out, 3);
+    		io_wr(com_out, i);
+    		
+    		for (j = 0; j < 10; j++)
+      			data = io_rd(com_in);
+    		//DISPLAY("%i: 0x%02x 0x%02x\n", i, data, seq[i]);
+    		
+    		if ((data & 0x30) != seq[i]) {
+      			io_wr(com_out, 3);
+      		return ERR_PROBE_FAILED;
+    		}
+  	}
+  	io_wr(com_out, 3);
 
-  return 0;
+  	return 0;
 }
 
 int ser_close()
 {
-  if (io_permitted == 2)
-    io_wr(com_out, 3);
+  	if (io_permitted == 2)
+    		io_wr(com_out, 3);
 
-  return 0;
+  	return 0;
 }
 
 int ser_exit()
 {
-  TRYC(io_close(com_out, 1));
-  io_permitted--;
-  TRYC(io_close(com_in, 1));
-  io_permitted--;
+  	TRYC(io_close(com_out, 1));
+  	io_permitted--;
+  	TRYC(io_close(com_in, 1));
+  	io_permitted--;
 
 #ifdef __WIN32__
-  //extern int win32_comport_close(PHANDLE hCom);
-  TRYC(win32_comport_close(&hCom));
+  	//extern int win32_comport_close(PHANDLE hCom);
+  	TRYC(win32_comport_close(&hCom));
 #endif
 
-  STOP_LOGGING();
+  	STOP_LOGGING();
 
-  return 0;
+  	return 0;
 }
 
 int ser_check(int *status)
 {
-  *status = STATUS_NONE;
+  	*status = STATUS_NONE;
 
-  if (!((io_rd(com_in) & 0x30) == 0x30)) {
-    *status = (STATUS_RX | STATUS_TX);
-  }
+  	if (!((io_rd(com_in) & 0x30) == 0x30)) {
+    		*status = (STATUS_RX | STATUS_TX);
+  	}
 
-  return 0;
+  	return 0;
 }
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 int ser_set_red_wire(int b)
 {
-  int v = swap_bits(io_rd(com_in) >> 4);
+  	int v = swap_bits(io_rd(com_in) >> 4);
 
-  if (b)
-    io_wr(com_out, v | 0x02);
-  else
-    io_wr(com_out, v & ~0x02);
+  	if (b)
+    		io_wr(com_out, v | 0x02);
+  	else
+    		io_wr(com_out, v & ~0x02);
 
-  return 0;
+  	return 0;
 }
 
 int ser_set_white_wire(int b)
 {
-  int v = swap_bits(io_rd(com_in) >> 4);
+  	int v = swap_bits(io_rd(com_in) >> 4);
 
-  if (b)
-    io_wr(com_out, v | 0x01);
-  else
-    io_wr(com_out, v & ~0x01);
+  	if (b)
+    		io_wr(com_out, v | 0x01);
+  	else
+    		io_wr(com_out, v & ~0x01);
 
-  return 0;
+  	return 0;
 }
 
 int ser_get_red_wire()
 {
-  return ((0x10 & io_rd(com_in)) ? 1 : 0);
+  	return ((0x10 & io_rd(com_in)) ? 1 : 0);
 }
 
 int ser_get_white_wire()
 {
-  return ((0x20 & io_rd(com_in)) ? 1 : 0);
+  	return ((0x20 & io_rd(com_in)) ? 1 : 0);
 }
 
 int ser_supported()
 {
-  return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
+  	return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
 int ser_register_cable_1(TicableLinkCable * lc)

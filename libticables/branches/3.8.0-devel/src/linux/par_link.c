@@ -42,6 +42,7 @@
 #include "verbose.h"
 
 static unsigned int lpt_adr;
+
 #define lpt_out (lpt_adr+0)
 #define lpt_in  (lpt_adr+1)
 #define lpt_ctl (lpt_adr+2)
