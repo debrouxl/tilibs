@@ -3,6 +3,11 @@ Log:
 To do: 
   - pre-init structs (ti9x_create_regular_content) rather than bzeros them.
 
+- 27/08/2003, version 0.5.7: maintenance release by JB.
+	Use AM_MAINTAINER_MODE in configure.in
+	Upgraded to automake 1.7
+	Upgraded to libtool 1.5
+
 - 01/05/2003, version 0.5.6:
 	Added 'mu' char to TI89..V200. Unicode translation was missing for
 	TI92(+)/V200.
