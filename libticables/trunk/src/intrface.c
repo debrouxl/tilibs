@@ -73,22 +73,26 @@ int ticables_instance = 0;	// counts # of instances
 TIEXPORT int
 TICALL ticable_init()
 {
+	char locale_dir[65536];
+	
 #ifdef __WIN32__
   	HANDLE hDll;
-  	char LOCALEDIR[65536];
   	int i;
   	
   	hDll = GetModuleHandle("ticables.dll");
-  	GetModuleFileName(hDll, LOCALEDIR, 65535);
+  	GetModuleFileName(hDll, locale_dir, 65535);
   	
-  	for (i = strlen(LOCALEDIR); i >= 0; i--) {
-    	if (LOCALEDIR[i] == '\\')
+  	for (i = strlen(locale_dir); i >= 0; i--) {
+    	if (locale_dir[i] == '\\')
       		break;
   	}
   	
-  	LOCALEDIR[i] = '\0';
-  	strcat(LOCALEDIR, "\\locale");
+  	locale_dir[i] = '\0';
+  	strcat(locale_dir, "\\locale");
+#else
+	strcpy(locale_dir, LOCALEDIR);
 #endif
+
 	if (ticables_instance)
 		return (++ticables_instance);
 	printl1(0, _("ticables library version %s\n"), LIBTICABLES_VERSION);
@@ -96,7 +100,7 @@ TICALL ticable_init()
 
 #if defined(ENABLE_NLS)
   	printl1(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	printl1(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+  	printl1(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	printl1(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif

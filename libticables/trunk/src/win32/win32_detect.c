@@ -38,6 +38,10 @@
 
 #include "win32_detect.h"
 
+#ifdef __MINGW32__	// ugly, will be removed
+#include "porttalk.c"
+#endif
+
 int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
