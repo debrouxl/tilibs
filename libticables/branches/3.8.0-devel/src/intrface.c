@@ -91,11 +91,10 @@ TICALL ticable_init()
   	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	setlocale(LC_ALL, "");
-  	bindtextdomain(PACKAGE, LOCALEDIR);
-  	DISPLAY("%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
+  	DISPLAY("libticables: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	DISPLAY("libticables: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	textdomain(PACKAGE);
+  	DISPLAY("libticables: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
   	DISPLAY(_("libticables: version %s\n"), LIBTICABLES_VERSION);
 
