@@ -8,6 +8,8 @@ Log:
 - 02/07/2004, version 0.6.0: roms
 	Loading of TI9x flash upgrades is less restrictive now. It can accept badly
 	formatted files.
+	Added checking for TI89 Titanium but FLASH upgrades have same extension and
+	same header.
 
 - 22/04/2004, version 0.5.9: roms
 	Patch from Adrian Mettler <amettler@hmc.edu> merged. His patch fixes

@@ -384,10 +384,12 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
     }
     fread(content->data_part, content->data_length, 1, f);
 
-	if((content->data_part[0x05] & 0x60) == 0x20)
-		content->device_type = DEVICE_TYPE_89;	// internal ROM
-	else
-		content->device_type = DEVICE_TYPE_92P;	// external ROM
+    switch(content->data_part[0x05] >> 4)
+    {
+    case 2:	content->device_type = DEVICE_TYPE_89; break;	// TI89 or V200
+    case 4: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
+    case 8: content->device_type = DEVICE_TYPE_89; break;   // TI89 Titanium
+    }
 
     content->next = NULL;
   } else {
