@@ -70,7 +70,7 @@
 #  endif
 # endif
 
-#elif defined(__LINUX__) || defined(__BSD__)	// GNU
+#elif defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)	// GNU
 # define TIEXPORT extern
 # define TICALL
 
