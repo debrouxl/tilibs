@@ -51,7 +51,14 @@ extern "C" {
 # else
 #  define TICALL
 # endif
+#else
+# define TICALL
+#endif
 
+#if defined(HAVE_FVISIBILITY)// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
+# define TIEXPORT __attribute__ ((visibility("default")))
+
+#elif defined(__WIN32__)
 # if defined(__BORLANDC__)		// BCC32 v5.x (or C++Builder)
 #  if __BORLANDC__ >= 0x0500	// (c) 2001 Thomas Wolf (two@chello.at)
 #   define TIEXPORT
@@ -66,9 +73,6 @@ extern "C" {
 #   define TIEXPORT __declspec(dllimport)
 #  endif
 
-# elif defined(HAVE_FVISIBILITY)// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
-#  define TIEXPORT __attribute__ ((visibility("default")))
-
 # elif defined(__MINGW32__)		// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
 #  if defined(DLL_EXPORT)		// defined by the configure script
 #   define TIEXPORT __declspec(dllexport)
@@ -79,11 +83,9 @@ extern "C" {
 
 #elif defined(__LINUX__) || defined(__BSD__)	// GNU
 # define TIEXPORT extern
-# define TICALL
 
 #else
 # define TIEXPORT				// default
-# define TICALL
 #endif
 
 #ifdef __cplusplus
