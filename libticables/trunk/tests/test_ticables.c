@@ -27,7 +27,7 @@
 #ifndef __WIN32__
 #include <unistd.h>
 #endif
-#include <sys/time.h>
+//#include <sys/time.h>
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>

@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 
-#include "cabl_def.h"
+//#include "/cabl_def.h"
 
 int win32_detect_os(char **os_type);
 int win32_detect_port(TicablePortInfo * pi);

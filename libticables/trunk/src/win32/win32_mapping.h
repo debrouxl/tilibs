@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 
-#include "cabl_def.h"
+//#include "cabl_def.h"
 
 int win32_get_method(TicableType type, int resources, TicableMethod *method);
 int win32_register_cable(TicableType type, TicableLinkCable *lc);

@@ -186,15 +186,7 @@ SOURCE=..\..\src\verbose.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\win32\win32_detect.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\win32\win32_ioports.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\win32\win32_mapping.c
 # End Source File
 # End Group
 # Begin Group "Headers"
