@@ -57,22 +57,24 @@ int ticalcs_instance = 0;	// counts # of instances
 */
 TIEXPORT int TICALL ticalc_init()
 {
+	char locale_dir[65536];
 #ifdef __WIN32__
 	HANDLE hDll;
-  	char LOCALEDIR[65536];
   	int i;
   	
   	// Get library path
   	hDll = GetModuleHandle("ticables.dll");
-  	GetModuleFileName(hDll, LOCALEDIR, 65535);
+  	GetModuleFileName(hDll, locale_dir, 65535);
   	
-  	for (i = strlen(LOCALEDIR); i >= 0; i--) {
-    		if (LOCALEDIR[i] == '\\')
+  	for (i = strlen(locale_dir); i >= 0; i--) {
+    		if (locale_dir[i] == '\\')
       			break;
   	}
   	
-  	LOCALEDIR[i] = '\0';
-  	strcat(LOCALEDIR, "\\locale");
+  	locale_dir[i] = '\0';
+  	strcat(locale_dir, "\\locale");
+#else
+	strcpy(locale_dir, LOCALEDIR);
 #endif
 
 	if (ticalcs_instance)
