@@ -9,6 +9,8 @@ Log:
 
 - 05/05/2004, version 3.8.5: roms
 	Bug fix in the verbose.c compatibility support (DISPLAY).
+	Merged Tijl's patch: does not build or use libusb support if libusb
+	not detected.
 	
 - 24/04/2004, version 3.8.4: roms
 	Added buffered write support to the SilverLink / Win32 module. 
