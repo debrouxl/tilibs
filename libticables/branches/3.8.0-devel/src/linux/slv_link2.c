@@ -188,7 +188,7 @@ int slv_open2()
   	/* Flush buffer */
   	/*
      	ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-     	MAX_PACKET_SIZE, (time_out * 10));
+     	MAX_PACKET_SIZE, (time_out * 100));
    	*/
 
 #if !defined(__BSD__)
@@ -264,7 +264,7 @@ int slv_put2(uint8_t data)
   	LOG_DATA(data);
 #ifndef BUFFERED_W
   	/* Byte per byte */
-  	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, (time_out * 10));
+  	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, 100*time_out);
   	if (ret <= 0) {
     		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
     		return ERR_WRITE_ERROR;
@@ -274,7 +274,7 @@ int slv_put2(uint8_t data)
   	wBuf2[nBytesWrite2++] = data;
   	if (nBytesWrite2 == MAX_PACKET_SIZE) {
 	    	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
-			       nBytesWrite2, (time_out * 10));
+			       nBytesWrite2, 100*time_out);
 	    	if (ret <= 0) {
 	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
 	      		return ERR_WRITE_ERROR;
@@ -292,14 +292,12 @@ int slv_get2(uint8_t * data)
   	tiTIME clk;
   	static uint8_t *rBuf2Ptr;
 
-  	//printf(".");
-
   	tdr.count++;
 #ifdef BUFFERED_W
   	/* Flush write buffer */
   	if (nBytesWrite2 > 0) {
     		ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
-		       nBytesWrite2, (time_out * 10));
+				     nBytesWrite2, 100*timeout);
 	    	nBytesWrite2 = 0;
 	    	if (ret <= 0) {
 	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
@@ -312,14 +310,14 @@ int slv_get2(uint8_t * data)
 	    	toSTART(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
-				  MAX_PACKET_SIZE, (time_out * 10));
+					    MAX_PACKET_SIZE, 100*time_out);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
 				printl1(2, _("weird, usb_bulk_read returns without any data; retrying for circumventing the quirk...\n"));
 	    	}
-	    	while (!ret);
-	
+		while(!ret);
+
 	    	if (ret < 0) {
 	      		printl1(2, "usb_bulk_read (%s).\n", usb_strerror());
 	      		nBytesRead2 = 0;
@@ -361,7 +359,7 @@ int slv_check2(int *status)
 	    	toSTART(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
-				  MAX_PACKET_SIZE, (time_out * 10));
+					    MAX_PACKET_SIZE, 100*time_out);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
