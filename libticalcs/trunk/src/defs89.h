@@ -121,10 +121,11 @@
 #define KEY89_8      56
 #define KEY89_9      57
 
-#define KEY89_UP     338
-#define KEY89_RIGHT  340
-#define KEY89_DOWN   344
-#define KEY89_LEFT   337
+// There is an error in the TI's key code list !
+#define KEY89_UP     337
+#define KEY89_RIGHT  344
+#define KEY89_DOWN   340
+#define KEY89_LEFT   338
 
 #define KEY89_2ND    4096
 #define KEY89_CTRL   8192

@@ -21,7 +21,7 @@
 
 // Little pause in milli-seconds
 
-#define pause_between_vars	250		// 250ms
+#define PAUSE_BETWEEN_VARS	250		// 250ms
 
 #if defined(__UNIX__) || defined(__LINUX__) || defined(__MACOSX__)
 # include <unistd.h>

@@ -410,6 +410,12 @@ int TICALL ticalc_get_calc(void)
   return calc_type;
 }
 
+TIEXPORT
+int TICALL ticalc_get_calc2(void)
+{
+  return calc_type;
+}
+
 static FILE* ti_file = NULL;
 
 /*

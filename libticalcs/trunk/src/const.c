@@ -64,7 +64,8 @@ static const char PAK_NAME[NCALCS+1][10]=
 };
 
 extern const struct ti_key TI89_KEYS[];
-extern const struct ti_key TI92_KEYS[];
+extern const struct ti_key TI92P_KEYS[];
+#define TI92_KEYS TI92P_KEYS
 
 TIEXPORT const char* TICALL ticalc_group_file_ext(int calc_type)
 {

@@ -55,8 +55,8 @@ struct varinfo
   struct varinfo *folder; // Points to the parent folder
   struct varinfo *next;   // Next variable (linked list)
 };
-typedef struct varinfo VAR_INFO;
-typedef struct varinfo VariableInfo;
+typedef struct varinfo VariableInfo; // obsolete
+typedef struct varinfo TicalcVarInfo;
 
 /*
   A structure used for the screendump functions
@@ -68,9 +68,8 @@ struct screen_coord
   byte clipped_width;  // clipped width (89 for instance)
   byte clipped_height; // clipped height (idem)
 };
-typedef struct screen_coord SCR_COORD;
-typedef struct screen_coord ScrCoord;
-typedef struct screen_coord ScreenCoord;
+typedef struct screen_coord ScrCoord; // obsolete
+typedef struct screen_coord TicalcScreenCoord;
 
 /* 
    A structure which contains the TI scancode of a TI key and additional
@@ -90,8 +89,8 @@ struct ti_key
   char *key5;		// ALPHA key		(83+,89)
   word alpha;
 };
-typedef struct ti_key TI_KEY;
-typedef struct ti_key TiKey;
+typedef struct ti_key TiKey; // obsolete
+typedef struct ti_key TicalcKey; 
 
 /* 
    Refresh/progress functions
@@ -109,8 +108,6 @@ struct ticalc_info_update
   float prev_main_percentage;// Previous percentage of all operations
   int count;                 // Number of bytes exchanged
   int total;                 // Number of bytes to exchange
-  clock_t start_time;        // Time when transfer has begun
-  clock_t current_time;      // Current time
 
   /* Functions for updating */
   void (*start)   (void);                   // Init internal variables
@@ -123,8 +120,8 @@ struct ticalc_info_update
 		   char *new_name);         // Display choice box (skip, rename
                                             // or overwrite, ... )
 };
-typedef struct ticalc_info_update INFO_UPDATE;
-typedef struct ticalc_info_update InfoUpdate;
+typedef struct ticalc_info_update InfoUpdate; // obsolete
+typedef struct ticalc_info_update TicalcInfoUpdate;
 
 /* 
    Calculator functions (independant of calculator model)
@@ -142,8 +139,8 @@ struct ticalc_fncts
 
   int (*send_key)        (word key);
   int (*screendump)      (byte **bitmap, int mode, 
-			  ScreenCoord *sc);
-  int (*directorylist)   (struct varinfo *list, int *n_elts);
+			  TicalcScreenCoord *sc);
+  int (*directorylist)   (TicalcVarInfo *list, int *n_elts);
 
   int (*recv_backup)     (FILE *file, int mode, longword *version);
   int (*send_backup)     (FILE *file, int mode);
@@ -161,20 +158,19 @@ struct ticalc_fncts
   int (*get_rom_version) (char *version);
 
   /* General purpose routines */
-  const struct ti_key (*ascii2ti_key) (unsigned char ascii_code);
+  const TicalcKey (*ascii2ti_key) (unsigned char ascii_code);
   char* (*translate_varname) (char *varname, char *translate, byte vartype);
   void  (*generate_single_file_header) (FILE *file, 
 					int mode,
 					const char *id, 
-					struct varinfo *v);
+					TicalcVarInfo *v);
   void  (*generate_group_file_header)  (FILE *file,
 					int mode,
 					const char *id,
-					struct varinfo *list,
+					TicalcVarInfo *list,
 					int calc_type);
   int   (*supported_operations) (void);
 };
-typedef struct ticalc_fncts TICALC_FNCTS;
 typedef struct ticalc_fncts TicalcFncts;
 
 

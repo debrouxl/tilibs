@@ -26,7 +26,7 @@
  *   This function generates the header for single variable files 
  */
 void generate_89_92_92p_single_file_header(FILE *file, int mask_mode, 
-					   const char *id, struct varinfo *v)
+					   const char *id, TicalcVarInfo *v)
 {
   char *varname=v->varname;
   char *folder=(v->folder)->varname;
@@ -65,7 +65,7 @@ void generate_89_92_92p_single_file_header(FILE *file, int mask_mode,
 void generate_89_92_92p_group_file_header_from_varlist(FILE *file, 
 						       int mask_mode, 
 						       const char *id, 
-						       struct varinfo *list,
+						       TicalcVarInfo *list,
 						       int calc_type)
 {
   longword index=0x52;
@@ -77,7 +77,7 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
   int j=0;
   long file_offset=0;
   word num_vars=0;
-  struct varinfo *v;
+  TicalcVarInfo *v;
 
   fprintf(file, id);
   fprintf(file, "%c%c", 0x01, 0x00);
@@ -171,7 +171,7 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
 
 
 void generate_82_83_85_86_single_file_header(FILE *file, int mask_mode,
-                                           const char *id, struct varinfo *v)
+                                           const char *id, TicalcVarInfo *v)
 {
   return;
 }
@@ -181,7 +181,7 @@ void generate_82_83_85_86_single_file_header(FILE *file, int mask_mode,
 void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
                                                        int mask_mode,
                                                        const char *id,
-                                                       struct varinfo *list,
+                                                       TicalcVarInfo *list,
                                                        int calc_type)
 {
   return;
@@ -194,9 +194,9 @@ void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
  * - vi [in]: a linked list of vars/folders such as one provided by a dirlist
  * - vn [in]: the varname to search (local or full)
  */
-int check_if_var_exist(VAR_INFO *vi, char *vn)
+int check_if_var_exist(TicalcVarInfo *vi, char *vn)
 {
-  VAR_INFO *ptr;
+  TicalcVarInfo *ptr;
   char folder_name[9] = "";
   char variable_name[9] = "";
   int b = 0;

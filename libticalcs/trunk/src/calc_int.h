@@ -55,7 +55,8 @@ extern "C" {
   void TICALL ticalc_set_calc(int type, TicalcFncts *calc, LinkCable *link);
   void TICALL ticalc_set_cable(LinkCable *lc);
   void TICALL ticalc_set_calc2(int type, TicalcFncts *calc);  
-  int  TICALL ticalc_get_calc(void);
+  int  TICALL ticalc_get_calc(int *type);
+  int  TICALL ticalc_get_calc2(void);
   
   int  TICALL detect_calc(int *calc_type);
   int  TICALL ticalc_89_92_92p_isready(int *calc_type);  // obsolete

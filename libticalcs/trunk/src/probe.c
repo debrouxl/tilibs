@@ -227,8 +227,6 @@ static int tiXX_isOK(byte *d)
   return 0;
 }
 
-int ticalc_get_calc(void); // defined in intrface.c
-
 /*
   Check if the calculator is ready and detect the type.
   Works only with TI89/92/92+ calculators.
@@ -248,7 +246,7 @@ TIEXPORT int TICALL ti89_92_92p_isready(int *calc_type)
   byte data;
   int ct;
 
-  ct = ticalc_get_calc();
+  ticalc_get_calc(&ct);
 
   if( (ct != CALC_TI89) && (ct != CALC_TI92) && (ct != CALC_TI92P) )
     return 0;
@@ -348,7 +346,7 @@ TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
   byte data;
   int ct;
 
-  ct = ticalc_get_calc();
+  ticalc_get_calc(&ct);
   if( (ct != CALC_TI89) && (ct != CALC_TI92P) && (ct != CALC_TI73) && (ct != CALC_TI83P) )
     return 0;
   

@@ -1052,7 +1052,7 @@ int ti89_recv_var(FILE *file, int mask_mode,
   
   update_start();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
   //UNLOCK_TRANSFER();
 
   return 0;
@@ -1359,7 +1359,7 @@ int ti89_send_var(FILE *file, int mask_mode)
 	  update->label();
 	}
       DISPLAY("\n");
-      PAUSE(pause_between_vars);
+      PAUSE(PAUSE_BETWEEN_VARS);
     }
 
   update_stop();
@@ -2140,7 +2140,7 @@ int ti89_recv_flash(FILE *file, int mask_mode, char *appname)
 
   update->start();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
   //UNLOCK_TRANSFER();
 
   return 0;

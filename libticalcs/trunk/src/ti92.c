@@ -1196,7 +1196,7 @@ int ti92_recv_var(FILE *file, int mask_mode,
 
   update_stop();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
 
   return 0;
 }
@@ -1476,7 +1476,7 @@ int ti92_send_var(FILE *file, int mask_mode)
           update_label();
         }
       DISPLAY("\n");
-      PAUSE(pause_between_vars);
+      PAUSE(PAUSE_BETWEEN_VARS);
     }
   update_stop();
   TRY(cable->close());
@@ -1597,101 +1597,7 @@ int ti92_dump_rom(FILE *file, int mask_mode)
 
 int ti92_get_rom_version(char *version)
 {
-  byte data;
-  word sum;
-  word checksum;
-  int i;
-  int b;
-  word block_size;
-  word num_bytes;
-
-  TRY(cable->open());
-  update_start();
-
-  /* Check if TI is ready*/
-  TRY(ti92_isready());  
-  
-  sum=0;
-  num_bytes=0;
-  DISPLAY("Request backup...\n");
-  /* Request a backup */
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_REQUEST));
-  TRY(cable->put(0x12));
-  TRY(cable->put(0x00));
-  for(i=0; i<4; i++) { TRY(cable->put(0x00)); }
-  TRY(cable->put(TI92_BKUP));
-  sum+=0x1D;
-  TRY(cable->put(0x0C));
-  sum+=0x0C;
-  TRY(ti92_sendstring("main\\version", &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  /* Check if TI replies OK */
-  TRY(ti92_isOK());
-  
-  /* Receive the ROM version */
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return 8;
-  TRY(cable->get(&data));
-  
-  if(data != CMD92_VAR_HEADER) return 8;
-  
-  TRY(cable->get(&data));
-  if(data == 0x09) { b=0; } else { b=1; }
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  block_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  block_size += (data << 8);
-  sum+=data;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-    }
-  TRY(cable->get(&data));
-  version[0]=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  version[1]=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  version[2]=data;
-  version[3]='\0';
-  sum+=data;
-  if(b == 1)
-    {
-      TRY(cable->get(&data));
-      version[3]=data;
-      version[4]='\0';
-      sum+=data;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return 9;
-  
-  /* Abort transfer */  
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_CHK_ERROR));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_CHK_ERROR));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("ROM version %s\n", version);
-  
-  DISPLAY("\n");
-  update_stop();
-  TRY(cable->close());	
-  
-  return 0;
+  return ERR_VOID_FUNCTION;
 }
 
 int ti92_send_flash(FILE *file, int mask_mode)

@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef KEYS92_H
-#define KEYS92_H
+#ifndef KEYS92P_H
+#define KEYS92P_H
 
 #include "calc_def.h"
 
@@ -32,7 +32,7 @@
 
   The array can be used in reverse order too, at least for the first column...
 */
-const struct ti_key TI92_KEYS[]=
+const struct ti_key TI92P_KEYS[]=
 {
 /* 0x00, 0-15 */
   { "", "", 0, "", 0, "", 0, "", 0, "", 0 },
@@ -409,5 +409,7 @@ const struct ti_key TI92_KEYS[]=
   { "", "", 0, "", 0, "", 0, "", 0 }
 /* 0x160 */
 };
+
+#define TI92_KEYS TI92P_KEYS
 
 #endif

@@ -1024,7 +1024,7 @@ int ti92p_recv_var(FILE *file, int mask_mode,
 
   update->start();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
 
   return 0;
 }
@@ -1334,7 +1334,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
           update->label();
         }
       DISPLAY("\n");
-      PAUSE(pause_between_vars);
+      PAUSE(PAUSE_BETWEEN_VARS);
     }
 
   update->start();
@@ -2231,7 +2231,7 @@ int ti92p_recv_flash(FILE *file, int mask_mode, char *appname)
 
   update->start();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
 
   return 0;
 }

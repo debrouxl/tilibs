@@ -1036,7 +1036,7 @@ int ti86_recv_var(FILE *file, int mask_mode,
 
   update_start();
   TRY(cable->close());
-  PAUSE(pause_between_vars);
+  PAUSE(PAUSE_BETWEEN_VARS);
 
   return 0;
 }

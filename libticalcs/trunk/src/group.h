@@ -24,23 +24,23 @@
 
 // 89, 92, 92+
 void generate_89_92_92p_single_file_header(FILE *file, int mask_mode, 
-					   const char *id, struct varinfo *v);
+					   const char *id, TicalcVarInfo *v);
 void generate_89_92_92p_group_file_header_from_varlist(FILE *file, 
 						       int mask_mode, 
 						       const char *id, 
-						       struct varinfo *list, 
+						       TicalcVarInfo *list, 
 						       int calc_type);
 
 // 82, 83, 85, 86
 void generate_82_83_85_86_single_file_header(FILE *file, int mask_mode,
-                                           const char *id, struct varinfo *v);
+                                           const char *id, TicalcVarInfo *v);
 void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
                                                        int mask_mode,
                                                        const char *id,
-                                                       struct varinfo *list,
+                                                       TicalcVarInfo *list,
                                                        int calc_type);
 
-int check_if_var_exist(VAR_INFO *vi, char *vn);
+int check_if_var_exist(TicalcVarInfo *vi, char *vn);
 
 #endif
 
