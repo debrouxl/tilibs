@@ -35,8 +35,12 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
+#if defined(__I386__) && defined(HAVE_SYS_PERM_H)
 #include <sys/perm.h>
+#endif
+#if defined(__I386__) && defined(HAVE_SYS_IO_H)
+#include <sys/io.h>
+#elif defined(__I386__) && defined(HAVE_ASM_IO_H)
 #include <asm/io.h>
 #endif
 
