@@ -33,8 +33,7 @@
 
 #include "tifiles.h"
 #include "typesxx.h"
-//#include "trans.h"
-#include "grp_ops.h"
+#include "grouped.h"
 #include "logging.h"
 
 /*****************/

@@ -24,17 +24,10 @@
   Calcs: 73/82/83/83+/85/86 & 89/92/92+
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "tifiles.h"
 #include "error.h"
-#include "typesxx.h"
-#include "filesxx.h"
 #include "macros.h"
 
-extern TiCalcType tifiles_calc_type;	// current calculator type
 
 /************************/
 /* (Un)grouping content */
@@ -48,8 +41,7 @@ extern TiCalcType tifiles_calc_type;	// current calculator type
   file. It's dynamically allocated.
   - int [out]: an error code.
 */
-TIEXPORT int TICALL tifiles_group_contents(TiRegular ** srcs,
-					   TiRegular ** dest)
+TIEXPORT int TICALL tifiles_group_contents(TiRegular **srcs, TiRegular **dest)
 {
   TiRegular *dst;
   int i;
@@ -85,8 +77,7 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular ** srcs,
   by the function.
   - int [out]: an error code.
  */
-TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src,
-					    TiRegular *** dest)
+TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular *** dest)
 {
   int i;
   TiRegular **dst;
@@ -136,8 +127,7 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src,
   - filename [in]: the filename where the group will be written
   - int [out]: an error code
  */
-TIEXPORT int TICALL tifiles_group_files(char **filenames,
-					const char *filename)
+TIEXPORT int TICALL tifiles_group_files(char **filenames, const char *filename)
 {
   int i, n;
   TiRegular **src = NULL;

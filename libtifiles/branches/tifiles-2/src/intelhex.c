@@ -20,10 +20,7 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "stdints.h"
-
 #include "macros.h"
 #include "intelhex.h"
 

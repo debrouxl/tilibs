@@ -304,19 +304,3 @@ int TICALL tifiles_build_fullname(TiCalcType model, char *full_name,
   return 0;
 }
 
-int is_regfile(const char *filename)
-{
-#ifndef __WIN32__
-  struct stat buf;
-
-  if (stat(filename, &buf) < 0)
-    return 0;
-
-  if (S_ISREG(buf.st_mode))
-    return !0;
-  else
-    return 0;
-#else
-  return !0;
-#endif
-}

@@ -266,7 +266,11 @@ SOURCE=..\..\src\filesxx.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\grp_ops.c
+SOURCE=..\..\src\filetypes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\grouped.c
 # End Source File
 # Begin Source File
 
@@ -278,11 +282,19 @@ SOURCE=..\..\src\intelhex.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\error.c
+SOURCE=..\..\src\fileops.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\fileops.c
+SOURCE=..\..\src\transcode.c
+# End Source File
+# End Group
+# Begin Group "Interface"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\error.c
 # End Source File
 # Begin Source File
 
@@ -291,10 +303,6 @@ SOURCE=..\..\src\logging.c
 # Begin Source File
 
 SOURCE=..\..\src\tifiles.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\transcode.c
 # End Source File
 # Begin Source File
 

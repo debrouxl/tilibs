@@ -79,11 +79,13 @@ extern "C" {
   /* General functions */
   /*********************/
 
-  // intrface.c
+  // interface.c
   TIEXPORT const char* TICALL tifiles_get_version(void);
+
+  // error.c
   TIEXPORT int         TICALL tifiles_get_error(int number, char **message);
 
-  // trans.c
+  // transcode.c
   TIEXPORT uint8_t TICALL *tixx_detokenize_varname(TiCalcType model, const char *src, char *dst, uint8_t vartype);
 
   TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcType model, char* dst, const char *src);
@@ -95,6 +97,20 @@ extern "C" {
 
   TIEXPORT char *TICALL tifiles_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype);
   TIEXPORT char *TICALL tifiles_translate_varname_static(TiCalcType model, const char *src, uint8_t vartype);
+
+  // filetypes.c
+  TIEXPORT const char* TICALL tifiles_group_file_ext(TiCalcType model);
+  TIEXPORT const char* TICALL tifiles_backup_file_ext(TiCalcType model);
+  TIEXPORT const char* TICALL tifiles_flash_app_file_ext(TiCalcType model);
+  TIEXPORT const char* TICALL tifiles_flash_os_file_ext(TiCalcType model);
+
+  TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_single_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_group_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_regular_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_backup_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename);
   
   // typesXX.c
   TIEXPORT const char* TICALL tifiles_vartype2string(uint8_t data);
@@ -104,19 +120,6 @@ extern "C" {
 
   TIEXPORT const char* TICALL tifiles_vartype2icon(uint8_t data);
   TIEXPORT const char* TICALL tifiles_vartype2desc(uint8_t data);
-
-  TIEXPORT const char* TICALL tifiles_group_file_ext(void);
-  TIEXPORT const char* TICALL tifiles_backup_file_ext(void);
-  TIEXPORT const char* TICALL tifiles_flash_app_file_ext(void);
-  TIEXPORT const char* TICALL tifiles_flash_os_file_ext(void);
-
-  TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_single_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_group_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_regular_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_backup_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename);
-  TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename);
 
   TIEXPORT int TICALL tifiles_which_calc_type(const char *filename);
   TIEXPORT int TICALL tifiles_which_file_type(const char *filename);
@@ -134,7 +137,7 @@ extern "C" {
   TIEXPORT int TICALL tifiles_is_ti8x(TiCalcType calc_type);
   TIEXPORT int TICALL tifiles_is_ti9x(TiCalcType calc_type);
 
-  // misc.c
+  // fileops.c
   TIEXPORT char* TICALL tifiles_get_extension(const char *filename);
   TIEXPORT char* TICALL tifiles_dup_extension(const char *filename);
 
@@ -162,7 +165,7 @@ extern "C" {
 						      int ***tabl,
 						      int *nfolders);
 
-  // grp_ops.c
+  // grouped.c
   TIEXPORT int TICALL tifiles_group_contents(TiRegular ** srcs,
 					     TiRegular ** dest);
   TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src,
