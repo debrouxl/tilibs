@@ -1,0 +1,14 @@
+[Main]
+Name=is_silent
+Type=Enum
+Header=calc_int.h
+Definition=int is_silent
+
+[Summary]
+This field is set to 0 when the calculator does not have the silent linking capability.
+
+[Description]
+The following calculator has the silent link capability: TI73, TI83(+), TI86, TI89, TI92(+), V200.
+
+[See also]
+@TicalcFunctions@

@@ -1,0 +1,457 @@
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+ACLOCALDIR = @ACLOCALDIR@
+AS = @AS@
+AWK = @AWK@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CXX = @CXX@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
+GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
+INSTOBJEXT = @INSTOBJEXT@
+INTLBISON = @INTLBISON@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+LDFLAGS = @LDFLAGS@
+LIB = @LIB@
+LIBICONV = @LIBICONV@
+LIBINTL = @LIBINTL@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTLIB = @LTLIB@
+LTLIBICONV = @LTLIBICONV@
+LTLIBINTL = @LTLIBINTL@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_RELEASE = @LT_RELEASE@
+LT_REVISION = @LT_REVISION@
+MAJOR_VERSION = @MAJOR_VERSION@
+MAKEINFO = @MAKEINFO@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+TICABLES_CFLAGS = @TICABLES_CFLAGS@
+TICABLES_LIBS = @TICABLES_LIBS@
+TIFILES_CFLAGS = @TIFILES_CFLAGS@
+TIFILES_LIBS = @TIFILES_LIBS@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+locale_dir = @locale_dir@
+
+DEFS = @DEFS@ -DLOCALEDIR=\"$(locale_dir)\"
+
+INCLUDES = -I$(top_srcdir) -I$(includedir)         -I../intl -I$(top_srcdir)/intl         -DPREFIX=\"${prefix}\" -I.
+
+
+# libraries to compile and install
+lib_LTLIBRARIES = libticalcs-4.la
+
+# libtool stuff: set version and export symbols for resolving
+libticalcsincludedir = $(includedir)/tilp
+libticalcs_4_la_LDFLAGS =  	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) 	-export-dynamic $(no_undefined)
+
+
+# ticalcs header files for public installation (non-generated)
+libticalcsinclude_HEADERS =  	calc_def.h 	calc_err.h 	calc_int.h 	calc_ver.h 	headers.h 	intl2.h 	keys73.h 	keys83p.h 	keys89.h 	keys92p.h 	pause.h 	update.h 	ticalcs.h 	tikeys.h
+
+
+# setup source file variables
+libticalcs_4_la_SOURCES =  	clock.c 	cmd73.c 	cmd82.c 	cmd85.c 	cmd89.c 	cmd92.c 	dirlist.c 	error.c 	intrface.c 	keys73.c 	keys83p.c 	keys89.c 	keys92p.c 	packets.c 	probe.c 	ti73.c 	ti82.c 	ti83.c 	ti85.c 	ti86.c 	ti89.c 	ti92.c 	tikeys.c 	type2str.c
+
+
+# objects
+libticalcs_4_OBJECTS =          error.o
+
+
+MAINTAINERCLEANFILES = 
+EXTRA_HEADERS = 
+EXTRA_DIST = *.h
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+CPPFLAGS = @CPPFLAGS@
+LIBS = @LIBS@
+libticalcs_4_la_LIBADD = 
+libticalcs_4_la_OBJECTS =  clock.lo cmd73.lo cmd82.lo cmd85.lo cmd89.lo \
+cmd92.lo dirlist.lo error.lo intrface.lo keys73.lo keys83p.lo keys89.lo \
+keys92p.lo packets.lo probe.lo ti73.lo ti82.lo ti83.lo ti85.lo ti86.lo \
+ti89.lo ti92.lo tikeys.lo type2str.lo
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libticalcsinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = tar
+GZIP_ENV = --best
+SOURCES = $(libticalcs_4_la_SOURCES)
+OBJECTS = $(libticalcs_4_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libticalcs-4.la: $(libticalcs_4_la_OBJECTS) $(libticalcs_4_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libticalcs_4_la_LDFLAGS) $(libticalcs_4_la_OBJECTS) $(libticalcs_4_la_LIBADD) $(LIBS)
+
+install-libticalcsincludeHEADERS: $(libticalcsinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libticalcsincludedir)
+	@list='$(libticalcsinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libticalcsincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libticalcsincludedir)/$$p; \
+	done
+
+uninstall-libticalcsincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libticalcsinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libticalcsincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+clock.lo clock.o : clock.c headers.h ../config.h
+cmd73.lo cmd73.o : cmd73.c headers.h ../config.h packets.h calc_err.h \
+	update.h externs.h calc_def.h
+cmd82.lo cmd82.o : cmd82.c headers.h ../config.h packets.h calc_err.h \
+	update.h
+cmd85.lo cmd85.o : cmd85.c headers.h ../config.h packets.h calc_err.h \
+	update.h externs.h calc_def.h
+cmd89.lo cmd89.o : cmd89.c headers.h ../config.h packets.h calc_err.h \
+	update.h externs.h calc_def.h
+cmd92.lo cmd92.o : cmd92.c headers.h ../config.h packets.h calc_err.h \
+	update.h externs.h calc_def.h
+dirlist.lo dirlist.o : dirlist.c calc_def.h ../config.h headers.h \
+	intl2.h
+error.lo error.o : error.c calc_err.h headers.h ../config.h update.h \
+	intl2.h
+intrface.lo intrface.o : intrface.c intl2.h ../config.h headers.h \
+	calc_ver.h calc_err.h calc_def.h tixx.h ti92.h ti89.h ti86.h \
+	ti85.h ti83.h ti82.h ti73.h type2str.h
+keys73.lo keys73.o : keys73.c calc_def.h ../config.h headers.h
+keys83p.lo keys83p.o : keys83p.c calc_def.h ../config.h headers.h
+keys89.lo keys89.o : keys89.c calc_def.h ../config.h headers.h
+keys92p.lo keys92p.o : keys92p.c calc_def.h ../config.h headers.h
+packets.lo packets.o : packets.c headers.h ../config.h externs.h \
+	calc_def.h update.h packets.h calc_err.h
+probe.lo probe.o : probe.c intl2.h ../config.h export.h headers.h \
+	calc_err.h calc_int.h calc_def.h externs.h packets.h update.h
+ti73.lo ti73.o : ti73.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd73.h rom83p.h \
+	pause.h
+ti82.lo ti82.o : ti82.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd82.h rom82.h
+ti83.lo ti83.o : ti83.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd82.h rom83.h \
+	pause.h
+ti85.lo ti85.o : ti85.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd85.h rom85u.h \
+	rom85z.h
+ti86.lo ti86.o : ti86.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd85.h rom86.h \
+	pause.h
+ti89.lo ti89.o : ti89.c intl2.h ../config.h headers.h externs.h \
+	calc_def.h update.h packets.h calc_err.h cmd89.h rom89.h \
+	keys89.h pause.h dirlist.h
+ti92.lo ti92.o : ti92.c headers.h ../config.h externs.h calc_def.h \
+	update.h packets.h calc_err.h cmd92.h rom92f2.h keys92p.h \
+	pause.h dirlist.h
+tikeys.lo tikeys.o : tikeys.c calc_def.h ../config.h headers.h keys73.h \
+	keys83p.h keys89.h keys92p.h
+type2str.lo type2str.o : type2str.c intl2.h ../config.h calc_def.h \
+	headers.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-libticalcsincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES \
+		uninstall-libticalcsincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(libticalcsincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool uninstall-libticalcsincludeHEADERS \
+install-libticalcsincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+@OS_WIN32_TRUE@ no_undefined = -no-undefined
+
+dos2unix:
+	dos2unix
+	lowercase
+	uppercase
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

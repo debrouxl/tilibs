@@ -1,0 +1,11 @@
+[Main]
+Name=uint8_t
+Type=Define
+Header=stdint.h
+Definition=typedef uint8_t
+
+[Summary]
+A ISO C99 normalized type.
+
+[Description]
+An unsigned 8-bits value.

@@ -1,0 +1,35 @@
+[Main]
+Name=TicalcOperations
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcOperations
+
+[Fields]
+OPS_NONE : 0
+OPS_ISREADY : @ticalcfncts.isready@
+OPS_SEND_KEY : @ticalcfncts.send_key@
+OPS_RECV_KEY : deprecated
+OPS_REMOTE : deprecated
+OPS_SCREENDUMP : @ticalcfncts.screendump@
+OPS_DIRLIST : @ticalcfncts.directorylist@
+OPS_RECV_BACKUP : @ticalcfncts.recv_backup@
+OPS_SEND_BACKUP : @ticalcfncts.send_backup@
+OPS_RECV_VARS : @ticalcfncts.recv_var@
+OPS_SEND_VARS : @ticalcfncts.send_var@
+OPS_SEND_FLASH : @ticalcfncts.send_flash@
+OPS_RECV_FLASH : @ticalcfncts.recv_flash@
+OPS_IDLIST : @ticalcfncts.get_idlist@
+OPS_ROMDUMP : @ticalcfncts.dump_rom@
+OPS_ROMVERSION : not used any longer
+OPS_CLOCK : @ticalcfncts.set_clock@ & @ticalcfncts.get_clock@
+
+[Summary]
+Defines which operations the calculator support.
+
+[Explanation]
+The function returns a value which is an OR of the values above.
+By calling this functions, you can know which functions are supported.
+The others returns ERR_VOID_FUNCTION.
+
+[See also]
+@TicalcFncts@

@@ -1,0 +1,19 @@
+[Main]
+Name=set_clock
+Type=Function
+Header=calc_int.h
+Definition=int (*set_clock) (const TicalcClock * clock, int mode);
+
+[Parameters]
+clock : the date, time and clock settings
+mode : a set of @TicalcMaskMode@ flags.
+Returns : 0 if successful, an error code otherwise.
+
+[Summary]
+Set the calculator clock.
+
+[Description]
+This function set a new clock and change the way the clock is displayed (time & date format).
+
+[See also]
+@ticalcfunctions.get_clock@
