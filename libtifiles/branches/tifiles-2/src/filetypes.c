@@ -64,6 +64,14 @@ static const char FLASH_OS_FILE_EXT[NCALCS + 1][4] =
 /* File extensions */
 /*******************/
 
+/**
+ * tifiles_group_file_ext:
+ * @model: a calculator model.
+ *
+ * Returns file extension of a group file.
+ *
+ * Return value: a file extenstion as string (like "83g").
+ **/
 TIEXPORT const char *TICALL tifiles_group_file_ext(TiCalcType model)
 {
   switch (model) 
@@ -100,6 +108,14 @@ TIEXPORT const char *TICALL tifiles_group_file_ext(TiCalcType model)
   return NULL;
 }
 
+/**
+ * tifiles_backup_file_ext:
+ * @model: a calculator model.
+ *
+ * Returns file extension of a backup file.
+ *
+ * Return value: a file extenstion as string (like "83b").
+ **/
 TIEXPORT const char *TICALL tifiles_backup_file_ext(TiCalcType model)
 {
   switch (model) 
@@ -136,6 +152,14 @@ TIEXPORT const char *TICALL tifiles_backup_file_ext(TiCalcType model)
   return NULL;
 }
 
+/**
+ * tifiles_flash_app_file_ext:
+ * @model: a calculator model.
+ *
+ * Returns file extension of a FLASH application file.
+ *
+ * Return value: a file extenstion as string (like "89k").
+ **/
 TIEXPORT const char *TICALL tifiles_flash_app_file_ext(TiCalcType model)
 {
   switch (model) 
@@ -172,6 +196,14 @@ TIEXPORT const char *TICALL tifiles_flash_app_file_ext(TiCalcType model)
   return NULL;
 }
 
+/**
+ * tifiles_flash_os_file_ext:
+ * @model: a calculator model.
+ *
+ * Returns file extension of a FLASH Operating System file.
+ *
+ * Return value: a file extenstion as string (like "89u").
+ **/
 TIEXPORT const char *TICALL tifiles_flash_os_file_ext(TiCalcType model)
 {
   switch (model) 
@@ -208,12 +240,14 @@ TIEXPORT const char *TICALL tifiles_flash_os_file_ext(TiCalcType model)
   return NULL;
 }
 
-/*
-  Retrieve the extension of a file
-  - filename [in]: a filename
-  - ext [out]: the extension
-  - [out]: the extension
-*/
+/**
+ * tifiles_fext_get:
+ * @filename: a filename as string.
+ *
+ * Returns file extension part.
+ *
+ * Return value: a file extension without dot as string (like "89g").
+ **/
 TIEXPORT char *TICALL tifiles_fext_get(const char *filename)
 {
   char *d = NULL;
@@ -225,6 +259,15 @@ TIEXPORT char *TICALL tifiles_fext_get(const char *filename)
   return (++d);
 }
 
+/**
+ * tifiles_fext_dup:
+ * @filename: a filename as string.
+ *
+ * Returns a copy of file extension part.
+ *
+ * Return value: a file extension without dot as string (like "89g").
+ * Need to be freed when no longer needed.
+ **/
 TIEXPORT char *TICALL tifiles_fext_dup(const char *filename)
 {
   char *ext = tifiles_fext_get(filename);
@@ -258,13 +301,15 @@ static int is_regfile(const char *filename)
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
 
-/*
-  Check if the file is a valid TI file by
-  reading its signature
-  - filename [in]: a file name
-  - int [out]: TRUE if valid file, FALSE otherwise
- */
-TIEXPORT int TICALL tifiles_is_ti_file(const char *filename)
+/**
+ * tifiles_file_is_ti:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a TI file by checking the signature.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 {
   FILE *f;
   char buf[9];
@@ -304,12 +349,15 @@ TIEXPORT int TICALL tifiles_is_ti_file(const char *filename)
   return 0;
 }
 
-/*
-  Check whether it is a single file
-  - filename [in]: a file name
-  - int [out]: TRUE if group file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_single_file(const char *filename)
+/**
+ * tifiles_file_is_single:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a single TI file (like program, function, ...).
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_single(const char *filename)
 {
   if (!tifiles_is_ti_file(filename))
     return 0;
@@ -322,12 +370,15 @@ TIEXPORT int TICALL tifiles_is_single_file(const char *filename)
     return !0;
 }
 
-/* 
-   Check whether it is a group file
-   - filename [in]: a file name
-   - int [out]: TRUE if group file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_group_file(const char *filename)
+/**
+ * tifiles_file_is_group:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a group file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_group(const char *filename)
 {
   int i;
   char *e = tifiles_fext_get(filename);
@@ -347,12 +398,15 @@ TIEXPORT int TICALL tifiles_is_group_file(const char *filename)
   return 0;
 }
 
-/*
-   Check whether it is a regular file (single | group)
-   - filename [in]: a file name
-   - int [out]: TRUE if group file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_regular_file(const char *filename)
+/**
+ * tifiles_file_is_regular:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a single or group file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_regular(const char *filename)
 {
   if (!tifiles_is_ti_file(filename))
     return 0;
@@ -361,12 +415,15 @@ TIEXPORT int TICALL tifiles_is_regular_file(const char *filename)
 	  tifiles_is_group_file(filename));
 }
 
-/* 
-   Check whether it is a backup file
-   - filename [in]: a file name
-   - int [out]: TRUE if backup file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_backup_file(const char *filename)
+/**
+ * tifiles_file_is_backup:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a backup file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_backup(const char *filename)
 {
   int i;
   char *e = tifiles_fext_get(filename);
@@ -386,12 +443,15 @@ TIEXPORT int TICALL tifiles_is_backup_file(const char *filename)
   return 0;
 }
 
-/* 
-   Check whether it is a flash file
-   - filename [in]: a file name
-   - int [out]: TRUE if flash file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_flash_file(const char *filename)
+/**
+ * tifiles_file_is_flash:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a FLASH file (os or app).
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
 {
   int i;
   char *e = tifiles_fext_get(filename);
@@ -412,12 +472,15 @@ TIEXPORT int TICALL tifiles_is_flash_file(const char *filename)
   return 0;
 }
 
-/* 
-   Check whether it is a tib file
-   - filename [in]: a file name
-   - int [out]: TRUE if tib file, FALSE otherwise
-*/
-TIEXPORT int TICALL tifiles_is_tib_file(const char *filename)
+/**
+ * tifiles_file_is_tib:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a TIB formatted file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
 
@@ -441,12 +504,15 @@ TIEXPORT int TICALL tifiles_is_tib_file(const char *filename)
 /********/
 
 /* Note: a better way should be to open the file and read the signature */
-/* 
-   Return the calc type corresponding to the file
-   - filename [in]: a filename
-   - int [out]: the calculator type
-*/
-TIEXPORT TiCalcType TICALL tifiles_which_calc_type(const char *filename)
+/**
+ * tifiles_file_get_model:
+ * @filename: a filename as string.
+ *
+ * Returns the calculator model targetted for this file.
+ *
+ * Return value: a model taken in #TiCalcModel.
+ **/
+TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename)
 {
   char *ext;
   int type = CALC_NONE;
@@ -485,12 +551,15 @@ TIEXPORT TiCalcType TICALL tifiles_which_calc_type(const char *filename)
   return type;
 }
 
-/*
-   Return the file type corresponding to the file
-   - filename [in]: a filename
-   - int [out]: the file type
-*/
-TIEXPORT TiFileType TICALL tifiles_which_file_type(const char *filename)
+/**
+ * tifiles_file_get_class:
+ * @filename: a filename as string.
+ *
+ * Returns the file class (single, group, backup, flash).
+ *
+ * Return value: a value in #TiFileClass.
+ **/
+TIEXPORT TiFileClass TICALL tifiles_file_get_class(const char *filename)
 {
   if (tifiles_is_single_file(filename))
     return TIFILE_SINGLE;
@@ -504,13 +573,15 @@ TIEXPORT TiFileType TICALL tifiles_which_file_type(const char *filename)
     return 0;
 }
 
-/*
-   Return the descriptive of the file such as 'Vector' or 'String'.
-   This function is localized (i18n).
-   - filename [in]: a filename
-   - char* [out]: the descriptive
-*/
-TIEXPORT const char *TICALL tifiles_file_descriptive(const char *filename)
+/**
+ * tifiles_file_get_type:
+ * @filename: a filename as string.
+ *
+ * Returns the type of file (function, program, ...).
+ *
+ * Return value: a string like "Assembly Program" (localized).
+ **/
+TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
 {
   char *ext;
 
@@ -571,14 +642,15 @@ TIEXPORT const char *TICALL tifiles_file_descriptive(const char *filename)
   return "";
 }
 
-/*
-   Return an icon name associated with the file type.
-   This function is the same than 'tifiles_file_descriptive' but it is
-   not localized (i18n).
-   - filename [in]: a filename
-   - char* [out]: the icon name, such as 'Vector'.
-*/
-TIEXPORT const char *TICALL tifiles_file_icon(const char *filename)
+/**
+ * tifiles_file_get_icon:
+ * @filename: a filename as string.
+ *
+ * Returns the type of file (function, program, ...).
+ *
+ * Return value: a string like "Assembly Program" (non localized).
+ **/
+TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
 {
   char *ext;
 

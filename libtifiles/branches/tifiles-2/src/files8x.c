@@ -45,12 +45,12 @@ extern int tifiles_calc_type;
 
 static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
 
-static int is_ti8586(TiCalcType calc_type)
+static int is_ti8586(TiCalcModel calc_type)
 {
   return ((calc_type == CALC_TI85) || (calc_type == CALC_TI86));
 }
 
-static int is_ti83p(TiCalcType calc_type)
+static int is_ti83p(TiCalcModel calc_type)
 {
   return (calc_type == CALC_TI83P) || (calc_type == CALC_TI84P);
 }

@@ -27,15 +27,22 @@
 #include "typesxx.h"
 #include "rwfile.h"
 
-extern int tifiles_calc_type;
-
 /********************************/
 /* Calculator independant types */
 /********************************/
 
-TIEXPORT const char *TICALL tifiles_vartype2string(uint8_t data)
+/**
+ * tifiles_vartype2string:
+ * @model: ...
+ * @data: a type ID.
+ *
+ * Returns the type of variable (REAL, EQU, PRGM, ...).
+ *
+ * Return value: a string like "REAL".
+ **/
+TIEXPORT const char *TICALL tifiles_vartype2string(TiCalcModel model, uint8_t data)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_TI73:
     return ti73_byte2type(data);
@@ -80,9 +87,17 @@ TIEXPORT const char *TICALL tifiles_vartype2string(uint8_t data)
   }
 }
 
-TIEXPORT uint8_t TICALL tifiles_string2vartype(const char *s)
+/**
+ * tifiles_string2vartype:
+ * @s: a type as string (like "REAL").
+ *
+ * Returns the type of variable.
+ *
+ * Return value: a type.
+ **/
+TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_TI73:
     return ti73_type2byte(s);
@@ -123,9 +138,17 @@ TIEXPORT uint8_t TICALL tifiles_string2vartype(const char *s)
   }
 }
 
-TIEXPORT const char *TICALL tifiles_vartype2file(uint8_t data)
+/**
+ * tifiles_vartype2fext:
+ * @data: a type ID.
+ *
+ * Returns the file extension tipcially used to store this kind of variable(REAL, EQU, PRGM, ...).
+ *
+ * Return value: a string like "REAL".
+ **/
+TIEXPORT const char *TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_TI73:
     return ti73_byte2fext(data);
@@ -166,9 +189,17 @@ TIEXPORT const char *TICALL tifiles_vartype2file(uint8_t data)
   }
 }
 
-TIEXPORT uint8_t TICALL tifiles_file2vartype(const char *s)
+/**
+ * tifiles_fext2vartype:
+ * @s: a file extension as string (like 89p).
+ *
+ * Returns the type ID of variable (REAL, EQU, PRGM, ...).
+ *
+ * Return value: a string like "PRGM".
+ **/
+TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_TI73:
     return ti73_fext2byte(s);
@@ -209,9 +240,18 @@ TIEXPORT uint8_t TICALL tifiles_file2vartype(const char *s)
   }
 }
 
-TIEXPORT const char *TICALL tifiles_vartype2desc(uint8_t d)
+/**
+ * tifiles_vartype2type:
+ * @id: a vartype ID.
+ *
+ * Returns the type ID of variable as string ("Real", "Program", ...).
+ * The function is localized.
+ *
+ * Return value: a string like "Assembly Program".
+ **/
+TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id)
 {
-  switch (tifiles_calc_type) 
+	switch (model)
   {
   case CALC_TI73:
     return ti73_byte2desc(d);
@@ -252,9 +292,18 @@ TIEXPORT const char *TICALL tifiles_vartype2desc(uint8_t d)
   }
 }
 
-TIEXPORT const char *TICALL tifiles_vartype2icon(uint8_t d)
+/**
+ * tifiles_vartype2icon:
+ * @id: a vartype ID.
+ *
+ * Returns the type ID of variable as string ("Real", "Program", ...).
+ * Same as #tifiles_vartype2type but un-localized.
+ *
+ * Return value: a string like "Assembly Program".
+ **/
+TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t id)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_TI73:
     return ti73_byte2icon(d);
@@ -350,7 +399,15 @@ static const int TIXX_IDLIST[NCALCS + 1] =
 	TI89_IDLIST, TI89t_IDLIST, -1, TI92p_IDLIST, V200_IDLIST,
 };
 
-TIEXPORT const uint8_t TICALL tifiles_folder_type(void)
+/**
+ * tifiles_folder_type
+ * @model: a calculator model in #TiCalcModel enumeration.
+ *
+ * Returns the variable type ID used for encoding folders.
+ *
+ * Return value: a type ID.
+ **/
+TIEXPORT const uint8_t TICALL tifiles_folder_type(TiCalcModel model)
 {
   switch (tifiles_calc_type) 
   {
@@ -386,9 +443,17 @@ TIEXPORT const uint8_t TICALL tifiles_folder_type(void)
   return -1;
 }
 
-TIEXPORT const uint8_t TICALL tifiles_flash_type(void)
+/**
+ * tifiles_flash_type
+ * @model: a calculator model in #TiCalcModel enumeration.
+ *
+ * Returns the variable type ID used for encoding FLASH apps.
+ *
+ * Return value: a type ID.
+ **/
+TIEXPORT const uint8_t TICALL tifiles_flash_type(TiCalcModel model)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_NONE:
     return -1;
@@ -422,9 +487,17 @@ TIEXPORT const uint8_t TICALL tifiles_flash_type(void)
   return -1;
 }
 
-TIEXPORT const uint8_t TICALL tifiles_idlist_type(void)
+/**
+ * tifiles_idlist_type
+ * @model: a calculator model in #TiCalcModel enumeration.
+ *
+ * Returns the variable type ID used for encoding IDLIST variable.
+ *
+ * Return value: a type ID.
+ **/
+TIEXPORT const uint8_t TICALL tifiles_idlist_type(TiCalcModel model)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_NONE:
     return -1;
@@ -462,20 +535,18 @@ TIEXPORT const uint8_t TICALL tifiles_idlist_type(void)
 /* Miscelaneous */
 /****************/
 
-
-/*
-   Return a string describing the file type (.82s for instance) or NULL
-   - type [in]: a variable type (independant format)
-   - const char* [out]: the string
-*/
-TIEXPORT const char *TICALL tifiles_vartype_to_file_extension(int type)
+/**
+ * tifiles_calctype2signature:
+ * @model: a calculator model taken in the #TiCalcModel enumeration.
+ *
+ * Returns the signature used at the top of a TI file depending on the
+ * calculator model.
+ *
+ * Return value: a string like "**TI89**".
+ **/
+TIEXPORT const char *TICALL tifiles_calctype2signature(TiCalcModel model)
 {
-	return tifiles_vartype2file((uint8_t)type);
-}
-
-TIEXPORT const char *TICALL tifiles_calctype2signature(TiCalcType calc_type)
-{
-  switch (calc_type) 
+  switch (model) 
   {
   case CALC_NONE:
     return "**TI??**";
@@ -511,7 +582,15 @@ TIEXPORT const char *TICALL tifiles_calctype2signature(TiCalcType calc_type)
   return NULL;
 }
 
-TIEXPORT TiCalcType TICALL tifiles_signature2calctype(const char *s)
+/**
+ * tifiles_signature2calctype:
+ * @s: a TI file signature like "**TI89**".
+ *
+ * Returns the calculator model contained in the signature.
+ *
+ * Return value: a model taken in #TiCalcModel enumeration.
+ **/
+TIEXPORT TiCalcModel TICALL tifiles_signature2calctype(const char *s)
 {
 
   if (!g_ascii_strcasecmp(s, "**TI73**"))
@@ -538,20 +617,30 @@ TIEXPORT TiCalcType TICALL tifiles_signature2calctype(const char *s)
     return CALC_NONE;
 }
 
-/*
-  Returns calcs which have folders
-*/
-TIEXPORT int TICALL tifiles_has_folder(TiCalcType calc_type)
+/**
+ * tifiles_has_folder:
+ * @model: a calculator model in #TiCalcModel enumeration.
+ *
+ * Returns TRUE if the calculator supports folders.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_has_folder(TiCalcModel calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
 	  (calc_type == CALC_V200));
 }
 
-/*
-  Return FLASH calcs
-*/
-TIEXPORT int TICALL tifiles_is_flash(TiCalcType calc_type)
+/**
+ * tifiles_is_flash:
+ * @model: a calculator model in #TiCalcModel enumeration.
+ *
+ * Returns TRUE if the calculator model has FLASH technology.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_is_flash(TiCalcModel calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
 	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI89T) ||

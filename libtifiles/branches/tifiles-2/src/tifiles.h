@@ -42,6 +42,11 @@
 #define VARNAME_MAX		18	// group/name: 8 + 1 + 8 + 1
 #define TIFILES_NCALCS	12	// # of supported calcs
 
+/**
+ * TiCalcModel:
+ *
+ * An enumeration which contains the following calculator types:
+ **/
 typedef enum 
 {
 	CALC_NONE = 0,
@@ -49,16 +54,31 @@ typedef enum
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 } TiCalcModel;
 
+/**
+ * TiFileAttr:
+ *
+ * An enumeration which contains the different variable attributes.
+ **/
 typedef enum 
 {
   ATTRB_NONE = 0, ATTRB_LOCKED = 1, ATTRB_PROTECTED, ATTRB_ARCHIVED = 3
 } TiFileAttr;
 
+/**
+ * TiFileClass:
+ *
+ * An enumeration which contains the following class of TI files:
+ **/
 typedef enum 
 {
   TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
 } TiFileClass;
 
+/**
+ * TiFileEncoding:
+ *
+ * An enumeration which contains the following encodings:
+ **/
 typedef enum 
 {
   ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE
@@ -66,17 +86,39 @@ typedef enum
 
 /* Structures (common to all calcs) */
 
+/**
+ * TiVarEntry:
+ * @folder: name of folder (TI9x only) or ""
+ * @name: binary name of variable
+ * @trans: detokenized name (human-readable)
+ * @type: vartype ID
+ * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
+ * @size: size of data (uint16_t for TI8x)
+ * @data: pure data
+ *
+ * A generic structure used to store the content of a TI variable.
+ **/
 typedef struct 
 {
-  char		folder[9];		// TI9x only
-  char		name[9];		// binary name
-  char		trans[18];		// translated name (human readable)
+  char		folder[9];
+  char		name[9];
+  char		trans[18];
   uint8_t	type;
-  uint8_t	attr;			// TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
-  uint32_t	size;			// uint16_t for TI8x
+  uint8_t	attr;
+  uint32_t	size;
   uint8_t*	data;
 } TiVarEntry;
 
+/**
+ * TiRegular:
+ * @calc_type: calculator model
+ * @default_folder: name of the default folder (TI9x only)
+ * @num_entries: number of variables stored after
+ * @entries: an array of #TiVarEntry structures which contains data
+ * @checksum: checksum of file
+ *
+ * A generic structure used to store the content of a single/grouped TI file.
+ **/
 typedef struct 
 {
   TiCalcModel calc_type;
@@ -160,21 +202,24 @@ extern "C" {
   TIEXPORT const char* TICALL tifiles_file_get_icon(const char *filename);
   
   // typesXX.c
-  TIEXPORT const char* TICALL tifiles_vartype2string(uint8_t data);
-  TIEXPORT uint8_t     TICALL tifiles_string2vartype(const char *s);
+  TIEXPORT const char* TICALL tifiles_vartype2string(TiCalcModel model, uint8_t data);
+  TIEXPORT uint8_t     TICALL tifiles_string2vartype(TiCalcModel model, const char *s);
 
-  TIEXPORT const char* TICALL tifiles_vartype2fext(uint8_t data);
-  TIEXPORT uint8_t     TICALL tifiles_fext2vartype(const char *s);
+  TIEXPORT const char* TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data);
+  TIEXPORT uint8_t     TICALL tifiles_fext2vartype(TiCalcModel model, const char *s);
 
-  TIEXPORT const char* TICALL tifiles_vartype2icon(uint8_t data);
-  TIEXPORT const char* TICALL tifiles_vartype2type(uint8_t data);
+  TIEXPORT const char* TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id);
+  TIEXPORT const char* TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t id);
 
-  TIEXPORT const char* TICALL tifiles_calctype2signature(TiCalcModel calc_type);
+  TIEXPORT const char* TICALL tifiles_calctype2signature(TiCalcModel model);
   TIEXPORT TiCalcModel  TICALL tifiles_signature2calctype(const char *signature);
 	
-  TIEXPORT const uint8_t TICALL tifiles_folder_type(void);
-  TIEXPORT const uint8_t TICALL tifiles_flash_type(void);
-  TIEXPORT const uint8_t TICALL tifiles_idlist_type(void); 
+  TIEXPORT int TICALL tifiles_has_folder(TiCalcModel model);
+  TIEXPORT int TICALL tifiles_is_flash(TiCalcModel model);
+
+  TIEXPORT const uint8_t TICALL tifiles_folder_type(TiCalcModel model);
+  TIEXPORT const uint8_t TICALL tifiles_flash_type(TiCalcModel model);
+  TIEXPORT const uint8_t TICALL tifiles_idlist_type(TiCalcModel model);
 
   // misc.c
   TIEXPORT int TICALL tifiles_calc_is_ti8x(TiCalcModel model);
@@ -184,7 +229,7 @@ extern "C" {
 
   TIEXPORT char* TICALL tifiles_get_varname(const char *full_name);
   TIEXPORT char* TICALL tifiles_get_fldname(const char *full_name);
-  TIEXPORT int   TICALL tifiles_build_fullname(TiCalcModel model,
+  TIEXPORT char* TICALL tifiles_build_fullname(TiCalcModel model,
 	                     char *full_name,
 					     const char *fldname,
 					     const char *varname);
@@ -228,8 +273,9 @@ extern "C" {
 # define tifiles_realloc realloc
 #endif
 
-  // deprecated
-  // nothing yet
+  /************************/
+  /* Deprecated functions */
+  /************************/
 
 #ifdef __cplusplus
 }
