@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: probe.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id: links.h 397 2004-03-29 17:21:12Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,17 +19,31 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PROBE_H__
-#define __PROBE_H__
+#ifndef __LINKS_H__
+#define __LINKS_H__
 
-#include <stdio.h>
-#include "export.h"
+#include "../cabl_def.h"
 
-int TICALL ticable_detect_os(char **os_type);
-int TICALL ticable_detect_port(TicablePortInfo * pi);
-int TICALL ticable_detect_cable(TicablePortInfo * pi);
-int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
+int avr_register_cable(TicableLinkCable * lc);
 
-int probe_io_resources(void);
+int dev_register_cable(TicableLinkCable * lc);
+
+int dfl_register_cable(TicableLinkCable * lc);
+
+int par_register_cable(TicableLinkCable * lc);
+
+int ser_register_cable_1(TicableLinkCable * lc);
+int ser_register_cable_2(TicableLinkCable * lc);
+
+int slv_register_cable_1(TicableLinkCable * lc);
+int slv_register_cable_2(TicableLinkCable * lc);
+
+int tie_register_cable(TicableLinkCable * lc);
+
+int tig_register_cable(TicableLinkCable * lc);
+
+int vti_register_cable(TicableLinkCable * lc);
+
+int vtl_register_cable(TicableLinkCable * lc);
 
 #endif

@@ -27,19 +27,18 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
-#include "intl.h"
+#include "../intl.h"
 
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "externs.h"
-#include "type2str.h"
-#include "verbose.h"
+#include "../cabl_def.h"
+#include "../cabl_err.h"
+#include "../externs.h"
+#include "../type2str.h"
+#include "../verbose.h"
 
 #include "links.h"
 
-int linux_get_method(TicableType type, int resources, TicableMethod *method)
+int win32_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	DISPLAY(_("libticables: getting method from resources..."));
 	
@@ -116,7 +115,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 }
 
 // Bind the right I/O address & device according to I/O method
-static int linux_map_io(TicableMethod method, TicablePort port)
+static int win32_map_io(TicableMethod method, TicablePort port)
 {
 	DISPLAY(_("libticables: mapping I/O...\n"));
 	
@@ -183,10 +182,14 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 }
 
 
-int linux_register_cable(TicableType type, TicableLinkCable *lc)
+int win32_register_cable(TicableType type, TicableLinkCable *lc)
 {
+	int ret;
+
 	// map I/O
-	TRYR(linux_map_io((TicableMethod)method, port));
+	ret = win32_map_io((TicableMethod)method, port);
+	if(ret)
+			return ret;
 	
 	// set the link cable
 	DISPLAY(_("libticables: registering cable...\n"));

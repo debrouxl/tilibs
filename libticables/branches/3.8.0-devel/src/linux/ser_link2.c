@@ -50,11 +50,6 @@
 
 #define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
-#if defined(__WIN32__)
-#define BUFFER_SIZE 1024
-static HANDLE hCom = 0;
-#endif
-
 static unsigned int com_addr;
 #define com_out (com_addr+4)
 #define com_in  (com_addr+6)

@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "timeout.h"
+#include "../timeout.h"
 #include "cabl_def.h"
 #include "export.h"
 #include "cabl_err.h"

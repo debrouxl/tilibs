@@ -39,14 +39,14 @@
 #include <winioctl.h>		// PortTalk
 #include "porttalk_IOCTL.h"	// PortTalk
 
-#include "cabl_err.h"
-#include "cabl_def.h"
-#include "verbose.h"
-#include "export.h"
+#include "../cabl_err.h"
+#include "../cabl_def.h"
+#include "../verbose.h"
+#include "../export.h"
+#include "../intl.h"
+#include "../cabl_int.h"
+#include "../externs.h"
 #include "ioports.h"
-#include "intl.h"
-#include "cabl_int.h"
-#include "externs.h"
 
 /* Variables */
 
@@ -403,4 +403,4 @@ int win32_comport_close(PHANDLE hCom)
 
   return 0;
 }
-#endif
+

@@ -27,7 +27,7 @@
 
 #include <windows.h>
 
-#include "verbose.h"
+#include "../verbose.h"
 
 /****************************************************/
 /* Utility functions for PortTalk driver	    */
@@ -151,7 +151,7 @@ unsigned char PortTalkStartDriver(void)
 	DISPLAY_ERROR
 	    ("PortTalk: The PortTalk driver does not exist. Installing driver.\n"
 	     "PortTalk: This can take up to 30 seconds on some machines . .\n");
-	InstallPortTalkDriver();
+	PortTalkInstallDriver();
 	break;
       }
   } while (schService == NULL);

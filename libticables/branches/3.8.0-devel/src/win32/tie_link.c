@@ -45,6 +45,8 @@
 #include "logging.h"
 #include "verbose.h"
 
+#define BUFFER_SIZE 256
+
 extern int time_out;		// Timeout value for cables in 0.10 seconds
 extern int delay;		// Time between 2 bits (home-made cables only)
 static int p;

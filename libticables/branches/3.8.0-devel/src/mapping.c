@@ -60,11 +60,11 @@ int mapping_get_method(TicableType type, int resources, TicableMethod *method)
 #if defined(__LINUX__)
 	ret = linux_get_method(type, resources, method);
 #elif defined(__BSD__)
-	ret = bsd_get_method(type, resources);
+	ret = bsd_get_method(type, resources, method);
 #elif defined(__WIN32__)
-	ret = win32_get_method(type, resources);
+	ret = win32_get_method(type, resources, method);
 #elif defined(__MACOSX__)
-	ret = macos_get_method(type, resources);
+	ret = macos_get_method(type, resources, method);
 #else
 	ret = 0;
 #endif

@@ -31,13 +31,14 @@
 # include <inttypes.h>
 #endif
 
-#include "intl.h"
+#include "../intl.h"
+#include "../cabl_def.h"
+#include "../cabl_err.h"
+#include "../export.h"
+#include "../externs.h"
+#include "../verbose.h"
 
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "export.h"
-#include "externs.h"
-#include "verbose.h"
+#include "porttalk.h"
 
 int win32_detect_os(char **os_type)
 {
@@ -117,7 +118,7 @@ int win32_detect_resources(void)
 
       		if (PortTalk_Handle == INVALID_HANDLE_VALUE) {
 			// Start or Install PortTalk Driver
-			StartPortTalkDriver();
+			PortTalkStartDriver();
 	
 			// Then try to open once more, before failing
 			PortTalk_Handle =
