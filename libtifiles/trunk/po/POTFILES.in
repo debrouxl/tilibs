@@ -8,6 +8,7 @@ src/grp_ops.c
 src/intelhex.c
 src/intrface.c
 src/misc.c
+src/printl.c
 src/trans.c
 src/types73.c
 src/types82.c
