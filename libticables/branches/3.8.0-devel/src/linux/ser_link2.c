@@ -249,7 +249,7 @@ int ser_supported2()
   return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
-int ser_register_cable_2(TicableLinkCable * lc, TicableMethod method)
+int ser_register_cable_2(TicableLinkCable * lc)
 {
   lc->init = ser_init2;
   lc->open = ser_open2;

@@ -249,7 +249,7 @@ int vtl_supported()
   return SUPPORT_OFF;
 }
 
-int vtl_register_cable(TicableLinkCable * lc, TicableMethod method)
+int vtl_register_cable(TicableLinkCable * lc)
 {
   lc->init = vtl_init;
   lc->open = vtl_open;

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: tie_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -243,7 +243,7 @@ int tie_supported()
   return SUPPORT_OFF;
 }
 
-int tie_register_cable(TicableLinkCable * lc, TicableMethod method)
+int tie_register_cable(TicableLinkCable * lc)
 {
   lc->init = tie_init;
   lc->open = tie_open;

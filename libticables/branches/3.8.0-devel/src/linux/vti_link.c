@@ -79,7 +79,8 @@ typedef struct _vti_buf vti_buf;
 key_t ipc_key[2];		// IPC key
 int shmid[2];			// Shm ID
 vti_buf *shm[2];		// Shm address
-vti_buf *send_buf[2], *recv_buf[2];	// Swapped buffer
+vti_buf *send_buf[2];		// Swapped buffer
+vti_buf *recv_buf[2];
 #endif
 
 static int p = 0;		// a shortcut
@@ -93,7 +94,7 @@ int vti_init()
   int i;
 
   if ((io_address < 1) || (io_address > 2)) {
-    DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
+    DISPLAY_ERROR("libticables: invalid io_address (bad port).\n");
     return ERR_ILLEGAL_ARG;
     io_address = 2;
   }
@@ -102,7 +103,7 @@ int vti_init()
   /* Get a unique (if possible) key */
   for (i = 0; i < 2; i++) {
     if ((ipc_key[i] = ftok("/tmp", i)) == -1) {
-      DISPLAY_ERROR("ftok\n");
+      DISPLAY_ERROR("libticables: unable to get unique key (ftok).\n");
       return ERR_IPC_KEY;
     }
     //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
@@ -112,7 +113,7 @@ int vti_init()
   for (i = 0; i < 2; i++) {
     if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf),
 			   IPC_CREAT | 0666)) == -1) {
-      DISPLAY_ERROR("ftok\n");
+      DISPLAY_ERROR("libticables: unable to open shared memory (shmget).\n");
       return ERR_SHM_GET;
     }
     //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
@@ -121,7 +122,7 @@ int vti_init()
   /* Attach the shm */
   for (i = 0; i < 2; i++) {
     if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) {
-      DISPLAY_ERROR("shmat\n");
+      DISPLAY_ERROR("libticables: unable to attach shared memory (shmat).\n");
       return ERR_SHM_ATTACH;
     }
   }
@@ -256,7 +257,7 @@ int vti_supported()
 #endif
 }
 
-int vti_register_cable(TicableLinkCable * lc, TicableMethod method)
+int vti_register_cable(TicableLinkCable * lc)
 {
   lc->init = vti_init;
   lc->open = vti_open;
