@@ -1,0 +1,17 @@
+[Main]
+Name=TifileAttributes
+Type=Enum
+Header=file_def.h
+Definition=enum TifileAttributes
+
+[Fields]
+ATTRB_NONE : the variable has no specific attributes
+ATTRB_LOCKED : the variables is locked
+ATTRB_ARCHIVED : the variable is archived
+ATTRB_PROTECTED : the variable is protected
+
+[Summary]
+Used to define some variable attributes.
+
+[Description]
+Be careful, these attributes are generic. Depending on the calculator model, some variables can not be protected, some others can not be archived, and so on.

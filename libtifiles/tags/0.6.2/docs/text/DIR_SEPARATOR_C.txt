@@ -1,0 +1,8 @@
+[Main]
+Name=DIR_SEPARATOR_C
+Type=Define
+Header=macros.h
+Definition=#define DIR_SEPARATOR_C
+
+[Summary]
+The directory separator ('\' or '/') as a character (platform independant).

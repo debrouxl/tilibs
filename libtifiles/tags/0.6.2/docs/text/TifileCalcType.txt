@@ -1,0 +1,22 @@
+[Main]
+Name=TifileCalcType
+Type=Enum
+Header=file_def.h
+Definition=enum TifileCalcType
+
+[Fields]
+CALC_NONE : no calculator (error)
+CALC_V200 : an V200PLT calculator
+CALC_TI92P : a TI92+ calculator
+CALC_TI92 : an TI92 calculator
+CALC_TI89 : an TI89 calculator
+CALC_TI86 : an TI86 calculator
+CALC_TI85 : an TI85 calculator
+CALC_TI83P : an TI83+ or TI83+ SE calculator
+CALC_TI83 : an TI83 calculator
+CALC_TI82 : an TI82 calculator
+CALC_TI73 : an TI73 calculator
+
+[Summary]
+Used to specify a calculator model.
+

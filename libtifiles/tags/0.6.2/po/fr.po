@@ -1,0 +1,477 @@
+# traduction de tifiles.po en Français
+# French locale for libtifiles.
+# Copyright (C) 2003
+# This file is distributed under the same license as the libtifiles package.
+# Sylvain Garsault <sylvain.garsault@freesbee.fr>, 2003,2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libtifiles 0.5.9\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2004-05-11 23:01+0200\n"
+"PO-Revision-Date: 2004-04-14 09:54+0000\n"
+"Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
+"Language-Team: Français <kde-francophone@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+
+#: src/error.c:44
+msgid "Msg: unable to allocate memory (malloc)."
+msgstr "Msg : impossible d'allouer de la mémoire (malloc)."
+
+#: src/error.c:46
+msgid "Cause: memory too low ?"
+msgstr "Cause : pas assez de mémoire ?"
+
+#: src/error.c:50
+msgid "Msg: unable to open file."
+msgstr "Msg : impossible d'ouvrir le fichier."
+
+#: src/error.c:52
+msgid "either the file does not exist, either there is no room."
+msgstr "Cause : le fichier n'existe pas, ou il n'est pas dans ce répertoire."
+
+#: src/error.c:56
+msgid "Msg: unable to close file."
+msgstr "Msg : impossible de fermer le fichier."
+
+#: src/error.c:58
+msgid "Cause: either the file does not exist, either there is no room."
+msgstr "Cause : le fichier n'existe pas, ou il n'est pas dans ce répertoire."
+
+#: src/error.c:62
+msgid "Msg: the size of a group file can not exceed 64KB."
+msgstr "Msg : la taille d'un groupe ne peut pas dépasser 64Ko."
+
+#: src/error.c:64
+msgid "Cause: too many variables/data."
+msgstr "Cause : trop de variables/données."
+
+#: src/error.c:68
+msgid "Msg: Unknown calculator type."
+msgstr "Msg : Type de calculatrice inconnu."
+
+#: src/error.c:70
+msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
+msgstr ""
+"Cause : il s'agit probablement d'un bogue, signalez-le à tilp-users@lists.sf."
+"net."
+
+#: src/error.c:75
+msgid "Msg: invalid file."
+msgstr "Msg : fichier non valide."
+
+#: src/error.c:77
+msgid "Cause: it's probably not a TI formatted file."
+msgstr "Cause : il ne s'agit probablement pas d'un fichier TI."
+
+#: src/error.c:81
+msgid "Msg: checksum error."
+msgstr "Msg : erreur de somme de contrôle (checksum)."
+
+#: src/error.c:83
+msgid "Cause: the file has an incorrect checksum and may be corrupted."
+msgstr ""
+"Cause : le fichier a une somme de contrôle incorrecte et peut être corrompu."
+
+#: src/error.c:87
+msgid ""
+"Error code not found in the list.\n"
+"This is a bug. Please report it.\n"
+"."
+msgstr ""
+"Code d'erreur inexistant dans la liste.\n"
+"Ceci est un bogue. Signalez-le s'il vous plaît.\n"
+"."
+
+#: src/intrface.c:78
+#, c-format
+msgid "tifiles library version %s\n"
+msgstr "librairie tifiles version %s\n"
+
+#: src/intrface.c:142
+msgid "Function not implemented. There is a bug. Please report it."
+msgstr "Fonction non implémentée. Ceci est un bogue. Veuillez le signaler."
+
+#: src/intrface.c:143
+msgid "Informations:\n"
+msgstr "Informations :\n"
+
+#: src/intrface.c:144
+#, c-format
+msgid "Calc: %i\n"
+msgstr "Calculatrice : %i\n"
+
+#: src/intrface.c:145
+msgid "Program halted before crashing...\n"
+msgstr "Le programme s'est terminé anormalement...\n"
+
+#: src/intrface.c:158
+msgid "settings:\n"
+msgstr "réglages :\n"
+
+#: src/intrface.c:159
+#, c-format
+msgid "  calc type: %s\n"
+msgstr "  type de calculatrice : %s\n"
+
+#: src/printl.c:46
+#, c-format
+msgid "wrn: "
+msgstr "avr : "
+
+#: src/printl.c:47
+#, c-format
+msgid "err: "
+msgstr "err : "
+
+#: src/trans.c:846
+msgid "libtifiles error: unknown calc type. Program halted before crashing !\n"
+msgstr ""
+"erreur dans libtifiles : type de calculatrice inconnu. Le programme s'est "
+"arrêté anormalement.\n"
+
+#: src/types73.c:45 src/types82.c:40 src/types83.c:40 src/types83p.c:40
+#: src/types85.c:40 src/types86.c:40
+msgid "Real"
+msgstr "Réel"
+
+#: src/types73.c:46 src/types82.c:41 src/types83.c:41 src/types83p.c:41
+#: src/types85.c:44 src/types86.c:44 src/types89.c:52 src/types92.c:52
+#: src/types92p.c:52 src/typesv2.c:51
+msgid "List"
+msgstr "Liste"
+
+#: src/types73.c:47 src/types82.c:42 src/types83.c:42 src/types83p.c:42
+#: src/types85.c:46 src/types86.c:46 src/types89.c:54 src/types92.c:54
+#: src/types92p.c:54 src/typesv2.c:53
+msgid "Matrix"
+msgstr "Matrice"
+
+#: src/types73.c:48 src/types83p.c:43 src/types85.c:50 src/types86.c:50
+msgid "Equation"
+msgstr "Équation"
+
+#: src/types73.c:49 src/types83.c:44 src/types83p.c:44 src/types85.c:52
+#: src/types86.c:52 src/types89.c:60 src/types92.c:60 src/types92p.c:60
+#: src/typesv2.c:59
+msgid "String"
+msgstr "Chaîne"
+
+#: src/types73.c:50 src/types82.c:45 src/types83.c:45 src/types83p.c:45
+#: src/types85.c:58 src/types86.c:58 src/types89.c:66 src/types92.c:66
+#: src/types92p.c:66 src/typesv2.c:65
+msgid "Program"
+msgstr "Programme"
+
+#: src/types73.c:51 src/types83.c:46 src/types83p.c:46 src/types89.c:81
+#: src/types92.c:81 src/types92p.c:81
+msgid "Asm Program"
+msgstr "Programme assembleur"
+
+#: src/types73.c:52 src/types82.c:47 src/types83.c:47 src/types83p.c:47
+#: src/types85.c:57 src/types86.c:57 src/types89.c:64 src/types92.c:64
+#: src/types92p.c:64 src/typesv2.c:63
+msgid "Picture"
+msgstr "Image"
+
+#: src/types73.c:53 src/types82.c:48 src/types83.c:48 src/types83p.c:48
+#: src/types85.c:53 src/types85.c:54 src/types85.c:55 src/types85.c:56
+#: src/types86.c:53 src/types86.c:54 src/types86.c:55 src/types86.c:56
+#: src/types89.c:61 src/types92.c:61 src/types92p.c:61 src/typesv2.c:60
+msgid "GDB"
+msgstr "GDB"
+
+#: src/types73.c:54 src/types73.c:55 src/types73.c:58 src/types73.c:59
+#: src/types73.c:63 src/types73.c:65 src/types73.c:66 src/types73.c:67
+#: src/types73.c:68 src/types73.c:69 src/types73.c:70 src/types73.c:71
+#: src/types73.c:72 src/types73.c:73 src/types73.c:74 src/types73.c:75
+#: src/types73.c:76 src/types73.c:77 src/types73.c:78 src/types73.c:79
+#: src/types73.c:83 src/types73.c:84 src/types73.c:85 src/types73.c:86
+#: src/types73.c:87 src/types73.c:88 src/types73.c:89 src/types73.c:90
+#: src/types73.c:91 src/types73.c:92 src/types73.c:144 src/types82.c:44
+#: src/types82.c:49 src/types82.c:50 src/types82.c:56 src/types82.c:57
+#: src/types82.c:58 src/types82.c:59 src/types82.c:60 src/types82.c:61
+#: src/types82.c:62 src/types82.c:63 src/types82.c:64 src/types82.c:65
+#: src/types82.c:66 src/types82.c:67 src/types82.c:68 src/types82.c:69
+#: src/types82.c:70 src/types82.c:71 src/types82.c:72 src/types82.c:73
+#: src/types82.c:74 src/types82.c:75 src/types82.c:76 src/types82.c:77
+#: src/types82.c:78 src/types82.c:79 src/types82.c:80 src/types82.c:81
+#: src/types82.c:82 src/types82.c:83 src/types82.c:84 src/types82.c:85
+#: src/types82.c:86 src/types82.c:87 src/types82.c:139 src/types83.c:49
+#: src/types83.c:50 src/types83.c:51 src/types83.c:55 src/types83.c:56
+#: src/types83.c:57 src/types83.c:58 src/types83.c:60 src/types83.c:61
+#: src/types83.c:62 src/types83.c:63 src/types83.c:64 src/types83.c:65
+#: src/types83.c:66 src/types83.c:67 src/types83.c:68 src/types83.c:69
+#: src/types83.c:70 src/types83.c:71 src/types83.c:72 src/types83.c:73
+#: src/types83.c:74 src/types83.c:75 src/types83.c:76 src/types83.c:77
+#: src/types83.c:78 src/types83.c:79 src/types83.c:80 src/types83.c:81
+#: src/types83.c:82 src/types83.c:83 src/types83.c:84 src/types83.c:85
+#: src/types83.c:86 src/types83.c:87 src/types83.c:139 src/types83p.c:49
+#: src/types83p.c:50 src/types83p.c:53 src/types83p.c:54 src/types83p.c:58
+#: src/types83p.c:60 src/types83p.c:62 src/types83p.c:64 src/types83p.c:65
+#: src/types83p.c:66 src/types83p.c:67 src/types83p.c:68 src/types83p.c:69
+#: src/types83p.c:70 src/types83p.c:71 src/types83p.c:72 src/types83p.c:73
+#: src/types83p.c:74 src/types83p.c:78 src/types83p.c:79 src/types83p.c:80
+#: src/types83p.c:81 src/types83p.c:82 src/types83p.c:83 src/types83p.c:84
+#: src/types83p.c:85 src/types83p.c:86 src/types83p.c:87 src/types83p.c:139
+#: src/types85.c:51 src/types85.c:62 src/types85.c:68 src/types85.c:70
+#: src/types85.c:71 src/types85.c:72 src/types85.c:73 src/types85.c:74
+#: src/types85.c:75 src/types85.c:76 src/types85.c:77 src/types85.c:78
+#: src/types85.c:79 src/types85.c:80 src/types85.c:81 src/types85.c:83
+#: src/types85.c:84 src/types85.c:85 src/types85.c:86 src/types85.c:87
+#: src/types85.c:140 src/types86.c:51 src/types86.c:62 src/types86.c:68
+#: src/types86.c:70 src/types86.c:71 src/types86.c:72 src/types86.c:73
+#: src/types86.c:74 src/types86.c:75 src/types86.c:76 src/types86.c:77
+#: src/types86.c:78 src/types86.c:79 src/types86.c:80 src/types86.c:81
+#: src/types86.c:82 src/types86.c:83 src/types86.c:84 src/types86.c:85
+#: src/types86.c:86 src/types86.c:87 src/types86.c:139 src/types89.c:49
+#: src/types89.c:50 src/types89.c:51 src/types89.c:53 src/types89.c:55
+#: src/types89.c:56 src/types89.c:57 src/types89.c:63 src/types89.c:65
+#: src/types89.c:69 src/types89.c:70 src/types89.c:71 src/types89.c:72
+#: src/types89.c:73 src/types89.c:74 src/types89.c:75 src/types89.c:78
+#: src/types89.c:79 src/types89.c:80 src/types89.c:86 src/types89.c:87
+#: src/types89.c:88 src/types89.c:89 src/types89.c:90 src/types89.c:91
+#: src/types89.c:92 src/types89.c:93 src/types89.c:94 src/types89.c:95
+#: src/types89.c:147 src/types92.c:49 src/types92.c:50 src/types92.c:51
+#: src/types92.c:53 src/types92.c:55 src/types92.c:56 src/types92.c:57
+#: src/types92.c:63 src/types92.c:65 src/types92.c:69 src/types92.c:70
+#: src/types92.c:71 src/types92.c:72 src/types92.c:73 src/types92.c:74
+#: src/types92.c:75 src/types92.c:78 src/types92.c:79 src/types92.c:80
+#: src/types92.c:82 src/types92.c:83 src/types92.c:84 src/types92.c:85
+#: src/types92.c:86 src/types92.c:87 src/types92.c:88 src/types92.c:89
+#: src/types92.c:90 src/types92.c:91 src/types92.c:92 src/types92.c:93
+#: src/types92.c:94 src/types92.c:95 src/types92.c:147 src/types92p.c:49
+#: src/types92p.c:50 src/types92p.c:51 src/types92p.c:53 src/types92p.c:55
+#: src/types92p.c:56 src/types92p.c:57 src/types92p.c:63 src/types92p.c:65
+#: src/types92p.c:69 src/types92p.c:70 src/types92p.c:71 src/types92p.c:72
+#: src/types92p.c:73 src/types92p.c:74 src/types92p.c:75 src/types92p.c:78
+#: src/types92p.c:79 src/types92p.c:80 src/types92p.c:86 src/types92p.c:87
+#: src/types92p.c:88 src/types92p.c:89 src/types92p.c:90 src/types92p.c:91
+#: src/types92p.c:92 src/types92p.c:93 src/types92p.c:94 src/types92p.c:95
+#: src/types92p.c:147 src/typesv2.c:48 src/typesv2.c:49 src/typesv2.c:50
+#: src/typesv2.c:52 src/typesv2.c:54 src/typesv2.c:55 src/typesv2.c:56
+#: src/typesv2.c:62 src/typesv2.c:64 src/typesv2.c:68 src/typesv2.c:69
+#: src/typesv2.c:70 src/typesv2.c:71 src/typesv2.c:72 src/typesv2.c:77
+#: src/typesv2.c:78 src/typesv2.c:79 src/typesv2.c:87 src/typesv2.c:88
+#: src/typesv2.c:89 src/typesv2.c:90 src/typesv2.c:91 src/typesv2.c:92
+#: src/typesv2.c:93 src/typesv2.c:94 src/typesv2.c:146
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: src/types73.c:56 src/types82.c:51 src/types83p.c:55 src/types85.c:63
+msgid "Window Setup"
+msgstr "Config fenêtre"
+
+#: src/types73.c:57 src/types83.c:52 src/types83p.c:52 src/types85.c:41
+#: src/types86.c:41
+msgid "Complex"
+msgstr "Nombre complexe"
+
+#: src/types73.c:60 src/types83p.c:51
+msgid "Window"
+msgstr "Fenêtre"
+
+#: src/types73.c:61 src/types82.c:52 src/types83.c:53 src/types83p.c:56
+#: src/types85.c:67 src/types86.c:67
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/types73.c:62 src/types82.c:53 src/types83.c:54 src/types83p.c:57
+msgid "Table Setup"
+msgstr "Config Table"
+
+#: src/types73.c:64 src/types82.c:55 src/types83.c:59 src/types83p.c:59
+#: src/types85.c:69 src/types86.c:69 src/types89.c:77 src/types92.c:77
+#: src/types92p.c:77 src/typesv2.c:76
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#: src/types73.c:80 src/types83p.c:75 src/types89.c:83 src/types92p.c:83
+#: src/typesv2.c:82 src/typesxx.c:971
+msgid "OS upgrade"
+msgstr "MAJ OS"
+
+#: src/types73.c:81 src/types83p.c:76 src/types89.c:84 src/types92p.c:84
+#: src/typesv2.c:83
+msgid "Application"
+msgstr "Application"
+
+#: src/types73.c:82 src/types83p.c:77 src/types89.c:85 src/types92p.c:85
+#: src/typesv2.c:84
+msgid "Certificate"
+msgstr "Certificat"
+
+#: src/types73.c:114 src/types73.c:136 src/types82.c:109 src/types82.c:131
+#: src/types83.c:109 src/types83.c:131 src/types83p.c:109 src/types83p.c:131
+#: src/types86.c:109 src/types86.c:131 src/types89.c:117 src/types89.c:139
+#: src/types92.c:117 src/types92.c:139 src/types92p.c:117 src/types92p.c:139
+#: src/typesv2.c:138
+msgid "unknown type. It is a bug. Please report this information.\n"
+msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler.\n"
+
+#: src/types82.c:43 src/types83.c:43 src/types85.c:82 src/types86.c:63
+msgid "Y-Var"
+msgstr "Variable Y"
+
+#: src/types82.c:46
+msgid "Protected Program"
+msgstr "Programme protégé"
+
+#: src/types82.c:54
+msgid "LCD"
+msgstr "LCD"
+
+#: src/types83p.c:61
+msgid "App Var"
+msgstr "Variable application"
+
+#: src/types83p.c:63
+msgid "Group Var"
+msgstr "Groupe de vars"
+
+#: src/types85.c:42 src/types86.c:42
+msgid "Vector"
+msgstr "Vecteur"
+
+#: src/types85.c:43 src/types86.c:43
+msgid "Complex Vector"
+msgstr "Vecteur complexe"
+
+#: src/types85.c:45 src/types86.c:45
+msgid "Complex List"
+msgstr "Liste complexe"
+
+#: src/types85.c:47 src/types86.c:47
+msgid "Complex Matrix"
+msgstr "Matrice complexe"
+
+#: src/types85.c:48 src/types86.c:48
+msgid "Constant"
+msgstr "Constante"
+
+#: src/types85.c:49 src/types86.c:49
+msgid "Complex Constant"
+msgstr "Constante complexe"
+
+#: src/types85.c:59 src/types86.c:59
+msgid "Range"
+msgstr "Intervalle"
+
+#: src/types85.c:60 src/types86.c:60
+msgid "Screen"
+msgstr "Écran"
+
+#: src/types85.c:61 src/types86.c:61
+msgid "Directory"
+msgstr "Répertoire"
+
+#: src/types85.c:64 src/types86.c:64
+msgid "Polar"
+msgstr "Polaire"
+
+#: src/types85.c:65 src/types86.c:65
+msgid "Parametric"
+msgstr "Paramétrique"
+
+#: src/types85.c:66 src/types86.c:66
+msgid "Diff Equ"
+msgstr "Équa diff"
+
+#: src/types85.c:109 src/types85.c:132
+msgid "unknown type. It is a bug. Please report this information."
+msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler."
+
+#: src/types89.c:48 src/types92.c:48 src/types92p.c:48 src/typesv2.c:47
+msgid "Expression"
+msgstr "Expression"
+
+#: src/types89.c:58 src/types92.c:58 src/types92p.c:58 src/typesv2.c:57
+msgid "Data"
+msgstr "Donnée"
+
+#: src/types89.c:59 src/types92.c:59 src/types92p.c:59 src/typesv2.c:58
+msgid "Text"
+msgstr "Texte"
+
+#: src/types89.c:62 src/types92.c:62 src/types92p.c:62 src/typesv2.c:61
+msgid "Figure"
+msgstr "Figure"
+
+#: src/types89.c:67 src/types92.c:67 src/types92p.c:67 src/typesv2.c:66
+msgid "Function"
+msgstr "Fonction"
+
+#: src/types89.c:68 src/types92.c:68 src/types92p.c:68 src/typesv2.c:67
+msgid "Macro"
+msgstr "Macro"
+
+#: src/types89.c:76 src/types92.c:76 src/types92p.c:76 src/typesv2.c:75
+msgid "Zipped"
+msgstr "Compressé"
+
+#: src/types89.c:82 src/types92p.c:82 src/typesv2.c:81
+msgid "ID-LIST"
+msgstr "ID-LIST"
+
+#: src/typesv2.c:80
+msgid "Asm Prog"
+msgstr "Prog Asm"
+
+#: src/typesv2.c:116
+msgid "unknown type. There is a bug. Please report this information.\n"
+msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler.\n"
+
+#: src/typesxx.c:75
+#, c-format
+msgid ""
+"Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
+msgstr ""
+"Erreur fatale dans \"%s\" : type de calculatrice inconnu. Le programme s'est "
+"terminé anormalement...\n"
+
+#: src/typesxx.c:981
+msgid "Group/Backup"
+msgstr "Groupe/sauvegarde"
+
+#: src/typesxx.c:983
+msgid "Group"
+msgstr "Groupe"
+
+#: src/type2str.c:76 src/type2str.c:86
+msgid "none     "
+msgstr "aucun    "
+
+#: src/type2str.c:77 src/type2str.c:88
+msgid "locked   "
+msgstr "vérrouillé"
+
+#: src/type2str.c:78 src/type2str.c:90
+msgid "archived "
+msgstr "archivé  "
+
+#: src/type2str.c:79 src/type2str.c:92
+msgid "protected"
+msgstr "protégé  "
+
+#: src/type2str.c:101 src/type2str.c:111
+msgid "single"
+msgstr "simple"
+
+#: src/type2str.c:102 src/type2str.c:113
+msgid "group"
+msgstr "groupe"
+
+#: src/type2str.c:103 src/type2str.c:115
+msgid "backup"
+msgstr "sauvegarde"
+
+#: src/type2str.c:104 src/type2str.c:117
+msgid "flash"
+msgstr "flash"
+
+#: src/type2str.c:105
+msgid "unknown"
+msgstr "inconnu"

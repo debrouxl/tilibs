@@ -1,0 +1,17 @@
+[Main]
+Name=tifiles_idlist_type
+Type=Function
+Header=file_int.h
+Definition=uint8_t tifiles_idlist_type
+
+[Parameters]
+Returns : a vartype.
+
+[Summary]
+Returns the vartype of ID-LIST for the current calculator.
+
+[Explanation]
+If a TI89 is defined, returns TI89_IDLIST as a vartype.
+Returns "-1" if the calculator does not have FLASH capabilities.
+
+Note: this function is contextual.
