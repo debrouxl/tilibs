@@ -5,21 +5,29 @@ To do:
 	- bug with API mode (Linux & Windows): may not work with some calcs ?!
 	- ioports.c to improve
 
-- 27/08/2003, version 3.7.7: Maintenance release by JB.
+- 01/03/2004, version 3.7.9: tijl
+	BSD usb fix in libticables
+
+- 01/10/2003, version 3.7.8: tijl
+	Added INTLLIBS to LDFLAGS in configure.in
+	Fix error messages in src/slv_link.c
+	Fix compile error in src/intrface.c
+
+- 27/08/2003, version 3.7.7: jb
 	Upgraded to libtool 1.5
 	Upgraded to automake 1.7
 	Use AM_MAINTAINER_MODE
 
-- 21/04/2003, version 3.7.6:
+- 21/04/2003, version 3.7.6: roms
         logging support added into the second serial link support.
 
-- 20/04/2003, version 3.7.5b:
+- 20/04/2003, version 3.7.5b: roms
         porttalk.c added in EXTRA_DIST for po compilation.
 	
-- 10/04/2003, version 3.7.5:
+- 10/04/2003, version 3.7.5: roms
 	Tijl's patch merged.
 	
-- 29/03/2003, version 3.7.4:
+- 29/03/2003, version 3.7.4: roms
 	i18n updated.
 	Typo fixes in tie_link.c
 	Included French translations.
@@ -27,7 +35,7 @@ To do:
 	i18n enabled for Windows.
 	indent -kr -i2
 	
-- 28/03/2003, version 3.7.3:
+- 28/03/2003, version 3.7.3: roms
 	avr_link support modified: RTS & DTR enabled by default (power supply).
 	Added constants for ticable_detect_os.
 	Verbose system improved (Win32) and a new function added to the API.
