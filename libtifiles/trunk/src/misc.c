@@ -40,7 +40,7 @@
   - len [in]: the number of bytes to dump
   - [out]: always 0
  */
-int hexdump(uint8_t * ptr, int len)
+TIEXPORT int TICALL hexdump(uint8_t * ptr, int len)
 {
   int i;
 
