@@ -1,0 +1,326 @@
+# Microsoft Developer Studio Generated Dependency File, included by tifiles.mak
+
+..\..\src\types73.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types82.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types82.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types83.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types83.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types83p.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types83p.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types85.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types85.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types86.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types86.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types89.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types89.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types92.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types92.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\types92p.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types92p.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\typesv2.c : \
+	"..\..\src\export.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\typesv2.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\typesXX.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\files8X.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\intelhex.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\files9X.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\filesxx.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\grp_ops.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\intelhex.c : \
+	"..\..\src\intelhex.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\stdints.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\error.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\intl.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\intrface.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\file_ver.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\grp_ops.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	
+
+..\..\src\misc.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\trans.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+..\..\src\type2str.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\intl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
+	

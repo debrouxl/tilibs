@@ -87,7 +87,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\...\test\test_libtifiles.c
+SOURCE=..\..\tests\test_tifiles.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -100,7 +100,7 @@ SOURCE=..\...\test\test_libtifiles.c
 # End Group
 # Begin Source File
 
-SOURCE=C:\msvc\tilp\libtifiles.lib
+SOURCE=C:\msvc\tilp\tifiles.lib
 # End Source File
 # End Target
 # End Project
