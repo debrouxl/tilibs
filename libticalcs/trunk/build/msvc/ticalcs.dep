@@ -1,36 +1,38 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticalcs.mak
 
 ..\..\src\cmd73.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\externs.h"\
@@ -38,82 +40,80 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\cmd82.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\cmd85.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\externs.h"\
@@ -121,42 +121,41 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\cmd89.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\externs.h"\
@@ -164,42 +163,41 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\cmd92.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\externs.h"\
@@ -207,42 +205,41 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\ti73.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd73.h"\
@@ -254,42 +251,41 @@
 	"..\..\src\rom83p.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti82.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd82.h"\
@@ -300,42 +296,41 @@
 	"..\..\src\rom82.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti83.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd82.h"\
@@ -347,42 +342,41 @@
 	"..\..\src\rom83.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti85.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd85.h"\
@@ -394,42 +388,41 @@
 	"..\..\src\rom85z.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti86.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd85.h"\
@@ -441,42 +434,41 @@
 	"..\..\src\rom86.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti89.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd89.h"\
@@ -490,42 +482,41 @@
 	"..\..\src\Rom89.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Ti92.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\cmd92.h"\
@@ -539,198 +530,193 @@
 	"..\..\src\Rom92f2.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\keys73.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\keys83p.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\keys89.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\keys92p.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\tikeys.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\keys73.h"\
@@ -738,42 +724,41 @@
 	"..\..\src\Keys89.h"\
 	"..\..\src\keys92p.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\packets.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\externs.h"\
@@ -781,159 +766,155 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\clock.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\headers.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\dirlist.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Error.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\headers.h"\
 	"..\..\src\Intl2.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Intrface.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\Calc_ver.h"\
@@ -949,42 +930,41 @@
 	"..\..\src\Tixx.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\type2str.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\Probe.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\Calc_int.h"\
@@ -995,9 +975,6 @@
 	"..\..\src\packets.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
-	"c:\program files\microsoft visual studio\vc98\include\libintl.h"\
 	
 
 ..\..\src\tnode.c : \

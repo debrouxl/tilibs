@@ -1,36 +1,38 @@
 # Microsoft Developer Studio Generated Dependency File, included by test_ticalcs.mak
 
 ..\..\tests\test_ticalcs.c : \
-	"..\..\..\libticables\src\cabl_def.h"\
-	"..\..\..\libticables\src\cabl_err.h"\
-	"..\..\..\libticables\src\cabl_int.h"\
-	"..\..\..\libticables\src\cabl_ver.h"\
-	"..\..\..\libticables\src\export.h"\
-	"..\..\..\libticables\src\intl.h"\
-	"..\..\..\libticables\src\ticables.h"\
-	"..\..\..\libticables\src\timeout.h"\
-	"..\..\..\libtifiles\src\export.h"\
-	"..\..\..\libtifiles\src\file_def.h"\
-	"..\..\..\libtifiles\src\file_err.h"\
-	"..\..\..\libtifiles\src\file_int.h"\
-	"..\..\..\libtifiles\src\file_ver.h"\
-	"..\..\..\libtifiles\src\files8X.h"\
-	"..\..\..\libtifiles\src\files9X.h"\
-	"..\..\..\libtifiles\src\filesXX.h"\
-	"..\..\..\libtifiles\src\macros.h"\
-	"..\..\..\libtifiles\src\stdints.h"\
-	"..\..\..\libtifiles\src\tifiles.h"\
-	"..\..\..\libtifiles\src\types73.h"\
-	"..\..\..\libtifiles\src\types82.h"\
-	"..\..\..\libtifiles\src\types83.h"\
-	"..\..\..\libtifiles\src\types83p.h"\
-	"..\..\..\libtifiles\src\types85.h"\
-	"..\..\..\libtifiles\src\types86.h"\
-	"..\..\..\libtifiles\src\types89.h"\
-	"..\..\..\libtifiles\src\types92.h"\
-	"..\..\..\libtifiles\src\types92p.h"\
-	"..\..\..\libtifiles\src\typesv2.h"\
-	"..\..\..\libtifiles\src\typesXX.h"\
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\cables\src\Cabl_def.h"\
+	"..\..\..\cables\src\Cabl_err.h"\
+	"..\..\..\cables\src\Cabl_int.h"\
+	"..\..\..\cables\src\Cabl_ver.h"\
+	"..\..\..\cables\src\Export.h"\
+	"..\..\..\cables\src\Intl.h"\
+	"..\..\..\cables\src\stdints.h"\
+	"..\..\..\cables\src\ticables.h"\
+	"..\..\..\cables\src\Timeout.h"\
+	"..\..\..\files\src\export.h"\
+	"..\..\..\files\src\file_def.h"\
+	"..\..\..\files\src\file_err.h"\
+	"..\..\..\files\src\file_int.h"\
+	"..\..\..\files\src\file_ver.h"\
+	"..\..\..\files\src\files8X.h"\
+	"..\..\..\files\src\files9X.h"\
+	"..\..\..\files\src\filesXX.h"\
+	"..\..\..\files\src\macros.h"\
+	"..\..\..\files\src\stdints.h"\
+	"..\..\..\files\src\tifiles.h"\
+	"..\..\..\files\src\types73.h"\
+	"..\..\..\files\src\types82.h"\
+	"..\..\..\files\src\types83.h"\
+	"..\..\..\files\src\types83p.h"\
+	"..\..\..\files\src\types85.h"\
+	"..\..\..\files\src\types86.h"\
+	"..\..\..\files\src\types89.h"\
+	"..\..\..\files\src\types92.h"\
+	"..\..\..\files\src\types92p.h"\
+	"..\..\..\files\src\typesv2.h"\
+	"..\..\..\files\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\Calc_err.h"\
 	"..\..\src\Calc_int.h"\
@@ -38,6 +40,4 @@
 	"..\..\src\headers.h"\
 	"..\..\src\ticalcs.h"\
 	"..\..\src\tnode.h"\
-	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
-	"c:\program files\microsoft visual studio\vc98\include\inttypes.h"\
 	
