@@ -1,0 +1,20 @@
+[Main]
+Name=ticable_set_timeout
+Type=Function
+Header=cabl_int.h
+Definition=void ticable_set_timeout(int timeout_v);
+
+[Parameters]
+timeout : the new timeout value in tenth of seconds
+
+[Summary]
+Change the timeout value for all link cables.
+
+[Description]
+The function changes the current timeout value. The change will come into effect immediately.
+
+Note: if you need to change more than one link cable parameter at a time, you
+should consider the @ticable_set_param@ function.
+
+[See also]
+@ticable_get_timeout@

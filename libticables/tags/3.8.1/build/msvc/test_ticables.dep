@@ -1,0 +1,13 @@
+# Microsoft Developer Studio Generated Dependency File, included by test_ticables.mak
+
+..\..\tests\test_ticables.c : \
+	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\Cabl_err.h"\
+	"..\..\src\Cabl_int.h"\
+	"..\..\src\Cabl_ver.h"\
+	"..\..\src\Export.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\ticables.h"\
+	"..\..\src\Timeout.h"\
+	

@@ -1,0 +1,13 @@
+[Main]
+Name=TicableStatus
+Type=Enum
+Header=cabl_def.h
+Definition=enum TicableStatus
+
+[Fields]
+STATUS_NONE : nothing to do.
+STATUS_RX : a byte has been received.
+STATUS_TX : the byte has been transmitted.
+
+[Summary]
+The value reported by the @TicableLinkCable.check@ function.
