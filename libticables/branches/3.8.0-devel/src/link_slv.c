@@ -27,8 +27,8 @@
 
 
 #if defined(__LINUX__)
-#include "linux/slv_link.c"
-//#include "linux/slv_link2.c"
+//#include "linux/slv_link.c"
+#include "linux/slv_link2.c"
 
 #elif defined(__BSD__)
 #include "linux/slv_link.c"

@@ -85,16 +85,18 @@ static int dev_fd = 0;
 
 int slv_init()
 {
-  int mask = O_RDWR | O_NONBLOCK | O_SYNC;
-
-  if ((dev_fd = open(io_device, mask)) == -1) {
-    DISPLAY_ERROR(_("libticables: unable to open this device: %s.\n"), io_device);
-    return ERR_OPEN_USB_DEV;
-  }
-
-  START_LOGGING();
-
-  return 0;
+	int mask = O_RDWR | O_NONBLOCK | O_SYNC;
+	
+	if ((dev_fd = open(io_device, mask)) == -1) {
+		printf("errno = %i\n", );
+		DISPLAY_ERROR(_("unable to open this device: %s.\n"), 
+			      io_device);
+		return ERR_OPEN_USB_DEV;
+	}
+	
+	START_LOGGING();
+	
+	return 0;
 }
 
 int slv_open(void)

@@ -76,7 +76,6 @@ static uint8_t wBuf[MAX_PACKET_SIZE];
 #endif
 static int nBytesRead = 0;
 static uint8_t rBuf[MAX_PACKET_SIZE];
-#endif
 
 /*********************************/
 /* Linux   : libusb support      */
@@ -84,8 +83,6 @@ static uint8_t rBuf[MAX_PACKET_SIZE];
 /* Contact : jb@technologeek.org */
 /* Date    : 20011126            */
 /*********************************/
-
-#if defined(HAVE_LIBUSB)
 
 #include <usb.h>
 

@@ -266,7 +266,7 @@ static int linux_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	case USB_PORT_1:
-		strcpy(io_device, tiser_node_names[devfs][0]);
+		strcpy(io_device, tiusb_node_names[devfs][0]);
 	break;
 
 	case VIRTUAL_PORT_1:
@@ -376,9 +376,9 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		if(method & IOM_IOCTL)
-			slv_register_cable_1(lc);
+			slv_register_cable_2(lc);
 		else if(method & IOM_DRV)
-			slv_register_cable_1/*2*/(lc);
+			slv_register_cable_2(lc);
 		break;
 
     	default:
@@ -616,7 +616,7 @@ static int check_for_tiusb(void)
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+	DISPLAY(_("    using devfs: %s\r\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiusb0");
@@ -624,23 +624,23 @@ static int check_for_tiusb(void)
 		strcpy(name, "/dev/ticables/usb/0");
 
 	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists\n"), name);
+		DISPLAY(_("    node %s: exists\n"), name);
 	else {
-		DISPLAY(_("      node %s: does not exists\n"), name);
+		DISPLAY(_("    node %s: does not exists\n"), name);
 		return -1;
 	}
 
 	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
 			get_attributes(st.st_mode),
 			get_user_name(st.st_uid),
 			get_group_name(st.st_gid));
 	}
  
 	if (find_string_in_proc("/proc/devices", "tiglusb"))
-		DISPLAY(_("      module: loaded\r\n"));
+		DISPLAY(_("    module: loaded\r\n"));
 	else {
-		DISPLAY(_("      module: not loaded\r\n"));
+		DISPLAY(_("    module: not loaded\r\n"));
 		return -1;
 	}
 
@@ -649,6 +649,8 @@ static int check_for_tiusb(void)
 
 static int check_for_libusb(void)
 {
+	DISPLAY(_("  check for lib-usb usability:\n"));
+
 	if(!access("/proc/bus/usb", F_OK))
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
