@@ -28,15 +28,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #ifdef HAVE_STDINT_H
 # include <stdint.h>
 #else
 # include <inttypes.h>
 #endif
-
 #include <dirent.h>
 #include <sys/utsname.h>	// for uname()
 #include <unistd.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/types.h>
 
 #include "intl.h"
 
@@ -50,6 +54,7 @@
 
 int linux_detect_os(char **os_type)
 {
+#ifdef HAVE_UNAME
 	struct utsname buf;
 
 	uname(&buf);
@@ -60,7 +65,7 @@ int linux_detect_os(char **os_type)
   	DISPLAY(_("  Version: %s\r\n"), buf.version);
   	DISPLAY(_("  Machine: %s\r\n"), buf.machine);
 	DISPLAY(_("Done.\r\n"));
-	
+#endif
 	*os_type = "Linux";
 
 	return 0;
@@ -165,76 +170,288 @@ char *result(int i)
   return ((i == 0) ? _("ok") : _("nok"));
 }
 
+/*
+  Returns mode string from mode value.
+*/
+const char *get_attributes(mode_t attrib)
+{
+	static char s[13] = " ---------- ";
+      
+        if (attrib & S_IRUSR)
+                s[2] = 'r';
+        if (attrib & S_IWUSR)
+                s[3] = 'w';
+        if (attrib & S_ISUID) {
+                if (attrib & S_IXUSR)
+                        s[4] = 's';
+		else
+                        s[4] = 'S';
+        }
+        else if (attrib & S_IXUSR)
+                s[4] = 'x';
+        if (attrib & S_IRGRP)
+                s[5] = 'r';
+        if (attrib & S_IWGRP)
+                s[6] = 'w';
+        if (attrib & S_ISGID) {
+                if (attrib & S_IXGRP)
+			s[7] = 's';
+		else
+                        s[7] = 'S';
+        }
+        else if (attrib & S_IXGRP)
+                s[7] = 'x';
+	if (attrib & S_IROTH)
+                s[8] = 'r';
+        if (attrib & S_IWOTH)
+                s[9] = 'w';
+        if (attrib & S_ISVTX) {
+                if (attrib & S_IXOTH)
+                        s[10] = 't';
+                else
+                        s[10] = 'T';
+        }
+	return s;
+}
 
-/* Try to find a specific string in /proc (vfs) */
+/*
+   Returns user name from id.
+*/
+const char *get_user_name(uid_t uid)
+{
+	struct passwd *pwuid;
+
+        if((pwuid = getpwuid(uid)) != NULL)
+		return pwuid->pw_name;
+
+	return "root";
+}
+
+/*
+  Returns group name from id.
+*/
+const char *get_group_name(uid_t uid)
+{
+	struct group *grpid;
+        
+	if ((grpid = getgrgid(uid)) != NULL)
+                return grpid->gr_name;
+
+	return "root";
+}
+
+/* 
+   Attempt to find a specific string in /proc (vfs) 
+   - entry [in] : an entry such as '/proc/devices'
+   - str [in) : an occurence to find (such as 'tipar')
+*/
 static int find_string_in_proc(char *entry, char *str)
 {
-  FILE *f;
-  char buffer[MAXCHARS];
-  int found = 0;
+	FILE *f;
+	char buffer[MAXCHARS];
+	int found = 0;
+	
+	f = fopen(entry, "rt");
+	if (f == NULL) {
+		return -1;
+	}
+	while (!feof(f)) {
+		fscanf(f, "%s", buffer);
+		if (strstr(buffer, str)) {
+			found = 1;
+		}
+	}
+	fclose(f);
+	
+	return found;
+}
 
-  f = fopen(entry, "rt");
-  if (f == NULL) {
-    return -1;
-  }
-  while (!feof(f)) {
-    fscanf(f, "%s", buffer);
-    if (strstr(buffer, str)) {
-      found = 1;
-    }
-  }
-  fclose(f);
+static void check_for_tipar_module(void)
+{
+	int devfs = 0;
+	struct stat st;
+	char name[15];
+	int ret = !0;
 
-  return found;
+#ifndef HAVE_LINUX_TICABLE_H
+	DISPLAY(_("  IO_TIPAR: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
+#else
+	DISPLAY(_("  IO_TIPAR: checking for various stuffs\r\n"));
+	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
+
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+
+	if(!devfs)
+		strcpy(name, "/dev/tipar0");
+	else
+		strcpy(name, "/dev/ticables/par/0");
+
+	if(!access(name, F_OK))
+		DISPLAY(_("      node %s: exists.\r\n"), name);
+	else {
+		DISPLAY(_("      node %s: does not exists.\r\n"), name);
+		ret = 0;
+}
+
+	if(!stat(name, &st)) {
+		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+                        get_attributes(st.st_mode),
+                        get_user_name(st.st_uid),
+                        get_group_name(st.st_gid));
+	}
+ 
+	if (find_string_in_proc("/proc/devices", "tipar") ||
+            find_string_in_proc("/proc/modules", "tipar"))
+		DISPLAY(_("      module: loaded\r\n"));
+	else
+		DISPLAY(_("      module: not loaded\r\n"));
+
+	resources |= ret ? IO_TIPAR : 0;
+ #endif
+}
+
+static void check_for_tiser_module(void)
+{
+	int devfs = 0;
+	struct stat st;
+	char name[15];
+	int ret = !0;
+
+#ifndef HAVE_LINUX_TICABLE_H
+	DISPLAY(_("  IO_TISER: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
+#else
+	DISPLAY(_("  IO_TISER: checking for various stuffs\r\n"));
+	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
+
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+
+	if(!devfs)
+		strcpy(name, "/dev/tiser0");
+	else
+		strcpy(name, "/dev/ticables/par/0");
+
+	if(!access(name, F_OK))
+		DISPLAY(_("      node %s: exists.\r\n"), name);
+	else {
+		DISPLAY(_("      node %s: does not exists.\r\n"), name);
+		ret = 0;
+}
+
+	if(!stat(name, &st)) {
+		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+                        get_attributes(st.st_mode),
+                        get_user_name(st.st_uid),
+                        get_group_name(st.st_gid));
+	}
+ 
+	if (find_string_in_proc("/proc/devices", "tiser") ||
+            find_string_in_proc("/proc/modules", "tiser"))
+		DISPLAY(_("      module: loaded\r\n"));
+	else
+		DISPLAY(_("      module: not loaded\r\n"));
+
+	resources |= ret ? IO_TISER : 0;
+#endif
+}
+
+static void check_for_tiusb_module(void)
+{
+	int devfs = 0;
+	struct stat st;
+	char name[15];
+	int ret = !0;
+
+#ifndef HAVE_LINUX_TIGLUSB_H
+	DISPLAY(_("  IO_TIUSB: not found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
+#else
+	DISPLAY(_("  IO_TIUSB: checking for various stuffs\r\n"));
+	DISPLAY(_("      found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
+
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+
+	if(!devfs)
+		strcpy(name, "/dev/tiusb0");
+	else
+		strcpy(name, "/dev/ticables/usb/0");
+
+	if(!access(name, F_OK))
+		DISPLAY(_("      node %s: exists.\r\n"), name);
+	else {
+		DISPLAY(_("      node %s: does not exists.\r\n"), name);
+		ret = 0;
+}
+
+	if(!stat(name, &st)) {
+		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+			get_attributes(st.st_mode),
+			get_user_name(st.st_uid),
+			get_group_name(st.st_gid));
+	}
+ 
+	if (find_string_in_proc("/proc/devices", "tiglusb") ||
+            find_string_in_proc("/proc/modules", "tiglusb"))
+		DISPLAY(_("      module: loaded\r\n"));
+	else
+		DISPLAY(_("      module: not loaded\r\n"));
+
+	resources |= ret ? IO_TIUSB : 0;
+#endif
 }
 
 int linux_detect_resources(void)
 {
 	DISPLAY(_("Libticables: checking resources...\r\n"));
 	resources = IO_LINUX;
-	
+
+	/* API: for use with ttySx */
+
+#if defined(HAVE_TERMIOS_H)
   	resources |= IO_API;
-  	DISPLAY(_("  IO_API: ok\r\n"));
-	
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
-	// check super or normal user
-    	uid_t uid = getuid();
-    	if (uid != 0) {
-      		DISPLAY(_("  IO_ASM: nok (a kernel module is needed)\r\n"));
-      		resources &= ~IO_ASM;
-    	} else {
-      		DISPLAY(_("  IO_ASM: ok (super user)\r\n"));
-      		resources |= IO_ASM;
-    	}
+  	DISPLAY(_("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
+#else
+	DISPLAY(_("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
 #endif
 
-  	if (find_string_in_proc("/proc/devices", "tipar") ||
-      		find_string_in_proc("/proc/modules", "tipar"))
-    		resources |= IO_TIPAR;
-  		DISPLAY(_("  IO_TIPAR: %s\r\n"), 
-			resources & IO_TIPAR ? "ok" : "nok");
+	/* ASM: for use with low-level I/O */
 
-  	if (find_string_in_proc("/proc/devices", "tiser") ||
-      		find_string_in_proc("/proc/modules", "tiser"))
-    		resources |= IO_TISER;
-  		DISPLAY(_("  IO_TISER: %s\r\n"), 
-			resources & IO_TISER ? "ok" : "nok");
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
+	DISPLAY(_("  IO_ASM: found at compile time (HAVE_ASM_IO_H), "));
+    	uid_t uid = getuid();
 
-  	if (find_string_in_proc("/proc/devices", "tiusb") ||
-      	find_string_in_proc("/proc/modules", "tiusb") ||
-	find_string_in_proc("/proc/devices", "tiglusb") ||
-      	find_string_in_proc("/proc/modules", "tiglusb")
-      	)
-    		resources |= IO_TIUSB;
-  	DISPLAY(_("  IO_TIUSB: %s\r\n"), resources & IO_TIUSB ? "ok" : "nok");
+    	if (uid != 0) {
+      		DISPLAY(_("but unuseable (non root)\r\n"));
+      		resources &= ~IO_ASM;
+    	} else {
+      		DISPLAY(_("and useable (root)\r\n"));
+      		resources |= IO_ASM;
+    	}
+#else
+	DISPLAY(_("  IO_ASM: not found at compile time (HAVE_ASM_IO_H), "));
+#endif
+
+	/* TIPAR: tipar kernel module */ 
+
+	check_for_tipar_module();
+	
+	/* TISER: tiser kernel module */ 
+
+	check_for_tiser_module();
+	
+	/* TIGLUSB: tiglusb kernel module */ 
+
+	check_for_tiusb_module();
 
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	DISPLAY(_("  IO_LIBUSB: %s\r\n"), 
-		resources & IO_LIBUSB ? "ok" : "N/A");
-
-  DISPLAY(_("Done.\r\n"));
+	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB).\r\n"),
+	resources & IO_LIBUSB ? "" : "not ");
 
   return 0;
 }
