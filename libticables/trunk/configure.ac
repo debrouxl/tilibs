@@ -3,7 +3,15 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 3.8.4, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiCables, 3.8.5, [tilp-users@lists.sourceforge.net])
+
+MAJOR_VERSION=3
+MINOR_VERSION=8
+MICRO_VERSION=5
+
+LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
+LT_REVISION=$MICRO_VERSION
+LT_AGE=$MINOR_VERSION
 
 dnl Library version.
 dnl current:revision:age
@@ -12,7 +20,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-AC_SUBST(LT_LIBVERSION, 11:4:1)
+AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
