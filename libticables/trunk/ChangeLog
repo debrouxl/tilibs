@@ -19,5 +19,18 @@
 	* Do not include detect.c, it's a test file !!
 * 20011216 : v2.2.0-osx0.0.5
 	* Fixed path in PB project files
+	* Enabled Grey TIGL...
+* 20011216 : v2.2.0-osx0.0.6
+	* Fixed timeout value handling, back to tenth of second in ugl_link.c,
+	due to enabling the Grey TIGL support.
 	
+
+
+
+
+
+
+
+
+
 	

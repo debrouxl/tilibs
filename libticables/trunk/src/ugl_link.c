@@ -987,7 +987,7 @@ int ugl_put(byte data)
     extern int	time_out;
     
     IOReturn	kr;
-    UInt32	timeout = time_out;
+    UInt32	timeout = 100 * time_out; // time_out is specified in tenth of seconds
     
     if (intf == NULL)
         return ERR_SND_BYT;
@@ -1017,7 +1017,7 @@ int ugl_get(byte *d)
 #ifdef OSX_DEBUG
     int		i;
 #endif
-    UInt32	timeout = time_out;
+    UInt32	timeout = 100 * time_out; // time_out is specified in tenth of seconds
     IOReturn	kr;
 
 #ifdef OSX_DEBUG
