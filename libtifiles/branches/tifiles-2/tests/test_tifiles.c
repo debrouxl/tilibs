@@ -340,6 +340,7 @@ static int test_v200_regular_support()
 int main(int argc, char **argv)
 {
 	char *msg;
+	char str[16];
 	char buffer[256];
 	int i;
 	int ret;
@@ -350,11 +351,13 @@ int main(int argc, char **argv)
 
 	// test tifiles.c
 	printf("Library version : <%s>\n", tifiles_version_get());
+	printf("--\n");
 
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
-	free(msg);
+	//free(msg);
+	printf("--\n");
 
 	// test type2str.c
 	printf("tifiles_string_to_model: <%i> <%i>\n", CALC_TI92, 
@@ -363,17 +366,20 @@ int main(int argc, char **argv)
 	       tifiles_string_to_attribute(tifiles_attribute_to_string(ATTRB_LOCKED)));
 	printf("tifiles_string_to_class: <%i> <%i>\n", TIFILE_SINGLE, 
 	       tifiles_string_to_class(tifiles_class_to_string(TIFILE_SINGLE)));
+	printf("--\n");
 
 	// test transcode.c
-	//tifiles_transcode_detokenize (CALC_TI82, "", buffer,0x0C/*TI82_ZSTO*/);
-	//printf("<%s>\n", buffer);
-// bug ?!
-	//tifiles_transcode_varname(CALC_TI82, "", buffer, 0x0C/*TI82_ZSTO*/);
-	//printf("<%s>\n", buffer);
-	// bug ?!
-	tifiles_transcode_detokenize (CALC_TI82, "\0x5d\0x00", buffer, -1);
-	//printf("<%s>\n", buffer);
-	//printf("\n");
+	tifiles_transcode_detokenize (CALC_TI82, buffer, "", 0x0C/*TI82_ZSTO*/);
+	printf("<%s>\n", buffer);
+
+	tifiles_transcode_varname(CALC_TI82, buffer, "", 0x0C/*TI82_ZSTO*/);
+	printf("<%s>\n", buffer);
+
+	tifiles_transcoding_set(ENCODING_ASCII);
+	str[0] = 0x5d; str[1] = 0x02;
+	tifiles_transcode_varname(CALC_TI82, buffer, str, -1);
+	printf("<%s>\n", buffer);
+	printf("--\n");
 
 	// test filetypes.c
 	for(i = CALC_TI73; i <= CALC_V200; i++)
@@ -420,6 +426,7 @@ int main(int argc, char **argv)
 
 	ret = tifiles_file_is_tib("misc/ams100.tib");
         printf("tifiles_file_is_tib: %i\n", ret);
+	printf("--\n");
 
 	// test typesxx.c
 	printf("tifiles_file_get_model: %s\n", 
@@ -432,6 +439,7 @@ int main(int argc, char **argv)
 	       tifiles_file_get_type("misc/TI73_OS160.73U"));
 	printf("tifiles_file_get_icon: %s\n",
 	       tifiles_file_get_icon("misc/str.92s"));
+	printf("--\n");
 
 	// test misc.c
 
@@ -445,11 +453,14 @@ int main(int argc, char **argv)
 	printf("tifiles_get_fldname: <%s>\n", tifiles_get_fldname("fld\\var"));
 	tifiles_build_fullname(CALC_TI89, buffer, "fld", "var");
 	printf("tifiles_build_fullname: <%s>\n", buffer);
+	printf("--\n");
 
 	// test filesxx.c
+	printf("--\n");
 
 	return 0;
 	// test grouped.c
+	printf("--\n");
 /*
 	// test OS file
 	tifiles_set_calc(CALC_TI89);

@@ -170,7 +170,7 @@ extern "C" {
   TIEXPORT TiFileClass TICALL tifiles_string_to_class (const char *str);
 
   // transcode.c
-  TIEXPORT char* TICALL tifiles_transcode_detokenize (TiCalcModel model, const char *src, char *dst, uint8_t vartype);
+  TIEXPORT char* TICALL tifiles_transcode_detokenize (TiCalcModel model, char *dst, const char *src, uint8_t vartype);
 
   TIEXPORT char* TICALL tifiles_transcode_to_ascii (TiCalcModel model, char* dst, const char *src);
   TIEXPORT char* TICALL tifiles_transcode_to_latin1 (TiCalcModel model, char* dst, const char *src);

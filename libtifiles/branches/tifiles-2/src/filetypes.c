@@ -329,7 +329,7 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 
   f = fopen(filename, "rb");
   if (f == NULL)
-	  return ERR_FILE_OPEN;
+	  return 0;
 
   // read header
   fread_8_chars(f, buf);

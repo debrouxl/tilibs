@@ -13,7 +13,8 @@ Log:
 	- documentation system has been changed
 	- functions pointers have been removed
 	- library has been fully documented
-	- decreased number of headers to include (3).
+	- decreased number of headers to include (3)
+	- fixed tifiles_file_is_ti and argument passing to transcode functions
 	
 ====[ Version II ]====
 
