@@ -36,7 +36,7 @@
 	Print to stdout as default behaviour unless changed by tifiles_set_print 
 	Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-int default_printl(int level, const char *format, ...)
+static int default_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret;
@@ -51,14 +51,14 @@ int default_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TIFILES_PRINT printl = default_printl;
+TIFILES_PRINTL printl = default_printl;
 
 /*
 	Change print behaviour (callback).
 */
-TIEXPORT TIFILES_PRINT tifiles_set_printl(TIFILES_PRINT new_printl)
+TIEXPORT TIFILES_PRINTL TICALL tifiles_set_printl(TIFILES_PRINTL new_printl)
 {
-  TIFILES_PRINT old_printl = printl;
+  TIFILES_PRINTL old_printl = printl;
 
   printf("printl = %p\n", printl);
   printf("old_printl = %p\n", old_printl);
