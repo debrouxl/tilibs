@@ -42,7 +42,6 @@ CLEAN :
 	-@erase "$(INTDIR)\direct.obj"
 	-@erase "$(INTDIR)\error.obj"
 	-@erase "$(INTDIR)\intrface.obj"
-	-@erase "$(INTDIR)\ioports.obj"
 	-@erase "$(INTDIR)\link_avr.obj"
 	-@erase "$(INTDIR)\link_dev.obj"
 	-@erase "$(INTDIR)\link_dfl.obj"
@@ -61,6 +60,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\verbose.obj"
 	-@erase "$(INTDIR)\win32_detect.obj"
+	-@erase "$(INTDIR)\win32_ioports.obj"
 	-@erase "$(INTDIR)\win32_mapping.obj"
 	-@erase "$(OUTDIR)\ticables.exp"
 	-@erase "$(OUTDIR)\ticables.lib"
@@ -69,7 +69,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "./tiglusb" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -77,9 +77,8 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ticables.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=intl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\ticables.pdb" /machine:I386 /out:"..\..\tests\ticables.dll" /implib:"$(OUTDIR)\ticables.lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\ticables.pdb" /machine:I386 /out:"..\..\tests\ticables.dll" /implib:"$(OUTDIR)\ticables.lib" 
 LINK32_OBJS= \
-	"$(INTDIR)\ioports.obj" \
 	"$(INTDIR)\link_avr.obj" \
 	"$(INTDIR)\link_dev.obj" \
 	"$(INTDIR)\link_dfl.obj" \
@@ -100,8 +99,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
 	"$(INTDIR)\win32_detect.obj" \
+	"$(INTDIR)\win32_ioports.obj" \
 	"$(INTDIR)\win32_mapping.obj" \
-	"$(INTDIR)\ticables.res"
+	"$(INTDIR)\ticables.res" \
+	".\intl.lib"
 
 "..\..\tests\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -124,7 +125,6 @@ CLEAN :
 	-@erase "$(INTDIR)\direct.obj"
 	-@erase "$(INTDIR)\error.obj"
 	-@erase "$(INTDIR)\intrface.obj"
-	-@erase "$(INTDIR)\ioports.obj"
 	-@erase "$(INTDIR)\link_avr.obj"
 	-@erase "$(INTDIR)\link_dev.obj"
 	-@erase "$(INTDIR)\link_dfl.obj"
@@ -144,6 +144,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\verbose.obj"
 	-@erase "$(INTDIR)\win32_detect.obj"
+	-@erase "$(INTDIR)\win32_ioports.obj"
 	-@erase "$(INTDIR)\win32_mapping.obj"
 	-@erase "$(OUTDIR)\ticables.dll"
 	-@erase "$(OUTDIR)\ticables.exp"
@@ -157,7 +158,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "./tiglusb" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -165,9 +166,8 @@ BSC32_FLAGS=/o"$(OUTDIR)\ticables.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib intl.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ticables.pdb" /debug /debugtype:both /machine:I386 /out:"$(OUTDIR)\ticables.dll" /implib:"$(OUTDIR)\ticables.lib" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ticables.pdb" /debug /debugtype:both /machine:I386 /out:"$(OUTDIR)\ticables.dll" /implib:"$(OUTDIR)\ticables.lib" /pdbtype:sept 
 LINK32_OBJS= \
-	"$(INTDIR)\ioports.obj" \
 	"$(INTDIR)\link_avr.obj" \
 	"$(INTDIR)\link_dev.obj" \
 	"$(INTDIR)\link_dfl.obj" \
@@ -188,8 +188,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
 	"$(INTDIR)\win32_detect.obj" \
+	"$(INTDIR)\win32_ioports.obj" \
 	"$(INTDIR)\win32_mapping.obj" \
-	"$(INTDIR)\ticables.res"
+	"$(INTDIR)\ticables.res" \
+	".\intl.lib"
 
 "$(OUTDIR)\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -239,12 +241,6 @@ LINK32_OBJS= \
 
 
 !IF "$(CFG)" == "ticables - Win32 Release" || "$(CFG)" == "ticables - Win32 Debug"
-SOURCE=..\..\src\win32\ioports.c
-
-"$(INTDIR)\ioports.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=..\..\src\link_avr.c
 
 "$(INTDIR)\link_avr.obj" : $(SOURCE) "$(INTDIR)"
@@ -362,6 +358,12 @@ SOURCE=..\..\src\verbose.c
 SOURCE=..\..\src\win32\win32_detect.c
 
 "$(INTDIR)\win32_detect.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\..\src\win32\win32_ioports.c
+
+"$(INTDIR)\win32_ioports.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -271,7 +271,7 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		if(method & IOM_DRV)
-			slv_register_cable(lc);
+			slv_register_cable_1(lc);
 		break;
 
     	default:

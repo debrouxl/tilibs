@@ -26,12 +26,7 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
-
+#include "stdints.h"
 #include "export.h"
 #include "timeout.h"
 

@@ -46,7 +46,7 @@
 #include "../intl.h"
 #include "../cabl_int.h"
 #include "../externs.h"
-#include "ioports.h"
+#include "../ioports.h"
 
 /* Variables */
 

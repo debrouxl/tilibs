@@ -28,11 +28,7 @@
 
 
 #include <stdio.h>
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
+#include "stdints.h"
 
 #include "timeout.h"
 #include "export.h"
