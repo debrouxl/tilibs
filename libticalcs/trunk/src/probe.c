@@ -206,8 +206,11 @@ TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
   TicalcType ct;
 
   ticalc_get_calc(&ct);
-  if ((ct != CALC_TI89) && (ct != CALC_TI92P) &&
-      (ct != CALC_TI73) && (ct != CALC_TI83P) && (ct != CALC_V200))
+  if (
+	  (ct != CALC_TI73) && (ct != CALC_TI83P) && (ct != CALC_TI84P) &&
+	  (ct != CALC_TI89) && (ct != CALC_TI89T) && 
+	  (ct != CALC_TI92P) && (ct != CALC_V200)
+	 )
     return 0;
 
   TRYF(cable->open());
