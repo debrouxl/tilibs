@@ -11,6 +11,10 @@ Log:
 	Bug in lib-usb support: wrong timeout passed to libusb (1/10 of
 	value) => short timeout !
 	Discovered the same bug in tipar/tiser/tiusb kernel module !
+
+	Note: USB support default behaviour is: BUFFERED_R=1 & BUFFERED_W=0.
+	Using BUFFERED_W make FLASH sending faster but communication is less 
+	reliable.
 	
 - 08/04/2004, version 3.8.1: roms
 	Redirection of stdout/stderr.
