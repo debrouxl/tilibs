@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
+/*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -52,42 +52,45 @@ extern "C" {
 #  define TICALL
 # endif
 
-# if defined(__BORLANDC__)	// BCC32 v5.x (or C++Builder)
+# if defined(__BORLANDC__)		// BCC32 v5.x (or C++Builder)
 #  if __BORLANDC__ >= 0x0500	// (c) 2001 Thomas Wolf (two@chello.at)
 #   define TIEXPORT
 #  else
 #   define TIEXPORT
 #  endif
 
-# elif defined(_MSC_VER)	// MSVC 5.0 mini
-#  if defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
+# elif defined(_MSC_VER)		// MSVC 5.0 mini
+#  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
 #   define TIEXPORT __declspec(dllexport)
 #  else
 #   define TIEXPORT __declspec(dllimport)
 #  endif
 
-# elif defined(__MINGW32__)	// MinGW - GCC for Windows, (c) 2002-2003 Kevin Kofler
-#  if defined(DLL_EXPORT)	// defined by the configure script
+# elif defined(HAVE_FVISIBILITY)// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
+#  define TIEXPORT __attribute__ ((visibility("default")))
+
+# elif defined(__MINGW32__)		// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
+#  if defined(DLL_EXPORT)		// defined by the configure script
 #   define TIEXPORT __declspec(dllexport)
 #  else
-#   define TIEXPORT extern	//__declspec(dllimport)
+#   define TIEXPORT extern
 #  endif
 # endif
 
-#elif defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)	// GNU
+#elif defined(__LINUX__) || defined(__BSD__)	// GNU
 # define TIEXPORT extern
 # define TICALL
 
 #else
-# define TIEXPORT		// default
+# define TIEXPORT				// default
 # define TICALL
 #endif
-
-// Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
-// .def file; MSVC uses _cdecl by default (__declspec)
 
 #ifdef __cplusplus
 }
 #endif
+
+// Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
+// .def file; MSVC uses _cdecl by default (__declspec)
 
 #endif
