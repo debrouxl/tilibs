@@ -259,10 +259,10 @@ int linux_detect_resources(void)
 	
 	/* TIGLUSB: tiglusb kernel module */ 
 	
-#ifdef HAVE_LINUX_TIGLUSB_H
+#ifdef HAVE_LINUX_TICABLE_H
 	resources |= IO_TIUSB;
 #endif
-	printl1(0, _("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"),
+	printl1(0, _("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"),
 		resources & IO_TIUSB ? "" : "not ");
 
 	/* LIBUSB: lib-usb userland module */

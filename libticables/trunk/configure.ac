@@ -74,7 +74,7 @@ AC_SUBST(LIBUSB_LIBS)
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS([asm/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h])
-AC_CHECK_HEADERS([linux/ticable.h linux/tiglusb.h])
+AC_CHECK_HEADERS([linux/ticable.h])
 AC_CHECK_HEADERS([sys/utsname.h pwd.h grp.h linux/serial.h sys/ioctl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.

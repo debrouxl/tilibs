@@ -27326,8 +27326,7 @@ fi
 done
 
 
-
-for ac_header in linux/ticable.h linux/tiglusb.h
+for ac_header in linux/ticable.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -29006,7 +29005,6 @@ case "$host" in
   mips-*-linux-*)        ARCH="-D__MIPS__ -D__LINUX__" ;;
   mipsel-*-linux-*)      ARCH="-D__MIPS__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
-  powerpc-apple-darwin*)     ARCH="-D__PPC__  -D__MACOSX__" ;;
   s390-*-linux-*)        ARCH="-D__LINUX__" ;;
   sh-*-linux-*)          ARCH="-D__LINUX__" ;;
   sparc-*-linux-*)       ARCH="-D__SPARC__ -D__LINUX__" ;;
