@@ -43,7 +43,7 @@
 #include "printl.h"
 
 #ifdef __WIN32__
-#define vsnprint _vsnprintf
+#define vsnprintf _vsnprintf
 #endif
 
 // for compatibility

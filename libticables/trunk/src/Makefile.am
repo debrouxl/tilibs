@@ -20,7 +20,7 @@ libticables_la_SOURCES = \
 	ioports.c ioports.h \
 	link_avr.c \
 	link_dev.c \
-	link_dfl.c \
+	link_nul.c \
 	link_par.c \
 	link_ser.c \
 	link_slv.c \

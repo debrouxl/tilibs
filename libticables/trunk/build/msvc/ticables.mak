@@ -44,7 +44,7 @@ CLEAN :
 	-@erase "$(INTDIR)\intrface.obj"
 	-@erase "$(INTDIR)\link_avr.obj"
 	-@erase "$(INTDIR)\link_dev.obj"
-	-@erase "$(INTDIR)\link_dfl.obj"
+	-@erase "$(INTDIR)\link_nul.obj"
 	-@erase "$(INTDIR)\link_par.obj"
 	-@erase "$(INTDIR)\link_ser.obj"
 	-@erase "$(INTDIR)\link_slv.obj"
@@ -60,9 +60,7 @@ CLEAN :
 	-@erase "$(INTDIR)\type2str.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\verbose.obj"
-	-@erase "$(INTDIR)\win32_detect.obj"
 	-@erase "$(INTDIR)\win32_ioports.obj"
-	-@erase "$(INTDIR)\win32_mapping.obj"
 	-@erase "$(OUTDIR)\ticables.exp"
 	-@erase "$(OUTDIR)\ticables.lib"
 	-@erase "..\..\tests\ticables.dll"
@@ -70,7 +68,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -82,7 +80,6 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LINK32_OBJS= \
 	"$(INTDIR)\link_avr.obj" \
 	"$(INTDIR)\link_dev.obj" \
-	"$(INTDIR)\link_dfl.obj" \
 	"$(INTDIR)\link_par.obj" \
 	"$(INTDIR)\link_ser.obj" \
 	"$(INTDIR)\link_slv.obj" \
@@ -100,11 +97,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
-	"$(INTDIR)\win32_detect.obj" \
 	"$(INTDIR)\win32_ioports.obj" \
-	"$(INTDIR)\win32_mapping.obj" \
 	"$(INTDIR)\ticables.res" \
-	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib" \
+	"$(INTDIR)\link_nul.obj"
 
 "..\..\tests\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -129,7 +125,7 @@ CLEAN :
 	-@erase "$(INTDIR)\intrface.obj"
 	-@erase "$(INTDIR)\link_avr.obj"
 	-@erase "$(INTDIR)\link_dev.obj"
-	-@erase "$(INTDIR)\link_dfl.obj"
+	-@erase "$(INTDIR)\link_nul.obj"
 	-@erase "$(INTDIR)\link_par.obj"
 	-@erase "$(INTDIR)\link_ser.obj"
 	-@erase "$(INTDIR)\link_slv.obj"
@@ -146,9 +142,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\verbose.obj"
-	-@erase "$(INTDIR)\win32_detect.obj"
 	-@erase "$(INTDIR)\win32_ioports.obj"
-	-@erase "$(INTDIR)\win32_mapping.obj"
 	-@erase "$(OUTDIR)\ticables.dll"
 	-@erase "$(OUTDIR)\ticables.exp"
 	-@erase "$(OUTDIR)\ticables.ilk"
@@ -161,7 +155,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_CONSOLE" /D "__I386__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -173,7 +167,6 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LINK32_OBJS= \
 	"$(INTDIR)\link_avr.obj" \
 	"$(INTDIR)\link_dev.obj" \
-	"$(INTDIR)\link_dfl.obj" \
 	"$(INTDIR)\link_par.obj" \
 	"$(INTDIR)\link_ser.obj" \
 	"$(INTDIR)\link_slv.obj" \
@@ -191,11 +184,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
-	"$(INTDIR)\win32_detect.obj" \
 	"$(INTDIR)\win32_ioports.obj" \
-	"$(INTDIR)\win32_mapping.obj" \
 	"$(INTDIR)\ticables.res" \
-	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib" \
+	"$(INTDIR)\link_nul.obj"
 
 "$(OUTDIR)\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -257,9 +249,9 @@ SOURCE=..\..\src\link_dev.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=..\..\src\link_dfl.c
+SOURCE=..\..\src\link_nul.c
 
-"$(INTDIR)\link_dfl.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\link_nul.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -365,21 +357,9 @@ SOURCE=..\..\src\verbose.c
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=..\..\src\win32\win32_detect.c
-
-"$(INTDIR)\win32_detect.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=..\..\src\win32\win32_ioports.c
 
 "$(INTDIR)\win32_ioports.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=..\..\src\win32\win32_mapping.c
-
-"$(INTDIR)\win32_mapping.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

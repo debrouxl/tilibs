@@ -190,7 +190,7 @@ libticables_la_SOURCES = \
 	ioports.c ioports.h \
 	link_avr.c \
 	link_dev.c \
-	link_dfl.c \
+	link_nul.c \
 	link_par.c \
 	link_ser.c \
 	link_slv.c \
@@ -230,7 +230,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libticables_la_DEPENDENCIES =
 am_libticables_la_OBJECTS = detect.lo direct.lo error.lo intrface.lo \
-	ioports.lo link_avr.lo link_dev.lo link_dfl.lo link_par.lo \
+	ioports.lo link_avr.lo link_dev.lo link_nul.lo link_par.lo \
 	link_ser.lo link_slv.lo link_tie.lo link_tig.lo link_vti.lo \
 	link_vtl.lo logging.lo mapping.lo none.lo printl.lo type2str.lo \
 	verbose.lo
@@ -242,7 +242,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/detect.Plo ./$(DEPDIR)/direct.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/error.Plo ./$(DEPDIR)/intrface.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ioports.Plo ./$(DEPDIR)/link_avr.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/link_dev.Plo ./$(DEPDIR)/link_dfl.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/link_dev.Plo ./$(DEPDIR)/link_nul.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/link_par.Plo ./$(DEPDIR)/link_ser.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/link_slv.Plo ./$(DEPDIR)/link_tie.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/link_tig.Plo ./$(DEPDIR)/link_vti.Plo \
@@ -317,7 +317,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ioports.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_avr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_dev.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_dfl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_nul.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_par.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_ser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/link_slv.Plo@am__quote@
