@@ -140,12 +140,21 @@ extern "C" {
   	/* Type to String functions */
 	/****************************/
 
-  TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType
-							  type);
-  TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate
-							 br);
+  TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type);
+  TIEXPORT TicableType TICALL ticable_string_to_cabletype(const char *str);
+  
+  TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br);
+  TIEXPORT TicableBaudRate TICALL ticable_string_to_baudrate(const char *str);
+  
   TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc);
+  TIEXPORT TicableHfc TICALL ticable_string_to_hfc(const char *str);
+  
   TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port);
+  TIEXPORT TicablePort TICALL ticable_string_to_port(const char *str);
+  
+  TIEXPORT const char *TICALL ticable_display_to_string(TicableDisplay disp);
+  TIEXPORT TicableDisplay TICALL ticable_string_to_display(const char *str);
+  
   TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod
 						       method);
 
