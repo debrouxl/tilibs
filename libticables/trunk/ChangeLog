@@ -6,6 +6,9 @@ To do:
 	- ioports.c to improve
 
 Log:
+- 22/03, 2004, version 3.8.0: roms
+	Splitted sources according to target and cables.
+	
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables
 

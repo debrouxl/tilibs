@@ -228,7 +228,6 @@ man/Makefile
 man/ticables-config.1 
 src/Makefile 
 tests/Makefile 
-win32/Makefile
 intl/Makefile
 po/Makefile.in
 ticables-config 

@@ -134,6 +134,7 @@ bin_SCRIPTS = ticables-config
 
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO docs osx
+pkgconfig_DATA = ticables.pc
 
 # This target retrieve some files from my Win$ partition to my Linux one
 SRC_DIR = /mnt/xp/devel/tilp_project/libs/cables
@@ -459,7 +460,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @OS_BSD_TRUE@ pkgconfigdir = $(prefix)/libdata/pkgconfig
 @OS_BSD_FALSE@ pkgconfigdir = $(libdir)/pkgconfig
-#pkgconfig_DATA = ticables.pc
 
 $(pkgconfig_DATA): config.status
 
