@@ -147,7 +147,7 @@ int win32_detect_resources(void)
 	hDLL = LoadLibrary("TiglUsb.DLL");
     	if (hDLL != NULL) {
       		resources |= IO_USB;
-#ifndef __BORLANDC__
+#if !defined(__BORLANDC__) && !defined(__WIN32__)	// why ?
       		CloseHandle(hDLL);
 #endif
     	}

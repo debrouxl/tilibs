@@ -1,13 +1,11 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticables.mak
 
 ..\..\src\link_avr.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
-	"..\..\src\linux\avr_link.c"\
 	"..\..\src\Logging.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
@@ -16,21 +14,11 @@
 	
 
 ..\..\src\link_dev.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
-	"..\..\src\Cabl_def.h"\
-	"..\..\src\Cabl_err.h"\
-	"..\..\src\export.h"\
-	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
-	"..\..\src\linux\dev_link.c"\
-	"..\..\src\Logging.h"\
 	"..\..\src\none.c"\
-	"..\..\src\stdints.h"\
-	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\link_dfl.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -41,6 +29,7 @@
 	
 
 ..\..\src\link_par.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -48,13 +37,13 @@
 	"..\..\src\Ioports.h"\
 	"..\..\src\linux\par_link.c"\
 	"..\..\src\Logging.h"\
-	"..\..\src\none.c"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\link_ser.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -63,22 +52,18 @@
 	"..\..\src\linux\ser_link.c"\
 	"..\..\src\linux\ser_link2.c"\
 	"..\..\src\Logging.h"\
-	"..\..\src\none.c"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	
 
 ..\..\src\link_slv.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\Intl.h"\
-	"..\..\src\linux\slv_link.c"\
-	"..\..\src\linux\slv_link2.c"\
 	"..\..\src\Logging.h"\
-	"..\..\src\macos\slv_link.c"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
@@ -87,15 +72,13 @@
 	
 
 ..\..\src\link_tie.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\Intl.h"\
-	"..\..\src\linux\tie_link.c"\
 	"..\..\src\Logging.h"\
-	"..\..\src\none.c"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
@@ -103,13 +86,11 @@
 	
 
 ..\..\src\link_tig.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
-	"..\..\src\linux\tig_link.c"\
 	"..\..\src\Logging.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
@@ -118,15 +99,13 @@
 	
 
 ..\..\src\link_vti.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\Intl.h"\
-	"..\..\src\linux\vti_link.c"\
 	"..\..\src\Logging.h"\
-	"..\..\src\none.c"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
@@ -134,12 +113,11 @@
 	
 
 ..\..\src\link_vtl.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\linux\vtl_link.c"\
-	"..\..\src\Logging.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
@@ -147,6 +125,7 @@
 	
 
 ..\..\src\win32\porttalk.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\stdints.h"\
@@ -155,24 +134,16 @@
 	
 
 ..\..\src\detect.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
-	"..\..\src\bsd\bsd_detect.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
-	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
-	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
-	"..\..\src\linux\linux_detect.c"\
-	"..\..\src\linux\linux_detect.h"\
-	"..\..\src\macos\macos_detect.h"\
-	"..\..\src\none.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\win32_detect.h"\
 	
 
 ..\..\src\direct.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_int.h"\
 	"..\..\src\export.h"\
@@ -182,7 +153,7 @@
 	
 
 ..\..\src\error.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -192,7 +163,7 @@
 	
 
 ..\..\src\intrface.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_ver.h"\
 	"..\..\src\detect.h"\
@@ -206,7 +177,7 @@
 	
 
 ..\..\src\logging.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\Intl.h"\
@@ -216,26 +187,16 @@
 	
 
 ..\..\src\mapping.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
-	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
-	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
-	"..\..\src\linux\links.h"\
-	"..\..\src\linux\linux_mapping.c"\
-	"..\..\src\linux\linux_mapping.h"\
-	"..\..\src\macos\macos_mapping.h"\
-	"..\..\src\none.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\type2str.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\win32_mapping.h"\
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\Intl.h"\
@@ -245,6 +206,7 @@
 	
 
 ..\..\src\verbose.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
 	"..\..\src\stdints.h"\
@@ -253,7 +215,7 @@
 	
 
 ..\..\src\win32\win32_detect.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
@@ -266,7 +228,7 @@
 	
 
 ..\..\src\win32\win32_ioports.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\Cabl_int.h"\
@@ -277,11 +239,11 @@
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
-	"..\..\src\win32\porttalk_IOCTL.h"\
+	"..\..\src\win32\porttalk_ioctl.h"\
 	
 
 ..\..\src\win32\win32_mapping.c : \
-	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
