@@ -108,6 +108,7 @@ int slv_open(void)
   {
     int arg = time_out;
 
+    printf("ioctl !\n");
     if (ioctl(dev_fd, IOCTL_TIUSB_TIMEOUT, arg) == -1) {
 	    printl1(2, _("unable to set timeout (ioctl).\n"));
 	    //return ERR_IOCTL;

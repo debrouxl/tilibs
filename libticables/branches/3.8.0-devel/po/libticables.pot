@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-13 22:24+0200\n"
+"POT-Creation-Date: 2004-04-14 19:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -708,16 +708,16 @@ msgstr ""
 msgid "unable to open this device: %s.\n"
 msgstr ""
 
-#: src/linux/slv_link.c:111
+#: src/linux/slv_link.c:112
 msgid "unable to set timeout (ioctl).\n"
 msgstr ""
 
-#: src/linux/slv_link.c:122
+#: src/linux/slv_link.c:124
 msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:192
+#: src/linux/slv_link.c:194
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""
@@ -737,7 +737,7 @@ msgstr ""
 msgid "usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:313
+#: src/linux/slv_link2.c:319
 msgid ""
 "weird, usb_bulk_read returns without any data; retrying for circumventing "
 "the quirk...\n"
