@@ -1,0 +1,8 @@
+[Main]
+Name=Ti9xRegular
+Type=Structure
+Header=file_def.h (files9x.h)
+Definition=typedef TiRegular
+
+[Summary]
+An alias for @TiRegular@.

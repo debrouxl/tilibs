@@ -1,0 +1,19 @@
+[Main]
+Name=tifiles_vartype_to_file_extension
+Type=Function
+Header=file_int.h
+Definition=const char* TICALL tifiles_vartype_to_file_extension(int vartype);
+
+[Parameters]
+vartype : a variable type,
+Returns : a string.
+
+[Summary]
+Returns the file extension associated with the correponding tyoe.
+
+[Explanation]
+Given a real number on a TI82, the function will return ".82n".
+
+Note: this function is contextual.
+
+[See also]

@@ -1,0 +1,33 @@
+[Main]
+Name=Ti8xBackup
+Type=Structure
+Header=file_def.h (files8x.h)
+Definition=struct Ti8xBackup
+
+[Fields]
+  int              calc_type : a calculator model
+  char             comment[43] : a comment 
+  @uint8_t@          type : a variable tye (backup)
+  @uint16_t@         mem_address : memory address where to place backup
+  @uint16_t@         data_length1 : length of backup part #1
+  @uint8_t@*         data_part1 : data for this part
+  @uint16_t@         data_length2 : length of backup part #2
+  @uint8_t@*         data_part2 : data for this part
+  @uint16_t@         data_length3 : length of backup part #3
+  @uint8_t@*         data_part3 ; data for this part
+  @uint16_t@         data_length4 : length of backup part #4 (TI86 only)
+  @uint8_t@*         data_part4 : data for this part (if needed)
+  @uint16_t@         checksum : the checkum of file
+
+[Summary]
+A generic structure used to store a TI8x backup.
+
+[Description]
+This structure is used by many functions which need to manipulate backup files for TI8x calculators.
+This structure is generic, that is to say common to all TI8x calculators.
+
+Some fields can be manipulated by the developer:
+- calc_type
+- comment
+the others are for internal use.
+

@@ -1,0 +1,18 @@
+[Main]
+Name=tifiles_set_printf
+Type=Function
+Header=file_int.h
+Definition=TIFILES_PRINTF tifiles_set_printf (TIFILES_PRINTF tp);
+
+[Parameters]
+tp : the new printf handler
+Returns : the previous PRINTF handler
+
+[Summary]
+Change the 'printf' handler used by library.
+
+[Explanation]
+...
+
+[See also]
+tifiles_set_calc

@@ -1,0 +1,15 @@
+[Main]
+Name=LSB
+Type=Macro
+Header=macros.h
+Definition=# define LSB(w)
+
+[Parameters]
+w : a word (16 bits)
+Returns : a byte (8 bits)
+
+[Summary]
+Returns the least significant byte.
+
+[See also]
+@MSB@

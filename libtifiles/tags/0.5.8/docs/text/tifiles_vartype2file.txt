@@ -1,0 +1,20 @@
+[Main]
+Name=tifiles_vartype2file
+Type=Function
+Header=file_int.h
+Definition=const char* TICALL tifiles_vartype2file (uint8_t data);
+
+[Parameters]
+data : a variable type
+Returns : a file extension.
+
+[Summary]
+Converts a numerical type into a valid file extension.
+
+[Explanation]
+The file extension which is returned is compatible with the TI' GraphLink extensions.
+
+Note: this function is contextual.
+
+[See also]
+tifiles_string2vartype
