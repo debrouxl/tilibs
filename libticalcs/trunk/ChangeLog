@@ -5,6 +5,8 @@ Log:
 - 18/09/2004, version 4.5.4: roms
 	Added TI89 Titanium support. File format seems to be the same as TI89.
 	Added TI84+ (SE) support. File format seems to be the same as TI83+.
+	Removed VTi's TI89/92+ ROM dumper by my own ROM dumper for 
+	TI89/TI92+/V200PLT/Titanium.
 
 - 08/04/2004, version 4.5.3: roms
 	Redirection of stdout/stderr.

@@ -27,6 +27,8 @@ Optimize Calculations=1
 Remove Unused Sections=1
 Cut Unused Ranges=1
 Binary Output=0
+Reorder Sections=1
+Merge Constants=1
 
 
 [Library Options]

@@ -36,7 +36,7 @@
 #pragma warning( disable : 4761 4244)
 #endif
 
-// Shares some commands between TI89/92+/V200
+// Shares some commands between TI89/92+/V200/TI89 Titanium
 extern int ticalcs_calc_type;
 
 static uint8_t pc_ti9x(void)

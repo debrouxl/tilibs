@@ -678,7 +678,7 @@ int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
 }
 
 #define DUMP_ROM89_FILE "dumprom.89z"
-#define ROMSIZE (2*1024)	// 2MB or 4MB (Titanium)
+//#define ROMSIZE (2*1024)	// 2MB or 4MB (Titanium)
 
 int ti89_dump_rom(const char *filename, int mask_mode)
 {
@@ -690,6 +690,8 @@ int ti89_dump_rom(const char *filename, int mask_mode)
   int pad;
   FILE *f, *file;
   uint16_t checksum, sum;
+  int ROMSIZE = (ticalcs_calc_type == CALC_TI89T) || 
+  				(ticalcs_calc_type == CALC_V200) ? 4*1024 : 2*1024;
 
   printl2(0, _("ROM dumping...\n"));
 
@@ -718,13 +720,13 @@ int ti89_dump_rom(const char *filename, int mask_mode)
   TRY(ti89_send_key('i'));
   TRY(ti89_send_key('n'));
   TRY(ti89_send_key('\\'));
+  TRY(ti89_send_key('r'));
+  TRY(ti89_send_key('o'));
+  TRY(ti89_send_key('m'));
   TRY(ti89_send_key('d'));
   TRY(ti89_send_key('u'));
   TRY(ti89_send_key('m'));
   TRY(ti89_send_key('p'));
-  TRY(ti89_send_key('r'));
-  TRY(ti89_send_key('o'));
-  TRY(ti89_send_key('m'));
   TRY(ti89_send_key(KEY89_LP));
   TRY(ti89_send_key(KEY89_RP));
   TRY(ti89_send_key(KEY89_ENTER));

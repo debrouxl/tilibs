@@ -43,6 +43,9 @@
 #define PC_TI83p 0x23
 #define TI83p_PC 0x73
 
+#define PC_TI84p 0x23
+#define TI84p_PC 0x73
+
 #define PC_TI85  0x05
 #define TI85_PC  0x85
 
@@ -51,6 +54,9 @@
 
 #define PC_TI89  0x08
 #define TI89_PC  0x98
+
+#define PC_TI89t 0x08
+#define TI89t_PC 0x98
 
 #define PC_TI92  0x09
 #define TI92_PC  0x89

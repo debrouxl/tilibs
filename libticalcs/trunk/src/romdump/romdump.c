@@ -143,6 +143,9 @@ void _main(void)
   sprintf(str, "ROM base: 0x%lx", rom_base);
   DrawStr(0, 40, str, A_NORMAL);  
   
+  sprintf(str, "by The TiLP Team");
+  DrawStr(0, 80, str, A_NORMAL);  
+  
   for(i = 0, p = (char *)rom_base; i < rom_size; i += 1024, p += 1024)
   {  	
 		sprintf(str, "Done: %ld/%ldKB", i >> 10, rom_size >> 10);
