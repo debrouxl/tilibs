@@ -169,8 +169,13 @@ extern "C" {
 
   // type2str.c
   TIEXPORT const char *TICALL tifiles_calctype_to_string(TicalcType type);
+  TIEXPORT TicalcType TICALL tifiles_string_to_calctype(const char *str);
+  
   TIEXPORT const char *TICALL tifiles_attribute_to_string(TifileAttr atrb);
+  TIEXPORT TifileAttr TICALL tifiles_string_to_attribute(const char *str);
+  
   TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type);
+  TIEXPORT TifileType TICALL tifiles_string_to_filetype(const char *str);
 
   /************************/
   /* Deprecated functions */
