@@ -35,7 +35,7 @@
 #include "typesxx.h"
 #include "file_int.h"
 #include "macros.h"
-#include "print.h"
+#include "printl.h"
 
 
 extern int tifiles_calc_type;
@@ -878,7 +878,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_latin1; 
       break;
 	default:
-	  print("error", "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  printl(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }
@@ -918,7 +918,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_utf8; 
       break;
 	default:
-	  print("error", "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  printl(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }

@@ -31,7 +31,7 @@
 
 #include "export.h"
 #include "file_int.h"
-#include "print.h"
+#include "printl.h"
 
 #define bswap_16(a) (a >> 8) | (a << 8)
 
@@ -48,8 +48,8 @@ TIEXPORT int TICALL hexdump(uint8_t * ptr, int len)
   int i;
 
   for (i = 0; i < len; i++)
-    print("", "%02X ", ptr[i]);
-  print("", "\n");
+    printl(0, "%02X ", ptr[i]);
+  printl(0, "\n");
 
   return 0;
 }
@@ -95,9 +95,8 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
   l = strlen(s);
   if (l > n) {
-    print("error", 
-	    "libtifiles error: string passed in 'write_string8' is too long (>n chars).\n");
-    printf("s = <%s>, len(s) = %i\n", s, strlen(s));
+    printl(2, "string passed in 'write_string8' is too long (>n chars).\n");
+    printl(2, "s = <%s>, len(s) = %i\n", s, strlen(s));
     hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
     abort();
   }

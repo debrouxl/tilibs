@@ -38,14 +38,14 @@
 	Print to stdout as default behaviour unless changed by tifiles_set_print 
 	Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-int default_print(const char *level, const char *format, ...)
+int default_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret;
 
 	fprintf(stdout, "libtifiles ");
-	if(strcmp(level, ""))
-		fprintf(stdout, "(%s): ", level);
+	if(level != 0)
+		fprintf(stdout, "(%s): ", (level == 2) ? _("error") : _("warning"));
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
@@ -53,20 +53,20 @@ int default_print(const char *level, const char *format, ...)
 	return ret;
 }
 
-TIFILES_PRINT print = default_print;
+TIFILES_PRINT printl = default_printl;
 
 /*
 	Change print behaviour (callback).
 */
-TIEXPORT TIFILES_PRINT tifiles_set_print(TIFILES_PRINT new_print)
+TIEXPORT TIFILES_PRINT tifiles_set_printl(TIFILES_PRINT new_printl)
 {
-  TIFILES_PRINT old_print = print;
+  TIFILES_PRINT old_printl = printl;
 
-  printf("printf = %p\n", print);
-  printf("old_printf = %p\n", old_print);
-  printf("new_printf = %p\n", new_print);
+  printf("printl = %p\n", printl);
+  printf("old_printl = %p\n", old_printl);
+  printf("new_printl = %p\n", new_printl);
 
-  print = new_print;
+  printl = new_printl;
 
-  return old_print;
+  return old_printl;
 }

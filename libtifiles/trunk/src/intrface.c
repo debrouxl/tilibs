@@ -35,7 +35,7 @@
 #include "typesxx.h"
 #include "trans.h"
 #include "grp_ops.h"
-#include "print.h"
+#include "printl.h"
 
 /*****************/
 /* Internal data */
@@ -72,14 +72,14 @@ TIEXPORT int TICALL tifiles_init()
 #endif
 
 #if defined(ENABLE_NLS)
-	print("",  "libtifiles: setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	print("",  "libtifiles: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	printl(0, "libtifiles: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	printl(0, "libtifiles: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	print("",  "libtifiles: textdomain: <%s>\n", textdomain(PACKAGE));
+  	printl(0, "libtifiles: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   if (tifiles_instance == 0) {
-    print("",  _("Libtifiles: version %s\n"), LIBTIFILES_VERSION);
+    printl(0, _("Libtifiles: version %s\n"), LIBTIFILES_VERSION);
   }
 
   return (++tifiles_instance);
@@ -137,12 +137,10 @@ TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
   case CALC_V200:
     break;
   default:
-    print("error", 
-	    _
-	    ("Function not implemented. This is a bug. Please report it."));
-    print("error",  _("Informations:\n"));
-    print("error",  _("Calc: %i\n"), type);
-    print("error",  _("Program halted before crashing...\n"));
+    printl(2, _("Function not implemented. This is a bug. Please report it."));
+    printl(2, _("Informations:\n"));
+    printl(2, _("Calc: %i\n"), type);
+    printl(2, _("Program halted before crashing...\n"));
     abort();
     break;
   }
@@ -155,43 +153,9 @@ TIEXPORT TicalcType TICALL tifiles_get_calc(void)
 
 static void print_informations(void)
 {
-  print("",  _("Libtifiles settings...\n"));
-
-  switch (tifiles_calc_type) {
-  case CALC_V200:
-    print("",  _("  Calc type: %s\n"), "V200");
-    break;
-  case CALC_TI92P:
-    print("",  _("  Calc type: %s\n"), "TI92+");
-    break;
-  case CALC_TI92:
-    print("",  _("  Calc type: %s\n"), "TI92");
-    break;
-  case CALC_TI89:
-    print("",  _("  Calc type: %s\n"), "TI89");
-    break;
-  case CALC_TI86:
-    print("",  _("  Calc type: %s\n"), "TI86");
-    break;
-  case CALC_TI85:
-    print("",  _("  Calc type: %s\n"), "TI85");
-    break;
-  case CALC_TI83P:
-    print("",  _("  Calc type: %s\n"), "TI83+");
-    break;
-  case CALC_TI83:
-    print("",  _("  Calc type: %s\n"), "TI83");
-    break;
-  case CALC_TI82:
-    print("",  _("  Calc type: %s\n"), "TI82");
-    break;
-  case CALC_TI73:
-    print("",  _("  Calc type: %s\n"), "TI73");
-    break;
-  default:			// error !
-    print("",  _("Oops, there is a bug. Unknown calculator.\n"));
-    break;
-  }
+  printl(0, _("Libtifiles settings...\n"));
+  printl(0, _("  Calc type: %s\n"), 
+  	tifiles_calctype_to_string(tifiles_calc_type));
 }
 
 /* deprecated */
