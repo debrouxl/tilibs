@@ -128,25 +128,25 @@ case $host_os in
   ;;
 esac
 
-# Check for the new -fvisibility flag introduced in gcc 4.0
+# Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
 if test x$GCC = xyes; then
    visibility_flag=''
-   AC_MSG_CHECKING([whether -fvisibility flag is supported])
+   AC_MSG_CHECKING([whether -fvisibility=hidden flag is supported])
    if test -z "$ac_cv_prog_CC"; then
       our_gcc="$CC"
    else
       our_gcc="$ac_cv_prog_CC"
    fi
-   if $our_gcc -v --help 2>/dev/null | grep fvisibility >/dev/null; then
-      visibility_flag='-fvisibility'
+   if $our_gcc -v --help 2>/dev/null | grep "fvisibility=hidden" >/dev/null; then
+      visibility_flag='-fvisibility=hidden'
    fi
    if test x"$visibility_flag" = x ; then
       AC_MSG_RESULT([no])
    else
       CFLAGS="$CFLAGS $visibility_flag"
       AC_MSG_RESULT([${visibility_flag}])
-      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility flag])
+      AC_DEFINE(HAVE_FVISIBILITY, 1, [Use -fvisibility=hidden flag])
     fi
 fi
 
