@@ -53,7 +53,7 @@ int resources = IO_NONE;     // I/O methods detected
 int method = IOM_AUTO;       // I/O method to use (automatic)
 
 uint io_address = 0;         // I/O port base address
-char device[MAXCHARS]="";    // The character device (COMx, ttySx, ...)
+char io_device[MAXCHARS]=""; // The character device (COMx, ttySx, ...)
 
 const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
@@ -153,13 +153,13 @@ TIEXPORT uint TICALL ticable_get_io_address()
 
 TIEXPORT void TICALL ticable_set_io_device(char *dev)
 {
-  strcpy(device, dev);
+  strcpy(io_device, dev);
 }
 
 
 TIEXPORT char* TICALL ticable_get_io_device()
 {
-  return device;
+  return io_device;
 }
 
 
@@ -216,7 +216,7 @@ TIEXPORT int TICALL ticable_set_param2(LinkParam lp)
   if((port == USER_PORT) || (port == OSX_SERIAL_PORT)) // force args
     {
       io_address = lp.io_addr;
-      strcpy(device, lp.device);
+      strcpy(io_device, lp.device);
     }
 
   return 0;
@@ -237,7 +237,7 @@ TIEXPORT int TICALL ticable_get_param(LinkParam *lp)
   lp->hfc = hfc;
 
   lp->io_addr = io_address;
-  strcpy(lp->device, device);
+  strcpy(lp->device, io_device);
 
   lp->port = port;
   lp->method = method;
@@ -278,7 +278,7 @@ TIEXPORT int TICALL ticable_get_default_param(LinkParam *lp)
 extern LinkCable *tcl;
 static void print_informations();
 
-
+/* HAVE_LIBINTL_H,ENABLE_NLS */
 TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
 {
   int type = typ;
@@ -560,6 +560,10 @@ TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
 	  if( (port != PARALLEL_PORT_1) &&
               (port != PARALLEL_PORT_2) &&
               (port != PARALLEL_PORT_3) &&
+	      (port != SERIAL_PORT_1) &&
+	      (port != SERIAL_PORT_2) &&
+	      (port != SERIAL_PORT_3) &&
+	      (port != SERIAL_PORT_4) &&
               (port != USER_PORT))
             return ERR_INVALID_PORT;
 
@@ -671,7 +675,7 @@ static void print_informations(void)
   DISPLAY(_("  Baud-rate: %i\n"), baud_rate);
   DISPLAY(_("  Hardware flow control: %s\n"), hfc ? _("on") : _("off"));
   DISPLAY(_("  I/O address: 0x%03x\n"), io_address);
-  DISPLAY(_("  Device name: %s\n"), device);
+  DISPLAY(_("  Device name: %s\n"), io_device);
 }
 
 
@@ -768,106 +772,106 @@ static int convert_port_into_device(void)
 #if !defined(__MACOSX__)
     case PARALLEL_PORT_1:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-	  strcpy(device, TIDEV_P0);
+	  strcpy(io_device, TIDEV_P0);
       else
 	{
 	  io_address = PP1_ADDR;
-	  strcpy(device, PP1_NAME);
+	  strcpy(io_device, PP1_NAME);
 	}
       break;
     case PARALLEL_PORT_2:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_P1);
+        strcpy(io_device, TIDEV_P1);
       else
         {
           io_address = PP2_ADDR;
-          strcpy(device, PP2_NAME);
+          strcpy(io_device, PP2_NAME);
         }
       break;
     case PARALLEL_PORT_3:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_P2);
+        strcpy(io_device, TIDEV_P2);
       else
         {
           io_address = PP3_ADDR;
-          strcpy(device, PP3_NAME);
+          strcpy(io_device, PP3_NAME);
         }
       break;
     case SERIAL_PORT_1:
       if((method & IOM_DRV) && (resources & IO_LINUX))
 	{
-	  strcpy(device, TIDEV_S0);
+	  strcpy(io_device, TIDEV_S0);
 	}     
       else
         {
           io_address = SP1_ADDR;
-          strcpy(device, SP1_NAME);
+          strcpy(io_device, SP1_NAME);
         }
       break;
     case SERIAL_PORT_2:
       if((method & IOM_DRV) && (resources & IO_LINUX))
 	{
-	  strcpy(device, TIDEV_S1);
+	  strcpy(io_device, TIDEV_S1);
 	}      
       else
         {
           io_address = SP2_ADDR;
-          strcpy(device, SP2_NAME);
+          strcpy(io_device, SP2_NAME);
         }
       break;
     case SERIAL_PORT_3:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_S2);
+        strcpy(io_device, TIDEV_S2);
       else
         {
           io_address = SP3_ADDR;
-          strcpy(device, SP3_NAME);
+          strcpy(io_device, SP3_NAME);
         }
       break;
     case SERIAL_PORT_4:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_S3);
+        strcpy(io_device, TIDEV_S3);
       else
         {
           io_address = SP4_ADDR;
-          strcpy(device, SP4_NAME);
+          strcpy(io_device, SP4_NAME);
         }
       break;
     case USB_PORT_1:
-      strcpy(device, UP1_NAME);
+      strcpy(io_device, UP1_NAME);
       break;
     case USB_PORT_2:
-      strcpy(device, UP2_NAME);
+      strcpy(io_device, UP2_NAME);
       break;
     case USB_PORT_3:
-      strcpy(device, UP3_NAME);
+      strcpy(io_device, UP3_NAME);
       break;
     case USB_PORT_4:
-      strcpy(device, UP4_NAME);
+      strcpy(io_device, UP4_NAME);
       break;
 #else
     case OSX_USB_PORT:
-      strcpy(device, "");
+      strcpy(io_device, "");
       break;
     case OSX_SERIAL_PORT:
       break;
 #endif /* !__MACOSX__ */
     case VIRTUAL_PORT_1:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_V0);
+        strcpy(io_device, TIDEV_V0);
       else
         {
           io_address = VLINK0;
-          strcpy(device, "");
+          strcpy(io_device, "");
         }
       break;
     case VIRTUAL_PORT_2:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(device, TIDEV_V1);
+        strcpy(io_device, TIDEV_V1);
       else
         {
           io_address = VLINK1;
-	    strcpy(device, "");
+	    strcpy(io_device, "");
         }
       break;
     default:

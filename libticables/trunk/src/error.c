@@ -133,11 +133,15 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
 #ifndef __MACOSX__
       strcpy(error_msg, _("Unable to open the USB device. Check that you have required rights on the node and/or your driver is loaded."));
 #else
-      strcpy(error_msg, _("Unable to open the USB device. Your cable is not connected."));
+      strcpy(error_msg, _("Unable to open the USB device. Your cable is not connected or stalled."));
 #endif
       break;
     case ERR_USB_INIT:
+#ifndef __MACOSX__
       strcpy(error_msg, _("Error occurred while initializing the libusb."));
+#else
+      strcpy(error_msg, _("Unable to initialize the USB device. Your cable is probably not connected."));
+#endif
       break;
     case ERR_IOCTL:
       strcpy(error_msg, _("IOCTL error. Check that you have required rights on the node and/or your kernel module is loaded."));

@@ -27,7 +27,8 @@
 #define DSP_CLOSE 2
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...);
-TIEXPORT int TICALL dERROR(const char *format, ...);
+TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
+#define dERROR DISPLAY_ERROR
 TIEXPORT int TICALL ticable_DISPLAY_settings(int op);
 
 #endif

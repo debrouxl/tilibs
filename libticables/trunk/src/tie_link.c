@@ -325,7 +325,7 @@ int tie_init(void)
 	/* Check if valid argument */
 	if( (io_address < 1) || (io_address > 2))
 	{
-		dERROR("invalid io_address parameter passed to libticables.\n");
+		DISPLAY_ERROR("invalid io_address parameter passed to libticables.\n");
 		io_address = 2;
 	}
 	else

@@ -39,7 +39,6 @@
 #if defined(__WIN32__)
  #define BUFFER_SIZE 1024
  static HANDLE hCom=0;
- static char comPort[MAXCHARS];
 #endif
 
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
@@ -56,6 +55,14 @@ static int io_permitted = 0;
 
 int ser_init()
 {
+#ifdef __WIN32__
+	// Under Win2k: if we do not open the serial device as a COM
+	// port, it may be impossible to transfer data.
+	// This problem exists with Win2k and some UARTs.
+	// It seems I have the same problem as FlashZ !!!
+	TRYC(open_com_port(io_device, &hCom));
+#endif
+
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
   com_addr = io_address;
 
@@ -68,6 +75,7 @@ int ser_init()
   wr_io(com_out, 0);
   wr_io(com_out, 3);
 #endif
+
   START_LOGGING();
 
   return 0;
@@ -220,6 +228,11 @@ int ser_exit()
   TRYC(close_io(com_in, 1));
   io_permitted--;
 #endif
+
+#ifdef __WIN32__
+	TRYC(close_com_port(&hCom));
+#endif
+
   STOP_LOGGING();
 
   return 0;

@@ -84,9 +84,9 @@ int dev_init()
 
   /* Open the device */
   mask = O_RDWR | O_NONBLOCK | O_SYNC;
-  if( (dev_fd = open(device, mask)) == -1)
+  if( (dev_fd = open(io_device, mask)) == -1)
     {
-      DISPLAY("unable to open this device: <%s>\n", device);
+      DISPLAY("unable to open this device: <%s>\n", io_device);
       DISPLAY("is the module loaded ?\n");
       return ERR_OPEN_TIDEV_DEV;
     }

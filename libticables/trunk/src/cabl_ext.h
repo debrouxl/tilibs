@@ -34,7 +34,7 @@ extern int resources;
 extern int method;
 
 extern uint io_address;
-extern char device[MAXCHARS];
+extern char io_device[MAXCHARS];
 
 extern char *os;
 extern PortInfo pi;

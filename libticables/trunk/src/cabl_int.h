@@ -87,7 +87,7 @@ extern "C" {
   /***********************/
   int TICALL DISPLAY(const char *format, ...);
   int TICALL ticable_DISPLAY_settings(int op);
-  int TICALL dERROR(const char *format, ...);
+  int TICALL DISPLAY_ERROR(const char *format, ...);
 
 #ifdef __cplusplus
 }

@@ -67,15 +67,15 @@ int avr_init()
   /* Init some internal variables */
   cs.available = 0;
   cs.data = 0;
-  strcpy(tty_dev, device);
+  strcpy(tty_dev, io_device);
 
   /* Give some perm for the probe function */
   // nothing for the moment
 
   /* Open the device */
-  if( (dev_fd = open(device, O_RDWR | O_SYNC )) == -1 )
+  if( (dev_fd = open(io_device, O_RDWR | O_SYNC )) == -1 )
     {
-      dERROR("unable to open this serial port: %s\n", device);
+      DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
       return ERR_OPEN_SER_DEV;
     }
   /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
@@ -296,7 +296,7 @@ int avr_init()
 
 	cs.available = 0;
 	cs.data = 0;
-	strcpy(comPort, device);
+	strcpy(comPort, io_device);
 
 	// Open COM port
 	hCom=CreateFile(comPort,GENERIC_READ|GENERIC_WRITE,0,NULL,

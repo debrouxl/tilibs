@@ -71,7 +71,7 @@ int tig_init()
 {
   /* Init some internal variables */
   memset((void *)&cs, 0, sizeof(cs));
-  strcpy(tty_dev, device);
+  strcpy(tty_dev, io_device);
   com_addr = io_address;
 
   /* Give some perm for the probe function */
@@ -79,12 +79,12 @@ int tig_init()
 
   /* Open the device */
 #ifndef __MACOSX__
-  if( (dev_fd = open(device, O_RDWR | O_SYNC )) == -1 )
+  if( (dev_fd = open(io_device, O_RDWR | O_SYNC )) == -1 )
 #else
-  if((dev_fd = open(device, O_RDWR | O_NDELAY)) == -1)
+  if((dev_fd = open(io_device, O_RDWR | O_NDELAY)) == -1)
 #endif
     {
-      DISPLAY("unable to open this serial port: %s\n", device);
+      DISPLAY("unable to open this serial port: %s\n", io_device);
       return ERR_OPEN_SER_DEV;
     }
 
@@ -321,12 +321,11 @@ int tig_init()
 	DCB dcb;
 	BOOL fSuccess;
 	COMMTIMEOUTS cto;
-	char *name = comPort;
 	int graphLink = 1;
 
 	/* Init some internal variables */
 	memset((void *)(&cs), 0, sizeof(cs));
-	strcpy(comPort, device);
+	strcpy(comPort, io_device);
 
 	/* Open COM port */
 	hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
@@ -653,7 +652,7 @@ int tig_init()
 
 	cs.available = 0;
 	cs.data = 0;
-	strcpy(comPort, device);
+	strcpy(comPort, io_device);
 	// Open COM port
 	hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

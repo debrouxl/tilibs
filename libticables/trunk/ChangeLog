@@ -43,7 +43,10 @@
 	* Merge up to libticables 3.1.0.
 * 20020126 : v3.1.0-osx0.1.0
 	* Added pause.h and probe.h to the project (reported by: Benjamin Esham)
-
+* 20020213 : v3.1.2-osx0.2.0
+	* Merge up to libticables 3.1.2.
+	* USB fixup, link seem to be stable now.
+	
 
 
 

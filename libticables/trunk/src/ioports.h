@@ -63,4 +63,9 @@ __inline void outp_ (unsigned short addr, short data)
 }
 #endif // Win32
 
+#ifdef __WIN32__
+int open_com_port(char *comPort, PHANDLE hCom);
+int close_com_port(PHANDLE hCom);
+#endif
+
 #endif

@@ -23,11 +23,11 @@
 #define TILP_MACROS
 /* Macros, part 1 */
 // extract a word from a longword
-# define LSW(l) (unsigned int) ((l) & 0x0000FFFF)
-# define MSW(l) (unsigned int)(((l) & 0xFFFF0000) >> 16)
+# define LSW(l) (word) ((l) & 0x0000FFFF)
+# define MSW(l) (word)(((l) & 0xFFFF0000) >> 16)
 // extract a byte from a word
-# define LSB(w) (unsigned char) ((w) & 0x00FF)
-# define MSB(w) (unsigned char)(((w) & 0xFF00) >> 8)
+# define LSB(w) (byte) ((w) & 0x00FF)
+# define MSB(w) (byte)(((w) & 0xFF00) >> 8)
 // extract a nibble from a byte
 # define LSN(b)  ((b) & 0x0F)
 # define MSN(b) (((b) & 0xF0) >> 4)
@@ -75,7 +75,7 @@
 #  define DIR_SEPARATOR "\\"
 #  define DIR_SEPARATOR_S "\\"
 #  define DIR_SEPARATOR_C '\\'
-#elif defined(__UNIX__)
+#elif defined(__LINUX__)
 #  define DIR_SEPARATOR "/"
 #  define DIR_SEPARATOR_S "/"
 #  define DIR_SEPARATOR_C '/'

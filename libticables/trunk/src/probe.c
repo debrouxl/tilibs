@@ -1021,14 +1021,14 @@ TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
 	  ser_close(); ser_exit();
 	  DISPLAY("    serial cable (%s)\n", result(res));
 	  
-	  strcpy(device, pi->com_name[i]);
+	  strcpy(io_device, pi->com_name[i]);
 	  tig_init(); tig_open();
 	  res = tig_probe();
 	  pi->com_mode[i]=LINK_TGL;
 	  tig_close(); tig_exit();
 	  DISPLAY("    GreyTIGL cable (%s)\n", result(res));
 	  
-	  strcpy(device, pi->com_name[i]);
+	  strcpy(io_device, pi->com_name[i]);
 	  avr_init(); avr_open();
 	  res = avr_probe();
 	  pi->com_mode[i]=LINK_AVR;
@@ -1144,7 +1144,7 @@ int list_io_resources(void)
     if (hDLL != NULL)
       {
 	resources |= IO_LIBUSB;
-	CloseHandle(hDLL);
+	//CloseHandle(hDLL);
       }
     DISPLAY(_("  IO_LIBUSB: %s (TiglUsb)\n"), resources & IO_LIBUSB ? "ok" : "nok");
     

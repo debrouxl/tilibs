@@ -73,7 +73,9 @@
 
 #define MAX_PACKET_SIZE 32 // 32 bytes max per packet
 static int nBytesWrite = 0;
+#ifdef BUFFERED_W
 static byte wBuf[MAX_PACKET_SIZE];
+#endif
 static int nBytesRead = 0;
 static byte rBuf[MAX_PACKET_SIZE];
 
@@ -100,9 +102,9 @@ int ugl_init()
 
   /* Open the device */
   mask = O_RDWR | O_NONBLOCK | O_SYNC;
-  if( (dev_fd = open(device, mask)) == -1)
+  if( (dev_fd = open(io_device, mask)) == -1)
     {
-      DISPLAY("Unable to open this device: %s\n", device);
+      DISPLAY("Unable to open this device: %s\n", io_device);
       DISPLAY("Is the tiusb.c module loaded ?\n");
       return ERR_USB_OPEN;
     }
@@ -761,7 +763,7 @@ static struct cs
 TIEXPORT
 int ugl_init()
 {
-	/* Create an handle on library and retrieve symbols */
+	// Create an handle on library and retrieve symbols
 	hDLL = LoadLibrary("TIGLUSB.DLL");
 	if (hDLL == NULL)
 	{
@@ -805,27 +807,26 @@ int ugl_init()
 	    return ERR_FREELIBRARY;
 	}
 
-	/* Init some internal variables */
+	// Init some internal variables
 	memset((void *)(&cs), 0, sizeof(cs));
 
-	/* Open the USB device: 2 named pipes (endpoints) */
+	// Open the USB device: 2 named pipes (endpoints)
 	hWrite = dynTiglUsbOpenFile(OUT_PIPE_0);
 	if(hWrite == INVALID_HANDLE_VALUE)
 	{
 		print_last_error();
 		return ERR_USB_OPEN;
 	}
-
 	hRead = dynTiglUsbOpenFile(IN_PIPE_0);
 	if(hRead == INVALID_HANDLE_VALUE)
 	{
 		print_last_error();
 		return ERR_USB_OPEN;
 	}
-
-	/* Setsup timeout */
-	dynTiglUsbSetTimeout(time_out);
 	
+	// Setsup timeout
+	dynTiglUsbSetTimeout(time_out);
+
 	START_LOGGING();
 	
 	return 0;
@@ -1134,6 +1135,11 @@ int ugl_supported2()
 // uncomment to add some tests
 //#define OSX_UGL_DEBUG
 
+#define IOKIT_ERROR(error)	fprintf(stderr, "IOKit Error : system 0x%x, subsystem 0x%x, code 0x%x\n", \
+                                                              err_get_system(error), \
+                                                              err_get_sub(error), \
+                                                              err_get_code(error))
+
 // globals
 
 IOUSBDeviceInterface **dev = NULL;
@@ -1185,8 +1191,13 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     printf("Interface found.\n");
 #endif
     
-    kr = IOCreatePlugInInterfaceForService(usbInterface, kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &plugInInterface, &score);
+    kr = IOCreatePlugInInterfaceForService(usbInterface,
+                                           kIOUSBInterfaceUserClientTypeID,
+                                           kIOCFPlugInInterfaceID,
+                                           &plugInInterface,
+                                           &score);
     kr = IOObjectRelease(usbInterface);	// done with the usbInterface object now that I have the plugin
+    
     if ((kIOReturnSuccess != kr) || !plugInInterface)
         {
 #ifdef OSX_DEBUG
@@ -1196,8 +1207,11 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
         }
             
     // I have the interface plugin. I need the interface interface
-    res = (*plugInInterface)->QueryInterface(plugInInterface, CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID), (LPVOID) &intf);
-    (*plugInInterface)->Release(plugInInterface);			// done with this
+    res = (*plugInInterface)->QueryInterface(plugInInterface,
+                                             CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID),
+                                             (LPVOID) &intf);
+    (*plugInInterface)->Release(plugInInterface); // done with this
+    
     if (res || !intf)
         {
 #ifdef OSX_DEBUG
@@ -1216,6 +1230,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     // Now open the interface. This will cause the pipes to be instantiated that are 
     // associated with the endpoints defined in the interface descriptor.
     kr = (*intf)->USBInterfaceOpen(intf);
+    
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
@@ -1226,6 +1241,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
         }
         
     kr = (*intf)->GetNumEndpoints(intf, &intfNumEndpoints);
+    
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
@@ -1245,6 +1261,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     // the default control endpoint. But it's usually better to use (*usbDevice)->DeviceRequest() instead.
 
     kr = (*intf)->WritePipe(intf, TIGL_BULK_ENDPOINT_OUT, test, 4); // endpoint 2
+    
     if (kIOReturnSuccess != kr)
         {
             printf("unable to do bulk write (%08x)\n", kr);
@@ -1262,7 +1279,9 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     printf(" (4 bytes) to bulk endpoint\n");
     
     numBytesRead = sizeof(gBuffer) - 1; // leave one byte at the end for NUL termination
+    
     kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, gBuffer, &numBytesRead); // endpoint 1
+    
     if (kIOReturnSuccess != kr)
         {
             printf("unable to do bulk read (%08x)\n", kr);
@@ -1289,11 +1308,13 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface **dev)
     IOUSBConfigurationDescriptorPtr	confDesc;
     
     kr = (*dev)->GetNumberOfConfigurations(dev, &numConf);
+    
     if (!numConf)
         return -1;
     
     // get the configuration descriptor for index 0
     kr = (*dev)->GetConfigurationDescriptorPtr(dev, 0, &confDesc);
+    
     if (kr)
         {
 #ifdef OSX_DEBUG
@@ -1302,6 +1323,7 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface **dev)
             return -1;
         }
     kr = (*dev)->SetConfiguration(dev, confDesc->bConfigurationValue);
+    
     if (kr)
         {
 #ifdef OSX_DEBUG
@@ -1324,12 +1346,16 @@ void tiglusbFindDevice(io_iterator_t iterator)
     UInt16			product;
     UInt16			release;
     
-    while (usbDevice = IOIteratorNext(iterator))
+    while ((usbDevice = IOIteratorNext(iterator)))
         {
 #ifdef OSX_DEBUG
             printf("TIGL added.\n");
 #endif
-            kr = IOCreatePlugInInterfaceForService(usbDevice, kIOUSBDeviceUserClientTypeID, kIOCFPlugInInterfaceID, &plugInInterface, &score);
+            kr = IOCreatePlugInInterfaceForService(usbDevice,
+                                                   kIOUSBDeviceUserClientTypeID,
+                                                   kIOCFPlugInInterfaceID,
+                                                   &plugInInterface,
+                                                   &score);
             kr = IOObjectRelease(usbDevice);	// done with the device object now that I have the plugin
             if ((kIOReturnSuccess != kr) || !plugInInterface)
                 {
@@ -1340,8 +1366,11 @@ void tiglusbFindDevice(io_iterator_t iterator)
                 }
             
             // I have the device plugin, I need the device interface
-            res = (*plugInInterface)->QueryInterface(plugInInterface, CFUUIDGetUUIDBytes(kIOUSBDeviceInterfaceID), (LPVOID)&dev);
-            (*plugInInterface)->Release(plugInInterface);			// done with this
+            res = (*plugInInterface)->QueryInterface(plugInInterface,
+                                                     CFUUIDGetUUIDBytes(kIOUSBDeviceInterfaceID),
+                                                     (LPVOID)&dev);
+            (*plugInInterface)->Release(plugInInterface); // done with this
+            
             if (res || !dev)
                 {
 #ifdef OSX_DEBUG
@@ -1357,7 +1386,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if ((vendor != kTIGLVendorID) || (product != kTIGLProductID))
                 {
 #ifdef OSX_DEBUG
-                    printf("found device i didn't want (vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
+                    printf("Found a device I didn't want (vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
 #endif
                     continue;
                 }
@@ -1365,15 +1394,18 @@ void tiglusbFindDevice(io_iterator_t iterator)
                 {
                     // we'll get here if TI releases a new version of the cable
                     
-                    printf("Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
-                    printf("This version of the TIGL USB has not been tested.\n");
-                    printf("Contact <jb@technologeek.org> about this\n");
+                    fprintf(stderr, "Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
+                    fprintf(stderr, "This version of the TIGL USB has not been tested.\n");
+                    fprintf(stderr, "Contact <jb@technologeek.org> about this\n");
+                    
                     (*dev)->Release(dev);
+                    
                     continue;
                 }
 
             // need to open the device in order to change its state
             kr = (*dev)->USBDeviceOpen(dev);
+            
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
@@ -1384,6 +1416,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
                 }
         
             kr = ConfigureTIGL(dev);
+            
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
@@ -1395,6 +1428,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
                 }
 
             kr = FindInterfaces(dev);
+            
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
@@ -1409,9 +1443,9 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
 
 
-/***************************/
-/* libticables begins here */
-/***************************/
+/***************************
+ * libticables begins here *
+ ***************************/
 
 int ugl_init()
 {
@@ -1420,16 +1454,17 @@ int ugl_init()
     kern_return_t		kr;
     SInt32			usbVendor = kTIGLVendorID;
     SInt32			usbProduct = kTIGLProductID;
-    io_iterator_t iterator;
+    io_iterator_t		iterator;
   
     // first create a master_port for my task
     kr = IOMasterPort(MACH_PORT_NULL, &masterPort);
+    
     if (kr || !masterPort)
         {
 #ifdef OSX_DEBUG
             printf("ERR: Couldn't create a master IOKit Port(%08x)\n", kr);
 #endif
-            return -1;
+            return ERR_USB_INIT;
         }
 
 #ifdef OSX_DEBUG
@@ -1444,23 +1479,21 @@ int ugl_init()
             printf("Can't create a USB matching dictionary\n");
 #endif
             mach_port_deallocate(mach_task_self(), masterPort);
-            return -1;
+            return ERR_USB_INIT;
         }
     
     // Add our vendor and product IDs to the matching criteria
-    CFDictionarySetValue( 
-            matchingDict, 
-            CFSTR(kUSBVendorID), 
-            CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbVendor)); 
-    CFDictionarySetValue( 
-            matchingDict, 
-            CFSTR(kUSBProductID), 
-            CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbProduct)); 
+    CFDictionarySetValue(matchingDict, 
+                         CFSTR(kUSBVendorID), 
+                         CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbVendor)); 
+    CFDictionarySetValue(matchingDict, 
+                         CFSTR(kUSBProductID), 
+                         CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &usbProduct)); 
 
     // get the matching devices list
     kr = IOServiceGetMatchingServices(masterPort, matchingDict, &iterator);
 
-    // Now done with the master_port
+    // Now done with the masterPort
     mach_port_deallocate(mach_task_self(), masterPort);
     masterPort = 0;
 
@@ -1470,7 +1503,7 @@ int ugl_init()
 #ifdef OSX_DEBUG
             printf("No matching devices !\n");
 #endif
-            return ERR_USB_OPEN; // hmm...
+            return ERR_USB_INIT;
         }
     
     tiglusbFindDevice(iterator);
@@ -1485,20 +1518,11 @@ int ugl_open()
     // if already open, then close...
     numBytesRead = 0;
     rcv_buf_ptr = rcv_buffer;
-
-#if 0
-    if (intf != NULL)
-        {
-            (void) (*intf)->USBInterfaceClose(intf);
-            (void) (*intf)->Release(intf);
-            intf = NULL;
-        }
-#endif
         
     if (dev == NULL)
         {
             if (ugl_init() != 0)
-                return ERR_USB_OPEN;
+                return ERR_USB_INIT;
         }
         
     if (intf == NULL)
@@ -1507,28 +1531,7 @@ int ugl_open()
                 return ERR_USB_OPEN;
         }
         
-    //(*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_IN);
-    (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_OUT);
-              
-    //fprintf(stderr, "DEBUG: RESET PIPES ! (open)\n");
-
     return 0;
-
-#if 0    
-    if (FindInterfaces(dev) == kIOReturnSuccess)
-    {
-        // we ugl_open() before each transfer
-        // reset all pipes
-        (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_IN);
-        (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_OUT);
-              
-        fprintf(stderr, "DEBUG: RESET PIPES ! (open)\n");
-      
-        return 0;
-    }
-    else
-        return ERR_USB_OPEN;
-#endif
 }
 
 int ugl_probe()
@@ -1564,19 +1567,19 @@ int ugl_exit()
 
 int ugl_put(byte data)
 {
-    extern int	time_out;
-    
     IOReturn	kr;
-    UInt32	timeout = 100 * time_out; // time_out is specified in tenth of seconds
     
     if (intf == NULL)
         return ERR_SND_BYT;
-        
-    kr = (*intf)->WritePipeTO(intf, TIGL_BULK_ENDPOINT_OUT, &data, 1, timeout, timeout);
+
+    kr = (*intf)->WritePipe(intf, TIGL_BULK_ENDPOINT_OUT, &data, 1);
+                
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
-            printf("unable to do bulk write (%08x)\n", kr);
+            printf("Unable to do bulk write (%08x)\n", kr);
+            
+            IOKIT_ERROR(kr);
 #endif
             (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_OUT);
 
@@ -1593,16 +1596,15 @@ int ugl_put(byte data)
 
 int ugl_get(byte *d)
 {
-    extern int 	time_out;
-    TIME clk;
+    extern int time_out;
 
-#ifdef OSX_DEBUG
-    int		i;
-#endif
-    UInt32	timeout = 100 * time_out; // time_out is specified in tenth of seconds
     IOReturn	kr;
 
+    TIME clk;
+    
 #ifdef OSX_DEBUG
+    int		i;
+
     fprintf(stderr, "IN UGL_GET\n");
 #endif
 
@@ -1612,32 +1614,31 @@ int ugl_get(byte *d)
     if (numBytesRead <= 0) // we're at the end of the buffer
         {
 #ifdef OSX_DEBUG
-            printf("rcv_buffer empty, reading bulk pipe...\n");
+            fprintf(stderr, "rcv_buffer empty, reading bulk pipe...\n");
 #endif
+
+            usleep(100);
 
             memset(rcv_buffer, 0, TIGL_MAXPACKETSIZE + 1);
 
             tSTART(clk);
 
             do {
-                    // Use ReadPipeTO(), it handles the timeout itself
+                    // Use ReadPipe(), not ReadPipeTO() (trouble with FLASHing)
                     // the do { } while () will handle the special case
                     // where a ReadPipeTO() returns BEFORE the timeout
                     // with NO DATA and NO ERROR
                     
                     numBytesRead = TIGL_MAXPACKETSIZE;
                     
-                    kr = (*intf)->ReadPipeTO(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead, 10, timeout);                    
+                    kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead);
+                    
                     if (kIOReturnSuccess == kr)
                         {
                             if (numBytesRead > 0) // regardless of the timeout, we HAVE DATA !
                                 break;
                             else if ((numBytesRead == 0) && !(tELAPSED(clk, time_out)))
-                                {
-                                    fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
-                                    
-                                    (*intf)->ResetPipe(intf, TIGL_BULK_ENDPOINT_IN);
-                                }
+                                fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
                             else if ((numBytesRead == 0) && (tELAPSED(clk, time_out)))
                                 return ERR_RCV_BYT_TIMEOUT;
                         }
@@ -1651,6 +1652,8 @@ int ugl_get(byte *d)
                 {
 #ifdef OSX_DEBUG
                     fprintf(stderr, "Unable to do bulk read (0x%x)\n", kr);
+                    
+                    IOKIT_ERROR(kr);
 #endif
                     numBytesRead = 0;
                     
@@ -1731,7 +1734,7 @@ int ugl_check(int *status)
                 }
             while(numBytesRead == 0);
             
-            if(kr = kIOReturnSuccess)
+            if(kr == kIOReturnSuccess)
                 {
 #ifdef OSX_DEBUG
                     printf("In ugl_check: numBytesRead = %ld\n", numBytesRead);

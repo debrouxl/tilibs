@@ -71,13 +71,13 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
   int ret = 0;
   va_list ap;
 
-  if(flog == NULL)
-  {
-	  flog = fopen(LOG_FILE, "wt");
-  }
-
   if(verbosity)
     {
+      if(flog == NULL)
+	{
+	  flog = fopen(LOG_FILE, "wt");
+	}
+      
       // Under Win32, we redirect stdout to the console
 #if defined(__WIN32__)				
       if (!alloc_console_called)
@@ -107,18 +107,18 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
    This function is equivalent to 'fprintf(stderr, ...)' but 
    if the VERBOSE constant is defined.
 */
-TIEXPORT int TICALL dERROR(const char *format, ...)
+TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
   int ret = 0;
   va_list ap;
 
-  if(flog == NULL)
-  {
-    flog = fopen(LOG_FILE, "wt");
-  }
-
   if(verbosity)
     {
+      if(flog == NULL)
+	{
+	  flog = fopen(LOG_FILE, "wt");
+	}
+      
       // Under Win32, we redirect stderr to the console
 #if defined(__WIN32__)				
       if (!alloc_console_called)

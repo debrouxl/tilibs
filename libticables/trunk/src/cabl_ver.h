@@ -24,7 +24,7 @@
 #endif
 
 #ifdef __WIN32__
-# define LIBTICABLES_VERSION "3.0.9"
+# define LIBTICABLES_VERSION "3.1.1"
 #else
 # define LIBTICABLES_VERSION VERSION
 #endif

@@ -255,18 +255,9 @@ int open_io(unsigned long from, unsigned long num)
 		{
 			iDcbUse++;
 		}
-      
-		switch(from) // I will have to change this trough DetectPort for a better correspondance
-		{
-			case 0x3f8: comPort = "COM1"; break;
-			case 0x2f8: comPort = "COM2"; break;
-			case 0x3e8: comPort = "COM3"; break;
-			case 0x2e8: comPort = "COM4"; break;
-			default: comPort = "COM2"; break;
-			}
-      
-		 // Open COM port
-		hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
+
+		// Open COM port
+		hCom = CreateFile(io_device, GENERIC_READ | GENERIC_WRITE, 0, 
 				NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if(hCom == INVALID_HANDLE_VALUE)
 		{
@@ -381,3 +372,108 @@ int close_io(unsigned long from, unsigned long num)
 #endif
   return 0;
 }
+
+#ifdef __WIN32__
+#define BUFFER_SIZE 1024
+
+/* Used by tig_link, ser_link and this file */
+/* Open a Win32 serial device */
+int open_com_port(char *comPort, PHANDLE hCom)
+{
+	DCB dcb;
+	BOOL fSuccess;
+	COMMTIMEOUTS cto;
+	char *name = comPort;
+
+	/* Open COM port */
+	*hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
+		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if(hCom == INVALID_HANDLE_VALUE)
+	{
+		fprintf(stderr, "CreateFile\n");
+		print_last_error();
+		return ERR_CREATE_FILE;
+	}
+
+	// Setup buffer size
+	fSuccess = SetupComm(*hCom, BUFFER_SIZE, BUFFER_SIZE);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "SetupComm\n");
+		print_last_error();
+		return ERR_SETUP_COMM;
+	}
+
+	// Retrieve config structure
+	fSuccess = GetCommState(*hCom, &dcb);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "GetCommState\n");
+		print_last_error();
+		return ERR_GET_COMMSTATE;
+	}
+
+	// Fills the structure with config
+	dcb.BaudRate = CBR_9600;				// 9600 bauds
+	dcb.fBinary = TRUE;						// Binary mode
+	dcb.fParity = FALSE;					// Parity checking disabled
+	dcb.fOutxCtsFlow = FALSE;				// No output flow control
+	dcb.fOutxDsrFlow = FALSE;				// Idem
+	dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
+	dcb.fDsrSensitivity = FALSE;			// ignore DSR status
+	dcb.fOutX = FALSE;						// no XON/XOFF flow control
+	dcb.fInX = FALSE;						// idem
+	dcb.fErrorChar = FALSE;					// no replacement
+	dcb.fNull = FALSE;						// don't discard null chars
+	dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
+	dcb.fAbortOnError = FALSE;				// do not report errors
+
+	dcb.ByteSize = 8;						// 8 bits
+	dcb.Parity = NOPARITY;					// no parity checking
+	dcb.StopBits = ONESTOPBIT;				// 1 stop bit
+
+	// Config COM port
+	fSuccess = SetCommState(*hCom, &dcb);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "SetCommState\n");
+		print_last_error();
+		return ERR_SET_COMMSTATE;
+	}
+
+    fSuccess=GetCommTimeouts(*hCom,&cto);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "GetCommTimeouts\n");
+		print_last_error();
+		return ERR_GET_COMMTIMEOUT;
+	}
+    
+	cto.ReadIntervalTimeout = MAXDWORD;
+    cto.ReadTotalTimeoutMultiplier = 0;
+    cto.ReadTotalTimeoutConstant = 100 * time_out;	
+    cto.WriteTotalTimeoutMultiplier = 0;
+    cto.WriteTotalTimeoutConstant = 0;	// A value of 0 make non-blocking
+
+    fSuccess=SetCommTimeouts(*hCom,&cto);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "SetCommTimeouts\n");
+		print_last_error();
+		return ERR_SET_COMMTIMEOUT;
+	}
+
+	return 0;
+}
+
+int close_com_port(PHANDLE hCom)
+{
+	if(*hCom)
+	{
+		CloseHandle(*hCom);
+		*hCom=0;
+	}
+
+	return 0;
+}
+#endif
