@@ -530,7 +530,9 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
 
     if (mask_mode & MODE_BACKUP) {
       (update->main_percentage) = (float) i / content.num_entries;
-      DISPLAY(_("perc = %1.2f \n"), update->main_percentage);
+
+    if (update->cancel)
+	        return ERR_ABORT;
     }
   }
 
@@ -596,6 +598,8 @@ int ti89_send_flash(const char *filename, int mask_mode)
     }
 
     update->main_percentage = (float) i / nblocks;
+    if (update->cancel)
+	return ERR_ABORT;
   }
 
   if (ptr->data_type == TI89_AMS)
