@@ -192,7 +192,6 @@ man/Makefile
 man/tifiles-config.1 
 src/Makefile 
 tests/Makefile 
-win32/Makefile
 intl/Makefile
 po/Makefile.in
 tifiles-config
