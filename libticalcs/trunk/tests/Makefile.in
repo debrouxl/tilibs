@@ -172,7 +172,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(includedir)/tilp
 
 noinst_PROGRAMS = test_ticalcs
 
