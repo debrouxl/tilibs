@@ -48,7 +48,7 @@ int win32_detect_os(char **os_type)
   	DISPLAY(_("  operating System: %s\r\n"),
 	  (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?
 	  "Windows9x" : "WindowsNT");
-  	DISPLAY(_("  version: major=%i, minor=%i\r\n"),
+  	DISPLAY(_("  version: %i.%i\r\n"),
 	  os.dwMajorVersion, os.dwMinorVersion);
   
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {

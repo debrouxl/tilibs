@@ -180,7 +180,7 @@ TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
 */
 TIEXPORT int TICALL ticable_verbose_flush_file(void)
 {
-	fflush(flog);
+	return fflush(flog);
 }
 
 /************ Unused/Obsoleted *****************/

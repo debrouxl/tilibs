@@ -57,7 +57,6 @@
 	
 
 ..\..\src\link_slv.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -73,7 +72,6 @@
 	
 
 ..\..\src\link_tie.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -101,7 +99,6 @@
 	
 
 ..\..\src\link_vti.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -156,7 +153,6 @@
 	
 
 ..\..\src\error.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -167,7 +163,6 @@
 	
 
 ..\..\src\intrface.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_ver.h"\
@@ -182,7 +177,6 @@
 	
 
 ..\..\src\logging.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Export.h"\
@@ -202,7 +196,6 @@
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Export.h"\
@@ -222,7 +215,6 @@
 	
 
 ..\..\src\win32\win32_detect.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -236,7 +228,6 @@
 	
 
 ..\..\src\win32\win32_ioports.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
@@ -252,7 +243,6 @@
 	
 
 ..\..\src\win32\win32_mapping.c : \
-	"..\..\..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
