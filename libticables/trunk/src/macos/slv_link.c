@@ -85,7 +85,7 @@
 //#define OSX_UGL_DEBUG
 //#define OSX_DEBUG
 
-#define IOKIT_ERROR(error)	printl(2, "IOKit Error : system 0x%x, subsystem 0x%x, code 0x%x\n", \
+#define IOKIT_ERROR(error)	printl1(2, "IOKit Error : system 0x%x, subsystem 0x%x, code 0x%x\n", \
                                                               err_get_system(error), \
                                                               err_get_sub(error), \
                                                               err_get_code(error))
@@ -138,7 +138,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
   usbInterface = IOIteratorNext(iterator);
 
 #ifdef OSX_DEBUG
-  printl(0, "Interface found.\n");
+  printl1(0, "Interface found.\n");
 #endif
 
   kr = IOCreatePlugInInterfaceForService(usbInterface,
@@ -149,7 +149,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
 
   if ((kIOReturnSuccess != kr) || !plugInInterface) {
 #ifdef OSX_DEBUG
-    printl(2, "unable to create a plugin (%08x)\n", kr);
+    printl1(2, "unable to create a plugin (%08x)\n", kr);
 #endif
     return kr;
   }
@@ -162,7 +162,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
 
   if (res || !intf) {
 #ifdef OSX_DEBUG
-    printl(2, "couldn't create an IOUSBInterfaceInterface (%08x)\n", (int) res);
+    printl1(2, "couldn't create an IOUSBInterfaceInterface (%08x)\n", (int) res);
 #endif
     return kr;
   }
@@ -171,7 +171,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
   kr = (*intf)->GetInterfaceSubClass(intf, &intfSubClass);
 
 #ifdef OSX_DEBUG
-  printl(0, "Interface class %d, subclass %d\n", intfClass, intfSubClass);
+  printl1(0, "Interface class %d, subclass %d\n", intfClass, intfSubClass);
 #endif
 
   // Now open the interface. This will cause the pipes to be instantiated that are 
@@ -180,7 +180,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
 
   if (kIOReturnSuccess != kr) {
 #ifdef OSX_DEBUG
-    printl(2, "unable to open interface (%08x)\n", kr);
+    printl1(2, "unable to open interface (%08x)\n", kr);
 #endif
     (void) (*intf)->Release(intf);
     return kr;
@@ -190,14 +190,14 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
 
   if (kIOReturnSuccess != kr) {
 #ifdef OSX_DEBUG
-    printl(2, "unable to get number of endpoints (%08x)\n", kr);
+    printl1(2, "unable to get number of endpoints (%08x)\n", kr);
 #endif
     (void) (*intf)->USBInterfaceClose(intf);
     (void) (*intf)->Release(intf);
     return kr;
   }
 #ifdef OSX_DEBUG
-  printl(0, "Interface has %d endpoints.\n", intfNumEndpoints);
+  printl1(0, "Interface has %d endpoints.\n", intfNumEndpoints);
 #endif
 
 #ifdef OSX_UGL_DEBUG
@@ -207,36 +207,36 @@ IOReturn FindInterfaces(IOUSBDeviceInterface ** dev)
   kr = (*intf)->WritePipe(intf, TIGL_BULK_ENDPOINT_OUT, test, 4);	// endpoint 2
 
   if (kIOReturnSuccess != kr) {
-    printl(2, "unable to do bulk write (%08x)\n", kr);
+    printl1(2, "unable to do bulk write (%08x)\n", kr);
     (void) (*intf)->USBInterfaceClose(intf);
     (void) (*intf)->Release(intf);
     return kr;
   }
 
-  printl(0, "Wrote");
+  printl1(0, "Wrote");
   for (i = 0; i < 4; i++) {
-    printl(0, " 0x%x", test[i]);
+    printl1(0, " 0x%x", test[i]);
   }
 
-  printl(0, " (4 bytes) to bulk endpoint\n");
+  printl1(0, " (4 bytes) to bulk endpoint\n");
 
   numBytesRead = sizeof(gBuffer) - 1;	// leave one uint8_t at the end for NUL termination
 
   kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, gBuffer, &numBytesRead);	// endpoint 1
 
   if (kIOReturnSuccess != kr) {
-    printl(2, "unable to do bulk read (%08x)\n", kr);
+    printl1(2, "unable to do bulk read (%08x)\n", kr);
     (void) (*intf)->USBInterfaceClose(intf);
     (void) (*intf)->Release(intf);
     return kr;
   }
 
-  printl(0, "Calc reply :");
+  printl1(0, "Calc reply :");
   for (i = 0; i < 4; i++)	// 4 bytes only
   {
-    printl(0, " 0x%x", gBuffer[i]);
+    printl1(0, " 0x%x", gBuffer[i]);
   }
-  printl(0, "\n");
+  printl1(0, "\n");
 #endif				/* OSX_UGL_DEBUG */
 
   return kr;
@@ -258,7 +258,7 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface ** dev)
 
   if (kr) {
 #ifdef OSX_DEBUG
-    printl(2, "\tunable to get config descriptor for index %d (err = %08x)\n",
+    printl1(2, "\tunable to get config descriptor for index %d (err = %08x)\n",
 	 0, kr);
 #endif
     return -1;
@@ -267,7 +267,7 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface ** dev)
 
   if (kr) {
 #ifdef OSX_DEBUG
-    printl(2, "\tunable to set configuration to value %d (err=%08x)\n", 0, kr);
+    printl1(2, "\tunable to set configuration to value %d (err=%08x)\n", 0, kr);
 #endif
     return -1;
   }
@@ -288,7 +288,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
   while ((usbDevice = IOIteratorNext(iterator))) {
 #ifdef OSX_DEBUG
-    printl(0, "TIGL added.\n");
+    printl1(0, "TIGL added.\n");
 #endif
     kr = IOCreatePlugInInterfaceForService(usbDevice,
 					   kIOUSBDeviceUserClientTypeID,
@@ -297,7 +297,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
     kr = IOObjectRelease(usbDevice);	// done with the device object now that I have the plugin
     if ((kIOReturnSuccess != kr) || !plugInInterface) {
 #ifdef OSX_DEBUG
-      printl(2, "unable to create a plugin (%08x)\n", kr);
+      printl1(2, "unable to create a plugin (%08x)\n", kr);
 #endif
       continue;
     }
@@ -310,7 +310,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
     if (res || !dev) {
 #ifdef OSX_DEBUG
-      printl(2, "couldn't create a device interface (%08x)\n", (int) res);
+      printl1(2, "couldn't create a device interface (%08x)\n", (int) res);
 #endif
       continue;
     }
@@ -332,10 +332,10 @@ void tiglusbFindDevice(io_iterator_t iterator)
 	       && (release > kTIGLKnownVersion)) {
       // we'll get here if TI releases a new version of the cable
 
-      printl(2, "Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n",
+      printl1(2, "Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n",
 	   vendor, product, release);
-      printl(2, "This version of the TIGL USB has not been tested.\n");
-      printl(2, "Contact <jb@technologeek.org> about this\n");
+      printl1(2, "This version of the TIGL USB has not been tested.\n");
+      printl1(2, "Contact <jb@technologeek.org> about this\n");
 
       (*dev)->Release(dev);
 
@@ -346,7 +346,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
     if (kIOReturnSuccess != kr) {
 #ifdef OSX_DEBUG
-      printl(2, "unable to open device: %08x\n", kr);
+      printl1(2, "unable to open device: %08x\n", kr);
 #endif
       (*dev)->Release(dev);
       continue;
@@ -356,7 +356,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
     if (kIOReturnSuccess != kr) {
 #ifdef OSX_DEBUG
-      printl(2, "unable to configure device: %08x\n", kr);
+      printl1(2, "unable to configure device: %08x\n", kr);
 #endif
       (*dev)->USBDeviceClose(dev);
       (*dev)->Release(dev);
@@ -367,7 +367,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
 
     if (kIOReturnSuccess != kr) {
 #ifdef OSX_DEBUG
-      printl(2, "unable to find interfaces on device: %08x\n", kr);
+      printl1(2, "unable to find interfaces on device: %08x\n", kr);
 #endif
       (*dev)->USBDeviceClose(dev);
       (*dev)->Release(dev);

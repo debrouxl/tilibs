@@ -70,7 +70,7 @@ static int macos_ioctl_read_io(unsigned int addr)
   unsigned int flags;
 
   if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    printl(2, "linux_ioctl_read_io: ioctl failed !\n");
+    printl1(2, "linux_ioctl_read_io: ioctl failed !\n");
     return ERR_IOCTL;
   }
 
@@ -84,7 +84,7 @@ static void macos_ioctl_write_io(unsigned int address, int data)
   flags |= (data & 2) ? TIOCM_RTS : 0;
   flags |= (data & 1) ? TIOCM_DTR : 0;
   if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    printl(2, "linux_ioctl_write_io: ioctl failed !\n");
+    printl1(2, "linux_ioctl_write_io: ioctl failed !\n");
     return /*ERR_IOCTL */ ;
   }
 }
@@ -102,15 +102,15 @@ int io_open(unsigned long from, unsigned long num)
 
     flags = O_RDWR | O_FSYNC;
     if ((dev_fd = open(io_device, flags)) == -1) {
-      printl(2, "unable to open this serial port: %s\n", io_device);
+      printl1(2, "unable to open this serial port: %s\n", io_device);
       return ERR_OPEN_SER_DEV;
     }
 
     tcgetattr(dev_fd, &termset);
     cfmakeraw(&termset);
 
-    io_rd = linux_ioctl_read_io;
-    io_wr = linux_ioctl_write_io;
+    io_rd = macos_ioctl_read_io;
+    io_wr = macos_ioctl_write_io;
 
     tty_use++;
 
@@ -119,8 +119,8 @@ int io_open(unsigned long from, unsigned long num)
     return ERR_ROOT;
 
  /* keep that for now until I'm sure it Works (tm) */
-  io_rd = null_read_io;
-  io_wr = null_write_io;
+  io_rd = macos_null_read_io;
+  io_wr = macos_null_write_io;
 
   return 0;
 }

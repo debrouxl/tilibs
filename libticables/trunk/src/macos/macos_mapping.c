@@ -41,15 +41,15 @@
 
 int macos_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	printl(0, _("getting method from resources"));
+	printl1(0, _("getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV);
-		printl(0, _(" (automatic)...\n"));
+		printl1(0, _(" (automatic)...\n"));
   	} else
-		printl(0, _(" (user-forced)...\n"));
+		printl1(0, _(" (user-forced)...\n"));
 
 	// depending on link type, do some checks
 	switch(type)
@@ -73,13 +73,13 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		printl(2, "bad argument (invalid link cable).\n");
+		printl1(2, "bad argument (invalid link cable).\n");
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
-    		printl(2, "unable to find an I/O method.\n");
+    		printl1(2, "unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
 	}
 	
@@ -89,7 +89,7 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 // Bind the right I/O address & device according to I/O method
 static int macos_map_io(TicableMethod method, TicablePort port)
 {
-	printl(0, _("mapping I/O...\n"));
+	printl1(0, _("mapping I/O...\n"));
 	
 	switch (port) {
   	case OSX_USB_PORT:
@@ -100,7 +100,7 @@ static int macos_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	default:
-    		printl(2, "bad argument (invalid port).\n");
+    		printl1(2, "bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
 	break;
 	}
@@ -119,7 +119,7 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		return ret;
 	
 	// set the link cable
-	printl(0, _("registering cable...\n"));
+	printl1(0, _("registering cable...\n"));
     	switch (type) {
     	case LINK_TGL:
     		if(port != OSX_SERIAL_PORT)
@@ -128,15 +128,15 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		tig_register_cable(lc);
 		break;
 
-    	case LINK_SLV:
+    	/*case LINK_SLV:
       		if(port != OSX_USB_PORT)
 			return ERR_INVALID_PORT;
 
 		slv_register_cable(lc);
-		break;
+		break;*/
 
     	default:
-	      	printl(2, _("invalid argument (bad cable)."));
+	      	printl1(2, _("invalid argument (bad cable)."));
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}

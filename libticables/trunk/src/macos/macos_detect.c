@@ -31,6 +31,8 @@
 # include <inttypes.h>
 #endif
 
+#include <sys/utsname.h> /*uname*/
+
 #include "../gettext.h"
 #include "../cabl_def.h"
 #include "../cabl_err.h"
@@ -45,13 +47,13 @@ int macos_detect_os(char **os_type)
 	struct utsname buf;
 
 	uname(&buf);
-  	printl(0, _("Getting OS type...\n"));
-  	printl(0, _("  System name: %s\n"), buf.sysname);
-  	printl(0, _("  Node name: %s\n"), buf.nodename);
-  	printl(0, _("  Release: %s\n"), buf.release);
-  	printl(0, _("  Version: %s\n"), buf.version);
-  	printl(0, _("  Machine: %s\n"), buf.machine);
-	printl(0, _("Done.\n"));
+  	printl1(0, _("Getting OS type...\n"));
+  	printl1(0, _("  System name: %s\n"), buf.sysname);
+  	printl1(0, _("  Node name: %s\n"), buf.nodename);
+  	printl1(0, _("  Release: %s\n"), buf.release);
+  	printl1(0, _("  Version: %s\n"), buf.version);
+  	printl1(0, _("  Machine: %s\n"), buf.machine);
+	printl1(0, _("Done.\n"));
 	*os_type = OS_MACOS;
 
 	return 0;
@@ -66,13 +68,13 @@ int macos_detect_port(TicablePortInfo * pi)
 
 int macos_detect_resources(void)
 {
-	printl(0, _("checking resources...\n"));
+	printl1(0, _("checking resources...\n"));
 	resources = IO_OSX;
 	
 	/* API: for use with all */
 	
 	resources |= IO_API;
-	printl(0, _("  IO_API: %sfound at compile time.\n"),
+	printl1(0, _("  IO_API: %sfound at compile time.\n"),
 		resources & IO_API ? "" : "not ");	
 
 	return 0;
