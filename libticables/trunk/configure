@@ -27177,7 +27177,8 @@ fi
 
 
 
-for ac_header in asm/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h
+
+for ac_header in asm/io.h sys/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
