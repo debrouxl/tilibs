@@ -68,6 +68,10 @@ AC_ISC_POSIX
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_AWK
 
+# gettext support (must be set here; before libti* dependancy checks)
+ALL_LINGUAS="fr"
+AM_GNU_GETTEXT
+
 # find pkg-config
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test x$PKG_CONFIG = xno ; then
@@ -160,9 +164,8 @@ if test x"$ticables_native_win32" = xyes; then
   fi
 fi
 
-AC_CYGWIN32
-AC_MINGW32
-AC_EXEEXT
+#AC_MINGW32
+#AC_EXEEXT
 
 # detect system type
 case "$host" in
@@ -205,10 +208,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# gettext support
-ALL_LINGUAS="fr"
-AM_GNU_GETTEXT
-
+# locale installation
 locale_dir='${prefix}/share/locale'
 AC_SUBST(locale_dir)
 

@@ -27,32 +27,3 @@ dos2unix:
 
 clean-local:
 	rm -f log
-
-# This target retrieve some files from my Win$ partition to my Linux one
-SRC_DIR=/mnt/xp/devel/tilp_project/libs/cables
-DST_DIR=/home/devel/tilp_project/libs/cables
-
-win2lin: $(C_FILES)
-	@echo Merging files from Win32 to Linux...
-	@echo dir1
-	@for I in $(SRC_DIR)/src/*.c ; do \
-	cp $$I $(DST_DIR)/src; \
-	done
-	@for I in $(SRC_DIR)/src/*.h ; do \
-	cp $$I $(DST_DIR)/src; \
-	done
-	cd $(DST_DIR)/src; dos2unix; lowercase; uppercase;
-	@echo dir2
-	@for I in $(SRC_DIR)/tests/*.c ; do \
-	cp $$I $(DST_DIR)/tests; \
-	done
-	cd $(DST_DIR)/tests; dos2unix; lowercase; uppercase;
-	@echo dir3
-	@for I in $(SRC_DIR)/win32/msvc/*.* ; do \
-	cp $$I $(DST_DIR)/win32/msvc; \
-	done
-	@echo dir4
-	@for I in $(SRC_DIR)/tests/*.dll ; do \
-	cp $$I $(DST_DIR)/tests; \
-	done
-	@echo Done
