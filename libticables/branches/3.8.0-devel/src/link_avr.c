@@ -36,7 +36,7 @@
 #include "win32/avr_link.c"
 
 #elif defined(__MACOSX__)
-#include "none.c"
+#include "linux/avr_link.c"
 
 #else
 #endif

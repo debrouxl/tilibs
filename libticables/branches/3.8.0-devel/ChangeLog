@@ -17,6 +17,9 @@ Log:
 	Wake-up sequence removed from serial & parallel cables because it 
 	perturbates communication start-up.
 	
+	Beware: Mac OS-X support has been moved to the new architecture but has not
+	been compiled !!!
+	
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables
 

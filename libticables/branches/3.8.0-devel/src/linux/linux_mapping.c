@@ -62,7 +62,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
-    		*method &= ~(IOM_ASM | IOM_API | IOM_DRV);
+    		*method &= ~(IOM_ASM | IOM_API | IOM_DRV | IOM_IOCTL);
 		DISPLAY(_(" (automatic)...\n"));
   	} else
 		DISPLAY(_(" (user-forced)...\n"));
