@@ -10,6 +10,7 @@ Log:
 
 - 05/03/2005, version 3.8.9: roms
 	Added gcc 4.0 -fvisibility flag support.
+	Fixed getting of current handle in VTi link support with MinGW.
 	
 - 09/02/2005, version 3.8.8: roms
 	Some clean-up and fixes in the virtual link cables.

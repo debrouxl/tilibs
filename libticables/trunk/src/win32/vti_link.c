@@ -101,6 +101,10 @@ int vti_init()
 
   /* Get the current DLL handle */
   Handle = GetModuleHandle("ticables.dll");
+  if(!Handle)
+	  Handle = GetModuleHandle("libticables-3.dll");
+  printf("h = %08x\n", Handle);
+
   if (!Handle) 
   {
     printl1(2, _("Unable to get an handle on the libTIcables.\n"));
