@@ -1,0 +1,18 @@
+[Main]
+Name=close
+Type=Function
+Header=cabl_int.h
+Definition=int (*close) (void);
+
+[Parameters]
+Returns : 0 if successful, an error code otherwise.
+
+[Summary]
+Momentarily close the link access.
+
+[Description]
+Use this function when you have finished to transfer some bytes to or from the
+device.
+
+[See also]
+@TicableLinkCable@, @ticablelinkcable.open@

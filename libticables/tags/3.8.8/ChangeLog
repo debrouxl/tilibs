@@ -1,0 +1,638 @@
+SubVersion: $Id$
+
+To do: 
+	- USB pass-thru support
+	- bug with API mode (Linux & Windows): may not work with some calcs ?!
+
+Checking: valgrind & splint
+	
+Log:
+
+- 09/02/2005, version 3.8.8: roms
+	Some clean-up and fixes in the virtual link cables.
+	Removed windows.h dependancy in timeout.h.
+	Fixed some MinGw compilation issues.
+
+- 25/09/2004, version 3.8.7: roms
+	Added USB direct cable support (kernel module).
+	Added USB direct cable support (lib-usb).
+	
+- 11/06/2004, version 3.8.6: jb
+	Added support for x86-64 (configure.ac, configure).
+
+- 22/05/2004, version 3.8.6: roms
+	Bug fixes from JB: buffer overflow in linux_detect.c, NULL functions
+	with direct link support.
+	
+- 05/05/2004, version 3.8.5: roms
+	Bug fix in the verbose.c compatibility support (DISPLAY).
+	Merged Tijl's patch: does not build or use libusb support if libusb
+	not detected.
+	link_dfl changed into link_nul (null cable). Added null method and null
+	port in order to implement a pure null cable.
+	Default settings are now set to a null cable/port.
+	
+- 24/04/2004, version 3.8.4: roms
+	Added buffered write support to the SilverLink / Win32 module. 
+	Driver 3.0.2.1 is needed. Tested with various transfers.
+
+- 21/04/2004, version 3.8.3: roms
+	Added full/partial BUFFERED_W (heuristic) support to get the best of
+	both worlds ! Tested with group, idlist, clock, backup, 
+	FLASH apps (s/r), ROM dump and FLASH os.
+	This really speed-up FLASH app transfer (sending).
+	Done the same work for tiglusb kernel module support. This stuff will 
+	be moved into the module later...
+	
+- 17/04/2004, version 3.8.2: roms
+	Bug in lib-usb support: wrong timeout passed to libusb (1/10 of
+	value) => short timeout !
+	Discovered the same bug in tipar/tiser/tiusb kernel module !
+
+	Note: USB support default behaviour is: BUFFERED_R=1 & BUFFERED_W=0.
+	Using BUFFERED_W make FLASH sending faster but communication is less 
+	reliable.
+	
+- 08/04/2004, version 3.8.1: roms
+	Redirection of stdout/stderr.
+	Weird: we were using tilp/ticable.h. It should be linux/ticable.h.
+	In fact, modules use tilp/ but built-in uses linux/.
+	Modules will be modified to linux/.
+	
+- 22/03/2004, version 3.8.0: roms
+	Splitted sources according to target and cables.
+	Tested under Linux with:
+	- GreyLink: api: ok
+	- BlackLink: asm: ok, ioctl: ok, module: ?? 
+	- SilverLink: ioctl: ok, module: ok
+	- Parallel: asm: ??, module: ??
+	Wake-up sequence removed from serial & parallel cables because it 
+	perturbates communication start-up.
+	
+	Beware: Mac OS-X support has been moved to the new architecture but 
+	has not been compiled !!!
+
+	Bug in serial link support (mode asm: no timeout on ser_get).
+	Bug in parallel link support (mode asm: no timeout on par_get).
+
+	Added ability to immediately flush log file to disk.
+
+-- version 4.x.x ?
+	
+- 01/03/2004, version 3.7.9: tijl
+	BSD usb fix in libticables
+
+- 01/10/2003, version 3.7.8: tijl
+	Added INTLLIBS to LDFLAGS in configure.in
+	Fix error messages in src/slv_link.c
+	Fix compile error in src/intrface.c
+
+- 27/08/2003, version 3.7.7: jb
+	Upgraded to libtool 1.5
+	Upgraded to automake 1.7
+	Use AM_MAINTAINER_MODE
+
+- 21/04/2003, version 3.7.6: roms
+        logging support added into the second serial link support.
+
+- 20/04/2003, version 3.7.5b: roms
+        porttalk.c added in EXTRA_DIST for po compilation.
+	
+- 10/04/2003, version 3.7.5: roms
+	Tijl's patch merged.
+	
+- 29/03/2003, version 3.7.4: roms
+	i18n updated.
+	Typo fixes in tie_link.c
+	Included French translations.
+	Code source parsed for _() occurences.	
+	i18n enabled for Windows.
+	indent -kr -i2
+	
+- 28/03/2003, version 3.7.3: roms
+	avr_link support modified: RTS & DTR enabled by default (power supply).
+	Added constants for ticable_detect_os.
+	Verbose system improved (Win32) and a new function added to the API.
+	
+- 22/03/2003, version 3.7.2:
+	Added JB's patch into slv_link.c
+	
+- 09/03/2003, version 3.7.1:
+	Added type to string conversion functions.
+	
+- 02/03/2003, version 3.7.0:
+	i18n re-enabled.
+	
+- 26/02/2003, version 3.6.9:
+	Tijl's patches for BSD merged.
+	
+- 22/02/2003, version 3.6.8:
+	Doc system improved.
+	Bug fix in the logging system (segfault due to out-of-bounds in the
+	array). Slightly reworked.
+	
+- 17/02/2003, version 3.6.7:
+	added a better checking for libusb support.
+	bug fix in the vti_link support under Windows (DLL was mis-named).
+	
+- 05/02/2003, version 3.6.6
+	Bug fix in intrface.c (serial link).
+	All link cables have been tested again under Linux & Windows with
+	different configurations.
+	
+- 03/02/2003, version 3.6.5:
+	Added direct link cable access (thru exported functions rather than
+	function pointers).
+	
+- 25/01/2003, version 3.6.4:
+        Added BSD target to configure.ac. Tijl's patches merged.
+        configure.ac cleaned-up.
+        Compilable with MinGW (under MSYS and CygWin).
+	
+- 17/01/2002, version 3.6.3b:
+	Documentation finished.
+	
+- 05/01/2003, version 3.6.3:
+	Logging files are now placed in the user's directory.
+	configure.ac modified for FreeBSD.
+	
+- 25/12/2002, version 3.6.2:
+	3.5.0b merged.
+	Added a new way of using the ser_link cable through ioctl calls (
+	similar to Win32 DCB calls). Surprisingly, this method is not time 
+	consuming too much contrary to Windows. It may supersede the tiser
+	kernel module way.
+	Changed indentation to 'indent -kr -i8'.
+	
+- 23/12/2002, version 3.6.1:
+	Added pkg-config support.
+	
+- 13/12/2002, version 3.6.0:
+	Some #define have been changed into enum (make code & doc better).
+	Added a documentation generator as well as a completely rewritten html
+	documentation.
+	
+- 30/11/2002, version 3.5.3:
+	Some patches submitted by Kevin Kofler have been merged.
+	These patches allow compilation of libticables under MinGW for the
+	TIGCC project.
+	Modified: configure.ac, export.h and tie_link.c
+	
+- 29/11/2002, version 3.5.2:
+	"Device name: void" fixed. Some line was commented ?!
+	
+- 15/11/2002, version 3.5.1:
+	Added --enable-logging command line argument.
+	configure.ac improved.
+
+- 21/12/2002, version 3.5.0b:
+        Added version checking into the SilverLink support for Windows.
+	
+- 21/10/2002, version 3.5.0:
+	Minor changes about verbose target file.
+	
+- 13/10/2002, version 3.4.9:
+	Parallel link support: fixed bidir flag.
+	
+- 04/10/2002, version 3.4.8:
+	Emulator support improved (_check use select now) for the following 
+	cables: GrayLink, AVRlink, SilverLink (kernel mode [Win32|Linux]).
+	Removed TIEXPORT symbols from slv_link.c
+	SilverLink drivers (Win32) use __stdcall calling convention now.
+	Driver v2.2 or 2.3? mini is required !
+	
+- 16/09/2002, version 3.4.7:
+	Win32 port.
+	
+- 08/09/2002, version 3.4.6:
+	removed old timodules header.
+	removed tpulink.c
+	move ugl_link.c to slv_link.c
+	dev_link support improved.
+	
+- 23/08/2002, version 3.4.5:
+	timeout fix in the SilverLink code (Win32 & Linux).
+	
+- 21/08/2002, version 3.4.4:
+	logging format of libticables.time improved.
+	
+- 14/08/2002, version 3.4.3:
+	added a new header (wrapper): ticables.h
+	typedefs.h removed. Replaced by stdint.h (ISO C 99).
+	
+- 12/08/2002, version 3.4.2:
+	some clean-ups. Some programs may not compile any longer but lib still
+	links !
+	
+- 22/07/2002, version 3.4.1:
+	logging system secured.
+	
+- 18/07/2002, version 3.4.0:
+	Error codes completely cleaned-up and more explicit.
+	Added system error message in the global message.
+	
+- 17/07/2002, version 3.3.1bis:
+	Some pbs fixed with the libusb support: reset endpoint removed
+	and NULL handle fixed by JB.
+	
+- 10/07/2002, version 3.3.1:
+	Some headers have been moved from libticables to libtifiles.
+	Now the minimum set of headers is installed.
+	
+- 03/07/2002, version 3.3.0 (3.2.7):
+	Win32 SilverLink support rewritten for TiglUsb driver v2.0 
+		(new driver based on the WinXP DDK).
+
+- 13/06/2002, version 3.2.6:
+	Version number is now displayed in ticable_init.
+	
+- 05/06/2002, version 3.2.5:
+	Mac OS-X merge.
+	
+- 21/04/2002, version 3.2.4:
+	Some pbs fixed with the libusb support: reset endpoint removed
+	and NULL handle fixed by JB.
+	Virtual link support broken. Works fine with TiLEM.
+	
+- 05/04/2002, version 3.2.3:
+	Upgraded to PortTalk v2.1.
+	It seems that modifications done in 3.2.1 have been lost...
+	Rewritten in this release.
+	Linux troubles with kernel modules about /dev/ namespace is now fixed:
+	libticables automatically find the right node.
+	dev_link.c: remove O_NONBLOCK flag for kernel modules
+	
+- 15/03/2002, version 3.2.2:
+        LIBTICABLE_VERSION symbol is now always defined.
+	Updated support of tiglusb driver.	
+
+- 01/03/2001, version 3.2.1:
+	Little fix with parallel link under Win2k.
+	PortTalk is now automatically started if needed.
+	
+- 24/02/2001, vesion 3.2.0:
+	Rounded to 3.2.0 for release.
+
+- 23/02/2001, version 3.1.7:
+	Merged again with Mac OS-X.
+	
+- 17/02/2001, version 3.1.6:
+	Test program and doc updated for libticables v3.x.x
+	Added in verbose.c the ability to change the output descriptor of
+	DISPLAY (stdout by default).
+	Libticables tested on Windows 98, NT4, 2000 & XP.
+	DISPLAY mechanism improved & cleaned (verbose.c).
+	
+- 15/02/2002, version 3.1.5:
+	timeout.h: macros updated for Win32.
+	
+- 14/02/2002, version 3.1.4:
+	Merge with Mac OS-X: building projects are in 'osx'.
+	
+- 13/02/2002, version 3.1.3:
+	Replaced some code by macros in tpu_link. & vti_link.c
+	Added a new structure and method for computing data rate.
+	
+- 12/02/2002, version 3.1.2:
+	Bug fix with the BlackLink cable under Windows2000 (FlashZ's bug).
+	Pb with the SilverLink driver (bad calling convention): TiglUsb.h
+	updated.
+	
+- 21/01/2002, version 3.1.1:
+	Bug fix in ticable_set_cable (serial cable & tiser).
+	Bug fix in macros.h (__UNIX__ instead of __LINUX__).
+	
+- 12/01/2002, version 3.1.0:
+	'pi' changed into 'pinfo' in intrface.c to avoid namespace conflicts.
+	
+- 05/01/2002, version 3.0.9:
+	Minor fix in libusb (if USB filesystem is not mounted, no error).
+	libticables does not depend any longer of TiglUsb.dll (use explicit
+	Dynamic Linking).
+	
+- 02/01/2002, version 3.0.8:
+	Html doc updated. Minor fixes for Win32.
+	
+- 31/12/2001, version 3.0.7:
+	intrface.c cleaned. 
+	TIGL-USB support with libusb works very fine now.
+	TIGL-USB support with kernel module improved. It works fine but if a
+	transfer is cancelled, we need to reload the kernel module or re-plug 
+	the link cable.
+	Error codes have been improved (more explicit).
+	Auto-detection of cable improved and widely tested. Nevertheless,
+	serial link can not be detected.
+	Logging added to all cables.
+	
+- 30/12/2001, version 3.0.6:
+	Added a SPECIFIC_PORT constant. I have changed the port management.
+	
+- 29/12/2001, version 3.0.5:
+	USB support for Win32 completely finished (user mode DLL, flushing and
+	some other things).
+	
+- 28/12/2001, version 3.0.4:
+	ugl_link: libusb support tested.
+	
+- 26/12/2001, version 3.0.3:
+	Removed DLPortIO for PortTalk (www.beyondlogic.org) which brings about
+	more advantages: source code available, smaller, faster, ...
+	tig_probe implemented.
+	
+- 24/12/2001, version 2.2.5 -> 3.0.2:
+	I have swapped ticable_set_param and ticable_set_param2 for JB.
+	Error code values changed.
+	I have changed the naming scheme about the LinkCable structure.
+	I have cleaned up the source code.
+	Moved pause.h from libticables to libticalcs.
+	
+- 21/12/2001, version 2.2.4 -> 3.0.1:
+	I have changed my motherboard (SiS + Duron800MHz) which have been
+	broken by my brother. I have finished the I/O management.
+	ugl_link.c: libusb and kernel module support splitted.
+	Compiled and fixed for Win32.
+	
+- 18/12/2001, version 2.2.3 -> 3.0.0:
+	I have increased the major number: I have planned many enhancements, 
+	modifications, clean-up, ...
+	
+	I/O management and probing improved.
+	I have added 2 new functions: ticable_init & ticable_exit. The first 
+	one is primarily used for detecting & listing available I/O routines.
+	This version is still backward compatible if the 
+	ticable_get_default_param function is called (and it should be...).
+	
+- 17/12/2001, version 2.2.2:
+	JB has written a support of the SilverLink (TIGL-USB) with the libusb.
+	I have merged his patch.
+	ticable_probe: I have added a check for mouse (no risk to hang up your
+	mouse, at least under Linux).
+	
+- 11/12/2001, version 2.2.1:
+	Consistency: ticable_set_param modified again: use a struct but
+	ticable_set_param2 use a pointer on structure.
+	
+- 20/11/2001, version 2.2.0:
+	Win32 projects are now distributed with source code.
+	get_default_param returns a GreyTIGL link cable on COM2.
+	
+- 19/11/2001, version 2.1.9:
+	French PO files have been updated (i18n).
+	Tested under WindowsXP with success ! WindowsXP seems to be a NT based
+	system rather than a Windows9x/Me system.
+	
+- 17/11/2001, version 2.1.8:
+	Recompiled under Win32.
+	
+- 15/11/2001, version 2.1.7:
+	Consistency: ticable_set_param use a pointer on struct now.
+	
+- 08/11/2001, version 2.1.6:
+	Added a m4 macro for checking libticables in configure scripts.
+	
+- 27/10/2001, version 2.1.5:
+	warnings fixed.
+	
+- 23/10/2001, version 2.1.4:
+	A bug fix in par_link/ser_link: TiLP crashes when a normal user try to
+	directly use a parallel/serial link cable.
+	
+- 19/10/2001, version 2.1.3:
+	Updated to Am/Ac2.52: configure.in renamed into configure.ac.
+	
+- 18/10/2001, version 2.1.2:
+	Some missing error codes have been added.
+	
+- 17/10/2001, version 2.1.1:
+	Logging mechanism improved (logging.*).
+	After some tests, it seems that transfer are more reliable if we
+	send byte per byte rather than per packet. I think (an hypothesis) that
+	we should not try to get data if link cable's buffer does not contain
+	data.
+	By sending byte per byte, we ensure a fast reply of the calc and so
+	we ensure that link cable's reading buffer are not empty.
+	
+- 16/10/2001, version 2.1.0:
+	TIGL-USB Linux support improved. There is still one problem: receiving
+	variables by block crashes. Else, all other things work (ready, screen,
+	send vars, backup, ...)
+	
+- 13/10/2001, version 2.0.9:
+	I have written the TIGL-USB Linux support for testing the device
+	driver.
+	Read & write operations are buffered.
+	The TIGL-USB Linux kernel driver works fine but it is a bit slow...
+
+- 12/10/2001, version 2.0.8:
+	The TIGL-USB Win32 kernel driver works fine now. I have merged Win32
+	support. Note: this version is not very clean because it includes
+	some kernel definitions & exports as well as a DDK library.
+	To do: write a DLL front-end and package it.
+	The library manages only 1 USB link cable. A future version will be
+	able to manage up to 4 USB link cables.
+	
+- 06/10/2001, version 2.0.7:
+	The TIGL-USB Win32 kernel driver is under development.
+	
+- 30/09/2001, version 2.0.6:
+	The TIGL-USB linux kernel driver works ! JB has chosen the 
+	following nodes: /dev/usb/tigl[0-15] so I have modified the lib
+	consequently.
+	
+- 29/09/2001, version 2.0.5:
+	TIGL-USB support added.
+	
+- 17/09/2001, version 2.0.4:
+	Routines for probing ports/cables have been fixed (many bugs under 
+	Linux).
+	Thing to fix: if a mouse is connected on a serial port, the probing
+	routine hang-up the mouse...
+	Anyways, these routines need to be cleaned, improved and securized.
+	
+- 14/09/2001, version 2.0.3:
+	The test program have been tested on Win32 platforms.
+	I have added a check in ticable_set_cable: user is informed if he
+	tries to use a port which is not compatible with the cable.
+	The cabl_int.h file has been completed. It contains now all exported
+	functions.
+	I have removed many warnings under MSVC (none to level3).
+	
+- 13/09/2001, version 2.0.2:
+	I have tested the library under Win32 (9x/NT).
+	The library is now stable and clean.
+	Doc has not been updated yet.
+	Headers are now C++ compliant (extern "C").
+	Thomas Wolf <two@chello.at> has written a BCC32 v5.x (or C++Builder5+)
+	wrapper for the libticables. He has also bring about some modifications
+	to the libticables that I have merged.
+	
+- 12/09/2001, version 2.0.1:
+	I have widely cleaned up I/O management, interface and headers.
+	I have also removed old routines.
+	
+- 11/09/2001, version 2.0.0: compatibility broken -> v2.x.x
+	library is now easier to use: simply pass the port to use (a name)
+	and the lib find device name & address.
+	The library is backward compatible with programs which use the old
+	library. Nethertheless, programs need to be recompiled.
+	
+- 10/09/2001, version 1.8.5: a bug fix in the dev string (too short).
+	Some modifications for making the lib easier to use.
+	The test_libticables program has been updated.
+	
+- 07/09/2001, version 1.8.4: dev_link.c modified for supporting the tipar/tiser
+	kernel modules (non blocking mode)
+	
+- 15/07/2001, version 1.8.3: some fixes for Debian packaging according to JB 
+	directives.
+	
+- 07/07/2001, version 1.8.2: some fixes for Debian packaging.
+	
+- 30/06/2001, version 1.8.1: the pb of FlashZ (and probably of some other people): BlackLink & Win2k has been fixed.
+	
+- 25/06/2001, version 1.8.0: minor fix for Debian packaging.
+	
+- 24/06/2001, version 1.7.9: dev_link.c unit slightly modified.
+	
+- 14/06/2001, version 1.7.8: a pb of TIPAR_DELAY/TIMEOUT fixed when we compile with the 'tiser' kernel module support.
+	
+- 02/06/2001, version 1.7.7: some functions for managing raw access have been added as well as functions for checking sending/receiving. They have been added for making easy emulator support which can require a direct access.
+	
+- 19/05/2001, version 1.7.6: VTi link support improved and modified. TIEmulator virtual link re-implemented under Win32. Some code have been cleaned.
+	
+- 08/05/2001, version 1.7.5: VERSION symbol changed due to some interactions under Win32 compiler.
+	
+- 07/05/2001, version 1.7.4: TiEmulator and generic virtual links improved: the Linux part of the tie_link has moved into the vti_link and the Linux part of the vtl_link has been copied into the tie_link.
+	
+- 01/05/2001, version 1.7.3: serial/BlackLink routines modified (test by FlashZ in progress...).
+	
+- 31/03/2001, version 1.7.2: library interface modified but still compatible.
+Win32 DCB method access used for GreyTIGL and BlackLink. Linking routines taken from Rusty Wagner's VTi. The fastAVRlink routines have been also modified on the same template as the GreyTIGL routines. Kernel module managemement improved.
+	
+- 29/03/2001, version 1.7.1: configure.in and src/dev_link.c adapted to the new serlink kernel module
+	
+- 28/03/2001, version 1.7.0: io_ports.c modified by James Lancaster for Alpha port.
+	
+- 27/03/2001, version 1.6.9: some files (tiglink.c, ...) modified for Debian packaging.
+	
+- 25/03/2001, version 1.6.8: intl.h renamed into intl1.h for Debian packaging.
+	
+- 20/03/2001, version 1.6.7: configure.in changed for Debian release.
+	
+- 15/03/2001, version 1.6.4: DISPLAY function improved for Win32 platform.
+	
+- 14/03/2001, version 1.6.3: minor bug fixes in I/O port routines. Checking of WindowsNT & DLPortIO.
+	
+- 11/03/2001, version 1.6.2: DISPLAY function from libticalcs added in the libticables.
+	
+- 08/03/2001, version 1.6.1: auto-detection of OS, I/O ports and cables added.
+	
+- 06/03/2001, version 1.6.0: I have boosted the libticables library for I/O transfers. A great thanks to Timothy Singer <tsinger@uoregon.gladstone.edu>, the FastLink's developer, who allows me to see why my routines was slow under Windows9x. Conclusion: use GetTickCount() instead of clock() under Win9x greatly improve speed.
+	
+- 27/02/2001, version 1.5.9: modifications made for compiling under Borland C++ 4.52 (Win16 target)
+	
+- 24/02/2001, version 1.5.8: some filenames have been changed for the Debian release.
+	
+- 17/02/2001, version 1.5.7: TiEmulator virtual link modified.
+
+- 13/02/2001, version 1.5.6: i18n support implemented for both Linux & Win32.
+	Configure.in script modified according to James Lancaster (Alpha port).
+	
+- 04/02/2001, version 1.5.5: enable/disable option for hardware flow control have been added.
+	
+- 29/01/2001, version 1.5.4: headers files are now in <tilp/..> instead of <ti/tilp/..>
+
+- 28/01/2001, version 1.5.3: errcodes.h and error.c changed for i18n.
+	
+- 23/01/2001, version 1.5.2: using automake & autoconf now. Better use of the i18n support due to automake !
+	
+- 03/12/2000, version 1.5.1: headers files are now in <ti/tilp/..> instead of <ti/...>
+
+- 31/12/2000, version 1.5.0: I/O ports low-level routines modified (more common, improved)
+
+- 14/12/2000, version 1.4.9: bug fixed in the fastAVRlink support (a B9600 instead of BR9600 constant).
+
+- 12/12/2000, version 1.4.8: I have completely rewritten the low-level I/O layer both for Linux and Windows. For Windows, we have now the choice between: asm, inp/outp, DLPortIO kernel driver for NT, HwPort95 kernel driver for 9x and Direct95 library. For Linux, there still are the inb/outb functions.
+
+- 30/11/2000, version 1.4.7: dev_link support improved for supporting my own kernel modules (ti_parlink & ti_serlink). It is always backwards compatible with the 'tidev' kernel module.
+
+- 28/11/2000, version 1.4.6: tie_link.* moved into vtl_link.* and TIEmulator
+virtual linking rewritten with Shared Memory Segment (IPC).
+
+- 27/11/2000, version 1.4.5: TIEmulator virtual linking improved (Linux).
+
+- 25/11/2000, version 1.4.4: fastAVRlink support improved but there is a bug: it is impossible to change the baud-rate under Linux ?!
+
+- 20/11/2000, version 1.4.3: I removed obsolete args for the xxx_init_port functions.
+
+- 18/11/2000, version 1.4.2: ser_link.c file ported on Alpha arthitecture by James Lancaster <james@kirk.math.twsu.edu>
+
+- 13/11/2000, version 1.4.1: Makefile patched by J. Derque <jderque@caramail.com>
+
+- 06/11/2000, version 1.4.0: VTi virtual link fully implemented.
+
+- 04/11/2000, version 1.3.9: VTi virtual link implemented. Works at 90%.
+
+- 03/11/2000, version 1.3.8: fixed a problem of permissions (->segfaults).
+
+- 02/11/2000, version 1.3.7: improvement (speed) of the libTIcables.
+
+- 01/11/2000, version 1.3.6: virtual linking improved as well as the Win32 functions.
+
+- 28/10/2000, version 1.3.5: J. Derque <jderque@caramail.com> has directly modified the libTIcables archive and implemented a 'lib-config' script.
+
+- 23/10/2000, version 1.3.4: I received 2 patches from J. Derque. One for uninstalling the library, the other provides a 'lib-config' script.
+
+- 21/10/2000, version 1.3.3: some methods added.
+
+- 18/10/2000, version 1.3.2: VTi virtual link implemented but not tested.
+
+- 18/10/2000, version 1.3.1: new files added for VTIlink, TiElink, TPUlink (my USBlink) and UGLlink (the TI's USB Graph Link).
+
+- 17/10/2000, version 1.3.0: external/exported functions and variables names
+begin with the 'ticable_' prefix in order to be conform with the GNU Coding Standard.
+
+- 12/10/2000, version 1.2.4: baud rate setting added (fastAVRlink)
+
+- 11/10/2000, version 1.2.3: hardware flow control added for the fastAVRlink.
+
+- 01/10/2000, version 1.2.2: ported to SPARC !
+
+- 23/09/2000, version 1.2.1: config.h & autoconf & autoheader & system type added. Modifications made for the Debian integration.
+
+- 23/09/2000, version 1.2.0: AVRlink support updated (the AVRlink works !)
+
+- 13/09/2000: version 1.1.9: more error codes.
+
+- 02/09/2000: version 1.1.8: JB has managed to include TiLT in the Debian distribution. For this, I have to do some modifications. 
+
+- 11/08/2000: version 1.1.6: Grey TIGL support for Windows updated with the 8th function.
+
+- 09/08/2000: version 1.1.5: at last, virtual linking works ! Pfew ! I begin a Windows version of the virtual linking.
+
+- 08/08/2000: version 1.1.4: 8th function implemented for the virtual linking.
+All works fine. Error function works !
+
+- 06/08/2000: version 1.1.3: some important modifications in tiglink.c (Linux part): I removed the receiving buffer, the timeout is now managed by a loop and not by the serial device any longer; I implemented the 8th function for the Grey TIGL.
+
+- 02/08/2000: version 1.1.2: I implemented the 8th function for both parallel
+and serial but not tested for the Grey TIGL
+
+- 01/08/2000: version 1.1.1: I added an 8th method for checking the status of
+the link without waiting (byte received or not, operations made, and so on).
+
+- 26/07/2000: version 1.1.0: virtual link capability finished but not tested
+
+- 20/07/2000: version 1.1.0: lib improved and overhauled: full 'tidev' support, virtual link capability and error management modified
+
+- 27/06/2000: version 1.0.5: overhaul of the source code and html documentation
+
+- 29/05/2000: version 1.0.4: the automatic use of DLPortIO works fine now.
+
+- 29/05/2000: version 1.0.3: a bug fix (ioperm redefined).
+
+- 25/05/2000: version 1.0.2: overhaul of the source files and automatic use of DLPortIO for Windows9x or Windows NT (does not work yet).
+
+- 18/05/2000: version 1.0.1: add a new type for the ti-lsd.
+
+- 15/05/2000: version 1.0.0: TI cable routines in .so/.DLL
