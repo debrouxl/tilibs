@@ -1,0 +1,18 @@
+[Main]
+Name=TicalcAction
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcAction
+
+[Fields]
+ACT_SKIP : skip variable
+ACT_OVER : overwrite/rename variable
+
+[Summary]
+Defines whether the variable is skipped, overwritten or renamed.
+
+[Explanation]
+These constants are used into an action array.
+
+[See also]
+@ticalc_create_action_array@

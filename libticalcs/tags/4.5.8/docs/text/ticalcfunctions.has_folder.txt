@@ -1,0 +1,15 @@
+[Main]
+Name=has_folder
+Type=Enum
+Header=calc_int.h
+Definition=int has_folder
+
+[Summary]
+This field is set to non-0 if the directory list can contains folders.
+
+[Description]
+Some calculators (from TI73 to TI86) can not organize their variables into folders. For these calculators, the field is set to 0.
+This has influence on the way the folder tree is treated.
+
+[See also]
+@TicalcFunctions@

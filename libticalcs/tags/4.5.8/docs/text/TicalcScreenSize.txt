@@ -1,0 +1,23 @@
+[Main]
+Name=TicalcScreenSize
+Type=Structure
+Header=calc_def.h
+Definition=struct TicalcScreenSize
+
+[Fields]
+@uint8_t@ width : the real width of the screen
+@uint8_t@ height : the real height
+@uint8_t@ clipped_width : the clipped width of the screen
+@uint8_t@ clipped_height : the clipped height
+
+[Summary]
+Structure used by the @ticalcfunctions.screendump@ function.
+
+[Description]
+This structure contains informations on the size of a screenshot. This structure is filled by the ticalcfncts.screendump function.
+
+<br>Usually, you will have to use only the clipped_xx fields of the structure. They contains the size of the useful image.
+
+<br>The width and height fields are provided to get access on the other part of the image.
+
+<br>Explanations: the TI89 screen is smaller than the TI92+ one but the memory screen has the same size. That is to say, the TI89 display a part of the area but all the area is accessible with a screendump.

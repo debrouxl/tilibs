@@ -1,0 +1,19 @@
+[Main]
+Name=stop
+Type=Function
+Header=calc_int.h
+Definition=void (*stop) (void);
+
+[Parameters]
+None.
+
+[Summary]
+Callback called whenever a transfer is finished.
+
+[Description]
+This function is called by the ticalc library whenever a transfer is finished.
+
+Usually, you place a function which clear the prev_percentage and percentage fields of the structure.
+
+[See also]
+TicalcInfoUpdate

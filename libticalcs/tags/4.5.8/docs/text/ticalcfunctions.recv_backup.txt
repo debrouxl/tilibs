@@ -1,0 +1,24 @@
+[Main]
+Name=recv_backup
+Type=Function
+Header=calc_int.h
+Definition=int (*recv_backup) (const char *filename, int mode);
+
+[Parameters]
+filename : the name of the file where the backup will be stored
+mode : no flags with this function
+Returns : 0 if successful, an error code otherwise.
+
+[Summary]
+Request or wait for a backup of the calculator content.
+
+[Description]
+This function allows to backup the calculator content.
+According to the @ticalcfunctions.is_silent@ field, the function will request a backup or will wait for the user to send a backup.
+
+The user has to manually send the backup with the TI82/85/86 calculators.
+
+[See also]
+@TicalcFunctions@
+
+

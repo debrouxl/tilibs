@@ -1,0 +1,17 @@
+[Main]
+Name=TicalcMemoryType
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcMemoryType
+
+[Fields]
+MEMORY_NONE : unused
+MEMORY_FREE : free memory
+MEMORY_USED : used memory
+
+[Summary]
+Defines how the value returned by ticalcfncts.directorylist must be interpreted.
+
+[Explanation]
+With MEMORY_FREE is set, the value returned is the memory free in the calculator.
+With MEMORY_USED is set, the value returbed is the memory _effectively_ used or which _may_ be used by the calculator (this depends on the calculator model).
