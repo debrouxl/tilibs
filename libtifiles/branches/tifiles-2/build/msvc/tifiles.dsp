@@ -190,19 +190,11 @@ SOURCE=..\..\src\macros.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\stdints.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\tifiles.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Trans.h
 # End Source File
 # Begin Source File
 
@@ -290,7 +282,7 @@ SOURCE=..\..\src\error.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\intrface.c
+SOURCE=..\..\src\fileops.c
 # End Source File
 # Begin Source File
 
@@ -298,11 +290,11 @@ SOURCE=..\..\src\logging.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc.c
+SOURCE=..\..\src\tifiles.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\trans.c
+SOURCE=..\..\src\transcode.c
 # End Source File
 # Begin Source File
 

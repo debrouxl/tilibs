@@ -36,7 +36,7 @@
 #include "error.h"
 #include "typesxx.h"
 #include "filesxx.h"
-#include "misc.h"
+#include "fileops.h"
 #include "intelhex.h"
 #include "transcode.h"
 #include "logging.h"

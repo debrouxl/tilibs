@@ -143,7 +143,8 @@ extern "C" {
 
   TIEXPORT char* TICALL tifiles_get_varname(const char *full_name);
   TIEXPORT char* TICALL tifiles_get_fldname(const char *full_name);
-  TIEXPORT int   TICALL tifiles_build_fullname(char *full_name,
+  TIEXPORT int   TICALL tifiles_build_fullname(TiCalcType model,
+	                     char *full_name,
 					     const char *fldname,
 					     const char *varname);
 

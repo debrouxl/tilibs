@@ -25,7 +25,7 @@
 #include "logging.h"
 #include "error.h"
 #include "typesxx.h"
-#include "misc.h"
+#include "fileops.h"
 
 extern int tifiles_calc_type;
 

@@ -32,10 +32,6 @@
 #include "tifiles.h"
 #include "logging.h"
 
-#define bswap_16(a) (a >> 8) | (a << 8)
-
-#define bswap_32(x) (x >> 24) | (x & 0xff0000) >> 8 | (x & 0xff00) << 8 | (x & 0xff) << 24
-
 /*
   Dump into hexadecimal format the content of a buffer
   - ptr [in]: a pointer on some data to dump
@@ -126,12 +122,6 @@ int fwrite_8_chars(FILE * f, const char *s)
 
 int fskip(FILE * f, int n)
 {
-  /*
-     int i;
-     for(i=0; i<n; i++)
-     fgetc(f);
-     return 0;
-   */
   return fseek(f, n, SEEK_CUR);
 }
 
@@ -155,9 +145,7 @@ int fread_word(FILE * f, uint16_t * data)
   if (data != NULL)
   {
     ret = fread((void *) data, sizeof(uint16_t), 1, f);
-#ifdef WORDS_BIGENDIAN
-    *data = bswap_16(*data);
-#endif /* WORDS_BIGENDIAN */
+	*data = GUINT16_FROM_LE(*data);
   }
   else
     fskip(f, 2);
@@ -171,9 +159,7 @@ int fread_long(FILE * f, uint32_t * data)
   if (data != NULL)
   {
     ret = fread((void *) data, sizeof(uint32_t), 1, f);
-#ifdef WORDS_BIGENDIAN
-    *data = bswap_32(*data);
-#endif /* WORDS_BIGENDIAN */
+	*data = GUINT32_FROM_LE(*data);
   }
   else
     fskip(f, 4);
@@ -192,17 +178,13 @@ int fwrite_byte(FILE * f, uint8_t data)
 
 int fwrite_word(FILE * f, uint16_t data)
 {
-#ifdef WORDS_BIGENDIAN
-  data = bswap_16(data);
-#endif /* WORDS_BIGENDIAN */
+	data = GUINT16_TO_LE(data);
   return fwrite(&data, sizeof(uint16_t), 1, f);
 }
 
 int fwrite_long(FILE * f, uint32_t data)
 {
-#ifdef WORDS_BIGENDIAN
-  data = bswap_32(data);
-#endif /* WORDS_BIGENDIAN */
+	data = GUINT16_TO_LE(data);
   return fwrite(&data, sizeof(uint32_t), 1, f);
 }
 
@@ -262,7 +244,7 @@ TIEXPORT uint16_t TICALL tifiles_compute_checksum(uint8_t * buffer,
 
 /*
   Retrieve the varname component of a full path
-   - full_name [in]: a stringsuch as 'fldname\varname'
+   - full_name [in]: a string such as 'fldname\varname'
    - [out]: the varname
 */
 char *TICALL tifiles_get_varname(const char *full_name)
@@ -289,7 +271,8 @@ char *TICALL tifiles_get_fldname(const char *full_name)
 
   if (bs == NULL)
     strcpy(folder, "");
-  else {
+  else 
+  {
     i = strlen(full_name) - strlen(bs);
     strncpy(folder, full_name, i);
     folder[i + 1] = '\0';
@@ -306,11 +289,10 @@ char *TICALL tifiles_get_fldname(const char *full_name)
    - varname [in]: the variable name
    - [out]: aalways 0.
 */
-extern TiCalcType tifiles_calc_type;
-int TICALL tifiles_build_fullname(char *full_name,
+int TICALL tifiles_build_fullname(TiCalcType model, char *full_name,
 				  const char *fldname, const char *varname)
 {
-  if (tifiles_has_folder(tifiles_calc_type)) {
+  if (tifiles_has_folder(model)) {
     if (strcmp(fldname, "")) {
       strcpy(full_name, fldname);
       strcat(full_name, "\\");
