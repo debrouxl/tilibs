@@ -513,6 +513,9 @@ int ti73_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
   int npages;
   uint32_t size = 0;
 
+  if(ticalcs_calc_type == CALC_TI84P)
+	return ERR_VOID_FUNCTION;
+
   printl2(0, _("Receiving FLASH application...\n"));
 
   LOCK_TRANSFER();
