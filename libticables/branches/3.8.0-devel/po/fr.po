@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-04 16:12+0200\n"
+"POT-Creation-Date: 2004-04-09 22:11+0200\n"
 "PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: src/detect.c:71 src/win32/win32_detect.c:63
+#: src/detect.c:71 src/type2str.c:147 src/win32/win32_detect.c:59
 msgid "unknown"
 msgstr "inconnu"
 
@@ -443,199 +443,326 @@ msgstr ""
 "C'est un bug. Reportez-le, s'il vous plaît.\n"
 "."
 
-#: src/intrface.c:100
+#: src/intrface.c:98
 #, fuzzy, c-format
-msgid "libticables: version %s\n"
+msgid "ticables library version %s\n"
 msgstr "Libticables: version %s\n"
 
 #. list built-in compiled options...
-#: src/intrface.c:103
+#: src/intrface.c:109
 #, fuzzy, c-format
-msgid "libticables: built for %s target.\n"
+msgid "built for %s target.\n"
 msgstr "Libticables: version %s\n"
 
-#: src/intrface.c:343
+#: src/intrface.c:351
 #, fuzzy
-msgid "libticables: list of settings...\n"
+msgid "list of settings:\n"
 msgstr "Libticables: réglages actuels...\n"
 
-#: src/intrface.c:345
+#: src/intrface.c:353
 #, fuzzy, c-format
 msgid "  cable: %s\n"
 msgstr " Câble de liaison: %s\n"
 
-#: src/intrface.c:348
+#: src/intrface.c:356
 #, fuzzy, c-format
 msgid "  port: %s\n"
 msgstr "  Port: %s\n"
 
-#: src/intrface.c:350
+#: src/intrface.c:358
 #, fuzzy, c-format
 msgid "  method: %s\n"
 msgstr " Méthode: %s\n"
 
-#: src/intrface.c:353
+#: src/intrface.c:361
 #, fuzzy, c-format
 msgid "  baud-rate: %i\n"
 msgstr " Vitesse de transmission en Bauds: %i\n"
 
-#: src/intrface.c:354
+#: src/intrface.c:362
 #, fuzzy, c-format
 msgid "  hardware flow control: %s\n"
 msgstr " Contrôle du flux matériel: %s\n"
 
-#: src/intrface.c:355
+#: src/intrface.c:363 src/type2str.c:92 src/type2str.c:100 src/type2str.c:167
+#: src/type2str.c:177
 msgid "on"
 msgstr "activé"
 
-#: src/intrface.c:355
+#: src/intrface.c:363 src/type2str.c:94 src/type2str.c:165 src/type2str.c:171
+#: src/type2str.c:179
 msgid "off"
 msgstr "désactivé"
 
-#: src/intrface.c:360
+#: src/intrface.c:368
 #, fuzzy, c-format
 msgid "  address: 0x%03x\n"
 msgstr " Adresse d'entrée/sortie: 0x%03x\n"
 
-#: src/intrface.c:362
+#: src/intrface.c:370
 #, fuzzy, c-format
 msgid "  device name: %s\n"
 msgstr " Nom du périphérique: %s\n"
 
-#: src/intrface.c:365
+#: src/intrface.c:373
 #, fuzzy, c-format
 msgid "  timeout value: %i\n"
 msgstr " Limite de temps: %i\n"
 
-#: src/intrface.c:367
+#: src/intrface.c:375
 #, fuzzy, c-format
 msgid "  delay value: %i\n"
 msgstr " Délai: %i\n"
+
+#: src/logging.c:78
+msgid "Logging STARTED.\n"
+msgstr ""
 
 #: src/logging.c:82 src/logging.c:88
 #, c-format
 msgid "Unable to open <%s> for logging.\n"
 msgstr "Impossible d'ouvrir <%s> pour se connecter.\n"
 
-#: src/type2str.c:43
-msgid "libticables error: unknown cable type !\n"
-msgstr "libticables erreur: type de câble inconnu !\n"
+#: src/printl.c:47
+#, c-format
+msgid "wrn: "
+msgstr ""
 
-#: src/type2str.c:57
-msgid "libticables error: unknown baud rate !\n"
-msgstr "libticables erreur: vitesse de transmission inconnue !\n"
+#: src/printl.c:48
+#, fuzzy, c-format
+msgid "err: "
+msgstr "Erreur: %s\n"
 
-#: src/type2str.c:71
-msgid "libticables error: unknown flow type !\n"
-msgstr "libticables erreur: type de flux inconnu !\n"
+#: src/type2str.c:29
+#, fuzzy
+msgid "none"
+msgstr "activé"
 
-#: src/type2str.c:114
-msgid "libticables error: unknown port !\n"
-msgstr "libticables erreur: port inconnu !\n"
+#: src/type2str.c:29
+msgid "GrayLink"
+msgstr ""
 
-#: src/bsd/bsd_detect.c:59 src/linux/linux_detect.c:61
-#: src/win32/win32_detect.c:47
+#: src/type2str.c:29
+msgid "BlackLink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "ParallelLink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "AVRlink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "virtual"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "TiEMu"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "VTi"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "obsolete"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "SilverLink"
+msgstr ""
+
+#: src/type2str.c:107
+msgid "custom"
+msgstr ""
+
+#: src/type2str.c:107
+#, fuzzy
+msgid "parallel port #1"
+msgstr "Recherche des ports parallèles...\r\n"
+
+#: src/type2str.c:107
+#, fuzzy
+msgid "parallel port #2"
+msgstr "Recherche des ports parallèles...\r\n"
+
+#: src/type2str.c:107
+#, fuzzy
+msgid "parallel port #3"
+msgstr "Recherche des ports parallèles...\r\n"
+
+#: src/type2str.c:108
+msgid "serial port #1"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #2"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #3"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #4"
+msgstr ""
+
+#: src/type2str.c:109
+msgid "virtual port #1"
+msgstr ""
+
+#: src/type2str.c:109
+msgid "virtual port #2"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #1"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #2"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #3"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #4"
+msgstr ""
+
+#: src/type2str.c:111
+#, fuzzy
+msgid "serial port"
+msgstr "Recherche des ports séries...\r\n"
+
+#: src/type2str.c:111
+msgid "USB port"
+msgstr ""
+
+#: src/type2str.c:150
+msgid "direct access (asm)"
+msgstr ""
+
+#: src/type2str.c:152
+msgid "direct access (api)"
+msgstr ""
+
+#: src/type2str.c:154
+msgid "kernel mode (module)"
+msgstr ""
+
+#: src/type2str.c:156
+msgid "user mode (ioctl)"
+msgstr ""
+
+#: src/type2str.c:169 src/type2str.c:181
+#, fuzzy
+msgid "closed"
+msgstr "Ferme le dossier\r\n"
+
+#: src/bsd/bsd_detect.c:59
 msgid "Getting OS type...\r\n"
 msgstr "Détermination du type de système d'exploitation... \r\n"
 
-#: src/bsd/bsd_detect.c:60 src/linux/linux_detect.c:62
+#: src/bsd/bsd_detect.c:60
 #, c-format
 msgid "  System name: %s\r\n"
 msgstr " Nom du système: %s\r\n"
 
-#: src/bsd/bsd_detect.c:61 src/linux/linux_detect.c:63
+#: src/bsd/bsd_detect.c:61
 #, c-format
 msgid "  Node name: %s\r\n"
 msgstr " Nom du noeud: %s\r\n"
 
-#: src/bsd/bsd_detect.c:62 src/linux/linux_detect.c:64
+#: src/bsd/bsd_detect.c:62
 #, c-format
 msgid "  Release: %s\r\n"
 msgstr " Version du noyau: %s\r\n"
 
-#: src/bsd/bsd_detect.c:63 src/linux/linux_detect.c:65
+#: src/bsd/bsd_detect.c:63
 #, c-format
 msgid "  Version: %s\r\n"
 msgstr " Version: %s\r\n"
 
-#: src/bsd/bsd_detect.c:64 src/linux/linux_detect.c:66
+#: src/bsd/bsd_detect.c:64
 #, c-format
 msgid "  Machine: %s\r\n"
 msgstr "  Machine: %s\r\n"
 
-#: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:67
-#: src/linux/linux_detect.c:107 src/linux/linux_detect.c:194
-#: src/win32/win32_detect.c:65
+#: src/bsd/bsd_detect.c:65
 msgid "Done.\r\n"
 msgstr "Fait. \r\n"
 
-#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:246
-#: src/win32/win32_detect.c:83
+#: src/bsd/bsd_detect.c:79 src/win32/win32_detect.c:78
 #, fuzzy
-msgid "libticables: checking resources...\r\n"
+msgid "checking resources...\r\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:253
+#: src/bsd/bsd_detect.c:86
 msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:255
+#: src/bsd/bsd_detect.c:88
 msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:263
+#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:262
 #, c-format
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:293
+#: src/bsd/bsd_detect.c:104
 #, c-format
 msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:77
 #, fuzzy
-msgid "libticables: ioctl failed in bsd_ioctl_read_io !\n"
+msgid "ioctl failed in bsd_ioctl_read_io !\n"
 msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 
 #: src/bsd/bsd_ioports.c:93
-msgid "libticables: ioctl failed in bsd_ioctl_write_io !\n"
-msgstr ""
+#, fuzzy
+msgid "ioctl failed in bsd_ioctl_write_io !\n"
+msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 
-#: src/bsd/bsd_ioports.c:117 src/linux/avr_link.c:77 src/linux/tig_link.c:73
+#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:77 src/linux/tig_link.c:73
 #: src/linux/linux_ioports.c:124
 #, fuzzy, c-format
-msgid "libticables: unable to open this serial port: %s (wrong permissions).\n"
+msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr "Impossible d'ouvrir ce port série: %s\n"
 
-#: src/bsd/bsd_ioports.c:119 src/linux/avr_link.c:79 src/linux/tig_link.c:75
+#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:79 src/linux/tig_link.c:75
 #: src/linux/linux_ioports.c:126
 #, fuzzy, c-format
-msgid "libticables: unable to open this serial port: %s\n"
-msgstr "Impossible d'ouvrir ce port série: %s\n"
+msgid "unable to open this serial port: %s\n"
+msgstr "Impossible d'ouvrir le port série <%s>.\n"
 
 #: src/linux/dev_link.c:81
 #, fuzzy, c-format
-msgid "libticables: unable to open character device: %s.\n"
+msgid "unable to open character device: %s.\n"
 msgstr "Impossible d'ouvrir ce périphérique: <%s>\n"
 
 #: src/linux/dev_link.c:82
-#, c-format
-msgid "libticables: unable to open character device: %s (wrong permissions).\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "unable to open character device: %s (wrong permissions).\n"
+msgstr "Impossible d'ouvrir ce port série: %s\n"
 
 #: src/linux/dev_link.c:83
 #, fuzzy, c-format
-msgid "libticables: unable to open character device: %s\n"
+msgid "unable to open character device: %s\n"
 msgstr "Impossible d'ouvrir ce périphérique: <%s>\n"
 
 #: src/linux/dev_link.c:93 src/linux/dev_link.c:104
-msgid "libticables: failed to set delay.\n"
+msgid "failed to set delay.\n"
 msgstr ""
 
 #: src/linux/dev_link.c:97 src/linux/dev_link.c:108
 #, fuzzy
-msgid "libticables: failed to set timeout.\n"
+msgid "failed to set timeout.\n"
 msgstr "Libticables: réglages actuels...\n"
 
 #: src/linux/slv_link.c:91
@@ -644,174 +771,229 @@ msgid "unable to open this device: %s.\n"
 msgstr "Impossible d'ouvrir ce périphérique: <%s>\n"
 
 #: src/linux/slv_link.c:111
-msgid "libticables: unable to set timeout (ioctl).\n"
-msgstr ""
+#, fuzzy
+msgid "unable to set timeout (ioctl).\n"
+msgstr "Impossible de charger le symbole TiglUsbSetTimeout.\n"
 
 #: src/linux/slv_link.c:122
-msgid "libticables: unable to reset pipes (ioctl).\n"
-msgstr ""
+#, fuzzy
+msgid "unable to reset pipes (ioctl).\n"
+msgstr "Msg: Impossible de fermer les tubes (pipes)."
 
 #. quirk (seems to be due to Cypress components)
 #: src/linux/slv_link.c:192
 #, fuzzy
 msgid ""
-"libticables: weird, read returns without any data; retrying to circumvent "
-"the quirk...\n"
+"weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr "La lecture n'a retourné aucune donnée. Nouvel essai...\n"
 
 #. keep track of the TIGL device
-#: src/linux/slv_link2.c:110
-msgid "libticables: TIGL-USB found.\n"
-msgstr ""
+#: src/linux/slv_link2.c:108
+#, fuzzy
+msgid "TIGL-USB found.\n"
+msgstr "TIGL-USB trouvé avec libusb.\n"
 
-#: src/linux/slv_link2.c:133
+#: src/linux/slv_link2.c:131
 #, fuzzy, c-format
-msgid "libticables: usb_find_busses (%s).\n"
+msgid "usb_find_busses (%s).\n"
 msgstr "usb_find_busses: %s\n"
 
-#: src/linux/slv_link2.c:140
+#: src/linux/slv_link2.c:138
 #, fuzzy, c-format
-msgid "libticables: usb_find_devices (%s).\n"
+msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices: %s\n"
 
-#: src/linux/slv_link2.c:321
+#: src/linux/slv_link2.c:319
 #, fuzzy
 msgid ""
-"libticables: weird, usb_bulk_read returns without any data; retrying for "
-"circumventing the quirk...\n"
+"weird, usb_bulk_read returns without any data; retrying for circumventing "
+"the quirk...\n"
 msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"
 
-#: src/linux/tie_link.c:73
+#: src/linux/tie_link.c:72
 msgid "Invalid io_address parameter passed to libticables.\n"
 msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 
-#: src/linux/tie_link.c:87
+#: src/linux/tie_link.c:86
 #, c-format
 msgid "error: %s\n"
 msgstr "Erreur: %s\n"
 
-#: src/linux/linux_detect.c:95
+#: src/linux/linux_detect.c:61
+#, fuzzy
+msgid "getting OS type:\n"
+msgstr "Détermination du type de système d'exploitation... \r\n"
+
+#: src/linux/linux_detect.c:62
+#, fuzzy, c-format
+msgid "  system name: %s\n"
+msgstr " Nom du système: %s\r\n"
+
+#: src/linux/linux_detect.c:63
+#, fuzzy, c-format
+msgid "  node name: %s\n"
+msgstr " Nom du noeud: %s\r\n"
+
+#: src/linux/linux_detect.c:64
+#, fuzzy, c-format
+msgid "  release: %s\n"
+msgstr " Version du noyau: %s\r\n"
+
+#: src/linux/linux_detect.c:65
+#, fuzzy, c-format
+msgid "  version: %s\n"
+msgstr " Version: %s\r\n"
+
+#: src/linux/linux_detect.c:66
+#, fuzzy, c-format
+msgid "  machine: %s\n"
+msgstr "  Machine: %s\r\n"
+
+#: src/linux/linux_detect.c:94
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
 msgstr ""
 
 #. Do a first/rapid checking with /proc/ioports
-#: src/linux/linux_detect.c:101
-msgid "libticables: quick search for parallel/serial ports...\r\n"
-msgstr ""
+#: src/linux/linux_detect.c:100
+#, fuzzy
+msgid "quick search for parallel/serial ports:\n"
+msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/linux/linux_detect.c:106
+#: src/linux/linux_detect.c:105
 #, fuzzy
 msgid ""
-"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"
+"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
 msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
 "la recherche des ports séries.\r\n"
 
-#: src/linux/linux_detect.c:114
+#: src/linux/linux_detect.c:106 src/linux/linux_detect.c:193
 #, fuzzy
-msgid "Unable to open /proc/ioports.\r\n"
+msgid "Done.\n"
+msgstr "Fait. \r\n"
+
+#: src/linux/linux_detect.c:113
+#, fuzzy
+msgid "Unable to open /proc/ioports.\n"
 msgstr "Msg: Impossible d'ouvrir le port COM."
 
-#: src/linux/linux_detect.c:127
+#: src/linux/linux_detect.c:126
 #, c-format
 msgid "  serial port found at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:129
+#: src/linux/linux_detect.c:128
 #, c-format
 msgid "  parallel port found at 0x%03x\n"
 msgstr ""
 
 #. Do a thorough check
-#: src/linux/linux_detect.c:137
+#: src/linux/linux_detect.c:136
 #, fuzzy
-msgid "libticables: search for all ports...\r\n"
+msgid "search for all ports:\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/linux/linux_detect.c:144
+#: src/linux/linux_detect.c:143
 #, fuzzy
 msgid "Unable to open '/proc/sys/dev/parport/'.\n"
 msgstr "Impossible d'ouvrir ce dossier: '/proc/sys/dev/parport/'.\r\n"
 
-#: src/linux/linux_detect.c:170
-#, c-format
-msgid "unable to open this entry: <%s>\r\n"
+#: src/linux/linux_detect.c:169
+#, fuzzy, c-format
+msgid "unable to open this entry: <%s>\n"
 msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
 
-#: src/linux/linux_detect.c:173
+#: src/linux/linux_detect.c:172
 #, fuzzy, c-format
 msgid "  %s at 0x%03x\n"
 msgstr " %s à l'adresse 0x%03x\r\n"
 
-#: src/linux/linux_detect.c:179
-#, c-format
-msgid "Invalid parport entry: <%s>.\r\n"
+#: src/linux/linux_detect.c:178
+#, fuzzy, c-format
+msgid "Invalid parport entry: <%s>.\n"
 msgstr "Entrée parport non valide: <%s>.\r\n"
 
-#: src/linux/linux_detect.c:185
-msgid "Closedir\r\n"
+#: src/linux/linux_detect.c:184
+#, fuzzy
+msgid "Closedir\n"
 msgstr "Ferme le dossier\r\n"
 
-#: src/linux/linux_detect.c:193
+#: src/linux/linux_detect.c:192
 #, fuzzy
 msgid ""
 "The file '/proc/tty/driver/serial' does not exist or is not accessible. "
-"Unable to probe serial ports.\r\n"
+"Unable to probe serial ports.\n"
 msgstr ""
 "Le fichier '/proc/tty/driver/serial' n'existe pas. Impossible de poursuivre "
 "la recherche des ports séries.\r\n"
 
-#: src/linux/linux_detect.c:201
-#, c-format
-msgid "Unable to open this entry: <%s>\r\n"
+#: src/linux/linux_detect.c:200
+#, fuzzy, c-format
+msgid "Unable to open this entry: <%s>\n"
 msgstr "Impossible d'ouvrir cette entrée: <%s>\r\n"
 
-#: src/linux/linux_detect.c:241
+#: src/linux/linux_detect.c:240
 msgid "ok"
 msgstr "ok"
 
-#: src/linux/linux_detect.c:241
+#: src/linux/linux_detect.c:240
 msgid "nok"
 msgstr "échec"
 
-#: src/linux/linux_detect.c:271
-#, c-format
-msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
+#: src/linux/linux_detect.c:245
+#, fuzzy
+msgid "checking resources:\n"
+msgstr "Libticables: vérification des ressources...\r\n"
+
+#: src/linux/linux_detect.c:252
+msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:278
-#, c-format
-msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
+#: src/linux/linux_detect.c:254
+msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:285
+#: src/linux/linux_detect.c:270
 #, c-format
-msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"
+msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:277
+#, c-format
+msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:284
+#, c-format
+msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:292
+#, c-format
+msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
 msgstr ""
 
 #: src/linux/linux_ioports.c:84
 #, fuzzy
-msgid "libticables: ioctl failed in linux_ioctl_read_io !\n"
+msgid "ioctl failed in linux_ioctl_read_io !\n"
 msgstr "libticables erreur: valeur de port illégale (%i) !\n"
 
 #: src/linux/linux_ioports.c:100
-msgid "libticables: ioctl failed in linux_ioctl_write_io !\n"
-msgstr ""
-
-#: src/linux/linux_mapping.c:59 src/win32/win32_mapping.c:43
 #, fuzzy
-msgid "libticables: getting method from resources"
+msgid "ioctl failed in linux_ioctl_write_io !\n"
+msgstr "libticables erreur: valeur de port illégale (%i) !\n"
+
+#: src/linux/linux_mapping.c:66
+#, fuzzy
+msgid "getting method from resources (automatic):\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
-#: src/linux/linux_mapping.c:66 src/win32/win32_mapping.c:49
-msgid " (automatic)...\n"
-msgstr ""
-
-#: src/linux/linux_mapping.c:68 src/win32/win32_mapping.c:51
-msgid " (user-forced)...\n"
-msgstr ""
+#: src/linux/linux_mapping.c:68
+#, fuzzy
+msgid "getting method from resources (user-forced):\n"
+msgstr "Libticables: vérification des ressources...\r\n"
 
 #: src/linux/linux_mapping.c:76
 msgid "  warning, can't use IO_API\n"
@@ -843,17 +1025,17 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:120
 #, fuzzy
-msgid "libticables: mapping I/O...\n"
+msgid "mapping I/O...\n"
 msgstr "Libticables: vérification des ressources...\r\n"
 
 #. set the link cable
 #: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:195
 #, fuzzy
-msgid "libticables: registering cable...\n"
+msgid "registering cable...\n"
 msgstr "Libticables: réglages actuels...\n"
 
 #: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:278
-msgid "libticables: invalid argument (bad cable)."
+msgid "invalid argument (bad cable)."
 msgstr ""
 
 #: src/linux/linux_mapping.c:507
@@ -877,7 +1059,7 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:545
 #, c-format
-msgid "    permissions/user/group:%s%s %s\r\n"
+msgid "    permissions/user/group:%s%s %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:554
@@ -929,18 +1111,18 @@ msgid "  check for tipar usability:\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:617
-#, c-format
-msgid "      using devfs: %s\r\n"
-msgstr ""
+#, fuzzy, c-format
+msgid "      using devfs: %s\n"
+msgstr "usb_find_devices: %s\n"
 
 #: src/linux/linux_mapping.c:628
 #, fuzzy
-msgid "      module: loaded\r\n"
+msgid "      module: loaded\n"
 msgstr "le module est-il chargé ?\n"
 
 #: src/linux/linux_mapping.c:630
 #, fuzzy
-msgid "      module: not loaded\r\n"
+msgid "      module: not loaded\n"
 msgstr "le module est-il chargé ?\n"
 
 #: src/linux/linux_mapping.c:631 src/linux/linux_mapping.c:695
@@ -957,17 +1139,17 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:649 src/linux/linux_mapping.c:681
 #, fuzzy, c-format
-msgid "    using devfs: %s\r\n"
+msgid "    using devfs: %s\n"
 msgstr "usb_find_devices: %s\n"
 
 #: src/linux/linux_mapping.c:660 src/linux/linux_mapping.c:692
 #, fuzzy
-msgid "    module: loaded\r\n"
+msgid "    module: loaded\n"
 msgstr "le module est-il chargé ?\n"
 
 #: src/linux/linux_mapping.c:662 src/linux/linux_mapping.c:694
 #, fuzzy
-msgid "    module: not loaded\r\n"
+msgid "    module: not loaded\n"
 msgstr "le module est-il chargé ?\n"
 
 #: src/linux/linux_mapping.c:663
@@ -988,7 +1170,7 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:712 src/linux/linux_mapping.c:714
 #, c-format
-msgid "    usb filesystem (/proc/bus/usb): %s\r\n"
+msgid "    usb filesystem (/proc/bus/usb): %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:715
@@ -1001,12 +1183,12 @@ msgid ""
 "    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
 msgstr ""
 
-#: src/win32/slv_link.c:92
+#: src/win32/slv_link.c:90
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
 msgstr ""
 "Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
 
-#: src/win32/slv_link.c:102
+#: src/win32/slv_link.c:100
 #, c-format
 msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
@@ -1016,35 +1198,35 @@ msgstr ""
 "Téléchargez s'il vous plaît la dernière version sur <http://ti-lpg.org/"
 "prj_usb>."
 
-#: src/win32/slv_link.c:112
+#: src/win32/slv_link.c:110
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsb.\n"
 
-#: src/win32/slv_link.c:119
+#: src/win32/slv_link.c:117
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbFlush.\n"
 
-#: src/win32/slv_link.c:126
+#: src/win32/slv_link.c:124
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbRead.\n"
 
-#: src/win32/slv_link.c:133
+#: src/win32/slv_link.c:131
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbWrite.\n"
 
-#: src/win32/slv_link.c:140
+#: src/win32/slv_link.c:138
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbClose.\n"
 
-#: src/win32/slv_link.c:148
+#: src/win32/slv_link.c:146
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbSetTimeout.\n"
 
-#: src/win32/slv_link.c:155
+#: src/win32/slv_link.c:153
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
 
-#: src/win32/tie_link.c:82
+#: src/win32/tie_link.c:81
 msgid "invalid io_address parameter passed to libticables.\n"
 msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 
@@ -1065,60 +1247,167 @@ msgstr "Erreur fatale. Programme terminé.\n"
 msgid "Opened %s\n"
 msgstr "%s a été ouvert\n"
 
-#: src/win32/win32_detect.c:52
+#: src/win32/porttalk.c:58
+msgid ""
+"PortTalk: Failed to get System Directory. Is System Directory Path > 55 "
+"Characters?\n"
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:64
+#, c-format
+msgid "PortTalk: Copying driver to %s\n"
+msgstr ""
+
+#: src/win32/porttalk.c:69
+#, c-format
+msgid "PortTalk: Failed to copy driver to %s\n"
+msgstr ""
+
+#: src/win32/porttalk.c:71
+msgid ""
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:101
+msgid "PortTalk: Driver already exists. No action taken.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:103
+msgid "PortTalk: Unknown error while creating Service.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:105
+msgid "PortTalk: Driver successfully installed.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:128
+msgid ""
+"PortTalk: You do not have rights to access the Service Control Manager and\n"
+"PortTalk: the PortTalk driver is not installed or started. Please ask \n"
+"PortTalk: your administrator to install the driver on your behalf.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:143
+msgid "PortTalk: You do not have rights to the PortTalk service database\n"
+msgstr ""
+
+#: src/win32/porttalk.c:146
+msgid "PortTalk: The specified service name is invalid.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:150
+msgid ""
+"PortTalk: The PortTalk driver does not exist. Installing driver.\n"
+"PortTalk: This can take up to 30 seconds on some machines . .\n"
+msgstr ""
+
+#: src/win32/porttalk.c:164
+msgid "PortTalk: The PortTalk driver has been successfully started.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:168
+msgid "PortTalk: The PortTalk driver is already running.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:170
+msgid ""
+"PortTalk: Unknown error while starting PortTalk driver service.\n"
+"PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
+msgstr ""
+
+#: src/win32/win32_detect.c:43
+#, fuzzy
+msgid "getting OS type...\r\n"
+msgstr "Détermination du type de système d'exploitation... \r\n"
+
+#: src/win32/win32_detect.c:48
 #, fuzzy, c-format
 msgid "  operating System: %s\r\n"
 msgstr " Système d'exploitation: %s\r\n"
 
-#: src/win32/win32_detect.c:55
+#: src/win32/win32_detect.c:51
 #, fuzzy, c-format
-msgid "  version: major=%i, minor=%i\r\n"
-msgstr " Version: majeure=%i, mineure=%i\r\n"
+msgid "  version: %i.%i\r\n"
+msgstr " Version: %s\r\n"
 
-#: src/win32/win32_detect.c:98
+#: src/win32/win32_detect.c:92
 #, c-format
 msgid "  IO_API: %sfound at compile time.\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:105
+#: src/win32/win32_detect.c:99
 msgid "  IO_ASM: available (Win9x).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:107
+#: src/win32/win32_detect.c:101
 msgid "  IO_ASM: not available (WinNT).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:145
+#: src/win32/win32_detect.c:139
 #, c-format
 msgid "  IO_DLL: %s (PortTalk)\r\n"
 msgstr "  IO_DLL: %s (PortTalk)\r\n"
 
-#: src/win32/win32_detect.c:158
+#: src/win32/win32_detect.c:152
 #, fuzzy, c-format
 msgid "  IO_USB: %s (TiglUsb)\r\n"
 msgstr "  IO_TIUSB: %s (TiglUsb)\r\n"
 
-#: src/win32/win32_ioports.c:156
+#: src/win32/win32_ioports.c:155
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 "Impossible d'accéder au pilote PortTalk. Vérifiez s'il vous plaît qu'il est "
 "installé/chargé.\n"
 
-#: src/win32/win32_ioports.c:181
+#: src/win32/win32_ioports.c:180
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr "L'accès à l'adresse 0x%03X (IOPM Offset 0x%02X) a été accordé.\n"
 
-#: src/win32/win32_ioports.c:196
+#: src/win32/win32_ioports.c:195
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d\n"
 
-#: src/win32/win32_ioports.c:273
-#, c-format
-msgid "Libticables: serial port %s successfully reconfigured.\n"
+#: src/win32/win32_ioports.c:272
+#, fuzzy, c-format
+msgid "serial port %s successfully reconfigured.\n"
 msgstr "Libticables: port série %s reconfiguré avec succès.\n"
+
+#: src/win32/win32_mapping.c:43
+#, fuzzy
+msgid "getting method from resources"
+msgstr "Libticables: vérification des ressources...\r\n"
+
+#: src/win32/win32_mapping.c:49
+msgid " (automatic)...\n"
+msgstr ""
+
+#: src/win32/win32_mapping.c:51
+msgid " (user-forced)...\n"
+msgstr ""
+
+#~ msgid "libticables error: unknown cable type !\n"
+#~ msgstr "libticables erreur: type de câble inconnu !\n"
+
+#~ msgid "libticables error: unknown baud rate !\n"
+#~ msgstr "libticables erreur: vitesse de transmission inconnue !\n"
+
+#~ msgid "libticables error: unknown flow type !\n"
+#~ msgstr "libticables erreur: type de flux inconnu !\n"
+
+#~ msgid "libticables error: unknown port !\n"
+#~ msgstr "libticables erreur: port inconnu !\n"
+
+#, fuzzy
+#~ msgid "libticables: unable to open this serial port: %s\n"
+#~ msgstr "Impossible d'ouvrir ce port série: %s\n"
+
+#, fuzzy
+#~ msgid "  version: major=%i, minor=%i\r\n"
+#~ msgstr " Version: majeure=%i, mineure=%i\r\n"
 
 #~ msgid "Function not implemented. This is a bug. Please report it."
 #~ msgstr ""
@@ -1135,12 +1424,6 @@ msgstr "Libticables: port série %s reconfiguré avec succès.\n"
 
 #~ msgid "Exiting...\n"
 #~ msgstr "Sortie...\n"
-
-#~ msgid "Probing parallel ports...\r\n"
-#~ msgstr "Recherche des ports parallèles...\r\n"
-
-#~ msgid "Probing serial ports...\r\n"
-#~ msgstr "Recherche des ports séries...\r\n"
 
 #~ msgid "Probing ports...\r\n"
 #~ msgstr "Recherche des ports...\r\n"
@@ -1197,9 +1480,3 @@ msgstr "Libticables: port série %s reconfiguré avec succès.\n"
 
 #~ msgid "Unable to use IOCTL codes.\n"
 #~ msgstr "Impossible d'utiliser les codes IOCTL.\n"
-
-#~ msgid "TIGL-USB found with libusb.\n"
-#~ msgstr "TIGL-USB trouvé avec libusb.\n"
-
-#~ msgid "unable to open the <%s> serial port.\n"
-#~ msgstr "Impossible d'ouvrir le port série <%s>.\n"

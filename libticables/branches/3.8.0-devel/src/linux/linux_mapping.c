@@ -56,16 +56,16 @@ static int check_for_libusb(void);
 
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	printl(0, _("getting method from resources"));
+        // init warning
 	warning = ERR_NO_ERROR;
 	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV | IOM_IOCTL);
-		printl(0, _(" (automatic)...\n"));
+		printl(0, _("getting method from resources (automatic):\n"));
   	} else
-		printl(0, _(" (user-forced)...\n"));
+		printl(0, _("getting method from resources (user-forced):\n"));
 
 	// depending on link type, do some checks
 	switch(type)
@@ -542,7 +542,7 @@ static int check_for_node_usability(const char *pathname)
 	}
 
 	if(!stat(pathname, &st)) {
-		printl(0, _("    permissions/user/group:%s%s %s\r\n"),
+		printl(0, _("    permissions/user/group:%s%s %s\n"),
                         get_attributes(st.st_mode),
                         get_user_name(st.st_uid),
                         get_group_name(st.st_gid));
@@ -614,7 +614,7 @@ static int check_for_tipar(void)
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	printl(0, _("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("      using devfs: %s\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tipar0");
@@ -625,9 +625,9 @@ static int check_for_tipar(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tipar"))
-		printl(0, _("      module: loaded\r\n"));
+		printl(0, _("      module: loaded\n"));
 	else {
-		printl(0, _("      module: not loaded\r\n"));
+		printl(0, _("      module: not loaded\n"));
 		printl(0, _("    => check the module exists (either as module, either as built-in)\n"));
 		printl(0, _("    => add an entry into your modutils file to automatically load it\n"));
 		
@@ -646,7 +646,7 @@ static int check_for_tiser(void)
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	printl(0, _("    using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("    using devfs: %s\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiser0");
@@ -657,9 +657,9 @@ static int check_for_tiser(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tiser"))
-		printl(0, _("    module: loaded\r\n"));
+		printl(0, _("    module: loaded\n"));
 	else {
-		printl(0, _("    module: not loaded\r\n"));
+		printl(0, _("    module: not loaded\n"));
 		printl(0, _("    => check the module exists (compiled as module)\n"));
 		printl(0, _("    => add an entry into your modutils file to automatically load it.\n"));
 		
@@ -678,7 +678,7 @@ static int check_for_tiusb(void)
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	printl(0, _("    using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("    using devfs: %s\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiusb0");
@@ -689,9 +689,9 @@ static int check_for_tiusb(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tiglusb"))
-		printl(0, _("    module: loaded\r\n"));
+		printl(0, _("    module: loaded\n"));
 	else {
-		printl(0, _("    module: not loaded\r\n"));
+		printl(0, _("    module: not loaded\n"));
 		printl(0, _("    => check the module exists (either as module, either as built-in)\n"));
 		printl(0, _("    => add an entry into your modutils file to automatically load it\n"));
 		
@@ -709,9 +709,9 @@ static int check_for_libusb(void)
 	printl(0, _("  check for lib-usb usability:\n"));
 
 	if(!access(USBFS, F_OK))
-		printl(0, _("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
+		printl(0, _("    usb filesystem (/proc/bus/usb): %s\n"), "mounted");
 	else {
-		printl(0, _("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
+		printl(0, _("    usb filesystem (/proc/bus/usb): %s\n"), "not mounted");
 		printl(0, _("    => the usbfs must be supported by your kernel and you have to mount it\n"));
 		printl(0, _("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"));
 		

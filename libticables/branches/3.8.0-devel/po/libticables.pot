@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-08 22:21+0200\n"
+"POT-Creation-Date: 2004-04-09 22:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -391,72 +391,72 @@ msgid ""
 "."
 msgstr ""
 
-#: src/intrface.c:99
+#: src/intrface.c:98
 #, c-format
-msgid "version %s\n"
+msgid "ticables library version %s\n"
 msgstr ""
 
 #. list built-in compiled options...
-#: src/intrface.c:102
+#: src/intrface.c:109
 #, c-format
 msgid "built for %s target.\n"
 msgstr ""
 
-#: src/intrface.c:342
-msgid "list of settings...\n"
-msgstr ""
-
-#: src/intrface.c:344
-#, c-format
-msgid "  cable: %s\n"
-msgstr ""
-
-#: src/intrface.c:347
-#, c-format
-msgid "  port: %s\n"
-msgstr ""
-
-#: src/intrface.c:349
-#, c-format
-msgid "  method: %s\n"
-msgstr ""
-
-#: src/intrface.c:352
-#, c-format
-msgid "  baud-rate: %i\n"
+#: src/intrface.c:351
+msgid "list of settings:\n"
 msgstr ""
 
 #: src/intrface.c:353
 #, c-format
-msgid "  hardware flow control: %s\n"
+msgid "  cable: %s\n"
 msgstr ""
 
-#: src/intrface.c:354 src/type2str.c:92 src/type2str.c:100 src/type2str.c:167
-#: src/type2str.c:177
-msgid "on"
-msgstr ""
-
-#: src/intrface.c:354 src/type2str.c:94 src/type2str.c:165 src/type2str.c:171
-#: src/type2str.c:179
-msgid "off"
-msgstr ""
-
-#: src/intrface.c:359
+#: src/intrface.c:356
 #, c-format
-msgid "  address: 0x%03x\n"
+msgid "  port: %s\n"
+msgstr ""
+
+#: src/intrface.c:358
+#, c-format
+msgid "  method: %s\n"
 msgstr ""
 
 #: src/intrface.c:361
 #, c-format
+msgid "  baud-rate: %i\n"
+msgstr ""
+
+#: src/intrface.c:362
+#, c-format
+msgid "  hardware flow control: %s\n"
+msgstr ""
+
+#: src/intrface.c:363 src/type2str.c:92 src/type2str.c:100 src/type2str.c:167
+#: src/type2str.c:177
+msgid "on"
+msgstr ""
+
+#: src/intrface.c:363 src/type2str.c:94 src/type2str.c:165 src/type2str.c:171
+#: src/type2str.c:179
+msgid "off"
+msgstr ""
+
+#: src/intrface.c:368
+#, c-format
+msgid "  address: 0x%03x\n"
+msgstr ""
+
+#: src/intrface.c:370
+#, c-format
 msgid "  device name: %s\n"
 msgstr ""
 
-#: src/intrface.c:364
+#: src/intrface.c:373
 #, c-format
 msgid "  timeout value: %i\n"
 msgstr ""
 
-#: src/intrface.c:366
+#: src/intrface.c:375
 #, c-format
 msgid "  delay value: %i\n"
 msgstr ""
@@ -468,6 +468,120 @@ msgstr ""
 #: src/logging.c:82 src/logging.c:88
 #, c-format
 msgid "Unable to open <%s> for logging.\n"
+msgstr ""
+
+#: src/printl.c:47
+#, c-format
+msgid "wrn: "
+msgstr ""
+
+#: src/printl.c:48
+#, c-format
+msgid "err: "
+msgstr ""
+
+#: src/type2str.c:29
+msgid "none"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "GrayLink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "BlackLink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "ParallelLink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "AVRlink"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "virtual"
+msgstr ""
+
+#: src/type2str.c:29
+msgid "TiEMu"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "VTi"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "obsolete"
+msgstr ""
+
+#: src/type2str.c:30
+msgid "SilverLink"
+msgstr ""
+
+#: src/type2str.c:107
+msgid "custom"
+msgstr ""
+
+#: src/type2str.c:107
+msgid "parallel port #1"
+msgstr ""
+
+#: src/type2str.c:107
+msgid "parallel port #2"
+msgstr ""
+
+#: src/type2str.c:107
+msgid "parallel port #3"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #1"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #2"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #3"
+msgstr ""
+
+#: src/type2str.c:108
+msgid "serial port #4"
+msgstr ""
+
+#: src/type2str.c:109
+msgid "virtual port #1"
+msgstr ""
+
+#: src/type2str.c:109
+msgid "virtual port #2"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #1"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #2"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #3"
+msgstr ""
+
+#: src/type2str.c:110
+msgid "USB port #4"
+msgstr ""
+
+#: src/type2str.c:111
+msgid "serial port"
+msgstr ""
+
+#: src/type2str.c:111
+msgid "USB port"
 msgstr ""
 
 #: src/type2str.c:150
@@ -490,106 +604,102 @@ msgstr ""
 msgid "closed"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:59 src/linux/linux_detect.c:61
-#: src/win32/win32_detect.c:43
+#: src/bsd/bsd_detect.c:59
 msgid "Getting OS type...\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:60 src/linux/linux_detect.c:62
+#: src/bsd/bsd_detect.c:60
 #, c-format
 msgid "  System name: %s\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:61 src/linux/linux_detect.c:63
+#: src/bsd/bsd_detect.c:61
 #, c-format
 msgid "  Node name: %s\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:62 src/linux/linux_detect.c:64
+#: src/bsd/bsd_detect.c:62
 #, c-format
 msgid "  Release: %s\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:63 src/linux/linux_detect.c:65
+#: src/bsd/bsd_detect.c:63
 #, c-format
 msgid "  Version: %s\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:64 src/linux/linux_detect.c:66
+#: src/bsd/bsd_detect.c:64
 #, c-format
 msgid "  Machine: %s\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:65 src/linux/linux_detect.c:67
-#: src/linux/linux_detect.c:107 src/linux/linux_detect.c:194
-#: src/win32/win32_detect.c:61
+#: src/bsd/bsd_detect.c:65
 msgid "Done.\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:79 src/linux/linux_detect.c:246
-#: src/win32/win32_detect.c:79
-msgid "libticables: checking resources...\r\n"
+#: src/bsd/bsd_detect.c:79 src/win32/win32_detect.c:78
+msgid "checking resources...\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:86 src/linux/linux_detect.c:253
+#: src/bsd/bsd_detect.c:86
 msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:255
+#: src/bsd/bsd_detect.c:88
 msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:263
+#: src/bsd/bsd_detect.c:96 src/linux/linux_detect.c:262
 #, c-format
 msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
 msgstr ""
 
-#: src/bsd/bsd_detect.c:104 src/linux/linux_detect.c:293
+#: src/bsd/bsd_detect.c:104
 #, c-format
 msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:77
-msgid "libticables: ioctl failed in bsd_ioctl_read_io !\n"
+msgid "ioctl failed in bsd_ioctl_read_io !\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:93
-msgid "libticables: ioctl failed in bsd_ioctl_write_io !\n"
+msgid "ioctl failed in bsd_ioctl_write_io !\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:77 src/linux/tig_link.c:73
 #: src/linux/linux_ioports.c:124
 #, c-format
-msgid "libticables: unable to open this serial port: %s (wrong permissions).\n"
+msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr ""
 
 #: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:79 src/linux/tig_link.c:75
 #: src/linux/linux_ioports.c:126
 #, c-format
-msgid "libticables: unable to open this serial port: %s\n"
+msgid "unable to open this serial port: %s\n"
 msgstr ""
 
 #: src/linux/dev_link.c:81
 #, c-format
-msgid "libticables: unable to open character device: %s.\n"
+msgid "unable to open character device: %s.\n"
 msgstr ""
 
 #: src/linux/dev_link.c:82
 #, c-format
-msgid "libticables: unable to open character device: %s (wrong permissions).\n"
+msgid "unable to open character device: %s (wrong permissions).\n"
 msgstr ""
 
 #: src/linux/dev_link.c:83
 #, c-format
-msgid "libticables: unable to open character device: %s\n"
+msgid "unable to open character device: %s\n"
 msgstr ""
 
 #: src/linux/dev_link.c:93 src/linux/dev_link.c:104
-msgid "libticables: failed to set delay.\n"
+msgid "failed to set delay.\n"
 msgstr ""
 
 #: src/linux/dev_link.c:97 src/linux/dev_link.c:108
-msgid "libticables: failed to set timeout.\n"
+msgid "failed to set timeout.\n"
 msgstr ""
 
 #: src/linux/slv_link.c:91
@@ -598,39 +708,38 @@ msgid "unable to open this device: %s.\n"
 msgstr ""
 
 #: src/linux/slv_link.c:111
-msgid "libticables: unable to set timeout (ioctl).\n"
+msgid "unable to set timeout (ioctl).\n"
 msgstr ""
 
 #: src/linux/slv_link.c:122
-msgid "libticables: unable to reset pipes (ioctl).\n"
+msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
 #: src/linux/slv_link.c:192
 msgid ""
-"libticables: weird, read returns without any data; retrying to circumvent "
-"the quirk...\n"
+"weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""
 
 #. keep track of the TIGL device
 #: src/linux/slv_link2.c:108
-msgid "libticables: TIGL-USB found.\n"
+msgid "TIGL-USB found.\n"
 msgstr ""
 
 #: src/linux/slv_link2.c:131
 #, c-format
-msgid "libticables: usb_find_busses (%s).\n"
+msgid "usb_find_busses (%s).\n"
 msgstr ""
 
 #: src/linux/slv_link2.c:138
 #, c-format
-msgid "libticables: usb_find_devices (%s).\n"
+msgid "usb_find_devices (%s).\n"
 msgstr ""
 
 #: src/linux/slv_link2.c:319
 msgid ""
-"libticables: weird, usb_bulk_read returns without any data; retrying for "
-"circumventing the quirk...\n"
+"weird, usb_bulk_read returns without any data; retrying for circumventing "
+"the quirk...\n"
 msgstr ""
 
 #: src/linux/tie_link.c:72
@@ -642,116 +751,162 @@ msgstr ""
 msgid "error: %s\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:95
+#: src/linux/linux_detect.c:61
+msgid "getting OS type:\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:62
+#, c-format
+msgid "  system name: %s\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:63
+#, c-format
+msgid "  node name: %s\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:64
+#, c-format
+msgid "  release: %s\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:65
+#, c-format
+msgid "  version: %s\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:66
+#, c-format
+msgid "  machine: %s\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:94
 msgid ""
 "The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
 "proc'.\n"
 msgstr ""
 
 #. Do a first/rapid checking with /proc/ioports
-#: src/linux/linux_detect.c:101
-msgid "libticables: quick search for parallel/serial ports...\r\n"
+#: src/linux/linux_detect.c:100
+msgid "quick search for parallel/serial ports:\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:106
+#: src/linux/linux_detect.c:105
 msgid ""
-"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"
+"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:114
-msgid "Unable to open /proc/ioports.\r\n"
+#: src/linux/linux_detect.c:106 src/linux/linux_detect.c:193
+msgid "Done.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:127
+#: src/linux/linux_detect.c:113
+msgid "Unable to open /proc/ioports.\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:126
 #, c-format
 msgid "  serial port found at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:129
+#: src/linux/linux_detect.c:128
 #, c-format
 msgid "  parallel port found at 0x%03x\n"
 msgstr ""
 
 #. Do a thorough check
-#: src/linux/linux_detect.c:137
-msgid "libticables: search for all ports...\r\n"
+#: src/linux/linux_detect.c:136
+msgid "search for all ports:\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:144
+#: src/linux/linux_detect.c:143
 msgid "Unable to open '/proc/sys/dev/parport/'.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:170
+#: src/linux/linux_detect.c:169
 #, c-format
-msgid "unable to open this entry: <%s>\r\n"
+msgid "unable to open this entry: <%s>\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:173
+#: src/linux/linux_detect.c:172
 #, c-format
 msgid "  %s at 0x%03x\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:179
+#: src/linux/linux_detect.c:178
 #, c-format
-msgid "Invalid parport entry: <%s>.\r\n"
+msgid "Invalid parport entry: <%s>.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:185
-msgid "Closedir\r\n"
+#: src/linux/linux_detect.c:184
+msgid "Closedir\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:193
+#: src/linux/linux_detect.c:192
 msgid ""
 "The file '/proc/tty/driver/serial' does not exist or is not accessible. "
-"Unable to probe serial ports.\r\n"
+"Unable to probe serial ports.\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:201
+#: src/linux/linux_detect.c:200
 #, c-format
-msgid "Unable to open this entry: <%s>\r\n"
+msgid "Unable to open this entry: <%s>\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:241
+#: src/linux/linux_detect.c:240
 msgid "ok"
 msgstr ""
 
-#: src/linux/linux_detect.c:241
+#: src/linux/linux_detect.c:240
 msgid "nok"
 msgstr ""
 
-#: src/linux/linux_detect.c:271
-#, c-format
-msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
+#: src/linux/linux_detect.c:245
+msgid "checking resources:\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:278
-#, c-format
-msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"
+#: src/linux/linux_detect.c:252
+msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
 msgstr ""
 
-#: src/linux/linux_detect.c:285
+#: src/linux/linux_detect.c:254
+msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:270
 #, c-format
-msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"
+msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:277
+#, c-format
+msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:284
+#, c-format
+msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
+msgstr ""
+
+#: src/linux/linux_detect.c:292
+#, c-format
+msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
 msgstr ""
 
 #: src/linux/linux_ioports.c:84
-msgid "libticables: ioctl failed in linux_ioctl_read_io !\n"
+msgid "ioctl failed in linux_ioctl_read_io !\n"
 msgstr ""
 
 #: src/linux/linux_ioports.c:100
-msgid "libticables: ioctl failed in linux_ioctl_write_io !\n"
+msgid "ioctl failed in linux_ioctl_write_io !\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:59 src/win32/win32_mapping.c:43
-msgid "libticables: getting method from resources"
+#: src/linux/linux_mapping.c:66
+msgid "getting method from resources (automatic):\n"
 msgstr ""
 
-#: src/linux/linux_mapping.c:66 src/win32/win32_mapping.c:49
-msgid " (automatic)...\n"
-msgstr ""
-
-#: src/linux/linux_mapping.c:68 src/win32/win32_mapping.c:51
-msgid " (user-forced)...\n"
+#: src/linux/linux_mapping.c:68
+msgid "getting method from resources (user-forced):\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:76
@@ -783,16 +938,16 @@ msgid "  warning: can't use IO_LIBUSB\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:197 src/win32/win32_mapping.c:120
-msgid "libticables: mapping I/O...\n"
+msgid "mapping I/O...\n"
 msgstr ""
 
 #. set the link cable
 #: src/linux/linux_mapping.c:300 src/win32/win32_mapping.c:195
-msgid "libticables: registering cable...\n"
+msgid "registering cable...\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:278
-msgid "libticables: invalid argument (bad cable)."
+msgid "invalid argument (bad cable)."
 msgstr ""
 
 #: src/linux/linux_mapping.c:507
@@ -815,7 +970,7 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:545
 #, c-format
-msgid "    permissions/user/group:%s%s %s\r\n"
+msgid "    permissions/user/group:%s%s %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:554
@@ -868,15 +1023,15 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:617
 #, c-format
-msgid "      using devfs: %s\r\n"
+msgid "      using devfs: %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:628
-msgid "      module: loaded\r\n"
+msgid "      module: loaded\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:630
-msgid "      module: not loaded\r\n"
+msgid "      module: not loaded\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:631 src/linux/linux_mapping.c:695
@@ -893,15 +1048,15 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:649 src/linux/linux_mapping.c:681
 #, c-format
-msgid "    using devfs: %s\r\n"
+msgid "    using devfs: %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:660 src/linux/linux_mapping.c:692
-msgid "    module: loaded\r\n"
+msgid "    module: loaded\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:662 src/linux/linux_mapping.c:694
-msgid "    module: not loaded\r\n"
+msgid "    module: not loaded\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:663
@@ -922,7 +1077,7 @@ msgstr ""
 
 #: src/linux/linux_mapping.c:712 src/linux/linux_mapping.c:714
 #, c-format
-msgid "    usb filesystem (/proc/bus/usb): %s\r\n"
+msgid "    usb filesystem (/proc/bus/usb): %s\n"
 msgstr ""
 
 #: src/linux/linux_mapping.c:715
@@ -1064,6 +1219,10 @@ msgid ""
 "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
 msgstr ""
 
+#: src/win32/win32_detect.c:43
+msgid "getting OS type...\r\n"
+msgstr ""
+
 #: src/win32/win32_detect.c:48
 #, c-format
 msgid "  operating System: %s\r\n"
@@ -1074,45 +1233,57 @@ msgstr ""
 msgid "  version: %i.%i\r\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:94
+#: src/win32/win32_detect.c:92
 #, c-format
 msgid "  IO_API: %sfound at compile time.\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:101
+#: src/win32/win32_detect.c:99
 msgid "  IO_ASM: available (Win9x).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:103
+#: src/win32/win32_detect.c:101
 msgid "  IO_ASM: not available (WinNT).\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:141
+#: src/win32/win32_detect.c:139
 #, c-format
 msgid "  IO_DLL: %s (PortTalk)\r\n"
 msgstr ""
 
-#: src/win32/win32_detect.c:154
+#: src/win32/win32_detect.c:152
 #, c-format
 msgid "  IO_USB: %s (TiglUsb)\r\n"
 msgstr ""
 
-#: src/win32/win32_ioports.c:156
+#: src/win32/win32_ioports.c:155
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 
-#: src/win32/win32_ioports.c:181
+#: src/win32/win32_ioports.c:180
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr ""
 
-#: src/win32/win32_ioports.c:196
+#: src/win32/win32_ioports.c:195
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr ""
 
-#: src/win32/win32_ioports.c:273
+#: src/win32/win32_ioports.c:272
 #, c-format
-msgid "Libticables: serial port %s successfully reconfigured.\n"
+msgid "serial port %s successfully reconfigured.\n"
+msgstr ""
+
+#: src/win32/win32_mapping.c:43
+msgid "getting method from resources"
+msgstr ""
+
+#: src/win32/win32_mapping.c:49
+msgid " (automatic)...\n"
+msgstr ""
+
+#: src/win32/win32_mapping.c:51
+msgid " (user-forced)...\n"
 msgstr ""

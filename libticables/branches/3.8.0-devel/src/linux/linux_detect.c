@@ -58,13 +58,12 @@ int linux_detect_os(char **os_type)
 	struct utsname buf;
 
 	uname(&buf);
-  	printl(0, _("Getting OS type...\r\n"));
-  	printl(0, _("  System name: %s\r\n"), buf.sysname);
-  	printl(0, _("  Node name: %s\r\n"), buf.nodename);
-  	printl(0, _("  Release: %s\r\n"), buf.release);
-  	printl(0, _("  Version: %s\r\n"), buf.version);
-  	printl(0, _("  Machine: %s\r\n"), buf.machine);
-	printl(0, _("Done.\r\n"));
+  	printl(0, _("getting OS type:\n"));
+  	printl(0, _("  system name: %s\n"), buf.sysname);
+  	printl(0, _("  node name: %s\n"), buf.nodename);
+  	printl(0, _("  release: %s\n"), buf.release);
+  	printl(0, _("  version: %s\n"), buf.version);
+  	printl(0, _("  machine: %s\n"), buf.machine);
 #endif
 	*os_type = OS_LINUX;
 
@@ -98,20 +97,20 @@ int linux_detect_port(TicablePortInfo * pi)
 
 	/* Do a first/rapid checking with /proc/ioports */
 	
-	printl(0, _("quick search for parallel/serial ports...\r\n"));
+	printl(0, _("quick search for parallel/serial ports:\n"));
 	
 	// check for existence
 	fd = access("/proc/ioports", F_OK);
 	if (fd < 0) {
-		printl(2, _("The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\r\n"));
-		printl(0, _("Done.\r\n"));
+		printl(2, _("The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"));
+		printl(0, _("Done.\n"));
 		return -1;
 	}
 	
 	// open file
 	f = fopen("/proc/ioports", "rt");
 	if (f == NULL) {
-		printl(2, _("Unable to open /proc/ioports.\r\n"));
+		printl(2, _("Unable to open /proc/ioports.\n"));
 		return -1;
 	}
 
@@ -134,7 +133,7 @@ int linux_detect_port(TicablePortInfo * pi)
 
 	/* Do a thorough check */
 
-	printl(0, _("search for all ports...\r\n"));
+	printl(0, _("search for all ports:\n"));
 
 	/* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
 	   to get infos on parallel ports */
@@ -167,7 +166,7 @@ int linux_detect_port(TicablePortInfo * pi)
 				sprintf(pi->lpt_name[i], "/dev/parport%i", i);
 				f = fopen(path, "rt");
 				if (f == NULL) {
-					printl(2, _("unable to open this entry: <%s>\r\n"), path);
+					printl(2, _("unable to open this entry: <%s>\n"), path);
 				} else {
 					fscanf(f, "%i", &(pi->lpt_addr[i]));
 					printl(0, _("  %s at 0x%03x\n"),
@@ -176,13 +175,13 @@ int linux_detect_port(TicablePortInfo * pi)
 					fclose(f);
 				}
 			} else {
-				printl(2, _("Invalid parport entry: <%s>.\r\n"), file->d_name);
+				printl(2, _("Invalid parport entry: <%s>.\n"), file->d_name);
 			}
 		}
 	}
 	
 	if (closedir(dir) == -1) {
-		printl(2, _("Closedir\r\n"));
+		printl(2, _("Closedir\n"));
 	}
 	
 	/* Use '/var/log/dmesg' to get infos on serial ports */
@@ -190,15 +189,15 @@ int linux_detect_port(TicablePortInfo * pi)
 	// test for file access
 	fd = access("/var/log/dmesg", F_OK);
 	if (fd < 0) {
-		printl(2, _("The file '/proc/tty/driver/serial' does not exist or is not accessible. Unable to probe serial ports.\r\n"));
-		printl(0, _("Done.\r\n"));
+		printl(2, _("The file '/proc/tty/driver/serial' does not exist or is not accessible. Unable to probe serial ports.\n"));
+		printl(0, _("Done.\n"));
 		return -1;
 	}
 
 	// open it
 	f = fopen("/var/log/dmesg", "rt");
 	if (f == NULL) {
-		printl(2, _("Unable to open this entry: <%s>\r\n"),
+		printl(2, _("Unable to open this entry: <%s>\n"),
 			      "/var/log/dmesg");
 		return -1;
 	}
@@ -220,7 +219,7 @@ int linux_detect_port(TicablePortInfo * pi)
 
 			sprintf(pi->com_name[i], "/dev/ttyS%i", i);
 			(pi->com_addr)[i] = sa;
-			printl(0, "  /dev/ttyS%i at 0x%03X\r\n", 
+			printl(0, "  /dev/ttyS%i at 0x%03X\n", 
 				i, pi->com_addr[i]);
 		}
 	}
@@ -243,16 +242,16 @@ char *result(int i)
 
 int linux_detect_resources(void)
 {
-	printl(0, _("checking resources...\r\n"));
+	printl(0, _("checking resources:\n"));
 	resources = IO_LINUX;
 
 	/* API: for use with ttySx */
 
 #if defined(HAVE_TERMIOS_H)
   	resources |= IO_API;
-  	printl(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
+  	printl(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\n"));
 #else
-	printl(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
+	printl(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"));
 #endif
 
 	/* ASM: for use with low-level I/O */
@@ -268,21 +267,21 @@ int linux_detect_resources(void)
 #ifdef HAVE_LINUX_TICABLE_H
         resources |= IO_TIPAR;
 #endif
-        printl(0, _("  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"), resources & IO_TIPAR ? "" : "not ");
+        printl(0, _("  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"), resources & IO_TIPAR ? "" : "not ");
 	
 	/* TISER: tiser kernel module */
 
 #ifdef HAVE_LINUX_TICABLE_H
 	resources |= IO_TISER;
 #endif
-        printl(0, _("  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\r\n"), resources & IO_TISER ? "" : "not ");
+        printl(0, _("  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"), resources & IO_TISER ? "" : "not ");
 	
 	/* TIGLUSB: tiglusb kernel module */ 
 	
 #ifdef HAVE_LINUX_TIGLUSB_H
 	resources |= IO_TIUSB;
 #endif
-	printl(0, _("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"),
+	printl(0, _("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"),
 		resources & IO_TIUSB ? "" : "not ");
 
 	/* LIBUSB: lib-usb userland module */
@@ -290,7 +289,7 @@ int linux_detect_resources(void)
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	printl(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
+	printl(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"),
 		resources & IO_LIBUSB ? "" : "not ");
 
   	return 0;

@@ -67,7 +67,8 @@ TicablePortInfo pi;	     // I/O ports detected
 /* Entry points */
 /****************/
 
-static int ticables_instance = 0;	// counts # of instances
+// not static, must be shared between instances
+int ticables_instance = 0;	// counts # of instances
 
 /*
 	This function should be the first one to call.
@@ -347,7 +348,7 @@ extern TicableLinkCable *tcl;
 
 static void print_settings(void)
 {
-  	printl(0, _("list of settings...\n"));
+  	printl(0, _("list of settings:\n"));
   	
   	printl(0, _("  cable: %s\n"), 
 		ticable_cabletype_to_string(cable_type));
