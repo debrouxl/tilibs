@@ -1,0 +1,13 @@
+[Main]
+Name=TicalcShellType
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcShellType
+
+[Fields]
+SHELL_NONE : no shell
+SHELL_USGARD : UsGard shell
+SHELL_ZSHELL : ZShell shell
+
+[Summary]
+Defines which shell to use with ROM dumping (Ti8x only).

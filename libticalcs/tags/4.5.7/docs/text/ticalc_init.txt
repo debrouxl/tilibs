@@ -1,0 +1,19 @@
+[Main]
+Name=ticalc_init
+Type=Function
+Header=calc_int.h
+Definition=int ticalc_init (void);
+
+[Parameters]
+Return value : always 0.
+
+[Summary]
+Initialize the ticalcs library.
+
+[Description]
+This function must be the first function to call from this library prior to any other. Usually, this is done at your program startup.
+
+What does it do ? It display library version, initialize i18n system.
+
+[See also]
+@ticalc_exit@

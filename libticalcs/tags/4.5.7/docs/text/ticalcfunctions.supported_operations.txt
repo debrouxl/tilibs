@@ -1,0 +1,17 @@
+[Main]
+Name=supported_operations
+Type=Function
+Header=calc_int.h
+Definition=int (*supported_operations) (void);
+
+[Parameters]
+Returns : a mask made up of @TicalcOperations@ flags
+
+[Summary]
+Used to retrieve which operations are supported by the current calculator.
+
+[Description]
+This function returns which operations the current calculator supports. The value can contain one or more TicalcOperations flags.
+
+[See also]
+@TicalcOperations@

@@ -1,0 +1,20 @@
+[Main]
+Name=ticalc_flash_isready
+Type=Function
+Header=calc_int.h
+Definition=int ticalc_flash_isready (@TifileCalcType@ *calc_type)
+
+[Parameters]
+calc_type : the calculator type is returned here
+Returns : 0 if successful, an error code otherwise
+
+[Summary]
+This function detects which calculator model is plugged and check whether it's ready.
+
+[Description]
+This function is better than @ticalc_detect_calc@ because it uses official commands.
+But, this worksonly with FLASH calculators, that is to say TI73, 83+, 89, 92+.
+Unfortunately, the V200PLT has the same IDs than the TI92+. Thus, there is no way to dinstinguish them.
+
+[See also]
+@ticalc_detect_calc@

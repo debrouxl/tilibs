@@ -1,0 +1,44 @@
+[Main]
+Name=TicalcFncts
+Type=Structure
+Header=calc_def.h
+Definition=struct TicalcFncts
+
+[Fields]
+int (*@ticalcfunctions.supported_operations@) (void) : the operations supported by the current calc model
+
+int is_silent : set to non-0 if calculator has silent link capabilities
+int has_folder : set to non-0 if directory list can contain folders
+@TicalcMemoryType@ memory : tells wether ticalcfncts.directorylist returns memory used or free
+
+int (*@ticalcfunctions.isready@)         (void) : chech whether calc is ready
+
+int (*@ticalcfunctions.send_key@)        (@uint16_t@ key) : send a TI scan code
+int (*@ticalcfunctions.screendump@)      (@uint8_t@ **bitmap, int mode, @TicalcScreenSize@ *sc) : dump the calculator screen
+int (*@ticalcfunctions.directorylist@)   (@TNode@ **tree, @uint32_t@ *memory) : do directory listing
+  
+int (*@ticalcfunctions.recv_backup@)     (const char *filename, int mode) : receive a backup
+int (*@ticalcfunctions.send_backup@)     (const char *filename, int mode) : send a backup
+  
+int (*@ticalcfunctions.recv_var@)        (      char *filename, int mode, TiVarEntry *ve) : receive one or more variables
+int (*@ticalcfunctions.send_var@)        (const char *filename, int mode, char **actions) : send one or more variables
+  
+int (*@ticalcfunctions.send_flash@)      (const char *filename, int mode) : send one FLASH application
+int (*@ticalcfunctions.recv_flash@)      (const char *filename, int mask_mode, TiVarEntry *ve) : receive a FLASH application
+int (*@ticalcfunctions.get_idlist@)      (char *idlist) : retrieve the calculator ID list
+
+int (*@ticalcfunctions.dump_rom@)        (const char *filename, int mode) : dump the ROM of the calculator
+
+int (*@ticalcfunctions.set_clock@)       (const @TicalcClock@ *clock, int mode) : set clock
+int (*@ticalcfunctions.get_clock@)       (      @TicalcClock@ *clock, int mode) : retrieve clock
+
+[Summary]
+Structure used to handle a calculator trough a set of abstract functions.
+
+[Description]
+This structure provides a set of functions (function pointers) to access a 
+calculator independantly of the model.
+
+Before using this structure, you must set a calculator model properly.
+
+[See also]
