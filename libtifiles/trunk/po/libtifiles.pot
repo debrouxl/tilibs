@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-13 22:30+0200\n"
+"POT-Creation-Date: 2004-04-17 12:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -281,7 +281,7 @@ msgid "Backup"
 msgstr ""
 
 #: src/types73.c:80 src/types83p.c:75 src/types89.c:83 src/types92p.c:83
-#: src/typesv2.c:82 src/typesxx.c:925
+#: src/typesv2.c:82 src/typesxx.c:959
 msgid "OS upgrade"
 msgstr ""
 
@@ -421,11 +421,11 @@ msgid ""
 "Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
 msgstr ""
 
-#: src/typesxx.c:935
+#: src/typesxx.c:969
 msgid "Group/Backup"
 msgstr ""
 
-#: src/typesxx.c:937
+#: src/typesxx.c:971
 msgid "Group"
 msgstr ""
 

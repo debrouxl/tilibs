@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tifiles\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-10 17:30+0200\n"
+"POT-Creation-Date: 2004-04-17 12:53+0200\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -73,7 +73,8 @@ msgstr "Msg : erreur de somme de contrôle (checksum)."
 
 #: src/error.c:83
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
-msgstr "Cause : le fichier a une somme de contrôle incorrecte et peut être corrompu."
+msgstr ""
+"Cause : le fichier a une somme de contrôle incorrecte et peut être corrompu."
 
 #: src/error.c:87
 msgid ""
@@ -128,7 +129,9 @@ msgstr "err : "
 
 #: src/trans.c:846
 msgid "libtifiles error: unknown calc type. Program halted before crashing !\n"
-msgstr "erreur dans libtifiles : type de calculatrice inconnu. Le programme s'est arrêté anormalement.\n"
+msgstr ""
+"erreur dans libtifiles : type de calculatrice inconnu. Le programme s'est "
+"arrêté anormalement.\n"
 
 #: src/types73.c:45 src/types82.c:40 src/types83.c:40 src/types83p.c:40
 #: src/types85.c:40 src/types86.c:40
@@ -287,7 +290,7 @@ msgid "Backup"
 msgstr "Sauvegarde"
 
 #: src/types73.c:80 src/types83p.c:75 src/types89.c:83 src/types92p.c:83
-#: src/typesv2.c:82 src/typesxx.c:924
+#: src/typesv2.c:82 src/typesxx.c:959
 msgid "OS upgrade"
 msgstr "MAJ OS"
 
@@ -421,18 +424,19 @@ msgstr "Prog Asm"
 msgid "unknown type. There is a bug. Please report this information.\n"
 msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler.\n"
 
-#: src/typesxx.c:74
+#: src/typesxx.c:75
 #, c-format
-msgid "Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
+msgid ""
+"Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
 msgstr ""
 "Erreur fatale dans \"%s\" : type de calculatrice inconnu. Le programme s'est "
 "terminé anormalement...\n"
 
-#: src/typesxx.c:934
+#: src/typesxx.c:969
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/typesxx.c:936
+#: src/typesxx.c:971
 msgid "Group"
 msgstr "Groupe"
 
@@ -471,4 +475,3 @@ msgstr "flash"
 #: src/type2str.c:105
 msgid "unknown"
 msgstr "inconnu"
-

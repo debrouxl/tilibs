@@ -351,7 +351,6 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
   int tib = 0;
   FILE *f;
   int j;
-  char buf[128];
   Ti9xFlash *content = head;
   char signature[9];
 

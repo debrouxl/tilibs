@@ -863,7 +863,6 @@ TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename)
 */
 TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename)
 {
-	int i;
 	char *e = tifiles_get_extension(filename);
 
 	if (!tifiles_is_a_ti_file(filename))
@@ -872,7 +871,8 @@ TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename)
 	if(!strcasecmp(e, "tib"))
 		return !0;
 
-	// no need to do more test, TIB signature has already been checked by is_a_ti_file
+	// no need to do more test, TIB signature has already been checked 
+	// by is_a_ti_file()
 
 	return 0;
 }
