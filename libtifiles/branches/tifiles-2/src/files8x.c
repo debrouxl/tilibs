@@ -35,7 +35,7 @@
 #include "tifiles.h"
 #include "error.h"
 #include "typesxx.h"
-#include "filesxx.h"
+#include "files8x.h"
 #include "rwfile.h"
 #include "intelhex.h"
 #include "transcode.h"
@@ -207,9 +207,9 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
   uint8_t test_space;
   char signature[9];
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_regular_file(filename))
+  if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -288,7 +288,7 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
     if (is_ti8586(content->calc_type))
       fread_byte(f, &name_length);
     fread_n_chars(f, name_length, entry->name);
-    tixx_translate_varname(content->calc_type, entry->trans, entry->name, 
+    tifiles_transcode_varname(content->calc_type, entry->trans, entry->name, 
 			   entry->type);
     if (is_ti8586(content->calc_type)) {
       /* Again, compatibility with padded and unpadded files */
@@ -333,9 +333,9 @@ TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
   FILE *f;
   char signature[9];
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_backup_file(filename))
+  if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -426,13 +426,13 @@ TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
   uint8_t buf[256];
   char signature[9];
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return ERR_INVALID_FILE;
 
-  if (!tifiles_is_flash_file(filename))
+  if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;
 
-  content->calc_type = tifiles_type_get_calc(filename);
+  content->calc_type = tifiles_file_get_model(filename);
   f = fopen(filename, "rb");
   if (f == NULL) {
     tifiles_info("Unable to open this file: <%s>\n", filename);
@@ -546,13 +546,13 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     if (filename == NULL)
       return ERR_MALLOC;
   } else {
-    tixx_translate_varname(content->calc_type, trans, content->entries[0].name, 
+    tifiles_transcode_varname(content->calc_type, trans, content->entries[0].name, 
 			   content->entries[0].type );
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2file(content->entries[0].type));
+    strcat(filename, tifiles_vartype2type(tifiles_calc_type, content->entries[0].type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -790,13 +790,13 @@ TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) {
     tifiles_info("Entry #%i\n", i);
     tifiles_info("  name:        <%s>\n",
-	    tixx_translate_varname(content->calc_type, trans,
+	    tifiles_transcode_varname(content->calc_type, trans,
 					content->entries[i].name,				   
 				   content->entries[i].type
 				   ));
     tifiles_info("  type:        %02X (%s)\n",
 	    content->entries[i].type,
-	    tifiles_vartype2string(content->entries[i].type));
+	    tifiles_vartype2string(tifiles_calc_type, content->entries[i].type));
     tifiles_info("  attr:        %s\n",
 	    tifiles_attribute_to_string(content->entries[i].attr));
     tifiles_info("  length:      %04X (%i)\n",
@@ -820,7 +820,7 @@ TIEXPORT int TICALL ti8x_display_backup_content(Ti8xBackup * content)
 	  tifiles_calctype2signature(content->calc_type));
   tifiles_info("Comment:        <%s>\n", content->comment);
   tifiles_info("Type:           %02X (%s)\n", content->type,
-	  tifiles_vartype2string(content->type));
+	  tifiles_vartype2string(tifiles_calc_type, content->type));
   tifiles_info("Mem address:    %04X (%i)\n",
 	  content->mem_address, content->mem_address);
 
@@ -897,15 +897,15 @@ TIEXPORT int TICALL ti8x_display_file(const char *filename)
   Ti8xBackup content2;
   Ti8xFlash content3;
 
-  if (tifiles_is_flash_file(filename)) {
+  if (tifiles_file_is_flash(filename)) {
     ti8x_read_flash_file(filename, &content3);
     ti8x_display_flash_content(&content3);
     ti8x_free_flash_content(&content3);
-  } else if (tifiles_is_backup_file(filename)) {
+  } else if (tifiles_file_is_backup(filename)) {
     ti8x_read_backup_file(filename, &content2);
     ti8x_display_backup_content(&content2);
     ti8x_free_backup_content(&content2);
-  } else if (tifiles_is_regular_file(filename)) {
+  } else if (tifiles_file_is_regular(filename)) {
     ti8x_read_regular_file(filename, &content1);
     ti8x_display_regular_content(&content1);
     ti8x_free_regular_content(&content1);

@@ -140,10 +140,6 @@ SOURCE=..\..\src\types92p.c
 
 SOURCE=..\..\src\typesv2.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\typesXX.c
-# End Source File
 # End Group
 # Begin Group "Headers"
 
@@ -168,36 +164,24 @@ SOURCE=..\..\src\files9X.c
 
 SOURCE=..\..\src\filesxx.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\grouped.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\intelhex.c
-# End Source File
 # End Group
 # Begin Group "Others"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\filetypes.c
+SOURCE=..\..\src\intelhex.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc.c
+SOURCE=..\..\src\logging.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\rwfile.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\transcode.c
-# End Source File
 # End Group
-# Begin Group "Interface"
+# Begin Group "API"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -206,7 +190,15 @@ SOURCE=..\..\src\error.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\logging.c
+SOURCE=..\..\src\filetypes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\grouped.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc.c
 # End Source File
 # Begin Source File
 
@@ -214,7 +206,15 @@ SOURCE=..\..\src\tifiles.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\transcode.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\type2str.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\typesXX.c
 # End Source File
 # End Group
 # Begin Source File

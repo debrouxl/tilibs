@@ -25,6 +25,7 @@
 #include "logging.h"
 #include "error.h"
 #include "rwfile.h"
+#include "typesxx.h"
 
 /****************/
 /* Global types */
@@ -65,14 +66,14 @@ static const char FLASH_OS_FILE_EXT[NCALCS + 1][4] =
 /*******************/
 
 /**
- * tifiles_group_file_ext:
+ * tifiles_fext_of_group:
  * @model: a calculator model.
  *
  * Returns file extension of a group file.
  *
  * Return value: a file extenstion as string (like "83g").
  **/
-TIEXPORT const char *TICALL tifiles_group_file_ext(TiCalcType model)
+TIEXPORT const char *TICALL tifiles_fext_of_group (TiCalcModel model)
 {
   switch (model) 
   {
@@ -101,7 +102,7 @@ TIEXPORT const char *TICALL tifiles_group_file_ext(TiCalcType model)
   case CALC_V200:
     return "v2g";
   default:
-    tifiles_error("tifiles_group_file_ext: invalid calc_type argument.");
+    tifiles_error("tifiles_fext_of_group: invalid calc_type argument.");
     break;
   }
 
@@ -109,14 +110,14 @@ TIEXPORT const char *TICALL tifiles_group_file_ext(TiCalcType model)
 }
 
 /**
- * tifiles_backup_file_ext:
+ * tifiles_fext_of_backup:
  * @model: a calculator model.
  *
  * Returns file extension of a backup file.
  *
  * Return value: a file extenstion as string (like "83b").
  **/
-TIEXPORT const char *TICALL tifiles_backup_file_ext(TiCalcType model)
+TIEXPORT const char *TICALL tifiles_fext_of_backup (TiCalcModel model)
 {
   switch (model) 
   {
@@ -145,7 +146,7 @@ TIEXPORT const char *TICALL tifiles_backup_file_ext(TiCalcType model)
   case CALC_V200:
     return "v2g";
   default:
-    tifiles_error("tifiles_backup_file_ext: invalid calc_type argument.");
+    tifiles_error("tifiles_fext_of_backup: invalid calc_type argument.");
     break;
   }
 
@@ -153,14 +154,14 @@ TIEXPORT const char *TICALL tifiles_backup_file_ext(TiCalcType model)
 }
 
 /**
- * tifiles_flash_app_file_ext:
+ * tifiles_fext_of_flash_app:
  * @model: a calculator model.
  *
  * Returns file extension of a FLASH application file.
  *
  * Return value: a file extenstion as string (like "89k").
  **/
-TIEXPORT const char *TICALL tifiles_flash_app_file_ext(TiCalcType model)
+TIEXPORT const char *TICALL tifiles_fext_of_flash_app (TiCalcModel model)
 {
   switch (model) 
   {
@@ -189,7 +190,7 @@ TIEXPORT const char *TICALL tifiles_flash_app_file_ext(TiCalcType model)
   case CALC_V200:
     return "v2k";
   default:
-    tifiles_error("tifiles_flash_app_file_ext: invalid calc_type argument.");
+    tifiles_error("tifiles_fext_of_flash_app: invalid calc_type argument.");
     break;
   }
 
@@ -197,14 +198,14 @@ TIEXPORT const char *TICALL tifiles_flash_app_file_ext(TiCalcType model)
 }
 
 /**
- * tifiles_flash_os_file_ext:
+ * tifiles_fext_of_flash_os:
  * @model: a calculator model.
  *
  * Returns file extension of a FLASH Operating System file.
  *
  * Return value: a file extenstion as string (like "89u").
  **/
-TIEXPORT const char *TICALL tifiles_flash_os_file_ext(TiCalcType model)
+TIEXPORT const char *TICALL tifiles_fext_of_flash_os(TiCalcModel model)
 {
   switch (model) 
   {
@@ -233,7 +234,7 @@ TIEXPORT const char *TICALL tifiles_flash_os_file_ext(TiCalcType model)
   case CALC_V200:
     return "v2u";
   default:
-    tifiles_error("tifiles_flash_os_file_ext: invalid calc_type argument.");
+    tifiles_error("tifiles_fext_of_flash_os: invalid calc_type argument.");
     break;
   }
 
@@ -359,12 +360,12 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
  **/
 TIEXPORT int TICALL tifiles_file_is_single(const char *filename)
 {
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return 0;
 
-  if (tifiles_is_group_file(filename) ||
-      tifiles_is_backup_file(filename) ||
-      tifiles_is_flash_file(filename))
+  if (tifiles_file_is_group(filename) ||
+      tifiles_file_is_backup(filename) ||
+      tifiles_file_is_flash(filename))
     return 0;
   else
     return !0;
@@ -386,7 +387,7 @@ TIEXPORT int TICALL tifiles_file_is_group(const char *filename)
   if (e == NULL)
     return 0;
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return 0;
 
   for (i = 1; i < NCALCS + 1; i++) 
@@ -408,11 +409,11 @@ TIEXPORT int TICALL tifiles_file_is_group(const char *filename)
  **/
 TIEXPORT int TICALL tifiles_file_is_regular(const char *filename)
 {
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return 0;
 
-  return (tifiles_is_single_file(filename) ||
-	  tifiles_is_group_file(filename));
+  return (tifiles_file_is_single(filename) ||
+	  tifiles_file_is_group(filename));
 }
 
 /**
@@ -431,7 +432,7 @@ TIEXPORT int TICALL tifiles_file_is_backup(const char *filename)
   if (e == NULL)
     return 0;
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return 0;
 
   for (i = 1; i < NCALCS + 1; i++) 
@@ -459,7 +460,7 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
   if (e == NULL)
     return 0;
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return 0;
 
   for (i = 1; i < NCALCS + 1; i++) 
@@ -487,7 +488,7 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 	if (e == NULL)
 	  return 0;
 
-	if (!tifiles_is_ti_file(filename))
+	if (!tifiles_file_is_ti(filename))
 		return 0;
 
 	if(!g_ascii_strcasecmp(e, "tib"))
@@ -561,13 +562,13 @@ TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename)
  **/
 TIEXPORT TiFileClass TICALL tifiles_file_get_class(const char *filename)
 {
-  if (tifiles_is_single_file(filename))
+  if (tifiles_file_is_single(filename))
     return TIFILE_SINGLE;
-  else if (tifiles_is_group_file(filename))
+  else if (tifiles_file_is_group(filename))
     return TIFILE_GROUP;
-  else if (tifiles_is_backup_file(filename))
+  else if (tifiles_file_is_backup(filename))
     return TIFILE_BACKUP;
-  else if (tifiles_is_flash_file(filename))
+  else if (tifiles_file_is_flash(filename))
     return TIFILE_FLASH;
   else
     return 0;
@@ -592,12 +593,12 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
   if (!g_ascii_strcasecmp(ext, "tib"))
     return _("OS upgrade");
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return "";
 
-  if (tifiles_is_group_file(filename)) 
+  if (tifiles_file_is_group(filename)) 
   {
-    switch (tifiles_which_calc_type(filename)) 
+    switch (tifiles_file_get_model(filename)) 
 	{
     case CALC_TI89:
 	case CALC_TI89T:
@@ -609,7 +610,7 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
     }
   }
 
-  switch (tifiles_which_calc_type(filename)) 
+  switch (tifiles_file_get_model(filename)) 
   {
   case CALC_TI73:
     return ti73_byte2desc(ti73_fext2byte(ext));
@@ -661,12 +662,12 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
   if (!g_ascii_strcasecmp(ext, "tib"))
     return "OS upgrade";
 
-  if (!tifiles_is_ti_file(filename))
+  if (!tifiles_file_is_ti(filename))
     return "";
 
-  if (tifiles_is_group_file(filename)) 
+  if (tifiles_file_is_group(filename)) 
   {
-    switch (tifiles_which_calc_type(filename)) 
+    switch (tifiles_file_get_model(filename)) 
 	{
     case CALC_TI89:
 	case CALC_TI89T:
@@ -678,7 +679,7 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
     }
   }
 
-  switch (tifiles_which_calc_type(filename)) 
+  switch (tifiles_file_get_model(filename)) 
   {
   case CALC_TI73:
     return ti73_byte2icon(ti73_fext2byte(ext));

@@ -38,9 +38,9 @@ int tifiles_instance = 0;	// counts # of instances
 /**
  * tifiles_library_init:
  *
- * This function must be the first one to call. It inits library stuffs.
+ * This function must be the first one to call. It inits library internals.
  *
- * Return value: handle count.
+ * Return value: the handle count.
  **/
 TIEXPORT int TICALL tifiles_library_init()
 {
@@ -80,9 +80,9 @@ TIEXPORT int TICALL tifiles_library_init()
 /**
  * tifiles_library_exit:
  *
- * This function must be the last one to call. Used to release resources.
+ * This function must be the last one to call. Used to release internal resources.
  *
- * Return value: handle count.
+ * Return value: the handle count.
  **/
 TIEXPORT int TICALL tifiles_library_exit()
 {
@@ -104,6 +104,10 @@ TIEXPORT const char *TICALL tifiles_version_get(void)
 {
 	return LIBTIFILES_VERSION;
 }
+
+/**********/
+/* Others */
+/**********/
 
 #ifdef __WIN32__
 TIEXPORT void *TICALL tifiles_calloc(size_t nmemb, size_t size)

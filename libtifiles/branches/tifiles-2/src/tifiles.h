@@ -150,80 +150,80 @@ extern "C" {
   /*********************/
 
   // tifiles.c
-  TIEXPORT const char* TICALL tifiles_version_get(void);
+  TIEXPORT const char* TICALL tifiles_version_get (void);
 
   // error.c
-  TIEXPORT int         TICALL tifiles_error_get(int number, char **message);
+  TIEXPORT int         TICALL tifiles_error_get (int number, char **message);
 
   // type2str.c
-  TIEXPORT const char* TICALL tifiles_model_to_string(TiCalcModel type);
-  TIEXPORT TiCalcModel TICALL tifiles_string_to_model(const char *str);
+  TIEXPORT const char* TICALL tifiles_model_to_string (TiCalcModel type);
+  TIEXPORT TiCalcModel TICALL tifiles_string_to_model (const char *str);
   
-  TIEXPORT const char* TICALL tifiles_attribute_to_string(TiFileAttr atrb);
-  TIEXPORT TiFileAttr  TICALL tifiles_string_to_attribute(const char *str);
+  TIEXPORT const char* TICALL tifiles_attribute_to_string (TiFileAttr atrb);
+  TIEXPORT TiFileAttr  TICALL tifiles_string_to_attribute (const char *str);
   
-  TIEXPORT const char* TICALL tifiles_class_to_string(TiFileClass type);
-  TIEXPORT TiFileClass TICALL tifiles_string_to_class(const char *str);
+  TIEXPORT const char* TICALL tifiles_class_to_string (TiFileClass type);
+  TIEXPORT TiFileClass TICALL tifiles_string_to_class (const char *str);
 
   // transcode.c
-  TIEXPORT char* TICALL tifiles_transcode_detokenize(TiCalcModel model, const char *src, char *dst, uint8_t vartype);
+  TIEXPORT char* TICALL tifiles_transcode_detokenize (TiCalcModel model, const char *src, char *dst, uint8_t vartype);
 
-  TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcModel model, char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcModel model, char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_unicode(TiCalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_ascii (TiCalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_latin1 (TiCalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_unicode (TiCalcModel model, char* dst, const char *src);
 
-  TIEXPORT void TICALL tifiles_transcoding_set(TiFileEncoding encoding);
-  TIEXPORT TiFileEncoding TICALL tifiles_transcoding_get(void);
+  TIEXPORT void TICALL tifiles_transcoding_set (TiFileEncoding encoding);
+  TIEXPORT TiFileEncoding TICALL tifiles_transcoding_get (void);
 
-  TIEXPORT char *TICALL tifiles_transcode_varname(TiCalcModel model, char *dst, const char *src, uint8_t vartype);
-  TIEXPORT char *TICALL tifiles_transcode_varname_static(TiCalcModel model, const char *src, uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_transcode_varname (TiCalcModel model, char *dst, const char *src, uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_transcode_varname_static (TiCalcModel model, const char *src, uint8_t vartype);
 
   // filetypes.c
-  TIEXPORT const char* TICALL tifiles_fext_of_group(TiCalcModel model);
-  TIEXPORT const char* TICALL tifiles_fext_of_backup(TiCalcModel model);
-  TIEXPORT const char* TICALL tifiles_fext_of_flash_app(TiCalcModel model);
-  TIEXPORT const char* TICALL tifiles_fext_of_flash_os(TiCalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_group (TiCalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_backup (TiCalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_flash_app (TiCalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_flash_os (TiCalcModel model);
 
-  TIEXPORT char* TICALL tifiles_fext_get(const char *filename);
-  TIEXPORT char* TICALL tifiles_fext_dup(const char *filename);
+  TIEXPORT char* TICALL tifiles_fext_get (const char *filename);
+  TIEXPORT char* TICALL tifiles_fext_dup (const char *filename);
 
-  TIEXPORT int TICALL tifiles_file_is_ti(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_single(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_group(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_regular(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_backup(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_flash(const char *filename);
-  TIEXPORT int TICALL tifiles_file_is_tib(const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_ti (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_single (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_group (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_regular (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_backup (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_flash (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_tib (const char *filename);
 
-  TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename);
-  TIEXPORT TiFileClass TICALL tifiles_file_get_class(const char *filename);
+  TIEXPORT TiCalcModel TICALL tifiles_file_get_model (const char *filename);
+  TIEXPORT TiFileClass TICALL tifiles_file_get_class (const char *filename);
 
-  TIEXPORT const char* TICALL tifiles_file_get_type(const char *filename);
-  TIEXPORT const char* TICALL tifiles_file_get_icon(const char *filename);
+  TIEXPORT const char* TICALL tifiles_file_get_type (const char *filename);
+  TIEXPORT const char* TICALL tifiles_file_get_icon (const char *filename);
   
   // typesXX.c
-  TIEXPORT const char* TICALL tifiles_vartype2string(TiCalcModel model, uint8_t data);
-  TIEXPORT uint8_t     TICALL tifiles_string2vartype(TiCalcModel model, const char *s);
+  TIEXPORT const char* TICALL tifiles_vartype2string (TiCalcModel model, uint8_t data);
+  TIEXPORT uint8_t     TICALL tifiles_string2vartype (TiCalcModel model, const char *s);
 
-  TIEXPORT const char* TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data);
-  TIEXPORT uint8_t     TICALL tifiles_fext2vartype(TiCalcModel model, const char *s);
+  TIEXPORT const char* TICALL tifiles_vartype2fext (TiCalcModel model, uint8_t data);
+  TIEXPORT uint8_t     TICALL tifiles_fext2vartype (TiCalcModel model, const char *s);
 
-  TIEXPORT const char* TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id);
-  TIEXPORT const char* TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t id);
+  TIEXPORT const char* TICALL tifiles_vartype2type (TiCalcModel model, uint8_t id);
+  TIEXPORT const char* TICALL tifiles_vartype2icon (TiCalcModel model, uint8_t id);
 
-  TIEXPORT const char* TICALL tifiles_calctype2signature(TiCalcModel model);
-  TIEXPORT TiCalcModel  TICALL tifiles_signature2calctype(const char *signature);
-	
-  TIEXPORT int TICALL tifiles_has_folder(TiCalcModel model);
-  TIEXPORT int TICALL tifiles_is_flash(TiCalcModel model);
+  TIEXPORT const char*  TICALL tifiles_calctype2signature (TiCalcModel model);
+  TIEXPORT TiCalcModel  TICALL tifiles_signature2calctype (const char *signature);
 
-  TIEXPORT const uint8_t TICALL tifiles_folder_type(TiCalcModel model);
-  TIEXPORT const uint8_t TICALL tifiles_flash_type(TiCalcModel model);
-  TIEXPORT const uint8_t TICALL tifiles_idlist_type(TiCalcModel model);
+  TIEXPORT const uint8_t TICALL tifiles_folder_type (TiCalcModel model);
+  TIEXPORT const uint8_t TICALL tifiles_flash_type (TiCalcModel model);
+  TIEXPORT const uint8_t TICALL tifiles_idlist_type (TiCalcModel model);
 
   // misc.c
-  TIEXPORT int TICALL tifiles_calc_is_ti8x(TiCalcModel model);
-  TIEXPORT int TICALL tifiles_calc_is_ti9x(TiCalcModel model);
+  TIEXPORT int TICALL tifiles_calc_is_ti8x (TiCalcModel model);
+  TIEXPORT int TICALL tifiles_calc_is_ti9x (TiCalcModel model);
+
+  TIEXPORT int TICALL tifiles_has_folder (TiCalcModel model);
+  TIEXPORT int TICALL tifiles_is_flash (TiCalcModel model);
 
   TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size);
 
@@ -249,14 +249,14 @@ extern "C" {
 						      int *nfolders);
 
   // grouped.c
-  TIEXPORT int TICALL tifiles_group_contents(TiRegular ** srcs,
-					     TiRegular ** dest);
-  TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src,
-					      TiRegular *** dest);
+  TIEXPORT int TICALL tifiles_group_contents(TiRegular ** src_contents,
+											 TiRegular ** dst_content);
+  TIEXPORT int TICALL tifiles_ungroup_content(TiRegular * src_content,
+											  TiRegular *** dst_contents);
 
-  TIEXPORT int TICALL tifiles_group_files(char **filenames,
-					  const char *filename);
-  TIEXPORT int TICALL tifiles_ungroup_file(const char *filename);
+  TIEXPORT int TICALL tifiles_group_files(char **src_filenames,
+									const char *dst_filename);
+  TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename);
 
   
 

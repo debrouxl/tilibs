@@ -36,3 +36,18 @@ The 3 folders are processed in 2 passes and the result is put in the
 
 Pass #1 (pass1.awk): text -> html
 Pass #2 (pass2.awk): html -> html
+
+
+
+//# = html link
+
+/**
+ * tifiles_get_error:
+ * @number: error number (see file_err.h for list).
+ * @message: a newly allocated string which contains corresponding error *message.
+ *
+ * Attempt to match the message corresponding to the error number. The returned
+ * string must be freed when no longer needed.
+ *
+ * Return value: 0 if error has been caught, the error number otherwise (propagation).
+ **/

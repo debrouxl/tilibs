@@ -24,7 +24,7 @@
 
 /**
  * tifiles_model_to_string:
- * @model: a calculator model taken in a #TiCalcModel enumeration.
+ * @model: a calculator model.
  *
  * Do an integer to string conversion.
  *
@@ -57,7 +57,7 @@ TIEXPORT const char *TICALL tifiles_model_to_string(TiCalcModel model)
  *
  * Do a string to integer conversion.
  *
- * Return value: a model taken in the #TiCalcModel enumeration .
+ * Return value: a calculator model.
  **/
 TIEXPORT TiCalcModel TICALL tifiles_string_to_model(const char *str)
 {
@@ -91,15 +91,15 @@ TIEXPORT TiCalcModel TICALL tifiles_string_to_model(const char *str)
 
 /**
  * tifiles_attribute_to_string:
- * @attrib: a variable attribute taken in a TiFileAttr enumeration.
+ * @attrb: an attribute of variable.
  *
  * Do an integer to string conversion.
  *
  * Return value: a string like "archived".
  **/
-TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
+TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr attrb)
 {
-  	switch (atrb) 
+  	switch (attrb) 
 	{
   	case ATTRB_NONE:      return _("none     ");
   	case ATTRB_LOCKED:    return _("locked   ");
@@ -115,7 +115,7 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
  *
  * Do a string to integer conversion.
  *
- * Return value: a variable attribute taken in the TiFileAttr enumeration .
+ * Return value: a variable attribute.
  **/
 TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
@@ -133,7 +133,7 @@ TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 
 /**
  * tifiles_class_to_string:
- * @klass: a file class taken in a TiFileClass enumeration.
+ * @klass: a class of file.
  *
  * Do an integer to string conversion.
  *
@@ -157,7 +157,7 @@ TIEXPORT const char *TICALL tifiles_class_to_string(TiFileClass klass)
  *
  * Do a string to integer conversion.
  *
- * Return value: a file class taken in the TiFileClass enumeration .
+ * Return value: a file class.
  **/
 TIEXPORT TiFileClass TICALL tifiles_string_to_class(const char *str)
 {

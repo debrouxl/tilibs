@@ -25,8 +25,6 @@
 #include "error.h"
 #include "logging.h"
 
-//# = html link
-
 /**
  * tifiles_get_error:
  * @number: error number (see file_err.h for list).

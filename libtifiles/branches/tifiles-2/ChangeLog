@@ -11,13 +11,14 @@ Log:
 	- use dynamic buffer rather static ones
 	* a single public header with functions & defs, others are private
 	* slightly fixed namespace sheme
+	* use strong type such as TiCalcModel, ...
+	* glib is heavily used (strings, logging, ...)
+	- documentation system will be changed
 
 Planning:
-	- documentation system will be changed
-	- functions pointers will be removed
-	- glib will be heavily used (strings, logging, ...)
-	- an handle will be used for calls
-	- use strong type such as TiCalcType, ...
+	
+	- functions pointers will be removed	
+	
 
 ====[ Version II ]====
 

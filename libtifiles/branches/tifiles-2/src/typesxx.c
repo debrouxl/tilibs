@@ -33,7 +33,7 @@
 
 /**
  * tifiles_vartype2string:
- * @model: ...
+ * @model: a calculator model.
  * @data: a type ID.
  *
  * Returns the type of variable (REAL, EQU, PRGM, ...).
@@ -89,11 +89,12 @@ TIEXPORT const char *TICALL tifiles_vartype2string(TiCalcModel model, uint8_t da
 
 /**
  * tifiles_string2vartype:
+ * @model: a calculator model.
  * @s: a type as string (like "REAL").
  *
  * Returns the type of variable.
  *
- * Return value: a type.
+ * Return value: a type ID.
  **/
 TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
 {
@@ -140,6 +141,7 @@ TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
 
 /**
  * tifiles_vartype2fext:
+ * @model: a calculator model.
  * @data: a type ID.
  *
  * Returns the file extension tipcially used to store this kind of variable(REAL, EQU, PRGM, ...).
@@ -191,6 +193,7 @@ TIEXPORT const char *TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data
 
 /**
  * tifiles_fext2vartype:
+ * @model: a calculator model.
  * @s: a file extension as string (like 89p).
  *
  * Returns the type ID of variable (REAL, EQU, PRGM, ...).
@@ -242,6 +245,7 @@ TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
 
 /**
  * tifiles_vartype2type:
+ * @model: a calculator model.
  * @id: a vartype ID.
  *
  * Returns the type ID of variable as string ("Real", "Program", ...).
@@ -249,41 +253,41 @@ TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
  *
  * Return value: a string like "Assembly Program".
  **/
-TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id)
+TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t vartype)
 {
 	switch (model)
   {
   case CALC_TI73:
-    return ti73_byte2desc(d);
+    return ti73_byte2desc(vartype);
     break;
   case CALC_TI82:
-    return ti82_byte2desc(d);
+    return ti82_byte2desc(vartype);
     break;
   case CALC_TI83:
-    return ti83_byte2desc(d);
+    return ti83_byte2desc(vartype);
     break;
   case CALC_TI83P:
   case CALC_TI84P:
-    return ti83p_byte2desc(d);
+    return ti83p_byte2desc(vartype);
     break;
   case CALC_TI85:
-    return ti85_byte2desc(d);
+    return ti85_byte2desc(vartype);
     break;
   case CALC_TI86:
-    return ti86_byte2desc(d);
+    return ti86_byte2desc(vartype);
     break;
   case CALC_TI89:
   case CALC_TI89T:
-    return ti89_byte2desc(d);
+    return ti89_byte2desc(vartype);
     break;
   case CALC_TI92:
-    return ti92_byte2desc(d);
+    return ti92_byte2desc(vartype);
     break;
   case CALC_TI92P:
-    return ti92p_byte2desc(d);
+    return ti92p_byte2desc(vartype);
     break;
   case CALC_V200:
-    return v200_byte2desc(d);
+    return v200_byte2desc(vartype);
     break;
   default:
     tifiles_error("tifiles_vartype2desc: invalid calc_type argument.");
@@ -294,6 +298,7 @@ TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id)
 
 /**
  * tifiles_vartype2icon:
+ * @model: a calculator model.
  * @id: a vartype ID.
  *
  * Returns the type ID of variable as string ("Real", "Program", ...).
@@ -301,41 +306,41 @@ TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t id)
  *
  * Return value: a string like "Assembly Program".
  **/
-TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t id)
+TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t vartype)
 {
   switch (model) 
   {
   case CALC_TI73:
-    return ti73_byte2icon(d);
+    return ti73_byte2icon(vartype);
     break;
   case CALC_TI82:
-    return ti82_byte2icon(d);
+    return ti82_byte2icon(vartype);
     break;
   case CALC_TI83:
-    return ti83_byte2icon(d);
+    return ti83_byte2icon(vartype);
     break;
   case CALC_TI83P:
   case CALC_TI84P:
-    return ti83p_byte2icon(d);
+    return ti83p_byte2icon(vartype);
     break;
   case CALC_TI85:
-    return ti85_byte2icon(d);
+    return ti85_byte2icon(vartype);
     break;
   case CALC_TI86:
-    return ti86_byte2icon(d);
+    return ti86_byte2icon(vartype);
     break;
   case CALC_TI89:
   case CALC_TI89T:
-    return ti89_byte2icon(d);
+    return ti89_byte2icon(vartype);
     break;
   case CALC_TI92:
-    return ti92_byte2icon(d);
+    return ti92_byte2icon(vartype);
     break;
   case CALC_TI92P:
-    return ti92p_byte2icon(d);
+    return ti92p_byte2icon(vartype);
     break;
   case CALC_V200:
-    return v200_byte2icon(d);
+    return v200_byte2icon(vartype);
     break;
   default:
     tifiles_error("tifiles_vartype2icon: invalid calc_type argument.");
@@ -409,7 +414,7 @@ static const int TIXX_IDLIST[NCALCS + 1] =
  **/
 TIEXPORT const uint8_t TICALL tifiles_folder_type(TiCalcModel model)
 {
-  switch (tifiles_calc_type) 
+  switch (model) 
   {
   case CALC_NONE:
     return -1;
@@ -537,7 +542,7 @@ TIEXPORT const uint8_t TICALL tifiles_idlist_type(TiCalcModel model)
 
 /**
  * tifiles_calctype2signature:
- * @model: a calculator model taken in the #TiCalcModel enumeration.
+ * @model: a calculator model.
  *
  * Returns the signature used at the top of a TI file depending on the
  * calculator model.
@@ -588,7 +593,7 @@ TIEXPORT const char *TICALL tifiles_calctype2signature(TiCalcModel model)
  *
  * Returns the calculator model contained in the signature.
  *
- * Return value: a model taken in #TiCalcModel enumeration.
+ * Return value: a calculator model.
  **/
 TIEXPORT TiCalcModel TICALL tifiles_signature2calctype(const char *s)
 {
@@ -615,35 +620,4 @@ TIEXPORT TiCalcModel TICALL tifiles_signature2calctype(const char *s)
     return CALC_V200;
   else
     return CALC_NONE;
-}
-
-/**
- * tifiles_has_folder:
- * @model: a calculator model in #TiCalcModel enumeration.
- *
- * Returns TRUE if the calculator supports folders.
- *
- * Return value: a boolean value.
- **/
-TIEXPORT int TICALL tifiles_has_folder(TiCalcModel calc_type)
-{
-  return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
-	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
-	  (calc_type == CALC_V200));
-}
-
-/**
- * tifiles_is_flash:
- * @model: a calculator model in #TiCalcModel enumeration.
- *
- * Returns TRUE if the calculator model has FLASH technology.
- *
- * Return value: a boolean value.
- **/
-TIEXPORT int TICALL tifiles_is_flash(TiCalcModel calc_type)
-{
-  return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
-	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI89T) ||
-	  (calc_type == CALC_TI89) || (calc_type == CALC_TI92P) ||
-	  (calc_type == CALC_V200));
 }

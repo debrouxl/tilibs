@@ -30,6 +30,8 @@
 
 #include "tifiles.h"
 #include "error.h"
+#include "files8x.h"
+#include "files9x.h"
 
 // allocating
 TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
@@ -40,9 +42,9 @@ TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
 // freeing
 TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
 {
-  if (tifiles_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->calc_type))
     return ti8x_free_regular_content(content);
-  else if (tifiles_is_ti9x(content->calc_type))
+  else if (tifiles_calc_is_ti9x(content->calc_type))
     return ti9x_free_regular_content(content);
   else
     return ERR_BAD_CALC;
@@ -52,9 +54,9 @@ TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
 TIEXPORT int tifiles_read_regular_file(const char *filename,
                                        TiRegular *content)
 {
-  if (tifiles_is_ti8x(tifiles_which_calc_type(filename)))
+  if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
     return ti8x_read_regular_file(filename, content);
-  else if (tifiles_is_ti9x(tifiles_which_calc_type(filename)))
+  else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
     return ti9x_read_regular_file(filename, content);
   else
     return ERR_BAD_CALC;
@@ -67,9 +69,9 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
                                         TiRegular * content,
                                         char **real_fname)
 {
-  if (tifiles_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->calc_type))
     return ti8x_write_regular_file(filename, content, real_fname);
-  else if (tifiles_is_ti9x(content->calc_type))
+  else if (tifiles_calc_is_ti9x(content->calc_type))
     return ti9x_write_regular_file(filename, content, real_fname);
   else
     return ERR_BAD_CALC;
@@ -80,9 +82,9 @@ TIEXPORT int tifiles_write_regular_file(const char *filename,
 // displaying
 TIEXPORT int TICALL tifiles_display_file(const char *filename)
 {
-  if (tifiles_is_ti8x(tifiles_which_calc_type(filename)))
+  if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
     return ti8x_display_file(filename);
-  else if (tifiles_is_ti9x(tifiles_which_calc_type(filename)))
+  else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
     return ti9x_display_file(filename);
   else
     return ERR_BAD_CALC;
@@ -141,7 +143,7 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular * content,
       assert(num_folders <= content->num_entries);
     }
   }
-  if (tifiles_is_ti8x(content->calc_type))
+  if (tifiles_calc_is_ti8x(content->calc_type))
     num_folders++;
   *nfolders = num_folders;
 

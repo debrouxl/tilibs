@@ -27,20 +27,23 @@
 #include "tifiles.h"
 #include "error.h"
 #include "macros.h"
+#include "files8x.h"
 
 
 /************************/
 /* (Un)grouping content */
 /************************/
 
-/*
-  Group TI files by concatenating an array of structures into a 
-  single structure.
-  - src [in]: a pointer on an array. The array is terminated by NULL.
-  - dst [out]: the address of a pointer. This pointer will contain the group
-  file. It's dynamically allocated.
-  - int [out]: an error code.
-*/
+/**
+ * tifiles_group_contents:
+ * @src_contents: a pointer on an array of #TiRegular structures. The array must be terminated by NULL.
+ * @dst_content: the address of a pointer. This pointer will contain the allocated group file.
+ * Must be freed when no longer needed.
+ *
+ * Group several #TiRegular structures into a single one.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
 TIEXPORT int TICALL tifiles_group_contents(TiRegular **srcs, TiRegular **dest)
 {
   TiRegular *dst;
@@ -68,15 +71,17 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **srcs, TiRegular **dest)
   return 0;
 }
 
-/*
-  Ungroup a TI file by exploding the structure into an array of structure.
-  Each structure is a single file.
-  - src [in]: the address of the group structure
-  - dst [out]: the address of a pointer. This pointer points on an array of 
-  structure. The array is terminated by NULL and dynamically allocated
-  by the function.
-  - int [out]: an error code.
- */
+/**
+ * tifiles_ungroup_content:
+ * @src_content: a pointer on the structure to unpack.
+ * @dst_contents: the address of your pointer. This pointers will point on a 
+ * dynamically allocated array of structures. The array is terminated by NULL.
+ * Must be freed when no longer needed.
+ *
+ * Ungroup a TI file by exploding the structure into an array of structures.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
 TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular *** dest)
 {
   int i;
@@ -107,9 +112,9 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular *** dest)
     // update some fields
     dst[i]->num_entries = 1;
     dst[i]->checksum +=
-	tifiles_compute_checksum((uint8_t *) dst_entry, 15);
+	tifiles_checksum((uint8_t *) dst_entry, 15);
     dst[i]->checksum +=
-	tifiles_compute_checksum(dst_entry->data, dst_entry->size);
+	tifiles_checksum(dst_entry->data, dst_entry->size);
   }
   dst[i] = NULL;
 
@@ -120,21 +125,23 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular *** dest)
 /* (Un)grouping of files */
 /*************************/
 
-/*
-  Group some files
-  - filenames [in]: an array of strings (list of files to read).
-  Must be NULL terminated.
-  - filename [in]: the filename where the group will be written
-  - int [out]: an error code
- */
-TIEXPORT int TICALL tifiles_group_files(char **filenames, const char *filename)
+/**
+ * tifiles_group_files:
+ * @src_filenames: a NULL-terminated array of strings (list of files to group).
+ * @dst_filename: the filename where to store the group.
+ *
+ * Group several TI files into a single one (group file).
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
 {
   int i, n;
   TiRegular **src = NULL;
   TiRegular *dst = NULL;
   char *unused;
 
-  for (n = 0; filenames[n] != NULL; n++);
+  for (n = 0; src_filenames[n] != NULL; n++);
 
   src = (TiRegular **) calloc(n + 1, sizeof(TiRegular *));
   if (src == NULL)
@@ -145,7 +152,7 @@ TIEXPORT int TICALL tifiles_group_files(char **filenames, const char *filename)
     if (src[i] == NULL)
       return ERR_MALLOC;
 
-    TRY(tifiles_read_regular_file(filenames[i], src[i]));
+    TRY(tifiles_read_regular_file(src_filenames[i], src[i]));
   }
   src[i] = NULL;
 
@@ -157,24 +164,29 @@ TIEXPORT int TICALL tifiles_group_files(char **filenames, const char *filename)
   }
   free(src);
 
-  TRY(tifiles_write_regular_file(filename, dst, &unused));
+  TRY(tifiles_write_regular_file(dst_filename, dst, &unused));
 
   return 0;
 }
 
-/*
-  Ungroup a group file into several single files:
-  - filename [in]: the name of a group file
-  - int [out]: an error code
- */
-TIEXPORT int TICALL tifiles_ungroup_file(const char *filename)
+/**
+ * tifiles_ungroup_file:
+ * @src_filename: full path of file to ungroup.
+ *
+ * Ungroup a TI 'group' file into several files. Resulting files have the
+ * same name as the variable stored within group file.
+ * Beware: there is no existence check; files may be overwritten !
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename)
 {
   TiRegular src;
   TiRegular **dst;
   TiRegular **ptr;
   char *real_name;
 
-  TRY(tifiles_read_regular_file(filename, &src));
+  TRY(tifiles_read_regular_file(src_filename, &src));
 
   TRY(tifiles_ungroup_content(&src, &dst));
 
