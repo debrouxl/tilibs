@@ -488,6 +488,75 @@ static int find_string_in_proc(char *entry, char *str)
 	return found;
 }
 
+/* 
+   Attempt to find if an user is attached to a group.
+   - user [in] : a user name
+   - group [in] : a group name
+*/
+static int search_for_user_in_group(const char *user, const char *group)
+{
+	FILE *f;
+	char buffer[129];
+	
+	f = fopen("/etc/group", "rt");
+	if (f == NULL) {
+		return -1;
+	}
+
+	while (!feof(f)) {
+		fgets(buffer, 128, f);
+		
+		if (strstr(buffer, group))
+			if(strstr(buffer, user)) {
+				fclose(f);
+				return 0;
+			}
+	}
+	
+	fclose(f);
+	return -1;
+}
+
+static int check_for_node_usability(const char *pathname)
+{
+	if(!access(pathname, F_OK))
+		DISPLAY(_("    node %s: exists\n"), pathname);
+	else {
+		DISPLAY(_("    node %s: does not exists\n"), pathname);
+		return -1;
+	}
+
+	if(!stat(pathname, &st)) {
+		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
+                        get_attributes(st.st_mode),
+                        get_user_name(st.st_uid),
+                        get_group_name(st.st_gid));
+	} else {
+		return -1;
+	}	
+	
+	if(st.st_mode & 0006)
+		DISPLAY(_("    are others can r/w on device: yes\n"));
+	else {
+		char *user, *group;
+		
+		user = strdup(get_user_name(getuid()));
+		group = strdup(get_group_name(st.st_gid));
+		
+		DISPLAY(_("    are others can r/w on device: no\n"));
+		if(!search_for_user_in_group(user, group))
+			DISPLAY(_("    is the user %s in the group %s: yes")); 
+		else {
+			DISPLAY(_("    is the user %s in the group %s: no")); 
+			free(user); free(group);
+			return -1;	
+		}
+		
+		free(user); 
+		free(group);
+	}	
+}
+
 static int check_for_root(void)
 {
 	uid_t uid = getuid();
@@ -502,22 +571,7 @@ static int check_for_tty(void)
 	struct stat st;	
 	
 	DISPLAY(_("  check for tty usability:\n"));
-	
-	if(!access(SP1_NAME, F_OK))
-		DISPLAY(_("    node %s: exists\n"), SP1_NAME);
-	else {
-		DISPLAY(_("    node %s: does not exists\n"), SP1_NAME);
-		return -1;
-	}
-
-	if(!stat("/dev/ttyS0", &st)) {
-		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
-                        get_attributes(st.st_mode),
-                        get_user_name(st.st_uid),
-                        get_group_name(st.st_gid));
-	} else {
-		return -1;
-	}	
+	return check_for_node_usability(SP1_NAME);	
 
 	return 0;
 }
@@ -538,19 +592,8 @@ static int check_for_tipar(void)
 	else
 		strcpy(name, "/dev/ticables/par/0");
 
-	if(!access(name, F_OK))
-		DISPLAY(_("      node %s: exists\n"), name);
-	else {
-		DISPLAY(_("      node %s: does not exists\n"), name);
+	if(check_for_node_usability(name))
 		return -1;
-	}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
-                        get_attributes(st.st_mode),
-                        get_user_name(st.st_uid),
-                        get_group_name(st.st_gid));
-	}
  
 	if (find_string_in_proc("/proc/devices", "tipar"))
 		DISPLAY(_("      module: loaded\r\n"));
@@ -578,19 +621,8 @@ static int check_for_tiser(void)
 	else
 		strcpy(name, "/dev/ticables/par/0");
 
-	if(!access(name, F_OK))
-		DISPLAY(_("    node %s: exists\n"), name);
-	else {
-		DISPLAY(_("    node %s: does not exists\n"), name);
+	if(check_for_node_usability(name))
 		return -1;
-	}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
-                        get_attributes(st.st_mode),
-                        get_user_name(st.st_uid),
-                        get_group_name(st.st_gid));
-	}
  
 	if (find_string_in_proc("/proc/devices", "tiser"))
 		DISPLAY(_("    module: loaded\r\n"));
@@ -618,19 +650,8 @@ static int check_for_tiusb(void)
 	else
 		strcpy(name, "/dev/ticables/usb/0");
 
-	if(!access(name, F_OK))
-		DISPLAY(_("    node %s: exists\n"), name);
-	else {
-		DISPLAY(_("    node %s: does not exists\n"), name);
+	if(check_for_node_usability(name))
 		return -1;
-	}
-
-	if(!stat(name, &st)) {
-		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
-			get_attributes(st.st_mode),
-			get_user_name(st.st_uid),
-			get_group_name(st.st_gid));
-	}
  
 	if (find_string_in_proc("/proc/devices", "tiglusb"))
 		DISPLAY(_("    module: loaded\r\n"));
@@ -642,16 +663,21 @@ static int check_for_tiusb(void)
 	return 0;
 }
 
+#define	USBFS	"/proc/bus/usb"
+
 static int check_for_libusb(void)
 {
 	DISPLAY(_("  check for lib-usb usability:\n"));
 
-	if(!access("/proc/bus/usb", F_OK))
+	if(!access(UBSFS, F_OK))
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
 		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
 		return -1;
 	}
+	
+	if(check_for_node_usability(USBFS "/devices"))
+		return -1;
 	
 	return 0;
 }
