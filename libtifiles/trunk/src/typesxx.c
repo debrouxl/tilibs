@@ -30,6 +30,7 @@
 #include "file_err.h"
 #include "typesxx.h"
 #include "misc.h"
+#include "printl.h"
 
 extern int tifiles_calc_type;
 
@@ -727,7 +728,7 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
 
   f = fopen(filename, "rb");
   if (f == NULL) {
-    printf("Unable to open this file: <%s>\n", filename);
+    printl3(2, "unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
   fread_8_chars(f, buf);
