@@ -63,6 +63,7 @@ ACLOCALDIR = @ACLOCALDIR@
 AS = @AS@
 AWK = @AWK@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CFLAGS = @CFLAGS@
@@ -73,22 +74,17 @@ ECHO = @ECHO@
 EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
+GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 LDFLAGS = @LDFLAGS@
-LIB = @LIB@
 LIBICONV = @LIBICONV@
-LIBINTL = @LIBINTL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LTLIB = @LTLIB@
-LTLIBICONV = @LTLIBICONV@
-LTLIBINTL = @LTLIBINTL@
 LT_AGE = @LT_AGE@
 LT_CURRENT = @LT_CURRENT@
 LT_RELEASE = @LT_RELEASE@
@@ -98,10 +94,12 @@ MAKEINFO = @MAKEINFO@
 MICRO_VERSION = @MICRO_VERSION@
 MINOR_VERSION = @MINOR_VERSION@
 MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
@@ -124,9 +122,9 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps win32/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu win32/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -139,6 +137,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = win32
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu win32/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
