@@ -1,0 +1,9 @@
+[Main]
+Name=AUTO_NAME
+Type=Define
+Header=cabl_def.h
+Definition=#define AUTO_NAME ""
+
+[Summary]
+Used by some functions or the developer to specify auto-assigning of a 
+device in the in TicableLinkParam.device field.

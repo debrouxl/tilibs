@@ -1,0 +1,1399 @@
+# traduction de ticables.po en Français
+# French locale for libticables.
+# Copyright (C) 2003
+# This file is distributed under the same license as the libticables package.
+# Sylvain GARSAULT <sylvain.garsault@freesbee.fr>, 2003.
+# Sylvain Garsault <sylvain.garsault@freesbee.fr>, 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libticables 3.8.5\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2004-05-11 23:34+0200\n"
+"PO-Revision-Date: 2004-04-14 21:55+0000\n"
+"Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
+"Language-Team: Français <kde-francophone@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.1\n"
+
+#: src/detect.c:67 src/type2str.c:150 src/win32/win32_detect.c:61
+msgid "unknown"
+msgstr "inconnu"
+
+#: src/error.c:54
+msgid "Msg: Unable to open serial device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:56
+msgid ""
+"Cause: check your permissions on the node. Check that the device is not "
+"locked by another application (modem ?)."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires sur ce noeud. "
+"Vérifiez que le périphérique n'est pas bloqué par une autre application "
+"(modem ?)."
+
+#: src/error.c:60
+msgid "Msg: Unable to open COM port."
+msgstr "Msg : Impossible d'ouvrir le port COM."
+
+#: src/error.c:62 src/error.c:94
+msgid ""
+"Cause: Check that the device is not used/locked by another application "
+"(modem ?)."
+msgstr ""
+"Cause : Vérifiez que le périphérique n'est pas utilisé/bloqué par une autre "
+"application (modem ?)."
+
+#: src/error.c:66
+msgid "Msg: Error occured while writing to the device."
+msgstr "Msg : Erreur en écrivant sur le périphérique."
+
+#: src/error.c:70
+msgid "Msg: Timeout occured while writing to the device."
+msgstr "Msg : Limite de temps dépassée en écrivant sur le périphérique."
+
+#: src/error.c:72 src/error.c:82
+msgid ""
+"Cause: Check that your link cable is plugged and/or the calculator is ready."
+msgstr ""
+"Cause : Vérifiez que le câble est connecté et/ou que la calculatrice est "
+"prête."
+
+#: src/error.c:76
+msgid "Msg: Error occured while reading to the device."
+msgstr "Msg : Erreur de lecture du périphérique."
+
+#: src/error.c:80
+msgid "Msg: Timeout occured while reading to the device."
+msgstr "Msg : Limite de temps dépassée en lisant le périphérique."
+
+#: src/error.c:86
+msgid "Msg: A uint8_t have been lost."
+msgstr "Msg : Une donnée a été perdue."
+
+#: src/error.c:88
+msgid "Cause: Application too slow."
+msgstr "Cause : Application trop lente."
+
+#: src/error.c:92
+msgid "Msg: CreateFile error."
+msgstr "Msg : Fichier d'erreur créé."
+
+#: src/error.c:98
+msgid "Msg: Unable to open a node in /dev."
+msgstr "Msg : Impossible d'ouvrir un noeud dans /dev."
+
+#: src/error.c:100
+msgid ""
+"Cause:Check that the node exists. Check your devfs. Check that you have "
+"installed the driver."
+msgstr ""
+"Cause : Vérifiez que le noeud existe et que vous avez installé le pilote "
+"approprié. Vérifiez également le fichier devfs."
+
+#: src/error.c:105 src/error.c:109
+msgid "Msg: Unable to use parallel/serial port: access refused."
+msgstr "Msg : Impossible d'utiliser le port parallèle/série : accès refusé."
+
+#: src/error.c:107
+msgid ""
+"Cause: Check that you have needed permissions (super user privileges). Else, "
+"you will need to use a kernel module (tipar/tiser)."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires (privilèges super "
+"utilisateur). Sinon, vous devrez utiliser un module du noyau (tipar/tiser)."
+
+#: src/error.c:111
+msgid ""
+"Cause: Is PortTalk installed/started ? You may have to install TiLP with "
+"administrator privileges."
+msgstr ""
+"Cause : Est-ce que PortTalk est installé/démarré ? Vous devrez peut-être "
+"installer TiLP avec les privilèges d'administrateur."
+
+#: src/error.c:116
+msgid "Msg: No link cable has been found on the scanned port."
+msgstr "Msg : Aucun câble n'a été trouvé sur le port scanné."
+
+#: src/error.c:118 src/error.c:243
+msgid "Cause: ??"
+msgstr "Cause : ??"
+
+#: src/error.c:122
+msgid "Msg: Unable to open pipes for virtual linking."
+msgstr "Msg : Impossible d'ouvrir les tubes pour la liaison virtuelle."
+
+#: src/error.c:124
+msgid ""
+"Cause: Check that you have permissions to create a pipe in the /tmp "
+"directory."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions de créer un tube (pipe) dans "
+"le dossier /tmp."
+
+#: src/error.c:128
+msgid "Msg: Unable to close pipes."
+msgstr "Msg : Impossible de fermer les tubes (pipes)."
+
+#: src/error.c:130
+msgid "Cause: System error ?!"
+msgstr "Cause : Erreur du système ?"
+
+#: src/error.c:134
+msgid "Msg: CreateFileMapping error."
+msgstr "Msg : Fichier MappingError créé."
+
+#: src/error.c:136
+msgid ""
+"Cause: Trying to communicate without correspondent. Did you launch the "
+"emulator before running TiLP ?"
+msgstr ""
+"Cause : Communication sans correspondant. Avez-vous lancé l'émulateur avant "
+"de démarrer TiLP ?"
+
+#: src/error.c:140
+msgid "Msg: IOCTL error."
+msgstr "Msg : Erreur IOCTL"
+
+#: src/error.c:144
+msgid ""
+"Cause: Check that you have required rights on the node and/or your kernel "
+"module is loaded."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires sur le nœud et/ou "
+"que le module du noyau est chargé."
+
+#: src/error.c:148
+msgid "Msg: SetupComm error."
+msgstr "Msg : Erreur à l'établissement de la communication."
+
+#: src/error.c:150 src/error.c:156 src/error.c:162 src/error.c:168
+#: src/error.c:174
+msgid "Cause: Internal Win32 error."
+msgstr "Cause : Erreur interne à Win32."
+
+#: src/error.c:154
+msgid "Msg: SetCommState error."
+msgstr "Msg : Erreur SetCommState."
+
+#: src/error.c:160
+msgid "Msg: GetCommState error."
+msgstr "Msg : Erreur GetCommState."
+
+#: src/error.c:166
+msgid "Msg: GetCommTimeouts error."
+msgstr "Msg : Erreur GetCommTimeouts."
+
+#: src/error.c:172
+msgid "Msg: SetCommTimeouts error."
+msgstr "Msg : Erreur SetCommTimeouts."
+
+#: src/error.c:178
+msgid "Msg: Error while flushing the buffer(s)."
+msgstr "Msg : Erreur en libérant le(s) buffer(s)."
+
+#: src/error.c:180
+msgid "Cause: Internal Win32 error"
+msgstr "Cause : Erreur interne à Win32."
+
+#: src/error.c:184
+msgid "Msg: IOCTL code unsuccessful."
+msgstr "Msg : Échec du code IOTCL."
+
+#: src/error.c:186
+msgid "Cause: Internal device driver error."
+msgstr "Cause : Erreur interne au pilote du périphérique."
+
+#: src/error.c:191 src/error.c:197 src/error.c:203
+msgid "Msg: Unable to open the USB device."
+msgstr "Msg : Impossible d'ouvrir le périphérique USB."
+
+#: src/error.c:195
+msgid ""
+"Cause: Check that you have required rights on the node and/or your driver is "
+"loaded."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires sur le nœud et/ou "
+"que le pilote est chargé."
+
+#: src/error.c:201
+msgid ""
+"Cause: Check your SilverLink is correcly installed in the Windows' Control "
+"Panel. The ticables library need a specific driver for this cable. You will "
+"find it on http://lpg.ticalc.org/prj_usb."
+msgstr ""
+"Cause : Vérifiez que votre SilverLink est correctement installé dans le "
+"panneau de configuration Windows. La librairie ticables a besoin d'un pilote "
+"spécifique pour ce câble. Vous le trouverez sur http://lpg.ticalc.org/"
+"prj_usb."
+
+#: src/error.c:205
+msgid "Cause: Your cable is not connected or stalled."
+msgstr "Cause : Votre câble est figé ou n'est pas connecté."
+
+#: src/error.c:212
+msgid "Msg: Error occurred while initializing the libusb."
+msgstr "Msg : Erreur à l'initialisation de libusb."
+
+#: src/error.c:216
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Check your libusb "
+"and usbfs, too."
+msgstr ""
+"Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
+"Vérifiez également libusb et usbfs."
+
+#: src/error.c:218
+msgid "Msg: Unable to initialize the USB device."
+msgstr "Msg : Impossible d'initialiser le périphérique USB."
+
+#: src/error.c:220
+msgid "Cause: Your cable is probably not connected."
+msgstr "Cause : Votre câble est probablement déconnecté."
+
+#: src/error.c:225
+msgid "Msg: Unable to open/find a USB device."
+msgstr "Msg : Impossible d'ouvrir/trouver un périphérique USB."
+
+#: src/error.c:229
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Check you rlibusb "
+"and usbfs, too."
+msgstr ""
+"Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
+"Vérifiez également libusb et usbfs."
+
+#: src/error.c:233
+msgid "Msg: Error while reseting USB endpoints."
+msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
+
+#: src/error.c:236
+msgid "Cause: Your cable may be stalled. Unplug and replug it !."
+msgstr ""
+"Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le."
+
+#: src/error.c:241
+msgid "Msg: FreeLibrary error. Unable to release the DLL."
+msgstr "Msg : Erreur FreeLibrary. Impossible de libérer la DLL."
+
+#: src/error.c:249
+msgid "Msg: Unable to get a unique IPC (Inter Process Communication) key."
+msgstr "Msg : Impossible d'obtenir une CIP (Clé Inter Processus) unique."
+
+#: src/error.c:253
+msgid ""
+"Cause: Check that you have enough resources for allocating a shared memory "
+"segment."
+msgstr ""
+"Cause : Vérifiez que vous disposez de suffisamment de mémoire pour allouer "
+"un segment de mémoire partagée."
+
+#: src/error.c:257
+msgid "Msg: Unable to open a shared memory segment."
+msgstr "Msg : Impossible d'ouvrir un segment de mémoire partagée."
+
+#: src/error.c:259
+msgid "Cause: Do you have any resources ?"
+msgstr "Cause : Disposez-vous de suffisamment de ressources ?"
+
+#: src/error.c:263
+msgid "Msg: Unable to attach shared memory segment."
+msgstr "Msg : Impossible de lier un segment de mémoire partagée."
+
+#: src/error.c:265
+msgid "Cause: Too many attachements ?"
+msgstr "Cause : Trop de liens ?"
+
+#: src/error.c:270
+msgid "Msg: Unable to detach the shared memory segment."
+msgstr "Msg : Impossible de libérer un segment de mémoire partagée."
+
+#: src/error.c:272
+msgid "Cause: Is segment locked ?"
+msgstr "Cause : Le segment est-il vérrouillé ?"
+
+#: src/error.c:277
+msgid "Msg: Unable to destroy the shared memory segment."
+msgstr "Msg : Impossible de supprimer le segment de mémoire partagée."
+
+#: src/error.c:281
+msgid "Cause: Check that no applications are still attached on it."
+msgstr "Cause : Vérifiez qu'aucune application n'y est attachée."
+
+#: src/error.c:285
+msgid "Msg: Unable to open a file mapping."
+msgstr "Msg : Impossible d'ouvrir un fichier d'allocation."
+
+#: src/error.c:287
+msgid "Cause: VTi seems to be not launched yet."
+msgstr "Cause : VTi semble ne pas être encore lancé."
+
+#: src/error.c:291
+msgid "Msg: Illegal operation or argument."
+msgstr "Msg : Opération ou argument illégal."
+
+#: src/error.c:293
+msgid "Cause: A bug in TiLP, mail to: roms@tilp.info."
+msgstr "Cause : Ceci est un bogue de TiLP, signalez-le à : roms@tilp.info."
+
+#: src/error.c:297
+msgid "Msg: No I/O resource available !"
+msgstr "Msg : Pas de ressource entrée/sortie disponible."
+
+#: src/error.c:300
+msgid ""
+"Cause: several ways. Check for:\n"
+"- PortTalk device driver (parallel/serial cable under Win NT4/2000/XP)\n"
+"- TiglUsb device driver (SilverLink)."
+msgstr ""
+
+#: src/error.c:303
+msgid ""
+"Cause: several ways. Check for:\n"
+"- I/O permissions (parallel/serial link cable)\n"
+"- kernel module (tipar/tiser/tiusb)."
+msgstr ""
+
+#: src/error.c:310
+msgid ""
+"Msg: Invalid port: try to use an I/O port device which is incompatible with "
+"the link cable."
+msgstr ""
+"Msg : Port non valide : vous essayez d'utiliser un port d'entrée/sortie "
+"incompatible avec le câble de liaison."
+
+#: src/error.c:314
+msgid ""
+"Cause: It's due to a misuse of library, probably a TiLP bug. Mail to: "
+"roms@tilp.info"
+msgstr ""
+"Cause : Ceci est dû à une mauvaise utilisation de la librairie, certainement "
+"un bogue de TiLP. Signalez-le à: roms@tilp.info"
+
+#: src/error.c:318
+msgid "Msg: PortTalk driver and/or library not found."
+msgstr "Msg : Pilote et/ou librairie PortTalk introuvable."
+
+#: src/error.c:322
+msgid ""
+"Cause: TiLP should start this driver automagically through the SCM. Check "
+"that it's loaded and TiLP as been installed with admin privileges !"
+msgstr ""
+"Cause : TiLP devrait lancer automatiquement ce pilote à travers SCM. "
+"Vérifiez qu'il est chargé et que TiLP a bien été installé avec les "
+"privilèges d'administrateur."
+
+#: src/error.c:328
+msgid "Msg: SilverLink library has an insufficient version number."
+msgstr "Msg : La librairie SilverLink a un numéro de version insuffisant."
+
+#: src/error.c:332
+msgid ""
+"Cause: the SilverLink driver currently installed has a wrong version. Please "
+"upgrade !"
+msgstr ""
+"Cause : Une mauvaise version du pilote SilverLink a été installée. Veuillez "
+"la mettre à jour."
+
+#: src/error.c:336
+msgid "Msg: the node does not exists."
+msgstr "Msg : le nœud n'existe pas."
+
+#: src/error.c:338
+msgid "Cause: the node has not been created by the module."
+msgstr "Cause : le nœud n'a pas été créé par le module."
+
+#: src/error.c:342
+msgid "Msg: you don't have permissions for reading/writing the node."
+msgstr "Msg : vous n'avez pas les permissions de lecture/écriture sur le nœud."
+
+#: src/error.c:344
+msgid "Cause: others does not have r/w access or you are not in the group."
+msgstr ""
+"Cause : les utilisateurs normaux n'ont pas l'accès en lecture/écriture ou "
+"vous n'appartenez pas à ce groupe."
+
+#: src/error.c:348
+msgid "Msg: module not loaded."
+msgstr "Msg : le module n'est pas chargé."
+
+#: src/error.c:350
+msgid "Cause: the module does not exist or has not been loaded."
+msgstr "Cause : le module n'existe pas ou n'a pas été préalablement chargé."
+
+#: src/error.c:354
+msgid "Msg: the usb pseudo-filesystem is not mounted."
+msgstr "Msg : le système de fichier virtuel usb n'est pas monté."
+
+#: src/error.c:356
+msgid ""
+"Cause: your kernel does not have usbfs support or it is not mounted by your /"
+"etc/fstab."
+msgstr ""
+"Cause : votre noyau ne prend pas en charge usbfs, ou le système de fichier "
+"n'a pas été monté par /etc/fstab."
+
+#: src/error.c:360
+#, fuzzy
+msgid "Msg: failed to reset USB endpoints."
+msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
+
+#: src/error.c:362
+#, fuzzy
+msgid "Cause: your SilverLink cable may be stalled. Try to unplug/plug it."
+msgstr ""
+"Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le."
+
+#: src/error.c:366
+msgid ""
+"Error code not found in the list.\n"
+"This is a bug. Please report it.\n"
+"."
+msgstr ""
+"Code d'erreur inexistant dans la liste.\n"
+"Ceci est un bogue. Veuillez le signaler.\n"
+"."
+
+#: src/intrface.c:94
+#, c-format
+msgid "ticables library version %s\n"
+msgstr "librairie ticables version %s\n"
+
+#: src/intrface.c:105
+#, c-format
+msgid "built for %s target.\n"
+msgstr "Compilé pour %s.\n"
+
+#: src/intrface.c:347
+msgid "list of settings:\n"
+msgstr "liste des réglages :\n"
+
+#: src/intrface.c:349
+#, c-format
+msgid "  cable: %s\n"
+msgstr "  câble : %s\n"
+
+#: src/intrface.c:352
+#, c-format
+msgid "  port: %s\n"
+msgstr "  port : %s\n"
+
+#: src/intrface.c:354
+#, c-format
+msgid "  method: %s\n"
+msgstr "  méthode : %s\n"
+
+#: src/intrface.c:357
+#, c-format
+msgid "  baud-rate: %i\n"
+msgstr "  débit (bits/s) : %i\n"
+
+#: src/intrface.c:358
+#, c-format
+msgid "  hardware flow control: %s\n"
+msgstr "  contrôle de flux matériel : %s\n"
+
+#: src/intrface.c:359 src/type2str.c:92 src/type2str.c:100 src/type2str.c:172
+#: src/type2str.c:182
+msgid "on"
+msgstr "activé"
+
+#: src/intrface.c:359 src/type2str.c:94 src/type2str.c:170 src/type2str.c:176
+#: src/type2str.c:184
+msgid "off"
+msgstr "désactivé"
+
+#: src/intrface.c:364
+#, c-format
+msgid "  address: 0x%03x\n"
+msgstr "  adresse : 0x%03x\n"
+
+#: src/intrface.c:366
+#, c-format
+msgid "  device name: %s\n"
+msgstr "  nom du périphérique : %s\n"
+
+#: src/intrface.c:369
+#, c-format
+msgid "  timeout value: %i\n"
+msgstr "  limite de temps : %i\n"
+
+#: src/intrface.c:371
+#, c-format
+msgid "  delay value: %i\n"
+msgstr "  délai : %i\n"
+
+#: src/logging.c:78
+msgid "Logging STARTED.\n"
+msgstr "Journalisation démarrée.\n"
+
+#: src/logging.c:82 src/logging.c:88
+#, c-format
+msgid "Unable to open <%s> for logging.\n"
+msgstr "Impossible d'ouvrir <%s> comme fichier de journalisation.\n"
+
+#: src/printl.c:47
+#, c-format
+msgid "wrn: "
+msgstr "avr : "
+
+#: src/printl.c:48
+#, c-format
+msgid "err: "
+msgstr "err : "
+
+#: src/type2str.c:29
+msgid "none"
+msgstr "aucun(e)"
+
+#: src/type2str.c:29
+msgid "GrayLink"
+msgstr "GrayLink (gris)"
+
+#: src/type2str.c:29
+msgid "BlackLink"
+msgstr "BlackLink (noir)"
+
+#: src/type2str.c:29
+msgid "ParallelLink"
+msgstr "Câble parallèle"
+
+#: src/type2str.c:29
+msgid "AVRlink"
+msgstr "AVRlink"
+
+#: src/type2str.c:29
+msgid "virtual"
+msgstr "virtuel"
+
+#: src/type2str.c:29
+msgid "TiEMu"
+msgstr "TiEMu"
+
+#: src/type2str.c:30
+msgid "VTi"
+msgstr "VTi"
+
+#: src/type2str.c:30
+msgid "obsolete"
+msgstr "obsolète"
+
+#: src/type2str.c:30
+msgid "SilverLink"
+msgstr "SilverLink (argent)"
+
+#: src/type2str.c:107
+msgid "custom"
+msgstr "personnalisé"
+
+#: src/type2str.c:108
+msgid "parallel port #1"
+msgstr "port parallèle n°1"
+
+#: src/type2str.c:108
+msgid "parallel port #2"
+msgstr "port parallèle n°2"
+
+#: src/type2str.c:108
+msgid "parallel port #3"
+msgstr "port parallèle n°4"
+
+#: src/type2str.c:109
+msgid "serial port #1"
+msgstr "port série n°1"
+
+#: src/type2str.c:109
+msgid "serial port #2"
+msgstr "port série n°2"
+
+#: src/type2str.c:110
+msgid "serial port #3"
+msgstr "port série n°3"
+
+#: src/type2str.c:110
+msgid "serial port #4"
+msgstr "port série n°4"
+
+#: src/type2str.c:111
+msgid "virtual port #1"
+msgstr "port virtuel n°1"
+
+#: src/type2str.c:111
+msgid "virtual port #2"
+msgstr "port virtuel n°2"
+
+#: src/type2str.c:112
+msgid "USB port #1"
+msgstr "port USB n°1"
+
+#: src/type2str.c:112
+msgid "USB port #2"
+msgstr "port USB n°2"
+
+#: src/type2str.c:112
+msgid "USB port #3"
+msgstr "port USB n°3"
+
+#: src/type2str.c:112
+msgid "USB port #4"
+msgstr "port USB n°4"
+
+#: src/type2str.c:113
+msgid "serial port"
+msgstr "port série"
+
+#: src/type2str.c:113
+msgid "USB port"
+msgstr "port USB"
+
+#: src/type2str.c:114 src/type2str.c:161
+msgid "null"
+msgstr ""
+
+#: src/type2str.c:153
+msgid "direct access (asm)"
+msgstr "accès direct (asm)"
+
+#: src/type2str.c:155
+msgid "direct access (api)"
+msgstr "accès direct (api)"
+
+#: src/type2str.c:157
+msgid "kernel mode (module)"
+msgstr "noyau (module)"
+
+#: src/type2str.c:159
+msgid "user mode (ioctl)"
+msgstr "mode utilisateur (ioctl)"
+
+#: src/type2str.c:174 src/type2str.c:186
+msgid "closed"
+msgstr "fermé"
+
+#: src/bsd/bsd_detect.c:61
+msgid "Getting OS type...\n"
+msgstr "Détermination du système d'exploitation...\n"
+
+#: src/bsd/bsd_detect.c:62
+#, c-format
+msgid "  System name: %s\n"
+msgstr " Nom du système : %s\n"
+
+#: src/bsd/bsd_detect.c:63
+#, c-format
+msgid "  Node name: %s\n"
+msgstr "  Nom du nœud : %s\n"
+
+#: src/bsd/bsd_detect.c:64
+#, c-format
+msgid "  Release: %s\n"
+msgstr "  Version du noyau : %s\n"
+
+#: src/bsd/bsd_detect.c:65
+#, c-format
+msgid "  Version: %s\n"
+msgstr "  Version : %s\n"
+
+#: src/bsd/bsd_detect.c:66
+#, c-format
+msgid "  Machine: %s\n"
+msgstr "  Machine : %s\n"
+
+#: src/bsd/bsd_detect.c:67 src/linux/linux_detect.c:108
+#: src/linux/linux_detect.c:195
+msgid "Done.\n"
+msgstr "Fait.\n"
+
+#: src/bsd/bsd_detect.c:81
+msgid "checking resources...\n"
+msgstr "vérification des ressources...\n"
+
+#: src/bsd/bsd_detect.c:88 src/linux/linux_detect.c:254
+msgid "  IO_API: found at compile time (HAVE_TERMIOS_H)\n"
+msgstr "  IO_API : trouvé lors de la compilation (HAVE_TERMIOS_H)\n"
+
+#: src/bsd/bsd_detect.c:90 src/linux/linux_detect.c:256
+msgid "  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"
+msgstr "  IO_API : introuvable lors de la compilation (HAVE_TERMIOS_H)\n"
+
+#: src/bsd/bsd_detect.c:98 src/linux/linux_detect.c:264
+#, c-format
+msgid "  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"
+msgstr "  IO_ASM : %s trouvé lors de la compilation (HAVE_ASM_IO_H).\n"
+
+#: src/bsd/bsd_detect.c:106 src/linux/linux_detect.c:294
+#, c-format
+msgid "  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"
+msgstr "  IO_LIBUSB : %s trouvé lors de la compilation (HAVE_LIBUSB).\n"
+
+#: src/bsd/bsd_ioports.c:77
+msgid "ioctl failed in bsd_ioctl_read_io !\n"
+msgstr "échec de ioctl dans bsd_ioctl_read_io.\n"
+
+#: src/bsd/bsd_ioports.c:93
+msgid "ioctl failed in bsd_ioctl_write_io !\n"
+msgstr "échec de ioctl dans bsd_ioctl_write_io.\n"
+
+#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:75 src/linux/tig_link.c:71
+#: src/linux/linux_ioports.c:124
+#, c-format
+msgid "unable to open this serial port: %s (wrong permissions).\n"
+msgstr "impossible d'ouvrir ce port série : %s (permissions insuffisantes).\n"
+
+#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:77 src/linux/tig_link.c:73
+#: src/linux/linux_ioports.c:126
+#, c-format
+msgid "unable to open this serial port: %s\n"
+msgstr "impossible d'ouvrir ce port série : %s\n"
+
+#: src/bsd/bsd_mapping.c:59 src/linux/linux_mapping.c:66
+#: src/win32/win32_mapping.c:48
+msgid "getting method from resources (automatic):\n"
+msgstr "détermination de la méthode utilisée (automatique) :\n"
+
+#: src/bsd/bsd_mapping.c:61 src/linux/linux_mapping.c:68
+#: src/win32/win32_mapping.c:50
+msgid "getting method from resources (user-forced):\n"
+msgstr "détermination de la méthode utilisée (manuelle) :\n"
+
+#: src/bsd/bsd_mapping.c:85 src/bsd/bsd_mapping.c:100
+#: src/linux/linux_mapping.c:105 src/linux/linux_mapping.c:134
+msgid "  warning: can't use IO_ASM\n"
+msgstr "  attention : impossible d'utiliser IO_ASM\n"
+
+#: src/bsd/bsd_mapping.c:138 src/linux/linux_mapping.c:201
+#: src/win32/win32_mapping.c:123
+msgid "mapping I/O...\n"
+msgstr "carte des E/S...\n"
+
+#: src/bsd/bsd_mapping.c:217 src/linux/linux_mapping.c:308
+#: src/win32/win32_mapping.c:203
+msgid "registering cable...\n"
+msgstr "enregistrement du câble...\n"
+
+#: src/bsd/bsd_mapping.c:300 src/linux/linux_mapping.c:400
+#: src/win32/win32_mapping.c:292
+msgid "invalid argument (bad cable)."
+msgstr "argument non valide (câble incorrect)."
+
+#: src/bsd/bsd_mapping.c:317 src/linux/linux_mapping.c:609
+#, c-format
+msgid "  check for asm usability: %s\n"
+msgstr "  disponibilité de l'asm : %s\n"
+
+#: src/linux/dev_link.c:81
+#, c-format
+msgid "unable to open character device: %s.\n"
+msgstr "impossible d'ouvrir ce périphérique de type caractère : %s.\n"
+
+#: src/linux/dev_link.c:82
+#, c-format
+msgid "unable to open character device: %s (wrong permissions).\n"
+msgstr ""
+"impossible d'ouvrir ce périphérique de type caractère : %s (permissions "
+"insuffisantes).\n"
+
+#: src/linux/dev_link.c:83
+#, c-format
+msgid "unable to open character device: %s\n"
+msgstr "impossible d'ouvrir ce périphérique de type caractère : %s\n"
+
+#: src/linux/dev_link.c:93 src/linux/dev_link.c:104
+msgid "failed to set delay.\n"
+msgstr "impossible de définir le délai.\n"
+
+#: src/linux/dev_link.c:97 src/linux/dev_link.c:108
+msgid "failed to set timeout.\n"
+msgstr "impossible de définir la limite de temps.\n"
+
+#: src/linux/slv_link.c:100
+#, c-format
+msgid "unable to open this device: %s.\n"
+msgstr "impossible d'ouvrir ce périphérique : %s.\n"
+
+#: src/linux/slv_link.c:129
+msgid "unable to set timeout (ioctl).\n"
+msgstr "impossible de définir la limite de temps (ioctl).\n"
+
+#: src/linux/slv_link.c:141
+msgid "unable to reset pipes (ioctl).\n"
+msgstr "impossible d'initialiser les tubes (ioctl).\n"
+
+#: src/linux/slv_link.c:227
+msgid ""
+"weird, read returns without any data; retrying to circumvent the quirk...\n"
+msgstr "la lecture n'a retourné aucune donnée. Nouvel essai...\n"
+
+#: src/linux/slv_link2.c:122
+msgid "TIGL-USB found.\n"
+msgstr "TIGL-USB trouvé.\n"
+
+#: src/linux/slv_link2.c:145
+#, c-format
+msgid "usb_find_busses (%s).\n"
+msgstr "usb_find_busses (%s).\n"
+
+#: src/linux/slv_link2.c:152
+#, c-format
+msgid "usb_find_devices (%s).\n"
+msgstr "usb_find_devices (%s).\n"
+
+#: src/linux/slv_link2.c:383
+#, fuzzy
+msgid ""
+"\n"
+"weird, usb_bulk_read returns without any data & error; retrying...\n"
+msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"
+
+#: src/linux/tie_link.c:72
+msgid "Invalid io_address parameter passed to libticables.\n"
+msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
+
+#: src/linux/tie_link.c:86
+#, c-format
+msgid "error: %s\n"
+msgstr "Erreur : %s\n"
+
+#: src/linux/linux_detect.c:63 src/win32/win32_detect.c:45
+msgid "getting OS type:\n"
+msgstr "Détermination du système d'exploitation :\n"
+
+#: src/linux/linux_detect.c:64
+#, c-format
+msgid "  system name: %s\n"
+msgstr "  nom du système : %s\n"
+
+#: src/linux/linux_detect.c:65
+#, c-format
+msgid "  node name: %s\n"
+msgstr "  nom du nœud : %s\n"
+
+#: src/linux/linux_detect.c:66
+#, c-format
+msgid "  release: %s\n"
+msgstr "  version du noyau : %s\n"
+
+#: src/linux/linux_detect.c:67
+#, c-format
+msgid "  version: %s\n"
+msgstr "  version : %s\n"
+
+#: src/linux/linux_detect.c:68
+#, c-format
+msgid "  machine: %s\n"
+msgstr "  machine : %s\n"
+
+#: src/linux/linux_detect.c:96
+msgid ""
+"The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc "
+"proc'.\n"
+msgstr ""
+"Le dossier virtuel \"proc\" n'existe pas. Montez-le avec \"mount -t proc /"
+"proc proc\".\n"
+
+#: src/linux/linux_detect.c:102
+msgid "quick search for parallel/serial ports:\n"
+msgstr "recherche rapide des ports série/parallèle :\n"
+
+#: src/linux/linux_detect.c:107
+msgid ""
+"The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"
+msgstr ""
+"Le dossier virtuel \"/proc/ioports\" n'existe pas. Impossible de poursuivre "
+"la recherche des ports.\n"
+
+#: src/linux/linux_detect.c:115
+msgid "Unable to open /proc/ioports.\n"
+msgstr "Impossible d'ouvrir /proc/ioports.\n"
+
+#: src/linux/linux_detect.c:128
+#, c-format
+msgid "  serial port found at 0x%03x\n"
+msgstr "  port série trouvé à l'adresse 0x%03x\n"
+
+#: src/linux/linux_detect.c:130
+#, c-format
+msgid "  parallel port found at 0x%03x\n"
+msgstr "  port parallèle trouvé à l'adresse 0x%03x\n"
+
+#: src/linux/linux_detect.c:138
+msgid "search for all ports:\n"
+msgstr "recherche de tous les ports :\n"
+
+#: src/linux/linux_detect.c:145
+msgid "Unable to open '/proc/sys/dev/parport/'.\n"
+msgstr "Impossible d'ouvrir \"/proc/sys/dev/parport/\".\n"
+
+#: src/linux/linux_detect.c:171
+#, c-format
+msgid "unable to open this entry: <%s>\n"
+msgstr "Impossible d'ouvrir cette entrée : <%s>\n"
+
+#: src/linux/linux_detect.c:174
+#, c-format
+msgid "  %s at 0x%03x\n"
+msgstr "  %s à l'adresse 0x%03x\n"
+
+#: src/linux/linux_detect.c:180
+#, c-format
+msgid "Invalid parport entry: <%s>.\n"
+msgstr "Entrée parport non valide : <%s>.\n"
+
+#: src/linux/linux_detect.c:186
+msgid "Closedir\n"
+msgstr "Ferme le dossier\n"
+
+#: src/linux/linux_detect.c:194
+msgid ""
+"The file '/proc/tty/driver/serial' does not exist or is not accessible. "
+"Unable to probe serial ports.\n"
+msgstr ""
+"Le fichier \"/proc/tty/driver/serial\" n'existe pas ou n'est pas accessible. "
+"Impossible de poursuivre la recherche des ports séries.\n"
+
+#: src/linux/linux_detect.c:202
+#, c-format
+msgid "Unable to open this entry: <%s>\n"
+msgstr "Impossible d'ouvrir cette entrée : <%s>\n"
+
+#: src/linux/linux_detect.c:242
+msgid "ok"
+msgstr "ok"
+
+#: src/linux/linux_detect.c:242
+msgid "nok"
+msgstr "échec"
+
+#: src/linux/linux_detect.c:247 src/win32/win32_detect.c:80
+msgid "checking resources:\n"
+msgstr "vérification des ressources :\n"
+
+#: src/linux/linux_detect.c:272
+#, c-format
+msgid "  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr "  IO_TIPAR : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
+
+#: src/linux/linux_detect.c:279
+#, c-format
+msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr "  IO_TISER : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
+
+#: src/linux/linux_detect.c:286
+#, c-format
+msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
+msgstr "  IO_TIUSB : %s trouvé lors de la compilation (HAVE_LINUX_TIGLUSB_H)\n"
+
+#: src/linux/linux_ioports.c:84
+msgid "ioctl failed in linux_ioctl_read_io !\n"
+msgstr "échec de ioctl dans linux_ioctl_read_io.\n"
+
+#: src/linux/linux_ioports.c:100
+msgid "ioctl failed in linux_ioctl_write_io !\n"
+msgstr "échec de ioctl dans linux_ioctl_write_io.\n"
+
+#: src/linux/linux_mapping.c:80
+msgid "  warning, can't use IO_API\n"
+msgstr "  attention : impossible d'utiliser IO_API\n"
+
+#: src/linux/linux_mapping.c:88 src/linux/linux_mapping.c:114
+msgid "  warning: can't use IO_API\n"
+msgstr "  attention : impossible d'utiliser IO_API\n"
+
+#: src/linux/linux_mapping.c:96
+msgid "  warning: can't use IO_TISER\n"
+msgstr "  attention : impossible d'utiliser IO_TISER\n"
+
+#: src/linux/linux_mapping.c:125
+msgid "  warning: can't use IO_TIPAR\n"
+msgstr "  attention : impossible d'utiliser IO_TIPAR\n"
+
+#: src/linux/linux_mapping.c:145
+msgid "  warning: can't use IO_TIUSB\n"
+msgstr "  attention : impossible d'utiliser IO_TIUSB\n"
+
+#: src/linux/linux_mapping.c:154
+msgid "  warning: can't use IO_LIBUSB\n"
+msgstr "  attention : impossible d'utiliser IO_LIBUSB\n"
+
+#: src/linux/linux_mapping.c:522
+msgid "Unable to open the '/etc/group' file\n"
+msgstr "Impossible d'ouvrir le fichier \"/etc/group\".\n"
+
+#: src/linux/linux_mapping.c:549
+#, c-format
+msgid "    node %s: exists\n"
+msgstr "    le nœud %s existe\n"
+
+#: src/linux/linux_mapping.c:551
+#, c-format
+msgid "    node %s: does not exists\n"
+msgstr "    le nœud %s n'existe pas\n"
+
+#: src/linux/linux_mapping.c:552
+msgid "    => you will have to create the node.\n"
+msgstr "    => vous devez créer le nœud.\n"
+
+#: src/linux/linux_mapping.c:560
+#, c-format
+msgid "    permissions/user/group:%s%s %s\n"
+msgstr "    permissions /user/group :%s%s %s\n"
+
+#: src/linux/linux_mapping.c:569
+msgid "    is user can r/w on device: yes\n"
+msgstr ""
+"    l'utilisateur a le droit de lecture/écriture sur le périphérique : oui\n"
+
+#: src/linux/linux_mapping.c:572
+msgid "    is user can r/w on device: no\n"
+msgstr ""
+"    l'utilisateur a le droit de lecture/écriture sur le périphérique : non\n"
+
+#: src/linux/linux_mapping.c:576
+msgid "    are others can r/w on device: yes\n"
+msgstr ""
+"    les autres utilisateurs ont le droit de lecture/écriture sur le "
+"périphérique : oui\n"
+
+#: src/linux/linux_mapping.c:580
+msgid "    are others can r/w on device: no\n"
+msgstr ""
+"    les autres utilisateurs ont le droit de lecture/écriture sur le "
+"périphérique : non\n"
+
+#: src/linux/linux_mapping.c:586
+#, c-format
+msgid "    is the user '%s' in the group '%s': yes\n"
+msgstr "    l'utilisateur \"%s\" est dans le groupe \"%s\" : oui\n"
+
+#: src/linux/linux_mapping.c:588
+#, c-format
+msgid "    is the user '%s' in the group '%s': no\n"
+msgstr "    l'utilisateur \"%s\" est dans le groupe \"%s\" : non\n"
+
+#: src/linux/linux_mapping.c:589
+#, c-format
+msgid "    => you should add your username at the group '%s' in '/etc/group'\n"
+msgstr ""
+"    => vous devriez ajouter votre nom d'utilisateur au groupe \"%s\" dans \"/"
+"etc/group\"\n"
+
+#: src/linux/linux_mapping.c:590
+msgid "    => you will have to restart you session, too\n"
+msgstr "    => vous devrez ensuite redémarrer une session.\n"
+
+#: src/linux/linux_mapping.c:618
+msgid "  check for tty usability:\n"
+msgstr "  disponibilité de tty :\n"
+
+#: src/linux/linux_mapping.c:628
+msgid "  check for tipar usability:\n"
+msgstr "  disponibilité de tipar :\n"
+
+#: src/linux/linux_mapping.c:632
+#, c-format
+msgid "      using devfs: %s\n"
+msgstr "      utilisation de devfs : %s\n"
+
+#: src/linux/linux_mapping.c:643
+msgid "      module: loaded\n"
+msgstr "      module : chargé\n"
+
+#: src/linux/linux_mapping.c:645
+msgid "      module: not loaded\n"
+msgstr "      module : non chargé\n"
+
+#: src/linux/linux_mapping.c:646 src/linux/linux_mapping.c:710
+msgid "    => check the module exists (either as module, either as built-in)\n"
+msgstr ""
+"    => vérifiez que le module existe (comme module ou directement intégré au "
+"noyau)\n"
+
+#: src/linux/linux_mapping.c:647 src/linux/linux_mapping.c:711
+msgid "    => add an entry into your modutils file to automatically load it\n"
+msgstr ""
+"    => ajoutez une ligne dans le fichier modutils pour le charger "
+"automatiquement.\n"
+
+#: src/linux/linux_mapping.c:660
+msgid "  check for tiser usability:\n"
+msgstr "  disponibilité de tiser :\n"
+
+#: src/linux/linux_mapping.c:664 src/linux/linux_mapping.c:696
+#, c-format
+msgid "    using devfs: %s\n"
+msgstr "      utilisation de devfs : %s\n"
+
+#: src/linux/linux_mapping.c:675 src/linux/linux_mapping.c:707
+msgid "    module: loaded\n"
+msgstr "      module : chargé\n"
+
+#: src/linux/linux_mapping.c:677 src/linux/linux_mapping.c:709
+msgid "    module: not loaded\n"
+msgstr "      module : non chargé\n"
+
+#: src/linux/linux_mapping.c:678
+msgid "    => check the module exists (compiled as module)\n"
+msgstr "    => vérifiez que le module existe (compilé comme module)\n"
+
+#: src/linux/linux_mapping.c:679
+msgid "    => add an entry into your modutils file to automatically load it.\n"
+msgstr ""
+"    => ajoutez une ligne dans le fichier modutils pour le charger "
+"automatiquement.\n"
+
+#: src/linux/linux_mapping.c:692
+msgid "  check for tiusb usability:\n"
+msgstr "  disponibilité de tiusb :\n"
+
+#: src/linux/linux_mapping.c:724
+msgid "  check for lib-usb usability:\n"
+msgstr "  disponibilité de lib-usb :\n"
+
+#: src/linux/linux_mapping.c:727 src/linux/linux_mapping.c:729
+#, c-format
+msgid "    usb filesystem (/proc/bus/usb): %s\n"
+msgstr "    système de fichiers usb (/proc/bus/usb) : %s\n"
+
+#: src/linux/linux_mapping.c:730
+msgid ""
+"    => the usbfs must be supported by your kernel and you have to mount it\n"
+msgstr ""
+"    => usbfs doit être pris en charge par votre noyau et doit être "
+"préalablement monté\n"
+
+#: src/linux/linux_mapping.c:731
+msgid ""
+"    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
+msgstr ""
+"    => ajoutez \"none /proc/bus/usb usbfs defaults 0 0\" dans le fichier \"/"
+"etc/fstab\"\n"
+
+#: src/win32/slv_link.c:76
+msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
+msgstr ""
+"Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
+
+#: src/win32/slv_link.c:83
+#, c-format
+msgid ""
+"TiglUsb.dll: version %s mini needed, got version %s.\n"
+"Please download the latest release on <http://ti-lpg.org/prj_usb>."
+msgstr ""
+"TiglUsb.dll: la version %s au minimum est nécessaire, vous utilisez la "
+"version %s.\n"
+"Veuillez télécharger la dernière version sur <http://ti-lpg.org/prj_usb>."
+
+#: src/win32/slv_link.c:90
+#, fuzzy, c-format
+msgid "using TiglUsb.dll version %s\n"
+msgstr "  version : %s\n"
+
+#: src/win32/slv_link.c:94
+msgid "Unable to load TiglUsbOpen symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsb.\n"
+
+#: src/win32/slv_link.c:101
+msgid "Unable to load TiglUsbClose symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbClose.\n"
+
+#: src/win32/slv_link.c:108 src/win32/slv_link.c:115
+msgid "Unable to load TiglUsbFlush symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbFlush.\n"
+
+#: src/win32/slv_link.c:122
+msgid "Unable to load TiglUsbCheck symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
+
+#: src/win32/slv_link.c:129
+msgid "Unable to load TiglUsbRead symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbRead.\n"
+
+#: src/win32/slv_link.c:136
+msgid "Unable to load TiglUsbWrite symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbWrite.\n"
+
+#: src/win32/slv_link.c:143 src/win32/slv_link.c:150
+msgid "Unable to load TiglUsbSetTimeout symbol.\n"
+msgstr "Impossible de charger le symbole TiglUsbSetTimeout.\n"
+
+#: src/win32/tie_link.c:81
+msgid "invalid io_address parameter passed to libticables.\n"
+msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
+
+#: src/win32/vti_link.c:103
+msgid "Unable to get an handle on the libTIcables.\n"
+msgstr "Impossible de mettre la main sur libTIcables.\n"
+
+#: src/win32/vti_link.c:104
+msgid "Did you rename the library ?!\n"
+msgstr "Avez-vous renommé la librairie ?\n"
+
+#: src/win32/vti_link.c:105
+msgid "Fatal error. Program terminated.\n"
+msgstr "Erreur fatale. Programme terminé.\n"
+
+#: src/win32/vti_link.c:121
+#, c-format
+msgid "Opened %s\n"
+msgstr "%s a été ouvert\n"
+
+#: src/win32/porttalk.c:58
+msgid ""
+"PortTalk: Failed to get System Directory. Is System Directory Path > 55 "
+"Characters?\n"
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+"PortTalk : Impossible de trouver le répertoire système. Le chemin d'accès "
+"fait-il plus de 55 caractères ?\n"
+"PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/"
+"driver.\n"
+
+#: src/win32/porttalk.c:64
+#, c-format
+msgid "PortTalk: Copying driver to %s\n"
+msgstr "PortTalk : Copie le pilote dans %s\n"
+
+#: src/win32/porttalk.c:69
+#, c-format
+msgid "PortTalk: Failed to copy driver to %s\n"
+msgstr "PortTalk : Impossible de copier le pilote dans %s\n"
+
+#: src/win32/porttalk.c:71
+msgid ""
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+"PortTalk : Veuillez copier manuellement le pilote dans le dossier system32/"
+"driver.\n"
+
+#: src/win32/porttalk.c:101
+msgid "PortTalk: Driver already exists. No action taken.\n"
+msgstr "PortTalk : Le pilote existe déjà. Aucun changement n'a été fait.\n"
+
+#: src/win32/porttalk.c:103
+msgid "PortTalk: Unknown error while creating Service.\n"
+msgstr ""
+"PortTalk : Une erreur inconnue est survenue lors de la création du service.\n"
+
+#: src/win32/porttalk.c:105
+msgid "PortTalk: Driver successfully installed.\n"
+msgstr "PortTalk : Le pilote a été installé avec succès.\n"
+
+#: src/win32/porttalk.c:128
+msgid ""
+"PortTalk: You do not have rights to access the Service Control Manager and\n"
+"PortTalk: the PortTalk driver is not installed or started. Please ask \n"
+"PortTalk: your administrator to install the driver on your behalf.\n"
+msgstr ""
+"PortTalk : Vous n'avez pas les droits d'accès au Service Control Manager et\n"
+"PortTalk : le pilote PortTalk n'est pas installé ou démarré. Veuillez "
+"demander\n"
+"PortTalk : à votre administrateur d'installer le pilote en votre nom.\n"
+
+#: src/win32/porttalk.c:143
+msgid "PortTalk: You do not have rights to the PortTalk service database\n"
+msgstr ""
+"PortTalk : Vous n'avez pas les droits d'accès à la base de données du "
+"service PortTalk.\n"
+
+#: src/win32/porttalk.c:146
+msgid "PortTalk: The specified service name is invalid.\n"
+msgstr "PortTalk : Le nom du service spécifié n'est pas valide.\n"
+
+#: src/win32/porttalk.c:150
+msgid ""
+"PortTalk: The PortTalk driver does not exist. Installing driver.\n"
+"PortTalk: This can take up to 30 seconds on some machines . .\n"
+msgstr ""
+"PortTalk : Le pilote PortTalk n'existe pas. Installation du pilote en "
+"cours.\n"
+"PortTalk : Cela peut prendre près de 30 secondes sur certaines machines.\n"
+
+#: src/win32/porttalk.c:164
+msgid "PortTalk: The PortTalk driver has been successfully started.\n"
+msgstr "PortTalk : Le pilote PortTalk a été démarré avec succès.\n"
+
+#: src/win32/porttalk.c:168
+msgid "PortTalk: The PortTalk driver is already running.\n"
+msgstr "PortTalk : Le pilote PortTalk est déjà lancé.\n"
+
+#: src/win32/porttalk.c:170
+msgid ""
+"PortTalk: Unknown error while starting PortTalk driver service.\n"
+"PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
+msgstr ""
+"PortTalk : Une erreur inconnue est survenue lors du démarrage du service "
+"PortTalk.\n"
+"PortTalk : Est-ce que le fichier PortTalk.SYS figure bien dans le dossier "
+"\"\\System32\\Drivers\" ?\n"
+
+#: src/win32/win32_detect.c:50
+#, c-format
+msgid "  operating System: %s\n"
+msgstr "  système d'exploitation : %s\n"
+
+#: src/win32/win32_detect.c:53
+#, c-format
+msgid "  version: %i.%i\n"
+msgstr "  version : %i.%i\n"
+
+#: src/win32/win32_detect.c:94
+#, c-format
+msgid "  IO_API: %sfound at compile time.\n"
+msgstr "  IO_API : %s trouvé lors de la compilation.\n"
+
+#: src/win32/win32_detect.c:101
+msgid "  IO_ASM: available (Win9x).\n"
+msgstr "  IO_ASM : disponible (Win9x).\n"
+
+#: src/win32/win32_detect.c:103
+msgid "  IO_ASM: not available (WinNT).\n"
+msgstr "  IO_ASM : indisponible (WinNT).\n"
+
+#: src/win32/win32_detect.c:141
+#, c-format
+msgid "  IO_DLL: %s (PortTalk)\n"
+msgstr "  IO_DLL : %s (PortTalk)\n"
+
+#: src/win32/win32_detect.c:152
+#, c-format
+msgid "  IO_USB: %s (TiglUsb)\n"
+msgstr "  IO_TIUSB : %s (TiglUsb)\n"
+
+#: src/win32/win32_ioports.c:155
+msgid ""
+"couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
+msgstr ""
+"Impossible d'accéder au pilote PortTalk. Veuillez vérifier qu'il est "
+"installé/chargé.\n"
+
+#: src/win32/win32_ioports.c:180
+#, c-format
+msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
+msgstr "L'accès à l'adresse 0x%03X (IOPM Offset 0x%02X) a été accordé.\n"
+
+#: src/win32/win32_ioports.c:195
+#, c-format
+msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
+msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d.\n"
+
+#: src/win32/win32_ioports.c:272
+#, c-format
+msgid "serial port %s successfully reconfigured.\n"
+msgstr "Le port série %s a été reconfiguré avec succès.\n"
+
+#~ msgid ""
+#~ "Cause: This error may have some causes. See the previous error message "
+#~ "for more complete informations. Check for:\n"
+#~ "- I/O permissions (parallel/serial link cable)\n"
+#~ "- device driver (parallel/serial cable under Win NT4/2000/XP or USB)\n"
+#~ "- kernel module (parallel/serial or USB under Linux."
+#~ msgstr ""
+#~ "Cause : Cette erreur peut avoir plusieurs causes. Se référer aux messages "
+#~ "d'erreur précédents pour plus d'information. Vérifiez :\n"
+#~ "- les permissions d'entrée/sortie (câble parallèle/série)\n"
+#~ "- le pilote du périphérique (câble parallèle/série sous Win NT4/2000/XP "
+#~ "ou USB)\n"
+#~ "- le module du noyau (parallèle/série ou USB sous Linux)."
