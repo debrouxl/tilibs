@@ -78,8 +78,8 @@ static uint8_t rBuf[MAX_PACKET_SIZE];
 
 static int dev_fd = 0;
 
-#ifdef HAVE_TILP_TICABLE_H
-# include <tilp/ticable.h>	//ioctl codes
+#ifdef HAVE_LINUX_TICABLE_H
+# include <linux/ticable.h>	//ioctl codes
 # include <sys/ioctl.h>
 #endif
 
@@ -94,7 +94,7 @@ int slv_init()
 	}
 	
 	START_LOGGING();
-	
+
 	return 0;
 }
 
@@ -104,22 +104,24 @@ int slv_open(void)
   nBytesRead = 0;
   nBytesWrite = 0;
 
-#ifdef HAVE_TILP_TICABLE_H
+#ifdef HAVE_LINUX_TICABLE_H
   {
     int arg = time_out;
+
     if (ioctl(dev_fd, IOCTL_TIUSB_TIMEOUT, arg) == -1) {
-      printl1(2, _("unable to set timeout (ioctl).\n"));
-      return ERR_IOCTL;
+	    printl1(2, _("unable to set timeout (ioctl).\n"));
+	    //return ERR_IOCTL;
     }
   }
 #endif
 
   /* Reset both endpoints */
-#ifdef HAVE_TILP_TICABLE_H
-  {
+#ifdef HAVE_LINUX_TICABLE_H
+ {
     int arg = 0;
+    
     if (ioctl(dev_fd, IOCTL_TIUSB_RESET_PIPES, arg) == -1) {
-      printl1(0, _("unable to reset pipes (ioctl).\n"));
+	    printl1(2, _("unable to reset pipes (ioctl).\n"));
       //return ERR_IOCTL;
     }
   }

@@ -41,8 +41,8 @@
 #include <time.h>
 #include <errno.h>
 
-#ifdef HAVE_TILP_TICABLE_H
-# include <tilp/ticable.h>
+#ifdef HAVE_LINUX_TICABLE_H
+# include <linux/ticable.h>
 # include <sys/ioctl.h>
 #endif
 
@@ -86,7 +86,7 @@ int dev_init()
 	}
 
   	/* Set timeout and inter-bit delay */
-#if defined(HAVE_TILP_TICABLE_H)
+#if defined(HAVE_LINUX_TICABLE_H)
 	
 	if((port == PARALLEL_PORT_1) || (port == PARALLEL_PORT_2) || (port == PARALLEL_PORT_3)) {
 	  	if (ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay) == -1) {
@@ -212,7 +212,7 @@ int dev_check(int *status)
 
 int dev_supported()
 {
-#if defined(HAVE_TILP_TICABLE_H)
+#if defined(HAVE_LINUX_TICABLE_H)
   	return SUPPORT_ON | SUPPORT_TIPAR | SUPPORT_TISER;
 #else
   	return SUPPORT_ON;
