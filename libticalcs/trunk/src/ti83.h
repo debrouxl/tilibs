@@ -16,34 +16,35 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TI83_H
-#define TI83_H
+#ifndef __TICALCS_TI83__
+#define __TICALCS_TI83__
 
 #include <stdio.h>
-#include "calc_ext.h"
-
-const char *ti83_byte2type(byte data);
-byte ti83_type2byte(char *s);
-const char *ti83_byte2fext(byte data);
-byte ti83_fext2byte(char *s);
-
-int ti83_isready(void);
-int ti83_send_key(word key);
-int ti83_remote_control(void);
-int ti83_screendump(byte **bitmap, int mask_mode,
-                         struct screen_coord *sc);
-int ti83_directorylist(struct varinfo *list, int *n_elts);
-int ti83_recv_backup(FILE *file, int mask_mode, longword *version);
-int ti83_send_backup(FILE *file, int mask_mode);
-int ti83_recv_var(FILE *file, int mask_mode, 
-		      char *varname, byte vartype, byte varlock);
-int ti83_send_var(FILE *file, int mask_mode);
-int ti83_send_flash(FILE *file, int mask_mode);
-int ti83_recv_flash(FILE *file, int mask_mode, char *appname, int appsize);
-int ti83_dump_rom(FILE *file, int mask_mode);
-int ti83_get_rom_version(char *version);
-int ti83_get_idlist(char *idlist);
+#include "headers.h"
 
 int ti83_supported_operations(void);
 
+int ti83_isready(void);
+
+int ti83_send_key(uint16_t key);
+
+int ti83_screendump(uint8_t **bitmap, int mask_mode,
+		    TicalcScreenCoord *sc);
+
+int ti83_directorylist(TNode **tree, uint32_t *memory);
+
+int ti83_send_backup(const char *filename, int mask_mode);
+int ti83_recv_backup(const char *filename, int mask_mode);
+
+int ti83_send_var(const char *filename, int mask_mode, char **actions);
+int ti83_recv_var(      char *filename, int mask_mode, TiVarEntry *ve);
+
+int ti83_send_flash(const char *filename, int mask_mode);
+int ti83_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve);
+int ti83_get_idlist(char *idlist);
+
+int ti83_dump_rom(const char *filename, int mask_mode);
+
 #endif
+
+

@@ -16,12 +16,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_PAUSE_H__
-#define __CALCS_PAUSE_H__
+#ifndef __CALCS_PAUSE__
+#define __CALCS_PAUSE__
 
 // Little pause in milli-seconds
 
-#define PAUSE_BETWEEN_VARS	250		// 250ms
+#define PAUSE_BETWEEN_VARS	250 // 250ms
 
 #if defined(__UNIX__) || defined(__LINUX__) || defined(__MACOSX__)
 # include <unistd.h>

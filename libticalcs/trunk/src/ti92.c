@@ -16,1519 +16,502 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+  This unit provides TI92 support.
+*/
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <time.h>
-//#include <unistd.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-#include "calc_err.h"
-#include "calc_ext.h"
-#include "defs92.h"
-//#include "keys92.h"
-#include "group.h"
-#include "rom92f2.h"
-#include "pause.h"
+#include "headers.h"
+#include "externs.h"
 #include "update.h"
+#include "packets.h"
+#include "calc_err.h"
+#include "cmd92.h"
+#include "rom92f2.h"
+#include "keys92p.h"
+#include "pause.h"
+#include "dirlist.h"
 
-#ifdef HAVE_CURSES_H
-#include <curses.h>
-#endif
+// Screen coordinates of the TI92
+#define TI92_ROWS  128
+#define TI92_COLS  240
 
-/* Functions used by TI_PC functions */
-
-// The PC indicates that is OK
-static int PC_replyOK_92(void)
+int ti92_supported_operations(void)
 {
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer reply OK.\n");
-
-  return 0;
+  return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
+     OPS_DIRLIST |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_ROMVERSION |
+     OPS_ROMDUMP
+     );
 }
 
-// The PC indicates that it is ready or wait data
-static int PC_waitdata_92(void)
-{
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_WAIT_DATA));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer wait data.\n");
-  
-  return 0;
-}
-
-// Check whether the TI reply OK
-static int ti92_isOK(void)
-{
-  byte data;
-
-  TRY(cable->get(&data));
-  if(data != TI92_PC) 
-    {
-      //DISPLAY("Debug1: %02X\n", data);
-      return 4;
-    }
-  TRY(cable->get(&data));
-  if(data != CMD92_TI_OK)
-    { 
-      //DISPLAY("Debug2: %02X\n", data);
-      if(data==CMD92_CHK_ERROR) return ERR_CHECKSUM;
-      else return 4;
-    }
-  TRY(cable->get(&data));
-  if(data != 0x00)
-    { 
-      //DISPLAY("Debug3: %02X\n", data);
-      return 4;
-    }
-  TRY(cable->get(&data));
-  if((data&1) != 0)
-    { 
-      //DISPLAY("Debug4: %02X\n", data);
-      return ERR_NOT_READY;
-    }
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-
-// The TI indicates that it is ready or wait data
-static int ti92_waitdata(void)
-{
-  byte data;
-
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD92_WAIT_DATA) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != 0x00) return ERR_DISCONTINUE;
-  TRY(cable->get(&data));
-  if(data != 0x00) return ERR_DISCONTINUE;
-  DISPLAY("The calculator wait data.\n");
-
-  return 0;
-}
-
-// Check whether the TI reply that it is ready
 int ti92_isready(void)
 {
-  TRY(cable->open());
+  uint16_t status;
+
   DISPLAY("Is calculator ready ?\n");
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_ISREADY));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(ti92_isOK());
-  DISPLAY("The calculator is ready.\n");
-  TRY(cable->close());
 
-  return 0;
-}
-
-// Send a string of characters to the TI
-static int ti92_sendstring(char *s, word *checksum)
-{
-  int i;
-
-  for(i=0; i<(int)strlen(s); i++)
-    {
-      TRY(cable->put(s[i]));
-      (*checksum) += (s[i] & 0xff); //0xFF allows special characters to be received !
-    }
-
-  return 0;
-}
-
-#define TI92_MAXTYPES 32
-const char *TI92_TYPES[TI92_MAXTYPES]=
-{ 
-"EXPR", "UNKNOWN", "UNKNOWN", "UNKNOWN", "LIST", "UNKNOWN", "MAT", "UNKNOWN", 
-"UNKNOW", "UNKNOWN", "DATA", "TEXT", "STR", "GDB", "FIG", "UNKNOWN",
-"PIC", "UNKNOWN", "PRGM", "FUNC", "MAC", "UNKNOWN", "UNKNOWN", "UNKNOWN",
-"UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "BACKUP", "UNKNOWN", "DIR"
-};
-const char *TI92_EXT[TI92_MAXTYPES]=
-{
-"92e", "unknown", "unknown", "unknown", "92l", "unknown", "92m", "unknown",
-"unknown", "unknown", "92c", "92t", "92s", "92d", "92a", "unknown",
-"92i", "unknown", "92p", "92f", "92x", "unknown", "unknown", "unknown",
-"unknown", "unknown", "unknown", "unknown", "unknown", "92b", "unknown", "unknown"
-};
-
-// Return the type corresponding to the value
-const char *ti92_byte2type(byte data)
-{
-  if(data>TI92_MAXTYPES)
-    {
-      DISPLAY("Type: %02X\n", data);
-      DISPLAY("Warning: unknown type. It is a bug. Please report this information.\n");
-      return "UNKNOWN";
-    }
-  else 
-    {
-      return TI92_TYPES[data];
-    }
-}
-
-// Return the value corresponding to the type
-byte ti92_type2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI92_MAXTYPES; i++)
-    {
-      if(!strcmp(TI92_TYPES[i], s)) break;
-    }
-  if(i>TI92_MAXTYPES)
-    {
-      DISPLAY("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// Return the file extension corresponding to the value
-const char *ti92_byte2fext(byte data)
-{
-  if(data>TI92_MAXTYPES)
-    {
-      DISPLAY("Type: %02X\n", data);
-      DISPLAY("Warning: unknown type. It is a bug. Please report this information.\n");    
-      return ".92?";
-    }
-  else 
-  {
-    return TI92_EXT[data];
-  }
-}
-
-// Return the value corresponding to the file extension
-byte ti92_fext2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI92_MAXTYPES; i++)
-    {
-      if(!strcmp(TI92_EXT[i], s)) break;
-    }
-  if(i > TI92_MAXTYPES)
-    {
-      DISPLAY("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// General functions
-int ti92_send_key(word key)
-{
-  TRY(cable->open());
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_DIRECT_CMD));
-  TRY(cable->put(LSB(key)));
-  TRY(cable->put(MSB(key)));
-  TRY(ti92_isOK());
-  TRY(cable->close());
-
-  return 0;
-}
-
-int ti92_remote_control(void)
-{
-#if defined(HAVE_CURSES_H) && defined(HAVE_LIBCURSES)
-  int c;
-  word d;
-  int sp_key;
-  char skey[10];
-  int b;
-
-  TRY(cable->open());
-  d=0;
-  DISPLAY("\n");
-  DISPLAY("Remote control: press any key but for:\n");
-  DISPLAY("2nd, press the square key\n");
-  DISPLAY("diamond, press the tab key\n");
-  DISPLAY("APPS, press F9\n");
-  DISPLAY("STO, press F10\n");
-  DISPLAY("MODE, press F11\n");
-  DISPLAY("CLEAR, press F12\n");
-  DISPLAY("Press End to quit the remote control mode.\n");
-  getchar();
-  initscr();
-  noecho();
-  keypad(stdscr, TRUE);
-  raw();
-  do
-    {
-      sp_key=0;
-      b=0;
-      strcpy(skey, "");
-      c=getch();
-      if(c==9)
-	{
-	  sp_key=KEY92_CTRL;
-	  strcpy(skey, "DIAMOND ");
-	  b=1;
-	  c=getch();
-	}
-      if(c==178)
-        {
-          sp_key=KEY92_2ND;
-	  strcpy(skey, "2nd ");
-	  b=1;
-	  c=getch();
-        }
-      if(c>31 && c<128)
-	{
-	  DISPLAY("Sending <%s%c>\n", skey, c);
-	  TRY(cable->put(PC_TI92));
-	  TRY(cable->put(CMD92_DIRECT_CMD));
-	  c+=sp_key;
-	  DISPLAY("%i\n", c);
-	  TRY(cable->put(LSB(c)));
-	  TRY(cable->put(MSB(c)));
-	  TRY(ti92_isOK());
-	  refresh();
-	}
-      else
-	{
-	  if(c==ESC)
-            {
-              d=KEY92_ESC;
-              DISPLAY("Sending %sESC key\n", skey);
-            }
-	  if(c==BS)
-            {
-              d=KEY92_BS;
-              DISPLAY("Sending %s<- key\n", skey);
-            }
-	  if(c==F1) 
-	    {
-	      d=KEY92_F1;
-	      DISPLAY("Sending %sF1 key\n", skey);	      
-	    }
-	  if(c==F2) 
-	    {
-	      d=KEY92_F2;
-	      DISPLAY("Sending %sF2 key\n", skey);
-	    }
-          if(c==F3) 
-	    {
-	      d=KEY92_F3;
-	      DISPLAY("Sending %sF3 key\n", skey);
-	    }
-          if(c==F4) 
-	    {
-	      d=KEY92_F4;
-	      DISPLAY("Sending %sF4 key\n", skey);
-	    }
-          if(c==F5) 
-	    {
-	      d=KEY92_F5;
-	      DISPLAY("Sending %sF5 key\n", skey);
-	    }
-          if(c==F6) 
-	    {
-	      d=KEY92_F6;
-	      DISPLAY("Sending %sF6 key\n", skey);
-	    }
-	  if(c==F7) 
-	    {
-	      d=KEY92_F7;
-	      DISPLAY("Sending %sF7 key\n", skey);
-	    }
-          if(c==F8) 
-	    {
-	      d=KEY92_F8;
-	      DISPLAY("Sending %sF8 key\n", skey);
-	    }
-          if(c==F9) 
-	    {
-	      d=KEY92_APPS;
-	      DISPLAY("Sending %sAPPS key\n", skey);
-	    }
-          if(c==F10) 
-	    {
-	      d=KEY92_STO;
-	      DISPLAY("Sending %sSTO key\n", skey);
-	    }
-          if(c==F11) 
-	    {
-	      d=KEY92_MODE;
-	      DISPLAY("Sending %sMODE key\n", skey);
-	    }
-          if(c==F12) 
-	    {
-	      d=KEY92_CLEAR;
-	      DISPLAY("Sending %sCLEAR key\n", skey);
-	    }
-	  if(c==CALC_CR || c==CALC_LF) 
-	    {
-	      d=KEY92_CR;
-	      DISPLAY("Sending %sENTER key\n", skey);
-	    }
-	  d+=sp_key;
-	  TRY(cable->put(PC_TI92));
-          TRY(cable->put(CMD92_DIRECT_CMD));
-          TRY(cable->put(LSB(d)));
-          TRY(cable->put(MSB(d)));
-          TRY(ti92_isOK());
-	  refresh();
-	}
-    }
-  while(c!=END);
-  noraw();
-  endwin();
-  DISPLAY("Remote control finished.\n");
-  DISPLAY("\n");
-  TRY(cable->close());
-  
-  return 0;
-#else
-  return ERR_VOID_FUNCTION;
-#endif
-}
-
-int ti92_screendump(byte **bitmap, int mask_mode,
-                         struct screen_coord *sc)
-{
-  byte data;
-  word max_cnt;
-  word sum;
-  word checksum;
-  int i;
-
-  TRY(cable->open());
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  update->prev_percentage = update->percentage = 0.0;
-  sc->width=TI92_COLS;
-  sc->height=TI92_ROWS;
-  sc->clipped_width=TI92_COLS;
-  sc->clipped_height=TI92_ROWS;
+
+  TRYF(ti92_send_RDY());
+  TRYF(ti92_recv_ACK(&status));
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return (status & 0x01) ? ERR_NOT_READY : 0;
+}
+
+int ti92_send_key(uint16_t key)
+{
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  
+  TRYF(ti92_send_KEY(key));
+  TRYF(ti92_recv_ACK(NULL));
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return 0;
+}
+
+int ti92_screendump(uint8_t **bitmap, int mask_mode,
+                    TicalcScreenCoord *sc)
+{
+  uint32_t max_cnt;
+  int err;
+
+  DISPLAY("Receiving screendump...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+  
+  sc->width  = TI92_COLS;
+  sc->height = TI92_ROWS;
+  sc->clipped_width  = TI92_COLS;
+  sc->clipped_height = TI92_ROWS;
+  
   if(*bitmap != NULL)
     free(*bitmap);
-  (*bitmap)=(byte *)malloc(TI92_COLS*TI92_ROWS*sizeof(byte)/8);
+  (*bitmap)=(uint8_t *)malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t)/8);
   if((*bitmap) == NULL)
     {
       fprintf(stderr, "Unable to allocate memory.\n");
       exit(0);
     }
+  
+  TRYF(ti92_send_SCR());
+  TRYF(ti92_recv_ACK(NULL));
 
-  sum=0;
-  DISPLAY("Request screendump.\n");
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_SCREEN_DUMP));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(ti92_isOK());
+  err = ti92_recv_XDP(&max_cnt, *bitmap); // pb with checksum
+  if(err != ERR_CHECKSUM) { TRYF(err) };
+  TRYF(ti92_send_ACK());
 
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return 6;
-  TRY(cable->get(&data));
-  if(data != CMD92_DATA_PART) return 6;  
-  TRY(cable->get(&data));
-  max_cnt=data;
-  TRY(cable->get(&data));
-  max_cnt += (data << 8);
-  DISPLAY("0x%04X = %i bytes to receive\n", max_cnt, max_cnt);
-  DISPLAY("Screendump in progress...\n");
+  DISPLAY("Done.\n");
 
-  update->total = max_cnt;
-  for(i=0; i<max_cnt; i++)
-    {
-      TRY(cable->get(&data));
-      (*bitmap)[i]=~data;
-      sum+=data;
-    
-      update->count = i;
-      update->percentage = (float)i/max_cnt;
-      update_pbar();
-      if(update->cancel) return -1;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  //if(sum != checksum) return 7; // PC & TI checksum are different. Why ?
-  //DISPLAY("Ckechsum: %04X\n", checksum);
-  //DISPLAY("Sum: %04X\n", sum);
-  //DISPLAY("Checksum OK.\n");
-
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_PC_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("PC reply OK.\n");
-  update_stop();
-  DISPLAY("\n");
-  TRY(cable->close());
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
 }
 
-int ti92_recv_backup(FILE *file, int mask_mode, longword *version)
+int ti92_directorylist(TNode **tree, uint32_t *memory)
 {
-  byte data;
-  word sum;
-  word checksum;
-  int i;
-  int b;
-  word block_size;
-  word num_bytes;
-  long offset1, offset2;
-  char desc[43]="Backup file received by tilp";
-  word file_checksum;
-  longword index;
-  int block;
-
-  TRY(cable->open());
+  uint32_t unused;
+  uint8_t buffer[65536];
+  int err;
+  TiVarEntry info;
+  char folder_name[9] = "";
+  TNode *vars, *apps;
+  TNode *folder = NULL;
+  
+  LOCK_TRANSFER();
+  TRYF(cable->open());
   update_start();
-  fprintf(file, "**TI92**");
-  fprintf(file, "%c%c", 0x01, 0x00);
-  for(i=0; i<8; i++) fprintf(file, "%c", 0x00);
-  for(i=0; i<40; i++) fprintf(file, "%c", desc[i]);
-  fprintf(file, "%c%c", 0x01, 0x00);
-  index=0x52;
-  fprintf(file, "%c%c%c%c", (index & 0xFF),(index & 0x0000FF00)>>8, (index & 0x00FF0000)>>16, 
-	  (index & 0xFF000000)>>24);
-  offset1=ftell(file);
-  for(i=0; i<8; i++) fprintf(file, "%c", 0x00);
-  fprintf(file, "%c%c", TI92_BKUP, 0x00); 
-  fprintf(file, "%c%c", 0x00, 0x00);
-  offset2=ftell(file);
-  fprintf(file, "%c%c%c%c", 0x00, 0x00, 0x00, 0x00);
-  fprintf(file, "%c%c", 0xA5, 0x5A);
 
-  sum=0;
-  file_checksum=0;
-  num_bytes=0;
-  DISPLAY("Request backup...\n");
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_REQUEST));
-  TRY(cable->put(0x11));
-  TRY(cable->put(0x00));
-  for(i=0; i<4; i++) { TRY(cable->put(0x00)); }
-  TRY(cable->put(TI92_BKUP));
-  sum+=0x1D;
-  TRY(cable->put(0x0B));
-  sum+=0x0B;
-  TRY(ti92_sendstring("main\\backup", &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  TRY(ti92_isOK());
-
-  for(block = 0; ; block++)
-    {
-      sprintf(update->label_text, "Receiving block %2i", block);      
-      update_label(); //update_label();
-      if(update->cancel) return -1;
-      sum=0;
-      TRY(cable->get(&data));
-      if(data != TI92_PC) return 8;
-      TRY(cable->get(&data));
-
-      if(data == CMD92_EOT) break;
-      else if(data != CMD92_VAR_HEADER) return 8;
-      DISPLAY("The calculator is going to send block %i\n", block);
-
-      TRY(cable->get(&data));
-      if(data == 0x09) { b=0; } else { b=1; }
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      block_size=data;
-      sum+=data;
-      TRY(cable->get(&data));
-      block_size += (data << 8);
-      sum+=data;
-      for(i=0; i<4; i++)
-	{
-	  TRY(cable->get(&data));
-	  sum+=data;
-	}
-      TRY(cable->get(&data));
-      (*version)|=data;
-      (*version) <<= 8;
-      sum+=data;
-      TRY(cable->get(&data));
-      (*version)|=data;
-      (*version) <<= 8;
-      sum+=data;
-      TRY(cable->get(&data));
-      (*version)|=data;
-      (*version) <<= 8;
-      sum+=data;
-      if(b == 1)
-	{
-	  TRY(cable->get(&data));
-	  (*version)|=data;
-	  sum+=data;
-	}
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return 9;
-      
-      TRY(PC_replyOK_92());
-      TRY(PC_waitdata_92());
-
-      TRY(ti92_isOK());
-      TRY(cable->get(&data));
-      if(data != TI92_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD92_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      block_size=data;
-      TRY(cable->get(&data));
-      block_size+=(data << 8);
-      sum=0;
-      TRY(cable->get(&data));
-      sum+=data;
-      TRY(cable->get(&data));
-      sum+=data;
-      TRY(cable->get(&data));
-      sum+=data;
-      TRY(cable->get(&data));
-      sum+=data;
-      DISPLAY("The computer is receiving block %i (%i bytes)\n", 
-	      block, 
-	      block_size-4);
-      num_bytes+=block_size-4;
-      for(i=0; i<block_size-4; i++)
-	{
-	  TRY(cable->get(&data));
-	  sum+=data;
-	  fprintf(file, "%c", data);
-	  file_checksum+=data;
-	}
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(sum != checksum) return 9;
-
-      TRY(PC_replyOK_92());
-    }
-  DISPLAY("%i bytes of backup.\n", num_bytes);
-  DISPLAY("ROM version %c%c%c%c\n", (*version & 0xFF000000)>>24, (*version & 0x00FF0000)>>16, (*version & 0x0000FF00)>>8, (*version & 0xFF));
-
-  fprintf(file, "%c%c", LSB(file_checksum), MSB(file_checksum));
-  fseek(file, offset1, SEEK_SET);
-  fprintf(file, "%c%c%c%c", (*version & 0xFF000000)>>24, (*version & 0x00FF0000)>>16, (*version & 0x0000FF00)>>8, (*version & 0xFF));
-  fseek(file, 0L, SEEK_END);
-  fseek(file, offset2, SEEK_SET);
-  num_bytes+=index+2; //  2 bytes of checksum
-  fprintf(file, "%c%c%c%c", (num_bytes & 0xFF),(num_bytes & 0x0000FF00)>>8, (num_bytes & 0x00FF0000)>>16, (num_bytes & 0xFF000000)>>24);
-  fseek(file, 0L, SEEK_END);
-  DISPLAY("\n");
-  update_stop();
-  TRY(cable->close());
-
-  return 0;
-}
-
-int ti92_send_backup(FILE *file, int mask_mode)
-{
-  byte data;
-  word sum;
-  char str[128];
-  longword backup_size;
-  longword block_size;
-  int i, j;
-  int num_blocks;
-  char version[9];
-  word last_block;
-  longword index;
-
-  TRY(cable->open());
-  update_start();
-  fgets(str, 9, file);
-  if(!(mask_mode & MODE_FILE_CHK_NONE))
-    {
-      if(mask_mode & MODE_FILE_CHK_MID)
-	{
-	  if( strcmp(str, "**TI92P*") && strcmp(str, "**TI89**") &&
-	      strcmp(str, "**TI92**") )
-	    { 
-	      return ERR_INVALID_TIXX_FILE;
-	    }
-	}
-      else if(mask_mode & MODE_FILE_CHK_ALL)
-	{
-	  if( strcmp(str, "**TI92**"))
-	    {
-	      return ERR_INVALID_TI92_FILE;
-	    }
-	}
-    }
- 
-  for(i=0; i<2; i++) fgetc(file);
-  for(i=0; i<8; i++) fgetc(file);
-  for(i=0; i<40; i++) fgetc(file);
-  for(i=0; i<2; i++) fgetc(file);
-  index=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
-    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-  for(i=0; i<8; i++) version[i]=fgetc(file);
-  version[8]='\0';
-  for(i=0; i<2; i++) fgetc(file);
-  for(i=0; i<2; i++) fgetc(file);
-  backup_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
-    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-  for(i=0; i<2; i++) fgetc(file);
-  backup_size-=index+2;
-  DISPLAY("Sending backup...\n");
-  DISPLAY("ROM version %s\n", version);
-  DISPLAY("Size of backup: %i bytes.\n", backup_size);
-
-  sum=0;
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_VAR_HEADER));
-  block_size=4+2+strlen(version);
-  TRY(cable->put(LSB(block_size)));
-  TRY(cable->put(MSB(block_size)));
-  data=backup_size & 0x000000FF;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(backup_size & 0x0000FF00) >> 8;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(backup_size & 0x00FF0000) >> 16;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(backup_size & 0xFF000000) >> 24;
-  sum+=data;
-  TRY(cable->put(data));
-  data=TI92_BKUP;
-  sum+=data;
-  TRY(cable->put(data));
-  data=strlen(version);
-  sum+=data;
-  TRY(cable->put(data));
-  ti92_sendstring(version, &sum);
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-  TRY(ti92_isOK());
-
-  num_blocks=backup_size/1024;
+  DISPLAY("Directory listing...\n");
   
-  for(i=0; i<num_blocks; i++ )
-    {
-      DISPLAY("Sending block %i.\n", i);
-      sum=0;
-      TRY(cable->put(PC_TI92));
-      TRY(cable->put(CMD92_VAR_HEADER));
-      block_size=4+2+strlen(version);
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      data=0x00;
-      sum+=data;
-      TRY(cable->put(data));
-      data=0x04;
-      sum+=data;
-      TRY(cable->put(data));
-      data=0x00;
-      sum+=data;
-      TRY(cable->put(data));
-      data=0x00;
-      sum+=data;
-      TRY(cable->put(data));
-      data=TI92_BKUP;
-      sum+=data;
-      TRY(cable->put(data));
-      data=strlen(version);
-      sum+=data;
-      TRY(cable->put(data));
-      ti92_sendstring(version, &sum);
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti92_isOK());
-      TRY(ti92_waitdata());
-
-      sum=0;
-      TRY(PC_replyOK_92());
-      TRY(cable->put(PC_TI92));
-      TRY(cable->put(CMD92_DATA_PART));
-      block_size=1024;
-      update->total = 1024;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      DISPLAY("Transmitting data.\n");
-      update->total = 1024;
-      for(j=0; j<1024; j++)
- 	{
-	  data=fgetc(file);
-	  sum+=data;
-	  TRY(cable->put(data));
-	  
-	  update->count = j;
-	  update->percentage = (float)j/1024;
-	  update_pbar();
-	  if(update->cancel) return -1;
-	}
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-
-      TRY(ti92_isOK());
-      
-      ((update->main_percentage))=(float)i/num_blocks;
-      update_pbar();
-      if(update->cancel) return -1;
-    }
-
-  DISPLAY("Sending the last block.\n");
-  sum=0;
-  last_block=backup_size%1024;
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_VAR_HEADER));
-  block_size=4+2+strlen(version);
-  TRY(cable->put(LSB(block_size)));
-  TRY(cable->put(MSB(block_size)));
-  data=LSB(last_block);
-  sum+=data;
-  TRY(cable->put(data));
-  data=MSB(last_block);
-  sum+=data;
-  TRY(cable->put(data));
-  data=0x00;
-  sum+=data;
-  TRY(cable->put(data));
-  data=0x00;
-  sum+=data;
-  TRY(cable->put(data));
-  data=TI92_BKUP;
-  sum+=data;
-  TRY(cable->put(data));
-  data=strlen(version);
-  sum+=data;
-  TRY(cable->put(data));
-  ti92_sendstring(version, &sum);
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
+  TRYF(ti92_send_REQ(0, TI92_RDIR, ""));
+  TRYF(ti92_recv_ACK(NULL));
   
-  TRY(ti92_isOK());
-  TRY(ti92_waitdata());
-  
-  sum=0;
-  TRY(PC_replyOK_92());
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_DATA_PART));
-  TRY(cable->put(LSB(last_block)));
-  TRY(cable->put(MSB(last_block)));
-  DISPLAY("Transmitting data.\n");
-  update->total = last_block;
-  for(j=0; j<last_block; j++)
-    {
-      data=fgetc(file);
-      sum+=data;
-      TRY(cable->put(data));
-      update->count = j;
-      update->percentage = (float)j/1024;
-      update_pbar();
-      if(update->cancel) return -1;
-    }
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-  
-  TRY(ti92_isOK());
+  TRYF(ti92_recv_VAR(&info.size, &info.type, info.name));
 
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_EOT));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("Backup sent completely.\n");
-  DISPLAY("\n");
-  update_stop();
-  TRY(cable->close());
+  *tree = g_node_new(NULL);
+  vars = g_node_new(NULL);
+  apps = g_node_new(NULL);
+  g_node_append(*tree, vars);
+  g_node_append(*tree, apps);
 
-  return 0;
-}
-
-int ti92_directorylist(struct varinfo *list, int *n_elts)
-{
-  byte data;
-  word sum;
-  word checksum;
-  int i;
-  word block_size;
-  byte var_type;
-  byte locked;
-  longword var_size;
-  byte name_length;
-  char var_name[9];
-  struct varinfo *p, *f;
-
-  TRY(cable->open());
-  *n_elts=0;
-  update_start();
-  p=list;
-  f=NULL;  
-  p->folder=f;
-  p->is_folder = VARIABLE;
-  p->next=NULL;
-  p->folder=NULL;
-  strcpy(p->varname, "");
-  p->varsize=0;
-  p->vartype=0;
-  p->varattr=0;
-  strcpy(p->translate, "");
-  
-  sum=0;
-  DISPLAY("Request directory list (dir)...\n");
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_REQUEST));
-  TRY(cable->put(0x06));
-  TRY(cable->put(0x00));
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  TRY(cable->put(0x19));
-  sum+=0x19;
-  TRY(cable->put(0x00));
-  sum+=0x00;
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  TRY(ti92_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD92_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  list->varsize=var_size;
-  DISPLAY("Size of the var in memory: %08X.\n", var_size);
-  TRY(cable->get(&data));
-  list->vartype=data;
-  sum+=data;
-  DISPLAY("Ty: %02X\n", data);
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  DISPLAY("Current directory: ");
-  for(i=0; i<name_length; i++)
-    {
-      TRY(cable->get(&data));
-      var_name[i]=data;
-      sum+=data;
-      DISPLAY("%c", data);
-    }
-  var_name[i]='\0';
-  DISPLAY("\n");
-  strcpy(list->varname, var_name);
-  strncpy(list->translate, list->varname, 9); 
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-  list->folder=NULL;
-  
   for( ; ; )
-    {
-      sum=0;
-      if( (p->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
-	{
-	  fprintf(stderr, "Unable to allocate memory.\n");
-	  exit(0);
-	}
-      p=p->next;
-      p->next=NULL;
-      (*n_elts)++;
-      strcpy(p->translate, "");
-      TRY(PC_replyOK_92());
-      TRY(PC_waitdata_92());
+  {
+    TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
+    TNode *node;
 
-      TRY(ti92_isOK());
-      TRY(cable->get(&data));
-      if(data != TI92_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD92_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      block_size=data;
-      TRY(cable->get(&data));
-      block_size += (data << 8);
-      sum=0;
-      for(i=0; i<4; i++)
-        {
-          TRY(cable->get(&data));
-	  sum+=data;
-	}
-      for(i=0; i<8; i++)
-	{
-	  TRY(cable->get(&data));
-          sum+=data;
-	  var_name[i]=data;
-	}
-      var_name[i]='\0';      
-      strcpy(p->varname, var_name);
-      strncpy(p->translate, p->varname, 9);
-      TRY(cable->get(&data));
-      var_type=data;
-      sum+=data;
-      p->vartype=var_type;
-      if(p->vartype == TI92_DIR)
-	p->is_folder = FOLDER;
-      else
-	p->is_folder = VARIABLE;
-      if(p->vartype==TI92_DIR)
-	{
-	  f=p;
-	}
-      p->folder=f;
-      TRY(cable->get(&data));
-      locked=data;
-      sum+=data;
-      p->varattr=locked;
-      TRY(cable->get(&data));
-      var_size=data;
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 8);
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 16);
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 24);
-      sum+=data;
-      p->varsize=var_size;
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      DISPLAY("Name: %8s | ", var_name);
-      DISPLAY("Type: %8s | ", ti92_byte2type(var_type));
-      DISPLAY("Attr: %i | ", locked);
-      DISPLAY("Size: %08X\n", var_size);
-      if(p->is_folder == VARIABLE)
-	list->varsize += var_size;
-      
-      TRY(PC_replyOK_92());
-      TRY(cable->get(&data));
-      if(data != TI92_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data == CMD92_EOT) break;
-      else if(data != CMD92_CONTINUE) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      DISPLAY("The calculator want continue.\n");
+    TRYF(ti92_send_ACK());
+    TRYF(ti92_send_CTS());
+    
+    TRYF(ti92_recv_ACK(NULL));
+    TRYF(ti92_recv_XDP(&unused, buffer));
+    memcpy(ve->name, buffer+4, 8); // skip 4 extra 00 uint8_t
+    ve->name[8] = '\0';
+    ve->type = buffer[12];
+    ve->attr = buffer[13];
+    ve->size = buffer[14] | (buffer[15] << 8) | 
+      (buffer[16] << 16) | (buffer[17] << 24);
+    strcpy(ve->folder, "");
 
-      sprintf(update->label_text, "Reading of: %s/%s", 
-	       (p->folder)->translate, p->translate);
-      update_label();
-      if(update->cancel) return -1;
-   }
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(PC_replyOK_92());
-  DISPLAY("\n");
-  update_stop();
-  TRY(cable->close());
+    tifiles_translate_varname(ve->name, ve->trans, ve->type);
+    node = g_node_new(ve);
 
+    if(ve->type == TI92_DIR) {
+      strcpy(folder_name, ve->name);
+      folder = g_node_append(vars, node);
+    }
+    else {
+      strcpy(ve->folder, folder_name);
+      g_node_append(folder, node);
+    }    
+
+    DISPLAY("Name: %8s | ",  ve->name);
+    DISPLAY("Type: %8s | ",  tifiles_vartype2string(ve->type));
+    DISPLAY("Attr: %i  | ",  ve->attr);
+    DISPLAY("Size: %08X\n",  ve->size);
+
+    TRYF(ti92_send_ACK());
+    err = ti92_recv_CONT();
+    if(err == ERR_EOT) break;
+    TRYF(err);
+
+    sprintf(update->label_text, "Reading of: %s/%s", 
+	    ((TiVarEntry *)(folder->data))->trans, ve->trans);
+    update_label();
+    if(update->cancel) return -1;
+  }
+  
+  TRYF(ti92_send_ACK());
+
+  *memory = ticalc_memory_used(*tree);
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
   return 0;
 }
 
-int ti92_recv_var(FILE *file, int mask_mode, 
-		     char *varname, byte vartype, byte varlock)
+int ti92_recv_backup(const char *filename, int mask_mode)
 {
-  byte data;
-  word sum;
-  word checksum;
-  word block_size;
-  int i;
-  longword var_size;
-  byte name_length;
-  char name[9];
+  Ti9xBackup content = { 0 };
+  uint32_t block_size;
+  int block, err;
+  uint32_t unused;
+  uint8_t *ptr;
 
-  update_stop();
-  TRY(cable->open());
-  sprintf(update->label_text, "Variable: %s", varname);
+  DISPLAY("Receiving backup...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
+  update_start();
+
+  content.calc_type = CALC_TI92;
+  sprintf(update->label_text, "Receiving backup...");
   update_label();
-  sum=0;
-  DISPLAY("Request variable: %s\n", varname);
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_REQUEST));
-  block_size=4+2+strlen(varname);
-  data=LSB(block_size);
-  TRY(cable->put(data));
-  data=MSB(block_size);
-  TRY(cable->put(data));
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  data=vartype;
-  TRY(cable->put(data));
-  sum+=data;
-  data=strlen(varname);
-  TRY(cable->put(data));
-  sum+=data;
-  TRY(ti92_sendstring(varname, &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
+
+  // silent request
+  TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\backup"));
+  printf("filename = <%s>\n", filename);
+  TRYF(ti92_recv_ACK((uint16_t *)&unused));
+
+  content.data_part = (uint8_t *)calloc(128*1024, 1);
+  content.type = TI92_BKUP;
+  content.data_length = 0;
+
+  for(block=0; ; block++)
+  {
+    sprintf(update->label_text, "Receiving block %2i", block);      
+    update_label();
+    err = ti92_recv_VAR(&block_size, &content.type, content.rom_version);
+    TRYF(ti92_send_ACK());
+    
+    if(err == ERR_EOT)
+      break;
+    TRYF(err);
+
+    TRYF(ti92_send_CTS());
+    TRYF(ti92_recv_ACK(NULL));
+    
+    ptr = content.data_part+content.data_length;
+    TRYF(ti92_recv_XDP(&unused, ptr));
+    memmove(ptr, ptr+4, block_size); 
+    TRYF(ti92_send_ACK());
+    content.data_length += block_size;
+  }
   
-  TRY(ti92_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD92_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  DISPLAY("Size of the var in memory: 0x%08X = %i.\n", var_size-2, var_size-2);
-  TRY(cable->get(&data));
-  DISPLAY("Type of the variable: %s\n", ti92_byte2type(data));
-  sum+=data;
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  DISPLAY("Variable name: ");
-  for(i=0; i<name_length; i++)
+  strcpy(content.comment, "Backup file received by TiLP");
+
+  ti9x_write_backup_file(filename, &content);
+  ti9x_free_backup_content(&content);
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+    
+  return 0;
+}
+
+int ti92_send_backup(const char *filename, int mask_mode)
+{
+  Ti9xBackup content = { 0 };
+  int i, nblocks;
+  
+  DISPLAY("Sending backup...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Sending backup...");
+  update_label();
+  
+  TRYF(ti9x_read_backup_file(filename, &content));
+
+  TRYF(ti92_send_VAR(content.data_length, TI92_BKUP, content.rom_version));
+  TRYF(ti92_recv_ACK(NULL));
+  
+  nblocks = content.data_length/1024;
+  for(i=0; i <= nblocks; i++)
+  {
+    uint32_t length = (i != nblocks) ? 1024 : content.data_length % 1024;
+    
+    TRYF(ti92_send_VAR(length, TI92_BKUP, content.rom_version));
+    TRYF(ti92_recv_ACK(NULL));
+    
+    TRYF(ti92_recv_CTS());
+    TRYF(ti92_send_ACK());
+    
+    TRYF(ti92_send_XDP(length, content.data_part + 1024*i));
+    TRYF(ti92_recv_ACK(NULL));
+
+    ((update->main_percentage))=(float)i/nblocks;
+    update_pbar();
+    if(update->cancel) return -1;
+  }
+  
+  TRYF(ti92_send_EOT());
+
+  ti9x_free_backup_content(&content);
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
+  return 0;
+}
+
+int ti92_recv_var(char *filename, int mask_mode, TiVarEntry *entry)
+{
+  static Ti9xRegular *content;
+  uint16_t status;
+  TiVarEntry *ve;
+  char *fn;
+  static int nvar=0;
+  uint32_t unused;
+  uint8_t varname[18];
+
+  DISPLAY("Receiving variable(s)...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
+  update_start();
+  
+  if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
+      (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
     {
-      TRY(cable->get(&data));
-      name[i]=data;
-      DISPLAY("%c", data);
-      sum+=data;
+      content = ti9x_create_regular_content();
+      nvar = 0;
     }
-  name[i]='\0';
-  DISPLAY("\n");
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
+  
+  content->calc_type = CALC_TI92;
+  content->entries = (TiVarEntry *)realloc(content->entries, 
+					  (nvar+1) * sizeof(TiVarEntry));
+  ve = &(content->entries[nvar]);
+  memcpy(ve, entry, sizeof(TiVarEntry));
+  
+  sprintf(update->label_text, "Receiving variable...");
+  update_label();
 
-  TRY(PC_replyOK_92());
-  TRY(PC_waitdata_92());
-  DISPLAY("The calculator want continue.\n");
+  strcpy(varname, entry->folder);
+  strcat(varname, "\\");
+  strcat(varname, entry->name);
+  
+  TRYF(ti92_send_REQ(0, entry->type, varname));
+  TRYF(ti92_recv_ACK(&status));
+  if(status != 0) return ERR_MISSING_VAR;
+  
+  TRYF(ti92_recv_VAR(&ve->size, &ve->type, ve->name));
+  TRYF(ti92_send_ACK());
+  
+  TRYF(ti92_send_CTS());
+  TRYF(ti92_recv_ACK(NULL));
+  
+  ve->data = calloc(ve->size+4, 1);
+  TRYF(ti92_recv_XDP(&unused, ve->data)); 
+  memmove(ve->data, ve->data+4, ve->size);
+  TRYF(ti92_send_ACK());
+  
+  TRYF(ti92_recv_EOT());
+  TRYF(ti92_send_ACK());
 
-  TRY(ti92_isOK());
-  DISPLAY("Receiving variable...\n");
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD92_DATA_PART) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  sum=0;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      fprintf(file, "%c", data);
+  if(++nvar > 1)
+    strcpy(content->comment, "Group file received by TiLP");
+  else
+    strcpy(content->comment, "Single file received by TiLP");
+
+  content->num_entries = nvar;
+  if(mask_mode & MODE_RECEIVE_SINGLE_VAR)
+    { // single
+      ti9x_write_regular_file(NULL, content, &fn);
+      strcpy(filename, fn); free(fn);
+      ti9x_free_regular_content(content);
     }
-  TRY(cable->get(&data));
-  block_size = (data << 8);
-  sum+=data;
-  fprintf(file, "%c", data);
-  TRY(cable->get(&data));
-  block_size |= data;
-  sum+=data;
-  fprintf(file, "%c", data);
-  update->total = block_size;
-  for(i=0; i<block_size; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      fprintf(file, "%c", data);
-
-      update->count = i;
-      update->percentage = (float)i/block_size;
-      update_pbar();
-      if(update->cancel) return -1;
+  else if(mask_mode & MODE_RECEIVE_LAST_VAR)
+    { // group
+      ti9x_write_regular_file(filename, content, NULL);
+      ti9x_free_regular_content(content);
     }
-  TRY(cable->get(&data));
-  checksum=data;
-  fprintf(file, "%c", data);
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  fprintf(file, "%c", data);
-  if(checksum != sum) return ERR_CHECKSUM;
-  TRY(PC_replyOK_92());
-  TRY(cable->get(&data));
-  if(data != TI92_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  DISPLAY("The calculator do not want continue.\n");
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
 
-  TRY(cable->put(PC_TI92));
-  TRY(cable->put(CMD92_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("\n");
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
-  update_stop();
-  TRY(cable->close());
   PAUSE(PAUSE_BETWEEN_VARS);
 
+  return 0;		     
+}
+
+int ti92_send_var(const char *filename, int mask_mode, char **actions)
+{
+  Ti9xRegular content = { 0 };
+  int i;
+  uint16_t status;  
+
+  DISPLAY("Sending variable(s)...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Sending variable(s)...");
+  update_label();
+  
+  TRYF(ti9x_read_regular_file(filename, &content));
+  
+  for(i=0; i<content.num_entries; i++)
+    {
+      TiVarEntry *entry = &(content.entries[i]);
+      uint8_t buffer[65536+4] = { 0 };
+      uint8_t full_name[18], varname[18];
+
+      if(actions == NULL) // backup or old behaviour
+        strcpy(varname, entry->name);
+      else if(actions[i][0] == ACT_SKIP)
+        {
+          DISPLAY(" '%s' has been skipped !\n", entry->name);
+          continue;
+        }
+      else if(actions[i][0] == ACT_OVER)
+        strcpy(varname, actions[i]+1);
+
+      if(mask_mode & MODE_LOCAL_PATH)
+	strcpy(full_name, varname);
+      else {
+	strcpy(full_name, entry->folder);
+	strcat(full_name, "\\");
+	strcat(full_name, varname);
+      }
+
+      TRYF(ti92_send_VAR(entry->size, entry->type, varname));
+      TRYF(ti92_recv_ACK(NULL));
+        
+      TRYF(ti92_recv_CTS());
+      TRYF(ti92_send_ACK());
+              
+      memcpy(buffer+4, entry->data, entry->size);
+      TRYF(ti92_send_XDP(entry->size+4, buffer));
+      TRYF(ti92_recv_ACK(&status));
+      
+      TRYF(ti92_send_EOT());
+      TRYF(ti92_recv_ACK(NULL));
+
+      DISPLAY("\n");
+    }
+
+  ti9x_free_regular_content(&content);
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
   return 0;
 }
 
-int ti92_send_var(FILE *file, int mask_mode)
+int ti92_send_flash(const char *filename, int mask_mode)
 {
-  byte data;
-  word sum;
-  word block_size = 0;
-  int i;
-  int j;
-  int k;
-  longword varsize;
-  byte vartype;
-  char foldname[18];
-  char varname[18];
+  return ERR_VOID_FUNCTION;
+}
 
-  char str[128];
-  int num_vars_in_folder;
-  int num_entries;
-  int var_index;
-  static int num_vars;
-  static char **t_varname=NULL;
-  static byte *t_vartype=NULL;
-  static struct varinfo dirlist;
-  int n;
-  int err;
-  int exist=0;
-  int action=ACTION_NONE;
-  static int do_dirlist=1;
-
-  if((mask_mode & MODE_DIRLIST) && do_dirlist) // do dirlist one time
-    {
-      TRY(ti92_directorylist(&dirlist, &n));
-      do_dirlist=0;
-    }
-
-  if((mask_mode & MODE_SEND_LAST_VAR) ||
-     (mask_mode & MODE_SEND_ONE_VAR)) do_dirlist=1;
-
-  if(t_vartype != NULL) { free(t_vartype); t_vartype=NULL; }
-  if(t_varname != NULL)
-    {
-      for(i=0; i<num_vars; i++) free(t_varname[i]); 
-      t_varname=NULL;
-      num_vars=0;
-    }
-  num_vars=0;
-  var_index=0;
-  TRY(cable->open());
-  update_start();
-  fgets(str, 9, file);
-  if(!(mask_mode & MODE_FILE_CHK_NONE))
-    {
-      if(mask_mode & MODE_FILE_CHK_MID)
-	{
-	  if( strcmp(str, "**TI92P*") && strcmp(str, "**TI89**") &&
-	      strcmp(str, "**TI92**") )
-	    { 
-	      return ERR_INVALID_TIXX_FILE;
-	    }
-	}
-      else if(mask_mode & MODE_FILE_CHK_ALL)
-	{
-	  if( strcmp(str, "**TI92**"))
-	    {
-	      return ERR_INVALID_TI92_FILE;
-	    }
-	}
-    }
-
-  for(i=0; i<2; i++) fgetc(file);
-  for(i=0; i<8; i++) foldname[i]=fgetc(file);
-  foldname[i]='\0';
-  for(i=0; i<40; i++) fgetc(file);
-  num_entries=fgetc(file);
-  num_entries+=fgetc(file) << 8;
-
-  if(num_entries == 1)
-    { // normal file, not a group file
-      t_varname=(char **)malloc(sizeof(char *));
-      if(t_varname == NULL) return 40; 
-      t_varname[0]=(char *)malloc(18*sizeof(char));
-      if(t_varname[0] == NULL) return 40;
-      t_vartype=(byte *)malloc(sizeof(byte));
-      if(t_vartype == NULL) return 40; 
-      num_vars=1;
-      for(i=0; i<4; i++) fgetc(file);
-      for(i=0; i<8; i++) t_varname[var_index][i]=fgetc(file);
-      t_varname[var_index][i]='\0';
-      if(! (mask_mode & MODE_LOCAL_PATH))
-	{ // full path
-	  strcat(foldname, "\\");
-	  strcat(foldname, t_varname[var_index]);
-	  strcpy(t_varname[var_index], foldname);
-	}
-      t_vartype[var_index]=fgetc(file);
-      fgetc(file);
-      for(i=0; i<2; i++) fgetc(file);
-    }
-  else
-  { // group file
-    k=0;
-    while(k<num_entries)
-      {
-	k++;
-	for(i=0; i<4; i++) fgetc(file);
-	for(i=0; i<8; i++) foldname[i]=fgetc(file);
-	foldname[i]='\0';
-	vartype=fgetc(file);
-	fgetc(file);
-	num_vars_in_folder=fgetc(file);
-	num_vars_in_folder+=fgetc(file) << 8;
-	num_vars+=num_vars_in_folder;
-        t_vartype=(byte *)realloc(t_vartype, (num_vars+1)*sizeof(byte));
-        if(t_vartype == NULL) return 40;
-	t_varname=(char **)realloc(t_varname, (num_vars+1)*sizeof(char *));
-	if(t_varname == NULL) return 40;
-
-	for(j=0; j<num_vars_in_folder; j++)
-	  { 
-	    t_varname[var_index]=(char *)malloc(18*sizeof(char));
-	    if(t_varname[var_index] == NULL) return 40; 	
-	    k++;
-	    for(i=0; i<4; i++) fgetc(file);
-	    for(i=0; i<8; i++) varname[i]=fgetc(file);
-	    varname[i]='\0';
-	    vartype=fgetc(file);
-	    fgetc(file);
-	    for(i=0; i<2; i++) fgetc(file);
-	    if(! (mask_mode & MODE_LOCAL_PATH))
-	      {
-		strcpy(t_varname[var_index], foldname);
-		strcat(t_varname[var_index], "\\");
-		strcat(t_varname[var_index], varname); 	    
-	      }
-	    else
-	      strcpy(t_varname[var_index], varname);
-	    t_vartype[var_index]=vartype;
-	    var_index++;
-	  }
-      }
-    var_index=0;
-  }
-  for(i=0; i<4; i++) fgetc(file);
-  for(i=0; i<2; i++) fgetc(file);
-  /*
-  for(i=0; i<num_vars; i++)
-    {
-      DISPLAY("-> <%8s> <%02X>\n", t_varname[i], t_vartype[i]);
-    }
-  */
-  for(j=0; j<num_vars; j++, var_index++)
-    {
-      for(i=0; i<4; i++) fgetc(file);
-      varsize=fgetc(file) << 8;
-      varsize+=fgetc(file);
-      varsize+=2;
-      
-      sprintf(update->label_text, "Variable: %s", 
-	      t_varname[var_index]);
-      update_label();
-      DISPLAY("Sending variable...\n");
-      DISPLAY("Name: %s\n", t_varname[var_index]);
-      DISPLAY("Size: %08X\n", varsize-2);
-      DISPLAY("Type: %s\n", ti92_byte2type(t_vartype[var_index]));
-      
-      /**/
-      exist=check_if_var_exist(&dirlist, t_varname[var_index]);
-      if(exist && (mask_mode & MODE_DIRLIST))
-        {
-          action=update_choose(t_varname[var_index], varname);
-          if(!strcmp(varname, "") && (action==ACTION_RENAME))
-            action=ACTION_SKIP;
-          switch(action)
-            {
-            case ACTION_SKIP: // skip var
-              DISPLAY("User action: skip.\n");
-	      for(i=0; i<varsize; i++)
-                data=fgetc(file);
-              continue;
-              break;
-            case ACTION_OVERWRITE: //try to overwrite it
-              DISPLAY("User action: overwrite.\n");
-              break;
-            case ACTION_RENAME: //rename var
-              DISPLAY("User action: rename from %s into %s.\n",
-                      t_varname[var_index], varname);
-              strcpy(t_varname[var_index], varname);
-              break;
-            default: // skip
-              for(i=0; i<block_size+2; i++)
-                data=fgetc(file);
-              continue;
-              break;
-            }
-        }
-      /**/
-
-      sum=0;
-      TRY(cable->put(PC_TI92));
-      TRY(cable->put(CMD92_VAR_HEADER));
-      block_size=4+2+strlen(t_varname[var_index]);
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      data=varsize & 0x000000FF;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0x0000FF00) >> 8;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0x00FF0000) >> 16;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0xFF000000) >> 24;
-      sum+=data;
-      TRY(cable->put(data));
-      data=t_vartype[var_index];
-      sum+=data;
-      TRY(cable->put(data));
-      data=strlen(t_varname[var_index]);
-      sum+=data;
-      TRY(cable->put(data));
-      TRY(ti92_sendstring(t_varname[var_index], &sum));
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti92_isOK());
-      TRY(ti92_waitdata());
-      
-      sum=0;
-      TRY(PC_replyOK_92());
-      TRY(cable->put(PC_TI92));
-      TRY(cable->put(CMD92_DATA_PART));
-      block_size=4+varsize;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      for(i=0; i<4; i++)
-	{
-	  TRY(cable->put(0x00));
-	}
-      block_size=varsize-2;
-      data=MSB(block_size);
-      sum+=data;
-      TRY(cable->put(data));
-      data=LSB(block_size);
-      sum+=data;
-      TRY(cable->put(data));
-      update->total = block_size;
-      for(i=0; i<block_size; i++)
-	{
-	  data=fgetc(file);
-	  TRY(cable->put(data));
-	  sum+=data;
-	  
-	  update->count = i;
-	  update->percentage = (float)i/block_size;
-	  update_pbar();
-	  if(update->cancel) return -1;
-	}
-      fgetc(file); //skips checksum
-      fgetc(file);
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti92_isOK());
-      TRY(cable->put(PC_TI92));
-      TRY(cable->put(CMD92_EOT));
-      TRY(cable->put(0x00));
-      TRY(cable->put(0x00));
-      DISPLAY("The computer does not want continue.\n");
-      err = ti92_isOK();
-      if(err)
-        {
-          DISPLAY("Variable has been rejected by calc.\n");
-          sprintf(update->label_text, _("Variable rejected"));
-          update_label();
-        }
-      DISPLAY("\n");
-      PAUSE(PAUSE_BETWEEN_VARS);
-    }
-  update_stop();
-  TRY(cable->close());
-
-  return 0;
+int ti92_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve)
+{
+  return ERR_VOID_FUNCTION;
 }
 
 #define DUMP_ROM92_FILE "dumprom.92p"
+#define ROMSIZE (1024*1024)
 
-int ti92_dump_rom(FILE *file, int mask_mode)
-{
+int ti92_dump_rom(const char *filename, int mask_mode)
+{ 
   int i, j;
   int total;
-  byte data;
+  uint8_t data;
   time_t start, elapsed, estimated, remaining;
-  char buffer[MAXCHARS];
-  char tmp[MAXCHARS];
+  char buffer[257];
+  char tmp[257];
   int pad;
-  FILE *f;
-  word checksum, sum;
+  FILE *f, *file;
+  uint16_t checksum, sum;
 
-  update_start();
-  sprintf(update->label_text, "Ready ?");
-  update_label();
+  DISPLAY("ROM dumping...\n");
 
-  /* Open connection and check */
-  TRY(cable->open());
-  TRY(ti92_isready());
-  TRY(cable->close());
-  sprintf(update->label_text, "Yes !");
-  update_label();
-
-  /* Transfer ROM dump program from lib to calc */
+  // Copies ROM dump program into a file
   f = fopen(DUMP_ROM92_FILE, "wb");
   if(f == NULL)
-    return -1;
+    return ERR_FILE_OPEN;
+  
   fwrite(romDump92f2, sizeof(unsigned char), 
 	 romDumpSize92f2, f);
+  
   fclose(f);
   
-  f = fopen(DUMP_ROM92_FILE, "rb");
-  TRY(ti92_send_var(f, MODE_NORMAL));
-  fclose(f);      
+  // Transfer program to calc
+  TRYF(ti92_send_var(DUMP_ROM92_FILE, MODE_SEND_ONE_VAR, NULL));
   unlink(DUMP_ROM92_FILE);
-
-  /* Launch calculator program by remote control */
+  
+  // Launch calculator program by remote control
   sprintf(update->label_text, "Launching...");
   update_label();
 
-  TRY(ti92_send_key(KEY92_CLEAR));
+  TRY(ti92_send_key(KEY92P_CLEAR));
   PAUSE(50);
-  TRY(ti92_send_key(KEY92_CLEAR));
+  TRY(ti92_send_key(KEY92P_CLEAR));
   PAUSE(50);
   TRY(ti92_send_key('m'));
   TRY(ti92_send_key('a'));
@@ -1542,17 +525,26 @@ int ti92_dump_rom(FILE *file, int mask_mode)
   TRY(ti92_send_key('r'));
   TRY(ti92_send_key('o'));
   TRY(ti92_send_key('m'));
-  TRY(ti92_send_key(KEY92_LP));
-  TRY(ti92_send_key(KEY92_RP));
-  TRY(ti92_send_key(KEY92_ENTER));
+  TRY(ti92_send_key(KEY92P_LP));
+  TRY(ti92_send_key(KEY92P_RP));
+  TRY(ti92_send_key(KEY92P_ENTER));
 
-  /* Receive it now blocks per blocks (1024 + CHK) */
+  // Open file
+  file = fopen(filename, "wb");
+  if(file == NULL)
+    return ERR_OPEN_FILE;
+  
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+  
+  // Receive it now blocks per blocks (1024 + CHK)
   update_start();
   sprintf(update->label_text, "Receiving...");
   update_label();
 
   start = time(NULL);
-  total = mask_mode * 1024 * 1024;
+  total = mask_mode * ROMSIZE;
   update->total = total;
 
   for(i=0; i<mask_mode*1024; i++)
@@ -1589,43 +581,13 @@ int ti92_dump_rom(FILE *file, int mask_mode)
       update_label();
     }
 
-  /* Close connection */
-  TRY(cable->close());
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
-}
-
-int ti92_get_rom_version(char *version)
-{
-  return ERR_VOID_FUNCTION;
-}
-
-int ti92_send_flash(FILE *file, int mask_mode)
-{
-  return ERR_VOID_FUNCTION;
-}
-
-int ti92_recv_flash(FILE *file, int mask_mode)
-{
-  return ERR_VOID_FUNCTION;
 }
 
 int ti92_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
-}
-
-int ti92_supported_operations(void)
-{
-   return 
-    (
-     OPS_ISREADY |
-     OPS_SCREENDUMP |
-     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
-     OPS_DIRLIST |
-     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
-     OPS_SEND_VARS | OPS_RECV_VARS |
-     OPS_ROMVERSION |
-     OPS_ROMDUMP
-     );
 }

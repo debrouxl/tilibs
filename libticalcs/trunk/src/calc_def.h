@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALC_DEFS__
-#define __CALC_DEFS__
+#ifndef __TICALC_DEFS__
+#define __TICALC_DEFS__
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -25,13 +25,8 @@
 
 #include <stdio.h>
 #include <time.h>
-#if defined(HAVE_TILP_TYPEDEFS_H) && !defined(__MACOSX__)
-#include <tilp/typedefs.h>
-#elif defined(HAVE_TILP_TYPEDEFS_H) && defined(__MACOSX__)
-#include <libticables/typedefs.h>
-#else
-#include "typedefs.h"
-#endif
+
+#include "headers.h"
 
 /********************/
 /* Type definitions */
@@ -40,162 +35,143 @@
 /* 
    A structure for creating a dirlist tree 
 */
+#ifndef __MACOSX__
+#include <glib.h>
+#else
+#include <glib/glib.h>
+#endif
 
-// To do: change this struct
-struct varinfo
-{
-  char varname[9];        // Name of the var
-  byte vartype;           // Type of the var
-  byte varattr;           // Attribute of the var (NONE, LOCK, ARCH)
-  longword varsize;       // Real size of the var
-  char translate[9];      // Real name of the var
+typedef GNode TNode;
 
-  int is_folder;          // 1 if folder, 0 if variable
-
-  struct varinfo *folder; // Points to the parent folder
-  struct varinfo *next;   // Next variable (linked list)
-};
-typedef struct varinfo VariableInfo; // obsolete
-typedef struct varinfo TicalcVarInfo;
 
 /*
   A structure used for the screendump functions
 */
-struct screen_coord
+typedef struct
 {
-  byte width;          // real width
-  byte height;         // real height
-  byte clipped_width;  // clipped width (89 for instance)
-  byte clipped_height; // clipped height (idem)
-};
-typedef struct screen_coord ScrCoord; // obsolete
-typedef struct screen_coord TicalcScreenCoord;
+  uint8_t width;          // real width
+  uint8_t height;         // real height
+  uint8_t clipped_width;  // clipped width (89 for instance)
+  uint8_t clipped_height; // clipped height (idem)
+}
+TicalcScreenCoord;
+
 
 /* 
    A structure which contains the TI scancode of a TI key and additional
    informations
 */
-struct ti_key
+typedef struct
 {
   char *key_name;	// Name of key
   char *key1;		// Normal key
-  word nothing;
+  uint16_t nothing;
   char *key2;		// SHIFT'ed key		(89,92,92+)
-  word shift;
+  uint16_t shift;
   char *key3;		// 2nd key			(all)
-  word second;
+  uint16_t second;
   char *key4;		// CTRL'ed key		(92,92+)
-  word diamond;
+  uint16_t diamond;
   char *key5;		// ALPHA key		(83+,89)
-  word alpha;
-};
-typedef struct ti_key TiKey; // obsolete
-typedef struct ti_key TicalcKey; 
+  uint16_t alpha;
+}
+TicalcKey; 
+
 
 /* 
    Refresh/progress functions
    This structure allows to implement a kind of callbacks mechanism (which
    allow libticalcs to interact with user without being dependant of a GUI).
 */
-struct ticalc_info_update
+typedef struct
 {
   /* Variables to update */
   int cancel;                // Abort the current transfer
-  char label_text[MAXCHARS]; // A text to display (varname, ...)
+  char label_text[256];      // A text to display (varname, ...)
+  int count;                 // Number of uint8_ts exchanged
+  int total;                 // Number of uint8_ts to exchange
   float percentage;          // Percentage of the current operation
-  float main_percentage;     // Percentage of all operations
   float prev_percentage;     // Previous percentage of current operation
+  float main_percentage;     // Percentage of all operations
   float prev_main_percentage;// Previous percentage of all operations
-  int count;                 // Number of bytes exchanged
-  int total;                 // Number of bytes to exchange
 
   /* Functions for updating */
   void (*start)   (void);                   // Init internal variables
   void (*stop)    (void);                   // Release internal variables
   void (*refresh) (void);                   // Pass control to GUI for refresh
-  void (*msg_box) (const char *t, char *s); // Display a message box
   void (*pbar)    (void);                   // Refresh the progress bar
   void (*label)   (void);                   // Refresh the label
-  int  (*choose)  (char *cur_name, 
-		   char *new_name);         // Display choice box (skip, rename
-                                            // or overwrite, ... )
-};
-typedef struct ticalc_info_update InfoUpdate; // obsolete
-typedef struct ticalc_info_update TicalcInfoUpdate;
+}
+TicalcInfoUpdate;
+
+
+/*
+  A structure used for clock management
+*/
+typedef struct
+{
+  uint16_t year;
+  uint8_t  month;
+  uint8_t  day;
+  uint8_t  hours;
+  uint8_t  minutes;
+  uint8_t  seconds;
+  uint8_t  time_format; // 12 or 24
+  uint8_t  date_format; // 1 to 6
+}
+TicalcClock;
+
 
 /* 
    Calculator functions (independant of calculator model)
 */
-struct ticalc_fncts
+typedef struct
 {
-  /* TI byte <-> type conversion functions, defined in the tiXX.c files */
-  const char* (*byte2type) (byte data);
-  byte        (*type2byte) (char *s);
-  const char* (*byte2fext) (byte data);
-  byte        (*fext2byte) (char *s);
+  // Supported functions
+  int (*supported_operations) (void);
 
-  /* Calculator handling routines */
+  // Silent calc model
+  int is_silent;
+  int has_folder;
+  int memory;
+
+  // Communication functions
   int (*isready)         (void);
 
-  int (*send_key)        (word key);
-  int (*screendump)      (byte **bitmap, int mode, 
+  int (*send_key)        (uint16_t key);
+  int (*screendump)      (uint8_t **bitmap, int mode, 
 			  TicalcScreenCoord *sc);
-  int (*directorylist)   (TicalcVarInfo *list, int *n_elts);
-
-  int (*recv_backup)     (FILE *file, int mode, longword *version);
-  int (*send_backup)     (FILE *file, int mode);
-
-  int (*recv_var)        (FILE *file, int mode, char *varname, 
-			  byte vartype, byte varlock);
-  int (*send_var)        (FILE *file, int mode); 
-
-  int (*send_flash)      (FILE *file, int mode);
-  int (*recv_flash)      (FILE *file, int mode, 
-							char *appname, int appsize);
+  int (*directorylist)   (TNode **tree, uint32_t *memory);
+  
+  int (*recv_backup)     (const char *filename, int mode);
+  int (*send_backup)     (const char *filename, int mode);
+  
+  int (*recv_var)        (      char *filename, int mode, TiVarEntry *ve);
+  int (*send_var)        (const char *filename, int mode, char **actions);
+  
+  int (*send_flash)      (const char *filename, int mode);
+  int (*recv_flash)      (const char *filename, int mask_mode, TiVarEntry *ve);
   int (*get_idlist)      (char *idlist);
 
-  int (*dump_rom)        (FILE *file, int mode);
-  int (*get_rom_version) (char *version);
+  int (*dump_rom)        (const char *filename, int mode);
 
-  /* General purpose routines */
-  const TicalcKey (*ascii2ti_key) (unsigned char ascii_code);
-  char* (*translate_varname) (char *varname, char *translate, byte vartype);
-  void  (*generate_single_file_header) (FILE *file, 
-					int mode,
-					const char *id, 
-					TicalcVarInfo *v);
-  void  (*generate_group_file_header)  (FILE *file,
-					int mode,
-					const char *id,
-					TicalcVarInfo *list,
-					int calc_type);
-  int   (*supported_operations) (void);
-};
-typedef struct ticalc_fncts TicalcFncts;
+  int (*set_clock)       (const TicalcClock *clock, int mode);
+  int (*get_clock)       (      TicalcClock *clock, int mode);
+}
+TicalcFncts;
 
 
 /*********************/
 /* Macro definitions */
 /*********************/
 
-/*
-  VariableInfo structure, is_folder field
-*/
-#define VARIABLE 0
-#define FOLDER   1
-
-/*
-  VariableInfo structure, attribute field
- */
-#define VARATTR_NONE	0
-#define VARATTR_LOCK	1	// Var is locked
-#define VARATTR_ARCH	3	// Var is archived
 
 /*
   Screendump: full or clipped screen
 */
-#define FULL_SCREEN 0
+#define FULL_SCREEN    0
 #define CLIPPED_SCREEN 1
+
 
 /* 
    Path: full or local 
@@ -203,59 +179,34 @@ typedef struct ticalc_fncts TicalcFncts;
 #define FULL_PATH  0
 #define LOCAL_PATH 1
 
-/* 
-   Use normal file format (don't keep archive attribute) or 
-   extended file format (keep archive attribute in the file) 
-*/
-#define NORMAL_FORMAT   0
-#define EXTENDED_FORMAT 1
 
-/* 
-   The different calculator types 
+/*
+  Memory field
 */
-// Don't change these values, const.c depends on them...
-#define CALC_NONE  0
-#define CALC_TI92P 1
-#define CALC_TI92  2
-#define CALC_TI89  3
-#define CALC_TI86  4
-#define CALC_TI85  5
-#define CALC_TI83P 6
-#define CALC_TI83  7
-#define CALC_TI82  8
-#define CALC_TI73  9
+#define MEMORY_NONE 0
+#define MEMORY_FREE 1
+#define MEMORY_USED 2
 
-//#define CALC_TI8X  (CALC_TI82|CALC_TI83|CALC_TI83P|CALC_TI85|CALC_TI86)
-//#define CALC_TI9X  (CALC_TI89|CALC_TI92|CALC_TI92P)
 
 /* 
    Some masks for the send/receive functions (mode) 
 */
 // No mask
-#define MODE_NORMAL              0 // No mode
+#define MODE_NORMAL                 0  // No mode
 // For receiving vars
 #define MODE_RECEIVE_SINGLE_VAR (1<<0) // Receive a single var
-#define MODE_RECEIVE_FIRST_VAR  (1<<1) // Recv the first var of a group file
-#define MODE_RECEIVE_VARS       (1<<2) // Recv var of a group file
-#define MODE_RECEIVE_LAST_VAR   (1<<3) // Recv the last var of a group file
+#define MODE_RECEIVE_FIRST_VAR  (1<<1) // Recv first var of group file
+#define MODE_RECEIVE_LAST_VAR   (1<<3) // Recv last var of group file
 // For sending vars
-#define MODE_SEND_ONE_VAR       (1<<4) // Send a single var or the first var (grp)
-#define MODE_SEND_LAST_VAR      (1<<5) // Send the last var of a group file
-#define MODE_SEND_VARS          (1<<6) // Send var of a group file
+#define MODE_SEND_ONE_VAR       (1<<4) // Send single var or first var (grp)
+#define MODE_SEND_LAST_VAR      (1<<5) // Send last var of group file
+#define MODE_SEND_VARS          (1<<6) // Send var of group file
 // Miscellaneous
 #define MODE_LOCAL_PATH         (1<<7) // Local path (full by default)
-#define MODE_KEEP_ARCH_ATTRIB   (1<<8) // Keep archive attribute (89/92+)
-#define MODE_USE_2ND_HEADER     (1<<9) // Use 0xC9 instead of 0x06
-// For requesting an IDlist thru the recv_var function
-#define MODE_IDLIST            (1<<10) // Get the IDlist (89/92+)
+#define MODE_BACKUP             (1<<8) // Keep archive attribute
 // For sending FLASH (apps/AMS)
 #define MODE_APPS	       (1<<11) // Send a (free) FLASH application
 #define MODE_AMS	       (1<<12) // Send an Operating System (AMS)
-// For file checking
-#define MODE_FILE_CHK_NONE     (1<<13) // Do no file checking (dangerous !)
-#define MODE_FILE_CHK_MID      (1<<14) // Do a simple file checking
-#define MODE_FILE_CHK_ALL      (1<<15) // Do a restrictive file checking
-#define MODE_DIRLIST           (1<<16) // Do a dirlist before sending vars
 
 // ROM size for the ROM dump function
 #define ROM_1MB      1 // 1 MegaBytes
@@ -266,13 +217,6 @@ typedef struct ticalc_fncts TicalcFncts;
 #define SHELL_USGARD 5
 #define SHELL_ZSHELL 6
 
-/*
-  Code returned by the update.choose() function
-*/
-#define ACTION_NONE       0
-#define ACTION_SKIP       (1<<0)
-#define ACTION_OVERWRITE  (1<<1)
-#define ACTION_RENAME     (1<<2)
 
 /*
   Mask returned by the 'supported_operations' function
@@ -293,6 +237,15 @@ typedef struct ticalc_fncts TicalcFncts;
 #define OPS_IDLIST      (1<<12)
 #define OPS_ROMDUMP     (1<<13)
 #define OPS_ROMVERSION  (1<<14)
+#define OPS_CLOCK       (1<<15)
+
+
+/*
+  Actions for send_var
+*/
+#define ACT_SKIP   0
+#define ACT_OVER (!0)
+
 
 /* 
    Key codes of PC's keyboard 
@@ -307,11 +260,11 @@ typedef struct ticalc_fncts TicalcFncts;
 #define CTRL_H  0x08
 #define CTRL_I  0x09
 #define TAB     0x09
-#define CALC_CR      0x0A
+#define CALC_CR 0x0A
 #define CTRL_J  0x0A
 #define CTRL_K  0x0B
 #define CTRL_L  0x0C
-#define CALC_LF      0x0D
+#define CALC_LF 0x0D
 #define CTRL_M  0x0D
 #define CTRL_N  0x0E
 #define CTRL_O  0x0F

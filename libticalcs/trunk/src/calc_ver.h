@@ -23,8 +23,10 @@
 #  include <config.h>
 #endif
 
+#define LIB_FILES_VERSION_REQUIRED  "0.3.6"
+
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "3.3.8"
+# define LIBTICALCS_VERSION "4.2.2"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif

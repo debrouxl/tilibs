@@ -16,962 +16,395 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+  This unit provides TI82 support
+  Note: the source code is the SAME as the TI85 support (same indentation).
+*/
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "calc_err.h"
-#include "defs82.h"
-#include "calc_ext.h"
-#include "trans.h"
-//#include "rom82.h" // to do...
+
+#include "headers.h"
+#include "externs.h"
 #include "update.h"
+#include "packets.h"
+#include "calc_err.h"
+#include "cmd82.h"
+//#include "rom82.h"
 
-/* Functions used by TI_PC functions */
 
-/* The PC indicates that is OK */
-/* 02 56 00 00 */
-static int PC_replyOK_82(void)
+// Screen coordinates of the TI82
+#define TI82_ROWS  64
+#define TI82_COLS  96
+
+int ti82_supported_operations(void)
 {
-  TRY(cable->put(PC_TI82));
-  TRY(cable->put(CMD82_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer reply OK.\n");
-
-  return 0;
+  return 
+    (
+     OPS_SCREENDUMP |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS
+     );
 }
 
-/* The PC indicates that it is ready or wait data */
-/* 02 09 00 00 */
-static int PC_waitdata_82(void)
-{
-  TRY(cable->put(PC_TI82));
-  TRY(cable->put(CMD82_WAIT_DATA));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer wait data.\n");
 
-  return 0;
-}
-
-/* Check whether the TI reply OK */
-/* 82 56 00 00 */
-static int ti82_isOK(void)
-{
-  byte data;
- 
-  TRY(cable->get(&data));
-  if(data != TI82_PC)
-    {
-      return ERR_NOT_REPLY;
-    }
-  TRY(cable->get(&data));
-  if(data != CMD82_TI_OK)
-    {
-      if(data == CMD82_CHK_ERROR) 
-	return ERR_CHECKSUM;
-      else 
-	return ERR_NOT_REPLY;
-    }
-  TRY(cable->get(&data));
-  if(data != 0x00)
-    {
-      //printf("Debug: %02X\n", data);
-      return ERR_NOT_REPLY;
-    }
-  TRY(cable->get(&data));
-  if(data != 0x00)
-    {
-      return ERR_NOT_READY;
-    }
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-
-/* Check whether the TI reply OK with packet length */
-/* 82 56 LL HH */
-static int ti82_isPacketOK(word length)
-{
-  byte data;
-  word w;
-
-  TRY(cable->get(&data));
-  if(data != TI82_PC) return ERR_NOT_REPLY;
-  TRY(cable->get(&data));
-  if(data != CMD82_TI_OK)
-    {
-      if(data==CMD82_CHK_ERROR) return ERR_CHECKSUM;
-      else return ERR_NOT_REPLY;
-    }
-  TRY(cable->get(&data));
-  w=data;
-  TRY(cable->get(&data));
-  w|=(data << 8);
-  if(w != length) return ERR_PACKET;
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-
-/* The TI indicates that it is ready or wait data */
-/* 82 09 00 00 */
-static int ti82_waitdata(byte *rej_code)
-{
-  byte data;
-  *rej_code = CMD82_REJ_NONE;
-
-  TRY(cable->get(&data));
-  if(data != TI82_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD82_WAIT_DATA) 
-    {
-      if(data != CMD82_REFUSED)
-	{
-	  DISPLAY("Data: %02X\n", data);
-	  return ERR_INVALID_BYTE;
-	}
-      else
-	{
-	  DISPLAY("Var rejected... ");
-	  TRY(cable->get(&data));
-	  TRY(cable->get(&data));
-	  TRY(cable->get(&data));
-	  *rej_code = data;
-	  //DISPLAY("Rejection code: %02X\n", data);
-	  TRY(cable->get(&data));
-	  TRY(cable->get(&data));
-	  return ERR_VAR_REFUSED;
-	}
-    }
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  DISPLAY("The calculator wait data.\n");
-
-  return 0;
-}
-
-// Check whether the TI reply that it is ready
 int ti82_isready(void)
 {
-  /* This function does not exist */
   return ERR_VOID_FUNCTION;
 }
 
-// Send a string of characters to the TI
-static int ti82_sendstring(char *s, word *checksum)
-{
-
-  int i;
-
-  for(i=0; i<(int)strlen(s); i++)
-    {
-      TRY(cable->put(s[i]));
-      (*checksum) += (0xFF & s[i]); // The 0xFF is important else some variables can not be transmitted     
-    }
-  for(i=0; i<(int)(8-strlen(s)); i++)
-    {
-      TRY(cable->put(0x00));
-    }
-
-  return 0;
-}
-
-#define TI82_MAXTYPES 16
-const char *TI82_TYPES[TI82_MAXTYPES]=
-{ 
-"REAL", "LIST", "MAT", "EQU", "??", "PRGM", "PPGM", "PIC", 
-"GDB", "??", "??", "WDW", "ZSTO", "TAB", "LCD", "BACKUP"
-};
-const char *TI82_EXT[TI82_MAXTYPES]=
-{
-"82n", "82l", "82m", "82y", "82?", "82p", "82p", "82i",
-"82d", "82?", "82?", "82w", "82z", "82t", "82?", "82b"
-};
-
-// Return the type corresponding to the value
-const char *ti82_byte2type(byte data)
-{
-  if(data>TI82_MAXTYPES)
-    {
-      printf("Type: %02X\n", data);
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return "??";
-    }
-  else 
-    {
-      return TI82_TYPES[data];
-    }
-}
-
-// Return the value corresponding to the type
-byte ti82_type2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI82_MAXTYPES; i++)
-    {
-      if(!strcmp(TI82_TYPES[i], s)) break;
-    }
-  if(i>TI82_MAXTYPES)
-    {
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// Return the file extension corresponding to the value
-const char *ti82_byte2fext(byte data)
-{
-  if(data>TI82_MAXTYPES)
-    {
-      printf("Type: %02X\n", data);
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");    
-      return ".82?";
-    }
-  else 
-  {
-    return TI82_EXT[data];
-  }
-}
-
-// Return the value corresponding to the file extension
-byte ti82_fext2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI82_MAXTYPES; i++)
-    {
-      if(!strcmp(TI82_EXT[i], s)) break;
-    }
-  if(i > TI82_MAXTYPES)
-    {
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// General functions
-
-int ti82_send_key(word key)
+int ti82_send_key(uint16_t key)
 {
   return ERR_VOID_FUNCTION;
 }
 
-int ti82_remote_control(void)
+int ti82_directorylist(TNode **tree, uint32_t *memory)
 {
-  /* This function does not exist */
   return ERR_VOID_FUNCTION;
 }
 
-int ti82_screendump(byte **bitmap, int mask_mode,
-                         struct screen_coord *sc)
+int ti82_screendump(uint8_t **bitmap, int mask_mode,
+		    TicalcScreenCoord *sc)
 {
-  byte data;
-  word max_cnt;
-  word sum;
-  word checksum;
-  int i;
+  uint16_t max_cnt;
 
-  LOCK_TRANSFER()
-  TRY(cable->open());
+
+  DISPLAY("Receiving screendump...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
   update_start();
-  sc->width=TI82_COLS;
-  sc->height=TI82_ROWS;
-  sc->clipped_width=TI82_COLS;
-  sc->clipped_height=TI82_ROWS;
+  
+  sc->width  = TI82_COLS;
+  sc->height = TI82_ROWS;
+  sc->clipped_width  = TI82_COLS;
+  sc->clipped_height = TI82_ROWS;
+  
   if(*bitmap != NULL)
     free(*bitmap);
-  (*bitmap)=(byte *)malloc(TI82_COLS*TI82_ROWS*sizeof(byte)/8);
+  (*bitmap)=(uint8_t *)malloc(TI82_COLS*TI82_ROWS*sizeof(uint8_t)/8);
   if((*bitmap) == NULL)
     {
       fprintf(stderr, "Unable to allocate memory.\n");
       exit(0);
     }
-
-  sum=0;
-  DISPLAY("Request screendump.\n");
-  TRY(cable->put(PC_TI82));
-  TRY(cable->put(CMD82_SCREEN_DUMP));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
   
-  TRY(ti82_isOK());
-  TRY(cable->get(&data));
-  if(data != TI82_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD82_DATA_PART) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  max_cnt=data;
-  TRY(cable->get(&data));
-  max_cnt += (data << 8);
-  DISPLAY("0x%04X = %i bytes to receive\n", max_cnt, max_cnt);
-  DISPLAY("Screendump in progress...\n");
+  TRYF(ti82_send_SCR());
+  TRYF(ti82_recv_ACK(NULL));
 
-  update->total = max_cnt;
-  for(i=0; i<max_cnt; i++)
-    {
-      TRY(cable->get(&data));
-      (*bitmap)[i]=~data;
-      sum+=data;
-      
-      update->count = i;
-      update->percentage = (float)i/max_cnt;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(sum != checksum) return ERR_CHECKSUM;
 
-  TRY(cable->put(PC_TI82));
-  TRY(cable->put(CMD82_PC_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("PC reply OK.\n");
-  DISPLAY("\n");
+  TRYF(ti82_recv_XDP(&max_cnt, *bitmap));
+  TRYF(ti82_send_ACK());
 
-  update_start();
-  TRY(cable->close());
-  UNLOCK_TRANSFER()
+  DISPLAY("Done.\n");
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
 }
 
-int ti82_recv_backup(FILE *file, int mask_mode, longword *version)
-{
-  byte data;
-  word sum;
-  word checksum;
-  word file_checksum;
-  word block_size, size;
-  int i, j;
-  char desc[43]="Backup file received by TiLP";
-  long offset;
 
-  TRY(cable->open());
+int ti82_recv_backup(const char *filename, int mask_mode)
+{
+  Ti8xBackup *content;
+  uint8_t varname[9] = { 0 };
+
+  DISPLAY("Receiving backup...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
+
+  content = ti8x_create_backup_content();
+  content->calc_type = CALC_TI82;
   sprintf(update->label_text, "Waiting backup...");
   update_label();
-  file_checksum=0;
-  fprintf(file, "**TI82**");
-  fprintf(file, "%c%c%c", 0x1A, 0x0A, 0x00);
-  for(i=0; i<42; i++) fprintf(file, "%c", desc[i]);
-  offset=ftell(file);
-  fprintf(file, "XX");
-  size=0;
-  sum=0;
-  DISPLAY("Receiving backup...\n");
-  TRY(cable->get(&data)); 
-  if(data != TI82_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD82_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  fprintf(file, "%c", data);
-  file_checksum+=data;
-  j=data; /* j should be equal to 0x09 but to be the safe side ... */
-  if(data != 0x09) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  fprintf(file, "%c", data);
-  file_checksum+=data;
-  j|=(data << 8);
-  if(data != 0x00) return ERR_INVALID_BYTE;
-  DISPLAY("Receiving header.\n");
-  sprintf(update->label_text, "Receiving...");
-  update_label();
-  for(i=0; i<j; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      file_checksum+=data;
-      fprintf(file, "%c", data); 
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
+  
+  TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, varname));
+  content->data_length2 = varname[0] | (varname[1] << 8);
+  content->data_length3 = varname[2] | (varname[3] << 8);
+  content->mem_address  = varname[4] | (varname[5] << 8);
+  TRYF(ti82_send_ACK());
+  
+  TRYF(ti82_send_CTS());
+  TRYF(ti82_recv_ACK(NULL));
+  
+  content->data_part1 = calloc(65536, 1);
+  TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
+  TRYF(ti82_send_ACK());
+  (update->main_percentage)=(float)1/3;
+  content->data_part2 = calloc(65536, 1);
+  TRYF(ti82_recv_XDP(&content->data_length2, content->data_part2));
+  TRYF(ti82_send_ACK());
+  (update->main_percentage)=(float)2/3;
+  content->data_part3 = calloc(65536, 1);
+  TRYF(ti82_recv_XDP(&content->data_length3, content->data_part3));
+  TRYF(ti82_send_ACK());
+  (update->main_percentage)=(float)3/3;
+  content->data_part4 = NULL;
+  
+  strcpy(content->comment, "Backup file received by TiLP");	                                           
+  ti8x_write_backup_file(filename, content);
+  ti8x_free_backup_content(content);
 
-  TRY(PC_replyOK_82());
-  TRY(PC_waitdata_82());
-  TRY(ti82_isOK());
-  for(i=0; i<3; i++)
-    {
-      (update->main_percentage)=(float)i/3;
-      DISPLAY("Receiving part %i\n", i+1);
-      TRY(cable->get(&data));
-      if(data != TI82_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD82_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      block_size=data;
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      TRY(cable->get(&data));
-      block_size+=(data << 8);
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      j=0;
-      sum=0;
-      size+=block_size;
-      update->total = block_size;
-      for(j=0; j<block_size; j++)
-	{
-	  TRY(cable->get(&data));
-          sum+=data;
-	  file_checksum+=data;
-          fprintf(file, "%c", data);
-
-	  update->count = j;
-	  update->percentage = (float)j/block_size;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(sum != checksum) return ERR_CHECKSUM;
-
-      TRY(PC_replyOK_82());
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-  fprintf(file, "%c%c", LSB(file_checksum), MSB(file_checksum));
-  DISPLAY("Backup complete.\n");
-  fseek(file, offset, SEEK_SET);
-  size+=2;
-  fprintf(file, "%c%c", LSB(size+15), MSB(size+15));
-  fseek(file, 0L, SEEK_END);
-  DISPLAY("\n");
-
-  update_start();
-  TRY(cable->close());
-
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+    
   return 0;
 }
 
-int ti82_send_backup(FILE *file, int mask_mode)
+int ti82_send_backup(const char *filename, int mask_mode)
 {
+  Ti8xBackup content = { 0 };
   int err = 0;
-  byte data;
-  char str[128];
-  word sum;
-  int i;
-  int j;
-  word block_size;
-  byte rej_code = CMD82_REJ_NONE;
+  uint16_t length;
+  uint8_t varname[9];
+  uint8_t rej_code;
+  uint16_t status;
 
-  TRY(cable->open());
+  DISPLAY("Sending backup...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
+
   sprintf(update->label_text, "Sending...");
   update_label();
-  DISPLAY("Sending backup...\n");
-  fgets(str, 9, file);
-  if(!(mask_mode & MODE_FILE_CHK_NONE))
-    {
-      if(mask_mode & MODE_FILE_CHK_MID)
-	{
-	  if( strcmp(str, "**TI82**") && strcmp(str, "**TI82**") )
-	    { 
-	      return ERR_INVALID_TIXX_FILE;
-	    }
-	}
-      else if(mask_mode & MODE_FILE_CHK_ALL)
-	{
-	  fprintf(stderr, "MODE_FILE_CHK_ALL\n");
-	  if( strcmp(str, "**TI82**"))
-	    {
-	      return ERR_INVALID_TI82_FILE;
-	    }
-	}
-    }
-  for(i=0; i<3; i++) fgetc(file);
-  for(i=0; i<42; i++)
-  {
-    fgetc(file);
-  }
-  data=fgetc(file);
-  //printf("%02X\n", data);
-  data=fgetc(file);
-  //printf("%02X\n", data);
-  sum=0;
-  DISPLAY("Sending header.\n");
-  TRY(cable->put(PC_TI82));
-  TRY(cable->put(CMD82_VAR_HEADER));
-  data=fgetc(file);
-  TRY(cable->put(data));
-  block_size=data;
-  data=fgetc(file);
-  TRY(cable->put(data));
-  block_size+=data;
-  for(i=0; i<9; i++)
-    {
-      data=fgetc(file);
-      sum+=data;
-      TRY(cable->put(data));
-    }
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-  DISPLAY("The calculator should ask you to continue the transfer.\n");
   
-  TRY(ti82_isPacketOK(block_size));
-
-  /* Here, the calc is waiting until the user has confirmed the operation */
-  sprintf(update->label_text, "Waiting confirmation on calc...");
+  TRYF(ti8x_read_backup_file(filename, &content));
+  
+  length = content.data_length1;
+  varname[0] = LSB(content.data_length2);
+  varname[1] = MSB(content.data_length2);
+  varname[2] = LSB(content.data_length3);
+  varname[3] = MSB(content.data_length3);
+  varname[4] = LSB(content.mem_address);
+  varname[5] = MSB(content.mem_address);
+  TRYF(ti82_send_VAR(content.data_length1, TI82_BKUP, varname));  	
+  TRYF(ti82_recv_ACK(&status));
+  
+  sprintf(update->label_text, "Waiting user's action...");
   update_label();
-  do
-    {
-      update_refresh();
+  do 
+    {	// wait user's action
       if(update->cancel) return ERR_ABORT;
-      err=ti82_waitdata(&rej_code); 
-      if(err == ERR_VAR_REFUSED)
-	{
-	  //fprintf(stderr, "Rejection code: 0x%02x\n", rej_code);
-	  switch(rej_code)
-	    {
-	    case CMD82_REJ_SKIP:
-	      DISPLAY("Variable skipped by user\n");
-	      //for(i=0; i<varsize; i++) fgetc(file); // read file anyway
-	      TRY(PC_replyOK_82());
-	      goto label_skip;
-	      break;
-	    case CMD82_REJ_EXIT:
-	      DISPLAY("Transfer cancelled by user\n");
-	      goto label_exit;
-	      break;
-	    case CMD82_REJ_OUTOFMEM:
-	      DISPLAY("Out of mem\n");
-	      return ERR_OUT_OF_MEMORY;
-	      break;
-	    default:
-	      return ERR_INVALID_BYTE;
-	      break;
-	    }
-	}
+      err = ti82_recv_SKIP(&rej_code);
+    }  
+  while(err == ERR_READ_TIMEOUT);
+  TRYF(ti82_send_ACK());
+  switch(rej_code)
+    {
+    case REJ_EXIT:
+    case REJ_SKIP:
+      return ERR_ABORT;
+      break;
+    case REJ_MEMORY:
+      return ERR_OUT_OF_MEMORY;
+      break;
+    default:	// RTS
+      break;
     }
-  while( (err == 35) || (err == 3) );
-  DISPLAY("The calculator continue the transfer.\n");
-
-  sprintf(update->label_text, "Transmitting...");
+  sprintf(update->label_text, "Sending...");
   update_label();
-			
-  TRY(PC_replyOK_82());
-  for(i=0; i<3; i++)
-    {
-      (update->main_percentage)=(float)i/3;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-      DISPLAY("Sending part %i...\n", i+1);
-      sum=0;
-      TRY(cable->put(PC_TI82));
-      TRY(cable->put(CMD82_DATA_PART));
-      
-      
-      data=fgetc(file);
-      block_size=data;
-      TRY(cable->put(data));
-      data=fgetc(file);
-      block_size+=data << 8;
-      TRY(cable->put(data));
-      printf("Backup block size: %04X\n", block_size);
-      update->total = block_size;
-      for(j=0; j<block_size; j++)
-        {
-          data=fgetc(file);
-          sum+=data;
-          TRY(cable->put(data));
+  
+  TRYF(ti82_send_XDP(content.data_length1, content.data_part1));
+  TRYF(ti82_recv_ACK(&status));
+  (update->main_percentage)=(float)1/3;
+  TRYF(ti82_send_XDP(content.data_length2, content.data_part2));
+  TRYF(ti82_recv_ACK(&status));
+  (update->main_percentage)=(float)2/3;
+  TRYF(ti82_send_XDP(content.data_length3, content.data_part3));
+  TRYF(ti82_recv_ACK(&status));
+  (update->main_percentage)=(float)3/3;
+  
+  ti8x_free_backup_content(&content);
 
-	  update->count = j;
-	  update->percentage = (float)j/block_size;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti82_isPacketOK(block_size));
-    }
-  TRY(PC_replyOK_82());
-  DISPLAY("\n");
- label_skip:
- label_exit:
-  update_start();
-  TRY(cable->close());
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
   
   return 0;
 }
 
-int ti82_directorylist(struct varinfo *list, int *n_elts)
+int ti82_recv_var(char *filename, int mask_mode, TiVarEntry *unused)
 {
-  /* This function does not exist */
+  int nvar = 0;
+  Ti8xRegular *content;
+  int err = 0;
+  char *fn = NULL;
+
+  DISPLAY("Receiving variable(s)...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
   update_start();
 
-  return ERR_VOID_FUNCTION;
-}
-
-/* 
-   Receive one or more variables: if varname[0]='\0' -> 
-   group file else single file 
-*/
-int ti82_recv_var(FILE *file, int mask_mode, 
-		     char *varname, byte vartype, byte varlock)
-{
-  byte data;
-  word sum;
-  word checksum, file_checksum;
-  word var_size;
-  char name[9];
-  byte var_type;
-  int i;
-  int nvars;
-  word w;
-  long offset;
-  char trans[9];
-  char desc[43]="File received by TiLP";
-  word allvars_size;	// This limits the size of a TIGL file to 64 Kb */
-  int k;
-
-  TRY(cable->open());
-  update_start();
   sprintf(update->label_text, "Waiting var(s)...");
   update_label();
-  file_checksum=0;
-  allvars_size=0;
-  DISPLAY("Receiving variable(s)...\n");
-  var_size=0;
-  fprintf(file, "**TI82**");
-  fprintf(file, "%c%c%c", 0x1A, 0x0A, 0x00);
-  for(i=0; i<42; i++) fprintf(file, "%c", desc[i]);
-  offset=ftell(file);
-  fprintf(file, "XX");
-  for(nvars=0; ;nvars++)
-    {
-      sum=0;
-      TRY(cable->get(&data));
-      if(data != TI82_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data == CMD82_EOT) break;
-      else if(data != CMD82_VAR_HEADER) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != 0x0B) return ERR_INVALID_BYTE;
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      TRY(cable->get(&data));
-      if(data != 0x00) return ERR_INVALID_BYTE;
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      TRY(cable->get(&data));
-      fprintf(file, "%c", data);
-      var_size=data;
-      sum+=data;
-      TRY(cable->get(&data));
-      fprintf(file, "%c", data);
-      var_size |= (data << 8);
-      sum+=data;
-      if(allvars_size+var_size+15 < allvars_size) 
-	return ERR_GRP_SIZE_EXCEEDED;
-      allvars_size+=var_size+15;
-      DISPLAY("-> Size: 0x%04X = %i.\n", var_size, var_size);
-      TRY(cable->get(&data));
-      fprintf(file, "%c", data);
-      var_type=data;
-      DISPLAY("-> Type: %s\n", ti82_byte2type(data));
-      sum+=data;
-      for(i=0; i<8; i++)
-	{
-	  TRY(cable->get(&data));
-	  fprintf(file, "%c", 0xFF & data);
-	  sum+=data;
-	  name[i]=data;
-	}
-      name[i]='\0';
-      strcpy(varname, name);
-      DISPLAY("-> Name: %s <", varname);
-      for(k=0; k<8; k++) DISPLAY("%02X.", 0xFF & varname[k]);
-      DISPLAY(">\n");
-      DISPLAY("-> Translated name: %s\n", ti82_translate_varname(varname, trans, var_type));
-      file_checksum += sum;
-      sprintf(update->label_text, "Variable: %s", 
-	      ti82_translate_varname(varname, trans, var_type));
-      update_label();
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      
-      TRY(PC_replyOK_82());
-      TRY(PC_waitdata_82());
-      DISPLAY("The calculator want continue.\n");
-      
-      TRY(ti82_isOK());
-      DISPLAY("Receiving variable...\n");
-      TRY(cable->get(&data));
-      if(data != TI82_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD82_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      TRY(cable->get(&data));
-      fprintf(file, "%c", data);
-      file_checksum+=data;
-      sum=0;
-      update->total = var_size;
-      for(i=0; i<var_size; i++)
-	{
-	  TRY(cable->get(&data));
-	  fprintf(file, "%c", data);
-	  sum+=data;
-	  
-	  update->count = i;
-	  update->percentage = (float)i/var_size;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      file_checksum+=sum;
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      
-      TRY(PC_replyOK_82());
-    }
-  DISPLAY("The calculator does not want continue.\n");
-  TRY(cable->get(&data));
-  w=data;
-  TRY(cable->get(&data));
-  w |= (data << 8);
-  if(w != var_size) return ERR_PACKET;
-  TRY(PC_replyOK_82());
-  fprintf(file, "%c%c", LSB(file_checksum), MSB(file_checksum));
-  fseek(file, offset, SEEK_SET);
-  if(nvars == 1)
-    fprintf(file, "%c%c", LSB(var_size+15), MSB(var_size+15));
-  else
-    fprintf(file, "%c%c", LSB(allvars_size), MSB(allvars_size));
-  fseek(file, 0L, SEEK_END);
-  if(nvars > 1) varname[0]='\0';
-  DISPLAY("\n");
 
-  update_start();
-  TRY(cable->close());
-
-  return 0;
-}
-
-int ti82_send_var(FILE *file, int mask_mode)
-{
-  int err = 0;
-  byte data;
-  word sum;
-  word block_size;
-  longword varsize;
-  char varname[9];
-  byte vartype;
-  int i;
-  char trans[9];
-  byte rej_code = CMD82_REJ_NONE;
-  char str[9];
- 
-  TRY(cable->open());
-  update_start();
-  fgets(str, 9, file);
-  if(!(mask_mode & MODE_FILE_CHK_NONE))
+  content = ti8x_create_regular_content();
+  content->calc_type = CALC_TI82;
+  
+  for(nvar=0; ; nvar++)
     {
-      if(mask_mode & MODE_FILE_CHK_MID)
-	{
-	  if( strcmp(str, "**TI82**") && strcmp(str, "**TI82**") )
-	    { 
-	      return ERR_INVALID_TIXX_FILE;
-	    }
-	}
-      else if(mask_mode & MODE_FILE_CHK_ALL)
-	{
-	  fprintf(stderr, "MODE_FILE_CHK_ALL\n");
-	  if( strcmp(str, "**TI82**"))
-	    {
-	      return ERR_INVALID_TI82_FILE;
-	    }
-	}
-    }
-  for(i=0; i<3; i++) fgetc(file);
-  for(i=0; i<42; i++)
-  {
-    fgetc(file);
-  }
-  data=fgetc(file);
-  data=fgetc(file);
-  while(!feof(file))
-    {
-      data=fgetc(file);
-      data=fgetc(file);
-      if(feof(file)) break;
-      varsize=fgetc(file);
-      if(feof(file)) break;
-      varsize+=fgetc(file) << 8;
-      vartype=fgetc(file);
-      for(i=0; i<8; i++) varname[i]=fgetc(file);
-      varname[i]='\0';
-      fgetc(file);
-      fgetc(file);
-      DISPLAY("Sending variable...\n");
-      DISPLAY("-> Name: %s\n", varname);
-      DISPLAY("-> Translated name: %s\n", 
-	      ti82_translate_varname(varname, trans, vartype));
-      DISPLAY("-> Size: %08X\n", varsize);
-      DISPLAY("-> Type: %s\n", ti82_byte2type(vartype));
-      sprintf(update->label_text, "Variable: %s", 
-	      ti82_translate_varname(varname, trans, vartype));
-      update_label();
-      sum=0;
-      TRY(cable->put(PC_TI82));
-      TRY(cable->put(CMD82_VAR_HEADER));
-      block_size=0x0B;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      data=LSB(varsize);
-      sum+=data;
-      TRY(cable->put(data));
-      data=MSB(varsize);
-      sum+=data;
-      TRY(cable->put(data));
-      data=vartype;
-      sum+=data;
-      TRY(cable->put(data));
-      TRY(ti82_sendstring(varname, &sum));
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti82_isPacketOK(block_size));
-      
-      /* Here, the calc wait an action of the user: skip, overwrite, rename
-	 or quit */
-      sprintf(update->label_text, "Waiting confirmation on calc...");
-      update_label();
+      TiVarEntry *ve;
+
+      content->entries = (TiVarEntry *)realloc(content->entries, 
+					      (nvar+2) * sizeof(TiVarEntry));
+      ve = &(content->entries[nvar]);
+
       do
 	{
-	  update_refresh();
 	  if(update->cancel) return ERR_ABORT;
-	  err=ti82_waitdata(&rej_code);
-	  if(err == ERR_VAR_REFUSED)
-	    {
-	      switch(rej_code)
-		{
-		case CMD82_REJ_SKIP:
-		  fprintf(stderr, "Variable skipped by user\n");
-		  for(i=0; i<(int)varsize; i++) fgetc(file); // read file anyway
-		  TRY(PC_replyOK_82());
-		  goto label_skip;
-		  break;
-		case CMD82_REJ_EXIT:
-		  fprintf(stderr, "Transfer cancelled by user\n");
-		  goto label_exit;
-		  break;
-		case CMD82_REJ_OUTOFMEM:
-		  fprintf(stderr, "Out of mem\n");
-		  return ERR_OUT_OF_MEMORY;
-                  break;
-		default:
-		  return ERR_INVALID_BYTE;
-		  break;
-		}
-	    }
+	  err = ti82_recv_VAR((uint16_t *)&(ve->size), &(ve->type), 
+			      ve->name); fixup(ve->size);
 	}
-      while( (err == 35) || (err == 3) );
+      while(err == ERR_READ_TIMEOUT);
+      TRYF(ti82_send_ACK());
+      if(err == ERR_EOT) {
+	goto exit;
+      }
+      TRYF(err);
+      
+      TRYF(ti82_send_CTS());
+      TRYF(ti82_recv_ACK(NULL));
 
-      sprintf(update->label_text, "Variable: %s",
-              ti82_translate_varname(varname, trans, vartype));
+      ve->data = calloc(ve->size, 1);
+      TRYF(ti82_recv_XDP((uint16_t *)&ve->size, ve->data));
+      TRYF(ti82_send_ACK());
+    }
+  
+ exit:
+  strcpy(content->comment, "Group file received by TiLP");
+  content->num_entries = nvar;
+  if(nvar > 1)
+    {
+      //strcpy(filename, "group.82g");
+      ti8x_write_regular_file(filename, content, NULL);
+    }  
+  else
+    {
+      ti8x_write_regular_file(NULL, content, &fn);
+      strcpy(filename, fn); free(fn);
+    }
+  ti8x_free_regular_content(content);
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return 0;		     
+}
+
+int ti82_send_var(const char *filename, int mask_mode)
+{
+  Ti8xRegular content = { 0 };
+  int i;
+  int err;
+  uint8_t rej_code;
+  uint16_t status;  
+
+  DISPLAY("Sending variable(s)...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Sending...");
+  update_label();
+  
+  TRYF(ti8x_read_regular_file(filename, &content));
+  
+  for(i=0; i<content.num_entries; i++)
+    {
+      TiVarEntry *entry = &(content.entries[i]);;
+      
+      TRYF(ti82_send_VAR(entry->size, entry->type, entry->name));  	
+      TRYF(ti82_recv_ACK(&status));
+      
+      sprintf(update->label_text, "Waiting user's action...");
+      update_label();
+      do 
+	{ 	// wait user's action
+	  if(update->cancel) return ERR_ABORT;
+	  err = ti82_recv_SKIP(&rej_code);
+	} 
+      while(err == ERR_READ_TIMEOUT);
+      TRYF(ti82_send_ACK());
+      switch(rej_code)
+	{
+	case REJ_EXIT:
+	  return ERR_ABORT;
+	  break;
+	case REJ_SKIP:
+	  continue;
+	  break;
+	case REJ_MEMORY:
+	  return ERR_OUT_OF_MEMORY;
+	  break;
+	default:	// RTS
+	  break;
+	}
+      sprintf(update->label_text, "Sending...");
       update_label();
       
-      sum=0;
-      TRY(PC_replyOK_82());
-      TRY(cable->put(PC_TI82));
-      TRY(cable->put(CMD82_DATA_PART));
-      block_size=(unsigned short)varsize;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      update->total = block_size;
-      for(i=0; i<block_size; i++)
-	{
-	  data=fgetc(file);
-	  TRY(cable->put(data));
-	  sum+=data;
-	  
-	  update->count = i;
-	  update->percentage = (float)i/block_size;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
+      TRYF(ti82_send_XDP(entry->size, entry->data));
+      TRYF(ti82_recv_ACK(&status));
 
-      TRY(ti82_isPacketOK(block_size));
-    label_skip:
-	  while(0);
-    }
+      DISPLAY("\n");
+    }  	
+  
   if( (mask_mode & MODE_SEND_ONE_VAR) ||
       (mask_mode & MODE_SEND_LAST_VAR) )
     {
-      // The last var
-      TRY(cable->put(PC_TI82));
-      TRY(cable->put(CMD82_EOT));
-      TRY(cable->put(0x00));
-      TRY(cable->put(0x00));
-      DISPLAY("The computer does not want continue.\n");
-      TRY(ti82_isOK());
+      TRYF(ti82_send_EOT());
+      TRYF(ti82_recv_ACK(NULL));  
     }  
-  DISPLAY("\n");
- label_exit:
-  update_start();
-  TRY(cable->close());
 
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+    
   return 0;
+}	
+
+int ti82_send_flash(const char *filename, int mask_mode)
+{
+  return ERR_VOID_FUNCTION;
+}
+
+int ti82_recv_flash(const char *filename, int mask_mode, const char *appname)
+{
+  return ERR_VOID_FUNCTION;
 }
 
 #define DUMP_ROM82_FILE "dumprom.82p"
 
-int ti82_dump_rom(FILE *file, int mask_mode)
-{
+int ti82_dump_rom(const char *filename, int mask_mode)
+{ // to do..
   return ERR_VOID_FUNCTION;
 }
 
-int ti82_get_rom_version(char *version)
-{
-  return ERR_VOID_FUNCTION;
-}
 
-int ti82_send_flash(FILE *file, int mask_mode)
-{
-  return ERR_VOID_FUNCTION;
-}
 
-int ti82_recv_flash(FILE *file, int mask_mode)
-{
-  return ERR_VOID_FUNCTION;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 int ti82_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
-}
-
-int ti82_supported_operations(void)
-{
-	return 
-	(
-     OPS_SCREENDUMP |
-     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
-     OPS_SEND_VARS | OPS_RECV_VARS |
-     OPS_ROMDUMP
-     );
 }

@@ -16,44 +16,32 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALC_ERRCODES__
-#define __CALC_ERRCODES__
+#ifndef __TICALC_ERRCODES__
+#define __TICALC_ERRCODES__
 
 /* Error codes: ERR_...  */
-/* Error codes must begin at 256 up to 512 */
+/* Error codes must begin at 256 up to 511 */
 #define ERR_ABORT              -1  // Operation aborted
-#define ERR_NOT_REPLY          304 // The calculator do not reply
-#define ERR_NOT_ACK            305 // Calc did not acknowledge
 #define ERR_CHECKSUM           307 // Checksum error
-#define ERR_VAR_NOTEXIST       312 // The requested var does not exit
-#define ERR_DISCONTINUE        316 // The calculator does not want continue
-#define ERR_INVALID_TI92_FILE  318 // Invalid TI92 file
 #define ERR_NOT_READY          320 // Calculator is not ready
-#define ERR_BACKUP             321 // Backup, not a var
-#define ERR_INVALID_BYTE       322 // Invalid byte received
-#define ERR_INVALID_TI92p_FILE 323 // Invalid TI92+ file
-#define ERR_INVALID_TI89_FILE  324 // Invalid TI89 file
 #define ERR_VOID_FUNCTION      325 // This function does not exist for the calc
-#define ERR_INVALID_TI82_FILE  326 // Invalid TI82 file
-#define ERR_PACKET             327 // Packet error
-#define ERR_SIZE               328 // Size error
-#define ERR_INVALID_TI83_FILE  329 // Invalid TI83 file
-#define ERR_INVALID_TI85_FILE  330 // Invalid TI85 file
-#define ERR_INVALID_TI86_FILE  331 // Invalid TI86 file
-#define ERR_INVALID_TI83p_FILE 332 // Invalid TI83+ file
-
-#define ERR_INVALID_FLASH_FILE 256 // FLASH file is invalid
-#define ERR_VAR_REFUSED        257 // Var has been refused by calc
-#define ERR_OUT_OF_MEMORY      258 // Calc reply out of memory
-#define ERR_INVALID_TIXX_FILE  259 // Invalid TI file
-#define ERR_GRP_SIZE_EXCEEDED  260 // Group size exceeds 64KB
-#define ERR_OPEN_FILE          261 // Can not open (reading) file
+#define ERR_OUT_OF_MEMORY      258 // Calc reply out of *memory
+#define ERR_OPEN_FILE          ERR_FILE_OPEN
 #define ERR_SAVE_FILE          264 // Can not open (writing) file
-#define ERR_CLOSE_FILE         262 // Can not close file
-#define ERR_NO_IDLIST          263 // Calc has not an IDlist
-
 #define ERR_PENDING_TRANSFER   333 // A transfer is in progress
-#define ERR_INVALID_TI73_FILE  334 // Invalid TI83 file
+
+#define ERR_INVALID_HOST       400 // Invalid host ID
+#define ERR_INVALID_TARGET     401 // Invalid target ID
+#define ERR_INVALID_CMD        402 // Invalid command ID
+#define ERR_EOT                403 // Not really an error (internal use)
+#define ERR_VAR_REJECTED       404 // The variable has been rejected by calc
+#define ERR_CTS_ERROR          405 // Invalid CTS packet
+#define ERR_NACK               406 // NACK received
+#define ERR_INVALID_PACKET     407 // Packet is invalid
+//#define ERR_FILE_OPEN          261 // Can not open (reading) file
+//#define ERR_FILE_CLOSE         262 // Can not close file
+#define ERR_FATAL_ERROR        408 // Fatal error (alloc, file, ...)
+#define ERR_MISSING_VAR        409 // The requested var does not exist
 
 #endif
 

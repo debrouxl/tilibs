@@ -1,3 +1,7 @@
+* 20020919 : v4.2.2
+	* Merge up to 4.2.2.
+	* Some files removed, added.
+	* I didn't screw up this commit. Gna.
 * 20020512 : v3.3.7
 	* Merge up to 3.3.7.
 	* Converted to ProjectBuilder 2.0 Beta.

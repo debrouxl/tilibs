@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 
-#include "calc_ext.h"
+#include "calc_def.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,42 +37,49 @@ extern "C" {
   /* Methods */
   /***********/
   
+  // intrface.c
   const char TICALL *ticalc_get_version();
   
   int        TICALL ticalc_get_error(int err_num, char *error_msg);
   
-  void       TICALL ticalc_set_update(struct ticalc_info_update *iu,
-                                     void (*start)   (void),
-                                     void (*stop)    (void),
-                                     void (*refresh) (void),
-                                     void (*msg_box) (const char *t, char *s),
-                                     void (*pbar)    (void),
-                                     void (*label)   (void),
-                                     int  (*choose)  (char *cur_name, 
-                                                      char *new_name));
-  
-  // obsolete, use the 2 functions below  
-  void TICALL ticalc_set_calc(int type, TicalcFncts *calc, LinkCable *link);
-  void TICALL ticalc_set_cable(LinkCable *lc);
-  void TICALL ticalc_set_calc2(int type, TicalcFncts *calc);  
+  void       TICALL ticalc_set_update(TicalcInfoUpdate *iu,
+				      void (*start)   (void),
+				      void (*stop)    (void),
+				      void (*refresh) (void),
+				      void (*pbar)    (void),
+				      void (*label)   (void));
+       
+  void TICALL ticalc_set_cable(TicableLinkCable *lc);
+  void TICALL ticalc_set_calc(int type, TicalcFncts *calc);  
+
+  int  TICALL ticalc_return_calc(void);
   int  TICALL ticalc_get_calc(int *type);
-  int  TICALL ticalc_get_calc2(void);
   
-  int  TICALL detect_calc(int *calc_type);
-  int  TICALL ticalc_89_92_92p_isready(int *calc_type);  // obsolete
-  int  TICALL ticalc_73_83p_89_92p_isready(int *calc_type); // preferred
-  
-  int  TICALL ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
-  int  TICALL ticalc_close_ti_file();
- 
-  const char* TICALL ticalc_group_file_ext(int calc_type);
-  const char* TICALL ticalc_backup_file_ext(int calc_type);
-  const char* TICALL ticalc_flash_app_file_ext(int calc_type);
-  const char* TICALL ticalc_flash_os_file_ext(int calc_type);
- 
-  const int   TICALL ticalc_folder_type(int calc_type);
-  const int   TICALL ticalc_flash_type(int calc_type);
-  
+  // probe.c
+  int  TICALL ticalc_detect_calc(int *calc_type);
+  int  TICALL ticalc_flash_isready(int *calc_type);         // preferred
+#define ticalc_89_92_92p_isready     ticalc_flash_isready   // obsolete
+#define ticalc_73_83p_89_92p_isready ticalc_flash_isready
+
+  // dirlist.c
+  void   TICALL ticalc_display_dirlist(TNode *tree);
+  int    TICALL ticalc_number_of_vars(TNode *tree);
+  int    TICALL ticalc_memory_used(TNode *tree);
+  TiVarEntry* TICALL ticalc_check_if_var_exists(TNode *tree, char *varname);
+  TiVarEntry* TICALL ticalc_check_if_app_exists(TNode *tree, char *appname);
+  char** TICALL ticalc_create_action_array(int num_entries);
+  void   TICALL ticalc_destroy_action_array(char **array);
+
+  // tikeys.c
+  const struct ti_key TICALL ticalc_73_keys (unsigned char ascii_code);
+  const struct ti_key TICALL ticalc_83p_keys(unsigned char ascii_code);
+  const struct ti_key TICALL ticalc_89_keys (unsigned char ascii_code);
+  const struct ti_key TICALL ticalc_92p_keys(unsigned char ascii_code);
+
+  // clock.c
+  const char* TICALL ticalc_format_to_date(int value);
+  int         TICALL ticalc_date_to_format(const char *format);
+
 #ifdef __cplusplus
 }
 #endif

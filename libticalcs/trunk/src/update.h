@@ -16,65 +16,39 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_UPDATE__
-#define __TICALCS_UPDATE__
-
-#ifndef TRYV
-# define TRYV(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
-#endif
+#ifndef __CALCS_UPDATE__
+#define __CALCS_UPDATE__
 
 /*
  * Implement a kind of mutex: prevent that someone tries to initiate
  * a transfer while another is in progress
  */
 extern int lock;
-#define LOCK_TRANSFER()   TRYV(lock);  lock = ERR_PENDING_TRANSFER;
 #define UNLOCK_TRANSFER() lock = 0;
 
-/* 
- * Functions for updating 
- */
+#ifndef TRYF
+# define TRYF(x) { int aaaa_; if((aaaa_ = (x))) { UNLOCK_TRANSFER() return aaaa_; } }   //new !
+#endif
 
-/*
-  void (*start)   (void);                   // Init internal variables
-  void (*msg_box) (const char *t, char *s); // Display a message box
-  void (*pbar)    (void);                   // Refresh the progress bar
-  void (*label)   (void);                   // Refresh the label
-  void (*refresh) (void);                   // Pass control to GUI for refresh
-  int  (*choose)  (char *cur_name, 
-  char *new_name);         // Display choice box (skip, rename, overwrite, ... )
-  void (*stop)    (void);
-*/
+#define LOCK_TRANSFER()   { TRYF(lock);  lock = ERR_PENDING_TRANSFER; }
 
 /* 
    Macros: they check that function pointer is good and then
-   call the pointer itself 
+   call the pointer itself.
+   Default behaviour: check is not done !
 */
 #ifdef CHECK_UPDATE
 # define update_start()      if(update && update->start)   update->start()
-# define update_msgbox(t, s) if(update && update->msgbox) update->msg_box(t, s)
 # define update_pbar()       if(update && update->pbar)    update->pbar()
 # define update_label()      if(update && update->label)   update->label()
 # define update_refresh()    if(update && update->refresh) update->refresh()
 # define update_stop()       if(update && update->stop)    update->stop()
-
-/*
-# ifndef UPDATE_INLINE
-#  define UPDATE_INLINE
-int inline update_choose(char* c, char* n)
-{ if(update && update->choose) return update->choose(c, n); else return 0; }
-# endif
-*/
-
-# define update_choose(c, n) update->choose(c, n)
 #else
 # define update_start()      update->start()
-# define update_msgbox(t, s) update->msg_box(t, s)
 # define update_pbar()       update->pbar()
 # define update_label()      update->label()
 # define update_refresh()    update->refresh()
 # define update_stop()       update->stop()
-# define update_choose(c, n) update->choose(c, n)
 #endif
 
 #endif

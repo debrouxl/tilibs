@@ -16,1540 +16,699 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+  This unit provides TI89/TI92+/V200 support.
+*/
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-#include "calc_err.h"
-#include "calc_ext.h"
-#include "defs89.h"
-#include "keys89.h"
-#include "group.h"
-#include "rom89.h"
-#include "pause.h"
+#include "headers.h"
+#include "externs.h"
 #include "update.h"
-//#include "struct.h"
+#include "packets.h"
+#include "calc_err.h"
+#include "cmd89.h"
+#include "rom89.h"
+#include "keys89.h"
+#include "pause.h"
+#include "dirlist.h"
 
-#ifdef HAVE_CURSES_H
-#include <curses.h>
-#endif
+// Screen coordinates of the TI89
+#define TI89_ROWS          128
+#define TI89_COLS          240
+#define TI89_ROWS_VISIBLE  100
+#define TI89_COLS_VISIBLE  160
 
-#ifndef __WIN32__
-static uint32_t bswap_32(uint32_t a)
+int ti89_supported_operations(void)
 {
-  return (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8;
-}
-#else
-static DWORD bswap_32(DWORD a)
-{
-  return (a >> 24) | ((a & 0xff0000) >> 16) << 8 | ((a & 0xff00) >> 8) << 16 | (a & 0xff) << 8;
-}
-#endif
-
-/* Functions used by TI_PC functions */
-
-// The PC indicates that is OK
-int PC_replyOK_89(void)
-{
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer reply OK.\n");
-
-  return 0;
-}
-
-int PC_replyCONT_89(void)
-{
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_CONTINUE));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer reply OK.\n");
-
-  return 0;
+  return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
+     OPS_DIRLIST |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_SEND_FLASH | OPS_RECV_FLASH |
+     OPS_IDLIST |
+     OPS_ROMDUMP |
+     OPS_CLOCK
+     );
 }
 
-// The PC indicates that it is ready or wait data
-int PC_waitdata_89(void)
-{
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_WAIT_DATA));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer wait data.\n");
-  
-  return 0;
-}
-
-// Check whether the TI reply OK
-int ti89_isOK(void)
-{
-  byte data;
-
-  TRY(cable->get(&data));
-  if(data != TI89_PC) 
-    {
-      return ERR_INVALID_BYTE;
-    }
-  TRY(cable->get(&data));
-  if(data != CMD89_TI_OK)
-    { 
-      if(data == CMD89_CHK_ERROR) return ERR_CHECKSUM;
-      else return ERR_INVALID_BYTE;
-    }
-  TRY(cable->get(&data));
-  if(data != 0x00)
-    { 
-      // FLASHed calcs reply in a different way
-      //return 4;
-    }
-  TRY(cable->get(&data));
-  if((data&1) != 0)
-    { 
-      return ERR_NOT_REPLY;
-    }
-
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-
-// The TI indicates that it is ready or wait data
-int ti89_waitdata(void)
-{
-  byte data;
-
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_WAIT_DATA)
-    {
-      if(data != CMD89_REFUSED)
-        {
-          DISPLAY("Data: %02X\n", data);
-          return ERR_INVALID_BYTE;
-        }
-      else
-        {
-          DISPLAY("Command rejected... ");
-          TRY(cable->get(&data));
-          TRY(cable->get(&data));
-          TRY(cable->get(&data));
-          //*rej_code = data;
-          DISPLAY("Rejection code: %02X\n", data);
-          TRY(cable->get(&data));
-          TRY(cable->get(&data));
-          return ERR_VAR_REFUSED;
-        }
-    }
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  DISPLAY("The calculator wait data.\n");
-
-  return 0;
-}
-
-// Check whether the TI reply that it is ready
 int ti89_isready(void)
 {
-  //LOCK_TRANSFER();
-  TRY(cable->open());
+  uint16_t status;
+
   DISPLAY("Is calculator ready ?\n");
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_ISREADY));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(ti89_isOK());
-  DISPLAY("The calculator is ready.\n");
-  DISPLAY("\n");
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
 
-  return 0;
-}
-
-// Send a string of characters to the TI
-int ti89_sendstring(char *s, word *checksum)
-{
-  int i;
-
-  for(i=0; i<strlen(s); i++)
-    {
-      TRY(cable->put(s[i]));
-      (*checksum) += (s[i] & 0xff);
-    }
-
-  return 0;
-}
-
-#define TI89_MAXTYPES 48
-const char *TI89_TYPES[TI89_MAXTYPES]=
-{ 
-"EXPR", "UNKNOWN", "UNKNOWN", "UNKNOWN", "LIST", "UNKNOWN", "MAT", "UNKNOWN", 
-"UNKNOW", "UNKNOWN", "DATA", "TEXT", "STR", "GDB", "FIG", "UNKNOWN",
-"PIC", "UNKNOWN", "PRGM", "FUNC", "MAC", "UNKNOWN", "UNKNOWN", "UNKNOWN",
-"UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "ZIP", "BACKUP", "UNKNOWN", "DIR",
-"UNKNOWN", "ASM", "IDLIST", "UNKNOWN", "FLASH", "UNKNOW", "LOCKED", "ARCHIVED",
-"UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"
-};
-const char *TI89_EXT[TI89_MAXTYPES]=
-{
-"89e", "unknown", "unknown", "unknown", "89l", "unknown", "89m", "unknown",
-"unknown", "unknown", "89c", "89t", "89s", "89d", "89a", "unknown",
-"89i", "unknown", "89p", "89f", "89x", "unknown", "unknown", "unknown",
-"unknown", "unknown", "unknown", "unknown", "89y", "89b", "unknown", "unknown",
-"unknown", "89z", "unknown", "unknown", "89k", "unknown", "unknown", "unknown",
-"unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"
-};
-
-// Return the type corresponding to the value
-const char *ti89_byte2type(byte data)
-{
-  if(data>TI89_MAXTYPES)
-    {
-      printf("Type: %02X\n", data);
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return "UNKNOWN";
-    }
-  else 
-    {
-      if(!strcmp(TI89_TYPES[data], "UNKNOWN"))
-	fprintf(stderr, "Unknown type. Please report it. Type: %02X\n", data);
-      return TI89_TYPES[data];
-    }
-}
-
-// Return the value corresponding to the type
-byte ti89_type2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI89_MAXTYPES; i++)
-    {
-      if(!strcmp(TI89_TYPES[i], s)) break;
-    }
-  if(i>TI89_MAXTYPES)
-    {
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// Return the file extension corresponding to the value
-const char *ti89_byte2fext(byte data)
-{
-  if(data>TI89_MAXTYPES)
-    {
-      printf("Type: %02X\n", data);
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");    
-      return ".89?";
-    }
-  else 
-  {
-    return TI89_EXT[data];
-  }
-}
-
-// Return the value corresponding to the file extension
-byte ti89_fext2byte(char *s)
-{
-  int i;
-
-  for(i=0; i<TI89_MAXTYPES; i++)
-    {
-      if(!strcmp(TI89_EXT[i], s)) break;
-    }
-  if(i > TI89_MAXTYPES)
-    {
-      printf("Warning: unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
-
-  return i;
-}
-
-// General functions
-
-int ti89_send_key(word key)
-{
-  //LOCK_TRANSFER();
-  TRY(cable->open());
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_DIRECT_CMD));
-  TRY(cable->put(LSB(key)));
-  TRY(cable->put(MSB(key)));
-  TRY(ti89_isOK());
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
-
-  return 0;
-}
-
-
-int ti89_remote_control(void)
-{
-#if defined(HAVE_CURSES_H) && defined(HAVE_LIBCURSES)
-  int c;
-  word d;
-  int sp_key;
-  char skey[10];
-  int b;
-
-  //LOCK_TRANSFER();
-  TRY(cable->open());
-  d=0;
-  DISPLAY("\n");
-  DISPLAY("Remote control: press any key but for:\n");
-  DISPLAY("2nd, press the square key\n");
-  DISPLAY("diamond, press the tab key\n");
-  DISPLAY("APPS, press F9\n");
-  DISPLAY("STO, press F10\n");
-  DISPLAY("MODE, press F11\n");
-  DISPLAY("CLEAR, press F12\n");
-  DISPLAY("Press End to quit the remote control mode.\n");
-  getchar();
-  initscr();
-  noecho();
-  keypad(stdscr, TRUE);
-  raw();
-  do
-    {
-      sp_key=0;
-      b=0;
-      strcpy(skey, "");
-      c=getch();
-      if(c==9)
-	{
-	  sp_key=KEY89_CTRL;
-	  strcpy(skey, "DIAMOND ");
-	  b=1;
-	  c=getch();
-	}
-      if(c==178)
-        {
-          sp_key=KEY89_2ND;
-	  strcpy(skey, "2nd ");
-	  b=1;
-	  c=getch();
-        }
-      if(c>31 && c<128)
-	{
-	  DISPLAY("Sending <%s%c>\n", skey, c);
-	  TRY(cable->put(PC_TI89));
-	  TRY(cable->put(CMD89_DIRECT_CMD));
-	  c+=sp_key;
-	  DISPLAY("%i\n", c);
-	  TRY(cable->put(LSB(c)));
-	  TRY(cable->put(MSB(c)));
-	  TRY(ti89_isOK());
-	  refresh();
-	}
-      else
-	{
-	  if(c==ESC)
-            {
-              d=KEY89_ESC;
-              DISPLAY("Sending %sESC key\n", skey);
-            }
-	  if(c==BS)
-            {
-              d=KEY89_BS;
-              DISPLAY("Sending %s<- key\n", skey);
-            }
-	  if(c==F1) 
-	    {
-	      d=KEY89_F1;
-	      DISPLAY("Sending %sF1 key\n", skey);	      
-	    }
-	  if(c==F2) 
-	    {
-	      d=KEY89_F2;
-	      DISPLAY("Sending %sF2 key\n", skey);
-	    }
-          if(c==F3) 
-	    {
-	      d=KEY89_F3;
-	      DISPLAY("Sending %sF3 key\n", skey);
-	    }
-          if(c==F4) 
-	    {
-	      d=KEY89_F4;
-	      DISPLAY("Sending %sF4 key\n", skey);
-	    }
-          if(c==F5) 
-	    {
-	      d=KEY89_F5;
-	      DISPLAY("Sending %sF5 key\n", skey);
-	    }
-          if(c==F6) 
-	    {
-	      d=KEY89_F6;
-	      DISPLAY("Sending %sF6 key\n", skey);
-	    }
-	  if(c==F7) 
-	    {
-	      d=KEY89_F7;
-	      DISPLAY("Sending %sF7 key\n", skey);
-	    }
-          if(c==F8) 
-	    {
-	      d=KEY89_F8;
-	      DISPLAY("Sending %sF8 key\n", skey);
-	    }
-          if(c==F9) 
-	    {
-	      d=KEY89_APPS;
-	      DISPLAY("Sending %sAPPS key\n", skey);
-	    }
-          if(c==F10) 
-	    {
-	      d=KEY89_STO;
-	      DISPLAY("Sending %sSTO key\n", skey);
-	    }
-          if(c==F11) 
-	    {
-	      d=KEY89_MODE;
-	      DISPLAY("Sending %sMODE key\n", skey);
-	    }
-          if(c==F12) 
-	    {
-	      d=KEY89_CLEAR;
-	      DISPLAY("Sending %sCLEAR key\n", skey);
-	    }
-	  if(c==CALC_CR || c==CALC_LF) 
-	    {
-	      d=KEY89_CR;
-	      DISPLAY("Sending %sENTER key\n", skey);
-	    }
-	  d+=sp_key;
-	  TRY(cable->put(PC_TI89));
-          TRY(cable->put(CMD89_DIRECT_CMD));
-          TRY(cable->put(LSB(d)));
-          TRY(cable->put(MSB(d)));
-          TRY(ti89_isOK());
-	  refresh();
-	}
-    }
-  while(c!=END);
-  noraw();
-  endwin();
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
-
-  return 0;
-#else
-  return ERR_VOID_FUNCTION;
-#endif
-}
-
-int ti89_screendump(byte **bitmap, int mask_mode,
-                         struct screen_coord *sc)
-{
-  byte data;
-  word max_cnt;
-  word sum;
-  word checksum;
-  int i, j, k;
-
-  //LOCK_TRANSFER();
-  TRY(cable->open());
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  sc->width=TI89_COLS;
-  sc->height=TI89_ROWS;
-  sc->clipped_width = TI89_COLS_VISIBLE;
-  sc->clipped_height = TI89_ROWS_VISIBLE;
+
+  TRYF(ti89_send_RDY());
+  TRYF(ti89_recv_ACK(&status));
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return (status & 0x01) ? ERR_NOT_READY : 0;
+}
+
+int ti89_send_key(uint16_t key)
+{
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  
+  TRYF(ti89_send_KEY(key));
+  TRYF(ti89_recv_ACK(NULL));
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return 0;
+}
+
+int ti89_screendump(uint8_t **bitmap, int mask_mode,
+                    TicalcScreenCoord *sc)
+{
+  uint32_t max_cnt;
+  int err;
+
+  DISPLAY("Receiving screendump...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+  
+  sc->width  = TI89_COLS;
+  sc->height = TI89_ROWS;
+  switch(ticalcs_calc_type)
+    {
+    case CALC_TI89:
+      sc->clipped_width  = TI89_COLS_VISIBLE;
+      sc->clipped_height = TI89_ROWS_VISIBLE;
+      break;
+    case CALC_TI92P:
+    case CALC_V200:
+      sc->clipped_width  = TI89_COLS;
+      sc->clipped_height = TI89_ROWS;
+      break;
+    }
+
   if(*bitmap != NULL)
     free(*bitmap);
-  (*bitmap)=(byte *)malloc(TI89_COLS*TI89_ROWS*sizeof(byte)/8);
+  (*bitmap) = (uint8_t *)malloc(TI89_COLS * TI89_ROWS * sizeof(uint8_t)/8);
   if((*bitmap) == NULL)
     {
-      DISPLAY_ERROR("Unable to allocate memory.\n");
+      fprintf(stderr, "Unable to allocate memory.\n");
       exit(0);
     }
+  
+  TRYF(ti89_send_SCR());
+  TRYF(ti89_recv_ACK(NULL));
 
-  sum=0;
-  DISPLAY("Requesting screendump.\n");
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_SCREEN_DUMP));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  TRY(ti89_isOK());
+  err = ti89_recv_XDP(&max_cnt, *bitmap); // pb with checksum
+  if(err != ERR_CHECKSUM) { TRYF(err) };
+  TRYF(ti89_send_ACK());
 
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;  
-  TRY(cable->get(&data));
-  max_cnt=data;
-  TRY(cable->get(&data));
-  max_cnt += (data << 8);
-  DISPLAY("0x%04X = %i bytes to receive\n", max_cnt, max_cnt);
-  DISPLAY("Screendump in progress...\n");
+  DISPLAY("Done.\n");
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
-  update->total = max_cnt;
-  for(i=0; i<max_cnt; i++)
+  // Clip the unused part of the screen (nethertheless useable witha asm prog)
+  if( (ticalcs_calc_type == CALC_TI89) && (mask_mode == CLIPPED_SCREEN) )
     {
-      TRY(cable->get(&data));
-      (*bitmap)[i]=~data;
-      sum += data;
+      int i, j, k;
 
-      update->count = i;
-      update->percentage = (float)i/max_cnt;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
+      for(i=0, j=0; j<TI89_ROWS_VISIBLE; j++)
+	for(k=0; k<(TI89_COLS_VISIBLE >> 3); k++)
+	  (*bitmap)[i++] = (*bitmap)[j*(TI89_COLS >> 3)+k];
     }
-  
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  //if(sum != checksum) return ERR_CHECKSUM;
 
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_PC_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("PC reply OK.\n");
-  DISPLAY("\n");
-  (update->percentage)=0.0;
-  TRY(cable->close());
-  
-  /* Clip the unused part of the screen (nethertheless useable via ASM) */
-  
-  if(mask_mode == CLIPPED_SCREEN)
-    {
-      i=0;
-      for(j=0; j<TI89_ROWS_VISIBLE; j++)
-	{
-	  for(k=0; k<(TI89_COLS_VISIBLE >> 3); k++)
-	    {
-	      (*bitmap)[i++] = (*bitmap)[j*(TI89_COLS >> 3)+k];
-	    }
-	}
-    }
-  //UNLOCK_TRANSFER();
-  
   return 0;
 }
 
-int ti89_directorylist(struct varinfo *list, int *n_elts)
+int ti89_directorylist(TNode **tree, uint32_t *memory)
 {
-  byte data;
-  word sum;
-  word checksum;
+  uint8_t buffer[65536];
+  TiVarEntry info;
+  uint32_t block_size;
   int i, j;
-  word block_size;
-  byte var_type;
-  byte locked;
-  longword var_size;
-  byte name_length;
-  char var_name[9];
-  struct varinfo *p, *f;
-  struct varinfo *q, *tmp;
-  byte num_var;
+  TNode *vars, *apps;
+  uint8_t extra = (ticalcs_calc_type == CALC_V200) ? 8 : 0;
 
-  //LOCK_TRANSFER();
-  TRY(cable->open());
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  *n_elts=0;
-  p=list;
-  f=NULL;
-  p->folder=f;
-  p->is_folder = VARIABLE;
-  p->next=NULL;
-  p->folder=NULL;
-  strcpy(p->varname, "");
-  p->varsize=0;
-  p->vartype=0;
-  p->varattr=0;
-  strcpy(p->translate, "");
 
-  sum=0;
-  DISPLAY("Requesting directory list (dir)...\n");
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_REQUEST));
-  TRY(cable->put(0x06));
-  TRY(cable->put(0x00));
-  for(i=0; i<3; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  data=TI89_DIR;
-  sum+=data;
-  TRY(cable->put(data));
-  data=TI89_DIRL;
-  sum+=data;
-  TRY(cable->put(data));
-  TRY(cable->put(0x00));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
+  DISPLAY("Directory listing...\n");
 
-  TRY(ti89_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  TRY(cable->get(&data));
-  list->vartype=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  for(i=0; i<name_length; i++)
-    {
-      TRY(cable->get(&data));
-      var_name[i]=data;
-      sum+=data;
-    }
-  var_name[i]='\0';
-  strcpy(list->varname, var_name);
-  strncpy(list->translate, list->varname, 9);
-  list->folder=NULL;
-  TRY(cable->get(&data));
-  sum+=data;
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-  TRY(PC_replyOK_89());
-  TRY(PC_waitdata_89());
-
-  TRY(ti89_isOK());
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  block_size=data;
-  TRY(cable->get(&data));
-  block_size += (data << 8);
-  sum=0;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-    }
-  block_size=block_size-4;
-  for(j=0; j<block_size/14; j++)
-    {
-      if( (p->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
-        {
-          fprintf(stderr, "Unable to allocate memory.\n");
-          exit(0);
-        }
-      p=p->next;
-      p->next=NULL;
-      (*n_elts)++;
-      //strcpy(p->varname, "");
-      p->is_folder = FOLDER;
-
-      for(i=0; i<8; i++)
-        {
-          TRY(cable->get(&data));
-          sum+=data;
-          var_name[i]=data;
-        }
-      var_name[i]='\0';      
-      strcpy(p->varname, var_name);
-      strncpy(p->translate, p->varname, 9);
-      TRY(cable->get(&data));
-      var_type=data;
-      sum+=data;
-      p->vartype=var_type;
-      if(p->vartype == TI89_FLASH)
-	p->is_folder = VARIABLE;
-      TRY(cable->get(&data));
-      locked=data;
-      sum+=data;
-      p->varattr=locked;
-      TRY(cable->get(&data));
-      var_size=data;
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 8);
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 16);
-      sum+=data;
-      TRY(cable->get(&data));
-      // See the doc: PROTOCOL.89
-      //      var_size |= (data << 24);
-      sum+=data;
-      p->varsize=var_size;
-      DISPLAY("Name: %8s | ", var_name);
-      DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
-      DISPLAY("Locked: %i | ", locked);
-      DISPLAY("Size: %08X\n", var_size);
-      p->folder=p;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-
-  TRY(PC_replyOK_89());
-  sprintf(update->label_text, "Reading of directory: %s", 
-	   p->translate);
-  update->label();
-  if(update->cancel) return ERR_ABORT;
+  TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
+  TRYF(ti89_recv_ACK(NULL));
   
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  DISPLAY("The calculator does not want to continue.\n");
+  TRYF(ti89_recv_VAR(&info.size, &info.type, info.name));
+  TRYF(ti89_send_ACK());
 
-  TRY(PC_replyOK_89());
+  TRYF(ti89_send_CTS());
+  TRYF(ti89_recv_ACK(NULL)); 
 
-  ////////
+  TRYF(ti89_recv_XDP(&block_size, buffer));
+  TRYF(ti89_send_ACK());
 
-  q=list->next;
-  do
+  TRYF(ti89_recv_EOT());
+  TRYF(ti89_send_ACK());
+
+  // get list of folders & FLASH apps
+  *tree = g_node_new(NULL);
+  vars = g_node_new(NULL);
+  apps = g_node_new(NULL);
+  g_node_append(*tree, vars);  
+  g_node_append(*tree, apps);
+
+  for(j=4; j<block_size; )
     {
-      tmp=q->next;
-      if(q->vartype == TI89_FLASH) {
-	q=tmp;
-	continue;
-      }
+      TiVarEntry *fe = calloc(1, sizeof(TiVarEntry));
+      TNode *node;
+     
+      memcpy(fe->name, buffer+j, 8);
+      fe->name[8] = '\0';
+      fe->type = buffer[j+8];
+      fe->attr = buffer[j+9];
+      fe->size = buffer[j+10] | (buffer[j+11] << 8) | 
+	(buffer[j+12] << 16);// | (buffer[j+13] << 24);
+      j += 14 + extra;
+      strcpy(fe->folder, "");
 
-      DISPLAY("Requesting local directory list in %8s...\n", q->varname);
-      p=q;
-      num_var=0;
-      sum=0;
-      TRY(cable->put(PC_TI89));
-      TRY(cable->put(CMD89_REQUEST));
-      block_size=4+2+strlen(q->varname);
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      for(i=0; i<3; i++)
-	{
-	  TRY(cable->put(0x00));
-	}
-      data=TI89_LDIR;
-      sum+=data;
-      TRY(cable->put(data));
-      data=TI89_DIRL;
-      sum+=data;
-      TRY(cable->put(data));
-      data=strlen(q->varname);
-      sum+=data;
-      TRY(cable->put(data));
-      TRY(ti89_sendstring(q->varname, &sum));
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
+      tifiles_translate_varname(fe->name, fe->trans, fe->type);
+      node = g_node_new(fe);
 
-      TRY(ti89_isOK());
+      DISPLAY("Name: %8s | ",  fe->name);
+      DISPLAY("Type: %8s | ",  tifiles_vartype2string(fe->type));
+      DISPLAY("Attr: %i  | ",  fe->attr);
+      DISPLAY("Size: %08X\n",  fe->size);
 
-      sum=0;
-      TRY(cable->get(&data));
-      if(data != TI89_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD89_VAR_HEADER) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      var_size=data;
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 8);
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 16);
-      sum+=data;
-      TRY(cable->get(&data));
-      var_size |= (data << 24);
-      sum+=data;
-      TRY(cable->get(&data));
-      sum+=data;
-      TRY(cable->get(&data));
-      name_length=data;
-      sum+=data;
-      for(i=0; i<name_length; i++)
-	{
-	  TRY(cable->get(&data));
-	  var_name[i]=data;
-	  sum+=data;
-	}
-      var_name[i]='\0';
-      TRY(cable->get(&data));
-      sum+=data;
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      TRY(PC_replyOK_89());
-      TRY(PC_waitdata_89());
+      if(fe->type == TI89_DIR)
+	g_node_append(vars, node);
+      else if(fe->type == TI89_APPL)
+	continue; // AMS<2.08 returns FLASH apps
+    }
+  
+  // get list of variables into each folder
+  for(i=0; i<g_node_n_children(vars); i++)
+    {
+      TNode *folder = g_node_nth_child(vars, i);
+      char *folder_name = ((TiVarEntry *)(folder->data))->name;
 
-      TRY(ti89_isOK());
-      TRY(cable->get(&data));
-      if(data != TI89_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      block_size=data;
-      TRY(cable->get(&data));
-      block_size += (data << 8);
-      sum=0;
-      for(i=0; i<4; i++)
-	{
-	  TRY(cable->get(&data));
-	  sum+=data;
-	}
-      block_size-=4;
-      for(i=0; i<14; i++)
-        {
-          TRY(cable->get(&data));
-          sum+=data;
-        }
-      block_size-=14;
-      for(j=0; j<block_size/14; j++)
+      DISPLAY("Directory listing in %8s...\n", folder_name); 
+      
+      TRYF(ti89_send_REQ(TI89_LDIR << 24, TI89_RDIR, folder_name));
+      TRYF(ti89_recv_ACK(NULL));
+      
+      TRYF(ti89_recv_VAR(&info.size, &info.type, info.name));
+      TRYF(ti89_send_ACK());
+
+      TRYF(ti89_send_CTS());
+      TRYF(ti89_recv_ACK(NULL)); 
+
+      TRYF(ti89_recv_XDP(&block_size, buffer));
+      TRYF(ti89_send_ACK());
+      
+      TRYF(ti89_recv_EOT());
+      TRYF(ti89_send_ACK());
+      
+      for(j=4+14+extra; j<block_size; )
 	{ 
-	  TicalcVarInfo *old = q;
-	  if( (q->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
+	  TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
+	  TNode *node;
+	
+	  memcpy(ve->name, buffer+j, 8);
+	  ve->name[8] = '\0';
+	  ve->type = buffer[j+8];
+	  ve->attr = buffer[j+9];
+	  ve->size = buffer[j+10] | (buffer[j+11] << 8) | 
+	    (buffer[j+12] << 16);// | (buffer[j+13] << 24);
+	  j += 14+extra;
+	  strcpy(ve->folder, folder_name);
+
+	  tifiles_translate_varname(ve->name, ve->trans, ve->type);
+          node = g_node_new(ve);
+
+	  DISPLAY("Name: %8s | ",  ve->trans);
+          DISPLAY("Type: %8s | ",  tifiles_vartype2string(ve->type));
+          DISPLAY("Attr: %i  | ",  ve->attr);
+          DISPLAY("Size: %08X\n",  ve->size);
+
+	  sprintf(update->label_text, "Reading of: %s/%s",
+                  ((TiVarEntry *)(folder->data))->trans, ve->trans);
+          update_label();
+          if(update->cancel) return -1;
+
+	  if(ve->type == TI89_APPL) 
 	    {
-	      fprintf(stderr, "Unable to allocate memory.\n");
-	      exit(0);
-	    }
-	  q=q->next;
-	  (*n_elts)++;
-	  num_var++;
-
-	  q->is_folder = VARIABLE;
-	  
-	  for(i=0; i<8; i++)
-	    {
-	      TRY(cable->get(&data));
-	      sum+=data;
-	      var_name[i]=data;
-	    }
-	  var_name[i]='\0';
-	  strcpy(q->varname, var_name);
-	  strncpy(q->translate, q->varname, 9);
-	  TRY(cable->get(&data));
-	  var_type=data;
-	  sum+=data;
-	  q->vartype=var_type;
-	  TRY(cable->get(&data));
-	  locked=data;
-	  sum+=data;
-	  q->varattr=locked;
-	  TRY(cable->get(&data));
-	  var_size=data;
-	  sum+=data;
-	  TRY(cable->get(&data));
-	  var_size |= (data << 8);
-	  sum+=data;
-	  TRY(cable->get(&data));
-	  var_size |= (data << 16);
-	  sum+=data;
-	  TRY(cable->get(&data));
-	  // See the doc: PROTOCOL.89
-	  //	  var_size |= (data << 24);
-	  sum+=data;
-	  q->varsize=var_size;
-
-	  /* if FLASH type, discards it */
-	  if(q->vartype == TI89_FLASH) {
-	    free(q);
-	    q = old;
-	    continue;
-	  }
-
-	  DISPLAY("Name: %8s | ", var_name);
-	  DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
-	  DISPLAY("Attr: %i | ", locked);
-	  DISPLAY("Size: %08X\n", var_size);
-	  list->varsize += var_size;
-	  q->folder=p;
-	  sprintf(update->label_text, "Reading of: %s/%s", 
-		   (q->folder)->translate, q->translate);
-	  update->label();	  
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      
-      TRY(PC_replyOK_89());
-      
-      TRY(cable->get(&data));
-      if(data != TI89_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      DISPLAY("The calculator do not want continue.\n");
-      
-      TRY(PC_replyOK_89());
-
-      q->next = tmp;
-      q = tmp;
-      p->varsize=num_var;
-    }
-  while(q != NULL);
-  DISPLAY("\n");
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
-
-  return 0;
-}
-
-int ti89_recv_var(FILE *file, int mask_mode, 
-		     char *varname, byte vartype, byte varlock)
-{
-  byte data;
-  word sum;
-  word checksum;
-  word block_size;
-  int i;
-  longword var_size;
-  byte name_length;
-  char name[9];
-
-  //LOCK_TRANSFER();
-  TRY(cable->open());
-  update_start();
-  sprintf(update->label_text, "Variable: %s", varname);
-  update->label();
-  (update->percentage)=0.0;
-  sum=0;
-  DISPLAY("Request variable: %s\n", varname);
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_REQUEST));
-  block_size=4+2+strlen(varname);
-  data=LSB(block_size);
-  TRY(cable->put(data));
-  data=MSB(block_size);
-  TRY(cable->put(data));
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  data=vartype;
-  TRY(cable->put(data));
-  sum+=data;
-  data=strlen(varname);
-  TRY(cable->put(data));
-  sum+=data;
-  TRY(ti89_sendstring(varname, &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-  
-  TRY(ti89_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  DISPLAY("Size of the var in memory: 0x%08X = %i.\n", var_size-2, var_size-2);
-  TRY(cable->get(&data));
-  DISPLAY("Type of the variable: %s\n", ti89_byte2type(data));
-  sum+=data;
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  DISPLAY("Variable name: ");
-  for(i=0; i<name_length; i++)
-    {
-      TRY(cable->get(&data));
-      name[i]=data;
-      DISPLAY("%c", data);
-      sum+=data;
-    }
-  name[i]='\0';
-  DISPLAY("\n");
-  TRY(cable->get(&data)); // It's the only difference with the 92
-  sum+=data;
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-
-  TRY(PC_replyOK_89());
-  TRY(PC_waitdata_89());
-  DISPLAY("The calculator want continue.\n");
-
-  TRY(ti89_isOK());
-  DISPLAY("Receiving variable...\n");
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  sum=0;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      fprintf(file, "%c", data);
-    }
-  TRY(cable->get(&data));
-  block_size = (data << 8);
-  sum+=data;
-  fprintf(file, "%c", data);
-  TRY(cable->get(&data));
-  block_size |= data;
-  sum+=data;
-  fprintf(file, "%c", data);
-  update->total = block_size;
-  for(i=0; i<block_size; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      fprintf(file, "%c", data);
-
-      update->count = i;
-      update->percentage = (float)i/block_size;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-  TRY(cable->get(&data));
-  checksum=data;
-  fprintf(file, "%c", data);
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  fprintf(file, "%c", data);
-  if(checksum != sum) return ERR_CHECKSUM;
-  TRY(PC_replyOK_89());
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  DISPLAY("The calculator do not want continue.\n");
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("\n");
-  
-  update_start();
-  TRY(cable->close());
-  PAUSE(PAUSE_BETWEEN_VARS);
-  //UNLOCK_TRANSFER();
-
-  return 0;
-}
-
-int ti89_send_var(FILE *file, int mask_mode)
-{
-  byte data;
-  word sum;
-  word block_size = 0;
-  int i;
-  int j;
-  int k;
-  longword varsize;
-  byte vartype;
-  char foldname[18];
-  char varname[18];
-  byte varattr;
-  char str[128];
-  int num_vars_in_folder;
-  int num_entries;
-  int var_index;
-  static int num_vars;
-  static char **t_varname=NULL;
-  static byte *t_vartype=NULL;
-  static struct varinfo dirlist;
-  int n;
-  int err;
-  int exist=0;
-  int action=ACTION_NONE;
-  static int do_dirlist=1;
-
-  //LOCK_TRANSFER();
-  if((mask_mode & MODE_DIRLIST) && do_dirlist) // do dirlist one time
-    {
-      TRY(ti89_directorylist(&dirlist, &n));
-      do_dirlist=0;
-    } 
-
-  if((mask_mode & MODE_SEND_LAST_VAR) ||
-     (mask_mode & MODE_SEND_ONE_VAR)) do_dirlist=1;
-
-  // it seems that TIGLv2.00 use always 0xC9
-  //mask_mode |= MODE_USE_2ND_HEADER;
-  if(t_vartype != NULL) { free(t_vartype); t_vartype=NULL; }
-  if(t_varname != NULL)
-    {
-      for(i=0; i<num_vars; i++) free(t_varname[i]); 
-      t_varname=NULL;
-      num_vars=0;
-    }
-  num_vars=0;
-  var_index=0;
-  TRY(cable->open());
-  update_start();
-  fgets(str, 9, file);
-  if(!(mask_mode & MODE_FILE_CHK_NONE))
-    {
-      if(mask_mode & MODE_FILE_CHK_MID)
-	{
-	  if( strcmp(str, "**TI92P*") && strcmp(str, "**TI92p*") &&
-	      strcmp(str, "**TI89**") && strcmp(str, "**TI92**") )
-	    { 
-	      return ERR_INVALID_TIXX_FILE;
-	    }
-	}
-      else if(mask_mode & MODE_FILE_CHK_ALL)
-	{
-	  fprintf(stderr, "MODE_FILE_CHK_ALL\n");
-	  if( strcmp(str, "**TI89**"))
-	    {
-	      return ERR_INVALID_TI89_FILE;
-	    }
-	}
-    }
-
-  for(i=0; i<2; i++) fgetc(file);
-  for(i=0; i<8; i++) foldname[i]=fgetc(file);
-  foldname[i]='\0';
-  for(i=0; i<40; i++) fgetc(file);
-  num_entries=fgetc(file);
-  num_entries+=fgetc(file) << 8;
-
-  if(num_entries == 1)
-    { // normal file, not a group file
-      t_varname=(char **)malloc(sizeof(char *));
-      if(t_varname == NULL) return 40; // 40, I don't remind me what's that ?! 
-      t_varname[0]=(char *)malloc(18*sizeof(char));
-      if(t_varname[0] == NULL) return 40;
-      t_vartype=(byte *)malloc(sizeof(byte));
-      if(t_vartype == NULL) return 40; 
-      num_vars=1;
-      for(i=0; i<4; i++) fgetc(file);
-      for(i=0; i<8; i++) t_varname[var_index][i]=fgetc(file);
-      t_varname[var_index][i]='\0';
-      if(! (mask_mode & MODE_LOCAL_PATH))
-	{ // full path
-	  strcat(foldname, "\\");
-	  strcat(foldname, t_varname[var_index]);
-	  strcpy(t_varname[var_index], foldname);
-	}
-      t_vartype[var_index]=fgetc(file);
-      fgetc(file);
-      for(i=0; i<2; i++) fgetc(file);
-    }
-  else
-  { // group file
-    k=0;
-    while(k<num_entries)
-      {
-	k++;
-	for(i=0; i<4; i++) fgetc(file);
-	for(i=0; i<8; i++) foldname[i]=fgetc(file);
-	foldname[i]='\0';
-	vartype=fgetc(file);
-	fgetc(file);
-	num_vars_in_folder=fgetc(file);
-	num_vars_in_folder+=fgetc(file) << 8;
-	num_vars+=num_vars_in_folder;
-        t_vartype=(byte *)realloc(t_vartype, (num_vars+1)*sizeof(byte));
-        if(t_vartype == NULL) return 40;
-	t_varname=(char **)realloc(t_varname, (num_vars+1)*sizeof(char *));
-	if(t_varname == NULL) return 40;
-
-	for(j=0; j<num_vars_in_folder; j++)
-	  { 
-	    t_varname[var_index]=(char *)malloc(18*sizeof(char));
-	    if(t_varname[var_index] == NULL) return 40; 	
-	    k++;
-	    for(i=0; i<4; i++) fgetc(file);
-	    for(i=0; i<8; i++) varname[i]=fgetc(file);
-	    varname[i]='\0';
-	    vartype=fgetc(file);
-	    t_vartype[var_index]=vartype;
-	    varattr=fgetc(file);
-	    if( (mask_mode & MODE_USE_2ND_HEADER)    // if backup
-		|| (mask_mode & MODE_KEEP_ARCH_ATTRIB) ) // or if we use the extended file format
-	      {
-		switch(varattr)
-		  {
-		  case TI89_VNONE: t_vartype[var_index]=TI89_BKUP;
-		    break;
-		  case TI89_VLOCK: t_vartype[var_index]=0x26;
-		    break;
-		  case TI89_VARCH: t_vartype[var_index]=0x27;
-		    break;
-		  }
-	      }
-	    for(i=0; i<2; i++) fgetc(file);
-	    if(! (mask_mode & MODE_LOCAL_PATH))
-	      {
-		strcpy(t_varname[var_index], foldname);
-		strcat(t_varname[var_index], "\\");
-		strcat(t_varname[var_index], varname); 	    
-	      }
-	    else
-	      strcpy(t_varname[var_index], varname);
-	    var_index++;
-	  }
-      }
-    var_index=0;
-  }
-  for(i=0; i<4; i++) fgetc(file);
-  for(i=0; i<2; i++) fgetc(file);
-
-  for(j=0; j<num_vars; j++, var_index++)
-    {
-      if(mask_mode & MODE_USE_2ND_HEADER)
-	{
-	  (update->main_percentage)=(float)j/num_vars;
-	  update_pbar();
-	}
-      for(i=0; i<4; i++) fgetc(file);
-      varsize=fgetc(file) << 8;
-      varsize+=fgetc(file);
-      varsize+=2;
-      
-      sprintf(update->label_text, "Variable: %s", 
-	       t_varname[var_index]);
-      update->label();
-      DISPLAY("Sending variable...\n");
-      DISPLAY("Name: %s\n", t_varname[var_index]);
-      DISPLAY("Size: %08X\n", varsize-2);
-      DISPLAY("Type: %s\n", ti89_byte2type(t_vartype[var_index]));
-
-      /**/
-      exist=check_if_var_exist(&dirlist, t_varname[var_index]);
-      if(exist && (mask_mode & MODE_DIRLIST))
-	{
-	  action=update->choose(t_varname[var_index], varname);
-	  if(!strcmp(varname, "") && (action==ACTION_RENAME)) 
-	    action=ACTION_SKIP;
-	  switch(action)
-	    {
-	    case ACTION_SKIP: // skip var
-	      DISPLAY("User action: skip.\n");
-	      for(i=0; i<varsize; i++)
-		data=fgetc(file);
-	      continue;
-	      break;
-	    case ACTION_OVERWRITE: //try to overwrite it
-	      DISPLAY("User action: overwrite.\n");
-	      break;
-	    case ACTION_RENAME: //rename var
-	      DISPLAY("User action: rename from %s into %s.\n", 
-		      t_varname[var_index], varname);
-	      strcpy(t_varname[var_index], varname);
-	      break;
-	    default: // skip
-	      for(i=0; i<block_size+2; i++)
-		data=fgetc(file);
-	      continue;
-	      break;
-	    }	  
-	}
-      /**/
-
-      sum=0;
-      TRY(cable->put(PC_TI89));
-      if((mask_mode & MODE_USE_2ND_HEADER))
-	{ // used for sending backup
-	  TRY(cable->put(CMD89_VAR_HEADER2));
-	}
-      else
-	{ // used for normal files
-	  TRY(cable->put(CMD89_VAR_HEADER));
-	}
-      block_size=4+2+strlen(t_varname[var_index])+1; // difference: see comment below
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      data=varsize & 0x000000FF;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0x0000FF00) >> 8;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0x00FF0000) >> 16;
-      sum+=data;
-      TRY(cable->put(data));
-      data=(varsize & 0xFF000000) >> 24;
-      sum+=data;
-      TRY(cable->put(data));
-      data=t_vartype[var_index];
-      sum+=data;
-      TRY(cable->put(data));
-      data=strlen(t_varname[var_index]);
-      sum+=data;
-      TRY(cable->put(data));
-      TRY(ti89_sendstring(t_varname[var_index], &sum));
-      data=0x00;
-      TRY(cable->put(data)); // The unique difference in comparison with the 92
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti89_isOK());
-      TRY(ti89_waitdata());
-      
-      sum=0;
-      TRY(PC_replyOK_89());
-      TRY(cable->put(PC_TI89));
-      TRY(cable->put(CMD89_DATA_PART));
-      block_size=4+varsize;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      for(i=0; i<4; i++)
-	{
-	  TRY(cable->put(0x00));
-	}
-      block_size=varsize-2;
-      data=MSB(block_size);
-      sum+=data;
-      TRY(cable->put(data));
-      data=LSB(block_size);
-      sum+=data;
-      TRY(cable->put(data));
-      update->total = block_size;
-      for(i=0; i<block_size; i++)
-	{
-	  data=fgetc(file);
-	  TRY(cable->put(data));
-	  sum+=data;
-	  
-	  update->count = i;
-	  update->percentage = (float)i/block_size;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      fgetc(file);
-      fgetc(file);
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-      
-      TRY(ti89_isOK());
-      TRY(cable->put(PC_TI89));
-      TRY(cable->put(CMD89_EOT));
-      TRY(cable->put(0x00));
-      TRY(cable->put(0x00));
-      DISPLAY("The computer does not want continue.\n");
-      err = ti89_isOK();
-      if(err) 
-	{
-	  DISPLAY("Variable has been rejected by calc.\n");
-	  sprintf(update->label_text, _("Variable rejected"));
-	  update->label();
+	      if(!ticalc_check_if_app_exists(*tree, ve->name))
+		g_node_append(apps, node);
+	      else
+		g_free(ve);
+	    } 
+	  else
+	    g_node_append(folder, node);
 	}
       DISPLAY("\n");
-      PAUSE(PAUSE_BETWEEN_VARS);
-    }
+    }     
 
-  update_stop();
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
-
+  *memory = ticalc_memory_used(*tree);
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
   return 0;
 }
 
-int ti89_recv_backup(FILE *file, int mask_mode, longword *version)
+int ti89_recv_var(char *filename, int mask_mode, TiVarEntry *entry);
+static gboolean free_varentry(TNode *node, gpointer data)
 {
-  struct varinfo dirlist, *ptr, *ptr2;
-  int n;
-  int i=0;
-  char varname[20];
+  free(node->data);
+  return FALSE;
+}
 
-  //LOCK_TRANSFER();
-  TRY(cable->open());
-  update_start();
+int ti89_recv_backup(const char *filename, int mask_mode)
+{
+  int i, j;
+  int i_max, j_max;
+  int mask = MODE_BACKUP;
+  TNode *tree, *vars;
+  uint32_t mem;
+  int nvars, ivars=0;
 
-  /* Do a directory list get variables entries */
-  TRY(ti89_directorylist(&dirlist, &n));
+  DISPLAY("Receiving backup...\n");
 
-  /* Generate the header of the group file */
-  generate_89_92_92p_group_file_header_from_varlist(file, mask_mode, 
-						    "**TI89**", 
-						    (&dirlist)->next,
-						    CALC_TI89);
+  // Do a directory list
+  TRYF(ti89_directorylist(&tree, &mem));
+  nvars = ticalc_number_of_vars(tree);
 
-  /* Receive all variables */
-  ptr=(&dirlist)->next;
-  do
+  // Receive all variables, except FLASH apps
+  vars = g_node_nth_child(tree, 0);
+  i_max = g_node_n_children(vars);
+  for(i=0; i<i_max; i++)
     {
-      i++;
-      (update->main_percentage)=(float)i/n;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-      DISPLAY("-> %8s %i  %02X %08X\r\n", ptr->varname, (int)(ptr->varattr), ptr->vartype, ptr->varsize);
-      if(ptr->vartype == TI89_DIR)
-        ptr->is_folder = FOLDER;
-      else
-        ptr->is_folder = VARIABLE;
-      if(ptr->vartype == TI89_DIR)
+      GNode *parent = g_node_nth_child(vars, i);
+
+      j_max = g_node_n_children(parent);
+      for(j=0; j<j_max; j++)
 	{
-	  ptr=ptr->next;
-	  continue;
+	  GNode *node = g_node_nth_child(parent, j);
+
+	  TiVarEntry *ve = (TiVarEntry *)(node->data);
+	
+	  if(!i && !j)
+	    mask = mask_mode | MODE_RECEIVE_FIRST_VAR;
+	  else if( (i == i_max-1) && (j == j_max-1) )
+	    mask = mask_mode | MODE_RECEIVE_LAST_VAR;
+	  else
+	    mask = mask_mode;
+
+	  TRYF(ti89_isready());
+	  TRYF(ti89_recv_var((char *)filename, mask, ve));
+
+	  (update->main_percentage)=(float)ivars++/nvars;
+	  if(update->cancel) return ERR_ABORT;
 	}
-      if(ptr->vartype == TI89_FLASH)
-        {
-          ptr=ptr->next;
-          continue;
-        }
-      TRY(ti89_isready());
-      strcpy(varname, (ptr->folder)->varname);
-      strcat(varname, "\\");
-      strcat(varname, ptr->varname);
-      TRY(ti89_recv_var(file, mask_mode, 
-			   varname, ptr->vartype, ptr->varattr));
-
-      ptr=ptr->next;
     }
-  while(ptr != NULL);
 
-  /* Free the allocated memory for the linked list */
-  ptr=&dirlist;
-  ptr=ptr->next;
-  do
-    {
-      ptr2=ptr->next;
-      free(ptr);
-      ptr=ptr2;
-    }
-  while(ptr != NULL);  
-
+  // Free the tree
+  g_node_traverse(tree, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+		  free_varentry, NULL);
+  
   update_stop();
   TRY(cable->close());
-
+    
   return 0;
 }
 
-int ti89_send_backup(FILE *file, int mask_mode)
-{
-  byte data;
-  word sum;
-  word block_size;
-  int i;
+int ti89_send_var(const char *filename, int mask_mode, char **actions);
 
-  TRY(cable->open());
-  update_start();
+int ti89_send_backup(const char *filename, int mask_mode)
+{
   DISPLAY("Sending backup...\n");
 
-  /* Send a header */
-  sum=0; 
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_VAR_HEADER));
-  block_size=4+2+strlen("main");
-  TRY(cable->put(LSB(block_size)));
-  TRY(cable->put(MSB(block_size)));
-  data=0x00;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(data));
-    }
-  data=TI89_BKUP;
-  sum+=data;
-  TRY(cable->put(data));
-  data=strlen("main");
-  sum+=data;
-  TRY(cable->put(data));
-  ti89_sendstring("main", &sum);
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-  TRY(ti89_isOK());
-  TRY(ti89_waitdata());  
-  TRY(PC_replyOK_89());  
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_EOT));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("The computer do not want continue.\n");
-  TRY(ti89_isOK());  
-
-  /* Send as a group file with some 'forced' options */
-  TRY(ti89_send_var(file, (mask_mode | MODE_USE_2ND_HEADER | 
-			   MODE_KEEP_ARCH_ATTRIB) & 
-		    ~MODE_LOCAL_PATH & ~MODE_DIRLIST));
-
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
+
+  sprintf(update->label_text, "Sending backup...");
+  update_label();
+ 
+  TRYF(ti89_send_VAR(0, TI89_BKUP, "main"));
+  TRYF(ti89_recv_ACK(NULL));
+        
+  TRYF(ti89_recv_CTS());
+  TRYF(ti89_send_ACK());
+         
+  TRYF(ti89_send_EOT());
+  TRYF(ti89_recv_ACK(NULL));
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
+  TRYF(ti89_send_var(filename, mask_mode | MODE_BACKUP, NULL));
+
+  return 0;
+}
+
+int ti89_recv_var(char *filename, int mask_mode, TiVarEntry *entry)
+{
+  static Ti9xRegular *content;
+  uint16_t status;
+  TiVarEntry *ve;
+  char *fn;
+  static int nvar=0;
+  uint32_t unused;
+  uint8_t varname[18];
+
+  DISPLAY("Receiving variable(s)...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
+  update_start();
+  
+  if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
+      (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
+    {
+      content = ti9x_create_regular_content();
+      nvar = 0;
+    }
+  
+  content->calc_type = CALC_TI89;
+  content->entries = (TiVarEntry *)realloc(content->entries, 
+					  (nvar+1) * sizeof(TiVarEntry));
+  ve = &(content->entries[nvar]);
+  memcpy(ve, entry, sizeof(TiVarEntry));
+  
+  sprintf(update->label_text, "Receiving variable...");
+  update_label();
+
+  if(mask_mode & MODE_LOCAL_PATH) // for IDLIST & set/get time
+    strcpy(varname, entry->name);
+  else {
+    strcpy(varname, entry->folder);
+    strcat(varname, "\\");
+    strcat(varname, entry->name);
+  }
+
+  TRYF(ti89_send_REQ(0, entry->type, varname));
+  TRYF(ti89_recv_ACK(&status));
+  if(status != 0) return ERR_MISSING_VAR;
+  
+  TRYF(ti89_recv_VAR(&ve->size, &ve->type, ve->name));
+  TRYF(ti89_send_ACK());
+  
+  TRYF(ti89_send_CTS());
+  TRYF(ti89_recv_ACK(NULL));
+  
+  ve->data = calloc(ve->size+4, 1);
+  TRYF(ti89_recv_XDP(&unused, ve->data));
+  memmove(ve->data, ve->data+4, ve->size);
+  TRYF(ti89_send_ACK());
+  
+  TRYF(ti89_recv_EOT());
+  TRYF(ti89_send_ACK());
+
+  if(++nvar > 1)
+    strcpy(content->comment, "Group file received by TiLP");
+  else
+    strcpy(content->comment, "Single file received by TiLP");
+
+  content->num_entries = nvar;  
+  if(mask_mode & MODE_RECEIVE_SINGLE_VAR)
+    { // single
+      ti9x_write_regular_file(NULL, content, &fn);
+      strcpy(filename, fn); free(fn);
+      ti9x_free_regular_content(content);
+    }
+  else if(mask_mode & MODE_RECEIVE_LAST_VAR)
+    { // group
+      ti9x_write_regular_file(filename, content, NULL);
+      ti9x_free_regular_content(content);
+    }
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  PAUSE(PAUSE_BETWEEN_VARS);
+
+  return 0;		     
+}
+
+int ti89_send_var(const char *filename, int mask_mode, char **actions)
+{
+  Ti9xRegular content = { 0 };
+  int i;
+  uint16_t status;  
+
+  DISPLAY("Sending variable(s)...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Sending variable(s)...");
+  update_label();
+  
+  TRYF(ti9x_read_regular_file(filename, &content));
+  
+  for(i=0; i<content.num_entries; i++)
+    {
+      TiVarEntry *entry = &(content.entries[i]);
+      uint8_t buffer[65536+4] = { 0 };
+      uint8_t vartype = entry->type;
+      uint8_t full_name[18], varname[18];
+
+      if(actions == NULL) // backup or old behaviour
+	strcpy(varname, entry->name);
+      else if(actions[i][0] == ACT_SKIP)
+	{
+	  DISPLAY(" '%s' has been skipped !\n", entry->name);
+	  continue;
+	}
+      else if(actions[i][0] == ACT_OVER)
+	strcpy(varname, actions[i]+1);
+
+      if( (mask_mode & MODE_LOCAL_PATH) && !(mask_mode & MODE_BACKUP) )
+	{ // local & not backup
+	  strcpy(full_name, varname);
+	}      
+      else 
+	{ // full or backup
+	  strcpy(full_name, entry->folder);
+	  strcat(full_name, "\\");
+	  strcat(full_name, varname);
+	}
+
+      if(mask_mode & MODE_BACKUP)
+	{ // backup: keep attributes
+	  switch(entry->attr)
+	    {
+	    case TI89_VNONE: vartype = TI89_BKUP;
+	      break;
+	    case TI89_VLOCK: vartype = 0x26;
+	      break;
+	    case TI89_VARCH: vartype = 0x27;
+	      break;
+	    }
+	  TRYF(ti89_send_RTS(entry->size, vartype, full_name));
+	}
+      else {
+	TRYF(ti89_send_VAR(entry->size, vartype, full_name));
+      }
+
+      TRYF(ti89_recv_ACK(NULL));
+        
+      TRYF(ti89_recv_CTS());
+      TRYF(ti89_send_ACK());
+              
+      memcpy(buffer+4, entry->data, entry->size);
+      TRYF(ti89_send_XDP(entry->size+4, buffer));
+      TRYF(ti89_recv_ACK(&status));
+      
+      TRYF(ti89_send_EOT());
+      TRYF(ti89_recv_ACK(NULL));
+    }
+
+  ti9x_free_regular_content(&content);
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+  
+  return 0;
+}
+
+int ti89_send_flash(const char *filename, int mask_mode)
+{
+  Ti9xFlash content = { 0 };
+  Ti9xFlash *ptr;
+  int i, nblocks;
+  int nheaders = 0;
+
+  DISPLAY("Sending FLASH app/os...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Sending FLASH app/os...");
+  update_label();
+
+  TRYF(ti9x_read_flash_file(filename, &content));
+
+  // count headers
+  for(ptr=&content; ptr != NULL; ptr = ptr->next)
+    nheaders++;
+
+  // keep the last one (data)
+  for(i=0, ptr=&content; i<nheaders-1; i++)
+    ptr = ptr->next;
+
+  DISPLAY("FLASH app/os name: \"%s\"\n", ptr->name);
+  DISPLAY("FLASH app/os size: %i bytes.\n", ptr->data_length);
+
+  if(ptr->data_type == TI89_AMS) {
+    TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ""));
+  } else {
+    TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ptr->name));
+  }
+
+  nblocks = ptr->data_length / 65536;
+  for(i=0; i <= nblocks; i++)
+  {
+    uint32_t length = (i != nblocks) ? 65536 : ptr->data_length % 65536;
+    
+    TRYF(ti89_recv_ACK(NULL));
+
+    TRYF(ti89_recv_CTS());
+    TRYF(ti89_send_ACK());
+
+    TRYF(ti89_send_XDP(length, (ptr->data_part) + 65536*i));
+    TRYF(ti89_recv_ACK(NULL));
+    
+    if(i != nblocks) {
+      TRYF(ti89_send_CONT());
+    }
+    else {
+      TRYF(ti89_send_EOT());
+    }
+
+    update->main_percentage = (float)i/nblocks;
+    if(update->cancel) return ERR_ABORT;
+  }
+
+  if(ptr->data_type == TI89_AMS)
+    TRYF(ti89_recv_ACK(NULL));
+
+  DISPLAY("Flash application/os sent completely.\n");
+  
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return 0;
+}
+
+int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve)
+{
+  Ti9xFlash *content;
+  int i;
+  
+  DISPLAY("Receiving FLASH application...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
+  update_start();
+  
+  content = ti9x_create_flash_content();
+  content->calc_type = CALC_TI89;
+  content->data_part = (uint8_t *)calloc(2*1024*1024, 1); // 2MB max
+  
+  sprintf(update->label_text, "Receiving application...");
+  update_label();
+  
+  TRYF(ti89_send_REQ(0x00, TI89_APPL, ve->name));
+  TRYF(ti89_recv_ACK(NULL));
+  
+  TRYF(ti89_recv_VAR(&content->data_length, &content->data_type, 
+		     content->name));
+
+  content->data_length = 0;  
+  for(i=0; ;i++)
+    {
+      int err;
+      uint32_t block_size;
+     
+      TRYF(ti89_send_ACK());
+      
+      TRYF(ti89_send_CTS());
+      TRYF(ti89_recv_ACK(NULL));
+
+      TRYF(ti89_recv_XDP(&block_size, content->data_part+content->data_length));
+      TRYF(ti89_send_ACK());
+
+      content->data_length += block_size;
+
+      err = ti89_recv_CONT();
+      if(err == ERR_EOT)
+	break;
+      TRYF(err);
+
+      (update->main_percentage)=(float)content->data_length/ve->size;
+      if(update->cancel) return ERR_ABORT;
+    }
+
+  ti9x_write_flash_file(filename, content);
+  ti9x_free_flash_content(content);
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
 }
 
 #define DUMP_ROM89_FILE "dumprom.89z"
+#define ROMSIZE (2*1024) // 2MB
 
-int ti89_dump_rom(FILE *file, int mask_mode)
-{
+int ti89_dump_rom(const char *filename, int mask_mode)
+{ 
   int i, j;
   int total;
-  byte data;
+  uint8_t data;
   time_t start, elapsed, estimated, remaining;
-  char buffer[MAXCHARS];
-  char tmp[MAXCHARS];
+  char buffer[257];
+  char tmp[257];
   int pad;
-  FILE *f;
-  word checksum, sum;
-  
-  //LOCK_TRANSFER();
-  update_start();
-  sprintf(update->label_text, "Ready ?");
-  update->label();
+  FILE *f, *file;
+  uint16_t checksum, sum;
 
-  /* Open connection and check */
-  TRY(cable->open());
-  TRY(ti89_isready());
-  TRY(cable->close());
-  sprintf(update->label_text, "Yes !");
-  update->label();
+  DISPLAY("ROM dumping...\n");
 
-  /* Transfer ROM dump program from lib to calc */
+  // Copies ROM dump program into a file
   f = fopen(DUMP_ROM89_FILE, "wb");
   if(f == NULL)
-    return -1;
-  fwrite(romDump89, sizeof(unsigned char),
-         romDumpSize89, f);
+    return ERR_FILE_OPEN;
+  
+  fwrite(romDump89, sizeof(unsigned char), 
+	 romDumpSize89, f);
+  
   fclose(f);
-  f = fopen(DUMP_ROM89_FILE, "rb");
-  TRY(ti89_send_var(f, MODE_NORMAL));
-  fclose(f);
+  
+  // Transfer program to calc
+  TRYF(ti89_send_var(DUMP_ROM89_FILE, MODE_SEND_ONE_VAR, NULL));
   unlink(DUMP_ROM89_FILE);
-
-  /* Launch calculator program by remote control */
+  
+  // Launch calculator program by remote control
   sprintf(update->label_text, "Launching...");
-  update->label();
+  update_label();
 
   TRY(ti89_send_key(KEY89_CLEAR));
   PAUSE(50);
@@ -1571,26 +730,37 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   TRY(ti89_send_key(KEY89_RP));
   TRY(ti89_send_key(KEY89_ENTER));
 
-  /* Receive it now blocks per blocks (1024 + CHK) */
+  // Open file
+  file = fopen(filename, "wb");
+  if(file == NULL)
+    return ERR_OPEN_FILE;
+  
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+  
+  // Receive it now blocks per blocks (1024 + CHK)
   update_start();
   sprintf(update->label_text, "Receiving...");
-  update->label();
+  update_label();
+
   start = time(NULL);
-  total = 2 * 1024 * 1024;
+  total = ROMSIZE * 1024;
   update->total = total;
 
-  for(i=0; i<2*1024; i++)
+  for(i=0; i<ROMSIZE; i++)
     {
       sum = 0;
       for (j=0; j<1024; j++)
-        {
-          TRY(cable->get(&data));
-          fprintf(file, "%c", data);
-          sum += data;
-	  update->percentage = (float)j/1024;
+	{
+	  TRY(cable->get(&data));
+	  fprintf(file, "%c", data);
+	  sum += data;
+
+          update->percentage = (float)j/1024;
           update_pbar();
           if(update->cancel) return -1;
-        }
+	}
       TRY(cable->get(&data));
       checksum = data << 8;
       TRY(cable->get(&data));
@@ -1598,576 +768,146 @@ int ti89_dump_rom(FILE *file, int mask_mode)
       if(sum != checksum) return ERR_CHECKSUM;
       TRY(cable->put(0xda));
 
-      update->count = 1024*2;
-      update->main_percentage = (float)i/(1024*2);
+      update->main_percentage = (float)i/(ROMSIZE);
       if(update->cancel) return -1;
 
-      elapsed = difftime(time(NULL), start);
-      estimated = elapsed * (float)(1024*2) / i;
-      remaining = difftime(estimated, elapsed);
+      elapsed = (long)difftime(time(NULL), start);
+      estimated = (long)(elapsed * (float)(1024*2) / i);
+      remaining = (long)difftime(estimated, elapsed);
       sprintf(buffer, "%s", ctime(&remaining));
       sscanf(buffer, "%3s %3s %i %s %i", tmp,
-             tmp, &pad, tmp, &pad);
+	     tmp, &pad, tmp, &pad);
       sprintf(update->label_text, "Remaining (mm:ss): %s", tmp+3);
-      update->label();
+      update_label();
     }
 
-  /* Close connection */
-  TRY(cable->close());
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
-}
-
-int ti89_get_rom_version(char *version)
-{
-  return ERR_VOID_FUNCTION;
 }
 
 int ti89_get_idlist(char *id)
 {
-  byte data;
-  word sum;
-  word checksum;
-  word block_size;
-  int i, j;
-  longword var_size;
-  byte name_length;
-  char name[9];
+  uint32_t varsize;
+  uint8_t vartype;
+  uint8_t varname[9];
 
-  //LOCK_TRANSFER();
-  TRY(cable->open());
+  DISPLAY("Getting ID list...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  sum=0;
-  DISPLAY("Request IDlist...\n");
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_REQUEST));
-  block_size=4+2;
-  data=LSB(block_size);
-  TRY(cable->put(data));
-  data=MSB(block_size);
-  TRY(cable->put(data));
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  data=TI89_IDLIST;
-  TRY(cable->put(data));
-  sum+=data;
-  data=0x00;
-  TRY(cable->put(data));
-  sum+=data;
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
   
-  TRY(ti89_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_VAR_HEADER) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  DISPLAY("Size of the IDlist: 0x%08X = %i.\n", var_size-2, var_size-2);
-  TRY(cable->get(&data));
-  DISPLAY("Type of the variable: %s\n", ti89_byte2type(data));
-  sum+=data;
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  DISPLAY("Variable name: ");
-  for(i=0; i<name_length; i++)
-    {
-      TRY(cable->get(&data));
-      name[i]=data;
-      DISPLAY("%c", data);
-      sum+=data;
-    }
-  name[i]='\0';
-  DISPLAY("\n");
-  TRY(cable->get(&data)); // It's the only difference with the 89
-  sum+=data;
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
+  sprintf(update->label_text, "Getting variable...");
+  update_label();
+  
+  TRYF(ti89_send_REQ(0x0000, TI89_IDLIST, ""));
+  TRYF(ti89_recv_ACK(NULL));
+  
+  TRYF(ti89_recv_VAR(&varsize, &vartype, varname));
+  TRYF(ti89_send_ACK());
+  
+  TRYF(ti89_send_CTS());
+  TRYF(ti89_recv_ACK(NULL));
+  
+  TRYF(ti89_recv_XDP(&varsize, id)); id[varsize] = '\0';
+  TRYF(ti89_send_ACK());
+  
+  TRYF(ti89_recv_EOT());
+  TRYF(ti89_send_ACK());
 
-  TRY(PC_replyOK_89());
-  TRY(PC_waitdata_89());
-  DISPLAY("The calculator want continue.\n");
-
-  TRY(ti89_isOK());
-  DISPLAY("Receiving IDlist...\n");
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  sum=0;
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-    }
-  TRY(cable->get(&data));
-  block_size = (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  block_size |= data;
-  sum+=data;
-  DISPLAY("block_size=%x, var_size=%x\n", block_size, var_size);
-  block_size=var_size-2; //diff here
-  for(i=0, j=0; i<block_size; i++, j++)
-    {
-      TRY(cable->get(&data));
-      sum+=data;
-      if( (j == 7) || (j == 13) )
-	{
-	  id[j]='-';
-	  j++;
-	}
-      id[j]=data;
-    }
-  id[j]='\0';
-  DISPLAY("IDlist: <%s>\n", id+2);
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-
-  TRY(PC_replyOK_89());
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  DISPLAY("The calculator do not want continue.\n");
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_TI_OK));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
-  DISPLAY("\n");
-  (update->percentage)=0.0;
-  TRY(cable->close());
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
 }
 
-int ti89_send_flash(FILE *file, int mask_mode)
+int ti89_get_clock(      TicalcClock *clock, int mode)
 {
-  byte data;
-  word sum;
-  char flash_name[128];
-  longword flash_size=0;
-  longword block_size;
-  int i, j;
-  int num_blocks;
-  word last_block;
-  char *signature = "Advanced Mathematics Software";
-  int tib = 0;
-  Ti89FlashHeader header;
-  long file_size, offset, pos=0;
+  uint32_t varsize;
+  uint8_t vartype;
+  uint8_t varname[9];
+  uint8_t buffer[32];
 
-  //LOCK_TRANSFER();
-  /* Read the file header and initialize some variables */
-  TRY(cable->open());
+  DISPLAY("Getting clock...\n");
+
+  LOCK_TRANSFER();  
+  TRYF(cable->open());
   update_start();
-  fgets(flash_name, 128, file);
-  if(strstr(flash_name, "**TIFL**") == NULL) // is a .89u file
-    {
-      for(i=0, j=0; i<127; i++) // is a .tib file
-	{
-	  if(flash_name[i] == signature[j])
-	    {
-	      j++;
-	      if(j==strlen(signature))
-		{
-		  DISPLAY("TIB file.\n");
-		  tib = 1;
-		  break;
-		}
-	    }
-	}
-      if(j < strlen(signature))
-	return ERR_INVALID_FLASH_FILE; // not a FLASH file
-    }
-
-  rewind(file);
   
-  if(tib)
-    { // tib is an old format
-      fseek(file, 0, SEEK_END);
-      flash_size = ftell(file);
-      fseek(file, 0, SEEK_SET);
-      strcpy(flash_name, "basecode");
-    }
-  else
-    {
-      fseek(file, 0, SEEK_END);
-      file_size = ftell(file);
-      fseek(file, 0, SEEK_SET);
-      
-      for(i=0, offset=2*sizeof(Ti89FlashHeader); offset<file_size; i++)
-	{
-	  fread(&header, sizeof(Ti89FlashHeader), 1, file);
-	  flash_size = header.data_length[0] + (header.data_length[1] << 8) +
-	    (header.data_length[2] << 16) + (header.data_length[3] << 24);
-	  
-	  if(memcmp(header.id, "**TIFL**", 8))
-	    return ERR_INVALID_FLASH_FILE;
-
-	  DISPLAY("Header #%i\n", i);
-	  DISPLAY(" id = <%s>\n", header.id);
-	  DISPLAY(" revision = %i.%i\n", LSB(header.revision), 
-		  MSB(header.revision));
-	  DISPLAY(" flags = %i\n", header.flags);
-	  DISPLAY(" type = %i\n", header.object_type);
-	  DISPLAY(" date : %02X/%02X/%02X%02X\n", 
-		  header.revision_day, header.revision_month, 
-		  LSB(header.revision_year), MSB(header.revision_year));
-	  DISPLAY(" name = <%s>\n", header.name);
-	  DISPLAY(" device_type = %02X\n", header.device_type);
-	  DISPLAY(" data_type = %02X\n", header.data_type);
-	  DISPLAY(" size = %i\n", flash_size);
-	  DISPLAY("\n");
-
-	  pos = ftell(file);
-	  fseek(file, flash_size, SEEK_CUR);
-	  offset += flash_size;
-	}
-
-      fseek(file, pos, SEEK_SET);
-      strcpy(flash_name, header.name);
-    }
-
+  sprintf(update->label_text, "Getting clock...");
+  update_label();
   
-  DISPLAY("\n");
-  DISPLAY("Sending FLASH app/os...\n");
-  DISPLAY("FLASH app/os name: \"%s\"\n", flash_name);
-  DISPLAY("FLASH app/os size: %i bytes.\n", flash_size);
-
-  /* Now, read data from the file and send them by block */
-  sum=0;
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_VAR_HEADER2));
-  if(mask_mode == MODE_AMS)
-    block_size = 4+2;
-  else
-    block_size=4+2+strlen(flash_name);
-  TRY(cable->put(LSB(block_size)));
-  TRY(cable->put(MSB(block_size)));
-  data=flash_size & 0x000000FF;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(flash_size & 0x0000FF00) >> 8;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(flash_size & 0x00FF0000) >> 16;
-  sum+=data;
-  TRY(cable->put(data));
-  data=(flash_size & 0xFF000000) >> 24;
-  sum+=data;
-  TRY(cable->put(data));
-  if(mask_mode == MODE_AMS)
-    data = TI89_AMS;
-  else
-    data = TI89_FLASH;
-  sum+=data;
-  TRY(cable->put(data));
-  if(mask_mode == MODE_AMS)
-    data=0x00;
-  else
-    data=strlen(flash_name);
-  sum+=data;
-  TRY(cable->put(data));
-  if(mask_mode != MODE_AMS)
-    ti89_sendstring(flash_name, &sum);
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
-
-  num_blocks = flash_size/65536;
-  DISPLAY("Number of blocks: %i\n", num_blocks + 1);
+  TRYF(ti89_send_REQ(0x0000, TI89_CLK, "Clock"));
+  TRYF(ti89_recv_ACK(NULL));
   
-  for(i=0; i<num_blocks; i++ )
-    {
-      DISPLAY("Sending block %i.\n", i);
-      TRY(ti89_isOK());
-      TRY(ti89_waitdata());
-      TRY(PC_replyOK_89());
-
-      sum=0;
-      TRY(cable->put(PC_TI89));
-      TRY(cable->put(CMD89_DATA_PART));
-      block_size=65536;
-      TRY(cable->put(LSB(block_size)));
-      TRY(cable->put(MSB(block_size)));
-      DISPLAY("Transmitting data.\n");
-      update->total = 65536;
-      for(j=0; j<65536; j++)
- 	{
-	  data=fgetc(file);
-	  sum+=data;
-	  TRY(cable->put(data));
-
-	  update->count = j;
-	  update->percentage = (float)j/65536;
-	  update_pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->put(LSB(sum)));
-      TRY(cable->put(MSB(sum)));
-
-      TRY(ti89_isOK());
-      TRY(PC_replyCONT_89());
-      
-      ((update->main_percentage))=(float)i/num_blocks;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-
-  DISPLAY("Sending the last block.\n");
-  last_block=flash_size % 65536;
-  sum=0;
-  TRY(ti89_isOK());
-  TRY(ti89_waitdata());
-  TRY(PC_replyOK_89());
+  TRYF(ti89_recv_VAR(&varsize, &vartype, varname));
+  TRYF(ti89_send_ACK());
   
-  sum=0;
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_DATA_PART));
-  block_size=last_block;
-  TRY(cable->put(LSB(block_size)));
-  TRY(cable->put(MSB(block_size)));
-  DISPLAY("Transmitting data.\n");
-  update->total = last_block;
-  for(j=0; j<last_block; j++)
-    {
-      data=fgetc(file);
-      sum+=data;
-      TRY(cable->put(data));
-
-      update->count = j;
-      update->percentage = (float)j/last_block;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
+  TRYF(ti89_send_CTS());
+  TRYF(ti89_recv_ACK(NULL));
   
-  TRY(ti89_isOK());
+  TRYF(ti89_recv_XDP(&varsize, buffer));
+  TRYF(ti89_send_ACK());
   
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_EOT));
-  TRY(cable->put(0x00));
-  TRY(cable->put(0x00));
+  TRYF(ti89_recv_EOT());
+  TRYF(ti89_send_ACK());
 
-  if(mask_mode != MODE_APPS)
-    DISPLAY("Flash application sent completely.\n");
-  if(mask_mode == MODE_AMS)
-    {
-      TRY(ti89_isOK());
-      DISPLAY("Operating System sent completely.\n");
-    }
-  DISPLAY("\n");
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
-  update_start();
-  TRY(cable->close());
-  //UNLOCK_TRANSFER();
+  clock->year  = (buffer[6] << 8) | buffer[7];
+  clock->month = buffer[8];
+  clock->day   = buffer[9];
+  clock->hours   = buffer[10];
+  clock->minutes = buffer[11];
+  clock->seconds = buffer[12];
+  clock->date_format = buffer[13];
+  clock->time_format = buffer[14];
 
   return 0;
 }
 
-int ti89_recv_flash(FILE *file, int mask_mode, char *appname)
+int ti89_set_clock(const TicalcClock *clock, int mode)
 {
-  byte data;
-  word sum;
-  word checksum;
-  word block_size;
-  int i,j;
-  longword var_size;
-  byte name_length;
-  char name[9];
-  char *varname = appname;
+  uint8_t buffer[16] = { 0 };
+  uint16_t status;  
 
-  //LOCK_TRANSFER();
-  fprintf(file, "**TIFL**");
-  for(i=0; i<4; i++)
-    fputc(0x00, file);
-  for(i=0; i<4; i++) //date: 24 01 2000
-    fputc(0x00, file);
-  fputc(strlen(appname), file);
-  fprintf(file, "%s", appname);
-  for(i=16+strlen(appname)+1; i<0x4A; i++)
-    fputc(0x00, file);
+  buffer[6] = clock->year >> 8;
+  buffer[7] = clock->year & 0x00ff;
+  buffer[8] = clock->month;
+  buffer[9] = clock->day;
+  buffer[10] = clock->hours;
+  buffer[11] = clock->minutes;
+  buffer[12] = clock->seconds;
+  buffer[13] = clock->time_format;
+  buffer[14] = clock->date_format;
+  buffer[15] = 0xff;
 
-  TRY(cable->open());
-  update->start();
-  sprintf(update->label_text, "Application: %s", varname);
-  update->label();
-  sum=0;
-  DISPLAY("Request FLASH application: %s\n", varname);
-  TRY(cable->put(PC_TI89));
-  TRY(cable->put(CMD89_REQUEST));
-  block_size=4+2+strlen(varname);
-  data=LSB(block_size);
-  TRY(cable->put(data));
-  data=MSB(block_size);
-  TRY(cable->put(data));
-  for(i=0; i<4; i++)
-    {
-      TRY(cable->put(0x00));
-    }
-  data=TI89_FLASH;
-  TRY(cable->put(data));
-  sum+=data;
-  data=strlen(varname);
-  TRY(cable->put(data));
-  sum+=data;
-  TRY(ti89_sendstring(varname, &sum));
-  TRY(cable->put(LSB(sum)));
-  TRY(cable->put(MSB(sum)));
+  DISPLAY("Setting clock...\n");
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  sprintf(update->label_text, "Setting clock...");
+  update_label();
   
-  TRY(ti89_isOK());
-  sum=0;
-  TRY(cable->get(&data));
-  if(data != TI89_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD89_VAR_HEADER) return ERR_PACKET;
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  TRY(cable->get(&data));
-  var_size=data;
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 8);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 16);
-  sum+=data;
-  TRY(cable->get(&data));
-  var_size |= (data << 24);
-  sum+=data;
-  DISPLAY("Size of the app in memory: 0x%08X = %i.\n", var_size, var_size);
-  fputc(LSB(LSW(var_size)), file);
-  fputc(MSB(LSW(var_size)), file);
-  fputc(LSB(MSW(var_size)), file);
-  fputc(MSB(MSW(var_size)), file);
-  TRY(cable->get(&data));
-  DISPLAY("Type of the application: %s\n", ti89_byte2type(data));
-  sum+=data;
-  TRY(cable->get(&data));
-  name_length=data;
-  sum+=data;
-  DISPLAY("Application name: ");
-  for(i=0; i<name_length; i++)
-    {
-      TRY(cable->get(&data));
-      name[i]=data;
-      DISPLAY("%c", data);
-      sum+=data;
-    }
-  name[i]='\0';
-  DISPLAY("\n");
-  TRY(cable->get(&data)); // It's the only difference with the 92
-  sum+=data;
-  TRY(cable->get(&data));
-  checksum=data;
-  TRY(cable->get(&data));
-  checksum += (data << 8);
-  if(checksum != sum) return ERR_CHECKSUM;
-
-  DISPLAY("Receiving application...\n");
-  for(i=0, block_size=0; i<var_size; i+=block_size)
-    {
-      TRY(PC_replyOK_89());
-      TRY(PC_waitdata_89());
-      DISPLAY("The calculator want continue.\n");
+  TRYF(ti89_send_RTS(0x10, TI89_CLK, "Clock"));
+  TRYF(ti89_recv_ACK(NULL));
+  
+  TRYF(ti89_recv_CTS());
+  TRYF(ti89_send_ACK());
+  
+  TRYF(ti89_send_XDP(0x10, buffer));
+  TRYF(ti89_recv_ACK(NULL));
       
-      TRY(ti89_isOK());
-      DISPLAY("Receiving block");
-      TRY(cable->get(&data));
-      if(data != TI89_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data != CMD89_DATA_PART) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      block_size = data;
-      TRY(cable->get(&data));
-      block_size |= (data << 8);
-      update->total = block_size;
-      DISPLAY(", size = 0x%04x...\n", block_size);
-      sum=0;
-      for(j=0; j<block_size; j++)
-	{
-	  TRY(cable->get(&data));
-	  sum+=data;
-	  fprintf(file, "%c", data);
-	  
-	  update->count = j;
-	  update->percentage = (float)j/block_size;
-	  update->pbar();
-	  if(update->cancel) return ERR_ABORT;
-	}
-      TRY(cable->get(&data));
-      checksum=data;
-      TRY(cable->get(&data));
-      checksum += (data << 8);
-      if(checksum != sum) return ERR_CHECKSUM;
-      
-      TRY(PC_replyOK_89());
-      TRY(cable->get(&data));
-      if(data != TI89_PC) return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      if(data == CMD89_CONTINUE)
-	DISPLAY("The calculator wants to continue.\n");
-      else if(data == CMD89_EOT)
-	DISPLAY("The calculator does not want to continue.\n");
-      else
-	return ERR_INVALID_BYTE;
-      TRY(cable->get(&data));
-      TRY(cable->get(&data));
-      
-      ((update->main_percentage))=(float)i/var_size;
-      update_pbar();
-      if(update->cancel) return ERR_ABORT;
-    }
-      TRY(PC_replyOK_89());
-      DISPLAY("\n");
-
-  update->start();
-  TRY(cable->close());
-  PAUSE(PAUSE_BETWEEN_VARS);
-  //UNLOCK_TRANSFER();
+  TRYF(ti89_send_EOT());
+  TRYF(ti89_recv_ACK(&status));
+ 
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
 
   return 0;
-}
-
-int ti89_supported_operations(void)
-{
-  return 
-    (
-     OPS_ISREADY |
-     OPS_SCREENDUMP |
-     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
-     OPS_DIRLIST |
-     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
-     OPS_SEND_VARS | OPS_RECV_VARS |
-     OPS_SEND_FLASH | OPS_RECV_FLASH |
-     OPS_IDLIST |
-     OPS_ROMDUMP
-     );
 }

@@ -16,10 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef TIXX_H
-#define TIXX_H
+#ifndef __CALCS_TIXX__
+#define __CALCS_TIXX__
 
-#include "ti92p.h"
 #include "ti92.h"
 #include "ti89.h"
 #include "ti86.h"
