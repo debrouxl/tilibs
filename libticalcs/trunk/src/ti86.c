@@ -38,6 +38,7 @@
 #include "cmd85.h"
 #include "rom86.h"
 #include "pause.h"
+#include "printl.h"
 
 // Screen coordinates of the TI86
 #define TI86_ROWS  64

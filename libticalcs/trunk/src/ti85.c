@@ -38,6 +38,7 @@
 #include "cmd85.h"
 #include "rom85u.h"
 #include "rom85z.h"
+#include "printl.h"
 
 // Screen coordinates of the TI82
 #define TI85_ROWS  64

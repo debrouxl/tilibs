@@ -37,7 +37,7 @@
 #include "calc_err.h"
 #include "cmd82.h"
 #include "rom82.h"
-
+#include "printl.h"
 
 // Screen coordinates of the TI82
 #define TI82_ROWS  64

@@ -144,7 +144,7 @@ libticalcsinclude_HEADERS =  	calc_def.h 	calc_err.h 	calc_int.h 	calc_ver.h 	he
 
 
 # setup source file variables
-libticalcs_la_SOURCES =  	clock.c 	cmd73.c 	cmd82.c 	cmd85.c 	cmd89.c 	cmd92.c 	dirlist.c 	error.c 	intrface.c 	keys73.c 	keys83p.c 	keys89.c 	keys92p.c 	packets.c 	probe.c 	ti73.c 	ti82.c 	ti83.c 	ti85.c 	ti86.c 	ti89.c 	ti92.c 	tikeys.c 	tnode.c 	type2str.c
+libticalcs_la_SOURCES =  	clock.c 	cmd73.c 	cmd82.c 	cmd85.c 	cmd89.c 	cmd92.c 	dirlist.c 	error.c 	intrface.c 	keys73.c 	keys83p.c 	keys89.c 	keys92p.c 	packets.c 	printl.c 	probe.c 	ti73.c 	ti82.c 	ti83.c 	ti85.c 	ti86.c 	ti89.c 	ti92.c 	tikeys.c 	tnode.c 	type2str.c
 
 
 MAINTAINERCLEANFILES = 
@@ -160,8 +160,8 @@ LIBS = @LIBS@
 libticalcs_la_LIBADD = 
 libticalcs_la_OBJECTS =  clock.lo cmd73.lo cmd82.lo cmd85.lo cmd89.lo \
 cmd92.lo dirlist.lo error.lo intrface.lo keys73.lo keys83p.lo keys89.lo \
-keys92p.lo packets.lo probe.lo ti73.lo ti82.lo ti83.lo ti85.lo ti86.lo \
-ti89.lo ti92.lo tikeys.lo tnode.lo type2str.lo
+keys92p.lo packets.lo printl.lo probe.lo ti73.lo ti82.lo ti83.lo \
+ti85.lo ti86.lo ti89.lo ti92.lo tikeys.lo tnode.lo type2str.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -178,9 +178,9 @@ GZIP_ENV = --best
 DEP_FILES =  .deps/clock.P .deps/cmd73.P .deps/cmd82.P .deps/cmd85.P \
 .deps/cmd89.P .deps/cmd92.P .deps/dirlist.P .deps/error.P \
 .deps/intrface.P .deps/keys73.P .deps/keys83p.P .deps/keys89.P \
-.deps/keys92p.P .deps/packets.P .deps/probe.P .deps/ti73.P .deps/ti82.P \
-.deps/ti83.P .deps/ti85.P .deps/ti86.P .deps/ti89.P .deps/ti92.P \
-.deps/tikeys.P .deps/tnode.P .deps/type2str.P
+.deps/keys92p.P .deps/packets.P .deps/printl.P .deps/probe.P \
+.deps/ti73.P .deps/ti82.P .deps/ti83.P .deps/ti85.P .deps/ti86.P \
+.deps/ti89.P .deps/ti92.P .deps/tikeys.P .deps/tnode.P .deps/type2str.P
 SOURCES = $(libticalcs_la_SOURCES)
 OBJECTS = $(libticalcs_la_OBJECTS)
 

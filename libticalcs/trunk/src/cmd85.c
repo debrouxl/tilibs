@@ -31,6 +31,7 @@
 #include "packets.h"
 #include "calc_err.h"
 #include "update.h"
+#include "printl.h"
 
 // Shares some commands between TI85 & 86
 extern int ticalcs_calc_type;

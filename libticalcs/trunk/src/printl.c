@@ -24,26 +24,30 @@
 */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "intl3.h"
+#include "intl2.h"
 
 #include "export.h"
 #include "calc_def.h"
 
 /* 
-	Print to stdout as default behaviour unless changed by tifiles_set_print 
-	Level: such as "warning", "error", "information", etc. "" = nothing.
+   Print to stdout as default behaviour unless changed by tifiles_set_print 
+   Level: such as "warning", "error", "information", etc. "" = nothing.
 */
 static int default_printl(int level, const char *format, ...)
 {
         int ret = 0;
 	va_list ap;
 
-	fprintf(stdout, "ticalc ");
+	fprintf(stdout, "ticalcs ");
 	if(level != 0)
-		fprintf(stdout, "(%s): ", (level == 2) ? _("error") : _("warning"));
+		fprintf(stdout, "(%s): ", 
+			(level == 2) ? _("error") : _("warning"));
+	fprintf(stdout, ": ");
+
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
@@ -60,9 +64,9 @@ TIEXPORT TICALC_PRINTL TICALL ticalc_set_printl(TICALC_PRINTL new_printl)
 {
   TICALC_PRINTL old_printl = printl;
 
-  printf("printl = %p\n", printl);
-  printf("old_printl = %p\n", old_printl);
-  printf("new_printl = %p\n", new_printl);
+  //printf("printl = %p\n", printl);
+  //printf("old_printl = %p\n", old_printl);
+  //printf("new_printl = %p\n", new_printl);
 
   printl = new_printl;
 

@@ -37,6 +37,7 @@
 #include "cmd73.h"
 #include "rom83p.h"
 #include "pause.h"
+#include "printl.h"
 
 // Screen coordinates of the TI83+
 #define TI73_ROWS  64

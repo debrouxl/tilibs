@@ -39,6 +39,7 @@
 #include "keys89.h"
 #include "pause.h"
 #include "dirlist.h"
+#include "printl.h"
 
 // Screen coordinates of the TI89
 #define TI89_ROWS          128

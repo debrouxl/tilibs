@@ -32,7 +32,7 @@
 #include "headers.h"
 #include "intl2.h"
 #include "tnode.h"
-
+#include "printl.h"
 
 static tboolean free_varentry(TNode * node, tpointer data)
 {

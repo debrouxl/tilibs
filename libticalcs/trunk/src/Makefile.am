@@ -53,6 +53,7 @@ libticalcs_la_SOURCES = \
 	keys89.c \
 	keys92p.c \
 	packets.c \
+	printl.c \
 	probe.c \
 	ti73.c \
 	ti82.c \
