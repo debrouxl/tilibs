@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "export.h"
 #include "cabl_def.h"

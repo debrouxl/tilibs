@@ -43,7 +43,7 @@
 #include "../cabl_def.h"
 #include "../printl.h"
 #include "../export.h"
-#include "../intl1.h"
+#include "../gettext.h"
 #include "../cabl_int.h"
 #include "../externs.h"
 #include "../ioports.h"

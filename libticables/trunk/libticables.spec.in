@@ -12,7 +12,7 @@ Packager:	roms roms@tilp.info
 Source:         %{name}-%{version}.tar.gz
 #Patch:		
 Group:		Application/Generic
-Copyright:	GPL
+Copyright:	LGPL
 #Icon:		
 #Requires:	
 BuildRoot:	/var/tmp/%{name}-%{version}

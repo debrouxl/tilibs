@@ -27,7 +27,7 @@
 #include <windows.h>
 #endif
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "cabl_ver.h"
 #include "cabl_def.h"

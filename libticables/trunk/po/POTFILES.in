@@ -14,6 +14,7 @@ src/verbose.c
 
 src/bsd/bsd_detect.c
 src/bsd/bsd_ioports.c
+src/bsd/bsd_mapping.c
 
 src/linux/avr_link.c
 src/linux/dev_link.c

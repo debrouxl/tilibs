@@ -35,11 +35,11 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "cabl_err.h"
 #include "externs.h"
-#include "printl1.h"
+#include "printl.h"
 
 /* Variables */
 

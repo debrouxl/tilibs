@@ -25,11 +25,11 @@
 #include <config.h>
 #endif
 
-#include "intl1.h"
+#include "gettext.h"
 #include "export.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
-#include "printl1.h"
+#include "printl.h"
 #include "logging.h"
 #include "externs.h"
 #include "timeout.h"

@@ -36,7 +36,7 @@ int start_void();
 int log_void();
 int stop_void();
 
-#ifdef LOGGING_ENABLED
+#ifdef ENABLE_LOGGING
 # define START_LOGGING(); start_logging();
 # define LOG_DATA(d);     log_data(d);
 # define STOP_LOGGING();  stop_logging();

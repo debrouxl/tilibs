@@ -74,7 +74,7 @@
 #include <errno.h>
 #include <usb.h>
 
-#include "intl1.h"
+#include "gettext.h"
 #include "export.h"
 #include "cabl_def.h"
 #include "cabl_err.h"

@@ -35,7 +35,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <time.h>
-#include "intl1.h"
+#include "gettext.h"
 
 #include "timeout.h"
 #include "cabl_def.h"

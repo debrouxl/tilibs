@@ -40,7 +40,7 @@
 #include <asm/io.h>
 #endif
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "cabl_err.h"
 #include "externs.h"

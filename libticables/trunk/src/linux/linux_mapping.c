@@ -32,7 +32,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "cabl_def.h"
 #include "cabl_err.h"

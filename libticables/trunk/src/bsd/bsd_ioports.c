@@ -37,7 +37,7 @@
 #include <machine/sysarch.h>
 #include <machine/cpufunc.h>
 
-#include "intl1.h"
+#include "gettext.h"
 
 #include "cabl_err.h"
 #include "externs.h"

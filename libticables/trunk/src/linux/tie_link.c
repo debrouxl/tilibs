@@ -42,7 +42,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "intl1.h"
+#include "gettext.h"
 #include "timeout.h"
 #include "export.h"
 #include "cabl_err.h"
