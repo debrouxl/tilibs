@@ -278,6 +278,7 @@ int ti82_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
+  LOCK_TRANSFER
   TRY(cable->open());
   update_start();
   sc->width=TI82_COLS;
@@ -339,6 +340,7 @@ int ti82_screendump(byte **bitmap, int mask_mode,
 
   update_start();
   TRY(cable->close());
+  UNLOCK_TRANSFER
 
   return 0;
 }

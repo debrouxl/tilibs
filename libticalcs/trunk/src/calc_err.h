@@ -49,6 +49,9 @@
 #define ERR_GRP_SIZE_EXCEEDED  260 // Group size exceeds 64KB
 #define ERR_OPEN_FILE          261 // Can not open file
 #define ERR_CLOSE_FILE         262 // Can not close file
+#define ERR_NO_IDLIST          263 // Calc has not an IDlist
+
+#define ERR_PENDING_TRANSFER   333 // A transfer is in progress
 
 #endif
 

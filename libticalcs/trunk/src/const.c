@@ -25,22 +25,22 @@
 
 static const char GROUP_FILE_EXT[9][4]=
 {  
-  "XxX", "9Xg", "92g", "89g", "86g", "85g", "8xg", "83g", "82g"
+  "XxX", "9Xg", "92g", "89g", "86g", "85g", "8Xg", "83g", "82g"
 };
 
 static const char BACKUP_FILE_EXT[9][4]=
 { 
-  "XxX", "9xg", "92b", "89g", "86b", "85b", "8xb", "83b", "82b" 
+  "XxX", "9Xg", "92b", "89g", "86b", "85b", "8Xg", "83b", "82b" 
 };
 
 static const char FLASH_APP_FILE_EXT[9][4]=
 {
-  "XxX", "9xk", "???", "89k", "???", "???", "8xk", "???", "???" 
+  "XxX", "9Xk", "???", "89k", "???", "???", "8Xk", "???", "???" 
 };
 
 static const char FLASH_OS_FILE_EXT[9][4]=
 {
-  "XxX", "9xu", "???", "89u", "???", "???", "8xu", "???", "???" 
+  "XxX", "9Xu", "???", "89u", "???", "???", "8Xu", "???", "???" 
 };
 
 
@@ -51,7 +51,7 @@ static const int TIXX_DIR[9]=
 
 static const int TIXX_FLASH[9]=
 {
-  -1, TI92p_FLASH, -1, TI89_FLASH, -1, -1, -1, -1, -1
+  -1, TI92p_FLASH, -1, TI89_FLASH, -1, -1, TI83p_FLASH, -1, -1
 };
 
 

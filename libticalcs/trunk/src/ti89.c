@@ -142,6 +142,7 @@ int ti89_waitdata(void)
 // Check whether the TI reply that it is ready
 int ti89_isready(void)
 {
+  //LOCK_TRANSFER
   TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI89));
@@ -152,6 +153,7 @@ int ti89_isready(void)
   DISPLAY("The calculator is ready.\n");
   DISPLAY("\n");
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -262,6 +264,7 @@ byte ti89_fext2byte(char *s)
 
 int ti89_send_key(int key)
 {
+  //LOCK_TRANSFER
   TRY(cable->open());
   TRY(cable->put(PC_TI89));
   TRY(cable->put(CMD89_DIRECT_CMD));
@@ -269,6 +272,7 @@ int ti89_send_key(int key)
   TRY(cable->put(MSB(key)));
   TRY(ti89_isOK());
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -282,6 +286,7 @@ int ti89_remote_control(void)
   char skey[10];
   int b;
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   d=0;
   DISPLAY("\n");
@@ -420,6 +425,7 @@ int ti89_remote_control(void)
   noraw();
   endwin();
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 #else
@@ -436,6 +442,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i, j, k;
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   update_start();
   sc->width=TI89_COLS;
@@ -511,6 +518,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
 	    }
 	}
     }
+  //UNLOCK_TRANSFER
   
   return 0;
 }
@@ -531,15 +539,23 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   struct varinfo *q, *tmp;
   byte num_var;
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   update_start();
   *n_elts=0;
   (update->percentage)=0.0;
   p=list;
-  p->next=NULL;
   f=NULL;
   p->folder=f;
   p->is_folder = VARIABLE;
+  p->next=NULL;
+  p->folder=NULL;
+  strcpy(p->varname, "");
+  p->varsize=0;
+  p->vartype=0;
+  p->varlocked=0;
+  strcpy(p->translate, "");
+
   sum=0;
   DISPLAY("Requesting directory list (dir)...\n");
   TRY(cable->put(PC_TI89));
@@ -580,8 +596,8 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   TRY(cable->get(&data));
   var_size |= (data << 24);
   sum+=data;
-  list->varsize=var_size;
-  //  DISPLAY("Size of the var in memory: %08X.\n", var_size);
+  //list->varsize=var_size;
+    //DISPLAY("Mem: %08X.\n", var_size);
   TRY(cable->get(&data));
   list->vartype=data;
   sum+=data;
@@ -843,8 +859,12 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
 	  q->varsize=var_size;
 	  DISPLAY("Name: %8s | ", var_name);
 	  DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
-	  DISPLAY("Locked: %i | ", locked);
+	  DISPLAY("Attr: %i | ", locked);
 	  DISPLAY("Size: %08X\n", var_size);
+	  if((q->is_folder == VARIABLE) && (q->vartype != TI89_FLASH))
+	  {
+	    list->varsize += var_size;
+	  }
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: TI89/%s/%s", 
 		   (q->folder)->translate, q->translate);
@@ -876,6 +896,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   DISPLAY("\n");
   (update->percentage)=0.0;
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -892,6 +913,7 @@ int ti89_recv_var(FILE *file, int mask_mode,
   byte name_length;
   char name[9];
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   update_start();
   sprintf(update->label_text, "Variable: %s", varname);
@@ -923,14 +945,8 @@ int ti89_recv_var(FILE *file, int mask_mode,
   TRY(ti89_isOK());
   sum=0;
   TRY(cable->get(&data));
-  
-  fprintf(stderr, "*** DEBUG : 0x%02x, 0x%02x\n", data, TI89_PC);
-  
   if(data != TI89_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  
-  fprintf(stderr, "*** DEBUG : 0x%02x, 0x%02x\n", data, CMD89_VAR_HEADER);
-  
   if(data != CMD89_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   TRY(cable->get(&data));
@@ -1034,6 +1050,7 @@ int ti89_recv_var(FILE *file, int mask_mode,
   update_start();
   TRY(cable->close());
   PAUSE(pause_between_vars);
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -1065,6 +1082,7 @@ int ti89_send_var(FILE *file, int mask_mode)
   int action=ACTION_NONE;
   static int do_dirlist=1;
 
+  //LOCK_TRANSFER
   if((mask_mode & MODE_DIRLIST) && do_dirlist) // do dirlist one time
     {
       TRY(ti89_directorylist(&dirlist, &n));
@@ -1168,7 +1186,7 @@ int ti89_send_var(FILE *file, int mask_mode)
 	    t_vartype[var_index]=vartype;
 	    varattr=fgetc(file);
 	    if( (mask_mode & MODE_USE_2ND_HEADER)    // if backup
-		&& (mask_mode & MODE_KEEP_ARCH_ATTRIB) ) // and if we use the extended file format
+		|| (mask_mode & MODE_KEEP_ARCH_ATTRIB) ) // or if we use the extended file format
 	      {
 		switch(varattr)
 		  {
@@ -1348,6 +1366,7 @@ int ti89_send_var(FILE *file, int mask_mode)
 
   update_start();
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -1359,6 +1378,7 @@ int ti89_recv_backup(FILE *file, int mask_mode, longword *version)
   int i=0;
   char varname[20];
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   update_start();
 
@@ -1471,6 +1491,7 @@ int ti89_send_backup(FILE *file, int mask_mode)
 
   update_start();
   TRY(cable->close());
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -1489,6 +1510,7 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   FILE *f;
   word checksum, sum;
   
+  //LOCK_TRANSFER
   update_start();
   sprintf(update->label_text, "Ready ?");
   update->label();
@@ -1589,6 +1611,7 @@ int ti89_get_rom_version(char *version)
   word block_size;
   word num_bytes;
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   (update->percentage)=0.0;
 
@@ -1673,6 +1696,7 @@ int ti89_get_rom_version(char *version)
   DISPLAY("\n");
   (update->percentage)=0.0;
   TRY(cable->close());	
+  //UNLOCK_TRANSFER
   
   return 0;
 }
@@ -1688,6 +1712,7 @@ int ti89_get_idlist(char *id)
   byte name_length;
   char name[9];
 
+  //LOCK_TRANSFER
   TRY(cable->open());
   update_start();
   sum=0;
@@ -1837,6 +1862,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
 
+  //LOCK_TRANSFER
   //DISPLAY("timeout: %i\n", ticable_get_timeout());  
   /* Read the file header and initialize some variables */
   TRY(cable->open());
@@ -2044,6 +2070,10 @@ int ti89_send_flash(FILE *file, int mask_mode)
 
   update_start();
   TRY(cable->close());
+  //UNLOCK_TRANSFER
+  //UNLOCK_TRANSFER
+  //UNLOCK_TRANSFER
+  //UNLOCK_TRANSFER
 
   return 0;
 }
@@ -2060,6 +2090,7 @@ int ti89_recv_flash(FILE *file, int mask_mode, char *appname)
   char name[9];
   char *varname = appname;
 
+  //LOCK_TRANSFER
   fprintf(file, "**TIFL**");
   for(i=0; i<4; i++)
     fputc(0x00, file);
@@ -2205,6 +2236,7 @@ int ti89_recv_flash(FILE *file, int mask_mode, char *appname)
   update->start();
   TRY(cable->close());
   PAUSE(pause_between_vars);
+  //UNLOCK_TRANSFER
 
   return 0;
 }

@@ -525,10 +525,17 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   *n_elts=0;
   update->start();
   p=list;
-  p->next=NULL;
   f=NULL;
   p->folder=f;
-  p->is_folder = FOLDER;
+  p->is_folder = VARIABLE;
+  p->next=NULL;
+  p->folder=NULL;
+  strcpy(p->varname, "");
+  p->varsize=0;
+  p->vartype=0;
+  p->varlocked=0;
+  strcpy(p->translate, "");
+
   sum=0;
   DISPLAY("Requesting directory list (dir)...\n");
   TRY(cable->put(PC_TI92p));
@@ -569,7 +576,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   TRY(cable->get(&data));
   var_size |= (data << 24);
   sum+=data;
-  list->varsize=var_size;
+  //list->varsize=var_size;
   //  DISPLAY("Size of the var in memory: %08X.\n", var_size);
   TRY(cable->get(&data));
   list->vartype=data;
@@ -832,8 +839,10 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  q->varsize=var_size;
 	  DISPLAY("Name: %8s | ", var_name);
 	  DISPLAY("Type: %8s | ", ti92p_byte2type(var_type));
-	  DISPLAY("Locked: %i | ", locked);
+	  DISPLAY("Attr: %i | ", locked);
 	  DISPLAY("Size: %08X\n", var_size);
+	  if((q->is_folder == VARIABLE) && (q->vartype != TI92p_FLASH))
+	    list->varsize += var_size;
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: TI92p/%s/%s", 
 		   (q->folder)->translate, q->translate);
@@ -1150,7 +1159,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
 	    t_vartype[var_index]=vartype;
 	    varattr=fgetc(file);
 	    if( (mask_mode & MODE_USE_2ND_HEADER)    // if backup
-		&& (mask_mode & MODE_KEEP_ARCH_ATTRIB) ) // and if use the extended file format
+		|| (mask_mode & MODE_KEEP_ARCH_ATTRIB) ) // or if use the extended file format
 	      {
 		switch(varattr)
 		  {

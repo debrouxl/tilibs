@@ -774,7 +774,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
     char var_name[9];
     struct varinfo *p;
     word size;
-    word sum;
+    word sum, checksum;
 
     update_start();
     TRY(cable->open());
@@ -816,6 +816,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
 
     TRY(ti86_isPacketOK(0x0005));
 
+    sum=0;
     TRY(cable->get(&data));
     if(data != TI86_PC) return ERR_INVALID_BYTE;
     TRY(cable->get(&data));
@@ -823,10 +824,19 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
     TRY(cable->get(&data));
     TRY(cable->get(&data));
     TRY(cable->get(&data));
+    list->varsize = (data << 24);         // store mem free
+    sum+=data;
     TRY(cable->get(&data));
+    list->varsize |= data;
+    sum+=data;
     TRY(cable->get(&data));
+    list->varsize |= (data << 8);
+    sum+=data;
     TRY(cable->get(&data));
+    checksum=data;
     TRY(cable->get(&data));
+    checksum += (data << 8);
+    if(checksum != sum) return ERR_CHECKSUM;
 
     TRY(PC_replyOK_86());
 

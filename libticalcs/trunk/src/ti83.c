@@ -668,6 +668,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
     struct varinfo *p;
     word size;
     int err;
+    word sum, checksum;
 
     TRY(cable->open());
     update_start();
@@ -687,6 +688,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
 
     TRY(ti83_isPacketOK(0x000B));
 
+    sum=0;
     TRY(cable->get(&data));
     if(data != TI83_PC) return ERR_INVALID_BYTE;
     TRY(cable->get(&data));
@@ -694,9 +696,16 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
     TRY(cable->get(&data));
     TRY(cable->get(&data));
     TRY(cable->get(&data));
+    list->varsize = data;         // store mem free
+    sum+=data;
     TRY(cable->get(&data));
+    list->varsize |= (data << 8);
+    sum+=data;
     TRY(cable->get(&data));
+    checksum=data;
     TRY(cable->get(&data));
+    checksum += (data << 8);
+    if(checksum != sum) return ERR_CHECKSUM;
 
     TRY(PC_replyOK_83());
 
@@ -1011,7 +1020,6 @@ int ti83_send_var(FILE *file, int mask_mode)
       TRY(cable->put(0x00));
     }
   DISPLAY("The computer does not want continue.\n");
-  //TRY(ti83_isOK());
   DISPLAY("\n");
 
   update_start();

@@ -43,6 +43,10 @@
 #define VARIABLE 0
 #define FOLDER   1
 
+#define VARATTR_NONE	0
+#define VARATTR_LOCK	1	// Var is locked
+#define VARATTR_ARCH	3	// Var is archived
+
 struct varinfo
 {
   char varname[9];        // Name of the var

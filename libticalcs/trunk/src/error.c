@@ -21,6 +21,7 @@
 
 #include "calc_err.h"
 #include "calc_ext.h"
+#include "update.h"
 
 /* 
    This function put in err_msg the error message corresponding to the 
@@ -108,11 +109,19 @@ ticalc_get_error(int err_num, char *error_msg)
     case ERR_OPEN_FILE:
       strcpy(error_msg, _("Unable to open the file."));
       break;
+	case ERR_NO_IDLIST:
+		strcpy(error_msg, _("No IDlist."));
+		break;
+	case ERR_PENDING_TRANSFER:
+		strcpy(error_msg, _("A transfer is in progress."));
+		break;
 
     default: strcpy(error_msg, _("Error code not found. This is a bug. Please report it.\n")); 
+		UNLOCK_TRANSFER
       return err_num;
       break;
     }
+  UNLOCK_TRANSFER
 
   return 0;
 }

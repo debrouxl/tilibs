@@ -870,11 +870,17 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
   *n_elts=0;
   update_start();
   p=list;
-  p->next=NULL;
-  f=NULL;
+  f=NULL;  
   p->folder=f;
-  p->is_folder=VARIABLE;
+  p->is_folder = VARIABLE;
+  p->next=NULL;
+  p->folder=NULL;
+  strcpy(p->varname, "");
+  p->varsize=0;
+  p->vartype=0;
+  p->varlocked=0;
   strcpy(p->translate, "");
+  
   sum=0;
   DISPLAY("Request directory list (dir)...\n");
   TRY(cable->put(PC_TI92));
@@ -1016,8 +1022,10 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
       if(checksum != sum) return ERR_CHECKSUM;
       DISPLAY("Name: %8s | ", var_name);
       DISPLAY("Type: %8s | ", ti92_byte2type(var_type));
-      DISPLAY("Locked: %i | ", locked);
+      DISPLAY("Attr: %i | ", locked);
       DISPLAY("Size: %08X\n", var_size);
+      if(p->is_folder == VARIABLE)
+	list->varsize += var_size;
       
       TRY(PC_replyOK_92());
       TRY(cable->get(&data));

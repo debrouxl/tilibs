@@ -19,6 +19,18 @@
 #ifndef __TICALCS_UPDATE__
 #define __TICALCS_UPDATE__
 
+#ifndef TRYV
+# define TRYV(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
+#endif
+
+/*
+ * Implement a kind of mutex: prevent that someone tries to initiate
+ * a transfer while another is in progress
+ */
+extern int lock;
+#define LOCK_TRANSFER   TRYV(lock);  lock = ERR_PENDING_TRANSFER;
+#define UNLOCK_TRANSFER lock = 0;
+
 /* 
  * Functions for updating 
  */

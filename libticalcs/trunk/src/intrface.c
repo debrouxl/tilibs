@@ -37,6 +37,7 @@
 LinkCable  *cable;
 InfoUpdate *update;
 static int calc_type;
+int lock = 0;
 
 /****************/
 /* Entry points */
@@ -190,6 +191,7 @@ void TICALL ticalc_set_calc(int type,
       calc->byte2fext = ti89_byte2fext;
       calc->fext2byte = ti89_fext2byte;
 
+	  //DISPLAY("lib: ticalc=%p, isready=%p, set_calc=%p, init=%p\n", calc, ti89_isready, ticalc_set_calc, ticalc_init);
       calc->isready=ti89_isready;
       calc->send_key=ti89_send_key;
       calc->remote_control=ti89_remote_control;
