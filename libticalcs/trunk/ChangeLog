@@ -18,5 +18,7 @@
 	* Merge up to 3.0.5.
 * 20020121 : v3.0.7-osx0.1.0
 	* Merge up to 3.0.7.
-	
+	* Fixed ticalc_83p_89_92p_isread() mess.
+	* Fixed send_key() mess.
+
 	

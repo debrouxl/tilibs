@@ -342,7 +342,7 @@ TIEXPORT int TICALL ti89_92_92p_isready(int *calc_type)
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise
 */
-TIEXPORT int TICALL ti83p_89_92p_isready(int *calc_type)
+TIEXPORT int TICALL ticalc_83p_89_92p_isready(int *calc_type)
 {
   byte data;
   int ct;

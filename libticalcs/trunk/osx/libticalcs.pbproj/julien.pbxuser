@@ -10,6 +10,11 @@
 			sepNavWindowFrame = "{{176, 92}, {750, 502}}";
 		};
 	};
+	0127D0ED017389D15041E0CA = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{379, 100}, {750, 502}}";
+		};
+	};
 	0867D690FE84028FC02AAC07 = {
 		activeBuildStyle = 014CEA450018CDF011CA2923;
 		activeTarget = 0867D69CFE84028FC02AAC07;
@@ -18,15 +23,15 @@
 		);
 		perUserDictionary = {
 			PBXWorkspaceConfiguration = {
-				ContentSize = "{886, 585}";
+				ContentSize = "{1082, 556}";
 				LeftSlideOut = {
 					ActiveTab = 0;
-					Frame = "{{0, 23}, {886, 562}}";
+					Frame = "{{0, 23}, {1082, 533}}";
 					Split0 = {
-						ActiveTab = 1;
-						Frame = "{{224, 0}, {662, 562}}";
+						ActiveTab = 2;
+						Frame = "{{224, 0}, {858, 533}}";
 						Split0 = {
-							Frame = "{{0, 74}, {662, 488}}";
+							Frame = "{{0, 74}, {858, 459}}";
 						};
 						SplitCount = 1;
 						Tab0 = {
@@ -62,9 +67,9 @@
 							};
 						};
 						Tab2 = {
-							BuildMessageFrame = "{{0, 0}, {664, 74}}";
-							BuildTranscriptFrame = "{{0, 83}, {664, 125}}";
-							Frame = "{{0, 0}, {662, 206}}";
+							BuildMessageFrame = "{{0, 0}, {860, 19}}";
+							BuildTranscriptFrame = "{{0, 28}, {860, 24}}";
+							Frame = "{{0, 0}, {858, 50}}";
 						};
 						Tab3 = {
 							Frame = "{{0, 0}, {661, 295}}";
@@ -73,7 +78,7 @@
 					};
 					SplitCount = 1;
 					Tab0 = {
-						Frame = "{{0, 0}, {200, 562}}";
+						Frame = "{{0, 0}, {200, 533}}";
 					};
 					Tab1 = {
 						ClassesFrame = "{{0, 0}, {202, 56}}";
