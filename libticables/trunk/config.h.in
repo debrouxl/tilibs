@@ -11,7 +11,7 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
-/* Define to enable logging. */
+/* Define to 1 to enable logging. */
 #undef ENABLE_LOGGING
 
 /* Define to 1 if translation of program messages to the user's native
@@ -126,7 +126,7 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
-/* libusb support enabled */
+/* Define to 1 to enable libusb support. */
 #undef HAVE_LIBUSB
 
 /* Define to 1 if you have the <limits.h> header file. */

@@ -17,6 +17,8 @@ AC_SUBST(LT_LIBVERSION, 11:4:1)
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
+AC_PREFIX_DEFAULT(/usr)
+
 dnl Files to configure.
 AC_CONFIG_SRCDIR([src/intrface.c])
 AC_CONFIG_HEADER([config.h])
@@ -31,10 +33,6 @@ AC_CONFIG_FILES([
   libticables.spec
   ticables.pc
 ])
-
-dnl do we need this?
-dnl # Change the default prefix (/usr/local) to /usr.
-dnl AC_PREFIX_DEFAULT([/usr])
 
 # Setup libtool.
 AC_DISABLE_STATIC
@@ -60,7 +58,7 @@ AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
 if test x$LIBUSB_CONFIG = xyes; then
   LIBUSB_CFLAGS=`libusb-config --cflags`
   LIBUSB_LIBS=`libusb-config --libs`
-  AC_DEFINE(HAVE_LIBUSB, 1, [libusb support enabled])
+  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
 else
   LIBUSB_CFLAGS=
   LIBUSB_LIBS=
@@ -96,7 +94,7 @@ AC_ARG_ENABLE(logging,
 AC_CACHE_CHECK([whether to enable logging],
   [cab_cv_enable_logging], [cab_cv_enable_logging=no])
 if test x$cab_cv_enable_logging = xyes; then
-  AC_DEFINE(ENABLE_LOGGING, 1, [Define to enable logging.])
+  AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
 fi
 
 # Platform specific tests.
