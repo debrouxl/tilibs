@@ -11,4 +11,7 @@
 	* Fixed ERR_USB_OPEN error message in error.c
 * 20011126 : v2.1.6-osx0.0.3
 	* Fixed buffer handling.
+* 20011128 : v2.1.6-osx0.0.4
+	* Fixed buffer handling again
+	* Code cleaning
 	

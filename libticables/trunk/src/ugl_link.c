@@ -574,14 +574,9 @@ int ugl_supported()
 
 // globals
 
-static struct cs
-{
-  byte data;
-  int available;
-} cs;
-
 IOUSBDeviceInterface **dev = NULL;
-IOUSBInterfaceInterface182 **intf = NULL;
+IOUSBInterfaceInterface182 **intf = NULL; // interface version 1.8.2
+
 static char rcv_buffer[TIGL_MAXPACKETSIZE + 1];
 static UInt32 numBytesRead = 0;
 static byte *rcv_buf_ptr;
@@ -834,10 +829,6 @@ int ugl_init_port()
     SInt32			usbProduct = kTIGLProductID;
     io_iterator_t iterator;
   
-    // init the cs struct
-    cs.available = 0;
-    cs.data = 0;
-        
     // first create a master_port for my task
     kr = IOMasterPort(MACH_PORT_NULL, &masterPort);
     if (kr || !masterPort)
@@ -988,23 +979,29 @@ int ugl_get(byte *d)
     if (intf == NULL)
         return ERR_RCV_BYT;
 
-    if (numBytesRead == 0) // we're at the end of the buffer
+    if (numBytesRead <= 0) // we're at the end of the buffer
         {
             printf("rcv_buffer empty, reading bulk pipe...\n");
          
-            numBytesRead = TIGL_MAXPACKETSIZE;    
+            memset(rcv_buffer, 0, TIGL_MAXPACKETSIZE + 1);
+         
+            numBytesRead = TIGL_MAXPACKETSIZE;
+                
             kr = (*intf)->ReadPipeTO(intf, TIGL_BULK_ENDPOINT_IN, rcv_buffer, &numBytesRead, timeout, timeout);
     
             if (kIOReturnSuccess != kr)
                 {
                     printf("unable to do bulk read (0x%x)\n", kr);
+                    
+                    numBytesRead = 0;
+                    
                     ugl_close_port();
+                    
                     return ERR_RCV_BYT;
                 }
                 
             rcv_buf_ptr = rcv_buffer;
-            numBytesRead = strlen(rcv_buffer);
-
+            
             printf("numBytesRead : %ld\n", numBytesRead);
 
             printf("Buffer content:");
@@ -1048,6 +1045,8 @@ int ugl_check_port(int *status)
             if(kr = kIOReturnSuccess)
                 {
                     printf("In ugl_check_port: numBytesRead = %ld\n", numBytesRead);
+                            
+                    rcv_buf_ptr = rcv_buffer;
                             
                     *status = STATUS_RX;
 
