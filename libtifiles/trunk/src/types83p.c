@@ -142,7 +142,7 @@ const char *ti83p_byte2desc(uint8_t data)
 // Return the icon name associated with the vartype
 const char *ti83p_byte2icon(uint8_t data)
 {
-  return (data < TI83p_MAXTYPES) ? TI83p_CONST[data][3] : _("Unknown");
+  return (data < TI83p_MAXTYPES) ? TI83p_CONST[data][3] : "Unknown";
 }
 
 

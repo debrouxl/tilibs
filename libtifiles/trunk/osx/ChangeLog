@@ -1,4 +1,6 @@
-* 20030419 : v0.5.3 ($Rev$)
+* 20030424 : v0.5.5 ($Rev$)
+	* Merge up to 0.5.5.
+* 20030419 : v0.5.3 (Rev: 248)
 	* src/misc.c : endianness fixes.
 * 20030416 : v0.5.3 (Rev: 239)
 	* Merged up to 0.5.3.

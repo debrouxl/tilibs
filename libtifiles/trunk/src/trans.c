@@ -28,10 +28,126 @@
 #include "typesxx.h"
 #include "file_int.h"
 
+// set to ISO8859-1 for compatibility with previous releases
+static TifileEncoding encoding = ENCODING_LATIN1;
+
+/*
+  Set/Get encoding methods
+*/
+
+TIEXPORT void TICALL tifiles_translate_set_encoding(TifileEncoding enc)
+{
+  encoding = enc;
+}
+
+TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void)
+{
+  return encoding;
+}
+
+
+/*
+  Convert string to pure ASCII.
+  Note: src & dst will have the same length.
+*/
+TIEXPORT char* TICALL tifiles_convert_to_ascii(char* dst, const char *src)
+{
+  char *dest = dst;
+
+  while(*src) {
+    *dst++ = ((uint8_t)*src < 0x80) ? *src : '_';
+    src++;
+  }
+  *dst = '\0';
+
+  return dest;
+}
+
+/*
+  Convert string to the ISO8859-1 charset (aka Latin1).
+  Note: src & dst will have the same length.
+*/
+TIEXPORT char* TICALL tifiles_convert_to_latin1(char* dst, const char *src)
+{
+  char *dest = dst;
+
+  while(*src) {
+    *dst++ = (((uint8_t)*src >= 0x80) && ((uint8_t)*src < 0xA0)) ? '_' : *src;
+    src++;
+  }
+  *dst = '\0';
+
+  return dest;
+}
+
+/*
+  Convert string to the UTF-8 charset (Unicode).
+  See: www.unicode.org/charts & www.czyborra.com/utf
+  Note: dst may be up to twice the length of src.
+*/
+TIEXPORT char* TICALL tifiles_convert_to_unicode(char* dst, const char *src)
+{
+  char *dest = dst;
+  uint16_t wchar;
+
+  while(*src) {
+    if((uint8_t)*src < 0x80) // ASCII part
+      wchar = *src;
+    else if((uint8_t)*src >= 0xA0) // ISO8859-1 part
+      wchar = *src & 0xff;
+    else 
+      { // greek characters
+	switch((uint8_t)*src) {
+	case 0x80: wchar = 0x03b1; break; // alpha
+	case 0x81: wchar = 0x03b2; break; // beta
+	case 0x82: wchar = 0x0393; break; // gamma (capital)
+	case 0x83: wchar = 0x03b3; break; // gamma
+	case 0x84: wchar = 0x0394; break; // delta (capital)
+	case 0x85: wchar = 0x03b4; break; // delta
+	case 0x86: wchar = 0x03b5; break; // epsilon
+	case 0x87: wchar = 0x03b6; break; // dzeta
+	case 0x88: wchar = 0x03b8; break; // theta
+	case 0x89: wchar = 0x03bb; break; // lambda
+	case 0x8a: wchar = 0x03be; break; // ksi
+	case 0x8b: wchar = 0x03a0; break; // pi (capital)
+	case 0x8c: wchar = 0x03c0; break; // pi
+	case 0x8d: wchar = 0x03c1; break; // rho
+	case 0x8e: wchar = 0x03a3; break; // sigma (capital)
+	case 0x8f: wchar = 0x03c3; break; // sigma
+	case 0x90: wchar = 0x03c4; break; // tau
+	case 0x91: wchar = 0x03d5; break; // phi (capital)
+	case 0x92: wchar = 0x03a8; break; // psi (capital)
+	case 0x93: wchar = 0x03a9; break; // omega (capital)
+	case 0x94: wchar = 0x03c9; break; // omega
+	default: wchar = '_';
+	}
+      }
+
+    // write our wide-char
+    if ((uint16_t)wchar < 0x80)
+      *dst++ = wchar;
+    else if ((uint16_t)wchar < 0x0800) {
+      *dst++ = (0xC0 | (wchar >> 6)) & 0xff;
+      *dst++ = (0x80 | (wchar & 0x3f)) & 0xff;
+    }
+    src++;
+  }
+  *dst = '\0';
+
+  return dest;
+}
+
+
 /* 
-   Some varnames have to be translated in a more useable name.
+   Variable name translation functions.
+   We have to process the varname for the following calcs:
+   - 73/82/83/83+: binary-coded to ASCII charset translation
+   - 85/86: no translation
+   - 89/92/92+: TI's charset to user-defined charset (ASCII/Latin1/Unicode)
+
    See the protocol doc for more informations
 */
+
 char *ti73_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
@@ -281,7 +397,6 @@ char *ti85_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
   strcpy(translate, varname);
-
   return translate;
 }
 
@@ -289,14 +404,17 @@ char *ti86_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
   strcpy(translate, varname);
-
   return translate;
 }
 
 char *ti89_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
-  strcpy(translate, varname);
+  switch(encoding) {
+  case ENCODING_ASCII: return tifiles_convert_to_ascii(translate, varname);
+  case ENCODING_LATIN1: return tifiles_convert_to_latin1(translate, varname);
+  case ENCODING_UNICODE: return tifiles_convert_to_unicode(translate, varname);
+  }
 
   return translate;
 }
@@ -305,7 +423,6 @@ char *ti92_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
   strcpy(translate, varname);
-
   return translate;
 }
 
@@ -313,7 +430,6 @@ char *ti92p_translate_varname(const char *varname, char *translate,
 			      uint8_t vartype)
 {
   strcpy(translate, varname);
-
   return translate;
 }
 
@@ -321,7 +437,6 @@ char *v200_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype)
 {
   strcpy(translate, varname);
-
   return translate;
 }
 
@@ -371,16 +486,22 @@ TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
 						char *translate,
 						uint8_t vartype)
 {
-  return
-      tixx_translate_varname(varname, translate, vartype,
-			     tifiles_calc_type);
+  return tixx_translate_varname(varname, translate, vartype, 
+				tifiles_calc_type);
 }
 
-TIEXPORT char *TICALL tifiles_translate_varname2(const char *varname,
-						 uint8_t vartype)
+TIEXPORT char *TICALL tifiles_translate_varname_static(const char *varname,
+						       uint8_t vartype)
 {
   static char trans[9];
-
+  
   return tixx_translate_varname(varname, trans, vartype,
-				tifiles_calc_type);
+                                tifiles_calc_type);
+}
+
+/* obsolete, replaced by the func below */
+TIEXPORT char *TICALL tifiles_translate_varname2(const char *varname,
+                                                 uint8_t vartype)
+{
+  return tifiles_translate_varname_static(varname, vartype);
 }

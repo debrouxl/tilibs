@@ -275,6 +275,46 @@ TIEXPORT const char *TICALL tifiles_vartype2desc(uint8_t d)
   }
 }
 
+TIEXPORT const char *TICALL tifiles_vartype2icon(uint8_t d)
+{
+  switch (tifiles_calc_type) {
+  case CALC_TI73:
+    return ti73_byte2icon(d);
+    break;
+  case CALC_TI82:
+    return ti82_byte2icon(d);
+    break;
+  case CALC_TI83:
+    return ti83_byte2icon(d);
+    break;
+  case CALC_TI83P:
+    return ti83p_byte2icon(d);
+    break;
+  case CALC_TI85:
+    return ti85_byte2icon(d);
+    break;
+  case CALC_TI86:
+    return ti86_byte2icon(d);
+    break;
+  case CALC_TI89:
+    return ti89_byte2icon(d);
+    break;
+  case CALC_TI92:
+    return ti92_byte2icon(d);
+    break;
+  case CALC_TI92P:
+    return ti92p_byte2icon(d);
+    break;
+  case CALC_V200:
+    return v200_byte2icon(d);
+    break;
+  default:
+    fatal_error("tifiles_vartype2icon");
+    return "";
+    break;
+  }
+}
+
 /****************/
 /* Global types */
 /****************/
@@ -452,7 +492,7 @@ TIEXPORT const char *TICALL tifiles_flash_os_file_ext()
   return NULL;
 }
 
-TIEXPORT const uint8_t TICALL tifiles_folder_type()
+TIEXPORT const int TICALL tifiles_folder_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:
@@ -485,7 +525,7 @@ TIEXPORT const uint8_t TICALL tifiles_folder_type()
   return -1;
 }
 
-TIEXPORT const uint8_t TICALL tifiles_flash_type()
+TIEXPORT const int TICALL tifiles_flash_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:
@@ -518,7 +558,7 @@ TIEXPORT const uint8_t TICALL tifiles_flash_type()
   return -1;
 }
 
-TIEXPORT const uint8_t TICALL tifiles_idlist_type()
+TIEXPORT const int TICALL tifiles_idlist_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:
@@ -599,32 +639,7 @@ TIEXPORT const char *TICALL tifiles_calc_type_to_string()
 */
 TIEXPORT const char *TICALL tifiles_vartype_to_file_extension(int type)
 {
-  switch (tifiles_calc_type) {
-  case CALC_TI73:
-    return ti73_byte2fext((uint8_t) type);
-  case CALC_TI82:
-    return ti82_byte2fext((uint8_t) type);
-  case CALC_TI83:
-    return ti83_byte2fext((uint8_t) type);
-  case CALC_TI83P:
-    return ti83p_byte2fext((uint8_t) type);
-  case CALC_TI85:
-    return ti85_byte2fext((uint8_t) type);
-  case CALC_TI86:
-    return ti86_byte2fext((uint8_t) type);
-  case CALC_TI89:
-    return ti89_byte2fext((uint8_t) type);
-  case CALC_TI92:
-    return ti92_byte2fext((uint8_t) type);
-  case CALC_TI92P:
-    return ti92p_byte2fext((uint8_t) type);
-  case CALC_V200:
-    return v200_byte2fext((uint8_t) type);
-  default:
-    return NULL;
-  }
-
-  return NULL;
+	return tifiles_vartype2file((uint8_t)type);
 }
 
 TIEXPORT const char *TICALL tifiles_calctype2signature(TicalcType

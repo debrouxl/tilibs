@@ -25,7 +25,7 @@ typedef struct {
 
   char folder[9];		// TI9x only
   char name[9];			// binary name
-  char trans[9];		// translated name (human readable)
+  char trans[17];		// translated name (human readable)
   uint8_t type;
   uint8_t attr;			// TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
   uint32_t size;		// uint16_t for TI8x

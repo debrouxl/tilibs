@@ -150,5 +150,5 @@ const char *ti89_byte2desc(uint8_t data)
 // Return the icon name associated with the vartype
 const char *ti89_byte2icon(uint8_t data)
 {
-  return (data < TI89_MAXTYPES) ? TI89_CONST[data][2] : _("Unknown");
+  return (data < TI89_MAXTYPES) ? TI89_CONST[data][2] : "Unknown";
 }

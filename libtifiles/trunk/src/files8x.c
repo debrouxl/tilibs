@@ -494,7 +494,7 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
   int i;
   uint16_t sum = 0;
   char *filename = NULL;
-  char trans[9];
+  char trans[17];
   uint32_t data_length;
   uint16_t packet_length = 0x0B;
 
@@ -734,7 +734,7 @@ TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
 TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
 {
   int i;
-  char trans[9];
+  char trans[17];
 
   tprintf("Signature:     <%s>\n",
 	  tifiles_calctype2signature(content->calc_type));

@@ -70,7 +70,7 @@ TIEXPORT int TICALL tifiles_init()
 #if defined(ENABLE_NLS)
   setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, LOCALEDIR);
-  fprintf(stdout, "%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
+  //fprintf(stdout, "%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
   //bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
   textdomain(PACKAGE);
 #endif

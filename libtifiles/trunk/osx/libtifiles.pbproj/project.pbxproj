@@ -144,11 +144,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.5.3</string>
+	<string>0.5.5</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>0.5.3</string>
+	<string>0.5.5</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

@@ -444,7 +444,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
   FILE *f;
   int i;
   char *filename = NULL;
-  char trans[9];
+  char trans[17];
   uint32_t offset = 0x52;
   int **table;
   int num_folders;
@@ -636,7 +636,7 @@ TIEXPORT int TICALL ti9x_write_flash_file(const char *filename,
 TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content)
 {
   int i;
-  char trans[9];
+  char trans[17];
 
   tprintf("Signature:         <%s>\n",
 	  tifiles_calctype2signature(content->calc_type));

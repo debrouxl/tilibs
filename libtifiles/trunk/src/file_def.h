@@ -36,6 +36,10 @@ typedef enum {
   TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
 } TifileType;
 
+typedef enum {
+  ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE
+} TifileEncoding;
+
 // headers
 
 #include "typesxx.h"
