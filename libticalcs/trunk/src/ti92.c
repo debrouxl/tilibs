@@ -39,6 +39,7 @@
 #include "keys92p.h"
 #include "pause.h"
 #include "dirlist.h"
+#include "printl.h"
 
 // Screen coordinates of the TI92
 #define TI92_ROWS  128

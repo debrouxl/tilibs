@@ -30,7 +30,7 @@
 #include "packets.h"
 #include "calc_err.h"
 #include "update.h"
-
+#include "printl.h"
 
 int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
 {

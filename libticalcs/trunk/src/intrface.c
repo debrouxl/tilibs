@@ -48,7 +48,8 @@ int lock = 0;
 /* Entry points */
 /****************/
 
-static int ticalcs_instance = 0;	// counts # of instances
+// not static, must be shared between instances
+int ticalcs_instance = 0;	// counts # of instances
 
 /*
   This function should be the first one to call.
@@ -172,8 +173,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
 #endif
 #endif
 
-  printl(0, _("Libticalcs settings...\n"));
-  printl(0, _("  Calc type: %s\n"),
+  printl(0, _("settings:\n"));
+  printl(0, _("  calc type: %s\n"),
 	  tifiles_calctype_to_string(ticalcs_calc_type));
 
   tcf = calc;
