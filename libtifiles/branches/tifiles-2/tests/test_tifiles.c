@@ -340,6 +340,9 @@ static int test_v200_regular_support()
 int main(int argc, char **argv)
 {
 	char *msg;
+	char buffer[256];
+	int i;
+	int ret;
 //	Ti9xFlash content = { 0 };
 
 	// init library
@@ -352,18 +355,52 @@ int main(int argc, char **argv)
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
 	free(msg);
-	return 0;
 
 	// test type2str.c
+	printf("tifiles_string_to_model: <%i> <%i>\n", CALC_TI92, 
+	       tifiles_string_to_model(tifiles_model_to_string(CALC_TI92)));
+	printf("tifiles_string_to_attribute: <%i> <%i>\n", ATTRB_LOCKED, 
+	       tifiles_string_to_attribute(tifiles_attribute_to_string(ATTRB_LOCKED)));
+	printf("tifiles_string_to_class: <%i> <%i>\n", TIFILE_SINGLE, 
+	       tifiles_string_to_class(tifiles_class_to_string(TIFILE_SINGLE)));
 
 	// test transcode.c
+	//tifiles_transcode_detokenize (CALC_TI82, "", buffer,0x0C/*TI82_ZSTO*/);
+	//printf("<%s>\n", buffer);
+// bug ?!
+	//tifiles_transcode_varname(CALC_TI82, "", buffer, 0x0C/*TI82_ZSTO*/);
+	//printf("<%s>\n", buffer);
+	// bug ?!
+	tifiles_transcode_detokenize (CALC_TI82, "\0x5d\0x00", buffer, -1);
+	//printf("<%s>\n", buffer);
+	//printf("\n");
 
 	// test filetypes.c
+	for(i = CALC_TI73; i <= CALC_V200; i++)
+	    printf("%s ", tifiles_fext_of_group(i));
+	printf("\n");
+
+	for(i = CALC_TI73; i <= CALC_V200; i++)
+            printf("%s ", tifiles_fext_of_backup(i));
+        printf("\n");
+
+	for(i = CALC_TI73; i <= CALC_V200; i++)
+            printf("%s ", tifiles_fext_of_flash_os(i));
+        printf("\n");
+
+	for(i = CALC_TI73; i <= CALC_V200; i++)
+            printf("%s ", tifiles_fext_of_flash_app(i));
+        printf("\n");
+
+	printf("<%s> <%s>\n", "foo.bar", tifiles_fext_get("foo.bar"));
+
+	ret = tifiles_file_is_ti(""); 
+	printf("tifiles_file_is_ti: %i\n", ret);
 
 	// test typesxx.c
 
 	// test misc.c
-
+	return 0;
 	// test filesxx.c
 
 	// test grouped.c
