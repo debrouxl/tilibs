@@ -2,7 +2,9 @@ SubVersion: $Id$
 
 Log:
 - 08/04/2004, version 4.5.3: roms
-	Redirection of stdout/stderr;
+	Redirection of stdout/stderr.
+	Fixed problem of i18n support: AM_GNU_GETTEXT must be put before
+	any libs checking.
 
 - 20/03/2004, version 4.5.2: roms
 	Added tree management (hacked from GLib) for internal use.

@@ -18,7 +18,7 @@ AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(VERSION)
 
-# libtool versionning
+# libtool versioning
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
 LT_REVISION=$MICRO_VERSION
@@ -59,7 +59,6 @@ AC_PREFIX_DEFAULT('/usr')
 AM_SANITY_CHECK
 
 # checks for programs.
-dnl AC_ARG_PROGRAM
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
@@ -69,24 +68,15 @@ AC_ISC_POSIX
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_AWK
 
+# gettext support (must be set here; before libti* dependancy checks)
+ALL_LINGUAS="fr"
+AM_GNU_GETTEXT
+
 # find pkg-config
 AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 if test x$PKG_CONFIG = xno ; then
   AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/])
 fi
-
-# check for ticables presence
-PKG_CHECK_MODULES(TICABLES, ticables >= 3.6.1)
-AC_SUBST(TICABLES_CFLAGS)
-AC_SUBST(TICABLES_LIBS)
-
-# check for tifiles presence
-PKG_CHECK_MODULES(TIFILES, tifiles >= 0.5.3)
-AC_SUBST(TIFILES_CFLAGS)
-AC_SUBST(TIFILES_LIBS)
-
-CFLAGS="$CFLAGS $TICABLES_CFLAGS $TIFILES_CFLAGS $GLIB_CFLAGS"
-LDFLAGS="$LDFLAGS $TICABLES_LIBS $TIFILES_LIBS $GLIB_LIBS"
 
 # checks for header files.
 AC_HEADER_STDC
@@ -160,9 +150,8 @@ if test x"$ticalcs_native_win32" = xyes; then
   fi
 fi
 
-AC_CYGWIN32
-AC_MINGW32
-AC_EXEEXT
+#AC_MINGW32
+#AC_EXEEXT
 
 case $host in
   *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__ -Os -s" ;;
@@ -171,27 +160,38 @@ case $host in
   *)          ARCH="-D__LINUX__" ;;
 esac
 
+# check for ticables presence
+PKG_CHECK_MODULES(TICABLES, ticables >= 3.6.1)
+AC_SUBST(TICABLES_CFLAGS)
+AC_SUBST(TICABLES_LIBS)
+
+# check for tifiles presence
+PKG_CHECK_MODULES(TIFILES, tifiles >= 0.5.3)
+AC_SUBST(TIFILES_CFLAGS)
+AC_SUBST(TIFILES_LIBS)
+
+CFLAGS="$CFLAGS $TICABLES_CFLAGS $TIFILES_CFLAGS $GLIB_CFLAGS"
+LDFLAGS="$LDFLAGS $TICABLES_LIBS $TIFILES_LIBS $GLIB_LIBS"
+
 # initialize libtool
 AM_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_PROG_LIBTOOL
 
-# gettext support
-ALL_LINGUAS="fr"
-AM_GNU_GETTEXT
-
+# locale installation
 locale_dir='${prefix}/share/locale'
 AC_SUBST(locale_dir)
 
 # some extra flags
 CFLAGS="$CFLAGS $ARCH -Wall -D_REENTRANT"
-LDFLAGS="$LDFLAGS $INTLLIBS -g"
+LDFLAGS="$LDFLAGS $INTLLIBS"
 
 # pass flags
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
+# output files
 AC_OUTPUT([
 Makefile 
 docs/Makefile 

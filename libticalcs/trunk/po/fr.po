@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ticalcs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-10 17:30+0200\n"
+"POT-Creation-Date: 2004-04-17 13:12+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -70,16 +70,20 @@ msgid "Msg: This function does not exist for this calculator."
 msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 
 #: src/error.c:71
-msgid "Cause: the operation you attempted is not supported by your calculator model."
-msgstr "Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
+msgid ""
+"Cause: the operation you attempted is not supported by your calculator model."
+msgstr ""
+"Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
 
 #: src/error.c:75
 msgid "Msg: Calculator out of memory."
 msgstr "Msg: Votre calculatrice n'a plus de mémoire libre."
 
 #: src/error.c:79
-msgid "Cause: the calculator does not have memory enough for doing the operation."
-msgstr "Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
+msgid ""
+"Cause: the calculator does not have memory enough for doing the operation."
+msgstr ""
+"Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
 
 #: src/error.c:83
 msgid "Msg: Unable to open (reading) the file."
@@ -554,4 +558,3 @@ msgstr "ignorer"
 #: src/type2str.c:75
 msgid "overwrite"
 msgstr "écraser"
-

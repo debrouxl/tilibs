@@ -128,7 +128,7 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 locale_dir = @locale_dir@
 
-SUBDIRS = . docs intl macros man po src tests #win32
+SUBDIRS = . docs macros man po src tests #win32 intl
 
 # Script to install
 bin_SCRIPTS = ticalcs-config
@@ -138,13 +138,6 @@ EXTRA_DIST = LOGO build docs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticalcs.pc
-
-#distclean:
-#	rm -f *.log *.scan log
-
-# This target retrieve some files from my Win$ partition to my Linux one
-SRC_DIR = /mnt/xp/devel/tilp_project/libs/calcs
-DST_DIR = /home/devel/tilp_project/libs/calcs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -452,7 +445,7 @@ mostlyclean-am:  mostlyclean-hdr mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-hdr clean-tags clean-generic mostlyclean-am
+clean-am:  clean-hdr clean-tags clean-generic mostlyclean-am clean-local
 
 clean: clean-recursive
 
@@ -496,30 +489,8 @@ dos2unix:
 	uppercase
 	cd src; ${MAKE} dos2unix
 
-win2lin: $(C_FILES)
-	@echo Merging files from Win32 to Linux...
-	@echo dir1
-	@for I in $(SRC_DIR)/src/*.c ; do \
-	cp $$I $(DST_DIR)/src; \
-	done
-	@for I in $(SRC_DIR)/src/*.h ; do \
-	cp $$I $(DST_DIR)/src; \
-	done
-	cd $(DST_DIR)/src; dos2unix; lowercase; uppercase;
-	@echo dir2
-	@for I in $(SRC_DIR)/tests/*.c ; do \
-	cp $$I $(DST_DIR)/tests; \
-	done
-	cd $(DST_DIR)/tests; dos2unix; lowercase; uppercase;
-	@echo dir3
-	@for I in $(SRC_DIR)/win32/msvc/*.* ; do \
-	cp $$I $(DST_DIR)/win32/msvc; \
-	done
-	@echo dir4
-	@for I in $(SRC_DIR)/tests/*.dll ; do \
-	cp $$I $(DST_DIR)/tests; \
-	done
-	@echo Done
+clean-local:
+	rm -f log
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
