@@ -427,7 +427,7 @@ PACKAGE_VERSION='4.5.8'
 PACKAGE_STRING='libTiCalcs 4.5.8'
 PACKAGE_BUGREPORT='tilp-users@lists.sourceforge.net'
 
-ac_default_prefix=/usr
+ac_default_prefix=/usr/local
 ac_unique_file="src/intrface.c"
 # Factoring default headers for most tests.
 ac_includes_default="\
