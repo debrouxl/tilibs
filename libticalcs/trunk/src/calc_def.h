@@ -37,7 +37,6 @@
 */
 
 #include "tnode.h"
-typedef GNode TNode;
 
 
 /*

@@ -27003,7 +27003,7 @@ locale_dir='${prefix}/share/locale'
 
 # some extra flags
 CFLAGS="$CFLAGS $ARCH -Wall -D_REENTRANT"
-LDFLAGS="$LDFLAGS $INTLLIBS"
+LDFLAGS="$LDFLAGS $INTLLIBS -g"
 
 # pass flags
 

@@ -27,90 +27,90 @@
  /*
   * Modified by roms for use in ticalcs library.
   * I needed tree manipulation routines without glib dependancies.
+  * I have systematically replaced G... by T... (GNode => TNode).
   */
 
 #ifndef __T_NODE_H__
 #define __T_NODE_H__
 
 // by roms (start)
-
-typedef int          gboolean;
-typedef void*	     gpointer;
-typedef	int	     gint;
-typedef unsigned int guint;
+typedef char         tchar;
+typedef	int	     tint;
+typedef unsigned int tuint;
+typedef int          tboolean;
+typedef void*	     tpointer;
 
 #define FALSE   0
 #define TRUE    (!FALSE)
-
 // by roms (end)
 
 
-typedef struct _GNode		GNode;
+typedef struct _TNode		TNode;
 
 /* Tree traverse flags */
 typedef enum
 {
-  G_TRAVERSE_LEAFS      = 1 << 0,
-  G_TRAVERSE_NON_LEAFS  = 1 << 1,
-  G_TRAVERSE_ALL        = G_TRAVERSE_LEAFS | G_TRAVERSE_NON_LEAFS,
-  G_TRAVERSE_MASK       = 0x03
-} GTraverseFlags;
+  T_TRAVERSE_LEAFS      = 1 << 0,
+  T_TRAVERSE_NON_LEAFS  = 1 << 1,
+  T_TRAVERSE_ALL        = T_TRAVERSE_LEAFS | T_TRAVERSE_NON_LEAFS,
+  T_TRAVERSE_MASK       = 0x03
+} TTraverseFlags;
 
 /* Tree traverse orders */
 typedef enum
 {
-  G_IN_ORDER,
-  G_PRE_ORDER,
-  G_POST_ORDER,
-  G_LEVEL_ORDER
-} GTraverseType;
+  T_IN_ORDER,
+  T_PRE_ORDER,
+  T_POST_ORDER,
+  T_LEVEL_ORDER
+} TTraverseType;
 
-typedef gboolean	(*GNodeTraverseFunc)	(GNode	       *node,
-						 gpointer	data);
-typedef void		(*GNodeForeachFunc)	(GNode	       *node,
-						 gpointer	data);
+typedef tboolean	(*TNodeTraverseFunc)	(TNode	       *node,
+						 tpointer	data);
+typedef void		(*TNodeForeachFunc)	(TNode	       *node,
+						 tpointer	data);
 
 /* N-way tree implementation
  */
-struct _GNode
+struct _TNode
 {
-  gpointer data;
-  GNode	  *next;
-  GNode	  *prev;
-  GNode	  *parent;
-  GNode	  *children;
+  tpointer data;
+  TNode	  *next;
+  TNode	  *prev;
+  TNode	  *parent;
+  TNode	  *children;
 };
 
-#define	 G_NODE_IS_ROOT(node)	(((GNode*) (node))->parent == NULL && \
-				 ((GNode*) (node))->prev == NULL && \
-				 ((GNode*) (node))->next == NULL)
-#define	 G_NODE_IS_LEAF(node)	(((GNode*) (node))->children == NULL)
+#define	 T_NODE_IS_ROOT(node)	(((TNode*) (node))->parent == NULL && \
+				 ((TNode*) (node))->prev == NULL && \
+				 ((TNode*) (node))->next == NULL)
+#define	 T_NODE_IS_LEAF(node)	(((TNode*) (node))->children == NULL)
 
-GNode*	 t_node_new		(gpointer	   data);
-void	 t_node_destroy		(GNode		  *root);
-void	 t_node_unlink		(GNode		  *node);
-GNode*   t_node_copy            (GNode            *node);
-GNode*	 t_node_insert		(GNode		  *parent,
-				 gint		   position,
-				 GNode		  *node);
-GNode*	 t_node_insert_before	(GNode		  *parent,
-				 GNode		  *sibling,
-				 GNode		  *node);
-GNode*   t_node_insert_after    (GNode            *parent,
-				 GNode            *sibling,
-				 GNode            *node); 
-GNode*	 t_node_prepend		(GNode		  *parent,
-				 GNode		  *node);
-guint	 t_node_n_nodes		(GNode		  *root,
-				 GTraverseFlags	   flags);
-GNode*	 t_node_get_root	(GNode		  *node);
-gboolean t_node_is_ancestor	(GNode		  *node,
-				 GNode		  *descendant);
-guint	 t_node_depth		(GNode		  *node);
-GNode*	 t_node_find		(GNode		  *root,
-				 GTraverseType	   order,
-				 GTraverseFlags	   flags,
-				 gpointer	   data);
+TNode*	 t_node_new		(tpointer	   data);
+void	 t_node_destroy		(TNode		  *root);
+void	 t_node_unlink		(TNode		  *node);
+TNode*   t_node_copy            (TNode            *node);
+TNode*	 t_node_insert		(TNode		  *parent,
+				 tint		   position,
+				 TNode		  *node);
+TNode*	 t_node_insert_before	(TNode		  *parent,
+				 TNode		  *sibling,
+				 TNode		  *node);
+TNode*   t_node_insert_after    (TNode            *parent,
+				 TNode            *sibling,
+				 TNode            *node); 
+TNode*	 t_node_prepend		(TNode		  *parent,
+				 TNode		  *node);
+tuint	 t_node_n_nodes		(TNode		  *root,
+				 TTraverseFlags	   flags);
+TNode*	 t_node_get_root	(TNode		  *node);
+tboolean t_node_is_ancestor	(TNode		  *node,
+				 TNode		  *descendant);
+tuint	 t_node_depth		(TNode		  *node);
+TNode*	 t_node_find		(TNode		  *root,
+				 TTraverseType	   order,
+				 TTraverseFlags	   flags,
+				 tpointer	   data);
 
 /* convenience macros */
 #define t_node_append(parent, node)				\
@@ -129,45 +129,45 @@ GNode*	 t_node_find		(GNode		  *root,
  * this function is just a high level interface to
  * low level traversal functions, optimized for speed.
  */
-void	 t_node_traverse	(GNode		  *root,
-				 GTraverseType	   order,
-				 GTraverseFlags	   flags,
-				 gint		   max_depth,
-				 GNodeTraverseFunc func,
-				 gpointer	   data);
+void	 t_node_traverse	(TNode		  *root,
+				 TTraverseType	   order,
+				 TTraverseFlags	   flags,
+				 tint		   max_depth,
+				 TNodeTraverseFunc func,
+				 tpointer	   data);
 
 /* return the maximum tree height starting with `node', this is an expensive
  * operation, since we need to visit all nodes. this could be shortened by
- * adding `guint height' to struct _GNode, but then again, this is not very
+ * adding `tuint height' to struct _TNode, but then again, this is not very
  * often needed, and would make t_node_insert() more time consuming.
  */
-guint	 t_node_max_height	 (GNode *root);
+tuint	 t_node_max_height	 (TNode *root);
 
-void	 t_node_children_foreach (GNode		  *node,
-				  GTraverseFlags   flags,
-				  GNodeForeachFunc func,
-				  gpointer	   data);
-void	 t_node_reverse_children (GNode		  *node);
-guint	 t_node_n_children	 (GNode		  *node);
-GNode*	 t_node_nth_child	 (GNode		  *node,
-				  guint		   n);
-GNode*	 t_node_last_child	 (GNode		  *node);
-GNode*	 t_node_find_child	 (GNode		  *node,
-				  GTraverseFlags   flags,
-				  gpointer	   data);
-gint	 t_node_child_position	 (GNode		  *node,
-				  GNode		  *child);
-gint	 t_node_child_index	 (GNode		  *node,
-				  gpointer	   data);
+void	 t_node_children_foreach (TNode		  *node,
+				  TTraverseFlags   flags,
+				  TNodeForeachFunc func,
+				  tpointer	   data);
+void	 t_node_reverse_children (TNode		  *node);
+tuint	 t_node_n_children	 (TNode		  *node);
+TNode*	 t_node_nth_child	 (TNode		  *node,
+				  tuint		   n);
+TNode*	 t_node_last_child	 (TNode		  *node);
+TNode*	 t_node_find_child	 (TNode		  *node,
+				  TTraverseFlags   flags,
+				  tpointer	   data);
+tint	 t_node_child_position	 (TNode		  *node,
+				  TNode		  *child);
+tint	 t_node_child_index	 (TNode		  *node,
+				  tpointer	   data);
 
-GNode*	 t_node_first_sibling	 (GNode		  *node);
-GNode*	 t_node_last_sibling	 (GNode		  *node);
+TNode*	 t_node_first_sibling	 (TNode		  *node);
+TNode*	 t_node_last_sibling	 (TNode		  *node);
 
 #define	 t_node_prev_sibling(node)	((node) ? \
-					 ((GNode*) (node))->prev : NULL)
+					 ((TNode*) (node))->prev : NULL)
 #define	 t_node_next_sibling(node)	((node) ? \
-					 ((GNode*) (node))->next : NULL)
+					 ((TNode*) (node))->next : NULL)
 #define	 t_node_first_child(node)	((node) ? \
-					 ((GNode*) (node))->children : NULL)
+					 ((TNode*) (node))->children : NULL)
 
-#endif /* __G_NODE_H__ */
+#endif /* __T_NODE_H__ */

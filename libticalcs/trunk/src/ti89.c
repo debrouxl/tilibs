@@ -309,11 +309,11 @@ int ti89_recv_backup(const char *filename, int mask_mode)
   // Receive all variables, except FLASH apps
   i_max = t_node_n_children(vars);
   for (i = 0; i < i_max; i++) {
-    GNode *parent = t_node_nth_child(vars, i);
+    TNode *parent = t_node_nth_child(vars, i);
 
     j_max = t_node_n_children(parent);
     for (j = 0; j < j_max; j++) {
-      GNode *node = t_node_nth_child(parent, j);
+      TNode *node = t_node_nth_child(parent, j);
 
       TiVarEntry *ve = (TiVarEntry *) (node->data);
 

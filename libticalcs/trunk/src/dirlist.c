@@ -31,7 +31,7 @@
 #include "tnode.h"
 
 
-static gboolean free_varentry(GNode * node, gpointer data)
+static tboolean free_varentry(TNode * node, tpointer data)
 {
   if (node)
     free(node->data);
@@ -41,7 +41,7 @@ static gboolean free_varentry(GNode * node, gpointer data)
 TIEXPORT void TICALL ticalc_dirlist_destroy(TNode ** tree)
 {
   if (*tree != NULL) {
-    t_node_traverse(*tree, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+    t_node_traverse(*tree, T_IN_ORDER, T_TRAVERSE_ALL, -1,
 		    free_varentry, NULL);
     t_node_destroy(*tree);
     *tree = NULL;
@@ -60,7 +60,7 @@ static void dirlist_display_vars(TNode * tree)
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
-    GNode *parent = t_node_nth_child(vars, i);
+    TNode *parent = t_node_nth_child(vars, i);
     TiVarEntry *fe = (TiVarEntry *) (parent->data);
 
     if (fe != NULL) {
@@ -82,7 +82,7 @@ static void dirlist_display_vars(TNode * tree)
 
     for (j = 0; j < t_node_n_children(parent); j++)	//parse variables
     {
-      GNode *child = t_node_nth_child(parent, j);
+      TNode *child = t_node_nth_child(parent, j);
       TiVarEntry *ve = (TiVarEntry *) (child->data);
 
       DISPLAY("| ");
@@ -119,7 +119,7 @@ static void dirlist_display_apps(TNode * tree)
   DISPLAY("+------------------+----------+----+----+----------+\n");
 
   for (i = 0; i < t_node_n_children(apps); i++) {
-    GNode *child = t_node_nth_child(apps, i);
+    TNode *child = t_node_nth_child(apps, i);
 
     TiVarEntry *ve = (TiVarEntry *) (child->data);
 
@@ -221,7 +221,7 @@ TIEXPORT TiVarEntry *TICALL ticalc_check_if_var_exists(TNode * tree,
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
-    GNode *parent = t_node_nth_child(vars, i);
+    TNode *parent = t_node_nth_child(vars, i);
     TiVarEntry *fe = (TiVarEntry *) (parent->data);
 
     if ((fe != NULL) && strcmp(fe->name, fldname))
@@ -229,7 +229,7 @@ TIEXPORT TiVarEntry *TICALL ticalc_check_if_var_exists(TNode * tree,
 
     for (j = 0; j < t_node_n_children(parent); j++)	//parse variables
     {
-      GNode *child = t_node_nth_child(parent, j);
+      TNode *child = t_node_nth_child(parent, j);
       TiVarEntry *ve = (TiVarEntry *) (child->data);
 
       if (!strcmp(ve->name, varname))
@@ -261,7 +261,7 @@ TIEXPORT TiVarEntry *TICALL ticalc_check_if_app_exists(TNode * tree,
   }
 
   for (i = 0; i < t_node_n_children(apps); i++) {
-    GNode *child = t_node_nth_child(apps, i);
+    TNode *child = t_node_nth_child(apps, i);
 
     TiVarEntry *ve = (TiVarEntry *) (child->data);
 
@@ -295,7 +295,7 @@ TIEXPORT int TICALL ticalc_dirlist_numvars(TNode * tree)
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
-    GNode *parent = t_node_nth_child(vars, i);
+    TNode *parent = t_node_nth_child(vars, i);
 
     for (j = 0; j < t_node_n_children(parent); j++)	//parse variables
     {
@@ -323,11 +323,11 @@ TIEXPORT int TICALL ticalc_dirlist_memused(TNode * tree)
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
-    GNode *parent = t_node_nth_child(vars, i);
+    TNode *parent = t_node_nth_child(vars, i);
 
     for (j = 0; j < t_node_n_children(parent); j++)	//parse variables
     {
-      GNode *child = t_node_nth_child(parent, j);
+      TNode *child = t_node_nth_child(parent, j);
       TiVarEntry *ve = (TiVarEntry *) (child->data);
 
       mem += ve->size;
@@ -383,24 +383,29 @@ int tixx_directorylist2(TNode ** vars, TNode ** apps, uint32_t * memory)
   TNode *var_node, *app_node;
   int err;
 
-  *vars = t_node_new("Variables");
-  *apps = t_node_new("Applications");
-
+  // Get old directory list
   err = tcf->directorylist(&tree, memory);
   if (err) {
     *vars = *apps = NULL;
     return err;
   }
 
-  var_node = *vars = t_node_nth_child(tree, 0);
-  var_node->data = VAR_NODE_NAME;
+  // Get Vars tree
+  var_node = t_node_nth_child(tree, 0);
+  var_node->data = strdup(VAR_NODE_NAME); // so that it can be freed !
 
-  app_node = *apps = t_node_nth_child(tree, 1);
-  app_node->data = APP_NODE_NAME;
+  // Get Apps tree
+  app_node = t_node_nth_child(tree, 1);
+  app_node->data = strdup(APP_NODE_NAME);
 
+  // Split trees
   t_node_unlink(var_node);
   t_node_unlink(app_node);
   t_node_destroy(tree);
+
+  // Returns new trees
+  *vars = var_node;
+  *apps = app_node;
 
   return 0;
 }
