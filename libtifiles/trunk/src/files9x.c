@@ -384,6 +384,11 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
     }
     fread(content->data_part, content->data_length, 1, f);
 
+	if((content->data_part[0x05] & 0x60) == 0x20)
+		content->device_type = DEVICE_TYPE_89;	// internal ROM
+	else
+		content->device_type = DEVICE_TYPE_92P;	// external ROM
+
     content->next = NULL;
   } else {
     long file_size;
