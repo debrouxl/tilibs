@@ -20,19 +20,23 @@
 #define __CALC_EXTERN__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
 #if defined(HAVE_TILP_MACROS_H) && !defined(__MACOSX__)
-#include <tilp/cabl_int.h>
-#include <tilp/intl.h>
+# include <tilp/cabl_int.h>
+# include <tilp/intl.h>
+//#include <tilp/verbose.h>
 #elif defined(HAVE_TILP_MACROS_H) && defined(__MACOSX__)
-#include <libticables/cabl_int.h>
-#include <libticables/intl.h>
+# include <libticables/cabl_int.h>
+# include <libticables/intl.h>
+//#include <libticables/verbose.h>
 #else
-#include "cabl_int.h"
-#include "intl2.h"
+# include "cabl_int.h"
+# include "intl2.h"
+//#include "verbose.h"
 #endif
+
 #include "calc_def.h"
 
 /*

@@ -187,7 +187,7 @@ const char *TI92p_EXT[TI92p_MAXTYPES]=
 "9Xe", "unknown", "unknown", "unknown", "9Xl", "unknown", "9Xm", "unknown",
 "unknown", "unknown", "9Xc", "9Xt", "9Xs", "9Xd", "9Xa", "unknown",
 "9Xi", "unknown", "9Xp", "9Xf", "9Xx", "unknown", "unknown", "unknown", 
-"unknown", "unknown", "unknown", "unknown", "unknown", "9Xb", "unknown", "unknown",
+"unknown", "unknown", "unknown", "unknown", "9Xy", "9Xb", "unknown", "unknown",
 "unknown", "9Xz", "unknown", "unknown", "9Xk", "unknown", "unknown", "unknown",
 "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"
 };
@@ -521,9 +521,10 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   struct varinfo *q, *tmp;
   byte num_var;
 
+
   TRY(cable->open());
+  update_start();
   *n_elts=0;
-  update->start();
   p=list;
   f=NULL;
   p->folder=f;
@@ -576,25 +577,19 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   TRY(cable->get(&data));
   var_size |= (data << 24);
   sum+=data;
-  //list->varsize=var_size;
-  //  DISPLAY("Size of the var in memory: %08X.\n", var_size);
   TRY(cable->get(&data));
   list->vartype=data;
   sum+=data;
-  //  DISPLAY("Ty: %02X\n", data);
   TRY(cable->get(&data));
   name_length=data;
   sum+=data;
-  //  DISPLAY("Current directory: ");
   for(i=0; i<name_length; i++)
     {
       TRY(cable->get(&data));
       var_name[i]=data;
       sum+=data;
-      //      DISPLAY("%c", data);
     }
   var_name[i]='\0';
-  //  DISPLAY("\n");
   strcpy(list->varname, var_name);
   strncpy(list->translate, list->varname, 9);
   list->folder=NULL;
@@ -650,6 +645,8 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       var_type=data;
       sum+=data;
       p->vartype=var_type;
+      if(p->vartype == TI92p_FLASH)
+        p->is_folder = VARIABLE;
       TRY(cable->get(&data));
       locked=data;
       sum+=data;
@@ -669,10 +666,9 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       sum+=data;
       p->varsize=var_size;
       DISPLAY("Name: %8s | ", var_name);
-      DISPLAY("Type: %8s\n", ti92p_byte2type(var_type));
-      //      DISPLAY("Type: %8s | ", ti92p_byte2type(var_type));
-      //      DISPLAY("Locked: %i | ", locked);
-      //      DISPLAY("Size: %08X\n", var_size);
+      DISPLAY("Type: %8s | ", ti92p_byte2type(var_type));
+      DISPLAY("Locked: %i | ", locked);
+      DISPLAY("Size: %08X\n", var_size);
       p->folder=p;
     }
   TRY(cable->get(&data));
@@ -685,14 +681,14 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   sprintf(update->label_text, "Reading of directory: %s", 
 	   p->translate);
   update->label();
-  if(update->cancel) return -1;
+  if(update->cancel) return ERR_ABORT;
   
   TRY(cable->get(&data));
-  if(data != TI92p_PC) return 9;
+  if(data != TI92p_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   TRY(cable->get(&data));
   TRY(cable->get(&data));
-  DISPLAY("The calculator do not want continue.\n");
+  DISPLAY("The calculator does not want to continue.\n");
 
   TRY(PC_replyOK_92p());
 
@@ -702,6 +698,11 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   do
     {
       tmp=q->next;
+      if(q->vartype == TI92p_FLASH) {
+        q=tmp;
+        continue;
+      }
+
       DISPLAY("Requesting local directory list in %8s...\n", q->varname);
       p=q;
       num_var=0;
@@ -726,7 +727,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       TRY(cable->put(data));
       TRY(ti92p_sendstring(q->varname, &sum));
       TRY(cable->put(LSB(sum)));
-		TRY(cable->put(MSB(sum)));
+      TRY(cable->put(MSB(sum)));
 
       TRY(ti92p_isOK());
 
@@ -795,6 +796,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       block_size-=14;
       for(j=0; j<block_size/14; j++)
 	{ 
+	  TicalcVarInfo *old = q;
 	  if( (q->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
 	    {
 	      fprintf(stderr, "Unable to allocate memory.\n");
@@ -803,7 +805,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  q=q->next;
 	  (*n_elts)++;
 	  num_var++;
-	  //strcpy(p->varname, "");
+
 	  q->is_folder = VARIABLE;
 	  
 	  for(i=0; i<8; i++)
@@ -837,17 +839,24 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  //	  var_size |= (data << 24);
 	  sum+=data;
 	  q->varsize=var_size;
+
+	  /* if FLASH type, discards it */
+          if(q->vartype == TI92p_FLASH) {
+            free(q);
+            q = old;
+            continue;
+          }
+
 	  DISPLAY("Name: %8s | ", var_name);
 	  DISPLAY("Type: %8s | ", ti92p_byte2type(var_type));
 	  DISPLAY("Attr: %i | ", locked);
 	  DISPLAY("Size: %08X\n", var_size);
-	  if((q->is_folder == VARIABLE) && (q->vartype != TI92p_FLASH))
-	    list->varsize += var_size;
+	  list->varsize += var_size;
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: %s/%s", 
 		   (q->folder)->translate, q->translate);
 	  update->label();
-	  if(update->cancel) return -1;
+	  if(update->cancel) return ERR_ABORT;
 	}
       TRY(cable->get(&data));
       checksum=data;
@@ -858,7 +867,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       TRY(PC_replyOK_92p());
       
       TRY(cable->get(&data));
-      if(data != TI92p_PC) return 9;
+      if(data != TI92p_PC) return ERR_INVALID_BYTE;
       TRY(cable->get(&data));
       TRY(cable->get(&data));
       TRY(cable->get(&data));
@@ -872,8 +881,8 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
     }
   while(q != NULL);
   DISPLAY("\n");
-  update->start();
   TRY(cable->close());
+
 
   return 0;
 }
@@ -1849,6 +1858,35 @@ int ti92p_get_idlist(char *id)
   return 0;
 }
 
+static int search_for_string(FILE *f, char *token)
+{
+  long pos;
+  int i, n;
+  int j, k;
+  char buffer[65536];
+
+  pos = ftell(f);
+  n = fread(buffer, sizeof(char), 65536*sizeof(char), f);
+
+  // scan for token in the file
+  for(i=0; i<n-strlen(token); i++) {
+    for(j=0, k=0; j<strlen(token); j++) {
+      if(buffer[i+j] == token[j]) {
+        k++;
+      }
+    }
+
+    if(k==strlen(token)) {
+      //printf("offset = %i = 0x%04x\n", i+pos, i+pos);
+      fseek(f, pos, SEEK_SET);
+      return !0;
+    }
+  }
+
+  fseek(f, pos, SEEK_SET);
+  return 0;
+}
+
 int ti92p_send_flash(FILE *file, int mask_mode)
 {
   byte data;
@@ -1864,8 +1902,9 @@ int ti92p_send_flash(FILE *file, int mask_mode)
   char date[5];
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
+  int quirk = 0;
 
-  //DISPLAY("timeout: %i\n", ticable_get_timeout());  
+
   /* Read the file header and initialize some variables */
   TRY(cable->open());
   update->start();
@@ -1879,6 +1918,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
               j++;
               if(j==strlen(signature))
                 {
+		  DISPLAY("TIB file.\n");
 		  tib = 1;
                   break;
                 }
@@ -1898,7 +1938,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
       
       for(i=0; i<4; i++)
 	date[i] = fgetc(file);
-      DISPLAY("Date of the FLASHapp or License: %02X/%02X/%02X%02X\n", 
+      DISPLAY("Date of the FLASHapp or License or Certificate: %02X/%02X/%02X%02X\n", 
 	      date[0], date[1], date[2], 0xff & date[3]);
       str_size=fgetc(file);
       for(i=0; i<str_size; i++)
@@ -1908,8 +1948,13 @@ int ti92p_send_flash(FILE *file, int mask_mode)
 	fgetc(file);
       flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
 	(LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
-      
-      if(!strcmp(str, "License"))
+
+      // Quirk workaround: some FLASH apps (usually not developped by TI)
+      // replace the 'License' string by their FLASH app name.
+      quirk = search_for_string(file, str);
+      printf("quirk = %i\n", quirk);
+
+      if(!strcmp(str, "License") || quirk)
 	{
 	  DISPLAY("There is a license header: skipped.\n");
 	  for(i=0; i<flash_size; i++)
@@ -1921,7 +1966,31 @@ int ti92p_send_flash(FILE *file, int mask_mode)
 	  for(i=0; i<4; i++) fgetc(file);
 	  for(i=0; i<4; i++)
 	    date[i] = 0xff & fgetc(file);
-	  DISPLAY("Date of the FLASHapp or License: %02X/%02X/%02X%02X\n", 
+	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
+		  date[0], date[1], date[2], 0xff & date[3]);
+	  str_size=fgetc(file);
+	  for(i=0; i<str_size; i++)
+	    str[i]=fgetc(file);
+	  str[i]='\0';
+	  for(i=16+str_size+1; i<0x4A; i++)
+	    fgetc(file);
+	  flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
+	    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
+	} 
+
+      if(!strcmp(str, ""))
+	{
+	  DISPLAY("There is a certificate: skipped (TiLP can not handle certificates).\n");
+	  for(i=0; i<flash_size; i++)
+	    fgetc(file);
+	  
+	  fgets(str, 9, file);
+	  if(strcmp(str, "**TIFL**"))
+	    return ERR_INVALID_FLASH_FILE;
+	  for(i=0; i<4; i++) fgetc(file);
+	  for(i=0; i<4; i++)
+	    date[i] = 0xff & fgetc(file);
+	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
 		  date[0], date[1], date[2], 0xff & date[3]);
 	  str_size=fgetc(file);
 	  for(i=0; i<str_size; i++)
@@ -1944,7 +2013,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
   DISPLAY("\n");
   DISPLAY("Sending FLASH application...\n");
   DISPLAY("FLASH application name: \"%s\"\n", str);
-  DISPLAY("FLASH application/Operating system size: %i bytes.\n", flash_size);
+  DISPLAY("FLASH application/Operating System size: %i bytes.\n", flash_size);
   
   /* Now, read data from the file and send them by block */
   sum=0;

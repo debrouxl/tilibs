@@ -167,23 +167,25 @@ static int sendstring8(char *s, word *checksum)
 }
 #define ti83p_sendstring8 sendstring8
 
-#define TI83p_MAXTYPES 48
+#define TI83p_MAXTYPES 64
 const char *TI83p_TYPES[TI83p_MAXTYPES]=
 {
   "REAL", "LIST", "MATRX", "Y-VAR", "STRNG", "PRGM", "ASM", "PIC", 
   "GDB", "??", "??", "WDW", "CPLX", "??", "??", "WDW",
-  "ZSTO", "TAB", "??", "??", "??", "??", "??", "??",
+  "ZSTO", "TAB", "??", "??", "??", "APPV", "??", "GROUP",
   "??", "??", "??", "??", "??", "??", "??", "??",
-  "??", "??", "??", "AMS", "APPL", "??", "??", "??"
+  "??", "??", "??", "AMS", "APPL", "??", "??", "??",
+  "??", "??", "??", "??", "??", "??", "??", "??",
+  "??", "??", "??", "??", "??", "??", "??", "??",
 };
 
 const char *TI83p_EXT[TI83p_MAXTYPES]=
 {
   "8Xn", "8Xl", "8Xm", "8Xy", "8Xs", "8Xp", "8Xp", "8Xi",
-  "8Xd", "8??", "8??", "8Xw", "8Xc", "8??", "8??", "8Xw",
-  "8Xz", "8Xt", "8??", "8??", "8??", "8??", "8??", "8??",
-  "8??", "8??", "8??", "8??", "8??", "8??", "8??", "8??",
-  "8??", "8??", "8??", "8Xu", "8Xk", "8??", "8??", "8??"
+  "8Xd", "8X?", "8X?", "8Xw", "8Xc", "8X?", "8X?", "8Xw",
+  "8Xz", "8Xt", "8X?", "8X?", "8X?", "8Xv", "8X?", "8Xgrp",
+  "8X?", "8X?", "8X?", "8X?", "8X?", "8X?", "8X?", "8X?",
+  "8X?", "8X?", "8X?", "8Xu", "8Xk", "8X?", "8X?", "8X?",
 };
 /* "82w", "82z", "82t" */
 
@@ -805,16 +807,18 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   TRY(cable->get(&data));
   if(data != 0x0D) return ERR_INVALID_BYTE;
   fprintf(file, "%c", data);
+  file_checksum+=data;
   TRY(cable->get(&data));
   if(data != 0x00) return ERR_INVALID_BYTE;
   fprintf(file, "%c", data);
+  file_checksum+=data;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   var_size=data;
   sum+=data;
-  if(allvars_size+var_size+15 < allvars_size) 
+  if(allvars_size+var_size+15+2 < allvars_size) 
     return ERR_GRP_SIZE_EXCEEDED;
-  allvars_size+=var_size+15;
+  allvars_size+=var_size+15+2;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
   var_size |= (data << 8);
@@ -847,6 +851,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   TRY(cable->get(&data));
   sum+=data;
   fprintf(file, "%c", data);
+  file_checksum+=sum;
 
   TRY(cable->get(&data));
   checksum=data;
@@ -866,10 +871,10 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   if(data != CMD83p_DATA_PART) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  sum+=data;
+  file_checksum+=data;
   TRY(cable->get(&data));
   fprintf(file, "%c", data);
-  sum+=data;
+  file_checksum+=data;
   sum=0;
   update->total = var_size;
   for(i=0; i<var_size; i++)
@@ -883,6 +888,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
       update_pbar();
       if(update->cancel) return ERR_ABORT;
     }
+  file_checksum+=data;
   TRY(cable->get(&data));
   checksum=data;
   TRY(cable->get(&data));
@@ -970,8 +976,8 @@ int ti83p_send_var(FILE *file, int mask_mode)
       if(!strcmp(trans,  "**TI82**") || 
 		  !strcmp(trans, "**TI83**") ||
 		  !strcmp(trans, "**TI85**")) fti83p = 0; else fti83p = 1;
-      //if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
-      //else break;
+      if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
+      else break;
       data=fgetc(file);
       if(feof(file)) break;
       if(data != 0) break;
@@ -1130,10 +1136,10 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
   sprintf(update->label_text, "Receiving...");
   update_label();
   start = time(NULL);
-  total = 256 * 1024;
+  total = 512 * 1024;
   update->total = total;
 
-  for(i=0; i<256; i++)
+  for(i=0; i<512; i++)
     {
       if(b) sum = 0;
       for (j=0; j<1023+b; j++)
@@ -1153,12 +1159,12 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
       if(sum != checksum) return ERR_CHECKSUM;
       TRY(cable->put(0xda));
 
-      update->count = 256;
-      update->main_percentage = (float)i/(256);
+      update->count = 512;
+      update->main_percentage = (float)i/(512);
       if(update->cancel) return ERR_ABORT;
 
       elapsed = (long)difftime(time(NULL), start);
-      estimated = (long)(elapsed * (float)(256) / i);
+      estimated = (long)(elapsed * (float)(512) / i);
       remaining = (long)difftime(estimated, elapsed);
       sprintf(buffer, "%s", ctime(&remaining));
       sscanf(buffer, "%3s %3s %i %s %i", tmp,
@@ -1178,6 +1184,11 @@ int ti83p_get_rom_version(char *version)
   return ERR_VOID_FUNCTION;
 }
 
+/*
+  Note: this function is 'indented' by MSVC.
+  Please don't modify indentation.
+*/
+
 int ti83p_send_flash(FILE *file, int mask_mode)
 {
   byte data;
@@ -1191,10 +1202,11 @@ int ti83p_send_flash(FILE *file, int mask_mode)
   char date[5];
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
-  word page_offset = 0x4000;
-  word page_number = 0x0000;
+  word flash_address;
+  word flash_page;
   byte flag = 0x80;
   byte buf[0x100];
+  int err, old_timeout;
   
   /* Read the file header and initialize some variables */
   //LOCK_TRANSFER();
@@ -1297,25 +1309,12 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 #ifdef TEST	// Display data on screen (and in the console.log file, if console enabled)
 	DISPLAY("!!!\n\n\n");
 
-	ret = j = -1;
-		DISPLAY("result = %i\n", ret);
-		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
-		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
-		DISPLAY("\n");
-
-		DISPLAY("result = %i\n", ret);
-		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
-		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
-		DISPLAY("\n");
-
-
-	read_data_block(file, &page_offset, &page_number, NULL, 0);	// reset block reader
+	read_data_block(file, &flash_address, &flash_page, NULL, 0);	// reset block reader
 	flag = 0x80;
-	j=0;
-	while(1)
-	//for(j=0; j<2; j++)
+	//while(1)
+	for(j=0; /*j<3*/; j++)
 	{
-		ret = read_data_block(file, &page_offset, &page_number, buf, mask_mode);
+		ret = read_data_block(file, &flash_address, &flash_page, buf, mask_mode);
 		if(j == 1) flag = 0x00;			// first block -> FLASH
 		if(ret == 3) flag = 0x80;	// last block -> FLASH
 		if(ret < 0) 
@@ -1328,7 +1327,6 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
 		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
 		DISPLAY("\n");
-		j++;
 	}
 	return -1;
 #endif
@@ -1373,30 +1371,37 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 	TRY(PC_replyOK_83p());
   }
  
-  read_data_block(file, &page_offset, &page_number, NULL, 0);	// reset block reader
+  // reset block reader by passing mode=0
+  read_data_block(file, &flash_address, &flash_page, NULL, 0);
   flag = 0x80; // OS only
   for(i=0; ;i++)
     {
-		ret = read_data_block(file, &page_offset, &page_number, buf, mask_mode);
+		ret = read_data_block(file, &flash_address, &flash_page, buf, mask_mode);
 		if(mask_mode & MODE_AMS)
 		{
-			if(i == 1)
-			{
-				flag = 0x00;			// first block -> FLASH
+			if(i == 0)
+			{	// first block is header
 				DISPLAY("Send OS header information...\n");
 				sprintf(update->label_text, "Send OS header information.");
 				update_label();
+				flag = 0x80;
 			}
-			if(ret == 3)
-			{
-				DISPLAY("Waits that calc displays 'Validating software...'\n");
+			if(i == 1)
+			{	// other blocks are data
 				sprintf(update->label_text, "Waiting...");
 				update_label();
 				PAUSE(1000);			// This pause is REQUIRED !!!
+				sprintf(update->label_text, "Sending data blocks.");
+				update_label();
+				flag = 0x00;
+			}
+			if(ret == 3)
+			{	// last block is signature
 				DISPLAY("Send digital signature...\n");
 				sprintf(update->label_text, "Send digital signature.");
 				update_label();
-				flag = 0x80;			// last block -> FLASH
+				PAUSE(1500);			// This pause is REQUIRED !!!
+				flag = 0x80;
 			}
 		}
 		if(ret < 0)
@@ -1442,17 +1447,17 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 		DISPLAY("flag=%02X\n", flag);
 	  }
       
-      data=LSB(page_offset);	// Page offset
+      data=LSB(flash_address);		// Page address
       TRY(cable->put(data));
       sum+=data;
-      data=MSB(page_offset);
+      data=MSB(flash_address);
       TRY(cable->put(data));
       sum+=data;
       
-      data=LSB(page_number);		// Page number
+      data=LSB(flash_page);		// Page number
       TRY(cable->put(data));
       sum+=data;
-      data=MSB(page_number);
+      data=MSB(flash_page);
       TRY(cable->put(data));
       sum+=data;
       
@@ -1492,10 +1497,19 @@ int ti83p_send_flash(FILE *file, int mask_mode)
       if(update->cancel) return ERR_ABORT;
     }
   
+	DISPLAY("End of transmission.\n");
   TRY(cable->put(PC_TI83p));
   TRY(cable->put(CMD83p_EOT));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
+
+  sprintf(update->label_text, "Waiting validation...");
+  update_label();
+  old_timeout = ticable_get_timeout();
+  ticable_set_timeout(50);
+  err = ti83p_isOK();
+  ticable_set_timeout(old_timeout);
+  TRY(err);
   
   if(mask_mode & MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
@@ -1620,7 +1634,7 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
       
       TRY(ti83p_isOK());
 
-      DISPLAY("Receiving block (page_offset=%04X, page_number=%04X)...\n", 
+      DISPLAY("Receiving block (page_address=%04X, page_number=%04X)...\n", 
 		  page_address, page_number);
       TRY(cable->get(&data));
       if(data != TI83p_PC) return ERR_INVALID_BYTE;
@@ -1847,6 +1861,7 @@ int ti83p_supported_operations(void)
      OPS_DIRLIST |
      OPS_SEND_VARS | OPS_RECV_VARS |
      OPS_SEND_FLASH | OPS_RECV_FLASH |
-     OPS_IDLIST
+     OPS_IDLIST |
+	 OPS_ROMDUMP
      );
 }

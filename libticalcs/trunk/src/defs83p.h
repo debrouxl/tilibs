@@ -66,8 +66,9 @@
 #define TI83p_WDW    0x0F
 #define TI83p_ZSTO   0x10
 #define TI83p_TAB    0x11
-
 #define TI83p_BKUP   0x13
+#define TI83p_APPVAR 0x15
+#define TI83p_GROUP  0x17
 #define TI83p_DIR    0x19
 #define TI83p_AMS    0x23
 #define TI83p_FLASH  0x24

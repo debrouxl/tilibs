@@ -127,7 +127,7 @@ static int ti73_waitdata(byte id, word length)
 // Check whether the TI reply that it is ready
 int ti73_isready(void)
 {
-  LOCK_TRANSFER()
+	LOCK_TRANSFER()
   TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI73));
@@ -1122,6 +1122,11 @@ int ti73_get_rom_version(char *version)
   return ERR_VOID_FUNCTION;
 }
 
+/*
+  Note: this function is 'indented' by MSVC.
+  Please don't modify indentation.
+*/
+
 int ti73_send_flash(FILE *file, int mask_mode)
 {
   byte data;
@@ -1135,10 +1140,11 @@ int ti73_send_flash(FILE *file, int mask_mode)
   char date[5];
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
-  word page_offset = 0x4000;
-  word page_number = 0x0000;
+  word flash_address;
+  word flash_page;
   byte flag = 0x80;
   byte buf[0x100];
+  int err, old_timeout;
   
   /* Read the file header and initialize some variables */
   LOCK_TRANSFER()
@@ -1241,25 +1247,12 @@ int ti73_send_flash(FILE *file, int mask_mode)
 #ifdef TEST	// Display data on screen (and in the console.log file, if console enabled)
 	DISPLAY("!!!\n\n\n");
 
-	ret = j = -1;
-		DISPLAY("result = %i\n", ret);
-		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
-		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
-		DISPLAY("\n");
-
-		DISPLAY("result = %i\n", ret);
-		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
-		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
-		DISPLAY("\n");
-
-
-	read_data_block(file, &page_offset, &page_number, NULL, 0);	// reset block reader
+	read_data_block(file, &flash_address, &flash_page, NULL, 0);	// reset block reader
 	flag = 0x80;
-	j=0;
-	while(1)
-	//for(j=0; j<2; j++)
+	//while(1)
+	for(j=0; /*j<3*/; j++)
 	{
-		ret = read_data_block(file, &page_offset, &page_number, buf, mask_mode);
+		ret = read_data_block(file, &flash_address, &flash_page, buf, mask_mode);
 		if(j == 1) flag = 0x00;			// first block -> FLASH
 		if(ret == 3) flag = 0x80;	// last block -> FLASH
 		if(ret < 0) 
@@ -1272,7 +1265,6 @@ int ti73_send_flash(FILE *file, int mask_mode)
 		DISPLAY("%i: flag = 0x%02x\n", j, flag & 0xff);
 		for(i=0; i<block_size; i++) DISPLAY("%02X ", buf[i]);
 		DISPLAY("\n");
-		j++;
 	}
 	return -1;
 #endif
@@ -1317,30 +1309,37 @@ int ti73_send_flash(FILE *file, int mask_mode)
 	TRY(PC_replyOK_73());
   }
  
-  read_data_block(file, &page_offset, &page_number, NULL, 0);	// reset block reader
+    // reset block reader by passing mode=0
+  read_data_block(file, &flash_address, &flash_page, NULL, 0);	// reset block reader
   flag = 0x80; // OS only
   for(i=0; ;i++)
     {
-		ret = read_data_block(file, &page_offset, &page_number, buf, mask_mode);
+		ret = read_data_block(file, &flash_address, &flash_page, buf, mask_mode);
 		if(mask_mode & MODE_AMS)
 		{
-			if(i == 1)
-			{
-				flag = 0x00;			// first block -> FLASH
+			if(i == 0)
+			{	// first block is header
 				DISPLAY("Send OS header information...\n");
 				sprintf(update->label_text, "Send OS header information.");
 				update_label();
+				flag = 0x80;
 			}
-			if(ret == 3)
-			{
-				DISPLAY("Waits that calc displays 'Validating software...'\n");
+			if(i == 1)
+			{	// other blocks are data
 				sprintf(update->label_text, "Waiting...");
 				update_label();
 				PAUSE(1000);			// This pause is REQUIRED !!!
+				sprintf(update->label_text, "Sending data blocks.");
+				update_label();
+				flag = 0x00;
+			}
+			if(ret == 3)
+			{	// last block is signature
 				DISPLAY("Send digital signature...\n");
 				sprintf(update->label_text, "Send digital signature.");
 				update_label();
-				flag = 0x80;			// last block -> FLASH
+				PAUSE(1500);			// This pause is REQUIRED !!!
+				flag = 0x80;
 			}
 		}
 		if(ret < 0)
@@ -1386,17 +1385,17 @@ int ti73_send_flash(FILE *file, int mask_mode)
 		DISPLAY("flag=%02X\n", flag);
 	  }
       
-      data=LSB(page_offset);	// Page offset
+      data=LSB(flash_address);	// Page offset
       TRY(cable->put(data));
       sum+=data;
-      data=MSB(page_offset);
+      data=MSB(flash_address);
       TRY(cable->put(data));
       sum+=data;
       
-      data=LSB(page_number);		// Page number
+      data=LSB(flash_page);		// Page number
       TRY(cable->put(data));
       sum+=data;
-      data=MSB(page_number);
+      data=MSB(flash_page);
       TRY(cable->put(data));
       sum+=data;
       
@@ -1436,12 +1435,20 @@ int ti73_send_flash(FILE *file, int mask_mode)
       if(update->cancel) return ERR_ABORT;
     }
   
+	DISPLAY("End of transmission.\n");
   TRY(cable->put(PC_TI73));
   TRY(cable->put(CMD73_EOT));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
+
+  sprintf(update->label_text, "Waiting validation...");
+  update_label();
+  old_timeout = ticable_get_timeout();
+  ticable_set_timeout(50);
+  err = ti73_isOK();
+  ticable_set_timeout(old_timeout);
+  TRY(err);
   
-  TRY(ti73_isOK());
   if(mask_mode & MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
   else if(mask_mode & MODE_AMS)

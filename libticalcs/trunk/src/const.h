@@ -33,8 +33,8 @@ extern "C" {
   const int   TICALL ticalc_folder_type(int calc_type);
   const int   TICALL ticalc_flash_type(int calc_type);
 
-const struct ti_key ti89_keys(unsigned char ascii_code);
-const struct ti_key ti92_keys(unsigned char ascii_code);
+  const struct ti_key ti89_keys(unsigned char ascii_code);
+  const struct ti_key ti92_keys(unsigned char ascii_code);
 
 #ifdef __cplusplus
 }

@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #include "calc_err.h"
 #include "calc_ext.h"

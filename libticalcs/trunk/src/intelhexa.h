@@ -19,10 +19,10 @@
 #ifndef INTELHEXA_H
 #define INTELHEXA_H
 
-int read_data_block(FILE *f, word *page_address, word *page_number, 
+int read_data_block(FILE *f, word *flash_address, word *flash_page, 
 		    byte *data, int mode);
 
-int write_data_block(FILE *f, word page_address, word page_number, 
+int write_data_block(FILE *f, word flash_address, word flash_page, 
 		     byte *data, int mode);
 
 #endif

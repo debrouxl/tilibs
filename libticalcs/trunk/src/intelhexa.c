@@ -22,6 +22,11 @@
 #include "calc_ext.h"
 #include "calc_def.h"
 
+/*
+  Note: this file is 'indented' by MSVC.
+  Please don't modify indentation.
+*/
+
 static byte read_byte(FILE *f)
 {
   int b;
@@ -77,30 +82,34 @@ static int read_intel_packet(FILE *f, int *n, word *addr,
 
 /*
 	Read a data block from FLASH file
-	- addr: the address of block
+	- flash_address: the address of FLASH block to send
+	- flash_page: the page number to send
 	- data: the buffer where data are placed, eventually completed with 0x00
 	- mode: App or Os. A null value reset internal values.
 	Return a negative value if error, a positive value (the same as read_intel_packet).
 */
-int read_data_block(FILE *f, word *page_address, word *page_number, 
+int read_data_block(FILE *f, word *flash_address, word *flash_page, 
 		    byte *data, int mode)
 {
 	static word offset = 0x0000;
+	static word pnumber = 0x00;
 	int ret = 0;
 	int i, k;
 	int n;
-	int bytes_to_read=0x80;	//number of bytes to read (usually 0x80 or 0x100)
+	int bytes_to_read;
 
 	if(mode & MODE_APPS)
 		bytes_to_read = 0x80;
 	else if(mode & MODE_AMS)
 		bytes_to_read = 0x100;
+	else
+		return -1;
 
-	if(!((mode & MODE_APPS) || (mode & MODE_AMS)))
+	if(mode == 0)
 	{	// reset page_offset & index
 		offset = 0x0000;
-		*page_address = 0x0000;
-		*page_number = 0x0000;
+		*flash_address = 0x0000;
+		*flash_page = pnumber = 0x00;
 		return 0;
 	}
 
@@ -116,14 +125,16 @@ int read_data_block(FILE *f, word *page_address, word *page_number,
 		if(type == 2)											// special block
 		{
 			offset = 0x4000;
-			*page_number = (buf[0] << 8) | buf[1];
+			*flash_page = pnumber = (buf[0] << 8) | buf[1];
 			ret = read_intel_packet(f, &n, &addr, &type, buf);	// get a data block
 		}
 
 		if( (type == 1) || (type == 3) )						// final block
 		{	// fill up to end
 			offset = 0x0000;
-			*page_number = 0x0000;
+			if( (mode & MODE_AMS) && (type == 3) )
+				pnumber = 0x00;
+			*flash_page = pnumber;
 			if(i == 0)			// no need to complete block
 			{ 
 				if(type == 3)
@@ -132,7 +143,7 @@ int read_data_block(FILE *f, word *page_address, word *page_number,
 			else
 			{
 				n = bytes_to_read - i;
-				DISPLAY("-> filling block: %i %i\n", i, n);
+				DISPLAY("-> filling block: %i bytes read, %i bytes added\n", i, n);
 				for(k=i; k<bytes_to_read; k++) data[k] = 0x00;
 				return type;
 			}
@@ -143,13 +154,16 @@ int read_data_block(FILE *f, word *page_address, word *page_number,
 
 			if(i==0)			// first loop: compute address of block
 			{	
-				if(mode & MODE_APPS)
-					*page_address = addr;
-				else
-					*page_address = (addr % 0x4000) + offset;
-
-				DISPLAY("offset = %04X, page_address = %04X, page_number = %04X\n", 
-					offset, *page_address, *page_number);
+				if(mode & MODE_APPS) {
+					*flash_address = addr;
+					DISPLAY("FLASH address = %04X, FLASH page = %02X\n", 
+					*flash_address, *flash_page);
+				}
+				else {
+					*flash_address = (addr % 0x4000) + offset;
+					DISPLAY("FLASH address = %04X (%04X mod 4000 + %04X), FLASH page = %02X\n", 
+					*flash_address, addr, offset, *flash_page);
+				}
 			} 
 		}
 	}
@@ -204,7 +218,7 @@ static int write_intel_packet(FILE *f, int n, word addr,
 	- mode: used for telling end of file
 	Return a negative value if error, 0 otherwise.
 */
-int write_data_block(FILE *f, word page_address, word page_number, 
+int write_data_block(FILE *f, word flash_address, word flash_page, 
 		     byte *data, int mode)
 {
 	static word pn = 0xffff;
@@ -218,9 +232,9 @@ int write_data_block(FILE *f, word page_address, word page_number,
 		return write_intel_packet(f, 0, 0x0000, 0x01, data);
 
 	// Write page number
-	if(pn != page_number)
+	if(pn != flash_page)
 	{
-		pn = page_number;
+		pn = flash_page;
 		buf[0] = MSB(pn);
 		buf[1] = LSB(pn);
 		write_intel_packet(f, 2, 0x0000, 0x02, buf);
@@ -229,7 +243,7 @@ int write_data_block(FILE *f, word page_address, word page_number,
 	// Write data block
 	for(i=0; i<bytes_to_write; i+=32)
 	{
-	  write_intel_packet(f, 32, page_address+i, 0x00, data+i);
+	  write_intel_packet(f, 32, flash_address+i, 0x00, data+i);
 	}
 		
 	return ret;

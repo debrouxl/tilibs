@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 34;
+	objectVersion = 38;
 	objects = {
 		0127D0C7017389D15041E0CA = {
 			isa = PBXFileReference;
@@ -982,11 +982,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.3.1</string>
+	<string>3.3.7</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.3.1</string>
+	<string>3.3.7</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -1043,7 +1043,6 @@
 				F50EF842021BFC6E01041594,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
 		};
 		0867D69EFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -1051,7 +1050,6 @@
 				089C1668FE841158C02AAC07,
 			);
 			isa = PBXResourcesBuildPhase;
-			name = "Bundle Resources";
 		};
 		0867D69FFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -1074,7 +1072,6 @@
 				F50EF840021BFC5801041594,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
 		};
 		0867D6A0FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
@@ -1082,14 +1079,12 @@
 				04DE224C01723FD35041E0CA,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
 		};
 		0867D6A2FE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
 		};
 		089C1665FE841158C02AAC07 = {
 			children = (

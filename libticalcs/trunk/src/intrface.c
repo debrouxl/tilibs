@@ -23,8 +23,6 @@
 #include <windows.h>
 #endif
 
-#include <string.h>
-
 #include "intl2.h"
 #include "calc_ext.h"
 #include "tixx.h"

@@ -21,7 +21,9 @@
 #include "defsxx.h"
 #include "calc_ext.h"
 #include "calc_err.h"
+#ifndef __WIN32__
 #include "calc_int.h"
+#endif
 
 #include "defs73.h"
 #include "defs83p.h"
@@ -347,7 +349,8 @@ TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
   int ct;
 
   ticalc_get_calc(&ct);
-  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && (ct != CALC_TI73) && (ct != CALC_TI83P) )
+  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && 
+      (ct != CALC_TI73) && (ct != CALC_TI83P) )
     return 0;
   
   TRY(cable->open());
@@ -357,7 +360,7 @@ TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
 
-  TRY(cable->get(&data));	// 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
+  TRY(cable->get(&data)); // 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
   //DISPLAY("isOK_1: 0x%02X\n", data);
   switch(data)
   {
@@ -375,7 +378,8 @@ TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
       return ERR_NOT_READY;
 
   DISPLAY("The calculator is ready.\n");
-  DISPLAY("Calculator type: %s\n", (*calc_type==CALC_TI83P)?"TI83+":(*calc_type==CALC_TI89)?"TI89":"TI92+");
+  DISPLAY("Calculator type: %s\n", (*calc_type==CALC_TI83P)?"TI83+":
+	  (*calc_type==CALC_TI89)?"TI89":"TI92+");
 
   return 0;
 }

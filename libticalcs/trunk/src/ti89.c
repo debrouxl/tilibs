@@ -187,7 +187,7 @@ const char *TI89_EXT[TI89_MAXTYPES]=
 "89e", "unknown", "unknown", "unknown", "89l", "unknown", "89m", "unknown",
 "unknown", "unknown", "89c", "89t", "89s", "89d", "89a", "unknown",
 "89i", "unknown", "89p", "89f", "89x", "unknown", "unknown", "unknown",
-"unknown", "unknown", "unknown", "unknown", "unknown", "89b", "unknown", "unknown",
+"unknown", "unknown", "unknown", "unknown", "89y", "89b", "unknown", "unknown",
 "unknown", "89z", "unknown", "unknown", "89k", "unknown", "unknown", "unknown",
 "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown", "unknown"
 };
@@ -273,6 +273,8 @@ int ti89_send_key(word key)
   TRY(ti89_isOK());
   TRY(cable->close());
   //UNLOCK_TRANSFER();
+
+  fprintf(stderr, "DEBUG: key %d (0x%x LSB: 0x%x MSB: 0x%x)\n", key, key, LSB(key), MSB(key));
 
   return 0;
 }
@@ -544,7 +546,6 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   TRY(cable->open());
   update_start();
   *n_elts=0;
-  (update->percentage)=0.0;
   p=list;
   f=NULL;
   p->folder=f;
@@ -597,25 +598,19 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   TRY(cable->get(&data));
   var_size |= (data << 24);
   sum+=data;
-  //list->varsize=var_size;
-    //DISPLAY("Mem: %08X.\n", var_size);
   TRY(cable->get(&data));
   list->vartype=data;
   sum+=data;
-  //  DISPLAY("Ty: %02X\n", data);
   TRY(cable->get(&data));
   name_length=data;
   sum+=data;
-  //  DISPLAY("Current directory: ");
   for(i=0; i<name_length; i++)
     {
       TRY(cable->get(&data));
       var_name[i]=data;
       sum+=data;
-      //DISPLAY("%c", data);
     }
   var_name[i]='\0';
-  //  DISPLAY("\n");
   strcpy(list->varname, var_name);
   strncpy(list->translate, list->varname, 9);
   list->folder=NULL;
@@ -671,6 +666,8 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
       var_type=data;
       sum+=data;
       p->vartype=var_type;
+      if(p->vartype == TI89_FLASH)
+	p->is_folder = VARIABLE;
       TRY(cable->get(&data));
       locked=data;
       sum+=data;
@@ -690,10 +687,9 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
       sum+=data;
       p->varsize=var_size;
       DISPLAY("Name: %8s | ", var_name);
-      DISPLAY("Type: %8s\n", ti89_byte2type(var_type));
-      //      DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
-      //      DISPLAY("Locked: %i | ", locked);
-      //      DISPLAY("Size: %08X\n", var_size);
+      DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
+      DISPLAY("Locked: %i | ", locked);
+      DISPLAY("Size: %08X\n", var_size);
       p->folder=p;
     }
   TRY(cable->get(&data));
@@ -723,6 +719,11 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   do
     {
       tmp=q->next;
+      if(q->vartype == TI89_FLASH) {
+	q=tmp;
+	continue;
+      }
+
       DISPLAY("Requesting local directory list in %8s...\n", q->varname);
       p=q;
       num_var=0;
@@ -816,6 +817,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
       block_size-=14;
       for(j=0; j<block_size/14; j++)
 	{ 
+	  TicalcVarInfo *old = q;
 	  if( (q->next=(struct varinfo *)malloc(sizeof(struct varinfo))) == NULL)
 	    {
 	      fprintf(stderr, "Unable to allocate memory.\n");
@@ -824,7 +826,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
 	  q=q->next;
 	  (*n_elts)++;
 	  num_var++;
-	  //strcpy(p->varname, "");
+
 	  q->is_folder = VARIABLE;
 	  
 	  for(i=0; i<8; i++)
@@ -858,14 +860,19 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
 	  //	  var_size |= (data << 24);
 	  sum+=data;
 	  q->varsize=var_size;
+
+	  /* if FLASH type, discards it */
+	  if(q->vartype == TI89_FLASH) {
+	    free(q);
+	    q = old;
+	    continue;
+	  }
+
 	  DISPLAY("Name: %8s | ", var_name);
 	  DISPLAY("Type: %8s | ", ti89_byte2type(var_type));
 	  DISPLAY("Attr: %i | ", locked);
 	  DISPLAY("Size: %08X\n", var_size);
-	  if((q->is_folder == VARIABLE) && (q->vartype != TI89_FLASH))
-	  {
-	    list->varsize += var_size;
-	  }
+	  list->varsize += var_size;
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: %s/%s", 
 		   (q->folder)->translate, q->translate);
@@ -889,13 +896,12 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
       
       TRY(PC_replyOK_89());
 
-      q->next=tmp;
-      q=tmp;
+      q->next = tmp;
+      q = tmp;
       p->varsize=num_var;
     }
   while(q != NULL);
   DISPLAY("\n");
-  (update->percentage)=0.0;
   TRY(cable->close());
   //UNLOCK_TRANSFER();
 
@@ -1751,6 +1757,35 @@ int ti89_get_idlist(char *id)
   return 0;
 }
 
+static int search_for_string(FILE *f, char *token)
+{
+  long pos;
+  int i, n;
+  int j, k;
+  char buffer[65536];
+  
+  pos = ftell(f);
+  n = fread(buffer, sizeof(char), 65536*sizeof(char), f);
+  
+  // scan for token in the file
+  for(i=0; i<n-strlen(token); i++) {
+    for(j=0, k=0; j<strlen(token); j++) {
+      if(buffer[i+j] == token[j]) {
+	k++;
+      }
+    }
+    
+    if(k==strlen(token)) {
+      //printf("offset = %i = 0x%04x\n", i+pos, i+pos);
+      fseek(f, pos, SEEK_SET);
+      return !0;
+    }
+  }
+
+  fseek(f, pos, SEEK_SET);
+  return 0;
+}
+
 int ti89_send_flash(FILE *file, int mask_mode)
 {
   byte data;
@@ -1766,9 +1801,9 @@ int ti89_send_flash(FILE *file, int mask_mode)
   char date[5];
   char *signature = "Advanced Mathematics Software";
   int tib = 0;
+  int quirk = 0;
 
   //LOCK_TRANSFER();
-  //DISPLAY("timeout: %i\n", ticable_get_timeout());  
   /* Read the file header and initialize some variables */
   TRY(cable->open());
   update_start();
@@ -1802,7 +1837,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
       
       for(i=0; i<4; i++)
 	date[i] = fgetc(file);
-      DISPLAY("Date of the FLASHapp or License: %02X/%02X/%02X%02X\n", 
+      DISPLAY("Date of the FLASHapp or License or Certificate: %02X/%02X/%02X%02X\n", 
 	      date[0], date[1], date[2], 0xff & date[3]);
       str_size=fgetc(file);
       for(i=0; i<str_size; i++)
@@ -1813,7 +1848,12 @@ int ti89_send_flash(FILE *file, int mask_mode)
       flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
 	(LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
       
-      if(!strcmp(str, "License"))
+      // Quirk workaround: some FLASH apps (usually not developped by TI) 
+      // replace the 'License' string by their FLASH app name.
+      quirk = search_for_string(file, str);
+      printf("quirk = %i\n", quirk);
+
+      if(!strcmp(str, "License") || quirk)
 	{
 	  DISPLAY("There is a license header: skipped.\n");
 	  for(i=0; i<flash_size; i++)
@@ -1825,7 +1865,31 @@ int ti89_send_flash(FILE *file, int mask_mode)
 	  for(i=0; i<4; i++) fgetc(file);
 	  for(i=0; i<4; i++)
 	    date[i] = 0xff & fgetc(file);
-	  DISPLAY("Date of the FLASHapp or License: %02X/%02X/%02X%02X\n", 
+	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
+		  date[0], date[1], date[2], 0xff & date[3]);
+	  str_size=fgetc(file);
+	  for(i=0; i<str_size; i++)
+	    str[i]=fgetc(file);
+	  str[i]='\0';
+	  for(i=16+str_size+1; i<0x4A; i++)
+	    fgetc(file);	
+	  flash_size=(LSB(fgetc(file)))+(LSB(fgetc(file)) << 8)+
+	    (LSB(fgetc(file)) << 16)+(LSB(fgetc(file)) << 24);
+	} 
+      
+      if(!strcmp(str, ""))
+	{
+	  DISPLAY("There is a certificate: skipped (TiLP can not handle certificates).\n");
+	  for(i=0; i<flash_size; i++)
+	    fgetc(file);
+	  
+	  fgets(str, 9, file);
+	  if(strcmp(str, "**TIFL**"))
+	    return ERR_INVALID_FLASH_FILE;
+	  for(i=0; i<4; i++) fgetc(file);
+	  for(i=0; i<4; i++)
+	    date[i] = 0xff & fgetc(file);
+	  DISPLAY("Date of the FLASHapp: %02X/%02X/%02X%02X\n", 
 		  date[0], date[1], date[2], 0xff & date[3]);
 	  str_size=fgetc(file);
 	  for(i=0; i<str_size; i++)
