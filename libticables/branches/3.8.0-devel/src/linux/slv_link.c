@@ -21,38 +21,36 @@
 
 /* TI-GRAPH LINK USB support (kernel module) */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "intl1.h"
-#include "export.h"
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "printl.h"
-#include "logging.h"
-#include "externs.h"
-#include "timeout.h"
-
 /* 
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
    
    This link cable use Bulk mode with packets. The max size of a packet is 
    32 bytes (MAX_PACKET_SIZE/BULKUSB_MAX_TRANSFER_SIZE). 
    
-   This is transparent for the user because the driver manages all these 
+   This is transparent for the user because the libusb manages all these 
    things for us. Nethertheless, this fact has some consequences:
+
    - it is better (for USB & OS performances) to read/write a set of bytes 
    rather than byte per byte.
+
    - for reading, we have to read up to 32 bytes at a time (even if we need 
-   only 1 byte) and to store them in a buffer for subsequent acesses. 
+   only 1 byte) and to store them in a buffer for subsequent accesses. 
    In fact, if we try and get byte per byte, it will not work.
+
    - for writing, we don't store bytes in a buffer. It seems better to send
-   data byte per byte (latency ?!).
+   data byte per byte (latency ?!). But, this make data-rate significantly 
+   decrease (1KB/s instead of 5KB/s).
+   Another way is to use partially buffered write operations: send consecutive
+   blocks as a whole but partial block byte per byte. This is the best compromise.
+
    - another particular effect (quirk): sometimes (usually when calc need to 
-   reply and takes a while), a read call can returns with no data or timeout. 
-   Simply retry a read call and it works fine.
+   reply and takes a while), a read call can returns with neither data nor timeout. 
+   Simply retry a read call and it works fine. The best example is to get IDLIST.
 */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -65,8 +63,17 @@
 # include <inttypes.h>
 #endif
 
-//#define BUFFERED_W /* enable buffered write operations */ 
-#define BUFFERED_R		/* enable buffered read operations (default) */
+#include "intl1.h"
+#include "export.h"
+#include "cabl_def.h"
+#include "cabl_err.h"
+#include "printl.h"
+#include "logging.h"
+#include "externs.h"
+#include "timeout.h"
+
+//#define BUFFERED_W	/* enable buffered write operations			*/ 
+#define BUFFERED_R		/* enable buffered read operations (always) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
 static int nBytesWrite = 0;
@@ -100,10 +107,6 @@ int slv_init()
 
 int slv_open(void)
 {
-  /* Clear buffers */
-  nBytesRead = 0;
-  nBytesWrite = 0;
-
 #ifdef HAVE_LINUX_TICABLE_H
   {
     int arg = time_out;
@@ -126,8 +129,13 @@ int slv_open(void)
     }
   }
 #endif
-  tdr.count = 0;
-  toSTART(tdr.start);
+
+	/* Reset buffers */
+	nBytesRead = 0;
+	nBytesWrite = 0;
+
+	tdr.count = 0;
+	toSTART(tdr.start);
 
   return 0;
 }
@@ -138,7 +146,8 @@ int slv_put(uint8_t data)
 
   	tdr.count++;
   	LOG_DATA(data);
-#ifndef BUFFERED_W
+
+#if !defiend( BUFFERED_W )
   	/* Byte per uint8_t */
   	ret = write(dev_fd, (void *) (&data), 1);
   	if(ret == -1)
@@ -168,7 +177,7 @@ int slv_get(uint8_t * data)
   	static uint8_t *rBufPtr;
   	int ret;
 
-#ifdef BUFFERED_W
+#if defined( BUFFERED_W )
   	/* Flush write buffer */
   	if (nBytesWrite > 0) {
     		ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);

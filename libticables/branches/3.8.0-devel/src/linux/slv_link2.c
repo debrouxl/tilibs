@@ -21,18 +21,12 @@
 
 /* TI-GRAPH LINK USB support (lib-usb) */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "intl1.h"
-#include "export.h"
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "printl.h"
-#include "logging.h"
-#include "externs.h"
-#include "timeout.h"
+/*********************************/
+/* Linux   : libusb support      */
+/* Author  : Julien BLACHE       */
+/* Contact : jb@technologeek.org */
+/* Date    : 20011126            */
+/*********************************/
 
 /* 
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
@@ -40,20 +34,30 @@
    This link cable use Bulk mode with packets. The max size of a packet is 
    32 bytes (MAX_PACKET_SIZE/BULKUSB_MAX_TRANSFER_SIZE). 
    
-   This is transparent for the user because the driver manages all these 
+   This is transparent for the user because the libusb manages all these 
    things for us. Nethertheless, this fact has some consequences:
+
    - it is better (for USB & OS performances) to read/write a set of bytes 
    rather than byte per byte.
+
    - for reading, we have to read up to 32 bytes at a time (even if we need 
-   only 1 byte) and to store them in a buffer for subsequent acesses. 
+   only 1 byte) and to store them in a buffer for subsequent accesses. 
    In fact, if we try and get byte per byte, it will not work.
+
    - for writing, we don't store bytes in a buffer. It seems better to send
-   data byte per byte (latency ?!).
+   data byte per byte (latency ?!). But, this make data-rate significantly 
+   decrease (1KB/s instead of 5KB/s).
+   Another way is to use partially buffered write operations: send consecutive
+   blocks as a whole but partial block byte per byte. This is the best compromise.
+
    - another particular effect (quirk): sometimes (usually when calc need to 
-   reply and takes a while), a read call can returns with no data or timeout. 
-   Simply retry a read call and it works fine.
+   reply and takes a while), a read call can returns with neither data nor timeout. 
+   Simply retry a read call and it works fine. The best example is to get IDLIST.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -65,9 +69,19 @@
 #else
 # include <inttypes.h>
 #endif
+#include <usb.h>
 
-//#define BUFFERED_W /* enable buffered write operations */ 
-#define BUFFERED_R		/* enable buffered read operations (default) */
+#include "intl1.h"
+#include "export.h"
+#include "cabl_def.h"
+#include "cabl_err.h"
+#include "printl.h"
+#include "logging.h"
+#include "externs.h"
+#include "timeout.h"
+
+#define BUFFERED_W		/* enable buffered write operations			*/ 
+#define BUFFERED_R		/* enable buffered read operations (always) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
 static int nBytesWrite2 = 0;
@@ -77,20 +91,13 @@ static uint8_t wBuf2[MAX_PACKET_SIZE];
 static int nBytesRead2 = 0;
 static uint8_t rBuf2[MAX_PACKET_SIZE];
 
-/*********************************/
-/* Linux   : libusb support      */
-/* Author  : Julien BLACHE       */
-/* Contact : jb@technologeek.org */
-/* Date    : 20011126            */
-/*********************************/
-
-#include <usb.h>
-
 #define TIGL_VENDOR_ID  0x0451	/* Texas Instruments, Inc.        */
 #define TIGL_PRODUCT_ID 0xE001	/* TI-GRAPH LINK USB (SilverLink) */
 
 #define TIGL_BULK_IN    0x81	// 0x81?
 #define TIGL_BULK_OUT   0x02
+
+#define to	(100 * time_out)	// in ms
 
 struct usb_bus *bus = NULL;
 struct usb_device *dev = NULL;
@@ -185,11 +192,8 @@ int slv_open2()
       			return ERR_LIBUSB_OPEN;
   	}
 
-  	/* Flush buffer */
-  	/*
-     	ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-     	MAX_PACKET_SIZE, (time_out * 100));
-   	*/
+  	/* Flush cable buffer */
+  	//ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, 0);
 
 #if !defined(__BSD__)
   	/* Reset endpoints */
@@ -262,24 +266,33 @@ int slv_put2(uint8_t data)
 
   	tdr.count++;
   	LOG_DATA(data);
-#ifndef BUFFERED_W
+
+#if !defined( BUFFERED_W )
   	/* Byte per byte */
-  	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, 100*time_out);
-  	if (ret <= 0) {
-    		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-    		return ERR_WRITE_ERROR;
-  	}
+  	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, to);
+
+	if(ret == -ETIMEDOUT)
+  		return ERR_WRITE_TIMEOUT;
+	else {
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+  		return ERR_WRITE_ERROR;
+	}
 #else
-  	/* Packets (up to 32 bytes) */
+  	/* Fill buffer (up to 32 bytes) */
   	wBuf2[nBytesWrite2++] = data;
+
+	/* Buffer full? Send the whole buffer once */
   	if (nBytesWrite2 == MAX_PACKET_SIZE) {
-	    	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
-			       nBytesWrite2, 100*time_out);
-	    	if (ret <= 0) {
-	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-	      		return ERR_WRITE_ERROR;
-	    	}
-	    	nBytesWrite2 = 0;
+	    	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2, nBytesWrite2, to);
+	    	
+			if(ret == -ETIMEDOUT)
+  				return ERR_WRITE_TIMEOUT;
+			else {
+				printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+  				return ERR_WRITE_ERROR;
+			}
+
+			nBytesWrite2 = 0;
   	}
 #endif
 
@@ -293,24 +306,31 @@ int slv_get2(uint8_t * data)
   	static uint8_t *rBuf2Ptr;
 
   	tdr.count++;
-#ifdef BUFFERED_W
-  	/* Flush write buffer */
+
+#if defined( BUFFERED_W )
+  	/* Flush write buffer but byte per byte (more reliable) */
   	if (nBytesWrite2 > 0) {
-    		ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
-				     nBytesWrite2, 100*timeout);
-	    	nBytesWrite2 = 0;
-	    	if (ret <= 0) {
-	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-	      		return ERR_WRITE_ERROR;
-	    	}
+			int i;
+
+			for(i=0; i<nBytesWrite2; i++)
+			{
+    			ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &wBuf2[i], 1, to);
+
+	    		if(ret == -ETIMEDOUT)
+  					return ERR_WRITE_TIMEOUT;
+				else {
+					printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+  					return ERR_WRITE_ERROR;
+				}
+			}
+			nBytesWrite2 = 0;
   	}
 #endif
 
   	if (nBytesRead2 <= 0) {
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
-					    MAX_PACKET_SIZE, 100*time_out);
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, to);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
@@ -318,11 +338,13 @@ int slv_get2(uint8_t * data)
 	    	}
 		while(!ret);
 
-	    	if (ret < 0) {
-	      		printl1(2, "usb_bulk_read (%s).\n", usb_strerror());
-	      		nBytesRead2 = 0;
-	      		return ERR_READ_ERROR;
-	    	}
+	    	if(ret == -ETIMEDOUT)
+  				return ERR_WRITE_TIMEOUT;
+			else {
+				printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+  				return ERR_WRITE_ERROR;
+			}
+
 	    	nBytesRead2 = ret;
 	    	rBuf2Ptr = rBuf2;
   	}
@@ -358,8 +380,7 @@ int slv_check2(int *status)
 
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2,
-					    MAX_PACKET_SIZE, 100*time_out);
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, to);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)

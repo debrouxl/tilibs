@@ -67,10 +67,10 @@
 #define MIN_VERSION "2.2"
 
 static HINSTANCE hDLL = NULL;	// DLL handle on TiglUsb.dll
-static dllOk = FALSE;		// Dll loading is OK
+static dllOk = FALSE;			// Dll loading is OK
 
 TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for 
-TIGLUSB_OPEN dynTiglUsbOpen = NULL;	// dynamic loading
+TIGLUSB_OPEN dynTiglUsbOpen = NULL;			// dynamic loading
 TIGLUSB_FLUSH dynTiglUsbFlush = NULL;
 TIGLUSB_READ dynTiglUsbRead = NULL;
 TIGLUSB_WRITE dynTiglUsbWrite = NULL;
@@ -78,101 +78,96 @@ TIGLUSB_CLOSE dynTiglUsbClose = NULL;
 TIGLUSB_SETTIMEOUT dynTiglUsbSetTimeout = NULL;
 TIGLUSB_CHECK dynTiglUsbCheck = NULL;
 
-extern int time_out;		// Timeout value for cables in 0.10 seconds
+extern int time_out;			// Timeout value for cables in 0.10 seconds
 
 int slv_init()
 {
-  int ret;
+	int ret;
 
-  // Create an handle on library and retrieve symbols
-  hDLL = LoadLibrary("TIGLUSB.DLL");
-  if (hDLL == NULL) {
-    printl1(2, _("TiglUsb library not found. Have you installed the TiglUsb driver ?\n"));
-    return ERR_OPEN_USB_DEV;
-  }
+	// Create an handle on library and retrieve symbols
+	hDLL = LoadLibrary("TIGLUSB.DLL");
+	if (hDLL == NULL) {
+		printl1(2, _("TiglUsb library not found. Have you installed the TiglUsb driver ?\n"));
+		return ERR_OPEN_USB_DEV;
+	}
 
-  dynTiglUsbVersion =
-      (TIGLUSB_VERSION) GetProcAddress(hDLL, "TiglUsbVersion");
-  if (!dynTiglUsbVersion || (strcmp(dynTiglUsbVersion(), MIN_VERSION) < 0)) {
-    char buffer[256];
-    sprintf(buffer,
-	    _
-	    ("TiglUsb.dll: version %s mini needed, got version %s.\nPlease download the latest release on <http://ti-lpg.org/prj_usb>."),
-	    MIN_VERSION, dynTiglUsbVersion());
-    printl1(2, buffer);
-    MessageBox(NULL, buffer, "Error in SilverLink support", MB_OK);
-    FreeLibrary(hDLL);
-    return ERR_TIGLUSB_VERSION;
-  }
-  printl1(0, _("using TiglUsb.dll version %s\n"), dynTiglUsbVersion());
+	dynTiglUsbVersion = (TIGLUSB_VERSION) GetProcAddress(hDLL, "TiglUsbVersion");
+	if (!dynTiglUsbVersion || (strcmp(dynTiglUsbVersion(), MIN_VERSION) < 0)) {
+	    char buffer[256];
+		sprintf(buffer, _("TiglUsb.dll: version %s mini needed, got version %s.\nPlease download the latest release on <http://ti-lpg.org/prj_usb>."),
+			MIN_VERSION, dynTiglUsbVersion());
+		printl1(2, buffer);
+		MessageBox(NULL, buffer, "Error in SilverLink support", MB_OK);
+		FreeLibrary(hDLL);
+		return ERR_TIGLUSB_VERSION;
+	}
+	printl1(0, _("using TiglUsb.dll version %s\n"), dynTiglUsbVersion());
 
-  dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
-  if (!dynTiglUsbOpen) {
-    printl1(2, _("Unable to load TiglUsbOpen symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
+	if (!dynTiglUsbOpen) {
+		printl1(2, _("Unable to load TiglUsbOpen symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
-  if (!dynTiglUsbOpen) {
-    printl1(2, _("Unable to load TiglUsbFlush symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
+	if (!dynTiglUsbOpen) {
+	    printl1(2, _("Unable to load TiglUsbFlush symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbRead = (TIGLUSB_READ) GetProcAddress(hDLL, "TiglUsbRead");
-  if (!dynTiglUsbRead) {
-    printl1(2, _("Unable to load TiglUsbRead symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbRead = (TIGLUSB_READ) GetProcAddress(hDLL, "TiglUsbRead");
+	if (!dynTiglUsbRead) {
+		printl1(2, _("Unable to load TiglUsbRead symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbWrite = (TIGLUSB_WRITE) GetProcAddress(hDLL, "TiglUsbWrite");
-  if (!dynTiglUsbWrite) {
-    printl1(2, _("Unable to load TiglUsbWrite symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbWrite = (TIGLUSB_WRITE) GetProcAddress(hDLL, "TiglUsbWrite");
+	if (!dynTiglUsbWrite) {
+	    printl1(2, _("Unable to load TiglUsbWrite symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
-  if (!dynTiglUsbClose) {
-    printl1(2, _("Unable to load TiglUsbClose symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
+	if (!dynTiglUsbClose) {
+		printl1(2, _("Unable to load TiglUsbClose symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL,
-							     "TiglUsbSetTimeout");
-  if (!dynTiglUsbSetTimeout) {
-    printl1(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL, "TiglUsbSetTimeout");
+	if (!dynTiglUsbSetTimeout) {
+		printl1(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
-  if (!dynTiglUsbCheck) {
-    printl1(2, _("Unable to load TiglUsbCheck symbol.\n"));
-    FreeLibrary(hDLL);
-    return ERR_FREELIBRARY;
-  }
+	dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
+	if (!dynTiglUsbCheck) {
+		printl1(2, _("Unable to load TiglUsbCheck symbol.\n"));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
 
-  dllOk = TRUE;
+  
+	// DLL loading succeeded !
+	dllOk = TRUE;
 
-  ret = dynTiglUsbOpen();
-  switch (ret) {
-  case TIGLERR_DEV_OPEN_FAILED:
-    return ERR_OPEN_USB_DEV;
-  case TIGLERR_DEV_ALREADY_OPEN:
-    return ERR_OPEN_USB_DEV;
-  default:
-    break;
-  }
+	ret = dynTiglUsbOpen();
+	switch (ret) {
+		case TIGLERR_DEV_OPEN_FAILED: return ERR_OPEN_USB_DEV;
+		case TIGLERR_DEV_ALREADY_OPEN: return ERR_OPEN_USB_DEV;
+		default: break;
+	}
 
-  dynTiglUsbSetTimeout(time_out);
+	dynTiglUsbSetTimeout(time_out);
 
-  START_LOGGING();
+	START_LOGGING();
 
-  return 0;
+	return 0;
 }
 
 int slv_open()
