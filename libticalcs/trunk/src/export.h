@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
+/*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,10 @@
 #ifndef __TICABLES_EXPORT__
 #define __TICABLES_EXPORT__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Choose one of these calling conventions (override compiler settings)
  */
@@ -29,10 +33,6 @@
 //#define FORCE_C_CALL
 //#define FORCE_FASTCALL
 //#define FORCE_NONE
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*
  * Defines one of the previous definitions for forcing a calling convention.
@@ -52,25 +52,28 @@ extern "C" {
 #  define TICALL
 # endif
 
-# if defined(__BORLANDC__)	// BCC32 v5.x (or C++Builder)
+# if defined(__BORLANDC__)		// BCC32 v5.x (or C++Builder)
 #  if __BORLANDC__ >= 0x0500	// (c) 2001 Thomas Wolf (two@chello.at)
 #   define TIEXPORT
 #  else
 #   define TIEXPORT
 #  endif
 
-# elif defined(_MSC_VER)	// MSVC 5.0 mini
-#  if defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
+# elif defined(_MSC_VER)		// MSVC 5.0 mini
+#  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
 #   define TIEXPORT __declspec(dllexport)
 #  else
 #   define TIEXPORT __declspec(dllimport)
 #  endif
 
-# elif defined(__MINGW32__)	// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
-#  if defined(DLL_EXPORT)	// defined by the configure script
+# elif defined(HAVE_FVISIBILITY)// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
+#  define TIEXPORT __attribute__ ((visibility("default")))
+
+# elif defined(__MINGW32__)		// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
+#  if defined(DLL_EXPORT)		// defined by the configure script
 #   define TIEXPORT __declspec(dllexport)
 #  else
-#   define TIEXPORT extern	//__declspec(dllimport)
+#   define TIEXPORT extern
 #  endif
 # endif
 
@@ -79,7 +82,7 @@ extern "C" {
 # define TICALL
 
 #else
-# define TIEXPORT		// default
+# define TIEXPORT				// default
 # define TICALL
 #endif
 

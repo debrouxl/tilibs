@@ -5,7 +5,7 @@ Log:
 - 28/02/2005, version 4.5.7: roms
 	Removed JB testing code in TI92 is_ready. 
 	Fixed TI89 Titanium ROM size in the progress bar.
-	Fixed ROM dumping support for TI83+/84+ Silver Edition but still unusable.
+	Fixed ROM dumping support for TI83+/84+ Silver Edition.
 
 - 29/01/2005, version 4.5.6: roms
 	Fixed TI89 unit to support Titanium FLASH transfers.
