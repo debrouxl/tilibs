@@ -57,7 +57,7 @@ static int check_for_libusb(void);
 
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources..."));
+	DISPLAY(_("libticables: getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;

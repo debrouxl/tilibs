@@ -12,13 +12,13 @@ Log:
 	Tested under Linux with:
 	- GreyLink: api: ok
 	- BlackLink: asm: ok, ioctl: ok, module: ?? 
-	- SilverLink: ioctl: ok, module: ok (both ok in 2.4 only) 
+	- SilverLink: ioctl: ok, module: ok
 	- Parallel: asm: ??, module: ??
 	Wake-up sequence removed from serial & parallel cables because it 
 	perturbates communication start-up.
 	
-	Beware: Mac OS-X support has been moved to the new architecture but has not
-	been compiled !!!
+	Beware: Mac OS-X support has been moved to the new architecture but 
+	has not been compiled !!!
 	
 - 01/03/2004, version 3.7.9: tijl
 	BSD usb fix in libticables
