@@ -57,10 +57,7 @@ int vtl_init()
   /* Create the pipe (in non-blocking mode) */
   hPipe = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT, 2, 256, 256, 0 * time_out, NULL);	// 100 * time_out
   if (hPipe == INVALID_HANDLE_VALUE) 
-  {
-    printl1(2, "CreateNamedPipe\n");
     return ERR_OPEN_PIPE;
-  }
 
   return 0;
 }
@@ -106,18 +103,13 @@ int vtl_put(uint8_t data)
   BOOL fSuccess;
 
   tdr.count++;
+
   // Write the data
   fSuccess = WriteFile(hPipe, &data, 1, &i, NULL);
   if (!fSuccess) 
-  {
-    printl1(2, "WriteFile\n");
-    //print_last_error();
     return ERR_WRITE_ERROR;
-  } 
   else if (i == 0) 
-  {
     return ERR_WRITE_TIMEOUT;
-  }
 
   return 0;
 }

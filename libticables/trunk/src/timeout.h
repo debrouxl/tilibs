@@ -41,9 +41,11 @@
   - toCURRENT: return the number of elapsed seconds
 */
 
-#if defined(__WIN32__)
-# include <windows.h>
-typedef DWORD tiTIME;
+#if defined(__WIN32__) && !defined(__MINGW32__)
+//# include <windows.h>
+//typedef DWORD tiTIME;
+// I don't want to include windows.h here:
+typedef unsigned long tiTIME;
 # define  toSTART(ref)          { (ref)=GetTickCount(); }
 # define  toELAPSED(ref, max)   ( (int)(GetTickCount()-(ref)) > (100*max) )
 # define  toCURRENT(ref)        ( (float)(GetTickCount()-(ref)) / 1000 )

@@ -10,6 +10,7 @@ Log:
 
 - 09/02/2005, version 3.8.8: roms
 	Some clean-up and fixes in the virtual link cables.
+	Removed windows.h dependancy in timeout.h.
 
 - 25/09/2004, version 3.8.7: roms
 	Added USB direct cable support (kernel module).
