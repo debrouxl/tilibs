@@ -26,44 +26,53 @@
 #include "calc_def.h"
 
 
-TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat
-						    format)
+TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat format)
 {
-  switch (format) {
-  case FULL_SCREEN:
-    return _("full");
-  case CLIPPED_SCREEN:
-    return _("clipped");
-  default:
-    DISPLAY_ERROR(_("libticalcs error: unknown screen format !\n"));
-    return _("unknown");
-  }
+  	switch (format) {
+  	case SCREEN_FULL: return _("full");
+  	case SCREEN_CLIPPED: return _("clipped");
+  	default: return _("unknown");
+  	}
+}
+
+TIEXPORT TicalcScreenFormat TICALL ticalc_screen_to_string(const char *str)
+{
+  	if(!strcasecmp(str, _("full"))
+  		return SCREEN_FULL;
+  	else if(!strcasecmp(str, _("clipped"))
+  		return SCREEN_CLIPPED;
+  		
+  	return SCREEN_CLIPPED;
 }
 
 
 TIEXPORT const char *TICALL ticalc_path_to_string(TicalcPathType type)
 {
-  switch (type) {
-  case FULL_PATH:
-    return "full";
-  case LOCAL_PATH:
-    return "local";
-  default:
-    DISPLAY_ERROR(_("libticalcs error: unknown path type !\n"));
-    return "unknown";
-  }
+  	switch (type) {
+  	case PATH_FULL: return _("full");
+  	case PATH_LOCAL: return _("local");
+  	default: return _("unknown");
+  	}
 }
+
+TIEXPORT TicalcPathType TICALL ticalc_string_to_path(const char *str)
+{
+  	if(!strcasecmp(str, _("full")))
+  		return PATH_FULL;
+  	else if(!strcasecmp(str, _("local")))
+  		return PATH_LOCAL;
+  	
+  	return PATH_FULL;
+}
+
+
 
 
 TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action)
 {
-  switch (action) {
-  case ACT_SKIP:
-    return "skip";
-  case ACT_OVER:
-    return "overwrite";
-  default:
-    DISPLAY_ERROR(_("libticalcs error: unknown action !\n"));
-    return "unknown";
-  }
+  	switch (action) {
+  	case ACT_SKIP: return _("skip");
+  	case ACT_OVER: return _("overwrite");
+	default: return _("unknown");
+  	}
 }

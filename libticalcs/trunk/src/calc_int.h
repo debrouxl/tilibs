@@ -92,9 +92,12 @@ extern "C" {
   TIEXPORT int TICALL ticalc_clock_date2format(const char *format);
 
   // type2str.c
-  TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat
-						      format);
+  TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat format);
+  TIEXPORT TicalcScreenFormat TICALL ticalc_screen_to_string(const char *str)
+  
   TIEXPORT const char *TICALL ticalc_path_to_string(TicalcPathType type);
+  TIEXPORT TicalcPathType TICALL ticalc_string_to_path(const char *str);
+  
   TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action);
 
 	/**************/

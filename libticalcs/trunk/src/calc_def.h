@@ -160,12 +160,18 @@ typedef TicalcFunctions TicalcFncts;
 
 
 typedef enum {
-  FULL_SCREEN, CLIPPED_SCREEN
+  SCREEN_FULL, SCREEN_CLIPPED
 } TicalcScreenFormat;
 
+#define FULL_SCREEN	SCREEN_FULL
+#define CLIPPED_SCREEN	SCREEN_CLIPPED
+
 typedef enum {
-  FULL_PATH, LOCAL_PATH
+  PATH_FULL, PATH_LOCAL
 } TicalcPathType;
+
+#define FULL_PATH	PATH_FULL
+#define LOCAL_PATH	PATH_LOCAL
 
 typedef enum {
   MEMORY_NONE, MEMORY_FREE, MEMORY_USED
