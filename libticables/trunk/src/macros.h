@@ -62,8 +62,11 @@
    A very very useful macro ! 
    Used to propagate an error code when a function returns.
 */
-#define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
+#ifndef TRY
+# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
+#endif
 #define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; } 
+#define TRY_ TRYC
 
 /*
   The directory separator depending on the platform

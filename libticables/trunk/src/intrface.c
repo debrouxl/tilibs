@@ -58,8 +58,8 @@ char device[MAXCHARS]="";    // The character device (COMx, ttySx, ...)
 const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
 
-char *os;		     // Operating System type
-PortInfo pi;		     // Informations on I/O ports
+char *os;			     // Operating System type
+PortInfo pinfo;			     // Informations on I/O ports
 
 /****************/
 /* Entry points */
@@ -75,7 +75,7 @@ TIEXPORT int TICALL ticable_init()
 {
   compat=0;
   ticable_detect_os(&os);
-  ticable_detect_port(&pi);
+  ticable_detect_port(&pinfo);
   list_io_resources();
 
   return 0;

@@ -43,7 +43,7 @@ int par_init()
   lpt_adr = io_address;
   
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  TRY(open_io(lpt_adr, 2));
+  TRYC(open_io(lpt_adr, 2));
   
   io_permitted = 1;
   wr_io(lpt_out, 3);
@@ -191,7 +191,7 @@ int par_close()
 int par_exit()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  TRY(close_io(lpt_adr, 2));
+  TRYC(close_io(lpt_adr, 2));
     
   io_permitted = 0;
 #endif

@@ -59,9 +59,9 @@ int ser_init()
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
   com_addr = io_address;
 
-  TRY(open_io(com_out, 1));
+  TRYC(open_io(com_out, 1));
   io_permitted++;
-  TRY(open_io(com_in, 1));
+  TRYC(open_io(com_in, 1));
   io_permitted++;
 
   wr_io(com_out, 3);
@@ -215,9 +215,9 @@ int ser_close()
 int ser_exit()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__) 
-  TRY(close_io(com_out, 1));
+  TRYC(close_io(com_out, 1));
   io_permitted--;
-  TRY(close_io(com_in, 1));
+  TRYC(close_io(com_in, 1));
   io_permitted--;
 #endif
   STOP_LOGGING();
@@ -305,9 +305,9 @@ int ser_supported()
 #ifdef __WIN32__
 int ser_init2()
 {
-  TRY(open_io(com_out, 1));
+  TRYC(open_io(com_out, 1));
   io_permitted++;
-  TRY(open_io(com_in, 1));
+  TRYC(open_io(com_in, 1));
   io_permitted++;
 
   wr_io(com_out, 3);
@@ -417,9 +417,9 @@ int ser_close2()
 
 int ser_exit2()
 {
-  TRY(close_io(com_out, 1));
+  TRYC(close_io(com_out, 1));
   io_permitted--;
-  TRY(close_io(com_in, 1));
+  TRYC(close_io(com_in, 1));
   io_permitted--;
 
   return 0;

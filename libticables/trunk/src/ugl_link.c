@@ -405,6 +405,9 @@ int ugl_init2()
 	return ERR_USB_OPEN;
     }
 
+  if(tigl_han == NULL)
+    return ERR_USB_OPEN;
+
   START_LOGGING();
 
   return 0;
@@ -422,7 +425,17 @@ int ugl_open2()
 
   /* Reset both endpoints */
   ret = usb_resetep(tigl_han, TIGL_BULK_IN);
+  if (ret < 0)
+    {
+      dERROR("%s\n", usb_strerror());
+      return ERR_USB_OPEN;
+    }
   ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
+  if (ret < 0)
+    {
+      dERROR("%s\n", usb_strerror());
+      return ERR_USB_OPEN;
+    }
 
   /* Reset buffers */    
   nBytesRead = 0;
@@ -731,6 +744,13 @@ static byte wBuf[TIGLUSB_MAX_PACKET_SIZE];
 static DWORD nBytesRead = 0;
 static byte rBuf[TIGLUSB_MAX_PACKET_SIZE];
 
+/* Function pointers for dynamic loading */
+TIGLUSB_OPENFILE	dynTiglUsbOpenFile	= NULL;
+TIGLUSB_OPENDEV		dynTiglUsbOpenDev	= NULL;
+TIGLUSB_RESETPIPES	dynTiglUsbResetPipes	= NULL;
+TIGLUSB_SETTIMEOUT	dynTiglUsbSetTimeout	= NULL;
+static HINSTANCE hDLL = NULL;		// DLL handle
+
 extern int time_out;		// Timeout value for cables in 0.10 seconds
 static struct cs
 {
@@ -741,26 +761,70 @@ static struct cs
 TIEXPORT
 int ugl_init()
 {
+	/* Create an handle on library and retrieve symbols */
+	hDLL = LoadLibrary("TIGLUSB.DLL");
+	if (hDLL == NULL)
+	{
+	  dERROR("TiglUsb library not found. Have you installed the driver ?\n");
+	  return ERR_USB_OPEN;
+	}
+
+	dynTiglUsbOpenFile = (TIGLUSB_OPENFILE)GetProcAddress(hDLL,
+								    "open_file");
+	if (!dynTiglUsbOpenFile)
+	{
+		dERROR("Unable to load TiglUsbOpenFile symbol.\n");
+	    FreeLibrary(hDLL);       
+	    return ERR_FREELIBRARY;
+	}
+
+	dynTiglUsbOpenDev = (TIGLUSB_OPENDEV)GetProcAddress(hDLL,
+								    "open_dev");
+	if (!dynTiglUsbOpenDev)
+	{
+		dERROR("Unable to load TiglUsbOpenDev symbol.\n");
+	    FreeLibrary(hDLL);       
+	    return ERR_FREELIBRARY;
+	}
+
+	dynTiglUsbResetPipes = (TIGLUSB_RESETPIPES)GetProcAddress(hDLL,
+								    "resetPipes");
+	if (!dynTiglUsbResetPipes)
+	{
+		dERROR("Unable to load TiglUsbOpenFile symbol.\n");
+	    FreeLibrary(hDLL);       
+	    return ERR_FREELIBRARY;
+	}
+
+	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT)GetProcAddress(hDLL,
+								    "setTimeout");
+	if (!dynTiglUsbSetTimeout)
+	{
+		dERROR("Unable to load TiglUsbSetTimeout symbol.\n");
+	    FreeLibrary(hDLL);       
+	    return ERR_FREELIBRARY;
+	}
+
 	/* Init some internal variables */
 	memset((void *)(&cs), 0, sizeof(cs));
 
 	/* Open the USB device: 2 named pipes (endpoints) */
-	hWrite = open_file(OUT_PIPE_0);
+	hWrite = dynTiglUsbOpenFile(OUT_PIPE_0);
 	if(hWrite == INVALID_HANDLE_VALUE)
 	{
 		print_last_error();
 		return ERR_USB_OPEN;
 	}
 
-	hRead = open_file(IN_PIPE_0);
+	hRead = dynTiglUsbOpenFile(IN_PIPE_0);
 	if(hRead == INVALID_HANDLE_VALUE)
 	{
 		print_last_error();
 		return ERR_USB_OPEN;
 	}
 
-	/* Setup timeout */
-	setTimeout(time_out);
+	/* Setsup timeout */
+	dynTiglUsbSetTimeout(time_out);
 	
 	START_LOGGING();
 	
@@ -771,7 +835,7 @@ TIEXPORT
 int ugl_open()
 {
 	/* Clear buffers */
-	resetPipes();
+	dynTiglUsbResetPipes();
 
 	nBytesRead = 0;
 	nBytesWrite = 0;
@@ -871,13 +935,18 @@ int ugl_exit()
 		hRead = INVALID_HANDLE_VALUE;
 	}	
 
+	/* Free library handle */
+	if(hDLL != NULL)
+		FreeLibrary(hDLL);	
+	hDLL = NULL;
+
 	return 0;
 }
 
 TIEXPORT
 int ugl_probe()
 {
-	HANDLE hDev = open_dev();
+	HANDLE hDev = dynTiglUsbOpenDev();
 
 	if(hDev == INVALID_HANDLE_VALUE)
 	{
