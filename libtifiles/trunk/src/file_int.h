@@ -70,8 +70,7 @@ extern "C" {
   // trans.c
   TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
 						   char *translate,
-						   uint8_t vartype, 
-						   TicalcType calc_type);
+						   uint8_t vartype);
 
   TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, 
 						   const char *src);

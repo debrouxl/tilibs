@@ -6,7 +6,9 @@ To do:
 - 01/05/2003, version 0.5.6:
 	Added 'mu' char to TI89..V200. Unicode translation was missing for
 	TI92(+)/V200.
-	Translation (detokenization in fact) is being reworked.
+	trans.c has been hugely reworked:
+	- varname detokenization
+	- TI-charset to user-selected charset transcoding
 	
 - 19/04/2003, version 0.5.5:
 	Added various varname translations (ASCII, ISO8859-1 and UTF-8).
