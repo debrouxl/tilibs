@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../intl.h"
+#include "../intl1.h"
 
 #include "../cabl_def.h"
 #include "../cabl_err.h"

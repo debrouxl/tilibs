@@ -36,14 +36,15 @@
 	Print to stdout as default behaviour unless changed by tifiles_set_print 
 	Level: such as "warning", "error", "information", etc. "" = nothing.
 */
-int default_printl(int level, const char *format, ...)
+static int default_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret;
 
-	fprintf(stdout, "libticables ");
+	fprintf(stdout, "ticables ");
 	if(level != 0)
-		fprintf(stdout, "(%s): ", (level == 2) ? _("error") : _("warning"));
+		fprintf(stdout, "(%s)", (level == 2) ? _("error") : _("warning"));
+        fprintf(stdout, ": ");
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
@@ -51,14 +52,14 @@ int default_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICABLES_PRINT printl = default_printl;
+TICABLES_PRINTL printl = default_printl;
 
 /*
 	Change print behaviour (callback).
 */
-TIEXPORT TICABLES_PRINT ticable_set_printl(TICABLES_PRINT new_printl)
+TIEXPORT TICABLES_PRINTL TICALL ticable_set_printl(TICABLES_PRINTL new_printl)
 {
-  TICABLES_PRINT old_printl = printl;
+  TICABLES_PRINTL old_printl = printl;
 
   printf("printl = %p\n", printl);
   printf("old_printl = %p\n", old_printl);

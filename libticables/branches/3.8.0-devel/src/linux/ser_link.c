@@ -223,7 +223,10 @@ int ser_exit()
 
 #ifdef __WIN32__
   	//extern int win32_comport_close(PHANDLE hCom);
-  	TRYC(win32_comport_close(&hCom));
+#pragma warning( push )
+#pragma warning( disable : 4013 )
+        TRYC(win32_comport_close(&hCom));
+#pragma warning( pop ) 
 #endif
 
   	STOP_LOGGING();

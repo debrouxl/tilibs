@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PRINT_H__
-#define __PRINT_H__
+#ifndef __TICABLES_PRINT_H__
+#define __TICABLES_PRINT_H__
 
 #include "cabl_def.h"
 

@@ -109,7 +109,7 @@ typedef enum {
 #define OS_NONE  "unknown"
 
 /* Callback */
-typedef int (*TICABLES_PRINT) (int level, const char *format, ...);
+typedef int (*TICABLES_PRINTL) (int level, const char *format, ...);
 
 /********************/
 /* Type definitions */

@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_CONSOLE" /D "__I386__" /FD /c
 # SUBTRACT CPP /Fr /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -230,7 +230,7 @@ SOURCE=..\..\src\externs.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Intl.h
+SOURCE=..\..\src\intl1.h
 # End Source File
 # Begin Source File
 

@@ -37,7 +37,7 @@
 #include <windows.h>
 #include <time.h>
 
-#include "intl.h"
+#include "intl1.h"
 #include "timeout.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
