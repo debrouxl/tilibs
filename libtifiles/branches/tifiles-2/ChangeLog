@@ -9,10 +9,10 @@ Log:
 	- a single public header with functions & defs, others are private
 	- slightly fixed namespace sheme
 	- use strong type such as TiCalcModel, ...
-	- glib is heavily used (strings, logging, ...)
+	- glib is (heavily) used (strings, logging, ...)
 	- documentation system has been changed
 	- functions pointers have been removed
-	* tifiles_calc_type to remove !
+	- library has been fuully documented
 
 ====[ Version II ]====
 

@@ -40,19 +40,20 @@
 #include "intelhex.h"
 #include "transcode.h"
 
-
-int tifiles_calc_type;
+/********/
+/* Misc */
+/********/
 
 static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
 
-static int is_ti8586(TiCalcModel calc_type)
+static int is_ti8586(TiCalcModel model)
 {
-  return ((calc_type == CALC_TI85) || (calc_type == CALC_TI86));
+  return ((model == CALC_TI85) || (model == CALC_TI86));
 }
 
-static int is_ti83p(TiCalcModel calc_type)
+static int is_ti83p(TiCalcModel model)
 {
-  return (calc_type == CALC_TI83P) || (calc_type == CALC_TI84P);
+  return (model == CALC_TI83P) || (model == CALC_TI84P);
 }
 
 /**************/
@@ -617,7 +618,7 @@ TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, Ti8xRegular *cont
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2type(tifiles_calc_type, content->entries[0].type));
+    strcat(filename, tifiles_vartype2type(content->model, content->entries[0].type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -882,7 +883,7 @@ TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular *content)
 				   ));
     tifiles_info("  type:        %02X (%s)\n",
 	    content->entries[i].type,
-	    tifiles_vartype2string(tifiles_calc_type, content->entries[i].type));
+	    tifiles_vartype2string(content->model, content->entries[i].type));
     tifiles_info("  attr:        %s\n",
 	    tifiles_attribute_to_string(content->entries[i].attr));
     tifiles_info("  length:      %04X (%i)\n",
@@ -909,7 +910,7 @@ TIEXPORT int TICALL ti8x_content_display_backup(Ti8xBackup *content)
 	  tifiles_calctype2signature(content->model));
   tifiles_info("Comment:        <%s>\n", content->comment);
   tifiles_info("Type:           %02X (%s)\n", content->type,
-	  tifiles_vartype2string(tifiles_calc_type, content->type));
+	  tifiles_vartype2string(content->model, content->type));
   tifiles_info("Mem address:    %04X (%i)\n",
 	  content->mem_address, content->mem_address);
 

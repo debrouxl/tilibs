@@ -23,6 +23,7 @@
   This unit contains a TI file independant API
 */
 
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -184,7 +185,7 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
       strcpy(folder_list[num_folders], entry->fld_name);
       folder_list[num_folders + 1] = NULL;
       num_folders++;
-      assert(num_folders <= content->num_entries);
+      g_assert(num_folders <= content->num_entries);
     }
   }
   if (tifiles_calc_is_ti8x(content->model))

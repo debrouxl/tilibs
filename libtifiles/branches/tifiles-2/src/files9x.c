@@ -36,10 +36,11 @@
 #include "rwfile.h"
 #include "transcode.h"
 
+/********/
+/* Misc */
+/********/
 
 static int fsignature[2] = { 1, 0 };
-
-extern int tifiles_calc_type;
 
 /**************/
 /* Allocating */
@@ -288,7 +289,7 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
     fread_byte(f, &(entry->attr));
     fread_word(f, NULL);
 
-    if (entry->type == tifiles_folder_type(tifiles_calc_type)) 
+    if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 	{
       strcpy(current_folder, entry->var_name);
       continue;			// folder: skip entry
@@ -547,7 +548,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2type(tifiles_calc_type, content->entries[0].type));
+    strcat(filename, tifiles_vartype2type(content->model, content->entries[0].type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -590,7 +591,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
     {
       fwrite_long(f, offset);
       fwrite_8_chars(f, fentry->fld_name);
-      fwrite_byte(f, (uint8_t)tifiles_folder_type(tifiles_calc_type));
+      fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model));
       fwrite_byte(f, 0x00);
       for (j = 0; table[i][j] != -1; j++);
       fwrite_word(f, (uint16_t) j);
@@ -761,7 +762,7 @@ TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content)
 				   content->entries[i].type));
     tifiles_info("  type:      %02X (%s)\n",
 	    content->entries[i].type,
-	    tifiles_vartype2string(tifiles_calc_type, content->entries[i].type));
+	    tifiles_vartype2string(content->model, content->entries[i].type));
     tifiles_info("  attr:      %s\n",
 	    tifiles_attribute_to_string(content->entries[i].attr));
     tifiles_info("  length:    %04X (%i)\n",
@@ -789,7 +790,7 @@ TIEXPORT int TICALL ti9x_content_display_backup(Ti9xBackup *content)
   tifiles_info("comment:        <%s>\n", content->comment);
   tifiles_info("ROM version:    <%s>\n", content->rom_version);
   tifiles_info("type:           %02X (%s)\n",
-	  content->type, tifiles_vartype2string(tifiles_calc_type, content->type));
+	  content->type, tifiles_vartype2string(content->model, content->type));
   tifiles_info("data length:    %08X (%i)\n",
 	  content->data_length, content->data_length);
 
