@@ -59,14 +59,14 @@ static unsigned int com_addr;
 #define com_out (com_addr+4)
 #define com_in  (com_addr+6)
 
-static int io_permitted = 0;
+static int io_permitted2 = 0;
 
 int ser_init2()
 {
   TRYC(io_open(com_out, 1));
-  io_permitted++;
+  io_permitted2++;
   TRYC(io_open(com_in, 1));
-  io_permitted++;
+  io_permitted2++;
 
   io_wr(com_out, 3);
   io_wr(com_out, 0);
@@ -178,7 +178,7 @@ int ser_probe2()
 
 int ser_close2()
 {
-  if (io_permitted == 2)
+  if (io_permitted2 == 2)
     io_wr(com_out, 3);
 
   return 0;
@@ -187,9 +187,9 @@ int ser_close2()
 int ser_exit2()
 {
   TRYC(io_close(com_out, 1));
-  io_permitted--;
+  io_permitted2--;
   TRYC(io_close(com_in, 1));
-  io_permitted--;
+  io_permitted2--;
 
   return 0;
 }
@@ -246,7 +246,7 @@ int ser_get_white_wire2()
 
 int ser_supported2()
 {
-  return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
+  return SUPPORT_ON | ((methods & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
 int ser_register_cable_2(TicableLinkCable * lc, TicableMethod method)
@@ -266,11 +266,4 @@ int ser_register_cable_2(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = ser_get_white_wire2;
 
   return 0;
-}
-
-int ser_unregister_cable_2(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

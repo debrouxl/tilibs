@@ -262,10 +262,3 @@ int tig_register_cable(TicableLinkCable * lc, TicableMethod method)
 
   return 0;
 }
-
-int tig_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
-}

@@ -263,7 +263,7 @@ int ser_get_white_wire()
 
 int ser_supported()
 {
-  return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
+  return SUPPORT_ON | ((methods & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
 int ser_register_cable_1(TicableLinkCable * lc, TicableMethod method)
@@ -283,11 +283,4 @@ int ser_register_cable_1(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = ser_get_white_wire;
 
   return 0;
-}
-
-int ser_unregister_cable_1(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

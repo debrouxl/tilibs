@@ -30,7 +30,6 @@
 #endif
 
 # include <unistd.h>
-# include <sys/types.h>
 # include <termios.h>
 # include <sys/ioctl.h>
 # include <fcntl.h>
@@ -40,14 +39,11 @@
 # include <asm/io.h>
 #endif
 
-#include "cabl_err.h"
-#include "cabl_def.h"
-#include "verbose.h"
-#include "export.h"
-#include "ioports.h"
 #include "intl.h"
-#include "cabl_int.h"
+
+#include "cabl_err.h"
 #include "externs.h"
+#include "verbose.h"
 
 /* Variables */
 
@@ -80,7 +76,7 @@ static int linux_ioctl_read_io(unsigned int addr)
 	unsigned int flags;
 
   	if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    		DISPLAY_ERROR("linux_ioctl_read_io: ioctl failed !\n");
+    		DISPLAY_ERROR(_("linux_ioctl_read_io: ioctl failed !\n"));
     		return ERR_IOCTL;
   	}
 
@@ -94,7 +90,7 @@ static void linux_ioctl_write_io(unsigned int address, int data)
   	flags |= (data & 2) ? TIOCM_RTS : 0;
   	flags |= (data & 1) ? TIOCM_DTR : 0;
   	if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    		DISPLAY_ERROR("linux_ioctl_write_io: ioctl failed !\n");
+    		DISPLAY_ERROR(_("linux_ioctl_write_io: ioctl failed !\n"));
     		return /*ERR_IOCTL */ ;
   	}
 }
@@ -103,20 +99,20 @@ static void linux_ioctl_write_io(unsigned int address, int data)
 
 int io_open(unsigned long from, unsigned long num)
 {
-	if (method & IOM_ASM) {
+	if (methods & IOM_ASM) {
     		io_rd = linux_asm_read_io;
     		io_wr = linux_asm_write_io;
     		
 		return (ioperm(from, num, 1) ? ERR_ROOT : 0);
 	}
-  	else if (method & IOM_API) {
+  	else if (methods & IOM_API) {
 		struct termios termset;
 
     		if (tty_use)
       			return 0;
       			
 		if ((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1) {
-      			DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
+      			DISPLAY_ERROR(_("unable to open this serial port: %s\n"), io_device);
       			return ERR_OPEN_SER_DEV;
     		}
 
@@ -134,10 +130,10 @@ int io_open(unsigned long from, unsigned long num)
 
 int io_close(unsigned long from, unsigned long num)
 {
-	if (method & IOM_ASM) {
+	if (methods & IOM_ASM) {
     		return (ioperm(from, num, 0) ? ERR_ROOT : 0);
     	}
-    	else if (method & IOM_API) {
+    	else if (methods & IOM_API) {
     		if (tty_use) {
       			close(dev_fd);
       			tty_use--;

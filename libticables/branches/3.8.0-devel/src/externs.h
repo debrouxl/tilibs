@@ -38,7 +38,7 @@ extern "C" {
   extern int hfc;
   extern int port;
   extern int resources;
-  extern int method;
+  extern int methods;
 
   extern unsigned int io_address;
   extern char io_device[1024];

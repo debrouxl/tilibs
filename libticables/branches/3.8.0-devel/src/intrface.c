@@ -23,30 +23,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-
 #if defined(__WIN32__)
 # include <windows.h>
 #endif
 
-#if defined(__LINUX__)
-# include <unistd.h>
-# include <sys/types.h>
-#endif
-
 #include "intl.h"
+
 #include "cabl_ver.h"
 #include "cabl_def.h"
-#include "cabl_err.h"
-#include "cables.h"
 #include "detect.h"
 #include "export.h"
 #include "mapping.h"
 #include "type2str.h"
 #include "verbose.h"
 
-#ifdef __LINUX__
-#include "timodules.h"
-#endif
 
 /*****************/
 /* Internal data */
@@ -109,12 +99,26 @@ TICALL ticable_init()
 #endif
   	DISPLAY(_("Libticables: version %s\n"), LIBTICABLES_VERSION);
 
+	// list built-in compiled options...
+	DISPLAY(_("Libticables: built for %s target.\n"), 
+#if defined(__LINUX__)
+		"__LINUX__"
+#elif defined(__BSD__)
+		"__BSD__"
+#elif defined(__MACOSX__)
+		"__MACOSX__"
+#elif defined(__MINGW32__)
+		"__MINGW32__"
+#elif defined(__CYGWIN__)
+		"__CYGWIN__"
+#else
+		"not listed"
+#endif
+		);
+
 	// check I/O resources
   	detect_resources();
   	
-  	// set default cable
-  	mapping_unregister_cable(lc);
-
   	return 0;
 }
 
@@ -241,14 +245,14 @@ TICALL ticable_get_port(void)
 TIEXPORT void
 TICALL ticable_set_method(int m)
 {
-  	method = m;
+  	methods = m;
 }
 
 
 TIEXPORT int
 TICALL ticable_get_method(void)
 {
-  	return method;
+  	return methods;
 }
 
 TIEXPORT int
@@ -266,7 +270,7 @@ TICALL ticable_set_param2(TicableLinkParam lp)
   	baud_rate = lp.baud_rate;
   	hfc = lp.hfc;
   	port = lp.port;
-  	method = lp.method;
+  	methods = lp.method;
 
   	if ((port == USER_PORT) || (port == OSX_SERIAL_PORT))	// force args
   	{
@@ -296,7 +300,7 @@ TICALL ticable_get_param(TicableLinkParam * lp)
   	strcpy(lp->device, io_device);
 
   	lp->port = port;
-  	lp->method = method;
+  	lp->method = methods;
 
   	return 0;
 }
@@ -335,34 +339,34 @@ static void print_settings(void)
 {
   	DISPLAY(_("Libticables: list of settings...\n"));
   	
-  	DISPLAY(_("  Link cable: %s\n"), ticable_cabletype_to_string(cable_type));
+  	DISPLAY(_("  Link cable: %s\n"), 
+		ticable_cabletype_to_string(cable_type));
   	
   	DISPLAY(_("  Port: %s\n"), ticable_port_to_string(port));
   	
-  	DISPLAY(_("  Method: %s\n"), ticable_method_to_string(method));
+  	DISPLAY(_("  Method: %s\n"), ticable_method_to_string(methods));
   	
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-  	DISPLAY(_("  Timeout value: %i\n"), time_out);
-  		
+		DISPLAY(_("  Timeout value: %i\n"), time_out);
+	
   	DISPLAY(_("  Delay value: %i\n"), delay);
   	
-  	if((cable_type == LINK_AVR) || (cable_type == LINK_TGL))
-  	DISPLAY(_("  Baud-rate: %i\n"), baud_rate);
-  		
-  	if(cable_type == LINK_AVR)
-  	DISPLAY(_("  Hardware flow control: %s\n"), hfc ? _("on") : _("off"));
-  		
+  	if(cable_type == LINK_AVR) {
+		DISPLAY(_("  Baud-rate: %i\n"), baud_rate);
+		DISPLAY(_("  Hardware flow control: %s\n"), 
+			hfc ? _("on") : _("off"));
+	}
+
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-  	DISPLAY(_("  I/O address: 0x%03x\n"), io_address);
-  		
+		DISPLAY(_("  I/O address: 0x%03x\n"), io_address);
+	
 	DISPLAY(_("  Device name: %s\n"), io_device);
 }
 
 
 TIEXPORT int
-TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
+TICALL ticable_set_cable(int type, TicableLinkCable * lc)
 {
-	int type = typ;
   	cable_type = type;
 
 	// remove link cable
@@ -370,10 +374,10 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
 
 	// compile informations (I/O resources & OS platform) in order to 
   	// determine the best I/O method to use.
-	method = mapping_get_methods(type, resources);
+	methods = mapping_get_methods(type, resources);
 
   	// set the link cable
-  	mapping_register_cable(lc);
+  	mapping_register_cable(type, lc);
   	
   	// displays useful infos
   	print_settings();

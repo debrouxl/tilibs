@@ -32,8 +32,6 @@
 #include <config.h>
 #endif
 
-#if defined(__LINUX__)
-
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
@@ -218,11 +216,4 @@ int dev_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = NULL;
 
   return 0;
-}
-
-int dev_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

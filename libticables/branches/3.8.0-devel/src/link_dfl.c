@@ -34,7 +34,6 @@
 #endif
 
 #include "timeout.h"
-#include "ioports.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
@@ -108,7 +107,6 @@ int dfl_supported()
   return SUPPORT_OFF;
 }
 
-//int set_default_cable(TicableLinkCable * lc)
 int dfl_register_cable(TicableLinkCable * lc, TicableMethod method)
 {
   lc->init = dfl_init;
@@ -126,11 +124,4 @@ int dfl_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = dfl_get_white_wire;
 
   return 0;
-}
-
-int dfl_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

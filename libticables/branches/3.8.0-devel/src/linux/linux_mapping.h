@@ -23,9 +23,10 @@
 #define __LINUX_MAPPING_H__
 
 #include <stdio.h>
-#include "export.h"
 
-TicableMethod linux_get_method(TicableType type, int resources);
-int linux_register_cable(TicableType type, LinkCable *lc);
+#include "cabl_def.h"
+
+TicableMethod linux_get_methods(TicableType type, int resources);
+int linux_register_cable(TicableType type, TicableLinkCable *lc);
 
 #endif

@@ -19,10 +19,42 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef CABLES_H
-#define CABLES_H
+#ifndef LINKXXX_H
+#define LINKXXX_H
+
+#include "cabl_def.h"
 
 int dfl_register_cable(TicableLinkCable * lc, TicableMethod method);
 int dfl_unregister_cable(TicableLinkCable * lc);
+
+int avr_register_cable(TicableLinkCable * lc, TicableMethod method);
+int avr_unregister_cable(TicableLinkCable * lc);
+
+int dev_register_cable(TicableLinkCable * lc, TicableMethod method);
+int dev_unregister_cable(TicableLinkCable * lc);
+
+int par_register_cable(TicableLinkCable * lc, TicableMethod method);
+int par_unregister_cable(TicableLinkCable * lc);
+
+int ser_register_cable_1(TicableLinkCable * lc, TicableMethod method);
+int ser_unregister_cable_1(TicableLinkCable * lc);
+
+int ser_register_cable_2(TicableLinkCable * lc, TicableMethod method);
+int ser_unregister_cable_2(TicableLinkCable * lc);
+
+int slv_register_cable(TicableLinkCable * lc, TicableMethod method);
+int slv_unregister_cable(TicableLinkCable * lc);
+
+int tie_register_cable(TicableLinkCable * lc, TicableMethod method);
+int tie_unregister_cable(TicableLinkCable * lc);
+
+int tig_register_cable(TicableLinkCable * lc, TicableMethod method);
+int tig_unregister_cable(TicableLinkCable * lc);
+
+int vti_register_cable(TicableLinkCable * lc, TicableMethod method);
+int vti_unregister_cable(TicableLinkCable * lc);
+
+int vtl_register_cable(TicableLinkCable * lc, TicableMethod method);
+int vtl_unregister_cable(TicableLinkCable * lc);
 
 #endif

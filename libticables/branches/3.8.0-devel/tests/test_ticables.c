@@ -64,11 +64,11 @@ int main(int argc, char **argv)
 	ticable_get_default_param(&lp);
 	lp.delay = 10;
 	lp.timeout = 15;
-	lp.port = PARALLEL_PORT_1;
+	lp.port = SERIAL_PORT_1;
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	ticable_set_cable(LINK_PAR, &lc);
+	ticable_set_cable(LINK_TGL, &lc);
 
 	// Init port (usually at program startup)
 	if ((err = lc.init())) {

@@ -257,7 +257,7 @@ int par_get_white_wire()
 
 int par_supported()
 {
-  if (method & IOM_OK)
+  if (methods & IOM_OK)
     return SUPPORT_ON | SUPPORT_IO;
   else
     return SUPPORT_OFF;
@@ -280,11 +280,4 @@ int par_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = par_get_white_wire;
 
   return 0;
-}
-
-int par_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

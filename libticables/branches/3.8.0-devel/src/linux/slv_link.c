@@ -302,10 +302,3 @@ int slv_register_cable(TicableLinkCable * lc, TicableMethod method)
 
   return 0;
 }
-
-int slv_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
-}

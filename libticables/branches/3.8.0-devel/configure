@@ -1507,8 +1507,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 # set library version number
 MAJOR_VERSION=3
-MINOR_VERSION=7
-MICRO_VERSION=7
+MINOR_VERSION=8
+MICRO_VERSION=0
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION
 
 
@@ -27606,7 +27606,7 @@ LDFLAGS="$LDFLAGS $LIBUSB_LDFLAGS $INTLLIBS"
 
 
 # output files
-                                                                                                                                            ac_config_files="$ac_config_files Makefile docs/Makefile macros/Makefile man/Makefile man/ticables-config.1 src/Makefile tests/Makefile win32/Makefile intl/Makefile po/Makefile.in ticables-config libticables.lsm libticables.spec ticables.pc"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile docs/Makefile macros/Makefile man/Makefile man/ticables-config.1 src/Makefile tests/Makefile intl/Makefile po/Makefile.in ticables-config libticables.lsm libticables.spec ticables.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -28156,7 +28156,6 @@ do
   "man/ticables-config.1" ) CONFIG_FILES="$CONFIG_FILES man/ticables-config.1" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "win32/Makefile" ) CONFIG_FILES="$CONFIG_FILES win32/Makefile" ;;
   "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
   "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "ticables-config" ) CONFIG_FILES="$CONFIG_FILES ticables-config" ;;

@@ -127,14 +127,13 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 locale_dir = @locale_dir@
 
-SUBDIRS = . docs macros man src tests win32 intl po
+SUBDIRS = . docs intl macros man po src tests
 
 # Script to install
 bin_SCRIPTS = ticables-config
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO docs osx
-pkgconfig_DATA = ticables.pc
+EXTRA_DIST = LOGO build docs
 
 # This target retrieve some files from my Win$ partition to my Linux one
 SRC_DIR = /mnt/xp/devel/tilp_project/libs/cables
@@ -460,6 +459,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 @OS_BSD_TRUE@ pkgconfigdir = $(prefix)/libdata/pkgconfig
 @OS_BSD_FALSE@ pkgconfigdir = $(libdir)/pkgconfig
+#pkgconfig_DATA = ticables.pc
 
 $(pkgconfig_DATA): config.status
 

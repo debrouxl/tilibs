@@ -34,15 +34,19 @@
 #endif
 
 #if defined(__LINUX__)
-#include "linux_mapping.h"
+#include "linux/linux_mapping.h"
 #elif defined(__MACOSX__)
-#include "macos_mapping.h"
+#include "macos/macos_mapping.h"
 #elif defined(__BSD__)
-#include "bsd_mapping.h"
+#include "bsd/bsd_mapping.h"
 #elif defined(__WIN32__)
-#include "win32_mapping.h"
+#include "win32/win32_mapping.h"
 #else
 #include "none.h"
+#endif
+
+#if defined(__LINUX__)
+#include "linux/linux_mapping.c"
 #endif
 
 /*
@@ -69,7 +73,7 @@ TicableMethod mapping_get_methods(TicableType type, int resources)
 }
 
 
-int mapping_register_cable(TicableType type, LinkCable *lc)
+int mapping_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	int ret;
 	
@@ -88,8 +92,9 @@ int mapping_register_cable(TicableType type, LinkCable *lc)
   	return ret;
 }
 
+int dfl_register_cable(TicableLinkCable * lc, TicableMethod method);
 
-void mapping_unregister_cable(LinkCable *lc)
+void mapping_unregister_cable(TicableLinkCable *lc)
 {
-	dfl_register_cable(lc);	
+	dfl_register_cable(lc, IOM_AUTO);	
 }

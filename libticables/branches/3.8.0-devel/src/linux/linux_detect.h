@@ -23,7 +23,8 @@
 #define __LINUX_DETECT_H__
 
 #include <stdio.h>
-#include "export.h"
+
+#include "cabl_def.h"
 
 int linux_detect_os(char **os_type);
 int linux_detect_port(TicablePortInfo * pi);

@@ -44,7 +44,6 @@
 #include "cabl_err.h"
 #include "export.h"
 #include "externs.h"
-#include "cables.h"
 #include "verbose.h"
 
 #define MAXCHARS 1024
@@ -190,7 +189,6 @@ static int find_string_in_proc(char *entry, char *str)
 
   return found;
 }
-#endif
 
 int linux_detect_resources(void)
 {

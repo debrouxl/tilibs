@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-
 #if defined(__LINUX__)
 #include "linux/avr_link.c"
 
