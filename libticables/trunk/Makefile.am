@@ -9,8 +9,6 @@ EXTRA_DIST = LOGO
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticables.pc
 
-$(pkgconfig_DATA): config.status
-
 dos2unix:
 	dos2unix
 	lowercase
