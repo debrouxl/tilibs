@@ -136,7 +136,8 @@ libticables_la_SOURCES =  	ioports.c 	avr_link.c 	dev_link.c 	dfl_link.c 	par_li
 
 MAINTAINERCLEANFILES = 
 EXTRA_HEADERS = 
-EXTRA_DIST = *.h
+EXTRA_DIST =  	*.h
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -307,50 +308,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-avr_link.lo avr_link.o : avr_link.c ../config.h intl.h export.h \
-	cabl_err.h cabl_def.h timeout.h externs.h verbose.h logging.h
-dev_link.lo dev_link.o : dev_link.c ../config.h intl.h export.h \
-	cabl_err.h cabl_def.h timeout.h externs.h verbose.h logging.h
-dfl_link.lo dfl_link.o : dfl_link.c ../config.h timeout.h ioports.h \
-	export.h cabl_err.h cabl_def.h logging.h externs.h
-direct.lo direct.o : direct.c ../config.h export.h cabl_def.h timeout.h \
-	cabl_int.h externs.h
-error.lo error.o : error.c intl.h ../config.h cabl_err.h export.h \
-	cabl_def.h timeout.h
-intrface.lo intrface.o : intrface.c intl.h ../config.h cabl_ver.h \
-	cabl_def.h export.h timeout.h cabl_err.h links.h dfl_link.h \
-	par_link.h ser_link.h tig_link.h avr_link.h dev_link.h \
-	vtl_link.h tie_link.h vti_link.h slv_link.h verbose.h probe.h \
-	timodules.h type2str.h
-ioports.lo ioports.o : ioports.c ../config.h cabl_err.h cabl_def.h \
-	export.h timeout.h verbose.h ioports.h intl.h cabl_int.h \
-	externs.h
-logging.lo logging.o : logging.c ../config.h intl.h verbose.h export.h \
-	cabl_def.h timeout.h
-par_link.lo par_link.o : par_link.c ../config.h timeout.h ioports.h \
-	export.h cabl_err.h cabl_def.h logging.h externs.h verbose.h
-probe.lo probe.o : probe.c ../config.h intl.h cabl_def.h export.h \
-	timeout.h cabl_err.h externs.h links.h dfl_link.h par_link.h \
-	ser_link.h tig_link.h avr_link.h dev_link.h vtl_link.h \
-	tie_link.h vti_link.h slv_link.h verbose.h
-ser_link.lo ser_link.o : ser_link.c ../config.h timeout.h ioports.h \
-	export.h cabl_err.h cabl_def.h externs.h logging.h
-slv_link.lo slv_link.o : slv_link.c ../config.h intl.h export.h \
-	cabl_def.h timeout.h cabl_err.h verbose.h logging.h externs.h
-tie_link.lo tie_link.o : tie_link.c ../config.h intl.h timeout.h \
-	export.h cabl_err.h cabl_def.h externs.h logging.h verbose.h
-tig_link.lo tig_link.o : tig_link.c ../config.h intl.h export.h \
-	cabl_err.h cabl_def.h timeout.h externs.h verbose.h logging.h
-timodules.lo timodules.o : timodules.c intl.h ../config.h
-type2str.lo type2str.o : type2str.c intl.h ../config.h cabl_def.h \
-	export.h timeout.h verbose.h
-verbose.lo verbose.o : verbose.c ../config.h export.h verbose.h \
-	cabl_def.h timeout.h
-vti_link.lo vti_link.o : vti_link.c ../config.h intl.h timeout.h \
-	export.h cabl_err.h cabl_def.h externs.h verbose.h logging.h
-vtl_link.lo vtl_link.o : vtl_link.c ../config.h cabl_def.h export.h \
-	timeout.h cabl_err.h externs.h logging.h verbose.h
-
 info-am:
 info: info-am
 dvi-am:
@@ -433,6 +390,7 @@ mostlyclean distclean maintainer-clean
 
 
 @OS_WIN32_TRUE@ no_undefined = -no-undefined
+	porttalk.c
 
 dos2unix:
 	dos2unix

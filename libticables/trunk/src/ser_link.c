@@ -100,6 +100,7 @@ int ser_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
+
   for (bit = 0; bit < 8; bit++) {
     if (data & 1) {
       io_wr(com_out, 2);
@@ -166,6 +167,7 @@ int ser_get(uint8_t * ch)
     for (i = 0; i < delay; i++)
       io_rd(com_in);
   }
+
   *ch = data;
   LOG_DATA(data);
 
@@ -313,7 +315,9 @@ int ser_put2(uint8_t data)
   tiTIME clk;
 
   tdr.count++;
+  LOG_DATA(data);
   toSTART(clk);
+
   for (bit = 0; bit < 8; bit++) {
     if (data & 1)
       io_wr(com_out, 2);
@@ -345,6 +349,7 @@ int ser_get2(uint8_t * ch)
 
   tdr.count++;
   toSTART(clk);
+
   for (i = 0, bit = 1, *ch = 0; i < 8; i++) {
     while ((j = io_rd(com_in)) == 3) {
       if (toELAPSED(clk, time_out))
@@ -368,6 +373,8 @@ int ser_get2(uint8_t * ch)
     io_wr(com_out, 3);
     bit <<= 1;
   }
+
+  LOG_DATA(*ch);
 
   return 0;
 }

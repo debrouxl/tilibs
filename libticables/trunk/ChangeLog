@@ -2,8 +2,15 @@ Log:
 
 To do: 
 	- USB pass-thru support
-	- bug with API mode (LInux & Windows): may not work with some calcs ?!
+	- bug with API mode (Linux & Windows): may not work with some calcs ?!
+	- ioports.c to improve
+	
+- 21/04/2003, version 3.7.6:
+        logging support added into the second serial link support.
 
+- 20/04/2003, version 3.7.5b:
+        porttalk.c added in EXTRA_DIST for po compilation.
+	
 - 10/04/2003, version 3.7.5:
 	Tijl's patch merged.
 	

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-04-10 21:32+0200\n"
+"POT-Creation-Date: 2003-05-03 11:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -352,110 +352,110 @@ msgid ""
 "."
 msgstr ""
 
-#: src/intrface.c:106
+#: src/intrface.c:109
 #, c-format
 msgid "Libticables: version %s\n"
 msgstr ""
 
-#: src/intrface.c:573 src/intrface.c:623
+#: src/intrface.c:578 src/intrface.c:628
 msgid "Function not implemented. This is a bug. Please report it."
 msgstr ""
 
-#: src/intrface.c:574 src/intrface.c:624
+#: src/intrface.c:579 src/intrface.c:629
 msgid "Informations:\n"
 msgstr ""
 
-#: src/intrface.c:575 src/intrface.c:625
+#: src/intrface.c:580 src/intrface.c:630
 #, c-format
 msgid "Cable: %i\n"
 msgstr ""
 
-#: src/intrface.c:576 src/intrface.c:626
+#: src/intrface.c:581 src/intrface.c:631
 msgid "Program halted before crashing...\n"
 msgstr ""
 
-#: src/intrface.c:640
-msgid "Libticables: current settings...\n"
-msgstr ""
-
-#: src/intrface.c:642
-#, c-format
-msgid "  Link cable: %s\n"
-msgstr ""
-
-#: src/intrface.c:644
-#, c-format
-msgid "  Port: %s\n"
-msgstr ""
-
 #: src/intrface.c:645
-#, c-format
-msgid "  Method: %s\n"
-msgstr ""
-
-#: src/intrface.c:646
-#, c-format
-msgid "  Timeout value: %i\n"
+msgid "Libticables: current settings...\n"
 msgstr ""
 
 #: src/intrface.c:647
 #, c-format
-msgid "  Delay value: %i\n"
-msgstr ""
-
-#: src/intrface.c:648
-#, c-format
-msgid "  Baud-rate: %i\n"
+msgid "  Link cable: %s\n"
 msgstr ""
 
 #: src/intrface.c:649
 #, c-format
-msgid "  Hardware flow control: %s\n"
-msgstr ""
-
-#: src/intrface.c:649
-msgid "on"
-msgstr ""
-
-#: src/intrface.c:649
-msgid "off"
+msgid "  Port: %s\n"
 msgstr ""
 
 #: src/intrface.c:650
 #, c-format
-msgid "  I/O address: 0x%03x\n"
+msgid "  Method: %s\n"
 msgstr ""
 
 #: src/intrface.c:651
 #, c-format
+msgid "  Timeout value: %i\n"
+msgstr ""
+
+#: src/intrface.c:652
+#, c-format
+msgid "  Delay value: %i\n"
+msgstr ""
+
+#: src/intrface.c:653
+#, c-format
+msgid "  Baud-rate: %i\n"
+msgstr ""
+
+#: src/intrface.c:654
+#, c-format
+msgid "  Hardware flow control: %s\n"
+msgstr ""
+
+#: src/intrface.c:654
+msgid "on"
+msgstr ""
+
+#: src/intrface.c:654
+msgid "off"
+msgstr ""
+
+#: src/intrface.c:655
+#, c-format
+msgid "  I/O address: 0x%03x\n"
+msgstr ""
+
+#: src/intrface.c:656
+#, c-format
 msgid "  Device name: %s\n"
 msgstr ""
 
-#: src/intrface.c:834
+#: src/intrface.c:839
 #, c-format
 msgid "libticables error: port value is illegal (%i) !\n"
 msgstr ""
 
-#: src/intrface.c:835
+#: src/intrface.c:840
 msgid "Exiting...\n"
 msgstr ""
 
-#: src/ioports.c:259
+#: src/ioports.c:276
 msgid ""
 "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 
-#: src/ioports.c:284
+#: src/ioports.c:301
 #, c-format
 msgid "Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"
 msgstr ""
 
-#: src/ioports.c:299
+#: src/ioports.c:316
 #, c-format
 msgid "PortTalk Device Driver has set IOPM for ProcessID %d.\n"
 msgstr ""
 
-#: src/ioports.c:376
+#: src/ioports.c:393
 #, c-format
 msgid "Libticables: serial port %s successfully reconfigured.\n"
 msgstr ""
@@ -733,21 +733,21 @@ msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr ""
 
 #. keep track of the TIGL device
-#: src/slv_link.c:1337
+#: src/slv_link.c:1339
 msgid "TIGL-USB found with libusb.\n"
 msgstr ""
 
-#: src/slv_link.c:1360
+#: src/slv_link.c:1362
 #, c-format
 msgid "usb_find_busses: %s\n"
 msgstr ""
 
-#: src/slv_link.c:1367
+#: src/slv_link.c:1369
 #, c-format
 msgid "usb_find_devices: %s\n"
 msgstr ""
 
-#: src/slv_link.c:1551
+#: src/slv_link.c:1553
 msgid ""
 "usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
 msgstr ""

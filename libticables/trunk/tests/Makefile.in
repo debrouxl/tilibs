@@ -258,10 +258,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-test_ticables.o: test_ticables.c ../config.h ../src/ticables.h \
-	../src/cabl_def.h ../src/export.h ../src/timeout.h \
-	../src/cabl_int.h ../src/cabl_err.h ../src/cabl_ver.h
-
 info-am:
 info: info-am
 dvi-am:
