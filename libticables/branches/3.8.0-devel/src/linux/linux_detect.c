@@ -75,13 +75,12 @@ int linux_detect_port(TicablePortInfo * pi)
 {
 	int fd;
 	FILE *f;
-        int i, j;
-        int sa, ea;
+        int i;
         char name[10];
+        int sa, ea;
         int nargs;
         char buffer[MAXCHARS];
-        char info[MAXCHARS];
-        DIR *dir;
+	DIR *dir;
         struct dirent *file;
         int res;
         char path[25];
@@ -186,37 +185,44 @@ int linux_detect_port(TicablePortInfo * pi)
 		DISPLAY_ERROR(_("Closedir\r\n"));
 	}
 	
-	/* Use '/proc/tty/driver/serial' to get infos on serial ports */
+	/* Use '/var/log/dmesg' to get infos on serial ports */
 
 	// test for file access
-	fd = access("/proc/tty/driver/serial", F_OK);
+	fd = access("/var/log/dmesg", F_OK);
 	if (fd < 0) {
-		DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\r\n"));
+		DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist or is not accessible. Unable to probe serial ports.\r\n"));
 		DISPLAY(_("Done.\r\n"));
 		return -1;
 	}
 
 	// open it
-	f = fopen("/proc/tty/driver/serial", "rt");
+	f = fopen("/var/log/dmesg", "rt");
 	if (f == NULL) {
 		DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
-			      "/proc/tty/driver/serial");
+			      "/var/log/dmesg");
 		return -1;
 	}
 	
-	// skip first line ('serinfo:1.0 driver revision:')
-	fgets(buffer, 256, f);
+	// read entries
+	while(!feof(f)) {
+                fgets(buffer, 256, f);
 
-	// read entries: '0: uart:16550A port:000003F8 irq:4 tx:0 rx:0'
-	for (i = 0; i < MAX_COM_PORTS; i++) {
-		fgets(buffer, 256, f);
-		sscanf(buffer, "%i: uart:%s port:%x ", 
-		       &j, info, &((pi->com_addr)[i]));
-		if (strcmp(info, "unknown")) {
-			sprintf(pi->com_name[i], "/dev/ttyS%i", j);
-			DISPLAY("  ttyS%i at 0x%03X\r\n", j, pi->com_addr[i]);
-		} else
-			pi->com_addr[i] = 0;
+                // Form: 'ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A'
+                nargs = sscanf(buffer, "%s at I/O %x", name, &sa);
+                if(nargs < 2)
+                        continue;
+
+                if(strstr(name, "ttyS")) {
+			i = name[4] - '0';
+
+			if (i >= MAX_LPT_PORTS - 1)
+				break;
+
+			sprintf(pi->com_name[i], "/dev/ttyS%i", i);
+			(pi->com_addr)[i] = sa;
+			DISPLAY("  /dev/ttyS%i at 0x%03X\r\n", 
+				i, pi->com_addr[i]);
+		}
 	}
 
 	// close
