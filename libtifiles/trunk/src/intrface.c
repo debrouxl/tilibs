@@ -75,13 +75,13 @@ TIEXPORT int TICALL tifiles_init()
 
 	if (tifiles_instance)
 		return (++tifiles_instance);
-	printl(0, _("tifiles library version %s\n"), LIBTIFILES_VERSION);
+	printl3(0, _("tifiles library version %s\n"), LIBTIFILES_VERSION);
 
 #if defined(ENABLE_NLS)
-	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	printl(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	printl3(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	printl3(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
+  	printl3(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   	return (++tifiles_instance);
@@ -139,10 +139,10 @@ TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
   case CALC_V200:
     break;
   default:
-    printl(2, _("Function not implemented. There is a bug. Please report it."));
-    printl(2, _("Informations:\n"));
-    printl(2, _("Calc: %i\n"), type);
-    printl(2, _("Program halted before crashing...\n"));
+    printl3(2, _("Function not implemented. There is a bug. Please report it."));
+    printl3(2, _("Informations:\n"));
+    printl3(2, _("Calc: %i\n"), type);
+    printl3(2, _("Program halted before crashing...\n"));
     abort();
     break;
   }
@@ -155,8 +155,8 @@ TIEXPORT TicalcType TICALL tifiles_get_calc(void)
 
 static void print_informations(void)
 {
-  printl(0, _("settings:\n"));
-  printl(0, _("  calc type: %s\n"), 
+  printl3(0, _("settings:\n"));
+  printl3(0, _("  calc type: %s\n"), 
   	tifiles_calctype_to_string(tifiles_calc_type));
 }
 

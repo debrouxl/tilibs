@@ -24,7 +24,7 @@
 
 #include "file_def.h"
 
-extern TIFILES_PRINTL printl;
+extern TIFILES_PRINTL printl3;
 
 #define	PRINT_STD	0
 #define PRINT_WRN	1

@@ -48,8 +48,8 @@ TIEXPORT int TICALL hexdump(uint8_t * ptr, int len)
   int i;
 
   for (i = 0; i < len; i++)
-    printl(0, "%02X ", ptr[i]);
-  printl(0, "\n");
+    printl3(0, "%02X ", ptr[i]);
+  printl3(0, "\n");
 
   return 0;
 }
@@ -95,8 +95,8 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
   l = strlen(s);
   if (l > n) {
-    printl(2, "string passed in 'write_string8' is too long (>n chars).\n");
-    printl(2, "s = <%s>, len(s) = %i\n", s, strlen(s));
+    printl3(2, "string passed in 'write_string8' is too long (>n chars).\n");
+    printl3(2, "s = <%s>, len(s) = %i\n", s, strlen(s));
     hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
     abort();
   }

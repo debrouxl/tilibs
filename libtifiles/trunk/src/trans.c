@@ -843,7 +843,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_ascii; 
       break;
 	default:
-		printl(2, _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
+		printl3(2, _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
 		exit(-1);
     }
 
@@ -880,7 +880,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_latin1; 
       break;
 	default:
-	  printl(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }
@@ -920,7 +920,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
     case CALC_V200:  f = transcode_from_ti9x_charset_to_utf8; 
       break;
 	default:
-	  printl(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }

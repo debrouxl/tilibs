@@ -54,20 +54,20 @@ static int default_tifiles_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TIFILES_PRINTL printl = default_tifiles_printl;
+TIFILES_PRINTL printl3 = default_tifiles_printl;
 
 /*
 	Change print behaviour (callback).
 */
 TIEXPORT TIFILES_PRINTL TICALL tifiles_set_printl(TIFILES_PRINTL new_printl)
 {
-  TIFILES_PRINTL old_printl = printl;
+  TIFILES_PRINTL old_printl = printl3;
 
   //printf("printl = %p\n", printl);
   //printf("old_printl = %p\n", old_printl);
   //printf("new_printl = %p\n", new_printl);
 
-  printl = new_printl;
+  printl3 = new_printl;
 
   return old_printl;
 }

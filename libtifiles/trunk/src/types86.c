@@ -106,7 +106,7 @@ uint8_t ti86_type2byte(const char *s)
   }
 
   if (i == TI86_MAXTYPES)
-    printl(1, _("unknown type. It is a bug. Please report this information.\n"));
+    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -128,7 +128,7 @@ uint8_t ti86_fext2byte(const char *s)
   }
 
   if (i == TI86_MAXTYPES)
-    printl(1, _("unknown type. It is a bug. Please report this information.\n"));
+    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
