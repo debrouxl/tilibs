@@ -178,9 +178,9 @@ extern "C" {
   TIEXPORT int TICALL tifiles_has_folder(TicalcType calc_type);
   TIEXPORT int TICALL tifiles_is_flash(TicalcType calc_type);
   TIEXPORT const char *TICALL tifiles_vartype_to_file_extension(int vartype);
-  TIEXPORT char *TICALL tifiles_translate_varname_static(const char
-                                                         *varname,
-                                                         uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_translate_varname2(const char
+						   *varname,
+						   uint8_t vartype);
 
 #ifdef __cplusplus
 }
