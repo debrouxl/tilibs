@@ -27,13 +27,13 @@
 #endif
 
 #if defined(__LINUX__)
-#include "linux/linux_ioports.h"
+#include "linux/linux_ioports.c"
 #elif defined(__MACOSX__)
-#include "macos/macos_ioports.h"
+#include "macos/macos_ioports.c"
 #elif defined(__BSD__)
-#include "linux/linux_ioports.h"
+#include "linux/linux_ioports.c"
 #elif defined(__WIN32__)
-#include "win32/win32_ioports.h"
+#include "win32/win32_ioports.c"
 #else
 #include "none.h"
 #endif
