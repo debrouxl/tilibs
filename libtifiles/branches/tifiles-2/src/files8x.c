@@ -19,13 +19,13 @@
  */
 
 /*
-  TI File Format handling routines
-  Calcs: 73/82/83/83+/85/86
+	TI File Format handling routines
+	Calcs: 73/82/83/83+/84+/85/86
 */
 
 /*
-  Thanks to Adrian Mettler <amettler@hmc.edu> for his patch which fixes
-  some TI85/86 file issues (padded, not padded).
+	Thanks to Adrian Mettler <amettler@hmc.edu> for his patch which fixes
+	some TI85/86 file issues (padded, not padded).
 */
 
 #include <stdio.h>
@@ -41,7 +41,7 @@
 #include "transcode.h"
 #include "logging.h"
 
-extern int tifiles_calc_type;
+int tifiles_calc_type;
 
 static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
 

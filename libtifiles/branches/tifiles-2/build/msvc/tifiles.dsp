@@ -190,10 +190,6 @@ SOURCE=..\..\src\stdints.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\tifiles.h~
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\transcode.h
 # End Source File
 # Begin Source File

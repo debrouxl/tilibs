@@ -27,38 +27,81 @@
 
 /* Structures */
 
-// defined in filesxx.h (common to all calcs)
+/**
+ * Ti9xVarEntry:
+ *
+ * Alias to @TiVarEntry. Common to all calcs.
+ **/
 typedef TiVarEntry Ti9xVarEntry;
+
+/**
+ * Ti9xRegular:
+ *
+ * Alias to TiRegular. Common to all calcs.
+ **/
 typedef TiRegular Ti9xRegular;
 
-typedef struct {
+/**
+ * Ti9xBackup:
+ * @model: calculator moel.
+ * @comment: comment embedded in file.
+ * @rom_version: ROM version  (such as "2.1").
+ * @type: a variable type ID for backup.
+ * @data_length: size of data part.
+ * @data_part: pure backup data.
+ * @checksum: checksum of file.
+ *
+ * A generic structure used to store the content of a TI92 backup file.
+ **/
+typedef struct 
+{
   TiCalcModel model;
 
-  char comment[41];
-  char rom_version[9];
-  uint8_t type;
-  uint32_t data_length;
-  uint8_t *data_part;
-  uint16_t checksum;
+  char		comment[41];
+  char		rom_version[9];
+  uint8_t	type;
+  uint32_t	data_length;
+  uint8_t*	data_part;
+  uint16_t	checksum;
 
 } Ti9xBackup;
 
+/**
+ * Ti9xFlash:
+ * @model: a calculator model.
+ * @revision_major:
+ * @revision_minor:
+ * @flags:
+ * @object_type:
+ * @revision_day:
+ * @revision_month:
+ * @revision_year: 
+ * @name: name of FLASH app or "basecode" for OS
+ * @device_type: a device ID (TI89: 0x88, TI92+:0x98)
+ * @data_type: var type ID (app, os, certificate, ...)
+ * @data_length: length of data part
+ * @data_part: pure FLASH data
+ * @next: pointer to next #Ti9xFlash structure (linked list).
+ *
+ * A generic structure used to store the content of a TI9x FLASH file (os or app).
+ **/
 typedef struct ti9x_flash Ti9xFlash;
-struct ti9x_flash {
+typedef struct ti9x_flash 
+{
   TiCalcModel model;
 
-  uint8_t revision_major;
-  uint8_t revision_minor;
-  uint8_t flags;
-  uint8_t object_type;
-  uint8_t revision_day;
-  uint8_t revision_month;
-  uint16_t revision_year;
-  char name[9];
-  uint8_t device_type;
-  uint8_t data_type;
-  uint32_t data_length;
-  uint8_t *data_part;
+  uint8_t	revision_major;
+  uint8_t	revision_minor;
+  uint8_t	flags;
+  uint8_t	object_type;
+  uint8_t	revision_day;
+  uint8_t	revision_month;
+  uint16_t	revision_year;
+  char		name[9];
+  uint8_t	device_type;
+  uint8_t	data_type;
+  uint32_t	data_length;
+  uint8_t*	data_part;
 
   Ti9xFlash *next;
 };

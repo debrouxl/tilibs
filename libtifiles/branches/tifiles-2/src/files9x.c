@@ -20,27 +20,27 @@
  */
 
 /*
-  TI File Format handling routines
-  Calcs: 89/92/92+/V200
+	TI File Format handling routines
+	Calcs: 89/89tm/92/92+/V200
 */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 #include "tifiles.h"
 #include "error.h"
+#include "logging.h"
+#include "macros.h"
 #include "typesxx.h"
 #include "files9x.h"
 #include "rwfile.h"
-#include "macros.h"
+
 #include "transcode.h"
-#include "logging.h"
+
 
 static int fsignature[2] = { 1, 0 };
 
-int tifiles_calc_type = 0;
+extern int tifiles_calc_type;
 
 /**************/
 /* Allocating */
