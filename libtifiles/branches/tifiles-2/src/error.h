@@ -33,6 +33,6 @@ typedef enum {
 	ERR_INVALID_FILE,		// Is not a TI file
 	ERR_BAD_FILE,			// Same as above
 	ERR_FILE_CHECKSUM,		// Checksum file error
-} TiFilesError;
+} TiFileError;
 
 #endif

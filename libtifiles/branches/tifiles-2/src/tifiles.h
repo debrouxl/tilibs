@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __tifiles_H__
-#define __tifiles_H__
+#ifndef __TIFILES_H__
+#define __TIFILES_H__
 
 #include "export.h"
 
@@ -38,8 +38,8 @@
 
 /* Definitions */
 
-#define VARNAME_MAX	18		// group/name: 8 + 1 + 8 + 1
-#define TIFILES_NCALCS 12	// # of supported calcs
+#define VARNAME_MAX		18	// group/name: 8 + 1 + 8 + 1
+#define TIFILES_NCALCS	12	// # of supported calcs
 
 typedef enum {
 	CALC_NONE = 0,
@@ -81,46 +81,20 @@ extern "C" {
 
   // intrface.c
   TIEXPORT const char* TICALL tifiles_get_version(void);
-  TIEXPORT int         TICALL tifiles_get_error(int err_num, char *error_msg);
-
-  TIEXPORT void TICALL tifiles_set_calc(TiCalcType type);
-  TIEXPORT TiCalcType TICALL tifiles_get_calc(void);
-
-  // for win32 (DLL partition -> memory violation)
-#ifdef __WIN32__
-  TIEXPORT void* TICALL tifiles_calloc(size_t nmemb, size_t size);
-  TIEXPORT void* TICALL tifiles_malloc(size_t size);
-  TIEXPORT void  TICALL tifiles_free(void *ptr);
-  TIEXPORT void* TICALL tifiles_realloc(void *ptr, size_t size);
-#else
-# define tifiles_calloc  calloc
-# define tifiles_malloc  malloc
-# define tifiles_free    free
-# define tifiles_realloc realloc
-#endif
+  TIEXPORT int         TICALL tifiles_get_error(int number, char **message);
 
   // trans.c
-  TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
-						   char *translate,
-						   uint8_t vartype,
-						   TiCalcType calc_type);
+  TIEXPORT uint8_t TICALL *tixx_detokenize_varname(TiCalcType model, const char *src, char *dst, uint8_t vartype);
 
-  TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, 
-						   const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, 
-						    const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_unicode(char* dst, 
-						     const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcType model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcType model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_unicode(TiCalcType model, char* dst, const char *src);
 
   TIEXPORT void TICALL tifiles_translate_set_encoding(TiFileEncoding encoding);
   TIEXPORT TiFileEncoding TICALL tifiles_translate_get_encoding(void);
 
-  TIEXPORT char* TICALL tifiles_translate_varname(const char *varname, 
-						  char *translate, 
-						  uint8_t vartype);
-  TIEXPORT char* TICALL tifiles_translate_varname_static(const char
-							 *varname,
-							 uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_translate_varname_static(TiCalcType model, const char *src, uint8_t vartype);
   
   // typesXX.c
   TIEXPORT const char* TICALL tifiles_vartype2string(uint8_t data);
@@ -207,8 +181,23 @@ extern "C" {
   TIEXPORT const char* TICALL tifiles_filetype_to_string(TiFileType type);
   TIEXPORT TiFileType  TICALL tifiles_string_to_filetype(const char *str);
 
+  // special for win32 (DLL partition -> memory violation)
+#ifdef __WIN32__
+  TIEXPORT void* TICALL tifiles_calloc(size_t nmemb, size_t size);
+  TIEXPORT void* TICALL tifiles_malloc(size_t size);
+  TIEXPORT void  TICALL tifiles_free(void *ptr);
+  TIEXPORT void* TICALL tifiles_realloc(void *ptr, size_t size);
+#else
+# define tifiles_calloc  calloc
+# define tifiles_malloc  malloc
+# define tifiles_free    free
+# define tifiles_realloc realloc
+#endif
+
   // deprecated
   // nothing yet
+  TIEXPORT void TICALL tifiles_set_calc(TiCalcType type);
+  TIEXPORT TiCalcType TICALL tifiles_get_calc(void);
 
 #ifdef __cplusplus
 }

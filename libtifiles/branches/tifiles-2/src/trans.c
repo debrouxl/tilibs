@@ -51,26 +51,25 @@ extern int tifiles_calc_type;
 */
 
 
-static char *ti8x_detokenize_varname(const char *varname, char *translate,
-			      uint8_t vartype)
+static char *ti8x_detokenize_varname(const char *src, char *dst, uint8_t vartype)
 {
   int i;
-  uint8_t tok1 = varname[0] & 0xff;
-  uint8_t tok2 = varname[1] & 0xff;
+  uint8_t tok1 = src[0] & 0xff;
+  uint8_t tok2 = src[1] & 0xff;
 
   switch (vartype) 
     {
     case TI82_WDW:
-      strcpy(translate, "Window");
-      return translate;
+      strcpy(dst, "Window");
+      return dst;
       break;
     case TI82_ZSTO:
-      strcpy(translate, "RclWin");
-      return translate;
+      strcpy(dst, "RclWin");
+      return dst;
       break;
     case TI82_TAB:
-      strcpy(translate, "TblSet");
-      return translate;
+      strcpy(dst, "TblSet");
+      return dst;
       break;
     default:
       break;
@@ -81,41 +80,41 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
     case 0x5C:			/* Matrix: [A] to [E]/[J] */
       switch(tok2)
 	{
-	case 0x00: sprintf(translate, "%cA]", '\xc1'); break;
-	case 0x01: sprintf(translate, "%cB]", '\xc1'); break;
-	case 0x02: sprintf(translate, "%cC]", '\xc1'); break;
-	case 0x03: sprintf(translate, "%cD]", '\xc1'); break;
-	case 0x04: sprintf(translate, "%cE]", '\xc1'); break;
-	case 0x05: sprintf(translate, "%cF]", '\xc1'); break;
-	case 0x06: sprintf(translate, "%cG]", '\xc1'); break;
-	case 0x07: sprintf(translate, "%cH]", '\xc1'); break;
-	case 0x08: sprintf(translate, "%cI]", '\xc1'); break;
-	case 0x09: sprintf(translate, "%cJ]", '\xc1'); break;
+	case 0x00: sprintf(dst, "%cA]", '\xc1'); break;
+	case 0x01: sprintf(dst, "%cB]", '\xc1'); break;
+	case 0x02: sprintf(dst, "%cC]", '\xc1'); break;
+	case 0x03: sprintf(dst, "%cD]", '\xc1'); break;
+	case 0x04: sprintf(dst, "%cE]", '\xc1'); break;
+	case 0x05: sprintf(dst, "%cF]", '\xc1'); break;
+	case 0x06: sprintf(dst, "%cG]", '\xc1'); break;
+	case 0x07: sprintf(dst, "%cH]", '\xc1'); break;
+	case 0x08: sprintf(dst, "%cI]", '\xc1'); break;
+	case 0x09: sprintf(dst, "%cJ]", '\xc1'); break;
 
-	default:   sprintf(translate, "%c?]", '\xc1'); break;
+	default:   sprintf(dst, "%c?]", '\xc1'); break;
 	}
       break;
     case 0x5D:			/* List: L1 to L6/L0 */
       if(tifiles_calc_type == CALC_TI73) //TI73 != TI83 here
-	sprintf(translate, "L%c", varname[1] + '\x80');	
+	sprintf(dst, "L%c", src[1] + '\x80');	
       else 
 	{// TI73 begins at L0, others at L1
 	  switch(tok2)
 	    {
-	    case 0x00: sprintf(translate, "L%c", '\x81'); break;
-	    case 0x01: sprintf(translate, "L%c", '\x82'); break;
-	    case 0x02: sprintf(translate, "L%c", '\x83'); break;
-	    case 0x03: sprintf(translate, "L%c", '\x84'); break;
-	    case 0x04: sprintf(translate, "L%c", '\x85'); break;
-	    case 0x05: sprintf(translate, "L%c", '\x86'); break;
-	    case 0x06: sprintf(translate, "L%c", '\x87'); break;
-	    case 0x07: sprintf(translate, "L%c", '\x88'); break;
-	    case 0x08: sprintf(translate, "L%c", '\x89'); break;
-	    case 0x09: sprintf(translate, "L%c", '\x80'); break;
+	    case 0x00: sprintf(dst, "L%c", '\x81'); break;
+	    case 0x01: sprintf(dst, "L%c", '\x82'); break;
+	    case 0x02: sprintf(dst, "L%c", '\x83'); break;
+	    case 0x03: sprintf(dst, "L%c", '\x84'); break;
+	    case 0x04: sprintf(dst, "L%c", '\x85'); break;
+	    case 0x05: sprintf(dst, "L%c", '\x86'); break;
+	    case 0x06: sprintf(dst, "L%c", '\x87'); break;
+	    case 0x07: sprintf(dst, "L%c", '\x88'); break;
+	    case 0x08: sprintf(dst, "L%c", '\x89'); break;
+	    case 0x09: sprintf(dst, "L%c", '\x80'); break;
 	      
 	    default: // named list
 	      for (i = 0; i < 7; i++)
-		translate[i] = varname[i + 1];
+		dst[i] = src[i + 1];
 	      break;
 	    }
 	}
@@ -123,220 +122,221 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
     case 0x5E:			/* Equations: Y1 to Y0, ... */
       switch(tok2)
 	{
-	case 0x10: sprintf(translate, "Y%c", '\x81'); break;
-	case 0x11: sprintf(translate, "Y%c", '\x82'); break;
-	case 0x12: sprintf(translate, "Y%c", '\x83'); break;
-	case 0x13: sprintf(translate, "Y%c", '\x84'); break;
-	case 0x14: sprintf(translate, "Y%c", '\x85'); break;
-	case 0x15: sprintf(translate, "Y%c", '\x86'); break;
-	case 0x16: sprintf(translate, "Y%c", '\x87'); break;
-	case 0x17: sprintf(translate, "Y%c", '\x88'); break;
-	case 0x18: sprintf(translate, "Y%c", '\x89'); break;
-	case 0x19: sprintf(translate, "Y%c", '\x80'); break;
+	case 0x10: sprintf(dst, "Y%c", '\x81'); break;
+	case 0x11: sprintf(dst, "Y%c", '\x82'); break;
+	case 0x12: sprintf(dst, "Y%c", '\x83'); break;
+	case 0x13: sprintf(dst, "Y%c", '\x84'); break;
+	case 0x14: sprintf(dst, "Y%c", '\x85'); break;
+	case 0x15: sprintf(dst, "Y%c", '\x86'); break;
+	case 0x16: sprintf(dst, "Y%c", '\x87'); break;
+	case 0x17: sprintf(dst, "Y%c", '\x88'); break;
+	case 0x18: sprintf(dst, "Y%c", '\x89'); break;
+	case 0x19: sprintf(dst, "Y%c", '\x80'); break;
 
-	case 0x20: sprintf(translate, "X%ct", '\x81'); break;
-	case 0x21: sprintf(translate, "Y%ct", '\x81'); break;
-	case 0x22: sprintf(translate, "X%ct", '\x82'); break;
-	case 0x23: sprintf(translate, "Y%ct", '\x82'); break;
-	case 0x24: sprintf(translate, "X%ct", '\x83'); break;
-	case 0x25: sprintf(translate, "Y%ct", '\x83'); break;
-	case 0x26: sprintf(translate, "X%ct", '\x84'); break;
-	case 0x27: sprintf(translate, "Y%ct", '\x84'); break;
-	case 0x28: sprintf(translate, "X%ct", '\x85'); break;
-	case 0x29: sprintf(translate, "Y%ct", '\x85'); break;
-	case 0x2a: sprintf(translate, "X%ct", '\x86'); break;
-	case 0x2b: sprintf(translate, "Y%ct", '\x86'); break;
+	case 0x20: sprintf(dst, "X%ct", '\x81'); break;
+	case 0x21: sprintf(dst, "Y%ct", '\x81'); break;
+	case 0x22: sprintf(dst, "X%ct", '\x82'); break;
+	case 0x23: sprintf(dst, "Y%ct", '\x82'); break;
+	case 0x24: sprintf(dst, "X%ct", '\x83'); break;
+	case 0x25: sprintf(dst, "Y%ct", '\x83'); break;
+	case 0x26: sprintf(dst, "X%ct", '\x84'); break;
+	case 0x27: sprintf(dst, "Y%ct", '\x84'); break;
+	case 0x28: sprintf(dst, "X%ct", '\x85'); break;
+	case 0x29: sprintf(dst, "Y%ct", '\x85'); break;
+	case 0x2a: sprintf(dst, "X%ct", '\x86'); break;
+	case 0x2b: sprintf(dst, "Y%ct", '\x86'); break;
 
-	case 0x40: sprintf(translate, "r%c", '\x81'); break;
-	case 0x41: sprintf(translate, "r%c", '\x82'); break;
-	case 0x42: sprintf(translate, "r%c", '\x83'); break;
-	case 0x43: sprintf(translate, "r%c", '\x84'); break;
-	case 0x44: sprintf(translate, "r%c", '\x85'); break;
-	case 0x45: sprintf(translate, "r%c", '\x86'); break;
+	case 0x40: sprintf(dst, "r%c", '\x81'); break;
+	case 0x41: sprintf(dst, "r%c", '\x82'); break;
+	case 0x42: sprintf(dst, "r%c", '\x83'); break;
+	case 0x43: sprintf(dst, "r%c", '\x84'); break;
+	case 0x44: sprintf(dst, "r%c", '\x85'); break;
+	case 0x45: sprintf(dst, "r%c", '\x86'); break;
 
 	case 0x80: 
 	  if(tifiles_calc_type == CALC_TI82)
-	    sprintf(translate, "U%c", '\xd7'); 
+	    sprintf(dst, "U%c", '\xd7'); 
 	  else
-	    sprintf(translate, "u");
+	    sprintf(dst, "u");
 	  break;
 	case 0x81:
 	  if(tifiles_calc_type == CALC_TI82)
-	    sprintf(translate, "V%c", '\xd7'); 
+	    sprintf(dst, "V%c", '\xd7'); 
 	  else
-	    sprintf(translate, "v");
+	    sprintf(dst, "v");
 	  break;
 	case 0x82:
 	  if(tifiles_calc_type == CALC_TI82)
-	    sprintf(translate, "W%c", '\xd7'); 
+	    sprintf(dst, "W%c", '\xd7'); 
 	  else
-	    sprintf(translate, "w");
+	    sprintf(dst, "w");
 	  break; 
 	
-	default: sprintf(translate, "_"); break;
+	default: sprintf(dst, "_"); break;
     }
       break;
     case 0x60:			/* Pictures */
       if (tok2 != 0x09)
-	sprintf(translate, "Pic%c", tok2 + '\x81');
+	sprintf(dst, "Pic%c", tok2 + '\x81');
       else
-	sprintf(translate, "Pic%c", '\x80');
+	sprintf(dst, "Pic%c", '\x80');
       break;
     case 0x61:			/* GDB */
       if (tok2 != 0x09)
-	sprintf(translate, "GDB%c", tok2 + '\x81');
+	sprintf(dst, "GDB%c", tok2 + '\x81');
       else
-	sprintf(translate, "GDB%c", '\x80');
+	sprintf(dst, "GDB%c", '\x80');
       break;
     case 0x62:
       switch(tok2)
 	{
-	case 0x01: sprintf(translate, "ReqEq"); break;
-	case 0x02: sprintf(translate, "n"); break;
-	case 0x03: sprintf(translate, "%c", '\xcb'); break;
-	case 0x04: sprintf(translate, "%c%c", '\xc6', 'x'); break;
-	case 0x05: sprintf(translate, "%c%c%c", '\xc6', 'x', '\x12'); break;
-	case 0x06: sprintf(translate, "%c%c", 'S', 'x'); break;
-	case 0x07: sprintf(translate, "%c%c", '\xc7', 'x'); break;
-	case 0x08: sprintf(translate, "minX"); break;
-	case 0x09: sprintf(translate, "maxX"); break;
-	case 0x0a: sprintf(translate, "minY"); break;
-	case 0x0b: sprintf(translate, "maxY"); break;
-	case 0x0c: sprintf(translate, "%c", '\xcc'); break;
-	case 0x0d: sprintf(translate, "%c%c", '\xc6', 'y'); break;
-	case 0x0e: sprintf(translate, "%c%c%c", '\xc6', 'y', '\x12'); break;
-	case 0x0f: sprintf(translate, "%c%c", 'S', 'y'); break;
-	case 0x10: sprintf(translate, "%c%c", '\xc7', 'y'); break;
-	case 0x11: sprintf(translate, "%c%c%c", '\xc6', 'x', 'y'); break;
-	case 0x12: sprintf(translate, "%c", 'r'); break; 
-	case 0x13: sprintf(translate, "Med"); break;
-	case 0x14: sprintf(translate, "%c%c", 'Q', '\x81'); break;
-	case 0x15: sprintf(translate, "%c%c", 'Q', '\x83'); break;
-	case 0x16: sprintf(translate, "a"); break;
-	case 0x17: sprintf(translate, "b"); break;
-	case 0x18: sprintf(translate, "c"); break;
-	case 0x19: sprintf(translate, "d"); break;
-	case 0x1a: sprintf(translate, "e"); break;
-	case 0x1b: sprintf(translate, "%c%c", 'x', '\x81'); break;
-	case 0x1c: sprintf(translate, "%c%c", 'x', '\x82'); break;
-	case 0x1d: sprintf(translate, "%c%c", 'x', '\x83'); break;
-	case 0x1e: sprintf(translate, "%c%c", 'y', '\x81'); break;
-	case 0x1f: sprintf(translate, "%c%c", 'y', '\x82'); break;
-	case 0x20: sprintf(translate, "%c%c", 'y', '\x83'); break;
-	case 0x21: sprintf(translate, "%c", '\xd7'); break;
-	case 0x22: sprintf(translate, "p"); break;
-	case 0x23: sprintf(translate, "z"); break;
-	case 0x24: sprintf(translate, "t"); break;
-	case 0x25: sprintf(translate, "%c%c", '\xd9', '\x12'); break;
-	case 0x26: sprintf(translate, "%c", '\xda'); break;
-	case 0x27: sprintf(translate, "df"); break;
-	case 0x28: sprintf(translate, "%c", '\xbc'); break;
-	case 0x29: sprintf(translate, "%c%c", '\xbc', '\x81'); break;
-	case 0x2a: sprintf(translate, "%c%c", '\xbc', '\x82'); break;
-	case 0x2b: sprintf(translate, "%c%c", '\xcb', '\x81'); break;
-	case 0x2c: sprintf(translate, "Sx%c", '\x81'); break;
-	case 0x2d: sprintf(translate, "n%c", '\x81'); break;
-	case 0x2e: sprintf(translate, "%c%c", '\xcb', '\x82'); break;
-	case 0x2f: sprintf(translate, "Sx%c", '\x82'); break;
-	case 0x30: sprintf(translate, "n%c", '\x82'); break;
-	case 0x31: sprintf(translate, "Sxp"); break;
-	case 0x32: sprintf(translate, "lower"); break;
-	case 0x33: sprintf(translate, "upper"); break;
-	case 0x34: sprintf(translate, "s"); break;
-	case 0x35: sprintf(translate, "r%c", '\x12'); break;
-	case 0x36: sprintf(translate, "R%c", '\x12'); break;
-	case 0x37: sprintf(translate, "df"); break;
-	case 0x38: sprintf(translate, "SS"); break;
-	case 0x39: sprintf(translate, "MS"); break;
-	case 0x3a: sprintf(translate, "df"); break;
-	case 0x3b: sprintf(translate, "SS"); break;
-	case 0x3c: sprintf(translate, "MS"); break;
-	default: sprintf(translate, "_"); break;
+	case 0x01: sprintf(dst, "ReqEq"); break;
+	case 0x02: sprintf(dst, "n"); break;
+	case 0x03: sprintf(dst, "%c", '\xcb'); break;
+	case 0x04: sprintf(dst, "%c%c", '\xc6', 'x'); break;
+	case 0x05: sprintf(dst, "%c%c%c", '\xc6', 'x', '\x12'); break;
+	case 0x06: sprintf(dst, "%c%c", 'S', 'x'); break;
+	case 0x07: sprintf(dst, "%c%c", '\xc7', 'x'); break;
+	case 0x08: sprintf(dst, "minX"); break;
+	case 0x09: sprintf(dst, "maxX"); break;
+	case 0x0a: sprintf(dst, "minY"); break;
+	case 0x0b: sprintf(dst, "maxY"); break;
+	case 0x0c: sprintf(dst, "%c", '\xcc'); break;
+	case 0x0d: sprintf(dst, "%c%c", '\xc6', 'y'); break;
+	case 0x0e: sprintf(dst, "%c%c%c", '\xc6', 'y', '\x12'); break;
+	case 0x0f: sprintf(dst, "%c%c", 'S', 'y'); break;
+	case 0x10: sprintf(dst, "%c%c", '\xc7', 'y'); break;
+	case 0x11: sprintf(dst, "%c%c%c", '\xc6', 'x', 'y'); break;
+	case 0x12: sprintf(dst, "%c", 'r'); break; 
+	case 0x13: sprintf(dst, "Med"); break;
+	case 0x14: sprintf(dst, "%c%c", 'Q', '\x81'); break;
+	case 0x15: sprintf(dst, "%c%c", 'Q', '\x83'); break;
+	case 0x16: sprintf(dst, "a"); break;
+	case 0x17: sprintf(dst, "b"); break;
+	case 0x18: sprintf(dst, "c"); break;
+	case 0x19: sprintf(dst, "d"); break;
+	case 0x1a: sprintf(dst, "e"); break;
+	case 0x1b: sprintf(dst, "%c%c", 'x', '\x81'); break;
+	case 0x1c: sprintf(dst, "%c%c", 'x', '\x82'); break;
+	case 0x1d: sprintf(dst, "%c%c", 'x', '\x83'); break;
+	case 0x1e: sprintf(dst, "%c%c", 'y', '\x81'); break;
+	case 0x1f: sprintf(dst, "%c%c", 'y', '\x82'); break;
+	case 0x20: sprintf(dst, "%c%c", 'y', '\x83'); break;
+	case 0x21: sprintf(dst, "%c", '\xd7'); break;
+	case 0x22: sprintf(dst, "p"); break;
+	case 0x23: sprintf(dst, "z"); break;
+	case 0x24: sprintf(dst, "t"); break;
+	case 0x25: sprintf(dst, "%c%c", '\xd9', '\x12'); break;
+	case 0x26: sprintf(dst, "%c", '\xda'); break;
+	case 0x27: sprintf(dst, "df"); break;
+	case 0x28: sprintf(dst, "%c", '\xbc'); break;
+	case 0x29: sprintf(dst, "%c%c", '\xbc', '\x81'); break;
+	case 0x2a: sprintf(dst, "%c%c", '\xbc', '\x82'); break;
+	case 0x2b: sprintf(dst, "%c%c", '\xcb', '\x81'); break;
+	case 0x2c: sprintf(dst, "Sx%c", '\x81'); break;
+	case 0x2d: sprintf(dst, "n%c", '\x81'); break;
+	case 0x2e: sprintf(dst, "%c%c", '\xcb', '\x82'); break;
+	case 0x2f: sprintf(dst, "Sx%c", '\x82'); break;
+	case 0x30: sprintf(dst, "n%c", '\x82'); break;
+	case 0x31: sprintf(dst, "Sxp"); break;
+	case 0x32: sprintf(dst, "lower"); break;
+	case 0x33: sprintf(dst, "upper"); break;
+	case 0x34: sprintf(dst, "s"); break;
+	case 0x35: sprintf(dst, "r%c", '\x12'); break;
+	case 0x36: sprintf(dst, "R%c", '\x12'); break;
+	case 0x37: sprintf(dst, "df"); break;
+	case 0x38: sprintf(dst, "SS"); break;
+	case 0x39: sprintf(dst, "MS"); break;
+	case 0x3a: sprintf(dst, "df"); break;
+	case 0x3b: sprintf(dst, "SS"); break;
+	case 0x3c: sprintf(dst, "MS"); break;
+	default: sprintf(dst, "_"); break;
 	}
       break;
     case 0x63:
       switch(tok2)
 	{
-	case 0x00: sprintf(translate, "ZXscl"); break;
-	case 0x01: sprintf(translate, "ZYscl"); break;
-	case 0x02: sprintf(translate, "Xscl"); break;
-	case 0x03: sprintf(translate, "Yscl"); break;
-	case 0x04: sprintf(translate, "U%cStart", '\xd7'); break;
-	case 0x05: sprintf(translate, "V%cStart", '\xd7'); break;
-	case 0x06: sprintf(translate, "U%c-%c", '\xd7', '\x81'); break;
-	case 0x07: sprintf(translate, "V%c-%c", '\xd7', '\x81'); break;
-	case 0x08: sprintf(translate, "ZU%cStart", '\xd7'); break;
-	case 0x09: sprintf(translate, "ZV%cStart", '\xd7'); break;
-	case 0x0a: sprintf(translate, "Xmin"); break;
-	case 0x0b: sprintf(translate, "Xmax"); break;
-	case 0x0c: sprintf(translate, "Ymin"); break;
-	case 0x0d: sprintf(translate, "Ymax"); break;
-	case 0x0e: sprintf(translate, "Tmin"); break;
-	case 0x0f: sprintf(translate, "Tmax"); break;
-	case 0x10: sprintf(translate, "%cmin", '\x5b'); break;
-	case 0x11: sprintf(translate, "%cmax", '\x5b'); break;
-	case 0x12: sprintf(translate, "ZXmin"); break;
-	case 0x13: sprintf(translate, "ZXmax"); break;
-	case 0x14: sprintf(translate, "ZYmin"); break;
-	case 0x15: sprintf(translate, "ZYmax"); break;
-	case 0x16: sprintf(translate, "Z%cmin", '\x5b'); break;
-	case 0x17: sprintf(translate, "Z%cmax", '\x5b'); break;
-	case 0x18: sprintf(translate, "ZTmin"); break;
-	case 0x19: sprintf(translate, "ZTmax"); break;
-	case 0x1a: sprintf(translate, "TblMin"); break;
-	case 0x1b: sprintf(translate, "%cMin", '\xd7'); break;
-	case 0x1c: sprintf(translate, "Z%cMin", '\xd7'); break;
-	case 0x1d: sprintf(translate, "%cMax", '\xd7'); break;
-	case 0x1e: sprintf(translate, "Z%cMax", '\xd7'); break;
-	case 0x1f: sprintf(translate, "%cStart", '\xd7'); break;
-	case 0x20: sprintf(translate, "Z%cStart", '\xd7'); break;
-	case 0x21: sprintf(translate, "%cTbl", '\xbe'); break;
-	case 0x22: sprintf(translate, "Tstep"); break;
-	case 0x23: sprintf(translate, "%cstep", '\x5b'); break;
-	case 0x24: sprintf(translate, "ZTstep"); break;
-	case 0x25: sprintf(translate, "Z%cstep", '\x5b'); break;
-	case 0x26: sprintf(translate, "%cX", '\xbe'); break;
-	case 0x27: sprintf(translate, "%cY", '\xbe'); break;
-	case 0x28: sprintf(translate, "XFact"); break;
-	case 0x29: sprintf(translate, "YFact"); break;
-	case 0x2a: sprintf(translate, "TblInput"); break;
-	case 0x2b: sprintf(translate, "N"); break;
-	case 0x2c: sprintf(translate, "I%c", '\x25'); break;
-	case 0x2d: sprintf(translate, "PV"); break;
-	case 0x2e: sprintf(translate, "PMT"); break;
-	case 0x2f: sprintf(translate, "FV"); break;
-	case 0x30: sprintf(translate, "Xres"); break;
-	case 0x31: sprintf(translate, "ZXres"); break;
-	default: sprintf(translate, "_"); break;
+	case 0x00: sprintf(dst, "ZXscl"); break;
+	case 0x01: sprintf(dst, "ZYscl"); break;
+	case 0x02: sprintf(dst, "Xscl"); break;
+	case 0x03: sprintf(dst, "Yscl"); break;
+	case 0x04: sprintf(dst, "U%cStart", '\xd7'); break;
+	case 0x05: sprintf(dst, "V%cStart", '\xd7'); break;
+	case 0x06: sprintf(dst, "U%c-%c", '\xd7', '\x81'); break;
+	case 0x07: sprintf(dst, "V%c-%c", '\xd7', '\x81'); break;
+	case 0x08: sprintf(dst, "ZU%cStart", '\xd7'); break;
+	case 0x09: sprintf(dst, "ZV%cStart", '\xd7'); break;
+	case 0x0a: sprintf(dst, "Xmin"); break;
+	case 0x0b: sprintf(dst, "Xmax"); break;
+	case 0x0c: sprintf(dst, "Ymin"); break;
+	case 0x0d: sprintf(dst, "Ymax"); break;
+	case 0x0e: sprintf(dst, "Tmin"); break;
+	case 0x0f: sprintf(dst, "Tmax"); break;
+	case 0x10: sprintf(dst, "%cmin", '\x5b'); break;
+	case 0x11: sprintf(dst, "%cmax", '\x5b'); break;
+	case 0x12: sprintf(dst, "ZXmin"); break;
+	case 0x13: sprintf(dst, "ZXmax"); break;
+	case 0x14: sprintf(dst, "ZYmin"); break;
+	case 0x15: sprintf(dst, "ZYmax"); break;
+	case 0x16: sprintf(dst, "Z%cmin", '\x5b'); break;
+	case 0x17: sprintf(dst, "Z%cmax", '\x5b'); break;
+	case 0x18: sprintf(dst, "ZTmin"); break;
+	case 0x19: sprintf(dst, "ZTmax"); break;
+	case 0x1a: sprintf(dst, "TblMin"); break;
+	case 0x1b: sprintf(dst, "%cMin", '\xd7'); break;
+	case 0x1c: sprintf(dst, "Z%cMin", '\xd7'); break;
+	case 0x1d: sprintf(dst, "%cMax", '\xd7'); break;
+	case 0x1e: sprintf(dst, "Z%cMax", '\xd7'); break;
+	case 0x1f: sprintf(dst, "%cStart", '\xd7'); break;
+	case 0x20: sprintf(dst, "Z%cStart", '\xd7'); break;
+	case 0x21: sprintf(dst, "%cTbl", '\xbe'); break;
+	case 0x22: sprintf(dst, "Tstep"); break;
+	case 0x23: sprintf(dst, "%cstep", '\x5b'); break;
+	case 0x24: sprintf(dst, "ZTstep"); break;
+	case 0x25: sprintf(dst, "Z%cstep", '\x5b'); break;
+	case 0x26: sprintf(dst, "%cX", '\xbe'); break;
+	case 0x27: sprintf(dst, "%cY", '\xbe'); break;
+	case 0x28: sprintf(dst, "XFact"); break;
+	case 0x29: sprintf(dst, "YFact"); break;
+	case 0x2a: sprintf(dst, "TblInput"); break;
+	case 0x2b: sprintf(dst, "N"); break;
+	case 0x2c: sprintf(dst, "I%c", '\x25'); break;
+	case 0x2d: sprintf(dst, "PV"); break;
+	case 0x2e: sprintf(dst, "PMT"); break;
+	case 0x2f: sprintf(dst, "FV"); break;
+	case 0x30: sprintf(dst, "Xres"); break;
+	case 0x31: sprintf(dst, "ZXres"); break;
+	default: sprintf(dst, "_"); break;
 	}
       break;
     case 0xAA:
       if (tok2 != 0x09)
-	sprintf(translate, "Str%c", tok2 + '\x81');
+	sprintf(dst, "Str%c", tok2 + '\x81');
       else
-	sprintf(translate, "Str%c", '\x80');
+	sprintf(dst, "Str%c", '\x80');
       break;
     default:
-      strcpy(translate, varname);
+      strcpy(dst, src);
       break;
     }
 
-    return translate;
+    return dst;
 }
 
 
-TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
-						 char *translate,
-						 uint8_t vartype,
-						 TiCalcType calc_type)
+TIEXPORT uint8_t TICALL *tixx_detokenize_varname(TiCalcType model, 
+												 const char *src, 
+												 char *dst,
+												 uint8_t vartype)
 {
-  switch (calc_type) {
+  switch (model) 
+  {
   case CALC_TI73:
   case CALC_TI82:
   case CALC_TI83:
   case CALC_TI83P:
   case CALC_TI84P:
-    return ti8x_detokenize_varname(varname, translate, vartype);
+    return ti8x_detokenize_varname(src, dst, vartype);
     break;
   case CALC_TI85:
   case CALC_TI86:
@@ -345,10 +345,10 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname,
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
-    return strcpy(translate, varname);
+    return strcpy(dst, src);
     break;
   default:
-    return strcpy(translate, "________");
+    return strcpy(dst, "________");
     break;
   }
 }
@@ -817,18 +817,16 @@ typedef char     (*TRANSCODE_TO_ASCII)   (const char c);
 typedef char     (*TRANSCODE_TO_LATIN1)  (const char c);
 typedef uint16_t (*TRANSCODE_TO_UNICODE) (const char c);
 
-extern int tifiles_calc_type;
-
 /*
   Convert string to pure ASCII.
   Note: src & dst will have the same length.
 */
-TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
   TRANSCODE_TO_ASCII f = NULL;
 
-  switch(tifiles_calc_type)
+  switch(model)
     {
     case CALC_TI73:
     case CALC_TI83:
@@ -851,8 +849,8 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_ascii; 
       break;
 	default:
-		tifiles_error( _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
-		exit(-1);
+		tifiles_warning("tifiles_transcode_to_ascii: invalid calc type");
+		break;
     }
 
   while(*src)
@@ -866,12 +864,12 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
   Convert string to the ISO8859-1 charset (aka Latin1).
   Note: src & dst will have the same length.
 */
-TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
   TRANSCODE_TO_LATIN1 f = NULL;
 
-  switch(tifiles_calc_type)
+  switch(model)
     {
     case CALC_TI73:
     case CALC_TI83:
@@ -894,8 +892,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_latin1; 
       break;
 	default:
-	  tifiles_error( "libtifiles error: unknown calc type. Program halted before crashing !\n");
-		exit(-1);
+	  tifiles_warning("tifiles_transcode_to_latin1: invalid calc type");
 	break;
     }
 
@@ -911,13 +908,13 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
   See: www.unicode.org/charts & www.czyborra.com/utf
   Note: dst may be up to twice the length of src.
 */
-TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_utf8(TiCalcType model, char* dst, const char *src)
 {
   char *dest = dst;
   uint16_t wchar;
   TRANSCODE_TO_UNICODE f = NULL;
 
-  switch(tifiles_calc_type)
+  switch(model)
     {
     case CALC_TI73:
     case CALC_TI83:
@@ -940,8 +937,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_utf8; 
       break;
 	default:
-	  tifiles_error("libtifiles error: unknown calc type. Program halted before crashing !\n");
-		exit(-1);
+	  tifiles_warning("tifiles_transcode_to_utf8: invalid calc type");
 	break;
     }
 
@@ -985,46 +981,30 @@ TIEXPORT TiFileEncoding TICALL tifiles_translate_get_encoding(void)
    Variable name translation: detokenization + charset transcoding.
 */
 
-char *tixx_translate_varname(const char *varname, char *translate,
-			     uint8_t vartype, TiCalcType calc_type)
+char *tixx_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype)
 {
   char detokenized[18];
-  char *src = detokenized;
-  char dst[2*18];
 
-  tixx_detokenize_varname(varname, detokenized, vartype, calc_type);
+  tixx_detokenize_varname(model, src, detokenized, vartype);
 
   switch(tifiles_encoding)
   {
-  case ENCODING_ASCII:   tifiles_transcode_to_ascii(dst, src); break;
-  case ENCODING_LATIN1:  tifiles_transcode_to_latin1(dst, src); break;
-  case ENCODING_UNICODE: tifiles_transcode_to_utf8(dst, src); break;
+  case ENCODING_ASCII:   tifiles_transcode_to_ascii(model, dst, detokenized); break;
+  case ENCODING_LATIN1:  tifiles_transcode_to_latin1(model, dst, detokenized); break;
+  case ENCODING_UNICODE: tifiles_transcode_to_utf8(model, dst, detokenized); break;
   }
 
-  strcpy(translate, dst);
-
-  return translate;
+  return dst;
 }
 
-TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
-						char *translate,
-						uint8_t vartype)
+TIEXPORT char *TICALL tifiles_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype)
 {
-	return tixx_translate_varname(varname, translate, vartype, 
-				tifiles_calc_type);
+	return tixx_translate_varname(model, dst, src, vartype);
 }
 
-TIEXPORT char *TICALL tifiles_translate_varname_static(const char *varname,
-						       uint8_t vartype)
+TIEXPORT char *TICALL tifiles_translate_varname_static(TiCalcType model, const char *src, uint8_t vartype)
 {
   static char trans[18];
   
-  return tifiles_translate_varname(varname, trans, vartype);
-}
-
-/* obsolete, replaced by the func below */
-TIEXPORT char *TICALL tifiles_translate_varname2(const char *varname,
-                                                 uint8_t vartype)
-{
-  return tifiles_translate_varname_static(varname, vartype);
+  return tifiles_translate_varname(model, trans, src, vartype);
 }

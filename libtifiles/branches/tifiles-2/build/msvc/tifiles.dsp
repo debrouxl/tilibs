@@ -110,6 +110,10 @@ SOURCE=..\..\src\types83p.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\types84p.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\types85.c
 # End Source File
 # Begin Source File
@@ -144,6 +148,10 @@ SOURCE=..\..\src\typesXX.c
 # Begin Group "Headers"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\error.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\export.h
@@ -186,10 +194,6 @@ SOURCE=..\..\src\misc.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\plerror.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\stdints.h
 # End Source File
 # Begin Source File
@@ -218,6 +222,10 @@ SOURCE=..\..\src\types83p.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\types84p.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\types85.h
 # End Source File
 # Begin Source File
@@ -227,6 +235,10 @@ SOURCE=..\..\src\types86.h
 # Begin Source File
 
 SOURCE=..\..\src\types89.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\types89t.h
 # End Source File
 # Begin Source File
 
