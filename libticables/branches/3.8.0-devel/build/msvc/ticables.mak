@@ -55,6 +55,7 @@ CLEAN :
 	-@erase "$(INTDIR)\logging.obj"
 	-@erase "$(INTDIR)\mapping.obj"
 	-@erase "$(INTDIR)\porttalk.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\ticables.res"
 	-@erase "$(INTDIR)\type2str.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -69,7 +70,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /Fp"$(INTDIR)\ticables.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -96,13 +97,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\intrface.obj" \
 	"$(INTDIR)\logging.obj" \
 	"$(INTDIR)\mapping.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
 	"$(INTDIR)\win32_detect.obj" \
 	"$(INTDIR)\win32_ioports.obj" \
 	"$(INTDIR)\win32_mapping.obj" \
 	"$(INTDIR)\ticables.res" \
-	".\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
 
 "..\..\tests\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -138,6 +140,7 @@ CLEAN :
 	-@erase "$(INTDIR)\logging.obj"
 	-@erase "$(INTDIR)\mapping.obj"
 	-@erase "$(INTDIR)\porttalk.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\ticables.res"
 	-@erase "$(INTDIR)\type2str.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -158,7 +161,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_CONSOLE" /D "__I386__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticables.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -185,13 +188,14 @@ LINK32_OBJS= \
 	"$(INTDIR)\intrface.obj" \
 	"$(INTDIR)\logging.obj" \
 	"$(INTDIR)\mapping.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\verbose.obj" \
 	"$(INTDIR)\win32_detect.obj" \
 	"$(INTDIR)\win32_ioports.obj" \
 	"$(INTDIR)\win32_mapping.obj" \
 	"$(INTDIR)\ticables.res" \
-	".\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
 
 "$(OUTDIR)\ticables.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -340,6 +344,12 @@ SOURCE=..\..\src\logging.c
 SOURCE=..\..\src\mapping.c
 
 "$(INTDIR)\mapping.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\..\src\printl.c
+
+"$(INTDIR)\printl.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -7,9 +7,9 @@
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\avr_link.c"\
 	
 
@@ -37,9 +37,9 @@
 	"..\..\src\Ioports.h"\
 	"..\..\src\linux\par_link.c"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\link_ser.c : \
@@ -57,33 +57,31 @@
 	
 
 ..\..\src\link_slv.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\slv_link.c"\
 	"..\..\src\win32\tiglusb.h"\
 	
 
 ..\..\src\link_tie.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\tie_link.c"\
 	
 
@@ -94,24 +92,23 @@
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\tig_link.c"\
 	
 
 ..\..\src\link_vti.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\Logging.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\vti_link.c"\
 	
 
@@ -121,9 +118,9 @@
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\vtl_link.c"\
 	
 
@@ -131,9 +128,10 @@
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
+	"..\..\src\intl1.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\detect.c : \
@@ -156,40 +154,37 @@
 	
 
 ..\..\src\error.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	
 
 ..\..\src\intrface.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_ver.h"\
 	"..\..\src\detect.h"\
 	"..\..\src\export.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\mapping.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\type2str.h"\
-	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\logging.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\mapping.c : \
@@ -201,67 +196,72 @@
 	"..\..\src\win32\win32_mapping.h"\
 	
 
-..\..\src\type2str.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
+..\..\src\printl.c : \
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
+	
+
+..\..\src\type2str.c : \
+	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\src\Cabl_def.h"\
+	"..\..\src\export.h"\
+	"..\..\src\intl1.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Timeout.h"\
 	
 
 ..\..\src\verbose.c : \
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\export.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\Verbose.h"\
 	
 
 ..\..\src\win32\win32_detect.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\porttalk.h"\
 	
 
 ..\..\src\win32\win32_ioports.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\Cabl_int.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
 	"..\..\src\Ioports.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\porttalk_ioctl.h"\
 	
 
 ..\..\src\win32\win32_mapping.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
 	"..\..\..\..\..\program files\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\src\Cabl_def.h"\
 	"..\..\src\Cabl_err.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
-	"..\..\src\Intl.h"\
+	"..\..\src\intl1.h"\
+	"..\..\src\printl.h"\
 	"..\..\src\stdints.h"\
 	"..\..\src\Timeout.h"\
 	"..\..\src\type2str.h"\
-	"..\..\src\Verbose.h"\
 	"..\..\src\win32\links.h"\
 	
