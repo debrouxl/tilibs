@@ -40,18 +40,18 @@
 static int default_printl(int level, const char *format, ...)
 {
 	va_list ap;
-	int ret;
-
-	fprintf(stdout, "tifiles ");
-	if(level != 0)
-		fprintf(stdout, "(%s)", 
-			(level == 2) ? _("error") : _("warning"));
-	fprintf(stdout, ": ");
-
+	int ret = 0;
+#ifndef __WIN32__	
+	switch(level) {
+		case 1: fprintf(stdout, _("(warning)")); break;
+		case 2: fprintf(stdout, _("(error)")); break;
+	}
+        fprintf(stdout, ": ");
+	
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
-
+#endif
 	return ret;
 }
 

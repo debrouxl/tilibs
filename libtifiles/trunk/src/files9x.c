@@ -503,7 +503,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
     {
       fwrite_long(f, offset);
       fwrite_8_chars(f, fentry->folder);
-      fwrite_byte(f, tifiles_folder_type());
+      fwrite_byte(f, (uint8_t)tifiles_folder_type());
       fwrite_byte(f, 0x00);
       for (j = 0; table[i][j] != -1; j++);
       fwrite_word(f, (uint16_t) j);

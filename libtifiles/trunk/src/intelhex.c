@@ -206,7 +206,7 @@ static int write_intel_packet(FILE * f, int n, uint16_t addr,
   int sum;
 
   fputc(':', f);
-  write_byte(n, f);
+  write_byte((uint8_t)n, f);
   write_byte(MSB(addr), f);
   write_byte(LSB(addr), f);
   write_byte(type, f);
@@ -215,7 +215,7 @@ static int write_intel_packet(FILE * f, int n, uint16_t addr,
     write_byte(data[i], f);
     sum += data[i];
   }
-  write_byte(0x100 - LSB(sum), f);
+  write_byte((uint8_t)(0x100 - LSB(sum)), f);
   if (type != 0x01) {
     fputc(0x0D, f);		// CR
     fputc(0x0A, f);		// LF
@@ -254,7 +254,8 @@ int write_data_block(FILE * f, uint16_t flash_address, uint16_t flash_page,
   }
   // Write data block
   for (i = 0; i < bytes_to_write; i += 32) {
-    write_intel_packet(f, 32, flash_address + i, 0x00, data + i);
+    write_intel_packet(f, 32, (uint16_t)(flash_address + i), 
+	    0x00, data + i);
   }
 
   return ret;

@@ -563,14 +563,14 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     Ti8xVarEntry *entry = &(content->entries[i]);
 
     fwrite_word(f, packet_length);
-    fwrite_word(f, entry->size);
+    fwrite_word(f, (uint16_t)entry->size);
     fwrite_byte(f, entry->type);
     if (is_ti8586(content->calc_type))
       fwrite_byte(f, (uint8_t) strlen(entry->name));
     fwrite_n_chars(f, 8, entry->name);
     if (is_ti83p(content->calc_type))
-      fwrite_word(f, (entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00);
-    fwrite_word(f, entry->size);
+      fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00));
+    fwrite_word(f, (uint16_t)entry->size);
     fwrite(entry->data, entry->size, 1, f);
 
     sum += packet_length;
@@ -706,7 +706,7 @@ TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
   fwrite_byte(f, content->revision_day);
   fwrite_byte(f, content->revision_month);
   fwrite_word(f, content->revision_year);
-  fwrite_byte(f, strlen(content->name));
+  fwrite_byte(f, (uint8_t)strlen(content->name));
   fwrite_8_chars(f, content->name);
   for (j = 0; j < 23; j++)
     fputc(0, f);
