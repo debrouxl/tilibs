@@ -25,10 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "tifiles - Win32 Release"
 
 OUTDIR=.
@@ -69,8 +65,42 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "_WINDOWS" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fp"$(INTDIR)\tifiles.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fp"$(INTDIR)\tifiles.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
+RSC=rc.exe
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\tifiles.bsc" 
@@ -101,8 +131,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\trans.obj" \
 	"$(INTDIR)\type2str.obj" \
-	"$(INTDIR)\tifiles.res" \
-	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
+	"$(INTDIR)\tifiles.res"
 
 "..\..\tests\tifiles.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -158,47 +187,8 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "TIFILES_EXPORTS" /D "__WIN32__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
-RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "_DEBUG" 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\tifiles.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\tifiles.pdb" /debug /machine:I386 /out:"$(OUTDIR)\tifiles.dll" /implib:"$(OUTDIR)\tifiles.lib" /pdbtype:sept 
-LINK32_OBJS= \
-	"$(INTDIR)\types73.obj" \
-	"$(INTDIR)\types82.obj" \
-	"$(INTDIR)\types83.obj" \
-	"$(INTDIR)\types83p.obj" \
-	"$(INTDIR)\types85.obj" \
-	"$(INTDIR)\types86.obj" \
-	"$(INTDIR)\types89.obj" \
-	"$(INTDIR)\types92.obj" \
-	"$(INTDIR)\types92p.obj" \
-	"$(INTDIR)\typesv2.obj" \
-	"$(INTDIR)\typesXX.obj" \
-	"$(INTDIR)\files8X.obj" \
-	"$(INTDIR)\files9X.obj" \
-	"$(INTDIR)\filesxx.obj" \
-	"$(INTDIR)\grp_ops.obj" \
-	"$(INTDIR)\intelhex.obj" \
-	"$(INTDIR)\error.obj" \
-	"$(INTDIR)\intrface.obj" \
-	"$(INTDIR)\misc.obj" \
-	"$(INTDIR)\printl.obj" \
-	"$(INTDIR)\trans.obj" \
-	"$(INTDIR)\type2str.obj" \
-	"$(INTDIR)\tifiles.res" \
-	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
-
-"$(OUTDIR)\tifiles.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ENDIF 
+CPP=cl.exe
+CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -229,6 +219,48 @@ LINK32_OBJS= \
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+MTL=midl.exe
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
+RSC=rc.exe
+RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "_DEBUG" 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\tifiles.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\tifiles.pdb" /debug /machine:I386 /out:"$(OUTDIR)\tifiles.dll" /implib:"$(OUTDIR)\tifiles.lib" /pdbtype:sept 
+LINK32_OBJS= \
+	"$(INTDIR)\types73.obj" \
+	"$(INTDIR)\types82.obj" \
+	"$(INTDIR)\types83.obj" \
+	"$(INTDIR)\types83p.obj" \
+	"$(INTDIR)\types85.obj" \
+	"$(INTDIR)\types86.obj" \
+	"$(INTDIR)\types89.obj" \
+	"$(INTDIR)\types92.obj" \
+	"$(INTDIR)\types92p.obj" \
+	"$(INTDIR)\typesv2.obj" \
+	"$(INTDIR)\typesXX.obj" \
+	"$(INTDIR)\files8X.obj" \
+	"$(INTDIR)\files9X.obj" \
+	"$(INTDIR)\filesxx.obj" \
+	"$(INTDIR)\grp_ops.obj" \
+	"$(INTDIR)\intelhex.obj" \
+	"$(INTDIR)\error.obj" \
+	"$(INTDIR)\intrface.obj" \
+	"$(INTDIR)\misc.obj" \
+	"$(INTDIR)\printl.obj" \
+	"$(INTDIR)\trans.obj" \
+	"$(INTDIR)\type2str.obj" \
+	"$(INTDIR)\tifiles.res"
+
+"$(OUTDIR)\tifiles.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ENDIF 
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"

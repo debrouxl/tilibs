@@ -930,7 +930,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
 
     // write our wide-char
     if ((uint16_t)wchar < 0x80)
-      *dst++ = wchar;
+      *dst++ = (char)wchar;
     else if ((uint16_t)wchar < 0x0800) {
       *dst++ = (0xC0 | (wchar >> 6)) & 0xff;
       *dst++ = (0x80 | (wchar & 0x3f)) & 0xff;
