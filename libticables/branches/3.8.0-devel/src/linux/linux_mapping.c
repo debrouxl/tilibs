@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <pwd.h>
@@ -56,7 +57,7 @@ static int check_for_libusb(void);
 
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources"));
+	DISPLAY(_("libticables: getting method from resources..."));
 	
 	// reset method
 	*method &= ~IOM_OK;
@@ -79,11 +80,9 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 
 	case LINK_AVR:
 		if(resources & IO_API) {
-			if(!check_for_tty())
-				*method |= IOM_API | IOM_OK;	
-			else
+			if(check_for_tty())
 				DISPLAY(_("  warning: can't use IO_API.\n"));
-                        
+			*method |= IOM_API | IOM_OK;	
 		}
 		break;
 
@@ -170,10 +169,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
   	if (!(*method & IOM_OK)) {
     		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
-	}/* else {
-		DISPLAY(_("  method: %s\n"), 
-			ticable_method_to_string(*method));
-			}*/
+	}
 	
 	return 0;
 }
@@ -198,6 +194,8 @@ const char *tiusb_node_names[2][4] = {
 // Bind the right I/O address & device according to I/O method
 static int linux_map_io(TicableMethod method, TicablePort port)
 {
+	DISPLAY(_("libticables: mapping I/O...\n"));
+	
 	switch (port) {
   	case USER_PORT:
     	break;
@@ -292,14 +290,12 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	// map I/O
-	DISPLAY(_("libticables: mapping I/O...\n"));
 	TRYR(linux_map_io((TicableMethod)method, port));
 	
 	// set the link cable
 	DISPLAY(_("libticables: registering cable...\n"));
     	switch (type) {
     	case LINK_PAR:
-
       		if ((port != PARALLEL_PORT_1) &&
 		    (port != PARALLEL_PORT_2) &&
 		    (port != PARALLEL_PORT_3) && (port != USER_PORT))

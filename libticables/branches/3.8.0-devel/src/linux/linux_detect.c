@@ -279,11 +279,13 @@ int linux_detect_resources(void)
 	DISPLAY(_("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\r\n"),
 		resources & IO_TIUSB ? "" : "not ");
 
+	/* LIBUSB: lib-usb userland module */
+
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
 	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
 		resources & IO_LIBUSB ? "" : "not ");
 
-  return 0;
+  	return 0;
 }

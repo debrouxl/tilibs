@@ -228,16 +228,16 @@ typedef struct {
 #endif
 
 /* USB port devices */
-#if defined(__LINUX__) && !defined(HAVE_LIBUSB)
+#if defined(__LINUX__)
 # define UP1_NAME "/dev/tiusb0"
 # define UP2_NAME "/dev/tiusb1"
 # define UP3_NAME "/dev/tiusb2"
 # define UP4_NAME "/dev/tiusb3"
-#elif defined(__LINUX__) && defined(HAVE_LIBUSB)
-# define UP1_NAME ""
-# define UP2_NAME ""
-# define UP3_NAME ""
-# define UP4_NAME ""
+#elif defined(__WIN32__)
+# define UP1_NAME "//./TiglUsb0"
+# define UP2_NAME "//./TiglUsb0"
+# define UP3_NAME "//./TiglUsb0"
+# define UP4_NAME "//./TiglUsb0"
 #else				// default
 # define UP1_NAME ""
 # define UP2_NAME ""
@@ -256,8 +256,9 @@ typedef struct {
 #define IO_DLL    (1<<3)	/* PortTalk device driver (NT4/2000/XP)     */
 #define IO_TIPAR  (1<<4)	/* tipar kernel module (Linux)              */
 #define IO_TISER  (1<<5)	/* tiser kernel module (Linux)              */
-#define IO_TIUSB  (1<<6)	/* tiglusb kernel module (Linux/Win32)      */
-#define IO_LIBUSB (1<<7)	/* libusb (Linux/Win32)                     */
+#define IO_TIUSB  (1<<6)	/* tiglusb kernel module (Linux)            */
+#define IO_LIBUSB (1<<7)	/* libusb (Linux)	                    */
+#define IO_USB	  (1<<8)	/* tiglusb (Win32)			    */ 
 
 #define IO_BSD   (1<<11)	/* Any *BSD platform                        */
 #define IO_LINUX (1<<12)	/* Any Linux platform                       */
