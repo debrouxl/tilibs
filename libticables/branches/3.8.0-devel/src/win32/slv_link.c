@@ -87,7 +87,7 @@ int slv_init()
   // Create an handle on library and retrieve symbols
   hDLL = LoadLibrary("TIGLUSB.DLL");
   if (hDLL == NULL) {
-    printl(2, _("TiglUsb library not found. Have you installed the TiglUsb driver ?\n"));
+    printl1(2, _("TiglUsb library not found. Have you installed the TiglUsb driver ?\n"));
     return ERR_OPEN_USB_DEV;
   }
 
@@ -99,7 +99,7 @@ int slv_init()
 	    _
 	    ("TiglUsb.dll: version %s mini needed, got version %s.\nPlease download the latest release on <http://ti-lpg.org/prj_usb>."),
 	    MIN_VERSION, dynTiglUsbVersion());
-    printl(2, buffer);
+    printl1(2, buffer);
     MessageBox(NULL, buffer, "Error in SilverLink support", MB_OK);
     FreeLibrary(hDLL);
     return ERR_TIGLUSB_VERSION;
@@ -107,35 +107,35 @@ int slv_init()
 
   dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
   if (!dynTiglUsbOpen) {
-    printl(2, _("Unable to load TiglUsbOpen symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbOpen symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
 
   dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
   if (!dynTiglUsbOpen) {
-    printl(2, _("Unable to load TiglUsbFlush symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbFlush symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
 
   dynTiglUsbRead = (TIGLUSB_READ) GetProcAddress(hDLL, "TiglUsbRead");
   if (!dynTiglUsbRead) {
-    printl(2, _("Unable to load TiglUsbRead symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbRead symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
 
   dynTiglUsbWrite = (TIGLUSB_WRITE) GetProcAddress(hDLL, "TiglUsbWrite");
   if (!dynTiglUsbWrite) {
-    printl(2, _("Unable to load TiglUsbWrite symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbWrite symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
 
   dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
   if (!dynTiglUsbClose) {
-    printl(2, _("Unable to load TiglUsbClose symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbClose symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
@@ -143,14 +143,14 @@ int slv_init()
   dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL,
 							     "TiglUsbSetTimeout");
   if (!dynTiglUsbSetTimeout) {
-    printl(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbSetTimeout symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }
 
   dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
   if (!dynTiglUsbCheck) {
-    printl(2, _("Unable to load TiglUsbCheck symbol.\n"));
+    printl1(2, _("Unable to load TiglUsbCheck symbol.\n"));
     FreeLibrary(hDLL);
     return ERR_FREELIBRARY;
   }

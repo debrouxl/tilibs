@@ -49,7 +49,7 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 	int ret;
 		
 	va_start(ap, format);
-    	ret = printl(0, format, ap);
+    	ret = printl1(0, format, ap);
     	va_end(ap);
 	
 	return ret;
@@ -62,7 +62,7 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 	int ret;
 		
 	va_start(ap, format);
-    	ret = printl(2, format, ap);
+    	ret = printl1(2, format, ap);
     	va_end(ap);
 	
 	return ret;

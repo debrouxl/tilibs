@@ -78,9 +78,9 @@ int dev_init()
   	mask = O_RDWR | /*O_NONBLOCK | */ O_SYNC;
   	if ((dev_fd = open(io_device, mask)) == -1) {
   		switch(errno) {
-  		case ENODEV: printl(2, _("unable to open character device: %s.\n"), io_device); break;
-  		case EACCES: printl(2, _("unable to open character device: %s (wrong permissions).\n"), io_device); break;
-		default: printl(2, _("unable to open character device: %s\n"), io_device); break;
+  		case ENODEV: printl1(2, _("unable to open character device: %s.\n"), io_device); break;
+  		case EACCES: printl1(2, _("unable to open character device: %s (wrong permissions).\n"), io_device); break;
+		default: printl1(2, _("unable to open character device: %s\n"), io_device); break;
 		}
     	return ERR_OPEN_TIDEV;
 	}
@@ -90,22 +90,22 @@ int dev_init()
 	
 	if((port == PARALLEL_PORT_1) || (port == PARALLEL_PORT_2) || (port == PARALLEL_PORT_3)) {
 	  	if (ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay) == -1) {
-	    		printl(2, _("failed to set delay.\n"));
+	    		printl1(2, _("failed to set delay.\n"));
 	    		return ERR_IOCTL;
 	  	}
 	  	if (ioctl(dev_fd, IOCTL_TIPAR_TIMEOUT, time_out) == -1) {
-	    		printl(2, _("failed to set timeout.\n"));
+	    		printl1(2, _("failed to set timeout.\n"));
 	    		return ERR_IOCTL;
 	  	}
 	}
   	
   	if((port == SERIAL_PORT_1) || (port == SERIAL_PORT_2) || (port == SERIAL_PORT_3) || (port == SERIAL_PORT_4)) {
 	  	if (ioctl(dev_fd, IOCTL_TISER_DELAY, delay) == -1) {
-	    		printl(2, _("failed to set delay.\n"));
+	    		printl1(2, _("failed to set delay.\n"));
 	    		return ERR_IOCTL;
 	  	}
 	  	if (ioctl(dev_fd, IOCTL_TISER_TIMEOUT, time_out) == -1) {
-	    		printl(2, _("failed to set timeout.\n"));
+	    		printl1(2, _("failed to set timeout.\n"));
 	    		return ERR_IOCTL;
 	  	}
 	}

@@ -78,7 +78,7 @@ int tie_init(void)
 {
   /* Check if valid argument */
   if ((io_address < 1) || (io_address > 2)) {
-    printl(2, _("invalid io_address parameter passed to libticables.\n"));
+    printl1(2, _("invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
   } else {
     p = io_address - 1;
@@ -162,7 +162,7 @@ int tie_get(uint8_t * data)
   //if(!hMap)
   //      return ERR_OPEN_FILE_MAP;
 
-  //printl(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
+  //printl1(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
 
   tdr.count++;
   /* Wait that the buffer has been filled */
@@ -176,7 +176,7 @@ int tie_get(uint8_t * data)
   /* And retrieve the data from the circular buffer */
   *data = pRecvBuf->buf[pRecvBuf->start];
   pRecvBuf->start = (pRecvBuf->start + 1) & 255;
-  //printl(0, "get: 0x%02x\n", *data);
+  //printl1(0, "get: 0x%02x\n", *data);
   LOG_DATA(*data);
 
   return 0;

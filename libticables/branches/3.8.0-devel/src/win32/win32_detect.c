@@ -40,15 +40,15 @@ int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
 
-  	printl(0, _("getting OS type:\n"));
+  	printl1(0, _("getting OS type:\n"));
   	
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
-  	printl(0, _("  operating System: %s\n"),
+  	printl1(0, _("  operating System: %s\n"),
 	  (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?
 	  "Windows9x" : "WindowsNT");
-  	printl(0, _("  version: %i.%i\n"),
+  	printl1(0, _("  version: %i.%i\n"),
 	  os.dwMajorVersion, os.dwMinorVersion);
   
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -75,7 +75,7 @@ int win32_detect_resources(void)
 	char *os;
     	
 	win32_detect_os(&os);
-	printl(0, _("checking resources:\n"));
+	printl1(0, _("checking resources:\n"));
 	
 	/* Windows NT need permissions */
 	
@@ -89,16 +89,16 @@ int win32_detect_resources(void)
     	/* API: for use with COMx */
     	
     	resources |= IO_API;
-    	printl(0, _("  IO_API: %sfound at compile time.\n"),
+    	printl1(0, _("  IO_API: %sfound at compile time.\n"),
 		resources & IO_API ? "" : "not ");
 
 	/* ASM: for use with low-level I/O and Win9x */
 	
     	if (!strcmp(os, "Windows9x")) {
       		resources |= IO_ASM;
-      		printl(0, _("  IO_ASM: available (Win9x).\n"));
+      		printl1(0, _("  IO_ASM: available (Win9x).\n"));
 	} else {
-		printl(0, _("  IO_ASM: not available (WinNT).\n"));
+		printl1(0, _("  IO_ASM: not available (WinNT).\n"));
 	}	
 
 	/* DLL: for use with low-level I/O and WinNT */
@@ -126,7 +126,7 @@ int win32_detect_resources(void)
 		       		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 			if (PortTalk_Handle == INVALID_HANDLE_VALUE) {
-	  			printl(2, "PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
+	  			printl1(2, "PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
 	  			return -1;
 			}
       		}
@@ -136,7 +136,7 @@ int win32_detect_resources(void)
 			CloseHandle(PortTalk_Handle);
       		}
       
-      		printl(0, _("  IO_DLL: %s (PortTalk)\n"),
+      		printl1(0, _("  IO_DLL: %s (PortTalk)\n"),
 	      		resources & IO_DLL ? "available" : "not available");
     	}
     
@@ -149,7 +149,7 @@ int win32_detect_resources(void)
       		CloseHandle(hDLL);
 #endif
     	}
-    	printl(0, _("  IO_USB: %s (TiglUsb)\n"),
+    	printl1(0, _("  IO_USB: %s (TiglUsb)\n"),
 	    resources & IO_USB ? "available" : "not available");
 
 	return 0;

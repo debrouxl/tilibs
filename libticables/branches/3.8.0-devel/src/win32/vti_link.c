@@ -86,23 +86,23 @@ int vti_init(unsigned int io_addr, char *dev)
     if (GetLastError() != ERROR_ALREADY_EXISTS)
       break;
   }
-  //printl(0, "Virtual Link L->V %i\n", i);
+  //printl1(0, "Virtual Link L->V %i\n", i);
   vSendBuf = (LinkBuffer *) MapViewOfFile(hVLinkFileMap,
 					  FILE_MAP_ALL_ACCESS, 0, 0,
 					  sizeof(LinkBuffer));
 
   /* Get an handle on the VTi window */
   otherWnd = FindWindow("TEmuWnd", NULL);
-  //printl(0, "otherWnd: %p\n", otherWnd);
+  //printl1(0, "otherWnd: %p\n", otherWnd);
   if (!otherWnd)
     return ERR_OPP_NOT_AVAIL;
 
   /* Get the current DLL handle */
   Handle = GetModuleHandle("ticables.dll");
   if (!Handle) {
-    printl(2, _("Unable to get an handle on the libTIcables.\n"));
-    printl(2, _("Did you rename the library ?!\n"));
-    printl(2, _("Fatal error. Program terminated.\n"));
+    printl1(2, _("Unable to get an handle on the libTIcables.\n"));
+    printl1(2, _("Did you rename the library ?!\n"));
+    printl1(2, _("Fatal error. Program terminated.\n"));
     exit(-1);
   }
   // Inform VTi of our virtual link so that it can enable it. It should returns 
@@ -114,11 +114,11 @@ int vti_init(unsigned int io_addr, char *dev)
   //WaitMessage();                                                                                // Waits VTi answer
 
   /* Create a file mapping handle for the 'Vti->lib' communication channel */
-  //printl(0, "Virtual Link V->L %i\n", i-1);
+  //printl1(0, "Virtual Link V->L %i\n", i-1);
   sprintf(name, "Virtual Link %d", i - 1);
   hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
   if (hMap) {
-    printl(2, _("Opened %s\n"), name);
+    printl1(2, _("Opened %s\n"), name);
     vRecvBuf =
 	(LinkBuffer *) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
 				     0, 0, sizeof(LinkBuffer));

@@ -55,20 +55,20 @@ static int default_ticables_printl(int level, const char *format, ...)
 	return ret;
 }
 
-TICABLES_PRINTL printl = default_ticables_printl;
+TICABLES_PRINTL printl1 = default_ticables_printl;
 
 /*
 	Change print behaviour (callback).
 */
 TIEXPORT TICABLES_PRINTL TICALL ticable_set_printl(TICABLES_PRINTL new_printl)
 {
-  TICABLES_PRINTL old_printl = printl;
+  TICABLES_PRINTL old_printl = printl1;
 
   //printf("printl = %p\n", printl);
   //printf("old_printl = %p\n", old_printl);
   //printf("new_printl = %p\n", new_printl);
 
-  printl = new_printl;
+  printl1 = new_printl;
 
   return old_printl;
 }

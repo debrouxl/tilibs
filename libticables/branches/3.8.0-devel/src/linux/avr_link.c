@@ -74,9 +74,9 @@ int avr_init()
 	
 	if ((dev_fd = open(io_device, flags)) == -1) {
 		if(errno == EACCES)
-			printl(2, _("unable to open this serial port: %s (wrong permissions).\n"), io_device);
+			printl1(2, _("unable to open this serial port: %s (wrong permissions).\n"), io_device);
 		else
-			printl(2, _("unable to open this serial port: %s\n"), io_device);
+			printl1(2, _("unable to open this serial port: %s\n"), io_device);
 		return ERR_OPEN_SER_DEV;
 	}
 	

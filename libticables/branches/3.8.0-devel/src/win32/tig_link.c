@@ -59,19 +59,19 @@ int tig_init()
   hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0,
 		    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (hCom == INVALID_HANDLE_VALUE) {
-    printl(2, "CreateFile\n");
+    printl1(2, "CreateFile\n");
     return ERR_OPEN_SER_COMM;
   }
   // Setup buffer size
   fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
   if (!fSuccess) {
-    printl(2, "SetupComm\n");
+    printl1(2, "SetupComm\n");
     return ERR_SETUP_COMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(hCom, &dcb);
   if (!fSuccess) {
-    printl(2, "GetCommState\n");
+    printl1(2, "GetCommState\n");
     return ERR_GET_COMMSTATE;
   }
   // Fills the structure with config
@@ -96,13 +96,13 @@ int tig_init()
   // Config COM port
   fSuccess = SetCommState(hCom, &dcb);
   if (!fSuccess) {
-    printl(2, "SetCommState\n");
+    printl1(2, "SetCommState\n");
     return ERR_SET_COMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    printl(2, "GetCommTimeouts\n");
+    printl1(2, "GetCommTimeouts\n");
     return ERR_GET_COMMTIMEOUT;
   }
 
@@ -114,7 +114,7 @@ int tig_init()
 
   fSuccess = SetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    printl(2, "SetCommTimeouts\n");
+    printl1(2, "SetCommTimeouts\n");
     return ERR_SET_COMMTIMEOUT;
   }
 
@@ -131,7 +131,7 @@ int tig_open()
 
   fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
   if (!fSuccess) {
-    printl(2, "PurgeComm\n");
+    printl1(2, "PurgeComm\n");
     return ERR_FLUSH_COMM;
   }
 
@@ -151,10 +151,10 @@ int tig_put(uint8_t data)
 
   fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
   if (!fSuccess) {
-    printl(2, "WriteFile\n");
+    printl1(2, "WriteFile\n");
     return ERR_WRITE_ERROR;
   } else if (i == 0) {
-    printl(2, "WriteFile\n");
+    printl1(2, "WriteFile\n");
     return ERR_WRITE_TIMEOUT;
   }
 
@@ -182,7 +182,7 @@ int tig_get(uint8_t * data)
   while (i != 1);
 
   if (!fSuccess) {
-    printl(2, "ReadFile\n");
+    printl1(2, "ReadFile\n");
     return ERR_READ_ERROR;
   }
 
@@ -217,35 +217,35 @@ int tig_probe()
   EscapeCommFunction(hCom, SETDTR);
   EscapeCommFunction(hCom, SETRTS);
   GetCommModemStatus(hCom, &status);	// Get MCR values
-  //printl(0, "status: %i\n", status);
+  //printl1(0, "status: %i\n", status);
   if (status != 0x20)
     return ERR_PROBE_FAILED;
 
   EscapeCommFunction(hCom, SETDTR);
   EscapeCommFunction(hCom, CLRRTS);
   GetCommModemStatus(hCom, &status);
-  //printl(0, "status: %i\n", status);
+  //printl1(0, "status: %i\n", status);
   if (status != 0x20)
     return ERR_PROBE_FAILED;
 
   EscapeCommFunction(hCom, CLRDTR);
   EscapeCommFunction(hCom, CLRRTS);
   GetCommModemStatus(hCom, &status);
-  //printl(0, "status: %i\n", status);
+  //printl1(0, "status: %i\n", status);
   if (status != 0x00)
     return ERR_PROBE_FAILED;
 
   EscapeCommFunction(hCom, CLRDTR);
   EscapeCommFunction(hCom, SETRTS);
   GetCommModemStatus(hCom, &status);
-  //printl(0, "status: %i\n", status);
+  //printl1(0, "status: %i\n", status);
   if (status != 0x00)
     return ERR_PROBE_FAILED;
 
   EscapeCommFunction(hCom, SETDTR);
   EscapeCommFunction(hCom, SETRTS);
   GetCommModemStatus(hCom, &status);
-  //printl(0, "status: %i\n", status);
+  //printl1(0, "status: %i\n", status);
   if (status != 0x20)
     return ERR_PROBE_FAILED;
 

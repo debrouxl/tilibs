@@ -192,7 +192,7 @@ int par_probe()
     		for (j = 0; j < 10; j++)
       			data = io_rd(lpt_in);
       			
-    		//printl(0, "%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
+    		//printl1(0, "%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
     		if ((data & 0x30) != seq[i]) {
       			io_wr(lpt_out, 3);
       		return ERR_PROBE_FAILED;

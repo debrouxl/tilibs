@@ -61,19 +61,19 @@ int avr_init()
   hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, NULL,
 		    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (hCom == INVALID_HANDLE_VALUE) {
-    printl(2, "CreateFile\n");
+    printl1(2, "CreateFile\n");
     return ERR_OPEN_SER_COMM;
   }
   // Setup buffer size
   fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
   if (!fSuccess) {
-    printl(2, "SetupComm\n");
+    printl1(2, "SetupComm\n");
     return ERR_SETUP_COMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(hCom, &dcb);
   if (!fSuccess) {
-    printl(2, "GetCommState\n");
+    printl1(2, "GetCommState\n");
     return ERR_GET_COMMSTATE;
   }
   // select baud-rate
@@ -113,13 +113,13 @@ int avr_init()
   // Config COM port
   fSuccess = SetCommState(hCom, &dcb);
   if (!fSuccess) {
-    printl(2, "SetCommState\n");
+    printl1(2, "SetCommState\n");
     return ERR_SET_COMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    printl(2, "GetCommTimeouts\n");
+    printl1(2, "GetCommTimeouts\n");
     return ERR_GET_COMMTIMEOUT;
   }
 
@@ -131,7 +131,7 @@ int avr_init()
 
   fSuccess = SetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    printl(2, "SetCommTimeouts\n");
+    printl1(2, "SetCommTimeouts\n");
     return ERR_SET_COMMTIMEOUT;
   }
 
@@ -148,7 +148,7 @@ int avr_open()
 
   fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
   if (!fSuccess) {
-    printl(2, "PurgeComm\n");
+    printl1(2, "PurgeComm\n");
     //print_last_error();
     return ERR_FLUSH_COMM;
   }
@@ -169,10 +169,10 @@ int avr_put(uint8_t data)
 
   fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
   if (!fSuccess) {
-    printl(2, "WriteFile\n");
+    printl1(2, "WriteFile\n");
     return ERR_WRITE_ERROR;
   } else if (i == 0) {
-    printl(2, "WriteFile\n");
+    printl1(2, "WriteFile\n");
     return ERR_WRITE_TIMEOUT;
   }
 
@@ -199,7 +199,7 @@ int avr_get(uint8_t * data)
   }
   while (i != 1);
   if (!fSuccess) {
-    printl(2, "ReadFile\n");
+    printl1(2, "ReadFile\n");
     return ERR_READ_ERROR;
   }
 

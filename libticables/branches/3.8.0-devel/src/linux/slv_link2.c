@@ -105,7 +105,7 @@ static void find_tigl_device(void)
       			if ((dev->descriptor.idVendor == TIGL_VENDOR_ID) &&
 	  			(dev->descriptor.idProduct == TIGL_PRODUCT_ID)) {
 				/* keep track of the TIGL device */
-				printl(0, _("TIGL-USB found.\n"));
+				printl1(0, _("TIGL-USB found.\n"));
 		
 				tigl_dev = dev;
 				break;
@@ -128,14 +128,14 @@ static int enumerate_tigl_device(void)
   	/* find all usb busses on the system */
   	ret = usb_find_busses();
   	if (ret < 0) {
-    		printl(2, _("usb_find_busses (%s).\n"), usb_strerror());
+    		printl1(2, _("usb_find_busses (%s).\n"), usb_strerror());
     		return ERR_LIBUSB_OPEN;
   	}
 
   	/* find all usb devices on all discovered busses */
   	ret = usb_find_devices();
   	if (ret < 0) {
-    		printl(2, _("usb_find_devices (%s).\n"), usb_strerror());
+    		printl1(2, _("usb_find_devices (%s).\n"), usb_strerror());
     		return ERR_LIBUSB_OPEN;
   	}
 
@@ -149,13 +149,13 @@ static int enumerate_tigl_device(void)
       			/* interface 0, configuration 1 */
       			ret = usb_claim_interface(tigl_han, 0);
       			if (ret < 0) {
-				printl(2, "usb_claim_interface (%s).\n", usb_strerror());
+				printl1(2, "usb_claim_interface (%s).\n", usb_strerror());
 				return ERR_LIBUSB_INIT;
       			}
 
       			ret = usb_set_configuration(tigl_han, 1);
 	      		if (ret < 0) {
-				printl(2, "usb_set_configuration (%s).\n", usb_strerror());
+				printl1(2, "usb_set_configuration (%s).\n", usb_strerror());
 				return ERR_LIBUSB_INIT;
 	      		}
 	      		return 0;
@@ -195,15 +195,15 @@ int slv_open2()
   	/* Reset endpoints */
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   	if (ret < 0) {
-    		printl(2, "usb_clear_halt (%s).\n", usb_strerror());
+    		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
 
     		ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     		if (ret < 0) {
-      			printl(2, "usb_resetep (%s).\n", usb_strerror());
+      			printl1(2, "usb_resetep (%s).\n", usb_strerror());
 
       			ret = usb_reset(tigl_han);
       			if (ret < 0) {
-				printl(2, "usb_reset (%s).\n", usb_strerror());
+				printl1(2, "usb_reset (%s).\n", usb_strerror());
 				return ERR_LIBUSB_RESET;
       			}
     		}
@@ -211,15 +211,15 @@ int slv_open2()
 
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   	if (ret < 0) {
-    		printl(2, "usb_clear_halt (%s).\n", usb_strerror());
+    		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
 
 	    	ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
 	    	if (ret < 0) {
-	      		printl(2, "usb_resetep (%s).\n", usb_strerror());
+	      		printl1(2, "usb_resetep (%s).\n", usb_strerror());
 	
 	      		ret = usb_reset(tigl_han);
 	      		if (ret < 0) {
-				printl(2, "usb_reset (%s).\n", usb_strerror());
+				printl1(2, "usb_reset (%s).\n", usb_strerror());
 				return ERR_LIBUSB_RESET;
 	      		}
 	    	}
@@ -266,7 +266,7 @@ int slv_put2(uint8_t data)
   	/* Byte per byte */
   	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, (time_out * 10));
   	if (ret <= 0) {
-    		printl(2, "usb_bulk_write (%s).\n", usb_strerror());
+    		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
     		return ERR_WRITE_ERROR;
   	}
 #else
@@ -276,7 +276,7 @@ int slv_put2(uint8_t data)
 	    	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2,
 			       nBytesWrite2, (time_out * 10));
 	    	if (ret <= 0) {
-	      		printl(2, "usb_bulk_write (%s).\n", usb_strerror());
+	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
 	      		return ERR_WRITE_ERROR;
 	    	}
 	    	nBytesWrite2 = 0;
@@ -302,7 +302,7 @@ int slv_get2(uint8_t * data)
 		       nBytesWrite2, (time_out * 10));
 	    	nBytesWrite2 = 0;
 	    	if (ret <= 0) {
-	      		printl(2, "usb_bulk_write (%s).\n", usb_strerror());
+	      		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
 	      		return ERR_WRITE_ERROR;
 	    	}
   	}
@@ -316,12 +316,12 @@ int slv_get2(uint8_t * data)
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
-				printl(2, _("weird, usb_bulk_read returns without any data; retrying for circumventing the quirk...\n"));
+				printl1(2, _("weird, usb_bulk_read returns without any data; retrying for circumventing the quirk...\n"));
 	    	}
 	    	while (!ret);
 	
 	    	if (ret < 0) {
-	      		printl(2, "usb_bulk_read (%s).\n", usb_strerror());
+	      		printl1(2, "usb_bulk_read (%s).\n", usb_strerror());
 	      		nBytesRead2 = 0;
 	      		return ERR_READ_ERROR;
 	    	}
@@ -365,7 +365,7 @@ int slv_check2(int *status)
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
-				printl(2, "weird, usb_bulk_read returns without any data;  retrying...\n");
+				printl1(2, "weird, usb_bulk_read returns without any data;  retrying...\n");
 	    	}
 	    	while (!ret);
 	
