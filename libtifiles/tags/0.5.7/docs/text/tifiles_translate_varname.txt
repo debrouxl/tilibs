@@ -1,0 +1,25 @@
+[Main]
+Name=tifiles_translate_varname
+Type=Function
+Header=file_int.h
+Definition=char* tifiles_translate_varname(const char *varname,
+						  char *translate,
+						  uint8_t vartype);
+
+[Parameters]
+varname : a variable name (binary name)
+translate : a buffer to place the translated name
+vartype : the variable type
+Returns : the translated name
+
+[Summary]
+Translate a variable name into a human readable name.
+
+[Explanation]
+Some calculators (such as TI82..TI86) encodes the name of the variables,
+especially for lists, matrices, and so on. Instead of naming the variable
+L1, it names 0x60 0x02 0x00.
+This function allows you to pass from one representation to the other one.
+
+[See also]
+tifiles_translate_varname2
