@@ -344,6 +344,8 @@ int main(int argc, char **argv)
 {
   tifiles_init();
 
+  fprintf(stdout, "coucou !\n");
+
   goto ti83p;
 
   // TI82 support

@@ -357,25 +357,19 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
 
   if (!tifiles_is_a_ti_file(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_a_flash_file(filename))
+  if (!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
     return ERR_INVALID_FILE;
+
+  // detect file type (old or new format)
+  tib = tifiles_is_a_tib_file(filename);
 
   f = fopen(filename, "rb");
   if (f == NULL) {
     printl3(0, "Unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
-  }
+  }  
 
-  fread_8_chars(f, signature);
-  if (strcmp(signature, "**TIFL**"))
-    return ERR_INVALID_FILE;
-
-  // detect file type (old or new format)
-  fgets(buf, 128, f);
-  tib = (int) strstr(buf, "Advanced Mathematics Software");
-  rewind(f);
-
-  if (tib) {			// tib is an old format
+  if (tib) {			// tib is an old format but still in use (by developers)
     fseek(f, 0, SEEK_END);
     content->data_length = (uint32_t) ftell(f);
     fseek(f, 0, SEEK_SET);

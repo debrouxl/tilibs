@@ -711,6 +711,8 @@ TIEXPORT TicalcType TICALL tifiles_signature2calctype(const char *s)
 /* Query functions */
 /*******************/
 
+#define TIB_SIGNATURE	"Advanced Mathematics Software"
+
 /*
   Check if the file is a valid TI file by
   reading its signature
@@ -721,6 +723,7 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
 {
   FILE *f;
   char buf[9];
+  char str[64];
 
   // bug: check the file is not an fifo
   if (!is_regfile(filename))
@@ -731,8 +734,9 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
     //printl3(2, "unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
-  fread_8_chars(f, buf);
 
+  // read header
+  fread_8_chars(f, buf);
   if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
       !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
       !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
@@ -741,6 +745,15 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
       !strcmp(buf, "**TIFL**")) {
     fclose(f);
     return !0;
+  }
+
+  // check for TIB file
+  fread_n_chars(f, 14, str);
+  fread_n_chars(f, strlen(TIB_SIGNATURE), str);
+  str[strlen(TIB_SIGNATURE)] = '\0';
+  if(!strcmp(str, TIB_SIGNATURE)) {
+	fclose(f);
+	return !0;
   }
 
   fclose(f);
@@ -836,11 +849,32 @@ TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename)
 
   for (i = 1; i < NCALCS + 1; i++) {
     if ((!strcasecmp(e, FLASH_APP_FILE_EXT[i])) ||
-	(!strcasecmp(e, FLASH_OS_FILE_EXT[i])) || (!strcasecmp(e, "tib")))
+	(!strcasecmp(e, FLASH_OS_FILE_EXT[i])))
       return !0;
   }
 
   return 0;
+}
+
+/* 
+   Check whether it is a tib file
+   - filename [in]: a file name
+   - int [out]: TRUE if tib file, FALSE otherwise
+*/
+TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename)
+{
+	int i;
+	char *e = tifiles_get_extension(filename);
+
+	if (!tifiles_is_a_ti_file(filename))
+		return 0;
+
+	if(!strcasecmp(e, "tib"))
+		return !0;
+
+	// no need to do more test, TIB signature has already been checked by is_a_ti_file
+
+	return 0;
 }
 
 /* Note: a better way should be to open the file and read the signature */
@@ -883,7 +917,7 @@ TIEXPORT int TICALL tifiles_which_calc_type(const char *filename)
   else
     type = CALC_NONE;
 
-  //free(ext); // fault under Win32 ?!
+  free(ext); // fault under Win32 ?!
 
   return type;
 }

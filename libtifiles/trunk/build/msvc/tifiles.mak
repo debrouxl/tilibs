@@ -158,7 +158,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "TIFILES_EXPORTS" /D "__WIN32__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "_DEBUG" 
 BSC32=bscmake.exe

@@ -111,6 +111,7 @@ extern "C" {
   TIEXPORT int TICALL tifiles_is_a_regular_file(const char *filename);
   TIEXPORT int TICALL tifiles_is_a_backup_file(const char *filename);
   TIEXPORT int TICALL tifiles_is_a_flash_file(const char *filename);
+  TIEXPORT int TICALL tifiles_is_a_tib_file(const char *filename);
 
   TIEXPORT int TICALL tifiles_which_calc_type(const char *filename);
   TIEXPORT int TICALL tifiles_which_file_type(const char *filename);
