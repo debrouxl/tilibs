@@ -28185,7 +28185,7 @@ LDFLAGS="$LDFLAGS $INTLLIBS"
 
 
 
-                                                                                                                                  ac_config_files="$ac_config_files Makefile docs/Makefile macros/Makefile man/Makefile man/tifiles-config.1 src/Makefile tests/Makefile intl/Makefile po/Makefile.in tifiles-config libtifiles.lsm libtifiles.spec tifiles.pc"
+                                                                                                                                            ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile macros/Makefile man/Makefile man/tifiles-config.1 src/Makefile tests/Makefile intl/Makefile po/Makefile.in tifiles-config libtifiles.lsm libtifiles.spec tifiles.pc"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -28729,6 +28729,7 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+  "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "macros/Makefile" ) CONFIG_FILES="$CONFIG_FILES macros/Makefile" ;;
   "man/Makefile" ) CONFIG_FILES="$CONFIG_FILES man/Makefile" ;;

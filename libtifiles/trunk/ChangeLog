@@ -4,6 +4,10 @@ To do:
   - pre-init structs (ti9x_create_regular_content) rather than bzeros them.
 
 Log:
+- 22/04/2004, version 0.5.9: roms
+	Patch from Adrian Mettler <amettler@hmc.edu> merged. His patch fixes
+	  some TI85/86 file handling issues about varname (padded, not padded).
+
 - 08/04/2004, version 0.5.8: roms
 	Redirection of stdout/stderr.
 	Fixed TI85/TI86 varname encoding bug.

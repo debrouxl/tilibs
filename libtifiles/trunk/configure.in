@@ -185,7 +185,8 @@ AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
 AC_OUTPUT([
-Makefile 
+Makefile
+build/Makefile
 docs/Makefile 
 macros/Makefile 
 man/Makefile
