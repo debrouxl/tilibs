@@ -980,7 +980,7 @@ TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
 TIEXPORT char *TICALL tifiles_translate_varname_static(const char *varname,
 						       uint8_t vartype)
 {
-  static char trans[9];
+  static char trans[17];
   
   return tifiles_translate_varname(varname, trans, vartype);
 }
