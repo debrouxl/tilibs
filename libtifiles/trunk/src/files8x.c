@@ -565,9 +565,13 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
     fwrite_byte(f, entry->type);
-    if (is_ti8586(content->calc_type))
-      fwrite_byte(f, (uint8_t) strlen(entry->name));
-    fwrite_n_chars(f, 8, entry->name);
+    if (is_ti8586(content->calc_type)) {
+      size_t name_length = strlen(entry->name);
+      fwrite_byte(f, (uint8_t)name_length);
+      fwrite_n_chars(f, name_length, entry->name);
+    }
+    else
+    	fwrite_n_chars(f, 8, entry->name);
     if (is_ti83p(content->calc_type))
       fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00));
     fwrite_word(f, (uint16_t)entry->size);
