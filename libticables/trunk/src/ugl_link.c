@@ -206,7 +206,8 @@ int DLLEXPORT2 ugl_supported()
 #define TIGL_BULK_ENDPOINT_OUT 2
 #define TIGL_BULK_ENDPOINT_IN 1
 
-#define DEBUG
+// uncomment to add some tests
+#define OSX_UGL_DEBUG
 
 // globals
 
@@ -234,8 +235,8 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     UInt8			intfSubClass;
     UInt8			intfNumEndpoints;
 
-#ifdef DEBUG
-#warning DEBUG defined !
+#ifdef OSX_UGL_DEBUG
+#warning OSX_UGL_DEBUG defined !
     UInt32			numBytesRead;
     UInt32			i;    
     char			test[4];
@@ -246,7 +247,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     test[1] = 0x87;
     test[2] = 'A';
     test[3] = 0;
-#endif /* DEBUG */
+#endif /* OSX_UGL_DEBUG */
 
     request.bInterfaceClass = 255;  // proprietary device
     request.bInterfaceSubClass = 0;
@@ -302,11 +303,11 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
         
     printf("Interface has %d endpoints.\n", intfNumEndpoints);
 
-#ifdef DEBUG    
+#ifdef OSX_UGL_DEBUG    
     // We can now address endpoints 1 through intfNumEndpoints. Or, we can also address endpoint 0,
     // the default control endpoint. But it's usually better to use (*usbDevice)->DeviceRequest() instead.
 
-    kr = (*intf)->WritePipe(intf, 2, test, 4); // endpoint 2
+    kr = (*intf)->WritePipe(intf, TIGL_BULK_ENDPOINT_OUT, test, 4); // endpoint 2
     if (kIOReturnSuccess != kr)
         {
             printf("unable to do bulk write (%08x)\n", kr);
@@ -324,7 +325,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     printf(" (4 bytes) to bulk endpoint\n");
     
     numBytesRead = sizeof(gBuffer) - 1; // leave one byte at the end for NUL termination
-    kr = (*intf)->ReadPipe(intf, 1, gBuffer, &numBytesRead); // endpoint 1
+    kr = (*intf)->ReadPipe(intf, TIGL_BULK_ENDPOINT_IN, gBuffer, &numBytesRead); // endpoint 1
     if (kIOReturnSuccess != kr)
         {
             printf("unable to do bulk read (%08x)\n", kr);
@@ -339,7 +340,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
             printf(" 0x%x", gBuffer[i]);
         }
     printf("\n");
-#endif /* DEBUG */
+#endif /* OSX_UGL_DEBUG */
 
     return kr;
 }
@@ -531,6 +532,12 @@ int ugl_open_port()
             (void) (*intf)->USBInterfaceClose(intf);
             (void) (*intf)->Release(intf);
             intf = NULL;
+        }
+    
+    if (dev == NULL)
+        {
+            if (ugl_init_port() != 0)
+                return ERR_USB_OPEN;
         }
     
     if (FindInterfaces(dev) == kIOReturnSuccess)

@@ -1,2 +1,5 @@
 * 20011119 : v2.0.6-osx0.0.2
 	* cvs import
+	* Fixed DISPLAY()
+	* Fixed ugl_open_port() when (dev == NULL)
+	
