@@ -19,6 +19,11 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+ 
+/*
+	Note: this program is compatible with the built-in VTi ROM dumper as well as
+	TiLP.
+/*
 
 #define USE_TI89              // Compile for TI-89
 #define USE_TI92PLUS          // Compile for TI-92 Plus
@@ -32,6 +37,11 @@
 
 #define VERSION		"1.00"			// Version
 
+/*
+	Function: send a byte and check keyboard
+	- [in] c : character to send
+	- [out] int : 1 if successful, 0 otherwise.
+*/
 int SendByte(BYTE c)
 {
 	while(OSWriteLinkBlock(&c, 1))
@@ -43,6 +53,11 @@ int SendByte(BYTE c)
     return 1;
 }
 
+/*
+	Function: receive a byte and check keyboard
+	- [out] c : character to receive
+	- [out] int : 1 if successful, 0 otherwise.
+*/
 int GetByte(BYTE *c)
 {
     BYTE c;
@@ -56,15 +71,23 @@ int GetByte(BYTE *c)
         	return 0;	//0xcc
     }
     
-    return c;
+    return 0;
 }
 
-int SendSegment(char *ptr)
+/*
+	Function: send a 1024-bytes block + 2 bytes of checksum
+	- [in] ptr : pointer to ROM area
+	- [out] int : 1 if successful, 0 otherwise.
+*/
+int SendBlock(char *ptr)
 {
     WORD csum;
     int i;
     BYTE c;
+    int retry = 0;
 
+	while(1)
+	{
         for (i = 0, csum = 0; i < 1024; i++)
         {
             BYTE ch = ptr[i];
@@ -84,19 +107,21 @@ int SendSegment(char *ptr)
         if (!i)
             return 0;
             
-        if (c == 0xda)
-            return 1;
+        if (c == 0xda)	// chksum error: retry
+        {
+        	if(retry++ < 3)
+            	continue;
+            else
+            	return 0;	//2;
+        }
         
+        return 1;
+    }
     
     return 0;
 }
 
-
-#define MB	(1024*1024)
-
-//TI89  = 0
-//TI92+ = 1
-//V200  = 3
+//									 TI89   ,  TI92+  ,    , V200
 const unsigned long rom_sizes[4] = { 2097152,  2097152,  -1, 4194304  };
 const unsigned long rom_bases[4] = { 0x200000, 0x400000, -1, 0x200000 };
 const unsigned int  lcd_bases[4] = { 0x4c00,   0x4c00,   -1, 0x4c00 };
@@ -143,8 +168,10 @@ void _main(void)
 		
 		while(1);
 		
-		//if (!SendSegment(ptr))
-      //      break;
+		if (!SendSegment(ptr))
+      		break;
   }
+  
+  return;
 }
 
