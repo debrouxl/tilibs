@@ -26,10 +26,11 @@
 #  include <config.h>
 #endif
 
-#define LIB_FILES_VERSION_REQUIRED  "0.5.6"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.5.8"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBCABLES_VERSION "3.8.1"	// useless with pkg-config
 
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.5.2"
+# define LIBTICALCS_VERSION "4.5.3"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif

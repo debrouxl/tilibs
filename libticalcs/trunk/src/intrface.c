@@ -48,44 +48,60 @@ int lock = 0;
 /* Entry points */
 /****************/
 
+static int ticalcs_instance = 0;	// counts # of instances
+
 /*
   This function should be the first one to call.
 */
 TIEXPORT int TICALL ticalc_init()
 {
 #ifdef __WIN32__
-  HANDLE hDll;
-  char LOCALEDIR[65536];
-  int i;
-  hDll = GetModuleHandle("ticables.dll");
-  GetModuleFileName(hDll, LOCALEDIR, 65535);
-  for (i = strlen(LOCALEDIR); i >= 0; i--) {
-    if (LOCALEDIR[i] == '\\')
-      break;
-  }
-  LOCALEDIR[i] = '\0';
-  strcat(LOCALEDIR, "\\locale");
+	HANDLE hDll;
+  	char LOCALEDIR[65536];
+  	int i;
+  	
+  	// Get library path
+  	hDll = GetModuleHandle("ticables.dll");
+  	GetModuleFileName(hDll, LOCALEDIR, 65535);
+  	
+  	for (i = strlen(LOCALEDIR); i >= 0; i--) {
+    		if (LOCALEDIR[i] == '\\')
+      			break;
+  	}
+  	
+  	LOCALEDIR[i] = '\0';
+  	strcat(LOCALEDIR, "\\locale");
 #endif
 
+	if (ticalcs_instance)
+		return (++ticalcs_instance);
+	printl(0, _("ticalcs library version %s\n"), LIBTICALCS_VERSION);
+
 #if defined(ENABLE_NLS)
+	// Init i18n support
 	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
   	printl(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
-  //tifiles_init();
+	// Check version
+	if (strcmp(tifiles_get_version(), LIBCALCS_REQUIRES_LIBFILES_VERSION) < 0) {
+    		printl(0, _("Libtifiles: version mismatches. Library version >= <%s> is required.\n"),
+	    		LIBCALCS_REQUIRES_LIBFILES_VERSION);
+    		exit(-1);
+	}	
+	if (strcmp(ticable_get_version(), LIBCALCS_REQUIRES_LIBCABLES_VERSION) < 0) {
+    		printl(0, _("Libticables: version mismatches. Library version >= <%s> is required.\n"),
+	    		LIBCALCS_REQUIRES_LIBCABLES_VERSION);
+    		exit(-1);
+	}
 
-  printl(0, _("ticalcs library version %s\n"), LIBTICALCS_VERSION);
+	// Init sub-libraries
+  	tifiles_init();
+  	ticable_init();
 
-  if (strcmp(tifiles_get_version(), LIB_FILES_VERSION_REQUIRED) < 0) {
-    printl(0, _
-	    ("Libtifiles: version mismatches. Library version >= <%s> is required.\n"),
-	    LIB_FILES_VERSION_REQUIRED);
-    exit(-1);
-  }
-
-  return 0;
+  	return (++ticalcs_instance);
 }
 
 /*
@@ -94,9 +110,10 @@ TIEXPORT int TICALL ticalc_init()
 */
 TIEXPORT int TICALL ticalc_exit()
 {
-  tifiles_exit();
+	ticable_exit();
+  	tifiles_exit();
 
-  return 0;
+  	return (--ticalcs_instance);
 }
 
 /***********/
