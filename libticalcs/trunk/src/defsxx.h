@@ -27,5 +27,6 @@
 #include "defs83p.h"
 #include "defs83.h"
 #include "defs82.h"
+#include "defs73.h"
 
 #endif

@@ -40,28 +40,23 @@
 /* 
    A structure for creating a dirlist tree 
 */
-#define VARIABLE 0
-#define FOLDER   1
 
-#define VARATTR_NONE	0
-#define VARATTR_LOCK	1	// Var is locked
-#define VARATTR_ARCH	3	// Var is archived
-
+// To do: change this struct
 struct varinfo
 {
   char varname[9];        // Name of the var
   byte vartype;           // Type of the var
-  byte varlocked;         // Attribute of the var (locked, archived, none)
+  byte varattr;           // Attribute of the var (NONE, LOCK, ARCH)
   longword varsize;       // Real size of the var
   char translate[9];      // Real name of the var
 
   int is_folder;          // 1 if folder, 0 if variable
 
   struct varinfo *folder; // Points to the parent folder
-  struct varinfo *next;   // Next variable
+  struct varinfo *next;   // Next variable (linked list)
 };
 typedef struct varinfo VAR_INFO;
-//typedef struct varinfo VarInfo; //conflict with TiFFEP: to fix...
+typedef struct varinfo VariableInfo;
 
 /*
   A structure used for the screendump functions
@@ -75,6 +70,7 @@ struct screen_coord
 };
 typedef struct screen_coord SCR_COORD;
 typedef struct screen_coord ScrCoord;
+typedef struct screen_coord ScreenCoord;
 
 /* 
    A structure which contains the TI scancode of a TI key and additional
@@ -82,16 +78,16 @@ typedef struct screen_coord ScrCoord;
 */
 struct ti_key
 {
-  char *key_name;
-  char *key1;
+  char *key_name;	// Name of key
+  char *key1;		// Normal key
   word nothing;
-  char *key2;
+  char *key2;		// SHIFT'ed key		(89,92,92+)
   word shift;
-  char *key3;
+  char *key3;		// 2nd key			(all)
   word second;
-  char *key4;
+  char *key4;		// CTRL'ed key		(92,92+)
   word diamond;
-  char *key5;
+  char *key5;		// ALPHA key		(83+,89)
   word alpha;
 };
 typedef struct ti_key TI_KEY;
@@ -131,7 +127,7 @@ typedef struct ticalc_info_update INFO_UPDATE;
 typedef struct ticalc_info_update InfoUpdate;
 
 /* 
-   Calculator functions 
+   Calculator functions (independant of calculator model)
 */
 struct ticalc_fncts
 {
@@ -141,82 +137,63 @@ struct ticalc_fncts
   const char* (*byte2fext) (byte data);
   byte        (*fext2byte) (char *s);
 
-  /* TI routines, defined in the tiXX.c files */
+  /* Calculator handling routines */
   int (*isready)         (void);
 
   int (*send_key)        (word key);
-  int (*recv_key)        (byte ** answer);
-  int (*remote_control)  (void);
-
-  int (*screendump)      (byte **bitmap, int mask_mode, 
-			  ScrCoord *sc);
+  int (*screendump)      (byte **bitmap, int mode, 
+			  ScreenCoord *sc);
   int (*directorylist)   (struct varinfo *list, int *n_elts);
 
-  int (*recv_backup)     (FILE *file, int mask_mode, longword *version);
-  int (*send_backup)     (FILE *file, int mask_mode);
+  int (*recv_backup)     (FILE *file, int mode, longword *version);
+  int (*send_backup)     (FILE *file, int mode);
 
-  int (*recv_var)        (FILE *file, int mask_mode, char *varname, 
-							byte vartype, byte varlock);
-  int (*send_var)        (FILE *file, int mask_mode); 
+  int (*recv_var)        (FILE *file, int mode, char *varname, 
+			  byte vartype, byte varlock);
+  int (*send_var)        (FILE *file, int mode); 
 
-  int (*send_flash)      (FILE *file, int mask_mode);
-  int (*recv_flash)      (FILE *file, int mask_mode, 
+  int (*send_flash)      (FILE *file, int mode);
+  int (*recv_flash)      (FILE *file, int mode, 
 							char *appname, int appsize);
-  int (*dump_rom)        (FILE *file, int mask_mode);
-  int (*get_rom_version) (char *version);
   int (*get_idlist)      (char *idlist);
 
-  /* General purpose routines, calc independant */
-  char* (*translate_varname) (char *varname, char *translate, byte vartype);
+  int (*dump_rom)        (FILE *file, int mode);
+  int (*get_rom_version) (char *version);
+
+  /* General purpose routines */
   const struct ti_key (*ascii2ti_key) (unsigned char ascii_code);
+  char* (*translate_varname) (char *varname, char *translate, byte vartype);
   void  (*generate_single_file_header) (FILE *file, 
-					int mask_mode,
+					int mode,
 					const char *id, 
 					struct varinfo *v);
-  void  (*generate_group_file_header) (FILE *file,
-				       int mask_mode,
-				       const char *id,
-				       struct varinfo *list,
-				       int calc_type);
-
-  /* General purpose routines, calc dependant */
-  const char* (*group_file_ext) (int calc_type);
-  const char* (*backup_file_ext) (int calc_type);
-  const int   (*tixx_dir) (int calc_type);
-  const char* (*pak_name) (int calc_type);
-  const char* (*flash_app_file_ext) (int calc_type);
-  const char* (*flash_os_file_ext) (int calc_type);
-  const int   (*tixx_flash) (int calc_type);
+  void  (*generate_group_file_header)  (FILE *file,
+					int mode,
+					const char *id,
+					struct varinfo *list,
+					int calc_type);
+  int   (*supported_operations) (void);
 };
 typedef struct ticalc_fncts TICALC_FNCTS;
 typedef struct ticalc_fncts TicalcFncts;
-
-/* 
-   Calculator functions: check whether a function is supported by a calc
-   Not used yet.
-*/
-struct ticalc_supp_fncts
-{
-  int (*isready)        (void);
-  int (*send_key)       (void);
-  int (*remote_control) (void);
-  int (*screendump)     (void);
-  int (*recv_backup) (void);
-  int (*send_backup)    (void);
-  int (*directorylist)  (void);
-  int (*recv_var)    (void);
-  int (*send_var)       (void);
-  int (*dump_rom)       (void);
-  int (*get_rom_version)(void);
-  int (*send_flash)     (void);
-};
-typedef struct ticalc_supp_fncts TICALC_SUPP_FNCTS;
-typedef struct ticalc_supp_fncts TicalcSuppFncts;
 
 
 /*********************/
 /* Macro definitions */
 /*********************/
+
+/*
+  VariableInfo structure, is_folder field
+*/
+#define VARIABLE 0
+#define FOLDER   1
+
+/*
+  VariableInfo structure, attribute field
+ */
+#define VARATTR_NONE	0
+#define VARATTR_LOCK	1	// Var is locked
+#define VARATTR_ARCH	3	// Var is archived
 
 /*
   Screendump: full or clipped screen
@@ -252,7 +229,7 @@ typedef struct ticalc_supp_fncts TicalcSuppFncts;
 #define CALC_TI73  9
 
 /* 
-   Some masks for the send/receive functions (mask_mode) 
+   Some masks for the send/receive functions (mode) 
 */
 // No mask
 #define MODE_NORMAL              0 // No mode
@@ -289,11 +266,33 @@ typedef struct ticalc_supp_fncts TicalcSuppFncts;
 #define SHELL_USGARD 5
 #define SHELL_ZSHELL 6
 
-// Code returned by the update.choose() function
+/*
+  Code returned by the update.choose() function
+*/
 #define ACTION_NONE      0
 #define ACTION_SKIP      1
 #define ACTION_OVERWRITE 2
 #define ACTION_RENAME    4
+
+/*
+  Mask returned by the 'supported_operations' function
+*/
+#define OPS_NONE        0
+#define OPS_ISREADY     (1<<0)
+#define OPS_SEND_KEY    (1<<1)
+#define OPS_RECV_KEY    (1<<2)
+#define OPS_REMOTE      (1<<3)	//disabled
+#define OPS_SCREENDUMP  (1<<4)
+#define OPS_DIRLIST     (1<<5)
+#define OPS_RECV_BACKUP (1<<6)
+#define OPS_SEND_BACKUP (1<<7)
+#define OPS_RECV_VARS   (1<<8)
+#define OPS_SEND_VARS   (1<<9)
+#define OPS_SEND_FLASH  (1<<10)
+#define OPS_RECV_FLASH  (1<<11)
+#define OPS_IDLIST      (1<<12)
+#define OPS_ROMDUMP     (1<<13)
+#define OPS_ROMVERSION  (1<<14)
 
 /* 
    Key codes of PC's keyboard 

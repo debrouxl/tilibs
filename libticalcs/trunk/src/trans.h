@@ -19,6 +19,7 @@
 #ifndef TRANS_H
 #define TRANS_H
 
+char *ti73_translate_varname (char *varname, char *translate, byte vartype);
 char *ti82_translate_varname (char *varname, char *translate, byte vartype);
 char *ti83_translate_varname (char *varname, char *translate, byte vartype);
 char *ti83p_translate_varname(char *varname, char *translate, byte vartype);

@@ -878,7 +878,7 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
   strcpy(p->varname, "");
   p->varsize=0;
   p->vartype=0;
-  p->varlocked=0;
+  p->varattr=0;
   strcpy(p->translate, "");
   
   sum=0;
@@ -1001,7 +1001,7 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
       TRY(cable->get(&data));
       locked=data;
       sum+=data;
-      p->varlocked=locked;
+      p->varattr=locked;
       TRY(cable->get(&data));
       var_size=data;
       sum+=data;
@@ -1530,18 +1530,18 @@ int ti92_dump_rom(FILE *file, int mask_mode)
   PAUSE(50);
   TRY(ti92_send_key(KEY92_CLEAR));
   PAUSE(50);
-  TRY(ti92_send_key(KEY92_m));
-  TRY(ti92_send_key(KEY92_a));
-  TRY(ti92_send_key(KEY92_i));
-  TRY(ti92_send_key(KEY92_n));
-  TRY(ti92_send_key(KEY92_BSLASH));
-  TRY(ti92_send_key(KEY92_d));
-  TRY(ti92_send_key(KEY92_u));
-  TRY(ti92_send_key(KEY92_m));
-  TRY(ti92_send_key(KEY92_p));
-  TRY(ti92_send_key(KEY92_r));
-  TRY(ti92_send_key(KEY92_o));
-  TRY(ti92_send_key(KEY92_m));
+  TRY(ti92_send_key('m'));
+  TRY(ti92_send_key('a'));
+  TRY(ti92_send_key('i'));
+  TRY(ti92_send_key('n'));
+  TRY(ti92_send_key('\\'));
+  TRY(ti92_send_key('d'));
+  TRY(ti92_send_key('u'));
+  TRY(ti92_send_key('m'));
+  TRY(ti92_send_key('p'));
+  TRY(ti92_send_key('r'));
+  TRY(ti92_send_key('o'));
+  TRY(ti92_send_key('m'));
   TRY(ti92_send_key(KEY92_LP));
   TRY(ti92_send_key(KEY92_RP));
   TRY(ti92_send_key(KEY92_ENTER));
@@ -1707,4 +1707,19 @@ int ti92_recv_flash(FILE *file, int mask_mode)
 int ti92_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
+}
+
+int ti92_supported_operations(void)
+{
+   return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
+     OPS_DIRLIST |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_ROMVERSION |
+     OPS_ROMDUMP
+     );
 }

@@ -49,7 +49,7 @@ void generate_89_92_92p_single_file_header(FILE *file, int mask_mode,
   for(i=strlen(varname); i<8; i++) fprintf(file, "%c", '\0');
   fprintf(file, "%c", vartype);
   if(mask_mode &  MODE_KEEP_ARCH_ATTRIB)
-    fprintf(file, "%c", v->varlocked); // extended group file
+    fprintf(file, "%c", v->varattr); // extended group file
   else
     fprintf(file, "%c", 0x00); // standard group file
   fprintf(file, "%c%c",  0x00, 0x00);
@@ -90,8 +90,8 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
   v=list;
   while(v != NULL)
     {
-      if( (v->vartype == tixx_dir(calc_type)) || 
-	  ((v->vartype) == tixx_flash(calc_type)) )
+      if( (v->vartype == ticalc_folder_type(calc_type)) || 
+	  ((v->vartype) == ticalc_flash_type(calc_type)) )
 	{
 	  v=v->next;
 	  continue;
@@ -113,8 +113,8 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
   v=list; 
   while(v != NULL)
     {
-      if( (v->vartype == tixx_dir(calc_type)) ||
-	  ((v->vartype) == tixx_flash(calc_type)) )
+      if( (v->vartype == ticalc_folder_type(calc_type)) ||
+	  ((v->vartype) == ticalc_flash_type(calc_type)) )
 	{
 	  v=v->next;
 	  continue;
@@ -129,7 +129,7 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
 		  (index & 0x00FF0000)>>16, (index & 0xFF000000)>>24);
 	  for(i=0; i<strlen(folder_name); i++) fprintf(file, "%c", folder_name[i]);
 	  for(i=strlen(folder_name); i<8; i++) fprintf(file, "%c", '\0');
-	  fprintf(file, "%c%c", tixx_dir(calc_type), 0x00);
+	  fprintf(file, "%c%c", ticalc_folder_type(calc_type), 0x00);
 	  if(file_offset != 0)
 	    {
 	      fseek(file, file_offset, SEEK_SET);
@@ -148,7 +148,7 @@ void generate_89_92_92p_group_file_header_from_varlist(FILE *file,
       for(i=strlen(variable_name); i<8; i++) fprintf(file, "%c", '\0');
       fprintf(file, "%c", v->vartype);
       if(mask_mode &  MODE_KEEP_ARCH_ATTRIB)
-	fprintf(file, "%c", v->varlocked); // extended group file
+	fprintf(file, "%c", v->varattr); // extended group file
       else
 	fprintf(file, "%c", 0x00); // standard group file
 
@@ -176,6 +176,7 @@ void generate_82_83_85_86_single_file_header(FILE *file, int mask_mode,
   return;
 }
 
+#define generate_73_82_83_83p_85_86_single_file_header generate_82_83_85_86_single_file_header
 
 void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
                                                        int mask_mode,
@@ -185,6 +186,8 @@ void generate_82_83_85_86_group_file_header_from_varlist(FILE *file,
 {
   return;
 }
+
+#define generate_73_82_83_83p_85_86_group_file_header_from_varlist generate_82_83_85_86_group_file_header_from_varlist
 
 /*
  * Check whether a given variable exists in the directory list

@@ -44,4 +44,6 @@ int ti83_dump_rom(FILE *file, int mask_mode);
 int ti83_get_rom_version(char *version);
 int ti83_get_idlist(char *idlist);
 
+int ti83_supported_operations(void);
+
 #endif

@@ -115,6 +115,9 @@ ticalc_get_error(int err_num, char *error_msg)
 	case ERR_PENDING_TRANSFER:
 		strcpy(error_msg, _("A transfer is in progress."));
 		break;
+	case ERR_INVALID_TI73_FILE:
+		strcpy(error_msg, _("Invalid TI73 file."));
+		break;
 
     default: strcpy(error_msg, _("Error code not found. This is a bug. Please report it.\n")); 
 		UNLOCK_TRANSFER()

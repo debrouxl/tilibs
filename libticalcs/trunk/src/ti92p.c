@@ -24,7 +24,7 @@
 #include "calc_err.h"
 #include "calc_ext.h"
 #include "defs92p.h"
-#include "keys92.h"
+#include "keys92p.h"
 #include "group.h"
 #include "pause.h"
 #include "rom89.h"
@@ -533,7 +533,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   strcpy(p->varname, "");
   p->varsize=0;
   p->vartype=0;
-  p->varlocked=0;
+  p->varattr=0;
   strcpy(p->translate, "");
 
   sum=0;
@@ -653,7 +653,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
       TRY(cable->get(&data));
       locked=data;
       sum+=data;
-      p->varlocked=locked;
+      p->varattr=locked;
       TRY(cable->get(&data));
       var_size=data;
       sum+=data;
@@ -822,7 +822,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  TRY(cable->get(&data));
 	  locked=data;
 	  sum+=data;
-	  q->varlocked=locked;
+	  q->varattr=locked;
 	  TRY(cable->get(&data));
 	  var_size=data;
 	  sum+=data;
@@ -1370,7 +1370,7 @@ int ti92p_recv_backup(FILE *file, int mask_mode, longword *version)
       (update->main_percentage)=(float)i/n;
       update->pbar();
       if(update->cancel) return -1;
-      DISPLAY("-> %8s %i  %02X %08X\r\n", ptr->varname, (int)(ptr->varlocked),
+      DISPLAY("-> %8s %i  %02X %08X\r\n", ptr->varname, (int)(ptr->varattr),
 	      ptr->vartype, ptr->varsize);
       if(ptr->vartype == TI92p_DIR)
         ptr->is_folder = FOLDER;
@@ -1391,7 +1391,7 @@ int ti92p_recv_backup(FILE *file, int mask_mode, longword *version)
       strcat(varname, "\\");
       strcat(varname, ptr->varname);
       TRY(ti92p_recv_var(file, mask_mode, 
-			    varname, ptr->vartype, ptr->varlocked));
+			    varname, ptr->vartype, ptr->varattr));
 
       ptr=ptr->next;
     }
@@ -1549,7 +1549,7 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   TRY(ti92p_send_key(KEY92p_a));
   TRY(ti92p_send_key(KEY92p_i));
   TRY(ti92p_send_key(KEY92p_n));
-  TRY(ti92p_send_key(KEY92p_BSLASH));
+  TRY(ti92p_send_key('\\'));
   TRY(ti92p_send_key(KEY92p_d));
   TRY(ti92p_send_key(KEY92p_u));
   TRY(ti92p_send_key(KEY92p_m));
@@ -2060,7 +2060,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
   TRY(cable->put(CMD92p_EOT));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
-  if(mask_mode != MODE_AMS)
+  if(mask_mode != MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
   if(mask_mode == MODE_AMS)
     {
@@ -2234,4 +2234,20 @@ int ti92p_recv_flash(FILE *file, int mask_mode, char *appname)
   PAUSE(pause_between_vars);
 
   return 0;
+}
+
+int ti92p_supported_operations(void)
+{
+   return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
+     OPS_DIRLIST |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_SEND_FLASH | OPS_RECV_FLASH |
+     OPS_IDLIST |
+     OPS_ROMDUMP
+     );
 }

@@ -26,6 +26,7 @@
 
 #include "calc_err.h"
 #include "defs83p.h"
+#include "keys83p.h"
 #include "calc_ext.h"
 #include "trans.h"
 #include "pause.h"
@@ -73,12 +74,12 @@ static int PC_waitdata_83p(void)
 
 // Check whether the TI reply OK
 // 73 56 00 00
-static int ti83p_isOK_id(byte id)
+static int ti83p_isOK(void)
 {
   byte data;
 
   TRY(cable->get(&data));
-  if(data != id)
+  if(data != TI83p_PC) 
     {
       return ERR_NOT_REPLY;
     }
@@ -106,37 +107,6 @@ static int ti83p_isOK_id(byte id)
 
   return 0;
 }
-
-#define ti83p_isOK() ti83p_isOK_id(TI83p_PC)
-
-// Check whether the TI reply OK with packet length
-// 73 56 LL HH
-/*
-static int ti83p_isPacketOK(word length)
-{
-  byte data;
-  word w;
-
-  TRY(cable->get(&data));
-  if(data != TI83p_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD83p_TI_OK)
-    {
-      if(data==CMD83p_CHK_ERROR)
-        return ERR_CHECKSUM;
-      else
-        return ERR_INVALID_BYTE;
-    }
-  TRY(cable->get(&data));
-  w=data;
-  TRY(cable->get(&data));
-  w|=(data << 8);
-  if(w != length) return ERR_PACKET;
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-*/
 
 // The TI indicates that it is ready or wait data
 // 73 09 00 00
@@ -361,11 +331,22 @@ static int recv_var_header(word *size, byte *type, byte *attr, char *string)
 
 /* General functions */
 
+// It seems that TI83+ has a remote control...
 int ti83p_send_key(word key)
 {
-  /* This function does not exist */
-  return ERR_VOID_FUNCTION;
+  LOCK_TRANSFER()
+  TRY(cable->open());
+  TRY(cable->put(PC_TI83p));
+  TRY(cable->put(CMD83p_DIRECT_CMD));
+  TRY(cable->put(LSB(key)));
+  TRY(cable->put(MSB(key)));
+  TRY(ti83p_isOK());
+  TRY(cable->close());
+  UNLOCK_TRANSFER()
+    
+  return 0;
 }
+
 
 int ti83p_remote_control(void)
 {
@@ -696,7 +677,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
-    p->varlocked=0;
+    p->varattr=0;
     strcpy(p->translate, "");
 
     DISPLAY("Request directory list (dir)...\n");
@@ -743,7 +724,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 	strcpy(p->varname, var_name);
 	p->vartype=var_type;
 	p->varsize=size;
-	if(attr == 0x80) p->varlocked = VARATTR_ARCH; else p->varlocked = VARATTR_NONE;
+	if(attr == 0x80) p->varattr = VARATTR_ARCH; else p->varattr = VARATTR_NONE;
 	p->folder=list;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
@@ -752,7 +733,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 	
 	DISPLAY("Name: %8s | ", p->translate);
 	DISPLAY("Type: %8s | ", ti83p_byte2type(p->vartype));
-	DISPLAY("Attr: %i | ", p->varlocked);
+	DISPLAY("Attr: %i | ", p->varattr);
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_83p());
@@ -1250,7 +1231,7 @@ static int read_intel_packet(FILE *f, int *n, word *addr,
 	- mode: App or Os. A null value reset internal values.
 	Return a negative value if error, a positive value (the same as read_intel_packet).
 */
-static int read_data_block(FILE *f, word *page_address, word *page_number, 
+int read_data_block(FILE *f, word *page_address, word *page_number, 
 						   byte *data, int mode)
 {
 	static word offset = 0x0000;
@@ -1644,7 +1625,6 @@ int ti83p_send_flash(FILE *file, int mask_mode)
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   
-  TRY(ti83p_isOK());
   if(mask_mode & MODE_APPS)
     DISPLAY("Flash application sent completely.\n");
   else if(mask_mode & MODE_AMS)
@@ -1705,7 +1685,7 @@ static int write_intel_packet(FILE *f, int n, word addr,
 	- mode: used for telling end of file
 	Return a negative value if error, 0 otherwise.
 */
-static int write_data_block(FILE *f, word page_address, word page_number, 
+int write_data_block(FILE *f, word page_address, word page_number, 
 						   byte *data, int mode)
 {
 	static word pn = 0xffff;
@@ -2061,4 +2041,18 @@ int ti83p_get_idlist(char *id)
   UNLOCK_TRANSFER()
 
   return 0;
+}
+
+int ti83p_supported_operations(void)
+{
+  return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+	 OPS_SEND_KEY |
+     OPS_DIRLIST |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_SEND_FLASH | OPS_RECV_FLASH |
+     OPS_IDLIST
+     );
 }

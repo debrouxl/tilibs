@@ -25,13 +25,13 @@
 extern "C" {
 #endif
 
-const char* group_file_ext(int calc_type);
-const char* backup_file_ext(int calc_type);
-const int   tixx_dir(int calc_type);
-const int   tixx_flash(int calc_type);
-const char* pak_name(int calc_type);
-const char* flash_app_file_ext(int calc_type);
-const char* flash_os_file_ext(int calc_type);
+  const char* TICALL ticalc_group_file_ext(int calc_type);
+  const char* TICALL ticalc_backup_file_ext(int calc_type);
+  const char* TICALL ticalc_flash_app_file_ext(int calc_type);
+  const char* TICALL ticalc_flash_os_file_ext(int calc_type);
+
+  const int   TICALL ticalc_folder_type(int calc_type);
+  const int   TICALL ticalc_flash_type(int calc_type);
 
 const struct ti_key ti89_keys(unsigned char ascii_code);
 const struct ti_key ti92_keys(unsigned char ascii_code);

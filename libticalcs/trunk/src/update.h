@@ -57,6 +57,7 @@ extern int lock;
 # define update_label()      if(update && update->label)   update->label()
 # define update_refresh()    if(update && update->refresh) update->refresh()
 # define update_stop()       if(update && update->stop)    update->stop()
+
 /*
 # ifndef UPDATE_INLINE
 #  define UPDATE_INLINE
@@ -64,6 +65,7 @@ int inline update_choose(char* c, char* n)
 { if(update && update->choose) return update->choose(c, n); else return 0; }
 # endif
 */
+
 # define update_choose(c, n) update->choose(c, n)
 #else
 # define update_start()      update->start()

@@ -16,10 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
-  Thanks to RB for some informations...
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,7 +31,7 @@
 /* Functions used by TI_PC functions */
 
 // The PC indicates that is OK
-// 23 56 00 00
+// 07 56 00 00
 static int PC_replyOK_73(void)
 {
   TRY(cable->put(PC_TI73));
@@ -59,7 +55,7 @@ int PC_replyCONT_73(void)
 }
 
 // The PC indicates that it is ready or wait data
-// 23 09 00 00
+// 07 09 00 00
 static int PC_waitdata_73(void)
 {
   TRY(cable->put(PC_TI73));
@@ -72,13 +68,13 @@ static int PC_waitdata_73(void)
 }
 
 // Check whether the TI reply OK
-// 73 56 00 00
-static int ti73_isOK_id(byte id)
+// 74 56 00 00
+static int ti73_isOK(void)
 {
   byte data;
 
   TRY(cable->get(&data));
-  if(data != id)
+  if(data != TI73_PC) 
     {
       return ERR_NOT_REPLY;
     }
@@ -94,7 +90,6 @@ static int ti73_isOK_id(byte id)
   TRY(cable->get(&data));
   if(data != 0x00)
     { 
-      //printf("Debug: %02X\n", data);
       return ERR_NOT_REPLY;
     }
   TRY(cable->get(&data));
@@ -107,39 +102,8 @@ static int ti73_isOK_id(byte id)
   return 0;
 }
 
-#define ti73_isOK() ti73_isOK_id(TI73_PC)
-
-// Check whether the TI reply OK with packet length
-// 73 56 LL HH
-/*
-static int ti73_isPacketOK(word length)
-{
-  byte data;
-  word w;
-
-  TRY(cable->get(&data));
-  if(data != TI73_PC) return ERR_INVALID_BYTE;
-  TRY(cable->get(&data));
-  if(data != CMD73_TI_OK)
-    {
-      if(data==CMD73_CHK_ERROR)
-        return ERR_CHECKSUM;
-      else
-        return ERR_INVALID_BYTE;
-    }
-  TRY(cable->get(&data));
-  w=data;
-  TRY(cable->get(&data));
-  w|=(data << 8);
-  if(w != length) return ERR_PACKET;
-  DISPLAY("The calculator reply OK.\n");
-
-  return 0;
-}
-*/
-
 // The TI indicates that it is ready or wait data
-// 73 09 00 00
+// 74 09 00 00
 static int ti73_waitdata(byte id, word length)
 {
   byte data;
@@ -199,7 +163,7 @@ static int sendstring8(char *s, word *checksum)
 #define TI73_MAXTYPES 48
 const char *TI73_TYPES[TI73_MAXTYPES]=
 {
-  "REAL", "LIST", "MATRX", "Y-VAR", "STRNG", "PRGM", "ASM", "PIC", 
+  "REAL", "LIST", "MATRX", "Y-VAR", "??", "PRGM", "ASM", "PIC", 
   "GDB", "??", "??", "WDW", "CPLX", "??", "??", "WDW",
   "ZSTO", "TAB", "??", "??", "??", "??", "??", "??",
   "??", "??", "??", "??", "??", "??", "??", "??",
@@ -208,11 +172,11 @@ const char *TI73_TYPES[TI73_MAXTYPES]=
 
 const char *TI73_EXT[TI73_MAXTYPES]=
 {
-  "73n", "73l", "73m", "73y", "73s", "73p", "73p", "73i",
+  "73n", "73l", "73m", "73y", "7??", "73p", "73p", "73i",
   "73d", "7??", "7??", "73w", "73c", "7??", "7??", "73w",
   "73z", "73t", "7??", "7??", "7??", "7??", "7??", "7??",
   "7??", "7??", "7??", "7??", "7??", "7??", "7??", "7??",
-  "7??", "7??", "7??", "73u", "7Xk", "7??", "7??", "7??"
+  "7??", "7??", "7??", "73u", "73k", "7??", "7??", "7??"
 };
 
 // Return the type corresponding to the value
@@ -304,7 +268,7 @@ static int send_request(word size, byte type, char *string)
   sum+=data;
   TRY(cable->put(type));
   sendstring8(string, &sum);
-  TRY(cable->put(0x00)); // extra bytes with TI83+ protocol
+  TRY(cable->put(0x00)); // extra bytes with TI protocol
   TRY(cable->put(0x00));
   TRY(cable->put(LSB(sum)));
   TRY(cable->put(MSB(sum)));
@@ -461,7 +425,7 @@ int ti73_recv_backup(FILE *file, int mask_mode, longword *version)
   TRY(cable->open());
   update_start();
   file_checksum=0;
-  fprintf(file, "**TI83F*");
+  fprintf(file, "**TI73**");
   fprintf(file, "%c%c%c", 0x1A, 0x0A, 0x00);
   for(i=0; i<42; i++) fprintf(file, "%c", desc[i]);
   offset=ftell(file);
@@ -581,7 +545,7 @@ int ti73_send_backup(FILE *file, int mask_mode)
     {
       if(mask_mode & MODE_FILE_CHK_MID)
         {
-          if( strcmp(str, "**TI83**") && strcmp(str, "**TI83F*") )
+          if( strcmp(str, "**TI73**"))
             {
               return ERR_INVALID_TIXX_FILE;
             }
@@ -589,7 +553,7 @@ int ti73_send_backup(FILE *file, int mask_mode)
       else if(mask_mode & MODE_FILE_CHK_ALL)
         {
           fprintf(stderr, "MODE_FILE_CHK_ALL\n");
-          if( strcmp(str, "**TI83F*"))
+          if( strcmp(str, "**TI73**"))
 	    {
               return ERR_INVALID_TI83_FILE;
             }
@@ -695,7 +659,7 @@ int ti73_directorylist(struct varinfo *list, int *n_elts)
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
-    p->varlocked=0;
+    p->varattr=0;
     strcpy(p->translate, "");
 
     DISPLAY("Request directory list (dir)...\n");
@@ -742,16 +706,16 @@ int ti73_directorylist(struct varinfo *list, int *n_elts)
 	strcpy(p->varname, var_name);
 	p->vartype=var_type;
 	p->varsize=size;
-	if(attr == 0x80) p->varlocked = VARATTR_ARCH; else p->varlocked = VARATTR_NONE;
+	if(attr == 0x80) p->varattr = VARATTR_ARCH; else p->varattr = VARATTR_NONE;
 	p->folder=list;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 	/* Translate the varname if necessary */
-	ti83_translate_varname(p->varname, p->translate, p->vartype);
+	ti73_translate_varname(p->varname, p->translate, p->vartype);
 	
 	DISPLAY("Name: %8s | ", p->translate);
 	DISPLAY("Type: %8s | ", ti73_byte2type(p->vartype));
-	DISPLAY("Attr: %i | ", p->varlocked);
+	DISPLAY("Attr: %i | ", p->varattr);
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_73());
@@ -794,7 +758,7 @@ int ti73_recv_var(FILE *file, int mask_mode,
   if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
       (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
     {
-      fprintf(file, "**TI83F*");
+      fprintf(file, "**TI73**");
       fprintf(file, "%c%c%c", 0x1A, 0x0A, 0x00);
       for(i=0; i<42; i++) fprintf(file, "%c", desc[i]);
       offset=ftell(file);
@@ -803,11 +767,12 @@ int ti73_recv_var(FILE *file, int mask_mode,
       allvars_size=0;
     }
   var_size=0;
-  sprintf(update->label_text, "Reading of: TI83+/%s", 
-	   ti83_translate_varname(varname, trans, vartype));
+  sprintf(update->label_text, "Reading of: TI73/%s", 
+	   ti73_translate_varname(varname, trans, vartype));
   update_label();
-  /* [X91] anglais: inversion */
-  DISPLAY("Variable requested: %s\n", varname);
+
+  DISPLAY("<%s|%s>\n", varname, trans);
+  DISPLAY("Variable requested: %s\n", trans);
   TRY(send_request(0x0000, vartype, varname));
 
   TRY(ti73_isOK());
@@ -818,9 +783,10 @@ int ti73_recv_var(FILE *file, int mask_mode,
   if(data != TI73_PC) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
   if(data == CMD73_EOT) return ERR_ABORT; //break;
+  else if(data == CMD73_REJECTED) return ERR_VAR_REFUSED;
   else if(data != CMD73_VAR_HEADER) return ERR_INVALID_BYTE;
   TRY(cable->get(&data));
-  if(data != 0x0D) return ERR_INVALID_BYTE;
+  if(data != 0x0B) return ERR_INVALID_BYTE;
   fprintf(file, "%c", data);
   TRY(cable->get(&data));
   if(data != 0x00) return ERR_INVALID_BYTE;
@@ -854,16 +820,7 @@ int ti73_recv_var(FILE *file, int mask_mode,
   DISPLAY("-> Name: %s <", varname);
   for(k=0; k<8; k++) DISPLAY("%02X", varname[k]);
   DISPLAY(">\n");
-  DISPLAY("-> Translated name: %s\n", ti83_translate_varname(varname, trans, var_type));
-  /* [X91] C'est ici que les deux octets de plus vont, c'est le numero
-   * de compatibilité du système de fichiers, pour le moment, c'est 00 00
-   * (ROM v1.12) */
-  TRY(cable->get(&data));
-  sum+=data;
-  fprintf(file, "%c", data);
-  TRY(cable->get(&data));
-  sum+=data;
-  fprintf(file, "%c", data);
+  DISPLAY("-> Translated name: %s\n", ti73_translate_varname(varname, trans, var_type));
 
   TRY(cable->get(&data));
   checksum=data;
@@ -914,8 +871,7 @@ int ti73_recv_var(FILE *file, int mask_mode,
       fprintf(file, "%c%c", LSB(file_checksum), MSB(file_checksum));
       fseek(file, offset, SEEK_SET);
       if(mask_mode & MODE_RECEIVE_SINGLE_VAR)
-	/* [X91] les deux octets de compatibilité se repercutent ici */
-	/* [X91] fprintf(file, "%c%c", LSB(var_size+15), MSB(var_size+15));*/
+
 	fprintf(file, "%c%c", LSB(var_size+17), MSB(var_size+17));
       else
 	if(mask_mode & MODE_RECEIVE_LAST_VAR)
@@ -932,11 +888,6 @@ int ti73_recv_var(FILE *file, int mask_mode,
   return 0;
 }
 
-
-/* [X91] d'après ce que j'ai lu, la difference entre les
- * fichiers est gérée  (mais de manière laxiste:
- * la détection 0x0D / 0x0B se fait au niveau
- * de l'en tête **TI83** / **TI83F* */
 int ti73_send_var(FILE *file, int mask_mode)
 {
   byte data;
@@ -946,8 +897,8 @@ int ti73_send_var(FILE *file, int mask_mode)
   char varname[9];
   byte vartype;
   int i;
-  char trans[9]; int fti73 = 0;
-  byte varattr = VARATTR_NONE;
+  char trans[9];
+
   
   LOCK_TRANSFER()
   TRY(cable->open());
@@ -958,7 +909,7 @@ int ti73_send_var(FILE *file, int mask_mode)
     {
       if(mask_mode & MODE_FILE_CHK_MID)
         {
-          if( strcmp(trans, "**TI83**") && strcmp(trans, "**TI83F*") )
+          if( strcmp(trans, "**TI73**"))
             {
               return ERR_INVALID_TIXX_FILE;
             }
@@ -966,7 +917,7 @@ int ti73_send_var(FILE *file, int mask_mode)
       else if(mask_mode & MODE_FILE_CHK_ALL)
         {
           fprintf(stderr, "MODE_FILE_CHK_ALL\n");
-	  if( strcmp(trans, "**TI83F*"))
+	  if( strcmp(trans, "**TI73**"))
             {
               return ERR_INVALID_TI83_FILE;
             }
@@ -983,37 +934,29 @@ int ti73_send_var(FILE *file, int mask_mode)
   while(!feof(file))
     {
       data=fgetc(file);
-	  if(feof(file)) break;
-      if(data == 0x0d) fti73 = 1; else if(data == 0x0b) fti73 = 0;
-      else break;
       data=fgetc(file);
 	  if(feof(file)) break;
-      if(data != 0) return -1;
       varsize=fgetc(file);
 	  if(feof(file)) break;
       varsize+=fgetc(file) << 8;
       vartype=fgetc(file);
       for(i=0; i<8; i++) varname[i]=fgetc(file);
       varname[i]='\0';
-	  if(fti73) { 
-		  data = fgetc(file);
-		  varattr = fgetc(file);
-	  }
 	  fgetc(file);
       fgetc(file);
       sprintf(update->label_text, "Variable: %s", 
-	       ti83_translate_varname(varname, trans, vartype));
+	       ti73_translate_varname(varname, trans, vartype));
 	  update_label();
       DISPLAY("Sending variable...\n");
       DISPLAY("-> Name: %s\n", varname);
       DISPLAY("-> Translated name: %s\n", 
-	      ti83_translate_varname(varname, trans, vartype));
+	      ti73_translate_varname(varname, trans, vartype));
       DISPLAY("-> Size: %08X\n", varsize);
       DISPLAY("-> Type: %s\n", ti73_byte2type(vartype));
       sum=0;
       TRY(cable->put(PC_TI73));
       TRY(cable->put(CMD73_VAR_HEADER2));
-      if(fti73) block_size=0x0D; else block_size=0x0B;
+	  block_size=0x0B;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       data=LSB(varsize);
@@ -1026,23 +969,11 @@ int ti73_send_var(FILE *file, int mask_mode)
       sum+=data;
       TRY(cable->put(data));
       TRY(sendstring8(varname, &sum));
-      TRY(cable->put(0x00));
-      if( (mask_mode & MODE_USE_2ND_HEADER)			// if backup
-		|| (mask_mode & MODE_KEEP_ARCH_ATTRIB) )	// or if we use the extended file format
-	      {
-			//DISPLAY("attr = %02X\n", varattr);
-			TRY(cable->put(varattr));
-			sum+=varattr;
-	      }
-	  else
-	  {
-		TRY(cable->put(0x00));
-	  }
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
 
       TRY(ti73_isOK());
-      TRY(ti73_waitdata(TI73_PC, block_size));
+      TRY(ti73_waitdata(TI73_PC, 0x0000));
 
       sum=0;
       TRY(PC_replyOK_73());
@@ -1190,139 +1121,15 @@ int ti73_get_rom_version(char *version)
   return ERR_VOID_FUNCTION;
 }
 
-static byte read_byte(FILE *f)
-{
-  int b;
-  
-  fscanf(f, "%02X", &b);
-  return b;
-}
-
-/* 
-   Read an IntelHexa block from FLASH file
-   Format: ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
-   Format: ': 00 0000 01 FF'
-   Format: ': 02 0000 02 0000 FC'
-   Return 0 if success, an error code otherwise.
-   Type: 
-	- 0x00: data block (with page address)
-	- 0x01: end block (without end of file)
-	- 0x02: TI block (page number)
-	- 0x03: end block (with end of file)
-*/
-static int read_intel_packet(FILE *f, int *n, word *addr, 
-							 byte *type, byte *data)
-{
-  int c, i;
-  byte sum, checksum;
-  
-  sum = 0;
-  c = fgetc(f);
-  if(c != ':') return -1;
-  *n = read_byte(f);
-  *addr = read_byte(f) << 8;
-  *addr |= read_byte(f);
-  *type = read_byte(f);
-  sum = *n + MSB(*addr) + LSB(*addr) + *type;
-  for(i=0; i<*n; i++)
-    {
-      data[i] = read_byte(f);
-      sum += data[i];
-    }
-  checksum = read_byte(f);			// verify checksum of block
-  if(LSB(sum+checksum)) return -2;
-  c = fgetc(f); fgetc(f);			// skip CR/LF
-  if( (c == EOF) || (c == ' ')) 
-  {
-	  DISPLAY("End of file detected\n");
-	  *type = 3;
-	  return 0;						// End of File
-  }
-    
-  return 0;
-}
-
 /*
-	Read a data block from FLASH file
-	- addr: the address of block
-	- data: the buffer where data are placed, eventually completed with 0x00
-	- mode: App or Os. A null value reset internal values.
-	Return a negative value if error, a positive value (the same as read_intel_packet).
+  Read a data block from FLASH file
+  - addr: the address of block
+  - data: the buffer where data are placed, eventually completed with 0x00
+  - mode: App or Os. A null value reset internal values.
+  Return a negative value if error, a positive value (the same as read_intel_packet).
 */
-static int read_data_block(FILE *f, word *page_address, word *page_number, 
-						   byte *data, int mode)
-{
-	static word offset = 0x0000;
-	int ret = 0;
-	int i, k;
-	int n;
-	int bytes_to_read=0x80;	//number of bytes to read (usually 0x80 or 0x100)
-
-	if(mode & MODE_APPS)
-		bytes_to_read = 0x80;
-	else if(mode & MODE_AMS)
-		bytes_to_read = 0x100;
-
-	if(!((mode & MODE_APPS) || (mode & MODE_AMS)))
-	{	// reset page_offset & index
-		offset = 0x0000;
-		*page_address = 0x0000;
-		*page_number = 0x0000;
-		return 0;
-	}
-
-	for(i=0; i<bytes_to_read; i+=n)
-	{
-		word addr;
-		byte type;
-		byte buf[32];
-
-		ret = read_intel_packet(f, &n, &addr, &type, buf);
-		if(ret < 0) return ret;
-
-		if(type == 2)											// special block
-		{
-			offset = 0x4000;
-			*page_number = (buf[0] << 8) | buf[1];
-			ret = read_intel_packet(f, &n, &addr, &type, buf);	// get a data block
-		}
-
-		if( (type == 1) || (type == 3) )						// final block
-		{	// fill up to end
-			offset = 0x0000;
-			*page_number = 0x0000;
-			if(i == 0)			// no need to complete block
-			{ 
-				if(type == 3)
-					break; 
-			}					
-			else
-			{
-				n = bytes_to_read - i;
-				DISPLAY("-> filling block: %i %i\n", i, n);
-				for(k=i; k<bytes_to_read; k++) data[k] = 0x00;
-				return type;
-			}
-		}
-		else
-		{	// copy data
-			for(k=0; k<n; k++) data[i+k] = buf[k];
-
-			if(i==0)			// first loop: compute address of block
-			{	
-				if(mode & MODE_APPS)
-					*page_address = addr;
-				else
-					*page_address = (addr % 0x4000) + offset;
-
-				DISPLAY("offset = %04X, page_address = %04X, page_number = %04X\n", 
-					offset, *page_address, *page_number);
-			} 
-		}
-	}
-		
-	return ret;
-}
+extern int read_data_block(FILE *f, word *page_address, word *page_number, 
+			   byte *data, int mode);
 
 int ti73_send_flash(FILE *file, int mask_mode)
 {
@@ -1657,45 +1464,6 @@ int ti73_send_flash(FILE *file, int mask_mode)
   return 0;
 }
 
-static int write_byte(byte b, FILE *f)
-{
-  return fprintf(f, "%02X", b);
-}
-
-/* 
-   Write an IntelHexa block from FLASH file
-   Format: ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
-   Format: ': 00 0000 01 FF'
-   Format: ': 02 0000 02 0000 FC'
-   Return 0 if success, an error code otherwise.
-*/
-static int write_intel_packet(FILE *f, int n, word addr, 
-			      byte type, byte *data)
-{
-  int i;
-  int sum;
-  
-  fputc(':', f);
-  write_byte(n, f);
-  write_byte(MSB(addr), f);
-  write_byte(LSB(addr), f);
-  write_byte(type, f);
-  sum = n + MSB(addr) + LSB(addr) + type;
-  for(i=0; i<n; i++)
-    {
-      write_byte(data[i], f);
-      sum += data[i];
-    }
-  write_byte(0x100 - LSB(sum), f);
-  if(type != 0x01)
-  {
-	fputc(0x0D, f);	// CR
-	fputc(0x0A, f);	// LF
-  }
-    
-  return 0;
-}
-
 /*
 	Write a data block to FLASH file
 	- page_address: the address of the FLASH page
@@ -1704,36 +1472,8 @@ static int write_intel_packet(FILE *f, int n, word addr,
 	- mode: used for telling end of file
 	Return a negative value if error, 0 otherwise.
 */
-static int write_data_block(FILE *f, word page_address, word page_number, 
-						   byte *data, int mode)
-{
-	static word pn = 0xffff;
-	int ret = 0;
-	int i;
-	int bytes_to_write = 0x80;	//number of bytes to write (usually 0x80)
-	byte buf[2];
-
-	// Write end of block
-	if(mode)
-		return write_intel_packet(f, 0, 0x0000, 0x01, data);
-
-	// Write page number
-	if(pn != page_number)
-	{
-		pn = page_number;
-		buf[0] = MSB(pn);
-		buf[1] = LSB(pn);
-		write_intel_packet(f, 2, 0x0000, 0x02, buf);
-	}
-
-	// Write data block
-	for(i=0; i<bytes_to_write; i+=32)
-	{
-	  write_intel_packet(f, 32, page_address+i, 0x00, data+i);
-	}
-		
-	return ret;
-}
+extern int write_data_block(FILE *f, word page_address, word page_number, 
+						   byte *data, int mode);
 
 int ti73_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
 {
@@ -2060,4 +1800,16 @@ int ti73_get_idlist(char *id)
   UNLOCK_TRANSFER()
 
   return 0;
+}
+
+int ti73_supported_operations(void)
+{
+  return 
+    (
+     OPS_SCREENDUMP |
+     OPS_DIRLIST |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_SEND_FLASH | OPS_RECV_FLASH |
+     OPS_IDLIST
+     );
 }

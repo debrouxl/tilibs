@@ -117,14 +117,6 @@ void TICALL ticalc_set_calc(int type,
 
   print_informations();
 
-  calc->group_file_ext = group_file_ext;
-  calc->backup_file_ext = backup_file_ext;
-  calc->tixx_dir = tixx_dir;
-  calc->pak_name = pak_name;
-  calc->flash_app_file_ext = flash_app_file_ext;
-  calc->flash_os_file_ext = flash_os_file_ext;
-  calc->tixx_flash = tixx_flash;
-
   switch(type)
     {
     case CALC_TI92P:
@@ -135,7 +127,6 @@ void TICALL ticalc_set_calc(int type,
       
       calc->isready=ti92p_isready;
       calc->send_key=ti92p_send_key;
-      calc->remote_control=ti92p_remote_control;
       calc->screendump=ti92p_screendump;
       calc->recv_backup=ti92p_recv_backup;
       calc->send_backup=ti92p_send_backup;
@@ -155,6 +146,8 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header 
 	= generate_89_92_92p_group_file_header_from_varlist;
 
+      calc->supported_operations = ti92p_supported_operations;
+
       break;
     case CALC_TI92:
       calc->byte2type = ti92_byte2type;
@@ -164,7 +157,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti92_isready;
       calc->send_key=ti92_send_key;
-      calc->remote_control=ti92_remote_control;
       calc->screendump=ti92_screendump;
       calc->recv_backup=ti92_recv_backup;
       calc->send_backup=ti92_send_backup;
@@ -184,6 +176,8 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header
         = generate_89_92_92p_group_file_header_from_varlist;
 
+      calc->supported_operations = ti92_supported_operations;
+
       break;
     case CALC_TI89:
       calc->byte2type = ti89_byte2type;
@@ -193,7 +187,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti89_isready;
       calc->send_key=ti89_send_key;
-      calc->remote_control=ti89_remote_control;
       calc->screendump=ti89_screendump;
       calc->recv_backup=ti89_recv_backup;
       calc->send_backup=ti89_send_backup;
@@ -214,6 +207,8 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header
         = generate_89_92_92p_group_file_header_from_varlist;
 
+      calc->supported_operations = ti89_supported_operations;
+
       break;
     case CALC_TI86:
       calc->byte2type = ti86_byte2type;
@@ -223,7 +218,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti86_isready;
       calc->send_key=ti86_send_key;
-      calc->remote_control=ti86_remote_control;
       calc->screendump=ti86_screendump;
       calc->recv_backup=ti86_recv_backup;
       calc->send_backup=ti86_send_backup;
@@ -244,6 +238,8 @@ void TICALL ticalc_set_calc(int type,
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
 
+      calc->supported_operations = ti86_supported_operations;
+
       break;
     case CALC_TI85:
       calc->byte2type = ti85_byte2type;
@@ -253,7 +249,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti85_isready;
       calc->send_key=ti85_send_key;
-      calc->remote_control=ti85_remote_control;
       calc->screendump=ti85_screendump;
       calc->recv_backup=ti85_recv_backup;
       calc->send_backup=ti85_send_backup;
@@ -272,6 +267,9 @@ void TICALL ticalc_set_calc(int type,
         = generate_82_83_85_86_single_file_header;
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
+      
+      calc->supported_operations = ti85_supported_operations;
+
       break;
     case CALC_TI83P:
       calc->byte2type = ti83p_byte2type;
@@ -281,7 +279,6 @@ void TICALL ticalc_set_calc(int type,
     
       calc->isready=ti83p_isready;
       calc->send_key=ti83p_send_key;
-      calc->remote_control=ti83p_remote_control;
       calc->screendump=ti83p_screendump;
       calc->recv_backup=ti83p_recv_backup;
       calc->send_backup=ti83p_send_backup;
@@ -300,6 +297,9 @@ void TICALL ticalc_set_calc(int type,
 	= generate_82_83_85_86_single_file_header;
       calc->generate_group_file_header
 	= generate_82_83_85_86_group_file_header_from_varlist;
+
+      calc->supported_operations = ti83p_supported_operations;
+
       break;
     case CALC_TI83:
       calc->byte2type = ti83_byte2type;
@@ -309,7 +309,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti83_isready;
       calc->send_key=ti83_send_key;
-      calc->remote_control=ti83_remote_control;
       calc->screendump=ti83_screendump;
       calc->recv_backup=ti83_recv_backup;
       calc->send_backup=ti83_send_backup;
@@ -328,6 +327,9 @@ void TICALL ticalc_set_calc(int type,
         = generate_82_83_85_86_single_file_header;
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
+
+      calc->supported_operations = ti83_supported_operations;
+
       break;
     case CALC_TI82:
       calc->byte2type = ti82_byte2type;
@@ -337,7 +339,6 @@ void TICALL ticalc_set_calc(int type,
 
       calc->isready=ti82_isready;
       calc->send_key=ti82_send_key;
-      calc->remote_control=ti82_remote_control;
       calc->screendump=ti82_screendump;
       calc->recv_backup=ti82_recv_backup;
       calc->send_backup=ti82_send_backup;
@@ -356,6 +357,9 @@ void TICALL ticalc_set_calc(int type,
         = generate_82_83_85_86_single_file_header;
       calc->generate_group_file_header
         = generate_82_83_85_86_group_file_header_from_varlist;
+      
+      calc->supported_operations = ti82_supported_operations;
+
       break;
     case CALC_TI73:
       calc->byte2type = ti73_byte2type;
@@ -365,7 +369,6 @@ void TICALL ticalc_set_calc(int type,
       
       calc->isready=ti73_isready;
       calc->send_key=ti73_send_key;
-      calc->remote_control=ti73_remote_control;
       calc->screendump=ti73_screendump;
       calc->recv_backup=ti73_recv_backup;
       calc->send_backup=ti73_send_backup;
@@ -378,12 +381,15 @@ void TICALL ticalc_set_calc(int type,
       calc->recv_flash=ti73_recv_flash;
       calc->get_idlist=ti73_get_idlist;
     
-      calc->translate_varname = ti83_translate_varname;
+      calc->translate_varname = ti73_translate_varname;
       calc->ascii2ti_key = ti92_keys;
       calc->generate_single_file_header
 	= generate_82_83_85_86_single_file_header;
       calc->generate_group_file_header
 	= generate_82_83_85_86_group_file_header_from_varlist;
+      
+      calc->supported_operations = ti73_supported_operations;
+
       break;
     default:
     fprintf(stderr, "Function not implemented. This is a bug. Please report it.");

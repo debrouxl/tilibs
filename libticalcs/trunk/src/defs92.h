@@ -61,9 +61,10 @@
 
 // Locking variables
 
+#define TI92_VNONE 0
 #define TI92_VLOCK 1
 
-// Keys of the TI92
+// Keys codes of the TI92/TI92+
 
 #define KEY92_F1     268
 #define KEY92_F2     269
@@ -83,22 +84,21 @@
 #define KEY92_SIN    259
 #define KEY92_COS    260
 #define KEY92_TAN    261
-#define KEY92_POW    94
+#define KEY92_POWER  94
 #define KEY92_LP     40  // Left parenthesis
 #define KEY92_RP     41  // Right parenthesis
 #define KEY92_COMMA  44
-#define KEY92_BSLASH 92
 #define KEY92_DIVIDE 47
 #define KEY92_MULT   42
 #define KEY92_MINUS  45
 #define KEY92_PLUS   43
 #define KEY92_STO    258
 #define KEY92_SPACE  32
-#define KEY92_EQUAL  61
+#define KEY92_EQUALS 61
 #define KEY92_BS     257
 #define KEY92_THETA  136
 #define KEY92_NEG    173
-#define KEY92_POINT  46
+#define KEY92_DOT   46
 #define KEY92_0      48
 #define KEY92_1      49
 #define KEY92_2      50
@@ -143,6 +143,9 @@
 #define KEY92_DW_LF  345
 #define KEY92_LEFT   337
 #define KEY92_UP_LF  339
+
+// Key modifiers
+
 #define KEY92_2ND    4096
 #define KEY92_CTRL   8192
 #define KEY92_SHIFT  16384

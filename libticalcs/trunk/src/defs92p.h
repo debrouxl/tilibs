@@ -19,7 +19,7 @@
 #ifndef DEFS92P_H
 #define DEFS92P_H
 
-// Devicetype
+// Devicetype7
 
 #define PC_TI92p 0x08
 #define TI92p_PC 0x88
@@ -73,7 +73,7 @@
 #define TI92p_VLOCK 1
 #define TI92p_VARCH 3
 
-// Keys of the TI92p/TI92+
+// Keys codes of the TI92/TI92+
 
 #define KEY92p_F1     268
 #define KEY92p_F2     269
@@ -93,22 +93,21 @@
 #define KEY92p_SIN    259
 #define KEY92p_COS    260
 #define KEY92p_TAN    261
-#define KEY92p_POW    94
+#define KEY92p_POWER  94
 #define KEY92p_LP     40  // Left parenthesis
 #define KEY92p_RP     41  // Right parenthesis
 #define KEY92p_COMMA  44
-#define KEY92p_BSLASH 92
 #define KEY92p_DIVIDE 47
 #define KEY92p_MULT   42
 #define KEY92p_MINUS  45
 #define KEY92p_PLUS   43
 #define KEY92p_STO    258
 #define KEY92p_SPACE  32
-#define KEY92p_EQUAL  61
+#define KEY92p_EQUALS 61
 #define KEY92p_BS     257
 #define KEY92p_THETA  136
 #define KEY92p_NEG    173
-#define KEY92p_POINT  46
+#define KEY92p_DOT    46
 #define KEY92p_0      48
 #define KEY92p_1      49
 #define KEY92p_2      50
@@ -153,6 +152,9 @@
 #define KEY92p_DW_LF  345
 #define KEY92p_LEFT   337
 #define KEY92p_UP_LF  339
+
+// Key modifiers
+
 #define KEY92p_2ND    4096
 #define KEY92p_CTRL   8192
 #define KEY92p_SHIFT  16384

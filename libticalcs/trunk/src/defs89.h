@@ -83,32 +83,33 @@
 #define KEY89_F6     273
 #define KEY89_F7     274
 #define KEY89_F8     275
-#define KEY89_MODE   266
-#define KEY89_CLEAR  263
-#define KEY89_LN     262
 #define KEY89_ESC    264
 #define KEY89_APPS   265
-#define KEY89_CR     13
-#define KEY89_ENTER  13
-#define KEY89_SIN    259
-#define KEY89_COS    260
-#define KEY89_TAN    261
-#define KEY89_POW    94
+#define KEY89_HOME   277
+#define KEY89_MODE   266
+#define KEY89_CATLG  278
+#define KEY89_BS	 257
+#define KEY89_CLEAR  263
+#define KEY89_X      120
+#define KEY89_Y      121
+#define KEY89_Z      122
+#define KEY89_T      116
+#define KEY89_POWER  94
+#define KEY89_TUBE	 124
 #define KEY89_LP     40  // Left parenthesis
 #define KEY89_RP     41  // Right parenthesis
 #define KEY89_COMMA  44
-#define KEY89_BSLASH 92
 #define KEY89_DIVIDE 47
 #define KEY89_MULT   42
 #define KEY89_MINUS  45
 #define KEY89_PLUS   43
+#define KEY89_CR     13
+#define KEY89_ENTER  13
 #define KEY89_STO    258
-#define KEY89_SPACE  32
-#define KEY89_EQUAL  61
-#define KEY89_BS     257
-#define KEY89_THETA  136
+#define KEY89_EQUALS 61
+#define KEY89_EE     149
 #define KEY89_NEG    173
-#define KEY89_POINT  46
+#define KEY89_DOT    46
 #define KEY89_0      48
 #define KEY89_1      49
 #define KEY89_2      50
@@ -119,44 +120,16 @@
 #define KEY89_7      55
 #define KEY89_8      56
 #define KEY89_9      57
-#define KEY89_a      97
-#define KEY89_b      98
-#define KEY89_c      99
-#define KEY89_d      100
-#define KEY89_e      101
-#define KEY89_f      102
-#define KEY89_g      103
-#define KEY89_h      104
-#define KEY89_i      105
-#define KEY89_j      106
-#define KEY89_k      107
-#define KEY89_l      108
-#define KEY89_m      109
-#define KEY89_n      110
-#define KEY89_o      111
-#define KEY89_p      112
-#define KEY89_q      113
-#define KEY89_r      114
-#define KEY89_s      115
-#define KEY89_t      116
-#define KEY89_u      117
-#define KEY89_v      118
-#define KEY89_w      119
-#define KEY89_x      120
-#define KEY89_y      121
-#define KEY89_z      122
+
 #define KEY89_UP     338
-#define KEY89_UP_RG  342
 #define KEY89_RIGHT  340
-#define KEY89_DW_RG  348
 #define KEY89_DOWN   344
-#define KEY89_DW_LF  345
 #define KEY89_LEFT   337
-#define KEY89_UP_LF  339
+
 #define KEY89_2ND    4096
 #define KEY89_CTRL   8192
 #define KEY89_SHIFT  16384
-#define KEY89_LOCK   32768
+#define KEY89_ALPHA  32768
 
 // Screen coordinates of the TI89
 

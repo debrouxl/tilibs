@@ -45,6 +45,8 @@ int ti92_dump_rom(FILE *file, int mask_mode);
 int ti92_get_rom_version(char *version);
 int ti92_get_idlist(char *idlist);
 
+int ti92_supported_operations(void);
+
 #endif
 
 

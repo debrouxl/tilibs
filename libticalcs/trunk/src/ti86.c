@@ -785,7 +785,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
-    p->varlocked=0;
+    p->varattr=0;
     strcpy(p->translate, "");
 
     DISPLAY("Request directory list (dir)...\n");
@@ -857,14 +857,14 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
 	strcpy(p->varname, var_name);
 	p->vartype=var_type;
 	p->varsize=size;
-	p->varlocked=0;
+	p->varattr=0;
 	p->folder=list;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 
 	DISPLAY("Name: %8s | ", p->varname);
 	DISPLAY("Type: %8s | ", ti86_byte2type(p->vartype));
-	DISPLAY("Locked: %i | ", p->varlocked);
+	DISPLAY("Locked: %i | ", p->varattr);
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_86());
@@ -1251,4 +1251,17 @@ int ti86_recv_flash(FILE *file, int mask_mode)
 int ti86_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
+}
+
+int ti86_supported_operations(void)
+{
+  return 
+    (
+     OPS_ISREADY |
+     OPS_SCREENDUMP |
+     OPS_DIRLIST |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_ROMDUMP
+     );
 }

@@ -23,6 +23,7 @@
 #include "calc_err.h"
 #include "calc_int.h"
 
+#include "defs73.h"
 #include "defs83p.h"
 #include "defs92p.h"
 #include "defs89.h"
@@ -342,13 +343,13 @@ TIEXPORT int TICALL ti89_92_92p_isready(int *calc_type)
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise
 */
-TIEXPORT int TICALL ticalc_83p_89_92p_isready(int *calc_type)
+TIEXPORT int TICALL ticalc_73_83p_89_92p_isready(int *calc_type)
 {
   byte data;
   int ct;
 
   ct = ticalc_get_calc();
-  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && (ct != CALC_TI83P) )
+  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && (ct != CALC_TI73) && (ct != CALC_TI83P) )
     return 0;
   
   TRY(cable->open());
@@ -358,13 +359,14 @@ TIEXPORT int TICALL ticalc_83p_89_92p_isready(int *calc_type)
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
 
-  TRY(cable->get(&data));		// 0x98: TI89, 0x88: TI92+, 0x73: TI83+
+  TRY(cable->get(&data));		// 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
   //DISPLAY("isOK_1: 0x%02X\n", data);
   switch(data)
   {
-  case TI89_PC: *calc_type = CALC_TI89; break;
+  case TI89_PC:  *calc_type = CALC_TI89; break;
   case TI92p_PC: *calc_type = CALC_TI92P; break;
   case TI83p_PC: *calc_type = CALC_TI83P; break;
+  case TI73_PC:  *calc_type = CALC_TI73; break;
   default: *calc_type = CALC_NONE; return ERR_INVALID_BYTE; break;
   }
   TRY(cable->get(&data)); 

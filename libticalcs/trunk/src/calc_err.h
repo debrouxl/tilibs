@@ -52,6 +52,7 @@
 #define ERR_NO_IDLIST          263 // Calc has not an IDlist
 
 #define ERR_PENDING_TRANSFER   333 // A transfer is in progress
+#define ERR_INVALID_TI73_FILE  334 // Invalid TI83 file
 
 #endif
 

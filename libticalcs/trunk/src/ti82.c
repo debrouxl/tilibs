@@ -964,3 +964,14 @@ int ti82_get_idlist(char *id)
 {
   return ERR_VOID_FUNCTION;
 }
+
+int ti82_supported_operations(void)
+{
+	return 
+	(
+     OPS_SCREENDUMP |
+     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+     OPS_SEND_VARS | OPS_RECV_VARS |
+     OPS_ROMDUMP
+     );
+}

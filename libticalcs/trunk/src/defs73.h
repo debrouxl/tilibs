@@ -21,8 +21,8 @@
 
 // Devicetype
 
-#define PC_TI73 0x23
-#define TI73_PC 0x73
+#define PC_TI73 0x07
+#define TI73_PC 0x74
 
 // Commands
 
@@ -65,7 +65,7 @@
 #define TI73_ZSTO   0x10
 #define TI73_TAB    0x11
 
-#define TI73_BKUP   0x13
+#define TI73_BKUP	0x13
 #define TI73_DIR    0x19
 #define TI73_AMS    0x23
 #define TI73_FLASH  0x24

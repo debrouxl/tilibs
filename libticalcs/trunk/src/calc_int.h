@@ -39,32 +39,38 @@ extern "C" {
   
   const char TICALL *ticalc_get_version();
   
-  void TICALL ticalc_set_update(struct ticalc_info_update *iu,
-				void (*start)   (void),
-				void (*stop)    (void),
-				void (*refresh) (void),
-				void (*msg_box) (const char *t, char *s),
-				void (*pbar)    (void),
-				void (*label)   (void),
-				int  (*choose)  (char *cur_name, 
-						 char *new_name));
-
+  int        TICALL ticalc_get_error(int err_num, char *error_msg);
+  
+  void       TICALL ticalc_set_update(struct ticalc_info_update *iu,
+                                     void (*start)   (void),
+                                     void (*stop)    (void),
+                                     void (*refresh) (void),
+                                     void (*msg_box) (const char *t, char *s),
+                                     void (*pbar)    (void),
+                                     void (*label)   (void),
+                                     int  (*choose)  (char *cur_name, 
+                                                      char *new_name));
+  
   // obsolete, use the 2 functions below  
-  void TICALL ticalc_set_calc(int type, 
-			      TicalcFncts *calc, 
-			      LinkCable *link);
+  void TICALL ticalc_set_calc(int type, TicalcFncts *calc, LinkCable *link);
   void TICALL ticalc_set_cable(LinkCable *lc);
-  void TICALL ticalc_set_calc2(int type, TicalcFncts *calc);
-
-  int TICALL ticalc_get_calc(void);
+  void TICALL ticalc_set_calc2(int type, TicalcFncts *calc);  
+  int  TICALL ticalc_get_calc(void);
   
-  int TICALL ticalc_get_error(int err_num, char *error_msg);
+  int  TICALL detect_calc(int *calc_type);
+  int  TICALL ticalc_89_92_92p_isready(int *calc_type);  // obsolete
+  int  TICALL ticalc_73_83p_89_92p_isready(int *calc_type); // preferred
   
-  int TICALL detect_calc(int *calc_type);
-  int TICALL ticalc_83p_89_92p_isready(int *calc_type);
-  
-  int TICALL ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
-  int TICALL ticalc_close_ti_file();
+  int  TICALL ticalc_open_ti_file(char *filename, char *mode, FILE **fd);
+  int  TICALL ticalc_close_ti_file();
+ 
+  const char* TICALL ticalc_group_file_ext(int calc_type);
+  const char* TICALL ticalc_backup_file_ext(int calc_type);
+  const char* TICALL ticalc_flash_app_file_ext(int calc_type);
+  const char* TICALL ticalc_flash_os_file_ext(int calc_type);
+ 
+  const int   TICALL ticalc_folder_type(int calc_type);
+  const int   TICALL ticalc_flash_type(int calc_type);
   
 #ifdef __cplusplus
 }

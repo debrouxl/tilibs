@@ -145,9 +145,9 @@
 		};
 		0127D0DE017389D15041E0CA = {
 			isa = PBXFileReference;
-			name = keys92.h;
-			path = ../src/keys92.h;
-			refType = 2;
+			name = keys92p.h;
+			path = /Users/julien/devel/libticalcs/src/keys92p.h;
+			refType = 0;
 		};
 		0127D0DF017389D15041E0CA = {
 			isa = PBXFileReference;
@@ -401,15 +401,6 @@
 				);
 			};
 		};
-		0127D100017389D15041E0CA = {
-			fileRef = 0127D0D9017389D15041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
 		0127D101017389D15041E0CA = {
 			fileRef = 0127D0DA017389D15041E0CA;
 			isa = PBXBuildFile;
@@ -421,15 +412,6 @@
 		};
 		0127D102017389D15041E0CA = {
 			fileRef = 0127D0DB017389D15041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		0127D103017389D15041E0CA = {
-			fileRef = 0127D0DC017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 				ATTRIBUTES = (
@@ -953,6 +935,7 @@
 				0867D6A2FE84028FC02AAC07,
 			);
 			buildSettings = {
+				DEBUGGING_SYMBOLS = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -960,12 +943,12 @@
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /System/Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O0";
+				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
 				PREBINDING = NO;
 				PRODUCT_NAME = libticalcs;
 				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WARNING_CFLAGS = "-Wall -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = framework;
 			};
 			dependencies = (
@@ -996,11 +979,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.7-osx0.1.0</string>
+	<string>3.1.3-osx0.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.0.7-osx0.1.0</string>
+	<string>3.1.3-osx0.1.0</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -1030,10 +1013,8 @@
 				0127D0FD017389D15041E0CA,
 				0127D0FE017389D15041E0CA,
 				0127D0FF017389D15041E0CA,
-				0127D100017389D15041E0CA,
 				0127D101017389D15041E0CA,
 				0127D102017389D15041E0CA,
-				0127D103017389D15041E0CA,
 				0127D104017389D15041E0CA,
 				0127D105017389D15041E0CA,
 				0127D106017389D15041E0CA,
@@ -1053,6 +1034,8 @@
 				0127D114017389D15041E0CA,
 				F50CA7FE01FC268901000102,
 				F50A0D7701FC735001000102,
+				F50DEC1502197FBC01041594,
+				F50DEC160219806501041594,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1206,6 +1189,18 @@
 		};
 		F50CA80001FC269401000102 = {
 			fileRef = F50CA7FF01FC269301000102;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50DEC1502197FBC01041594 = {
+			fileRef = 0127D0D9017389D15041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F50DEC160219806501041594 = {
+			fileRef = 0127D0DC017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 			};
