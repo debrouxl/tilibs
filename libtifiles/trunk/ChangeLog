@@ -1,0 +1,5 @@
+* 20020919 : v0.3.6
+	* Install headers.
+	* strdup() is provided by the libc, thanks.
+* 20020918 : v0.3.6
+	* Initial release.

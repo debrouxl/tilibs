@@ -107,7 +107,7 @@
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-DHAVE_CONFIG_H";
+				OTHER_CFLAGS = "-DHAVE_CONFIG_H -D__MACOSX__";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = libtifiles;
@@ -628,6 +628,9 @@
 			fileRef = F798EF550338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF850338F84901000102 = {
@@ -640,12 +643,18 @@
 			fileRef = F798EF570338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF870338F84901000102 = {
 			fileRef = F798EF580338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF880338F84901000102 = {
@@ -658,18 +667,27 @@
 			fileRef = F798EF5A0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF8A0338F84901000102 = {
 			fileRef = F798EF5B0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF8B0338F84901000102 = {
 			fileRef = F798EF5C0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF8C0338F84901000102 = {
@@ -688,6 +706,9 @@
 			fileRef = F798EF5F0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF8F0338F84901000102 = {
@@ -712,24 +733,36 @@
 			fileRef = F798EF630338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF930338F84901000102 = {
 			fileRef = F798EF640338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF940338F84901000102 = {
 			fileRef = F798EF650338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF950338F84901000102 = {
 			fileRef = F798EF660338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF960338F84901000102 = {
@@ -742,18 +775,27 @@
 			fileRef = F798EF680338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF980338F84901000102 = {
 			fileRef = F798EF690338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF990338F84901000102 = {
 			fileRef = F798EF6A0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF9A0338F84901000102 = {
@@ -784,12 +826,18 @@
 			fileRef = F798EF6F0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EF9F0338F84901000102 = {
 			fileRef = F798EF700338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA00338F84901000102 = {
@@ -802,24 +850,36 @@
 			fileRef = F798EF720338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA20338F84901000102 = {
 			fileRef = F798EF730338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA30338F84901000102 = {
 			fileRef = F798EF740338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA40338F84901000102 = {
 			fileRef = F798EF750338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA50338F84901000102 = {
@@ -838,6 +898,9 @@
 			fileRef = F798EF780338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFA80338F84901000102 = {
@@ -850,30 +913,45 @@
 			fileRef = F798EF7A0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFAA0338F84901000102 = {
 			fileRef = F798EF7B0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFAB0338F84901000102 = {
 			fileRef = F798EF7C0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFAC0338F84901000102 = {
 			fileRef = F798EF7D0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFAD0338F84901000102 = {
 			fileRef = F798EF7E0338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F798EFAE0338F84901000102 = {
@@ -892,6 +970,8 @@
 			fileRef = F798EF810338F84901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+				);
 			};
 		};
 		F798EFB10338F84901000102 = {

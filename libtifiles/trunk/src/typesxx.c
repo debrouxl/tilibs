@@ -37,7 +37,7 @@ extern int tifiles_calc_type;
 /* Utility functions */
 /*********************/
 
-#ifndef __LINUX__
+#if !defined(__LINUX__) && !defined(__MACOSX__)
 char *strdup(const char *s)
 {
   char *p = NULL;

@@ -7,7 +7,7 @@
 			0867D69CFE84028FC02AAC07,
 		);
 		perUserDictionary = {
-			PBXPerProjectTemplateStateSaveDate = 54064282;
+			PBXPerProjectTemplateStateSaveDate = 54134792;
 			"PBXTemplateGeometry-F5CA7ECB015C094F0DCA290F" = {
 				ContentSize = "{668, 621}";
 				LeftSlideOut = {
@@ -135,7 +135,7 @@
 						Split0 = {
 							Split0 = {
 								NavContent0 = {
-									bookmark = F798EFDD0338FD4101000102;
+									bookmark = F75DBF79033A0A1501000102;
 									history = (
 										F798EFBB0338FD4101000102,
 										F798EFBC0338FD4101000102,
@@ -150,7 +150,9 @@
 										F798EFC50338FD4101000102,
 										F798EFC60338FD4101000102,
 										F798EFC70338FD4101000102,
-										F798EFC80338FD4101000102,
+										F75DBEC00339EFDC01000102,
+										F75DBF76033A0A1501000102,
+										F75DBF77033A0A1501000102,
 									);
 									prevStack = (
 										F798EFC90338FD4101000102,
@@ -173,11 +175,13 @@
 										F798EFDA0338FD4101000102,
 										F798EFDB0338FD4101000102,
 										F798EFDC0338FD4101000102,
+										F75DBEC20339EFDC01000102,
+										F75DBF78033A0A1501000102,
 									);
 								};
 								NavCount = 1;
 								NavGeometry0 = {
-									Frame = "{{0, 0}, {632, 398}}";
+									Frame = "{{0, 0}, {641, 398}}";
 									NavBarVisible = YES;
 								};
 							};
@@ -211,15 +215,15 @@
 				{
 					ContentSize = "{856, 572}";
 					LeftSlideOut = {
-						ActiveTab = 0;
+						ActiveTab = 3;
 						Collapsed = NO;
 						Frame = "{{0, 23}, {856, 549}}";
 						Split0 = {
 							ActiveTab = 2;
 							Collapsed = NO;
-							Frame = "{{224, 0}, {632, 549}}";
+							Frame = "{{215, 0}, {641, 549}}";
 							Split0 = {
-								Frame = "{{0, 151}, {632, 398}}";
+								Frame = "{{0, 151}, {641, 398}}";
 							};
 							SplitCount = 1;
 							Tab0 = {
@@ -265,9 +269,9 @@
 								};
 							};
 							Tab2 = {
-								BuildMessageFrame = "{{0, 0}, {634, 120}}";
-								BuildTranscriptFrame = "{{0, 129}, {634, 0}}";
-								Frame = "{{0, 0}, {632, 127}}";
+								BuildMessageFrame = "{{0, 0}, {643, 52}}";
+								BuildTranscriptFrame = "{{0, 61}, {643, 68}}";
+								Frame = "{{0, 0}, {641, 127}}";
 							};
 							Tab3 = {
 								Frame = "{{0, 0}, {572, 265}}";
@@ -332,9 +336,15 @@
 					WindowLocation = "{180, 85}";
 				},
 			);
-			PBXWorkspaceStateSaveDate = 54064282;
+			PBXWorkspaceStateSaveDate = 54134792;
 		};
 		perUserProjectItems = {
+			F75DBEC00339EFDC01000102 = F75DBEC00339EFDC01000102;
+			F75DBEC20339EFDC01000102 = F75DBEC20339EFDC01000102;
+			F75DBF76033A0A1501000102 = F75DBF76033A0A1501000102;
+			F75DBF77033A0A1501000102 = F75DBF77033A0A1501000102;
+			F75DBF78033A0A1501000102 = F75DBF78033A0A1501000102;
+			F75DBF79033A0A1501000102 = F75DBF79033A0A1501000102;
 			F798EFBB0338FD4101000102 = F798EFBB0338FD4101000102;
 			F798EFBC0338FD4101000102 = F798EFBC0338FD4101000102;
 			F798EFBD0338FD4101000102 = F798EFBD0338FD4101000102;
@@ -348,7 +358,6 @@
 			F798EFC50338FD4101000102 = F798EFC50338FD4101000102;
 			F798EFC60338FD4101000102 = F798EFC60338FD4101000102;
 			F798EFC70338FD4101000102 = F798EFC70338FD4101000102;
-			F798EFC80338FD4101000102 = F798EFC80338FD4101000102;
 			F798EFC90338FD4101000102 = F798EFC90338FD4101000102;
 			F798EFCA0338FD4101000102 = F798EFCA0338FD4101000102;
 			F798EFCB0338FD4101000102 = F798EFCB0338FD4101000102;
@@ -369,7 +378,6 @@
 			F798EFDA0338FD4101000102 = F798EFDA0338FD4101000102;
 			F798EFDB0338FD4101000102 = F798EFDB0338FD4101000102;
 			F798EFDC0338FD4101000102 = F798EFDC0338FD4101000102;
-			F798EFDD0338FD4101000102 = F798EFDD0338FD4101000102;
 		};
 		projectwideBuildSettings = {
 		};
@@ -378,6 +386,76 @@
 	};
 	0867D69CFE84028FC02AAC07 = {
 		activeExec = 0;
+	};
+	F75DBEC00339EFDC01000102 = {
+		fRef = F798EF560338F84901000102;
+		isa = PBXTextBookmark;
+		name = "grp_ops.c: aaaa_";
+		rLen = 66;
+		rLoc = 2007;
+		rType = 0;
+		vrLen = 949;
+		vrLoc = 0;
+	};
+	F75DBEC20339EFDC01000102 = {
+		fRef = F798EF560338F84901000102;
+		isa = PBXTextBookmark;
+		name = "grp_ops.c: aaaa_";
+		rLen = 66;
+		rLoc = 2007;
+		rType = 0;
+		vrLen = 949;
+		vrLoc = 0;
+	};
+	F75DBF76033A0A1501000102 = {
+		isa = PBXTargetBookmark;
+		trg = 0867D69CFE84028FC02AAC07;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {426, 233}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+				"com.apple.target-editor-pane.settings.simple",
+				"com.apple.target-editor-pane.info-plist",
+				"com.apple.target-editor-pane.info-plist.simple",
+				"com.apple.target-editor-pane.buildphases",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {167, 344}}";
+			TOCViewSelectedItems = (
+				PBXTargetSummarySettingsModule,
+			);
+		};
+	};
+	F75DBF77033A0A1501000102 = {
+		fRef = F798EF5E0338F84901000102;
+		isa = PBXBookmark;
+	};
+	F75DBF78033A0A1501000102 = {
+		isa = PBXTargetBookmark;
+		trg = 0867D69CFE84028FC02AAC07;
+		uiCtxt = {
+			TOCViewDetailVisibleRect = "{{0, 0}, {426, 233}}";
+			TOCViewExpandedItems = (
+				"com.apple.target-editor-pane.settings",
+				"com.apple.target-editor-pane.settings.simple",
+				"com.apple.target-editor-pane.info-plist",
+				"com.apple.target-editor-pane.info-plist.simple",
+				"com.apple.target-editor-pane.buildphases",
+			);
+			TOCViewMasterVisibleRect = "{{0, 0}, {167, 344}}";
+			TOCViewSelectedItems = (
+				PBXTargetSummarySettingsModule,
+			);
+		};
+	};
+	F75DBF79033A0A1501000102 = {
+		fRef = F798EF5E0338F84901000102;
+		isa = PBXTextBookmark;
+		name = "typesxx.c: 40";
+		rLen = 0;
+		rLoc = 1180;
+		rType = 0;
+		vrLen = 385;
+		vrLoc = 995;
 	};
 	F798EFBB0338FD4101000102 = {
 		fRef = 089C1667FE841158C02AAC07;
@@ -508,13 +586,6 @@
 		rType = 0;
 		vrLen = 963;
 		vrLoc = 0;
-	};
-	F798EFC80338FD4101000102 = {
-		fRef = F798EF560338F84901000102;
-		isa = PBXTextBookmark;
-		rLen = 1;
-		rLoc = 70;
-		rType = 1;
 	};
 	F798EFC90338FD4101000102 = {
 		fRef = 089C1667FE841158C02AAC07;
@@ -714,16 +785,6 @@
 		rLoc = 0;
 		rType = 0;
 		vrLen = 963;
-		vrLoc = 0;
-	};
-	F798EFDD0338FD4101000102 = {
-		fRef = F798EF560338F84901000102;
-		isa = PBXTextBookmark;
-		name = "grp_ops.c: aaaa_";
-		rLen = 66;
-		rLoc = 2007;
-		rType = 0;
-		vrLen = 949;
 		vrLoc = 0;
 	};
 }
