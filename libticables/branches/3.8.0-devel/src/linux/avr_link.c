@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: avr_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -67,12 +67,15 @@ int avr_init()
   flags = O_RDWR | O_NDELAY;
 #elif defined(__BSD__)
   flags = O_RDWR | O_FSYNC;
-#else
+#elif defied(__LINUX__)
   flags = O_RDWR | O_SYNC;
 #endif
 
   if ((dev_fd = open(io_device, flags)) == -1) {
-    DISPLAY_ERROR(_("unable to open this serial port: %s\n"), io_device);
+    if(errno == EACCESS)
+      		DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+    else
+    		DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
     return ERR_OPEN_SER_DEV;
   }
 
@@ -251,11 +254,4 @@ int avr_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = NULL;
 
   return 0;
-}
-
-int avr_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }
