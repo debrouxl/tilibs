@@ -83,6 +83,9 @@
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
+/* Use -fvisibility flag */
+#undef HAVE_FVISIBILITY
+
 /* Define to 1 if you have the `fwprintf' function. */
 #undef HAVE_FWPRINTF
 
@@ -143,9 +146,6 @@
 
 /* Define to 1 if you have the <linux/ticable.h> header file. */
 #undef HAVE_LINUX_TICABLE_H
-
-/* Define to 1 if you have the <linux/tiglusb.h> header file. */
-#undef HAVE_LINUX_TIGLUSB_H
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
