@@ -58,7 +58,7 @@ int win32_detect_os(char **os_type)
   	} else if (os.dwPlatformId == VER_PLATFORM_WIN32_NT) {
     		*os_type = OS_WINNT;
   	} else
-    		*os_type = _("unknown");
+    		*os_type = (char *)_("unknown");
 
 	return 0;
 }
