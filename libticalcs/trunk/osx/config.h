@@ -5,7 +5,7 @@
  * $Id$
  */
 
-#define VERSION "4.4.9"
+#define VERSION "4.5.0"
 
 #define HAVE_TILP_MACROS_H
 #define HAVE_TILP_TYPEDEFS_H
