@@ -46,6 +46,7 @@ CLEAN :
 	-@erase "$(INTDIR)\intelhex.obj"
 	-@erase "$(INTDIR)\intrface.obj"
 	-@erase "$(INTDIR)\misc.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\tifiles.res"
 	-@erase "$(INTDIR)\trans.obj"
 	-@erase "$(INTDIR)\type2str.obj"
@@ -68,7 +69,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TIFILES_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fp"$(INTDIR)\tifiles.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "_WINDOWS" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fp"$(INTDIR)\tifiles.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -97,10 +98,11 @@ LINK32_OBJS= \
 	"$(INTDIR)\error.obj" \
 	"$(INTDIR)\intrface.obj" \
 	"$(INTDIR)\misc.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\trans.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\tifiles.res" \
-	".\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
 
 "..\..\tests\tifiles.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -127,6 +129,7 @@ CLEAN :
 	-@erase "$(INTDIR)\intelhex.obj"
 	-@erase "$(INTDIR)\intrface.obj"
 	-@erase "$(INTDIR)\misc.obj"
+	-@erase "$(INTDIR)\printl.obj"
 	-@erase "$(INTDIR)\tifiles.res"
 	-@erase "$(INTDIR)\trans.obj"
 	-@erase "$(INTDIR)\type2str.obj"
@@ -155,7 +158,7 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TIFILES_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MTd /W2 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "TIFILES_EXPORTS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\tifiles.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -184,10 +187,11 @@ LINK32_OBJS= \
 	"$(INTDIR)\error.obj" \
 	"$(INTDIR)\intrface.obj" \
 	"$(INTDIR)\misc.obj" \
+	"$(INTDIR)\printl.obj" \
 	"$(INTDIR)\trans.obj" \
 	"$(INTDIR)\type2str.obj" \
 	"$(INTDIR)\tifiles.res" \
-	".\intl.lib"
+	"..\..\..\..\..\Gtk2Dev\lib\intl.lib"
 
 "$(OUTDIR)\tifiles.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -348,6 +352,12 @@ SOURCE=..\..\src\intrface.c
 SOURCE=..\..\src\misc.c
 
 "$(INTDIR)\misc.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\..\src\printl.c
+
+"$(INTDIR)\printl.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
