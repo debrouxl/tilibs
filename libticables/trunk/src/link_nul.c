@@ -91,12 +91,12 @@ int nul_set_white_wire(int b)
 
 int nul_get_red_wire()
 {
-  return 0;
+  return 1;
 }
 
 int nul_get_white_wire()
 {
-  return 0;
+  return 1;
 }
 
 int nul_supported()
