@@ -40,7 +40,7 @@ int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
 
-  	printl(0, _("Getting OS type...\r\n"));
+  	printl(0, _("getting OS type...\r\n"));
   	
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -57,8 +57,6 @@ int win32_detect_os(char **os_type)
     		*os_type = OS_WINNT;
   	} else
     		*os_type = _("unknown");
-  	
-  	printl(0, _("Done.\r\n"));
 
 	return 0;
 }
@@ -76,8 +74,8 @@ int win32_detect_resources(void)
     HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
 	char *os;
     	
-	printl(0, _("checking resources...\r\n"));
 	win32_detect_os(&os);
+	printl(0, _("checking resources...\r\n"));
 	
 	/* Windows NT need permissions */
 	

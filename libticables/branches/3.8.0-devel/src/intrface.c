@@ -67,6 +67,8 @@ TicablePortInfo pi;	     // I/O ports detected
 /* Entry points */
 /****************/
 
+static int ticables_instance = 0;	// counts # of instances
+
 /*
 	This function should be the first one to call.
   	It tries to list available I/O resources for later use.
@@ -78,16 +80,21 @@ TICALL ticable_init()
   	HANDLE hDll;
   	char LOCALEDIR[65536];
   	int i;
+  	
   	hDll = GetModuleHandle("ticables.dll");
   	GetModuleFileName(hDll, LOCALEDIR, 65535);
+  	
   	for (i = strlen(LOCALEDIR); i >= 0; i--) {
     	if (LOCALEDIR[i] == '\\')
       		break;
   	}
+  	
   	LOCALEDIR[i] = '\0';
   	strcat(LOCALEDIR, "\\locale");
 #endif
-
+	if (ticables_instance)
+		return (++ticables_instance);
+	printl(0, _("ticables library version %s\n"), LIBTICABLES_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
@@ -96,7 +103,6 @@ TICALL ticable_init()
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
-  	printl(0, _("version %s\n"), LIBTICABLES_VERSION);
 
 	// list built-in compiled options...
 	printl(0, _("built for %s target.\n"), 
@@ -110,6 +116,8 @@ TICALL ticable_init()
 		"__MINGW32__"
 #elif defined(__CYGWIN__)
 		"__CYGWIN__"
+#elif defined(__WIN32__)
+		"__WIN32__"
 #else
 		"not listed"
 #endif
@@ -121,7 +129,7 @@ TICALL ticable_init()
 	// list I/O ports
 	ticable_detect_port(&pi);
 
-  	return 0;
+  	return (++ticables_instance);
 }
 
 
@@ -132,7 +140,7 @@ TICALL ticable_init()
 TIEXPORT int
 TICALL ticable_exit()
 {
-  	return 0;
+  	return (--ticables_instance);
 }
 
 

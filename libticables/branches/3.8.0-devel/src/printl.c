@@ -38,10 +38,11 @@
    Level: such as "warning", "error", "information", etc. "" = nothing.
 */
 static int default_printl(int level, const char *format, ...)
-{
-	va_list ap;
+{	
 	int ret = 0;
-#ifndef __WIN32__	
+#ifndef __WIN32__
+	va_list ap;
+
 	switch(level) {
 		case 1: fprintf(stdout, _("wrn: ")); break;
 		case 2: fprintf(stdout, _("err: ")); break;
