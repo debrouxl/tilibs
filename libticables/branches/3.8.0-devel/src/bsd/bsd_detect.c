@@ -1,4 +1,4 @@
-/* Hey EMACS -*- macos-c -*- */
+/* Hey EMACS -*- bsd-c -*- */
 /* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
@@ -19,27 +19,40 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* macos probing module */
+/* *Bsd probing module */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #ifdef HAVE_STDINT_H
 # include <stdint.h>
 #else
 # include <inttypes.h>
 #endif
+#include <dirent.h>
+#include <sys/utsname.h>	// for uname()
+#include <unistd.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/types.h>
 
-#include "../intl.h"
-#include "../cabl_def.h"
-#include "../cabl_err.h"
-#include "../export.h"
-#include "../externs.h"
-#include "../verbose.h"
+#include "intl.h"
 
-int macos_detect_os(char **os_type)
+#include "cabl_def.h"
+#include "cabl_err.h"
+#include "export.h"
+#include "externs.h"
+#include "verbose.h"
+
+int bsd_detect_os(char **os_type)
 {
+#ifdef HAVE_UNAME
 	struct utsname buf;
 
 	uname(&buf);
@@ -50,28 +63,46 @@ int macos_detect_os(char **os_type)
   	DISPLAY(_("  Version: %s\r\n"), buf.version);
   	DISPLAY(_("  Machine: %s\r\n"), buf.machine);
 	DISPLAY(_("Done.\r\n"));
-	*os_type = OS_MACOS;
+#endif
+	*os_type = OS_BSD;
 
 	return 0;
 }
 
-int macos_detect_port(TicablePortInfo * pi)
+int bsd_detect_port(TicablePortInfo * pi)
 {
-	// I will put them later...
-
 	return 0;
 }
 
-int macos_detect_resources(void)
+int bsd_detect_resources(void)
 {
 	DISPLAY(_("libticables: checking resources...\r\n"));
-	resources = IO_OSX;
-	
-	/* API: for use with all */
-	
-	resources |= IO_API;
-	DISPLAY(_("  IO_API: %sfound at compile time.\n"),
-		resources & IO_API ? "" : "not ");	
+	resources = IO_BSD;
 
-	return 0;
+	/* API: for use with ttySx */
+
+#if defined(HAVE_TERMIOS_H)
+  	resources |= IO_API;
+  	DISPLAY(_("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
+#else
+	DISPLAY(_("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
+#endif
+
+	/* ASM: for use with low-level I/O */
+
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
+	resources |= IO_ASM;
+#endif
+	DISPLAY(_("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),
+		resources & IO_ASM ? "" : "not ");
+
+	/* LIBUSB: lib-usb userland module */
+
+#ifdef HAVE_LIBUSB
+	resources |= IO_LIBUSB;
+#endif
+	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
+		resources & IO_LIBUSB ? "" : "not ");
+
+  	return 0;
 }

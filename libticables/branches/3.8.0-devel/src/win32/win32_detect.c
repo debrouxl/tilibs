@@ -56,9 +56,9 @@ int win32_detect_os(char **os_type)
 	  os.dwMajorVersion, os.dwMinorVersion);
   
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-    		*os_type = "Windows9x";
+    		*os_type = OS_WIN9X;
   	} else if (os.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-    		*os_type = "WindowsNT";
+    		*os_type = OS_WINNT;
   	} else
     		*os_type = _("unknown");
   	

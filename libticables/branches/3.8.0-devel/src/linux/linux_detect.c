@@ -66,7 +66,7 @@ int linux_detect_os(char **os_type)
   	DISPLAY(_("  Machine: %s\r\n"), buf.machine);
 	DISPLAY(_("Done.\r\n"));
 #endif
-	*os_type = "Linux";
+	*os_type = OS_LINUX;
 
 	return 0;
 }

@@ -38,7 +38,7 @@
 #elif defined(__MACOSX__)
 #include "macos/macos_mapping.h"
 #elif defined(__BSD__)
-#include "bsd/bsd_mapping.h"
+#include "linux/linux_mapping.h"
 #elif defined(__WIN32__)
 #include "win32/win32_mapping.h"
 #else

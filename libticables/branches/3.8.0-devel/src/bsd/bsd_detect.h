@@ -1,5 +1,5 @@
-/* Hey EMACS -*- linux-c -*- */
-/* $Id: vti_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* Hey EMACS -*- bsd-c -*- */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,24 +19,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* "VTi" virtual link cable unit */
+#ifndef __BSD_DETECT_H__
+#define __BSD_DETECT_H__
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <stdio.h>
 
+#include "cabl_def.h"
 
-#if defined(__LINUX__)
-#include "linux/vti_link.c"
+int bsd_detect_os(char **os_type);
+int bsd_detect_port(TicablePortInfo * pi);
+int bsd_detect_resources(void);
 
-#elif defined(__BSD__)
-#include "linux/vti_link.c"
-
-#elif defined(__WIN32__)
-#include "win32/vti_link.c"
-
-#elif defined(__MACOSX__)
-#include "none.c"
-
-#else
 #endif

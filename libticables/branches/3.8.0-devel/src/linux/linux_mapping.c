@@ -500,14 +500,13 @@ static int check_for_root(void)
 static int check_for_tty(void)
 {
 	struct stat st;	
-	char name[15];
 	
 	DISPLAY(_("  check for tty usability:\n"));
 	
-	if(!access("/dev/ttyS0", F_OK))
-		DISPLAY(_("    node %s: exists\n"), "/dev/ttySx");
+	if(!access(SP1_NAME, F_OK))
+		DISPLAY(_("    node %s: exists\n"), SP1_NAME);
 	else {
-		DISPLAY(_("    node %s: does not exists\n"), name);
+		DISPLAY(_("    node %s: does not exists\n"), SP1_NAME);
 		return -1;
 	}
 
