@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,29 +19,22 @@
 #ifndef __TIFILES_FILEDEF__
 #define __TIFILES_FILEDEF__
 
-#define TIFILES_NCALCS 10 // # of supported calcs
+#define TIFILES_NCALCS 10	// # of supported calcs
 
-#define CALC_NONE  0
-#define CALC_TI92P 1
-#define CALC_TI92  2
-#define CALC_TI89  3
-#define CALC_TI86  4
-#define CALC_TI85  5
-#define CALC_TI83P 6
-#define CALC_TI83  7
-#define CALC_TI82  8
-#define CALC_TI73  9
-#define CALC_V200 10
+typedef enum {
+  CALC_NONE = 0,
+  CALC_TI92P, CALC_TI92, CALC_TI89,
+  CALC_TI86, CALC_TI85, CALC_TI83P, CALC_TI83, CALC_TI82, CALC_TI73,
+  CALC_V200,
+} TicalcType;
 
-#define ATTRB_NONE      0
-#define ATTRB_LOCKED    1 // don't change this value !
-#define ATTRB_ARCHIVED  3 // don't change this value !
-#define ATTRB_PROTECTED 2
+typedef enum {
+  ATTRB_NONE = 0, ATTRB_LOCKED = 1, ATTRB_PROTECTED, ATTRB_ARCHIVED = 3
+} TifileAttr;
 
-#define TIFILE_SINGLE 1
-#define TIFILE_GROUP  2
-#define TIFILE_BACKUP 4
-#define TIFILE_FLASH  8
+typedef enum {
+  TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
+} TifileType;
 
 // headers
 
@@ -51,7 +44,7 @@
 // callbacks
 
 typedef void (*TIFILES_MSGBOX) (const char *, char *);
-typedef int  (*TIFILES_CHOOSE) (char *, char *);
+typedef int (*TIFILES_CHOOSE) (char *, char *);
 
 typedef int (*TIFILES_PRINTF) (const char *format, ...);
 

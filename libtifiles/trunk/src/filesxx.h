@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,28 +21,26 @@
 
 /* Structures (common to all calcs) */
 
-typedef struct
-{
+typedef struct {
 
-  char      folder[9];  // TI9x only
-  char      name[9];    // binary name
-  char      trans[9];   // translated name (human readable)
-  uint8_t   type;
-  uint8_t   attr;       // TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
-  uint32_t  size;       // uint16_t for TI8x
-  uint8_t*  data;
+  char folder[9];		// TI9x only
+  char name[9];			// binary name
+  char trans[9];		// translated name (human readable)
+  uint8_t type;
+  uint8_t attr;			// TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
+  uint32_t size;		// uint16_t for TI8x
+  uint8_t *data;
 
 } TiVarEntry;
 
-typedef struct
-{
-  int            calc_type;
+typedef struct {
+  TicalcType calc_type;
 
-  char           default_folder[9]; // TI9x only
-  char           comment[43];       // Ti8x: 41 max
-  int            num_entries;
-  TiVarEntry*    entries;
-  uint16_t       checksum;
+  char default_folder[9];	// TI9x only
+  char comment[43];		// Ti8x: 41 max
+  int num_entries;
+  TiVarEntry *entries;
+  uint16_t checksum;
 
 } TiRegular;
 
@@ -51,5 +49,3 @@ typedef struct
 #include "files9x.h"
 
 #endif
-
-

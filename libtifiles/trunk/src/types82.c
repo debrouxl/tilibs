@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,68 +22,73 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "intl.h"
 
 #include "export.h"
 #include "types82.h"
 
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
 
-const char *TI82_CONST[TI82_MAXTYPES][3] =
-  {
-    { "REAL",  "82n", "Real" },
-    { "LIST",  "82l", "List" },
-    { "MAT",   "82m", "Matrix" },
-    { "YVAR",  "82y", "Y-Var" },
-    { "",      "82?", "Unknown" },
-    { "PRGM",  "82p", "Program" },
-    { "PPGM",  "82p", "Protected Program" },
-    { "PIC",   "82i", "Picture" },
-    { "GDB",   "82d", "GDB" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "WDW",   "82w", "Window Setup" },
-    { "ZSTO",  "82z", "Zoom" },
-    { "TAB",   "82t", "Table Setup" },
-    { "LCD",   "82?", "LCD" },
-    { "BKUP",  "82b", "Backup" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
-    { "",      "82?", "Unknown" },
+
+const char *TI82_CONST[TI82_MAXTYPES + 1][4] = {
+  {"REAL", "82n", "Real", N_("Real")},
+  {"LIST", "82l", "List", N_("List")},
+  {"MAT", "82m", "Matrix", N_("Matrix")},
+  {"YVAR", "82y", "Y-Var", N_("Y-Var")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"PRGM", "82p", "Program", N_("Program")},
+  {"PPGM", "82p", "Protected Program", N_("Protected Program")},
+  {"PIC", "82i", "Picture", N_("Picture")},
+  {"GDB", "82d", "GDB", N_("GDB")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"WDW", "82w", "Window Setup", N_("Window Setup")},
+  {"ZSTO", "82z", "Zoom", N_("Zoom")},
+  {"TAB", "82t", "Table Setup", N_("Table Setup")},
+  {"LCD", "82?", "LCD", N_("LCD")},
+  {"BKUP", "82b", "Backup", N_("Backup")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+  {"", "82?", "Unknown", N_("Unknown")},
+
+  {NULL, NULL, NULL},
 };
 
 // Return the type corresponding to the value
 const char *ti82_byte2type(uint8_t data)
 {
-  if(data > TI82_MAXTYPES) return NULL;
-  return TI82_CONST[data][0];
+  return (data < TI82_MAXTYPES) ? TI82_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
@@ -91,15 +96,15 @@ uint8_t ti82_type2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI82_MAXTYPES; i++)
-    {
-      if(!strcmp(TI82_CONST[i][0], s)) break;
-    }
-  if(i>TI82_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
+  for (i = 0; i < TI82_MAXTYPES; i++) {
+    if (!strcmp(TI82_CONST[i][0], s))
+      break;
+  }
+
+  if (i == TI82_MAXTYPES)
+    printf
+	(_
+	 ("Warning: unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -107,8 +112,7 @@ uint8_t ti82_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti82_byte2fext(uint8_t data)
 {
-  if(data > TI82_MAXTYPES) return NULL;
-  return TI82_CONST[data][1];
+  return (data < TI82_MAXTYPES) ? TI82_CONST[data][1] : "82?";
 }
 
 // Return the value corresponding to the file extension
@@ -116,15 +120,15 @@ uint8_t ti82_fext2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI82_MAXTYPES; i++)
-    {
-      if(!strcasecmp(TI82_CONST[i][1], s)) break;
-    }
-  if(i > TI82_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
+  for (i = 0; i < TI82_MAXTYPES; i++) {
+    if (!strcasecmp(TI82_CONST[i][1], s))
+      break;
+  }
+
+  if (i == TI82_MAXTYPES)
+    printf
+	(_
+	 ("Warning: unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -132,6 +136,13 @@ uint8_t ti82_fext2byte(const char *s)
 // Return the descriptive associated with the vartype
 const char *ti82_byte2desc(uint8_t data)
 {
-  if(data > TI82_MAXTYPES) return NULL;
-  return TI82_CONST[data][2];
+  return (data < TI82_MAXTYPES) ? TI82_CONST[data][2] : _("Unknown");
 }
+
+// Return the icon name associated with the vartype
+const char *ti82_byte2icon(uint8_t data)
+{
+  return (data < TI82_MAXTYPES) ? TI82_CONST[data][3] : _("Unknown");
+}
+
+

@@ -1,5 +1,7 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin, Julien Blache
+ *  Copyright (C) 2002-2003 Romain Lievin, Julien Blache
+ *
+ *  $Id$
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +21,6 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define VERSION "0.3.6"
+#define VERSION "0.5.3"
 
 #endif /* __CONFIG_H__ */

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,68 +22,73 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "intl.h"
 
 #include "export.h"
 #include "types86.h"
 
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
 
-const char *TI86_CONST[TI86_MAXTYPES][3] =
-  {
-    { "REAL",  "86n", "Real" },
-    { "CPLX",  "86c", "Complex" },
-    { "VECT",  "86v", "Vector" },
-    { "CVECT", "86v", "Complex Vector" },
-    { "LIST",  "86l", "List" },
-    { "CLIST", "86l", "Complex List" },
-    { "MAT",   "86m", "Matrix" },
-    { "CMAT",  "86m", "Complex Matrix" },
-    { "CONS",  "86k", "Constant" },
-    { "CCONS", "86k", "Complex Constant" },
-    { "EQU",   "86y", "Equation" },
-    { "",      "86?", "Unknown" },
-    { "STR",   "86s", "String" },
-    { "GDB",   "86d", "GDB" },
-    { "GDB",   "86d", "GDB" },
-    { "GDB",   "86d", "GDB" },
-    { "GDB",   "86d", "GDB" },
-    { "PIC",   "86i", "Picture" },
-    { "PRGM",  "86p", "Program" },
-    { "RANGE", "86r", "Range" },
-    { "SCRN",  "86?", "Screen" },
-    { "DIR",   "86?", "Directory" },
-    { "",      "86?", "Unknown" },
-    { "YVAR",  "86y", "Y-Var" },
-    { "POLAR", "86?", "Polar" },
-    { "PARAM", "86?", "Parametric" },
-    { "DIFEQ", "86?", "Diff Equ" },
-    { "ZRCL",  "86z", "Zoom" },
-    { "",      "86?", "Unknown" },
-    { "BKUP",  "86b", "Backup" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
-    { "",      "86?", "Unknown" },
+
+const char *TI86_CONST[TI86_MAXTYPES + 1][4] = {
+  {"REAL", "86n", "Real", N_("Real")},
+  {"CPLX", "86c", "Complex", N_("Complex")},
+  {"VECT", "86v", "Vector", N_("Vector")},
+  {"CVECT", "86v", "Complex Vector", N_("Complex Vector")},
+  {"LIST", "86l", "List", N_("List")},
+  {"CLIST", "86l", "Complex List", N_("Complex List")},
+  {"MAT", "86m", "Matrix", N_("Matrix")},
+  {"CMAT", "86m", "Complex Matrix", N_("Complex Matrix")},
+  {"CONS", "86k", "Constant", N_("Constant")},
+  {"CCONS", "86k", "Complex Constant", N_("Complex Constant")},
+  {"EQU", "86y", "Equation", N_("Equation")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"STR", "86s", "String", N_("String")},
+  {"GDB", "86d", "GDB", N_("GDB")},
+  {"GDB", "86d", "GDB", N_("GDB")},
+  {"GDB", "86d", "GDB", N_("GDB")},
+  {"GDB", "86d", "GDB", N_("GDB")},
+  {"PIC", "86i", "Picture", N_("Picture")},
+  {"PRGM", "86p", "Program", N_("Program")},
+  {"RANGE", "86r", "Range", N_("Range")},
+  {"SCRN", "86?", "Screen", N_("Screen")},
+  {"DIR", "86?", "Directory", N_("Directory")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"YVAR", "86y", "Y-Var", N_("Y-Var")},
+  {"POLAR", "86?", "Polar", N_("Polar")},
+  {"PARAM", "86?", "Parametric", N_("Parametric")},
+  {"DIFEQ", "86?", "Diff Equ", N_("Diff Equ")},
+  {"ZRCL", "86z", "Zoom", N_("Zoom")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"BKUP", "86b", "Backup", N_("Backup")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+  {"", "86?", "Unknown", N_("Unknown")},
+
+  {NULL, NULL, NULL},
 };
 
 // Return the type corresponding to the value
 const char *ti86_byte2type(uint8_t data)
 {
-  if(data > TI86_MAXTYPES) return NULL;
-  return TI86_CONST[data][0];
+  return (data < TI86_MAXTYPES) ? TI86_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
@@ -91,15 +96,15 @@ uint8_t ti86_type2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI86_MAXTYPES; i++)
-    {
-      if(!strcmp(TI86_CONST[i][0], s)) break;
-    }
-  if(i>TI86_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.");
-      return 0;
-    }
+  for (i = 0; i < TI86_MAXTYPES; i++) {
+    if (!strcmp(TI86_CONST[i][0], s))
+      break;
+  }
+
+  if (i == TI86_MAXTYPES)
+    printf
+	(_
+	 ("Warning: unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -107,8 +112,7 @@ uint8_t ti86_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti86_byte2fext(uint8_t data)
 {
-  if(data > TI86_MAXTYPES) return NULL;
-  return TI86_CONST[data][1];
+  return (data < TI86_MAXTYPES) ? TI86_CONST[data][1] : "86?";
 }
 
 // Return the value corresponding to the file extension
@@ -116,15 +120,15 @@ uint8_t ti86_fext2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI86_MAXTYPES; i++)
-    {
-      if(!strcasecmp(TI86_CONST[i][1], s)) break;
-    }
-  if(i > TI86_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.");
-      return 0;
-    }
+  for (i = 0; i < TI86_MAXTYPES; i++) {
+    if (!strcasecmp(TI86_CONST[i][1], s))
+      break;
+  }
+
+  if (i == TI86_MAXTYPES)
+    printf
+	(_
+	 ("Warning: Unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -132,6 +136,13 @@ uint8_t ti86_fext2byte(const char *s)
 // Return the descriptive associated with the vartype
 const char *ti86_byte2desc(uint8_t data)
 {
-  if(data > TI86_MAXTYPES) return NULL;
-  return TI86_CONST[data][2];
+  return (data < TI86_MAXTYPES) ? TI86_CONST[data][2] : _("Unknown");
 }
+
+// Return the icon name associated with the vartype
+const char *ti86_byte2icon(uint8_t data)
+{
+  return (data < TI86_MAXTYPES) ? TI86_CONST[data][3] : _("Unknown");
+}
+
+

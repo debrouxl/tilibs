@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,9 +22,10 @@
 */
 
 #include <stdio.h>
-#include <string.h>
-#include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
+#include "stdints.h"
+#include <sys/stat.h>
 
 #include "export.h"
 #include "file_int.h"
@@ -34,11 +36,11 @@
   - len [in]: the number of bytes to dump
   - [out]: always 0
  */
-int hexdump(uint8_t *ptr, int len)
+int hexdump(uint8_t * ptr, int len)
 {
   int i;
 
-  for(i=0; i<len; i++)
+  for (i = 0; i < len; i++)
     fprintf(stdout, "%02X ", ptr[i]);
   fprintf(stdout, "\n");
 
@@ -55,16 +57,15 @@ int hexdump(uint8_t *ptr, int len)
    - f [in]: a file descriptor
    - [out]: the result of the operation (0 if failed)
 */
-int fread_n_chars(FILE *f, int n, char *s)
+int fread_n_chars(FILE * f, int n, char *s)
 {
   int i;
 
-  if(s == NULL) {
-    for(i=0; i<n; i++)
+  if (s == NULL) {
+    for (i = 0; i < n; i++)
       fgetc(f);
-  }
-  else {
-    for(i=0; i<n; i++)
+  } else {
+    for (i = 0; i < n; i++)
       s[i] = 0xff & fgetc(f);
     s[i] = '\0';
   }
@@ -79,53 +80,53 @@ int fread_n_chars(FILE *f, int n, char *s)
   - [out]: always different of 0
 */
 #define FOO
-int fwrite_n_chars(FILE *f, int n, const char *s)
+int fwrite_n_chars(FILE * f, int n, const char *s)
 {
 #ifdef FOO
   int i;
   int l = n;
-  
-  l=strlen(s);
-  if(l > n)
-    {
-      fprintf(stderr, "libtifiles error: string passed in 'write_string8' is too long (>n chars).\n");
-      printf("s = <%s>, len(s) = %i\n", s, strlen(s));
-      hexdump((uint8_t *)s, (strlen(s) < 9) ? 9 : strlen(s));
-      abort();
-    }
 
-  for(i=0; i<l; i++)
+  l = strlen(s);
+  if (l > n) {
+    fprintf(stderr,
+	    "libtifiles error: string passed in 'write_string8' is too long (>n chars).\n");
+    printf("s = <%s>, len(s) = %i\n", s, strlen(s));
+    hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
+    abort();
+  }
+
+  for (i = 0; i < l; i++)
     fputc(s[i], f);
-  for(i=l; i<n; i++) {
+  for (i = l; i < n; i++) {
     fputc(0x00, f);
   }
 #else
   int i;
 
-  for(i=0; i<n; i++)
-    fputc((int)s[i], f);
+  for (i = 0; i < n; i++)
+    fputc((int) s[i], f);
 #endif
   return 0;
 }
 
-int fread_8_chars(FILE *f, char *s)
+int fread_8_chars(FILE * f, char *s)
 {
   return fread_n_chars(f, 8, s);
 }
 
-int fwrite_8_chars(FILE *f, const char *s)
+int fwrite_8_chars(FILE * f, const char *s)
 {
   return fwrite_n_chars(f, 8, s);
 }
 
-int fskip(FILE *f, int n)
+int fskip(FILE * f, int n)
 {
   /*
-  int i;
-  for(i=0; i<n; i++)
-    fgetc(f);
-  return 0;
-  */
+     int i;
+     for(i=0; i<n; i++)
+     fgetc(f);
+     return 0;
+   */
   return fseek(f, n, SEEK_CUR);
 }
 
@@ -133,33 +134,33 @@ int fskip(FILE *f, int n)
 /* Read byte/word/longword */
 /***************************/
 
-int fread_byte(FILE *f, uint8_t *data)
+int fread_byte(FILE * f, uint8_t * data)
 {
-  if(data != NULL)
-    return fread((void *)data, sizeof(uint8_t), 1, f);
+  if (data != NULL)
+    return fread((void *) data, sizeof(uint8_t), 1, f);
   else
     fskip(f, 1);
-  
+
   return 0;
 }
 
-int fread_word(FILE *f, uint16_t *data)
+int fread_word(FILE * f, uint16_t * data)
 {
-  if(data != NULL)
-    return fread((void *)data, sizeof(uint16_t), 1, f);
+  if (data != NULL)
+    return fread((void *) data, sizeof(uint16_t), 1, f);
   else
     fskip(f, 2);
-  
+
   return 0;
 }
 
-int fread_long(FILE *f, uint32_t *data)
+int fread_long(FILE * f, uint32_t * data)
 {
-  if(data != NULL)
-    return fread((void *)data, sizeof(uint32_t), 1, f);
+  if (data != NULL)
+    return fread((void *) data, sizeof(uint32_t), 1, f);
   else
     fskip(f, 4);
-  
+
   return 0;
 }
 
@@ -167,17 +168,17 @@ int fread_long(FILE *f, uint32_t *data)
 /* Write byte/word/longword */
 /****************************/
 
-int fwrite_byte(FILE *f, uint8_t data)
+int fwrite_byte(FILE * f, uint8_t data)
 {
   return fwrite(&data, sizeof(uint8_t), 1, f);
 }
 
-int fwrite_word(FILE *f, uint16_t data)
+int fwrite_word(FILE * f, uint16_t data)
 {
   return fwrite(&data, sizeof(uint16_t), 1, f);
 }
 
-int fwrite_long(FILE *f, uint32_t data)
+int fwrite_long(FILE * f, uint32_t data)
 {
   return fwrite(&data, sizeof(uint32_t), 1, f);
 }
@@ -192,22 +193,22 @@ int fwrite_long(FILE *f, uint32_t data)
   - ext [out]: the extension
   - [out]: the extension
 */
-TIEXPORT char* TICALL tifiles_get_extension(const char *filename)
+TIEXPORT char *TICALL tifiles_get_extension(const char *filename)
 {
   char *d = NULL;
 
   d = strrchr(filename, '.');
-  if(d == NULL)
+  if (d == NULL)
     return NULL;
 
   return (++d);
 }
 
-TIEXPORT char* TICALL tifiles_dup_extension(const char *filename)
+TIEXPORT char *TICALL tifiles_dup_extension(const char *filename)
 {
   char *ext = tifiles_get_extension(filename);
 
-  if(ext != NULL)
+  if (ext != NULL)
     return strdup(tifiles_get_extension(filename));
   else
     return strdup("");
@@ -220,15 +221,16 @@ TIEXPORT char* TICALL tifiles_dup_extension(const char *filename)
    - chk [out]: the computed checksum
    - [out]: the computed checksum
 */
-TIEXPORT uint16_t TICALL tifiles_compute_checksum(uint8_t *buffer, int size)
+TIEXPORT uint16_t TICALL tifiles_compute_checksum(uint8_t * buffer,
+						  int size)
 {
   int i;
   uint16_t c = 0;
- 
-  if(buffer == NULL)
+
+  if (buffer == NULL)
     return 0;
 
-  for(i=0; i<size; i++)
+  for (i = 0; i < size; i++)
     c += buffer[i];
 
   return c;
@@ -240,12 +242,12 @@ TIEXPORT uint16_t TICALL tifiles_compute_checksum(uint8_t *buffer, int size)
    - full_name [in]: a stringsuch as 'fldname\varname'
    - [out]: the varname
 */
-char* TICALL tifiles_get_varname(const char* full_name)
+char *TICALL tifiles_get_varname(const char *full_name)
 {
   char *bs = strchr(full_name, '\\');
 
-  if(bs == NULL)
-    return (char *)full_name;
+  if (bs == NULL)
+    return (char *) full_name;
   else
     return (++bs);
 }
@@ -256,20 +258,19 @@ char* TICALL tifiles_get_varname(const char* full_name)
    - full_name [in]: a string such as 'fldname\varname'
    - [out]: the folder name (don't need to be freed)
 */
-char* TICALL tifiles_get_fldname(const char* full_name)
+char *TICALL tifiles_get_fldname(const char *full_name)
 {
   static char folder[9];
   char *bs = strchr(full_name, '\\');
   int i;
 
-  if(bs == NULL)
+  if (bs == NULL)
     strcpy(folder, "");
-  else 
-    {
-      i = strlen(full_name) - strlen(bs);
-      strncpy(folder, full_name, i);
-      folder[i+1] = '\0';
-    }
+  else {
+    i = strlen(full_name) - strlen(bs);
+    strncpy(folder, full_name, i);
+    folder[i + 1] = '\0';
+  }
   return folder;
 }
 
@@ -282,21 +283,35 @@ char* TICALL tifiles_get_fldname(const char* full_name)
    - varname [in]: the variable name
    - [out]: aalways 0.
 */
-extern int tifiles_calc_type;
-int TICALL tifiles_build_fullname(char* full_name,
-				  const char *fldname, const char* varname)
+extern TicalcType tifiles_calc_type;
+int TICALL tifiles_build_fullname(char *full_name,
+				  const char *fldname, const char *varname)
 {
-  if(tifiles_has_folder(tifiles_calc_type))
-    {
-      if(strcmp(fldname, ""))
-	{
-	  strcpy(full_name, fldname);
-	  strcat(full_name, "\\");
-	}
-      strcat(full_name, varname);
+  if (tifiles_has_folder(tifiles_calc_type)) {
+    if (strcmp(fldname, "")) {
+      strcpy(full_name, fldname);
+      strcat(full_name, "\\");
     }
-  else
+    strcat(full_name, varname);
+  } else
     strcpy(full_name, varname);
-  
-  return 0; 
+
+  return 0;
+}
+
+int is_regfile(const char *filename)
+{
+#ifndef __WIN32__
+  struct stat buf;
+
+  if (stat(filename, &buf) < 0)
+    return 0;
+
+  if (S_ISREG(buf.st_mode))
+    return !0;
+  else
+    return 0;
+#else
+  return !0;
+#endif
 }

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,27 +22,25 @@
 #include "export.h"
 
 char *tixx_translate_varname(const char *varname, char *translate,
-                             uint8_t vartype, int calc_type);
+			     uint8_t vartype, TicalcType calc_type);
 
-char *ti73_translate_varname(const char *varname, char *translate, 
+char *ti73_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti82_translate_varname(const char *varname, char *translate, 
+char *ti82_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti83_translate_varname(const char *varname, char *translate, 
+char *ti83_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti83p_translate_varname(const char *varname, char *translate, 
+char *ti83p_translate_varname(const char *varname, char *translate,
 			      uint8_t vartype);
-char *ti85_translate_varname(const char *varname, char *translate, 
+char *ti85_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti86_translate_varname(const char *varname, char *translate, 
+char *ti86_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti89_translate_varname(const char *varname, char *translate, 
+char *ti89_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti92_translate_varname(const char *varname, char *translate, 
+char *ti92_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
-char *ti92p_translate_varname(const char *varname, char *translate, 
+char *ti92p_translate_varname(const char *varname, char *translate,
 			      uint8_t vartype);
 
 #endif
-
-

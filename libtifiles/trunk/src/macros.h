@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #ifndef TIFILES_MACROS
 #define TIFILES_MACROS
 
-#include <stdint.h>
+#include "stdints.h"
 
 /* Macros, part 1 */
 // extract a word from a longword
@@ -66,9 +66,9 @@
    Used to propagate an error code when a function returns.
 */
 #ifndef TRY
-# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
+# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }	//new !
 #endif
-#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; } 
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 #define TRY_ TRYC
 
 /*
@@ -78,14 +78,10 @@
 #  define DIR_SEPARATOR "\\"
 #  define DIR_SEPARATOR_S "\\"
 #  define DIR_SEPARATOR_C '\\'
-#elif defined(__LINUX__)
+#else
 #  define DIR_SEPARATOR "/"
 #  define DIR_SEPARATOR_S "/"
 #  define DIR_SEPARATOR_C '/'
 #endif
 
 #endif
-
-
-
-

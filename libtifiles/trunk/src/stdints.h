@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002-2003  Romain Lievin
+ *  Copyright (C) 2002-2003-2003, Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,15 +16,34 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFILES__PERROR__
-#define __TIFILES__PERROR__
+/* 
+   Encapsulate the ISO-C99 'stdint.h' header for platforms which haven't it
+*/
 
-#ifdef __WIN32__
+#ifndef __TIFILES_STDINT__
+#define __TIFILES_STDINT__
 
-#include "export.h"
-
-void print_last_error();
-
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
 
-#endif
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# if defined(__WIN32__)
+#  include <windows.h>
+typedef BYTE uint8_t;
+typedef WORD uint16_t;
+typedef DWORD uint32_t;
+typedef __int8 int8_t;
+typedef __int16 int16_t;
+typedef __int32 int32_t;
+# elif defined(__BSD__)
+#  include <inttypes.h>
+# else
+#  include <inttypes.h>
+# endif				/* __WIN32__, __BSD__ */
+
+#endif				/* HAVE_STDINT_H */
+
+#endif				/* __TIFILES_STDINT__ */

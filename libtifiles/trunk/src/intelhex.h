@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,19 +21,15 @@
 
 #include "macros.h"
 
-#define MODE_APPS              (1<<11) // Send a (free) FLASH application
-#define MODE_AMS               (1<<12) // Send an Operating System (AMS)
+#define MODE_APPS              (1<<11)	// Send a (free) FLASH application
+#define MODE_AMS               (1<<12)	// Send an Operating System (AMS)
 
-int read_data_block(FILE *f, 
-		    uint16_t *flash_address, uint16_t *flash_page, 
-		    uint8_t *data, int mode);
+int read_data_block(FILE * f,
+		    uint16_t * flash_address, uint16_t * flash_page,
+		    uint8_t * data, int mode);
 
-int write_data_block(FILE *f, 
-		     uint16_t flash_address, uint16_t flash_page, 
-		     uint8_t *data, int mode);
+int write_data_block(FILE * f,
+		     uint16_t flash_address, uint16_t flash_page,
+		     uint8_t * data, int mode);
 
 #endif
-
-
-
-

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,68 +22,73 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "intl.h"
 
 #include "export.h"
 #include "types85.h"
 
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
 
-const char *TI85_CONST[TI85_MAXTYPES][3] =
-  {
-    { "REAL",  "85n", "Real" },
-    { "CPLX",  "85c", "Complex" },
-    { "VECT",  "85v", "Vector" },
-    { "CVECT", "85v", "Complex Vector" },
-    { "LIST",  "85l", "List" },
-    { "CLIST", "85l", "Complex List" },
-    { "MAT",   "85m", "Matrix" },
-    { "CMAT",  "85m", "Complex Matrix" },
-    { "CONS",  "85k", "Constant" },
-    { "CCONS", "85c", "Complex Constant" },
-    { "EQU",   "85y", "Equation" },
-    { "",      "85?", "Unknown" },
-    { "STR",   "85s", "String" },
-    { "GDB",   "85d", "GDB" },
-    { "GDB",   "85d", "GDB" },
-    { "GDB",   "85d", "GDB" },
-    { "GDB",   "85d", "GDB" },
-    { "PIC",   "85i", "Picture" },
-    { "PRGM",  "85p", "Program" },
-    { "RANGE", "85r", "Range" },
-    { "SCRN",  "85?", "Screen" },
-    { "DIR",   "85?", "Directory" },
-    { "",      "85?", "Unknown" },
-    { "WND",   "85w", "Window Setup" },
-    { "POLAR", "85?", "Polar" },
-    { "PARAM", "85?", "Parametric" },
-    { "DIFEQ", "85?", "Diff Equ" },
-    { "ZRCL",  "85z", "Zoom" },
-    { "",      "85?", "Unknown" },
-    { "BKUP",  "85b", "Backup" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "YVAR",  "85y", "Y-Var" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
-    { "",      "85?", "Unknown" },
+
+const char *TI85_CONST[TI85_MAXTYPES + 1][4] = {
+  {"REAL", "85n", "Real", N_("Real")},
+  {"CPLX", "85c", "Complex", N_("Complex")},
+  {"VECT", "85v", "Vector", N_("Vector")},
+  {"CVECT", "85v", "Complex Vector", N_("Complex Vector")},
+  {"LIST", "85l", "List", N_("List")},
+  {"CLIST", "85l", "Complex List", N_("Complex List")},
+  {"MAT", "85m", "Matrix", N_("Matrix")},
+  {"CMAT", "85m", "Complex Matrix", N_("Complex Matrix")},
+  {"CONS", "85k", "Constant", N_("Constant")},
+  {"CCONS", "85c", "Complex Constant", N_("Complex Constant")},
+  {"EQU", "85y", "Equation", N_("Equation")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"STR", "85s", "String", N_("String")},
+  {"GDB", "85d", "GDB", N_("GDB")},
+  {"GDB", "85d", "GDB", N_("GDB")},
+  {"GDB", "85d", "GDB", N_("GDB")},
+  {"GDB", "85d", "GDB", N_("GDB")},
+  {"PIC", "85i", "Picture", N_("Picture")},
+  {"PRGM", "85p", "Program", N_("Program")},
+  {"RANGE", "85r", "Range", N_("Range")},
+  {"SCRN", "85?", "Screen", N_("Screen")},
+  {"DIR", "85?", "Directory", N_("Directory")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"WND", "85w", "Window Setup", N_("Window Setup")},
+  {"POLAR", "85?", "Polar", N_("Polar")},
+  {"PARAM", "85?", "Parametric", N_("Parametric")},
+  {"DIFEQ", "85?", "Diff Equ", N_("Diff Equ")},
+  {"ZRCL", "85z", "Zoom", N_("Zoom")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"BKUP", "85b", "Backup", N_("Backup")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"YVAR", "85y", "Y-Var", N_("Y-Var")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+  {"", "85?", "Unknown", N_("Unknown")},
+
+  {NULL, NULL, NULL},
 };
 
 // Return the type corresponding to the value
 const char *ti85_byte2type(uint8_t data)
 {
-  if(data > TI85_MAXTYPES) return NULL;
-  return TI85_CONST[data][0];
+  return (data < TI85_MAXTYPES) ? TI85_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
@@ -91,15 +96,15 @@ uint8_t ti85_type2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI85_MAXTYPES; i++)
-    {
-      if(!strcmp(TI85_CONST[i][0], s)) break;
-    }
-  if(i>TI85_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.");
-      return 0;
-    }
+  for (i = 0; i < TI85_MAXTYPES; i++) {
+    if (!strcmp(TI85_CONST[i][0], s))
+      break;
+  }
+
+  if (i == TI85_MAXTYPES)
+    printf
+	(_
+	 ("Warning: unknown type. It is a bug. Please report this information."));
 
   return i;
 }
@@ -108,8 +113,7 @@ uint8_t ti85_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti85_byte2fext(uint8_t data)
 {
-  if(data > TI85_MAXTYPES) return NULL;
-  return TI85_CONST[data][1];
+  return (data < TI85_MAXTYPES) ? TI85_CONST[data][1] : "85?";
 }
 
 // Return the value corresponding to the file extension
@@ -117,15 +121,15 @@ uint8_t ti85_fext2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI85_MAXTYPES; i++)
-    {
-      if(!strcasecmp(TI85_CONST[i][1], s)) break;
-    }
-  if(i > TI85_MAXTYPES)
-    {
-      printf("Warning: Unknown type. It is a bug. Please report this information.");
-      return 0;
-    }
+  for (i = 0; i < TI85_MAXTYPES; i++) {
+    if (!strcasecmp(TI85_CONST[i][1], s))
+      break;
+  }
+
+  if (i == TI85_MAXTYPES)
+    printf
+	(_
+	 ("Warning: unknown type. It is a bug. Please report this information."));
 
   return i;
 }
@@ -133,6 +137,13 @@ uint8_t ti85_fext2byte(const char *s)
 // Return the descriptive associated with the vartype
 const char *ti85_byte2desc(uint8_t data)
 {
-  if(data > TI85_MAXTYPES) return NULL;
-  return TI85_CONST[data][2];
+  return (data < TI85_MAXTYPES) ? TI85_CONST[data][2] : _("Unknown");
 }
+
+// Return the icon name associated with the vartype
+const char *ti85_byte2icon(uint8_t data)
+{
+  return (data < TI85_MAXTYPES) ? TI85_CONST[data][3] : _("Unknown");
+}
+
+

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,22 +19,24 @@
 #ifndef __TIFILES_MISC__
 #define __TIFILES_MISC__
 
-int fread_n_chars(FILE *f, int n, char *s);
-int fwrite_n_chars(FILE *f, int n, const char *s);
+int fread_n_chars(FILE * f, int n, char *s);
+int fwrite_n_chars(FILE * f, int n, const char *s);
 
-int fread_8_chars(FILE *f, char *s);
-int fwrite_8_chars(FILE *f, const char *s);
+int fread_8_chars(FILE * f, char *s);
+int fwrite_8_chars(FILE * f, const char *s);
 
-int fskip(FILE *f, int n);
+int fskip(FILE * f, int n);
 
-int fread_byte(FILE *f, uint8_t  *data);
-int fread_word(FILE *f, uint16_t *data);
-int fread_long(FILE *f, uint32_t *data);
+int fread_byte(FILE * f, uint8_t * data);
+int fread_word(FILE * f, uint16_t * data);
+int fread_long(FILE * f, uint32_t * data);
 
-int fwrite_byte(FILE *f, uint8_t  data);
-int fwrite_word(FILE *f, uint16_t data);
-int fwrite_long(FILE *f, uint32_t data);
+int fwrite_byte(FILE * f, uint8_t data);
+int fwrite_word(FILE * f, uint16_t data);
+int fwrite_long(FILE * f, uint32_t data);
 
-int hexdump(uint8_t *ptr, int len);
+int hexdump(uint8_t * ptr, int len);
+
+int is_regfile(const char *filename);
 
 #endif

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "intl.h"
 
 #include "export.h"
 #include "types92.h"
+
+#ifdef __WIN32__
+# define strcasecmp _stricmp
+#endif
 
 
 /*
@@ -35,107 +40,103 @@
   Table Setup (.89t)
   Lab Report (92r)
 */
-const char *TI92_CONST[TI92_MAXTYPES][3] =
-  {
-    { "EXPR",   "92e", "Expression" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "LIST",   "92l", "List" },
-    { "",       "92?", "Unknown" },
-    { "MAT",    "92m", "Matrix" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "DATA",   "92c", "Data" },
-    { "TEXT",   "92t", "Text" },
-    { "STR",    "92s", "String" },
-    { "GDB",    "92d", "GDB"    },
-    { "FIG",    "92a", "Figure"  },
-    { "",       "92?", "Unknown" },
-    { "PIC",    "92i", "Picture" },
-    { "",       "92?", "Unknown" },
-    { "PRGM",   "92p", "Program" },
-    { "FUNC",   "92f", "Function" },
-    { "MAC",    "92x", "Macro"   },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "ZIP",    "92?", "Zipped"  },
-    { "BKUP",   "92b", "Backup"  },
-    { "",       "92?", "Unknown" },
-    { "DIR",    "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "ASM",    "92z", "Asm Program" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-    { "",       "92?", "Unknown" },
-  };
+const char *TI92_CONST[TI92_MAXTYPES + 1][4] = {
+  {"EXPR", "92e", "Expression", N_("Expression")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"LIST", "92l", "List", N_("List")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"MAT", "92m", "Matrix", N_("Matrix")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"DATA", "92c", "Data", N_("Data")},
+  {"TEXT", "92t", "Text", N_("Text")},
+  {"STR", "92s", "String", N_("String")},
+  {"GDB", "92d", "GDB", N_("GDB")},
+  {"FIG", "92a", "Figure", N_("Figure")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"PIC", "92i", "Picture", N_("Picture")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"PRGM", "92p", "Program", N_("Program")},
+  {"FUNC", "92f", "Function", N_("Function")},
+  {"MAC", "92x", "Macro", N_("Macro")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"ZIP", "92?", "Zipped", N_("Zipped")},
+  {"BKUP", "92b", "Backup", N_("Backup")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"DIR", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"ASM", "92z", "Asm Program", N_("Asm Program")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+  {"", "92?", "Unknown", N_("Unknown")},
+
+  {NULL, NULL, NULL},
+};
 
 // Return the type corresponding to the value
 const char *ti92_byte2type(uint8_t data)
 {
-  if(data > TI92_MAXTYPES) return NULL;
-  return TI92_CONST[data][0];
+  return (data < TI92_MAXTYPES) ? TI92_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
-/*TIEXPORT*/
 uint8_t ti92_type2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI92_MAXTYPES; i++)
-    {
-      if(!strcmp(TI92_CONST[i][0], s)) break;
-    }
-  if(i>TI92_MAXTYPES)
-    {
-      fprintf(stdout, "Warning: Unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
+  for (i = 0; i < TI92_MAXTYPES; i++) {
+    if (!strcmp(TI92_CONST[i][0], s))
+      break;
+  }
+
+  if (i == TI92_MAXTYPES)
+    fprintf(stdout,
+	    _
+	    ("Warning: unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
 
 // Return the file extension corresponding to the value
-/*TIEXPORT*/
 const char *ti92_byte2fext(uint8_t data)
 {
-  if(data > TI92_MAXTYPES) return NULL;
-  return TI92_CONST[data][1];
+  return (data < TI92_MAXTYPES) ? TI92_CONST[data][1] : "92?";
 }
 
 // Return the value corresponding to the file extension
-/*TIEXPORT*/
 uint8_t ti92_fext2byte(const char *s)
 {
   int i;
 
-  for(i=0; i<TI92_MAXTYPES; i++)
-    {
-      if(!strcasecmp(TI92_CONST[i][1], s)) break;
-    }
-  if(i > TI92_MAXTYPES)
-    {
-      fprintf(stdout, "Warning: Unknown type. It is a bug. Please report this information.\n");
-      return 0;
-    }
+  for (i = 0; i < TI92_MAXTYPES; i++) {
+    if (!strcasecmp(TI92_CONST[i][1], s))
+      break;
+  }
+
+  if (i == TI92_MAXTYPES)
+    fprintf(stdout,
+	    _
+	    ("Warning: unknown type. It is a bug. Please report this information.\n"));
 
   return i;
 }
@@ -143,6 +144,13 @@ uint8_t ti92_fext2byte(const char *s)
 // Return the descriptive associated with the vartype
 const char *ti92_byte2desc(uint8_t data)
 {
-  if(data > TI92_MAXTYPES) return NULL;
-  return TI92_CONST[data][2];
+  return (data < TI92_MAXTYPES) ? TI92_CONST[data][2] : _("Unknown");
 }
+
+// Return the icon name associated with the vartype
+const char *ti92_byte2icon(uint8_t data)
+{
+  return (data < TI92_MAXTYPES) ? TI92_CONST[data][3] : _("Unknown");
+}
+
+

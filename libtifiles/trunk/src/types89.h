@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef __TIFILES_DEFS89__
 #define __TIFILES_DEFS89__
 
-#include <stdint.h>
+#include "stdints.h"
 
 #define TI89_MAXTYPES 48
 
@@ -35,13 +35,13 @@
 #define TI89_PRGM 0x12
 #define TI89_FUNC 0x13
 #define TI89_MAC  0x14
-#define TI89_CLK  0x18 // clock
-#define TI89_RDIR 0x1A // request
-#define TI89_LDIR 0x1B // local
+#define TI89_CLK  0x18		// clock
+#define TI89_RDIR 0x1A		// request
+#define TI89_LDIR 0x1B		// local
 #define TI89_ZIP  0x1C
 #define TI89_BKUP 0x1D
-#define TI89_FDIR 0x1F // full
-#define TI89_DIR  TI89_FDIR //type
+#define TI89_FDIR 0x1F		// full
+#define TI89_DIR  TI89_FDIR	//type
 #define TI89_ASM  0x21
 #define TI89_IDLIST  0x22
 #define TI89_AMS     0x23
@@ -55,13 +55,14 @@
 
 // libtifiles: for internal use only, not exported !
 
-extern const char *TI89_CONST[TI89_MAXTYPES][3];
+extern const char *TI89_CONST[TI89_MAXTYPES + 1][4];
 
 const char *ti89_byte2type(uint8_t data);
-uint8_t     ti89_type2byte(const char *s);
+uint8_t ti89_type2byte(const char *s);
 const char *ti89_byte2fext(uint8_t data);
-uint8_t     ti89_fext2byte(const char *s);
+uint8_t ti89_fext2byte(const char *s);
 
 const char *ti89_byte2desc(uint8_t data);
+const char *ti89_byte2icon(uint8_t data);
 
 #endif

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,13 +24,9 @@
 #endif
 
 #ifdef __WIN32__
-# define LIBTIFILES_VERSION "0.3.6"
+# define LIBTIFILES_VERSION "0.5.1"
 #else
-# ifdef VERSION
-#  define LIBTIFILES_VERSION VERSION
-# else
-#  define LIBTIFILES_VERSION "9.9.9"
-#endif
+# define LIBTIFILES_VERSION VERSION
 #endif
 
 #endif

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
 #endif
 
 #include <locale.h>
-//#include <glib.h>
 
 /*
  * Standard gettext macros.
@@ -49,20 +48,8 @@
 #  define N_(String) (String)
 #endif
 
-/* Taken from Gimp Win32 */
-/*
-#define INIT_LOCALE( domain )	G_STMT_START{	\
-	gtk_set_locale ();			\
-	setlocale (LC_NUMERIC, "C");		\
-	bindtextdomain (domain, LOCALEDIR);	\
-	textdomain (domain);			\
-				}G_STMT_END
-*/
-
-#ifdef __WIN32__
-#  define PACKAGE "libtifiles"    	// name of package
-#  define PACKAGE_LOCALE_DIR ""		// place of the translated file
+#if defined(__WIN32__) && !defined(__MINGW32__)
+#  define PACKAGE "tifiles"	// name of package
 #endif
 
 #endif
-

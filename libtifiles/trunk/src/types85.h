@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef __TIFILES_DEFS85__
 #define __TIFILES_DEFS85__
 
-#include <stdint.h>
+#include "stdints.h"
 
 #define TI85_MAXTYPES 48
 
@@ -53,13 +53,15 @@
 #define TI85_UNKN  0x1E
 
 // libtifiles: for internal use only, not exported !
-extern const char* TI85_CONST[TI85_MAXTYPES][3];
+
+extern const char *TI85_CONST[TI85_MAXTYPES + 1][4];
 
 const char *ti85_byte2type(uint8_t data);
-uint8_t     ti85_type2byte(const char *s);
+uint8_t ti85_type2byte(const char *s);
 const char *ti85_byte2fext(uint8_t data);
-uint8_t     ti85_fext2byte(const char *s);
+uint8_t ti85_fext2byte(const char *s);
 
 const char *ti85_byte2desc(uint8_t data);
+const char *ti85_byte2icon(uint8_t data);
 
 #endif

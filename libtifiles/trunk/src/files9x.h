@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,44 +19,42 @@
 #ifndef __TIFILES_FILES9X_H__
 #define __TIFILES_FILES9X_H__
 
-#include <stdint.h>
+#include "stdints.h"
 
 /* Structures */
 
 // defined in filesxx.h (common to all calcs)
 typedef TiVarEntry Ti9xVarEntry;
-typedef TiRegular  Ti9xRegular;
+typedef TiRegular Ti9xRegular;
 
-typedef struct
-{
-  int              calc_type;
+typedef struct {
+  TicalcType calc_type;
 
-  char             comment[41];
-  char             rom_version[9];
-  uint8_t          type;
-  uint32_t         data_length;
-  uint8_t*         data_part;
-  uint16_t         checksum;
+  char comment[41];
+  char rom_version[9];
+  uint8_t type;
+  uint32_t data_length;
+  uint8_t *data_part;
+  uint16_t checksum;
 
 } Ti9xBackup;
 
 typedef struct ti9x_flash Ti9xFlash;
-struct ti9x_flash
-{
-  int      calc_type;
+struct ti9x_flash {
+  TicalcType calc_type;
 
-  uint8_t  revision_major;
-  uint8_t  revision_minor;
-  uint8_t  flags;
-  uint8_t  object_type;
-  uint8_t  revision_day;
-  uint8_t  revision_month;
+  uint8_t revision_major;
+  uint8_t revision_minor;
+  uint8_t flags;
+  uint8_t object_type;
+  uint8_t revision_day;
+  uint8_t revision_month;
   uint16_t revision_year;
-  char     name[9];
-  uint8_t  device_type;
-  uint8_t  data_type;
+  char name[9];
+  uint8_t device_type;
+  uint8_t data_type;
   uint32_t data_length;
-  uint8_t* data_part;
+  uint8_t *data_part;
 
   Ti9xFlash *next;
 };
@@ -67,32 +65,32 @@ struct ti9x_flash
 /* Functions */
 
 // allocating
-TIEXPORT Ti9xRegular* TICALL ti9x_create_regular_content(void);
-TIEXPORT Ti9xBackup*  TICALL ti9x_create_backup_content (void);
-TIEXPORT Ti9xFlash*   TICALL ti9x_create_flash_content  (void);
+TIEXPORT Ti9xRegular *TICALL ti9x_create_regular_content(void);
+TIEXPORT Ti9xBackup *TICALL ti9x_create_backup_content(void);
+TIEXPORT Ti9xFlash *TICALL ti9x_create_flash_content(void);
 // freeing
-TIEXPORT int TICALL ti9x_free_regular_content(Ti9xRegular *content);
-TIEXPORT int TICALL ti9x_free_backup_content (Ti9xBackup  *content);
-TIEXPORT int TICALL ti9x_free_flash_content  (Ti9xFlash   *content);
+TIEXPORT int TICALL ti9x_free_regular_content(Ti9xRegular * content);
+TIEXPORT int TICALL ti9x_free_backup_content(Ti9xBackup * content);
+TIEXPORT int TICALL ti9x_free_flash_content(Ti9xFlash * content);
 // reading
-TIEXPORT int TICALL ti9x_read_regular_file(const char  *filename, 
-					   Ti9xRegular *content);
-TIEXPORT int TICALL ti9x_read_backup_file (const char  *filename, 
-					   Ti9xBackup  *content);
-TIEXPORT int TICALL ti9x_read_flash_file  (const char  *filename,
-					   Ti9xFlash   *content);
+TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
+					   Ti9xRegular * content);
+TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
+					  Ti9xBackup * content);
+TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
+					 Ti9xFlash * content);
 // writing
-TIEXPORT int TICALL ti9x_write_regular_file(const char  *filename, 
-					    Ti9xRegular *content,
+TIEXPORT int TICALL ti9x_write_regular_file(const char *filename,
+					    Ti9xRegular * content,
 					    char **filename2);
-TIEXPORT int TICALL ti9x_write_backup_file (const char  *filename, 
-					    Ti9xBackup  *content);
-TIEXPORT int TICALL ti9x_write_flash_file  (const char  *filename,
-					    Ti9xFlash   *content);
+TIEXPORT int TICALL ti9x_write_backup_file(const char *filename,
+					   Ti9xBackup * content);
+TIEXPORT int TICALL ti9x_write_flash_file(const char *filename,
+					  Ti9xFlash * content);
 //displaying
-TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular *content);
-TIEXPORT int TICALL ti9x_display_backup_content (Ti9xBackup  *content);
-TIEXPORT int TICALL ti9x_display_flash_content  (Ti9xFlash   *content);
+TIEXPORT int TICALL ti9x_display_regular_content(Ti9xRegular * content);
+TIEXPORT int TICALL ti9x_display_backup_content(Ti9xBackup * content);
+TIEXPORT int TICALL ti9x_display_flash_content(Ti9xFlash * content);
 TIEXPORT int TICALL ti9x_display_file(const char *filename);
 
 #endif

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef __TIFILES_DEFSV2__
 #define __TIFILES_DEFSV2__
 
-#include <stdint.h>
+#include "stdints.h"
 
 #define V200_MAXTYPES 48
 
@@ -36,12 +36,12 @@
 #define V200_FUNC 0x13
 #define V200_MAC  0x14
 #define V200_CLK  0x18
-#define V200_RDIR 0x1A // request
-#define V200_LDIR 0x1B // local
+#define V200_RDIR 0x1A		// request
+#define V200_LDIR 0x1B		// local
 #define V200_ZIP  0x1C
 #define V200_BKUP 0x1D
-#define V200_FDIR 0x1F // full
-#define V200_DIR  V200_FDIR //type
+#define V200_FDIR 0x1F		// full
+#define V200_DIR  V200_FDIR	//type
 #define V200_ASM  0x21
 #define V200_IDLIST  0x22
 #define V200_AMS     0x23
@@ -55,13 +55,14 @@
 
 // libtifiles: for internal use only, not exported !
 
-extern const char *V200_CONST[V200_MAXTYPES][3];
+extern const char *V200_CONST[V200_MAXTYPES + 1][4];
 
 const char *v200_byte2type(uint8_t data);
-uint8_t     v200_type2byte(const char *s);
+uint8_t v200_type2byte(const char *s);
 const char *v200_byte2fext(uint8_t data);
-uint8_t     v200_fext2byte(const char *s);
+uint8_t v200_fext2byte(const char *s);
 
 const char *v200_byte2desc(uint8_t data);
+const char *v200_byte2icon(uint8_t data);
 
 #endif

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,57 +36,65 @@
 */
 TIEXPORT int TICALL tifiles_get_error(int err_num, char *error_msg)
 {
-  switch(err_num)
-    {
-    case ERR_MALLOC: 
-      strcpy(error_msg, "Msg: unable to allocate memory (malloc).");
-      strcat(error_msg, "\n");
-      strcat(error_msg, "Cause: memory too low ?");
-      break;
-      
-    case ERR_FILE_OPEN:
-      strcpy(error_msg, "Msg: unable to open file."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "either the file does not exist, either there is no room.");
-      break;
-      
-    case ERR_FILE_CLOSE:
-      strcpy(error_msg, "Msg: unable to close file."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "Cause: either the file does not exist, either there is no room.");
-      break;
-      
-    case ERR_GROUP_SIZE:
-      strcpy(error_msg, "Msg: the size of a group file can not exceed 64KB."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "Cause: too many variables/data.");
-      break;
-      
-    case ERR_BAD_CALC:
-      strcpy(error_msg, "Msg: Unknown calculator type."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net.");
-      break;
-      
-    case ERR_INVALID_FILE:
-    case ERR_BAD_FILE:
-      strcpy(error_msg, "Msg: invalid file."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "Cause: it's probably not a TI formatted file.");
-      break;      
+  switch (err_num) {
+  case ERR_MALLOC:
+    strcpy(error_msg, _("Msg: unable to allocate memory (malloc)."));
+    strcat(error_msg, "\n");
+    strcat(error_msg, _("Cause: memory too low ?"));
+    break;
 
-    case ERR_FILE_CHECKSUM:
-      strcpy(error_msg, "Msg: checksum error."); 
-      strcat(error_msg, "\n"); 
-      strcat(error_msg, "Cause: the file has an incorrect checksum and may be corrupted.");
-      break;
-      
-    default:
-      strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
-      return err_num;
-      break;
+  case ERR_FILE_OPEN:
+    strcpy(error_msg, _("Msg: unable to open file."));
+    strcat(error_msg, "\n");
+    strcat(error_msg,
+	   _("either the file does not exist, either there is no room."));
+    break;
+
+  case ERR_FILE_CLOSE:
+    strcpy(error_msg, _("Msg: unable to close file."));
+    strcat(error_msg, "\n");
+    strcat(error_msg,
+	   _
+	   ("Cause: either the file does not exist, either there is no room."));
+    break;
+
+  case ERR_GROUP_SIZE:
+    strcpy(error_msg,
+	   _("Msg: the size of a group file can not exceed 64KB."));
+    strcat(error_msg, "\n");
+    strcat(error_msg, _("Cause: too many variables/data."));
+    break;
+
+  case ERR_BAD_CALC:
+    strcpy(error_msg, _("Msg: Unknown calculator type."));
+    strcat(error_msg, "\n");
+    strcat(error_msg,
+	   _
+	   ("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."));
+    break;
+
+  case ERR_INVALID_FILE:
+  case ERR_BAD_FILE:
+    strcpy(error_msg, _("Msg: invalid file."));
+    strcat(error_msg, "\n");
+    strcat(error_msg, _("Cause: it's probably not a TI formatted file."));
+    break;
+
+  case ERR_FILE_CHECKSUM:
+    strcpy(error_msg, _("Msg: checksum error."));
+    strcat(error_msg, "\n");
+    strcat(error_msg,
+	   _
+	   ("Cause: the file has an incorrect checksum and may be corrupted."));
+    break;
+
+  default:
+    strcpy(error_msg,
+	   _
+	   ("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+    return err_num;
+    break;
   }
-  
+
   return 0;
 }
-

@@ -1,5 +1,5 @@
 /*  libtifiles - TI File Format library
- *  Copyright (C) 2002  Romain Lievin
+ *  Copyright (C) 2002-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,44 +29,44 @@
 #include "file_err.h"
 
 // allocating
-TIEXPORT TiRegular* tifiles_create_regular_content(void)
+TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)
 {
   return ti9x_create_regular_content();
 }
 
 // freeing
-TIEXPORT int TICALL tifiles_free_regular_content(TiRegular *content)
+TIEXPORT int TICALL tifiles_free_regular_content(TiRegular * content)
 {
-  if(tifiles_is_ti8x(content->calc_type))
+  if (tifiles_is_ti8x(content->calc_type))
     return ti8x_free_regular_content(content);
-  else if(tifiles_is_ti9x(content->calc_type))
+  else if (tifiles_is_ti9x(content->calc_type))
     return ti9x_free_regular_content(content);
   else
     return ERR_BAD_CALC;
 }
 
 // reading
-int tifiles_read_regular_file(const char  *filename, 
-			      TiRegular *content)
+TIEXPORT int tifiles_read_regular_file(const char *filename,
+                                       TiRegular *content)
 {
-  if(tifiles_is_ti8x(tifiles_which_calc_type(filename)))
+  if (tifiles_is_ti8x(tifiles_which_calc_type(filename)))
     return ti8x_read_regular_file(filename, content);
-  else if(tifiles_is_ti9x(tifiles_which_calc_type(filename)))
+  else if (tifiles_is_ti9x(tifiles_which_calc_type(filename)))
     return ti9x_read_regular_file(filename, content);
   else
-    return ERR_BAD_CALC; 
+    return ERR_BAD_CALC;
 
   return 0;
 }
 
 // writing
-int tifiles_write_regular_file(const char  *filename, 
-			       TiRegular *content,
-			       char **real_fname)
+TIEXPORT int tifiles_write_regular_file(const char *filename,
+                                        TiRegular * content,
+                                        char **real_fname)
 {
-  if(tifiles_is_ti8x(content->calc_type))
+  if (tifiles_is_ti8x(content->calc_type))
     return ti8x_write_regular_file(filename, content, real_fname);
-  else if(tifiles_is_ti9x(content->calc_type))
+  else if (tifiles_is_ti9x(content->calc_type))
     return ti9x_write_regular_file(filename, content, real_fname);
   else
     return ERR_BAD_CALC;
@@ -75,12 +75,12 @@ int tifiles_write_regular_file(const char  *filename,
 }
 
 // displaying
-int tifiles_display_file(const char *filename)
+TIEXPORT int TICALL tifiles_display_file(const char *filename)
 {
-  if(tifiles_is_ti8x(tifiles_which_calc_type(filename)))
-      return ti8x_display_file(filename);
-  else if(tifiles_is_ti9x(tifiles_which_calc_type(filename)))
-      return ti9x_display_file(filename);
+  if (tifiles_is_ti8x(tifiles_which_calc_type(filename)))
+    return ti8x_display_file(filename);
+  else if (tifiles_is_ti9x(tifiles_which_calc_type(filename)))
+    return ti9x_display_file(filename);
   else
     return ERR_BAD_CALC;
 
@@ -105,7 +105,7 @@ int tifiles_display_file(const char *filename)
   This function may be difficult to understand but it avoids to use trees (and
   linked list) which will require an implementation.
  */
-TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content, 
+TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular * content,
 						    int ***tabl,
 						    int *nfolders)
 {
@@ -114,62 +114,58 @@ TIEXPORT int TICALL tifiles_create_table_of_entries(TiRegular *content,
   char **ptr, *folder_list[32768] = { 0 };
   int **table;
 
-  folder_list[0] = (char *)calloc(9, sizeof(char));
+  folder_list[0] = (char *) calloc(9, sizeof(char));
   strcpy(folder_list[0], "");
   folder_list[1] = NULL;
 
   // determine how many folders we have
-  for(i=0; i<content->num_entries; i++) 
-    {
-      TiVarEntry *entry = &(content->entries[i]);
-       
-      // scan for an existing folder entry
-      for(ptr = folder_list; *ptr != NULL; ptr++) {
-	if(!strcmp(*ptr, entry->folder)) {
-	  //printf("break: <%s>\n", entry->folder);
-	  break;
-	}
-      }
-      if(*ptr == NULL) { // add new folder entry
-	folder_list[num_folders] = (char *)calloc(9, sizeof(char));
-	//printf("%i: adding '%s'\n", num_folders, entry->folder);
-	strcpy(folder_list[num_folders], entry->folder);
-	folder_list[num_folders+1] = NULL;
-	num_folders++;
-	assert(num_folders <= content->num_entries);
+  for (i = 0; i < content->num_entries; i++) {
+    TiVarEntry *entry = &(content->entries[i]);
+
+    // scan for an existing folder entry
+    for (ptr = folder_list; *ptr != NULL; ptr++) {
+      if (!strcmp(*ptr, entry->folder)) {
+	//printf("break: <%s>\n", entry->folder);
+	break;
       }
     }
-  if(tifiles_is_ti8x(content->calc_type))
+    if (*ptr == NULL) {		// add new folder entry
+      folder_list[num_folders] = (char *) calloc(9, sizeof(char));
+      //printf("%i: adding '%s'\n", num_folders, entry->folder);
+      strcpy(folder_list[num_folders], entry->folder);
+      folder_list[num_folders + 1] = NULL;
+      num_folders++;
+      assert(num_folders <= content->num_entries);
+    }
+  }
+  if (tifiles_is_ti8x(content->calc_type))
     num_folders++;
   *nfolders = num_folders;
-  
+
   // allocate the folder list
-  table = *tabl = (int **)calloc((num_folders+1), sizeof(int *));
+  table = *tabl = (int **) calloc((num_folders + 1), sizeof(int *));
   table[num_folders] = NULL;
 
   // for each folder, determine how many variables we have
   // and allocate array with indexes
-  for(j=0; j<num_folders; j++)
-    {
-      int k;
+  for (j = 0; j < num_folders; j++) {
+    int k;
 
-      for(i=0, k=0; i<content->num_entries; i++)
-	{
-	  Ti9xVarEntry *entry = &(content->entries[i]);
-	
-	  if(!strcmp(folder_list[j], entry->folder))
-	    {
-	      table[j] = (int *)realloc(table[j], (k+2)*sizeof(int));
-	      table[j][k] = i;
-	      //printf("%i %i: adding %i\n", j, k, i); 
-	      table[j][k+1] = -1;
-	      k++;
-	    }
-	}
+    for (i = 0, k = 0; i < content->num_entries; i++) {
+      Ti9xVarEntry *entry = &(content->entries[i]);
+
+      if (!strcmp(folder_list[j], entry->folder)) {
+	table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
+	table[j][k] = i;
+	//printf("%i %i: adding %i\n", j, k, i); 
+	table[j][k + 1] = -1;
+	k++;
+      }
     }
+  }
 
   // free memory
-  for(j=0; j<num_folders+1; j++)
+  for (j = 0; j < num_folders + 1; j++)
     free(folder_list[j]);
 
   return 0;
