@@ -1,0 +1,19 @@
+[Main]
+Name=ticable_get_version
+Type=Function
+Header=cabl_int.h
+Definition=const char* ticable_get_version(void);
+
+[Parameters]
+Return value : a string like "X.Y.Z".
+
+[Summary]
+Returns the library version.
+
+[Description]
+This function returns the library version as a string. The string has the following format:
+<br>- X = major number
+<br>- Y = minor number
+<br>- Z = micro or release number
+<br><br>
+When X is increased, there is a major change and the library is not backward compatible with a previous release.

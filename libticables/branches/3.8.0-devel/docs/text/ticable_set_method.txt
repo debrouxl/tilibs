@@ -1,0 +1,28 @@
+[Main]
+Name=ticable_set_method
+Type=Function
+Header=cabl_int.h
+Definition=void ticable_set_method(@TicableMethod@ method)
+
+[Parameters]
+method : the abtract I/O method to use.
+
+[Summary]
+Set the I/O method to use.
+
+[Description]
+Specify which I/O method the ticable library must use. It can be one of the
+following method:
+<br>- automatic
+<br>- internal assembly routines
+<br>- Direct Control Block routines (serial port access under Win32)
+<br>- driver 
+<br>- the OS' API
+
+The change will come into effect on the next call to @ticable_set_cable@.
+
+Note: if you need to change more than one link cable parameter at a time, you
+should consider the @ticable_set_param function@.
+
+[See also]
+ticable_get_method

@@ -1,0 +1,15 @@
+[Main]
+Name=ticable_get_datarate
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_get_datarate(@TicableDataRate@ **ptdr);
+
+[Parameters]
+ptdr : a pointer on a TicableDataRate structure.
+Returns: the value of the count field.
+
+[Summary]
+Get a pointer on the internally used structure.
+
+[Description]
+This function allows you to retrieve a pointer on the @TicableDataRate@ structure used by library.

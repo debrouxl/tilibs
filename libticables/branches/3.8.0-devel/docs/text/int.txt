@@ -1,0 +1,8 @@
+[Main]
+Name=int
+Type=Define
+Header=
+Definition=
+
+[Summary]
+An integer value.

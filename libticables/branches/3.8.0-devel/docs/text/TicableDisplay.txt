@@ -1,0 +1,13 @@
+[Main]
+Name=TicableDisplay
+Type=Enum
+Header=cabl_def.h
+Definition=enum TicableDisplay
+
+[Fields]
+DSP_OFF : displaying in console is off.
+DSP_ON : displaying in console is on.
+DSP_CLOSE : close the DOS console (Win32 only).
+
+[Summary]
+Used by the verbosity system for defining a verbosity level.

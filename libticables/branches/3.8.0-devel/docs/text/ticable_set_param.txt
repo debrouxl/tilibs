@@ -1,0 +1,20 @@
+[Main]
+Name=ticable_set_param
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_set_param(const @TicableLinkParam@ *lp);
+
+[Parameters]
+lp : the link cable parameters.
+
+[Summary]
+Set parameters to use for the link cable.
+
+[Description]
+This function set the link cables parameters starting at the lp structure.
+It must be called before @ticable_set_cable@ but typically after @ticable_get_default_param@.
+
+This function is more convenient than the set of ticable_set/get_xxx functions.
+
+[See also]
+@ticable_get_param@
