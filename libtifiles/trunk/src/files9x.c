@@ -424,8 +424,13 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
       fread(content->data_part, content->data_length, 1, f);
 
       content->next = NULL;
+
       if (file_size == ftell(f))
-	break;
+          break;
+
+      // to be less restrictive with weird files
+      if((ftell(f) > file_size - 0x4e))
+	        break;
 
       content->next = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
       if (content->next == NULL) {

@@ -4,6 +4,11 @@ To do:
   - pre-init structs (ti9x_create_regular_content) rather than bzeros them.
 
 Log:
+
+- 02/07/2004, version 0.6.0: roms
+	Loading of TI9x flash upgrades is less restrictive now. It can accept badly
+	formatted files.
+
 - 22/04/2004, version 0.5.9: roms
 	Patch from Adrian Mettler <amettler@hmc.edu> merged. His patch fixes
 	  some TI85/86 file handling issues about varname (padded, not padded).
