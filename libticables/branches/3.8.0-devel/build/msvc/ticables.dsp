@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /YX /FD /c
+# ADD CPP /nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "_WINDOWS" /D "__I386__" /FD /c
 # SUBTRACT CPP /Fr /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -328,10 +328,6 @@ SOURCE=..\..\src\Cabl_ver.h
 # Begin Source File
 
 SOURCE=..\..\..\ChangeLog
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Export.h
 # End Source File
 # Begin Source File
 

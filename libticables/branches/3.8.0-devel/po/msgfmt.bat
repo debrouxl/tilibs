@@ -1,0 +1,1 @@
+msgfmt fr.po -o fr.po
