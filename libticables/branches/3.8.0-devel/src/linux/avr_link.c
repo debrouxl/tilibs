@@ -48,7 +48,7 @@
 #include "cabl_def.h"
 #include "externs.h"
 #include "timeout.h"
-#include "printl1.h"
+#include "printl.h"
 #include "logging.h"
 
 static char tty_dev[1024];

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-06 20:59+0200\n"
+"POT-Creation-Date: 2004-04-08 22:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/detect.c:71 src/type2str.c:150 src/win32/win32_detect.c:59
+#: src/detect.c:71 src/type2str.c:147 src/win32/win32_detect.c:59
 msgid "unknown"
 msgstr ""
 
@@ -391,74 +391,78 @@ msgid ""
 "."
 msgstr ""
 
-#: src/intrface.c:100
+#: src/intrface.c:99
 #, c-format
-msgid "libticables: version %s\n"
+msgid "version %s\n"
 msgstr ""
 
 #. list built-in compiled options...
-#: src/intrface.c:103
+#: src/intrface.c:102
 #, c-format
-msgid "libticables: built for %s target.\n"
+msgid "built for %s target.\n"
 msgstr ""
 
-#: src/intrface.c:343
-msgid "libticables: list of settings...\n"
+#: src/intrface.c:342
+msgid "list of settings...\n"
 msgstr ""
 
-#: src/intrface.c:345
+#: src/intrface.c:344
 #, c-format
 msgid "  cable: %s\n"
 msgstr ""
 
-#: src/intrface.c:348
+#: src/intrface.c:347
 #, c-format
 msgid "  port: %s\n"
 msgstr ""
 
-#: src/intrface.c:350
+#: src/intrface.c:349
 #, c-format
 msgid "  method: %s\n"
 msgstr ""
 
-#: src/intrface.c:353
+#: src/intrface.c:352
 #, c-format
 msgid "  baud-rate: %i\n"
 msgstr ""
 
-#: src/intrface.c:354
+#: src/intrface.c:353
 #, c-format
 msgid "  hardware flow control: %s\n"
 msgstr ""
 
-#: src/intrface.c:355 src/type2str.c:95 src/type2str.c:103 src/type2str.c:170
-#: src/type2str.c:180
+#: src/intrface.c:354 src/type2str.c:92 src/type2str.c:100 src/type2str.c:167
+#: src/type2str.c:177
 msgid "on"
 msgstr ""
 
-#: src/intrface.c:355 src/type2str.c:97 src/type2str.c:168 src/type2str.c:174
-#: src/type2str.c:182
+#: src/intrface.c:354 src/type2str.c:94 src/type2str.c:165 src/type2str.c:171
+#: src/type2str.c:179
 msgid "off"
 msgstr ""
 
-#: src/intrface.c:360
+#: src/intrface.c:359
 #, c-format
 msgid "  address: 0x%03x\n"
 msgstr ""
 
-#: src/intrface.c:362
+#: src/intrface.c:361
 #, c-format
 msgid "  device name: %s\n"
 msgstr ""
 
-#: src/intrface.c:365
+#: src/intrface.c:364
 #, c-format
 msgid "  timeout value: %i\n"
 msgstr ""
 
-#: src/intrface.c:367
+#: src/intrface.c:366
 #, c-format
 msgid "  delay value: %i\n"
+msgstr ""
+
+#: src/logging.c:78
+msgid "Logging STARTED.\n"
 msgstr ""
 
 #: src/logging.c:82 src/logging.c:88
@@ -466,27 +470,23 @@ msgstr ""
 msgid "Unable to open <%s> for logging.\n"
 msgstr ""
 
-#: src/type2str.c:71
-msgid "libticables error: unknown baud rate !\n"
-msgstr ""
-
-#: src/type2str.c:153
+#: src/type2str.c:150
 msgid "direct access (asm)"
 msgstr ""
 
-#: src/type2str.c:155
+#: src/type2str.c:152
 msgid "direct access (api)"
 msgstr ""
 
-#: src/type2str.c:157
+#: src/type2str.c:154
 msgid "kernel mode (module)"
 msgstr ""
 
-#: src/type2str.c:159
+#: src/type2str.c:156
 msgid "user mode (ioctl)"
 msgstr ""
 
-#: src/type2str.c:172 src/type2str.c:184
+#: src/type2str.c:169 src/type2str.c:181
 msgid "closed"
 msgstr ""
 
@@ -613,31 +613,31 @@ msgid ""
 msgstr ""
 
 #. keep track of the TIGL device
-#: src/linux/slv_link2.c:110
+#: src/linux/slv_link2.c:108
 msgid "libticables: TIGL-USB found.\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:133
+#: src/linux/slv_link2.c:131
 #, c-format
 msgid "libticables: usb_find_busses (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:140
+#: src/linux/slv_link2.c:138
 #, c-format
 msgid "libticables: usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:321
+#: src/linux/slv_link2.c:319
 msgid ""
 "libticables: weird, usb_bulk_read returns without any data; retrying for "
 "circumventing the quirk...\n"
 msgstr ""
 
-#: src/linux/tie_link.c:73
+#: src/linux/tie_link.c:72
 msgid "Invalid io_address parameter passed to libticables.\n"
 msgstr ""
 
-#: src/linux/tie_link.c:87
+#: src/linux/tie_link.c:86
 #, c-format
 msgid "error: %s\n"
 msgstr ""
@@ -935,46 +935,46 @@ msgid ""
 "    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
 msgstr ""
 
-#: src/win32/slv_link.c:92
+#: src/win32/slv_link.c:90
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
 msgstr ""
 
-#: src/win32/slv_link.c:102
+#: src/win32/slv_link.c:100
 #, c-format
 msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
 "Please download the latest release on <http://ti-lpg.org/prj_usb>."
 msgstr ""
 
-#: src/win32/slv_link.c:112
+#: src/win32/slv_link.c:110
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:119
+#: src/win32/slv_link.c:117
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:126
+#: src/win32/slv_link.c:124
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:133
+#: src/win32/slv_link.c:131
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:140
+#: src/win32/slv_link.c:138
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:148
+#: src/win32/slv_link.c:146
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:155
+#: src/win32/slv_link.c:153
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr ""
 
-#: src/win32/tie_link.c:82
+#: src/win32/tie_link.c:81
 msgid "invalid io_address parameter passed to libticables.\n"
 msgstr ""
 
@@ -993,6 +993,75 @@ msgstr ""
 #: src/win32/vti_link.c:121
 #, c-format
 msgid "Opened %s\n"
+msgstr ""
+
+#: src/win32/porttalk.c:58
+msgid ""
+"PortTalk: Failed to get System Directory. Is System Directory Path > 55 "
+"Characters?\n"
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:64
+#, c-format
+msgid "PortTalk: Copying driver to %s\n"
+msgstr ""
+
+#: src/win32/porttalk.c:69
+#, c-format
+msgid "PortTalk: Failed to copy driver to %s\n"
+msgstr ""
+
+#: src/win32/porttalk.c:71
+msgid ""
+"PortTalk: Please manually copy driver to your system32/driver directory.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:101
+msgid "PortTalk: Driver already exists. No action taken.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:103
+msgid "PortTalk: Unknown error while creating Service.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:105
+msgid "PortTalk: Driver successfully installed.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:128
+msgid ""
+"PortTalk: You do not have rights to access the Service Control Manager and\n"
+"PortTalk: the PortTalk driver is not installed or started. Please ask \n"
+"PortTalk: your administrator to install the driver on your behalf.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:143
+msgid "PortTalk: You do not have rights to the PortTalk service database\n"
+msgstr ""
+
+#: src/win32/porttalk.c:146
+msgid "PortTalk: The specified service name is invalid.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:150
+msgid ""
+"PortTalk: The PortTalk driver does not exist. Installing driver.\n"
+"PortTalk: This can take up to 30 seconds on some machines . .\n"
+msgstr ""
+
+#: src/win32/porttalk.c:164
+msgid "PortTalk: The PortTalk driver has been successfully started.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:168
+msgid "PortTalk: The PortTalk driver is already running.\n"
+msgstr ""
+
+#: src/win32/porttalk.c:170
+msgid ""
+"PortTalk: Unknown error while starting PortTalk driver service.\n"
+"PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"
 msgstr ""
 
 #: src/win32/win32_detect.c:48

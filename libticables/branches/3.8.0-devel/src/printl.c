@@ -24,6 +24,7 @@
 */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -33,18 +34,20 @@
 #include "cabl_def.h"
 
 /* 
-	Print to stdout as default behaviour unless changed by tifiles_set_print 
-	Level: such as "warning", "error", "information", etc. "" = nothing.
+   Print to stdout as default behaviour unless changed by tifiles_set_print 
+   Level: such as "warning", "error", "information", etc. "" = nothing.
 */
 static int default_printl(int level, const char *format, ...)
 {
 	va_list ap;
 	int ret;
-
+	
 	fprintf(stdout, "ticables ");
 	if(level != 0)
-		fprintf(stdout, "(%s)", (level == 2) ? _("error") : _("warning"));
+		fprintf(stdout, "(%s)", 
+			(level == 2) ? _("error") : _("warning"));
         fprintf(stdout, ": ");
+	
 	va_start(ap, format);
         ret = vfprintf(stdout, format, ap);
         va_end(ap);
@@ -61,9 +64,9 @@ TIEXPORT TICABLES_PRINTL TICALL ticable_set_printl(TICABLES_PRINTL new_printl)
 {
   TICABLES_PRINTL old_printl = printl;
 
-  printf("printl = %p\n", printl);
-  printf("old_printl = %p\n", old_printl);
-  printf("new_printl = %p\n", new_printl);
+  //printf("printl = %p\n", printl);
+  //printf("old_printl = %p\n", old_printl);
+  //printf("new_printl = %p\n", new_printl);
 
   printl = new_printl;
 

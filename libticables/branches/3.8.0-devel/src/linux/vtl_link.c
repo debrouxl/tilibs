@@ -43,7 +43,7 @@
 #include "cabl_def.h"
 #include "externs.h"
 #include "logging.h"
-#include "printl1.h"
+#include "printl.h"
 
 static int p;
 static int ref_cnt = 0;		// Counter of library instances

@@ -53,7 +53,7 @@
 #include "externs.h"
 #include "timeout.h"
 #include "export.h"
-#include "printl1.h"
+#include "printl.h"
 #include "logging.h"
 
 extern const char *ti_dev_file;

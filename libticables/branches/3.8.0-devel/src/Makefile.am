@@ -26,7 +26,6 @@ libticablesinclude_HEADERS = \
 	cabl_int.h \
 	cabl_ver.h \
 	export.h \
-	intl.h \
 	timeout.h \
 	ticables.h
 
@@ -50,6 +49,7 @@ libticables_la_SOURCES = \
 	logging.c \
 	mapping.c \
 	none.c \
+	printl.c \
 	type2str.c \
 	verbose.c
 
