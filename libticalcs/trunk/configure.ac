@@ -54,10 +54,6 @@ AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_ISC_POSIX
 AC_PROG_AWK
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-if test x$PKG_CONFIG = xno ; then
-  AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/Software/pkgconfig/])
-fi
 
 # Checks for libraries.
 AM_GNU_GETTEXT

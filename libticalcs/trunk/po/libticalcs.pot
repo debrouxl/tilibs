@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) YEAR Romain Lievin
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-17 13:12+0200\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2004-05-11 21:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,222 +16,222 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/dirlist.c:61
+#: src/dirlist.c:62
 msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
 msgstr ""
 
-#: src/dirlist.c:109
+#: src/dirlist.c:110
 msgid "  No variables\n"
 msgstr ""
 
-#: src/dirlist.c:112
+#: src/dirlist.c:113
 msgid "+------------------+----------+----+----+----------+----------+\n"
 msgstr ""
 
-#: src/dirlist.c:121
+#: src/dirlist.c:122
 msgid "| B. name          | T. name  |Attr|Type| Size     |\n"
 msgstr ""
 
-#: src/dirlist.c:144
+#: src/dirlist.c:145
 msgid "  No applications\n"
 msgstr ""
 
-#: src/error.c:46
+#: src/error.c:47
 msgid "Msg: Transfer aborted"
 msgstr ""
 
-#: src/error.c:48
+#: src/error.c:49
 msgid "Cause: the user !"
 msgstr ""
 
-#: src/error.c:52
+#: src/error.c:53
 msgid "Msg: Checksum error."
 msgstr ""
 
-#: src/error.c:54
+#: src/error.c:55
 msgid "Cause: a transmission error. Try again."
 msgstr ""
 
-#: src/error.c:58
+#: src/error.c:59
 msgid "Msg: Calculator is not ready."
 msgstr ""
 
-#: src/error.c:62
+#: src/error.c:63
 msgid ""
 "Cause: the calculator is off, your link cable is not plugged correctly, your "
 "calculator is busy, ..."
 msgstr ""
 
-#: src/error.c:67
+#: src/error.c:68
 msgid "Msg: This function does not exist for this calculator."
 msgstr ""
 
-#: src/error.c:71
+#: src/error.c:72
 msgid ""
 "Cause: the operation you attempted is not supported by your calculator model."
 msgstr ""
 
-#: src/error.c:75
+#: src/error.c:76
 msgid "Msg: Calculator out of memory."
 msgstr ""
 
-#: src/error.c:79
+#: src/error.c:80
 msgid ""
 "Cause: the calculator does not have memory enough for doing the operation."
 msgstr ""
 
-#: src/error.c:83
+#: src/error.c:84
 msgid "Msg: Unable to open (reading) the file."
 msgstr ""
 
-#: src/error.c:85 src/error.c:91
+#: src/error.c:86 src/error.c:92
 msgid "Cause: disk space or permissions."
 msgstr ""
 
-#: src/error.c:89
+#: src/error.c:90
 msgid "Msg: Unable to open (writing) the file."
 msgstr ""
 
-#: src/error.c:95
+#: src/error.c:96
 msgid "Msg: Invalid host ID."
 msgstr ""
 
-#: src/error.c:99
+#: src/error.c:100
 msgid ""
 "Cause: TiLP received an unexpected Machine ID, probably due to a "
 "transmission error."
 msgstr ""
 
-#: src/error.c:103
+#: src/error.c:104
 msgid "Msg: Invalid target ID."
 msgstr ""
 
-#: src/error.c:107
+#: src/error.c:108
 msgid ""
 "Cause: TiLP received an unexpected Target ID, probably due to a transmission "
 "error."
 msgstr ""
 
-#: src/error.c:111
+#: src/error.c:112
 msgid "Msg: Invalid command ID."
 msgstr ""
 
-#: src/error.c:115
+#: src/error.c:116
 msgid ""
 "Cause: TiLP received an unexpected Command ID, probably due to a "
 "transmission error."
 msgstr ""
 
-#: src/error.c:119
+#: src/error.c:120
 msgid "Msg: Not really an error, should not appear !"
 msgstr ""
 
-#: src/error.c:121 src/error.c:179
+#: src/error.c:122 src/error.c:180
 msgid "Cause: a bug. Drop us an email !"
 msgstr ""
 
-#: src/error.c:126
+#: src/error.c:127
 msgid "Msg: The variable or FLASH application has been refused."
 msgstr ""
 
-#: src/error.c:130
+#: src/error.c:131
 msgid ""
 "Cause: you attempted to send a variable which is locked/archived on the "
 "target calculator. The calculator may be out of memory, too."
 msgstr ""
 
-#: src/error.c:134
+#: src/error.c:135
 msgid "Invalid CTS packet."
 msgstr ""
 
-#: src/error.c:136
+#: src/error.c:137
 msgid "Cause: a transmission error."
 msgstr ""
 
-#: src/error.c:140
+#: src/error.c:141
 msgid "NACK received."
 msgstr ""
 
-#: src/error.c:142
+#: src/error.c:143
 msgid "Cause: the command has been refused.\n"
 msgstr ""
 
-#: src/error.c:146
+#: src/error.c:147
 msgid "Invalid packet."
 msgstr ""
 
-#: src/error.c:148
+#: src/error.c:149
 msgid "Cause: a transmission error.\n"
 msgstr ""
 
-#: src/error.c:152
+#: src/error.c:153
 msgid "The requested var does not exist."
 msgstr ""
 
-#: src/error.c:156
+#: src/error.c:157
 msgid ""
 "Cause: you attempted to download a variable which does not exist on the "
 "calculaotr any longer. Maybe you have manually deleted it ?"
 msgstr ""
 
-#: src/error.c:161
+#: src/error.c:162
 msgid "A transfer is in progress. You can not start a new one."
 msgstr ""
 
-#: src/error.c:165
+#: src/error.c:166
 msgid "Cause: this should not happen. Probably a bug: drop us an email !"
 msgstr ""
 
-#: src/error.c:169
+#: src/error.c:170
 msgid "There is nothing to backup."
 msgstr ""
 
-#: src/error.c:172
+#: src/error.c:173
 msgid "Cause: 0 variables stored onto your calculator.\n"
 msgstr ""
 
-#: src/error.c:177
+#: src/error.c:178
 msgid "Error code not found. This is a bug. Please report it.\n"
 msgstr ""
 
-#: src/intrface.c:79
+#: src/intrface.c:80
 #, c-format
 msgid "ticalcs library version %s\n"
 msgstr ""
 
-#: src/intrface.c:91
+#: src/intrface.c:92
 #, c-format
 msgid "Libtifiles: version mismatches. Library version >= <%s> is required.\n"
 msgstr ""
 
-#: src/intrface.c:96
+#: src/intrface.c:97
 #, c-format
 msgid "Libticables: version mismatches. Library version >= <%s> is required.\n"
 msgstr ""
 
-#: src/intrface.c:176
+#: src/intrface.c:177
 msgid "settings:\n"
 msgstr ""
 
-#: src/intrface.c:177
+#: src/intrface.c:178
 #, c-format
 msgid "  calc type: %s\n"
 msgstr ""
 
-#: src/intrface.c:339
+#: src/intrface.c:340
 msgid "Function not implemented. This is a bug. Please report it."
 msgstr ""
 
-#: src/intrface.c:340
+#: src/intrface.c:341
 msgid "Informations:\n"
 msgstr ""
 
-#: src/intrface.c:341
+#: src/intrface.c:342
 #, c-format
 msgid "Calc: %i\n"
 msgstr ""
 
-#: src/intrface.c:342
+#: src/intrface.c:343
 msgid "Program halted before crashing...\n"
 msgstr ""
 
@@ -245,297 +245,288 @@ msgstr ""
 msgid "err: "
 msgstr ""
 
-#: src/probe.c:73
+#: src/probe.c:74
 msgid "Probing calculator...\n"
 msgstr ""
 
-#. Test for a TI 89 or a TI92+
-#: src/probe.c:76
+#: src/probe.c:77
 msgid "Trying TI89/TI92+... "
 msgstr ""
 
-#. Test for a TI92
-#: src/probe.c:101
+#: src/probe.c:102
 msgid "Trying TI92... "
 msgstr ""
 
-#. Test for a TI86 before a TI85
-#: src/probe.c:118
+#: src/probe.c:119
 msgid "Trying TI86... "
 msgstr ""
 
-#. Test for a TI85
-#: src/probe.c:136
+#: src/probe.c:137
 msgid "Trying TI85... "
 msgstr ""
 
-#. Test for a TI83 before a TI82
-#: src/probe.c:154
+#: src/probe.c:155
 msgid "Trying TI83... "
 msgstr ""
 
-#. Test for a TI82
-#: src/probe.c:172
+#: src/probe.c:173
 msgid "Trying TI82... "
 msgstr ""
 
-#: src/probe.c:213
+#: src/probe.c:214
 msgid "Is calculator ready (and check type) ?\n"
 msgstr ""
 
-#: src/probe.c:226
+#: src/probe.c:227
 #, c-format
 msgid ""
 "\n"
 "Status = %04X\n"
 msgstr ""
 
-#: src/probe.c:254
+#: src/probe.c:255
 msgid "The calculator is ready.\n"
 msgstr ""
 
-#: src/probe.c:255
+#: src/probe.c:256
 #, c-format
 msgid "Calculator type: %s\n"
 msgstr ""
 
-#: src/ti73.c:62 src/ti89.c:67 src/ti92.c:63
+#: src/ti73.c:63 src/ti89.c:68 src/ti92.c:64
 msgid "Is calculator ready ?\n"
 msgstr ""
 
-#: src/ti73.c:96 src/ti83.c:71 src/ti86.c:82 src/ti89.c:170 src/ti92.c:148
+#: src/ti73.c:97 src/ti83.c:72 src/ti86.c:83 src/ti89.c:171 src/ti92.c:149
 msgid "Directory listing...\n"
 msgstr ""
 
-#: src/ti73.c:140 src/ti83.c:110 src/ti86.c:125
+#: src/ti73.c:141 src/ti83.c:111 src/ti86.c:126
 #, c-format
 msgid "Reading of '%s'"
 msgstr ""
 
-#: src/ti73.c:158 src/ti82.c:76 src/ti83.c:128 src/ti85.c:76 src/ti86.c:143
-#: src/ti89.c:102 src/ti92.c:98
+#: src/ti73.c:159 src/ti82.c:77 src/ti83.c:129 src/ti85.c:77 src/ti86.c:144
+#: src/ti89.c:103 src/ti92.c:99
 msgid "Receiving screendump...\n"
 msgstr ""
 
-#: src/ti73.c:186 src/ti82.c:103 src/ti83.c:156 src/ti85.c:104 src/ti86.c:171
-#: src/ti89.c:139 src/ti92.c:126
+#: src/ti73.c:187 src/ti82.c:104 src/ti83.c:157 src/ti85.c:105 src/ti86.c:172
+#: src/ti89.c:140 src/ti92.c:127
 msgid "Done.\n"
 msgstr ""
 
-#: src/ti73.c:201 src/ti82.c:117 src/ti83.c:171 src/ti85.c:118 src/ti86.c:185
-#: src/ti89.c:299 src/ti92.c:226
+#: src/ti73.c:202 src/ti82.c:118 src/ti83.c:172 src/ti85.c:119 src/ti86.c:186
+#: src/ti89.c:300 src/ti92.c:227
 msgid "Receiving backup...\n"
 msgstr ""
 
-#: src/ti73.c:209 src/ti83.c:179 src/ti92.c:233
+#: src/ti73.c:210 src/ti83.c:180 src/ti92.c:234
 #, c-format
 msgid "Receiving backup..."
 msgstr ""
 
-#: src/ti73.c:258 src/ti82.c:170 src/ti83.c:227 src/ti85.c:171 src/ti86.c:246
-#: src/ti89.c:353 src/ti92.c:280
+#: src/ti73.c:259 src/ti82.c:171 src/ti83.c:228 src/ti85.c:172 src/ti86.c:247
+#: src/ti89.c:354 src/ti92.c:281
 msgid "Sending backup...\n"
 msgstr ""
 
-#: src/ti73.c:264 src/ti73.c:398 src/ti82.c:176 src/ti82.c:212 src/ti82.c:320
-#: src/ti83.c:233 src/ti83.c:367 src/ti85.c:177 src/ti85.c:213 src/ti85.c:321
-#: src/ti86.c:252 src/ti86.c:288 src/ti86.c:398
+#: src/ti73.c:265 src/ti73.c:399 src/ti82.c:177 src/ti82.c:213 src/ti82.c:321
+#: src/ti83.c:234 src/ti83.c:368 src/ti85.c:178 src/ti85.c:214 src/ti85.c:322
+#: src/ti86.c:253 src/ti86.c:289 src/ti86.c:399
 #, c-format
 msgid "Sending..."
 msgstr ""
 
-#: src/ti73.c:321 src/ti82.c:240 src/ti83.c:291 src/ti85.c:241 src/ti86.c:322
-#: src/ti89.c:389 src/ti92.c:333
+#: src/ti73.c:322 src/ti82.c:241 src/ti83.c:292 src/ti85.c:242 src/ti86.c:323
+#: src/ti89.c:390 src/ti92.c:334
 msgid "Receiving variable(s)...\n"
 msgstr ""
 
-#. 2MB max
-#: src/ti73.c:341 src/ti73.c:538 src/ti82.c:278 src/ti83.c:311 src/ti85.c:279
-#: src/ti86.c:342 src/ti89.c:414 src/ti89.c:632 src/ti92.c:358
+#: src/ti73.c:342 src/ti73.c:539 src/ti82.c:279 src/ti83.c:312 src/ti85.c:280
+#: src/ti86.c:343 src/ti89.c:415 src/ti89.c:633 src/ti92.c:359
 #, c-format
 msgid "Receiving '%s'"
 msgstr ""
 
-#: src/ti73.c:392 src/ti82.c:314 src/ti83.c:361 src/ti85.c:315 src/ti86.c:392
-#: src/ti89.c:466 src/ti92.c:410
+#: src/ti73.c:393 src/ti82.c:315 src/ti83.c:362 src/ti85.c:316 src/ti86.c:393
+#: src/ti89.c:467 src/ti92.c:411
 msgid "Sending variable(s)...\n"
 msgstr ""
 
-#: src/ti73.c:410 src/ti83.c:379 src/ti86.c:410 src/ti89.c:486 src/ti92.c:429
+#: src/ti73.c:411 src/ti83.c:380 src/ti86.c:411 src/ti89.c:487 src/ti92.c:430
 #, c-format
 msgid " '%s' has been skipped !\n"
 msgstr ""
 
-#: src/ti73.c:436 src/ti82.c:354 src/ti83.c:403 src/ti85.c:355 src/ti86.c:434
-#: src/ti89.c:500 src/ti92.c:443
+#: src/ti73.c:437 src/ti82.c:355 src/ti83.c:404 src/ti85.c:356 src/ti86.c:435
+#: src/ti89.c:501 src/ti92.c:444
 #, c-format
 msgid "Sending '%s'"
 msgstr ""
 
-#: src/ti73.c:459 src/ti89.c:555
+#: src/ti73.c:460 src/ti89.c:556
 msgid "Sending FLASH app/os...\n"
 msgstr ""
 
-#: src/ti73.c:525 src/ti89.c:622
+#: src/ti73.c:526 src/ti89.c:623
 msgid "Receiving FLASH application...\n"
 msgstr ""
 
-#: src/ti73.c:600 src/ti82.c:403 src/ti83.c:447 src/ti85.c:402 src/ti86.c:478
-#: src/ti89.c:692 src/ti92.c:494
+#: src/ti73.c:601 src/ti82.c:404 src/ti83.c:448 src/ti85.c:403 src/ti86.c:479
+#: src/ti89.c:693 src/ti92.c:495
 msgid "ROM dumping...\n"
 msgstr ""
 
-#. Wait for user's action (execing program)
-#: src/ti73.c:624 src/ti82.c:191 src/ti82.c:331 src/ti82.c:427 src/ti83.c:476
-#: src/ti85.c:192 src/ti85.c:332 src/ti85.c:430 src/ti86.c:268 src/ti86.c:507
+#: src/ti73.c:625 src/ti82.c:192 src/ti82.c:332 src/ti82.c:428 src/ti83.c:477
+#: src/ti85.c:193 src/ti85.c:333 src/ti85.c:431 src/ti86.c:269 src/ti86.c:508
 #, c-format
 msgid "Waiting user's action..."
 msgstr ""
 
-#: src/ti73.c:638 src/ti82.c:441 src/ti83.c:490 src/ti85.c:444 src/ti86.c:521
-#: src/ti89.c:741 src/ti92.c:544
+#: src/ti73.c:639 src/ti82.c:442 src/ti83.c:491 src/ti85.c:445 src/ti86.c:522
+#: src/ti89.c:742 src/ti92.c:545
 #, c-format
 msgid "Receiving..."
 msgstr ""
 
-#: src/ti73.c:678 src/ti82.c:481 src/ti83.c:530 src/ti85.c:484 src/ti86.c:561
-#: src/ti89.c:778 src/ti92.c:582
+#: src/ti73.c:679 src/ti82.c:482 src/ti83.c:531 src/ti85.c:485 src/ti86.c:562
+#: src/ti89.c:779 src/ti92.c:583
 #, c-format
 msgid "Remaining (mm:ss): %s"
 msgstr ""
 
-#: src/ti73.c:698 src/ti89.c:797
+#: src/ti73.c:699 src/ti89.c:798
 msgid "Getting ID list...\n"
 msgstr ""
 
-#: src/ti73.c:704 src/ti89.c:803
+#: src/ti73.c:705 src/ti89.c:804
 #, c-format
 msgid "Getting variable..."
 msgstr ""
 
-#: src/ti82.c:125 src/ti85.c:126
+#: src/ti82.c:126 src/ti85.c:127
 #, c-format
 msgid "Waiting for backup..."
 msgstr ""
 
-#: src/ti82.c:246 src/ti85.c:247
+#: src/ti82.c:247 src/ti85.c:248
 #, c-format
 msgid "Waiting var(s)..."
 msgstr ""
 
-#: src/ti86.c:193
+#: src/ti86.c:194
 #, c-format
 msgid "Waiting backup..."
 msgstr ""
 
-#: src/ti89.c:209 src/ti89.c:257 src/ti92.c:189
+#: src/ti89.c:210 src/ti89.c:258 src/ti92.c:190
 #, c-format
 msgid "Name: %8s | "
 msgstr ""
 
-#: src/ti89.c:210 src/ti89.c:258 src/ti92.c:190
+#: src/ti89.c:211 src/ti89.c:259 src/ti92.c:191
 #, c-format
 msgid "Type: %8s | "
 msgstr ""
 
-#: src/ti89.c:211 src/ti89.c:259 src/ti92.c:191
+#: src/ti89.c:212 src/ti89.c:260 src/ti92.c:192
 #, c-format
 msgid "Attr: %i  | "
 msgstr ""
 
-#: src/ti89.c:212 src/ti89.c:260 src/ti92.c:192
+#: src/ti89.c:213 src/ti89.c:261 src/ti92.c:193
 #, c-format
 msgid "Size: %08X\n"
 msgstr ""
 
-#: src/ti89.c:225
+#: src/ti89.c:226
 #, c-format
 msgid "Directory listing in %8s...\n"
 msgstr ""
 
-#: src/ti89.c:262 src/ti92.c:200
+#: src/ti89.c:263 src/ti92.c:201
 #, c-format
 msgid "Reading of '%s/%s'"
 msgstr ""
 
-#: src/ti89.c:359 src/ti92.c:286
+#: src/ti89.c:360 src/ti92.c:287
 #, c-format
 msgid "Sending backup..."
 msgstr ""
 
-#: src/ti89.c:472 src/ti92.c:416
+#: src/ti89.c:473 src/ti92.c:417
 #, c-format
 msgid "Sending variable(s)..."
 msgstr ""
 
-#: src/ti89.c:561
+#: src/ti89.c:562
 #, c-format
 msgid "Sending FLASH OS/App..."
 msgstr ""
 
-#: src/ti89.c:574
+#: src/ti89.c:575
 #, c-format
 msgid "FLASH app/os name: \"%s\"\n"
 msgstr ""
 
-#: src/ti89.c:575
+#: src/ti89.c:576
 #, c-format
 msgid "FLASH app/os size: %i bytes.\n"
 msgstr ""
 
-#: src/ti89.c:609
+#: src/ti89.c:610
 msgid "Flash application/os sent completely.\n"
 msgstr ""
 
-#. Launch calculator program by remote control
-#: src/ti89.c:707 src/ti92.c:510
+#: src/ti89.c:708 src/ti92.c:511
 #, c-format
 msgid "Launching..."
 msgstr ""
 
-#: src/ti89.c:835
+#: src/ti89.c:836
 msgid "Getting clock...\n"
 msgstr ""
 
-#: src/ti89.c:841
+#: src/ti89.c:842
 #, c-format
 msgid "Getting clock..."
 msgstr ""
 
-#: src/ti89.c:890
+#: src/ti89.c:891
 msgid "Setting clock...\n"
 msgstr ""
 
-#: src/ti89.c:896
+#: src/ti89.c:897
 #, c-format
 msgid "Setting clock..."
 msgstr ""
 
-#: src/ti92.c:245
+#: src/ti92.c:246
 #, c-format
 msgid "Receiving block %2i"
 msgstr ""
 
-#: src/type2str.c:32 src/type2str.c:40 src/type2str.c:52 src/type2str.c:60
+#: src/type2str.c:33 src/type2str.c:41 src/type2str.c:53 src/type2str.c:61
 msgid "full"
 msgstr ""
 
-#: src/type2str.c:33 src/type2str.c:42
+#: src/type2str.c:34 src/type2str.c:43
 msgid "clipped"
 msgstr ""
 
-#: src/type2str.c:34 src/type2str.c:54 src/type2str.c:76
+#: src/type2str.c:35 src/type2str.c:55 src/type2str.c:77
 msgid "unknown"
 msgstr ""
 
-#: src/type2str.c:53 src/type2str.c:62
+#: src/type2str.c:54 src/type2str.c:63
 msgid "local"
 msgstr ""
 
-#: src/type2str.c:74
+#: src/type2str.c:75
 msgid "skip"
 msgstr ""
 
-#: src/type2str.c:75
+#: src/type2str.c:76
 msgid "overwrite"
 msgstr ""
