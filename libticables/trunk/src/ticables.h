@@ -22,9 +22,17 @@
 #ifndef __TICABLES_H__
 #define __TICABLES_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "cabl_def.h"
 #include "cabl_int.h"
 #include "cabl_err.h"
 #include "cabl_ver.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -30,6 +30,10 @@
 //#define FORCE_FASTCALL
 //#define FORCE_NONE
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Defines one of the previous definitions for forcing a calling convention.
  * VB & Delphi users will enable FORCE_STDCALL.
@@ -77,6 +81,10 @@
 #else
 # define TIEXPORT		// default
 # define TICALL
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 // Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
