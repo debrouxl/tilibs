@@ -34,6 +34,7 @@
 #endif
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...);
+TIEXPORT int TICALL DISPLAY_WARNING(const char *format, ...);
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
 TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op);
 TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);

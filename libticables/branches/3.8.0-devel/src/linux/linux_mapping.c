@@ -67,42 +67,51 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	{
 	case LINK_TGL:
 		if(resources & IO_API) {
-			check_for_tty();
+			if(check_for_tty())
+				DISPLAY("  warning, IO_API problem."));
 			*method |= IOM_API | IOM_OK;
 		}
 		break;
 	case LINK_AVR:
 		if(resources & IO_API) {
-			check_for_tty();
+			if(check_for_tty())
+				DISPLAY("  warning: IO_API problem."));
                         *method |= IOM_API | IOM_OK;
 		break;
 	case LINK_SER:
 		if(resources & IO_TISER) {
-			check_for_tiser();
+			if(check_for_tiser())
+				DISPLAY("  warning: IO_TISER problem."));
 			*method |= IOM_DRV | IOM_OK;
 		} else if (resources & IO_ASM) {
-			check_for_root();
+			if(check_for_root())
+				DISPLAY("  warning: IO_ASM problem."));
 			*method |= IOM_ASM | IOM_OK;
 		} else if (resources & IO_API)
-			check_for_tty();
+			if(check_for_tty())
+				DISPLAY("  warning: IO_API problem."));
 			*method |= IOM_IOCTL | IOM_OK;
 		break;
 	case LINK_PAR:
 		if(resources & IO_TIPAR) {
-			check_for_tipar();
+			if(check_for_tipar())
+				DISPLAY("  warning: IO_TIPAR problem."));
 			*method |= IOM_DRV | IOM_OK;
 		} else if (resources & IO_ASM) {
-			check_for_root();
+			if(check_for_root())
+				DISPLAY("  warning: IO_ASM problem."));
 			*method |= IOM_ASM | IOM_OK;
 		}
 		break;
 	case LINK_SLV:
 		if (resources & IO_TIUSB) {
-			check_for_tiusb();
+			if(check_for_tiusb())
+				DISPLAY("  warning: IO_TIUSB problem."));
 			*method |= IOM_DRV | IOM_OK;
 		}
 		else if (resources & IO_LIBUSB) {
-			check_for_libusb();
+			if(check_for_libusb())
+				DISPLAY("  warning: IO_LIBUSB problem."));
 			*method |= IOM_IOCTL | IOM_OK;
 		}
 		break;
@@ -347,12 +356,10 @@ static void check_for_tiser(void);
 static void check_for_tiusb(void);
 static void check_for_libusb(void);
 
-#if 0
-
 /*
   Returns mode string from mode value.
 */
-const char *get_attributes(mode_t attrib)
+static const char *get_attributes(mode_t attrib)
 {
 	static char s[13] = " ---------- ";
       
@@ -396,7 +403,7 @@ const char *get_attributes(mode_t attrib)
 /*
    Returns user name from id.
 */
-const char *get_user_name(uid_t uid)
+static const char *get_user_name(uid_t uid)
 {
 	struct passwd *pwuid;
 
@@ -409,7 +416,7 @@ const char *get_user_name(uid_t uid)
 /*
   Returns group name from id.
 */
-const char *get_group_name(uid_t uid)
+static const char *get_group_name(uid_t uid)
 {
 	struct group *grpid;
         
@@ -445,18 +452,40 @@ static int find_string_in_proc(char *entry, char *str)
 	return found;
 }
 
-static void check_for_tipar_module(void)
+static int check_for_root(void)
 {
-	int devfs = 0;
+	uid_t uid = getuid();
+    	
+    	DISPLAY(_("  check for root: %s\n"), uid ? "no" : "yes");
+}
+
+static int check_for_tty(void)
+{
+	DISPLAY(_("  check for tty usability:\n"));
+	
+	if(!access("/dev/ttyS0", F_OK))
+		DISPLAY(_("      node %s: exists.\r\n"), "/dev/ttySx");
+	else {
+		DISPLAY(_("      node %s: does not exists.\r\n"), name);
+		return -1;
+	}
+
+	if(!stat("/dev/ttyS0", &st)) {
+		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
+                        get_attributes(st.st_mode),
+                        get_user_name(st.st_uid),
+                        get_group_name(st.st_gid));
+	} else
+		return -1;
+	
+	return 0;
+}
+
+static void check_for_tipar(void)
+{
 	struct stat st;
 	char name[15];
 	int ret = !0;
-
-#ifndef HAVE_LINUX_TICABLE_H
-	DISPLAY(_("  IO_TIPAR: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TIPAR: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
@@ -472,7 +501,7 @@ static void check_for_tipar_module(void)
 	else {
 		DISPLAY(_("      node %s: does not exists.\r\n"), name);
 		ret = 0;
-}
+	}
 
 	if(!stat(name, &st)) {
 		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
@@ -486,23 +515,13 @@ static void check_for_tipar_module(void)
 		DISPLAY(_("      module: loaded\r\n"));
 	else
 		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TIPAR : 0;
- #endif
 }
 
-static void check_for_tiser_module(void)
+static void check_for_tiser(void)
 {
-	int devfs = 0;
 	struct stat st;
 	char name[15];
 	int ret = !0;
-
-#ifndef HAVE_LINUX_TICABLE_H
-	DISPLAY(_("  IO_TISER: not found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TISER: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TICABLE_H).\r\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
@@ -518,7 +537,7 @@ static void check_for_tiser_module(void)
 	else {
 		DISPLAY(_("      node %s: does not exists.\r\n"), name);
 		ret = 0;
-}
+	}
 
 	if(!stat(name, &st)) {
 		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
@@ -532,23 +551,13 @@ static void check_for_tiser_module(void)
 		DISPLAY(_("      module: loaded\r\n"));
 	else
 		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TISER : 0;
-#endif
 }
 
-static void check_for_tiusb_module(void)
+static void check_for_tiusb(void)
 {
-	int devfs = 0;
 	struct stat st;
 	char name[15];
 	int ret = !0;
-
-#ifndef HAVE_LINUX_TIGLUSB_H
-	DISPLAY(_("  IO_TIUSB: not found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
-#else
-	DISPLAY(_("  IO_TIUSB: checking for various stuffs\r\n"));
-	DISPLAY(_("      found at compile time (HAVE_LINUX_TIGLUSB_H).\r\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
@@ -564,7 +573,7 @@ static void check_for_tiusb_module(void)
 	else {
 		DISPLAY(_("      node %s: does not exists.\r\n"), name);
 		ret = 0;
-}
+	}
 
 	if(!stat(name, &st)) {
 		DISPLAY(_("      permissions/user/group:%s%s %s\r\n"),
@@ -578,9 +587,16 @@ static void check_for_tiusb_module(void)
 		DISPLAY(_("      module: loaded\r\n"));
 	else
 		DISPLAY(_("      module: not loaded\r\n"));
-
-	resources |= ret ? IO_TIUSB : 0;
-#endif
 }
 
-#endif
+static void check_for_libusb(void)
+{
+	if(!access("/proc/bus/usb", F_OK))
+		DISPLAY(_("      usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
+	else {
+		DISPLAY(_("      usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
+		return -1;
+	}
+	
+	return 0;
+}
