@@ -36,6 +36,7 @@
 #include "misc.h"
 #include "intelhex.h"
 #include "trans.h"
+#include "print.h"
 
 static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
 
@@ -727,8 +728,6 @@ TIEXPORT int TICALL ti8x_write_flash_file(const char *filename,
 /* Displaying */
 /**************/
 
-#define tprintf tifiles_printf
-
 /* 
    Display the characteristics of a TI regular content
    - content [in]: the content to show
@@ -739,28 +738,28 @@ TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
   int i;
   char trans[17];
 
-  tprintf("Signature:     <%s>\n",
+  print("", "Signature:     <%s>\n",
 	  tifiles_calctype2signature(content->calc_type));
-  tprintf("Comment:       <%s>\n", content->comment);
-  tprintf("# of entries:  %i\n", content->num_entries);
+  print("", "Comment:       <%s>\n", content->comment);
+  print("", "# of entries:  %i\n", content->num_entries);
 
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) {
-    tprintf("Entry #%i\n", i);
-    tprintf("  name:        <%s>\n",
+    print("", "Entry #%i\n", i);
+    print("", "  name:        <%s>\n",
 	    tixx_translate_varname(content->entries[i].name,
 				   trans,
 				   content->entries[i].type,
 				   content->calc_type));
-    tprintf("  type:        %02X (%s)\n",
+    print("", "  type:        %02X (%s)\n",
 	    content->entries[i].type,
 	    tifiles_vartype2string(content->entries[i].type));
-    tprintf("  attr:        %s\n",
+    print("", "  attr:        %s\n",
 	    tifiles_attribute_to_string(content->entries[i].attr));
-    tprintf("  length:      %04X (%i)\n",
+    print("", "  length:      %04X (%i)\n",
 	    content->entries[i].size, content->entries[i].size);
   }
 
-  tprintf("Checksum:      %04X (%i) \n", content->checksum,
+  print("", "Checksum:      %04X (%i) \n", content->checksum,
 	  content->checksum);
 
   return 0;
@@ -773,27 +772,27 @@ TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
 */
 TIEXPORT int TICALL ti8x_display_backup_content(Ti8xBackup * content)
 {
-  tprintf("Signature:      <%s>\n",
+  print("", "Signature:      <%s>\n",
 	  tifiles_calctype2signature(content->calc_type));
-  tprintf("Comment:        <%s>\n", content->comment);
-  tprintf("Type:           %02X (%s)\n", content->type,
+  print("", "Comment:        <%s>\n", content->comment);
+  print("", "Type:           %02X (%s)\n", content->type,
 	  tifiles_vartype2string(content->type));
-  tprintf("Mem address:    %04X (%i)\n",
+  print("", "Mem address:    %04X (%i)\n",
 	  content->mem_address, content->mem_address);
 
-  tprintf("\n");
+  print("", "\n");
 
-  tprintf("data_length1:   %04X (%i)\n",
+  print("", "data_length1:   %04X (%i)\n",
 	  content->data_length1, content->data_length1);
-  tprintf("data_length2:   %04X (%i)\n",
+  print("", "data_length2:   %04X (%i)\n",
 	  content->data_length2, content->data_length2);
-  tprintf("data_length3:   %04X (%i)\n",
+  print("", "data_length3:   %04X (%i)\n",
 	  content->data_length3, content->data_length3);
   if (content->calc_type == CALC_TI86)
-    tprintf("data_length4:   %04X (%i)\n",
+    print("", "data_length4:   %04X (%i)\n",
 	    content->data_length4, content->data_length4);
 
-  tprintf("Checksum:       %04X (%i) \n", content->checksum,
+  print("", "Checksum:       %04X (%i) \n", content->checksum,
 	  content->checksum);
 
   return 0;
@@ -808,37 +807,37 @@ TIEXPORT int TICALL ti8x_display_flash_content(Ti8xFlash * content)
 {
   Ti8xFlash *ptr = content;
 
-  tprintf("Signature:       <%s>\n",
+  print("", "Signature:       <%s>\n",
 	  tifiles_calctype2signature(ptr->calc_type));
-  tprintf("Revision:        %i.%i\n", ptr->revision_major,
+  print("", "Revision:        %i.%i\n", ptr->revision_major,
 	  ptr->revision_minor);
-  tprintf("Flags:           %02X\n", ptr->flags);
-  tprintf("Object type:     %02X\n", ptr->object_type);
-  tprintf("Date:            %02X/%02X/%02X%02X\n",
+  print("", "Flags:           %02X\n", ptr->flags);
+  print("", "Object type:     %02X\n", ptr->object_type);
+  print("", "Date:            %02X/%02X/%02X%02X\n",
 	  ptr->revision_day, ptr->revision_month,
 	  ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-  tprintf("Name:            <%s>\n", ptr->name);
-  tprintf("Device type:     %s\n",
+  print("", "Name:            <%s>\n", ptr->name);
+  print("", "Device type:     %s\n",
 	  ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");
-  tprintf("Data type:       ");
+  print("", "Data type:       ");
   switch (ptr->data_type) {
   case 0x23:
-    tprintf("OS data\n");
+    print("", "OS data\n");
     break;
   case 0x24:
-    tprintf("APP data\n");
+    print("", "APP data\n");
     break;
   case 0x25:
-    tprintf("certificate\n");
+    print("", "certificate\n");
     break;
   case 0x3E:
-    tprintf("license\n");
+    print("", "license\n");
     break;
   default:
-    tprintf("Unknown (mailto roms@lpg.ticalc.org)\n");
+    print("", "Unknown (mailto roms@lpg.ticalc.org)\n");
     break;
   }
-  tprintf("Number of pages: %i\n", ptr->num_pages);
+  print("", "Number of pages: %i\n", ptr->num_pages);
 
   return 0;
 }
@@ -867,7 +866,7 @@ TIEXPORT int TICALL ti8x_display_file(const char *filename)
     ti8x_display_regular_content(&content1);
     ti8x_free_regular_content(&content1);
   } else {
-    tprintf("Unknwon file type !\n");
+    print("", "Unknwon file type !\n");
     return ERR_BAD_FILE;
   }
 

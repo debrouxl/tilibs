@@ -57,4 +57,6 @@ typedef int (*TIFILES_CHOOSE) (char *, char *);
 
 typedef int (*TIFILES_PRINTF) (const char *format, ...);
 
+typedef int (*TIFILES_PRINT) (const char *level, const char *format, ...);
+
 #endif

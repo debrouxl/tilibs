@@ -38,6 +38,8 @@ extern "C" {
   
   TIEXPORT int TICALL tifiles_init(void);
   TIEXPORT int TICALL tifiles_exit(void);
+  
+  TIEXPORT TIFILES_PRINT tifiles_set_print(TIFILES_PRINT new_printf);
 
   /*********************/
   /* General functions */

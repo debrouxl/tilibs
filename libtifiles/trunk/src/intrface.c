@@ -35,6 +35,7 @@
 #include "typesxx.h"
 #include "trans.h"
 #include "grp_ops.h"
+#include "print.h"
 
 /*****************/
 /* Internal data */
@@ -42,14 +43,13 @@
 int tifiles_instance = 0;	// counts # of instances
 TicalcType tifiles_calc_type = CALC_NONE;	// current calc type (context)
 
-TIFILES_PRINTF tifiles_printf = printf;
-
 /****************/
 /* Entry points */
 /****************/
 
 /*
-  This function should be the first one to call.
+  This function should be the first one to call (or the
+  second one after tifiles_set_print).
   It tries to list available I/O functions (I/O resources).
  */
 TIEXPORT int TICALL tifiles_init()
@@ -72,14 +72,14 @@ TIEXPORT int TICALL tifiles_init()
 #endif
 
 #if defined(ENABLE_NLS)
-	fprintf(stdout, "libtifiles: setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	fprintf(stdout, "libtifiles: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	print("",  "libtifiles: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	print("",  "libtifiles: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	fprintf(stdout, "libtifiles: textdomain: <%s>\n", textdomain(PACKAGE));
+  	print("",  "libtifiles: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   if (tifiles_instance == 0) {
-    fprintf(stdout, _("Libtifiles: version %s\n"), LIBTIFILES_VERSION);
+    print("",  _("Libtifiles: version %s\n"), LIBTIFILES_VERSION);
   }
 
   return (++tifiles_instance);
@@ -137,12 +137,12 @@ TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
   case CALC_V200:
     break;
   default:
-    fprintf(stderr,
+    print("error", 
 	    _
 	    ("Function not implemented. This is a bug. Please report it."));
-    fprintf(stderr, _("Informations:\n"));
-    fprintf(stderr, _("Calc: %i\n"), type);
-    fprintf(stderr, _("Program halted before crashing...\n"));
+    print("error",  _("Informations:\n"));
+    print("error",  _("Calc: %i\n"), type);
+    print("error",  _("Program halted before crashing...\n"));
     abort();
     break;
   }
@@ -155,57 +155,49 @@ TIEXPORT TicalcType TICALL tifiles_get_calc(void)
 
 static void print_informations(void)
 {
-  fprintf(stdout, _("Libtifiles settings...\n"));
+  print("",  _("Libtifiles settings...\n"));
 
   switch (tifiles_calc_type) {
   case CALC_V200:
-    fprintf(stdout, _("  Calc type: %s\n"), "V200");
+    print("",  _("  Calc type: %s\n"), "V200");
     break;
   case CALC_TI92P:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI92+");
+    print("",  _("  Calc type: %s\n"), "TI92+");
     break;
   case CALC_TI92:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI92");
+    print("",  _("  Calc type: %s\n"), "TI92");
     break;
   case CALC_TI89:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI89");
+    print("",  _("  Calc type: %s\n"), "TI89");
     break;
   case CALC_TI86:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI86");
+    print("",  _("  Calc type: %s\n"), "TI86");
     break;
   case CALC_TI85:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI85");
+    print("",  _("  Calc type: %s\n"), "TI85");
     break;
   case CALC_TI83P:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI83+");
+    print("",  _("  Calc type: %s\n"), "TI83+");
     break;
   case CALC_TI83:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI83");
+    print("",  _("  Calc type: %s\n"), "TI83");
     break;
   case CALC_TI82:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI82");
+    print("",  _("  Calc type: %s\n"), "TI82");
     break;
   case CALC_TI73:
-    fprintf(stdout, _("  Calc type: %s\n"), "TI73");
+    print("",  _("  Calc type: %s\n"), "TI73");
     break;
   default:			// error !
-    fprintf(stdout, _("Oops, there is a bug. Unknown calculator.\n"));
+    print("",  _("Oops, there is a bug. Unknown calculator.\n"));
     break;
   }
 }
 
-
+/* deprecated */
 TIEXPORT TIFILES_PRINTF tifiles_set_printf(TIFILES_PRINTF new_printf)
 {
-  TIFILES_PRINTF old_printf = tifiles_printf;
-
-  fprintf(stderr, "printf = %p\n", printf);
-  fprintf(stderr, "old_printf = %p\n", old_printf);
-  fprintf(stderr, "new_printf = %p\n", new_printf);
-
-  tifiles_printf = new_printf;
-
-  return old_printf;
+  return printf;
 }
 
 #ifdef __WIN32__
