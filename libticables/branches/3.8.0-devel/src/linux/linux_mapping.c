@@ -49,7 +49,7 @@ TicableMethod linux_get_methods(TicableType type, int resources)
     		method |= IOM_API | IOM_OK;
   	else if ((type == LINK_TGL) && (resources & IO_OSX))
     		method |= IOM_API | IOM_OK;
-
+	
   	if ((type == LINK_AVR) && (resources & IO_API))
     		method |= IOM_API | IOM_OK;
 
@@ -93,6 +93,9 @@ extern int resources, methods;
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	int ret;
+
+	// fill device and io_addr fields
+	convert_port_into_device();
 	
 	// set the link cable
   	if (((resources & IO_LINUX) && !(methods & IOM_DRV)) || (resources & IO_WIN32) || (resources & IO_OSX) || (resources & IO_BSD)) {	// no kernel driver (tipar/tiser/tiusb)
@@ -335,3 +338,5 @@ static int convert_port_into_device(void)
 
   return 0;
 }
+
+#include "timodules.c"

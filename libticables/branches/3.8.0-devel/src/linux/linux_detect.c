@@ -69,7 +69,6 @@ int linux_detect_os(char **os_type)
 
 int linux_detect_port(TicablePortInfo * pi)
 {
-  int ret = 0;
   int fd;
   FILE *f;
   char buffer[MAXCHARS];
@@ -168,7 +167,6 @@ char *result(int i)
 
 
 /* Try to find a specific string in /proc (vfs) */
-#ifdef __LINUX__
 static int find_string_in_proc(char *entry, char *str)
 {
   FILE *f;
@@ -197,7 +195,7 @@ int linux_detect_resources(void)
 	
   	resources |= IO_API;
   	DISPLAY(_("  IO_API: ok\r\n"));
-
+	
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
 	// check super or normal user
     	uid_t uid = getuid();
@@ -213,12 +211,14 @@ int linux_detect_resources(void)
   	if (find_string_in_proc("/proc/devices", "tipar") ||
       		find_string_in_proc("/proc/modules", "tipar"))
     		resources |= IO_TIPAR;
-  		DISPLAY(_("  IO_TIPAR: %s\r\n"), resources & IO_TIPAR ? "ok" : "nok");
+  		DISPLAY(_("  IO_TIPAR: %s\r\n"), 
+			resources & IO_TIPAR ? "ok" : "nok");
 
   	if (find_string_in_proc("/proc/devices", "tiser") ||
       		find_string_in_proc("/proc/modules", "tiser"))
     		resources |= IO_TISER;
-  		DISPLAY(_("  IO_TISER: %s\r\n"), resources & IO_TISER ? "ok" : "nok");
+  		DISPLAY(_("  IO_TISER: %s\r\n"), 
+			resources & IO_TISER ? "ok" : "nok");
 
   	if (find_string_in_proc("/proc/devices", "tiusb") ||
       	find_string_in_proc("/proc/modules", "tiusb") ||
@@ -231,8 +231,8 @@ int linux_detect_resources(void)
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	DISPLAY(_("  IO_LIBUSB: %s\r\n"), resources & IO_LIBUSB ? "ok" : "N/A");
-#endif /*__LINUX__*/
+	DISPLAY(_("  IO_LIBUSB: %s\r\n"), 
+		resources & IO_LIBUSB ? "ok" : "N/A");
 
   DISPLAY(_("Done.\r\n"));
 
