@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tifiles\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-24 15:26+0200\n"
+"Project-Id-Version: libtifiles 0.5.9\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2004-05-11 23:01+0200\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -290,7 +290,7 @@ msgid "Backup"
 msgstr "Sauvegarde"
 
 #: src/types73.c:80 src/types83p.c:75 src/types89.c:83 src/types92p.c:83
-#: src/typesv2.c:82 src/typesxx.c:959
+#: src/typesv2.c:82 src/typesxx.c:971
 msgid "OS upgrade"
 msgstr "MAJ OS"
 
@@ -432,11 +432,11 @@ msgstr ""
 "Erreur fatale dans \"%s\" : type de calculatrice inconnu. Le programme s'est "
 "terminé anormalement...\n"
 
-#: src/typesxx.c:969
+#: src/typesxx.c:981
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/typesxx.c:971
+#: src/typesxx.c:983
 msgid "Group"
 msgstr "Groupe"
 

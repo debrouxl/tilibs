@@ -114,7 +114,6 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
@@ -175,7 +174,7 @@ SUBDIRS = build intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ticables.pc
+pkgconfig_DATA = tifiles.pc
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -625,8 +624,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-recursive uninstall-pkgconfigDATA \
 	uninstall-recursive
 
-
-$(pkgconfig_DATA): config.status
 
 dos2unix:
 	dos2unix
