@@ -682,7 +682,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   if(checksum != sum) return ERR_CHECKSUM;
 
   TRY(PC_replyOK_92p());
-  sprintf(update->label_text, "Reading of directory: TI92p/%s", 
+  sprintf(update->label_text, "Reading of directory: %s", 
 	   p->translate);
   update->label();
   if(update->cancel) return -1;
@@ -844,7 +844,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  if((q->is_folder == VARIABLE) && (q->vartype != TI92p_FLASH))
 	    list->varsize += var_size;
 	  q->folder=p;
-	  sprintf(update->label_text, "Reading of: TI92p/%s/%s", 
+	  sprintf(update->label_text, "Reading of: %s/%s", 
 		   (q->folder)->translate, q->translate);
 	  update->label();
 	  if(update->cancel) return -1;

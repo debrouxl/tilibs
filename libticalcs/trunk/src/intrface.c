@@ -22,6 +22,8 @@
 #include <windows.h>
 #endif
 
+#include <string.h>
+
 #include "intl2.h"
 #include "calc_ext.h"
 #include "tixx.h"
@@ -405,9 +407,10 @@ void TICALL ticalc_set_calc(int type,
   Set up the calculator functions according to the calculator type
 */
 TIEXPORT
-int TICALL ticalc_get_calc(void)
+int  TICALL ticalc_get_calc(int *type)
 {
-  return calc_type;
+	*type = calc_type;
+  return 0;
 }
 
 TIEXPORT
@@ -428,7 +431,12 @@ ticalc_open_ti_file(char *filename, char *mode, FILE **fd)
     {
       fprintf(stderr, "Unable to open this file: <%s>.\n", 
 	      filename);
-      return ERR_OPEN_FILE;
+	  if(strstr(mode, "r"))
+		  return ERR_OPEN_FILE;
+	  else if(strstr(mode, "w"))
+		return ERR_SAVE_FILE;
+	  else
+		  return -5; // bug
     }
   *fd = ti_file;
   

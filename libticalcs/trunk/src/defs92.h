@@ -135,6 +135,7 @@
 #define KEY92_x      120
 #define KEY92_y      121
 #define KEY92_z      122
+
 #define KEY92_UP     338
 #define KEY92_UP_RG  342
 #define KEY92_RIGHT  340

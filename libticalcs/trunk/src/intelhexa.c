@@ -63,7 +63,8 @@ static int read_intel_packet(FILE *f, int *n, word *addr,
     }
   checksum = read_byte(f);			// verify checksum of block
   if(LSB(sum+checksum)) return -2;
-  c = fgetc(f); fgetc(f);			// skip CR/LF
+  c = fgetc(f);						// skip \r\n (Win32) or \n (Linux)
+  if(c == '\r') c = fgetc(f);		
   if( (c == EOF) || (c == ' ')) 
     {
       DISPLAY("End of file detected\n");

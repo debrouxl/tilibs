@@ -213,6 +213,7 @@ typedef struct ticalc_fncts TicalcFncts;
 /* 
    The different calculator types 
 */
+// Don't change these values, const.c depends on them...
 #define CALC_NONE  0
 #define CALC_TI92P 1
 #define CALC_TI92  2
@@ -224,34 +225,37 @@ typedef struct ticalc_fncts TicalcFncts;
 #define CALC_TI82  8
 #define CALC_TI73  9
 
+//#define CALC_TI8X  (CALC_TI82|CALC_TI83|CALC_TI83P|CALC_TI85|CALC_TI86)
+//#define CALC_TI9X  (CALC_TI89|CALC_TI92|CALC_TI92P)
+
 /* 
    Some masks for the send/receive functions (mode) 
 */
 // No mask
 #define MODE_NORMAL              0 // No mode
 // For receiving vars
-#define MODE_RECEIVE_SINGLE_VAR  1 // Receive a single var
-#define MODE_RECEIVE_FIRST_VAR   2 // Recv the first var of a group file
-#define MODE_RECEIVE_VARS        4 // Recv var of a group file
-#define MODE_RECEIVE_LAST_VAR    8 // Recv the last var of a group file
+#define MODE_RECEIVE_SINGLE_VAR (1<<0) // Receive a single var
+#define MODE_RECEIVE_FIRST_VAR  (1<<1) // Recv the first var of a group file
+#define MODE_RECEIVE_VARS       (1<<2) // Recv var of a group file
+#define MODE_RECEIVE_LAST_VAR   (1<<3) // Recv the last var of a group file
 // For sending vars
-#define MODE_SEND_ONE_VAR       16 // Send a single var or the first var (grp)
-#define MODE_SEND_LAST_VAR      32 // Send the last var of a group file
-#define MODE_SEND_VARS          64 // Send var of a group file
+#define MODE_SEND_ONE_VAR       (1<<4) // Send a single var or the first var (grp)
+#define MODE_SEND_LAST_VAR      (1<<5) // Send the last var of a group file
+#define MODE_SEND_VARS          (1<<6) // Send var of a group file
 // Miscellaneous
-#define MODE_LOCAL_PATH        128 // Local path (full by default)
-#define MODE_KEEP_ARCH_ATTRIB  256 // Keep archive attribute (89/92+)
-#define MODE_USE_2ND_HEADER    512 // Use 0xC9 instead of 0x06
+#define MODE_LOCAL_PATH         (1<<7) // Local path (full by default)
+#define MODE_KEEP_ARCH_ATTRIB   (1<<8) // Keep archive attribute (89/92+)
+#define MODE_USE_2ND_HEADER     (1<<9) // Use 0xC9 instead of 0x06
 // For requesting an IDlist thru the recv_var function
-#define MODE_IDLIST           1024 // Get the IDlist (89/92+)
+#define MODE_IDLIST            (1<<10) // Get the IDlist (89/92+)
 // For sending FLASH (apps/AMS)
-#define MODE_APPS	      2048 // Send a (free) FLASH application
-#define MODE_AMS	      4096 // Send an Operating System (AMS)
+#define MODE_APPS	       (1<<11) // Send a (free) FLASH application
+#define MODE_AMS	       (1<<12) // Send an Operating System (AMS)
 // For file checking
-#define MODE_FILE_CHK_NONE    8192 // Do no file checking (dangerous !)
-#define MODE_FILE_CHK_MID    16384 // Do a simple file checking
-#define MODE_FILE_CHK_ALL    32768 // Do a restrictive file checking
-#define MODE_DIRLIST         65536 // Do a dirlist before sending vars
+#define MODE_FILE_CHK_NONE     (1<<13) // Do no file checking (dangerous !)
+#define MODE_FILE_CHK_MID      (1<<14) // Do a simple file checking
+#define MODE_FILE_CHK_ALL      (1<<15) // Do a restrictive file checking
+#define MODE_DIRLIST           (1<<16) // Do a dirlist before sending vars
 
 // ROM size for the ROM dump function
 #define ROM_1MB      1 // 1 MegaBytes
@@ -265,10 +269,10 @@ typedef struct ticalc_fncts TicalcFncts;
 /*
   Code returned by the update.choose() function
 */
-#define ACTION_NONE      0
-#define ACTION_SKIP      1
-#define ACTION_OVERWRITE 2
-#define ACTION_RENAME    4
+#define ACTION_NONE       0
+#define ACTION_SKIP       (1<<0)
+#define ACTION_OVERWRITE  (1<<1)
+#define ACTION_RENAME     (1<<2)
 
 /*
   Mask returned by the 'supported_operations' function

@@ -399,6 +399,7 @@ const struct ti_key TI92P_KEYS[]=
   { "RIGHT", "RIGHT", 340, "RIGHT", 16724, "RIGHT", 4436, "RIGHT", 8532, "", 0 },
   { "", "", 0, "", 0, "", 0, "", 0 },
   { "RIGHT-UP", "RIGHT-UP", 342, "RIGHT-UP", 0, "RIGHT-UP", 0, "RIGHT-UP", 0 },
+  { "", "", 0, "", 0, "", 0, "", 0 },
   { "DOWN", "DOWN", 344, "DOWN", 16728, "DOWN", 4440, "DOWN", 8536, "", 0 },
   { "LEFT-DOWN", "LEFT-DOWN", 345, "LEFT-DOWN", 345, "LEFT-DOWN", 345, "LEFT-DOWN", 345 },
   { "", "", 0, "", 0, "", 0, "", 0 },

@@ -1037,7 +1037,7 @@ int ti92_directorylist(struct varinfo *list, int *n_elts)
       TRY(cable->get(&data));
       DISPLAY("The calculator want continue.\n");
 
-      sprintf(update->label_text, "Reading of: TI92/%s/%s", 
+      sprintf(update->label_text, "Reading of: %s/%s", 
 	       (p->folder)->translate, p->translate);
       update_label();
       if(update->cancel) return -1;

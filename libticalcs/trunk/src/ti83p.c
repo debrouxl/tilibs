@@ -133,7 +133,7 @@ static int ti83p_waitdata(byte id, word length)
 // Check whether the TI reply that it is ready
 int ti83p_isready(void)
 {
-	LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   DISPLAY("Is calculator ready ?\n");
   TRY(cable->put(PC_TI83p));
@@ -143,7 +143,7 @@ int ti83p_isready(void)
   TRY(ti83p_isOK());
   DISPLAY("The calculator is ready.\n");
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -335,7 +335,7 @@ static int recv_var_header(word *size, byte *type, byte *attr, char *string)
 // It seems that TI83+ has a remote control...
 int ti83p_send_key(word key)
 {
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   TRY(cable->put(PC_TI83p));
   TRY(cable->put(CMD83p_DIRECT_CMD));
@@ -343,7 +343,7 @@ int ti83p_send_key(word key)
   TRY(cable->put(MSB(key)));
   TRY(ti83p_isOK());
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
     
   return 0;
 }
@@ -364,7 +364,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
   word checksum;
   int i;
 
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   update_start();
   sc->width=TI83p_COLS;
@@ -421,7 +421,7 @@ int ti83p_screendump(byte **bitmap, int mask_mode,
 
   update_start();
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -440,7 +440,7 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
   long offset;
 
   return ERR_VOID_FUNCTION;
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   update_start();
   file_checksum=0;
@@ -539,7 +539,7 @@ int ti83p_recv_backup(FILE *file, int mask_mode, longword *version)
   update_start();
   TRY(cable->close());
   DISPLAY("\n");
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -554,7 +554,7 @@ int ti83p_send_backup(FILE *file, int mask_mode)
   word block_size;
 
   return ERR_VOID_FUNCTION;
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());  
   update_start();
   DISPLAY("Sending backup...\n");
@@ -650,7 +650,7 @@ int ti83p_send_backup(FILE *file, int mask_mode)
 
   update_start();
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
     
   return 0;
 }
@@ -668,13 +668,13 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
   byte attr;
   word sum, checksum;
 
-	LOCK_TRANSFER()
+	//LOCK_TRANSFER();
     TRY(cable->open());
     update_start();
     *n_elts=0;
     p=list;
     p->next=NULL;
-    p->folder=NULL;
+    p->folder=p;
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
@@ -726,7 +726,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 	p->vartype=var_type;
 	p->varsize=size;
 	if(attr == 0x80) p->varattr = VARATTR_ARCH; else p->varattr = VARATTR_NONE;
-	p->folder=list;
+	p->folder=p;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 	/* Translate the varname if necessary */
@@ -738,7 +738,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_83p());
-	sprintf(update->label_text, "Reading of: TI83p/%s", p->translate);
+	sprintf(update->label_text, "Reading of: %s", p->translate);
 	update_label();
 	if(update->cancel) return ERR_ABORT;
       }
@@ -749,7 +749,7 @@ int ti83p_directorylist(struct varinfo *list, int *n_elts)
     TRY(PC_replyOK_83p());
     DISPLAY("\n");
     TRY(cable->close());
-    UNLOCK_TRANSFER()
+    //UNLOCK_TRANSFER();
     
   return 0;
 }
@@ -771,7 +771,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   static word allvars_size;	// This limits the size of a TIGL file to 64 Kb */
   int k;
 
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   update_start();
   TRY(cable->open());
   if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
@@ -786,7 +786,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
       allvars_size=0;
     }
   var_size=0;
-  sprintf(update->label_text, "Reading of: TI83+/%s", 
+  sprintf(update->label_text, "Reading of: %s", 
 	   ti83_translate_varname(varname, trans, vartype));
   update_label();
   /* [X91] anglais: inversion */
@@ -910,7 +910,7 @@ int ti83p_recv_var(FILE *file, int mask_mode,
   update_start();
   TRY(cable->close());
   PAUSE(PAUSE_BETWEEN_VARS);
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
   
   return 0;
 }
@@ -929,10 +929,10 @@ int ti83p_send_var(FILE *file, int mask_mode)
   char varname[9];
   byte vartype;
   int i;
-  char trans[9]; int fti83p = 0;
+  char trans[9]; int fti83p = 1;
   byte varattr = VARATTR_NONE;
   
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   update_start();
   fgets(trans, 9, file);
@@ -941,14 +941,14 @@ int ti83p_send_var(FILE *file, int mask_mode)
     {
       if(mask_mode & MODE_FILE_CHK_MID)
         {
-          if( strcmp(trans, "**TI83**") && strcmp(trans, "**TI83F*") )
+          if( strcmp(trans, "**TI83**") && strcmp(trans, "**TI83F*") &&
+			  strcmp(trans, "**TI82**") && strcmp(trans, "**TI85**"))
             {
               return ERR_INVALID_TIXX_FILE;
             }
         }
       else if(mask_mode & MODE_FILE_CHK_ALL)
         {
-          fprintf(stderr, "MODE_FILE_CHK_ALL\n");
 	  if( strcmp(trans, "**TI83F*"))
             {
               return ERR_INVALID_TI83_FILE;
@@ -966,27 +966,31 @@ int ti83p_send_var(FILE *file, int mask_mode)
   while(!feof(file))
     {
       data=fgetc(file);
-	  if(feof(file)) break;
-      if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
-      else break;
+      if(feof(file)) break;
+      if(!strcmp(trans,  "**TI82**") || 
+		  !strcmp(trans, "**TI83**") ||
+		  !strcmp(trans, "**TI85**")) fti83p = 1; else fti83p = 0;
+      //if(data == 0x0d) fti83p = 1; else if(data == 0x0b) fti83p = 0;
+      //else break;
       data=fgetc(file);
-	  if(feof(file)) break;
-      if(data != 0) return -1;
+      if(feof(file)) break;
+      if(data != 0) break;
       varsize=fgetc(file);
-	  if(feof(file)) break;
+      if(feof(file)) break;
       varsize+=fgetc(file) << 8;
       vartype=fgetc(file);
       for(i=0; i<8; i++) varname[i]=fgetc(file);
       varname[i]='\0';
-	  if(fti83p) { 
-		  data = fgetc(file);
-		  varattr = fgetc(file);
-	  }
-	  fgetc(file);
+      varattr = 0;
+      if(fti83p) { // TI83 compatibility
+	data = fgetc(file);
+	varattr = fgetc(file);
+      }
+      fgetc(file);
       fgetc(file);
       sprintf(update->label_text, "Variable: %s", 
-	       ti83_translate_varname(varname, trans, vartype));
-	  update_label();
+	      ti83_translate_varname(varname, trans, vartype));
+      update_label();
       DISPLAY("Sending variable...\n");
       DISPLAY("-> Name: %s\n", varname);
       DISPLAY("-> Translated name: %s\n", 
@@ -996,7 +1000,8 @@ int ti83p_send_var(FILE *file, int mask_mode)
       sum=0;
       TRY(cable->put(PC_TI83p));
       TRY(cable->put(CMD83p_VAR_HEADER2));
-      if(fti83p) block_size=0x0D; else block_size=0x0B;
+      block_size = 0x0D;
+      //if(fti83p) block_size=0x0D; else block_size=0x0B;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       data=LSB(varsize);
@@ -1010,20 +1015,20 @@ int ti83p_send_var(FILE *file, int mask_mode)
       TRY(cable->put(data));
       TRY(sendstring8(varname, &sum));
       TRY(cable->put(0x00));
-      if( (mask_mode & MODE_USE_2ND_HEADER)			// if backup
-		|| (mask_mode & MODE_KEEP_ARCH_ATTRIB) )	// or if we use the extended file format
-	      {
-			//DISPLAY("attr = %02X\n", varattr);
-			TRY(cable->put(varattr));
-			sum+=varattr;
-	      }
-	  else
-	  {
-		TRY(cable->put(0x00));
-	  }
+      if( (mask_mode & MODE_USE_2ND_HEADER) ||	// if backup
+	  (mask_mode & MODE_KEEP_ARCH_ATTRIB) )	// if extended file format
+	{
+	  //DISPLAY("attr = %02X\n", varattr);
+	  TRY(cable->put(varattr));
+	  sum+=varattr;
+	}
+      else
+	{
+	  TRY(cable->put(0x00));
+	}
       TRY(cable->put(LSB(sum)));
       TRY(cable->put(MSB(sum)));
-
+      
       TRY(ti83p_isOK());
       TRY(ti83p_waitdata(TI83p_PC, block_size));
 
@@ -1034,7 +1039,7 @@ int ti83p_send_var(FILE *file, int mask_mode)
       block_size=(word)varsize;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
-	  update->total = block_size;
+      update->total = block_size;
       for(i=0; i<block_size; i++)
 	{
 	  data=fgetc(file);
@@ -1051,18 +1056,18 @@ int ti83p_send_var(FILE *file, int mask_mode)
 
       TRY(ti83p_isOK());
 
+      DISPLAY("The computer does want to continue.\n");
       TRY(cable->put(PC_TI83p));
       TRY(cable->put(CMD83p_EOT));
       TRY(cable->put(0x00));
       TRY(cable->put(0x00));
-  }
+    }
 
   DISPLAY("\n");
+  update_stop();
+  TRY(cable->close());
+  //UNLOCK_TRANSFER();;
 
-	update_start();
-	TRY(cable->close());
-	UNLOCK_TRANSFER()
-    
   return 0;
 }
 
@@ -1082,7 +1087,7 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
   int err;
   int b=0;;
 
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   update_start();
   sprintf(update->label_text, "Ready ?");
   update_label();
@@ -1163,7 +1168,7 @@ int ti83p_dump_rom(FILE *file, int mask_mode)
     }
   /* Close connection */
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -1192,7 +1197,7 @@ int ti83p_send_flash(FILE *file, int mask_mode)
   byte buf[0x100];
   
   /* Read the file header and initialize some variables */
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   update_start();
   fgets(str, 128, file);
@@ -1500,7 +1505,7 @@ int ti83p_send_flash(FILE *file, int mask_mode)
 
   update_start();
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -1519,7 +1524,7 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   byte buffer[0x80];
   long cur_pos, end_pos, pos;
 
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   fprintf(file, "**TIFL**");
   for(i=0; i<4; i++)
     fputc(0x00, file);
@@ -1670,7 +1675,7 @@ int ti83p_recv_flash(FILE *file, int mask_mode, char *appname, word appsize)
   update->start();
   TRY(cable->close());
   PAUSE(PAUSE_BETWEEN_VARS);
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }
@@ -1686,7 +1691,7 @@ int ti83p_get_idlist(char *id)
   byte name_length;
   char name[9];
 
-  LOCK_TRANSFER()
+  //LOCK_TRANSFER();
   TRY(cable->open());
   update_start();
   sum=0;
@@ -1827,7 +1832,7 @@ int ti83p_get_idlist(char *id)
   DISPLAY("\n");
   (update->percentage)=0.0;
   TRY(cable->close());
-  UNLOCK_TRANSFER()
+  //UNLOCK_TRANSFER();
 
   return 0;
 }

@@ -656,7 +656,7 @@ int ti73_directorylist(struct varinfo *list, int *n_elts)
     *n_elts=0;
     p=list;
     p->next=NULL;
-    p->folder=NULL;
+    p->folder=p;
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
@@ -708,7 +708,7 @@ int ti73_directorylist(struct varinfo *list, int *n_elts)
 	p->vartype=var_type;
 	p->varsize=size;
 	if(attr == 0x80) p->varattr = VARATTR_ARCH; else p->varattr = VARATTR_NONE;
-	p->folder=list;
+	p->folder=p;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 	/* Translate the varname if necessary */
@@ -720,7 +720,7 @@ int ti73_directorylist(struct varinfo *list, int *n_elts)
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_73());
-	sprintf(update->label_text, "Reading of: TI73/%s", p->translate);
+	sprintf(update->label_text, "Reading of: %s", p->translate);
 	update_label();
 	if(update->cancel) return ERR_ABORT;
       }

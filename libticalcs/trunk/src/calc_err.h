@@ -47,7 +47,8 @@
 #define ERR_OUT_OF_MEMORY      258 // Calc reply out of memory
 #define ERR_INVALID_TIXX_FILE  259 // Invalid TI file
 #define ERR_GRP_SIZE_EXCEEDED  260 // Group size exceeds 64KB
-#define ERR_OPEN_FILE          261 // Can not open file
+#define ERR_OPEN_FILE          261 // Can not open (reading) file
+#define ERR_SAVE_FILE          264 // Can not open (writing) file
 #define ERR_CLOSE_FILE         262 // Can not close file
 #define ERR_NO_IDLIST          263 // Calc has not an IDlist
 

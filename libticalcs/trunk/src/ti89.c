@@ -705,7 +705,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   if(checksum != sum) return ERR_CHECKSUM;
 
   TRY(PC_replyOK_89());
-  sprintf(update->label_text, "Reading of directory: TI89/%s", 
+  sprintf(update->label_text, "Reading of directory: %s", 
 	   p->translate);
   update->label();
   if(update->cancel) return ERR_ABORT;
@@ -869,7 +869,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
 	    list->varsize += var_size;
 	  }
 	  q->folder=p;
-	  sprintf(update->label_text, "Reading of: TI89/%s/%s", 
+	  sprintf(update->label_text, "Reading of: %s/%s", 
 		   (q->folder)->translate, q->translate);
 	  update->label();	  
 	  if(update->cancel) return ERR_ABORT;

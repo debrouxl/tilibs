@@ -107,7 +107,10 @@ ticalc_get_error(int err_num, char *error_msg)
       strcpy(error_msg, _("Group size exceeded (must be less than 64 KBytes)."));
       break;
     case ERR_OPEN_FILE:
-      strcpy(error_msg, _("Unable to open the file."));
+      strcpy(error_msg, _("Unable to open (reading) the file."));
+      break;
+	case ERR_SAVE_FILE:
+      strcpy(error_msg, _("Unable to open (writing) the file."));
       break;
 	case ERR_NO_IDLIST:
 		strcpy(error_msg, _("No IDlist."));

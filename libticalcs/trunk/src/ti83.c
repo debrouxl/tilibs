@@ -675,7 +675,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
     *n_elts=0;
     p=list;
     p->next=NULL;
-    p->folder=NULL;
+    p->folder=p;
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
@@ -727,7 +727,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
 	p->vartype=var_type;
 	p->varsize=size;
 	p->varattr=0;
-	p->folder=list;
+	p->folder=p;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 	/* Translate the varname if necessary */
@@ -739,7 +739,7 @@ int ti83_directorylist(struct varinfo *list, int *n_elts)
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_83());
-	sprintf(update->label_text, "Reading of: TI83/%s", p->translate);
+	sprintf(update->label_text, "Reading of: %s", p->translate);
 	update_label();
 	if(update->cancel) return ERR_ABORT;
       }

@@ -781,7 +781,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
     *n_elts=0;
     p=list;
     p->next=NULL;
-    p->folder=list;
+    p->folder=p;
     strcpy(p->varname, "");
     p->varsize=0;
     p->vartype=0;
@@ -858,7 +858,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
 	p->vartype=var_type;
 	p->varsize=size;
 	p->varattr=0;
-	p->folder=list;
+	p->folder=p;
 	p->is_folder = VARIABLE;
 	strncpy(p->translate, p->varname, 9);
 
@@ -868,7 +868,7 @@ int ti86_directorylist(struct varinfo *list, int *n_elts)
 	DISPLAY("Size: %08X\n", p->varsize);
 
 	TRY(PC_replyOK_86());
-	sprintf(update->label_text, "Reading of: TI86/%s", p->translate);
+	sprintf(update->label_text, "Reading of: %s", p->translate);
 	update_label();
 	if(update->cancel) return ERR_ABORT;
       }
@@ -1057,8 +1057,26 @@ int ti86_send_var(FILE *file, int mask_mode)
   TRY(cable->open());
   update_start();
   fgets(trans, 9, file);
-  if(strcmp(trans, "**TI86**")) 
-    return ERR_INVALID_TI86_FILE;
+
+  if(!(mask_mode & MODE_FILE_CHK_NONE))
+    {
+      if(mask_mode & MODE_FILE_CHK_MID)
+        {
+          if( strcmp(trans, "**TI82**") && strcmp(trans, "**TI83**") &&
+			  strcmp(trans, "**TI83F*") && strcmp(trans, "**TI86**"))
+            {
+              return ERR_INVALID_TIXX_FILE;
+            }
+        }
+      else if(mask_mode & MODE_FILE_CHK_ALL)
+        {
+	  if( strcmp(trans, "**TI86**"))
+            {
+              return ERR_INVALID_TI83_FILE;
+            }
+        }
+    }
+
   for(i=0; i<3; i++) fgetc(file);
   for(i=0; i<42; i++)
   {
@@ -1257,7 +1275,6 @@ int ti86_supported_operations(void)
 {
   return 
     (
-     OPS_ISREADY |
      OPS_SCREENDUMP |
      OPS_DIRLIST |
      OPS_SEND_BACKUP | OPS_RECV_BACKUP |
