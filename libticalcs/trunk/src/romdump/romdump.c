@@ -23,7 +23,7 @@
 /*
 	Note: this program is compatible with the built-in VTi ROM dumper as well as
 	TiLP.
-/*
+*/
 
 #define USE_TI89              // Compile for TI-89
 #define USE_TI92PLUS          // Compile for TI-92 Plus
@@ -46,11 +46,11 @@ int SendByte(BYTE c)
 {
 	while(OSWriteLinkBlock(&c, 1))
 	{
-		if(kbhit())
-			return 0;
-    }
+//		if(kbhit())
+//			return 0;
+  }
     
-    return 1;
+  return 1;
 }
 
 /*
@@ -60,15 +60,13 @@ int SendByte(BYTE c)
 */
 int GetByte(BYTE *c)
 {
-    BYTE c;
-    
     while(1)
     {
         if(OSReadLinkBlock(c, 1))
             return 1;
             
-        if(kbhit())
-        	return 0;	//0xcc
+//        if(kbhit())
+//        	return 0;
     }
     
     return 0;
@@ -81,10 +79,10 @@ int GetByte(BYTE *c)
 */
 int SendBlock(char *ptr)
 {
-    WORD csum;
-    int i;
-    BYTE c;
-    int retry = 0;
+  WORD csum;
+  int i;
+  BYTE c;
+	int retry = 0;
 
 	while(1)
 	{
@@ -107,7 +105,7 @@ int SendBlock(char *ptr)
         if (!i)
             return 0;
             
-        if (c == 0xda)	// chksum error: retry
+        if (c != 0xda)	// chksum error: retry
         {
         	if(retry++ < 3)
             	continue;
@@ -121,17 +119,15 @@ int SendBlock(char *ptr)
     return 0;
 }
 
-//									 TI89   ,  TI92+  ,    , V200
+//									 								 TI89   ,  TI92+  ,    , V200
 const unsigned long rom_sizes[4] = { 2097152,  2097152,  -1, 4194304  };
 const unsigned long rom_bases[4] = { 0x200000, 0x400000, -1, 0x200000 };
-const unsigned int  lcd_bases[4] = { 0x4c00,   0x4c00,   -1, 0x4c00 };
 
 // Main Function
 void _main(void)
 {
 	unsigned long rom_size = rom_sizes[CALCULATOR];
 	unsigned long rom_base = rom_bases[CALCULATOR];
-	//unsigned int  lcd_base = lcd_bases[CALCULATOR];
 	
   unsigned long i;
   unsigned char *p;
@@ -143,32 +139,30 @@ void _main(void)
   sprintf(str, "RomDumper v%s", VERSION);
   DrawStr(0, 0, str, A_NORMAL);
   
-  sprintf(str, "HW type: %i", HW_VERSION);
+  sprintf(str, "Type: HW%i", HW_VERSION);
   DrawStr(0, 20, str, A_NORMAL);
   
-  sprintf(str, "ROM base: %08x", rom_base);
-  DrawStr(0, 30, str, A_NORMAL);  
+  sprintf(str, "ROM base: 0x%lx", rom_base);
+  DrawStr(0, 40, str, A_NORMAL);  
   
   for(i = 0, p = (char *)rom_base; i < rom_size; i += 1024, p += 1024)
   {  	
-		sprintf(str, "Done: %ld/%ldK", i >> 10, rom_size >> 10);
+		sprintf(str, "Done: %ld/%ldKB", i >> 10, rom_size >> 10);
 		
 		switch(CALCULATOR)
 		{
 			case 0: // TI89
-				DrawStr(0, 50, str, A_NORMAL);
+				DrawStr(0, 60, str, A_REPLACE	);
 			break;
 			case 1: // TI92+
-				DrawStr(0, 50, str, A_NORMAL);
+				DrawStr(0, 60, str, A_REPLACE	);
 			break;
 			case 3: // V200
-				DrawStr(0, 50, str, A_NORMAL);
+				DrawStr(0, 60, str, A_REPLACE	);
 			break;			
 		}
 		
-		while(1);
-		
-		if (!SendSegment(ptr))
+		if (!SendBlock(p))
       		break;
   }
   

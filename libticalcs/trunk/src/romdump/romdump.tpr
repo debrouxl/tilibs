@@ -2,7 +2,7 @@
 Archive=0
 Pack=0
 Packed Variable=
-Project Name=RomDumper
+Project Name=RomDump
 GCC Switches=-Os -Wall -W -Wwrite-strings
 GNU Assembler Switches=
 Assembler Switches=-g -t
@@ -51,6 +51,6 @@ Use Return Value=0
 Enable Error Return=0
 Save Screen=0
 [File Editing]
-Open File=
+Open File=C:\sources\roms\ticalcs\src\romdump\romdump.c
 [Included Files]
-C File 1=Rom Dumper.c
+C File 1=romdump.c
