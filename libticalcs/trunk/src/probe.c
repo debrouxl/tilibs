@@ -73,7 +73,7 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
   printl(0, _("Probing calculator...\n"));
 
   /* Test for a TI 89 or a TI92+ */
-  printl(0, "Trying TI89/TI92+... ");
+  printl(0, _("Trying TI89/TI92+... "));
   TRYF(cable->open());
 
   printl(0, " PC->TI: SCR\n");
@@ -98,7 +98,7 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
   }
 
   /* Test for a TI92 */
-  printl(0, "Trying TI92... ");
+  printl(0, _("Trying TI92... "));
   TRYF(send_packet(PC_TI92, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
 
@@ -115,7 +115,7 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
   }
 
   /* Test for a TI86 before a TI85 */
-  printl(0, "Trying TI86... ");
+  printl(0, _("Trying TI86... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI86, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);
@@ -133,7 +133,7 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
   }
 
   /* Test for a TI85 */
-  printl(0, "Trying TI85... ");
+  printl(0, _("Trying TI85... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI85, CMD_SCR, 2, NULL));
   err = tixx_recv_ACK(&data);

@@ -110,7 +110,7 @@ int ti92_screendump(uint8_t ** bitmap, int mask_mode,
   (*bitmap) =
       (uint8_t *) malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t) / 8);
   if ((*bitmap) == NULL) {
-    fprintf(stderr, "Unable to allocate memory.\n");
+    printl(2, "Unable to allocate memory.\n");
     exit(0);
   }
 

@@ -14,6 +14,7 @@ src/keys83p.c
 src/keys89.c
 src/keys92p.c
 src/packets.c
+src/printl.c
 src/probe.c
 src/ti73.c
 src/ti82.c

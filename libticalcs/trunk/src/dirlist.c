@@ -57,9 +57,9 @@ static void dirlist_display_vars(TNode * tree)
   int i, j, k;
   TNode *vars = tree;
 
-  printl(0, "+------------------+----------+----+----+----------+----------+\n");
+  printl(0,   "+------------------+----------+----+----+----------+----------+\n");
   printl(0, _("| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"));
-  printl(0, "+------------------+----------+----+----+----------+----------+\n");
+  printl(0,   "+------------------+----------+----+----+----------+----------+\n");
 
   for (i = 0; i < t_node_n_children(vars); i++)	// parse folders
   {
@@ -117,9 +117,9 @@ static void dirlist_display_apps(TNode * tree)
   int i, k;
   TNode *apps = tree;
 
-  printl(0, "+------------------+----------+----+----+----------+\n");
+  printl(0,   "+------------------+----------+----+----+----------+\n");
   printl(0, _("| B. name          | T. name  |Attr|Type| Size     |\n"));
-  printl(0, "+------------------+----------+----+----+----------+\n");
+  printl(0,   "+------------------+----------+----+----+----------+\n");
 
   for (i = 0; i < t_node_n_children(apps); i++) {
     TNode *child = t_node_nth_child(apps, i);
@@ -190,7 +190,7 @@ TIEXPORT void TICALL ticalc_dirlist_display(TNode * tree)
 	    printl(0, "dirlist form #2: apps\n");
 	    dirlist_display_apps(tree);
     } else {
-      printl(2, "libticalcs: invalid tree !\n");
+      printl(2, "invalid tree !\n");
       printl(2, "Program halted before crashing...\n");
       exit(-1);
     }
