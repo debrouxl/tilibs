@@ -51,7 +51,7 @@
 #include "printl.h"
 #include "logging.h"
 
-static int dev_fd = 0;
+static int dev_fd = -1;
 static struct termios termset;
 
 int tig_init()
@@ -176,6 +176,9 @@ int tig_check(int *status)
   	struct timeval tv;
   	int retval;
 
+	if (dev_fd < 0)
+		return ERR_READ_ERROR;
+
   	*status = STATUS_NONE;
 
   	FD_ZERO(&rdfs);
@@ -257,11 +260,6 @@ int tig_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->exit = tig_exit;
   lc->probe = tig_probe;
   lc->check = tig_check;
-
-  lc->set_red_wire = NULL;
-  lc->set_white_wire = NULL;
-  lc->get_red_wire = NULL;
-  lc->get_white_wire = NULL;
 
   return 0;
 }

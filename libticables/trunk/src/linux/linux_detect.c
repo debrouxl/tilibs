@@ -77,7 +77,7 @@ int linux_detect_port(TicablePortInfo * pi)
 	int fd;
 	FILE *f;
         int i;
-        char name[10];
+        char name[MAXCHARS];
         int sa, ea;
         int nargs;
         char buffer[MAXCHARS];
@@ -205,10 +205,11 @@ int linux_detect_port(TicablePortInfo * pi)
 	}
 	
 	// read entries
-	while(!feof(f)) {
-                fgets(buffer, 256, f);
-
-                // Form: 'ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A'
+	/*
+	 * WARNING: THIS CODE IS FUCKING BROKEN (JB)
+	 */
+	while(fgets(buffer, MAXCHARS, f) != NULL) {
+		// Form: 'ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A'
                 nargs = sscanf(buffer, "%s at I/O %x", name, &sa);
                 if(nargs < 2)
                         continue;
