@@ -52,6 +52,7 @@ static int verbosity = 0;
 
 
 static FILE *flog = NULL;
+static char *fname = NULL;
 
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...)
@@ -60,7 +61,6 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
   	va_list ap;
 
   	if (verbosity) {
-
 #if defined(__WIN32__)		// redirect stdout to the console
     	if (alloc_console_called == FALSE) {
       		AllocConsole();
@@ -164,13 +164,16 @@ TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
 TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
 {
   	if (flog != NULL) {
-    		fflush(flog);
     		fclose(flog);
-  	}
+    		free(fname);
+	}
 
+	fname = strdup(filename);
   	flog = fopen(filename, "wt");
-  	if (flog != NULL)
+  	if (flog != NULL) {
+  		DISPLAY("libticables: flushing error (%s).\n", strerror(errno));
     		return -1;
+	}
 
   	return 0;
 }
@@ -180,7 +183,11 @@ TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
 */
 TIEXPORT int TICALL ticable_verbose_flush_file(void)
 {
-	return fflush(flog);
+	// fflush does not work under win32
+	fflush(stdout);
+	fflush(flog);
+
+	return 0;
 }
 
 /************ Unused/Obsoleted *****************/
