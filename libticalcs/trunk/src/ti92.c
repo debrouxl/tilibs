@@ -67,6 +67,10 @@ int ti92_isready(void)
   TRYF(cable->open());
   update_start();
 
+  UNLOCK_TRANSFER();
+TRY(ti92_send_key('m'));
+ LOCK_TRANSFER(); 
+
   TRYF(ti92_send_RDY());
   TRYF(ti92_recv_ACK(&status));
 
