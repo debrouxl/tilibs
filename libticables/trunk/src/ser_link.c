@@ -34,6 +34,7 @@
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "cabl_ext.h"
+#include "logging.h"
 
 #if defined(__WIN32__)
  #define BUFFER_SIZE 1024
@@ -47,9 +48,7 @@
  #define com_in  (com_addr+6)
 #endif
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)
 static int io_permitted = 0;
-#endif 
  
 /**********************************************/
 /* Multi-platform part (trough low-level I/O) */
@@ -70,13 +69,18 @@ int DLLEXPORT2 ser_init_port()
   wr_io(com_out, 0);
   wr_io(com_out, 3);
 #endif
+  START_LOGGING();
+
   return 0;
 }
 
 DLLEXPORT
 int DLLEXPORT2 ser_open_port()
 {
-  return 0;
+  if(io_permitted)
+    return 0;
+  else
+    return ERR_ROOT;
 }
 
 DLLEXPORT
@@ -87,6 +91,7 @@ int DLLEXPORT2 ser_put(byte data)
   int i;
   TIME clk;
 
+  LOG_DATA(data);
   for(bit=0; bit<8; bit++)
     {
       if(data & 1)
@@ -166,6 +171,7 @@ int DLLEXPORT2 ser_get(byte *ch)
       for(i=0; i<delay; i++) rd_io(com_in);
     }
   *ch=data;
+  LOG_DATA(data);
 #endif
   
   return 0;
@@ -215,7 +221,7 @@ DLLEXPORT
 int DLLEXPORT2 ser_term_port()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__) 
-	
+  STOP_LOGGING();	
   TRY(close_io(com_out, 1));
   io_permitted--;
   TRY(close_io(com_in, 1));

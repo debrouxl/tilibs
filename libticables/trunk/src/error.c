@@ -123,18 +123,25 @@ int DLLEXPORT2 ticable_get_error(int err_num, char *error_msg)
     case ERR_OPEN_FILE_MAP:
       strcpy(error_msg, _("VTi seems to be not launched (Win32)."));
       break;
-	case ERR_USB_DEVICE_CMD:
-	  strcpy(error_msg, _("DeviceIoControl function error (Win32): unable to send USB request."));
-	  break;
-	case ERR_GETPROCADDRESS:
-		strcpy(error_msg, _("GetProcAddress function error (Win32): unable to load a DLL symbol."));
-		break;
-	case ERR_DLPORTIO_NOT_FOUND:
-		strcpy(error_msg, _("Currently running on WinNT. The DLPortIO kernel driver is required for home-made parallel/serial link cables. You can get this driver on the TiLP web-page <http://lpg.ticalc.org/prj_tilp/download.html>.."));
-		break;
-	case ERR_FREELIBRARY:
-		strcpy(error_msg, _("FreeLibrary function error (Win32): unable to release the DLL."));
-		break;
+    case ERR_USB_DEVICE_CMD:
+      strcpy(error_msg, _("DeviceIoControl function error (Win32): unable to send USB request."));
+      break;
+    case ERR_GETPROCADDRESS:
+      strcpy(error_msg, _("GetProcAddress function error (Win32): unable to load a DLL symbol."));
+      break;
+    case ERR_DLPORTIO_NOT_FOUND:
+      strcpy(error_msg, _("Currently running on WinNT. The DLPortIO kernel driver is required for home-made parallel/serial link cables. You can get this driver on the TiLP web-page <http://lpg.ticalc.org/prj_tilp/download.html>.."));
+      break;
+    case ERR_FREELIBRARY:
+      strcpy(error_msg, _("FreeLibrary function error (Win32): unable to release the DLL."));
+      break;
+    case ERR_USB_OPEN:
+      strcpy(error_msg, _("Unable to open the USB device. Is your tiusb.c moduled loaded ?"));
+      break;
+    case ERR_IOCTL:
+      strcpy(error_msg, _("IOCTL error."));
+      break;
+
 
     default:
       strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));

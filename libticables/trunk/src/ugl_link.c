@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TiGraphLink-USB support */
+/* TI-GRAPH LINK USB support */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -24,6 +24,28 @@
 #include "export.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
+
+/**************/
+/* Linux part */
+/**************/
+
+/* 
+   This part talk use the tiglusb.c kernel module for handling the TI-GRAPH 
+   LINK USB link cable.
+
+   Some important remarks: 
+   - this link cable use Bulk mode with packets. The max size of a packet is 
+   32 bytes (MAX_PACKET_SIZE). This is transparent for the user because 
+   the driver manages all these things for us. Nethertheless, it is better 
+   (for USB & OS performances) to read/write a set of bytes rather than byte 
+   per byte. This is due to the current version of our driver.
+   A future release will allow to write byte per byte.
+   - for reading, we try to read up to 32 bytes and we store them in a buffer 
+   even if we need only a byte. Else, if we try to get byte per byte, it will 
+   not work.
+   - for writing, we store bytes in a buffer. The buffer is flushed (sent) is 
+   buffer size > 32 or if the get function has been called.
+*/
 
 #if defined(__LINUX__)
 
@@ -33,6 +55,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+/*
+#ifdef HAVE_TI_TIUSB_H
+# define IOCTL_EXPORT  //use tiusb.h file
+# include <ti/tiusb.h> //ioctl codes
+# include <sys/ioctl.h>
+#endif
+*/
+
 #include "typedefs.h"
 #include "export.h"
 #include "cabl_def.h"
@@ -40,9 +70,13 @@
 #include "timeout.h"
 #include "export.h"
 #include "verbose.h"
+#include "logging.h"
+
+#define BUFFERED_R   /* enable buffered read operations */
+//#define BUFFERED_W /* enable buffered write operations */ 
+#define MAX_PACKET_SIZE 32 // 32 bytes max per packet
 
 extern int time_out;
-
 static int dev_fd = 0;
 
 static struct cs
@@ -50,6 +84,16 @@ static struct cs
   byte data;
   int available;
 } cs;
+
+/* For buffered writing */
+static int nBytesWrite = 0;
+#ifdef BUFFERED_W
+static byte wBuf[MAX_PACKET_SIZE];
+#endif
+/* For buffered reading */
+static int nBytesRead = 0;
+static byte rBuf[MAX_PACKET_SIZE];
+static byte *rBufPtr = NULL;
 
 int ugl_init_port()
 {
@@ -60,19 +104,44 @@ int ugl_init_port()
   cs.data = 0;
 
   /* Open the device */
-  mask = O_RDWR | O_NONBLOCK | O_SYNC; // JB: you may have to change this...
-  if( (dev_fd = open(device, mask)) == -1)
+  mask = O_RDWR | O_NONBLOCK | O_SYNC;
+    if( (dev_fd = open(device, mask)) == -1)
     {
-      fprintf(stderr, "Unable to open this device: %s\n", device);
+      DISPLAY("Unable to open this device: %s\n", device);
+      DISPLAY("Is the tiusb.c module loaded ?\n");
       return ERR_USB_OPEN;
     }
+  START_LOGGING();
+  /*  
+#ifdef HAVE_TI_TIUSB_H
+  mask = time_out;
+  if(ioctl(dev_fd, IOCTL_TIGLUSB_TIMEOUT, mask) == -1)
+    {
+      DISPLAY("Unable to use IOCTL codes.\n");
+      return ERR_IOCTL;
+    }
+#endif
+  */
 
   return 0;
 }
 
 int ugl_open_port(void)
 {
-  /* Flush */
+  /* Clear buffers */
+  nBytesRead = 0;
+  nBytesWrite = 0;
+
+  /*  
+#ifdef HAVE_TI_TIUSB_H
+  value = 0;
+  if(ioctl(dev_fd, IOCTL_TIGLUSB_RESET, value) == -1)
+    {
+      DISPLAY("Unable to use IOCTL codes.\n");
+      return ERR_IOCTL;
+    }
+#endif
+  */
 
   return 0;
 }
@@ -80,7 +149,8 @@ int ugl_open_port(void)
 int ugl_put(byte data)
 {
   int err;
-
+  
+#ifndef BUFFERED_W /* Write data byte per byte */
   err = write(dev_fd, (void *)(&data), 1);
   switch(err)
     {
@@ -91,35 +161,74 @@ int ugl_put(byte data)
       return ERR_SND_BYT_TIMEOUT;
       break;
     }
+#else /* Write data by packets (up to 32 bytes) */
+  wBuf[nBytesWrite++] = data;
+  if(nBytesWrite == MAX_PACKET_SIZE)
+    {
+      err = write(dev_fd, (void *)(&wBuf), nBytesWrite);
+      nBytesWrite = 0;
+
+      switch(err)
+       {
+       case -1: //error
+         return ERR_SND_BYT;
+         break;
+       case 0: // timeout
+         return ERR_SND_BYT_TIMEOUT;
+         break;
+       }
+    }
+#endif
+  LOG_DATA(data);
 
   return 0;
 }
 
 int ugl_get(byte *data)
 {
-  static int n=0;
-  TIME clk;
+#ifdef BUFFERED_W
+  int err;
+  int i;
 
-  /* If the ugl_check function was previously called, retrieve the byte */
-  if(cs.available)
+  /* Flush write buffer */
+  if(nBytesWrite > 0)
     {
-      *data = cs.data;
-      cs.available = 0;
-      return 0;
+      err = write(dev_fd, (void *)(&wBuf), nBytesWrite);
+      nBytesWrite = 0;
+      //DISPLAY("get, write flushed, nBytesWritten = %i\n", err);
+      switch(err)
+        {
+        case -1: //error
+          return ERR_SND_BYT;
+          break;
+        case 0: // timeout
+          return ERR_SND_BYT_TIMEOUT;
+          break;
+        }
     }
+#endif
 
-  tSTART(clk);
-  do
+#ifdef BUFFERED_R  
+  /* This routine try to read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
+     store them in a buffer for subsequent accesses */
+  if(nBytesRead == 0)
     {
-      if(tELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
-      n = read(dev_fd, (void *)data, 1);
+      nBytesRead = read(dev_fd, (void *)rBuf, MAX_PACKET_SIZE);
+      rBufPtr = rBuf;
+      if(nBytesRead == -1) return ERR_RCV_BYT;
+      if(nBytesRead == 0) return ERR_RCV_BYT_TIMEOUT;
     }
-  while(n == 0);
-  
-  if(n == -1)
-    {
-      return ERR_RCV_BYT;
-    }
+       
+  *data = *rBufPtr;
+  rBufPtr++;
+  nBytesRead--;
+#else
+  nBytesRead = read(dev_fd, (void *)data, 1);
+  if(nBytesRead == -1) return ERR_RCV_BYT;
+  if(nBytesRead == 0) return ERR_RCV_BYT_TIMEOUT;
+#endif
+  //DISPLAY("get: 0x%02x\n", *data);
+  LOG_DATA(*data);
 
   return 0;
 }
@@ -136,6 +245,7 @@ int ugl_close_port(void)
 
 int ugl_term_port()
 {
+  STOP_LOGGING();
   if(dev_fd)
     {
       close(dev_fd);
@@ -175,6 +285,258 @@ int ugl_check_port(int *status)
 
 DLLEXPORT
 int DLLEXPORT2 ugl_supported()
+{
+  return SUPPORT_ON;
+}
+
+#elif defined(__WIN32__)
+
+/************************/
+/* Windows 32 bits part */
+/************************/
+
+/* 
+	This part talk with the USB device driver through ugl_drv.c. The ugl_drv.c file is
+	widely inspired from rwbulk.c, a sample program provided with the Win98 DDK.
+	There is a subdirectory named TiglUsb which contains files specific to this link cable
+	(definitions, library, routines, ...). These files comes from DDK and DDK's sample.
+
+	Some important remarks: 
+	- this link cable use Bulk mode with packets. The max size of a 
+	packet is 32 bytes (BULKUSB_MAX_TRANSFER_SIZE). This is transparent for the user because 
+	the driver manages all these things for us. Nethertheless, it is better (for USB & OS 
+	performances) to read/write a set of bytes rather than byte per byte.
+	- for reading, we try to read up to 32 bytes and we store them in a buffer even
+	if we need only a byte. Else, if we try to get byte per byte, it will not work.
+	- for writing, we store bytes in a buffer. The buffer is flushed (sent) is buffer
+	size > 32 or if the get function has been called.
+*/
+
+#include <stdio.h>
+#include <windows.h>
+
+#include "timeout.h"
+#include "cabl_def.h"
+#include "export.h"
+#include "cabl_err.h"
+#include "plerror.h"
+#include "cabl_ext.h"
+
+//#define BUFFERED_W /* enable buffered write operations */ 
+#define BUFFERED_R   /* enable buffered read operations */
+
+#include "./tiglusb/devioctl.h"
+#include "./tiglusb/bulkusb.h"
+
+extern char inPipe[32];		// Pipe name for bulk input pipe on our TIGL USB
+extern char outPipe[32];	// Pipe name for bulk output pipe on our TIGL USB
+extern char completeDeviceName[256];  //generated from the GUID registered by the driver itself 
+
+static HANDLE hRead  = INVALID_HANDLE_VALUE;	// Named pipe
+static HANDLE hWrite = INVALID_HANDLE_VALUE;	// Named pipe
+static HANDLE hDevice = INVALID_HANDLE_VALUE;	// for DeviceIoCtl
+
+/* For buffered writing */
+static DWORD nBytesWrite = 0;
+static byte wBuf[32];
+/* For buffered reading */
+static DWORD nBytesRead = 0;
+static byte rBuf[32];
+
+extern int time_out;		// Timeout value for cables in 0.10 seconds
+static struct cs
+{
+  byte data;
+  int available;
+} cs;
+
+DLLEXPORT
+int ugl_init_port()
+{
+	/* Init some internal variables */
+	memset((void *)(&cs), 0, sizeof(cs));
+
+	/* Open the USB device: 2 named pipes (endpoints) */
+	hWrite = open_file(outPipe);
+	if(hWrite == INVALID_HANDLE_VALUE)
+	{
+		fprintf(stderr, "open_file error (write)\n");
+		print_last_error();
+		return ERR_CREATE_FILE;
+	}
+
+	hRead = open_file(inPipe);
+	if(hRead == INVALID_HANDLE_VALUE)
+	{
+		fprintf(stderr, "open_file error (read)\n");
+		print_last_error();
+		return ERR_CREATE_FILE;
+	}
+
+	return 0;
+}
+
+DLLEXPORT
+int ugl_open_port()
+{
+	/* Clear buffers */
+	nBytesRead = 0;
+	nBytesWrite = 0;
+
+	return 0;
+}
+
+DLLEXPORT
+int ugl_put(byte data)
+{
+	BOOL fSuccess;
+	int nBytesWritten;
+	TIME clk;
+
+#ifndef BUFFERED_W
+	fSuccess=WriteFile(hWrite, &data, 1, &nBytesWritten, NULL);
+	if(!fSuccess)
+	{
+		fprintf(stderr, "WriteFile\n");
+		print_last_error();
+		return ERR_SND_BYT;
+	}
+	else if(nBytesWritten == 0)
+	{
+		return ERR_SND_BYT_TIMEOUT;
+	}
+#else
+	/* Write data by packets (up to 32 bytes) */
+	//DISPLAY("put: 0x%02x\n", data);
+	wBuf[nBytesWrite++] = data;
+	if(nBytesWrite == 32)
+	{
+		fSuccess=WriteFile(hWrite, &wBuf, nBytesWrite, &nBytesWritten, NULL);
+		nBytesWrite = 0;
+	}
+#endif
+
+	return 0;
+}
+
+DLLEXPORT
+int ugl_get(byte *data)
+{
+	BOOL fSuccess;
+	TIME clk;
+	static byte *rBufPtr;
+	int j;
+	int nBytesWritten;
+
+#ifdef BUFFERED_W
+	/* Flush write buffer */
+	fSuccess=WriteFile(hWrite, &wBuf, nBytesWrite, &nBytesWritten, NULL);
+	nBytesWrite = 0;
+#endif
+
+	/* This routine try to read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and store them
+	in a buffer for subsequent accesses */
+	//DISPLAY("get before\n");
+	if(nBytesRead == 0)
+	{
+		fSuccess = ReadFile(hRead, rBuf, 32, &nBytesRead, NULL);
+		rBufPtr = rBuf;
+	}
+	
+	*data = *rBufPtr++;
+	nBytesRead--;
+	//DISPLAY("get: 0x%02x\n", *data);
+
+	return 0;
+}
+
+DLLEXPORT
+int ugl_close_port()
+{
+	return 0;
+}
+
+DLLEXPORT
+int ugl_term_port()
+{	
+	/* Close pipes if needed */
+	if(hWrite != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hWrite);
+		hWrite = INVALID_HANDLE_VALUE;
+	}
+
+	if(hRead != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hRead);
+		hRead = INVALID_HANDLE_VALUE;
+	}
+
+	return 0;
+}
+
+DLLEXPORT
+int ugl_probe_port()
+{
+  return 0;
+}
+
+DLLEXPORT
+int ugl_check_port(int *status)
+{
+	// TO DO...
+	int n = 0;
+	DWORD i;
+	BOOL fSuccess;
+
+	*status = STATUS_NONE;
+	if(hRead)
+    {
+	    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
+		fSuccess = ReadFile(hRead, (&cs.data), 1, &i, NULL);
+		if(fSuccess && (i==1))
+		{
+			if(cs.available == 1)
+				return ERR_BYTE_LOST;
+
+			cs.available = 1;
+			*status = STATUS_RX;
+			return 0;
+		}
+		else
+		{
+			*status = STATUS_NONE;
+			return 0;
+		}
+    }
+
+	return 0;
+}
+
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+
+int ugl_set_red_wire(int b)
+{
+  return 0;
+}
+
+int ugl_set_white_wire(int b)
+{
+  return 0;
+}
+
+int ugl_get_red_wire()
+{
+  return 0;
+}
+
+int ugl_get_white_wire()
+{
+  return 0;
+}
+
+DLLEXPORT
+int ugl_supported()
 {
   return SUPPORT_ON;
 }
@@ -743,9 +1105,9 @@ int ugl_supported()
 
 #else
 
-/************************/
-/* Unsupported platform */
-/************************/
+/*************************/
+/* Unsupported platforms */
+/*************************/
 
 DLLEXPORT
 int ugl_init_port()

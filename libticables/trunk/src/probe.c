@@ -175,7 +175,7 @@ int DetectPortsLinux(PortInfo *pi)
   DISPLAY(_("Probing parallel ports...\n"));
   if( (dir=opendir("/proc/sys/dev/parport/")) == NULL) 
     {
-      perror(_("Unable to do a dirlist in '/proc/sys/dev/parport/'.\n"));
+      DISPLAY(_("Error: unable to open this directory: '/proc/sys/dev/parport/'.\n"));
       return -1;
     }
 
@@ -221,7 +221,7 @@ int DetectPortsLinux(PortInfo *pi)
   
   if(closedir(dir)==-1)
     {
-      perror(_("Closedir error\n"));
+      DISPLAY(_("Error: closedir\n"));
     }
   DISPLAY(_("Done.\n"));
 

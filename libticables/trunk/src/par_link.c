@@ -36,9 +36,7 @@ static unsigned int lpt_adr;
 #define lpt_out lpt_adr
 #define lpt_in (lpt_adr+1)
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
 static int io_permitted = 0;
-#endif
 
 DLLEXPORT
 int DLLEXPORT2 par_init_port()
@@ -51,6 +49,7 @@ int DLLEXPORT2 par_init_port()
   io_permitted = 1;
   wr_io(lpt_out, 3);
 #endif
+  START_LOGGING();
 
   return 0;
 }
@@ -58,7 +57,10 @@ int DLLEXPORT2 par_init_port()
 DLLEXPORT
 int DLLEXPORT2 par_open_port()
 {
-  return 0;
+  if(io_permitted)
+    return 0;
+  else
+    return ERR_ROOT;
 }
 
 DLLEXPORT
@@ -69,6 +71,7 @@ int DLLEXPORT2 par_put(byte data)
   int i;
   TIME clk;
 
+  LOG_DATA(data);
   for(bit=0; bit<8; bit++)
     {
       if(data & 1)
@@ -146,6 +149,7 @@ int DLLEXPORT2 par_get(byte *d)
       for(i=0; i<delay; i++) rd_io(lpt_in);
     }
   *d=data;
+  LOG_DATA(data);
 
 #endif
   return 0;
@@ -197,6 +201,8 @@ int DLLEXPORT2 par_term_port()
     
   io_permitted = 0;
 #endif
+  STOP_LOGGING();
+  
   return 0;
 }
 

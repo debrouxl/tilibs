@@ -62,6 +62,7 @@
 #define ERR_FREELIBRARY         114 // FreeLibrary error (Win32)
 
 #define ERR_USB_OPEN            115 // Unable to open the USB device
+#define ERR_IOCTL               116 // Unable to use IOCTL codes
 
 #endif
 

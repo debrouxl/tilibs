@@ -131,14 +131,14 @@ int DLLEXPORT2 tpu_supported()
 
 //extern int time_out; // Timeout value for cables in 0.10 seconds
 
-struct _lIn lIn;	// PC -> device buffer
-struct _lOut lOut;	// device -> USB buffer
-DWORD nBytes;		// Effective number of returned bytes 
+static struct _lIn lIn;	// PC -> device buffer
+static struct _lOut lOut;	// device -> USB buffer
+static DWORD nBytes;		// Effective number of returned bytes 
 
-HANDLE hDevice = 0;
+static HANDLE hDevice = 0;
 
-unsigned char getb ();
-void putb (unsigned char value);
+static unsigned char getb ();
+static void putb (unsigned char value);
 
 DLLEXPORT
 int tpu_init_port(uint io_addr, char *dev)

@@ -194,6 +194,7 @@
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
+				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = libticables;
@@ -228,11 +229,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.6-osx0.0.1</string>
+	<string>2.1.6-osx0.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.6</string>
+	<string>2.1.6</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>

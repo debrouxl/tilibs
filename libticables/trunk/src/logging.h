@@ -21,8 +21,20 @@
 
 #include <stdio.h>
 
-int START_LOGGING();
-int LOG_DATA(int data);
-int STOP_LOGGING();
+int start_logging();
+int log_data(int data);
+int stop_logging();
+
+//#define LOGGING // enable logging facilities
+
+#ifdef LOGGING
+# define START_LOGGING(); start_logging();
+# define LOG_DATA(d);     log_data(d);
+# define STOP_LOGGING();  stop_logging();
+#else
+# define START_LOGGING();
+# define LOG_DATA(d);
+# define STOP_LOGGING();
+#endif
 
 #endif

@@ -86,11 +86,11 @@ int dev_init_port()
   if( (dev_fd = open(device, mask)) == -1)
     {
       fprintf(stderr, "Unable to open this device: %s\n", device);
+      DISPLAY("Is the module loaded ?\n");
       return ERR_OPEN_TIDEV_DEV;
     }
 
   /* Initialize it */
-  /* This part will be removed with new kernel modules */
 #if defined(HAVE_TI_TIPAR_H) || defined(HAVE_TI_TISER_H)
   value = delay;
   if(ioctl(dev_fd, TIDEV_DELAY, value) == -1)

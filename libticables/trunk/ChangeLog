@@ -2,6 +2,9 @@
 	* cvs import
 	* Fixed DISPLAY()
 	* Fixed ugl_open_port() when (dev == NULL)
-* 20011119 : V2.0.6-osx0.0.3
+* 20011119 : v2.0.6-osx0.0.3
 	* working USB support
-	
+* 20011119 : v2.1.6-osx0.0.3
+	* "Yes, it finally happens !" -- Linus
+	     ie. this is the first merge with Romain's tree.
+	     Well, on my side, that is :D

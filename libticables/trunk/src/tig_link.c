@@ -69,8 +69,7 @@ DLLEXPORT
 int tig_init_port()
 {
   /* Init some internal variables */
-  cs.available = 0;
-  cs.data = 0;
+  memset((void *)&cs, 0, sizeof(cs));
   strcpy(tty_dev, device);
   com_addr = io_address;
 
@@ -83,6 +82,7 @@ int tig_init_port()
       fprintf(stderr, "Unable to open this serial port: %s\n", device);
       return ERR_OPEN_SER_DEV;
     }
+    
   /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
   tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
@@ -113,7 +113,6 @@ int tig_open_port()
   do
     {
       n=read(dev_fd, (void *)(&d), 1);
-      //printf("Flushing...\n");
     }
   while(n!=0 && n!=-1);
 
@@ -320,11 +319,11 @@ int tig_init_port()
 	char *name = comPort;
 	int graphLink = 1;
 
-	cs.available = 0;
-	cs.data = 0;
+        /* Init some internal variables */
+        memset((void *)(&cs), 0, sizeof(cs));
 	strcpy(comPort, device);
 
-	// Open COM port
+	/* Open COM port */
 	hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, 
 		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hCom == INVALID_HANDLE_VALUE)

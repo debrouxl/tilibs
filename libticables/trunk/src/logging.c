@@ -17,45 +17,49 @@
  */
 
 /* This unit allow to trace bytes which are transferred between PC
-	and TI calculator.
+   and TI calculator.
 */
 
 #include <stdio.h>
 #include <stdarg.h>
+#ifdef __LINUX__
+#include <sys/time.h>
+#endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#define LOGGING
-//#undef LOGGING
-
-#ifdef LOGGING
 static FILE *log = NULL;
-static char *filename = "libTIcables.log";
+static FILE *log2 = NULL;
+static char *fn1 = "libTIcables.log";
+static char *fn2 = "libTIcables.time";
 static int i = 0;
-#endif
 
-int START_LOGGING()
+int start_logging()
 {
-#ifdef LOGGING
-  fprintf(stdout, "Logging tSTARTed.\n");
-  log = fopen(filename, "wt");
+  fprintf(stdout, "Logging STARTED.\n");
+  log = fopen(fn1, "wt");
   if(log == NULL)
+    return 1;
+  
+  log2 = fopen(fn2, "wt");
+  if(log2 == NULL)
     return 1;
 
   return 0;
-#else
-  return 0;
-#endif
 }
 
-int LOG_DATA(int d)
+int log_data(int d)
 {
-#ifdef LOGGING
   static int array[16];
   int j;
   int c;
+#ifdef __LINUX__
+  struct timeval tv;
+  struct timezone tz;
+  static int k = 0;
+#endif
   
   array[i++] = d;
   fprintf(log, "%02X ", d);
@@ -73,22 +77,23 @@ int LOG_DATA(int d)
       fprintf(log, "\n");
       i = 0;
     }
-  
-  return 0;
-#else
-  return 0;
+#ifdef __LINUX__  
+  memset((void *)(&tz), 0, sizeof(tz));
+  gettimeofday(&tv, &tz);
+  k++;
+  fprintf(log2, "%i: %lu.%lu\n", k, tv.tv_sec, tv.tv_usec);
 #endif
+
+  return 0;
 }
 
-int STOP_LOGGING()
+int stop_logging()
 {
-#ifdef LOGGING
   fprintf(stdout, "Logging stopped.\n");
   if(log != NULL)
     fclose(log);
+  if(log2 != NULL)
+    fclose(log2);
   
   return 0;
-#else
-  return 0;
-#endif
 }
