@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-20 22:40+0200\n"
+"POT-Creation-Date: 2004-04-21 22:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -703,41 +703,41 @@ msgstr ""
 msgid "failed to set timeout.\n"
 msgstr ""
 
-#: src/linux/slv_link.c:91
+#: src/linux/slv_link.c:100
 #, c-format
 msgid "unable to open this device: %s.\n"
 msgstr ""
 
-#: src/linux/slv_link.c:112
+#: src/linux/slv_link.c:117
 msgid "unable to set timeout (ioctl).\n"
 msgstr ""
 
-#: src/linux/slv_link.c:125
+#: src/linux/slv_link.c:129
 msgid "unable to reset pipes (ioctl).\n"
 msgstr ""
 
 #. quirk (seems to be due to Cypress components)
-#: src/linux/slv_link.c:195
+#: src/linux/slv_link.c:205
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr ""
 
 #. keep track of the TIGL device
-#: src/linux/slv_link2.c:108
+#: src/linux/slv_link2.c:116
 msgid "TIGL-USB found.\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:131
+#: src/linux/slv_link2.c:139
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:138
+#: src/linux/slv_link2.c:146
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr ""
 
-#: src/linux/slv_link2.c:317
+#: src/linux/slv_link2.c:336
 msgid ""
 "weird, usb_bulk_read returns without any data; retrying for circumventing "
 "the quirk...\n"
@@ -1078,43 +1078,43 @@ msgstr ""
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
 msgstr ""
 
-#: src/win32/slv_link.c:100
+#: src/win32/slv_link.c:97
 #, c-format
 msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
 "Please download the latest release on <http://ti-lpg.org/prj_usb>."
 msgstr ""
 
-#: src/win32/slv_link.c:107
+#: src/win32/slv_link.c:104
 #, c-format
 msgid "using TiglUsb.dll version %s\n"
 msgstr ""
 
-#: src/win32/slv_link.c:111
+#: src/win32/slv_link.c:108
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:118
+#: src/win32/slv_link.c:115
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:125
+#: src/win32/slv_link.c:122
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:132
+#: src/win32/slv_link.c:129
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:139
+#: src/win32/slv_link.c:136
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:147
+#: src/win32/slv_link.c:143
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr ""
 
-#: src/win32/slv_link.c:154
+#: src/win32/slv_link.c:150
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr ""
 

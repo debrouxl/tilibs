@@ -7,6 +7,12 @@ To do:
 
 Log:
 
+- 21/04/2004, version 3.8.3: roms
+	Added full/partial BUFFERED_W (heuristic) support to get the best of
+	both worlds ! Tested with group, idlist, clock, backup, 
+	FLASH apps (s/r), ROM dump and FLASH os.
+	This really speed-up FLASH app transfer (sending).
+	
 - 17/04/2004, version 3.8.2: roms
 	Bug in lib-usb support: wrong timeout passed to libusb (1/10 of
 	value) => short timeout !

@@ -69,6 +69,7 @@
 #else
 # include <inttypes.h>
 #endif
+#include <errno.h>
 #include <usb.h>
 
 #include "intl1.h"
@@ -80,8 +81,8 @@
 #include "externs.h"
 #include "timeout.h"
 
-#define BUFFERED_W		/* enable buffered write operations			*/ 
-#define BUFFERED_R		/* enable buffered read operations (always) */
+#define BUFFERED_W    /* enable buffered write operations	  */ 
+#define BUFFERED_R    /* enable buffered read operations (always) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
 static int nBytesWrite2 = 0;
@@ -156,13 +157,15 @@ static int enumerate_tigl_device(void)
       			/* interface 0, configuration 1 */
       			ret = usb_claim_interface(tigl_han, 0);
       			if (ret < 0) {
-				printl1(2, "usb_claim_interface (%s).\n", usb_strerror());
+				printl1(2, "usb_claim_interface (%s).\n", 
+					usb_strerror());
 				return ERR_LIBUSB_INIT;
       			}
 
       			ret = usb_set_configuration(tigl_han, 1);
 	      		if (ret < 0) {
-				printl1(2, "usb_set_configuration (%s).\n", usb_strerror());
+				printl1(2, "usb_set_configuration (%s).\n", 
+					usb_strerror());
 				return ERR_LIBUSB_INIT;
 	      		}
 	      		return 0;
@@ -191,9 +194,6 @@ int slv_open2()
     		if (slv_init2() != 0)
       			return ERR_LIBUSB_OPEN;
   	}
-
-  	/* Flush cable buffer */
-  	//ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, 0);
 
 #if !defined(__BSD__)
   	/* Reset endpoints */
@@ -240,8 +240,22 @@ int slv_open2()
   	return 0;
 }
 
+static int send_fblock(uint8_t *data, int length);
+static int send_pblock(uint8_t *data, int length);
+
 int slv_close2()
 {
+#if defined( BUFFERED_W )
+	int ret;
+
+	/* Flush buffer (last command) */
+	if (nBytesWrite2 > 0) {
+		ret = send_pblock(wBuf2, nBytesWrite2);
+		nBytesWrite2 = 0;
+		if(ret) return ret;
+	}
+#endif
+
   	return 0;
 }
 
@@ -271,9 +285,11 @@ int slv_put2(uint8_t data)
   	/* Byte per byte */
   	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, to);
 
-	if(ret == -ETIMEDOUT)
+	if(ret == -ETIMEDOUT) {
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
   		return ERR_WRITE_TIMEOUT;
-	else {
+	}
+	if(ret < 0) {
 		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
   		return ERR_WRITE_ERROR;
 	}
@@ -281,18 +297,11 @@ int slv_put2(uint8_t data)
   	/* Fill buffer (up to 32 bytes) */
   	wBuf2[nBytesWrite2++] = data;
 
-	/* Buffer full? Send the whole buffer once */
+	/* Buffer full? Send the whole buffer at once */
   	if (nBytesWrite2 == MAX_PACKET_SIZE) {
-	    	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf2, nBytesWrite2, to);
-	    	
-			if(ret == -ETIMEDOUT)
-  				return ERR_WRITE_TIMEOUT;
-			else {
-				printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-  				return ERR_WRITE_ERROR;
-			}
-
-			nBytesWrite2 = 0;
+		ret = send_fblock(wBuf2, nBytesWrite2);
+		nBytesWrite2 = 0;
+		if(ret) return ret;
   	}
 #endif
 
@@ -308,29 +317,19 @@ int slv_get2(uint8_t * data)
   	tdr.count++;
 
 #if defined( BUFFERED_W )
-  	/* Flush write buffer but byte per byte (more reliable) */
+        /* Flush write buffer byte per byte (more reliable) */
   	if (nBytesWrite2 > 0) {
-			int i;
-
-			for(i=0; i<nBytesWrite2; i++)
-			{
-    			ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &wBuf2[i], 1, to);
-
-	    		if(ret == -ETIMEDOUT)
-  					return ERR_WRITE_TIMEOUT;
-				else {
-					printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-  					return ERR_WRITE_ERROR;
-				}
-			}
-			nBytesWrite2 = 0;
-  	}
+		ret = send_pblock(wBuf2, nBytesWrite2);
+		nBytesWrite2 = 0;
+		if(ret) return ret;
+	}
 #endif
 
   	if (nBytesRead2 <= 0) {
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, to);
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
+					    MAX_PACKET_SIZE, to);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
@@ -338,17 +337,19 @@ int slv_get2(uint8_t * data)
 	    	}
 		while(!ret);
 
-	    	if(ret == -ETIMEDOUT)
-  				return ERR_WRITE_TIMEOUT;
-			else {
-				printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-  				return ERR_WRITE_ERROR;
-			}
-
+	    	if(ret == -ETIMEDOUT) {
+			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+			return ERR_WRITE_TIMEOUT;
+		}
+		if(ret < 0) {
+			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+			return ERR_WRITE_ERROR;
+		}
+		
 	    	nBytesRead2 = ret;
 	    	rBuf2Ptr = rBuf2;
   	}
-
+	
   	*data = *rBuf2Ptr++;
   	nBytesRead2--;
   	LOG_DATA(*data);
@@ -380,7 +381,8 @@ int slv_check2(int *status)
 
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, MAX_PACKET_SIZE, to);
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
+					    MAX_PACKET_SIZE, to);
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
@@ -447,3 +449,37 @@ int slv_register_cable_2(TicableLinkCable * lc)
 
   return 0;
 }
+
+/***/
+
+#if defined( BUFFERED_W )
+static int send_fblock(uint8_t *data, int length)
+{
+	int ret;
+
+	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
+
+	if(ret == -ETIMEDOUT) {
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_TIMEOUT;
+	}
+	if(ret < 0) {
+		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
+		return ERR_WRITE_ERROR;
+	}
+
+	return 0;
+}
+
+static int send_pblock(uint8_t *data, int length)
+{
+	int i, ret;
+
+	for(i=0; i<length; i++) {
+		ret = send_fblock(&wBuf2[i], 1);
+		if(ret) return ret;
+	}
+
+	return 0;
+}
+#endif

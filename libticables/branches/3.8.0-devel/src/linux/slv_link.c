@@ -41,11 +41,13 @@
    data byte per byte (latency ?!). But, this make data-rate significantly 
    decrease (1KB/s instead of 5KB/s).
    Another way is to use partially buffered write operations: send consecutive
-   blocks as a whole but partial block byte per byte. This is the best compromise.
+   blocks as a whole but partial block byte per byte. This is the best 
+   compromise.
 
    - another particular effect (quirk): sometimes (usually when calc need to 
-   reply and takes a while), a read call can returns with neither data nor timeout. 
-   Simply retry a read call and it works fine. The best example is to get IDLIST.
+   reply and takes a while), a read call can returns with neither data nor 
+   timeout. Simply retry a read call and it works fine. The best example is 
+   to get IDLIST.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -72,8 +74,8 @@
 #include "externs.h"
 #include "timeout.h"
 
-//#define BUFFERED_W	/* enable buffered write operations			*/ 
-#define BUFFERED_R		/* enable buffered read operations (always) */
+//#define BUFFERED_W	/* enable buffered write operations         */	     
+#define BUFFERED_R      /* enable buffered read operations (always) */
 
 #define MAX_PACKET_SIZE 32	// 32 bytes max per packet
 static int nBytesWrite = 0;
@@ -147,7 +149,7 @@ int slv_put(uint8_t data)
   	tdr.count++;
   	LOG_DATA(data);
 
-#if !defiend( BUFFERED_W )
+#if !defined( BUFFERED_W )
   	/* Byte per uint8_t */
   	ret = write(dev_fd, (void *) (&data), 1);
   	if(ret == -1)
