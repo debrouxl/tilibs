@@ -728,7 +728,7 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
 
   f = fopen(filename, "rb");
   if (f == NULL) {
-    printl3(2, "unable to open this file: <%s>\n", filename);
+    //printl3(2, "unable to open this file: <%s>\n", filename);
     return ERR_FILE_OPEN;
   }
   fread_8_chars(f, buf);
