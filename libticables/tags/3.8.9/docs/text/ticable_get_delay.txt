@@ -1,0 +1,14 @@
+[Main]
+Name=ticable_get_delay
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_get_delay (void);
+
+[Parameters]
+Returns : the inter-bit delay.
+
+[Summary]
+Retrieve the inter-bit delay used by home-made link cables.
+
+[See also]
+@ticable_set_delay@

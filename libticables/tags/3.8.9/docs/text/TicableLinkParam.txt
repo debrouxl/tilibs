@@ -1,0 +1,34 @@
+[Main]
+Name=TicableLinkParam
+Type=Structure
+Header=cabl_def.h
+Definition=struct TicableLinkParam
+
+[Fields]
+int calc_type : calculator type.
+@TicableLinkType@ link_type : link cable type.
+unsigned int io_addr : I/O address of a serial or parallel port.
+char device[1024] : the name of a device.
+int timeout : timeout value in tenth of seconds.
+int delay : inter-bit delay in micro-seconds.
+@TicableBaudRate@ baud_rate : serial baud-rate for GreyLink/AVRlink cables.
+@TicableHfc@ hfc : hardware flow control.
+@TicablePort@ port : abstract port to use.
+@TicableMethod@ method : abstract method to use.
+
+[Summary]
+Structure used to setup the link cable characteristics.
+
+[Description]
+This structure, usually passed to the @ticable_set_param@ function, is used to
+set up some characteristics of a link cable such as:
+<br>- I/O address to use (if needed),
+<br>- a device to use (if needed),
+<br>- the timeout value (common to all cables),
+<br>- the inter-bit delay value (home-made cables),
+<br>- the baud-rate (AVRlink only),
+<br>- the use of hardware flow control (AVRlink only),
+<br>- which port to use (hardware independant),
+<br>- which I/O access to use (IOM_AUTO usually).
+<br>
+This structure does not specify a link model. Use @ticable_set_cable@ instead.

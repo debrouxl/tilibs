@@ -1,0 +1,23 @@
+[Main]
+Name=DISPLAY_ERROR
+Type=Function
+Header=cabl_int.h
+Definition=int DISPLAY_ERROR (const char *format, ...);
+
+[Parameters]
+format : a string specifier similator to those used by printf.
+... : a variable list of argument.
+
+[Summary]
+A function equivalent to fprintf(stderr) but with some additionnal features.
+
+[Description]
+This functions acts like printf if the libticables library has the verbose
+support enabled at compile time and if the verbosity level has been set with
+@ticable_DISPLAY_settings@ to DSP_ON.
+
+Under Linux, informations are printed to stderr (console or xterm).
+Under Windows, informations are printed into a DOS console.
+
+[See also]
+@DISPLAY@
