@@ -311,7 +311,7 @@ SOURCE=.\tifiles.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\intl.lib
+SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
 # End Source File
 # End Target
 # End Project
