@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "intl.h"
+#include "intl3.h"
 
 #include "export.h"
 #include "types82.h"

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "intl.h"
+#include "intl3.h"
 
 #include "export.h"
 #include "file_ver.h"
@@ -61,7 +61,7 @@ TIEXPORT int TICALL tifiles_init()
   char LOCALEDIR[65536];
   int i;
 
-  hDll = GetModuleHandle("ticables.dll");
+  hDll = GetModuleHandle("tifiles.dll");
   GetModuleFileName(hDll, LOCALEDIR, 65535);
   for (i = strlen(LOCALEDIR); i >= 0; i--) {
     if (LOCALEDIR[i] == '\\')
@@ -72,12 +72,10 @@ TIEXPORT int TICALL tifiles_init()
 #endif
 
 #if defined(ENABLE_NLS)
-  setlocale(LC_ALL, "");
-  bindtextdomain(PACKAGE, LOCALEDIR);
-
-  fprintf(stdout, "%s: bindtextdomain to %s\n", PACKAGE, LOCALEDIR);
-  //bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
-  textdomain(PACKAGE);
+	fprintf(stdout, "libtifiles: setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	fprintf(stdout, "libtifiles: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+  	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+  	fprintf(stdout, "libtifiles: textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   if (tifiles_instance == 0) {

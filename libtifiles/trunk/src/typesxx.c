@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "intl.h"
+#include "intl3.h"
 
 #include "file_int.h"
 #include "file_def.h"

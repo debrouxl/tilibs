@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "intl.h"
+#include "intl3.h"
 #include "file_def.h"
 
 
