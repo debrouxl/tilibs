@@ -1011,6 +1011,7 @@
 		0867D69DFE84028FC02AAC07 = {
 			buildActionMask = 2147483647;
 			files = (
+				0127D13201738AAA5041E0CA,
 				0127D0EE017389D15041E0CA,
 				0127D0EF017389D15041E0CA,
 				0127D0F0017389D15041E0CA,
@@ -1050,9 +1051,8 @@
 				0127D112017389D15041E0CA,
 				0127D113017389D15041E0CA,
 				0127D114017389D15041E0CA,
-				0127D13201738AAA5041E0CA,
-				F50CA7FD01FC268901000102,
 				F50CA7FE01FC268901000102,
+				F50A0D7701FC735001000102,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1168,6 +1168,15 @@
 //F52
 //F53
 //F54
+		F50A0D7701FC735001000102 = {
+			fileRef = F50CA7FC01FC268901000102;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
 		F50CA7FB01FC268901000102 = {
 			isa = PBXFileReference;
 			name = defs73.h;
@@ -1180,16 +1189,13 @@
 			path = ../src/ti73.h;
 			refType = 2;
 		};
-		F50CA7FD01FC268901000102 = {
-			fileRef = F50CA7FC01FC268901000102;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		F50CA7FE01FC268901000102 = {
 			fileRef = F50CA7FB01FC268901000102;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F50CA7FF01FC269301000102 = {

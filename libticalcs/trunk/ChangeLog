@@ -20,5 +20,6 @@
 	* Merge up to 3.0.7.
 	* Fixed ticalc_83p_89_92p_isread() mess.
 	* Fixed send_key() mess.
-
+* 20020126 : v3.0.7-osx0.1.0
+	* Install TI-73 related header files (reported by: Benjamin Esham)
 	
