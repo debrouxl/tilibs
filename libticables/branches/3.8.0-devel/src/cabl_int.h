@@ -111,6 +111,7 @@ extern "C" {
   TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
   TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
   TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
+  TIEXPORT int TICALL ticable_verbose_flush_file(void);
 
 	/**************************************/
   	/* Direct access functions (reserved) */

@@ -175,6 +175,14 @@ TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
   	return 0;
 }
 
+/*
+  Flush file
+*/
+TIEXPORT int TICALL ticable_verbose_flush_file(void)
+{
+	fflush(flog);
+}
+
 /************ Unused/Obsoleted *****************/
 
 
