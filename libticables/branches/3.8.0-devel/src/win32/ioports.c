@@ -23,10 +23,10 @@
 /*
  * This unit manages direct low-level I/O operations depending on the 
  * platform type:
- * - Linux: inb/outb (super user privileges required) or ioctl calls
- * - Windows 9x/Me: assembly routines
+ * - Linux: inb/outb (super user privileges required) or ioctl calls,
+ * - Windows 9x/Me: assembly routines,
  * - Windows NT4/2000: assembly routines with a kernel driver for 
- * granting I/O permissions
+ *     granting I/O permissions.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -311,12 +311,12 @@ int io_close(unsigned long from, unsigned long num)
   return 0;
 }
 
-#ifdef __WIN32__
+/* Used by ser_link.c only (should be used by this module and tig_link.c) */
+
 #define BUFFER_SIZE 1024
 
-/* Used by tig_link, ser_link and this file */
-/* Open a Win32 serial device */
-int io_open_comport(char *comPort, PHANDLE hCom)
+
+int win32_comport_open(char *comPort, PHANDLE hCom)
 {
   DCB dcb;
   BOOL fSuccess;
@@ -394,7 +394,7 @@ int io_open_comport(char *comPort, PHANDLE hCom)
   return 0;
 }
 
-int io_close_comport(PHANDLE hCom)
+int win32_comport_close(PHANDLE hCom)
 {
   if (*hCom) {
     CloseHandle(*hCom);
