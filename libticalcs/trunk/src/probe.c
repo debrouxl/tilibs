@@ -220,6 +220,8 @@ static int tiXX_isOK(byte *d)
   return 0;
 }
 
+int ticalc_get_calc(int *type); // defined in intrface.c
+
 /*
   Check if the calculator is ready and detect the type.
   Works only with TI89/92/92+ calculators.

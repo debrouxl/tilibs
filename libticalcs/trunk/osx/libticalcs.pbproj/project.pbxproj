@@ -728,12 +728,6 @@
 			settings = {
 			};
 		};
-		0127D12C017389DF5041E0CA = {
-			fileRef = 0127D11E017389DF5041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		0127D12D017389DF5041E0CA = {
 			fileRef = 0127D11F017389DF5041E0CA;
 			isa = PBXBuildFile;
@@ -997,11 +991,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.0-osx0.0.3</string>
+	<string>2.0.4-osx0.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.0-osx0.0.3</string>
+	<string>2.0.4-osx0.0.3</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -1076,11 +1070,11 @@
 				0127D129017389DF5041E0CA,
 				0127D12A017389DF5041E0CA,
 				0127D12B017389DF5041E0CA,
-				0127D12C017389DF5041E0CA,
 				0127D12D017389DF5041E0CA,
 				0127D12E017389DF5041E0CA,
 				0127D12F017389DF5041E0CA,
 				0127D130017389DF5041E0CA,
+				F54393FF01A995F901000102,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -1153,6 +1147,22 @@
 			isa = PBXGroup;
 			name = "Other Frameworks";
 			refType = 4;
+		};
+//100
+//101
+//102
+//103
+//104
+//F50
+//F51
+//F52
+//F53
+//F54
+		F54393FF01A995F901000102 = {
+			fileRef = 0127D11E017389DF5041E0CA;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 	};
 	rootObject = 0867D690FE84028FC02AAC07;

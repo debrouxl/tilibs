@@ -28,7 +28,7 @@
 #include "group.h"
 #include "pause.h"
 #include "rom89.h"
-#include "update.h"
+
 
 #ifdef HAVE_CURSES_H
 #include <curses.h>
@@ -421,7 +421,7 @@ int ti92p_screendump(byte **bitmap, int mask_mode,
 
   TRY(cable->open_port());
 
-  update_start();
+  update->start();
   sc->width=TI92p_COLS;
   sc->height=TI92p_ROWS;
   sc->clipped_width=TI92p_COLS;
@@ -463,7 +463,7 @@ int ti92p_screendump(byte **bitmap, int mask_mode,
 
       update->count = i;
       update->percentage = (float)i/max_cnt;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return -1;
     }
   
@@ -482,7 +482,7 @@ int ti92p_screendump(byte **bitmap, int mask_mode,
   TRY(cable->put(0x00));
   DISPLAY("PC reply OK.\n");
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -506,7 +506,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 
   TRY(cable->open_port());
   *n_elts=0;
-  update_start();
+  update->start();
   p=list;
   p->next=NULL;
   f=NULL;
@@ -660,7 +660,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
   TRY(PC_replyOK_92p());
   sprintf(update->label_text, "Reading of directory: TI92p/%s", 
 	   p->translate);
-  update_label();
+  update->label();
   if(update->cancel) return -1;
   
   TRY(cable->get(&data));
@@ -820,7 +820,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: TI92p/%s/%s", 
 		   (q->folder)->translate, q->translate);
-	  update_label();
+	  update->label();
 	  if(update->cancel) return -1;
 	}
       TRY(cable->get(&data));
@@ -846,7 +846,7 @@ int ti92p_directorylist(struct varinfo *list, int *n_elts)
     }
   while(q != NULL);
   DISPLAY("\n");
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -873,9 +873,9 @@ int ti92p_receive_var(FILE *file, int mask_mode,
     }
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   sprintf(update->label_text, "Variable: %s", varname);
-  update_label();
+  update->label();
   sum=0;
   DISPLAY("Request variable: %s\n", varname);
   TRY(cable->put(PC_TI92p));
@@ -980,7 +980,7 @@ int ti92p_receive_var(FILE *file, int mask_mode,
 
       update->count = i;
       update->percentage = (float)i/block_size;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return -1;
     }
   TRY(cable->get(&data));
@@ -1004,7 +1004,7 @@ int ti92p_receive_var(FILE *file, int mask_mode,
   TRY(cable->put(0x00));
   DISPLAY("\n");
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
   PAUSE(pause_between_vars);
 
@@ -1059,7 +1059,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
   num_vars=0;
   var_index=0;
   TRY(cable->open_port());
-  update_start();
+  update->start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
     {
@@ -1180,7 +1180,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
       if(mask_mode & MODE_USE_2ND_HEADER)
 	{
 	  (update->main_percentage)=(float)j/num_vars;
-	  update_pbar();
+	  update->pbar();
 	}
       for(i=0; i<4; i++) fgetc(file);
       varsize=fgetc(file) << 8;
@@ -1189,7 +1189,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
       
       sprintf(update->label_text, "Variable: %s", 
 	       t_varname[var_index]);
-      update_label();
+      update->label();
       DISPLAY("Sending variable...\n");
       DISPLAY("Name: %s\n", t_varname[var_index]);
       DISPLAY("Size: %08X\n", varsize-2);
@@ -1199,7 +1199,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
       exist=check_if_var_exist(&dirlist, t_varname[var_index]);
       if(exist && (mask_mode & MODE_DIRLIST))
         {
-          action=update_choose(t_varname[var_index], varname);
+          action=update->choose(t_varname[var_index], varname);
           if(!strcmp(varname, "") && (action==ACTION_RENAME)) 
 	    action=ACTION_SKIP;
           switch(action)
@@ -1294,7 +1294,7 @@ int ti92p_send_var(FILE *file, int mask_mode)
 	  
 	  update->count = i;
 	  update->percentage = (float)i/block_size;
-	  update_pbar();
+	  update->pbar();
 	  if(update->cancel) return ERR_ABORT;
 	}
       fgetc(file); //skips checksum
@@ -1313,13 +1313,13 @@ int ti92p_send_var(FILE *file, int mask_mode)
         {
           DISPLAY("Variable has been rejected by calc.\n");
           sprintf(update->label_text, _("Variable rejected"));
-          update_label();
+          update->label();
         }
       DISPLAY("\n");
       PAUSE(pause_between_vars);
     }
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1333,7 +1333,7 @@ int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
   char varname[20];
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
 
   /* Do a directory list to cable->get variables entries */
   TRY(ti92p_directorylist(&dirlist, &n));
@@ -1350,7 +1350,7 @@ int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
     {
       i++;
       (update->main_percentage)=(float)i/n;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return -1;
       DISPLAY("-> %8s %i  %02X %08X\r\n", ptr->varname, (int)(ptr->varlocked),
 	      ptr->vartype, ptr->varsize);
@@ -1390,7 +1390,7 @@ int ti92p_receive_backup(FILE *file, int mask_mode, longword *version)
     }
   while(ptr != NULL);  
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1437,7 +1437,7 @@ int ti92p_send_backup(FILE *file, int mask_mode)
   int i;
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   DISPLAY("Sending backup...\n");
 
   /* Send a header */
@@ -1476,7 +1476,7 @@ int ti92p_send_backup(FILE *file, int mask_mode)
 			    MODE_KEEP_ARCH_ATTRIB) &
 		     ~MODE_LOCAL_PATH & ~MODE_DIRLIST));
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1496,16 +1496,16 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   FILE *f;
   word checksum, sum;
   
-  update_start();
+  update->start();
   sprintf(update->label_text, "Ready ?");
-  update_label();
+  update->label();
 
   /* Open connection and check */
   TRY(cable->open_port());
   TRY(ti92p_isready());
   TRY(cable->close_port());
   sprintf(update->label_text, "Yes !");
-  update_label();
+  update->label();
 
   /* Transfer ROM dump program from lib to calc */
   f = fopen(DUMPROM, "wb");
@@ -1521,7 +1521,7 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   //exit(-1);
   /* Launch calculator program by remote control */
   sprintf(update->label_text, "Launching...");
-  update_label();
+  update->label();
 
   TRY(ti92p_send_key(KEY92p_m));
   TRY(ti92p_send_key(KEY92p_a));
@@ -1540,9 +1540,9 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
   TRY(ti92p_send_key(KEY92p_ENTER));
 
   /* Receive it now blocks per blocks (1024 + CHK) */
-  update_start();
+  update->start();
   sprintf(update->label_text, "Receiving...");
-  update_label();
+  update->label();
   start = time(NULL);
   total = 2 * 1024 * 1024;
   update->total = total;
@@ -1556,7 +1556,7 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
           fprintf(file, "%c", data);
           sum += data;
 	  update->percentage = (float)j/1024;
-          update_pbar();
+          update->pbar();
           if(update->cancel) return -1;
         }
       TRY(cable->get(&data));
@@ -1570,14 +1570,14 @@ int ti92p_dump_rom(FILE *file, int mask_mode)
       update->main_percentage = (float)i/(1024*2);
       if(update->cancel) return -1;
 
-      elapsed = (long)difftime(time(NULL), start);
-      estimated = (long)(elapsed * (float)(1024*2) / i);
-      remaining = (long)difftime(estimated, elapsed);
+      elapsed = difftime(time(NULL), start);
+      estimated = elapsed * (float)(1024*2) / i;
+      remaining = difftime(estimated, elapsed);
       sprintf(buffer, "%s", ctime(&remaining));
       sscanf(buffer, "%3s %3s %i %s %i", tmp,
              tmp, &pad, tmp, &pad);
       sprintf(update->label_text, "Remaining (mm:ss): %s", tmp+3);
-      update_label();
+      update->label();
     }
 
   /* Close connection */
@@ -1598,7 +1598,7 @@ int ti92p_receive_IDlist(char *id)
   char name[9];
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   sum=0;
   DISPLAY("Request IDlist...\n");
   TRY(cable->put(PC_TI92p));
@@ -1722,7 +1722,7 @@ int ti92p_receive_IDlist(char *id)
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
   DISPLAY("\n");
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1739,7 +1739,7 @@ int ti92p_get_rom_version(char *version)
   word num_bytes;
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
 
   /* Check if TI is ready*/
   TRY(ti92p_isready());  
@@ -1821,7 +1821,7 @@ int ti92p_get_rom_version(char *version)
   DISPLAY("ROM version %s\n", version);
   
   DISPLAY("\n");
-  update_start();
+  update->start();
   TRY(cable->close_port());	
   
   return 0;
@@ -1846,7 +1846,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
   //DISPLAY("timeout: %i\n", ticable_get_timeout());  
   /* Read the file header and initialize some variables */
   TRY(cable->open_port());
-  update_start();
+  update->start();
   fgets(str, 128, file);
   if(strstr(str, "**TIFL**") == NULL) // is a .89u file
     {
@@ -1989,7 +1989,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
 
 	  update->count = j;
 	  update->percentage = (float)j/65536;
-	  update_pbar();
+	  update->pbar();
 	  if(update->cancel) return -1;
 	}
       TRY(cable->put(LSB(sum)));
@@ -1999,7 +1999,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
       TRY(PC_replyCONT_92p());
       
       ((update->main_percentage))=(float)i/num_blocks;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return -1;
     }
 
@@ -2026,7 +2026,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
 
       update->count = j;
       update->percentage = (float)j/last_block;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return -1;
     }
   TRY(cable->put(LSB(sum)));
@@ -2047,7 +2047,7 @@ int ti92p_send_flash(FILE *file, int mask_mode)
     }
   DISPLAY("\n");
 
-  update_start();
+  update->start();
   TRY(cable->close_port());
 
   return 0;

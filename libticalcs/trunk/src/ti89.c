@@ -28,7 +28,6 @@
 #include "group.h"
 #include "rom89.h"
 #include "pause.h"
-#include "update.h"
 
 #ifdef HAVE_CURSES_H
 #include <curses.h>
@@ -143,8 +142,8 @@ int ti89_isready(void)
 int ti89_sendstring(char *s, word *checksum)
 {
   int i;
-
-  for(i=0; i<(int)strlen(s); i++)
+  
+  for(i=0; i<strlen(s); i++)
     {
       TRY(cable->put(s[i]));
       (*checksum) += (s[i] & 0xff);
@@ -420,7 +419,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
   int i, j, k;
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   sc->width=TI89_COLS;
   sc->height=TI89_ROWS;
   sc->clipped_width = TI89_COLS_VISIBLE;
@@ -462,7 +461,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
 
       update->count = i;
       update->percentage = (float)i/max_cnt;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return ERR_ABORT;
     }
   
@@ -478,6 +477,7 @@ int ti89_screendump(byte **bitmap, int mask_mode,
   TRY(cable->put(0x00));
   DISPLAY("PC reply OK.\n");
   DISPLAY("\n");
+  (update->percentage)=0.0;
   TRY(cable->close_port());
   
   /* Clip the unused part of the screen (nethertheless useable via ASM) */
@@ -493,7 +493,6 @@ int ti89_screendump(byte **bitmap, int mask_mode,
 	    }
 	}
     }
-  update_stop();
   
   return 0;
 }
@@ -515,7 +514,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   byte num_var;
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   *n_elts=0;
   p=list;
   p->next=NULL;
@@ -670,7 +669,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
   TRY(PC_replyOK_89());
   sprintf(update->label_text, "Reading of directory: TI89/%s", 
 	   p->translate);
-  update_label();
+  update->label();
   if(update->cancel) return ERR_ABORT;
   
   TRY(cable->get(&data));
@@ -830,7 +829,7 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
 	  q->folder=p;
 	  sprintf(update->label_text, "Reading of: TI89/%s/%s", 
 		   (q->folder)->translate, q->translate);
-	  update_label();	  
+	  update->label();	  
 	  if(update->cancel) return ERR_ABORT;
 	}
       TRY(cable->get(&data));
@@ -856,8 +855,8 @@ int ti89_directorylist(struct varinfo *list, int *n_elts)
     }
   while(q != NULL);
   DISPLAY("\n");
+  (update->percentage)=0.0;
   TRY(cable->close_port());
-  update_stop();
 
   return 0;
 }
@@ -883,9 +882,10 @@ int ti89_receive_var(FILE *file, int mask_mode,
     }
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   sprintf(update->label_text, "Variable: %s", varname);
-  update_label();
+  update->label();
+  (update->percentage)=0.0;
   sum=0;
   DISPLAY("Request variable: %s\n", varname);
   TRY(cable->put(PC_TI89));
@@ -990,7 +990,7 @@ int ti89_receive_var(FILE *file, int mask_mode,
 
       update->count = i;
       update->percentage = (float)i/block_size;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return ERR_ABORT;
     }
   TRY(cable->get(&data));
@@ -1014,7 +1014,7 @@ int ti89_receive_var(FILE *file, int mask_mode,
   TRY(cable->put(0x00));
   DISPLAY("\n");
   
-  update_stop();
+  update->start();
   TRY(cable->close_port());
   PAUSE(pause_between_vars);
 
@@ -1069,7 +1069,7 @@ int ti89_send_var(FILE *file, int mask_mode)
   num_vars=0;
   var_index=0;
   TRY(cable->open_port());
-  update_start();
+  update->start();
   fgets(str, 9, file);
   if(!(mask_mode & MODE_FILE_CHK_NONE))
     {
@@ -1190,7 +1190,7 @@ int ti89_send_var(FILE *file, int mask_mode)
       if(mask_mode & MODE_USE_2ND_HEADER)
 	{
 	  (update->main_percentage)=(float)j/num_vars;
-	  update_pbar();
+	  update->pbar();
 	}
       for(i=0; i<4; i++) fgetc(file);
       varsize=fgetc(file) << 8;
@@ -1199,7 +1199,7 @@ int ti89_send_var(FILE *file, int mask_mode)
       
       sprintf(update->label_text, "Variable: %s", 
 	       t_varname[var_index]);
-      update_label();
+      update->label();
       DISPLAY("Sending variable...\n");
       DISPLAY("Name: %s\n", t_varname[var_index]);
       DISPLAY("Size: %08X\n", varsize-2);
@@ -1209,14 +1209,14 @@ int ti89_send_var(FILE *file, int mask_mode)
       exist=check_if_var_exist(&dirlist, t_varname[var_index]);
       if(exist && (mask_mode & MODE_DIRLIST))
 	{
-	  action=update_choose(t_varname[var_index], varname);
+	  action=update->choose(t_varname[var_index], varname);
 	  if(!strcmp(varname, "") && (action==ACTION_RENAME)) 
 	    action=ACTION_SKIP;
 	  switch(action)
 	    {
 	    case ACTION_SKIP: // skip var
 	      DISPLAY("User action: skip.\n");
-	      for(i=0; i<(int)varsize; i++)
+	      for(i=0; i<varsize; i++)
 		data=fgetc(file);
 	      continue;
 	      break;
@@ -1250,16 +1250,16 @@ int ti89_send_var(FILE *file, int mask_mode)
       block_size=4+2+strlen(t_varname[var_index])+1; // difference: see comment below
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
-      data=(byte)(varsize & 0x000000FF);
+      data=varsize & 0x000000FF;
       sum+=data;
       TRY(cable->put(data));
-      data=(byte)(varsize & 0x0000FF00) >> 8;
+      data=(varsize & 0x0000FF00) >> 8;
       sum+=data;
       TRY(cable->put(data));
-      data=(byte)(varsize & 0x00FF0000) >> 16;
+      data=(varsize & 0x00FF0000) >> 16;
       sum+=data;
       TRY(cable->put(data));
-      data=(byte)(varsize & 0xFF000000) >> 24;
+      data=(varsize & 0xFF000000) >> 24;
       sum+=data;
       TRY(cable->put(data));
       data=t_vartype[var_index];
@@ -1281,14 +1281,14 @@ int ti89_send_var(FILE *file, int mask_mode)
       TRY(PC_replyOK_89());
       TRY(cable->put(PC_TI89));
       TRY(cable->put(CMD89_DATA_PART));
-      block_size=(word)(4+varsize);
+      block_size=4+varsize;
       TRY(cable->put(LSB(block_size)));
       TRY(cable->put(MSB(block_size)));
       for(i=0; i<4; i++)
 	{
 	  TRY(cable->put(0x00));
 	}
-      block_size=(word)(varsize-2);
+      block_size=varsize-2;
       data=MSB(block_size);
       sum+=data;
       TRY(cable->put(data));
@@ -1304,7 +1304,7 @@ int ti89_send_var(FILE *file, int mask_mode)
 	  
 	  update->count = i;
 	  update->percentage = (float)i/block_size;
-	  update_pbar();
+	  update->pbar();
 	  if(update->cancel) return ERR_ABORT;
 	}
       fgetc(file);
@@ -1323,13 +1323,13 @@ int ti89_send_var(FILE *file, int mask_mode)
 	{
 	  DISPLAY("Variable has been rejected by calc.\n");
 	  sprintf(update->label_text, _("Variable rejected"));
-	  update_label();
+	  update->label();
 	}
       DISPLAY("\n");
       PAUSE(pause_between_vars);
     }
 
-  update_stop();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1343,7 +1343,7 @@ int ti89_receive_backup(FILE *file, int mask_mode, longword *version)
   char varname[20];
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
 
   /* Do a directory list get variables entries */
   TRY(ti89_directorylist(&dirlist, &n));
@@ -1360,7 +1360,7 @@ int ti89_receive_backup(FILE *file, int mask_mode, longword *version)
     {
       i++;
       (update->main_percentage)=(float)i/n;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return ERR_ABORT;
       DISPLAY("-> %8s %i  %02X %08X\r\n", ptr->varname, (int)(ptr->varlocked), ptr->vartype, ptr->varsize);
       if(ptr->vartype == TI89_DIR)
@@ -1399,7 +1399,7 @@ int ti89_receive_backup(FILE *file, int mask_mode, longword *version)
     }
   while(ptr != NULL);  
 
-  update_stop();
+  update->stop();
   TRY(cable->close_port());
 
   return 0;
@@ -1413,7 +1413,7 @@ int ti89_send_backup(FILE *file, int mask_mode)
   int i;
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   DISPLAY("Sending backup...\n");
 
   /* Send a header */
@@ -1452,7 +1452,7 @@ int ti89_send_backup(FILE *file, int mask_mode)
 			   MODE_KEEP_ARCH_ATTRIB) & 
 		    ~MODE_LOCAL_PATH & ~MODE_DIRLIST));
 
-  update_stop();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
@@ -1472,16 +1472,16 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   FILE *f;
   word checksum, sum;
   
-  update_start();
+  update->start();
   sprintf(update->label_text, "Ready ?");
-  update_label();
+  update->label();
 
   /* Open connection and check */
   TRY(cable->open_port());
   TRY(ti89_isready());
   TRY(cable->close_port());
   sprintf(update->label_text, "Yes !");
-  update_label();
+  update->label();
 
   /* Transfer ROM dump program from lib to calc */
   f = fopen(DUMP_ROM89_FILE, "wb");
@@ -1497,7 +1497,7 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   //exit(-1);
   /* Launch calculator program by remote control */
   sprintf(update->label_text, "Launching...");
-  update_label();
+  update->label();
 
   TRY(ti89_send_key(KEY89_m));
   TRY(ti89_send_key(KEY89_a));
@@ -1516,9 +1516,9 @@ int ti89_dump_rom(FILE *file, int mask_mode)
   TRY(ti89_send_key(KEY89_ENTER));
 
   /* Receive it now blocks per blocks (1024 + CHK) */
-  update_start();
+  update->start();
   sprintf(update->label_text, "Receiving...");
-  update_label();
+  update->label();
   start = time(NULL);
   total = 2 * 1024 * 1024;
   update->total = total;
@@ -1532,7 +1532,7 @@ int ti89_dump_rom(FILE *file, int mask_mode)
           fprintf(file, "%c", data);
           sum += data;
 	  update->percentage = (float)j/1024;
-          update_pbar();
+          update->pbar();
           if(update->cancel) return -1;
         }
       TRY(cable->get(&data));
@@ -1546,19 +1546,18 @@ int ti89_dump_rom(FILE *file, int mask_mode)
       update->main_percentage = (float)i/(1024*2);
       if(update->cancel) return -1;
 
-      elapsed = (long)difftime(time(NULL), start);
-      estimated = (long)(elapsed * (float)(1024*2) / i);
-      remaining = (long)difftime(estimated, elapsed);
+      elapsed = difftime(time(NULL), start);
+      estimated = elapsed * (float)(1024*2) / i;
+      remaining = difftime(estimated, elapsed);
       sprintf(buffer, "%s", ctime(&remaining));
       sscanf(buffer, "%3s %3s %i %s %i", tmp,
              tmp, &pad, tmp, &pad);
       sprintf(update->label_text, "Remaining (mm:ss): %s", tmp+3);
-      update_label();
+      update->label();
     }
 
   /* Close connection */
   TRY(cable->close_port());
-  update_stop();
 
   return 0;
 }
@@ -1575,7 +1574,7 @@ int ti89_receive_IDlist(char *id)
   char name[9];
 
   TRY(cable->open_port());
-  update_start();
+  update->start();
   sum=0;
   DISPLAY("Request IDlist...\n");
   TRY(cable->put(PC_TI89));
@@ -1667,7 +1666,8 @@ int ti89_receive_IDlist(char *id)
   TRY(cable->get(&data));
   block_size |= data;
   sum+=data;
-  block_size=(word)(var_size-2);
+  DISPLAY("block_size=%x, var_size=%x\n", block_size, var_size);
+  block_size=var_size-2; // diff here
   for(i=0, j=0; i<block_size; i++, j++)
     {
       TRY(cable->get(&data));
@@ -1686,6 +1686,7 @@ int ti89_receive_IDlist(char *id)
   TRY(cable->get(&data));
   checksum += (data << 8);
   if(checksum != sum) return ERR_CHECKSUM;
+  
   TRY(PC_replyOK_89());
   TRY(cable->get(&data));
   if(data != TI89_PC) return ERR_INVALID_BYTE;
@@ -1698,9 +1699,9 @@ int ti89_receive_IDlist(char *id)
   TRY(cable->put(CMD89_TI_OK));
   TRY(cable->put(0x00));
   TRY(cable->put(0x00));
+  (update->percentage)=0.0;
   DISPLAY("\n");
   TRY(cable->close_port());
-  update_stop();
 
   return 0;
 }
@@ -1716,6 +1717,7 @@ int ti89_get_rom_version(char *version)
   word num_bytes;
 
   TRY(cable->open_port());
+  (update->percentage)=0.0;
 
   /* Check if TI is ready*/
   TRY(ti89_isready());  
@@ -1796,9 +1798,9 @@ int ti89_get_rom_version(char *version)
   DISPLAY("ROM version %s\n", version);
   
   DISPLAY("\n");
+  (update->percentage)=0.0;
   TRY(cable->close_port());	
-  update_stop();
-  
+    
   return 0;
 }
 
@@ -1821,7 +1823,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
   //DISPLAY("timeout: %i\n", ticable_get_timeout());  
   /* Read the file header and initialize some variables */
   TRY(cable->open_port());
-  update_start();
+  update->start();
   fgets(str, 128, file);
   if(strstr(str, "**TIFL**") == NULL) // is a .89u file
     {
@@ -1830,7 +1832,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
 	  if(str[i] == signature[j])
 	    {
 	      j++;
-	      if(j==(int)strlen(signature))
+	      if(j==strlen(signature))
 		{
 		  DISPLAY("TIB file.\n");
 		  tib = 1;
@@ -1838,7 +1840,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
 		}
 	    }
 	}
-      if(j < (int)strlen(signature))
+      if(j < strlen(signature))
 	return ERR_INVALID_FLASH_FILE; // not a FLASH file
     }
 
@@ -1866,7 +1868,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
       if(!strcmp(str, "License"))
 	{
 	  DISPLAY("There is a license header: skipped.\n");
-	  for(i=0; i<(int)flash_size; i++)
+	  for(i=0; i<flash_size; i++)
 	    fgetc(file);
 	  
 	  fgets(str, 9, file);
@@ -1910,16 +1912,16 @@ int ti89_send_flash(FILE *file, int mask_mode)
     block_size=4+2+strlen(flash_name);
   TRY(cable->put(LSB(block_size)));
   TRY(cable->put(MSB(block_size)));
-  data=(byte)(flash_size & 0x000000FF);
+  data=flash_size & 0x000000FF;
   sum+=data;
   TRY(cable->put(data));
-  data=(byte)(flash_size & 0x0000FF00) >> 8;
+  data=(flash_size & 0x0000FF00) >> 8;
   sum+=data;
   TRY(cable->put(data));
-  data=(byte)(flash_size & 0x00FF0000) >> 16;
+  data=(flash_size & 0x00FF0000) >> 16;
   sum+=data;
   TRY(cable->put(data));
-  data=(byte)(flash_size & 0xFF000000) >> 24;
+  data=(flash_size & 0xFF000000) >> 24;
   sum+=data;
   TRY(cable->put(data));
   if(mask_mode == MODE_AMS)
@@ -1965,7 +1967,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
 
 	  update->count = j;
 	  update->percentage = (float)j/65536;
-	  update_pbar();
+	  update->pbar();
 	  if(update->cancel) return ERR_ABORT;
 	}
       TRY(cable->put(LSB(sum)));
@@ -1975,12 +1977,12 @@ int ti89_send_flash(FILE *file, int mask_mode)
       TRY(PC_replyCONT_89());
       
       ((update->main_percentage))=(float)i/num_blocks;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return ERR_ABORT;
     }
 
   DISPLAY("Sending the last block.\n");
-  last_block=(word)(flash_size % 65536);
+  last_block=flash_size % 65536;
   sum=0;
   TRY(ti89_isOK());
   TRY(ti89_waitdata());
@@ -2002,7 +2004,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
 
       update->count = j;
       update->percentage = (float)j/last_block;
-      update_pbar();
+      update->pbar();
       if(update->cancel) return ERR_ABORT;
     }
   TRY(cable->put(LSB(sum)));
@@ -2023,7 +2025,7 @@ int ti89_send_flash(FILE *file, int mask_mode)
     }
   DISPLAY("\n");
 
-  update_stop();
+  update->start();
   TRY(cable->close_port());
 
   return 0;
