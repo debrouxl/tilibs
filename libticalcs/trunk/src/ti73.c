@@ -660,8 +660,6 @@ int ti73_dump_rom(const char *filename, int mask_mode)
       return ERR_CHECKSUM;
     TRYF(cable->put(0xda));
 
-	Sleep(1);
-
     update->count = ROMSIZE;
     update->main_percentage = (float) i / (ROMSIZE);
     if (update->cancel)
