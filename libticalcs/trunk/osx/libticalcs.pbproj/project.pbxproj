@@ -839,6 +839,7 @@
 				0127D0DD017389D15041E0CA,
 				0127D0DE017389D15041E0CA,
 				0127D0DF017389D15041E0CA,
+				F509D4EB021AC7CA01041594,
 				0127D0E0017389D15041E0CA,
 				0127D0E1017389D15041E0CA,
 				0127D0E2017389D15041E0CA,
@@ -1036,6 +1037,7 @@
 				F50A0D7701FC735001000102,
 				F50DEC1502197FBC01041594,
 				F50DEC160219806501041594,
+				F509D4EC021AC7CA01041594,
 			);
 			isa = PBXHeadersBuildPhase;
 			name = Headers;
@@ -1151,6 +1153,21 @@
 //F52
 //F53
 //F54
+		F509D4EB021AC7CA01041594 = {
+			isa = PBXFileReference;
+			name = keys83p.h;
+			path = ../src/keys83p.h;
+			refType = 2;
+		};
+		F509D4EC021AC7CA01041594 = {
+			fileRef = F509D4EB021AC7CA01041594;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
 		F50A0D7701FC735001000102 = {
 			fileRef = F50CA7FC01FC268901000102;
 			isa = PBXBuildFile;
@@ -1197,12 +1214,18 @@
 			fileRef = 0127D0D9017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F50DEC160219806501041594 = {
 			fileRef = 0127D0DC017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 		F54393FF01A995F901000102 = {
