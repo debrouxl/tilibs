@@ -35,6 +35,19 @@
 
 #include "links.h"
 
+#define TRYR(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+#define TRYB(x) { int aaa_; if((aaa_ = (x))) break; }
+
+extern int resources, method;
+static int devfs = 0;
+
+static int check_for_root(void);
+static int check_for_tty(void);
+static void check_for_tipar(void);
+static void check_for_tiser(void);
+static void check_for_tiusb(void);
+static void check_for_libusb(void);
+
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
 	DISPLAY(_("libticables: getting method from resources & cable...\n"));
@@ -53,44 +66,58 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	switch(type)
 	{
 	case LINK_TGL:
-		if(resources & IO_API)
+		if(resources & IO_API) {
+			check_for_tty();
 			*method |= IOM_API | IOM_OK;
+		}
 		break;
 	case LINK_AVR:
-		if(resources & IO_API)
+		if(resources & IO_API) {
+			check_for_tty();
                         *method |= IOM_API | IOM_OK;
 		break;
 	case LINK_SER:
-		if(resources & IO_TISER)
+		if(resources & IO_TISER) {
+			check_for_tiser();
 			*method |= IOM_DRV | IOM_OK;
-		else if (resources & IO_ASM)
+		} else if (resources & IO_ASM) {
+			check_for_root();
 			*method |= IOM_ASM | IOM_OK;
-		else if (resources & IO_API)
+		} else if (resources & IO_API)
+			check_for_tty();
 			*method |= IOM_IOCTL | IOM_OK;
 		break;
 	case LINK_PAR:
-		if(resources & IO_TIPAR)
+		if(resources & IO_TIPAR) {
+			check_for_tipar();
 			*method |= IOM_DRV | IOM_OK;
-		else if (resources & IO_ASM)
+		} else if (resources & IO_ASM) {
+			check_for_root();
 			*method |= IOM_ASM | IOM_OK;
+		}
 		break;
 	case LINK_SLV:
-		if (resources & IO_TIUSB)
+		if (resources & IO_TIUSB) {
+			check_for_tiusb();
 			*method |= IOM_DRV | IOM_OK;
-		else if (resources & IO_LIBUSB)
+		}
+		else if (resources & IO_LIBUSB) {
+			check_for_libusb();
 			*method |= IOM_IOCTL | IOM_OK;
+		}
 		break;
 	case LINK_TIE:
 	case LINK_VTI:
  		*method |= IOM_API | IOM_OK;
 		break;
 	default:
-		DISPLAY_ERROR("libticables: bad argument (invalid link cable).n");
+		DISPLAY_ERROR("libticables: bad argument (invalid link cable).\n");
+		return ERR_NONE;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
-    		DISPLAY_ERROR("unable to find an I/O method.\n");
+    		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
 	} else {
 		DISPLAY(_("  method: %s\n"), 
@@ -100,256 +127,225 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	return 0;
 }
 
-extern int resources, method;
+
+const char *tipar_node_names[2][3] = { 
+	{ "/dev/tipar0", "/dev/tipar1", "/dev/tipar2"}, 
+	{ "/dev/ticables/par/0", "/dev/ticables/par/1", "/dev/ticables/par/2" },
+};
+
+const char *tiser_node_names[2][4] = { 
+	{ "/dev/tiser0", "/dev/tiser1", "/dev/tiser2", "/dev/tiser3"}, 
+	{ "/dev/ticables/ser/0", "/dev/ticables/ser/1", "/dev/ticables/ser/2", "/dev/ticables/ser/3" },
+};
+
+const char *tiusb_node_names[2][4] = { 
+	{ "/dev/tiusb0", "/dev/tiusb1", "/dev/tiusb2", "/dev/tiusb3"}, 
+	{ "/dev/ticables/usb/0", "/dev/ticables/usb/1", "/dev/ticables/usb/2", "/dev/ticables/usb/3" },
+};
+
+
+// Bind the right I/O address & device according to I/O method
+static int linux_map_io(TicableMethod method, TicablePort port)
+{
+	switch (port) {
+  	case USER_PORT:
+    	break;
+
+	case PARALLEL_PORT_1:
+		if(method & IOM_DRV)
+    			strcpy(io_device, tipar_node_names[devfs][0]);
+    		else {
+      			io_address = PP1_ADDR;
+      			strcpy(io_device, PP1_NAME);
+    		}
+    	break;
+
+  	case PARALLEL_PORT_2:
+    		if (method & IOM_DRV)
+      			strcpy(io_device, tipar_node_names[devfs][1]);
+    		else {
+      			io_address = PP2_ADDR;
+      			strcpy(io_device, PP2_NAME);
+    		}
+    	break;
+
+  	case PARALLEL_PORT_3:
+    		if (method & IOM_DRV))
+      			strcpy(io_device, tipar_node_names[devfs][3]);
+    		else {
+      			io_address = PP3_ADDR;
+      			strcpy(io_device, PP3_NAME);
+    		}
+    	break;
+
+  	case SERIAL_PORT_1:
+    		if (method & IOM_DRV)
+      			strcpy(io_device, tiser_node_names[devfs][0]);
+    		else {
+      			io_address = SP1_ADDR;
+      			strcpy(io_device, SP1_NAME);
+    		}
+    	break;
+
+  	case SERIAL_PORT_2:
+    		if (method & IOM_DRV)
+      			strcpy(io_device, tiser_node_names[devfs][1]);
+    		else {
+      			io_address = SP2_ADDR;
+      			strcpy(io_device, SP2_NAME);
+    		}
+    	break;
+
+  	case SERIAL_PORT_3:
+    	if (method & IOM_DRV)
+      			strcpy(io_device, tiser_node_names[devfs][2]);
+    		else {
+      			io_address = SP3_ADDR;
+      			strcpy(io_device, SP3_NAME);
+    		}
+    	break;
+
+  	case SERIAL_PORT_4:
+    	if (method & IOM_DRV)
+      			strcpy(io_device, tiser_node_names[devfs][3]);
+    		else {
+      			io_address = SP3_ADDR;
+      			strcpy(io_device, SP3_NAME);
+    		}
+    	break;
+
+  	case USB_PORT_1:
+		strcpy(io_device, tiser_node_names[devfs][0]);
+	break;
+
+	case VIRTUAL_PORT_1:
+		io_address = VLINK0;
+      		strcpy(io_device, "");
+	break;
+
+  	case VIRTUAL_PORT_2:
+		io_address = VLINK1;
+      		strcpy(io_device, "");
+	break;
+
+  	default:
+    		DISPLAY_ERROR("libticables: bad argument (invalid port).\n");
+		return ERR_NONE;
+	break;
+	}
+	
+	return 0;
+}
 
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
-//	int ret;
-
-	// fill device and io_addr fields
-	convert_port_into_device();
+	// map I/O
+	TRYC(linux_map_io(method, port));
 	
 	// set the link cable
-  	if (((resources & IO_LINUX) && !(method & IOM_DRV)) || (resources & IO_WIN32) || (resources & IO_OSX) || (resources & IO_BSD)) {	// no kernel driver (tipar/tiser/tiusb)
     	switch (type) {
-    case LINK_PAR:		// IOM_ASM, IOM_DRV&Win32
-      if ((port != PARALLEL_PORT_1) &&
-	  (port != PARALLEL_PORT_2) &&
-	  (port != PARALLEL_PORT_3) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
+    	case LINK_PAR:
+      		if ((port != PARALLEL_PORT_1) &&
+	  		(port != PARALLEL_PORT_2) &&
+	  		(port != PARALLEL_PORT_3) && (port != USER_PORT))
+		return ERR_INVALID_PORT;
 
-	par_register_cable(lc);
-      break;
+		if(method & IOM_ASM)
+			par_register_cable(lc);
+		else if(method & IOM_DRV)
+			dev_register_cable(lc);
+      	break;
 
-    case LINK_SER:		// IOM_ASM, IOM_API, IOM_DRV&Win32
-      if ((port != SERIAL_PORT_1) &&
-	  (port != SERIAL_PORT_2) &&
-	  (port != SERIAL_PORT_3) &&
-	  (port != SERIAL_PORT_4) &&
-	  (port != USER_PORT))
-	return ERR_INVALID_PORT;
+    	case LINK_SER:
+      		if ((port != SERIAL_PORT_1) &&
+	  		(port != SERIAL_PORT_2) &&
+	  		(port != SERIAL_PORT_3) &&
+	  		(port != SERIAL_PORT_4) &&
+	  		(port != USER_PORT))
+		return ERR_INVALID_PORT;
 
-      if ((method & IOM_ASM) || (method & IOM_DRV)) {
-	// serial routines in IOM_ASM/DLL mode
-	ser_register_cable_1(lc);
+		if(method & IOM_ASM)
+			ser_register_cable_1(lc);
+		else if(method & IOM_IOCTL)
+			ser_register_cable_2(lc);
+		else if(method & IOM_DRV)
+			dev_register_cable(lc);
+		
+      	break;
+
+    	case LINK_AVR:
+      		if ((port != SERIAL_PORT_1) &&
+	  		(port != SERIAL_PORT_2) &&
+	  		(port != SERIAL_PORT_3) &&
+	  		(port != SERIAL_PORT_4) && (port != USER_PORT))
+		return ERR_INVALID_PORT;
+
+		avr_register_cable(lc);
+      	break;
+
+    	case LINK_VTL:
+      		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
+		return ERR_INVALID_PORT;
+
+      		vtl_register_cable(lc);
+      	break;
+
+    	case LINK_TIE:
+      		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
+			return ERR_INVALID_PORT;
+
+      		tie_register_cable(lc);
+      	break;
+
+    	case LINK_TGL:
+	      	if ((port != SERIAL_PORT_1) &&
+		  	(port != SERIAL_PORT_2) &&
+		  	(port != SERIAL_PORT_3) &&
+		  	(port != SERIAL_PORT_4) && (port != USER_PORT))
+		return ERR_INVALID_PORT;
+
+		tig_register_cable(lc);
+      	break;
+
+    	case LINK_VTI:
+      		if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
+		return ERR_INVALID_PORT;
 	
-      } else if (method & IOM_API) {
-	ser_register_cable_2(lc);
-      } else {
-	      //set_default_cable(lc);
-      }
-      break;
+      		vti_register_cable(lc);
+      	break;
 
-    case LINK_AVR:		// IOM_API
-      if ((port != SERIAL_PORT_1) &&
-	  (port != SERIAL_PORT_2) &&
-	  (port != SERIAL_PORT_3) &&
-	  (port != SERIAL_PORT_4) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
+    	case LINK_SLV:
+      		if ((port != USB_PORT_1) &&
+		  	(port != USB_PORT_2) &&
+		  	(port != USB_PORT_3) &&
+		  	(port != USB_PORT_4) && (port != USER_PORT))
+		return ERR_INVALID_PORT;
 
-	avr_register_cable(lc);
-      break;
+		if(method & IOM_IOCTL)
+			slv_register_cable_1(lc);
+		else if(method & IOM_DRV)
+			slv_register_cable_2(lc);
+	break;
 
-    case LINK_VTL:		// IOM_API
-      if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
-	return ERR_INVALID_PORT;
-
-      vtl_register_cable(lc);
-      break;
-
-    case LINK_TIE:		// IOM_API
-      if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
-	return ERR_INVALID_PORT;
-
-      tie_register_cable(lc);
-      break;
-
-    case LINK_TGL:		// IOM_API
-      if ((port != SERIAL_PORT_1) &&
-	  (port != SERIAL_PORT_2) &&
-	  (port != SERIAL_PORT_3) &&
-	  (port != SERIAL_PORT_4) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
-
-	tig_register_cable(lc);
-      break;
-
-    case LINK_VTI:		// IOM_API
-      if ((port != VIRTUAL_PORT_1) && (port != VIRTUAL_PORT_2))
-	return ERR_INVALID_PORT;
-	
-      vti_register_cable(lc);
-      break;
-
-    case LINK_SLV:		// IOM_LIBUSB (Linux) or IOM_TIUSB (Win32) or IOM_MAC (IOKit)
-      if ((port != USB_PORT_1) &&
-	  (port != USB_PORT_2) &&
-	  (port != USB_PORT_3) &&
-	  (port != USB_PORT_4) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
-
-	slv_register_cable(lc);
-      break;
-
-    default:			// error !
-      DISPLAY(_
-	      ("Function not implemented. This is a bug. Please report it."));
-      DISPLAY(_("Informations:\n"));
-      DISPLAY(_("Cable: %i\n"), type);
-      DISPLAY(_("Program halted before crashing...\n"));
-      exit(-1);
-      break;
-    }
-  } else {			// kernel driver
-    switch (type) {
-    case LINK_PAR:		// IOM_TIPAR
-    case LINK_SER:		// IOM_TISER
-      if ((port != PARALLEL_PORT_1) &&
-	  (port != PARALLEL_PORT_2) &&
-	  (port != PARALLEL_PORT_3) &&
-	  (port != SERIAL_PORT_1) &&
-	  (port != SERIAL_PORT_2) &&
-	  (port != SERIAL_PORT_3) &&
-	  (port != SERIAL_PORT_4) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
-
-	dev_register_cable(lc);
-      break;
-
-    case LINK_SLV:		// IOM_TIUSB
-      if ((port != USB_PORT_1) &&
-	  (port != USB_PORT_2) &&
-	  (port != USB_PORT_3) &&
-	  (port != USB_PORT_4) && (port != USER_PORT))
-	return ERR_INVALID_PORT;
-
-	slv_register_cable(lc);
-      break;
-
-    default:			// error !
-      DISPLAY(_
-	      ("Function not implemented. This is a bug. Please report it."));
-      DISPLAY(_("Informations:\n"));
-      DISPLAY(_("Cable: %i\n"), type);
-      DISPLAY(_("Program halted before crashing...\n"));
-      exit(-1);
-      break;
-    }
-  }
+    	default:
+	      	DISPLAY_ERROR(_("libticables: invalid argument (bad cable)."));
+	      	return ERR_NONE;
+	break;
+    	}
 }
 
 
-static int convert_port_into_device(void)
-{
-  switch (port) {
-  case USER_PORT:
-    break;
+/***********/
+/* Helpers */
+/***********/
 
-  case PARALLEL_PORT_1:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tipar0");
-    else {
-      io_address = PP1_ADDR;
-      strcpy(io_device, PP1_NAME);
-    }
-    break;
 
-  case PARALLEL_PORT_2:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tipar1");
-    else {
-      io_address = PP2_ADDR;
-      strcpy(io_device, PP2_NAME);
-    }
-    break;
-
-  case PARALLEL_PORT_3:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tipar2");
-    else {
-      io_address = PP3_ADDR;
-      strcpy(io_device, PP3_NAME);
-    }
-    break;
-
-  case SERIAL_PORT_1:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tiser0");
-    else {
-      io_address = SP1_ADDR;
-      strcpy(io_device, SP1_NAME);
-    }
-    break;
-
-  case SERIAL_PORT_2:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tiser1");
-    else {
-      io_address = SP2_ADDR;
-      strcpy(io_device, SP2_NAME);
-    }
-    break;
-
-  case SERIAL_PORT_3:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tiser2");
-    else {
-      io_address = SP3_ADDR;
-      strcpy(io_device, SP3_NAME);
-    }
-    break;
-
-  case SERIAL_PORT_4:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, "/dev/tiser");
-    else {
-      io_address = SP4_ADDR;
-      strcpy(io_device, SP4_NAME);
-    }
-    break;
-
-  case USB_PORT_1:
-    strcpy(io_device, search_for_tiusb_node(0));
-    break;
-
-  case USB_PORT_2:
-    strcpy(io_device, search_for_tiusb_node(1));
-    break;
-
-  case USB_PORT_3:
-    strcpy(io_device, search_for_tiusb_node(2));
-    break;
-
-  case USB_PORT_4:
-    strcpy(io_device, search_for_tiusb_node(3));
-    break;
-  case VIRTUAL_PORT_1:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, TIDEV_V0);
-    else {
-      io_address = VLINK0;
-      strcpy(io_device, "");
-    }
-    break;
-
-  case VIRTUAL_PORT_2:
-    if ((method & IOM_DRV) && (resources & IO_LINUX))
-      strcpy(io_device, TIDEV_V1);
-    else {
-      io_address = VLINK1;
-      strcpy(io_device, "");
-    }
-    break;
-
-  default:
-    DISPLAY(_("libticables error: port value is illegal (%i) !\n"), port);
-    DISPLAY(_("Exiting...\n"));
-    //exit(1);
-    break;
-  }
-
-  return 0;
-}
+static int check_for_root(void);
+static int check_for_tty(void);
+static void check_for_tipar(void);
+static void check_for_tiser(void);
+static void check_for_tiusb(void);
+static void check_for_libusb(void);
 
 #if 0
 

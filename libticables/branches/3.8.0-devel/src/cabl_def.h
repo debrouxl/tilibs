@@ -175,15 +175,15 @@ typedef struct {
 /****************/
 
 /* Parallel Port addresses */
-#define PP3_ADDR 0x3bc
 #define PP1_ADDR 0x378
 #define PP2_ADDR 0x278
+#define PP3_ADDR 0x3bc
 
 /* Parallel port devices */
 #if defined(__LINUX__)
-# define PP1_NAME "/dev/lp0"
-# define PP2_NAME "/dev/lp1"
-# define PP3_NAME "/dev/lp2"
+# define PP1_NAME "/dev/parport0"
+# define PP2_NAME "/dev/parport1"
+# define PP3_NAME "/dev/parport2"
 #elif defined(__WIN32__)
 # define PP1_NAME "LPT1"
 # define PP2_NAME "LPT2"
@@ -244,19 +244,6 @@ typedef struct {
 # define UP3_NAME ""
 # define UP4_NAME ""
 #endif
-
-/* Characters devices of the 'tidev' kernel module (obsolete) */
-/* See timodules.c instead */
-#define TIDEV	 "/dev/ti"	/* Symbolic link to one of the folowing devices */
-#define TIDEV_P0 "/dev/tiP0"	/* TI device for parallel link at 0x3BC */
-#define TIDEV_P1 "/dev/tiP1"	/* TI device for parallel link at 0x378 */
-#define TIDEV_P2 "/dev/tiP2"	/* TI device for parallel link at 0x278 */
-#define TIDEV_S0 "/dev/tiS0"	/* TI device for serial link at 0x3F8 (COM1) */
-#define TIDEV_S1 "/dev/tiS1"	/* TI device for serial link at 0x2F8 (COM2) */
-#define TIDEV_S2 "/dev/tiS2"	/* TI device for serial link at 0x3E8 (COM3) */
-#define TIDEV_S3 "/dev/tiS3"	/* TI device for serial link at 0x3E8 (COM4) */
-#define TIDEV_V0 "/dev/ti0"	/* Virtual link device (compl. to /dev/ti1) */
-#define TIDEV_V1 "/dev/ti1"	/* Virtual link device (compl. to /dev/ti0) */
 
 /* Virtual link devices */
 #define VLINK0 1		/* Virtual link (complementary to VL1) */
