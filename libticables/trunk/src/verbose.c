@@ -42,6 +42,10 @@
 #include "verbose.h"
 #include "printl.h"
 
+#ifdef __WIN32__
+#define vsnprint _vsnprintf
+#endif
+
 // for compatibility
 TIEXPORT int TICALL DISPLAY(const char *format, ...)
 {
@@ -50,7 +54,7 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 	char buf[256];
 		
 	va_start(ap, format);
-	ret = _vsnprintf(buf, 256, format, ap);
+	ret = vsnprintf(buf, 256, format, ap);
     	ret = printl1(0, "%s", buf);
     	va_end(ap);
 	
@@ -65,7 +69,7 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 	char buf[256];
 		
 	va_start(ap, format);
-	ret = _vsnprintf(buf, 256, format, ap);
+	ret = vsnprintf(buf, 256, format, ap);
     	ret = printl1(2, "%s", buf);
     	va_end(ap);
 	
