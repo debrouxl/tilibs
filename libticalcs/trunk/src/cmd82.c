@@ -33,6 +33,10 @@
 #include "update.h"
 #include "printl.h"
 
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
+
 // Shares some commands between TI82 & 83
 extern int ticalcs_calc_type;
 #define PC_TI8283 ((ticalcs_calc_type == CALC_TI82) ? PC_TI82 : PC_TI83)

@@ -32,6 +32,10 @@
 #include "update.h"
 #include "printl.h"
 
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
+
 int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];

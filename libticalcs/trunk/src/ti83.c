@@ -41,6 +41,10 @@
 #include "pause.h"
 #include "printl.h"
 
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
+
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
 #define TI83_COLS  96

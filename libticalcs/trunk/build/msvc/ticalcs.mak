@@ -25,10 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "ticalcs - Win32 Release"
 
 OUTDIR=.
@@ -84,15 +80,49 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "TICALCS_EXPORTS" /D "_WINDOWS" /D "__WIN32__" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MT /w /W0 /GX /I "../../../cables/src" /I "../../../files/src" /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /I "." /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /Fp"$(INTDIR)\ticalcs.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL" 
+RSC=rc.exe
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticalcs.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ticalcs.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib intl.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\ticalcs.pdb" /machine:I386 /out:"..\..\tests\ticalcs.dll" /implib:"$(OUTDIR)\ticalcs.lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\ticalcs.pdb" /machine:I386 /out:"..\..\tests\ticalcs.dll" /implib:"$(OUTDIR)\ticalcs.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\cmd73.obj" \
 	"$(INTDIR)\cmd82.obj" \
@@ -194,8 +224,42 @@ CLEAN :
 "$(INTDIR)" :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
-CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "_DEBUG" /D "TICALCS_EXPORTS" /D "_CONSOLE" /D "__WIN32__" /D "ENABLE_NLS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MTd /w /W0 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /I "." /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL" 
+RSC=rc.exe
 RSC_PROJ=/l 0x40c /fo"$(INTDIR)\ticalcs.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ticalcs.bsc" 
@@ -241,36 +305,6 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -442,24 +476,24 @@ SOURCE=..\..\src\type2str.c
 !IF  "$(CFG)" == "ticalcs - Win32 Release"
 
 "ticables - Win32 Release" : 
-   cd "\home\devel\ticables\build\msvc"
+   cd "\sources\roms\ticables\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\ticables.mak CFG="ticables - Win32 Release" 
    cd "..\..\..\ticalcs\build\msvc"
 
 "ticables - Win32 ReleaseCLEAN" : 
-   cd "\home\devel\ticables\build\msvc"
+   cd "\sources\roms\ticables\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\ticables.mak CFG="ticables - Win32 Release" RECURSE=1 CLEAN 
    cd "..\..\..\ticalcs\build\msvc"
 
 !ELSEIF  "$(CFG)" == "ticalcs - Win32 Debug"
 
 "ticables - Win32 Debug" : 
-   cd "\home\devel\ticables\build\msvc"
+   cd "\sources\roms\ticables\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\ticables.mak CFG="ticables - Win32 Debug" 
    cd "..\..\..\ticalcs\build\msvc"
 
 "ticables - Win32 DebugCLEAN" : 
-   cd "\home\devel\ticables\build\msvc"
+   cd "\sources\roms\ticables\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\ticables.mak CFG="ticables - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\..\..\ticalcs\build\msvc"
 
@@ -468,24 +502,24 @@ SOURCE=..\..\src\type2str.c
 !IF  "$(CFG)" == "ticalcs - Win32 Release"
 
 "tifiles - Win32 Release" : 
-   cd "\home\devel\tifiles\build\msvc"
+   cd "\sources\roms\tifiles\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\tifiles.mak CFG="tifiles - Win32 Release" 
    cd "..\..\..\ticalcs\build\msvc"
 
 "tifiles - Win32 ReleaseCLEAN" : 
-   cd "\home\devel\tifiles\build\msvc"
+   cd "\sources\roms\tifiles\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\tifiles.mak CFG="tifiles - Win32 Release" RECURSE=1 CLEAN 
    cd "..\..\..\ticalcs\build\msvc"
 
 !ELSEIF  "$(CFG)" == "ticalcs - Win32 Debug"
 
 "tifiles - Win32 Debug" : 
-   cd "\home\devel\tifiles\build\msvc"
+   cd "\sources\roms\tifiles\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\tifiles.mak CFG="tifiles - Win32 Debug" 
    cd "..\..\..\ticalcs\build\msvc"
 
 "tifiles - Win32 DebugCLEAN" : 
-   cd "\home\devel\tifiles\build\msvc"
+   cd "\sources\roms\tifiles\build\msvc"
    $(MAKE) /$(MAKEFLAGS) /F .\tifiles.mak CFG="tifiles - Win32 Debug" RECURSE=1 CLEAN 
    cd "..\..\..\ticalcs\build\msvc"
 

@@ -32,6 +32,10 @@
 #include "update.h"
 #include "printl.h"
 
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
+
 // Shares some commands between TI89/92+/V200
 extern int ticalcs_calc_type;
 

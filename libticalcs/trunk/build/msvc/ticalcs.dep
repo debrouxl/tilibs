@@ -1,7 +1,6 @@
 # Microsoft Developer Studio Generated Dependency File, included by ticalcs.mak
 
 ..\..\src\cmd73.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -44,7 +43,6 @@
 	
 
 ..\..\src\cmd82.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -86,7 +84,6 @@
 	
 
 ..\..\src\cmd85.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -129,7 +126,6 @@
 	
 
 ..\..\src\cmd89.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -172,7 +168,6 @@
 	
 
 ..\..\src\cmd92.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -215,8 +210,7 @@
 	
 
 ..\..\src\ti73.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -252,19 +246,19 @@
 	"..\..\src\cmd73.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\rom83p.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
+	".\unistd.h"\
 	
 
 ..\..\src\Ti82.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -300,8 +294,8 @@
 	"..\..\src\cmd82.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\rom82.h"\
@@ -310,8 +304,7 @@
 	
 
 ..\..\src\Ti83.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -347,19 +340,19 @@
 	"..\..\src\cmd82.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\rom83.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
+	".\unistd.h"\
 	
 
 ..\..\src\Ti85.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -395,8 +388,8 @@
 	"..\..\src\cmd85.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\rom85u.h"\
@@ -406,8 +399,7 @@
 	
 
 ..\..\src\Ti86.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -443,19 +435,19 @@
 	"..\..\src\cmd85.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\rom86.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
+	".\unistd.h"\
 	
 
 ..\..\src\Ti89.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -492,8 +484,8 @@
 	"..\..\src\dirlist.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\Keys89.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
@@ -501,11 +493,11 @@
 	"..\..\src\Rom89.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
+	".\unistd.h"\
 	
 
 ..\..\src\Ti92.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -542,8 +534,8 @@
 	"..\..\src\dirlist.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\keys92p.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\pause.h"\
@@ -551,10 +543,10 @@
 	"..\..\src\Rom92f2.h"\
 	"..\..\src\tnode.h"\
 	"..\..\src\update.h"\
+	".\unistd.h"\
 	
 
 ..\..\src\keys73.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -592,7 +584,6 @@
 	
 
 ..\..\src\keys83p.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -630,7 +621,6 @@
 	
 
 ..\..\src\keys89.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -668,7 +658,6 @@
 	
 
 ..\..\src\keys92p.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -706,7 +695,6 @@
 	
 
 ..\..\src\tikeys.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -748,7 +736,6 @@
 	
 
 ..\..\src\packets.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -790,7 +777,6 @@
 	
 
 ..\..\src\clock.c : \
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -825,8 +811,7 @@
 	
 
 ..\..\src\dirlist.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -859,15 +844,14 @@
 	"..\..\..\tifiles\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\export.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
 	
 
 ..\..\src\Error.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -899,14 +883,13 @@
 	"..\..\..\tifiles\src\typesv2.h"\
 	"..\..\..\tifiles\src\typesXX.h"\
 	"..\..\src\Calc_err.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\update.h"\
 	
 
 ..\..\src\Intrface.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -941,8 +924,8 @@
 	"..\..\src\Calc_err.h"\
 	"..\..\src\Calc_ver.h"\
 	"..\..\src\export.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\ti73.h"\
 	"..\..\src\Ti82.h"\
@@ -957,8 +940,7 @@
 	
 
 ..\..\src\printl.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -991,14 +973,13 @@
 	"..\..\..\tifiles\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\export.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\tnode.h"\
 	
 
 ..\..\src\Probe.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -1034,8 +1015,8 @@
 	"..\..\src\Calc_int.h"\
 	"..\..\src\export.h"\
 	"..\..\src\externs.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\packets.h"\
 	"..\..\src\printl.h"\
 	"..\..\src\tnode.h"\
@@ -1048,8 +1029,7 @@
 	
 
 ..\..\src\type2str.c : \
-	"..\..\..\..\..\gtk2dev\include\libintl.h"\
-	"..\..\..\..\..\microsoft visual studio\vc98\include\basetsd.h"\
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
 	"..\..\..\ticables\src\Cabl_def.h"\
 	"..\..\..\ticables\src\Cabl_err.h"\
 	"..\..\..\ticables\src\Cabl_int.h"\
@@ -1082,7 +1062,7 @@
 	"..\..\..\tifiles\src\typesXX.h"\
 	"..\..\src\Calc_def.h"\
 	"..\..\src\export.h"\
+	"..\..\src\gettext.h"\
 	"..\..\src\headers.h"\
-	"..\..\src\Intl2.h"\
 	"..\..\src\tnode.h"\
 	

@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #include "gettext.h"
 
@@ -40,6 +40,10 @@
 #include "rom85u.h"
 #include "rom85z.h"
 #include "printl.h"
+
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
 
 // Screen coordinates of the TI82
 #define TI85_ROWS  64

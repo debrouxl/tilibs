@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #include "gettext.h"
 
@@ -39,6 +39,10 @@
 #include "rom83p.h"
 #include "pause.h"
 #include "printl.h"
+
+#ifdef __WIN32__
+#pragma warning( disable : 4761 )
+#endif
 
 // Screen coordinates of the TI83+
 #define TI73_ROWS  64
