@@ -140,7 +140,7 @@ libtifilesinclude_HEADERS =  	file_def.h 	file_err.h 	file_int.h 	file_ver.h 	fi
 
 
 # setup source file variables
-libtifiles_la_SOURCES =  	error.c 	files8x.c 	files9x.c 	filesxx.c 	grp_ops.c 	intelhex.c 	intrface.c 	misc.c 	trans.c 	types73.c 	types82.c 	types83.c 	types83p.c 	types85.c 	types86.c 	types89.c 	types92.c 	types92p.c 	typesv2.c 	typesxx.c 	type2str.c
+libtifiles_la_SOURCES =  	error.c 	files8x.c 	files9x.c 	filesxx.c 	grp_ops.c 	intelhex.c 	intrface.c 	misc.c 	printl.c 	trans.c 	types73.c 	types82.c 	types83.c 	types83p.c 	types85.c 	types86.c 	types89.c 	types92.c 	types92p.c 	typesv2.c 	typesxx.c 	type2str.c
 
 
 MAINTAINERCLEANFILES = 
@@ -155,9 +155,9 @@ CPPFLAGS = @CPPFLAGS@
 LIBS = @LIBS@
 libtifiles_la_LIBADD = 
 libtifiles_la_OBJECTS =  error.lo files8x.lo files9x.lo filesxx.lo \
-grp_ops.lo intelhex.lo intrface.lo misc.lo trans.lo types73.lo \
-types82.lo types83.lo types83p.lo types85.lo types86.lo types89.lo \
-types92.lo types92p.lo typesv2.lo typesxx.lo type2str.lo
+grp_ops.lo intelhex.lo intrface.lo misc.lo printl.lo trans.lo \
+types73.lo types82.lo types83.lo types83p.lo types85.lo types86.lo \
+types89.lo types92.lo types92p.lo typesv2.lo typesxx.lo type2str.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -173,10 +173,10 @@ TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/error.P .deps/files8x.P .deps/files9x.P \
 .deps/filesxx.P .deps/grp_ops.P .deps/intelhex.P .deps/intrface.P \
-.deps/misc.P .deps/trans.P .deps/type2str.P .deps/types73.P \
-.deps/types82.P .deps/types83.P .deps/types83p.P .deps/types85.P \
-.deps/types86.P .deps/types89.P .deps/types92.P .deps/types92p.P \
-.deps/typesv2.P .deps/typesxx.P
+.deps/misc.P .deps/printl.P .deps/trans.P .deps/type2str.P \
+.deps/types73.P .deps/types82.P .deps/types83.P .deps/types83p.P \
+.deps/types85.P .deps/types86.P .deps/types89.P .deps/types92.P \
+.deps/types92p.P .deps/typesv2.P .deps/typesxx.P
 SOURCES = $(libtifiles_la_SOURCES)
 OBJECTS = $(libtifiles_la_OBJECTS)
 

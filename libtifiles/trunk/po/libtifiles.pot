@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-22 21:43+0100\n"
+"POT-Creation-Date: 2004-04-08 21:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,47 +79,35 @@ msgid ""
 "."
 msgstr ""
 
-#: src/intrface.c:81
+#: src/intrface.c:82
 #, c-format
 msgid "Libtifiles: version %s\n"
 msgstr ""
 
-#: src/intrface.c:141
-#, c-format
+#: src/intrface.c:140
 msgid "Function not implemented. This is a bug. Please report it."
+msgstr ""
+
+#: src/intrface.c:141
+msgid "Informations:\n"
 msgstr ""
 
 #: src/intrface.c:142
 #, c-format
-msgid "Informations:\n"
-msgstr ""
-
-#: src/intrface.c:143
-#, c-format
 msgid "Calc: %i\n"
 msgstr ""
 
-#: src/intrface.c:144
-#, c-format
+#: src/intrface.c:143
 msgid "Program halted before crashing...\n"
+msgstr ""
+
+#: src/intrface.c:156
+msgid "Libtifiles settings...\n"
 msgstr ""
 
 #: src/intrface.c:157
 #, c-format
-msgid "Libtifiles settings...\n"
-msgstr ""
-
-#: src/intrface.c:161 src/intrface.c:164 src/intrface.c:167 src/intrface.c:170
-#: src/intrface.c:173 src/intrface.c:176 src/intrface.c:179 src/intrface.c:182
-#: src/intrface.c:185 src/intrface.c:188
-#, c-format
 msgid "  Calc type: %s\n"
-msgstr ""
-
-#. error !
-#: src/intrface.c:191
-#, c-format
-msgid "Oops, there is a bug. Unknown calculator.\n"
 msgstr ""
 
 #: src/types73.c:44 src/types82.c:39 src/types83.c:39 src/types83p.c:39
@@ -430,12 +418,38 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: src/type2str.c:55
-#, c-format
-msgid "libtifiles error: unknown calc type !\n"
+#: src/type2str.c:76 src/type2str.c:86
+msgid "none     "
 msgstr ""
 
-#: src/type2str.c:73
-#, c-format
-msgid "libtifiles error: unknown attribute !\n"
+#: src/type2str.c:77 src/type2str.c:88
+msgid "locked   "
+msgstr ""
+
+#: src/type2str.c:78 src/type2str.c:90
+msgid "archived "
+msgstr ""
+
+#: src/type2str.c:79 src/type2str.c:92
+msgid "protected"
+msgstr ""
+
+#: src/type2str.c:101 src/type2str.c:111
+msgid "single"
+msgstr ""
+
+#: src/type2str.c:102 src/type2str.c:113
+msgid "group"
+msgstr ""
+
+#: src/type2str.c:103 src/type2str.c:115
+msgid "backup"
+msgstr ""
+
+#: src/type2str.c:104 src/type2str.c:117
+msgid "flash"
+msgstr ""
+
+#: src/type2str.c:105
+msgid "unknown"
 msgstr ""

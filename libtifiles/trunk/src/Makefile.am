@@ -54,6 +54,7 @@ libtifiles_la_SOURCES = \
 	intelhex.c \
 	intrface.c \
 	misc.c \
+	printl.c \
 	trans.c \
 	types73.c \
 	types82.c \
