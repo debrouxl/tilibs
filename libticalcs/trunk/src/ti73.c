@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit provides TI73/TI83+ support.
+  This unit provides TI73/TI83+/TI84+ support.
 */
 
 #include <stdio.h>
@@ -591,8 +591,8 @@ exit:
   return 0;
 }
 
-#define DUMP_ROM73_FILE "dumprom.83p"
-#define ROMSIZE 512		// 512KB
+#define DUMP_ROM73_FILE "dumprom.8Xp"
+//#define ROMSIZE 512		// 512KB (TI83+) or 1MB (TI84+) or 2MB (SilverEdition)
 
 int ti73_dump_rom(const char *filename, int mask_mode)
 {
@@ -605,7 +605,8 @@ int ti73_dump_rom(const char *filename, int mask_mode)
   FILE *f, *file;
   uint16_t checksum, sum;
   int err;
-  int b = 0;;
+  int b = 0;
+  int ROMSIZE = (ticalcs_calc_type == CALC_TI84P) ? 1024 : 512;
 
   printl2(0, _("ROM dumping...\n"));
 

@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 02/10/2004, version 4.5.5: roms
+	Replaced VTi's TI83+ ROM dumper by a new one developped by 	
+	"Benjamin Moody" <bmoody@WPI.EDU>. Works with 83+(SE)/84+(SE).
+
 - 18/09/2004, version 4.5.4: roms
 	Added TI89 Titanium support. File format seems to be the same as TI89.
 	Added TI84+ (SE) support. File format seems to be the same as TI83+.

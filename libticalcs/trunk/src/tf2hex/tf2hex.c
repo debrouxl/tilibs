@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	int i, j;
 
 	// read input file
-	fi = fopen("romdump.89z", "rb");
+	fi = fopen("romdump.8xp", "rb");
 	if(fi == NULL)
 	{
 		fprintf(stderr, "Unable to open input file.\n");
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 	fclose(fi);
 
 	// write output file
-	fo = fopen("rom89.h", "wt");
+	fo = fopen("rom83p.h", "wt");
 	if(fi == NULL)
 	{
 		fprintf(stderr, "Unable to open output file.\n");
