@@ -305,9 +305,10 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
 
 TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
 						 char *translate,
-						 uint8_t vartype)
+						 uint8_t vartype,
+						 TicalcType calc_type)
 {
-  switch (tifiles_calc_type) {
+  switch (calc_type) {
   case CALC_TI73:
   case CALC_TI82:
   case CALC_TI83:
@@ -931,16 +932,14 @@ TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void)
    Variable name translation: detokenization + charset transcoding.
 */
 
-
-TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
-						char *translate,
-						uint8_t vartype)
+char *tixx_translate_varname(const char *varname, char *translate,
+			     uint8_t vartype, TicalcType calc_type)
 {
   char detokenized[9];
   char *src = detokenized;
   char dst[17];
 
-  tixx_detokenize_varname(varname, detokenized, vartype);
+  tixx_detokenize_varname(varname, detokenized, vartype, calc_type);
 
   switch(tifiles_encoding)
   {
@@ -952,6 +951,14 @@ TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
   strcpy(translate, dst);
 
   return translate;
+}
+
+TIEXPORT char *TICALL tifiles_translate_varname(const char *varname,
+						char *translate,
+						uint8_t vartype)
+{
+  return tixx_translate_varname(varname, translate, vartype, 
+				tifiles_calc_type);
 }
 
 TIEXPORT char *TICALL tifiles_translate_varname_static(const char *varname,
