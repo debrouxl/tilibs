@@ -178,3 +178,22 @@ int vtl_supported()
 {
   return SUPPORT_ON;
 }
+
+int vtl_register_cable(TicableLinkCable * lc)
+{
+  lc->init = vtl_init;
+  lc->open = vtl_open;
+  lc->put = vtl_put;
+  lc->get = vtl_get;
+  lc->close = vtl_close;
+  lc->exit = vtl_exit;
+  lc->probe = vtl_probe;
+  lc->check = vtl_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

@@ -56,6 +56,7 @@ int ser_init()
   // This problem exists with Win2k and some UARTs.
   // It seems I got the same problem as FlashZ when I changed my 
   // motherboard. Are some port broken ?
+	extern int win32_comport_open(char *comPort, PHANDLE hCom);
   TRYC(win32_comport_open(io_device, &hCom));
 #endif
   com_addr = io_address;
@@ -206,6 +207,7 @@ int ser_exit()
   io_permitted--;
 
 #ifdef __WIN32__
+  //extern int win32_comport_close(PHANDLE hCom);
   TRYC(win32_comport_close(&hCom));
 #endif
 

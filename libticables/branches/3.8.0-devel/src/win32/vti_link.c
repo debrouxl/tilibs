@@ -242,3 +242,22 @@ int vti_supported()
 {
   return SUPPORT_ON;
 }
+
+int vti_register_cable(TicableLinkCable * lc)
+{
+  lc->init = vti_init;
+  lc->open = vti_open;
+  lc->put = vti_put;
+  lc->get = vti_get;
+  lc->close = vti_close;
+  lc->exit = vti_exit;
+  lc->probe = vti_probe;
+  lc->check = vti_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

@@ -40,7 +40,7 @@
 
 int win32_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources..."));
+	DISPLAY(_("libticables: getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;
@@ -271,7 +271,7 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		if(method & IOM_DRV)
-			slv_register_cable_2(lc);
+			slv_register_cable(lc);
 		break;
 
     	default:

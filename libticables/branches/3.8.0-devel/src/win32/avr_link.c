@@ -259,3 +259,22 @@ int avr_supported()
 {
   return SUPPORT_ON | SUPPORT_DCB;
 }
+
+int avr_register_cable(TicableLinkCable * lc)
+{
+  lc->init = avr_init;
+  lc->open = avr_open;
+  lc->put = avr_put;
+  lc->get = avr_get;
+  lc->close = avr_close;
+  lc->exit = avr_exit;
+  lc->probe = avr_probe;
+  lc->check = avr_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>
@@ -83,7 +83,11 @@ int main(int argc, char **argv)
 	}
 
 	DISPLAY("Wait 1 second...\n");
+#ifndef __WIN32__
 	sleep(1);
+#else
+	Sleep(1000);
+#endif
 
 	/* 
 	   Do a simple test with a TI89/92+ calculator

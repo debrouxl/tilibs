@@ -42,7 +42,7 @@
 
 int win32_detect_os(char **os_type)
 {
-  	OSVERSIONINFO os;
+	OSVERSIONINFO os;
 
   	DISPLAY(_("Getting OS type...\r\n"));
   	
@@ -77,9 +77,11 @@ int win32_detect_port(TicablePortInfo * pi)
 int win32_detect_resources(void)
 {
 	HINSTANCE hDLL = NULL;	/* Handle for TiglUsb driver */
-    	HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
+    HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
+	char *os;
     	
 	DISPLAY(_("libticables: checking resources...\r\n"));
+	win32_detect_os(&os);
 	
 	/* Windows NT need permissions */
 	
@@ -119,6 +121,9 @@ int win32_detect_resources(void)
       		if (PortTalk_Handle == INVALID_HANDLE_VALUE) {
 			// Start or Install PortTalk Driver
 			PortTalkStartDriver();
+
+			// Don't be too hurry !
+			Sleep(1000);
 	
 			// Then try to open once more, before failing
 			PortTalk_Handle =

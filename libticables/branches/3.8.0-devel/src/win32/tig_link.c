@@ -281,3 +281,22 @@ int tig_supported()
 {
   return SUPPORT_ON;
 }
+
+int tig_register_cable(TicableLinkCable * lc)
+{
+  lc->init = tig_init;
+  lc->open = tig_open;
+  lc->put = tig_put;
+  lc->get = tig_get;
+  lc->close = tig_close;
+  lc->exit = tig_exit;
+  lc->probe = tig_probe;
+  lc->check = tig_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

@@ -307,3 +307,22 @@ int slv_supported()
 {
   return SUPPORT_ON;
 }
+
+int slv_register_cable(TicableLinkCable * lc)
+{
+  lc->init = slv_init;
+  lc->open = slv_open;
+  lc->put = slv_put;
+  lc->get = slv_get;
+  lc->close = slv_close;
+  lc->exit = slv_exit;
+  lc->probe = slv_probe;
+  lc->check = slv_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

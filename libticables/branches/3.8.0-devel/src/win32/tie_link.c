@@ -222,3 +222,22 @@ int tie_supported()
 {
   return SUPPORT_ON;
 }
+
+int tie_register_cable(TicableLinkCable * lc)
+{
+  lc->init = tie_init;
+  lc->open = tie_open;
+  lc->put = tie_put;
+  lc->get = tie_get;
+  lc->close = tie_close;
+  lc->exit = tie_exit;
+  lc->probe = tie_probe;
+  lc->check = tie_check;
+
+  lc->set_red_wire = NULL;
+  lc->set_white_wire = NULL;
+  lc->get_red_wire = NULL;
+  lc->get_white_wire = NULL;
+
+  return 0;
+}

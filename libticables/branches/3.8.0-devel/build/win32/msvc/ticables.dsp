@@ -69,8 +69,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "./tiglusb" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /D "ENABLE_NLS" /YX /FD /c
-# SUBTRACT CPP /Fr
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "./tiglusb" /D "_DEBUG" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "__I386__" /FD /c
+# SUBTRACT CPP /Fr /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
@@ -97,48 +97,56 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\TiglUsb.h
+SOURCE=..\..\..\src\win32\tiglusb.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\Avr_link.c
+SOURCE=..\..\..\src\win32\ioports.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Dev_link.c
+SOURCE=..\..\..\src\link_avr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dfl_link.c
+SOURCE=..\..\..\src\link_dev.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Par_link.c
+SOURCE=..\..\..\src\link_dfl.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Ser_link.c
+SOURCE=..\..\..\src\link_par.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\slv_link.c
+SOURCE=..\..\..\src\link_ser.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Tie_link.c
+SOURCE=..\..\..\src\link_slv.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Tig_link.c
+SOURCE=..\..\..\src\link_tie.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Vti_link.c
+SOURCE=..\..\..\src\link_tig.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Vtl_link.c
+SOURCE=..\..\..\src\link_vti.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\link_vtl.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\win32\porttalk.c
 # End Source File
 # End Group
 # Begin Group "Others"
@@ -146,39 +154,43 @@ SOURCE=..\..\src\Vtl_link.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\Error.c
+SOURCE=..\..\..\src\detect.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Intrface.c
+SOURCE=..\..\..\src\direct.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Ioports.c
+SOURCE=..\..\..\src\error.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Logging.c
+SOURCE=..\..\..\src\intrface.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\porttalk.c
+SOURCE=..\..\..\src\logging.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Probe.c
+SOURCE=..\..\..\src\mapping.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\timodules.c
+SOURCE=..\..\..\src\type2str.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\type2str.c
+SOURCE=..\..\..\src\verbose.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\verbose.c
+SOURCE=..\..\..\src\win32\win32_detect.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\win32\win32_mapping.c
 # End Source File
 # End Group
 # Begin Group "Headers"
@@ -186,136 +198,136 @@ SOURCE=..\..\src\verbose.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\Avr_link.h
+SOURCE=..\..\..\src\Avr_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Cabl_def.h
+SOURCE=..\..\..\src\Cabl_def.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Cabl_err.h
+SOURCE=..\..\..\src\Cabl_err.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Cabl_int.h
+SOURCE=..\..\..\src\Cabl_int.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\default.h
+SOURCE=..\..\..\src\default.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Dev_link.h
+SOURCE=..\..\..\src\Dev_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\externs.h
+SOURCE=..\..\..\src\externs.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Intl.h
+SOURCE=..\..\..\src\Intl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Iocompat.h
+SOURCE=..\..\..\src\Iocompat.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Ioports.h
+SOURCE=..\..\..\src\Ioports.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Links.h
+SOURCE=..\..\..\src\Links.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Logging.h
+SOURCE=..\..\..\src\Logging.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Par_link.h
+SOURCE=..\..\..\src\Par_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\pause.h
+SOURCE=..\..\..\src\pause.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\plerror.h
+SOURCE=..\..\..\src\plerror.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\porttalk_ioctl.h
+SOURCE=..\..\..\src\porttalk_ioctl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Probe.h
+SOURCE=..\..\..\src\Probe.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Ser_link.h
+SOURCE=..\..\..\src\Ser_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\slv_link.h
+SOURCE=..\..\..\src\slv_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Str.h
+SOURCE=..\..\..\src\Str.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticables.h
+SOURCE=..\..\..\src\ticables.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Tie_link.h
+SOURCE=..\..\..\src\Tie_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Tig_link.h
+SOURCE=..\..\..\src\Tig_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Timeout.h
+SOURCE=..\..\..\src\Timeout.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\timodules.h
+SOURCE=..\..\..\src\timodules.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\typedefs.h.old
+SOURCE=..\..\..\src\typedefs.h.old
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Usb_defs.h
+SOURCE=..\..\..\src\Usb_defs.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Verbose.h
+SOURCE=..\..\..\src\Verbose.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Vti_link.h
+SOURCE=..\..\..\src\Vti_link.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Vtl_link.h
+SOURCE=..\..\..\src\Vtl_link.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\Cabl_ver.h
+SOURCE=..\..\..\src\Cabl_ver.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\ChangeLog
+SOURCE=..\..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Export.h
+SOURCE=..\..\..\src\Export.h
 # End Source File
 # Begin Source File
 
