@@ -29,14 +29,14 @@ extern "C" {
 #endif
 
 	/****************/
-  /* Entry points */
+	/* Entry points */
 	/****************/
 
   int TICALL ticalc_init(void);
   int TICALL ticalc_exit(void);
 
 	/***********/
-  /* Methods */
+	/* Methods */
 	/***********/
 
   // intrface.c
@@ -76,14 +76,6 @@ extern "C" {
   TIEXPORT void TICALL ticalc_action_destroy_array(char **array);
 
   // tikeys.c
-/*#ifdef __WIN32__
-	// MSVC refuse to compile (C linkage function cannot return 
-	// C++ class 'ti_key')
-	extern const TicalcKey TI73_KEYS[];
-	extern const TicalcKey TI83P_KEYS[];
-	extern const TicalcKey TI89_KEYS[];
-	extern const TicalcKey TI92P_KEYS[];
-#else*/
   TIEXPORT const TicalcKey TICALL ticalc_73_keys(unsigned char
 						 ascii_code);
   TIEXPORT const TicalcKey TICALL ticalc_83p_keys(unsigned char
@@ -92,7 +84,6 @@ extern "C" {
 						 ascii_code);
   TIEXPORT const TicalcKey TICALL ticalc_92p_keys(unsigned char
 						  ascii_code);
-/*#endif*/
 
   // clock.c
   TIEXPORT const char *TICALL ticalc_clock_format2date(int value);
@@ -105,7 +96,7 @@ extern "C" {
   TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action);
 
 	/**************/
-  /* Deprecated */
+	/* Deprecated */
 	/**************/
 
 #define ticalc_flash_isready         ticalc_isready

@@ -185,7 +185,6 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
   *tree = g_node_new(NULL);
   vars = g_node_new(NULL);
   apps = g_node_new(NULL);
-  printf("<<%p %p\n", vars, apps);
   g_node_append(*tree, vars);
   g_node_append(*tree, apps);
 

@@ -168,6 +168,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = !0;
     calc->has_folder = !0;
     calc->memory = MEMORY_USED;
+    calc->is_flash = 0;
 
     calc->isready = ti92_isready;
     calc->send_key = ti92_send_key;
@@ -190,6 +191,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = !0;
     calc->has_folder = !0;
     calc->memory = MEMORY_USED;
+    calc->is_flash = !0;
 
     calc->isready = ti89_isready;
     calc->send_key = ti89_send_key;
@@ -212,6 +214,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = !0;
     calc->has_folder = 0;
     calc->memory = MEMORY_FREE;
+    calc->is_flash = 0;
 
     calc->isready = ti86_isready;
     calc->send_key = ti86_send_key;
@@ -232,6 +235,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = 0;
     calc->has_folder = 0;
     calc->memory = MEMORY_NONE;
+    calc->is_flash = 0;
 
     calc->isready = ti85_isready;
     calc->send_key = ti85_send_key;
@@ -252,6 +256,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = !0;
     calc->has_folder = 0;
     calc->memory = MEMORY_FREE;
+    calc->is_flash = 0;
 
     calc->isready = ti83_isready;
     calc->send_key = ti83_send_key;
@@ -272,6 +277,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = 0;
     calc->has_folder = 0;
     calc->memory = MEMORY_NONE;
+    calc->is_flash = 0;
 
     calc->isready = ti82_isready;
     calc->send_key = ti82_send_key;
@@ -293,6 +299,7 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->is_silent = !0;
     calc->has_folder = 0;
     calc->memory = MEMORY_FREE;
+    calc->is_flash = !0;
 
     calc->isready = ti73_isready;
     calc->send_key = ti73_send_key;

@@ -1,4 +1,3 @@
-/* Hey EMACS -*- linux-c -*- */
 /*  libticalcs - calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2003  Romain Lievin
  *
@@ -54,12 +53,9 @@ static void dirlist_display_vars(TNode * tree)
   int i, j, k;
   TNode *vars = tree;
 
-  DISPLAY(_
-	  ("+---------+------------------+---------+----+----+--------+---------+\n"));
-  DISPLAY(_
-	  ("| Name    | B. name          | T. name |Attr|Type|Size    |Parent   |\n"));
-  DISPLAY(_
-	  ("+---------+------------------+---------+----+----+--------+---------+\n"));
+  DISPLAY("+------------------+----------+----+----+----------+----------+\n");
+  DISPLAY(_("| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"));
+  DISPLAY("+------------------+----------+----+----+----------+----------+\n");
 
   for (i = 0; i < g_node_n_children(vars); i++)	// parse folders
   {
@@ -68,28 +64,19 @@ static void dirlist_display_vars(TNode * tree)
 
     if (fe != NULL) {
       DISPLAY("| ");
-      for (k = 0; k < 8; k++) {
-	if (isprint((fe->name)[k]))
-	  DISPLAY("%c", (fe->name)[k]);
-	else
-	  DISPLAY(" ");
-      }
-      DISPLAY("| ");
-      for (k = 0; k < 8; k++) {
+      for (k = 0; k < 8; k++)
 	DISPLAY("%02X", (uint8_t) (fe->name)[k]);
-      }
+      DISPLAY(" | ");	
+      DISPLAY("%8s", fe->trans);
       DISPLAY(" | ");
-      for (k = 0; k < 8; k++) {
-	if (isprint((fe->trans)[k]))
-	  DISPLAY("%c", (fe->trans)[k]);
-	else
-	  DISPLAY(" ");
-      }
-      DISPLAY("|");
-      DISPLAY(" %i  |", fe->attr);
-      DISPLAY(" %02X |", fe->type);
-      DISPLAY("%08X|", fe->size);
-      DISPLAY("%s |\n", fe->folder);
+      DISPLAY("%2i", fe->attr);
+      DISPLAY(" | ");
+      DISPLAY("%02X", fe->type);
+      DISPLAY(" | ");
+      DISPLAY("%08X", fe->size);
+      DISPLAY(" | ");
+      DISPLAY("%8s", fe->folder);
+      DISPLAY(" |\n");
     }
 
     for (j = 0; j < g_node_n_children(parent); j++)	//parse variables
@@ -99,34 +86,26 @@ static void dirlist_display_vars(TNode * tree)
 
       DISPLAY("| ");
       for (k = 0; k < 8; k++) {
-	if (isprint((ve->name)[k]))
-	  DISPLAY("%c", (ve->name)[k]);
-	else
-	  DISPLAY(" ");
-      }
-      DISPLAY("| ");
-      for (k = 0; k < 8; k++) {
 	DISPLAY("%02X", (uint8_t) (ve->name)[k]);
       }
       DISPLAY(" | ");
-      for (k = 0; k < 8; k++) {
-	if (isprint((ve->trans)[k]))
-	  DISPLAY("%c", (ve->trans)[k]);
-	else
-	  DISPLAY(" ");
-      }
-      DISPLAY("|");
-      DISPLAY(" %i  |", ve->attr);
-      DISPLAY(" %02X |", ve->type);
-      DISPLAY("%08X|", ve->size);
-      DISPLAY("%8s |\n", ve->folder);
+      DISPLAY("%8s", ve->trans);
+      DISPLAY(" | ");
+      DISPLAY("%2i", ve->attr);
+      DISPLAY(" | ");
+      DISPLAY("%02X", ve->type);
+      DISPLAY(" | ");
+      DISPLAY("%08X", ve->size);
+      DISPLAY(" | ");
+      DISPLAY("%8s", ve->folder);
+      DISPLAY(" |\n");
     }
   }
   if (!i)
     DISPLAY(_("  No variables\n"));
 
   DISPLAY(_
-	  ("+---------+------------------+---------+----+----+--------+---------+\n"));
+	  ("+------------------+----------+----+----+----------+----------+\n"));
 }
 
 static void dirlist_display_apps(TNode * tree)
@@ -134,9 +113,9 @@ static void dirlist_display_apps(TNode * tree)
   int i, k;
   TNode *apps = tree;
 
-  DISPLAY(_("+----------+------------------+----+----+---------+\n"));
-  DISPLAY(_("| Name     | B. name          |Attr|Type| Size    |\n"));
-  DISPLAY(_("+----------+------------------+----+----+---------+\n"));
+  DISPLAY("+------------------+----------+----+----+----------+\n");
+  DISPLAY(_("| B. name          | T. name  |Attr|Type| Size     |\n"));
+  DISPLAY("+------------------+----------+----+----+----------+\n");
 
   for (i = 0; i < g_node_n_children(apps); i++) {
     GNode *child = g_node_nth_child(apps, i);
@@ -145,25 +124,22 @@ static void dirlist_display_apps(TNode * tree)
 
     DISPLAY("| ");
     for (k = 0; k < 8; k++) {
-      if (isprint((ve->name)[k]))
-	DISPLAY("%c", (ve->name)[k]);
-      else
-	DISPLAY(" ");
-    }
-    DISPLAY(" | ");
-    for (k = 0; k < 8; k++) {
       DISPLAY("%02X", (uint8_t) (ve->name)[k]);
     }
-
-    DISPLAY(" |");
-    DISPLAY(" %i  |", ve->attr);
-    DISPLAY(" %02X |", ve->type);
-    DISPLAY("%08X |\n", ve->size);
+    DISPLAY(" | ");
+    DISPLAY("%8s", ve->trans);
+    DISPLAY(" | ");
+    DISPLAY("%2i", ve->attr);
+    DISPLAY(" | ");
+    DISPLAY("%02X", ve->type);
+    DISPLAY(" | ");
+    DISPLAY("%08X", ve->size);
+    DISPLAY(" |\n");
   }
   if (!i)
     DISPLAY(_("  No applications\n"));
 
-  DISPLAY(_("+----------+------------------+----+----+---------+\n"));
+  DISPLAY("+------------------+----------+----+----+----------+\n");
   DISPLAY("\n");
 }
 
@@ -198,17 +174,18 @@ TIEXPORT void TICALL ticalc_dirlist_display(TNode * tree)
 
   // Determine tree format
   if (tree->data == NULL) {
-    DISPLAY("dirlist form #1\n");
+    DISPLAY("dirlist form #1: vars & apps\n");
     dirlist_display1(tree);
   } else {
     char *node_name = (char *) tree->data;
 
-    DISPLAY("dirlist form #2\n");
-    if (!strcmp(node_name, VAR_NODE_NAME))
-      dirlist_display_vars(tree);
-    else if (!strcmp(node_name, APP_NODE_NAME))
-      dirlist_display_apps(tree);
-    else {
+    if (!strcmp(node_name, VAR_NODE_NAME)) {
+	    DISPLAY("dirlist form #2: vars\n");
+	    dirlist_display_vars(tree);
+    } else if (!strcmp(node_name, APP_NODE_NAME)) {
+	    DISPLAY("dirlist form #2: apps\n");
+	    dirlist_display_apps(tree);
+    } else {
       DISPLAY_ERROR("libticalcs: invalid tree !\n");
       DISPLAY_ERROR("Program halted before crashing...\n");
       exit(-1);

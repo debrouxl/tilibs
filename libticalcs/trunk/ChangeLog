@@ -1,4 +1,6 @@
-* 20030419 : v4.4.8 ($Rev$)
+* 20030424 : v4.4.9 ($Rev$)
+	* Merge up to 4.4.9.
+* 20030419 : v4.4.8 (Rev: 249)
 	* src/packets.h : endianness fixes.
 * 20030416 : v4.4.8 (Rev: 243)
 	* Merge up to 4.4.8.

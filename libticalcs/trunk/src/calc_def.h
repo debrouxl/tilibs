@@ -121,11 +121,10 @@ typedef struct {
   // Supported functions
   int (*supported_operations) (void);
 
-  // Silent calc model
+  // Model informations
   int is_silent;
   int has_folder;
   int memory;
-  // int is_flash; maybe I should add it later...
 
   // Communication functions
   int (*isready) (void);
@@ -150,6 +149,9 @@ typedef struct {
 
   int (*set_clock) (const TicalcClock * clock, int mode);
   int (*get_clock) (TicalcClock * clock, int mode);
+
+  // Added here for maintain structure alignment
+  int is_flash;
 } TicalcFunctions;
 typedef TicalcFunctions TicalcFncts;
 

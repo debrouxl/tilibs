@@ -131,12 +131,6 @@
 			path = ../src/ti85.h;
 			refType = 2;
 		};
-		0127D0EA017389D15041E0CA = {
-			isa = PBXFileReference;
-			name = ti83p.h;
-			path = ../src/ti83p.h;
-			refType = 2;
-		};
 		0127D0EB017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = ti83.h;
@@ -313,15 +307,6 @@
 		};
 		0127D110017389D15041E0CA = {
 			fileRef = 0127D0E9017389D15041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		0127D111017389D15041E0CA = {
-			fileRef = 0127D0EA017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 				ATTRIBUTES = (
@@ -554,7 +539,6 @@
 				0127D0E7017389D15041E0CA,
 				0127D0E8017389D15041E0CA,
 				0127D0E9017389D15041E0CA,
-				0127D0EA017389D15041E0CA,
 				0127D0EB017389D15041E0CA,
 				0127D0ED017389D15041E0CA,
 				F7C7C5890449954D01000306,
@@ -692,11 +676,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.4.8</string>
+	<string>4.4.9</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>4.4.8</string>
+	<string>4.4.9</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -727,7 +711,6 @@
 				0127D10E017389D15041E0CA,
 				0127D10F017389D15041E0CA,
 				0127D110017389D15041E0CA,
-				0127D111017389D15041E0CA,
 				0127D112017389D15041E0CA,
 				0127D114017389D15041E0CA,
 				F50A0D7701FC735001000102,
