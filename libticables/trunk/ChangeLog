@@ -8,6 +8,9 @@ Checking: valgrind & splint
 	
 Log:
 
+- 11/06/2004, version 3.8.6: jb
+	Added support for x86-64 (configure.ac, configure).
+
 - 22/05/2004, version 3.8.6: roms
 	Bug fixes from JB: buffer overflow in linux_detect.c, NULL functions
 	with direct link support.
