@@ -42,12 +42,12 @@
 			isa = PBXGroup;
 			name = Headers;
 			path = "";
-			refType = 4;
+			refType = 2;
 		};
 		0127DA230170FC105041E0CA = {
 			isa = PBXFileReference;
 			path = config.h;
-			refType = 4;
+			refType = 2;
 		};
 		0127DA240170FC105041E0CA = {
 			fileRef = 0127DA230170FC105041E0CA;
@@ -92,12 +92,14 @@
 			);
 			isa = PBXGroup;
 			name = Products;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		034768E0FF38A50411DB9C8B = {
 			isa = PBXFrameworkReference;
-			path = libticables.framework;
-			refType = 3;
+			name = libticables.framework;
+			path = build/libticables.framework;
+			refType = 2;
 		};
 //030
 //031
@@ -132,7 +134,7 @@
 			isa = PBXGroup;
 			name = Sources;
 			path = "";
-			refType = 4;
+			refType = 2;
 		};
 //040
 //041
@@ -335,7 +337,8 @@
 			);
 			isa = PBXGroup;
 			name = Resources;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		089C1666FE841158C02AAC07 = {
 			children = (
@@ -343,14 +346,15 @@
 			);
 			isa = PBXVariantGroup;
 			name = InfoPlist.strings;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		089C1667FE841158C02AAC07 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
 			name = English;
 			path = English.lproj/InfoPlist.strings;
-			refType = 4;
+			refType = 2;
 		};
 		089C1668FE841158C02AAC07 = {
 			fileRef = 089C1666FE841158C02AAC07;
@@ -397,44 +401,44 @@
 		18D1B3910170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = compat.h;
-			path = /Users/julien/devel/libticables/src/compat.h;
-			refType = 0;
+			path = ../src/compat.h;
+			refType = 2;
 		};
 		18D1B3920170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = cabl_ver.h;
-			path = /Users/julien/devel/libticables/src/cabl_ver.h;
-			refType = 0;
+			path = ../src/cabl_ver.h;
+			refType = 2;
 		};
 		18D1B3930170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = cabl_int.h;
-			path = /Users/julien/devel/libticables/src/cabl_int.h;
-			refType = 0;
+			path = ../src/cabl_int.h;
+			refType = 2;
 		};
 		18D1B3940170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = cabl_ext.h;
-			path = /Users/julien/devel/libticables/src/cabl_ext.h;
-			refType = 0;
+			path = ../src/cabl_ext.h;
+			refType = 2;
 		};
 		18D1B3950170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = cabl_err.h;
-			path = /Users/julien/devel/libticables/src/cabl_err.h;
-			refType = 0;
+			path = ../src/cabl_err.h;
+			refType = 2;
 		};
 		18D1B3960170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = cabl_def.h;
-			path = /Users/julien/devel/libticables/src/cabl_def.h;
-			refType = 0;
+			path = ../src/cabl_def.h;
+			refType = 2;
 		};
 		18D1B3970170FD1C5041E0CA = {
 			isa = PBXFileReference;
 			name = avr_link.h;
-			path = /Users/julien/devel/libticables/src/avr_link.h;
-			refType = 0;
+			path = ../src/avr_link.h;
+			refType = 2;
 		};
 		18D1B3980170FD1C5041E0CA = {
 			fileRef = 18D1B3910170FD1C5041E0CA;
@@ -502,8 +506,8 @@
 		18D1B39F0170FD245041E0CA = {
 			isa = PBXFileReference;
 			name = default.h;
-			path = /Users/julien/devel/libticables/src/default.h;
-			refType = 0;
+			path = ../src/default.h;
+			refType = 2;
 		};
 		18D1B3A00170FD245041E0CA = {
 			fileRef = 18D1B39F0170FD245041E0CA;
@@ -517,8 +521,8 @@
 		18D1B3A10170FD2A5041E0CA = {
 			isa = PBXFileReference;
 			name = dev_link.h;
-			path = /Users/julien/devel/libticables/src/dev_link.h;
-			refType = 0;
+			path = ../src/dev_link.h;
+			refType = 2;
 		};
 		18D1B3A20170FD2A5041E0CA = {
 			fileRef = 18D1B3A10170FD2A5041E0CA;
@@ -532,14 +536,14 @@
 		18D1B3A30170FD395041E0CA = {
 			isa = PBXFileReference;
 			name = export.h;
-			path = /Users/julien/devel/libticables/src/export.h;
-			refType = 0;
+			path = ../src/export.h;
+			refType = 2;
 		};
 		18D1B3A40170FD395041E0CA = {
 			isa = PBXFileReference;
 			name = intl.h;
-			path = /Users/julien/devel/libticables/src/intl.h;
-			refType = 0;
+			path = ../src/intl.h;
+			refType = 2;
 		};
 		18D1B3A50170FD395041E0CA = {
 			fileRef = 18D1B3A30170FD395041E0CA;
@@ -562,116 +566,116 @@
 		18D1B3A70170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = plerror.h;
-			path = /Users/julien/devel/libticables/src/plerror.h;
-			refType = 0;
+			path = ../src/plerror.h;
+			refType = 2;
 		};
 		18D1B3A80170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = par_link.h;
-			path = /Users/julien/devel/libticables/src/par_link.h;
-			refType = 0;
+			path = ../src/par_link.h;
+			refType = 2;
 		};
 		18D1B3A90170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = macros.h;
-			path = /Users/julien/devel/libticables/src/macros.h;
-			refType = 0;
+			path = ../src/macros.h;
+			refType = 2;
 		};
 		18D1B3AA0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = logging.h;
-			path = /Users/julien/devel/libticables/src/logging.h;
-			refType = 0;
+			path = ../src/logging.h;
+			refType = 2;
 		};
 		18D1B3AB0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = links.h;
-			path = /Users/julien/devel/libticables/src/links.h;
-			refType = 0;
+			path = ../src/links.h;
+			refType = 2;
 		};
 		18D1B3AC0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = ioports.h;
-			path = /Users/julien/devel/libticables/src/ioports.h;
-			refType = 0;
+			path = ../src/ioports.h;
+			refType = 2;
 		};
 		18D1B3AD0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = iocompat.h;
-			path = /Users/julien/devel/libticables/src/iocompat.h;
-			refType = 0;
+			path = ../src/iocompat.h;
+			refType = 2;
 		};
 		18D1B3AE0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = ugl_link.h;
-			path = /Users/julien/devel/libticables/src/ugl_link.h;
-			refType = 0;
+			path = ../src/ugl_link.h;
+			refType = 2;
 		};
 		18D1B3AF0170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = typedefs.h;
-			path = /Users/julien/devel/libticables/src/typedefs.h;
-			refType = 0;
+			path = ../src/typedefs.h;
+			refType = 2;
 		};
 		18D1B3B00170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = vtl_link.h;
-			path = /Users/julien/devel/libticables/src/vtl_link.h;
-			refType = 0;
+			path = ../src/vtl_link.h;
+			refType = 2;
 		};
 		18D1B3B10170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = vti_link.h;
-			path = /Users/julien/devel/libticables/src/vti_link.h;
-			refType = 0;
+			path = ../src/vti_link.h;
+			refType = 2;
 		};
 		18D1B3B20170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = verbose.h;
-			path = /Users/julien/devel/libticables/src/verbose.h;
-			refType = 0;
+			path = ../src/verbose.h;
+			refType = 2;
 		};
 		18D1B3B30170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = usb_defs.h;
-			path = /Users/julien/devel/libticables/src/usb_defs.h;
-			refType = 0;
+			path = ../src/usb_defs.h;
+			refType = 2;
 		};
 		18D1B3B40170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = tpu_link.h;
-			path = /Users/julien/devel/libticables/src/tpu_link.h;
-			refType = 0;
+			path = ../src/tpu_link.h;
+			refType = 2;
 		};
 		18D1B3B50170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = timeout.h;
-			path = /Users/julien/devel/libticables/src/timeout.h;
-			refType = 0;
+			path = ../src/timeout.h;
+			refType = 2;
 		};
 		18D1B3B60170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = tig_link.h;
-			path = /Users/julien/devel/libticables/src/tig_link.h;
-			refType = 0;
+			path = ../src/tig_link.h;
+			refType = 2;
 		};
 		18D1B3B70170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = tie_link.h;
-			path = /Users/julien/devel/libticables/src/tie_link.h;
-			refType = 0;
+			path = ../src/tie_link.h;
+			refType = 2;
 		};
 		18D1B3B80170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = str.h;
-			path = /Users/julien/devel/libticables/src/str.h;
-			refType = 0;
+			path = ../src/str.h;
+			refType = 2;
 		};
 		18D1B3B90170FD5A5041E0CA = {
 			isa = PBXFileReference;
 			name = ser_link.h;
-			path = /Users/julien/devel/libticables/src/ser_link.h;
-			refType = 0;
+			path = ../src/ser_link.h;
+			refType = 2;
 		};
 		18D1B3BA0170FD5A5041E0CA = {
 			fileRef = 18D1B3A70170FD5A5041E0CA;
@@ -847,104 +851,104 @@
 		18D1B3CD0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = verbose.c;
-			path = /Users/julien/devel/libticables/src/verbose.c;
-			refType = 0;
+			path = ../src/verbose.c;
+			refType = 2;
 		};
 		18D1B3CE0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = ugl_link.c;
-			path = /Users/julien/devel/libticables/src/ugl_link.c;
-			refType = 0;
+			path = ../src/ugl_link.c;
+			refType = 2;
 		};
 		18D1B3CF0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = tpu_link.c;
-			path = /Users/julien/devel/libticables/src/tpu_link.c;
-			refType = 0;
+			path = ../src/tpu_link.c;
+			refType = 2;
 		};
 		18D1B3D00170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = avr_link.c;
-			path = /Users/julien/devel/libticables/src/avr_link.c;
-			refType = 0;
+			path = ../src/avr_link.c;
+			refType = 2;
 		};
 		18D1B3D10170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = intrface.c;
-			path = /Users/julien/devel/libticables/src/intrface.c;
-			refType = 0;
+			path = ../src/intrface.c;
+			refType = 2;
 		};
 		18D1B3D20170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = probe.c;
-			path = /Users/julien/devel/libticables/src/probe.c;
-			refType = 0;
+			path = ../src/probe.c;
+			refType = 2;
 		};
 		18D1B3D30170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = par_link.c;
-			path = /Users/julien/devel/libticables/src/par_link.c;
-			refType = 0;
+			path = ../src/par_link.c;
+			refType = 2;
 		};
 		18D1B3D40170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = logging.c;
-			path = /Users/julien/devel/libticables/src/logging.c;
-			refType = 0;
+			path = ../src/logging.c;
+			refType = 2;
 		};
 		18D1B3D50170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = ioports.c;
-			path = /Users/julien/devel/libticables/src/ioports.c;
-			refType = 0;
+			path = ../src/ioports.c;
+			refType = 2;
 		};
 		18D1B3D60170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = default.c;
-			path = /Users/julien/devel/libticables/src/default.c;
-			refType = 0;
+			path = ../src/default.c;
+			refType = 2;
 		};
 		18D1B3D70170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = error.c;
-			path = /Users/julien/devel/libticables/src/error.c;
-			refType = 0;
+			path = ../src/error.c;
+			refType = 2;
 		};
 		18D1B3D80170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = dev_link.c;
-			path = /Users/julien/devel/libticables/src/dev_link.c;
-			refType = 0;
+			path = ../src/dev_link.c;
+			refType = 2;
 		};
 		18D1B3DA0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = vtl_link.c;
-			path = /Users/julien/devel/libticables/src/vtl_link.c;
-			refType = 0;
+			path = ../src/vtl_link.c;
+			refType = 2;
 		};
 		18D1B3DB0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = vti_link.c;
-			path = /Users/julien/devel/libticables/src/vti_link.c;
-			refType = 0;
+			path = ../src/vti_link.c;
+			refType = 2;
 		};
 		18D1B3DC0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = tig_link.c;
-			path = /Users/julien/devel/libticables/src/tig_link.c;
-			refType = 0;
+			path = ../src/tig_link.c;
+			refType = 2;
 		};
 		18D1B3DD0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = tie_link.c;
-			path = /Users/julien/devel/libticables/src/tie_link.c;
-			refType = 0;
+			path = ../src/tie_link.c;
+			refType = 2;
 		};
 		18D1B3DE0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = ser_link.c;
-			path = /Users/julien/devel/libticables/src/ser_link.c;
-			refType = 0;
+			path = ../src/ser_link.c;
+			refType = 2;
 		};
 		18D1B3DF0170FD845041E0CA = {
 			fileRef = 18D1B3CD0170FD845041E0CA;

@@ -17,5 +17,7 @@
 * 20011209 : v2.2.0-osx0.0.5
 	* Merge up to 2.2.0
 	* Do not include detect.c, it's a test file !!
+* 20011216 : v2.2.0-osx0.0.5
+	* Fixed path in PB project files
 	
 	

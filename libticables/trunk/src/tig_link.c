@@ -24,7 +24,7 @@
 #include "cabl_def.h"
 #include "export.h"
 
-#if defined(__LINUX__) || defined(__SPARC__)
+#if defined(__LINUX__) || defined(__SPARC__) || defined(__MACOSX__)
 
 #include <config.h>
 #include <stdio.h>
@@ -77,7 +77,11 @@ int tig_init_port()
   // nothing for the moment
 
   /* Open the device */
+#ifndef __MACOSX__
   if( (dev_fd = open(device, O_RDWR | O_SYNC )) == -1 )
+#else
+  if( (dev_fd = open(device, O_RDWR | O_NDELAY)) == -1 )
+#endif
     {
       fprintf(stderr, "Unable to open this serial port: %s\n", device);
       return ERR_OPEN_SER_DEV;
