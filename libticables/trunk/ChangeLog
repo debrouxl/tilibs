@@ -53,6 +53,9 @@
 	* Merge up to 3.1.5.
 * 20020224 : v3.1.6
 	* Merge up to 3.1.6.
+* 20020305 : v3.2.1
+	* Merge up to 3.2.1.
+	* Get rid of console.log. At last.
 	
 
 

@@ -22,7 +22,8 @@
 #if defined(__UNIX__) || defined(__LINUX__)
 # include <string.h>
 #elif defined(__WIN32__)
-# include <strings.h>
+//# include <strings.h>
+#include <string.h>
 #elif defined(__WIN16__)
 # include <strings.h>
 #elif defined(__DOS__)

@@ -27,7 +27,6 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <unistd.h>
 #ifdef __WIN32__
 # include <windows.h>
 #endif
@@ -60,7 +59,9 @@
 
 // Store in a file what is displayed in the console
 #define LOG_FILE "console.log"
+#ifndef __MACOSX__
 static FILE *flog = NULL;
+#endif
 
 #if defined(__LINUX__)
 #elif defined(__WIN32__)
@@ -70,12 +71,12 @@ static FILE *flog = NULL;
 #endif
 
 /* 
-   This function is equivalent to 'fprintf(st_out, ...)' but 
+   This function is equivalent to 'fprintf(out, ...)'
    if the VERBOSE constant is defined.
-   Default behaviour: st_out = stdout;
+   Default behaviour: out = stdout;
 */
 static FILE* out = NULL; // stdout by default
-static FILE* old = NULL;   // old stream pointer
+static FILE* old = NULL; // old stream pointer
 static FILE *f = NULL;
 
 TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream)
@@ -104,7 +105,9 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
   if(verbosity)
     {
       if(out == NULL)  out = stdout;
+#ifndef __MACOSX__
       if(flog == NULL) flog = fopen(LOG_FILE, "wt");
+#endif
       
       // Under Win32, we redirect stdout to the console
 #if defined(__WIN32__)				
@@ -123,18 +126,25 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 #ifdef VERBOSE
       va_start(ap, format);
       ret = vfprintf(out, format, ap);
+      va_end(ap);
+# ifndef __MACOSX__
+      va_start(ap, format);
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
+# endif
 #endif
     }
+
+#ifndef __MACOSX__
   if(f != NULL)
     {
-#ifdef VERBOSE
+# ifdef VERBOSE
       va_start(ap, format);
       ret = vfprintf(f, format, ap);
       va_end(ap);
-#endif
+# endif
     }
+#endif
 
   return ret;
 }
@@ -150,10 +160,12 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
   
   if(verbosity)
     {
+#ifndef __MACOSX__
       if(flog == NULL)
 	{
 	  flog = fopen(LOG_FILE, "wt");
 	}
+#endif
       
       // Under Win32, we redirect stderr to the console
 #if defined(__WIN32__)				
@@ -172,10 +184,12 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 #ifdef VERBOSE
       va_start(ap, format);
       fprintf(stderr, "Error: ");
-      if(flog) fprintf(flog, "Error: ");
       ret=vfprintf(stderr, format, ap);
+# ifndef __MACOSX__
+      if(flog)  fprintf(flog, "Error: ");
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
+# endif
 #endif
     }
 
