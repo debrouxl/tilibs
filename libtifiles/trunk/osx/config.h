@@ -23,4 +23,6 @@
 
 #define VERSION "0.5.3"
 
+#define WORDS_BIGENDIAN
+
 #endif /* __CONFIG_H__ */

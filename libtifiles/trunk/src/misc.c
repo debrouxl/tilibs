@@ -30,6 +30,10 @@
 #include "export.h"
 #include "file_int.h"
 
+#define bswap_16(a) (a >> 8) | (a << 8)
+
+#define bswap_32(x) (x >> 24) | (x & 0xff0000) >> 8 | (x & 0xff00) << 8 | (x & 0xff) << 24
+
 /*
   Dump into hexadecimal format the content of a buffer
   - ptr [in]: a pointer on some data to dump
@@ -146,22 +150,34 @@ int fread_byte(FILE * f, uint8_t * data)
 
 int fread_word(FILE * f, uint16_t * data)
 {
+  int ret = 0;
   if (data != NULL)
-    return fread((void *) data, sizeof(uint16_t), 1, f);
+  {
+    ret = fread((void *) data, sizeof(uint16_t), 1, f);
+#ifdef WORDS_BIGENDIAN
+    *data = bswap_16(*data);
+#endif /* WORDS_BIGENDIAN */
+  }
   else
     fskip(f, 2);
 
-  return 0;
+  return ret;
 }
 
 int fread_long(FILE * f, uint32_t * data)
 {
+  int ret = 0;
   if (data != NULL)
-    return fread((void *) data, sizeof(uint32_t), 1, f);
+  {
+    ret = fread((void *) data, sizeof(uint32_t), 1, f);
+#ifdef WORDS_BIGENDIAN
+    *data = bswap_32(*data);
+#endif /* WORDS_BIGENDIAN */
+  }
   else
     fskip(f, 4);
 
-  return 0;
+  return ret;
 }
 
 /****************************/
@@ -175,11 +191,17 @@ int fwrite_byte(FILE * f, uint8_t data)
 
 int fwrite_word(FILE * f, uint16_t data)
 {
+#ifdef WORDS_BIGENDIAN
+  data = bswap_16(data);
+#endif /* WORDS_BIGENDIAN */
   return fwrite(&data, sizeof(uint16_t), 1, f);
 }
 
 int fwrite_long(FILE * f, uint32_t data)
 {
+#ifdef WORDS_BIGENDIAN
+  data = bswap_32(data);
+#endif /* WORDS_BIGENDIAN */
   return fwrite(&data, sizeof(uint32_t), 1, f);
 }
 
