@@ -5,6 +5,20 @@ To do:
 
 Log:
 
+- 26/03/2005, version 0.0.1: roms
+	* error management left untouched
+	* logging reworked (use glib)
+	- use dynamic buffer rather static ones
+	- a single public header with functions & defs, others are private
+
+Planning:
+	- documentation system will be changed
+	- functions pointers will be removed
+	- glib will be heavily used (strings, logging, ...)
+	- an handle will be used for calls
+
+====[ Version II ]====
+
 - 05/03/2005, version 0.6.3: roms
 	Added gcc 4.0 -fvisibility flag support.
 	

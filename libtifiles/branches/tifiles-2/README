@@ -19,7 +19,7 @@ Development platform:
 
   - Linux Debian Potatoe, 2.4.14 kernel
 
-  - Windows 95/98/Me & Windows NT4/2000/XP
+  - Windows
 
 --------------------------------------------------------------------------
 Requirements
@@ -28,6 +28,8 @@ Requirements
   - A UNIX computer and C compiler (gcc) for the Linux version
 or
   - A *BSD (FreeBSD) computer and C compiler (gcc)
+or 
+  - A WIN32 computer and C compiler (MSVC or MinGW)
 
 --------------------------------------------------------------------------
 Compilation
@@ -50,7 +52,7 @@ Availability
 Copyright
 --------------------------------------------------------------------------
 
-tifiles library is Copyright (C) 1999-2004 by the TiLP team:
+tifiles library is Copyright (C) 1999-2005 by the TiLP team:
 <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public
@@ -58,9 +60,5 @@ License (LGPL). See the file COPYING for more details.
 
 --------------------------------------------------------------------------
 
-Please report any bugs, questions, ...  (please give me
-your platform, your calculator type (with ROM version)
-and your link cable model).
-
-
+Please report any bugs, questions, ...
 The TiLP team <tilp-users@lists.sf.net>

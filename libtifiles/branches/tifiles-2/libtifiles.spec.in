@@ -1,8 +1,8 @@
-# libtiff.spec
+# libfiles-2.spec
 #
 # Copyright (c) 2002 roms roms@tilp.info
 #
-%define name libtiff
+%define name libtifiles-2
 %define version @VERSION@
 %define release 1
 %define manifest %{_builddir}/%{name}-%{version}-%{release}.manifest
@@ -41,7 +41,7 @@ Summary: Ti File Format management
 %description
 Ti File Format management
 @configure_input@
-Please edit libtiff.spec.in to add several more lines of description
+Please edit libtifiles-2.spec.in to add several more lines of description
 here if appropriate, and to delete these instructions.
 
 %prep

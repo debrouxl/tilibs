@@ -23,18 +23,9 @@
   Variable type ID and file extensions
 */
 
-#include <stdio.h>
-#include <string.h>
 #include "gettext.h"
-
-#include "export.h"
 #include "types92.h"
-#include "printl.h"
-
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
-
+#include "logging.h"
 
 /*
   Is missing:
@@ -44,7 +35,8 @@
   Table Setup (.89t)
   Lab Report (92r)
 */
-const char *TI92_CONST[TI92_MAXTYPES + 1][4] = {
+const char *TI92_CONST[TI92_MAXTYPES + 1][4] = 
+{
   {"EXPR", "92e", "Expression", N_("Expression")},
   {"", "92?", "Unknown", N_("Unknown")},
   {"", "92?", "Unknown", N_("Unknown")},
@@ -100,57 +92,63 @@ const char *TI92_CONST[TI92_MAXTYPES + 1][4] = {
 // Return the type corresponding to the value
 const char *ti92_byte2type(uint8_t data)
 {
-  return (data < TI92_MAXTYPES) ? TI92_CONST[data][0] : "";
+	g_assert(data < TI92_MAXTYPES);
+	return (data < TI92_MAXTYPES) ? TI92_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
 uint8_t ti92_type2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI92_MAXTYPES; i++) {
-    if (!strcmp(TI92_CONST[i][0], s))
-      break;
-  }
+	for (i = 0; i < TI92_MAXTYPES; i++) 
+	{
+		if (!strcmp(TI92_CONST[i][0], s))
+			break;
+	}
 
-  if (i == TI92_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI92_MAXTYPES)
+		tifiles_warning( _("ti92_type2byte: unknown type."));
 
-  return i;
+	return i;
 }
 
 // Return the file extension corresponding to the value
 const char *ti92_byte2fext(uint8_t data)
 {
-  return (data < TI92_MAXTYPES) ? TI92_CONST[data][1] : "92?";
+	g_assert(data < TI92_MAXTYPES);
+	return (data < TI92_MAXTYPES) ? TI92_CONST[data][1] : "92?";
 }
 
 // Return the value corresponding to the file extension
 uint8_t ti92_fext2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI92_MAXTYPES; i++) {
-    if (!strcasecmp(TI92_CONST[i][1], s))
-      break;
-  }
+	for (i = 0; i < TI92_MAXTYPES; i++) 
+	{
+		if (!g_ascii_strcasecmp(TI92_CONST[i][1], s))
+			break;
+	}
 
-  if (i == TI92_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI92_MAXTYPES)
+		tifiles_warning(_("ti92_fext2byte: unknown type."));
 
-  return i;
+	return i;
 }
 
 // Return the descriptive associated with the vartype
 const char *ti92_byte2desc(uint8_t data)
 {
-  return (data < TI92_MAXTYPES) ? TI92_CONST[data][2] : _("Unknown");
+	g_assert(data < TI92_MAXTYPES);
+	return (data < TI92_MAXTYPES) ? TI92_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *ti92_byte2icon(uint8_t data)
 {
-  return (data < TI92_MAXTYPES) ? TI92_CONST[data][3] : "Unknown";
+	g_assert(data < TI92_MAXTYPES);
+	return (data < TI92_MAXTYPES) ? TI92_CONST[data][3] : "Unknown";
 }
 
 

@@ -1,10 +1,10 @@
 Begin3
-Title:		libtifiles
+Title:		libtifiles-2
 Version:	@VERSION@
 Entered-date:	@ISODATE@
 Description:	Ti File Format management
 		@configure_input@
-		Please edit libtifiles.lsm.in to fix the Keywords and
+		Please edit libtifiles-2.lsm.in to fix the Keywords and
 		Primary-site entries, add several more lines of
 		description here if appropriate, and to delete these
 		instructions.
@@ -13,7 +13,7 @@ Author: 	roms@tilp.info (Romain Lievin)
 Maintained-by:	roms@tilp.info (Romain Lievin)
 Primary-site:	http://tilp.info
 		31k libtifiles-@VERSION@.tar.gz
-		500  libtifiles.lsm
+		500  libtifiles-2.lsm
 Alternate-site: http://tilp.sourceforge.net
 Original-site:  http://lpg.ticalc.org/prj_tilp/
 Platforms:      Linux, Windows, Mac OS-X, FreeBSD

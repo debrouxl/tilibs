@@ -23,17 +23,9 @@
   Variable type ID and file extensions
 */
 
-#include <stdio.h>
-#include <string.h>
 #include "gettext.h"
-
-#include "export.h"
 #include "typesv2.h"
-#include "printl.h"
-
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
+#include "logging.h"
 
 /*
   Is missing :
@@ -99,57 +91,63 @@ const char *V200_CONST[V200_MAXTYPES + 1][4] = {
 // Return the type corresponding to the value
 const char *v200_byte2type(uint8_t data)
 {
-  return (data < V200_MAXTYPES) ? V200_CONST[data][0] : "";
+	g_assert(data < V200_MAXTYPES);
+	return (data < V200_MAXTYPES) ? V200_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
 uint8_t v200_type2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < V200_MAXTYPES; i++) {
-    if (!strcmp(V200_CONST[i][0], s))
-      break;
-  }
+	for (i = 0; i < V200_MAXTYPES; i++) 
+	{
+		if (!strcmp(V200_CONST[i][0], s))
+			break;
+	}
 
-  if (i == V200_MAXTYPES)
-    printl3(1, _("unknown type. There is a bug. Please report this information.\n"));
+	if (i == V200_MAXTYPES)
+		tifiles_warning( _("v200_type2byte: unknown type."));
 
-  return i;
+	return i;
 }
 
 // Return the file extension corresponding to the value
 const char *v200_byte2fext(uint8_t data)
 {
-  return (data < V200_MAXTYPES) ? V200_CONST[data][1] : "v2?";
+	g_assert(data < V200_MAXTYPES);
+	return (data < V200_MAXTYPES) ? V200_CONST[data][1] : "v2?";
 }
 
 // Return the value corresponding to the file extension
 uint8_t v200_fext2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < V200_MAXTYPES; i++) {
-    if (!strcasecmp(V200_CONST[i][1], s))
-      break;
-  }
+	for (i = 0; i < V200_MAXTYPES; i++) 
+	{
+		if (!g_ascii_strcasecmp(V200_CONST[i][1], s))
+			break;
+	}
 
-  if (i == V200_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == V200_MAXTYPES)
+		tifiles_warning( _("v200_fext2byte: unknown type.\n"));
 
-  return i;
+	return i;
 }
 
 // Return the descriptive associated with the vartype
 const char *v200_byte2desc(uint8_t data)
 {
-  return (data < V200_MAXTYPES) ? V200_CONST[data][2] : _("Unknown");
+	g_assert(data < V200_MAXTYPES);
+	return (data < V200_MAXTYPES) ? V200_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *v200_byte2icon(uint8_t data)
 {
-  return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
+	g_assert(data < V200_MAXTYPES);
+	return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
 }
 
 

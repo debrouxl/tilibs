@@ -35,9 +35,9 @@
 
 #include "gettext.h"
 #include "typesxx.h"
-#include "file_int.h"
+#include "tifiles.h"
 #include "macros.h"
-#include "printl.h"
+#include "logging.h"
 
 
 extern int tifiles_calc_type;
@@ -328,7 +328,7 @@ static char *ti8x_detokenize_varname(const char *varname, char *translate,
 TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname, 
 						 char *translate,
 						 uint8_t vartype,
-						 TicalcType calc_type)
+						 TiCalcType calc_type)
 {
   switch (calc_type) {
   case CALC_TI73:
@@ -851,7 +851,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_ascii; 
       break;
 	default:
-		printl3(2, _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
+		tifiles_error( _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
 		exit(-1);
     }
 
@@ -894,7 +894,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_latin1; 
       break;
 	default:
-	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  tifiles_error( "libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }
@@ -940,7 +940,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
 		f = transcode_from_ti9x_charset_to_utf8; 
       break;
 	default:
-	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
+	  tifiles_error("libtifiles error: unknown calc type. Program halted before crashing !\n");
 		exit(-1);
 	break;
     }
@@ -968,14 +968,14 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
 
 
 // set to ISO8859-1 for compatibility with previous releases
-static TifileEncoding tifiles_encoding = ENCODING_LATIN1;
+static TiFileEncoding tifiles_encoding = ENCODING_LATIN1;
 
-TIEXPORT void TICALL tifiles_translate_set_encoding(TifileEncoding encoding)
+TIEXPORT void TICALL tifiles_translate_set_encoding(TiFileEncoding encoding)
 {
   tifiles_encoding = encoding;
 }
 
-TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void)
+TIEXPORT TiFileEncoding TICALL tifiles_translate_get_encoding(void)
 {
   return tifiles_encoding;
 }
@@ -986,7 +986,7 @@ TIEXPORT TifileEncoding TICALL tifiles_translate_get_encoding(void)
 */
 
 char *tixx_translate_varname(const char *varname, char *translate,
-			     uint8_t vartype, TicalcType calc_type)
+			     uint8_t vartype, TiCalcType calc_type)
 {
   char detokenized[18];
   char *src = detokenized;

@@ -25,7 +25,7 @@
 #include "export.h"
 
 char *tixx_translate_varname(const char *varname, char *translate,
-			     uint8_t vartype, TicalcType calc_type);
+			     uint8_t vartype, TiCalcType calc_type);
 
 char *ti73_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);

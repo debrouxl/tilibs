@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -150,18 +150,6 @@ SOURCE=..\..\src\export.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\file_def.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\file_err.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\file_int.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\files8X.h
 # End Source File
 # Begin Source File
@@ -174,6 +162,10 @@ SOURCE=..\..\src\filesXX.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\gettext.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\grp_ops.h
 # End Source File
 # Begin Source File
@@ -182,7 +174,7 @@ SOURCE=..\..\src\intelhex.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\intl.h
+SOURCE=..\..\src\logging.h
 # End Source File
 # Begin Source File
 
@@ -195,6 +187,10 @@ SOURCE=..\..\src\misc.h
 # Begin Source File
 
 SOURCE=..\..\src\plerror.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\stdints.h
 # End Source File
 # Begin Source File
 
@@ -286,11 +282,11 @@ SOURCE=..\..\src\intrface.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\misc.c
+SOURCE=..\..\src\logging.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\printl.c
+SOURCE=..\..\src\misc.c
 # End Source File
 # Begin Source File
 
@@ -312,6 +308,10 @@ SOURCE=..\..\src\file_ver.h
 # Begin Source File
 
 SOURCE=.\tifiles.rc
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
 # End Project

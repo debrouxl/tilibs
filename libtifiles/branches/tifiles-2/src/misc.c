@@ -29,9 +29,8 @@
 #include "stdints.h"
 #include <sys/stat.h>
 
-#include "export.h"
-#include "file_int.h"
-#include "printl.h"
+#include "tifiles.h"
+#include "logging.h"
 
 #define bswap_16(a) (a >> 8) | (a << 8)
 
@@ -48,8 +47,8 @@ TIEXPORT int TICALL hexdump(uint8_t * ptr, int len)
   int i;
 
   for (i = 0; i < len; i++)
-    printl3(0, "%02X ", ptr[i]);
-  printl3(0, "\n");
+    tifiles_info("%02X ", ptr[i]);
+  tifiles_info("\n");
 
   return 0;
 }
@@ -95,8 +94,8 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
   l = strlen(s);
   if (l > n) {
-    printl3(2, "string passed in 'write_string8' is too long (>n chars).\n");
-    printl3(2, "s = <%s>, len(s) = %i\n", s, strlen(s));
+    tifiles_error("string passed in 'write_string8' is too long (>n chars).\n");
+    tifiles_error( "s = <%s>, len(s) = %i\n", s, strlen(s));
     hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
     abort();
   }
@@ -307,7 +306,7 @@ char *TICALL tifiles_get_fldname(const char *full_name)
    - varname [in]: the variable name
    - [out]: aalways 0.
 */
-extern TicalcType tifiles_calc_type;
+extern TiCalcType tifiles_calc_type;
 int TICALL tifiles_build_fullname(char *full_name,
 				  const char *fldname, const char *varname)
 {

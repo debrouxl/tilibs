@@ -23,20 +23,12 @@
   Variable type ID and file extensions
 */
 
-#include <stdio.h>
-#include <string.h>
 #include "gettext.h"
-
-#include "export.h"
 #include "types85.h"
-#include "printl.h"
+#include "logging.h"
 
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
-
-
-const char *TI85_CONST[TI85_MAXTYPES + 1][4] = {
+const char *TI85_CONST[TI85_MAXTYPES + 1][4] = 
+{
   {"REAL", "85n", "Real", N_("Real")},
   {"CPLX", "85c", "Complex", N_("Complex")},
   {"VECT", "85v", "Vector", N_("Vector")},
@@ -92,7 +84,8 @@ const char *TI85_CONST[TI85_MAXTYPES + 1][4] = {
 // Return the type corresponding to the value
 const char *ti85_byte2type(uint8_t data)
 {
-  return (data < TI85_MAXTYPES) ? TI85_CONST[data][0] : "";
+	g_assert(data < TI85_MAXTYPES);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
@@ -106,7 +99,7 @@ uint8_t ti85_type2byte(const char *s)
   }
 
   if (i == TI85_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information."));
+    tifiles_warning(_("ti85_type2byte: unknown type."));
 
   return i;
 }
@@ -115,35 +108,38 @@ uint8_t ti85_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti85_byte2fext(uint8_t data)
 {
+	g_assert(data < TI85_MAXTYPES);
   return (data < TI85_MAXTYPES) ? TI85_CONST[data][1] : "85?";
 }
 
 // Return the value corresponding to the file extension
 uint8_t ti85_fext2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI85_MAXTYPES; i++) {
-    if (!strcasecmp(TI85_CONST[i][1], s))
-      break;
-  }
+	for (i = 0; i < TI85_MAXTYPES; i++) {
+		if (!g_ascii_strcasecmp(TI85_CONST[i][1], s))
+			break;
+	}
 
-  if (i == TI85_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information."));
+	if (i == TI85_MAXTYPES)
+		tifiles_warning(_("ti85_fext2byte: unknown type."));
 
-  return i;
+	return i;
 }
 
 // Return the descriptive associated with the vartype
 const char *ti85_byte2desc(uint8_t data)
 {
-  return (data < TI85_MAXTYPES) ? TI85_CONST[data][2] : _("Unknown");
+	g_assert(data < TI85_MAXTYPES);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *ti85_byte2icon(uint8_t data)
 {
-  return (data < TI85_MAXTYPES) ? TI85_CONST[data][3] : "Unknown";
+	g_assert(data < TI85_MAXTYPES);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][3] : "Unknown";
 }
 
 

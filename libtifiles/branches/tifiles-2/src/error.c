@@ -19,75 +19,93 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include <glib.h>
 #include "gettext.h"
 #include "export.h"
+#include "error.h"
+#include "logging.h"
 
-#include "file_err.h"
+//# = link
 
-/* 
-   This function put in err_msg the error message corresponding to the 
-   error code.
-   If the error code has been handled, the function returns 0 else it 
-   propagates the error code by returning it.
-
-   The error message has the following format:
-   - 1: the error message
-   - 2: the cause(s), explanations on how to fix it
-*/
-TIEXPORT int TICALL tifiles_get_error(int err_num, char *error_msg)
+/**
+ * tifiles_get_error:
+ * @number: error number (see file_err.h for list).
+ * @message: a newly allocated string which contains corresponding error *message.
+ *
+ * Attempt to match the message corresponding to the error number. The returned
+ * string must be freed when no longer needed.
+ *
+ * Return value: 0 if error has been caught, the error number otherwise (propagation).
+ **/
+TIEXPORT int TICALL tifiles_get_error(TiFilesError number, char **message)
 {
-  switch (err_num) {
-  case ERR_MALLOC:
-    strcpy(error_msg, _("Msg: unable to allocate memory (malloc)."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: memory too low ?"));
+	g_assert (message != NULL);
+
+	switch (number) 
+	{
+	case ERR_MALLOC:
+		*message = g_strconcat(
+			_("Msg: unable to allocate memory (malloc)."),
+			"\n",
+			_("Cause: memory too low ?"), 
+			NULL);
     break;
 
-  case ERR_FILE_OPEN:
-    strcpy(error_msg, _("Msg: unable to open file."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("either the file does not exist, either there is no room."));
+	case ERR_FILE_OPEN:
+		*message = g_strconcat(
+			_("Msg: unable to open file."),
+			"\n",
+			_("either the file does not exist, either there is no room."),
+			NULL);
     break;
 
-  case ERR_FILE_CLOSE:
-    strcpy(error_msg, _("Msg: unable to close file."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: either the file does not exist, either there is no room."));
+	case ERR_FILE_CLOSE:
+		*message = g_strconcat(
+			_("Msg: unable to close file."),
+			"\n",
+			_("Cause: either the file does not exist, either there is no room."),
+			NULL);
     break;
 
-  case ERR_GROUP_SIZE:
-    strcpy(error_msg, _("Msg: the size of a group file can not exceed 64KB."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: too many variables/data."));
+	case ERR_GROUP_SIZE:
+		*message = g_strconcat(
+			_("Msg: the size of a group file can not exceed 64KB."),
+			"\n",
+			_("Cause: too many variables/data."),
+			NULL);
     break;
 
-  case ERR_BAD_CALC:
-    strcpy(error_msg, _("Msg: Unknown calculator type."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."));
+	case ERR_BAD_CALC:
+		*message = g_strconcat(
+			_("Msg: Unknown calculator type."),
+			"\n",
+			_("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."),
+			NULL);
     break;
 
-  case ERR_INVALID_FILE:
-  case ERR_BAD_FILE:
-    strcpy(error_msg, _("Msg: invalid file."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: it's probably not a TI formatted file."));
+	case ERR_INVALID_FILE:
+	case ERR_BAD_FILE:
+		*message = g_strconcat(
+			_("Msg: invalid file."),
+			"\n",
+			_("Cause: it's probably not a TI formatted file."),
+			NULL);
     break;
 
-  case ERR_FILE_CHECKSUM:
-    strcpy(error_msg, _("Msg: checksum error."));
-    strcat(error_msg, "\n");
-    strcat(error_msg, _("Cause: the file has an incorrect checksum and may be corrupted."));
+	case ERR_FILE_CHECKSUM:
+		*message = g_strconcat(
+			_("Msg: checksum error."),
+			"\n",
+			_("Cause: the file has an incorrect checksum and may be corrupted."),
+			NULL);
     break;
 
-  default:
-    strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
-    return err_num;
+	default:
+		tifiles_warning(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+		*message = g_strconcat(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
+		return number;
     break;
-  }
+	}
 
-  return 0;
+	return 0;
 }

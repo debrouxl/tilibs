@@ -28,13 +28,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "file_int.h"
-#include "file_err.h"
+#include "tifiles.h"
+#include "error.h"
 #include "typesxx.h"
 #include "filesxx.h"
 #include "macros.h"
 
-extern TicalcType tifiles_calc_type;	// current calculator type
+extern TiCalcType tifiles_calc_type;	// current calculator type
 
 /************************/
 /* (Un)grouping content */

@@ -41,7 +41,7 @@ typedef struct {
 } TiVarEntry;
 
 typedef struct {
-  TicalcType calc_type;
+  TiCalcType calc_type;
 
   char default_folder[9];	// TI9x only
   char comment[43];		// Ti8x: 41 max

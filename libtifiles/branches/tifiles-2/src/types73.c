@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,17 +23,9 @@
   Variable type ID and file extensions
 */
 
-#include <stdio.h>
-#include <string.h>
 #include "gettext.h"
-
-#include "export.h"
 #include "types73.h"
-#include "printl.h"
-
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
+#include "logging.h"
 
 /* is missing:
    { "VECT",  "73v", "Vector" },
@@ -41,7 +33,8 @@
     { "CONST", "73c", "Constant" },
 */
 
-const char *TI73_CONST[TI73_MAXTYPES + 1][4] = {
+const char *TI73_CONST[TI73_MAXTYPES + 1][4] = 
+{
   {"REAL", "73n", "Real", N_("Real")},
   {"LIST", "73l", "List", N_("List")},
   {"MAT", "73m", "Matrix", N_("Matrix")},
@@ -97,57 +90,63 @@ const char *TI73_CONST[TI73_MAXTYPES + 1][4] = {
 // Return the type corresponding to the value
 const char *ti73_byte2type(uint8_t data)
 {
-  return (data < TI73_MAXTYPES) ? TI73_CONST[data][0] : "";
+	g_assert(data < TI73_MAXTYPES);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
 uint8_t ti73_type2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI73_MAXTYPES; i++) {
-    if (!strcmp(TI73_CONST[i][0], s))
-      break;
-  }
+	for (i = 0; i < TI73_MAXTYPES; i++) 
+	{
+		if (!strcmp(TI73_CONST[i][0], s))
+			break;
+	}
 
-  if (i == TI73_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI73_MAXTYPES)
+		tifiles_warning(_("ti73_type2byte: unknown type.\n"));
 
-  return i;
+	return i;
 }
 
 // Return the file extension corresponding to the value
 const char *ti73_byte2fext(uint8_t data)
 {
-  return (data < TI73_MAXTYPES) ? TI73_CONST[data][1] : "73?";
+	g_assert(data < TI73_MAXTYPES);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][1] : "73?";
 }
 
 // Return the value corresponding to the file extension
 uint8_t ti73_fext2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI73_MAXTYPES; i++) {
-    if (!strcasecmp(TI73_CONST[i][1], s))
-      break;
-  }
+	for (i = 0; i < TI73_MAXTYPES; i++) 
+	{
+		if (!g_ascii_strcasecmp(TI73_CONST[i][1], s))
+			break;
+	}
 
-  if (i == TI73_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI73_MAXTYPES)
+		tifiles_warning(_("ti73_fext2byte: unknown type.\n"));
 
-  return i;
+	return i;
 }
 
 // Return the descriptive associated with the vartype
 const char *ti73_byte2desc(uint8_t data)
 {
-  return (data < TI73_MAXTYPES) ? TI73_CONST[data][2] : _("Unknown");
+	g_assert(data < TI73_MAXTYPES);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *ti73_byte2icon(uint8_t data)
 {
-  return (data < TI73_MAXTYPES) ? TI73_CONST[data][3] : "Unknown";
+	g_assert(data < TI73_MAXTYPES);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][3] : "Unknown";
 }
 
 

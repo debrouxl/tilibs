@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: types89.c 667 2004-05-03 11:45:01Z tijl $ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -20,11 +20,11 @@
  */
 
 /*
-  Variable type ID and file extensions
+	Variable type ID and file extensions
 */
 
 #include "gettext.h"
-#include "types89.h"
+#include "types89t.h"
 #include "logging.h"
 
 /*
@@ -35,7 +35,7 @@
   - Table Setup (.89t)
   - Lab Report (89r)
 */
-const char *TI89_CONST[TI89_MAXTYPES + 1][4] = 
+const char *TI89t_CONST[TI89t_MAXTYPES + 1][4] = 
 {
   {"EXPR", "89e", "Expression", N_("Expression")},
   {"", "89?", "Unknown", N_("Unknown")},
@@ -65,7 +65,7 @@ const char *TI89_CONST[TI89_MAXTYPES + 1][4] =
   {"", "89?", "Unknown", N_("Unknown")},
   {"RDIR", "89?", "Unknown", N_("Unknown")},
   {"LDIR", "89?", "Unknown", N_("Unknown")},
-  {"STDY", "89y", "Zipped", N_("Zipped")},
+  {"ZIP", "89y", "Zipped", N_("Zipped")},
   {"BKUP", "89g", "Backup", N_("Backup")},
   {"", "89?", "Unknown", N_("Unknown")},
   {"DIR", "89?", "Unknown", N_("Unknown")},
@@ -90,63 +90,63 @@ const char *TI89_CONST[TI89_MAXTYPES + 1][4] =
 };
 
 // Return the type corresponding to the value
-const char *ti89_byte2type(uint8_t data)
+const char *ti89t_byte2type(uint8_t data)
 {
-	g_assert(data < TI89_MAXTYPES);
-  return (data < TI89_MAXTYPES) ? TI89_CONST[data][0] : "";
+	g_assert(data < TI89t_MAXTYPES);
+	return (data < TI89t_MAXTYPES) ? TI89t_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
-uint8_t ti89_type2byte(const char *s)
+uint8_t ti89t_type2byte(const char *s)
 {
 	int i;
 
-	for (i = 0; i < TI89_MAXTYPES; i++) 
+	for (i = 0; i < TI89t_MAXTYPES; i++) 
 	{
-		if (!strcmp(TI89_CONST[i][0], s))
+		if (!strcmp(TI89t_CONST[i][0], s))
 			break;
 	}
 
-	if (i == TI89_MAXTYPES)
-		tifiles_warning(_("ti89_type2byte: unknown type."));
+	if (i == TI89t_MAXTYPES)
+		tifiles_info( _("ti89t_type2byte: unknown type.\n"));
 
 	return i;
 }
 
 // Return the file extension corresponding to the value
-const char *ti89_byte2fext(uint8_t data)
+const char *ti89t_byte2fext(uint8_t data)
 {
-	g_assert(data < TI89_MAXTYPES);
-	return (data < TI89_MAXTYPES) ? TI89_CONST[data][1] : "89?";
+	g_assert(data < TI89t_MAXTYPES);
+	return (data < TI89t_MAXTYPES) ? TI89t_CONST[data][1] : "89?";
 }
 
 // Return the value corresponding to the file extension
-uint8_t ti89_fext2byte(const char *s)
+uint8_t ti89t_fext2byte(const char *s)
 {
 	int i;
 
-	for (i = 0; i < TI89_MAXTYPES; i++) 
+	for (i = 0; i < TI89t_MAXTYPES; i++) 
 	{
-		if (!g_ascii_strcasecmp(TI89_CONST[i][1], s))
+		if (!g_ascii_strcasecmp(TI89t_CONST[i][1], s))
 			break;
 	}
 
-	if (i == TI89_MAXTYPES)
-		tifiles_warning(_("ti89_fext2byte: unknown type."));
+	if (i == TI89t_MAXTYPES)
+		tifiles_warning(_("ti89t_fext2byte: unknown type."));
 
-	return i;
+  return i;
 }
 
 // Return the descriptive associated with the vartype
-const char *ti89_byte2desc(uint8_t data)
+const char *ti89t_byte2desc(uint8_t data)
 {
-	g_assert(data < TI89_MAXTYPES);
-	return (data < TI89_MAXTYPES) ? TI89_CONST[data][3] : _("Unknown");
+	g_assert(data < TI89t_MAXTYPES);
+	return (data < TI89t_MAXTYPES) ? TI89t_CONST[data][3] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
-const char *ti89_byte2icon(uint8_t data)
+const char *ti89t_byte2icon(uint8_t data)
 {
-	g_assert(data < TI89_MAXTYPES);
-	return (data < TI89_MAXTYPES) ? TI89_CONST[data][2] : "Unknown";
+	g_assert(data < TI89t_MAXTYPES);
+	return (data < TI89t_MAXTYPES) ? TI89t_CONST[data][2] : "Unknown";
 }

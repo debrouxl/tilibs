@@ -23,10 +23,10 @@
 #include <string.h>
 
 #include "gettext.h"
-#include "file_def.h"
+#include "tifiles.h"
 
 
-TIEXPORT const char *TICALL tifiles_calctype_to_string(TicalcType type)
+TIEXPORT const char *TICALL tifiles_calctype_to_string(TiCalcType type)
 {
   	switch (type) {
   	case CALC_NONE:  return "none";
@@ -46,7 +46,7 @@ TIEXPORT const char *TICALL tifiles_calctype_to_string(TicalcType type)
   	}
 }
 
-TIEXPORT TicalcType TICALL tifiles_string_to_calctype(const char *str)
+TIEXPORT TiCalcType TICALL tifiles_string_to_calctype(const char *str)
 {
 	if(!strcmp(str, "TI73"))
 		return CALC_TI73;
@@ -76,7 +76,7 @@ TIEXPORT TicalcType TICALL tifiles_string_to_calctype(const char *str)
 	return CALC_NONE;
 }
 
-TIEXPORT const char *TICALL tifiles_attribute_to_string(TifileAttr atrb)
+TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
 {
   	switch (atrb) {
   	case ATTRB_NONE:      return _("none     ");
@@ -87,7 +87,7 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(TifileAttr atrb)
   	}
 }
 
-TIEXPORT TifileAttr TICALL tifiles_string_to_attribute(const char *str)
+TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
 	if(!strcmp(str, _("none     ")))
 		return ATTRB_NONE;
@@ -101,7 +101,7 @@ TIEXPORT TifileAttr TICALL tifiles_string_to_attribute(const char *str)
 	return ATTRB_NONE;
 }
 
-TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type)
+TIEXPORT const char *TICALL tifiles_filetype_to_string(TiFileType type)
 {
   	switch (type) {
   	case TIFILE_SINGLE: return _("single");
@@ -112,7 +112,7 @@ TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type)
   	}
 }
 
-TIEXPORT TifileType TICALL tifiles_string_to_filetype(const char *str)
+TIEXPORT TiFileType TICALL tifiles_string_to_filetype(const char *str)
 {
 	if(!strcmp(str, _("single")))
 		return TIFILE_SINGLE;

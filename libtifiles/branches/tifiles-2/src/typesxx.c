@@ -25,12 +25,11 @@
 #include <string.h>
 #include "gettext.h"
 
-#include "file_int.h"
-#include "file_def.h"
-#include "file_err.h"
+#include "tifiles.h"
+#include "error.h"
 #include "typesxx.h"
 #include "misc.h"
-#include "printl.h"
+#include "logging.h"
 
 extern int tifiles_calc_type;
 
@@ -675,7 +674,7 @@ TIEXPORT const char *TICALL tifiles_vartype_to_file_extension(int type)
 	return tifiles_vartype2file((uint8_t)type);
 }
 
-TIEXPORT const char *TICALL tifiles_calctype2signature(TicalcType
+TIEXPORT const char *TICALL tifiles_calctype2signature(TiCalcType
 						       calc_type)
 {
   switch (calc_type) {
@@ -711,7 +710,7 @@ TIEXPORT const char *TICALL tifiles_calctype2signature(TicalcType
   return NULL;
 }
 
-TIEXPORT TicalcType TICALL tifiles_signature2calctype(const char *s)
+TIEXPORT TiCalcType TICALL tifiles_signature2calctype(const char *s)
 {
 
   if (!strcasecmp(s, "**TI73**"))
@@ -1117,7 +1116,7 @@ TIEXPORT const char *TICALL tifiles_file_icon(const char *filename)
 /*
   Return TRUE for calcs in TI82..TI86
 */
-TIEXPORT int TICALL tifiles_is_ti8x(TicalcType calc_type)
+TIEXPORT int TICALL tifiles_is_ti8x(TiCalcType calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
 	  (calc_type == CALC_TI82) || (calc_type == CALC_TI83) ||
@@ -1128,7 +1127,7 @@ TIEXPORT int TICALL tifiles_is_ti8x(TicalcType calc_type)
 /*
   Return TRUE for calcs in TI89..TI92+,V200
 */
-TIEXPORT int TICALL tifiles_is_ti9x(TicalcType calc_type)
+TIEXPORT int TICALL tifiles_is_ti9x(TiCalcType calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) ||
@@ -1138,7 +1137,7 @@ TIEXPORT int TICALL tifiles_is_ti9x(TicalcType calc_type)
 /*
   Return silent calcs
 */
-TIEXPORT int TICALL tifiles_is_silent(TicalcType calc_type)
+TIEXPORT int TICALL tifiles_is_silent(TiCalcType calc_type)
 {
   return ((calc_type == CALC_TI82) || (calc_type == CALC_TI83) ||
 	  (calc_type == CALC_TI85));
@@ -1147,7 +1146,7 @@ TIEXPORT int TICALL tifiles_is_silent(TicalcType calc_type)
 /*
   Returns calcs which have folders
 */
-TIEXPORT int TICALL tifiles_has_folder(TicalcType calc_type)
+TIEXPORT int TICALL tifiles_has_folder(TiCalcType calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
@@ -1157,7 +1156,7 @@ TIEXPORT int TICALL tifiles_has_folder(TicalcType calc_type)
 /*
   Return FLASH calcs
 */
-TIEXPORT int TICALL tifiles_is_flash(TicalcType calc_type)
+TIEXPORT int TICALL tifiles_is_flash(TiCalcType calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
 	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI89T) ||

@@ -23,20 +23,12 @@
   Variable type ID and file extensions
 */
 
-#include <stdio.h>
-#include <string.h>
 #include "gettext.h"
-
-#include "export.h"
 #include "types83.h"
-#include "printl.h"
+#include "logging.h"
 
-#ifdef __WIN32__
-# define strcasecmp _stricmp
-#endif
-
-
-const char *TI83_CONST[TI83_MAXTYPES + 1][4] = {
+const char *TI83_CONST[TI83_MAXTYPES + 1][4] = 
+{
   {"REAL", "83n", "Real", N_("Real")},
   {"LIST", "83l", "List", N_("List")},
   {"MAT", "83m", "Matrix", N_("Matrix")},
@@ -92,21 +84,23 @@ const char *TI83_CONST[TI83_MAXTYPES + 1][4] = {
 // Return the type corresponding to the value
 const char *ti83_byte2type(uint8_t data)
 {
-  return (data < TI83_MAXTYPES) ? TI83_CONST[data][0] : "";
+	g_assert(data < TI83_MAXTYPES);
+	return (data < TI83_MAXTYPES) ? TI83_CONST[data][0] : "";
 }
 
 // Return the value corresponding to the type
 uint8_t ti83_type2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI83_MAXTYPES; i++) {
-    if (!strcmp(TI83_CONST[i][0], s))
-      break;
-  }
+	for (i = 0; i < TI83_MAXTYPES; i++) 
+	{
+		if (!strcmp(TI83_CONST[i][0], s))
+			break;
+	}
 
-  if (i == TI83_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI83_MAXTYPES)
+		tifiles_warning(_("ti83_type2byteunknown type.\n"));
 
   return i;
 }
@@ -114,35 +108,39 @@ uint8_t ti83_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti83_byte2fext(uint8_t data)
 {
-  return (data < TI83_MAXTYPES) ? TI83_CONST[data][1] : "83?";
+	g_assert(data < TI83_MAXTYPES);
+	return (data < TI83_MAXTYPES) ? TI83_CONST[data][1] : "83?";
 }
 
 // Return the value corresponding to the file extension
 uint8_t ti83_fext2byte(const char *s)
 {
-  int i;
+	int i;
 
-  for (i = 0; i < TI83_MAXTYPES; i++) {
-    if (!strcasecmp(TI83_CONST[i][1], s))
-      break;
-  }
+	for (i = 0; i < TI83_MAXTYPES; i++) 
+	{
+		if (!g_ascii_strcasecmp(TI83_CONST[i][1], s))
+			break;
+	}
 
-  if (i == TI83_MAXTYPES)
-    printl3(1, _("unknown type. It is a bug. Please report this information.\n"));
+	if (i == TI83_MAXTYPES)
+		tifiles_warning( _("ti83_fext2byte: unknown type.\n"));
 
-  return i;
+	return i;
 }
 
 // Return the descriptive associated with the vartype
 const char *ti83_byte2desc(uint8_t data)
 {
-  return (data < TI83_MAXTYPES) ? TI83_CONST[data][2] : _("Unknown");
+	g_assert(data < TI83_MAXTYPES);
+	return (data < TI83_MAXTYPES) ? TI83_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *ti83_byte2icon(uint8_t data)
 {
-  return (data < TI83_MAXTYPES) ? TI83_CONST[data][3] : "Unknown";
+	g_assert(data < TI83_MAXTYPES);
+	return (data < TI83_MAXTYPES) ? TI83_CONST[data][3] : "Unknown";
 }
 
 

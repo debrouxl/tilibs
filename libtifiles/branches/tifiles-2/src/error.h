@@ -24,13 +24,15 @@
 
 /* Error codes must begin at 512 up to 767 */
 
-#define ERR_MALLOC           512	// Error with malloc
-#define ERR_FILE_OPEN        513	// Unable to open file
-#define ERR_FILE_CLOSE       514	// Unable to close file
-#define ERR_GROUP_SIZE       515	// Group size exceeded (>64KB)
-#define ERR_BAD_CALC	     516	// The function does not exist for this calc
-#define ERR_INVALID_FILE     517	// Is not a TI file
-#define ERR_BAD_FILE         518	// Same as above
-#define ERR_FILE_CHECKSUM    519	// Checksum error
+typedef enum {
+	ERR_MALLOC=512,			// Error with malloc
+	ERR_FILE_OPEN,			// Unable to open file
+	ERR_FILE_CLOSE,			// Unable to close file
+	ERR_GROUP_SIZE,			// Group size exceeded (>64KB)
+	ERR_BAD_CALC,			// The function does not exist for this calc
+	ERR_INVALID_FILE,		// Is not a TI file
+	ERR_BAD_FILE,			// Same as above
+	ERR_FILE_CHECKSUM,		// Checksum file error
+} TiFilesError;
 
 #endif

@@ -31,20 +31,17 @@
 
 #include "gettext.h"
 
-#include "export.h"
-#include "file_ver.h"
-#include "file_int.h"
-#include "file_def.h"
+#include "tifiles.h"
 #include "typesxx.h"
 #include "trans.h"
 #include "grp_ops.h"
-#include "printl.h"
+#include "logging.h"
 
 /*****************/
 /* Internal data */
 /*****************/
 
-TicalcType tifiles_calc_type = CALC_NONE;	// current calc type (context)
+TiCalcType tifiles_calc_type = CALC_NONE;	// current calc type (context)
 
 /****************/
 /* Entry points */
@@ -81,13 +78,13 @@ TIEXPORT int TICALL tifiles_init()
 
 	if (tifiles_instance)
 		return (++tifiles_instance);
-	printl3(0, _("tifiles library version %s\n"), LIBTIFILES_VERSION);
+	tifiles_info( _("tifiles library version %s\n"), LIBTIFILES_VERSION);
 
 #if defined(ENABLE_NLS)
-	printl3(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	printl3(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	tifiles_info "setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	tifiles_info "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	printl3(0, "textdomain: <%s>\n", textdomain(PACKAGE));
+  	tifiles_info "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   	return (++tifiles_instance);
@@ -107,9 +104,6 @@ TIEXPORT int TICALL tifiles_exit()
 /* Methods */
 /***********/
 
-TIFILES_MSGBOX tifiles_msgbox = NULL;
-TIFILES_CHOOSE tifiles_choose = NULL;
-
 TIEXPORT const char *TICALL tifiles_get_version()
 {
   return LIBTIFILES_VERSION;
@@ -117,7 +111,7 @@ TIEXPORT const char *TICALL tifiles_get_version()
 
 static void print_informations();
 
-TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
+TIEXPORT void TICALL tifiles_set_calc(TiCalcType type)
 {
   tifiles_calc_type = type;
 
@@ -149,38 +143,25 @@ TIEXPORT void TICALL tifiles_set_calc(TicalcType type)
   case CALC_V200:
     break;
   default:
-    printl3(2, _("Function not implemented. There is a bug. Please report it."));
-    printl3(2, _("Informations:\n"));
-    printl3(2, _("Calc: %i\n"), type);
-    printl3(2, _("Program halted before crashing...\n"));
+    tifiles_error(_("Function not implemented. There is a bug. Please report it."));
+    tifiles_error(_("Informations:\n"));
+    tifiles_error(_("Calc: %i\n"), type);
+    tifiles_error(_("Program halted before crashing...\n"));
     abort();
     break;
   }
 }
 
-TIEXPORT TicalcType TICALL tifiles_get_calc(void)
+TIEXPORT TiCalcType TICALL tifiles_get_calc(void)
 {
   return tifiles_calc_type;
 }
 
 static void print_informations(void)
 {
-  printl3(0, _("settings:\n"));
-  printl3(0, _("  calc type: %s\n"), 
+  tifiles_info( _("settings:\n"));
+  tifiles_info( _("  calc type: %s\n"), 
   	tifiles_calctype_to_string(tifiles_calc_type));
-}
-
-/* deprecated */
-TIEXPORT TIFILES_PRINTF tifiles_set_printf(TIFILES_PRINTF new_printf)
-{
-#ifdef __WIN32__
-#pragma warning( push )
-#pragma warning( disable : 4550 )
-        return printf;
-#pragma warning( pop ) 
-#else
-	return printf;
-#endif
 }
 
 #ifdef __WIN32__

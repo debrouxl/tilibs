@@ -28,8 +28,8 @@
 #include <assert.h>
 #include <string.h>
 
-#include "file_int.h"
-#include "file_err.h"
+#include "tifiles.h"
+#include "error.h"
 
 // allocating
 TIEXPORT TiRegular *TICALL tifiles_create_regular_content(void)

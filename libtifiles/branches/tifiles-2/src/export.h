@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES_EXPORT__
-#define __TICABLES_EXPORT__
+#ifndef __TIFILES_EXPORT__
+#define __TIFILES_EXPORT__
 
 #ifdef __cplusplus
 extern "C" {
