@@ -3,8 +3,9 @@ SubVersion: $Id$
 To do: 
 	- USB pass-thru support
 	- bug with API mode (Linux & Windows): may not work with some calcs ?!
-	- ioports.c to improve
 
+Checking: valgrind & splint
+	
 Log:
 
 - 22/05/2004, version 3.8.6: roms
