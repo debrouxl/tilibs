@@ -43,7 +43,7 @@
 #include "cabl_def.h"
 #include "externs.h"
 #include "logging.h"
-#include "verbose.h"
+#include "printl.h"
 
 static int p;
 static int ref_cnt = 0;		// Counter of library instances
@@ -78,7 +78,7 @@ int vtl_init()
    	*/
 
   	p = io_address;
-  	//DISPLAY_ERROR("io_address: %i\n", io_address);
+  	//printl(2, "io_address: %i\n", io_address);
 
   	/* Check if the pipes already exist else create them */
   	if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) {
@@ -90,13 +90,13 @@ int vtl_init()
   	// Open the 1->0 pipe in reading
   	if ((rd[p - 1] = open(fifo_names[2 * (p - 1) + 0],
 			O_RDONLY | O_NONBLOCK)) == -1) {
-    		DISPLAY_ERROR("error: %s\n", strerror(errno));
+    		printl(2, "error: %s\n", strerror(errno));
     		return ERR_OPEN_PIPE;
   	}
   	// Open the 0->1 pipe in writing (in reading at first)
   	if ((wr[p - 1] = open(fifo_names[2 * (p - 1) + 1],
 			O_RDONLY | O_NONBLOCK)) == -1) {
-		DISPLAY_ERROR("error: %s\n", strerror(errno));
+		printl(2, "error: %s\n", strerror(errno));
     		return ERR_OPEN_PIPE;
   	}
   	if ((wr[p - 1] = open(fifo_names[2 * (p - 1) + 1],

@@ -33,7 +33,7 @@
 #include "cabl_err.h"
 #include "export.h"
 #include "externs.h"
-#include "verbose.h"
+#include "printl.h"
 
 extern int time_out;		// Timeout value for cables in 0.10 seconds
 extern int delay;		// Time between 2 bits (home-made cables only)
@@ -59,7 +59,7 @@ int vtl_init(unsigned int io_addr, char *dev)
   /* Create the pipe (in non-blocking mode) */
   hPipe = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT, 2, 256, 256, 0 * time_out, NULL);	// 100 * time_out
   if (hPipe == INVALID_HANDLE_VALUE) {
-    DISPLAY_ERROR("CreateNamedPipe\n");
+    printl(2, "CreateNamedPipe\n");
     //print_last_error();
     return ERR_OPEN_PIPE;
   }
@@ -94,7 +94,7 @@ int vtl_put(uint8_t data)
   // Write the data
   fSuccess = WriteFile(hPipe, &data, 1, &i, NULL);
   if (!fSuccess) {
-    DISPLAY_ERROR("WriteFile\n");
+    printl(2, "WriteFile\n");
     //print_last_error();
     return ERR_WRITE_ERROR;
   } else if (i == 0) {

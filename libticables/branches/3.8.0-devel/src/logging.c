@@ -36,7 +36,7 @@
 #endif
 
 #include "intl.h"
-#include "verbose.h"
+#include "printl.h"
 
 #define LOG_FILE  "libticables.log"
 #define TIME_FILE "libticables.time"
@@ -75,17 +75,17 @@ int start_logging()
   	strcat(fn2, TIME_FILE);
 #endif
 
-  	DISPLAY("Logging STARTED.\n");
+  	printl(0, _("Logging STARTED.\n"));
 
   	log1 = fopen(fn1, "wt");
   	if (log1 == NULL) {
-    		DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn1);
+    		printl(2, _("Unable to open <%s> for logging.\n"), fn1);
     		return -1;
   	}
 
   	log2 = fopen(fn2, "wt");
   	if (log2 == NULL) {
-    		DISPLAY_ERROR(_("Unable to open <%s> for logging.\n"), fn2);
+    		printl(2, _("Unable to open <%s> for logging.\n"), fn2);
     		return -1;
   	}
 #ifndef __WIN32__
@@ -137,7 +137,7 @@ int log_data(int d)
 
 int stop_logging()
 {
-  	DISPLAY("Logging stopped.\n");
+  	printl(0, "Logging stopped.\n");
 
   	if (log1 != NULL)
     		fclose(log1);

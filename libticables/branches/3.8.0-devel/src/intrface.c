@@ -35,7 +35,7 @@
 #include "export.h"
 #include "mapping.h"
 #include "type2str.h"
-#include "verbose.h"
+#include "printl.h"
 
 
 /*****************/
@@ -91,15 +91,15 @@ TICALL ticable_init()
   	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	DISPLAY("libticables: setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	DISPLAY("libticables: bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+  	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	printl(0, "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	DISPLAY("libticables: textdomain: <%s>\n", textdomain(PACKAGE));
+  	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
-  	DISPLAY(_("libticables: version %s\n"), LIBTICABLES_VERSION);
+  	printl(0, _("version %s\n"), LIBTICABLES_VERSION);
 
 	// list built-in compiled options...
-	DISPLAY(_("libticables: built for %s target.\n"), 
+	printl(0, _("built for %s target.\n"), 
 #if defined(__LINUX__)
 		"__LINUX__"
 #elif defined(__BSD__)
@@ -339,31 +339,31 @@ extern TicableLinkCable *tcl;
 
 static void print_settings(void)
 {
-  	DISPLAY(_("libticables: list of settings...\n"));
+  	printl(0, _("list of settings...\n"));
   	
-  	DISPLAY(_("  cable: %s\n"), 
+  	printl(0, _("  cable: %s\n"), 
 		ticable_cabletype_to_string(cable_type));
   	
-  	DISPLAY(_("  port: %s\n"), ticable_port_to_string(port));
+  	printl(0, _("  port: %s\n"), ticable_port_to_string(port));
   	
-  	DISPLAY(_("  method: %s\n"), ticable_method_to_string(method));
+  	printl(0, _("  method: %s\n"), ticable_method_to_string(method));
   	  	
   	if(cable_type == LINK_AVR) {
-		DISPLAY(_("  baud-rate: %i\n"), baud_rate);
-		DISPLAY(_("  hardware flow control: %s\n"), 
+		printl(0, _("  baud-rate: %i\n"), baud_rate);
+		printl(0, _("  hardware flow control: %s\n"), 
 			hfc ? _("on") : _("off"));
 	}
 
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
 		if(io_address != 0x000)
-			DISPLAY(_("  address: 0x%03x\n"), io_address);
+			printl(0, _("  address: 0x%03x\n"), io_address);
 	
-	DISPLAY(_("  device name: %s\n"), io_device);
+	printl(0, _("  device name: %s\n"), io_device);
 
 	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
-                DISPLAY(_("  timeout value: %i\n"), time_out);
+                printl(0, _("  timeout value: %i\n"), time_out);
 
-        DISPLAY(_("  delay value: %i\n"), delay);
+        printl(0, _("  delay value: %i\n"), delay);
 }
 
 
@@ -466,7 +466,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,	// handle to DLL module
 
 		setlocale(LC_ALL, "");
 		bindtextdomain(PACKAGE, buffer);
-        	DISPLAY("%s: bindtextdomain to %s\n", PACKAGE, buffer);
+        	printl(0, "%s: bindtextdomain to %s\n", PACKAGE, buffer);
 		//bind_textdomain_codeset(PACKAGE, "ISO-8859-15");
 		textdomain(PACKAGE);
 #endif

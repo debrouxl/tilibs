@@ -32,7 +32,7 @@
 #include "../cabl_err.h"
 #include "../export.h"
 #include "../externs.h"
-#include "../verbose.h"
+#include "../printl.h"
 
 #include "porttalk.h"
 
@@ -40,15 +40,15 @@ int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
 
-  	DISPLAY(_("Getting OS type...\r\n"));
+  	printl(0, _("Getting OS type...\r\n"));
   	
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
-  	DISPLAY(_("  operating System: %s\r\n"),
+  	printl(0, _("  operating System: %s\r\n"),
 	  (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?
 	  "Windows9x" : "WindowsNT");
-  	DISPLAY(_("  version: %i.%i\r\n"),
+  	printl(0, _("  version: %i.%i\r\n"),
 	  os.dwMajorVersion, os.dwMinorVersion);
   
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -58,7 +58,7 @@ int win32_detect_os(char **os_type)
   	} else
     		*os_type = _("unknown");
   	
-  	DISPLAY(_("Done.\r\n"));
+  	printl(0, _("Done.\r\n"));
 
 	return 0;
 }
@@ -76,7 +76,7 @@ int win32_detect_resources(void)
     HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
 	char *os;
     	
-	DISPLAY(_("libticables: checking resources...\r\n"));
+	printl(0, _("libticables: checking resources...\r\n"));
 	win32_detect_os(&os);
 	
 	/* Windows NT need permissions */
@@ -91,16 +91,16 @@ int win32_detect_resources(void)
     	/* API: for use with COMx */
     	
     	resources |= IO_API;
-    	DISPLAY(_("  IO_API: %sfound at compile time.\n"),
+    	printl(0, _("  IO_API: %sfound at compile time.\n"),
 		resources & IO_API ? "" : "not ");
 
 	/* ASM: for use with low-level I/O and Win9x */
 	
     	if (!strcmp(os, "Windows9x")) {
       		resources |= IO_ASM;
-      		DISPLAY(_("  IO_ASM: available (Win9x).\n"));
+      		printl(0, _("  IO_ASM: available (Win9x).\n"));
 	} else {
-		DISPLAY(_("  IO_ASM: not available (WinNT).\n"));
+		printl(0, _("  IO_ASM: not available (WinNT).\n"));
 	}	
 
 	/* DLL: for use with low-level I/O and WinNT */
@@ -128,7 +128,7 @@ int win32_detect_resources(void)
 		       		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 			if (PortTalk_Handle == INVALID_HANDLE_VALUE) {
-	  			DISPLAY_ERROR("PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
+	  			printl(2, "PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
 	  			return -1;
 			}
       		}
@@ -138,7 +138,7 @@ int win32_detect_resources(void)
 			CloseHandle(PortTalk_Handle);
       		}
       
-      		DISPLAY(_("  IO_DLL: %s (PortTalk)\r\n"),
+      		printl(0, _("  IO_DLL: %s (PortTalk)\r\n"),
 	      		resources & IO_DLL ? "available" : "not available");
     	}
     
@@ -151,7 +151,7 @@ int win32_detect_resources(void)
       		CloseHandle(hDLL);
 #endif
     	}
-    	DISPLAY(_("  IO_USB: %s (TiglUsb)\r\n"),
+    	printl(0, _("  IO_USB: %s (TiglUsb)\r\n"),
 	    resources & IO_USB ? "available" : "not available");
 
 	return 0;

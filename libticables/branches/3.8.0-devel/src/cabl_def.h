@@ -108,6 +108,9 @@ typedef enum {
 #define OS_BSD   "*BSD"
 #define OS_NONE  "unknown"
 
+/* Callback */
+typedef int (*TICABLES_PRINT) (int level, const char *format, ...);
+
 /********************/
 /* Type definitions */
 /********************/

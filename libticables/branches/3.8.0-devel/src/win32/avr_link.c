@@ -34,7 +34,7 @@
 #include "cabl_err.h"
 #include "externs.h"
 #include "logging.h"
-#include "verbose.h"
+#include "printl.h"
 #include "logging.h"
 
 #define BUFFER_SIZE 1024
@@ -61,19 +61,19 @@ int avr_init()
   hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0, NULL,
 		    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (hCom == INVALID_HANDLE_VALUE) {
-    DISPLAY_ERROR("CreateFile\n");
+    printl(2, "CreateFile\n");
     return ERR_OPEN_SER_COMM;
   }
   // Setup buffer size
   fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetupComm\n");
+    printl(2, "SetupComm\n");
     return ERR_SETUP_COMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(hCom, &dcb);
   if (!fSuccess) {
-    DISPLAY_ERROR("GetCommState\n");
+    printl(2, "GetCommState\n");
     return ERR_GET_COMMSTATE;
   }
   // select baud-rate
@@ -113,13 +113,13 @@ int avr_init()
   // Config COM port
   fSuccess = SetCommState(hCom, &dcb);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetCommState\n");
+    printl(2, "SetCommState\n");
     return ERR_SET_COMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    DISPLAY_ERROR("GetCommTimeouts\n");
+    printl(2, "GetCommTimeouts\n");
     return ERR_GET_COMMTIMEOUT;
   }
 
@@ -131,7 +131,7 @@ int avr_init()
 
   fSuccess = SetCommTimeouts(hCom, &cto);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetCommTimeouts\n");
+    printl(2, "SetCommTimeouts\n");
     return ERR_SET_COMMTIMEOUT;
   }
 
@@ -148,7 +148,7 @@ int avr_open()
 
   fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
   if (!fSuccess) {
-    DISPLAY_ERROR("PurgeComm\n");
+    printl(2, "PurgeComm\n");
     //print_last_error();
     return ERR_FLUSH_COMM;
   }
@@ -169,10 +169,10 @@ int avr_put(uint8_t data)
 
   fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
   if (!fSuccess) {
-    DISPLAY_ERROR("WriteFile\n");
+    printl(2, "WriteFile\n");
     return ERR_WRITE_ERROR;
   } else if (i == 0) {
-    DISPLAY_ERROR("WriteFile\n");
+    printl(2, "WriteFile\n");
     return ERR_WRITE_TIMEOUT;
   }
 
@@ -199,7 +199,7 @@ int avr_get(uint8_t * data)
   }
   while (i != 1);
   if (!fSuccess) {
-    DISPLAY_ERROR("ReadFile\n");
+    printl(2, "ReadFile\n");
     return ERR_READ_ERROR;
   }
 

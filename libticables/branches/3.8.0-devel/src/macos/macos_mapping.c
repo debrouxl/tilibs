@@ -34,21 +34,21 @@
 #include "../cabl_err.h"
 #include "../externs.h"
 #include "../type2str.h"
-#include "../verbose.h"
+#include "../printl.h"
 
 #include "links.h"
 
 int macos_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources"));
+	printl(0, _("libticables: getting method from resources"));
 	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV);
-		DISPLAY(_(" (automatic)...\n"));
+		printl(0, _(" (automatic)...\n"));
   	} else
-		DISPLAY(_(" (user-forced)...\n"));
+		printl(0, _(" (user-forced)...\n"));
 
 	// depending on link type, do some checks
 	switch(type)
@@ -72,13 +72,13 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		DISPLAY_ERROR("libticables: bad argument (invalid link cable).\n");
+		printl(2, "libticables: bad argument (invalid link cable).\n");
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
-    		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
+    		printl(2, "libticables: unable to find an I/O method.\n");
 		return ERR_NO_RESOURCES;
 	}
 	
@@ -88,7 +88,7 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 // Bind the right I/O address & device according to I/O method
 static int macos_map_io(TicableMethod method, TicablePort port)
 {
-	DISPLAY(_("libticables: mapping I/O...\n"));
+	printl(0, _("libticables: mapping I/O...\n"));
 	
 	switch (port) {
   	case OSX_USB_PORT:
@@ -99,7 +99,7 @@ static int macos_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	default:
-    		DISPLAY_ERROR("libticables: bad argument (invalid port).\n");
+    		printl(2, "libticables: bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
 	break;
 	}
@@ -118,7 +118,7 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		return ret;
 	
 	// set the link cable
-	DISPLAY(_("libticables: registering cable...\n"));
+	printl(0, _("libticables: registering cable...\n"));
     	switch (type) {
     	case LINK_TGL:
     		if(port != OSX_SERIAL_PORT)
@@ -135,7 +135,7 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	default:
-	      	DISPLAY_ERROR(_("libticables: invalid argument (bad cable)."));
+	      	printl(2, _("libticables: invalid argument (bad cable)."));
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}

@@ -38,7 +38,7 @@
 #include "cabl_err.h"
 #include "externs.h"
 #include "type2str.h"
-#include "verbose.h"
+#include "printl.h"
 
 #include "links.h"
 
@@ -56,16 +56,16 @@ static int check_for_libusb(void);
 
 int linux_get_method(TicableType type, int resources, TicableMethod *method)
 {
-	DISPLAY(_("libticables: getting method from resources"));
+	printl(0, _("libticables: getting method from resources"));
 	warning = ERR_NO_ERROR;
 	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
     		*method &= ~(IOM_ASM | IOM_API | IOM_DRV | IOM_IOCTL);
-		DISPLAY(_(" (automatic)...\n"));
+		printl(0, _(" (automatic)...\n"));
   	} else
-		DISPLAY(_(" (user-forced)...\n"));
+		printl(0, _(" (user-forced)...\n"));
 
 	// depending on link type, do some checks
 	switch(type)
@@ -73,7 +73,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_TGL:
 		if(resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning, can't use IO_API\n"));
+				printl(0, _("  warning, can't use IO_API\n"));
 			*method |= IOM_API | IOM_OK;
 		}
 		break;
@@ -81,7 +81,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_AVR:
 		if(resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning: can't use IO_API\n"));
+				printl(0, _("  warning: can't use IO_API\n"));
 			*method |= IOM_API | IOM_OK;	
 		}
 		break;
@@ -89,7 +89,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_SER:
 		if(resources & IO_TISER) {
 			if(check_for_tiser())
-				DISPLAY(_("  warning: can't use IO_TISER\n"));
+				printl(0, _("  warning: can't use IO_TISER\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -98,7 +98,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		       
 		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY(_("  warning: can't use IO_ASM\n"));
+				printl(0, _("  warning: can't use IO_ASM\n"));
 			else {
 				*method |= IOM_ASM | IOM_OK;
 				break;
@@ -107,7 +107,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_API) {
 			if(check_for_tty())
-				DISPLAY(_("  warning: can't use IO_API\n"));
+				printl(0, _("  warning: can't use IO_API\n"));
 			else {
 				*method |= IOM_IOCTL | IOM_OK;
 				break;
@@ -118,7 +118,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_PAR:
 		if(resources & IO_TIPAR) {
 			if(check_for_tipar())
-				DISPLAY(_("  warning: can't use IO_TIPAR\n"));
+				printl(0, _("  warning: can't use IO_TIPAR\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -127,7 +127,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_ASM) {
 			if(check_for_root())
-				DISPLAY(_("  warning: can't use IO_ASM\n"));
+				printl(0, _("  warning: can't use IO_ASM\n"));
 			else {
 				*method |= IOM_ASM | IOM_OK;
 				break;
@@ -138,7 +138,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 	case LINK_SLV:
 		if (resources & IO_TIUSB) {
 			if(check_for_tiusb())
-				DISPLAY(_("  warning: can't use IO_TIUSB\n"));
+				printl(0, _("  warning: can't use IO_TIUSB\n"));
 			else {
 				*method |= IOM_DRV | IOM_OK;
 				break;
@@ -147,7 +147,7 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		
 		if (resources & IO_LIBUSB) {
 			if(check_for_libusb())
-				DISPLAY(_("  warning: can't use IO_LIBUSB\n"));
+				printl(0, _("  warning: can't use IO_LIBUSB\n"));
 			else {
 				*method |= IOM_IOCTL | IOM_OK;
 				break;
@@ -161,13 +161,13 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		DISPLAY_ERROR("libticables: bad argument (invalid link cable).\n");
+		printl(2, "libticables: bad argument (invalid link cable).\n");
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
 		
   	if (!(*method & IOM_OK)) {
-    		DISPLAY_ERROR("libticables: unable to find an I/O method.\n");
+    		printl(2, "libticables: unable to find an I/O method.\n");
 		return warning;	//ERR_NO_RESOURCES;
 	}
 	
@@ -194,7 +194,7 @@ const char *tiusb_node_names[2][4] = {
 // Bind the right I/O address & device according to I/O method
 static int linux_map_io(TicableMethod method, TicablePort port)
 {
-	DISPLAY(_("libticables: mapping I/O...\n"));
+	printl(0, _("libticables: mapping I/O...\n"));
 	
 	switch (port) {
   	case USER_PORT:
@@ -278,7 +278,7 @@ static int linux_map_io(TicableMethod method, TicablePort port)
 	break;
 
   	default:
-    		DISPLAY_ERROR("libticables: bad argument (invalid port).\n");
+    		printl(2, "libticables: bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
 	break;
 	}
@@ -297,7 +297,7 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		return ret;
 	
 	// set the link cable
-	DISPLAY(_("libticables: registering cable...\n"));
+	printl(0, _("libticables: registering cable...\n"));
     	switch (type) {
     	case LINK_PAR:
       		if ((port != PARALLEL_PORT_1) &&
@@ -382,7 +382,7 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	default:
-	      	DISPLAY_ERROR(_("libticables: invalid argument (bad cable)."));
+	      	printl(2, _("libticables: invalid argument (bad cable)."));
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}
@@ -504,7 +504,7 @@ static int search_for_user_in_group(const char *user, const char *group)
 	
 	f = fopen("/etc/group", "rt");
 	if (f == NULL) {
-		DISPLAY_ERROR(_("Unable to open the '/etc/group' file\n"));
+		printl(2, _("Unable to open the '/etc/group' file\n"));
 		return -1;
 	}
 
@@ -531,10 +531,10 @@ static int check_for_node_usability(const char *pathname)
 	struct stat st;
 
 	if(!access(pathname, F_OK))
-		DISPLAY(_("    node %s: exists\n"), pathname);
+		printl(0, _("    node %s: exists\n"), pathname);
 	else {
-		DISPLAY(_("    node %s: does not exists\n"), pathname);
-		DISPLAY(_("    => you will have to create the node.\n"));
+		printl(0, _("    node %s: does not exists\n"), pathname);
+		printl(0, _("    => you will have to create the node.\n"));
 		
 		warning = ERR_NODE_NONEXIST;
 		
@@ -542,7 +542,7 @@ static int check_for_node_usability(const char *pathname)
 	}
 
 	if(!stat(pathname, &st)) {
-		DISPLAY(_("    permissions/user/group:%s%s %s\r\n"),
+		printl(0, _("    permissions/user/group:%s%s %s\r\n"),
                         get_attributes(st.st_mode),
                         get_user_name(st.st_uid),
                         get_group_name(st.st_gid));
@@ -551,28 +551,28 @@ static int check_for_node_usability(const char *pathname)
 	}	
 
 	if(getuid() == st.st_uid) {
-		DISPLAY(_("    is user can r/w on device: yes\n"));
+		printl(0, _("    is user can r/w on device: yes\n"));
 		return 0;
 	} else {
-		DISPLAY(_("    is user can r/w on device: no\n"));
+		printl(0, _("    is user can r/w on device: no\n"));
 	}
 
 	if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
-		DISPLAY(_("    are others can r/w on device: yes\n"));
+		printl(0, _("    are others can r/w on device: yes\n"));
 	else {
 		char *user, *group;
 		
-		DISPLAY(_("    are others can r/w on device: no\n"));
+		printl(0, _("    are others can r/w on device: no\n"));
 
 		user = strdup(get_user_name(getuid()));
 		group = strdup(get_group_name(st.st_gid));
 		
 		if(!search_for_user_in_group(user, group))
-			DISPLAY(_("    is the user '%s' in the group '%s': yes\n"), user, group); 
+			printl(0, _("    is the user '%s' in the group '%s': yes\n"), user, group); 
 		else {
-			DISPLAY(_("    is the user '%s' in the group '%s': no\n"), user, group);
-			DISPLAY(_("    => you should add your username at the group '%s' in '/etc/group'\n"), group);
-			DISPLAY(_("    => you will have to restart you session, too\n"), group);
+			printl(0, _("    is the user '%s' in the group '%s': no\n"), user, group);
+			printl(0, _("    => you should add your username at the group '%s' in '/etc/group'\n"), group);
+			printl(0, _("    => you will have to restart you session, too\n"), group);
 			free(user); free(group);
 			
 			warning = ERR_NODE_PERMS;
@@ -591,7 +591,7 @@ static int check_for_root(void)
 {
 	uid_t uid = getuid();
     	
-    	DISPLAY(_("  check for asm usability: %s\n"), uid ? "no" : "yes");
+    	printl(0, _("  check for asm usability: %s\n"), uid ? "no" : "yes");
     	
     	warning = ERR_ROOT;
 
@@ -600,7 +600,7 @@ static int check_for_root(void)
 
 static int check_for_tty(void)
 {
-	DISPLAY(_("  check for tty usability:\n"));
+	printl(0, _("  check for tty usability:\n"));
 	return check_for_node_usability(SP1_NAME);	
 
 	return 0;
@@ -610,11 +610,11 @@ static int check_for_tipar(void)
 {
 	char name[15];
 
-	DISPLAY(_("  check for tipar usability:\n"));
+	printl(0, _("  check for tipar usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	DISPLAY(_("      using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("      using devfs: %s\r\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tipar0");
@@ -625,11 +625,11 @@ static int check_for_tipar(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tipar"))
-		DISPLAY(_("      module: loaded\r\n"));
+		printl(0, _("      module: loaded\r\n"));
 	else {
-		DISPLAY(_("      module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (either as module, either as built-in)\n"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it\n"));
+		printl(0, _("      module: not loaded\r\n"));
+		printl(0, _("    => check the module exists (either as module, either as built-in)\n"));
+		printl(0, _("    => add an entry into your modutils file to automatically load it\n"));
 		
 		warning = ERR_NOTLOADED;		
 		return -1;
@@ -642,11 +642,11 @@ static int check_for_tiser(void)
 {
 	char name[15];
 
-	DISPLAY(_("  check for tiser usability:\n"));
+	printl(0, _("  check for tiser usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	DISPLAY(_("    using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("    using devfs: %s\r\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiser0");
@@ -657,11 +657,11 @@ static int check_for_tiser(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tiser"))
-		DISPLAY(_("    module: loaded\r\n"));
+		printl(0, _("    module: loaded\r\n"));
 	else {
-		DISPLAY(_("    module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (compiled as module)\n"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it.\n"));
+		printl(0, _("    module: not loaded\r\n"));
+		printl(0, _("    => check the module exists (compiled as module)\n"));
+		printl(0, _("    => add an entry into your modutils file to automatically load it.\n"));
 		
 		warning = ERR_NOTLOADED;
 		return -1;
@@ -674,11 +674,11 @@ static int check_for_tiusb(void)
 {
 	char name[15];
 
-	DISPLAY(_("  check for tiusb usability:\n"));
+	printl(0, _("  check for tiusb usability:\n"));
 
 	if(!access("/dev/.devfs", F_OK))
 		devfs = !0;
-	DISPLAY(_("    using devfs: %s\r\n"), devfs ? "yes" : "no");
+	printl(0, _("    using devfs: %s\r\n"), devfs ? "yes" : "no");
 
 	if(!devfs)
 		strcpy(name, "/dev/tiusb0");
@@ -689,11 +689,11 @@ static int check_for_tiusb(void)
 		return -1;
  
 	if (find_string_in_proc("/proc/devices", "tiglusb"))
-		DISPLAY(_("    module: loaded\r\n"));
+		printl(0, _("    module: loaded\r\n"));
 	else {
-		DISPLAY(_("    module: not loaded\r\n"));
-		DISPLAY(_("    => check the module exists (either as module, either as built-in)\n"));
-		DISPLAY(_("    => add an entry into your modutils file to automatically load it\n"));
+		printl(0, _("    module: not loaded\r\n"));
+		printl(0, _("    => check the module exists (either as module, either as built-in)\n"));
+		printl(0, _("    => add an entry into your modutils file to automatically load it\n"));
 		
 		warning = ERR_NOTLOADED;
 		return -1;
@@ -706,14 +706,14 @@ static int check_for_tiusb(void)
 
 static int check_for_libusb(void)
 {
-	DISPLAY(_("  check for lib-usb usability:\n"));
+	printl(0, _("  check for lib-usb usability:\n"));
 
 	if(!access(USBFS, F_OK))
-		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
+		printl(0, _("    usb filesystem (/proc/bus/usb): %s\r\n"), "mounted");
 	else {
-		DISPLAY(_("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
-		DISPLAY(_("    => the usbfs must be supported by your kernel and you have to mount it\n"));
-		DISPLAY(_("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"));
+		printl(0, _("    usb filesystem (/proc/bus/usb): %s\r\n"), "not mounted");
+		printl(0, _("    => the usbfs must be supported by your kernel and you have to mount it\n"));
+		printl(0, _("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"));
 		
 		warning = ERR_NOTMOUNTED;
 		return -1;

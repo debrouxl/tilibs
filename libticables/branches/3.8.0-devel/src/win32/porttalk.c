@@ -27,7 +27,8 @@
 
 #include <windows.h>
 
-#include "../verbose.h"
+#include "../intl.h"
+#include "../printl.h"
 
 /****************************************************/
 /* Utility functions for PortTalk driver	    */
@@ -53,22 +54,21 @@ void PortTalkInstallDriver(void)
   /* of 55 uint8_ts */
 
   if (!GetSystemDirectory(DriverFileName, 55)) {
-    DISPLAY_ERROR
-	("PortTalk: Failed to get System Directory. Is System Directory Path > 55 Characters?\n"
-	 "PortTalk: Please manually copy driver to your system32/driver directory.\n");
+    printl(2, _(
+    	 "PortTalk: Failed to get System Directory. Is System Directory Path > 55 Characters?\n"
+	 "PortTalk: Please manually copy driver to your system32/driver directory.\n"));
   }
 
   /* Append our Driver Name */
   lstrcat(DriverFileName, "\\Drivers\\PortTalk.sys");
-  DISPLAY_ERROR("PortTalk: Copying driver to %s\n", DriverFileName);
+  printl(2, _("PortTalk: Copying driver to %s\n"), DriverFileName);
 
   /* Copy Driver to System32/drivers directory. This fails if the file doesn't exist. */
 
   if (!CopyFile("PortTalk.sys", DriverFileName, FALSE)) {
-    DISPLAY_ERROR("PortTalk: Failed to copy driver to %s\n",
+    printl(2, _("PortTalk: Failed to copy driver to %s\n"),
 		  DriverFileName);
-    DISPLAY_ERROR
-	("PortTalk: Please manually copy driver to your system32/driver directory.\n");
+    	printl(2, _("PortTalk: Please manually copy driver to your system32/driver directory.\n"));
   }
 
   /* Open Handle to Service Control Manager */
@@ -98,11 +98,11 @@ void PortTalkInstallDriver(void)
   if (schService == NULL) {
     err = GetLastError();
     if (err == ERROR_SERVICE_EXISTS)
-      DISPLAY_ERROR("PortTalk: Driver already exists. No action taken.\n");
+      printl(2, _("PortTalk: Driver already exists. No action taken.\n"));
     else
-      DISPLAY_ERROR("PortTalk: Unknown error while creating Service.\n");
+      printl(2, _("PortTalk: Unknown error while creating Service.\n"));
   } else
-    DISPLAY_ERROR("PortTalk: Driver successfully installed.\n");
+    printl(2, _("PortTalk: Driver successfully installed.\n"));
 
   /* Close Handle to Service Control Manager */
   CloseServiceHandle(schService);
@@ -124,10 +124,10 @@ unsigned char PortTalkStartDriver(void)
     if (GetLastError() == ERROR_ACCESS_DENIED) {
       /* We do not have enough rights to open the SCM, therefore we must */
       /* be a poor user with only user rights. */
-      DISPLAY_ERROR
-	  ("PortTalk: You do not have rights to access the Service Control Manager and\n"
+      printl(2, _(
+	   "PortTalk: You do not have rights to access the Service Control Manager and\n"
 	   "PortTalk: the PortTalk driver is not installed or started. Please ask \n"
-	   "PortTalk: your administrator to install the driver on your behalf.\n");
+	   "PortTalk: your administrator to install the driver on your behalf.\n"));
       return (0);
     }
 
@@ -140,17 +140,15 @@ unsigned char PortTalkStartDriver(void)
     if (schService == NULL)
       switch (GetLastError()) {
       case ERROR_ACCESS_DENIED:
-	DISPLAY_ERROR
-	    ("PortTalk: You do not have rights to the PortTalk service database\n");
+	printl(2, _("PortTalk: You do not have rights to the PortTalk service database\n"));
 	return (0);
       case ERROR_INVALID_NAME:
-	DISPLAY_ERROR
-	    ("PortTalk: The specified service name is invalid.\n");
+	printl(2, _("PortTalk: The specified service name is invalid.\n"));
 	return (0);
       case ERROR_SERVICE_DOES_NOT_EXIST:
-	DISPLAY_ERROR
-	    ("PortTalk: The PortTalk driver does not exist. Installing driver.\n"
-	     "PortTalk: This can take up to 30 seconds on some machines . .\n");
+	printl(2, _(
+	     "PortTalk: The PortTalk driver does not exist. Installing driver.\n"
+	     "PortTalk: This can take up to 30 seconds on some machines . .\n"));
 	PortTalkInstallDriver();
 	break;
       }
@@ -163,16 +161,14 @@ unsigned char PortTalkStartDriver(void)
 		     NULL);	/* pointer to arguments */
 
   if (ret)
-    DISPLAY_ERROR
-	("PortTalk: The PortTalk driver has been successfully started.\n");
+    printl(2, _("PortTalk: The PortTalk driver has been successfully started.\n"));
   else {
     err = GetLastError();
     if (err == ERROR_SERVICE_ALREADY_RUNNING)
-      DISPLAY_ERROR("PortTalk: The PortTalk driver is already running.\n");
+      printl(2, _("PortTalk: The PortTalk driver is already running.\n"));
     else {
-      DISPLAY_ERROR
-	  ("PortTalk: Unknown error while starting PortTalk driver service.\n"
-	   "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n");
+      printl(2, _("PortTalk: Unknown error while starting PortTalk driver service.\n"
+	   "PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n"));
       return (0);
     }
   }

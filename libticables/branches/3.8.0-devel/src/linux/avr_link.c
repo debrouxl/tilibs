@@ -48,7 +48,7 @@
 #include "cabl_def.h"
 #include "externs.h"
 #include "timeout.h"
-#include "verbose.h"
+#include "printl.h"
 #include "logging.h"
 
 static char tty_dev[1024];
@@ -74,9 +74,9 @@ int avr_init()
 	
 	if ((dev_fd = open(io_device, flags)) == -1) {
 		if(errno == EACCES)
-			DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+			printl(2, _("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
 		else
-			DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
+			printl(2, _("libticables: unable to open this serial port: %s\n"), io_device);
 		return ERR_OPEN_SER_DEV;
 	}
 	

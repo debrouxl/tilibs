@@ -48,7 +48,7 @@
 #include "cabl_err.h"
 #include "export.h"
 #include "externs.h"
-#include "verbose.h"
+#include "printl.h"
 
 int bsd_detect_os(char **os_type)
 {
@@ -56,13 +56,13 @@ int bsd_detect_os(char **os_type)
 	struct utsname buf;
 
 	uname(&buf);
-  	DISPLAY(_("Getting OS type...\r\n"));
-  	DISPLAY(_("  System name: %s\r\n"), buf.sysname);
-  	DISPLAY(_("  Node name: %s\r\n"), buf.nodename);
-  	DISPLAY(_("  Release: %s\r\n"), buf.release);
-  	DISPLAY(_("  Version: %s\r\n"), buf.version);
-  	DISPLAY(_("  Machine: %s\r\n"), buf.machine);
-	DISPLAY(_("Done.\r\n"));
+  	printl(0, _("Getting OS type...\r\n"));
+  	printl(0, _("  System name: %s\r\n"), buf.sysname);
+  	printl(0, _("  Node name: %s\r\n"), buf.nodename);
+  	printl(0, _("  Release: %s\r\n"), buf.release);
+  	printl(0, _("  Version: %s\r\n"), buf.version);
+  	printl(0, _("  Machine: %s\r\n"), buf.machine);
+	printl(0, _("Done.\r\n"));
 #endif
 	*os_type = OS_BSD;
 
@@ -76,16 +76,16 @@ int bsd_detect_port(TicablePortInfo * pi)
 
 int bsd_detect_resources(void)
 {
-	DISPLAY(_("libticables: checking resources...\r\n"));
+	printl(0, _("libticables: checking resources...\r\n"));
 	resources = IO_BSD;
 
 	/* API: for use with ttySx */
 
 #if defined(HAVE_TERMIOS_H)
   	resources |= IO_API;
-  	DISPLAY(_("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
+  	printl(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\r\n"));
 #else
-	DISPLAY(_("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
+	printl(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\r\n"));
 #endif
 
 	/* ASM: for use with low-level I/O */
@@ -93,7 +93,7 @@ int bsd_detect_resources(void)
 #if defined(__I386__)
 	resources |= IO_ASM;
 #endif
-	DISPLAY(_("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),
+	printl(0, _("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),
 		resources & IO_ASM ? "" : "not ");
 
 	/* LIBUSB: lib-usb userland module */
@@ -101,7 +101,7 @@ int bsd_detect_resources(void)
 #ifdef HAVE_LIBUSB
 	resources |= IO_LIBUSB;
 #endif
-	DISPLAY(_("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
+	printl(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\r\n"),
 		resources & IO_LIBUSB ? "" : "not ");
 
   	return 0;

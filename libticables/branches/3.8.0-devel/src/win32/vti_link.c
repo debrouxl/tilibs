@@ -44,7 +44,7 @@
 #include "export.h"
 #include "logging.h"
 #include "externs.h"
-#include "verbose.h"
+#include "printl.h"
 
 extern int time_out;		// Timeout value for cables in 0.10 seconds
 extern int delay;		// Time between 2 bits (home-made cables only)
@@ -86,23 +86,23 @@ int vti_init(unsigned int io_addr, char *dev)
     if (GetLastError() != ERROR_ALREADY_EXISTS)
       break;
   }
-  //DISPLAY("Virtual Link L->V %i\n", i);
+  //printl(0, "Virtual Link L->V %i\n", i);
   vSendBuf = (LinkBuffer *) MapViewOfFile(hVLinkFileMap,
 					  FILE_MAP_ALL_ACCESS, 0, 0,
 					  sizeof(LinkBuffer));
 
   /* Get an handle on the VTi window */
   otherWnd = FindWindow("TEmuWnd", NULL);
-  //DISPLAY("otherWnd: %p\n", otherWnd);
+  //printl(0, "otherWnd: %p\n", otherWnd);
   if (!otherWnd)
     return ERR_OPP_NOT_AVAIL;
 
   /* Get the current DLL handle */
   Handle = GetModuleHandle("ticables.dll");
   if (!Handle) {
-    DISPLAY_ERROR(_("Unable to get an handle on the libTIcables.\n"));
-    DISPLAY_ERROR(_("Did you rename the library ?!\n"));
-    DISPLAY_ERROR(_("Fatal error. Program terminated.\n"));
+    printl(2, _("Unable to get an handle on the libTIcables.\n"));
+    printl(2, _("Did you rename the library ?!\n"));
+    printl(2, _("Fatal error. Program terminated.\n"));
     exit(-1);
   }
   // Inform VTi of our virtual link so that it can enable it. It should returns 
@@ -114,11 +114,11 @@ int vti_init(unsigned int io_addr, char *dev)
   //WaitMessage();                                                                                // Waits VTi answer
 
   /* Create a file mapping handle for the 'Vti->lib' communication channel */
-  //DISPLAY("Virtual Link V->L %i\n", i-1);
+  //printl(0, "Virtual Link V->L %i\n", i-1);
   sprintf(name, "Virtual Link %d", i - 1);
   hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
   if (hMap) {
-    DISPLAY_ERROR(_("Opened %s\n"), name);
+    printl(2, _("Opened %s\n"), name);
     vRecvBuf =
 	(LinkBuffer *) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
 				     0, 0, sizeof(LinkBuffer));

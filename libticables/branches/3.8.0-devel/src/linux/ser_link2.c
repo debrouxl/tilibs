@@ -164,7 +164,7 @@ int ser_probe2()
 	    	for (j = 0; j < 10; j++)
 	      		io_rd(com_in);
 	    
-	    	//DISPLAY("%i %02X %02X %02X\n", i, io_rd(com_in), io_rd(com_in) & 0x30, seq[i]);
+	    	//printl(0, "%i %02X %02X %02X\n", i, io_rd(com_in), io_rd(com_in) & 0x30, seq[i]);
 	    	if ((io_rd(com_in) & 0x30) != seq[i]) {
 	      		io_wr(com_out, 3);
 	      		return ERR_ROOT;

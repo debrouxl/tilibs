@@ -41,7 +41,7 @@
 
 #include "../cabl_err.h"
 #include "../cabl_def.h"
-#include "../verbose.h"
+#include "../printl.h"
 #include "../export.h"
 #include "../intl.h"
 #include "../cabl_int.h"
@@ -72,7 +72,7 @@ static void print_last_error(char *s)
 		NULL, GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) & lpMsgBuf, 0, NULL);
-        DISPLAY("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+        printl(0, "%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
 }
 #endif				//__WIN32__
 
@@ -152,7 +152,7 @@ int io_open(unsigned long from, unsigned long num)
 		      0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hDll == INVALID_HANDLE_VALUE) {
-      DISPLAY_ERROR(_
+      printl(2, _
 		    ("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
       return ERR_PORTTALK_NOT_FOUND;
     } else {
@@ -177,7 +177,7 @@ int io_open(unsigned long from, unsigned long num)
     if (!iError)
       print_last_error("Granting access");
     else
-      DISPLAY(_
+      printl(0, _
 	      ("Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"),
 	      from, offset);
 
@@ -190,9 +190,9 @@ int io_open(unsigned long from, unsigned long num)
 
     if (!iError)
       print_last_error("Talking to device driver");
-    //DISPLAY(_("Error Occured talking to Device Driver %d\n"),GetLastError());
+    //printl(0, _("Error Occured talking to Device Driver %d\n"),GetLastError());
     else
-      DISPLAY(_
+      printl(0, _
 	      ("PortTalk Device Driver has set IOPM for ProcessID %d.\n"),
 	      pid);
 
@@ -269,7 +269,7 @@ int io_open(unsigned long from, unsigned long num)
       return ERR_SET_COMMTIMEOUT;
     }
 
-    DISPLAY(_
+    printl(0, _
 	    ("Libticables: serial port %s successfully reconfigured.\n"),
 	    comPort);
     iDcbUse++;
@@ -277,7 +277,7 @@ int io_open(unsigned long from, unsigned long num)
     io_rd = win32_dcb_read_io;
     io_wr = win32_dcb_write_io;
   } else {
-		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+		printl(2, "libticables: bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
   }
 
@@ -305,7 +305,7 @@ int io_close(unsigned long from, unsigned long num)
       iDcbUse = 0;
     }
   }  else {
-		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+		printl(2, "libticables: bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
 	}
 
@@ -327,21 +327,21 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   *hCom = CreateFile(comPort, GENERIC_READ | GENERIC_WRITE, 0,
 		     NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (hCom == INVALID_HANDLE_VALUE) {
-    DISPLAY_ERROR("CreateFile\n");
+    printl(2, "CreateFile\n");
     print_last_error("CreateFile");
     return ERR_CREATE_FILE;
   }
   // Setup buffer size
   fSuccess = SetupComm(*hCom, BUFFER_SIZE, BUFFER_SIZE);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetupComm\n");
+    printl(2, "SetupComm\n");
     print_last_error("SetupComm");
     return ERR_SETUP_COMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(*hCom, &dcb);
   if (!fSuccess) {
-    DISPLAY_ERROR("GetCommState\n");
+    printl(2, "GetCommState\n");
     print_last_error("GetCOmmState");
     return ERR_GET_COMMSTATE;
   }
@@ -367,14 +367,14 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   // Config COM port
   fSuccess = SetCommState(*hCom, &dcb);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetCommState\n");
+    printl(2, "SetCommState\n");
     print_last_error("SetCOmmState");
     return ERR_SET_COMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(*hCom, &cto);
   if (!fSuccess) {
-    DISPLAY_ERROR("GetCommTimeouts\n");
+    printl(2, "GetCommTimeouts\n");
     print_last_error("GetCommTimeouts");
     return ERR_GET_COMMTIMEOUT;
   }
@@ -387,7 +387,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
 
   fSuccess = SetCommTimeouts(*hCom, &cto);
   if (!fSuccess) {
-    DISPLAY_ERROR("SetCommTimeouts\n");
+    printl(2, "SetCommTimeouts\n");
     print_last_error("SetCommTimeouts");
     return ERR_SET_COMMTIMEOUT;
   }

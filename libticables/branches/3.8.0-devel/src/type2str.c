@@ -24,7 +24,6 @@
 
 #include "intl.h"
 #include "cabl_def.h"
-#include "verbose.h"
 
 static const char *TICABLETYPE[TICABLETYPE_MAX] = {
   "none", "GrayLink", "BlackLink", "ParallelLink", "AVRlink", "virtual", "TiEMu",
@@ -67,9 +66,7 @@ TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br)
   	case BR19200: return "19200 bauds";
   	case BR38400: return "38400 bauds";
   	case BR57600: return "57600 bauds";
-  	default:
-  	    	DISPLAY_ERROR(_("libticables error: unknown baud rate !\n"));
-    		return "unknown";
+  	default: return "unknown";
   	}
 }
 

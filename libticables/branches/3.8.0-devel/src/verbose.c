@@ -22,6 +22,10 @@
 /* 
    Allow to display or not some informations depending on the
    verbosity level.
+   
+   Note: this module is completely deprecated (replaced by a more convenient 
+   module: printl). But, it can be used as sample code for overriding printl
+   callback.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +40,70 @@
 
 #include "export.h"
 #include "verbose.h"
+#include "printl.h"
+
+// for compatibility
+TIEXPORT int TICALL DISPLAY(const char *format, ...)
+{
+	va_list ap;
+	int ret;
+		
+	va_start(ap, format);
+    	ret = printl(0, format, ap);
+    	va_end(ap);
+	
+	return ret;
+}
+
+// for compatibility
+TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
+{
+	va_list ap;
+	int ret;
+		
+	va_start(ap, format);
+    	ret = printl(2, format, ap);
+    	va_end(ap);
+	
+	return ret;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay op)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay op)
+{
+  	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_set_file(const char *filename)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL ticable_verbose_flush_file(void)
+{
+	return 0;
+}
+
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_stream(FILE * stream)
+{
+	return NULL;
+}
+
+TIEXPORT FILE *TICALL ticable_DISPLAY_set_output_to_file(char *filename)
+{
+	 return NULL;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_close_file()
+{
+  	return 0;
+}
+
+#if 0
 
 // Display output in console
 #ifdef __WIN32__
@@ -238,3 +306,5 @@ TIEXPORT int TICALL ticable_DISPLAY_close_file()
 {
   return fclose(f);
 }
+
+#endif

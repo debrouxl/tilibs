@@ -49,7 +49,7 @@
 #include "cabl_def.h"
 #include "externs.h"
 #include "logging.h"
-#include "verbose.h"
+#include "printl.h"
 
 #define BUFFER_SIZE 256
 #define HIGH 666		// upper limit (used for avoiding 'uint8_t timeout')
@@ -69,8 +69,7 @@ static const char fifo_names[4][256] = {
 int tie_init()
 {
   if ((io_address < 1) || (io_address > 2)) {
-    DISPLAY_ERROR
-	(_("Invalid io_address parameter passed to libticables.\n"));
+    printl(2, _("Invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
   }
   p = io_address - 1;
@@ -84,7 +83,7 @@ int tie_init()
   /* Open the pipes */
   // Open the 1->0 pipe in reading
   if ((rd[p] = open(fifo_names[2 * (p) + 0], O_RDONLY | O_NONBLOCK)) == -1) {
-    DISPLAY_ERROR(_("error: %s\n"), strerror(errno));
+    printl(2, _("error: %s\n"), strerror(errno));
     return ERR_OPEN_PIPE;
   }
   // Open the 0->1 pipe in writing (in reading at first)

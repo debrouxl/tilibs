@@ -41,7 +41,7 @@
 
 #include "cabl_err.h"
 #include "externs.h"
-#include "verbose.h"
+#include "printl.h"
 
 /* Variables */
 
@@ -74,7 +74,7 @@ static int bsd_ioctl_read_io(unsigned int addr)
 	unsigned int flags;
 
   	if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    		DISPLAY_ERROR(_("libticables: ioctl failed in bsd_ioctl_read_io !\n"));
+    		printl(2, _("libticables: ioctl failed in bsd_ioctl_read_io !\n"));
     		return ERR_IOCTL;
   	}
 
@@ -90,7 +90,7 @@ static void bsd_ioctl_write_io(unsigned int address, int data)
   	flags |= (data & 2) ? TIOCM_RTS : 0;
   	flags |= (data & 1) ? TIOCM_DTR : 0;
   	if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    		DISPLAY_ERROR(_("libticables: ioctl failed in bsd_ioctl_write_io !\n"));
+    		printl(2, _("libticables: ioctl failed in bsd_ioctl_write_io !\n"));
     		//return ERR_IOCTL;
   	}
 #endif
@@ -118,9 +118,9 @@ int io_open(unsigned long from, unsigned long num)
 
 		if ((dev_fd = open(io_device, O_RDWR | O_FSYNC)) == -1) {
       			if(errno == EACCES)
-      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
+      				printl(2, _("libticables: unable to open this serial port: %s (wrong permissions).\n"), io_device);
       			else
-      				DISPLAY_ERROR(_("libticables: unable to open this serial port: %s\n"), io_device);
+      				printl(2, _("libticables: unable to open this serial port: %s\n"), io_device);
       			return ERR_OPEN_SER_DEV;
     		}
 
@@ -132,7 +132,7 @@ int io_open(unsigned long from, unsigned long num)
 
     		tty_use++;
 	} else {
-		DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+		printl(2, "libticables: bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
 	}
 
@@ -154,7 +154,7 @@ int io_close(unsigned long from, unsigned long num)
       			tty_use--;
     		}
 	} else {
-                DISPLAY_ERROR("libticables: bad argument (invalid method).\n");
+                printl(2, "libticables: bad argument (invalid method).\n");
                 return ERR_ILLEGAL_ARG;
         }
 	

@@ -103,11 +103,8 @@ extern "C" {
   	/* Verbosity functions */
 	/***********************/
 
-  TIEXPORT int TICALL DISPLAY(const char *format, ...);
-  TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
-  TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
-  TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
-  TIEXPORT int TICALL ticable_verbose_flush_file(void);
+  // printl.c
+  TIEXPORT TICABLES_PRINT ticable_set_print(TICABLES_PRINT new_printf);
 
 	/**************************************/
   	/* Direct access functions (reserved) */
@@ -135,6 +132,12 @@ extern "C" {
 
   TIEXPORT int TICALL ticable_set_param2(TicableLinkParam lp);
   TIEXPORT int TICALL ticable_DISPLAY_settings(TicableDisplay);
+  
+  TIEXPORT int TICALL DISPLAY(const char *format, ...);
+  TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
+  TIEXPORT int TICALL ticable_verbose_settings(TicableDisplay);
+  TIEXPORT int TICALL ticable_verbose_set_file(const char *filename);
+  TIEXPORT int TICALL ticable_verbose_flush_file(void);
 
 	/****************************/
   	/* Type to String functions */

@@ -43,7 +43,7 @@
 #include "externs.h"
 #include "export.h"
 #include "logging.h"
-#include "verbose.h"
+#include "printl.h"
 
 #define BUFFER_SIZE 256
 
@@ -78,8 +78,7 @@ int tie_init(void)
 {
   /* Check if valid argument */
   if ((io_address < 1) || (io_address > 2)) {
-    DISPLAY_ERROR
-	(_("invalid io_address parameter passed to libticables.\n"));
+    printl(2, _("invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
   } else {
     p = io_address - 1;
@@ -163,7 +162,7 @@ int tie_get(uint8_t * data)
   //if(!hMap)
   //      return ERR_OPEN_FILE_MAP;
 
-  //DISPLAY("s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
+  //printl(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
 
   tdr.count++;
   /* Wait that the buffer has been filled */
@@ -177,7 +176,7 @@ int tie_get(uint8_t * data)
   /* And retrieve the data from the circular buffer */
   *data = pRecvBuf->buf[pRecvBuf->start];
   pRecvBuf->start = (pRecvBuf->start + 1) & 255;
-  //DISPLAY("get: 0x%02x\n", *data);
+  //printl(0, "get: 0x%02x\n", *data);
   LOG_DATA(*data);
 
   return 0;
