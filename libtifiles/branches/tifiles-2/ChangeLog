@@ -15,6 +15,12 @@ Log:
 	- library has been fully documented
 	- decreased number of headers to include (3)
 	- fixed tifiles_file_is_ti and argument passing to transcode functions
+	- added fread_n_bytes adn fwrite_n_bytes which replaces fwrite_n_chars 
+	- fixed missing fclose()
+	- fixed fsignature in TI8x support
+
+Pb with TI8x write flash.
+	Add TiGroup (*.tig) support which is a kind of file container.
 	
 ====[ Version II ]====
 
