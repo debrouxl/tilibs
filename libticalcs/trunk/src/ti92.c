@@ -57,29 +57,6 @@ int ti92_supported_operations(void)
        OPS_SEND_VARS | OPS_RECV_VARS | OPS_ROMVERSION | OPS_ROMDUMP);
 }
 
-int ti92_isready(void)
-{
-  uint16_t status;
-
-  printl2(0, _("Is calculator ready ?\n"));
-
-  LOCK_TRANSFER();
-  TRYF(cable->open());
-  update_start();
-
-  UNLOCK_TRANSFER();
-TRY(ti92_send_key('m'));
- LOCK_TRANSFER(); 
-
-  TRYF(ti92_send_RDY());
-  TRYF(ti92_recv_ACK(&status));
-
-  TRYF(cable->close());
-  UNLOCK_TRANSFER();
-
-  return (status & 0x01) ? ERR_NOT_READY : 0;
-}
-
 int ti92_send_key(uint16_t key)
 {
   LOCK_TRANSFER();
@@ -92,6 +69,29 @@ int ti92_send_key(uint16_t key)
   UNLOCK_TRANSFER();
 
   return 0;
+}
+
+int ti92_isready(void)
+{
+  uint16_t status;
+
+  printl2(0, _("Is calculator ready ?\n"));
+
+  LOCK_TRANSFER();
+  TRYF(cable->open());
+  update_start();
+
+  UNLOCK_TRANSFER();
+  TRY(ti92_send_key('m'));
+  LOCK_TRANSFER(); 
+
+  TRYF(ti92_send_RDY());
+  TRYF(ti92_recv_ACK(&status));
+
+  TRYF(cable->close());
+  UNLOCK_TRANSFER();
+
+  return (status & 0x01) ? ERR_NOT_READY : 0;
 }
 
 int ti92_screendump(uint8_t ** bitmap, int mask_mode,
