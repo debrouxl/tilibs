@@ -1,0 +1,18 @@
+[Main]
+Name=label
+Type=Function
+Header=calc_int.h
+Definition=void (*label) (void);
+
+[Parameters]
+None.
+
+[Summary]
+Called whenever the label_text has been updated.
+
+[Description]
+This function is called by the ticalc library when the library has updated the label_text fields of the TicalcInfoUpdate structure.
+It's typically used to update a label or a text area which contains this string.
+
+[See also]
+TicalcInfoUpdate

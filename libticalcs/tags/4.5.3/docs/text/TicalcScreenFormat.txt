@@ -1,0 +1,9 @@
+[Main]
+Name=TicalcScreenFormat
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcScreenFormat
+
+[Fields]
+FULL_SCREEN : the whole screen
+CLIPPED_SCREEN : a part of the screen

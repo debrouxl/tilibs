@@ -1,0 +1,20 @@
+[Main]
+Name=get_clock
+Type=Function
+Header=calc_int.h
+Definition=int (*get_clock) (@TicalcClock@ * clock, int mode);
+
+[Parameters]
+clock : a structure containing clock informations
+mode : a @TicalcMaskMode@ mask
+Returns : 0 if sucessful, an error code otherwise
+
+[Summary]
+Retrieve time, date and clock settings from the calculator.
+
+[Description]
+This function works only with TI89/92+/V200 calculators with AMS2.08 minimum
+(the version re-released by TI, else setting clock will not work).
+
+[See also]
+@TicalcClock@

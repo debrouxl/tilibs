@@ -1,0 +1,27 @@
+[Main]
+Name=ticalc_set_update
+Type=Function
+Header=calc_int.h
+Definition=void ticalc_set_update(@TicalcInfoUpdate@ *iu,
+                                       void (*start)   (void),
+                                       void (*stop)    (void),
+                                       void (*refresh) (void),
+                                       void (*pbar)    (void),
+                                       void (*label)   (void));
+
+[Parameters]
+iu : the structure to pass to the library
+start : called when a transfer is started
+stop : called when a transfer is finished
+refresh : called to periodically let control to GUI for refresh
+pbar : called whenever a progress bar has to be updated
+label : called whenver a label has to be updated
+
+[Summary]
+Tells library to use our 'update' functions.
+
+[Description]
+This function allows the user to place a set of callbacks. These callbacks are usually GUI functions that the library can call.
+
+Note: the pointers must points on valid functions. They can not be NULL.
+If you does not want this capability, make the structure points on void functions (see the test_ticables.c program).

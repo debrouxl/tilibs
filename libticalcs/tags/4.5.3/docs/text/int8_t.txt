@@ -1,0 +1,11 @@
+[Main]
+Name=int8_t
+Type=Define
+Header=stdint.h
+Definition=typedef int8_t
+
+[Summary]
+A ISO C99 normalized type.
+
+[Description]
+A signed 8 bits value.

@@ -1,0 +1,502 @@
+Log:
+
+- 23/12/2002, version 4.2.9:
+	Added pkg-config support.
+	
+- 15/11/2002, version 4.2.8:
+	configure.ac improved.
+	
+- 09/10/2002, version 4.2.7:
+	ROM dump fixes: file descriptor was not closed -> invalid ROM size.
+	
+- 30/09/2002, version 4.2.6:
+	Some fixes (display).
+	
+- 26/09/2002, version 4.2.5:
+	Some changes due to libtifiles modifications for Win32.
+	
+- 17/09/2002, version 4.2.4:
+	ROM dump fixes.
+	Auto-detect fix.
+	pbar: label 'receiving var %s'
+	
+- 16/09/2002, version 4.2.3:
+	Win32 port.
+	
+- 13/09/2002, version 4.2.2:
+	testing phase:
+	- TI83/86:  ok
+	- TI82/85:  ok
+	- TI73/83+: ok
+	- TI92:
+	- TI89/92+/V200
+	
+- 07/09/2002, version 4.2.1:
+	ti73/83+ support merged into a single one (ti83+)
+	
+- 05/09/2002, version 4.2.0:
+	ticalc_check_if_[var|app]_exists modified.
+	tixx_send_var: added new argument, the action list.
+	error code sorting & clean-up.
+	added some extra infos for error msg.
+	
+- 02/09/2002, version 4.1.9:
+	ti89/92+/v200 support merged into a single one (ti89)
+	
+- 01/09/2002, version 4.1.8:
+	set/get date function added.
+	clock.c utilies added.
+	
+- 31/08/2002, version 4.1.7:
+	testing phase: 
+	- TI92 recv backup fixed
+	- TI83+ send var fixed
+	
+- 26/08/2002, version 4.1.6:
+	added preliminary V200 support. V200 uses the same Machine IDs than
+	TI92+.
+	
+- 18/08/2002, version 4.1.5:
+	added a new argument to tixx_directorylist: returns mem free or used
+	testing phase:
+	- TI73..86, dirlist fixed
+	- TI83 & TI86, mem free added/fixed
+	- TI83 & TI86, recv_var fixed
+	- TI73/83+: os fixed
+	- recv_flash: changed appname parameter for a TiVarEntry
+	- added a new function in dirlist.c
+	- TI89 dirlist fixed for AMS2.08 (FLASH apps)
+	
+- 16/08/2002, version 4.1.4:
+	uses ti8x/9x_create_[]_content.
+	tree utility functions are now in dirlist.c
+	
+- 14/08/2002, version 4.1.3:
+	added a new header (wrapper): ticalcs.h
+	byte/word/longword removed for uint8/16/32_ of stdint.h (ISO C 99)
+	TI92 recv backup fixed.
+	
+- 12/08/2002, version 4.1.2:
+	Added displaying of folder list (misc.c).
+	Clean-up in the various ticalc_set_cable, ticalc_set_calc, ... fncts.
+	
+- 11/08/2002, version 4.1.1:
+	Directory list system modified: uses tree instead of list.
+	Currently uses GLib's GNode. Will be replaced later by my own GNode
+	implementation.
+	
+- 10/08/2002, version 4.1.0:
+	Compatibility wrapper removed.
+	Group header management removed.
+	Minor bug fixes.
+	
+- 08/08/2002, version 4.0.9:
+	TI89 support added.
+	
+- 31/07/2002, version 4.0.8:
+	TI92 support added.
+
+- 27/07/2002, version 4.0.7:
+	TI83+/TI73 support added.
+	intelhexa.c removed
+	
+- 25/07/2002, version 4.0.6:
+	TI86 fixed. TI82/83/85/86 have been tested: OK !
+	
+- 23/07/2002, version 4.0.5:
+	TI86 added. TI82 & 85 backup fixes (sending).
+	TI86 backup to fix (pb of file format).
+	
+- 21/07/2002, version 4.0.4:
+	TI82/85/83 finished.
+	
+- 17/07/2002, version 4.0.3:
+	I begin to rewrite the calculator communication layer...
+	
+- 13/07/2002, version 4.0.2:
+	Some changes from libtifiles included:
+	- headers
+	- added keys code for ti73/83+ (not tested)
+	- remote control with curses removed
+	
+- 04/07/2002, version 4.0.1:
+	byte2type & translate are now calc independant.
+	Rebuilt under Win32.
+	
+- 10/06/2002, version 4.0.0 (4.x.x):
+	Moved some stuffs in the libtifiles library.
+	Library version is now displayed in ticalc_init.
+	
+- 04/06/2002, version 3.3.9:
+	Mac OS-X merge.
+	
+- 14/05/2002, version 3.3.8:
+	TI89 FLASH support completely rewritten with the TI89/92+ SDK doc 
+	(contains FLASH file format).
+	
+- 29/04/2002, version 3.3.7:
+	Added ROM dump support for TI83+ in ti83p_supported_operations: ok !
+	Added a new type (0x4D: PRGM ?) and fixed group support: ok !
+	Pb with FLASH OS/App sending (signature): fixed by a 3.3.2 backport.
+	Thanks to "Stephen Shaw" <stephenshaw@email.com> for these bug reports.
+	TI73 FLASH support updated with TI83+ support.
+
+- 24/04/2002, version 3.3.6:
+	ZIP vartype has no file extension for TI89/92+: fixed.
+	
+- 15/04/2002, version 3.3.5:
+	TI83+ ROM dumping support fixed (stop at 512KB instead of 256KB)
+	Thanks to Thomas Shawn.
+	
+- 11/04/2002, version 3.3.4:
+	Another bug report: some TI89 FLASH apps (usually developped by third 
+	parties) replace the "License" string/header by their FLASH app name.
+	Thanks to Brandon Barker <bebarker@meginc.com>.
+	
+- 06/04/2002, version 3.3.3:
+	TI has released a FLASH app for a limited amount of time (TI Cell 
+	Sheet). This FLASH app contains a certificate which was not handled by
+	TiLP. Fixed for TI89/TI92+.
+	Beware: certificates are still unsupported (currently skipped).
+	Thanks to ?? <??>.
+	
+- 15/03/2002, version 3.3.2:
+	LIBTICALCS_VERSION symbol is now always defined.
+	Added the type 15h (appvar) and 17h (group) to TI83+.
+	TI83+ pb with FLASH app sending (> 1 page): fixed (introduced in 3.1.8)
+	TI83+, fixed checksums: TIGL compatible.
+	Dirlist fixed for TI89/92+ (FLASH apps listed multiple times).
+
+	Group (17h) support: the group is receive as a single var (contrary to
+	TIGL. This allow to keep the group as is on calc -> advantage).
+	Contrary to (maybe a drawback) TI's soft, it's not converted into
+	a .8Xg group file.
+
+	Removed verbose.c: already compiled in libticables -> problem with
+	console management !
+	
+- 01/03/2002, version 3.3.1:
+	Minor bug fix on TI83+ support (sending of vars) introduced in v3.2.0.
+	Thanks to Paxl !
+	
+- 24/02/2002, version 3.3.0:
+	Rounded to 3.3.0 for official release.
+	
+- 23/02/2002, version 3.2.1:
+	Merged with Mac OS-X again.
+	
+- 17/02/2002, version 3.2.0:
+	Added the ability to send a TI8x file on a TI83+ calculator.
+	For calc which does not have folder: p->folder = p instead of list.
+	Paxl problem fixed ( '/r/n' or '/r' in FLASH app signed by 
+	appsign.
+	
+- 15/02/2002, version 3.1.9:
+	Fixed some keys for remote control.
+	
+- 14/02/2002, version 3.1.8:
+	TI73/83+ FLASH file management moved in intelhexa.c/h.
+	
+- 14/02/2002, version 3.1.7:
+	Merge with Mac OS-X: building projects are in 'osx'.
+	
+- 14/02/2002, version 3.1.6:
+        Cleanup in the TicalcInfoUpdate structure (data rate moved in
+        libticables).
+	
+- 13/02/2002, version 3.1.5:
+	Remote control fixes.
+	
+- 12/02/2002, version 3.1.4:
+	Little fixes.
+	
+- 10/02/2002, version 3.1.3:
+	VarInfo structure modified.
+	
+- 02/02/2002, version 3.1.2:
+	TI89 & 92+ key definitions and array updated and improved.
+
+- 23/01/2002, version 3.1.1:
+	TI73 support added & tested.
+	send_key added for TI73,83,83+,86.
+
+- 21/01/2002, version 3.1.0:
+	Some clean-up, enhancements. Compatibility broken !
+	
+- 20/01/2002, version 3.0.7:
+	The command line is cleared before doing a ROM dumping.
+	TI73 support added (not tested).
+	
+- 19/01/2002, version 3.0.6:
+	TI83+, sending of FLASH Apps/Os works now.
+	Receiving of FLASHapps: done.
+	New function added: ticalc_83p_89_92p_isready. Allow to auto-detect a 
+	TI83+/89/92+ calculator.
+	This function is cleaner than ti89_92_92p_isready and should be used 
+	as a replacement even if it does not check for a TI92 any longer.
+	Little fix with ti83p_send_var ('transfer aborted').
+
+- 15/01/2002, version 3.0.5:
+	mutex: only one transfer possible and review update mechanism
+	
+- 12/01/2002, version 3.0.4:
+	ticalc_get_calc parameter changed.
+	Dirlist function improved: the first element of linked list contains
+	memory free (83/83+/86) or memory used (89/92/92+).
+	
+- 10/01/2002, version 3.0.3:
+	TI83+ support improved: sending of vars/backup works.
+	Receiving of IDlist: implemented but not tested.
+	Sending of FLASHapps/OS: pending (almost finished).
+	
+- 29/12/2001, version 3.0.2:
+	Some fixes.
+	
+- 26/12/2001, version 3.0.1:
+	Receiving of FLASH apps added.
+	TicalcFncts structure modified.
+	
+- 25/12/2001, version 3.0.0:
+	Source code cleaned up.
+	This release requires a libticables v3.x.x mini.
+	
+- 21/12/2001, version 2.1.2:
+	I have added 2 new functions: ticalc_init & ticalc_exit. These
+	functions are not used yet. They have been written for use in future.
+	Rudolf Polzer reported a problem while sending a FLASH app (TiCabri).
+	It was due to a lack of memory so I have added a more explicit message
+	for this case
+	ti89_waitdata() improved.
+	Error codes changed (valued).
+	
+- 19/12/2001, version 2.1.1:
+	probe.c: I have improved the ti89_92_92p_isready function. It directly
+	detects the calc type as well as the TI83+ (new).
+	To finish...
+	
+- 11/12/2001, version 2.1.0:
+	I have finished to patch TiLEM (lpg.ticalc.org/prj_tilem) for
+	testing TI83+ support.
+	TI83+ support widely improved: ready, screendump, dirlist, receive var,
+	receive backup tested and certified as OK. The send var/backup
+	functions have not been tested.
+	
+- 09/12/2001, version 2.0.9:
+	isready function implemented (TI83+) but not tested.
+	Macros (update.h) disabled.
+	
+- 20/11/2001, version 2.0.8:
+	Win32 projects are now distributed with source code.
+	
+- 19/11/2001, version 2.0.7:
+	French PO files have been updated (i18n).
+	
+- 17/11/2001, version 2.0.6:
+	Recompiled under WiN32.
+	
+- 14/11/2001, version 2.0.5:
+	Changed parameters name of ticalc_set_update().
+	Fixed macros of update.h for avoiding NULL accesses with the function 
+	pointers of the 'update' struct.
+	
+- 08/11/2001, version 2.0.4:
+	Added a m4 macro for checking libticables in configure scripts.
+	
+- 27/10/2001, version 2.0.3:
+        warnings fixed.
+	
+- 19/10/2001, version 2.0.2:
+        Updated to Am/Ac2.52: configure.in renamed into configure.ac.
+	
+- 15/10/2001, version 2.0.1:
+	FLASH support broken, due to type conversion (ti89.c.old/ti92p.c.old)
+	for MSVC warnings.
+	
+- 04/10/2001, version 2.0.0: compatibility broken -> v2.x.x
+	Added the stop() function in the update structure for future use.
+	The library is backward compatible with programs which use the old
+        library. Nethertheless, programs need to be recompiled.
+	
+- 14/09/2001, version 1.8.5:
+	Headers are now C++ compliant (extern "C").
+        Thomas Wolf <two@chello.at> has written a BCC32 v5.x (or C++Builder5+)
+        wrapper for the libticables. He has also bring about some modifications
+        to the libticables that I have merged.
+	I have also cleaned up the source code and the headers.
+	At last, test_libticalcs has been updated.
+	I have removed many warnings under MSVC (none to level3).
+	
+- 14/09/2001, version 1.8.4:
+	added some macros for avoiding NULL accesses with the function pointers
+	of the 'update' struct.
+	If the struct has not been set, this will not crash the library.
+	
+- 13/09/2001, version 1.8.3:
+	recompiled on Win32: some fixes.
+	
+- 16/07/2001, version 1.8.2: Julien Solignac alias x1cygnus (developer of the
+	TI83(+) TiLEM 'Ti Linux EMulator') has widely improved the TI83+
+	support.
+	
+- 03/07/2001, version 1.8.1: TI89...92+ support improved: check if the calc var
+	already exists and wait an action from user
+	
+- 30/06/2001, version 1.8.0: TI89/TI92+ group file bug fixed (I hope...)
+	
+- 21/06/2001, version 1.7.9: TI86 ROM dumper and TI86 support improved.
+	
+- 20/06/2001, version 1.7.8: I have found a tricky bug with GtkTiEmu which allows to improve the ti89_isOK, ti92_isOK and ti92p_isOK functions. There should not be 'Invalid byte' any longer.
+	
+- 15/06/2001, version 1.7.7: TI83 bug fix in dirlist (due to recent modifs)
+	
+- 06/06/2001, version 1.7.6: TI85 ROM dumper added both for Usgard & Zshell.
+	
+- 04/06/2001, version 1.7.5: see the bug_report3.html for the pb. Not fixed yet. TI89 support has been tested again. It is fully compliant.
+	
+- 28/05/2001, version 1.7.4: minor bug fix in the TI92+ FLASH routine (calc does not reboot automatically).
+	
+- 26/05/2001, version 1.7.3: TI83+ support cleaned but not tested with VTi yet.
+	
+- 25/05/2001, version 1.7.2: ROM dumping added for TI83(+) calcs but tested only on TI83. The ability to send a .tib file (old FLASH file format, replaced now by .9xu/.89u file format).
+	
+- 23/05/2001, version 1.7.1: TI92+ ROM dump dumps only 1 MB instead of 2 MB. TI92+ files was not correctly recognized by TiLP (**TI92p*/**TI92P*).
+	
+- 22/05/2001, version 1.7.0: TI92+ auto-detection pb is now fixed (a missing break, grr).
+	
+- 13/05/2001, version 1.6.9: vartype missing in the TI83 support. ROM dumping capability added to TI83.
+	
+- 08/05/2001, version 1.6.8: VERSION symbol changed due to some interactions under Win32 compiler.
+	
+- 05/05/2001, version 1.6.7: a mail from Xavier Larue paxl@ca.inter.net: TI83+ error codes have not been updated.
+	
+- 04/05/2001, version 1.6.6: ROM dumping works now for TI89. Not tested on TI92+ yet but it should work.
+	
+- 01/05/2001, version 1.6.5: bug fix in the TI83 support (ASM vartype missing).
+	
+- 21/04/2001, version 1.6.4: bug fixes in TI89/TI92+ support: backups corrupted with calculators which contained FLASHapps
+	
+- 20/04/2001, version 1.6.3: ROM dumping for TI89/92+ implemented but does not work.
+	
+- 14/04/2001, version 1.6.2: ROM dumping program is now included into the library (rom*.h). These files comes from Rusty Wagner's VTi. Done for TI92.
+	
+- 25/03/2001, version 1.6.1: intl.h removed for Debian packaging
+	
+- 22/03/2001, version 1.6.0: verbose.c removed (libticables)
+	
+- 17/03/2001, version 1.5.9: minor bug fix in the TI89 FLASH routine (calc does not reboot automatically).
+	
+- 11/03/2001, version 1.5.8: minor modifications on DISPLAY().
+	
+- 04/03/2001, version 1.5.7: changing the macros LSW to LSB_ and next LSB. Source code cleaned.
+	
+- 27/02/2001, version 1.5.6: modifications made for compiling under Borland C++ 4.52 (Win16 target)
+	
+- 24/02/2001, version 1.5.5: some filenames have been changed for the Debian release.
+	
+- 22/02/2001, version 1.5.4: at last, my system administrator have given to me some right on a SPARC station for testing TiLP. It works but I have done some modifications.
+	
+- 21/02/2001, version 1.5.3: a new set of functions have been added for providing a request service (the application asks to the lib whether this function is supported or not by the calc). Not finished yet !
+	
+- 20/02/2001, version 1.5.2: TI86 support improved and backups (both backups in 3 & 4 parts -> old & new calcs) are now supported. Thanks to Tim Singer (the FastLink's developper) for the informations on TI86 backup. I do not use its proprietary (but open) format but the same format as the TI82/83/85 format.
+	
+- 14/02/2001, version 1.5.1: TI83 support improved.
+	
+- 13/02/2001, version 1.5.0: i18 support finished for both Linux & Win32.
+	
+- 06/02/2001, version 1.4.9: TI89 support improved.
+	
+- 30/01/2001, version 1.4.8: file checking added for 82,85,89,92,92+.
+	
+- 29/01/2001, version 1.4.7: all headers files are now in <tilp/..> instead of <ti/tilp/..>
+	
+- 28/01/2001, version 1.4.6: i18 support added.
+	
+- 22/01/2001, version 1.4.5: TI85 support improved: skip/exit, pbar.
+
+- 21/01/2001, version 1.4.4: TI82 support improved: skip/exit, pbar.
+
+- 20/01/2001, version 1.4.3: I have fixed up a problem with the use of curses and results of the configure script.
+
+- 03/01/2001, version 1.4.2: all headers files are now in <ti/tilp/..> instead of <ti/..>
+
+- 21/11/2000, version 1.4.1: all tiXX.c files modified according to the new fields in the update_fncts structure.
+
+- 20/11/2000, version 1.4.0: new fields added to the update_fncts structure for speeding up the transfers (refresh)
+
+- 16/11/2000, version 1.3.9: a new type added for the TI92+: DoorsOS ZIP type, 0x1C.
+
+- 12/11/2000, version 1.3.8: IDlist, FLASH app & OS support added for the TI92+ as well as improvement of the TI92+ support and cleaning of the code.
+I have also modified the TI89 & TI92+ backup functions: they do not work if the calc has a FLASH app.
+
+- 11/11/2000, version 1.3.7: I have replaced the 0 in TIXX_FLASH by -1 which causes EXPR var to be not diplayed in the dirlist
+
+- 29/10/2000, version 1.3.6: ti89.c and ti92p.c files have been patched by J. Derque.
+
+- 28/10/2000, version 1.3.5: I finished the error.c module (errcodes mechanism).
+
+- 24/10/2000, version 1.3.4:  external/exported functions and variables names
+begin with the 'ticable_' prefix in order to be conform with the GNU Coding Standard.
+
+- 23/10/2000, version 1.3.3: I received a patch from Mikael Magnusson for the TI83+ support. I also added another function 'tixx_flash' to make the GUI independant of the calculator definitions.
+
+- 23/10/2000, version 1.3.2: I received 2 patches from J. Derque. One for uninstalling the library components (lib & header), the other is a 'lib-config' script.
+
+- 21/10/2000, version 1.3.1: TI86 support cleaned/improved.
+
+- 15/10/2000, version 1.3.0: special characters (such as alpha) can now be received without triggering a checksum error.
+
+- 07/10/2000, version 1.2.8: some vartypes added to the TI89.
+
+- 01/10/2000, version 1.2.7: config.h & autoconf & autoheader & system type added. Modifications made for the Debian integration.
+
+- 30/09/2000, version 1.2.6: FLASHing of apps/AMS added for the TI89
+
+- 25/09/2000: version 1.2.5: screendump functions have been improved...
+
+- 25/09/2000, version 1.2.4: 2 functions (open_ti_file & close_ti_file) added for circumvent a new bug in the Windows version. This bug appeared after the previous modifications.
+
+- 20/09/2000, version 1.2.3: a small modification in the header files. A bug in
+the TI89/92+ directory list due to recent modifs.
+
+- 19/09/2000, version 1.2.2: a bug in the ROMdump function: it works only if the calc is in the 'main' folder.
+
+- 18/09/2000: version 1.2.1: the 'CID' work is finished.
+
+- 18/09/2000: version 1.2.0: I received today a mail with some patches for managing the TI83+. At last !!! A great thanks to Mikael Magnusson <mikma@hem.passagen.se>
+
+- 14/09/2000: version 1.1.9: TiLP is going to be ported under Windows with MFC and under BeOS. Then, I begin a huge work of cleaning/improvement/documentation (CID) of the libTIcalc.
+Phase 1: cleaning of exported functions. Turn the libTIcable into a calc API.
+
+- 01/09/2000: version 1.1.8: ROM version improved: works fine !
+
+- 22/08/2000: version 1.1.7: get_rom_version function added.
+
+- 13/08/2000: version 1.1.6: I added a new function for doing ROM dumps.
+
+- 08/08/2000: version 1.1.5: I implemented the new error message management.
+I let the previous error function for backward compatibility.
+
+- 20/07/2000: version 1.1.4: I added some error messages since I modified the
+libTIcables.
+
+- 29/06/2000: version 1.1.2: I defined an assertion macro so that the source code is clearer/more obvious.
+
+- 27/06/2000: version 1.1.1: I begin an overhaul of the source. I have to do the html doc also. Moreover, there is a guy who want reuse this lib to port TiLT under BeOS !
+
+- 30/05/2000: version 1.1.0: I modified the calc lib. There is no update_cable
+function any longer.
+
+- 29/05/2000: version 1.0.5: the cables lib is now loaded in TiLT and not
+in the calcs lib any longer.
+
+- 25/05/2000: version 1.0.4: overhaul of the source files
+
+- 23/05/2000: version 1.0.3: JB reports me a problem of var type with the 89
+and asm vars.
+
+- 19/05/2000: version 1.0.2: I finished to standardize the function calls for
+calc routines.
+
+- 18/05/2000: version 1.0.1: set_cable routine modified for ti-lsd
+
+- 15/05/2000: version 1.0.0: TI calc routines in .so/.DLL
