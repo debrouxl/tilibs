@@ -1,4 +1,7 @@
-* 20030419 : v3.7.5 ($Rev$)
+* 20030523 : v3.7.6 ($Rev$)
+	* Enabled BlackLink support on OS X, based on the assumption that
+	  Mac OS X implements the needed ioctl(). UNTESTED.
+* 20030419 : v3.7.5 (Rev: 267)
 	* src/intrface.c : fix SilverLink wrt Mac OS X.
 * 20030416 : v3.7.5 (Rev: 245)
 	* Merge up to 3.7.5.

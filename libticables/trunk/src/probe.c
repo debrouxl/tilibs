@@ -1178,7 +1178,7 @@ int probe_io_resources(void)
 #ifdef __MACOSX__
   DISPLAY(_("Libticables: checking resources...\r\n"));
 
-  resources = IO_OSX;
+  resources = IO_OSX | IO_API;
 #endif /*__MACOSX__*/
 
 

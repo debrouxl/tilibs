@@ -1,4 +1,3 @@
-/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cables library, a part of the TiLP project
  *  Copyright (C) 1999-2003  Romain Lievin
  *  Copyright (c) 2002, Kevin Kofler for the __MINGW32__ & __GNUC__ extensions.
@@ -31,7 +30,7 @@
 #include <config.h>
 #endif
 
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 # include <unistd.h>
 # include <sys/types.h>
 # include <termios.h>
@@ -70,7 +69,7 @@ static HINSTANCE hDLL = NULL;	// Handle for PortTalk Driver
 static HANDLE hCom = 0;		// COM port handle for Win32 DCB (API)
 static int iDcbUse = 0;		// Internal use
 #endif
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 static int dev_fd;		// TTY handle for Linux ioctl calls (API)
 static int tty_use = 0;
 #endif
@@ -95,7 +94,8 @@ static void print_last_error(char *s)
 }
 #endif				//__WIN32__
 
-#ifdef __MACOSX__
+//#ifdef __MACOSX__
+#if 0 /* keep that for now, until I'm sure it Works (tm) */
 static int null_read_io(unsigned int addr)
 {
   return -1;
@@ -105,7 +105,7 @@ static void null_write_io(unsigned int addr, int data)
 {
   return;
 }
-#endif /* __MACOSX__ */
+#endif /* 0 */ /* __MACOSX__ */
 
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__)
 static int linux_asm_read_io(unsigned int addr)
@@ -173,7 +173,7 @@ static void win32_dcb_write_io(unsigned int address, int data)
 #endif				//__WIN32__
 
 
-#if defined(__LINUX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__BSD__) || defined(__MACOSX__)
 static int linux_ioctl_read_io(unsigned int addr)
 {
   unsigned int flags;
@@ -206,8 +206,9 @@ static void linux_ioctl_write_io(unsigned int address, int data)
 
 int io_open(unsigned long from, unsigned long num)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__)
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__) || defined(__MACOSX__)
 
+#ifndef __MACOSX__
   if (method & IOM_ASM) {
     io_rd = linux_asm_read_io;
     io_wr = linux_asm_write_io;
@@ -218,13 +219,16 @@ int io_open(unsigned long from, unsigned long num)
     return (i386_set_ioperm(from, num, 1) ? ERR_ROOT : 0);
 #endif
   } else if (method & IOM_API) {
+#else /* __MACOSX__ */
+    if (method & IOM_API) {
+#endif /* !__MACOSX__ */
     struct termios termset;
     int flags = 0;
 
     if (tty_use)
       return 0;
 
-#ifndef __BSD__
+#if !defined(__BSD__) && !defined(__MACOSX__)
     flags = O_RDWR | O_SYNC;
 #else
     flags = O_RDWR | O_FSYNC;
@@ -247,11 +251,12 @@ int io_open(unsigned long from, unsigned long num)
     return ERR_ROOT;
 #endif
 
-#ifdef __MACOSX__
+//#ifdef __MACOSX__
+#if 0 /* keep that for now until I'm sure it Works (tm) */
   io_rd = null_read_io;
   io_wr = null_write_io;
   return -1; // low-level not supported
-#endif /* __MACOSX */
+#endif /* 0 */ /* __MACOSX__ */
 
 #if defined(__WIN32__)
   DWORD BytesReturned;		// Bytes Returned for DeviceIoControl()
@@ -411,7 +416,8 @@ int io_open(unsigned long from, unsigned long num)
 
 int io_close(unsigned long from, unsigned long num)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__)
+#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__) || defined(__BSD__) || defined(__MACOSX__)
+#ifndef __MACOSX__
   if (method & IOM_ASM)
 #ifndef __BSD__
     return (ioperm(from, num, 0) ? ERR_ROOT : 0);
@@ -419,6 +425,9 @@ int io_close(unsigned long from, unsigned long num)
     return (i386_set_ioperm(from, num, 0) ? ERR_ROOT : 0);
 #endif
   else if (method & IOM_API) {
+#else /* __MACOSX__ */
+  if (method & IOM_API) {
+#endif /* !__MACOSX__ */
     if (tty_use) {
       close(dev_fd);
       tty_use--;
@@ -427,9 +436,10 @@ int io_close(unsigned long from, unsigned long num)
     return -1;
 #endif
 
-#ifdef __MACOSX__
+//#ifdef __MACOSX__
+#if 0 /* keep that for now until I'm sure it Works (tm) */
   return -1; // low-level not supported
-#endif /* __MACOSX__ */
+#endif /* 0 */ /* __MACOSX__ */
   
 #if defined(__WIN32__)
   if (method & IOM_DRV) {

@@ -1,4 +1,3 @@
-/* Hey EMACS -*- linux-c -*- */
 /*  libticables - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2003  Romain Lievin
  *
@@ -352,7 +351,10 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
   else if ((type == LINK_TGL) && (resources & IO_OSX))
     method |= IOM_API | IOM_OK;
 
-#ifndef __MACOSX__
+#ifdef __MACOSX__
+  if ((type == LINK_SER) && (resources & IO_API))
+    method |= IOM_API | IOM_OK;
+#else
   if ((type == LINK_AVR) && (resources & IO_API))
     method |= IOM_API | IOM_OK;
 
@@ -395,7 +397,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
   // set the link cable
   if (((resources & IO_LINUX) && !(method & IOM_DRV)) || (resources & IO_WIN32) || (resources & IO_OSX) || (resources & IO_BSD)) {	// no kernel driver (tipar/tiser/tiusb)
     switch (type) {
-#if !defined(__MACOSX__)
+#ifndef __MACOSX__
     case LINK_PAR:		// IOM_ASM, IOM_DRV&Win32
       if ((port != PARALLEL_PORT_1) &&
 	  (port != PARALLEL_PORT_2) &&
@@ -416,14 +418,21 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
       lc->get_red_wire = par_get_red_wire;
       lc->get_white_wire = par_get_white_wire;
       break;
+#endif /* !__MACOSX__ */
 
     case LINK_SER:		// IOM_ASM, IOM_API, IOM_DRV&Win32
+#ifndef __MACOSX__
       if ((port != SERIAL_PORT_1) &&
 	  (port != SERIAL_PORT_2) &&
 	  (port != SERIAL_PORT_3) &&
-	  (port != SERIAL_PORT_4) && (port != USER_PORT))
+	  (port != SERIAL_PORT_4) &&
+	  (port != USER_PORT))
+#else
+      if (port != OS_SERIAL_PORT)
+#endif /* !__MACOSX__ */
 	return ERR_INVALID_PORT;
 
+#ifndef __MACOSX__
       if ((method & IOM_ASM) || (method & IOM_DRV)) {
 	// serial routines in IOM_ASM/DLL mode
 	lc->init = ser_init;
@@ -440,6 +449,9 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
 	lc->get_red_wire = ser_get_red_wire;
 	lc->get_white_wire = ser_get_white_wire;
       } else if (method & IOM_API) {
+#else
+	if (method & IOM_API) {
+#endif /* !__MACOSX__ */
 	// serial routines in IOM_API mode
 	lc->init = ser_init2;
 	lc->open = ser_open2;
@@ -454,6 +466,9 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
 	lc->set_white_wire = ser_set_white_wire2;
 	lc->get_red_wire = ser_get_red_wire2;
 	lc->get_white_wire = ser_get_white_wire2;
+#ifdef __MACOSX__
+	}
+#else
       } else
 	set_default_cable(lc);
       break;
@@ -503,7 +518,7 @@ TICALL ticable_set_cable(int typ, TicableLinkCable * lc)
       lc->check = tie_check;
       break;
 
-#endif				/* !__MACOSX__ */
+#endif /* __MACOSX__ */
 
     case LINK_TGL:		// IOM_API
 #ifndef __MACOSX__
