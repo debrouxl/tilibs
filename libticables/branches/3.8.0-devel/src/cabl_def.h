@@ -93,7 +93,7 @@ typedef enum {
 
 /* I/O method to use */
 typedef enum {
-  IOM_AUTO = 1, IOM_ASM = 2, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
+  IOM_AUTO = 1, IOM_ASM = 2, IOM_IOCTL = 4, IOM_DRV = 8, IOM_API = 32, IOM_OK = (1 << 15)
 } TicableMethod;
 
 /* Verbosity level for DISPLAY function */
