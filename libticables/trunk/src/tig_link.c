@@ -79,12 +79,12 @@ int tig_init()
 
   /* Open the device */
 #ifndef __MACOSX__
-  if( (dev_fd = open(io_device, O_RDWR | O_SYNC )) == -1 )
+  if((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1)
 #else
   if((dev_fd = open(io_device, O_RDWR)) == -1)
 #endif
     {
-      DISPLAY("unable to open this serial port: %s\n", io_device);
+      DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);
       return ERR_OPEN_SER_DEV;
     }
 
@@ -193,7 +193,7 @@ static int dcb_read_io()
   if(ioctl(dev_fd, TIOCMGET, &flags) == -1)
     return ERR_IOCTL;
   /*
-  printf("flags: rts=%i dtr=%i cts=%i dsr=%i\n",
+  DISPLAY("flags: rts=%i dtr=%i cts=%i dsr=%i\n",
          (flags & TIOCM_RTS) >> 2, (flags & TIOCM_DTR) >> 1,
          (flags & TIOCM_CTS) >> 5, (flags & TIOCM_DSR) >> 8);
   */

@@ -28,7 +28,10 @@
 
 TIEXPORT int TICALL DISPLAY(const char *format, ...);
 TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...);
-#define dERROR DISPLAY_ERROR
 TIEXPORT int TICALL ticable_DISPLAY_settings(int op);
+
+TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream);
+TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename);
+TIEXPORT int TICALL ticable_DISPLAY_close_file();
 
 #endif

@@ -3,7 +3,7 @@
 
 #ifdef __MACOSX__
 
-#define VERSION "3.1.5"
+#define VERSION "3.1.6"
 #define HAVE_SYS_PERM_H
 #define HAVE_SYS_IPC_H  /* needed for virtual linking */
 #define HAVE_SYS_SHM_H

@@ -51,8 +51,9 @@
 	* Removed O_NDELAY in tig_link.c.
 * 20020216 : v3.1.5
 	* Merge up to 3.1.5.
+* 20020224 : v3.1.6
+	* Merge up to 3.1.6.
 	
-
 
 
 

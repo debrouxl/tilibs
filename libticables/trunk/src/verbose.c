@@ -62,21 +62,49 @@
 #define LOG_FILE "console.log"
 static FILE *flog = NULL;
 
+#if defined(__LINUX__)
+#elif defined(__WIN32__)
+# define STDIN_FILENO  0//(fileno(CONIN$))
+# define STDOUT_FILENO 1//(fileno(CONOUT$))
+# define STDERR_FILENO 2//(fileno(CONOUT$))
+#endif
+
 /* 
-   This function is equivalent to 'fprintf(stdout, ...)' but 
+   This function is equivalent to 'fprintf(st_out, ...)' but 
    if the VERBOSE constant is defined.
+   Default behaviour: st_out = stdout;
 */
+static FILE* out = NULL; // stdout by default
+static FILE* old = NULL;   // old stream pointer
+static FILE *f = NULL;
+
+TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream)
+{
+  old = out;
+  out = stream;
+  return old;
+}
+
+TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename)
+{
+  f = fopen(filename, "wb");
+  return f;
+}
+
+TIEXPORT int TICALL ticable_DISPLAY_close_file()
+{
+  return fclose(f);
+}
+
 TIEXPORT int TICALL DISPLAY(const char *format, ...)
 {
   int ret = 0;
   va_list ap;
-
+  
   if(verbosity)
     {
-      if(flog == NULL)
-	{
-	  flog = fopen(LOG_FILE, "wt");
-	}
+      if(out == NULL)  out = stdout;
+      if(flog == NULL) flog = fopen(LOG_FILE, "wt");
       
       // Under Win32, we redirect stdout to the console
 #if defined(__WIN32__)				
@@ -88,14 +116,22 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 	    {
 	      AllocConsole ();
 	      alloc_console_called = TRUE;
-	      freopen ("CONOUT$", "w", stdout);
+	      freopen ("CONOUT$", "w", out);
 	    }
 	}
 #endif
 #ifdef VERBOSE
       va_start(ap, format);
-      ret=vfprintf(stdout, format, ap);
-	  if(flog) vfprintf(flog, format, ap);
+      ret = vfprintf(out, format, ap);
+      if(flog) vfprintf(flog, format, ap);
+      va_end(ap);
+#endif
+    }
+  if(f != NULL)
+    {
+#ifdef VERBOSE
+      va_start(ap, format);
+      ret = vfprintf(f, format, ap);
       va_end(ap);
 #endif
     }
@@ -111,7 +147,7 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
   int ret = 0;
   va_list ap;
-
+  
   if(verbosity)
     {
       if(flog == NULL)

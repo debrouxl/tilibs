@@ -36,6 +36,7 @@
 #include "cabl_ext.h"
 #include "logging.h"
 
+
 #if defined(__WIN32__)
  #define BUFFER_SIZE 1024
  static HANDLE hCom=0;

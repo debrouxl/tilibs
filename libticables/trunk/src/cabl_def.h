@@ -69,8 +69,8 @@ typedef struct ticable_param LinkParam;  // obsolete
 typedef struct ticable_param TicableLinkParam;
 
 // for probe.c
-#define MAX_LPT_PORTS	3	// up to 3
-#define MAX_COM_PORTS	4       // up to 4
+#define MAX_LPT_PORTS	3		// up to 3
+#define MAX_COM_PORTS	4		// up to 4
 struct port_info_
 {
   int lpt_count;	// Current number of printer port, default=1

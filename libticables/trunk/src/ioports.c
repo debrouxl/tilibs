@@ -74,13 +74,11 @@ int (*wr_io) (unsigned int addr, int data);
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
 int linux_read_io(unsigned int addr)
 {
-  //printf("0x%03x -> 0x%02x\n", addr, inb(addr));
   return inb(addr);
 }
 
 int linux_write_io(unsigned int addr, int data)
 {
-  //printf("0x%03x <- 0x%02x\n", addr, data);
   outb(data, addr);
   return 0;
 }
@@ -187,8 +185,8 @@ int open_io(unsigned long from, unsigned long num)
 
     	if(hDLL == INVALID_HANDLE_VALUE) 
 		{
-	       	printf(_("Libticables: error, couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
-        	return ERR_DLPORTIO_NOT_FOUND;
+		  DISPLAY_ERROR(_("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
+	return ERR_DLPORTIO_NOT_FOUND;
     	}
 		else
 		{
@@ -225,9 +223,9 @@ int open_io(unsigned long from, unsigned long num)
 
   		if(!Error)
 			print_last_error("Granting access");
-			//printf(_("Error %d granting access to Address 0x%03X\n"), GetLastError(), from);
+			//DISPLAY(_("Error %d granting access to Address 0x%03X\n"), GetLastError(), from);
 		else  
-			printf(_("Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"), from, offset);
+			DISPLAY(_("Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"), from, offset);
 
 		// Pass PID
 		pid = _getpid();
@@ -244,9 +242,9 @@ int open_io(unsigned long from, unsigned long num)
 
   		if(!Error)
 			print_last_error("Talking to device driver");
-			//printf(_("Error Occured talking to Device Driver %d\n"),GetLastError());
+			//DISPLAY(_("Error Occured talking to Device Driver %d\n"),GetLastError());
 		else        
-			printf(_("PortTalk Device Driver has set IOPM for ProcessID %d.\n"),pid);
+			DISPLAY(_("PortTalk Device Driver has set IOPM for ProcessID %d.\n"),pid);
 	}
 
 	if(method & IOM_DCB)
@@ -328,7 +326,7 @@ int open_io(unsigned long from, unsigned long num)
 			return ERR_SET_COMMTIMEOUT;
 		}
       
-		printf(_("Libticables: serial port %s successfully reconfigured.\n"), comPort);
+		DISPLAY(_("Libticables: serial port %s successfully reconfigured.\n"), comPort);
 		iDcbUse++;
       
 		rd_io = dcb_read_io;

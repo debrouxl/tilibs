@@ -226,7 +226,7 @@ int ugl_get(byte *data)
 	  ret = read(dev_fd, (void *)rBuf, MAX_PACKET_SIZE);
 	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
-	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
+	    DISPLAY_ERROR("usb_bulk_read returns without any data. Retrying...\n");
 	} 
       while(!ret);
 
@@ -365,7 +365,7 @@ int ugl_init2()
 
   if (ret < 0)
     {
-      dERROR("%s\n", usb_strerror());
+      DISPLAY_ERROR("%s\n", usb_strerror());
       return ERR_USB_INIT;
     }
 
@@ -374,7 +374,7 @@ int ugl_init2()
 
   if (ret < 0)
     {
-      dERROR("error, %s\n", usb_strerror());
+      DISPLAY_ERROR("error, %s\n", usb_strerror());
       return ERR_USB_INIT;
     }
 
@@ -393,7 +393,7 @@ int ugl_init2()
 	  
 	  if (ret < 0)
 	    {
-	      dERROR("%s\n", usb_strerror());
+	      DISPLAY_ERROR("%s\n", usb_strerror());
 	      return ERR_USB_OPEN;
 	    }
 
@@ -401,7 +401,7 @@ int ugl_init2()
 
 	  if (ret < 0)
 	    {
-	      dERROR("%s\n", usb_strerror());
+	      DISPLAY_ERROR("%s\n", usb_strerror());
 	      return ERR_USB_OPEN;
 	    }
 
@@ -433,13 +433,13 @@ int ugl_open2()
   ret = usb_resetep(tigl_han, TIGL_BULK_IN);
   if (ret < 0)
     {
-      dERROR("%s\n", usb_strerror());
+      DISPLAY_ERROR("%s\n", usb_strerror());
       return ERR_USB_OPEN;
     }
   ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
   if (ret < 0)
     {
-      dERROR("%s\n", usb_strerror());
+      DISPLAY_ERROR("%s\n", usb_strerror());
       return ERR_USB_OPEN;
     }
 
@@ -485,7 +485,7 @@ int ugl_put2(byte data)
   ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, (time_out * 10));
   if (ret <= 0)
     {
-      dERROR("%s\n", usb_strerror());
+      DISPLAY_ERROR("%s\n", usb_strerror());
       return ERR_SND_BYT;
     }
 #else
@@ -497,7 +497,7 @@ int ugl_put2(byte data)
 			   (time_out * 10));
       if (ret <= 0)
 	{
-	  dERROR("%s\n", usb_strerror());
+	  DISPLAY_ERROR("%s\n", usb_strerror());
 	  return ERR_SND_BYT;
 	}
       nBytesWrite = 0;
@@ -523,7 +523,7 @@ int ugl_get2(byte *data)
       nBytesWrite = 0;
       if (ret <= 0)
 	{
-	  dERROR("%s\n", usb_strerror());
+	  DISPLAY_ERROR("%s\n", usb_strerror());
 	  return ERR_SND_BYT;
 	}
     }
@@ -538,13 +538,13 @@ int ugl_get2(byte *data)
 			      MAX_PACKET_SIZE, (time_out * 10));
 	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
-	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
+	    DISPLAY_ERROR("usb_bulk_read returns without any data. Retrying...\n");
 	}
       while(!ret);
       
       if (ret < 0)
 	{
-	  dERROR("(ret = %d) %s\n", ret, usb_strerror());
+	  DISPLAY_ERROR("(ret = %d) %s\n", ret, usb_strerror());
 	  nBytesRead = 0;
 	  return ERR_RCV_BYT;
 	}
@@ -590,7 +590,7 @@ int ugl_check2(int *status)
 			      MAX_PACKET_SIZE, (time_out * 10));
 	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
-	    dERROR("usb_bulk_read returns without any data. Retrying...\n");
+	    DISPLAY_ERROR("usb_bulk_read returns without any data. Retrying...\n");
 	}
       while(!ret);
 
@@ -776,7 +776,7 @@ int ugl_init()
 	hDLL = LoadLibrary("TIGLUSB.DLL");
 	if (hDLL == NULL)
 	{
-	  dERROR("TiglUsb library not found. Have you installed the driver ?\n");
+	  DISPLAY_ERROR("TiglUsb library not found. Have you installed the driver ?\n");
 	  return ERR_USB_OPEN;
 	}
 
@@ -784,7 +784,7 @@ int ugl_init()
 								    "open_file");
 	if (!dynTiglUsbOpenFile)
 	{
-		dERROR("Unable to load TiglUsbOpenFile symbol.\n");
+		DISPLAY_ERROR("Unable to load TiglUsbOpenFile symbol.\n");
 	    FreeLibrary(hDLL);       
 	    return ERR_FREELIBRARY;
 	}
@@ -793,7 +793,7 @@ int ugl_init()
 								    "open_dev");
 	if (!dynTiglUsbOpenDev)
 	{
-		dERROR("Unable to load TiglUsbOpenDev symbol.\n");
+		DISPLAY_ERROR("Unable to load TiglUsbOpenDev symbol.\n");
 	    FreeLibrary(hDLL);       
 	    return ERR_FREELIBRARY;
 	}
@@ -802,7 +802,7 @@ int ugl_init()
 								    "resetPipes");
 	if (!dynTiglUsbResetPipes)
 	{
-		dERROR("Unable to load TiglUsbOpenFile symbol.\n");
+		DISPLAY_ERROR("Unable to load TiglUsbOpenFile symbol.\n");
 	    FreeLibrary(hDLL);       
 	    return ERR_FREELIBRARY;
 	}
@@ -811,7 +811,7 @@ int ugl_init()
 								    "setTimeout");
 	if (!dynTiglUsbSetTimeout)
 	{
-		dERROR("Unable to load TiglUsbSetTimeout symbol.\n");
+		DISPLAY_ERROR("Unable to load TiglUsbSetTimeout symbol.\n");
 	    FreeLibrary(hDLL);       
 	    return ERR_FREELIBRARY;
 	}
@@ -1150,7 +1150,7 @@ int ugl_supported2()
 // uncomment to add some tests
 //#define OSX_UGL_DEBUG
 
-#define IOKIT_ERROR(error)	fprintf(stderr, "IOKit Error : system 0x%x, subsystem 0x%x, code 0x%x\n", \
+#define IOKIT_ERROR(error)	DISPLAY_ERROR("IOKit Error : system 0x%x, subsystem 0x%x, code 0x%x\n", \
                                                               err_get_system(error), \
                                                               err_get_sub(error), \
                                                               err_get_code(error))
@@ -1203,7 +1203,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     usbInterface = IOIteratorNext(iterator);
 
 #ifdef OSX_DEBUG
-    printf("Interface found.\n");
+    DISPLAY("Interface found.\n");
 #endif
     
     kr = IOCreatePlugInInterfaceForService(usbInterface,
@@ -1216,7 +1216,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     if ((kIOReturnSuccess != kr) || !plugInInterface)
         {
 #ifdef OSX_DEBUG
-            printf("unable to create a plugin (%08x)\n", kr);
+            DISPLAY_ERROR("unable to create a plugin (%08x)\n", kr);
 #endif
             return kr;
         }
@@ -1230,7 +1230,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     if (res || !intf)
         {
 #ifdef OSX_DEBUG
-            printf("couldn't create an IOUSBInterfaceInterface (%08x)\n", (int) res);
+            DISPLAY_ERROR("couldn't create an IOUSBInterfaceInterface (%08x)\n", (int) res);
 #endif
             return kr;
         }
@@ -1239,7 +1239,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     kr = (*intf)->GetInterfaceSubClass(intf, &intfSubClass);
 
 #ifdef OSX_DEBUG
-    printf("Interface class %d, subclass %d\n", intfClass, intfSubClass);
+    DISPLAY("Interface class %d, subclass %d\n", intfClass, intfSubClass);
 #endif
 
     // Now open the interface. This will cause the pipes to be instantiated that are 
@@ -1249,7 +1249,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
-            printf("unable to open interface (%08x)\n", kr);
+            DISPLAY_ERROR("unable to open interface (%08x)\n", kr);
 #endif
             (void) (*intf)->Release(intf);
             return kr;
@@ -1260,7 +1260,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
-            printf("unable to get number of endpoints (%08x)\n", kr);
+            DISPLAY_ERROR("unable to get number of endpoints (%08x)\n", kr);
 #endif
             (void) (*intf)->USBInterfaceClose(intf);
             (void) (*intf)->Release(intf);
@@ -1268,7 +1268,7 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
         }
 
 #ifdef OSX_DEBUG
-    printf("Interface has %d endpoints.\n", intfNumEndpoints);
+    DISPLAY("Interface has %d endpoints.\n", intfNumEndpoints);
 #endif
 
 #ifdef OSX_UGL_DEBUG    
@@ -1279,19 +1279,19 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     
     if (kIOReturnSuccess != kr)
         {
-            printf("unable to do bulk write (%08x)\n", kr);
+            DISPLAY_ERROR("unable to do bulk write (%08x)\n", kr);
             (void) (*intf)->USBInterfaceClose(intf);
             (void) (*intf)->Release(intf);
             return kr;
         }
         
-    printf("Wrote");
+    DISPLAY("Wrote");
     for (i = 0; i < 4; i++)
         {
-            printf(" 0x%x", test[i]);
+            DISPLAY(" 0x%x", test[i]);
         }
           
-    printf(" (4 bytes) to bulk endpoint\n");
+    DISPLAY(" (4 bytes) to bulk endpoint\n");
     
     numBytesRead = sizeof(gBuffer) - 1; // leave one byte at the end for NUL termination
     
@@ -1299,18 +1299,18 @@ IOReturn FindInterfaces(IOUSBDeviceInterface **dev)
     
     if (kIOReturnSuccess != kr)
         {
-            printf("unable to do bulk read (%08x)\n", kr);
+            DISPLAY_ERROR("unable to do bulk read (%08x)\n", kr);
             (void) (*intf)->USBInterfaceClose(intf);
             (void) (*intf)->Release(intf);
             return kr;
         }
 
-    printf("Calc reply :");
+    DISPLAY("Calc reply :");
     for (i = 0; i < 4; i++)  // 4 bytes only
         {
-            printf(" 0x%x", gBuffer[i]);
+            DISPLAY(" 0x%x", gBuffer[i]);
         }
-    printf("\n");
+    DISPLAY("\n");
 #endif /* OSX_UGL_DEBUG */
 
     return kr;
@@ -1333,7 +1333,7 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface **dev)
     if (kr)
         {
 #ifdef OSX_DEBUG
-            printf("\tunable to get config descriptor for index %d (err = %08x)\n", 0, kr);
+            DISPLAY_ERROR("\tunable to get config descriptor for index %d (err = %08x)\n", 0, kr);
 #endif
             return -1;
         }
@@ -1342,7 +1342,7 @@ IOReturn ConfigureTIGL(IOUSBDeviceInterface **dev)
     if (kr)
         {
 #ifdef OSX_DEBUG
-            printf("\tunable to set configuration to value %d (err=%08x)\n", 0, kr);
+            DISPLAY_ERROR("\tunable to set configuration to value %d (err=%08x)\n", 0, kr);
 #endif
             return -1;
         }
@@ -1364,7 +1364,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
     while ((usbDevice = IOIteratorNext(iterator)))
         {
 #ifdef OSX_DEBUG
-            printf("TIGL added.\n");
+            DISPLAY("TIGL added.\n");
 #endif
             kr = IOCreatePlugInInterfaceForService(usbDevice,
                                                    kIOUSBDeviceUserClientTypeID,
@@ -1375,7 +1375,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if ((kIOReturnSuccess != kr) || !plugInInterface)
                 {
 #ifdef OSX_DEBUG
-                    printf("unable to create a plugin (%08x)\n", kr);
+                    DISPLAY_ERROR("unable to create a plugin (%08x)\n", kr);
 #endif
                     continue;
                 }
@@ -1389,7 +1389,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if (res || !dev)
                 {
 #ifdef OSX_DEBUG
-                    printf("couldn't create a device interface (%08x)\n", (int) res);
+                    DISPLAY_ERROR("couldn't create a device interface (%08x)\n", (int) res);
 #endif
                     continue;
                 }
@@ -1401,7 +1401,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if ((vendor != kTIGLVendorID) || (product != kTIGLProductID))
                 {
 #ifdef OSX_DEBUG
-                    printf("Found a device I didn't want (vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
+                    DISPLAY("Found a device I didn't want (vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
 #endif
                     continue;
                 }
@@ -1409,9 +1409,9 @@ void tiglusbFindDevice(io_iterator_t iterator)
                 {
                     // we'll get here if TI releases a new version of the cable
                     
-                    fprintf(stderr, "Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
-                    fprintf(stderr, "This version of the TIGL USB has not been tested.\n");
-                    fprintf(stderr, "Contact <jb@technologeek.org> about this\n");
+                    DISPLAY_ERROR("Found TIGL USB : vendor = 0x%x, product = 0x%x, version = Ox%x)\n", vendor, product, release);
+                    DISPLAY_ERROR("This version of the TIGL USB has not been tested.\n");
+                    DISPLAY_ERROR("Contact <jb@technologeek.org> about this\n");
                     
                     (*dev)->Release(dev);
                     
@@ -1424,7 +1424,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
-                    printf("unable to open device: %08x\n", kr);
+                    DISPLAY_ERROR("unable to open device: %08x\n", kr);
 #endif
                     (*dev)->Release(dev);
                     continue;
@@ -1435,7 +1435,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
-                    printf("unable to configure device: %08x\n", kr);
+                    DISPLAY_ERROR("unable to configure device: %08x\n", kr);
 #endif
                     (*dev)->USBDeviceClose(dev);
                     (*dev)->Release(dev);
@@ -1447,7 +1447,7 @@ void tiglusbFindDevice(io_iterator_t iterator)
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
-                    printf("unable to find interfaces on device: %08x\n", kr);
+                    DISPLAY_ERROR("unable to find interfaces on device: %08x\n", kr);
 #endif
                     (*dev)->USBDeviceClose(dev);
                     (*dev)->Release(dev);
@@ -1477,13 +1477,13 @@ int ugl_init()
     if (kr || !masterPort)
         {
 #ifdef OSX_DEBUG
-            printf("ERR: Couldn't create a master IOKit Port(%08x)\n", kr);
+            DISPLAY_ERROR("ERR: Couldn't create a master IOKit Port(%08x)\n", kr);
 #endif
             return ERR_USB_INIT;
         }
 
 #ifdef OSX_DEBUG
-    printf("Looking for devices matching vendor ID=0x%x and product ID=0x%x\n", (int)usbVendor, (int)usbProduct);
+    DISPLAY("Looking for devices matching vendor ID=0x%x and product ID=0x%x\n", (int)usbVendor, (int)usbProduct);
 #endif
 
     // Set up the matching criteria for the devices we're interested in
@@ -1491,7 +1491,7 @@ int ugl_init()
     if (!matchingDict)
         {
 #ifdef OSX_DEBUG
-            printf("Can't create a USB matching dictionary\n");
+            DISPLAY_ERROR("Can't create a USB matching dictionary\n");
 #endif
             mach_port_deallocate(mach_task_self(), masterPort);
             return ERR_USB_INIT;
@@ -1516,7 +1516,7 @@ int ugl_init()
     if (iterator == NULL)
         {
 #ifdef OSX_DEBUG
-            printf("No matching devices !\n");
+            DISPLAY_ERROR("No matching devices !\n");
 #endif
             return ERR_USB_INIT;
         }
@@ -1595,7 +1595,7 @@ int ugl_put(byte data)
     if (kIOReturnSuccess != kr)
         {
 #ifdef OSX_DEBUG
-            printf("Unable to do bulk write (%08x)\n", kr);
+            DISPLAY_ERROR("Unable to do bulk write (%08x)\n", kr);
             
             IOKIT_ERROR(kr);
 #endif
@@ -1604,7 +1604,7 @@ int ugl_put(byte data)
         }
         
 #ifdef OSX_DEBUG
-    printf("Wrote 0x%x to bulk endpoint %d\n", data, TIGL_BULK_ENDPOINT_OUT);
+    DISPLAY("Wrote 0x%x to bulk endpoint %d\n", data, TIGL_BULK_ENDPOINT_OUT);
 #endif
 
     tdr.count++;
@@ -1623,7 +1623,7 @@ int ugl_get(byte *d)
 #ifdef OSX_DEBUG
     int		i;
 
-    fprintf(stderr, "IN UGL_GET\n");
+    DISPLAY_ERROR("IN UGL_GET\n");
 #endif
 
     if (intf == NULL)
@@ -1632,7 +1632,7 @@ int ugl_get(byte *d)
     if (numBytesRead <= 0) // we're at the end of the buffer
         {
 #ifdef OSX_DEBUG
-            fprintf(stderr, "rcv_buffer empty, reading bulk pipe...\n");
+            DISPLAY_ERROR("rcv_buffer empty, reading bulk pipe...\n");
 #endif
 
             usleep(100);
@@ -1656,7 +1656,7 @@ int ugl_get(byte *d)
                             if (numBytesRead > 0) // regardless of the timeout, we HAVE DATA !
                                 break;
                             else if ((numBytesRead == 0) && !(toELAPSED(clk, time_out)))
-                                fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
+                                DISPLAY_ERROR("ReadPipeTO returned before timeout with no data. Retrying...\n");
                             else if ((numBytesRead == 0) && (toELAPSED(clk, time_out)))
                                 return ERR_RCV_BYT_TIMEOUT;
                         }
@@ -1669,7 +1669,7 @@ int ugl_get(byte *d)
             if (kIOReturnSuccess != kr)
                 {
 #ifdef OSX_DEBUG
-                    fprintf(stderr, "Unable to do bulk read (0x%x)\n", kr);
+                    DISPLAY_ERROR("Unable to do bulk read (0x%x)\n", kr);
                     
                     IOKIT_ERROR(kr);
 #endif
@@ -1683,19 +1683,19 @@ int ugl_get(byte *d)
             rcv_buf_ptr = rcv_buffer;
             
 #ifdef OSX_DEBUG
-            printf("numBytesRead : %ld\n", numBytesRead);
+            DISPLAY("numBytesRead : %ld\n", numBytesRead);
 
-            printf("Buffer content:");
+            DISPLAY("Buffer content:");
 
             for (i = 0; i < numBytesRead; i++)
                 {
-                    printf(" 0x%x", rcv_buffer[i]);
+                    DISPLAY(" 0x%x", rcv_buffer[i]);
                 }
-            printf("\n");
+            DISPLAY("\n");
 #endif
         }
 #ifdef OSX_DEBUG
-    printf("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buf_ptr[0], TIGL_BULK_ENDPOINT_IN);
+    DISPLAY("Calc reply : 0x%x on bulk endpoint %d\n", rcv_buf_ptr[0], TIGL_BULK_ENDPOINT_IN);
 #endif
 
     tdr.count++;
@@ -1745,7 +1745,7 @@ int ugl_check(int *status)
                             if (numBytesRead > 0) // regardless of the timeout, we HAVE DATA !
                                 break;
                             else if ((numBytesRead == 0) && !(toELAPSED(clk, time_out)))
-                                fprintf(stderr, "ReadPipeTO returned before timeout with no data. Retrying...\n");
+                                DISPLAY_ERROR("ReadPipeTO returned before timeout with no data. Retrying...\n");
                             else if ((numBytesRead == 0) && (toELAPSED(clk, time_out)))
                                 return ERR_RCV_BYT_TIMEOUT;
                         }
@@ -1757,7 +1757,7 @@ int ugl_check(int *status)
             if(kr == kIOReturnSuccess)
                 {
 #ifdef OSX_DEBUG
-                    printf("In ugl_check: numBytesRead = %ld\n", numBytesRead);
+		  DISPLAY("In ugl_check: numBytesRead = %ld\n", numBytesRead);
 #endif
                     rcv_buf_ptr = rcv_buffer;
                             

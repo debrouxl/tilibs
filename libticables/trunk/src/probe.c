@@ -80,19 +80,19 @@ TIEXPORT int TICALL ticable_detect_os(char **os_type)
 #if defined(__LINUX__) || defined(__MACOSX__)
   struct utsname buf;
 
-  DISPLAY(_("Getting OS type...\n"));
+  DISPLAY(_("Getting OS type...\r\n"));
   uname(&buf);
-  DISPLAY(_("  System name: %s\n"), buf.sysname);
-  DISPLAY(_("  Node name: %s\n"), buf.nodename);
-  DISPLAY(_("  Release: %s\n"), buf.release);
-  DISPLAY(_("  Version: %s\n"), buf.version);
-  DISPLAY(_("  Machine: %s\n"), buf.machine);
+  DISPLAY(_("  System name: %s\r\n"), buf.sysname);
+  DISPLAY(_("  Node name: %s\r\n"), buf.nodename);
+  DISPLAY(_("  Release: %s\r\n"), buf.release);
+  DISPLAY(_("  Version: %s\r\n"), buf.version);
+  DISPLAY(_("  Machine: %s\r\n"), buf.machine);
 #ifdef __LINUX__
   *os_type = "Linux";
 #else
   *os_type = "Mac OS X";
 #endif
-  DISPLAY(_("Done.\n"));
+  DISPLAY(_("Done.\r\n"));
 
   return 0;
 
@@ -100,14 +100,14 @@ TIEXPORT int TICALL ticable_detect_os(char **os_type)
      // Are we running Windows NT?
    OSVERSIONINFO os;
    
-   DISPLAY(_("Getting OS type...\n"));
+   DISPLAY(_("Getting OS type...\r\n"));
    memset(&os, 0, sizeof(OSVERSIONINFO));
    os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
    GetVersionEx(&os);
-   DISPLAY(_("  Operating System: %s\n"), 
+   DISPLAY(_("  Operating System: %s\r\n"), 
 	   (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?  
 	   "Windows9x" : "WindowsNT");
-   DISPLAY(_("  Version: major=%i, minor=%i\n"), 
+   DISPLAY(_("  Version: major=%i, minor=%i\r\n"), 
 		os.dwMajorVersion, os.dwMinorVersion);
 	if(os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
 	{
@@ -119,7 +119,7 @@ TIEXPORT int TICALL ticable_detect_os(char **os_type)
 	}
 	else 
 		*os_type = _("unknown");
-	DISPLAY(_("Done.\n"));
+	DISPLAY(_("Done.\r\n"));
 
 #elif defined(__WIN16__)
   *os_type = "Windows3.1";
@@ -183,10 +183,10 @@ int DetectPortsLinux(PortInfo *pi)
   char path[MAXCHARS] = "/proc/sys/dev/parport/";
 
   /* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ... */  
-  DISPLAY(_("Probing parallel ports...\n"));
+  DISPLAY(_("Probing parallel ports...\r\n"));
   if( (dir=opendir("/proc/sys/dev/parport/")) == NULL) 
     {
-      DISPLAY(_("Error: unable to open this directory: '/proc/sys/dev/parport/'.\n"));
+      DISPLAY(_("Error: unable to open this directory: '/proc/sys/dev/parport/'.\r\n"));
       return -1;
     }
 
@@ -210,13 +210,13 @@ int DetectPortsLinux(PortInfo *pi)
 	      f = fopen(path, "rt");
 	      if(f == NULL)
 		{
-		  DISPLAY_ERROR(_("Unable to open this entry: <%s>\n"),
+		  DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
 			  path);
 		}
 	      else
 		{
 		  fscanf(f, "%i", &(pi->lpt_addr[i]));
-		  DISPLAY(_("  %s at address 0x%03x\n"),
+		  DISPLAY(_("  %s at address 0x%03x\r\n"),
 			  pi->lpt_name[i],
 			  pi->lpt_addr[i]);
 		  fclose(f);
@@ -224,7 +224,7 @@ int DetectPortsLinux(PortInfo *pi)
 	    }
 	  else 
 	    {
-	      DISPLAY_ERROR(_("Invalid parport entry: <%s>.\n"), 
+	      DISPLAY_ERROR(_("Invalid parport entry: <%s>.\r\n"), 
 				file->d_name);
 	    }
 	}
@@ -232,24 +232,24 @@ int DetectPortsLinux(PortInfo *pi)
   
   if(closedir(dir)==-1)
     {
-      DISPLAY(_("Error: closedir\n"));
+      DISPLAY(_("Error: closedir\r\n"));
     }
-  DISPLAY(_("Done.\n"));
+  DISPLAY(_("Done.\r\n"));
 
   /* Use /proc/tty/driver/serial */
-  DISPLAY(_("Probing serial ports...\n"));
+  DISPLAY(_("Probing serial ports...\r\n"));
   fd=access("/proc/tty/driver/serial", F_OK);
   if(fd<0)
     {
-      DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\n"));
-      DISPLAY(_("Done.\n"));
+      DISPLAY_ERROR(_("The file '/proc/tty/driver/serial' does not exist. Unable to probe serial port.\r\n"));
+      DISPLAY(_("Done.\r\n"));
       return -1;
     }
   
   f=fopen("/proc/tty/driver/serial", "rt");
   if(f == NULL)
     {
-      DISPLAY_ERROR(_("Unable to open this entry: <%s>\n"),
+      DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
 	      "/proc/tty/driver/serial");
       return -1;
     }
@@ -263,13 +263,13 @@ int DetectPortsLinux(PortInfo *pi)
       if(strcmp(info, "unknown"))
 	{
 	  sprintf(pi->com_name[i], "/dev/ttyS%i", j);
-	  DISPLAY("  /dev/ttyS%i: %8s adr:%03X\n", j, info, 
+	  DISPLAY("  /dev/ttyS%i: %8s adr:%03X\r\n", j, info, 
 		  pi->com_addr[i]);
 	}
       else
 	pi->com_addr[i] = 0;
     }
-  DISPLAY(_("Done.\n"));
+  DISPLAY(_("Done.\r\n"));
 #endif
   return 0;
 }
@@ -504,7 +504,7 @@ void DetectPorts9x(PortInfo *pi)
                         FLPTAddress[PortNumber] = Allocation[pos+1];
                         FLPTCount++;
 						sprintf(FLPTName[PortNumber], "LPT%i", PortNumber);
-						DISPLAY("  %s at 0x%03x\n", 
+						DISPLAY("  %s at 0x%03x\r\n", 
 								FLPTName[PortNumber], FLPTAddress[PortNumber]);
 
                         break;
@@ -560,7 +560,7 @@ void DetectPorts9x(PortInfo *pi)
                         FCOMAddress[PortNumber] = Allocation[pos+1];
                         FCOMCount++;
 						sprintf(FCOMName[PortNumber], "COM%i", PortNumber);
-						DISPLAY("  %s at 0x%03x\n", 
+						DISPLAY("  %s at 0x%03x\r\n", 
 								FCOMName[PortNumber], FCOMAddress[PortNumber]);
                         break;
                      }
@@ -726,7 +726,7 @@ void DetectPortsNT1(PortInfo *pi)
                FLPTAddress[PortNumber] = Allocation[12];
                FLPTCount++;
 			   sprintf(FLPTName[PortNumber], "LPT%i", PortNumber);
-			   DISPLAY("  %s at 0x%03x\n", 
+			   DISPLAY("  %s at 0x%03x\r\n", 
 								FLPTName[PortNumber], FLPTAddress[PortNumber]);
             }
          }
@@ -887,7 +887,7 @@ void DetectPortsNT2(PortInfo *pi)
                FCOMAddress[PortNumber] = Allocation[12];
                FCOMCount++;
 			   sprintf(FCOMName[PortNumber], "COM%i", PortNumber);
-			   DISPLAY("  %s at 0x%03x\n", 
+			   DISPLAY("  %s at 0x%03x\r\n", 
 								FCOMName[PortNumber], FCOMAddress[PortNumber]);
             }
          }
@@ -912,7 +912,7 @@ int DetectPortsWindows(PortInfo *pi)
    BOOL RunningWinNT;
    OSVERSIONINFO os;
 
-   DISPLAY(_("Probing ports...\n"));
+   DISPLAY(_("Probing ports...\r\n"));
    // Are we running Windows NT?
    memset(&os, 0, sizeof(OSVERSIONINFO));
    os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -922,12 +922,12 @@ int DetectPortsWindows(PortInfo *pi)
    // Detect the printer ports available
    if (RunningWinNT)
    {
-		DetectPortsNT1(pi); // WinNT version
-		DetectPortsNT2(pi); // WinNT version
+     DetectPortsNT1(pi); // WinNT version
+     DetectPortsNT2(pi); // WinNT version
    }
    else
       DetectPorts9x(pi); // Win9x version
-   DISPLAY(_("Done\n"));
+   DISPLAY(_("Done\r\n"));
 #endif
    return 0;
 }
@@ -959,10 +959,10 @@ static int ticable_detect_mouse(PortInfo *pi)
   fclose(f);
   found = 1; // to improve...
   if(found)
-    DISPLAY(_("A PS/2 mouse has been found, no serial port used.\n"));
+    DISPLAY(_("A PS/2 mouse has been found, no serial port used.\r\n"));
   else
     {
-      DISPLAY(_("No PS/2 mouse found, the first serial port may be used by mouse.\n"));
+      DISPLAY(_("No PS/2 mouse found, the first serial port may be used by mouse.\r\n"));
       pi->com_addr[0] = 0;
     }
 
@@ -992,26 +992,26 @@ TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
   int res;
   
   //tcl.exit();
-  DISPLAY(_("Probing link cables on each port...\n"));
+  DISPLAY(_("Probing link cables on each port...\r\n"));
   for(i=0; i<MAX_LPT_PORTS; i++)
     {
       if(pi->lpt_addr[i] != 0)
 	{
-	  DISPLAY("  Probing on %s at 0x%03x :\n",
+	  DISPLAY("  Probing on %s at 0x%03x :\r\n",
 		  pi->lpt_name[i], pi->lpt_addr[i]);
 	  
 	  io_address = pi->lpt_addr[i];
 	  par_init();
 	  res = par_probe();
 	  pi->lpt_mode[i]=LINK_PAR;
-	  DISPLAY("    parallel cable (%s)\n", result(res));
+	  DISPLAY("    parallel cable (%s)\r\n", result(res));
 	}
     }
   for(i=0; i<MAX_COM_PORTS; i++)
     {
       if( (pi->com_addr[i] != 0))
 	{
-	  DISPLAY("  Probing on %s at 0x%03x :\n",
+	  DISPLAY("  Probing on %s at 0x%03x :\r\n",
 		  pi->com_name[i], pi->com_addr[i]);
 
 	  io_address = pi->com_addr[i];
@@ -1019,21 +1019,21 @@ TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
 	  res = ser_probe();
 	  pi->com_mode[i]=LINK_SER;
 	  ser_close(); ser_exit();
-	  DISPLAY("    serial cable (%s)\n", result(res));
+	  DISPLAY("    serial cable (%s)\r\n", result(res));
 	  
 	  strcpy(io_device, pi->com_name[i]);
 	  tig_init(); tig_open();
 	  res = tig_probe();
 	  pi->com_mode[i]=LINK_TGL;
 	  tig_close(); tig_exit();
-	  DISPLAY("    GreyTIGL cable (%s)\n", result(res));
+	  DISPLAY("    GreyTIGL cable (%s)\r\n", result(res));
 	  
 	  strcpy(io_device, pi->com_name[i]);
 	  avr_init(); avr_open();
 	  res = avr_probe();
 	  pi->com_mode[i]=LINK_AVR;
 	  avr_close(); avr_exit();
-	  DISPLAY("    AVRlink cable (%s)\n", result(res));
+	  DISPLAY("    AVRlink cable (%s)\r\n", result(res));
 	}
     }
 
@@ -1102,7 +1102,10 @@ extern int resources; // defined in intrface.c
 
 int list_io_resources(void)
 {
-    /* Windows part */
+  char *os;
+  
+  ticable_detect_os(&os);
+  /* Windows part */
   
 #ifdef __WIN32__
   {
@@ -1114,14 +1117,14 @@ int list_io_resources(void)
       resources = IO_WINNT;
     else return ERR_NO_RESOURCES;
     
-    DISPLAY(_("Libticables: checking resources...\n"));
+    DISPLAY(_("Libticables: checking resources...\r\n"));
     
     resources |= (IO_API | IO_DCB);
-    DISPLAY(_("  IO_API: ok\n"));
-    DISPLAY(_("  IO_DCB: ok\n"));
+    DISPLAY(_("  IO_API: ok\r\n"));
+    DISPLAY(_("  IO_DCB: ok\r\n"));
     if(!strcmp(os, "Windows9x"))
       resources |= IO_ASM;
-    DISPLAY(_("  IO_ASM: %s\n"), resources & IO_ASM ? "ok" : "nok");
+    DISPLAY(_("  IO_ASM: %s\r\n"), resources & IO_ASM ? "ok" : "nok");
     
     // Open PortTalk Driver
     hDLL = CreateFile("\\\\.\\PortTalk", 
@@ -1137,7 +1140,7 @@ int list_io_resources(void)
 	resources |= IO_DLL;
 	CloseHandle(hDLL);
       }
-    DISPLAY(_("  IO_DLL: %s (PortTalk)\n"), resources & IO_DLL ? "ok" : "nok");
+    DISPLAY(_("  IO_DLL: %s (PortTalk)\r\n"), resources & IO_DLL ? "ok" : "nok");
     
     // Open TiglUsb Driver
     hDLL = LoadLibrary("TiglUsb.DLL");
@@ -1146,7 +1149,7 @@ int list_io_resources(void)
 	resources |= IO_LIBUSB;
 	//CloseHandle(hDLL);
       }
-    DISPLAY(_("  IO_LIBUSB: %s (TiglUsb)\n"), resources & IO_LIBUSB ? "ok" : "nok");
+    DISPLAY(_("  IO_LIBUSB: %s (TiglUsb)\r\n"), resources & IO_LIBUSB ? "ok" : "nok");
     
   }
 #endif
@@ -1154,23 +1157,23 @@ int list_io_resources(void)
   /* Linux part */
 
 #ifdef __LINUX__
-  DISPLAY(_("Libticables: checking resources...\n"));
+  DISPLAY(_("Libticables: checking resources...\r\n"));
 
   resources = IO_LINUX;
   resources |= IO_API;  
-  DISPLAY(_("  IO_API: ok\n"));
+  DISPLAY(_("  IO_API: ok\r\n"));
 
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
   { // check super or normal user
     uid_t uid = getuid();
     if(uid != 0)
       {
-	DISPLAY(_("  IO_ASM: nok (normal user -> kernel module)\n"));
+	DISPLAY(_("  IO_ASM: nok (normal user -> kernel module)\r\n"));
 	resources &= ~IO_ASM;
       }
     else
       {
-	DISPLAY(_("  IO_ASM: ok (super user)\n"));
+	DISPLAY(_("  IO_ASM: ok (super user)\r\n"));
 	resources |= IO_ASM;
       }
   }
@@ -1179,31 +1182,31 @@ int list_io_resources(void)
   if(find_string_in_proc("/proc/devices", "tipar") ||
      find_string_in_proc("/proc/modules", "tipar"))
     resources |= IO_TIPAR;
-    DISPLAY(_("  IO_TIPAR: %s\n"), resources & IO_TIPAR ? "ok" : "nok");
+    DISPLAY(_("  IO_TIPAR: %s\r\n"), resources & IO_TIPAR ? "ok" : "nok");
 
   if(find_string_in_proc("/proc/devices", "tiser") ||
      find_string_in_proc("/proc/modules", "tiser"))
     resources |= IO_TISER;
-  DISPLAY(_("  IO_TISER: %s\n"), resources & IO_TISER ? "ok" : "nok");
+  DISPLAY(_("  IO_TISER: %s\r\n"), resources & IO_TISER ? "ok" : "nok");
 
   if(find_string_in_proc("/proc/devices", "tiusb") ||
      find_string_in_proc("/proc/modules", "tiusb"))
     resources |= IO_TIUSB;
-  DISPLAY(_("  IO_TIUSB: %s\n"), resources & IO_TIUSB ? "ok" : "nok");
+  DISPLAY(_("  IO_TIUSB: %s\r\n"), resources & IO_TIUSB ? "ok" : "nok");
   
 #ifdef HAVE_LIBUSB
   resources |= IO_LIBUSB;
 #endif
-  DISPLAY(_("  IO_LIBUSB: %s\n"), resources & IO_LIBUSB ? "ok" : "nok");
+  DISPLAY(_("  IO_LIBUSB: %s\r\n"), resources & IO_LIBUSB ? "ok" : "nok");
 #endif
 
 #ifdef __MACOSX__
-  DISPLAY(_("Libticables: checking resources...\n"));
+  DISPLAY(_("Libticables: checking resources...\r\n"));
 
   resources = IO_OSX;
 #endif
 
-  DISPLAY(_("Done.\n"));
+  DISPLAY(_("Done.\r\n"));
 
   return 0;
 }

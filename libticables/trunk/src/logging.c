@@ -30,6 +30,8 @@
 #include <config.h>
 #endif
 
+#include "verbose.h"
+
 static FILE *log = NULL;
 static FILE *log2 = NULL;
 static char *fn1 = "libTIcables.log";
@@ -38,7 +40,7 @@ static int i = 0;
 
 int start_logging()
 {
-  fprintf(stdout, "Logging STARTED.\n");
+  DISPLAY("Logging STARTED.\n");
   log = fopen(fn1, "wt");
   if(log == NULL)
     return 1;

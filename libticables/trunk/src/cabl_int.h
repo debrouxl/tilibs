@@ -19,6 +19,8 @@
 #ifndef __CABLE_INTERFACE__
 #define __CABLE_INTERFACE__
 
+#include <stdio.h>
+
 #include "cabl_def.h"
 #include "export.h"
 #include "typedefs.h"
@@ -90,6 +92,9 @@ extern "C" {
   int TICALL DISPLAY(const char *format, ...);
   int TICALL ticable_DISPLAY_settings(int op);
   int TICALL DISPLAY_ERROR(const char *format, ...);
+  FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream);
+  FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename);
+  int TICALL ticable_DISPLAY_close_file();
 
 #ifdef __cplusplus
 }

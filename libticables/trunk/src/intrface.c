@@ -71,14 +71,12 @@ TicableDataRate tdr;         // Data rate during transfers
   This function should be the first one to call.
   It tries to list available I/O functions (I/O resources).
  */
-static int compat=!0; // for compatibility with lib < v2.2.3
 int list_io_resources(void);
 TIEXPORT int TICALL ticable_init()
 {
-  compat=0;
-  ticable_detect_os(&os);
-  ticable_detect_port(&pinfo);
-  list_io_resources();
+  //ticable_detect_os(&os);
+  //ticable_detect_port(&pinfo);
+	list_io_resources();
 
   return 0;
 }
@@ -256,9 +254,6 @@ TIEXPORT int TICALL ticable_get_param(LinkParam *lp)
 
 TIEXPORT int TICALL ticable_get_default_param(LinkParam *lp)
 {
-  if(compat)
-    ticable_init();
-
   lp->calc_type = 2;          //CALC_TI92
 #ifdef __MACOSX__
   lp->link_type = LINK_UGL;   // USB by default on Mac OS X
@@ -346,7 +341,7 @@ TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
   //DISPLAY("Chosen method: %i\n", method);
   if(!(method & IOM_OK))
     {
-      dERROR("unable to find an I/O method.\n");
+      DISPLAY_ERROR("unable to find an I/O method.\n");
       return ERR_NO_RESOURCES;
     }
 
