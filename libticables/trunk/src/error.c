@@ -136,7 +136,11 @@ int DLLEXPORT2 ticable_get_error(int err_num, char *error_msg)
       strcpy(error_msg, _("FreeLibrary function error (Win32): unable to release the DLL."));
       break;
     case ERR_USB_OPEN:
+#if defined(__LINUX__)
       strcpy(error_msg, _("Unable to open the USB device. Is your tiusb.c moduled loaded ?"));
+#elif defined(__MACOSX__)
+      strcpy(error_msg, _("Unable to open the USB device. Your cable is not connected."));
+#endif
       break;
     case ERR_IOCTL:
       strcpy(error_msg, _("IOCTL error."));

@@ -8,3 +8,4 @@
 	* "Yes, it finally happens !" -- Linus
 	     ie. this is the first merge with Romain's tree.
 	     Well, on my side, that is :D
+	* Fixed ERR_USB_OPEN error message in error.c
