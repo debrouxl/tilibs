@@ -25,17 +25,19 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include <stdio.h>
+#include <stdint.h>
 
 #include "timeout.h"
 #include "ioports.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 #if defined(__WIN32__)
  #define BUFFER_SIZE 1024
@@ -93,7 +95,7 @@ int ser_open()
     return ERR_ROOT;
 }
 
-int ser_put(byte data)
+int ser_put(uint8_t data)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
   int bit;
@@ -110,14 +112,14 @@ int ser_put(byte data)
 	  toSTART(clk);
 	  do 
 	    { 
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x10));
 	  wr_io(com_out, 3);
 	  toSTART(clk);
 	  do 
 	    { 
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x10)==0x00);
 	}
@@ -127,14 +129,14 @@ int ser_put(byte data)
 	  toSTART(clk);
           do 
 	    { 
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while(rd_io(com_in) & 0x20);
 	  wr_io(com_out, 3);
 	  toSTART(clk);
           do 
 	    { 
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(com_in) & 0x20)==0x00);
         }
@@ -146,12 +148,12 @@ int ser_put(byte data)
   return 0;
 }
 
-int ser_get(byte *ch)
+int ser_get(uint8_t *ch)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__)  
   int bit;
-  byte data=0;
-  byte v;
+  uint8_t data=0;
+  uint8_t v;
   int i;
   TIME clk;
 
@@ -161,7 +163,7 @@ int ser_get(byte *ch)
       toSTART(clk);
       while((v=rd_io(com_in) & 0x30)==0x30)
 	{
-	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
 	}
       if(v==0x10)
 	{
@@ -337,13 +339,13 @@ int ser_init2()
 
 int ser_open2()
 {
-	tdr.count = 0;
+  tdr.count = 0;
   toSTART(tdr.start);
 
   return 0;
 }
 
-int ser_put2(byte data)
+int ser_put2(uint8_t data)
 {
   int i;
   TIME clk;
@@ -358,12 +360,12 @@ int ser_put2(byte data)
 	wr_io(com_out, 1);
       while(rd_io(com_in)!=0)
         {
-	  if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
         }
       wr_io(com_out, 3);
       while(rd_io(com_in)!=3)
         {
-	  if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
         }
       data>>=1;
     }
@@ -371,10 +373,10 @@ int ser_put2(byte data)
   return 0;
 }
 
-int ser_get2(byte *ch)
+int ser_get2(uint8_t *ch)
 {
   int bit;
-  byte data=0;
+  uint8_t data=0;
   int i, j;
   TIME clk;
 
@@ -384,7 +386,7 @@ int ser_get2(byte *ch)
     {
       while ((j=rd_io(com_in))==3)
         {
-	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
         }
       if (j==1)
         {
@@ -399,7 +401,7 @@ int ser_get2(byte *ch)
         }
       while ((rd_io(com_in)&j)==0)
         {
-	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
         }
       wr_io(com_out, 3);
       bit<<=1;

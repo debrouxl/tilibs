@@ -127,6 +127,10 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
       va_start(ap, format);
       ret = vfprintf(out, format, ap);
       va_end(ap);
+
+      //
+      fflush(out);
+
       va_start(ap, format);
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
@@ -213,7 +217,7 @@ TIEXPORT int TICALL ticable_DISPLAY_settings(int op)
       break;
     }
 
-	verbosity = 1; 
-  
+  verbosity = 1;
+
   return 0;
 }

@@ -19,13 +19,13 @@
 #ifndef SERLINK_H
 #define SERLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 /* I/O mode (Linux & Win32) */
 int ser_init();
 int ser_open();
-int ser_put(byte data);
-int ser_get(byte *data);
+int ser_put(uint8_t data);
+int ser_get(uint8_t *data);
 int ser_probe();
 int ser_close();
 int ser_exit();
@@ -41,8 +41,8 @@ int ser_supported();
 /* DCB mode (Win32 only) */
 int ser_init2();
 int ser_open2();
-int ser_put2(byte data);
-int ser_get2(byte *data);
+int ser_put2(uint8_t data);
+int ser_get2(uint8_t *data);
 int ser_probe2();
 int ser_close2();
 int ser_exit2();

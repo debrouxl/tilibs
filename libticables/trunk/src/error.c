@@ -17,7 +17,12 @@
  */
 
 #include <stdio.h>
-#include "str.h"
+#include <string.h>
+#include <errno.h>
+
+#ifdef __WIN32__
+# include <windows.h>
+#endif
 
 #include "intl.h"
 #include "cabl_err.h"
@@ -31,152 +36,296 @@ TicableLinkCable *tcl;
    error code.
    If the error code has been handled, the function returns 0 else it 
    propagates the error code by returning it.
+
+   The error message has the following format:
+   - 1: the error message
+   - 2: the cause(s), explanations on how to fix it
+   - 3: the error returned by the system
 */
 TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
 {
   switch(err_num)
-    {
-    case ERR_ROOT: 
-      strcpy(error_msg, _("Unable to open parallel/serial port. Check that you have required permissions (super user privileges). Else, you will need to use a kernel module."));
-      break;
-    case ERR_SND_BIT_TIMEOUT: 
-      strcpy(error_msg, _("Send bit time out."));
-      break;
-    case ERR_RCV_BIT_TIMEOUT: 
-      strcpy(error_msg, _("Receive bit time out."));
-      break;
+    {      
     case ERR_OPEN_SER_DEV:
-      strcpy(error_msg, _("Unable to open serial device. Check that you have required rights on the node or the device is not locked by another application (modem ?)."));
+      strcpy(error_msg, _("Msg: Unable to open serial device."));
+      strcat(error_msg, "\n");
+      strcat(error_msg, _("Cause: check that you have required rights on the node. Check that the device is not locked by another application (modem ?)."));
       break;
-    case ERR_SND_BYT: 
-      strcpy(error_msg, _("Unable to send a byte."));
+      
+    case ERR_OPEN_SER_COMM:
+      strcpy(error_msg, _("Msg: Unable to open COM port.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that the device is not used/locked by another application (modem ?)."));
       break;
-    case ERR_RCV_BYT: 
-      strcpy(error_msg, _("Unable to receive a byte."));
+      
+    case ERR_WRITE_ERROR:
+      strcpy(error_msg, _("Msg: Error occured while writing to the device."));
       break;
-    case ERR_RCV_BYT_TIMEOUT: 
-      strcpy(error_msg, _("Receive byte timeout."));
+      
+    case ERR_WRITE_TIMEOUT:
+      strcpy(error_msg, _("Msg: Timeout occured while writing to the device."));
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that your link cable is plugged and/or the calculator is ready."));
       break;
-    case ERR_SND_BYT_TIMEOUT: 
-      strcpy(error_msg, _("Send byte timeout."));
+      
+    case ERR_READ_ERROR:
+      strcpy(error_msg, _("Msg: Error occured while reading to the device."));
       break;
-    case ERR_CREATE_FILE: 
-      strcpy(error_msg, _("CreateFile error. Check that the device is not locked by another application (modem ?)"));
+      
+    case ERR_READ_TIMEOUT:
+      strcpy(error_msg, _("Msg: Timeout occured while reading to the device."));
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that your link cable is plugged and/or the calculator is ready."));
       break;
-    case ERR_OPEN_COM_PORT: 
-      strcpy(error_msg, _("Unable to open COM port (Win32)."));
-      break;
-    case ERR_READ_FILE: 
-      strcpy(error_msg, _("ReadFile failed."));
-      break;
-    case ERR_OPEN_TIDEV_DEV:
-      strcpy(error_msg, _("Unable to open node on kernel module. Check that you have required rights on the node and/or your kernel module is loaded."));
-      break;
-    case ERR_VT0_ALREADY_USED:
-      strcpy(error_msg, _("The virtual link #0 is already used by another application."));
-      break;
-    case ERR_VT1_ALREADY_USED:
-      strcpy(error_msg, _("The virtual link #1 is already used by another application."));
-      break;
-    case ERR_OPEN_PIPE:
-      strcpy(error_msg, _("Unable to open pipes for virtual linking. Check that you have permissions to create a pipe in the /tmp directory."));
-      break;
-    case ERR_PIPE_FCNTL:
-      strcpy(error_msg, _("Unable to modify the pipe characteristics."));
-      break;
-    case ERR_OPP_NOT_AVAIL:
-      strcpy(error_msg, _("Trying to communicate without correspondent. Did you launch the emulator ?"));
-      break;
-    case ERR_CLOSE_PIPE:
-      strcpy(error_msg, _("Unable to close pipes."));
-      break;
+      
     case ERR_BYTE_LOST: 
-      strcpy(error_msg, _("A byte have been lost."));
-    break;
-    case ERR_ILLEGAL_OP: 
-      strcpy(error_msg, _("Illegal operation or argument."));
+      strcpy(error_msg, _("Msg: A uint8_t have been lost.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Application too slow."));
       break;
-    case ERR_FLUSH:
-      strcpy(error_msg, _("Error while flushing the buffer."));
+      
+    case ERR_CREATE_FILE: 
+      strcpy(error_msg, _("Msg: CreateFile error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that the device is not used/locked by another application (modem ?)."));
       break;
-    case ERR_SET_COMMSTATE:
-      strcpy(error_msg, _("SetCommState error (Win32)."));
+      
+    case ERR_OPEN_TIDEV:
+      strcpy(error_msg, _("Msg: Unable to open a node in /dev.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause:Check that the node exists. Check your devfs. Check that you have installed the driver."));
       break;
-    case ERR_GET_COMMSTATE:
-      strcpy(error_msg, _("GetCommState error (Win32)."));
-      break;
-    case ERR_SETUP_COMM:
-      strcpy(error_msg, _("SetupComm error (Win32)."));
-      break;
-    case ERR_GET_COMMTIMEOUT:
-      strcpy(error_msg, _("GetCommTimeouts error (Win32)."));
-      break;
-    case ERR_SET_COMMTIMEOUT:
-      strcpy(error_msg, _("SetCommTimeouts error (Win32)."));
-      break;
-    case ERR_OPEN_FILE_MAP:
-      strcpy(error_msg, _("VTi seems to be not launched yet (Win32)."));
-      break;
-    case ERR_USB_DEVICE_CMD:
-      strcpy(error_msg, _("DeviceIoControl function error (Win32): unable to send USB request."));
-      break;
-    case ERR_GETPROCADDRESS:
-      strcpy(error_msg, _("GetProcAddress function error (Win32): unable to load a DLL symbol."));
-      break;
-    case ERR_DLPORTIO_NOT_FOUND:
-      strcpy(error_msg, _("DLPortIO driver & library not found. The DLPortIO kernel driver is required for home-made parallel/serial link cables under Windows NT4/2000/XP. You can get this driver on the TiLP web-page at <http://lpg.ticalc.org/prj_tilp/download.html>.."));
-      break;
-    case ERR_FREELIBRARY:
-      strcpy(error_msg, _("FreeLibrary function error (Win32): unable to release the DLL."));
-      break;
-    case ERR_USB_OPEN:
-#ifndef __MACOSX__
-      strcpy(error_msg, _("Unable to open the USB device. Check that you have required rights on the node and/or your driver is loaded."));
-#else
-      strcpy(error_msg, _("Unable to open the USB device. Your cable is not connected or stalled."));
+      
+    case ERR_ROOT: 
+#ifdef __LINUX__
+      strcpy(error_msg, _("Msg: Unable to use parallel/serial port: access refused.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that you have needed permissions (super user privileges). Else, you will need to use a kernel module (tipar/tiser)."));
+#endif
+#ifdef __WIN32__
+      strcpy(error_msg, _("Msg: Unable to use parallel/serial port: access refused.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Is PortTalk installed/started ? You may have to install TiLP with administrator privileges."));
 #endif
       break;
-    case ERR_USB_INIT:
-#ifndef __MACOSX__
-      strcpy(error_msg, _("Error occurred while initializing the libusb."));
-#else
-      strcpy(error_msg, _("Unable to initialize the USB device. Your cable is probably not connected."));
-#endif
-      break;
-    case ERR_IOCTL:
-      strcpy(error_msg, _("IOCTL error. Check that you have required rights on the node and/or your kernel module is loaded."));
-      break;
-    case ERR_NO_RESOURCES:
-      strcpy(error_msg, _("No I/O resource available ! Check for:\n- I/O permissions (parallel/serial link cable)\n- device driver (parallel/serial cable under Win NT4/2000/XP or USB)\n- kernel module (parallel/serial or USB under Linux\n- ..."));
-      break;
-    case ERR_INVALID_PORT:
-      strcpy(error_msg, _("Invalid port: try to use an I/O port device which is incompatible with the link cable."));
-      break;
+      
     case ERR_PROBE_FAILED:
-      strcpy(error_msg, _("Probing has failed."));
+      strcpy(error_msg, _("Msg: No link cable has been found on the scanned port.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: ??"));
       break;
-    case ERR__IPC_KEY:
-      strcpy(error_msg, _("Unable to get a unique IPC (Inter Process Communication) key. Check that you have enough resources for allocating a shared memory segment."));
+      
+    case ERR_OPEN_PIPE:
+      strcpy(error_msg, _("Msg: Unable to open pipes for virtual linking.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that you have permissions to create a pipe in the /tmp directory."));
       break;
-    case ERR__SHM_GET:
-      strcpy(error_msg, _("Unable to open a shared memory segment. Do you have any resources ?"));
+      
+    case ERR_CLOSE_PIPE:
+      strcpy(error_msg, _("Msg: Unable to close pipes.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: System error ?!"));
       break;
-    case ERR__SHM_ATT:
-      strcpy(error_msg, _("Unable to attach shared memory segment. Too many attachements ?"));
+      
+    case ERR_OPP_NOT_AVAIL:
+      strcpy(error_msg, _("Msg: CreateFileMapping error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Trying to communicate without correspondent. Did you launch the emulator before running TiLP ?"));
       break;
-    case ERR__SHM_DTCH:
-      strcpy(error_msg, _("Unable to detach the shared memory segment. Is segment locked ?"));
+      
+    case ERR_IOCTL:
+      strcpy(error_msg, _("Msg: IOCTL error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that you have required rights on the node and/or your kernel module is loaded."));
+      break;		
+      
+    case ERR_SETUP_COMM:
+      strcpy(error_msg, _("Msg: SetupComm error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error."));
       break;
-    case ERR__SHM_RMID:
-      strcpy(error_msg, _("Unable to destroy the shared memory segment. Check that no applications are still attached on it."));
+      
+    case ERR_SET_COMMSTATE:
+      strcpy(error_msg, _("Msg: SetCommState error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error."));
       break;
+      
+    case ERR_GET_COMMSTATE:
+      strcpy(error_msg, _("Msg: GetCommState error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error."));
+      break;
+      
+    case ERR_GET_COMMTIMEOUT:
+      strcpy(error_msg, _("Msg: GetCommTimeouts error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error."));
+      break;
+      
+    case ERR_SET_COMMTIMEOUT:
+      strcpy(error_msg, _("Msg: SetCommTimeouts error.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error."));
+      break;
+      
+    case ERR_FLUSH_COMM:
+      strcpy(error_msg, _("Msg: Error while flushing the buffer(s).")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal Win32 error"));
+      break;
+      
+    case ERR_USB_DEVICE_CMD:
+      strcpy(error_msg, _("Msg: IOCTL code unsuccessful.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Internal device driver error."));
+      break;
+      
+    case ERR_OPEN_USB_DEV:
+#if defined(__LINUX__)
+      strcpy(error_msg, _("Msg: Unable to open the USB device.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that you have required rights on the node and/or your driver is loaded."));
+#elif defined(__WIN32__)
+      strcpy(error_msg, _("Msg: Unable to open the USB device.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check your SilverLink is correcly installed in the Control Panel. TiLP need a specific driver for this cable. It's available on http://lpg.ticalc.org/prj_usb."));
+#elif defined(__MACOSX__)
+      strcpy(error_msg, _("Msg: Unable to open the USB device.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Your cable is not connected or stalled."));
+#endif
+      break;
+      
+    case ERR_LIBUSB_INIT:
+#ifndef __MACOSX__
+      strcpy(error_msg, _("Msg: Error occurred while initializing the libusb.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that your cable is connected or not stalled. Check you rlibusb and usbfs, too."));
+#else
+      strcpy(error_msg, _("Msg: Unable to initialize the USB device.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Your cable is probably not connected."));
+#endif
+      break;
+      
+    case ERR_LIBUSB_OPEN:
+      strcpy(error_msg, _("Msg: Unable to open/find a USB device.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that your cable is connected or not stalled. Check you rlibusb and usbfs, too."));
+      break;
+      
+    case ERR_LIBUSB_RESET:
+      strcpy(error_msg, _("Msg: Error while reseting USB endpoints.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Your cable may be stalled. Unplug and replug it !."));
+      break;
+      
+    case ERR_FREELIBRARY:
+      strcpy(error_msg, _("Msg: FreeLibrary error. Unable to release the DLL.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: ??"));
+      break;
+      
+    case ERR_IPC_KEY:
+      strcpy(error_msg, _("Msg: Unable to get a unique IPC (Inter Process Communication) key.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that you have enough resources for allocating a shared memory segment."));
+      break;
+      
+    case ERR_SHM_GET:
+      strcpy(error_msg, _("Msg: Unable to open a shared memory segment."));
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Do you have any resources ?"));
+      break;
+    
+    case ERR_SHM_ATTACH:
+      strcpy(error_msg, _("Msg: Unable to attach shared memory segment.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Too many attachements ?"));
+      break;
+      
+    case ERR_SHM_DETACH:
+      strcpy(error_msg, _("Msg: Unable to detach the shared memory segment."));
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Is segment locked ?"));
+      break;
+      
+    case ERR_SHM_RMID:
+      strcpy(error_msg, _("Msg: Unable to destroy the shared memory segment.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: Check that no applications are still attached on it."));
+      break;
+      
+    case ERR_OPEN_FILE_MAP:
+      strcpy(error_msg, _("Msg: Unable to open a file mapping.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: VTi seems to be not launched yet."));
+      break;
+      
+    case ERR_ILLEGAL_ARG: 
+      strcpy(error_msg, _("Msg: Illegal operation or argument.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: A bug in TiLP, mail to: roms@lpg.ticalc.org."));
+      break;
+      
+    case ERR_NO_RESOURCES:
+      strcpy(error_msg, _("Msg: No I/O resource available !")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: This error may have some causes. See the previous error message for more complete informations. Check for:\n- I/O permissions (parallel/serial link cable)\n- device driver (parallel/serial cable under Win NT4/2000/XP or USB)\n- kernel module (parallel/serial or USB under Linux."));
+      break;
+      
+    case ERR_INVALID_PORT:
+      strcpy(error_msg, _("Msg: Invalid port: try to use an I/O port device which is incompatible with the link cable.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: It's due to a misuse of library, probably a TiLP bug. Mail to: roms@lpg.ticalc.org"));
+      break;
+      
+    case ERR_PORTTALK_NOT_FOUND:
+      strcpy(error_msg, _("Msg: PortTalk driver and/or library not found.")); 
+      strcat(error_msg, "\n"); 
+      strcat(error_msg, _("Cause: TiLP should start this driver automagically through the SCM. Check that it's loaded and TiLP as been installed with admin privileges !"));
+      break;
+      
     default:
       strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
       return err_num;
       break;
-  }
+    }
+
+#if defined(__LINUX__)
+  if(errno != 0)
+    {
+      strcat(error_msg, "\n");
+      strcat(error_msg, "System: ");
+      strcat(error_msg, strerror(errno));
+      snprintf(buf, 256, " (errno = %i)", errno);
+      strcat(error_msg, buf);
+      strcat(error_msg, "\n");
+    }
+#elif defined(__WIN32__)
+  if(GetLastError())
+    {
+      LPVOID lpMsgBuf;
+      
+      FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		    FORMAT_MESSAGE_FROM_SYSTEM |
+		    FORMAT_MESSAGE_IGNORE_INSERTS,
+		    NULL, GetLastError(),
+		    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		    (LPTSTR) &lpMsgBuf,    0,    NULL );
+      strcat(error_msg, "\n");
+      strcat(error_msg, "System: ");
+      //snprintf(buf, 256, "GetLastError = %i -> ", GetLastError());
+	  sprintf(buf, "GetLastError = %i -> ", GetLastError());
+      strcat(error_msg, buf);
+      strcat(error_msg, lpMsgBuf);
+      strcat(error_msg, "\n");
+    }
+#endif
+  
   if(tcl != NULL)
-	tcl->close();	// Close the connection
+    tcl->close();	// Close the connection
   
   return 0;
 }

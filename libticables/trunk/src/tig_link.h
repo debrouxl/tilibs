@@ -19,12 +19,12 @@
 #ifndef TIGLINK_H
 #define TIGLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int tig_init();
 int tig_open();
-int tig_put(byte data);
-int tig_get(byte *data);
+int tig_put(uint8_t data);
+int tig_get(uint8_t *data);
 int tig_probe();
 int tig_close();
 int tig_exit();

@@ -22,12 +22,12 @@
 #ifndef DEVLINK_H
 #define DEVLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int dev_init(void);
 int dev_open(void);
-int dev_put(byte data);
-int dev_get(byte *data);
+int dev_put(uint8_t data);
+int dev_get(uint8_t *data);
 int dev_probe(void);
 int dev_close(void);
 int dev_exit(void);

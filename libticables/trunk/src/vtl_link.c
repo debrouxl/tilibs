@@ -23,6 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "cabl_def.h"
 #include "export.h"
 
@@ -32,25 +33,21 @@
 /* Linux part */
 /**************/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #include <stdio.h>
+#include <stdint.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
+#include <string.h>
 #include <errno.h>
-#include "str.h"
 
 #include "timeout.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 #include "verbose.h"
 
@@ -63,7 +60,7 @@ static int wr[2] = { 0, 0 }; // Pipe 0 -> 1 or 1 -> 0
 #define HIGH 666 // 2 of 3
 #define LOW  333 // 1 of 3
 
-static const char fifo_names[4][MAXCHARS] = 
+static const char fifo_names[4][256] = 
 { 
   "/tmp/.vlc_1_0", "/tmp/.vlc_0_1", 
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0" 
@@ -71,7 +68,7 @@ static const char fifo_names[4][MAXCHARS] =
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -125,7 +122,7 @@ int vtl_init()
 
 int vtl_open()
 {
-  byte d;
+  uint8_t d;
   int n;
 
   /* Flush the pipe */
@@ -141,7 +138,7 @@ int vtl_open()
   return 0;
 }
 
-int vtl_put(byte data)
+int vtl_put(uint8_t data)
 {
   int n = 0;
   TIME clk;
@@ -158,7 +155,7 @@ int vtl_put(byte data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
       fstat(wr[p-1], &s);
       if(s.st_size > HIGH)
 	n = 0;
@@ -171,7 +168,7 @@ int vtl_put(byte data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
       n = write(wr[p-1], (void *)(&data), 1);
     }
   while(n <= 0);
@@ -179,7 +176,7 @@ int vtl_put(byte data)
   return 0;
 }
 
-int vtl_get(byte *data)
+int vtl_get(uint8_t *data)
 {
   static int n=0;
   TIME clk;
@@ -192,18 +189,18 @@ int vtl_get(byte *data)
       return 0;
     }
 
-  // Read the byte in a defined delay
+  // Read the uint8_t in a defined delay
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
       n = read(rd[p-1], (void *)data, 1);
     }
   while(n <= 0);
 
   if(n == -1)
     {
-      return ERR_RCV_BYT;
+      return ERR_READ_ERROR;
     }
 
   return 0;
@@ -291,7 +288,7 @@ int vtl_supported()
 #include "cabl_err.h"
 #include "export.h"
 #include "plerror.h"
-#include "cabl_ext.h"
+#include "externs.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -304,15 +301,15 @@ HANDLE hPipe;
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
-int vtl_init(uint io_addr, char *dev)
+int vtl_init(unsigned int io_addr, char *dev)
 {
 	/* Check if valid argument */
 	if(io_addr > 2)
-		return ERR_ILLEGAL_OP;
+		return ERR_ILLEGAL_ARG;
 	else
 		p = io_addr;
 
@@ -334,7 +331,7 @@ int vtl_open()
 {
 	BOOL fSuccess;
 	DWORD i;
-	byte data;
+	uint8_t data;
 
 	/* Flush the pipe */
 	do
@@ -349,7 +346,7 @@ int vtl_open()
   return 0;
 }
 
-int vtl_put(byte data)
+int vtl_put(uint8_t data)
 {
 	DWORD i;
 	BOOL fSuccess;
@@ -361,17 +358,17 @@ int vtl_put(byte data)
 	{
 		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
-		return ERR_SND_BYT;
+		return ERR_WRITE_ERROR;
 	}
 	else if(i == 0)
 	{
-		return ERR_SND_BYT_TIMEOUT;
+		return ERR_WRITE_TIMEOUT;
 	}
 
 	return 0;
 }
 
-int vtl_get(byte *data)
+int vtl_get(uint8_t *data)
 {
 	DWORD i;
 	BOOL fSuccess;
@@ -379,7 +376,7 @@ int vtl_get(byte *data)
 	int b;
 
 	tdr.count++;
-	/* If the tig_check function was previously called, retrieve the byte */
+	/* If the tig_check function was previously called, retrieve the uint8_t */
 	if(cs.available)
     {
       *data = cs.data;
@@ -390,7 +387,7 @@ int vtl_get(byte *data)
 	toSTART(clk);
 	do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
 	  fSuccess = ReadFile(hPipe,data,1,&i,NULL);
     }
 	while(i != 1);
@@ -470,12 +467,12 @@ int vtl_open()
   return 0;
 }
 
-int vtl_put(byte data)
+int vtl_put(uint8_t data)
 {
   return 0;
 }
 
-int vtl_get(byte *d)
+int vtl_get(uint8_t *d)
 {
   return 0;
 }

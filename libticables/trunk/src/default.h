@@ -19,12 +19,12 @@
 #ifndef DEFAULT_LINK_H
 #define DEFAULT_LINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int dfl_init();
 int dfl_open();
-int dfl_put(byte data);
-int dfl_get(byte *data);
+int dfl_put(uint8_t data);
+int dfl_get(uint8_t *data);
 int dfl_probe();
 int dfl_close();
 int dfl_exit();

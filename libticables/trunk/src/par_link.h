@@ -19,12 +19,12 @@
 #ifndef PARLINK_H
 #define PARLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int par_init();
 int par_open();
-int par_put(byte data);
-int par_get(byte *data);
+int par_put(uint8_t data);
+int par_get(uint8_t *data);
 int par_probe();
 int par_close();
 int par_exit();

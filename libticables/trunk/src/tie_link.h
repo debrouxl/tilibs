@@ -19,12 +19,12 @@
 #ifndef TIELINK_H
 #define TIELINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int tie_init();
 int tie_open();
-int tie_put(byte data);
-int tie_get(byte *data);
+int tie_put(uint8_t data);
+int tie_get(uint8_t *data);
 int tie_probe();
 int tie_close();
 int tie_exit();

@@ -34,6 +34,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "cabl_def.h"
 #include "export.h"
 
@@ -53,29 +54,24 @@
    shm1: R <- W
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #if defined(HAVE_SYS_IPC_H) && defined(HAVE_SYS_SHM_H)
 # define USE_SHM
 #endif
 
 #include <stdio.h>
+#include <stdint.h>
 #include <time.h>
 #include <sys/types.h>
 #ifdef USE_SHM
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif
-#include "str.h"
 
 #include "timeout.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "verbose.h"
 #include "logging.h"
 
@@ -83,7 +79,7 @@
 #define BUF_SIZE 1*1024 
 struct _vti_buf
 {
-  byte buf[BUF_SIZE];
+  uint8_t buf[BUF_SIZE];
   int toSTART;
   int end;
 };
@@ -110,6 +106,7 @@ int vti_init()
   if( (io_address < 1) || (io_address > 2))
     {
       DISPLAY_ERROR("Invalid io_address parameter passed to libticables.\n");
+	  return ERR_ILLEGAL_ARG;
       io_address = 2;
     }
   p = io_address - 1;
@@ -120,7 +117,7 @@ int vti_init()
       if((ipc_key[i] = ftok("/tmp", i)) == -1)
 	{
 	  DISPLAY_ERROR("ftok\n");
-	  return ERR__IPC_KEY;
+	  return ERR_IPC_KEY;
 	}
       //DISPLAY("ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
     }
@@ -132,7 +129,7 @@ int vti_init()
 			    IPC_CREAT | 0666)) == -1)
 	{
 	  DISPLAY_ERROR("ftok\n");    
-	  return ERR__SHM_GET;
+	  return ERR_SHM_GET;
 	}
       //DISPLAY("shmid[%i] = %i\n", i, shmid[i]);
     }
@@ -143,7 +140,7 @@ int vti_init()
       if((shm[i] = shmat(shmid[i], NULL, 0)) == NULL)
 	{
 	  DISPLAY_ERROR("shmat\n");
-	  return ERR__SHM_ATT;
+	  return ERR_SHM_ATTACH;
 	}
     }
 
@@ -177,7 +174,7 @@ int vti_open()
   return 0;
 }
 
-int vti_put(byte data)
+int vti_put(uint8_t data)
 {
 #ifdef USE_SHM
   TIME clk;
@@ -187,7 +184,7 @@ int vti_put(byte data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
     }
   while(((send_buf[p]->end + 1) & 255) == send_buf[p]->toSTART);
   
@@ -197,7 +194,7 @@ int vti_put(byte data)
   return 0;
 }
 
-int vti_get(byte *data)
+int vti_get(uint8_t *data)
 {
 #ifdef USE_SHM
   TIME clk;
@@ -207,7 +204,7 @@ int vti_get(byte *data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
     }
   while(recv_buf[p]->toSTART == recv_buf[p]->end);
   
@@ -242,13 +239,13 @@ int vti_exit()
       if(shmdt(shm[i]) == -1)
 	{
 	  DISPLAY_ERROR("shmdt\n");
-	  return ERR__SHM_DTCH;
+	  return ERR_SHM_DETACH;
 	}
       /* and destroy it */
       if(shmctl(shmid[i], IPC_RMID, NULL) == -1)
 	{
 	  DISPLAY_ERROR("shmctl\n");
-	  return ERR__SHM_RMID;
+	  return ERR_SHM_RMID;
 	}
     }
 #endif  
@@ -300,7 +297,7 @@ int vti_supported()
 #include "cabl_err.h"
 #include "export.h"
 #include "logging.h"
-#include "cabl_ext.h"
+#include "externs.h"
 
 extern int time_out; // Timeout value for cables in 0.10 seconds
 extern int delay;    // Time between 2 bits (home-made cables only)
@@ -410,7 +407,7 @@ int vti_open()
   return 0;
 }
 
-int vti_put(byte data)
+int vti_put(uint8_t data)
 {
 	TIME clk;
 
@@ -422,7 +419,7 @@ int vti_put(byte data)
 	toSTART(clk);
 	  do 
 	  { 
-		  if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+		  if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	  }
 	while(((vSendBuf->end + 1) & 255) == vSendBuf->toSTART);
 
@@ -432,7 +429,7 @@ int vti_put(byte data)
 	return 0;
 }
 
-int vti_get(byte *data)
+int vti_get(uint8_t *data)
 {
 	TIME clk;
 
@@ -446,7 +443,7 @@ int vti_get(byte *data)
 	toSTART(clk);
 	do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
     }
 	while(vRecvBuf->toSTART == vRecvBuf->end);
 	
@@ -522,12 +519,12 @@ int vti_open()
   return 0;
 }
 
-int vti_put(byte data)
+int vti_put(uint8_t data)
 {
   return 0;
 }
 
-int vti_get(byte *d)
+int vti_get(uint8_t *d)
 {
   return 0;
 }

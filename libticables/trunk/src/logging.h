@@ -30,9 +30,9 @@ int log_void();
 int stop_void();
 
 /* uncomment it for enabling logging facilities */
-//#define LOGGING
+#define ALLOW_LOGGING
 
-#ifdef LOGGING
+#ifdef ALLOW_LOGGING
 # define START_LOGGING(); start_logging();
 # define LOG_DATA(d);     log_data(d);
 # define STOP_LOGGING();  stop_logging();

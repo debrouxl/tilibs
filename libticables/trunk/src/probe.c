@@ -25,9 +25,10 @@
 */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-//#include <unistd.h>
-#include "str.h"
+#include <string.h>
+
 #include "intl.h"
 #if defined(__LINUX__) || defined(__MACOSX__)
 # include <dirent.h>
@@ -42,17 +43,17 @@
 #include "cabl_def.h"
 #include "cabl_err.h"
 #include "export.h"
-#include "typedefs.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "links.h"
 #include "verbose.h"
 
+#define MAXCHARS 1024
 
 /************************************/
 /* Windows & Linux I/O port probing */
 /************************************/
 
-void clear_portinfo_struct(PortInfo *pi)
+void clear_portinfo_struct(TicablePortInfo *pi)
 {
   int i;
 
@@ -145,16 +146,16 @@ TIEXPORT int TICALL ticable_detect_os(char **os_type)
 }
 
 /* Described further in the source code */
-int DetectPortsLinux(PortInfo *pi);
-int DetectPortsWindows(PortInfo *pi);
-static int ticable_detect_mouse(PortInfo *pi);
+int DetectPortsLinux(TicablePortInfo *pi);
+int DetectPortsWindows(TicablePortInfo *pi);
+static int ticable_detect_mouse(TicablePortInfo *pi);
 
 /* 
    This function detects which ports are available according to
    the operating system type.
    It detects parallel and serial ports.
 */
-TIEXPORT int TICALL ticable_detect_port(PortInfo *pi)
+TIEXPORT int TICALL ticable_detect_port(TicablePortInfo *pi)
 {
   int ret = 0;
 
@@ -175,7 +176,7 @@ TIEXPORT int TICALL ticable_detect_port(PortInfo *pi)
 /*
   Detect ports on Linux OS
 */
-int DetectPortsLinux(PortInfo *pi)
+int DetectPortsLinux(TicablePortInfo *pi)
 {
 #if defined(__LINUX__)
   int fd;
@@ -315,7 +316,7 @@ int DetectPortsLinux(PortInfo *pi)
 //---------------------------------------------------------------------------
 // DetectPorts9x()
 //---------------------------------------------------------------------------
-void DetectPorts9x(PortInfo *pi)
+void DetectPorts9x(TicablePortInfo *pi)
 {
 #if defined(__WIN32__)
    const char *BASE_KEY = "Config Manager\\Enum";
@@ -590,7 +591,7 @@ void DetectPorts9x(PortInfo *pi)
 //---------------------------------------------------------------------------
 // DetectPortsNT1()
 //---------------------------------------------------------------------------
-void DetectPortsNT1(PortInfo *pi)
+void DetectPortsNT1(TicablePortInfo *pi)
 {
 #if defined(__WIN32__)
   const char *BASE_KEY = "HARDWARE\\DEVICEMAP\\PARALLEL PORTS";
@@ -751,7 +752,7 @@ void DetectPortsNT1(PortInfo *pi)
 //---------------------------------------------------------------------------
 // DetectPortsNT2()
 //---------------------------------------------------------------------------
-void DetectPortsNT2(PortInfo *pi)
+void DetectPortsNT2(TicablePortInfo *pi)
 {
 #if defined(__WIN32__)
   const char *BASE_KEY = "HARDWARE\\DEVICEMAP\\SERIALCOMM";
@@ -912,7 +913,7 @@ void DetectPortsNT2(PortInfo *pi)
 /*
 	Detect ports on Win32 OS
 */
-int DetectPortsWindows(PortInfo *pi)
+int DetectPortsWindows(TicablePortInfo *pi)
 {
 #if defined(__WIN32__)
    BOOL RunningWinNT;
@@ -942,7 +943,7 @@ int DetectPortsWindows(PortInfo *pi)
   Try to detect a mouse. This avoid to hang up it when we try to detect
   a link cable.
  */
-static int ticable_detect_mouse(PortInfo *pi)
+static int ticable_detect_mouse(TicablePortInfo *pi)
 {
 #ifdef __LINUX__
   FILE *f;
@@ -992,7 +993,7 @@ char* result(int i)
   on a serial port other than the first one (under Linux or Windows9x, 
   not NT4/2000)
 */
-TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
+TIEXPORT int TICALL ticable_detect_cable(TicablePortInfo *pi)
 {
   int i;
   int res;
@@ -1050,7 +1051,7 @@ TIEXPORT int TICALL ticable_detect_cable(PortInfo *pi)
   This function tries to detect a link cable.
   The returned value is placed in os and pi.
 */
-int TICALL ticable_detect_all(char **os, PortInfo *pi)
+int TICALL ticable_detect_all(char **os, TicablePortInfo *pi)
 {
   if(!ticable_detect_os(os))
     { if(!ticable_detect_port(pi))
@@ -1308,8 +1309,8 @@ void InstallPortTalkDriver(void)
 
     /* Get System Directory. This should be something like c:\windows\system32 or  */
     /* c:\winnt\system32 with a Maximum Character lenght of 20. As we have a       */
-    /* buffer of 80 bytes and a string of 24 bytes to append, we can go for a max  */
-    /* of 55 bytes */
+    /* buffer of 80 uint8_ts and a string of 24 uint8_ts to append, we can go for a max  */
+    /* of 55 uint8_ts */
 
     if (!GetSystemDirectory(DriverFileName, 55))
         {
@@ -1351,7 +1352,7 @@ void InstallPortTalkDriver(void)
                                 NULL,                              /* no tag identifier */
                                 NULL,                              /* no dependencies */
                                 NULL,                              /* LocalSystem account */
-                                NULL                               /* no password */
+                                NULL                               /* no passuint16_t */
                                 );
 
     if (schService == NULL) {

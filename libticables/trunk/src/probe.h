@@ -23,8 +23,8 @@
 #include "export.h"
 
 int TICALL ticable_detect_os(char **os_type);
-int TICALL ticable_detect_port(PortInfo *pi);
-int TICALL ticable_detect_cable(PortInfo *pi);
-int TICALL ticable_detect_all(char **os, PortInfo *pi);
+int TICALL ticable_detect_port(TicablePortInfo *pi);
+int TICALL ticable_detect_cable(TicablePortInfo *pi);
+int TICALL ticable_detect_all(char **os, TicablePortInfo *pi);
 
 #endif

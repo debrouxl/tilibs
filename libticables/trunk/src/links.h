@@ -27,7 +27,6 @@
 #include "vtl_link.h"
 #include "tie_link.h"
 #include "vti_link.h"
-#include "ugl_link.h"
-#include "tpu_link.h"
+#include "slv_link.h"
 
 #endif

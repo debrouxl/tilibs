@@ -19,12 +19,12 @@
 #ifndef VTLLINK_H
 #define VTLLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int vtl_init();
 int vtl_open();
-int vtl_put(byte data);
-int vtl_get(byte *data);
+int vtl_put(uint8_t data);
+int vtl_get(uint8_t *data);
 int vtl_probe();
 int vtl_close();
 int vtl_exit();

@@ -21,6 +21,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "export.h"
 #include "cabl_def.h"
 
@@ -36,21 +37,21 @@
 #include <termios.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdint.h>
 
 #include "timeout.h"
-#include "typedefs.h"
 #include "cabl_err.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 #include "verbose.h"
 
-static char tty_dev[MAXCHARS];
+static char tty_dev[1024];
 static int dev_fd = 0;
 static struct termios termset;
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -118,7 +119,7 @@ int avr_init()
 
 int avr_open()
 {
-  byte d;
+  uint8_t d;
   int n;
 
   /* Flush the input */
@@ -141,7 +142,7 @@ int avr_open()
   return 0;
 }
 
-int avr_put(byte data)
+int avr_put(uint8_t data)
 {
   int err;
 
@@ -152,24 +153,24 @@ int avr_put(byte data)
     {
     case -1: //error
       avr_close();
-      return ERR_SND_BYT;
+      return ERR_WRITE_ERROR;
       break;
     case 0: // timeout
       avr_close();
-      return ERR_SND_BYT_TIMEOUT;
+      return ERR_WRITE_TIMEOUT;
       break;
     }
 
   return 0;
 }
 
-int avr_get(byte *data)
+int avr_get(uint8_t *data)
 {
   int n=0;
   TIME clk;
 
   tdr.count++;
-  /* If the avr_check function was previously called, retrieve the byte */
+  /* If the avr_check function was previously called, retrieve the uint8_t */
   if(cs.available)
     {
       *data = cs.data;
@@ -181,13 +182,13 @@ int avr_get(byte *data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);
 
   if(n == -1)
-    return ERR_RCV_BYT;
+    return ERR_READ_ERROR;
 
   LOG_DATA(*data);
 
@@ -274,7 +275,7 @@ int avr_supported()
 #include "export.h"
 #include "cabl_err.h"
 #include "plerror.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 
 #define BUFFER_SIZE 1024
@@ -283,11 +284,11 @@ extern int time_out; // Timeout value for cables in 0.10 seconds
 
 static HANDLE hCom=0;
 static char comPort[MAXCHARS];
-static int byte_count = 0;
+static int uint8_t_count = 0;
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -310,7 +311,7 @@ int avr_init()
 	{
 		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
-		return ERR_CREATE_FILE;
+		return ERR_OPEN_SER_COMM;
 	}
 
 	if(baud_rate == 9600)
@@ -370,9 +371,9 @@ int avr_open()
 	{
 		DISPLAY_ERROR("PurgeComm\n");
 		print_last_error();
-		return ERR_FLUSH;
+		return ERR_FLUSH_COMM;
 	}
-	byte_count = 0;
+	uint8_t_count = 0;
 
 	tdr.count = 0;
 	toSTART(tdr.start);
@@ -380,7 +381,7 @@ int avr_open()
 	return 0;
 }
 
-int avr_put(byte data)
+int avr_put(uint8_t data)
 {
 	DWORD i;
 	BOOL fSuccess;
@@ -393,24 +394,24 @@ int avr_put(byte data)
 	{
 		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
-		return ERR_SND_BYT;
+		return ERR_WRITE_ERROR;
 	}
 	else if(i == 0)
 	{
-		return ERR_SND_BYT_TIMEOUT;
+		return ERR_WRITE_TIMEOUT;
 	}
 
 	return 0;
 }
 
-int avr_get(byte *data)
+int avr_get(uint8_t *data)
 {
 	DWORD i;
 	BOOL fSuccess;
 	TIME clk;
 
 	tdr.count++;
-	/* If the avr_check function was previously called, retrieve the byte */
+	/* If the avr_check function was previously called, retrieve the uint8_t */
 	if(cs.available)
     {
       *data = cs.data;
@@ -421,7 +422,7 @@ int avr_get(byte *data)
 	toSTART(clk);
 	do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
 	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
     }
 	while(i != 1);
@@ -504,12 +505,12 @@ int avr_open()
   return 0;
 }
 
-int avr_put(byte data)
+int avr_put(uint8_t data)
 {
   return 0;
 }
 
-int avr_get(byte *d)
+int avr_get(uint8_t *d)
 {
   return 0;
 }

@@ -1,4 +1,4 @@
-/*  ti_link - link program for TI calculators
+/*  libticables - link cables library, a part of the TiLP project
  *  Copyright (C) 1999-2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -16,26 +16,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CABLE_DEFS__
-#define __CABLE_DEFS__
+#ifndef __TICABLE_DEFS__
+#define __TICABLE_DEFS__
+
+#include <stdint.h>
 
 #include "export.h"
-#include "typedefs.h"
-#include "macros.h"
-#include "compat.h"
 #include "timeout.h"
 
 /********************/
 /* Type definitions */
 /********************/
 
-struct ticable_link
+typedef struct
 {
   // cooked access
   int (*init)  ();
   int (*open)  ();
-  int (*put)   (byte data);
-  int (*get)   (byte *data);
+  int (*put)   (uint8_t data);
+  int (*get)   (uint8_t *data);
   int (*probe) ();
   int (*close) ();
   int (*exit)  ();
@@ -46,16 +45,15 @@ struct ticable_link
   int (*set_white_wire) (int b);
   int (*get_red_wire)   ();
   int (*get_white_wire) ();
-};
-typedef struct ticable_link LinkCable;  // obsolete
-typedef struct ticable_link TicableLinkCable;
+}
+TicableLinkCable;
 
-struct ticable_param
+typedef struct
 {
   int calc_type;
   int link_type;
   unsigned int io_addr;  // used for compatability or forcing
-  char device[MAXCHARS]; // used for compatability or forcing
+  char device[1024];     // used for compatability or forcing
   int timeout;
   int delay;
   int baud_rate;
@@ -64,14 +62,13 @@ struct ticable_param
   // new fields starting at lib v2.x.x
   int port;
   int method;
-};
-typedef struct ticable_param LinkParam;  // obsolete
-typedef struct ticable_param TicableLinkParam;
+}
+TicableLinkParam;
 
 // for probe.c
 #define MAX_LPT_PORTS	3		// up to 3
 #define MAX_COM_PORTS	4		// up to 4
-struct port_info_
+typedef struct
 {
   int lpt_count;	// Current number of printer port, default=1
   int lpt_addr[MAX_LPT_PORTS+1];
@@ -82,17 +79,16 @@ struct port_info_
   int com_addr[MAX_COM_PORTS+1];
   int com_mode[MAX_COM_PORTS+1];
   char com_name[MAX_COM_PORTS+1][17];
-};
-typedef struct port_info_ PortInfo; // obsolete
-typedef struct port_info_ TicablePortInfo;
+}
+TicablePortInfo;
 
-struct data_rate
+typedef struct
 {
-  int count;         // Number of bytes exchanged
+  int  count;        // Number of uint8_ts exchanged
   TIME start;        // Time when transfer has begun
   TIME current;      // Current time (free for use)
-};
-typedef struct data_rate TicableDataRate;
+}
+TicableDataRate;
 
 /*********************/
 /* Macro definitions */
@@ -110,7 +106,7 @@ typedef struct data_rate TicableDataRate;
 #define LINK_VTL 5 /* Virtual link */
 #define LINK_TIE 6 /* Virtual link with TiE (TI Emulator) */
 #define LINK_VTI 7 /* Virtual link with VTi (Virtual TI) */
-#define LINK_TPU 8 /* My TI/PC USB link (still under development) */
+#define LINK_TPU 8 /* Obsolete */
 #define LINK_UGL 9 /* TI's USB GraphLink */
 
 /* Automatic config */
@@ -187,9 +183,6 @@ typedef struct data_rate TicableDataRate;
 
 /* Characters devices of the 'tidev' kernel module (obsolete) */
 /* See timodules.c instead */
-#ifdef __LINUX__
-#include "timodules.h"
-#endif /* __LINUX__ */
 #define TIDEV	 "/dev/ti"   /* Symbolic link to one of the folowing devices */
 #define TIDEV_P0 "/dev/tiP0" /* TI device for parallel link at 0x3BC */
 #define TIDEV_P1 "/dev/tiP1" /* TI device for parallel link at 0x378 */
@@ -224,16 +217,16 @@ typedef struct data_rate TicableDataRate;
 #define SUPPORT_USB      32
 
 /* Ports */
-#define USER_PORT       0  /* User port: io_addr & device */
-#define PARALLEL_PORT_1 1  /* Parallel port #1 */
-#define PARALLEL_PORT_2 2  /* Parallel port #2 */
-#define PARALLEL_PORT_3 3  /* Parallel port #3 */
-#define SERIAL_PORT_1   4  /* Serial port #1 */
-#define SERIAL_PORT_2   5  /* Serial port #2 */
-#define SERIAL_PORT_3   6  /* Serial port #3 */
-#define SERIAL_PORT_4   7  /* Serial port #4 */
-#define VIRTUAL_PORT_1  8  /* Virtual port #1 */
-#define VIRTUAL_PORT_2  9  /* Virtual port #2 */
+#define USER_PORT        0 /* User port: io_addr & device */
+#define PARALLEL_PORT_1  1 /* Parallel port #1 */
+#define PARALLEL_PORT_2  2 /* Parallel port #2 */
+#define PARALLEL_PORT_3  3 /* Parallel port #3 */
+#define SERIAL_PORT_1    4 /* Serial port #1 */
+#define SERIAL_PORT_2    5 /* Serial port #2 */
+#define SERIAL_PORT_3    6 /* Serial port #3 */
+#define SERIAL_PORT_4    7 /* Serial port #4 */
+#define VIRTUAL_PORT_1   8 /* Virtual port #1 */
+#define VIRTUAL_PORT_2   9 /* Virtual port #2 */
 #define USB_PORT_1      10 /* USB port #0 */
 #define USB_PORT_2      11 /* USB port #1 */
 #define USB_PORT_3      12 /* USB port #2 */

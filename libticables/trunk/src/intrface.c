@@ -18,14 +18,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
 #if defined(__WIN32__)
 # include <windows.h>
 #endif
+
 #ifdef __LINUX__
 # include <unistd.h>
 # include <sys/types.h>
 #endif
-#include "str.h"
 
 #include "intl.h"
 #include "cabl_ver.h"
@@ -36,6 +39,10 @@
 #include "default.h"
 #include "export.h"
 #include "probe.h"
+
+#ifdef __LINUX__
+#include "timodules.h"
+#endif
 
 /*****************/
 /* Internal data */
@@ -52,7 +59,7 @@ int port = SERIAL_PORT_2;    // Use COM2 by default
 int resources = IO_NONE;     // I/O methods detected
 int method = IOM_AUTO;       // I/O method to use (automatic)
 
-uint io_address = 0;         // I/O port base address
+unsigned int io_address = 0; // I/O port base address
 char io_device[256]="";      // The character device (COMx, ttySx, ...)
 
 const char *err_msg;         // The error message of the last error occured
@@ -74,6 +81,11 @@ TicableDataRate tdr;         // Data rate during transfers
 int list_io_resources(void);
 TIEXPORT int TICALL ticable_init()
 {
+  errno = 0;
+  
+  DISPLAY(_("Libticables: version %s\n"),
+	  LIBTICABLES_VERSION);
+  
   //ticable_detect_os(&os);
   //ticable_detect_port(&pinfo);
   list_io_resources();
@@ -139,13 +151,13 @@ TIEXPORT int TICALL ticable_get_baudrate()
 }
 
 
-TIEXPORT void TICALL ticable_set_io_address(uint io_addr)
+TIEXPORT void TICALL ticable_set_io_address(unsigned int io_addr)
 {
   io_address = io_addr;
 }
 
 
-TIEXPORT uint TICALL ticable_get_io_address()
+TIEXPORT unsigned int TICALL ticable_get_io_address()
 {
   return io_address;
 }
@@ -210,7 +222,7 @@ static int convert_port_into_device(void);
   Set internal parameters starting at user configuration.
   Assign an I/O resources to use, too.
 */
-TIEXPORT int TICALL ticable_set_param2(LinkParam lp)
+TIEXPORT int TICALL ticable_set_param2(TicableLinkParam lp)
 {
   time_out = lp.timeout;
   delay = lp.delay;
@@ -229,13 +241,13 @@ TIEXPORT int TICALL ticable_set_param2(LinkParam lp)
 }
 
 
-TIEXPORT int TICALL ticable_set_param(const LinkParam *lp)
+TIEXPORT int TICALL ticable_set_param(const TicableLinkParam *lp)
 {
   return ticable_set_param2(*lp);
 }
 
 
-TIEXPORT int TICALL ticable_get_param(LinkParam *lp)
+TIEXPORT int TICALL ticable_get_param(TicableLinkParam *lp)
 {
   lp->timeout = time_out;
   lp->delay = delay;
@@ -252,7 +264,7 @@ TIEXPORT int TICALL ticable_get_param(LinkParam *lp)
 }
 
 
-TIEXPORT int TICALL ticable_get_default_param(LinkParam *lp)
+TIEXPORT int TICALL ticable_get_default_param(TicableLinkParam *lp)
 {
   lp->calc_type = 2;          //CALC_TI92
 #ifdef __MACOSX__
@@ -278,11 +290,11 @@ TIEXPORT int TICALL ticable_get_default_param(LinkParam *lp)
 }
 
 
-extern LinkCable *tcl;
+extern TicableLinkCable *tcl;
 static void print_informations();
 
 /* HAVE_LIBINTL_H,ENABLE_NLS */
-TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
+TIEXPORT int TICALL ticable_set_cable(int typ, TicableLinkCable *lc)
 {
   int type = typ;
   cable_type = type;
@@ -468,16 +480,6 @@ TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
 	  lc->probe = tie_probe;
 	  lc->check = tie_check;
 	  break;
-        case LINK_TPU:
-          lc->init  = tpu_init;
-          lc->open  = tpu_open;
-          lc->put   = tpu_put;
-          lc->get   = tpu_get;
-          lc->close = tpu_close;
-          lc->exit  = tpu_exit;
-          lc->probe = tpu_probe;
-          lc->check = tpu_check;
-          break;
 #endif /* !__MACOSX__ */
         case LINK_TGL: // IO_API
 #ifndef __MACOSX__
@@ -661,9 +663,6 @@ static void print_informations(void)
     case LINK_VTI:
       DISPLAY(_("  Link cable type: VTi virtual link\n"));
       break;
-    case LINK_TPU:
-      DISPLAY(_("  Link cable type: Ti/Pc USB link\n"));
-      break;
     case LINK_UGL:
       DISPLAY(_("  Link cable type: SilverLink (USB Graph Link)\n"));
       break;
@@ -717,9 +716,6 @@ TIEXPORT int TICALL ticable_get_support(int type)
 	  break;
 	case LINK_VTI:
 	  support = vti_supported();
-	  break;
-	case LINK_TPU:
-	  support = tpu_supported();
 	  break;
 	case LINK_UGL:
 	  support = ugl_supported();
@@ -875,9 +871,9 @@ static int convert_port_into_device(void)
         }
       break;
     default:
-      DISPLAY(_("libticables error: illegal argument !\n"));
+      DISPLAY(_("libticables error: port value is illegal (%i) !\n"), port);
       DISPLAY(_("Exiting...\n"));
-      exit(1);
+      //exit(1);
       break;
     }
 

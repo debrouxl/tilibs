@@ -55,7 +55,7 @@
 #include "intl.h"
 #include "plerror.h"
 #include "cabl_int.h"
-#include "cabl_ext.h"
+#include "externs.h"
 
 /* Variables */
 extern int cable_type;  // Link cable type, I/O method depends on it
@@ -185,7 +185,7 @@ int open_io(unsigned long from, unsigned long num)
 
     	if(hDLL == INVALID_HANDLE_VALUE) {
 			DISPLAY_ERROR(_("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
-			return ERR_DLPORTIO_NOT_FOUND;
+			return ERR_PORTTALK_NOT_FOUND;
     	}
 		else {
 			rd_io = asm_read_io;
@@ -254,7 +254,7 @@ int open_io(unsigned long from, unsigned long num)
 		if(hCom == INVALID_HANDLE_VALUE)
 		{
 			  print_last_error();
-			  return ERR_CREATE_FILE;
+			  return case ERR_OPEN_SER_COMM;
 		}
       
 		// Setup buffer size

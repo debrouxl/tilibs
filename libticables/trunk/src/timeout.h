@@ -28,8 +28,8 @@
   mine. This allowed me to find why my routines was so slow !
 */
 
-#ifndef __TIMEOUT_H__
-#define __TIMEOUT_H__
+#ifndef __TICABLE_TIMEOUT__
+#define __TICABLE_TIMEOUT__
 
 /*
   Platform independant time measurement & timeout management

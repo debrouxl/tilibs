@@ -1,5 +1,5 @@
-/*  libticables - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+/*  libtifiles - TI File Format library
+ *  Copyright (C) 2002  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,14 +16,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES_EXPORT__
-#define __TICABLES_EXPORT__
+#ifndef __TIFILES_EXPORT__
+#define __TIFILES_EXPORT__
 
 /*
- * Defines this if you want use this library with Visual Basic.
- * VB & Delphi also requires the __stdcall calling convention
+ * Defines this if you want to use this library with Visual Basic.
+ * VB & Delphi require the __stdcall calling convention, too.
  */
-//#define VB
+//#define __BORLANDC__
+//#define __WIN32__
 
 /*
  *  BCC32 v5.x (or C++Builder)
@@ -38,6 +39,7 @@
 #   define TICALL
 #   define TICALL
 #  endif
+# endif
 /*
  * MSVC 5.0 mini
  */
@@ -46,14 +48,12 @@
 #   define TIEXPORT __declspec(dllexport)
 #   define TICALL
 #  else
-#   define TIEXPORT __declspec(dllexport)       //__declspec(dllimport)
+#   define TIEXPORT __declspec(dllimport)
 #   define TICALL
 #  endif
-# elif defined(VB)
-#  define TIEXPORT
-#  define TICALL  __stdcall			// VB
-# endif
-
+/*
+ * Linux
+ */
 #elif defined(__LINUX__)			// GNU
 # define TIEXPORT extern
 # define TICALL
@@ -66,3 +66,6 @@
 // .def file; MSVC uses _cdecl by default (__declspec)
 
 #endif
+
+
+

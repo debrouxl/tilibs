@@ -32,7 +32,7 @@
 #include "verbose.h"
 
 #define BUFFER_SIZE 256
-#define HIGH 666 // upper limit (used for avoiding 'byte timeout')
+#define HIGH 666 // upper limit (used for avoiding 'uint8_t timeout')
 #define LOW  333 // lower limit
 
 #if defined(__LINUX__)
@@ -42,21 +42,20 @@
 /**************/
 
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
 #include <errno.h>
-#include "str.h"
 
 #include "timeout.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 
 static int p;
@@ -65,7 +64,7 @@ static int ref_cnt = 0; // Counter of library instances
 static int rd[2] = { 0, 0 }; // Pipe 0 <- 1 or 1 <- 0
 static int wr[2] = { 0, 0 }; // Pipe 0 -> 1 or 1 -> 0
 
-static const char fifo_names[4][MAXCHARS] = 
+static const char fifo_names[4][256] = 
 { 
   "/tmp/.vlc_1_0", "/tmp/.vlc_0_1", 
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0" 
@@ -73,7 +72,7 @@ static const char fifo_names[4][MAXCHARS] =
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -126,7 +125,7 @@ int tie_init()
 
 int tie_open()
 {
-  byte d;
+  uint8_t d;
   int n;
 
   /* Flush the pipe */
@@ -142,7 +141,7 @@ int tie_open()
   return 0;
 }
 
-int tie_put(byte data)
+int tie_put(uint8_t data)
 {
   int n = 0;
   TIME clk;
@@ -160,7 +159,7 @@ int tie_put(byte data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
       fstat(wr[p], &s);
       if(s.st_size > HIGH)
 	n = 0;
@@ -173,7 +172,7 @@ int tie_put(byte data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
       n = write(wr[p], (void *)(&data), 1);
     }
   while(n <= 0);
@@ -181,7 +180,7 @@ int tie_put(byte data)
   return 0;
 }
 
-int tie_get(byte *data)
+int tie_get(uint8_t *data)
 {
   static int n=0;
   TIME clk;
@@ -194,18 +193,18 @@ int tie_get(byte *data)
       return 0;
     }
 
-  // Read the byte in a defined delay
+  // Read the uint8_t in a defined delay
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
       n = read(rd[p], (void *)data, 1);
     }
   while(n <= 0);
 
   if(n == -1)
     {
-      return ERR_RCV_BYT;
+      return ERR_READ_ERROR;
     }
 
   LOG_DATA(*data);
@@ -296,7 +295,7 @@ int tie_supported()
 #include "timeout.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "export.h"
 #include "plerror.h"
 #include "logging.h"
@@ -386,7 +385,7 @@ int tie_open()
 	return 0;
 }
 
-int tie_put(byte data)
+int tie_put(uint8_t data)
 {
 	TIME clk;
 
@@ -398,7 +397,7 @@ int tie_put(byte data)
 	toSTART(clk);
 	  do 
 	  { 
-		  if(toELAPSED(clk, time_out)) return ERR_SND_BYT_TIMEOUT;
+		  if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	  }
 	while(((pSendBuf->end + 1) & 255) == pSendBuf->toSTART);
 
@@ -408,7 +407,7 @@ int tie_put(byte data)
 	return 0;
 }
 
-int tie_get(byte *data)
+int tie_get(uint8_t *data)
 {
 	TIME clk;
 
@@ -422,7 +421,7 @@ int tie_get(byte *data)
 	toSTART(clk);
 	do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
     }
 	while(pRecvBuf->toSTART == pRecvBuf->end);
 	
@@ -493,12 +492,12 @@ int tie_open()
   return 0;
 }
 
-int tie_put(byte data)
+int tie_put(uint8_t data)
 {
   return 0;
 }
 
-int tie_get(byte *d)
+int tie_get(uint8_t *d)
 {
   return 0;
 }

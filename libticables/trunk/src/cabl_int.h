@@ -16,14 +16,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CABLE_INTERFACE__
-#define __CABLE_INTERFACE__
+#ifndef __TICABLE_INTERFACE__
+#define __TICABLE_INTERFACE__
 
 #include <stdio.h>
+#include <stdint.h>
 
-#include "cabl_def.h"
 #include "export.h"
-#include "typedefs.h"
+#include "cabl_def.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,12 +42,12 @@ extern "C" {
   const char* TICALL ticable_get_version(void);
   
   int  TICALL ticable_get_error(int err_num, char *error_msg);
-  int  TICALL ticable_set_param2(LinkParam lp);
-  int  TICALL ticable_set_param(const LinkParam *lp);
-  int  TICALL ticable_get_param(LinkParam *lp);
-  int  TICALL ticable_get_default_param(LinkParam *lp);
+  int  TICALL ticable_set_param2(TicableLinkParam lp); // deprecated !
+  int  TICALL ticable_set_param(const TicableLinkParam *lp);
+  int  TICALL ticable_get_param(TicableLinkParam *lp);
+  int  TICALL ticable_get_default_param(TicableLinkParam *lp);
   int  TICALL ticable_get_support(int cable_type);
-  int  TICALL ticable_set_cable(int type, LinkCable *lc);
+  int  TICALL ticable_set_cable(int type, TicableLinkCable *lc);
 
   int  TICALL ticable_get_datarate(TicableDataRate **ptdr);
   
@@ -63,8 +63,8 @@ extern "C" {
   void  TICALL ticable_set_baudrate(int br);
   int   TICALL ticable_get_baudrate(void);
 
-  void  TICALL ticable_set_io_address(uint io_addr);
-  uint  TICALL ticable_get_io_address(void);
+  void  TICALL ticable_set_io_address(unsigned int io_addr);
+  unsigned int TICALL ticable_get_io_address(void);
 
   void  TICALL ticable_set_io_device(char *dev);
   char* TICALL ticable_get_io_device(void);
@@ -82,9 +82,9 @@ extern "C" {
   /* Probe functions */
   /*******************/
   int TICALL ticable_detect_os(char **os_type);
-  int TICALL ticable_detect_port(PortInfo *pi);
-  int TICALL ticable_detect_cable(PortInfo *pi);
-  int TICALL ticable_detect_all(char **os, PortInfo *pi);
+  int TICALL ticable_detect_port(TicablePortInfo *pi);
+  int TICALL ticable_detect_cable(TicablePortInfo *pi);
+  int TICALL ticable_detect_all(char **os, TicablePortInfo *pi);
 
   /***********************/
   /* Verbosity functions */

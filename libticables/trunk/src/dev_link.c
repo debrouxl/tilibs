@@ -34,66 +34,41 @@
 #if defined(__LINUX__)
 
 #include <stdio.h>
+#include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
-
-#ifdef HAVE_TI_TIPAR_H
-# include <ti/tipar.h>
-# include <sys/ioctl.h>
-#endif
-
-#ifdef HAVE_TILP_TIPAR_H
-# include <tilp/tipar.h>
-# include <sys/ioctl.h>
-#endif
-
-#ifdef HAVE_TI_TISER_H
-# include <ti/tiser.h>
-# include <sys/ioctl.h>
-#endif
-
-#ifdef HAVE_TILP_TISER_H
-# include <tilp/tiser.h>
-# include <sys/ioctl.h>
-#endif
+#include <errno.h>
 
 #ifdef HAVE_TILP_TICABLE_H
 # include <tilp/ticable.h>
 # include <sys/ioctl.h>
 #endif
 
-
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "timeout.h"
 #include "export.h"
 #include "verbose.h"
 #include "logging.h"
 
-//#define TI_DEV_FILE "/dev/ti" /* Removed by roms */
 extern const char * ti_dev_file;
 extern int time_out;
 
-//int tidev; /* Removed by roms */
 static int dev_fd = 0;
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
 int dev_init()
 {
-#if defined(HAVE_TI_TIPAR_H) || defined(HAVE_TI_TISER_H)
-  int value;
-#endif
   int mask;
 
   /* Init some internal variables */
@@ -106,17 +81,16 @@ int dev_init()
     {
       DISPLAY_ERROR("unable to open this device: <%s>\n", io_device);
       DISPLAY_ERROR("is the module loaded ?\n");
-      return ERR_OPEN_TIDEV_DEV;
+      return ERR_OPEN_TIDEV;
     }
 
-  /* Initialize it */
-#if defined(HAVE_TI_TIPAR_H) || defined(HAVE_TI_TISER_H)
-  value = delay;
-  if(ioctl(dev_fd, TIDEV_DELAY, value) == -1)
-    {}
-  value = time_out;
-  if(ioctl(dev_fd, TIDEV_TIMEOUT, value) == -1)
-    {}
+  /* Set timeout and inter-bit delay */
+#if defined(HAVE_TILP_TICABLE_H)
+  ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay);
+  ioctl(dev_fd, IOCTL_TIPAR_TIMEOUT, time_out);
+
+  ioctl(dev_fd, IOCTL_TISER_DELAY, delay);
+  ioctl(dev_fd, IOCTL_TISER_TIMEOUT, time_out);
 #endif
 
   START_LOGGING();
@@ -132,33 +106,30 @@ int dev_open(void)
   return 0;
 }
 
-int dev_put(byte data)
+int dev_put(uint8_t data)
 {
   int err;
 
   tdr.count++;
   LOG_DATA(data);
   err = write(dev_fd, (void *)(&data), 1);
-  switch(err)
+  if(err <= 0)
     {
-    case -1: //error
-      return ERR_SND_BYT;
-      break;
-    case 0: // timeout
-      return ERR_SND_BYT_TIMEOUT;
-      break;
+      if(errno == ETIMEDOUT)
+        return ERR_WRITE_TIMEOUT;
+      else
+        return ERR_WRITE_ERROR;      
     }
 
   return 0;
 }
 
-int dev_get(byte *data)
+int dev_get(uint8_t *data)
 {
-  static int n=0;
-  TIME clk;
+  int err=0;
 
   tdr.count++;
-  /* If the dev_check function was previously called, retrieve the byte */
+  /* If the dev_check function was previously called, retrieve the uint8_t */
   if(cs.available)
     {
       *data = cs.data;
@@ -166,17 +137,13 @@ int dev_get(byte *data)
       return 0;
     }
 
-  toSTART(clk);
-  do
+  err = read(dev_fd, (void *)data, 1);
+  if(err <= 0)
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
-      n = read(dev_fd, (void *)data, 1);
-    }
-  while(n == 0);
-
-  if(n == -1)
-    {
-      return ERR_RCV_BYT;
+      if(errno == ETIMEDOUT)
+	return ERR_READ_TIMEOUT;
+      else
+	return ERR_READ_ERROR;
     }
   LOG_DATA(*data);
 
@@ -235,10 +202,8 @@ int dev_check(int *status)
 
 int dev_supported()
 {
-#if defined(HAVE_TI_TIPAR_H) 
-  return SUPPORT_ON | SUPPORT_TIPAR;
-#elif defined(HAVE_TI_TISER_H)
-  return SUPPORT_ON | SUPPORT_TISER;
+#if defined(HAVE_TILP_TICABLE_H)
+  return SUPPORT_ON | SUPPORT_TIPAR | SUPPORT_TISER;
 #else
   return SUPPORT_ON;
 #endif
@@ -260,12 +225,12 @@ int dev_open()
   return 0;
 }
 
-int dev_put(byte data)
+int dev_put(uint8_t data)
 {
   return 0;
 }
 
-int dev_get(byte *d)
+int dev_get(uint8_t *d)
 {
   return 0;
 }

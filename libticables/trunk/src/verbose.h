@@ -32,6 +32,6 @@ TIEXPORT int TICALL ticable_DISPLAY_settings(int op);
 
 TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_stream(FILE *stream);
 TIEXPORT FILE* TICALL ticable_DISPLAY_set_output_to_file(char *filename);
-TIEXPORT int TICALL ticable_DISPLAY_close_file();
+TIEXPORT int   TICALL ticable_DISPLAY_close_file();
 
 #endif

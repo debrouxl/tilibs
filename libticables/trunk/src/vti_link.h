@@ -19,12 +19,12 @@
 #ifndef VTILINK_H
 #define VTILINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int vti_init();
 int vti_open();
-int vti_put(byte data);
-int vti_get(byte *data);
+int vti_put(uint8_t data);
+int vti_get(uint8_t *data);
 int vti_probe();
 int vti_close();
 int vti_exit();

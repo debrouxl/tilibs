@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* This unit allows to trace bytes which are transferred between PC
+/* This unit allows to trace uint8_ts which are transferred between PC
    and TI calculator.
 */
 
@@ -32,22 +32,38 @@
 
 #include "verbose.h"
 
+#ifdef __LINUX__
+static char *fn1 = "/tmp/libTIcables.log";
+static char *fn2 = "/tmp/libTIcables.time";
+#else
+static char *fn1 = "C:\\libTIcables.log";
+static char *fn2 = "C:\\libTIcables.time";
+#endif
+
 static FILE *log = NULL;
 static FILE *log2 = NULL;
-static char *fn1 = "libTIcables.log";
-static char *fn2 = "libTIcables.time";
 static int i = 0;
+
+#ifdef __LINUX__
+static struct timeval tv_start;
+static struct timezone tz;
+#endif
 
 int start_logging()
 {
   DISPLAY("Logging STARTED.\n");
   log = fopen(fn1, "wt");
   if(log == NULL)
-    return 1;
+    return -1;
   
   log2 = fopen(fn2, "wt");
   if(log2 == NULL)
-    return 1;
+    return -1;
+
+#ifdef __LINUX__
+  memset((void *)(&tz), 0, sizeof(tz));
+  gettimeofday(&tv_start, &tz);
+#endif
 
   return 0;
 }
@@ -59,13 +75,16 @@ int log_data(int d)
   int c;
 #ifdef __LINUX__
   struct timeval tv;
-  struct timezone tz;
   static int k = 0;
 #endif
   
   array[i++] = d;
+
+  if(log == NULL)
+    return -1;
+
   fprintf(log, "%02X ", d);
-  if(!(i % 16) && (i > 1))// && (i != 8))
+  if(!(i % 16) && (i > 1))
     {
       fprintf(log, "| ");
       for(j=0; j<16; j++)
@@ -80,10 +99,11 @@ int log_data(int d)
       i = 0;
     }
 #ifdef __LINUX__  
-  memset((void *)(&tz), 0, sizeof(tz));
   gettimeofday(&tv, &tz);
   k++;
-  fprintf(log2, "%i: %lu.%lu\n", k, tv.tv_sec, tv.tv_usec);
+  fprintf(log2, "%i: %i.%2i\n", k, 
+	  (int)(tv.tv_sec - tv_start.tv_sec), 
+	  (int)(tv.tv_usec - tv_start.tv_usec));
 #endif
 
   return 0;

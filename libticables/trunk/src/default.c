@@ -21,16 +21,17 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include <stdio.h>
+#include <stdint.h>
 
 #include "timeout.h"
 #include "ioports.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "logging.h"
-#include "cabl_ext.h"
+#include "externs.h"
 
 int dfl_init()
 {
@@ -42,12 +43,12 @@ int dfl_open()
   return 0;
 }
 
-int dfl_put(byte data)
+int dfl_put(uint8_t data)
 {
   return 0;
 }
 
-int dfl_get(byte *d)
+int dfl_get(uint8_t *d)
 {
   return 0;
 }

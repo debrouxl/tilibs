@@ -19,12 +19,12 @@
 #ifndef AVRLINK_H
 #define AVRLINK_H
 
-#include "typedefs.h"
+//#include <stdint.h>
 
 int avr_init();
 int avr_open();
-int avr_put(byte data);
-int avr_get(byte *data);
+int avr_put(uint8_t data);
+int avr_get(uint8_t *data);
 int avr_probe();
 int avr_close();
 int avr_exit();

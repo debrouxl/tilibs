@@ -21,39 +21,39 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "cabl_def.h"
 #include "export.h"
 
 #if defined(__LINUX__) || defined(__SPARC__) || defined(__MACOSX__)
 
-#include <config.h>
-#include <stdio.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <strings.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "timeout.h"
 #include "verbose.h"
 #include "logging.h"
 
-static char tty_dev[MAXCHARS];
+static char tty_dev[1024];
 static int dev_fd = 0;
 static struct termios termset;
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -109,7 +109,7 @@ int tig_init()
 
 int tig_open()
 {
-  byte d;
+  uint8_t d;
   int n;
 
   /* Flush the input */
@@ -132,7 +132,7 @@ int tig_open()
   return 0;
 }
 
-int tig_put(byte data)
+int tig_put(uint8_t data)
 {
   int err;
 
@@ -143,24 +143,24 @@ int tig_put(byte data)
     {
     case -1: //error
       tig_close();
-      return ERR_SND_BYT;
+      return ERR_WRITE_ERROR;
       break;
     case 0: // timeout
       tig_close();
-      return ERR_SND_BYT_TIMEOUT;
+      return ERR_WRITE_TIMEOUT;
       break;
     }
 
   return 0;
 }
 
-int tig_get(byte *data)
+int tig_get(uint8_t *data)
 {
   static int n=0;
   TIME clk;
 
   tdr.count++;
-  /* If the tig_check function was previously called, retrieve the byte */
+  /* If the tig_check function was previously called, retrieve the uint8_t */
   if(cs.available)
     {
       *data = cs.data;
@@ -172,13 +172,13 @@ int tig_get(byte *data)
   toSTART(clk);
   do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);
 
   if(n == -1)
-    return ERR_RCV_BYT;
+    return ERR_READ_ERROR;
 
   LOG_DATA(*data);
   
@@ -305,7 +305,7 @@ int tig_supported()
 #include "export.h"
 #include "cabl_err.h"
 #include "plerror.h"
-#include "cabl_ext.h"
+#include "externs.h"
 #include "logging.h"
 
 #define BUFFER_SIZE 1024
@@ -317,7 +317,7 @@ static char comPort[MAXCHARS];
 
 static struct cs
 {
-  byte data;
+  uint8_t data;
   int available;
 } cs;
 
@@ -339,7 +339,7 @@ int tig_init()
 	{
 		DISPLAY_ERROR("CreateFile\n");
 		print_last_error();
-		return ERR_CREATE_FILE;
+		return ERR_OPEN_SER_COMM;
 	}
 
 	// Setup buffer size
@@ -424,7 +424,7 @@ int tig_open()
 	{
 		DISPLAY_ERROR("PurgeComm\n");
 		print_last_error();
-		return ERR_FLUSH;
+		return ERR_FLUSH_COMM;
 	}
 
 	tdr.count = 0;
@@ -433,7 +433,7 @@ int tig_open()
 	return 0;
 }
 
-int tig_put(byte data)
+int tig_put(uint8_t data)
 {
 	DWORD i;
 	BOOL fSuccess;
@@ -446,24 +446,24 @@ int tig_put(byte data)
 	{
 		DISPLAY_ERROR("WriteFile\n");
 		print_last_error();
-		return ERR_SND_BYT;
+		return ERR_WRITE_ERROR;
 	}
 	else if(i == 0)
 	{
-		return ERR_SND_BYT_TIMEOUT;
+		return ERR_WRITE_TIMEOUT;
 	}
 
 	return 0;
 }
 
-int tig_get(byte *data)
+int tig_get(uint8_t *data)
 {
 	DWORD i;
 	BOOL fSuccess;
 	TIME clk;
 
 	tdr.count++;
-	/* If the tig_check function was previously called, retrieve the byte */
+	/* If the tig_check function was previously called, retrieve the uint8_t */
 	if(cs.available)
     {
       *data = cs.data;
@@ -474,7 +474,7 @@ int tig_get(byte *data)
 	toSTART(clk);
 	do
     {
-      if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
+      if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
 	  fSuccess = ReadFile(hCom,data,1,&i,NULL);
     }
 	while(i != 1);
@@ -512,31 +512,31 @@ int tig_probe()
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);	// Get MCR values
 	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_ABORT;
+	if(status != 0x20) return ERR_PROBE_FAILED;
 
 	EscapeCommFunction(hCom, SETDTR);
 	EscapeCommFunction(hCom, CLRRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_ABORT;
+	if(status != 0x20) return ERR_PROBE_FAILED;
 
 	EscapeCommFunction(hCom, CLRDTR);
 	EscapeCommFunction(hCom, CLRRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0x00) return ERR_ABORT;
+	if(status != 0x00) return ERR_PROBE_FAILED;
 
 	EscapeCommFunction(hCom, CLRDTR);
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0x00) return ERR_ABORT;
+	if(status != 0x00) return ERR_PROBE_FAILED;
 
 	EscapeCommFunction(hCom, SETDTR);
 	EscapeCommFunction(hCom, SETRTS);
 	GetCommModemStatus(hCom, &status);
 	//DISPLAY("status: %i\n", status);
-	if(status != 0x20) return ERR_ABORT;
+	if(status != 0x20) return ERR_PROBE_FAILED;
 
 	return 0;
 }
@@ -592,12 +592,12 @@ int tig_open()
   return 0;
 }
 
-int tig_put(byte data)
+int tig_put(uint8_t data)
 {
   return 0;
 }
 
-int tig_get(byte *d)
+int tig_get(uint8_t *d)
 {
   return 0;
 }

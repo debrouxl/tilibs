@@ -21,16 +21,17 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include <stdio.h>
+#include <stdint.h>
 
 #include "timeout.h"
 #include "ioports.h"
-#include "typedefs.h"
 #include "export.h"
 #include "cabl_err.h"
 #include "cabl_def.h"
 #include "logging.h"
-#include "cabl_ext.h"
+#include "externs.h"
 
 static unsigned int lpt_adr;
 #define lpt_out lpt_adr
@@ -43,9 +44,11 @@ int par_init()
   lpt_adr = io_address;
   
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  TRYC(open_io(lpt_adr, 2));
+  if(open_io(lpt_adr, 2))
+    return ERR_ROOT;
   // required for circumenting a strange problem with PortTalk & Win2k
-  TRYC(open_io(lpt_adr, 2));
+  if(open_io(lpt_adr, 2))
+    return ERR_ROOT;
   
   io_permitted = 1;
   wr_io(lpt_out, 3);
@@ -66,7 +69,7 @@ int par_open()
     return ERR_ROOT;
 }
 
-int par_put(byte data)
+int par_put(uint8_t data)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
@@ -83,14 +86,14 @@ int par_put(byte data)
 	  toSTART(clk);
 	  do
 	    {
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x10));
 	  wr_io(lpt_out, 3);
 	  toSTART(clk);
 	  do
 	    {
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x10)==0x00);
 	}
@@ -100,14 +103,14 @@ int par_put(byte data)
 	  toSTART(clk);
 	  do
 	    {
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while(rd_io(lpt_in) & 0x20);
 	  wr_io(lpt_out, 3);
 	  toSTART(clk);
 	  do
 	    {
-	      if(toELAPSED(clk, time_out)) return ERR_SND_BIT_TIMEOUT;
+	      if(toELAPSED(clk, time_out)) return ERR_WRITE_TIMEOUT;
 	    }
 	  while((rd_io(lpt_in) & 0x20)==0x00);
 	}
@@ -118,12 +121,12 @@ int par_put(byte data)
   return 0;
 }
 
-int par_get(byte *d)
+int par_get(uint8_t *d)
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int bit;
-  byte data=0;
-  byte v;
+  uint8_t data=0;
+  uint8_t v;
   int i;
   TIME clk;
 
@@ -133,7 +136,7 @@ int par_get(byte *d)
       toSTART(clk);
       while((v=rd_io(lpt_in) & 0x30)==0x30)
 	{
-	  if(toELAPSED(clk, time_out)) return ERR_RCV_BIT_TIMEOUT;
+	  if(toELAPSED(clk, time_out)) return ERR_READ_TIMEOUT;
 	}
       if(v==0x10)
 	{
@@ -163,7 +166,7 @@ int par_probe()
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   int i, j;
   int seq[]={ 0x00, 0x20, 0x10, 0x30 };
-  byte data;
+  uint8_t data;
 
   for(i=3; i>=0; i--)
     {
@@ -198,7 +201,8 @@ int par_close()
 int par_exit()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
-  TRYC(close_io(lpt_adr, 2));
+  if(close_io(lpt_adr, 2))
+    return ERR_ROOT;
     
   io_permitted = 0;
 #endif
