@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: porttalk.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id: linux_mapping.h 386 2004-03-28 21:39:04Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,10 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PORTTALK_H__
-#define __PORTALLK_H__
+#ifndef __WIN32_MAPPING_H__
+#define __WIN32_MAPPING_H__
 
-void PortTalkInstallDriver(void);
-unsigned char PortTalkStartDriver(void);
+#include <stdio.h>
+
+#include "cabl_def.h"
+
+int win32_get_method(TicableType type, int resources, TicableMethod *method);
+int win32_register_cable(TicableType type, TicableLinkCable *lc);
 
 #endif

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: porttalk.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id: linux_detect.c 397 2004-03-29 17:21:12Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,10 +19,42 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PORTTALK_H__
-#define __PORTALLK_H__
+/* Win32 probing module */
 
-void PortTalkInstallDriver(void);
-unsigned char PortTalkStartDriver(void);
-
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
+
+#ifdef HAVE_STDINT_H
+# include <stdint.h>
+#else
+# include <inttypes.h>
+#endif
+
+#include "intl.h"
+
+#include "cabl_def.h"
+#include "cabl_err.h"
+#include "export.h"
+#include "externs.h"
+#include "verbose.h"
+
+int win32_detect_os(char **os_type)
+{
+
+	return 0;
+}
+
+int win32_detect_port(TicablePortInfo * pi)
+{
+
+	return 0;
+}
+
+int win32_detect_resources(void)
+{
+	DISPLAY(_("libticables: checking resources...\r\n"));
+	resources = IO_WIN32;
+
+  return 0;
+}

@@ -1,4 +1,4 @@
-/* Hey EMACS -*- linux-c -*- */
+/* Hey EMACS -*- win32-c -*- */
 /* $Id: porttalk.c 370 2004-03-22 18:47:32Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
@@ -35,7 +35,7 @@
 /****************************************************/
 
 #ifdef __WIN32__
-void InstallPortTalkDriver(void)
+void PortTalkInstallDriver(void)
 {
   SC_HANDLE SchSCManager;
   SC_HANDLE schService;
@@ -108,7 +108,7 @@ void InstallPortTalkDriver(void)
   CloseServiceHandle(schService);
 }
 
-unsigned char StartPortTalkDriver(void)
+unsigned char PortTalkStartDriver(void)
 {
   SC_HANDLE SchSCManager;
   SC_HANDLE schService;
