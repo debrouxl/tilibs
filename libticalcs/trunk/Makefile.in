@@ -136,6 +136,9 @@ bin_SCRIPTS = ticalcs-config
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO build docs
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = ticalcs.pc
+
 #distclean:
 #	rm -f *.log *.scan log
 
@@ -148,6 +151,8 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  ticalcs-config libticalcs.lsm libticalcs.spec \
 ticalcs.pc
 SCRIPTS =  $(bin_SCRIPTS)
+
+DATA =  $(pkgconfig_DATA)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS aclocal.m4 config.guess \
@@ -230,6 +235,25 @@ uninstall-binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
 	list='$(bin_SCRIPTS)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed '$(transform)'`; \
+	done
+
+install-pkgconfigDATA: $(pkgconfig_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-pkgconfigDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -398,21 +422,21 @@ all-recursive-am: config.h
 install-exec-am: install-binSCRIPTS
 install-exec: install-exec-recursive
 
-install-data-am:
+install-data-am: install-pkgconfigDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-binSCRIPTS
+uninstall-am: uninstall-binSCRIPTS uninstall-pkgconfigDATA
 uninstall: uninstall-recursive
-all-am: Makefile $(SCRIPTS) config.h
+all-am: Makefile $(SCRIPTS) $(DATA) config.h
 all-redirect: all-recursive-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir)
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -447,11 +471,12 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-uninstall-binSCRIPTS install-binSCRIPTS install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-binSCRIPTS install-binSCRIPTS uninstall-pkgconfigDATA \
+install-pkgconfigDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
@@ -460,10 +485,8 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
 @OS_BSD_TRUE@ pkgconfigdir = $(prefix)/libdata/pkgconfig
 @OS_BSD_FALSE@ pkgconfigdir = $(libdir)/pkgconfig
-#pkgconfig_DATA = ticalcs.pc
 
 $(pkgconfig_DATA): config.status
 
