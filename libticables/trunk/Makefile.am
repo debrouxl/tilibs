@@ -14,7 +14,7 @@ if OS_BSD
 else
  pkgconfigdir = $(libdir)/pkgconfig
 endif
-pkgconfig_DATA = ticables.pc
+#pkgconfig_DATA = ticables.pc
 
 $(pkgconfig_DATA): config.status
 
