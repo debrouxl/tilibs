@@ -38,8 +38,10 @@
 #include "filesxx.h"
 #include "misc.h"
 #include "intelhex.h"
-#include "trans.h"
+#include "transcode.h"
 #include "logging.h"
+
+extern int tifiles_calc_type;
 
 static uint8_t fsignature[3] = { 0x1A, 0x0A, 0x00 };
 
@@ -286,8 +288,8 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
     if (is_ti8586(content->calc_type))
       fread_byte(f, &name_length);
     fread_n_chars(f, name_length, entry->name);
-    tixx_translate_varname(entry->name, entry->trans,
-			   entry->type, content->calc_type);
+    tixx_translate_varname(content->calc_type, entry->trans, entry->name, 
+			   entry->type);
     if (is_ti8586(content->calc_type)) {
       /* Again, compatibility with padded and unpadded files */
       fread_byte(f, &test_space);
@@ -544,8 +546,8 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     if (filename == NULL)
       return ERR_MALLOC;
   } else {
-    tixx_translate_varname(content->entries[0].name, trans,
-			   content->entries[0].type, content->calc_type);
+    tixx_translate_varname(content->calc_type, trans, content->entries[0].name, 
+			   content->entries[0].type );
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
@@ -788,10 +790,10 @@ TIEXPORT int TICALL ti8x_display_regular_content(Ti8xRegular * content)
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) {
     tifiles_info("Entry #%i\n", i);
     tifiles_info("  name:        <%s>\n",
-	    tixx_translate_varname(content->entries[i].name,
-				   trans,
-				   content->entries[i].type,
-				   content->calc_type));
+	    tixx_translate_varname(content->calc_type, trans,
+					content->entries[i].name,				   
+				   content->entries[i].type
+				   ));
     tifiles_info("  type:        %02X (%s)\n",
 	    content->entries[i].type,
 	    tifiles_vartype2string(content->entries[i].type));

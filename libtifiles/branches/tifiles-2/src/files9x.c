@@ -35,7 +35,7 @@
 #include "filesxx.h"
 #include "misc.h"
 #include "macros.h"
-#include "trans.h"
+#include "transcode.h"
 #include "logging.h"
 
 static int fsignature[2] = { 1, 0 };

@@ -19,16 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "gettext.h"
 #include "tifiles.h"
 
 
 TIEXPORT const char *TICALL tifiles_calctype_to_string(TiCalcType type)
 {
-  	switch (type) {
+  	switch (type) 
+	{
   	case CALC_NONE:  return "none";
   	case CALC_V200:  return "V200";
   	case CALC_TI92P: return "TI92+";
@@ -78,7 +76,8 @@ TIEXPORT TiCalcType TICALL tifiles_string_to_calctype(const char *str)
 
 TIEXPORT const char *TICALL tifiles_attribute_to_string(TiFileAttr atrb)
 {
-  	switch (atrb) {
+  	switch (atrb) 
+	{
   	case ATTRB_NONE:      return _("none     ");
   	case ATTRB_LOCKED:    return _("locked   ");
   	case ATTRB_ARCHIVED:  return _("archived ");
@@ -103,7 +102,8 @@ TIEXPORT TiFileAttr TICALL tifiles_string_to_attribute(const char *str)
 
 TIEXPORT const char *TICALL tifiles_filetype_to_string(TiFileType type)
 {
-  	switch (type) {
+  	switch (type) 
+	{
   	case TIFILE_SINGLE: return _("single");
   	case TIFILE_GROUP:  return _("group");
   	case TIFILE_BACKUP: return _("backup");

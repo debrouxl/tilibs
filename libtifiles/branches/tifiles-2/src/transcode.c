@@ -40,18 +40,18 @@
 #include "logging.h"
 
 
-extern int tifiles_calc_type;
-
 /* 
    Variable name detokenization. This is needed for the following calcs:
    - 73/82/83/83+: binary-coded to TI-charset
    - 85/86: no operation
    - 89/92/92+: no operation
    See the 'TI Link Guide' for more informations...
+
+  Vriable name charset conversion (ascii, latin1 and UTF8)
 */
 
 
-static char *ti8x_detokenize_varname(const char *src, char *dst, uint8_t vartype)
+static char *ti8x_detokenize_varname(TiCalcType model, const char *src, char *dst, uint8_t vartype)
 {
   int i;
   uint8_t tok1 = src[0] & 0xff;
@@ -95,7 +95,7 @@ static char *ti8x_detokenize_varname(const char *src, char *dst, uint8_t vartype
 	}
       break;
     case 0x5D:			/* List: L1 to L6/L0 */
-      if(tifiles_calc_type == CALC_TI73) //TI73 != TI83 here
+      if(model == CALC_TI73) //TI73 != TI83 here
 	sprintf(dst, "L%c", src[1] + '\x80');	
       else 
 	{// TI73 begins at L0, others at L1
@@ -154,19 +154,19 @@ static char *ti8x_detokenize_varname(const char *src, char *dst, uint8_t vartype
 	case 0x45: sprintf(dst, "r%c", '\x86'); break;
 
 	case 0x80: 
-	  if(tifiles_calc_type == CALC_TI82)
+	  if(model == CALC_TI82)
 	    sprintf(dst, "U%c", '\xd7'); 
 	  else
 	    sprintf(dst, "u");
 	  break;
 	case 0x81:
-	  if(tifiles_calc_type == CALC_TI82)
+	  if(model == CALC_TI82)
 	    sprintf(dst, "V%c", '\xd7'); 
 	  else
 	    sprintf(dst, "v");
 	  break;
 	case 0x82:
-	  if(tifiles_calc_type == CALC_TI82)
+	  if(model == CALC_TI82)
 	    sprintf(dst, "W%c", '\xd7'); 
 	  else
 	    sprintf(dst, "w");
@@ -336,7 +336,7 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(TiCalcType model,
   case CALC_TI83:
   case CALC_TI83P:
   case CALC_TI84P:
-    return ti8x_detokenize_varname(src, dst, vartype);
+    return ti8x_detokenize_varname(model, src, dst, vartype);
     break;
   case CALC_TI85:
   case CALC_TI86:

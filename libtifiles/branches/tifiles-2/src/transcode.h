@@ -22,10 +22,9 @@
 #ifndef __TIFILES_TRANS__
 #define __TIFILES_TRANS__
 
-#include "export.h"
+#include "tifiles.h"
 
-char *tixx_translate_varname(const char *varname, char *translate,
-			     uint8_t vartype, TiCalcType calc_type);
+char *tixx_translate_varname(TiCalcType model, char *dst, const char *src, uint8_t vartype);
 
 char *ti73_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);
