@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 
 // Little pause in milli-seconds
 
-#define PAUSE_BETWEEN_VARS	250 // 250ms
+#define PAUSE_BETWEEN_VARS	250	// 250ms
 
-#if defined(__UNIX__) || defined(__LINUX__) || defined(__MACOSX__)
+#if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__)
 # include <unistd.h>
 # define PAUSE(x)  usleep(1000*(x));
 #elif defined(__WIN32__)
@@ -32,6 +32,3 @@
 #endif
 
 #endif
-
-
-

@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,23 +63,23 @@
  # means the device id is ignored with this command.
  $ means it's a silent command
 */
-#define CMD_VAR  0x06 // [*  ] Variable Header - includes a std variable header
-#define CMD_CTS  0x09 // [   ] Continue - used to signal OK to send a variable
-#define CMD_XDP  0x15 // [*  ] Data packet - Pure data
-#define CMD_FLSH 0x2D // [  $] Send a FLASH application
-#define CMD_SKIP 0x36 // [*  ] Skip/Exit - used when duplicate name is found
-#define CMD_SID  0x47 // [*#$] Send calc ID
-#define CMD_ACK  0x56 // [   ] Acknowledge
-#define CMD_ERR  0x5A // [   ] Checksum error: send last packet again
-#define CMD_RDY  0x68 // [ #$] Test if calc is ready
-#define CMD_SCR  0x6D // [  $] Request screenshot
-#define CMD_RID  0x74 // [ #$] Request calc ID
-#define CMD_CONT 0x78 // [  $] Continue
-#define CMD_KEY  0x87 // [  $] Send key
-#define CMD_EOT  0x92 // [   ] End Of Transmission: no more variables to send
-#define CMD_REQ  0xA2 // [* $] Request variable - includes a std var header
-#define CMD_IND  0xB7 // [* $] Request variable index
-#define CMD_RTS  0xC9 // [* $] Request to send - includes a padded var header
+#define CMD_VAR  0x06		// [*  ] Variable Header - includes a std variable header
+#define CMD_CTS  0x09		// [   ] Continue - used to signal OK to send a variable
+#define CMD_XDP  0x15		// [*  ] Data packet - Pure data
+#define CMD_FLSH 0x2D		// [  $] Send a FLASH application
+#define CMD_SKIP 0x36		// [*  ] Skip/Exit - used when duplicate name is found
+#define CMD_SID  0x47		// [*#$] Send calc ID
+#define CMD_ACK  0x56		// [   ] Acknowledge
+#define CMD_ERR  0x5A		// [   ] Checksum error: send last packet again
+#define CMD_RDY  0x68		// [ #$] Test if calc is ready
+#define CMD_SCR  0x6D		// [  $] Request screenshot
+#define CMD_RID  0x74		// [ #$] Request calc ID
+#define CMD_CONT 0x78		// [  $] Continue
+#define CMD_KEY  0x87		// [  $] Send key
+#define CMD_EOT  0x92		// [   ] End Of Transmission: no more variables to send
+#define CMD_REQ  0xA2		// [* $] Request variable - includes a std var header
+#define CMD_IND  0xB7		// [* $] Request variable index
+#define CMD_RTS  0xC9		// [* $] Request to send - includes a padded var header
 
 // Rejection codes (CMD82_SKIP)
 
@@ -91,8 +91,10 @@
 /* Functions */
 /*************/
 
-int send_packet(uint8_t target, uint8_t cmd, uint16_t  length, uint8_t *data);
-int recv_packet(uint8_t *host, uint8_t *cmd, uint16_t *length, uint8_t *data);
+int send_packet(uint8_t target, uint8_t cmd, uint16_t length,
+		uint8_t * data);
+int recv_packet(uint8_t * host, uint8_t * cmd, uint16_t * length,
+		uint8_t * data);
 
 void pad_buffer(char *varname, uint8_t value);
 

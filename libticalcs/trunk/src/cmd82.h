@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 int ti82_send_VAR(uint16_t varsize, uint8_t vartype, char *varname);
 int ti82_send_CTS(void);
-int ti82_send_XDP(int length, uint8_t *data);
+int ti82_send_XDP(int length, uint8_t * data);
 int ti82_send_SKIP(uint8_t rej_code);
 int ti82_send_ACK(void);
 int ti82_send_ERR(void);
@@ -31,12 +31,12 @@ int ti82_send_EOT(void);
 int ti82_send_REQ(uint16_t varsize, uint8_t vartype, char *varname);
 int ti82_send_RTS(uint16_t varsize, uint8_t vartype, char *varname);
 
-int ti82_recv_VAR(uint16_t *varsize, uint8_t *vartype, char *varname);
+int ti82_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname);
 int ti82_recv_CTS(void);
-int ti82_recv_SKIP(uint8_t *rej_code);
-int ti82_recv_XDP(uint16_t *length, uint8_t *data);
-int ti82_recv_ACK(uint16_t *status);
-int ti82_recv_RTS(uint16_t *varsize, uint8_t *vartype, char *varname);
+int ti82_recv_SKIP(uint8_t * rej_code);
+int ti82_recv_XDP(uint16_t * length, uint8_t * data);
+int ti82_recv_ACK(uint16_t * status);
+int ti82_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname);
 
 
 #endif

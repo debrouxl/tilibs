@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,26 +28,24 @@ int ti89_isready(void);
 
 int ti89_send_key(uint16_t key);
 
-int ti89_screendump(uint8_t **bitmap, int mask_mode,
-		    TicalcScreenCoord *sc);
+int ti89_screendump(uint8_t ** bitmap, int mask_mode,
+		    TicalcScreenCoord * sc);
 
-int ti89_directorylist(TNode **tree, uint32_t *memory);
+int ti89_directorylist(TNode ** tree, uint32_t * memory);
 
 int ti89_send_backup(const char *filename, int mask_mode);
 int ti89_recv_backup(const char *filename, int mask_mode);
 
 int ti89_send_var(const char *filename, int mask_mode, char **actions);
-int ti89_recv_var(      char *filename, int mask_mode, TiVarEntry *ve);
+int ti89_recv_var(char *filename, int mask_mode, TiVarEntry * ve);
 
 int ti89_send_flash(const char *filename, int mask_mode);
-int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve);
+int ti89_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve);
 int ti89_get_idlist(char *idlist);
 
 int ti89_dump_rom(const char *filename, int mask_mode);
 
-int ti89_set_clock(const TicalcClock *clock, int mode);
-int ti89_get_clock(      TicalcClock *clock, int mode);
+int ti89_set_clock(const TicalcClock * clock, int mode);
+int ti89_get_clock(TicalcClock * clock, int mode);
 
 #endif
-
-

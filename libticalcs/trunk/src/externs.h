@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,14 +30,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
   extern TicableLinkCable *cable;
   extern TicalcInfoUpdate *update;
-  extern int              ticalcs_calc_type;
-  extern int              lock;
+  extern int ticalcs_calc_type;
+  extern int lock;
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

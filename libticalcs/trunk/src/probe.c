@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 
+#include "intl2.h"
+#include "export.h"
 #include "headers.h"
 #include "calc_err.h"
 #include "calc_int.h"
@@ -32,16 +34,17 @@
 /* 
    Get the first uint8_t sent by the calc (Machine ID)
 */
-int tixx_recv_ACK(uint8_t *mid)
+int tixx_recv_ACK(uint8_t * mid)
 {
   uint8_t host, cmd;
   uint16_t status;
-  
+
   DISPLAY(" TI->PC: ACK");
   TRYF(recv_packet(&host, &cmd, &status, NULL));
 
   *mid = host;
-  if(cmd != CMD_ACK) return ERR_INVALID_CMD;
+  if (cmd != CMD_ACK)
+    return ERR_INVALID_CMD;
 
   return 0;
 }
@@ -58,12 +61,12 @@ int tixx_recv_ACK(uint8_t *mid)
    
    Beware: the call sequence is very important: 89, 92+, 92, 86, 85, 83, 82 !!!
 */
-TIEXPORT int TICALL detect_calc(int *calc_type)
+TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
 {
   int err;
   uint8_t data;
-  
-  DISPLAY("Probing calculator...\n");
+
+  DISPLAY(_("Probing calculator...\n"));
 
   /* Test for a TI 89 or a TI92+ */
   DISPLAY("Trying TI89/TI92+... ");
@@ -71,189 +74,185 @@ TIEXPORT int TICALL detect_calc(int *calc_type)
 
   DISPLAY(" PC->TI: SCR\n");
   TRYF(send_packet(PC_TI89, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X/%02X> ", PC_TI89, data);
   TRYF(cable->close());
 
-  if( !err && (data == TI89_PC) )
-    {
-      DISPLAY("OK (TI89) !\n");
-      *calc_type=CALC_TI89;
-      
-      return 0;
-    }
-  else if( !err && (data == TI92p_PC) )
-    {
-      DISPLAY("OK (TI92+) !\n");
-	*calc_type=CALC_TI92P;
-	
-	return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
-  
+  if (!err && (data == TI89_PC)) {
+    DISPLAY("OK (TI89) !\n");
+    *calc_type = CALC_TI89;
+
+    return 0;
+  } else if (!err && (data == TI92p_PC)) {
+    DISPLAY("OK (TI92+) !\n");
+    *calc_type = CALC_TI92P;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
+
   /* Test for a TI92 */
   DISPLAY("Trying TI92... ");
   TRYF(send_packet(PC_TI92, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X/%02X> ", PC_TI92, data);
   TRYF(cable->close());
-  
-  if( !err && (data == TI92_PC) )
-    {
-      DISPLAY("OK !\n");
-      *calc_type=CALC_TI92;
-      
-      return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
-  
+
+  if (!err && (data == TI92_PC)) {
+    DISPLAY("OK !\n");
+    *calc_type = CALC_TI92;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
+
   /* Test for a TI86 before a TI85 */
   DISPLAY("Trying TI86... ");
   TRYF(cable->open());
   TRYF(send_packet(PC_TI86, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X/%02X> ", PC_TI86, data);
   TRYF(cable->close());
 
-  if( !err && (data == TI86_PC) )
-    {
-      DISPLAY("OK !\n");
-      *calc_type=CALC_TI86;
-      
-      return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
-  
+  if (!err && (data == TI86_PC)) {
+    DISPLAY("OK !\n");
+    *calc_type = CALC_TI86;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
+
   /* Test for a TI85 */
   DISPLAY("Trying TI85... ");
   TRYF(cable->open());
   TRYF(send_packet(PC_TI85, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X/%02X> ", PC_TI85, data);
   TRYF(cable->close());
 
-  if( !err && (data == TI85_PC) )
-    {
-      DISPLAY("OK !\n");
-      *calc_type=CALC_TI85;
-      
-      return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
-  
+  if (!err && (data == TI85_PC)) {
+    DISPLAY("OK !\n");
+    *calc_type = CALC_TI85;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
+
   /* Test for a TI83 before a TI82 */
-  DISPLAY("Trying TI83... ");
+  DISPLAY(_("Trying TI83... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI83, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X/%02X> ", PC_TI82, data);
   TRYF(cable->close());
 
-  if( !err && (data == TI83_PC) )
-    {
-      DISPLAY("OK !\n");
-      *calc_type=CALC_TI83;
-      
-      return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
-  
+  if (!err && (data == TI83_PC)) {
+    DISPLAY("OK !\n");
+    *calc_type = CALC_TI83;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
+
   /* Test for a TI82 */
-  DISPLAY("Trying TI82... ");
+  DISPLAY(_("Trying TI82... "));
   TRYF(cable->open());
   TRYF(send_packet(PC_TI83, CMD_SCR, 2, NULL));
-  err=tixx_recv_ACK(&data);
+  err = tixx_recv_ACK(&data);
 
   DISPLAY("<%02X> ", data);
   TRYF(cable->close());
-  
-  if( !err && (data == TI82_PC) )
-    {
-      DISPLAY("OK !\n");
-      *calc_type=CALC_TI82;
-      
-      return 0;
-    }
-  else
-    {
-      DISPLAY("NOK.\n");
-    }
+
+  if (!err && (data == TI82_PC)) {
+    DISPLAY("OK !\n");
+    *calc_type = CALC_TI82;
+
+    return 0;
+  } else {
+    DISPLAY("NOK.\n");
+  }
   /* Next calc */
-  
+
   return 0;
 }
 
 
 /*
   Check if the calculator is ready and detect the type.
-  Works only with TI73/83+/89/92+ calculators (FLASH).
+  Works only with TI73/83+/89/92+ calculators (FLASH). It could work with an 
+  V200 but it returns the same ID as V200...
   Practically, call this function first, and call tixx_isready next.
   Return 0 if successful, 0 otherwise.
 */
-TIEXPORT int TICALL ticalc_flash_isready(int *calc_type)
+TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
 {
-  uint8_t host, cmd;
+  uint8_t host, cmd, st1, st2;
   uint16_t status;
-  int ct;
+  TicalcType ct;
 
   ticalc_get_calc(&ct);
-  if( (ct != CALC_TI89) && (ct != CALC_TI92P) && 
-      (ct != CALC_TI73) && (ct != CALC_TI83P) &&
-      (ct != CALC_V200) )
+  if ((ct != CALC_TI89) && (ct != CALC_TI92P) &&
+      (ct != CALC_TI73) && (ct != CALC_TI83P) && (ct != CALC_V200))
     return 0;
-  
+
   TRYF(cable->open());
-  DISPLAY("Is calculator ready (and check type) ?\n");
-  
+  DISPLAY(_("Is calculator ready (and check type) ?\n"));
+
   DISPLAY(" PC->TI: RDY?\n");
   TRYF(send_packet(PC_TIXX, CMD_RDY, 2, NULL));
-    
-  DISPLAY(" TI->PC: ACK");
-  TRYF(recv_packet(&host, &cmd, &status, NULL));
-  DISPLAY("\nStatus = %04X\n", status);
 
-  // 0x98: TI89, 0x88: TI92+, 0x73: TI83+, 0x74: TI73
-  switch(host)
-  {
+  DISPLAY(" TI->PC: ACK");
+  TRYF(cable->get(&host));
+  TRYF(cable->get(&cmd));
+  TRYF(cable->get(&st1));
+  TRYF(cable->get(&st2));
+  status = (st1 << 8) | st2;
+  if (cmd != CMD_ACK)
+    return ERR_INVALID_CMD;
+  DISPLAY(_("\nStatus = %04X\n"), status);
+
+  // 0x98: TI89, 0x88: TI92+/V200, 0x73: TI83+, 0x74: TI73
+  switch (host) {
     //case V200_PC:  *calc_type = CALC_V200; break;
-  case TI92p_PC: *calc_type = CALC_TI92P; break;
-  case TI89_PC:  *calc_type = CALC_TI89; break;
-  case TI83p_PC: *calc_type = CALC_TI83P; break;
-  case TI73_PC:  *calc_type = CALC_TI73; break;
-  default: *calc_type = CALC_NONE; 
-    return ERR_INVALID_HOST; 
+  case TI92p_PC:
+    *calc_type = CALC_TI92P;
+    break;
+  case TI89_PC:
+    *calc_type = CALC_TI89;
+    break;
+  case TI83p_PC:
+    *calc_type = CALC_TI83P;
+    break;
+  case TI73_PC:
+    *calc_type = CALC_TI73;
+    break;
+  default:
+    *calc_type = CALC_NONE;
+    return ERR_INVALID_HOST;
     break;
   }
 
-  if(cmd != CMD_ACK) return ERR_INVALID_CMD;
-  if((status & 1) != 0) return ERR_NOT_READY;
+  if (cmd != CMD_ACK)
+    return ERR_INVALID_CMD;
+  if ((status & 1) != 0)
+    return ERR_NOT_READY;
 
-  DISPLAY("The calculator is ready.\n");
-  DISPLAY("Calculator type: %s\n", 
+  DISPLAY(_("The calculator is ready.\n"));
+  DISPLAY(_("Calculator type: %s\n"),
 	  (*calc_type == CALC_TI83P) ? "TI83+" :
-	  (*calc_type == CALC_TI89)  ? "TI89"  : 
+	  (*calc_type == CALC_TI89) ? "TI89" :
 	  (*calc_type == CALC_TI92P) ? "TI92+" :
-	  (*calc_type == CALC_V200)  ? "V200" : "???");
+	  (*calc_type == CALC_V200) ? "V200" : "???");
 
   return 0;
 }

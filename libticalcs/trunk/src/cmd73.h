@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ int ti73_send_VAR(uint16_t varsize, uint8_t vartype, char *varname,
 int ti73_send_VAR2(uint32_t length, uint8_t type, uint8_t flag,
 		   uint16_t offset, uint16_t page);
 int ti73_send_CTS(void);
-int ti73_send_XDP(int length, uint8_t *data);
+int ti73_send_XDP(int length, uint8_t * data);
 int ti73_send_FLSH(void);
 int ti73_send_SKIP(uint8_t rej_code);
 int ti73_send_ACK(void);
@@ -41,15 +41,15 @@ int ti73_send_REQ2(uint16_t appsize, uint8_t apptype, char *appname,
 int ti73_send_RTS(uint16_t varsize, uint8_t vartype, char *varname,
 		  uint8_t varattr);
 
-int ti73_recv_VAR(uint16_t *varsize, uint8_t *vartype, char *varname,
-		  uint8_t *varattr);
-int ti73_recv_VAR2(uint16_t *length, uint8_t *type, char *name,
-		   uint16_t *offset, uint16_t *page);
+int ti73_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname,
+		  uint8_t * varattr);
+int ti73_recv_VAR2(uint16_t * length, uint8_t * type, char *name,
+		   uint16_t * offset, uint16_t * page);
 int ti73_recv_CTS(uint16_t length);
-int ti73_recv_SKIP(uint8_t *rej_code);
-int ti73_recv_XDP(uint16_t *length, uint8_t *data);
-int ti73_recv_ACK(uint16_t *status);
-int ti73_recv_RTS(uint16_t *varsize, uint8_t *vartype, char *varname,
-		  uint8_t *varattr);
+int ti73_recv_SKIP(uint8_t * rej_code);
+int ti73_recv_XDP(uint16_t * length, uint8_t * data);
+int ti73_recv_ACK(uint16_t * status);
+int ti73_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname,
+		  uint8_t * varattr);
 
 #endif

@@ -83,12 +83,6 @@
 			path = ../src/pause.h;
 			refType = 2;
 		};
-		0127D0DE017389D15041E0CA = {
-			isa = PBXFileReference;
-			name = keys92p.h;
-			path = /Users/julien/devel/libticalcs/src/keys92p.h;
-			refType = 0;
-		};
 		0127D0DF017389D15041E0CA = {
 			isa = PBXFileReference;
 			name = keys89.h;
@@ -247,15 +241,6 @@
 		};
 		0127D104017389D15041E0CA = {
 			fileRef = 0127D0DD017389D15041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-					Public,
-				);
-			};
-		};
-		0127D105017389D15041E0CA = {
-			fileRef = 0127D0DE017389D15041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 				ATTRIBUTES = (
@@ -560,7 +545,6 @@
 				0127D0DB017389D15041E0CA,
 				0127D0DC017389D15041E0CA,
 				0127D0DD017389D15041E0CA,
-				0127D0DE017389D15041E0CA,
 				0127D0DF017389D15041E0CA,
 				F509D4EB021AC7CA01041594,
 				0127D0E0017389D15041E0CA,
@@ -573,6 +557,8 @@
 				0127D0EA017389D15041E0CA,
 				0127D0EB017389D15041E0CA,
 				0127D0ED017389D15041E0CA,
+				F7C7C5890449954D01000306,
+				F7C7C58D0449957001000306,
 			);
 			isa = PBXGroup;
 			name = Headers;
@@ -604,6 +590,7 @@
 				0127D120017389DF5041E0CA,
 				0127D11F017389DF5041E0CA,
 				0127D11E017389DF5041E0CA,
+				F7C7C58B0449956201000306,
 			);
 			isa = PBXGroup;
 			name = Sources;
@@ -635,8 +622,8 @@
 		};
 		0867D691FE84028FC02AAC07 = {
 			children = (
-				04DE224E017240965041E0CA,
 				04DE224D017240245041E0CA,
+				04DE224E017240965041E0CA,
 				089C1665FE841158C02AAC07,
 				0867D69AFE84028FC02AAC07,
 				034768DFFF38A50411DB9C8B,
@@ -669,9 +656,8 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				FRAMEWORK_VERSION = C;
 				HEADER_SEARCH_PATHS = "";
-				INSTALL_PATH = /System/Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "-O3";
+				OPTIMIZATION_CFLAGS = "-O2";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
 				PREBINDING = NO;
 				PRODUCT_NAME = libticalcs;
@@ -683,7 +669,6 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = libticalcs;
-			productInstallPath = /System/Library/Frameworks;
 			productName = libticalcs;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -695,7 +680,7 @@
 	<key>CFBundleExecutable</key>
 	<string>libticalcs</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Copyright (C) 1999-2002 Romain LIEVIN, Julien BLACHE</string>
+	<string>Copyright (C) 1999-2003 Romain LIEVIN, Julien BLACHE</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
@@ -707,11 +692,11 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.3.8</string>
+	<string>4.4.8</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>3.3.8</string>
+	<string>4.4.8</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -734,7 +719,6 @@
 				0127D101017389D15041E0CA,
 				0127D102017389D15041E0CA,
 				0127D104017389D15041E0CA,
-				0127D105017389D15041E0CA,
 				0127D106017389D15041E0CA,
 				0127D107017389D15041E0CA,
 				0127D109017389D15041E0CA,
@@ -766,6 +750,8 @@
 				F75DBF06033A061C01000102,
 				F75DBF07033A061C01000102,
 				F75DBF08033A061C01000102,
+				F7C7C58A0449954D01000306,
+				F7C7C58E0449957001000306,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -804,6 +790,7 @@
 				F75DBF20033A064C01000102,
 				F75DBF21033A064C01000102,
 				F75DBF22033A064C01000102,
+				F7C7C58C0449956201000306,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1399,6 +1386,48 @@
 			fileRef = F75DBF24033A067401000102;
 			isa = PBXBuildFile;
 			settings = {
+			};
+		};
+		F7C7C5890449954D01000306 = {
+			isa = PBXFileReference;
+			name = export.h;
+			path = ../src/export.h;
+			refType = 2;
+		};
+		F7C7C58A0449954D01000306 = {
+			fileRef = F7C7C5890449954D01000306;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		F7C7C58B0449956201000306 = {
+			isa = PBXFileReference;
+			name = type2str.c;
+			path = ../src/type2str.c;
+			refType = 2;
+		};
+		F7C7C58C0449956201000306 = {
+			fileRef = F7C7C58B0449956201000306;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F7C7C58D0449957001000306 = {
+			isa = PBXFileReference;
+			name = type2str.h;
+			path = ../src/type2str.h;
+			refType = 2;
+		};
+		F7C7C58E0449957001000306 = {
+			fileRef = F7C7C58D0449957001000306;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
 			};
 		};
 	};

@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ extern int lock;
 #define UNLOCK_TRANSFER() lock = 0;
 
 #ifndef TRYF
-# define TRYF(x) { int aaaa_; if((aaaa_ = (x))) { UNLOCK_TRANSFER() return aaaa_; } }   //new !
+# define TRYF(x) { int aaaa_; if((aaaa_ = (x))) { UNLOCK_TRANSFER() return aaaa_; } }	//new !
 #endif
 
 #define LOCK_TRANSFER()   { TRYF(lock);  lock = ERR_PENDING_TRANSFER; }
@@ -52,8 +52,3 @@ extern int lock;
 #endif
 
 #endif
-
-
-
-
-

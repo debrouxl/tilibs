@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 int ti89_send_VAR(uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_CTS(void);
-int ti89_send_XDP(int length, uint8_t *data);
+int ti89_send_XDP(int length, uint8_t * data);
 int ti89_send_SKIP(uint8_t rej_code);
 int ti89_send_ACK(void);
 int ti89_send_ERR(void);
@@ -34,14 +34,14 @@ int ti89_send_EOT(void);
 int ti89_send_REQ(uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname);
 
-int ti89_recv_VAR(uint32_t *varsize, uint8_t *vartype, char *varname);
+int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname);
 int ti89_recv_CTS(void);
-int ti89_recv_SKIP(uint8_t *rej_code);
-int ti89_recv_XDP(uint32_t *length, uint8_t *data);
-int ti89_recv_ACK(uint16_t *status);
+int ti89_recv_SKIP(uint8_t * rej_code);
+int ti89_recv_XDP(uint32_t * length, uint8_t * data);
+int ti89_recv_ACK(uint16_t * status);
 int ti89_recv_CONT(void);
 int ti89_recv_EOT(void);
-int ti89_recv_RTS(uint32_t *varsize, uint8_t *vartype, char *varname);
+int ti89_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname);
 
 
 #endif

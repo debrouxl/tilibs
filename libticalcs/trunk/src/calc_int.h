@@ -1,5 +1,6 @@
+/* Hey EMACS -*- linux-c -*- */
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,65 +28,100 @@
 extern "C" {
 #endif
 
-  /****************/
+	/****************/
   /* Entry points */
-  /****************/
+	/****************/
+
   int TICALL ticalc_init(void);
   int TICALL ticalc_exit(void);
-  
-  /***********/
-  /* Methods */
-  /***********/
-  
-  // intrface.c
-  const char TICALL *ticalc_get_version();
-  
-  int        TICALL ticalc_get_error(int err_num, char *error_msg);
-  
-  void       TICALL ticalc_set_update(TicalcInfoUpdate *iu,
-				      void (*start)   (void),
-				      void (*stop)    (void),
-				      void (*refresh) (void),
-				      void (*pbar)    (void),
-				      void (*label)   (void));
-       
-  void TICALL ticalc_set_cable(TicableLinkCable *lc);
-  void TICALL ticalc_set_calc(int type, TicalcFncts *calc);  
 
-  int  TICALL ticalc_return_calc(void);
-  int  TICALL ticalc_get_calc(int *type);
-  
+	/***********/
+  /* Methods */
+	/***********/
+
+  // intrface.c
+  TIEXPORT const char *TICALL ticalc_get_version();
+
+  TIEXPORT int TICALL ticalc_get_error(int err_num, char *error_msg);
+
+  TIEXPORT void TICALL ticalc_set_update(TicalcInfoUpdate * iu,
+					 void (*start) (void),
+					 void (*stop) (void),
+					 void (*refresh) (void),
+					 void (*pbar) (void),
+					 void (*label) (void));
+
+  TIEXPORT void TICALL ticalc_set_cable(TicableLinkCable * lc);
+  TIEXPORT void TICALL ticalc_set_calc(TicalcType type,
+				       TicalcFncts * calc);
+
+  TIEXPORT int TICALL ticalc_return_calc(void);
+  TIEXPORT int TICALL ticalc_get_calc(TicalcType * type);
+
   // probe.c
-  int  TICALL ticalc_detect_calc(int *calc_type);
-  int  TICALL ticalc_flash_isready(int *calc_type);         // preferred
-#define ticalc_89_92_92p_isready     ticalc_flash_isready   // obsolete
-#define ticalc_73_83p_89_92p_isready ticalc_flash_isready
+  TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type);
+  TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type);
 
   // dirlist.c
-  void   TICALL ticalc_display_dirlist(TNode *tree);
-  int    TICALL ticalc_number_of_vars(TNode *tree);
-  int    TICALL ticalc_memory_used(TNode *tree);
-  TiVarEntry* TICALL ticalc_check_if_var_exists(TNode *tree, char *varname);
-  TiVarEntry* TICALL ticalc_check_if_app_exists(TNode *tree, char *appname);
-  char** TICALL ticalc_create_action_array(int num_entries);
-  void   TICALL ticalc_destroy_action_array(char **array);
+  TIEXPORT void TICALL ticalc_dirlist_destroy(TNode ** tree);
+  TIEXPORT void TICALL ticalc_dirlist_display(TNode * tree);
+
+  TIEXPORT int TICALL ticalc_dirlist_numvars(TNode * tree);
+  TIEXPORT int TICALL ticalc_dirlist_memused(TNode * tree);
+  TIEXPORT TiVarEntry *TICALL ticalc_check_if_var_exists(TNode * tree, char
+							 *varname);
+  TIEXPORT TiVarEntry *TICALL ticalc_check_if_app_exists(TNode * tree, char
+							 *appname);
+  TIEXPORT char **TICALL ticalc_action_create_array(int num_entries);
+  TIEXPORT void TICALL ticalc_action_destroy_array(char **array);
 
   // tikeys.c
-  const struct ti_key TICALL ticalc_73_keys (unsigned char ascii_code);
-  const struct ti_key TICALL ticalc_83p_keys(unsigned char ascii_code);
-  const struct ti_key TICALL ticalc_89_keys (unsigned char ascii_code);
-  const struct ti_key TICALL ticalc_92p_keys(unsigned char ascii_code);
+/*#ifdef __WIN32__
+	// MSVC refuse to compile (C linkage function cannot return 
+	// C++ class 'ti_key')
+	extern const TicalcKey TI73_KEYS[];
+	extern const TicalcKey TI83P_KEYS[];
+	extern const TicalcKey TI89_KEYS[];
+	extern const TicalcKey TI92P_KEYS[];
+#else*/
+  TIEXPORT const TicalcKey TICALL ticalc_73_keys(unsigned char
+						 ascii_code);
+  TIEXPORT const TicalcKey TICALL ticalc_83p_keys(unsigned char
+						  ascii_code);
+  TIEXPORT const TicalcKey TICALL ticalc_89_keys(unsigned char
+						 ascii_code);
+  TIEXPORT const TicalcKey TICALL ticalc_92p_keys(unsigned char
+						  ascii_code);
+/*#endif*/
 
   // clock.c
-  const char* TICALL ticalc_format_to_date(int value);
-  int         TICALL ticalc_date_to_format(const char *format);
+  TIEXPORT const char *TICALL ticalc_clock_format2date(int value);
+  TIEXPORT int TICALL ticalc_clock_date2format(const char *format);
+
+  // type2str.c
+  TIEXPORT const char *TICALL ticalc_screen_to_string(TicalcScreenFormat
+						      format);
+  TIEXPORT const char *TICALL ticalc_path_to_string(TicalcPathType type);
+  TIEXPORT const char *TICALL ticalc_action_to_string(TicalcAction action);
+
+	/**************/
+  /* Deprecated */
+	/**************/
+
+#define ticalc_flash_isready         ticalc_isready
+#define ticalc_89_92_92p_isready     ticalc_flash_isready
+#define ticalc_73_83p_89_92p_isready ticalc_flash_isready
+
+#define ticalc_display_dirlist ticalc_dirlist_display;
+#define ticalc_number_of_vars  ticalc_dirlist_numvars;
+#define ticalc_memory_used     ticalc_dirlist_memused;
+#define ticalc_create_action_array  ticalc_action_create_array
+#define ticalc_destroy_action_array ticalc_action_destroy_array
+
+#define ticalc_format_to_date ticalc_clock_format2date
+#define ticalc_date_to_format ticalc_clock_date2format
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif
-
-
-
-

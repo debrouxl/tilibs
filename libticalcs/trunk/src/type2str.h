@@ -1,4 +1,5 @@
-/*  libticalcs - calculator library, a part of the TiLP project
+/* Hey EMACS -*- linux-c -*- */
+/*  libticables - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -16,36 +17,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "calc_def.h"
-#include "headers.h"
+#ifndef __TICABLE_INTERFACE__
+#define __TICABLE_INTERFACE__
 
-#include "keys73.h"
-#include "keys83p.h"
-#include "keys89.h"
-#include "keys92p.h"
+#include "export.h"
+#include "cabl_def.h"
 
-extern const TicalcKey TI73_KEYS[];
-extern const TicalcKey TI83P_KEYS[];
-extern const TicalcKey TI89_KEYS[];
-extern const TicalcKey TI92P_KEYS[];
+TIEXPORT const char *TICALL ticable_cabletype_to_string(TicableType type);
+TIEXPORT const char *TICALL ticable_baudrate_to_string(TicableBaudRate br);
+TIEXPORT const char *TICALL ticable_hfc_to_string(TicableHfc hfc);
+TIEXPORT const char *TICALL ticable_port_to_string(TicablePort port);
+TIEXPORT const char *TICALL ticable_method_to_string(TicableMethod method);
 
-
-TIEXPORT const TicalcKey TICALL ticalc_73_keys(unsigned char ascii_code)
-{
-  return TI73_KEYS[ascii_code];
-}
-
-TIEXPORT const TicalcKey TICALL ticalc_83p_keys(unsigned char ascii_code)
-{
-  return TI83P_KEYS[ascii_code];
-}
-
-TIEXPORT const TicalcKey TICALL ticalc_89_keys(unsigned char ascii_code)
-{
-  return TI89_KEYS[ascii_code];
-}
-
-TIEXPORT const TicalcKey TICALL ticalc_92p_keys(unsigned char ascii_code)
-{
-  return TI92P_KEYS[ascii_code];
-}
+#endif

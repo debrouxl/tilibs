@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "intl2.h"
 #include "headers.h"
 #include "externs.h"
 #include "update.h"
@@ -42,26 +43,22 @@
 
 int ti92_supported_operations(void)
 {
-  return 
-    (
-     OPS_ISREADY |
-     OPS_SCREENDUMP |
-     OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
-     OPS_DIRLIST |
-     OPS_SEND_BACKUP | OPS_RECV_BACKUP |
-     OPS_SEND_VARS | OPS_RECV_VARS |
-     OPS_ROMVERSION |
-     OPS_ROMDUMP
-     );
+  return
+      (OPS_ISREADY |
+       OPS_SCREENDUMP |
+       OPS_SEND_KEY | OPS_RECV_KEY | OPS_REMOTE |
+       OPS_DIRLIST |
+       OPS_SEND_BACKUP | OPS_RECV_BACKUP |
+       OPS_SEND_VARS | OPS_RECV_VARS | OPS_ROMVERSION | OPS_ROMDUMP);
 }
 
 int ti92_isready(void)
 {
   uint16_t status;
 
-  DISPLAY("Is calculator ready ?\n");
+  DISPLAY(_("Is calculator ready ?\n"));
 
-  LOCK_TRANSFER();  
+  LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
 
@@ -78,50 +75,51 @@ int ti92_send_key(uint16_t key)
 {
   LOCK_TRANSFER();
   TRYF(cable->open());
-  
+
   TRYF(ti92_send_KEY(key));
   TRYF(ti92_recv_ACK(NULL));
-  
+
   TRYF(cable->close());
   UNLOCK_TRANSFER();
 
   return 0;
 }
 
-int ti92_screendump(uint8_t **bitmap, int mask_mode,
-                    TicalcScreenCoord *sc)
+int ti92_screendump(uint8_t ** bitmap, int mask_mode,
+		    TicalcScreenCoord * sc)
 {
   uint32_t max_cnt;
   int err;
 
-  DISPLAY("Receiving screendump...\n");
+  DISPLAY(_("Receiving screendump...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
-  
-  sc->width  = TI92_COLS;
+
+  sc->width = TI92_COLS;
   sc->height = TI92_ROWS;
-  sc->clipped_width  = TI92_COLS;
+  sc->clipped_width = TI92_COLS;
   sc->clipped_height = TI92_ROWS;
-  
-  if(*bitmap != NULL)
+
+  if (*bitmap != NULL)
     free(*bitmap);
-  (*bitmap)=(uint8_t *)malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t)/8);
-  if((*bitmap) == NULL)
-    {
-      fprintf(stderr, "Unable to allocate memory.\n");
-      exit(0);
-    }
-  
+  (*bitmap) =
+      (uint8_t *) malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t) / 8);
+  if ((*bitmap) == NULL) {
+    fprintf(stderr, "Unable to allocate memory.\n");
+    exit(0);
+  }
+
   TRYF(ti92_send_SCR());
   TRYF(ti92_recv_ACK(NULL));
 
-  err = ti92_recv_XDP(&max_cnt, *bitmap); // pb with checksum
-  if(err != ERR_CHECKSUM) { TRYF(err) };
+  err = ti92_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+  if (err != ERR_CHECKSUM) {
+  TRYF(err)};
   TRYF(ti92_send_ACK());
 
-  DISPLAY("Done.\n");
+  DISPLAY(_("Done.\n"));
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
@@ -129,7 +127,7 @@ int ti92_screendump(uint8_t **bitmap, int mask_mode,
   return 0;
 }
 
-int ti92_directorylist(TNode **tree, uint32_t *memory)
+int ti92_directorylist(TNode ** tree, uint32_t * memory)
 {
   uint32_t unused;
   uint8_t buffer[65536];
@@ -138,16 +136,16 @@ int ti92_directorylist(TNode **tree, uint32_t *memory)
   char folder_name[9] = "";
   TNode *vars, *apps;
   TNode *folder = NULL;
-  
+
   LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
 
-  DISPLAY("Directory listing...\n");
-  
+  DISPLAY(_("Directory listing...\n"));
+
   TRYF(ti92_send_REQ(0, TI92_RDIR, ""));
   TRYF(ti92_recv_ACK(NULL));
-  
+
   TRYF(ti92_recv_VAR(&info.size, &info.type, info.name));
 
   *tree = g_node_new(NULL);
@@ -156,59 +154,59 @@ int ti92_directorylist(TNode **tree, uint32_t *memory)
   g_node_append(*tree, vars);
   g_node_append(*tree, apps);
 
-  for( ; ; )
-  {
+  for (;;) {
     TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
     TNode *node;
 
     TRYF(ti92_send_ACK());
     TRYF(ti92_send_CTS());
-    
+
     TRYF(ti92_recv_ACK(NULL));
     TRYF(ti92_recv_XDP(&unused, buffer));
-    memcpy(ve->name, buffer+4, 8); // skip 4 extra 00 uint8_t
+    memcpy(ve->name, buffer + 4, 8);	// skip 4 extra 00 uint8_t
     ve->name[8] = '\0';
     ve->type = buffer[12];
     ve->attr = buffer[13];
-    ve->size = buffer[14] | (buffer[15] << 8) | 
-      (buffer[16] << 16) | (buffer[17] << 24);
+    ve->size = buffer[14] | (buffer[15] << 8) |
+	(buffer[16] << 16) | (buffer[17] << 24);
     strcpy(ve->folder, "");
 
     tifiles_translate_varname(ve->name, ve->trans, ve->type);
     node = g_node_new(ve);
 
-    if(ve->type == TI92_DIR) {
+    if (ve->type == TI92_DIR) {
       strcpy(folder_name, ve->name);
       folder = g_node_append(vars, node);
-    }
-    else {
+    } else {
       strcpy(ve->folder, folder_name);
       g_node_append(folder, node);
-    }    
+    }
 
-    DISPLAY("Name: %8s | ",  ve->name);
-    DISPLAY("Type: %8s | ",  tifiles_vartype2string(ve->type));
-    DISPLAY("Attr: %i  | ",  ve->attr);
-    DISPLAY("Size: %08X\n",  ve->size);
+    DISPLAY(_("Name: %8s | "), ve->name);
+    DISPLAY(_("Type: %8s | "), tifiles_vartype2string(ve->type));
+    DISPLAY(_("Attr: %i  | "), ve->attr);
+    DISPLAY(_("Size: %08X\n"), ve->size);
 
     TRYF(ti92_send_ACK());
     err = ti92_recv_CONT();
-    if(err == ERR_EOT) break;
+    if (err == ERR_EOT)
+      break;
     TRYF(err);
 
-    sprintf(update->label_text, "Reading of: %s/%s", 
-	    ((TiVarEntry *)(folder->data))->trans, ve->trans);
+    sprintf(update->label_text, _("Reading of '%s/%s'"),
+	    ((TiVarEntry *) (folder->data))->trans, ve->trans);
     update_label();
-    if(update->cancel) return -1;
+    if (update->cancel)
+      return -1;
   }
-  
+
   TRYF(ti92_send_ACK());
 
-  *memory = ticalc_memory_used(*tree);
-  
+  *memory = ticalc_dirlist_memused(*tree);
+
   TRYF(cable->close());
   UNLOCK_TRANSFER();
-  
+
   return 0;
 }
 
@@ -220,46 +218,45 @@ int ti92_recv_backup(const char *filename, int mask_mode)
   uint32_t unused;
   uint8_t *ptr;
 
-  DISPLAY("Receiving backup...\n");
+  DISPLAY(_("Receiving backup...\n"));
 
-  LOCK_TRANSFER();  
+  LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
 
   content.calc_type = CALC_TI92;
-  sprintf(update->label_text, "Receiving backup...");
+  sprintf(update->label_text, _("Receiving backup..."));
   update_label();
 
   // silent request
   TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\backup"));
   printf("filename = <%s>\n", filename);
-  TRYF(ti92_recv_ACK((uint16_t *)&unused));
+  TRYF(ti92_recv_ACK((uint16_t *) & unused));
 
-  content.data_part = (uint8_t *)calloc(128*1024, 1);
+  content.data_part = (uint8_t *) tifiles_calloc(128 * 1024, 1);
   content.type = TI92_BKUP;
   content.data_length = 0;
 
-  for(block=0; ; block++)
-  {
-    sprintf(update->label_text, "Receiving block %2i", block);      
+  for (block = 0;; block++) {
+    sprintf(update->label_text, _("Receiving block %2i"), block);
     update_label();
     err = ti92_recv_VAR(&block_size, &content.type, content.rom_version);
     TRYF(ti92_send_ACK());
-    
-    if(err == ERR_EOT)
+
+    if (err == ERR_EOT)
       break;
     TRYF(err);
 
     TRYF(ti92_send_CTS());
     TRYF(ti92_recv_ACK(NULL));
-    
-    ptr = content.data_part+content.data_length;
+
+    ptr = content.data_part + content.data_length;
     TRYF(ti92_recv_XDP(&unused, ptr));
-    memmove(ptr, ptr+4, block_size); 
+    memmove(ptr, ptr + 4, block_size);
     TRYF(ti92_send_ACK());
     content.data_length += block_size;
   }
-  
+
   strcpy(content.comment, "Backup file received by TiLP");
 
   ti9x_write_backup_file(filename, &content);
@@ -267,7 +264,7 @@ int ti92_recv_backup(const char *filename, int mask_mode)
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
-    
+
   return 0;
 }
 
@@ -275,192 +272,192 @@ int ti92_send_backup(const char *filename, int mask_mode)
 {
   Ti9xBackup content = { 0 };
   int i, nblocks;
-  
-  DISPLAY("Sending backup...\n");
 
-  LOCK_TRANSFER();  
+  DISPLAY(_("Sending backup...\n"));
+
+  LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
 
-  sprintf(update->label_text, "Sending backup...");
+  sprintf(update->label_text, _("Sending backup..."));
   update_label();
-  
+
   TRYF(ti9x_read_backup_file(filename, &content));
 
   TRYF(ti92_send_VAR(content.data_length, TI92_BKUP, content.rom_version));
   TRYF(ti92_recv_ACK(NULL));
-  
-  nblocks = content.data_length/1024;
-  for(i=0; i <= nblocks; i++)
-  {
+
+  nblocks = content.data_length / 1024;
+  for (i = 0; i <= nblocks; i++) {
     uint32_t length = (i != nblocks) ? 1024 : content.data_length % 1024;
-    
+
     TRYF(ti92_send_VAR(length, TI92_BKUP, content.rom_version));
     TRYF(ti92_recv_ACK(NULL));
-    
+
     TRYF(ti92_recv_CTS());
     TRYF(ti92_send_ACK());
-    
-    TRYF(ti92_send_XDP(length, content.data_part + 1024*i));
+
+    TRYF(ti92_send_XDP(length, content.data_part + 1024 * i));
     TRYF(ti92_recv_ACK(NULL));
 
-    ((update->main_percentage))=(float)i/nblocks;
+    ((update->main_percentage)) = (float) i / nblocks;
     update_pbar();
-    if(update->cancel) return -1;
+    if (update->cancel)
+      return -1;
   }
-  
+
   TRYF(ti92_send_EOT());
 
   ti9x_free_backup_content(&content);
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
-  
+
   return 0;
 }
 
-int ti92_recv_var(char *filename, int mask_mode, TiVarEntry *entry)
+int ti92_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
 {
   static Ti9xRegular *content;
   uint16_t status;
   TiVarEntry *ve;
   char *fn;
-  static int nvar=0;
+  static int nvar = 0;
   uint32_t unused;
   uint8_t varname[18];
 
-  DISPLAY("Receiving variable(s)...\n");
+  DISPLAY(_("Receiving variable(s)...\n"));
 
-  LOCK_TRANSFER();  
+  LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
-  
-  if( (mask_mode & MODE_RECEIVE_FIRST_VAR) || 
-      (mask_mode & MODE_RECEIVE_SINGLE_VAR) )
-    {
-      content = ti9x_create_regular_content();
-      nvar = 0;
-    }
-  
+
+  if ((mask_mode & MODE_RECEIVE_FIRST_VAR) ||
+      (mask_mode & MODE_RECEIVE_SINGLE_VAR)) {
+    content = ti9x_create_regular_content();
+    nvar = 0;
+  }
+
   content->calc_type = CALC_TI92;
-  content->entries = (TiVarEntry *)realloc(content->entries, 
-					  (nvar+1) * sizeof(TiVarEntry));
+  content->entries = (TiVarEntry *) tifiles_realloc(content->entries,
+						    (nvar +
+						     1) *
+						    sizeof(TiVarEntry));
   ve = &(content->entries[nvar]);
   memcpy(ve, entry, sizeof(TiVarEntry));
-  
-  sprintf(update->label_text, "Receiving variable...");
-  update_label();
 
   strcpy(varname, entry->folder);
   strcat(varname, "\\");
   strcat(varname, entry->name);
-  
+
+  sprintf(update->label_text, _("Receiving '%s'"), varname);
+  update_label();
+
   TRYF(ti92_send_REQ(0, entry->type, varname));
   TRYF(ti92_recv_ACK(&status));
-  if(status != 0) return ERR_MISSING_VAR;
-  
+  if (status != 0)
+    return ERR_MISSING_VAR;
+
   TRYF(ti92_recv_VAR(&ve->size, &ve->type, ve->name));
   TRYF(ti92_send_ACK());
-  
+
   TRYF(ti92_send_CTS());
   TRYF(ti92_recv_ACK(NULL));
-  
-  ve->data = calloc(ve->size+4, 1);
-  TRYF(ti92_recv_XDP(&unused, ve->data)); 
-  memmove(ve->data, ve->data+4, ve->size);
+
+  ve->data = tifiles_calloc(ve->size + 4, 1);
+  TRYF(ti92_recv_XDP(&unused, ve->data));
+  memmove(ve->data, ve->data + 4, ve->size);
   TRYF(ti92_send_ACK());
-  
+
   TRYF(ti92_recv_EOT());
   TRYF(ti92_send_ACK());
 
-  if(++nvar > 1)
+  if (++nvar > 1)
     strcpy(content->comment, "Group file received by TiLP");
   else
     strcpy(content->comment, "Single file received by TiLP");
 
   content->num_entries = nvar;
-  if(mask_mode & MODE_RECEIVE_SINGLE_VAR)
-    { // single
-      ti9x_write_regular_file(NULL, content, &fn);
-      strcpy(filename, fn); free(fn);
-      ti9x_free_regular_content(content);
-    }
-  else if(mask_mode & MODE_RECEIVE_LAST_VAR)
-    { // group
-      ti9x_write_regular_file(filename, content, NULL);
-      ti9x_free_regular_content(content);
-    }
+  if (mask_mode & MODE_RECEIVE_SINGLE_VAR) {	// single
+    ti9x_write_regular_file(NULL, content, &fn);
+    strcpy(filename, fn);
+    tifiles_free(fn);
+    ti9x_free_regular_content(content);
+  } else if (mask_mode & MODE_RECEIVE_LAST_VAR) {	// group
+    ti9x_write_regular_file(filename, content, NULL);
+    ti9x_free_regular_content(content);
+  }
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
 
   PAUSE(PAUSE_BETWEEN_VARS);
 
-  return 0;		     
+  return 0;
 }
 
 int ti92_send_var(const char *filename, int mask_mode, char **actions)
 {
   Ti9xRegular content = { 0 };
   int i;
-  uint16_t status;  
+  uint16_t status;
 
-  DISPLAY("Sending variable(s)...\n");
+  DISPLAY(_("Sending variable(s)...\n"));
 
   LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
 
-  sprintf(update->label_text, "Sending variable(s)...");
+  sprintf(update->label_text, _("Sending variable(s)..."));
   update_label();
-  
+
   TRYF(ti9x_read_regular_file(filename, &content));
-  
-  for(i=0; i<content.num_entries; i++)
-    {
-      TiVarEntry *entry = &(content.entries[i]);
-      uint8_t buffer[65536+4] = { 0 };
-      uint8_t full_name[18], varname[18];
 
-      if(actions == NULL) // backup or old behaviour
-        strcpy(varname, entry->name);
-      else if(actions[i][0] == ACT_SKIP)
-        {
-          DISPLAY(" '%s' has been skipped !\n", entry->name);
-          continue;
-        }
-      else if(actions[i][0] == ACT_OVER)
-        strcpy(varname, actions[i]+1);
+  for (i = 0; i < content.num_entries; i++) {
+    TiVarEntry *entry = &(content.entries[i]);
+    uint8_t buffer[65536 + 4] = { 0 };
+    uint8_t full_name[18], varname[18];
 
-      if(mask_mode & MODE_LOCAL_PATH)
-	strcpy(full_name, varname);
-      else {
-	strcpy(full_name, entry->folder);
-	strcat(full_name, "\\");
-	strcat(full_name, varname);
-      }
+    if (actions == NULL)	// backup or old behaviour
+      strcpy(varname, entry->name);
+    else if (actions[i][0] == ACT_SKIP) {
+      DISPLAY(_(" '%s' has been skipped !\n"), entry->name);
+      continue;
+    } else if (actions[i][0] == ACT_OVER)
+      strcpy(varname, actions[i] + 1);
 
-      TRYF(ti92_send_VAR(entry->size, entry->type, varname));
-      TRYF(ti92_recv_ACK(NULL));
-        
-      TRYF(ti92_recv_CTS());
-      TRYF(ti92_send_ACK());
-              
-      memcpy(buffer+4, entry->data, entry->size);
-      TRYF(ti92_send_XDP(entry->size+4, buffer));
-      TRYF(ti92_recv_ACK(&status));
-      
-      TRYF(ti92_send_EOT());
-      TRYF(ti92_recv_ACK(NULL));
-
-      DISPLAY("\n");
+    if (mask_mode & MODE_LOCAL_PATH)
+      strcpy(full_name, varname);
+    else {
+      strcpy(full_name, entry->folder);
+      strcat(full_name, "\\");
+      strcat(full_name, varname);
     }
+
+    sprintf(update->label_text, _("Sending '%s'"), full_name);
+    update_label();
+
+    TRYF(ti92_send_VAR(entry->size, entry->type, varname));
+    TRYF(ti92_recv_ACK(NULL));
+
+    TRYF(ti92_recv_CTS());
+    TRYF(ti92_send_ACK());
+
+    memcpy(buffer + 4, entry->data, entry->size);
+    TRYF(ti92_send_XDP(entry->size + 4, buffer));
+    TRYF(ti92_recv_ACK(&status));
+
+    TRYF(ti92_send_EOT());
+    TRYF(ti92_recv_ACK(NULL));
+
+    DISPLAY("\n");
+  }
 
   ti9x_free_regular_content(&content);
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();
-  
+
   return 0;
 }
 
@@ -469,7 +466,7 @@ int ti92_send_flash(const char *filename, int mask_mode)
   return ERR_VOID_FUNCTION;
 }
 
-int ti92_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve)
+int ti92_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve)
 {
   return ERR_VOID_FUNCTION;
 }
@@ -478,9 +475,8 @@ int ti92_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve)
 #define ROMSIZE (1024*1024)
 
 int ti92_dump_rom(const char *filename, int mask_mode)
-{ 
-  int i, j;
-  int total;
+{
+  int i, j, k;
   uint8_t data;
   time_t start, elapsed, estimated, remaining;
   char buffer[257];
@@ -489,24 +485,23 @@ int ti92_dump_rom(const char *filename, int mask_mode)
   FILE *f, *file;
   uint16_t checksum, sum;
 
-  DISPLAY("ROM dumping...\n");
+  DISPLAY(_("ROM dumping...\n"));
 
   // Copies ROM dump program into a file
   f = fopen(DUMP_ROM92_FILE, "wb");
-  if(f == NULL)
+  if (f == NULL)
     return ERR_FILE_OPEN;
-  
-  fwrite(romDump92f2, sizeof(unsigned char), 
-	 romDumpSize92f2, f);
-  
+
+  fwrite(romDump92f2, sizeof(unsigned char), romDumpSize92f2, f);
+
   fclose(f);
-  
+
   // Transfer program to calc
   TRYF(ti92_send_var(DUMP_ROM92_FILE, MODE_SEND_ONE_VAR, NULL));
   unlink(DUMP_ROM92_FILE);
-  
+
   // Launch calculator program by remote control
-  sprintf(update->label_text, "Launching...");
+  sprintf(update->label_text, _("Launching..."));
   update_label();
 
   TRY(ti92_send_key(KEY92P_CLEAR));
@@ -531,55 +526,59 @@ int ti92_dump_rom(const char *filename, int mask_mode)
 
   // Open file
   file = fopen(filename, "wb");
-  if(file == NULL)
+  if (file == NULL)
     return ERR_OPEN_FILE;
-  
+
   LOCK_TRANSFER();
   TRYF(cable->open());
   update_start();
-  
+
   // Receive it now blocks per blocks (1024 + CHK)
   update_start();
-  sprintf(update->label_text, "Receiving...");
+  sprintf(update->label_text, _("Receiving..."));
   update_label();
 
   start = time(NULL);
-  total = mask_mode * ROMSIZE;
-  update->total = total;
 
-  for(i=0; i<mask_mode*1024; i++)
-    {
-      sum = 0;
-      for (j=0; j<1024; j++)
-	{
-	  TRY(cable->get(&data));
-	  fprintf(file, "%c", data);
-	  sum += data;
+  for (i = 0, k = 0; i < mask_mode * 1024; i++) {
+    sum = 0;
+    update->total = 1024;
 
-          update->percentage = (float)j/1024;
-          update_pbar();
-          if(update->cancel) return -1;
-	}
+    for (j = 0; j < 1024; j++) {
       TRY(cable->get(&data));
-      checksum = data << 8;
-      TRY(cable->get(&data));
-      checksum |= data;
-      if(sum != checksum) return ERR_CHECKSUM;
-      TRY(cable->put(0xda));
+      fprintf(file, "%c", data);
+      sum += data;
 
-      update->count = 1024*mask_mode;
-      update->main_percentage = (float)i/(1024*mask_mode);
-      if(update->cancel) return -1;
-
-      elapsed = (long)difftime(time(NULL), start);
-      estimated = (long)(elapsed * (float)(1024*mask_mode) / i);
-      remaining = (long)difftime(estimated, elapsed);
-      sprintf(buffer, "%s", ctime(&remaining));
-      sscanf(buffer, "%3s %3s %i %s %i", tmp,
-	     tmp, &pad, tmp, &pad);
-      sprintf(update->label_text, "Remaining (mm:ss): %s", tmp+3);
-      update_label();
+      update->count = j;
+      update_pbar();
+      if (update->cancel)
+	return -1;
     }
+
+    TRY(cable->get(&data));
+    checksum = data << 8;
+    TRY(cable->get(&data));
+    checksum |= data;
+    if (sum != checksum)
+      return ERR_CHECKSUM;
+    TRY(cable->put(0xda));
+
+    update->count = 1024 * mask_mode;
+    update->main_percentage = (float) i / (1024 * mask_mode);
+    if (update->cancel)
+      return -1;
+
+    elapsed = (long) difftime(time(NULL), start);
+    estimated = (long) (elapsed * (float) (1024 * mask_mode) / i);
+    remaining = (long) difftime(estimated, elapsed);
+    sprintf(buffer, "%s", ctime(&remaining));
+    sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
+    sprintf(update->label_text, _("Remaining (mm:ss): %s"), tmp + 3);
+    update_label();
+  }
+
+  TRY(cable->put(0xcc));	// make ROM dumping program exit.
+  fclose(file);
 
   TRYF(cable->close());
   UNLOCK_TRANSFER();

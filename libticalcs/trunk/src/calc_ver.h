@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
 #  include <config.h>
 #endif
 
-#define LIB_FILES_VERSION_REQUIRED  "0.3.6"
+#define LIB_FILES_VERSION_REQUIRED  "0.3.9"	// useless with pkg-config
 
 #ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.2.2"
+# define LIBTICALCS_VERSION "4.4.6"
 #else
 # define LIBTICALCS_VERSION VERSION
 #endif

@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,21 +51,9 @@
 #  define N_(String) (String)
 #endif
 
-/* Taken from Gimp Win32 */
-/*
-#define INIT_LOCALE( domain )	G_STMT_START{	\
-	gtk_set_locale ();			\
-	setlocale (LC_NUMERIC, "C");		\
-	bindtextdomain (domain, LOCALEDIR);	\
-	textdomain (domain);			\
-				}G_STMT_END
-*/
-
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW__)
 # undef PACKAGE
-# define PACKAGE "libticalcs"    	// name of package
-# define PACKAGE_LOCALE_DIR ""		// place of the translated file
+# define PACKAGE "ticalcs"	// name of package
 #endif
 
 #endif
-

@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,28 +35,29 @@ extern int ticalcs_calc_type;
 #define EXTRAS ((ticalcs_calc_type == CALC_TI83P) ? 2 : 0)
 
 /* Variable (std var header: NUL padded, fixed length) */
-int ti73_send_VAR(uint16_t varsize, uint8_t vartype, char *varname, 
+int ti73_send_VAR(uint16_t varsize, uint8_t vartype, char *varname,
 		  uint8_t varattr)
 {
   uint8_t buffer[16];
 
-  DISPLAY(" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n", 
-	  varsize, varsize, vartype, varname, varattr);
+  DISPLAY
+      (" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n",
+       varsize, varsize, vartype, varname, varattr);
 
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
-  memcpy(buffer+3, varname, 8);
+  memcpy(buffer + 3, varname, 8);
   buffer[11] = 0x00;
-  buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;  
+  buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  if(vartype != TI7383_BKUP) { // backup: special header
-    TRYF(send_packet(PC_TI7383, CMD_VAR, 11+EXTRAS, buffer));
-    pad_buffer(buffer+3, '\0');
+  if (vartype != TI7383_BKUP) {	// backup: special header
+    pad_buffer(buffer + 3, '\0');
+    TRYF(send_packet(PC_TI7383, CMD_VAR, 11 + EXTRAS, buffer));
   } else {
-    TRYF(send_packet(PC_TI7383, CMD_VAR,  9, buffer));
+    TRYF(send_packet(PC_TI7383, CMD_VAR, 9, buffer));
   }
-  
+
   return 0;
 }
 
@@ -65,9 +66,11 @@ int ti73_send_VAR2(uint32_t length, uint8_t type, uint8_t flag,
 		   uint16_t offset, uint16_t page)
 {
   uint8_t buffer[11];
-  
-  DISPLAY(" PC->TI: VAR (size=0x%04X=%i, id=%02X, flag=%02X, offset=%04X, page=%02X)\n", length, length, type, flag, offset, page);
-  
+
+  DISPLAY
+      (" PC->TI: VAR (size=0x%04X=%i, id=%02X, flag=%02X, offset=%04X, page=%02X)\n",
+       length, length, type, flag, offset, page);
+
   buffer[0] = LSB(LSW(length));
   buffer[1] = MSB(LSW(length));
   buffer[2] = type;
@@ -79,8 +82,8 @@ int ti73_send_VAR2(uint32_t length, uint8_t type, uint8_t flag,
   buffer[8] = LSB(page);
   buffer[9] = MSB(page);
 
-  TRYF(send_packet(PC_TI7383, CMD_VAR,  10, buffer));
-  
+  TRYF(send_packet(PC_TI7383, CMD_VAR, 10, buffer));
+
   return 0;
 }
 
@@ -88,15 +91,15 @@ int ti73_send_CTS(void)
 {
   DISPLAY(" PC->TI: CTS\n");
   TRYF(send_packet(PC_TI7383, CMD_CTS, 0, NULL));
-   
+
   return 0;
 }
 
-int ti73_send_XDP(int length, uint8_t *data)
+int ti73_send_XDP(int length, uint8_t * data)
 {
   DISPLAY(" PC->TI: XDP (0x%04X = %i bytes)\n", length, length);
   TRYF(send_packet(PC_TI7383, CMD_XDP, length, data));
-  
+
   return 0;
 }
 
@@ -118,7 +121,7 @@ int ti73_send_SKIP(uint8_t rej_code)
   DISPLAY(" PC->TI: SKIP\n");
   TRYF(send_packet(PC_TI7383, CMD_SKIP, 1, &rej_code));
   DISPLAY(" (rejection code = %i)\n", rej_code);
-  
+
   return 0;
 }
 
@@ -126,12 +129,12 @@ int ti73_send_ACK(void)
 {
   DISPLAY(" PC->TI: ACK\n");
   TRYF(send_packet(PC_TI7383, CMD_ACK, 2, NULL));
-  
+
   return 0;
 }
 
 int ti73_send_ERR(void)
-{         
+{
   DISPLAY(" PC->TI: ERR\n");
   TRYF(send_packet(PC_TI7383, CMD_ERR, 2, NULL));
 
@@ -142,7 +145,7 @@ int ti73_send_RDY(void)
 {
   DISPLAY(" PC->TI: RDY?\n");
   TRYF(send_packet(PC_TI7383, CMD_RDY, 2, NULL));
-  
+
   return 0;
 }
 
@@ -150,7 +153,7 @@ int ti73_send_SCR(void)
 {
   DISPLAY(" PC->TI: SCR\n");
   TRYF(send_packet(PC_TI7383, CMD_SCR, 2, NULL));
-  
+
   return 0;
 }
 
@@ -181,24 +184,25 @@ int ti73_send_REQ(uint16_t varsize, uint8_t vartype, char *varname,
 {
   uint8_t buffer[16] = { 0 };
   uint8_t trans[9];
-      
+
   tifiles_translate_varname(varname, trans, vartype);
-  DISPLAY(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n", 
-	  varsize, varsize, vartype, trans, varattr);
+  DISPLAY
+      (" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n",
+       varsize, varsize, vartype, trans, varattr);
 
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
-  memcpy(buffer+3, varname, 8);
-  pad_buffer(buffer+3, '\0');
+  memcpy(buffer + 3, varname, 8);
+  pad_buffer(buffer + 3, '\0');
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  if(vartype != TI83p_IDLIST) {
-    TRYF(send_packet(PC_TI7383, CMD_REQ, 11+EXTRAS, buffer));
+  if (vartype != TI83p_IDLIST) {
+    TRYF(send_packet(PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer));
   } else {
     TRYF(send_packet(PC_TI7383, CMD_REQ, 11, buffer));
-  }  
+  }
 
   return 0;
 }
@@ -208,17 +212,17 @@ int ti73_send_REQ2(uint16_t appsize, uint8_t apptype, char *appname,
 		   uint8_t appattr)
 {
   uint8_t buffer[16] = { 0 };
-      
-  DISPLAY(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)\n", 
+
+  DISPLAY(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)\n",
 	  appsize, appsize, apptype, appname);
 
   buffer[0] = LSB(appsize);
   buffer[1] = MSB(appsize);
   buffer[2] = apptype;
-  memcpy(buffer+3, appname, 8);
-  pad_buffer(buffer+3, '\0');
+  memcpy(buffer + 3, appname, 8);
+  pad_buffer(buffer + 3, '\0');
 
-  TRYF(send_packet(TI83p_PC, CMD_REQ, 11, buffer)); // TI_PC73 !
+  TRYF(send_packet(TI83p_PC, CMD_REQ, 11, buffer));	// TI_PC73 !
 
   return 0;
 }
@@ -229,30 +233,31 @@ int ti73_send_RTS(uint16_t varsize, uint8_t vartype, char *varname,
 {
   uint8_t buffer[16];
   uint8_t trans[9];
-                             
+
   tifiles_translate_varname(varname, trans, vartype);
-  DISPLAY(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n", 
-	  varsize, varsize, vartype, trans, varattr);
-  
+  DISPLAY
+      (" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n",
+       varsize, varsize, vartype, trans, varattr);
+
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
-  memcpy(buffer+3, varname, 8);
+  memcpy(buffer + 3, varname, 8);
   buffer[11] = 0x00;
-  buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;  
+  buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  if(vartype != TI7383_BKUP) { // backup: special header
-    TRYF(send_packet(PC_TI7383, CMD_RTS, 11+EXTRAS, buffer));
-    pad_buffer(buffer+3, '\0');
+  if (vartype != TI7383_BKUP) {	// backup: special header
+    pad_buffer(buffer + 3, '\0');
+    TRYF(send_packet(PC_TI7383, CMD_RTS, 11 + EXTRAS, buffer));
   } else {
-    TRYF(send_packet(PC_TI7383, CMD_RTS,  9, buffer));
+    TRYF(send_packet(PC_TI7383, CMD_RTS, 9, buffer));
   }
-  
+
   return 0;
 }
 
-int ti73_recv_VAR(uint16_t *varsize, uint8_t *vartype, char *varname,
-		  uint8_t *varattr)
+int ti73_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname,
+		  uint8_t * varattr)
 {
   uint8_t host, cmd;
   uint8_t buffer[16] = { 0 };
@@ -261,49 +266,58 @@ int ti73_recv_VAR(uint16_t *varsize, uint8_t *vartype, char *varname,
 
   DISPLAY(" TI->PC: VAR");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
-  if(cmd == CMD_EOT) return ERR_EOT;	// not really an error
-  if(cmd == CMD_SKIP) return ERR_VAR_REJECTED;
-  if(cmd != CMD_VAR) return ERR_INVALID_CMD;	
-  if((length != (11+EXTRAS)) && (length != 9)) return ERR_INVALID_PACKET; 
- 
+  if (cmd == CMD_EOT)
+    return ERR_EOT;		// not really an error
+  if (cmd == CMD_SKIP)
+    return ERR_VAR_REJECTED;
+  if (cmd != CMD_VAR)
+    return ERR_INVALID_CMD;
+  if ((length != (11 + EXTRAS)) && (length != 9))
+    return ERR_INVALID_PACKET;
+
   *varsize = buffer[0] | (buffer[1] << 8);
   *vartype = buffer[2];
-  memcpy(varname, buffer+3, 8);
-  varname[8]='\0';
+  memcpy(varname, buffer + 3, 8);
+  varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
   tifiles_translate_varname(varname, trans, *vartype);
-  DISPLAY(" (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)", 
+  DISPLAY(" (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *varsize, *vartype, trans, *varattr);
   DISPLAY(".\n");
-  
+
   return 0;
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
-int ti73_recv_VAR2(uint16_t *length, uint8_t *type, char *name,
-		   uint16_t *offset, uint16_t *page)
+int ti73_recv_VAR2(uint16_t * length, uint8_t * type, char *name,
+		   uint16_t * offset, uint16_t * page)
 {
   uint8_t host, cmd;
   uint8_t buffer[16] = { 0 };
-  uint16_t len;  
+  uint16_t len;
 
   DISPLAY(" TI->PC: VAR");
   TRYF(recv_packet(&host, &cmd, &len, buffer));
-  if(cmd == CMD_EOT) return ERR_EOT;	// not really an error
-  if(cmd == CMD_SKIP) return ERR_VAR_REJECTED;
-  if(cmd != CMD_VAR) return ERR_INVALID_CMD;	
-  if(len != 10) return ERR_INVALID_PACKET; 
- 
+  if (cmd == CMD_EOT)
+    return ERR_EOT;		// not really an error
+  if (cmd == CMD_SKIP)
+    return ERR_VAR_REJECTED;
+  if (cmd != CMD_VAR)
+    return ERR_INVALID_CMD;
+  if (len != 10)
+    return ERR_INVALID_PACKET;
+
   *length = buffer[0] | (buffer[1] << 8);
   *type = buffer[2];
-  memcpy(name, buffer+3, 3);
-  name[3]='\0';
+  memcpy(name, buffer + 3, 3);
+  name[3] = '\0';
   *offset = buffer[6] | (buffer[7] << 8);
-  *page   = buffer[8] | (buffer[9] << 8);
-  
-  DISPLAY(" (size=0x%04X=%i, type=%02X, name=<%s>, offset=%04X, page=%02X)\n", 
-	  *length, *length, *type, name, *offset, *page & 0xff);
+  *page = buffer[8] | (buffer[9] << 8);
+
+  DISPLAY
+      (" (size=0x%04X=%i, type=%02X, name=<%s>, offset=%04X, page=%02X)\n",
+       *length, *length, *type, name, *offset, *page & 0xff);
 
   return 0;
 }
@@ -312,43 +326,53 @@ int ti73_recv_CTS(uint16_t length)
 {
   uint8_t host, cmd;
   uint16_t len;
-  
+  uint8_t buffer[5];
+
   DISPLAY(" TI->PC: CTS");
-  TRYF(recv_packet(&host, &cmd, &len, NULL));
-  if(cmd == CMD_SKIP) return ERR_VAR_REJECTED;
-  else if(cmd != CMD_CTS) return ERR_INVALID_CMD;
-  if(length != len) return ERR_CTS_ERROR;
+  TRYF(recv_packet(&host, &cmd, &len, buffer));
+  if (cmd == CMD_SKIP)
+    return ERR_VAR_REJECTED;
+  else if (cmd != CMD_CTS)
+    return ERR_INVALID_CMD;
+  if (length != len)
+    return ERR_CTS_ERROR;
   DISPLAY(".\n");
-  
+
   return 0;
 }
 
-int ti73_recv_SKIP(uint8_t *rej_code)
-{
-    uint8_t host, cmd;
-    uint16_t length;
-    *rej_code = 0;
-    
-    DISPLAY(" TI->PC: SKIP");
-    TRYF(recv_packet(&host, &cmd, &length, rej_code));
-    if(cmd == CMD_CTS) { DISPLAY("CTS"); return 0; }
-    if(cmd != CMD_SKIP) return ERR_INVALID_CMD;    
-    DISPLAY(" (rejection code = %i)", *rej_code);
-    DISPLAY(".\n");
-    
-    return 0;
-}
-
-int ti73_recv_XDP(uint16_t *length, uint8_t *data)
+int ti73_recv_SKIP(uint8_t * rej_code)
 {
   uint8_t host, cmd;
-  
+  uint16_t length;
+  uint8_t buffer[5];
+  *rej_code = 0;
+
+  DISPLAY(" TI->PC: SKIP");
+  TRYF(recv_packet(&host, &cmd, &length, buffer));
+  if (cmd == CMD_CTS) {
+    DISPLAY("CTS");
+    return 0;
+  }
+  if (cmd != CMD_SKIP)
+    return ERR_INVALID_CMD;
+  DISPLAY(" (rejection code = %i)", *rej_code = buffer[0]);
+  DISPLAY(".\n");
+
+  return 0;
+}
+
+int ti73_recv_XDP(uint16_t * length, uint8_t * data)
+{
+  uint8_t host, cmd;
+
   DISPLAY(" TI->PC: XDP");
   TRYF(recv_packet(&host, &cmd, length, data));
-  if(cmd != CMD_XDP) return ERR_INVALID_CMD;
+  if (cmd != CMD_XDP)
+    return ERR_INVALID_CMD;
   DISPLAY(" (%04X=%i bytes)", *length, *length);
   DISPLAY(".\n");
-  
+
   return 0;
 }
 
@@ -358,45 +382,48 @@ int ti73_recv_XDP(uint16_t *length, uint8_t *data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti73_recv_ACK(uint16_t *status)
-{   
+int ti73_recv_ACK(uint16_t * status)
+{
   uint8_t host, cmd;
-  uint16_t sts;
-  
-  
+  uint16_t length;
+  uint8_t buffer[5];
+
   DISPLAY(" TI->PC: ACK");
-  TRYF(recv_packet(&host, &cmd, &sts, NULL));
-  if(status != NULL)
-    *status = sts;
-  else if(sts != 0x0000) return ERR_NACK;
-  if(cmd != CMD_ACK) return ERR_INVALID_CMD;
+  TRYF(recv_packet(&host, &cmd, &length, buffer));
+  if (status != NULL)
+    *status = length;
+  else if (length != 0x0000)
+    return ERR_NACK;
+  if (cmd != CMD_ACK)
+    return ERR_INVALID_CMD;
 
   DISPLAY(".\n");
-  
+
   return 0;
 }
 
-int ti73_recv_RTS(uint16_t *varsize, uint8_t *vartype, char *varname,
-		  uint8_t *varattr)
+int ti73_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname,
+		  uint8_t * varattr)
 {
   uint8_t host, cmd;
   uint8_t buffer[16];
   uint8_t trans[9];
 
-  
+
   DISPLAY(" TI->PC: RTS");
   TRYF(recv_packet(&host, &cmd, varsize, buffer));
-  if(cmd != CMD_RTS) return ERR_INVALID_CMD;
+  if (cmd != CMD_RTS)
+    return ERR_INVALID_CMD;
   *varsize = buffer[0] | (buffer[1] << 8);
   *vartype = buffer[2];
-  memcpy(varname, buffer+3, 8);
-  varname[8]='\0';
+  memcpy(varname, buffer + 3, 8);
+  varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
   tifiles_translate_varname(varname, trans, *vartype);
-  DISPLAY(" (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)", 
+  DISPLAY(" (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *varsize, *vartype, trans, *varattr);
   DISPLAY(".\n");
-  
+
   return 0;
 }

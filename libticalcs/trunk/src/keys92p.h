@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@
 #define KEY92P_COS    260
 #define KEY92P_TAN    261
 #define KEY92P_POWER  94
-#define KEY92P_LP     40  // Left parenthesis
-#define KEY92P_RP     41  // Right parenthesis
+#define KEY92P_LP     40	// Left parenthesis
+#define KEY92P_RP     41	// Right parenthesis
 #define KEY92P_COMMA  44
 #define KEY92P_DIVIDE 47
 #define KEY92P_MULT   42
@@ -112,6 +112,3 @@
 extern const TicalcKey TI92P_KEYS[];
 
 #endif
-
-
-

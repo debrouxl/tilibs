@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,23 +28,21 @@ int ti86_isready(void);
 
 int ti86_send_key(uint16_t key);
 
-int ti86_screendump(uint8_t **bitmap, int mask_mode,
-		    TicalcScreenCoord *sc);
+int ti86_screendump(uint8_t ** bitmap, int mask_mode,
+		    TicalcScreenCoord * sc);
 
-int ti86_directorylist(TNode **tree, uint32_t *memory);
+int ti86_directorylist(TNode ** tree, uint32_t * memory);
 
 int ti86_send_backup(const char *filename, int mask_mode);
 int ti86_recv_backup(const char *filename, int mask_mode);
 
 int ti86_send_var(const char *filename, int mask_mode, char **actions);
-int ti86_recv_var(      char *filename, int mask_mode, TiVarEntry *ve);
+int ti86_recv_var(char *filename, int mask_mode, TiVarEntry * ve);
 
 int ti86_send_flash(const char *filename, int mask_mode);
-int ti86_recv_flash(const char *filename, int mask_mode, TiVarEntry *ve);
+int ti86_recv_flash(const char *filename, int mask_mode, TiVarEntry * ve);
 int ti86_get_idlist(char *idlist);
 
 int ti86_dump_rom(const char *filename, int mask_mode);
 
 #endif
-
-

@@ -1,5 +1,5 @@
 /*  libticalcs - calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2002  Romain Lievin
+ *  Copyright (C) 1999-2003  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,12 +23,8 @@
 #include "ti89.h"
 #include "ti86.h"
 #include "ti85.h"
-#include "ti83p.h"
 #include "ti83.h"
 #include "ti82.h"
 #include "ti73.h"
 
 #endif
-
-
-
