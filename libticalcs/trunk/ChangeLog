@@ -1,39 +1,37 @@
-* 20011119 : v2.0.0-osx0.0.3
-	* First import.
-* 20011119 : v2.0.3-osx0.0.3
-	* "Yes, it finally happens !" -- Linus
-	     * ie. first merge with Romain's tree
-	     => Well, at least on my side.
-* 20011209 : v2.0.7-osx0.0.4
-	* Merge up to 2.0.7
-* 20011216 : v2.0.7-osx0.0.4
-	* Fixed paths in PB project files
-* 20020106 : v3.0.2-osx0.0.4
-	* Happy new year !
-	    => Copyright 1999-2002
-	* Merged in libticalcs v3
-* 20020112 : v3.0.2-osx0.1.0
-	* Misc fixes.
-* 20020119 : v3.0.5-osx0.1.0
-	* Merge up to 3.0.5.
+* 20020512 : v3.3.7
+	* Merge up to 3.3.7.
+	* Converted to ProjectBuilder 2.0 Beta.
+* 20020305 : v3.3.1
+	* Merge up to 3.3.1.
+* 20020224 : v3.2.0
+	* Merge up to 3.2.0.
+* 20020214 : v3.1.8
+	* Merge up to 3.1.8.
+* 20020214 : v3.1.7
+	* Final merge, step1.
+* 20020213 : v3.1.3-osx0.1.0
+	* Merge up to libticalcs 3.1.3.
+* 20020126 : v3.0.7-osx0.1.0
+	* Install TI-73 related header files (reported by: Benjamin Esham)
 * 20020121 : v3.0.7-osx0.1.0
 	* Merge up to 3.0.7.
 	* Fixed ticalc_83p_89_92p_isread() mess.
 	* Fixed send_key() mess.
-* 20020126 : v3.0.7-osx0.1.0
-	* Install TI-73 related header files (reported by: Benjamin Esham)
-* 20020213 : v3.1.3-osx0.1.0
-	* Merge up to libticalcs 3.1.3.
-* 20020214 : v3.1.7
-	* Final merge, step1.
-* 20020214 : v3.1.8
-	* Merge up to 3.1.8.
-* 20020224 : v3.2.0
-	* Merge up to 3.2.0.
-* 20020305 : v3.3.1
-	* Merge up to 3.3.1.
-* 20020512 : v3.3.7
-	* Merge up to 3.3.7.
-	* Converted to ProjectBuilder 2.0 Beta.
-* 20020602 : v3.3.8
-	* Merge up to 3.3.8.
+* 20020119 : v3.0.5-osx0.1.0
+	* Merge up to 3.0.5.
+* 20020112 : v3.0.2-osx0.1.0
+	* Misc fixes.
+* 20020106 : v3.0.2-osx0.0.4
+	* Happy new year !
+	    => Copyright 1999-2002
+	* Merged in libticalcs v3
+* 20011216 : v2.0.7-osx0.0.4
+	* Fixed paths in PB project files
+* 20011209 : v2.0.7-osx0.0.4
+	* Merge up to 2.0.7
+* 20011119 : v2.0.3-osx0.0.3
+	* "Yes, it finally happens !" -- Linus
+	     * ie. first merge with Romain's tree
+	     => Well, at least on my side.
+* 20011119 : v2.0.0-osx0.0.3
+	* First import.
