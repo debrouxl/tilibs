@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: slv_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -110,7 +110,7 @@ static void find_tigl_device(void)
       if ((dev->descriptor.idVendor == TIGL_VENDOR_ID) &&
 	  (dev->descriptor.idProduct == TIGL_PRODUCT_ID)) {
 	/* keep track of the TIGL device */
-	DISPLAY(_("TIGL-USB found with libusb.\n"));
+	DISPLAY(_("libticables: TIGL-USB found.\n"));
 
 	tigl_dev = dev;
 	break;
@@ -133,14 +133,14 @@ static int enumerate_tigl_device(void)
   /* find all usb busses on the system */
   ret = usb_find_busses();
   if (ret < 0) {
-    DISPLAY_ERR(_("usb_find_busses: %s\n"), usb_strerror());
+    DISPLAY_ERR(_("libticables: usb_find_busses (%s).\n"), usb_strerror());
     return ERR_LIBUSB_OPEN;
   }
 
   /* find all usb devices on all discovered busses */
   ret = usb_find_devices();
   if (ret < 0) {
-    DISPLAY_ERR(_("usb_find_devices: %s\n"), usb_strerror());
+    DISPLAY_ERR(_("libticables: usb_find_devices (%s).\n"), usb_strerror());
     return ERR_LIBUSB_OPEN;
   }
 
@@ -154,13 +154,13 @@ static int enumerate_tigl_device(void)
       /* interface 0, configuration 1 */
       ret = usb_claim_interface(tigl_han, 0);
       if (ret < 0) {
-	DISPLAY_ERR("usb_claim_interface: %s\n", usb_strerror());
+	DISPLAY_ERR("libticables: usb_claim_interface (%s).\n", usb_strerror());
 	return ERR_LIBUSB_INIT;
       }
 
       ret = usb_set_configuration(tigl_han, 1);
       if (ret < 0) {
-	DISPLAY_ERR("usb_set_configuration: %s\n", usb_strerror());
+	DISPLAY_ERR("libticables: usb_set_configuration (%s).\n", usb_strerror());
 	return ERR_LIBUSB_INIT;
       }
 
@@ -201,15 +201,15 @@ int slv_open2()
   /* Reset endpoints */
   ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   if (ret < 0) {
-    DISPLAY_ERR("usb_clear_halt: %s\n", usb_strerror());
+    DISPLAY_ERR("libticables: usb_clear_halt (%s).\n", usb_strerror());
 
     ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     if (ret < 0) {
-      DISPLAY_ERR("usb_resetep: %s\n", usb_strerror());
+      DISPLAY_ERR("libticables: usb_resetep (%s).\n", usb_strerror());
 
       ret = usb_reset(tigl_han);
       if (ret < 0) {
-	DISPLAY_ERR("usb_reset: %s\n", usb_strerror());
+	DISPLAY_ERR("libticables: usb_reset (%s).\n", usb_strerror());
 	return ERR_LIBUSB_RESET;
       }
     }
@@ -217,15 +217,15 @@ int slv_open2()
 
   ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   if (ret < 0) {
-    DISPLAY_ERR("usb_clear_halt: %s\n", usb_strerror());
+    DISPLAY_ERR("libticables: usb_clear_halt (%s).\n", usb_strerror());
 
     ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     if (ret < 0) {
-      DISPLAY_ERR("usb_resetep: %s\n", usb_strerror());
+      DISPLAY_ERR("libticables: usb_resetep (%s).\n", usb_strerror());
 
       ret = usb_reset(tigl_han);
       if (ret < 0) {
-	DISPLAY_ERR("usb_reset: %s\n", usb_strerror());
+	DISPLAY_ERR("libticables: usb_reset (%s).\n", usb_strerror());
 	return ERR_LIBUSB_RESET;
       }
     }
@@ -272,7 +272,7 @@ int slv_put2(uint8_t data)
   /* Byte per byte */
   ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, &data, 1, (time_out * 10));
   if (ret <= 0) {
-    DISPLAY_ERR("usb_bulk_write: %s\n", usb_strerror());
+    DISPLAY_ERR("libticables: usb_bulk_write (%s).\n", usb_strerror());
     return ERR_WRITE_ERROR;
   }
 #else
@@ -283,7 +283,7 @@ int slv_put2(uint8_t data)
 	usb_bulk_write(tigl_han, TIGL_BULK_OUT, wBuf,
 		       nBytesWrite, (time_out * 10));
     if (ret <= 0) {
-      DISPLAY_ERR("usb_bulk_write: %s\n", usb_strerror());
+      DISPLAY_ERR("libticables: usb_bulk_write (%s).\n", usb_strerror());
       return ERR_WRITE_ERROR;
     }
     nBytesWrite = 0;
@@ -310,7 +310,7 @@ int slv_get2(uint8_t * data)
 		       nBytesWrite, (time_out * 10));
     nBytesWrite = 0;
     if (ret <= 0) {
-      DISPLAY_ERR("usb_bulk_write: %s\n", usb_strerror());
+      DISPLAY_ERR("libticables: usb_bulk_write (%s).\n", usb_strerror());
       return ERR_WRITE_ERROR;
     }
   }
@@ -326,12 +326,12 @@ int slv_get2(uint8_t * data)
       if (ret == 0)
 	DISPLAY_ERR
 	    (_
-	     ("usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"));
+	     ("libticables: weird, usb_bulk_read returns without any data; retrying for circumventing the quirk...\n"));
     }
     while (!ret);
 
     if (ret < 0) {
-      DISPLAY_ERR("usb_bulk_read: %s\n", usb_strerror());
+      DISPLAY_ERR("libticables: usb_bulk_read (%s).\n", usb_strerror());
       nBytesRead = 0;
       return ERR_READ_ERROR;
     }
@@ -376,7 +376,7 @@ int slv_check2(int *status)
 	return ERR_READ_TIMEOUT;
       if (ret == 0)
 	DISPLAY_ERR
-	    ("usb_bulk_read returns without any data. Retrying...\n");
+	    ("libticables: weird, usb_bulk_read returns without any data;  retrying...\n");
     }
     while (!ret);
 
@@ -421,7 +421,7 @@ int slv_supported2()
   return SUPPORT_ON;
 }
 
-int slv_register_cable2(TicableLinkCable * lc, TicableMethod method)
+int slv_register_cable2(TicableLinkCable * lc)
 {
   lc->init = slv_init2;
   lc->open = slv_open2;
@@ -438,11 +438,4 @@ int slv_register_cable2(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = NULL;
 
   return 0;
-}
-
-int slv_unregister_cable2(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

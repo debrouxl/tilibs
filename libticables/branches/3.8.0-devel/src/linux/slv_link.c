@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: slv_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -88,8 +88,7 @@ int slv_init()
   int mask = O_RDWR | O_NONBLOCK | O_SYNC;
 
   if ((dev_fd = open(io_device, mask)) == -1) {
-    DISPLAY(_("Unable to open this device: %s\n"), io_device);
-    DISPLAY(_("Is the tiusb.c module loaded ?\n"));
+    DISPLAY_ERROR(_("libticables: unable to open this device: %s.\n"), io_device);
     return ERR_OPEN_USB_DEV;
   }
 
@@ -108,7 +107,7 @@ int slv_open(void)
   {
     int arg = time_out;
     if (ioctl(dev_fd, IOCTL_TIUSB_TIMEOUT, arg) == -1) {
-      DISPLAY_ERROR(_("Unable to use IOCTL codes.\n"));
+      DISPLAY_ERROR(_("libticables: unable to set timeout (ioctl).\n"));
       return ERR_IOCTL;
     }
   }
@@ -119,7 +118,7 @@ int slv_open(void)
   {
     int arg = 0;
     if (ioctl(dev_fd, IOCTL_TIUSB_RESET_PIPES, arg) == -1) {
-      DISPLAY(_("Unable to use IOCTL codes.\n"));
+      DISPLAY(_("libticables: unable to reset pipes (ioctl).\n"));
       //return ERR_IOCTL;
     }
   }
@@ -199,10 +198,10 @@ int slv_get(uint8_t * data)
       ret = read(dev_fd, (void *) rBuf, MAX_PACKET_SIZE);
       if (toELAPSED(clk, time_out))
 	return ERR_READ_TIMEOUT;
-      if (ret == 0)
+      if (ret == 0)		// quirk (seems to be due to Cypress components)
 	DISPLAY_ERROR
 	    (_
-	     ("read returns without any data. Retrying for circumventing quirk...\n"));
+	     ("libticables: weird, read returns without any data; retrying to circumvent the quirk...\n"));
     }
     while (!ret);
 
@@ -284,7 +283,7 @@ int slv_supported()
   return SUPPORT_ON;
 }
 
-int slv_register_cable(TicableLinkCable * lc, TicableMethod method)
+int slv_register_cable(TicableLinkCable * lc)
 {
   lc->init = slv_init;
   lc->open = slv_open;
