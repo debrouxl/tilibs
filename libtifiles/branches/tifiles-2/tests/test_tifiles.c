@@ -40,44 +40,41 @@
 */
 static int compare_files(char *src, char *dst)
 {
-  FILE *fs, *fd;
-  int i;
-  int s, d;
-
-  fs = fopen(src, "rb");
-  fd = fopen(dst, "rb");
-
-  if( (fs == NULL) || (fd == NULL) )
+    FILE *fs, *fd;
+    int i;
+    int s, d;
+    
+    fs = fopen(src, "rb");
+    fd = fopen(dst, "rb");
+    
+    if( (fs == NULL) || (fd == NULL) )
     {
-      printf("Unable to open these files: <%s> & <%s>.\n", src, dst);
-      return -1;
+	printf("Unable to open these files: <%s> & <%s>.\n", src, dst);
+	return -1;
     }
-
-  while(!feof(fs))
+    
+    while(!feof(fs))
     {
-      if((s = fgetc(fs)) != (d = fgetc(fd)))
+	if((s = fgetc(fs)) != (d = fgetc(fd)))
 	{
-	  printf("\nFiles do not match !!!\n");
-	  printf("Offset: %08X %i\n", (int)ftell(fs), (int)ftell(fs));
-	  printf("Data  (src): %02X ", s);
-	  for(i=0; i<16 && !feof(fs); i++)
-	    printf("%02X ", fgetc(fs));
-	  printf("\n");
-	  printf("Data  (dst): %02X ", d);
-	  for(i=0; i<16 && !feof(fd); i++)
-	    printf("%02X ", fgetc(fd));
-	  printf("\n");
-	  return -1;
+	    printf("\nFiles do not match !!!\n");
+	    printf("Offset: %08X %i\n", (int)ftell(fs), (int)ftell(fs));
+	    printf("Data  (src): %02X ", s);
+	    for(i=0; i<16 && !feof(fs); i++)
+		printf("%02X ", fgetc(fs));
+	    printf("\n");
+	    printf("Data  (dst): %02X ", d);
+	    for(i=0; i<16 && !feof(fd); i++)
+		printf("%02X ", fgetc(fd));
+	    printf("\n");
+	    return -1;
 	}
     }
-
-  printf("\n--> Files match !\n");
-
-
-  return 0;
+    
+    printf("\n--> Files match !\n");
+   
+    return 0;
 }
-
-
 
 static int test_ti82_backup_support()
 {

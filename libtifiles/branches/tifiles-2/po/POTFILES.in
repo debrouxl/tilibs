@@ -4,12 +4,15 @@ src/error.c
 src/files8x.c
 src/files9x.c
 src/filesxx.c
-src/grp_ops.c
+src/grouped.c
 src/intelhex.c
-src/intrface.c
+src/logging.c
+src/malloc.c
 src/misc.c
-src/printl.c
-src/trans.c
+src/rwfile.c
+src/tifiles.c
+src/transcode.c
+src/type2str.c
 src/types73.c
 src/types82.c
 src/types83.c
@@ -21,6 +24,6 @@ src/types92.c
 src/types92p.c
 src/typesv2.c
 src/typesxx.c
-src/type2str.c
+
 
 

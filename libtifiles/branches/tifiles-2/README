@@ -30,6 +30,8 @@ or
   - A *BSD (FreeBSD) computer and C compiler (gcc)
 or 
   - A WIN32 computer and C compiler (MSVC or MinGW)
+and
+  - the GLib library (http://www.gtk.org)
 
 --------------------------------------------------------------------------
 Compilation

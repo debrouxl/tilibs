@@ -24,6 +24,8 @@
   Calcs: 73/82/83/83+/84+/85/86 & 89/89tm/92/92+/V200
 */
 
+#include <stdlib.h>
+#include <string.h>
 #include "tifiles.h"
 #include "error.h"
 #include "macros.h"

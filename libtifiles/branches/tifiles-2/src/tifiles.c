@@ -23,7 +23,15 @@
   This unit contains the interface of the libtifiles library.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <stdio.h>
+#include <string.h>
+#ifdef ENABLE_NLS
+#include <locale.h>
+#endif
 #include "gettext.h"
 #include "tifiles.h"
 #include "logging.h"
@@ -68,10 +76,10 @@ TIEXPORT int TICALL tifiles_library_init()
 	tifiles_info( _("tifiles library version %s\n"), LIBTIFILES_VERSION);
 
 #if defined(ENABLE_NLS)
-	tifiles_info "setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	tifiles_info "bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
+	tifiles_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	tifiles_info("bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, LOCALEDIR));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	tifiles_info "textdomain: <%s>\n", textdomain(PACKAGE));
+  	tifiles_info("textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
   	return (++tifiles_instance);

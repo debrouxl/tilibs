@@ -20,6 +20,13 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+#ifndef __WIN32__
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #include "gettext.h"
 #include "tifiles.h"
 #include "logging.h"

@@ -17,8 +17,8 @@ dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
 LT_CURRENT=0
-LT_REVISION=0
-LT_AGE=1
+LT_REVISION=1
+LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
 
@@ -59,6 +59,13 @@ AC_PROG_AWK
 # Checks for libraries.
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.13.1)
+
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
+CFLAGS="$GLIB_CFLAGS"
+LDFLAGS="$GLIB_LIBS"
 
 # Checks for header files.
 AC_HEADER_STDC

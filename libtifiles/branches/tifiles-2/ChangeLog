@@ -12,8 +12,9 @@ Log:
 	- glib is (heavily) used (strings, logging, ...)
 	- documentation system has been changed
 	- functions pointers have been removed
-	- library has been fuully documented
-
+	- library has been fully documented
+	- decreased number of headers to include (3).
+	
 ====[ Version II ]====
 
 - 05/03/2005, version 0.6.3: roms

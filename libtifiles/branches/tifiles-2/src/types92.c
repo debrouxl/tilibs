@@ -23,6 +23,7 @@
   Variable type ID and file extensions
 */
 
+#include <string.h>
 #include "gettext.h"
 #include "types92.h"
 #include "logging.h"

@@ -40,6 +40,4 @@ int fwrite_long(FILE * f, uint32_t data);
 
 int hexdump(uint8_t * ptr, int len);
 
-int is_regfile(const char *filename);
-
 #endif

@@ -86,7 +86,7 @@ typedef struct
  * A generic structure used to store the content of a TI9x FLASH file (os or app).
  **/
 typedef struct ti9x_flash Ti9xFlash;
-typedef struct ti9x_flash 
+struct ti9x_flash 
 {
   TiCalcModel model;
 

@@ -73,7 +73,10 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GENCAT = @GENCAT@
+GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 HAVE_ASPRINTF = @HAVE_ASPRINTF@
 HAVE_POSIX_PRINTF = @HAVE_POSIX_PRINTF@
@@ -88,6 +91,7 @@ INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
@@ -115,6 +119,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
@@ -171,34 +176,32 @@ AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libtifiles.la
-libtifilesincludedir = $(includedir)/tilp
+lib_LTLIBRARIES = libtifiles-2.la
+libtifilesincludedir = $(includedir)/tilp2
 libtifilesinclude_HEADERS = \
-	file_def.h file_err.h file_int.h file_ver.h \
-	files8x.h files9x.h filesxx.h \
-	grp_ops.h \
-	macros.h \
-	stdints.h \
-	tifiles.h \
-	types73.h types82.h types83.h types83p.h types85.h types86.h \
-	types89.h types92.h types92p.h typesv2.h typesxx.h
+	export.h stdints.h tifiles.h files8x.h files9x.h
 
 
 # build instructions
-libtifiles_la_LIBADD = @LTLIBINTL@
-libtifiles_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libtifiles_la_SOURCES = *.h \
+libtifiles_2_la_LIBADD = @LTLIBINTL@
+libtifiles_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libtifiles_2_la_SOURCES = *.h \
 	error.c \
 	files8x.c files9x.c filesxx.c \
-	grp_ops.c \
+	filetypes.c \
+	grouped.c \
 	intelhex.c \
-	intrface.c \
+	logging.c \
+	malloc.c \
 	misc.c \
-	printl.c \
-	trans.c \
-	types73.c types82.c types83.c types83p.c types85.c types86.c \
-	types89.c types92.c types92p.c typesv2.c typesxx.c \
-	type2str.c
+	rwfile.c \
+	tifiles.c \
+	transcode.c \
+	type2str.c \
+	types73.c types82.c types83.c types83p.c types84p.c \
+	types85.c types86.c \
+	types89.c types89t.c types92.c types92p.c typesv2.c \
+	typesxx.c
 
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -207,28 +210,32 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libtifiles_la_DEPENDENCIES =
-am_libtifiles_la_OBJECTS = error.lo files8x.lo files9x.lo filesxx.lo \
-	grp_ops.lo intelhex.lo intrface.lo misc.lo printl.lo trans.lo \
-	types73.lo types82.lo types83.lo types83p.lo types85.lo \
-	types86.lo types89.lo types92.lo types92p.lo typesv2.lo \
-	typesxx.lo type2str.lo
-libtifiles_la_OBJECTS = $(am_libtifiles_la_OBJECTS)
+libtifiles_2_la_DEPENDENCIES =
+am_libtifiles_2_la_OBJECTS = error.lo files8x.lo files9x.lo filesxx.lo \
+	filetypes.lo grouped.lo intelhex.lo logging.lo malloc.lo \
+	misc.lo rwfile.lo tifiles.lo transcode.lo type2str.lo \
+	types73.lo types82.lo types83.lo types83p.lo types84p.lo \
+	types85.lo types86.lo types89.lo types89t.lo types92.lo \
+	types92p.lo typesv2.lo typesxx.lo
+libtifiles_2_la_OBJECTS = $(am_libtifiles_2_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/error.Plo ./$(DEPDIR)/files8x.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/files9x.Plo ./$(DEPDIR)/filesxx.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/grp_ops.Plo ./$(DEPDIR)/intelhex.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/intrface.Plo ./$(DEPDIR)/misc.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/printl.Plo ./$(DEPDIR)/trans.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/type2str.Plo ./$(DEPDIR)/types73.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/types82.Plo ./$(DEPDIR)/types83.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/types83p.Plo ./$(DEPDIR)/types85.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/filetypes.Plo ./$(DEPDIR)/grouped.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/intelhex.Plo ./$(DEPDIR)/logging.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/malloc.Plo ./$(DEPDIR)/misc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/rwfile.Plo ./$(DEPDIR)/tifiles.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/transcode.Plo ./$(DEPDIR)/type2str.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/types73.Plo ./$(DEPDIR)/types82.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/types83.Plo ./$(DEPDIR)/types83p.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/types84p.Plo ./$(DEPDIR)/types85.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/types86.Plo ./$(DEPDIR)/types89.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/types92.Plo ./$(DEPDIR)/types92p.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/typesv2.Plo ./$(DEPDIR)/typesxx.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/types89t.Plo ./$(DEPDIR)/types92.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/types92p.Plo ./$(DEPDIR)/typesv2.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/typesxx.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -236,12 +243,12 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libtifiles_la_SOURCES)
+DIST_SOURCES = $(libtifiles_2_la_SOURCES)
 HEADERS = $(libtifilesinclude_HEADERS)
 
 DIST_COMMON = $(libtifilesinclude_HEADERS) $(srcdir)/Makefile.in \
 	Makefile.am
-SOURCES = $(libtifiles_la_SOURCES)
+SOURCES = $(libtifiles_2_la_SOURCES)
 
 all: all-am
 
@@ -280,8 +287,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libtifiles.la: $(libtifiles_la_OBJECTS) $(libtifiles_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libtifiles_la_LDFLAGS) $(libtifiles_la_OBJECTS) $(libtifiles_la_LIBADD) $(LIBS)
+libtifiles-2.la: $(libtifiles_2_la_OBJECTS) $(libtifiles_2_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libtifiles_2_la_LDFLAGS) $(libtifiles_2_la_OBJECTS) $(libtifiles_2_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -293,20 +300,25 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/files8x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/files9x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filesxx.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grp_ops.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filetypes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grouped.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/intelhex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/intrface.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/logging.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/malloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/printl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/trans.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwfile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tifiles.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transcode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/type2str.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types73.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types82.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types83.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types83p.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types84p.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types85.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types89.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types89t.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types92.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/types92p.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/typesv2.Plo@am__quote@

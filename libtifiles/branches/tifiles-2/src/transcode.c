@@ -29,6 +29,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "gettext.h"
 #include "tifiles.h"
 #include "macros.h"
