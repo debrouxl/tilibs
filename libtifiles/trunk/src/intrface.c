@@ -25,6 +25,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 #include "gettext.h"
 
@@ -57,20 +60,23 @@ int tifiles_instance = 0;	// counts # of instances
  */
 TIEXPORT int TICALL tifiles_init()
 {
+	char locale_dir[65536];
+	
 #ifdef __WIN32__
   	HANDLE hDll;
-  	char LOCALEDIR[65536];
   	int i;
   	
   	hDll = GetModuleHandle("tifiles.dll");
-  	GetModuleFileName(hDll, LOCALEDIR, 65535);
-  	for (i = strlen(LOCALEDIR); i >= 0; i--) {
-    		if (LOCALEDIR[i] == '\\')
+  	GetModuleFileName(hDll, locale_dir, 65535);
+  	for (i = strlen(locale_dir); i >= 0; i--) {
+    		if (locale_dir[i] == '\\')
       			break;
   	}
   	
-  	LOCALEDIR[i] = '\0';
-  	strcat(LOCALEDIR, "\\locale");
+  	locale_dir[i] = '\0';
+  	strcat(locale_dir, "\\locale");
+#else
+	strcpy(locale_dir, LOCALEDIR);
 #endif
 
 	if (tifiles_instance)
