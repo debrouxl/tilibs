@@ -21,7 +21,7 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define VERSION "0.5.5"
+#define VERSION "0.5.6"
 
 #define WORDS_BIGENDIAN
 
