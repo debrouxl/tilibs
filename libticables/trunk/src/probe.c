@@ -26,12 +26,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include "str.h"
 #include "intl.h"
 #if defined(__LINUX__) || defined(__MACOSX__)
 # include <dirent.h>
 # include <sys/utsname.h> // for uname()
+# include <unistd.h>
 #elif defined(__WIN32__)
 # include <windows.h>
 # include <malloc.h>
@@ -45,6 +46,11 @@
 #include "cabl_ext.h"
 #include "links.h"
 #include "verbose.h"
+
+
+/************************************/
+/* Windows & Linux I/O port probing */
+/************************************/
 
 void clear_portinfo_struct(PortInfo *pi)
 {
@@ -186,7 +192,7 @@ int DetectPortsLinux(PortInfo *pi)
   DISPLAY(_("Probing parallel ports...\r\n"));
   if( (dir=opendir("/proc/sys/dev/parport/")) == NULL) 
     {
-      DISPLAY(_("Error: unable to open this directory: '/proc/sys/dev/parport/'.\r\n"));
+      DISPLAY_ERROR(_("Unable to open this directory: '/proc/sys/dev/parport/'.\r\n"));
       return -1;
     }
 
@@ -210,7 +216,7 @@ int DetectPortsLinux(PortInfo *pi)
 	      f = fopen(path, "rt");
 	      if(f == NULL)
 		{
-		  DISPLAY_ERROR(_("Unable to open this entry: <%s>\r\n"),
+		  DISPLAY_ERROR(_("unable to open this entry: <%s>\r\n"),
 			  path);
 		}
 	      else
@@ -232,7 +238,7 @@ int DetectPortsLinux(PortInfo *pi)
   
   if(closedir(dir)==-1)
     {
-      DISPLAY(_("Error: closedir\r\n"));
+      DISPLAY_ERROR(_("Closedir\r\n"));
     }
   DISPLAY(_("Done.\r\n"));
 
@@ -1062,43 +1068,18 @@ int TICALL ticable_detect_all(char **os, PortInfo *pi)
 }
 
 
-/******************/
-/* Misc functions */
-/******************/
-
-#ifdef __LINUX__
-
-/*
-  Internal use.
-  Try to find a specific string in /proc (vfs)
- */
-static int find_string_in_proc(char *entry, char *str)
-{
-  FILE *f;
-  char buffer[MAXCHARS];
-  int found = 0;
-
-  f = fopen(entry, "rt");
-  if(f == NULL)
-    {
-      return -1;
-    }
-  while(!feof(f))
-    {
-      fscanf(f, "%s", buffer);
-      if(strstr(buffer, str))
-	{
-	  found = 1;
-	}
-    }
-  fclose(f);
-
-  return found;
-}
-
-#endif
+/**************************/
+/* I/O ressources listing */
+/**************************/
 
 extern int resources; // defined in intrface.c
+
+#ifdef __LINUX__
+static int find_string_in_proc(char *entry, char *str);
+#elif defined(__WIN32__)
+unsigned char StartPortTalkDriver(void);
+void InstallPortTalkDriver(void);
+#endif
 
 int list_io_resources(void)
 {
@@ -1109,7 +1090,8 @@ int list_io_resources(void)
   
 #ifdef __WIN32__
   {
-    HINSTANCE hDLL = NULL;
+    HINSTANCE hDLL = NULL;		/* Handle for TiglUsb driver */
+	HANDLE PortTalk_Handle;		/* Handle for PortTalk Driver */
     
     if(!strcmp(os, "Windows9x"))
       resources = IO_WIN9X;
@@ -1126,8 +1108,10 @@ int list_io_resources(void)
       resources |= IO_ASM;
     DISPLAY(_("  IO_ASM: %s\r\n"), resources & IO_ASM ? "ok" : "nok");
     
-    // Open PortTalk Driver
-    hDLL = CreateFile("\\\\.\\PortTalk", 
+	if(resources & IO_WINNT)
+	{
+		// Open PortTalk Driver. If we cannot open it, try installing and starting it
+		PortTalk_Handle = CreateFile("\\\\.\\PortTalk", 
 		      GENERIC_READ, 
 		      0, 
 		      NULL,
@@ -1135,19 +1119,38 @@ int list_io_resources(void)
 		      FILE_ATTRIBUTE_NORMAL, 
 		      NULL);
 
-    if(hDLL != INVALID_HANDLE_VALUE) 
-      {
-	resources |= IO_DLL;
-	CloseHandle(hDLL);
-      }
-    DISPLAY(_("  IO_DLL: %s (PortTalk)\r\n"), resources & IO_DLL ? "ok" : "nok");
+		if(PortTalk_Handle == INVALID_HANDLE_VALUE) {
+            /* Start or Install PortTalk Driver */
+            StartPortTalkDriver();
+            /* Then try to open once more, before failing */
+            PortTalk_Handle = CreateFile("\\\\.\\PortTalk", 
+                                         GENERIC_READ, 
+                                         0, 
+                                         NULL,
+                                         OPEN_EXISTING, 
+                                         FILE_ATTRIBUTE_NORMAL, 
+                                         NULL);
+               
+            if(PortTalk_Handle == INVALID_HANDLE_VALUE) {
+                    DISPLAY_ERROR("PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.\n\n");
+                    return -1;
+            }
+		}
+
+		if(PortTalk_Handle != INVALID_HANDLE_VALUE) 
+		{
+			resources |= IO_DLL;
+			CloseHandle(PortTalk_Handle);
+		}
+		DISPLAY(_("  IO_DLL: %s (PortTalk)\r\n"), resources & IO_DLL ? "ok" : "nok");
+	}
     
     // Open TiglUsb Driver
     hDLL = LoadLibrary("TiglUsb.DLL");
     if (hDLL != NULL)
       {
-	resources |= IO_LIBUSB;
-	//CloseHandle(hDLL);
+		resources |= IO_LIBUSB;
+		CloseHandle(hDLL);
       }
     DISPLAY(_("  IO_LIBUSB: %s (TiglUsb)\r\n"), resources & IO_LIBUSB ? "ok" : "nok");
     
@@ -1189,8 +1192,12 @@ int list_io_resources(void)
     resources |= IO_TISER;
   DISPLAY(_("  IO_TISER: %s\r\n"), resources & IO_TISER ? "ok" : "nok");
 
-  if(find_string_in_proc("/proc/devices", "tiusb") ||
-     find_string_in_proc("/proc/modules", "tiusb"))
+  if(
+     find_string_in_proc("/proc/devices", "tiusb") ||
+     find_string_in_proc("/proc/modules", "tiusb") ||
+     find_string_in_proc("/proc/devices", "tiglusb") ||
+     find_string_in_proc("/proc/modules", "tiglusb")
+     )
     resources |= IO_TIUSB;
   DISPLAY(_("  IO_TIUSB: %s\r\n"), resources & IO_TIUSB ? "ok" : "nok");
   
@@ -1210,3 +1217,184 @@ int list_io_resources(void)
 
   return 0;
 }
+
+
+/****************************************************/
+/* Utility functions for PortTalk driver			*/
+/* Comes from Craig Peacock's AllowIo.exe program	*/
+/****************************************************/
+#ifdef __WIN32__
+unsigned char StartPortTalkDriver(void)
+{
+    SC_HANDLE  SchSCManager;
+    SC_HANDLE  schService;
+    BOOL       ret;
+    DWORD      err;
+
+    /* Open Handle to Service Control Manager */
+    SchSCManager = OpenSCManager (NULL,                        /* machine (NULL == local) */
+                                  NULL,                        /* database (NULL == default) */
+                                  SC_MANAGER_ALL_ACCESS);      /* access required */
+                         
+    if (SchSCManager == NULL)
+      if (GetLastError() == ERROR_ACCESS_DENIED) {
+         /* We do not have enough rights to open the SCM, therefore we must */
+         /* be a poor user with only user rights. */
+		  DISPLAY_ERROR(
+			"PortTalk: You do not have rights to access the Service Control Manager and\n" \
+			"PortTalk: the PortTalk driver is not installed or started. Please ask \n" \
+			"PortTalk: your administrator to install the driver on your behalf.\n");
+         return(0);
+         }
+
+    do {
+         /* Open a Handle to the PortTalk Service Database */
+         schService = OpenService(SchSCManager,         /* handle to service control manager database */
+                                  "PortTalk",           /* pointer to name of service to start */
+                                  SERVICE_ALL_ACCESS);  /* type of access to service */
+
+         if (schService == NULL)
+            switch (GetLastError()){
+                case ERROR_ACCESS_DENIED:
+                        DISPLAY_ERROR("PortTalk: You do not have rights to the PortTalk service database\n");
+                        return(0);
+                case ERROR_INVALID_NAME:
+                        DISPLAY_ERROR("PortTalk: The specified service name is invalid.\n");
+                        return(0);
+                case ERROR_SERVICE_DOES_NOT_EXIST:
+						DISPLAY_ERROR(
+							"PortTalk: The PortTalk driver does not exist. Installing driver.\n" \
+							"PortTalk: This can take up to 30 seconds on some machines . .\n");
+                        InstallPortTalkDriver();
+                        break;
+            }
+         } while (schService == NULL);
+
+    /* Start the PortTalk Driver. Errors will occur here if PortTalk.SYS file doesn't exist */
+    
+    ret = StartService (schService,    /* service identifier */
+                        0,             /* number of arguments */
+                        NULL);         /* pointer to arguments */
+                    
+    if (ret) DISPLAY_ERROR("PortTalk: The PortTalk driver has been successfully started.\n");
+    else {
+        err = GetLastError();
+        if (err == ERROR_SERVICE_ALREADY_RUNNING)
+          DISPLAY_ERROR("PortTalk: The PortTalk driver is already running.\n");
+        else {
+          DISPLAY_ERROR(
+			"PortTalk: Unknown error while starting PortTalk driver service.\n" \
+			"PortTalk: Does PortTalk.SYS exist in your \\System32\\Drivers Directory?\n");
+          return(0);
+        }
+    }
+
+    /* Close handle to Service Control Manager */
+    CloseServiceHandle (schService);
+    return(TRUE);
+}
+
+void InstallPortTalkDriver(void)
+{
+    SC_HANDLE  SchSCManager;
+    SC_HANDLE  schService;
+    DWORD      err;
+    CHAR         DriverFileName[80];
+
+    /* Get Current Directory. Assumes PortTalk.SYS driver is in this directory.    */
+    /* Doesn't detect if file exists, nor if file is on removable media - if this  */
+    /* is the case then when windows next boots, the driver will fail to load and  */
+    /* a error entry is made in the event viewer to reflect this */
+
+    /* Get System Directory. This should be something like c:\windows\system32 or  */
+    /* c:\winnt\system32 with a Maximum Character lenght of 20. As we have a       */
+    /* buffer of 80 bytes and a string of 24 bytes to append, we can go for a max  */
+    /* of 55 bytes */
+
+    if (!GetSystemDirectory(DriverFileName, 55))
+        {
+			DISPLAY_ERROR(
+				"PortTalk: Failed to get System Directory. Is System Directory Path > 55 Characters?\n" \
+				"PortTalk: Please manually copy driver to your system32/driver directory.\n");
+        }
+
+    /* Append our Driver Name */
+    lstrcat(DriverFileName,"\\Drivers\\PortTalk.sys");
+    DISPLAY_ERROR("PortTalk: Copying driver to %s\n",DriverFileName);
+
+    /* Copy Driver to System32/drivers directory. This fails if the file doesn't exist. */
+
+    if (!CopyFile("PortTalk.sys", DriverFileName, FALSE))
+        {
+         DISPLAY_ERROR("PortTalk: Failed to copy driver to %s\n",DriverFileName);
+         DISPLAY_ERROR("PortTalk: Please manually copy driver to your system32/driver directory.\n");
+        }
+
+    /* Open Handle to Service Control Manager */
+    SchSCManager = OpenSCManager (NULL,                   /* machine (NULL == local) */
+                                  NULL,                   /* database (NULL == default) */
+                                  SC_MANAGER_ALL_ACCESS); /* access required */
+
+    /* Create Service/Driver - This adds the appropriate registry keys in */
+    /* HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services - It doesn't  */
+    /* care if the driver exists, or if the path is correct.              */
+
+    schService = CreateService (SchSCManager,                      /* SCManager database */
+                                "PortTalk",                        /* name of service */
+                                "PortTalk",                        /* name to display */
+                                SERVICE_ALL_ACCESS,                /* desired access */
+                                SERVICE_KERNEL_DRIVER,             /* service type */
+                                SERVICE_DEMAND_START,              /* start type */
+                                SERVICE_ERROR_NORMAL,              /* error control type */
+                                "System32\\Drivers\\PortTalk.sys", /* service's binary */
+                                NULL,                              /* no load ordering group */
+                                NULL,                              /* no tag identifier */
+                                NULL,                              /* no dependencies */
+                                NULL,                              /* LocalSystem account */
+                                NULL                               /* no password */
+                                );
+
+    if (schService == NULL) {
+         err = GetLastError();
+         if (err == ERROR_SERVICE_EXISTS)
+               DISPLAY_ERROR("PortTalk: Driver already exists. No action taken.\n");
+         else  DISPLAY_ERROR("PortTalk: Unknown error while creating Service.\n");    
+    }
+    else DISPLAY_ERROR("PortTalk: Driver successfully installed.\n");
+
+    /* Close Handle to Service Control Manager */
+    CloseServiceHandle (schService);
+}
+#endif
+
+#ifdef __LINUX__
+
+/*
+  Internal use.
+  Try to find a specific string in /proc (vfs)
+ */
+static int find_string_in_proc(char *entry, char *str)
+{
+  FILE *f;
+  char buffer[MAXCHARS];
+  int found = 0;
+
+  f = fopen(entry, "rt");
+  if(f == NULL)
+    {
+      return -1;
+    }
+  while(!feof(f))
+    {
+      fscanf(f, "%s", buffer);
+      if(strstr(buffer, str))
+	{
+	  found = 1;
+	}
+    }
+  fclose(f);
+
+  return found;
+}
+
+#endif

@@ -53,7 +53,7 @@ int resources = IO_NONE;     // I/O methods detected
 int method = IOM_AUTO;       // I/O method to use (automatic)
 
 uint io_address = 0;         // I/O port base address
-char io_device[MAXCHARS]=""; // The character device (COMx, ttySx, ...)
+char io_device[256]="";      // The character device (COMx, ttySx, ...)
 
 const char *err_msg;         // The error message of the last error occured
 int cable_type;              // Used for debug
@@ -76,7 +76,7 @@ TIEXPORT int TICALL ticable_init()
 {
   //ticable_detect_os(&os);
   //ticable_detect_port(&pinfo);
-	list_io_resources();
+  list_io_resources();
 
   return 0;
 }
@@ -307,10 +307,10 @@ TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
   if( (type == LINK_TGL) && (resources & IO_API) )
     method |= IOM_OK;
   else if ((type == LINK_TGL) && (resources & IO_OSX))
-    method |= IOM_OK;
+    method |= IOM_RAW | IOM_OK;
 
   if( (type == LINK_AVR) && (resources & IO_API) )
-    method |= IOM_ASM | IOM_OK;
+    method |= IOM_RAW | IOM_OK;
 
   if( (type == LINK_SER) && (resources & IO_TISER) )
     method |= IOM_DRV | IOM_OK;
@@ -333,10 +333,11 @@ TIEXPORT int TICALL ticable_set_cable(int typ, LinkCable *lc)
   else if( (type == LINK_UGL) && (resources & IO_LIBUSB) )
     method |= IOM_RAW | IOM_OK;
   else if ((type == LINK_UGL) && (resources & IO_OSX))
-      method |= IOM_OK;
-
-  if((type == LINK_TIE) || (type == LINK_VTI) )
     method |= IOM_OK;
+  
+  if((type == LINK_TIE) || (type == LINK_VTI) ) {
+    method |= IOM_RAW | IOM_OK;
+  }
 
   //DISPLAY("Chosen method: %i\n", method);
   if(!(method & IOM_OK))
@@ -775,7 +776,7 @@ static int convert_port_into_device(void)
 #if !defined(__MACOSX__)
     case PARALLEL_PORT_1:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-	  strcpy(io_device, TIDEV_P0);
+	  strcpy(io_device, search_for_tipar_node(0));
       else
 	{
 	  io_address = PP1_ADDR;
@@ -784,7 +785,7 @@ static int convert_port_into_device(void)
       break;
     case PARALLEL_PORT_2:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(io_device, TIDEV_P1);
+        strcpy(io_device, search_for_tipar_node(1));
       else
         {
           io_address = PP2_ADDR;
@@ -793,7 +794,7 @@ static int convert_port_into_device(void)
       break;
     case PARALLEL_PORT_3:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(io_device, TIDEV_P2);
+        strcpy(io_device, search_for_tipar_node(2));
       else
         {
           io_address = PP3_ADDR;
@@ -802,9 +803,7 @@ static int convert_port_into_device(void)
       break;
     case SERIAL_PORT_1:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-	{
-	  strcpy(io_device, TIDEV_S0);
-	}     
+	  strcpy(io_device, search_for_tiser_node(0));
       else
         {
           io_address = SP1_ADDR;
@@ -813,9 +812,7 @@ static int convert_port_into_device(void)
       break;
     case SERIAL_PORT_2:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-	{
-	  strcpy(io_device, TIDEV_S1);
-	}      
+	  strcpy(io_device, search_for_tiser_node(1));
       else
         {
           io_address = SP2_ADDR;
@@ -824,7 +821,7 @@ static int convert_port_into_device(void)
       break;
     case SERIAL_PORT_3:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(io_device, TIDEV_S2);
+        strcpy(io_device, search_for_tiser_node(2));
       else
         {
           io_address = SP3_ADDR;
@@ -833,7 +830,7 @@ static int convert_port_into_device(void)
       break;
     case SERIAL_PORT_4:
       if((method & IOM_DRV) && (resources & IO_LINUX))
-        strcpy(io_device, TIDEV_S3);
+        strcpy(io_device, search_for_tiser_node(3));
       else
         {
           io_address = SP4_ADDR;
@@ -841,16 +838,16 @@ static int convert_port_into_device(void)
         }
       break;
     case USB_PORT_1:
-      strcpy(io_device, UP1_NAME);
+      strcpy(io_device, search_for_tiusb_node(0));
       break;
     case USB_PORT_2:
-      strcpy(io_device, UP2_NAME);
+      strcpy(io_device, search_for_tiusb_node(1));
       break;
     case USB_PORT_3:
-      strcpy(io_device, UP3_NAME);
+      strcpy(io_device, search_for_tiusb_node(2));
       break;
     case USB_PORT_4:
-      strcpy(io_device, UP4_NAME);
+      strcpy(io_device, search_for_tiusb_node(3));
       break;
 #else
     case OSX_USB_PORT:
@@ -900,9 +897,9 @@ static char* convert_method(int v)
   if(v & IOM_AUTO)
     p1 = "automatic";
   if(v & IOM_ASM)
-    p2 = "internal ASM";
+    p2 = "direct access with ASM";
   if(v & IOM_RAW)
-    p2 = "raw access";
+    p2 = "direct access with API";
   if(v & IOM_DCB)
     p3 = "DCB";
 #if defined(__LINUX__)

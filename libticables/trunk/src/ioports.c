@@ -36,6 +36,8 @@
 #  include <conio.h>
 #  include <stdio.h>
 #  include <windows.h>
+#  include <winioctl.h>			// PortTalk
+#  include "porttalk_IOCTL.h"	// PortTalk
 #elif defined(__ALPHA__)
 #  include <sys/io.h>
 #endif
@@ -58,7 +60,7 @@
 /* Variables */
 extern int cable_type;  // Link cable type, I/O method depends on it
 #ifdef __WIN32__
- static HINSTANCE hDLL = NULL;		// Handle for PortTalk Driver
+ static HINSTANCE hDLL = NULL;	// Handle for PortTalk Driver
  static HANDLE hCom=0;				// COM port handle for DCB
  static int iDcbUse = 0;			// Internal use
 #endif
@@ -156,7 +158,7 @@ int open_io(unsigned long from, unsigned long num)
 	int result = 0;
  	DWORD BytesReturned;	// Bytes Returned for DeviceIoControl()
 	int offset;				// Offset for IOPM
-	int Error; 		 		// Error Handling for DeviceIoControl()
+	int iError;		 		// Error Handling for DeviceIoControl()
 	DWORD pid;				// PID of the program which use the library
   
 	DCB dcb;
@@ -172,79 +174,71 @@ int open_io(unsigned long from, unsigned long num)
 
     if(method & IOM_DRV)
 	{
-		if(hDLL != NULL)
-			CloseHandle(hDLL);
-		// Open PortTalk Driver
-    	hDLL = CreateFile("\\\\.\\PortTalk", 
-			GENERIC_READ, 
-			0, 
-			NULL,
-			OPEN_EXISTING, 
-			FILE_ATTRIBUTE_NORMAL, 
-			NULL);
+		// At this point, the driver should have been installed and started in probe.c
+		hDLL = CreateFile("\\\\.\\PortTalk", 
+                                 GENERIC_READ, 
+                                 0, 
+                                 NULL,
+                                 OPEN_EXISTING, 
+                                 FILE_ATTRIBUTE_NORMAL, 
+                                 NULL);
 
-    	if(hDLL == INVALID_HANDLE_VALUE) 
-		{
-		  DISPLAY_ERROR(_("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
-	return ERR_DLPORTIO_NOT_FOUND;
+    	if(hDLL == INVALID_HANDLE_VALUE) {
+			DISPLAY_ERROR(_("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"));
+			return ERR_DLPORTIO_NOT_FOUND;
     	}
-		else
-		{
+		else {
 			rd_io = asm_read_io;
 			wr_io = asm_write_io;
 		}
 
 		// Turn off all access
-		Error = DeviceIoControl(
-                          	hDLL,
-                          	0x10,   // RTL Fill Memory,
-	                        NULL,
-        	                0,		// Send Zero Bytes
-                	        NULL,
-                        	0,
-                          	&BytesReturned,
-                          	NULL
-                         	);
-  		if(!Error)
-			print_last_error("Talking to device driver");
+		iError = DeviceIoControl(hDLL,
+                            IOCTL_IOPM_RESTRICT_ALL_ACCESS,   
+                            NULL,
+                            0,    
+                            NULL,
+                            0,
+                            &BytesReturned,
+                            NULL);
+
+  		if(!iError)
+			print_last_error("PortTalk: error %d occured in IOCTL_IOPM_RESTRICT_ALL_ACCESS\n",GetLastError());
 
 		// Turn on some access
 		offset = from / 8;
-		Error = DeviceIoControl(
-			               		hDLL,
-                          		0x18,   // IoControlCode,
-  	                        	&offset,
-        	                  	3,		// Send Zero Bytes
-                	          	NULL,
-                        	  	0,
-                          		&BytesReturned,
-                          		NULL
-                         		);
-
-  		if(!Error)
+		iError = DeviceIoControl(hDLL,
+                                        IOCTL_SET_IOPM,
+                                        &offset,
+                                        3,    
+                                        NULL,
+                                        0,
+                                        &BytesReturned,
+                                        NULL);
+  		if(!iError)
 			print_last_error("Granting access");
-			//DISPLAY(_("Error %d granting access to Address 0x%03X\n"), GetLastError(), from);
 		else  
 			DISPLAY(_("Address 0x%03X (IOPM Offset 0x%02X) has been granted access.\n"), from, offset);
 
 		// Pass PID
 		pid = _getpid();
-		Error = DeviceIoControl(
-                          	hDLL,
-                          	0x04,
-                          	&pid,
-                          	4,
-                          	NULL,
-                          	0,
-                          	&BytesReturned,
-                          	NULL
-                         	);
 
-  		if(!Error)
+		iError = DeviceIoControl(hDLL,
+                            IOCTL_ENABLE_IOPM_ON_PROCESSID,
+                            &pid,
+                            4,
+                            NULL,
+                            0,
+                            &BytesReturned,
+                            NULL);
+
+  		if(!iError)
 			print_last_error("Talking to device driver");
 			//DISPLAY(_("Error Occured talking to Device Driver %d\n"),GetLastError());
 		else        
 			DISPLAY(_("PortTalk Device Driver has set IOPM for ProcessID %d.\n"),pid);
+
+		//CloseHandle(hDLL);
 	}
 
 	if(method & IOM_DCB)
@@ -348,7 +342,7 @@ int close_io(unsigned long from, unsigned long num)
   if(method & IOM_DRV)
   {
 	if(hDLL != NULL)
-	CloseHandle(hDLL);	
+		CloseHandle(hDLL);	
   }
 
   if(method & IOM_DCB)

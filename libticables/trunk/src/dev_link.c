@@ -39,14 +39,32 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+
 #ifdef HAVE_TI_TIPAR_H
 # include <ti/tipar.h>
 # include <sys/ioctl.h>
 #endif
+
+#ifdef HAVE_TILP_TIPAR_H
+# include <tilp/tipar.h>
+# include <sys/ioctl.h>
+#endif
+
 #ifdef HAVE_TI_TISER_H
 # include <ti/tiser.h>
 # include <sys/ioctl.h>
 #endif
+
+#ifdef HAVE_TILP_TISER_H
+# include <tilp/tiser.h>
+# include <sys/ioctl.h>
+#endif
+
+#ifdef HAVE_TILP_TICABLE_H
+# include <tilp/ticable.h>
+# include <sys/ioctl.h>
+#endif
+
 
 #include "typedefs.h"
 #include "export.h"
@@ -83,7 +101,7 @@ int dev_init()
   cs.data = 0;
 
   /* Open the device */
-  mask = O_RDWR | O_NONBLOCK | O_SYNC;
+  mask = O_RDWR | /*O_NONBLOCK |*/ O_SYNC;
   if( (dev_fd = open(io_device, mask)) == -1)
     {
       DISPLAY_ERROR("unable to open this device: <%s>\n", io_device);
@@ -155,7 +173,7 @@ int dev_get(byte *data)
       n = read(dev_fd, (void *)data, 1);
     }
   while(n == 0);
-  
+
   if(n == -1)
     {
       return ERR_RCV_BYT;

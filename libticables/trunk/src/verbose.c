@@ -54,14 +54,16 @@
 #if defined(__LINUX__)
   static int verbosity = 1;
 #elif defined(__WIN32__) || defined(__MACOSX__)
-  static int verbosity = 0;
+  static int verbosity = 1;
 #endif
 
 // Store in a file what is displayed in the console
-#define LOG_FILE "console.log"
-#ifndef __MACOSX__
-static FILE *flog = NULL;
+#ifdef __LINUX__
+# define LOG_FILE "/tmp/console.log"
+#else
+# define LOG_FILE "C:\\console.log"
 #endif
+static FILE *flog = NULL;
 
 #if defined(__LINUX__)
 #elif defined(__WIN32__)
@@ -105,9 +107,7 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
   if(verbosity)
     {
       if(out == NULL)  out = stdout;
-#ifndef __MACOSX__
       if(flog == NULL) flog = fopen(LOG_FILE, "wt");
-#endif
       
       // Under Win32, we redirect stdout to the console
 #if defined(__WIN32__)				
@@ -127,24 +127,20 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
       va_start(ap, format);
       ret = vfprintf(out, format, ap);
       va_end(ap);
-# ifndef __MACOSX__
       va_start(ap, format);
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
-# endif
 #endif
     }
 
-#ifndef __MACOSX__
   if(f != NULL)
     {
-# ifdef VERBOSE
+#ifdef VERBOSE
       va_start(ap, format);
       ret = vfprintf(f, format, ap);
       va_end(ap);
-# endif
-    }
 #endif
+    }
 
   return ret;
 }
@@ -160,12 +156,10 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
   
   if(verbosity)
     {
-#ifndef __MACOSX__
       if(flog == NULL)
 	{
 	  flog = fopen(LOG_FILE, "wt");
 	}
-#endif
       
       // Under Win32, we redirect stderr to the console
 #if defined(__WIN32__)				
@@ -185,11 +179,11 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
       va_start(ap, format);
       fprintf(stderr, "Error: ");
       ret=vfprintf(stderr, format, ap);
-# ifndef __MACOSX__
+      va_end(ap);
+      va_start(ap, format);
       if(flog)  fprintf(flog, "Error: ");
       if(flog) vfprintf(flog, format, ap);
       va_end(ap);
-# endif
 #endif
     }
 
@@ -218,6 +212,8 @@ TIEXPORT int TICALL ticable_DISPLAY_settings(int op)
     default:
       break;
     }
+
+	verbosity = 1; 
   
   return 0;
 }

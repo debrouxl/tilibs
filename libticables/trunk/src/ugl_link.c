@@ -21,6 +21,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "export.h"
 #include "cabl_def.h"
 #include "cabl_err.h"
@@ -90,6 +91,17 @@ static struct cs
 #ifdef HAVE_TI_TIUSB_H
 # define IOCTL_EXPORT  //use tiusb.h file
 # include <ti/tiusb.h> //ioctl codes
+# include <sys/ioctl.h>
+#endif
+
+#ifdef HAVE_TILP_TIUSB_H
+# define IOCTL_EXPORT  //use tiusb.h file
+# include <tilp/tiusb.h> //ioctl codes
+# include <sys/ioctl.h>
+#endif
+
+#ifdef HAVE_TILP_TICABLE_H
+# include <tilp/ticable.h> //ioctl codes
 # include <sys/ioctl.h>
 #endif
 
@@ -226,7 +238,7 @@ int ugl_get(byte *data)
 	  ret = read(dev_fd, (void *)rBuf, MAX_PACKET_SIZE);
 	  if(toELAPSED(clk, time_out)) return ERR_RCV_BYT_TIMEOUT;
 	  if(ret == 0)
-	    DISPLAY_ERROR("usb_bulk_read returns without any data. Retrying...\n");
+	    DISPLAY_ERROR("read returns without any data. Retrying for circumventing quirk...\n");
 	} 
       while(!ret);
 
@@ -317,7 +329,7 @@ int ugl_supported()
 
 #ifdef HAVE_LIBUSB /* change according to configure */
 
-#include "usb.h"
+#include <usb.h>
 
 #define TIGL_VENDOR_ID  0x0451 /* Texas Instruments, Inc.        */
 #define TIGL_PRODUCT_ID 0xE001 /* TI-GRAPH LINK USB (SilverLink) */
@@ -411,8 +423,9 @@ int ugl_init2()
 	return ERR_USB_OPEN;
     }
 
-  if(tigl_han == NULL)
-    return ERR_USB_OPEN;
+  if (tigl_han == NULL)
+    if (ugl_init2() != 0)
+      return ERR_USB_OPEN;
 
   START_LOGGING();
 
@@ -430,12 +443,14 @@ int ugl_open2()
   */
 
   /* Reset both endpoints */
+  /*
   ret = usb_resetep(tigl_han, TIGL_BULK_IN);
   if (ret < 0)
     {
       DISPLAY_ERROR("%s\n", usb_strerror());
       return ERR_USB_OPEN;
     }
+  */
   ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
   if (ret < 0)
     {

@@ -48,7 +48,7 @@
 #  ifdef __WIN32__
     typedef unsigned short word;      /* Two bytes */
 #  else
-	typedef uint16_t word;
+    typedef uint16_t word;
 #  endif
 # endif
 #endif // !_WORD_DEFINED
@@ -56,15 +56,15 @@
 /* Under linux, sizeof(int)=4 but under Win32, sizeof(int)=2 -> longint */
 #if defined(__WIN32__) || defined(__WIN16__)
 # ifndef longword
-  typedef unsigned long longword;
+   typedef unsigned long longword;
 # endif
 # ifndef uint
-  typedef unsigned int uint;
+   typedef unsigned int uint;
 # endif
 #else //if defined(__LINUX__)
 # ifndef longword
    typedef uint32_t longword;
-//typedef unsigned int longword;
+   //typedef unsigned int longword;
 # endif
 #endif
 #endif //TILP_TYPES

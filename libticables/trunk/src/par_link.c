@@ -44,6 +44,8 @@ int par_init()
   
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__)
   TRYC(open_io(lpt_adr, 2));
+  // required for circumenting a strange problem with PortTalk & Win2k
+  TRYC(open_io(lpt_adr, 2));
   
   io_permitted = 1;
   wr_io(lpt_out, 3);

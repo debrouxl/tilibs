@@ -79,9 +79,9 @@ int tig_init()
 
   /* Open the device */
 #ifndef __MACOSX__
-  if((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1)
+  if((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1 )
 #else
-  if((dev_fd = open(io_device, O_RDWR)) == -1)
+  if((dev_fd = open(io_device, O_RDWR | O_NDELAY)) == -1)
 #endif
     {
       DISPLAY_ERROR("unable to open this serial port: %s\n", io_device);

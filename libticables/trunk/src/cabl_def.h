@@ -131,14 +131,10 @@ typedef struct data_rate TicableDataRate;
 # define PP1_NAME "LPT1"
 # define PP2_NAME "LPT2"
 # define PP3_NAME "LPT3"
-#elif defined(__SOL__)
-# define PP1_NAME "/dev/cua/a"
-# define PP2_NAME "/dev/cua/b"
-# define PP3_NAME "/dev/cua/a"
 #else
-# define PP1_NAME "/dev/lp0"
-# define PP2_NAME "/dev/lp1"
-# define PP3_NAME "/dev/lp2"
+# define PP1_NAME ""
+# define PP2_NAME ""
+# define PP3_NAME ""
 #endif
 
 /* Serial Port addresses */
@@ -158,29 +154,24 @@ typedef struct data_rate TicableDataRate;
 # define SP2_NAME "COM2"
 # define SP3_NAME "COM3"
 # define SP4_NAME "COM4"
-#elif defined(__SOL__) // Sparc + Solaris
-# define SP1_NAME "/dev/cua/a"
-# define SP2_NAME "/dev/cua/b"
-# define SP3_NAME "/dev/cua/a"
-# define SP4_NAME "/dev/cua/b"
 #else // default
-# define SP1_NAME "/dev/ttyS0"
-# define SP2_NAME "/dev/ttyS1"
-# define SP3_NAME "/dev/ttyS2"
-# define SP4_NAME "/dev/ttyS3"
+# define SP1_NAME ""
+# define SP2_NAME ""
+# define SP3_NAME ""
+# define SP4_NAME ""
 #endif
 
 /* USB port devices */
 #if defined(__LINUX__) && !defined(HAVE_LIBUSB)
-# define UP1_NAME "/dev/usb/tigl0"
-# define UP2_NAME "/dev/usb/tigl1"
-# define UP3_NAME "/dev/usb/tigl2"
-# define UP4_NAME "/dev/usb/tigl3"
+# define UP1_NAME "/dev/tiusb0"
+# define UP2_NAME "/dev/tiusb1"
+# define UP3_NAME "/dev/tiusb2"
+# define UP4_NAME "/dev/tiusb3"
 #elif defined(__LINUX__) && defined(HAVE_LIBUSB)
-# define UP1_NAME "/dev/usb/tigl0"
-# define UP2_NAME "/dev/usb/tigl1"
-# define UP3_NAME "/dev/usb/tigl2"
-# define UP4_NAME "/dev/usb/tigl3"
+# define UP1_NAME ""
+# define UP2_NAME ""
+# define UP3_NAME ""
+# define UP4_NAME ""
 #else // default
 # define UP1_NAME ""
 # define UP2_NAME ""
@@ -194,8 +185,11 @@ typedef struct data_rate TicableDataRate;
 #define BR38400 38400
 #define BR57600 57600
 
-/* Characters devices of the 'tidev' kernel module */
-
+/* Characters devices of the 'tidev' kernel module (obsolete) */
+/* See timodules.c instead */
+#ifdef __LINUX__
+#include "timodules.h"
+#endif /* __LINUX__ */
 #define TIDEV	 "/dev/ti"   /* Symbolic link to one of the folowing devices */
 #define TIDEV_P0 "/dev/tiP0" /* TI device for parallel link at 0x3BC */
 #define TIDEV_P1 "/dev/tiP1" /* TI device for parallel link at 0x378 */
