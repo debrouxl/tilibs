@@ -3,11 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 3.8.6, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiCables, 3.8.7, [tilp-users@lists.sourceforge.net])
 
 MAJOR_VERSION=3
 MINOR_VERSION=8
-MICRO_VERSION=6
+MICRO_VERSION=7
 
 LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
 LT_REVISION=$MICRO_VERSION
@@ -100,6 +100,16 @@ AC_CACHE_CHECK([whether to enable logging],
   [cab_cv_enable_logging], [cab_cv_enable_logging=no])
 if test x$cab_cv_enable_logging = xyes; then
   AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
+fi
+
+# Direct USB cable
+AC_ARG_ENABLE(direct-usb,
+  AC_HELP_STRING([--enable-direct-usb], [enable direct USB cable]),
+  [cab_cv_enable_direct_usb=$enableval], [])
+AC_CACHE_CHECK([whether to enable direct USB cable],
+  [cab_cv_enable_direct_usb], [cab_cv_enable_direct_usb=no])
+if test x$cab_cv_enable_direct_usb = xyes; then
+  AC_DEFINE(ENABLE_DIRECT_USB, 1, [Define to 1 to enable direct USB cable.])
 fi
 
 # Platform specific tests.

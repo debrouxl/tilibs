@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TI-GRAPH LINK USB support (kernel module) */
+/* TI-GRAPH LINK USB and direct cable support (kernel module) */
 
 /* 
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
@@ -56,6 +56,7 @@
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -77,13 +78,12 @@
 #define BUFFERED_W    /* enable buffered write operations	  */ 
 #define BUFFERED_R    /* enable buffered read operations (always) */
 
-#define MAX_PACKET_SIZE 32	// 32 bytes max per packet
+static int max_ps = 32;  // max packet size (32 ot 64)
+
 static int nBytesWrite = 0;
-#ifdef BUFFERED_W
-static uint8_t wBuf[MAX_PACKET_SIZE];
-#endif
+static uint8_t *wBuf = NULL;
 static int nBytesRead = 0;
-static uint8_t rBuf[MAX_PACKET_SIZE];
+static uint8_t *rBuf = NULL;
 
 static int dev_fd = 0;
 
@@ -91,10 +91,15 @@ static int dev_fd = 0;
 # include <linux/ticable.h>	//ioctl codes
 # include <sys/ioctl.h>
 #endif
+#ifdef ENABLE_DIRECT_USB
+#define IOCTL_TIUSB_GET_MXPS       _IOR('N', 0x23, int) /* max packet size */
+#define IOCTL_TIUSB_GET_DEVID      _IOR('N', 0x24, int) /* get device type */
+#endif
 
 int slv_init()
 {
 	int mask = O_RDWR | O_NONBLOCK | O_SYNC;
+	int arg;
 	
 	if ((dev_fd = open(io_device, mask)) == -1) {
 		printl1(2, _("unable to open this device: %s.\n"), 
@@ -104,11 +109,37 @@ int slv_init()
 	
 	START_LOGGING();
 
+#ifdef ENABLE_DIRECT_USB
+	if (ioctl(dev_fd, IOCTL_TIUSB_GET_MXPS, &arg) == -1) {
+		printl1(2, _("unable to get max packet size (ioctl).\n"));
+		//return ERR_IOCTL;
+	} else
+		max_ps = arg;
+
+	if (ioctl(dev_fd, IOCTL_TIUSB_GET_DEVID, &arg) == -1) {
+                printl1(2, _("unable to get device id (ioctl).\n"));
+                //return ERR_IOCTL;
+        } else
+		printl1(0, _("device type: %04X.\n"), arg & 0xffff);
+#endif
+
+	wBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+	rBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+	if((wBuf == NULL) || (rBuf == NULL))
+	{
+		free(wBuf);
+		free(rBuf);
+		return ERR_OPEN_USB_DEV;
+	}
+
 	return 0;
 }
 
 int slv_exit()
 {
+	free(wBuf); wBuf = NULL;
+	free(rBuf); rBuf = NULL;
+
   	if (dev_fd) {
     		close(dev_fd);
     		dev_fd = 0;
@@ -188,7 +219,7 @@ int slv_put(uint8_t data)
   	wBuf[nBytesWrite++] = data;
   	
   	/* Buffer full? Send the whole buffer at once */
-  	if (nBytesWrite == MAX_PACKET_SIZE) {
+  	if (nBytesWrite == max_ps) {
     		ret = send_fblock(wBuf, nBytesWrite);
     		nBytesWrite = 0;
 		if(ret) return ret;
@@ -219,7 +250,7 @@ int slv_get(uint8_t * data)
   	if (nBytesRead <= 0) {
     		toSTART(clk);
     		do {
-      			ret = read(dev_fd, (void *) rBuf, MAX_PACKET_SIZE);
+      			ret = read(dev_fd, (void *) rBuf, max_ps);
       			
       			if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
