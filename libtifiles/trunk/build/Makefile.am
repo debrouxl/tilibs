@@ -1,10 +1,8 @@
-EXTRA_DIST = mingw
+EXTRA_DIST = mingw/*
 
 exports:
 	./scan.sh
 
-distclean: clean
-
-clean: 
+clean:
 	$(RM) \#*
 	$(RM) *~

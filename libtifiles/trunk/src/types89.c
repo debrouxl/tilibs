@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "intl3.h"
+#include "gettext.h"
 
 #include "export.h"
 #include "types89.h"

@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "intl3.h"
+#include "gettext.h"
 
 #include "export.h"
 #include "file_def.h"

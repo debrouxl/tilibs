@@ -33,7 +33,7 @@
 #include <string.h>
 #include "stdints.h"
 
-#include "intl3.h"
+#include "gettext.h"
 #include "typesxx.h"
 #include "file_int.h"
 #include "macros.h"

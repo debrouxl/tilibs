@@ -1,61 +1,29 @@
 ## Process this file with automake to produce Makefile.in
 
-if OS_WIN32
- no_undefined = -no-undefined
-endif
-
-DEFS=@DEFS@ -DLOCALEDIR=\"$(locale_dir)\"
-
-INCLUDES = -I$(top_srcdir) -I$(includedir) \
-        -I../intl -I$(top_srcdir)/intl \
-        -DPREFIX=\"${prefix}\" -I.
+DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\" -DPREFIX=\"$(prefix)\"
+AM_CPPFLAGS = -I$(top_srcdir)/intl
+AM_CFLAGS = -Wall
 
 # libraries to compile and install
 lib_LTLIBRARIES = libtifiles.la
 
-# libtool stuff: set version and export symbols for resolving
-libtifilesincludedir = $(includedir)/tilp
-libtifiles_la_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
-	-export-dynamic $(no_undefined)
-
-# tifiles header files for public installation (non-generated)
-libtifilesinclude_HEADERS = \
-	file_def.h \
-	file_err.h \
-	file_int.h \
-	file_ver.h \
-	files8x.h \
-	files9x.h \
-	filesxx.h \
-	grp_ops.h \
-	macros.h \
-	stdints.h \
-	typesxx.h \
-	types73.h \
-	types82.h \
-	types83.h \
-	types83p.h \
-	types85.h \
-	types86.h \
-	types89.h \
-	types92.h \
-	types92p.h \
-	typesv2.h \
-	tifiles.h
-
-# setup source file variables
+# build instructions
+libtifiles_la_LIBADD = @LTLIBINTL@
+libtifiles_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles_la_SOURCES = \
 	error.c \
+	export.h \
 	files8x.c \
 	files9x.c \
 	filesxx.c \
+	gettext.h \
 	grp_ops.c \
-	intelhex.c \
+	intelhex.c intelhex.h \
 	intrface.c \
-	misc.c \
-	printl.c \
-	trans.c \
+	misc.c misc.h \
+	plerror.h \
+	printl.c printl.h \
+	trans.c trans.h \
 	types73.c \
 	types82.c \
 	types83.c \
@@ -69,9 +37,31 @@ libtifiles_la_SOURCES = \
 	typesxx.c \
 	type2str.c
 
-MAINTAINERCLEANFILES =
-EXTRA_HEADERS =
-EXTRA_DIST = *.h
+# tifiles header files for public installation (non-generated)
+libtifilesincludedir = $(includedir)/tilp
+libtifilesinclude_HEADERS = \
+	file_def.h \
+	file_err.h \
+	file_int.h \
+	file_ver.h \
+	files8x.h \
+	files9x.h \
+	filesxx.h \
+	grp_ops.h \
+	macros.h \
+	stdints.h \
+	tifiles.h \
+	types73.h \
+	types82.h \
+	types83.h \
+	types83p.h \
+	types85.h \
+	types86.h \
+	types89.h \
+	types92.h \
+	types92p.h \
+	typesv2.h \
+	typesxx.h
 
 dos2unix:
 	dos2unix

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "intl3.h"
+#include "gettext.h"
 
 #include "export.h"
 #include "file_ver.h"

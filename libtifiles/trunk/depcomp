@@ -207,9 +207,11 @@ aix)
   ;;
 
 icc)
-  # Intel's C compiler understands `-MD -MF file'.  However on
+  # Must come before tru64.
+
+  # Intel's C compiler understands `-MD -MF file'.  However
   #    icc -MD -MF foo.d -c -o sub/foo.o sub/foo.c
-  # ICC 7.0 will fill foo.d with something like
+  # will fill foo.d with something like
   #    foo.o: sub/foo.c
   #    foo.o: sub/foo.h
   # which is wrong.  We want:
@@ -217,12 +219,6 @@ icc)
   #    sub/foo.o: sub/foo.h
   #    sub/foo.c:
   #    sub/foo.h:
-  # ICC 7.1 will output
-  #    foo.o: sub/foo.c sub/foo.h
-  # and will wrap long lines using \ :
-  #    foo.o: sub/foo.c ... \
-  #     sub/foo.h ... \
-  #     ...
 
   "$@" -MD -MF "$tmpdepfile"
   stat=$?
@@ -232,15 +228,11 @@ icc)
     exit $stat
   fi
   rm -f "$depfile"
-  # Each line is of the form `foo.o: dependent.h',
-  # or `foo.o: dep1.h dep2.h \', or ` dep3.h dep4.h \'.
+  # Each line is of the form `foo.o: dependent.h'.
   # Do two passes, one to just change these to
   # `$object: dependent.h' and one to simply `dependent.h:'.
-  sed "s,^[^:]*:,$object :," < "$tmpdepfile" > "$depfile"
-  # Some versions of the HPUX 10.20 sed can't process this invocation
-  # correctly.  Breaking it into two sed invocations is a workaround.
-  sed 's,^[^:]*: \(.*\)$,\1,;s/^\\$//;/^$/d;/:$/d' < "$tmpdepfile" |
-    sed -e 's/$/ :/' >> "$depfile"
+  sed -e "s,^[^:]*:,$object :," < "$tmpdepfile" > "$depfile"
+  sed -e "s,^[^:]*: \(.*\)$,\1:," < "$tmpdepfile" >> "$depfile"
   rm -f "$tmpdepfile"
   ;;
 
