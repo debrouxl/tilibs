@@ -39,8 +39,6 @@
 
 #define BUFFER_SIZE 1024
 
-extern int time_out;		// Timeout value for cables in 0.10 seconds
-
 static HANDLE hCom = 0;
 static char comPort[1024];
 static struct cs {

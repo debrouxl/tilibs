@@ -389,12 +389,18 @@ TICALL ticable_set_cable(int type, TicableLinkCable * lc)
   	// determine the best I/O method to use.
 	ret = mapping_get_method(type, resources, &method);
 	if(ret)
+	{
+		print_settings();
 		return ret;
+	}
 
   	// set the link cable
   	ret = mapping_register_cable(type, lc);
   	if(ret)
+	{
+		print_settings();
 		return ret;
+	}
 
   	// displays useful infos
   	print_settings();

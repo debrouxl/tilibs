@@ -64,8 +64,6 @@ TIGLUSB_WRITE dynTiglUsbWrite = NULL;
 TIGLUSB_SETTIMEOUT dynTiglUsbSetTimeout = NULL;
 TIGLUSB_GETTIMEOUT dynTiglUsbGetTimeout = NULL;
 
-extern int time_out;			// Timeout value for cables in 0.10 seconds
-
 int slv_init()
 {
 	int ret;

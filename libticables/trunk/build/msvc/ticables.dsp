@@ -323,7 +323,7 @@ SOURCE=..\..\src\Cabl_ver.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\ChangeLog
+SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 

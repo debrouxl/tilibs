@@ -45,28 +45,26 @@
 #include "logging.h"
 #include "printl.h"
 
-#define BUFFER_SIZE 256
+#define BUFSIZE 256
 
-extern int time_out;		// Timeout value for cables in 0.10 seconds
-extern int delay;		// Time between 2 bits (home-made cables only)
-static int p;
-
-static const char name[4][256] = {
+static const char name[4][256] = 
+{
   "GtkTiEmu Virtual Link 0", "GtkTiEmu Virtual Link 1",
   "GtkTiEmu Virtual Link 1", "GtkTiEmu Virtual Link 0"
 };
 
-#ifdef __GNUC__			// Kevin Kofler
+#ifdef __GNUC__						// Kevin Kofler
 static int ref_cnt __attribute__ ((section(".shared"), shared)) = 0;
 #else
 #pragma comment(linker, "/SECTION:.shared,RWS")
-#pragma data_seg(".shared")	// Share these variables between different instances
-static int ref_cnt = 0;		// Counter of library instances
+#pragma data_seg(".shared")			// Share these variables between different instances
+static int volatile	ref_cnt = 0;	// Counter of library instances
 #pragma data_seg()
 #endif
 
-typedef struct {
-  BYTE buf[BUFFER_SIZE];
+typedef struct 
+{
+  BYTE buf[BUFSIZE];
   int start;
   int end;
 } LinkBuffer;
@@ -76,46 +74,37 @@ static LinkBuffer *pSendBuf, *pRecvBuf;
 
 int tie_init(void)
 {
+	int p;
+
   /* Check if valid argument */
-  if ((io_address < 1) || (io_address > 2)) {
+  if ((io_address < 1) || (io_address > 2)) 
+  {
     printl1(2, _("invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
-  } else {
+  } 
+  else 
+  {
     p = io_address - 1;
     ref_cnt++;
   }
 
   /* Create a FileMapping objects */
-  hSendBuf = CreateFileMapping((HANDLE) (-1), NULL,
-			       PAGE_READWRITE, 0, sizeof(LinkBuffer),
-			       (LPCTSTR) name[2 * p + 0]);
-  if (hSendBuf == NULL) {
-    //print_last_error("CreateFileMapping");
+  hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
+  if (hSendBuf == NULL) 
     return ERR_OPP_NOT_AVAIL;
-  }
-  hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL,
-			       PAGE_READWRITE, 0, sizeof(LinkBuffer),
-			       (LPCTSTR) name[2 * p + 1]);
-  if (hRecvBuf == NULL) {
-    //print_last_error("CreateFileMapping");
+
+  hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
+  if (hRecvBuf == NULL) 
     return ERR_OPP_NOT_AVAIL;
-  }
 
   /* Map them */
-  pSendBuf =
-      (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0,
-				   0, sizeof(LinkBuffer));
-  if (pSendBuf == NULL) {
-    //print_last_error("MapViewOfFile");
+  pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+  if (pSendBuf == NULL) 
     return ERR_OPP_NOT_AVAIL;
-  }
-  pRecvBuf =
-      (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0,
-				   0, sizeof(LinkBuffer));
-  if (pRecvBuf == NULL) {
-    //print_last_error("MapViewOfFile");
+
+  pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+  if (pRecvBuf == NULL) 
     return ERR_OPP_NOT_AVAIL;
-  }
 
   START_LOGGING();
 
@@ -125,13 +114,15 @@ int tie_init(void)
 int tie_exit()
 {
   STOP_LOGGING();
+
+  printf("tie_exit!\n");
+
   /* Close the shared buffer */
-  if (hSendBuf) {
+  if (hSendBuf) 
     UnmapViewOfFile(pSendBuf);
-  }
-  if (hRecvBuf) {
+
+  if (hRecvBuf) 
     UnmapViewOfFile(pRecvBuf);
-  }
 
   return 0;
 }
@@ -161,15 +152,17 @@ int tie_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
+
   toSTART(clk);
-  do {
+  do 
+  {
     if (toELAPSED(clk, time_out))
       return ERR_WRITE_TIMEOUT;
   }
-  while (((pSendBuf->end + 1) & 255) == pSendBuf->start);
+  while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
 
-  pSendBuf->buf[pSendBuf->end] = data;	// put data in buffer
-  pSendBuf->end = (pSendBuf->end + 1) & 255;	// update circular buffer
+  pSendBuf->buf[pSendBuf->end] = data;
+  pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
 
   return 0;
 }
@@ -184,9 +177,11 @@ int tie_get(uint8_t * data)
   //printl1(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
 
   tdr.count++;
+
   /* Wait that the buffer has been filled */
   toSTART(clk);
-  do {
+  do 
+  {
     if (toELAPSED(clk, time_out))
       return ERR_READ_TIMEOUT;
   }
@@ -194,8 +189,8 @@ int tie_get(uint8_t * data)
 
   /* And retrieve the data from the circular buffer */
   *data = pRecvBuf->buf[pRecvBuf->start];
-  pRecvBuf->start = (pRecvBuf->start + 1) & 255;
-  //printl1(0, "get: 0x%02x\n", *data);
+  pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
+
   LOG_DATA(*data);
 
   return 0;

@@ -57,7 +57,6 @@
 #include "logging.h"
 
 extern const char *ti_dev_file;
-extern int time_out;
 
 static int dev_fd = 0;
 

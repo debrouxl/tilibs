@@ -46,29 +46,31 @@
 #include "externs.h"
 #include "printl.h"
 
-extern int time_out;		// Timeout value for cables in 0.10 seconds
-extern int delay;		// Time between 2 bits (home-made cables only)
-
-#define WM_HELLO WM_USER+101
-#define WM_GOODBYE WM_USER+102
-#define WM_ENABLE_LINK WM_USER+110
+// VTi messages
+#define WM_HELLO		WM_USER+101
+#define WM_GOODBYE		WM_USER+102
+#define WM_ENABLE_LINK	WM_USER+110	// used
 #define WM_DISABLE_LINK WM_USER+111
-#define WM_SEND_BUFFER WM_USER+120
-#define WM_ENTER_DEBUG WM_USER+130
-#define WM_EXIT_DEBUG WM_USER+131
+#define WM_SEND_BUFFER	WM_USER+120	// used
+#define WM_ENTER_DEBUG	WM_USER+130
+#define WM_EXIT_DEBUG	WM_USER+131
+
+#define BUFSIZE	256
 
 /* VTi's LinkBuffer structure */
-typedef struct {
-  BYTE buf[256];
-  int start;
-  int end;
+typedef struct 
+{
+  BYTE	buf[BUFSIZE];
+  int	start;
+  int	end;
 } LinkBuffer;
 
-static LinkBuffer *vSendBuf, *vRecvBuf;	//
-static HANDLE hMap = NULL;	// Handle on
-static HWND otherWnd = NULL;	// Handle on the VTi window
+static LinkBuffer*	vSendBuf;
+static LinkBuffer*	vRecvBuf;
+static HANDLE		hMap = NULL;		// Handle on file-mapping object
+static HWND			otherWnd = NULL;	// Handle on the VTi window
 
-int vti_init(unsigned int io_addr, char *dev)
+int vti_init()
 {
   char name[32];
   char vLinkFileName[32];
@@ -78,33 +80,35 @@ int vti_init(unsigned int io_addr, char *dev)
   ATOM a;
 
   /* Create a file mapping handle for the 'lib->VTi' communication channel */
-  for (i = 0;; i++) {
+  for (i = 0;; i++) 
+  {
     sprintf(vLinkFileName, "Virtual Link %d", i);
     hVLinkFileMap = CreateFileMapping((HANDLE) - 1, NULL,
 				      PAGE_READWRITE, 0,
 				      sizeof(LinkBuffer), vLinkFileName);
+
     if (GetLastError() != ERROR_ALREADY_EXISTS)
       break;
   }
-  //printl1(0, "Virtual Link L->V %i\n", i);
-  vSendBuf = (LinkBuffer *) MapViewOfFile(hVLinkFileMap,
-					  FILE_MAP_ALL_ACCESS, 0, 0,
-					  sizeof(LinkBuffer));
+  
+  printl1(0, "Virtual Link L->V %i\n", i);
+  vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
 
   /* Get an handle on the VTi window */
   otherWnd = FindWindow("TEmuWnd", NULL);
-  //printl1(0, "otherWnd: %p\n", otherWnd);
   if (!otherWnd)
     return ERR_OPP_NOT_AVAIL;
 
   /* Get the current DLL handle */
   Handle = GetModuleHandle("ticables.dll");
-  if (!Handle) {
+  if (!Handle) 
+  {
     printl1(2, _("Unable to get an handle on the libTIcables.\n"));
     printl1(2, _("Did you rename the library ?!\n"));
     printl1(2, _("Fatal error. Program terminated.\n"));
     exit(-1);
   }
+
   // Inform VTi of our virtual link so that it can enable it. It should returns 
   // its virtual link name in a message.
   SendMessage(otherWnd, WM_HELLO, 0, (LPARAM) Handle);
@@ -114,14 +118,13 @@ int vti_init(unsigned int io_addr, char *dev)
   //WaitMessage();                                                                                // Waits VTi answer
 
   /* Create a file mapping handle for the 'Vti->lib' communication channel */
-  //printl1(0, "Virtual Link V->L %i\n", i-1);
+  printl1(0, "Virtual Link V->L %i\n", i-1);
   sprintf(name, "Virtual Link %d", i - 1);
   hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
-  if (hMap) {
-    printl1(2, _("Opened %s\n"), name);
-    vRecvBuf =
-	(LinkBuffer *) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS,
-				     0, 0, sizeof(LinkBuffer));
+  if (hMap) 
+  {
+    printl1(0, _("Opened %s\n"), name);
+    vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
   } else
     return ERR_OPEN_FILE_MAP;
 
@@ -143,13 +146,16 @@ int vti_exit()
 {
   /* Send an atom */
   STOP_LOGGING();
-  if (otherWnd) {
+
+  if (otherWnd) 
+  {
     SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
     SendMessage(otherWnd, WM_GOODBYE, 0, 0);
   }
 
   /* Close the shared buffer */
-  if (hMap) {
+  if (hMap) 
+  {
     UnmapViewOfFile(vSendBuf);
     UnmapViewOfFile(vRecvBuf);
     CloseHandle(hMap);
@@ -160,8 +166,8 @@ int vti_exit()
 
 int vti_open()
 {
-  //vSendBuf->start = vSendBuf->end = 0;
-  //vRecvBuf->start = vRecvBuf->end = 0;
+  vSendBuf->start = vSendBuf->end = 0;
+  vRecvBuf->start = vRecvBuf->end = 0;
 
   tdr.count = 0;
   toSTART(tdr.start);
@@ -185,14 +191,15 @@ int vti_put(uint8_t data)
   LOG_DATA(data);
 
   toSTART(clk);
-  do {
+  do 
+  {
     if (toELAPSED(clk, time_out))
       return ERR_WRITE_TIMEOUT;
   }
-  while (((vSendBuf->end + 1) & 255) == vSendBuf->start);
+  while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
 
-  vSendBuf->buf[vSendBuf->end] = data;	// put data in buffer
-  vSendBuf->end = (vSendBuf->end + 1) & 255;	// update circular buffer
+  vSendBuf->buf[vSendBuf->end] = data;					// put data in buffer
+  vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
 
   return 0;
 }
@@ -206,7 +213,8 @@ int vti_get(uint8_t * data)
 
   /* Wait that the buffer has been filled */
   toSTART(clk);
-  do {
+  do 
+  {
     if (toELAPSED(clk, time_out))
       return ERR_READ_TIMEOUT;
   }
@@ -214,7 +222,7 @@ int vti_get(uint8_t * data)
 
   /* And retrieve the data from the circular buffer */
   *data = vRecvBuf->buf[vRecvBuf->start];
-  vRecvBuf->start = (vRecvBuf->start + 1) & 255;
+  vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
 
   tdr.count++;
   LOG_DATA(*data);

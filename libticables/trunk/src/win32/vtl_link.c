@@ -35,32 +35,30 @@
 #include "externs.h"
 #include "printl.h"
 
-extern int time_out;		// Timeout value for cables in 0.10 seconds
-extern int delay;		// Time between 2 bits (home-made cables only)
-static int p;
-
 static const char *pipeName = "\\\\.\\pipe\\vtl";	// string: \\.\pipe\pipename
-
 HANDLE hPipe;
 
-static struct cs {
+static struct cs 
+{
   uint8_t data;
   int available;
 } cs;
 
-int vtl_init(unsigned int io_addr, char *dev)
+int vtl_init()
 {
+	int p;
+
   /* Check if valid argument */
-  if (io_addr > 2)
+  if (io_address > 2)
     return ERR_ILLEGAL_ARG;
   else
-    p = io_addr;
+    p = io_address;
 
   /* Create the pipe (in non-blocking mode) */
   hPipe = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE | PIPE_NOWAIT, 2, 256, 256, 0 * time_out, NULL);	// 100 * time_out
-  if (hPipe == INVALID_HANDLE_VALUE) {
+  if (hPipe == INVALID_HANDLE_VALUE) 
+  {
     printl1(2, "CreateNamedPipe\n");
-    //print_last_error();
     return ERR_OPEN_PIPE;
   }
 
@@ -69,7 +67,8 @@ int vtl_init(unsigned int io_addr, char *dev)
 
 int vtl_exit()
 {
-  if (hPipe) {
+  if (hPipe) 
+  {
     CloseHandle(hPipe);
     hPipe = 0;
   }
@@ -84,7 +83,8 @@ int vtl_open()
   uint8_t data;
 
   /* Flush the pipe */
-  do {
+  do 
+  {
     fSuccess = ReadFile(hPipe, &data, 1, &i, NULL);
   }
   while (i > 0);
@@ -108,11 +108,14 @@ int vtl_put(uint8_t data)
   tdr.count++;
   // Write the data
   fSuccess = WriteFile(hPipe, &data, 1, &i, NULL);
-  if (!fSuccess) {
+  if (!fSuccess) 
+  {
     printl1(2, "WriteFile\n");
     //print_last_error();
     return ERR_WRITE_ERROR;
-  } else if (i == 0) {
+  } 
+  else if (i == 0) 
+  {
     return ERR_WRITE_TIMEOUT;
   }
 
@@ -127,14 +130,16 @@ int vtl_get(uint8_t * data)
 
   tdr.count++;
   /* If the tig_check function was previously called, retrieve the uint8_t */
-  if (cs.available) {
+  if (cs.available) 
+  {
     *data = cs.data;
     cs.available = 0;
     return 0;
   }
 
   toSTART(clk);
-  do {
+  do 
+  {
     if (toELAPSED(clk, time_out))
       return ERR_READ_TIMEOUT;
     fSuccess = ReadFile(hPipe, data, 1, &i, NULL);
@@ -150,17 +155,22 @@ int vtl_check(int *status)
   BOOL fSuccess;
 
   *status = STATUS_NONE;
-  if (hPipe) {
+  
+  if (hPipe) 
+  {
     // Read the data: return 0 if error and i contains 1 or 0 (timeout)
     fSuccess = ReadFile(hPipe, (&cs.data), 1, &i, NULL);
-    if (fSuccess && (i == 1)) {
+    if (fSuccess && (i == 1)) 
+	{
       if (cs.available == 1)
-	return ERR_BYTE_LOST;
+		return ERR_BYTE_LOST;
 
       cs.available = 1;
       *status = STATUS_RX;
       return 0;
-    } else {
+    } 
+	else 
+	{
       *status = STATUS_NONE;
       return 0;
     }

@@ -100,6 +100,7 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 
 	case LINK_TIE:
 	case LINK_VTI:
+	case LINK_VTL:
  		*method |= IOM_API | IOM_OK;
 		break;
 
