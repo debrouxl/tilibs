@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\" -DPREFIX=\"$(prefix)\"
+DEFS = @DEFS@ -DLOCALEDIR=\"$(DESTDIR)$(datadir)/locale\"
 AM_CPPFLAGS = -I$(top_srcdir)/intl @TICABLES_CFLAGS@ @TIFILES_CFLAGS@
 AM_CFLAGS = -Wall
 
