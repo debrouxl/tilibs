@@ -41,7 +41,7 @@
 #include "printl.h"
 
 #ifdef __WIN32__
-#pragma warning( disable : 4761 )
+#pragma warning( disable : 4761 4244)
 #endif
 
 // Screen coordinates of the TI82

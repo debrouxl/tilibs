@@ -39,7 +39,9 @@
 */
 static int default_ticalcs_printl(int level, const char *format, ...)
 {
-	va_list ap;
+#ifndef __WIN32__
+    va_list ap;
+#endif
 	int ret = 0;
 #ifndef __WIN32__	
 	switch(level) {

@@ -582,7 +582,7 @@ t_node_depth_traverse_level (TNode		 *node,
 			     TNodeTraverseFunc func,
 			     tpointer	  data)
 {
-  tint level;
+  tuint level;
   tboolean more_levels;
 
   level = 0;  

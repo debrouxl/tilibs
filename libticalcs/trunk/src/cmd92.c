@@ -33,7 +33,7 @@
 #include "printl.h"
 
 #ifdef __WIN32__
-#pragma warning( disable : 4761 )
+#pragma warning( disable : 4761 4244)
 #endif
 
 int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)

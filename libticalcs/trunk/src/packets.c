@@ -58,7 +58,7 @@ int send_packet(uint8_t target, uint8_t cmd, uint16_t len, uint8_t * data)
 	TRYF(cable->put(MSB(length)));
 
     update->total = length;
-    for (i = 0; i < length; i++) {
+    for (i = 0; i < (int)length; i++) {
       TRYF(cable->put(data[i]));
 
       update->count = i;

@@ -192,7 +192,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
   t_node_append(*tree, vars);
   t_node_append(*tree, apps);
 
-  for (j = 4; j < block_size;) {
+  for (j = 4; j < (int)block_size;) {
     TiVarEntry *fe = calloc(1, sizeof(TiVarEntry));
     TNode *node;
 
@@ -219,7 +219,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
   }
 
   // get list of variables into each folder
-  for (i = 0; i < t_node_n_children(vars); i++) {
+  for (i = 0; i < (int)t_node_n_children(vars); i++) {
     TNode *folder = t_node_nth_child(vars, i);
     char *folder_name = ((TiVarEntry *) (folder->data))->name;
 
@@ -240,7 +240,7 @@ int ti89_directorylist(TNode ** tree, uint32_t * memory)
     TRYF(ti89_recv_EOT());
     TRYF(ti89_send_ACK());
 
-    for (j = 4 + 14 + extra; j < block_size;) {
+    for (j = 4 + 14 + extra; j < (int)block_size;) {
       TiVarEntry *ve = calloc(1, sizeof(TiVarEntry));
       TNode *node;
 

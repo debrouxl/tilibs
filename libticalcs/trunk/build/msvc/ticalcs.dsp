@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W1 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /I "." /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /I "." /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
