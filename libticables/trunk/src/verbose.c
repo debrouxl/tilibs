@@ -52,7 +52,6 @@ TIEXPORT int TICALL DISPLAY(const char *format, ...)
 {
 	va_list ap;
 	int ret;
-	char buf[256];
 		
 	va_start(ap, format);
 	//ret = vsnprintf(buf, 256, format, ap);
@@ -68,7 +67,6 @@ TIEXPORT int TICALL DISPLAY_ERROR(const char *format, ...)
 {
 	va_list ap;
 	int ret;
-	char buf[256];
 		
 	va_start(ap, format);
 	//ret = vsnprintf(buf, 256, format, ap);
