@@ -67,11 +67,11 @@ int main(int argc, char **argv)
 	ticable_get_default_param(&lp);
 	lp.delay = 10;
 	lp.timeout = 20;
-	lp.port = DEFAULT_PORT;
+	lp.port = SERIAL_PORT_2;
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	if((err=ticable_set_cable(LINK_NONE, &lc))) {
+	if((err=ticable_set_cable(LINK_SER, &lc))) {
 		print_lc_error(err);
                 return -1;
 	}
