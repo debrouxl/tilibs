@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs-4.4.7\n"
 "POT-Creation-Date: 2003-05-03 11:56+0200\n"
-"PO-Revision-Date: 2003-05-04 21:22GMT\n"
+"PO-Revision-Date: 2003-05-07 13:40GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: src/dirlist.c:57
 msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
-msgstr "| B. nom           | T. nom   |Attr|Type| Taille   | Parent   |\n"
+msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
 #: src/dirlist.c:105
 msgid "  No variables\n"
@@ -29,7 +29,7 @@ msgstr "+------------------+----------+----+----+----------+----------+\n"
 
 #: src/dirlist.c:117
 msgid "| B. name          | T. name  |Attr|Type| Size     |\n"
-msgstr "| B. nom           | T. nom   |Attr|Type| Taille    |\n"
+msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille    |\n"
 
 #: src/dirlist.c:140
 msgid "  No applications\n"
@@ -68,16 +68,20 @@ msgid "Msg: This function does not exist for this calculator."
 msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 
 #: src/error.c:68
-msgid "Cause: the operation you attempted is not supported by your calculator model."
-msgstr "Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
+msgid ""
+"Cause: the operation you attempted is not supported by your calculator model."
+msgstr ""
+"Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
 
 #: src/error.c:72
 msgid "Msg: Calculator out of memory."
 msgstr "Msg: Votre calculatrice n'a plus de mémoire libre."
 
 #: src/error.c:76
-msgid "Cause: the calculator does not have memory enough for doing the operation."
-msgstr "Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
+msgid ""
+"Cause: the calculator does not have memory enough for doing the operation."
+msgstr ""
+"Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
 
 #: src/error.c:80
 msgid "Msg: Unable to open (reading) the file."
@@ -129,7 +133,7 @@ msgstr ""
 
 #: src/error.c:116
 msgid "Msg: Not really an error, should not appear !"
-msgstr "Msg: Pas vraiment une erreur, ne devraît pas apparaître !"
+msgstr "Msg: Pas vraiment une erreur, ne devrait pas apparaître !"
 
 #: src/error.c:118 src/error.c:176
 msgid "Cause: a bug. Drop us an email !"
@@ -266,7 +270,7 @@ msgid ""
 "Status = %04X\n"
 msgstr ""
 "\n"
-"Etat = %04X\n"
+"État = %04X\n"
 
 #: src/probe.c:250
 msgid "The calculator is ready.\n"
@@ -483,7 +487,7 @@ msgstr "Mise à jour de l'horloge..."
 #: src/ti92.c:241
 #, c-format
 msgid "Receiving block %2i"
-msgstr "Réception du block %2i"
+msgstr "Réception du bloc %2i"
 
 #: src/type2str.c:32
 msgid "full"
@@ -508,4 +512,3 @@ msgstr "libticalcs erreur: type de chemin inconnu !\n"
 #: src/type2str.c:64
 msgid "libticalcs error: unknown action !\n"
 msgstr "libticalcs erreur: action inconnue !\n"
-
