@@ -387,9 +387,10 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
     {
 	case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
 	case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
-		// can't distinguish from other calcs :-(
-	//case 8: content->device_type = DEVICE_TYPE_V200; break;	// V200PLT
-	//case 9: content->device_type = DEVICE_TYPE_89T; break;	// Titanium
+	// value added by the TI community according to HWID parameter
+	// doesn't have any 'legal existence'
+	case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
+	case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
     }
 
     content->next = NULL;

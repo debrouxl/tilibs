@@ -64,6 +64,8 @@ struct ti9x_flash {
 
 #define DEVICE_TYPE_89  0x98
 #define DEVICE_TYPE_92P 0x88
+// no legal existence, internal use
+//#define DEVICE_TYPE_
 
 /* Functions */
 
