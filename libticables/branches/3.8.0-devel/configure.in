@@ -223,6 +223,7 @@ AC_SUBST(LDFLAGS)
 # output files
 AC_OUTPUT([
 Makefile 
+build/Makefile
 docs/Makefile 
 macros/Makefile 
 man/Makefile

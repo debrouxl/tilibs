@@ -7,6 +7,11 @@ To do:
 
 Log:
 
+- 17/04/2004, version 3.8.2: roms
+	Bug in lib-usb support: wrong timeout passed to libusb (1/10 of
+	value) => short timeout !
+	Discovered the same bug in tipar/tiser/tiusb kernel module !
+	
 - 08/04/2004, version 3.8.1: roms
 	Redirection of stdout/stderr.
 	Weird: we were using tilp/ticable.h. It should be linux/ticable.h.

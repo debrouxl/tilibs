@@ -127,13 +127,13 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 locale_dir = @locale_dir@
 
-SUBDIRS = . docs intl macros man po src tests
+SUBDIRS = . build docs intl macros man po src tests
 
 # Script to install
 bin_SCRIPTS = ticables-config
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO build docs
+EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticables.pc

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ticables\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-17 16:27+0200\n"
+"POT-Creation-Date: 2004-04-20 22:40+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -795,7 +795,7 @@ msgstr "usb_find_busses (%s).\n"
 msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices (%s).\n"
 
-#: src/linux/slv_link2.c:319
+#: src/linux/slv_link2.c:317
 msgid ""
 "weird, usb_bulk_read returns without any data; retrying for circumventing "
 "the quirk...\n"
@@ -994,7 +994,7 @@ msgstr "carte des E/S...\n"
 msgid "registering cable...\n"
 msgstr "enregistrement du câble...\n"
 
-#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:276
+#: src/linux/linux_mapping.c:385 src/win32/win32_mapping.c:278
 msgid "invalid argument (bad cable)."
 msgstr "argument non valide (câble incorrect)."
 

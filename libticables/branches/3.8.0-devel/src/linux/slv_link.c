@@ -120,10 +120,9 @@ int slv_open(void)
  {
     int arg = 0;
 
-    fprintf(stdout, "reset pipes !\n");
     if (ioctl(dev_fd, IOCTL_TIUSB_RESET_PIPES, arg) == -1) {
 	    printl1(2, _("unable to reset pipes (ioctl).\n"));
-      //return ERR_IOCTL;
+	    //return ERR_IOCTL;
     }
   }
 #endif

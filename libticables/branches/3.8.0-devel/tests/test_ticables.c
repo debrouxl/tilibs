@@ -27,6 +27,7 @@
 #ifndef __WIN32__
 #include <unistd.h>
 #endif
+#include <sys/time.h>
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
 	uint8_t data;
 	TicableLinkParam lp;
 	TicableLinkCable lc;
-	//int retval;
+	tiTIME ref, end;
 
 	/* 
 	   Display verbose informations in the shell (Linux) or 
@@ -65,12 +66,12 @@ int main(int argc, char **argv)
 
 	ticable_get_default_param(&lp);
 	lp.delay = 10;
-	lp.timeout = 15;
-	lp.port = SERIAL_PORT_2;
+	lp.timeout = 20;
+	lp.port = USB_PORT_1;
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	if((err=ticable_set_cable(LINK_SER, &lc))) {
+	if((err=ticable_set_cable(LINK_SLV, &lc))) {
 		print_lc_error(err);
                 return -1;
 	}
@@ -111,12 +112,22 @@ int main(int argc, char **argv)
 
 	// Check if calc is ready
 	DISPLAY("Check if calc is OK...\n");
+	
+        toSTART(ref);
 	err = lc.put(0x00);
+	printf("Time: %1.1f\n", toCURRENT(ref));
+	if(err)
+		goto exit;
 	err = lc.put(0x68);
 	err = lc.put(0x00);
 	err = lc.put(0x00);
+
+	toSTART(ref);
 	err = lc.get(&data);
+	printf("Time: %1.1f\n", toCURRENT(ref));
 	printf("Data: %02X\n", data);
+	if(err)
+		goto exit;
 	err = lc.get(&data);
 	printf("Data: %02X\n", data);
 	err = lc.get(&data);
