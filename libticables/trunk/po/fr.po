@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables-3.7.4\n"
 "POT-Creation-Date: 2003-05-03 11:42+0200\n"
-"PO-Revision-Date: 2003-05-04 21:18GMT\n"
+"PO-Revision-Date: 2003-05-07 13:43GMT\n"
 "Last-Translator: GARSAULT Sylvain <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: FRENCH <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,8 @@ msgid "Msg: Timeout occured while writing to the device."
 msgstr "Msg: Limite de temps dépassée en écrivant sur le périphérique."
 
 #: src/error.c:78 src/error.c:92
-msgid "Cause: Check that your link cable is plugged and/or the calculator is ready."
+msgid ""
+"Cause: Check that your link cable is plugged and/or the calculator is ready."
 msgstr ""
 "Cause: Vérifiez que le câble est connecté et/ou que la calculatrice est "
 "prête."
@@ -123,8 +124,8 @@ msgid ""
 "Cause: Check that you have permissions to create a pipe in the /tmp "
 "directory."
 msgstr ""
-"Cause: Vérifiez que vous avez les permissions de céer un tube (pipe) dans le "
-"dossier /tmp."
+"Cause: Vérifiez que vous avez les permissions de créer un tube (pipe) dans "
+"le dossier /tmp."
 
 #: src/error.c:151
 msgid "Msg: Unable to close pipes."
@@ -193,7 +194,7 @@ msgstr "Cause: Erreur interne à Win32."
 
 #: src/error.c:209
 msgid "Msg: IOCTL code unsuccessful."
-msgstr "Msg: Echec du code IOTCL."
+msgstr "Msg: Échec du code IOTCL."
 
 #: src/error.c:211
 msgid "Cause: Internal device driver error."
@@ -217,7 +218,7 @@ msgid ""
 "Panel. The ticables library need a specific driver for this cable. You will "
 "find it on http://lpg.ticalc.org/prj_usb."
 msgstr ""
-"Cause: Vérifez que votre SilverLink est correctement installé dans le "
+"Cause: Vérifiez que votre SilverLink est correctement installé dans le "
 "panneau de configuration Windows. La librairie ticables a besoin d'un pilote "
 "spécifique pour ce câble. Vous le trouverez sur http://lpg.ticalc.org/"
 "prj_usb."
@@ -236,7 +237,7 @@ msgid ""
 "and usbfs, too."
 msgstr ""
 "Cause: Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
-"Vérifez également libusb et usbfs."
+"Vérifiez également libusb et usbfs."
 
 #: src/error.c:243
 msgid "Msg: Unable to initialize the USB device."
@@ -264,7 +265,8 @@ msgstr "Msg: Erreur à la ré-initialisation des endpoints USB."
 
 #: src/error.c:261
 msgid "Cause: Your cable may be stalled. Unplug and replug it !."
-msgstr "Cause: Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le !"
+msgstr ""
+"Cause: Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le !"
 
 #: src/error.c:266
 msgid "Msg: FreeLibrary error. Unable to release the DLL."
@@ -279,7 +281,7 @@ msgid ""
 "Cause: Check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
-"Cause: Vérifiez que vous diposez de suffisamment de mémoire pour allouer un "
+"Cause: Vérifiez que vous disposez de suffisamment de mémoire pour allouer un "
 "segment de mémoire partagée."
 
 #: src/error.c:282
@@ -407,7 +409,8 @@ msgstr "Libticables: version %s\n"
 
 #: src/intrface.c:578 src/intrface.c:628
 msgid "Function not implemented. This is a bug. Please report it."
-msgstr "Fonction non implémentée. Ceci est un bug. Reportez-le s'il vous plaît."
+msgstr ""
+"Fonction non implémentée. Ceci est un bug. Reportez-le s'il vous plaît."
 
 #: src/intrface.c:579 src/intrface.c:629
 msgid "Informations:\n"
@@ -489,7 +492,8 @@ msgid "Exiting...\n"
 msgstr "Sortie...\n"
 
 #: src/ioports.c:276
-msgid "couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
+msgid ""
+"couldn't access PortTalk Driver, Please ensure driver is installed/loaded.\n"
 msgstr ""
 "Impossible d'accéder au pilote PortTalk. Vérifiez s'il vous plaît qu'il est "
 "installé/chargé.\n"
@@ -646,7 +650,7 @@ msgstr "Libticables: vérification des ressources...\r\n"
 
 #: src/probe.c:1078 src/probe.c:1138 src/probe.c:1189
 msgid "  IO_API: ok\r\n"
-msgstr " IO_API: ok\r\n"
+msgstr "  IO_API: ok\r\n"
 
 #: src/probe.c:1081
 #, c-format
@@ -665,11 +669,11 @@ msgstr "  IO_TIUSB: %s (TiglUsb)\r\n"
 
 #: src/probe.c:1144
 msgid "  IO_ASM: nok (a kernel module is needed)\r\n"
-msgstr " IO_ASM: échec (un module du noyau est nécessaire)\r\n"
+msgstr "  IO_ASM: échec (un module du noyau est nécessaire)\r\n"
 
 #: src/probe.c:1147 src/probe.c:1197
 msgid "  IO_ASM: ok (super user)\r\n"
-msgstr " IO_ASM: ok (super utilisateur)\r\n"
+msgstr "  IO_ASM: ok (super utilisateur)\r\n"
 
 #: src/probe.c:1156
 #, c-format
@@ -748,7 +752,8 @@ msgstr "La lecture n'a retourné aucune donnée. Nouvel essai...\n"
 
 #: src/slv_link.c:340
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
-msgstr "Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
+msgstr ""
+"Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
 
 #: src/slv_link.c:350
 #, c-format
@@ -804,7 +809,8 @@ msgid "usb_find_devices: %s\n"
 msgstr "usb_find_devices: %s\n"
 
 #: src/slv_link.c:1553
-msgid "usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
+msgid ""
+"usb_bulk_read returns without any data. Retrying for circumventing quirk...\n"
 msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"
 
 #: src/tie_link.c:76
@@ -841,4 +847,3 @@ msgstr "Erreur fatale. Programme terminé.\n"
 #, c-format
 msgid "Opened %s\n"
 msgstr "%s a été ouvert\n"
-
