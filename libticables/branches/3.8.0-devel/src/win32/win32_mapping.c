@@ -123,7 +123,7 @@ static int win32_map_io(TicableMethod method, TicablePort port)
 
 	case PARALLEL_PORT_1:
 		io_address = PP1_ADDR;
-      		strcpy(io_device, PP1_NAME);
+      	strcpy(io_device, PP1_NAME);
     	break;
 
   	case PARALLEL_PORT_2:
@@ -132,23 +132,23 @@ static int win32_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	case PARALLEL_PORT_3:
-    		io_address = PP3_ADDR;
-      		strcpy(io_device, PP3_NAME);
+    	io_address = PP3_ADDR;
+      	strcpy(io_device, PP3_NAME);
     	break;
 
   	case SERIAL_PORT_1:
 		io_address = SP1_ADDR;
-      		strcpy(io_device, SP1_NAME);
+      	strcpy(io_device, SP1_NAME);
     	break;
 
   	case SERIAL_PORT_2:
-    		io_address = SP2_ADDR;
-      		strcpy(io_device, SP2_NAME);
+    	io_address = SP2_ADDR;
+      	strcpy(io_device, SP2_NAME);
     	break;
 
   	case SERIAL_PORT_3:
-    		io_address = SP3_ADDR;
-      		strcpy(io_device, SP3_NAME);
+    	io_address = SP3_ADDR;
+      	strcpy(io_device, SP3_NAME);
     	break;
 
   	case SERIAL_PORT_4:
@@ -156,24 +156,24 @@ static int win32_map_io(TicableMethod method, TicablePort port)
 		strcpy(io_device, SP3_NAME);
     	break;
 
-  	case USB_PORT_1:
+  	case USB_PORT:
 		strcpy(io_device, UP1_NAME);
-	break;
+		break;
 
 	case VIRTUAL_PORT_1:
 		io_address = VLINK0;
-      		strcpy(io_device, "");
-	break;
+      	strcpy(io_device, "");
+		break;
 
   	case VIRTUAL_PORT_2:
 		io_address = VLINK1;
-      		strcpy(io_device, "");
-	break;
+      	strcpy(io_device, "");
+		break;
 
   	default:
-    		printl1(2, "bad argument (invalid port).\n");
+    	printl1(2, "bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
-	break;
+		break;
 	}
 	
 	return 0;
@@ -262,12 +262,14 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	case LINK_SLV:
-      		if ((port != USB_PORT_1) &&
+// commented out, we have only 1 cable
+/*
+			if ((port != USB_PORT_1) &&
 		  	(port != USB_PORT_2) &&
 		  	(port != USB_PORT_3) &&
 		  	(port != USB_PORT_4) && (port != USER_PORT))
 		return ERR_INVALID_PORT;
-
+*/
 		if(method & IOM_DRV)
 			slv_register_cable_1(lc);
 		break;
