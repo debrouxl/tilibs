@@ -6,7 +6,7 @@ includedir=@includedir@
 Name: TiCalcs
 Description: TI's calculator management library
 Version: @VERSION@
-Requires: ticables,tifiles,glib
+Requires: ticables,tifiles
 Libs: -L${libdir} -lticalcs
 Cflags: -I${includedir}/tilp
 
