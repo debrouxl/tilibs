@@ -24,6 +24,7 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+#include <stdlib.h>
 
 #include "intl.h"
 
@@ -32,13 +33,15 @@
 #include "externs.h"
 #include "verbose.h"
 
+#include "links.h"
+
 extern const char *search_for_tiser_node(int minor);
 extern const char *search_for_tipar_node(int minor);
 static int convert_port_into_device(void);
 
 TicableMethod linux_get_methods(TicableType type, int resources)
 {
-	TicableMethod method;
+	TicableMethod method = IOM_AUTO;
 	
 	// reset methods
   	if (method & IOM_AUTO)
@@ -92,7 +95,7 @@ extern int resources, methods;
 
 int linux_register_cable(TicableType type, TicableLinkCable *lc)
 {
-	int ret;
+//	int ret;
 
 	// fill device and io_addr fields
 	convert_port_into_device();

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: vti_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -273,11 +273,4 @@ int vti_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->get_white_wire = NULL;
 
   return 0;
-}
-
-int vti_unregister_cable(TicableLinkCable * lc)
-{
-	memset(lc, 0, sizeof(lc));
-	
-	return 0;
 }

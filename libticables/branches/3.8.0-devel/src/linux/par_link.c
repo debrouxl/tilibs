@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: par_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -263,7 +263,7 @@ int par_supported()
     return SUPPORT_OFF;
 }
 
-int par_register_cable(TicableLinkCable * lc, TicableMethod method)
+int par_register_cable(TicableLinkCable * lc)
 {
   lc->init = par_init;
   lc->open = par_open;

@@ -92,9 +92,9 @@ int mapping_register_cable(TicableType type, TicableLinkCable *lc)
   	return ret;
 }
 
-int dfl_register_cable(TicableLinkCable * lc, TicableMethod method);
+int dfl_register_cable(TicableLinkCable * lc);
 
 void mapping_unregister_cable(TicableLinkCable *lc)
 {
-	dfl_register_cable(lc, IOM_AUTO);	
+	dfl_register_cable(lc);	
 }
