@@ -96,7 +96,7 @@ int avr_init_port()
   else
     termset.c_cflag=CS8|CLOCAL|CREAD;
   termset.c_lflag=0;
-#endif /* HAVE_CFMAKERAW */
+#endif
   //DISPLAY("fastAVRlink baud-rate: %i\n", baud_rate);
   if(baud_rate == 9600)
     br = B9600;
@@ -250,7 +250,7 @@ int DLLEXPORT2 avr_supported()
   return SUPPORT_ON;
 }
 
-#elif defined(__WIN32)
+#elif defined(__WIN32__)
 
 /************************/
 /* Windows 32 bits part */
@@ -503,14 +503,13 @@ int DLLEXPORT2 avr_supported()
   return SUPPORT_ON | SUPPORT_DCB;
 }
 
-#else
-
-// unsupported platforms
+#else // unsupported platforms
 
 /************************/
 /* Unsupported platform */
 /************************/
 
+/* you'll probably need the following variable */
 /* static unsigned int com_addr; */
 
 DLLEXPORT
@@ -561,7 +560,7 @@ int avr_check_port(int *status)
   return 0;
 }
 
- //#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1)) // swap the 2 lowest bits
 
 int avr_set_red_wire(int b)
 {

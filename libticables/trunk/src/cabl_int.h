@@ -31,11 +31,11 @@ extern "C" {
   const char *TIEXPORT ticable_get_version(void);
   
   int   TIEXPORT ticable_get_error(int err_num, char *error_msg);
-  void  TIEXPORT ticable_set_param(LINK_PARAM lp);
-  int   TIEXPORT ticable_get_param(LINK_PARAM *lp);
-  int   TIEXPORT ticable_get_default_param(LINK_PARAM *lp);
+  void  TIEXPORT ticable_set_param(const LinkParam *lp);
+  int   TIEXPORT ticable_get_param(LinkParam *lp);
+  int   TIEXPORT ticable_get_default_param(LinkParam *lp);
   int   TIEXPORT ticable_get_support(int cable_type);
-  void  TIEXPORT ticable_set_cable(int type, LINK_CABLE *lc);
+  void  TIEXPORT ticable_set_cable(int type, LinkCable *lc);
   
   /*********************/
   /* Set/Get functions */

@@ -14,4 +14,8 @@
 * 20011128 : v2.1.6-osx0.0.4
 	* Fixed buffer handling again
 	* Code cleaning
+* 20011209 : v2.2.0-osx0.0.5
+	* Merge up to 2.2.0
+	* Do not include detect.c, it's a test file !!
+	
 	

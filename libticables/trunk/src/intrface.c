@@ -154,7 +154,7 @@ void DLLEXPORT2 ticable_set_method(int m)
 }
 
 DLLEXPORT
-int DLLEXPORT2 ticable_get_emthod(void)
+int DLLEXPORT2 ticable_get_method(void)
 {
   return method;
 }
@@ -162,20 +162,20 @@ int DLLEXPORT2 ticable_get_emthod(void)
 static int convert_port_into_device(LinkParam lp);
 
 DLLEXPORT
-void DLLEXPORT2 ticable_set_param(LINK_PARAM lp)
+void DLLEXPORT2 ticable_set_param(const LinkParam *lp)
 {
-  time_out = lp.timeout;
-  delay = lp.delay;
-  baud_rate = lp.baud_rate;
-  convert_port_into_device(lp);
-  hfc = lp.hfc;
-
-  port = lp.port;
-  method = lp.method;
+  time_out = lp->timeout;
+  delay = lp->delay;
+  baud_rate = lp->baud_rate;
+  convert_port_into_device(*lp);
+  hfc = lp->hfc;
+ 
+  port = lp->port;
+  method = lp->method;
 }
 
 DLLEXPORT
-int DLLEXPORT2 ticable_get_param(LINK_PARAM *lp)
+int DLLEXPORT2 ticable_get_param(LinkParam *lp)
 {
   lp->timeout = time_out;
   lp->delay = delay;
@@ -192,10 +192,10 @@ int DLLEXPORT2 ticable_get_param(LINK_PARAM *lp)
 }
 
 DLLEXPORT
-int DLLEXPORT2 ticable_get_default_param(LINK_PARAM *lp)
+int DLLEXPORT2 ticable_get_default_param(LinkParam *lp)
 {
   lp->calc_type = 2;   //CALC_TI92
-  lp->link_type = LINK_PAR;
+  lp->link_type = LINK_TGL; // do not change this (NT)
   lp->timeout = DFLT_TIMEOUT;
   lp->delay = DFLT_DELAY;
   lp->baud_rate = BR9600;
@@ -203,17 +203,17 @@ int DLLEXPORT2 ticable_get_default_param(LINK_PARAM *lp)
   strcpy(lp->device, AUTO_NAME);
   lp->hfc = HFC_ON;
 
-  lp->port = PARALLEL_PORT_1;
+  lp->port = SERIAL_PORT_2;
   lp->method = IOM_AUTO;
 
   return 0;
 }
 
-extern LINK_CABLE *tcl;
+extern LinkCable *tcl;
 static void print_informations();
 
 DLLEXPORT
-void DLLEXPORT2 ticable_set_cable(int typ, LINK_CABLE *lc)
+void DLLEXPORT2 ticable_set_cable(int typ, LinkCable *lc)
 {
   int type = typ;
   int test = 1;

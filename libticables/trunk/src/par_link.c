@@ -202,7 +202,7 @@ int DLLEXPORT2 par_term_port()
   io_permitted = 0;
 #endif
   STOP_LOGGING();
-  
+
   return 0;
 }
 

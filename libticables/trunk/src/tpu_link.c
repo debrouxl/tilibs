@@ -347,7 +347,8 @@ int DLLEXPORT2 tpu_supported()
 /* Unsupported platform */
 /************************/
 
-/* static unsigned int com_addr; */ /* Use this when writing for your platform */
+/* you'll probably need the following variable */
+/* static unsigned int com_addr; */
 
 DLLEXPORT
 int tpu_init_port()
@@ -426,5 +427,4 @@ int tpu_supported()
 }
 
 #endif
-
 

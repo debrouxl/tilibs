@@ -221,7 +221,7 @@ DLLEXPORT
 int DLLEXPORT2 ser_term_port()
 {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined (__WIN32__) || defined(__WIN16__) || defined(__ALPHA__) 
-  STOP_LOGGING();	
+  STOP_LOGGING();
   TRY(close_io(com_out, 1));
   io_permitted--;
   TRY(close_io(com_in, 1));

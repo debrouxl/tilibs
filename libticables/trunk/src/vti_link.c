@@ -90,9 +90,7 @@ vti_buf *shm[2];      // Shm address
 vti_buf *send_buf[2], *recv_buf[2]; // Swapped buffer
 #endif
 
-#ifdef USE_SHM
 static int p = 0; // a shortcut
-#endif
 
 /*
   The first call to init_port open the 2 shm

@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFFEP_MACROS__
-#define __TIFFEP_MACROS__
+#ifndef __TICABLES_MACROS__
+#define __TICABLES_MACROS__
 
 #ifndef TILP_MACROS
 #define TILP_MACROS
@@ -63,7 +63,7 @@
    Used to propagate an error code when a function returns.
 */
 #define CHECK(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; } //obsolete
-#define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; } //new !
+#define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }   //new !
 
 /*
   The directory separator depending on the platform

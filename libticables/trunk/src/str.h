@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __STR_H__
-#define __STR_H__
+#ifndef __TICABLES_STR__
+#define __TICABLES_STR__
 
 #if defined(__UNIX__) || defined(__LINUX__)
 # include <string.h>

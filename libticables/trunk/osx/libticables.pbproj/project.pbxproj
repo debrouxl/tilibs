@@ -7,6 +7,7 @@
 	objects = {
 		0127DA220170EE495041E0CA = {
 			children = (
+				0127DA230170FC105041E0CA,
 				18D1B3A70170FD5A5041E0CA,
 				18D1B3A80170FD5A5041E0CA,
 				18D1B3A90170FD5A5041E0CA,
@@ -37,7 +38,6 @@
 				18D1B3950170FD1C5041E0CA,
 				18D1B3960170FD1C5041E0CA,
 				18D1B3970170FD1C5041E0CA,
-				0127DA230170FC105041E0CA,
 			);
 			isa = PBXGroup;
 			name = Headers;
@@ -123,7 +123,6 @@
 				18D1B3D60170FD845041E0CA,
 				18D1B3D70170FD845041E0CA,
 				18D1B3D80170FD845041E0CA,
-				18D1B3D90170FD845041E0CA,
 				18D1B3DA0170FD845041E0CA,
 				18D1B3DB0170FD845041E0CA,
 				18D1B3DC0170FD845041E0CA,
@@ -193,10 +192,12 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				FRAMEWORK_VERSION = A;
 				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = /System/Library/Frameworks;
 				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-D__MACOSX__ -DHAVE_CONFIG_H";
 				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
 				PRODUCT_NAME = libticables;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -206,6 +207,7 @@
 			);
 			isa = PBXFrameworkTarget;
 			name = libticables;
+			productInstallPath = /System/Library/Frameworks;
 			productName = libticables;
 			productReference = 034768E0FF38A50411DB9C8B;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -225,15 +227,15 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>libTIcables for OS X</string>
+	<string>libTIcables for Mac OS X</string>
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.1.6-osx0.0.3</string>
+	<string>2.2.0-osx0.0.5</string>
 	<key>CFBundleSignature</key>
 	<string>JBRL</string>
 	<key>CFBundleVersion</key>
-	<string>2.1.6</string>
+	<string>2.2.0-osx0.0.5</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
@@ -301,7 +303,6 @@
 				18D1B3E70170FD845041E0CA,
 				18D1B3E80170FD845041E0CA,
 				18D1B3EA0170FD845041E0CA,
-				18D1B3EB0170FD845041E0CA,
 				18D1B3EC0170FD845041E0CA,
 				18D1B3ED0170FD845041E0CA,
 				18D1B3EE0170FD845041E0CA,
@@ -915,12 +916,6 @@
 			path = /Users/julien/devel/libticables/src/dev_link.c;
 			refType = 0;
 		};
-		18D1B3D90170FD845041E0CA = {
-			isa = PBXFileReference;
-			name = detect.c;
-			path = /Users/julien/devel/libticables/src/detect.c;
-			refType = 0;
-		};
 		18D1B3DA0170FD845041E0CA = {
 			isa = PBXFileReference;
 			name = vtl_link.c;
@@ -1013,12 +1008,6 @@
 		};
 		18D1B3EA0170FD845041E0CA = {
 			fileRef = 18D1B3D80170FD845041E0CA;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		18D1B3EB0170FD845041E0CA = {
-			fileRef = 18D1B3D90170FD845041E0CA;
 			isa = PBXBuildFile;
 			settings = {
 			};

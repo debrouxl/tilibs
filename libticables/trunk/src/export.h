@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef EXPORT_H
-#define EXPORT_H
+#ifndef __TICABLES_EXPORT__
+#define __TICABLES_EXPORT__
 /*
  * For exporting function in a Windows DLL
  */

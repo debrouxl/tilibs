@@ -20,8 +20,8 @@
   Contains the right headers for the internationalization library
 */
 
-#ifndef CABLES_INTL_H
-#define CABLES_INTL_H
+#ifndef __TICABLES_INTL__
+#define __TICABLES_INTL__
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

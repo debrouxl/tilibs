@@ -82,7 +82,7 @@ int tig_init_port()
       fprintf(stderr, "Unable to open this serial port: %s\n", device);
       return ERR_OPEN_SER_DEV;
     }
-    
+
   /* Initialize it: 9600 bauds, 8 bits of data, no parity and 1 stop bit */
   tcgetattr(dev_fd, &termset);
 #ifdef HAVE_CFMAKERAW
@@ -319,8 +319,8 @@ int tig_init_port()
 	char *name = comPort;
 	int graphLink = 1;
 
-        /* Init some internal variables */
-        memset((void *)(&cs), 0, sizeof(cs));
+	/* Init some internal variables */
+	memset((void *)(&cs), 0, sizeof(cs));
 	strcpy(comPort, device);
 
 	/* Open COM port */
@@ -571,8 +571,9 @@ int DLLEXPORT2 tig_supported()
 /* Unsupported platform */
 /************************/
 
-/* static unsigned int com_addr; */ /* Use this when writing for your platform */
-
+/* you'll probably need the following variable */
+/* static unsigned int com_addr; */
+ 
 DLLEXPORT
 int tig_init_port()
 {

@@ -71,7 +71,7 @@ void clear_portinfo_struct(PortInfo *pi)
   The returned value can be:
   - "Linux"
   - "Windows9x" for Windows95, 98 or Me
-  - "WindowsNT" for WindowsNT4 or 2000
+  - "WindowsNT" for WindowsNT4 or 2000 or XP
   - "unknown" if failed
 */
 DLLEXPORT int DLLEXPORT2 ticable_detect_os(char **os_type)
