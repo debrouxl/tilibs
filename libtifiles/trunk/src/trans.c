@@ -832,18 +832,23 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(char* dst, const char *src)
     {
     case CALC_TI73:
     case CALC_TI83:
-    case CALC_TI83P: f = transcode_from_ti83_charset_to_ascii; 
+    case CALC_TI83P: 
+	case CALC_TI84P: 
+		f = transcode_from_ti83_charset_to_ascii; 
       break;
-    case CALC_TI82:  f = transcode_from_ti82_charset_to_ascii; 
+    case CALC_TI82:  
+		f = transcode_from_ti82_charset_to_ascii; 
       break;
     case CALC_TI85:  
-    case CALC_TI86:  f = transcode_from_ti85_charset_to_ascii; 
+    case CALC_TI86:  
+		f = transcode_from_ti85_charset_to_ascii; 
       break;
     case CALC_TI89:
     case CALC_TI89T:
     case CALC_TI92:
     case CALC_TI92P:
-    case CALC_V200:  f = transcode_from_ti9x_charset_to_ascii; 
+    case CALC_V200:  
+		f = transcode_from_ti9x_charset_to_ascii; 
       break;
 	default:
 		printl3(2, _("libtifiles error: unknown calc type. Program halted before crashing !\n"));
@@ -870,18 +875,23 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(char* dst, const char *src)
     {
     case CALC_TI73:
     case CALC_TI83:
-    case CALC_TI83P: f = transcode_from_ti83_charset_to_latin1; 
+    case CALC_TI83P: 
+	case CALC_TI84P:
+		f = transcode_from_ti83_charset_to_latin1; 
       break;
-    case CALC_TI82:  f = transcode_from_ti82_charset_to_latin1; 
+    case CALC_TI82:  
+		f = transcode_from_ti82_charset_to_latin1; 
       break;
     case CALC_TI85:  
-    case CALC_TI86:  f = transcode_from_ti85_charset_to_latin1; 
+    case CALC_TI86:  
+		f = transcode_from_ti85_charset_to_latin1; 
       break;
     case CALC_TI89:
     case CALC_TI89T:
     case CALC_TI92:
     case CALC_TI92P:
-    case CALC_V200:  f = transcode_from_ti9x_charset_to_latin1; 
+    case CALC_V200:  
+		f = transcode_from_ti9x_charset_to_latin1; 
       break;
 	default:
 	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");
@@ -912,18 +922,22 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(char* dst, const char *src)
     case CALC_TI73:
     case CALC_TI83:
     case CALC_TI83P: 
-	case CALC_TI84P: f = transcode_from_ti83_charset_to_utf8; 
+	case CALC_TI84P: 
+		f = transcode_from_ti83_charset_to_utf8; 
       break;
-    case CALC_TI82:  f = transcode_from_ti82_charset_to_utf8; 
+    case CALC_TI82:  
+		f = transcode_from_ti82_charset_to_utf8; 
       break;
     case CALC_TI85:  
-    case CALC_TI86:  f = transcode_from_ti85_charset_to_utf8; 
+    case CALC_TI86:  
+		f = transcode_from_ti85_charset_to_utf8; 
       break;
     case CALC_TI89:
 	case CALC_TI89T:
     case CALC_TI92:
     case CALC_TI92P:
-    case CALC_V200:  f = transcode_from_ti9x_charset_to_utf8; 
+    case CALC_V200:  
+		f = transcode_from_ti9x_charset_to_utf8; 
       break;
 	default:
 	  printl3(2, "libtifiles error: unknown calc type. Program halted before crashing !\n");

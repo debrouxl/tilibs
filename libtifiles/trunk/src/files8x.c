@@ -51,7 +51,7 @@ static int is_ti8586(TicalcType calc_type)
 
 static int is_ti83p(TicalcType calc_type)
 {
-  return (calc_type == CALC_TI83P);
+  return (calc_type == CALC_TI83P) || (calc_type == CALC_TI84P);
 }
 
 /**************/
@@ -261,7 +261,7 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
        if (test_space == '\0' || test_space == ' ')  // skip padding if padded
 	 fskip(f, 8 - name_length);
     }
-    else if (content->calc_type == CALC_TI83P)
+    else if ((content->calc_type == CALC_TI83P) || (content->calc_type == CALC_TI84P))
       fskip(f, 13);
     else
       fskip(f, 11);
@@ -586,6 +586,7 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     packet_length = 0x0C;
     break;
   case CALC_TI83P:
+  case CALC_TI84P:
     packet_length = 0x0D;
     break;
   case CALC_TI82:
