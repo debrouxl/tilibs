@@ -132,156 +132,144 @@ int slv_open(void)
 
 int slv_put(uint8_t data)
 {
-  int err;
+  	int ret;
 
-  tdr.count++;
-  LOG_DATA(data);
+  	tdr.count++;
+  	LOG_DATA(data);
 #ifndef BUFFERED_W
-  /* Byte per uint8_t */
-  err = write(dev_fd, (void *) (&data), 1);
-  switch (err) {
-  case -1:			//error
-    return ERR_WRITE_ERROR;
-    break;
-  case 0:			// timeout
-    return ERR_WRITE_TIMEOUT;
-    break;
-  }
+  	/* Byte per uint8_t */
+  	ret = write(dev_fd, (void *) (&data), 1);
+  	if(ret == -1)
+  		return ERR_WRITE_ERROR;
+  	if(!ret)
+  		return ERR_WRITE_TIMEOUT;
 #else
-  /* Packets (up to 32 bytes) */
-  wBuf[nBytesWrite++] = data;
-  if (nBytesWrite == MAX_PACKET_SIZE) {
-    err = write(dev_fd, (void *) (&wBuf), nBytesWrite);
-    nBytesWrite = 0;
+  	/* Packets (up to 32 bytes) */
+  	wBuf[nBytesWrite++] = data;
+  	if (nBytesWrite == MAX_PACKET_SIZE) {
+    		ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);
+    		nBytesWrite = 0;
 
-    switch (err) {
-    case -1:			//error
-      return ERR_WRITE_ERROR;
-      break;
-    case 0:			// timeout
-      return ERR_WRITE_TIMEOUT;
-      break;
-    }
-  }
+    		if(ret == -1)
+    			return ERR_WRITE_ERROR;
+		if(!ret)
+			return ERR_WRITE_TIMEOUT;
+  	}
 #endif
 
-  return 0;
+  	return 0;
 }
 
 int slv_get(uint8_t * data)
 {
-  tiTIME clk;
-  static uint8_t *rBufPtr;
-  int ret;
+  	tiTIME clk;
+  	static uint8_t *rBufPtr;
+  	int ret;
 
 #ifdef BUFFERED_W
-  /* Flush write buffer */
-  if (nBytesWrite > 0) {
-    ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);
-    nBytesWrite = 0;
-    switch (err) {
-    case -1:			//error
-      return ERR_READ_ERROR;
-      break;
-    case 0:			// timeout
-      return ERR_READ_TIMEOUT;
-      break;
-    }
-  }
+  	/* Flush write buffer */
+  	if (nBytesWrite > 0) {
+    		ret = write(dev_fd, (void *) (&wBuf), nBytesWrite);
+    		nBytesWrite = 0;
+    		
+    		if(ret == -1)
+    			return ERR_READ_ERROR;
+    		if(!ret)
+    			return ERR_READ_TIMEOUT;
+  	}
 #endif
 
 #ifdef BUFFERED_R
-  /* This routine try to read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
-     store them in a buffer for subsequent accesses */
-  if (nBytesRead == 0) {
-    toSTART(clk);
-    do {
-      ret = read(dev_fd, (void *) rBuf, MAX_PACKET_SIZE);
-      if (toELAPSED(clk, time_out))
-	return ERR_READ_TIMEOUT;
-      if (ret == 0)		// quirk (seems to be due to Cypress components)
-	DISPLAY_ERROR
-	    (_
-	     ("libticables: weird, read returns without any data; retrying to circumvent the quirk...\n"));
-    }
-    while (!ret);
+  	/* This routine try to read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
+     	store them in a buffer for subsequent accesses */
+  	if (nBytesRead == 0) {
+    		toSTART(clk);
+    		do {
+      			ret = read(dev_fd, (void *) rBuf, MAX_PACKET_SIZE);
+      			if (toELAPSED(clk, time_out))
+				return ERR_READ_TIMEOUT;
+      			if (ret == 0)		// quirk (seems to be due to Cypress components)
+				DISPLAY_ERROR(_("libticables: weird, read returns without any data; retrying to circumvent the quirk...\n"));
+    		}
+    		while (!ret);
 
-    if (ret < 0) {
-      nBytesRead = 0;
-      return ERR_READ_ERROR;
-    }
-    nBytesRead = ret;
-    rBufPtr = rBuf;
-  }
+	    	if (ret < 0) {
+	      		nBytesRead = 0;
+	      		return ERR_READ_ERROR;
+	    	}
+	    	
+	    	nBytesRead = ret;
+	    	rBufPtr = rBuf;
+  	}
 
-  *data = *rBufPtr++;
-  nBytesRead--;
+  	*data = *rBufPtr++;
+  	nBytesRead--;
 #else
-  nBytesRead = read(dev_fd, (void *) data, 1);
-  if (nBytesRead == -1)
-    return ERR_READ_ERROR;
-  if (nBytesRead == 0)
-    return ERR_READ_TIMEOUT;
+  	nBytesRead = read(dev_fd, (void *) data, 1);
+  	if (nBytesRead == -1)
+    		return ERR_READ_ERROR;
+  	if (nBytesRead == 0)
+    		return ERR_READ_TIMEOUT;
 #endif
 
-  tdr.count++;
-  LOG_DATA(*data);
+  	tdr.count++;
+  	LOG_DATA(*data);
 
-  return 0;
+  	return 0;
 }
 
 int slv_probe(void)
 {
-  return 0;
+  	return 0;
 }
 
 int slv_close(void)
 {
-  return 0;
+  	return 0;
 }
 
 int slv_exit()
 {
-  if (dev_fd) {
-    close(dev_fd);
-    dev_fd = 0;
-  }
+  	if (dev_fd) {
+    		close(dev_fd);
+    		dev_fd = 0;
+  	}
 
-  STOP_LOGGING();
+  	STOP_LOGGING();
 
-  return 0;
+  	return 0;
 }
 
 int slv_check(int *status)
 {
-  fd_set rdfs;
-  struct timeval tv;
-  int retval;
+  	fd_set rdfs;
+  	struct timeval tv;
+  	int retval;
 
-  *status = STATUS_NONE;
+  	*status = STATUS_NONE;
 
-  FD_ZERO(&rdfs);
-  FD_SET(dev_fd, &rdfs);
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
+  	FD_ZERO(&rdfs);
+  	FD_SET(dev_fd, &rdfs);
+  	tv.tv_sec = 0;
+  	tv.tv_usec = 0;
 
-  retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
-  switch (retval) {
-  case -1:			//error
-    return ERR_READ_ERROR;
-  case 0:			//no data
-    return 0;
-  default:			// data available
-    *status = STATUS_RX;
-    break;
-  }
+  	retval = select(dev_fd + 1, &rdfs, NULL, NULL, &tv);
+  	switch (retval) {
+  	case -1:			//error
+    		return ERR_READ_ERROR;
+  	case 0:			//no data
+    		return 0;
+  	default:			// data available
+    		*status = STATUS_RX;
+    	break;
+  	}
 
-  return 0;
+  	return 0;
 }
 
 int slv_supported()
 {
-  return SUPPORT_ON;
+  	return SUPPORT_ON;
 }
 
 int slv_register_cable_1(TicableLinkCable * lc)
