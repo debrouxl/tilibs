@@ -22,6 +22,10 @@
 #ifndef __TIFILES_FILESXX__
 #define __TIFILES_FILESXX__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Structures (common to all calcs) */
 
 typedef struct {
@@ -50,5 +54,9 @@ typedef struct {
 
 #include "files8x.h"
 #include "files9x.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

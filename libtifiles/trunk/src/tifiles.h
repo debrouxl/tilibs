@@ -22,9 +22,17 @@
 #ifndef __TIFILES__
 #define __TIFILES__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "file_def.h"
 #include "file_int.h"
 #include "file_err.h"
 #include "file_ver.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

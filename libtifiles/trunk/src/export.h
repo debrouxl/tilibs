@@ -22,6 +22,10 @@
 #ifndef __TICABLES_EXPORT__
 #define __TICABLES_EXPORT__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Choose one of these calling conventions (override compiler settings)
  */
@@ -81,5 +85,9 @@
 
 // Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
 // .def file; MSVC uses _cdecl by default (__declspec)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
