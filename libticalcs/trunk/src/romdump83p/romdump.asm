@@ -1,3 +1,4 @@
+;;; -*- TI-Asm -*-
 #include "ti83plus.inc"
 #include "extraequ.inc"
 
@@ -159,7 +160,7 @@ Send:
          jr nz,SendSE
          pop af
 #endif
-        ld c,0
+        ld c,a
         ld b,8
 SendLoop:
         in a,(4)
