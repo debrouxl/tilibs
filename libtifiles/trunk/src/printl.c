@@ -30,8 +30,6 @@
 #include "intl3.h"
 
 #include "export.h"
-#include "file_ver.h"
-#include "file_int.h"
 #include "file_def.h"
 
 /* 

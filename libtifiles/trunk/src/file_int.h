@@ -38,8 +38,6 @@ extern "C" {
   
   TIEXPORT int TICALL tifiles_init(void);
   TIEXPORT int TICALL tifiles_exit(void);
-  
-  TIEXPORT TIFILES_PRINT tifiles_set_print(TIFILES_PRINT new_printf);
 
   /*********************/
   /* General functions */
@@ -178,6 +176,9 @@ extern "C" {
   
   TIEXPORT const char *TICALL tifiles_filetype_to_string(TifileType type);
   TIEXPORT TifileType TICALL tifiles_string_to_filetype(const char *str);
+  
+  // printl.c
+  TIEXPORT TIFILES_PRINT tifiles_set_print(TIFILES_PRINT new_printf);
 
   /************************/
   /* Deprecated functions */
