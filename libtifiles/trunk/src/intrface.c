@@ -40,12 +40,14 @@
 /*****************/
 /* Internal data */
 /*****************/
-int tifiles_instance = 0;	// counts # of instances
+
 TicalcType tifiles_calc_type = CALC_NONE;	// current calc type (context)
 
 /****************/
 /* Entry points */
 /****************/
+
+static int tifiles_instance = 0;	// counts # of instances
 
 /*
   This function should be the first one to call (or the
@@ -57,19 +59,24 @@ TIEXPORT int TICALL tifiles_init()
 	int fd;
 
 #ifdef __WIN32__
-  HANDLE hDll;
-  char LOCALEDIR[65536];
-  int i;
-
-  hDll = GetModuleHandle("tifiles.dll");
-  GetModuleFileName(hDll, LOCALEDIR, 65535);
-  for (i = strlen(LOCALEDIR); i >= 0; i--) {
-    if (LOCALEDIR[i] == '\\')
-      break;
-  }
-  LOCALEDIR[i] = '\0';
-  strcat(LOCALEDIR, "\\locale");
+  	HANDLE hDll;
+  	char LOCALEDIR[65536];
+  	int i;
+  	
+  	hDll = GetModuleHandle("tifiles.dll");
+  	GetModuleFileName(hDll, LOCALEDIR, 65535);
+  	for (i = strlen(LOCALEDIR); i >= 0; i--) {
+    		if (LOCALEDIR[i] == '\\')
+      			break;
+  	}
+  	
+  	LOCALEDIR[i] = '\0';
+  	strcat(LOCALEDIR, "\\locale");
 #endif
+
+	if (tifiles_instance)
+		return (++tifiles_instance);
+	printl(0, _("tifiles library version %s\n"), LIBTIFILES_VERSION);
 
 #if defined(ENABLE_NLS)
 	printl(0, "setlocale: <%s>\n", setlocale(LC_ALL, ""));
@@ -78,11 +85,7 @@ TIEXPORT int TICALL tifiles_init()
   	printl(0, "textdomain: <%s>\n", textdomain(PACKAGE));
 #endif
 
-  if (tifiles_instance == 0) {
-    printl(0, _("tifiles library version %s\n"), LIBTIFILES_VERSION);
-  }
-
-  return (++tifiles_instance);
+  	return (++tifiles_instance);
 }
 
 /*
@@ -91,7 +94,7 @@ TIEXPORT int TICALL tifiles_init()
  */
 TIEXPORT int TICALL tifiles_exit()
 {
-  return (--tifiles_instance);
+  	return (--tifiles_instance);
 }
 
 
