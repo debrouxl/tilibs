@@ -1,0 +1,15 @@
+[Main]
+Name=MSB
+Type=Macro
+Header=macros.h
+Definition=# define MSB(w)
+
+[Parameters]
+w : a word (16 bits)
+Returns : a byte (8 bits)
+
+[Summary]
+Returns the most significant byte.
+
+[See also]
+@LSN@
