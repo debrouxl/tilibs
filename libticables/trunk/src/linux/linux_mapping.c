@@ -42,6 +42,8 @@
 
 #include "links.h"
 
+#include "linux_detect.h"
+
 static int warning;
 
 static int devfs = 0;

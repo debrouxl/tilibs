@@ -48,7 +48,7 @@
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
+#include "stdints.h"
 #include <time.h>
 #include <sys/types.h>
 #ifdef USE_SHM

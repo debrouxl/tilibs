@@ -33,7 +33,7 @@
 #endif
 
 #include <stdio.h>
-#include <stdint.h>
+#include "stdints.h"
 #include <string.h>
 #include <time.h>
 #include <unistd.h>

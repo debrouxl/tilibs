@@ -36,6 +36,7 @@
 #include "../type2str.h"
 #include "../printl1.h"
 
+#include "macos_mapping.h"
 #include "links.h"
 
 int macos_get_method(TicableType type, int resources, TicableMethod *method)

@@ -38,6 +38,8 @@
 #include "../externs.h"
 #include "../printl1.h"
 
+#include "macos_detect.h"
+
 int macos_detect_os(char **os_type)
 {
 	struct utsname buf;

@@ -48,7 +48,9 @@
 #include "cabl_err.h"
 #include "export.h"
 #include "externs.h"
-#include "printl1.h"
+#include "printl.h"
+
+#include "bsd_detect.h"
 
 int bsd_detect_os(char **os_type)
 {

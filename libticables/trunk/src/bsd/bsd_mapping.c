@@ -1,5 +1,5 @@
-/* Hey EMACS -*- win32-c -*- */
-/* $Id: linux_mapping.c 399 2004-03-29 19:50:38Z roms $ */
+/* Hey EMACS -*- linux-c -*- */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -27,20 +27,31 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <pwd.h>
+#include <grp.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-#include "../intl1.h"
+#include "intl1.h"
 
-#include "../cabl_def.h"
-#include "../cabl_err.h"
-#include "../externs.h"
-#include "../type2str.h"
-#include "../printl.h"
+#include "cabl_def.h"
+#include "cabl_err.h"
+#include "externs.h"
+#include "type2str.h"
+#include "printl.h"
 
-#include "win32_mapping.h"
+#include "bsd_mapping.h"
 #include "links.h"
 
-int win32_get_method(TicableType type, int resources, TicableMethod *method)
+static int warning;
+
+static int check_for_root(void);
+
+int bsd_get_method(TicableType type, int resources, TicableMethod *method)
 {
+        // init warning
+	warning = ERR_NO_ERROR;
+	
 	// reset method
 	*method &= ~IOM_OK;
   	if (*method & IOM_AUTO) {
@@ -65,12 +76,13 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	case LINK_SER:
-		if(resources & IO_DLL) {
-			*method |= IOM_DRV | IOM_OK;
-		}
-		       
 		if (resources & IO_ASM) {
-			*method |= IOM_ASM | IOM_OK;
+			if(check_for_root())
+				printl1(0, _("  warning: can't use IO_ASM\n"));
+			else {
+				*method |= IOM_ASM | IOM_OK;
+				break;
+			}
 		}
 		
 		if (resources & IO_API) {
@@ -79,18 +91,20 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	case LINK_PAR:
-		if(resources & IO_DLL) {
-			*method |= IOM_DRV | IOM_OK;
-		}
-		
 		if (resources & IO_ASM) {
-			*method |= IOM_ASM | IOM_OK;
+			if(check_for_root())
+				printl1(0, _("  warning: can't use IO_ASM\n"));
+			else {
+				*method |= IOM_ASM | IOM_OK;
+				break;
+			}
 		}
 		break;
 
 	case LINK_SLV:
-		if (resources & IO_USB) {
-			*method |= IOM_DRV | IOM_OK;
+		if (resources & IO_LIBUSB) {
+			*method |= IOM_IOCTL | IOM_OK;
+			break;
 		}
 		break;
 
@@ -107,14 +121,15 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 		
   	if (!(*method & IOM_OK)) {
     		printl1(2, "unable to find an I/O method.\n");
-		return ERR_NO_RESOURCES;
+		return warning;	//ERR_NO_RESOURCES;
 	}
 	
 	return 0;
 }
 
+
 // Bind the right I/O address & device according to I/O method
-static int win32_map_io(TicableMethod method, TicablePort port)
+static int bsd_map_io(TicableMethod method, TicablePort port)
 {
 	printl1(0, _("mapping I/O...\n"));
 	
@@ -124,7 +139,7 @@ static int win32_map_io(TicableMethod method, TicablePort port)
 
 	case PARALLEL_PORT_1:
 		io_address = PP1_ADDR;
-      	strcpy(io_device, PP1_NAME);
+		strcpy(io_device, PP1_NAME);
     	break;
 
   	case PARALLEL_PORT_2:
@@ -133,23 +148,23 @@ static int win32_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	case PARALLEL_PORT_3:
-    	io_address = PP3_ADDR;
-      	strcpy(io_device, PP3_NAME);
+		io_address = PP3_ADDR;
+		strcpy(io_device, PP3_NAME);
     	break;
 
   	case SERIAL_PORT_1:
 		io_address = SP1_ADDR;
-      	strcpy(io_device, SP1_NAME);
+		strcpy(io_device, SP1_NAME);
     	break;
 
   	case SERIAL_PORT_2:
-    	io_address = SP2_ADDR;
-      	strcpy(io_device, SP2_NAME);
+		io_address = SP2_ADDR;
+		strcpy(io_device, SP2_NAME);
     	break;
 
   	case SERIAL_PORT_3:
-    	io_address = SP3_ADDR;
-      	strcpy(io_device, SP3_NAME);
+		io_address = SP3_ADDR;
+		strcpy(io_device, SP3_NAME);
     	break;
 
   	case SERIAL_PORT_4:
@@ -157,38 +172,37 @@ static int win32_map_io(TicableMethod method, TicablePort port)
 		strcpy(io_device, SP3_NAME);
     	break;
 
-  	case USB_PORT:
-		strcpy(io_device, UP1_NAME);
-		break;
+  	case USB_PORT_1:
+	break;
 
 	case VIRTUAL_PORT_1:
 		io_address = VLINK0;
-      	strcpy(io_device, "");
-		break;
+      		strcpy(io_device, "");
+	break;
 
   	case VIRTUAL_PORT_2:
 		io_address = VLINK1;
-      	strcpy(io_device, "");
-		break;
+      		strcpy(io_device, "");
+	break;
 
   	default:
-    	printl1(2, "bad argument (invalid port).\n");
+    		printl1(2, "bad argument (invalid port).\n");
 		return ERR_ILLEGAL_ARG;
-		break;
+	break;
 	}
 	
 	return 0;
 }
 
 
-int win32_register_cable(TicableType type, TicableLinkCable *lc)
+int bsd_register_cable(TicableType type, TicableLinkCable *lc)
 {
 	int ret;
-
+	
 	// map I/O
-	ret = win32_map_io((TicableMethod)method, port);
+	ret = bsd_map_io((TicableMethod)method, port);
 	if(ret)
-			return ret;
+		return ret;
 	
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
@@ -201,8 +215,6 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		
 		if(method & IOM_ASM)
 			par_register_cable(lc);
-		else if(method & IOM_DRV)
-			par_register_cable(lc);
 		break;
 		
     	case LINK_SER:
@@ -214,8 +226,6 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		return ERR_INVALID_PORT;
 
 		if(method & IOM_ASM)
-			ser_register_cable_1(lc);
-		else if(method & IOM_DRV)
 			ser_register_cable_1(lc);
 		else if(method & IOM_IOCTL)
 			ser_register_cable_2(lc);
@@ -263,16 +273,14 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	case LINK_SLV:
-// commented out, we have only 1 cable
-/*
-			if ((port != USB_PORT_1) &&
+      		if ((port != USB_PORT_1) &&
 		  	(port != USB_PORT_2) &&
 		  	(port != USB_PORT_3) &&
 		  	(port != USB_PORT_4) && (port != USER_PORT))
 		return ERR_INVALID_PORT;
-*/
-		if(method & IOM_DRV)
-			slv_register_cable_1(lc);
+
+		if(method & IOM_IOCTL)
+			slv_register_cable_2(lc);
 		break;
 
     	default:
@@ -288,4 +296,15 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 /***********/
 /* Helpers */
 /***********/
+
+static int check_for_root(void)
+{
+	uid_t uid = getuid();
+    	
+    	printl1(0, _("  check for asm usability: %s\n"), uid ? "no" : "yes");
+    	
+    	warning = ERR_ROOT;
+
+	return (uid ? -1 : 0);
+}
 

@@ -33,19 +33,15 @@
 #endif
 
 #if defined(__LINUX__)
-#include "linux/linux_detect.h"
+#include "linux/linux_detect.c"
 #elif defined(__MACOSX__)
-#include "macos/macos_detect.h"
+#include "macos/macos_detect.c"
 #elif defined(__BSD__)
-#include "bsd/bsd_detect.h"
+#include "bsd/bsd_detect.c"
 #elif defined(__WIN32__)
-#include "win32/win32_detect.h"
+#include "win32/win32_detect.c"
 #else
 #include "none.h"
-#endif
-
-#if defined(__LINUX__)
-#include "linux/linux_detect.c"
 #endif
 
 /*

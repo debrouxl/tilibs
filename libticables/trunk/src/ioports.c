@@ -31,7 +31,7 @@
 #elif defined(__MACOSX__)
 #include "macos/macos_ioports.c"
 #elif defined(__BSD__)
-#include "linux/linux_ioports.c"
+#include "bsd/bsd_ioports.c"
 #elif defined(__WIN32__)
 #include "win32/win32_ioports.c"
 #else

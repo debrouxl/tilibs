@@ -50,6 +50,8 @@
 #include "../externs.h"
 #include "../printl.h"
 
+#include "linux_detect.h"
+
 #define MAXCHARS 1024
 
 int linux_detect_os(char **os_type)

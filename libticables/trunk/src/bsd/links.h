@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: slv_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,25 +19,28 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TI-GRAPH LINK USB support */
+#ifndef __LINKS_H__
+#define __LINKS_H__
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "cabl_def.h"
 
+int avr_register_cable(TicableLinkCable * lc);
 
-#if defined(__LINUX__)
-#include "linux/slv_link.c"
-#include "linux/slv_link2.c"
+int dfl_register_cable(TicableLinkCable * lc);
 
-#elif defined(__BSD__)
-#include "linux/slv_link2.c"
+int par_register_cable(TicableLinkCable * lc);
 
-#elif defined(__WIN32__)
-#include "win32/slv_link.c"
+int ser_register_cable_1(TicableLinkCable * lc);
+int ser_register_cable_2(TicableLinkCable * lc);
 
-#elif defined(__MACOSX__)
-#include "macos/slv_link.c"
+int slv_register_cable_2(TicableLinkCable * lc);
 
-#else
+int tie_register_cable(TicableLinkCable * lc);
+
+int tig_register_cable(TicableLinkCable * lc);
+
+int vti_register_cable(TicableLinkCable * lc);
+
+int vtl_register_cable(TicableLinkCable * lc);
+
 #endif

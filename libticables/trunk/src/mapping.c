@@ -34,19 +34,15 @@
 #endif
 
 #if defined(__LINUX__)
-#include "linux/linux_mapping.h"
+#include "linux/linux_mapping.c"
 #elif defined(__MACOSX__)
-#include "macos/macos_mapping.h"
+#include "macos/macos_mapping.c"
 #elif defined(__BSD__)
-#include "linux/linux_mapping.h"
+#include "bsd/bsd_mapping.c"
 #elif defined(__WIN32__)
-#include "win32/win32_mapping.h"
+#include "win32/win32_mapping.c"
 #else
 #include "none.h"
-#endif
-
-#if defined(__LINUX__)
-#include "linux/linux_mapping.c"
 #endif
 
 

@@ -36,6 +36,8 @@
 
 #include "porttalk.h"
 
+#include "win32_detect.h"
+
 int win32_detect_os(char **os_type)
 {
 	OSVERSIONINFO os;
