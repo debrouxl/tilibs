@@ -22,6 +22,8 @@
 #ifndef __TIFILES_FILEDEF__
 #define __TIFILES_FILEDEF__
 
+#define VARNAME_MAX	18	// group/name: 8 + 1 + 8 + 1
+
 #define TIFILES_NCALCS 10	// # of supported calcs
 
 typedef enum {

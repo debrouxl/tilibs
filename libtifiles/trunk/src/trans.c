@@ -967,7 +967,7 @@ char *tixx_translate_varname(const char *varname, char *translate,
 {
   char detokenized[18];
   char *src = detokenized;
-  char dst[18] = { 0 };
+  char dst[2*18];
 
   tixx_detokenize_varname(varname, detokenized, vartype, calc_type);
 

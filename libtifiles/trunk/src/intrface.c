@@ -234,12 +234,13 @@ TIEXPORT void *TICALL tifiles_realloc(void *ptr, size_t size)
 
 
 /* Initialize i18n support under Win32 platforms */
+/*
 #if defined(__WIN32__)
 BOOL WINAPI DllMain(HINSTANCE hinstDLL,	// handle to DLL module
 		    DWORD fdwReason,	// reason for calling function
 		    LPVOID lpvReserved)	// reserved);
 {
-  /*#ifdef ENABLE_NLS
+#ifdef ENABLE_NLS
      char buffer[65536];
      HINSTANCE hDLL = hinstDLL;
      int i=0;
@@ -251,7 +252,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,	// handle to DLL module
 
      bindtextdomain (PACKAGE, buffer);  
      //textdomain (PACKAGE);
-     #endif */
+#endif 
   return TRUE;
 }
 #endif
+*/
