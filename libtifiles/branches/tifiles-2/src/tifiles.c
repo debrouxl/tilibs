@@ -103,7 +103,7 @@ TIEXPORT int TICALL tifiles_exit()
 /* Methods */
 /***********/
 
-TIEXPORT const char *TICALL tifiles_get_version()
+TIEXPORT const char *TICALL tifiles_version_get()
 {
   return LIBTIFILES_VERSION;
 }

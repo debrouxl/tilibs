@@ -36,7 +36,7 @@
 #include "error.h"
 #include "typesxx.h"
 #include "filesxx.h"
-#include "fileops.h"
+#include "rwfile.h"
 #include "intelhex.h"
 #include "transcode.h"
 #include "logging.h"
@@ -207,9 +207,9 @@ TIEXPORT int TICALL ti8x_read_regular_file(const char *filename,
   uint8_t test_space;
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_a_regular_file(filename))
+  if (!tifiles_is_regular_file(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -333,9 +333,9 @@ TIEXPORT int TICALL ti8x_read_backup_file(const char *filename,
   FILE *f;
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_a_backup_file(filename))
+  if (!tifiles_is_backup_file(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -426,13 +426,13 @@ TIEXPORT int TICALL ti8x_read_flash_file(const char *filename,
   uint8_t buf[256];
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
 
-  if (!tifiles_is_a_flash_file(filename))
+  if (!tifiles_is_flash_file(filename))
     return ERR_INVALID_FILE;
 
-  content->calc_type = tifiles_which_calc_type(filename);
+  content->calc_type = tifiles_type_get_calc(filename);
   f = fopen(filename, "rb");
   if (f == NULL) {
     tifiles_info("Unable to open this file: <%s>\n", filename);
@@ -618,13 +618,13 @@ TIEXPORT int TICALL ti8x_write_regular_file(const char *fname,
     fwrite(entry->data, entry->size, 1, f);
 
     sum += packet_length;
-    sum += tifiles_compute_checksum((uint8_t *) & (entry->size), 2);
+    sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
     sum += entry->type;
     if (is_ti8586(content->calc_type))
       sum += strlen(entry->name);
-    sum += tifiles_compute_checksum((uint8_t *) entry->name, 8);
-    sum += tifiles_compute_checksum((uint8_t *) & (entry->size), 2);
-    sum += tifiles_compute_checksum(entry->data, entry->size);
+    sum += tifiles_checksum((uint8_t *) entry->name, 8);
+    sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
+    sum += tifiles_checksum(entry->data, entry->size);
   }
 
   //checksum is the sum of all bytes in the data section
@@ -691,35 +691,35 @@ TIEXPORT int TICALL ti8x_write_backup_file(const char *filename,
   sum = 0;
   sum += 9;
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length1), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
   sum += content->type;
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length2), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length2), 2);
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length3), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length3), 2);
   if (content->calc_type != CALC_TI86)
     sum +=
-	tifiles_compute_checksum((uint8_t *) & (content->mem_address), 2);
+	tifiles_checksum((uint8_t *) & (content->mem_address), 2);
   else
     sum +=
-	tifiles_compute_checksum((uint8_t *) & (content->data_length4), 2);
+	tifiles_checksum((uint8_t *) & (content->data_length4), 2);
 
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length1), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
   sum +=
-      tifiles_compute_checksum(content->data_part1, content->data_length1);
+      tifiles_checksum(content->data_part1, content->data_length1);
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length2), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length2), 2);
   sum +=
-      tifiles_compute_checksum(content->data_part2, content->data_length2);
+      tifiles_checksum(content->data_part2, content->data_length2);
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length3), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length3), 2);
   sum +=
-      tifiles_compute_checksum(content->data_part3, content->data_length3);
+      tifiles_checksum(content->data_part3, content->data_length3);
   sum +=
-      tifiles_compute_checksum((uint8_t *) & (content->data_length4), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length4), 2);
   sum +=
-      tifiles_compute_checksum(content->data_part4, content->data_length4);
+      tifiles_checksum(content->data_part4, content->data_length4);
 
   content->checksum = sum;
   fwrite_word(f, content->checksum);
@@ -897,15 +897,15 @@ TIEXPORT int TICALL ti8x_display_file(const char *filename)
   Ti8xBackup content2;
   Ti8xFlash content3;
 
-  if (tifiles_is_a_flash_file(filename)) {
+  if (tifiles_is_flash_file(filename)) {
     ti8x_read_flash_file(filename, &content3);
     ti8x_display_flash_content(&content3);
     ti8x_free_flash_content(&content3);
-  } else if (tifiles_is_a_backup_file(filename)) {
+  } else if (tifiles_is_backup_file(filename)) {
     ti8x_read_backup_file(filename, &content2);
     ti8x_display_backup_content(&content2);
     ti8x_free_backup_content(&content2);
-  } else if (tifiles_is_a_regular_file(filename)) {
+  } else if (tifiles_is_regular_file(filename)) {
     ti8x_read_regular_file(filename, &content1);
     ti8x_display_regular_content(&content1);
     ti8x_free_regular_content(&content1);

@@ -25,7 +25,7 @@
 #include "logging.h"
 #include "error.h"
 #include "typesxx.h"
-#include "fileops.h"
+#include "rwfile.h"
 
 extern int tifiles_calc_type;
 
@@ -350,7 +350,7 @@ static const int TIXX_IDLIST[NCALCS + 1] =
 	TI89_IDLIST, TI89t_IDLIST, -1, TI92p_IDLIST, V200_IDLIST,
 };
 
-TIEXPORT const int TICALL tifiles_folder_type(void)
+TIEXPORT const uint8_t TICALL tifiles_folder_type(void)
 {
   switch (tifiles_calc_type) 
   {
@@ -386,7 +386,7 @@ TIEXPORT const int TICALL tifiles_folder_type(void)
   return -1;
 }
 
-TIEXPORT const int TICALL tifiles_flash_type(void)
+TIEXPORT const uint8_t TICALL tifiles_flash_type(void)
 {
   switch (tifiles_calc_type) 
   {
@@ -422,7 +422,7 @@ TIEXPORT const int TICALL tifiles_flash_type(void)
   return -1;
 }
 
-TIEXPORT const int TICALL tifiles_idlist_type(void)
+TIEXPORT const uint8_t TICALL tifiles_idlist_type(void)
 {
   switch (tifiles_calc_type) 
   {
@@ -461,48 +461,6 @@ TIEXPORT const int TICALL tifiles_idlist_type(void)
 /****************/
 /* Miscelaneous */
 /****************/
-
-/* 
-   Return a string describing the calculator type or NULL
-   - const char* [out]: the string
-*/
-TIEXPORT const char *TICALL tifiles_calc_type_to_string(void)
-{
-  switch (tifiles_calc_type) 
-  {
-  case CALC_NONE:
-    return "none";
-  case CALC_V200:
-    return "v200";
-  case CALC_TI92P:
-    return "92+";
-  case CALC_TI92:
-    return "92";
-  case CALC_TI89T:
-	  return "89t";
-  case CALC_TI89:
-    return "89";
-  case CALC_TI86:
-    return "86";
-  case CALC_TI85:
-    return "85";
-  case CALC_TI84P:
-    return "84+";
-  case CALC_TI83P:
-    return "83+";
-  case CALC_TI83:
-    return "83";
-  case CALC_TI82:
-    return "82";
-  case CALC_TI73:
-    return "73";
-  default:
-	  tifiles_error("tifiles_calc_type_to_string: invalid calc_type argument.");
-    return NULL;
-  }
-
-  return NULL;
-}
 
 
 /*
@@ -578,235 +536,6 @@ TIEXPORT TiCalcType TICALL tifiles_signature2calctype(const char *s)
     return CALC_V200;
   else
     return CALC_NONE;
-}
-
-/* Note: a better way should be to open the file and read the signature */
-/* 
-   Return the calc type corresponding to the file
-   - filename [in]: a filename
-   - int [out]: the calculator type
-*/
-TIEXPORT int TICALL tifiles_which_calc_type(const char *filename)
-{
-  char *ext;
-  int type = CALC_NONE;
-
-  ext = tifiles_dup_extension(filename);
-  if (ext == NULL)
-    return CALC_NONE;
-
-  ext[2] = '\0';
-
-  if (!g_ascii_strcasecmp(ext, "73"))
-    type = CALC_TI73;
-  else if (!g_ascii_strcasecmp(ext, "82"))
-    type = CALC_TI82;
-  else if (!g_ascii_strcasecmp(ext, "83"))
-    type = CALC_TI83;
-  else if (!g_ascii_strcasecmp(ext, "8x"))
-    type = CALC_TI83P;
-  else if (!g_ascii_strcasecmp(ext, "85"))
-    type = CALC_TI85;
-  else if (!g_ascii_strcasecmp(ext, "86"))
-    type = CALC_TI86;
-  else if (!g_ascii_strcasecmp(ext, "89"))
-    type = CALC_TI89;
-  else if (!g_ascii_strcasecmp(ext, "92"))
-    type = CALC_TI92;
-  else if (!g_ascii_strcasecmp(ext, "9x"))
-    type = CALC_TI92P;
-  else if (!g_ascii_strcasecmp(ext, "v2"))
-    type = CALC_V200;
-  else
-    type = CALC_NONE;
-
-  g_free(ext);
-
-  return type;
-}
-
-/*
-   Return the file type corresponding to the file
-   - filename [in]: a filename
-   - int [out]: the file type
-*/
-TIEXPORT int TICALL tifiles_which_file_type(const char *filename)
-{
-  if (tifiles_is_a_single_file(filename))
-    return TIFILE_SINGLE;
-  else if (tifiles_is_a_group_file(filename))
-    return TIFILE_GROUP;
-  else if (tifiles_is_a_backup_file(filename))
-    return TIFILE_BACKUP;
-  else if (tifiles_is_a_flash_file(filename))
-    return TIFILE_FLASH;
-  else
-    return 0;
-}
-
-/*
-   Return the descriptive of the file such as 'Vector' or 'String'.
-   This function is localized (i18n).
-   - filename [in]: a filename
-   - char* [out]: the descriptive
-*/
-TIEXPORT const char *TICALL tifiles_file_descriptive(const char *filename)
-{
-  char *ext;
-
-  ext = tifiles_get_extension(filename);
-  if (ext == NULL)
-    return "";
-
-  if (!g_ascii_strcasecmp(ext, "tib"))
-    return _("OS upgrade");
-
-  if (!tifiles_is_a_ti_file(filename))
-    return "";
-
-  if (tifiles_is_a_group_file(filename)) 
-  {
-    switch (tifiles_which_calc_type(filename)) 
-	{
-    case CALC_TI89:
-	case CALC_TI89T:
-    case CALC_TI92P:
-    case CALC_V200:
-      return _("Group/Backup");
-    default:
-      return _("Group");
-    }
-  }
-
-  switch (tifiles_which_calc_type(filename)) 
-  {
-  case CALC_TI73:
-    return ti73_byte2desc(ti73_fext2byte(ext));
-  case CALC_TI82:
-    return ti82_byte2desc(ti82_fext2byte(ext));
-  case CALC_TI83:
-    return ti83_byte2desc(ti83_fext2byte(ext));
-  case CALC_TI83P:
-  case CALC_TI84P:
-    return ti83p_byte2desc(ti83p_fext2byte(ext));
-  case CALC_TI85:
-    return ti85_byte2desc(ti85_fext2byte(ext));
-  case CALC_TI86:
-    return ti86_byte2desc(ti86_fext2byte(ext));
-  case CALC_TI89:
-  case CALC_TI89T:
-    return ti89_byte2desc(ti89_fext2byte(ext));
-  case CALC_TI92:
-    return ti92_byte2desc(ti92_fext2byte(ext));
-  case CALC_TI92P:
-    return ti92p_byte2desc(ti92p_fext2byte(ext));
-  case CALC_V200:
-    return v200_byte2desc(v200_fext2byte(ext));
-  case CALC_NONE:
-  default:
-    return "";
-    break;
-  }
-
-  return "";
-}
-
-/*
-   Return an icon name associated with the file type.
-   This function is the same than 'tifiles_file_descriptive' but it is
-   not localized (i18n).
-   - filename [in]: a filename
-   - char* [out]: the icon name, such as 'Vector'.
-*/
-TIEXPORT const char *TICALL tifiles_file_icon(const char *filename)
-{
-  char *ext;
-
-  ext = tifiles_get_extension(filename);
-  if (ext == NULL)
-    return "";
-
-  if (!g_ascii_strcasecmp(ext, "tib"))
-    return "OS upgrade";
-
-  if (!tifiles_is_a_ti_file(filename))
-    return "";
-
-  if (tifiles_is_a_group_file(filename)) 
-  {
-    switch (tifiles_which_calc_type(filename)) 
-	{
-    case CALC_TI89:
-	case CALC_TI89T:
-    case CALC_TI92P:
-    case CALC_V200:
-      return "Group/Backup";
-    default:
-      return "Group";
-    }
-  }
-
-  switch (tifiles_which_calc_type(filename)) 
-  {
-  case CALC_TI73:
-    return ti73_byte2icon(ti73_fext2byte(ext));
-  case CALC_TI82:
-    return ti82_byte2icon(ti82_fext2byte(ext));
-  case CALC_TI83:
-    return ti83_byte2icon(ti83_fext2byte(ext));
-  case CALC_TI83P:
-  case CALC_TI84P:
-    return ti83p_byte2icon(ti83p_fext2byte(ext));
-  case CALC_TI85:
-    return ti85_byte2icon(ti85_fext2byte(ext));
-  case CALC_TI86:
-    return ti86_byte2icon(ti86_fext2byte(ext));
-  case CALC_TI89:
-  case CALC_TI89T:
-    return ti89_byte2icon(ti89_fext2byte(ext));
-  case CALC_TI92:
-    return ti92_byte2icon(ti92_fext2byte(ext));
-  case CALC_TI92P:
-    return ti92p_byte2icon(ti92p_fext2byte(ext));
-  case CALC_V200:
-    return v200_byte2icon(v200_fext2byte(ext));
-  case CALC_NONE:
-  default:
-    return "";
-    break;
-  }
-
-  return "";
-}
-
-/*
-  Return TRUE for calcs in TI73..TI86
-*/
-TIEXPORT int TICALL tifiles_is_ti8x(TiCalcType calc_type)
-{
-  return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
-	  (calc_type == CALC_TI82) || (calc_type == CALC_TI83) ||
-	  (calc_type == CALC_TI83P) || (calc_type == CALC_TI84P) ||
-	  (calc_type == CALC_TI85) || (calc_type == CALC_TI86));
-}
-
-/*
-  Return TRUE for calcs in TI89..TI92+,V200
-*/
-TIEXPORT int TICALL tifiles_is_ti9x(TiCalcType calc_type)
-{
-  return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
-	  (calc_type == CALC_TI92) ||
-	  (calc_type == CALC_TI92P) || (calc_type == CALC_V200));
-}
-
-/*
-  Return silent calcs
-*/
-TIEXPORT int TICALL tifiles_is_silent(TiCalcType calc_type)
-{
-  return ((calc_type == CALC_TI82) || (calc_type == CALC_TI83) ||
-	  (calc_type == CALC_TI85));
 }
 
 /*

@@ -38,7 +38,7 @@
   - len [in]: the number of bytes to dump
   - [out]: always 0
  */
-TIEXPORT int TICALL hexdump(uint8_t * ptr, int len)
+int hexdump(uint8_t * ptr, int len)
 {
   int i;
 
@@ -81,10 +81,8 @@ int fread_n_chars(FILE * f, int n, char *s)
   - f [in]: a file descriptor
   - [out]: always different of 0
 */
-#define FOO
 int fwrite_n_chars(FILE * f, int n, const char *s)
 {
-#ifdef FOO
   int i;
   int l = n;
 
@@ -101,12 +99,6 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
   for (i = l; i < n; i++) {
     fputc(0x00, f);
   }
-#else
-  int i;
-
-  for (i = 0; i < n; i++)
-    fputc((int) s[i], f);
-#endif
   return 0;
 }
 
@@ -187,120 +179,3 @@ int fwrite_long(FILE * f, uint32_t data)
 	data = GUINT16_TO_LE(data);
   return fwrite(&data, sizeof(uint32_t), 1, f);
 }
-
-/****************/
-/* Miscelaneous */
-/****************/
-
-/*
-  Retrieve the extension of a file
-  - filename [in]: a filename
-  - ext [out]: the extension
-  - [out]: the extension
-*/
-TIEXPORT char *TICALL tifiles_get_extension(const char *filename)
-{
-  char *d = NULL;
-
-  d = strrchr(filename, '.');
-  if (d == NULL)
-    return NULL;
-
-  return (++d);
-}
-
-TIEXPORT char *TICALL tifiles_dup_extension(const char *filename)
-{
-  char *ext = tifiles_get_extension(filename);
-
-  if (ext != NULL)
-    return strdup(tifiles_get_extension(filename));
-  else
-    return strdup("");
-}
-
-/* 
-   Compute the checksum of a uint8_t array. Returns a uint16_t value.
-   - buffer [in]: an array of uint8_t values
-   - size [in]: the array size
-   - chk [out]: the computed checksum
-   - [out]: the computed checksum
-*/
-TIEXPORT uint16_t TICALL tifiles_compute_checksum(uint8_t * buffer,
-						  int size)
-{
-  int i;
-  uint16_t c = 0;
-
-  if (buffer == NULL)
-    return 0;
-
-  for (i = 0; i < size; i++)
-    c += buffer[i];
-
-  return c;
-}
-
-
-/*
-  Retrieve the varname component of a full path
-   - full_name [in]: a string such as 'fldname\varname'
-   - [out]: the varname
-*/
-char *TICALL tifiles_get_varname(const char *full_name)
-{
-  char *bs = strchr(full_name, '\\');
-
-  if (bs == NULL)
-    return (char *) full_name;
-  else
-    return (++bs);
-}
-
-
-/*
-  Retrieve the folder component of a full path (fldname\varname).
-   - full_name [in]: a string such as 'fldname\varname'
-   - [out]: the folder name (don't need to be freed)
-*/
-char *TICALL tifiles_get_fldname(const char *full_name)
-{
-  static char folder[9];
-  char *bs = strchr(full_name, '\\');
-  int i;
-
-  if (bs == NULL)
-    strcpy(folder, "");
-  else 
-  {
-    i = strlen(full_name) - strlen(bs);
-    strncpy(folder, full_name, i);
-    folder[i + 1] = '\0';
-  }
-  return folder;
-}
-
-
-/*
-  Build the complete path starting at varname & folder name.
-  This function is calculator independant.
-   - full_name [out]: a string such as 'fldname\varname'
-   - fldname [in]: the folder name or "" (local -> no path)
-   - varname [in]: the variable name
-   - [out]: aalways 0.
-*/
-int TICALL tifiles_build_fullname(TiCalcType model, char *full_name,
-				  const char *fldname, const char *varname)
-{
-  if (tifiles_has_folder(model)) {
-    if (strcmp(fldname, "")) {
-      strcpy(full_name, fldname);
-      strcat(full_name, "\\");
-    }
-    strcat(full_name, varname);
-  } else
-    strcpy(full_name, varname);
-
-  return 0;
-}
-

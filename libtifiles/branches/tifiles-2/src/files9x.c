@@ -33,7 +33,7 @@
 #include "error.h"
 #include "typesxx.h"
 #include "filesxx.h"
-#include "fileops.h"
+#include "rwfile.h"
 #include "macros.h"
 #include "transcode.h"
 #include "logging.h"
@@ -211,10 +211,10 @@ TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
   int i, j;
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
 
-  if (!tifiles_is_a_regular_file(filename))
+  if (!tifiles_is_regular_file(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -300,9 +300,9 @@ TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
   uint32_t file_size;
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_a_backup_file(filename))
+  if (!tifiles_is_backup_file(filename))
     return ERR_INVALID_FILE;
 
   f = fopen(filename, "rb");
@@ -351,13 +351,13 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
   Ti9xFlash *content = head;
   char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
+  if (!tifiles_is_ti_file(filename))
     return ERR_INVALID_FILE;
-  if (!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
+  if (!tifiles_is_flash_file(filename) && !tifiles_is_tib_file(filename))
     return ERR_INVALID_FILE;
 
   // detect file type (old or new format)
-  tib = tifiles_is_a_tib_file(filename);
+  tib = tifiles_is_tib_file(filename);
 
   f = fopen(filename, "rb");
   if (f == NULL) {
@@ -401,7 +401,7 @@ TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
 
     for (content = head;; content = content->next) {
       fread_8_chars(f, signature);
-      content->calc_type = tifiles_which_calc_type(filename);
+      content->calc_type = tifiles_type_get_calc(filename);
       fread_byte(f, &(content->revision_major));
       fread_byte(f, &(content->revision_minor));
       fread_byte(f, &(content->flags));
@@ -554,7 +554,7 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
 
       fwrite_long(f, 0);
       fwrite(entry->data, entry->size, 1, f);
-      sum = tifiles_compute_checksum(entry->data, entry->size);
+      sum = tifiles_checksum(entry->data, entry->size);
       fwrite_word(f, sum);
     }
   }
@@ -600,7 +600,7 @@ TIEXPORT int TICALL ti9x_write_backup_file(const char *filename,
   fwrite(content->data_part, 1, content->data_length, f);
 
   content->checksum =
-      tifiles_compute_checksum(content->data_part, content->data_length);
+      tifiles_checksum(content->data_part, content->data_length);
 
   fwrite_word(f, content->checksum);
 
@@ -766,15 +766,15 @@ TIEXPORT int TICALL ti9x_display_file(const char *filename)
   Ti9xFlash content3;
 
   // the testing order is important: regular before backup (due to TI89/92+)
-  if (tifiles_is_a_flash_file(filename) || tifiles_is_a_tib_file(filename)) {
+  if (tifiles_is_flash_file(filename) || tifiles_is_tib_file(filename)) {
     ti9x_read_flash_file(filename, &content3);
     ti9x_display_flash_content(&content3);
     ti9x_free_flash_content(&content3);
-  } else if (tifiles_is_a_regular_file(filename)) {
+  } else if (tifiles_is_regular_file(filename)) {
     ti9x_read_regular_file(filename, &content1);
     ti9x_display_regular_content(&content1);
     ti9x_free_regular_content(&content1);
-  } else if (tifiles_is_a_backup_file(filename)) {
+  } else if (tifiles_is_backup_file(filename)) {
     ti9x_read_backup_file(filename, &content2);
     ti9x_display_backup_content(&content2);
     ti9x_free_backup_content(&content2);

@@ -324,7 +324,7 @@ static char *ti8x_detokenize_varname(TiCalcType model, const char *src, char *ds
 }
 
 
-TIEXPORT uint8_t TICALL *tixx_detokenize_varname(TiCalcType model, 
+TIEXPORT char* TICALL tixx_detokenize_varname(TiCalcType model, 
 												 const char *src, 
 												 char *dst,
 												 uint8_t vartype)

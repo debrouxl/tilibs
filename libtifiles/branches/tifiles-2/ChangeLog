@@ -9,13 +9,15 @@ Log:
 	* error management left untouched
 	* logging reworked (use glib)
 	- use dynamic buffer rather static ones
-	- a single public header with functions & defs, others are private
+	* a single public header with functions & defs, others are private
+	* slightly fixed namespace sheme
 
 Planning:
 	- documentation system will be changed
 	- functions pointers will be removed
 	- glib will be heavily used (strings, logging, ...)
 	- an handle will be used for calls
+	- use strong type such as TiCalcType, ...
 
 ====[ Version II ]====
 

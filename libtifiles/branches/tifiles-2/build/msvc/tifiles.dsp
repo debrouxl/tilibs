@@ -266,10 +266,6 @@ SOURCE=..\..\src\filesxx.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\filetypes.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\grouped.c
 # End Source File
 # Begin Source File
@@ -282,7 +278,15 @@ SOURCE=..\..\src\intelhex.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\fileops.c
+SOURCE=..\..\src\filetypes.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\misc.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\rwfile.c
 # End Source File
 # Begin Source File
 

@@ -31,7 +31,7 @@ typedef TiVarEntry Ti9xVarEntry;
 typedef TiRegular Ti9xRegular;
 
 typedef struct {
-  TiCalcType calc_type;
+  TiCalcModel calc_type;
 
   char comment[41];
   char rom_version[9];
@@ -44,7 +44,7 @@ typedef struct {
 
 typedef struct ti9x_flash Ti9xFlash;
 struct ti9x_flash {
-  TiCalcType calc_type;
+  TiCalcModel calc_type;
 
   uint8_t revision_major;
   uint8_t revision_minor;
