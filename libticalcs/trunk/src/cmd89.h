@@ -36,6 +36,7 @@ int ti89_send_KEY(uint16_t scancode);
 int ti89_send_EOT(void);
 int ti89_send_REQ(uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname);
+int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname);	// titanium
 
 int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname);
 int ti89_recv_CTS(void);

@@ -224,8 +224,32 @@ int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname)
   buffer[6 + strlen(varname)] = 0x00;
 
   len = 6 + strlen(varname) + 1;
-  if ((vartype == TI89_AMS) || (vartype == TI89_APPL))
-    len--;
+  // used by AMS <= 2.09 ?
+  //if ((vartype == TI89_AMS) || (vartype == TI89_APPL)) len--;
+  TRYF(send_packet(PC_TI9X, CMD_RTS, len, buffer));
+
+  return 0;
+}
+
+int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname)
+{
+  uint8_t buffer[32] = { 0 };
+  uint16_t len;
+
+  printl2(0, " PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+	  varsize, varsize, vartype, varname);
+
+  buffer[0] = LSB(LSW(varsize));
+  buffer[1] = MSB(LSW(varsize));
+  buffer[2] = LSB(MSW(varsize));
+  buffer[3] = MSB(MSW(varsize));
+  buffer[4] = vartype;
+  buffer[5] = 0x00;
+  buffer[6] = 0x08;
+  buffer[7] = 0x00;
+  buffer[8] = 0x09;
+
+  len = 9;
   TRYF(send_packet(PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;
