@@ -28,9 +28,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "gettext.h"
+
 #include "calc_def.h"
 #include "headers.h"
-#include "intl2.h"
 #include "tnode.h"
 #include "printl.h"
 

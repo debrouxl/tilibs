@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "intl2.h"
+#include "gettext.h"
 
 #include "export.h"
 #include "calc_def.h"

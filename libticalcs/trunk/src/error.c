@@ -22,10 +22,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "gettext.h"
+
 #include "calc_err.h"
 #include "headers.h"
 #include "update.h"
-#include "intl2.h"
 
 extern TicableLinkCable *cable;
 

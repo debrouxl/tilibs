@@ -25,7 +25,8 @@
 
 #include <stdio.h>
 
-#include "intl2.h"
+#include "gettext.h"
+
 #include "export.h"
 #include "headers.h"
 #include "calc_err.h"

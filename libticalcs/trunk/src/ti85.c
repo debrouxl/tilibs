@@ -29,7 +29,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "intl2.h"
+#include "gettext.h"
+
 #include "headers.h"
 #include "externs.h"
 #include "update.h"

@@ -26,7 +26,8 @@
 #include <windows.h>
 #endif
 
-#include "intl2.h"
+#include "gettext.h"
+
 #include "headers.h"
 #include "calc_ver.h"
 #include "calc_err.h"
