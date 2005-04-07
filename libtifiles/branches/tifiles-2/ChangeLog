@@ -20,7 +20,7 @@ Log:
 	- fixed fsignature in TI8x support
 
 	TI86 group file seems to be weird ...
-	Pb with TI8x write flash.
+	Pb with TI8x write flash: set fixed size block (0x80) or not ?!
 	Add TiGroup (*.tig) support which is a kind of file container.
 	
 ====[ Version II ]====

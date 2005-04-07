@@ -453,7 +453,6 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
 {
   FILE *f, *file;
   int i;
-  uint32_t flash_size;
   uint32_t block_size;
   int num_blocks;
   int mask_mode;
@@ -495,7 +494,7 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
   fread_byte(f, &(content->device_type));
   fread_byte(f, &(content->data_type));
   fskip(f, 24);
-  fread_long(f, &flash_size);
+  fread_long(f, &content->data_length);
   content->pages = NULL;
 
   // determine block size
@@ -513,18 +512,18 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
     return ERR_INVALID_FILE;
 
   // compute approximative number of pages
-  num_blocks = (flash_size / 77) / (block_size >> 5);
+  num_blocks = (content->data_length / 77) / (block_size >> 5);
   content->pages = (Ti8xFlashPage *) calloc(num_blocks + 10,
 					    sizeof(Ti8xFlashPage));
   if (content->pages == NULL)
     return ERR_MALLOC;
 
   // reset block reader by passing mode=0
-  read_data_block(file, &flash_address, &flash_page, NULL, 0);
+  intelhex_read_data_block(file, &flash_address, &flash_page, NULL, 0);
   flag = 0x80;			// OS only
   for (i = 0;; i++) 
   {
-    ret = read_data_block(file, &flash_address, &flash_page,
+    ret = intelhex_read_data_block(file, &flash_address, &flash_page,
 			  buf, mask_mode);
 
     if (mask_mode & MODE_AMS) 
@@ -809,7 +808,7 @@ TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *conte
 {
   FILE *f, *file;
   int i, j;
-  uint32_t flash_size;
+  int bytes_written = 0;
 
   f = fopen(filename, "wb");
   if (f == NULL) 
@@ -837,12 +836,17 @@ TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *conte
     fputc(0, f);
 
   // approximative value, need to be fixed !
-  flash_size = content->num_pages * (content->pages[0].length >> 5) * 77;
-  fwrite_long(f, flash_size);
+  //content->data_length = content->num_pages * (content->pages[0].length >> 5) * 77;
+  fwrite_long(f, content->data_length);
 
+  // data
   for (i = 0; i < content->num_pages; i++)
-    write_data_block(file, content->pages[i].offset,
+    bytes_written += intelhex_write_data_block(file, content->pages[i].offset,
 		     content->pages[i].page, content->pages[i].data, 0);
+
+  // final block
+  bytes_written += intelhex_write_data_block(file, 0, 0, 0, !0);  
+  printf("bytes_written = %06x (%i) \n", bytes_written, bytes_written);
 
   fclose(f);
 
@@ -974,6 +978,8 @@ TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash *content)
     tifiles_info("Unknown (mailto roms@lpg.ticalc.org)\n");
     break;
   }
+  tifiles_info("Length:          %08X (%i)", ptr->data_length,
+	    ptr->data_length);
   tifiles_info("Number of pages: %i", ptr->num_pages);
 
   return 0;

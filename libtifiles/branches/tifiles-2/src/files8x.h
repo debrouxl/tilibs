@@ -125,6 +125,7 @@ struct ti8x_flash
   char			name[9];
   uint8_t		device_type;
   uint8_t		data_type;
+  uint32_t		data_length;
 
   int			 num_pages;
   Ti8xFlashPage* pages;

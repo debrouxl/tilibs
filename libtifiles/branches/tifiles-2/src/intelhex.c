@@ -68,7 +68,8 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
 
   sum = *n + MSB(*addr) + LSB(*addr) + *type;
 
-  for (i = 0; i < *n; i++) {
+  for (i = 0; i < *n; i++) 
+  {
     data[i] = read_byte(f);
     sum += data[i];
   }
@@ -79,7 +80,9 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
   c = fgetc(f);
   if (c == '\r')
     c = fgetc(f);		// skip \r\n (Win32) or \n (Linux)  
-  if ((c == EOF) || (c == ' ')) {	// end of file
+  if ((c == EOF) || (c == ' ')) 
+  {	
+	// end of file
     //printf("End of file detected\n");
     *type = 3;
     return 0;
@@ -97,8 +100,8 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
   Return a negative value if error, a positive value (the same as 
   read_intel_packet).
 */
-int read_data_block(FILE * f, uint16_t * flash_address,
-		    uint16_t * flash_page, uint8_t * data, int mode)
+int intelhex_read_data_block(FILE * f, uint16_t * flash_address,
+							 uint16_t * flash_page, uint8_t * data, int mode)
 {
   static uint16_t offset = 0x0000;
   static uint16_t pnumber = 0x00;
@@ -111,19 +114,22 @@ int read_data_block(FILE * f, uint16_t * flash_address,
     bytes_to_read = 0x80;
   else if (mode & MODE_AMS)
     bytes_to_read = 0x100;
-  else if (mode != 0) {
+  else if (mode != 0) 
+  {
     printf("IntelHex reader: invalid mode: %i !\n", mode);
     exit(-1);
   }
 
-  if (mode == 0) {		// reset page_offset & index
+  if (mode == 0) 
+  {		// reset page_offset & index
     offset = 0x0000;
     *flash_address = 0x0000;
     *flash_page = pnumber = 0x00;
     return 0;
   }
 
-  for (i = 0; i < bytes_to_read; i += n) {
+  for (i = 0; i < bytes_to_read; i += n) 
+  {
     uint16_t addr;
     uint8_t type;
     uint8_t buf[32];
@@ -149,35 +155,45 @@ int read_data_block(FILE * f, uint16_t * flash_address,
       *flash_page = pnumber;
 
       // we may have to fill up the block
-      if (i == 0) {
-	// no need to complete block
-	if (type == 3)
-	  break;
-      } else {
-	// null padding
-	n = bytes_to_read - i;
-	//printf("Filling block: %i bytes read, %i bytes added\n", i, n);
-	for (k = i; k < bytes_to_read; k++)
-	  data[k] = 0x00;
-	return type;
+      if (i == 0) 
+	  {
+		// no need to complete block
+		if (type == 3)
+		  break;
+      } else 
+	  {
+		// 0xff padding
+		n = bytes_to_read - i;
+		//printf("Filling block: %i bytes read, %i bytes added\n", i, n);
+		for (k = i; k < bytes_to_read; k++)
+		  data[k] = 0xff;
+		return type;
       }
-    } else {
+    } 
+	else 
+	{
       // copy data
       for (k = 0; k < n; k++)
-	data[i + k] = buf[k];
+		data[i + k] = buf[k];
 
-      if (i == 0) {
-	// first loop: compute address of block
-	if (mode & MODE_APPS) {
-	  *flash_address = addr;
-	  //printf("FLASH address = %04X, FLASH page = %02X\n", *flash_address, *flash_page);
-	} else if (mode & MODE_AMS) {
-	  *flash_address = (addr % 0x4000) + offset;
-	  //printf("FLASH address = %04X ((%04X mod 4000) + %04X), FLASH page = %02X\n", *flash_address, addr, offset, *flash_page);
-	} else if (mode != 0) {
-	  printf("IntelHex reader: invalid mode: %i !\n", mode);
-	  exit(-1);
-	}
+      if (i == 0) 
+	  {
+		// first loop: compute address of block
+		if (mode & MODE_APPS) 
+		{
+		  *flash_address = addr;
+		  //printf("FLASH address = %04X, FLASH page = %02X\n", *flash_address, *flash_page);
+		} 
+		else if (mode & MODE_AMS) 
+		{
+		  *flash_address = (addr % 0x4000) + offset;
+		  //printf("FLASH address = %04X ((%04X mod 4000) + %04X), FLASH page = %02X\n", *flash_address, addr, offset, *flash_page);
+		} 
+		else if (mode != 0) 
+		{
+		  printf("IntelHex reader: invalid mode: %i !\n", mode);
+		  exit(-1);
+		}
       }
     }
   }
@@ -187,39 +203,46 @@ int read_data_block(FILE * f, uint16_t * flash_address,
 
 static int write_byte(uint8_t b, FILE * f)
 {
-  return fprintf(f, "%02X", b);
+  fprintf(f, "%02X", b);
+  return 1;
 }
 
 /* 
-   Write an IntelHexa block from FLASH file
+   Write an IntelHexa block to FLASH file
    Format: ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
    Format: ': 00 0000 01 FF'
    Format: ': 02 0000 02 0000 FC'
-   Return 0 if success, an error code otherwise.
+   Return number of chars written to file.
 */
 static int write_intel_packet(FILE * f, int n, uint16_t addr,
 			      uint8_t type, uint8_t * data)
 {
   int i;
   int sum;
+  int num = 0;
 
-  fputc(':', f);
-  write_byte((uint8_t)n, f);
-  write_byte(MSB(addr), f);
-  write_byte(LSB(addr), f);
-  write_byte(type, f);
+  fputc(':', f); num++;
+  num += write_byte((uint8_t)n, f);
+  num += write_byte(MSB(addr), f);
+  num += write_byte(LSB(addr), f);
+  num += write_byte(type, f);
+
   sum = n + MSB(addr) + LSB(addr) + type;
-  for (i = 0; i < n; i++) {
-    write_byte(data[i], f);
+  for (i = 0; i < n; i++) 
+  {
+    num += write_byte(data[i], f);
     sum += data[i];
   }
-  write_byte((uint8_t)(0x100 - LSB(sum)), f);
-  if (type != 0x01) {
-    fputc(0x0D, f);		// CR
-    fputc(0x0A, f);		// LF
+
+  num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
+
+  if (type != 0x01) 
+  {
+    fputc(0x0D, f);	num++;	// CR
+    fputc(0x0A, f); num++;	// LF
   }
 
-  return 0;
+  return num;
 }
 
 /*
@@ -228,33 +251,35 @@ static int write_intel_packet(FILE * f, int n, uint16_t addr,
 	- page_number: the index of the FLASH page
 	- data: the buffer where data are placed
 	- mode: used for telling end of file
-	Return a negative value if error, 0 otherwise.
+	Return number of chars written.
 */
-int write_data_block(FILE * f, uint16_t flash_address, uint16_t flash_page,
-		     uint8_t * data, int mode)
+int intelhex_write_data_block(FILE * f, uint16_t flash_address, uint16_t flash_page,
+							  uint8_t * data, int mode)
 {
   static uint16_t pn = 0xffff;
   int ret = 0;
   int i;
   int bytes_to_write = 0x80;	//number of bytes to write (usually 0x80)
   uint8_t buf[2];
+  int bytes_written = 0;
 
   // Write end of block
   if (mode)
     return write_intel_packet(f, 0, 0x0000, 0x01, data);
 
   // Write page number
-  if (pn != flash_page) {
+  if (pn != flash_page) 
+  {
     pn = flash_page;
     buf[0] = MSB(pn);
     buf[1] = LSB(pn);
-    write_intel_packet(f, 2, 0x0000, 0x02, buf);
+    bytes_written = write_intel_packet(f, 2, 0x0000, 0x02, buf);
   }
   // Write data block
-  for (i = 0; i < bytes_to_write; i += 32) {
-    write_intel_packet(f, 32, (uint16_t)(flash_address + i), 
-	    0x00, data + i);
+  for (i = 0; i < bytes_to_write; i += 32) 
+  {
+    bytes_written = write_intel_packet(f, 32, (uint16_t)(flash_address + i), 0x00, data + i);
   }
 
-  return ret;
+  return bytes_written;
 }

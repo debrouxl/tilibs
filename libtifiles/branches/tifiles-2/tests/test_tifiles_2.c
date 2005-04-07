@@ -225,8 +225,9 @@ ti84p:
 	//test_ti84p_backup_support();
 	test_ti84p_regular_support();
 	test_ti84p_group_support();
-	test_ti84p_ungroup_support();
+	test_ti84p_ungroup_support();	
 	test_ti84p_flash_support();  
+	goto end;
 
 ti86:
 	change_dir("C:\\sources\\roms\\tifiles-2\\tests\\ti86");

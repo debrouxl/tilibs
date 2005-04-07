@@ -437,6 +437,7 @@ TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		fclose(f);
 		return ERR_MALLOC;
     }
+	memset(content->data_part, 0xff, content->data_length);
     fread(content->data_part, content->data_length, 1, f);
 
     switch(content->data_part[8])
@@ -485,6 +486,7 @@ TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		fclose(f);
 		return ERR_MALLOC;
       }
+	  memset(content->data_part, 0xff, content->data_length);
       fread(content->data_part, content->data_length, 1, f);
 
       content->next = NULL;
