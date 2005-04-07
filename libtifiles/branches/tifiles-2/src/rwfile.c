@@ -94,6 +94,7 @@ int fwrite_n_bytes(FILE * f, int n, const char *s)
   return 0;
 }
 
+
 /*
    Read a string of 'n' chars max from a file
    - s [out]: a buffer for storing the string
@@ -132,6 +133,35 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
   return 0;
 }
+
+/*
+  Write a string of 'n' chars max (SPC padded) to a file
+  - s [in]: a string
+  - f [in]: a file descriptor
+  - [out]: always different of 0
+*/
+int fwrite_n_chars2(FILE * f, int n, const char *s)
+{
+  int i;
+  int l = n;
+
+  l = strlen(s);
+  if (l > n) 
+  {
+    tifiles_error("string passed in 'write_string8' is too long (>n chars).\n");
+    tifiles_error( "s = <%s>, len(s) = %i\n", s, strlen(s));
+    hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
+    abort();
+  }
+
+  for (i = 0; i < l; i++)
+    fputc(s[i], f);
+  for (i = l; i < n; i++) 
+    fputc(0x20, f);
+
+  return 0;
+}
+
 
 int fread_8_chars(FILE * f, char *s)
 {

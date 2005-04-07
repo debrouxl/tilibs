@@ -222,7 +222,7 @@ ti82:
   // TI83+ support
 ti84p:
 	change_dir("C:\\sources\\roms\\tifiles-2\\tests\\ti84p");
-	test_ti84p_regular_support();
+	//test_ti84p_backup_support();
 	test_ti84p_regular_support();
 	test_ti84p_group_support();
 	test_ti84p_ungroup_support();
@@ -468,7 +468,7 @@ static int test_ti86_regular_support()
 
 static int test_ti86_group_support()
 {
-  char *array[] = { "C:\\sources\\roms\\tifiles-2\\tests\\ti86\\xx.86n", "C:\\sources\\roms\\tifiles-2\\tests\\ti86\\yy.86n", NULL };
+  char *array[] = { "C:\\sources\\roms\\tifiles-2\\tests\\ti86\\yy.86n", "C:\\sources\\roms\\tifiles-2\\tests\\ti86\\xx.86n", NULL };
   
   printf("--> Testing grouping of files...\n");
   tifiles_group_files(array, "C:\\sources\\roms\\tifiles-2\\tests\\ti86\\xxyy.86g_");

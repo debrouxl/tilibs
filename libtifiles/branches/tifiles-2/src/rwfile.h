@@ -27,6 +27,7 @@ int fwrite_n_bytes(FILE * f, int n, const char *s);
 
 int fread_n_chars(FILE * f, int n, char *s);
 int fwrite_n_chars(FILE * f, int n, const char *s);
+int fwrite_n_chars2(FILE * f, int n, const char *s);
 
 int fread_8_chars(FILE * f, char *s);
 int fwrite_8_chars(FILE * f, const char *s);
