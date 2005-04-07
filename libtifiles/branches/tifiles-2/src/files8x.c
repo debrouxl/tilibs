@@ -236,7 +236,6 @@ TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, Ti8xRegular *co
   int ti83p_flag = 0;
   uint8_t name_length = 8;	// ti85/86 only
   uint16_t data_size;
-  uint8_t test_space;
   char signature[9];
 
   if (!tifiles_file_is_ti(filename))

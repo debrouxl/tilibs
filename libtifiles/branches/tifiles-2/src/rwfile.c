@@ -103,7 +103,19 @@ int fwrite_n_bytes(FILE * f, int n, const char *s)
 */
 int fread_n_chars(FILE * f, int n, char *s)
 {
-	return fread_n_bytes(f, n, s);
+	int i;
+	int ret;
+	
+	ret = fread_n_bytes(f, n, s);
+
+	if(s != NULL)
+	{	
+		// not compulsory but I prefer set unused bytes to 0
+		for(i = strlen(s); i < n; i++)
+			s[i] = '\0';
+	}
+
+	return ret;
 }
 
 /*

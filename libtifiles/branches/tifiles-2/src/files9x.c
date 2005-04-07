@@ -731,6 +731,8 @@ TIEXPORT int TICALL ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
     fwrite(content->data_part, content->data_length, 1, f);
   }
 
+  fclose(f);
+
   return 0;
 }
 

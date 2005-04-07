@@ -234,25 +234,20 @@ ti86:
 	test_ti86_regular_support();
 	test_ti86_group_support();
 	test_ti86_ungroup_support();
-	goto end;
 
   // TI92 support
 ti92:
-  test_ti92_backup_support();
-  test_ti92_regular_support();
-  test_ti92_group_support();
-  test_ti92_ungroup_support();
-  goto end;
+	change_dir("C:\\sources\\roms\\tifiles-2\\tests\\ti92");
+	test_ti92_backup_support();
+	test_ti92_regular_support();
+	test_ti92_group_support();
+	test_ti92_ungroup_support();
 
 ti89:
-  test_ti89_flash_support();
-  // test_ti89_regular_support();
-  goto end;
-
-  // V200 support
-v200:
-  test_v200_regular_support();
-  goto end;
+	change_dir("C:\\sources\\roms\\tifiles-2\\tests\\ti89");
+	test_ti89_regular_support();
+	test_ti89_flash_support();
+	goto end;
 
 end:
 	tifiles_library_exit();
@@ -489,37 +484,6 @@ static int test_ti86_ungroup_support()
 }
 
 /*********/
-/* TI-89 */
-/*********/
-
-static int test_ti89_regular_support()
-{
-  Ti9xRegular content;
-  char *unused;
-
-  printf("--> Testing regular support (group)...\n");
-  ti9x_file_display("./ti89/group.89g");
-  ti9x_file_read_regular("./ti89/group.89g", &content);
-  ti9x_file_write_regular("./ti89/group.89g_", &content, &unused);
-  compare_files("./ti89/group.89g", "./ti89/group.89g_");
-
-  return 0;
-}
-
-static int test_ti89_flash_support()
-{
-  Ti9xFlash content;
-
-  printf("--> Testing flash support...\n");
-  ti9x_file_display("./ti89/ticabfra.89k");
-  ti9x_file_read_flash("./ti89/ticabfra.89k", &content);
-  ti9x_file_write_flash("./ti89/ticabfra.89k_", &content);
-  compare_files("./ti89/ticabfra.89k", "./ti89/ticabfra.89k_");
-
-  return 0;
-}
-
-/*********/
 /* TI-92 */
 /*********/
 
@@ -528,10 +492,10 @@ static int test_ti92_backup_support()
   Ti9xBackup content;
 
   printf("--> Testing backup support...\n");
-  ti9x_file_display("./ti92/backup.92b");
-  ti9x_file_read_backup("./ti92/backup.92b", &content);
-  ti9x_file_write_backup("./ti92/backup.92b_", &content);
-  compare_files("./ti92/backup.92b", "./ti92/backup.92b_");
+  ti9x_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\backup.92b");
+  ti9x_file_read_backup("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\backup.92b", &content);
+  ti9x_file_write_backup("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\backup.92b_", &content);
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\backup.92b", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\backup.92b_");
 
   return 0;
 }
@@ -542,30 +506,30 @@ static int test_ti92_regular_support()
   char *unused;
 
   printf("--> Testing regular support (single)...\n");
-  ti9x_file_display("./ti92/str.92s");
-  ti9x_file_read_regular("./ti92/str.92s", &content);
-  ti9x_file_write_regular("./ti92/str.92s_", &content, &unused);
-  //compare_files("./ti92/str.92s", "./ti92/str.92s_");
+  ti9x_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\str.92s");
+  ti9x_file_read_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\str.92s", &content);
+  ti9x_file_write_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\str.92s_", &content, &unused);
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\str.92s", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\str.92s_");
 
   printf("\n");
   
   printf("--> --> Testing regular support (group)...\n");
-  ti9x_file_display("./ti92/group.92g");  
-  ti9x_file_read_regular("./ti92/group.92g", &content);
-  ti9x_file_write_regular("./ti92/group.92g_", &content, &unused);
-  //compare_files("./ti92/group.92g", "./ti92/group.92g_");
+  ti9x_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g");  
+  ti9x_file_read_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g", &content);
+  ti9x_file_write_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g_", &content, &unused);
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g_");
 
   return 0;
 }
 
 static int test_ti92_group_support()
 {
-  char *array[] = { "./ti92/xx.92s", "./ti92/yy.92s", "./ti92/zz.92s", NULL };
+  char *array[] = { "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\xx.92s", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\yy.92s", NULL };
   
   printf("--> Testing grouping of files...\n");
-  tifiles_group_files(array, "./ti92/xxyyzz.92g_");
-  tifiles_file_display("./ti92/xxyyzz.92g_");
-  compare_files("./ti92/group.92g", "./ti92/xxyyzz.92g_");
+  tifiles_group_files(array, "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\xxyy.92g_");
+  tifiles_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\xxyy.92g_");
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\xxyy.92g_");
   
   return 0;
 }
@@ -573,17 +537,43 @@ static int test_ti92_group_support()
 static int test_ti92_ungroup_support()
 {
   printf("--> Testing ungrouping of files...\n");
-  tifiles_ungroup_file("./ti92/group.92g");
-  rename("x.92s", "./ti92/x.92s");
-  rename("y.92s", "./ti92/y.92s");
-  compare_files("./ti92/x.92s", "./ti92/xx.92s");
-  compare_files("./ti92/y.92s", "./ti92/yy.92s");
+  tifiles_ungroup_file("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\group.92g");
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\x.92s", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\xx.92s");
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti92\\y.92s", "C:\\sources\\roms\\tifiles-2\\tests\\ti92\\yy.92s");
 
   return 0;
 }
 
+/*********/
+/* TI-89 */
+/*********/
 
+static int test_ti89_regular_support()
+{
+  Ti9xRegular content;
+  char *unused;
 
+  printf("--> Testing regular support (group)...\n");
+  ti9x_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\group.89g");
+  ti9x_file_read_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\group.89g", &content);
+  ti9x_file_write_regular("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\group.89g_", &content, &unused);
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\group.89g", "C:\\sources\\roms\\tifiles-2\\tests\\ti89\\group.89g_");
+
+  return 0;
+}
+
+static int test_ti89_flash_support()
+{
+  Ti9xFlash content;
+
+  printf("--> Testing flash support...\n");
+  ti9x_file_display("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\ticabfra.89k");
+  ti9x_file_read_flash("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\ticabfra.89k", &content);
+  ti9x_file_write_flash("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\ticabfra.89k_", &content);
+  compare_files("C:\\sources\\roms\\tifiles-2\\tests\\ti89\\ticabfra.89k", "C:\\sources\\roms\\tifiles-2\\tests\\ti89\\ticabfra.89k_");
+
+  return 0;
+}
 
 
 static int test_v200_regular_support()

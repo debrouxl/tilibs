@@ -16,7 +16,7 @@ Log:
 	- decreased number of headers to include (3)
 	- fixed tifiles_file_is_ti and argument passing to transcode functions
 	- added fread_n_bytes adn fwrite_n_bytes which replaces fwrite_n_chars 
-	- fixed missing fclose()
+	- fixed many missing fclose() => file truncated...
 	- fixed fsignature in TI8x support
 
 	TI86 group file seems to be weird ...
