@@ -161,8 +161,8 @@ int main(int argc, char **argv)
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
-	//bug
-	//free(msg);
+	msg = malloc(10);
+	free(msg); //bug
 	printf("--\n");
 
 	// test type2str.c

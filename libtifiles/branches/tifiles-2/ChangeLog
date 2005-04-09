@@ -18,8 +18,9 @@ Log:
 	- added fread_n_bytes adn fwrite_n_bytes which replaces fwrite_n_chars 
 	- fixed many missing fclose() => file truncated...
 	- fixed fsignature in TI8x support
-
-	TI86 group file seems to be weird ...
+	- checked with valgrind: no memory allocation errors with 
+	test_tifiles_2.c
+	
 	Pb with TI8x write flash: set fixed size block (0x80) or not ?!
 	Add TiGroup (*.tig) support which is a kind of file container.
 	
