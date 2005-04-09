@@ -259,10 +259,10 @@ extern "C" {
 
   // special for win32 (DLL partition -> memory violation)
 #ifdef __WIN32__
-  TIEXPORT void* TICALL tifiles_calloc(size_t nmemb, size_t size);
-  TIEXPORT void* TICALL tifiles_malloc(size_t size);
+  TIEXPORT void* TICALL tifiles_calloc(unsigned int nmemb, unsigned int size);
+  TIEXPORT void* TICALL tifiles_malloc(unsigned int size);
   TIEXPORT void  TICALL tifiles_free(void *ptr);
-  TIEXPORT void* TICALL tifiles_realloc(void *ptr, size_t size);
+  TIEXPORT void* TICALL tifiles_realloc(void *ptr, unsigned int size);
 #else
 # define tifiles_calloc  calloc
 # define tifiles_malloc  malloc

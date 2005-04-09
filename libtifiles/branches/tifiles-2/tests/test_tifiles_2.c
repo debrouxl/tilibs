@@ -93,7 +93,7 @@ static const char* BUILD_PATH(const char *path)
 	static char str[1024];
 	unsigned int i;
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__MINGW32__)
 	strcpy(str, "C:\\sources\\roms\\tifiles-2\\tests\\");
 	strcat(str, path);
 
@@ -141,7 +141,6 @@ int main(int argc, char **argv)
 	char buffer[256];
 	int i;
 	int ret;
-//	Ti9xFlash content = { 0 };
 
 	// init library
 	tifiles_library_init();
@@ -225,6 +224,7 @@ int main(int argc, char **argv)
 	ret = tifiles_file_is_tib(BUILD_PATH("misc/ams100.tib"));
         printf("tifiles_file_is_tib: %i\n", ret);
 	printf("--\n");
+	return 0;
 
 	// test typesxx.c
 	printf("tifiles_file_get_model: %s\n", 
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
 	test_ti92_group_support();
 	test_ti92_ungroup_support();
 
-end:
+	// end of test
 	tifiles_library_exit();
 
   return 0;

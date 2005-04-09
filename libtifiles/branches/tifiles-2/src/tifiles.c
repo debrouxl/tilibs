@@ -32,6 +32,10 @@
 #ifdef ENABLE_NLS
 #include <locale.h>
 #endif
+#ifdef __WIN32__
+#include <windows.h>
+#endif
+
 #include "gettext.h"
 #include "tifiles.h"
 #include "logging.h"
