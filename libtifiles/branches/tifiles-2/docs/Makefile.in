@@ -111,6 +111,8 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OS_WIN32_FALSE = @OS_WIN32_FALSE@
+OS_WIN32_TRUE = @OS_WIN32_TRUE@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -325,7 +327,8 @@ all: gen_doc
 	./gen_doc .
 
 gen_doc: gen_doc.c
-	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
+@OS_WIN32_TRUE@	gcc `pkg-config.exe glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc.exe
+@OS_WIN32_FALSE@	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
 
 clean:
 	rm -f ./text/*~ ./html/*.*

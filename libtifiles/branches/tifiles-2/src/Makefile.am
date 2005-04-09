@@ -11,7 +11,8 @@ libtifilesinclude_HEADERS = \
 	export.h stdints.h tifiles.h files8x.h files9x.h
 
 # build instructions
-libtifiles_2_la_LIBADD = @LTLIBINTL@
+libtifiles_2_la_CPPFLAGS = @GLIB_CFLAGS@
+libtifiles_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
 libtifiles_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles_2_la_SOURCES = *.h \
 	error.c \

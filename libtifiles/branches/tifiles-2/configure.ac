@@ -64,9 +64,6 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-CFLAGS="$GLIB_CFLAGS"
-LDFLAGS="$GLIB_LIBS"
-
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([inttypes.h stdint.h stdlib.h string.h])

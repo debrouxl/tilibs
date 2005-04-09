@@ -257,7 +257,6 @@ int intelhex_write_data_block(FILE * f, uint16_t flash_address, uint16_t flash_p
 							  uint8_t * data, int mode)
 {
   static uint16_t pn = 0xffff;
-  int ret = 0;
   int i;
   int bytes_to_write = 0x80;	//number of bytes to write (usually 0x80)
   uint8_t buf[2];

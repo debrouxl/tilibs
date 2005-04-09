@@ -79,6 +79,15 @@ static int compare_files(const char *src, const char *dst)
     return 0;
 }
 
+static int move_file(const char *oldpath, const char *newpath)
+{
+#ifdef __WIN32__
+    return 0;
+#else
+    return rename(oldpath, newpath);
+#endif
+}
+
 // Set output directory
 static void change_dir(const char *path)
 {
@@ -224,7 +233,6 @@ int main(int argc, char **argv)
 	ret = tifiles_file_is_tib(BUILD_PATH("misc/ams100.tib"));
         printf("tifiles_file_is_tib: %i\n", ret);
 	printf("--\n");
-	return 0;
 
 	// test typesxx.c
 	printf("tifiles_file_get_model: %s\n", 
@@ -292,6 +300,7 @@ int main(int argc, char **argv)
 	test_ti92_regular_support();
 	test_ti92_group_support();
 	test_ti92_ungroup_support();
+	return 0;
 
 	// end of test
 	tifiles_library_exit();
@@ -378,6 +387,8 @@ static int test_ti82_ungroup_support()
 {
   printf("--> Testing ungrouping of files...\n");
   tifiles_ungroup_file(BUILD_PATH("ti82/group.82g"));
+  move_file("A.82n", "ti82/A.82n");
+  move_file("B.82n", "ti82/B.82n");
   compare_files(BUILD_PATH("ti82/A.82n"), BUILD_PATH("ti82/aa.82n"));
   compare_files(BUILD_PATH("ti82/B.82n"), BUILD_PATH("ti82/bb.82n"));
 
@@ -412,10 +423,10 @@ static int test_ti84p_regular_support()
   char *unused;
 
   printf("--> Testing regular support (single)...\n");
-  ti8x_file_display(BUILD_PATH("ti84p/romdump.8xp"));
-  ti8x_file_read_regular(BUILD_PATH("ti84p/romdump.8xp"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti84p/romdump.8xp_"), &content, &unused);
-  compare_files(BUILD_PATH("ti84p/romdump.8xp"), BUILD_PATH("ti84p/romdump.8xp_"));
+  ti8x_file_display(BUILD_PATH("ti84p/romdump.8Xp"));
+  ti8x_file_read_regular(BUILD_PATH("ti84p/romdump.8Xp"), &content);
+  ti8x_file_write_regular(BUILD_PATH("ti84p/romdump.8Xp_"), &content, &unused);
+  compare_files(BUILD_PATH("ti84p/romdump.8Xp"), BUILD_PATH("ti84p/romdump.8Xp_"));
 
   printf("\n");
 
@@ -451,6 +462,8 @@ static int test_ti84p_ungroup_support()
 {
   printf("--> Testing ungrouping of files...\n");
   tifiles_ungroup_file(BUILD_PATH("ti84p/group.8Xg"));
+  move_file("A.8Xn", "ti84p/A.8Xn");
+  move_file("B.8Xn", "ti84p/B.8Xn");
   compare_files(BUILD_PATH("ti84p/A.8Xn"), BUILD_PATH("ti84p/aa.8Xn"));
   compare_files(BUILD_PATH("ti84p/B.8Xn"), BUILD_PATH("ti84p/bb.8Xn"));
 
@@ -525,8 +538,8 @@ static int test_ti86_group_support()
   char files[2][1024];
   char *array[3] = { 0 };
 
-  strcpy(files[0], BUILD_PATH("ti86/yy.8Xn"));
-  strcpy(files[1], BUILD_PATH("ti86/xx.8Xn"));  
+  strcpy(files[0], BUILD_PATH("ti86/yy.86n"));
+  strcpy(files[1], BUILD_PATH("ti86/xx.86n"));  
   array[0] = files[0];
   array[1] = files[1];
   
@@ -542,6 +555,8 @@ static int test_ti86_ungroup_support()
 {
   printf("--> Testing ungrouping of files...\n");
   tifiles_ungroup_file(BUILD_PATH("ti86/group.86g"));
+  move_file("X.86n", "ti86/X.86n");
+  move_file("Y.86n", "ti86/Y.86n");
   compare_files(BUILD_PATH("ti86/X.86n"), BUILD_PATH("ti86/xx.86n"));
   compare_files(BUILD_PATH("ti86/Y.86n"), BUILD_PATH("ti86/yy.86n"));
 
@@ -593,8 +608,8 @@ static int test_ti92_group_support()
   char files[2][1024];
   char *array[3] = { 0 };
 
-  strcpy(files[0], BUILD_PATH("ti92/xx.8Xn"));
-  strcpy(files[1], BUILD_PATH("ti92/yy.8Xn"));
+  strcpy(files[0], BUILD_PATH("ti92/xx.92s"));
+  strcpy(files[1], BUILD_PATH("ti92/yy.92s"));
   array[0] = files[0];
   array[1] = files[1];
   
@@ -610,8 +625,10 @@ static int test_ti92_ungroup_support()
 {
   printf("--> Testing ungrouping of files...\n");
   tifiles_ungroup_file(BUILD_PATH("ti92/group.92g"));
-  compare_files(BUILD_PATH("ti92/x.92s"), BUILD_PATH("ti92/xx.92s"));
-  compare_files(BUILD_PATH("ti92/y.92s"), BUILD_PATH("ti92/yy.92s"));
+  move_file("X.92s", "ti92/X.92s");
+  move_file("Y.92s", "ti92/Y.92s");
+  compare_files(BUILD_PATH("ti92/X.92s"), BUILD_PATH("ti92/xx.92s"));
+  compare_files(BUILD_PATH("ti92/Y.92s"), BUILD_PATH("ti92/yy.92s"));
 
   return 0;
 }
