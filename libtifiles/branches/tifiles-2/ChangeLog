@@ -1,5 +1,7 @@
 SubVersion: $Id$
 
+Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
+
 Log:
 
 - 26/03/2005, version 0.0.1: roms
@@ -18,8 +20,10 @@ Log:
 	- added fread_n_bytes adn fwrite_n_bytes which replaces fwrite_n_chars 
 	- fixed many missing fclose() => file truncated...
 	- fixed fsignature in TI8x support
-	- checked with valgrind: no memory allocation errors with 
-	test_tifiles_2.c
+	- checked with valgrind: few allocations errors with test_tifiles_2.c
+	- added a new convenient function: tifiles_content_free_group
+	- tifiles_ungroup_file now returns a list of files extracted from group file
+	- fixed few memory allocation issues
 	
 	Pb with TI8x write flash: set fixed size block (0x80) or not ?!
 	Add TiGroup (*.tig) support which is a kind of file container.

@@ -71,6 +71,9 @@ TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
  *
  * Load the single/group file into a TiRegular structure.
  *
+ * Structure content must be freed with #tifiles_content_free_regular when
+ * no longer used.
+ *
  * Return value: an error code, 0 otherwise.
  **/
 TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
@@ -93,7 +96,9 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
- * One of filename and real_filename can be NULL but not both !
+ * %filename and %real_filename can be NULL but not both !
+ *
+ * %real_filename must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -152,7 +157,8 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * This function may be difficult to understand but it avoids to use trees (and
  * linked list) which will require an implementation.
  *
- * Return value: a 2-dimensions allocated integer array.
+ * Return value: a 2-dimensions allocated integer array. Must be freed when no
+ * longer used.
  **/
 TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *nfolders)
 {

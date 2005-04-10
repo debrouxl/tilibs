@@ -104,7 +104,8 @@ TIEXPORT Ti8xFlash *TICALL ti8x_create_flash_content(void)
 /*************************/
 
 /*
-  Copy an Ti8xVarEntry structure (data included)
+  Copy an Ti8xVarEntry structure (data included).
+  Memory must be freed when no longer used.
 */
 int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src)
 {
@@ -119,7 +120,8 @@ int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src)
 }
 
 /*
-  Copy an Ti8xRegular structure
+  Copy an Ti8xRegular structure.
+  Memory must be freed when no longer used.
 */
 int ti8x_dup_Regular(Ti8xRegular *dst, Ti8xRegular *src)
 {
@@ -139,7 +141,8 @@ int ti8x_dup_Regular(Ti8xRegular *dst, Ti8xRegular *src)
 }
 
 /*
-  Copy an Ti8xBackup structure
+  Copy an Ti8xBackup structure.
+  Memory must be freed when no longer used.
 */
 int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
 {
@@ -224,6 +227,9 @@ TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
  * @content: where to store the file content.
  *
  * Load the single/group file into a Ti8xRegular structure.
+ *
+ * Structure content must be freed with #ti8x_content_free_regular when
+ * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -348,6 +354,9 @@ TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, Ti8xRegular *co
  *
  * Load the backup file into a Ti8xBackup structure.
  *
+ * Structure content must be freed with #ti8x_content_free_backup when
+ * no longer used.
+ *
  * Return value: an error code, 0 otherwise.
  **/
 TIEXPORT int TICALL ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
@@ -446,6 +455,9 @@ TIEXPORT int TICALL ti8x_file_read_backup(const char *filename, Ti8xBackup *cont
  * @content: where to store the file content.
  *
  * Load the flash file into a Ti8xFlash structure.
+ *
+ * Structure content must be freed with #ti8x_content_free_flash when
+ * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -579,7 +591,9 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
- * One of filename and real_filename can be NULL but not both !
+ * %filename and %real_filename can be NULL but not both !
+ *
+ * %real_filename must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/

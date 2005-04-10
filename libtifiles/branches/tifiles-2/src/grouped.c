@@ -31,6 +31,35 @@
 #include "macros.h"
 #include "files8x.h"
 
+/***********/
+/* Freeing */
+/***********/
+
+/**
+ * tifiles_content_free_group:
+ *
+ * Convenient function which free a NULL-terminated array of #TiRegular 
+ * structures (typically used to store a group file) and the array itself.
+ *
+ * Return value: always 0.
+ **/
+TIEXPORT int TICALL tifiles_content_free_group(TiRegular **array)
+{
+	int i, n;
+	
+	// counter number of files to group
+	for (n = 0; array[n] != NULL; n++);
+
+	// release allocated memory in structures
+	for (i = 0; i < n; i++) 
+	{
+	    TRY(tifiles_content_free_regular(array[i]));
+		free(array[i]);
+	}
+	free(array);
+
+  return 0;
+}
 
 /************************/
 /* (Un)grouping content */
@@ -42,7 +71,9 @@ int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
  * tifiles_group_contents:
  * @src_contents: a pointer on an array of #TiRegular structures. The array must be terminated by NULL.
  * @dst_content: the address of a pointer. This pointer will contain the allocated group file.
- * Must be freed when no longer needed.
+ *
+ * Must be freed when no longer needed as well as the content of each #TiRegular structure
+ * (use #tifiles_content_free_regular as usual).
  *
  * Group several #TiRegular structures into a single one.
  *
@@ -80,9 +111,11 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular *
  * @src_content: a pointer on the structure to unpack.
  * @dst_contents: the address of your pointer. This pointers will point on a 
  * dynamically allocated array of structures. The array is terminated by NULL.
- * Must be freed when no longer needed.
  *
  * Ungroup a TI file by exploding the structure into an array of structures.
+ *
+ * Array must be freed when no longer needed as well as the content of each #TiRegular 
+ * structure (use #tifiles_content_free_regular as usual).
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
@@ -146,12 +179,15 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   TiRegular *dst = NULL;
   char *unused;
 
+  // counter number of files to group
   for (n = 0; src_filenames[n] != NULL; n++);
 
+  // allocate space for that
   src = (TiRegular **) calloc(n + 1, sizeof(TiRegular *));
   if (src == NULL)
     return ERR_MALLOC;
 
+  // allocate each structure and load file content
   for (i = 0; i < n; i++) 
   {
     src[i] = (TiRegular *) calloc(1, sizeof(TiRegular));
@@ -162,15 +198,13 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   }
   src[i] = NULL;
 
+  // group the array of structures
   TRY(tifiles_group_contents(src, &dst));
 
-  for (i = 0; i < n; i++) 
-  {
-    TRY(tifiles_content_free_regular(src[i]));
-    free(src[i]);
-  }
-  free(src);
+  // release allocated memory
+  tifiles_content_free_group(src);
 
+  // write grouped file
   TRY(tifiles_file_write_regular(dst_filename, dst, &unused));
 
   return 0;
@@ -179,26 +213,50 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
 /**
  * tifiles_ungroup_file:
  * @src_filename: full path of file to ungroup.
+ * @dst_filenames: NULL or the address of a pointer where to store a NULL-terminated 
+ * array of strings which contain the list of ungrouped files.
  *
  * Ungroup a TI 'group' file into several files. Resulting files have the
  * same name as the variable stored within group file.
  * Beware: there is no existence check; files may be overwritten !
  *
+ * %dst_filenames must be freed when no longer used.
+ *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename)
+TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
   TiRegular src;
-  TiRegular **dst;
-  TiRegular **ptr;
+  TiRegular **dst, **ptr;
   char *real_name;
+  
+  int i, n;
 
+  // read group file
   TRY(tifiles_file_read_regular(src_filename, &src));
 
+  // ungroup structure
   TRY(tifiles_ungroup_content(&src, &dst));
 
-  for (ptr = dst; *ptr != NULL; ptr++)
+  // count number of structures and allocates array of strings
+  for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
+  if(dst_filenames != NULL)
+	  *dst_filenames = (char **)malloc((n + 1) * sizeof(char *));
+
+  // store each structure content to file
+  for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
+  {
     TRY(tifiles_file_write_regular(NULL, *ptr, &real_name));
+
+	if(dst_filenames != NULL)
+		*dst_filenames[i] = real_name;
+	else
+		free(real_name);
+  }
+
+  // release allocated memory
+  tifiles_content_free_regular(&src);
+  tifiles_content_free_group(dst);
 
   return 0;
 }

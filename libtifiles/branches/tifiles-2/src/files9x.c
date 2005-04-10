@@ -103,7 +103,8 @@ TIEXPORT Ti9xFlash *TICALL ti9x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy an Ti9xVarEntry structure (data included)
+  Copy an Ti9xVarEntry structure (data included).
+  Memory must be freed when no longer used.
 */
 int ti9x_dup_VarEntry(Ti9xVarEntry * dst, Ti9xVarEntry * src)
 {
@@ -119,7 +120,8 @@ int ti9x_dup_VarEntry(Ti9xVarEntry * dst, Ti9xVarEntry * src)
 
 
 /*
-  Copy an Ti9xRegular structure
+  Copy an Ti9xRegular structure.
+  Memory must be freed when no longer used.
 */
 int ti9x_dup_Regular(Ti9xRegular * dst, Ti9xRegular * src)
 {
@@ -139,7 +141,8 @@ int ti9x_dup_Regular(Ti9xRegular * dst, Ti9xRegular * src)
 }
 
 /*
-  Copy an Ti9xBackup structure
+  Copy an Ti9xBackup structure.
+  Memory must be freed when no longer used.
 */
 int ti9x_dup_Backup(Ti9xBackup * dst, Ti9xBackup * src)
 {
@@ -155,7 +158,8 @@ int ti9x_dup_Backup(Ti9xBackup * dst, Ti9xBackup * src)
 }
 
 /*
-  Copy an Ti9xFlash structure
+  Copy an Ti9xFlash structure.
+  Memory must be freed when no longer used.
 */
 int ti9x_dup_Flash(Ti9xFlash * dst, Ti9xFlash * src)
 {
@@ -234,6 +238,9 @@ TIEXPORT void TICALL ti9x_content_free_flash(Ti9xFlash *content)
  * @content: where to store the file content.
  *
  * Load the single/group file into a Ti9xRegular structure.
+ *
+ * Structure content must be freed with #ti9x_content_free_regular when
+ * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -337,6 +344,9 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
  *
  * Load the backup file into a Ti9xBackup structure.
  *
+ * Structure content must be freed with #ti9x_content_free_backup when
+ * no longer used.
+ *
  * Return value: an error code, 0 otherwise.
  **/
 TIEXPORT int TICALL ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
@@ -395,6 +405,9 @@ TIEXPORT int TICALL ti9x_file_read_backup(const char *filename, Ti9xBackup *cont
  * @content: where to store the file content.
  *
  * Load the flash file into a Ti9xFlash structure.
+ *
+ * Structure content must be freed with #ti9x_content_free_flash when
+ * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -524,7 +537,9 @@ TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
- * One of filename and real_filename can be NULL but not both !
+ * %filename and %real_filename can be NULL but not both !
+ *
+ * %real_filename must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
