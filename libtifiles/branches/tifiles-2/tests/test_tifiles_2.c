@@ -145,7 +145,7 @@ static int test_ti92_ungroup_support(void);
 */
 int main(int argc, char **argv)
 {
-	char *msg;
+	char *msg = NULL;
 	char str[16];
 	char buffer[256];
 	int i;
@@ -161,7 +161,6 @@ int main(int argc, char **argv)
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
-	msg = malloc(10);
 	free(msg); //bug
 	printf("--\n");
 
@@ -387,7 +386,7 @@ static int test_ti82_group_support()
 static int test_ti82_ungroup_support()
 {
   printf("--> Testing TI82 ungrouping of files...\n");
-  tifiles_ungroup_file(BUILD_PATH("ti82/group.82g"));
+  tifiles_ungroup_file(BUILD_PATH("ti82/group.82g"), NULL);
   move_file("A.82n", "ti82/A.82n");
   move_file("B.82n", "ti82/B.82n");
   compare_files(BUILD_PATH("ti82/A.82n"), BUILD_PATH("ti82/aa.82n"));
@@ -462,7 +461,7 @@ static int test_ti84p_group_support()
 static int test_ti84p_ungroup_support()
 {
   printf("--> Testing TI84+ ungrouping of files...\n");
-  tifiles_ungroup_file(BUILD_PATH("ti84p/group.8Xg"));
+  tifiles_ungroup_file(BUILD_PATH("ti84p/group.8Xg"), NULL);
   move_file("A.8Xn", "ti84p/A.8Xn");
   move_file("B.8Xn", "ti84p/B.8Xn");
   compare_files(BUILD_PATH("ti84p/A.8Xn"), BUILD_PATH("ti84p/aa.8Xn"));
@@ -557,7 +556,7 @@ static int test_ti86_group_support()
 static int test_ti86_ungroup_support()
 {
   printf("--> Testing TI86 ungrouping of files...\n");
-  tifiles_ungroup_file(BUILD_PATH("ti86/group.86g"));
+  tifiles_ungroup_file(BUILD_PATH("ti86/group.86g"), NULL);
   move_file("X.86n", "ti86/X.86n");
   move_file("Y.86n", "ti86/Y.86n");
   compare_files(BUILD_PATH("ti86/X.86n"), BUILD_PATH("ti86/xx.86n"));
@@ -629,7 +628,7 @@ static int test_ti92_group_support()
 static int test_ti92_ungroup_support()
 {
   printf("--> Testing TI92 ungrouping of files...\n");
-  tifiles_ungroup_file(BUILD_PATH("ti92/group.92g"));
+  tifiles_ungroup_file(BUILD_PATH("ti92/group.92g"), NULL);
   move_file("X.92s", "ti92/X.92s");
   move_file("Y.92s", "ti92/Y.92s");
   compare_files(BUILD_PATH("ti92/X.92s"), BUILD_PATH("ti92/xx.92s"));

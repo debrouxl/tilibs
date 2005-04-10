@@ -214,7 +214,11 @@ TIEXPORT void TICALL ti8x_content_free_backup(Ti8xBackup *content)
  **/
 TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
 {
-  free(content->pages);
+    int i;
+
+    for(i = 0; i < content->num_pages; i++)
+	free(content->pages[i].data);
+    free(content->pages);
 }
 
 /***********/

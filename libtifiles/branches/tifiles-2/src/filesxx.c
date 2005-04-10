@@ -167,10 +167,6 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *n
   char **ptr, *folder_list[32768] = { 0 };
   int **table;
 
-  folder_list[0] = (char *) calloc(9, sizeof(char));
-  strcpy(folder_list[0], "");
-  folder_list[1] = NULL;
-
   // determine how many folders we have
   for (i = 0; i < content->num_entries; i++) 
   {
@@ -187,7 +183,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *n
     }
     if (*ptr == NULL) 
 	{		// add new folder entry
-      folder_list[num_folders] = (char *) calloc(9, sizeof(char));
+      folder_list[num_folders] = (char *) calloc(10, sizeof(char));
       //printf("%i: adding '%s'\n", num_folders, entry->fld_name);
       strcpy(folder_list[num_folders], entry->fld_name);
       folder_list[num_folders + 1] = NULL;

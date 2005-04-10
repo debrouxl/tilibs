@@ -86,9 +86,11 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular *
 
   for (n = 0; src_contents[n] != NULL; n++);
 
-  dst = *dst_content = (TiRegular *) calloc(1, sizeof(TiRegular));
-  if (dst == NULL)
+  *dst_content = (TiRegular *) calloc(1, sizeof(TiRegular));
+  if (*dst_content == NULL)
     return ERR_MALLOC;
+
+  dst = *dst_content;
   memcpy(dst, src_contents[0], sizeof(TiRegular));
 
   dst->num_entries = n;
@@ -206,6 +208,9 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
 
   // write grouped file
   TRY(tifiles_file_write_regular(dst_filename, dst, &unused));
+
+  // release allocated memory
+  tifiles_content_free_regular(dst);
 
   return 0;
 }
