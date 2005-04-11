@@ -6,6 +6,11 @@ Log:
 
 - 10/04/2005, version 0.0.2: roms
 	- rewritten TI8X+ FLASH support
+	- need to fix memory errors at:
+		* test_tifiles_2.c:168
+		* realloc in ti8x_file_read_flash
+		* free in ti8x_content_free_flash
+
 
 	Add TiGroup (*.tig) support which is a kind of file container.
 

@@ -216,9 +216,11 @@ TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
 {
     int i;
 
+#ifndef __WIN32__
     for(i = 0; i < content->num_pages; i++)
 		free(content->pages[i].data);
     free(content->pages);
+#endif
 }
 
 /***********/
@@ -527,6 +529,7 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
 		if (content->pages == NULL)
 			return ERR_MALLOC;
 */
+		printf("%i %02x\n", i, page);
 		content->pages[i].data = (uint8_t *) calloc(PAGE_SIZE, 1);
 		memset(content->pages[i].data, 0xff, PAGE_SIZE);
 		if (content->pages[i].data == NULL)

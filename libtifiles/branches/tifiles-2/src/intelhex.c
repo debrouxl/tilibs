@@ -160,8 +160,8 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 			new_page = 0;
 		}
 
-		//if(pkt_addr == 0x7fe0 && flash_page == 0x1c)
-		//	printf("bar\n");
+		//if(pkt_addr == 0x7fe0 && flash_page == 0x1d)
+		//printf("bar\n");
 
 		// returned values
 		*addr = flash_addr;
@@ -180,18 +180,19 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_END: 
 			// new section
+			printf("pkt_size = %04x\n", pkt_size);
 			flash_addr = 0;
 			flash_page = 0;
 			flag ^= 0x80;
-			return 0;
+			if(i == 0)
+				break;
+			else
+				return 0;
 
 		case HEX_PAGE: 
 			// new page
 			flash_page = (pkt_data[0] << 8) | pkt_data[1];
-			    //printf("<%02x> ", flash_page);
 			new_page = !0;
-			//if(flash_page == 0x1c)
-			//	printf("bar !\n");
 			break;
 
 		case HEX_EOF: 

@@ -52,26 +52,29 @@ static int compare_files(const char *src, const char *dst)
     
     if( (fs == NULL) || (fd == NULL) )
     {
-	printf("Unable to open these files: <%s> & <%s>.\n", src, dst);
-	return -1;
+		printf("Unable to open these files: <%s> & <%s>.\n", src, dst);
+		return -1;
     }
     
-    while(!feof(fs))
+    while(!feof(fs) && !feof(fd))
     {
-	if((s = fgetc(fs)) != (d = fgetc(fd)))
-	{
-	    printf("\nFiles do not match !!!\n");
-	    printf("Offset: %08X %i\n", (int)ftell(fs), (int)ftell(fs));
-	    printf("Data  (src): %02X ", s);
-	    for(i=0; i<16 && !feof(fs); i++)
-		printf("%02X ", fgetc(fs));
-	    printf("\n");
-	    printf("Data  (dst): %02X ", d);
-	    for(i=0; i<16 && !feof(fd); i++)
-		printf("%02X ", fgetc(fd));
-	    printf("\n");
-	    return -1;
-	}
+		if((s = fgetc(fs)) != (d = fgetc(fd)))
+		{
+			printf("\nFiles do not match !!!\n");
+			printf("Offset: %08X %i\n", (int)ftell(fs), (int)ftell(fs));
+
+			printf("Data  (src): %02X ", s);
+			for(i=0; i<16 && !feof(fs); i++)
+				printf("%02X ", fgetc(fs));
+			printf("\n");
+
+			printf("Data  (dst): %02X ", d);
+			for(i=0; i<16 && !feof(fd); i++)
+			printf("%02X ", fgetc(fd));
+			printf("\n");
+
+			return -1;
+		}
     }
     
     printf("    Files match !\n");
@@ -474,6 +477,33 @@ static int test_ti84p_ungroup_support()
   return 0;
 }
 
+/*
+static int special_test(Ti8xFlash *content)
+{
+	const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\out.txt";
+	FILE *f;
+	int i, j, k;
+
+	f = fopen(filename, "wt");
+	if(f == NULL)
+		return -1;
+
+	for(i = 0; i < content->num_pages; i++)
+	{
+		fprintf(f, "%02x %04X\n", content->pages[i].flag, content->pages[i].page);
+		for(j = 0; j < content->pages[i].size; j += 32)
+		{
+			fprintf(f, "%04X: ", content->pages[i].addr + j);
+			for(k = 0; k < 32; k++)
+				fprintf(f, "%02X", content->pages[i].data[j+k]);
+			fprintf(f, "\n");
+		}
+	}
+
+	fclose(f);
+}
+*/
+
 static int test_ti84p_flash_support()
 {
   Ti8xFlash content;
@@ -484,14 +514,17 @@ static int test_ti84p_flash_support()
   ti8x_file_read_flash(BUILD_PATH("ti84p/chembio.8Xk"), &content);
   ti8x_file_write_flash(BUILD_PATH("ti84p/chembio.8Xk_"), &content);
   ti8x_content_free_flash(&content);
-  //compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
+  compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
 
-  //return 0;
+  return 0;
 
   ti8x_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
   ti8x_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
+
+//special_test(&content);
+
   ti8x_file_write_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"), &content);
-  //compare_files(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"));
+  compare_files(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"));
 
   return 0;
 }
