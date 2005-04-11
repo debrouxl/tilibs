@@ -218,9 +218,7 @@ TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
 
     for(i = 0; i < content->num_pages; i++)
 		free(content->pages[i].data);
-
-	// fault
-    //free(content->pages);
+    free(content->pages);
 }
 
 /***********/
@@ -510,7 +508,7 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
   hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
   content->pages = NULL;
 
-  content->pages = (Ti8xFlashPage *) calloc(20, sizeof(Ti8xFlashPage *));
+  content->pages = (Ti8xFlashPage *) calloc(100, sizeof(Ti8xFlashPage *));
   if (content->pages == NULL)
 	return ERR_MALLOC;
 

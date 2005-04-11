@@ -188,7 +188,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 		case HEX_PAGE: 
 			// new page
 			flash_page = (pkt_data[0] << 8) | pkt_data[1];
-			printf("<%02x> ", flash_page);
+			    //printf("<%02x> ", flash_page);
 			new_page = !0;
 			//if(flash_page == 0x1c)
 			//	printf("bar !\n");
