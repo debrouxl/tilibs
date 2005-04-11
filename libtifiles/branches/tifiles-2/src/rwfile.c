@@ -249,6 +249,6 @@ int fwrite_word(FILE * f, uint16_t data)
 
 int fwrite_long(FILE * f, uint32_t data)
 {
-	data = GUINT16_TO_LE(data);
+	data = GUINT32_TO_LE(data);
   return fwrite(&data, sizeof(uint32_t), 1, f);
 }

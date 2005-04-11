@@ -19,17 +19,29 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+	IntelHex format reader/writer for TI8X FLASH calculators.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "stdints.h"
 #include "macros.h"
 #include "intelhex.h"
+#include "export.h"
 
-/*
-  Note: this file is 'indented' by MSVC.
-  Don't modify indentation, please.
-*/
+/* Constants */
 
+#define HEX_DATA	0x00	// data packet
+#define HEX_END		0x01	// end of section (1 for app, 3 for OS)
+#define HEX_PAGE	0x02	// page change
+#define HEX_EOF		0x03	// end of file (custom)
+
+#define PKT_MAX		32		// 32 bytes max
+#define BLK_MAX		16384	// 16KB max
+
+
+/* TI8X+ FLASH files contains text data. */
 static uint8_t read_byte(FILE * f)
 {
   int b;
@@ -38,20 +50,22 @@ static uint8_t read_byte(FILE * f)
   return b;
 }
 
-/* 
-   Read an IntelHexa block from FLASH file
-   Format: ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
-   Format: ': 00 0000 01 FF'
-   Format: ': 02 0000 02 0000 FC'
-   Return 0 if success, an error code otherwise.
-   Type: 
-	- 0x00: data block (with page address)
-	- 0x01: end block (without end of file)
-	- 0x02: TI block (page number)
-	- 0x03: end block (with end of file)
+/*
+	hex_packet_read:
+	@f : file descriptor
+	@size : size of packet (field #1)
+	@addr : addr of packet (field #2)
+	@type : type of packet (field #3)
+	@data : data of packet (field after #3), 32 bytes max
+
+	Read an IntelHexa block from FLASH file like these:
+	- ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
+	- ': 00 0000 01 FF'
+	- ': 02 0000 02 0000 FC'
+
+	Returns : 0 if success, a negative value otherwise.
 */
-static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
-			     uint8_t * type, uint8_t * data)
+static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
   int c, i;
   uint8_t sum, checksum;
@@ -61,14 +75,17 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
   if (c != ':')
     return -1;
 
-  *n = read_byte(f);
+  *size = read_byte(f);
   *addr = read_byte(f) << 8;
   *addr |= read_byte(f);
   *type = read_byte(f);
 
-  sum = *n + MSB(*addr) + LSB(*addr) + *type;
+  if(*size > PKT_MAX)
+	  return -2;
 
-  for (i = 0; i < *n; i++) 
+  sum = *size + MSB(*addr) + LSB(*addr) + *type;
+
+  for (i = 0; i < *size; i++) 
   {
     data[i] = read_byte(f);
     sum += data[i];
@@ -76,15 +93,15 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
 
   checksum = read_byte(f);	// verify checksum of block
   if (LSB(sum + checksum))
-    return -2;
+    return -3;
+
   c = fgetc(f);
   if (c == '\r')
     c = fgetc(f);		// skip \r\n (Win32) or \n (Linux)  
   if ((c == EOF) || (c == ' ')) 
   {	
 	// end of file
-    //printf("End of file detected\n");
-    *type = 3;
+    *type = HEX_EOF;
     return 0;
   }
 
@@ -92,114 +109,135 @@ static int read_intel_packet(FILE * f, int *n, uint16_t * addr,
 }
 
 /*
-  Read a data block from FLASH file and compute FLASH address & FLASH page.
-  - flash_address: the address of FLASH block to send
-  - flash_page: the page number to send
-  - data: the buffer where data are placed, eventually null (0x00) padded
-  - mode: App or Os. A null value reset internal variables.
-  Return a negative value if error, a positive value (the same as 
-  read_intel_packet).
+	hex_block_read:
+	@f : file descriptor
+	@size : size of block
+	@addr : address of block
+	@type : a flag (0x80 or 0x00)
+	@page : page of block	
+	@data : the buffer where block is placed (16KB max)
+
+	Read a data block (page or segment) from FLASH file. 
+	If all args are set to NULL, this resets the parser.
+
+	Returns : 0 if success, EOF if end of file has been reached.
 */
-int intelhex_read_data_block(FILE * f, uint16_t * flash_address,
-							 uint16_t * flash_page, uint8_t * data, int mode)
+int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page)
 {
-  static uint16_t offset = 0x0000;
-  static uint16_t pnumber = 0x00;
-  int bytes_to_read = 0x80;
-  int ret = 0;
-  int i, k;
-  int n;
+	static int flag = 0x80;
+	static uint16_t flash_page;
+	static uint16_t flash_addr;
+	int i;
+	int new_page = 0;
 
-  if (mode & MODE_APPS)
-    bytes_to_read = 0x80;
-  else if (mode & MODE_AMS)
-    bytes_to_read = 0x100;
-  else if (mode != 0) 
-  {
-    printf("IntelHex reader: invalid mode: %i !\n", mode);
-    exit(-1);
-  }
-
-  if (mode == 0) 
-  {		// reset page_offset & index
-    offset = 0x0000;
-    *flash_address = 0x0000;
-    *flash_page = pnumber = 0x00;
-    return 0;
-  }
-
-  for (i = 0; i < bytes_to_read; i += n) 
-  {
-    uint16_t addr;
-    uint8_t type;
-    uint8_t buf[32];
-
-    ret = read_intel_packet(f, &n, &addr, &type, buf);
-    if (ret < 0)
-      return ret;
-
-    if (type == 2) {
-      // special block
-      offset = 0x4000;
-      *flash_page = pnumber = (buf[0] << 8) | buf[1];
-      //printf("Page block: %02X\n", *flash_page); 
-      ret = read_intel_packet(f, &n, &addr, &type, buf);
-    }
-
-    if ((type == 1) || (type == 3)) {
-      // final block
-      //printf("End block with%s end of file\n", type == 1 ? "out" : "");
-      if ((mode & MODE_AMS) && (type == 3))
-	pnumber = 0x00;
-      offset = 0x0000;
-      *flash_page = pnumber;
-
-      // we may have to fill up the block
-      if (i == 0) 
-	  {
-		// no need to complete block
-		if (type == 3)
-		  break;
-      } else 
-	  {
-		// 0xff padding
-		n = bytes_to_read - i;
-		//printf("Filling block: %i bytes read, %i bytes added\n", i, n);
-		for (k = i; k < bytes_to_read; k++)
-		  data[k] = 0xff;
-		return type;
-      }
-    } 
-	else 
+	// reset condition: all args set to NULL
+	if(!size && !addr && !type && !data && !page)
 	{
-      // copy data
-      for (k = 0; k < n; k++)
-		data[i + k] = buf[k];
+		flag = 0x80;
+		flash_page = flash_addr = 0;
+		return 0;
+	}
 
-      if (i == 0) 
-	  {
-		// first loop: compute address of block
-		if (mode & MODE_APPS) 
+	// fill-up buffer with 0xff (flash)
+	memset(data, 0xff, BLK_MAX);
+
+	// load data
+	for (i = 0; i < BLK_MAX; )
+	{
+		int ret;
+		uint8_t pkt_size, pkt_type;
+		uint8_t pkt_data[PKT_MAX];
+		uint16_t pkt_addr;
+
+		// read packet
+		ret = hex_packet_read(f, &pkt_size, &pkt_addr, &pkt_type, pkt_data);
+		if(ret < 0)	return ret;
+
+		// new block ? Set address
+		if(new_page)
 		{
-		  *flash_address = addr;
-		  //printf("FLASH address = %04X, FLASH page = %02X\n", *flash_address, *flash_page);
-		} 
-		else if (mode & MODE_AMS) 
-		{
-		  *flash_address = (addr % 0x4000) + offset;
-		  //printf("FLASH address = %04X ((%04X mod 4000) + %04X), FLASH page = %02X\n", *flash_address, addr, offset, *flash_page);
-		} 
-		else if (mode != 0) 
-		{
-		  printf("IntelHex reader: invalid mode: %i !\n", mode);
-		  exit(-1);
+			flash_addr = pkt_addr;
+			new_page = 0;
 		}
-      }
-    }
-  }
 
-  return ret;
+		//if(pkt_addr == 0x7fe0 && flash_page == 0x1c)
+		//	printf("bar\n");
+
+		// returned values
+		*addr = flash_addr;
+		*type = flag;
+		*page = flash_page;
+		
+		// determine what to do
+		switch(pkt_type)
+		{
+		case HEX_DATA:
+			// copy data
+			memcpy(&data[i], pkt_data, pkt_size);
+			i += pkt_size;
+			*size = i;
+			break;
+
+		case HEX_END: 
+			// new section
+			flash_addr = 0;
+			flash_page = 0;
+			flag ^= 0x80;
+			return 0;
+
+		case HEX_PAGE: 
+			// new page
+			flash_page = (pkt_data[0] << 8) | pkt_data[1];
+			printf("<%02x> ", flash_page);
+			new_page = !0;
+			//if(flash_page == 0x1c)
+			//	printf("bar !\n");
+			break;
+
+		case HEX_EOF: 
+			// end of file
+			return EOF;
+
+		default: 
+			return -1;
+		}
+	}
+
+	return 0;
 }
+
+#if 0
+TIEXPORT int TICALL test_hex_read(void)
+{
+	const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\chembio.8Xk";
+	//const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\TI84Plus_OS.8Xu";
+	FILE *f;
+	uint16_t size, addr, page;
+	uint8_t type, data[BLK_MAX];
+	int ret;
+
+	f = fopen(filename, "rb");
+	if (f == NULL) 
+	{
+		printf("Unable to open this file: <%s>", filename);
+		return -1;
+	}
+
+	fseek(f, 0x4e, SEEK_SET);
+
+	ret = hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
+
+	do
+	{
+		ret = hex_block_read(f, &size, &addr, &type, data, &page);
+	} 
+	while(!ret);
+
+	fclose(f);
+
+	return 0;
+}
+#endif
 
 static int write_byte(uint8_t b, FILE * f)
 {
@@ -207,28 +245,35 @@ static int write_byte(uint8_t b, FILE * f)
   return 1;
 }
 
-/* 
-   Write an IntelHexa block to FLASH file
-   Format: ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
-   Format: ': 00 0000 01 FF'
-   Format: ': 02 0000 02 0000 FC'
-   Return number of chars written to file.
+/*
+	hex_packet_write:
+	@f : file descriptor
+	@size : size of packet (field #1)
+	@addr : addr of packet (field #2)
+	@type : type of packet (field #3)
+	@data : data of packet (field after #3), 32 bytes max
+
+	Write an IntelHexa block from FLASH file like these:
+	- ': 10 0000 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 CR/LF'
+	- ': 00 0000 01 FF'
+	- ': 02 0000 02 0000 FC'
+
+	Returns : number of chars written to file.
 */
-static int write_intel_packet(FILE * f, int n, uint16_t addr,
-			      uint8_t type, uint8_t * data)
+static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, uint8_t *data)
 {
   int i;
   int sum;
   int num = 0;
 
   fputc(':', f); num++;
-  num += write_byte((uint8_t)n, f);
+  num += write_byte((uint8_t)size, f);
   num += write_byte(MSB(addr), f);
   num += write_byte(LSB(addr), f);
   num += write_byte(type, f);
 
-  sum = n + MSB(addr) + LSB(addr) + type;
-  for (i = 0; i < n; i++) 
+  sum = size + MSB(addr) + LSB(addr) + type;
+  for (i = 0; i < size; i++) 
   {
     num += write_byte(data[i], f);
     sum += data[i];
@@ -236,49 +281,66 @@ static int write_intel_packet(FILE * f, int n, uint16_t addr,
 
   num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
 
-  if (type != 0x01) 
-  {
-    fputc(0x0D, f);	num++;	// CR
-    fputc(0x0A, f); num++;	// LF
-  }
+  fputc(0x0D, f);	num++;	// CR
+  fputc(0x0A, f); num++;	// LF
 
   return num;
 }
 
 /*
-	Write a data block to FLASH file
-	- page_address: the address of the FLASH page
-	- page_number: the index of the FLASH page
-	- data: the buffer where data are placed
-	- mode: used for telling end of file
-	Return number of chars written.
+	hex_block_write:
+	@f : file descriptor
+	@size : size of block
+	@addr : address of block
+	@type : a flag (0x80 or 0x00)
+	@page : page of block	
+	@data : the buffer where block is placed (16KB max)
+
+	Write a data block (page/segment) to FLASH file. 
+
+	Returns : number of chars written to file.
 */
-int intelhex_write_data_block(FILE * f, uint16_t flash_address, uint16_t flash_page,
-							  uint8_t * data, int mode)
+int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t *data, uint16_t page)
 {
-  static uint16_t pn = 0xffff;
-  int i;
-  int bytes_to_write = 0x80;	//number of bytes to write (usually 0x80)
-  uint8_t buf[2];
-  int bytes_written = 0;
+	int i, bytes_written = 0;
+	static int old_flag = 0x80;
+	int n = size / PKT_MAX;
+	int r = size % PKT_MAX;
+	uint8_t buf[3];
+	int  new_section = 0;
 
-  // Write end of block
-  if (mode)
-    return write_intel_packet(f, 0, 0x0000, 0x01, data);
+	// write end block
+	if(!size && !addr && !type && !data && !page)
+		return hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
 
-  // Write page number
-  if (pn != flash_page) 
-  {
-    pn = flash_page;
-    buf[0] = MSB(pn);
-    buf[1] = LSB(pn);
-    bytes_written = write_intel_packet(f, 2, 0x0000, 0x02, buf);
-  }
-  // Write data block
-  for (i = 0; i < bytes_to_write; i += 32) 
-  {
-    bytes_written = write_intel_packet(f, 32, (uint16_t)(flash_address + i), 0x00, data + i);
-  }
+	// new section (FLASH OS only)
+	if(old_flag == 0x80 && type == 0x00)
+		new_section = !0;
 
-  return bytes_written;
+	if(old_flag != type)
+	{
+		old_flag = type;
+		bytes_written += hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
+	}
+
+	// write page
+	if(!addr && !page && !new_section)
+	{
+		// no packet if default address (0) & page (0)
+	}
+	else
+	{
+		buf[0] = page >> 8;
+		buf[1] = page & 0xff;
+		bytes_written += hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
+		new_section = 0;
+	}
+
+	// write a block (=page)
+	for(i = 0; i < n * PKT_MAX; i += PKT_MAX)
+		bytes_written += hex_packet_write(f, PKT_MAX, addr + i, HEX_DATA, data + i);
+	if(r > 0)
+		bytes_written += hex_packet_write(f, r, addr + i, HEX_DATA, data + i);
+	
+	return bytes_written;
 }

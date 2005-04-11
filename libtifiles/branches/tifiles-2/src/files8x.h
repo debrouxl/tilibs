@@ -84,10 +84,10 @@ typedef struct
  **/
 typedef struct 
 {
-  uint16_t	offset;
+  uint16_t	addr;
   uint16_t	page;
   uint8_t	flag;
-  uint32_t	length;
+  uint16_t	size;
   uint8_t*	data;
 
 } Ti8xFlashPage;

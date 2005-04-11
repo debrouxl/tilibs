@@ -4,6 +4,11 @@ Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
 
 Log:
 
+- 10/04/2005, version 0.0.2: roms
+	- rewritten TI8X+ FLASH support
+
+	Add TiGroup (*.tig) support which is a kind of file container.
+
 - 26/03/2005, version 0.0.1: roms
 	- error management left untouched
 	- logging reworked (use glib)
@@ -24,9 +29,6 @@ Log:
 	- tifiles_ungroup_file now returns a list of files 
 	  extracted from group file
 	- fixed few memory allocation issues with ValGrind.
-	
-	Pb with TI8x write flash: set fixed size block (0x80) or not ?!
-	Add TiGroup (*.tig) support which is a kind of file container.
 	
 ====[ Version II ]====
 

@@ -217,8 +217,10 @@ TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
     int i;
 
     for(i = 0; i < content->num_pages; i++)
-	free(content->pages[i].data);
-    free(content->pages);
+		free(content->pages[i].data);
+
+	// fault
+    //free(content->pages);
 }
 
 /***********/
@@ -468,15 +470,7 @@ TIEXPORT int TICALL ti8x_file_read_backup(const char *filename, Ti8xBackup *cont
 TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
 {
   FILE *f, *file;
-  int i;
-  uint32_t block_size;
-  int num_blocks;
-  int mask_mode;
-  int ret;
-  uint16_t flash_address;
-  uint16_t flash_page;
-  uint8_t flag = 0x80;
-  uint8_t buf[256];
+  int i, ret;
   char signature[9];
 
   if (!tifiles_file_is_ti(filename))
@@ -511,71 +505,41 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
   fread_byte(f, &(content->data_type));
   fskip(f, 24);
   fread_long(f, &content->data_length);
+
+  // reset/initialize block reader
+  hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
   content->pages = NULL;
 
-  // determine block size
-  if (content->data_type == TI83p_AMS) 
-  {
-    block_size = 256;
-    mask_mode = MODE_AMS;
-  } 
-  else if (content->data_type == TI83p_APPL) 
-  {
-    block_size = 128;
-    mask_mode = MODE_APPS;
-  } 
-  else
-    return ERR_INVALID_FILE;
-
-  // compute approximative number of pages
-  num_blocks = (content->data_length / 77) / (block_size >> 5);
-  content->pages = (Ti8xFlashPage *) calloc(num_blocks + 10,
-					    sizeof(Ti8xFlashPage));
+  content->pages = (Ti8xFlashPage *) calloc(20, sizeof(Ti8xFlashPage *));
   if (content->pages == NULL)
-    return ERR_MALLOC;
+	return ERR_MALLOC;
 
-  // reset block reader by passing mode=0
-  intelhex_read_data_block(file, &flash_address, &flash_page, NULL, 0);
-  flag = 0x80;			// OS only
-  for (i = 0;; i++) 
-  {
-    ret = intelhex_read_data_block(file, &flash_address, &flash_page,
-			  buf, mask_mode);
-
-    if (mask_mode & MODE_AMS) 
+  // read FLASH pages
+	for(i = 0, ret = 0; !ret; i++)
 	{
-      if (i == 0) 
-	  {
-		// first block is header
-		flag = 0x80;
-		flash_address = flash_page = 0;
-      }
-      if (i == 1) 
-	  {
-		// other blocks are data
-		flag = 0x00;
-      }
-      if (ret == 3) 
-	  {
-		// last block is signature
-		flag = 0x80;
-		flash_address = flash_page = 0;	// fix quirk in IntelHex module
-      }
-    }
-    if (ret < 0)
-      break;
+		uint16_t size;
+		uint16_t addr;
+		uint16_t page;
+		uint8_t flag = 0x80;
+		uint8_t data[PAGE_SIZE];  
 
-    content->pages[i].offset = flash_address;
-    content->pages[i].page = flash_page;
-    content->pages[i].flag = flag;
-    content->pages[i].length = block_size;
+		ret = hex_block_read(file, &size, &addr, &flag, data, &page);
+/*
+		content->pages = (Ti8xFlashPage *) realloc(content->pages, i+1);
+		if (content->pages == NULL)
+			return ERR_MALLOC;
+*/
+		content->pages[i].data = (uint8_t *) calloc(PAGE_SIZE, 1);
+		memset(content->pages[i].data, 0xff, PAGE_SIZE);
+		if (content->pages[i].data == NULL)
+			return ERR_MALLOC;
 
-    content->pages[i].data = (uint8_t *) calloc(block_size, 1);
-    if (content->pages[i].data == NULL)
-      return ERR_MALLOC;
-
-    memcpy(content->pages[i].data, buf, block_size);
-  }
+		content->pages[i].addr = addr;
+		content->pages[i].page = page;
+		content->pages[i].flag = flag;
+		content->pages[i].size = size;
+		memcpy(content->pages[i].data, data, size);		
+	} 
   content->num_pages = i;
 
   fclose(f);
@@ -836,6 +800,7 @@ TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *conte
   }
   file = f;
 
+  // header
   fwrite_8_chars(f, "**TIFL**");
   fwrite_byte(f, content->revision_major);
   fwrite_byte(f, content->revision_minor);
@@ -852,19 +817,20 @@ TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *conte
   fwrite_byte(f, content->data_type);
   for (j = 0; j < 24; j++)
     fputc(0, f);
-
-  // approximative value, need to be fixed !
-  //content->data_length = content->num_pages * (content->pages[0].length >> 5) * 77;
   fwrite_long(f, content->data_length);
 
   // data
   for (i = 0; i < content->num_pages; i++)
-    bytes_written += intelhex_write_data_block(file, content->pages[i].offset,
-		     content->pages[i].page, content->pages[i].data, 0);
+  {
+	  bytes_written += hex_block_write(f, 
+		  content->pages[i].size, content->pages[i].addr,
+		  content->pages[i].flag, content->pages[i].data, 
+		  content->pages[i].page);
+  }
 
   // final block
-  bytes_written += intelhex_write_data_block(file, 0, 0, 0, !0);  
-  printf("bytes_written = %06x (%i) \n", bytes_written, bytes_written);
+  bytes_written += hex_block_write(file, 0, 0, 0, NULL, 0);  
+  //printf("bytes_written = %06x (%i) \n", bytes_written, bytes_written);
 
   fclose(f);
 

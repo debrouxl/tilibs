@@ -32,7 +32,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBTIFILES_VERSION "0.0.1"
+# define LIBTIFILES_VERSION "0.0.2"
 #else
 # define LIBTIFILES_VERSION VERSION
 #endif

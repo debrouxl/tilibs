@@ -161,7 +161,9 @@ int main(int argc, char **argv)
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
+#ifndef __WIN32__
 	free(msg); //bug
+#endif
 	printf("--\n");
 
 	// test type2str.c
@@ -279,7 +281,9 @@ int main(int argc, char **argv)
 	test_ti84p_regular_support();
 	test_ti84p_group_support();
 	test_ti84p_ungroup_support();	
-	test_ti84p_flash_support();  
+	test_ti84p_flash_support();
+
+	return 0;
 
 	// TI86 support
 	change_dir(BUILD_PATH("ti86"));
@@ -475,21 +479,19 @@ static int test_ti84p_flash_support()
   Ti8xFlash content;
 
   printf("--> Testing TI84+ flash support...\n");
-
+/*
   ti8x_file_display(BUILD_PATH("ti84p/chembio.8Xk"));
   ti8x_file_read_flash(BUILD_PATH("ti84p/chembio.8Xk"), &content);
   ti8x_file_write_flash(BUILD_PATH("ti84p/chembio.8Xk_"), &content);
   ti8x_content_free_flash(&content);
   compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
 
-  return 0;
+  return 0;*/
 
-  ti8x_file_display("./ti83+/base112.8Xu");
-  //ti8x_read_flash_file("./ti83+/base112.8Xu", &content);
-  //hexdump(content.pages[0].data, 256);
-  //hexdump(content.pages[content.num_pages-1].data, 256);
-  //ti8x_write_flash_file("./ti83+/base112.8Xu_", &content);
-  //compare_files("./ti83+/base112.8Xu", "./ti83+/base112.8Xu_");
+  ti8x_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
+  ti8x_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
+  ti8x_file_write_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"), &content);
+  compare_files(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"));
 
   return 0;
 }

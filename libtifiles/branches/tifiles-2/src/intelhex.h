@@ -24,17 +24,9 @@
 
 #include "macros.h"
 
-#define MODE_APPS              (1<<11)	// Send a (free) FLASH application
-#define MODE_AMS               (1<<12)	// Send an Operating System (AMS)
+#define PAGE_SIZE	16384
 
-int intelhex_read_data_block(
-			FILE * f,
-		    uint16_t * flash_address, uint16_t * flash_page,
-		    uint8_t * data, int mode);
-
-int intelhex_write_data_block(
-			 FILE * f,
-		     uint16_t flash_address, uint16_t flash_page,
-		     uint8_t * data, int mode);
+int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page);
+int hex_block_write(FILE *f, uint16_t size, uint16_t  addr, uint8_t  type, uint8_t *data, uint16_t  page);
 
 #endif
