@@ -284,8 +284,6 @@ int main(int argc, char **argv)
 	test_ti84p_ungroup_support();	
 	test_ti84p_flash_support();
 
-	return 0;
-
 	// TI86 support
 	change_dir(BUILD_PATH("ti86"));
 	test_ti86_backup_support();
@@ -514,7 +512,6 @@ static int test_ti84p_flash_support()
   ti8x_content_free_flash(&content);
   compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
 
-  exit(-1);
   return 0;
 
   ti8x_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));

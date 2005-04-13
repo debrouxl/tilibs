@@ -510,7 +510,8 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
   hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
   content->pages = NULL;
 
-  content->pages = (Ti8xFlashPage *) calloc(100, sizeof(Ti8xFlashPage *));
+  // we should determine the number of pages, to do...
+  content->pages = (Ti8xFlashPage *) calloc(50, sizeof(Ti8xFlashPage *));
   if (content->pages == NULL)
 	return ERR_MALLOC;
 
@@ -524,11 +525,6 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
 		uint8_t data[PAGE_SIZE];  
 
 		ret = hex_block_read(file, &size, &addr, &flag, data, &page);
-/*
-		content->pages = (Ti8xFlashPage *) realloc(content->pages, i+1);
-		if (content->pages == NULL)
-			return ERR_MALLOC;
-*/
 
 		content->pages[i].data = (uint8_t *) calloc(PAGE_SIZE, 1);
 		memset(content->pages[i].data, 0xff, PAGE_SIZE);
