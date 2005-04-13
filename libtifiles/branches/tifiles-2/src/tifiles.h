@@ -259,8 +259,8 @@ extern "C" {
 
   
 
-  // special for win32 (DLL partition -> memory violation)
-#ifdef __WIN32__
+  // special for MSVC (DLL partition -> memory violation, why ?!)
+#if defined(__WIN32__) && !defined(__MINGW32__)
   TIEXPORT void* TICALL tifiles_calloc(unsigned int nmemb, unsigned int size);
   TIEXPORT void* TICALL tifiles_malloc(unsigned int size);
   TIEXPORT void  TICALL tifiles_free(void *ptr);

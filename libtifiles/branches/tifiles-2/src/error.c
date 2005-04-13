@@ -102,8 +102,6 @@ TIEXPORT int TICALL tifiles_error_get(TiFileError number, char **message)
     break;
 
 	default:
-		//tifiles_warning(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
-		//*message = g_strconcat(_("Error code not found in the list.\nThis is a bug. Please report it.\n."));
 		return number;
     break;
 	}

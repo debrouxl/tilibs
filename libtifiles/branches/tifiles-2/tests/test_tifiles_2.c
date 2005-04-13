@@ -164,9 +164,7 @@ int main(int argc, char **argv)
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
-#ifndef __WIN32__
-	free(msg); //bug
-#endif
+	tifiles_free(msg);
 	printf("--\n");
 
 	// test type2str.c
@@ -516,6 +514,7 @@ static int test_ti84p_flash_support()
   ti8x_content_free_flash(&content);
   compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
 
+  exit(-1);
   return 0;
 
   ti8x_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));

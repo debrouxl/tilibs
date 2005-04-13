@@ -25,6 +25,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "stdints.h"
 #include "macros.h"
 #include "intelhex.h"
@@ -160,9 +162,6 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 			new_page = 0;
 		}
 
-		//if(pkt_addr == 0x7fe0 && flash_page == 0x1d)
-		//printf("bar\n");
-
 		// returned values
 		*addr = flash_addr;
 		*type = flag;
@@ -180,7 +179,6 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_END: 
 			// new section
-			printf("pkt_size = %04x\n", pkt_size);
 			flash_addr = 0;
 			flash_page = 0;
 			flag ^= 0x80;
