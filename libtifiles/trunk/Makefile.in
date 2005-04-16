@@ -72,6 +72,7 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 GENCAT = @GENCAT@
+GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
 HAVE_ASPRINTF = @HAVE_ASPRINTF@
@@ -87,6 +88,7 @@ INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
@@ -168,7 +170,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # Subdirectories to scan
-SUBDIRS = build intl po src #tests
+SUBDIRS = build intl po src tests
 
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO
