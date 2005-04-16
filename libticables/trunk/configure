@@ -26617,6 +26617,10 @@ _ACEOF
 
 
 
+
+case "$host" in
+  arm*-*-linux-*)        ;;
+  *)
 # Extract the first word of "libusb-config", so it can be a program name with args.
 set dummy libusb-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -26667,6 +26671,7 @@ else
 fi
 
 
+esac
 
 # Checks for header files.
 

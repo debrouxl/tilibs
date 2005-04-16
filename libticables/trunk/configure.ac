@@ -58,6 +58,10 @@ AC_PROG_AWK
 # Checks for libraries.
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.13.1)
+
+case "$host" in
+  arm*-*-linux-*)        ;;
+  *)
 AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
 if test x$LIBUSB_CONFIG = xyes; then
   LIBUSB_CFLAGS=`libusb-config --cflags`
@@ -69,6 +73,7 @@ else
 fi
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
+esac
 
 # Checks for header files.
 AC_HEADER_DIRENT
