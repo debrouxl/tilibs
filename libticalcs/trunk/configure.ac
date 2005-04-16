@@ -78,7 +78,6 @@ AC_C_CONST
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
-AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup])
 
