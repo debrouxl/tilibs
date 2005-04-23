@@ -135,6 +135,7 @@ case "$host" in
   mips-*-linux-*)        ARCH="-D__MIPS__ -D__LINUX__" ;;
   mipsel-*-linux-*)      ARCH="-D__MIPS__ -D__LINUX__" ;;
   powerpc-*-linux-*)     ARCH="-D__PPC__  -D__LINUX__" ;;
+  powerpc-apple-darwin*) ARCH="-D__PPC__  -D__MACOSX__" ;;
   s390-*-linux-*)        ARCH="-D__LINUX__" ;;
   sh-*-linux-*)          ARCH="-D__LINUX__" ;;
   sparc-*-linux-*)       ARCH="-D__SPARC__ -D__LINUX__" ;;
