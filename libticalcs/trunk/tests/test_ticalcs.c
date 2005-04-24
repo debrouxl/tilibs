@@ -46,11 +46,11 @@ TicalcFncts      tc; // Functions which drive a calculator
 TicalcInfoUpdate iu; // Functions to do the refresh of progress bar & label
 
 /* Update functions */
-void ilp_start() { }
-void ilp_stop() { }
-void ilp_refresh() { }
-void ilp_pbar() { }
-void ilp_label() { }
+void ilp_start(void) { }
+void ilp_stop(void) { }
+void ilp_refresh(void) { }
+void ilp_pbar(void) { }
+void ilp_label(void) { }
 
 /* Error function */
 void print_lc_error(int errnum)
@@ -65,6 +65,9 @@ int main(int argc, char **argv)
 {
   int err;
 
+  ticable_init();
+  ticalc_init();
+
   /* 
      Initialize the libTIcable library 
   */
@@ -74,7 +77,11 @@ int main(int argc, char **argv)
   lp.port    = SERIAL_PORT_2;
   lp.method  = IOM_AUTO;
   ticable_set_param(&lp);
-  ticable_set_cable(LINK_SER, &lc);
+  if((err=ticable_set_cable(LINK_SER, &lc))) 
+  {
+		print_lc_error(err);
+                return -1;
+  }
 
   /* 
      Initialize the libTIcalc library 
@@ -98,10 +105,21 @@ int main(int argc, char **argv)
       return -1;
     }
 
+  DISPLAY("Wait 1 second...\n");
+#if defined(__WIN32__) && !defined(__MINGW32__)
+	Sleep(1000);
+#else
+	sleep(1);
+#endif
+
   // Check ready
-  fprintf(stdout, "Test if calc is ready...\n");
+  fprintf(stdout, "Test if calc is ready... ");
   err = tc.isready();
+  fprintf(stdout, "%s (%i)\n", err ? "KO" : "OK", err);
+
+  //fprintf(stdout, "Test screendump...\n");
   //err = tc.screendump(&bitmap, FULL_SCREEN, &sc);
+  
   fprintf(stdout, "\n");
 
   // Close port

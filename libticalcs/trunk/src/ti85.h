@@ -48,4 +48,6 @@ int ti85_get_idlist(char *idlist);
 
 int ti85_dump_rom(const char *filename, int mask_mode);
 
+int ti85_recv_var_2(char *filename, int mask_mode, TiVarEntry * ve);
+
 #endif

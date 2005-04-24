@@ -310,10 +310,6 @@ SOURCE=..\..\src\Ti83.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Ti83p.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\Ti85.h
 # End Source File
 # Begin Source File

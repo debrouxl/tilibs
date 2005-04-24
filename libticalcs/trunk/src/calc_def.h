@@ -150,6 +150,9 @@ typedef struct {
 
   // Added here for maintain structure alignment
   int is_flash;
+
+  int (*recv_var_2) (char *filename, int mode, TiVarEntry * ve);
+
 } TicalcFunctions;
 typedef TicalcFunctions TicalcFncts;
 

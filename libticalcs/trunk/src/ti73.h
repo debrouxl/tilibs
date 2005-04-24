@@ -51,4 +51,6 @@ int ti73_dump_rom(const char *filename, int mask_mode);
 int ti73_set_clock(const TicalcClock * clock, int mode);
 int ti73_get_clock(TicalcClock * clock, int mode);
 
+int ti73_recv_var_2(char *filename, int mask_mode, TiVarEntry * ve);
+
 #endif

@@ -423,6 +423,11 @@ int ti83_send_var(const char *filename, int mask_mode, char **actions)
   return 0;
 }
 
+int ti83_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
+{
+	return ERR_VOID_FUNCTION;
+}
+
 int ti83_send_flash(const char *filename, int mask_mode)
 {
   return ERR_VOID_FUNCTION;

@@ -51,4 +51,6 @@ int ti89_dump_rom(const char *filename, int mask_mode);
 int ti89_set_clock(const TicalcClock * clock, int mode);
 int ti89_get_clock(TicalcClock * clock, int mode);
 
+int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * ve);
+
 #endif

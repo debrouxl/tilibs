@@ -231,6 +231,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->get_idlist = ti89_get_idlist;
     calc->get_clock = ti89_get_clock;
     calc->set_clock = ti89_set_clock;
+
+	calc->recv_var_2 = ti89_recv_var_2;
     break;
 
   case CALC_TI86:
@@ -252,6 +254,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti86_send_flash;
     calc->recv_flash = ti86_recv_flash;
     calc->get_idlist = ti86_get_idlist;
+
+	calc->recv_var_2 = ti86_recv_var_2;
     break;
 
   case CALC_TI85:
@@ -273,6 +277,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti85_send_flash;
     calc->recv_flash = ti85_recv_flash;
     calc->get_idlist = ti85_get_idlist;
+
+	calc->recv_var_2 = ti85_recv_var_2;
     break;
 
   case CALC_TI83:
@@ -294,6 +300,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti83_send_flash;
     calc->recv_flash = ti83_recv_flash;
     calc->get_idlist = ti83_get_idlist;
+
+	calc->recv_var_2 = ti83_recv_var_2;
     break;
 
   case CALC_TI82:
@@ -315,6 +323,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti82_send_flash;
     calc->recv_flash = ti82_recv_flash;
     calc->get_idlist = ti82_get_idlist;
+
+	calc->recv_var_2 = ti82_recv_var_2;
     break;
 
   case CALC_TI84P:
@@ -338,6 +348,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti73_send_flash;
     calc->recv_flash = ti73_recv_flash;
     calc->get_idlist = ti73_get_idlist;
+
+	calc->recv_var_2 = ti73_recv_var_2;
     break;
 
   default:

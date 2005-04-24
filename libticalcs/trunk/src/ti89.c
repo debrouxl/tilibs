@@ -547,6 +547,68 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
   return 0;
 }
 
+// automatically build filename and put it into 'filename'.
+// mask_mode is unused
+// 'entry' contains informations
+int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
+{
+	static Ti9xRegular *content;
+	TiVarEntry *ve;
+	uint32_t unused;
+	uint8_t varname[20], utf8[35];
+	char *fn;
+
+	printl2(0, _("Receiving variable(s)...\n"));
+
+	// create variable content and fills
+    content = ti9x_create_regular_content();
+
+	content->calc_type = ticalcs_calc_type;
+	content->num_entries = 1;
+	content->entries = (TiVarEntry *) tifiles_calloc(1, sizeof(TiVarEntry));	
+	strcpy(content->comment, "Single file received by TiLP");
+
+	// alias
+	ve = &(content->entries[0]);
+
+	// open cable
+	LOCK_TRANSFER();
+	TRYF(cable->open());
+	update_start();
+
+	// receive packets
+	TRYF(ti89_recv_VAR(&ve->size, &ve->type, ve->name));
+	TRYF(ti89_send_ACK());
+
+	tifiles_translate_varname(varname, utf8, entry->type);
+	sprintf(update->label_text, _("Receiving '%s'"), utf8);
+	update_label();
+
+	TRYF(ti89_send_CTS());
+	TRYF(ti89_recv_ACK(NULL));
+
+	ve->data = tifiles_calloc(ve->size + 4, 1);
+	TRYF(ti89_recv_XDP(&unused, ve->data));
+	memmove(ve->data, ve->data + 4, ve->size);
+	TRYF(ti89_send_ACK());
+
+	TRYF(ti89_recv_EOT());
+	TRYF(ti89_send_ACK());
+
+	// close cable
+	TRYF(cable->close());
+	UNLOCK_TRANSFER();
+    
+	// write file content
+    ti9x_write_regular_file(NULL, content, &fn);
+    strcpy(filename, fn);
+    tifiles_free(fn);
+    ti9x_free_regular_content(content);
+	memcpy(entry, ve, sizeof(TiVarEntry));
+
+	return 0;
+}
+
 int ti89_send_flash(const char *filename, int mask_mode)
 {
   Ti9xFlash content = { 0 };
