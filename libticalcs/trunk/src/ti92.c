@@ -472,8 +472,7 @@ int ti92_recv_var_2(char *filename, int mask_mode, TiVarEntry *entry)
 {
 	Ti9xRegular *content;
 	uint32_t unused;
-	uint8_t varname[20], utf8[35];
-	char *fn;
+	uint8_t utf8[35];
 	int nvar, err;
 
 	printl2(0, _("Receiving variable(s)...\n"));
@@ -504,7 +503,7 @@ int ti92_recv_var_2(char *filename, int mask_mode, TiVarEntry *entry)
 		else
 			content->num_entries = nvar;
 
-		tifiles_translate_varname(varname, utf8, ve->type);
+		tifiles_translate_varname(ve->name, utf8, ve->type);
 		sprintf(update->label_text, _("Receiving '%s'"), utf8);
 		update_label();
 
@@ -527,14 +526,16 @@ exit:
 	if(nvar > 1)
 	{
 		strcpy(content->comment, "Group file received by TiLP");
+		strcat(filename, "group.92g");
 		ti9x_write_regular_file(filename, content, NULL);
 	}
 	else
 	{
 		strcpy(content->comment, "Single file received by TiLP");
-		ti9x_write_regular_file(NULL, content, &fn);
-		strcpy(filename, fn);
-		tifiles_free(fn);
+		strcat(filename, content->entries[0].name);
+		strcat(filename, ".");
+		strcat(filename, tifiles_vartype2file(content->entries[0].type));
+		ti9x_write_regular_file(filename, content, NULL);
 	}
     ti9x_free_regular_content(content);
 
