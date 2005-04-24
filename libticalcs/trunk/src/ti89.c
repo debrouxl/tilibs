@@ -552,7 +552,7 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
 // 'entry' contains informations
 int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 {
-	static Ti9xRegular *content;
+	Ti9xRegular *content;
 	TiVarEntry *ve;
 	uint32_t unused;
 	uint8_t varname[20], utf8[35];
@@ -570,6 +570,7 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 
 	// alias
 	ve = &(content->entries[0]);
+	strcpy(ve->folder, "main");
 
 	// open cable
 	LOCK_TRANSFER();
@@ -580,7 +581,7 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 	TRYF(ti89_recv_VAR(&ve->size, &ve->type, ve->name));
 	TRYF(ti89_send_ACK());
 
-	tifiles_translate_varname(varname, utf8, entry->type);
+	tifiles_translate_varname(varname, utf8, ve->type);
 	sprintf(update->label_text, _("Receiving '%s'"), utf8);
 	update_label();
 
@@ -604,7 +605,10 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
     strcpy(filename, fn);
     tifiles_free(fn);
     ti9x_free_regular_content(content);
-	memcpy(entry, ve, sizeof(TiVarEntry));
+	if(entry != NULL)
+		memcpy(entry, ve, sizeof(TiVarEntry));
+
+	return 0;
 
 	return 0;
 }

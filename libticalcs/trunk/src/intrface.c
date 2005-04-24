@@ -205,6 +205,8 @@ TIEXPORT void TICALL ticalc_set_calc(TicalcType type, TicalcFncts * calc)
     calc->send_flash = ti92_send_flash;
     calc->recv_flash = ti92_recv_flash;
     calc->get_idlist = ti92_get_idlist;
+
+	calc->recv_var_2 = ti92_recv_var_2;
     break;
 
   case CALC_V200:
