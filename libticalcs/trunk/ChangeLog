@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 24/04/2005, version 4.5.9: roms
+	Adding new function for non-silent variable receiving support.
+	Needed for TiEmu (receive file).
+	
 - 05/03/2005, version 4.5.8: roms
 	Added gcc 4.0 -fvisibility flag support.
 	

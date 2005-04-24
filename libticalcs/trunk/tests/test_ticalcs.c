@@ -113,13 +113,23 @@ int main(int argc, char **argv)
 #endif
 
   // Check ready
+#if 1
   fprintf(stdout, "Test if calc is ready... ");
   err = tc.isready();
   fprintf(stdout, "%s (%i)\n", err ? "KO" : "OK", err);
 
   //fprintf(stdout, "Test screendump...\n");
   //err = tc.screendump(&bitmap, FULL_SCREEN, &sc);
-  
+#else
+  // Check non-silent recv var
+  {
+      char fn[1024];
+      TiVarEntry ve;
+      
+      err = tc.recv_var_2(fn, 0, &ve);
+      fprintf(stdout, "<%s> %i\n", fn, err);
+  }  
+#endif
   fprintf(stdout, "\n");
 
   // Close port
