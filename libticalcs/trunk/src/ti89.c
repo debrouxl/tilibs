@@ -553,62 +553,72 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
 int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 {
 	Ti9xRegular *content;
-	TiVarEntry *ve;
 	uint32_t unused;
 	uint8_t varname[20], utf8[35];
 	char *fn;
+	int nvar, err;
 
 	printl2(0, _("Receiving variable(s)...\n"));
-
-	// create variable content and fills
-    content = ti9x_create_regular_content();
-
-	content->calc_type = ticalcs_calc_type;
-	content->num_entries = 1;
-	content->entries = (TiVarEntry *) tifiles_calloc(1, sizeof(TiVarEntry));	
-	strcpy(content->comment, "Single file received by TiLP");
-
-	// alias
-	ve = &(content->entries[0]);
-	strcpy(ve->folder, "main");
 
 	// open cable
 	LOCK_TRANSFER();
 	TRYF(cable->open());
 	update_start();
 
+	// create variable content and fills
+    content = ti9x_create_regular_content();
+	content->calc_type = ticalcs_calc_type;
+
 	// receive packets
-	TRYF(ti89_recv_VAR(&ve->size, &ve->type, ve->name));
-	TRYF(ti89_send_ACK());
+	for(nvar = 1;; nvar++)
+	{
+		TiVarEntry *ve;
 
-	tifiles_translate_varname(varname, utf8, ve->type);
-	sprintf(update->label_text, _("Receiving '%s'"), utf8);
-	update_label();
+		content->entries = (TiVarEntry *) tifiles_realloc(content->entries, nvar * sizeof(TiVarEntry));
+		ve = &(content->entries[nvar-1]);
+		strcpy(ve->folder, "main");	
 
-	TRYF(ti89_send_CTS());
-	TRYF(ti89_recv_ACK(NULL));
+		err = ti89_recv_VAR(&ve->size, &ve->type, ve->name);
+		TRYF(ti89_send_ACK());
 
-	ve->data = tifiles_calloc(ve->size + 4, 1);
-	TRYF(ti89_recv_XDP(&unused, ve->data));
-	memmove(ve->data, ve->data + 4, ve->size);
-	TRYF(ti89_send_ACK());
+		if(err == ERR_EOT)	// end of transmission
+			goto exit;
+		else
+			content->num_entries = nvar;
 
-	TRYF(ti89_recv_EOT());
-	TRYF(ti89_send_ACK());
+		tifiles_translate_varname(varname, utf8, ve->type);
+		sprintf(update->label_text, _("Receiving '%s'"), utf8);
+		update_label();
 
+		TRYF(ti89_send_CTS());
+		TRYF(ti89_recv_ACK(NULL));
+
+		ve->data = tifiles_calloc(ve->size + 4, 1);
+		TRYF(ti89_recv_XDP(&unused, ve->data));
+		memmove(ve->data, ve->data + 4, ve->size);
+		TRYF(ti89_send_ACK());
+	}
+
+exit:
 	// close cable
 	TRYF(cable->close());
 	UNLOCK_TRANSFER();
     
 	// write file content
-    ti9x_write_regular_file(NULL, content, &fn);
-    strcpy(filename, fn);
-    tifiles_free(fn);
+	nvar--;
+	if(nvar > 1)
+	{
+		strcpy(content->comment, "Group file received by TiLP");
+		ti9x_write_regular_file(filename, content, NULL);
+	}
+	else
+	{
+		strcpy(content->comment, "Single file received by TiLP");
+		ti9x_write_regular_file(NULL, content, &fn);
+		strcpy(filename, fn);
+		tifiles_free(fn);
+	}
     ti9x_free_regular_content(content);
-	if(entry != NULL)
-		memcpy(entry, ve, sizeof(TiVarEntry));
-
-	return 0;
 
 	return 0;
 }
