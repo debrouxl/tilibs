@@ -4,9 +4,24 @@ To do:
 	- USB pass-thru support
 	- bug with API mode (Linux & Windows): may not work with some calcs ?!
 
-Checking: valgrind & splint
+
 	
 Log:
+
+- 27/04/2005, version 0.0.1: roms
+	- error management left untouched
+	- logging reworked (use glib)
+	- a single public header with functions & defs, others are private
+	- slightly fixed namespace sheme
+	- use strong types such as TiCalcModel, ...
+	- glib is used for logging (not very much for strings)
+	- documentation system has been changed
+	- functions pointers have been removed
+	- library has been fully documented
+	- decreased number of headers to include (1 or 3)
+	- 
+	
+====[ Version II ]====
 
 - 05/03/2005, version 3.8.9: roms
 	Added gcc 4.0 -fvisibility flag support.

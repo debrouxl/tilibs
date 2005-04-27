@@ -3,15 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 3.8.9, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiCables, 0.0.1, [tilp-users@lists.sourceforge.net])
 
-MAJOR_VERSION=3
-MINOR_VERSION=8
-MICRO_VERSION=9
-
-LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
-LT_REVISION=$MICRO_VERSION
-LT_AGE=$MINOR_VERSION
+dnl Release versioning info
+VERSION="0.0.1"
+AC_SUBST(VERSION)
 
 dnl Library version.
 dnl current:revision:age
@@ -20,6 +16,10 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
+LT_CURRENT=0
+LT_REVISION=1
+LT_AGE=0
+LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -33,13 +33,14 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
+  docs/Makefile
   intl/Makefile
   po/Makefile.in
   src/Makefile
   tests/Makefile
   libticables.lsm
   libticables.spec
-  ticables.pc
+  ticables-2.pc
 ])
 
 # Setup libtool.

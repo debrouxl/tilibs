@@ -1,0 +1,15 @@
+tifiles.h : Enumerations, structures and type definitions
+tifiles.c : Entry Points
+error.c : General Functions
+malloc.c : Memory Allocation
+type2str.c : Types / Strings conversions
+transcode.c : Variable name translation and charsets
+filetypes.c : File type checking
+misc.c : Miscelaneous
+typesxx.c : Types / Strings conversions
+filesxx.c : Operations on TI files (single/group only)
+grouped.c : Grouping/Ungrouping of TI files
+files8x.h : Structure definitions for TI9x support
+files8x.c : TI9x variables and files manipulation
+files9x.h : Structure definitions for TI8x support
+files9x.c : TI8x variables and files manipulation

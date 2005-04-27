@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: TiCables
 Description: TI's link cable management library
 Version: @VERSION@
-Libs: -L${libdir} -lticables
+Libs: -L${libdir} -lticables-2
 Cflags: -I${includedir}/tilp
 
