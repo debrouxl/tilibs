@@ -2,7 +2,8 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -556,6 +557,8 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 	uint32_t unused;
 	uint8_t utf8[35];
 	int nvar, err;
+    char tipath[18];
+    char *tiname;
 
 	printl2(0, _("Receiving variable(s)...\n"));
 
@@ -577,13 +580,26 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
 		ve = &(content->entries[nvar-1]);
 		strcpy(ve->folder, "main");	
 
-		err = ti89_recv_VAR(&ve->size, &ve->type, ve->name);
+		err = ti89_recv_VAR(&ve->size, &ve->type, tipath);
 		TRYF(ti89_send_ACK());
 
 		if(err == ERR_EOT)	// end of transmission
 			goto exit;
 		else
 			content->num_entries = nvar;
+
+		// from Christian (TI can send varname or fldname/varname)
+        if ((tiname = strchr(tipath, '\\')) != NULL) 
+		{
+			*tiname = '\0';
+            strcpy(ve->folder, tipath);
+            strcpy(ve->name, tiname + 1);
+        }
+        else 
+		{
+            strcpy(ve->folder, "main");
+            strcpy(ve->name, tipath);
+        }
 
 		tifiles_translate_varname(ve->name, utf8, ve->type);
 		sprintf(update->label_text, _("Receiving '%s'"), utf8);
