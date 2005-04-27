@@ -341,10 +341,5 @@ int slv_register_cable_1(TicableLinkCable * lc)
   lc->probe = slv_probe;
   lc->check = slv_check;
 
-  lc->set_red_wire = NULL;
-  lc->set_white_wire = NULL;
-  lc->get_red_wire = NULL;
-  lc->get_white_wire = NULL;
-
   return 0;
 }

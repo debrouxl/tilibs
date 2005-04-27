@@ -8,6 +8,10 @@ Checking: valgrind & splint
 	
 Log:
 
+- 27/04/2005, version 3.9.0: roms
+	Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead.
+	Merged Christian "Christian Walther" <cwalther@gmx.ch> patches for Mac OS-X.
+
 - 05/03/2005, version 3.8.9: roms
 	Added gcc 4.0 -fvisibility flag support.
 	Fixed getting of current handle in VTi link support with MinGW.

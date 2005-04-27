@@ -304,6 +304,9 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 	ret = linux_map_io((TicableMethod)method, port);
 	if(ret)
 		return ret;
+
+	// set fields to default values
+	nul_register_cable(lc);
 	
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
