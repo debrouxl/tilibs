@@ -2,7 +2,8 @@
 /* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2004  Romain Lievin, Julien Blache
+ *  Copyright (c) 2005, Christian Walther (patches for Mac OS-X port)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,6 +55,10 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 	// depending on link type, do some checks
 	switch(type)
 	{
+	case LINK_NUL:
+        *method |= IOM_NULL | IOM_OK;
+        break;                
+
 	case LINK_TGL:
 		if(resources & IO_API) {
 			*method |= IOM_API | IOM_OK;
@@ -73,7 +78,7 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		printl1(2, "bad argument (invalid link cable).\n");
+		printl1(2, "bad argument to macos_map_io (invalid port %d).\n", port);
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
@@ -117,10 +122,17 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 	ret = macos_map_io((TicableMethod)method, port);
 	if(ret)
 		return ret;
+
+	// set fields to default values
+	nul_register_cable(lc);
 	
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
     	switch (type) {
+		case LINK_NUL:
+                nul_register_cable(lc);
+                break;
+
     	case LINK_TGL:
     		if(port != OSX_SERIAL_PORT)
 			return ERR_INVALID_PORT;
@@ -136,7 +148,7 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		break;*/
 
     	default:
-	      	printl1(2, _("invalid argument (bad cable)."));
+	      	printl1(2, _("bad argument to macos_register_cable (invalid cable type %d).\n", type);
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}
