@@ -1,0 +1,29 @@
+[Main]
+Name=ticable_set_io_address
+Type=Function
+Header=cabl_int.h
+Definition=void ticable_set_io_address(unsigned int address)
+
+[Parameters]
+address : a valid I/O address to use.
+
+[Summary]
+Set the I/O address to use for link cable access.
+
+[Description]
+Be careful: an incorrect value can provoke strange behaviour, mouse lockup or
+even worse !
+
+The address parameter contains a valid I/O port address. It can be 0x378 for
+the first parallel port (LPT1 or /dev/lp0), or 0x3f8 (COM1), or ...
+
+Usually, this field is left to 0 unless you specify USER_PORT as an abstract 
+port to use. Indeed, the device is automatically determined by library.
+
+The change will come into effect on the next call to @ticable_set_cable@.
+
+Note: if you need to change more than one link cable parameter at a time, you
+should consider the @ticable_set_param@ function.
+
+[See also]
+@ticable_get_io_address@

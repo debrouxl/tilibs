@@ -1,0 +1,20 @@
+[Main]
+Name=TicableLinkType
+Type=Enum
+Header=cabl_def.h
+Definition=enum TicableLinkType
+
+[Fields]
+LINK_NONE : No cable (error). 
+LINK_TGL : TI's GrayLink cable.
+LINK_SER : TI's BlackLink or home-made serial cable.
+LINK_PAR : home-made parallel cable.
+LINK_AVR : AVRlink cable (http://tilp.info).
+LINK_VTL : generic virtual link (unused).
+LINK_TIE : TiEmu virtual link.
+LINK_VTI : VTi virtual link.
+LINK_TPU : unused.
+LINK_SLV : TI's SilverLink cable.
+
+[Summary]
+Used to specify a link cable model with @ticable_set_cable@.

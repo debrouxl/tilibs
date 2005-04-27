@@ -1,0 +1,14 @@
+[Main]
+Name=ticable_get_io_address
+Type=Function
+Header=cabl_int.h
+Definition=unsigned int ticable_get_io_address (void);
+
+[Parameters]
+Returns : an I/O port address (in the 0x000-0x3ff range).
+
+[Summary]
+Get the I/O address used by library for link cable access (if available).
+
+[See also]
+@ticable_set_io_address@

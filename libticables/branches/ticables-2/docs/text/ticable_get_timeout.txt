@@ -1,0 +1,14 @@
+[Main]
+Name=ticable_get_timeout
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_get_timeout(void);
+
+[Parameters]
+Returns : the timeout value in tenth of seconds.
+
+[Summary]
+Returns the timeout value set for all link cables.
+
+[See also]
+@ticable_set_timeout@
