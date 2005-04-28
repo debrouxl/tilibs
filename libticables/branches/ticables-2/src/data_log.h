@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef LOGGING_H
-#define LOGGING_H
+#ifndef __DATALOG_H__
+#define __DATALOG_H__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -31,10 +31,6 @@
 int start_logging();
 int log_data(int data);
 int stop_logging();
-
-int start_void();
-int log_void();
-int stop_void();
 
 #ifdef ENABLE_LOGGING
 # define START_LOGGING(); start_logging();

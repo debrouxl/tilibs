@@ -19,43 +19,46 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
+#include <glib.h>
 #include <string.h>
-#include <errno.h>
-
 #ifdef __WIN32__
-# include <windows.h>
+#include <windows.h>
 #endif
-
 #include "gettext.h"
-#include "cabl_err.h"
 #include "export.h"
-#include "cabl_def.h"
+#include "error.h"
+#include "logging.h"
 
-TicableLinkCable *tcl;
-
-/* 
-   This function put in err_msg the error message corresponding to the 
-   error code.
-   If the error code has been handled, the function returns 0 else it 
-   propagates the error code by returning it.
-
-   The error message has the following format:
-   - 1: the error message
-   - 2: the cause(s), explanations on how to fix it
-   - 3: the error returned by the system
-*/
-TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
+/**
+ * tifiles_get_error:
+ * @number: error number (see file_err.h for list).
+ * @message: a newly allocated string which contains corresponding error *message.
+ *
+ * Attempt to match the message corresponding to the error number. The returned
+ * string must be freed when no longer needed.
+ * The error message has the following format:
+ * - 1: the error message
+ * - 2: the cause(s), explanations on how to fix it
+ * - 3: the error returned by the system
+ *
+ * Return value: 0 if error has been caught, the error number otherwise (propagation).
+ **/
+TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 {
-  	char buf[256];
+	char *tmp;
 
-  	switch (err_num) {
+	g_assert (message != NULL);
+
+	switch(number)
+	{
   	case ERR_OPEN_SER_DEV:
-    		strcpy(error_msg, _("Msg: Unable to open serial device."));
-    		strcat(error_msg, "\n");
-    		strcat(error_msg, _("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."));
+		*message = g_strconcat(
+    		_("Msg: Unable to open serial device."),
+    		"\n",
+    		 _("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."),
+			 NULL);
     	break;
-
+/*
   	case ERR_OPEN_SER_COMM:
     		strcpy(error_msg, _("Msg: Unable to open COM port."));
     		strcat(error_msg, "\n");
@@ -361,21 +364,23 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
     	strcat(error_msg, "\n");
     	strcat(error_msg, _("Cause: your SilverLink cable may be stalled. Try to unplug/plug it."));
 	break;
-
+*/
   	default:
-    		strcpy(error_msg, _("Error code not found in the list.\nThis is a bug. Please report it.\n."));
-    		return err_num;
-    	break;
+		return number;
+    break;
   	}
 
+	/*
 #ifndef __WIN32__
-  	if (errno != 0) {
-    		strcat(error_msg, "\n");
-    		strcat(error_msg, "System: ");
-    		strcat(error_msg, strerror(errno));
-    		snprintf(buf, 256, " (errno = %i)", errno);
-    		strcat(error_msg, buf);
-    		strcat(error_msg, "\n");
+  	if (errno != 0) 
+	{
+		gchar *str;
+		tmp = *message;
+		
+		str = g_strdup-printf(" (errno = %i)", errno);
+		*message = g_strconcat(tmp, "\n", "System: ", strerror(errno), str, "\n", NULL);
+		g_free(tmp);
+		g_fre(str);
   	}
 #else
   	if (GetLastError()) {
@@ -396,9 +401,11 @@ TIEXPORT int TICALL ticable_get_error(int err_num, char *error_msg)
     		strcat(error_msg, "\n");
   	}
 #endif
-
-  	if (tcl != NULL)
-    		tcl->close();		// Close the connection
+*/
+  	// don't use GLib allocator
+	tmp = strdup(*message);
+	g_free(*message);
+	*message = tmp;
 
 	return 0;
 }

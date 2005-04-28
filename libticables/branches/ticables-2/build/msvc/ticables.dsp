@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /YX /FD /c
+# ADD CPP /nologo /MT /w /W0 /GX /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "TICABLES_EXPORTS" /D "__WIN32__" /D "__I386__" /FD /c
 # SUBTRACT CPP /Fr /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -92,101 +92,17 @@ LINK32=link.exe
 # Begin Group "Link cables"
 
 # PROP Default_Filter ""
-# Begin Group "TiglUsb"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\win32\tiglusb.h
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\..\src\link_avr.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_dev.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_nul.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_par.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_ser.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_slv.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_tie.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_tig.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_vti.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_vtl.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\win32\porttalk.c
-# End Source File
 # End Group
 # Begin Group "Others"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\detect.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\direct.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\error.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\intrface.c
+SOURCE=..\..\src\data_log.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\logging.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\mapping.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\printl.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\type2str.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\verbose.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\win32\win32_ioports.c
 # End Source File
 # End Group
 # Begin Group "Headers"
@@ -317,10 +233,22 @@ SOURCE=..\..\src\Vti_link.h
 SOURCE=..\..\src\Vtl_link.h
 # End Source File
 # End Group
+# Begin Group "API"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\Cabl_ver.h
+SOURCE=..\..\src\error.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\ticables.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\type2str.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
@@ -332,6 +260,10 @@ SOURCE=.\ticables.rc
 # Begin Source File
 
 SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
 # End Project
