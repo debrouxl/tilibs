@@ -89,18 +89,15 @@ struct _Cable
 	const char*		description;	// name like "Serial cable"
 
 	int (*prepare)	(TiHandle *);	// Detect and map I/O
-
 	int (*probe)	(TiHandle *);	// Check if cable is present
 
 	int (*open)		(TiHandle *);	// Open cable
 	int (*close)	(TiHandle *);	// Close cable
-
 	int (*reset)	(TiHandle *);	// Reset cable
 
-	int (*send)		(TiHandle *, uint8_t);
-	int (*recv)		(TiHandle *, uint8_t *);
-
-	int (*check)	(TiHandle *, int *);
+	int (*send)		(TiHandle *, uint8_t);		// Send data
+	int (*recv)		(TiHandle *, uint8_t *);	// Recv data
+	int (*check)	(TiHandle *, int *);		// Check data arrival
 
 	int (*set_d0)	(TiHandle *, int);	// Direct access to D0 wire
 	int (*set_d1)	(TiHandle *, int);	// Direct access to D1 wire
@@ -118,7 +115,7 @@ struct _Handle
 	char *			device;	// The character device: COMx, ttySx, ...
 	unsigned int	address;// I/O port base address
 
-	TiCable	*		cable;	// Link cable
+	const TiCable*	cable;	// Link cable
 	TiDataRate		rate;	// Data rate during transfers
 
 	void *			priv;	// Holding data

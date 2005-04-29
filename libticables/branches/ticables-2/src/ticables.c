@@ -132,12 +132,20 @@ TIEXPORT const char *TICALL ticables_version_get(void)
 TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
 {
 	TiHandle *handle = (TiHandle *)calloc(1, sizeof(TiHandle));
+	int i;
 
 	handle->model = model;
 	handle->port = port;
 
 	handle->delay = DFLT_DELAY;
 	handle->timeout = DFLT_TIMEOUT;
+
+	for(i = 0; i < sizeof(cables) / sizeof(TiCable); i++)
+		if(cables[i]->model == model)
+			handle->cable = cables[i];
+	
+	if(handle->cable == NULL)
+		return NULL;
 
 	return handle;
 }
