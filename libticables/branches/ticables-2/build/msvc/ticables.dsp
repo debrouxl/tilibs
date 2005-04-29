@@ -92,6 +92,10 @@ LINK32=link.exe
 # Begin Group "Link cables"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\link_nul.c
+# End Source File
 # End Group
 # Begin Group "Others"
 
@@ -110,11 +114,11 @@ SOURCE=..\..\src\logging.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\private.h
+SOURCE=..\..\src\ticables.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticables.h
+SOURCE=..\..\src\timeout.h
 # End Source File
 # End Group
 # Begin Group "API"

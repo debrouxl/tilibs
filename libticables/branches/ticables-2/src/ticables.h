@@ -159,11 +159,11 @@ struct _Handle
 	TIEXPORT int TICALL ticables_cable_send(TiHandle*, uint8_t *data, uint16_t len);
 	TIEXPORT int TICALL ticables_cable_recv(TiHandle*, uint8_t *data, uint16_t len);
 
-	TIEXPORT int TICALL ticables_cable_check(TiHandle*, uint8_t *data);
+	TIEXPORT int TICALL ticables_cable_check(TiHandle*, TiCableStatus*);
 
 	TIEXPORT int TICALL ticables_cable_reset(TiHandle*);
 
-	TIEXPORT int TICALL ticables_cable_probe(TiHandle*);
+	TIEXPORT int TICALL ticables_cable_probe(TiHandle*, int*);
 
 	TIEXPORT int TICALL ticables_cable_set_d0(TiHandle*, int state);
 	TIEXPORT int TICALL ticables_cable_set_d1(TiHandle*, int state);

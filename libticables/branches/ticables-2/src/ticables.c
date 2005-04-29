@@ -36,6 +36,7 @@
 #include "logging.h"
 #include "error.h"
 #include "link_xxx.h"
+#include "data_log.h"
 
 /*****************/
 /* Internal data */
@@ -52,6 +53,10 @@ static TiCable const *const cables[] =
 	&cable_tie,*/
 	NULL
 };
+
+#ifndef TRY
+# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }	//new !
+#endif
 
 /****************/
 /* Entry points */
@@ -135,12 +140,17 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
 	handle->model = model;
 	handle->port = port;
 
+	handle->delay = DFLT_DELAY;
+	handle->timeout = DFLT_TIMEOUT;
+
 	return handle;
 }
 
-TIEXPORT int       TICALL ticables_handle_del(TiHandle* handle)
+TIEXPORT int TICALL ticables_handle_del(TiHandle* handle)
 {
 	free(handle);
+	handle = NULL;
+
 	return 0;
 }
 
@@ -169,8 +179,9 @@ TIEXPORT int TICALL ticables_cable_open(TiHandle* handle)
 {
 	TiCable *cable = handle->cable;
 
-	cable->open(handle);
+	TRY(cable->open(handle));
 	handle->open = 1;
+	START_LOGGING();
 
 	return 0;
 }
@@ -179,6 +190,7 @@ TIEXPORT int TICALL ticables_cable_close(TiHandle* handle)
 {
 	TiCable *cable = handle->cable;
 
+	STOP_LOGGING();
 	cable->close(handle);
 	handle->open = 0;
 
@@ -188,12 +200,25 @@ TIEXPORT int TICALL ticables_cable_close(TiHandle* handle)
 TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_t len)
 {
 	TiCable *cable = handle->cable;
+	int ret, i;
 	
 	if (handle->open == 1 && handle->busy == 0 && len > 0)
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	//cable->send(handle, data, len);
+	handle->rate.count = len;
+	toSTART(handle->rate.start);
+	for(i = 0; i < len; i++)
+	{
+		LOG_DATA(data[i]);
+		ret = cable->send(handle, data[i]);
+		if(ret)
+		{
+			handle->busy = 0;
+			return ret;
+		}
+	}	
+	toCURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
@@ -202,99 +227,140 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_t len)
 {
 	TiCable *cable = handle->cable;
+	int ret, i;
 	
 	if (handle->open == 1 && handle->busy == 0 && len > 0)
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	//cable->recv(handle, data, len);
+	handle->rate.count = len;
+	toSTART(handle->rate.start);
+	for(i = 0; i < len; i++)
+	{
+		ret = cable->recv(handle, &data[i]);
+		LOG_DATA(data[i]);
+		if(ret)
+		{
+			handle->busy = 0;
+			return ret;
+		}
+	}
+	toCURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
 }
 
-TIEXPORT int TICALL ticables_cable_check(TiHandle* handle, uint8_t *data)
+TIEXPORT int TICALL ticables_cable_check(TiHandle* handle, TiCableStatus *status)
 {
 	TiCable *cable = handle->cable;
+	int ret;
 	
 	if (handle->open == 1 && handle->busy)
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	//cable->check(handle, data);
+	ret = cable->check(handle, status);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_reset(TiHandle* handle)
 {
 	TiCable *cable = handle->cable;
+	int ret;
 	
 	if (handle->open == 1 && handle->busy == 0)
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	cable->reset(handle);
+	ret = cable->reset(handle);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
-TIEXPORT int TICALL ticables_cable_probe(TiHandle* handle)
+TIEXPORT int TICALL ticables_cable_probe(TiHandle* handle, int *found)
 {
 	TiCable *cable = handle->cable;
+	int ret;
 	
 	if (handle->open == 1 && handle->busy == 0)
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	cable->probe(handle);
+	ret = cable->probe(handle);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_set_d0(TiHandle* handle, int state)
 {
 	TiCable *cable = handle->cable;
+	int ret;
 	
 	if (handle->open == 1 && handle->busy == 0 )
-		return -1;
+		return ERR_BUSY;
 
 	handle->busy = 1;
-	cable->set_d0(handle, state);
+	ret = cable->set_d0(handle, state);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_set_d1(TiHandle* handle, int state)
 {
 	TiCable *cable = handle->cable;
+	int ret;
 	
 	if (handle->open == 1 && handle->busy == 0)
 		return -1;
 
 	handle->busy = 1;
-	cable->set_d1(handle, state);
+	ret = cable->set_d1(handle, state);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_get_d0(TiHandle* handle)
 {
-	return 0;
+	TiCable *cable = handle->cable;
+	int ret;
+	
+	if (handle->open == 1 && handle->busy == 0)
+		return -1;
+
+	handle->busy = 1;
+	ret = cable->get_d0(handle);
+	handle->busy = 0;
+
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_get_d1(TiHandle* handle)
 {
-	return 0;
+	TiCable *cable = handle->cable;
+	int ret;
+	
+	if (handle->open == 1 && handle->busy == 0)
+		return -1;
+
+	handle->busy = 1;
+	ret = cable->get_d1(handle);
+	handle->busy = 0;
+
+	return ret;
 }
 
 TIEXPORT int TICALL ticables_cable_progress(TiHandle* handle, int *count, int *msec)
 {
+	*count = handle->rate.count;
+	*msec = 1000 * toELAPSED(handle->rate.start, handle->rate.current);
+
 	return 0;
 }
 
@@ -321,37 +387,3 @@ static void ticables_cable_show_infos(TiCableHandle *handle)
 	ticables_info(_("  delay value: %i\n"), handle->delay);
 }
 */
-
-/*
-TIEXPORT int TICALL ticables_cable_set(TiCableHandle *handle)
-{
-	int ret;
-
-	// remove link cable
-	mapping_unregister_cable(lc);
-	cable_type = type;
-
-	// compile informations (I/O resources & OS platform) in order to 
-  	// determine the best I/O method to use.
-	ret = mapping_get_method(type, resources, &method);
-	if(ret)
-	{
-		print_settings();
-		return ret;
-	}
-
-  	// set the link cable
-  	ret = mapping_register_cable(type, lc);
-  	if(ret)
-	{
-		print_settings();
-		return ret;
-	}
-
-  	// displays useful infos
-  	ticables_cable_show_infos(handle);
-
-  	return 0;
-}
-*/
-
