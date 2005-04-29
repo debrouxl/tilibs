@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLE_DEFS__
-#define __TICABLE_DEFS__
+#ifndef __TICABLES__
+#define __TICABLES__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -152,6 +152,8 @@ struct _Handle
 	TIEXPORT TiCableModel TICALL ticables_get_model(TiHandle*);
 	TIEXPORT TiCablePort  TICALL ticables_get_port(TiHandle*);
 
+	TIEXPORT int TICALL ticables_handle_show(TiHandle*);
+
 	// link.c
 	TIEXPORT int TICALL ticables_cable_open(TiHandle*);
 	TIEXPORT int TICALL ticables_cable_close(TiHandle*);
@@ -160,10 +162,6 @@ struct _Handle
 	TIEXPORT int TICALL ticables_cable_recv(TiHandle*, uint8_t *data, uint16_t len);
 
 	TIEXPORT int TICALL ticables_cable_check(TiHandle*, TiCableStatus*);
-
-	TIEXPORT int TICALL ticables_cable_reset(TiHandle*);
-
-	TIEXPORT int TICALL ticables_cable_probe(TiHandle*, int*);
 
 	TIEXPORT int TICALL ticables_cable_set_d0(TiHandle*, int state);
 	TIEXPORT int TICALL ticables_cable_set_d1(TiHandle*, int state);

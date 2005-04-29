@@ -23,8 +23,8 @@
    Encapsulate the ISO-C99 'stdint.h' header for platforms which haven't it
 */
 
-#ifndef __TIFILES_STDINT__
-#define __TIFILES_STDINT__
+#ifndef __TICABLES_STDINT__
+#define __TICABLES_STDINT__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

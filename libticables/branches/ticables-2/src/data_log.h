@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __DATALOG_H__
-#define __DATALOG_H__
+#ifndef __TICABLES_DATALOG__
+#define __TICABLES_DATALOG__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>

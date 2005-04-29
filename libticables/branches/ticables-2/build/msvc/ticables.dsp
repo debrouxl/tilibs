@@ -114,6 +114,10 @@ SOURCE=..\..\src\logging.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\data_log.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\ticables.h
 # End Source File
 # Begin Source File
@@ -127,6 +131,10 @@ SOURCE=..\..\src\timeout.h
 # Begin Source File
 
 SOURCE=..\..\src\error.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_xxx.c
 # End Source File
 # Begin Source File
 

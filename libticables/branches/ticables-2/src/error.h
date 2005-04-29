@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES_ERRCODES__
-#define __TICABLES_ERRCODES__
+#ifndef __TICABLES_ERROR__
+#define __TICABLES_ERROR__
 
 /* Error codes must begin at 0 up to 255 */
 

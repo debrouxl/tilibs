@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES_LOGGING_H__
-#define __TICABLES_LOGGING_H__
+#ifndef __TICABLES_LOGGING__
+#define __TICABLES_LOGGING__
 
 #include <glib.h>
 

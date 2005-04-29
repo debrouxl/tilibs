@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __LINKS__
-#define __LINKS__
+#ifndef __TICABLES_LINKS__
+#define __TICABLES_LINKS__
 
 #include "ticables.h"
 
