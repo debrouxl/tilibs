@@ -34,6 +34,7 @@
 #include "gettext.h"
 #include "ticables.h"
 #include "logging.h"
+#include "private.h"
 
 /*****************/
 /* Internal data */
@@ -120,16 +121,36 @@ TIEXPORT const char *TICALL ticables_version_get(void)
 	return LIBTICABLES_VERSION;
 }
 
-TIEXPORT void ticables_handle_set_default(TiCableHandle *handle)
+TIEXPORT int TICALL ticables_connection_new(void)
 {
-	memset(handle, 0, sizeof(TiCableHandle)); 
 
-	handle->model = LINK_NUL;
-	handle->port = PORT_0;
-	handle->timeout = DFLT_TIMEOUT;
-	handle->delay = DFLT_DELAY;
 }
 
+TIEXPORT int TICALL ticables_connection_del(int handle)
+{
+
+}
+
+TIEXPORT int          TICALL ticables_model_set(int handle, TiCableModel model)
+{
+
+}
+
+TIEXPORT TiCableModel TICALL ticables_model_get(int handle)
+{
+}
+
+TIEXPORT int		  TICALL ticables_port_set(int handle, TiCablePort port)
+{
+
+}
+
+TIEXPORT TiCablePort  TICALL ticables_port_get(int handle)
+{
+
+}
+
+/*
 static void ticables_cable_show_infos(TiCableHandle *handle)
 {
   	ticables_info(_("list of settings:\n"));
@@ -151,6 +172,7 @@ static void ticables_cable_show_infos(TiCableHandle *handle)
 
 	ticables_info(_("  delay value: %i\n"), handle->delay);
 }
+*/
 
 
 TIEXPORT int TICALL ticables_cable_set(TiCableHandle *handle)

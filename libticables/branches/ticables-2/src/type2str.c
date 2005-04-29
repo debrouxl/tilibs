@@ -27,14 +27,14 @@ TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
 {
   	switch (model) 
 	{
-	case LINK_NUL: return "null";
-	case LINK_TGL: return "GrayLink";
-	case LINK_SER: return "BlackLink";
-	case LINK_PAR: return "Parallel";
-	case LINK_SLV: return "SilverLink";
-	case LINK_VTI: return "Virtual TI";
-	case LINK_TIE: return "TiEmu";
-	case LINK_VTL: return "virtual";
+	case CABLE_NUL: return "null";
+	case CABLE_TGL: return "GrayLink";
+	case CABLE_SER: return "BlackLink";
+	case CABLE_PAR: return "Parallel";
+	case CABLE_SLV: return "SilverLink";
+	case CABLE_VTI: return "Virtual TI";
+	case CABLE_TIE: return "TiEmu";
+	case CABLE_VTL: return "virtual";
 	default: return "unknown";
 	}
 }
@@ -42,23 +42,23 @@ TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
 TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
 {
 	if(!strcmp(str, "null"))
-		return LINK_NUL;
+		return CABLE_NUL;
 	else if(!strcmp(str, "GrayLink"))
-		return LINK_TGL;
+		return CABLE_TGL;
 	else if(!strcmp(str, "BlackLink"))
-		return LINK_SER;
+		return CABLE_SER;
 	else if(!strcmp(str, "Parallel"))
-		return LINK_PAR;
+		return CABLE_PAR;
 	else if(!strcmp(str, "SilverLink"))
-		return LINK_SLV;
+		return CABLE_SLV;
 	else if(!strcmp(str, "Virtual TI"))
-		return LINK_VTI;
+		return CABLE_VTI;
 	else if(!strcmp(str, "TiEmu"))
-		return LINK_TIE;
+		return CABLE_TIE;
 	else if(!strcmp(str, "virtual"))
-		return LINK_VTL;
+		return CABLE_VTL;
 
-	return LINK_NUL;
+	return CABLE_NUL;
 }
 
 TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port)
