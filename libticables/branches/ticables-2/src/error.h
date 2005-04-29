@@ -74,6 +74,8 @@ typedef enum
 
     ERR_TIGLUSB_FLUSH,   
     ERR_TIGLUSB_RESET,   
+
+	ERR_LIB_INIT
 } TiCableError;
 
 #endif

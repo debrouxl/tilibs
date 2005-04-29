@@ -30,95 +30,82 @@
 #include <stdio.h>
 #include "stdints.h"
 
-#include "timeout.h"
-#include "export.h"
-#include "cabl_err.h"
-#include "cabl_def.h"
-#include "logging.h"
-#include "externs.h"
+#include "ticables.h"
+#include "gettext.h"
 
-
-int nul_init()
+int nul_prepare(TiHandle *h)
 {
-  return 0;
+	return 0;
 }
 
-int nul_open()
+int nul_open(TiHandle *h)
 {
-  return 0;
+	return 0;
 }
 
-int nul_put(uint8_t data)
+int nul_close(TiHandle *h)
 {
-  return 0;
+	return 0;
 }
 
-int nul_get(uint8_t * d)
+int nul_reset(TiHandle *h)
 {
-  return 0;
+	return 0;
 }
 
-int nul_probe()
+int nul_put(TiHandle *h, uint8_t data)
 {
-  return 0;
+	return 0;
 }
 
-int nul_close()
+int nul_get(TiHandle *h, uint8_t *data)
 {
-  return 0;
+	return 0;
 }
 
-int nul_exit()
+int nul_probe(TiHandle *h)
 {
-  return 0;
+	return 0;
 }
 
-int nul_check(int *status)
+int nul_check(TiHandle *h, int *status)
 {
-  *status = STATUS_NONE;
-  return 0;
+	*status = STATUS_NONE;
+	return 0;
 }
 
-int nul_set_red_wire(int b)
+int nul_set_red_wire(TiHandle *h, int b)
 {
-  return 0;
+	return 0;
 }
 
-int nul_set_white_wire(int b)
+int nul_set_white_wire(TiHandle *h, int b)
 {
-  return 0;
+	return 0;
 }
 
-int nul_get_red_wire()
+int nul_get_red_wire(TiHandle *h)
 {
-  return 1;
+	return 1;
 }
 
-int nul_get_white_wire()
+int nul_get_white_wire(TiHandle *h)
 {
-  return 1;
+	return 1;
 }
 
-int nul_supported()
+const TiCable cable_nul = 
 {
-  return SUPPORT_OFF;
-}
+	CABLE_NUL,
+	"NUL",
+	N_("Dummy link"),
+	N_("Dummy link used when no cable is set"),
 
-int nul_register_cable(TicableLinkCable * lc, TicableMethod method)
-{
-  lc->init = nul_init;
-  lc->open = nul_open;
-  lc->put = nul_put;
-  lc->get = nul_get;
-  lc->close = nul_close;
-  lc->exit = nul_exit;
-  lc->probe = nul_probe;
-  lc->check = nul_check;
-
-  lc->set_red_wire = nul_set_red_wire;
-  lc->set_white_wire = nul_set_white_wire;
-  lc->get_red_wire = nul_get_red_wire;
-  lc->get_white_wire = nul_get_white_wire;
-
-  return 0;
-}
+	&nul_prepare, 
+	&nul_open, &nul_close,
+	&nul_reset,
+	&nul_put, &nul_get,
+	&nul_check,
+	&nul_set_red_wire, &nul_set_white_wire,
+	&nul_get_red_wire, &nul_get_white_wire,
+};

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: nul_link.c 370 2004-03-22 18:47:32Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -19,17 +19,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __DETECT_H__
-#define __DETECT_H__
+#ifndef __LINKS__
+#define __LINKS__
 
-#include <stdio.h>
-#include "export.h"
+#include "ticables.h"
 
-int TICALL ticable_detect_os(char **os_type);
-int TICALL ticable_detect_port(TicablePortInfo * pi);
-int TICALL ticable_detect_cable(TicablePortInfo * pi);
-int TICALL ticable_detect_all(char **os, TicablePortInfo * pi);
-
-int detect_resources(void);
+extern const TiCable cable_nul;
+extern const TiCable cable_tig;
+extern const TiCable cable_ser;
+extern const TiCable cable_slv;
+extern const TiCable cable_par;
+extern const TiCable cable_vti;
+extern const TiCable cable_tie;
 
 #endif
+
+
