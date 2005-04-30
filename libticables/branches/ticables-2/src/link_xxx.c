@@ -67,7 +67,7 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 
 	handle->busy = 1;
 	handle->rate.count = len;
-	toSTART(handle->rate.start);
+	TO_START(handle->rate.start);
 	for(i = 0; i < len; i++)
 	{
 		LOG_DATA(data[i]);
@@ -78,7 +78,7 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 			return ret;
 		}
 	}	
-	toCURRENT(handle->rate.current);
+	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
@@ -98,7 +98,7 @@ TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_
 
 	handle->busy = 1;
 	handle->rate.count = len;
-	toSTART(handle->rate.start);
+	TO_START(handle->rate.start);
 	for(i = 0; i < len; i++)
 	{
 		ret = cable->recv(handle, &data[i]);
@@ -109,7 +109,7 @@ TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_
 			return ret;
 		}
 	}
-	toCURRENT(handle->rate.current);
+	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
@@ -203,7 +203,7 @@ TIEXPORT int TICALL ticables_cable_get_d1(TiHandle* handle)
 TIEXPORT int TICALL ticables_cable_progress(TiHandle* handle, int *count, int *msec)
 {
 	*count = handle->rate.count;
-	*msec = 1000 * toELAPSED(handle->rate.start, handle->rate.current);
+	*msec = 1000 * TO_ELAPSED(handle->rate.start, handle->rate.current);
 
 	return 0;
 }

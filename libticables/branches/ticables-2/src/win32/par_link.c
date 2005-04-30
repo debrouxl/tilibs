@@ -89,19 +89,19 @@ static int par_put(TiHandle *h, uint8_t data)
 	{
     		if (data & 1) {
       			io_wr(lpt_out, 2);
-      			toSTART(clk);
+      			TO_START(clk);
 	      		do 
 				{
-					if (toELAPSED(clk, h->timeout))
+					if (TO_ELAPSED(clk, h->timeout))
 		  			return ERR_WRITE_TIMEOUT;
 	      		}
 	      		while ((io_rd(lpt_in) & 0x10));
 	      		
 	      		io_wr(lpt_out, 3);
-	      		toSTART(clk);
+	      		TO_START(clk);
 	      		do 
 				{
-					if (toELAPSED(clk, h->timeout))
+					if (TO_ELAPSED(clk, h->timeout))
 		  			return ERR_WRITE_TIMEOUT;
 	      		}
 	      		while (!(io_rd(lpt_in) & 0x10));
@@ -109,19 +109,19 @@ static int par_put(TiHandle *h, uint8_t data)
 			else 
 			{
       			io_wr(lpt_out, 1);
-      			toSTART(clk);
+      			TO_START(clk);
 		      	do 
 				{
-					if (toELAPSED(clk, h->timeout))
+					if (TO_ELAPSED(clk, h->timeout))
 			  		return ERR_WRITE_TIMEOUT;
 		      	}
 		      	while (io_rd(lpt_in) & 0x20);
 		      	
 		      	io_wr(lpt_out, 3);
-		      	toSTART(clk);
+		      	TO_START(clk);
 		      	do 
 				{
-					if (toELAPSED(clk, h->timeout))
+					if (TO_ELAPSED(clk, h->timeout))
 			  		return ERR_WRITE_TIMEOUT;
 		      	}
 		      	while (!(io_rd(lpt_in) & 0x20));
@@ -145,10 +145,10 @@ static int par_get(TiHandle *h, uint8_t *d)
 
   	for (bit = 0; bit < 8; bit++) 
 	{
-    		toSTART(clk);
+    		TO_START(clk);
     		while ((v = io_rd(lpt_in) & 0x30) == 0x30) 
 			{
-      			if (toELAPSED(clk, h->timeout))
+      			if (TO_ELAPSED(clk, h->timeout))
 				return ERR_READ_TIMEOUT;
     		}
     		
@@ -156,10 +156,10 @@ static int par_get(TiHandle *h, uint8_t *d)
 			{
       			data = (data >> 1) | 0x80;
       			io_wr(lpt_out, 1);
-      			toSTART(clk);
+      			TO_START(clk);
       			while ((io_rd(lpt_in) & 0x20) == 0x00) 
 				{
-      				if (toELAPSED(clk, h->timeout))
+      				if (TO_ELAPSED(clk, h->timeout))
 			  		return ERR_WRITE_TIMEOUT;
       			}
       			io_wr(lpt_out, 3);
@@ -168,10 +168,10 @@ static int par_get(TiHandle *h, uint8_t *d)
 			{
       			data = (data >> 1) & 0x7F;
       			io_wr(lpt_out, 2);
-      			toSTART(clk);
+      			TO_START(clk);
       			while ((io_rd(lpt_in) & 0x10) == 0x00) 
 				{
-      				if (toELAPSED(clk, h->timeout))
+      				if (TO_ELAPSED(clk, h->timeout))
 			  		return ERR_WRITE_TIMEOUT;
       			}
       			io_wr(lpt_out, 3);

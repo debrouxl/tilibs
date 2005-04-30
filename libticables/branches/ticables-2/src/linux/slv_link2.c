@@ -328,7 +328,7 @@ int slv_open2()
   	nBytesWrite2 = 0;
 
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	return 0;
 }
@@ -410,12 +410,12 @@ int slv_get2(uint8_t * data)
 	/* Read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
      		store them in a buffer for subsequent accesses */
   	if (nBytesRead2 <= 0) {
-	    	toSTART(clk);
+	    	TO_START(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
 					    max_ps, to);
 					    
-	      		if (toELAPSED(clk, time_out))
+	      		if (TO_ELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
 				printl1(2, _("\nweird, usb_bulk_read returns without any data & error; retrying...\n"));
@@ -471,12 +471,12 @@ int slv_check2(int *status)
       			return 0;
     		}
 
-	    	toSTART(clk);
+	    	TO_START(clk);
 	    	do {
 	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
 					    max_ps, to);
 					    
-	      		if (toELAPSED(clk, time_out))
+	      		if (TO_ELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
 	      		if (ret == 0)
 				printl1(2, "weird, usb_bulk_read returns without any data;  retrying...\n");

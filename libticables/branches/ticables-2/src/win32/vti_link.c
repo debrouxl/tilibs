@@ -174,10 +174,10 @@ static int vti_put(TiHandle *h, uint8_t data)
 	tiTIME clk;
 
 
-	toSTART(clk);
+	TO_START(clk);
 	do 
 	{
-		if (toELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, h->timeout))
 			return ERR_WRITE_TIMEOUT;
 	}
 	while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
@@ -193,10 +193,10 @@ static int vti_get(TiHandle *h, uint8_t *data)
 	tiTIME clk;
 
 	/* Wait that the buffer has been filled */
-	toSTART(clk);
+	TO_START(clk);
 	do 
 	{
-		if (toELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, h->timeout))
 			return ERR_READ_TIMEOUT;
 	}
 	while (vRecvBuf->start == vRecvBuf->end);

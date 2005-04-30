@@ -101,36 +101,36 @@ static int ser_put(TiHandle *h, uint8_t data)
     	if (data & 1) 
 		{
       		io_wr(com_out, 2);
-      		toSTART(clk);
+      		TO_START(clk);
       		do 
 			{
-				if (toELAPSED(clk, h->timeout))
+				if (TO_ELAPSED(clk, h->timeout))
 	  			return ERR_WRITE_TIMEOUT;
       		} while ((io_rd(com_in) & 0x10));
       		
       		io_wr(com_out, 3);
-      		toSTART(clk);
+      		TO_START(clk);
       		do 
 			{
-				if (toELAPSED(clk, h->timeout))
+				if (TO_ELAPSED(clk, h->timeout))
 	  			return ERR_WRITE_TIMEOUT;
       		} while ((io_rd(com_in) & 0x10) == 0x00);
     	} 
 		else 
 		{
       		io_wr(com_out, 1);
-      		toSTART(clk);
+      		TO_START(clk);
       		do 
 			{
-				if (toELAPSED(clk, h->timeout))
+				if (TO_ELAPSED(clk, h->timeout))
 	  			return ERR_WRITE_TIMEOUT;
       		} while (io_rd(com_in) & 0x20);
       	
       		io_wr(com_out, 3);
-      		toSTART(clk);
+      		TO_START(clk);
 			do 
 			{
-				if (toELAPSED(clk, h->timeout))
+				if (TO_ELAPSED(clk, h->timeout))
 	  			return ERR_WRITE_TIMEOUT;
       		} while ((io_rd(com_in) & 0x20) == 0x00);
     	}
@@ -153,10 +153,10 @@ static int ser_get(TiHandle *h, uint8_t *ch)
 
   	for (bit = 0; bit < 8; bit++) 
 	{
-    		toSTART(clk);
+    		TO_START(clk);
     		while ((v = io_rd(com_in) & 0x30) == 0x30) 
 			{
-      			if (toELAPSED(clk, h->timeout))
+      			if (TO_ELAPSED(clk, h->timeout))
 				return ERR_READ_TIMEOUT;
     		}
     		
@@ -164,10 +164,10 @@ static int ser_get(TiHandle *h, uint8_t *ch)
 			{
 	      		data = (data >> 1) | 0x80;
 	      		io_wr(com_out, 1);
-	      		toSTART(clk);
+	      		TO_START(clk);
 	      		while ((io_rd(com_in) & 0x20) == 0x00) 
 				{
-		      		if (toELAPSED(clk, h->timeout))
+		      		if (TO_ELAPSED(clk, h->timeout))
 			      	return ERR_READ_TIMEOUT;
 	      		}
 	      		io_wr(com_out, 3);
@@ -176,10 +176,10 @@ static int ser_get(TiHandle *h, uint8_t *ch)
 			{
 	      		data = (data >> 1) & 0x7F;
 	      		io_wr(com_out, 2);
-	      		toSTART(clk);
+	      		TO_START(clk);
 	      		while ((io_rd(com_in) & 0x10) == 0x00) 
 				{
-		      		if (toELAPSED(clk, h->timeout))
+		      		if (TO_ELAPSED(clk, h->timeout))
 	                      	return ERR_READ_TIMEOUT;
 	      		}
 	      		io_wr(com_out, 3);

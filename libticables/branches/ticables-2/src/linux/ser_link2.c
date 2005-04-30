@@ -87,7 +87,7 @@ int ser_exit2()
 int ser_open2()
 {
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	return 0;
 }
@@ -108,7 +108,7 @@ int ser_put2(uint8_t data)
   	tdr.count++;
   	LOG_DATA(data);
   	
-  	toSTART(clk);
+  	TO_START(clk);
   	for (bit = 0; bit < 8; bit++) {
     		if (data & 1)
       			io_wr(com_out, 2);
@@ -116,13 +116,13 @@ int ser_put2(uint8_t data)
       			io_wr(com_out, 1);
 
     		while (io_rd(com_in) != 0) {
-      			if (toELAPSED(clk, time_out))
+      			if (TO_ELAPSED(clk, time_out))
 			return ERR_WRITE_TIMEOUT;
     		}
 
 	    	io_wr(com_out, 3);
 	    	while (io_rd(com_in) != 3) {
-	      		if (toELAPSED(clk, time_out))
+	      		if (TO_ELAPSED(clk, time_out))
 			return ERR_WRITE_TIMEOUT;
 	    	}
 	
@@ -139,11 +139,11 @@ int ser_get2(uint8_t * ch)
   	tiTIME clk;
 
   	tdr.count++;
-  	toSTART(clk);
+  	TO_START(clk);
 
   	for (i = 0, bit = 1, *ch = 0; i < 8; i++) {
     		while ((j = io_rd(com_in)) == 3) {
-      			if (toELAPSED(clk, time_out))
+      			if (TO_ELAPSED(clk, time_out))
 			return ERR_READ_TIMEOUT;
     		}
 
@@ -157,7 +157,7 @@ int ser_get2(uint8_t * ch)
     		}
 
     		while ((io_rd(com_in) & j) == 0) {
-      			if (toELAPSED(clk, time_out))
+      			if (TO_ELAPSED(clk, time_out))
 			return ERR_READ_TIMEOUT;
     		}
 

@@ -129,7 +129,7 @@ int dev_exit()
 int dev_open(void)
 {
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	return 0;
 }

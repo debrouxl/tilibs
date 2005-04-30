@@ -180,7 +180,7 @@ int slv_open(void)
 	nBytesWrite = 0;
 
 	tdr.count = 0;
-	toSTART(tdr.start);
+	TO_START(tdr.start);
 
   return 0;
 }
@@ -248,11 +248,11 @@ int slv_get(uint8_t * data)
   	/* Read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
      		store them in a buffer for subsequent accesses */
   	if (nBytesRead <= 0) {
-    		toSTART(clk);
+    		TO_START(clk);
     		do {
       			ret = read(dev_fd, (void *) rBuf, max_ps);
       			
-      			if (toELAPSED(clk, time_out))
+      			if (TO_ELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
       			if (ret == 0)		// quirk (seems to be due to Cypress components)
 				printl1(2, _("weird, read returns without any data; retrying to circumvent the quirk...\n"));

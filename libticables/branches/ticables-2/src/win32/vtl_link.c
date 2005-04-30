@@ -87,7 +87,7 @@ int vtl_open()
   while (i > 0);
 
   tdr.count = 0;
-  toSTART(tdr.start);
+  TO_START(tdr.start);
 
   return 0;
 }
@@ -129,10 +129,10 @@ int vtl_get(uint8_t * data)
     return 0;
   }
 
-  toSTART(clk);
+  TO_START(clk);
   do 
   {
-    if (toELAPSED(clk, time_out))
+    if (TO_ELAPSED(clk, time_out))
       return ERR_READ_TIMEOUT;
     fSuccess = ReadFile(hPipe, data, 1, &i, NULL);
   }

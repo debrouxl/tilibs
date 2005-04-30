@@ -118,7 +118,7 @@ int tig_open()
   	tcsetattr(dev_fd, TCSANOW, &termset);
 
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	return 0;
 }

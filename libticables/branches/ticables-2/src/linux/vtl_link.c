@@ -143,7 +143,7 @@ int vtl_open()
   	while (n > 0);
 
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	return 0;
 }
@@ -166,9 +166,9 @@ int vtl_put(uint8_t data)
    	*/
 
   	tdr.count++;
-  	toSTART(clk);
+  	TO_START(clk);
   	do {
-    		if (toELAPSED(clk, time_out))
+    		if (TO_ELAPSED(clk, time_out))
       			return ERR_WRITE_TIMEOUT;
       		/* Transfer rate modulation */
     		fstat(wr[p - 1], &s);
@@ -180,9 +180,9 @@ int vtl_put(uint8_t data)
   	while (n <= 0);
 
   	/* Write the data in a defined delay */
-  	toSTART(clk);
+  	TO_START(clk);
   	do {
-    		if (toELAPSED(clk, time_out))
+    		if (TO_ELAPSED(clk, time_out))
       			return ERR_WRITE_TIMEOUT;
     		n = write(wr[p - 1], (void *) (&data), 1);
   	}
@@ -204,9 +204,9 @@ int vtl_get(uint8_t * data)
   	}
   
   	// Read the uint8_t in a defined delay
-  	toSTART(clk);
+  	TO_START(clk);
   	do {
-    		if (toELAPSED(clk, time_out))
+    		if (TO_ELAPSED(clk, time_out))
       			return ERR_READ_TIMEOUT;
     		n = read(rd[p - 1], (void *) data, 1);
   	}

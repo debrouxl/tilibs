@@ -174,7 +174,7 @@ int vti_open()
 #endif
 
   tdr.count = 0;
-  toSTART(tdr.start);
+  TO_START(tdr.start);
 
   return 0;
 }
@@ -191,9 +191,9 @@ int vti_put(uint8_t data)
 
   tdr.count++;
   LOG_DATA(data);
-  toSTART(clk);
+  TO_START(clk);
   do {
-    if (toELAPSED(clk, time_out))
+    if (TO_ELAPSED(clk, time_out))
       return ERR_WRITE_TIMEOUT;
   }
   while (((send_buf[p]->end + 1) & 255) == send_buf[p]->start);
@@ -211,9 +211,9 @@ int vti_get(uint8_t * data)
 
   tdr.count++;
   /* Wait that the buffer has been filled */
-  toSTART(clk);
+  TO_START(clk);
   do {
-    if (toELAPSED(clk, time_out))
+    if (TO_ELAPSED(clk, time_out))
       return ERR_READ_TIMEOUT;
   }
   while (recv_buf[p]->start == recv_buf[p]->end);

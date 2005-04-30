@@ -192,10 +192,10 @@ static int gry_get(TiHandle *h, uint8_t *data)
 		return 0;
     }
   
-    toSTART(clk);
+    TO_START(clk);
     do 
     {
-		if (toELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, h->timeout))
 			return ERR_READ_TIMEOUT;
 		fSuccess = ReadFile(hCom, data, 1, &i, NULL);
     }

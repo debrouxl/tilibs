@@ -131,10 +131,10 @@ static int tie_reset(TiHandle *h)
 static int tie_put(TiHandle *h, uint8_t data)
 {
 	tiTIME clk;
-  toSTART(clk);
+  TO_START(clk);
   do 
   {
-    if (toELAPSED(clk, h->timeout))
+    if (TO_ELAPSED(clk, h->timeout))
       return ERR_WRITE_TIMEOUT;
   }
   while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
@@ -150,10 +150,10 @@ static int tie_get(TiHandle *h, uint8_t *data)
 	tiTIME clk;
 
 	/* Wait that the buffer has been filled */
-	toSTART(clk);
+	TO_START(clk);
 	do 
 	{
-		if (toELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, h->timeout))
 			return ERR_READ_TIMEOUT;
 	}
 	while (pRecvBuf->start == pRecvBuf->end);

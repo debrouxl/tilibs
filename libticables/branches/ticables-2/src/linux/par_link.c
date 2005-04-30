@@ -85,7 +85,7 @@ int par_exit()
 int par_open()
 {
   	tdr.count = 0;
-  	toSTART(tdr.start);
+  	TO_START(tdr.start);
 
   	if (io_permitted)
     		return 0;
@@ -113,33 +113,33 @@ int par_put(uint8_t data)
   	for (bit = 0; bit < 8; bit++) {
     		if (data & 1) {
       			io_wr(lpt_out, 2);
-      			toSTART(clk);
+      			TO_START(clk);
 	      		do {
-				if (toELAPSED(clk, time_out))
+				if (TO_ELAPSED(clk, time_out))
 		  		return ERR_WRITE_TIMEOUT;
 	      		}
 	      		while ((io_rd(lpt_in) & 0x10));
 	      		
 	      		io_wr(lpt_out, 3);
-	      		toSTART(clk);
+	      		TO_START(clk);
 	      		do {
-				if (toELAPSED(clk, time_out))
+				if (TO_ELAPSED(clk, time_out))
 		  		return ERR_WRITE_TIMEOUT;
 	      		}
 	      		while (!(io_rd(lpt_in) & 0x10));
     		} else {
       			io_wr(lpt_out, 1);
-      			toSTART(clk);
+      			TO_START(clk);
 		      	do {
-				if (toELAPSED(clk, time_out))
+				if (TO_ELAPSED(clk, time_out))
 			  	return ERR_WRITE_TIMEOUT;
 		      	}
 		      	while (io_rd(lpt_in) & 0x20);
 		      	
 		      	io_wr(lpt_out, 3);
-		      	toSTART(clk);
+		      	TO_START(clk);
 		      	do {
-				if (toELAPSED(clk, time_out))
+				if (TO_ELAPSED(clk, time_out))
 			  	return ERR_WRITE_TIMEOUT;
 		      	}
 		      	while (!(io_rd(lpt_in) & 0x20));
@@ -163,27 +163,27 @@ int par_get(uint8_t * d)
 
   	tdr.count++;
   	for (bit = 0; bit < 8; bit++) {
-    		toSTART(clk);
+    		TO_START(clk);
     		while ((v = io_rd(lpt_in) & 0x30) == 0x30) {
-      			if (toELAPSED(clk, time_out))
+      			if (TO_ELAPSED(clk, time_out))
 			return ERR_READ_TIMEOUT;
     		}
     		
     		if (v == 0x10) {
       			data = (data >> 1) | 0x80;
       			io_wr(lpt_out, 1);
-      			toSTART(clk);
+      			TO_START(clk);
       			while ((io_rd(lpt_in) & 0x20) == 0x00) {
-      				if (toELAPSED(clk, time_out))
+      				if (TO_ELAPSED(clk, time_out))
 			  	return ERR_WRITE_TIMEOUT;
       			}
       			io_wr(lpt_out, 3);
     		} else {
       			data = (data >> 1) & 0x7F;
       			io_wr(lpt_out, 2);
-      			toSTART(clk);
+      			TO_START(clk);
       			while ((io_rd(lpt_in) & 0x10) == 0x00) {
-      				if (toELAPSED(clk, time_out))
+      				if (TO_ELAPSED(clk, time_out))
 			  	return ERR_WRITE_TIMEOUT;
       			}
       			io_wr(lpt_out, 3);
