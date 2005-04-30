@@ -1,5 +1,5 @@
-/* Hey EMACS -*- linux-c -*- */
-/* $Id: par_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* Hey EMACS -*- win32-c -*- */
+/* $Id: linux_detect.h 388 2004-03-29 09:49:37Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -19,24 +19,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* "Home-made parallel" link cable unit */
+#ifndef __WIN32_DETECT_H__
+#define __WIN32_DETECT_H__
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <stdio.h>
 
+#define WIN_9X	1
+#define WIN_NT	2
 
-#if defined(__LINUX__)
-#include "linux/par_link.c"
+int win32_detect_os(void);
 
-#elif defined(__BSD__)
-#include "linux/par_link.c"
+int win32_detect_porttalk(void);
 
-#elif defined(__WIN32__)
-#include "win32/par_link.c"
+int win32_detect_tiglusb(void);
 
-#elif defined(__MACOSX__)
-#include "none.c"
-
-#else
 #endif

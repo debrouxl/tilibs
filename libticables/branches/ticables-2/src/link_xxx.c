@@ -57,9 +57,13 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 {
 	const TiCable *cable = handle->cable;
 	int ret, i;
-	
-	if (handle->open == 1 && handle->busy == 0 && len > 0)
+
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
 		return ERR_BUSY;
+	if(!len)
+		return 0;
 
 	handle->busy = 1;
 	handle->rate.count = len;
@@ -85,8 +89,12 @@ TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_
 	const TiCable *cable = handle->cable;
 	int ret, i;
 	
-	if (handle->open == 1 && handle->busy == 0 && len > 0)
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
 		return ERR_BUSY;
+	if(!len)
+		return 0;
 
 	handle->busy = 1;
 	handle->rate.count = len;
@@ -112,7 +120,9 @@ TIEXPORT int TICALL ticables_cable_check(TiHandle* handle, TiCableStatus *status
 	const TiCable *cable = handle->cable;
 	int ret;
 	
-	if (handle->open == 1 && handle->busy)
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
 		return ERR_BUSY;
 
 	handle->busy = 1;
@@ -127,7 +137,9 @@ TIEXPORT int TICALL ticables_cable_set_d0(TiHandle* handle, int state)
 	const TiCable *cable = handle->cable;
 	int ret;
 	
-	if (handle->open == 1 && handle->busy == 0 )
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
 		return ERR_BUSY;
 
 	handle->busy = 1;
@@ -142,8 +154,10 @@ TIEXPORT int TICALL ticables_cable_set_d1(TiHandle* handle, int state)
 	const TiCable *cable = handle->cable;
 	int ret;
 	
-	if (handle->open == 1 && handle->busy == 0)
+	if(!handle->open)
 		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = cable->set_d1(handle, state);
@@ -157,8 +171,10 @@ TIEXPORT int TICALL ticables_cable_get_d0(TiHandle* handle)
 	const TiCable *cable = handle->cable;
 	int ret;
 	
-	if (handle->open == 1 && handle->busy == 0)
+	if(!handle->open)
 		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = cable->get_d0(handle);
@@ -172,8 +188,10 @@ TIEXPORT int TICALL ticables_cable_get_d1(TiHandle* handle)
 	const TiCable *cable = handle->cable;
 	int ret;
 	
-	if (handle->open == 1 && handle->busy == 0)
+	if(!handle->open)
 		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = cable->get_d1(handle);

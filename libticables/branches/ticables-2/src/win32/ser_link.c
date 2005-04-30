@@ -23,11 +23,12 @@
 
 #include <stdio.h>
 
-#include "ticables.h"
-#include "logging.h"
-#include "error.h"
-#include "gettext.H"
-#include "win32_ioports.h"
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
+#include "ioports.h"
 
 #define com_out (h->address + 4)
 #define com_in  (h->address + 6)
@@ -35,25 +36,29 @@
 #define hCom	(HANDLE)(h->priv)
 #define BUFFER_SIZE 1024
 
-int ser_prepare(TiHandle *h)
+static int ser_prepare(TiHandle *h)
 {
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; strcpy(h->device, "COM1"); break;
-	case PORT_2: h->address = 0x2f8; strcpy(h->device, "COM2"); break;
-	case PORT_3: h->address = 0x3e8; strcpy(h->device, "COM3"); break;
-	case PORT_4: h->address = 0x3e8; strcpy(h->device, "COM4"); break;
+	case PORT_1: h->address = 0x3f8; h->device = strdup("COM1"); break;
+	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
+	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
+	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
 	default: return -1;
 	}
 
-	// detect OS
-
-	// detect porttalk
+	// detect OS 
+	if(win32_detect_os() == WIN_NT)
+	{
+		// detect porttalk if Windows NT
+		if(!win32_detect_porttalk())
+			return -1;
+	}
 
 	return 0;
 }
 
-int ser_open(TiHandle *h)
+static int ser_open(TiHandle *h)
 {
 	// Under Win2k: if we do not open the serial device as a COM
 	// port, it may be impossible to transfer data.
@@ -62,30 +67,30 @@ int ser_open(TiHandle *h)
 	// motherboard. Are some port broken ?
   	TRYC(win32_comport_open(h->device, &hCom));
 
-  	TRYC(io_open(com_out, 1));
-  	TRYC(io_open(com_in, 1));
+  	TRYC(io_open(com_out));
+  	TRYC(io_open(com_in));
 
 	return 0;
 }
 
-int ser_close(TiHandle *h)
+static int ser_close(TiHandle *h)
 {
-	TRYC(io_close(com_out, 1));
-  	TRYC(io_close(com_in, 1));
+	TRYC(io_close(com_out));
+  	TRYC(io_close(com_in));
 
     TRYC(win32_comport_close(&hCom));
 
 	return 0;
 }
 
-int ser_reset(TiHandle *h)
+static int ser_reset(TiHandle *h)
 {
 
 
 	return 0;
 }
 
-int ser_put(TiHandle *h, uint8_t data)
+static int ser_put(TiHandle *h, uint8_t data)
 {
 	int bit;
   	int i;
@@ -138,7 +143,7 @@ int ser_put(TiHandle *h, uint8_t data)
 	return 0;
 }
 
-int ser_get(TiHandle *h, uint8_t *ch)
+static int ser_get(TiHandle *h, uint8_t *ch)
 {
 	int bit;
   	uint8_t data = 0;
@@ -189,7 +194,7 @@ int ser_get(TiHandle *h, uint8_t *ch)
 	return 0;
 }
 
-int ser_probe(TiHandle *h)
+static int ser_probe(TiHandle *h)
 {
 	int i, j;
   	int seq[] = { 0x00, 0x20, 0x00, 0x20 };
@@ -215,7 +220,7 @@ int ser_probe(TiHandle *h)
 	return 0;
 }
 
-int ser_check(TiHandle *h, int *status)
+static int ser_check(TiHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
@@ -227,7 +232,7 @@ int ser_check(TiHandle *h, int *status)
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
-int ser_set_red_wire(TiHandle *h, int b)
+static int ser_set_red_wire(TiHandle *h, int b)
 {
 	int v = swap_bits(io_rd(com_in) >> 4);
 
@@ -239,7 +244,7 @@ int ser_set_red_wire(TiHandle *h, int b)
 	return 0;
 }
 
-int ser_set_white_wire(TiHandle *h, int b)
+static int ser_set_white_wire(TiHandle *h, int b)
 {
 	int v = swap_bits(io_rd(com_in) >> 4);
 
@@ -251,28 +256,26 @@ int ser_set_white_wire(TiHandle *h, int b)
 	return 0;
 }
 
-int ser_get_red_wire(TiHandle *h)
+static int ser_get_red_wire(TiHandle *h)
 {
 	return ((0x10 & io_rd(com_in)) ? 1 : 0);
 }
 
-int ser_get_white_wire(TiHandle *h)
+static int ser_get_white_wire(TiHandle *h)
 {
 	return ((0x20 & io_rd(com_in)) ? 1 : 0);
 }
 
-const TiCable cable_nul = 
+const TiCable cable_ser = 
 {
-	CABLE_NUL,
+	CABLE_SER,
 	"SER",
 	N_("BlackLink"),
 	N_("BlackLink or home-made serial cable"),
 
-	&ser_prepare, 
-	&ser_open, &ser_close,
-	&ser_reset,
-	&ser_put, &ser_get,
-	&ser_check,
+	&ser_prepare, &ser_probe,
+	&ser_open, &ser_close, &ser_reset,
+	&ser_put, &ser_get, &ser_check,
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,
 };

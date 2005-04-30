@@ -38,6 +38,11 @@ int nul_prepare(TiHandle *h)
 	return 0;
 }
 
+int nul_probe(TiHandle *h)
+{
+	return 0;
+}
+
 int nul_open(TiHandle *h)
 {
 	return 0;
@@ -59,11 +64,6 @@ int nul_put(TiHandle *h, uint8_t data)
 }
 
 int nul_get(TiHandle *h, uint8_t *data)
-{
-	return 0;
-}
-
-int nul_probe(TiHandle *h)
 {
 	return 0;
 }
@@ -101,11 +101,10 @@ const TiCable cable_nul =
 	N_("Dummy link"),
 	N_("Dummy link used when no cable is set"),
 
-	&nul_prepare, 
-	&nul_open, &nul_close,
-	&nul_reset,
-	&nul_put, &nul_get,
-	&nul_check,
+	&nul_prepare, &nul_probe,
+
+	&nul_open, &nul_close, &nul_reset,
+	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
 };

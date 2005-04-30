@@ -96,6 +96,14 @@ LINK32=link.exe
 
 SOURCE=..\..\src\link_nul.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_ser.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_xxx.c
+# End Source File
 # End Group
 # Begin Group "Others"
 
@@ -106,7 +114,19 @@ SOURCE=..\..\src\data_log.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\win32\detect.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\win32\ioports.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\logging.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\win32\porttalk.c
 # End Source File
 # End Group
 # Begin Group "Headers"
@@ -115,6 +135,10 @@ SOURCE=..\..\src\logging.c
 # Begin Source File
 
 SOURCE=..\..\src\data_log.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\error.h
 # End Source File
 # Begin Source File
 
@@ -131,10 +155,6 @@ SOURCE=..\..\src\timeout.h
 # Begin Source File
 
 SOURCE=..\..\src\error.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\link_xxx.c
 # End Source File
 # Begin Source File
 

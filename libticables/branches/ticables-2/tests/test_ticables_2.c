@@ -27,7 +27,6 @@
 #ifndef __WIN32__
 #include <unistd.h>
 #endif
-//#include <sys/time.h>
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>
@@ -40,106 +39,59 @@
 
 void print_lc_error(int errnum)
 {
-	char msg[256] = "No error -> bug !\n";
+	char *msg;
 
-	ticable_get_error(errnum, msg);
-	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum,
-		msg);
+	ticables_error_get(errnum, msg);
+	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
+	free(msg);
 }
 
 int main(int argc, char **argv)
 {
-	int err;
-	uint8_t data;
-	TicableLinkParam lp;
-	TicableLinkCable lc;
-	tiTIME ref, end;
+	TiHandle *handle;
+	int err, i;
+	uint8_t buf[4], data;
 
-	/* 
-	   Display verbose informations in the shell (Linux) or 
-	   in a console (Win32) 
-	 */
-	ticable_DISPLAY_settings(DSP_ON);
+	// init lib
+	ticables_library_init();
 
 	// set cable
-	ticable_init();
+	handle = ticables_handle_new(CABLE_SER, PORT_2);
+	//ticables_options_set_timeout(handle, 15);
+	//ticables_options_set_delay(handle, 10);
+	ticables_handle_show(handle);
 
-	// get default params
-	ticable_get_default_param(&lp);
-	// or set your own ones
-	lp.delay = 10;
-	lp.timeout = 20;
-	lp.port = SERIAL_PORT_2;
-	lp.method = IOM_AUTO;
-	ticable_set_param(&lp);
+	// open cable
+	err = ticables_cable_open(handle);
+	if(err) print_lc_error(err);
 
-	if((err=ticable_set_cable(LINK_SER, &lc))) {
-		print_lc_error(err);
-                return -1;
-	}
-
-	// Init port (usually at program startup)
-	if ((err = lc.init())) {
-		print_lc_error(err);
-		return -1;
-	}
-
-	// open it (usually before each set of transfer)
-	if ((err = lc.open())) {
-		print_lc_error(err);
-		return -1;
-	}
-
-	DISPLAY("Wait 1 second...\n");
+	//wait
+	printf("Wait 1 second...\n");
 #if defined(__WIN32__) && !defined(__MINGW32__)
 	Sleep(1000);
 #else
 	sleep(1);
 #endif
 
-	/* 
-	   Do a simple test with a TI89/92+ calculator
-	 */
-	// Poll for data
-#ifdef POLL_TEST
-	do {
-		err = lc.check(&retval);
-	}
-	while (retval == STATUS_NONE);
-	DISPLAY("One or more byte are available: %i %i\n", err, retval);
-	lc.get(&data);
-	DISPLAY("Data: %02X\n", data);
-	return 0;
-#endif
+	// do a simple test with a TI89/92+ calculator
+	buf[0] = 0x00; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;
+	err = ticables_cable_send(handle, buf, 4);
+	if(err) print_lc_error(err);
 
-	// Check if calc is ready
-	DISPLAY("Check if calc is OK...\n");
+	// display answer
+	err = ticables_cable_recv(handle, buf, 4);
+	if(err) print_lc_error(err);
+
+	for(i = 0; i < 4; i++)
+		printf("%02x ", buf[i]);
+	printf("\n");
+
+	// close cable
+	ticables_cable_close(handle);
 	
-        toSTART(ref);
-	err = lc.put(0x00);
-	printf("Time: %1.1f\n", toCURRENT(ref));
-	if(err)
-		goto exit;
-	err = lc.put(0x68);
-	err = lc.put(0x00);
-	err = lc.put(0x00);
 
-	toSTART(ref);
-	err = lc.get(&data);
-	printf("Time: %1.1f\n", toCURRENT(ref));
-	printf("Data: %02X\n", data);
-	if(err)
-		goto exit;
-	err = lc.get(&data);
-	printf("Data: %02X\n", data);
-	err = lc.get(&data);
-	printf("Data: %02X\n", data);
-	err = lc.get(&data);
-	printf("Data: %02X\n", data);
-
-	DISPLAY("\n");
-	goto exit;
 	// Remote control: display a 'A' on the calc
+	/*
 	DISPLAY("Display a 'A' on the calc...\n");
 	err = lc.put(0x08);	// 0x08: TI89, 0x09: TI92
 	err = lc.put(0x87);
@@ -153,15 +105,8 @@ int main(int argc, char **argv)
 	err = lc.get(&data);
 	printf("Data: %02X\n", data);
 	err = lc.get(&data);
-
-      exit:
-	// Close port
-	if ((err = lc.close()))
-		print_lc_error(err);
-
-	// Exit port (usually at program termination
-	if ((err = lc.exit()))
-		print_lc_error(err);
+*/
+	ticables_library_exit();
 
 	return 0;
 }

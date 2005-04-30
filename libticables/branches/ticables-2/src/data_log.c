@@ -75,7 +75,7 @@ int start_logging()
   	strcat(fn2, TIME_FILE);
 #endif
 
-  	ticables_info(_("Logging STARTED.\n"));
+  	ticables_info(_("Logging started."));
 
   	log1 = fopen(fn1, "wt");
   	if (log1 == NULL) {
@@ -137,7 +137,7 @@ int log_data(int d)
 
 int stop_logging()
 {
-  	ticables_info("Logging stopped.\n");
+  	ticables_info("Logging stopped.");
 
   	if (log1 != NULL)
     		fclose(log1);

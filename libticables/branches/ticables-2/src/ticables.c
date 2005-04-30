@@ -44,7 +44,9 @@
 
 static TiCable const *const cables[] = 
 {
-	&cable_nul,/*
+	&cable_nul,
+	&cable_ser,
+	/*
 	&cable_tig,
 	&cable_ser,
 	&cable_slv,
@@ -65,7 +67,7 @@ int ticables_instance = 0;	// counts # of instances
 	This function should be the first one to call.
   	It tries to list available I/O resources for later use.
  */
-TIEXPORT int TICALL tifiles_library_init(void)
+TIEXPORT int TICALL ticables_library_init(void)
 {
 	char locale_dir[65536];
 	
@@ -89,14 +91,14 @@ TIEXPORT int TICALL tifiles_library_init(void)
 
 	if (ticables_instance)
 		return (++ticables_instance);
-	ticables_info(_("ticables library version %s\n"), LIBTICABLES_VERSION);
+	ticables_info(_("ticables library version %s"), LIBTICABLES_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
   	ticables_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	ticables_info("bindtextdomain: <%s>\n", bindtextdomain(PACKAGE, locale_dir));
+  	ticables_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	ticables_info("textdomain: <%s>\n", textdomain(PACKAGE));
+  	ticables_info("textdomain: <%s>", textdomain(PACKAGE));
 #endif
 
   	return (++ticables_instance);
@@ -108,7 +110,7 @@ TIEXPORT int TICALL tifiles_library_init(void)
   	no longer used.
  */
 TIEXPORT int
-TICALL ticable_exit(void)
+TICALL ticables_library_exit(void)
 {
   	return (--ticables_instance);
 }
@@ -118,7 +120,7 @@ TICALL ticable_exit(void)
 /***********/
 
 /**
- * tifiles_version_get:
+ * ticables_version_get:
  *
  * This function returns the library version like "X.Y.Z".
  *
@@ -140,18 +142,26 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
 	handle->delay = DFLT_DELAY;
 	handle->timeout = DFLT_TIMEOUT;
 
-	for(i = 0; i < sizeof(cables) / sizeof(TiCable); i++)
+	printf("%i %i\n", sizeof(cables), sizeof(TiCable));
+	for(i = 0; cables[i]; i++)
 		if(cables[i]->model == model)
 			handle->cable = cables[i];
 	
 	if(handle->cable == NULL)
 		return NULL;
 
+	if(handle->cable->prepare(handle))
+	{
+		ticables_handle_del(handle);
+		return NULL;
+	}
+
 	return handle;
 }
 
 TIEXPORT int TICALL ticables_handle_del(TiHandle* handle)
 {
+	free(handle->device);
 	free(handle);
 	handle = NULL;
 
@@ -181,13 +191,13 @@ TIEXPORT TiCablePort  TICALL ticables_get_port(TiHandle* handle)
 
 TIEXPORT int TICALL ticables_handle_show(TiHandle* handle)
 {
-	ticables_info(_("Link cable handle details:\n"));
-	ticables_info(_("  cable   : %s\n"), ticables_model_to_string(handle->model));
-	ticables_info(_("  port    : %s\n"), ticables_port_to_string(handle->port));
-	ticables_info(_("  timeout : %s\n"), ticables_port_to_string(handle->timeout));
-	ticables_info(_("  delay   : %s\n"), ticables_port_to_string(handle->delay));
-	ticables_info(_("  device  : %s\n"), handle->device);
-	ticables_info(_("  address : 0x%03x\n"), handle->address);
+	ticables_info(_("Link cable handle details:"));
+	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
+	ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
+	ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
+	ticables_info(_("  delay   : %i us"), handle->delay);
+	ticables_info(_("  device  : %s"), handle->device);
+	ticables_info(_("  address : 0x%03x"), handle->address);
 
 	return 0;
 }
