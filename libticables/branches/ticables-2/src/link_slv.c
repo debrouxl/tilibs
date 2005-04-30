@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: slv_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -26,19 +26,19 @@
 #endif
 
 #if defined(__LINUX__)
-#include "linux/slv_link.c"
+#include "linux/link_slv.c"
 #if defined(HAVE_LIBUSB)
-#include "linux/slv_link2.c"
+#include "linux/link_slv2.c"
 #endif
 
 #elif defined(__BSD__)
-#include "linux/slv_link2.c"
+#include "linux/link_slv2.c"
 
 #elif defined(__WIN32__)
-#include "win32/slv_link.c"
+#include "win32/link_slv.c"
 
 #elif defined(__MACOSX__)
-#include "macos/slv_link.c"
+#include "macos/link_slv.c"
 
 #else
 #endif

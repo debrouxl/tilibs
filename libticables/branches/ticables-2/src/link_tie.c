@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: tie_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -25,15 +25,14 @@
 #include <config.h>
 #endif
 
-
 #if defined(__LINUX__)
-#include "linux/tie_link.c"
+#include "linux/link_tie.c"
 
 #elif defined(__BSD__)
-#include "linux/tie_link.c"
+#include "linux/link_tie.c"
 
 #elif defined(__WIN32__)
-#include "win32/tie_link.c"
+#include "win32/link_tie.c"
 
 #elif defined(__MACOSX__)
 #include "none.c"
