@@ -179,7 +179,8 @@ struct _Handle
 	const TiCable*	cable;	// Link cable
 	TiDataRate		rate;	// Data rate during transfers
 
-	void *			priv;	// Holding data
+	void*			priv;	// Holding data (static)
+	void*			priv2;	// Holding data (allocated)
 
 	int		open;			// Cable is open
 	int		busy;			// Cable is busy

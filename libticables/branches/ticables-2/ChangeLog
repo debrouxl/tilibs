@@ -3,10 +3,6 @@ SubVersion: $Id$
 To do: 
 	- use overlapped I/O for GrayLink
 	- pack structure in handle
-
-nul,par,ser,gry,slv,
-
-
 	
 Log:
 

@@ -30,9 +30,9 @@
 #include "detect.h"
 #include "ioports.h"
 
-#define lpt_out (h->address+0)
-#define lpt_in  (h->address+1)
-#define lpt_ctl (h->address+2)
+#define lpt_out (h->address + 0)
+#define lpt_in  (h->address + 1)
+#define lpt_ctl (h->address + 2)
 
 static int par_prepare(TiHandle *h)
 {

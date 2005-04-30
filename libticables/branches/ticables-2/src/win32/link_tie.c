@@ -65,6 +65,9 @@ static LinkBuffer *pSendBuf, *pRecvBuf;
 
 static int tie_prepare(TiHandle *h)
 {
+	h->address = 0;
+	h->device = strdup("");
+
 	return 0;
 }
 

@@ -63,6 +63,9 @@ static HWND			otherWnd = NULL;	// Handle on the VTi window
 
 static int vti_prepare(TiHandle *h)
 {
+	h->address = 0;
+	h->device = strdup("");
+
 	return 0;
 }
 
