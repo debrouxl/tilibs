@@ -23,6 +23,8 @@
   Variable type ID and file extensions
 */
 
+#ifdef ENABLE_TI9X
+
 #include <string.h>
 #include "gettext.h"
 #include "types92.h"
@@ -152,4 +154,4 @@ const char *ti92_byte2icon(uint8_t data)
 	return (data < TI92_MAXTYPES) ? TI92_CONST[data][3] : "Unknown";
 }
 
-
+#endif

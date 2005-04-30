@@ -2,7 +2,7 @@
 /* $Id: types89.c 667 2004-05-03 11:45:01Z tijl $ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 /*
 	Variable type ID and file extensions
 */
+
+#ifdef ENABLE_TI9X
 
 #include <string.h>
 #include "gettext.h"
@@ -151,3 +153,5 @@ const char *ti89t_byte2icon(uint8_t data)
 	g_assert(data < TI89t_MAXTYPES);
 	return (data < TI89t_MAXTYPES) ? TI89t_CONST[data][2] : "Unknown";
 }
+
+#endif

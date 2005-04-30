@@ -22,12 +22,16 @@
 #ifndef __TIFILES_H__
 #define __TIFILES_H__
 
-#include "export.h"
-#include "stdints.h"
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#include "export.h"
+#include "stdints.h"
+
+	/***********************/
+	/* Types & Definitions */
+	/***********************/
 
 /* Versioning */
 

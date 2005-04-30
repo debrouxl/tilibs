@@ -23,6 +23,8 @@
   Variable type ID and file extensions
 */
 
+#ifdef ENABLE_TI8X
+
 #include <string.h>
 #include "gettext.h"
 #include "types73.h"
@@ -150,4 +152,4 @@ const char *ti73_byte2icon(uint8_t data)
 	return (data < TI73_MAXTYPES) ? TI73_CONST[data][3] : "Unknown";
 }
 
-
+#endif

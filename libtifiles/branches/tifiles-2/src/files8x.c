@@ -1,7 +1,7 @@
 /* $Id$ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@
 #include "rwfile.h"
 #include "intelhex.h"
 #include "transcode.h"
+
+#ifdef ENABLE_TI8X
 
 /********/
 /* Misc */
@@ -1006,3 +1008,5 @@ TIEXPORT int TICALL ti8x_file_display(const char *filename)
 
   return 0;
 }
+
+#endif

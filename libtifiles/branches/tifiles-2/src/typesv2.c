@@ -23,6 +23,8 @@
   Variable type ID and file extensions
 */
 
+#ifdef ENABLE_TI9X
+
 #include <string.h>
 #include "gettext.h"
 #include "typesv2.h"
@@ -151,4 +153,4 @@ const char *v200_byte2icon(uint8_t data)
 	return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
 }
 
-
+#endif
