@@ -279,5 +279,3 @@ const TiCable cable_ser =
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,
 };
-
-

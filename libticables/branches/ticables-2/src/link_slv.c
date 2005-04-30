@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-
 #if defined(__LINUX__)
 #include "linux/slv_link.c"
 #if defined(HAVE_LIBUSB)

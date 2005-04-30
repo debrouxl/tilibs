@@ -1,0 +1,311 @@
+/* Hey EMACS -*- win32-c -*- */
+/* $Id: gry_link.c 370 2004-03-22 18:47:32Z roms $ */
+
+/*  libticables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/* "Grey TIGraphLink" link cable unit */
+
+#include <stdio.h>
+#include <windows.h>
+
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
+
+#define hCom	(HANDLE)(h->priv)
+#define BUFFER_SIZE 1024
+
+static struct cs {
+  uint8_t data;
+  BOOL avail;
+} cs;
+
+static int gry_prepare(TiHandle *h)
+{
+	switch(h->port)
+	{
+	case PORT_1: h->address = 0x3f8; h->device = strdup("COM1"); break;
+	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
+	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
+	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
+	default: return -1;
+	}
+
+	return 0;
+}
+
+static int gry_open(TiHandle *h)
+{
+	DCB dcb;
+  BOOL fSuccess;
+  COMMTIMEOUTS cto;
+
+  hCom = CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
+		    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  if (hCom == INVALID_HANDLE_VALUE) 
+  {
+    ticables_warning("CreateFile\n");
+    return ERR_OPEN_SER_COMM;
+  }
+  // Setup buffer size
+  fSuccess = SetupComm(hCom, BUFFER_SIZE, BUFFER_SIZE);
+  if (!fSuccess) 
+  {
+    ticables_warning("SetupComm\n");
+    return ERR_SETUP_COMM;
+  }
+  // Retrieve config structure
+  fSuccess = GetCommState(hCom, &dcb);
+  if (!fSuccess) 
+  {
+    ticables_warning("GetCommState\n");
+    return ERR_GET_COMMSTATE;
+  }
+  // Fills the structure with config
+  dcb.BaudRate = CBR_9600;	// 9600 bauds
+  dcb.fBinary = TRUE;		// Binary mode
+  dcb.fParity = FALSE;		// Parity checking disabled
+  dcb.fOutxCtsFlow = FALSE;	// No output flow control
+  dcb.fOutxDsrFlow = FALSE;	// Idem
+  dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
+  dcb.fDsrSensitivity = FALSE;	// ignore DSR status
+  dcb.fOutX = FALSE;		// no XON/XOFF flow control
+  dcb.fInX = FALSE;		// idem
+  dcb.fErrorChar = FALSE;	// no replacement
+  dcb.fNull = FALSE;		// don't discard null chars
+  dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
+  dcb.fAbortOnError = FALSE;	// do not report errors
+
+  dcb.ByteSize = 8;		// 8 bits
+  dcb.Parity = NOPARITY;	// no parity checking
+  dcb.StopBits = ONESTOPBIT;	// 1 stop bit
+
+  // Config COM port
+  fSuccess = SetCommState(hCom, &dcb);
+  if (!fSuccess) 
+  {
+    ticables_warning("SetCommState\n");
+    return ERR_SET_COMMSTATE;
+  }
+
+  fSuccess = GetCommTimeouts(hCom, &cto);
+  if (!fSuccess) 
+  {
+    ticables_warning("GetCommTimeouts\n");
+    return ERR_GET_COMMTIMEOUT;
+  }
+
+  cto.ReadIntervalTimeout = MAXDWORD;
+  cto.ReadTotalTimeoutMultiplier = 0;
+  cto.ReadTotalTimeoutConstant = 0;	//100 * h->timeout;      
+  cto.WriteTotalTimeoutMultiplier = 0;
+  cto.WriteTotalTimeoutConstant = 100 * h->timeout;	// A value of 0 make non-blocking
+
+  fSuccess = SetCommTimeouts(hCom, &cto);
+  if (!fSuccess) 
+  {
+    ticables_warning("SetCommTimeouts\n");
+    return ERR_SET_COMMTIMEOUT;
+  }
+
+	return 0;
+}
+
+static int gry_close(TiHandle *h)
+{
+	if (hCom) 
+	{
+		CloseHandle(hCom);
+		hCom = 0;
+	}
+
+	return 0;
+}
+
+static int gry_reset(TiHandle *h)
+{
+	BOOL fSuccess;
+
+	memset((void *) (&cs), 0, sizeof(cs));
+
+	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
+	if (!fSuccess) 
+	{
+		ticables_warning("PurgeComm\n");
+		return ERR_FLUSH_COMM;
+	}
+
+	return 0;
+}
+
+static int gry_put(TiHandle *h, uint8_t data)
+{
+	DWORD i;
+	BOOL fSuccess;
+
+  fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
+  if (!fSuccess) 
+  {
+    ticables_warning("WriteFile\n");
+    return ERR_WRITE_ERROR;
+  } 
+  else if (i == 0) 
+  {
+    ticables_warning("WriteFile\n");
+    return ERR_WRITE_TIMEOUT;
+  }
+
+	return 0;
+}
+
+static int gry_get(TiHandle *h, uint8_t *data)
+{
+	BOOL fSuccess;
+  DWORD i;
+  tiTIME clk;
+
+  if (cs.avail) 
+  {
+    *data = cs.data;
+    cs.avail = FALSE;
+    return 0;
+  }
+
+  toSTART(clk);
+  do 
+  {
+    if (toELAPSED(clk, h->timeout))
+      return ERR_READ_TIMEOUT;
+    fSuccess = ReadFile(hCom, data, 1, &i, NULL);
+  }
+  while (i != 1);
+
+  if (!fSuccess) 
+  {
+    ticables_warning("ReadFile\n");
+    return ERR_READ_ERROR;
+  }
+	
+	return 0;
+}
+
+#define MS_ON (MS_CTS_ON | MS_DTR_ON)
+
+static int gry_probe(TiHandle *h)
+{
+	DWORD status;			//MS_CTS_ON or MS_DTR_ON
+
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);	// Get MCR values
+  //printl1(0, "status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
+
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, CLRRTS);
+  GetCommModemStatus(hCom, &status);
+  //printl1(0, "status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
+
+  EscapeCommFunction(hCom, CLRDTR);
+  EscapeCommFunction(hCom, CLRRTS);
+  GetCommModemStatus(hCom, &status);
+  //printl1(0, "status: %i\n", status);
+  if (status != 0x00)
+    return ERR_PROBE_FAILED;
+
+  EscapeCommFunction(hCom, CLRDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);
+  //printl1(0, "status: %i\n", status);
+  if (status != 0x00)
+    return ERR_PROBE_FAILED;
+
+  EscapeCommFunction(hCom, SETDTR);
+  EscapeCommFunction(hCom, SETRTS);
+  GetCommModemStatus(hCom, &status);
+  //printl1(0, "status: %i\n", status);
+  if (status != 0x20)
+    return ERR_PROBE_FAILED;
+
+	return 0;
+}
+
+static int gry_check(TiHandle *h, int *status)
+{
+	DWORD i;
+  BOOL fSuccess;
+
+  *status = STATUS_NONE;
+  if (hCom) {
+    // Read the data: return 0 if error and i contains 1 or 0 (timeout)
+    fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
+    if (fSuccess && (i == 1)) {
+      if (cs.avail == TRUE)
+	return ERR_BYTE_LOST;
+
+      cs.avail = TRUE;
+      *status = STATUS_RX;
+      return 0;
+    } else {
+      *status = STATUS_NONE;
+      return 0;
+    }
+  }
+
+	return 0;
+}
+
+static int gry_set_red_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int gry_set_white_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int gry_get_red_wire(TiHandle *h)
+{
+	return 1;
+}
+
+static int gry_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_gry = 
+{
+	CABLE_TGL,
+	"TGL",
+	N_("GrayLink"),
+	N_("GrayLink serial cable"),
+
+	&gry_prepare, &gry_probe,
+	&gry_open, &gry_close, &gry_reset,
+	&gry_put, &gry_get, &gry_check,
+	&gry_set_red_wire, &gry_set_white_wire,
+	&gry_get_red_wire, &gry_get_white_wire,
+};

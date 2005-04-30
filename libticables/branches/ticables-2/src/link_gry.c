@@ -25,18 +25,17 @@
 #include <config.h>
 #endif
 
-
 #if defined(__LINUX__)
-#include "linux/tig_link.c"
+#include "linux/gry_link.c"
 
 #elif defined(__BSD__)
-#include "linux/tig_link.c"
+#include "linux/gry_link.c"
 
 #elif defined(__WIN32__)
-#include "win32/tig_link.c"
+#include "win32/gry_link.c"
 
 #elif defined(__MACOSX__)
-#include "linux/tig_link.c"
+#include "linux/gry_link.c"
 
 #else
 #endif

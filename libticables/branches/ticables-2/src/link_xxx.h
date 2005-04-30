@@ -25,12 +25,13 @@
 #include "ticables.h"
 
 extern const TiCable cable_nul;
-extern const TiCable cable_tig;
+extern const TiCable cable_gry;
 extern const TiCable cable_ser;
 extern const TiCable cable_slv;
 extern const TiCable cable_par;
 extern const TiCable cable_vti;
 extern const TiCable cable_tie;
+extern const TiCable cable_raw;
 
 #endif
 

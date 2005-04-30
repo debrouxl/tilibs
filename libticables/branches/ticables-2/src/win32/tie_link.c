@@ -28,22 +28,13 @@
  *  pipe is used for transferring from 1 to 0.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdio.h>
-#include <windows.h>
-#include <time.h>
-#include "gettext.h"
 
-#include "timeout.h"
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "externs.h"
-#include "export.h"
-#include "logging.h"
-#include "printl.h"
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
 
 #define BUFSIZE 256
 
@@ -72,19 +63,24 @@ typedef struct
 static HANDLE hSendBuf, hRecvBuf;
 static LinkBuffer *pSendBuf, *pRecvBuf;
 
-int tie_init(void)
+static int tie_prepare(TiHandle *h)
+{
+	return 0;
+}
+
+static int tie_open(TiHandle *h)
 {
 	int p;
 
   /* Check if valid argument */
-  if ((io_address < 1) || (io_address > 2)) 
+  if ((h->address < 1) || (h->address > 2)) 
   {
-    printl1(2, _("invalid io_address parameter passed to libticables.\n"));
-    io_address = 2;
+    ticables_info(_("invalid h->address parameter passed to libticables."));
+    h->address = 2;
   } 
   else 
   {
-    p = io_address - 1;
+    p = h->address - 1;
     ref_cnt++;
   }
 
@@ -106,15 +102,14 @@ int tie_init(void)
   if (pRecvBuf == NULL) 
     return ERR_OPP_NOT_AVAIL;
 
-  START_LOGGING();
+	pSendBuf->start = pSendBuf->end = 0;
+  pRecvBuf->start = pRecvBuf->end = 0;
 
-  return 0;
+	return 0;
 }
 
-int tie_exit()
+static int tie_close(TiHandle *h)
 {
-  STOP_LOGGING();
-
   /* Close the shared buffer */
   if (hSendBuf) 
     UnmapViewOfFile(pSendBuf);
@@ -125,111 +120,96 @@ int tie_exit()
   return 0;
 }
 
-int tie_open()
+static int tie_reset(TiHandle *h)
 {
-  pSendBuf->start = pSendBuf->end = 0;
-  pRecvBuf->start = pRecvBuf->end = 0;
+	pSendBuf->start = pSendBuf->end = 0;
+	pRecvBuf->start = pRecvBuf->end = 0;
 
-  tdr.count = 0;
-  toSTART(tdr.start);
-
-  return 0;
+	return 0;
 }
 
-int tie_close()
+static int tie_put(TiHandle *h, uint8_t data)
 {
-  return 0;
-}
-
-int tie_put(uint8_t data)
-{
-  tiTIME clk;
-
-  //if(!hMap)
-  //      return ERR_OPEN_FILE_MAP;
-
-  tdr.count++;
-  LOG_DATA(data);
-
+	tiTIME clk;
   toSTART(clk);
   do 
   {
-    if (toELAPSED(clk, time_out))
+    if (toELAPSED(clk, h->timeout))
       return ERR_WRITE_TIMEOUT;
   }
   while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
 
   pSendBuf->buf[pSendBuf->end] = data;
   pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
-
-  return 0;
+	
+	return 0;
 }
 
-int tie_get(uint8_t * data)
+static int tie_get(TiHandle *h, uint8_t *data)
 {
-  tiTIME clk;
+	tiTIME clk;
 
-  //if(!hMap)
-  //      return ERR_OPEN_FILE_MAP;
+	/* Wait that the buffer has been filled */
+	toSTART(clk);
+	do 
+	{
+		if (toELAPSED(clk, h->timeout))
+			return ERR_READ_TIMEOUT;
+	}
+	while (pRecvBuf->start == pRecvBuf->end);
 
-  //printl1(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
+	/* And retrieve the data from the circular buffer */
+	*data = pRecvBuf->buf[pRecvBuf->start];
+	pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
 
-  tdr.count++;
-
-  /* Wait that the buffer has been filled */
-  toSTART(clk);
-  do 
-  {
-    if (toELAPSED(clk, time_out))
-      return ERR_READ_TIMEOUT;
-  }
-  while (pRecvBuf->start == pRecvBuf->end);
-
-  /* And retrieve the data from the circular buffer */
-  *data = pRecvBuf->buf[pRecvBuf->start];
-  pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
-
-  LOG_DATA(*data);
-
-  return 0;
+	return 0;
 }
 
-int tie_check(int *status)
+static int tie_probe(TiHandle *h)
 {
-  /* Check if positions are the same */
-  if (pRecvBuf->start == pRecvBuf->end)
-    *status = STATUS_NONE;
-  else
-    *status = STATUS_RX;
-
-  return 0;
+	return 0;
 }
 
-int tie_probe()
+static int tie_check(TiHandle *h, int *status)
 {
-  return 0;
+	if (pRecvBuf->start == pRecvBuf->end)
+		*status = STATUS_NONE;
+	else
+		*status = STATUS_RX;
+
+	return 0;
 }
 
-int tie_supported()
+static int tie_set_red_wire(TiHandle *h, int b)
 {
-  return SUPPORT_ON;
+	return 0;
 }
 
-int tie_register_cable(TicableLinkCable * lc)
+static int tie_set_white_wire(TiHandle *h, int b)
 {
-  lc->init = tie_init;
-  lc->open = tie_open;
-  lc->put = tie_put;
-  lc->get = tie_get;
-  lc->close = tie_close;
-  lc->exit = tie_exit;
-  lc->probe = tie_probe;
-  lc->check = tie_check;
-
-  lc->set_red_wire = NULL;
-  lc->set_white_wire = NULL;
-  lc->get_red_wire = NULL;
-  lc->get_white_wire = NULL;
-
-  return 0;
+	return 0;
 }
+
+static int tie_get_red_wire(TiHandle *h)
+{
+	return 1;
+}
+
+static int tie_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_tie = 
+{
+	CABLE_TIE,
+	"TIE",
+	N_("TiEmu"),
+	N_("Virtual link for TiEmu"),
+
+	&tie_prepare, &tie_probe,
+	&tie_open, &tie_close, &tie_reset,
+	&tie_put, &tie_get, &tie_check,
+	&tie_set_red_wire, &tie_set_white_wire,
+	&tie_get_red_wire, &tie_get_white_wire,
+};

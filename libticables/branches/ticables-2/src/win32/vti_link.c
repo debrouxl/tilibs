@@ -29,22 +29,13 @@
    <mikma@users.sourceforge.net> (or <mikma@hem.passagen.se>)
 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdio.h>
-#include <windows.h>
-#include <time.h>
 
-#include "gettext.h"
-#include "timeout.h"
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "export.h"
-#include "logging.h"
-#include "externs.h"
-#include "printl.h"
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
 
 // VTi messages
 #define WM_HELLO		WM_USER+101
@@ -70,9 +61,14 @@ static LinkBuffer*	vRecvBuf;
 static HANDLE		hMap = NULL;		// Handle on file-mapping object
 static HWND			otherWnd = NULL;	// Handle on the VTi window
 
-int vti_init()
+static int vti_prepare(TiHandle *h)
 {
-  char name[32];
+	return 0;
+}
+
+static int vti_open(TiHandle *h)
+{
+	char name[32];
   char vLinkFileName[32];
   HANDLE hVLinkFileMap = NULL;	// Handle on the 
   HANDLE Handle;
@@ -91,7 +87,7 @@ int vti_init()
       break;
   }
   
-  printl1(0, "Virtual Link L->V %i\n", i);
+  ticables_info("Virtual Link L->V %i\n", i);
   vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
 
   /* Get an handle on the VTi window */
@@ -106,9 +102,9 @@ int vti_init()
 
   if (!Handle) 
   {
-    printl1(2, _("Unable to get an handle on the libTIcables.\n"));
-    printl1(2, _("Did you rename the library ?!\n"));
-    printl1(2, _("Fatal error. Program terminated.\n"));
+    ticables_warning(_("Unable to get an handle on the libTIcables.\n"));
+    ticables_warning(_("Did you rename the library ?!\n"));
+    ticables_warning(_("Fatal error. Program terminated.\n"));
     exit(-1);
   }
 
@@ -121,12 +117,12 @@ int vti_init()
   //WaitMessage();                                                                                // Waits VTi answer
 
   /* Create a file mapping handle for the 'Vti->lib' communication channel */
-  printl1(0, "Virtual Link V->L %i\n", i-1);
+  ticables_info("Virtual Link V->L %i\n", i-1);
   sprintf(name, "Virtual Link %d", i - 1);
   hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
   if (hMap) 
   {
-    printl1(0, _("Opened %s\n"), name);
+    ticables_info(_("Opened %s\n"), name);
     vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
   } else
     return ERR_OPEN_FILE_MAP;
@@ -140,17 +136,15 @@ int vti_init()
   if (otherWnd)
     SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
 
-  START_LOGGING();
+  vSendBuf->start = vSendBuf->end = 0;
+  vRecvBuf->start = vRecvBuf->end = 0;
 
-  return 0;
+	return 0;
 }
 
-int vti_exit()
+static int vti_close(TiHandle *h)
 {
-  /* Send an atom */
-  STOP_LOGGING();
-
-  if (otherWnd) 
+	if (otherWnd) 
   {
     SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
     SendMessage(otherWnd, WM_GOODBYE, 0, 0);
@@ -164,111 +158,98 @@ int vti_exit()
     CloseHandle(hMap);
   }
 
-  return 0;
+	return 0;
 }
 
-int vti_open()
+static int vti_reset(TiHandle *h)
 {
-  vSendBuf->start = vSendBuf->end = 0;
-  vRecvBuf->start = vRecvBuf->end = 0;
+	vSendBuf->start = vSendBuf->end = 0;
+	vRecvBuf->start = vRecvBuf->end = 0;
 
-  tdr.count = 0;
-  toSTART(tdr.start);
-
-  return 0;
+	return 0;
 }
 
-int vti_close()
+static int vti_put(TiHandle *h, uint8_t data)
 {
-  return 0;
+	tiTIME clk;
+
+
+	toSTART(clk);
+	do 
+	{
+		if (toELAPSED(clk, h->timeout))
+			return ERR_WRITE_TIMEOUT;
+	}
+	while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
+
+	vSendBuf->buf[vSendBuf->end] = data;					// put data in buffer
+	vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
+
+	return 0;
 }
 
-int vti_put(uint8_t data)
+static int vti_get(TiHandle *h, uint8_t *data)
 {
-  tiTIME clk;
+	tiTIME clk;
 
-  if (!hMap)
-    return ERR_OPEN_FILE_MAP;
+	/* Wait that the buffer has been filled */
+	toSTART(clk);
+	do 
+	{
+		if (toELAPSED(clk, h->timeout))
+			return ERR_READ_TIMEOUT;
+	}
+	while (vRecvBuf->start == vRecvBuf->end);
 
-  tdr.count++;
-  LOG_DATA(data);
+	/* And retrieve the data from the circular buffer */
+	*data = vRecvBuf->buf[vRecvBuf->start];
+	vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
 
-  toSTART(clk);
-  do 
-  {
-    if (toELAPSED(clk, time_out))
-      return ERR_WRITE_TIMEOUT;
-  }
-  while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
-
-  vSendBuf->buf[vSendBuf->end] = data;					// put data in buffer
-  vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
-
-  return 0;
+	return 0;
 }
 
-int vti_get(uint8_t * data)
+static int vti_probe(TiHandle *h)
 {
-  tiTIME clk;
-
-  if (!hMap)
-    return ERR_OPEN_FILE_MAP;
-
-  /* Wait that the buffer has been filled */
-  toSTART(clk);
-  do 
-  {
-    if (toELAPSED(clk, time_out))
-      return ERR_READ_TIMEOUT;
-  }
-  while (vRecvBuf->start == vRecvBuf->end);
-
-  /* And retrieve the data from the circular buffer */
-  *data = vRecvBuf->buf[vRecvBuf->start];
-  vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
-
-  tdr.count++;
-  LOG_DATA(*data);
-
-  return 0;
+	return 0;
 }
 
-int vti_check(int *status)
+static int vti_check(TiHandle *h, int *status)
 {
-  if (!hMap)
-    return ERR_OPEN_FILE_MAP;
+	*status = !(vRecvBuf->start == vRecvBuf->end);
 
-  /* Check if positions are the same */
-  *status = !(vRecvBuf->start == vRecvBuf->end);
-
-  return 0;
+	return 0;
 }
 
-int vti_probe()
+static int vti_set_red_wire(TiHandle *h, int b)
 {
-  return 0;
+	return 0;
 }
 
-int vti_supported()
+static int vti_set_white_wire(TiHandle *h, int b)
 {
-  return SUPPORT_ON;
+	return 0;
 }
 
-int vti_register_cable(TicableLinkCable * lc)
+static int vti_get_red_wire(TiHandle *h)
 {
-  lc->init = vti_init;
-  lc->open = vti_open;
-  lc->put = vti_put;
-  lc->get = vti_get;
-  lc->close = vti_close;
-  lc->exit = vti_exit;
-  lc->probe = vti_probe;
-  lc->check = vti_check;
-
-  lc->set_red_wire = NULL;
-  lc->set_white_wire = NULL;
-  lc->get_red_wire = NULL;
-  lc->get_white_wire = NULL;
-
-  return 0;
+	return 1;
 }
+
+static int vti_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_vti = 
+{
+	CABLE_VTI,
+	"VTI",
+	N_("Virtual TI"),
+	N_("Virtual link for VTi"),
+
+	&vti_prepare, &vti_probe,
+	&vti_open, &vti_close, &vti_reset,
+	&vti_put, &vti_get, &vti_check,
+	&vti_set_red_wire, &vti_set_white_wire,
+	&vti_get_red_wire, &vti_get_white_wire,
+};

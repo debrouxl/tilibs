@@ -94,11 +94,31 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\link_gry.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\link_nul.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\link_par.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\link_ser.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_slv.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_tie.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\link_vti.c
 # End Source File
 # Begin Source File
 

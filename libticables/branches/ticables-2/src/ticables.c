@@ -45,14 +45,13 @@
 static TiCable const *const cables[] = 
 {
 	&cable_nul,
+	&cable_gry,
 	&cable_ser,
-	/*
-	&cable_tig,
-	&cable_ser,
-	&cable_slv,
 	&cable_par,
+	&cable_slv,
+	&cable_raw,
 	&cable_vti,
-	&cable_tie,*/
+	&cable_tie,
 	NULL
 };
 
