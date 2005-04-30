@@ -268,8 +268,8 @@ static int ser_get_white_wire(TiHandle *h)
 
 const TiCable cable_ser = 
 {
-	CABLE_SER,
-	"SER",
+	CABLE_BLK,
+	"BLK",
 	N_("BlackLink"),
 	N_("BlackLink or home-made serial cable"),
 

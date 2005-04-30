@@ -66,7 +66,7 @@ TIGLUSB_GETTIMEOUT dynTiglUsbGetTimeout = NULL;
 static int slv_prepare(TiHandle *h)
 {
 	h->address = 0;
-	h->device = NULL;
+	h->device = strdup("");
 
 	// detect driver
 	if(!win32_detect_tiglusb())

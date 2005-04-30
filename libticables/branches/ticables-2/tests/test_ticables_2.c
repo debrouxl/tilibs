@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SER, PORT_2);
+	handle = ticables_handle_new(CABLE_SLV, PORT_1);
 	//ticables_options_set_timeout(handle, 15);
 	//ticables_options_set_delay(handle, 10);
 	ticables_handle_show(handle);
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 #endif
 
 	// do a simple test with a TI89/92+ calculator
-	buf[0] = 0x00; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;
+	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;
 	err = ticables_cable_send(handle, buf, 4);
 	if(err) print_lc_error(err);
 
@@ -89,6 +89,11 @@ int main(int argc, char **argv)
 	// close cable
 	ticables_cable_close(handle);
 	
+	// exit lib
+	ticables_library_exit();
+
+	return 0;
+}
 
 	// Remote control: display a 'A' on the calc
 	/*
@@ -106,7 +111,3 @@ int main(int argc, char **argv)
 	printf("Data: %02X\n", data);
 	err = lc.get(&data);
 */
-	ticables_library_exit();
-
-	return 0;
-}

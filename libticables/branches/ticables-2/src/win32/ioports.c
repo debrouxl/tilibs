@@ -46,6 +46,7 @@
 /* Variables */
 
 static HINSTANCE hDll = NULL;	// Handle for PortTalk Driver
+static int instance = 0;		// Instance counter
 
 /* Function pointers */
 
@@ -106,9 +107,9 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 int io_open(unsigned long from)
 {
 	DWORD BytesReturned;	// Bytes Returned for DeviceIoControl()
-	int offset;			// Offset for IOPM
-	int iError;			// Error Handling for DeviceIoControl()
-	DWORD pid;			// PID of the program which use the library
+	int offset;				// Offset for IOPM
+	int iError;				// Error Handling for DeviceIoControl()
+	DWORD pid;				// PID of the program which use the library
 
 	io_rd = win32_asm_read_io;
     io_wr = win32_asm_write_io;
@@ -126,6 +127,8 @@ int io_open(unsigned long from)
 			ticables_info("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.");
 			return ERR_PORTTALK_NOT_FOUND;
 		}
+
+		instance++;
 
 		// Turn off all access
 		iError = DeviceIoControl(hDll,
@@ -167,15 +170,15 @@ int io_open(unsigned long from)
 int io_close(unsigned long from)
 {
 	if(win32_detect_os() == WIN_NT)
-		CloseHandle(hDll);
+	{
+		if(--instance)
+			CloseHandle(hDll);
+	}
 
 	return 0;
 }
 
 /* Used by ser_link.c only (should be used by this module and tig_link.c) */
-
-#define BUFFER_SIZE 1024
-
 
 int win32_comport_open(char *comPort, PHANDLE hCom)
 {
@@ -193,7 +196,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
     return ERR_CREATE_FILE;
   }
   // Setup buffer size
-  fSuccess = SetupComm(*hCom, BUFFER_SIZE, BUFFER_SIZE);
+  fSuccess = SetupComm(*hCom, 1024, 1024);
   if (!fSuccess) 
   {
     ticables_info("SetupComm");

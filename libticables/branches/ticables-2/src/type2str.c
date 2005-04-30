@@ -28,8 +28,8 @@ TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
   	switch (model) 
 	{
 	case CABLE_NUL: return "null";
-	case CABLE_TGL: return "GrayLink";
-	case CABLE_SER: return "BlackLink";
+	case CABLE_GRY: return "GrayLink";
+	case CABLE_BLK: return "BlackLink";
 	case CABLE_PAR: return "Parallel";
 	case CABLE_SLV: return "SilverLink";
 	case CABLE_VTI: return "Virtual TI";
@@ -44,9 +44,9 @@ TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
 	if(!strcmp(str, "null"))
 		return CABLE_NUL;
 	else if(!strcmp(str, "GrayLink"))
-		return CABLE_TGL;
+		return CABLE_GRY;
 	else if(!strcmp(str, "BlackLink"))
-		return CABLE_SER;
+		return CABLE_BLK;
 	else if(!strcmp(str, "Parallel"))
 		return CABLE_PAR;
 	else if(!strcmp(str, "SilverLink"))
