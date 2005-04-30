@@ -33,4 +33,6 @@ void ticables_warning(const gchar *format, ...);
 void ticables_critical(const gchar *format, ...);
 void ticables_error(const gchar *format, ...);
 
+#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
+
 #endif
