@@ -1,8 +1,10 @@
 SubVersion: $Id$
 
 To do: 
-	- USB pass-thru support
-	- bug with API mode (Linux & Windows): may not work with some calcs ?!
+	- use overlapped I/O for GrayLink
+	- pack structure in handle
+
+nul,par,ser,gry,slv,
 
 
 	

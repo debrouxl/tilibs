@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: par_link.c 994 2005-04-30 09:09:49Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -41,15 +41,13 @@ static int par_prepare(TiHandle *h)
 	case PORT_1: h->address = 0x378; h->device = strdup("LPT1"); break;
 	case PORT_2: h->address = 0x278; h->device = strdup("LPT2"); break;
 	case PORT_3: h->address = 0x3bc; h->device = strdup("LPT3"); break;
-	default: return -1;
+	default: return ERR_ILLEGAL_ARG;
 	}
 
-	// detect OS 
 	if(win32_detect_os() == WIN_NT)
 	{
-		// detect porttalk if Windows NT
 		if(!win32_detect_porttalk())
-			return -1;
+			return ERR_PORTTALK_NOT_FOUND;
 	}
 
 	return 0;
@@ -59,7 +57,7 @@ static int par_open(TiHandle *h)
 {
 	TRYC(io_open(h->address));
 #ifdef __WIN32__
-  // needed for circumventing a strange problem with PortTalk & Win2k
+	// needed for circumventing a strange problem with PortTalk & Win2k
   	TRYC(io_open(h->address))
 #endif
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
@@ -76,6 +74,7 @@ static int par_close(TiHandle *h)
 
 static int par_reset(TiHandle *h)
 {
+	io_wr(lpt_out, 3);
 	return 0;
 }
 

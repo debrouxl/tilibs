@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: tie_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -75,32 +75,32 @@ static int tie_open(TiHandle *h)
   /* Check if valid argument */
   if ((h->address < 1) || (h->address > 2)) 
   {
-    ticables_info(_("invalid h->address parameter passed to libticables."));
-    h->address = 2;
+		ticables_info(_("invalid h->address parameter passed to libticables."));
+		h->address = 2;
   } 
   else 
   {
-    p = h->address - 1;
-    ref_cnt++;
+		p = h->address - 1;
+		ref_cnt++;
   }
 
   /* Create a FileMapping objects */
   hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
   if (hSendBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+		return ERR_OPENFILEMAPPING;
 
   hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
   if (hRecvBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+		return ERR_OPENFILEMAPPING;
 
   /* Map them */
   pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
   if (pSendBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+		return ERR_MAPVIEWOFFILE;
 
   pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
   if (pRecvBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+		return ERR_MAPVIEWOFFILE;
 
 	pSendBuf->start = pSendBuf->end = 0;
   pRecvBuf->start = pRecvBuf->end = 0;

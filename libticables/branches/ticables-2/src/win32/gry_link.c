@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: gry_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -45,7 +45,7 @@ static int gry_prepare(TiHandle *h)
 	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
 	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
 	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
-	default: return -1;
+	default: return ERR_ILLEGAL_ARG;
 	}
 
 	return 0;
@@ -63,7 +63,7 @@ static int gry_open(TiHandle *h)
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
 		ticables_warning("CreateFile\n");
-		return ERR_OPEN_SER_COMM;
+		return ERR_CREATEFILE;
 	}
   
 	// Setup buffer size
@@ -71,7 +71,7 @@ static int gry_open(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("SetupComm\n");
-		return ERR_SETUP_COMM;
+		return ERR_SETUPCOMM;
 	}
 
 	// Retrieve config structure
@@ -79,26 +79,26 @@ static int gry_open(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("GetCommState\n");
-		return ERR_GET_COMMSTATE;
+		return ERR_GETCOMMSTATE;
 	}
 
 	// Fills the structure with config
 	dcb.BaudRate = CBR_9600;	// 9600 bauds
-    dcb.fBinary = TRUE;		// Binary mode
+    dcb.fBinary = TRUE;			// Binary mode
     dcb.fParity = FALSE;		// Parity checking disabled
     dcb.fOutxCtsFlow = FALSE;	// No output flow control
     dcb.fOutxDsrFlow = FALSE;	// Idem
     dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
     dcb.fDsrSensitivity = FALSE;	// ignore DSR status
-    dcb.fOutX = FALSE;		// no XON/XOFF flow control
-    dcb.fInX = FALSE;		// idem
-    dcb.fErrorChar = FALSE;	// no replacement
-    dcb.fNull = FALSE;		// don't discard null chars
+    dcb.fOutX = FALSE;			// no XON/XOFF flow control
+    dcb.fInX = FALSE;			// idem
+    dcb.fErrorChar = FALSE;		// no replacement
+    dcb.fNull = FALSE;			// don't discard null chars
     dcb.fRtsControl = RTS_CONTROL_ENABLE;	// Provide power supply
     dcb.fAbortOnError = FALSE;	// do not report errors
 
-    dcb.ByteSize = 8;		// 8 bits
-    dcb.Parity = NOPARITY;	// no parity checking
+    dcb.ByteSize = 8;			// 8 bits
+    dcb.Parity = NOPARITY;		// no parity checking
     dcb.StopBits = ONESTOPBIT;	// 1 stop bit
 
     // Config COM port
@@ -106,27 +106,29 @@ static int gry_open(TiHandle *h)
     if (!fSuccess) 
     {
 		ticables_warning("SetCommState\n");
-		return ERR_SET_COMMSTATE;
+		return ERR_SETCOMMSTATE;
     }
   
     fSuccess = GetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
 		ticables_warning("GetCommTimeouts\n");
-		return ERR_GET_COMMTIMEOUT;
+		return ERR_GETCOMMTIMEOUT;
     }
   
-    cto.ReadIntervalTimeout = MAXDWORD;
+    cto.ReadIntervalTimeout = 100 * h->timeout;
+
     cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 0;	//100 * h->timeout;      
+    cto.ReadTotalTimeoutConstant = 100 * h->timeout;  
+    
     cto.WriteTotalTimeoutMultiplier = 0;
-    cto.WriteTotalTimeoutConstant = 100 * h->timeout;	// A value of 0 make non-blocking
+    cto.WriteTotalTimeoutConstant = 100 * h->timeout;
   
     fSuccess = SetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
 		ticables_warning("SetCommTimeouts\n");
-		return ERR_SET_COMMTIMEOUT;
+		return ERR_SETCOMMTIMEOUT;
     }
 
 	return 0;
@@ -153,7 +155,7 @@ static int gry_reset(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("PurgeComm\n");
-		return ERR_FLUSH_COMM;
+		return ERR_PURGECOMM;
 	}
 
 	return 0;
@@ -162,8 +164,8 @@ static int gry_reset(TiHandle *h)
 
 static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
 {
-	DWORD nBytesWritten;
 	BOOL fSuccess;
+	DWORD nBytesWritten;
 
     fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
     if (!fSuccess) 
@@ -189,7 +191,6 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;
-	tiTIME clk;
 
     if (cs.avail) 
     {
@@ -197,21 +198,23 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 		cs.avail = FALSE;
 		return 0;
     }
-  
-    TO_START(clk);
-    do 
-    {
-		if (TO_ELAPSED(clk, len * h->timeout))
-			return ERR_READ_TIMEOUT;
-		fSuccess = ReadFile(hCom, data, len, &nBytesRead, NULL);
-    }
-    while (nBytesRead < len);
-  
-    if (!fSuccess) 
+
+	fSuccess = ReadFile(hCom, data, len, &nBytesRead, NULL);
+	if (!fSuccess) 
     {
 		ticables_warning("ReadFile\n");
 		return ERR_READ_ERROR;
     }
+	else if (nBytesRead == 0) 
+    {
+		ticables_warning("ReadFile\n");
+		return ERR_READ_TIMEOUT;
+    }
+	else if (nBytesRead < len)
+	{
+		ticables_warning("ReadFile\n");
+		return ERR_READ_ERROR;
+	}
   	
   	return 0;
 }

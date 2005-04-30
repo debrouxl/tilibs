@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ser_link.c 859 2005-02-24 12:24:58Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -44,7 +44,7 @@ static int ser_prepare(TiHandle *h)
 	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
 	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
 	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
-	default: return -1;
+	default: return ERR_ILLEGAL_ARG;
 	}
 
 	// detect OS 
@@ -52,7 +52,7 @@ static int ser_prepare(TiHandle *h)
 	{
 		// detect porttalk if Windows NT
 		if(!win32_detect_porttalk())
-			return -1;
+			return ERR_PORTTALK_NOT_FOUND;
 	}
 
 	return 0;
@@ -85,8 +85,7 @@ static int ser_close(TiHandle *h)
 
 static int ser_reset(TiHandle *h)
 {
-
-
+	io_wr(com_out, 3);
 	return 0;
 }
 
@@ -164,18 +163,19 @@ static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
     			while ((v = io_rd(com_in) & 0x30) == 0x30) 
 				{
       				if (TO_ELAPSED(clk, h->timeout))
-					return ERR_READ_TIMEOUT;
+						return ERR_READ_TIMEOUT;
     			}
     			
     			if (v == 0x10) 
 				{
 	      			byte = (byte >> 1) | 0x80;
 	      			io_wr(com_out, 1);
+
 	      			TO_START(clk);
 	      			while ((io_rd(com_in) & 0x20) == 0x00) 
 					{
 		      			if (TO_ELAPSED(clk, h->timeout))
-			      		return ERR_READ_TIMEOUT;
+			      			return ERR_READ_TIMEOUT;
 	      			}
 	      			io_wr(com_out, 3);
     			} 
@@ -183,6 +183,7 @@ static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
 				{
 	      			byte = (byte >> 1) & 0x7F;
 	      			io_wr(com_out, 2);
+
 	      			TO_START(clk);
 	      			while ((io_rd(com_in) & 0x10) == 0x00) 
 					{

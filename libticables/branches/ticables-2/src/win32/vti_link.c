@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: vti_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -93,7 +93,7 @@ static int vti_open(TiHandle *h)
   /* Get an handle on the VTi window */
   otherWnd = FindWindow("TEmuWnd", NULL);
   if (!otherWnd)
-    return ERR_OPP_NOT_AVAIL;
+    return ERR_FINDWINDOW;
 
   /* Get the current DLL handle */
   Handle = GetModuleHandle("ticables.dll");
@@ -124,8 +124,9 @@ static int vti_open(TiHandle *h)
   {
     ticables_info(_("Opened %s\n"), name);
     vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  } else
-    return ERR_OPEN_FILE_MAP;
+  } 
+  else
+    return ERR_OPENFILEMAPPING;
 
   /* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
   a = GlobalAddAtom(vLinkFileName);
@@ -173,7 +174,6 @@ static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
-
 
 	for(i = 0; i < len; i++)
 	{

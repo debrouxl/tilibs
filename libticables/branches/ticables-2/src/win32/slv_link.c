@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: slv_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -43,7 +43,7 @@
 
 #define MIN_VERSION "3.0"
 
-static HINSTANCE hDLL = NULL;	// DLL handle on TiglUsb.dll
+#define hDLL	(HANDLE)(h->priv)	// DLL handle on TiglUsb.dll
 
 TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic loading
 
@@ -59,9 +59,6 @@ TIGLUSB_WRITE dynTiglUsbWrite = NULL;
 
 TIGLUSB_SETTIMEOUT dynTiglUsbSetTimeout = NULL;
 TIGLUSB_GETTIMEOUT dynTiglUsbGetTimeout = NULL;
-
-#define hCom	(HANDLE)(h->priv)
-#define BUFFER_SIZE 1024
 
 static int slv_prepare(TiHandle *h)
 {
@@ -81,13 +78,15 @@ static int slv_open(TiHandle *h)
 
 	// Create an handle on library and retrieve symbols
 	hDLL = LoadLibrary("TIGLUSB.DLL");
-	if (hDLL == NULL) {
+	if (hDLL == NULL) 
+	{
 		ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
-		return ERR_OPEN_USB_DEV;
+		return ERR_LOADLIBRARY;
 	}
 
 	dynTiglUsbVersion = (TIGLUSB_VERSION) GetProcAddress(hDLL, "TiglUsbVersion");
-	if (!dynTiglUsbVersion || (strcmp(dynTiglUsbVersion(), MIN_VERSION) < 0)) {
+	if (!dynTiglUsbVersion || (strcmp(dynTiglUsbVersion(), MIN_VERSION) < 0)) 
+	{
 	    char buffer[256];
 		sprintf(buffer, _("TiglUsb.dll: version %s mini needed, got version %s.\nPlease download the latest release on <http://ti-lpg.org/prj_usb>."),
 			MIN_VERSION, dynTiglUsbVersion());
@@ -99,72 +98,82 @@ static int slv_open(TiHandle *h)
 	ticables_info(_("using TiglUsb.dll version %s"), dynTiglUsbVersion());
 
 	dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
-	if (!dynTiglUsbOpen) {
+	if (!dynTiglUsbOpen) 
+	{
 		ticables_warning(_("Unable to load TiglUsbOpen symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
     dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
-	if (!dynTiglUsbClose) {
+	if (!dynTiglUsbClose) 
+	{
 		ticables_warning(_("Unable to load TiglUsbClose symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
 	dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
-	if (!dynTiglUsbOpen) {
+	if (!dynTiglUsbOpen) 
+	{
 	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
     dynTiglUsbReset = (TIGLUSB_RESET) GetProcAddress(hDLL, "TiglUsbReset");
-	if (!dynTiglUsbOpen) {
+	if (!dynTiglUsbOpen) 
+	{
 	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
     dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
-	if (!dynTiglUsbCheck) {
+	if (!dynTiglUsbCheck) 
+	{
 		ticables_warning(_("Unable to load TiglUsbCheck symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
 	dynTiglUsbRead = (TIGLUSB_READ) GetProcAddress(hDLL, "TiglUsbRead");
-	if (!dynTiglUsbRead) {
+	if (!dynTiglUsbRead) 
+	{
 		ticables_warning(_("Unable to load TiglUsbRead symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
 	dynTiglUsbWrite = (TIGLUSB_WRITE) GetProcAddress(hDLL, "TiglUsbWrite");
-	if (!dynTiglUsbWrite) {
+	if (!dynTiglUsbWrite) 
+	{
 	    ticables_warning(_("Unable to load TiglUsbWrite symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
 	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL, "TiglUsbSetTimeout");
-	if (!dynTiglUsbSetTimeout) {
+	if (!dynTiglUsbSetTimeout) 
+	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
     dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT) GetProcAddress(hDLL, "TiglUsbGetTimeout");
-	if (!dynTiglUsbSetTimeout) {
+	if (!dynTiglUsbSetTimeout) 
+	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
   
 	ret = dynTiglUsbOpen();
-	switch (ret) {
-		case TIGLERR_DEV_OPEN_FAILED: return ERR_OPEN_USB_DEV;
-		case TIGLERR_DEV_ALREADY_OPEN: return ERR_OPEN_USB_DEV;
+	switch (ret) 
+	{
+		case TIGLERR_DEV_OPEN_FAILED: return ERR_TIGLUSB_OPEN;
+		case TIGLERR_DEV_ALREADY_OPEN: return ERR_TIGLUSB_OPEN;
 		default: break;
 	}
 
@@ -179,7 +188,6 @@ static int slv_close(TiHandle *h)
 
     ret = dynTiglUsbClose();
 
-    /* Free library handle */
     if (hDLL != NULL)
         FreeLibrary(hDLL);
     hDLL = NULL;

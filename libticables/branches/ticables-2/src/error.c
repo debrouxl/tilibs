@@ -51,14 +51,21 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 
 	switch(number)
 	{
-  	case ERR_OPEN_SER_DEV:
+	case ERR_BUSY:
+		*message = g_strconcat(
+    		_("Msg: Link cable is busy."),
+    		"\n",
+    		 _("Cause: a transfer is in progress."),
+			 NULL);
+    	break;
+/*
+  	case ERR_CREATEFILE:
 		*message = g_strconcat(
     		_("Msg: Unable to open serial device."),
     		"\n",
     		 _("Cause: check your permissions on the node. Check that the device is not locked by another application (modem ?)."),
 			 NULL);
     	break;
-/*
   	case ERR_OPEN_SER_COMM:
     		strcpy(error_msg, _("Msg: Unable to open COM port."));
     		strcat(error_msg, "\n");

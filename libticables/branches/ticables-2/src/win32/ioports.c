@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: ioports.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
@@ -193,7 +193,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("CreateFile");
     print_last_error("CreateFile");
-    return ERR_CREATE_FILE;
+    return ERR_CREATEFILE;
   }
   // Setup buffer size
   fSuccess = SetupComm(*hCom, 1024, 1024);
@@ -201,7 +201,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetupComm");
     print_last_error("SetupComm");
-    return ERR_SETUP_COMM;
+    return ERR_SETUPCOMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(*hCom, &dcb);
@@ -209,7 +209,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("GetCommState");
     print_last_error("GetCOmmState");
-    return ERR_GET_COMMSTATE;
+    return ERR_GETCOMMSTATE;
   }
   // Fills the structure with config
   dcb.BaudRate = CBR_9600;	// 9600 bauds
@@ -236,7 +236,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetCommState");
     print_last_error("SetCOmmState");
-    return ERR_SET_COMMSTATE;
+    return ERR_SETCOMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(*hCom, &cto);
@@ -244,7 +244,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("GetCommTimeouts");
     print_last_error("GetCommTimeouts");
-    return ERR_GET_COMMTIMEOUT;
+    return ERR_GETCOMMTIMEOUT;
   }
 
   cto.ReadIntervalTimeout = MAXDWORD;
@@ -258,7 +258,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetCommTimeouts");
     print_last_error("SetCommTimeouts");
-    return ERR_SET_COMMTIMEOUT;
+    return ERR_SETCOMMTIMEOUT;
   }
 
   return 0;
