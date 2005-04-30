@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ticables.c 990 2005-04-29 14:14:02Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -26,16 +26,15 @@
 #include "ticables.h"
 #include "data_log.h"
 #include "error.h"
-
-#ifndef TRY
-# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }	//new !
-#endif
+#include "logging.h"
 
 TIEXPORT int TICALL ticables_cable_open(TiHandle* handle)
 {
 	const TiCable *cable = handle->cable;
 
-	TRY(cable->open(handle));
+	TRYC(handle->cable->prepare(handle));
+
+	TRYC(cable->open(handle));
 	handle->open = 1;
 	START_LOGGING();
 

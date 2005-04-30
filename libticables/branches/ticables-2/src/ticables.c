@@ -166,12 +166,6 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
 	if(handle->cable == NULL)
 		return NULL;
 
-	if(handle->cable->prepare(handle))
-	{
-		ticables_handle_del(handle);
-		return NULL;
-	}
-
 	return handle;
 }
 
@@ -193,22 +187,55 @@ TIEXPORT int TICALL ticables_handle_del(TiHandle* handle)
 	return 0;
 }
 
+/**
+ * ticables_options_set_timeout:
+ * @handle: the handle
+ * @timeout: timeout value in tenth of seconds
+ *
+ * Set timeout for any cable.
+ *
+ * Return value: always 0.
+ **/
 TIEXPORT int TICALL ticables_options_set_timeout(TiHandle* handle, int timeout)
 {
 	return handle->timeout = timeout;
 }
 	
+/**
+ * ticables_options_set_delay:
+ * @handle: the handle
+ * @delay: delay in micro-seconds
+ *
+ * Set inter-bit delay for parallel or BlackLink cable.
+ *
+ * Return value: always 0.
+ **/
 TIEXPORT int TICALL ticables_options_set_delay(TiHandle* handle, int delay)
 {
 	return handle->delay = delay;
 }
 
-
+/**
+ * ticables_get_model:
+ * @handle: the handle
+ *
+ * Retrieve link cable model.
+ *
+ * Return value: cable model.
+ **/
 TIEXPORT TiCableModel TICALL ticables_get_model(TiHandle* handle)
 {
 	return handle->model;
 }
 
+/**
+ * ticables_get_port:
+ * @handle: the handle
+ *
+ * Retrieve port.
+ *
+ * Return value: the port value.
+ **/
 TIEXPORT TiCablePort  TICALL ticables_get_port(TiHandle* handle)
 {
 	return handle->port;
