@@ -2,7 +2,7 @@
 /* $Id: ser_link.c 370 2004-03-22 18:47:32Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,18 +25,14 @@
 #include <config.h>
 #endif
 
-
 #if defined(__LINUX__)
 #include "linux/ser_link.c"
-#include "linux/ser_link2.c"
 
 #elif defined(__BSD__)
 #include "linux/ser_link.c"
-#include "linux/ser_link2.c"
 
 #elif defined(__WIN32__)
-#include "linux/ser_link.c"
-#include "linux/ser_link2.c"
+#include "win32/ser_link.c"
 
 #elif defined(__MACOSX__)
 #include "none.c"

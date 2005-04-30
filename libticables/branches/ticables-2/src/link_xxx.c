@@ -2,7 +2,7 @@
 /* $Id: ticables.c 990 2005-04-29 14:14:02Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
