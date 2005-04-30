@@ -169,41 +169,49 @@ static int vti_reset(TiHandle *h)
 	return 0;
 }
 
-static int vti_put(TiHandle *h, uint8_t data)
+static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
+	int i;
 	tiTIME clk;
 
 
-	TO_START(clk);
-	do 
+	for(i = 0; i < len; i++)
 	{
-		if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-	}
-	while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
+		TO_START(clk);
+		do 
+		{
+			if (TO_ELAPSED(clk, h->timeout))
+				return ERR_WRITE_TIMEOUT;
+		}
+		while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
 
-	vSendBuf->buf[vSendBuf->end] = data;					// put data in buffer
-	vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
+		vSendBuf->buf[vSendBuf->end] = data[i];					// put data in buffer
+		vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
+	}
 
 	return 0;
 }
 
-static int vti_get(TiHandle *h, uint8_t *data)
+static int vti_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
+	int i;
 	tiTIME clk;
 
 	/* Wait that the buffer has been filled */
-	TO_START(clk);
-	do 
+	for(i = 0; i < len; i++)
 	{
-		if (TO_ELAPSED(clk, h->timeout))
-			return ERR_READ_TIMEOUT;
-	}
-	while (vRecvBuf->start == vRecvBuf->end);
+		TO_START(clk);
+		do 
+		{
+			if (TO_ELAPSED(clk, h->timeout))
+				return ERR_READ_TIMEOUT;
+		}
+		while (vRecvBuf->start == vRecvBuf->end);
 
-	/* And retrieve the data from the circular buffer */
-	*data = vRecvBuf->buf[vRecvBuf->start];
-	vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
+		/* And retrieve the data from the circular buffer */
+		data[i] = vRecvBuf->buf[vRecvBuf->start];
+		vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
+	}
 
 	return 0;
 }

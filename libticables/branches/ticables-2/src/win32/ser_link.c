@@ -90,106 +90,114 @@ static int ser_reset(TiHandle *h)
 	return 0;
 }
 
-static int ser_put(TiHandle *h, uint8_t data)
+static int ser_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
-  	int i;
+  	int i, j;
   	tiTIME clk;
 
-  	for (bit = 0; bit < 8; bit++) 
+	for(j = 0; j < len; j++)
 	{
-    	if (data & 1) 
-		{
-      		io_wr(com_out, 2);
-      		TO_START(clk);
-      		do 
-			{
-				if (TO_ELAPSED(clk, h->timeout))
-	  			return ERR_WRITE_TIMEOUT;
-      		} while ((io_rd(com_in) & 0x10));
-      		
-      		io_wr(com_out, 3);
-      		TO_START(clk);
-      		do 
-			{
-				if (TO_ELAPSED(clk, h->timeout))
-	  			return ERR_WRITE_TIMEOUT;
-      		} while ((io_rd(com_in) & 0x10) == 0x00);
-    	} 
-		else 
-		{
-      		io_wr(com_out, 1);
-      		TO_START(clk);
-      		do 
-			{
-				if (TO_ELAPSED(clk, h->timeout))
-	  			return ERR_WRITE_TIMEOUT;
-      		} while (io_rd(com_in) & 0x20);
-      	
-      		io_wr(com_out, 3);
-      		TO_START(clk);
-			do 
-			{
-				if (TO_ELAPSED(clk, h->timeout))
-	  			return ERR_WRITE_TIMEOUT;
-      		} while ((io_rd(com_in) & 0x20) == 0x00);
-    	}
+		uint8_t byte = data[j];
 
-    	data >>= 1;
-    	for (i = 0; i < h->delay; i++)
-      		io_rd(com_in);
-  	}
+  		for (bit = 0; bit < 8; bit++) 
+		{
+    		if (byte & 1) 
+			{
+      			io_wr(com_out, 2);
+      			TO_START(clk);
+      			do 
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+	  					return ERR_WRITE_TIMEOUT;
+      			} while ((io_rd(com_in) & 0x10));
+      			
+      			io_wr(com_out, 3);
+      			TO_START(clk);
+      			do 
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+	  					return ERR_WRITE_TIMEOUT;
+      			} while ((io_rd(com_in) & 0x10) == 0x00);
+    		} 
+			else 
+			{
+      			io_wr(com_out, 1);
+      			TO_START(clk);
+      			do 
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+	  					return ERR_WRITE_TIMEOUT;
+      			} while (io_rd(com_in) & 0x20);
+      		
+      			io_wr(com_out, 3);
+      			TO_START(clk);
+				do 
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+	  					return ERR_WRITE_TIMEOUT;
+      			} while ((io_rd(com_in) & 0x20) == 0x00);
+    		}
+
+    		byte >>= 1;
+    		for (i = 0; i < h->delay; i++)
+      			io_rd(com_in);
+  		}
+	}
 
 	return 0;
 }
 
-static int ser_get(TiHandle *h, uint8_t *ch)
+static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
-  	uint8_t data = 0;
-  	uint8_t v;
-  	int i;
+  	int i, j;
   	tiTIME clk;
 
-  	for (bit = 0; bit < 8; bit++) 
+	for(j = 0; j < len; j++)
 	{
-    		TO_START(clk);
-    		while ((v = io_rd(com_in) & 0x30) == 0x30) 
-			{
-      			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_READ_TIMEOUT;
-    		}
+		uint8_t v, byte = 0;
+  	
+		for (bit = 0; bit < 8; bit++) 
+		{
+    			TO_START(clk);
+    			while ((v = io_rd(com_in) & 0x30) == 0x30) 
+				{
+      				if (TO_ELAPSED(clk, h->timeout))
+					return ERR_READ_TIMEOUT;
+    			}
+    			
+    			if (v == 0x10) 
+				{
+	      			byte = (byte >> 1) | 0x80;
+	      			io_wr(com_out, 1);
+	      			TO_START(clk);
+	      			while ((io_rd(com_in) & 0x20) == 0x00) 
+					{
+		      			if (TO_ELAPSED(clk, h->timeout))
+			      		return ERR_READ_TIMEOUT;
+	      			}
+	      			io_wr(com_out, 3);
+    			} 
+				else 
+				{
+	      			byte = (byte >> 1) & 0x7F;
+	      			io_wr(com_out, 2);
+	      			TO_START(clk);
+	      			while ((io_rd(com_in) & 0x10) == 0x00) 
+					{
+		      			if (TO_ELAPSED(clk, h->timeout))
+	                      		return ERR_READ_TIMEOUT;
+	      			}
+	      			io_wr(com_out, 3);
+    			}
     		
-    		if (v == 0x10) 
-			{
-	      		data = (data >> 1) | 0x80;
-	      		io_wr(com_out, 1);
-	      		TO_START(clk);
-	      		while ((io_rd(com_in) & 0x20) == 0x00) 
-				{
-		      		if (TO_ELAPSED(clk, h->timeout))
-			      	return ERR_READ_TIMEOUT;
-	      		}
-	      		io_wr(com_out, 3);
-    		} 
-			else 
-			{
-	      		data = (data >> 1) & 0x7F;
-	      		io_wr(com_out, 2);
-	      		TO_START(clk);
-	      		while ((io_rd(com_in) & 0x10) == 0x00) 
-				{
-		      		if (TO_ELAPSED(clk, h->timeout))
-	                      	return ERR_READ_TIMEOUT;
-	      		}
-	      		io_wr(com_out, 3);
-    		}
-    	
-		for (i = 0; i < h->delay; i++)
-      			io_rd(com_in);
-  	}
+			for (i = 0; i < h->delay; i++)
+      				io_rd(com_in);
+  		}
 
-  	*ch = data;
+  		data[j] = byte;
+	}
 
 	return 0;
 }

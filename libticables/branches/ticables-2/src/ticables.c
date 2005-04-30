@@ -62,10 +62,13 @@ static TiCable const *const cables[] =
 // not static, must be shared between instances
 int ticables_instance = 0;	// counts # of instances
 
-/*
-	This function should be the first one to call.
-  	It tries to list available I/O resources for later use.
- */
+/**
+ * tifiles_library_init:
+ *
+ * This function must be the first one to call. It inits library internals.
+ *
+ * Return value: the instance count.
+ **/
 TIEXPORT int TICALL ticables_library_init(void)
 {
 	char locale_dir[65536];
@@ -104,10 +107,13 @@ TIEXPORT int TICALL ticables_library_init(void)
 }
 
 
-/*
-  	This function should be called when the libticables library is
-  	no longer used.
- */
+/**
+ * tifiles_library_exit:
+ *
+ * This function must be the last one to call. Used to release internal resources.
+ *
+ * Return value: the instance count.
+ **/
 TIEXPORT int
 TICALL ticables_library_exit(void)
 {
@@ -130,6 +136,17 @@ TIEXPORT const char *TICALL ticables_version_get(void)
 	return LIBTICABLES_VERSION;
 }
 
+/**
+ * ticables_handle_new:
+ * @model: a cable model
+ * @port: the generic port on which cable is attached.
+ *
+ * Create a new handle associated with the given cable on the given port.
+ * Must be freed with ticables_handle_del when no longer needed.
+ * Note: the handle is a pointer on an opaque structure and should not be modified.
+ *
+ * Return value: NULL if error, an handle otherwise.
+ **/
 TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
 {
 	TiHandle *handle = (TiHandle *)calloc(1, sizeof(TiHandle));
@@ -158,6 +175,14 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
 	return handle;
 }
 
+/**
+ * ticables_handle_del:
+ * @handle: the handle
+ *
+ * Release the cable and free the associated resources.
+ *
+ * Return value: always 0.
+ **/
 TIEXPORT int TICALL ticables_handle_del(TiHandle* handle)
 {
 	free(handle->device);

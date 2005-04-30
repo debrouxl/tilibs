@@ -162,10 +162,6 @@ SOURCE=..\..\src\error.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticables.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\timeout.h
 # End Source File
 # End Group
@@ -179,6 +175,10 @@ SOURCE=..\..\src\error.c
 # Begin Source File
 
 SOURCE=..\..\src\ticables.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\ticables.h
 # End Source File
 # Begin Source File
 

@@ -211,40 +211,46 @@ static int slv_reset(TiHandle *h)
 	return 0;
 }
 
-static int slv_put(TiHandle *h, uint8_t data)
+static int slv_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
-	int ret;
+	int ret, i;
 
-    ret = dynTiglUsbWrite(data);
-
-    switch (ret) 
+	for(i = 0; i < len; i++)
 	{
-    case TIGLERR_WRITE_TIMEOUT:
-        return ERR_WRITE_TIMEOUT;
-    case TIGLERR_WRITE_ERROR:
-        return ERR_WRITE_ERROR;
-    default:
-        break;
-    }
+		ret = dynTiglUsbWrite(data[i]);
+
+		switch (ret) 
+		{
+		case TIGLERR_WRITE_TIMEOUT:
+			return ERR_WRITE_TIMEOUT;
+		case TIGLERR_WRITE_ERROR:
+			return ERR_WRITE_ERROR;
+		default:
+			break;
+		}
+	}
 
 	return 0;
 }
 
-static int slv_get(TiHandle *h, uint8_t *data)
+static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
-	int ret;
+	int ret, i;
 
-    ret = dynTiglUsbRead(data);
-
-    switch (ret) 
+	for(i = 0; i < len; i++)
 	{
-    case TIGLERR_READ_TIMEOUT:
-        return ERR_READ_TIMEOUT;
-    case TIGLERR_READ_ERROR:
-        return ERR_READ_ERROR;
-    default:
-        break;
-    }
+		ret = dynTiglUsbRead(data+i);
+
+		switch (ret) 
+		{
+		case TIGLERR_READ_TIMEOUT:
+			return ERR_READ_TIMEOUT;
+		case TIGLERR_READ_ERROR:
+			return ERR_READ_ERROR;
+		default:
+			break;
+		}
+	}
 
 	return 0;
 }

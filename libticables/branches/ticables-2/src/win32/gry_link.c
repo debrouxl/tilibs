@@ -159,31 +159,37 @@ static int gry_reset(TiHandle *h)
 	return 0;
 }
 
-static int gry_put(TiHandle *h, uint8_t data)
+
+static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
 {
-	DWORD i;
+	DWORD nBytesWritten;
 	BOOL fSuccess;
 
-    fSuccess = WriteFile(hCom, &data, 1, &i, NULL);
+    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
     if (!fSuccess) 
     {
-      ticables_warning("WriteFile\n");
-      return ERR_WRITE_ERROR;
+		ticables_warning("WriteFile\n");
+		return ERR_WRITE_ERROR;
     } 
-    else if (i == 0) 
+    else if (nBytesWritten == 0) 
     {
-      ticables_warning("WriteFile\n");
-      return ERR_WRITE_TIMEOUT;
+		ticables_warning("WriteFile\n");
+		return ERR_WRITE_TIMEOUT;
     }
+	else if (nBytesWritten < len)
+	{
+		ticables_warning("WriteFile\n");
+		return ERR_WRITE_ERROR;
+	}
 
 	return 0;
 }
 
-static int gry_get(TiHandle *h, uint8_t *data)
+static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
-  DWORD i;
-  tiTIME clk;
+	DWORD nBytesRead;
+	tiTIME clk;
 
     if (cs.avail) 
     {
@@ -195,16 +201,16 @@ static int gry_get(TiHandle *h, uint8_t *data)
     TO_START(clk);
     do 
     {
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, len * h->timeout))
 			return ERR_READ_TIMEOUT;
-		fSuccess = ReadFile(hCom, data, 1, &i, NULL);
+		fSuccess = ReadFile(hCom, data, len, &nBytesRead, NULL);
     }
-    while (i != 1);
+    while (nBytesRead < len);
   
     if (!fSuccess) 
     {
-      ticables_warning("ReadFile\n");
-      return ERR_READ_ERROR;
+		ticables_warning("ReadFile\n");
+		return ERR_READ_ERROR;
     }
   	
   	return 0;

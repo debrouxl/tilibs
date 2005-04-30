@@ -51,6 +51,11 @@ extern "C" {
 #define DFLT_TIMEOUT  15	/* 1.5 second */
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
+/**
+ * TiCableModel:
+ *
+ * An enumeration which contains the following cable types:
+ **/
 typedef enum 
 {
 	CABLE_NUL = 0,
@@ -58,29 +63,70 @@ typedef enum
 	CABLE_VTL, CABLE_TIE, CABLE_VTI,
 } TiCableModel;
 
-/* Ports */
+/**
+ * TiCablePort:
+ *
+ * An enumeration which contains the following ports:
+ **/
 typedef enum 
 {
 	PORT_0 = 0,
 	PORT_1, PORT_2, PORT_3, PORT_4,
 } TiCablePort;
 
+/**
+ * TiCableStatus:
+ *
+ * An enumeration which contains the following values:
+ **/
 typedef enum 
 {
 	STATUS_NONE = 0, 
-	STATUS_RX, STATUS_TX,
+	STATUS_RX = 1, 
+	STATUS_TX = 2,
 } TiCableStatus;
 
+/**
+ * TiDataRate:
+ * @count: number of bytes transferred
+ * @start: the time when transfer started
+ * @stop: the time when transfer finished
+ * @current: free of use
+ *
+ * A structure used for benchmarks.
+ **/
 typedef struct 
 {
 	int		count;			// Number of bytes exchanged
 	tiTIME	start;			// Time when transfer has begun
 	tiTIME	current;		// Current time (free for use)
+	tiTIME	stop;			// Time when transfer has finished
 } TiDataRate;
 
 typedef struct _Cable	TiCable;
 typedef struct _Handle	TiHandle;
 
+/**
+ * TiCable:
+ * @model: link cable model (TiCableModel).
+ * @name: name of cable
+ * @fullname: complete name of cable
+ * @description: description of cable
+ * @prepare:
+ * @probe:
+ * @open:
+ * @close:
+ * @reset:
+ * @send:
+ * @recv:
+ * @check:
+ * @set_d0:
+ * @set_d1:
+ * @get_d0
+ * @get_d1
+ *
+ * A internal structure by link cables.
+ **/
 struct _Cable
 {
 	int				model;			// TiCableModel
@@ -95,9 +141,9 @@ struct _Cable
 	int (*close)	(TiHandle *);	// Close cable
 	int (*reset)	(TiHandle *);	// Reset cable
 
-	int (*send)		(TiHandle *, uint8_t);		// Send data
-	int (*recv)		(TiHandle *, uint8_t *);	// Recv data
-	int (*check)	(TiHandle *, int *);		// Check data arrival
+	int (*send)		(TiHandle *, uint8_t *, uint16_t);	// Send data
+	int (*recv)		(TiHandle *, uint8_t *, uint16_t);	// Recv data
+	int (*check)	(TiHandle *, int *);// Check data arrival
 
 	int (*set_d0)	(TiHandle *, int);	// Direct access to D0 wire
 	int (*set_d1)	(TiHandle *, int);	// Direct access to D1 wire
@@ -105,6 +151,21 @@ struct _Cable
 	int (*get_d1)	(TiHandle *);
 };
 
+/**
+ * TiHandle:
+ * @model: link cable model
+ * @port: link port
+ * @timeout: timeout value
+ * @delay: inter-bit delay for serial/parallel cable
+ * @device: device name (if used)
+ * @address: I/O address of device (if used)
+ * @cable: a TiCable structure used by this handle
+ * @priv: opaque data for internal/private use
+ * @open: set if cable has been open
+ * @busy: set if cable is busy
+ *
+ * A internal structure by link cables.
+ **/
 struct _Handle
 {
 	TiCableModel	model;	// Cable model
@@ -179,6 +240,7 @@ struct _Handle
 	TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str);
 
 	// probe.c
+	// later...
   
   
   /************************/

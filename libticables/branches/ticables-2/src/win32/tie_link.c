@@ -128,39 +128,47 @@ static int tie_reset(TiHandle *h)
 	return 0;
 }
 
-static int tie_put(TiHandle *h, uint8_t data)
+static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
+	int i;
 	tiTIME clk;
-  TO_START(clk);
-  do 
-  {
-    if (TO_ELAPSED(clk, h->timeout))
-      return ERR_WRITE_TIMEOUT;
-  }
-  while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
 
-  pSendBuf->buf[pSendBuf->end] = data;
-  pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
+	for(i = 0; i < len; i++)
+	{
+		TO_START(clk);
+		do 
+		{
+		  if (TO_ELAPSED(clk, h->timeout))
+			return ERR_WRITE_TIMEOUT;
+		}
+		while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
+
+		pSendBuf->buf[pSendBuf->end] = data[i];
+		pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
+	}
 	
 	return 0;
 }
 
-static int tie_get(TiHandle *h, uint8_t *data)
+static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
+	int i;
 	tiTIME clk;
 
-	/* Wait that the buffer has been filled */
-	TO_START(clk);
-	do 
+	for(i = 0; i < len; i++)
 	{
-		if (TO_ELAPSED(clk, h->timeout))
-			return ERR_READ_TIMEOUT;
-	}
-	while (pRecvBuf->start == pRecvBuf->end);
+		TO_START(clk);
+		do 
+		{
+			if (TO_ELAPSED(clk, h->timeout))
+				return ERR_READ_TIMEOUT;
+		}
+		while (pRecvBuf->start == pRecvBuf->end);
 
-	/* And retrieve the data from the circular buffer */
-	*data = pRecvBuf->buf[pRecvBuf->start];
-	pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
+		/* And retrieve the data from the circular buffer */
+		data[i] = pRecvBuf->buf[pRecvBuf->start];
+		pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
+	}
 
 	return 0;
 }

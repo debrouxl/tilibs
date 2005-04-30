@@ -56,7 +56,7 @@ TIEXPORT int TICALL ticables_cable_close(TiHandle* handle)
 TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_t len)
 {
 	const TiCable *cable = handle->cable;
-	int ret, i;
+	int ret;
 
 	if(!handle->open)
 		return -1;
@@ -68,16 +68,7 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 	handle->busy = 1;
 	handle->rate.count = len;
 	TO_START(handle->rate.start);
-	for(i = 0; i < len; i++)
-	{
-		LOG_DATA(data[i]);
-		ret = cable->send(handle, data[i]);
-		if(ret)
-		{
-			handle->busy = 0;
-			return ret;
-		}
-	}	
+	ret = cable->send(handle, data, len);
 	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 
@@ -87,7 +78,7 @@ TIEXPORT int TICALL ticables_cable_send(TiHandle* handle, uint8_t *data, uint16_
 TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_t len)
 {
 	const TiCable *cable = handle->cable;
-	int ret, i;
+	int ret;
 	
 	if(!handle->open)
 		return -1;
@@ -99,16 +90,7 @@ TIEXPORT int TICALL ticables_cable_recv(TiHandle* handle, uint8_t *data, uint16_
 	handle->busy = 1;
 	handle->rate.count = len;
 	TO_START(handle->rate.start);
-	for(i = 0; i < len; i++)
-	{
-		ret = cable->recv(handle, &data[i]);
-		LOG_DATA(data[i]);
-		if(ret)
-		{
-			handle->busy = 0;
-			return ret;
-		}
-	}
+	ret = cable->recv(handle, data, len);
 	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 

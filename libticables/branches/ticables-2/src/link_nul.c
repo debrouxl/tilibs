@@ -58,12 +58,12 @@ int nul_reset(TiHandle *h)
 	return 0;
 }
 
-int nul_put(TiHandle *h, uint8_t data)
+int nul_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
 
-int nul_get(TiHandle *h, uint8_t *data)
+int nul_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
