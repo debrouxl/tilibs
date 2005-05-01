@@ -158,10 +158,12 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
 	handle->delay = DFLT_DELAY;
 	handle->timeout = DFLT_TIMEOUT;
 
-	printf("%i %i\n", sizeof(cables), sizeof(TiCable));
 	for(i = 0; cables[i]; i++)
 		if(cables[i]->model == model)
+		{
 			handle->cable = cables[i];
+			break;
+		}
 	
 	if(handle->cable == NULL)
 		return NULL;
@@ -248,8 +250,11 @@ TIEXPORT int TICALL ticables_handle_show(TiHandle* handle)
 	ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
 	ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
 	ticables_info(_("  delay   : %i us"), handle->delay);
-	ticables_info(_("  device  : %s"), handle->device);
-	ticables_info(_("  address : 0x%03x"), handle->address);
+	if(handle->device)
+	{
+		ticables_info(_("  device  : %s"), handle->device);
+		ticables_info(_("  address : 0x%03x"), handle->address);
+	}
 
 	return 0;
 }

@@ -131,6 +131,11 @@ static int tie_reset(TiHandle *h)
 	return 0;
 }
 
+static int tie_probe(TiHandle *h)
+{
+	return 1;
+}
+
 static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
@@ -176,11 +181,6 @@ static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_probe(TiHandle *h)
-{
-	return 0;
-}
-
 static int tie_check(TiHandle *h, int *status)
 {
 	if (pRecvBuf->start == pRecvBuf->end)
@@ -218,8 +218,8 @@ const TiCable cable_tie =
 	N_("TiEmu"),
 	N_("Virtual link for TiEmu"),
 
-	&tie_prepare, &tie_probe,
-	&tie_open, &tie_close, &tie_reset,
+	&tie_prepare,
+	&tie_open, &tie_close, &tie_reset, &tie_probe,
 	&tie_put, &tie_get, &tie_check,
 	&tie_set_red_wire, &tie_set_white_wire,
 	&tie_get_red_wire, &tie_get_white_wire,

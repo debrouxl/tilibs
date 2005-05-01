@@ -173,6 +173,11 @@ static int vti_reset(TiHandle *h)
 	return 0;
 }
 
+static int vti_probe(TiHandle *h)
+{
+	return 1;
+}
+
 static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
@@ -219,11 +224,6 @@ static int vti_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_probe(TiHandle *h)
-{
-	return 0;
-}
-
 static int vti_check(TiHandle *h, int *status)
 {
 	*status = !(vRecvBuf->start == vRecvBuf->end);
@@ -258,8 +258,8 @@ const TiCable cable_vti =
 	N_("Virtual TI"),
 	N_("Virtual link for VTi"),
 
-	&vti_prepare, &vti_probe,
-	&vti_open, &vti_close, &vti_reset,
+	&vti_prepare,
+	&vti_open, &vti_close, &vti_reset, &vti_probe,
 	&vti_put, &vti_get, &vti_check,
 	&vti_set_red_wire, &vti_set_white_wire,
 	&vti_get_red_wire, &vti_get_white_wire,

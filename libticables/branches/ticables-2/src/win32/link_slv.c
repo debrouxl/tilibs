@@ -219,6 +219,11 @@ static int slv_reset(TiHandle *h)
 	return 0;
 }
 
+static int slv_probe(TiHandle *h)
+{
+	return 0;
+}
+
 static int slv_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int ret, i;
@@ -260,11 +265,6 @@ static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
 		}
 	}
 
-	return 0;
-}
-
-static int slv_probe(TiHandle *h)
-{
 	return 0;
 }
 
@@ -326,8 +326,8 @@ const TiCable cable_raw =
 	N_("DirectLink"),
 	N_("DirectLink (direct USB) cable"),
 
-	&slv_prepare, &slv_probe,
-	&slv_open, &slv_close, &slv_reset,
+	&slv_prepare,
+	&slv_open, &slv_close, &slv_reset, &slv_probe,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,

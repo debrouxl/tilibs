@@ -135,11 +135,11 @@ struct _Cable
 	const char*		description;	// name like "Serial cable"
 
 	int (*prepare)	(TiHandle *);	// Detect and map I/O
-	int (*probe)	(TiHandle *);	// Check if cable is present
 
 	int (*open)		(TiHandle *);	// Open cable
 	int (*close)	(TiHandle *);	// Close cable
 	int (*reset)	(TiHandle *);	// Reset cable
+	int (*probe)	(TiHandle *);	// Check if cable is present
 
 	int (*send)		(TiHandle *, uint8_t *, uint16_t);	// Send data
 	int (*recv)		(TiHandle *, uint8_t *, uint16_t);	// Recv data

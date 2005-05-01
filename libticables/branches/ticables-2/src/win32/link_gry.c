@@ -161,6 +161,49 @@ static int gry_reset(TiHandle *h)
 	return 0;
 }
 
+#define MS_ON (MS_CTS_ON | MS_DTR_ON)
+
+static int gry_probe(TiHandle *h)
+{
+	DWORD status;			//MS_CTS_ON or MS_DTR_ON
+
+    EscapeCommFunction(hCom, SETDTR);
+    EscapeCommFunction(hCom, SETRTS);
+    GetCommModemStatus(hCom, &status);	// Get MCR values
+    fprintf(stdout, "status: %i\n", status);
+    if (status != 0x20)
+      return ERR_PROBE_FAILED;
+  
+    EscapeCommFunction(hCom, SETDTR);
+    EscapeCommFunction(hCom, CLRRTS);
+    GetCommModemStatus(hCom, &status);
+    fprintf(stdout, "status: %i\n", status);
+    if (status != 0x20)
+      return ERR_PROBE_FAILED;
+  
+    EscapeCommFunction(hCom, CLRDTR);
+    EscapeCommFunction(hCom, CLRRTS);
+    GetCommModemStatus(hCom, &status);
+    fprintf(stdout, "status: %i\n", status);
+    if (status != 0x00)
+      return ERR_PROBE_FAILED;
+
+    EscapeCommFunction(hCom, CLRDTR);
+    EscapeCommFunction(hCom, SETRTS);
+    GetCommModemStatus(hCom, &status);
+    fprintf(stdout, "status: %i\n", status);
+    if (status != 0x00)
+      return ERR_PROBE_FAILED;
+  
+    EscapeCommFunction(hCom, SETDTR);
+    EscapeCommFunction(hCom, SETRTS);
+    GetCommModemStatus(hCom, &status);
+	fprintf(stdout, "status: %i\n", status);
+	if (status != 0x20)
+		return ERR_PROBE_FAILED;
+
+	return 0;
+}
 
 static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
 {
@@ -219,50 +262,6 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
   	return 0;
 }
 
-#define MS_ON (MS_CTS_ON | MS_DTR_ON)
-
-static int gry_probe(TiHandle *h)
-{
-	DWORD status;			//MS_CTS_ON or MS_DTR_ON
-
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);	// Get MCR values
-    //printl1(0, "status: %i\n", status);
-    if (status != 0x20)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, CLRRTS);
-    GetCommModemStatus(hCom, &status);
-    //printl1(0, "status: %i\n", status);
-    if (status != 0x20)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, CLRDTR);
-    EscapeCommFunction(hCom, CLRRTS);
-    GetCommModemStatus(hCom, &status);
-    //printl1(0, "status: %i\n", status);
-    if (status != 0x00)
-      return ERR_PROBE_FAILED;
-
-    EscapeCommFunction(hCom, CLRDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);
-    //printl1(0, "status: %i\n", status);
-    if (status != 0x00)
-      return ERR_PROBE_FAILED;
-  
-    EscapeCommFunction(hCom, SETDTR);
-    EscapeCommFunction(hCom, SETRTS);
-    GetCommModemStatus(hCom, &status);
-	//printl1(0, "status: %i\n", status);
-	if (status != 0x20)
-		return ERR_PROBE_FAILED;
-
-	return 0;
-}
-
 static int gry_check(TiHandle *h, int *status)
 {
 	DWORD i;
@@ -319,8 +318,8 @@ const TiCable cable_gry =
 	N_("GrayLink"),
 	N_("GrayLink serial cable"),
 
-	&gry_prepare, &gry_probe,
-	&gry_open, &gry_close, &gry_reset,
+	&gry_prepare,
+	&gry_open, &gry_close, &gry_reset, &gry_probe,
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,

@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	handle = ticables_handle_new(CABLE_GRY, PORT_1);
 	//ticables_options_set_timeout(handle, 15);
 	//ticables_options_set_delay(handle, 10);
 	ticables_handle_show(handle);
