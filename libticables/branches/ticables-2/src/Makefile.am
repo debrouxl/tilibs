@@ -4,32 +4,22 @@ AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libticables.la
-libticablesincludedir = $(includedir)/tilp
-libticablesinclude_HEADERS = \
-	cabl_def.h cabl_err.h cabl_int.h cabl_ver.h \
-	export.h \
-	ticables.h \
-	timeout.h
+lib_LTLIBRARIES = libticables-2.la
+libticablesincludedir = $(includedir)/tilp2
+libticablesinclude_HEADERS = ticables.h exports.h stdints.h timeout.h
 
 # build instructions
-libticables_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" @LIBUSB_CFLAGS@
-libticables_la_LIBADD = @LTLIBINTL@ @LIBUSB_LIBS@
-libticables_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libticables_la_SOURCES = *.h \
-	detect.c \
-	direct.c \
+libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@
+libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
+libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libticables_2_la_SOURCES = *.h \
+	data_log.c \
 	error.c \
-	intrface.c \
-	ioports.c \
-	link_avr.c link_dev.c link_nul.c link_par.c link_ser.c \
-	link_slv.c link_tie.c link_tig.c link_vti.c link_vtl.c \
+	link_gry.c link_nul.c link_par.c link_ser.c \
+	link_slv.c link_tie.c link_vti.c link_xxx.c \
 	logging.c \
-	mapping.c \
-	none.c \
-	printl.c \
-	type2str.c \
-	verbose.c
+	ticables.c \
+	type2str.c
 
 EXTRA_DIST = bsd/* linux/* macos/* win32/*
 

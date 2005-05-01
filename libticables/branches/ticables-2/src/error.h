@@ -55,6 +55,9 @@ typedef enum
 	ERR_OPENFILEMAPPING,
 	ERR_MAPVIEWOFFILE,
 
+	ERR_OPEN,
+	ERR_IOCTL,
+
 } TiCableError;
 
 #endif

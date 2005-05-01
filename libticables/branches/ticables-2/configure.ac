@@ -3,7 +3,7 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCables, 0.0.1, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticables-2, 0.0.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
 VERSION="0.0.1"
@@ -28,7 +28,7 @@ AM_MAINTAINER_MODE
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/intrface.c])
+AC_CONFIG_SRCDIR([src/ticables.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
@@ -60,6 +60,10 @@ AC_PROG_AWK
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.13.1)
 
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
 case "$host" in
   arm*-*-linux-*)        ;;
   *)
@@ -80,7 +84,7 @@ esac
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS([asm/io.h sys/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h])
-AC_CHECK_HEADERS([linux/ticable.h])
+#AC_CHECK_HEADERS([linux/ticable.h])
 AC_CHECK_HEADERS([sys/utsname.h pwd.h grp.h linux/serial.h sys/ioctl.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -92,7 +96,6 @@ AC_HEADER_TIME
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
 AC_PROG_GCC_TRADITIONAL
-#AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
@@ -106,16 +109,6 @@ AC_CACHE_CHECK([whether to enable logging],
   [cab_cv_enable_logging], [cab_cv_enable_logging=no])
 if test x$cab_cv_enable_logging = xyes; then
   AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
-fi
-
-# Direct USB cable
-AC_ARG_ENABLE(direct-usb,
-  AC_HELP_STRING([--enable-direct-usb], [enable direct USB cable]),
-  [cab_cv_enable_direct_usb=$enableval], [])
-AC_CACHE_CHECK([whether to enable direct USB cable],
-  [cab_cv_enable_direct_usb], [cab_cv_enable_direct_usb=no])
-if test x$cab_cv_enable_direct_usb = xyes; then
-  AC_DEFINE(ENABLE_DIRECT_USB, 1, [Define to 1 to enable direct USB cable.])
 fi
 
 # Platform specific tests.
@@ -180,6 +173,8 @@ case $host_os in
   fi
   ;;
 esac
+
+AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
 
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
