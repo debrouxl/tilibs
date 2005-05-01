@@ -221,7 +221,7 @@ TIEXPORT int TICALL ticables_options_set_delay(TiHandle* handle, int delay)
  *
  * Retrieve link cable model.
  *
- * Return value: cable model.
+ * Return value: a #TiCableModel value.
  **/
 TIEXPORT TiCableModel TICALL ticables_get_model(TiHandle* handle)
 {
@@ -232,9 +232,9 @@ TIEXPORT TiCableModel TICALL ticables_get_model(TiHandle* handle)
  * ticables_get_port:
  * @handle: the handle
  *
- * Retrieve port.
+ * Retrieve link port.
  *
- * Return value: the port value.
+ * Return value: a #TiCablePort value.
  **/
 TIEXPORT TiCablePort  TICALL ticables_get_port(TiHandle* handle)
 {

@@ -1,8 +1,0 @@
-[Main]
-Name=DFLT_DELAY
-Type=Define
-Header=cabl_def.h
-Definition=#define DFLT_DELAY 10
-
-[Summary]
-Defines a default inter-bit delay of 10 micro-seconds.

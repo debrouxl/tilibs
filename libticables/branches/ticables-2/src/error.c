@@ -30,8 +30,8 @@
 #include "logging.h"
 
 /**
- * tifiles_get_error:
- * @number: error number (see file_err.h for list).
+ * ticables_error_get:
+ * @number: error number (see error.h for list).
  * @message: a newly allocated string which contains corresponding error *message.
  *
  * Attempt to match the message corresponding to the error number. The returned

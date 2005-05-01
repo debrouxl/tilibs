@@ -23,6 +23,14 @@
 #include "gettext.h"
 #include "ticables.h"
 
+/**
+ * ticables_model_to_string:
+ * @model: a cable model.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "BlackLink".
+ **/
 TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
 {
   	switch (model) 
@@ -39,6 +47,14 @@ TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
 	}
 }
 
+/**
+ * ticables_string_to_model:
+ * @str: a cable model as string like "BlackLink".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a cable model.
+ **/
 TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
 {
 	if(!strcmp(str, "null"))
@@ -61,6 +77,14 @@ TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
 	return CABLE_NUL;
 }
 
+/**
+ * ticables_port_to_string:
+ * @port: a link port.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "#1".
+ **/
 TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port)
 {
   	switch (port) 
@@ -74,6 +98,14 @@ TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port)
 	}
 }
 
+/**
+ * ticables_string_to_port:
+ * @str: a link port as string like "#1".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a link port.
+ **/
 TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str)
 {
 	if(!strcmp(str, "null"))
