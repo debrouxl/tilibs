@@ -22,7 +22,7 @@
 /* "TiEmu" virtual link cable unit */
 
 /* 
- *  This unit use two FIFOs between 2 program which use this lib.
+ *  This unit use two FIFOs between 2 programs which use this lib.
  *  Convention used: 0 is an emulator and 1 is a linking program.
  *  One pipe is used for transferring information from 0 to 1 and the other
  *  pipe is used for transferring from 1 to 0.
@@ -33,26 +33,21 @@
 #endif
 
 #include <stdio.h>
-#include "stdints.h"
 #include <string.h>
-#include <time.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 
-#include "gettext.h"
-#include "timeout.h"
-#include "export.h"
-#include "cabl_err.h"
-#include "cabl_def.h"
-#include "externs.h"
-#include "logging.h"
-#include "printl.h"
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
 
 #define BUFFER_SIZE 256
-#define HIGH 666		// upper limit (used for avoiding 'uint8_t timeout')
+#define HIGH 666		// upper limit (used for avoiding timeout)
 #define LOW  333		// lower limit
 
 static int p;
@@ -66,192 +61,201 @@ static const char fifo_names[4][256] = {
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0"
 };
 
-int tie_init()
+static int tie_prepare(TiHandle *h)
 {
-  if ((io_address < 1) || (io_address > 2)) {
-    printl1(2, _("Invalid io_address parameter passed to libticables.\n"));
-    io_address = 2;
-  }
-  p = io_address - 1;
+	h->address = 0;
+	h->device = strdup("");
 
-  /* Check if the pipes already exist else create them */
-  if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) {
-    mkfifo(fifo_names[0], O_RDONLY | O_WRONLY | O_NONBLOCK | S_IRWXU);
-    mkfifo(fifo_names[1], O_RDONLY | O_WRONLY | O_NONBLOCK | S_IRWXU);
-  }
-
-  /* Open the pipes */
-  // Open the 1->0 pipe in reading
-  if ((rd[p] = open(fifo_names[2 * (p) + 0], O_RDONLY | O_NONBLOCK)) == -1) {
-    printl1(2, _("error: %s\n"), strerror(errno));
-    return ERR_OPEN_PIPE;
-  }
-  // Open the 0->1 pipe in writing (in reading at first)
-  if ((wr[p] = open(fifo_names[2 * (p) + 1], O_RDONLY | O_NONBLOCK)) == -1) {
-    return ERR_OPEN_PIPE;
-  }
-  if ((wr[p] = open(fifo_names[2 * (p) + 1], O_WRONLY | O_NONBLOCK)) == -1) {
-    return ERR_OPEN_PIPE;
-  }
-  ref_cnt++;
-  START_LOGGING();
-
-  return 0;
+	return 0;
 }
 
-int tie_exit()
+static int tie_open(TiHandle *h)
 {
-  STOP_LOGGING();
-
-  if (rd[p]) {
-    /* Close the pipe */
-    if (close(rd[p]) == -1) {
-      return ERR_CLOSE_PIPE;
+    if ((h->address < 1) || (h->address > 2)) {
+	ticables_warning(_("Invalid h->address parameter passed to libticables.\n"));
+    h->address = 2;
     }
-    rd[p] = 0;
-  }
-  if (wr[p]) {
-    /* Close the pipe */
-    if (close(wr[p]) == -1) {
-      return ERR_CLOSE_PIPE;
+    p = h->address - 1;
+    
+    /* Check if the pipes already exist else create them */
+    if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) {
+	mkfifo(fifo_names[0], O_RDONLY | O_WRONLY | O_NONBLOCK | S_IRWXU);
+	mkfifo(fifo_names[1], O_RDONLY | O_WRONLY | O_NONBLOCK | S_IRWXU);
     }
-    wr[p] = 0;
-  }
-  ref_cnt--;
+    
+    /* Open the pipes */
+    // Open the 1->0 pipe in reading
+    if ((rd[p] = open(fifo_names[2 * (p) + 0], O_RDONLY | O_NONBLOCK)) == -1) 
+    {
+	ticables_warning(_("error: %s\n"), strerror(errno));
+	return ERR_OPEN_PIPE;
+    }
+    // Open the 0->1 pipe in writing (in reading at first)
+    if ((wr[p] = open(fifo_names[2 * (p) + 1], O_RDONLY | O_NONBLOCK)) == -1) 
+    {
+	return ERR_OPEN_PIPE;
+    }
+    if ((wr[p] = open(fifo_names[2 * (p) + 1], O_WRONLY | O_NONBLOCK)) == -1) 
+    {
+	return ERR_OPEN_PIPE;
+    }
+    ref_cnt++;
 
   return 0;
 }
 
-int tie_open()
+static int tie_close(TiHandle *h)
 {
-  uint8_t d;
-  int n;
-
-  /* Flush the pipe */
-  do {
-    n = read(rd[p], (void *) (&d), 1);
-  } while (n > 0);
-
-  tdr.count = 0;
-  TO_START(tdr.start);
-
-  return 0;
-}
-
-int tie_close()
-{
-  return 0;
-}
-
-int tie_put(uint8_t data)
-{
-  int n = 0;
-  tiTIME clk;
-  struct stat s;
-
-  tdr.count++;
-  /* Check if the other pipe is used */
-  /* if(ref_cnt < 2)
-     return ERR_OPP_NOT_AVAIL;
-   */
-
-  LOG_DATA(data);
-  /* Transfer rate modulation */
-  TO_START(clk);
-  do {
-    if (TO_ELAPSED(clk, time_out))
-      return ERR_WRITE_TIMEOUT;
-    fstat(wr[p], &s);
-    if (s.st_size > HIGH)
-      n = 0;
-    else if (s.st_size < LOW)
-      n = 1;
-  }
-  while (n <= 0);
-
-  /* Write the data in a defined delay */
-  TO_START(clk);
-  do {
-    if (TO_ELAPSED(clk, time_out))
-      return ERR_WRITE_TIMEOUT;
-    n = write(wr[p], (void *) (&data), 1);
-  }
-  while (n <= 0);
-
-  return 0;
-}
-
-int tie_get(uint8_t * data)
-{
-  static int n = 0;
-  tiTIME clk;
-
-  // Read the uint8_t in a defined delay
-  TO_START(clk);
-  do {
-    if (TO_ELAPSED(clk, time_out))
-      return ERR_READ_TIMEOUT;
-    n = read(rd[p], (void *) data, 1);
-  }
-  while (n <= 0);
-
-  if (n == -1) {
-    return ERR_READ_ERROR;
-  }
-
-  tdr.count++;
-  LOG_DATA(*data);
-
-  return 0;
-}
-
-int tie_check(int *status)
-{
-  fd_set rdfs;
-  struct timeval tv;
-  int retval;
-
-  *status = STATUS_NONE;
-
-  FD_ZERO(&rdfs);
-  FD_SET(rd[p], &rdfs);
-  tv.tv_sec = 0;
-  tv.tv_usec = 0;
-
-  retval = select(rd[p] + 1, &rdfs, NULL, NULL, &tv);
-  switch (retval) {
-  case -1:			//error
-    return ERR_READ_ERROR;
-  case 0:			//no data
+    if (rd[p]) 
+    {
+	/* Close the pipe */
+	if (close(rd[p]) == -1) 
+	{
+	    return ERR_CLOSE_PIPE;
+	}
+	rd[p] = 0;
+    }
+    if (wr[p]) 
+    {
+	/* Close the pipe */
+	if (close(wr[p]) == -1) {
+	    return ERR_CLOSE_PIPE;
+	}
+	wr[p] = 0;
+    }
+    ref_cnt--;
+    
     return 0;
-  default:			// data available
-    *status = STATUS_RX;
-    break;
-  }
-
-  return 0;
 }
 
-int tie_probe()
+static int tie_reset(TiHandle *h)
 {
-  return 0;
+    uint8_t d;
+    int n;
+    
+    /* Flush the pipe */
+    do 
+    {
+	n = read(rd[p], (void *) (&d), 1);
+    } while (n > 0);
+    
+    return 0;
 }
 
-int tie_supported()
+static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
-  return SUPPORT_OFF;
+    int n = 0;
+    tiTIME clk;
+    struct stat s;
+    
+    /* Transfer rate modulation */
+    TO_START(clk);
+    do {
+	if (TO_ELAPSED(clk, h->timeout))
+	    return ERR_WRITE_TIMEOUT;
+	fstat(wr[p], &s);
+	if (s.st_size > HIGH)
+	    n = 0;
+	else if (s.st_size < LOW)
+	    n = 1;
+    }
+    while (n <= 0);
+    
+    /* Write the data in a defined delay */
+    TO_START(clk);
+    do {
+	if (TO_ELAPSED(clk, h->timeout))
+	    return ERR_WRITE_TIMEOUT;
+	n = write(wr[p], (void *) (&data), 1);
+    }
+    while (n <= 0);
+    
+    return 0;
 }
 
-int tie_register_cable(TicableLinkCable * lc)
+static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
-  lc->init = tie_init;
-  lc->open = tie_open;
-  lc->put = tie_put;
-  lc->get = tie_get;
-  lc->close = tie_close;
-  lc->exit = tie_exit;
-  lc->probe = tie_probe;
-  lc->check = tie_check;
-
-  return 0;
+    static int n = 0;
+    tiTIME clk;
+    
+    // Read the uint8_t in a defined delay
+    TO_START(clk);
+    do {
+	if (TO_ELAPSED(clk, h->timeout))
+	    return ERR_READ_TIMEOUT;
+	n = read(rd[p], (void *) data, 1);
+    }
+    while (n <= 0);
+    
+    if (n == -1) {
+	return ERR_READ_ERROR;
+    }
+    
+    return 0;
 }
+
+static int tie_probe(TiHandle *h)
+{
+	return 0;
+}
+
+static int tie_check(TiHandle *h, int *status)
+{
+    fd_set rdfs;
+    struct timeval tv;
+    int retval;
+    
+    *status = STATUS_NONE;
+    
+    FD_ZERO(&rdfs);
+    FD_SET(rd[p], &rdfs);
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+    
+    retval = select(rd[p] + 1, &rdfs, NULL, NULL, &tv);
+    switch (retval) {
+    case -1:			//error
+	return ERR_READ_ERROR;
+    case 0:			//no data
+	return 0;
+    default:			// data available
+	*status = STATUS_RX;
+	break;
+    }
+    
+    return 0;
+}
+
+static int tie_set_red_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int tie_set_white_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int tie_get_red_wire(TiHandle *h)
+{
+	return 1;
+}
+
+static int tie_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_tie = 
+{
+	CABLE_TIE,
+	"TIE",
+	N_("TiEmu"),
+	N_("Virtual link for TiEmu"),
+
+	&tie_prepare, &tie_probe,
+	&tie_open, &tie_close, &tie_reset,
+	&tie_put, &tie_get, &tie_check,
+	&tie_set_red_wire, &tie_set_white_wire,
+	&tie_get_red_wire, &tie_get_white_wire,
+};

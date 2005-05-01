@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: linux_mapping.h 386 2004-03-28 21:39:04Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: porttalk.h 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin

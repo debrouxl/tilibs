@@ -43,27 +43,16 @@
    shm1: R <- W
 */
 
-#if defined(HAVE_SYS_IPC_H) && defined(HAVE_SYS_SHM_H)
-# define USE_SHM
-#endif
-
 #include <stdio.h>
-#include "stdints.h"
-#include <time.h>
+#include <string.h>
 #include <sys/types.h>
-#ifdef USE_SHM
 #include <sys/ipc.h>
-#include <sys/shm.h>
-#endif
 
-#include "gettext.h"
-#include "timeout.h"
-#include "export.h"
-#include "cabl_err.h"
-#include "cabl_def.h"
-#include "externs.h"
-#include "printl.h"
-#include "logging.h"
+#include "../ticables.h"
+#include "../logging.h"
+#include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
 
 /* Circular buffer (O: TIEmu, 1: TiLP) */
 #define BUF_SIZE 1*1024
@@ -75,30 +64,32 @@ struct _vti_buf {
 typedef struct _vti_buf vti_buf;
 
 /* Shm variables */
-#ifdef USE_SHM
 key_t ipc_key[2];		// IPC key
 int shmid[2];			// Shm ID
 vti_buf *shm[2];		// Shm address
 vti_buf *send_buf[2];		// Swapped buffer
 vti_buf *recv_buf[2];
-#endif
 
 static int p = 0;		// a shortcut
 
-/*
-  The first call to init open the 2 shm
-*/
-int vti_init()
+static int vti_prepare(TiHandle *h)
 {
-#ifdef USE_SHM
+	h->address = 0;
+	h->device = strdup("");
+
+	return 0;
+}
+
+static int vti_open(TiHandle *h)
+{
   int i;
 
-  if ((io_address < 1) || (io_address > 2)) {
-    printl1(2, "invalid io_address (bad port).\n");
+  if ((h->address < 1) || (h->address > 2)) {
+    printl1(2, "invalid h->address (bad port).\n");
     return ERR_ILLEGAL_ARG;
-    io_address = 2;
+    h->address = 2;
   }
-  p = io_address - 1;
+  p = h->address - 1;
 
   /* Get a unique (if possible) key */
   for (i = 0; i < 2; i++) {
@@ -132,19 +123,14 @@ int vti_init()
   recv_buf[0] = shm[1];		// 0 <- 1: reading
   send_buf[1] = shm[1];		// 1 -> 0: writing
   recv_buf[1] = shm[0];		// 1 <- 0: reading
-#endif
-
-  START_LOGGING();
 
   return 0;
 }
 
-int vti_exit()
+static int vti_close(TiHandle *h)
 {
-#ifdef USE_SHM
   int i;
 
-  STOP_LOGGING();
   //printl1(0, "exit\n");
   /* Detach segment */
   for (i = 0; i < 2; i++) {
@@ -158,62 +144,45 @@ int vti_exit()
       return ERR_SHM_RMID;
     }
   }
-#endif
+
   return 0;
 }
 
-int vti_open()
+static int vti_reset(TiHandle *h)
 {
-#ifdef USE_SHM
   int i;
 
   /* Init buffers */
   for (i = 0; i < 2; i++) {
     shm[i]->start = shm[i]->end = 0;
   }
-#endif
-
-  tdr.count = 0;
-  TO_START(tdr.start);
 
   return 0;
 }
 
-int vti_close()
+static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
-  return 0;
-}
-
-int vti_put(uint8_t data)
-{
-#ifdef USE_SHM
   tiTIME clk;
 
-  tdr.count++;
-  LOG_DATA(data);
   TO_START(clk);
   do {
-    if (TO_ELAPSED(clk, time_out))
+    if (TO_ELAPSED(clk, h->timeout))
       return ERR_WRITE_TIMEOUT;
   }
   while (((send_buf[p]->end + 1) & 255) == send_buf[p]->start);
 
   send_buf[p]->buf[send_buf[p]->end] = data;	// put data in buffer
   send_buf[p]->end = (send_buf[p]->end + 1) & 255;	// update circular buffer
-#endif
   return 0;
 }
 
-int vti_get(uint8_t * data)
+static int vti_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
-#ifdef USE_SHM
   tiTIME clk;
 
-  tdr.count++;
-  /* Wait that the buffer has been filled */
   TO_START(clk);
   do {
-    if (TO_ELAPSED(clk, time_out))
+    if (TO_ELAPSED(clk, h->timeout))
       return ERR_READ_TIMEOUT;
   }
   while (recv_buf[p]->start == recv_buf[p]->end);
@@ -221,14 +190,17 @@ int vti_get(uint8_t * data)
   /* And retrieve the data from the circular buffer */
   *data = recv_buf[p]->buf[recv_buf[p]->start];
   recv_buf[p]->start = (recv_buf[p]->start + 1) & 255;
-  LOG_DATA(*data);
-#endif
+
   return 0;
 }
 
-int vti_check(int *status)
+static int vti_probe(TiHandle *h)
 {
-#ifdef USE_SHM
+	return 0;
+}
+
+static int vti_check(TiHandle *h, int *status)
+{
   *status = STATUS_NONE;
 
   /* Check if positions are the same */
@@ -239,38 +211,40 @@ int vti_check(int *status)
     *status = STATUS_RX;
     return 0;
   }
-#endif
-  return 0;
-}
-
-int vti_probe()
-{
-#ifdef USE_SHM
-	return !0;
-#else
-  	return 0;
-#endif
-}
-
-int vti_supported()
-{
-#ifdef USE_SHM
-  return SUPPORT_ON;
-#else
-  return SUPPORT_OFF;
-#endif
-}
-
-int vti_register_cable(TicableLinkCable * lc)
-{
-  lc->init = vti_init;
-  lc->open = vti_open;
-  lc->put = vti_put;
-  lc->get = vti_get;
-  lc->close = vti_close;
-  lc->exit = vti_exit;
-  lc->probe = vti_probe;
-  lc->check = vti_check;
 
   return 0;
 }
+
+static int vti_set_red_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int vti_set_white_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int vti_get_red_wire(TiHandle *h)
+{
+	return 1;
+}
+
+static int vti_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_vti = 
+{
+	CABLE_VTI,
+	"VTI",
+	N_("Virtual TI"),
+	N_("Virtual link for VTi"),
+
+	&vti_prepare, &vti_probe,
+	&vti_open, &vti_close, &vti_reset,
+	&vti_put, &vti_get, &vti_check,
+	&vti_set_red_wire, &vti_set_white_wire,
+	&vti_get_red_wire, &vti_get_white_wire,
+};

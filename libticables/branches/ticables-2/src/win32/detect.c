@@ -1,5 +1,5 @@
 /* Hey EMACS -*- win32-c -*- */
-/* $Id: linux_detect.c 397 2004-03-29 17:21:12Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
