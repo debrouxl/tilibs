@@ -59,7 +59,9 @@ static int gry_open(TiHandle *h)
 
 	// Open device
 	hCom = CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
-		    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		    NULL, OPEN_EXISTING, 
+			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING,
+			NULL);
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
 		ticables_warning("CreateFile\n");
@@ -129,6 +131,13 @@ static int gry_open(TiHandle *h)
     {
 		ticables_warning("SetCommTimeouts\n");
 		return ERR_SETCOMMTIMEOUT;
+    }
+
+	fSuccess = SetCommMask(hCom, EV_RXCHAR);
+	if (!fSuccess)
+    {
+		ticables_warning("SetCommMask\n");
+		return ERR_SETCOMMMASK;
     }
 
 	return 0;
@@ -209,8 +218,14 @@ static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesWritten;
+	OVERLAPPED ol;
 
-    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
+	memset(&ol, 0, sizeof(OVERLAPPED));
+    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, &ol);
+
+	while(HasOverlappedIoCompleted(&ol) == FALSE) Sleep(0);
+
+	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesWritten, FALSE);
     if (!fSuccess) 
     {
 		ticables_warning("WriteFile\n");
@@ -234,15 +249,14 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;
+	OVERLAPPED ol;
 
-    if (cs.avail) 
-    {
-		*data = cs.data;
-		cs.avail = FALSE;
-		return 0;
-    }
+	memset(&ol, 0, sizeof(OVERLAPPED));
+    fSuccess = ReadFile(hCom, data, len, &nBytesRead, &ol);
 
-	fSuccess = ReadFile(hCom, data, len, &nBytesRead, NULL);
+	while(HasOverlappedIoCompleted(&ol) == FALSE) Sleep(0);
+
+	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesRead, FALSE);
 	if (!fSuccess) 
     {
 		ticables_warning("ReadFile\n");
@@ -264,29 +278,16 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 
 static int gry_check(TiHandle *h, int *status)
 {
-	DWORD i;
-    BOOL fSuccess;
-  
-    *status = STATUS_NONE;
-    if (hCom) 
-    {
-		// Read the data: return 0 if error and i contains 1 or 0 (timeout)
-		fSuccess = ReadFile(hCom, &cs.data, 1, &i, NULL);
-		if (fSuccess && (i == 1)) 
-  		{
-			if (cs.avail == TRUE)
-  				return ERR_BYTE_LOST;
-  
-			cs.avail = TRUE;
+	BOOL fSuccess;
+	DWORD dwEvtMask;
+	OVERLAPPED ol;
+
+	memset(&ol, 0, sizeof(OVERLAPPED));
+    fSuccess = WaitCommEvent(hCom, &dwEvtMask, &ol);
+	
+	if(HasOverlappedIoCompleted(&ol))
+		if(dwEvtMask & EV_RXCHAR)
 			*status = STATUS_RX;
-			return 0;
-		} 
-		else 
-		{
-			*status = STATUS_NONE;
-			return 0;
-		}
-    }
 
 	return 0;
 }
