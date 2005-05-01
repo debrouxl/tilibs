@@ -21,22 +21,8 @@
 
 /* "Home-made parallel" link cable unit */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <errno.h>
-#include <unistd.h>
-#ifdef HAVE_LINUX_TICABLE_H
-# include <linux/ticable.h>
-# include <sys/ioctl.h>
-#endif
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -45,173 +31,239 @@
 #include "detect.h"
 #include "ioports.h"
 
-//#define dev_fd      (int)(h->priv)
-static int dev_fd = -1;
-
-static struct cs {
-  	uint8_t data;
-  	int available;
-} cs;
+#define lpt_out (h->address + 0)
+#define lpt_in  (h->address + 1)
+#define lpt_ctl (h->address + 2)
 
 static int par_prepare(TiHandle *h)
 {
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x378; h->device = strdup("/dev/tipar0"); break;
-	case PORT_2: h->address = 0x278; h->device = strdup("/dev/tipar1"); break;
-	case PORT_3: h->address = 0x3bc; h->device = strdup("/dev/tipar2"); break;
+	case PORT_1: h->address = 0x378; h->device = strdup("/dev/lp0"); break;
+	case PORT_2: h->address = 0x278; h->device = strdup("/dev/lp1"); break;
+	case PORT_3: h->address = 0x3bc; h->device = strdup("/dev/lp2"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
-
-	// check
-
+/*
+	if(win32_detect_os() == WIN_NT)
+	{
+		if(!win32_detect_porttalk())
+			return ERR_PORTTALK_NOT_FOUND;
+	}
+*/
 	return 0;
 }
 
 static int par_open(TiHandle *h)
 {
-    int mask;
-    
-    /* Init some internal variables */
-    cs.available = 0;
-    cs.data = 0;
-    
-    /* Open the device */
-    mask = O_RDWR | /*O_NONBLOCK | */ O_SYNC;
-    if ((dev_fd = open(h->device, mask)) == -1) 
-    {
-	switch(errno) 
-	{
-	case ENODEV: ticables_warning(_("unable to open character device: %s.\n"), h->device); break;
-	case EACCES: ticables_warning(_("unable to open character device: %s (wrong permissions).\n"), h->device); break;
-	default: ticables_warning(_("unable to open character device: %s\n"), h->device); break;
-	}
-    	return ERR_OPEN;
-    }
-    
-    /* Set timeout and inter-bit delay */
-#if defined(HAVE_LINUX_TICABLE_H)
-    if (ioctl(dev_fd, IOCTL_TIPAR_DELAY, delay) == -1) 
-    {
-	ticables_warning(_("failed to set delay.\n"));
-	return ERR_IOCTL;
-    }
-    if (ioctl(dev_fd, IOCTL_TIPAR_TIMEOUT, h->timeout) == -1) {
-	ticables_warning(_("failed to set timeout.\n"));
-	return ERR_IOCTL;
-    }
+	TRYC(io_open(h->address));
+#ifdef __WIN32__
+	// needed for circumventing a strange problem with PortTalk & Win2k
+  	TRYC(io_open(h->address))
 #endif
+  	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
 
 	return 0;
 }
 
 static int par_close(TiHandle *h)
 {
-    if (dev_fd) 
-    {
-	close(dev_fd);
-	dev_fd = 0;
-    }
-    
-    return 0;
+	TRYC(io_close(h->address));
+
+	return 0;
 }
 
 static int par_reset(TiHandle *h)
 {
+	io_wr(lpt_out, 3);
 	return 0;
 }
 
 static int par_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
-    int err;
+	int bit;
+  	int i, j;
+  	tiTIME clk;
 
-    err = write(dev_fd, (void *)data, len);
-    if (err <= 0) 
-    {
-	if (errno == ETIMEDOUT)
-	    return ERR_WRITE_TIMEOUT;
-    	else
-	    return ERR_WRITE_ERROR;
-    }
-    
-    return 0;
+	for(j = 0; j < len; j++)
+	{
+		uint8_t byte = data[j];
+
+  		for (bit = 0; bit < 8; bit++) 
+		{
+    			if (byte & 1) {
+      				io_wr(lpt_out, 2);
+      				TO_START(clk);
+	      			do 
+					{
+						if (TO_ELAPSED(clk, h->timeout))
+		  				return ERR_WRITE_TIMEOUT;
+	      			}
+	      			while ((io_rd(lpt_in) & 0x10));
+	      			
+	      			io_wr(lpt_out, 3);
+	      			TO_START(clk);
+	      			do 
+					{
+						if (TO_ELAPSED(clk, h->timeout))
+		  				return ERR_WRITE_TIMEOUT;
+	      			}
+	      			while (!(io_rd(lpt_in) & 0x10));
+    			} 
+				else 
+				{
+      				io_wr(lpt_out, 1);
+      				TO_START(clk);
+		      		do 
+					{
+						if (TO_ELAPSED(clk, h->timeout))
+			  			return ERR_WRITE_TIMEOUT;
+		      		}
+		      		while (io_rd(lpt_in) & 0x20);
+		      		
+		      		io_wr(lpt_out, 3);
+		      		TO_START(clk);
+		      		do 
+					{
+						if (TO_ELAPSED(clk, h->timeout))
+			  			return ERR_WRITE_TIMEOUT;
+		      		}
+		      		while (!(io_rd(lpt_in) & 0x20));
+    		}
+    		
+    		byte >>= 1;
+    		for (i = 0; i < h->delay; i++)
+      			io_rd(lpt_in);
+  		}	
+	}
+
+	return 0;
 }
 
 static int par_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
-    int err = 0;
+	int bit;
+	int i, j;
+  	tiTIME clk;
 
-    /* If the dev_check function was previously called, retrieve the uint8_t */
-    if (cs.available) 
-    {
-	*data = cs.data;
-	cs.available = 0;
+	for(j = 0; j < len; j++)
+	{
+		uint8_t v, byte = 0;
+
+  		for (bit = 0; bit < 8; bit++) 
+		{
+    			TO_START(clk);
+    			while ((v = io_rd(lpt_in) & 0x30) == 0x30) 
+				{
+      				if (TO_ELAPSED(clk, h->timeout))
+						return ERR_READ_TIMEOUT;
+    			}
+    			
+    			if (v == 0x10) 
+				{
+      				byte = (byte >> 1) | 0x80;
+      				io_wr(lpt_out, 1);
+      				TO_START(clk);
+      				while ((io_rd(lpt_in) & 0x20) == 0x00) 
+					{
+      					if (TO_ELAPSED(clk, h->timeout))
+			  				return ERR_WRITE_TIMEOUT;
+      				}
+      				io_wr(lpt_out, 3);
+    			} 
+				else 
+				{
+      				byte = (byte >> 1) & 0x7F;
+      				io_wr(lpt_out, 2);
+      				TO_START(clk);
+      				while ((io_rd(lpt_in) & 0x10) == 0x00) 
+					{
+      					if (TO_ELAPSED(clk, h->timeout))
+			  				return ERR_WRITE_TIMEOUT;
+      				}
+      				io_wr(lpt_out, 3);
+    		}
+    		
+    		for (i = 0; i < h->delay; i++)
+      			io_rd(lpt_in);
+  		}
+  
+  		data[j] = byte;
+	}
+
 	return 0;
-    }
-    
-    err = read(dev_fd, (void *) data, 1);
-    if (err <= 0) 
-    {
-	if (errno == ETIMEDOUT)
-	    return ERR_READ_TIMEOUT;
-	else
-	    return ERR_READ_ERROR;
-    }
-    
-    return 0;
 }
 
 static int par_probe(TiHandle *h)
 {
+	int i, j;
+  	int seq[] = { 0x00, 0x20, 0x10, 0x30 };
+  	uint8_t data;
+
+  	for (i = 3; i >= 0; i--) 
+	{
+    		io_wr(lpt_out, 3);
+    		io_wr(lpt_out, i);
+    		
+    		for (j = 0; j < 10; j++)
+      			data = io_rd(lpt_in);
+      			
+    		//printl1(0, "%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
+    		if ((data & 0x30) != seq[i]) 
+			{
+      			io_wr(lpt_out, 3);
+      			return ERR_PROBE_FAILED;
+    		}
+  	}
+  	io_wr(lpt_out, 3);
+
 	return 0;
 }
 
 static int par_check(TiHandle *h, int *status)
 {
-    int n = 0;
-    
-    /* Since the select function does not work, I do it myself ! */
-    *status = STATUS_NONE;
-    if (dev_fd) 
-    {
-	n = read(dev_fd, (void *) (&cs.data), 1);
-	if (n > 0) 
-	{
-	    if (cs.available == 1)
-		return ERR_BYTE_LOST;
-	    
-	    cs.available = 1;
-	    *status = STATUS_RX;
-	    return 0;
-	}
-	else 
-	{
-	    *status = STATUS_NONE;
-	    return 0;
-	}
-    }
-    
-    return 0;
+	*status = STATUS_NONE;
+
+  	if (!((io_rd(lpt_in) & 0x30) == 0x30))
+    		*status = STATUS_RX | STATUS_TX;
+
+	return 0;
 }
+
+#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
 static int par_set_red_wire(TiHandle *h, int b)
 {
-    return 0;
+	int v = swap_bits(io_rd(lpt_in) >> 4);
+
+  	if (b)
+    		io_wr(lpt_out, v | 0x02);
+  	else
+    		io_wr(lpt_out, v & ~0x02);
+
+	return 0;
 }
 
 static int par_set_white_wire(TiHandle *h, int b)
 {
-    return 0;
+	int v = swap_bits(io_rd(lpt_in) >> 4);
+
+  	if (b)
+    		io_wr(lpt_out, v | 0x01);
+  	else
+    		io_wr(lpt_out, v & ~0x01);
+
+	return 0;
 }
 
 static int par_get_red_wire(TiHandle *h)
 {
-    return 1;
+	return (0x10 & io_rd(lpt_in)) ? 1 : 0;
 }
 
 static int par_get_white_wire(TiHandle *h)
 {
-    return 1;
+	return (0x20 & io_rd(lpt_in)) ? 1 : 0;
 }
 
 const TiCable cable_par = 

@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: linux_detect.h 994 2005-04-30 09:09:49Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -19,26 +19,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TI-GRAPH LINK USB support */
+#ifndef __LINUX_IOPORTS__
+#define __LINUX_IOPORTS__
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <stdio.h>
 
-#if defined(__LINUX__)
-//#include "linux/link_slv.c"
-#if defined(HAVE_LIBUSB)
-//#include "linux/link_slv2.c"
-#endif
+int io_open(unsigned long from);//, unsigned long num);
+int io_close(unsigned long from);//, unsigned long num);
 
-#elif defined(__BSD__)
-#include "linux/link_slv2.c"
+int  (*io_rd) (unsigned int addr);
+void (*io_wr) (unsigned int addr, int data);
 
-#elif defined(__WIN32__)
-#include "win32/link_slv.c"
-
-#elif defined(__MACOSX__)
-#include "macos/link_slv.c"
-
-#else
 #endif

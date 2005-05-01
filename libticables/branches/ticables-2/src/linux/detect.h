@@ -24,10 +24,10 @@
 
 #include <stdio.h>
 
-#include "cabl_def.h"
-
+/*
 int linux_detect_os(char **os_type);
 int linux_detect_port(TicablePortInfo * pi);
 int linux_detect_resources(void);
+*/
 
 #endif

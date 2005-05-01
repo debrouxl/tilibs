@@ -30,11 +30,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
+#include "stdints.h"
 #include <dirent.h>
 #include <sys/utsname.h>	// for uname()
 #include <unistd.h>
@@ -46,14 +42,6 @@
 #include <sys/ioctl.h>
 
 #include "../gettext.h"
-
-#include "../cabl_def.h"
-#include "../cabl_err.h"
-#include "../export.h"
-#include "../externs.h"
-#include "../printl.h"
-
-#include "linux_detect.h"
 
 #define MAXCHARS 1024
 
