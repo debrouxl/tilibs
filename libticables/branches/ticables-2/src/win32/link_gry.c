@@ -32,11 +32,6 @@
 
 #define hCom	(HANDLE)(h->priv)
 
-static struct cs {
-  uint8_t data;
-  BOOL avail;
-} cs;
-
 static int gry_prepare(TiHandle *h)
 {
 	switch(h->port)
@@ -157,8 +152,6 @@ static int gry_close(TiHandle *h)
 static int gry_reset(TiHandle *h)
 {
 	BOOL fSuccess;
-
-	memset((void *) (&cs), 0, sizeof(cs));
 
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if (!fSuccess) 

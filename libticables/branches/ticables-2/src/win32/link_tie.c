@@ -55,58 +55,53 @@ static int volatile	ref_cnt = 0;	// Counter of library instances
 
 typedef struct 
 {
-  BYTE buf[BUFSIZE];
-  int start;
-  int end;
+	BYTE buf[BUFSIZE];
+	int start;
+	int end;
 } LinkBuffer;
 
-static HANDLE hSendBuf, hRecvBuf;
-static LinkBuffer *pSendBuf, *pRecvBuf;
+static HANDLE hSendBuf;
+static HANDLE hRecvBuf;
+static LinkBuffer *pSendBuf;
+static LinkBuffer *pRecvBuf;
 
 static int tie_prepare(TiHandle *h)
 {
-	h->address = 0;
-	h->device = strdup("");
+	switch(h->port)
+	{
+	case PORT_1: h->address = 0; h->device = strdup("0->1"); break;
+	case PORT_2: h->address = 1; h->device = strdup("1->0"); break;
+	default: return ERR_ILLEGAL_ARG;
+	}
+	ref_cnt++;
 
 	return 0;
 }
 
 static int tie_open(TiHandle *h)
 {
-	int p;
+	int p = h->address;
 
-  /* Check if valid argument */
-  if ((h->address < 1) || (h->address > 2)) 
-  {
-		ticables_info(_("invalid h->address parameter passed to libticables."));
-		h->address = 2;
-  } 
-  else 
-  {
-		p = h->address - 1;
-		ref_cnt++;
-  }
-
-  /* Create a FileMapping objects */
-  hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
-  if (hSendBuf == NULL) 
+    /* Create a FileMapping objects */
+    hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
+    if (hSendBuf == NULL) 
 		return ERR_OPENFILEMAPPING;
 
-  hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
-  if (hRecvBuf == NULL) 
+    hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
+    if (hRecvBuf == NULL) 
 		return ERR_OPENFILEMAPPING;
 
-  /* Map them */
-  pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  if (pSendBuf == NULL) 
+    /* Map them */
+    pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+    if (pSendBuf == NULL) 
 		return ERR_MAPVIEWOFFILE;
 
-  pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  if (pRecvBuf == NULL) 
+    pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+    if (pRecvBuf == NULL) 
 		return ERR_MAPVIEWOFFILE;
 
 	pSendBuf->start = pSendBuf->end = 0;
-  pRecvBuf->start = pRecvBuf->end = 0;
+    pRecvBuf->start = pRecvBuf->end = 0;
 
 	return 0;
 }

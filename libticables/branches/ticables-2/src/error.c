@@ -19,11 +19,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <glib.h>
+#include <stdio.h>
 #include <string.h>
 #ifdef __WIN32__
 #include <windows.h>
 #endif
+#include <glib.h>
+
 #include "gettext.h"
 #include "export.h"
 #include "error.h"
@@ -373,6 +375,25 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 	break;
 */
   	default:
+		if (GetLastError()) 
+	{
+    		LPVOID lpMsgBuf;
+			char buf[256];
+
+    		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		  FORMAT_MESSAGE_FROM_SYSTEM |
+		  FORMAT_MESSAGE_IGNORE_INSERTS,
+		  NULL, GetLastError(),
+		  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		  (LPTSTR) & lpMsgBuf, 0, NULL);
+    		fprintf(stdout,  "\n");
+    		fprintf(stdout,  "System: ");
+    		//snprintf(buf, 256, "GetLastError = %i -> ", GetLastError());
+    		sprintf(buf, "GetLastError = %li -> ", GetLastError());
+    		fprintf(stdout,  buf);
+    		fprintf(stdout,  lpMsgBuf);
+    		fprintf(stdout,  "\n");
+	}
 		return number;
     break;
   	}
@@ -409,6 +430,7 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
   	}
 #endif
 */
+
   	// don't use GLib allocator
 	tmp = strdup(*message);
 	g_free(*message);

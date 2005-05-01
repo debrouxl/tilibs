@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 	TiHandle *handle;
 	int err, i;
 	uint8_t buf[4], data;
+	int status;
 
 	// init lib
 	ticables_library_init();
