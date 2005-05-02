@@ -162,6 +162,10 @@ SOURCE=..\..\src\error.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\win32\tiglusb.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\timeout.h
 # End Source File
 # End Group

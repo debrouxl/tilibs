@@ -129,10 +129,12 @@ typedef struct _Handle	TiHandle;
  **/
 struct _Cable
 {
-	int				model;			// TiCableModel
+	const int		model;			// TiCableModel
 	const char*		name;			// name like "SER"
 	const char*		fullname;		// name like "BlackLink"
 	const char*		description;	// name like "Serial cable"
+
+	const int		need_open;		// Need to be opened for probing
 
 	int (*prepare)	(TiHandle *);	// Detect and map I/O
 
@@ -181,6 +183,7 @@ struct _Handle
 
 	void*			priv;	// Holding data (static)
 	void*			priv2;	// Holding data (allocated)
+	void*			priv3;	// Holding data (static)
 
 	int		open;			// Cable is open
 	int		busy;			// Cable is busy

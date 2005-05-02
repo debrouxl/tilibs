@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: nul_link.c 370 2004-03-22 18:47:32Z roms $ */
+/* $Id$ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -25,7 +25,6 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
 
 #include <stdio.h>
 #include "stdints.h"
@@ -100,10 +99,9 @@ const TiCable cable_nul =
 	"NUL",
 	N_("Dummy link"),
 	N_("Dummy link used when no cable is set"),
-
-	&nul_prepare, &nul_probe,
-
-	&nul_open, &nul_close, &nul_reset,
+	0,
+	&nul_prepare,
+	&nul_open, &nul_close, &nul_reset, &nul_probe,
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,

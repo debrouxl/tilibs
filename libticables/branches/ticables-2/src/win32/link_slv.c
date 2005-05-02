@@ -44,26 +44,33 @@
 #define MIN_VERSION "3.2"
 
 #define hDLL	(HANDLE)(h->priv)	// DLL handle on TiglUsb.dll
+#define hLNK	(int)(h->priv3)		// Link handle as return by dynTiglUsbOpen
 
 TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic loading
 
-TIGLUSB_OPEN_2 dynTiglUsbOpen2 = NULL;
-TIGLUSB_CLOSE  dynTiglUsbClose = NULL;
+TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
 
-TIGLUSB_FLUSH  dynTiglUsbFlush = NULL;
-TIGLUSB_RESET  dynTiglUsbReset = NULL;
+TIGLUSB_OPEN2	dynTiglUsbOpen = NULL;
+TIGLUSB_CLOSE2  dynTiglUsbClose = NULL;
 
-TIGLUSB_CHECK   dynTiglUsbCheck = NULL;
-TIGLUSB_READ_2  dynTiglUsbRead2 = NULL;
-TIGLUSB_WRITE_2 dynTiglUsbWrite2 = NULL;
+TIGLUSB_CHECK2	dynTiglUsbCheck = NULL;
 
-TIGLUSB_SETTIMEOUT dynTiglUsbSetTimeout = NULL;
-TIGLUSB_GETTIMEOUT dynTiglUsbGetTimeout = NULL;
+TIGLUSB_READ2	dynTiglUsbRead = NULL;
+TIGLUSB_WRITE2	dynTiglUsbWrite = NULL;
+
+TIGLUSB_FLUSH2  dynTiglUsbFlush = NULL;		// à utiliser ????
+TIGLUSB_RESET2  dynTiglUsbReset = NULL;
+
+TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
+TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
 
 static int slv_prepare(TiHandle *h)
 {
-	h->address = 0;
-	h->device = strdup("");
+	char str[64];
+
+	h->address = h->port;
+	sprintf(str, "TiglUsb #%i", h->port);
+	h->device = strdup(str);
 
 	// detect driver
 	if(!win32_detect_tiglusb())
@@ -97,15 +104,23 @@ static int slv_open(TiHandle *h)
 	}
 	ticables_info(_("using TiglUsb.dll version %s"), dynTiglUsbVersion());
 
-	dynTiglUsbOpen2 = (TIGLUSB_OPEN_2) GetProcAddress(hDLL, "TiglUsbOpen2");
-	if (!dynTiglUsbOpen2) 
+	dynTiglUsbProbe = (TIGLUSB_PROBE2) GetProcAddress(hDLL, "TiglUsbProbe2");
+	if (!dynTiglUsbProbe) 
 	{
 		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
-    dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
+	dynTiglUsbOpen = (TIGLUSB_OPEN2) GetProcAddress(hDLL, "TiglUsbOpen2");
+	if (!dynTiglUsbOpen) 
+	{
+		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
+    dynTiglUsbClose = (TIGLUSB_CLOSE2) GetProcAddress(hDLL, "TiglUsbClose2");
 	if (!dynTiglUsbClose) 
 	{
 		ticables_warning(_("Unable to load TiglUsbClose symbol."));
@@ -113,23 +128,7 @@ static int slv_open(TiHandle *h)
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbFlush = (TIGLUSB_FLUSH) GetProcAddress(hDLL, "TiglUsbFlush");
-	if (!dynTiglUsbFlush) 
-	{
-	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
-		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
-	}
-
-    dynTiglUsbReset = (TIGLUSB_RESET) GetProcAddress(hDLL, "TiglUsbReset");
-	if (!dynTiglUsbReset) 
-	{
-	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
-		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
-	}
-
-    dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
+	dynTiglUsbCheck = (TIGLUSB_CHECK2) GetProcAddress(hDLL, "TiglUsbCheck2");
 	if (!dynTiglUsbCheck) 
 	{
 		ticables_warning(_("Unable to load TiglUsbCheck symbol."));
@@ -137,47 +136,63 @@ static int slv_open(TiHandle *h)
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbRead2 = (TIGLUSB_READ_2) GetProcAddress(hDLL, "TiglUsbRead2");
-	if (!dynTiglUsbRead2) 
+	dynTiglUsbRead = (TIGLUSB_READ2) GetProcAddress(hDLL, "TiglUsbRead2");
+	if (!dynTiglUsbRead) 
 	{
 		ticables_warning(_("Unable to load TiglUsbRead2 symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbWrite2 = (TIGLUSB_WRITE_2) GetProcAddress(hDLL, "TiglUsbWrite2");
-	if (!dynTiglUsbWrite2) 
+	dynTiglUsbWrite = (TIGLUSB_WRITE2) GetProcAddress(hDLL, "TiglUsbWrite2");
+	if (!dynTiglUsbWrite) 
 	{
 	    ticables_warning(_("Unable to load TiglUsbWrite2 symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
-	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL, "TiglUsbSetTimeout");
-	if (!dynTiglUsbSetTimeout) 
+	dynTiglUsbFlush = (TIGLUSB_FLUSH2) GetProcAddress(hDLL, "TiglUsbFlush2");
+	if (!dynTiglUsbFlush) 
 	{
-		ticables_warning(_("Unable to load TiglUsbSetTimeout symbol."));
+	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
 
-    dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT) GetProcAddress(hDLL, "TiglUsbGetTimeout");
+    dynTiglUsbReset = (TIGLUSB_RESET2) GetProcAddress(hDLL, "TiglUsbReset2");
+	if (!dynTiglUsbReset) 
+	{
+	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
+	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbSetTimeout2");
 	if (!dynTiglUsbSetTimeout) 
 	{
-		ticables_warning(_("Unable to load TiglUsbSetTimeout symbol."));
+		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
+		FreeLibrary(hDLL);
+		return ERR_FREELIBRARY;
+	}
+
+    dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbGetTimeout2");
+	if (!dynTiglUsbSetTimeout) 
+	{
+		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
 		FreeLibrary(hDLL);
 		return ERR_FREELIBRARY;
 	}
   
-	ret = dynTiglUsbOpen2(h->port);
+	ret = hLNK = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
-		case TIGLERR_DEV_OPEN_FAILED: return ERR_TIGLUSB_OPEN;
-		case TIGLERR_DEV_ALREADY_OPEN: return ERR_TIGLUSB_OPEN;
+		case TIGLERR2_DEV_OPEN_FAILED: return ERR_TIGLUSB_OPEN;
+		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_TIGLUSB_OPEN;
 		default: break;
 	}
 
-	dynTiglUsbSetTimeout(h->timeout);
+	dynTiglUsbSetTimeout(hLNK, h->timeout);
 
 	return 0;
 }
@@ -186,7 +201,7 @@ static int slv_close(TiHandle *h)
 {
 	int ret;
 
-    ret = dynTiglUsbClose();
+    ret = dynTiglUsbClose(hLNK);
 
     if (hDLL != NULL)
         FreeLibrary(hDLL);
@@ -199,21 +214,8 @@ static int slv_reset(TiHandle *h)
 {
 	int ret;
 
-	/*
-	ret = dynTiglUsbFlush();
-
-    switch (ret) {
-    case TIGLERR_WRITE_TIMEOUT:
-        return ERR_WRITE_TIMEOUT;
-    case TIGLERR_WRITE_ERROR:
-        return ERR_WRITE_ERROR;
-    default:
-        break;
-    }
-	*/
-
-    ret = dynTiglUsbReset();
-    if(ret == TIGLERR_RESET_FAILED)
+    ret = dynTiglUsbReset(hLNK);
+    if(ret == TIGLERR2_RESET_FAILED)
         return ERR_TIGLUSB_RESET;
 
 	return 0;
@@ -221,20 +223,43 @@ static int slv_reset(TiHandle *h)
 
 static int slv_probe(TiHandle *h)
 {
-	return 0;
+	int ret;
+	unsigned int *list;
+
+	ret = dynTiglUsbProbe(&list);
+    
+	if(ret > 0)
+		if(list[h->address-1] == PID_TIGLUSB)
+			return 0;
+
+	return ERR_PROBE_FAILED;
+}
+
+static int raw_probe(TiHandle *h)
+{
+	int ret;
+	unsigned int *list;
+
+	ret = dynTiglUsbProbe(&list);
+    
+	if(ret > 0)
+		if(list[h->address-1] == PID_TI89TM || list[h->address-1] == PID_TI84P)
+			return 0;
+
+	return ERR_PROBE_FAILED;
 }
 
 static int slv_put(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int ret;
 
-	ret = dynTiglUsbWrite2(data, len);
+	ret = dynTiglUsbWrite(hLNK, data, len);
 
 	switch (ret) 
 	{
-	case TIGLERR_WRITE_TIMEOUT:
+	case TIGLERR2_WRITE_TIMEOUT:
 		return ERR_WRITE_TIMEOUT;
-	case TIGLERR_WRITE_ERROR:
+	case TIGLERR2_WRITE_ERROR:
 		return ERR_WRITE_ERROR;
 	default:
 		break;
@@ -247,13 +272,13 @@ static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
 {
 	int ret;
 
-	ret = dynTiglUsbRead2(data, len);
+	ret = dynTiglUsbRead(hLNK, data, len);
 
 	switch (ret) 
 	{
-	case TIGLERR_READ_TIMEOUT:
+	case TIGLERR2_READ_TIMEOUT:
 		return ERR_READ_TIMEOUT;
-	case TIGLERR_READ_ERROR:
+	case TIGLERR2_READ_ERROR:
 		return ERR_READ_ERROR;
 	default:
 		break;
@@ -264,13 +289,13 @@ static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
 
 static int slv_check(TiHandle *h, int *status)
 {
-	int ret = dynTiglUsbCheck(status);
+	int ret = dynTiglUsbCheck(hLNK, status);
 
     switch (ret) 
 	{
-    case TIGLERR_READ_TIMEOUT:
+    case TIGLERR2_READ_TIMEOUT:
         return ERR_READ_TIMEOUT;
-    case TIGLERR_READ_ERROR:
+    case TIGLERR2_READ_ERROR:
         return ERR_READ_ERROR;
     default:
         break;
@@ -305,9 +330,9 @@ const TiCable cable_slv =
 	"SLV",
 	N_("SilverLink"),
 	N_("SilverLink (TI-GRAPH LINK USB) cable"),
-
-	&slv_prepare, &slv_probe,
-	&slv_open, &slv_close, &slv_reset,
+	0,
+	&slv_prepare,
+	&slv_open, &slv_close, &slv_reset, &slv_probe,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
@@ -319,9 +344,9 @@ const TiCable cable_raw =
 	"USB",
 	N_("DirectLink"),
 	N_("DirectLink (direct USB) cable"),
-
+	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &slv_probe,
+	&slv_open, &slv_close, &slv_reset, &raw_probe,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,

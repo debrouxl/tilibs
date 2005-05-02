@@ -51,6 +51,45 @@ TIEXPORT int TICALL ticables_cable_open(TiHandle* handle)
 }
 
 /**
+ * ticables_cable_probe:
+ * @handle: a previously allocated handle
+ * @result: cable found (!0) or not (0)
+ *
+ * Attempt to probe if a cable is present. Open device if not opened.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticables_cable_probe(TiHandle* handle, unsigned int* result)
+{
+	const TiCable *cable = handle->cable;
+	int already;
+	int ret;
+
+	// Check for requirement
+	TRYC(cable->prepare(handle));
+
+	// Check if device is already opened
+	already = handle->open;
+	if(!already && cable->need_open)
+		TRYC(cable->open(handle));
+
+	// Do the check itself
+	ret = cable->probe(handle);
+	if(ret == ERR_PROBE_FAILED)
+		*result = 0;
+	else
+		*result = !0;
+	
+	// If was opened for this, close it
+	if(!already && cable->need_open)
+		TRYC(cable->close(handle));
+
+	return 0;
+}
+
+
+
+/**
  * ticables_cable_close:
  * @handle: a previously allocated handle
  *

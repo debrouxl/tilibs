@@ -311,7 +311,7 @@ const TiCable cable_gry =
 	"GRY",
 	N_("GrayLink"),
 	N_("GrayLink serial cable"),
-
+	!0,
 	&gry_prepare,
 	&gry_open, &gry_close, &gry_reset, &gry_probe,
 	&gry_put, &gry_get, &gry_check,

@@ -51,13 +51,13 @@ int main(int argc, char **argv)
 	TiHandle *handle;
 	int err, i;
 	uint8_t buf[4], data;
-	int status;
+	int status, result;
 
 	// init lib
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_GRY, PORT_1);
+	handle = ticables_handle_new(CABLE_SLV, PORT_1);
 	//ticables_options_set_timeout(handle, 15);
 	//ticables_options_set_delay(handle, 10);
 	ticables_handle_show(handle);
@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 	sleep(1);
 #endif
 
+#if 0
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;
 	err = ticables_cable_send(handle, buf, 4);
@@ -86,12 +87,18 @@ int main(int argc, char **argv)
 	for(i = 0; i < 4; i++)
 		printf("%02x ", buf[i]);
 	printf("\n");
+#else
+	err = ticables_cable_probe(handle, &result);
+	printf("result = %i\n", result);
+#endif
 
 	// close cable
 	ticables_cable_close(handle);
 	
 	// exit lib
 	ticables_library_exit();
+
+	while(!kbhit());
 
 	return 0;
 }

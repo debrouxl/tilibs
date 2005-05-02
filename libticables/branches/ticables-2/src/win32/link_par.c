@@ -80,26 +80,46 @@ static int par_reset(TiHandle *h)
 
 static int par_probe(TiHandle *h)
 {
-	int i, j;
-  	int seq[] = { 0x00, 0x20, 0x10, 0x30 };
-  	uint8_t data;
+	int timeout = 1;
+	tiTIME clk;
 
-  	for (i = 3; i >= 0; i--) 
+	// 1
+	io_wr(lpt_out, 2);
+    TO_START(clk);
+	do 
 	{
-    		io_wr(lpt_out, 3);
-    		io_wr(lpt_out, i);
-    		
-    		for (j = 0; j < 10; j++)
-      			data = io_rd(lpt_in);
-      			
-    		//printl1(0, "%i: 0x%02x 0x%02x\n", i, data & 0x30, seq[i]);
-    		if ((data & 0x30) != seq[i]) 
-			{
-      			io_wr(lpt_out, 3);
-      			return ERR_PROBE_FAILED;
-    		}
-  	}
-  	io_wr(lpt_out, 3);
+		if (TO_ELAPSED(clk, h->timeout))
+		return ERR_WRITE_TIMEOUT;
+	}
+	while ((io_rd(lpt_in) & 0x10));
+	
+	io_wr(lpt_out, 3);
+	TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, h->timeout))
+		return ERR_WRITE_TIMEOUT;
+	}
+	while (!(io_rd(lpt_in) & 0x10));
+
+	// 0
+	io_wr(lpt_out, 1);
+    TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, h->timeout))
+		return ERR_WRITE_TIMEOUT;
+	}
+	while (io_rd(lpt_in) & 0x20);
+	
+	io_wr(lpt_out, 3);
+	TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, h->timeout))
+		return ERR_WRITE_TIMEOUT;
+	}
+	while (!(io_rd(lpt_in) & 0x20));
 
 	return 0;
 }
@@ -271,7 +291,7 @@ const TiCable cable_par =
 	"PAR",
 	N_("Parallel"),
 	N_("Home-made parallel cable"),
-
+	!0,
 	&par_prepare,
 	&par_open, &par_close, &par_reset, &par_probe,
 	&par_put, &par_get, &par_check,

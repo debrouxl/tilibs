@@ -91,26 +91,42 @@ static int ser_reset(TiHandle *h)
 
 static int ser_probe(TiHandle *h)
 {
-	int i, j;
-  	int seq[] = { 0x00, 0x20, 0x00, 0x20 };
-  	int data;
+	int timeout = 1;
+	tiTIME clk;
 
-  	for (i = 3; i >= 0; i--) 
+	// 1
+	io_wr(com_out, 2);
+    TO_START(clk);
+    do 
 	{
-    		io_wr(com_out, 3);
-    		io_wr(com_out, i);
-    		
-    		for (j = 0; j < 10; j++)
-      			data = io_rd(com_in);
-    		//printl1(0, "%i: 0x%02x 0x%02x\n", i, data, seq[i]);
-    		
-    		if ((data & 0x30) != seq[i]) 
-			{
-      			io_wr(com_out, 3);
-      			return ERR_PROBE_FAILED;
-    		}
-  	}
-  	io_wr(com_out, 3);
+		if (TO_ELAPSED(clk, timeout))
+	  		return ERR_WRITE_TIMEOUT;
+    } while ((io_rd(com_in) & 0x10));
+    
+    io_wr(com_out, 3);
+    TO_START(clk);
+    do 
+	{
+		if (TO_ELAPSED(clk, timeout))
+	  		return ERR_WRITE_TIMEOUT;
+    } while ((io_rd(com_in) & 0x10) == 0x00);
+
+	// 0
+	io_wr(com_out, 1);
+    TO_START(clk);
+    do 
+	{
+		if (TO_ELAPSED(clk, timeout))
+	  		return ERR_WRITE_TIMEOUT;
+    } while (io_rd(com_in) & 0x20);
+
+    io_wr(com_out, 3);
+    TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, timeout))
+	  		return ERR_WRITE_TIMEOUT;
+    } while ((io_rd(com_in) & 0x20) == 0x00);
 
 	return 0;
 }
@@ -281,7 +297,7 @@ const TiCable cable_ser =
 	"BLK",
 	N_("BlackLink"),
 	N_("BlackLink or home-made serial cable"),
-
+	!0,
 	&ser_prepare,
 	&ser_open, &ser_close, &ser_reset, &ser_probe,
 	&ser_put, &ser_get, &ser_check,

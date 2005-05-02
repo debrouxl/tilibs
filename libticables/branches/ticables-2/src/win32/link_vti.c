@@ -261,7 +261,7 @@ const TiCable cable_vti =
 	"VTI",
 	N_("Virtual TI"),
 	N_("Virtual link for VTi"),
-
+	0,
 	&vti_prepare,
 	&vti_open, &vti_close, &vti_reset, &vti_probe,
 	&vti_put, &vti_get, &vti_check,

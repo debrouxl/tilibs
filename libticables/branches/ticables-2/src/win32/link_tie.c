@@ -212,7 +212,7 @@ const TiCable cable_tie =
 	"TIE",
 	N_("TiEmu"),
 	N_("Virtual link for TiEmu"),
-
+	0,
 	&tie_prepare,
 	&tie_open, &tie_close, &tie_reset, &tie_probe,
 	&tie_put, &tie_get, &tie_check,
