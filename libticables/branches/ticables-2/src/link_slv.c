@@ -26,7 +26,7 @@
 #endif
 
 #if defined(__LINUX__)
-//#include "linux/link_slv.c"
+#include "linux/link_slv.c"
 
 #elif defined(__BSD__)
 #include "linux/link_slv2.c"

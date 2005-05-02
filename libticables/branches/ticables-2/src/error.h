@@ -68,6 +68,11 @@ typedef enum
 	ERR_SHM_DETACH,
 	ERR_SHM_RMID,
 
+    ERR_LIBUSB_INIT,
+    ERR_LIBUSB_OPEN,
+    ERR_LIBUSB_RESET,
+    ERR_OPEN_USB_DEV,
+
 } TiCableError;
 
 #endif

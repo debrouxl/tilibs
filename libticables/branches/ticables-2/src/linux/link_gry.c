@@ -26,6 +26,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -41,11 +42,8 @@
 #include "../gettext.h"
 #include "detect.h"
 
-//#define dev_fd      (int)(h->priv)
-//#define termset     (struct termios *)(h->priv2)
-
-static int dev_fd = -1;
-static struct termios termset;
+#define dev_fd      ((int)(h->priv))
+#define termset     ((struct termios *)(h->priv2))
 
 static int gry_prepare(TiHandle *h)
 {
@@ -86,18 +84,18 @@ static int gry_open(TiHandle *h)
     }
     
     // Initialize it: 9600,8,N,1
-    tcgetattr(dev_fd, &termset);
+    tcgetattr(dev_fd, termset);
 #ifdef HAVE_CFMAKERAW
-    cfmakeraw(&termset);
+    cfmakeraw(termset);
 #else
-    termset.c_iflag = 0;
-    termset.c_oflag = 0;
-    termset.c_cflag = CS8 | CLOCAL | CREAD;
-    termset.c_lflag = 0;
+    termset->c_iflag = 0;
+    termset->c_oflag = 0;
+    termset->c_cflag = CS8 | CLOCAL | CREAD;
+    termset->c_lflag = 0;
 #endif
-    
-    cfsetispeed(&termset, B9600);
-    cfsetospeed(&termset, B9600);    
+
+    cfsetispeed(termset, B9600);
+    cfsetospeed(termset, B9600);
 
     return 0;
 }
@@ -105,6 +103,9 @@ static int gry_open(TiHandle *h)
 static int gry_close(TiHandle *h)
 {
     close(dev_fd);
+    free(h->priv2);
+    h->priv2 = NULL;
+
     return 0;
 }
 
@@ -112,19 +113,19 @@ static int gry_reset(TiHandle *h)
 {
     uint8_t unused[1024];
     int n;
-    
+
     /* Flush the input */
-    termset.c_cc[VMIN] = 0;
-    termset.c_cc[VTIME] = 0;
-    tcsetattr(dev_fd, TCSANOW, &termset);
-    do 
+    termset->c_cc[VMIN] = 0;
+    termset->c_cc[VTIME] = 0;
+    tcsetattr(dev_fd, TCSANOW, termset);
+    do
     {
 	n = read(dev_fd, (void *) unused, 1024);
     } while ((n != 0) && (n != -1));
-    
+
     /* and set/restore the timeout */
-    termset.c_cc[VTIME] = h->timeout;
-    tcsetattr(dev_fd, TCSANOW, &termset);
+    termset->c_cc[VTIME] = h->timeout;
+    tcsetattr(dev_fd, TCSANOW, termset);
     
     return 0;
 }
@@ -168,7 +169,7 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 }
 
 // Migrate these functions into ioports.c
-static int dcb_read_io()
+static int dcb_read_io(TiHandle *h)
 {
 #ifdef HAVE_TERMIOS_H	
     unsigned int flags;
@@ -180,7 +181,7 @@ static int dcb_read_io()
 #endif
 }
 
-static int dcb_write_io(int data)
+static int dcb_write_io(TiHandle *h, int data)
 {
 #ifdef HAVE_TERMIOS_H
     unsigned int flags = 0;
@@ -202,13 +203,13 @@ static int gry_probe(TiHandle *h)
 
     for (i = 0; i < 5; i++) 
     {
-	dcb_write_io(seq_in[i]);
+	dcb_write_io(h, seq_in[i]);
 	usleep(1000);
 	//printf("%i : %i\n", seq[i], dcb_read_io() & 0x3);
 
-	if ((dcb_read_io() & 0x3) != seq_out[i]) 
+	if ((dcb_read_io(h) & 0x3) != seq_out[i]) 
 	{
-	    dcb_write_io(3);
+	    dcb_write_io(h, 3);
 	    return ERR_PROBE_FAILED;
 	}
 

@@ -41,7 +41,7 @@ void print_lc_error(int errnum)
 {
 	char *msg;
 
-	ticables_error_get(errnum, msg);
+	ticables_error_get(errnum, &msg);
 	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
 	free(msg);
 }
@@ -57,7 +57,9 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLK, PORT_1);
+	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	if(handle == NULL)
+	    return -1;
 	//ticables_options_set_timeout(handle, 15);
 	//ticables_options_set_delay(handle, 10);
 	ticables_handle_show(handle);

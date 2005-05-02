@@ -3,6 +3,7 @@
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2001 Julien Blache (original author)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,13 +21,6 @@
  */
 
 /* TI-GRAPH LINK USB and direct USB cable support (lib-usb) */
-
-/*********************************/
-/* Linux   : libusb support      */
-/* Author  : Julien BLACHE       */
-/* Contact : jb@technologeek.org */
-/* Date    : 20011126            */
-/*********************************/
 
 /* 
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
@@ -70,14 +64,16 @@
 #include <errno.h>
 #include <usb.h>
 
-#include "../gettext.h"
-#include "../logging.h"
 #include "../ticables.h"
-#include "detect.h"
+#include "../logging.h"
 #include "../error.h"
+#include "../gettext.h"
+#include "detect.h"
+#include "ioports.h"
 
-#define BUFFERED_W    /* enable buffered write operations	  */ 
-#define BUFFERED_R    /* enable buffered read operations (always) */
+/* Constants */
+
+#define MAX_CABLES   4
 
 #define VID_TIGLUSB  0x0451     /* Texas Instruments, Inc.            */
 #define PID_TIGLUSB  0xE001     /* TI-GRAPH LINK USB (SilverLink)     */
@@ -87,119 +83,153 @@
 #define TIGL_BULK_IN    0x81
 #define TIGL_BULK_OUT   0x02
 
-#define to      (100 * time_out)        // in ms
+#define to      (100 * h->timeout)        // in ms
 
-typedef struct {
-	uint16_t vid;
-	uint16_t pid;
-	char*    str;
-} usb_dev_infos;
+/* Types */
 
-static usb_dev_infos tiglusb_infos[] = {
-        {0x0451, 0xe001, "SilverLink"},
-        {0x0451, 0xe004, "TI89 Titanium"},
-        {0x0451, 0xe008, "TI84 Plus"},
+typedef struct
+{
+    uint16_t vid;
+    uint16_t pid;
+    char*    str;
+
+    struct usb_device *dev;
+} usb_infos;
+
+static usb_infos tigl_infos[] =
+{
+        {0x0451, 0xe001, "SilverLink", NULL},
+        {0x0451, 0xe004, "TI89 Titanium", NULL},
+        {0x0451, 0xe008, "TI84 Plus", NULL},
         {}
 };
 
-//static int max_ps = 32;  // max packet size (32 ot 64)
+static usb_infos tigl_devices[MAX_CABLES];// = { 0 }; 
+static int ndevices = 0;
 
-static int nBytesWrite2 = 0;
-static uint8_t *wBuf2 = NULL;
-static int nBytesRead2 = 0;
-static uint8_t *rBuf2 = NULL;
+typedef struct
+{
+    struct usb_device *tigl_dev;
+    usb_dev_handle    *tigl_han;
+    
+    int     max_ps;
+    
+    int     nBytesWrite;
+    uint8_t *wBuf;
+    
+    int     nBytesRead;
+    int8_t *rBuf;
+} usb_struct;
+
+#define tigl_dev (((usb_struct *)(h->priv2))->tigl_dev)
+#define tigl_han (((usb_struct *)(h->priv2))->tigl_han)
+#define max_ps   (((usb_struct *)(h->priv2))->max_ps)
+#define nBytesWrite (((usb_struct *)(h->priv2))->nBytesWrite)
+#define wBuf        (((usb_struct *)(h->priv2))->wBuf)
+#define nBytesRead  (((usb_struct *)(h->priv2))->nBytesRead)
+#define rBuf        (((usb_struct *)(h->priv2))->rBuf)
 
 /* Helpers */
 
-struct usb_bus *bus = NULL;
-struct usb_device *dev = NULL;
-struct usb_device *tigl_dev = NULL;
-usb_dev_handle *tigl_han = NULL;
-
-static void find_tigl_device(void)
+static void find_tigl_devices(void)
 {
-	int i;
-
-  	/* loop taken from testlibusb.c */
-  	for (bus = usb_busses; bus; bus = bus->next) {
-    		for (dev = bus->devices; dev; dev = dev->next) {
-      			if ((dev->descriptor.idVendor == VID_TIGLUSB)) {
-				for(i = 0; i < sizeof(tiglusb_infos) / 
-					    sizeof(usb_dev_infos); i++)
-				{
-					if(dev->descriptor.idProduct == 
-					   tiglusb_infos[i].pid) {
-						/* keep track of the TIGL device */
-						printl1(0, _("Found <%s>.\n"), 
-							     tiglusb_infos[i].str);
-						tigl_dev = dev;
-						return;
-					}
-				}
-			}
-    		}
-
-    		/* if we found the device, then stop... */
-    		if (tigl_dev != NULL)
-      			break;
-  	}
+    struct usb_bus    *bus;
+    struct usb_device *dev;
+    int i;
+    
+    ndevices = 0;
+    /* loop taken from testlibusb.c */
+    for (bus = usb_busses; bus; bus = bus->next)
+    {
+	for (dev = bus->devices; dev; dev = dev->next)
+	{
+	    if ((dev->descriptor.idVendor == VID_TIGLUSB))
+	    {
+		for(i = 0; i < sizeof(tigl_infos) / sizeof(usb_infos); i++)
+		{
+		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
+		    {
+			/* keep track of the TIGL device */
+			ticables_info(_("found <%s>."), tigl_infos[i].str);
+			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
+			       sizeof(usb_infos));
+			tigl_devices[ndevices++].dev = dev;
+		    }
+		}
+	    }
+	}
+    }
 }
 
-static int enumerate_tigl_device(void)
+static int enumerate_tigl_devices(void)
 {
-  	int ret = 0;
+    int ret = 0;
+    
+    /* init the libusb */
+    usb_init();
+    
+    /* find all usb busses on the system */
+    ret = usb_find_busses();
+    if (ret < 0)
+    {
+	ticables_warning(_("usb_find_busses (%s).\n"), usb_strerror());
+	return ERR_LIBUSB_OPEN;
+    }
+    
+    /* find all usb devices on all discovered busses */
+    ret = usb_find_devices();
+    if (ret < 0)
+    {
+	ticables_warning(_("usb_find_devices (%s).\n"), usb_strerror());
+	return ERR_LIBUSB_OPEN;
+    }
+    
+    /* iterate through the busses/devices */
+    find_tigl_devices();
 
-  	/* init the libusb */
-  	usb_init();
+    return 0;
+}    
 
-  	/* find all usb busses on the system */
-  	ret = usb_find_busses();
-  	if (ret < 0) {
-    		printl1(2, _("usb_find_busses (%s).\n"), usb_strerror());
-    		return ERR_LIBUSB_OPEN;
-  	}
+int open_tigl_device(int id, usb_dev_handle **udh)
+{
+    int ret; 
 
-  	/* find all usb devices on all discovered busses */
-  	ret = usb_find_devices();
-  	if (ret < 0) {
-    		printl1(2, _("usb_find_devices (%s).\n"), usb_strerror());
-    		return ERR_LIBUSB_OPEN;
-  	}
+    ret = enumerate_tigl_devices();
+    if(ret) return ret;
 
-  	/* iterate through the busses/devices */
-  	find_tigl_device();
+    if(tigl_devices[id].dev == NULL)
+	return ERR_ILLEGAL_ARG;
 
-  	/* if we didn't find our TIGL USB, then slv_init() and retry... */
-  	if (tigl_dev != NULL) {
-    		tigl_han = usb_open(tigl_dev);
-    		if (tigl_han != NULL) {
-      			/* interface 0, configuration 1 */
-      			ret = usb_claim_interface(tigl_han, 0);
-      			if (ret < 0) {
-				printl1(2, "usb_claim_interface (%s).\n", 
-					usb_strerror());
-				return ERR_LIBUSB_INIT;
-      			}
+    *udh = usb_open(tigl_devices[id].dev);
+    if (*udh != NULL) 
+    {
+	/* interface 0, configuration 1 */
+	ret = usb_claim_interface(*udh, 0);
+	if (ret < 0) 
+	{
+	    ticables_warning("usb_claim_interface (%s).\n",
+			     usb_strerror());
+	    return ERR_LIBUSB_INIT;
+	}
+	
+	ret = usb_set_configuration(*udh, 1);
+	if (ret < 0) 
+	{
+	    ticables_warning("usb_set_configuration (%s).\n",
+			     usb_strerror());
+	    return ERR_LIBUSB_INIT;
+	}
+	return 0;
+    } 
+    else
+	return ERR_LIBUSB_OPEN;
 
-      			ret = usb_set_configuration(tigl_han, 1);
-	      		if (ret < 0) {
-				printl1(2, "usb_set_configuration (%s).\n", 
-					usb_strerror());
-				return ERR_LIBUSB_INIT;
-	      		}
-	      		return 0;
-	    	} else
-	      		return ERR_LIBUSB_OPEN;
-  	}
-
-  	if (tigl_han == NULL)
-    		return ERR_LIBUSB_OPEN;
-
-  	return 0;
+    return 0;
 }
 
-static int reset_pipes(void)
+static int reset_pipes(usb_struct *s)
 {
+#if 0
 	int ret;
 
 	printf("resetting pipes... ");
@@ -207,324 +237,200 @@ static int reset_pipes(void)
   	// Reset out pipe
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
   	if (ret < 0) {
-    		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
+    		ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
 
     		ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
     		if (ret < 0) {
-      			printl1(2, "usb_resetep (%s).\n", usb_strerror());
+      			ticables_warning("usb_resetep (%s).\n", usb_strerror());
 
       			ret = usb_reset(tigl_han);
       			if (ret < 0) {
-				printl1(2, "usb_reset (%s).\n", usb_strerror());
+				ticables_warning("usb_reset (%s).\n", usb_strerror());
 				return ERR_LIBUSB_RESET;
       			}
     		}
   	}
-  	
+
 	// Reset in pipe
   	ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
   	if (ret < 0) {
-    		printl1(2, "usb_clear_halt (%s).\n", usb_strerror());
+    		ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
 
 	    	ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
 	    	if (ret < 0) {
-	      		printl1(2, "usb_resetep (%s).\n", usb_strerror());
-	
+	      		ticables_warning("usb_resetep (%s).\n", usb_strerror());
+
 	      		ret = usb_reset(tigl_han);
 	      		if (ret < 0) {
-				printl1(2, "usb_reset (%s).\n", usb_strerror());
+				ticables_warning("usb_reset (%s).\n", usb_strerror());
 				return ERR_LIBUSB_RESET;
 	      		}
 	    	}
   	}
 
 	printf("done !\n");
+#endif
+	return 0;
+}
+
+/* API */
+
+static int slv_prepare(TiHandle *h)
+{
+	char str[64];
+
+	if(h->port >= MAX_CABLES)
+	    return ERR_ILLEGAL_ARG;
+
+	h->address = h->port;
+	sprintf(str, "TiglUsb #%i", h->port);
+	h->device = strdup(str);
+	h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
+
+	//if(!check_for_libusb())
+	//  return -1;
 
 	return 0;
 }
 
-static int send_fblock2(uint8_t *data, int length)
+static int slv_open(TiHandle *h)
 {
-	int ret;
+    int ret;
 
-	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
-
-	if(ret == -ETIMEDOUT) {
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-		return ERR_WRITE_TIMEOUT;
-	} else if(ret == -EPIPE) {
-		printf("ret = %i\n", ret);
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-		return ERR_WRITE_ERROR;
-	} else if(ret < 0) {
-		printf("ret = %i\n", ret);
-		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-		return ERR_WRITE_ERROR;
-	}
-
-	return 0;
-}
-
-static int send_pblock2(uint8_t *data, int length)
-{
-	int i;
-
-	for(i=0; i<length; i++) {
-		int ret = send_fblock2(&data[i], 1);
-		if(ret) return ret;
-	}
-
-	return 0;
-}
-
-/* */
-
-int slv_init2()
-{
-	int ret = 0;
-
-  	START_LOGGING();
-
-  	ret = enumerate_tigl_device();
-
-	wBuf2 = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
-        rBuf2 = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
-        if((wBuf2 == NULL) || (rBuf2 == NULL))
-        {
-                free(wBuf2);
-                free(rBuf2);
-                return ERR_OPEN_USB_DEV;
-        }
-
+    // open device
+    tigl_dev = tigl_devices[h->address-1].dev;
+    ret = open_tigl_device(h->address, &tigl_han);
+    if(ret)
 	return ret;
-}
+    
+// get max packet size
+    max_ps = 32;
 
-int slv_open2()
-{
-  	if (tigl_han == NULL) {
-    		if (slv_init2() != 0)
-      			return ERR_LIBUSB_OPEN;
-  	}
+// allocate buffers
+    wBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+    rBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
+    if((wBuf == NULL) || (rBuf == NULL))
+    {
+	free(wBuf);
+	free(rBuf);
+	return ERR_OPEN_USB_DEV;
+    }
 
-#if !defined(__BSD__)
-	{
-		/* Reset both endpoints */
-		int ret = reset_pipes();
-		if(ret) return ret;
-	}
+#if 0 //!defined(__BSD__)
+ {
+     /* Reset both endpoints */
+     int ret = reset_pipes();
+     if(ret) return ret;
+ }
 #endif
 
-  	/* Clear buffers */
-  	nBytesRead2 = 0;
-  	nBytesWrite2 = 0;
-
-  	tdr.count = 0;
-  	TO_START(tdr.start);
-
-  	return 0;
+    return 0;
 }
 
-int slv_exit2()
+static int slv_close(TiHandle *h)
 {
-	free(wBuf2); wBuf2 = NULL;
-        free(rBuf2); rBuf2 = NULL;
+    free(wBuf); wBuf = NULL;
+    free(rBuf); rBuf = NULL;
 
-  	tigl_dev = NULL;
+    tigl_dev = NULL;
 
-	STOP_LOGGING();
+    if (tigl_han != NULL) 
+    {
+	usb_release_interface(tigl_han, 0);
+	usb_close(tigl_han);
+	tigl_han = NULL;
+    }
 
-  	if (tigl_han != NULL) {
-    		usb_release_interface(tigl_han, 0);
-    		usb_close(tigl_han);
-    		tigl_han = NULL;
-  	}
+    free(h->priv2);
 
-  	return 0;
+    return 0;
 }
 
-static int send_fblock2(uint8_t *data, int length);
-static int send_pblock2(uint8_t *data, int length);
-
-int slv_close2()
+static int slv_reset(TiHandle *h)
 {
-#if defined( BUFFERED_W )
-	/* Flush write buffer byte per byte (last command) */
-	if (nBytesWrite2 > 0) {
-		int ret = send_pblock2(wBuf2, nBytesWrite2);
-		nBytesWrite2 = 0;
-		if(ret) return ret;
-	}
-#endif
-
-  	return 0;
-}
-
-int slv_put2(uint8_t data)
-{
-  	tdr.count++;
-  	LOG_DATA(data);
-
-#if !defined( BUFFERED_W )
-  	/* Byte per byte */
-	return send_pblock2(&data, 1);
-#else
-  	/* Fill buffer (up to 32 bytes) */
-  	wBuf2[nBytesWrite2++] = data;
-
-	/* Buffer full? Send the whole buffer at once */
-  	if (nBytesWrite2 == max_ps) {
-		int ret = send_fblock2(wBuf2, nBytesWrite2);
-		nBytesWrite2 = 0;
-		if(ret) return ret;
-  	}
-#endif
-
-  	return 0;
-}
-
-int slv_get2(uint8_t * data)
-{
-  	int ret = 0;
-  	tiTIME clk;
-  	static uint8_t *rBuf2Ptr;
-
-#if defined( BUFFERED_W )
-        /* Flush write buffer byte per byte (more reliable) */
-  	if (nBytesWrite2 > 0) {
-		ret = send_pblock2(wBuf2, nBytesWrite2);
-		nBytesWrite2 = 0;
-		if(ret) return ret;
-	}
-#endif
-
-#ifdef BUFFERED_R
-	/* Read up to 32 bytes (BULKUSB_MAX_TRANSFER_SIZE) and 
-     		store them in a buffer for subsequent accesses */
-  	if (nBytesRead2 <= 0) {
-	    	TO_START(clk);
-	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-					    max_ps, to);
-					    
-	      		if (TO_ELAPSED(clk, time_out))
-				return ERR_READ_TIMEOUT;
-	      		if (ret == 0)
-				printl1(2, _("\nweird, usb_bulk_read returns without any data & error; retrying...\n"));
-	    	}
-		while(!ret);
-
-	    	if(ret == -ETIMEDOUT) {
-			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-			return ERR_WRITE_TIMEOUT;
-		} else if(ret == -EPIPE) {
-			printf("ret = %i\n", ret);
-			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-			return ERR_WRITE_ERROR;
-		} else if(ret < 0) {
-			printf("ret = %i\n", ret);
-			printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
-			return ERR_WRITE_ERROR;
-		}
-		
-	    	nBytesRead2 = ret;
-	    	rBuf2Ptr = rBuf2;
-  	}
-	
-  	*data = *rBuf2Ptr++;
-  	nBytesRead2--;
-#endif
-  	
-  	tdr.count++;
-  	LOG_DATA(*data);
-
-  	return 0;
-}
-
-int slv_probe2()
-{
-  	if (tigl_dev != NULL)
-    		return 0;
-  	else
-    		return ERR_PROBE_FAILED;
-}
-
-int slv_check2(int *status)
-{
-  	tiTIME clk;
-  	int ret = 0;
-
-  	/* Since the select function does not work, I do it myself ! */
-  	*status = STATUS_NONE;
-
-  	if (tigl_han != NULL) {
-    		if (nBytesRead2 > 0) {
-      			*status = STATUS_RX;
-      			return 0;
-    		}
-
-	    	TO_START(clk);
-	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-					    max_ps, to);
-					    
-	      		if (TO_ELAPSED(clk, time_out))
-				return ERR_READ_TIMEOUT;
-	      		if (ret == 0)
-				printl1(2, "weird, usb_bulk_read returns without any data;  retrying...\n");
-	    	}
-	    	while (!ret);
-	
-	    	if (ret > 0) {
-	      		nBytesRead2 = ret;
-	      		*status = STATUS_RX;
-	      		return 0;
-	    	} else {
-	      		nBytesRead2 = 0;
-	      		*status = STATUS_NONE;
-	      		return 0;
-	    	}
-  	}
-
-  	return 0;
-}
-
-#define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
-
-int slv_set_red_wire2(int b)
-{
-  	return 0;
-}
-
-int slv_set_white_wire2(int b)
-{
-  	return 0;
-}
-
-int slv_get_red_wire2()
-{
-  	return 0;
-}
-
-int slv_get_white_wire2()
-{
-  	return 0;
-}
-
-int slv_supported2()
-{				/* HELL YES IT'S SUPPORTED ! :-) */
-  	return SUPPORT_ON;
-}
-
-int slv_register_cable_2(TicableLinkCable * lc)
-{
-  lc->init = slv_init2;
-  lc->open = slv_open2;
-  lc->put = slv_put2;
-  lc->get = slv_get2;
-  lc->close = slv_close2;
-  lc->exit = slv_exit2;
-  lc->probe = slv_probe2;
-  lc->check = slv_check2;
-
   return 0;
 }
+
+static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
+{
+  return 0;
+}
+
+static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
+{
+  return 0;
+}
+
+static int slv_probe(TiHandle *h)
+{
+    enumerate_tigl_devices();
+
+    if(tigl_devices[h->address-1].pid == PID_TIGLUSB)
+	return 0;
+
+    return ERR_PROBE_FAILED;
+}
+
+static int raw_probe(TiHandle *h)
+{
+    enumerate_tigl_devices();
+
+    if(tigl_devices[h->address-1].pid == PID_TI89TM ||
+       tigl_devices[h->address-1].pid == PID_TI84P)
+        return 0;
+    
+    return ERR_PROBE_FAILED;
+}
+
+static int slv_check(TiHandle *h, int *status)
+{
+  	return 0;
+}
+
+static int slv_set_red_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int slv_set_white_wire(TiHandle *h, int b)
+{
+	return 0;
+}
+
+static int slv_get_red_wire(TiHandle *h)
+{
+	return 1;
+}
+
+static int slv_get_white_wire(TiHandle *h)
+{
+	return 1;
+}
+
+const TiCable cable_slv =
+{
+	CABLE_SLV,
+	"SLV",
+	N_("SilverLink"),
+	N_("SilverLink (TI-GRAPH LINK USB) cable"),
+	0,
+	&slv_prepare,
+	&slv_open, &slv_close, &slv_reset, &slv_probe,
+	&slv_put, &slv_get, &slv_check,
+	&slv_set_red_wire, &slv_set_white_wire,
+	&slv_get_red_wire, &slv_get_white_wire,
+};
+
+const TiCable cable_raw =
+{
+	CABLE_USB,
+	"USB",
+	N_("DirectLink"),
+	N_("DirectLink (direct USB) cable"),
+	0,
+	&slv_prepare,
+	&slv_open, &slv_close, &slv_reset, &raw_probe,
+	&slv_put, &slv_get, &slv_check,
+	&slv_set_red_wire, &slv_set_white_wire,
+	&slv_get_red_wire, &slv_get_white_wire,
+};

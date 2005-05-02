@@ -48,10 +48,8 @@ static TiCable const *const cables[] =
 	&cable_gry,
 	&cable_ser,
 	&cable_par,
-#ifndef __LINUX__
 	&cable_slv,
 	&cable_raw,
-#endif
 	&cable_vti,
 	&cable_tie,
 	NULL
