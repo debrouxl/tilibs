@@ -163,8 +163,6 @@ static int gry_reset(TiHandle *h)
 	return 0;
 }
 
-#define MS_ON (MS_CTS_ON | MS_DTR_ON)
-
 static int gry_probe(TiHandle *h)
 {
 	DWORD status;			//MS_CTS_ON or MS_DTR_ON

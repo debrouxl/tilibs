@@ -171,45 +171,48 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 static int dcb_read_io()
 {
 #ifdef HAVE_TERMIOS_H	
-  	unsigned int flags;
-
-  	if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
-    		return ERR_IOCTL;
-
-  	return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+    unsigned int flags;
+    
+    if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
+	return ERR_IOCTL;
+    
+    return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
 #endif
 }
 
 static int dcb_write_io(int data)
 {
 #ifdef HAVE_TERMIOS_H
-  	unsigned int flags = 0;
-
-  	flags |= (data & 2) ? TIOCM_RTS : 0;
-  	flags |= (data & 1) ? TIOCM_DTR : 0;
-  	if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
-    		return ERR_IOCTL;
-
-  	return 0;
+    unsigned int flags = 0;
+    
+    flags |= (data & 2) ? TIOCM_RTS : 0;
+    flags |= (data & 1) ? TIOCM_DTR : 0;
+    if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
+	return ERR_IOCTL;
+    
+    return 0;
 #endif
 }
 
 static int gry_probe(TiHandle *h)
 {
     int i;
-    int seq[] = { 0x0, 0x2, 0x0, 0x2 };
-    
-    dcb_write_io(3);
-    for (i = 3; i >= 0; i--) 
+    int seq_in[] =  { 3, 2, 0, 1, 3 };
+    int seq_out[] = { 2, 0, 0, 2, 2 };
+
+    for (i = 0; i < 5; i++) 
     {
-	dcb_write_io(i);
-	if ((dcb_read_io() & 0x3) != seq[i]) 
+	dcb_write_io(seq_in[i]);
+	usleep(1000);
+	//printf("%i : %i\n", seq[i], dcb_read_io() & 0x3);
+
+	if ((dcb_read_io() & 0x3) != seq_out[i]) 
 	{
 	    dcb_write_io(3);
 	    return ERR_PROBE_FAILED;
 	}
+
     }
-    dcb_write_io(3);
 
     return 0;
 }

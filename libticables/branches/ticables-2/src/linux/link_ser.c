@@ -196,44 +196,44 @@ static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
 
 static int ser_probe(TiHandle *h)
 {
-int timeout = 1;
-	tiTIME clk;
-
-	// 1
-	io_wr(com_out, 2);
+    int timeout = 1;
+    tiTIME clk;
+    
+    // 1
+    io_wr(com_out, 2);
     TO_START(clk);
     do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
+    {
+	if (TO_ELAPSED(clk, timeout))
+	    return ERR_WRITE_TIMEOUT;
     } while ((io_rd(com_in) & 0x10));
     
     io_wr(com_out, 3);
     TO_START(clk);
     do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
+    {
+	if (TO_ELAPSED(clk, timeout))
+	    return ERR_WRITE_TIMEOUT;
     } while ((io_rd(com_in) & 0x10) == 0x00);
-
-	// 0
-	io_wr(com_out, 1);
+    
+    // 0
+    io_wr(com_out, 1);
     TO_START(clk);
     do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
+    {
+	if (TO_ELAPSED(clk, timeout))
+	    return ERR_WRITE_TIMEOUT;
     } while (io_rd(com_in) & 0x20);
-
+    
     io_wr(com_out, 3);
     TO_START(clk);
-	do 
-	{
-		if (TO_ELAPSED(clk, timeout))
-	  		return ERR_WRITE_TIMEOUT;
+    do 
+    {
+	if (TO_ELAPSED(clk, timeout))
+	    return ERR_WRITE_TIMEOUT;
     } while ((io_rd(com_in) & 0x20) == 0x00);
-
-	return 0;
+    
+    return 0;
 }
 
 static int ser_check(TiHandle *h, int *status)
