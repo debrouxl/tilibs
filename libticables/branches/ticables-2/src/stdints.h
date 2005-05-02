@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: stdints.h 368 2004-03-22 18:42:08Z roms $ */
+/* $Id$ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin

@@ -44,13 +44,10 @@ static int par_prepare(TiHandle *h)
 	case PORT_3: h->address = 0x3bc; h->device = strdup("/dev/lp2"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
-/*
-	if(win32_detect_os() == WIN_NT)
-	{
-		if(!win32_detect_porttalk())
-			return ERR_PORTTALK_NOT_FOUND;
-	}
-*/
+
+	// detect stuffs 
+	TRYC(check_for_root());
+
 	return 0;
 }
 
@@ -272,9 +269,9 @@ const TiCable cable_par =
 	"PAR",
 	N_("Parallel"),
 	N_("Home-made parallel cable"),
-
-	&par_prepare, &par_probe,
-	&par_open, &par_close, &par_reset,
+	!0,
+	&par_prepare,
+	&par_open, &par_close, &par_reset, &par_probe,
 	&par_put, &par_get, &par_check,
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,

@@ -42,224 +42,347 @@
 #include <sys/ioctl.h>
 
 #include "../gettext.h"
+#include "../error.h"
+#include "../logging.h"
 
-#define MAXCHARS 1024
+static int warning = 0;
+static int devfs = 0;
 
-int linux_detect_os(char **os_type)
+/*static char *result(int i)
 {
-#ifdef HAVE_UNAME
-	struct utsname buf;
+  return ((i == 0) ? _("ok") : _("nok"));
+}*/
 
-	uname(&buf);
-  	printl1(0, _("getting OS type:\n"));
-  	printl1(0, _("  system name: %s\n"), buf.sysname);
-  	printl1(0, _("  node name: %s\n"), buf.nodename);
-  	printl1(0, _("  release: %s\n"), buf.release);
-  	printl1(0, _("  version: %s\n"), buf.version);
-  	printl1(0, _("  machine: %s\n"), buf.machine);
-#endif
-	*os_type = OS_LINUX;
+/***********/
+/* Helpers */
+/***********/
 
-	return 0;
+/*
+  Returns mode string from mode value.
+*/
+static const char *get_attributes(mode_t attrib)
+{
+	static char s[13] = " ---------- ";
+      
+        if (attrib & S_IRUSR)
+                s[2] = 'r';
+        if (attrib & S_IWUSR)
+                s[3] = 'w';
+        if (attrib & S_ISUID) {
+                if (attrib & S_IXUSR)
+                        s[4] = 's';
+		else
+                        s[4] = 'S';
+        }
+        else if (attrib & S_IXUSR)
+                s[4] = 'x';
+        if (attrib & S_IRGRP)
+                s[5] = 'r';
+        if (attrib & S_IWGRP)
+                s[6] = 'w';
+        if (attrib & S_ISGID) {
+                if (attrib & S_IXGRP)
+			s[7] = 's';
+		else
+                        s[7] = 'S';
+        }
+        else if (attrib & S_IXGRP)
+                s[7] = 'x';
+	if (attrib & S_IROTH)
+                s[8] = 'r';
+        if (attrib & S_IWOTH)
+                s[9] = 'w';
+        if (attrib & S_ISVTX) {
+                if (attrib & S_IXOTH)
+                        s[10] = 't';
+                else
+                        s[10] = 'T';
+        }
+	return s;
 }
 
-int linux_detect_port(TicablePortInfo * pi)
+/*
+   Returns user name from id.
+*/
+static const char *get_user_name(uid_t uid)
 {
-	int fd;
+	struct passwd *pwuid;
+
+        if((pwuid = getpwuid(uid)) != NULL)
+		return pwuid->pw_name;
+
+	return "root";
+}
+
+/*
+  Returns group name from id.
+*/
+static const char *get_group_name(uid_t uid)
+{
+	struct group *grpid;
+        
+	if ((grpid = getgrgid(uid)) != NULL)
+                return grpid->gr_name;
+
+	return "root";
+}
+
+/* 
+   Attempt to find a specific string in /proc (vfs) 
+   - entry [in] : an entry such as '/proc/devices'
+   - str [in) : an occurence to find (such as 'tipar')
+*/
+static int find_string_in_proc(char *entry, char *str)
+{
 	FILE *f;
-        int i;
-        char name[MAXCHARS];
-        int sa, ea;
-        int nargs;
-        char buffer[MAXCHARS];
-	DIR *dir;
-        struct dirent *file;
-        int res;
-        char path[256];
-	char *sports[] = { SP1_NAME, SP2_NAME, SP3_NAME, SP4_NAME };
-	struct serial_struct serinfo;
-
-	// clear structure
-	bzero(pi, sizeof(TicablePortInfo));
-
-	/* Ensure /proc is mounted */
-
-	fd = access("/proc/", F_OK);
-        if (fd < 0) {
-                printl1(2, _("The pseudo-file '/proc' does not exist. Mount it with 'mount -t proc /proc proc'.\n"));
-		return -1;
-	}
-
-	/* Do a first/rapid checking with /proc/ioports */
+	char buffer[80];
+	int found = 0;
 	
-	printl1(0, _("quick search for parallel/serial ports:\n"));
-	
-	// check for existence
-	fd = access("/proc/ioports", F_OK);
-	if (fd < 0) {
-		printl1(2, _("The pseudo-file '/proc/ioports' does not exist. Unable to probe ports.\n"));
-		printl1(0, _("Done.\n"));
-		return -1;
-	}
-	
-	// open file
-	f = fopen("/proc/ioports", "rt");
+	f = fopen(entry, "rt");
 	if (f == NULL) {
-		printl1(2, _("Unable to open /proc/ioports.\n"));
 		return -1;
 	}
 
-	// parses all entries
-	while(!feof(f)) {
-		fgets(buffer, 256, f);
-		// Form: '03f8-03ff : serial' or '0378-037a : parport'
-		nargs = sscanf(buffer, "%x-%x : %s", &sa, &ea, name);
-		if(nargs < 3)
-			continue;
-		
-		if(strstr(name, "serial"))
-			printl1(0, _("  serial port found at 0x%03x\n"), sa);
-		if(strstr(name, "parport"))
-			printl1(0, _("  parallel port found at 0x%03x\n"), sa);
+	while (!feof(f)) {
+		fscanf(f, "%s", buffer);
+		if (strstr(buffer, str)) {
+			found = 1;
+		}
 	}
-
-	// close file
 	fclose(f);
+	
+	return found;
+}
 
-	/* Do a thorough check */
-
-	printl1(0, _("search for all ports:\n"));
-
-	/* Use /proc/sys/dev/parport/parportX/base-addr where X=0, 1, ...
-	   to get infos on parallel ports. There is no other way to do that */
-
-	// open /proc/sys/dev/parport/ directory
-	if ((dir = opendir("/proc/sys/dev/parport/")) == NULL) {
-		printl1(2, _("Unable to open '/proc/sys/dev/parport/'.\n"));
+/* 
+   Attempt to find if an user is attached to a group.
+   - user [in] : a user name
+   - group [in] : a group name
+*/
+static int search_for_user_in_group(const char *user, const char *group)
+{
+	FILE *f;
+	char buffer[129];
+	
+	f = fopen("/etc/group", "rt");
+	if (f == NULL) {
+		ticables_warning(_("Unable to open the '/etc/group' file"));
 		return -1;
 	}
 
-	// parse for sub-directories
-	while ((file = readdir(dir)) != NULL) {
-		if (!strcmp(file->d_name, "."))
-			continue;
-		if (!strcmp(file->d_name, ".."))
-			continue;
+	while (!feof(f)) {
+		fgets(buffer, 129, f);
 		
-		// sub-dir such as parport0 ?
-		if (strstr(file->d_name, "parport")) {
-			res = sscanf(file->d_name, "parport%i", &i);
-			if (res == 1) {
-				if (i >= MAX_LPT_PORTS - 1)
-					break;
-
-				// yes, open base-addr file
-				strcpy(path, "/proc/sys/dev/parport/");
-				strcat(path, file->d_name);
-				strcat(path, "/");
-				strcat(path, "base-addr");
-				sprintf(pi->lpt_name[i], "/dev/parport%i", i);
-				f = fopen(path, "rt");
-				if (f == NULL) {
-					printl1(2, _("unable to open this entry: <%s>\n"), path);
-				} else {
-					fscanf(f, "%i", &(pi->lpt_addr[i]));
-					printl1(0, _("  %s at 0x%03x\n"),
-						pi->lpt_name[i], 
-						pi->lpt_addr[i]);
-					fclose(f);
-				}
+		if (strstr(buffer, group)) {
+			if(strstr(buffer, user)) {
+				fclose(f);
+				return 0;
 			} else {
-				printl1(2, _("Invalid parport entry: <%s>.\n"), file->d_name);
+				fclose(f);
+				return -1;
 			}
 		}
 	}
-	
-	if (closedir(dir) == -1) {
-		printl1(2, _("Closedir\n"));
-	}
 
-	/* Use ttySx to get infos on serial ports */
-	
-	for(i = 0; i < sizeof(sports) / sizeof(char*); i++) {
-		if ((fd = open(sports[i], O_RDWR | O_NONBLOCK)) < 0)
-			break;
+	fclose(f);
+	return -1;
+}
+
+int check_for_node_usability(const char *pathname)
+{
+	struct stat st;
+
+	if(!access(pathname, F_OK))
+		ticables_info(_("    node %s: exists"), pathname);
+	else {
+		ticables_info(_("    node %s: does not exists"), pathname);
+		ticables_info(_("    => you will have to create the node."));
 		
-		if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0) {
-			close(fd);
-			break;
-		}
-
-		sprintf(pi->com_name[i], "/dev/ttyS%i", i);
-		(pi->com_addr)[i] = serinfo.port;
-		printl1(0, "  /dev/ttyS%i at 0x%03x\n",
-			i, pi->com_addr[i]);
+		//warning = ERR_NODE_NONEXIST;
+		
+		return -1;
 	}
 
-	/* Use '/proc/bus/usb/devices' to get infos on usb ports */
+	if(!stat(pathname, &st)) {
+		ticables_info(_("    permissions/user/group:%s%s %s"),
+                        get_attributes(st.st_mode),
+                        get_user_name(st.st_uid),
+                        get_group_name(st.st_gid));
+	} else {
+		return -1;
+	}	
 
-	// to do...
+	if(getuid() == st.st_uid) {
+		ticables_info(_("    is user can r/w on device: yes"));
+		return 0;
+	} else {
+		ticables_info(_("    is user can r/w on device: no"));
+	}
+
+	if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
+		ticables_info(_("    are others can r/w on device: yes"));
+	else {
+		char *user, *group;
+		
+		ticables_info(_("    are others can r/w on device: no"));
+
+		user = strdup(get_user_name(getuid()));
+		group = strdup(get_group_name(st.st_gid));
+		
+		if(!search_for_user_in_group(user, group))
+			ticables_info(_("    is the user '%s' in the group '%s': yes"), user, group); 
+		else {
+			ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
+			ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
+			ticables_info(_("    => you will have to restart you session, too"), group);
+			free(user); free(group);
+			
+			//warning = ERR_NODE_PERMS;
+			
+			return -1;	
+		}
+		
+		free(user); 
+		free(group);
+	}	
 
 	return 0;
 }
 
-
-char *result(int i)
+int check_for_root(void)
 {
-  return ((i == 0) ? _("ok") : _("nok"));
+	uid_t uid = getuid();
+    	
+    	ticables_info(_("  check for asm usability: %s"), uid ? "no" : "yes");
+    	
+    	warning = ERR_ROOT;
+
+	return (uid ? -1 : 0);
 }
 
-int linux_detect_resources(void)
+int check_for_tty(const char *devname)
 {
-	printl1(0, _("checking resources:\n"));
-	resources = IO_LINUX;
+	ticables_info(_("  check for tty usability:"));
+	return check_for_node_usability(devname);	
 
-	/* API: for use with ttySx */
+	return 0;
+}
 
-#if defined(HAVE_TERMIOS_H)
-  	resources |= IO_API;
-  	printl1(0, _("  IO_API: found at compile time (HAVE_TERMIOS_H)\n"));
-#else
-	printl1(0, _("  IO_API: not found at compile time (HAVE_TERMIOS_H)\n"));
-#endif
+int check_for_tipar(const char *devname)
+{
+	char name[15];
 
-	/* ASM: for use with low-level I/O */
+	ticables_info(_("  check for tipar usability:"));
 
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H) || defined(__ALPHA__)
-	resources |= IO_ASM;
-#endif
-	printl1(0, _("  IO_ASM: %sfound at compile time (HAVE_ASM_IO_H).\n"),
-		resources & IO_ASM ? "" : "not ");
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	ticables_info(_("      using devfs: %s"), devfs ? "yes" : "no");
 
-	/* TIPAR: tipar kernel module */ 
+	if(!devfs)
+		strcpy(name, "/dev/tipar0");
+	else
+		strcpy(name, "/dev/ticables/par/0");
 
-#ifdef HAVE_LINUX_TICABLE_H
-        resources |= IO_TIPAR;
-#endif
-        printl1(0, _("  IO_TIPAR: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"), resources & IO_TIPAR ? "" : "not ");
+	if(check_for_node_usability(name))
+		return -1;
+ 
+	if (find_string_in_proc("/proc/devices", "tipar"))
+		ticables_info(_("      module: loaded"));
+	else {
+		ticables_info(_("      module: not loaded"));
+		ticables_info(_("    => check the module exists (either as module, either as built-in)"));
+		ticables_info(_("    => add an entry into your modutils file to automatically load it"));
+		
+		//warning = ERR_NOTLOADED;		
+		return -1;
+	}
+
+	return 0;
+}
+
+int check_for_tiser(const char *devname)
+{
+	char name[15];
+
+	ticables_info(_("  check for tiser usability:"));
+
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	ticables_info(_("    using devfs: %s"), devfs ? "yes" : "no");
+
+	if(!devfs)
+		strcpy(name, "/dev/tiser0");
+	else
+		strcpy(name, "/dev/ticables/par/0");
+
+	if(check_for_node_usability(name))
+		return -1;
+ 
+	if (find_string_in_proc("/proc/devices", "tiser"))
+		ticables_info(_("    module: loaded"));
+	else {
+		ticables_info(_("    module: not loaded"));
+		ticables_info(_("    => check the module exists (compiled as module)"));
+		ticables_info(_("    => add an entry into your modutils file to automatically load it."));
+		
+		//warning = ERR_NOTLOADED;
+		return -1;
+	}
+
+	return 0;
+}
+
+int check_for_tiusb(const char *devname)
+{
+	char name[15];
+
+	ticables_info(_("  check for tiusb usability:"));
+
+	if(!access("/dev/.devfs", F_OK))
+		devfs = !0;
+	ticables_info(_("    using devfs: %s"), devfs ? "yes" : "no");
+
+	if(!devfs)
+		strcpy(name, "/dev/tiusb0");
+	else
+		strcpy(name, "/dev/ticables/usb/0");
+
+	if(check_for_node_usability(name))
+		return -1;
+ 
+	if (find_string_in_proc("/proc/devices", "tiglusb"))
+		ticables_info(_("    module: loaded"));
+	else {
+		ticables_info(_("    module: not loaded"));
+		ticables_info(_("    => check the module exists (either as module, either as built-in)"));
+		ticables_info(_("    => add an entry into your modutils file to automatically load it"));
+		
+		//warning = ERR_NOTLOADED;
+		return -1;
+	}
+
+	return 0;
+}
+
+#define	USBFS	"/proc/bus/usb"
+
+int check_for_libusb(void)
+{
+	ticables_info(_("  check for lib-usb usability:"));
+
+	if(!access(USBFS, F_OK))
+		ticables_info(_("    usb filesystem (/proc/bus/usb): %s"), "mounted");
+	else {
+		ticables_info(_("    usb filesystem (/proc/bus/usb): %s"), "not mounted");
+		ticables_info(_("    => the usbfs must be supported by your kernel and you have to mount it"));
+		ticables_info(_("    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'"));
+		
+		//warning = ERR_NOTMOUNTED;
+		return -1;
+	}
 	
-	/* TISER: tiser kernel module */
-
-#ifdef HAVE_LINUX_TICABLE_H
-	resources |= IO_TISER;
-#endif
-        printl1(0, _("  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"), resources & IO_TISER ? "" : "not ");
+	if(check_for_node_usability(USBFS "/devices"))
+		return -1;
 	
-	/* TIGLUSB: tiglusb kernel module */ 
-	
-#ifdef HAVE_LINUX_TICABLE_H
-	resources |= IO_TIUSB;
-#endif
-	printl1(0, _("  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"),
-		resources & IO_TIUSB ? "" : "not ");
-
-	/* LIBUSB: lib-usb userland module */
-
-#ifdef HAVE_LIBUSB
-	resources |= IO_LIBUSB;
-#endif
-	printl1(0, _("  IO_LIBUSB: %sfound at compile time (HAVE_LIBUSB)\n"),
-		resources & IO_LIBUSB ? "" : "not ");
-
-  	return 0;
+	return 0;
 }

@@ -45,15 +45,7 @@
 #endif
 
 #include "gettext.h"
-
-#include "cabl_err.h"
-#include "externs.h"
-#include "printl.h"
-
-/* Variables */
-
-static int dev_fd;	// TTY handle for Linux ioctl calls (API)
-static int tty_use = 0;	// open TTY just once
+#include "error.h"
 
 /* Function pointers */
 
@@ -80,7 +72,7 @@ static void linux_asm_write_io(unsigned int addr, int data)
 
 
 /* I/O thru ioctl() calls */
-
+#if 0
 static int linux_ioctl_read_io(unsigned int addr)
 {
 #ifdef HAVE_TERMIOS_H
@@ -108,68 +100,30 @@ static void linux_ioctl_write_io(unsigned int address, int data)
   	}
 #endif
 }
+#endif
 
 /* Functions used for initializing the I/O routines */
 
-int io_open(unsigned long from, unsigned long num)
+int io_open(unsigned long from)
 {
-	if (method & IOM_ASM) {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
     		io_rd = linux_asm_read_io;
     		io_wr = linux_asm_write_io;
 
-		return (ioperm(from, num, 1) ? ERR_ROOT : 0);
+		return (ioperm(from, 3, 1) ? ERR_ROOT : 0);
 #else
 		return ERR_ROOT;
 #endif
-	}
-  	else if (method & IOM_IOCTL) {
-		struct termios termset;
-
-    		if (tty_use)
-      			return 0;
-
-		if ((dev_fd = open(io_device, O_RDWR | O_SYNC)) == -1) {
-      			if(errno == EACCES)
-      				printl1(2, _("unable to open this serial port: %s (wrong permissions).\n"), io_device);
-      			else
-      				printl1(2, _("unable to open this serial port: %s\n"), io_device);
-      			return ERR_OPEN_SER_DEV;
-    		}
-
-    		tcgetattr(dev_fd, &termset);
-    		cfmakeraw(&termset);
-
-    		io_rd = linux_ioctl_read_io;
-    		io_wr = linux_ioctl_write_io;
-
-    		tty_use++;
-	} else {
-		printl1(2, "bad argument (invalid method).\n");
-                return ERR_ILLEGAL_ARG;
-	}
 
 	return 0;
 }
 
-int io_close(unsigned long from, unsigned long num)
+int io_close(unsigned long from)
 {
-	if (method & IOM_ASM) {
 #if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-    		return (ioperm(from, num, 0) ? ERR_ROOT : 0);
+    		return (ioperm(from, 3, 0) ? ERR_ROOT : 0);
 #else
 		return 0;
 #endif
-    	}
-    	else if (method & IOM_IOCTL) {
-    		if (tty_use) {
-      			close(dev_fd);
-      			tty_use--;
-    		}
-	} else {
-                printl1(2, "bad argument (invalid method).\n");
-                return ERR_ILLEGAL_ARG;
-        }
-	
 	return 0;
 }

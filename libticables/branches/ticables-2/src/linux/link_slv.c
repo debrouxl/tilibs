@@ -61,27 +61,20 @@
 #include <config.h>
 #endif
 
-#include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#ifdef HAVE_STDINT_H
-# include <stdint.h>
-#else
-# include <inttypes.h>
-#endif
 #include <errno.h>
 #include <usb.h>
 
-#include "gettext.h"
-#include "export.h"
-#include "cabl_def.h"
-#include "cabl_err.h"
-#include "printl.h"
-#include "logging.h"
-#include "externs.h"
-#include "timeout.h"
+#include "../gettext.h"
+#include "../logging.h"
+#include "../ticables.h"
+#include "detect.h"
+#include "../error.h"
 
 #define BUFFERED_W    /* enable buffered write operations	  */ 
 #define BUFFERED_R    /* enable buffered read operations (always) */
@@ -95,8 +88,6 @@
 #define TIGL_BULK_OUT   0x02
 
 #define to      (100 * time_out)        // in ms
-
-#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 typedef struct {
 	uint16_t vid;

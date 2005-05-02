@@ -24,8 +24,8 @@
 
 #include <stdio.h>
 
-int io_open(unsigned long from);//, unsigned long num);
-int io_close(unsigned long from);//, unsigned long num);
+int io_open(unsigned long from);
+int io_close(unsigned long from);
 
 int  (*io_rd) (unsigned int addr);
 void (*io_wr) (unsigned int addr, int data);

@@ -47,6 +47,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
+#include <sys/shm.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -85,7 +86,7 @@ static int vti_open(TiHandle *h)
   int i;
 
   if ((h->address < 1) || (h->address > 2)) {
-    printl1(2, "invalid h->address (bad port).\n");
+    ticables_warning("invalid h->address (bad port).\n");
     return ERR_ILLEGAL_ARG;
     h->address = 2;
   }
@@ -94,7 +95,7 @@ static int vti_open(TiHandle *h)
   /* Get a unique (if possible) key */
   for (i = 0; i < 2; i++) {
     if ((ipc_key[i] = ftok("/tmp", i)) == -1) {
-      printl1(2, "unable to get unique key (ftok).\n");
+      ticables_warning("unable to get unique key (ftok).\n");
       return ERR_IPC_KEY;
     }
     //printl1(0, "ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
@@ -104,7 +105,7 @@ static int vti_open(TiHandle *h)
   for (i = 0; i < 2; i++) {
     if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf),
 			   IPC_CREAT | 0666)) == -1) {
-      printl1(2, "unable to open shared memory (shmget).\n");
+      ticables_warning("unable to open shared memory (shmget).\n");
       return ERR_SHM_GET;
     }
     //printl1(0, "shmid[%i] = %i\n", i, shmid[i]);
@@ -113,7 +114,7 @@ static int vti_open(TiHandle *h)
   /* Attach the shm */
   for (i = 0; i < 2; i++) {
     if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) {
-      printl1(2, "unable to attach shared memory (shmat).\n");
+      ticables_warning("unable to attach shared memory (shmat).\n");
       return ERR_SHM_ATTACH;
     }
   }
@@ -135,12 +136,12 @@ static int vti_close(TiHandle *h)
   /* Detach segment */
   for (i = 0; i < 2; i++) {
     if (shmdt(shm[i]) == -1) {
-      printl1(2, "shmdt\n");
+      ticables_warning("shmdt\n");
       return ERR_SHM_DETACH;
     }
     /* and destroy it */
     if (shmctl(shmid[i], IPC_RMID, NULL) == -1) {
-      printl1(2, "shmctl\n");
+      ticables_warning("shmctl\n");
       return ERR_SHM_RMID;
     }
   }
@@ -241,9 +242,9 @@ const TiCable cable_vti =
 	"VTI",
 	N_("Virtual TI"),
 	N_("Virtual link for VTi"),
-
-	&vti_prepare, &vti_probe,
-	&vti_open, &vti_close, &vti_reset,
+	0,
+	&vti_prepare,
+	&vti_open, &vti_close, &vti_reset, &vti_probe,
 	&vti_put, &vti_get, &vti_check,
 	&vti_set_red_wire, &vti_set_white_wire,
 	&vti_get_red_wire, &vti_get_white_wire,

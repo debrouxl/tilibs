@@ -14,7 +14,9 @@ libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
 libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables_2_la_SOURCES = *.h \
 	data_log.c \
+	detect.c \
 	error.c \
+	ioports.c \
 	link_gry.c link_nul.c link_par.c link_ser.c \
 	link_slv.c link_tie.c link_vti.c link_xxx.c \
 	logging.c \

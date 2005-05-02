@@ -27,9 +27,6 @@
 
 #if defined(__LINUX__)
 //#include "linux/link_slv.c"
-#if defined(HAVE_LIBUSB)
-//#include "linux/link_slv2.c"
-#endif
 
 #elif defined(__BSD__)
 #include "linux/link_slv2.c"

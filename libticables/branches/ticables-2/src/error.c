@@ -375,25 +375,6 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 	break;
 */
   	default:
-		if (GetLastError()) 
-	{
-    		LPVOID lpMsgBuf;
-			char buf[256];
-
-    		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		  FORMAT_MESSAGE_FROM_SYSTEM |
-		  FORMAT_MESSAGE_IGNORE_INSERTS,
-		  NULL, GetLastError(),
-		  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		  (LPTSTR) & lpMsgBuf, 0, NULL);
-    		fprintf(stdout,  "\n");
-    		fprintf(stdout,  "System: ");
-    		//snprintf(buf, 256, "GetLastError = %i -> ", GetLastError());
-    		sprintf(buf, "GetLastError = %li -> ", GetLastError());
-    		fprintf(stdout,  buf);
-    		fprintf(stdout,  lpMsgBuf);
-    		fprintf(stdout,  "\n");
-	}
 		return number;
     break;
   	}

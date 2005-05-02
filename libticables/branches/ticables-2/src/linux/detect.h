@@ -24,10 +24,11 @@
 
 #include <stdio.h>
 
-/*
-int linux_detect_os(char **os_type);
-int linux_detect_port(TicablePortInfo * pi);
-int linux_detect_resources(void);
-*/
+int check_for_root(void);
+int check_for_tty(const char *devname);
+int check_for_tipar(const char *devname);
+int check_for_tiser(const char *devname);
+int check_for_tiusb(const char *devname);
+int check_for_libusb(void);
 
 #endif

@@ -29,6 +29,7 @@ typedef enum
     ERR_ABORT = -1,			// Operation aborted
     ERR_NO_ERROR = 0,		// No error (returns 0)
 
+    ERR_ROOT,
 	ERR_BUSY,
 	ERR_ILLEGAL_ARG,
 	ERR_PORTTALK_NOT_FOUND,

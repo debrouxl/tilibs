@@ -59,6 +59,8 @@ static int gry_prepare(TiHandle *h)
 	}
 	h->priv2 = (struct termios *)calloc(1, sizeof(struct termios));
 
+	TRYC(check_for_tty(h->device));
+
 	return 0;
 }
 
@@ -268,9 +270,9 @@ const TiCable cable_gry =
 	"GRY",
 	N_("GrayLink"),
 	N_("GrayLink serial cable"),
-
-	&gry_prepare, &gry_probe,
-	&gry_open, &gry_close, &gry_reset,
+	!0,
+	&gry_prepare,
+	&gry_open, &gry_close, &gry_reset, &gry_probe,
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,

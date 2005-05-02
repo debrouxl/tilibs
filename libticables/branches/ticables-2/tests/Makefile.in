@@ -179,26 +179,26 @@ target_alias = @target_alias@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 
-noinst_PROGRAMS = test_ticables
+noinst_PROGRAMS = test_ticables_2
 
-test_ticables_LDADD = $(top_builddir)/src/libticables.la
+test_ticables_2_LDADD = $(top_builddir)/src/libticables-2.la
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = test_ticables$(EXEEXT)
+noinst_PROGRAMS = test_ticables_2$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-test_ticables_SOURCES = test_ticables.c
-test_ticables_OBJECTS = test_ticables.$(OBJEXT)
-test_ticables_DEPENDENCIES = $(top_builddir)/src/libticables.la
-test_ticables_LDFLAGS =
+test_ticables_2_SOURCES = test_ticables_2.c
+test_ticables_2_OBJECTS = test_ticables_2.$(OBJEXT)
+test_ticables_2_DEPENDENCIES = $(top_builddir)/src/libticables-2.la
+test_ticables_2_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test_ticables.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test_ticables_2.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -206,9 +206,9 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = test_ticables.c
+DIST_SOURCES = test_ticables_2.c
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
-SOURCES = test_ticables.c
+SOURCES = test_ticables_2.c
 
 all: all-am
 
@@ -226,9 +226,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-test_ticables$(EXEEXT): $(test_ticables_OBJECTS) $(test_ticables_DEPENDENCIES) 
-	@rm -f test_ticables$(EXEEXT)
-	$(LINK) $(test_ticables_LDFLAGS) $(test_ticables_OBJECTS) $(test_ticables_LDADD) $(LIBS)
+test_ticables_2$(EXEEXT): $(test_ticables_2_OBJECTS) $(test_ticables_2_DEPENDENCIES) 
+	@rm -f test_ticables_2$(EXEEXT)
+	$(LINK) $(test_ticables_2_LDFLAGS) $(test_ticables_2_OBJECTS) $(test_ticables_2_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -236,7 +236,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ticables.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ticables_2.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
