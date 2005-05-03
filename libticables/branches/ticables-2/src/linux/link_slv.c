@@ -227,49 +227,53 @@ int open_tigl_device(int id, usb_dev_handle **udh)
     return 0;
 }
 
-static int reset_pipes(usb_struct *s)
+static int reset_pipes(usb_dev_handle *udh)
 {
-#if 0
 	int ret;
 
-	printf("resetting pipes... ");
+	ticables_info("resetting pipes... ");
 
   	// Reset out pipe
-  	ret = usb_clear_halt(tigl_han, TIGL_BULK_OUT);
-  	if (ret < 0) {
-    		ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-
-    		ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
-    		if (ret < 0) {
-      			ticables_warning("usb_resetep (%s).\n", usb_strerror());
-
-      			ret = usb_reset(tigl_han);
-      			if (ret < 0) {
-				ticables_warning("usb_reset (%s).\n", usb_strerror());
-				return ERR_LIBUSB_RESET;
-      			}
-    		}
+  	ret = usb_clear_halt(udh, TIGL_BULK_OUT);
+  	if (ret < 0) 
+	{
+	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
+	    
+	    ret = usb_resetep(udh, TIGL_BULK_OUT);
+	    if (ret < 0) 
+	    {
+		ticables_warning("usb_resetep (%s).\n", usb_strerror());
+		
+		ret = usb_reset(udh);
+		if (ret < 0) 
+		{
+		    ticables_warning("usb_reset (%s).\n", usb_strerror());
+		    return ERR_LIBUSB_RESET;
+		}
+	    }
   	}
-
+	
 	// Reset in pipe
-  	ret = usb_clear_halt(tigl_han, TIGL_BULK_IN);
-  	if (ret < 0) {
-    		ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-
-	    	ret = usb_resetep(tigl_han, TIGL_BULK_OUT);
-	    	if (ret < 0) {
-	      		ticables_warning("usb_resetep (%s).\n", usb_strerror());
-
-	      		ret = usb_reset(tigl_han);
-	      		if (ret < 0) {
-				ticables_warning("usb_reset (%s).\n", usb_strerror());
-				return ERR_LIBUSB_RESET;
-	      		}
-	    	}
+  	ret = usb_clear_halt(udh, TIGL_BULK_IN);
+  	if (ret < 0) 
+	{
+	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
+	    
+	    ret = usb_resetep(udh, TIGL_BULK_OUT);
+	    if (ret < 0) 
+	    {
+		ticables_warning("usb_resetep (%s).\n", usb_strerror());
+		
+		ret = usb_reset(udh);
+		if (ret < 0) 
+		{
+		    ticables_warning("usb_reset (%s).\n", usb_strerror());
+		    return ERR_LIBUSB_RESET;
+		}
+	    }
   	}
 
 	printf("done !\n");
-#endif
 	return 0;
 }
 
@@ -279,6 +283,8 @@ static int slv_prepare(TiHandle *h)
 {
 	char str[64];
 
+	TRYC(check_for_libusb());
+
 	if(h->port >= MAX_CABLES)
 	    return ERR_ILLEGAL_ARG;
 
@@ -286,9 +292,6 @@ static int slv_prepare(TiHandle *h)
 	sprintf(str, "TiglUsb #%i", h->port);
 	h->device = strdup(str);
 	h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
-
-	//if(!check_for_libusb())
-	//  return -1;
 
 	return 0;
 }
@@ -302,8 +305,8 @@ static int slv_open(TiHandle *h)
     ret = open_tigl_device(h->address, &tigl_han);
     if(ret)
 	return ret;
-    
-// get max packet size
+
+    // get max packet size
     max_ps = 32;
 
 // allocate buffers
@@ -316,14 +319,11 @@ static int slv_open(TiHandle *h)
 	return ERR_OPEN_USB_DEV;
     }
 
-#if 0 //!defined(__BSD__)
- {
-     /* Reset both endpoints */
-     int ret = reset_pipes();
-     if(ret) return ret;
- }
+#if !defined(__BSD__)
+    /* Reset both endpoints */
+    TRYC(reset_pipes(tigl_han));
 #endif
-
+    
     return 0;
 }
 
@@ -348,7 +348,10 @@ static int slv_close(TiHandle *h)
 
 static int slv_reset(TiHandle *h)
 {
-  return 0;
+/* Reset both endpoints */
+    TRYC(reset_pipes(tigl_han));
+    
+    return 0;
 }
 
 static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
@@ -363,22 +366,32 @@ static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
 
 static int slv_probe(TiHandle *h)
 {
-    enumerate_tigl_devices();
+    int i;
+ 
+   TRYC(enumerate_tigl_devices());
 
-    if(tigl_devices[h->address-1].pid == PID_TIGLUSB)
-	return 0;
+    for(i = 0; i < MAX_CABLES; i++)
+    {
+	if(tigl_devices[i].pid == PID_TIGLUSB)
+	    return 0;
+    }
 
     return ERR_PROBE_FAILED;
 }
 
 static int raw_probe(TiHandle *h)
 {
-    enumerate_tigl_devices();
+    int i;
 
-    if(tigl_devices[h->address-1].pid == PID_TI89TM ||
-       tigl_devices[h->address-1].pid == PID_TI84P)
-        return 0;
-    
+    TRYC(enumerate_tigl_devices());
+
+    for(i = 0; i < MAX_CABLES; i++)
+    {
+	if(tigl_devices[h->address-1].pid == PID_TI89TM ||
+	   tigl_devices[h->address-1].pid == PID_TI84P)
+	    return 0;
+    }    
+
     return ERR_PROBE_FAILED;
 }
 

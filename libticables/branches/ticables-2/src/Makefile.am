@@ -6,7 +6,7 @@ AM_CFLAGS = -Wall
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticables-2.la
 libticablesincludedir = $(includedir)/tilp2
-libticablesinclude_HEADERS = ticables.h exports.h stdints.h timeout.h
+libticablesinclude_HEADERS = ticables.h export.h stdints.h timeout.h
 
 # build instructions
 libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@

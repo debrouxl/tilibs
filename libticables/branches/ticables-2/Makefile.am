@@ -7,7 +7,7 @@ SUBDIRS = build intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ticables.pc
+pkgconfig_DATA = ticables-2.pc
 
 dos2unix:
 	dos2unix

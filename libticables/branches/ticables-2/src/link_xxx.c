@@ -62,16 +62,12 @@ TIEXPORT int TICALL ticables_cable_open(TiHandle* handle)
 TIEXPORT int TICALL ticables_cable_probe(TiHandle* handle, unsigned int* result)
 {
 	const TiCable *cable = handle->cable;
-	int already;
+	int already = handle->open;
 	int ret;
 
-	// Check for requirement
-	TRYC(cable->prepare(handle));
-
 	// Check if device is already opened
-	already = handle->open;
 	if(!already && cable->need_open)
-		TRYC(cable->open(handle));
+	    TRYC(ticables_cable_open(handle));
 
 	// Do the check itself
 	ret = cable->probe(handle);
@@ -79,10 +75,10 @@ TIEXPORT int TICALL ticables_cable_probe(TiHandle* handle, unsigned int* result)
 		*result = 0;
 	else
 		*result = !0;
-	
-	// If was opened for this, close it
+
+	// If it was opened for this, close it
 	if(!already && cable->need_open)
-		TRYC(cable->close(handle));
+	    TRYC(ticables_cable_close(handle));
 
 	return 0;
 }
@@ -103,8 +99,11 @@ TIEXPORT int TICALL ticables_cable_close(TiHandle* handle)
 	const TiCable *cable = handle->cable;
 
 	STOP_LOGGING();
-	cable->close(handle);
-	handle->open = 0;
+	if(handle->open)
+	{
+	    cable->close(handle);
+	    handle->open = 0;
+	}
 
 	return 0;
 }

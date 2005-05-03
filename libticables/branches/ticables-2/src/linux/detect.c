@@ -194,7 +194,8 @@ int check_for_node_usability(const char *pathname)
 
 	if(!access(pathname, F_OK))
 		ticables_info(_("    node %s: exists"), pathname);
-	else {
+	else 
+	{
 		ticables_info(_("    node %s: does not exists"), pathname);
 		ticables_info(_("    => you will have to create the node."));
 		
@@ -203,25 +204,33 @@ int check_for_node_usability(const char *pathname)
 		return -1;
 	}
 
-	if(!stat(pathname, &st)) {
+	if(!stat(pathname, &st)) 
+	{
 		ticables_info(_("    permissions/user/group:%s%s %s"),
                         get_attributes(st.st_mode),
                         get_user_name(st.st_uid),
                         get_group_name(st.st_gid));
-	} else {
+	} 
+	else 
+	{
 		return -1;
 	}	
 
-	if(getuid() == st.st_uid) {
+	if(getuid() == st.st_uid) 
+	{
 		ticables_info(_("    is user can r/w on device: yes"));
 		return 0;
-	} else {
+	} 
+	else 
+	{
 		ticables_info(_("    is user can r/w on device: no"));
 	}
 
+	printf("!!!\n");
 	if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
 		ticables_info(_("    are others can r/w on device: yes"));
-	else {
+	else 
+	{
 		char *user, *group;
 		
 		ticables_info(_("    are others can r/w on device: no"));
