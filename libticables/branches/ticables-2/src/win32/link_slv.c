@@ -58,7 +58,6 @@ TIGLUSB_CHECK2	dynTiglUsbCheck = NULL;
 TIGLUSB_READ2	dynTiglUsbRead = NULL;
 TIGLUSB_WRITE2	dynTiglUsbWrite = NULL;
 
-TIGLUSB_FLUSH2  dynTiglUsbFlush = NULL;		// à utiliser ????
 TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 
 TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
@@ -88,7 +87,7 @@ static int slv_open(TiHandle *h)
 	if (hDLL == NULL) 
 	{
 		ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
-		return ERR_LOADLIBRARY;
+		return ERR_SLV_LOADLIBRARY;
 	}
 
 	dynTiglUsbVersion = (TIGLUSB_VERSION) GetProcAddress(hDLL, "TiglUsbVersion");
@@ -100,7 +99,7 @@ static int slv_open(TiHandle *h)
 		ticables_warning(buffer);
 		MessageBox(NULL, buffer, "Error in SilverLink support", MB_OK);
 		FreeLibrary(hDLL);
-		return ERR_TIGLUSB_VERSION;
+		return ERR_SLV_VERSION;
 	}
 	ticables_info(_("using TiglUsb.dll version %s"), dynTiglUsbVersion());
 
@@ -109,7 +108,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
 	dynTiglUsbOpen = (TIGLUSB_OPEN2) GetProcAddress(hDLL, "TiglUsbOpen2");
@@ -117,7 +116,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
     dynTiglUsbClose = (TIGLUSB_CLOSE2) GetProcAddress(hDLL, "TiglUsbClose2");
@@ -125,7 +124,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbClose symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
 	dynTiglUsbCheck = (TIGLUSB_CHECK2) GetProcAddress(hDLL, "TiglUsbCheck2");
@@ -133,7 +132,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbCheck symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
 	dynTiglUsbRead = (TIGLUSB_READ2) GetProcAddress(hDLL, "TiglUsbRead2");
@@ -141,7 +140,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbRead2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
 	dynTiglUsbWrite = (TIGLUSB_WRITE2) GetProcAddress(hDLL, "TiglUsbWrite2");
@@ -149,23 +148,15 @@ static int slv_open(TiHandle *h)
 	{
 	    ticables_warning(_("Unable to load TiglUsbWrite2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
-	}
-
-	dynTiglUsbFlush = (TIGLUSB_FLUSH2) GetProcAddress(hDLL, "TiglUsbFlush2");
-	if (!dynTiglUsbFlush) 
-	{
-	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
-		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
     dynTiglUsbReset = (TIGLUSB_RESET2) GetProcAddress(hDLL, "TiglUsbReset2");
 	if (!dynTiglUsbReset) 
 	{
-	    ticables_warning(_("Unable to load TiglUsbFlush symbol."));
+	    ticables_warning(_("Unable to load dynTiglUsbReset symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
 	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbSetTimeout2");
@@ -173,7 +164,7 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
 
     dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbGetTimeout2");
@@ -181,14 +172,14 @@ static int slv_open(TiHandle *h)
 	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
 		FreeLibrary(hDLL);
-		return ERR_FREELIBRARY;
+		return ERR_SLV_FREELIBRARY;
 	}
   
 	ret = hLNK = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
-		case TIGLERR2_DEV_OPEN_FAILED: return ERR_TIGLUSB_OPEN;
-		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_TIGLUSB_OPEN;
+		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
+		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
 		default: break;
 	}
 
@@ -216,7 +207,7 @@ static int slv_reset(TiHandle *h)
 
     ret = dynTiglUsbReset(hLNK);
     if(ret == TIGLERR2_RESET_FAILED)
-        return ERR_TIGLUSB_RESET;
+        return ERR_SLV_RESET;
 
 	return 0;
 }

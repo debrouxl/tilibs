@@ -100,7 +100,7 @@ static int vti_open(TiHandle *h)
     /* Get an handle on the VTi window */
     otherWnd = FindWindow("TEmuWnd", NULL);
     if (!otherWnd)
-		return ERR_FINDWINDOW;
+		return ERR_VTI_FINDWINDOW;
   
     /* Get the current DLL handle */
     Handle = GetModuleHandle("ticables-2.dll");
@@ -133,7 +133,7 @@ static int vti_open(TiHandle *h)
       vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
     } 
     else
-		return ERR_OPENFILEMAPPING;
+		return ERR_VTI_OPENFILEMAPPING;
   
     /* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
     a = GlobalAddAtom(vLinkFileName);

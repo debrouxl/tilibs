@@ -80,7 +80,7 @@ static int gry_open(TiHandle *h)
 	    ticables_warning(_("unable to open this serial port: %s (wrong permissions).\n"), h->device);
 	else
 	    ticables_warning(_("unable to open this serial port: %s\n"), h->device);
-	return ERR_OPEN;
+	return ERR_GRY_OPEN;
     }
     
     // Initialize it: 9600,8,N,1
@@ -175,7 +175,7 @@ static int dcb_read_io(TiHandle *h)
     unsigned int flags;
     
     if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
-	return ERR_IOCTL;
+	return ERR_GRY_IOCTL;
     
     return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
 #endif
@@ -189,7 +189,7 @@ static int dcb_write_io(TiHandle *h, int data)
     flags |= (data & 2) ? TIOCM_RTS : 0;
     flags |= (data & 1) ? TIOCM_DTR : 0;
     if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
-	return ERR_IOCTL;
+	return ERR_GRY_IOCTL;
     
     return 0;
 #endif

@@ -193,7 +193,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("CreateFile");
     print_last_error("CreateFile");
-    return ERR_CREATEFILE;
+    return ERR_GRY_CREATEFILE;
   }
   // Setup buffer size
   fSuccess = SetupComm(*hCom, 1024, 1024);
@@ -201,7 +201,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetupComm");
     print_last_error("SetupComm");
-    return ERR_SETUPCOMM;
+    return ERR_GRY_SETUPCOMM;
   }
   // Retrieve config structure
   fSuccess = GetCommState(*hCom, &dcb);
@@ -209,7 +209,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("GetCommState");
     print_last_error("GetCOmmState");
-    return ERR_GETCOMMSTATE;
+    return ERR_GRY_GETCOMMSTATE;
   }
   // Fills the structure with config
   dcb.BaudRate = CBR_9600;	// 9600 bauds
@@ -236,7 +236,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetCommState");
     print_last_error("SetCOmmState");
-    return ERR_SETCOMMSTATE;
+    return ERR_GRY_SETCOMMSTATE;
   }
 
   fSuccess = GetCommTimeouts(*hCom, &cto);
@@ -244,7 +244,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("GetCommTimeouts");
     print_last_error("GetCommTimeouts");
-    return ERR_GETCOMMTIMEOUT;
+    return ERR_GRY_GETCOMMTIMEOUT;
   }
 
   cto.ReadIntervalTimeout = MAXDWORD;
@@ -258,7 +258,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   {
     ticables_info("SetCommTimeouts");
     print_last_error("SetCommTimeouts");
-    return ERR_SETCOMMTIMEOUT;
+    return ERR_GRY_SETCOMMTIMEOUT;
   }
 
   return 0;

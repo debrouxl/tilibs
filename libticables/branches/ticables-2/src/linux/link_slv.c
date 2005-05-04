@@ -204,7 +204,7 @@ int open_tigl_device(int id, usb_dev_handle **udh)
 	{
 	    ticables_warning("usb_claim_interface (%s).\n",
 			     usb_strerror());
-	    return ERR_LIBUSB_INIT;
+	    return ERR_LIBUSB_CLAIM;
 	}
 	
 	ret = usb_set_configuration(*udh, 1);
@@ -212,7 +212,7 @@ int open_tigl_device(int id, usb_dev_handle **udh)
 	{
 	    ticables_warning("usb_set_configuration (%s).\n",
 			     usb_strerror());
-	    return ERR_LIBUSB_INIT;
+	    return ERR_LIBUSB_CONFIG;
 	}
 	return 0;
     } 

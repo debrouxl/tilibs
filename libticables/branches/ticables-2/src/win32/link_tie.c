@@ -85,20 +85,20 @@ static int tie_open(TiHandle *h)
     /* Create a FileMapping objects */
     hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
     if (hSendBuf == NULL) 
-		return ERR_OPENFILEMAPPING;
+		return ERR_TIE_OPENFILEMAPPING;
 
     hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
     if (hRecvBuf == NULL) 
-		return ERR_OPENFILEMAPPING;
+		return ERR_TIE_OPENFILEMAPPING;
 
     /* Map them */
     pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
     if (pSendBuf == NULL) 
-		return ERR_MAPVIEWOFFILE;
+		return ERR_TIE_MAPVIEWOFFILE;
 
     pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
     if (pRecvBuf == NULL) 
-		return ERR_MAPVIEWOFFILE;
+		return ERR_TIE_MAPVIEWOFFILE;
 
 	pSendBuf->start = pSendBuf->end = 0;
     pRecvBuf->start = pRecvBuf->end = 0;

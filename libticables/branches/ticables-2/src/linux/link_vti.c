@@ -96,7 +96,7 @@ static int vti_open(TiHandle *h)
   for (i = 0; i < 2; i++) {
     if ((ipc_key[i] = ftok("/tmp", i)) == -1) {
       ticables_warning("unable to get unique key (ftok).\n");
-      return ERR_IPC_KEY;
+      return ERR_VTI_IPCKEY;
     }
     //printl1(0, "ipc_key[%i] = 0x%08x\n", i, ipc_key[i]);
   }
@@ -106,7 +106,7 @@ static int vti_open(TiHandle *h)
     if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf),
 			   IPC_CREAT | 0666)) == -1) {
       ticables_warning("unable to open shared memory (shmget).\n");
-      return ERR_SHM_GET;
+      return ERR_VTI_SHMGET;
     }
     //printl1(0, "shmid[%i] = %i\n", i, shmid[i]);
   }
@@ -115,7 +115,7 @@ static int vti_open(TiHandle *h)
   for (i = 0; i < 2; i++) {
     if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) {
       ticables_warning("unable to attach shared memory (shmat).\n");
-      return ERR_SHM_ATTACH;
+      return ERR_VTI_SHMAT;
     }
   }
 
@@ -137,12 +137,12 @@ static int vti_close(TiHandle *h)
   for (i = 0; i < 2; i++) {
     if (shmdt(shm[i]) == -1) {
       ticables_warning("shmdt\n");
-      return ERR_SHM_DETACH;
+      return ERR_VTI_SHMDT;
     }
     /* and destroy it */
     if (shmctl(shmid[i], IPC_RMID, NULL) == -1) {
       ticables_warning("shmctl\n");
-      return ERR_SHM_RMID;
+      return ERR_VTI_SHMCTL;
     }
   }
 

@@ -88,16 +88,16 @@ static int tie_open(TiHandle *h)
     if ((rd[p] = open(fifo_names[2 * (p) + 0], O_RDONLY | O_NONBLOCK)) == -1) 
     {
 	ticables_warning(_("error: %s\n"), strerror(errno));
-	return ERR_OPEN_PIPE;
+	return ERR_TIE_OPEN;
     }
     // Open the 0->1 pipe in writing (in reading at first)
     if ((wr[p] = open(fifo_names[2 * (p) + 1], O_RDONLY | O_NONBLOCK)) == -1) 
     {
-	return ERR_OPEN_PIPE;
+	return ERR_TIE_OPEN;
     }
     if ((wr[p] = open(fifo_names[2 * (p) + 1], O_WRONLY | O_NONBLOCK)) == -1) 
     {
-	return ERR_OPEN_PIPE;
+	return ERR_TIE_OPEN;
     }
     ref_cnt++;
 
@@ -111,7 +111,7 @@ static int tie_close(TiHandle *h)
 	/* Close the pipe */
 	if (close(rd[p]) == -1) 
 	{
-	    return ERR_CLOSE_PIPE;
+	    return ERR_TIE_CLOSE;
 	}
 	rd[p] = 0;
     }
@@ -119,7 +119,7 @@ static int tie_close(TiHandle *h)
     {
 	/* Close the pipe */
 	if (close(wr[p]) == -1) {
-	    return ERR_CLOSE_PIPE;
+	    return ERR_TIE_CLOSE;
 	}
 	wr[p] = 0;
     }

@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	handle = ticables_handle_new(CABLE_USB, PORT_2);
 	if(handle == NULL)
 	    return -1;
 	//ticables_options_set_timeout(handle, 15);
@@ -86,6 +86,7 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 
 	// display answer
+	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);
 	if(err) print_lc_error(err);
 

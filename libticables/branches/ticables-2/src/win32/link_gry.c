@@ -60,7 +60,7 @@ static int gry_open(TiHandle *h)
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
 		ticables_warning("CreateFile\n");
-		return ERR_CREATEFILE;
+		return ERR_GRY_CREATEFILE;
 	}
   
 	// Setup buffer size
@@ -68,7 +68,7 @@ static int gry_open(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("SetupComm\n");
-		return ERR_SETUPCOMM;
+		return ERR_GRY_SETUPCOMM;
 	}
 
 	// Retrieve config structure
@@ -76,7 +76,7 @@ static int gry_open(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("GetCommState\n");
-		return ERR_GETCOMMSTATE;
+		return ERR_GRY_GETCOMMSTATE;
 	}
 
 	// Fills the structure with config
@@ -103,14 +103,14 @@ static int gry_open(TiHandle *h)
     if (!fSuccess) 
     {
 		ticables_warning("SetCommState\n");
-		return ERR_SETCOMMSTATE;
+		return ERR_GRY_SETCOMMSTATE;
     }
   
     fSuccess = GetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
 		ticables_warning("GetCommTimeouts\n");
-		return ERR_GETCOMMTIMEOUT;
+		return ERR_GRY_GETCOMMTIMEOUT;
     }
   
     cto.ReadIntervalTimeout = 100 * h->timeout;
@@ -125,14 +125,14 @@ static int gry_open(TiHandle *h)
     if (!fSuccess) 
     {
 		ticables_warning("SetCommTimeouts\n");
-		return ERR_SETCOMMTIMEOUT;
+		return ERR_GRY_SETCOMMTIMEOUT;
     }
 
 	fSuccess = SetCommMask(hCom, EV_RXCHAR);
 	if (!fSuccess)
     {
 		ticables_warning("SetCommMask\n");
-		return ERR_SETCOMMMASK;
+		return ERR_GRY_SETCOMMMASK;
     }
 
 	return 0;
@@ -157,7 +157,7 @@ static int gry_reset(TiHandle *h)
 	if (!fSuccess) 
 	{
 		ticables_warning("PurgeComm\n");
-		return ERR_PURGECOMM;
+		return ERR_GRY_PURGECOMM;
 	}
 
 	return 0;
