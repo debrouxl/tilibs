@@ -51,6 +51,8 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 
 	g_assert (message != NULL);
 
+	*message = g_strdup("test");
+
 	switch(number)
 	{
 	case ERR_BUSY:
@@ -375,7 +377,9 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 	break;
 */
   	default:
-		return number;
+	    *message = strdup(_("Error code not handled; this is a bug"));
+	    ticables_warning(*message);
+	    return number;
     break;
   	}
 

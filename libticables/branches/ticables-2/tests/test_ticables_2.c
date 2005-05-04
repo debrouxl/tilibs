@@ -42,8 +42,11 @@ void print_lc_error(int errnum)
 	char *msg;
 
 	ticables_error_get(errnum, &msg);
-	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
+	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", 
+		errnum, msg);
+
 	free(msg);
+
 }
 
 int main(int argc, char **argv)

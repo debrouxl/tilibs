@@ -145,8 +145,8 @@ static void find_tigl_devices(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			/* keep track of the TIGL device */
 			ticables_info(_("found <%s>."), tigl_infos[i].str);
+
 			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
 			       sizeof(usb_infos));
 			tigl_devices[ndevices++].dev = dev;
@@ -268,7 +268,6 @@ static int reset_pipes(usb_dev_handle *udh)
 	    }
   	}
 
-	printf("done !\n");
 	return 0;
 }
 
