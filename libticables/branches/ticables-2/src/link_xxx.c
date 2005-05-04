@@ -192,7 +192,7 @@ TIEXPORT int TICALL ticables_cable_check(TiHandle* handle, TiCableStatus *status
 		return ERR_BUSY;
 
 	handle->busy = 1;
-	ret = cable->check(handle, status);
+	ret = cable->check(handle, (int *)status);
 	handle->busy = 0;
 
 	return ret;

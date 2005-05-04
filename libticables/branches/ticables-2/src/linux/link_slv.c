@@ -26,7 +26,7 @@
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)
    
    This link cable use Bulk mode with packets. The max size of a packet is 
-   32 bytes (MAX_PACKET_SIZE/BULKUSB_MAX_TRANSFER_SIZE). 
+   32/64 bytes (MAX_PACKET_SIZE/BULKUSB_MAX_TRANSFER_SIZE). 
    
    This is transparent for the user because the libusb manages all these 
    things for us. Nethertheless, this fact has some consequences:
@@ -70,6 +70,7 @@
 #include "../gettext.h"
 #include "detect.h"
 #include "ioports.h"
+#include "../timeout.h"
 
 /* Constants */
 
@@ -80,13 +81,14 @@
 #define PID_TI89TM   0xE004     /* TI89 Titanium w/ embedded USB port */
 #define PID_TI84P    0xE008     /* TI84+ w/ embedded USB port         */
 
-#define TIGL_BULK_IN    0x81
-#define TIGL_BULK_OUT   0x02
+#define TIGL_BULK_IN    0x81    /* IN  endpoint */
+#define TIGL_BULK_OUT   0x02    /* OUT endpoint */
 
 #define to      (100 * h->timeout)        // in ms
 
 /* Types */
 
+// device infos
 typedef struct
 {
     uint16_t vid;
@@ -96,6 +98,7 @@ typedef struct
     struct usb_device *dev;
 } usb_infos;
 
+// list of known devices
 static usb_infos tigl_infos[] =
 {
         {0x0451, 0xe001, "SilverLink", NULL},
@@ -104,30 +107,23 @@ static usb_infos tigl_infos[] =
         {}
 };
 
+// list of devices found 
 static usb_infos tigl_devices[MAX_CABLES];// = { 0 }; 
 static int ndevices = 0;
 
+// internal structure for holding data
 typedef struct
 {
     struct usb_device *tigl_dev;
     usb_dev_handle    *tigl_han;
     
     int     max_ps;
-    
-    int     nBytesWrite;
-    uint8_t *wBuf;
-    
-    int     nBytesRead;
-    int8_t *rBuf;
 } usb_struct;
 
+// convenient macros
 #define tigl_dev (((usb_struct *)(h->priv2))->tigl_dev)
 #define tigl_han (((usb_struct *)(h->priv2))->tigl_han)
 #define max_ps   (((usb_struct *)(h->priv2))->max_ps)
-#define nBytesWrite (((usb_struct *)(h->priv2))->nBytesWrite)
-#define wBuf        (((usb_struct *)(h->priv2))->wBuf)
-#define nBytesRead  (((usb_struct *)(h->priv2))->nBytesRead)
-#define rBuf        (((usb_struct *)(h->priv2))->rBuf)
 
 /* Helpers */
 
@@ -194,8 +190,7 @@ int open_tigl_device(int id, usb_dev_handle **udh)
 {
     int ret; 
 
-    ret = enumerate_tigl_devices();
-    if(ret) return ret;
+    TRYC(enumerate_tigl_devices());
 
     if(tigl_devices[id].dev == NULL)
 	return ERR_ILLEGAL_ARG;
@@ -288,7 +283,7 @@ static int slv_prepare(TiHandle *h)
 	if(h->port >= MAX_CABLES)
 	    return ERR_ILLEGAL_ARG;
 
-	h->address = h->port;
+	h->address = h->port-1;
 	sprintf(str, "TiglUsb #%i", h->port);
 	h->device = strdup(str);
 	h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
@@ -298,42 +293,25 @@ static int slv_prepare(TiHandle *h)
 
 static int slv_open(TiHandle *h)
 {
-    int ret;
-
     // open device
-    tigl_dev = tigl_devices[h->address-1].dev;
-    ret = open_tigl_device(h->address, &tigl_han);
-    if(ret)
-	return ret;
-
+    tigl_dev = tigl_devices[h->address].dev;
+    TRYC(open_tigl_device(h->address, &tigl_han));
+    
     // get max packet size
     max_ps = 32;
-
-// allocate buffers
-    wBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
-    rBuf = (uint8_t *)malloc(max_ps * sizeof(uint8_t));
-    if((wBuf == NULL) || (rBuf == NULL))
-    {
-	free(wBuf);
-	free(rBuf);
-	return ERR_OPEN_USB_DEV;
-    }
-
+    
 #if !defined(__BSD__)
     /* Reset both endpoints */
     TRYC(reset_pipes(tigl_han));
 #endif
-    
+
     return 0;
 }
 
 static int slv_close(TiHandle *h)
 {
-    free(wBuf); wBuf = NULL;
-    free(rBuf); rBuf = NULL;
-
     tigl_dev = NULL;
-
+    
     if (tigl_han != NULL) 
     {
 	usb_release_interface(tigl_han, 0);
@@ -342,40 +320,108 @@ static int slv_close(TiHandle *h)
     }
 
     free(h->priv2);
-
+    
     return 0;
 }
 
 static int slv_reset(TiHandle *h)
 {
-/* Reset both endpoints */
+    /* Reset both endpoints */
     TRYC(reset_pipes(tigl_han));
     
     return 0;
 }
 
+// convenient function which send one or more bytes
+static int send_block(TiHandle *h, uint8_t *data, int length)
+{
+    int ret;
+    
+    ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
+    
+    if(ret == -ETIMEDOUT) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_TIMEOUT;
+    } 
+    else if(ret == -EPIPE) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_ERROR;
+    } 
+    else if(ret < 0) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_ERROR;
+    }
+
+    return 0;
+}
+
 static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
 {
+    int q = len / max_ps;
+    int r = len % max_ps;
+    int i, j;
+
+    for(i = 0; i < q; i++)
+	TRYC(send_block(h, data + i * max_ps, max_ps));
+
+    for(j = 0; j < r; j++)
+	TRYC(send_block(h, data + i * max_ps + j, 1));
+
   return 0;
 }
 
 static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
 {
-  return 0;
+    tiTIME clk;
+    int ret;
+
+    /* Read up to 32/64 bytes (max_ps) */
+    TO_START(clk);
+    do 
+    {
+	ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, data, max_ps, to);
+	
+	if (TO_ELAPSED(clk, h->timeout))
+	    return ERR_READ_TIMEOUT;
+	if (ret == 0)
+	    ticables_warning(_("\nweird, usb_bulk_read returns wi\thout any data & error; retrying...\n"));
+    }
+    while(!ret);
+    
+    if(ret == -ETIMEDOUT) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_TIMEOUT;
+    } 
+    else if(ret == -EPIPE) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_ERROR;
+    } 
+    else if(ret < 0) 
+    {
+	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	return ERR_WRITE_ERROR;
+    }
+    
+    return 0;
 }
 
 static int slv_probe(TiHandle *h)
 {
     int i;
- 
-   TRYC(enumerate_tigl_devices());
-
+    
+    TRYC(enumerate_tigl_devices());
+    
     for(i = 0; i < MAX_CABLES; i++)
     {
 	if(tigl_devices[i].pid == PID_TIGLUSB)
 	    return 0;
     }
-
+    
     return ERR_PROBE_FAILED;
 }
 
@@ -387,8 +433,8 @@ static int raw_probe(TiHandle *h)
 
     for(i = 0; i < MAX_CABLES; i++)
     {
-	if(tigl_devices[h->address-1].pid == PID_TI89TM ||
-	   tigl_devices[h->address-1].pid == PID_TI84P)
+	if(tigl_devices[h->address].pid == PID_TI89TM ||
+	   tigl_devices[h->address].pid == PID_TI84P)
 	    return 0;
     }    
 
