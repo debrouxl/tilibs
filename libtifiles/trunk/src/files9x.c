@@ -347,106 +347,107 @@ TIEXPORT int TICALL ti9x_read_backup_file(const char *filename,
 TIEXPORT int TICALL ti9x_read_flash_file(const char *filename,
 					 Ti9xFlash * head)
 {
-  int tib = 0;
-  FILE *f;
-  int j;
-  Ti9xFlash *content = head;
-  char signature[9];
+	FILE *f;
+	Ti9xFlash *content = head;
+	int j, tib = 0;
+	char signature[9];
 
-  if (!tifiles_is_a_ti_file(filename))
-    return ERR_INVALID_FILE;
-  if (!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
-    return ERR_INVALID_FILE;
+	if (!tifiles_is_a_ti_file(filename))
+		return ERR_INVALID_FILE;
+	if (!tifiles_is_a_flash_file(filename) && !tifiles_is_a_tib_file(filename))
+		return ERR_INVALID_FILE;
 
-  // detect file type (old or new format)
-  tib = tifiles_is_a_tib_file(filename);
+	// detect file type (old or new format)
+	tib = tifiles_is_a_tib_file(filename);
 
-  f = fopen(filename, "rb");
-  if (f == NULL) {
-    printl3(0, "Unable to open this file: <%s>\n", filename);
-    return ERR_FILE_OPEN;
-  }  
+	f = fopen(filename, "rb");
+	if (f == NULL) 
+	{
+	    printl3(0, "Unable to open this file: <%s>\n", filename);
+		return ERR_FILE_OPEN;
+	}  
 
-  if (tib) {			// tib is an old format but still in use (by developers)
-	memset(content, 0, sizeof(Ti9xFlash));
-    fseek(f, 0, SEEK_END);
-    content->data_length = (uint32_t) ftell(f);
-    fseek(f, 0, SEEK_SET);
+	if (tib) 
+	{	// tib is an old format but still in use (by developers)
+		memset(content, 0, sizeof(Ti9xFlash));
+		fseek(f, 0, SEEK_END);
+		content->data_length = (uint32_t) ftell(f);
+		fseek(f, 0, SEEK_SET);
 
-    strcpy(content->name, "basecode");
-	content->data_type = 0x23;	// FLASH os
+		strcpy(content->name, "basecode");
+		content->data_type = 0x23;	// FLASH os
 
-	content->data_part = (uint8_t *) calloc(content->data_length, 1);
-    if (content->data_part == NULL) {
-		fclose(f);
-		return ERR_MALLOC;
-    }
-    fread(content->data_part, content->data_length, 1, f);
+		content->data_part = (uint8_t *) calloc(content->data_length, 1);
+		if (content->data_part == NULL) 
+		{
+			fclose(f);
+			return ERR_MALLOC;
+		}
+		fread(content->data_part, content->data_length, 1, f);
 
-    switch(content->data_part[8])
-    {
-	case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
-	case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
-	// value added by the TI community according to HWID parameter
-	// doesn't have any 'legal existence'
-	case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
-	case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
-    }
+		switch(content->data_part[8])
+		{
+		case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
+		case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
+		// value added by the TI community according to HWID parameter
+		// doesn't have any 'legal existence'
+		case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
+		case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
+		}
 
-    content->next = NULL;
-  } else {
-    long file_size;
+		content->next = NULL;
+	} 
+	else 
+	{
+		for (content = head;; content = content->next) 
+		{
+		    fread_8_chars(f, signature);
+		    content->calc_type = tifiles_which_calc_type(filename);
+		    fread_byte(f, &(content->revision_major));
+		    fread_byte(f, &(content->revision_minor));
+		    fread_byte(f, &(content->flags));
+		    fread_byte(f, &(content->object_type));
+		    fread_byte(f, &(content->revision_day));
+		    fread_byte(f, &(content->revision_month));
+		    fread_word(f, &(content->revision_year));
+		    fread_byte(f, NULL);
+		    fread_8_chars(f, content->name);
+		    for (j = 0; j < 23; j++)
+			fgetc(f);
+		    fread_byte(f, &(content->device_type));
+		    fread_byte(f, &(content->data_type));
+		    for (j = 0; j < 24; j++)
+			fgetc(f);
+		    fread_long(f, &(content->data_length));
 
-    fseek(f, 0, SEEK_END);
-    file_size = ftell(f);
-    fseek(f, 0, SEEK_SET);
+			content->data_part = (uint8_t *) calloc(content->data_length, 1);
+			if (content->data_part == NULL) 
+			{
+				fclose(f);
+				return ERR_MALLOC;
+			}
+			fread(content->data_part, content->data_length, 1, f);
 
-    for (content = head;; content = content->next) {
-      fread_8_chars(f, signature);
-      content->calc_type = tifiles_which_calc_type(filename);
-      fread_byte(f, &(content->revision_major));
-      fread_byte(f, &(content->revision_minor));
-      fread_byte(f, &(content->flags));
-      fread_byte(f, &(content->object_type));
-      fread_byte(f, &(content->revision_day));
-      fread_byte(f, &(content->revision_month));
-      fread_word(f, &(content->revision_year));
-      fread_byte(f, NULL);
-      fread_8_chars(f, content->name);
-      for (j = 0; j < 23; j++)
-	fgetc(f);
-      fread_byte(f, &(content->device_type));
-      fread_byte(f, &(content->data_type));
-      for (j = 0; j < 24; j++)
-	fgetc(f);
-      fread_long(f, &(content->data_length));
-      content->data_part = (uint8_t *) calloc(content->data_length, 1);
-      if (content->data_part == NULL) {
+			content->next = NULL;
+
+			// check for end of file
+			fread_8_chars(f, signature);
+			if(strcmp(signature, "**TIFL**") || feof(f))
+				break;
+			fseek(f, -8, SEEK_CUR);
+
+			content->next = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
+			if (content->next == NULL) 
+			{
+				fclose(f);
+				return ERR_MALLOC;
+			}
+		}
+	}
+
 	fclose(f);
-	return ERR_MALLOC;
-      }
-      fread(content->data_part, content->data_length, 1, f);
 
-      content->next = NULL;
-
-      if (file_size == ftell(f))
-          break;
-
-      // to be less restrictive with weird files
-      if((ftell(f) > file_size - 0x4e))
-	        break;
-
-      content->next = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
-      if (content->next == NULL) {
-	fclose(f);
-	return ERR_MALLOC;
-      }
-    }
-  }
-
-  fclose(f);
-
-  return 0;
+	return 0;
 }
 
 /***********/

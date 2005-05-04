@@ -79,6 +79,8 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   *-*-*bsd*)  ARCH="-D__BSD__" ;;
   *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__" ;;
+  powerpc-*-linux-*)     ARCH="-D__LINUX__ -DWORDS_BIGENDIAN" ;;
+  powerpc-apple-darwin*) ARCH="-D__MACOSX__ -DWORDS_BIGENDIAN" ;;
   *)          ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
