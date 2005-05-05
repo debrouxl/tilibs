@@ -74,7 +74,8 @@ static int gry_open(TiHandle *h)
     flags = O_RDWR | O_SYNC;
 #endif
     
-    if ((dev_fd = open(h->device, flags)) == -1) 
+    dev_fd = (int)open(h->device, flags);
+    if (dev_fd == -1) 
     {
 	if(errno == EACCES)
 	    ticables_warning(_("unable to open this serial port: %s (wrong permissions).\n"), h->device);

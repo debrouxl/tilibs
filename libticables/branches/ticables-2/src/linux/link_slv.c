@@ -319,6 +319,7 @@ static int slv_close(TiHandle *h)
     }
 
     free(h->priv2);
+    h->priv2 = NULL;
     
     return 0;
 }

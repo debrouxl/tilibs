@@ -181,12 +181,15 @@ TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort po
  **/
 TIEXPORT int TICALL ticables_handle_del(TiHandle* handle)
 {
+    if(handle->priv2)
 	free(handle->priv2);
+    if(handle->device)
 	free(handle->device);
+    if(handle)
 	free(handle);
-	handle = NULL;
-
-	return 0;
+    handle = NULL;
+    
+    return 0;
 }
 
 /**

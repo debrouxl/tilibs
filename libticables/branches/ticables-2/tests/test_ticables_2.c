@@ -61,11 +61,12 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_USB, PORT_1);
+	handle = ticables_handle_new(CABLE_SLV, PORT_1);
 	if(handle == NULL)
 	    return -1;
-	//ticables_options_set_timeout(handle, 15);
-	//ticables_options_set_delay(handle, 10);
+
+	ticables_options_set_timeout(handle, 15);
+	ticables_options_set_delay(handle, 10);
 	ticables_handle_show(handle);
 
 	// open cable
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
 	sleep(1);
 #endif
 
-#ifdef PROBE
+#if 0
 	err = ticables_cable_probe(handle, &result);
 	printf("result = %i\n", result);
 #endif
@@ -101,7 +102,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 1
+#if 0
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);
@@ -122,6 +123,9 @@ int main(int argc, char **argv)
 
 	// close cable
 	ticables_cable_close(handle);
+
+        // release handle
+	ticables_handle_del(handle);
 	
 	// exit lib
 	ticables_library_exit();

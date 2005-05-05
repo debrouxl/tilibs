@@ -25,6 +25,7 @@
 #include <windows.h>
 #endif
 #include <glib.h>
+#include <errno.h>
 
 #include "gettext.h"
 #include "export.h"
