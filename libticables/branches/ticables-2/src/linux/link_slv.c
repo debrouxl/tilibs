@@ -116,14 +116,22 @@ typedef struct
 {
     struct usb_device *tigl_dev;
     usb_dev_handle    *tigl_han;
+
+    int               nBytesRead;
+    uint8_t           rBuf[64];
+    uint8_t*          rBufPtr;
     
-    int     max_ps;
+    int               max_ps;
 } usb_struct;
 
 // convenient macros
 #define tigl_dev (((usb_struct *)(h->priv2))->tigl_dev)
 #define tigl_han (((usb_struct *)(h->priv2))->tigl_han)
 #define max_ps   (((usb_struct *)(h->priv2))->max_ps)
+#define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
+#define rBuf       (((usb_struct *)(h->priv2))->rBuf)
+#define rBufPtr    (((usb_struct *)(h->priv2))->rBufPtr)
+
 
 /* Helpers */
 
@@ -145,7 +153,7 @@ static void find_tigl_devices(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			ticables_info(_("found <%s>."), tigl_infos[i].str);
+			ticables_info("found <%s>.", tigl_infos[i].str);
 
 			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
 			       sizeof(usb_infos));
@@ -298,6 +306,7 @@ static int slv_open(TiHandle *h)
     
     // get max packet size
     max_ps = 32;
+    nBytesRead = 0;
     
 #if !defined(__BSD__)
     /* Reset both endpoints */
@@ -373,39 +382,67 @@ static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
   return 0;
 }
 
+static int slv_get_(TiHandle *h, uint8_t *data)
+{
+    int ret = 0;
+    tiTIME clk;
+
+    /* Read up to 32/64 bytes and store them in a buffer for 
+       subsequent accesses */
+    if (nBytesRead <= 0) 
+    {
+	TO_START(clk);
+	do 
+	{
+	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf, max_ps, to);
+
+	    if (TO_ELAPSED(clk, h->timeout))
+	    {
+		nBytesRead = 0;
+		return ERR_READ_TIMEOUT;
+	    }
+	    if (ret == 0)
+		ticables_warning("\nweird, usb_bulk_read returns without any data & error; retrying...\n");
+	}
+	while(!ret);
+	
+	if(ret == -ETIMEDOUT) 
+	{
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    nBytesRead = 0;
+	    return ERR_READ_TIMEOUT;
+	} 
+	else if(ret == -EPIPE) 
+	{
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    nBytesRead = 0;
+	    return ERR_READ_ERROR;
+	} 
+	else if(ret < 0) 
+	{
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    nBytesRead = 0;
+	    return ERR_READ_ERROR;
+	}
+
+	nBytesRead = ret;
+	rBufPtr = rBuf;
+    }
+
+    *data = *rBufPtr++;
+    nBytesRead--;
+
+    return 0;
+}
+
 static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
 {
-    tiTIME clk;
-    int ret;
+    int i;
 
-    /* Read up to 32/64 bytes (max_ps) */
-    TO_START(clk);
-    do 
-    {
-	ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, data, max_ps, to);
-	
-	if (TO_ELAPSED(clk, h->timeout))
-	    return ERR_READ_TIMEOUT;
-	if (ret == 0)
-	    ticables_warning(_("\nweird, usb_bulk_read returns wi\thout any data & error; retrying...\n"));
-    }
-    while(!ret);
-    
-    if(ret == -ETIMEDOUT) 
-    {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_TIMEOUT;
-    } 
-    else if(ret == -EPIPE) 
-    {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
-    } 
-    else if(ret < 0) 
-    {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
-    }
+    // we can't do that in any other way because TiglUsbRead can returns
+    // 1, 2, ..., len bytes.
+    for(i = 0; i < len; i++)
+	slv_get_(h, data+i);
     
     return 0;
 }
