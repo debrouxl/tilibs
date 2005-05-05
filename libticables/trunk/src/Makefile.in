@@ -89,6 +89,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
+IOKIT_LIBS = @IOKIT_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
@@ -187,7 +188,7 @@ libticablesinclude_HEADERS = \
 
 # build instructions
 libticables_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" @LIBUSB_CFLAGS@
-libticables_la_LIBADD = @LTLIBINTL@ @LIBUSB_LIBS@
+libticables_la_LIBADD = @LTLIBINTL@ @LIBUSB_LIBS@ @IOKIT_LIBS@
 libticables_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables_la_SOURCES = *.h \
 	detect.c \

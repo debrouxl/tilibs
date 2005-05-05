@@ -14,7 +14,7 @@ libticablesinclude_HEADERS = \
 
 # build instructions
 libticables_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" @LIBUSB_CFLAGS@
-libticables_la_LIBADD = @LTLIBINTL@ @LIBUSB_LIBS@
+libticables_la_LIBADD = @LTLIBINTL@ @LIBUSB_LIBS@ @IOKIT_LIBS@
 libticables_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables_la_SOURCES = *.h \
 	detect.c \

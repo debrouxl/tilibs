@@ -75,6 +75,18 @@ AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
 esac
 
+# USB support depends on the IOKit framework on Mac OS X
+# CW 2005-05-03
+case "$host_os" in
+  darwin*)
+    IOKIT_LIBS="-framework IOKit"
+  ;;
+  *)
+    IOKIT_LIBS=
+  ;;
+esac
+AC_SUBST(IOKIT_LIBS)
+
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
