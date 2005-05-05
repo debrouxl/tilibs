@@ -55,12 +55,13 @@ int main(int argc, char **argv)
 	int err, i;
 	uint8_t buf[4], data;
 	int status, result;
+	uint8_t scr[3840 + 6];
 
 	// init lib
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_USB, PORT_2);
+	handle = ticables_handle_new(CABLE_USB, PORT_1);
 	if(handle == NULL)
 	    return -1;
 	//ticables_options_set_timeout(handle, 15);
@@ -79,9 +80,14 @@ int main(int argc, char **argv)
 	sleep(1);
 #endif
 
+#ifdef PROBE
+	err = ticables_cable_probe(handle, &result);
+	printf("result = %i\n", result);
+#endif
+
 #if 1
 	// do a simple test with a TI89/92+ calculator
-	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;
+	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);
 	if(err) print_lc_error(err);
 
@@ -93,9 +99,25 @@ int main(int argc, char **argv)
 	for(i = 0; i < 4; i++)
 		printf("%02x ", buf[i]);
 	printf("\n");
-#else
-	err = ticables_cable_probe(handle, &result);
-	printf("result = %i\n", result);
+#endif
+
+#if 1
+	// do a screendump
+	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
+	err = ticables_cable_send(handle, buf, 4);
+	if(err) print_lc_error(err);
+	
+	memset(buf, 0xff, 4);
+	err = ticables_cable_recv(handle, buf, 4);	// ACK
+	if(err) print_lc_error(err);
+
+	err = ticables_cable_recv(handle, scr, 0x0f00 + 6);	// XDP
+	if(err) print_lc_error(err);
+	printf("%02x %02x\n", scr[2], scr[3]);
+
+	buf[0] = 0x08;  buf[1] = 0x56; buf[2] = 0x00; buf[3] = 0x00;	// ACK
+	err = ticables_cable_send(handle, buf, 4);
+	if(err) print_lc_error(err);
 #endif
 
 	// close cable

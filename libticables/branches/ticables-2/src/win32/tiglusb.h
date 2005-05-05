@@ -45,7 +45,7 @@ Revision History:
     24/04/04: API modified to use buffered write I/O (API compat broken)
 	02/10/04: added new function to get device information (PID)
 	01/05/05: added extended functions for sending/receiving whole packets
-	01/05/05: can parse available cables with characteristics (product id)
+	01/05/05: can parse available cables with characteristics (Product ID)
 --*/
 
 #ifndef TIGLUSB_INC
@@ -101,18 +101,16 @@ TIGLUSB_EXP INT TIGLUSB_API TiglUsbProbe2 (PUINT* list);// Parse available cable
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbOpen2  (INT id);		// Open a device instance
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbClose2 (INT handle); // Close the device instance
 
-TIGLUSB_EXP INT TIGLUSB_API TiglUsbCheck2 (INT handle, 
-										   INT *status);// Check whether data is available
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbReset2 (INT handle); // Reset r/w pipes
 
-TIGLUSB_EXP INT TIGLUSB_API TiglUsbRead2  (INT handle,
-										   UCHAR *data,
-										   INT len);	// Read a byte from cable
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbWrite2 (INT handle,
 										   UCHAR *data,
 										   INT len);	// Write a byte to cable
-
-TIGLUSB_EXP INT TIGLUSB_API TiglUsbFlush2 (INT handle); // Flush write buffer
-TIGLUSB_EXP INT TIGLUSB_API TiglUsbReset2 (INT handle); // Reset r/w pipes
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbRead2  (INT handle,
+										   UCHAR *data,
+										   INT len);	// Read a byte from cable
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbCheck2 (INT handle, 
+										   INT *status);// Check whether data is available
 
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbSetTimeout2 (INT handle,
 												INT ts);// Set timeout value (in tenth of seconds)
@@ -142,13 +140,11 @@ typedef INT (TIGLUSB_API *TIGLUSB_PROBE2)		(PUINT*);
 typedef INT (TIGLUSB_API *TIGLUSB_OPEN2)	    (INT);
 typedef INT (TIGLUSB_API *TIGLUSB_CLOSE2)       (INT);
 
-typedef INT (TIGLUSB_API *TIGLUSB_CHECK2)       (INT,PINT);
-
-typedef INT (TIGLUSB_API *TIGLUSB_READ2)	    (INT,PUCHAR,INT);
-typedef INT (TIGLUSB_API *TIGLUSB_WRITE2)	    (INT,PUCHAR,INT);
-
-typedef INT (TIGLUSB_API *TIGLUSB_FLUSH2)	    (INT);
 typedef INT (TIGLUSB_API *TIGLUSB_RESET2)       (INT);
+
+typedef INT (TIGLUSB_API *TIGLUSB_WRITE2)	    (INT,PUCHAR,INT);
+typedef INT (TIGLUSB_API *TIGLUSB_READ2)	    (INT,PUCHAR,INT);
+typedef INT (TIGLUSB_API *TIGLUSB_CHECK2)       (INT,PINT);
 
 typedef INT	(TIGLUSB_API *TIGLUSB_SETTIMEOUT2)	(INT,INT);
 typedef INT	(TIGLUSB_API *TIGLUSB_GETTIMEOUT2)	(INT,PINT);
@@ -230,17 +226,16 @@ typedef INT	(TIGLUSB_API *TIGLUSB_GETTIMEOUT2)	(INT,PINT);
 typedef struct 
 {
 	UINT		number;	// link cable number
-	UINT		max_ps;	// packet size
 	UINT		timeout;// timeout
+
+	UINT		max_ps;	// packet size
 
 	HANDLE	hRead;		// read pipe
 	HANDLE  hWrite;		// write pipe
 
-	PUCHAR	rBuf;		// rx buf
+	UCHAR	rBuf[64];	// rx buf
 	DWORD	nBytesRead;
-
-	PUCHAR	wBuf;		// tx buf
-	DWORD	nBytesWrite;
+	PUCHAR	rBufPtr;
 
 	OVERLAPPED olp;		// for overlapped i/o
 
