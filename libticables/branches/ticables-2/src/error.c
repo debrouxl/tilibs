@@ -72,6 +72,20 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 			NULL);
     	break;
 
+	case ERR_TTYSx:
+	    *message = g_strconcat(
+                _("Msg: unable to use serial (TTY) device."),
+                "\n",
+                _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions. See the log output for testing details."),
+		NULL);
+
+	case ERR_USBFS:
+	    *message = g_strconcat(
+                _("Msg: unable to use USB pseudo file system."),
+                "\n",
+                _("Cause: the USB fs is not mounted or you don't have permissions to use it. See the log oupput for testing details."),
+                NULL);
+
 	case ERR_ILLEGAL_ARG:
 		*message = g_strconcat(
     		_("Msg: illegal operation or argument."),

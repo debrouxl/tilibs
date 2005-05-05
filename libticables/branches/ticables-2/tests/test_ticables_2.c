@@ -57,6 +57,12 @@ int main(int argc, char **argv)
 	int status, result;
 	uint8_t scr[3840 + 6];
 
+#if 0
+	printf("check_for_root: %i \n", check_for_root());
+	printf("check_for_tty: %i\n", check_for_tty("/dev/ttyS2"));
+	printf("check_for_libusb: %i\n", check_for_libusb());
+#endif
+
 	// init lib
 	ticables_library_init();
 
