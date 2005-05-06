@@ -35,49 +35,45 @@
 #include "detect.h"
 #include "ioports.h"
 
-#define com_out (h->address + 4)
-#define com_in  (h->address + 6)
-
-#define hCom	(HANDLE)(h->priv)
-#define BUFFER_SIZE 1024
+#define dev_fd	((int)(h->priv))
 
 static int ser_prepare(TiHandle *h)
 {
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("COM1"); break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("COM2"); break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("COM3"); break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
+	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0"); 
+	    break;
+	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/ttyS1"); 
+	    break;
+	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/ttyS2"); 
+	    break;
+	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/ttyS3"); 
+	    break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
 	// detect stuffs 
-	TRYC(check_for_root());
+	TRYC(check_for_tty(h->device));
 
 	return 0;
 }
 
 static int ser_open(TiHandle *h)
 {
-  	TRYC(io_open(com_out));
-  	TRYC(io_open(com_in));
-
-	return 0;
+    TRYC(ser_io_open(h->device, (int *)&(h->priv)));
+    return 0;
 }
 
 static int ser_close(TiHandle *h)
 {
-	TRYC(io_close(com_out));
-  	TRYC(io_close(com_in));
-
-	return 0;
+    TRYC(ser_io_close(dev_fd));
+    return 0;
 }
 
 static int ser_reset(TiHandle *h)
 {
-	io_wr(com_out, 3);
-	return 0;
+    ser_io_wr(dev_fd, 3);
+    return 0;
 }
 
 static int ser_put(TiHandle *h, uint8_t *data, uint16_t len)
@@ -85,54 +81,36 @@ static int ser_put(TiHandle *h, uint8_t *data, uint16_t len)
     int bit;
     int i, j;
     tiTIME clk;
-    
+
     for(j = 0; j < len; j++)
     {
-	uint8_t byte = data[j];
-	
-	for (bit = 0; bit < 8; bit++) 
+        uint8_t byte = data[j];
+
+	TO_START(clk);
+        for (bit = 0; bit < 8; bit++) 
 	{
-	    if (byte & 1) 
+	    if (byte & 1)
+		ser_io_wr(dev_fd, 2);
+	    else
+		ser_io_wr(dev_fd, 1);
+
+	    while (ser_io_rd(dev_fd) != 0) 
 	    {
-		io_wr(com_out, 2);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x10));
-		
-		io_wr(com_out, 3);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x10) == 0x00);
-	    } 
-	    else 
-	    {
-		io_wr(com_out, 1);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while (io_rd(com_in) & 0x20);
-      		
-		io_wr(com_out, 3);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x20) == 0x00);
+		if (TO_ELAPSED(clk, h->timeout))
+		    return ERR_WRITE_TIMEOUT;
 	    }
-	    
+
+	    ser_io_wr(dev_fd, 3);
+	    while (ser_io_rd(dev_fd) != 3) 
+	    {
+		if (TO_ELAPSED(clk, h->timeout))
+		    return ERR_WRITE_TIMEOUT;
+	    }
+
 	    byte >>= 1;
 	    for (i = 0; i < h->delay; i++)
-		io_rd(com_in);
-	}
+                ser_io_rd(dev_fd);
+        }
     }
     
     return 0;
@@ -143,51 +121,44 @@ static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
     int bit;
     int i, j;
     tiTIME clk;
-    
+
     for(j = 0; j < len; j++)
     {
-	uint8_t v, byte = 0;
-  	
-	for (bit = 0; bit < 8; bit++) 
+        uint8_t v, byte = 0;
+
+	TO_START(clk);
+	for (i = 0, bit = 1, byte = 0; i < 8; i++) 
 	{
-	    TO_START(clk);
-	    while ((v = io_rd(com_in) & 0x30) == 0x30) 
+	    while ((v = ser_io_rd(dev_fd)) == 3) 
 	    {
 		if (TO_ELAPSED(clk, h->timeout))
 		    return ERR_READ_TIMEOUT;
 	    }
 	    
-	    if (v == 0x10) 
+	    if (v == 1) 
 	    {
-		byte = (byte >> 1) | 0x80;
-		io_wr(com_out, 1);
-		
-		TO_START(clk);
-		while ((io_rd(com_in) & 0x20) == 0x00) 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_READ_TIMEOUT;
-		}
-		io_wr(com_out, 3);
+		byte |= bit;
+		ser_io_wr(dev_fd, 1);
+		v = 2;
 	    } 
 	    else 
 	    {
-		byte = (byte >> 1) & 0x7F;
-		io_wr(com_out, 2);
-		
-		TO_START(clk);
-		while ((io_rd(com_in) & 0x10) == 0x00) 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_READ_TIMEOUT;
-		}
-		io_wr(com_out, 3);
+		ser_io_wr(dev_fd, 2);
+		v = 1;
 	    }
-	    
+
+	    while ((ser_io_rd(dev_fd) & v) == 0) 
+	    {
+		if (TO_ELAPSED(clk, h->timeout))
+		    return ERR_READ_TIMEOUT;
+	    }
+	    ser_io_wr(dev_fd, 3);
+	    bit <<= 1;
+
 	    for (i = 0; i < h->delay; i++)
-		io_rd(com_in);
+                ser_io_rd(dev_fd);
 	}
-	
+
 	data[j] = byte;
     }
     
@@ -200,38 +171,38 @@ static int ser_probe(TiHandle *h)
     tiTIME clk;
     
     // 1
-    io_wr(com_out, 2);
+    ser_io_wr(dev_fd, 2);
     TO_START(clk);
     do 
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x10));
+    } while ((ser_io_rd(dev_fd) & 0x10));
     
-    io_wr(com_out, 3);
+    ser_io_wr(dev_fd, 3);
     TO_START(clk);
     do 
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x10) == 0x00);
+    } while ((ser_io_rd(dev_fd) & 0x10) == 0x00);
     
     // 0
-    io_wr(com_out, 1);
+    ser_io_wr(dev_fd, 1);
     TO_START(clk);
     do 
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while (io_rd(com_in) & 0x20);
+    } while (ser_io_rd(dev_fd) & 0x20);
     
-    io_wr(com_out, 3);
+    ser_io_wr(dev_fd, 3);
     TO_START(clk);
     do 
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((io_rd(com_in) & 0x20) == 0x00);
+    } while ((ser_io_rd(dev_fd) & 0x20) == 0x00);
     
     return 0;
 }
@@ -240,7 +211,7 @@ static int ser_check(TiHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
-  	if (!((io_rd(com_in) & 0x30) == 0x30)) 
+  	if (!((ser_io_rd(dev_fd) & 0x30) == 0x30)) 
     		*status = (STATUS_RX | STATUS_TX);
 
 	return 0;
@@ -250,36 +221,36 @@ static int ser_check(TiHandle *h, int *status)
 
 static int ser_set_red_wire(TiHandle *h, int b)
 {
-	int v = swap_bits(io_rd(com_in) >> 4);
+	int v = swap_bits(ser_io_rd(dev_fd) >> 4);
 
   	if (b)
-    		io_wr(com_out, v | 0x02);
+    		ser_io_wr(dev_fd, v | 0x02);
   	else
-    		io_wr(com_out, v & ~0x02);
+    		ser_io_wr(dev_fd, v & ~0x02);
 
 	return 0;
 }
 
 static int ser_set_white_wire(TiHandle *h, int b)
 {
-	int v = swap_bits(io_rd(com_in) >> 4);
+	int v = swap_bits(ser_io_rd(dev_fd) >> 4);
 
   	if (b)
-    		io_wr(com_out, v | 0x01);
+    		ser_io_wr(dev_fd, v | 0x01);
   	else
-    		io_wr(com_out, v & ~0x01);
+    		ser_io_wr(dev_fd, v & ~0x01);
 
 	return 0;
 }
 
 static int ser_get_red_wire(TiHandle *h)
 {
-	return ((0x10 & io_rd(com_in)) ? 1 : 0);
+	return ((0x10 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
 static int ser_get_white_wire(TiHandle *h)
 {
-	return ((0x20 & io_rd(com_in)) ? 1 : 0);
+	return ((0x20 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
 const TiCable cable_ser = 
