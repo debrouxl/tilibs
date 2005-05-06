@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 0
+#if 1
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);

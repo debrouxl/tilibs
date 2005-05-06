@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: link_ser.c 1016 2005-05-02 14:11:22Z roms $ */
+/* $Id: link_ser2.c 1033 2005-05-06 18:17:02Z roms $ */
 
 /*  libticables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -35,27 +35,28 @@
 #include "detect.h"
 #include "ioports.h"
 
-#define dev_fd	((int)(h->priv))
+#define dev_fd  ((int)(h->priv))
 
 static int ser_prepare(TiHandle *h)
 {
-	switch(h->port)
-	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0"); 
-	    break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/ttyS1"); 
-	    break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/ttyS2"); 
-	    break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/ttyS3"); 
-	    break;
-	default: return ERR_ILLEGAL_ARG;
-	}
+    switch(h->port)
+    {
+    case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0");
+	break;
+    case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/ttyS1");
+	break;
+    case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/ttyS2");
+	break;
+    case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/ttyS3");
+	break;
+    default: return ERR_ILLEGAL_ARG;
+    }
 
-	// detect stuffs 
-	TRYC(check_for_tty(h->device));
+    // detect stuffs
+    TRYC(check_for_tty(h->device));
 
-	return 0;
+
+    return 0;
 }
 
 static int ser_open(TiHandle *h)
@@ -81,36 +82,55 @@ static int ser_put(TiHandle *h, uint8_t *data, uint16_t len)
     int bit;
     int i, j;
     tiTIME clk;
-
+    
     for(j = 0; j < len; j++)
     {
-        uint8_t byte = data[j];
-
-	TO_START(clk);
-        for (bit = 0; bit < 8; bit++) 
+	uint8_t byte = data[j];
+	
+	for (bit = 0; bit < 8; bit++) 
 	{
-	    if (byte & 1)
+	    if (byte & 1) 
+	    {
 		ser_io_wr(dev_fd, 2);
+		
+		TO_START(clk);
+		while ((ser_io_rd(dev_fd) & 0x10))
+		{
+		    if (TO_ELAPSED(clk, h->timeout))
+			return ERR_WRITE_TIMEOUT;
+		};
+	    
+		ser_io_wr(dev_fd, 3);
+		TO_START(clk);
+		while ((ser_io_rd(dev_fd) & 0x10) == 0x00);
+		{
+		    if (TO_ELAPSED(clk, h->timeout))
+			return ERR_WRITE_TIMEOUT;
+		};
+	    }
 	    else
+	    {
 		ser_io_wr(dev_fd, 1);
-
-	    while (ser_io_rd(dev_fd) != 0) 
-	    {
-		if (TO_ELAPSED(clk, h->timeout))
-		    return ERR_WRITE_TIMEOUT;
+                TO_START(clk);
+		while (ser_io_rd(dev_fd) & 0x20)
+		{  
+		    if (TO_ELAPSED(clk, h->timeout))
+                        return ERR_WRITE_TIMEOUT;
+		};
+		
+                ser_io_wr(dev_fd, 3);
+                TO_START(clk);
+                while ((ser_io_rd(dev_fd) & 0x20) == 0x00)
+		{
+		    if (TO_ELAPSED(clk, h->timeout))
+                        return ERR_WRITE_TIMEOUT;
+                };
 	    }
-
-	    ser_io_wr(dev_fd, 3);
-	    while (ser_io_rd(dev_fd) != 3) 
-	    {
-		if (TO_ELAPSED(clk, h->timeout))
-		    return ERR_WRITE_TIMEOUT;
-	    }
-
+	    
 	    byte >>= 1;
 	    for (i = 0; i < h->delay; i++)
-                ser_io_rd(dev_fd);
-        }
+		ser_io_rd(dev_fd);
+	}
     }
     
     return 0;
@@ -121,44 +141,51 @@ static int ser_get(TiHandle *h, uint8_t *data, uint16_t len)
     int bit;
     int i, j;
     tiTIME clk;
-
+    
     for(j = 0; j < len; j++)
     {
-        uint8_t v, byte = 0;
-
-	TO_START(clk);
-	for (i = 0, bit = 1, byte = 0; i < 8; i++) 
+	uint8_t v, byte = 0;
+  	
+	for (bit = 0; bit < 8; bit++) 
 	{
-	    while ((v = ser_io_rd(dev_fd)) == 3) 
+	    TO_START(clk);
+	    while ((v = ser_io_rd(dev_fd) & 0x30) == 0x30) 
 	    {
 		if (TO_ELAPSED(clk, h->timeout))
 		    return ERR_READ_TIMEOUT;
 	    }
 	    
-	    if (v == 1) 
+	    if (v == 0x10) 
 	    {
-		byte |= bit;
+		byte = (byte >> 1) | 0x80;
 		ser_io_wr(dev_fd, 1);
-		v = 2;
+		
+		TO_START(clk);
+		while ((ser_io_rd(dev_fd) & 0x20) == 0x00) 
+		{
+		    if (TO_ELAPSED(clk, h->timeout))
+			return ERR_READ_TIMEOUT;
+		}
+		ser_io_wr(dev_fd, 3);
 	    } 
 	    else 
 	    {
+		byte = (byte >> 1) & 0x7F;
 		ser_io_wr(dev_fd, 2);
-		v = 1;
+		
+		TO_START(clk);
+		while ((ser_io_rd(dev_fd) & 0x10) == 0x00) 
+		{
+		    if (TO_ELAPSED(clk, h->timeout))
+			return ERR_READ_TIMEOUT;
+		}
+		ser_io_wr(dev_fd, 3);
 	    }
-
-	    while ((ser_io_rd(dev_fd) & v) == 0) 
-	    {
-		if (TO_ELAPSED(clk, h->timeout))
-		    return ERR_READ_TIMEOUT;
-	    }
-	    ser_io_wr(dev_fd, 3);
-	    bit <<= 1;
-
+	    
 	    for (i = 0; i < h->delay; i++)
-                ser_io_rd(dev_fd);
+		ser_io_rd(dev_fd);
 	}
-
+	
 	data[j] = byte;
     }
     

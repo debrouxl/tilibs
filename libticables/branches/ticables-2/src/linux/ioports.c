@@ -135,7 +135,7 @@ int ser_io_rd(int dev_fd)
 	return ERR_TTY_IOCTL;
     }
 
-    return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+    return (flags & TIOCM_CTS ? 0x10 : 0) | (flags & TIOCM_DSR ? 0x20 : 0);
 }
 
 int ser_io_wr(int dev_fd, uint8_t data)
