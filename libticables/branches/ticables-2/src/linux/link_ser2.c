@@ -92,42 +92,21 @@ static int ser_put(TiHandle *h, uint8_t *data, uint16_t len)
 	
 	for (bit = 0; bit < 8; bit++) 
 	{
-	    if (byte & 1) 
+	    io_wr(com_out, byte & 1 ? 2 : 1);
+	    TO_START(clk);
+	    while (io_rd(com_in) != 0x00)
 	    {
-		io_wr(com_out, 2);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x10));
-		
-		io_wr(com_out, 3);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x10) == 0x00);
-	    } 
-	    else 
+		if (TO_ELAPSED(clk, h->timeout))
+		    return ERR_WRITE_TIMEOUT;
+	    };
+	    
+	    io_wr(com_out, 3);
+	    TO_START(clk);
+	    while (io_rd(com_in) != 0x30)
 	    {
-		io_wr(com_out, 1);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while (io_rd(com_in) & 0x20);
-      		
-		io_wr(com_out, 3);
-		TO_START(clk);
-		do 
-		{
-		    if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		} while ((io_rd(com_in) & 0x20) == 0x00);
-	    }
+		if (TO_ELAPSED(clk, h->timeout))
+		    return ERR_WRITE_TIMEOUT;
+	    };
 	    
 	    byte >>= 1;
 	    for (i = 0; i < h->delay; i++)

@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	handle = ticables_handle_new(CABLE_BLK, PORT_2);
 	if(handle == NULL)
 	    return -1;
 
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 1
+#if 0
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);
