@@ -34,6 +34,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <stdint.h>
 
 #if defined(__I386__) && defined(HAVE_SYS_PERM_H)
 #include <sys/perm.h>
@@ -46,6 +47,7 @@
 
 #include "gettext.h"
 #include "error.h"
+#include "logging.h"
 
 /* Function pointers */
 
@@ -69,38 +71,6 @@ static void linux_asm_write_io(unsigned int addr, int data)
 	outb(data, addr);
 #endif
 }
-
-
-/* I/O thru ioctl() calls */
-#if 0
-static int linux_ioctl_read_io(unsigned int addr)
-{
-#ifdef HAVE_TERMIOS_H
-	unsigned int flags;
-
-  	if (ioctl(dev_fd, TIOCMGET, &flags) == -1) {
-    		printl1(2, _("ioctl failed in linux_ioctl_read_io !\n"));
-    		return ERR_IOCTL;
-  	}
-
-  	return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
-#endif
-}
-
-static void linux_ioctl_write_io(unsigned int address, int data)
-{
-#ifdef HAVE_TERMIOS_H
-	unsigned int flags = 0;
-
-  	flags |= (data & 2) ? TIOCM_RTS : 0;
-  	flags |= (data & 1) ? TIOCM_DTR : 0;
-  	if (ioctl(dev_fd, TIOCMSET, &flags) == -1) {
-    		printl1(2, _("ioctl failed in linux_ioctl_write_io !\n"));
-    		//return ERR_IOCTL;
-  	}
-#endif
-}
-#endif
 
 /* Functions used for initializing the I/O routines */
 
@@ -126,4 +96,60 @@ int io_close(unsigned long from)
 		return 0;
 #endif
 	return 0;
+}
+
+// ---
+
+int par_io_open(const char *device);
+int par_io_close(void);
+
+int  par_io_rd(unsigned int addr);
+void par_io_wr(unsigned int addr, int data);
+
+// ---
+
+int ser_io_open(const char *dev_name, int *dev_fd)
+{
+    *dev_fd = open(dev_name, O_RDWR | O_SYNC);
+    if (*dev_fd == -1) 
+    {
+	ticables_warning("unable to open serial device '%s'", dev_name);
+	return ERR_TTY_OPEN;
+    }
+
+    return 0;
+}
+
+int ser_io_close(int dev_fd)
+{
+    return close(dev_fd);
+}
+
+int ser_io_rd(int dev_fd)
+{
+    unsigned int flags;
+
+    if (ioctl(dev_fd, TIOCMGET, &flags) == -1) 
+    {
+	ticables_warning(_("ioctl failed on serial device."));
+	return ERR_TTY_IOCTL;
+    }
+
+    return (flags & TIOCM_CTS ? 1 : 0) | (flags & TIOCM_DSR ? 2 : 0);
+}
+
+int ser_io_wr(int dev_fd, uint8_t data)
+{
+    unsigned int flags = 0;
+
+    flags |= (data & 2) ? TIOCM_RTS : 0;
+    flags |= (data & 1) ? TIOCM_DTR : 0;
+    
+    if (ioctl(dev_fd, TIOCMSET, &flags) == -1) 
+    {
+	ticables_warning(_("ioctl failed on serial device."));
+        return ERR_TTY_IOCTL;
+    }
+    
+    return 0;
 }

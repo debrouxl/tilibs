@@ -223,6 +223,7 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 			NULL);
     	break;
 
+	case ERR_TTY_OPEN:
 	case ERR_GRY_OPEN:
 		*message = g_strconcat(
 			_("Msg: unable to open serial device."),
@@ -231,6 +232,7 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 			NULL);
 		break;
 
+	case ERR_TTY_IOCTL:
 	case ERR_GRY_IOCTL:
 		*message = g_strconcat(
 			_("Msg: unable to issue a specific command on serial device."),

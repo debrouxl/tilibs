@@ -82,6 +82,9 @@ typedef enum
     ERR_TTYSx,
     ERR_USBFS,
 
+    ERR_TTY_OPEN,
+    ERR_TTY_IOCTL,
+
 } TiCableError;
 
 #endif
