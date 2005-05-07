@@ -25,7 +25,9 @@
 #include <config.h>
 #endif
 
-#if defined(__LINUX__)
+#ifndef NO_CABLE_SLV
+
+#if defined(__LINUX__) && defined(HAVE_LIBUSB)
 #include "linux/link_slv.c"
 
 #elif defined(__BSD__)
@@ -38,4 +40,6 @@
 #include "macos/link_slv.c"
 
 #else
+#endif
+
 #endif

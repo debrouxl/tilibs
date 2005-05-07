@@ -83,9 +83,7 @@ esac
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS([asm/io.h sys/io.h errno.h fcntl.h inttypes.h stdint.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/ipc.h sys/perm.h sys/shm.h sys/stat.h sys/time.h sys/types.h termios.h unistd.h])
-#AC_CHECK_HEADERS([linux/ticable.h])
-AC_CHECK_HEADERS([sys/utsname.h pwd.h grp.h linux/serial.h sys/ioctl.h])
+AC_CHECK_HEADERS([stdint.h termios.h linux/parport.h linux/ppdev.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UID_T
@@ -94,22 +92,10 @@ AC_C_CONST
 AC_HEADER_TIME
 
 # Checks for library functions.
-AC_FUNC_CLOSEDIR_VOID
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
-AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([bzero cfmakeraw gettimeofday memset mkfifo select strdup strerror strstr uname])
-
-# Logging
-AC_ARG_ENABLE(logging,
-  AC_HELP_STRING([--enable-logging], [enable logging]),
-  [cab_cv_enable_logging=$enableval], [])
-AC_CACHE_CHECK([whether to enable logging],
-  [cab_cv_enable_logging], [cab_cv_enable_logging=no])
-if test x$cab_cv_enable_logging = xyes; then
-  AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
-fi
+AC_CHECK_FUNCS([cfmakeraw])
 
 # Platform specific tests.
 dnl AC_CANONICAL_HOST
@@ -203,6 +189,19 @@ case $host_os in
 	fi
 	;;
 esac
+
+# Logging
+AC_ARG_ENABLE(logging,
+  AC_HELP_STRING([--enable-logging], [enable logging]),
+  [cab_cv_enable_logging=$enableval], [])
+AC_CACHE_CHECK([whether to enable logging],
+  [cab_cv_enable_logging], [cab_cv_enable_logging=no])
+if test x$cab_cv_enable_logging = xyes; then
+  AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
+fi
+
+# Custom cable support
+# to do...
 
 # Output.
 AC_OUTPUT

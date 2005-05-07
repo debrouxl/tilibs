@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#ifndef NO_CABLE_VTI
+
 #if defined(__LINUX__)
 #include "linux/link_vti.c"
 
@@ -38,4 +40,6 @@
 #include "none.c"
 
 #else
+#endif
+
 #endif

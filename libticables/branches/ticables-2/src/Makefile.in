@@ -186,7 +186,9 @@ libticablesincludedir = $(includedir)/tilp2
 libticablesinclude_HEADERS = ticables.h export.h stdints.h timeout.h
 
 # build instructions
-libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@
+libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
+	-DLOCALEDIR=\"$(datadir)/locale\"
+
 libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
 libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables_2_la_SOURCES = *.h \
@@ -194,7 +196,7 @@ libticables_2_la_SOURCES = *.h \
 	detect.c \
 	error.c \
 	ioports.c \
-	link_gry.c link_nul.c link_par.c link_ser.c \
+	link_gry.c link_nul.c link_par.c link_blk.c \
 	link_slv.c link_tie.c link_vti.c link_xxx.c \
 	logging.c \
 	ticables.c \
@@ -214,7 +216,7 @@ am_libticables_2_la_OBJECTS = libticables_2_la-data_log.lo \
 	libticables_2_la-detect.lo libticables_2_la-error.lo \
 	libticables_2_la-ioports.lo libticables_2_la-link_gry.lo \
 	libticables_2_la-link_nul.lo libticables_2_la-link_par.lo \
-	libticables_2_la-link_ser.lo libticables_2_la-link_slv.lo \
+	libticables_2_la-link_blk.lo libticables_2_la-link_slv.lo \
 	libticables_2_la-link_tie.lo libticables_2_la-link_vti.lo \
 	libticables_2_la-link_xxx.lo libticables_2_la-logging.lo \
 	libticables_2_la-ticables.lo libticables_2_la-type2str.lo
@@ -227,10 +229,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-detect.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-ioports.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_blk.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_gry.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_nul.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_par.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_ser.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_slv.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_tie.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_vti.Plo \
@@ -302,10 +304,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-detect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-ioports.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_blk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_gry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_nul.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_par.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_ser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_slv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_tie.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_vti.Plo@am__quote@
@@ -578,38 +580,38 @@ libticables_2_la-link_par.lo: link_par.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_par.lo `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c
 
-libticables_2_la-link_ser.o: link_ser.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_ser.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_ser.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_ser.o `test -f 'link_ser.c' || echo '$(srcdir)/'`link_ser.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo" "$(DEPDIR)/libticables_2_la-link_ser.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo"; exit 1; \
+libticables_2_la-link_blk.o: link_blk.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_ser.c' object='libticables_2_la-link_ser.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_ser.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_ser.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_ser.o `test -f 'link_ser.c' || echo '$(srcdir)/'`link_ser.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
 
-libticables_2_la-link_ser.obj: link_ser.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_ser.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_ser.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_ser.obj `if test -f 'link_ser.c'; then $(CYGPATH_W) 'link_ser.c'; else $(CYGPATH_W) '$(srcdir)/link_ser.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo" "$(DEPDIR)/libticables_2_la-link_ser.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo"; exit 1; \
+libticables_2_la-link_blk.obj: link_blk.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_ser.c' object='libticables_2_la-link_ser.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_ser.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_ser.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_ser.obj `if test -f 'link_ser.c'; then $(CYGPATH_W) 'link_ser.c'; else $(CYGPATH_W) '$(srcdir)/link_ser.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`
 
-libticables_2_la-link_ser.lo: link_ser.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_ser.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_ser.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_ser.lo `test -f 'link_ser.c' || echo '$(srcdir)/'`link_ser.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo" "$(DEPDIR)/libticables_2_la-link_ser.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_ser.Tpo"; exit 1; \
+libticables_2_la-link_blk.lo: link_blk.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_ser.c' object='libticables_2_la-link_ser.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_ser.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_ser.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_ser.lo `test -f 'link_ser.c' || echo '$(srcdir)/'`link_ser.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
 
 libticables_2_la-link_slv.o: link_slv.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_slv.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_slv.Tpo" \

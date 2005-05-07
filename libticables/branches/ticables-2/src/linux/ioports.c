@@ -21,92 +21,110 @@
  */
 
 /*
- * This unit manages direct low-level I/O operations depending on a
- * I/O method.
+ * This unit manages direct low-level and user-landI/O operations.
  */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <errno.h>
+#include <stdio.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#include <stdint.h>
-
-#if defined(__I386__) && defined(HAVE_SYS_PERM_H)
-#include <sys/perm.h>
-#endif
-#if defined(__I386__) && defined(HAVE_SYS_IO_H)
-#include <sys/io.h>
-#elif defined(__I386__) && defined(HAVE_ASM_IO_H)
-#include <asm/io.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifdef HAVE_LINUX_PARPORT_H
+#include <linux/parport.h>
+#include <linux/ppdev.h>
 #endif
 
 #include "gettext.h"
 #include "error.h"
 #include "logging.h"
 
-/* Function pointers */
+#ifdef HAVE_LINUX_PARPORT_H
 
-int (*io_rd) (unsigned int addr);
-void (*io_wr) (unsigned int addr, int data);
-
-/* I/O thru assembly code */
-
-static int linux_asm_read_io(unsigned int addr)
+int par_io_open(const char *dev_name, int *dev_fd)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-	return inb(addr);
-#else
-	return 0;
-#endif
+    int mode;
+
+    // Open device
+    *dev_fd = open(dev_name, O_RDWR);
+    if (*dev_fd == -1) 
+    {
+	ticables_warning("unable to open parallel device '%s'.", dev_name);
+	return ERR_PPT_OPEN;
+    }
+
+    // Claim access
+    if (ioctl(*dev_fd, PPCLAIM) == -1) 
+    {
+	ticables_warning(_("ioctl failed on parallel device: can't claim parport."));
+	return ERR_PPT_IOCTL;
+    }
+
+    // and exclusive access !
+    if (ioctl(*dev_fd, PPEXCL) == -1)
+    {
+        ticables_warning(_("ioctl failed on parallel device: can't claim exclusive access."));
+        return ERR_PPT_IOCTL;
+    }
+
+    // Change transfer mode
+    //mode = PARPORT_MODE_PCSPP;
+    mode = IEEE1284_MODE_COMPAT;
+    if (ioctl(*dev_fd, PPSETMODE, &mode) == -1)
+    {
+	ticables_warning(_("ioctl failed on parallel device: can't change transfer mode."));
+	return ERR_PPT_IOCTL;
+    }
+
+    return 0;
 }
 
-static void linux_asm_write_io(unsigned int addr, int data)
+int par_io_close(int dev_fd)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-	outb(data, addr);
-#endif
+    // release access
+    if (ioctl(dev_fd, PPRELEASE) == -1)
+    {
+        ticables_warning(_("ioctl failed on parallel device: can't release parport."));
+        return ERR_PPT_IOCTL;
+    }
+
+    // and close
+    return close(dev_fd);
 }
 
-/* Functions used for initializing the I/O routines */
-
-int io_open(unsigned long from)
+int par_io_rd(int dev_fd, uint8_t *data)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-    		io_rd = linux_asm_read_io;
-    		io_wr = linux_asm_write_io;
-
-		return (ioperm(from, 3, 1) ? ERR_ROOT : 0);
-#else
-		return ERR_ROOT;
-#endif
-
-	return 0;
+    if (ioctl(dev_fd, PPRSTATUS, data) == -1)
+    {
+        ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
+        return ERR_PPT_IOCTL;
+    }
+    
+    return 0;
 }
 
-int io_close(unsigned long from)
+int par_io_wr(int dev_fd, uint8_t data)
 {
-#if defined(__I386__) && defined(HAVE_ASM_IO_H) && defined(HAVE_SYS_PERM_H)
-    		return (ioperm(from, 3, 0) ? ERR_ROOT : 0);
-#else
-		return 0;
-#endif
-	return 0;
+    if(write(dev_fd, &data, 1) < 1)
+    {
+	ticables_warning(_("write failed on parallel device: can't write value."));
+	return ERR_WRITE_ERROR;
+    }
+
+    return 0;
 }
+
+#endif
 
 // ---
 
-int par_io_open(const char *device);
-int par_io_close(void);
-
-int  par_io_rd(unsigned int addr);
-void par_io_wr(unsigned int addr, int data);
-
-// ---
+#ifdef HAVE_TERMIOS_H
 
 int ser_io_open(const char *dev_name, int *dev_fd)
 {
@@ -153,3 +171,5 @@ int ser_io_wr(int dev_fd, uint8_t data)
     
     return 0;
 }
+
+#endif

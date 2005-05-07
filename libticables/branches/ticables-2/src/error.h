@@ -39,7 +39,7 @@ typedef enum
     
     ERR_GRY_CREATEFILE,
     ERR_GRY_SETUPCOMM,
-    ERR_GRY_GETCOMMSTATE,
+    ERR_GRY_GETCOMMSTATE, //10
     ERR_GRY_SETCOMMSTATE,
     ERR_GRY_GETCOMMTIMEOUT,
     ERR_GRY_SETCOMMTIMEOUT,
@@ -50,7 +50,7 @@ typedef enum
     ERR_SLV_FREELIBRARY,
     ERR_SLV_VERSION,
     ERR_SLV_OPEN,
-    ERR_SLV_FLUSH,
+    ERR_SLV_FLUSH, //20
     ERR_SLV_RESET,
     
     ERR_VTI_FINDWINDOW,	// open
@@ -63,7 +63,7 @@ typedef enum
     ERR_VTI_IPCKEY,	//open
     ERR_VTI_SHMGET,
     ERR_VTI_SHMAT,
-    ERR_VTI_SHMDT,	//close
+    ERR_VTI_SHMDT, //30	//close
     ERR_VTI_SHMCTL,
     
     ERR_TIE_OPEN,	//open
@@ -77,13 +77,17 @@ typedef enum
     ERR_LIBUSB_CONFIG,
     ERR_LIBUSB_RESET,	
     
-    ERR_PORTTALK_NOT_FOUND,
+    ERR_PORTTALK_NOT_FOUND, //40
     ERR_ROOT,    
-    ERR_TTYSx,
+    ERR_TTDEV,
+    ERR_PPDEV,
     ERR_USBFS,
 
     ERR_TTY_OPEN,
     ERR_TTY_IOCTL,
+
+    ERR_PPT_OPEN,
+    ERR_PPT_IOCTL, //48
 
 } TiCableError;
 

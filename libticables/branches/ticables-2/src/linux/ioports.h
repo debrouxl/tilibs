@@ -24,19 +24,11 @@
 
 #include <stdio.h>
 
-int io_open(unsigned long from);
-int io_close(unsigned long from);
+int par_io_open(const char *device, int *dev_fd);
+int par_io_close(int dev_fd);
 
-int  (*io_rd) (unsigned int addr);
-void (*io_wr) (unsigned int addr, int data);
-
-// ---
-
-int par_io_open(const char *device);
-int par_io_close(void);
-
-int  par_io_rd(unsigned int addr);
-void par_io_wr(unsigned int addr, int data);
+int par_io_rd(unsigned int addr);
+int par_io_wr(unsigned int addr, int data);
 
 // ---
 

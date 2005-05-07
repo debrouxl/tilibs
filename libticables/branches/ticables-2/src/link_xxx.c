@@ -42,8 +42,9 @@ TIEXPORT int TICALL ticables_cable_open(TiHandle* handle)
 	const TiCable *cable = handle->cable;
 
 	TRYC(handle->cable->prepare(handle));
-
+	
 	TRYC(cable->open(handle));
+	
 	handle->open = 1;
 	START_LOGGING();
 

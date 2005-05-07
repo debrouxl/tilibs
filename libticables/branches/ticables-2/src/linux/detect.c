@@ -31,13 +31,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "stdints.h"
-#include <dirent.h>
-#include <sys/utsname.h>	// for uname()
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
-#include <sys/types.h>
-#include <linux/serial.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
@@ -129,6 +125,7 @@ static const char *get_group_name(uid_t uid)
    - entry [in] : an entry such as '/proc/devices'
    - str [in) : an occurence to find (such as 'tipar')
 */
+#if 0
 static int find_string_in_proc(char *entry, char *str)
 {
 	FILE *f;
@@ -152,6 +149,7 @@ static int find_string_in_proc(char *entry, char *str)
 	
 	return found;
 }
+#endif
 
 /* 
    Attempt to find if an user is attached to a group.
@@ -273,7 +271,7 @@ int check_for_root(void)
 {
     uid_t uid = getuid();
     
-    ticables_info(_(" check for super-user access: %s"), 
+    ticables_info(_("Check for super-user access: %s"), 
 		  uid ? "no" : "yes");
     
     return (uid ? ERR_ROOT : 0);
@@ -281,10 +279,19 @@ int check_for_root(void)
 
 int check_for_tty(const char *devname)
 {
-    ticables_info(_(" check for tty usability:"));
+    ticables_info(_("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
-	return ERR_TTYSx;
+	return ERR_TTDEV;
     
+    return 0;
+}
+
+int check_for_parport(const char *devname)
+{
+    ticables_info(_("Check for parport usability:"));
+    if(check_for_node_usability(devname) == -1)
+        return ERR_PPDEV;
+
     return 0;
 }
 
@@ -292,7 +299,7 @@ int check_for_tty(const char *devname)
 
 int check_for_libusb(void)
 {
-    ticables_info(_("  check for lib-usb usability:"));
+    ticables_info(_("Check for lib-usb usability:"));
     
     if(!access(USBFS, F_OK))
     {

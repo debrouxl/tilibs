@@ -200,36 +200,36 @@ static int ser_probe(TiHandle *h)
     // 1
     ser_io_wr(dev_fd, 2);
     TO_START(clk);
-    do 
+    while ((ser_io_rd(dev_fd) & 0x10))
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((ser_io_rd(dev_fd) & 0x10));
+    };
     
     ser_io_wr(dev_fd, 3);
     TO_START(clk);
-    do 
+    while ((ser_io_rd(dev_fd) & 0x10) == 0x00)
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((ser_io_rd(dev_fd) & 0x10) == 0x00);
+    };
     
     // 0
     ser_io_wr(dev_fd, 1);
     TO_START(clk);
-    do 
+    while (ser_io_rd(dev_fd) & 0x20)
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while (ser_io_rd(dev_fd) & 0x20);
+    };
     
     ser_io_wr(dev_fd, 3);
     TO_START(clk);
-    do 
+    while ((ser_io_rd(dev_fd) & 0x20) == 0x00)
     {
 	if (TO_ELAPSED(clk, timeout))
 	    return ERR_WRITE_TIMEOUT;
-    } while ((ser_io_rd(dev_fd) & 0x20) == 0x00);
+    };
     
     return 0;
 }

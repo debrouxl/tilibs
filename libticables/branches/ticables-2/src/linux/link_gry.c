@@ -74,7 +74,8 @@ static int gry_open(TiHandle *h)
     flags = O_RDWR | O_SYNC;
 #endif
     
-    dev_fd = (int)open(h->device, flags);
+    //dev_fd = (int)open(h->device, flags);
+    h->device = (void *)open(h->device, flags);
     if (dev_fd == -1) 
     {
 	if(errno == EACCES)

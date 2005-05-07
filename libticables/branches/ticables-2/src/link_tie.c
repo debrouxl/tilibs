@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#ifndef NO_CABLE_TIE
+
 #if defined(__LINUX__)
 #include "linux/link_tie.c"
 
@@ -38,4 +40,6 @@
 #include "none.c"
 
 #else
+#endif
+
 #endif

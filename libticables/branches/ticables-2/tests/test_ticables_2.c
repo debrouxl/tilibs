@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_BLK, PORT_2);
+	handle = ticables_handle_new(CABLE_PAR, PORT_1);
 	if(handle == NULL)
 	    return -1;
 
@@ -78,6 +78,7 @@ int main(int argc, char **argv)
 	// open cable
 	err = ticables_cable_open(handle);
 	if(err) print_lc_error(err);
+	if(err) return -1;
 
 	//wait
 	printf("Wait 1 second...\n");
@@ -89,6 +90,8 @@ int main(int argc, char **argv)
 
 #if 0
 	err = ticables_cable_probe(handle, &result);
+	if(err) print_lc_error(err);
+        if(err) return -1;
 	printf("result = %i\n", result);
 #endif
 

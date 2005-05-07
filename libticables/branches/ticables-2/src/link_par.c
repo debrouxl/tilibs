@@ -25,7 +25,9 @@
 #include <config.h>
 #endif
 
-#if defined(__LINUX__)
+#ifndef NO_CABLE_PAR
+
+#if defined(__LINUX__) && defined(HAVE_LINUX_PARPORT_H)
 #include "linux/link_par.c"
 
 #elif defined(__BSD__)
@@ -38,4 +40,6 @@
 #include "none.c"
 
 #else
+#endif
+
 #endif

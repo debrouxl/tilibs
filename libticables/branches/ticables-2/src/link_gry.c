@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#ifndef NO_CABLE_GRY
+
 #if defined(__LINUX__)
 #include "linux/link_gry.c"
 
@@ -38,4 +40,6 @@
 #include "linux/link_gry.c"
 
 #else
+#endif
+
 #endif

@@ -9,7 +9,8 @@ libticablesincludedir = $(includedir)/tilp2
 libticablesinclude_HEADERS = ticables.h export.h stdints.h timeout.h
 
 # build instructions
-libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@
+libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
+	-DLOCALEDIR=\"$(datadir)/locale\"
 libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
 libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables_2_la_SOURCES = *.h \
@@ -17,7 +18,7 @@ libticables_2_la_SOURCES = *.h \
 	detect.c \
 	error.c \
 	ioports.c \
-	link_gry.c link_nul.c link_par.c link_ser.c \
+	link_gry.c link_nul.c link_par.c link_blk.c \
 	link_slv.c link_tie.c link_vti.c link_xxx.c \
 	logging.c \
 	ticables.c \

@@ -45,13 +45,27 @@
 static TiCable const *const cables[] = 
 {
 	&cable_nul,
+#ifndef NO_CABLE_GRY
 	&cable_gry,
+#endif
+#ifndef NO_CABLE_BLK
 	&cable_ser,
+#endif
+#ifndef NO_CABLE_PAR
 	&cable_par,
+#endif
+#ifndef NO_CABLE_SLV
 	&cable_slv,
+#endif
+#ifndef NO_CABLE_RAW
 	&cable_raw,
+#endif
+#ifndef NO_CABLE_VTI
 	&cable_vti,
+#endif
+#ifndef NO_CABLE_TIE
 	&cable_tie,
+#endif
 	NULL
 };
 
@@ -71,7 +85,7 @@ int ticables_instance = 0;	// counts # of instances
  **/
 TIEXPORT int TICALL ticables_library_init(void)
 {
-	char locale_dir[65536];
+    char locale_dir[65536];
 	
 #ifdef __WIN32__
   	HANDLE hDll;
@@ -88,7 +102,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	locale_dir[i] = '\0';
   	strcat(locale_dir, "\\locale");
 #else
-	//strcpy(locale_dir, LOCALEDIR);
+	strcpy(locale_dir, LOCALEDIR);
 #endif
 
 	if (ticables_instance)

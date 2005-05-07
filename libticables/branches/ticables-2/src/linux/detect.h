@@ -26,9 +26,7 @@
 
 int check_for_root(void);
 int check_for_tty(const char *devname);
-int check_for_tipar(const char *devname);
-int check_for_tiser(const char *devname);
-int check_for_tiusb(const char *devname);
+int check_for_parport(const char *devname);
 int check_for_libusb(void);
 
 #endif

@@ -72,12 +72,19 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 			NULL);
     	break;
 
-	case ERR_TTYSx:
+	case ERR_TTDEV:
 	    *message = g_strconcat(
-                _("Msg: unable to use serial (TTY) device."),
+                _("Msg: unable to use serial (/dev/ttySx) device."),
                 "\n",
                 _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions. See the log output for testing details."),
 		NULL);
+
+	case ERR_PPDEV:
+            *message = g_strconcat(
+                _("Msg: unable to use parport (/dev/parportX) device."),
+                "\n",
+                _("Cause: the /dev/parportX node doesn't exist or you don't have required permissions. See the log output for testing details."),
+                NULL);
 
 	case ERR_USBFS:
 	    *message = g_strconcat(
@@ -240,6 +247,22 @@ TIEXPORT int TICALL ticables_error_get(TiCableError number, char **message)
 			_("Cause: check that you permissions on /dev/ttySx device. Check your device is not locked."),
 			NULL);
 		break;
+
+	case ERR_PPT_OPEN:
+	    *message = g_strconcat(
+		_("Msg: unable to open parallel device."),
+		"\n",
+		_("Cause: check that you permissions on /dev/parportX device. Check your device is not locked."),
+		NULL);
+	    break;
+
+	case ERR_PPT_IOCTL:
+	    *message = g_strconcat(
+		_("Msg: unable to issue a specific command on parallel device."),
+		"\n",
+		_("Cause: check that you permissions on /dev/parportX device. Check your device is not locked."),
+		NULL);
+	    break;
 
 	case ERR_LIBUSB_OPEN:
 	case ERR_LIBUSB_CLAIM:
