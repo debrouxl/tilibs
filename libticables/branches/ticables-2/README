@@ -29,12 +29,12 @@ Requirements
 or
   - A *BSD (FreeBSD) computer and C compiler (gcc)
 
-  - parallel link: your kernel must have parport support and the /dev/parportX
-	device must have required permissions
+  - parallel link: your kernel must have parport support (PARPORT, PARPORT_PC 
+	and PPDEV) and the /dev/parportX device must have required permissions.
 
-  - BlackLink: the /dev/ttySx device must have required permissions
+  - BlackLink: the /dev/ttySx device must have required permissions.
 
-  - GrayLink: idem
+  - GrayLink: idem.
 
   - SilverLink: your kernel must have USB device file-system and your system 
 	must have lib-usb properly installed and configured (USB fs must be
