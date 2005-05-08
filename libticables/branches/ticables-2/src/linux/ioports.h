@@ -27,15 +27,15 @@
 int par_io_open(const char *device, int *dev_fd);
 int par_io_close(int dev_fd);
 
-int par_io_rd(unsigned int addr);
-int par_io_wr(unsigned int addr, int data);
+int par_io_rd(int dev_fd);
+int par_io_wr(int dev_fd, uint8_t data);
 
 // ---
 
 int ser_io_open(const char *device, int *dev_fd);
 int ser_io_close(int dev_fd);
 
-int ser_io_rd(unsigned int addr);
-int ser_io_wr(unsigned int addr, int data);
+int ser_io_rd(int dev_fd);
+int ser_io_wr(int dev_fd, uint8_t data);
 
 #endif

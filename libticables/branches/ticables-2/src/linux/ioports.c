@@ -59,18 +59,18 @@ int par_io_open(const char *dev_name, int *dev_fd)
 	return ERR_PPT_OPEN;
     }
 
+// and exclusive access !
+    if (ioctl(*dev_fd, PPEXCL) == -1)
+    {
+        ticables_warning(_("ioctl failed on parallel device: can't claim exclusive access."));
+        return ERR_PPT_IOCTL;
+    }
+
     // Claim access
     if (ioctl(*dev_fd, PPCLAIM) == -1) 
     {
 	ticables_warning(_("ioctl failed on parallel device: can't claim parport."));
 	return ERR_PPT_IOCTL;
-    }
-
-    // and exclusive access !
-    if (ioctl(*dev_fd, PPEXCL) == -1)
-    {
-        ticables_warning(_("ioctl failed on parallel device: can't claim exclusive access."));
-        return ERR_PPT_IOCTL;
     }
 
     // Change transfer mode
@@ -98,25 +98,32 @@ int par_io_close(int dev_fd)
     return close(dev_fd);
 }
 
-int par_io_rd(int dev_fd, uint8_t *data)
+int par_io_rd(int dev_fd)
 {
-    if (ioctl(dev_fd, PPRSTATUS, data) == -1)
+    uint8_t data;
+#if 1
+    data = 0xff;
+#else
+    if (ioctl(dev_fd, PPRSTATUS, &data) == -1)
     {
-        ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
+        //ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
         return ERR_PPT_IOCTL;
     }
-    
-    return 0;
+#endif
+
+    return data;
 }
 
 int par_io_wr(int dev_fd, uint8_t data)
 {
+#if 1
+#else
     if(write(dev_fd, &data, 1) < 1)
     {
-	ticables_warning(_("write failed on parallel device: can't write value."));
+	//ticables_warning(_("write failed on parallel device: can't write value."));
 	return ERR_WRITE_ERROR;
     }
-
+#endif
     return 0;
 }
 
