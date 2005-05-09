@@ -40,6 +40,8 @@
 #include <linux/parport.h>
 #include <linux/ppdev.h>
 #endif
+#include <errno.h>
+#include <string.h>
 
 #include "gettext.h"
 #include "error.h"
@@ -59,11 +61,11 @@ int par_io_open(const char *dev_name, int *dev_fd)
 	return ERR_PPT_OPEN;
     }
 
-// and exclusive access !
+    // Ask for exclusive access
     if (ioctl(*dev_fd, PPEXCL) == -1)
     {
         ticables_warning(_("ioctl failed on parallel device: can't claim exclusive access."));
-        return ERR_PPT_IOCTL;
+	ticables_warning("we will do without that.");
     }
 
     // Claim access
@@ -81,7 +83,18 @@ int par_io_open(const char *dev_name, int *dev_fd)
 	ticables_warning(_("ioctl failed on parallel device: can't change transfer mode."));
 	return ERR_PPT_IOCTL;
     }
-
+/*
+    {
+	uint8_t data = 0x00;
+	
+	if (ioctl(*dev_fd, PPRSTATUS, &data) == -1)
+	{
+	    printf("ioctl failed\n");
+	    printf("<%s>\n", strerror(errno));
+ 	}
+	printf("%02x\n", data);
+    }
+*/
     return 0;
 }
 
@@ -101,29 +114,24 @@ int par_io_close(int dev_fd)
 int par_io_rd(int dev_fd)
 {
     uint8_t data;
-#if 1
-    data = 0xff;
-#else
+
     if (ioctl(dev_fd, PPRSTATUS, &data) == -1)
     {
-        //ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
+        ticables_warning(_("ioctl failed on parallel device: can't read status lines."));
         return ERR_PPT_IOCTL;
     }
-#endif
 
     return data;
 }
 
 int par_io_wr(int dev_fd, uint8_t data)
 {
-#if 1
-#else
-    if(write(dev_fd, &data, 1) < 1)
+    if(ioctl (dev_fd, PPWDATA, &data) == -1)
     {
-	//ticables_warning(_("write failed on parallel device: can't write value."));
+	ticables_warning(_("ioctl failed on parallel device: can't write on data lines."));
 	return ERR_WRITE_ERROR;
     }
-#endif
+
     return 0;
 }
 

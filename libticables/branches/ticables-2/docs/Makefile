@@ -98,7 +98,6 @@ LIBOBJS =
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIBUSB_CFLAGS = 
-LIBUSB_CONFIG = yes
 LIBUSB_LIBS = -L/usr/lib -lusb
 LN_S = ln -s
 LTLIBICONV = 

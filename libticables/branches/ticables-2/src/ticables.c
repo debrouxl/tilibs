@@ -54,10 +54,10 @@ static TiCable const *const cables[] =
 #ifndef NO_CABLE_PAR
 	&cable_par,
 #endif
-#ifndef NO_CABLE_SLV
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
 	&cable_slv,
 #endif
-#ifndef NO_CABLE_RAW
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
 	&cable_raw,
 #endif
 #ifndef NO_CABLE_VTI
