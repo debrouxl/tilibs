@@ -42,7 +42,13 @@
  **/
 TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
 {
+#if !defined(DISABLE_TI8X)
+	return ti8x_content_create_regular();
+#elif !defined(DISABLE_TI9X)
     return ti9x_content_create_regular();
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
 }
 
 /**
@@ -54,14 +60,20 @@ TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
  **/
 TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
 {
-  if (tifiles_calc_is_ti8x(content->model))
-    ti8x_content_free_regular(content);
-  else if (tifiles_calc_is_ti9x(content->model))
-    ti9x_content_free_regular(content);
-  else
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		ti8x_content_free_regular(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		ti9x_content_free_regular(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
     return ERR_BAD_CALC;
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -78,14 +90,20 @@ TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
  **/
 TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
 {
-  if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-    return ti8x_file_read_regular(filename, content);
-  else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-    return ti9x_file_read_regular(filename, content);
-  else
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+		return ti8x_file_read_regular(filename, content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+		return ti9x_file_read_regular(filename, content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
     return ERR_BAD_CALC;
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -104,14 +122,20 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
  **/
 TIEXPORT int tifiles_file_write_regular(const char *filename, TiRegular *content, char **real_fname)
 {
-  if (tifiles_calc_is_ti8x(content->model))
-    return ti8x_file_write_regular(filename, content, real_fname);
-  else if (tifiles_calc_is_ti9x(content->model))
-    return ti9x_file_write_regular(filename, content, real_fname);
-  else
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_file_write_regular(filename, content, real_fname);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_file_write_regular(filename, content, real_fname);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
     return ERR_BAD_CALC;
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -124,14 +148,20 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, TiRegular *content
  **/
 TIEXPORT int TICALL tifiles_file_display(const char *filename)
 {
-  if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-    return ti8x_file_display(filename);
-  else if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-    return ti9x_file_display(filename);
-  else
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+		return ti8x_file_display(filename);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+		return ti9x_file_display(filename);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
     return ERR_BAD_CALC;
 
-  return 0;
+	return 0;
 }
 
 /*****************/

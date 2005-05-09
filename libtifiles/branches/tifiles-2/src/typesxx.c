@@ -44,6 +44,7 @@ TIEXPORT const char *TICALL tifiles_vartype2string(TiCalcModel model, uint8_t da
 {
   switch (model) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2type(data);
     break;
@@ -65,6 +66,8 @@ TIEXPORT const char *TICALL tifiles_vartype2string(TiCalcModel model, uint8_t da
   case CALC_TI86:
     return ti86_byte2type(data);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
     return ti89_byte2type(data);
     break;
@@ -80,6 +83,7 @@ TIEXPORT const char *TICALL tifiles_vartype2string(TiCalcModel model, uint8_t da
   case CALC_V200:
     return v200_byte2type(data);
     break;
+#endif
   default:
 	  tifiles_error("tifiles_vartype2string: invalid calc_type argument.");
 	  return "";
@@ -100,6 +104,7 @@ TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
 {
   switch (model) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_type2byte(s);
     break;
@@ -119,6 +124,8 @@ TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
   case CALC_TI86:
     return ti86_type2byte(s);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_type2byte(s);
@@ -132,6 +139,7 @@ TIEXPORT uint8_t TICALL tifiles_string2vartype(TiCalcModel model, const char *s)
   case CALC_V200:
     return v200_type2byte(s);
     break;
+#endif
   default:
     tifiles_error("tifiles_string2vartype: invalid calc_type argument.");
     return 0;
@@ -152,6 +160,7 @@ TIEXPORT const char *TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data
 {
   switch (model) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2fext(data);
     break;
@@ -171,6 +180,8 @@ TIEXPORT const char *TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data
   case CALC_TI86:
     return ti86_byte2fext(data);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_byte2fext(data);
@@ -184,6 +195,7 @@ TIEXPORT const char *TICALL tifiles_vartype2fext(TiCalcModel model, uint8_t data
   case CALC_V200:
     return v200_byte2fext(data);
     break;
+#endif
   default:
     tifiles_error("tifiles_vartype2file: invalid calc_type argument.");
     return "";
@@ -204,6 +216,7 @@ TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
 {
   switch (model) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_fext2byte(s);
     break;
@@ -223,6 +236,8 @@ TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
   case CALC_TI86:
     return ti86_fext2byte(s);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_fext2byte(s);
@@ -236,6 +251,7 @@ TIEXPORT uint8_t TICALL tifiles_fext2vartype(TiCalcModel model, const char *s)
   case CALC_V200:
     return v200_fext2byte(s);
     break;
+#endif
   default:
     tifiles_error("tifiles_file2vartype: invalid calc_type argument.");
     return 0;
@@ -257,6 +273,7 @@ TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t vart
 {
 	switch (model)
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2desc(vartype);
     break;
@@ -276,6 +293,8 @@ TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t vart
   case CALC_TI86:
     return ti86_byte2desc(vartype);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_byte2desc(vartype);
@@ -289,6 +308,7 @@ TIEXPORT const char *TICALL tifiles_vartype2type(TiCalcModel model, uint8_t vart
   case CALC_V200:
     return v200_byte2desc(vartype);
     break;
+#endif
   default:
     tifiles_error("tifiles_vartype2desc: invalid calc_type argument.");
     return "";
@@ -310,6 +330,7 @@ TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t vart
 {
   switch (model) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2icon(vartype);
     break;
@@ -329,6 +350,8 @@ TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t vart
   case CALC_TI86:
     return ti86_byte2icon(vartype);
     break;
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_byte2icon(vartype);
@@ -342,6 +365,7 @@ TIEXPORT const char *TICALL tifiles_vartype2icon(TiCalcModel model, uint8_t vart
   case CALC_V200:
     return v200_byte2icon(vartype);
     break;
+#endif
   default:
     tifiles_error("tifiles_vartype2icon: invalid calc_type argument.");
     return "";

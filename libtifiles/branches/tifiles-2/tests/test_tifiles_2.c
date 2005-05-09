@@ -270,39 +270,48 @@ int main(int argc, char **argv)
 	// no file
 
 	// TI82 support
+#if 0
 	change_dir(BUILD_PATH("ti82"));
 	test_ti82_backup_support();
 	test_ti82_regular_support();
 	test_ti82_group_support();
 	test_ti82_ungroup_support();
+#endif
 
-  // TI83+ support
+	// TI83+ support
+#if 0
 	change_dir(BUILD_PATH("ti84p"));
 	//test_ti84p_backup_support();
 	test_ti84p_regular_support();
 	test_ti84p_group_support();
 	test_ti84p_ungroup_support();	
 	test_ti84p_flash_support();
+#endif
 
 	// TI86 support
+#if 0
 	change_dir(BUILD_PATH("ti86"));
 	test_ti86_backup_support();
 	test_ti86_regular_support();
 	test_ti86_group_support();
 	test_ti86_ungroup_support();
+#endif
 
 	// TI89 support
+#if 0
 	change_dir(BUILD_PATH("ti89"));
 	test_ti89_regular_support();
 	test_ti89_flash_support();
+#endif
 
 	// TI92 support
+#if 0
 	change_dir(BUILD_PATH("ti92"));
 	test_ti92_backup_support();
 	test_ti92_regular_support();
 	test_ti92_group_support();
 	test_ti92_ungroup_support();
-	return 0;
+#endif
 
 	// end of test
 	tifiles_library_exit();
@@ -561,6 +570,21 @@ static int test_ti86_regular_support()
   ti8x_file_write_regular(BUILD_PATH("ti86/group.86g_"), &content, &unused);
   ti8x_content_free_regular(&content);
   compare_files(BUILD_PATH("ti86/group.86g"), BUILD_PATH("ti86/group.86g_"));
+
+  return 0;
+}
+
+static int test_ti86_regular_support_()
+{
+  Ti8xRegular content;
+  char *unused;
+
+  printf("--> Testing TI86 regular support (single)...\n");
+  ti8x_file_display(BUILD_PATH("ti86/ellipse.86p"));
+  ti8x_file_read_regular(BUILD_PATH("ti86/ellipse.86p"), &content);
+  ti8x_file_write_regular(BUILD_PATH("ti86/ellipse.86p_"), &content, &unused);
+  ti8x_content_free_regular(&content);
+  compare_files(BUILD_PATH("ti86/ellipse.86p"), BUILD_PATH("ti86/ellipse.86p_"));
 
   return 0;
 }

@@ -38,6 +38,8 @@
 #include "rwfile.h"
 #include "transcode.h"
 
+#ifndef DISABLE_TI9X
+
 /********/
 /* Misc */
 /********/
@@ -905,3 +907,5 @@ TIEXPORT int TICALL ti9x_file_display(const char *filename)
 
   return 0;
 }
+
+#endif

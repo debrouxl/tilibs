@@ -620,6 +620,7 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
 
   switch (tifiles_file_get_model(filename)) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2desc(ti73_fext2byte(ext));
   case CALC_TI82:
@@ -633,6 +634,8 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
     return ti85_byte2desc(ti85_fext2byte(ext));
   case CALC_TI86:
     return ti86_byte2desc(ti86_fext2byte(ext));
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_byte2desc(ti89_fext2byte(ext));
@@ -642,6 +645,7 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
     return ti92p_byte2desc(ti92p_fext2byte(ext));
   case CALC_V200:
     return v200_byte2desc(v200_fext2byte(ext));
+#endif
   case CALC_NONE:
   default:
     return "";
@@ -689,6 +693,7 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
 
   switch (tifiles_file_get_model(filename)) 
   {
+#ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2icon(ti73_fext2byte(ext));
   case CALC_TI82:
@@ -702,6 +707,8 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
     return ti85_byte2icon(ti85_fext2byte(ext));
   case CALC_TI86:
     return ti86_byte2icon(ti86_fext2byte(ext));
+#endif
+#ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
     return ti89_byte2icon(ti89_fext2byte(ext));
@@ -711,6 +718,7 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
     return ti92p_byte2icon(ti92p_fext2byte(ext));
   case CALC_V200:
     return v200_byte2icon(v200_fext2byte(ext));
+#endif
   case CALC_NONE:
   default:
     return "";

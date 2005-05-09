@@ -30,6 +30,7 @@
 #include "error.h"
 #include "macros.h"
 #include "files8x.h"
+#include "files9x.h"
 
 /***********/
 /* Freeing */
@@ -66,6 +67,18 @@ TIEXPORT int TICALL tifiles_content_free_group(TiRegular **array)
 /************************/
 
 int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
+int ti9x_dup_VarEntry(Ti9xVarEntry *dst, Ti9xVarEntry *src);
+
+static int tixx_dup_VarEntry(TiVarEntry *dst, TiVarEntry *src)
+{
+#if !defined(DISABLE_TI8X)
+	return ti8x_dup_VarEntry(dst, src);
+#elif !defined(DISABLE_TI9X)
+    return ti9x_dup_VarEntry(dst, src);
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+}
 
 /**
  * tifiles_group_contents:
@@ -101,7 +114,7 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular *
   {
     TiRegular *src = src_contents[i];
 
-    TRY(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
+    TRY(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
   }
 
   *dst_content = dst;
@@ -148,7 +161,7 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular ***dest)
     // allocate and duplicate entry
     dst[i]->entries = (TiVarEntry *) calloc(1, sizeof(TiVarEntry));
     dst_entry = &(dst[i]->entries[0]);
-    TRY(ti8x_dup_VarEntry(dst_entry, src_entry));
+    TRY(tixx_dup_VarEntry(dst_entry, src_entry));
 
     // update some fields
     dst[i]->num_entries = 1;

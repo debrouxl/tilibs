@@ -23,7 +23,7 @@
   Variable type ID and file extensions
 */
 
-#ifdef ENABLE_TI8X
+#ifndef DISABLE_TI8X
 
 #include <string.h>
 #include "gettext.h"

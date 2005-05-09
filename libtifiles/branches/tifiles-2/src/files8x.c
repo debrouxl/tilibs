@@ -41,7 +41,7 @@
 #include "intelhex.h"
 #include "transcode.h"
 
-#ifdef ENABLE_TI8X
+#ifndef DISABLE_TI8X
 
 /********/
 /* Misc */
@@ -72,7 +72,7 @@ static int is_ti83p(TiCalcModel model)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT Ti8xRegular *TICALL ti8x_create_regular_content(void)
+TIEXPORT Ti8xRegular *TICALL ti8x_content_create_regular(void)
 {
 	return (Ti8xRegular *) calloc(1, sizeof(Ti8xRegular));
 }
@@ -84,7 +84,7 @@ TIEXPORT Ti8xRegular *TICALL ti8x_create_regular_content(void)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT Ti8xBackup *TICALL ti8x_create_backup_content(void)
+TIEXPORT Ti8xBackup *TICALL ti8x_content_create_backup(void)
 {
 	return (Ti8xBackup *) calloc(1, sizeof(Ti8xBackup));
 }
@@ -96,7 +96,7 @@ TIEXPORT Ti8xBackup *TICALL ti8x_create_backup_content(void)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT Ti8xFlash *TICALL ti8x_create_flash_content(void)
+TIEXPORT Ti8xFlash *TICALL ti8x_content_create_flash(void)
 {
 	return (Ti8xFlash *) calloc(1, sizeof(Ti8xFlash));
 }
