@@ -83,18 +83,7 @@ int par_io_open(const char *dev_name, int *dev_fd)
 	ticables_warning(_("ioctl failed on parallel device: can't change transfer mode."));
 	return ERR_PPT_IOCTL;
     }
-/*
-    {
-	uint8_t data = 0x00;
-	
-	if (ioctl(*dev_fd, PPRSTATUS, &data) == -1)
-	{
-	    printf("ioctl failed\n");
-	    printf("<%s>\n", strerror(errno));
- 	}
-	printf("%02x\n", data);
-    }
-*/
+
     return 0;
 }
 
