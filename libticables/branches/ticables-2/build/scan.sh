@@ -5,12 +5,12 @@
 #
 
 SRC=../src
-DST=ticables.def
+DST=ticables-2.def
 
 echo "Parsing..."
 
 rm -f $DST
-echo "LIBRARY ticables.dll" >> $DST
+echo "LIBRARY ticables-2.dll" >> $DST
 echo "EXPORTS" >> $DST
 echo "" >> $DST
 

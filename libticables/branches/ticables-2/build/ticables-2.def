@@ -1,0 +1,42 @@
+LIBRARY ticables-2.dll
+EXPORTS
+
+	ticables_library_init
+	ticables_library_exit
+
+	ticables_version_get
+
+	ticables_handle_new
+	ticables_handle_del
+
+	ticables_options_set_timeout
+	ticables_options_set_delay
+
+	ticables_get_model
+	ticables_get_port
+
+	ticables_handle_show
+
+	ticables_cable_open
+	ticables_cable_close
+
+	ticables_cable_send
+	ticables_cable_recv
+
+	ticables_cable_check
+
+	ticables_cable_set_d0
+	ticables_cable_set_d1
+
+	ticables_cable_get_d0
+	ticables_cable_get_d1
+
+	ticables_cable_progress
+
+	ticables_error_get
+
+	ticables_model_to_string
+	ticables_string_to_model
+
+	ticables_port_to_string
+	ticables_string_to_port
