@@ -31,6 +31,8 @@
 #include <windows.h>
 #endif
 
+//#include "vbapi.h"
+
 #include "gettext.h"
 #include "ticables.h"
 #include "logging.h"
@@ -38,7 +40,7 @@
 #include "link_xxx.h"
 #include "data_log.h"
 
-#if defined(__WIN32__)
+#if 0// defined(__WIN32__)
 
 TiHandle* handle_list[MAX_DESCRIPTORS] = { 0 };
 
@@ -57,6 +59,20 @@ static int find_free_spot(void)
 	return i;
 }
 
+
+//http://support.microsoft.com/default.aspx?scid=kb%3Ben-us%3B118643
+/**
+ * ticables_version_get:
+ *
+ * This function returns the library version like "X.Y.Z".
+ *
+ * Return value: a string.
+ **/
+HLSTR __stdcall ticables_vb_version_get(void)
+{
+	return LIBTICABLES_VERSION;
+}
+
 /**
  * ticables_descriptor_new:
  * @model: a cable model
@@ -70,7 +86,7 @@ static int find_free_spot(void)
  *
  * Return value: -1 if error, a valid descriptor otherwise.
  **/
-int __stdcall ticables_descriptor_new(TiCableModel model, TiCablePort port)
+int __stdcall ticables_vb_handle_new(TiCableModel model, TiCablePort port)
 {
 	TiHandle *handle = ticables_handle_new(model, port);
 	int cd;
@@ -92,7 +108,7 @@ int __stdcall ticables_descriptor_new(TiCableModel model, TiCablePort port)
  *
  * Return value: -1 if descriptor is invalid, 0 otherwise.
  **/
-int __stdcall ticables_descriptor_del(int cd)
+int __stdcall ticables_vb_handle_del(int cd)
 {
 	if(cd < 0 || cd >= MAX_DESCRIPTORS)
 		return -1;

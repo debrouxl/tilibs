@@ -198,7 +198,7 @@ SOURCE=..\..\src\type2str.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE="..\ticables-2.def"
+SOURCE="..\vb\ticables-2.def"
 # End Source File
 # Begin Source File
 

@@ -4,9 +4,9 @@ EXPORTS
 	ticables_library_init
 	ticables_library_exit
 
-	ticables_version_get
+;	ticables_vb_version_get
 
-	ticables_descriptor_new
-	ticables_descriptor_del
+;	ticables_vb_handle_new
+;	ticables_vb_handle_del
 
 	
