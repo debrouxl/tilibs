@@ -192,17 +192,22 @@ SOURCE=..\..\src\ticables.h
 
 SOURCE=..\..\src\type2str.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\vb.c
-# End Source File
 # End Group
-# Begin Group "Libraries"
+# Begin Group "VB binding"
 
 # PROP Default_Filter ""
 # Begin Source File
 
 SOURCE="..\ticables-2.def"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\vb_bind.c
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
@@ -215,11 +220,6 @@ SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
 # Begin Source File
 
 SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\..\ChangeLog
 # End Source File
 # End Target
 # End Project
