@@ -51,6 +51,8 @@ extern "C" {
 #define DFLT_TIMEOUT  15	/* 1.5 second */
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
+#define MAX_DESCRIPTORS	4	/* Maximum number of handles */
+
 /**
  * TiCableModel:
  *
@@ -220,6 +222,8 @@ struct _Handle
 	TIEXPORT int TICALL ticables_cable_open(TiHandle*);
 	TIEXPORT int TICALL ticables_cable_close(TiHandle*);
 
+	TIEXPORT int TICALL ticables_cable_probe(TiHandle*, unsigned int* result);
+
 	TIEXPORT int TICALL ticables_cable_send(TiHandle*, uint8_t *data, uint16_t len);
 	TIEXPORT int TICALL ticables_cable_recv(TiHandle*, uint8_t *data, uint16_t len);
 
@@ -242,10 +246,6 @@ struct _Handle
 
 	TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port);
 	TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str);
-
-	// probe.c
-	// later...
-  
   
   /************************/
   /* Deprecated functions */
