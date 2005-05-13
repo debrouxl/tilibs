@@ -4,16 +4,16 @@ AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libticables-2.la
+lib_LTLIBRARIES = libticables2.la
 libticablesincludedir = $(includedir)/tilp2
 libticablesinclude_HEADERS = ticables.h export.h stdints.h timeout.h
 
 # build instructions
-libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
+libticables2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
 	-DLOCALEDIR=\"$(datadir)/locale\"
-libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
-libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libticables_2_la_SOURCES = *.h \
+libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
+libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libticables2_la_SOURCES = *.h \
 	data_log.c \
 	detect.c \
 	error.c \

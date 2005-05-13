@@ -3,7 +3,7 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticables-2, 0.0.1, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticables2, 0.0.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
 VERSION="0.0.1"
@@ -40,7 +40,7 @@ AC_CONFIG_FILES([
   tests/Makefile
   libticables.lsm
   libticables.spec
-  ticables-2.pc
+  ticables2.pc
 ])
 
 # Setup libtool.
