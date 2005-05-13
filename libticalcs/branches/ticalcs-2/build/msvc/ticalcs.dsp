@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"..\..\tests\ticalcs.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"..\..\tests\ticalcs2.dll"
 
 !ELSEIF  "$(CFG)" == "ticalcs - Win32 Debug"
 
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:"C:\msvc\tilp2\ticalcs2.dll" /pdbtype:sept
 # SUBTRACT LINK32 /map
 
 !ENDIF 
@@ -190,14 +190,6 @@ SOURCE=..\..\src\dirlist.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Error.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Intrface.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\printl.c
 # End Source File
 # Begin Source File
@@ -207,10 +199,6 @@ SOURCE=..\..\src\Probe.c
 # Begin Source File
 
 SOURCE=..\..\src\tnode.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\type2str.c
 # End Source File
 # End Group
 # Begin Group "Headers"
@@ -381,10 +369,26 @@ SOURCE=..\..\src\Rom89.h
 SOURCE=..\..\src\Rom92f2.h
 # End Source File
 # End Group
+# Begin Group "API"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\src\Calc_ver.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\Error.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\Intrface.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\type2str.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
@@ -395,7 +399,7 @@ SOURCE=.\ticalcs.rc
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
 # End Project
