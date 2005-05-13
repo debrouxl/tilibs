@@ -92,103 +92,110 @@ typedef enum
  * TiDataRate:
  * @count: number of bytes transferred
  * @start: the time when transfer started
- * @stop: the time when transfer finished
  * @current: free of use
+ * @stop: the time when transfer finished
  *
  * A structure used for benchmarks.
+ * This structure is for private use !
  **/
 typedef struct 
 {
-	int		count;			// Number of bytes exchanged
-	tiTIME	start;			// Time when transfer has begun
-	tiTIME	current;		// Current time (free for use)
-	tiTIME	stop;			// Time when transfer has finished
+	int		count;
+	tiTIME	start;
+	tiTIME	current;
+	tiTIME	stop;
 } TiDataRate;
 
 typedef struct _Cable	TiCable;
-typedef struct _Handle	TiHandle;
+typedef struct _Handle TiCblHandle;
 
 /**
  * TiCable:
  * @model: link cable model (TiCableModel).
- * @name: name of cable
- * @fullname: complete name of cable
- * @description: description of cable
- * @prepare:
- * @probe:
- * @open:
- * @close:
- * @reset:
- * @send:
- * @recv:
- * @check:
- * @set_d0:
- * @set_d1:
- * @get_d0
- * @get_d1
+ * @name: name of cable like "SER"
+ * @fullname: complete name of cable like "BlackLink"
+ * @description: description of cable like "serial cable"
+ * @need_open: set if cable need to be 'open'/'close' before calling 'probe'
+ * @prepare: detect and map I/O
+ * @probe: check for cable presence
+ * @open: open I/O port or device
+ * @close: close I/O port or device
+ * @reset: reset I/O port or device
+ * @send: send data onto the cable
+ * @recv: recv data from cable
+ * @check: check for data arrival
+ * @set_d0: set D0/red wire
+ * @set_d1: set D1/white wire
+ * @get_d0 get D0/red wire
+ * @get_d1 set D1/red wire
  *
- * A internal structure by link cables.
+ * A structure used for handling a link cable.
+ * This structure is for private use !
  **/
 struct _Cable
 {
-	const int		model;			// TiCableModel
-	const char*		name;			// name like "SER"
-	const char*		fullname;		// name like "BlackLink"
-	const char*		description;	// name like "Serial cable"
+	const int		model;			
+	const char*		name;			
+	const char*		fullname;		
+	const char*		description;	
 
-	const int		need_open;		// Need to be opened for probing
+	const int		need_open;		
 
-	int (*prepare)	(TiHandle *);	// Detect and map I/O
+	int (*prepare)	(TiCblHandle *);
 
-	int (*open)		(TiHandle *);	// Open cable
-	int (*close)	(TiHandle *);	// Close cable
-	int (*reset)	(TiHandle *);	// Reset cable
-	int (*probe)	(TiHandle *);	// Check if cable is present
+	int (*open)		(TiCblHandle *);
+	int (*close)	(TiCblHandle *);
+	int (*reset)	(TiCblHandle *);
+	int (*probe)	(TiCblHandle *);
 
-	int (*send)		(TiHandle *, uint8_t *, uint16_t);	// Send data
-	int (*recv)		(TiHandle *, uint8_t *, uint16_t);	// Recv data
-	int (*check)	(TiHandle *, int *);// Check data arrival
+	int (*send)		(TiCblHandle *, uint8_t *, uint16_t);
+	int (*recv)		(TiCblHandle *, uint8_t *, uint16_t);
+	int (*check)	(TiCblHandle *, int *);
 
-	int (*set_d0)	(TiHandle *, int);	// Direct access to D0 wire
-	int (*set_d1)	(TiHandle *, int);	// Direct access to D1 wire
-	int (*get_d0)	(TiHandle *);
-	int (*get_d1)	(TiHandle *);
+	int (*set_d0)	(TiCblHandle *, int);
+	int (*set_d1)	(TiCblHandle *, int);
+	int (*get_d0)	(TiCblHandle *);
+	int (*get_d1)	(TiCblHandle *);
 };
 
 /**
- * TiHandle:
- * @model: link cable model
- * @port: link port
- * @timeout: timeout value
- * @delay: inter-bit delay for serial/parallel cable
- * @device: device name (if used)
- * @address: I/O address of device (if used)
+ * TiCblHandle:
+ * @model: cable model
+ * @port: generic port
+ * @timeout: timeout value in 0.1 seconds
+ * @delay: inter-bit delay for serial/parallel cable in µs
+ * @device: device name like COMx or ttySx (if used)
+ * @address: I/O base address of device (if used)
  * @cable: a TiCable structure used by this handle
- * @priv: opaque data for internal/private use
+ * @rate: data rate during transfers
+ * @priv: opaque data for internal/private use (static)
+ * @priv2: idem (allocated)
+ * @priv3: idem (static)
  * @open: set if cable has been open
  * @busy: set if cable is busy
  *
- * A internal structure by link cables.
+ * A structure used to store informations as an handle.
+ * This structure is for private use !
  **/
 struct _Handle
 {
-	TiCableModel	model;	// Cable model
-	TiCablePort		port;	// Generic port
-	int				timeout;// Timeout value for cables in 0.10 seconds
-	int				delay;	// Time between 2 bits (home-made cables only)
+	TiCableModel	model;	
+	TiCablePort		port;	
+	int				timeout;
+	int				delay;	
 
-	char *			device;	// The character device: COMx, ttySx, ...
-	unsigned int	address;// I/O port base address
+	char *			device;	
+	unsigned int	address;
 
-	const TiCable*	cable;	// Link cable
-	TiDataRate		rate;	// Data rate during transfers
+	const TiCable*	cable;	
+	TiDataRate		rate;	
 
-	void*			priv;	// Holding data (static)
-	void*			priv2;	// Holding data (allocated)
-	void*			priv3;	// Holding data (static)
+	void*			priv;	
+	void*			priv2;	
+	void*			priv3;	
 
-	int		open;			// Cable is open
-	int		busy;			// Cable is busy
+	int				open;	
+	int				busy;	
 };
 
 // namespace scheme: library_class_function like ticables_fext_get
@@ -207,35 +214,35 @@ struct _Handle
 	// ticables.c
 	TIEXPORT const char* TICALL ticables_version_get (void);
 
-	TIEXPORT TiHandle* TICALL ticables_handle_new(TiCableModel, TiCablePort);
-	TIEXPORT int       TICALL ticables_handle_del(TiHandle*);
+	TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel, TiCablePort);
+	TIEXPORT int       TICALL ticables_handle_del(TiCblHandle*);
 
-	TIEXPORT int TICALL ticables_options_set_timeout(TiHandle*, int);
-	TIEXPORT int TICALL ticables_options_set_delay(TiHandle*, int);
+	TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle*, int);
+	TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle*, int);
 
-	TIEXPORT TiCableModel TICALL ticables_get_model(TiHandle*);
-	TIEXPORT TiCablePort  TICALL ticables_get_port(TiHandle*);
+	TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle*);
+	TIEXPORT TiCablePort  TICALL ticables_get_port(TiCblHandle*);
 
-	TIEXPORT int TICALL ticables_handle_show(TiHandle*);
+	TIEXPORT int TICALL ticables_handle_show(TiCblHandle*);
 
 	// link.c
-	TIEXPORT int TICALL ticables_cable_open(TiHandle*);
-	TIEXPORT int TICALL ticables_cable_close(TiHandle*);
+	TIEXPORT int TICALL ticables_cable_open(TiCblHandle*);
+	TIEXPORT int TICALL ticables_cable_close(TiCblHandle*);
 
-	TIEXPORT int TICALL ticables_cable_probe(TiHandle*, unsigned int* result);
+	TIEXPORT int TICALL ticables_cable_probe(TiCblHandle*, unsigned int* result);
 
-	TIEXPORT int TICALL ticables_cable_send(TiHandle*, uint8_t *data, uint16_t len);
-	TIEXPORT int TICALL ticables_cable_recv(TiHandle*, uint8_t *data, uint16_t len);
+	TIEXPORT int TICALL ticables_cable_send(TiCblHandle*, uint8_t *data, uint16_t len);
+	TIEXPORT int TICALL ticables_cable_recv(TiCblHandle*, uint8_t *data, uint16_t len);
 
-	TIEXPORT int TICALL ticables_cable_check(TiHandle*, TiCableStatus*);
+	TIEXPORT int TICALL ticables_cable_check(TiCblHandle*, TiCableStatus*);
 
-	TIEXPORT int TICALL ticables_cable_set_d0(TiHandle*, int state);
-	TIEXPORT int TICALL ticables_cable_set_d1(TiHandle*, int state);
+	TIEXPORT int TICALL ticables_cable_set_d0(TiCblHandle*, int state);
+	TIEXPORT int TICALL ticables_cable_set_d1(TiCblHandle*, int state);
 
-	TIEXPORT int TICALL ticables_cable_get_d0(TiHandle*);
-	TIEXPORT int TICALL ticables_cable_get_d1(TiHandle*);
+	TIEXPORT int TICALL ticables_cable_get_d0(TiCblHandle*);
+	TIEXPORT int TICALL ticables_cable_get_d1(TiCblHandle*);
 
-	TIEXPORT int TICALL ticables_cable_progress(TiHandle*, int *count, int *msec);
+	TIEXPORT int TICALL ticables_cable_progress(TiCblHandle*, int *count, int *msec);
 
 	// error.c
 	TIEXPORT int         TICALL ticables_error_get (int number, char **message);

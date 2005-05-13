@@ -32,7 +32,7 @@
 
 #define hCom	(HANDLE)(h->priv)
 
-static int gry_prepare(TiHandle *h)
+static int gry_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -46,7 +46,7 @@ static int gry_prepare(TiHandle *h)
 	return 0;
 }
 
-static int gry_open(TiHandle *h)
+static int gry_open(TiCblHandle *h)
 {
 	DCB dcb;
 	BOOL fSuccess;
@@ -138,7 +138,7 @@ static int gry_open(TiHandle *h)
 	return 0;
 }
 
-static int gry_close(TiHandle *h)
+static int gry_close(TiCblHandle *h)
 {
 	if (hCom) 
 	{
@@ -149,7 +149,7 @@ static int gry_close(TiHandle *h)
 	return 0;
 }
 
-static int gry_reset(TiHandle *h)
+static int gry_reset(TiCblHandle *h)
 {
 	BOOL fSuccess;
 
@@ -163,7 +163,7 @@ static int gry_reset(TiHandle *h)
 	return 0;
 }
 
-static int gry_probe(TiHandle *h)
+static int gry_probe(TiCblHandle *h)
 {
 	DWORD status;			//MS_CTS_ON or MS_DTR_ON
 
@@ -205,7 +205,7 @@ static int gry_probe(TiHandle *h)
 	return 0;
 }
 
-static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesWritten;
@@ -236,7 +236,7 @@ static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;
@@ -267,7 +267,7 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
   	return 0;
 }
 
-static int gry_check(TiHandle *h, int *status)
+static int gry_check(TiCblHandle *h, int *status)
 {
 	BOOL fSuccess;
 	DWORD dwEvtMask;
@@ -283,22 +283,22 @@ static int gry_check(TiHandle *h, int *status)
 	return 0;
 }
 
-static int gry_set_red_wire(TiHandle *h, int b)
+static int gry_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_set_white_wire(TiHandle *h, int b)
+static int gry_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_get_red_wire(TiHandle *h)
+static int gry_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int gry_get_white_wire(TiHandle *h)
+static int gry_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

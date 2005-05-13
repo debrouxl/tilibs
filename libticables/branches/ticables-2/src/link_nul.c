@@ -32,63 +32,63 @@
 #include "ticables.h"
 #include "gettext.h"
 
-int nul_prepare(TiHandle *h)
+int nul_prepare(TiCblHandle *h)
 {
 	return 0;
 }
 
-int nul_probe(TiHandle *h)
+int nul_probe(TiCblHandle *h)
 {
 	return 0;
 }
 
-int nul_open(TiHandle *h)
+int nul_open(TiCblHandle *h)
 {
 	return 0;
 }
 
-int nul_close(TiHandle *h)
+int nul_close(TiCblHandle *h)
 {
 	return 0;
 }
 
-int nul_reset(TiHandle *h)
+int nul_reset(TiCblHandle *h)
 {
 	return 0;
 }
 
-int nul_put(TiHandle *h, uint8_t *data, uint16_t len)
+int nul_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
 
-int nul_get(TiHandle *h, uint8_t *data, uint16_t len)
+int nul_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
 
-int nul_check(TiHandle *h, int *status)
+int nul_check(TiCblHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 	return 0;
 }
 
-int nul_set_red_wire(TiHandle *h, int b)
+int nul_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_set_white_wire(TiHandle *h, int b)
+int nul_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_get_red_wire(TiHandle *h)
+int nul_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-int nul_get_white_wire(TiHandle *h)
+int nul_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

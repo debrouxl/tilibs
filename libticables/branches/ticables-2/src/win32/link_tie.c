@@ -65,7 +65,7 @@ static HANDLE hRecvBuf;
 static LinkBuffer *pSendBuf;
 static LinkBuffer *pRecvBuf;
 
-static int tie_prepare(TiHandle *h)
+static int tie_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -78,7 +78,7 @@ static int tie_prepare(TiHandle *h)
 	return 0;
 }
 
-static int tie_open(TiHandle *h)
+static int tie_open(TiCblHandle *h)
 {
 	int p = h->address;
 
@@ -106,7 +106,7 @@ static int tie_open(TiHandle *h)
 	return 0;
 }
 
-static int tie_close(TiHandle *h)
+static int tie_close(TiCblHandle *h)
 {
   /* Close the shared buffer */
   if (hSendBuf) 
@@ -118,7 +118,7 @@ static int tie_close(TiHandle *h)
   return 0;
 }
 
-static int tie_reset(TiHandle *h)
+static int tie_reset(TiCblHandle *h)
 {
 	pSendBuf->start = pSendBuf->end = 0;
 	pRecvBuf->start = pRecvBuf->end = 0;
@@ -126,12 +126,12 @@ static int tie_reset(TiHandle *h)
 	return 0;
 }
 
-static int tie_probe(TiHandle *h)
+static int tie_probe(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -153,7 +153,7 @@ static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -176,7 +176,7 @@ static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_check(TiHandle *h, int *status)
+static int tie_check(TiCblHandle *h, int *status)
 {
 	if (pRecvBuf->start == pRecvBuf->end)
 		*status = STATUS_NONE;
@@ -186,22 +186,22 @@ static int tie_check(TiHandle *h, int *status)
 	return 0;
 }
 
-static int tie_set_red_wire(TiHandle *h, int b)
+static int tie_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_set_white_wire(TiHandle *h, int b)
+static int tie_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_get_red_wire(TiHandle *h)
+static int tie_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int tie_get_white_wire(TiHandle *h)
+static int tie_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

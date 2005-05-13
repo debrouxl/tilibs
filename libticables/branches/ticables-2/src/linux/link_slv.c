@@ -281,7 +281,7 @@ static int reset_pipes(usb_dev_handle *udh)
 
 /* API */
 
-static int slv_prepare(TiHandle *h)
+static int slv_prepare(TiCblHandle *h)
 {
 	char str[64];
 
@@ -298,7 +298,7 @@ static int slv_prepare(TiHandle *h)
 	return 0;
 }
 
-static int slv_open(TiHandle *h)
+static int slv_open(TiCblHandle *h)
 {
     // open device
     tigl_dev = tigl_devices[h->address].dev;
@@ -316,7 +316,7 @@ static int slv_open(TiHandle *h)
     return 0;
 }
 
-static int slv_close(TiHandle *h)
+static int slv_close(TiCblHandle *h)
 {
     tigl_dev = NULL;
     
@@ -333,7 +333,7 @@ static int slv_close(TiHandle *h)
     return 0;
 }
 
-static int slv_reset(TiHandle *h)
+static int slv_reset(TiCblHandle *h)
 {
     /* Reset both endpoints */
     TRYC(reset_pipes(tigl_han));
@@ -342,7 +342,7 @@ static int slv_reset(TiHandle *h)
 }
 
 // convenient function which send one or more bytes
-static int send_block(TiHandle *h, uint8_t *data, int length)
+static int send_block(TiCblHandle *h, uint8_t *data, int length)
 {
     int ret;
     
@@ -367,7 +367,7 @@ static int send_block(TiHandle *h, uint8_t *data, int length)
     return 0;
 }
 
-static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
+static int slv_put(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
     int q = len / max_ps;
     int r = len % max_ps;
@@ -382,7 +382,7 @@ static int slv_put(TiHandle* h, uint8_t *data, uint16_t len)
   return 0;
 }
 
-static int slv_get_(TiHandle *h, uint8_t *data)
+static int slv_get_(TiCblHandle *h, uint8_t *data)
 {
     int ret = 0;
     tiTIME clk;
@@ -435,7 +435,7 @@ static int slv_get_(TiHandle *h, uint8_t *data)
     return 0;
 }
 
-static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
+static int slv_get(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
     int i;
 
@@ -447,7 +447,7 @@ static int slv_get(TiHandle* h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int slv_probe(TiHandle *h)
+static int slv_probe(TiCblHandle *h)
 {
     int i;
     
@@ -462,7 +462,7 @@ static int slv_probe(TiHandle *h)
     return ERR_PROBE_FAILED;
 }
 
-static int raw_probe(TiHandle *h)
+static int raw_probe(TiCblHandle *h)
 {
     int i;
 
@@ -478,27 +478,27 @@ static int raw_probe(TiHandle *h)
     return ERR_PROBE_FAILED;
 }
 
-static int slv_check(TiHandle *h, int *status)
+static int slv_check(TiCblHandle *h, int *status)
 {
   	return 0;
 }
 
-static int slv_set_red_wire(TiHandle *h, int b)
+static int slv_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_set_white_wire(TiHandle *h, int b)
+static int slv_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_get_red_wire(TiHandle *h)
+static int slv_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int slv_get_white_wire(TiHandle *h)
+static int slv_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

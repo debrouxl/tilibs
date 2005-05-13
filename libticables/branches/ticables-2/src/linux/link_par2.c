@@ -35,7 +35,7 @@
 #define lpt_in  (h->address + 1)
 #define lpt_ctl (h->address + 2)
 
-static int par_prepare(TiHandle *h)
+static int par_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -51,7 +51,7 @@ static int par_prepare(TiHandle *h)
 	return 0;
 }
 
-static int par_open(TiHandle *h)
+static int par_open(TiCblHandle *h)
 {
 	TRYC(io_open(h->address));
 #ifdef __WIN32__
@@ -63,20 +63,20 @@ static int par_open(TiHandle *h)
 	return 0;
 }
 
-static int par_close(TiHandle *h)
+static int par_close(TiCblHandle *h)
 {
 	TRYC(io_close(h->address));
 
 	return 0;
 }
 
-static int par_reset(TiHandle *h)
+static int par_reset(TiCblHandle *h)
 {
 	io_wr(lpt_out, 3);
 	return 0;
 }
 
-static int par_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int par_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
   	int i, j;
@@ -137,7 +137,7 @@ static int par_put(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int par_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int par_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
 	int i, j;
@@ -191,7 +191,7 @@ static int par_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int par_probe(TiHandle *h)
+static int par_probe(TiCblHandle *h)
 {
 	int i, j;
   	int seq[] = { 0x00, 0x20, 0x10, 0x30 };
@@ -217,7 +217,7 @@ static int par_probe(TiHandle *h)
 	return 0;
 }
 
-static int par_check(TiHandle *h, int *status)
+static int par_check(TiCblHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
@@ -229,7 +229,7 @@ static int par_check(TiHandle *h, int *status)
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
-static int par_set_red_wire(TiHandle *h, int b)
+static int par_set_red_wire(TiCblHandle *h, int b)
 {
 	int v = swap_bits(io_rd(lpt_in) >> 4);
 
@@ -241,7 +241,7 @@ static int par_set_red_wire(TiHandle *h, int b)
 	return 0;
 }
 
-static int par_set_white_wire(TiHandle *h, int b)
+static int par_set_white_wire(TiCblHandle *h, int b)
 {
 	int v = swap_bits(io_rd(lpt_in) >> 4);
 
@@ -253,12 +253,12 @@ static int par_set_white_wire(TiHandle *h, int b)
 	return 0;
 }
 
-static int par_get_red_wire(TiHandle *h)
+static int par_get_red_wire(TiCblHandle *h)
 {
 	return (0x10 & io_rd(lpt_in)) ? 1 : 0;
 }
 
-static int par_get_white_wire(TiHandle *h)
+static int par_get_white_wire(TiCblHandle *h)
 {
 	return (0x20 & io_rd(lpt_in)) ? 1 : 0;
 }

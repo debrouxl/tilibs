@@ -9,6 +9,7 @@ Log:
 - 02/05/2005, version 0.0.1: roms
 	- API frozen
 	- added working probing support
+	- clean-up
 
 - 27/04/2005, version 0.0.1: roms
 	- error management left untouched

@@ -33,7 +33,7 @@
 
 #define dev_fd  ((int)(h->priv))
 
-static int par_prepare(TiHandle *h)
+static int par_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -51,25 +51,25 @@ static int par_prepare(TiHandle *h)
 	return 0;
 }
 
-static int par_open(TiHandle *h)
+static int par_open(TiCblHandle *h)
 {
     TRYC(par_io_open(h->device, (int *)&(h->priv)));
     return 0;
 }
 
-static int par_close(TiHandle *h)
+static int par_close(TiCblHandle *h)
 {
     TRYC(par_io_close(dev_fd));
     return 0;
 }
 
-static int par_reset(TiHandle *h)
+static int par_reset(TiCblHandle *h)
 {
     par_io_wr(dev_fd, 3);
     return 0;
 }
 
-static int par_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int par_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
     int bit;
     int i, j;
@@ -128,7 +128,7 @@ static int par_put(TiHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int par_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int par_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
     int bit;
     int i, j;
@@ -184,7 +184,7 @@ static int par_get(TiHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int par_probe(TiHandle *h)
+static int par_probe(TiCblHandle *h)
 {
     int timeout = 1;
     tiTIME clk;
@@ -226,7 +226,7 @@ static int par_probe(TiHandle *h)
     return 0;
 }
 
-static int par_check(TiHandle *h, int *status)
+static int par_check(TiCblHandle *h, int *status)
 {
     *status = STATUS_NONE;
     
@@ -238,7 +238,7 @@ static int par_check(TiHandle *h, int *status)
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
-static int par_set_red_wire(TiHandle *h, int b)
+static int par_set_red_wire(TiCblHandle *h, int b)
 {
 int v = swap_bits(par_io_rd(dev_fd) >> 4);
 
@@ -250,7 +250,7 @@ int v = swap_bits(par_io_rd(dev_fd) >> 4);
 	return 0;
 }
 
-static int par_set_white_wire(TiHandle *h, int b)
+static int par_set_white_wire(TiCblHandle *h, int b)
 {
 int v = swap_bits(par_io_rd(dev_fd) >> 4);
 
@@ -262,12 +262,12 @@ int v = swap_bits(par_io_rd(dev_fd) >> 4);
 	return 0;
 }
 
-static int par_get_red_wire(TiHandle *h)
+static int par_get_red_wire(TiCblHandle *h)
 {
     return ((0x10 & par_io_rd(dev_fd)) ? 1 : 0);
 }
 
-static int par_get_white_wire(TiHandle *h)
+static int par_get_white_wire(TiCblHandle *h)
 {
     return ((0x20 & par_io_rd(dev_fd)) ? 1 : 0);
 }

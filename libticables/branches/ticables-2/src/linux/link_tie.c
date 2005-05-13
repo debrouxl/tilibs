@@ -61,7 +61,7 @@ static const char fifo_names[4][256] = {
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0"
 };
 
-static int tie_prepare(TiHandle *h)
+static int tie_prepare(TiCblHandle *h)
 {
 	h->address = 0;
 	h->device = strdup("");
@@ -69,7 +69,7 @@ static int tie_prepare(TiHandle *h)
 	return 0;
 }
 
-static int tie_open(TiHandle *h)
+static int tie_open(TiCblHandle *h)
 {
     if ((h->address < 1) || (h->address > 2)) {
 	ticables_warning(_("Invalid h->address parameter passed to libticables.\n"));
@@ -104,7 +104,7 @@ static int tie_open(TiHandle *h)
   return 0;
 }
 
-static int tie_close(TiHandle *h)
+static int tie_close(TiCblHandle *h)
 {
     if (rd[p]) 
     {
@@ -128,7 +128,7 @@ static int tie_close(TiHandle *h)
     return 0;
 }
 
-static int tie_reset(TiHandle *h)
+static int tie_reset(TiCblHandle *h)
 {
     uint8_t d;
     int n;
@@ -142,7 +142,7 @@ static int tie_reset(TiHandle *h)
     return 0;
 }
 
-static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
     int n = 0;
     tiTIME clk;
@@ -173,7 +173,7 @@ static int tie_put(TiHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
     static int n = 0;
     tiTIME clk;
@@ -194,12 +194,12 @@ static int tie_get(TiHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int tie_probe(TiHandle *h)
+static int tie_probe(TiCblHandle *h)
 {
 	return 0;
 }
 
-static int tie_check(TiHandle *h, int *status)
+static int tie_check(TiCblHandle *h, int *status)
 {
     fd_set rdfs;
     struct timeval tv;
@@ -226,22 +226,22 @@ static int tie_check(TiHandle *h, int *status)
     return 0;
 }
 
-static int tie_set_red_wire(TiHandle *h, int b)
+static int tie_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_set_white_wire(TiHandle *h, int b)
+static int tie_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_get_red_wire(TiHandle *h)
+static int tie_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int tie_get_white_wire(TiHandle *h)
+static int tie_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

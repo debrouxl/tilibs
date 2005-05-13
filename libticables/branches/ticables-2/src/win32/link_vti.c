@@ -61,7 +61,7 @@ static LinkBuffer*	vRecvBuf;
 static HANDLE		hMap = NULL;		// Handle on file-mapping object
 static HWND			otherWnd = NULL;	// Handle on the VTi window
 
-static int vti_prepare(TiHandle *h)
+static int vti_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -73,7 +73,7 @@ static int vti_prepare(TiHandle *h)
 	return 0;
 }
 
-static int vti_open(TiHandle *h)
+static int vti_open(TiCblHandle *h)
 {
 	int i;
 	char vLinkFileName[32];
@@ -150,7 +150,7 @@ static int vti_open(TiHandle *h)
 	return 0;
 }
 
-static int vti_close(TiHandle *h)
+static int vti_close(TiCblHandle *h)
 {
 	if (otherWnd) 
   {
@@ -169,7 +169,7 @@ static int vti_close(TiHandle *h)
 	return 0;
 }
 
-static int vti_reset(TiHandle *h)
+static int vti_reset(TiCblHandle *h)
 {
 	vSendBuf->start = vSendBuf->end = 0;
 	vRecvBuf->start = vRecvBuf->end = 0;
@@ -177,12 +177,12 @@ static int vti_reset(TiHandle *h)
 	return 0;
 }
 
-static int vti_probe(TiHandle *h)
+static int vti_probe(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int vti_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -204,7 +204,7 @@ static int vti_put(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int vti_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -228,29 +228,29 @@ static int vti_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_check(TiHandle *h, int *status)
+static int vti_check(TiCblHandle *h, int *status)
 {
 	*status = !(vRecvBuf->start == vRecvBuf->end);
 
 	return 0;
 }
 
-static int vti_set_red_wire(TiHandle *h, int b)
+static int vti_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_set_white_wire(TiHandle *h, int b)
+static int vti_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_get_red_wire(TiHandle *h)
+static int vti_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int vti_get_white_wire(TiHandle *h)
+static int vti_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

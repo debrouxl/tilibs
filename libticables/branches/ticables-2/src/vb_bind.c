@@ -42,13 +42,13 @@
 
 #if 0// defined(__WIN32__)
 
-TiHandle* handle_list[MAX_DESCRIPTORS] = { 0 };
+TiCblHandle* handle_list[MAX_DESCRIPTORS] = { 0 };
 
 #define CD_DEREF(cd)	(handle_list[cd])
 
 static int find_free_spot(void)
 {
-	TiHandle **p;
+	TiCblHandle **p;
 	int i;
 
 	for(p = handle_list, i = 0; *p == NULL && i < MAX_DESCRIPTORS; p++, i++);
@@ -88,7 +88,7 @@ HLSTR __stdcall ticables_vb_version_get(void)
  **/
 int __stdcall ticables_vb_handle_new(TiCableModel model, TiCablePort port)
 {
-	TiHandle *handle = ticables_handle_new(model, port);
+	TiCblHandle *handle = ticables_handle_new(model, port);
 	int cd;
 
 	cd = find_free_spot();

@@ -63,7 +63,7 @@ TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
 TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
 
-static int slv_prepare(TiHandle *h)
+static int slv_prepare(TiCblHandle *h)
 {
 	char str[64];
 
@@ -78,7 +78,7 @@ static int slv_prepare(TiHandle *h)
 	return 0;
 }
 
-static int slv_open(TiHandle *h)
+static int slv_open(TiCblHandle *h)
 {
 	int ret;
 
@@ -188,7 +188,7 @@ static int slv_open(TiHandle *h)
 	return 0;
 }
 
-static int slv_close(TiHandle *h)
+static int slv_close(TiCblHandle *h)
 {
 	int ret;
 
@@ -201,7 +201,7 @@ static int slv_close(TiHandle *h)
 	return 0;
 }
 
-static int slv_reset(TiHandle *h)
+static int slv_reset(TiCblHandle *h)
 {
 	int ret;
 
@@ -212,7 +212,7 @@ static int slv_reset(TiHandle *h)
 	return 0;
 }
 
-static int slv_probe(TiHandle *h)
+static int slv_probe(TiCblHandle *h)
 {
 	int ret;
 	unsigned int *list;
@@ -226,7 +226,7 @@ static int slv_probe(TiHandle *h)
 	return ERR_PROBE_FAILED;
 }
 
-static int raw_probe(TiHandle *h)
+static int raw_probe(TiCblHandle *h)
 {
 	int ret;
 	unsigned int *list;
@@ -240,7 +240,7 @@ static int raw_probe(TiHandle *h)
 	return ERR_PROBE_FAILED;
 }
 
-static int slv_put(TiHandle *h, uint8_t *data, uint16_t len)
+static int slv_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int ret;
 
@@ -259,7 +259,7 @@ static int slv_put(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
+static int slv_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 {
 	int ret;
 
@@ -278,7 +278,7 @@ static int slv_get(TiHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int slv_check(TiHandle *h, int *status)
+static int slv_check(TiCblHandle *h, int *status)
 {
 	int ret = dynTiglUsbCheck(hLNK, status);
 
@@ -295,22 +295,22 @@ static int slv_check(TiHandle *h, int *status)
 	return 0;
 }
 
-static int slv_set_red_wire(TiHandle *h, int b)
+static int slv_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_set_white_wire(TiHandle *h, int b)
+static int slv_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_get_red_wire(TiHandle *h)
+static int slv_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int slv_get_white_wire(TiHandle *h)
+static int slv_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }

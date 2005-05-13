@@ -45,7 +45,7 @@
 #define dev_fd      ((int)(h->priv))
 #define termset     ((struct termios *)(h->priv2))
 
-static int gry_prepare(TiHandle *h)
+static int gry_prepare(TiCblHandle *h)
 {
 	switch(h->port)
 	{
@@ -62,7 +62,7 @@ static int gry_prepare(TiHandle *h)
 	return 0;
 }
 
-static int gry_open(TiHandle *h)
+static int gry_open(TiCblHandle *h)
 {
     int flags = 0;
     
@@ -102,7 +102,7 @@ static int gry_open(TiHandle *h)
     return 0;
 }
 
-static int gry_close(TiHandle *h)
+static int gry_close(TiCblHandle *h)
 {
     close(dev_fd);
     free(h->priv2);
@@ -111,7 +111,7 @@ static int gry_close(TiHandle *h)
     return 0;
 }
 
-static int gry_reset(TiHandle *h)
+static int gry_reset(TiCblHandle *h)
 {
     uint8_t unused[1024];
     int n;
@@ -132,7 +132,7 @@ static int gry_reset(TiHandle *h)
     return 0;
 }
 
-static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
     int err;
 
@@ -150,7 +150,7 @@ static int gry_put(TiHandle* h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
 {
     int err;
     
@@ -171,7 +171,7 @@ static int gry_get(TiHandle* h, uint8_t *data, uint16_t len)
 }
 
 // Migrate these functions into ioports.c
-static int dcb_read_io(TiHandle *h)
+static int dcb_read_io(TiCblHandle *h)
 {
 #ifdef HAVE_TERMIOS_H	
     unsigned int flags;
@@ -183,7 +183,7 @@ static int dcb_read_io(TiHandle *h)
 #endif
 }
 
-static int dcb_write_io(TiHandle *h, int data)
+static int dcb_write_io(TiCblHandle *h, int data)
 {
 #ifdef HAVE_TERMIOS_H
     unsigned int flags = 0;
@@ -197,7 +197,7 @@ static int dcb_write_io(TiHandle *h, int data)
 #endif
 }
 
-static int gry_probe(TiHandle *h)
+static int gry_probe(TiCblHandle *h)
 {
     int i;
     int seq_in[] =  { 3, 2, 0, 1, 3 };
@@ -220,7 +220,7 @@ static int gry_probe(TiHandle *h)
     return 0;
 }
 
-static int gry_check(TiHandle *h, int *status)
+static int gry_check(TiCblHandle *h, int *status)
 {
     fd_set rdfs;
     struct timeval tv;
@@ -250,22 +250,22 @@ static int gry_check(TiHandle *h, int *status)
     return 0;
 }
 
-static int gry_set_red_wire(TiHandle *h, int b)
+static int gry_set_red_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_set_white_wire(TiHandle *h, int b)
+static int gry_set_white_wire(TiCblHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_get_red_wire(TiHandle *h)
+static int gry_get_red_wire(TiCblHandle *h)
 {
 	return 1;
 }
 
-static int gry_get_white_wire(TiHandle *h)
+static int gry_get_white_wire(TiCblHandle *h)
 {
 	return 1;
 }
