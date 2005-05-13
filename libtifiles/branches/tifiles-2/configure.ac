@@ -75,10 +75,7 @@ AC_STRUCT_TM
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
-AC_FUNC_MALLOC
-AC_FUNC_REALLOC
 AC_FUNC_STAT
-AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memset strcasecmp strchr strdup strrchr])
 
 # Platform specific tests.

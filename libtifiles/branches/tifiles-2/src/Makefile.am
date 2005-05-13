@@ -31,8 +31,3 @@ libtifiles2_la_SOURCES = *.h \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesxx.c
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase

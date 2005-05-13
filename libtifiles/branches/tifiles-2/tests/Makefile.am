@@ -2,6 +2,6 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 
-noinst_PROGRAMS = test_tifiles2
+noinst_PROGRAMS = test_tifiles_2
 
-test_tifiles2_LDADD = $(top_builddir)/src/libtifiles2.la
+test_tifiles_2_LDADD = $(top_builddir)/src/libtifiles2.la
