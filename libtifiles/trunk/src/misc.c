@@ -28,6 +28,12 @@
 #include <string.h>
 #include "stdints.h"
 #include <sys/stat.h>
+#ifndef __WIN32__
+# include <endian.h>
+# if __BYTE_ORDER == __BIG_ENDIAN
+#  define WORDS_BIGENDIAN 1
+# endif /* __BYTE_ORDER == __BIG_ENDIAN */
+#endif /* !__WIN32__ */
 
 #include "export.h"
 #include "file_int.h"

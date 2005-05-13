@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 13/05/2005 jb
+	src/misc.c: endianness fixes.
+
 - 05/03/2005, version 0.6.3: roms
 	Added gcc 4.0 -fvisibility flag support.
 	
