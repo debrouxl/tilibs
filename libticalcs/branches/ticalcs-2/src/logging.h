@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: logging.h 1015 2005-05-02 14:00:00Z roms $ */
 
-/*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+/*  libticables - Ti File Format library, a part of the TiLP project
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,20 +19,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALC_VERSION__
-#define __CALC_VERSION__
+#ifndef __TICALCS_LOGGING__
+#define __TICALCS_LOGGING__
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include <glib.h>
 
-#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.5.8"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBCABLES_VERSION "3.8.1"	// useless with pkg-config
+#define LOG_DOMAIN	"ticalcs"
 
-#ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.5.9"
-#else
-# define LIBTICALCS_VERSION VERSION
-#endif
+void ticalcs_debug(const gchar *format, ...);
+void ticalcs_info(const gchar *format, ...);
+void ticalcs_message(const gchar *format, ...);
+void ticalcs_warning(const gchar *format, ...);
+void ticalcs_critical(const gchar *format, ...);
+void ticalcs_error(const gchar *format, ...);
+
+//#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 #endif

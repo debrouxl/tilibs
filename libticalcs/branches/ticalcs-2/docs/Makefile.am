@@ -1,14 +1,22 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = *.sh *.awk
+EXTRA_DIST = gen_doc.c api.txt
 
-index:
-	./gen_doc.sh
+all: gen_doc
+	cp ./tmpl/*.* ./html
+	./gen_doc .
+
+gen_doc: gen_doc.c
+if OS_WIN32
+	gcc `pkg-config.exe glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc.exe
+else
+	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
+endif
 
 clean:
-	rm -f ./text/*~ index ./html/*.*
+	rm -f ./text/*~ ./html/*.*
 
-files:
-	@files=`ls $(DISTFILES) 2> /dev/null `; for p in $$files; do \
+calcs:
+	@calcs=`ls $(DISTcalcs) 2> /dev/null `; for p in $$calcs; do \
 	  echo $$p; \
 	done

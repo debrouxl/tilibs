@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /I "." /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -314,10 +314,6 @@ SOURCE=..\..\src\Ti92.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticalcs.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\tikeys.h
 # End Source File
 # Begin Source File
@@ -374,15 +370,15 @@ SOURCE=..\..\src\Rom92f2.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\Calc_ver.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\Error.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\Intrface.c
+SOURCE=..\..\src\ticalcs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\ticalcs.h
 # End Source File
 # Begin Source File
 

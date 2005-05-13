@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2004  Romain Lievin
+ *  Copyright (C) 1999-2005  Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,27 +21,52 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 
 #include "gettext.h"
+#include "export.h"
+#include "error.h"
+#include "logging.h"
 
-#include "calc_err.h"
-#include "headers.h"
-#include "update.h"
-
-extern TicableLinkCable *cable;
-
-/* 
-   This function put in err_msg the error message corresponding to the
-   error code.
-   If the error code has been handled, the function returns 0 else it
-   propagates the error code by returning it.
-
-   The error message has the following format:
-   - 1: the error message
-   - 2: the cause(s), explanations on how to fix it
-*/
-TIEXPORT int TICALL ticalc_get_error(int err_num, char *error_msg)
+/**
+ * ticalcs_error_get:
+ * @number: error number (see error.h for list).
+ * @message: a newly allocated string which contains corresponding error *message.
+ *
+ * Attempt to match the message corresponding to the error number. The returned
+ * string must be freed when no longer needed.
+ * The error message has the following format:
+ * - 1: the error message
+ * - 2: the cause(s), explanations on how to fix it
+ * - 3: the error returned by the system
+ *
+ * Return value: 0 if error has been caught, the error number otherwise (propagation).
+ **/
+TIEXPORT int TICALL ticalcs_error_get(TiCableError number, char **message)
 {
+	char *tmp;
+
+	g_assert (message != NULL);
+
+	*message = g_strdup("test");
+
+	switch(number)
+	{
+	case ERR_ABORT:
+		*message = g_strconcat(
+    		_("Msg: transfer aborted."),
+    		"\n",
+    		 _("Cause: the user !"),
+			 NULL);
+		break;
+	default:
+	    *message = strdup(_("Error code not handled; this is a bug"));
+	    ticalcs_warning(*message);
+	    return number;
+    break;
+	}
+
+/*
   switch (err_num) {
   case ERR_ABORT:
     strcpy(error_msg, _("Msg: Transfer aborted"));
@@ -187,4 +212,12 @@ TIEXPORT int TICALL ticalc_get_error(int err_num, char *error_msg)
   UNLOCK_TRANSFER();
 
   return 0;
+  */
+
+	// don't use GLib allocator
+	tmp = strdup(*message);
+	g_free(*message);
+	*message = tmp;
+
+	return 0;
 }
