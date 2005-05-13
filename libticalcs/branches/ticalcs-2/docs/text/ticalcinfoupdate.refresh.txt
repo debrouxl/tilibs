@@ -1,0 +1,19 @@
+[Main]
+Name=refresh
+Type=Function
+Header=calc_int.h
+Definition=void (*refresh) (void);
+
+[Parameters]
+None.
+
+[Summary]
+Callback which is called to pass control to the GUI.
+
+[Description]
+This function is called by the ticalc library when the library need to pass control to the GUI so that the GUI can refresh its interface. It's typically used when the calculator waits for an user's action and we need to refresh the dialog box.
+
+Usually, you place a function which refresh the GUI.
+
+[See also]
+TicalcInfoUpdate

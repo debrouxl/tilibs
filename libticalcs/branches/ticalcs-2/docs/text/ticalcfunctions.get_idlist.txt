@@ -1,0 +1,20 @@
+[Main]
+Name=get_idlist
+Type=Function
+Header=calc_int.h
+Definition=int (*get_idlist) (char *idlist);
+
+[Parameters]
+idlist : the calculator ID-LIST.
+Returns : 0 if successful, an error code otherwise.
+
+[Summary]
+Retrieve the ID-LIST from the calculator.
+
+[Description]
+This is only supported by 'FLASH' calculators (73/83+/89/92+/V200).
+
+The idlist array must be long enough to store the returned string (17 chars).
+
+[See also]
+@TicalcFunctions@

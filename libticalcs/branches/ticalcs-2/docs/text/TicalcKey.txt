@@ -1,0 +1,23 @@
+[Main]
+Name=TicalcKey
+Type=Structure
+Header=calc_def.h
+Definition=struct TicalcKey
+
+[Fields]
+char* key_name : the name of the key
+char* key1 : key name
+@uint16_t@ nothing : key value
+char *key2 : key name as SHIFT'ed key
+@uint16_t@ shift : key value
+char *key3 : key name as 2ND'ed key
+@uint16_t@ second : key value
+char *key4 : key name as CTRL'ed key
+@uint16_t@ diamond : key value
+char *key5 : key name as ALPHA'ed key
+@uint16_t@ alpha : key value
+
+[Summary]
+Structure used to store key informations.
+
+[Description]

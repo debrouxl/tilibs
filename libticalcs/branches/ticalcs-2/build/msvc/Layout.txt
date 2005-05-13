@@ -1,0 +1,4 @@
+?:/base_folder/ticables
+?:/base_folder/ticalcs
+?:/base_folder/tifiles
+?:/base_folder/tilp
