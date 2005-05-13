@@ -161,9 +161,9 @@ TIEXPORT const char *TICALL ticables_version_get(void)
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
+TIEXPORT CableHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
 {
-	TiCblHandle *handle = (TiCblHandle *)calloc(1, sizeof(TiCblHandle));
+	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
 	int i;
 
 	handle->model = model;
@@ -193,7 +193,7 @@ TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_handle_del(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
 {
     if(handle->priv2)
 	free(handle->priv2);
@@ -215,7 +215,7 @@ TIEXPORT int TICALL ticables_handle_del(TiCblHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle* handle, int timeout)
+TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
 	return handle->timeout = timeout;
 }
@@ -229,7 +229,7 @@ TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle* handle, int timeou
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle* handle, int delay)
+TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
 	return handle->delay = delay;
 }
@@ -242,7 +242,7 @@ TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle* handle, int delay)
  *
  * Return value: a #TiCableModel value.
  **/
-TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle* handle)
+TIEXPORT TiCableModel TICALL ticables_get_model(CableHandle* handle)
 {
 	return handle->model;
 }
@@ -255,12 +255,12 @@ TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle* handle)
  *
  * Return value: a #TiCablePort value.
  **/
-TIEXPORT TiCablePort  TICALL ticables_get_port(TiCblHandle* handle)
+TIEXPORT TiCablePort  TICALL ticables_get_port(CableHandle* handle)
 {
 	return handle->port;
 }
 
-TIEXPORT int TICALL ticables_handle_show(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_handle_show(CableHandle* handle)
 {
 	ticables_info(_("Link cable handle details:"));
 	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));

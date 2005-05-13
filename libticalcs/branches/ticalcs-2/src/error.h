@@ -28,32 +28,27 @@ typedef enum
 {
     ERR_NO_ERROR = 0,		// No error (returns 0)
 
-	
+	ERR_ABORT = 256,		// Operation aborted
+	ERR_CHECKSUM,			// Checksum error
+	ERR_NOT_READY,			// Calculator is not ready
+	ERR_VOID_FUNCTION,		// This function does not exist for the calc
+	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
+	ERR_OPEN_FILE,
+	ERR_SAVE_FILE,			// Can not open (writing) file
+	ERR_PENDING_TRANSFER,	// A transfer is in progress
+
+	ERR_INVALID_HOST,		// Invalid host ID
+	ERR_INVALID_TARGET,		// Invalid target ID
+	ERR_INVALID_CMD,		// Invalid command ID
+	ERR_EOT,				// Not really an error (internal use)
+	ERR_VAR_REJECTED,		// The variable has been rejected by calc
+	ERR_CTS_ERROR,			// Invalid CTS packet
+	ERR_NACK,				// NACK received
+	ERR_INVALID_PACKET,		// Packet is invalid
+	ERR_FATAL_ERROR,		// Fatal error (alloc, file, ...)
+	ERR_MISSING_VAR,		// The requested var does not exist
+	ERR_NO_VARS,			// No vars to backup
+
 } TiCalcError;
 
 #endif
-
-/*
-#define ERR_ABORT              -1	// Operation aborted
-#define ERR_CHECKSUM           307	// Checksum error
-#define ERR_NOT_READY          320	// Calculator is not ready
-#define ERR_VOID_FUNCTION      325	// This function does not exist for the calc
-#define ERR_OUT_OF_MEMORY      258	// Calc reply out of *memory
-#define ERR_OPEN_FILE          ERR_FILE_OPEN
-#define ERR_SAVE_FILE          264	// Can not open (writing) file
-#define ERR_PENDING_TRANSFER   333	// A transfer is in progress
-
-#define ERR_INVALID_HOST       400	// Invalid host ID
-#define ERR_INVALID_TARGET     401	// Invalid target ID
-#define ERR_INVALID_CMD        402	// Invalid command ID
-#define ERR_EOT                403	// Not really an error (internal use)
-#define ERR_VAR_REJECTED       404	// The variable has been rejected by calc
-#define ERR_CTS_ERROR          405	// Invalid CTS packet
-#define ERR_NACK               406	// NACK received
-#define ERR_INVALID_PACKET     407	// Packet is invalid
-//#define ERR_FILE_OPEN          261 // Can not open (reading) file
-//#define ERR_FILE_CLOSE         262 // Can not close file
-#define ERR_FATAL_ERROR        408	// Fatal error (alloc, file, ...)
-#define ERR_MISSING_VAR        409	// The requested var does not exist
-#define ERR_NO_VARS            410	// No vars to backup
-*/

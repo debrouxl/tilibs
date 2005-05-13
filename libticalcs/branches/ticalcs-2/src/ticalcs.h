@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICABLES__
-#define __TICABLES__
+#ifndef __CalcS__
+#define __CalcS__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -28,7 +28,7 @@
 
 #include "stdints.h"
 #include "export.h"
-#include "timeout.h"
+#include "tnode.h"	// to replace by glib !
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,170 +41,388 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBTICABLES_VERSION "0.0.1"
+# define LIBCALCS_VERSION "0.0.1"
 #else
-# define LIBTICABLES_VERSION VERSION
+# define LIBCALCS_VERSION VERSION
 #endif
 
-	#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.5.8"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBCABLES_VERSION "3.8.1"	// useless with pkg-config
-
-#ifdef __WIN32__
-# define LIBTICALCS_VERSION "4.5.9"
-#else
-# define LIBTICALCS_VERSION VERSION
-#endif
+#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.0.1"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBCABLES_VERSION "0.0.1"	// useless with pkg-config
 
 /* Types */
 
-#define DFLT_TIMEOUT  15	/* 1.5 second */
-#define DFLT_DELAY    10	/* 10 micro-seconds */
-
-#define MAX_DESCRIPTORS	4	/* Maximum number of handles */
+// Name of the root node for 'Variables' & 'Applications' tree
+#define VAR_NODE_NAME "Variables"
+#define APP_NODE_NAME "Applications"
 
 /**
- * TiCableModel:
+ * CalcModel:
  *
- * An enumeration which contains the following cable types:
+ * An enumeration which contains the following calculator types:
  **/
 typedef enum 
 {
-	CABLE_NUL = 0,
-	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
-	CABLE_VTL, CABLE_TIE, CABLE_VTI,
-} TiCableModel;
+	CALC_NONE = 0,
+	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
+	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
+} CalcModel;
 
 /**
- * TiCablePort:
+ * CalcScreenFormat:
  *
- * An enumeration which contains the following ports:
+ * An enumeration which contains the following calculator types:
  **/
 typedef enum 
 {
-	PORT_0 = 0,
-	PORT_1, PORT_2, PORT_3, PORT_4,
-} TiCablePort;
+	SCREEN_FULL, 
+	SCREEN_CLIPPED
+} CalcScreenFormat;
 
 /**
- * TiCableStatus:
+ * CalcPathType:
  *
- * An enumeration which contains the following values:
+ * An enumeration which contains the path type:
  **/
 typedef enum 
 {
-	STATUS_NONE = 0, 
-	STATUS_RX = 1, 
-	STATUS_TX = 2,
-} TiCableStatus;
+	PATH_FULL, 
+	PATH_LOCAL
+} CalcPathType;
 
 /**
- * TiDataRate:
- * @count: number of bytes transferred
- * @start: the time when transfer started
- * @current: free of use
- * @stop: the time when transfer finished
+ * CalcMemType:
  *
- * A structure used for benchmarks.
- * This structure is for private use !
+ * An enumeration which contains the different memory sizes:
+ **/
+typedef enum 
+{
+	MEMORY_NONE, 
+	MEMORY_FREE, 
+	MEMORY_USED
+} CalcMemType;
+
+/**
+ * CalcMode:
+ *
+ * An enumeration which contains different mask modes:
+ **/
+typedef enum {
+  MODE_NORMAL = 0,
+  // For receiving vars
+  MODE_RECEIVE_SINGLE_VAR = (1 << 0),	// Receive a single var
+  MODE_RECEIVE_FIRST_VAR = (1 << 1),	// Recv first var of group file
+  MODE_RECEIVE_LAST_VAR = (1 << 3),		// Recv last var of group file
+  // For sending vars
+  MODE_SEND_ONE_VAR = (1 << 4),			// Send single var or first var (grp)
+  MODE_SEND_LAST_VAR = (1 << 5),		// Send last var of group file
+  MODE_SEND_VARS = (1 << 6),			// Send var of group file
+  MODE_SEND_TO_FLASH = (1 << 2),		// Send var to FLASH archive
+  // Miscellaneous
+  MODE_LOCAL_PATH = (1 << 7),			// Local path (full by default)
+  MODE_BACKUP = (1 << 8),				// Keep archive attribute
+  // For sending FLASH (apps/AMS)
+  MODE_APPS = (1 << 11),				// Send a (free) FLASH application
+  MODE_AMS = (1 << 12),					// Send an Operating System (AMS)
+} CalcMode;
+
+/**
+ * CalcRomDumpSize:
+ *
+ * An enumeration which contains the following ROM dump sizes:
+ **/
+typedef enum 
+{
+	ROM_1MB = 1, 
+	ROM_2MB, 
+	ROM_SE,
+} CalcRomDumpSize;
+
+/**
+ * CalcShellType:
+ *
+ * An enumeration which contains the shell to use with ROM dumping:
+ **/
+typedef enum 
+{
+	SHELL_NONE = 4, 
+	SHELL_USGARD, 
+	SHELL_ZSHELL
+} CalcShellType;
+
+/**
+ * CalcOperations:
+ *
+ * An enumeration which contains the different supported operations:
+ **/
+typedef enum 
+{
+  OPS_NONE = 0,
+  OPS_ISREADY = (1 << 0),
+  OPS_SEND_KEY = (1 << 1),
+  OPS_RECV_KEY = (1 << 2),
+  OPS_REMOTE = (1 << 3),	//disabled
+  OPS_SCREENDUMP = (1 << 4),
+  OPS_DIRLIST = (1 << 5),
+  OPS_RECV_BACKUP = (1 << 6),
+  OPS_SEND_BACKUP = (1 << 7),
+  OPS_RECV_VARS = (1 << 8),
+  OPS_SEND_VARS = (1 << 9),
+  OPS_SEND_FLASH = (1 << 10),
+  OPS_RECV_FLASH = (1 << 11),
+  OPS_IDLIST = (1 << 12),
+  OPS_ROMDUMP = (1 << 13),
+  OPS_ROMVERSION = (1 << 14),
+  OPS_CLOCK = (1 << 15),
+} CalcOperations;
+
+/**
+ * CalcAction:
+ *
+ * An enumeration which contains a possible action:
+ **/
+typedef enum 
+{
+	ACTION_SKIP, 
+	ACTION_OVER
+} CalcAction;
+
+/**
+ * CalcScreenCoord:
+ * @width: real width
+ * @height: real height
+ * @clipped_width: clipped width (89 for instance)
+ * @clipped_height: clipped height (89 for instance)
+ *
+ * A structure used for storing screen size.
  **/
 typedef struct 
 {
-	int		count;
-	tiTIME	start;
-	tiTIME	current;
-	tiTIME	stop;
-} TiDataRate;
+	uint8_t width;
+	uint8_t height;
+	uint8_t clipped_width;
+	uint8_t clipped_height;
+} CalcScreenCoord;
 
-typedef struct _Cable	TiCable;
-typedef struct _Handle TiCblHandle;
+/**
+ * KeyPair:
+ * @name: name of key (like "ESC")
+ * @value: value of key (like 264)
+ *
+ * A structure which contains a TI scancode.
+ **/
+typedef struct
+{
+	char*		name;
+	uint16_t	value;
+} KeyPair;
+
+/**
+ * CalcKey:
+ * @key_name: name of key
+ *
+ * A structure which contains a TI scancode with key modifiers.
+ * FIXME: use KeyPair structure to pack infos !
+ **/
+typedef struct 
+{
+  char*		key_name;	// Name of key
+
+  char*		key1;		// Normal key
+  uint16_t	nothing;
+
+  char*		key2;		// SHIFT'ed key (89,92,92+)
+  uint16_t	shift;
+
+  char*		key3;		// 2nd key      (all)
+  uint16_t	second;
+
+  char*		key4;		// CTRL'ed key  (92,92+)
+  uint16_t	diamond;
+
+  char*		key5;		// ALPHA key    (83+,89)
+  uint16_t	alpha;
+} CalcKey;
+
+/**
+ * CalcClock:
+ * @year: year
+ * @month:
+ * @day:
+ * @hours:
+ * @minutes:
+ * @seconds:
+ * @time_format: 12 or 24
+ * @date_format: 1 or 6
+ *
+ * A structure used for clock management.
+ **/
+typedef struct 
+{
+  uint16_t	year;
+  uint8_t	month;
+  uint8_t	day;
+  uint8_t	hours;
+  uint8_t	minutes;
+  uint8_t	seconds;
+  uint8_t	time_format;
+  uint8_t	date_format;
+} CalcClock;
+
+/**
+ * CalcUpdate:
+ * @cancel: set to 1 if transfer have to be cancelled
+ * @count: number of bytes currently transferred
+ * @total: number of bytes to transfer
+ * @percentage: percentage of the current operation
+ * @prev_percentage: Previous percentage of current operation
+ * @main_percentage: Percentage of all operations
+ * @prev_main_percentage: Previous percentage of all operations
+ * @info: a text to display about the current operation
+ * @start: init internal vars
+ * @stop: release internal vars
+ * @refresh: pass control to GUI for refresh
+ * @pbar: refresh pprogress bar
+ * @label: refresh label
+ *
+ * Refresh/progress functions
+ * This structure allows to implement a kind of callbacks mechanism (which
+ * allow libCalcs to interact with user without being dependant of a GUI).
+ **/
+typedef struct 
+{
+  /* Variables to update */
+  int cancel;
+  
+  int count;
+  int total;
+
+  float percentage;
+  float prev_percentage;
+
+  float main_percentage;
+  float prev_main_percentage;
+
+  char info[256];
+
+  /* Functions for updating (callbacks) */
+  void	(*start)	(void);
+  void	(*stop)		(void);
+  void	(*refresh)	(void);
+  void	(*pbar)		(void);
+  void	(*label)	(void);
+} CalcUpdate;
+
+typedef struct _Calc		Calc;
+typedef struct _CalcHandle	CalcHandle;
 
 /**
  * TiCable:
- * @model: link cable model (TiCableModel).
- * @name: name of cable like "SER"
- * @fullname: complete name of cable like "BlackLink"
- * @description: description of cable like "serial cable"
- * @need_open: set if cable need to be 'open'/'close' before calling 'probe'
- * @prepare: detect and map I/O
- * @probe: check for cable presence
- * @open: open I/O port or device
- * @close: close I/O port or device
- * @reset: reset I/O port or device
- * @send: send data onto the cable
- * @recv: recv data from cable
- * @check: check for data arrival
- * @set_d0: set D0/red wire
- * @set_d1: set D1/white wire
- * @get_d0 get D0/red wire
- * @get_d1 set D1/red wire
+ * @model: link cable model (CalcModel).
+ * @name: name of hand-held like "TI89"
+ * @fullname: complete name of hand-held like "TI-89"
+ * @description: description of hand-held like "TI89 calculator"
+ * @operations: supported operations (CalcOperations)
+ * @silent: TRUE if hand-held has silent technology, 0 otherwise
+ * @folder: TRUE if hand-held can store folders
+ * @memory: memory used/free on hand-held (CalcMemType)
+ * @flash: calculator has FLASH ROM
  *
- * A structure used for handling a link cable.
- * This structure is for private use !
+ * A structure used for handling a hand-held.
+ * !!! This structure is for private use !!!
  **/
-struct _Cable
+struct _Calc
 {
 	const int		model;			
 	const char*		name;			
 	const char*		fullname;		
-	const char*		description;	
+	const char*		description;
+	
+	const int		operations;
 
-	const int		need_open;		
+	const int		silent;
+	const int		folder;
+	const int		memory;
+	const int		flash;
 
-	int (*prepare)	(TiCblHandle *);
+	const int		(*is_ready)	(CalcHandle *);
 
-	int (*open)		(TiCblHandle *);
-	int (*close)	(TiCblHandle *);
-	int (*reset)	(TiCblHandle *);
-	int (*probe)	(TiCblHandle *);
+	const int		(*send_key)	(CalcHandle *, uint16_t key);
 
-	int (*send)		(TiCblHandle *, uint8_t *, uint16_t);
-	int (*recv)		(TiCblHandle *, uint8_t *, uint16_t);
-	int (*check)	(TiCblHandle *, int *);
+	const int		(*recv_screen)	(CalcHandle *, 
+									 CalcScreenFormat format, 
+									 CalcScreenCoord  sc,
+									 uint8_t **bitmap
+									 );
 
-	int (*set_d0)	(TiCblHandle *, int);
-	int (*set_d1)	(TiCblHandle *, int);
-	int (*get_d0)	(TiCblHandle *);
-	int (*get_d1)	(TiCblHandle *);
+	const int		(*dirlist)	(CalcHandle *, 
+								 TNode ** vars, TNode ** apps, 
+								 uint32_t * memory);
+
+	const int		(*recv_backup)	(CalcHandle*);
+	const int		(*send_backup)	(CalcHandle*);
+
+	const int		(*send_var)	(CalcHandle*);
+	const int		(*recv_var)	(CalcHandle*);
+	const int		(*recv_var2)	(CalcHandle*);
+
+	const int		(*send_flash)	(CalcHandle*);
+	const int		(*recv_flash)	(CalcHandle*);
+	const int		(*recv_idlist)	(CalcHandle*);
+
+	const int		(*dump_rom)		(CalcHandle*);
+
+	const int		(*set_clock)	(CalcHandle*);
+	const int		(*get_clock)	(CalcHandle*);
+
+/*
+
+  // Communication functions
+
+  int (*recv_backup) (const char *filename, int mode);
+  int (*send_backup) (const char *filename, int mode);
+
+  int (*recv_var) (char *filename, int mode, TiVarEntry * ve);
+  int (*send_var) (const char *filename, int mode, char **actions);
+
+  int (*send_flash) (const char *filename, int mode);
+  int (*recv_flash) (const char *filename, int mask_mode, TiVarEntry * ve);
+  int (*get_idlist) (char *idlist);
+
+  int (*dump_rom) (const char *filename, int mode);
+
+  int (*set_clock) (const CalcClock * clock, int mode);
+  int (*get_clock) (CalcClock * clock, int mode);
+
+  int (*recv_var_2) (char *filename, int mode, TiVarEntry * ve);
+  */
 };
 
 /**
- * TiCblHandle:
+ * CalcHandle:
  * @model: cable model
- * @port: generic port
- * @timeout: timeout value in 0.1 seconds
- * @delay: inter-bit delay for serial/parallel cable in µs
- * @device: device name like COMx or ttySx (if used)
- * @address: I/O base address of device (if used)
- * @cable: a TiCable structure used by this handle
- * @rate: data rate during transfers
- * @priv: opaque data for internal/private use (static)
- * @priv2: idem (allocated)
- * @priv3: idem (static)
- * @open: set if cable has been open
- * @busy: set if cable is busy
+ * @cable: handle on cable used with this model
+ * @update: callbacks for GUI interaction
+ * @priv: holding data
+ * @open: device has been opened
+ * @busy: transfer is in progress
  *
  * A structure used to store informations as an handle.
- * This structure is for private use !
+ * !!! This structure is for private use !!!
  **/
-struct _Handle
+struct _CalcHandle
 {
-	TiCableModel	model;	
-	TiCablePort		port;	
-	int				timeout;
-	int				delay;	
+	CalcModel	model;	
+	
+	CableHandle	cable;
 
-	char *			device;	
-	unsigned int	address;
+	CalcUpdate	update;
 
-	const TiCable*	cable;	
-	TiDataRate		rate;	
+	void*		priv;	
+	void*		priv2;	
+	void*		priv3;	
 
-	void*			priv;	
-	void*			priv2;	
-	void*			priv3;	
-
-	int				open;	
-	int				busy;	
+	int			open;
+	int			busy;	
 };
 
 // namespace scheme: library_class_function like ticables_fext_get
@@ -213,55 +431,18 @@ struct _Handle
 	/* Entry points */
 	/****************/
   
-	TIEXPORT int TICALL ticables_library_init(void);
-	TIEXPORT int TICALL ticables_library_exit(void);
+	TIEXPORT int TICALL ticalcs_library_init(void);
+	TIEXPORT int TICALL ticalcs_library_exit(void);
 
 	/*********************/
 	/* General functions */
 	/*********************/
 
-	// ticables.c
-	TIEXPORT const char* TICALL ticables_version_get (void);
+	// ticalcs.c
+	TIEXPORT const char* TICALL ticalcs_version_get (void);
 
-	TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel, TiCablePort);
-	TIEXPORT int       TICALL ticables_handle_del(TiCblHandle*);
-
-	TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle*, int);
-	TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle*, int);
-
-	TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle*);
-	TIEXPORT TiCablePort  TICALL ticables_get_port(TiCblHandle*);
-
-	TIEXPORT int TICALL ticables_handle_show(TiCblHandle*);
-
-	// link.c
-	TIEXPORT int TICALL ticables_cable_open(TiCblHandle*);
-	TIEXPORT int TICALL ticables_cable_close(TiCblHandle*);
-
-	TIEXPORT int TICALL ticables_cable_probe(TiCblHandle*, unsigned int* result);
-
-	TIEXPORT int TICALL ticables_cable_send(TiCblHandle*, uint8_t *data, uint16_t len);
-	TIEXPORT int TICALL ticables_cable_recv(TiCblHandle*, uint8_t *data, uint16_t len);
-
-	TIEXPORT int TICALL ticables_cable_check(TiCblHandle*, TiCableStatus*);
-
-	TIEXPORT int TICALL ticables_cable_set_d0(TiCblHandle*, int state);
-	TIEXPORT int TICALL ticables_cable_set_d1(TiCblHandle*, int state);
-
-	TIEXPORT int TICALL ticables_cable_get_d0(TiCblHandle*);
-	TIEXPORT int TICALL ticables_cable_get_d1(TiCblHandle*);
-
-	TIEXPORT int TICALL ticables_cable_progress(TiCblHandle*, int *count, int *msec);
-
-	// error.c
-	TIEXPORT int         TICALL ticables_error_get (int number, char **message);
-
-	// type2str.c
-	TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model);
-	TIEXPORT TiCableModel TICALL ticables_string_to_model (const char *str);
-
-	TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port);
-	TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str);
+	TIEXPORT CableHandle* TICALL ticalcss_handle_new(TiCableModel, TiCablePort);
+	TIEXPORT int       TICALL ticalcss_handle_del(CableHandle*);
   
   /************************/
   /* Deprecated functions */
