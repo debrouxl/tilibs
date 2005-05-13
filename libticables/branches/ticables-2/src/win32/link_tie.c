@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -65,7 +65,7 @@ static HANDLE hRecvBuf;
 static LinkBuffer *pSendBuf;
 static LinkBuffer *pRecvBuf;
 
-static int tie_prepare(TiCblHandle *h)
+static int tie_prepare(CableHandle *h)
 {
 	switch(h->port)
 	{
@@ -78,7 +78,7 @@ static int tie_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int tie_open(TiCblHandle *h)
+static int tie_open(CableHandle *h)
 {
 	int p = h->address;
 
@@ -106,7 +106,7 @@ static int tie_open(TiCblHandle *h)
 	return 0;
 }
 
-static int tie_close(TiCblHandle *h)
+static int tie_close(CableHandle *h)
 {
   /* Close the shared buffer */
   if (hSendBuf) 
@@ -118,7 +118,7 @@ static int tie_close(TiCblHandle *h)
   return 0;
 }
 
-static int tie_reset(TiCblHandle *h)
+static int tie_reset(CableHandle *h)
 {
 	pSendBuf->start = pSendBuf->end = 0;
 	pRecvBuf->start = pRecvBuf->end = 0;
@@ -126,12 +126,12 @@ static int tie_reset(TiCblHandle *h)
 	return 0;
 }
 
-static int tie_probe(TiCblHandle *h)
+static int tie_probe(CableHandle *h)
 {
 	return 1;
 }
 
-static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -153,7 +153,7 @@ static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -176,7 +176,7 @@ static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_check(TiCblHandle *h, int *status)
+static int tie_check(CableHandle *h, int *status)
 {
 	if (pRecvBuf->start == pRecvBuf->end)
 		*status = STATUS_NONE;
@@ -186,27 +186,27 @@ static int tie_check(TiCblHandle *h, int *status)
 	return 0;
 }
 
-static int tie_set_red_wire(TiCblHandle *h, int b)
+static int tie_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_set_white_wire(TiCblHandle *h, int b)
+static int tie_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_get_red_wire(TiCblHandle *h)
+static int tie_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int tie_get_white_wire(TiCblHandle *h)
+static int tie_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_tie = 
+const Cable cable_tie = 
 {
 	CABLE_TIE,
 	"TIE",

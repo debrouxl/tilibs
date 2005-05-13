@@ -1,7 +1,7 @@
 /* Hey EMACS -*- macos-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -39,7 +39,7 @@
 #include "macos_mapping.h"
 #include "links.h"
 
-int macos_get_method(TicableType type, int resources, TicableMethod *method)
+int macos_get_method(CableType type, int resources, CableMethod *method)
 {
 	printl1(0, _("getting method from resources"));
 	
@@ -87,7 +87,7 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 }
 
 // Bind the right I/O address & device according to I/O method
-static int macos_map_io(TicableMethod method, TicablePort port)
+static int macos_map_io(CableMethod method, CablePort port)
 {
 	printl1(0, _("mapping I/O...\n"));
 	
@@ -109,12 +109,12 @@ static int macos_map_io(TicableMethod method, TicablePort port)
 }
 
 
-int macos_register_cable(TicableType type, TicableLinkCable *lc)
+int macos_register_cable(CableType type, CableLinkCable *lc)
 {
 	int ret;
 
 	// map I/O
-	ret = macos_map_io((TicableMethod)method, port);
+	ret = macos_map_io((CableMethod)method, port);
 	if(ret)
 		return ret;
 	

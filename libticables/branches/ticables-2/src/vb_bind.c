@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ticables.c 1038 2005-05-09 12:05:08Z roms $ */
+/* $Id: Cables.c 1038 2005-05-09 12:05:08Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -42,13 +42,15 @@
 
 #if 0// defined(__WIN32__)
 
-TiCblHandle* handle_list[MAX_DESCRIPTORS] = { 0 };
+#define MAX_DESCRIPTORS	4	/* Maximum number of handles */
+
+CableHandle* handle_list[MAX_DESCRIPTORS] = { 0 };
 
 #define CD_DEREF(cd)	(handle_list[cd])
 
 static int find_free_spot(void)
 {
-	TiCblHandle **p;
+	CableHandle **p;
 	int i;
 
 	for(p = handle_list, i = 0; *p == NULL && i < MAX_DESCRIPTORS; p++, i++);
@@ -70,7 +72,7 @@ static int find_free_spot(void)
  **/
 HLSTR __stdcall ticables_vb_version_get(void)
 {
-	return LIBTICABLES_VERSION;
+	return LIBticables_VERSION;
 }
 
 /**
@@ -86,9 +88,9 @@ HLSTR __stdcall ticables_vb_version_get(void)
  *
  * Return value: -1 if error, a valid descriptor otherwise.
  **/
-int __stdcall ticables_vb_handle_new(TiCableModel model, TiCablePort port)
+int __stdcall ticables_vb_handle_new(CableModel model, CablePort port)
 {
-	TiCblHandle *handle = ticables_handle_new(model, port);
+	CableHandle *handle = ticables_handle_new(model, port);
 	int cd;
 
 	cd = find_free_spot();

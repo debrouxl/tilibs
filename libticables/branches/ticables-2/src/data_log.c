@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -38,8 +38,8 @@
 #include "gettext.h"
 #include "logging.h"
 
-#define LOG_FILE  "libticables.log"
-#define TIME_FILE "libticables.time"
+#define LOG_FILE  "libCables.log"
+#define TIME_FILE "libCables.time"
 
 static char *fn1 = NULL;
 static char *fn2 = NULL;

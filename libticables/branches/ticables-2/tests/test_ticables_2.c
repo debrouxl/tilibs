@@ -51,7 +51,7 @@ void print_lc_error(int errnum)
 
 int main(int argc, char **argv)
 {
-	TiHandle *handle;
+	CableHandle *handle;
 	int err, i;
 	uint8_t buf[4], data;
 	int status, result;

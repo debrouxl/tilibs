@@ -1,7 +1,7 @@
 /* Hey EMACS -*- bsd-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -71,7 +71,7 @@ int bsd_detect_os(char **os_type)
 	return 0;
 }
 
-int bsd_detect_port(TicablePortInfo * pi)
+int bsd_detect_port(CablePortInfo * pi)
 {
 	return 0;
 }

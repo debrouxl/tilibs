@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
  *
  * Return value: a string like "BlackLink".
  **/
-TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
+TIEXPORT const char *TICALL ticables_model_to_string(CableModel model)
 {
   	switch (model) 
 	{
@@ -55,7 +55,7 @@ TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model)
  *
  * Return value: a cable model.
  **/
-TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
+TIEXPORT CableModel TICALL ticables_string_to_model(const char *str)
 {
 	if(!strcmp(str, "null"))
 		return CABLE_NUL;
@@ -85,7 +85,7 @@ TIEXPORT TiCableModel TICALL ticables_string_to_model(const char *str)
  *
  * Return value: a string like "#1".
  **/
-TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port)
+TIEXPORT const char *TICALL ticables_port_to_string(CablePort port)
 {
   	switch (port) 
 	{
@@ -106,7 +106,7 @@ TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port)
  *
  * Return value: a link port.
  **/
-TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str)
+TIEXPORT CablePort TICALL ticables_string_to_port(const char *str)
 {
 	if(!strcmp(str, "null"))
 		return PORT_0;

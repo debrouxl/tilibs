@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -41,9 +41,9 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBTICABLES_VERSION "0.0.1"
+# define LIBticables_VERSION "0.0.1"
 #else
-# define LIBTICABLES_VERSION VERSION
+# define LIBticables_VERSION VERSION
 #endif
 
 /* Types */
@@ -51,10 +51,8 @@ extern "C" {
 #define DFLT_TIMEOUT  15	/* 1.5 second */
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
-#define MAX_DESCRIPTORS	4	/* Maximum number of handles */
-
 /**
- * TiCableModel:
+ * CableModel:
  *
  * An enumeration which contains the following cable types:
  **/
@@ -63,10 +61,10 @@ typedef enum
 	CABLE_NUL = 0,
 	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
 	CABLE_VTL, CABLE_TIE, CABLE_VTI,
-} TiCableModel;
+} CableModel;
 
 /**
- * TiCablePort:
+ * CablePort:
  *
  * An enumeration which contains the following ports:
  **/
@@ -74,10 +72,10 @@ typedef enum
 {
 	PORT_0 = 0,
 	PORT_1, PORT_2, PORT_3, PORT_4,
-} TiCablePort;
+} CablePort;
 
 /**
- * TiCableStatus:
+ * CableStatus:
  *
  * An enumeration which contains the following values:
  **/
@@ -86,7 +84,7 @@ typedef enum
 	STATUS_NONE = 0, 
 	STATUS_RX = 1, 
 	STATUS_TX = 2,
-} TiCableStatus;
+} CableStatus;
 
 /**
  * TiDataRate:
@@ -96,7 +94,7 @@ typedef enum
  * @stop: the time when transfer finished
  *
  * A structure used for benchmarks.
- * This structure is for private use !
+ * !!! This structure is for private use !!!
  **/
 typedef struct 
 {
@@ -104,14 +102,14 @@ typedef struct
 	tiTIME	start;
 	tiTIME	current;
 	tiTIME	stop;
-} TiDataRate;
+} DataRate;
 
-typedef struct _Cable	TiCable;
-typedef struct _Handle TiCblHandle;
+typedef struct _Cable	Cable;
+typedef struct _CableHandle  CableHandle;
 
 /**
- * TiCable:
- * @model: link cable model (TiCableModel).
+ * Cable:
+ * @model: link cable model (CableModel).
  * @name: name of cable like "SER"
  * @fullname: complete name of cable like "BlackLink"
  * @description: description of cable like "serial cable"
@@ -130,7 +128,7 @@ typedef struct _Handle TiCblHandle;
  * @get_d1 set D1/red wire
  *
  * A structure used for handling a link cable.
- * This structure is for private use !
+ * !!! This structure is for private use !!! 
  **/
 struct _Cable
 {
@@ -141,32 +139,32 @@ struct _Cable
 
 	const int		need_open;		
 
-	int (*prepare)	(TiCblHandle *);
+	int (*prepare)	(CableHandle *);
 
-	int (*open)		(TiCblHandle *);
-	int (*close)	(TiCblHandle *);
-	int (*reset)	(TiCblHandle *);
-	int (*probe)	(TiCblHandle *);
+	int (*open)		(CableHandle *);
+	int (*close)	(CableHandle *);
+	int (*reset)	(CableHandle *);
+	int (*probe)	(CableHandle *);
 
-	int (*send)		(TiCblHandle *, uint8_t *, uint16_t);
-	int (*recv)		(TiCblHandle *, uint8_t *, uint16_t);
-	int (*check)	(TiCblHandle *, int *);
+	int (*send)		(CableHandle *, uint8_t *, uint16_t);
+	int (*recv)		(CableHandle *, uint8_t *, uint16_t);
+	int (*check)	(CableHandle *, int *);
 
-	int (*set_d0)	(TiCblHandle *, int);
-	int (*set_d1)	(TiCblHandle *, int);
-	int (*get_d0)	(TiCblHandle *);
-	int (*get_d1)	(TiCblHandle *);
+	int (*set_d0)	(CableHandle *, int);
+	int (*set_d1)	(CableHandle *, int);
+	int (*get_d0)	(CableHandle *);
+	int (*get_d1)	(CableHandle *);
 };
 
 /**
- * TiCblHandle:
+ * CableHandle:
  * @model: cable model
  * @port: generic port
  * @timeout: timeout value in 0.1 seconds
  * @delay: inter-bit delay for serial/parallel cable in µs
  * @device: device name like COMx or ttySx (if used)
  * @address: I/O base address of device (if used)
- * @cable: a TiCable structure used by this handle
+ * @cable: a Cable structure used by this handle
  * @rate: data rate during transfers
  * @priv: opaque data for internal/private use (static)
  * @priv2: idem (allocated)
@@ -175,20 +173,20 @@ struct _Cable
  * @busy: set if cable is busy
  *
  * A structure used to store informations as an handle.
- * This structure is for private use !
+ * !!! This structure is for private use !!!
  **/
-struct _Handle
+struct _CableHandle
 {
-	TiCableModel	model;	
-	TiCablePort		port;	
+	CableModel		model;	
+	CablePort		port;	
 	int				timeout;
 	int				delay;	
 
 	char *			device;	
 	unsigned int	address;
 
-	const TiCable*	cable;	
-	TiDataRate		rate;	
+	const Cable*	cable;	
+	DataRate		rate;	
 
 	void*			priv;	
 	void*			priv2;	
@@ -211,48 +209,48 @@ struct _Handle
 	/* General functions */
 	/*********************/
 
-	// ticables.c
+	// Cables.c
 	TIEXPORT const char* TICALL ticables_version_get (void);
 
-	TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel, TiCablePort);
-	TIEXPORT int       TICALL ticables_handle_del(TiCblHandle*);
+	TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel, CablePort);
+	TIEXPORT int        TICALL ticables_handle_del(CableHandle*);
 
-	TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle*, int);
-	TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle*, int);
+	TIEXPORT int TICALL ticables_options_set_timeout(CableHandle*, int);
+	TIEXPORT int TICALL ticables_options_set_delay(CableHandle*, int);
 
-	TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle*);
-	TIEXPORT TiCablePort  TICALL ticables_get_port(TiCblHandle*);
+	TIEXPORT CableModel TICALL ticables_get_model(CableHandle*);
+	TIEXPORT CablePort  TICALL ticables_get_port(CableHandle*);
 
-	TIEXPORT int TICALL ticables_handle_show(TiCblHandle*);
+	TIEXPORT int TICALL ticables_handle_show(CableHandle*);
 
 	// link.c
-	TIEXPORT int TICALL ticables_cable_open(TiCblHandle*);
-	TIEXPORT int TICALL ticables_cable_close(TiCblHandle*);
+	TIEXPORT int TICALL ticables_cable_open(CableHandle*);
+	TIEXPORT int TICALL ticables_cable_close(CableHandle*);
 
-	TIEXPORT int TICALL ticables_cable_probe(TiCblHandle*, unsigned int* result);
+	TIEXPORT int TICALL ticables_cable_probe(CableHandle*, unsigned int* result);
 
-	TIEXPORT int TICALL ticables_cable_send(TiCblHandle*, uint8_t *data, uint16_t len);
-	TIEXPORT int TICALL ticables_cable_recv(TiCblHandle*, uint8_t *data, uint16_t len);
+	TIEXPORT int TICALL ticables_cable_send(CableHandle*, uint8_t *data, uint16_t len);
+	TIEXPORT int TICALL ticables_cable_recv(CableHandle*, uint8_t *data, uint16_t len);
 
-	TIEXPORT int TICALL ticables_cable_check(TiCblHandle*, TiCableStatus*);
+	TIEXPORT int TICALL ticables_cable_check(CableHandle*, CableStatus*);
 
-	TIEXPORT int TICALL ticables_cable_set_d0(TiCblHandle*, int state);
-	TIEXPORT int TICALL ticables_cable_set_d1(TiCblHandle*, int state);
+	TIEXPORT int TICALL ticables_cable_set_d0(CableHandle*, int state);
+	TIEXPORT int TICALL ticables_cable_set_d1(CableHandle*, int state);
 
-	TIEXPORT int TICALL ticables_cable_get_d0(TiCblHandle*);
-	TIEXPORT int TICALL ticables_cable_get_d1(TiCblHandle*);
+	TIEXPORT int TICALL ticables_cable_get_d0(CableHandle*);
+	TIEXPORT int TICALL ticables_cable_get_d1(CableHandle*);
 
-	TIEXPORT int TICALL ticables_cable_progress(TiCblHandle*, int *count, int *msec);
+	TIEXPORT int TICALL ticables_cable_progress(CableHandle*, int *count, int *msec);
 
 	// error.c
 	TIEXPORT int         TICALL ticables_error_get (int number, char **message);
 
 	// type2str.c
-	TIEXPORT const char *TICALL ticables_model_to_string(TiCableModel model);
-	TIEXPORT TiCableModel TICALL ticables_string_to_model (const char *str);
+	TIEXPORT const char* TICALL ticables_model_to_string(CableModel model);
+	TIEXPORT CableModel  TICALL ticables_string_to_model (const char *str);
 
-	TIEXPORT const char *TICALL ticables_port_to_string(TiCablePort port);
-	TIEXPORT TiCablePort TICALL ticables_string_to_port(const char *str);
+	TIEXPORT const char* TICALL ticables_port_to_string(CablePort port);
+	TIEXPORT CablePort   TICALL ticables_string_to_port(const char *str);
   
   /************************/
   /* Deprecated functions */

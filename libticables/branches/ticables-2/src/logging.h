@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti File Format library, a part of the TiLP project
+/*  libCables - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 
 #include <glib.h>
 
-#define LOG_DOMAIN	"ticables"
+#define LOG_DOMAIN	"Cables"
 
 void ticables_debug(const gchar *format, ...);
 void ticables_info(const gchar *format, ...);

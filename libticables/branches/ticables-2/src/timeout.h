@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -31,8 +31,8 @@
   mine. This allowed me to find why my routines was so slow !
 */
 
-#ifndef __TICABLE_TIMEOUT__
-#define __TICABLE_TIMEOUT__
+#ifndef __Cable_TIMEOUT__
+#define __Cable_TIMEOUT__
 
 /*
   Platform independant time measurement & timeout management

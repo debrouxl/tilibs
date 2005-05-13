@@ -1,7 +1,7 @@
 /* Hey EMACS -*- macos-c -*- */
 /* $Id: ioports.c 370 2004-03-22 18:47:32Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *  Copyright (c) 2002, Kevin Kofler for the __MINGW32__ & __GNUC__ extensions.
  *

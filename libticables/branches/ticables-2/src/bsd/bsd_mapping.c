@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -47,7 +47,7 @@ static int warning;
 
 static int check_for_root(void);
 
-int bsd_get_method(TicableType type, int resources, TicableMethod *method)
+int bsd_get_method(CableType type, int resources, CableMethod *method)
 {
         // init warning
 	warning = ERR_NO_ERROR;
@@ -133,7 +133,7 @@ int bsd_get_method(TicableType type, int resources, TicableMethod *method)
 
 
 // Bind the right I/O address & device according to I/O method
-static int bsd_map_io(TicableMethod method, TicablePort port)
+static int bsd_map_io(CableMethod method, CablePort port)
 {
 	printl1(0, _("mapping I/O...\n"));
 	
@@ -204,12 +204,12 @@ static int bsd_map_io(TicableMethod method, TicablePort port)
 }
 
 
-int bsd_register_cable(TicableType type, TicableLinkCable *lc)
+int bsd_register_cable(CableType type, CableLinkCable *lc)
 {
 	int ret;
 	
 	// map I/O
-	ret = bsd_map_io((TicableMethod)method, port);
+	ret = bsd_map_io((CableMethod)method, port);
 	if(ret)
 		return ret;
 	

@@ -76,7 +76,7 @@
 
 #if defined(__WIN32__) && !defined(__MINGW32__)
 # undef PACKAGE
-# define PACKAGE "ticables"	// name of package
+# define PACKAGE "Cables"	// name of package
 #endif
 
 #endif /* _LIBGETTEXT_H */

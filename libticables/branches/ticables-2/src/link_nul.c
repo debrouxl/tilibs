@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -32,68 +32,68 @@
 #include "ticables.h"
 #include "gettext.h"
 
-int nul_prepare(TiCblHandle *h)
+int nul_prepare(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_probe(TiCblHandle *h)
+int nul_probe(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_open(TiCblHandle *h)
+int nul_open(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_close(TiCblHandle *h)
+int nul_close(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_reset(TiCblHandle *h)
+int nul_reset(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+int nul_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
 
-int nul_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+int nul_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	return 0;
 }
 
-int nul_check(TiCblHandle *h, int *status)
+int nul_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 	return 0;
 }
 
-int nul_set_red_wire(TiCblHandle *h, int b)
+int nul_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_set_white_wire(TiCblHandle *h, int b)
+int nul_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_get_red_wire(TiCblHandle *h)
+int nul_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-int nul_get_white_wire(TiCblHandle *h)
+int nul_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_nul = 
+const Cable cable_nul = 
 {
 	CABLE_NUL,
 	"NUL",

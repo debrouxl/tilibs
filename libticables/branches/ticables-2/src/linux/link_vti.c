@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -73,7 +73,7 @@ vti_buf *recv_buf[2];
 
 static int p = 0;		// a shortcut
 
-static int vti_prepare(TiCblHandle *h)
+static int vti_prepare(CableHandle *h)
 {
 	h->address = 0;
 	h->device = strdup("");
@@ -81,7 +81,7 @@ static int vti_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int vti_open(TiCblHandle *h)
+static int vti_open(CableHandle *h)
 {
   int i;
 
@@ -128,7 +128,7 @@ static int vti_open(TiCblHandle *h)
   return 0;
 }
 
-static int vti_close(TiCblHandle *h)
+static int vti_close(CableHandle *h)
 {
   int i;
 
@@ -149,7 +149,7 @@ static int vti_close(TiCblHandle *h)
   return 0;
 }
 
-static int vti_reset(TiCblHandle *h)
+static int vti_reset(CableHandle *h)
 {
   int i;
 
@@ -161,7 +161,7 @@ static int vti_reset(TiCblHandle *h)
   return 0;
 }
 
-static int vti_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
   tiTIME clk;
 
@@ -177,7 +177,7 @@ static int vti_put(TiCblHandle *h, uint8_t *data, uint16_t len)
   return 0;
 }
 
-static int vti_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
   tiTIME clk;
 
@@ -195,12 +195,12 @@ static int vti_get(TiCblHandle *h, uint8_t *data, uint16_t len)
   return 0;
 }
 
-static int vti_probe(TiCblHandle *h)
+static int vti_probe(CableHandle *h)
 {
 	return 0;
 }
 
-static int vti_check(TiCblHandle *h, int *status)
+static int vti_check(CableHandle *h, int *status)
 {
   *status = STATUS_NONE;
 
@@ -216,27 +216,27 @@ static int vti_check(TiCblHandle *h, int *status)
   return 0;
 }
 
-static int vti_set_red_wire(TiCblHandle *h, int b)
+static int vti_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_set_white_wire(TiCblHandle *h, int b)
+static int vti_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_get_red_wire(TiCblHandle *h)
+static int vti_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int vti_get_white_wire(TiCblHandle *h)
+static int vti_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_vti = 
+const Cable cable_vti = 
 {
 	CABLE_VTI,
 	"VTI",

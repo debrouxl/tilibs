@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # SUBTRACT BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /debugtype:both /machine:I386 /out:"C:\msvc\tilp-2\ticables2.dll" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /debugtype:both /machine:I386 /out:"C:\msvc\tilp2\ticables2.dll" /pdbtype:sept
 # SUBTRACT LINK32 /map
 
 !ENDIF 
@@ -193,18 +193,6 @@ SOURCE=..\..\src\ticables.h
 SOURCE=..\..\src\type2str.c
 # End Source File
 # End Group
-# Begin Group "VB binding"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE="..\vb\ticables2.def"
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\vb_bind.c
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
@@ -212,10 +200,6 @@ SOURCE=..\..\ChangeLog
 # Begin Source File
 
 SOURCE=.\ticables.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\Gtk2Dev\lib\intl.lib
 # End Source File
 # Begin Source File
 

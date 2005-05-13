@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,9 +37,9 @@
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_open(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 
 	TRYC(handle->cable->prepare(handle));
 	
@@ -60,9 +60,9 @@ TIEXPORT int TICALL ticables_cable_open(TiCblHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_probe(TiCblHandle* handle, unsigned int* result)
+TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* result)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int already = handle->open;
 	int ret;
 
@@ -95,9 +95,9 @@ TIEXPORT int TICALL ticables_cable_probe(TiCblHandle* handle, unsigned int* resu
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_close(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 
 	STOP_LOGGING();
 	if(handle->open)
@@ -119,9 +119,9 @@ TIEXPORT int TICALL ticables_cable_close(TiCblHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_send(TiCblHandle* handle, uint8_t *data, uint16_t len)
+TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint16_t len)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 
 	if(!handle->open)
@@ -151,9 +151,9 @@ TIEXPORT int TICALL ticables_cable_send(TiCblHandle* handle, uint8_t *data, uint
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_recv(TiCblHandle* handle, uint8_t *data, uint16_t len)
+TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint16_t len)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -182,9 +182,9 @@ TIEXPORT int TICALL ticables_cable_recv(TiCblHandle* handle, uint8_t *data, uint
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_check(TiCblHandle* handle, TiCableStatus *status)
+TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -208,9 +208,9 @@ TIEXPORT int TICALL ticables_cable_check(TiCblHandle* handle, TiCableStatus *sta
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_set_d0(TiCblHandle* handle, int state)
+TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -234,9 +234,9 @@ TIEXPORT int TICALL ticables_cable_set_d0(TiCblHandle* handle, int state)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_set_d1(TiCblHandle* handle, int state)
+TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -259,9 +259,9 @@ TIEXPORT int TICALL ticables_cable_set_d1(TiCblHandle* handle, int state)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT int TICALL ticables_cable_get_d0(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -284,9 +284,9 @@ TIEXPORT int TICALL ticables_cable_get_d0(TiCblHandle* handle)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT int TICALL ticables_cable_get_d1(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
 {
-	const TiCable *cable = handle->cable;
+	const Cable *cable = handle->cable;
 	int ret;
 	
 	if(!handle->open)
@@ -311,7 +311,7 @@ TIEXPORT int TICALL ticables_cable_get_d1(TiCblHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_progress(TiCblHandle* handle, int *count, int *msec)
+TIEXPORT int TICALL ticables_cable_progress(CableHandle* handle, int *count, int *msec)
 {
 	*count = handle->rate.count;
 	*msec = 1000 * TO_ELAPSED(handle->rate.start, handle->rate.current);

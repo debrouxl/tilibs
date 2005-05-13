@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *  Copyright (C) 2001 Julien Blache (original author)
  *
@@ -281,7 +281,7 @@ static int reset_pipes(usb_dev_handle *udh)
 
 /* API */
 
-static int slv_prepare(TiCblHandle *h)
+static int slv_prepare(CableHandle *h)
 {
 	char str[64];
 
@@ -298,7 +298,7 @@ static int slv_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int slv_open(TiCblHandle *h)
+static int slv_open(CableHandle *h)
 {
     // open device
     tigl_dev = tigl_devices[h->address].dev;
@@ -316,7 +316,7 @@ static int slv_open(TiCblHandle *h)
     return 0;
 }
 
-static int slv_close(TiCblHandle *h)
+static int slv_close(CableHandle *h)
 {
     tigl_dev = NULL;
     
@@ -333,7 +333,7 @@ static int slv_close(TiCblHandle *h)
     return 0;
 }
 
-static int slv_reset(TiCblHandle *h)
+static int slv_reset(CableHandle *h)
 {
     /* Reset both endpoints */
     TRYC(reset_pipes(tigl_han));
@@ -342,7 +342,7 @@ static int slv_reset(TiCblHandle *h)
 }
 
 // convenient function which send one or more bytes
-static int send_block(TiCblHandle *h, uint8_t *data, int length)
+static int send_block(CableHandle *h, uint8_t *data, int length)
 {
     int ret;
     
@@ -367,7 +367,7 @@ static int send_block(TiCblHandle *h, uint8_t *data, int length)
     return 0;
 }
 
-static int slv_put(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int slv_put(CableHandle* h, uint8_t *data, uint16_t len)
 {
     int q = len / max_ps;
     int r = len % max_ps;
@@ -382,7 +382,7 @@ static int slv_put(TiCblHandle* h, uint8_t *data, uint16_t len)
   return 0;
 }
 
-static int slv_get_(TiCblHandle *h, uint8_t *data)
+static int slv_get_(CableHandle *h, uint8_t *data)
 {
     int ret = 0;
     tiTIME clk;
@@ -435,7 +435,7 @@ static int slv_get_(TiCblHandle *h, uint8_t *data)
     return 0;
 }
 
-static int slv_get(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int slv_get(CableHandle* h, uint8_t *data, uint16_t len)
 {
     int i;
 
@@ -447,7 +447,7 @@ static int slv_get(TiCblHandle* h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int slv_probe(TiCblHandle *h)
+static int slv_probe(CableHandle *h)
 {
     int i;
     
@@ -462,7 +462,7 @@ static int slv_probe(TiCblHandle *h)
     return ERR_PROBE_FAILED;
 }
 
-static int raw_probe(TiCblHandle *h)
+static int raw_probe(CableHandle *h)
 {
     int i;
 
@@ -478,32 +478,32 @@ static int raw_probe(TiCblHandle *h)
     return ERR_PROBE_FAILED;
 }
 
-static int slv_check(TiCblHandle *h, int *status)
+static int slv_check(CableHandle *h, int *status)
 {
   	return 0;
 }
 
-static int slv_set_red_wire(TiCblHandle *h, int b)
+static int slv_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_set_white_wire(TiCblHandle *h, int b)
+static int slv_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int slv_get_red_wire(TiCblHandle *h)
+static int slv_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int slv_get_white_wire(TiCblHandle *h)
+static int slv_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_slv =
+const Cable cable_slv =
 {
 	CABLE_SLV,
 	"SLV",
@@ -517,7 +517,7 @@ const TiCable cable_slv =
 	&slv_get_red_wire, &slv_get_white_wire,
 };
 
-const TiCable cable_raw =
+const Cable cable_raw =
 {
 	CABLE_USB,
 	"USB",

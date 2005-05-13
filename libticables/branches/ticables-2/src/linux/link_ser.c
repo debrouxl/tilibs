@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: link_ser2.c 1033 2005-05-06 18:17:02Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,7 @@
 
 #define dev_fd  ((int)(h->priv))
 
-static int ser_prepare(TiCblHandle *h)
+static int ser_prepare(CableHandle *h)
 {
     switch(h->port)
     {
@@ -59,25 +59,25 @@ static int ser_prepare(TiCblHandle *h)
     return 0;
 }
 
-static int ser_open(TiCblHandle *h)
+static int ser_open(CableHandle *h)
 {
     TRYC(ser_io_open(h->device, (int *)&(h->priv)));
     return 0;
 }
 
-static int ser_close(TiCblHandle *h)
+static int ser_close(CableHandle *h)
 {
     TRYC(ser_io_close(dev_fd));
     return 0;
 }
 
-static int ser_reset(TiCblHandle *h)
+static int ser_reset(CableHandle *h)
 {
     ser_io_wr(dev_fd, 3);
     return 0;
 }
 
-static int ser_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int ser_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
     int bit;
     int i, j;
@@ -136,7 +136,7 @@ static int ser_put(TiCblHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int ser_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int ser_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
     int bit;
     int i, j;
@@ -192,7 +192,7 @@ static int ser_get(TiCblHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int ser_probe(TiCblHandle *h)
+static int ser_probe(CableHandle *h)
 {
     int timeout = 1;
     tiTIME clk;
@@ -234,7 +234,7 @@ static int ser_probe(TiCblHandle *h)
     return 0;
 }
 
-static int ser_check(TiCblHandle *h, int *status)
+static int ser_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
@@ -246,7 +246,7 @@ static int ser_check(TiCblHandle *h, int *status)
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
-static int ser_set_red_wire(TiCblHandle *h, int b)
+static int ser_set_red_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(ser_io_rd(dev_fd) >> 4);
 
@@ -258,7 +258,7 @@ static int ser_set_red_wire(TiCblHandle *h, int b)
 	return 0;
 }
 
-static int ser_set_white_wire(TiCblHandle *h, int b)
+static int ser_set_white_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(ser_io_rd(dev_fd) >> 4);
 
@@ -270,17 +270,17 @@ static int ser_set_white_wire(TiCblHandle *h, int b)
 	return 0;
 }
 
-static int ser_get_red_wire(TiCblHandle *h)
+static int ser_get_red_wire(CableHandle *h)
 {
 	return ((0x10 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
-static int ser_get_white_wire(TiCblHandle *h)
+static int ser_get_white_wire(CableHandle *h)
 {
 	return ((0x20 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
-const TiCable cable_ser = 
+const Cable cable_ser = 
 {
 	CABLE_BLK,
 	"BLK",

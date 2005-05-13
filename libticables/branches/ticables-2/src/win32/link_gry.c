@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 
 #define hCom	(HANDLE)(h->priv)
 
-static int gry_prepare(TiCblHandle *h)
+static int gry_prepare(CableHandle *h)
 {
 	switch(h->port)
 	{
@@ -46,7 +46,7 @@ static int gry_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_open(TiCblHandle *h)
+static int gry_open(CableHandle *h)
 {
 	DCB dcb;
 	BOOL fSuccess;
@@ -138,7 +138,7 @@ static int gry_open(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_close(TiCblHandle *h)
+static int gry_close(CableHandle *h)
 {
 	if (hCom) 
 	{
@@ -149,7 +149,7 @@ static int gry_close(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_reset(TiCblHandle *h)
+static int gry_reset(CableHandle *h)
 {
 	BOOL fSuccess;
 
@@ -163,7 +163,7 @@ static int gry_reset(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_probe(TiCblHandle *h)
+static int gry_probe(CableHandle *h)
 {
 	DWORD status;			//MS_CTS_ON or MS_DTR_ON
 
@@ -205,7 +205,7 @@ static int gry_probe(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesWritten;
@@ -236,7 +236,7 @@ static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(CableHandle* h, uint8_t *data, uint16_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;
@@ -267,7 +267,7 @@ static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
   	return 0;
 }
 
-static int gry_check(TiCblHandle *h, int *status)
+static int gry_check(CableHandle *h, int *status)
 {
 	BOOL fSuccess;
 	DWORD dwEvtMask;
@@ -283,27 +283,27 @@ static int gry_check(TiCblHandle *h, int *status)
 	return 0;
 }
 
-static int gry_set_red_wire(TiCblHandle *h, int b)
+static int gry_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_set_white_wire(TiCblHandle *h, int b)
+static int gry_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_get_red_wire(TiCblHandle *h)
+static int gry_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int gry_get_white_wire(TiCblHandle *h)
+static int gry_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_gry = 
+const Cable cable_gry = 
 {
 	CABLE_GRY,
 	"GRY",

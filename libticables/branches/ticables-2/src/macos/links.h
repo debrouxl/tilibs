@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id: links.h 397 2004-03-29 17:21:12Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -24,26 +24,26 @@
 
 #include "../cabl_def.h"
 
-int avr_register_cable(TicableLinkCable * lc);
+int avr_register_cable(CableLinkCable * lc);
 
-int dev_register_cable(TicableLinkCable * lc);
+int dev_register_cable(CableLinkCable * lc);
 
-int nul_register_cable(TicableLinkCable * lc);
+int nul_register_cable(CableLinkCable * lc);
 
-int par_register_cable(TicableLinkCable * lc);
+int par_register_cable(CableLinkCable * lc);
 
-int ser_register_cable_1(TicableLinkCable * lc);
-int ser_register_cable_2(TicableLinkCable * lc);
+int ser_register_cable_1(CableLinkCable * lc);
+int ser_register_cable_2(CableLinkCable * lc);
 
-int slv_register_cable_1(TicableLinkCable * lc);
-int slv_register_cable_2(TicableLinkCable * lc);
+int slv_register_cable_1(CableLinkCable * lc);
+int slv_register_cable_2(CableLinkCable * lc);
 
-int tie_register_cable(TicableLinkCable * lc);
+int tie_register_cable(CableLinkCable * lc);
 
-int tig_register_cable(TicableLinkCable * lc);
+int tig_register_cable(CableLinkCable * lc);
 
-int vti_register_cable(TicableLinkCable * lc);
+int vti_register_cable(CableLinkCable * lc);
 
-int vtl_register_cable(TicableLinkCable * lc);
+int vtl_register_cable(CableLinkCable * lc);
 
 #endif

@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -45,7 +45,7 @@
 #define dev_fd      ((int)(h->priv))
 #define termset     ((struct termios *)(h->priv2))
 
-static int gry_prepare(TiCblHandle *h)
+static int gry_prepare(CableHandle *h)
 {
 	switch(h->port)
 	{
@@ -62,7 +62,7 @@ static int gry_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int gry_open(TiCblHandle *h)
+static int gry_open(CableHandle *h)
 {
     int flags = 0;
     
@@ -102,7 +102,7 @@ static int gry_open(TiCblHandle *h)
     return 0;
 }
 
-static int gry_close(TiCblHandle *h)
+static int gry_close(CableHandle *h)
 {
     close(dev_fd);
     free(h->priv2);
@@ -111,7 +111,7 @@ static int gry_close(TiCblHandle *h)
     return 0;
 }
 
-static int gry_reset(TiCblHandle *h)
+static int gry_reset(CableHandle *h)
 {
     uint8_t unused[1024];
     int n;
@@ -132,7 +132,7 @@ static int gry_reset(TiCblHandle *h)
     return 0;
 }
 
-static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
 {
     int err;
 
@@ -150,7 +150,7 @@ static int gry_put(TiCblHandle* h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(CableHandle* h, uint8_t *data, uint16_t len)
 {
     int err;
     
@@ -171,7 +171,7 @@ static int gry_get(TiCblHandle* h, uint8_t *data, uint16_t len)
 }
 
 // Migrate these functions into ioports.c
-static int dcb_read_io(TiCblHandle *h)
+static int dcb_read_io(CableHandle *h)
 {
 #ifdef HAVE_TERMIOS_H	
     unsigned int flags;
@@ -183,7 +183,7 @@ static int dcb_read_io(TiCblHandle *h)
 #endif
 }
 
-static int dcb_write_io(TiCblHandle *h, int data)
+static int dcb_write_io(CableHandle *h, int data)
 {
 #ifdef HAVE_TERMIOS_H
     unsigned int flags = 0;
@@ -197,7 +197,7 @@ static int dcb_write_io(TiCblHandle *h, int data)
 #endif
 }
 
-static int gry_probe(TiCblHandle *h)
+static int gry_probe(CableHandle *h)
 {
     int i;
     int seq_in[] =  { 3, 2, 0, 1, 3 };
@@ -220,7 +220,7 @@ static int gry_probe(TiCblHandle *h)
     return 0;
 }
 
-static int gry_check(TiCblHandle *h, int *status)
+static int gry_check(CableHandle *h, int *status)
 {
     fd_set rdfs;
     struct timeval tv;
@@ -250,27 +250,27 @@ static int gry_check(TiCblHandle *h, int *status)
     return 0;
 }
 
-static int gry_set_red_wire(TiCblHandle *h, int b)
+static int gry_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_set_white_wire(TiCblHandle *h, int b)
+static int gry_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int gry_get_red_wire(TiCblHandle *h)
+static int gry_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int gry_get_white_wire(TiCblHandle *h)
+static int gry_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_gry = 
+const Cable cable_gry = 
 {
 	CABLE_GRY,
 	"GRY",

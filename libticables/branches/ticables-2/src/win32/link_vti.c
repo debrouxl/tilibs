@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -61,19 +61,19 @@ static LinkBuffer*	vRecvBuf;
 static HANDLE		hMap = NULL;		// Handle on file-mapping object
 static HWND			otherWnd = NULL;	// Handle on the VTi window
 
-static int vti_prepare(TiCblHandle *h)
+static int vti_prepare(CableHandle *h)
 {
 	switch(h->port)
 	{
 	case PORT_1: h->address = 0; h->device = strdup("VTi"); break;
-	case PORT_2: h->address = 1; h->device = strdup("libticables"); break;
+	case PORT_2: h->address = 1; h->device = strdup("libCables"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
 	return 0;
 }
 
-static int vti_open(TiCblHandle *h)
+static int vti_open(CableHandle *h)
 {
 	int i;
 	char vLinkFileName[32];
@@ -103,13 +103,13 @@ static int vti_open(TiCblHandle *h)
 		return ERR_VTI_FINDWINDOW;
   
     /* Get the current DLL handle */
-    Handle = GetModuleHandle("ticables-2.dll");
+    Handle = GetModuleHandle("Cables-2.dll");
 	if(!Handle)
-	  Handle = GetModuleHandle("libticables-3.dll");
+	  Handle = GetModuleHandle("libCables-3.dll");
   
     if (!Handle) 
     {
-      ticables_warning(_("Unable to get an handle on the libTIcables.\n"));
+      ticables_warning(_("Unable to get an handle on the libCables.\n"));
       ticables_warning(_("Did you rename the library ?!\n"));
       ticables_warning(_("Fatal error. Program terminated.\n"));
       exit(-1);
@@ -150,7 +150,7 @@ static int vti_open(TiCblHandle *h)
 	return 0;
 }
 
-static int vti_close(TiCblHandle *h)
+static int vti_close(CableHandle *h)
 {
 	if (otherWnd) 
   {
@@ -169,7 +169,7 @@ static int vti_close(TiCblHandle *h)
 	return 0;
 }
 
-static int vti_reset(TiCblHandle *h)
+static int vti_reset(CableHandle *h)
 {
 	vSendBuf->start = vSendBuf->end = 0;
 	vRecvBuf->start = vRecvBuf->end = 0;
@@ -177,12 +177,12 @@ static int vti_reset(TiCblHandle *h)
 	return 0;
 }
 
-static int vti_probe(TiCblHandle *h)
+static int vti_probe(CableHandle *h)
 {
 	return 1;
 }
 
-static int vti_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -204,7 +204,7 @@ static int vti_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
@@ -228,34 +228,34 @@ static int vti_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_check(TiCblHandle *h, int *status)
+static int vti_check(CableHandle *h, int *status)
 {
 	*status = !(vRecvBuf->start == vRecvBuf->end);
 
 	return 0;
 }
 
-static int vti_set_red_wire(TiCblHandle *h, int b)
+static int vti_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_set_white_wire(TiCblHandle *h, int b)
+static int vti_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int vti_get_red_wire(TiCblHandle *h)
+static int vti_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int vti_get_white_wire(TiCblHandle *h)
+static int vti_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_vti = 
+const Cable cable_vti = 
 {
 	CABLE_VTI,
 	"VTI",

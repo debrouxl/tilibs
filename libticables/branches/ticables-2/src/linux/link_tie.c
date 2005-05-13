@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -61,7 +61,7 @@ static const char fifo_names[4][256] = {
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0"
 };
 
-static int tie_prepare(TiCblHandle *h)
+static int tie_prepare(CableHandle *h)
 {
 	h->address = 0;
 	h->device = strdup("");
@@ -69,10 +69,10 @@ static int tie_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int tie_open(TiCblHandle *h)
+static int tie_open(CableHandle *h)
 {
     if ((h->address < 1) || (h->address > 2)) {
-	ticables_warning(_("Invalid h->address parameter passed to libticables.\n"));
+	ticables_warning(_("Invalid h->address parameter passed to libCables.\n"));
     h->address = 2;
     }
     p = h->address - 1;
@@ -104,7 +104,7 @@ static int tie_open(TiCblHandle *h)
   return 0;
 }
 
-static int tie_close(TiCblHandle *h)
+static int tie_close(CableHandle *h)
 {
     if (rd[p]) 
     {
@@ -128,7 +128,7 @@ static int tie_close(TiCblHandle *h)
     return 0;
 }
 
-static int tie_reset(TiCblHandle *h)
+static int tie_reset(CableHandle *h)
 {
     uint8_t d;
     int n;
@@ -142,7 +142,7 @@ static int tie_reset(TiCblHandle *h)
     return 0;
 }
 
-static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
     int n = 0;
     tiTIME clk;
@@ -173,7 +173,7 @@ static int tie_put(TiCblHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
     static int n = 0;
     tiTIME clk;
@@ -194,12 +194,12 @@ static int tie_get(TiCblHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int tie_probe(TiCblHandle *h)
+static int tie_probe(CableHandle *h)
 {
 	return 0;
 }
 
-static int tie_check(TiCblHandle *h, int *status)
+static int tie_check(CableHandle *h, int *status)
 {
     fd_set rdfs;
     struct timeval tv;
@@ -226,27 +226,27 @@ static int tie_check(TiCblHandle *h, int *status)
     return 0;
 }
 
-static int tie_set_red_wire(TiCblHandle *h, int b)
+static int tie_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_set_white_wire(TiCblHandle *h, int b)
+static int tie_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-static int tie_get_red_wire(TiCblHandle *h)
+static int tie_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-static int tie_get_white_wire(TiCblHandle *h)
+static int tie_get_white_wire(CableHandle *h)
 {
 	return 1;
 }
 
-const TiCable cable_tie = 
+const Cable cable_tie = 
 {
 	CABLE_TIE,
 	"TIE",

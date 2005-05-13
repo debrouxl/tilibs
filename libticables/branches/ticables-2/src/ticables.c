@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@
 /* Internal data */
 /*****************/
 
-static TiCable const *const cables[] = 
+static Cable const *const cables[] = 
 {
 	&cable_nul,
 #ifndef NO_CABLE_GRY
@@ -91,7 +91,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	HANDLE hDll;
   	int i;
   	
-  	hDll = GetModuleHandle("ticables.dll");
+  	hDll = GetModuleHandle("Cables.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
   	
   	for (i = strlen(locale_dir); i >= 0; i--) {
@@ -107,7 +107,7 @@ TIEXPORT int TICALL ticables_library_init(void)
 
 	if (ticables_instance)
 		return (++ticables_instance);
-	ticables_info(_("ticables library version %s"), LIBTICABLES_VERSION);
+	ticables_info(_("Cables library version %s"), LIBticables_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
@@ -147,7 +147,7 @@ TICALL ticables_library_exit(void)
  **/
 TIEXPORT const char *TICALL ticables_version_get(void)
 {
-	return LIBTICABLES_VERSION;
+	return LIBticables_VERSION;
 }
 
 /**
@@ -161,9 +161,9 @@ TIEXPORT const char *TICALL ticables_version_get(void)
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
+TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 {
-	TiCblHandle *handle = (TiCblHandle *)calloc(1, sizeof(TiCblHandle));
+	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
 	int i;
 
 	handle->model = model;
@@ -193,7 +193,7 @@ TIEXPORT TiCblHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_handle_del(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
 {
     if(handle->priv2)
 	free(handle->priv2);
@@ -215,7 +215,7 @@ TIEXPORT int TICALL ticables_handle_del(TiCblHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle* handle, int timeout)
+TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
 	return handle->timeout = timeout;
 }
@@ -229,7 +229,7 @@ TIEXPORT int TICALL ticables_options_set_timeout(TiCblHandle* handle, int timeou
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle* handle, int delay)
+TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
 	return handle->delay = delay;
 }
@@ -240,9 +240,9 @@ TIEXPORT int TICALL ticables_options_set_delay(TiCblHandle* handle, int delay)
  *
  * Retrieve link cable model.
  *
- * Return value: a #TiCableModel value.
+ * Return value: a #CableModel value.
  **/
-TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle* handle)
+TIEXPORT CableModel TICALL ticables_get_model(CableHandle* handle)
 {
 	return handle->model;
 }
@@ -253,14 +253,14 @@ TIEXPORT TiCableModel TICALL ticables_get_model(TiCblHandle* handle)
  *
  * Retrieve link port.
  *
- * Return value: a #TiCablePort value.
+ * Return value: a #CablePort value.
  **/
-TIEXPORT TiCablePort  TICALL ticables_get_port(TiCblHandle* handle)
+TIEXPORT CablePort  TICALL ticables_get_port(CableHandle* handle)
 {
 	return handle->port;
 }
 
-TIEXPORT int TICALL ticables_handle_show(TiCblHandle* handle)
+TIEXPORT int TICALL ticables_handle_show(CableHandle* handle)
 {
 	ticables_info(_("Link cable handle details:"));
 	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));

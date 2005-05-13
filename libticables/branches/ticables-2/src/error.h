@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -89,6 +89,6 @@ typedef enum
     ERR_PPT_OPEN,
     ERR_PPT_IOCTL, //48
 
-} TiCableError;
+} CableError;
 
 #endif

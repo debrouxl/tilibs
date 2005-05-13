@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: link_par.c 1015 2005-05-02 14:00:00Z roms $ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@
 #define lpt_in  (h->address + 1)
 #define lpt_ctl (h->address + 2)
 
-static int par_prepare(TiCblHandle *h)
+static int par_prepare(CableHandle *h)
 {
 	switch(h->port)
 	{
@@ -51,7 +51,7 @@ static int par_prepare(TiCblHandle *h)
 	return 0;
 }
 
-static int par_open(TiCblHandle *h)
+static int par_open(CableHandle *h)
 {
 	TRYC(io_open(h->address));
 #ifdef __WIN32__
@@ -63,20 +63,20 @@ static int par_open(TiCblHandle *h)
 	return 0;
 }
 
-static int par_close(TiCblHandle *h)
+static int par_close(CableHandle *h)
 {
 	TRYC(io_close(h->address));
 
 	return 0;
 }
 
-static int par_reset(TiCblHandle *h)
+static int par_reset(CableHandle *h)
 {
 	io_wr(lpt_out, 3);
 	return 0;
 }
 
-static int par_put(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int par_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
   	int i, j;
@@ -137,7 +137,7 @@ static int par_put(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int par_get(TiCblHandle *h, uint8_t *data, uint16_t len)
+static int par_get(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int bit;
 	int i, j;
@@ -191,7 +191,7 @@ static int par_get(TiCblHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int par_probe(TiCblHandle *h)
+static int par_probe(CableHandle *h)
 {
 	int i, j;
   	int seq[] = { 0x00, 0x20, 0x10, 0x30 };
@@ -217,7 +217,7 @@ static int par_probe(TiCblHandle *h)
 	return 0;
 }
 
-static int par_check(TiCblHandle *h, int *status)
+static int par_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 
@@ -229,7 +229,7 @@ static int par_check(TiCblHandle *h, int *status)
 
 #define swap_bits(a) (((a&2)>>1) | ((a&1)<<1))	// swap the 2 lowest bits
 
-static int par_set_red_wire(TiCblHandle *h, int b)
+static int par_set_red_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(io_rd(lpt_in) >> 4);
 
@@ -241,7 +241,7 @@ static int par_set_red_wire(TiCblHandle *h, int b)
 	return 0;
 }
 
-static int par_set_white_wire(TiCblHandle *h, int b)
+static int par_set_white_wire(CableHandle *h, int b)
 {
 	int v = swap_bits(io_rd(lpt_in) >> 4);
 
@@ -253,17 +253,17 @@ static int par_set_white_wire(TiCblHandle *h, int b)
 	return 0;
 }
 
-static int par_get_red_wire(TiCblHandle *h)
+static int par_get_red_wire(CableHandle *h)
 {
 	return (0x10 & io_rd(lpt_in)) ? 1 : 0;
 }
 
-static int par_get_white_wire(TiCblHandle *h)
+static int par_get_white_wire(CableHandle *h)
 {
 	return (0x20 & io_rd(lpt_in)) ? 1 : 0;
 }
 
-const TiCable cable_par = 
+const Cable cable_par = 
 {
 	CABLE_PAR,
 	"PAR",

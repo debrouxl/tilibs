@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -24,14 +24,14 @@
 
 #include "ticables.h"
 
-extern const TiCable cable_nul;
-extern const TiCable cable_gry;
-extern const TiCable cable_ser;
-extern const TiCable cable_slv;
-extern const TiCable cable_par;
-extern const TiCable cable_vti;
-extern const TiCable cable_tie;
-extern const TiCable cable_raw;
+extern const Cable cable_nul;
+extern const Cable cable_gry;
+extern const Cable cable_ser;
+extern const Cable cable_slv;
+extern const Cable cable_par;
+extern const Cable cable_vti;
+extern const Cable cable_tie;
+extern const Cable cable_raw;
 
 #endif
 
