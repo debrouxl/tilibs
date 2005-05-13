@@ -3,15 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiCalcs, 4.5.9, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticalcs2, 0.0.1, [tilp-users@lists.sourceforge.net])
 
-MAJOR_VERSION=4
-MINOR_VERSION=5
-MICRO_VERSION=9
-
-LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
-LT_REVISION=$MICRO_VERSION
-LT_AGE=$MINOR_VERSION
+dnl Release versioning info
+VERSION="0.0.1"
+AC_SUBST(VERSION)
 
 dnl Library version.
 dnl current:revision:age
@@ -20,6 +16,10 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
+LT_CURRENT=0
+LT_REVISION=1
+LT_AGE=0
+LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -39,7 +39,7 @@ AC_CONFIG_FILES([
   tests/Makefile
   libticalcs.lsm
   libticalcs.spec
-  ticalcs.pc
+  ticalcs2.pc
 ])
 
 # Setup libtool.
@@ -59,18 +59,18 @@ AC_PROG_AWK
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.13.1)
 
-PKG_CHECK_MODULES(TICABLES, ticables >= 3.6.1)
+PKG_CHECK_MODULES(TICABLES, ticables2 >= 0.0.1)
 AC_SUBST(TICABLES_CFLAGS)
 AC_SUBST(TICABLES_LIBS)
 
-PKG_CHECK_MODULES(TIFILES, tifiles >= 0.6.1)
+PKG_CHECK_MODULES(TIFILES, tifiles2 >= 0.0.1)
 AC_SUBST(TIFILES_CFLAGS)
 AC_SUBST(TIFILES_LIBS)
 
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h time.h unistd.h])
-AC_CHECK_HEADERS([tilp/ticables.h tilp/tifiles.h])
+AC_CHECK_HEADERS([tilp2/ticables.h tilp2/tifiles.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_BIGENDIAN
@@ -78,7 +78,6 @@ AC_C_CONST
 
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
-AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([bzero memmove memset strcasecmp strdup])
 
 # Platform specific tests.
@@ -126,6 +125,8 @@ case $host_os in
   fi
   ;;
 esac
+
+AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
 
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash

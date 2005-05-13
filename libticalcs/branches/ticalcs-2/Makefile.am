@@ -8,9 +8,3 @@ EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticalcs.pc
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase
-	cd src; ${MAKE} dos2unix

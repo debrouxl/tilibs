@@ -1,11 +1,12 @@
 ## Process this file with automake to produce Makefile.in
 
+DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
 AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libticalcs.la
-libticalcsincludedir = $(includedir)/tilp
+lib_LTLIBRARIES = libticalcs2.la
+libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
 	calc_def.h calc_err.h calc_int.h calc_ver.h \
 	headers.h \
@@ -17,11 +18,11 @@ libticalcsinclude_HEADERS = \
 	update.h
 
 # build instructions
-libticalcs_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
+libticalcs2_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
-libticalcs_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
-libticalcs_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libticalcs_la_SOURCES = *.h \
+libticalcs2_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
+libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libticalcs2_la_SOURCES = *.h \
 	clock.c \
 	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c \
 	dirlist.c \
@@ -35,8 +36,3 @@ libticalcs_la_SOURCES = *.h \
 	tikeys.c \
 	tnode.c \
 	type2str.c
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase
