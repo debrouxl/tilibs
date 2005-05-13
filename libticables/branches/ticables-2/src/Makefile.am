@@ -1,5 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
+DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
 AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
@@ -25,8 +26,3 @@ libticables2_la_SOURCES = *.h \
 	type2str.c
 
 EXTRA_DIST = bsd/* linux/* macos/* win32/*
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase
