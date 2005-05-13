@@ -48,7 +48,7 @@
 */
 
 
-static char *ti8x_detokenize_varname(TiCalcModel model, char *dst, const char *src, uint8_t vartype)
+static char *ti8x_detokenize_varname(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
   int i;
   uint8_t tok1 = src[0] & 0xff;
@@ -332,7 +332,7 @@ static char *ti8x_detokenize_varname(TiCalcModel model, char *dst, const char *s
  *
  * Return value: the detokenized name (same as dst).
  **/
-TIEXPORT char* TICALL tifiles_transcode_detokenize(TiCalcModel model, char *dst, const char *src, uint8_t vartype)
+TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
   switch (model) 
   {
@@ -833,7 +833,7 @@ typedef uint16_t (*TRANSCODE_TO_UNICODE) (const char c);
  *
  * Return value: the converted name (same as %dst).
  **/
-TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcModel model, char *dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_ascii(CalcModel model, char *dst, const char *src)
 {
   TRANSCODE_TO_ASCII f = NULL;
 
@@ -882,7 +882,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(TiCalcModel model, char *dst, c
  *
  * Return value: the converted name (same as %dst).
  **/
-TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcModel model, char *dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_latin1(CalcModel model, char *dst, const char *src)
 {
   TRANSCODE_TO_LATIN1 f = NULL;
 
@@ -933,7 +933,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(TiCalcModel model, char *dst, 
  *
  * Return value: the converted name (same as %dst).
  **/
-TIEXPORT char* TICALL tifiles_transcode_to_utf8(TiCalcModel model, char *dst, const char *src)
+TIEXPORT char* TICALL tifiles_transcode_to_utf8(CalcModel model, char *dst, const char *src)
 {
   char *dest = dst;
   uint16_t wchar;
@@ -988,18 +988,18 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(TiCalcModel model, char *dst, co
 */
 
 // set to ISO8859-1 for compatibility with previous releases
-static TiFileEncoding tifiles_encoding = ENCODING_LATIN1;
+static FileEncoding tifiles_encoding = ENCODING_LATIN1;
 
 /**
  * tifiles_transcoding_set:
  * @encoding: an encoding space.
  *
  * Set the default encoding method for #tifiles_transcode_varname. The method is taken in the
- * #TiFileEncoding enumeration.
+ * #FileEncoding enumeration.
  *
  * Return value: none.
  **/
-TIEXPORT void TICALL tifiles_transcoding_set(TiFileEncoding encoding)
+TIEXPORT void TICALL tifiles_transcoding_set(FileEncoding encoding)
 {
   tifiles_encoding = encoding;
 }
@@ -1009,9 +1009,9 @@ TIEXPORT void TICALL tifiles_transcoding_set(TiFileEncoding encoding)
  *
  * Returns the encoding method used by #tifiles_transcode_varname.
  *
- * Return value: a value taken in #TiFileEncoding.
+ * Return value: a value taken in #FileEncoding.
  **/
-TIEXPORT TiFileEncoding TICALL tifiles_transcoding_get(void)
+TIEXPORT FileEncoding TICALL tifiles_transcoding_get(void)
 {
   return tifiles_encoding;
 }
@@ -1020,7 +1020,7 @@ TIEXPORT TiFileEncoding TICALL tifiles_transcoding_get(void)
    Variable name translation: detokenization + charset transcoding.
 */
 
-static char *tixx_translate_varname(TiCalcModel model, char *dst, const char *src, uint8_t vartype)
+static char *tixx_translate_varname(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
   char detokenized[18];
 
@@ -1038,7 +1038,7 @@ static char *tixx_translate_varname(TiCalcModel model, char *dst, const char *sr
 
 /**
  * tifiles_transcode_varname:
- * @model: a calculator model taken in #TiCalcModel.
+ * @model: a calculator model taken in #CalcModel.
  * @dst: a buffer to place result of transcoding.
  * @src: the name of variable to convert.
  * @vartype: the type of variable to convert
@@ -1049,14 +1049,14 @@ static char *tixx_translate_varname(TiCalcModel model, char *dst, const char *sr
  *
  * Return value: %dst.
  **/
-TIEXPORT char *TICALL tifiles_transcode_varname(TiCalcModel model, char *dst, const char *src, uint8_t vartype)
+TIEXPORT char *TICALL tifiles_transcode_varname(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
 	return tixx_translate_varname(model, dst, src, vartype);
 }
 
 /**
  * tifiles_transcode_varname_static:
- * @model: a calculator model taken in #TiCalcModel.
+ * @model: a calculator model taken in #CalcModel.
  * @dst: a buffer to place result of transcoding.
  * @src: the name of variable to convert.
  * @vartype: the type of variable to convert
@@ -1065,7 +1065,7 @@ TIEXPORT char *TICALL tifiles_transcode_varname(TiCalcModel model, char *dst, co
  *
  * Return value: a statically allocated string.
  **/
-TIEXPORT char *TICALL tifiles_transcode_varname_static(TiCalcModel model, const char *src, uint8_t vartype)
+TIEXPORT char *TICALL tifiles_transcode_varname_static(CalcModel model, const char *src, uint8_t vartype)
 {
   static char trans[18];
   

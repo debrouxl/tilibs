@@ -24,7 +24,7 @@
 
 #include "tifiles.h"
 
-char *tixx_translate_varname(TiCalcModel model, char *dst, const char *src, uint8_t vartype);
+char *tixx_translate_varname(CalcModel model, char *dst, const char *src, uint8_t vartype);
 
 char *ti73_translate_varname(const char *varname, char *translate,
 			     uint8_t vartype);

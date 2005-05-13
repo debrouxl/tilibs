@@ -51,12 +51,12 @@ static uint8_t fsignature85[3] = { 0x1A, 0x0C, 0x00 };	//TI85
 static uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI82, 83, 86
 
 
-static int is_ti8586(TiCalcModel model)
+static int is_ti8586(CalcModel model)
 {
   return ((model == CALC_TI85) || (model == CALC_TI86));
 }
 
-static int is_ti83p(TiCalcModel model)
+static int is_ti83p(CalcModel model)
 {
   return (model == CALC_TI83P) || (model == CALC_TI84P);
 }

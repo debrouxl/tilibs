@@ -55,7 +55,7 @@ typedef TiRegular Ti9xRegular;
  **/
 typedef struct 
 {
-  TiCalcModel model;
+  CalcModel model;
 
   char		comment[41];
   char		rom_version[9];
@@ -88,7 +88,7 @@ typedef struct
 typedef struct ti9x_flash Ti9xFlash;
 struct ti9x_flash 
 {
-  TiCalcModel model;
+  CalcModel model;
 
   uint8_t	revision_major;
   uint8_t	revision_minor;

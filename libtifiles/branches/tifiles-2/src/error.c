@@ -36,7 +36,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT int TICALL tifiles_error_get(TiFileError number, char **message)
+TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 {
 	char *tmp;
 

@@ -25,6 +25,8 @@
 /* Error codes must begin at 512 up to 767 */
 
 typedef enum {
+	ERR_NO_ERROR = 0,		// No error (returns 0)
+
 	ERR_MALLOC=512,			// Error with malloc
 	ERR_FILE_OPEN,			// Unable to open file
 	ERR_FILE_CLOSE,			// Unable to close file
@@ -33,6 +35,6 @@ typedef enum {
 	ERR_INVALID_FILE,		// Is not a TI file
 	ERR_BAD_FILE,			// Same as above
 	ERR_FILE_CHECKSUM,		// Checksum file error
-} TiFileError;
+} FileError;
 
 #endif

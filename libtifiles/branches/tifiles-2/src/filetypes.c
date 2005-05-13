@@ -81,7 +81,7 @@ static const char FLASH_OS_FILE_EXT[NCALCS + 1][4] =
  *
  * Return value: a file extenstion as string (like "83g").
  **/
-TIEXPORT const char *TICALL tifiles_fext_of_group (TiCalcModel model)
+TIEXPORT const char *TICALL tifiles_fext_of_group (CalcModel model)
 {
   switch (model) 
   {
@@ -125,7 +125,7 @@ TIEXPORT const char *TICALL tifiles_fext_of_group (TiCalcModel model)
  *
  * Return value: a file extenstion as string (like "83b").
  **/
-TIEXPORT const char *TICALL tifiles_fext_of_backup (TiCalcModel model)
+TIEXPORT const char *TICALL tifiles_fext_of_backup (CalcModel model)
 {
   switch (model) 
   {
@@ -169,7 +169,7 @@ TIEXPORT const char *TICALL tifiles_fext_of_backup (TiCalcModel model)
  *
  * Return value: a file extenstion as string (like "89k").
  **/
-TIEXPORT const char *TICALL tifiles_fext_of_flash_app (TiCalcModel model)
+TIEXPORT const char *TICALL tifiles_fext_of_flash_app (CalcModel model)
 {
   switch (model) 
   {
@@ -213,7 +213,7 @@ TIEXPORT const char *TICALL tifiles_fext_of_flash_app (TiCalcModel model)
  *
  * Return value: a file extenstion as string (like "89u").
  **/
-TIEXPORT const char *TICALL tifiles_fext_of_flash_os(TiCalcModel model)
+TIEXPORT const char *TICALL tifiles_fext_of_flash_os(CalcModel model)
 {
   switch (model) 
   {
@@ -519,9 +519,9 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
  *
  * Returns the calculator model targetted for this file.
  *
- * Return value: a model taken in #TiCalcModel.
+ * Return value: a model taken in #CalcModel.
  **/
-TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename)
+TIEXPORT CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
   char *ext;
   int type = CALC_NONE;
@@ -566,9 +566,9 @@ TIEXPORT TiCalcModel TICALL tifiles_file_get_model(const char *filename)
  *
  * Returns the file class (single, group, backup, flash).
  *
- * Return value: a value in #TiFileClass.
+ * Return value: a value in #FileClass.
  **/
-TIEXPORT TiFileClass TICALL tifiles_file_get_class(const char *filename)
+TIEXPORT FileClass TICALL tifiles_file_get_class(const char *filename)
 {
   if (tifiles_file_is_single(filename))
     return TIFILE_SINGLE;
