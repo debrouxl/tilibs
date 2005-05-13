@@ -3,7 +3,7 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libtifiles-2, 0.0.1, [tilp-users@lists.sourceforge.net])
+AC_INIT(libtifiles2, 0.0.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
 VERSION="0.0.1"
@@ -40,7 +40,7 @@ AC_CONFIG_FILES([
   tests/Makefile
   libtifiles.lsm
   libtifiles.spec
-  tifiles-2.pc
+  tifiles2.pc
 ])
 
 # Setup libtool.

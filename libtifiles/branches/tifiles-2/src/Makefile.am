@@ -5,16 +5,16 @@ AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libtifiles-2.la
+lib_LTLIBRARIES = libtifiles2.la
 libtifilesincludedir = $(includedir)/tilp2
 libtifilesinclude_HEADERS = \
 	export.h stdints.h tifiles.h files8x.h files9x.h
 
 # build instructions
-libtifiles_2_la_CPPFLAGS = @GLIB_CFLAGS@
-libtifiles_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
-libtifiles_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libtifiles_2_la_SOURCES = *.h \
+libtifiles2_la_CPPFLAGS = @GLIB_CFLAGS@
+libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
+libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libtifiles2_la_SOURCES = *.h \
 	error.c \
 	files8x.c files9x.c filesxx.c \
 	filetypes.c \
