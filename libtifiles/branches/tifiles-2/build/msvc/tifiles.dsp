@@ -144,6 +144,14 @@ SOURCE=..\..\src\typesv2.c
 # Begin Group "Headers"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\files8x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\files9x.h
+# End Source File
 # End Group
 # Begin Group "TI files"
 

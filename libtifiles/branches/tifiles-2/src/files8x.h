@@ -28,6 +28,32 @@
 /* Structures */
 
 /**
+ * Ti8xRegular:
+ * @model: calculator model
+ * @default_folder: name of the default folder (TI9x only)
+ * @comment: comment aembedded in file (like "Single file received by TiLP")
+ * @num_entries: number of variables stored after
+ * @entries: an array of #TiVarEntry structures which contains data
+ * @checksum: checksum of file
+ *
+ * A generic structure used to store the content of a single/grouped TI file.
+ * This structure is the same as Ti8xRegular.
+ **/
+typedef struct 
+{
+  CalcModel		model;
+
+  char			default_folder[9];	// unused
+  char			comment[43];		// Ti8x: 41 max
+
+  int			num_entries;
+  VarEntry*		entries;
+
+  uint16_t		checksum;
+
+} Ti8xRegular;
+
+/**
  * Ti8xBackup:
  * @model: calculator model.
  * @comment: comment embedded in file.
@@ -96,10 +122,9 @@ typedef struct
  *
  * A generic structure used to store the content of a TI8x FLASH file (os or app).
  **/
-typedef struct ti8x_flash Ti8xFlash;
-struct ti8x_flash 
+typedef struct 
 {
-  CalcModel	model;
+  CalcModel		model;
 
   uint8_t		revision_major;
   uint8_t		revision_minor;
@@ -115,7 +140,8 @@ struct ti8x_flash
 
   int			 num_pages;
   Ti8xFlashPage* pages;
-};
+
+} Ti8xFlash;
 
 #define DEVICE_TYPE_83P 0x73
 #define DEVICE_TYPE_73  0x74
@@ -123,24 +149,24 @@ struct ti8x_flash
 /* Functions */
 
 // allocating
-TIEXPORT FileContent* TICALL ti8x_content_create_regular(void);
+TIEXPORT Ti8xRegular* TICALL ti8x_content_create_regular(void);
 TIEXPORT Ti8xBackup*  TICALL ti8x_content_create_backup(void);
 TIEXPORT Ti8xFlash*   TICALL ti8x_content_create_flash(void);
 // freeing
-TIEXPORT void TICALL ti8x_content_free_regular(FileContent *content);
+TIEXPORT void TICALL ti8x_content_free_regular(Ti8xRegular *content);
 TIEXPORT void TICALL ti8x_content_free_backup(Ti8xBackup *content);
 TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content);
 // displaying
-TIEXPORT int TICALL ti8x_content_display_regular(FileContent *content);
+TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular *content);
 TIEXPORT int TICALL ti8x_content_display_backup(Ti8xBackup *content);
 TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash *content);
 
 // reading
-TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, FileContent *content);
+TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, Ti8xRegular *content);
 TIEXPORT int TICALL ti8x_file_read_backup(const char *filename, Ti8xBackup *content);
 TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *content);
 // writing
-TIEXPORT int TICALL ti8x_file_write_regular(const char *filename, FileContent *content, char **filename2);
+TIEXPORT int TICALL ti8x_file_write_regular(const char *filename, Ti8xRegular *content, char **filename2);
 TIEXPORT int TICALL ti8x_file_write_backup(const char *filename, Ti8xBackup *content);
 TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *content);
 // displaying

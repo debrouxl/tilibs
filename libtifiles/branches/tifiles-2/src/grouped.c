@@ -66,15 +66,15 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 /* (Un)grouping content */
 /************************/
 
-int ti8x_dup_FileEntry(FileEntry *dst, FileEntry *src);
-int ti9x_dup_FileEntry(FileEntry *dst, FileEntry *src);
+int ti8x_dup_VarEntry(VarEntry *dst, VarEntry *src);
+int ti9x_dup_VarEntry(VarEntry *dst, VarEntry *src);
 
-static int tixx_dup_FileEntry(FileEntry *dst, FileEntry *src)
+static int tixx_dup_VarEntry(VarEntry *dst, VarEntry *src)
 {
 #if !defined(DISABLE_TI8X)
-	return ti8x_dup_FileEntry(dst, src);
+	return ti8x_dup_VarEntry(dst, src);
 #elif !defined(DISABLE_TI9X)
-    return ti9x_dup_FileEntry(dst, src);
+    return ti9x_dup_VarEntry(dst, src);
 #else
 #error "You can't disable TI8x & TI9x support both.
 #endif
@@ -106,7 +106,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   memcpy(dst, src_contents[0], sizeof(FileContent));
 
   dst->num_entries = n;
-  dst->entries = (FileEntry *) calloc(n, sizeof(FileEntry));
+  dst->entries = (VarEntry *) calloc(n, sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
@@ -114,7 +114,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   {
     FileContent *src = src_contents[i];
 
-    TRY(tixx_dup_FileEntry(&(dst->entries[i]), &(src->entries[0])));
+    TRY(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
   }
 
   *dst_content = dst;
@@ -149,8 +149,8 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
   // parse each entry and duplicate it into a single content  
   for (i = 0; i < src->num_entries; i++) 
   {
-    FileEntry *src_entry = &(src->entries[i]);
-    FileEntry *dst_entry = NULL;
+    VarEntry *src_entry = &(src->entries[i]);
+    VarEntry *dst_entry = NULL;
 
     // allocate and duplicate content
     dst[i] = (FileContent *) calloc(1, sizeof(FileContent));
@@ -159,9 +159,9 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
     memcpy(dst[i], src, sizeof(FileContent));
 
     // allocate and duplicate entry
-    dst[i]->entries = (FileEntry *) calloc(1, sizeof(FileEntry));
+    dst[i]->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
     dst_entry = &(dst[i]->entries[0]);
-    TRY(tixx_dup_FileEntry(dst_entry, src_entry));
+    TRY(tixx_dup_VarEntry(dst_entry, src_entry));
 
     // update some fields
     dst[i]->num_entries = 1;

@@ -91,7 +91,7 @@ typedef enum
 /* Structures (common to all calcs) */
 
 /**
- * TiFileEntry:
+ * TiVarEntry:
  * @fld_name: name of folder (TI9x only) or ""
  * @var_name: name of variable (binary, on-calc)
  * @name: name of variable (detokenized, human-readable)
@@ -112,7 +112,7 @@ typedef struct
   uint8_t	attr;
   uint32_t	size;
   uint8_t*	data;
-} FileEntry;
+} VarEntry;
 
 /**
  * FileContent:
@@ -120,20 +120,20 @@ typedef struct
  * @default_folder: name of the default folder (TI9x only)
  * @comment: comment aembedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
- * @entries: an array of #TiFileEntry structures which contains data
+ * @entries: an array of #TiVarEntry structures which contains data
  * @checksum: checksum of file
  *
  * A generic structure used to store the content of a single/grouped TI file.
  **/
 typedef struct 
 {
-  CalcModel	model;
+  CalcModel		model;
 
   char			default_folder[9];	// TI9x only
   char			comment[43];		// Ti8x: 41 max
 
   int			num_entries;
-  FileEntry*		entries;
+  VarEntry*		entries;
 
   uint16_t		checksum;
 } FileContent;
@@ -165,13 +165,13 @@ extern "C" {
 
   // type2str.c
   TIEXPORT const char* TICALL tifiles_model_to_string (CalcModel type);
-  TIEXPORT CalcModel TICALL tifiles_string_to_model (const char *str);
+  TIEXPORT CalcModel   TICALL tifiles_string_to_model (const char *str);
   
   TIEXPORT const char* TICALL tifiles_attribute_to_string (FileAttr atrb);
-  TIEXPORT FileAttr  TICALL tifiles_string_to_attribute (const char *str);
+  TIEXPORT FileAttr    TICALL tifiles_string_to_attribute (const char *str);
   
   TIEXPORT const char* TICALL tifiles_class_to_string (FileClass type);
-  TIEXPORT FileClass TICALL tifiles_string_to_class (const char *str);
+  TIEXPORT FileClass   TICALL tifiles_string_to_class (const char *str);
 
   // transcode.c
   TIEXPORT char* TICALL tifiles_transcode_detokenize (CalcModel model, char *dst, const char *src, uint8_t vartype);
@@ -220,7 +220,7 @@ extern "C" {
   TIEXPORT const char* TICALL tifiles_vartype2icon (CalcModel model, uint8_t id);
 
   TIEXPORT const char*  TICALL tifiles_calctype2signature (CalcModel model);
-  TIEXPORT CalcModel  TICALL tifiles_signature2calctype (const char *signature);
+  TIEXPORT CalcModel    TICALL tifiles_signature2calctype (const char *signature);
 
   TIEXPORT const uint8_t TICALL tifiles_folder_type (CalcModel model);
   TIEXPORT const uint8_t TICALL tifiles_flash_type (CalcModel model);
@@ -244,7 +244,7 @@ extern "C" {
 
   // filesXX.c: layer built on files8x/9x
   TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
-  TIEXPORT int      TICALL tifiles_content_free_regular(FileContent *content);
+  TIEXPORT int          TICALL tifiles_content_free_regular(FileContent *content);
 
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
@@ -260,8 +260,6 @@ extern "C" {
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
 
   TIEXPORT int TICALL tifiles_content_free_group(FileContent **array);
-
-  
 
   // special for MSVC (DLL partition -> memory violation, why ?!)
 #if defined(__WIN32__) && !defined(__MINGW32__)

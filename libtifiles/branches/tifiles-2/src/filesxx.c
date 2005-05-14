@@ -40,12 +40,12 @@
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FileContent *TICALL tifiles_content_create_regular(void)
+TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 {
 #if !defined(DISABLE_TI8X)
-	return ti8x_content_create_regular();
+	return (FileContent*)ti8x_content_create_regular();
 #elif !defined(DISABLE_TI9X)
-    return ti9x_content_create_regular();
+    return (FileContent*)ti9x_content_create_regular();
 #else
 #error "You can't disable TI8x & TI9x support both.
 #endif
@@ -62,11 +62,11 @@ TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		ti8x_content_free_regular(content);
+		ti8x_content_free_regular((Ti8xRegular *)content);
 	else 
 #elif !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		ti9x_content_free_regular(content);
+		ti9x_content_free_regular((Ti9xRegular *)content);
 	else
 #else
 #error "You can't disable TI8x & TI9x support both.
@@ -92,11 +92,11 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *conten
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-		return ti8x_file_read_regular(filename, content);
+		return ti8x_file_read_regular(filename, (Ti8xRegular *)content);
 	else 
 #elif !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-		return ti9x_file_read_regular(filename, content);
+		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
 #else
 #error "You can't disable TI8x & TI9x support both.
@@ -124,11 +124,11 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		return ti8x_file_write_regular(filename, content, real_fname);
+		return ti8x_file_write_regular(filename, (Ti8xRegular *)content, real_fname);
 	else 
 #elif !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		return ti9x_file_write_regular(filename, content, real_fname);
+		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
 	else
 #else
 #error "You can't disable TI8x & TI9x support both.
@@ -177,7 +177,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * a table of entries so that it's easy to write it just after the header in a group
  * file. Mainly used as an helper.
  * The returned 'table' is an NULL-terminated array of int* pointers.
- * Each pointers points on an integer array. Each cell are an index on the 'FileEntry*  
+ * Each pointers points on an integer array. Each cell are an index on the 'VarEntry*  
  * entries' array.
  * 
  * In fact, this array represents a kind of tree. The array of pointer is the folder list
@@ -200,7 +200,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
   // determine how many folders we have
   for (i = 0; i < content->num_entries; i++) 
   {
-    FileEntry *entry = &(content->entries[i]);
+    VarEntry *entry = &(content->entries[i]);
 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) 
@@ -237,7 +237,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
 
     for (i = 0, k = 0; i < content->num_entries; i++) 
 	{
-      FileEntry *entry = &(content->entries[i]);
+      VarEntry *entry = &(content->entries[i]);
 
       if (!strcmp(folder_list[j], entry->fld_name)) 
 	  {

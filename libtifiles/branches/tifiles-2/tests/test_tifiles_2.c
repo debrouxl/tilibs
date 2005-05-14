@@ -345,7 +345,7 @@ static int test_ti82_backup_support()
   Ti8xBackup content;
 
   printf("--> Testing TI82 backup support...\n");
-  ti8x_file_display(BUILD_PATH("ti82/backup.82b"));
+  tifiles_file_display(BUILD_PATH("ti82/backup.82b"));
   ti8x_file_read_backup(BUILD_PATH("ti82/backup.82b"), &content);
   ti8x_file_write_backup(BUILD_PATH("ti82/backup.82b_"), &content);
   ti8x_content_free_backup(&content);
@@ -360,17 +360,17 @@ static int test_ti82_regular_support()
   char *unused;
 
   printf("--> Testing TI82 regular support (single)...\n");
-  ti8x_file_display(BUILD_PATH("ti82/math.82p"));
-  ti8x_file_read_regular(BUILD_PATH("ti82/math.82p"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti82/math.82p_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti82/math.82p"));
+  tifiles_file_read_regular(BUILD_PATH("ti82/math.82p"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti82/math.82p_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti82/math.82p"), BUILD_PATH("ti82/math.82p_"));
 
   printf("--> Testing TI82 regular support (group)...\n");
-  ti8x_file_display(BUILD_PATH("ti82/group.82g"));  
-  ti8x_file_read_regular(BUILD_PATH("ti82/group.82g"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti82/group.82g_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti82/group.82g"));  
+  tifiles_file_read_regular(BUILD_PATH("ti82/group.82g"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti82/group.82g_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti82/group.82g"), BUILD_PATH("ti82/group.82g_"));
 
   return 0;
@@ -435,17 +435,17 @@ static int test_ti84p_regular_support()
   char *unused;
 
   printf("--> Testing TI84+ regular support (single)...\n");
-  ti8x_file_display(BUILD_PATH("ti84p/romdump.8Xp"));
-  ti8x_file_read_regular(BUILD_PATH("ti84p/romdump.8Xp"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti84p/romdump.8Xp_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti84p/romdump.8Xp"));
+  tifiles_file_read_regular(BUILD_PATH("ti84p/romdump.8Xp"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti84p/romdump.8Xp_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti84p/romdump.8Xp"), BUILD_PATH("ti84p/romdump.8Xp_"));
 
   printf("--> Testing TI84+ regular support (group)...\n");
-  ti8x_file_display(BUILD_PATH("ti84p/group.8Xg"));  
-  ti8x_file_read_regular(BUILD_PATH("ti84p/group.8Xg"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti84p/group.8Xg_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti84p/group.8Xg"));  
+  tifiles_file_read_regular(BUILD_PATH("ti84p/group.8Xg"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti84p/group.8Xg_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti84p/group.8Xg"), BUILD_PATH("ti84p/group.8Xg_"));
 
   return 0;
@@ -515,7 +515,7 @@ static int test_ti84p_flash_support()
 
   printf("--> Testing TI84+ flash support...\n");
 
-  ti8x_file_display(BUILD_PATH("ti84p/chembio.8Xk"));
+  tifiles_file_display(BUILD_PATH("ti84p/chembio.8Xk"));
   ti8x_file_read_flash(BUILD_PATH("ti84p/chembio.8Xk"), &content);
   ti8x_file_write_flash(BUILD_PATH("ti84p/chembio.8Xk_"), &content);
   ti8x_content_free_flash(&content);
@@ -523,7 +523,7 @@ static int test_ti84p_flash_support()
 
   return 0;
 
-  ti8x_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
+  tifiles_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
   ti8x_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
 
 //special_test(&content);
@@ -543,7 +543,7 @@ static int test_ti86_backup_support()
   Ti8xBackup content;
 
   printf("--> Testing TI86 backup support...\n");
-  ti8x_file_display(BUILD_PATH("ti86/backup.85b"));
+  tifiles_file_display(BUILD_PATH("ti86/backup.85b"));
   ti8x_file_read_backup(BUILD_PATH("ti86/backup.85b"), &content);
   ti8x_file_write_backup(BUILD_PATH("ti86/backup.85b_"), &content);
   ti8x_content_free_backup(&content);
@@ -558,17 +558,17 @@ static int test_ti86_regular_support()
   char *unused;
 
   printf("--> Testing TI86 regular support (single)...\n");
-  ti8x_file_display(BUILD_PATH("ti86/prgm.86p"));
-  ti8x_file_read_regular(BUILD_PATH("ti86/prgm.86p"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti86/prgm.86p_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti86/prgm.86p"));
+  tifiles_file_read_regular(BUILD_PATH("ti86/prgm.86p"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti86/prgm.86p_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti86/prgm.86p"), BUILD_PATH("ti86/prgm.86p_"));
 
   printf("--> Testing TI86 regular support (group)...\n");
-  ti8x_file_display(BUILD_PATH("ti86/group.86g"));  
-  ti8x_file_read_regular(BUILD_PATH("ti86/group.86g"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti86/group.86g_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti86/group.86g"));  
+  tifiles_file_read_regular(BUILD_PATH("ti86/group.86g"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti86/group.86g_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti86/group.86g"), BUILD_PATH("ti86/group.86g_"));
 
   return 0;
@@ -580,10 +580,10 @@ static int test_ti86_regular_support_()
   char *unused;
 
   printf("--> Testing TI86 regular support (single)...\n");
-  ti8x_file_display(BUILD_PATH("ti86/ellipse.86p"));
-  ti8x_file_read_regular(BUILD_PATH("ti86/ellipse.86p"), &content);
-  ti8x_file_write_regular(BUILD_PATH("ti86/ellipse.86p_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti86/ellipse.86p"));
+  tifiles_file_read_regular(BUILD_PATH("ti86/ellipse.86p"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti86/ellipse.86p_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti86/ellipse.86p"), BUILD_PATH("ti86/ellipse.86p_"));
 
   return 0;
@@ -629,7 +629,7 @@ static int test_ti92_backup_support()
   Ti9xBackup content;
 
   printf("--> Testing TI92 backup support...\n");
-  ti9x_file_display(BUILD_PATH("ti92/backup.92b"));
+  tifiles_file_display(BUILD_PATH("ti92/backup.92b"));
   ti9x_file_read_backup(BUILD_PATH("ti92/backup.92b"), &content);
   ti9x_file_write_backup(BUILD_PATH("ti92/backup.92b_"), &content);
   ti9x_content_free_backup(&content);
@@ -644,18 +644,18 @@ static int test_ti92_regular_support()
   char *unused;
 
   printf("--> Testing TI92 regular support (single)...\n");
-  ti9x_file_display(BUILD_PATH("ti92/str.92s"));
-  ti9x_file_read_regular(BUILD_PATH("ti92/str.92s"), &content);
-  ti9x_file_write_regular(BUILD_PATH("ti92/str.92s_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti92/str.92s"));
+  tifiles_file_read_regular(BUILD_PATH("ti92/str.92s"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti92/str.92s_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti92/str.92s"), BUILD_PATH("ti92/str.92s_"));
 
 
   printf("--> --> Testing TI92 regular support (group)...\n");
-  ti9x_file_display(BUILD_PATH("ti92/group.92g"));  
-  ti9x_file_read_regular(BUILD_PATH("ti92/group.92g"), &content);
-  ti9x_file_write_regular(BUILD_PATH("ti92/group.92g_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti92/group.92g"));  
+  tifiles_file_read_regular(BUILD_PATH("ti92/group.92g"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti92/group.92g_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti92/group.92g"), BUILD_PATH("ti92/group.92g_"));
 
   return 0;
@@ -702,10 +702,10 @@ static int test_ti89_regular_support()
   char *unused;
 
   printf("--> Testing TI89 regular support (group)...\n");
-  ti9x_file_display(BUILD_PATH("ti89/group.89g"));
-  ti9x_file_read_regular(BUILD_PATH("ti89/group.89g"), &content);
-  ti9x_file_write_regular(BUILD_PATH("ti89/group.89g_"), &content, &unused);
-  ti8x_content_free_regular(&content);
+  tifiles_file_display(BUILD_PATH("ti89/group.89g"));
+  tifiles_file_read_regular(BUILD_PATH("ti89/group.89g"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti89/group.89g_"), &content, &unused);
+  tifiles_content_free_regular(&content);
   compare_files(BUILD_PATH("ti89/group.89g"), BUILD_PATH("ti89/group.89g_"));
 
   return 0;
@@ -716,7 +716,7 @@ static int test_ti89_flash_support()
   Ti9xFlash content;
 
   printf("--> Testing TI89 flash support...\n");
-  ti9x_file_display(BUILD_PATH("ti89/ticabfra.89k"));
+  tifiles_file_display(BUILD_PATH("ti89/ticabfra.89k"));
   ti9x_file_read_flash(BUILD_PATH("ti89/ticabfra.89k"), &content);
   ti9x_file_write_flash(BUILD_PATH("ti89/ticabfra.89k_"), &content);
   ti9x_content_free_flash(&content);
@@ -732,9 +732,9 @@ static int test_v200_regular_support()
   char *unused;
 
   printf("--> Testing regular support (group)...\n");
-  ti9x_file_display("./v200/xy.v2g");
-  ti9x_file_read_regular("./v200/xy.v2g", &content);
-  ti9x_file_write_regular("./v200/xy.v2g_", &content, &unused);
+  tifiles_file_display("./v200/xy.v2g");
+  tifiles_file_read_regular("./v200/xy.v2g", &content);
+  tifiles_file_write_regular("./v200/xy.v2g_", &content, &unused);
   compare_files("./v200/xy.v2g", "./v200/xy.v2g_");
 
   return 0;

@@ -68,13 +68,13 @@ static int is_ti83p(CalcModel model)
 /**
  * ti8x_create_regular_content:
  *
- * Allocates a #FileContent structure.
+ * Allocates a #Ti8xRegular structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FileContent *TICALL ti8x_content_create_regular(void)
+TIEXPORT Ti8xRegular *TICALL ti8x_content_create_regular(void)
 {
-	return (FileContent *) calloc(1, sizeof(FileContent));
+	return (Ti8xRegular *) calloc(1, sizeof(Ti8xRegular));
 }
 
 /**
@@ -106,12 +106,12 @@ TIEXPORT Ti8xFlash *TICALL ti8x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy an FileEntry structure (data included).
+  Copy an VarEntry structure (data included).
   Memory must be freed when no longer used.
 */
-int ti8x_dup_FileEntry(FileEntry *dst, FileEntry *src)
+int ti8x_dup_VarEntry(VarEntry *dst, VarEntry *src)
 {
-  memcpy(dst, src, sizeof(FileEntry));
+  memcpy(dst, src, sizeof(VarEntry));
 
   dst->data = (uint8_t *) calloc(dst->size, 1);
   if (dst->data == NULL)
@@ -122,22 +122,22 @@ int ti8x_dup_FileEntry(FileEntry *dst, FileEntry *src)
 }
 
 /*
-  Copy an FileContent structure.
+  Copy an Ti8xRegular structure.
   Memory must be freed when no longer used.
 */
-int ti8x_dup_FileContent(FileContent *dst, FileContent *src)
+int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
 {
   int i;
 
-  memcpy(dst, src, sizeof(FileContent));
+  memcpy(dst, src, sizeof(Ti8xRegular));
 
-  dst->entries = (FileEntry *) calloc(src->num_entries,
-					 sizeof(FileEntry));
+  dst->entries = (VarEntry *) calloc(src->num_entries,
+					 sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRY(ti8x_dup_FileEntry(&(dst->entries[i]), &(src->entries[i])));
+    TRY(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
 
   return 0;
 }
@@ -176,17 +176,17 @@ int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
 /**
  * ti8x_content_free_regular:
  *
- * Free the whole content of a #FileContent structure.
+ * Free the whole content of a #Ti8xRegular structure.
  *
  * Return value: none.
  **/
-TIEXPORT void TICALL ti8x_content_free_regular(FileContent *content)
+TIEXPORT void TICALL ti8x_content_free_regular(Ti8xRegular *content)
 {
   int i;
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    FileEntry *entry = &(content->entries[i]);
+    VarEntry *entry = &(content->entries[i]);
     free(entry->data);
   }
   free(content->entries);
@@ -234,14 +234,14 @@ TIEXPORT void TICALL ti8x_content_free_flash(Ti8xFlash *content)
  * @filename: name of single/group file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a FileContent structure.
+ * Load the single/group file into a Ti8xRegular structure.
  *
  * Structure content must be freed with #ti8x_content_free_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, FileContent *content)
+TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 {
   FILE *f;
   uint16_t tmp = 0x000B;
@@ -309,8 +309,8 @@ TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, FileContent *co
   fseek(f, offset, SEEK_SET);
 
   content->num_entries = i;
-  content->entries = (FileEntry *) calloc(content->num_entries,
-					     sizeof(FileEntry));
+  content->entries = (VarEntry *) calloc(content->num_entries,
+					     sizeof(VarEntry));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -319,7 +319,7 @@ TIEXPORT int TICALL ti8x_file_read_regular(const char *filename, FileContent *co
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    FileEntry *entry = &((content->entries)[i]);
+    VarEntry *entry = &((content->entries)[i]);
 
     fread_word(f, NULL);
     fread_word(f, (uint16_t *) & (entry->size));
@@ -564,7 +564,7 @@ TIEXPORT int TICALL ti8x_file_read_flash(const char *filename, Ti8xFlash *conten
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, FileContent *content, char **real_fname)
+TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real_fname)
 {
   FILE *f;
   int i;
@@ -608,7 +608,7 @@ TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, FileContent *cont
   fwrite_n_bytes(f, 42, content->comment);
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
-    FileEntry *entry = &(content->entries[i]);
+    VarEntry *entry = &(content->entries[i]);
     data_length += entry->size + 15;
     if (is_ti8586(content->model))
       data_length += 1;
@@ -640,7 +640,7 @@ TIEXPORT int TICALL ti8x_file_write_regular(const char *fname, FileContent *cont
   // write data section
   for (i = 0, sum = 0; i < content->num_entries; i++) 
   {
-    FileEntry *entry = &(content->entries[i]);
+    VarEntry *entry = &(content->entries[i]);
 
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
@@ -843,13 +843,13 @@ TIEXPORT int TICALL ti8x_file_write_flash(const char *filename, Ti8xFlash *conte
 
 /**
  * ti8x_content_display_regular:
- * @content: a FileContent structure.
+ * @content: a Ti8xRegular structure.
  *
- * Display fields of a FileContent structure.
+ * Display fields of a Ti8xRegular structure.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti8x_content_display_regular(FileContent *content)
+TIEXPORT int TICALL ti8x_content_display_regular(Ti8xRegular *content)
 {
   int i;
   char trans[17];
@@ -978,7 +978,7 @@ TIEXPORT int TICALL ti8x_content_display_flash(Ti8xFlash *content)
  **/
 TIEXPORT int TICALL ti8x_file_display(const char *filename)
 {
-  FileContent content1;
+  Ti8xRegular content1;
   Ti8xBackup content2;
   Ti8xFlash content3;
 
