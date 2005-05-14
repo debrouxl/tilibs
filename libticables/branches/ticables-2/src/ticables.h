@@ -41,9 +41,9 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBticables_VERSION "0.0.1"
+# define LIBCABLES_VERSION "0.0.1"
 #else
-# define LIBticables_VERSION VERSION
+# define LIBCABLES_VERSION VERSION
 #endif
 
 /* Types */
@@ -209,7 +209,7 @@ struct _CableHandle
 	/* General functions */
 	/*********************/
 
-	// Cables.c
+	// ticables.c
 	TIEXPORT const char* TICALL ticables_version_get (void);
 
 	TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel, CablePort);

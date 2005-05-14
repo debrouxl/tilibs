@@ -91,7 +91,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	HANDLE hDll;
   	int i;
   	
-  	hDll = GetModuleHandle("Cables.dll");
+  	hDll = GetModuleHandle("cables2.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
   	
   	for (i = strlen(locale_dir); i >= 0; i--) {
@@ -107,7 +107,7 @@ TIEXPORT int TICALL ticables_library_init(void)
 
 	if (ticables_instance)
 		return (++ticables_instance);
-	ticables_info(_("Cables library version %s"), LIBticables_VERSION);
+	ticables_info(_("Cables library version %s"), LIBCABLES_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
@@ -147,7 +147,7 @@ TICALL ticables_library_exit(void)
  **/
 TIEXPORT const char *TICALL ticables_version_get(void)
 {
-	return LIBticables_VERSION;
+	return LIBCABLES_VERSION;
 }
 
 /**
@@ -260,6 +260,14 @@ TIEXPORT CablePort  TICALL ticables_get_port(CableHandle* handle)
 	return handle->port;
 }
 
+/**
+ * ticables_handle_show:
+ * @handle: the handle
+ *
+ * Show informations stored in the handle.
+ *
+ * Return value: always 0.
+ **/
 TIEXPORT int TICALL ticables_handle_show(CableHandle* handle)
 {
 	ticables_info(_("Link cable handle details:"));
