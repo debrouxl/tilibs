@@ -308,7 +308,7 @@ extern "C" {
 					     const char *fldname,
 					     const char *varname);
 
-  // filesXX.c: layer built on files8x/9x
+  // filesXX.c
   TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
   TIEXPORT int          TICALL tifiles_content_free_regular(FileContent *content);
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);

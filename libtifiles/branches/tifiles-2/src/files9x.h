@@ -104,11 +104,13 @@ struct ti9x_flash
 Ti9xRegular* ti9x_content_create_regular(void);
 Ti9xBackup*  ti9x_content_create_backup(void);
 Ti9xFlash*   ti9x_content_create_flash(void);
+
 // freeing
 void ti9x_content_free_regular(Ti9xRegular *content);
 void ti9x_content_free_backup(Ti9xBackup *content);
 void ti9x_content_free_flash(Ti9xFlash *content);
-//displaying
+
+// displaying
 int ti9x_content_display_regular(Ti9xRegular *content);
 int ti9x_content_display_backup(Ti9xBackup *content);
 int ti9x_content_display_flash(Ti9xFlash *content);
@@ -117,11 +119,13 @@ int ti9x_content_display_flash(Ti9xFlash *content);
 int ti9x_file_read_regular(const char *filename, Ti9xRegular *content);
 int ti9x_file_read_backup(const char *filename, Ti9xBackup *content);
 int ti9x_file_read_flash(const char *filename, Ti9xFlash *content);
+
 // writing
 int ti9x_file_write_regular(const char *filename, Ti9xRegular *content, char **filename2);
 int ti9x_file_write_backup(const char *filename, Ti9xBackup *content);
 int ti9x_file_write_flash(const char *filename, Ti9xFlash *content);
-//displaying
+
+// displaying
 int ti9x_file_display(const char *filename);
 
 #endif
