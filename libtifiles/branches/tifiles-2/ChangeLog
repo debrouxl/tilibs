@@ -4,6 +4,10 @@ Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
 
 Log:
 
+- 14/05/2005, version 0.0.3: roms
+	- merged some types into a single type
+	- common file handling API
+
 - 10/04/2005, version 0.0.2: roms
 	- rewritten TI8X+ FLASH support
 	- fixed memory errors at:

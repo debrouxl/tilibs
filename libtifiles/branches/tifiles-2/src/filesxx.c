@@ -164,8 +164,6 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
 	return 0;
 }
 
-#if 0
-
 /**
  * tifiles_content_create_backup:
  *
@@ -225,11 +223,11 @@ TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *conte
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-		return ti8x_file_read_backup(filename, (Ti8xRegular *)content);
+		return ti8x_file_read_backup(filename, content);
 	else 
 #elif !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-		return ti9x_file_read_backup(filename, (Ti9xRegular *)content);
+		return ti9x_file_read_backup(filename, content);
 	else
 #else
 #error "You can't disable TI8x & TI9x support both.
@@ -257,11 +255,11 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		return ti8x_file_write_backup(filename, (Ti8xRegular *)content);
+		return ti8x_file_write_backup(filename, content);
 	else 
 #elif !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		return ti9x_file_write_backup(filename, (Ti9xRegular *)content);
+		return ti9x_file_write_backup(filename, content);
 	else
 #else
 #error "You can't disable TI8x & TI9x support both.
@@ -296,8 +294,6 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
 
 	return 0;
 }
-
-#endif
 
 /**
  * tifiles_content_create_flash:

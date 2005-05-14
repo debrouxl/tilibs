@@ -36,7 +36,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.0.2"
+# define LIBFILES_VERSION "0.0.3"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -137,6 +137,41 @@ typedef struct
 
   uint16_t		checksum;
 } FileContent;
+
+/**
+ * BackupContent:
+ * @model: calculator model
+ * @comment: comment embedded in file (like "Backup file received by TiLP")
+ * @checksum: checksum of file
+ *
+ * A generic structure used to store the content of a backup file.
+ **/
+typedef struct 
+{
+  CalcModel model;
+
+  char		comment[43];	// 41 on TI9x
+
+  char		rom_version[9];	// TI92 only
+  uint16_t	mem_address;	// TI8x only
+
+  uint8_t	type;
+
+  uint32_t	data_length;
+  uint8_t*	data_part;
+
+  uint16_t	data_length2;	// TI8x only
+  uint8_t*	data_part2;
+
+  uint16_t	data_length3;	// TI8x only
+  uint8_t*	data_part3;
+
+  uint16_t	data_length4;	// TI86 only
+  uint8_t*	data_part4;
+
+  uint16_t	checksum;
+
+} BackupContent;
 
 /**
  * FlashPage:
@@ -315,11 +350,11 @@ extern "C" {
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
   TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content);
 
-  //TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void);
-  //TIEXPORT int           TICALL tifiles_content_free_nackup(BackupContent *content);
-  //TIEXPORT int TICALL tifiles_file_read_backup(const char *filename, BackupContent *content);
-  //TIEXPORT int TICALL tifiles_file_write_backup(const char *filename, BackupContent *content);
-  //TIEXPORT int TICALL tifiles_file_display_regular(BackupContent *content);
+  TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void);
+  TIEXPORT int            TICALL tifiles_content_free_backup(BackupContent *content);
+  TIEXPORT int TICALL tifiles_file_read_backup(const char *filename, BackupContent *content);
+  TIEXPORT int TICALL tifiles_file_write_backup(const char *filename, BackupContent *content);
+  TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content);
 
   TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void);
   TIEXPORT int           TICALL tifiles_content_free_flash(FlashContent *content);

@@ -25,38 +25,16 @@
 #include "stdints.h"
 #include "tifiles.h"
 
-/* Structures */
-
-typedef FileContent		Ti9xRegular;
-typedef FlashContent	Ti9xFlash;
-
-/**
- * Ti9xBackup:
- * @model: calculator moel.
- * @comment: comment embedded in file.
- * @rom_version: ROM version  (such as "2.1").
- * @type: a variable type ID for backup.
- * @data_length: size of data part.
- * @data_part: pure backup data.
- * @checksum: checksum of file.
- *
- * A generic structure used to store the content of a TI92 backup file.
- **/
-typedef struct 
-{
-  CalcModel model;
-
-  char		comment[41];
-  char		rom_version[9];
-  uint8_t	type;
-  uint32_t	data_length;
-  uint8_t*	data_part;
-  uint16_t	checksum;
-
-} Ti9xBackup;
+/* Constants */
 
 #define DEVICE_TYPE_89  0x98
 #define DEVICE_TYPE_92P 0x88
+
+/* Structures */
+
+typedef FileContent		Ti9xRegular;
+typedef BackupContent	Ti9xBackup;
+typedef FlashContent	Ti9xFlash;
 
 /* Functions */
 

@@ -35,8 +35,6 @@
 #endif
 
 #include "../src/tifiles.h"
-#include "../src/files8x.h"
-#include "../src/files9x.h"
 
 /*
   Compare 2 files bytes per bytes and show differences
@@ -342,13 +340,13 @@ int main(int argc, char **argv)
 
 static int test_ti82_backup_support()
 {
-  Ti8xBackup content;
+  BackupContent content;
 
   printf("--> Testing TI82 backup support...\n");
   tifiles_file_display(BUILD_PATH("ti82/backup.82b"));
-  ti8x_file_read_backup(BUILD_PATH("ti82/backup.82b"), &content);
-  ti8x_file_write_backup(BUILD_PATH("ti82/backup.82b_"), &content);
-  ti8x_content_free_backup(&content);
+  tifiles_file_read_backup(BUILD_PATH("ti82/backup.82b"), &content);
+  tifiles_file_write_backup(BUILD_PATH("ti82/backup.82b_"), &content);
+  tifiles_content_free_backup(&content);
   compare_files(BUILD_PATH("ti82/backup.82b"), BUILD_PATH("ti82/backup.82b_"));
 
   return 0;
@@ -483,7 +481,7 @@ static int test_ti84p_ungroup_support()
 }
 
 /*
-static int special_test(Ti8xFlash *content)
+static int special_test(FlashContent *content)
 {
 	const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\out.txt";
 	FILE *f;
@@ -511,24 +509,24 @@ static int special_test(Ti8xFlash *content)
 
 static int test_ti84p_flash_support()
 {
-  Ti8xFlash content;
+  FlashContent content;
 
   printf("--> Testing TI84+ flash support...\n");
 
   tifiles_file_display(BUILD_PATH("ti84p/chembio.8Xk"));
-  ti8x_file_read_flash(BUILD_PATH("ti84p/chembio.8Xk"), &content);
-  ti8x_file_write_flash(BUILD_PATH("ti84p/chembio.8Xk_"), &content);
-  ti8x_content_free_flash(&content);
+  tifiles_file_read_flash(BUILD_PATH("ti84p/chembio.8Xk"), &content);
+  tifiles_file_write_flash(BUILD_PATH("ti84p/chembio.8Xk_"), &content);
+  tifiles_content_free_flash(&content);
   compare_files(BUILD_PATH("ti84p/chembio.8Xk"), BUILD_PATH("ti84p/chembio.8Xk_"));
 
   return 0;
 
   tifiles_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
-  ti8x_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
+  tifiles_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
 
 //special_test(&content);
 
-  ti8x_file_write_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"), &content);
+  tifiles_file_write_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"), &content);
   compare_files(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"));
 
   return 0;
@@ -540,13 +538,13 @@ static int test_ti84p_flash_support()
 
 static int test_ti86_backup_support()
 {
-  Ti8xBackup content;
+  BackupContent content;
 
   printf("--> Testing TI86 backup support...\n");
   tifiles_file_display(BUILD_PATH("ti86/backup.85b"));
-  ti8x_file_read_backup(BUILD_PATH("ti86/backup.85b"), &content);
-  ti8x_file_write_backup(BUILD_PATH("ti86/backup.85b_"), &content);
-  ti8x_content_free_backup(&content);
+  tifiles_file_read_backup(BUILD_PATH("ti86/backup.85b"), &content);
+  tifiles_file_write_backup(BUILD_PATH("ti86/backup.85b_"), &content);
+  tifiles_content_free_backup(&content);
   compare_files(BUILD_PATH("ti86/backup.85b"), BUILD_PATH("ti86/backup.85b_"));
 
   return 0;
@@ -626,13 +624,13 @@ static int test_ti86_ungroup_support()
 
 static int test_ti92_backup_support()
 {
-  Ti9xBackup content;
+  BackupContent content;
 
   printf("--> Testing TI92 backup support...\n");
   tifiles_file_display(BUILD_PATH("ti92/backup.92b"));
-  ti9x_file_read_backup(BUILD_PATH("ti92/backup.92b"), &content);
-  ti9x_file_write_backup(BUILD_PATH("ti92/backup.92b_"), &content);
-  ti9x_content_free_backup(&content);
+  tifiles_file_read_backup(BUILD_PATH("ti92/backup.92b"), &content);
+  tifiles_file_write_backup(BUILD_PATH("ti92/backup.92b_"), &content);
+  tifiles_content_free_backup(&content);
   compare_files(BUILD_PATH("ti92/backup.92b"), BUILD_PATH("ti92/backup.92b_"));
 
   return 0;
@@ -713,13 +711,13 @@ static int test_ti89_regular_support()
 
 static int test_ti89_flash_support()
 {
-  Ti9xFlash content;
+  FlashContent content;
 
   printf("--> Testing TI89 flash support...\n");
   tifiles_file_display(BUILD_PATH("ti89/ticabfra.89k"));
-  ti9x_file_read_flash(BUILD_PATH("ti89/ticabfra.89k"), &content);
-  ti9x_file_write_flash(BUILD_PATH("ti89/ticabfra.89k_"), &content);
-  ti9x_content_free_flash(&content);
+  tifiles_file_read_flash(BUILD_PATH("ti89/ticabfra.89k"), &content);
+  tifiles_file_write_flash(BUILD_PATH("ti89/ticabfra.89k_"), &content);
+  tifiles_content_free_flash(&content);
   compare_files(BUILD_PATH("ti89/ticabfra.89k"), BUILD_PATH("ti89/ticabfra.89k_"));
 
   return 0;

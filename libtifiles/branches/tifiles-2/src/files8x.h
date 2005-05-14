@@ -25,45 +25,17 @@
 #include "stdints.h"
 #include "tifiles.h"
 
-/* Structures */
-
-typedef FileContent		Ti8xRegular;
-typedef FlashContent	Ti8xFlash;
-typedef FlashPage		Ti8xFlashPage;
-
-/**
- * Ti8xBackup:
- * @model: calculator model.
- * @comment: comment embedded in file.
- * @type: a variable type ID for backup.
- * @mem_address: memory address for backup
- * @data_lengthX: length of data part #X
- * @data_partX: pure backup data #X.
- * @checksum: checksum of file.
- *
- * A generic structure used to store the content of a TI8x backup file.
- **/
-typedef struct 
-{
-  CalcModel model;
-
-  char		comment[43];
-  uint8_t	type;
-  uint16_t	mem_address;
-  uint16_t	data_length1;
-  uint8_t*	data_part1;
-  uint16_t	data_length2;
-  uint8_t*	data_part2;
-  uint16_t	data_length3;
-  uint8_t*	data_part3;
-  uint16_t	data_length4;	// TI86 only
-  uint8_t*	data_part4;
-  uint16_t	checksum;
-
-} Ti8xBackup;
+/* Constants */
 
 #define DEVICE_TYPE_83P 0x73
 #define DEVICE_TYPE_73  0x74
+
+/* Structures */
+
+typedef FileContent		Ti8xRegular;
+typedef BackupContent	Ti8xBackup;
+typedef FlashContent	Ti8xFlash;
+typedef FlashPage		Ti8xFlashPage;
 
 /* Functions */
 
