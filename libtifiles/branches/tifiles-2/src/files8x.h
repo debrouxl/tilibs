@@ -28,8 +28,9 @@
 
 /* Structures */
 
-// The structure _must_ be the same as FileContent (overriding).
-typedef FileContent Ti8xRegular;
+typedef FileContent		Ti8xRegular;
+typedef FlashContent	Ti8xFlash;
+typedef FlashPage		Ti8xFlashPage;
 
 /**
  * Ti8xBackup:
@@ -61,65 +62,6 @@ typedef struct
   uint16_t	checksum;
 
 } Ti8xBackup;
-
-/**
- * Ti8xFlashPage:
- * @offset: FLASH offset (see TI link guide).
- * @page: FLASH page (see TI link guide).
- * @flag: see link guide.
- * @length: length of pure data.
- * @data: pure FLASH data.
- *
- * A generic structure used to store the content of a TI8x memory page for FLASH.
- **/
-typedef struct 
-{
-  uint16_t	addr;
-  uint16_t	page;
-  uint8_t	flag;
-  uint16_t	size;
-  uint8_t*	data;
-
-} Ti8xFlashPage;
-
-/**
- * Ti8xFlash:
- * @model: a calculator model.
- * @revision_major:
- * @revision_minor:
- * @flags:
- * @object_type:
- * @revision_day:
- * @revision_month:
- * @revision_year: 
- * @name: name of FLASH app or "basecode" for OS
- * @device_type: a device ID (TI89: 0x88, TI92+:0x98)
- * @data_type: var type ID (app, os, certificate, ...)
- * @num_pages: number of memory pages (size of the %pages array).
- * @pages: array of memory pages for FLASH device.
- *
- * A generic structure used to store the content of a TI8x FLASH file (os or app).
- **/
-typedef struct 
-{
-  CalcModel		model;
-
-  uint8_t		revision_major;
-  uint8_t		revision_minor;
-  uint8_t		flags;
-  uint8_t		object_type;
-  uint8_t		revision_day;
-  uint8_t		revision_month;
-  uint16_t		revision_year;
-  char			name[9];
-  uint8_t		device_type;
-  uint8_t		data_type;
-  uint32_t		data_length;
-
-  int			 num_pages;
-  Ti8xFlashPage* pages;
-
-} Ti8xFlash;
 
 #define DEVICE_TYPE_83P 0x73
 #define DEVICE_TYPE_73  0x74
