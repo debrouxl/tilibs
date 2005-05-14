@@ -91,7 +91,7 @@ typedef enum
 /* Structures (common to all calcs) */
 
 /**
- * TiVarEntry:
+ * TiFileEntry:
  * @fld_name: name of folder (TI9x only) or ""
  * @var_name: name of variable (binary, on-calc)
  * @name: name of variable (detokenized, human-readable)
@@ -112,15 +112,15 @@ typedef struct
   uint8_t	attr;
   uint32_t	size;
   uint8_t*	data;
-} VarEntry;
+} FileEntry;
 
 /**
- * Regular:
+ * FileContent:
  * @model: calculator model
  * @default_folder: name of the default folder (TI9x only)
  * @comment: comment aembedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
- * @entries: an array of #TiVarEntry structures which contains data
+ * @entries: an array of #TiFileEntry structures which contains data
  * @checksum: checksum of file
  *
  * A generic structure used to store the content of a single/grouped TI file.
@@ -133,10 +133,10 @@ typedef struct
   char			comment[43];		// Ti8x: 41 max
 
   int			num_entries;
-  VarEntry*		entries;
+  FileEntry*		entries;
 
   uint16_t		checksum;
-} Regular;
+} FileContent;
 
 /* Functions */
 
@@ -243,23 +243,23 @@ extern "C" {
 					     const char *varname);
 
   // filesXX.c: layer built on files8x/9x
-  TIEXPORT Regular* TICALL tifiles_content_create_regular(void);
-  TIEXPORT int      TICALL tifiles_content_free_regular(Regular *content);
+  TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
+  TIEXPORT int      TICALL tifiles_content_free_regular(FileContent *content);
 
-  TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, Regular *content);
-  TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, Regular *content, char **filename2);
+  TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);
+  TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
   TIEXPORT int TICALL tifiles_file_display(const char *filename);
 
-  TIEXPORT int** TICALL tifiles_create_table_of_entries(Regular *content, int *nfolders);
+  TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int *nfolders);
 
   // grouped.c
-  TIEXPORT int TICALL tifiles_group_contents(Regular **src_contents, Regular **dst_content);
-  TIEXPORT int TICALL tifiles_ungroup_content(Regular *src_content, Regular ***dst_contents);
+  TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content);
+  TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src_content, FileContent ***dst_contents);
 
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
 
-  TIEXPORT int TICALL tifiles_content_free_group(Regular **array);
+  TIEXPORT int TICALL tifiles_content_free_group(FileContent **array);
 
   
 

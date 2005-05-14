@@ -36,11 +36,11 @@
 /**
  * tifiles_content_create_regular:
  *
- * Allocates a #Regular structure.
+ * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT Regular *TICALL tifiles_content_create_regular(void)
+TIEXPORT FileContent *TICALL tifiles_content_create_regular(void)
 {
 #if !defined(DISABLE_TI8X)
 	return ti8x_content_create_regular();
@@ -54,11 +54,11 @@ TIEXPORT Regular *TICALL tifiles_content_create_regular(void)
 /**
  * tifiles_content_free_regular:
  *
- * Free the whole content of a #Regular structure.
+ * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_free_regular(Regular *content)
+TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -81,14 +81,14 @@ TIEXPORT int TICALL tifiles_content_free_regular(Regular *content)
  * @filename: name of single/group file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a Regular structure.
+ * Load the single/group file into a FileContent structure.
  *
  * Structure content must be freed with #tifiles_content_free_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_read_regular(const char *filename, Regular *content)
+TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -120,7 +120,7 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, Regular *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_regular(const char *filename, Regular *content, char **real_fname)
+TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -177,7 +177,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * a table of entries so that it's easy to write it just after the header in a group
  * file. Mainly used as an helper.
  * The returned 'table' is an NULL-terminated array of int* pointers.
- * Each pointers points on an integer array. Each cell are an index on the 'Ti9xVarEntry*  
+ * Each pointers points on an integer array. Each cell are an index on the 'FileEntry*  
  * entries' array.
  * 
  * In fact, this array represents a kind of tree. The array of pointer is the folder list
@@ -190,7 +190,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed when no
  * longer used.
  **/
-TIEXPORT int** TICALL tifiles_create_table_of_entries(Regular *content, int *nfolders)
+TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 {
   int num_folders = 0;
   int i, j;
@@ -200,7 +200,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(Regular *content, int *nfo
   // determine how many folders we have
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    FileEntry *entry = &(content->entries[i]);
 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) 
@@ -237,7 +237,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(Regular *content, int *nfo
 
     for (i = 0, k = 0; i < content->num_entries; i++) 
 	{
-      Ti9xVarEntry *entry = &(content->entries[i]);
+      FileEntry *entry = &(content->entries[i]);
 
       if (!strcmp(folder_list[j], entry->fld_name)) 
 	  {

@@ -53,13 +53,13 @@ static int fsignature[2] = { 1, 0 };
 /**
  * ti9x_create_regular_content:
  *
- * Allocates a #Ti9xRegular structure.
+ * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT Ti9xRegular *TICALL ti9x_content_create_regular(void)
+TIEXPORT FileContent *TICALL ti9x_content_create_regular(void)
 {
-  return (Ti9xRegular *) calloc(1, sizeof(Ti9xRegular));
+  return (FileContent *) calloc(1, sizeof(FileContent));
 }
 
 /**
@@ -105,12 +105,12 @@ TIEXPORT Ti9xFlash *TICALL ti9x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy an Ti9xVarEntry structure (data included).
+  Copy an FileEntry structure (data included).
   Memory must be freed when no longer used.
 */
-int ti9x_dup_VarEntry(Ti9xVarEntry * dst, Ti9xVarEntry * src)
+int ti9x_dup_FileEntry(FileEntry * dst, FileEntry * src)
 {
-  memcpy(dst, src, sizeof(Ti9xVarEntry));
+  memcpy(dst, src, sizeof(FileEntry));
 
   dst->data = (uint8_t *) calloc(dst->size, 1);
   if (dst->data == NULL)
@@ -122,22 +122,22 @@ int ti9x_dup_VarEntry(Ti9xVarEntry * dst, Ti9xVarEntry * src)
 
 
 /*
-  Copy an Ti9xRegular structure.
+  Copy an FileContent structure.
   Memory must be freed when no longer used.
 */
-int ti9x_dup_Regular(Ti9xRegular * dst, Ti9xRegular * src)
+int ti9x_dup_FileContent(FileContent * dst, FileContent * src)
 {
   int i;
 
-  memcpy(dst, src, sizeof(Ti9xRegular));
+  memcpy(dst, src, sizeof(FileContent));
 
-  dst->entries = (Ti9xVarEntry *) calloc(src->num_entries,
-					 sizeof(Ti9xVarEntry));
+  dst->entries = (FileEntry *) calloc(src->num_entries,
+					 sizeof(FileEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRY(ti9x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
+    TRY(ti9x_dup_FileEntry(&(dst->entries[i]), &(src->entries[i])));
 
   return 0;
 }
@@ -177,17 +177,17 @@ int ti9x_dup_Flash(Ti9xFlash * dst, Ti9xFlash * src)
 /**
  * ti9x_content_free_regular:
  *
- * Free the whole content of a #Ti9xRegular structure.
+ * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
-TIEXPORT void TICALL ti9x_content_free_regular(Ti9xRegular *content)
+TIEXPORT void TICALL ti9x_content_free_regular(FileContent *content)
 {
   int i;
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    Ti9xVarEntry *entry = &(content->entries[i]);
+    FileEntry *entry = &(content->entries[i]);
     free(entry->data);
   }
   free(content->entries);
@@ -239,14 +239,14 @@ TIEXPORT void TICALL ti9x_content_free_flash(Ti9xFlash *content)
  * @filename: name of single/group file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a Ti9xRegular structure.
+ * Load the single/group file into a FileContent structure.
  *
  * Structure content must be freed with #ti9x_content_free_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
+TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, FileContent *content)
 {
   FILE *f;
   long cur_pos = 0;
@@ -281,8 +281,8 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
   fread_word(f, &tmp);
   content->num_entries = tmp;
 
-  content->entries = (Ti9xVarEntry *) calloc(content->num_entries,
-					     sizeof(Ti9xVarEntry));
+  content->entries = (FileEntry *) calloc(content->num_entries,
+					     sizeof(FileEntry));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -291,7 +291,7 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
 
   for (i = 0, j = 0; i < content->num_entries; i++) 
   {
-    Ti9xVarEntry *entry = &((content->entries)[j]);
+    FileEntry *entry = &((content->entries)[j]);
 
     fread_long(f, &curr_offset);
     fread_8_chars(f, entry->var_name);
@@ -327,9 +327,9 @@ TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *co
     }
   }
   content->num_entries = j;
-  content->entries = (Ti9xVarEntry *) realloc(content->entries,
+  content->entries = (FileEntry *) realloc(content->entries,
 					      content->num_entries *
-					      sizeof(Ti9xVarEntry));
+					      sizeof(FileEntry));
   fread_long(f, &next_offset);
   fseek(f, next_offset - 2, SEEK_SET);
   fread_word(f, &(content->checksum));
@@ -536,7 +536,7 @@ TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real_fname)
+TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, FileContent *content, char **real_fname)
 {
   FILE *f;
   int i;
@@ -597,7 +597,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
   // write table of entries
   for (i = 0; table[i] != NULL; i++) 
   {
-    Ti9xVarEntry *fentry;
+    FileEntry *fentry;
     int j, index = table[i][0];
     fentry = &(content->entries[index]);
 
@@ -614,7 +614,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
     for (j = 0; table[i][j] != -1; j++) 
 	{
       int index = table[i][j];
-      Ti9xVarEntry *entry = &(content->entries[index]);
+      FileEntry *entry = &(content->entries[index]);
 
       fwrite_long(f, offset);
       fwrite_8_chars(f, entry->var_name);
@@ -637,7 +637,7 @@ TIEXPORT int TICALL ti9x_file_write_regular(const char *fname, Ti9xRegular *cont
     for (j = 0; table[i][j] != -1; j++) 
 	{
       int index = table[i][j];
-      Ti9xVarEntry *entry = &(content->entries[index]);
+      FileEntry *entry = &(content->entries[index]);
       uint16_t sum;
 
       fwrite_long(f, 0);
@@ -752,13 +752,13 @@ TIEXPORT int TICALL ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
 
 /**
  * ti9x_content_display_regular:
- * @content: a Ti9xRegular structure.
+ * @content: a FileContent structure.
  *
- * Display fields of a Ti9xRegular structure.
+ * Display fields of a FileContent structure.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content)
+TIEXPORT int TICALL ti9x_content_display_regular(FileContent *content)
 {
   int i;
   char trans[17];
@@ -879,7 +879,7 @@ TIEXPORT int TICALL ti9x_content_display_flash(Ti9xFlash *content)
  **/
 TIEXPORT int TICALL ti9x_file_display(const char *filename)
 {
-  Ti9xRegular content1;
+  FileContent content1;
   Ti9xBackup content2;
   Ti9xFlash content3;
 

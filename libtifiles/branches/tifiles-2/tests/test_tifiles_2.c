@@ -356,7 +356,7 @@ static int test_ti82_backup_support()
 
 static int test_ti82_regular_support()
 {
-  Ti8xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI82 regular support (single)...\n");
@@ -410,11 +410,11 @@ static int test_ti82_ungroup_support()
 static int test_ti82_group_ungroup_support()
 {
   /*
-  Ti8xRegular src1;
-  Ti8xRegular **dst1;
-  Ti8xRegular **src2;
-  Ti8xRegular dst2;
-  Ti8xRegular **ptr;
+  FileContent src1;
+  FileContent **dst1;
+  FileContent **src2;
+  FileContent dst2;
+  FileContent **ptr;
 
   ti8x_read_regular_file("group.82g", &src1);
   ti8x_ungroup_content(&src1, &dst1);
@@ -431,7 +431,7 @@ static int test_ti82_group_ungroup_support()
 
 static int test_ti84p_regular_support()
 {
-  Ti8xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI84+ regular support (single)...\n");
@@ -554,7 +554,7 @@ static int test_ti86_backup_support()
 
 static int test_ti86_regular_support()
 {
-  Ti8xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI86 regular support (single)...\n");
@@ -576,7 +576,7 @@ static int test_ti86_regular_support()
 
 static int test_ti86_regular_support_()
 {
-  Ti8xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI86 regular support (single)...\n");
@@ -640,7 +640,7 @@ static int test_ti92_backup_support()
 
 static int test_ti92_regular_support()
 {
-  Ti9xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI92 regular support (single)...\n");
@@ -698,7 +698,7 @@ static int test_ti92_ungroup_support()
 
 static int test_ti89_regular_support()
 {
-  Ti9xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing TI89 regular support (group)...\n");
@@ -728,7 +728,7 @@ static int test_ti89_flash_support()
 
 static int test_v200_regular_support()
 {
-  Ti9xRegular content;
+  FileContent content;
   char *unused;
 
   printf("--> Testing regular support (group)...\n");
