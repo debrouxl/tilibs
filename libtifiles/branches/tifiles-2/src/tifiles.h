@@ -311,12 +311,24 @@ extern "C" {
   // filesXX.c: layer built on files8x/9x
   TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
   TIEXPORT int          TICALL tifiles_content_free_regular(FileContent *content);
-
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
-  TIEXPORT int TICALL tifiles_file_display(const char *filename);
+  TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content);
+
+  //TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void);
+  //TIEXPORT int           TICALL tifiles_content_free_nackup(BackupContent *content);
+  //TIEXPORT int TICALL tifiles_file_read_backup(const char *filename, BackupContent *content);
+  //TIEXPORT int TICALL tifiles_file_write_backup(const char *filename, BackupContent *content);
+  //TIEXPORT int TICALL tifiles_file_display_regular(BackupContent *content);
+
+  TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void);
+  TIEXPORT int           TICALL tifiles_content_free_flash(FlashContent *content);
+  TIEXPORT int TICALL tifiles_file_read_flash(const char *filename, FlashContent *content);
+  TIEXPORT int TICALL tifiles_file_write_flash(const char *filename, FlashContent *content);
+  TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content);
 
   TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int *nfolders);
+  TIEXPORT int TICALL tifiles_file_display(const char *filename);
 
   // grouped.c
   TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content);

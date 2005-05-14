@@ -101,27 +101,27 @@ struct ti9x_flash
 /* Functions */
 
 // allocating
-TIEXPORT Ti9xRegular* TICALL ti9x_content_create_regular(void);
-TIEXPORT Ti9xBackup*  TICALL ti9x_content_create_backup(void);
-TIEXPORT Ti9xFlash*   TICALL ti9x_content_create_flash(void);
+Ti9xRegular* ti9x_content_create_regular(void);
+Ti9xBackup*  ti9x_content_create_backup(void);
+Ti9xFlash*   ti9x_content_create_flash(void);
 // freeing
-TIEXPORT void TICALL ti9x_content_free_regular(Ti9xRegular *content);
-TIEXPORT void TICALL ti9x_content_free_backup(Ti9xBackup *content);
-TIEXPORT void TICALL ti9x_content_free_flash(Ti9xFlash *content);
+void ti9x_content_free_regular(Ti9xRegular *content);
+void ti9x_content_free_backup(Ti9xBackup *content);
+void ti9x_content_free_flash(Ti9xFlash *content);
 //displaying
-TIEXPORT int TICALL ti9x_content_display_regular(Ti9xRegular *content);
-TIEXPORT int TICALL ti9x_content_display_backup(Ti9xBackup *content);
-TIEXPORT int TICALL ti9x_content_display_flash(Ti9xFlash *content);
+int ti9x_content_display_regular(Ti9xRegular *content);
+int ti9x_content_display_backup(Ti9xBackup *content);
+int ti9x_content_display_flash(Ti9xFlash *content);
 
 // reading
-TIEXPORT int TICALL ti9x_file_read_regular(const char *filename, Ti9xRegular *content);
-TIEXPORT int TICALL ti9x_file_read_backup(const char *filename, Ti9xBackup *content);
-TIEXPORT int TICALL ti9x_file_read_flash(const char *filename, Ti9xFlash *content);
+int ti9x_file_read_regular(const char *filename, Ti9xRegular *content);
+int ti9x_file_read_backup(const char *filename, Ti9xBackup *content);
+int ti9x_file_read_flash(const char *filename, Ti9xFlash *content);
 // writing
-TIEXPORT int TICALL ti9x_file_write_regular(const char *filename, Ti9xRegular *content, char **filename2);
-TIEXPORT int TICALL ti9x_file_write_backup(const char *filename, Ti9xBackup *content);
-TIEXPORT int TICALL ti9x_file_write_flash(const char *filename, Ti9xFlash *content);
+int ti9x_file_write_regular(const char *filename, Ti9xRegular *content, char **filename2);
+int ti9x_file_write_backup(const char *filename, Ti9xBackup *content);
+int ti9x_file_write_flash(const char *filename, Ti9xFlash *content);
 //displaying
-TIEXPORT int TICALL ti9x_file_display(const char *filename);
+int ti9x_file_display(const char *filename);
 
 #endif

@@ -139,6 +139,298 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
 }
 
 /**
+ * tifiles_file_display_regular:
+ * @content: the file content to show.
+ *
+ * Display file content informations.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
+{
+	#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_content_display_regular(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_content_display_regular(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+#if 0
+
+/**
+ * tifiles_content_create_backup:
+ *
+ * Allocates a #FileContent structure.
+ *
+ * Return value: the allocated block.
+ **/
+TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
+{
+#if !defined(DISABLE_TI8X)
+	return (BackupContent*)ti8x_content_create_backup();
+#elif !defined(DISABLE_TI9X)
+    return (BackupContent*)ti9x_content_create_backup();
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+}
+
+/**
+ * tifiles_content_free_regular:
+ *
+ * Free the whole content of a #FileContent structure.
+ *
+ * Return value: none.
+ **/
+TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		ti8x_content_free_backup(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		ti9x_content_free_backup(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_read_backup:
+ * @filename: name of single/group file to open.
+ * @content: where to store the file content.
+ *
+ * Load the single/group file into a FileContent structure.
+ *
+ * Structure content must be freed with #tifiles_content_free_regular when
+ * no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+		return ti8x_file_read_backup(filename, (Ti8xRegular *)content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+		return ti9x_file_read_backup(filename, (Ti9xRegular *)content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_write_backup:
+ * @filename: name of single/group file where to write or NULL.
+ * @content: the file content to write.
+ * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ *
+ * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
+ * the function build a filename from varname and allocates resulting filename in %real_fname.
+ * %filename and %real_filename can be NULL but not both !
+ *
+ * %real_filename must be freed when no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_file_write_backup(filename, (Ti8xRegular *)content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_file_write_backup(filename, (Ti9xRegular *)content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_display_regular:
+ * @content: the file content to show.
+ *
+ * Display file content informations.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
+{
+	#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_content_display_backup(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_content_display_backup(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+#endif
+
+/**
+ * tifiles_content_create_flash:
+ *
+ * Allocates a #FileContent structure.
+ *
+ * Return value: the allocated block.
+ **/
+TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
+{
+#if !defined(DISABLE_TI8X)
+	return (FlashContent*)ti8x_content_create_flash();
+#elif !defined(DISABLE_TI9X)
+    return (FlashContent*)ti9x_content_create_flash();
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+}
+
+/**
+ * tifiles_content_free_flash:
+ *
+ * Free the whole content of a #FileContent structure.
+ *
+ * Return value: none.
+ **/
+TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		ti8x_content_free_flash(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		ti9x_content_free_flash(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_read_flash:
+ * @filename: name of single/group file to open.
+ * @content: where to store the file content.
+ *
+ * Load the single/group file into a FileContent structure.
+ *
+ * Structure content must be freed with #tifiles_content_free_regular when
+ * no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+		return ti8x_file_read_flash(filename, content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+		return ti9x_file_read_flash(filename, content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_write_flash:
+ * @filename: name of single/group file where to write or NULL.
+ * @content: the file content to write.
+ * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ *
+ * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
+ * the function build a filename from varname and allocates resulting filename in %real_fname.
+ * %filename and %real_filename can be NULL but not both !
+ *
+ * %real_filename must be freed when no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *content)
+{
+#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_file_write_flash(filename, content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_file_write_flash(filename, content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
+ * tifiles_file_display_flash:
+ * @content: the file content to show.
+ *
+ * Display file content informations.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
+{
+	#if !defined(DISABLE_TI8X)
+	if (tifiles_calc_is_ti8x(content->model))
+		return ti8x_content_display_flash(content);
+	else 
+#elif !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(content->model))
+		return ti9x_content_display_flash(content);
+	else
+#else
+#error "You can't disable TI8x & TI9x support both.
+#endif
+    return ERR_BAD_CALC;
+
+	return 0;
+}
+
+/**
  * tifiles_file_display:
  * @filename: a TI file.
  *
