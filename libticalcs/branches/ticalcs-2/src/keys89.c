@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "calc_def.h"
+#include "ticalcs.h"
 
 /*
   Conversion of an PC scancode into an TI scancode.
@@ -34,7 +34,7 @@
   Note: this array is a copy of the TI92 one which has been modified thus some rows may not
   really exists on the TI89.
 */
-const TicalcKey TI89_KEYS[] = {
+const CalcKey TI89_KEYS[] = {
 /* 0x00, 0 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},

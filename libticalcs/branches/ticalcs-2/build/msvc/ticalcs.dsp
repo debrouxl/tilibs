@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /w /W0 /GX /I "." /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /YX /FD /c
+# ADD CPP /nologo /MT /w /W0 /GX /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "../../../ticables/src" /I "../../../tifiles/src" /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /ZI /Od /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -95,58 +95,10 @@ LINK32=link.exe
 # Begin Group "cmds"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\cmd73.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd82.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd85.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd89.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd92.c
-# End Source File
 # End Group
 # Begin Group "calcs"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\ti73.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti82.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti83.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti85.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti86.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti89.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti92.c
-# End Source File
 # End Group
 # Begin Group "keys"
 
@@ -172,162 +124,18 @@ SOURCE=..\..\src\keys92p.c
 SOURCE=..\..\src\tikeys.c
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\..\src\packets.c
-# End Source File
 # End Group
 # Begin Group "Others"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\clock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dirlist.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\printl.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Probe.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\tnode.c
+SOURCE=..\..\src\logging.c
 # End Source File
 # End Group
 # Begin Group "Headers"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\Calc_def.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Calc_err.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Calc_int.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\clock.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd73.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd82.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd85.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd89.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\cmd92.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dirlist.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\export.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\externs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\headers.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Intl2.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\keys73.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\keys83p.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Keys89.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\keys92p.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\packets.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\pause.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\ti73.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti82.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti83.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti85.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti86.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti89.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Ti92.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\tikeys.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\Tixx.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\tnode.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\update.h
-# End Source File
 # End Group
 # Begin Group "ROMdumping"
 

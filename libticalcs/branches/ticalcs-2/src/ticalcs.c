@@ -32,39 +32,19 @@
 #endif
 
 #include "gettext.h"
-#include "ticables.h"
+#include "ticalcs.h"
 #include "logging.h"
 #include "error.h"
-#include "link_xxx.h"
-#include "data_log.h"
 
 /*****************/
 /* Internal data */
 /*****************/
 
-static TiCable const *const cables[] = 
+static CalcFncts const *const calcs[] = 
 {
-	&cable_nul,
-#ifndef NO_CABLE_GRY
-	&cable_gry,
-#endif
-#ifndef NO_CABLE_BLK
-	&cable_ser,
-#endif
-#ifndef NO_CABLE_PAR
-	&cable_par,
-#endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
-	&cable_slv,
-#endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
-	&cable_raw,
-#endif
-#ifndef NO_CABLE_VTI
-	&cable_vti,
-#endif
-#ifndef NO_CABLE_TIE
-	&cable_tie,
+//	&calc_nul,
+#ifndef NO_TI92
+//	&calc_ti92,
 #endif
 	NULL
 };
@@ -74,16 +54,16 @@ static TiCable const *const cables[] =
 /****************/
 
 // not static, must be shared between instances
-int ticables_instance = 0;	// counts # of instances
+int ticalcs_instance = 0;	// counts # of instances
 
 /**
- * tifiles_library_init:
+ * ticalcs_library_init:
  *
  * This function must be the first one to call. It inits library internals.
  *
  * Return value: the instance count.
  **/
-TIEXPORT int TICALL ticables_library_init(void)
+TIEXPORT int TICALL ticalcs_library_init(void)
 {
     char locale_dir[65536];
 	
@@ -91,7 +71,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	HANDLE hDll;
   	int i;
   	
-  	hDll = GetModuleHandle("ticables.dll");
+  	hDll = GetModuleHandle("ticalcs2.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
   	
   	for (i = strlen(locale_dir); i >= 0; i--) {
@@ -105,19 +85,19 @@ TIEXPORT int TICALL ticables_library_init(void)
 	strcpy(locale_dir, LOCALEDIR);
 #endif
 
-	if (ticables_instance)
-		return (++ticables_instance);
-	ticables_info(_("ticables library version %s"), LIBTICABLES_VERSION);
+	if (ticalcs_instance)
+		return (++ticalcs_instance);
+	ticalcs_info(_("ticalcs library version %s"), LIBCALCS_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	ticables_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));
-  	ticables_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
+  	ticalcs_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	ticalcs_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	ticables_info("textdomain: <%s>", textdomain(PACKAGE));
+  	ticalcs_info("textdomain: <%s>", textdomain(PACKAGE));
 #endif
 
-  	return (++ticables_instance);
+  	return (++ticalcs_instance);
 }
 
 
@@ -129,9 +109,9 @@ TIEXPORT int TICALL ticables_library_init(void)
  * Return value: the instance count.
  **/
 TIEXPORT int
-TICALL ticables_library_exit(void)
+TICALL ticalcs_library_exit(void)
 {
-  	return (--ticables_instance);
+  	return (--ticalcs_instance);
 }
 
 /***********/
@@ -139,21 +119,20 @@ TICALL ticables_library_exit(void)
 /***********/
 
 /**
- * ticables_version_get:
+ * ticalcs_version_get:
  *
  * This function returns the library version like "X.Y.Z".
  *
  * Return value: a string.
  **/
-TIEXPORT const char *TICALL ticables_version_get(void)
+TIEXPORT const char *TICALL ticalcs_version_get(void)
 {
-	return LIBTICABLES_VERSION;
+	return LIBCALCS_VERSION;
 }
 
 /**
- * ticables_handle_new:
- * @model: a cable model
- * @port: the generic port on which cable is attached.
+ * ticalcs_handle_new:
+ * @model: a hand-held model
  *
  * Create a new handle associated with the given cable on the given port.
  * Must be freed with ticables_handle_del when no longer needed.
@@ -161,117 +140,101 @@ TIEXPORT const char *TICALL ticables_version_get(void)
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT CableHandle* TICALL ticables_handle_new(TiCableModel model, TiCablePort port)
+TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
-	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
+	CalcHandle *handle = (CalcHandle *)calloc(1, sizeof(CalcHandle));
 	int i;
 
 	handle->model = model;
-	handle->port = port;
 
-	handle->delay = DFLT_DELAY;
-	handle->timeout = DFLT_TIMEOUT;
-
-	for(i = 0; cables[i]; i++)
-		if(cables[i]->model == model)
+	for(i = 0; calcs[i]; i++)
+		if(calcs[i]->model == model)
 		{
-			handle->cable = cables[i];
+			handle->calc = (CalcFncts *)calcs[i];
 			break;
 		}
 	
-	if(handle->cable == NULL)
+	if(handle->calc == NULL)
 		return NULL;
 
 	return handle;
 }
 
 /**
- * ticables_handle_del:
+ * ticalcs_handle_del:
  * @handle: the handle
  *
  * Release the cable and free the associated resources.
+ * If cable has not been detached with #ticalcs_cable_detach,
+ * it will be detached.
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
+TIEXPORT int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
+	if(handle->attached)
+		ticalcs_cable_detach(handle);
+
     if(handle->priv2)
 	free(handle->priv2);
-    if(handle->device)
-	free(handle->device);
+
     if(handle)
 	free(handle);
     handle = NULL;
-    
+
     return 0;
 }
 
 /**
- * ticables_options_set_timeout:
+ * ticalcs_handle_show:
  * @handle: the handle
- * @timeout: timeout value in tenth of seconds
  *
- * Set timeout for any cable.
+ * Show informations stored in the handle.
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
+TIEXPORT int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
-	return handle->timeout = timeout;
+	ticalcs_info(_("Link calc handle details:"));
+	ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
+
+	return 0;
 }
+
+/**
+ * ticalcs_cable_attach:
+ * @handle: the handle
+ * @cable: a cable to use
+ *
+ * Attach and open the given cable for use with the hand-held.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
+{
+	handle->cable = cable;
+	handle->attached = !0;
+
+	TRYC(ticables_cable_open(cable));
+
+	return 0;
+}
+
+/**
+ * ticalcs_cable_attach:
+ * @handle: the handle
+ * @cable: a cable to use
+ *
+ * Close and detach the cable associated with the hand-held.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
+{
+	TRYC(ticables_cable_close(handle->cable));
 	
-/**
- * ticables_options_set_delay:
- * @handle: the handle
- * @delay: delay in micro-seconds
- *
- * Set inter-bit delay for parallel or BlackLink cable.
- *
- * Return value: always 0.
- **/
-TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
-{
-	return handle->delay = delay;
-}
-
-/**
- * ticables_get_model:
- * @handle: the handle
- *
- * Retrieve link cable model.
- *
- * Return value: a #TiCableModel value.
- **/
-TIEXPORT TiCableModel TICALL ticables_get_model(CableHandle* handle)
-{
-	return handle->model;
-}
-
-/**
- * ticables_get_port:
- * @handle: the handle
- *
- * Retrieve link port.
- *
- * Return value: a #TiCablePort value.
- **/
-TIEXPORT TiCablePort  TICALL ticables_get_port(CableHandle* handle)
-{
-	return handle->port;
-}
-
-TIEXPORT int TICALL ticables_handle_show(CableHandle* handle)
-{
-	ticables_info(_("Link cable handle details:"));
-	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
-	ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
-	ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
-	ticables_info(_("  delay   : %i us"), handle->delay);
-	if(handle->device)
-	{
-		ticables_info(_("  device  : %s"), handle->device);
-		ticables_info(_("  address : 0x%03x"), handle->address);
-	}
+	handle->attached = 0;
+	handle->cable = NULL;
 
 	return 0;
 }

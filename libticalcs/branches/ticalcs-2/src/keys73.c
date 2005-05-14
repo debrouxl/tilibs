@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "calc_def.h"
+#include "ticalcs.h"
 
 /*
   Conversion of an ASCII code into a TI key
@@ -28,7 +28,7 @@
   From 0x00 to 0x80, ASCII codes
   From 0x80, I do not know where I can put them...
 */
-const TicalcKey TI73_KEYS[] = {
+const CalcKey TI73_KEYS[] = {
 /* 0x00 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},

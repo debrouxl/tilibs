@@ -29,10 +29,6 @@
 extern int lock;
 #define UNLOCK_TRANSFER() lock = 0;
 
-#ifndef TRYF
-# define TRYF(x) { int aaaa_; if((aaaa_ = (x))) { UNLOCK_TRANSFER() return aaaa_; } }	//new !
-#endif
-
 #define LOCK_TRANSFER()   { TRYF(lock);  lock = ERR_PENDING_TRANSFER; }
 
 /* 

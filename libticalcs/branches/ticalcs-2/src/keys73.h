@@ -76,6 +76,6 @@
 
 // Array of keys
 
-extern const TicalcKey TI73_KEYS[];
+extern const CalcKey TI73_KEYS[];
 
 #endif

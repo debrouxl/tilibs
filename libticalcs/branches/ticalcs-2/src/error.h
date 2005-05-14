@@ -49,6 +49,6 @@ typedef enum
 	ERR_MISSING_VAR,		// The requested var does not exist
 	ERR_NO_VARS,			// No vars to backup
 
-} TiCalcError;
+} CalcError;
 
 #endif

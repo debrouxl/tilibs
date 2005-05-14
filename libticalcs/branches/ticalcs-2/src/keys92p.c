@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "calc_def.h"
+#include "ticalcs.h"
 
 /*
   Conversion of an PC scancode into an TI scancode.
@@ -32,7 +32,7 @@
 
   The array can be used in reverse order too, at least for the first column...
 */
-const TicalcKey TI92P_KEYS[] = {
+const CalcKey TI92P_KEYS[] = {
 /* 0x00, 0-15 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},

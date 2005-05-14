@@ -112,6 +112,6 @@
 
 // Array of keys
 
-extern const TicalcKey TI92P_KEYS[];
+extern const CalcKey TI92P_KEYS[];
 
 #endif

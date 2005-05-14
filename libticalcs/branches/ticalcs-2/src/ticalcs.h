@@ -19,12 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CalcS__
-#define __CalcS__
+#ifndef __CALCS__
+#define __CALCS__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+
+#include <ticables.h>
 
 #include "stdints.h"
 #include "export.h"
@@ -199,6 +201,7 @@ typedef struct
 {
 	uint8_t width;
 	uint8_t height;
+
 	uint8_t clipped_width;
 	uint8_t clipped_height;
 } CalcScreenCoord;
@@ -261,9 +264,11 @@ typedef struct
   uint16_t	year;
   uint8_t	month;
   uint8_t	day;
+
   uint8_t	hours;
   uint8_t	minutes;
   uint8_t	seconds;
+
   uint8_t	time_format;
   uint8_t	date_format;
 } CalcClock;
@@ -290,11 +295,10 @@ typedef struct
  **/
 typedef struct 
 {
-  /* Variables to update */
-  int cancel;
+  int	cancel;
   
-  int count;
-  int total;
+  int	count;
+  int	total;
 
   float percentage;
   float prev_percentage;
@@ -302,9 +306,8 @@ typedef struct
   float main_percentage;
   float prev_main_percentage;
 
-  char info[256];
+  char	info[256];
 
-  /* Functions for updating (callbacks) */
   void	(*start)	(void);
   void	(*stop)		(void);
   void	(*refresh)	(void);
@@ -312,7 +315,7 @@ typedef struct
   void	(*label)	(void);
 } CalcUpdate;
 
-typedef struct _Calc		Calc;
+typedef struct _CalcFncts	CalcFncts;
 typedef struct _CalcHandle	CalcHandle;
 
 /**
@@ -330,7 +333,7 @@ typedef struct _CalcHandle	CalcHandle;
  * A structure used for handling a hand-held.
  * !!! This structure is for private use !!!
  **/
-struct _Calc
+struct _CalcFncts
 {
 	const int		model;			
 	const char*		name;			
@@ -344,9 +347,9 @@ struct _Calc
 	const int		memory;
 	const int		flash;
 
-	const int		(*is_ready)	(CalcHandle *);
+	const int		(*is_ready)		(CalcHandle *);
 
-	const int		(*send_key)	(CalcHandle *, uint16_t key);
+	const int		(*send_key)		(CalcHandle *, uint16_t key);
 
 	const int		(*recv_screen)	(CalcHandle *, 
 									 CalcScreenFormat format, 
@@ -354,15 +357,15 @@ struct _Calc
 									 uint8_t **bitmap
 									 );
 
-	const int		(*dirlist)	(CalcHandle *, 
-								 TNode ** vars, TNode ** apps, 
-								 uint32_t * memory);
+	const int		(*get_dirlist)	(CalcHandle *, 
+									TNode ** vars, TNode ** apps, 
+									uint32_t * memory);
 
 	const int		(*recv_backup)	(CalcHandle*);
 	const int		(*send_backup)	(CalcHandle*);
 
-	const int		(*send_var)	(CalcHandle*);
-	const int		(*recv_var)	(CalcHandle*);
+	const int		(*send_var)		(CalcHandle*);
+	const int		(*recv_var)		(CalcHandle*);
 	const int		(*recv_var2)	(CalcHandle*);
 
 	const int		(*send_flash)	(CalcHandle*);
@@ -400,11 +403,13 @@ struct _Calc
 /**
  * CalcHandle:
  * @model: cable model
- * @cable: handle on cable used with this model
+ * @calc: calculator functions
  * @update: callbacks for GUI interaction
  * @priv: holding data
  * @open: device has been opened
  * @busy: transfer is in progress
+ * @cable: handle on cable used with this model
+ * @attached: set if a cable has been attached
  *
  * A structure used to store informations as an handle.
  * !!! This structure is for private use !!!
@@ -412,20 +417,21 @@ struct _Calc
 struct _CalcHandle
 {
 	CalcModel	model;	
-	
-	CableHandle	cable;
-
-	CalcUpdate	update;
+	CalcFncts*	calc;
+	CalcUpdate*	update;
 
 	void*		priv;	
 	void*		priv2;	
 	void*		priv3;	
 
 	int			open;
-	int			busy;	
+	int			busy;
+	
+	CableHandle* cable;
+	int			attached;
 };
 
-// namespace scheme: library_class_function like ticables_fext_get
+// namespace scheme: library_class_function like ticalcs_fext_get
 
 	/****************/
 	/* Entry points */
@@ -438,11 +444,51 @@ struct _CalcHandle
 	/* General functions */
 	/*********************/
 
+	// error.c
+	TIEXPORT int         TICALL ticalcs_error_get (int number, char **message);
+
 	// ticalcs.c
 	TIEXPORT const char* TICALL ticalcs_version_get (void);
 
-	TIEXPORT CableHandle* TICALL ticalcss_handle_new(TiCableModel, TiCablePort);
-	TIEXPORT int       TICALL ticalcss_handle_del(CableHandle*);
+	TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel);
+	TIEXPORT int         TICALL ticalcs_handle_del(CalcHandle*);
+	TIEXPORT int         TICALL ticalcs_handle_show(CalcHandle*);
+
+	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
+
+	TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle*, CableHandle*);
+	TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle*);
+
+
+	// calc.c
+	//...
+
+	// type2str.c
+	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
+	TIEXPORT CalcModel    TICALL ticalcs_string_to_model (const char *str);
+
+	TIEXPORT const char*      TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format);
+	TIEXPORT CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str);
+
+	TIEXPORT const char*  TICALL ticalc_pathtype_to_string(CalcPathType type);
+	TIEXPORT CalcPathType TICALL ticalc_string_to_pathtype(const char *str);
+
+	TIEXPORT const char*  TICALL ticalc_memtype_to_string(CalcMemType type);
+	TIEXPORT CalcMemType  TICALL ticalc_string_to_memtype(const char *str);
+
+	TIEXPORT const char*  TICALL ticalc_action_to_string(CalcAction action);
+	TIEXPORT CalcAction   TICALL ticalc_string_to_action(const char *str);
+
+	// clock.c
+	TIEXPORT const char* TICALL ticalc_clock_format2date(int value);
+	TIEXPORT int		 TICALL ticalc_clock_date2format(const char *format);
+
+	// tikeys.c
+	TIEXPORT const CalcKey TICALL ticalc_73_keys (uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalc_83p_keys(uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalc_89_keys (uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalc_92p_keys(uint8_t ascii_code);
+	
   
   /************************/
   /* Deprecated functions */

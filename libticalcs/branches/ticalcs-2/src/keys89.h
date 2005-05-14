@@ -84,6 +84,6 @@
 
 // Array of keys
 
-extern const TicalcKey TI89_KEYS[];
+extern const CalcKey TI89_KEYS[];
 
 #endif
