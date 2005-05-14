@@ -24,14 +24,14 @@
 
 #include "ticables.h"
 
-extern const Cable cable_nul;
-extern const Cable cable_gry;
-extern const Cable cable_ser;
-extern const Cable cable_slv;
-extern const Cable cable_par;
-extern const Cable cable_vti;
-extern const Cable cable_tie;
-extern const Cable cable_raw;
+extern const CableFncts cable_nul;
+extern const CableFncts cable_gry;
+extern const CableFncts cable_ser;
+extern const CableFncts cable_slv;
+extern const CableFncts cable_par;
+extern const CableFncts cable_vti;
+extern const CableFncts cable_tie;
+extern const CableFncts cable_raw;
 
 #endif
 

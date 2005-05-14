@@ -303,7 +303,7 @@ static int gry_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_gry = 
+const CableFncts cable_gry = 
 {
 	CABLE_GRY,
 	"GRY",

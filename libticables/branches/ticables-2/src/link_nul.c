@@ -93,7 +93,7 @@ int nul_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_nul = 
+const CableFncts cable_nul = 
 {
 	CABLE_NUL,
 	"NUL",

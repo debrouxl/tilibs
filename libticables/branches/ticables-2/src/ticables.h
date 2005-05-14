@@ -104,7 +104,7 @@ typedef struct
 	tiTIME	stop;
 } DataRate;
 
-typedef struct _Cable	Cable;
+typedef struct _CableFncts	 CableFncts;
 typedef struct _CableHandle  CableHandle;
 
 /**
@@ -130,7 +130,7 @@ typedef struct _CableHandle  CableHandle;
  * A structure used for handling a link cable.
  * !!! This structure is for private use !!! 
  **/
-struct _Cable
+struct _CableFncts
 {
 	const int		model;			
 	const char*		name;			
@@ -185,7 +185,7 @@ struct _CableHandle
 	char *			device;	
 	unsigned int	address;
 
-	const Cable*	cable;	
+	CableFncts*		cable;	
 	DataRate		rate;	
 
 	void*			priv;	

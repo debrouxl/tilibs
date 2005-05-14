@@ -263,7 +263,7 @@ static int par_get_white_wire(CableHandle *h)
 	return (0x20 & io_rd(lpt_in)) ? 1 : 0;
 }
 
-const Cable cable_par = 
+const CableFncts cable_par = 
 {
 	CABLE_PAR,
 	"PAR",

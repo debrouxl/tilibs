@@ -42,7 +42,7 @@
 /* Internal data */
 /*****************/
 
-static Cable const *const cables[] = 
+static CableFncts const *const cables[] = 
 {
 	&cable_nul,
 #ifndef NO_CABLE_GRY
@@ -175,7 +175,7 @@ TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort por
 	for(i = 0; cables[i]; i++)
 		if(cables[i]->model == model)
 		{
-			handle->cable = cables[i];
+			handle->cable = (CableFncts *)cables[i];
 			break;
 		}
 	

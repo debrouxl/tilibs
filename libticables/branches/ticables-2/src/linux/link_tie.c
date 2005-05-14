@@ -246,7 +246,7 @@ static int tie_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_tie = 
+const CableFncts cable_tie = 
 {
 	CABLE_TIE,
 	"TIE",

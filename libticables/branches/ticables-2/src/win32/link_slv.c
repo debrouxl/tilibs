@@ -315,7 +315,7 @@ static int slv_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_slv = 
+const CableFncts cable_slv = 
 {
 	CABLE_SLV,
 	"SLV",
@@ -329,7 +329,7 @@ const Cable cable_slv =
 	&slv_get_red_wire, &slv_get_white_wire,
 };
 
-const Cable cable_raw = 
+const CableFncts cable_raw = 
 {
 	CABLE_USB,
 	"USB",

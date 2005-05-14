@@ -280,7 +280,7 @@ static int ser_get_white_wire(CableHandle *h)
 	return ((0x20 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
-const Cable cable_ser = 
+const CableFncts cable_ser = 
 {
 	CABLE_BLK,
 	"BLK",

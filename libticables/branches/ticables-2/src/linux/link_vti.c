@@ -236,7 +236,7 @@ static int vti_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_vti = 
+const CableFncts cable_vti = 
 {
 	CABLE_VTI,
 	"VTI",
