@@ -377,7 +377,7 @@ TIEXPORT const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t vartyp
 /* Global types */
 /****************/
 
-#define NCALCS TIFILES_NCALCS
+#define NCALCS FILES_NCALCS
 
 static const char GROUP_FILE_EXT[NCALCS + 1][4] = 
 {

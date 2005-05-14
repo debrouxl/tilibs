@@ -39,12 +39,12 @@
 /**
  * tifiles_content_free_group:
  *
- * Convenient function which free a NULL-terminated array of #TiRegular 
+ * Convenient function which free a NULL-terminated array of #Regular 
  * structures (typically used to store a group file) and the array itself.
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL tifiles_content_free_group(TiRegular **array)
+TIEXPORT int TICALL tifiles_content_free_group(Regular **array)
 {
 	int i, n;
 	
@@ -69,7 +69,7 @@ TIEXPORT int TICALL tifiles_content_free_group(TiRegular **array)
 int ti8x_dup_VarEntry(Ti8xVarEntry *dst, Ti8xVarEntry *src);
 int ti9x_dup_VarEntry(Ti9xVarEntry *dst, Ti9xVarEntry *src);
 
-static int tixx_dup_VarEntry(TiVarEntry *dst, TiVarEntry *src)
+static int tixx_dup_VarEntry(VarEntry *dst, VarEntry *src)
 {
 #if !defined(DISABLE_TI8X)
 	return ti8x_dup_VarEntry(dst, src);
@@ -82,37 +82,37 @@ static int tixx_dup_VarEntry(TiVarEntry *dst, TiVarEntry *src)
 
 /**
  * tifiles_group_contents:
- * @src_contents: a pointer on an array of #TiRegular structures. The array must be terminated by NULL.
+ * @src_contents: a pointer on an array of #Regular structures. The array must be terminated by NULL.
  * @dst_content: the address of a pointer. This pointer will contain the allocated group file.
  *
- * Must be freed when no longer needed as well as the content of each #TiRegular structure
+ * Must be freed when no longer needed as well as the content of each #Regular structure
  * (use #tifiles_content_free_regular as usual).
  *
- * Group several #TiRegular structures into a single one.
+ * Group several #Regular structures into a single one.
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular **dst_content)
+TIEXPORT int TICALL tifiles_group_contents(Regular **src_contents, Regular **dst_content)
 {
-  TiRegular *dst;
+  Regular *dst;
   int i, n;
 
   for (n = 0; src_contents[n] != NULL; n++);
 
-  dst = (TiRegular *) calloc(1, sizeof(TiRegular));
+  dst = (Regular *) calloc(1, sizeof(Regular));
   if (dst == NULL)
     return ERR_MALLOC;
 
-  memcpy(dst, src_contents[0], sizeof(TiRegular));
+  memcpy(dst, src_contents[0], sizeof(Regular));
 
   dst->num_entries = n;
-  dst->entries = (TiVarEntry *) calloc(n, sizeof(TiVarEntry));
+  dst->entries = (VarEntry *) calloc(n, sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
   for (i = 0; i < n; i++) 
   {
-    TiRegular *src = src_contents[i];
+    Regular *src = src_contents[i];
 
     TRY(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
   }
@@ -130,36 +130,36 @@ TIEXPORT int TICALL tifiles_group_contents(TiRegular **src_contents, TiRegular *
  *
  * Ungroup a TI file by exploding the structure into an array of structures.
  *
- * Array must be freed when no longer needed as well as the content of each #TiRegular 
+ * Array must be freed when no longer needed as well as the content of each #Regular 
  * structure (use #tifiles_content_free_regular as usual).
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular ***dest)
+TIEXPORT int TICALL tifiles_ungroup_content(Regular *src, Regular ***dest)
 {
   int i;
-  TiRegular **dst;
+  Regular **dst;
 
   // allocate an array of Regular structures (NULL terminated)
-  dst = *dest = (TiRegular **) calloc(src->num_entries + 1,
-				      sizeof(TiRegular *));
+  dst = *dest = (Regular **) calloc(src->num_entries + 1,
+				      sizeof(Regular *));
   if (dst == NULL)
     return ERR_MALLOC;
 
   // parse each entry and duplicate it into a single content  
   for (i = 0; i < src->num_entries; i++) 
   {
-    TiVarEntry *src_entry = &(src->entries[i]);
-    TiVarEntry *dst_entry = NULL;
+    VarEntry *src_entry = &(src->entries[i]);
+    VarEntry *dst_entry = NULL;
 
     // allocate and duplicate content
-    dst[i] = (TiRegular *) calloc(1, sizeof(TiRegular));
+    dst[i] = (Regular *) calloc(1, sizeof(Regular));
     if (dst[i] == NULL)
       return ERR_MALLOC;
-    memcpy(dst[i], src, sizeof(TiRegular));
+    memcpy(dst[i], src, sizeof(Regular));
 
     // allocate and duplicate entry
-    dst[i]->entries = (TiVarEntry *) calloc(1, sizeof(TiVarEntry));
+    dst[i]->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
     dst_entry = &(dst[i]->entries[0]);
     TRY(tixx_dup_VarEntry(dst_entry, src_entry));
 
@@ -191,22 +191,22 @@ TIEXPORT int TICALL tifiles_ungroup_content(TiRegular *src, TiRegular ***dest)
 TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
 {
   int i, n;
-  TiRegular **src = NULL;
-  TiRegular *dst = NULL;
+  Regular **src = NULL;
+  Regular *dst = NULL;
   char *unused;
 
   // counter number of files to group
   for (n = 0; src_filenames[n] != NULL; n++);
 
   // allocate space for that
-  src = (TiRegular **) calloc(n + 1, sizeof(TiRegular *));
+  src = (Regular **) calloc(n + 1, sizeof(Regular *));
   if (src == NULL)
     return ERR_MALLOC;
 
   // allocate each structure and load file content
   for (i = 0; i < n; i++) 
   {
-    src[i] = (TiRegular *) calloc(1, sizeof(TiRegular));
+    src[i] = (Regular *) calloc(1, sizeof(Regular));
     if (src[i] == NULL)
       return ERR_MALLOC;
 
@@ -246,8 +246,8 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
  **/
 TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
-  TiRegular src;
-  TiRegular **dst, **ptr;
+  Regular src;
+  Regular **dst, **ptr;
   char *real_name;
   
   int i, n;

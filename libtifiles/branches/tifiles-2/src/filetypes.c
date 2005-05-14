@@ -39,7 +39,7 @@
 /* Global types */
 /****************/
 
-#define NCALCS TIFILES_NCALCS
+#define NCALCS FILES_NCALCS
 
 static const char GROUP_FILE_EXT[NCALCS + 1][4] = 
 {

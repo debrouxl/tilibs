@@ -32,14 +32,14 @@
  *
  * Alias to @TiVarEntry. Common to all calcs.
  **/
-typedef TiVarEntry Ti9xVarEntry;
+typedef VarEntry Ti9xVarEntry;
 
 /**
  * Ti9xRegular:
  *
  * Alias to TiRegular. Common to all calcs.
  **/
-typedef TiRegular Ti9xRegular;
+typedef Regular Ti9xRegular;
 
 /**
  * Ti9xBackup:

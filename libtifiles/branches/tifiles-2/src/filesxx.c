@@ -36,11 +36,11 @@
 /**
  * tifiles_content_create_regular:
  *
- * Allocates a #TiRegular structure.
+ * Allocates a #Regular structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
+TIEXPORT Regular *TICALL tifiles_content_create_regular(void)
 {
 #if !defined(DISABLE_TI8X)
 	return ti8x_content_create_regular();
@@ -54,11 +54,11 @@ TIEXPORT TiRegular *TICALL tifiles_content_create_regular(void)
 /**
  * tifiles_content_free_regular:
  *
- * Free the whole content of a #TiRegular structure.
+ * Free the whole content of a #Regular structure.
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
+TIEXPORT int TICALL tifiles_content_free_regular(Regular *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -81,14 +81,14 @@ TIEXPORT int TICALL tifiles_content_free_regular(TiRegular *content)
  * @filename: name of single/group file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a TiRegular structure.
+ * Load the single/group file into a Regular structure.
  *
  * Structure content must be freed with #tifiles_content_free_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
+TIEXPORT int tifiles_file_read_regular(const char *filename, Regular *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -120,7 +120,7 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, TiRegular *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_regular(const char *filename, TiRegular *content, char **real_fname)
+TIEXPORT int tifiles_file_write_regular(const char *filename, Regular *content, char **real_fname)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -190,7 +190,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed when no
  * longer used.
  **/
-TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *nfolders)
+TIEXPORT int** TICALL tifiles_create_table_of_entries(Regular *content, int *nfolders)
 {
   int num_folders = 0;
   int i, j;
@@ -200,7 +200,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(TiRegular *content, int *n
   // determine how many folders we have
   for (i = 0; i < content->num_entries; i++) 
   {
-    TiVarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = &(content->entries[i]);
 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) 
