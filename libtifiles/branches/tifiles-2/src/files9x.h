@@ -27,8 +27,8 @@
 
 /* Structures */
 
-// The structure _must_ be the same as FileContent (overriding).
-typedef FileContent Ti9xRegular;
+typedef FileContent		Ti9xRegular;
+typedef FlashContent	Ti9xFlash;
 
 /**
  * Ti9xBackup:
@@ -54,46 +54,6 @@ typedef struct
   uint16_t	checksum;
 
 } Ti9xBackup;
-
-/**
- * Ti9xFlash:
- * @model: a calculator model.
- * @revision_major:
- * @revision_minor:
- * @flags:
- * @object_type:
- * @revision_day:
- * @revision_month:
- * @revision_year: 
- * @name: name of FLASH app or "basecode" for OS
- * @device_type: a device ID (TI89: 0x88, TI92+:0x98)
- * @data_type: var type ID (app, os, certificate, ...)
- * @data_length: length of data part
- * @data_part: pure FLASH data
- * @next: pointer to next #Ti9xFlash structure (linked list).
- *
- * A generic structure used to store the content of a TI9x FLASH file (os or app).
- **/
-typedef struct ti9x_flash Ti9xFlash;
-struct ti9x_flash 
-{
-  CalcModel model;
-
-  uint8_t	revision_major;
-  uint8_t	revision_minor;
-  uint8_t	flags;
-  uint8_t	object_type;
-  uint8_t	revision_day;
-  uint8_t	revision_month;
-  uint16_t	revision_year;
-  char		name[9];
-  uint8_t	device_type;
-  uint8_t	data_type;
-  uint32_t	data_length;
-  uint8_t*	data_part;
-
-  Ti9xFlash *next;
-};
 
 #define DEVICE_TYPE_89  0x98
 #define DEVICE_TYPE_92P 0x88
