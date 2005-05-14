@@ -454,11 +454,10 @@ struct _CalcHandle
 	TIEXPORT int         TICALL ticalcs_handle_del(CalcHandle*);
 	TIEXPORT int         TICALL ticalcs_handle_show(CalcHandle*);
 
-	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
-
 	TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle*, CableHandle*);
 	TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle*);
 
+	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
 
 	// calc.c
 	//...
@@ -470,24 +469,24 @@ struct _CalcHandle
 	TIEXPORT const char*      TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format);
 	TIEXPORT CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str);
 
-	TIEXPORT const char*  TICALL ticalc_pathtype_to_string(CalcPathType type);
-	TIEXPORT CalcPathType TICALL ticalc_string_to_pathtype(const char *str);
+	TIEXPORT const char*  TICALL ticalcs_pathtype_to_string(CalcPathType type);
+	TIEXPORT CalcPathType TICALL ticalcs_string_to_pathtype(const char *str);
 
-	TIEXPORT const char*  TICALL ticalc_memtype_to_string(CalcMemType type);
-	TIEXPORT CalcMemType  TICALL ticalc_string_to_memtype(const char *str);
+	TIEXPORT const char*  TICALL ticalcs_memtype_to_string(CalcMemType type);
+	TIEXPORT CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
 
-	TIEXPORT const char*  TICALL ticalc_action_to_string(CalcAction action);
-	TIEXPORT CalcAction   TICALL ticalc_string_to_action(const char *str);
+	TIEXPORT const char*  TICALL ticalcs_action_to_string(CalcAction action);
+	TIEXPORT CalcAction   TICALL ticalcs_string_to_action(const char *str);
 
 	// clock.c
-	TIEXPORT const char* TICALL ticalc_clock_format2date(int value);
-	TIEXPORT int		 TICALL ticalc_clock_date2format(const char *format);
+	TIEXPORT const char* TICALL ticalcs_clock_format2date(int value);
+	TIEXPORT int		 TICALL ticalcs_clock_date2format(const char *format);
 
 	// tikeys.c
-	TIEXPORT const CalcKey TICALL ticalc_73_keys (uint8_t ascii_code);
-	TIEXPORT const CalcKey TICALL ticalc_83p_keys(uint8_t ascii_code);
-	TIEXPORT const CalcKey TICALL ticalc_89_keys (uint8_t ascii_code);
-	TIEXPORT const CalcKey TICALL ticalc_92p_keys(uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
+	TIEXPORT const CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 	
   
   /************************/

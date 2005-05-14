@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: print.h 522 2004-04-08 10:12:55Z roms $ */
+/* $Id: link_xxx.h 1059 2005-05-14 09:45:42Z roms $ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libCables - Ti Link Cable library, a part of the TiLP project
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,15 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALC_PRINT_H__
-#define __TICALC_PRINT_H__
+#ifndef __TICALCS_XX__
+#define __TICALCS_XX__
 
-#include "calc_def.h"
+#include "ticalcs.h"
 
-extern TICALC_PRINTL printl2;
-
-#define	PRINT_STD	0
-#define PRINT_WRN	1
-#define PRINT_ERR	2
+extern const CalcFncts calc_00;
+extern const CalcFncts calc_89;
 
 #endif
+
+

@@ -19,9 +19,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_CLOCK__
-#define __CALCS_CLOCK__
+#include "ticalcs.h"
 
-extern const char TI_CLOCK[];
+static void update_start(void) {};
+static void update_stop(void) {};
+static void update_refresh(void) {};
+static void update_pbar(void) {};
+static void update_label(void) {};
 
-#endif
+const CalcUpdate default_update =
+{
+	0, 0, 0, 0.0, 0.0, 0.0, 0.0, "",
+	update_start,
+	update_stop,
+	update_refresh,
+	update_pbar,
+	update_label,
+};

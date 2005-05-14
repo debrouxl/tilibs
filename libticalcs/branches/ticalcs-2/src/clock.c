@@ -21,7 +21,7 @@
 
 #include <string.h>
 
-#include "headers.h"
+#include "ticalcs.h"
 
 #ifdef __WIN32__
 #define strcasecmp _stricmp
@@ -29,7 +29,8 @@
 
 #define MAX_FORMAT 8
 
-const char *TI_CLOCK[MAX_FORMAT + 2] = {
+const char *TI_CLOCK[MAX_FORMAT + 2] = 
+{
   "",
   "MM/DD/YY",
   "DD/MM/YY",
@@ -42,8 +43,7 @@ const char *TI_CLOCK[MAX_FORMAT + 2] = {
   ""
 };
 
-
-TIEXPORT const char *TICALL ticalc_clock_format2date(int value)
+TIEXPORT const char *TICALL ticalcs_clock_format2date(int value)
 {
   int v;
 
@@ -57,7 +57,7 @@ TIEXPORT const char *TICALL ticalc_clock_format2date(int value)
   return TI_CLOCK[v];
 }
 
-TIEXPORT int TICALL ticalc_clock_date2format(const char *format)
+TIEXPORT int TICALL ticalcs_clock_date2format(const char *format)
 {
   int i;
 

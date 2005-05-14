@@ -40,6 +40,8 @@
 /* Internal data */
 /*****************/
 
+extern const CalcUpdate default_update;
+
 static CalcFncts const *const calcs[] = 
 {
 //	&calc_nul,
@@ -157,6 +159,8 @@ TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 	if(handle->calc == NULL)
 		return NULL;
 
+	handle->update = (CalcUpdate *)&default_update;
+
 	return handle;
 }
 
@@ -235,6 +239,22 @@ TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
 	
 	handle->attached = 0;
 	handle->cable = NULL;
+
+	return 0;
+}
+
+/**
+ * ticalcs_update_set:
+ * @handle: the handle
+ * @update: the callbacks to use
+ *
+ * Set the callbacks to use for the given handle.
+ *
+ * Return value: always 0.
+ **/
+TIEXPORT int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* update)
+{
+	handle->update = update;
 
 	return 0;
 }
