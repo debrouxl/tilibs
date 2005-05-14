@@ -27,31 +27,8 @@
 
 /* Structures */
 
-/**
- * Ti9xRegular:
- * @model: calculator model
- * @default_folder: name of the default folder (TI9x only)
- * @comment: comment aembedded in file (like "Single file received by TiLP")
- * @num_entries: number of variables stored after
- * @entries: an array of #TiVarEntry structures which contains data
- * @checksum: checksum of file
- *
- * A generic structure used to store the content of a single/grouped TI file.
- * This structure is the same as Ti9xRegular.
- **/
-typedef struct 
-{
-  CalcModel		model;
-
-  char			default_folder[9];
-  char			comment[43];
-
-  int			num_entries;
-  VarEntry*		entries;
-
-  uint16_t		checksum;
-
-} Ti9xRegular;
+// The structure _must_ be the same as FileContent (overriding).
+typedef FileContent Ti9xRegular;
 
 /**
  * Ti9xBackup:

@@ -24,34 +24,12 @@
 
 #include "stdints.h"
 #include "files8x.h"
+#include "tifiles.h"
 
 /* Structures */
 
-/**
- * Ti8xRegular:
- * @model: calculator model
- * @default_folder: name of the default folder (TI9x only)
- * @comment: comment aembedded in file (like "Single file received by TiLP")
- * @num_entries: number of variables stored after
- * @entries: an array of #TiVarEntry structures which contains data
- * @checksum: checksum of file
- *
- * A generic structure used to store the content of a single/grouped TI file.
- * This structure is the same as Ti8xRegular.
- **/
-typedef struct 
-{
-  CalcModel		model;
-
-  char			default_folder[9];	// unused
-  char			comment[43];		// Ti8x: 41 max
-
-  int			num_entries;
-  VarEntry*		entries;
-
-  uint16_t		checksum;
-
-} Ti8xRegular;
+// The structure _must_ be the same as FileContent (overriding).
+typedef FileContent Ti8xRegular;
 
 /**
  * Ti8xBackup:
