@@ -137,7 +137,7 @@ typedef enum
 	ROM_1MB = 1, 
 	ROM_2MB, 
 	ROM_SE,
-} CalcRomDumpSize;
+} CalcDumpSize;
 
 /**
  * CalcShellType:
@@ -159,37 +159,29 @@ typedef enum
 typedef enum 
 {
   OPS_NONE = 0,
-  OPS_ISREADY = (1 << 0),
-  OPS_SEND_KEY = (1 << 1),
-  OPS_RECV_KEY = (1 << 2),
-  OPS_REMOTE = (1 << 3),	//disabled
-  OPS_SCREENDUMP = (1 << 4),
-  OPS_DIRLIST = (1 << 5),
-  OPS_RECV_BACKUP = (1 << 6),
-  OPS_SEND_BACKUP = (1 << 7),
-  OPS_RECV_VARS = (1 << 8),
-  OPS_SEND_VARS = (1 << 9),
-  OPS_SEND_FLASH = (1 << 10),
-  OPS_RECV_FLASH = (1 << 11),
-  OPS_IDLIST = (1 << 12),
-  OPS_ROMDUMP = (1 << 13),
-  OPS_ROMVERSION = (1 << 14),
-  OPS_CLOCK = (1 << 15),
-} CalcOperations;
 
-/**
- * CalcAction:
- *
- * An enumeration which contains a possible action:
- **/
-typedef enum 
-{
-	ACTION_SKIP, 
-	ACTION_OVER
-} CalcAction;
+  OPS_ISREADY	= (1 << 0),
+  OPS_KEYS		= (1 << 1),
+  OPS_SCREEN	= (1 << 2),
+  OPS_DIRLIST	= (1 << 3),
+  OPS_BACKUP	= (1 << 4),
+  OPS_VARS		= (1 << 5),
+  OPS_FLASH		= (1 << 6),
+  OPS_IDLIST	= (1 << 7),
+  OPS_CLOCK		= (1 << 8),
+  OPS_ROMDUMP	= (1 << 9),
+
+  FTS_SILENT	= (1 << 15),
+  FTS_FOLDER	= (1 << 16),
+  FTS_MEMFREE	= (1 << 17),
+  FTS_MEMUSED	= (1 << 18),
+  FTS_FLASH		= (1 << 19),
+
+} CalcFeatures;
 
 /**
  * CalcScreenCoord:
+ * @format: returns full or clipped image (#CalcScreenFormat)
  * @width: real width
  * @height: real height
  * @clipped_width: clipped width (89 for instance)
@@ -199,6 +191,8 @@ typedef enum
  **/
 typedef struct 
 {
+	int		format;
+
 	uint8_t width;
 	uint8_t height;
 
@@ -276,8 +270,10 @@ typedef struct
 /**
  * CalcUpdate:
  * @cancel: set to 1 if transfer have to be cancelled
- * @count: number of bytes currently transferred
- * @total: number of bytes to transfer
+ * @cnt1: current counter for local operation
+ * @max1: max value of this counter
+ * @cnt2: current counter for global operation
+ * @max2: max value of this counter
  * @percentage: percentage of the current operation
  * @prev_percentage: Previous percentage of current operation
  * @main_percentage: Percentage of all operations
@@ -297,14 +293,11 @@ typedef struct
 {
   int	cancel;
   
-  int	count;
-  int	total;
+  int	cnt1;
+  int	max1;
 
-  float percentage;
-  float prev_percentage;
-
-  float main_percentage;
-  float prev_main_percentage;
+  int	cnt2;
+  int	max2;
 
   char	info[256];
 
@@ -318,6 +311,8 @@ typedef struct
 typedef struct _CalcFncts	CalcFncts;
 typedef struct _CalcHandle	CalcHandle;
 
+typedef struct VarEntry	VarRequest;	// alias
+
 /**
  * TiCable:
  * @model: link cable model (CalcModel).
@@ -329,6 +324,22 @@ typedef struct _CalcHandle	CalcHandle;
  * @folder: TRUE if hand-held can store folders
  * @memory: memory used/free on hand-held (CalcMemType)
  * @flash: calculator has FLASH ROM
+ * @is_ready: check whether calculator is ready
+ * @send_key: send key value
+ * @recv_screen: request a screendump
+ * @get_dirlist: request a listing of variables, folders (if any) and apps (if any)
+ * @recv_backup: request a backup
+ * @send_backup: send a backup
+ * @send_var: send a variable (silent mode)
+ * @recv_var: request a variable silent mode)
+ * @send_var_ns: send a variable (non-silent mode)
+ * @recv_var_ns: receive a variable (non-silent mode)
+ * @send_flash: send a FLASH app/os
+ * @recv_flash: request a FLASH app/os
+ * @recv_idlist: request hand-held IDLIST
+ * @dump_rom: dump the hand-held ROM
+ * @set_clock: set date/time
+ * @get_clock: get date/time
  *
  * A structure used for handling a hand-held.
  * !!! This structure is for private use !!!
@@ -339,65 +350,38 @@ struct _CalcFncts
 	const char*		name;			
 	const char*		fullname;		
 	const char*		description;
-	
-	const int		operations;
+	const int		features;
 
-	const int		silent;
-	const int		folder;
-	const int		memory;
-	const int		flash;
+	const int		(*is_ready)		(CalcHandle*);
 
-	const int		(*is_ready)		(CalcHandle *);
+	const int		(*send_key)		(CalcHandle*, uint16_t key);
 
-	const int		(*send_key)		(CalcHandle *, uint16_t key);
+	const int		(*recv_screen)	(CalcHandle*, CalcScreenCoord* sc,
+									 uint8_t** bitmap);
 
-	const int		(*recv_screen)	(CalcHandle *, 
-									 CalcScreenFormat format, 
-									 CalcScreenCoord  sc,
-									 uint8_t **bitmap
-									 );
+	const int		(*get_dirlist)	(CalcHandle*, 
+									TNode** vars, TNode** apps, 
+									uint32_t* memory);
 
-	const int		(*get_dirlist)	(CalcHandle *, 
-									TNode ** vars, TNode ** apps, 
-									uint32_t * memory);
+	const int		(*send_backup)	(CalcHandle*, BackupContent*);
+	const int		(*recv_backup)	(CalcHandle*, BackupContent*);
 
-	const int		(*recv_backup)	(CalcHandle*);
-	const int		(*send_backup)	(CalcHandle*);
+	const int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
+	const int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
 
-	const int		(*send_var)		(CalcHandle*);
-	const int		(*recv_var)		(CalcHandle*);
-	const int		(*recv_var2)	(CalcHandle*);
+	const int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
+	const int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
 
-	const int		(*send_flash)	(CalcHandle*);
-	const int		(*recv_flash)	(CalcHandle*);
-	const int		(*recv_idlist)	(CalcHandle*);
+	const int		(*send_flash)	(CalcHandle*, FlashContent*);
+	const int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
+	const int		(*recv_idlist)	(CalcHandle*, uint8_t* idlist);
 
-	const int		(*dump_rom)		(CalcHandle*);
+	const int		(*dump_rom)		(CalcHandle*, CalcDumpSize, 
+									 const char *filename);
 
-	const int		(*set_clock)	(CalcHandle*);
-	const int		(*get_clock)	(CalcHandle*);
+	const int		(*set_clock)	(CalcHandle*, CalcClock* clock);
+	const int		(*get_clock)	(CalcHandle*, CalcClock* clock);
 
-/*
-
-  // Communication functions
-
-  int (*recv_backup) (const char *filename, int mode);
-  int (*send_backup) (const char *filename, int mode);
-
-  int (*recv_var) (char *filename, int mode, TiVarEntry * ve);
-  int (*send_var) (const char *filename, int mode, char **actions);
-
-  int (*send_flash) (const char *filename, int mode);
-  int (*recv_flash) (const char *filename, int mask_mode, TiVarEntry * ve);
-  int (*get_idlist) (char *idlist);
-
-  int (*dump_rom) (const char *filename, int mode);
-
-  int (*set_clock) (const CalcClock * clock, int mode);
-  int (*get_clock) (CalcClock * clock, int mode);
-
-  int (*recv_var_2) (char *filename, int mode, TiVarEntry * ve);
-  */
 };
 
 /**
@@ -460,7 +444,30 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
 
 	// calc.c
-	//...
+	TIEXPORT CalcOperations TICALL ticalcs_calc_features(CalcHandle*);
+
+	TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle*);
+	TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
+	TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
+												 uint8_t** bitmap);
+
+	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
+	TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle*, FlashContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle*, FlashContent*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
+
+	TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
+
+	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
+	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
 
 	// type2str.c
 	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);

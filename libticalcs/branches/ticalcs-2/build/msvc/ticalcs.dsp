@@ -130,7 +130,15 @@ SOURCE=..\..\src\tikeys.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\clock.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\logging.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\update.c
 # End Source File
 # End Group
 # Begin Group "Headers"
