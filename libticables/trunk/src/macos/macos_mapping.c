@@ -78,7 +78,7 @@ int macos_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	default:
-		printl1(2, "bad argument to macos_map_io (invalid port %d).\n", port);
+		printl1(2, "bad argument to macos_get_method (invalid link cable type %d).\n", type);
 		return ERR_ILLEGAL_ARG;
 		break;
 	}
@@ -97,6 +97,14 @@ static int macos_map_io(TicableMethod method, TicablePort port)
 	printl1(0, _("mapping I/O...\n"));
 	
 	switch (port) {
+  	case USER_PORT:
+	break;
+			
+	case NULL_PORT:
+		strcpy(io_device, "/dev/null");
+		io_address = 0;
+	break;
+			
   	case OSX_USB_PORT:
     		strcpy(io_device, "");
     	break;
@@ -105,7 +113,7 @@ static int macos_map_io(TicableMethod method, TicablePort port)
     	break;
 
   	default:
-    		printl1(2, "bad argument (invalid port).\n");
+    		printl1(2, "bad argument to macos_map_io (invalid port %d).\n", port);
 		return ERR_ILLEGAL_ARG;
 	break;
 	}
@@ -148,7 +156,7 @@ int macos_register_cable(TicableType type, TicableLinkCable *lc)
 		break;*/
 
     	default:
-	      	printl1(2, _("bad argument to macos_register_cable (invalid cable type %d).\n", type);
+	      	printl1(2, _("bad argument to macos_register_cable (invalid cable type %d).\n"), type);
 	      	return ERR_ILLEGAL_ARG;
 		break;
     	}
