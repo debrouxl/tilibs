@@ -155,6 +155,18 @@ case "$host" in
 esac
 CFLAGS="$CFLAGS $ARCH"
 
+# Silver Link support depends on the IOKit framework on Mac OS X
+# CW 2005-05-03
+case "$host_os" in
+  darwin*)
+    IOKIT_LIBS="-Wl,-framework -Wl,IOKit"
+  ;;
+  *)
+    IOKIT_LIBS=
+  ;;
+esac
+AC_SUBST(IOKIT_LIBS)
+
 # Ensure MSVC-compatible struct packing convention is used when
 # compiling for Win32 with gcc.
 # What flag to depends on gcc version: gcc3 uses "-mms-bitfields", while
