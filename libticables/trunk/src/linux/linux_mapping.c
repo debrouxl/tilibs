@@ -419,43 +419,52 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 */
 static const char *get_attributes(mode_t attrib)
 {
-	static char s[13] = " ---------- ";
-      
-        if (attrib & S_IRUSR)
-                s[2] = 'r';
-        if (attrib & S_IWUSR)
-                s[3] = 'w';
-        if (attrib & S_ISUID) {
-                if (attrib & S_IXUSR)
-                        s[4] = 's';
-		else
-                        s[4] = 'S';
-        }
-        else if (attrib & S_IXUSR)
-                s[4] = 'x';
-        if (attrib & S_IRGRP)
-                s[5] = 'r';
-        if (attrib & S_IWGRP)
-                s[6] = 'w';
-        if (attrib & S_ISGID) {
-                if (attrib & S_IXGRP)
-			s[7] = 's';
-		else
-                        s[7] = 'S';
-        }
-        else if (attrib & S_IXGRP)
-                s[7] = 'x';
-	if (attrib & S_IROTH)
-                s[8] = 'r';
-        if (attrib & S_IWOTH)
-                s[9] = 'w';
-        if (attrib & S_ISVTX) {
-                if (attrib & S_IXOTH)
-                        s[10] = 't';
-                else
-                        s[10] = 'T';
-        }
-	return s;
+    const char *i = " ---------- ";
+    static char s[13];
+
+    strcpy(s, i);
+
+    if (attrib & S_IRUSR)
+	s[2] = 'r';
+    if (attrib & S_IWUSR)
+	s[3] = 'w';
+    if (attrib & S_ISUID) 
+    {
+	if (attrib & S_IXUSR)
+	    s[4] = 's';
+	else
+	    s[4] = 'S';
+    }
+    else if (attrib & S_IXUSR)
+	s[4] = 'x';
+
+    if (attrib & S_IRGRP)
+	s[5] = 'r';
+    if (attrib & S_IWGRP)
+	s[6] = 'w';
+    if (attrib & S_ISGID) 
+    {
+	if (attrib & S_IXGRP)
+	    s[7] = 's';
+	else
+	    s[7] = 'S';
+    }
+    else if (attrib & S_IXGRP)
+	s[7] = 'x';
+
+    if (attrib & S_IROTH)
+	s[8] = 'r';
+    if (attrib & S_IWOTH)
+	s[9] = 'w';
+    if (attrib & S_ISVTX) 
+    {
+	if (attrib & S_IXOTH)
+	    s[10] = 't';
+	else
+	    s[10] = 'T';
+    }
+
+    return s;
 }
 
 /*
