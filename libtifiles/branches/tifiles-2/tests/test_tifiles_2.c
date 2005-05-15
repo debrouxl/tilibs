@@ -104,7 +104,7 @@ static const char* BUILD_PATH(const char *path)
 	unsigned int i;
 
 #if defined(__WIN32__) && !defined(__MINGW32__)
-	strcpy(str, "C:\\sources\\roms\\tifiles-2\\tests\\");
+	strcpy(str, "C:\\sources\\roms\\tifiles2\\tests\\");
 	strcat(str, path);
 
 	for(i = 0; i < strlen(str); i++)

@@ -150,18 +150,18 @@ int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
 {
   memcpy(dst, src, sizeof(Ti8xBackup));
 
-  dst->data_part  = (uint8_t *) calloc(dst->data_length , 1);
+  dst->data_part1 = (uint8_t *) calloc(dst->data_length1 , 1);
   dst->data_part2 = (uint8_t *) calloc(dst->data_length2, 1);
   dst->data_part3 = (uint8_t *) calloc(dst->data_length3, 1);
   dst->data_part4 = (uint8_t *) calloc(dst->data_length4, 1);
 
-  if ((dst->data_part  == NULL) ||
+  if ((dst->data_part1 == NULL) ||
       (dst->data_part2 == NULL) ||
       (dst->data_part3 == NULL) || 
 	  (dst->data_part4 == NULL))
     return ERR_MALLOC;
 
-  memcpy(dst->data_part , src->data_part , dst->data_length );
+  memcpy(dst->data_part1, src->data_part1, dst->data_length1);
   memcpy(dst->data_part2, src->data_part2, dst->data_length2);
   memcpy(dst->data_part3, src->data_part3, dst->data_length3);
   memcpy(dst->data_part4, src->data_part4, dst->data_length4);
@@ -201,7 +201,7 @@ void ti8x_content_free_regular(Ti8xRegular *content)
  **/
 void ti8x_content_free_backup(Ti8xBackup *content)
 {
-  free(content->data_part );
+  free(content->data_part1);
   free(content->data_part2);
   free(content->data_part3);
   free(content->data_part4);
@@ -393,7 +393,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   fread_word(f, NULL);
 
   fread_word(f, NULL);
-  fread_word(f, (uint16_t *)&(content->data_length ));
+  fread_word(f, &(content->data_length1));
   fread_byte(f, &(content->type));
   fread_word(f, &(content->data_length2));
   fread_word(f, &(content->data_length3));
@@ -404,13 +404,13 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
     fread_word(f, &(content->data_length4));
 
   fread_word(f, NULL);
-  content->data_part  = (uint8_t *) calloc(content->data_length , 1);
-  if (content->data_part  == NULL) 
+  content->data_part1 = (uint8_t *) calloc(content->data_length1, 1);
+  if (content->data_part1 == NULL) 
   {
     fclose(f);
     return ERR_MALLOC;
   }
-  fread(content->data_part , 1, content->data_length , f);
+  fread(content->data_part1, 1, content->data_length1, f);
 
   fread_word(f, NULL);
   content->data_part2 = (uint8_t *) calloc(content->data_length2, 1);
@@ -706,14 +706,14 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f);
   fwrite_n_bytes(f, 42, content->comment);
   data_length =
-      (uint16_t)content->data_length  + content->data_length2 +
+      content->data_length1 + content->data_length2 +
       content->data_length3 + 17;
   data_length += content->data_length4;
   fwrite_word(f, data_length);
 
   // write backup header
   fwrite_word(f, 0x09);
-  fwrite_word(f, (uint16_t)content->data_length );
+  fwrite_word(f, content->data_length1);
   fwrite_byte(f, content->type);
   fwrite_word(f, content->data_length2);
   fwrite_word(f, content->data_length3);
@@ -723,8 +723,8 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
     fwrite_word(f, content->data_length4);
 
   // write data num_entries
-  fwrite_word(f, (uint16_t)content->data_length );
-  fwrite(content->data_part , 1, content->data_length , f);
+  fwrite_word(f, content->data_length1);
+  fwrite(content->data_part1, 1, content->data_length1, f);
   fwrite_word(f, content->data_length2);
   fwrite(content->data_part2, 1, content->data_length2, f);
   if (content->data_length3)	// TI86: can be NULL
@@ -738,7 +738,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   sum = 0;
   sum += 9;
   sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length ), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
   sum += content->type;
   sum +=
       tifiles_checksum((uint8_t *) & (content->data_length2), 2);
@@ -752,9 +752,9 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 	tifiles_checksum((uint8_t *) & (content->data_length4), 2);
 
   sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length ), 2);
+      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
   sum +=
-      tifiles_checksum(content->data_part , content->data_length );
+      tifiles_checksum(content->data_part1, content->data_length1);
   sum +=
       tifiles_checksum((uint8_t *) & (content->data_length2), 2);
   sum +=
@@ -902,8 +902,8 @@ int ti8x_content_display_backup(Ti8xBackup *content)
 
   tifiles_info("\n");
 
-  tifiles_info("data_length :   %04X (%i)",
-	  content->data_length , content->data_length );
+  tifiles_info("data_length1:   %04X (%i)",
+	  content->data_length1, content->data_length1);
   tifiles_info("data_length2:   %04X (%i)",
 	  content->data_length2, content->data_length2);
   tifiles_info("data_length3:   %04X (%i)",

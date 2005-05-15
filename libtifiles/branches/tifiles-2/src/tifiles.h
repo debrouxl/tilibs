@@ -157,8 +157,11 @@ typedef struct
 
   uint8_t	type;
 
-  uint32_t	data_length;
+  uint32_t	data_length;	// TI9x only
   uint8_t*	data_part;
+
+  uint16_t	data_length1;	// TI8x only
+  uint8_t*	data_part1;
 
   uint16_t	data_length2;	// TI8x only
   uint8_t*	data_part2;
