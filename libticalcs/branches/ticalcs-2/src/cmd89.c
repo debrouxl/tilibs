@@ -20,28 +20,23 @@
  */
 
 /*
-  This unit handles TI89/92+/V200 commands.
+  This unit handles TI89/92+/V200/TI89t commands.
 */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "headers.h"
+#include "ticalcs.h"
 #include "packets.h"
-#include "calc_err.h"
-#include "update.h"
-#include "printl.h"
+#include "error.h"
+#include "logging.h"
+#include "macros.h"
 
 #ifdef __WIN32__
 #pragma warning( disable : 4761 4244)
 #endif
 
-// Shares some commands between TI89/92+/V200/TI89 Titanium
-extern int ticalcs_calc_type;
-
-static uint8_t pc_ti9x(void)
+static uint8_t pc_ti9x(CalcModel model)
 {
-  switch (ticalcs_calc_type) {
+  switch (model) 
+  {
   case CALC_TI89:
   case CALC_TI89T:
     return PC_TI89;
@@ -59,17 +54,17 @@ static uint8_t pc_ti9x(void)
   return 0;
 }
 
-#define PC_TI9X pc_ti9x()
+#define PC_TI9X pc_ti9x(handle->model)
 #define TI9X_BKUP TI89_BKUP
 
-int ti89_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
   uint8_t trans[9];
-  uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
+  uint8_t extra = (vartype == 0x1D/*TI9X_BKUP*/) ? 0 : 1;
 
-  tifiles_translate_varname(varname, trans, vartype);
-  printl2(0, " PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
 
   buffer[0] = LSB(LSW(varsize));
@@ -81,23 +76,23 @@ int ti89_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
   memcpy(buffer + 6, varname, strlen(varname));
   buffer[6 + strlen(varname)] = 0x03;
 
-  TRYF(send_packet(PC_TI9X, CMD_VAR, 6 + strlen(varname) + extra, buffer));
+  TRYF(send_packet(handle, PC_TI9X, CMD_VAR, 6 + strlen(varname) + extra, buffer));
 
   return 0;
 }
 
-int ti89_send_CTS(void)
+int ti89_send_CTS(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: CTS\n");
-  TRYF(send_packet(PC_TI9X, CMD_CTS, 2, NULL));
+  ticalcs_info(" PC->TI: CTS");
+  TRYF(send_packet(handle, PC_TI9X, CMD_CTS, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_XDP(uint32_t length, uint8_t * data)
+int ti89_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data)
 {
-  printl2(0, " PC->TI: XDP (0x%04X = %i)\n", length, length);
-  TRYF(send_packet(PC_TI9X, CMD_XDP, length, data));
+  ticalcs_info(" PC->TI: XDP (0x%04X = %i)", length, length);
+  TRYF(send_packet(handle, PC_TI9X, CMD_XDP, length, data));
 
   return 0;
 }
@@ -107,86 +102,84 @@ int ti89_send_XDP(uint32_t length, uint8_t * data)
   - rej_code [in]: a rejection code
   - int [out]: an error code
  */
-int ti89_send_SKIP(uint8_t rej_code)
+int ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
 {
   uint8_t buffer[5] = { 0 };
 
   buffer[0] = rej_code;
 
-  printl2(0, " PC->TI: SKIP");
-  TRYF(send_packet(PC_TI9X, CMD_SKIP, 3, buffer));
-  printl2(0, " (rejection code = %i)\n", rej_code);
+  ticalcs_info(" PC->TI: SKP");
+  TRYF(send_packet(handle, PC_TI9X, CMD_SKP, 3, buffer));
+  ticalcs_info(" (rejection code = %i)", rej_code);
 
   return 0;
 }
 
-int ti89_send_ACK(void)
+int ti89_send_ACK(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: ACK\n");
-  TRYF(send_packet(PC_TI9X, CMD_ACK, 2, NULL));
+  ticalcs_info(" PC->TI: ACK");
+  TRYF(send_packet(handle, PC_TI9X, CMD_ACK, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_ERR(void)
+int ti89_send_ERR(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: ERR\n");
-  TRYF(send_packet(PC_TI9X, CMD_ERR, 2, NULL));
+  ticalcs_info(" PC->TI: ERR");
+  TRYF(send_packet(handle, PC_TI9X, CMD_ERR, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_RDY(void)
+int ti89_send_RDY(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: RDY?\n");
-  TRYF(send_packet(PC_TI9X, CMD_RDY, 2, NULL));
+  ticalcs_info(" PC->TI: RDY?");
+  TRYF(send_packet(handle, PC_TI9X, CMD_RDY, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_SCR(void)
+int ti89_send_SCR(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: SCR\n");
-  TRYF(send_packet(PC_TI9X, CMD_SCR, 2, NULL));
+  ticalcs_info(" PC->TI: SCR");
+  TRYF(send_packet(handle, PC_TI9X, CMD_SCR, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_CONT(void)
+int ti89_send_CONT(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: CONT\n");
-  TRYF(send_packet(PC_TI9X, CMD_CONT, 2, NULL));
+  ticalcs_info(" PC->TI: CONT");
+  TRYF(send_packet(handle, PC_TI9X, CMD_CNT, 2, NULL));
 
   return 0;
 }
 
-#include "externs.h"
-
-int ti89_send_KEY(uint16_t scancode)
+int ti89_send_KEY(CalcHandle* handle, uint16_t scancode)
 {
-  printl2(0, " PC->TI: KEY\n");
-  TRYF(cable->put(PC_TI9X));
-  TRYF(cable->put(CMD_KEY));
-  TRYF(cable->put(LSB(scancode)));
-  TRYF(cable->put(MSB(scancode)));
+  ticalcs_info(" PC->TI: KEY");
+  TRYF(ticables_cable_put(handle->cable, PC_TI9X));
+  TRYF(ticables_cable_put(handle->cable, CMD_KEY));
+  TRYF(ticables_cable_put(handle->cable, LSB(scancode)));
+  TRYF(ticables_cable_put(handle->cable, MSB(scancode)));
 
   return 0;
 }
 
-int ti89_send_EOT(void)
+int ti89_send_EOT(CalcHandle* handle)
 {
-  printl2(0, " PC->TI: EOT\n");
-  TRYF(send_packet(PC_TI9X, CMD_EOT, 2, NULL));
+  ticalcs_info(" PC->TI: EOT");
+  TRYF(send_packet(handle, PC_TI9X, CMD_EOT, 2, NULL));
 
   return 0;
 }
 
-int ti89_send_REQ(uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
 
-  printl2(0, " PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, varname);
 
   buffer[0] = LSB(LSW(varsize));
@@ -199,19 +192,19 @@ int ti89_send_REQ(uint32_t varsize, uint8_t vartype, char *varname)
   buffer[6 + strlen(varname)] = 0x00;
 
   len = 6 + strlen(varname) + 1;
-  if (vartype != TI89_CLK)
+  if (vartype != 0x18/*TI89_CLK*/)
     len--;
-  TRYF(send_packet(PC_TI9X, CMD_REQ, len, buffer));
+  TRYF(send_packet(handle, PC_TI9X, CMD_REQ, len, buffer));
 
   return 0;
 }
 
-int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
 
-  printl2(0, " PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, varname);
 
   buffer[0] = LSB(LSW(varsize));
@@ -226,17 +219,17 @@ int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname)
   len = 6 + strlen(varname) + 1;
   // used by AMS <= 2.09 ?
   //if ((vartype == TI89_AMS) || (vartype == TI89_APPL)) len--;
-  TRYF(send_packet(PC_TI9X, CMD_RTS, len, buffer));
+  TRYF(send_packet(handle, PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;
 }
 
-int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
 
-  printl2(0, " PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)\n",
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, varname);
 
   buffer[0] = LSB(LSW(varsize));
@@ -250,14 +243,14 @@ int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname)
   buffer[8] = 0x09;
 
   len = 9;
-  TRYF(send_packet(PC_TI9X, CMD_RTS, len, buffer));
+  TRYF(send_packet(handle, PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;
 }
 
 
 /* Variable (std var header: variable length) */
-int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
+int ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[32] = { 0 };
@@ -265,11 +258,11 @@ int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
   uint8_t strl;
   uint8_t flag;
 
-  printl2(0, " TI->PC: VAR");
-  TRYF(recv_packet(&host, &cmd, &length, buffer));
+  ticalcs_info(" TI->PC: VAR");
+  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
-  if (cmd == CMD_SKIP)
+  if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
@@ -286,65 +279,65 @@ int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
       (length != (7 + strlen(varname))))
     return ERR_INVALID_PACKET;
 
-  printl2(0, " (size=0x%08X=%i, id=%02X, name=<%s>, flag=%i)",
+  ticalcs_info(" (size=0x%08X=%i, id=%02X, name=<%s>, flag=%i)",
 	  *varsize, *varsize, *vartype, varname, flag);
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_CTS(void)
+int ti89_recv_CTS(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
   uint8_t buffer[5];
 
-  printl2(0, " TI->PC: CTS");
-  TRYF(recv_packet(&host, &cmd, &length, buffer));
-  if (cmd == CMD_SKIP)
+  ticalcs_info(" TI->PC: CTS");
+  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+  if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   else if (cmd != CMD_CTS)
     return ERR_INVALID_CMD;
   if (length != 0x0000)
     return ERR_CTS_ERROR;
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_SKIP(uint8_t * rej_code)
+int ti89_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
   uint8_t buffer[5];
   *rej_code = 0;
 
-  printl2(0, " TI->PC: SKIP");
-  TRYF(recv_packet(&host, &cmd, &length, buffer));
+  ticalcs_info(" TI->PC: SKP");
+  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
   if (cmd == CMD_CTS) {
-    printl2(0, "CTS");
+    ticalcs_info("CTS");
     return 0;
   }
-  if (cmd != CMD_SKIP)
+  if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
-  printl2(0, " (rejection code = %i)", *rej_code = buffer[0]);
-  printl2(0, ".\n");
+  ticalcs_info(" (rejection code = %i)", *rej_code = buffer[0]);
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_XDP(uint32_t * length, uint8_t * data)
+int ti89_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
   int err;
 
-  printl2(0, " TI->PC: XDP");
-  err = recv_packet(&host, &cmd, (uint16_t *) length, data);
+  ticalcs_info(" TI->PC: XDP");
+  err = recv_packet(handle, &host, &cmd, (uint16_t *) length, data);
   fixup(*length);
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
-  printl2(0, " (%04X=%i bytes)", *length, *length);
-  printl2(0, ".\n");
+  ticalcs_info(" (%04X=%i bytes)", *length, *length);
+  ticalcs_info(".");
   TRYF(err);
 
   return 0;
@@ -356,15 +349,15 @@ int ti89_recv_XDP(uint32_t * length, uint8_t * data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti89_recv_ACK(uint16_t * status)
+int ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
   uint8_t buffer[5];
 
-  printl2(0, " TI->PC: ACK");
-  TRYF(recv_packet(&host, &cmd, &length, buffer));
-  if (cmd == CMD_SKIP)
+  ticalcs_info(" TI->PC: ACK");
+  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+  if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   if (status != NULL)
     *status = length;
@@ -373,54 +366,54 @@ int ti89_recv_ACK(uint16_t * status)
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
 
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_CONT(void)
+int ti89_recv_CONT(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t sts;
 
 
-  printl2(0, " TI->PC: CONT");
-  TRYF(recv_packet(&host, &cmd, &sts, NULL));
+  ticalcs_info(" TI->PC: CONT");
+  TRYF(recv_packet(handle, &host, &cmd, &sts, NULL));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
-  if (cmd != CMD_CONT)
+  if (cmd != CMD_CNT)
     return ERR_INVALID_CMD;
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_EOT(void)
+int ti89_recv_EOT(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
 
-  printl2(0, " TI->PC: EOT");
-  TRYF(recv_packet(&host, &cmd, &length, NULL));
+  ticalcs_info(" TI->PC: EOT");
+  TRYF(recv_packet(handle, &host, &cmd, &length, NULL));
   if (cmd != CMD_EOT)
     return ERR_INVALID_CMD;
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }
 
-int ti89_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname)
+int ti89_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[32] = { 0 };
   uint16_t length;
   uint8_t strl;
 
-  printl2(0, " TI->PC: RTS");
-  TRYF(recv_packet(&host, &cmd, &length, buffer));
+  ticalcs_info(" TI->PC: RTS");
+  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
-  if (cmd == CMD_SKIP)
+  if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
@@ -435,9 +428,9 @@ int ti89_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname)
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  printl2(0, " (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, varname);
-  printl2(0, ".\n");
+  ticalcs_info(".");
 
   return 0;
 }

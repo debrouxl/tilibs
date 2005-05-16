@@ -22,28 +22,28 @@
 #ifndef __TICALCS_CMD92__
 #define __TICALCS_CMD92__
 
-int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname);
-int ti92_send_CTS(void);
-int ti92_send_XDP(int length, uint8_t * data);
-int ti92_send_SKIP(uint8_t rej_code);
-int ti92_send_ACK(void);
-int ti92_send_ERR(void);
-int ti92_send_RDY(void);
-int ti92_send_SCR(void);
-int ti92_send_CONT(void);
-int ti92_send_KEY(uint16_t scancode);
-int ti92_send_EOT(void);
-int ti92_send_REQ(uint32_t varsize, uint8_t vartype, char *varname);
-int ti92_send_RTS(uint32_t varsize, uint8_t vartype, char *varname);
+int ti92_send_VAR(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
+int ti92_send_CTS(CalcHandle*);
+int ti92_send_XDP(CalcHandle*, int length, uint8_t * data);
+int ti92_send_SKP(CalcHandle*, uint8_t rej_code);
+int ti92_send_ACK(CalcHandle*);
+int ti92_send_ERR(CalcHandle*);
+int ti92_send_RDY(CalcHandle*);
+int ti92_send_SCR(CalcHandle*);
+int ti92_send_CNT(CalcHandle*);
+int ti92_send_KEY(CalcHandle*, uint16_t scancode);
+int ti92_send_EOT(CalcHandle*);
+int ti92_send_REQ(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
+int ti92_send_RTS(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 
-int ti92_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname);
-int ti92_recv_CTS(void);
-int ti92_recv_SKIP(uint8_t * rej_code);
-int ti92_recv_XDP(uint32_t * length, uint8_t * data);
-int ti92_recv_ACK(uint16_t * status);
-int ti92_recv_CONT(void);
-int ti92_recv_EOT(void);
-int ti92_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti92_recv_VAR(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti92_recv_CTS(CalcHandle*);
+int ti92_recv_SKP(CalcHandle*, uint8_t * rej_code);
+int ti92_recv_XDP(CalcHandle*, uint32_t * length, uint8_t * data);
+int ti92_recv_ACK(CalcHandle*, uint16_t * status);
+int ti92_recv_CNT(CalcHandle*);
+int ti92_recv_EOT(CalcHandle*);
+int ti92_recv_RTS(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
 
 
 #endif
