@@ -177,8 +177,7 @@ typedef enum
   FTS_SILENT	= (1 << 15),
   FTS_FOLDER	= (1 << 16),
   FTS_MEMFREE	= (1 << 17),
-  FTS_MEMUSED	= (1 << 18),
-  FTS_FLASH		= (1 << 19),
+  FTS_FLASH		= (1 << 18),
 
 } CalcFeatures;
 
@@ -349,14 +348,12 @@ struct _CalcFncts
 
 	const int		(*is_ready)		(CalcHandle*);
 
-	const int		(*send_key)		(CalcHandle*, uint16_t key);
+	const int		(*send_key)		(CalcHandle*, uint16_t);
 
-	const int		(*recv_screen)	(CalcHandle*, CalcScreenCoord* sc,
-									 uint8_t** bitmap);
+	const int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
 
-	const int		(*get_dirlist)	(CalcHandle*, 
-									TNode** vars, TNode** apps, 
-									uint32_t* memory);
+	const int		(*get_dirlist)	(CalcHandle*, TNode** vars, TNode** apps);
+	const int		(*get_memfree)	(CalcHandle*, uint32_t*);
 
 	const int		(*send_backup)	(CalcHandle*, BackupContent*);
 	const int		(*recv_backup)	(CalcHandle*, BackupContent*);
@@ -370,10 +367,9 @@ struct _CalcFncts
 
 	const int		(*send_flash)	(CalcHandle*, FlashContent*);
 	const int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
-	const int		(*recv_idlist)	(CalcHandle*, uint8_t* idlist);
+	const int		(*recv_idlist)	(CalcHandle*, uint8_t*);
 
-	const int		(*dump_rom)		(CalcHandle*, CalcDumpSize, 
-									 const char *filename);
+	const int		(*dump_rom)		(CalcHandle*, CalcDumpSize, const char *filename);
 
 	const int		(*set_clock)	(CalcHandle*, CalcClock* clock);
 	const int		(*get_clock)	(CalcHandle*, CalcClock* clock);

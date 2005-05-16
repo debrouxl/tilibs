@@ -27,9 +27,6 @@
 #include "error.h"
 #include "logging.h"
 
-
-const int		features;
-
 /**
  * ticalcs_calc_features:
  * @handle: a previously allocated handle
@@ -235,6 +232,33 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 
 	handle->busy = 1;
 	ret = calc->recv_var(handle, mode, content, var);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_del_var:
+ * @handle: a previously allocated handle
+ * @var: var to delete
+ *
+ * Request deleting of a variable (if possible ??).
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	handle->busy = 1;
+	ret = calc->del_var(handle, var);
 	handle->busy = 0;
 
 	return ret;
@@ -464,31 +488,3 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 
 	return ret;
 }
-
-/**
- * ticalcs_calc_del_var:
- * @handle: a previously allocated handle
- * @var: var to delete
- *
- * Request deleting of a variable (if possible ??).
- *
- * Return value: 0 if ready else ERR_NOT_READY.
- **/
-TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
-{
-	const CalcFncts *calc = handle->calc;
-	int ret;
-
-	if(!handle->attached)
-		return ERR_NO_CABLE;
-
-	if(!handle->open)
-		return ERR_NO_CABLE;
-
-	handle->busy = 1;
-	ret = calc->del_var(handle, var);
-	handle->busy = 0;
-
-	return ret;
-}
-
