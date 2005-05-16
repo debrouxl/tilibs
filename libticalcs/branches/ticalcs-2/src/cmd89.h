@@ -2,12 +2,12 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (CalcHandle*, C) 1999-2005  Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  (CalcHandle*, at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,29 +23,29 @@
 #define __TICALCS_CMD89__
 
 
-int ti89_send_VAR(uint32_t varsize, uint8_t vartype, char *varname);
-int ti89_send_CTS(void);
-int ti89_send_XDP(int length, uint8_t * data);
-int ti89_send_SKIP(uint8_t rej_code);
-int ti89_send_ACK(void);
-int ti89_send_ERR(void);
-int ti89_send_RDY(void);
-int ti89_send_SCR(void);
-int ti89_send_CONT(void);
-int ti89_send_KEY(uint16_t scancode);
-int ti89_send_EOT(void);
-int ti89_send_REQ(uint32_t varsize, uint8_t vartype, char *varname);
-int ti89_send_RTS(uint32_t varsize, uint8_t vartype, char *varname);
-int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname);	// titanium
+int ti89_send_VAR(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
+int ti89_send_CTS(CalcHandle*);
+int ti89_send_XDP(CalcHandle*, int length, uint8_t * data);
+int ti89_send_SKP(CalcHandle*, uint8_t rej_code);
+int ti89_send_ACK(CalcHandle*);
+int ti89_send_ERR(CalcHandle*);
+int ti89_send_RDY(CalcHandle*);
+int ti89_send_SCR(CalcHandle*);
+int ti89_send_CNT(CalcHandle*);
+int ti89_send_KEY(CalcHandle*, uint16_t scancode);
+int ti89_send_EOT(CalcHandle*);
+int ti89_send_REQ(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
+int ti89_send_RTS(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
+int ti89_send_RTS2(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);	// titanium
 
-int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname);
-int ti89_recv_CTS(void);
-int ti89_recv_SKIP(uint8_t * rej_code);
-int ti89_recv_XDP(uint32_t * length, uint8_t * data);
-int ti89_recv_ACK(uint16_t * status);
-int ti89_recv_CONT(void);
-int ti89_recv_EOT(void);
-int ti89_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti89_recv_VAR(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti89_recv_CTS(CalcHandle*);
+int ti89_recv_SKP(CalcHandle*, uint8_t * rej_code);
+int ti89_recv_XDP(CalcHandle*, uint32_t * length, uint8_t * data);
+int ti89_recv_ACK(CalcHandle*, uint16_t * status);
+int ti89_recv_CNT(CalcHandle*);
+int ti89_recv_EOT(CalcHandle*);
+int ti89_recv_RTS(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
 
 
 #endif
