@@ -77,14 +77,14 @@
 #define CMD_CTS  0x09		// [   ] Continue - used to signal OK to send a variable
 #define CMD_XDP  0x15		// [*  ] Data packet - Pure data
 #define CMD_FLSH 0x2D		// [  $] Send a FLASH application
-#define CMD_SKIP 0x36		// [*  ] Skip/Exit - used when duplicate name is found
+#define CMD_SKP  0x36		// [*  ] Skip/Exit - used when duplicate name is found
 #define CMD_SID  0x47		// [*#$] Send calc ID
 #define CMD_ACK  0x56		// [   ] Acknowledge
 #define CMD_ERR  0x5A		// [   ] Checksum error: send last packet again
 #define CMD_RDY  0x68		// [ #$] Test if calc is ready
 #define CMD_SCR  0x6D		// [  $] Request screenshot
 #define CMD_RID  0x74		// [ #$] Request calc ID
-#define CMD_CONT 0x78		// [  $] Continue
+#define CMD_CNT  0x78		// [  $] Continue
 #define CMD_KEY  0x87		// [  $] Send key
 #define CMD_EOT  0x92		// [   ] End Of Transmission: no more variables to send
 #define CMD_REQ  0xA2		// [* $] Request variable - includes a std var header

@@ -150,7 +150,7 @@ int recv_packet(CalcHandle* handle,
 	  {
 	  case CMD_VAR:
 	  case CMD_XDP:
-	  case CMD_SKIP:
+	  case CMD_SKP:
 	  case CMD_SID:
 	  case CMD_REQ:
 	  case CMD_IND:
@@ -183,7 +183,7 @@ int recv_packet(CalcHandle* handle,
 	  case CMD_RID:
 	  case CMD_KEY:
 	  case CMD_EOT:
-	  case CMD_CONT:
+	  case CMD_CNT:
 			// short packet (no data)
 			break;
 	  default:
