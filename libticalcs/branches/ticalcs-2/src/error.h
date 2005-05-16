@@ -28,11 +28,14 @@ typedef enum
 {
     ERR_NO_ERROR = 0,		// No error (returns 0)
 
-	ERR_NO_CABLE,
-
 	ERR_ABORT = 256,		// Operation aborted
-	ERR_CHECKSUM,			// Checksum error
 	ERR_NOT_READY,			// Calculator is not ready
+	ERR_CHECKSUM,			// Checksum error
+	
+	ERR_MALLOC,				// No memory ?!
+	ERR_NO_CABLE,			// No cable attached
+	ERR_BUSY,				// Device is busy (transfer in progress)
+		
 	ERR_VOID_FUNCTION,		// This function does not exist for the calc
 	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
 	ERR_OPEN_FILE,

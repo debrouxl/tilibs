@@ -61,6 +61,9 @@ TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->is_ready(handle);
 	handle->busy = 0;
@@ -87,6 +90,9 @@ TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->send_key(handle, key);
@@ -117,6 +123,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->recv_screen(handle, sc, bitmap);
 	handle->busy = 0;
@@ -144,6 +153,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* 
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->recv_backup(handle, content);
 	handle->busy = 0;
@@ -170,6 +182,9 @@ TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* 
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->send_backup(handle, content);
@@ -199,6 +214,9 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->send_var(handle, mode, content);
@@ -230,6 +248,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->recv_var(handle, mode, content, var);
 	handle->busy = 0;
@@ -256,6 +277,9 @@ TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->del_var(handle, var);
@@ -285,6 +309,9 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->send_var_ns(handle, mode, content);
@@ -316,6 +343,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->recv_var_ns(handle, mode, content, var);
 	handle->busy = 0;
@@ -342,6 +372,9 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->send_flash(handle, content);
@@ -372,6 +405,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->recv_flash(handle, content, var);
 	handle->busy = 0;
@@ -398,6 +434,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->recv_idlist(handle, idlist);
@@ -428,6 +467,9 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->dump_rom(handle, size, filename);
 	handle->busy = 0;
@@ -455,6 +497,9 @@ TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 	if(!handle->open)
 		return ERR_NO_CABLE;
 
+	if(handle->busy)
+		return ERR_BUSY;
+
 	handle->busy = 1;
 	ret = calc->set_clock(handle, clock);
 	handle->busy = 0;
@@ -481,6 +526,9 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 
 	if(!handle->open)
 		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
 
 	handle->busy = 1;
 	ret = calc->get_clock(handle, clock);
