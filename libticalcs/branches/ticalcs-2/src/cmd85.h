@@ -19,28 +19,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_CMD89__
-#define __TICALCS_CMD89__
+#ifndef __TICALCS_CMD85__
+#define __TICALCS_CMD85__
 
+int ti85_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_CTS(CalcHandle*);
+int ti85_send_XDP(CalcHandle*, int length, uint8_t * data);
+int ti85_send_SKP(CalcHandle*, uint8_t rej_code);
+int ti85_send_ACK(CalcHandle*);
+int ti85_send_ERR(CalcHandle*);
+int ti85_send_SCR(CalcHandle*);
+int ti85_send_KEY(CalcHandle*, uint16_t scancode);
+int ti85_send_EOT(CalcHandle*);
+int ti85_send_REQ(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
 
-int ti85_send_VAR(uint16_t varsize, uint8_t vartype, char *varname);
-int ti85_send_CTS(void);
-int ti85_send_XDP(int length, uint8_t * data);
-int ti85_send_SKIP(uint8_t rej_code);
-int ti85_send_ACK(void);
-int ti85_send_ERR(void);
-int ti85_send_SCR(void);
-int ti85_send_KEY(uint16_t scancode);
-int ti85_send_EOT(void);
-int ti85_send_REQ(uint16_t varsize, uint8_t vartype, char *varname);
-int ti85_send_RTS(uint16_t varsize, uint8_t vartype, char *varname);
-
-int ti85_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname);
-int ti85_recv_CTS(void);
-int ti85_recv_SKIP(uint8_t * rej_code);
-int ti85_recv_XDP(uint16_t * length, uint8_t * data);
-int ti85_recv_ACK(uint16_t * status);
-int ti85_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname);
-
+int ti85_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+int ti85_recv_CTS(CalcHandle*);
+int ti85_recv_SKP(CalcHandle*, uint8_t * rej_code);
+int ti85_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
+int ti85_recv_ACK(CalcHandle*, uint16_t * status);
+int ti85_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 #endif

@@ -24,9 +24,6 @@
   This unit shares its indentation with cmd85.c
 */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "ticalcs.h"
 #include "packets.h"
 #include "error.h"
