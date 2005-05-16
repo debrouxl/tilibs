@@ -76,7 +76,7 @@ static int tixx_dup_VarEntry(VarEntry *dst, VarEntry *src)
 #elif !defined(DISABLE_TI9X)
     return ti9x_dup_VarEntry(dst, src);
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 

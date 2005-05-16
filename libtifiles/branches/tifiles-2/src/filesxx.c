@@ -47,7 +47,7 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 #elif !defined(DISABLE_TI9X)
     return (FileContent*)ti9x_content_create_regular();
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -69,7 +69,7 @@ TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
 		ti9x_content_free_regular((Ti9xRegular *)content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -99,7 +99,7 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *conten
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -131,7 +131,7 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
 		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -157,7 +157,7 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
 		return ti9x_content_display_regular(content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -178,7 +178,7 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
 #elif !defined(DISABLE_TI9X)
     return (BackupContent*)ti9x_content_create_backup();
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -200,7 +200,7 @@ TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
 		ti9x_content_free_backup(content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -230,7 +230,7 @@ TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *conte
 		return ti9x_file_read_backup(filename, content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -262,7 +262,7 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
 		return ti9x_file_write_backup(filename, content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -288,7 +288,7 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
 		return ti9x_content_display_backup(content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -309,7 +309,7 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
 #elif !defined(DISABLE_TI9X)
     return (FlashContent*)ti9x_content_create_flash();
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -331,7 +331,7 @@ TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
 		ti9x_content_free_flash(content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -361,7 +361,7 @@ TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content
 		return ti9x_file_read_flash(filename, content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -393,7 +393,7 @@ TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *conten
 		return ti9x_file_write_flash(filename, content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -419,7 +419,7 @@ TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
 		return ti9x_content_display_flash(content);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -445,7 +445,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
 		return ti9x_file_display(filename);
 	else
 #else
-#error "You can't disable TI8x & TI9x support both.
+#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
