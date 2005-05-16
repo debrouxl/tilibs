@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CMD_85__
-#define __CMD_85__
+#ifndef __TICALCS_CMD89__
+#define __TICALCS_CMD89__
 
 
 int ti85_send_VAR(uint16_t varsize, uint8_t vartype, char *varname);

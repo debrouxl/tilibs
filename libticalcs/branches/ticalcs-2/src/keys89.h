@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_KEYS89__
-#define __CALCS_KEYS89__
+#ifndef __TICALCS_KEYS89__
+#define __TICALCS_KEYS89__
 
 // Keys of the TI89 (to update: tiams.h, line 38)
 

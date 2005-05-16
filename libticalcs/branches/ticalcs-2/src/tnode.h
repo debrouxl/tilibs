@@ -30,8 +30,8 @@
   * I have systematically replaced G... by T... (GNode => TNode).
   */
 
-#ifndef __T_NODE_H__
-#define __T_NODE_H__
+#ifndef __TICALCS_TNODE__
+#define __TICALCS_TNODE__
 
 // by roms (start)
 #include "export.h"

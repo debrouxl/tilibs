@@ -61,7 +61,8 @@ TIEXPORT int TICALL ticalcs_clock_date2format(const char *format)
 {
   int i;
 
-  for (i = 1; i <= MAX_FORMAT; i++) {
+  for (i = 1; i <= MAX_FORMAT; i++) 
+  {
     if (!strcasecmp(TI_CLOCK[i], format))
       break;
   }

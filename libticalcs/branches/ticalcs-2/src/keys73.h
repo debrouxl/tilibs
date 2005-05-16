@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_KEYS73__
-#define __CALCS_KEYS73__
+#ifndef __TICALCS_KEYS73__
+#define __TICALCS_KEYS73__
 
 // Scan codes of the TI73 (TI's ti73.inc, line 2167)
 

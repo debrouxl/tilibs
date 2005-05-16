@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_KEYS92P__
-#define __CALCS_KEYS92P__
+#ifndef __TICALCS_KEYS92P__
+#define __TICALCS_KEYS92P__
 
 // Keys codes of the TI92/TI92+
 

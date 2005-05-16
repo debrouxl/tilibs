@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_PACKETS__
-#define __CALCS_PACKETS__
+#ifndef __TICALCS_PACKETS__
+#define __TICALCS_PACKETS__
 
 
 /*************/

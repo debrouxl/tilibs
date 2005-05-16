@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_XX__
-#define __TICALCS_XX__
+#ifndef __TICALCS_CALCXX__
+#define __TICALCS_CALCXX__
 
 #include "ticalcs.h"
 

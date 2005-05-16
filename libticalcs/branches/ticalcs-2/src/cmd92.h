@@ -19,9 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CMDS_92__
-#define __CMDS_92__
-
+#ifndef __TICALCS_CMD92__
+#define __TICALCS_CMD92__
 
 int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname);
 int ti92_send_CTS(void);

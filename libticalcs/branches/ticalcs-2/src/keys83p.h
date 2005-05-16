@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_KEYS83P__
-#define __CALCS_KEYS83P__
+#ifndef __TICALCS_KEYS83P__
+#define __TICALCS_KEYS83P__
 
 // Scan codes of the TI83+ (TI's ti83plus.inc, line 2666)
 

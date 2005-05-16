@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CALCS_PAUSE__
-#define __CALCS_PAUSE__
+#ifndef __TICALCS_PAUSE__
+#define __TICALCS_PAUSE__
 
 // Little pause in milli-seconds
 
