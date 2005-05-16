@@ -225,22 +225,14 @@ typedef struct
  **/
 typedef struct 
 {
-  char*		key_name;	// Name of key
+	char*	key_name;	// Name of key
 
-  char*		key1;		// Normal key
-  uint16_t	nothing;
+	KeyPair	normal;		// normal key
+	KeyPair	shift;		// SHIFT key (TI9x)
+	KeyPair	second;		// 2ND key (all)
+	KeyPair diamond;	// CTRL key (TI92)
+	KeyPair alpha;		// ALPHA key (83+,89)
 
-  char*		key2;		// SHIFT'ed key (89,92,92+)
-  uint16_t	shift;
-
-  char*		key3;		// 2nd key      (all)
-  uint16_t	second;
-
-  char*		key4;		// CTRL'ed key  (92,92+)
-  uint16_t	diamond;
-
-  char*		key5;		// ALPHA key    (83+,89)
-  uint16_t	alpha;
 } CalcKey;
 
 /**

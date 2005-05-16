@@ -34,7 +34,8 @@
   Note: this array is a copy of the TI92 one which has been modified thus some rows may not
   really exists on the TI89.
 */
-const CalcKey TI89_KEYS[] = {
+const CalcKey TI89_KEYS[] = 
+{
 /* 0x00, 0 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},

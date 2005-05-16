@@ -32,7 +32,8 @@
 
   The array can be used in reverse order too, at least for the first column...
 */
-const CalcKey TI92P_KEYS[] = {
+const CalcKey TI92P_KEYS[] = 
+{
 /* 0x00, 0-15 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},
