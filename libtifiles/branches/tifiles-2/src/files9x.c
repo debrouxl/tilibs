@@ -903,7 +903,10 @@ int ti9x_file_display(const char *filename)
     ti9x_content_free_backup(&content2);
   } 
   else
-    tifiles_info("Unknwon file type !");
+  {
+      tifiles_info("Unknown file type !");
+      return ERR_BAD_FILE;
+  }
 
   return 0;
 }

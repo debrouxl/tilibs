@@ -271,9 +271,9 @@ int main(int argc, char **argv)
 #if 0
 	change_dir(BUILD_PATH("ti82"));
 	test_ti82_backup_support();
-	test_ti82_regular_support();
-	test_ti82_group_support();
-	test_ti82_ungroup_support();
+	//test_ti82_regular_support();
+	//test_ti82_group_support();
+	//test_ti82_ungroup_support();
 #endif
 
 	// TI83+ support

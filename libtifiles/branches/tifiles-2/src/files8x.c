@@ -1002,7 +1002,7 @@ int ti8x_file_display(const char *filename)
   } 
   else 
   {
-    tifiles_info("Unknwon file type !");
+    tifiles_info("Unknown file type !");
     return ERR_BAD_FILE;
   }
 

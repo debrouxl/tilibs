@@ -44,10 +44,9 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 {
 #if !defined(DISABLE_TI8X)
 	return (FileContent*)ti8x_content_create_regular();
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
     return (FileContent*)ti9x_content_create_regular();
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -64,12 +63,11 @@ TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
 	if (tifiles_calc_is_ti8x(content->model))
 		ti8x_content_free_regular((Ti8xRegular *)content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		ti9x_content_free_regular((Ti9xRegular *)content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -94,12 +92,11 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *conten
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_regular(filename, (Ti8xRegular *)content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -126,12 +123,11 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_regular(filename, (Ti8xRegular *)content, real_fname);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -148,16 +144,15 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
  **/
 TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
 {
-	#if !defined(DISABLE_TI8X)
+#if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_regular(content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_content_display_regular(content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -175,10 +170,9 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
 {
 #if !defined(DISABLE_TI8X)
 	return (BackupContent*)ti8x_content_create_backup();
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
     return (BackupContent*)ti9x_content_create_backup();
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -195,12 +189,11 @@ TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
 	if (tifiles_calc_is_ti8x(content->model))
 		ti8x_content_free_backup(content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		ti9x_content_free_backup(content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -224,13 +217,12 @@ TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *conte
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_backup(filename, content);
-	else 
-#elif !defined(DISABLE_TI9X)
+	else
+#endif 
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
 		return ti9x_file_read_backup(filename, content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -256,13 +248,12 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_backup(filename, content);
-	else 
-#elif !defined(DISABLE_TI9X)
+	else
+#endif 
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_file_write_backup(filename, content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -279,16 +270,15 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
  **/
 TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
 {
-	#if !defined(DISABLE_TI8X)
+#if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_backup(content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_content_display_backup(content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -306,10 +296,9 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
 {
 #if !defined(DISABLE_TI8X)
 	return (FlashContent*)ti8x_content_create_flash();
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
     return (FlashContent*)ti9x_content_create_flash();
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
 }
 
@@ -325,13 +314,12 @@ TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		ti8x_content_free_flash(content);
-	else 
-#elif !defined(DISABLE_TI9X)
+	else
+#endif 
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		ti9x_content_free_flash(content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -356,12 +344,11 @@ TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_flash(filename, content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
 		return ti9x_file_read_flash(filename, content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -388,12 +375,11 @@ TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *conten
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_flash(filename, content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_file_write_flash(filename, content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -410,16 +396,15 @@ TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *conten
  **/
 TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
 {
-	#if !defined(DISABLE_TI8X)
+#if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_flash(content);
 	else 
-#elif !defined(DISABLE_TI9X)
+#endif
+#if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 		return ti9x_content_display_flash(content);
 	else
-#else
-#error "You can't disable TI8x & TI9x support both".
 #endif
     return ERR_BAD_CALC;
 
@@ -437,19 +422,18 @@ TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
 TIEXPORT int TICALL tifiles_file_display(const char *filename)
 {
 #if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-		return ti8x_file_display(filename);
-	else 
-#elif !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-		return ti9x_file_display(filename);
-	else
-#else
-#error "You can't disable TI8x & TI9x support both".
+    if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+	return ti8x_file_display(filename);
+    else
 #endif
-    return ERR_BAD_CALC;
-
-	return 0;
+#if !defined(DISABLE_TI9X)
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+	    return ti9x_file_display(filename);
+	else
+#endif
+	    return ERR_BAD_CALC;
+    
+    return 0;
 }
 
 /*****************/
