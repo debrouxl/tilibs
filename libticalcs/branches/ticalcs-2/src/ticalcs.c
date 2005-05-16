@@ -220,6 +220,7 @@ TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 	handle->attached = !0;
 
 	TRYC(ticables_cable_open(cable));
+	handle->open = !0;
 
 	return 0;
 }
@@ -236,6 +237,7 @@ TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
 	TRYC(ticables_cable_close(handle->cable));
+	handle->open = 0;
 	
 	handle->attached = 0;
 	handle->cable = NULL;

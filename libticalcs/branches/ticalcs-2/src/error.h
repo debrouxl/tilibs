@@ -28,6 +28,8 @@ typedef enum
 {
     ERR_NO_ERROR = 0,		// No error (returns 0)
 
+	ERR_NO_CABLE,
+
 	ERR_ABORT = 256,		// Operation aborted
 	ERR_CHECKSUM,			// Checksum error
 	ERR_NOT_READY,			// Calculator is not ready

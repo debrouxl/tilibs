@@ -371,6 +371,7 @@ struct _CalcFncts
 
 	const int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
 	const int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+	const int		(*del_var)		(CalcHandle*, VarRequest*);
 
 	const int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
 	const int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
@@ -384,8 +385,6 @@ struct _CalcFncts
 
 	const int		(*set_clock)	(CalcHandle*, CalcClock* clock);
 	const int		(*get_clock)	(CalcHandle*, CalcClock* clock);
-
-	const int		(*del_var)		(CalcHandle*, VarRequest*);
 };
 
 /**
@@ -460,6 +459,7 @@ struct _CalcHandle
 
 	TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry*);
