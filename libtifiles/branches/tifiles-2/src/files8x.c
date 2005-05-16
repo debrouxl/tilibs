@@ -137,7 +137,7 @@ int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRY(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
+    TRYC(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
 
   return 0;
 }

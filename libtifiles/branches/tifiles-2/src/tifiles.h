@@ -65,7 +65,7 @@ typedef enum
  **/
 typedef enum 
 {
-  ATTRB_NONE = 0, ATTRB_LOCKED = 1, ATTRB_PROTECTED, ATTRB_ARCHIVED = 3
+  ATTRB_NONE = 0, ATTRB_LOCKED = 1, ATTRB_PROTECTED, ATTRB_ARCHIVED = 3,
 } FileAttr;
 
 /**
@@ -85,13 +85,13 @@ typedef enum
  **/
 typedef enum 
 {
-  ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE
+  ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE,
 } FileEncoding;
 
 /* Structures (common to all calcs) */
 
 /**
- * TiVarEntry:
+ * VarEntry:
  * @fld_name: name of folder (TI9x only) or ""
  * @var_name: name of variable (binary, on-calc)
  * @name: name of variable (detokenized, human-readable)
@@ -112,6 +112,7 @@ typedef struct
   uint8_t	attr;
   uint32_t	size;
   uint8_t*	data;
+
 } VarEntry;
 
 /**
@@ -136,6 +137,7 @@ typedef struct
   VarEntry*		entries;
 
   uint16_t		checksum;
+
 } FileContent;
 
 /**
@@ -239,7 +241,6 @@ struct _FlashContent
   FlashPage*	pages;		// TI8x only
 
   FlashContent*	next;		// TI9x only
-
 };
 
 /* Functions */

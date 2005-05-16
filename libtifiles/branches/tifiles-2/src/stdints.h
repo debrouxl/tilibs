@@ -38,9 +38,12 @@
 typedef BYTE uint8_t;
 typedef WORD uint16_t;
 typedef DWORD uint32_t;
+#pragma warning( push )
+#pragma warning( disable : 4142 )
 typedef unsigned char int8_t;
 typedef unsigned short int16_t;
 typedef unsigned long int32_t;
+#pragma warning( pop )
 # elif defined(__BSD__)
 #  include <inttypes.h>
 # else

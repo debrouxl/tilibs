@@ -26,11 +26,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+
 #include "tifiles.h"
 #include "error.h"
 #include "macros.h"
 #include "files8x.h"
 #include "files9x.h"
+#include "logging.h"
 
 /***********/
 /* Freeing */
@@ -54,7 +56,7 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 	// release allocated memory in structures
 	for (i = 0; i < n; i++) 
 	{
-	    TRY(tifiles_content_free_regular(array[i]));
+	    TRYC(tifiles_content_free_regular(array[i]));
 		free(array[i]);
 	}
 	free(array);
@@ -114,7 +116,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   {
     FileContent *src = src_contents[i];
 
-    TRY(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
+    TRYC(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
   }
 
   *dst_content = dst;
@@ -161,7 +163,7 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
     // allocate and duplicate entry
     dst[i]->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
     dst_entry = &(dst[i]->entries[0]);
-    TRY(tixx_dup_VarEntry(dst_entry, src_entry));
+    TRYC(tixx_dup_VarEntry(dst_entry, src_entry));
 
     // update some fields
     dst[i]->num_entries = 1;
@@ -210,18 +212,18 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
     if (src[i] == NULL)
       return ERR_MALLOC;
 
-    TRY(tifiles_file_read_regular(src_filenames[i], src[i]));
+    TRYC(tifiles_file_read_regular(src_filenames[i], src[i]));
   }
   src[i] = NULL;
 
   // group the array of structures
-  TRY(tifiles_group_contents(src, &dst));
+  TRYC(tifiles_group_contents(src, &dst));
 
   // release allocated memory
   tifiles_content_free_group(src);
 
   // write grouped file
-  TRY(tifiles_file_write_regular(dst_filename, dst, &unused));
+  TRYC(tifiles_file_write_regular(dst_filename, dst, &unused));
 
   // release allocated memory
   tifiles_content_free_regular(dst);
@@ -253,10 +255,10 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   int i, n;
 
   // read group file
-  TRY(tifiles_file_read_regular(src_filename, &src));
+  TRYC(tifiles_file_read_regular(src_filename, &src));
 
   // ungroup structure
-  TRY(tifiles_ungroup_content(&src, &dst));
+  TRYC(tifiles_ungroup_content(&src, &dst));
 
   // count number of structures and allocates array of strings
   for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
@@ -266,7 +268,7 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   // store each structure content to file
   for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
   {
-    TRY(tifiles_file_write_regular(NULL, *ptr, &real_name));
+    TRYC(tifiles_file_write_regular(NULL, *ptr, &real_name));
 
 	if(dst_filenames != NULL)
 		*dst_filenames[i] = real_name;

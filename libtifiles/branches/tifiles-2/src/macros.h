@@ -22,9 +22,6 @@
 #ifndef __TIFILES_MACROS__
 #define __TIFILES_MACROS__
 
-#ifndef TIFILES_MACROS
-#define TIFILES_MACROS
-
 #include "stdints.h"
 
 /* Macros, part 1 */
@@ -39,7 +36,6 @@
 # define MSN(b) (((b) & 0xF0) >> 4)
 // convert 2 nibbles into a BCD byte
 # define BCD(b) (10*MSN(b)+LSN(b))
-#endif
 
 /* Macros, part 2 */
 // these macro are in little endian format (Intel ?, LSB first)
@@ -63,28 +59,5 @@
 #define B_BYTE2WORD(u, l)               ((l) + ((u) << 8))
 #define B_BYTE2LONGWORD(uu, ul, lu, ll) ((ll) + ((lu) << 8) + ((ul) << 16) + ((uu) << 24))
 #define B_WORD2LONGWORD(u, l)           ((l) + ((u) << 16))
-
-/* 
-   A very very useful macro ! 
-   Used to propagate an error code when a function returns.
-*/
-#ifndef TRY
-# define TRY(x) { int aaaa_; if((aaaa_ = (x))) return aaaa_; }	//new !
-#endif
-#define TRYC(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-#define TRY_ TRYC
-
-/*
-  The directory separator depending on the platform
-*/
-#if defined(__WIN32__)
-#  define DIR_SEPARATOR "\\"
-#  define DIR_SEPARATOR_S "\\"
-#  define DIR_SEPARATOR_C '\\'
-#else
-#  define DIR_SEPARATOR "/"
-#  define DIR_SEPARATOR_S "/"
-#  define DIR_SEPARATOR_C '/'
-#endif
 
 #endif

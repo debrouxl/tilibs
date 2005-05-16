@@ -137,7 +137,7 @@ int ti9x_dup_Ti9xRegular(Ti9xRegular * dst, Ti9xRegular * src)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRY(ti9x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
+    TRYC(ti9x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
 
   return 0;
 }
