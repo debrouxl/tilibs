@@ -23,124 +23,29 @@
 #  include <config.h>
 #endif
 
-#include "ticables.h"
-#include "data_log.h"
+#include "ticalcs.h"
 #include "error.h"
 #include "logging.h"
 
-/**
- * ticables_cable_open:
- * @handle: a previously allocated handle
- *
- * Attempt to open a connection on the cable with the parameters
- * given with #ticables_handle_new().
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
-{
-	const CableFncts *cable = handle->cable;
 
-	TRYC(handle->cable->prepare(handle));
-	
-	TRYC(cable->open(handle));
-	
-	handle->open = 1;
-	START_LOGGING();
-
-	return 0;
-}
+const int		features;
 
 /**
- * ticables_cable_probe:
- * @handle: a previously allocated handle
- * @result: cable found (!0) or not (0)
- *
- * Attempt to probe if a cable is present. Open device if not opened.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* result)
-{
-	const CableFncts *cable = handle->cable;
-	int already = handle->open;
-	int ret;
-
-	// Check if device is already opened
-	if(!already && cable->need_open)
-	    TRYC(ticables_cable_open(handle));
-
-	// Do the check itself
-	ret = cable->probe(handle);
-	if(ret == ERR_PROBE_FAILED)
-		*result = 0;
-	else
-		*result = !0;
-
-	// If it was opened for this, close it
-	if(!already && cable->need_open)
-	    TRYC(ticables_cable_close(handle));
-
-	return 0;
-}
-
-
-
-/**
- * ticables_cable_close:
+ * ticalcs_calc_features:
  * @handle: a previously allocated handle
  *
- * Attempt to close a connection on the cable with the parameters
- * given with #ticables_handle_new().
+ * Returns the features and operations supported by the hand-held.
  *
- * Return value: 0 if successful, an error code otherwise.
+ * Return value: a mask of features (CalcFeatures).
  **/
-TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
+TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 {
-	const CableFncts *cable = handle->cable;
+	const CalcFncts *calc = handle->calc;
 
-	STOP_LOGGING();
-	if(handle->open)
-	{
-	    cable->close(handle);
-	    handle->open = 0;
-	}
-
-	return 0;
+	return calc->features;
 }
 
-/**
- * ticables_cable_send:
- * @handle: a previously allocated handle
- * @data: buffer with data to send
- * @len: length of buffer
- *
- * Send %len bytes of the %data buffer from PC to hand-held.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint16_t len)
-{
-	const CableFncts *cable = handle->cable;
-	int ret;
-
-	if(!handle->open)
-		return -1;
-	if(handle->busy)
-		return ERR_BUSY;
-	if(!len)
-		return 0;
-
-	handle->busy = 1;
-	handle->rate.count = len;
-	TO_START(handle->rate.start);
-	ret = cable->send(handle, data, len);
-	TO_CURRENT(handle->rate.current);
-	handle->busy = 0;
-
-	return 0;
-}
-
+#if 0
 /**
  * ticables_cable_recv:
  * @handle: a previously allocated handle
@@ -318,3 +223,4 @@ TIEXPORT int TICALL ticables_cable_progress(CableHandle* handle, int *count, int
 
 	return 0;
 }
+#endif

@@ -92,10 +92,6 @@ LINK32=link.exe
 # Begin Group "TI calcs"
 
 # PROP Default_Filter ""
-# Begin Group "cmds"
-
-# PROP Default_Filter ""
-# End Group
 # Begin Group "calcs"
 
 # PROP Default_Filter ""
@@ -124,6 +120,14 @@ SOURCE=..\..\src\keys92p.c
 SOURCE=..\..\src\tikeys.c
 # End Source File
 # End Group
+# Begin Group "cmds"
+
+# PROP Default_Filter ""
+# End Group
+# Begin Source File
+
+SOURCE=..\..\src\calc_xx.c
+# End Source File
 # End Group
 # Begin Group "Others"
 
@@ -135,6 +139,10 @@ SOURCE=..\..\src\clock.c
 # Begin Source File
 
 SOURCE=..\..\src\logging.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tnode.c
 # End Source File
 # Begin Source File
 

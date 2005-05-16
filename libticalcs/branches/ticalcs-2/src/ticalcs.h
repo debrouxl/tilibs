@@ -27,8 +27,8 @@
 #endif
 
 #include <ticables.h>
+#include <tifiles.h>
 
-#include "stdints.h"
 #include "export.h"
 #include "tnode.h"	// to replace by glib !
 
@@ -62,12 +62,14 @@ extern "C" {
  *
  * An enumeration which contains the following calculator types:
  **/
+#ifndef __TIFILES_H__
 typedef enum 
 {
 	CALC_NONE = 0,
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 } CalcModel;
+#endif
 
 /**
  * CalcScreenFormat:
@@ -103,6 +105,7 @@ typedef enum
 	MEMORY_USED
 } CalcMemType;
 
+// To clean-up !
 /**
  * CalcMode:
  *
@@ -382,6 +385,7 @@ struct _CalcFncts
 	const int		(*set_clock)	(CalcHandle*, CalcClock* clock);
 	const int		(*get_clock)	(CalcHandle*, CalcClock* clock);
 
+	const int		(*del_var)		(CalcHandle*, VarRequest*);
 };
 
 /**
@@ -444,7 +448,7 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
 
 	// calc.c
-	TIEXPORT CalcOperations TICALL ticalcs_calc_features(CalcHandle*);
+	TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle*);
 
 	TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle*);
 	TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
@@ -481,9 +485,6 @@ struct _CalcHandle
 
 	TIEXPORT const char*  TICALL ticalcs_memtype_to_string(CalcMemType type);
 	TIEXPORT CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
-
-	TIEXPORT const char*  TICALL ticalcs_action_to_string(CalcAction action);
-	TIEXPORT CalcAction   TICALL ticalcs_string_to_action(const char *str);
 
 	// clock.c
 	TIEXPORT const char* TICALL ticalcs_clock_format2date(int value);

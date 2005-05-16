@@ -111,24 +111,3 @@ TIEXPORT CalcMemType TICALL ticalc_string_to_memtype(const char *str)
   	
   	return MEMORY_NONE;
 }
-
-
-TIEXPORT const char *TICALL ticalc_action_to_string(CalcAction action)
-{
-  	switch (action) 
-	{
-  	case ACTION_SKIP: return _("skip");
-  	case ACTION_OVER: return _("overwrite");
-	default: return _("unknown");
-  	}
-}
-
-TIEXPORT CalcAction TICALL ticalc_string_to_action(const char *str)
-{
-	if(!strcmp(str, _("skip")))
-  		return ACTION_SKIP;
-  	else if(!strcmp(str, _("overwrite")))
-  		return ACTION_OVER;
-  	
-  	return ACTION_SKIP;
-}

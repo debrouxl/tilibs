@@ -29,7 +29,7 @@ static void update_label(void) {};
 
 const CalcUpdate default_update =
 {
-	0, 0, 0, 0.0, 0.0, 0.0, 0.0, "",
+	0, 0, 0, 0, 0, "",
 	update_start,
 	update_stop,
 	update_refresh,
