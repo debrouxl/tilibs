@@ -194,7 +194,11 @@ SOURCE=..\..\src\Rom92f2.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\Error.c
+SOURCE=..\..\src\dirlist.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\error.c
 # End Source File
 # Begin Source File
 

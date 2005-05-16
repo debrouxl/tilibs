@@ -461,6 +461,16 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
 
+	// dirlist.c
+	TIEXPORT void TICALL ticalc_dirlist_destroy(TNode** tree);
+	TIEXPORT void TICALL ticalc_dirlist_display(TNode*  tree);
+
+	TIEXPORT int TICALL ticalc_dirlist_num_vars(TNode* tree);
+	TIEXPORT int TICALL ticalc_dirlist_mem_used(TNode* tree);
+
+	TIEXPORT VarEntry *TICALL ticalc_dirlist_var_exist(TNode* tree, char* varname);
+	TIEXPORT VarEntry *TICALL ticalc_dirlist_app_exist(TNode* tree, char* appname);
+
 	// type2str.c
 	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
 	TIEXPORT CalcModel    TICALL ticalcs_string_to_model (const char *str);
