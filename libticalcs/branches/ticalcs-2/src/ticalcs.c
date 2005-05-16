@@ -35,6 +35,7 @@
 #include "ticalcs.h"
 #include "logging.h"
 #include "error.h"
+#include "calc_xx.h"
 
 /*****************/
 /* Internal data */
@@ -44,9 +45,9 @@ extern const CalcUpdate default_update;
 
 static CalcFncts const *const calcs[] = 
 {
-//	&calc_nul,
+	&calc_00,
 #ifndef NO_TI92
-//	&calc_ti92,
+//	&calc_92,
 #endif
 	NULL
 };

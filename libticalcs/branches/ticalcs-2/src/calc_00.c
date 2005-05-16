@@ -26,83 +26,122 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include "stdints.h"
-
-#include "ticables.h"
+#include "ticalcs.h"
 #include "gettext.h"
 
-int nul_prepare(CableHandle *h)
+static int is_ready			(CalcHandle* handle)
 {
 	return 0;
 }
 
-int nul_probe(CableHandle *h)
+static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	return 0;
 }
 
-int nul_open(CableHandle *h)
+static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	return 0;
 }
 
-int nul_close(CableHandle *h)
+static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
 	return 0;
 }
 
-int nul_reset(CableHandle *h)
+static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
 	return 0;
 }
 
-int nul_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
 	return 0;
 }
 
-int nul_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	return 0;
 }
 
-int nul_check(CableHandle *h, int *status)
-{
-	*status = STATUS_NONE;
-	return 0;
-}
-
-int nul_set_red_wire(CableHandle *h, int b)
+static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	return 0;
 }
 
-int nul_set_white_wire(CableHandle *h, int b)
+static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	return 0;
 }
 
-int nul_get_red_wire(CableHandle *h)
+static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	return 1;
+	return 0;
 }
 
-int nul_get_white_wire(CableHandle *h)
+static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return 1;
+	return 0;
 }
 
-const CableFncts cable_nul = 
+static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
 {
-	CABLE_NUL,
-	"NUL",
-	N_("Dummy link"),
-	N_("Dummy link used when no cable is set"),
-	0,
-	&nul_prepare,
-	&nul_open, &nul_close, &nul_reset, &nul_probe,
-	&nul_put, &nul_get, &nul_check,
-	&nul_set_red_wire, &nul_set_white_wire,
-	&nul_get_red_wire, &nul_get_white_wire,
+	return 0;
+}
+
+static int		send_flash	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
+static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
+{
+	return 0;
+}
+
+static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
+{
+	return 0;
+}
+
+static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+{
+	return 0;
+}
+
+static int		set_clock	(CalcHandle* handle, CalcClock* clock)
+{
+	return 0;
+}
+
+static int		get_clock	(CalcHandle* handle, CalcClock* clock)
+{
+	return 0;
+}
+
+const CalcFncts calc_00 = 
+{
+	CALC_NONE,
+	"NONE",
+	N_("Dummy hand-held"),
+	N_("Dummy hand-held used when no calc is set"),
+	FTS_NONE,
+	&is_ready,
+	&send_key,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&recv_backup,
+	&send_var,
+	&recv_var,
+	&del_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&recv_idlist,
+	&dump_rom,
+	&set_clock,
+	&get_clock,
 };

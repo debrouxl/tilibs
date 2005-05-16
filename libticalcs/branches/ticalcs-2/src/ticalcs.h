@@ -161,7 +161,7 @@ typedef enum
  **/
 typedef enum 
 {
-  OPS_NONE = 0,
+  FTS_NONE = 0,
 
   OPS_ISREADY	= (1 << 0),
   OPS_KEYS		= (1 << 1),
