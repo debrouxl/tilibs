@@ -25,7 +25,19 @@
 #include "ticalcs.h"
 
 extern const CalcFncts calc_00;
+
+extern const CalcFncts calc_73;
+extern const CalcFncts calc_82;
+extern const CalcFncts calc_83;
+extern const CalcFncts calc_83p;
+extern const CalcFncts calc_84p;
+extern const CalcFncts calc_85;
+extern const CalcFncts calc_86;
 extern const CalcFncts calc_89;
+extern const CalcFncts calc_89t;
+extern const CalcFncts calc_92;
+extern const CalcFncts calc_92p;
+extern const CalcFncts calc_v2;
 
 #endif
 

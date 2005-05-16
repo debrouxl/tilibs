@@ -95,6 +95,30 @@ LINK32=link.exe
 # Begin Group "calcs"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\calc_00.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_73.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_83.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_86.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_89.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_92.c
+# End Source File
 # End Group
 # Begin Group "keys"
 
@@ -126,6 +150,18 @@ SOURCE=..\..\src\tikeys.c
 # Begin Source File
 
 SOURCE=..\..\src\cmd82.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmd85.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmd89.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmd92.c
 # End Source File
 # Begin Source File
 
