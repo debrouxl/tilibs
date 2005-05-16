@@ -64,7 +64,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "C:\msvc\tilp\"
+# PROP Output_Dir "C:\msvc\tilp2\"
 # PROP Intermediate_Dir "C:\msvc\Output\ticalcs"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -123,6 +123,10 @@ SOURCE=..\..\src\tikeys.c
 # Begin Group "cmds"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\packets.c
+# End Source File
 # End Group
 # Begin Source File
 

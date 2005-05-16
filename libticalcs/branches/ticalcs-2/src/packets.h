@@ -101,10 +101,10 @@
 /* Functions */
 /*************/
 
-int send_packet(uint8_t target, uint8_t cmd, uint16_t length,
-		uint8_t * data);
-int recv_packet(uint8_t * host, uint8_t * cmd, uint16_t * length,
-		uint8_t * data);
+int send_packet(CalcHandle* cable,
+				uint8_t target, uint8_t cmd, uint16_t length, uint8_t* data);
+int recv_packet(CalcHandle* cable,
+				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
 
 void pad_buffer(char *varname, uint8_t value);
 

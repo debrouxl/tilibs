@@ -20,64 +20,69 @@
  */
 
 /*
-   This unit manages packets
+	This unit manages packets
 */
 
 
-#include <stdio.h>
-#include <string.h>
-
-#include "headers.h"
-#include "externs.h"
-#include "update.h"
+#include "ticalcs.h"
 #include "packets.h"
-#include "calc_err.h"
+#include "logging.h"
+#include "error.h"
+#include "macros.h"
 
 /*
-  Send a packet from PC (host) to TI (target):
-  - target [in]	: a machine ID uint8_t
-  - cmd [in]	: a command ID uint8_t
-  - length [in]	: length of buffer
-  - data [in]	: data to send (or 0x00 if NULL)
-  - int [out]	: an error code
+    Send a packet from PC (host) to TI (target):
+    - target [in]	: a machine ID uint8_t
+    - cmd [in]	: a command ID uint8_t
+    - length [in]	: length of buffer
+    - data [in]	: data to send (or 0x00 if NULL)
+    - int [out]	: an error code
 */
-int send_packet(uint8_t target, uint8_t cmd, uint16_t len, uint8_t * data)
+int send_packet(CalcHandle* handle,
+				uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
-  int i;
-  uint16_t sum;
-  uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
+	int i;
+	uint16_t sum;
+	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
 
-  TRYF(cable->put(target));
-  TRYF(cable->put(cmd));
+	TRYF(ticables_cable_put(handle->cable, target));
+	TRYF(ticables_cable_put(handle->cable, cmd));
 
-  if (data == NULL) {		// short packet (no data)
-    TRYF(cable->put(0x00));
-    TRYF(cable->put(0x00));
-  } else {			// std packet (data + checksum)
-    TRYF(cable->put(LSB(length)))
-	TRYF(cable->put(MSB(length)));
+	if (data == NULL) 
+	{		
+		// short packet (no data)
+		TRYF(ticables_cable_put(handle->cable, 0x00));
+		TRYF(ticables_cable_put(handle->cable, 0x00));
+	} 
+	else 
+	{
+		// std packet (data + checksum)
+		TRYF(ticables_cable_put(handle->cable, LSB(length)))
+		TRYF(ticables_cable_put(handle->cable, MSB(length)));
 
-    update->total = length;
-    for (i = 0; i < (int)length; i++) {
-      TRYF(cable->put(data[i]));
+		handle->update->max1 = length;
+		for (i = 0; i < (int)length; i++) 
+		{
+			TRYF(ticables_cable_put(handle->cable, data[i]));
 
-      update->count = i;
-      update_pbar();
-      if (update->cancel)
-	return ERR_ABORT;
-    }
+			handle->update->cnt1 = i;
+			handle->update->pbar();
+			if (handle->update->cancel)
+				return ERR_ABORT;
+		}
 
-    sum = tifiles_compute_checksum(data, length);
-    TRYF(cable->put(LSB(sum)));
-    TRYF(cable->put(MSB(sum)));
-  }
+		sum = tifiles_checksum(data, length);
+		TRYF(ticables_cable_put(handle->cable, LSB(sum)));
+		TRYF(ticables_cable_put(handle->cable, MSB(sum)));
+	}
 
-  return 0;
+	return 0;
 }
 
-static uint8_t host_ids()
+static uint8_t host_ids(CalcHandle *handle)
 {
-  switch (ticalcs_calc_type) {
+  switch (handle->model) 
+  {
   case CALC_TI73:
     return TI73_PC;
     break;
@@ -122,74 +127,77 @@ static uint8_t host_ids()
   - data [out]	: received data (depending on command)
   - int [out]	: an error code
 */
-int recv_packet(uint8_t * host, uint8_t * cmd, uint16_t * length,
-		uint8_t * data)
+int recv_packet(CalcHandle* handle, 
+				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
-  uint8_t d;
-  int i;
-  uint16_t chksum;
+	uint8_t d;
+	int i;
+	uint16_t chksum;
 
-  TRYF(cable->get(host));
-  if (*host != host_ids())
-    return ERR_INVALID_HOST;
-  TRYF(cable->get(cmd));
-  if (*cmd == CMD_ERR)
-    return ERR_CHECKSUM;
-  TRYF(cable->get(&d));
-  *length = d;
-  TRYF(cable->get(&d));
-  *length |= d << 8;
+	TRYF(ticables_cable_get(handle->cable, host));
+	if (*host != host_ids(handle)) return ERR_INVALID_HOST;
 
-  switch (*cmd) {
-  case CMD_VAR:
-  case CMD_XDP:
-  case CMD_SKIP:
-  case CMD_SID:
-  case CMD_REQ:
-  case CMD_IND:
-  case CMD_RTS:		// std packet ( data + checksum)
+	TRYF(ticables_cable_get(handle->cable, cmd));
+	if (*cmd == CMD_ERR) return ERR_CHECKSUM;
 
-    update->total = *length;
-    for (i = 0; i < *length; i++) {
-      TRYF(cable->get(&(data[i])));
+	TRYF(ticables_cable_get(handle->cable, &d));
+	*length = d;
 
-      update->count = i;
-      update_pbar();
-      if (update->cancel)
-	return ERR_ABORT;
-    }
+	TRYF(ticables_cable_get(handle->cable, &d));
+	*length |= d << 8;
 
-    TRYF(cable->get(&d));
-    chksum = d;
-    TRYF(cable->get(&d));
-    chksum |= d << 8;
+	  switch (*cmd) 
+	  {
+	  case CMD_VAR:
+	  case CMD_XDP:
+	  case CMD_SKIP:
+	  case CMD_SID:
+	  case CMD_REQ:
+	  case CMD_IND:
+	  case CMD_RTS:		
+		  // std packet ( data + checksum)
+			handle->update->max1 = *length;
+			for (i = 0; i < *length; i++) 
+			{
+				TRYF(ticables_cable_get(handle->cable, &(data[i])));
 
-    if (chksum != tifiles_compute_checksum(data, *length))
-      return ERR_CHECKSUM;
-    break;
-  case CMD_CTS:
-  case CMD_ACK:
-  case CMD_ERR:
-  case CMD_RDY:
-  case CMD_SCR:
-  case CMD_RID:
-  case CMD_KEY:
-  case CMD_EOT:
-  case CMD_CONT:
-    // short packet (no data)
-    break;
-  default:
-    return ERR_INVALID_CMD;
-  }
+				handle->update->cnt1 = i;
+				handle->update->pbar();
+				if (handle->update->cancel)
+					return ERR_ABORT;
+			}
 
-  return 0;
+			TRYF(ticables_cable_get(handle->cable, &d));
+			chksum = d;
+			TRYF(ticables_cable_get(handle->cable, &d));
+			chksum |= d << 8;
+
+			if (chksum != tifiles_checksum(data, *length))
+				return ERR_CHECKSUM;
+		break;
+	  case CMD_CTS:
+	  case CMD_ACK:
+	  case CMD_ERR:
+	  case CMD_RDY:
+	  case CMD_SCR:
+	  case CMD_RID:
+	  case CMD_KEY:
+	  case CMD_EOT:
+	  case CMD_CONT:
+			// short packet (no data)
+			break;
+	  default:
+			return ERR_INVALID_CMD;
+	  }
+
+	return 0;
 }
 
 /* Complete a 8-chars buffer with NUL chars */
 void pad_buffer(char *varname, uint8_t value)
 {
-  int i, len = strlen(varname);
+	int i, len = strlen(varname);
 
-  for (i = len; i < 8; i++)
-    varname[i] = value;
+	for (i = len; i < 8; i++)
+		varname[i] = value;
 }
