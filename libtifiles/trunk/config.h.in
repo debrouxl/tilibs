@@ -25,6 +25,14 @@
 /* Define to 1 if you have the `asprintf' function. */
 #undef HAVE_ASPRINTF
 
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 #undef HAVE_DCGETTEXT
@@ -55,7 +63,7 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* Use -fvisibility flag */
+/* Use -fvisibility=hidden flag */
 #undef HAVE_FVISIBILITY
 
 /* Define to 1 if you have the `fwprintf' function. */
@@ -113,10 +121,6 @@
 /* Define if you have the 'long long' type. */
 #undef HAVE_LONG_LONG
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -143,10 +147,6 @@
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `setenv' function. */
 #undef HAVE_SETENV
@@ -295,6 +295,10 @@
 /* Version number of package */
 #undef VERSION
 
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
@@ -304,18 +308,12 @@
 #undef inline
 #endif
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `long' if <sys/types.h> does not define. */
 #undef off_t
 
 /* Define as the type of the result of subtracting two pointers, if the system
    doesn't define it. */
 #undef ptrdiff_t
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Define to empty if the C compiler doesn't support this keyword. */
 #undef signed

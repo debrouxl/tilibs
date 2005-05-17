@@ -68,6 +68,9 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
+# Checks for architecture features.
+AC_C_BIGENDIAN
+
 # Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_STAT
@@ -79,8 +82,7 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   *-*-*bsd*)  ARCH="-D__BSD__" ;;
   *-*-mingw*) ARCH="-D__WIN32__ -D__MINGW32__" ;;
-  powerpc-*-linux-*)     ARCH="-D__LINUX__ -DWORDS_BIGENDIAN" ;;
-  powerpc-apple-darwin*) ARCH="-D__MACOSX__ -DWORDS_BIGENDIAN" ;;
+  powerpc-apple-darwin*) ARCH="-D__MACOSX__" ;;
   *)          ARCH="-D__LINUX__" ;;
 esac
 CFLAGS="$CFLAGS $ARCH"
