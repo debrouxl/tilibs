@@ -40,8 +40,8 @@
 
 static const char name[4][256] = 
 {
-  "GtkTiEmu Virtual Link 0", "GtkTiEmu Virtual Link 1",
-  "GtkTiEmu Virtual Link 1", "GtkTiEmu Virtual Link 0"
+	"GtkTiEmu Virtual Link 0", "GtkTiEmu Virtual Link 1",
+	"GtkTiEmu Virtual Link 1", "GtkTiEmu Virtual Link 0"
 };
 
 #ifdef __GNUC__						// Kevin Kofler
@@ -108,7 +108,6 @@ static int tie_open(CableHandle *h)
 
 static int tie_close(CableHandle *h)
 {
-  /* Close the shared buffer */
   if (hSendBuf) 
     UnmapViewOfFile(pSendBuf);
 
@@ -168,7 +167,6 @@ static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
 		}
 		while (pRecvBuf->start == pRecvBuf->end);
 
-		/* And retrieve the data from the circular buffer */
 		data[i] = pRecvBuf->buf[pRecvBuf->start];
 		pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
 	}

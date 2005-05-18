@@ -21,14 +21,6 @@
 
 /* "VTi" virtual link cable unit */
 
-/* 
-   Thanks to Mikael Magnusson for its simple program that I have
-   used as an example for writing this unit.
-   Mikael is also the developper & maintainer of the TI83+ support
-   for the libTIcalcs library.
-   <mikma@users.sourceforge.net> (or <mikma@hem.passagen.se>)
-*/
-
 #include <stdio.h>
 
 #include "../ticables.h"
@@ -153,18 +145,18 @@ static int vti_open(CableHandle *h)
 static int vti_close(CableHandle *h)
 {
 	if (otherWnd) 
-  {
-    SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
-    SendMessage(otherWnd, WM_GOODBYE, 0, 0);
-  }
+	{
+		SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
+		SendMessage(otherWnd, WM_GOODBYE, 0, 0);
+	}
 
-  /* Close the shared buffer */
-  if (hMap) 
-  {
-    UnmapViewOfFile(vSendBuf);
-    UnmapViewOfFile(vRecvBuf);
-    CloseHandle(hMap);
-  }
+	/* Close the shared buffer */
+	if (hMap) 
+	{
+		UnmapViewOfFile(vSendBuf);
+		UnmapViewOfFile(vRecvBuf);
+		CloseHandle(hMap);
+	}
 
 	return 0;
 }
@@ -197,8 +189,8 @@ static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 		}
 		while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
 
-		vSendBuf->buf[vSendBuf->end] = data[i];					// put data in buffer
-		vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);	// update circular buffer
+		vSendBuf->buf[vSendBuf->end] = data[i];
+		vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);
 	}
 
 	return 0;
