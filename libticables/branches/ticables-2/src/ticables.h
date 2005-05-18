@@ -240,7 +240,8 @@ struct _CableHandle
 	TIEXPORT int TICALL ticables_cable_get_d0(CableHandle*);
 	TIEXPORT int TICALL ticables_cable_get_d1(CableHandle*);
 
-	TIEXPORT int TICALL ticables_cable_progress(CableHandle*, int *count, int *msec);
+	TIEXPORT int TICALL ticables_progress_reset(CableHandle*);
+	TIEXPORT int TICALL ticables_progress_get(CableHandle*, int* count, int* msec, float* rate);
 
 	// error.c
 	TIEXPORT int         TICALL ticables_error_get (int number, char **message);

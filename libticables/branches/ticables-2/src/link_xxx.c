@@ -132,10 +132,8 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 		return 0;
 
 	handle->busy = 1;
-	handle->rate.count = len;
-	TO_START(handle->rate.start);
+	handle->rate.count += len;
 	ret = cable->send(handle, data, len);
-	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
@@ -164,10 +162,8 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 		return 0;
 
 	handle->busy = 1;
-	handle->rate.count = len;
-	TO_START(handle->rate.start);
+	handle->rate.count += len;
 	ret = cable->recv(handle, data, len);
-	TO_CURRENT(handle->rate.current);
 	handle->busy = 0;
 
 	return 0;
@@ -302,19 +298,38 @@ TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
 }
 
 /**
- * ticables_cable_progress:
+ * ticables_cable_progress_reset:
+ * @handle: a previously allocated handle
+ *
+ * Reset byte counter and timer used for computing data rate.
+ *
+ * Return value: always 0.
+ **/
+TIEXPORT int TICALL ticables_cable_progress_reset(CableHandle* handle)
+{
+	handle->rate.count = 0;;
+	TO_START(handle->rate.start);
+
+	return 0;
+}
+
+/**
+ * ticables_cable_progress_get:
  * @handle: a previously allocated handle
  * @count: number of bytes transfered
  * @msec: time needed for the operation
+ * @rate: data rate
  *
  * Returns informations needed to compute the transfer rate of the link cable.
  *
- * Return value: 0 if successful, an error code otherwise.
+ * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_cable_progress(CableHandle* handle, int *count, int *msec)
+TIEXPORT int TICALL ticables_cable_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
 {
+	TO_CURRENT(handle->rate.current);
 	*count = handle->rate.count;
 	*msec = 1000 * TO_ELAPSED(handle->rate.start, handle->rate.current);
+	*rate = (float)*count / ((float)*msec / 1000);
 
 	return 0;
 }
