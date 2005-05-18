@@ -26,6 +26,7 @@
 #include "ticalcs.h"
 #include "error.h"
 #include "logging.h"
+#include "gettext.h"
 
 /**
  * ticalcs_calc_features:
@@ -64,6 +65,7 @@ TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Checking hand-held status:"));
 	handle->busy = 1;
 	ret = calc->is_ready(handle);
 	handle->busy = 0;
@@ -94,6 +96,7 @@ TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Sending key %04x:"));
 	handle->busy = 1;
 	ret = calc->send_key(handle, key);
 	handle->busy = 0;
@@ -126,6 +129,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting screenshot:"));
 	handle->busy = 1;
 	ret = calc->recv_screen(handle, sc, bitmap);
 	handle->busy = 0;
@@ -156,6 +160,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* 
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting backup:"));
 	handle->busy = 1;
 	ret = calc->recv_backup(handle, content);
 	handle->busy = 0;
@@ -186,6 +191,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* 
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Sending backup:"));
 	handle->busy = 1;
 	ret = calc->send_backup(handle, content);
 	handle->busy = 0;
@@ -218,6 +224,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Sending one or more variables:"));
 	handle->busy = 1;
 	ret = calc->send_var(handle, mode, content);
 	handle->busy = 0;
@@ -251,6 +258,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting variable '%s':"), ""/*var->var_name*/);
 	handle->busy = 1;
 	ret = calc->recv_var(handle, mode, content, var);
 	handle->busy = 0;
@@ -281,6 +289,7 @@ TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting deletion of variable '%s':"), ""/*var->var_name)*/);
 	handle->busy = 1;
 	ret = calc->del_var(handle, var);
 	handle->busy = 0;
@@ -313,6 +322,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Sending variable (non-silent mode):"));
 	handle->busy = 1;
 	ret = calc->send_var_ns(handle, mode, content);
 	handle->busy = 0;
@@ -346,6 +356,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Receiving variable (non-silent mode):"));
 	handle->busy = 1;
 	ret = calc->recv_var_ns(handle, mode, content, var);
 	handle->busy = 0;
@@ -376,6 +387,7 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Sending FLASH app/os:"));
 	handle->busy = 1;
 	ret = calc->send_flash(handle, content);
 	handle->busy = 0;
@@ -408,6 +420,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting receiving of FLASH app:"));
 	handle->busy = 1;
 	ret = calc->recv_flash(handle, content, var);
 	handle->busy = 0;
@@ -438,6 +451,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Requesting ID-LIST:"));
 	handle->busy = 1;
 	ret = calc->recv_idlist(handle, idlist);
 	handle->busy = 0;
@@ -470,6 +484,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Dumping ROM:"));
 	handle->busy = 1;
 	ret = calc->dump_rom(handle, size, filename);
 	handle->busy = 0;
@@ -500,6 +515,7 @@ TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Setting clock:"));
 	handle->busy = 1;
 	ret = calc->set_clock(handle, clock);
 	handle->busy = 0;
@@ -530,6 +546,7 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ticalcs_info(_("Getting clock:"));
 	handle->busy = 1;
 	ret = calc->get_clock(handle, clock);
 	handle->busy = 0;
