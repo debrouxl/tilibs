@@ -8,6 +8,9 @@ Checking: valgrind & splint
 	
 Log:
 
+- 15/05/2005, version 3.9.1: roms
+	Fixed get_attributes for random permissions (backport of ticables2).
+
 - 27/04/2005, version 3.9.0: roms
 	Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead.
 	Merged Christian "Christian Walther" <cwalther@gmx.ch> patches for Mac OS-X.
