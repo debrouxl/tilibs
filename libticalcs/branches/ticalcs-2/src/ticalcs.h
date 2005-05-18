@@ -264,6 +264,7 @@ typedef struct
 /**
  * CalcUpdate:
  * @cancel: set to 1 if transfer have to be cancelled
+ * @rate: data rate of cable
  * @cnt1: current counter for local operation
  * @max1: max value of this counter
  * @cnt2: current counter for global operation
@@ -285,21 +286,20 @@ typedef struct
  **/
 typedef struct 
 {
-  int	cancel;
-  
-  int	cnt1;
-  int	max1;
+	char	info[256];
+	int		cancel;
 
-  int	cnt2;
-  int	max2;
+	float	rate;
+    int		cnt1;
+	int		max1;
+	int		cnt2;
+	int		max2;
 
-  char	info[256];
-
-  void	(*start)	(void);
-  void	(*stop)		(void);
-  void	(*refresh)	(void);
-  void	(*pbar)		(void);
-  void	(*label)	(void);
+	void	(*start)	(void);
+	void	(*stop)		(void);
+	void	(*refresh)	(void);
+	void	(*pbar)		(void);
+	void	(*label)	(void);
 } CalcUpdate;
 
 typedef struct _CalcFncts	CalcFncts;
@@ -380,7 +380,9 @@ struct _CalcFncts
  * @model: cable model
  * @calc: calculator functions
  * @update: callbacks for GUI interaction
- * @priv: holding data
+ * @priv: opaque data for internal/private use (static)
+ * @priv2: idem (allocated)
+ * @priv3: idem (static)
  * @open: device has been opened
  * @busy: transfer is in progress
  * @cable: handle on cable used with this model

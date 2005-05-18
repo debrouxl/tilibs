@@ -189,6 +189,10 @@ TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 	handle->update = (CalcUpdate *)&default_update;
 
+	handle->priv2 = (uint8_t *)malloc(65536 + 4);
+	if(handle->priv2 == NULL)
+		return NULL;
+
 	return handle;
 }
 

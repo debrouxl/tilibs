@@ -157,13 +157,16 @@ int ti89_send_CONT(CalcHandle* handle)
 
 int ti89_send_KEY(CalcHandle* handle, uint16_t scancode)
 {
-  ticalcs_info(" PC->TI: KEY");
-  TRYF(ticables_cable_put(handle->cable, PC_TI9X));
-  TRYF(ticables_cable_put(handle->cable, CMD_KEY));
-  TRYF(ticables_cable_put(handle->cable, LSB(scancode)));
-  TRYF(ticables_cable_put(handle->cable, MSB(scancode)));
+	uint8_t buf[5];
+  
+	ticalcs_info(" PC->TI: KEY");
+	buf[0] = PC_TI9X;
+	buf[1] = CMD_KEY;
+	buf[2] = LSB(scancode);
+	buf[3] = MSB(scancode);
+	TRYF(ticables_cable_send(handle->cable, buf, 4));
 
-  return 0;
+	return 0;
 }
 
 int ti89_send_EOT(CalcHandle* handle)

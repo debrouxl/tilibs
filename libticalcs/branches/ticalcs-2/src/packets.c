@@ -30,50 +30,79 @@
 #include "error.h"
 #include "macros.h"
 
+// We split packets into chucks to get control regularly and update statistics.
+#define BLK_SIZE	1024
+
 /*
     Send a packet from PC (host) to TI (target):
-    - target [in]	: a machine ID uint8_t
-    - cmd [in]	: a command ID uint8_t
-    - length [in]	: length of buffer
-    - data [in]	: data to send (or 0x00 if NULL)
-    - int [out]	: an error code
+    - target [in] : a machine ID uint8_t
+    - cmd [in]	  : a command ID uint8_t
+    - length [in] : length of buffer
+    - data [in]	  : data to send (or 0x00 if NULL)
+    - int [out]	  : an error code
 */
 int send_packet(CalcHandle* handle,
 				uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
-	int i;
+	int i, j;
 	uint16_t sum;
 	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
+	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+4];
+	int r, q;
 
-	TRYF(ticables_cable_put(handle->cable, target));
-	TRYF(ticables_cable_put(handle->cable, cmd));
+	ticables_progress_reset(handle->cable);
 
-	if (data == NULL) 
-	{		
+	if(data == NULL)
+	{
 		// short packet (no data)
-		TRYF(ticables_cable_put(handle->cable, 0x00));
-		TRYF(ticables_cable_put(handle->cable, 0x00));
-	} 
+		buf[0] = target;
+		buf[1] = cmd;
+		buf[2] = 0x00;
+		buf[3] = 0x00;
+
+		TRYF(ticables_cable_send(handle->cable, buf, 4));
+	}
 	else 
 	{
 		// std packet (data + checksum)
-		TRYF(ticables_cable_put(handle->cable, LSB(length)))
-		TRYF(ticables_cable_put(handle->cable, MSB(length)));
+		buf[0] = target;
+		buf[1] = cmd;
+		buf[2] = LSB(length);
+		buf[3] = MSB(length);
 
+		// copy data
+		memcpy(buf+4, data, len);
+
+		// add checksum of packet
+		sum = tifiles_checksum(data, length);
+		buf[len+4+0] = LSB(sum);
+		buf[len+4+1] = MSB(sum);
+
+		// compute chunks
+		q = len / BLK_SIZE;
+		r = len % BLK_SIZE;
 		handle->update->max1 = length;
-		for (i = 0; i < (int)length; i++) 
-		{
-			TRYF(ticables_cable_put(handle->cable, data[i]));
 
-			handle->update->cnt1 = i;
+		// send full chunks
+		for(i = 0; i < q; i++)
+		{
+			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->update->rate);
+			handle->update->cnt1 += BLK_SIZE;
 			handle->update->pbar();
 			if (handle->update->cancel)
 				return ERR_ABORT;
 		}
 
-		sum = tifiles_checksum(data, length);
-		TRYF(ticables_cable_put(handle->cable, LSB(sum)));
-		TRYF(ticables_cable_put(handle->cable, MSB(sum)));
+		// send last chunk
+		for(j = 0; j < r; j++)
+		{
+			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
+			handle->update->cnt1 += 1;
+			handle->update->pbar();
+			if (handle->update->cancel)
+				return ERR_ABORT;
+		}
 	}
 
 	return 0;
@@ -121,74 +150,87 @@ static uint8_t host_ids(CalcHandle *handle)
 
 /*
   Receive a packet from TI (target) to PC (host):
-  - host [out]	: a machine ID uint8_t
-  - cmd [out]	: a command ID uint8_t
-  - length [out]: length of buffer
-  - data [out]	: received data (depending on command)
-  - int [out]	: an error code
+  - host [out]	 : a machine ID uint8_t
+  - cmd [out]	 : a command ID uint8_t
+  - length [out] : length of buffer
+  - data [out]	 : received data (depending on command)
+  - int [out]	 : an error code
 */
 int recv_packet(CalcHandle* handle, 
 				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
-	uint8_t d;
-	int i;
+	int i, j;
 	uint16_t chksum;
+	uint8_t *buf = data;
+	int r, q;
 
-	TRYF(ticables_cable_get(handle->cable, host));
-	if (*host != host_ids(handle)) return ERR_INVALID_HOST;
+	// Any packet has always at least 4 bytes (MID, CID, LEN)
+	TRYF(ticables_cable_recv(handle->cable, buf, 4));
 
-	TRYF(ticables_cable_get(handle->cable, cmd));
-	if (*cmd == CMD_ERR) return ERR_CHECKSUM;
+	*host = buf[0];
+	*cmd = buf[1];
+	*length = buf[2] | (buf[3] << 8);
 
-	TRYF(ticables_cable_get(handle->cable, &d));
-	*length = d;
+	if(*host != host_ids(handle)) 
+		return ERR_INVALID_HOST;
 
-	TRYF(ticables_cable_get(handle->cable, &d));
-	*length |= d << 8;
+	if(*cmd == CMD_ERR) 
+		return ERR_CHECKSUM;
 
-	  switch (*cmd) 
-	  {
-	  case CMD_VAR:
-	  case CMD_XDP:
-	  case CMD_SKP:
-	  case CMD_SID:
-	  case CMD_REQ:
-	  case CMD_IND:
-	  case CMD_RTS:		
-		  // std packet ( data + checksum)
-			handle->update->max1 = *length;
-			for (i = 0; i < *length; i++) 
-			{
-				TRYF(ticables_cable_get(handle->cable, &(data[i])));
+	switch (*cmd) 
+	{
+	case CMD_VAR:	// std packet ( data + checksum)
+	case CMD_XDP:
+	case CMD_SKP:
+	case CMD_SID:
+	case CMD_REQ:
+	case CMD_IND:
+	case CMD_RTS:		
+		// compute chunks
+		q = *length / BLK_SIZE;
+		r = *length % BLK_SIZE;
+		handle->update->max1 = *length;
 
-				handle->update->cnt1 = i;
-				handle->update->pbar();
-				if (handle->update->cancel)
-					return ERR_ABORT;
-			}
+		// recv full chunks
+		for(i = 0; i < q; i++)
+		{
+			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->update->rate);
+			handle->update->cnt1 += BLK_SIZE;
+			handle->update->pbar();
+			if (handle->update->cancel)
+				return ERR_ABORT;
+		}
 
-			TRYF(ticables_cable_get(handle->cable, &d));
-			chksum = d;
-			TRYF(ticables_cable_get(handle->cable, &d));
-			chksum |= d << 8;
+		// send last chunk
+		for(j = 0; j < r+2; j++)
+		{
+			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], (uint16_t)(r+2)));
+			handle->update->cnt1 += 1;
+			handle->update->pbar();
+			if (handle->update->cancel)
+				return ERR_ABORT;
+		}
 
-			if (chksum != tifiles_checksum(data, *length))
-				return ERR_CHECKSUM;
+		// verify checksum
+		chksum = buf[*length] | (buf[*length+1] << 8);
+		if (chksum != tifiles_checksum(data, *length))
+			return ERR_CHECKSUM;
+
 		break;
-	  case CMD_CTS:
-	  case CMD_ACK:
-	  case CMD_ERR:
-	  case CMD_RDY:
-	  case CMD_SCR:
-	  case CMD_RID:
-	  case CMD_KEY:
-	  case CMD_EOT:
-	  case CMD_CNT:
-			// short packet (no data)
-			break;
-	  default:
-			return ERR_INVALID_CMD;
-	  }
+	case CMD_CTS:	// short packet (no data)
+	case CMD_ACK:
+	case CMD_ERR:
+	case CMD_RDY:
+	case CMD_SCR:
+	case CMD_RID:
+	case CMD_KEY:
+	case CMD_EOT:
+	case CMD_CNT:
+		break;
+	default:
+		return ERR_INVALID_CMD;
+	}
 
 	return 0;
 }
