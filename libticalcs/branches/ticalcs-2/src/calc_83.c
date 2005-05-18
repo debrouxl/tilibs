@@ -29,7 +29,7 @@
 #include "ticalcs.h"
 #include "gettext.h"
 
-static int is_ready			(CalcHandle* handle)
+static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
 }
@@ -125,7 +125,8 @@ const CalcFncts calc_83 =
 	"TI83",
 	N_("TI-83"),
 	N_("TI-83"),
-	FTS_NONE,
+	OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	FTS_SILENT | FTS_MEMFREE,
 	&is_ready,
 	&send_key,
 	&recv_screen,

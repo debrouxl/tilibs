@@ -29,7 +29,7 @@
 #include "ticalcs.h"
 #include "gettext.h"
 
-static int is_ready			(CalcHandle* handle)
+static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
 }

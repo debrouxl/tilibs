@@ -29,7 +29,7 @@
 #include "ticalcs.h"
 #include "gettext.h"
 
-static int is_ready			(CalcHandle* handle)
+static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
 }
@@ -125,7 +125,9 @@ const CalcFncts calc_89 =
 	"TI89",
 	N_("TI-89"),
 	N_("TI-89"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -152,7 +154,9 @@ const CalcFncts calc_92p =
 	"TI92+",
 	N_("TI-92 Plus"),
 	N_("TI-92 Plus"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -179,7 +183,9 @@ const CalcFncts calc_89t =
 	"TI89t",
 	N_("TI-89 Titanium"),
 	N_("TI-89 Titanium"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -206,7 +212,9 @@ const CalcFncts calc_v2 =
 	"V200",
 	N_("V200PLT"),
 	N_("V200 Portable Learning Tool"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -29,7 +29,7 @@
 #include "ticalcs.h"
 #include "gettext.h"
 
-static int is_ready			(CalcHandle* handle)
+static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
 }
@@ -125,7 +125,9 @@ const CalcFncts calc_73 =
 	"TI73",
 	N_("TI-73"),
 	N_("TI-73"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -152,7 +154,9 @@ const CalcFncts calc_83p =
 	"TI83+",
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -179,7 +183,9 @@ const CalcFncts calc_84p =
 	"TI84+",
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
-	FTS_NONE,
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
