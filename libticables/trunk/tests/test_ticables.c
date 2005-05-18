@@ -69,11 +69,11 @@ int main(int argc, char **argv)
 	// or set your own ones
 	lp.delay = 10;
 	lp.timeout = 20;
-	lp.port = SERIAL_PORT_2;
+	lp.port = PARALLEL_PORT_1;
 	lp.method = IOM_AUTO;
 	ticable_set_param(&lp);
 
-	if((err=ticable_set_cable(LINK_SER, &lc))) {
+	if((err=ticable_set_cable(LINK_PAR, &lc))) {
 		print_lc_error(err);
                 return -1;
 	}
