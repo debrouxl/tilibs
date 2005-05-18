@@ -197,8 +197,10 @@ TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
 {
     if(handle->priv2)
 	free(handle->priv2);
+
     if(handle->device)
 	free(handle->device);
+
     if(handle)
 	free(handle);
     handle = NULL;

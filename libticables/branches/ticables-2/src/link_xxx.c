@@ -305,7 +305,7 @@ TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_cable_progress_reset(CableHandle* handle)
+TIEXPORT int TICALL ticables_progress_reset(CableHandle* handle)
 {
 	handle->rate.count = 0;;
 	TO_START(handle->rate.start);
@@ -324,12 +324,15 @@ TIEXPORT int TICALL ticables_cable_progress_reset(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_cable_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
+TIEXPORT int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
 {
 	TO_CURRENT(handle->rate.current);
-	*count = handle->rate.count;
-	*msec = 1000 * TO_ELAPSED(handle->rate.start, handle->rate.current);
-	*rate = (float)*count / ((float)*msec / 1000);
+	if(count)
+		*count = handle->rate.count;
+	if(msec)
+		*msec = 1000 * TO_ELAPSED(handle->rate.start, handle->rate.current);
+	if(rate)
+		*rate = (float)handle->rate.count / ((float)TO_ELAPSED(handle->rate.start, handle->rate.current));
 
 	return 0;
 }
