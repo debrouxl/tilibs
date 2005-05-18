@@ -22,23 +22,44 @@
 #ifndef __TICALCS_CMD85__
 #define __TICALCS_CMD85__
 
-int ti85_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
-int ti85_send_CTS(CalcHandle*);
-int ti85_send_XDP(CalcHandle*, int length, uint8_t * data);
-int ti85_send_SKP(CalcHandle*, uint8_t rej_code);
-int ti85_send_ACK(CalcHandle*);
-int ti85_send_ERR(CalcHandle*);
-int ti85_send_SCR(CalcHandle*);
-int ti85_send_KEY(CalcHandle*, uint16_t scancode);
-int ti85_send_EOT(CalcHandle*);
-int ti85_send_REQ(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
-int ti85_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_CTS_h(CalcHandle*);
+int ti85_send_XDP_h(CalcHandle*, int length, uint8_t * data);
+int ti85_send_SKP_h(CalcHandle*, uint8_t rej_code);
+int ti85_send_ACK_h(CalcHandle*);
+int ti85_send_ERR_h(CalcHandle*);
+int ti85_send_SCR_h(CalcHandle*);
+int ti85_send_KEY_h(CalcHandle*, uint16_t scancode);
+int ti85_send_EOT_h(CalcHandle*);
+int ti85_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
 
-int ti85_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
-int ti85_recv_CTS(CalcHandle*);
-int ti85_recv_SKP(CalcHandle*, uint8_t * rej_code);
-int ti85_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
-int ti85_recv_ACK(CalcHandle*, uint16_t * status);
-int ti85_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+int ti85_recv_VAR_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+int ti85_recv_CTS_h(CalcHandle*);
+int ti85_recv_SKP_h(CalcHandle*, uint8_t * rej_code);
+int ti85_recv_XDP_h(CalcHandle*, uint16_t * length, uint8_t * data);
+int ti85_recv_ACK_h(CalcHandle*, uint16_t * status);
+int ti85_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+
+// ---
+
+#define ti85_send_VAR(a,b,c)		ti85_send_VAR_h(handle, a, b, c)
+#define ti85_send_CTS()				ti85_send_CTS_h(handle)
+#define ti85_send_XDP(a,b,c)		ti85_send_XDP_h(handle, a, b, c)
+#define ti85_send_SKP(a,b)			ti85_send_SKP_h(handle, a, b)
+#define ti85_send_ACK()				ti85_send_ACK_h(handle)	
+#define ti85_send_ERR()				ti85_send_ERR_h(handle)			
+#define ti85_send_SCR()				ti85_send_SCR_h(handle)			
+#define ti85_send_KEY(a)			ti85_send_KEY_h(handle, a)
+#define ti85_send_EOT()				ti85_send_EOT_h(handle)	
+#define ti85_send_REQ(a,b,c)		ti85_send_REQ_h(handle, a, b, c)
+#define ti85_send_RTS(a,b,c)		ti85_send_RTS_h(handle, a, b, c)
+
+#define ti85_recv_VAR(a,b,c)		ti85_recv_VAR_h(handle, a, b, c)
+#define ti85_recv_CTS()				ti85_recv_CTS_h(handle)	
+#define ti85_recv_SKP(a,b)			ti85_recv_SKP_h(handle, a, b)	
+#define ti85_recv_XDP(a,b)			ti85_recv_XDP_h(handle, a, b)	
+#define ti85_recv_ACK(a)			ti85_recv_ACK_h(handle, a)
+#define ti85_recv_RTS(a,b,c)		ti85_recv_RTS_h(handle, a, b, c)
 
 #endif

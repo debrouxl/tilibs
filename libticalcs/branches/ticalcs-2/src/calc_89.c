@@ -31,12 +31,24 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	return 0;
+	/*
+	uint16_t status;
+
+	TRYF(ti89_send_RDY(handle));
+	TRYF(ti89_recv_ACK(handle, &status));
+
+	return (status & 0x01) ? ERR_NOT_READY : 0;
+	*/
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
+	/*
+	TRYF(ti89_send_KEY(handle, key));
+	TRYF(ti89_recv_ACK(handle, NULL));
+
 	return 0;
+	*/
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)

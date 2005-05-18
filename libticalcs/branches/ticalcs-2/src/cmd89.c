@@ -57,7 +57,7 @@ static uint8_t pc_ti9x(CalcModel model)
 #define PC_TI9X pc_ti9x(handle->model)
 #define TI9X_BKUP TI89_BKUP
 
-int ti89_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
   uint8_t trans[9];
@@ -81,7 +81,7 @@ int ti89_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *v
   return 0;
 }
 
-int ti89_send_CTS(CalcHandle* handle)
+int ti89_send_CTS_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: CTS");
   TRYF(send_packet(handle, PC_TI9X, CMD_CTS, 2, NULL));
@@ -89,7 +89,7 @@ int ti89_send_CTS(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data)
+int ti89_send_XDP_h(CalcHandle* handle, uint32_t length, uint8_t * data)
 {
   ticalcs_info(" PC->TI: XDP (0x%04X = %i)", length, length);
   TRYF(send_packet(handle, PC_TI9X, CMD_XDP, length, data));
@@ -102,7 +102,7 @@ int ti89_send_XDP(CalcHandle* handle, uint32_t length, uint8_t * data)
   - rej_code [in]: a rejection code
   - int [out]: an error code
  */
-int ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
+int ti89_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 {
   uint8_t buffer[5] = { 0 };
 
@@ -115,7 +115,7 @@ int ti89_send_SKP(CalcHandle* handle, uint8_t rej_code)
   return 0;
 }
 
-int ti89_send_ACK(CalcHandle* handle)
+int ti89_send_ACK_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ACK");
   TRYF(send_packet(handle, PC_TI9X, CMD_ACK, 2, NULL));
@@ -123,7 +123,7 @@ int ti89_send_ACK(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_ERR(CalcHandle* handle)
+int ti89_send_ERR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ERR");
   TRYF(send_packet(handle, PC_TI9X, CMD_ERR, 2, NULL));
@@ -131,7 +131,7 @@ int ti89_send_ERR(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_RDY(CalcHandle* handle)
+int ti89_send_RDY_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: RDY?");
   TRYF(send_packet(handle, PC_TI9X, CMD_RDY, 2, NULL));
@@ -139,7 +139,7 @@ int ti89_send_RDY(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_SCR(CalcHandle* handle)
+int ti89_send_SCR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: SCR");
   TRYF(send_packet(handle, PC_TI9X, CMD_SCR, 2, NULL));
@@ -147,7 +147,7 @@ int ti89_send_SCR(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_CONT(CalcHandle* handle)
+int ti89_send_CONT_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: CONT");
   TRYF(send_packet(handle, PC_TI9X, CMD_CNT, 2, NULL));
@@ -155,7 +155,7 @@ int ti89_send_CONT(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_KEY(CalcHandle* handle, uint16_t scancode)
+int ti89_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
   
@@ -169,7 +169,7 @@ int ti89_send_KEY(CalcHandle* handle, uint16_t scancode)
 	return 0;
 }
 
-int ti89_send_EOT(CalcHandle* handle)
+int ti89_send_EOT_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: EOT");
   TRYF(send_packet(handle, PC_TI9X, CMD_EOT, 2, NULL));
@@ -177,7 +177,7 @@ int ti89_send_EOT(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -202,7 +202,7 @@ int ti89_send_REQ(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *v
   return 0;
 }
 
-int ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -227,7 +227,7 @@ int ti89_send_RTS(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *v
   return 0;
 }
 
-int ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -253,7 +253,7 @@ int ti89_send_RTS2(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *
 
 
 /* Variable (std var header: variable length) */
-int ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[32] = { 0 };
@@ -289,7 +289,7 @@ int ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, cha
   return 0;
 }
 
-int ti89_recv_CTS(CalcHandle* handle)
+int ti89_recv_CTS_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -308,7 +308,7 @@ int ti89_recv_CTS(CalcHandle* handle)
   return 0;
 }
 
-int ti89_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
+int ti89_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -329,7 +329,7 @@ int ti89_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
   return 0;
 }
 
-int ti89_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
+int ti89_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
   int err;
@@ -352,7 +352,7 @@ int ti89_recv_XDP(CalcHandle* handle, uint32_t * length, uint8_t * data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
+int ti89_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -374,7 +374,7 @@ int ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
   return 0;
 }
 
-int ti89_recv_CONT(CalcHandle* handle)
+int ti89_recv_CONT_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t sts;
@@ -391,7 +391,7 @@ int ti89_recv_CONT(CalcHandle* handle)
   return 0;
 }
 
-int ti89_recv_EOT(CalcHandle* handle)
+int ti89_recv_EOT_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -405,7 +405,7 @@ int ti89_recv_EOT(CalcHandle* handle)
   return 0;
 }
 
-int ti89_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
+int ti89_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[32] = { 0 };

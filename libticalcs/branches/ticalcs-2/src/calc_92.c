@@ -28,14 +28,27 @@
 
 #include "ticalcs.h"
 #include "gettext.h"
+#include "logging.h"
+#include "error.h"
+
+#include "cmd92.h"
+#include "rom92f2.h"
 
 static int		is_ready	(CalcHandle* handle)
 {
-	return 0;
+	uint16_t status;
+
+	TRYF(ti92_send_RDY());
+	TRYF(ti92_recv_ACK(&status));
+
+	return (status & 0x01) ? ERR_NOT_READY : 0;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
+	TRYF(ti92_send_KEY(key));
+	TRYF(ti92_recv_ACK(NULL));
+	
 	return 0;
 }
 

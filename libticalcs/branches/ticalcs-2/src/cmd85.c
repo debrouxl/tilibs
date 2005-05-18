@@ -39,7 +39,7 @@
 #define TI8586_BKUP ((handle->model == CALC_TI85) ? 0x1D : 0x1D)
 
 /* Variable (std var header: NUL padded, variable length) */
-int ti85_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[16];
   uint8_t trans[9];
@@ -65,7 +65,7 @@ int ti85_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *v
   return 0;
 }
 
-int ti85_send_CTS(CalcHandle* handle)
+int ti85_send_CTS_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: CTS");
   TRYF(send_packet(handle, PC_TI8586, CMD_CTS, 0, NULL));
@@ -73,7 +73,7 @@ int ti85_send_CTS(CalcHandle* handle)
   return 0;
 }
 
-int ti85_send_XDP(CalcHandle* handle, int length, uint8_t * data)
+int ti85_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
 {
   ticalcs_info(" PC->TI: XDP (0x%04X = %i bytes)", length, length);
   TRYF(send_packet(handle, PC_TI8586, CMD_XDP, length, data));
@@ -86,7 +86,7 @@ int ti85_send_XDP(CalcHandle* handle, int length, uint8_t * data)
   - rej_code [in]: a rejection code
   - int [out]: an error code
  */
-int ti85_send_SKIP(CalcHandle* handle, uint8_t rej_code)
+int ti85_send_SKIP_h(CalcHandle* handle, uint8_t rej_code)
 {
   ticalcs_info(" PC->TI: SKP");
   TRYF(send_packet(handle, PC_TI8586, CMD_SKP, 1, &rej_code));
@@ -95,7 +95,7 @@ int ti85_send_SKIP(CalcHandle* handle, uint8_t rej_code)
   return 0;
 }
 
-int ti85_send_ACK(CalcHandle* handle)
+int ti85_send_ACK_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ACK");
   TRYF(send_packet(handle, PC_TI8586, CMD_ACK, 2, NULL));
@@ -103,7 +103,7 @@ int ti85_send_ACK(CalcHandle* handle)
   return 0;
 }
 
-int ti85_send_ERR(CalcHandle* handle)
+int ti85_send_ERR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ERR");
   TRYF(send_packet(handle, PC_TI8586, CMD_ERR, 2, NULL));
@@ -111,7 +111,7 @@ int ti85_send_ERR(CalcHandle* handle)
   return 0;
 }
 
-int ti85_send_SCR(CalcHandle* handle)
+int ti85_send_SCR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: SCR");
   TRYF(send_packet(handle, PC_TI8586, CMD_SCR, 2, NULL));
@@ -119,7 +119,7 @@ int ti85_send_SCR(CalcHandle* handle)
   return 0;
 }
 
-int ti85_send_KEY(CalcHandle* handle, uint16_t scancode)
+int ti85_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
   
@@ -133,7 +133,7 @@ int ti85_send_KEY(CalcHandle* handle, uint16_t scancode)
 	return 0;
 }
 
-int ti85_send_EOT(CalcHandle* handle)
+int ti85_send_EOT_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: EOT");
   TRYF(send_packet(handle, PC_TI8586, CMD_EOT, 2, NULL));
@@ -142,7 +142,7 @@ int ti85_send_EOT(CalcHandle* handle)
 }
 
 /* Variable request (var header: NUL padded, fixed length) */
-int ti85_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[16] = { 0 };
   uint8_t trans[9];
@@ -170,7 +170,7 @@ int ti85_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *v
 }
 
 /* Request to send (var header: SPC padded, fixed length) */
-int ti85_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[16];
   uint8_t trans[9];
@@ -191,7 +191,7 @@ int ti85_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *v
 }
 
 /* Variable (std var header: NUL padded, variable length) */
-int ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
+int ti85_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[16] = { 0 };
@@ -227,7 +227,7 @@ int ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, cha
   return 0;
 }
 
-int ti85_recv_CTS(CalcHandle* handle)
+int ti85_recv_CTS_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -245,7 +245,7 @@ int ti85_recv_CTS(CalcHandle* handle)
   return 0;
 }
 
-int ti85_recv_SKIP(CalcHandle* handle, uint8_t * rej_code)
+int ti85_recv_SKIP_h(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -265,7 +265,7 @@ int ti85_recv_SKIP(CalcHandle* handle, uint8_t * rej_code)
   return 0;
 }
 
-int ti85_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
+int ti85_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
 
@@ -285,7 +285,7 @@ int ti85_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti85_recv_ACK(CalcHandle* handle, uint16_t * status)
+int ti85_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t sts;
@@ -306,7 +306,7 @@ int ti85_recv_ACK(CalcHandle* handle, uint16_t * status)
   return 0;
 }
 
-int ti85_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
+int ti85_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
   uint8_t buffer[16];
