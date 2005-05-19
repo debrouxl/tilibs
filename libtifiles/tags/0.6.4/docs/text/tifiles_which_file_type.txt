@@ -1,0 +1,12 @@
+[Main]
+Name=tifiles_which_file_type
+Type=Function
+Header=file_int.h
+Definition=int TICALL tifiles_which_file_type(const char *filename);
+
+[Parameters]
+filename : a file name,
+Returns : a file type.
+
+[Summary]
+?
