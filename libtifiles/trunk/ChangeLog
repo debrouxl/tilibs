@@ -5,8 +5,9 @@ To do:
 
 Log:
 
-- 13/05/2005 jb
-	src/misc.c: endianness fixes.
+- 04/05/2005, version 0.6.4: roms
+	Make loading of FLASH OS more robust against file 'garbaged' by TI !
+	Endianess fixes by JB (13/05/2005 jb: src/misc.c: endianness fixes) and CW.
 
 - 05/03/2005, version 0.6.3: roms
 	Added gcc 4.0 -fvisibility flag support.
