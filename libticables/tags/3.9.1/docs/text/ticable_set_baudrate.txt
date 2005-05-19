@@ -1,0 +1,19 @@
+[Main]
+Name=ticable_set_baudrate
+Type=Function
+Header=cabl_int.h
+Definition=void ticable_set_baudrate(@TicableBaudRate@ br)
+
+[Parameters]
+br : the baud-rate of the serial port.
+
+[Summary]
+Set the baud-rate of the port for use with the AVRlink.
+
+[Description]
+The AVRlink support 4 baud-rates: 9600 (GrayLink compatible), 19200, 38400 and 57600.
+
+Note:
+- the change will come into effect on the next call to @ticable_set_cable@.
+- if you need to change more than one link cable parameter at a time, you
+should consider the @ticable_set_param@ function.
