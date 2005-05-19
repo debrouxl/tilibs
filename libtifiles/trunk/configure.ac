@@ -3,11 +3,11 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libTiFiles, 0.6.3, [tilp-users@lists.sourceforge.net])
+AC_INIT(libTiFiles, 0.6.4, [tilp-users@lists.sourceforge.net])
 
 MAJOR_VERSION=0
 MINOR_VERSION=6
-MICRO_VERSION=3
+MICRO_VERSION=4
 
 LT_CURRENT=`expr $MINOR_VERSION + $MAJOR_VERSION`
 LT_REVISION=$MICRO_VERSION
