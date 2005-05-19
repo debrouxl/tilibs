@@ -149,6 +149,10 @@ SOURCE=..\..\src\tikeys.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\cmd73.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\cmd82.c
 # End Source File
 # Begin Source File

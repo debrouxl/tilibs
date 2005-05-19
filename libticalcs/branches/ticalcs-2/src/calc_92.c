@@ -34,6 +34,10 @@
 #include "cmd92.h"
 #include "rom92f2.h"
 
+// Screen coordinates of the TI92
+#define TI92_ROWS  128
+#define TI92_COLS  240
+
 static int		is_ready	(CalcHandle* handle)
 {
 	uint16_t status;
@@ -54,6 +58,25 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint32_t max_cnt;
+	int err;
+
+	sc->width = TI92_COLS;
+	sc->height = TI92_ROWS;
+	sc->clipped_width = TI92_COLS;
+	sc->clipped_height = TI92_ROWS;
+
+	*bitmap = (uint8_t *) malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t) / 8);
+	if(*bitmap == NULL)
+		return ERR_MALLOC;
+
+	TRYF(ti92_send_SCR());
+	TRYF(ti92_recv_ACK(NULL));
+
+	err = ti92_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+	if (err != ERR_CHECKSUM) { TRYF(err) };
+	TRYF(ti92_send_ACK());
+
 	return 0;
 }
 

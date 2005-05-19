@@ -28,31 +28,80 @@
 
 #include "ticalcs.h"
 #include "gettext.h"
+#include "logging.h"
+#include "error.h"
+
+#include "cmd89.h"
+#include "rom89.h"
+
+// Screen coordinates of the TI89
+#define TI89_ROWS          128
+#define TI89_COLS          240
+#define TI89_ROWS_VISIBLE  100
+#define TI89_COLS_VISIBLE  160
 
 static int		is_ready	(CalcHandle* handle)
 {
-	/*
 	uint16_t status;
 
-	TRYF(ti89_send_RDY(handle));
-	TRYF(ti89_recv_ACK(handle, &status));
+	TRYF(ti89_send_RDY());
+	TRYF(ti89_recv_ACK(&status));
 
 	return (status & 0x01) ? ERR_NOT_READY : 0;
-	*/
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	/*
-	TRYF(ti89_send_KEY(handle, key));
-	TRYF(ti89_recv_ACK(handle, NULL));
+	TRYF(ti89_send_KEY(key));
+	TRYF(ti89_recv_ACK(NULL));
 
 	return 0;
-	*/
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint32_t max_cnt;
+	int err;
+
+	sc->width = TI89_COLS;
+	sc->height = TI89_ROWS;
+	switch (handle->model) 
+	{
+	case CALC_TI89:
+	case CALC_TI89T:
+		sc->clipped_width = TI89_COLS_VISIBLE;
+		sc->clipped_height = TI89_ROWS_VISIBLE;
+    break;
+	case CALC_TI92P:
+	case CALC_V200:
+		sc->clipped_width = TI89_COLS;
+		sc->clipped_height = TI89_ROWS;
+    break;
+	}
+
+	*bitmap = (uint8_t *) malloc(TI89_COLS * TI89_ROWS * sizeof(uint8_t) / 8);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+
+	TRYF(ti89_send_SCR());
+	TRYF(ti89_recv_ACK(NULL));
+
+	err = ti89_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+	if (err != ERR_CHECKSUM) { TRYF(err) };
+	TRYF(ti89_send_ACK());
+
+	// Clip the unused part of the screen (nethertheless useable witha asm prog)
+	if (((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))
+      && (sc->format == SCREEN_CLIPPED)) 
+	{
+		int i, j, k;
+
+		for (i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
+			for (k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
+				*bitmap[i++] = *bitmap[j * (TI89_COLS >> 3) + k];
+	}
+	
+
 	return 0;
 }
 

@@ -28,6 +28,15 @@
 
 #include "ticalcs.h"
 #include "gettext.h"
+#include "logging.h"
+#include "error.h"
+
+#include "cmd82.h"
+#include "rom83.h"
+
+// Screen coordinates of the TI83
+#define TI83_ROWS  64
+#define TI83_COLS  96
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -41,6 +50,25 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint16_t max_cnt;
+	int err;
+
+	sc->width = TI83_COLS;
+	sc->height = TI83_ROWS;
+	sc->clipped_width = TI83_COLS;
+	sc->clipped_height = TI83_ROWS;
+
+	*bitmap = (uint8_t *)malloc(TI83_COLS * TI83_ROWS * sizeof(uint8_t) / 8);
+	if(*bitmap != NULL)
+		return ERR_MALLOC;
+
+	TRYF(ti82_send_SCR());
+	TRYF(ti82_recv_ACK(NULL));
+
+	err = ti82_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+	if (err != ERR_CHECKSUM) { TRYF(err) };
+	TRYF(ti82_send_ACK());
+
 	return 0;
 }
 
