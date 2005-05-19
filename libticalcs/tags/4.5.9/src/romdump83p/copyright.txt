@@ -1,0 +1,9 @@
+Sure, here's the source code.  I'm using Emacs here and don't have a
+convenient way to send attachments -- sorry about that.
+
+It can be run without a shell ('Asm(prgmROMDUMP') but it will also
+work with most 83+ shells.
+
+Benjamin
+
+"Benjamin Moody" <bmoody@WPI.EDU>

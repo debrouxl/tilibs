@@ -1,0 +1,19 @@
+[Main]
+Name=ticalc_get_version
+Type=Function
+Header=calc_int.h
+Definition=const char* ticalc_get_version(void);
+
+[Parameters]
+Return value : a string like "X.Y.Z".
+
+[Summary]
+Returns the library version.
+
+[Description]
+This function returns the library version as a string. The string has the following format:
+- X = major number
+- Y = minor number
+- Z = micro or release number
+
+When X is increased, this is a major change and the library is not compatible with a previous one any longer.

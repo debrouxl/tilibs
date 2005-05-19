@@ -1,0 +1,14 @@
+[Main]
+Name=TicalcPathType
+Type=Enum
+Header=calc_def.h
+Definition=enum TicalcPathType
+
+[Fields]
+FULL_PATH : the entire path (such as 'fldname/varname')
+LOCAL_PATH : just the variable name (such as 'varname')
+
+[Summary]
+Defines whether variable has to be sent in the local folder or not.
+
+[Explanation]

@@ -1,0 +1,18 @@
+[Main]
+Name=TNode
+Type=Define
+Header=calc_int.h
+Definition=typedef GNode TNode
+
+[Fields]
+void    *data : actual data of the node
+@TNode@ *next : node's sibling
+@TNode@ *prev : node's sibling
+@TNode@ *parent : parent of the TNode (NULL is the root)
+@TNode@ *children : the first child of the TNode. Access others by next.
+
+[Summary]
+A type representing a tree.
+
+[See also]
+The GLib documentation (<a href="http://www.gtk.org">www.gtk.org</a>)

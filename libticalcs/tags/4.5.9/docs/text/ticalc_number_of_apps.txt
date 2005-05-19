@@ -1,0 +1,15 @@
+[Main]
+Name=ticalc_number_of_apps
+Type=Function
+Header=calc_int.h
+Definition=int ticalc_number_of_apps (@TNode@ *tree);
+
+[Parameters]
+tree : a directory list
+Returns : the number of FLASH applications contained in the tree
+
+[Summary]
+Counts how many applications are in tree.
+
+[See also]
+@ticalc_number_of_vars@
