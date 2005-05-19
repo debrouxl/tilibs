@@ -26,10 +26,14 @@
 #include <config.h>
 #endif
 
+#include <stdio.h>
+#include <time.h>
+
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
 #include "error.h"
+#include "pause.h"
 
 #include "cmd82.h"
 #include "rom83.h"
@@ -37,6 +41,9 @@
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
 #define TI83_COLS  96
+
+#define DUMP_ROM83_FILE "dumprom.83p"
+#define ROMSIZE 256		// 256 KB
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -134,6 +141,99 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
+	int i, j;
+	uint8_t data;
+	time_t start, elapsed, estimated, remaining;
+	char buffer[256];
+	char tmp[256];
+	int pad;
+	FILE *f, *file;
+	uint16_t checksum, sum;
+	int err;
+	int b = 0;
+	FileContent content;
+
+	// Copies ROM dump program into a file
+	f = fopen(DUMP_ROM83_FILE, "wb");
+	if (f == NULL)
+		return ERR_FILE_OPEN;
+	fwrite(romDump83, sizeof(unsigned char), romDumpSize83, f);
+	fclose(f);
+
+	// Transfer program to calc
+	tifiles_file_read_regular(DUMP_ROM83_FILE, &content);
+	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
+	tifiles_content_free_regular(&content);
+	unlink(DUMP_ROM83_FILE);
+
+	// Open file
+	file = fopen(filename, "wb");
+	if (file == NULL)
+		return ERR_OPEN_FILE;
+
+	// Wait for user's action (execing program)
+	sprintf(handle->update->text, _("Waiting user's action..."));
+	handle->update->label();
+	do 
+	{
+		handle->update->refresh();
+		if (handle->update->cancel)
+			return ERR_ABORT;
+		err = ticables_cable_get(handle->cable, &data);
+		sum = data;
+	}
+	while (err == ERR_READ_TIMEOUT);
+	fprintf(file, "%c", data);
+
+	// Receive it now blocks per blocks (1024 + CHK)
+	sprintf(handle->update->text, _("Receiving..."));
+	handle->update->label();
+
+	start = time(NULL);
+	handle->update->max1 = 1024;
+	handle->update->max2 = ROMSIZE;
+
+	for (i = 0; i < ROMSIZE; i++) 
+	{
+		if (b)
+			sum = 0;
+
+		for (j = 0; j < 1023 + b; j++) 
+		{
+			TRYF(ticables_cable_get(handle->cable, &data));
+			fprintf(file, "%c", data);
+			sum += data;
+
+			handle->update->cnt1 = j;
+			handle->update->pbar();
+			if (handle->update->cancel)
+				return -1;
+		}
+		b = 1;
+
+		TRYF(ticables_cable_get(handle->cable, &data));
+		checksum = data << 8;
+		TRYF(ticables_cable_get(handle->cable, &data));
+		checksum |= data;
+		if (sum != checksum)
+		  return ERR_CHECKSUM;
+		TRYF(ticables_cable_put(handle->cable, 0xDA));
+
+		handle->update->cnt2 = i;
+		if (handle->update->cancel)
+		  return -1;
+
+		elapsed = (long) difftime(time(NULL), start);
+		estimated = (long) (elapsed * (float) (ROMSIZE) / i);
+		remaining = (long) difftime(estimated, elapsed);
+		sprintf(buffer, "%s", ctime(&remaining));
+		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
+		sprintf(handle->update->text, _("Remaining (mm:ss): %s"), tmp + 3);
+		handle->update->label();
+	}
+
+	fclose(file);	
+
 	return 0;
 }
 

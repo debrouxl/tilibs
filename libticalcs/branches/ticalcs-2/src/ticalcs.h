@@ -286,7 +286,7 @@ typedef struct
  **/
 typedef struct 
 {
-	char	info[256];
+	char	text[256];
 	int		cancel;
 
 	float	rate;

@@ -35,6 +35,7 @@ typedef enum
 	ERR_MALLOC,				// No memory ?!
 	ERR_NO_CABLE,			// No cable attached
 	ERR_BUSY,				// Device is busy (transfer in progress)
+	ERR_FILE_OPEN,			// Can't open file
 		
 	ERR_VOID_FUNCTION,		// This function does not exist for the calc
 	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
