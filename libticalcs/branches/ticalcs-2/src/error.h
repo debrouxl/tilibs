@@ -44,6 +44,7 @@ typedef enum
 	ERR_NO_CABLE,			// No cable attached
 	ERR_BUSY,				// Device is busy (transfer in progress)
 	ERR_FILE_OPEN,			// Can't open file
+	ERR_UNSUPPORTED,		// This function does not exist for the calc
 	
 // ---
 		

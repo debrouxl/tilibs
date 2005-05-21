@@ -147,9 +147,9 @@ int ti89_send_SCR_h(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_CONT_h(CalcHandle* handle)
+int ti89_send_CNT_h(CalcHandle* handle)
 {
-  ticalcs_info(" PC->TI: CONT");
+  ticalcs_info(" PC->TI: CNT");
   TRYF(send_packet(handle, PC_TI9X, CMD_CNT, 2, NULL));
 
   return 0;
@@ -374,13 +374,13 @@ int ti89_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   return 0;
 }
 
-int ti89_recv_CONT_h(CalcHandle* handle)
+int ti89_recv_CNT_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t sts;
 
 
-  ticalcs_info(" TI->PC: CONT");
+  ticalcs_info(" TI->PC: CNT");
   TRYF(recv_packet(handle, &host, &cmd, &sts, NULL));
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error

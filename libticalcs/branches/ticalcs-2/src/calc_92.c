@@ -98,7 +98,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	char folder_name[9] = "";
 	TNode *folder = NULL;
 
-	TRYF(ti92_send_REQ(0, 0x19/*TI92_RDIR*/, ""));
+	TRYF(ti92_send_REQ(0, TI92_RDIR, ""));
 	TRYF(ti92_recv_ACK(NULL));
 	TRYF(ti92_recv_VAR(&info.size, &info.type, info.name));
 
@@ -127,7 +127,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
 		node = t_node_new(ve);
 
-		if (ve->type == 0x1F /*TI92_DIR*/) 
+		if (ve->type == TI92_DIR) 
 		{
 			strcpy(folder_name, ve->var_name);
 			folder = t_node_append(*vars, node);
@@ -163,9 +163,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	// unsupported
 	*mem = -1;
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
@@ -346,36 +345,32 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
 {
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -485,14 +480,12 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	// unsupported
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 const CalcFncts calc_92 = 
