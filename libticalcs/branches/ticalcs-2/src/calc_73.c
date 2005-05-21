@@ -34,7 +34,9 @@
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
+#include "macros.h"
 
+#include "packets.h"
 #include "cmd73.h"
 #include "rom83p.h"
 
@@ -89,61 +91,378 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	uint16_t unused;
+	TNode *folder;
+	uint32_t memory;
+
+	TRYF(ti73_send_REQ(0x0000, TI73_DIR, "", 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_XDP(&unused, (uint8_t *)&memory));
+	fixup(memory);
+	TRYF(ti73_send_ACK());
+	handle->priv = GUINT_TO_POINTER(memory);
+
+	(*vars) = t_node_new(NULL);
+	(*vars)->data = strdup(VAR_NODE_NAME);
+	(*apps) = t_node_new(NULL);
+	(*apps)->data = strdup(APP_NODE_NAME);
+
+	folder = t_node_new(NULL);
+	t_node_append(*vars, folder);
+
+	for (;;) 
+	{
+		VarEntry *ve = calloc(1, sizeof(VarEntry));
+		TNode *node;
+		int err;
+
+		err = ti73_recv_VAR((uint16_t *) & ve->size, &ve->type, ve->name, &ve->attr);
+		fixup(ve->size);
+		TRYF(ti73_send_ACK());
+		if (err == ERR_EOT)
+			break;
+		else if (err != 0)
+			return err;
+
+		tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
+		node = t_node_new(ve);
+		if (ve->type != TI73_APPL)
+			t_node_append(folder, node);
+		else
+			t_node_append(*apps, node);
+
+		sprintf(update->text, _("Reading of '%s'"), ve->var_name);
+		update_label();
+		if (update->cancel)
+		  return ERR_ABORT;
+  }
+
 	return 0;
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
+	*mem = GPOINTER_TO_UINT(handle->priv);
 	return 0;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
+	uint16_t length;
+	uint8_t varname[9];
+	uint8_t rej_code;
+
+	length = content->data_length1;
+	varname[0] = LSB(content->data_length2);
+	varname[1] = MSB(content->data_length2);
+	varname[2] = LSB(content->data_length3);
+	varname[3] = MSB(content->data_length3);
+	varname[4] = LSB(content->mem_address);
+	varname[5] = MSB(content->mem_address);
+
+	TRYF(ti73_send_RTS(content->data_length1, TI73_BKUP, varname, 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_SKP(&rej_code))
+    TRYF(ti73_send_ACK());
+	switch (rej_code) 
+	{
+	case REJ_EXIT:
+	case REJ_SKIP:
+		return ERR_ABORT;
+    break;
+	case REJ_MEMORY:
+		return ERR_OUT_OF_MEMORY;
+    break;
+	default:			// RTS
+    break;
+	}
+
+	update->max2 = 3;
+	update->cnt2 = 0;
+
+	TRYF(ti73_send_XDP(content->data_length1, content->data_part1));
+	TRYF(ti73_recv_ACK(NULL));
+	update->cnt2++;
+
+	TRYF(ti73_send_XDP(content->data_length2, content->data_part2));
+	TRYF(ti73_recv_ACK(NULL));
+	update->cnt2++;
+
+	TRYF(ti73_send_XDP(content->data_length3, content->data_part3));
+	TRYF(ti73_recv_ACK(NULL));
+	update->cnt2++;
+
+	TRYF(ti73_send_ACK());
+
 	return 0;
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
+	uint8_t varname[9] = { 0 };
+	uint8_t attr;
+
+	strcpy(content->comment, "Backup file received by TiLP");
+	content->model = handle->model;
+	sprintf(update->text, _("Receiving backup..."));
+	update_label();
+
+	// silent request
+	TRYF(ti73_send_REQ(0x0000, TI73_BKUP, "", 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_VAR(&content->data_length1, &content->type, varname, &attr));
+	content->data_length2 = varname[0] | (varname[1] << 8);
+	content->data_length3 = varname[2] | (varname[3] << 8);
+	content->mem_address = varname[4] | (varname[5] << 8);
+	TRYF(ti73_send_ACK());
+
+	TRYF(ti73_send_CTS());
+	TRYF(ti73_recv_ACK(NULL));
+
+	update->max2 = 3;
+	update->cnt2 = 0;
+
+	content->data_part1 = tifiles_calloc(65536, 1);
+	TRYF(ti73_recv_XDP(&content->data_length1, content->data_part1));
+	TRYF(ti73_send_ACK());
+	update->cnt2++;
+
+	content->data_part2 = tifiles_calloc(65536, 1);
+	TRYF(ti73_recv_XDP(&content->data_length2, content->data_part2));
+	TRYF(ti73_send_ACK());
+	update->cnt2++;
+
+	content->data_part3 = tifiles_calloc(65536, 1);
+	TRYF(ti73_recv_XDP(&content->data_length3, content->data_part3));
+	TRYF(ti73_send_ACK());
+	update->cnt2++;
+  
+	content->data_part4 = NULL;
+  
 	return 0;
 }
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
+	int i;
+	uint8_t rej_code;
+	uint8_t attrb;
+
+	sprintf(update->text, _("Sending..."));
+	update_label();
+
+	for (i = 0; i < content->num_entries; i++) 
+	{
+		VarEntry *entry = &(content->entries[i]);
+		uint8_t varname[18];
+
+		attrb = (mode & MODE_SEND_TO_FLASH) ?
+		ATTRB_ARCHIVED : entry->attr;
+		TRYF(ti73_send_RTS((uint16_t)entry->size, entry->type, varname, attrb));
+		TRYF(ti73_recv_ACK(NULL));
+
+		TRYF(ti73_recv_SKP(&rej_code));
+		TRYF(ti73_send_ACK());
+
+		switch (rej_code) 
+		{
+		case REJ_EXIT:
+		  return ERR_ABORT;
+		  break;
+		case REJ_SKIP:
+		  continue;
+		  break;
+		case REJ_MEMORY:
+		  return ERR_OUT_OF_MEMORY;
+		  break;
+		default:			// RTS
+		  break;
+		}
+		sprintf(update->text, _("Sending '%s'"),
+			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+		update_label();
+
+		TRYF(ti73_send_XDP(entry->size, entry->data));
+		TRYF(ti73_recv_ACK(NULL));
+
+		ticalcs_info("");
+  }
+
+	TRYF(ti73_send_EOT());
+
 	return 0;
 }
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
+    VarEntry *ve;
+
+    strcpy(content->comment, "Single file received by TiLP");
+    content->model = handle->model;
+    content->num_entries = 1;
+    content->entries = (VarEntry *) tifiles_calloc(1, sizeof(VarEntry));
+    ve = &(content->entries[0]);
+    memcpy(ve, vr, sizeof(VarEntry));
+
+    sprintf(update->text, _("Receiving '%s'"),
+	  tifiles_transcode_varname_static(handle->model, vr->name, vr->type));
+    update_label();
+
+    // silent request
+    TRYF(ti73_send_REQ((uint16_t)vr->size, vr->type, vr->name, vr->attr));
+    TRYF(ti73_recv_ACK(NULL));
+
+    TRYF(ti73_recv_VAR((uint16_t *)&ve->size, &ve->type, ve->name, &vr->attr));
+    fixup(ve->size);
+    TRYF(ti73_send_ACK());
+
+    TRYF(ti73_send_CTS());
+    TRYF(ti73_recv_ACK(NULL));
+
+    ve->data = tifiles_calloc(ve->size, 1);
+    TRYF(ti73_recv_XDP((uint16_t *) & ve->size, ve->data));
+    TRYF(ti73_send_ACK());
+
 	return 0;
 }
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
 {
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
+	int i;
+
+	sprintf(update->text, ("Sending FLASH OS/App..."));
+	update_label();
+
+	update->max2 = content->num_pages;
+	for (i = 0; i < content->num_pages; i++) 
+	{
+		FlashPage *fp = &(content->pages[i]);
+
+		TRYF(ti73_send_VAR2(fp->size, content->data_type, fp->flag, fp->addr, fp->page));
+		TRYF(ti73_recv_ACK(NULL));
+
+		TRYF(ti73_recv_CTS(10));
+		TRYF(ti73_send_ACK());
+
+		TRYF(ti73_send_XDP(fp->size, fp->data));
+		TRYF(ti73_recv_ACK(NULL));
+
+		if(handle->model != CALC_TI84P)
+		{
+			if (i == 1)
+			  PAUSE(1000);		// This pause is NEEDED !
+			if (i == content->num_pages - 2)
+			  PAUSE(2500);		// This pause is NEEDED !
+		}
+
+		update->cnt2 = i;
+		if (update->cancel)
+			return ERR_ABORT;
+	}
+
+	TRYF(ti73_send_EOT());
+	TRYF(ti73_recv_ACK(NULL));
+
 	return 0;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
+	int npages;
+	uint32_t size = 0;
+
+	if(handle->model == CALC_TI84P)
+		return ERR_UNSUPPORTED;
+
+	content->model = handle->model;
+	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
+	content->pages = (FlashPage *)tifiles_calloc(content->num_pages, sizeof(FlashPage));
+
+	sprintf(update->text, _("Receiving '%s'"), vr->name);
+	update_label();
+
+	// silent request
+	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	update->max2 = vr->size;
+	for (size = 0, npages = 0;; npages++) 
+	{
+		int err;
+		uint16_t data_length;
+		uint8_t data_type;
+		char name[9];
+		FlashPage *fp = &(content->pages[npages]);
+
+		err = ti73_recv_VAR2(&data_length, &data_type, name, &fp->addr, &fp->page);
+		TRYF(ti73_send_ACK());
+		if (err == ERR_EOT)
+			goto exit;
+		TRYF(err);
+
+		TRYF(ti73_send_CTS());
+		TRYF(ti73_recv_ACK(NULL));
+
+		fp->data = tifiles_calloc(fp->size, 1);
+		TRYF(ti73_recv_XDP((uint16_t *) & fp->size, fp->data));
+		fixup(fp->size);
+		TRYF(ti73_send_ACK());
+
+		size += fp->size;
+		update->cnt2 = size;
+		if (update->cancel)
+			return ERR_ABORT;
+	}
+
+exit:
+	content->num_pages = npages;
+
 	return 0;
 }
 
-static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
+static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
+	uint16_t unused;
+	uint16_t varsize;
+	uint8_t vartype;
+	uint8_t varname[9];
+	uint8_t varattr;
+
+	sprintf(update->text, _("Getting variable..."));
+	update_label();
+
+	TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
+	TRYF(ti73_recv_ACK(&unused));
+
+	TRYF(ti73_recv_VAR((uint16_t *) & varsize, &vartype, varname, &varattr));
+	fixup(varsize);
+	TRYF(ti73_send_ACK());
+
+	TRYF(ti73_send_CTS());
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_XDP((uint16_t *) & varsize, id));
+	id[varsize] = '\0';
+	TRYF(ti73_send_ACK());
+
 	return 0;
 }
 
@@ -181,26 +500,26 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		return ERR_OPEN_FILE;
 
 	// Wait for user's action (execing program)
-	sprintf(handle->update->text, _("Waiting user's action..."));
-	handle->update->label();
+	sprintf(handle->updat->text, _("Waiting user's action..."));
+	handle->updat->label();
 	do 
 	{
-		handle->update->refresh();
-		if (handle->update->cancel)
+		handle->updat->refresh();
+		if (handle->updat->cancel)
 			return ERR_ABORT;
 		err = ticables_cable_get(handle->cable, &data);
 		sum = data;
 	}
-	while (err == ERR_READ_TIMEOUT);
+	while (err == ERROR_READ_TIMEOUT);
 	fprintf(file, "%c", data);
 
 	// Receive it now blocks per blocks (1024 + CHK)
-	sprintf(handle->update->text, _("Receiving..."));
-	handle->update->label();
+	sprintf(handle->updat->text, _("Receiving..."));
+	handle->updat->label();
 
 	start = time(NULL);
-	handle->update->max1 = 1024;
-	handle->update->max2 = ROMSIZE;
+	handle->updat->max1 = 1024;
+	handle->updat->max2 = ROMSIZE;
 
 	for (i = 0; i < ROMSIZE; i++) 
 	{
@@ -213,9 +532,9 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 			fprintf(file, "%c", data);
 			sum += data;
 
-			handle->update->cnt1 = j;
-			handle->update->pbar();
-			if (handle->update->cancel)
+			handle->updat->cnt1 = j;
+			handle->updat->pbar();
+			if (handle->updat->cancel)
 				return -1;
 		}
 		b = 1;
@@ -228,8 +547,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		  return ERR_CHECKSUM;
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 
-		handle->update->cnt2 = i;
-		if (handle->update->cancel)
+		handle->updat->cnt2 = i;
+		if (handle->updat->cancel)
 		  return -1;
 
 		elapsed = (long) difftime(time(NULL), start);
@@ -237,8 +556,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		remaining = (long) difftime(estimated, elapsed);
 		sprintf(buffer, "%s", ctime(&remaining));
 		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
-		sprintf(handle->update->text, _("Remaining (mm:ss): %s"), tmp + 3);
-		handle->update->label();
+		sprintf(handle->updat->text, _("Remaining (mm:ss): %s"), tmp + 3);
+		handle->updat->label();
 	}
 
 	fclose(file);	

@@ -49,7 +49,7 @@ int ti73_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *va
 // ---
 
 #define ti73_send_VAR(a,b,c,d)		ti73_send_VAR_h(handle,a,b,c,d)
-#define ti73_send_VAR2(a,b,c,d)		ti73_send_VAR2_h(handle,a,b,c,d)
+#define ti73_send_VAR2(a,b,c,d,e)	ti73_send_VAR2_h(handle,a,b,c,d,e)
 #define ti73_send_CTS()				ti73_send_CTS_h(handle)
 #define ti73_send_XDP(a,b)			ti73_send_XDP_h(handle,a,b)
 #define ti73_send_FLSH()			ti73_send_FLSH_h(handle)
@@ -60,7 +60,7 @@ int ti73_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *va
 #define ti73_send_SCR()				ti73_send_SCR_h(handle)
 #define ti73_send_KEY(a)			ti73_send_KEY_h(handle,a)
 #define ti73_send_EOT()				ti73_send_EOT_h(handle)
-#define ti73_send_REQ(a,b,c,d)		ti73_send_REQ(_hhandle,a,b,c,d)
+#define ti73_send_REQ(a,b,c,d)		ti73_send_REQ_h(handle,a,b,c,d)
 #define ti73_send_REQ2(a,b,c,d)		ti73_send_REQ2_h(handle,a,b,c,d)
 #define ti73_send_RTS(a,b,c,d)		ti73_send_RTS_h(handle,a,b,c,d)
 
