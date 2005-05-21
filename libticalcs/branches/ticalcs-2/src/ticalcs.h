@@ -313,7 +313,7 @@ typedef struct _CalcHandle	CalcHandle;
 #define update_refresh()    handle->updat->refresh()
 #define update_stop()       handle->updat->stop()
 
-typedef struct VarEntry	VarRequest;	// alias
+typedef VarEntry	VarRequest;	// alias
 
 /**
  * TiCable:
