@@ -45,7 +45,7 @@ int ti82_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *va
 
 #define ti82_send_VAR(a,b,c)		ti82_send_VAR_h(handle, a, b, c)
 #define ti82_send_CTS()				ti82_send_CTS_h(handle)
-#define ti82_send_XDP(a,b,c)		ti82_send_XDP_h(handle, a, b, c)
+#define ti82_send_XDP(a,b)			ti82_send_XDP_h(handle, a, b)
 #define ti82_send_SKP(a,b)			ti82_send_SKP_h(handle, a, b)
 #define ti82_send_ACK()				ti82_send_ACK_h(handle)	
 #define ti82_send_ERR()				ti82_send_ERR_h(handle)			
@@ -57,7 +57,7 @@ int ti82_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *va
 
 #define ti82_recv_VAR(a,b,c)		ti82_recv_VAR_h(handle, a, b, c)
 #define ti82_recv_CTS()				ti82_recv_CTS_h(handle)	
-#define ti82_recv_SKP(a,b)			ti82_recv_SKP_h(handle, a, b)	
+#define ti82_recv_SKP(a)			ti82_recv_SKP_h(handle, a)	
 #define ti82_recv_XDP(a,b)			ti82_recv_XDP_h(handle, a, b)	
 #define ti82_recv_ACK(a)			ti82_recv_ACK_h(handle, a)
 #define ti82_recv_RTS(a,b,c)		ti82_recv_RTS_h(handle, a, b, c)
