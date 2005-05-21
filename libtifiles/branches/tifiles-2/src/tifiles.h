@@ -28,6 +28,7 @@
 
 #include "export.h"
 #include "stdints.h"
+#include "typesxx.h"
 
 	/***********************/
 	/* Types & Definitions */
