@@ -86,7 +86,7 @@ int ti85_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
   - rej_code [in]: a rejection code
   - int [out]: an error code
  */
-int ti85_send_SKIP_h(CalcHandle* handle, uint8_t rej_code)
+int ti85_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 {
   ticalcs_info(" PC->TI: SKP");
   TRYF(send_packet(handle, PC_TI8586, CMD_SKP, 1, &rej_code));
@@ -245,7 +245,7 @@ int ti85_recv_CTS_h(CalcHandle* handle)
   return 0;
 }
 
-int ti85_recv_SKIP_h(CalcHandle* handle, uint8_t * rej_code)
+int ti85_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;

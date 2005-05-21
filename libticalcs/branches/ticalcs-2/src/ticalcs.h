@@ -405,8 +405,8 @@ struct _CalcHandle
 	CalcFncts*	calc;
 	CalcUpdate*	updat;
 
-	void*		priv;	
-	void*		priv2;	
+	void*		priv;	// used to store used memory
+	void*		priv2;	// used for sending buffer
 	void*		priv3;	
 
 	int			open;
