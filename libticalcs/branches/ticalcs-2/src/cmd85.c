@@ -36,7 +36,7 @@
 
 // Shares some commands between TI85 & 86
 #define PC_TI8586 ((handle->model == CALC_TI85) ? PC_TI85 : PC_TI86)
-#define TI8586_BKUP ((handle->model == CALC_TI85) ? 0x1D : 0x1D)
+#define TI8586_BKUP ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP)
 
 /* Variable (std var header: NUL padded, variable length) */
 int ti85_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
@@ -157,7 +157,7 @@ int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[3] = strlen(varname);
   memcpy(buffer + 4, varname, 8);
   if ((handle->model == CALC_TI86) &&
-      (vartype >= 0x15/*TI86_DIR*/) && (vartype <= 0x1B/*TI86_ZRCL*/)) {
+      (vartype >= TI86_DIR) && (vartype <= TI86_ZRCL)) {
     memset(buffer, 0, 9);
     buffer[2] = vartype;
     TRYF(send_packet(handle, PC_TI86, CMD_REQ, 5, buffer));

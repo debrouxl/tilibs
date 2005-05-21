@@ -61,7 +61,7 @@ int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 {
   uint8_t buffer[32];
   uint8_t trans[9];
-  uint8_t extra = (vartype == 0x1D/*TI9X_BKUP*/) ? 0 : 1;
+  uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
@@ -195,7 +195,7 @@ int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[6 + strlen(varname)] = 0x00;
 
   len = 6 + strlen(varname) + 1;
-  if (vartype != 0x18/*TI89_CLK*/)
+  if (vartype != TI89_CLK)
     len--;
   TRYF(send_packet(handle, PC_TI9X, CMD_REQ, len, buffer));
 

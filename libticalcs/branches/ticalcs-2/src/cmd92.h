@@ -61,7 +61,7 @@ int ti92_recv_RTS_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *va
 #define ti92_send_REQ(a,b,c)		ti92_send_REQ_h(handle, a, b, c)
 #define ti92_send_RTS(a,b,c)		ti92_send_RTS_h(handle, a, b, c)
 
-#define ti92_recv_VAR(a,b,c)		ti92_recv_VAR_h((handle, a, b, c)		
+#define ti92_recv_VAR(a,b,c)		ti92_recv_VAR_h(handle, a, b, c)		
 #define ti92_recv_CTS()				ti92_recv_CTS_h(handle)
 #define ti92_recv_SKP(a)			ti92_recv_SKP_h(handle, a)
 #define ti92_recv_XDP(a,b)			ti92_recv_XDP_h(handle, a , b)
@@ -69,7 +69,6 @@ int ti92_recv_RTS_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *va
 #define ti92_recv_CNT()				ti92_recv_CNT_h(handle)
 #define ti92_recv_EOT()				ti92_recv_EOT_h(handle)
 #define ti92_recv_RTS(a,b,c)		ti92_recv_RTS_h(handle, a, b, c)
-
 
 #endif
 

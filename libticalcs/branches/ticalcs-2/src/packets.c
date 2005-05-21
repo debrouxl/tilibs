@@ -81,16 +81,16 @@ int send_packet(CalcHandle* handle,
 		// compute chunks
 		q = len / BLK_SIZE;
 		r = len % BLK_SIZE;
-		handle->update->max1 = length;
+		handle->updat->max1 = length;
 
 		// send full chunks
 		for(i = 0; i < q; i++)
 		{
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->update->rate);
-			handle->update->cnt1 += BLK_SIZE;
-			handle->update->pbar();
-			if (handle->update->cancel)
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			handle->updat->cnt1 += BLK_SIZE;
+			handle->updat->pbar();
+			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
 
@@ -98,9 +98,9 @@ int send_packet(CalcHandle* handle,
 		for(j = 0; j < r; j++)
 		{
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
-			handle->update->cnt1 += 1;
-			handle->update->pbar();
-			if (handle->update->cancel)
+			handle->updat->cnt1 += 1;
+			handle->updat->pbar();
+			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
 	}
@@ -189,16 +189,16 @@ int recv_packet(CalcHandle* handle,
 		// compute chunks
 		q = *length / BLK_SIZE;
 		r = *length % BLK_SIZE;
-		handle->update->max1 = *length;
+		handle->updat->max1 = *length;
 
 		// recv full chunks
 		for(i = 0; i < q; i++)
 		{
 			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->update->rate);
-			handle->update->cnt1 += BLK_SIZE;
-			handle->update->pbar();
-			if (handle->update->cancel)
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			handle->updat->cnt1 += BLK_SIZE;
+			handle->updat->pbar();
+			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
 
@@ -206,9 +206,9 @@ int recv_packet(CalcHandle* handle,
 		for(j = 0; j < r+2; j++)
 		{
 			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], (uint16_t)(r+2)));
-			handle->update->cnt1 += 1;
-			handle->update->pbar();
-			if (handle->update->cancel)
+			handle->updat->cnt1 += 1;
+			handle->updat->pbar();
+			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
 

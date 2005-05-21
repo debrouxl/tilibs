@@ -35,7 +35,7 @@
 
 // Shares some commands between TI73 & 83+ & 84+
 #define PC_TI7383 ((handle->model == CALC_TI73) ? PC_TI73 : PC_TI83p)
-#define TI7383_BKUP ((handle->model == CALC_TI73) ? 0x13/*TI73_BKUP*/ : 0x13/*TI83p_BKUP*/)
+#define TI7383_BKUP ((handle->model == CALC_TI73) ? TI73_BKUP : TI83p_BKUP)
 #define EXTRAS ((handle->model == CALC_TI83P) || (handle->model == CALC_TI84P) ? 2 : 0)
 
 /* Variable (std var header: NUL padded, fixed length) */
@@ -202,7 +202,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  if (vartype != 0x26/*TI83p_IDLIST*/) 
+  if (vartype != TI83p_IDLIST) 
   {
     TRYF(send_packet(handle, PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer));
   } 

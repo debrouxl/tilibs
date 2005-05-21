@@ -36,7 +36,7 @@
 
 // Shares some commands between TI82 & 83
 #define PC_TI8283 ((handle->model == CALC_TI82) ? PC_TI82 : PC_TI83)
-#define TI8283_BKUP ((handle->model == CALC_TI82) ? 0x0f : 0x13)
+#define TI8283_BKUP ((handle->model == CALC_TI82) ? TI82_BKUP : TI83_BKUP)
 
 /* Variable (std var header: NUL padded, fixed length) */
 int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
