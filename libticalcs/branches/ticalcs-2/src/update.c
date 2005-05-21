@@ -21,19 +21,19 @@
 
 #include "ticalcs.h"
 
-static void update_start(void) {};
-static void update_stop(void) {};
-static void update_refresh(void) {};
-static void update_pbar(void) {};
-static void update_label(void) {};
+static void ticalcs_update_start(void) {};
+static void ticalcs_update_stop(void) {};
+static void ticalcs_update_refresh(void) {};
+static void ticalcs_update_pbar(void) {};
+static void ticalcs_update_label(void) {};
 
 const CalcUpdate default_update =
 {
 	"", 0,
 	0.0, 0, 0, 0, 0,
-	update_start,
-	update_stop,
-	update_refresh,
-	update_pbar,
-	update_label,
+	ticalcs_update_start,
+	ticalcs_update_stop,
+	ticalcs_update_refresh,
+	ticalcs_update_pbar,
+	ticalcs_update_label,
 };

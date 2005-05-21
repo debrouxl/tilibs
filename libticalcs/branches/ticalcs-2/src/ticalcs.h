@@ -305,6 +305,14 @@ typedef struct
 typedef struct _CalcFncts	CalcFncts;
 typedef struct _CalcHandle	CalcHandle;
 
+// convenient wrappers: will be removed later !
+#define update				(handle->updat)
+#define update_start()		handle->updat->start()
+#define update_pbar()       handle->updat->pbar()
+#define update_label()      handle->updat->label()
+#define update_refresh()    handle->updat->refresh()
+#define update_stop()       handle->updat->stop()
+
 typedef struct VarEntry	VarRequest;	// alias
 
 /**
@@ -395,7 +403,7 @@ struct _CalcHandle
 {
 	CalcModel	model;	
 	CalcFncts*	calc;
-	CalcUpdate*	update;
+	CalcUpdate*	updat;
 
 	void*		priv;	
 	void*		priv2;	

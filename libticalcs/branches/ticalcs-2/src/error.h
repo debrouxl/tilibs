@@ -31,18 +31,6 @@ typedef enum
 	ERR_ABORT = 256,		// Operation aborted
 	ERR_NOT_READY,			// Calculator is not ready
 	ERR_CHECKSUM,			// Checksum error
-	
-	ERR_MALLOC,				// No memory ?!
-	ERR_NO_CABLE,			// No cable attached
-	ERR_BUSY,				// Device is busy (transfer in progress)
-	ERR_FILE_OPEN,			// Can't open file
-		
-	ERR_VOID_FUNCTION,		// This function does not exist for the calc
-	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
-	ERR_OPEN_FILE,
-	ERR_SAVE_FILE,			// Can not open (writing) file
-	ERR_PENDING_TRANSFER,	// A transfer is in progress
-
 	ERR_INVALID_HOST,		// Invalid host ID
 	ERR_INVALID_TARGET,		// Invalid target ID
 	ERR_INVALID_CMD,		// Invalid command ID
@@ -51,6 +39,20 @@ typedef enum
 	ERR_CTS_ERROR,			// Invalid CTS packet
 	ERR_NACK,				// NACK received
 	ERR_INVALID_PACKET,		// Packet is invalid
+	
+	ERR_MALLOC,				// No memory ?!
+	ERR_NO_CABLE,			// No cable attached
+	ERR_BUSY,				// Device is busy (transfer in progress)
+	ERR_FILE_OPEN,			// Can't open file
+	
+// ---
+		
+	ERR_VOID_FUNCTION,		// This function does not exist for the calc
+	ERR_OUT_OF_MEMORY,		// Calc reply out of *memory
+	ERR_OPEN_FILE,
+	ERR_SAVE_FILE,			// Can not open (writing) file
+	ERR_PENDING_TRANSFER,	// A transfer is in progress
+	
 	ERR_FATAL_ERROR,		// Fatal error (alloc, file, ...)
 	ERR_MISSING_VAR,		// The requested var does not exist
 	ERR_NO_VARS,			// No vars to backup

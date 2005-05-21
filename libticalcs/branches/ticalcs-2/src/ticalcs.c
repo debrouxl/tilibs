@@ -187,7 +187,7 @@ TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 	if(handle->calc == NULL)
 		return NULL;
 
-	handle->update = (CalcUpdate *)&default_update;
+	handle->updat = (CalcUpdate *)&default_update;
 
 	handle->priv2 = (uint8_t *)malloc(65536 + 4);
 	if(handle->priv2 == NULL)
@@ -286,9 +286,9 @@ TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* update)
+TIEXPORT int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
-	handle->update = update;
+	handle->updat = upd;
 
 	return 0;
 }
