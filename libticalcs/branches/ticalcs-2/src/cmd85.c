@@ -222,7 +222,6 @@ int ti85_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
   ticalcs_info(" (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
-  ticalcs_info(".");
 
   return 0;
 }
@@ -240,7 +239,6 @@ int ti85_recv_CTS_h(CalcHandle* handle)
     return ERR_INVALID_CMD;
   if (length != 0x0000)
     return ERR_CTS_ERROR;
-  ticalcs_info(".");
 
   return 0;
 }
@@ -260,7 +258,6 @@ int ti85_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
   ticalcs_info(" (rejection code = %i)", *rej_code);
-  ticalcs_info(".");
 
   return 0;
 }
@@ -274,7 +271,6 @@ int ti85_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
   ticalcs_info(" (%04X=%i bytes)", *length, *length);
-  ticalcs_info(".");
 
   return 0;
 }
@@ -300,9 +296,6 @@ int ti85_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
 
-
-  ticalcs_info(".");
-
   return 0;
 }
 
@@ -326,7 +319,6 @@ int ti85_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
   ticalcs_info(" (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
-  ticalcs_info(".");
 
   return 0;
 }

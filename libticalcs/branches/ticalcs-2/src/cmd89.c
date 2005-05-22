@@ -284,7 +284,6 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
 
   ticalcs_info(" (size=0x%08X=%i, id=%02X, name=<%s>, flag=%i)",
 	  *varsize, *varsize, *vartype, varname, flag);
-  ticalcs_info(".");
 
   return 0;
 }
@@ -303,7 +302,6 @@ int ti89_recv_CTS_h(CalcHandle* handle)
     return ERR_INVALID_CMD;
   if (length != 0x0000)
     return ERR_CTS_ERROR;
-  ticalcs_info(".");
 
   return 0;
 }
@@ -324,7 +322,6 @@ int ti89_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
   ticalcs_info(" (rejection code = %i)", *rej_code = buffer[0]);
-  ticalcs_info(".");
 
   return 0;
 }
@@ -340,7 +337,6 @@ int ti89_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
   ticalcs_info(" (%04X=%i bytes)", *length, *length);
-  ticalcs_info(".");
   TRYF(err);
 
   return 0;
@@ -369,8 +365,6 @@ int ti89_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
 
-  ticalcs_info(".");
-
   return 0;
 }
 
@@ -386,7 +380,6 @@ int ti89_recv_CNT_h(CalcHandle* handle)
     return ERR_EOT;		// not really an error
   if (cmd != CMD_CNT)
     return ERR_INVALID_CMD;
-  ticalcs_info(".");
 
   return 0;
 }
@@ -400,7 +393,6 @@ int ti89_recv_EOT_h(CalcHandle* handle)
   TRYF(recv_packet(handle, &host, &cmd, &length, NULL));
   if (cmd != CMD_EOT)
     return ERR_INVALID_CMD;
-  ticalcs_info(".");
 
   return 0;
 }
@@ -433,7 +425,6 @@ int ti89_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
 
   ticalcs_info(" (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, varname);
-  ticalcs_info(".");
 
   return 0;
 }
