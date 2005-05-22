@@ -132,7 +132,7 @@ TIEXPORT int TICALL ticalcs_library_init(void)
 
 
 /**
- * tifiles_library_exit:
+ * ticalcs_library_exit:
  *
  * This function must be the last one to call. Used to release internal resources.
  *

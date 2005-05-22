@@ -23,118 +23,259 @@
  * as an authoritative example. 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-//#include "../src/headers.h"
+#include "../src/ticables.h"
 #include "../src/ticalcs.h"
-#include "../src/calc_def.h"
+
+#define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
 #undef VERSION
 #define VERSION "Test program"
 
-/* Cable & Calc structures */
-TicableLinkParam lp;
-TicableLinkCable lc;
-TicalcFncts      tc; // Functions which drive a calculator
-TicalcInfoUpdate iu; // Functions to do the refresh of progress bar & label
-
-/* Update functions */
-void ilp_start(void) { }
-void ilp_stop(void) { }
-void ilp_refresh(void) { }
-void ilp_pbar(void) { }
-void ilp_label(void) { }
-
-/* Error function */
-void print_lc_error(int errnum)
+static void print_lc_error(int errnum)
 {
-  char msg[256] = "No error -> bug !\n";
+	char *msg;
 
-  ticable_get_error(errnum, msg);
-  fprintf(stderr, "Link cable error: %i: %s\n", errnum, msg);
+	ticables_error_get(errnum, &msg);
+	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", 
+		errnum, msg);
+
+	free(msg);
+
 }
+
+static int is_ready(CalcHandle* h)
+{
+	int err;
+
+	err = ticalcs_calc_isready(h);
+	printf("Hand-held is %sready !\n", err ? "not " : "");
+
+	return 0;
+}
+
+static int send_key(CalcHandle *h)
+{
+	CalcKey key;
+	
+	key = ticalcs_keys_92p('A');
+
+	TRYF(ticalcs_calc_send_key(h, key.normal.value));
+	return 0;
+}
+
+static int recv_screen(CalcHandle *h)
+{
+	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0 };
+	uint8_t* bitmap;
+
+	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
+	free(bitmap);
+	return 0;
+}
+
+static int send_backup(CalcHandle* h)
+{
+	const char filename[1024] = "";
+
+	TRYF(ticalcs_calc_send_backup2(h, filename));
+	return 0;
+}
+
+static int recv_backup(CalcHandle* h)
+{
+	const char filename[1024] = "";
+
+	TRYF(ticalcs_calc_recv_backup2(h, filename));
+	return 0;
+}
+
+static int send_var(CalcHandle* h)
+{
+	const char filename[1024] = "";
+
+	TRYF(ticalcs_calc_send_var2(h, MODE_NORMAL, filename));
+	return 0;
+}
+
+static int recv_var(CalcHandle* h)
+{
+	const char filename[1024] = "";
+	VarEntry ve = { 0 };
+
+	TRYF(ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve));
+	return 0;
+}
+
+static int send_var_ns(CalcHandle* h)
+{
+	const char filename[1024] = "";
+
+	TRYF(ticalcs_calc_send_var_ns2(h, MODE_NORMAL, filename));
+	return 0;
+}
+
+static int recv_var_ns(CalcHandle* h)
+{
+	const char filename[1024] = "";
+	VarEntry ve = { 0 };
+
+	TRYF(ticalcs_calc_recv_var_ns2(h, MODE_NORMAL, filename, &ve));
+	return 0;
+}
+
+static int del_var(CalcHandle* h)
+{
+	VarEntry ve = { 0 };
+
+	TRYF(ticalcs_calc_del_var(h, &ve));
+	return 0;
+}
+
+static int send_flash(CalcHandle *h)
+{
+	return 0;
+}
+
+static int recv_flash(CalcHandle *h)
+{
+	return 0;
+}
+
+static int recv_idlist(CalcHandle *h)
+{
+	return 0;
+}
+
+static int dump_rom(CalcHandle *h)
+{
+	return 0;
+}
+
+static int set_clock(CalcHandle *h)
+{
+	return 0;
+}
+
+static int get_clock(CalcHandle *h)
+{
+	return 0;
+}
+
+static const char *str_menu[17] = 
+{
+	"Exit",
+	"Check whether calc is ready",
+	"Send a key",
+	"Do a screenshot",
+	"Send backup",
+	"Recv backup",
+	"Send var",
+	"Recv var",
+	"Delete var",
+	"Send var (ns)",
+	"Recv var (ns)",
+	"Send flash",
+	"Recv flash",
+	"Get ID-LIST",
+	"Dump ROM",
+	"Set clock",
+	"Get clock",
+};
+
+typedef int (*FNCT_MENU) (CalcHandle*);
+
+static FNCT_MENU fnct_menu[17] = 
+{
+	NULL,
+	is_ready,
+	send_key,
+	recv_screen,
+	send_backup,
+	recv_backup,
+	send_var,
+	recv_var,
+	del_var,
+	send_var_ns,
+	recv_var_ns,
+	send_flash,
+	recv_flash,
+	recv_idlist,
+	dump_rom,
+	set_clock,
+	get_clock,
+};
 
 int main(int argc, char **argv)
 {
-  int err;
+	CableHandle* cable;
+	CalcHandle* calc;
+	int err, i;
+	int exit=0;
+	int choice;
 
-  ticable_init();
-  ticalc_init();
+	// init libs
+	ticables_library_init();
+	ticalcs_library_init();
 
-  /* 
-     Initialize the libTIcable library 
-  */
-  ticable_get_default_param(&lp);
-  lp.delay   = DFLT_DELAY;
-  lp.timeout = DFLT_TIMEOUT;
-  lp.port    = SERIAL_PORT_2;
-  lp.method  = IOM_AUTO;
-  ticable_set_param(&lp);
-  if((err=ticable_set_cable(LINK_SER, &lc))) 
-  {
-		print_lc_error(err);
-                return -1;
-  }
+	// set cable
+	cable = ticables_handle_new(CABLE_BLK, PORT_2);
+	if(cable == NULL)
+	    return -1;
 
-  /* 
-     Initialize the libTIcalc library 
-  */
-  ticalc_set_update(&iu, ilp_start, ilp_stop, ilp_refresh, 
-		    ilp_pbar, ilp_label);
+	// set calc
+	calc = ticalcs_handle_new(CALC_TI92);
+	if(calc == NULL)
+		return -1;
 
-  ticalc_set_cable(&lc);
-  ticalc_set_calc(CALC_TI89, &tc);
-  
-  // Init port
-  fprintf(stdout, "Init calc\n");
-  if( (err=lc.init()) )
-    {
-      print_lc_error(err);
-      return -1;
-    }
-  if( (err=lc.open()) )
-    {
-      print_lc_error(err);
-      return -1;
-    }
+	// attach cable to calc (and open cable)
+	err = ticalcs_cable_attach(calc, cable);
 
-  DISPLAY("Wait 1 second...\n");
+	printf("Wait 1 second...\n");
 #if defined(__WIN32__) && !defined(__MINGW32__)
 	Sleep(1000);
 #else
 	sleep(1);
 #endif
 
-  // Check ready
-#if 1
-  fprintf(stdout, "Test if calc is ready... ");
-  err = tc.isready();
-  fprintf(stdout, "%s (%i)\n", err ? "KO" : "OK", err);
+	do
+	{
+restart:
+		// Display menu
+		printf("Choose an action:\n");
+		for(i = 0; i < 15; i++)
+			printf("%2i. %s\n", i, str_menu[i]);
+		printf("Your choice: ");
 
-  //fprintf(stdout, "Test screendump...\n");
-  //err = tc.screendump(&bitmap, FULL_SCREEN, &sc);
-#else
-  // Check non-silent recv var
-  {
-      char fn[1024];
-      TiVarEntry ve;
-      
-      err = tc.recv_var_2(fn, 0, &ve);
-      fprintf(stdout, "<%s> %i\n", fn, err);
-  }  
-#endif
-  fprintf(stdout, "\n");
+		err = scanf("%i", &choice);
+		if(err < 1)
+			goto restart;
+		printf("\n");
 
-  // Close port
-  if( (err=lc.close()) ) print_lc_error(err);
-  if( (err=lc.exit()) ) print_lc_error(err);
+		if(choice == 0)
+			exit = 1;
+
+		// Process choice
+		if(fnct_menu[choice])
+			fnct_menu[choice](calc);
+		printf("\n");
+
+	} while(!exit);
+
+	// detach cable (made by handle_del, too)
+	err = ticalcs_cable_detach(calc);
+
+	// remove calc & cable
+	ticalcs_handle_del(calc);
+	ticables_handle_del(cable);
 
   return 0;
 }
