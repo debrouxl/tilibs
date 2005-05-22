@@ -452,8 +452,8 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
 												 uint8_t** bitmap);
 
-	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
 	TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
@@ -470,6 +470,19 @@ struct _CalcHandle
 
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
+
+	// calc.c: convenient functions
+	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char *filename);
+	TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char *filename);
+	
+	TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle*, CalcMode, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle*, CalcMode, const char*, VarRequest*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle*, CalcMode, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry*);
+	
+	TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle*, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle*, const char*, VarRequest*);
 
 	// dirlist.c
 	TIEXPORT void TICALL ticalc_dirlist_destroy(TNode** tree);

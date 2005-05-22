@@ -553,3 +553,294 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 
 	return ret;
 }
+
+// ---
+
+/**
+ * ticalcs_calc_recv_backup2:
+ * @handle: a previously allocated handle
+ * @filename: name of file where to store backup
+ *
+ * Request a backup and receive it to file.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
+{
+	const CalcFncts *calc = handle->calc;
+	BackupContent *content1;
+	FileContent *content2;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	switch(handle->model)
+	{
+	case CALC_TI73:
+	case CALC_TI83:
+	case CALC_TI86:
+	case CALC_TI92:
+		// true backup capability
+		content1 = tifiles_content_create_backup();
+		TRYF(ticalcs_calc_recv_backup(handle, content1));
+		TRYF(tifiles_file_write_backup(filename, content1));
+		TRYF(tifiles_content_free_backup(content1));
+		break;
+	default:
+		// pseudo-backup
+		content2 = tifiles_content_create_regular();
+		TRYF(ticalcs_calc_recv_backup(handle, (BackupContent *)content2));
+		TRYF(tifiles_file_write_regular(filename, content2, NULL));
+		TRYF(tifiles_content_free_regular(content2));
+		break;
+	}
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_send_backup2:
+ * @handle: a previously allocated handle
+ * @filename: name of file which contains backup to send
+ *
+ * Send a backup from file.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
+{
+	const CalcFncts *calc = handle->calc;
+	BackupContent content1;
+	FileContent content2;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	switch(handle->model)
+	{
+	case CALC_TI73:
+	case CALC_TI83:
+	case CALC_TI86:
+	case CALC_TI92:
+		// true backup capability
+		TRYF(tifiles_file_read_backup(filename, &content1));
+		TRYF(ticalcs_calc_send_backup(handle, &content1));
+		TRYF(tifiles_content_free_backup(&content1));
+		break;
+	default:
+		// pseudo-backup
+		TRYF(tifiles_file_read_regular(filename, &content2));
+		TRYF(ticalcs_calc_send_backup(handle, (BackupContent *)&content2));
+		TRYF(tifiles_content_free_regular(&content2));
+		break;
+	}
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_send_var2:
+ * @handle: a previously allocated handle
+ * @mode: to document
+ * @filename: name of file
+ *
+ * Send one or more variables (silent mode) from file.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
+										   const char* filename)
+{
+	const CalcFncts *calc = handle->calc;
+	FileContent content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	TRYF(tifiles_file_read_regular(filename, &content));
+	TRYF(ticalcs_calc_send_var(handle, mode, &content));
+	TRYF(tifiles_content_free_regular(&content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_var2:
+ * @handle: a previously allocated handle
+ * @mode:
+ * @content: where to store variable content
+ * @var: a #VarEntry structure got with dirlist
+ *
+ * Request receiving of _one_ variable (silent mode).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
+											const char* filename, VarRequest* vr)
+{
+	const CalcFncts *calc = handle->calc;
+	FileContent* content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_regular();
+	TRYF(ticalcs_calc_recv_var(handle, mode, content, vr));
+	TRYF(tifiles_file_write_regular(filename, content, NULL));
+	TRYF(tifiles_content_free_regular(content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_send_var_ns2:
+ * @handle: a previously allocated handle
+ * @mode:
+ * @filename: name of file
+ *
+ * Send one or more variable (non-silent mode).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
+											 const char* filename)
+{
+	const CalcFncts *calc = handle->calc;
+	FileContent content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	TRYF(tifiles_file_read_regular(filename, &content));
+	TRYF(ticalcs_calc_send_var(handle, mode, &content));
+	TRYF(tifiles_content_free_regular(&content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_var_ns2:
+ * @handle: a previously allocated handle
+ * @mode:
+ * @content: where to store variables
+ * @var: informations on the received variable
+ *
+ * Receive one or more variable (non-silent mode).
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
+											 const char* filename, VarEntry* vr)
+{
+	const CalcFncts *calc = handle->calc;
+	FileContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_regular();
+	TRYF(ticalcs_calc_recv_var(handle, mode, content, vr));
+	TRYF(tifiles_file_write_regular(filename, content, NULL));
+	TRYF(tifiles_content_free_regular(content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_send_flash2:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ *
+ * Send a FLASH app or os.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* filename)
+{
+	const CalcFncts *calc = handle->calc;
+	FlashContent content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	TRYF(tifiles_file_read_flash(filename, &content));
+	TRYF(ticalcs_calc_send_flash(handle, &content));
+	TRYF(tifiles_content_free_flash(&content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_flash2:
+ * @handle: a previously allocated handle
+ * @content: where to store content
+ * @var: FLASH app to request
+ *
+ * Request receiving of a FLASH app.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* filename, 
+											VarRequest* vr)
+{
+	const CalcFncts *calc = handle->calc;
+	FlashContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_flash();
+	TRYF(ticalcs_calc_recv_flash(handle, content, vr));
+	TRYF(tifiles_file_write_flash(filename, content));
+	TRYF(tifiles_content_free_flash(content));
+
+	return 0;
+}
