@@ -27,7 +27,7 @@ static void ticalcs_update_refresh(void) {};
 static void ticalcs_update_pbar(void) {};
 static void ticalcs_update_label(void) {};
 
-const CalcUpdate default_update =
+CalcUpdate default_update =
 {
 	"", 0,
 	0.0, 0, 0, 0, 0,

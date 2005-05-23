@@ -44,7 +44,7 @@
 int send_packet(CalcHandle* handle,
 				uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
-	int i, j;
+	int i;
 	uint16_t sum;
 	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
 	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+4];
@@ -95,7 +95,6 @@ int send_packet(CalcHandle* handle,
 		}
 
 		// send last chunk
-		for(j = 0; j < r; j++)
 		{
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
 			handle->updat->cnt1 += 1;
@@ -159,7 +158,7 @@ static uint8_t host_ids(CalcHandle *handle)
 int recv_packet(CalcHandle* handle, 
 				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
-	int i, j;
+	int i;
 	uint16_t chksum;
 	uint8_t *buf = data;
 	int r, q;
@@ -202,8 +201,7 @@ int recv_packet(CalcHandle* handle,
 				return ERR_ABORT;
 		}
 
-		// send last chunk
-		for(j = 0; j < r+2; j++)
+		// recv last chunk
 		{
 			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], (uint16_t)(r+2)));
 			handle->updat->cnt1 += 1;
