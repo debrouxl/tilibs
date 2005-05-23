@@ -60,7 +60,7 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(send_key(handle, key));
+	TRYF(ti89_send_KEY(key));
 	TRYF(ti89_recv_ACK(NULL));
 
 	return 0;
@@ -106,7 +106,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 		for (i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
 			for (k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
-				*bitmap[i++] = *bitmap[j * (TI89_COLS >> 3) + k];
+				(*bitmap)[i++] = (*bitmap)[j * (TI89_COLS >> 3) + k];
 	}
 	
 

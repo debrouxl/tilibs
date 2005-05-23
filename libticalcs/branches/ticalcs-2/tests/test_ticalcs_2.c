@@ -75,10 +75,10 @@ static int send_key(CalcHandle *h)
 static int recv_screen(CalcHandle *h)
 {
 	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0 };
-	uint8_t* bitmap;
+	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
-	free(bitmap);
+	//free(bitmap);
 	return 0;
 }
 
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI92);
+	calc = ticalcs_handle_new(CALC_TI89T);
 	if(calc == NULL)
 		return -1;
 
