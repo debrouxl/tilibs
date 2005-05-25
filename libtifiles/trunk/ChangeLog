@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 25/05/2005, version 0.6.5: roms
+	Fixed detection of TI file signaure (not case sensitive).
+
 - 04/05/2005, version 0.6.4: roms
 	Make loading of FLASH OS more robust against file 'garbaged' by TI !
 	Endianess fixes by JB (13/05/2005 jb: src/misc.c: endianness fixes) and CW.

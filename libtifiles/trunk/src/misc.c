@@ -28,7 +28,7 @@
 #include <string.h>
 #include "stdints.h"
 #include <sys/stat.h>
-#include "config.h"
+//#include "config.h"
 
 #include "export.h"
 #include "file_int.h"
