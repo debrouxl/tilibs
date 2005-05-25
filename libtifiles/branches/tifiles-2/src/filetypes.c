@@ -334,6 +334,7 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 
   // read header
   fread_8_chars(f, buf);
+  strupr(buf);
   if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
       !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
       !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
