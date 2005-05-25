@@ -44,7 +44,6 @@
 
 int time_out = DFLT_TIMEOUT; // Timeout value for cables in 0.10 seconds
 int delay = DFLT_DELAY;      // Time between 2 bits (home-made cables only)
-int baud_rate = BR9600;      // Baud rate setting for serial port
 int hfc = HFC_ON;            // Hardware flow control for fastAVRlink
 int port = NULL_PORT;        // No port and null cable
 int resources = IO_NONE;     // I/O resources detected
@@ -187,14 +186,14 @@ TICALL ticable_get_delay()
 TIEXPORT void
 TICALL ticable_set_baudrate(int br)
 {
-	baud_rate = br;
+	//baud_rate = br;
 }
 
 
 TIEXPORT int
 TICALL ticable_get_baudrate()
 {
-  	return baud_rate;
+	return 0;  	//return baud_rate;
 }
 
 
@@ -278,7 +277,7 @@ TICALL ticable_set_param2(TicableLinkParam lp)
 {
   	time_out = lp.timeout;
   	delay = lp.delay;
-  	baud_rate = lp.baud_rate;
+  	//baud_rate = lp.baud_rate;
   	hfc = lp.hfc;
   	port = lp.port;
   	method = lp.method;
@@ -304,7 +303,7 @@ TICALL ticable_get_param(TicableLinkParam * lp)
 {
   	lp->timeout = time_out;
   	lp->delay = delay;
-  	lp->baud_rate = baud_rate;
+  	//lp->baud_rate = baud_rate;
   	lp->hfc = hfc;
 
   	lp->io_addr = io_address;
@@ -328,7 +327,7 @@ TICALL ticable_get_default_param(TicableLinkParam * lp)
 #endif
   	lp->timeout = DFLT_TIMEOUT;
   	lp->delay = DFLT_DELAY;
-  	lp->baud_rate = BR9600;
+  	//lp->baud_rate = BR9600;
   	lp->io_addr = AUTO_ADDR;
   	strcpy(lp->device, AUTO_NAME);
   	lp->hfc = HFC_ON;
@@ -356,12 +355,12 @@ static void print_settings(void)
   	printl1(0, _("  port: %s\n"), ticable_port_to_string(port));
   	
   	printl1(0, _("  method: %s\n"), ticable_method_to_string(method));
-  	  	
+  	  	/*
   	if(cable_type == LINK_AVR) {
 		printl1(0, _("  baud-rate: %i\n"), baud_rate);
 		printl1(0, _("  hardware flow control: %s\n"), 
 			hfc ? _("on") : _("off"));
-	}
+	}*/
 
   	if((cable_type == LINK_PAR) || (cable_type == LINK_SER))
 		if(io_address != 0x000)
