@@ -8,6 +8,9 @@ Checking: valgrind & splint
 	
 Log:
 
+- 25/05/2005, version 3.9.2: roms
+	Removed AVRlink support (avoid clashing on exported baud_rate symbol).
+
 - 15/05/2005, version 3.9.1: roms
 	Fixed get_attributes for random permissions (backport of ticables2).
 

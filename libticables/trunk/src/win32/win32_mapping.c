@@ -63,9 +63,8 @@ int win32_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	case LINK_AVR:
-		if(resources & IO_API) {
-			*method |= IOM_API | IOM_OK;	
-		}
+		printl1(2, "AVR link support has been removed !\n");
+		return ERR_ILLEGAL_ARG;
 		break;
 
 	case LINK_SER:
@@ -239,13 +238,7 @@ int win32_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	case LINK_AVR:
-      		if ((port != SERIAL_PORT_1) &&
-	  		(port != SERIAL_PORT_2) &&
-	  		(port != SERIAL_PORT_3) &&
-	  		(port != SERIAL_PORT_4) && (port != USER_PORT))
-		return ERR_INVALID_PORT;
-
-		avr_register_cable(lc);
+      		return ERR_INVALID_PORT;
 		break;
 
     	case LINK_VTL:

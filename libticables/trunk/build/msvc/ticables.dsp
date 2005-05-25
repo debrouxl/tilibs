@@ -102,10 +102,6 @@ SOURCE=..\..\src\win32\tiglusb.h
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\link_avr.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\link_dev.c
 # End Source File
 # Begin Source File
