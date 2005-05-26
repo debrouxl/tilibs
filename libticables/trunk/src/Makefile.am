@@ -22,7 +22,7 @@ libticables_la_SOURCES = *.h \
 	error.c \
 	intrface.c \
 	ioports.c \
-	link_avr.c link_dev.c link_nul.c link_par.c link_ser.c \
+	link_dev.c link_nul.c link_par.c link_ser.c \
 	link_slv.c link_tie.c link_tig.c link_vti.c link_vtl.c \
 	logging.c \
 	mapping.c \

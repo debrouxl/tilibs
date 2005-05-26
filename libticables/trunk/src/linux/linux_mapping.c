@@ -83,12 +83,9 @@ int linux_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	case LINK_AVR:
-		if(resources & IO_API) {
-			if(check_for_tty())
-				printl1(0, _("  warning: can't use IO_API\n"));
-			*method |= IOM_API | IOM_OK;	
-		}
-		break;
+	    printl1(2, "AVR link support has been removed !\n");
+	    return ERR_ILLEGAL_ARG;
+	    break;
 
 	case LINK_SER:
 		if(resources & IO_TISER) {
@@ -344,13 +341,7 @@ int linux_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	case LINK_AVR:
-      		if ((port != SERIAL_PORT_1) &&
-	  		(port != SERIAL_PORT_2) &&
-	  		(port != SERIAL_PORT_3) &&
-	  		(port != SERIAL_PORT_4) && (port != USER_PORT))
 		return ERR_INVALID_PORT;
-
-		avr_register_cable(lc);
 		break;
 
     	case LINK_VTL:

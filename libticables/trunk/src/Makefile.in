@@ -196,7 +196,7 @@ libticables_la_SOURCES = *.h \
 	error.c \
 	intrface.c \
 	ioports.c \
-	link_avr.c link_dev.c link_nul.c link_par.c link_ser.c \
+	link_dev.c link_nul.c link_par.c link_ser.c \
 	link_slv.c link_tie.c link_tig.c link_vti.c link_vtl.c \
 	logging.c \
 	mapping.c \
@@ -218,14 +218,14 @@ libticables_la_DEPENDENCIES =
 am_libticables_la_OBJECTS = libticables_la-detect.lo \
 	libticables_la-direct.lo libticables_la-error.lo \
 	libticables_la-intrface.lo libticables_la-ioports.lo \
-	libticables_la-link_avr.lo libticables_la-link_dev.lo \
-	libticables_la-link_nul.lo libticables_la-link_par.lo \
-	libticables_la-link_ser.lo libticables_la-link_slv.lo \
-	libticables_la-link_tie.lo libticables_la-link_tig.lo \
-	libticables_la-link_vti.lo libticables_la-link_vtl.lo \
-	libticables_la-logging.lo libticables_la-mapping.lo \
-	libticables_la-none.lo libticables_la-printl.lo \
-	libticables_la-type2str.lo libticables_la-verbose.lo
+	libticables_la-link_dev.lo libticables_la-link_nul.lo \
+	libticables_la-link_par.lo libticables_la-link_ser.lo \
+	libticables_la-link_slv.lo libticables_la-link_tie.lo \
+	libticables_la-link_tig.lo libticables_la-link_vti.lo \
+	libticables_la-link_vtl.lo libticables_la-logging.lo \
+	libticables_la-mapping.lo libticables_la-none.lo \
+	libticables_la-printl.lo libticables_la-type2str.lo \
+	libticables_la-verbose.lo
 libticables_la_OBJECTS = $(am_libticables_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -236,7 +236,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-intrface.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-ioports.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_la-link_avr.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-link_dev.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-link_nul.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticables_la-link_par.Plo \
@@ -317,7 +316,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-intrface.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-ioports.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-link_avr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-link_dev.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-link_nul.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_la-link_par.Plo@am__quote@
@@ -531,39 +529,6 @@ libticables_la-ioports.lo: ioports.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-ioports.Plo' tmpdepfile='$(DEPDIR)/libticables_la-ioports.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-ioports.lo `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c
-
-libticables_la-link_avr.o: link_avr.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-link_avr.o -MD -MP -MF "$(DEPDIR)/libticables_la-link_avr.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-link_avr.o `test -f 'link_avr.c' || echo '$(srcdir)/'`link_avr.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-link_avr.Tpo" "$(DEPDIR)/libticables_la-link_avr.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-link_avr.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_avr.c' object='libticables_la-link_avr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-link_avr.Po' tmpdepfile='$(DEPDIR)/libticables_la-link_avr.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-link_avr.o `test -f 'link_avr.c' || echo '$(srcdir)/'`link_avr.c
-
-libticables_la-link_avr.obj: link_avr.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-link_avr.obj -MD -MP -MF "$(DEPDIR)/libticables_la-link_avr.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-link_avr.obj `if test -f 'link_avr.c'; then $(CYGPATH_W) 'link_avr.c'; else $(CYGPATH_W) '$(srcdir)/link_avr.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-link_avr.Tpo" "$(DEPDIR)/libticables_la-link_avr.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-link_avr.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_avr.c' object='libticables_la-link_avr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-link_avr.Po' tmpdepfile='$(DEPDIR)/libticables_la-link_avr.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-link_avr.obj `if test -f 'link_avr.c'; then $(CYGPATH_W) 'link_avr.c'; else $(CYGPATH_W) '$(srcdir)/link_avr.c'; fi`
-
-libticables_la-link_avr.lo: link_avr.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-link_avr.lo -MD -MP -MF "$(DEPDIR)/libticables_la-link_avr.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_la-link_avr.lo `test -f 'link_avr.c' || echo '$(srcdir)/'`link_avr.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_la-link_avr.Tpo" "$(DEPDIR)/libticables_la-link_avr.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_la-link_avr.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_avr.c' object='libticables_la-link_avr.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_la-link_avr.Plo' tmpdepfile='$(DEPDIR)/libticables_la-link_avr.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_la-link_avr.lo `test -f 'link_avr.c' || echo '$(srcdir)/'`link_avr.c
 
 libticables_la-link_dev.o: link_dev.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_la-link_dev.o -MD -MP -MF "$(DEPDIR)/libticables_la-link_dev.Tpo" \
