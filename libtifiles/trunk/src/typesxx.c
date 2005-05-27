@@ -773,7 +773,7 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
 #if 0
   strupr(buf);
 #else
-  for(p = buf; *buf != '\0'; p++)
+  for(p = buf; *p != '\0'; p++)
       *p = toupper(*p);
 #endif
   if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
