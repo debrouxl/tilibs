@@ -756,6 +756,7 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
   FILE *f;
   char buf[9];
   char str[64];
+  char *p;
 
   // bug: check the file is not an fifo
   if (!is_regfile(filename))
@@ -769,7 +770,12 @@ TIEXPORT int TICALL tifiles_is_a_ti_file(const char *filename)
 
   // read header
   fread_8_chars(f, buf);
+#if 0
   strupr(buf);
+#else
+  for(p = buf; *buf != '\0'; p++)
+      *p = toupper(*p);
+#endif
   if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
       !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
       !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
