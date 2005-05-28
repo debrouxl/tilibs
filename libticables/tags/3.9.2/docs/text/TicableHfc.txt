@@ -1,0 +1,12 @@
+[Main]
+Name=TicableHfc
+Type=Enum
+Header=cabl_def.h
+Definition=enum TicableHfc
+
+[Fields]
+HFC_OFF : hardware flow control is disabled.
+HFC_ON : hardware flow control is enabled.
+
+[Summary]
+Used to specify whether AVRlink wil use hardware flow control (RTS/CTS).

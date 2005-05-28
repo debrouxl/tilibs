@@ -1,0 +1,14 @@
+[Main]
+Name=ticable_get_hfc
+Type=Function
+Header=cabl_int.h
+Definition=@TicableHfc@ ticable_get_hfc (void);
+
+[Parameters]
+Returns : the hardware flow control method.
+
+[Summary]
+Check for hardware flow control enabled or not.
+
+[See also]
+@ticable_set_hfc@
