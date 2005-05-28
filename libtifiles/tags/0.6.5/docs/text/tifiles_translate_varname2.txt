@@ -1,0 +1,23 @@
+[Main]
+Name=tifiles_translate_varname
+Type=Function
+Header=file_int.h
+Definition=char* tifiles_translate_varname2(const char *varname,
+						  uint8_t vartype);
+
+[Parameters]
+varname : a variable name (binary name)
+vartype : the variable type
+Returns : the translated name
+
+[Summary]
+Translate a variable name into a human readable name.
+
+[Explanation]
+The same function as tifiles_translate_varname but it uses its own static
+buffer.
+
+Note: this function is contextual.
+
+[See also]
+tifiles_translate_varname

@@ -1,0 +1,8 @@
+[Main]
+Name=Ti8xVarEntry
+Type=Define
+Header=file_def.h (files8x.h)
+Definition=typedef TiVarEntry
+
+[Summary]
+An alias to @TiVarEntry@.
