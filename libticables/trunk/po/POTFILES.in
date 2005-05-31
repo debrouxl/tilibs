@@ -16,7 +16,6 @@ src/bsd/bsd_detect.c
 src/bsd/bsd_ioports.c
 src/bsd/bsd_mapping.c
 
-src/linux/avr_link.c
 src/linux/dev_link.c
 src/linux/par_link.c
 src/linux/ser_link.c
@@ -31,7 +30,6 @@ src/linux/linux_detect.c
 src/linux/linux_ioports.c
 src/linux/linux_mapping.c
 
-src/win32/avr_link.c
 src/win32/slv_link.c
 src/win32/tie_link.c
 src/win32/tig_link.c
