@@ -352,12 +352,65 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return ERR_UNSUPPORTED;
+	return send_var(handle, mode, content);
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
 {
-	return ERR_UNSUPPORTED;
+	uint32_t unused;
+	int nvar, err;
+    char tipath[18];
+    char *tiname;
+
+	content->model = handle->model;
+
+	// receive packets
+	for(nvar = 1;; nvar++)
+	{
+		VarEntry *ve;
+
+		content->entries = (VarEntry *) tifiles_realloc(content->entries, nvar * sizeof(VarEntry));
+		ve = &(content->entries[nvar-1]);
+		strcpy(ve->fld_name, "main");	
+
+		err = ti92_recv_VAR(&ve->size, &ve->type, tipath);
+		TRYF(ti92_send_ACK());
+
+		if(err == ERR_EOT)	// end of transmission
+			goto exit;
+		else
+			content->num_entries = nvar;
+
+		// from Christian (TI can send varname or fldname/varname)
+        if ((tiname = strchr(tipath, '\\')) != NULL) 
+		{
+			*tiname = '\0';
+            strcpy(ve->fld_name, tipath);
+            strcpy(ve->var_name, tiname + 1);
+        }
+        else 
+		{
+            strcpy(ve->fld_name, "main");
+            strcpy(ve->var_name, tipath);
+        }
+
+		sprintf(update->text, _("Receiving '%s'"), ve->var_name);
+		update_label();
+
+		TRYF(ti92_send_CTS());
+		TRYF(ti92_recv_ACK(NULL));
+
+		ve->data = tifiles_calloc(ve->size + 4, 1);
+		TRYF(ti92_recv_XDP(&unused, ve->data));
+		memmove(ve->data, ve->data + 4, ve->size);
+		TRYF(ti92_send_ACK());
+	}
+
+exit:
+	// write file content
+	nvar--;
+
+	return 0;
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)

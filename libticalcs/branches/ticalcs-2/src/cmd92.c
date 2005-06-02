@@ -198,9 +198,14 @@ int ti92_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
   if (cmd == CMD_EOT)
-    return ERR_EOT;		// not really an error
+  {
+	  ticalcs_info(" TI->PC: EOT");
+		return ERR_EOT;		// not really an error
+  }
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
+
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
 
@@ -227,6 +232,7 @@ int ti92_recv_CTS_h(CalcHandle* handle)
   uint8_t buffer[5];
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   else if (cmd != CMD_CTS)
@@ -248,13 +254,16 @@ int ti92_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   *rej_code = 0;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_CTS) 
   {
     ticalcs_info("CTS");
     return 0;
   }
+
   if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
+
   ticalcs_info(" TI->PC: SKP (rejection code = %i)", *rej_code = buffer[0]);
 
   return 0;

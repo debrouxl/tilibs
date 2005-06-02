@@ -806,7 +806,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode,
 		return ERR_BUSY;
 
 	TRYF(tifiles_file_read_regular(filename, &content));
-	TRYF(ticalcs_calc_send_var(handle, mode, &content));
+	TRYF(ticalcs_calc_send_var_ns(handle, mode, &content));
 	TRYF(tifiles_content_free_regular(&content));
 
 	return 0;
@@ -839,7 +839,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
 		return ERR_BUSY;
 
 	content = tifiles_content_create_regular();
-	TRYF(ticalcs_calc_recv_var(handle, mode, content, vr));
+	TRYF(ticalcs_calc_recv_var_ns(handle, mode, content, vr));
 	TRYF(tifiles_file_write_regular(filename, content, NULL));
 	TRYF(tifiles_content_free_regular(content));
 
