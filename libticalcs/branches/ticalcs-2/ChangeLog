@@ -2,6 +2,19 @@ SubVersion: $Id$
 
 Log:
 
+- 15/05/2005, version 0.0.1: roms
+	- logging reworked (use glib)
+	- a single public header with functions & defs, others are private
+	- slightly fixed namespace sheme
+	- use strong types such as TiCalcModel, ...
+	- glib is used for logging (not very much for strings)
+	- documentation system has been changed
+	- functions pointers have been removed
+	- library has been fully documented
+	- decreased number of headers to include (1 or 3)
+	
+====[ Version II ]====
+
 - 24/04/2005, version 4.5.9: roms
 	Adding new function for non-silent variable receiving support.
 	Needed for TiEmu (receive file).
