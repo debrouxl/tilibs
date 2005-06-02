@@ -154,6 +154,22 @@ case $host_os in
 	;;
 esac
 
+# Custom support
+AC_ARG_ENABLE(ti8x,
+  AC_HELP_STRING([--disable-ti8x], [disable TI8x support]),
+  [use_ti8x=$enableval], [use_ti8x=yes])
+if test x$use_ti8x = xno; then
+  AC_DEFINE(DISABLE_TI8X, 1, [Defined to disable the TI8x support])
+fi
+
+# Custom support
+AC_ARG_ENABLE(ti9x,
+  AC_HELP_STRING([--disable-ti9x], [disable TI9x support]),
+  [use_ti9x=$enableval], [use_ti9x=yes])
+if test x$use_ti9x = xno; then
+  AC_DEFINE(DISABLE_TI9X, 1, [Defined to disable the TI9x support])
+fi
+
 # Output.
 AC_OUTPUT
 

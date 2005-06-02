@@ -8,6 +8,12 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Define to 1 to disable the TI8x support */
+#undef DISABLE_TI8X
+
+/* Define to 1 to disable the TI9x support */
+#undef DISABLE_TI9X
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -59,9 +65,6 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
-
-/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
-#undef HAVE_DOPRNT
 
 /* Use -fvisibility=hidden flag */
 #undef HAVE_FVISIBILITY
@@ -121,10 +124,6 @@
 /* Define if you have the 'long long' type. */
 #undef HAVE_LONG_LONG
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
 
@@ -151,10 +150,6 @@
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
-
-/* Define to 1 if your system has a GNU libc compatible `realloc' function,
-   and to 0 otherwise. */
-#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `setenv' function. */
 #undef HAVE_SETENV
@@ -226,9 +221,6 @@
 
 /* Define if you have the 'unsigned long long' type. */
 #undef HAVE_UNSIGNED_LONG_LONG
-
-/* Define to 1 if you have the `vprintf' function. */
-#undef HAVE_VPRINTF
 
 /* Define if you have the 'wchar_t' type. */
 #undef HAVE_WCHAR_T
@@ -312,18 +304,12 @@
 #undef inline
 #endif
 
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
-
 /* Define to `long' if <sys/types.h> does not define. */
 #undef off_t
 
 /* Define as the type of the result of subtracting two pointers, if the system
    doesn't define it. */
 #undef ptrdiff_t
-
-/* Define to rpl_realloc if the replacement function should be used. */
-#undef realloc
 
 /* Define to empty if the C compiler doesn't support this keyword. */
 #undef signed
