@@ -277,6 +277,9 @@
    slash. */
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
+/* Define to 1 to disable the SilverLink support */
+#undef NO_CABLE_SLV
+
 /* Name of package */
 #undef PACKAGE
 

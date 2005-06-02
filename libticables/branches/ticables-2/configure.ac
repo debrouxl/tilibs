@@ -201,7 +201,12 @@ if test x$cab_cv_enable_logging = xyes; then
 fi
 
 # Custom cable support
-# to do...
+AC_ARG_ENABLE(link_slv,
+  AC_HELP_STRING([--disable-SilverLink], [disable SilverLink support]),
+  [use_link_slv=$enableval], [use_link_slv=yes])
+if test x$use_link_slv = xno; then
+  AC_DEFINE(NO_CABLE_SLV, 1, [Defined to disable the SilverLink support])
+fi
 
 # Output.
 AC_OUTPUT
