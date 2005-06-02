@@ -138,10 +138,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			t_node_append(folder, node);
 		}
 
-		ticalcs_info(_("Name: %8s | "), ve->name);
-		ticalcs_info(_("Type: %8s | "), tifiles_vartype2string(handle->model, ve->type));
-		ticalcs_info(_("Attr: %i  | "), ve->attr);
-		ticalcs_info(_("Size: %08X\n"), ve->size);
+		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
+			ve->name, 
+			tifiles_vartype2string(handle->model, ve->type),
+			ve->attr,
+			ve->size);
 
 		TRYF(ti92_send_ACK());
 		err = ti92_recv_CNT();
@@ -264,7 +265,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *entry = &(content->entries[i]);
 		uint8_t buffer[65536 + 4] = { 0 };
-		uint8_t full_name[18], varname[18], utf8[35];
+		uint8_t full_name[18], utf8[35];
 
 		if (mode & MODE_LOCAL_PATH)
 		{
@@ -281,7 +282,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
-		TRYF(ti92_send_VAR(entry->size, entry->type, varname));
+		TRYF(ti92_send_VAR(entry->size, entry->type, full_name));
 		TRYF(ti92_recv_ACK(NULL));
 
 		TRYF(ti92_recv_CTS());
@@ -307,6 +308,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint32_t unused;
 	uint8_t varname[18], utf8[35];
 
+	strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI92;
 	content->num_entries = 1;
 	content->entries = (VarEntry *) tifiles_calloc(1, sizeof(VarEntry));

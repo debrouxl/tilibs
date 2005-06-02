@@ -452,6 +452,9 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
 												 uint8_t** bitmap);
 
+	TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, TNode** vars, TNode **apps);
+	TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t*);
+
 	TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
 
@@ -485,21 +488,21 @@ struct _CalcHandle
 	TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle*, const char*, VarRequest*);
 
 	// dirlist.c
-	TIEXPORT void TICALL ticalc_dirlist_destroy(TNode** tree);
-	TIEXPORT void TICALL ticalc_dirlist_display(TNode*  tree);
+	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);
+	TIEXPORT void TICALL ticalcs_dirlist_display(TNode*  tree);
 
-	TIEXPORT int TICALL ticalc_dirlist_num_vars(TNode* tree);
-	TIEXPORT int TICALL ticalc_dirlist_mem_used(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree);
 
-	TIEXPORT VarEntry *TICALL ticalc_dirlist_var_exist(TNode* tree, char* varname);
-	TIEXPORT VarEntry *TICALL ticalc_dirlist_app_exist(TNode* tree, char* appname);
+	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
+	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);
 
 	// type2str.c
 	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
 	TIEXPORT CalcModel    TICALL ticalcs_string_to_model (const char *str);
 
 	TIEXPORT const char*      TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format);
-	TIEXPORT CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str);
+	TIEXPORT CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str);
 
 	TIEXPORT const char*  TICALL ticalcs_pathtype_to_string(CalcPathType type);
 	TIEXPORT CalcPathType TICALL ticalcs_string_to_pathtype(const char *str);

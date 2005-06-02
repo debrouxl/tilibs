@@ -221,7 +221,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 			if (ve->type == TI89_APPL) 
 			{
-				if (!ticalc_dirlist_app_exist(*apps, ve->name))
+				if (!ticalcs_dirlist_app_exist(*apps, ve->name))
 					t_node_append(*apps, node);
 				else
 					free(ve);
@@ -388,7 +388,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	// Do a directory list and check for something to backup
 	TRYF(get_dirlist(handle, &vars, &apps));
-	nvars = ticalc_dirlist_num_vars(vars);
+	nvars = ticalcs_dirlist_num_vars(vars);
 	if (!nvars)
 		return ERR_NO_VARS;
 
@@ -429,8 +429,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		}
 	}
 
-	ticalc_dirlist_destroy(&vars);
-	ticalc_dirlist_destroy(&apps);
+	ticalcs_dirlist_destroy(&vars);
+	ticalcs_dirlist_destroy(&apps);
 
 	return 0;
 }

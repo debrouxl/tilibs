@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include "../src/ticables.h"
+#include "../src/tifiles.h"
 #include "../src/ticalcs.h"
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
@@ -64,9 +65,7 @@ static int is_ready(CalcHandle* h)
 
 static int send_key(CalcHandle *h)
 {
-	CalcKey key;
-	
-	key = ticalcs_keys_92p('A');
+	CalcKey key = ticalcs_keys_92p('A');
 
 	TRYF(ticalcs_calc_send_key(h, key.normal.value));
 	return 0;
@@ -82,9 +81,27 @@ static int recv_screen(CalcHandle *h)
 	return 0;
 }
 
+static int get_dirlist(CalcHandle *h)
+{
+	TNode *vars, *apps;
+
+	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
+	ticalcs_dirlist_display(vars);
+	ticalcs_dirlist_display(apps);
+	return 0;
+}
+
 static int send_backup(CalcHandle* h)
 {
 	const char filename[1024] = "";
+	int ret;
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+	strcat(filename, ".");
+	strcat(filename, tifiles_fext_of_backup(h->model));
 
 	TRYF(ticalcs_calc_send_backup2(h, filename));
 	return 0;
@@ -93,6 +110,14 @@ static int send_backup(CalcHandle* h)
 static int recv_backup(CalcHandle* h)
 {
 	const char filename[1024] = "";
+	int ret;
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+	strcat(filename, ".");
+	strcat(filename, tifiles_fext_of_backup(h->model));
 
 	TRYF(ticalcs_calc_recv_backup2(h, filename));
 	return 0;
@@ -101,6 +126,12 @@ static int recv_backup(CalcHandle* h)
 static int send_var(CalcHandle* h)
 {
 	const char filename[1024] = "";
+	int ret;
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
 
 	TRYF(ticalcs_calc_send_var2(h, MODE_NORMAL, filename));
 	return 0;
@@ -109,7 +140,23 @@ static int send_var(CalcHandle* h)
 static int recv_var(CalcHandle* h)
 {
 	const char filename[1024] = "";
+	int ret;
 	VarEntry ve = { 0 };
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+
+	printf("Enter folder name: ");
+	ret = scanf("%s", ve.fld_name);
+	if(ret < 1)
+		return 0;
+
+	printf("Enter variable name: ");
+	ret = scanf("%s", ve.var_name);
+	if(ret < 1)
+		return 0;
 
 	TRYF(ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve));
 	return 0;
@@ -170,12 +217,13 @@ static int get_clock(CalcHandle *h)
 	return 0;
 }
 
-static const char *str_menu[17] = 
+static const char *str_menu[18] = 
 {
 	"Exit",
 	"Check whether calc is ready",
 	"Send a key",
 	"Do a screenshot",
+	"Listing",
 	"Send backup",
 	"Recv backup",
 	"Send var",
@@ -193,12 +241,13 @@ static const char *str_menu[17] =
 
 typedef int (*FNCT_MENU) (CalcHandle*);
 
-static FNCT_MENU fnct_menu[17] = 
+static FNCT_MENU fnct_menu[18] = 
 {
 	NULL,
 	is_ready,
 	send_key,
 	recv_screen,
+	get_dirlist,
 	send_backup,
 	recv_backup,
 	send_var,
@@ -232,26 +281,28 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T);
+	calc = ticalcs_handle_new(CALC_TI92);
 	if(calc == NULL)
 		return -1;
 
 	// attach cable to calc (and open cable)
 	err = ticalcs_cable_attach(calc, cable);
 
+/*
 	printf("Wait 1 second...\n");
 #if defined(__WIN32__) && !defined(__MINGW32__)
 	Sleep(1000);
 #else
 	sleep(1);
 #endif
+	*/
 
 	do
 	{
 restart:
 		// Display menu
 		printf("Choose an action:\n");
-		for(i = 0; i < 15; i++)
+		for(i = 0; i < 18; i++)
 			printf("%2i. %s\n", i, str_menu[i]);
 		printf("Your choice: ");
 
