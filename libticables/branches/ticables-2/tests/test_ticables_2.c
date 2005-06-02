@@ -28,16 +28,12 @@
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_TILP_CABL_INT_H
-# include <tilp/ticables.h>
-#else
-# include "../src/ticables.h"
-#endif
+#include "../src/ticables.h"
 
 #undef VERSION
 #define VERSION "Test program"
 
-void print_lc_error(int errnum)
+static void print_lc_error(int errnum)
 {
 	char *msg;
 
