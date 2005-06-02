@@ -86,7 +86,7 @@ static int get_dirlist(CalcHandle *h)
 	TNode *vars, *apps;
 
 	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
-	ticalcs_dirlist_display(vars);
+	//ticalcs_dirlist_display(vars);
 	ticalcs_dirlist_display(apps);
 	return 0;
 }
@@ -294,7 +294,7 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI92);
+	calc = ticalcs_handle_new(CALC_TI89T);
 	if(calc == NULL)
 		return -1;
 

@@ -1,5 +1,7 @@
 SubVersion: $Id$
 
+To do : use UTF8 strings for labels
+
 Log:
 
 - 15/05/2005, version 0.0.1: roms

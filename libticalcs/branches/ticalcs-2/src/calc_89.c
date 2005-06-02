@@ -19,8 +19,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* Initialize the LinkCable structure with default functions */
-/* This module can be used as sample code.*/
+/*
+	TI89/TI92+/V200/TI89 Titanium support.
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -158,10 +159,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		tifiles_transcode_detokenize(handle->model, fe->var_name, fe->name, fe->type);
         node = t_node_new(fe);
 
-        ticalcs_info(_("Name: %8s | "), fe->name);
-        ticalcs_info(_("Type: %8s | "), tifiles_vartype2string(handle->model, fe->type));
-        ticalcs_info(_("Attr: %i  | "), fe->attr);
-        ticalcs_info(_("Size: %08X\n"), fe->size);
+		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
+			fe->name, 
+			tifiles_vartype2string(handle->model, fe->type),
+			fe->attr,
+			fe->size);
 
         if (fe->type == TI89_DIR)
 			t_node_append(*vars, node);
@@ -208,10 +210,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
 			node = t_node_new(ve);
 
-			ticalcs_info(_("Name: %8s | "), ve->var_name);
-			ticalcs_info(_("Type: %8s | "), tifiles_vartype2string(handle->model, ve->type));
-			ticalcs_info(_("Attr: %i  | "), ve->attr);
-			ticalcs_info(_("Size: %08X\n"), ve->size);
+			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
+			ve->name, 
+			tifiles_vartype2string(handle->model, ve->type),
+			ve->attr,
+			ve->size);
 
 			sprintf(update->text, _("Reading of '%s/%s'"),
 			  ((VarEntry *) (folder->data))->var_name, ve->var_name);

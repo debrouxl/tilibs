@@ -263,6 +263,7 @@ typedef struct
 
 /**
  * CalcUpdate:
+ * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled
  * @rate: data rate of cable
  * @cnt1: current counter for local operation
@@ -273,7 +274,7 @@ typedef struct
  * @prev_percentage: Previous percentage of current operation
  * @main_percentage: Percentage of all operations
  * @prev_main_percentage: Previous percentage of all operations
- * @info: a text to display about the current operation
+ 
  * @start: init internal vars
  * @stop: release internal vars
  * @refresh: pass control to GUI for refresh

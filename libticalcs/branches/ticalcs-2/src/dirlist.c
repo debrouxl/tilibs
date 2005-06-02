@@ -138,6 +138,7 @@ static void dirlist_display_apps(TNode* tree)
     printf(" | ");
     printf("%08X", ve->size);
     printf(" |");
+	printf("\n");
   }
   if (!i)
   {
