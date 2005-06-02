@@ -340,6 +340,7 @@ extern "C" {
   TIEXPORT int TICALL tifiles_is_flash (CalcModel model);
 
   TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size);
+  TIEXPORT int             tifiles_hexdump(uint8_t* ptr, unsigned int length);
 
   TIEXPORT char* TICALL tifiles_get_varname(const char *full_name);
   TIEXPORT char* TICALL tifiles_get_fldname(const char *full_name);

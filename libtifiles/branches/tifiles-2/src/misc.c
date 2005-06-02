@@ -25,7 +25,9 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "tifiles.h"
+#include "rwfile.h"
 
 /**
  * tifiles_calc_is_ti8x:
@@ -112,6 +114,11 @@ TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
     c += buffer[i];
 
   return c;
+}
+
+TIEXPORT int tifiles_hexdump(uint8_t* ptr, unsigned int length)
+{
+	return hexdump(ptr, length);
 }
 
 /**
