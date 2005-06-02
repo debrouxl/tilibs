@@ -79,8 +79,8 @@ int send_packet(CalcHandle* handle,
 		buf[len+4+1] = MSB(sum);
 
 		// compute chunks
-		q = len / BLK_SIZE;
-		r = len % BLK_SIZE;
+		q = (len + 6) / BLK_SIZE;
+		r = (len + 6) % BLK_SIZE;
 		handle->updat->max1 = length;
 
 		// send full chunks
@@ -160,7 +160,7 @@ int recv_packet(CalcHandle* handle,
 {
 	int i;
 	uint16_t chksum;
-	uint8_t *buf = data;
+	uint8_t buf[4];
 	int r, q;
 
 	// Any packet has always at least 4 bytes (MID, CID, LEN)
@@ -193,7 +193,7 @@ int recv_packet(CalcHandle* handle,
 		// recv full chunks
 		for(i = 0; i < q; i++)
 		{
-			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
+			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += BLK_SIZE;
 			handle->updat->pbar();
@@ -203,7 +203,7 @@ int recv_packet(CalcHandle* handle,
 
 		// recv last chunk
 		{
-			TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE], (uint16_t)(r+2)));
+			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
 			handle->updat->cnt1 += 1;
 			handle->updat->pbar();
 			if (handle->updat->cancel)
@@ -211,7 +211,7 @@ int recv_packet(CalcHandle* handle,
 		}
 
 		// verify checksum
-		chksum = buf[*length] | (buf[*length+1] << 8);
+		chksum = data[*length] | (data[*length+1] << 8);
 		if (chksum != tifiles_checksum(data, *length))
 			return ERR_CHECKSUM;
 
