@@ -138,6 +138,70 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
 }
 
 /**
+ * ticalcs_calc_get_dirlist:
+ * @handle: a previously allocated handle
+ * @vars: a tree of folder & variables
+ * @apps: a tree of FLASH apps
+ *
+ * Request a directory listing.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, 
+											 TNode** vars, TNode **apps)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Requesting folder & vars & apps listing:"));
+	handle->busy = 1;
+	ret = calc->get_dirlist(handle, vars, apps);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_dirlist:
+ * @handle: a previously allocated handle
+ * @memory: memory available
+ *
+ * Request free memory. Do a dirlist to update value.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memory)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Requesting folder & vars & apps listing:"));
+	handle->busy = 1;
+	ret = calc->get_memfree(handle, memory);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
  * ticalcs_calc_recv_backup:
  * @handle: a previously allocated handle
  * @content: backup content

@@ -24,6 +24,7 @@
 */
 
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,7 +39,7 @@ static tboolean free_varentry(TNode* node, tpointer data)
 	return FALSE;
 }
 
-TIEXPORT void TICALL ticalc_dirlist_destroy(TNode** tree)
+TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree)
 {
 	if (*tree != NULL) 
 	{
@@ -53,9 +54,9 @@ static void dirlist_display_vars(TNode* tree)
   int i, j, k;
   TNode *vars = tree;
 
-  ticalcs_info(  "+------------------+----------+----+----+----------+----------+");
-  ticalcs_info(_("| B. name          | T. name  |Attr|Type| Size     | Parent   |"));
-  ticalcs_info(  "+------------------+----------+----+----+----------+----------+");
+  printf(  "+------------------+----------+----+----+----------+----------+\n");
+  printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
+  printf(  "+------------------+----------+----+----+----------+----------+\n");
 
   for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
   {
@@ -64,20 +65,21 @@ static void dirlist_display_vars(TNode* tree)
 
     if (fe != NULL) 
 	{
-      ticalcs_info("| ");
+      printf("| ");
       for (k = 0; k < 8; k++)
-		ticalcs_info("%02X", (uint8_t) (fe->var_name)[k]);
-      ticalcs_info(" | ");	
-      ticalcs_info("%8s", fe->name);
-      ticalcs_info(" | ");
-      ticalcs_info("%2i", fe->attr);
-      ticalcs_info(" | ");
-      ticalcs_info("%02X", fe->type);
-      ticalcs_info(" | ");
-      ticalcs_info("%08X", fe->size);
-      ticalcs_info(" | ");
-      ticalcs_info("%8s", fe->fld_name);
-      ticalcs_info(" |");
+		printf("%02X", (uint8_t) (fe->var_name)[k]);
+      printf(" | ");	
+      printf("%8s", fe->name);
+      printf(" | ");
+      printf("%2i", fe->attr);
+      printf(" | ");
+      printf("%02X", fe->type);
+      printf(" | ");
+      printf("%08X", fe->size);
+      printf(" | ");
+      printf("%8s", fe->fld_name);
+      printf(" |");
+	  printf("\n");
     }
 
     for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
@@ -85,27 +87,28 @@ static void dirlist_display_vars(TNode* tree)
       TNode *child = t_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
-      ticalcs_info("| ");
+      printf("| ");
       for (k = 0; k < 8; k++) 
-		ticalcs_info("%02X", (uint8_t) (ve->var_name)[k]);
-      ticalcs_info(" | ");
-      ticalcs_info("%8s", ve->name);
-      ticalcs_info(" | ");
-      ticalcs_info("%2i", ve->attr);
-      ticalcs_info(" | ");
-      ticalcs_info("%02X", ve->type);
-      ticalcs_info(" | ");
-      ticalcs_info("%08X", ve->size);
-      ticalcs_info(" | ");
-      ticalcs_info("%8s", ve->fld_name);
-      ticalcs_info(" |");
+		printf("%02X", (uint8_t) (ve->var_name)[k]);
+      printf(" | ");
+      printf("%8s", ve->name);
+      printf(" | ");
+      printf("%2i", ve->attr);
+      printf(" | ");
+      printf("%02X", ve->type);
+      printf(" | ");
+      printf("%08X", ve->size);
+      printf(" | ");
+      printf("%8s", ve->fld_name);
+      printf(" |");
+	  printf("\n");
     }
   }
   if (!i)
-    ticalcs_info(_("  No variables"));
+    printf(_("  No variables"));
 
-  ticalcs_info(_
-	  ("+------------------+----------+----+----+----------+----------+"));
+  printf(_("+------------------+----------+----+----+----------+----------+"));
+  printf("\n");
 }
 
 static void dirlist_display_apps(TNode* tree)
@@ -113,9 +116,9 @@ static void dirlist_display_apps(TNode* tree)
   int i, k;
   TNode *apps = tree;
 
-  ticalcs_info(  "+------------------+----------+----+----+----------+");
-  ticalcs_info(_("| B. name          | T. name  |Attr|Type| Size     |"));
-  ticalcs_info(  "+------------------+----------+----+----+----------+");
+  printf(  "+------------------+----------+----+----+----------+\n");
+  printf(_("| B. name          | T. name  |Attr|Type| Size     |\n"));
+  printf(  "+------------------+----------+----+----+----------+\n");
 
   for (i = 0; i < (int)t_node_n_children(apps); i++) 
   {
@@ -123,27 +126,30 @@ static void dirlist_display_apps(TNode* tree)
 
     VarEntry *ve = (VarEntry *) (child->data);
 
-    ticalcs_info("| ");
+    printf("| ");
     for (k = 0; k < 8; k++)
-      ticalcs_info("%02X", (uint8_t) (ve->var_name)[k]);
-    ticalcs_info(" | ");
-    ticalcs_info("%8s", ve->name);
-    ticalcs_info(" | ");
-    ticalcs_info("%2i", ve->attr);
-    ticalcs_info(" | ");
-    ticalcs_info("%02X", ve->type);
-    ticalcs_info(" | ");
-    ticalcs_info("%08X", ve->size);
-    ticalcs_info(" |");
+      printf("%02X", (uint8_t) (ve->var_name)[k]);
+    printf(" | ");
+    printf("%8s", ve->name);
+    printf(" | ");
+    printf("%2i", ve->attr);
+    printf(" | ");
+    printf("%02X", ve->type);
+    printf(" | ");
+    printf("%08X", ve->size);
+    printf(" |");
   }
   if (!i)
-    ticalcs_info(_("  No applications"));
+  {
+	printf(_("+ No applications  |          |    |    |          +"));
+	printf("\n");
+  }
 
-  ticalcs_info("+------------------+----------+----+----+----------+");
-  ticalcs_info("");
+  printf("+------------------+----------+----+----+----------+");
+  printf("\n");
 }
 
-TIEXPORT void TICALL ticalc_dirlist_display(TNode* tree)
+TIEXPORT void TICALL ticalcs_dirlist_display(TNode* tree)
 {
 	char *node_name;
   
@@ -159,7 +165,7 @@ TIEXPORT void TICALL ticalc_dirlist_display(TNode* tree)
 }
 
 
-TIEXPORT VarEntry *TICALL ticalc_dirlist_var_exist(TNode* tree, char *full_name)
+TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char *full_name)
 {
 	int i, j;
 	TNode *vars = tree;
@@ -197,7 +203,7 @@ TIEXPORT VarEntry *TICALL ticalc_dirlist_var_exist(TNode* tree, char *full_name)
 }
 
 
-TIEXPORT VarEntry *TICALL ticalc_dirlist_app_exist(TNode* tree, char *appname)
+TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char *appname)
 {
 	int i;
 	TNode *apps = tree;
@@ -220,7 +226,7 @@ TIEXPORT VarEntry *TICALL ticalc_dirlist_app_exist(TNode* tree, char *appname)
 	return NULL;
 }
 
-TIEXPORT int TICALL ticalc_dirlist_num_vars(TNode* tree)
+TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree)
 {
 	int i, j;
 	TNode *vars = tree;
@@ -244,7 +250,7 @@ TIEXPORT int TICALL ticalc_dirlist_num_vars(TNode* tree)
 }
 
 
-TIEXPORT int TICALL ticalc_dirlist_mem_used(TNode* tree)
+TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 {
 	int i, j;
 	TNode *vars = tree;
