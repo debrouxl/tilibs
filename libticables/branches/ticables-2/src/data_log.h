@@ -26,19 +26,22 @@
 # include <config.h>
 #endif
 
-#include <stdio.h>
+#include "stdints.h"
 
 int start_logging();
-int log_data(int data);
+int log_data(uint8_t data);
+int log_n_data(uint8_t* data, int len);
 int stop_logging();
 
 #ifdef ENABLE_LOGGING
-# define START_LOGGING(); start_logging();
-# define LOG_DATA(d);     log_data(d);
-# define STOP_LOGGING();  stop_logging();
+# define START_LOGGING();	start_logging();
+# define LOG_DATA(d);		log_data(d);
+# define LOG_N_DATA(d,n);	log_n_data(d,n);
+# define STOP_LOGGING();	stop_logging();
 #else
 # define START_LOGGING();
 # define LOG_DATA(d);
+# define LOG_N_DATA(d,n);
 # define STOP_LOGGING();
 #endif
 

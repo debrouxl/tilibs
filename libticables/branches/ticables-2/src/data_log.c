@@ -23,6 +23,10 @@
    and TI calculator.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -31,15 +35,13 @@
 #endif
 #include <string.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
+#include "stdints.h"
 #include "gettext.h"
 #include "logging.h"
+#include "data_log.h"
 
-#define LOG_FILE  "libCables.log"
-#define TIME_FILE "libCables.time"
+#define LOG_FILE  "ticables.log"
+#define TIME_FILE "ticables.tim"
 
 static char *fn1 = NULL;
 static char *fn2 = NULL;
@@ -78,13 +80,15 @@ int start_logging()
   	ticables_info(_("Logging started."));
 
   	log1 = fopen(fn1, "wt");
-  	if (log1 == NULL) {
+  	if (log1 == NULL) 
+	{
     		ticables_error(_("Unable to open <%s> for logging.\n"), fn1);
     		return -1;
   	}
 
   	log2 = fopen(fn2, "wt");
-  	if (log2 == NULL) {
+  	if (log2 == NULL) 
+	{
     		ticables_error(_("Unable to open <%s> for logging.\n"), fn2);
     		return -1;
   	}
@@ -96,7 +100,7 @@ int start_logging()
   	return 0;
 }
 
-int log_data(int d)
+int log_data(uint8_t d)
 {
   	static int array[16];
   	static int i = 0;
@@ -112,17 +116,19 @@ int log_data(int d)
   	array[i++] = d;
 
   	fprintf(log1, "%02X ", d);
-  	if (!(i % 16) && (i > 1)) {
-    		fprintf(log1, "| ");
-    		for (j = 0; j < 16; j++) {
-      			c = array[j];
-      			if ((c < 32) || (c > 127))
-				fprintf(log1, " ");
-      			else
-				fprintf(log1, "%c", c);
-    		}
-    		fprintf(log1, "\n");
-    		i = 0;
+  	if (!(i % 16) && (i > 1)) 
+	{
+    	fprintf(log1, "| ");
+    	for (j = 0; j < 16; j++) 
+		{
+      		c = array[j];
+      		if ((c < 32) || (c > 127))
+			fprintf(log1, " ");
+      		else
+			fprintf(log1, "%c", c);
+    	}
+    	fprintf(log1, "\n");
+    	i = 0;
   	}
 #ifndef __WIN32__
   	gettimeofday(&tv, &tz);
@@ -132,6 +138,16 @@ int log_data(int d)
 	  (int) (tv.tv_usec - tv_start.tv_usec));
 #endif
 
+  	return 0;
+}
+
+int log_n_data(uint8_t* d, int n)
+{
+	int i;
+
+	for(i = 0; i < n; i++)
+		log_data(d[i]);
+  	
   	return 0;
 }
 
@@ -149,6 +165,8 @@ int stop_logging()
 
   	return 0;
 }
+
+// ---
 
 int start_void()
 {
