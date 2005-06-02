@@ -212,7 +212,7 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char *appname)
 	if (tree == NULL)
 		return NULL;
 
-	if (strcmp(apps->data, VAR_NODE_NAME))
+	if (strcmp(apps->data, APP_NODE_NAME))
 		return NULL;
 
 	for (i = 0; i < (int)t_node_n_children(apps); i++) 
