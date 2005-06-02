@@ -134,10 +134,40 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->send(handle, data, len);
+	LOG_N_DATA(data, len);
 	handle->busy = 0;
 
 	return 0;
 }
+
+/**
+ * ticables_cable_put:
+ * @handle: a previously allocated handle
+ * @data: data to send
+ *
+ * Send one byte from PC to hand-held.
+ * Convenient function implemented for compatibility.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
+{
+	const CableFncts *cable = handle->cable;
+	int ret;
+
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
+
+	handle->busy = 1;
+	handle->rate.count += 1;
+	ret = cable->send(handle, &data, 1);
+	LOG_DATA(data);
+	handle->busy = 0;
+
+	return 0;
+}	
 
 /**
  * ticables_cable_recv:
@@ -164,6 +194,36 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->recv(handle, data, len);
+	LOG_N_DATA(data, len);
+	handle->busy = 0;
+
+	return 0;
+}
+
+/**
+ * ticables_cable_get:
+ * @handle: a previously allocated handle
+ * @data: data to receive
+ *
+ * Receive one byte from hand-held to PC.
+ * Convenient function implemented for compatibility.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
+{
+	const CableFncts *cable = handle->cable;
+	int ret;
+	
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
+
+	handle->busy = 1;
+	handle->rate.count += 1;
+	ret = cable->recv(handle, data, 1);
+	LOG_DATA(*data);
 	handle->busy = 0;
 
 	return 0;

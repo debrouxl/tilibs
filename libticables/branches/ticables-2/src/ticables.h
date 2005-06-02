@@ -51,6 +51,8 @@ extern "C" {
 #define DFLT_TIMEOUT  15	/* 1.5 second */
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
+#define ERROR_READ_TIMEOUT	4
+
 /**
  * CableModel:
  *
@@ -242,6 +244,9 @@ struct _CableHandle
 
 	TIEXPORT int TICALL ticables_progress_reset(CableHandle*);
 	TIEXPORT int TICALL ticables_progress_get(CableHandle*, int* count, int* msec, float* rate);
+
+	TIEXPORT int TICALL ticables_cable_put(CableHandle*, uint8_t data);
+	TIEXPORT int TICALL ticables_cable_get(CableHandle*, uint8_t *data);
 
 	// error.c
 	TIEXPORT int         TICALL ticables_error_get (int number, char **message);
