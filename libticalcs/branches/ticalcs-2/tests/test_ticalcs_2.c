@@ -212,6 +212,11 @@ static int recv_flash(CalcHandle *h)
 
 static int recv_idlist(CalcHandle *h)
 {
+	uint8_t id[32];
+
+	TRYF(ticalcs_calc_recv_idlist(h, id));
+	printf("IDLIST: <%s>", id);
+
 	return 0;
 }
 
