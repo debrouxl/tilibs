@@ -248,16 +248,32 @@ static int recv_idlist(CalcHandle *h)
 
 static int dump_rom(CalcHandle *h)
 {
+	const char filename[1024] = "";
+	int ret;
+	VarEntry ve = { 0 };
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+
+	TRYF(ticalcs_calc_dump_rom(h, 0, filename));
 	return 0;
 }
 
 static int set_clock(CalcHandle *h)
 {
+	printf("Not implemented yet !\n");
 	return 0;
 }
 
 static int get_clock(CalcHandle *h)
 {
+	CalcClock clk;
+
+	TRYF(ticalcs_calc_get_clock(h, &clk));
+	ticalcs_calc_show_clock(&clk);
+
 	return 0;
 }
 

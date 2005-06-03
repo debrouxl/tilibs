@@ -474,6 +474,7 @@ struct _CalcHandle
 
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
+	TIEXPORT int TICALL ticalcs_calc_show_clock(CalcClock* clock);
 
 	// calc.c: convenient functions
 	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char *filename);

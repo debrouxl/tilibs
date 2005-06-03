@@ -12,7 +12,7 @@
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU General Public License for more details->
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
+#include "logging.h"
 
 #ifdef __WIN32__
 #define strcasecmp _stricmp
@@ -70,4 +71,13 @@ TIEXPORT int TICALL ticalcs_clock_date2format(const char *format)
     return 1;
 
   return i;
+}
+
+TIEXPORT int TICALL ticalcs_calc_show_clock(CalcClock* s)
+{
+	ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
+	ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);
+	ticalcs_info("Time format: %02i", s->time_format);
+	ticalcs_info("Date format: %s", ticalcs_clock_format2date(s->date_format));
+	return 0;
 }
