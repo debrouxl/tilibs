@@ -202,11 +202,37 @@ static int del_var(CalcHandle* h)
 
 static int send_flash(CalcHandle *h)
 {
+	const char filename[1024] = "";
+	int ret;
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+	strcat(filename, ".");
+	strcat(filename, tifiles_fext_of_flash_app(h->model));
+
+	TRYF(ticalcs_calc_send_flash2(h, filename));
 	return 0;
 }
 
 static int recv_flash(CalcHandle *h)
 {
+	const char filename[1024] = "";
+	int ret;
+	VarEntry ve = { 0 };
+
+	printf("Enter filename: ");
+	ret = scanf("%s", filename);
+	if(ret < 1)
+		return 0;
+
+	printf("Enter application name: ");
+	ret = scanf("%s", ve.var_name);
+	if(ret < 1)
+		return 0;
+
+	TRYF(ticalcs_calc_recv_flash2(h, MODE_NORMAL, filename, &ve));
 	return 0;
 }
 
