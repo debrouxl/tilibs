@@ -228,11 +228,11 @@ static int recv_flash(CalcHandle *h)
 		return 0;
 
 	printf("Enter application name: ");
-	ret = scanf("%s", ve.var_name);
+	ret = scanf("%s", ve.name);
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_recv_flash2(h, MODE_NORMAL, filename, &ve));
+	TRYF(ticalcs_calc_recv_flash2(h, filename, &ve));
 	return 0;
 }
 
