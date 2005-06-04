@@ -308,7 +308,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
  * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, 
-											FileContent* content, VarRequest* var)
+											FileContent* content, VarRequest* vr)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
@@ -322,9 +322,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Requesting variable '%s':"), ""/*var->var_name*/);
+	ticalcs_info(_("Requesting variable '%s':"), vr->name);
 	handle->busy = 1;
-	ret = calc->recv_var(handle, mode, content, var);
+	ret = calc->recv_var(handle, mode, content, vr);
 	handle->busy = 0;
 
 	return ret;
@@ -339,7 +339,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
+TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
@@ -353,9 +353,9 @@ TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* var)
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Requesting deletion of variable '%s':"), ""/*var->var_name)*/);
+	ticalcs_info(_("Requesting deletion of variable '%s':"), vr->name);
 	handle->busy = 1;
-	ret = calc->del_var(handle, var);
+	ret = calc->del_var(handle, vr);
 	handle->busy = 0;
 
 	return ret;
@@ -647,7 +647,10 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
 	switch(handle->model)
 	{
 	case CALC_TI73:
+	case CALC_TI82:
 	case CALC_TI83:
+	case CALC_TI83P:
+	case CALC_TI84P:
 	case CALC_TI86:
 	case CALC_TI92:
 		// true backup capability

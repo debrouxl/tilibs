@@ -67,11 +67,11 @@ static void dirlist_display_vars(TNode* tree)
 
     if (fe != NULL) 
 	{
-	  tifiles_transcode_varname (info->model, trans, fe->var_name, fe->type);
+	  tifiles_transcode_varname (info->model, trans, fe->name, fe->type);
 
       printf("| ");
       for (k = 0; k < 8; k++)
-		printf("%02X", (uint8_t) (fe->var_name)[k]);
+		printf("%02X", (uint8_t) (fe->name)[k]);
       printf(" | ");	
       printf("%8s", trans);
       printf(" | ");
@@ -81,7 +81,7 @@ static void dirlist_display_vars(TNode* tree)
       printf(" | ");
       printf("%08X", fe->size);
       printf(" | ");
-      printf("%8s", fe->fld_name);
+      printf("%8s", fe->folder);
       printf(" |");
 	  printf("\n");
     }
@@ -91,11 +91,11 @@ static void dirlist_display_vars(TNode* tree)
       TNode *child = t_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
-	  tifiles_transcode_varname (info->model, trans, ve->var_name, ve->type);
+	  tifiles_transcode_varname (info->model, trans, ve->name, ve->type);
 
       printf("| ");
       for (k = 0; k < 8; k++) 
-		printf("%02X", (uint8_t) (ve->var_name)[k]);
+		printf("%02X", (uint8_t) (ve->name)[k]);
       printf(" | ");
       printf("%8s", trans);
       printf(" | ");
@@ -105,7 +105,7 @@ static void dirlist_display_vars(TNode* tree)
       printf(" | ");
       printf("%08X", ve->size);
       printf(" | ");
-      printf("%8s", ve->fld_name);
+      printf("%8s", ve->folder);
       printf(" |");
 	  printf("\n");
     }
@@ -133,11 +133,11 @@ static void dirlist_display_apps(TNode* tree)
     TNode *child = t_node_nth_child(apps, i);
     VarEntry *ve = (VarEntry *) (child->data);
 
-	tifiles_transcode_varname (info->model, trans, ve->var_name, ve->type);
+	tifiles_transcode_varname (info->model, trans, ve->name, ve->type);
 
     printf("| ");
     for (k = 0; k < 8; k++)
-      printf("%02X", (uint8_t) (ve->var_name)[k]);
+      printf("%02X", (uint8_t) (ve->name)[k]);
     printf(" | ");
     printf("%8s", trans);
     printf(" | ");
@@ -197,7 +197,7 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char *full_name
 		TNode *parent = t_node_nth_child(vars, i);
 		VarEntry *fe = (VarEntry *) (parent->data);
 
-		if ((fe != NULL) && strcmp(fe->var_name, fldname))
+		if ((fe != NULL) && strcmp(fe->name, fldname))
 			continue;
 
 		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
@@ -205,7 +205,7 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char *full_name
 			TNode *child = t_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
-			if (!strcmp(ve->var_name, varname))
+			if (!strcmp(ve->name, varname))
 				return ve;
 		}
 	}
@@ -232,7 +232,7 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char *appname)
 		TNode *child = t_node_nth_child(apps, i);
 		VarEntry *ve = (VarEntry *) (child->data);
 
-		if (!strcmp(ve->var_name, appname))
+		if (!strcmp(ve->name, appname))
 			return ve;
 	}
 

@@ -86,14 +86,14 @@ static int get_dirlist(CalcHandle *h)
 	TNode *vars, *apps;
 
 	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
-	//ticalcs_dirlist_display(vars);
+	ticalcs_dirlist_display(vars);
 	ticalcs_dirlist_display(apps);
 	return 0;
 }
 
 static int send_backup(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 
 	printf("Enter filename: ");
@@ -109,7 +109,7 @@ static int send_backup(CalcHandle* h)
 
 static int recv_backup(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 
 	printf("Enter filename: ");
@@ -149,12 +149,12 @@ static int recv_var(CalcHandle* h)
 		return 0;
 
 	printf("Enter folder name: ");
-	ret = scanf("%s", ve.fld_name);
+	ret = scanf("%s", ve.folder);
 	if(ret < 1)
 		return 0;
 
 	printf("Enter variable name: ");
-	ret = scanf("%s", ve.var_name);
+	ret = scanf("%s", ve.name);
 	if(ret < 1)
 		return 0;
 
@@ -202,7 +202,7 @@ static int del_var(CalcHandle* h)
 
 static int send_flash(CalcHandle *h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 
 	printf("Enter filename: ");

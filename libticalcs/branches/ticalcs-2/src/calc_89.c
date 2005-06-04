@@ -121,6 +121,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
     uint32_t block_size;
     int i, j;
     uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
+	TreeInfo *ti;
 
     TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
     TRYF(ti89_recv_ACK(NULL));
@@ -139,9 +140,16 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
     // get list of folders & FLASH apps
     (*vars) = t_node_new(NULL);
-	(*vars)->data = strdup(VAR_NODE_NAME);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
 	(*apps) = t_node_new(NULL);
-	(*apps)->data = strdup(APP_NODE_NAME);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
 
 	for (j = 4; j < (int)block_size;) 
 	{
@@ -154,10 +162,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
         fe->attr = buffer[j + 9];
         fe->size = buffer[j + 10] | (buffer[j + 11] << 8) | (buffer[j + 12] << 16);	// | (buffer[j+13] << 24);
         j += 14 + extra;
-        strcpy(fe->fld_name, "");
-
-		tifiles_transcode_detokenize(handle->model, fe->var_name, fe->name, fe->type);
-        node = t_node_new(fe);
+        strcpy(fe->folder, "");
 
 		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
 			fe->name, 
@@ -166,7 +171,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			fe->size);
 
         if (fe->type == TI89_DIR)
+		{
+			node = t_node_new(fe);
 			t_node_append(*vars, node);
+		}
         else if (fe->type == TI89_APPL)
 			continue;			// AMS<2.08 returns FLASH apps
 	}
@@ -205,10 +213,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			ve->attr = buffer[j + 9];
 			ve->size = buffer[j + 10] | (buffer[j + 11] << 8) | (buffer[j + 12] << 16);	// | (buffer[j+13] << 24);
 			j += 14 + extra;
-			strcpy(ve->fld_name, folder_name);
-
-			tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
-			node = t_node_new(ve);
+			strcpy(ve->folder, folder_name);
 
 			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
 			ve->name, 
@@ -217,7 +222,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			ve->size);
 
 			sprintf(update->text, _("Reading of '%s/%s'"),
-			  ((VarEntry *) (folder->data))->var_name, ve->var_name);
+			  ((VarEntry *) (folder->data))->name, ve->name);
 			update_label();
 			if (update->cancel)
 				return -1;
@@ -225,12 +230,16 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			if (ve->type == TI89_APPL) 
 			{
 				if (!ticalcs_dirlist_app_exist(*apps, ve->name))
+				{
+					node = t_node_new(ve);
 					t_node_append(*apps, node);
-				else
-					free(ve);
+				}
 			} 
 			else
+			{
+				node = t_node_new(ve);
 				t_node_append(folder, node);
+			}
 		}
 		
 		ticalcs_info("\n");
@@ -261,17 +270,17 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		if ((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
 		{	
 			// local & not backup
-			strcpy(full_name, entry->var_name);
+			strcpy(full_name, entry->name);
 		} 
 		else 
 		{
 			// full or backup
-			strcpy(full_name, entry->fld_name);
+			strcpy(full_name, entry->folder);
 			strcat(full_name, "\\");
-			strcat(full_name, entry->var_name);
+			strcat(full_name, entry->name);
 		}
 
-		tifiles_transcode_detokenize(handle->model, utf8, full_name, entry->type);
+		tifiles_transcode_varname(handle->model, utf8, full_name, entry->type);
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
@@ -326,7 +335,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	uint8_t varname[20], utf8[35];
+	uint8_t full_name[20], utf8[35];
 
 	content->model = handle->model;
 	content->num_entries = 1;
@@ -334,15 +343,15 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	strcpy(varname, vr->fld_name);
-	strcat(varname, "\\");
-	strcat(varname, vr->var_name);
+	strcpy(full_name, vr->folder);
+	strcat(full_name, "\\");
+	strcat(full_name, vr->name);
 
-	tifiles_transcode_detokenize(handle->model, utf8, varname, vr->type);
+	tifiles_transcode_varname(handle->model, utf8, full_name, vr->type);
 	sprintf(update->text, _("Receiving '%s'"), utf8);
 	update_label();
 
-	TRYF(ti89_send_REQ(0, vr->type, varname));
+	TRYF(ti89_send_REQ(0, vr->type, full_name));
 	TRYF(ti89_recv_ACK(&status));
 	if (status != 0)
 		return ERR_MISSING_VAR;
@@ -465,7 +474,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		content->entries = (VarEntry *) tifiles_realloc(content->entries, nvar * sizeof(VarEntry));
 		ve = &(content->entries[nvar-1]);
-		strcpy(ve->fld_name, "main");	
+		strcpy(ve->folder, "main");	
 
 		err = ti89_recv_VAR(&ve->size, &ve->type, tipath);
 		TRYF(ti89_send_ACK());
@@ -479,16 +488,16 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
         if ((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
-            strcpy(ve->fld_name, tipath);
-            strcpy(ve->var_name, tiname + 1);
+            strcpy(ve->folder, tipath);
+            strcpy(ve->name, tiname + 1);
         }
         else 
 		{
-            strcpy(ve->fld_name, "main");
-            strcpy(ve->var_name, tipath);
+            strcpy(ve->folder, "main");
+            strcpy(ve->name, tipath);
         }
 
-		sprintf(update->text, _("Receiving '%s'"), ve->var_name);
+		sprintf(update->text, _("Receiving '%s'"), ve->name);
 		update_label();
 
 		TRYF(ti89_send_CTS());

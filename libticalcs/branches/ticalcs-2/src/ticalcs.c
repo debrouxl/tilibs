@@ -46,6 +46,7 @@ extern const CalcUpdate default_update;
 static CalcFncts const *const calcs[] = 
 {
 	&calc_00,
+		/*
 #ifndef NO_TI73
 	&calc_73,
 #endif
@@ -73,6 +74,7 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_V200
 	&calc_v2,
 #endif
+	*/
 #ifndef NO_TI89T
 	&calc_89t,
 #endif
