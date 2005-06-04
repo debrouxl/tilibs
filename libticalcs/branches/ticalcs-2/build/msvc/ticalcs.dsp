@@ -105,7 +105,15 @@ SOURCE=..\..\src\calc_73.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\calc_82.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\calc_83.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_85.c
 # End Source File
 # Begin Source File
 

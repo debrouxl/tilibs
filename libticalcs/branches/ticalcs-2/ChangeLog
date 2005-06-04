@@ -1,6 +1,12 @@
 SubVersion: $Id$
 
-To do : use UTF8 strings for labels
+To do : 
+- review of code:
+  - clean-up
+  - defining some coding style (var name, similitudes)
+- use localized strings for labels/printf
+- update the link guide
+- update code according to link guide
 
 Log:
 

@@ -194,15 +194,18 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     TRYF(ti85_send_XDP(content->data_length1, content->data_part1));
     TRYF(ti85_recv_ACK(&status));
     update->cnt2 = 1;
+
     TRYF(ti85_send_XDP(content->data_length2, content->data_part2));
     TRYF(ti85_recv_ACK(&status));
     update->cnt2 = 2;
+
     if (content->data_length3) 
 	{
       TRYF(ti85_send_XDP(content->data_length3, content->data_part3));
       TRYF(ti85_recv_ACK(&status));
     }
     update->cnt2 = 3;
+
     TRYF(ti85_send_XDP(content->data_length4, content->data_part4));
     TRYF(ti85_recv_ACK(&status));
     update->cnt2 = 4;
