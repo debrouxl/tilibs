@@ -203,6 +203,23 @@ typedef struct
 } CalcScreenCoord;
 
 /**
+ * TreeInfo:
+ * @model: hand-held model
+ * @type: var or app list
+ * @mem_used: memory used (depends on hand-held model)
+ * @mem_free: memory free (depends on hand-held model)
+ *
+ * A structure used for storing information about a directory lsit tree.
+ **/
+typedef struct
+{
+	CalcModel	model;
+	char*		type;	// VAR_NODE_NAME or APP_NODE_NAME
+	uint32_t	mem_used;
+	uint32_t	mem_free;
+} TreeInfo;
+
+/**
  * KeyPair:
  * @name: name of key (like "ESC")
  * @value: value of key (like 264)
