@@ -326,7 +326,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     fread_byte(f, &(entry->type));
     if (is_ti8586(content->model))
       fread_byte(f, &name_length);
-    fread_n_chars(f, name_length, entry->var_name);
+    fread_n_chars(f, name_length, entry->name);
 	if(content->model == CALC_TI86)
 		fskip(f, 8 - name_length);
     if (ti83p_flag) 
@@ -580,7 +580,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0].var_name, 
+    tifiles_transcode_varname(content->model, trans, content->entries[0].name, 
 			   content->entries[0].type );
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
@@ -645,15 +645,15 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     fwrite_byte(f, entry->type);
     if (is_ti8586(content->model)) 
 	{
-      size_t name_length = strlen(entry->var_name);
+      size_t name_length = strlen(entry->name);
       fwrite_byte(f, (uint8_t)name_length);
 	  if(content->model == CALC_TI85)
-		fwrite_n_chars(f, name_length, entry->var_name);
+		fwrite_n_chars(f, name_length, entry->name);
 	  else
-		fwrite_n_chars2(f, 8, entry->var_name);
+		fwrite_n_chars2(f, 8, entry->name);
     }
     else
-    	fwrite_n_chars(f, 8, entry->var_name);
+    	fwrite_n_chars(f, 8, entry->name);
     if (is_ti83p(content->model))
       fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00));
     fwrite_word(f, (uint16_t)entry->size);
@@ -663,8 +663,8 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
     sum += entry->type;
     if (is_ti8586(content->model))
-      sum += strlen(entry->var_name);
-    sum += tifiles_checksum((uint8_t *) entry->var_name, 8);
+      sum += strlen(entry->name);
+    sum += tifiles_checksum((uint8_t *) entry->name, 8);
     sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
     sum += tifiles_checksum(entry->data, entry->size);
   }
@@ -862,7 +862,7 @@ int ti8x_content_display_regular(Ti8xRegular *content)
     tifiles_info("Entry #%i", i);
     tifiles_info("  name:        <%s>",
 	    tifiles_transcode_varname(content->model, trans,
-					content->entries[i].var_name,				   
+					content->entries[i].name,				   
 				   content->entries[i].type
 				   ));
     tifiles_info("  type:        %02X (%s)",

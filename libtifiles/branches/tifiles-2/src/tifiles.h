@@ -93,8 +93,8 @@ typedef enum
 
 /**
  * VarEntry:
- * @fld_name: name of folder (TI9x only) or ""
- * @var_name: name of variable (binary, on-calc)
+ * folder: name of folder (TI9x only) or ""
+ * @name: name of variable (binary, on-calc)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @size: size of data (uint16_t for TI8x)
@@ -104,9 +104,8 @@ typedef enum
  **/
 typedef struct 
 {
-  char		fld_name[9];
-  char		var_name[9];
-
+  char		folder[9];
+  char		name[9];
   uint8_t	type;
   uint8_t	attr;
   uint32_t	size;

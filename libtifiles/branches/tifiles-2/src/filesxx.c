@@ -477,17 +477,17 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) 
 	{
-      if (!strcmp(*ptr, entry->fld_name)) 
+      if (!strcmp(*ptr, entry->folder)) 
 	  {
-		//printf("break: <%s>\n", entry->fld_name);
+		//printf("break: <%s>\n", entry->folder);
 		break;
       }
     }
     if (*ptr == NULL) 
 	{		// add new folder entry
       folder_list[num_folders] = (char *) calloc(10, sizeof(char));
-      //printf("%i: adding '%s'\n", num_folders, entry->fld_name);
-      strcpy(folder_list[num_folders], entry->fld_name);
+      //printf("%i: adding '%s'\n", num_folders, entry->folder);
+      strcpy(folder_list[num_folders], entry->folder);
       folder_list[num_folders + 1] = NULL;
       num_folders++;
       g_assert(num_folders <= content->num_entries);
@@ -511,7 +511,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
 	{
       VarEntry *entry = &(content->entries[i]);
 
-      if (!strcmp(folder_list[j], entry->fld_name)) 
+      if (!strcmp(folder_list[j], entry->folder)) 
 	  {
 		table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
 		table[j][k] = i;

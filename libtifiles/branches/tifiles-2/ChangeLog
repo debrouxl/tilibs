@@ -7,6 +7,7 @@ Log:
 - 04/06/2005, version 0.0.4: roms
 	- added transcode function to API for future implementation
 	- removed 'name' field of VarEntry: make confusion
+	- changed 'var_name' into name and 'fld_name' into 'folder'
 
 - 14/05/2005, version 0.0.3: roms
 	- merged some types into a single type
