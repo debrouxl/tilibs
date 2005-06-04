@@ -233,7 +233,7 @@ int recv_packet(CalcHandle* handle,
 	return 0;
 }
 
-/* Complete a 8-chars buffer with NUL chars */
+/* Fill-up a 8-chars buffer with NUL chars */
 void pad_buffer(char *varname, uint8_t value)
 {
 	int i, len = strlen(varname);

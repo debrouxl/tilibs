@@ -64,8 +64,6 @@ int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
-  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, trans);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));
@@ -76,6 +74,8 @@ int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   memcpy(buffer + 6, varname, strlen(varname));
   buffer[6 + strlen(varname)] = 0x03;
 
+  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, trans);
   TRYF(send_packet(handle, PC_TI9X, CMD_VAR, 6 + strlen(varname) + extra, buffer));
 
   return 0;
@@ -108,9 +108,8 @@ int ti89_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 
   buffer[0] = rej_code;
 
-  ticalcs_info(" PC->TI: SKP");
   TRYF(send_packet(handle, PC_TI9X, CMD_SKP, 3, buffer));
-  ticalcs_info(" (rejection code = %i)", rej_code);
+  ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
 
   return 0;
 }
@@ -158,12 +157,13 @@ int ti89_send_CNT_h(CalcHandle* handle)
 int ti89_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
-  
-	ticalcs_info(" PC->TI: KEY");
+
 	buf[0] = PC_TI9X;
 	buf[1] = CMD_KEY;
 	buf[2] = LSB(scancode);
 	buf[3] = MSB(scancode);
+
+	ticalcs_info(" PC->TI: KEY");
 	TRYF(ticables_cable_send(handle->cable, buf, 4));
 
 	return 0;
@@ -182,9 +182,6 @@ int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   uint8_t buffer[32] = { 0 };
   uint16_t len;
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
-
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));
   buffer[2] = LSB(MSW(varsize));
@@ -197,6 +194,9 @@ int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   len = 6 + strlen(varname) + 1;
   if (vartype != TI89_CLK)
     len--;
+
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI9X, CMD_REQ, len, buffer));
 
   return 0;
@@ -206,9 +206,6 @@ int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
-
-  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));
@@ -222,6 +219,9 @@ int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   len = 6 + strlen(varname) + 1;
   // used by AMS <= 2.09 ?
   //if ((vartype == TI89_AMS) || (vartype == TI89_APPL)) len--;
+
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;
@@ -232,9 +232,6 @@ int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char
   uint8_t buffer[32] = { 0 };
   uint16_t len;
 
-  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
-
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));
   buffer[2] = LSB(MSW(varsize));
@@ -244,8 +241,10 @@ int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char
   buffer[6] = 0x08;
   buffer[7] = 0x00;
   buffer[8] = 0x09;
-
   len = 9;
+
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;
@@ -262,10 +261,13 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   uint8_t flag;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
+
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
 
@@ -294,10 +296,12 @@ int ti89_recv_CTS_h(CalcHandle* handle)
   uint8_t buffer[5];
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   else if (cmd != CMD_CTS)
     return ERR_INVALID_CMD;
+
   if (length != 0x0000)
     return ERR_CTS_ERROR;
 
@@ -314,11 +318,13 @@ int ti89_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   *rej_code = 0;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_CTS) 
   {
     ticalcs_info("CTS");
     return 0;
   }
+
   if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
 
@@ -334,8 +340,10 @@ int ti89_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
 
   err = recv_packet(handle, &host, &cmd, (uint16_t *) length, data);
   fixup(*length);
+
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
+
   TRYF(err);
 
   ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
@@ -356,12 +364,15 @@ int ti89_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   uint8_t buffer[5];
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
+
   if (status != NULL)
     *status = length;
   else if (length != 0x0000)
     return ERR_NACK;
+
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
 
@@ -376,8 +387,10 @@ int ti89_recv_CNT_h(CalcHandle* handle)
   uint16_t sts;
 
   TRYF(recv_packet(handle, &host, &cmd, &sts, NULL));
+
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
+
   if (cmd != CMD_CNT)
     return ERR_INVALID_CMD;
 
@@ -392,6 +405,7 @@ int ti89_recv_EOT_h(CalcHandle* handle)
   uint16_t length;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, NULL));
+
   if (cmd != CMD_EOT)
     return ERR_INVALID_CMD;
 
@@ -408,10 +422,13 @@ int ti89_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   uint8_t strl;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
+
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
 

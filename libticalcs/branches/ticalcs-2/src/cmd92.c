@@ -39,8 +39,6 @@ int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   uint8_t trans[9];
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
-  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, trans);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));
@@ -50,6 +48,7 @@ int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
+  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)", varsize, varsize, vartype, trans);
   TRYF(send_packet(handle, PC_TI92, CMD_VAR, 6 + strlen(varname), buffer));
 
   return 0;
@@ -78,9 +77,8 @@ int ti92_send_XDP_h(CalcHandle* handle, uint32_t length, uint8_t * data)
  */
 int ti92_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 {
-  ticalcs_info(" PC->TI: SKP");
   TRYF(send_packet(handle, PC_TI92, CMD_SKP, 1, &rej_code));
-  ticalcs_info(" (rejection code = %i)", rej_code);
+  ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
 
   return 0;
 }
@@ -129,11 +127,12 @@ int ti92_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
   
-	ticalcs_info(" PC->TI: KEY");
 	buf[0] = PC_TI92;
 	buf[1] = CMD_KEY;
 	buf[2] = LSB(scancode);
 	buf[3] = MSB(scancode);
+
+	ticalcs_info(" PC->TI: KEY");
 	TRYF(ticables_cable_send(handle->cable, buf, 4));
 
 	return 0;
@@ -151,9 +150,6 @@ int ti92_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 {
   uint8_t buffer[32] = { 0 };
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
-
   buffer[0] = 0;
   buffer[1] = 0;
   buffer[2] = 0;
@@ -162,6 +158,7 @@ int ti92_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)", varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI92, CMD_REQ, 6 + strlen(varname), buffer));
 
   return 0;
@@ -171,9 +168,6 @@ int ti92_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 {
   uint8_t buffer[32] = { 0 };
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
-
   buffer[0] = 0;
   buffer[1] = 0;
   buffer[2] = 0;
@@ -182,6 +176,8 @@ int ti92_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI92, CMD_RTS, 6 + strlen(varname), buffer));
 
   return 0;
@@ -276,8 +272,10 @@ int ti92_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
 
   err = recv_packet(handle, &host, &cmd, (uint16_t *) length, data);
   fixup(*length);
+
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
+
   ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
   TRYF(err);
 
@@ -305,6 +303,7 @@ int ti92_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
+
   ticalcs_info(" TI->PC: ACK");
 
   return 0;

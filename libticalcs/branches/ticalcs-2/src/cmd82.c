@@ -44,14 +44,14 @@ int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	uint8_t buffer[16];
 	uint8_t trans[9];
 
-	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
-	ticalcs_info(" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, trans);
-
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
 	memcpy(buffer + 3, varname, 8);
+
+	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+	ticalcs_info(" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, trans);
 
 	if (vartype != TI8283_BKUP) 
 	{	
@@ -90,9 +90,8 @@ int ti82_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
  */
 int ti82_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 {
-  ticalcs_info(" PC->TI: SKIP");
   TRYF(send_packet(handle, PC_TI8283, CMD_SKP, 1, &rej_code));
-  ticalcs_info(" (rejection code = %i)", rej_code);
+  ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
 
   return 0;
 }
@@ -148,16 +147,15 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   uint8_t buffer[16] = { 0 };
   uint8_t trans[9];
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
-  ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, trans);
-
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
   pad_buffer(buffer + 3, '\0');
 
+  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, trans);
   TRYF(send_packet(handle, PC_TI8283, CMD_REQ, 11, buffer));
 
   return 0;
@@ -178,19 +176,22 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   uint8_t buffer[16];
   uint8_t trans[9];
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
-  ticalcs_info(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, trans);
-
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
 
-  if (vartype != TI8283_BKUP) {	// backup: special header
+  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticalcs_info(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, trans);
+
+  if (vartype != TI8283_BKUP) 
+  {	// backup: special header
     pad_buffer(buffer + 3, '\0');
     TRYF(send_packet(handle, PC_TI8283, CMD_RTS, 11, buffer));
-  } else {
+  } 
+  else 
+  {
     TRYF(send_packet(handle, PC_TI8283, CMD_RTS, 9, buffer));
   }
 
@@ -204,15 +205,17 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint16_t length;
   uint8_t trans[9];
 
-
-  ticalcs_info(" TI->PC: VAR");
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
+
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
+
   if ((length != 11) && (length != 9))
     return ERR_INVALID_PACKET;
 
@@ -226,7 +229,7 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 
 
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
-  ticalcs_info(" (size=0x%04X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" TI->PC: VAR (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
 
   return 0;
@@ -237,14 +240,17 @@ int ti82_recv_CTS_h(CalcHandle* handle)
   uint8_t host, cmd;
   uint16_t length;
 
-  ticalcs_info(" TI->PC: CTS");
   TRYF(recv_packet(handle, &host, &cmd, &length, NULL));
+
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
   else if (cmd != CMD_CTS)
     return ERR_INVALID_CMD;
+
   if (length != 0x0000)
     return ERR_CTS_ERROR;
+
+  ticalcs_info(" TI->PC: CTS");
 
   return 0;
 }
@@ -255,15 +261,18 @@ int ti82_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   uint16_t length;
   *rej_code = 0;
 
-  ticalcs_info(" TI->PC: SKP");
   TRYF(recv_packet(handle, &host, &cmd, &length, rej_code));
-  if (cmd == CMD_CTS) {
+
+  if (cmd == CMD_CTS) 
+  {
     ticalcs_info("->CTS.");
     return 0;
   }
+
   if (cmd != CMD_SKP)
     return ERR_INVALID_CMD;
-  ticalcs_info(" (rejection code = %i)", *rej_code);
+
+  ticalcs_info(" TI->PC: SKP (rejection code = %i)", *rej_code);
 
   return 0;
 }
@@ -272,11 +281,12 @@ int ti82_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
 
-  ticalcs_info(" TI->PC: XDP");
   TRYF(recv_packet(handle, &host, &cmd, length, data));
+
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
-  ticalcs_info(" (%04X=%i bytes)", *length, *length);
+
+  ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
 
   return 0;
 }
@@ -292,15 +302,17 @@ int ti82_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   uint8_t host, cmd;
   uint16_t sts;
 
-
-  ticalcs_info(" TI->PC: ACK");
   TRYF(recv_packet(handle, &host, &cmd, &sts, NULL));
+
   if (status != NULL)
     *status = sts;
   else if (sts != 0x0000)
     return ERR_NACK;
+
   if (cmd != CMD_ACK)
     return ERR_INVALID_CMD;
+
+  ticalcs_info(" TI->PC: ACK");
 
   return 0;
 }
@@ -311,19 +323,18 @@ int ti82_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint8_t buffer[16];
   uint8_t trans[9];
 
-
-  ticalcs_info(" TI->PC: RTS");
   TRYF(recv_packet(handle, &host, &cmd, varsize, buffer));
+
   if (cmd != CMD_RTS)
     return ERR_INVALID_CMD;
+
   *varsize = buffer[0] | (buffer[1] << 8);
   *vartype = buffer[2];
   memcpy(varname, buffer + 3, 8);
   varname[8] = '\0';
 
-
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
-  ticalcs_info(" (size=0x%04X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" TI->PC: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
 
   return 0;
