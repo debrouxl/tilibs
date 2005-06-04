@@ -101,7 +101,15 @@ SOURCE=..\..\src\calc_00.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\calc_73.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\calc_89.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_92.c
 # End Source File
 # End Group
 # Begin Group "keys"

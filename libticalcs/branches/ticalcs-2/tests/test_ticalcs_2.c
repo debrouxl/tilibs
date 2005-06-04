@@ -341,7 +341,7 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T);
+	calc = ticalcs_handle_new(CALC_TI84P);
 	if(calc == NULL)
 		return -1;
 

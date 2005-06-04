@@ -98,15 +98,24 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	VarEntry info;
 	char folder_name[9] = "";
 	TNode *folder = NULL;
+	TreeInfo *ti;
+
+	// get list of folders & FLASH apps
+    (*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
 
 	TRYF(ti92_send_REQ(0, TI92_RDIR, ""));
 	TRYF(ti92_recv_ACK(NULL));
 	TRYF(ti92_recv_VAR(&info.size, &info.type, info.name));
-
-	*vars = t_node_new(NULL);
-	(*vars)->data = strdup(VAR_NODE_NAME);
-	*apps = t_node_new(NULL);
-	(*apps)->data = strdup(APP_NODE_NAME);
 
 	for (;;) 
 	{
@@ -123,19 +132,18 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		ve->type = buffer[12];
 		ve->attr = buffer[13];
 		ve->size = buffer[14] | (buffer[15] << 8) | (buffer[16] << 16) | (buffer[17] << 24);
-		strcpy(ve->fld_name, "");
-
-		tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
-		node = t_node_new(ve);
+		strcpy(ve->folder, "");
 
 		if (ve->type == TI92_DIR) 
 		{
-			strcpy(folder_name, ve->var_name);
+			strcpy(folder_name, ve->name);
+			node = t_node_new(ve);
 			folder = t_node_append(*vars, node);
 		} 
 		else 
 		{
-			strcpy(ve->fld_name, folder_name);
+			strcpy(ve->folder, folder_name);
+			node = t_node_new(ve);
 			t_node_append(folder, node);
 		}
 
@@ -152,7 +160,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TRYF(err);
 
 		sprintf(update->text, _("Reading of '%s/%s'"),
-			((VarEntry *) (folder->data))->var_name, ve->var_name);
+			((VarEntry *) (folder->data))->name, 
+			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
 		update->label();
 		if (update->cancel)
 			return -1;
@@ -270,16 +279,16 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		if (mode & MODE_LOCAL_PATH)
 		{
-		  strcpy(full_name, entry->var_name);
+		  strcpy(full_name, entry->name);
 		}
 		else 
 		{
-		  strcpy(full_name, entry->fld_name);
+		  strcpy(full_name, entry->folder);
 		  strcat(full_name, "\\");
-		  strcat(full_name, entry->var_name);
+		  strcat(full_name, entry->name);
 		}
 
-		tifiles_transcode_detokenize(handle->model, utf8, full_name, entry->type);
+		tifiles_transcode_varname(handle->model, utf8, full_name, entry->type);
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
@@ -316,11 +325,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	strcpy(varname, vr->fld_name);
+	strcpy(varname, vr->folder);
 	strcat(varname, "\\");
-	strcat(varname, vr->var_name);
+	strcat(varname, vr->name);
 
-	tifiles_transcode_detokenize(handle->model, utf8, vr->name, vr->type);
+	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
 	sprintf(update->text, _("Receiving '%s'"), utf8);
 	update_label();
 
@@ -372,7 +381,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		content->entries = (VarEntry *) tifiles_realloc(content->entries, nvar * sizeof(VarEntry));
 		ve = &(content->entries[nvar-1]);
-		strcpy(ve->fld_name, "main");	
+		strcpy(ve->folder, "main");	
 
 		err = ti92_recv_VAR(&ve->size, &ve->type, tipath);
 		TRYF(ti92_send_ACK());
@@ -386,16 +395,16 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
         if ((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
-            strcpy(ve->fld_name, tipath);
-            strcpy(ve->var_name, tiname + 1);
+            strcpy(ve->folder, tipath);
+            strcpy(ve->name, tiname + 1);
         }
         else 
 		{
-            strcpy(ve->fld_name, "main");
-            strcpy(ve->var_name, tipath);
+            strcpy(ve->folder, "main");
+            strcpy(ve->name, tipath);
         }
 
-		sprintf(update->text, _("Receiving '%s'"), ve->var_name);
+		sprintf(update->text, _("Receiving '%s'"), ve->name);
 		update_label();
 
 		TRYF(ti92_send_CTS());

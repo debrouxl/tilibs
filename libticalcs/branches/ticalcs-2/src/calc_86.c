@@ -19,8 +19,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* Initialize the LinkCable structure with default functions */
-/* This module can be used as sample code.*/
+/*
+	TI86 support.
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

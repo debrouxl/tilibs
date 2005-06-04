@@ -19,8 +19,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* Initialize the LinkCable structure with default functions */
-/* This module can be used as sample code.*/
+/*
+	TI73/TI83+/TI84+ support.
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -76,7 +77,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI73_ROWS;
 
 	*bitmap = (uint8_t *) malloc(TI73_COLS * TI73_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap != NULL)
+	if(*bitmap == NULL)
 		return ERR_MALLOC;
 
 	TRYF(ti73_send_SCR());
@@ -94,6 +95,20 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint16_t unused;
 	TNode *folder;
 	uint32_t memory;
+	TreeInfo *ti;
+	char utf8[10];
+
+	(*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
 
 	TRYF(ti73_send_REQ(0x0000, TI73_DIR, "", 0x00));
 	TRYF(ti73_recv_ACK(NULL));
@@ -102,11 +117,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	fixup(memory);
 	TRYF(ti73_send_ACK());
 	handle->priv = GUINT_TO_POINTER(memory);
-
-	(*vars) = t_node_new(NULL);
-	(*vars)->data = strdup(VAR_NODE_NAME);
-	(*apps) = t_node_new(NULL);
-	(*apps)->data = strdup(APP_NODE_NAME);
 
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
@@ -125,14 +135,14 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else if (err != 0)
 			return err;
 
-		tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
 		node = t_node_new(ve);
 		if (ve->type != TI73_APPL)
 			t_node_append(folder, node);
 		else
 			t_node_append(*apps, node);
 
-		sprintf(update->text, _("Reading of '%s'"), ve->var_name);
+		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
+		sprintf(update->text, _("Reading of '%s'"), utf8);
 		update_label();
 		if (update->cancel)
 		  return ERR_ABORT;
