@@ -358,6 +358,22 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
   }
 }
 
+/**
+ * tifiles_transcode_tokenize:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize.
+ * @dst: a buffer of 20 chars to contain the detokenized name.
+ * @vartype: the type of variable.
+ *
+ * Not implemented yet.
+ *
+ * Return value: the tokenized name (same as dst).
+ **/
+TIEXPORT char* TICALL tifiles_transcode_tokenize(CalcModel model, char *dst, const char *src, uint8_t vartype)
+{
+	return strcpy(dst, src);
+}
+
 
 /* 
    Charset transcoding. Required for all calcs.
@@ -966,7 +982,8 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(CalcModel model, char *dst, cons
 	break;
     }
 
-  while(*src) {
+  while(*src) 
+  {
     wchar = f(*src++);
 
     // write our wide-char
@@ -1001,7 +1018,7 @@ static FileEncoding tifiles_encoding = ENCODING_LATIN1;
  **/
 TIEXPORT void TICALL tifiles_transcoding_set(FileEncoding encoding)
 {
-  tifiles_encoding = encoding;
+	tifiles_encoding = encoding;
 }
 
 /**
@@ -1013,7 +1030,7 @@ TIEXPORT void TICALL tifiles_transcoding_set(FileEncoding encoding)
  **/
 TIEXPORT FileEncoding TICALL tifiles_transcoding_get(void)
 {
-  return tifiles_encoding;
+	return tifiles_encoding;
 }
 
 /* 
@@ -1022,18 +1039,18 @@ TIEXPORT FileEncoding TICALL tifiles_transcoding_get(void)
 
 static char *tixx_translate_varname(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
-  char detokenized[18];
+    char detokenized[18];
 
-  tifiles_transcode_detokenize(model, detokenized, src, vartype);
+    tifiles_transcode_detokenize(model, detokenized, src, vartype);
 
-  switch(tifiles_encoding)
-  {
-  case ENCODING_ASCII:   tifiles_transcode_to_ascii(model, dst, detokenized); break;
-  case ENCODING_LATIN1:  tifiles_transcode_to_latin1(model, dst, detokenized); break;
-  case ENCODING_UNICODE: tifiles_transcode_to_utf8(model, dst, detokenized); break;
-  }
+    switch(tifiles_encoding)
+    {
+    case ENCODING_ASCII:   tifiles_transcode_to_ascii (model, dst, detokenized); break;
+    case ENCODING_LATIN1:  tifiles_transcode_to_latin1(model, dst, detokenized); break;
+    case ENCODING_UNICODE: tifiles_transcode_to_utf8  (model, dst, detokenized); break;
+    }
 
-  return dst;
+	return dst;
 }
 
 /**
@@ -1067,7 +1084,6 @@ TIEXPORT char *TICALL tifiles_transcode_varname(CalcModel model, char *dst, cons
  **/
 TIEXPORT char *TICALL tifiles_transcode_varname_static(CalcModel model, const char *src, uint8_t vartype)
 {
-  static char trans[18];
-  
-  return tixx_translate_varname(model, trans, src, vartype);
+	static char trans[18];  
+	return tixx_translate_varname(model, trans, src, vartype);
 }

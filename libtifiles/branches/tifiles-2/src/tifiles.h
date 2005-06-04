@@ -95,7 +95,6 @@ typedef enum
  * VarEntry:
  * @fld_name: name of folder (TI9x only) or ""
  * @var_name: name of variable (binary, on-calc)
- * @name: name of variable (detokenized, human-readable)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @size: size of data (uint16_t for TI8x)
@@ -108,7 +107,6 @@ typedef struct
   char		fld_name[9];
   char		var_name[9];
 
-  char		name[18];
   uint8_t	type;
   uint8_t	attr;
   uint32_t	size;
@@ -280,13 +278,14 @@ extern "C" {
   TIEXPORT FileClass   TICALL tifiles_string_to_class (const char *str);
 
   // transcode.c
+  TIEXPORT char* TICALL tifiles_transcode_tokenize   (CalcModel model, char *dst, const char *src, uint8_t vartype);
   TIEXPORT char* TICALL tifiles_transcode_detokenize (CalcModel model, char *dst, const char *src, uint8_t vartype);
 
-  TIEXPORT char* TICALL tifiles_transcode_to_ascii (CalcModel model, char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_latin1 (CalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_ascii   (CalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_latin1  (CalcModel model, char* dst, const char *src);
   TIEXPORT char* TICALL tifiles_transcode_to_unicode (CalcModel model, char* dst, const char *src);
 
-  TIEXPORT void TICALL tifiles_transcoding_set (FileEncoding encoding);
+  TIEXPORT void         TICALL tifiles_transcoding_set (FileEncoding encoding);
   TIEXPORT FileEncoding TICALL tifiles_transcoding_get (void);
 
   TIEXPORT char *TICALL tifiles_transcode_varname (CalcModel model, char *dst, const char *src, uint8_t vartype);

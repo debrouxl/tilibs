@@ -4,6 +4,10 @@ Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
 
 Log:
 
+- 04/06/2005, version 0.0.4: roms
+	- added transcode function to API for future implementation
+	- removed 'name' field of VarEntry: make confusion
+
 - 14/05/2005, version 0.0.3: roms
 	- merged some types into a single type
 	- common file handling API

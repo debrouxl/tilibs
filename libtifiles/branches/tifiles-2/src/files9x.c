@@ -295,7 +295,6 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
     fread_long(f, &curr_offset);
     fread_8_chars(f, entry->var_name);
-    tifiles_transcode_varname(content->model, entry->name, entry->var_name, entry->type);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
     fread_word(f, NULL);
@@ -554,7 +553,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0].name, 
+    tifiles_transcode_varname(content->model, trans, content->entries[0].var_name, 
 			   content->entries[0].type);
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
@@ -774,7 +773,7 @@ int ti9x_content_display_regular(Ti9xRegular *content)
     tifiles_info("Entry #%i", i);
     tifiles_info("  folder:    <%s>", content->entries[i].fld_name);
     tifiles_info("  name:      <%s>",
-	    tifiles_transcode_varname(content->model, trans, content->entries[i].name,
+	    tifiles_transcode_varname(content->model, trans, content->entries[i].var_name,
 				   content->entries[i].type));
     tifiles_info("  type:      %02X (%s)",
 	    content->entries[i].type,

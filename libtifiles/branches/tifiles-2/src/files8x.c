@@ -329,8 +329,6 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     fread_n_chars(f, name_length, entry->var_name);
 	if(content->model == CALC_TI86)
 		fskip(f, 8 - name_length);
-    tifiles_transcode_varname(content->model, entry->name, entry->var_name, 
-			   entry->type);
     if (ti83p_flag) 
 	{
       entry->attr = (fgetc(f) == 0x80 ? ATTRB_ARCHIVED : ATTRB_NONE);
