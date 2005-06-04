@@ -90,6 +90,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TNode *folder;
 	uint8_t hl, ll, lh;
 	uint8_t mem[8];
+	char utf8[10];
 
 	TRYF(ti85_send_REQ(0x0000, TI86_DIR, ""));
 	TRYF(ti85_recv_ACK(&unused));
@@ -124,11 +125,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else if (err != 0)
 			return err;
 
-		tifiles_transcode_detokenize(handle->model, ve->var_name, ve->name, ve->type);
 		node = t_node_new(ve);
 		t_node_append(folder, node);
 
-		sprintf(update->text, _("Reading of '%s'"), ve->var_name);
+		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
+		sprintf(update->text, _("Reading of '%s'"), utf8);
 		update_label();
 		if (update->cancel)
 			return ERR_ABORT;
