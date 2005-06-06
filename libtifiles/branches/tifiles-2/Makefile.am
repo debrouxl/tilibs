@@ -7,4 +7,4 @@ SUBDIRS = build docs intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = tifiles-2.pc
+pkgconfig_DATA = tifiles2.pc
