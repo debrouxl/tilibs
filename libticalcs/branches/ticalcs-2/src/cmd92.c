@@ -23,6 +23,8 @@
   This unit handles TI92 commands.
 */
 
+#include <string.h>
+
 #include "ticalcs.h"
 #include "packets.h"
 #include "error.h"

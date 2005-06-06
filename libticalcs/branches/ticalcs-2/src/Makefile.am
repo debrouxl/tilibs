@@ -8,14 +8,9 @@ AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libticalcs2.la
 libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
-	calc_def.h calc_err.h calc_int.h calc_ver.h \
-	headers.h \
+	ticalcs.h export.h \
 	keys73.h keys83p.h keys89.h keys92p.h \
-	pause.h \
-	ticalcs.h \
-	tikeys.h \
-	tnode.h \
-	update.h
+	tnode.h
 
 # build instructions
 libticalcs2_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
@@ -23,16 +18,18 @@ libticalcs2_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
 libticalcs2_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
 libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticalcs2_la_SOURCES = *.h \
+	calc_00.c calc_xx.c \
+	calc_73.c calc_82.c calc_83.c calc_85.c calc_86.c \
+	calc_89.c calc_92.c \
 	clock.c \
 	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c \
 	dirlist.c \
 	error.c \
-	intrface.c \
 	keys73.c keys83p.c keys89.c keys92p.c \
+	logging.c \
 	packets.c \
-	printl.c \
-	probe.c \
-	ti73.c ti82.c ti83.c ti85.c ti86.c ti89.c ti92.c \
+	ticalcs.c \
 	tikeys.c \
 	tnode.c \
-	type2str.c
+	type2str.c \
+	update.c

@@ -32,9 +32,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../src/ticables.h"
-#include "../src/tifiles.h"
-#include "../src/ticalcs.h"
+#include "ticables.h"
+#include "tifiles.h"
+#include "ticalcs.h"
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 

@@ -23,6 +23,8 @@
   This unit handles TI89/92+/V200/TI89t commands.
 */
 
+#include <string.h>
+
 #include "ticalcs.h"
 #include "packets.h"
 #include "error.h"

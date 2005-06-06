@@ -23,6 +23,7 @@
 	This unit manages packets
 */
 
+#include <string.h>
 
 #include "ticalcs.h"
 #include "packets.h"
@@ -143,6 +144,9 @@ static uint8_t host_ids(CalcHandle *handle)
   case CALC_V200:
     return V200_PC;
     break;
+  default:
+      return 0x00;
+      break;
   }
   return 0x00;
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs 4.5.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2004-05-11 21:55+0200\n"
+"POT-Creation-Date: 2005-06-06 15:34+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -17,250 +17,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.1\n"
 
-#: src/dirlist.c:62
-msgid "| B. name          | T. name  |Attr|Type| Size     | Parent   |\n"
+#: src/dirlist.c:58
+#, fuzzy, c-format
+msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
-#: src/dirlist.c:110
-msgid "  No variables\n"
+#: src/dirlist.c:108
+#, fuzzy, c-format
+msgid "  No variables"
 msgstr " Pas de variable\n"
 
-#: src/dirlist.c:113
-msgid "+------------------+----------+----+----+----------+----------+\n"
+#: src/dirlist.c:110
+#, fuzzy, c-format
+msgid "+------------------+----------+----+----+----------+----------+"
 msgstr "+------------------+----------+----+----+----------+----------+\n"
 
-#: src/dirlist.c:122
+#: src/dirlist.c:120
+#, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille    |\n"
 
-#: src/dirlist.c:145
-msgid "  No applications\n"
-msgstr " Pas d'application\n"
+#: src/dirlist.c:144
+#, c-format
+msgid "+ No applications  |          |    |    |          +"
+msgstr ""
 
-#: src/error.c:47
-msgid "Msg: Transfer aborted"
+#: src/error.c:57
+#, fuzzy
+msgid "Msg: transfer aborted."
 msgstr "Msg: Transfert annulé"
 
-#: src/error.c:49
+#: src/error.c:59
 msgid "Cause: the user !"
 msgstr "Cause: l'utilisateur !"
 
-#: src/error.c:53
-msgid "Msg: Checksum error."
-msgstr "Msg: Erreur de somme de contrôle (checksum)."
-
-#: src/error.c:55
-msgid "Cause: a transmission error. Try again."
-msgstr "Cause: une erreur de transmission. Essayez encore."
-
-#: src/error.c:59
-msgid "Msg: Calculator is not ready."
-msgstr "Msg: La calculatrice n'est pas prête."
-
 #: src/error.c:63
-msgid ""
-"Cause: the calculator is off, your link cable is not plugged correctly, your "
-"calculator is busy, ..."
-msgstr ""
-"Cause: la calculatrice est éteinte, votre câble n'est pas branché "
-"correctement, votre calculatrice est occupée,..."
-
-#: src/error.c:68
-msgid "Msg: This function does not exist for this calculator."
-msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
-
-#: src/error.c:72
-msgid ""
-"Cause: the operation you attempted is not supported by your calculator model."
-msgstr ""
-"Cause: cette opération n'est pas supportée par votre modèle de calculatrice."
-
-#: src/error.c:76
-msgid "Msg: Calculator out of memory."
-msgstr "Msg: Votre calculatrice n'a plus de mémoire libre."
-
-#: src/error.c:80
-msgid ""
-"Cause: the calculator does not have memory enough for doing the operation."
-msgstr ""
-"Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
-
-#: src/error.c:84
-msgid "Msg: Unable to open (reading) the file."
-msgstr "Msg: Impossible d'ouvrir (en lecture) le fichier."
-
-#: src/error.c:86 src/error.c:92
-msgid "Cause: disk space or permissions."
-msgstr "Cause: espace disque ou permissions."
-
-#: src/error.c:90
-msgid "Msg: Unable to open (writing) the file."
-msgstr "Msg: Impossible d'ouvrir (en écriture) le fichier."
-
-#: src/error.c:96
-msgid "Msg: Invalid host ID."
-msgstr "Msg: L'ID de l'hôte n'est pas valide."
-
-#: src/error.c:100
-msgid ""
-"Cause: TiLP received an unexpected Machine ID, probably due to a "
-"transmission error."
-msgstr ""
-"Cause: TiLP a reçu une mauvaise ID Machine, certainement à cause d'une "
-"erreur de transmission."
-
-#: src/error.c:104
-msgid "Msg: Invalid target ID."
-msgstr "Msg: L'ID de la cible n'est pas valide."
-
-#: src/error.c:108
-msgid ""
-"Cause: TiLP received an unexpected Target ID, probably due to a transmission "
-"error."
-msgstr ""
-"Cause: TiLP a reçu une mauvaise ID Cible, certainement à cause d'une erreur "
-"de transmission."
-
-#: src/error.c:112
-msgid "Msg: Invalid command ID."
-msgstr "Msg: L'ID de la commande n'est pas valide."
-
-#: src/error.c:116
-msgid ""
-"Cause: TiLP received an unexpected Command ID, probably due to a "
-"transmission error."
-msgstr ""
-"Cause: TiLP a reçu une mauvaise ID de Commande, certainement à cause d'une "
-"erreur de transmission."
-
-#: src/error.c:120
-msgid "Msg: Not really an error, should not appear !"
-msgstr "Msg: Pas vraiment une erreur, ne devrait pas apparaître !"
-
-#: src/error.c:122 src/error.c:180
-msgid "Cause: a bug. Drop us an email !"
-msgstr "Cause: un bug. Envoyez-nous un email !"
-
-#: src/error.c:127
-msgid "Msg: The variable or FLASH application has been refused."
-msgstr "Msg: La variable ou l'application FLASH a été refusée."
-
-#: src/error.c:131
-msgid ""
-"Cause: you attempted to send a variable which is locked/archived on the "
-"target calculator. The calculator may be out of memory, too."
-msgstr ""
-"Cause: vous avez tenté d'envoyer une variable vérouillée/archivée sur la "
-"calculatrice cible. La calculatrice manque peut-être aussi de mémoire."
-
-#: src/error.c:135
-msgid "Invalid CTS packet."
-msgstr "Paquet CTS non valide."
-
-#: src/error.c:137
-msgid "Cause: a transmission error."
-msgstr "Cause: une erreur de transmission."
-
-#: src/error.c:141
-msgid "NACK received."
-msgstr "NACK reçu."
-
-#: src/error.c:143
-msgid "Cause: the command has been refused.\n"
-msgstr "Cause: la commande a été refusée.\n"
-
-#: src/error.c:147
-msgid "Invalid packet."
-msgstr "Paquet non valide."
-
-#: src/error.c:149
-msgid "Cause: a transmission error.\n"
-msgstr "Cause: une erreur de transmission.\n"
-
-#: src/error.c:153
-msgid "The requested var does not exist."
-msgstr "La variable demandée n'existe pas."
-
-#: src/error.c:157
-msgid ""
-"Cause: you attempted to download a variable which does not exist on the "
-"calculaotr any longer. Maybe you have manually deleted it ?"
-msgstr ""
-"Cause: vous avez tenté de télécharger une variable qui n'existe plus sur la "
-"calculatrice. Vous l'avez peut-être effacée manuellement ?"
-
-#: src/error.c:162
-msgid "A transfer is in progress. You can not start a new one."
-msgstr "Un transfert est en cours. Vous ne pouvez pas en démarrer un autre."
-
-#: src/error.c:166
-msgid "Cause: this should not happen. Probably a bug: drop us an email !"
-msgstr ""
-"Cause: ceci ne devrait pas arriver. C'est probablement un bug: envoyez-nous "
-"un email !"
-
-#: src/error.c:170
-msgid "There is nothing to backup."
-msgstr "Il n'y a rien à sauvegarder."
-
-#: src/error.c:173
-msgid "Cause: 0 variables stored onto your calculator.\n"
-msgstr "Cause: aucune variable n'est stockée sur votre calculatrice.\n"
-
-#: src/error.c:178
-msgid "Error code not found. This is a bug. Please report it.\n"
+#, fuzzy
+msgid "Error code not handled; this is a bug"
 msgstr "Code d'erreur inexistant. C'est un bug. Reportez-le s'il vous plaît.\n"
-
-#: src/intrface.c:80
-#, c-format
-msgid "ticalcs library version %s\n"
-msgstr "librairie ticalcs version %s\n"
-
-#: src/intrface.c:92
-#, c-format
-msgid "Libtifiles: version mismatches. Library version >= <%s> is required.\n"
-msgstr "Libtifiles: mauvaise version. La version >= <%s> est nécessaire.\n"
-
-#: src/intrface.c:97
-#, c-format
-msgid "Libticables: version mismatches. Library version >= <%s> is required.\n"
-msgstr "Libticables: mauvaise version. La version >= <%s> est nécessaire.\n"
-
-#: src/intrface.c:177
-msgid "settings:\n"
-msgstr "réglages :\n"
-
-#: src/intrface.c:178
-#, c-format
-msgid "  calc type: %s\n"
-msgstr " Type de calculatrice: %s\n"
-
-#: src/intrface.c:340
-msgid "Function not implemented. This is a bug. Please report it."
-msgstr "Fonction non implémentée. C'est un bug. Reportez-le s'il vous plaît."
-
-#: src/intrface.c:341
-msgid "Informations:\n"
-msgstr "Informations:\n"
-
-#: src/intrface.c:342
-#, c-format
-msgid "Calc: %i\n"
-msgstr "Calculatrice: %i\n"
-
-#: src/intrface.c:343
-msgid "Program halted before crashing...\n"
-msgstr "Le programme s'est arrêté avant de se terminer anormalement...\n"
-
-#: src/printl.c:46
-#, c-format
-msgid "wrn: "
-msgstr "avr : "
-
-#: src/printl.c:47
-#, c-format
-msgid "err: "
-msgstr "err : "
 
 #: src/probe.c:74
 msgid "Probing calculator...\n"
@@ -290,11 +84,11 @@ msgstr "Essai avec TI83..."
 msgid "Trying TI82... "
 msgstr "Essai avec TI82..."
 
-#: src/probe.c:214
+#: src/probe.c:217
 msgid "Is calculator ready (and check type) ?\n"
 msgstr "La calculatrice est-elle prête (et vérifiez le type) ?\n"
 
-#: src/probe.c:227
+#: src/probe.c:230
 #, c-format
 msgid ""
 "\n"
@@ -303,249 +97,352 @@ msgstr ""
 "\n"
 "État = %04X\n"
 
-#: src/probe.c:255
+#: src/probe.c:258
 msgid "The calculator is ready.\n"
 msgstr "La calculatrice est prête.\n"
 
-#: src/probe.c:256
+#: src/probe.c:259
 #, c-format
 msgid "Calculator type: %s\n"
 msgstr " Type de calculatrice: %s\n"
 
-#: src/ti73.c:63 src/ti89.c:68 src/ti92.c:64
-msgid "Is calculator ready ?\n"
-msgstr "La calculatrice est-elle prête ?\n"
+#: src/ticalcs.c:120
+#, fuzzy, c-format
+msgid "ticalcs library version %s"
+msgstr "librairie ticalcs version %s\n"
 
-#: src/ti73.c:97 src/ti83.c:72 src/ti86.c:83 src/ti89.c:171 src/ti92.c:149
-msgid "Directory listing...\n"
-msgstr "Listage du dossier...\n"
+#: src/ticalcs.c:234
+msgid "Link calc handle details:"
+msgstr ""
 
-#: src/ti73.c:141 src/ti83.c:111 src/ti86.c:126
+#: src/ticalcs.c:235
 #, c-format
-msgid "Reading of '%s'"
-msgstr "Lecture de '%s'"
+msgid "  model   : %s"
+msgstr ""
 
-#: src/ti73.c:159 src/ti82.c:77 src/ti83.c:129 src/ti85.c:77 src/ti86.c:144
-#: src/ti89.c:103 src/ti92.c:99
-msgid "Receiving screendump...\n"
-msgstr "Réception de la capture d'écran...\n"
-
-#: src/ti73.c:187 src/ti82.c:104 src/ti83.c:157 src/ti85.c:105 src/ti86.c:172
-#: src/ti89.c:140 src/ti92.c:127
-msgid "Done.\n"
-msgstr "Fait.\n"
-
-#: src/ti73.c:202 src/ti82.c:118 src/ti83.c:172 src/ti85.c:119 src/ti86.c:186
-#: src/ti89.c:300 src/ti92.c:227
-msgid "Receiving backup...\n"
-msgstr "Réception de la sauvegarde...\n"
-
-#: src/ti73.c:210 src/ti83.c:180 src/ti92.c:234
-#, c-format
-msgid "Receiving backup..."
-msgstr "Réception de la suavegarde..."
-
-#: src/ti73.c:259 src/ti82.c:171 src/ti83.c:228 src/ti85.c:172 src/ti86.c:247
-#: src/ti89.c:354 src/ti92.c:281
-msgid "Sending backup...\n"
-msgstr "Envoi de la sauvegarde...\n"
-
-#: src/ti73.c:265 src/ti73.c:399 src/ti82.c:177 src/ti82.c:213 src/ti82.c:321
-#: src/ti83.c:234 src/ti83.c:368 src/ti85.c:178 src/ti85.c:214 src/ti85.c:322
-#: src/ti86.c:253 src/ti86.c:289 src/ti86.c:399
-#, c-format
-msgid "Sending..."
-msgstr "Envoi..."
-
-#: src/ti73.c:322 src/ti82.c:241 src/ti83.c:292 src/ti85.c:242 src/ti86.c:323
-#: src/ti89.c:390 src/ti92.c:334
-msgid "Receiving variable(s)...\n"
-msgstr "Réception de variable(s)...\n"
-
-#: src/ti73.c:342 src/ti73.c:539 src/ti82.c:279 src/ti83.c:312 src/ti85.c:280
-#: src/ti86.c:343 src/ti89.c:415 src/ti89.c:633 src/ti92.c:359
-#, c-format
-msgid "Receiving '%s'"
-msgstr "Réception de '%s'"
-
-#: src/ti73.c:393 src/ti82.c:315 src/ti83.c:362 src/ti85.c:316 src/ti86.c:393
-#: src/ti89.c:467 src/ti92.c:411
-msgid "Sending variable(s)...\n"
-msgstr "Envoi de variable(s)...\n"
-
-#: src/ti73.c:411 src/ti83.c:380 src/ti86.c:411 src/ti89.c:487 src/ti92.c:430
-#, c-format
-msgid " '%s' has been skipped !\n"
-msgstr " '%s' a été ignoré !\n"
-
-#: src/ti73.c:437 src/ti82.c:355 src/ti83.c:404 src/ti85.c:356 src/ti86.c:435
-#: src/ti89.c:501 src/ti92.c:444
-#, c-format
-msgid "Sending '%s'"
-msgstr "Envoi de '%s'"
-
-#: src/ti73.c:460 src/ti89.c:556
-msgid "Sending FLASH app/os...\n"
-msgstr "Envoi d'app/os FLASH...\n"
-
-#: src/ti73.c:526 src/ti89.c:623
-msgid "Receiving FLASH application...\n"
-msgstr "Réception d'une application FLASH...\n"
-
-#: src/ti73.c:601 src/ti82.c:404 src/ti83.c:448 src/ti85.c:403 src/ti86.c:479
-#: src/ti89.c:693 src/ti92.c:495
-msgid "ROM dumping...\n"
-msgstr "Copie de ROM...\n"
-
-#: src/ti73.c:625 src/ti82.c:192 src/ti82.c:332 src/ti82.c:428 src/ti83.c:477
-#: src/ti85.c:193 src/ti85.c:333 src/ti85.c:431 src/ti86.c:269 src/ti86.c:508
-#, c-format
-msgid "Waiting user's action..."
-msgstr "Attente d'une action de la part de l'utilisateur..."
-
-#: src/ti73.c:639 src/ti82.c:442 src/ti83.c:491 src/ti85.c:445 src/ti86.c:522
-#: src/ti89.c:742 src/ti92.c:545
-#, c-format
-msgid "Receiving..."
-msgstr "Réception..."
-
-#: src/ti73.c:679 src/ti82.c:482 src/ti83.c:531 src/ti85.c:485 src/ti86.c:562
-#: src/ti89.c:779 src/ti92.c:583
-#, c-format
-msgid "Remaining (mm:ss): %s"
-msgstr "Restant (min:sec): %s"
-
-#: src/ti73.c:699 src/ti89.c:798
-msgid "Getting ID list...\n"
-msgstr "Réception de l'ID de la liste...\n"
-
-#: src/ti73.c:705 src/ti89.c:804
-#, c-format
-msgid "Getting variable..."
-msgstr "Réception de la variable..."
-
-#: src/ti82.c:126 src/ti85.c:127
-#, c-format
-msgid "Waiting for backup..."
-msgstr "En attente pour sauvegarder..."
-
-#: src/ti82.c:247 src/ti85.c:248
-#, c-format
-msgid "Waiting var(s)..."
-msgstr "Attente de variable(s)..."
-
-#: src/ti86.c:194
-#, c-format
-msgid "Waiting backup..."
-msgstr "Attente de la sauvegarde..."
-
-#: src/ti89.c:210 src/ti89.c:258 src/ti92.c:190
-#, c-format
-msgid "Name: %8s | "
-msgstr "Nom: %8s | "
-
-#: src/ti89.c:211 src/ti89.c:259 src/ti92.c:191
-#, c-format
-msgid "Type: %8s | "
-msgstr "Type: %8s | "
-
-#: src/ti89.c:212 src/ti89.c:260 src/ti92.c:192
-#, c-format
-msgid "Attr: %i  | "
-msgstr "Attribut: %i  | "
-
-#: src/ti89.c:213 src/ti89.c:261 src/ti92.c:193
-#, c-format
-msgid "Size: %08X\n"
-msgstr "Taille: %08X\n"
-
-#: src/ti89.c:226
-#, c-format
-msgid "Directory listing in %8s...\n"
-msgstr "Listage du dossier dans %8s...\n"
-
-#: src/ti89.c:263 src/ti92.c:201
-#, c-format
-msgid "Reading of '%s/%s'"
-msgstr "Lecture de '%s/%s'"
-
-#: src/ti89.c:360 src/ti92.c:287
-#, c-format
-msgid "Sending backup..."
-msgstr "Envoi de la sauvegarde..."
-
-#: src/ti89.c:473 src/ti92.c:417
-#, c-format
-msgid "Sending variable(s)..."
-msgstr "Envoi de variable(s)..."
-
-#: src/ti89.c:562
-#, c-format
-msgid "Sending FLASH OS/App..."
-msgstr "Envoi d' OS/App FLASH..."
-
-#: src/ti89.c:575
-#, c-format
-msgid "FLASH app/os name: \"%s\"\n"
-msgstr "Nom de l'app/os:  \"%s\"\n"
-
-#: src/ti89.c:576
-#, c-format
-msgid "FLASH app/os size: %i bytes.\n"
-msgstr "Taille de l'app/os FLASH: %i octets.\n"
-
-#: src/ti89.c:610
-msgid "Flash application/os sent completely.\n"
-msgstr "Envoi de l'application/os FLASH complet.\n"
-
-#: src/ti89.c:708 src/ti92.c:511
-#, c-format
-msgid "Launching..."
-msgstr "Chargement..."
-
-#: src/ti89.c:836
-msgid "Getting clock...\n"
-msgstr "Réception de l'horloge...\n"
-
-#: src/ti89.c:842
-#, c-format
-msgid "Getting clock..."
-msgstr "Réception de l'horloge..."
-
-#: src/ti89.c:891
-msgid "Setting clock...\n"
-msgstr "Mise à jour de l'horloge...\n"
-
-#: src/ti89.c:897
-#, c-format
-msgid "Setting clock..."
-msgstr "Mise à jour de l'horloge..."
-
-#: src/ti92.c:246
-#, c-format
-msgid "Receiving block %2i"
-msgstr "Réception du bloc %2i"
-
-#: src/type2str.c:33 src/type2str.c:41 src/type2str.c:53 src/type2str.c:61
+#: src/type2str.c:57 src/type2str.c:65 src/type2str.c:78 src/type2str.c:86
 msgid "full"
 msgstr "plein"
 
-#: src/type2str.c:34 src/type2str.c:43
+#: src/type2str.c:58 src/type2str.c:67
 msgid "clipped"
 msgstr "attaché"
 
-#: src/type2str.c:35 src/type2str.c:55 src/type2str.c:77
+#: src/type2str.c:59 src/type2str.c:80 src/type2str.c:101
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/type2str.c:54 src/type2str.c:63
+#: src/type2str.c:79 src/type2str.c:88
 msgid "local"
 msgstr "local"
 
-#: src/type2str.c:75
-msgid "skip"
-msgstr "ignorer"
+#: src/type2str.c:99 src/type2str.c:107
+msgid "free"
+msgstr ""
 
-#: src/type2str.c:76
-msgid "overwrite"
-msgstr "écraser"
+#: src/type2str.c:100 src/type2str.c:109
+msgid "used"
+msgstr ""
+
+#~ msgid "  No applications\n"
+#~ msgstr " Pas d'application\n"
+
+#~ msgid "Msg: Checksum error."
+#~ msgstr "Msg: Erreur de somme de contrôle (checksum)."
+
+#~ msgid "Cause: a transmission error. Try again."
+#~ msgstr "Cause: une erreur de transmission. Essayez encore."
+
+#~ msgid "Msg: Calculator is not ready."
+#~ msgstr "Msg: La calculatrice n'est pas prête."
+
+#~ msgid ""
+#~ "Cause: the calculator is off, your link cable is not plugged correctly, "
+#~ "your calculator is busy, ..."
+#~ msgstr ""
+#~ "Cause: la calculatrice est éteinte, votre câble n'est pas branché "
+#~ "correctement, votre calculatrice est occupée,..."
+
+#~ msgid "Msg: This function does not exist for this calculator."
+#~ msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
+
+#~ msgid ""
+#~ "Cause: the operation you attempted is not supported by your calculator "
+#~ "model."
+#~ msgstr ""
+#~ "Cause: cette opération n'est pas supportée par votre modèle de "
+#~ "calculatrice."
+
+#~ msgid "Msg: Calculator out of memory."
+#~ msgstr "Msg: Votre calculatrice n'a plus de mémoire libre."
+
+#~ msgid ""
+#~ "Cause: the calculator does not have memory enough for doing the operation."
+#~ msgstr ""
+#~ "Cause: la calculatrice n'a pas assez de mémoire pour effectuer "
+#~ "l'opération."
+
+#~ msgid "Msg: Unable to open (reading) the file."
+#~ msgstr "Msg: Impossible d'ouvrir (en lecture) le fichier."
+
+#~ msgid "Cause: disk space or permissions."
+#~ msgstr "Cause: espace disque ou permissions."
+
+#~ msgid "Msg: Unable to open (writing) the file."
+#~ msgstr "Msg: Impossible d'ouvrir (en écriture) le fichier."
+
+#~ msgid "Msg: Invalid host ID."
+#~ msgstr "Msg: L'ID de l'hôte n'est pas valide."
+
+#~ msgid ""
+#~ "Cause: TiLP received an unexpected Machine ID, probably due to a "
+#~ "transmission error."
+#~ msgstr ""
+#~ "Cause: TiLP a reçu une mauvaise ID Machine, certainement à cause d'une "
+#~ "erreur de transmission."
+
+#~ msgid "Msg: Invalid target ID."
+#~ msgstr "Msg: L'ID de la cible n'est pas valide."
+
+#~ msgid ""
+#~ "Cause: TiLP received an unexpected Target ID, probably due to a "
+#~ "transmission error."
+#~ msgstr ""
+#~ "Cause: TiLP a reçu une mauvaise ID Cible, certainement à cause d'une "
+#~ "erreur de transmission."
+
+#~ msgid "Msg: Invalid command ID."
+#~ msgstr "Msg: L'ID de la commande n'est pas valide."
+
+#~ msgid ""
+#~ "Cause: TiLP received an unexpected Command ID, probably due to a "
+#~ "transmission error."
+#~ msgstr ""
+#~ "Cause: TiLP a reçu une mauvaise ID de Commande, certainement à cause "
+#~ "d'une erreur de transmission."
+
+#~ msgid "Msg: Not really an error, should not appear !"
+#~ msgstr "Msg: Pas vraiment une erreur, ne devrait pas apparaître !"
+
+#~ msgid "Cause: a bug. Drop us an email !"
+#~ msgstr "Cause: un bug. Envoyez-nous un email !"
+
+#~ msgid "Msg: The variable or FLASH application has been refused."
+#~ msgstr "Msg: La variable ou l'application FLASH a été refusée."
+
+#~ msgid ""
+#~ "Cause: you attempted to send a variable which is locked/archived on the "
+#~ "target calculator. The calculator may be out of memory, too."
+#~ msgstr ""
+#~ "Cause: vous avez tenté d'envoyer une variable vérouillée/archivée sur la "
+#~ "calculatrice cible. La calculatrice manque peut-être aussi de mémoire."
+
+#~ msgid "Invalid CTS packet."
+#~ msgstr "Paquet CTS non valide."
+
+#~ msgid "Cause: a transmission error."
+#~ msgstr "Cause: une erreur de transmission."
+
+#~ msgid "NACK received."
+#~ msgstr "NACK reçu."
+
+#~ msgid "Cause: the command has been refused.\n"
+#~ msgstr "Cause: la commande a été refusée.\n"
+
+#~ msgid "Invalid packet."
+#~ msgstr "Paquet non valide."
+
+#~ msgid "Cause: a transmission error.\n"
+#~ msgstr "Cause: une erreur de transmission.\n"
+
+#~ msgid "The requested var does not exist."
+#~ msgstr "La variable demandée n'existe pas."
+
+#~ msgid ""
+#~ "Cause: you attempted to download a variable which does not exist on the "
+#~ "calculaotr any longer. Maybe you have manually deleted it ?"
+#~ msgstr ""
+#~ "Cause: vous avez tenté de télécharger une variable qui n'existe plus sur "
+#~ "la calculatrice. Vous l'avez peut-être effacée manuellement ?"
+
+#~ msgid "A transfer is in progress. You can not start a new one."
+#~ msgstr "Un transfert est en cours. Vous ne pouvez pas en démarrer un autre."
+
+#~ msgid "Cause: this should not happen. Probably a bug: drop us an email !"
+#~ msgstr ""
+#~ "Cause: ceci ne devrait pas arriver. C'est probablement un bug: envoyez-"
+#~ "nous un email !"
+
+#~ msgid "There is nothing to backup."
+#~ msgstr "Il n'y a rien à sauvegarder."
+
+#~ msgid "Cause: 0 variables stored onto your calculator.\n"
+#~ msgstr "Cause: aucune variable n'est stockée sur votre calculatrice.\n"
+
+#~ msgid ""
+#~ "Libtifiles: version mismatches. Library version >= <%s> is required.\n"
+#~ msgstr "Libtifiles: mauvaise version. La version >= <%s> est nécessaire.\n"
+
+#~ msgid ""
+#~ "Libticables: version mismatches. Library version >= <%s> is required.\n"
+#~ msgstr "Libticables: mauvaise version. La version >= <%s> est nécessaire.\n"
+
+#~ msgid "settings:\n"
+#~ msgstr "réglages :\n"
+
+#~ msgid "  calc type: %s\n"
+#~ msgstr " Type de calculatrice: %s\n"
+
+#~ msgid "Function not implemented. This is a bug. Please report it."
+#~ msgstr ""
+#~ "Fonction non implémentée. C'est un bug. Reportez-le s'il vous plaît."
+
+#~ msgid "Informations:\n"
+#~ msgstr "Informations:\n"
+
+#~ msgid "Calc: %i\n"
+#~ msgstr "Calculatrice: %i\n"
+
+#~ msgid "Program halted before crashing...\n"
+#~ msgstr "Le programme s'est arrêté avant de se terminer anormalement...\n"
+
+#~ msgid "wrn: "
+#~ msgstr "avr : "
+
+#~ msgid "err: "
+#~ msgstr "err : "
+
+#~ msgid "Is calculator ready ?\n"
+#~ msgstr "La calculatrice est-elle prête ?\n"
+
+#~ msgid "Directory listing...\n"
+#~ msgstr "Listage du dossier...\n"
+
+#~ msgid "Reading of '%s'"
+#~ msgstr "Lecture de '%s'"
+
+#~ msgid "Receiving screendump...\n"
+#~ msgstr "Réception de la capture d'écran...\n"
+
+#~ msgid "Done.\n"
+#~ msgstr "Fait.\n"
+
+#~ msgid "Receiving backup...\n"
+#~ msgstr "Réception de la sauvegarde...\n"
+
+#~ msgid "Receiving backup..."
+#~ msgstr "Réception de la suavegarde..."
+
+#~ msgid "Sending backup...\n"
+#~ msgstr "Envoi de la sauvegarde...\n"
+
+#~ msgid "Sending..."
+#~ msgstr "Envoi..."
+
+#~ msgid "Receiving variable(s)...\n"
+#~ msgstr "Réception de variable(s)...\n"
+
+#~ msgid "Receiving '%s'"
+#~ msgstr "Réception de '%s'"
+
+#~ msgid "Sending variable(s)...\n"
+#~ msgstr "Envoi de variable(s)...\n"
+
+#~ msgid " '%s' has been skipped !\n"
+#~ msgstr " '%s' a été ignoré !\n"
+
+#~ msgid "Sending '%s'"
+#~ msgstr "Envoi de '%s'"
+
+#~ msgid "Sending FLASH app/os...\n"
+#~ msgstr "Envoi d'app/os FLASH...\n"
+
+#~ msgid "Receiving FLASH application...\n"
+#~ msgstr "Réception d'une application FLASH...\n"
+
+#~ msgid "ROM dumping...\n"
+#~ msgstr "Copie de ROM...\n"
+
+#~ msgid "Waiting user's action..."
+#~ msgstr "Attente d'une action de la part de l'utilisateur..."
+
+#~ msgid "Receiving..."
+#~ msgstr "Réception..."
+
+#~ msgid "Remaining (mm:ss): %s"
+#~ msgstr "Restant (min:sec): %s"
+
+#~ msgid "Getting ID list...\n"
+#~ msgstr "Réception de l'ID de la liste...\n"
+
+#~ msgid "Getting variable..."
+#~ msgstr "Réception de la variable..."
+
+#~ msgid "Waiting for backup..."
+#~ msgstr "En attente pour sauvegarder..."
+
+#~ msgid "Waiting var(s)..."
+#~ msgstr "Attente de variable(s)..."
+
+#~ msgid "Waiting backup..."
+#~ msgstr "Attente de la sauvegarde..."
+
+#~ msgid "Name: %8s | "
+#~ msgstr "Nom: %8s | "
+
+#~ msgid "Type: %8s | "
+#~ msgstr "Type: %8s | "
+
+#~ msgid "Attr: %i  | "
+#~ msgstr "Attribut: %i  | "
+
+#~ msgid "Size: %08X\n"
+#~ msgstr "Taille: %08X\n"
+
+#~ msgid "Directory listing in %8s...\n"
+#~ msgstr "Listage du dossier dans %8s...\n"
+
+#~ msgid "Reading of '%s/%s'"
+#~ msgstr "Lecture de '%s/%s'"
+
+#~ msgid "Sending backup..."
+#~ msgstr "Envoi de la sauvegarde..."
+
+#~ msgid "Sending variable(s)..."
+#~ msgstr "Envoi de variable(s)..."
+
+#~ msgid "Sending FLASH OS/App..."
+#~ msgstr "Envoi d' OS/App FLASH..."
+
+#~ msgid "FLASH app/os name: \"%s\"\n"
+#~ msgstr "Nom de l'app/os:  \"%s\"\n"
+
+#~ msgid "FLASH app/os size: %i bytes.\n"
+#~ msgstr "Taille de l'app/os FLASH: %i octets.\n"
+
+#~ msgid "Flash application/os sent completely.\n"
+#~ msgstr "Envoi de l'application/os FLASH complet.\n"
+
+#~ msgid "Launching..."
+#~ msgstr "Chargement..."
+
+#~ msgid "Getting clock...\n"
+#~ msgstr "Réception de l'horloge...\n"
+
+#~ msgid "Getting clock..."
+#~ msgstr "Réception de l'horloge..."
+
+#~ msgid "Setting clock...\n"
+#~ msgstr "Mise à jour de l'horloge...\n"
+
+#~ msgid "Setting clock..."
+#~ msgstr "Mise à jour de l'horloge..."
+
+#~ msgid "Receiving block %2i"
+#~ msgstr "Réception du bloc %2i"
+
+#~ msgid "skip"
+#~ msgstr "ignorer"
+
+#~ msgid "overwrite"
+#~ msgstr "écraser"

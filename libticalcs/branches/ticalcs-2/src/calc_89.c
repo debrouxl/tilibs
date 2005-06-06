@@ -28,6 +28,8 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "ticalcs.h"
@@ -86,6 +88,10 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		sc->clipped_width = TI89_COLS;
 		sc->clipped_height = TI89_ROWS;
     break;
+	default:
+	    sc->clipped_width = TI89_COLS;
+	    sc->clipped_height = TI89_ROWS;
+	    break;
 	}
 
 	*bitmap = (uint8_t *) malloc(TI89_COLS * TI89_ROWS * sizeof(uint8_t) / 8);
@@ -395,7 +401,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	int mask = MODE_BACKUP;
 	TNode *vars, *apps;
 	int nvars, ivars = 0;
-	int b;
+	int b = 0;
 
 	// Do a directory list and check for something to backup
 	TRYF(get_dirlist(handle, &vars, &apps));

@@ -137,12 +137,12 @@ typedef enum {
  **/
 typedef enum 
 {
-	ROMSIZE_128KB	=  128,
-	ROMSIZE_256KB	=  256,
-	ROMSIZE_512KB	=  512,
-	ROMSIZE_1MB		= 1024,
-	ROMSIZE_2MB		= 2048,
-	ROMSIZE_4MB		= 4096,
+    ROMSIZE_128KB = 128, /* TI82, 85 */
+    ROMSIZE_256KB = 256, /* TI83, 86 */
+    ROMSIZE_512KB = 512, /* TI83+ */
+    ROMSIZE_1MB	= 1024,  /* TI84+, TI92 */
+    ROMSIZE_2MB	= 2048,  /* TI8x+ (SE), TI89, 92-II, 92+ */ 
+    ROMSIZE_4MB	= 4096,  /* TI89t, V200 */
 } CalcDumpSize;
 
 /**
@@ -375,33 +375,33 @@ struct _CalcFncts
 	const char*		description;
 	const int		features;
 
-	const int		(*is_ready)		(CalcHandle*);
+	int		(*is_ready)		(CalcHandle*);
 
-	const int		(*send_key)		(CalcHandle*, uint16_t);
+	int		(*send_key)		(CalcHandle*, uint16_t);
 
-	const int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
+	int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
 
-	const int		(*get_dirlist)	(CalcHandle*, TNode** vars, TNode** apps);
-	const int		(*get_memfree)	(CalcHandle*, uint32_t*);
+	int		(*get_dirlist)	(CalcHandle*, TNode** vars, TNode** apps);
+	int		(*get_memfree)	(CalcHandle*, uint32_t*);
 
-	const int		(*send_backup)	(CalcHandle*, BackupContent*);
-	const int		(*recv_backup)	(CalcHandle*, BackupContent*);
+	int		(*send_backup)	(CalcHandle*, BackupContent*);
+	int		(*recv_backup)	(CalcHandle*, BackupContent*);
 
-	const int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
-	const int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
-	const int		(*del_var)		(CalcHandle*, VarRequest*);
+	int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
+	int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+	int		(*del_var)		(CalcHandle*, VarRequest*);
 
-	const int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
-	const int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
+	int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
+	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
 
-	const int		(*send_flash)	(CalcHandle*, FlashContent*);
-	const int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
-	const int		(*recv_idlist)	(CalcHandle*, uint8_t*);
+	int		(*send_flash)	(CalcHandle*, FlashContent*);
+	int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
+	int		(*recv_idlist)	(CalcHandle*, uint8_t*);
 
-	const int		(*dump_rom)		(CalcHandle*, CalcDumpSize, const char *filename);
+	int		(*dump_rom)		(CalcHandle*, CalcDumpSize, const char *filename);
 
-	const int		(*set_clock)	(CalcHandle*, CalcClock* clock);
-	const int		(*get_clock)	(CalcHandle*, CalcClock* clock);
+	int		(*set_clock)	(CalcHandle*, CalcClock* clock);
+	int		(*get_clock)	(CalcHandle*, CalcClock* clock);
 };
 
 /**

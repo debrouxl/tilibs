@@ -7,4 +7,4 @@ SUBDIRS = build intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ticalcs.pc
+pkgconfig_DATA = ticalcs2.pc

@@ -109,6 +109,8 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OS_WIN32_FALSE = @OS_WIN32_FALSE@
+OS_WIN32_TRUE = @OS_WIN32_TRUE@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -178,9 +180,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
 
 
-noinst_PROGRAMS = test_ticalcs
+noinst_PROGRAMS = test_ticalcs_2
 
-test_ticalcs_LDADD = $(top_builddir)/src/libticalcs.la \
+test_ticalcs_2_LDADD = $(top_builddir)/src/libticalcs2.la \
 	@TICABLES_LIBS@ @TIFILES_LIBS@
 
 subdir = tests
@@ -188,18 +190,18 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = test_ticalcs$(EXEEXT)
+noinst_PROGRAMS = test_ticalcs_2$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-test_ticalcs_SOURCES = test_ticalcs.c
-test_ticalcs_OBJECTS = test_ticalcs.$(OBJEXT)
-test_ticalcs_DEPENDENCIES = $(top_builddir)/src/libticalcs.la
-test_ticalcs_LDFLAGS =
+test_ticalcs_2_SOURCES = test_ticalcs_2.c
+test_ticalcs_2_OBJECTS = test_ticalcs_2.$(OBJEXT)
+test_ticalcs_2_DEPENDENCIES = $(top_builddir)/src/libticalcs2.la
+test_ticalcs_2_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test_ticalcs.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/test_ticalcs_2.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -207,9 +209,9 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = test_ticalcs.c
+DIST_SOURCES = test_ticalcs_2.c
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
-SOURCES = test_ticalcs.c
+SOURCES = test_ticalcs_2.c
 
 all: all-am
 
@@ -227,9 +229,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-test_ticalcs$(EXEEXT): $(test_ticalcs_OBJECTS) $(test_ticalcs_DEPENDENCIES) 
-	@rm -f test_ticalcs$(EXEEXT)
-	$(LINK) $(test_ticalcs_LDFLAGS) $(test_ticalcs_OBJECTS) $(test_ticalcs_LDADD) $(LIBS)
+test_ticalcs_2$(EXEEXT): $(test_ticalcs_2_OBJECTS) $(test_ticalcs_2_DEPENDENCIES) 
+	@rm -f test_ticalcs_2$(EXEEXT)
+	$(LINK) $(test_ticalcs_2_LDFLAGS) $(test_ticalcs_2_OBJECTS) $(test_ticalcs_2_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -237,7 +239,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ticalcs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ticalcs_2.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \

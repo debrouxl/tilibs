@@ -109,6 +109,8 @@ MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OS_WIN32_FALSE = @OS_WIN32_FALSE@
+OS_WIN32_TRUE = @OS_WIN32_TRUE@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -181,13 +183,13 @@ SUBDIRS = build intl po src tests
 EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = ticalcs.pc
+pkgconfig_DATA = ticalcs2.pc
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES = intl/Makefile libticalcs.lsm libticalcs.spec \
-	ticalcs.pc
+	ticalcs2.pc
 DIST_SOURCES =
 DATA = $(pkgconfig_DATA)
 
@@ -202,7 +204,7 @@ DIST_COMMON = README $(srcdir)/Makefile.in $(srcdir)/configure \
 	aclocal.m4 compile config.guess config.h.in config.rpath \
 	config.sub configure configure.ac depcomp install-sh \
 	libticalcs.lsm.in libticalcs.spec.in ltmain.sh missing \
-	mkinstalldirs ticalcs.pc.in
+	mkinstalldirs ticalcs2.pc.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -247,7 +249,7 @@ libticalcs.lsm: $(top_builddir)/config.status libticalcs.lsm.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 libticalcs.spec: $(top_builddir)/config.status libticalcs.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-ticalcs.pc: $(top_builddir)/config.status ticalcs.pc.in
+ticalcs2.pc: $(top_builddir)/config.status ticalcs2.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 mostlyclean-libtool:
@@ -634,12 +636,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-recursive uninstall-pkgconfigDATA \
 	uninstall-recursive
 
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase
-	cd src; ${MAKE} dos2unix
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

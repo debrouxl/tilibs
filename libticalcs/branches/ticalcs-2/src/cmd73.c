@@ -23,6 +23,8 @@
   This unit handles TI73 & TI83+ & TI84+ commands.
 */
 
+#include <string.h>
+
 #include "ticalcs.h"
 #include "packets.h"
 #include "error.h"

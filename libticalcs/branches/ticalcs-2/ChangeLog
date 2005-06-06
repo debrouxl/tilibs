@@ -1,5 +1,7 @@
 SubVersion: $Id$
 
+Set svn:eol property to native on all files
+	
 To do : 
 - review of code:
   - clean-up
