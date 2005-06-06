@@ -92,10 +92,10 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
-	uint16_t unused;
-	TNode *folder;
-	uint32_t memory;
 	TreeInfo *ti;
+	uint16_t unused;
+	uint32_t memory;
+	TNode *folder;	
 	char utf8[10];
 
 	(*vars) = t_node_new(NULL);
@@ -260,9 +260,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint8_t rej_code;
 	uint8_t attrb;
-
-	sprintf(update->text, _("Sending..."));
-	update_label();
 
 	for (i = 0; i < content->num_entries; i++) 
 	{

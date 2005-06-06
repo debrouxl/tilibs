@@ -92,13 +92,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	TreeInfo *ti;
+	VarEntry info;
 	uint32_t unused;
 	uint8_t buffer[65536];
 	int err;
-	VarEntry info;
 	char folder_name[9] = "";
-	TNode *folder = NULL;
-	TreeInfo *ti;
 
 	// get list of folders & FLASH apps
     (*vars) = t_node_new(NULL);
@@ -121,6 +120,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	{
 		VarEntry *ve = calloc(1, sizeof(VarEntry));
 		TNode *node;
+		TNode *folder = NULL;
 
 		TRYF(ti92_send_ACK());
 		TRYF(ti92_send_CTS());
@@ -224,14 +224,11 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint16_t unused2;
 	uint8_t *ptr;
 
-	content->model = CALC_TI92;
-	sprintf(update->text, _("Receiving backup..."));
-	update_label();
-
-	// silent request
 	TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\backup"));
 	TRYF(ti92_recv_ACK(&unused2));
 
+	content->model = CALC_TI92;
+	strcpy(content->comment, "Backup file received by TiLP");
 	content->data_part = (uint8_t *) tifiles_calloc(128 * 1024, 1);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
@@ -258,8 +255,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		content->data_length += block_size;
 	}
 
-	strcpy(content->comment, "Backup file received by TiLP");
-
 	return 0;
 }
 
@@ -268,31 +263,22 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint16_t status;
 
-	sprintf(update->text, _("Sending variable(s)..."));
-	update_label();
-
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = &(content->entries[i]);
 		uint8_t buffer[65536 + 4] = { 0 };
-		uint8_t full_name[18], utf8[35];
+		uint8_t varname[18], utf8[35];
 
 		if (mode & MODE_LOCAL_PATH)
-		{
-		  strcpy(full_name, entry->name);
-		}
+		  strcpy(varname, entry->name);
 		else 
-		{
-		  strcpy(full_name, entry->folder);
-		  strcat(full_name, "\\");
-		  strcat(full_name, entry->name);
-		}
+			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
-		tifiles_transcode_varname(handle->model, utf8, full_name, entry->type);
+		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
-		TRYF(ti92_send_VAR(entry->size, entry->type, full_name));
+		TRYF(ti92_send_VAR(entry->size, entry->type, varname));
 		TRYF(ti92_recv_ACK(NULL));
 
 		TRYF(ti92_recv_CTS());
@@ -325,9 +311,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	strcpy(varname, vr->folder);
-	strcat(varname, "\\");
-	strcat(varname, vr->name);
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
 	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
 	sprintf(update->text, _("Receiving '%s'"), utf8);
