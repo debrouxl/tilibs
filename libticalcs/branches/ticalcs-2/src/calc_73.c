@@ -488,7 +488,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	uint16_t checksum, sum;
 	int err;
 	int b = 0;
-	int ROMSIZE = (size == ROM_SE) ? 2048 : (handle->model == CALC_TI84P) ? 1024 : 512;
+	int ROMSIZE = (size == ROMSIZE_2MB) ? 2048 : (handle->model == CALC_TI84P) ? 1024 : 512;
 	FileContent content;
 
 	// Copies ROM dump program into a file

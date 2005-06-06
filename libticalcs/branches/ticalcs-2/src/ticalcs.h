@@ -137,9 +137,12 @@ typedef enum {
  **/
 typedef enum 
 {
-	ROM_1MB = 1, 
-	ROM_2MB, 
-	ROM_SE,
+	ROMSIZE_128KB	=  128,
+	ROMSIZE_256KB	=  256,
+	ROMSIZE_512KB	=  512,
+	ROMSIZE_1MB		= 1024,
+	ROMSIZE_2MB		= 2048,
+	ROMSIZE_4MB		= 4096,
 } CalcDumpSize;
 
 /**

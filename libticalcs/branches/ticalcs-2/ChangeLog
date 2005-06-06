@@ -5,8 +5,11 @@ To do :
   - clean-up
   - defining some coding style (var name, similitudes)
 - use localized strings for labels/printf
+
 - update the link guide
 - update code according to link guide
+
+- ROM dumping: new protocol and make clac returns ROM size (automatic probing)
 
 Log:
 

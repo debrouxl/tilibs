@@ -96,32 +96,31 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti89_recv_ACK(NULL));
 
 	err = ti89_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
-	if (err != ERR_CHECKSUM) { TRYF(err) };
+	if(err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti89_send_ACK());
 
 	// Clip the unused part of the screen (nethertheless useable witha asm prog)
-	if (((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))
+	if(((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))
       && (sc->format == SCREEN_CLIPPED)) 
 	{
 		int i, j, k;
 
-		for (i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
-			for (k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
+		for(i = 0, j = 0; j < TI89_ROWS_VISIBLE; j++)
+			for(k = 0; k < (TI89_COLS_VISIBLE >> 3); k++)
 				(*bitmap)[i++] = (*bitmap)[j * (TI89_COLS >> 3) + k];
 	}
-	
 
 	return 0;
 }
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	TreeInfo *ti;
+	VarEntry info;
+	uint32_t block_size;
 	uint8_t buffer[65536];
-    VarEntry info;
-    uint32_t block_size;
     int i, j;
     uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
-	TreeInfo *ti;
 
 	// get list of folders & FLASH apps
     (*vars) = t_node_new(NULL);
@@ -151,7 +150,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
     TRYF(ti89_recv_EOT());
     TRYF(ti89_send_ACK());
 
-	for (j = 4; j < (int)block_size;) 
+	for(j = 4; j < (int)block_size;) 
 	{
 		VarEntry *fe = calloc(1, sizeof(VarEntry));
         TNode *node;
@@ -170,17 +169,20 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			fe->attr,
 			fe->size);
 
-        if (fe->type == TI89_DIR)
+        if(fe->type == TI89_DIR)
 		{
 			node = t_node_new(fe);
 			t_node_append(*vars, node);
 		}
-        else if (fe->type == TI89_APPL)
-			continue;			// AMS<2.08 returns FLASH apps
+        else if(fe->type == TI89_APPL)
+		{
+			// AMS<2.08 returns FLASH apps
+			continue;
+		}
 	}
 
 	// get list of variables into each folder
-	for (i = 0; i < (int)t_node_n_children(*vars); i++) 
+	for(i = 0; i < (int)t_node_n_children(*vars); i++) 
 	{
 		TNode *folder = t_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
@@ -202,7 +204,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TRYF(ti89_recv_EOT());
 		TRYF(ti89_send_ACK());
 
-		for (j = 4 + 14 + extra; j < (int)block_size;) 
+		for(j = 4 + 14 + extra; j < (int)block_size;) 
 		{
 			VarEntry *ve = calloc(1, sizeof(VarEntry));
 			TNode *node;
@@ -224,12 +226,12 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			sprintf(update->text, _("Reading of '%s/%s'"),
 			  ((VarEntry *) (folder->data))->name, ve->name);
 			update_label();
-			if (update->cancel)
+			if(update->cancel)
 				return -1;
 
-			if (ve->type == TI89_APPL) 
+			if(ve->type == TI89_APPL) 
 			{
-				if (!ticalcs_dirlist_app_exist(*apps, ve->name))
+				if(!ticalcs_dirlist_app_exist(*apps, ve->name))
 				{
 					node = t_node_new(ve);
 					t_node_append(*apps, node);
@@ -259,32 +261,29 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint16_t status;
 
 	update->max2 = content->num_entries;
-
-	for (i = 0; i < content->num_entries; i++) 
+	for(i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = &(content->entries[i]);
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
-		uint8_t full_name[18], utf8[35];
+		uint8_t varname[18], utf8[35];
 
-		if ((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
+		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
 		{	
 			// local & not backup
-			strcpy(full_name, entry->name);
+			strcpy(varname, entry->name);
 		} 
 		else 
 		{
 			// full or backup
-			strcpy(full_name, entry->folder);
-			strcat(full_name, "\\");
-			strcat(full_name, entry->name);
+			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		tifiles_transcode_varname(handle->model, utf8, full_name, entry->type);
+		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
-		if (mode & MODE_BACKUP) 
+		if(mode & MODE_BACKUP) 
 		{	
 			// backup: keep attributes
 			switch (entry->attr) 
@@ -300,11 +299,11 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			break;
 			}
 
-			TRYF(ti89_send_RTS(entry->size, vartype, full_name));
+			TRYF(ti89_send_RTS(entry->size, vartype, varname));
 		} 
 		else 
 		{
-		  TRYF(ti89_send_VAR(entry->size, vartype, full_name));
+		  TRYF(ti89_send_VAR(entry->size, vartype, varname));
 		}
 
 		TRYF(ti89_recv_ACK(NULL));
@@ -319,10 +318,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti89_send_EOT());
 		TRYF(ti89_recv_ACK(NULL));
 
-		if (mode & MODE_BACKUP) 
+		if(mode & MODE_BACKUP) 
 		{
 			update->cnt2 = i;		  
-			if (update->cancel)
+			if(update->cancel)
 				return ERR_ABORT;
 		}
 	}
@@ -335,7 +334,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	uint8_t full_name[20], utf8[35];
+	uint8_t varname[20], utf8[35];
 
 	content->model = handle->model;
 	content->num_entries = 1;
@@ -343,17 +342,15 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	strcpy(full_name, vr->folder);
-	strcat(full_name, "\\");
-	strcat(full_name, vr->name);
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	tifiles_transcode_varname(handle->model, utf8, full_name, vr->type);
+	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
 	sprintf(update->text, _("Receiving '%s'"), utf8);
 	update_label();
 
-	TRYF(ti89_send_REQ(0, vr->type, full_name));
+	TRYF(ti89_send_REQ(0, vr->type, varname));
 	TRYF(ti89_recv_ACK(&status));
-	if (status != 0)
+	if(status != 0)
 		return ERR_MISSING_VAR;
 
 	TRYF(ti89_recv_VAR(&ve->size, &ve->type, ve->name));
@@ -369,6 +366,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	TRYF(ti89_recv_EOT());
 	TRYF(ti89_send_ACK());
+
+	PAUSE(250);
 
 	return 0;
 }
@@ -401,7 +400,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	// Do a directory list and check for something to backup
 	TRYF(get_dirlist(handle, &vars, &apps));
 	nvars = ticalcs_dirlist_num_vars(vars);
-	if (!nvars)
+	if(!nvars)
 		return ERR_NO_VARS;
 
 	// Check whether the last folder is empty
@@ -411,22 +410,22 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->max2 = nvars;
 	i_max = t_node_n_children(vars);
 
-	for (i = 0; i < i_max; i++) 
+	for(i = 0; i < i_max; i++) 
 	{
 		TNode *parent = t_node_nth_child(vars, i);
 
 		j_max = t_node_n_children(parent);
-		for (j = 0; j < j_max; j++) 
+		for(j = 0; j < j_max; j++) 
 		{
 			TNode *node = t_node_nth_child(parent, j);
 
 			VarEntry *ve = (VarEntry *) (node->data);
 
-			if (!i && !j)
+			if(!i && !j)
 				mask = MODE_RECEIVE_FIRST_VAR;
-			else if ((i == i_max - 1) && (j == j_max - 1) && b)
+			else if((i == i_max - 1) && (j == j_max - 1) && b)
 				mask = MODE_RECEIVE_LAST_VAR;
-			else if ((i == i_max - 2) && (j == j_max - 1) && !b)
+			else if((i == i_max - 2) && (j == j_max - 1) && !b)
 				mask = MODE_RECEIVE_LAST_VAR;
 			else
 				mask = 0;
@@ -434,10 +433,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		  TRYF(is_ready(handle));
 		  TRYF(recv_var(handle, 0, (FileContent *)content, ve));
 		  //TRYF(ti89_recv_var((char *) filename, mask, ve));
-		  PAUSE(250);
 
 		  update->cnt2 = ivars++;
-		  if (update->cancel)
+		  if(update->cancel)
 				return ERR_ABORT;
 		}
 	}
@@ -485,7 +483,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			content->num_entries = nvar;
 
 		// from Christian (TI can send varname or fldname/varname)
-        if ((tiname = strchr(tipath, '\\')) != NULL) 
+        if((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
             strcpy(ve->folder, tipath);
@@ -523,17 +521,17 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int nheaders = 0;
 
 	// count headers
-	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	for(ptr = content; ptr != NULL; ptr = ptr->next)
 		nheaders++;
 
-	// keep the last one (data)
-	for (i = 0, ptr = content; i < nheaders - 1; i++)
+	// use the last one (data)
+	for(i = 0, ptr = content; i < nheaders - 1; i++)
 		ptr = ptr->next;
 
 	ticalcs_info(_("FLASH app/os name: \"%s\"\n"), ptr->name);
 	ticalcs_info(_("FLASH app/os size: %i bytes.\n"), ptr->data_length);
 
-	if (ptr->data_type == TI89_AMS) 
+	if(ptr->data_type == TI89_AMS) 
 	{
 	  if(handle->model == CALC_TI89T)
 	  {
@@ -552,7 +550,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	nblocks = ptr->data_length / 65536;
 	update->max2 = nblocks;
 
-	for (i = 0; i <= nblocks; i++) 
+	for(i = 0; i <= nblocks; i++) 
 	{
 		uint32_t length = (i != nblocks) ? 65536 : ptr->data_length % 65536;
 
@@ -564,7 +562,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		TRYF(ti89_send_XDP(length, (ptr->data_part) + 65536 * i));
 		TRYF(ti89_recv_ACK(NULL));
 
-		if (i != nblocks) 
+		if(i != nblocks) 
 		{
 		  TRYF(ti89_send_CNT());
 		} 
@@ -574,11 +572,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		update->cnt2 = i;
-		if (update->cancel)
+		if(update->cancel)
 			return ERR_ABORT;
 	}
 
-	if (ptr->data_type == TI89_AMS)
+	if(ptr->data_type == TI89_AMS)
 		TRYF(ti89_recv_ACK(NULL));
 
 	ticalcs_info(_("Flash application/os sent completely.\n"));
@@ -602,9 +600,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti89_recv_VAR(&content->data_length, &content->data_type, content->name));
 
 	update->cnt2 = vr->size;
-	content->data_length = 0;
-
-	for (i = 0;; i++) 
+	for(i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
 		uint32_t block_size;
@@ -620,12 +616,12 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		content->data_length += block_size;
 
 		err = ti89_recv_CNT();
-		if (err == ERR_EOT)
+		if(err == ERR_EOT)
 			break;
 		TRYF(err);
 
 		update->cnt2 = content->data_length;
-		if (update->cancel)
+		if(update->cancel)
 		  return ERR_ABORT;
 	}
 
@@ -679,7 +675,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 	// Copies ROM dump program into a file
 	f = fopen(DUMP_ROM89_FILE, "wb");
-	if (f == NULL)
+	if(f == NULL)
 		return ERR_FILE_OPEN;
 
 	fwrite(romDump89, sizeof(unsigned char), romDumpSize89, f);
@@ -717,7 +713,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 	// Open file
 	file = fopen(filename, "wb");
-	if (file == NULL)
+	if(file == NULL)
 		return ERR_OPEN_FILE;
 
 	// Receive it now blocks per blocks (1024 + CHK)
@@ -728,10 +724,10 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	handle->updat->max1 = 1024;
 	handle->updat->max2 = 1024 * size;
 
-	for (i = 0; i < ROMSIZE; i++) 
+	for(i = 0; i < ROMSIZE; i++) 
 	{
 		sum = 0;
-		for (j = 0; j < 1024; j++) 
+		for(j = 0; j < 1024; j++) 
 		{
 			TRYF(ticables_cable_get(handle->cable, &data));
 			fprintf(file, "%c", data);
@@ -739,7 +735,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 			handle->updat->cnt1 = j;
 			handle->updat->pbar();
-			if (handle->updat->cancel)
+			if(handle->updat->cancel)
 				return -1;
 		}
 
@@ -747,12 +743,12 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		checksum = data << 8;
 		TRYF(ticables_cable_get(handle->cable, &data));
 		checksum |= data;
-		if (sum != checksum)
+		if(sum != checksum)
 		return ERR_CHECKSUM;
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 
 		handle->updat->cnt2 = i;
-		if (handle->updat->cancel)
+		if(handle->updat->cancel)
 			return -1;
 
 		elapsed = (long) difftime(time(NULL), start);
