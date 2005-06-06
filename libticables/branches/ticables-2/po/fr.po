@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables 3.8.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2005-05-01 10:49+0200\n"
+"POT-Creation-Date: 2005-06-06 15:17+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -18,104 +18,338 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.1\n"
 
-#: src/data_log.c:78
+#: src/data_log.c:68
 msgid "Logging started."
 msgstr ""
 
-#: src/data_log.c:82 src/data_log.c:88
+#: src/data_log.c:73 src/data_log.c:80
 #, c-format
 msgid "Unable to open <%s> for logging.\n"
 msgstr "Impossible d'ouvrir <%s> comme fichier de journalisation.\n"
 
-#: src/error.c:56
-msgid "Msg: Link cable is busy."
+#: src/error.c:61
+msgid "Msg: link cable is busy."
 msgstr ""
 
-#: src/error.c:58
+#: src/error.c:63
 msgid "Cause: a transfer is in progress."
 msgstr ""
 
-#: src/ticables.c:96
-#, fuzzy, c-format
-msgid "ticables library version %s"
+#: src/error.c:69
+#, fuzzy
+msgid "Msg: nable to use parallel/serial port: access refused."
+msgstr "Msg : Impossible d'utiliser le port parallèle/série : accès refusé."
+
+#: src/error.c:71
+msgid "Cause: you are not running program as root or setuid root."
+msgstr ""
+
+#: src/error.c:77
+#, fuzzy
+msgid "Msg: unable to use serial (/dev/ttySx) device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:79
+msgid ""
+"Cause: the /dev/ttySx node doesn't exist or you don't have required "
+"permissions. See the log output for testing details."
+msgstr ""
+
+#: src/error.c:84
+#, fuzzy
+msgid "Msg: unable to use parport (/dev/parportX) device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:86
+msgid ""
+"Cause: the /dev/parportX node doesn't exist or you don't have required "
+"permissions. See the log output for testing details."
+msgstr ""
+
+#: src/error.c:91
+#, fuzzy
+msgid "Msg: unable to use USB pseudo file system."
+msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
+
+#: src/error.c:93
+msgid ""
+"Cause: the USB fs is not mounted or you don't have permissions to use it. "
+"See the log oupput for testing details."
+msgstr ""
+
+#: src/error.c:98
+#, fuzzy
+msgid "Msg: illegal operation or argument."
+msgstr "Msg : Opération ou argument illégal."
+
+#: src/error.c:100
+msgid ""
+"Cause: the program which uses this library is buggy. Fire-up the developer !"
+msgstr ""
+
+#: src/error.c:106
+msgid "Msg: PortTalk driver and/or library not found."
+msgstr "Msg : Pilote et/ou librairie PortTalk introuvable."
+
+#: src/error.c:108
+msgid ""
+"Cause: the driver may have been not started yet; it maye have been "
+"uninstalled; the library has been installed without NT administrator "
+"privileges."
+msgstr ""
+
+#: src/error.c:114
+#, fuzzy
+msgid "Msg: error occured while writing to the device."
+msgstr "Msg : Erreur en écrivant sur le périphérique."
+
+#: src/error.c:120
+#, fuzzy
+msgid "Msg: timeout occured while writing to the device."
+msgstr "Msg : Limite de temps dépassée en écrivant sur le périphérique."
+
+#: src/error.c:122 src/error.c:136
+#, fuzzy
+msgid ""
+"Cause: check that your link cable is plugged and/or the calculator is ready."
+msgstr ""
+"Cause : Vérifiez que le câble est connecté et/ou que la calculatrice est "
+"prête."
+
+#: src/error.c:128
+#, fuzzy
+msgid "Msg: error occured while reading to the device."
+msgstr "Msg : Erreur de lecture du périphérique."
+
+#: src/error.c:134
+#, fuzzy
+msgid "Msg: timeout occured while reading to the device."
+msgstr "Msg : Limite de temps dépassée en lisant le périphérique."
+
+#: src/error.c:142
+msgid "Msg: the probing od device failed."
+msgstr ""
+
+#: src/error.c:144
+msgid "Cause: internal error. If you get it, this is a bug !"
+msgstr ""
+
+#: src/error.c:157
+#, fuzzy
+msgid "Msg: unable to open COM port."
+msgstr "Msg : Impossible d'ouvrir le port COM."
+
+#: src/error.c:159
+#, fuzzy
+msgid "Cause: check your device is not used/locked by another application."
+msgstr ""
+"Cause : Vérifiez que le périphérique n'est pas utilisé/bloqué par une autre "
+"application (modem ?)."
+
+#: src/error.c:165
+#, fuzzy
+msgid "Msg: unable to load TiglUsb library."
+msgstr "Impossible de charger le symbole TiglUsbRead.\n"
+
+#: src/error.c:167
+msgid "Cause: is the LPG's SilverLink driver installed ?"
+msgstr ""
+
+#: src/error.c:173
+#, fuzzy
+msgid "Msg: unable to release TiglUsb library."
+msgstr "Msg : Impossible de fermer les tubes (pipes)."
+
+#: src/error.c:175
+#, fuzzy
+msgid "Cause: internal error"
+msgstr "Cause : Erreur interne à Win32."
+
+#: src/error.c:181
+#, fuzzy
+msgid "Msg: TiglUsb library version is wrong."
 msgstr "librairie ticables version %s\n"
 
-#: src/ticables.c:246
+#: src/error.c:183
+msgid "Cause: the library may require an earlier version. Update your driver !"
+msgstr ""
+
+#: src/error.c:189
+#, fuzzy
+msgid "Msg: failed to open SilverLink access."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:191
+msgid "Cause: check your USB cable is well plugged !"
+msgstr ""
+
+#: src/error.c:197
+#, fuzzy
+msgid "Msg: failed to reset SilverLink cable."
+msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
+
+#: src/error.c:199
+#, fuzzy
+msgid ""
+"Cause: check your USB cable is well plugged ! It may be stalled, too: unplug/"
+"replug it."
+msgstr ""
+"Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-le."
+
+#: src/error.c:207
+#, fuzzy
+msgid "Msg: failed to get VTI handle."
+msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
+
+#: src/error.c:209
+#, fuzzy
+msgid "Cause: VTi may not be running. VTi must be launched before."
+msgstr "Cause : VTi semble ne pas être encore lancé."
+
+#: src/error.c:218
+#, fuzzy
+msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
+msgstr "Msg : Impossible d'obtenir une CIP (Clé Inter Processus) unique."
+
+#: src/error.c:220
+#, fuzzy
+msgid ""
+"Cause: check that you have enough resources for allocating a shared memory "
+"segment."
+msgstr ""
+"Cause : Vérifiez que vous disposez de suffisamment de mémoire pour allouer "
+"un segment de mémoire partagée."
+
+#: src/error.c:227
+#, fuzzy
+msgid "Msg: unable to open/close pipes for virtual linking."
+msgstr "Msg : Impossible d'ouvrir les tubes pour la liaison virtuelle."
+
+#: src/error.c:229
+#, fuzzy
+msgid ""
+"Cause: check that you have permissions to create a pipe in the /tmp "
+"directory."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions de créer un tube (pipe) dans "
+"le dossier /tmp."
+
+#: src/error.c:236
+#, fuzzy
+msgid "Msg: unable to open serial device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:238 src/error.c:247
+#, fuzzy
+msgid ""
+"Cause: check that you permissions on /dev/ttySx device. Check your device is "
+"not locked."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires sur ce noeud. "
+"Vérifiez que le périphérique n'est pas bloqué par une autre application "
+"(modem ?)."
+
+#: src/error.c:245
+#, fuzzy
+msgid "Msg: unable to issue a specific command on serial device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:253
+#, fuzzy
+msgid "Msg: unable to open parallel device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:255 src/error.c:263
+#, fuzzy
+msgid ""
+"Cause: check that you permissions on /dev/parportX device. Check your device "
+"is not locked."
+msgstr ""
+"Cause : Vérifiez que vous avez les permissions nécessaires sur ce noeud. "
+"Vérifiez que le périphérique n'est pas bloqué par une autre application "
+"(modem ?)."
+
+#: src/error.c:261
+#, fuzzy
+msgid "Msg: unable to issue a specific command on parallel device."
+msgstr "Msg : Impossible d'ouvrir le périphérique série."
+
+#: src/error.c:271
+#, fuzzy
+msgid "Msg: unable to open USB device."
+msgstr "Msg : Impossible d'ouvrir le périphérique USB."
+
+#: src/error.c:273
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Check your libusb "
+"and usbfs, too."
+msgstr ""
+"Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
+"Vérifiez également libusb et usbfs."
+
+#: src/error.c:279
+#, fuzzy
+msgid "Msg: unable to reset USB device."
+msgstr "Msg : Impossible d'ouvrir le périphérique USB."
+
+#: src/error.c:281
+#, fuzzy
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Try to unplug/plug "
+"it."
+msgstr ""
+"Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
+"Vérifiez également libusb et usbfs."
+
+#: src/error.c:286
+#, fuzzy
+msgid "Error code not handled; this is a bug"
+msgstr ""
+"Code d'erreur inexistant dans la liste.\n"
+"Ceci est un bogue. Veuillez le signaler.\n"
+"."
+
+#: src/ticables.c:110
+#, fuzzy, c-format
+msgid "Cables library version %s"
+msgstr "librairie ticables version %s\n"
+
+#: src/ticables.c:275
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:247
+#: src/ticables.c:276
 #, fuzzy, c-format
 msgid "  model   : %s"
 msgstr "  nom du nœud : %s\n"
 
-#: src/ticables.c:248
+#: src/ticables.c:277
 #, fuzzy, c-format
 msgid "  port    : %s"
 msgstr "  port : %s\n"
 
-#: src/ticables.c:249
+#: src/ticables.c:278
 #, fuzzy, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  limite de temps : %i\n"
 
-#: src/ticables.c:250
+#: src/ticables.c:279
 #, fuzzy, c-format
 msgid "  delay   : %i us"
 msgstr "  délai : %i\n"
 
-#: src/ticables.c:251
+#: src/ticables.c:282
 #, fuzzy, c-format
 msgid "  device  : %s"
 msgstr "  nom du périphérique : %s\n"
 
-#: src/ticables.c:252
+#: src/ticables.c:283
 #, fuzzy, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x\n"
 
 #~ msgid "unknown"
 #~ msgstr "inconnu"
-
-#~ msgid "Msg: Unable to open serial device."
-#~ msgstr "Msg : Impossible d'ouvrir le périphérique série."
-
-#~ msgid ""
-#~ "Cause: check your permissions on the node. Check that the device is not "
-#~ "locked by another application (modem ?)."
-#~ msgstr ""
-#~ "Cause : Vérifiez que vous avez les permissions nécessaires sur ce noeud. "
-#~ "Vérifiez que le périphérique n'est pas bloqué par une autre application "
-#~ "(modem ?)."
-
-#~ msgid "Msg: Unable to open COM port."
-#~ msgstr "Msg : Impossible d'ouvrir le port COM."
-
-#~ msgid ""
-#~ "Cause: Check that the device is not used/locked by another application "
-#~ "(modem ?)."
-#~ msgstr ""
-#~ "Cause : Vérifiez que le périphérique n'est pas utilisé/bloqué par une "
-#~ "autre application (modem ?)."
-
-#~ msgid "Msg: Error occured while writing to the device."
-#~ msgstr "Msg : Erreur en écrivant sur le périphérique."
-
-#~ msgid "Msg: Timeout occured while writing to the device."
-#~ msgstr "Msg : Limite de temps dépassée en écrivant sur le périphérique."
-
-#~ msgid ""
-#~ "Cause: Check that your link cable is plugged and/or the calculator is "
-#~ "ready."
-#~ msgstr ""
-#~ "Cause : Vérifiez que le câble est connecté et/ou que la calculatrice est "
-#~ "prête."
-
-#~ msgid "Msg: Error occured while reading to the device."
-#~ msgstr "Msg : Erreur de lecture du périphérique."
-
-#~ msgid "Msg: Timeout occured while reading to the device."
-#~ msgstr "Msg : Limite de temps dépassée en lisant le périphérique."
 
 #~ msgid "Msg: A uint8_t have been lost."
 #~ msgstr "Msg : Une donnée a été perdue."
@@ -135,9 +369,6 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgstr ""
 #~ "Cause : Vérifiez que le noeud existe et que vous avez installé le pilote "
 #~ "approprié. Vérifiez également le fichier devfs."
-
-#~ msgid "Msg: Unable to use parallel/serial port: access refused."
-#~ msgstr "Msg : Impossible d'utiliser le port parallèle/série : accès refusé."
 
 #~ msgid ""
 #~ "Cause: Check that you have needed permissions (super user privileges). "
@@ -159,19 +390,6 @@ msgstr "  adresse : 0x%03x\n"
 
 #~ msgid "Cause: ??"
 #~ msgstr "Cause : ??"
-
-#~ msgid "Msg: Unable to open pipes for virtual linking."
-#~ msgstr "Msg : Impossible d'ouvrir les tubes pour la liaison virtuelle."
-
-#~ msgid ""
-#~ "Cause: Check that you have permissions to create a pipe in the /tmp "
-#~ "directory."
-#~ msgstr ""
-#~ "Cause : Vérifiez que vous avez les permissions de créer un tube (pipe) "
-#~ "dans le dossier /tmp."
-
-#~ msgid "Msg: Unable to close pipes."
-#~ msgstr "Msg : Impossible de fermer les tubes (pipes)."
 
 #~ msgid "Cause: System error ?!"
 #~ msgstr "Cause : Erreur du système ?"
@@ -217,17 +435,11 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgid "Msg: Error while flushing the buffer(s)."
 #~ msgstr "Msg : Erreur en libérant le(s) buffer(s)."
 
-#~ msgid "Cause: Internal Win32 error"
-#~ msgstr "Cause : Erreur interne à Win32."
-
 #~ msgid "Msg: IOCTL code unsuccessful."
 #~ msgstr "Msg : Échec du code IOTCL."
 
 #~ msgid "Cause: Internal device driver error."
 #~ msgstr "Cause : Erreur interne au pilote du périphérique."
-
-#~ msgid "Msg: Unable to open the USB device."
-#~ msgstr "Msg : Impossible d'ouvrir le périphérique USB."
 
 #~ msgid ""
 #~ "Cause: Check that you have required rights on the node and/or your driver "
@@ -252,13 +464,6 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgid "Msg: Error occurred while initializing the libusb."
 #~ msgstr "Msg : Erreur à l'initialisation de libusb."
 
-#~ msgid ""
-#~ "Cause: Check that your cable is connected or not stalled. Check your "
-#~ "libusb and usbfs, too."
-#~ msgstr ""
-#~ "Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
-#~ "Vérifiez également libusb et usbfs."
-
 #~ msgid "Msg: Unable to initialize the USB device."
 #~ msgstr "Msg : Impossible d'initialiser le périphérique USB."
 
@@ -267,13 +472,6 @@ msgstr "  adresse : 0x%03x\n"
 
 #~ msgid "Msg: Unable to open/find a USB device."
 #~ msgstr "Msg : Impossible d'ouvrir/trouver un périphérique USB."
-
-#~ msgid ""
-#~ "Cause: Check that your cable is connected or not stalled. Check you "
-#~ "rlibusb and usbfs, too."
-#~ msgstr ""
-#~ "Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
-#~ "Vérifiez également libusb et usbfs."
 
 #~ msgid "Msg: Error while reseting USB endpoints."
 #~ msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
@@ -285,16 +483,6 @@ msgstr "  adresse : 0x%03x\n"
 
 #~ msgid "Msg: FreeLibrary error. Unable to release the DLL."
 #~ msgstr "Msg : Erreur FreeLibrary. Impossible de libérer la DLL."
-
-#~ msgid "Msg: Unable to get a unique IPC (Inter Process Communication) key."
-#~ msgstr "Msg : Impossible d'obtenir une CIP (Clé Inter Processus) unique."
-
-#~ msgid ""
-#~ "Cause: Check that you have enough resources for allocating a shared "
-#~ "memory segment."
-#~ msgstr ""
-#~ "Cause : Vérifiez que vous disposez de suffisamment de mémoire pour "
-#~ "allouer un segment de mémoire partagée."
 
 #~ msgid "Msg: Unable to open a shared memory segment."
 #~ msgstr "Msg : Impossible d'ouvrir un segment de mémoire partagée."
@@ -323,12 +511,6 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgid "Msg: Unable to open a file mapping."
 #~ msgstr "Msg : Impossible d'ouvrir un fichier d'allocation."
 
-#~ msgid "Cause: VTi seems to be not launched yet."
-#~ msgstr "Cause : VTi semble ne pas être encore lancé."
-
-#~ msgid "Msg: Illegal operation or argument."
-#~ msgstr "Msg : Opération ou argument illégal."
-
 #~ msgid "Cause: A bug in TiLP, mail to: roms@tilp.info."
 #~ msgstr "Cause : Ceci est un bogue de TiLP, signalez-le à : roms@tilp.info."
 
@@ -348,9 +530,6 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgstr ""
 #~ "Cause : Ceci est dû à une mauvaise utilisation de la librairie, "
 #~ "certainement un bogue de TiLP. Signalez-le à: roms@tilp.info"
-
-#~ msgid "Msg: PortTalk driver and/or library not found."
-#~ msgstr "Msg : Pilote et/ou librairie PortTalk introuvable."
 
 #~ msgid ""
 #~ "Cause: TiLP should start this driver automagically through the SCM. Check "
@@ -400,25 +579,6 @@ msgstr "  adresse : 0x%03x\n"
 #~ msgstr ""
 #~ "Cause : votre noyau ne prend pas en charge usbfs, ou le système de "
 #~ "fichier n'a pas été monté par /etc/fstab."
-
-#, fuzzy
-#~ msgid "Msg: failed to reset USB endpoints."
-#~ msgstr "Msg : Erreur à la ré-initialisation des endpoints USB."
-
-#, fuzzy
-#~ msgid "Cause: your SilverLink cable may be stalled. Try to unplug/plug it."
-#~ msgstr ""
-#~ "Cause : Votre câble est peut-être figé/bloqué. Déconnectez et reconnectez-"
-#~ "le."
-
-#~ msgid ""
-#~ "Error code not found in the list.\n"
-#~ "This is a bug. Please report it.\n"
-#~ "."
-#~ msgstr ""
-#~ "Code d'erreur inexistant dans la liste.\n"
-#~ "Ceci est un bogue. Veuillez le signaler.\n"
-#~ "."
 
 #~ msgid "built for %s target.\n"
 #~ msgstr "Compilé pour %s.\n"
@@ -919,9 +1079,6 @@ msgstr "  adresse : 0x%03x\n"
 
 #~ msgid "Unable to load TiglUsbCheck symbol.\n"
 #~ msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
-
-#~ msgid "Unable to load TiglUsbRead symbol.\n"
-#~ msgstr "Impossible de charger le symbole TiglUsbRead.\n"
 
 #~ msgid "Unable to load TiglUsbWrite symbol.\n"
 #~ msgstr "Impossible de charger le symbole TiglUsbWrite.\n"

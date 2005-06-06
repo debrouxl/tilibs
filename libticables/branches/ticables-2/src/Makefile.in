@@ -60,7 +60,8 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DEFS = @DEFS@
+
+DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
@@ -98,6 +99,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
+LIBUSB_CONFIG = @LIBUSB_CONFIG@
 LIBUSB_LIBS = @LIBUSB_LIBS@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -175,22 +177,21 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-
 AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
-lib_LTLIBRARIES = libticables-2.la
+lib_LTLIBRARIES = libticables2.la
 libticablesincludedir = $(includedir)/tilp2
 libticablesinclude_HEADERS = ticables.h export.h stdints.h timeout.h
 
 # build instructions
-libticables_2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
+libticables2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
 	-DLOCALEDIR=\"$(datadir)/locale\"
 
-libticables_2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
-libticables_2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libticables_2_la_SOURCES = *.h \
+libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
+libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libticables2_la_SOURCES = *.h \
 	data_log.c \
 	detect.c \
 	error.c \
@@ -210,35 +211,35 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libticables_2_la_DEPENDENCIES =
-am_libticables_2_la_OBJECTS = libticables_2_la-data_log.lo \
-	libticables_2_la-detect.lo libticables_2_la-error.lo \
-	libticables_2_la-ioports.lo libticables_2_la-link_gry.lo \
-	libticables_2_la-link_nul.lo libticables_2_la-link_par.lo \
-	libticables_2_la-link_blk.lo libticables_2_la-link_slv.lo \
-	libticables_2_la-link_tie.lo libticables_2_la-link_vti.lo \
-	libticables_2_la-link_xxx.lo libticables_2_la-logging.lo \
-	libticables_2_la-ticables.lo libticables_2_la-type2str.lo
-libticables_2_la_OBJECTS = $(am_libticables_2_la_OBJECTS)
+libticables2_la_DEPENDENCIES =
+am_libticables2_la_OBJECTS = libticables2_la-data_log.lo \
+	libticables2_la-detect.lo libticables2_la-error.lo \
+	libticables2_la-ioports.lo libticables2_la-link_gry.lo \
+	libticables2_la-link_nul.lo libticables2_la-link_par.lo \
+	libticables2_la-link_blk.lo libticables2_la-link_slv.lo \
+	libticables2_la-link_tie.lo libticables2_la-link_vti.lo \
+	libticables2_la-link_xxx.lo libticables2_la-logging.lo \
+	libticables2_la-ticables.lo libticables2_la-type2str.lo
+libticables2_la_OBJECTS = $(am_libticables2_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libticables_2_la-data_log.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-detect.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-error.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-ioports.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_blk.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_gry.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_nul.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_par.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_slv.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_tie.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_vti.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-link_xxx.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-logging.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-ticables.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticables_2_la-type2str.Plo
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libticables2_la-data_log.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-detect.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-error.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-ioports.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_blk.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_gry.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_nul.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_par.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_slv.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_tie.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_vti.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-link_xxx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-logging.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-ticables.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticables2_la-type2str.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -246,12 +247,12 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libticables_2_la_SOURCES)
+DIST_SOURCES = $(libticables2_la_SOURCES)
 HEADERS = $(libticablesinclude_HEADERS)
 
 DIST_COMMON = $(libticablesinclude_HEADERS) $(srcdir)/Makefile.in \
 	Makefile.am
-SOURCES = $(libticables_2_la_SOURCES)
+SOURCES = $(libticables2_la_SOURCES)
 
 all: all-am
 
@@ -290,8 +291,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libticables-2.la: $(libticables_2_la_OBJECTS) $(libticables_2_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libticables_2_la_LDFLAGS) $(libticables_2_la_OBJECTS) $(libticables_2_la_LIBADD) $(LIBS)
+libticables2.la: $(libticables2_la_OBJECTS) $(libticables2_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libticables2_la_LDFLAGS) $(libticables2_la_OBJECTS) $(libticables2_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -299,21 +300,21 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-data_log.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-detect.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-error.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-ioports.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_blk.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_gry.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_nul.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_par.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_slv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_tie.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_vti.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-link_xxx.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-logging.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-ticables.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables_2_la-type2str.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-data_log.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-detect.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-error.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-ioports.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_blk.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_gry.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_nul.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_par.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_slv.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_tie.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_vti.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_xxx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-logging.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-ticables.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-type2str.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
@@ -348,500 +349,500 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
 
-libticables_2_la-data_log.o: data_log.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-data_log.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-data_log.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-data_log.o `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-data_log.Tpo" "$(DEPDIR)/libticables_2_la-data_log.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-data_log.Tpo"; exit 1; \
+libticables2_la-data_log.o: data_log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-data_log.o -MD -MP -MF "$(DEPDIR)/libticables2_la-data_log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-data_log.o `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-data_log.Tpo" "$(DEPDIR)/libticables2_la-data_log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-data_log.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables_2_la-data_log.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-data_log.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-data_log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables2_la-data_log.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-data_log.Po' tmpdepfile='$(DEPDIR)/libticables2_la-data_log.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-data_log.o `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-data_log.o `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c
 
-libticables_2_la-data_log.obj: data_log.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-data_log.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-data_log.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-data_log.obj `if test -f 'data_log.c'; then $(CYGPATH_W) 'data_log.c'; else $(CYGPATH_W) '$(srcdir)/data_log.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-data_log.Tpo" "$(DEPDIR)/libticables_2_la-data_log.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-data_log.Tpo"; exit 1; \
+libticables2_la-data_log.obj: data_log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-data_log.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-data_log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-data_log.obj `if test -f 'data_log.c'; then $(CYGPATH_W) 'data_log.c'; else $(CYGPATH_W) '$(srcdir)/data_log.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-data_log.Tpo" "$(DEPDIR)/libticables2_la-data_log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-data_log.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables_2_la-data_log.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-data_log.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-data_log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables2_la-data_log.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-data_log.Po' tmpdepfile='$(DEPDIR)/libticables2_la-data_log.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-data_log.obj `if test -f 'data_log.c'; then $(CYGPATH_W) 'data_log.c'; else $(CYGPATH_W) '$(srcdir)/data_log.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-data_log.obj `if test -f 'data_log.c'; then $(CYGPATH_W) 'data_log.c'; else $(CYGPATH_W) '$(srcdir)/data_log.c'; fi`
 
-libticables_2_la-data_log.lo: data_log.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-data_log.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-data_log.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-data_log.lo `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-data_log.Tpo" "$(DEPDIR)/libticables_2_la-data_log.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-data_log.Tpo"; exit 1; \
+libticables2_la-data_log.lo: data_log.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-data_log.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-data_log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-data_log.lo `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-data_log.Tpo" "$(DEPDIR)/libticables2_la-data_log.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-data_log.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables_2_la-data_log.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-data_log.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-data_log.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='data_log.c' object='libticables2_la-data_log.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-data_log.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-data_log.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-data_log.lo `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-data_log.lo `test -f 'data_log.c' || echo '$(srcdir)/'`data_log.c
 
-libticables_2_la-detect.o: detect.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-detect.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-detect.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-detect.o `test -f 'detect.c' || echo '$(srcdir)/'`detect.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-detect.Tpo" "$(DEPDIR)/libticables_2_la-detect.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-detect.Tpo"; exit 1; \
+libticables2_la-detect.o: detect.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-detect.o -MD -MP -MF "$(DEPDIR)/libticables2_la-detect.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-detect.o `test -f 'detect.c' || echo '$(srcdir)/'`detect.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-detect.Tpo" "$(DEPDIR)/libticables2_la-detect.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-detect.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables_2_la-detect.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-detect.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-detect.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables2_la-detect.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-detect.Po' tmpdepfile='$(DEPDIR)/libticables2_la-detect.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-detect.o `test -f 'detect.c' || echo '$(srcdir)/'`detect.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-detect.o `test -f 'detect.c' || echo '$(srcdir)/'`detect.c
 
-libticables_2_la-detect.obj: detect.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-detect.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-detect.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-detect.obj `if test -f 'detect.c'; then $(CYGPATH_W) 'detect.c'; else $(CYGPATH_W) '$(srcdir)/detect.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-detect.Tpo" "$(DEPDIR)/libticables_2_la-detect.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-detect.Tpo"; exit 1; \
+libticables2_la-detect.obj: detect.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-detect.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-detect.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-detect.obj `if test -f 'detect.c'; then $(CYGPATH_W) 'detect.c'; else $(CYGPATH_W) '$(srcdir)/detect.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-detect.Tpo" "$(DEPDIR)/libticables2_la-detect.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-detect.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables_2_la-detect.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-detect.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-detect.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables2_la-detect.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-detect.Po' tmpdepfile='$(DEPDIR)/libticables2_la-detect.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-detect.obj `if test -f 'detect.c'; then $(CYGPATH_W) 'detect.c'; else $(CYGPATH_W) '$(srcdir)/detect.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-detect.obj `if test -f 'detect.c'; then $(CYGPATH_W) 'detect.c'; else $(CYGPATH_W) '$(srcdir)/detect.c'; fi`
 
-libticables_2_la-detect.lo: detect.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-detect.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-detect.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-detect.lo `test -f 'detect.c' || echo '$(srcdir)/'`detect.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-detect.Tpo" "$(DEPDIR)/libticables_2_la-detect.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-detect.Tpo"; exit 1; \
+libticables2_la-detect.lo: detect.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-detect.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-detect.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-detect.lo `test -f 'detect.c' || echo '$(srcdir)/'`detect.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-detect.Tpo" "$(DEPDIR)/libticables2_la-detect.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-detect.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables_2_la-detect.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-detect.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-detect.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='detect.c' object='libticables2_la-detect.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-detect.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-detect.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-detect.lo `test -f 'detect.c' || echo '$(srcdir)/'`detect.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-detect.lo `test -f 'detect.c' || echo '$(srcdir)/'`detect.c
 
-libticables_2_la-error.o: error.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-error.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-error.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-error.o `test -f 'error.c' || echo '$(srcdir)/'`error.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-error.Tpo" "$(DEPDIR)/libticables_2_la-error.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-error.Tpo"; exit 1; \
+libticables2_la-error.o: error.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-error.o -MD -MP -MF "$(DEPDIR)/libticables2_la-error.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-error.o `test -f 'error.c' || echo '$(srcdir)/'`error.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-error.Tpo" "$(DEPDIR)/libticables2_la-error.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-error.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables_2_la-error.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-error.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-error.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables2_la-error.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-error.Po' tmpdepfile='$(DEPDIR)/libticables2_la-error.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-error.o `test -f 'error.c' || echo '$(srcdir)/'`error.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-error.o `test -f 'error.c' || echo '$(srcdir)/'`error.c
 
-libticables_2_la-error.obj: error.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-error.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-error.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-error.obj `if test -f 'error.c'; then $(CYGPATH_W) 'error.c'; else $(CYGPATH_W) '$(srcdir)/error.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-error.Tpo" "$(DEPDIR)/libticables_2_la-error.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-error.Tpo"; exit 1; \
+libticables2_la-error.obj: error.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-error.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-error.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-error.obj `if test -f 'error.c'; then $(CYGPATH_W) 'error.c'; else $(CYGPATH_W) '$(srcdir)/error.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-error.Tpo" "$(DEPDIR)/libticables2_la-error.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-error.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables_2_la-error.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-error.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-error.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables2_la-error.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-error.Po' tmpdepfile='$(DEPDIR)/libticables2_la-error.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-error.obj `if test -f 'error.c'; then $(CYGPATH_W) 'error.c'; else $(CYGPATH_W) '$(srcdir)/error.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-error.obj `if test -f 'error.c'; then $(CYGPATH_W) 'error.c'; else $(CYGPATH_W) '$(srcdir)/error.c'; fi`
 
-libticables_2_la-error.lo: error.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-error.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-error.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-error.lo `test -f 'error.c' || echo '$(srcdir)/'`error.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-error.Tpo" "$(DEPDIR)/libticables_2_la-error.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-error.Tpo"; exit 1; \
+libticables2_la-error.lo: error.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-error.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-error.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-error.lo `test -f 'error.c' || echo '$(srcdir)/'`error.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-error.Tpo" "$(DEPDIR)/libticables2_la-error.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-error.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables_2_la-error.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-error.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-error.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='error.c' object='libticables2_la-error.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-error.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-error.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-error.lo `test -f 'error.c' || echo '$(srcdir)/'`error.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-error.lo `test -f 'error.c' || echo '$(srcdir)/'`error.c
 
-libticables_2_la-ioports.o: ioports.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ioports.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-ioports.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ioports.o `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ioports.Tpo" "$(DEPDIR)/libticables_2_la-ioports.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ioports.Tpo"; exit 1; \
+libticables2_la-ioports.o: ioports.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ioports.o -MD -MP -MF "$(DEPDIR)/libticables2_la-ioports.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ioports.o `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ioports.Tpo" "$(DEPDIR)/libticables2_la-ioports.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ioports.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables_2_la-ioports.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ioports.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-ioports.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables2_la-ioports.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ioports.Po' tmpdepfile='$(DEPDIR)/libticables2_la-ioports.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ioports.o `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ioports.o `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c
 
-libticables_2_la-ioports.obj: ioports.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ioports.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-ioports.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ioports.obj `if test -f 'ioports.c'; then $(CYGPATH_W) 'ioports.c'; else $(CYGPATH_W) '$(srcdir)/ioports.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ioports.Tpo" "$(DEPDIR)/libticables_2_la-ioports.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ioports.Tpo"; exit 1; \
+libticables2_la-ioports.obj: ioports.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ioports.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-ioports.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ioports.obj `if test -f 'ioports.c'; then $(CYGPATH_W) 'ioports.c'; else $(CYGPATH_W) '$(srcdir)/ioports.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ioports.Tpo" "$(DEPDIR)/libticables2_la-ioports.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ioports.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables_2_la-ioports.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ioports.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-ioports.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables2_la-ioports.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ioports.Po' tmpdepfile='$(DEPDIR)/libticables2_la-ioports.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ioports.obj `if test -f 'ioports.c'; then $(CYGPATH_W) 'ioports.c'; else $(CYGPATH_W) '$(srcdir)/ioports.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ioports.obj `if test -f 'ioports.c'; then $(CYGPATH_W) 'ioports.c'; else $(CYGPATH_W) '$(srcdir)/ioports.c'; fi`
 
-libticables_2_la-ioports.lo: ioports.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ioports.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-ioports.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ioports.lo `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ioports.Tpo" "$(DEPDIR)/libticables_2_la-ioports.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ioports.Tpo"; exit 1; \
+libticables2_la-ioports.lo: ioports.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ioports.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-ioports.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ioports.lo `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ioports.Tpo" "$(DEPDIR)/libticables2_la-ioports.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ioports.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables_2_la-ioports.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ioports.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-ioports.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ioports.c' object='libticables2_la-ioports.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ioports.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-ioports.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ioports.lo `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ioports.lo `test -f 'ioports.c' || echo '$(srcdir)/'`ioports.c
 
-libticables_2_la-link_gry.o: link_gry.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_gry.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_gry.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_gry.o `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo" "$(DEPDIR)/libticables_2_la-link_gry.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo"; exit 1; \
+libticables2_la-link_gry.o: link_gry.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_gry.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_gry.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_gry.o `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_gry.Tpo" "$(DEPDIR)/libticables2_la-link_gry.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_gry.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables_2_la-link_gry.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_gry.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_gry.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables2_la-link_gry.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_gry.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_gry.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_gry.o `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_gry.o `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c
 
-libticables_2_la-link_gry.obj: link_gry.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_gry.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_gry.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_gry.obj `if test -f 'link_gry.c'; then $(CYGPATH_W) 'link_gry.c'; else $(CYGPATH_W) '$(srcdir)/link_gry.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo" "$(DEPDIR)/libticables_2_la-link_gry.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo"; exit 1; \
+libticables2_la-link_gry.obj: link_gry.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_gry.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_gry.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_gry.obj `if test -f 'link_gry.c'; then $(CYGPATH_W) 'link_gry.c'; else $(CYGPATH_W) '$(srcdir)/link_gry.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_gry.Tpo" "$(DEPDIR)/libticables2_la-link_gry.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_gry.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables_2_la-link_gry.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_gry.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_gry.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables2_la-link_gry.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_gry.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_gry.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_gry.obj `if test -f 'link_gry.c'; then $(CYGPATH_W) 'link_gry.c'; else $(CYGPATH_W) '$(srcdir)/link_gry.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_gry.obj `if test -f 'link_gry.c'; then $(CYGPATH_W) 'link_gry.c'; else $(CYGPATH_W) '$(srcdir)/link_gry.c'; fi`
 
-libticables_2_la-link_gry.lo: link_gry.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_gry.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_gry.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_gry.lo `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo" "$(DEPDIR)/libticables_2_la-link_gry.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_gry.Tpo"; exit 1; \
+libticables2_la-link_gry.lo: link_gry.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_gry.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_gry.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_gry.lo `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_gry.Tpo" "$(DEPDIR)/libticables2_la-link_gry.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_gry.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables_2_la-link_gry.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_gry.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_gry.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_gry.c' object='libticables2_la-link_gry.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_gry.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_gry.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_gry.lo `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_gry.lo `test -f 'link_gry.c' || echo '$(srcdir)/'`link_gry.c
 
-libticables_2_la-link_nul.o: link_nul.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_nul.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_nul.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_nul.o `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo" "$(DEPDIR)/libticables_2_la-link_nul.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo"; exit 1; \
+libticables2_la-link_nul.o: link_nul.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_nul.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_nul.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_nul.o `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_nul.Tpo" "$(DEPDIR)/libticables2_la-link_nul.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_nul.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables_2_la-link_nul.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_nul.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_nul.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables2_la-link_nul.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_nul.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_nul.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_nul.o `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_nul.o `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c
 
-libticables_2_la-link_nul.obj: link_nul.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_nul.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_nul.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_nul.obj `if test -f 'link_nul.c'; then $(CYGPATH_W) 'link_nul.c'; else $(CYGPATH_W) '$(srcdir)/link_nul.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo" "$(DEPDIR)/libticables_2_la-link_nul.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo"; exit 1; \
+libticables2_la-link_nul.obj: link_nul.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_nul.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_nul.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_nul.obj `if test -f 'link_nul.c'; then $(CYGPATH_W) 'link_nul.c'; else $(CYGPATH_W) '$(srcdir)/link_nul.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_nul.Tpo" "$(DEPDIR)/libticables2_la-link_nul.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_nul.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables_2_la-link_nul.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_nul.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_nul.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables2_la-link_nul.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_nul.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_nul.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_nul.obj `if test -f 'link_nul.c'; then $(CYGPATH_W) 'link_nul.c'; else $(CYGPATH_W) '$(srcdir)/link_nul.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_nul.obj `if test -f 'link_nul.c'; then $(CYGPATH_W) 'link_nul.c'; else $(CYGPATH_W) '$(srcdir)/link_nul.c'; fi`
 
-libticables_2_la-link_nul.lo: link_nul.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_nul.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_nul.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_nul.lo `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo" "$(DEPDIR)/libticables_2_la-link_nul.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_nul.Tpo"; exit 1; \
+libticables2_la-link_nul.lo: link_nul.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_nul.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_nul.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_nul.lo `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_nul.Tpo" "$(DEPDIR)/libticables2_la-link_nul.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_nul.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables_2_la-link_nul.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_nul.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_nul.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_nul.c' object='libticables2_la-link_nul.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_nul.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_nul.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_nul.lo `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_nul.lo `test -f 'link_nul.c' || echo '$(srcdir)/'`link_nul.c
 
-libticables_2_la-link_par.o: link_par.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_par.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_par.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_par.o `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_par.Tpo" "$(DEPDIR)/libticables_2_la-link_par.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_par.Tpo"; exit 1; \
+libticables2_la-link_par.o: link_par.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_par.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_par.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_par.o `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_par.Tpo" "$(DEPDIR)/libticables2_la-link_par.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_par.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables_2_la-link_par.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_par.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_par.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables2_la-link_par.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_par.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_par.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_par.o `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_par.o `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c
 
-libticables_2_la-link_par.obj: link_par.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_par.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_par.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_par.obj `if test -f 'link_par.c'; then $(CYGPATH_W) 'link_par.c'; else $(CYGPATH_W) '$(srcdir)/link_par.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_par.Tpo" "$(DEPDIR)/libticables_2_la-link_par.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_par.Tpo"; exit 1; \
+libticables2_la-link_par.obj: link_par.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_par.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_par.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_par.obj `if test -f 'link_par.c'; then $(CYGPATH_W) 'link_par.c'; else $(CYGPATH_W) '$(srcdir)/link_par.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_par.Tpo" "$(DEPDIR)/libticables2_la-link_par.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_par.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables_2_la-link_par.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_par.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_par.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables2_la-link_par.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_par.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_par.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_par.obj `if test -f 'link_par.c'; then $(CYGPATH_W) 'link_par.c'; else $(CYGPATH_W) '$(srcdir)/link_par.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_par.obj `if test -f 'link_par.c'; then $(CYGPATH_W) 'link_par.c'; else $(CYGPATH_W) '$(srcdir)/link_par.c'; fi`
 
-libticables_2_la-link_par.lo: link_par.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_par.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_par.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_par.lo `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_par.Tpo" "$(DEPDIR)/libticables_2_la-link_par.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_par.Tpo"; exit 1; \
+libticables2_la-link_par.lo: link_par.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_par.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_par.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_par.lo `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_par.Tpo" "$(DEPDIR)/libticables2_la-link_par.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_par.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables_2_la-link_par.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_par.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_par.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_par.c' object='libticables2_la-link_par.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_par.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_par.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_par.lo `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_par.lo `test -f 'link_par.c' || echo '$(srcdir)/'`link_par.c
 
-libticables_2_la-link_blk.o: link_blk.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
+libticables2_la-link_blk.o: link_blk.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_blk.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_blk.Tpo" "$(DEPDIR)/libticables2_la-link_blk.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables2_la-link_blk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_blk.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_blk.o `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
 
-libticables_2_la-link_blk.obj: link_blk.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
+libticables2_la-link_blk.obj: link_blk.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_blk.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_blk.Tpo" "$(DEPDIR)/libticables2_la-link_blk.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables2_la-link_blk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_blk.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_blk.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_blk.obj `if test -f 'link_blk.c'; then $(CYGPATH_W) 'link_blk.c'; else $(CYGPATH_W) '$(srcdir)/link_blk.c'; fi`
 
-libticables_2_la-link_blk.lo: link_blk.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_blk.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_blk.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo" "$(DEPDIR)/libticables_2_la-link_blk.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_blk.Tpo"; exit 1; \
+libticables2_la-link_blk.lo: link_blk.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_blk.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_blk.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_blk.Tpo" "$(DEPDIR)/libticables2_la-link_blk.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_blk.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables_2_la-link_blk.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_blk.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_blk.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_blk.c' object='libticables2_la-link_blk.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_blk.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_blk.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_blk.lo `test -f 'link_blk.c' || echo '$(srcdir)/'`link_blk.c
 
-libticables_2_la-link_slv.o: link_slv.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_slv.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_slv.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_slv.o `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo" "$(DEPDIR)/libticables_2_la-link_slv.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo"; exit 1; \
+libticables2_la-link_slv.o: link_slv.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_slv.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_slv.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_slv.o `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_slv.Tpo" "$(DEPDIR)/libticables2_la-link_slv.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_slv.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables_2_la-link_slv.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_slv.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_slv.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables2_la-link_slv.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_slv.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_slv.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_slv.o `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_slv.o `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c
 
-libticables_2_la-link_slv.obj: link_slv.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_slv.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_slv.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_slv.obj `if test -f 'link_slv.c'; then $(CYGPATH_W) 'link_slv.c'; else $(CYGPATH_W) '$(srcdir)/link_slv.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo" "$(DEPDIR)/libticables_2_la-link_slv.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo"; exit 1; \
+libticables2_la-link_slv.obj: link_slv.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_slv.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_slv.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_slv.obj `if test -f 'link_slv.c'; then $(CYGPATH_W) 'link_slv.c'; else $(CYGPATH_W) '$(srcdir)/link_slv.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_slv.Tpo" "$(DEPDIR)/libticables2_la-link_slv.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_slv.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables_2_la-link_slv.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_slv.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_slv.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables2_la-link_slv.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_slv.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_slv.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_slv.obj `if test -f 'link_slv.c'; then $(CYGPATH_W) 'link_slv.c'; else $(CYGPATH_W) '$(srcdir)/link_slv.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_slv.obj `if test -f 'link_slv.c'; then $(CYGPATH_W) 'link_slv.c'; else $(CYGPATH_W) '$(srcdir)/link_slv.c'; fi`
 
-libticables_2_la-link_slv.lo: link_slv.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_slv.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_slv.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_slv.lo `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo" "$(DEPDIR)/libticables_2_la-link_slv.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_slv.Tpo"; exit 1; \
+libticables2_la-link_slv.lo: link_slv.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_slv.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_slv.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_slv.lo `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_slv.Tpo" "$(DEPDIR)/libticables2_la-link_slv.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_slv.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables_2_la-link_slv.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_slv.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_slv.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_slv.c' object='libticables2_la-link_slv.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_slv.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_slv.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_slv.lo `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_slv.lo `test -f 'link_slv.c' || echo '$(srcdir)/'`link_slv.c
 
-libticables_2_la-link_tie.o: link_tie.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_tie.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_tie.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_tie.o `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo" "$(DEPDIR)/libticables_2_la-link_tie.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo"; exit 1; \
+libticables2_la-link_tie.o: link_tie.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_tie.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_tie.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_tie.o `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_tie.Tpo" "$(DEPDIR)/libticables2_la-link_tie.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_tie.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables_2_la-link_tie.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_tie.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_tie.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables2_la-link_tie.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_tie.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_tie.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_tie.o `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_tie.o `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c
 
-libticables_2_la-link_tie.obj: link_tie.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_tie.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_tie.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_tie.obj `if test -f 'link_tie.c'; then $(CYGPATH_W) 'link_tie.c'; else $(CYGPATH_W) '$(srcdir)/link_tie.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo" "$(DEPDIR)/libticables_2_la-link_tie.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo"; exit 1; \
+libticables2_la-link_tie.obj: link_tie.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_tie.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_tie.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_tie.obj `if test -f 'link_tie.c'; then $(CYGPATH_W) 'link_tie.c'; else $(CYGPATH_W) '$(srcdir)/link_tie.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_tie.Tpo" "$(DEPDIR)/libticables2_la-link_tie.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_tie.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables_2_la-link_tie.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_tie.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_tie.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables2_la-link_tie.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_tie.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_tie.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_tie.obj `if test -f 'link_tie.c'; then $(CYGPATH_W) 'link_tie.c'; else $(CYGPATH_W) '$(srcdir)/link_tie.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_tie.obj `if test -f 'link_tie.c'; then $(CYGPATH_W) 'link_tie.c'; else $(CYGPATH_W) '$(srcdir)/link_tie.c'; fi`
 
-libticables_2_la-link_tie.lo: link_tie.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_tie.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_tie.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_tie.lo `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo" "$(DEPDIR)/libticables_2_la-link_tie.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_tie.Tpo"; exit 1; \
+libticables2_la-link_tie.lo: link_tie.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_tie.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_tie.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_tie.lo `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_tie.Tpo" "$(DEPDIR)/libticables2_la-link_tie.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_tie.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables_2_la-link_tie.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_tie.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_tie.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_tie.c' object='libticables2_la-link_tie.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_tie.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_tie.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_tie.lo `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_tie.lo `test -f 'link_tie.c' || echo '$(srcdir)/'`link_tie.c
 
-libticables_2_la-link_vti.o: link_vti.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_vti.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_vti.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_vti.o `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo" "$(DEPDIR)/libticables_2_la-link_vti.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo"; exit 1; \
+libticables2_la-link_vti.o: link_vti.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_vti.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_vti.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_vti.o `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_vti.Tpo" "$(DEPDIR)/libticables2_la-link_vti.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_vti.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables_2_la-link_vti.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_vti.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_vti.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables2_la-link_vti.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_vti.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_vti.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_vti.o `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_vti.o `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c
 
-libticables_2_la-link_vti.obj: link_vti.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_vti.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_vti.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_vti.obj `if test -f 'link_vti.c'; then $(CYGPATH_W) 'link_vti.c'; else $(CYGPATH_W) '$(srcdir)/link_vti.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo" "$(DEPDIR)/libticables_2_la-link_vti.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo"; exit 1; \
+libticables2_la-link_vti.obj: link_vti.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_vti.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_vti.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_vti.obj `if test -f 'link_vti.c'; then $(CYGPATH_W) 'link_vti.c'; else $(CYGPATH_W) '$(srcdir)/link_vti.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_vti.Tpo" "$(DEPDIR)/libticables2_la-link_vti.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_vti.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables_2_la-link_vti.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_vti.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_vti.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables2_la-link_vti.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_vti.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_vti.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_vti.obj `if test -f 'link_vti.c'; then $(CYGPATH_W) 'link_vti.c'; else $(CYGPATH_W) '$(srcdir)/link_vti.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_vti.obj `if test -f 'link_vti.c'; then $(CYGPATH_W) 'link_vti.c'; else $(CYGPATH_W) '$(srcdir)/link_vti.c'; fi`
 
-libticables_2_la-link_vti.lo: link_vti.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_vti.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_vti.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_vti.lo `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo" "$(DEPDIR)/libticables_2_la-link_vti.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_vti.Tpo"; exit 1; \
+libticables2_la-link_vti.lo: link_vti.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_vti.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_vti.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_vti.lo `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_vti.Tpo" "$(DEPDIR)/libticables2_la-link_vti.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_vti.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables_2_la-link_vti.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_vti.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_vti.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_vti.c' object='libticables2_la-link_vti.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_vti.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_vti.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_vti.lo `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_vti.lo `test -f 'link_vti.c' || echo '$(srcdir)/'`link_vti.c
 
-libticables_2_la-link_xxx.o: link_xxx.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_xxx.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_xxx.o `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" "$(DEPDIR)/libticables_2_la-link_xxx.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo"; exit 1; \
+libticables2_la-link_xxx.o: link_xxx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_xxx.o -MD -MP -MF "$(DEPDIR)/libticables2_la-link_xxx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_xxx.o `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo" "$(DEPDIR)/libticables2_la-link_xxx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables_2_la-link_xxx.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_xxx.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_xxx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables2_la-link_xxx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_xxx.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_xxx.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_xxx.o `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_xxx.o `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c
 
-libticables_2_la-link_xxx.obj: link_xxx.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_xxx.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_xxx.obj `if test -f 'link_xxx.c'; then $(CYGPATH_W) 'link_xxx.c'; else $(CYGPATH_W) '$(srcdir)/link_xxx.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" "$(DEPDIR)/libticables_2_la-link_xxx.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo"; exit 1; \
+libticables2_la-link_xxx.obj: link_xxx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_xxx.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-link_xxx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_xxx.obj `if test -f 'link_xxx.c'; then $(CYGPATH_W) 'link_xxx.c'; else $(CYGPATH_W) '$(srcdir)/link_xxx.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo" "$(DEPDIR)/libticables2_la-link_xxx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables_2_la-link_xxx.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_xxx.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-link_xxx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables2_la-link_xxx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_xxx.Po' tmpdepfile='$(DEPDIR)/libticables2_la-link_xxx.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_xxx.obj `if test -f 'link_xxx.c'; then $(CYGPATH_W) 'link_xxx.c'; else $(CYGPATH_W) '$(srcdir)/link_xxx.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_xxx.obj `if test -f 'link_xxx.c'; then $(CYGPATH_W) 'link_xxx.c'; else $(CYGPATH_W) '$(srcdir)/link_xxx.c'; fi`
 
-libticables_2_la-link_xxx.lo: link_xxx.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-link_xxx.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-link_xxx.lo `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo" "$(DEPDIR)/libticables_2_la-link_xxx.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-link_xxx.Tpo"; exit 1; \
+libticables2_la-link_xxx.lo: link_xxx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-link_xxx.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-link_xxx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-link_xxx.lo `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo" "$(DEPDIR)/libticables2_la-link_xxx.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-link_xxx.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables_2_la-link_xxx.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-link_xxx.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-link_xxx.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables2_la-link_xxx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-link_xxx.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-link_xxx.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-link_xxx.lo `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_xxx.lo `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c
 
-libticables_2_la-logging.o: logging.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-logging.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-logging.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-logging.Tpo" "$(DEPDIR)/libticables_2_la-logging.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-logging.Tpo"; exit 1; \
+libticables2_la-logging.o: logging.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-logging.o -MD -MP -MF "$(DEPDIR)/libticables2_la-logging.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-logging.Tpo" "$(DEPDIR)/libticables2_la-logging.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-logging.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables_2_la-logging.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-logging.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-logging.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables2_la-logging.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-logging.Po' tmpdepfile='$(DEPDIR)/libticables2_la-logging.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-logging.o `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
 
-libticables_2_la-logging.obj: logging.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-logging.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-logging.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-logging.Tpo" "$(DEPDIR)/libticables_2_la-logging.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-logging.Tpo"; exit 1; \
+libticables2_la-logging.obj: logging.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-logging.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-logging.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-logging.Tpo" "$(DEPDIR)/libticables2_la-logging.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-logging.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables_2_la-logging.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-logging.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-logging.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables2_la-logging.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-logging.Po' tmpdepfile='$(DEPDIR)/libticables2_la-logging.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-logging.obj `if test -f 'logging.c'; then $(CYGPATH_W) 'logging.c'; else $(CYGPATH_W) '$(srcdir)/logging.c'; fi`
 
-libticables_2_la-logging.lo: logging.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-logging.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-logging.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-logging.Tpo" "$(DEPDIR)/libticables_2_la-logging.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-logging.Tpo"; exit 1; \
+libticables2_la-logging.lo: logging.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-logging.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-logging.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-logging.Tpo" "$(DEPDIR)/libticables2_la-logging.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-logging.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables_2_la-logging.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-logging.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-logging.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='logging.c' object='libticables2_la-logging.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-logging.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-logging.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
 
-libticables_2_la-ticables.o: ticables.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ticables.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-ticables.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ticables.o `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ticables.Tpo" "$(DEPDIR)/libticables_2_la-ticables.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ticables.Tpo"; exit 1; \
+libticables2_la-ticables.o: ticables.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ticables.o -MD -MP -MF "$(DEPDIR)/libticables2_la-ticables.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ticables.o `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ticables.Tpo" "$(DEPDIR)/libticables2_la-ticables.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ticables.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables_2_la-ticables.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ticables.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-ticables.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables2_la-ticables.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ticables.Po' tmpdepfile='$(DEPDIR)/libticables2_la-ticables.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ticables.o `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ticables.o `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c
 
-libticables_2_la-ticables.obj: ticables.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ticables.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-ticables.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ticables.obj `if test -f 'ticables.c'; then $(CYGPATH_W) 'ticables.c'; else $(CYGPATH_W) '$(srcdir)/ticables.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ticables.Tpo" "$(DEPDIR)/libticables_2_la-ticables.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ticables.Tpo"; exit 1; \
+libticables2_la-ticables.obj: ticables.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ticables.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-ticables.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ticables.obj `if test -f 'ticables.c'; then $(CYGPATH_W) 'ticables.c'; else $(CYGPATH_W) '$(srcdir)/ticables.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ticables.Tpo" "$(DEPDIR)/libticables2_la-ticables.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ticables.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables_2_la-ticables.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ticables.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-ticables.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables2_la-ticables.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ticables.Po' tmpdepfile='$(DEPDIR)/libticables2_la-ticables.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ticables.obj `if test -f 'ticables.c'; then $(CYGPATH_W) 'ticables.c'; else $(CYGPATH_W) '$(srcdir)/ticables.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ticables.obj `if test -f 'ticables.c'; then $(CYGPATH_W) 'ticables.c'; else $(CYGPATH_W) '$(srcdir)/ticables.c'; fi`
 
-libticables_2_la-ticables.lo: ticables.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-ticables.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-ticables.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-ticables.lo `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-ticables.Tpo" "$(DEPDIR)/libticables_2_la-ticables.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-ticables.Tpo"; exit 1; \
+libticables2_la-ticables.lo: ticables.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-ticables.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-ticables.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-ticables.lo `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-ticables.Tpo" "$(DEPDIR)/libticables2_la-ticables.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-ticables.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables_2_la-ticables.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-ticables.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-ticables.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ticables.c' object='libticables2_la-ticables.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-ticables.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-ticables.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-ticables.lo `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-ticables.lo `test -f 'ticables.c' || echo '$(srcdir)/'`ticables.c
 
-libticables_2_la-type2str.o: type2str.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-type2str.o -MD -MP -MF "$(DEPDIR)/libticables_2_la-type2str.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-type2str.o `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-type2str.Tpo" "$(DEPDIR)/libticables_2_la-type2str.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-type2str.Tpo"; exit 1; \
+libticables2_la-type2str.o: type2str.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-type2str.o -MD -MP -MF "$(DEPDIR)/libticables2_la-type2str.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-type2str.o `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-type2str.Tpo" "$(DEPDIR)/libticables2_la-type2str.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-type2str.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables_2_la-type2str.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-type2str.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-type2str.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables2_la-type2str.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-type2str.Po' tmpdepfile='$(DEPDIR)/libticables2_la-type2str.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-type2str.o `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-type2str.o `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c
 
-libticables_2_la-type2str.obj: type2str.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-type2str.obj -MD -MP -MF "$(DEPDIR)/libticables_2_la-type2str.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-type2str.obj `if test -f 'type2str.c'; then $(CYGPATH_W) 'type2str.c'; else $(CYGPATH_W) '$(srcdir)/type2str.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-type2str.Tpo" "$(DEPDIR)/libticables_2_la-type2str.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-type2str.Tpo"; exit 1; \
+libticables2_la-type2str.obj: type2str.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-type2str.obj -MD -MP -MF "$(DEPDIR)/libticables2_la-type2str.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-type2str.obj `if test -f 'type2str.c'; then $(CYGPATH_W) 'type2str.c'; else $(CYGPATH_W) '$(srcdir)/type2str.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-type2str.Tpo" "$(DEPDIR)/libticables2_la-type2str.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-type2str.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables_2_la-type2str.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-type2str.Po' tmpdepfile='$(DEPDIR)/libticables_2_la-type2str.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables2_la-type2str.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-type2str.Po' tmpdepfile='$(DEPDIR)/libticables2_la-type2str.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-type2str.obj `if test -f 'type2str.c'; then $(CYGPATH_W) 'type2str.c'; else $(CYGPATH_W) '$(srcdir)/type2str.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-type2str.obj `if test -f 'type2str.c'; then $(CYGPATH_W) 'type2str.c'; else $(CYGPATH_W) '$(srcdir)/type2str.c'; fi`
 
-libticables_2_la-type2str.lo: type2str.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables_2_la-type2str.lo -MD -MP -MF "$(DEPDIR)/libticables_2_la-type2str.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticables_2_la-type2str.lo `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables_2_la-type2str.Tpo" "$(DEPDIR)/libticables_2_la-type2str.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables_2_la-type2str.Tpo"; exit 1; \
+libticables2_la-type2str.lo: type2str.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-type2str.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-type2str.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticables2_la-type2str.lo `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-type2str.Tpo" "$(DEPDIR)/libticables2_la-type2str.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticables2_la-type2str.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables_2_la-type2str.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables_2_la-type2str.Plo' tmpdepfile='$(DEPDIR)/libticables_2_la-type2str.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='type2str.c' object='libticables2_la-type2str.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticables2_la-type2str.Plo' tmpdepfile='$(DEPDIR)/libticables2_la-type2str.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables_2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables_2_la-type2str.lo `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-type2str.lo `test -f 'type2str.c' || echo '$(srcdir)/'`type2str.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1051,11 +1052,6 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-libticablesincludeHEADERS
 
-
-dos2unix:
-	dos2unix
-	lowercase
-	uppercase
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

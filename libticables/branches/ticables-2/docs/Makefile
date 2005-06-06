@@ -17,9 +17,9 @@
 srcdir = .
 top_srcdir = ..
 
-pkgdatadir = $(datadir)/libticables-2
-pkglibdir = $(libdir)/libticables-2
-pkgincludedir = $(includedir)/libticables-2
+pkgdatadir = $(datadir)/libticables2
+pkglibdir = $(libdir)/libticables2
+pkgincludedir = $(includedir)/libticables2
 top_builddir = ..
 
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
@@ -98,6 +98,7 @@ LIBOBJS =
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIBUSB_CFLAGS = 
+LIBUSB_CONFIG = yes
 LIBUSB_LIBS = -L/usr/lib -lusb
 LN_S = ln -s
 LTLIBICONV = 
@@ -115,11 +116,11 @@ OBJDUMP = objdump
 OBJEXT = o
 OS_WIN32_FALSE = 
 OS_WIN32_TRUE = #
-PACKAGE = libticables-2
+PACKAGE = libticables2
 PACKAGE_BUGREPORT = tilp-users@lists.sourceforge.net
-PACKAGE_NAME = libticables-2
-PACKAGE_STRING = libticables-2 0.0.1
-PACKAGE_TARNAME = libticables-2
+PACKAGE_NAME = libticables2
+PACKAGE_STRING = libticables2 0.0.1
+PACKAGE_TARNAME = libticables2
 PACKAGE_VERSION = 0.0.1
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config

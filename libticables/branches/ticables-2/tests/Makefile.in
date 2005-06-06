@@ -98,6 +98,7 @@ LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
+LIBUSB_CONFIG = @LIBUSB_CONFIG@
 LIBUSB_LIBS = @LIBUSB_LIBS@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -180,7 +181,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src
 
 noinst_PROGRAMS = test_ticables_2
 
-test_ticables_2_LDADD = $(top_builddir)/src/libticables-2.la
+test_ticables_2_LDADD = $(top_builddir)/src/libticables2.la
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -191,7 +192,7 @@ PROGRAMS = $(noinst_PROGRAMS)
 
 test_ticables_2_SOURCES = test_ticables_2.c
 test_ticables_2_OBJECTS = test_ticables_2.$(OBJEXT)
-test_ticables_2_DEPENDENCIES = $(top_builddir)/src/libticables-2.la
+test_ticables_2_DEPENDENCIES = $(top_builddir)/src/libticables2.la
 test_ticables_2_LDFLAGS =
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)

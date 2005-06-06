@@ -60,12 +60,12 @@ typedef struct
 /* Shm variables */
 static key_t ipc_key[2];// IPC key
 static int shmid[2];	// Shm ID
-static vti_buf *shm[2];	// Shm address
+static LinkBuffer *shm[2];	// Shm address
 
 static LinkBuffer* send_buf[2];	// Swapped buffer
 static LinkBuffer* recv_buf[2];
 
-//static int p = 0;		// a shortcut
+static int p = 0;		// a shortcut
 
 static int vti_prepare(CableHandle *h)
 {
@@ -85,7 +85,7 @@ static int vti_open(CableHandle *h)
 		return ERR_ILLEGAL_ARG;
 		h->address = 2;
 	}
-	//p = h->address - 1;
+	p = h->address - 1;
 
 	/* Get a unique (if possible) key */
 	for (i = 0; i < 2; i++) 
@@ -100,7 +100,7 @@ static int vti_open(CableHandle *h)
 	/* Open a shared memory segment */
 	for (i = 0; i < 2; i++) 
 	{
-		if ((shmid[i] = shmget(ipc_key[i], sizeof(vti_buf), IPC_CREAT | 0666)) == -1) 
+		if ((shmid[i] = shmget(ipc_key[i], sizeof(LinkBuffer), IPC_CREAT | 0666)) == -1) 
 		{
 			ticables_warning("unable to open shared memory (shmget).\n");
 			return ERR_VTI_SHMGET;

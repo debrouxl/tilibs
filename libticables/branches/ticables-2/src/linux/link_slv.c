@@ -503,7 +503,7 @@ static int slv_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-const Cable cable_slv =
+const CableFncts cable_slv =
 {
 	CABLE_SLV,
 	"SLV",
