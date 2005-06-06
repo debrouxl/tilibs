@@ -58,23 +58,11 @@ int start_logging()
 {
   // build filenames
 #ifdef __WIN32__
-  	fn1 = (char *) malloc(strlen(LOG_FILE) + strlen("C:\\"));
-  	fn2 = (char *) malloc(strlen(TIME_FILE) + strlen("C:\\"));
-
-  	strcpy(fn1, "C:\\" LOG_FILE);
-  	strcpy(fn2, "C:\\" TIME_FILE);
+	fn1 = g_strconcat("C:\\", LOG_FILE, NULL);
+	fn2 = g_strconcat("C:\\", TIME_FILE, NULL);
 #else
-  	char *home_dir = getenv("HOME");
-
-  	fn1 = (char *) malloc(strlen(home_dir) + strlen(LOG_FILE) + 2);
-  	fn2 = (char *) malloc(strlen(home_dir) + strlen(TIME_FILE) + 2);
-
-  	strcpy(fn1, home_dir);
-  	strcat(fn1, "/");
-  	strcat(fn1, LOG_FILE);
-  	strcpy(fn2, home_dir);
-  	strcat(fn2, "/");
-  	strcat(fn2, TIME_FILE);
+	fn1 = g_strconcat(g_get_home_dir(), "/", LOG_FILE, NULL);
+	fn2 = g_strconcat(g_get_home_dir(), "/", TIME_FILE, NULL);
 #endif
 
   	ticables_info(_("Logging started."));
@@ -160,8 +148,8 @@ int stop_logging()
   	if (log2 != NULL)
     		fclose(log2);
 
-  	free(fn1);
-  	free(fn2);
+  	g_free(fn1);
+  	g_free(fn2);
 
   	return 0;
 }

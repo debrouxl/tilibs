@@ -95,13 +95,13 @@ static int vti_open(CableHandle *h)
 		return ERR_VTI_FINDWINDOW;
   
     /* Get the current DLL handle */
-    Handle = GetModuleHandle("Cables-2.dll");
+    Handle = GetModuleHandle("ticables2.dll");
 	if(!Handle)
-	  Handle = GetModuleHandle("libCables-3.dll");
+	  Handle = GetModuleHandle("licables2-0.dll");
   
     if (!Handle) 
     {
-      ticables_warning(_("Unable to get an handle on the libCables.\n"));
+      ticables_warning(_("Unable to get an handle on the ticables-2 library.\n"));
       ticables_warning(_("Did you rename the library ?!\n"));
       ticables_warning(_("Fatal error. Program terminated.\n"));
       exit(-1);
