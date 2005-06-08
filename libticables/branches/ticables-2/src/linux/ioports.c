@@ -149,7 +149,7 @@ int ser_io_close(int dev_fd)
 
 int ser_io_rd(int dev_fd)
 {
-    unsigned int flags;
+    unsigned int flags = 0;
 
     if (ioctl(dev_fd, TIOCMGET, &flags) == -1) 
     {

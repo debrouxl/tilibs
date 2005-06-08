@@ -53,7 +53,7 @@ static int ser_prepare(CableHandle *h)
     }
 
     // detect stuffs
-    TRYC(check_for_tty(h->device));
+    //TRYC(check_for_tty(h->device));
 
 
     return 0;
