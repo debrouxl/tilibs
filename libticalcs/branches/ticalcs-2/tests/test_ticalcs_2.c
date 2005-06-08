@@ -77,7 +77,7 @@ static int recv_screen(CalcHandle *h)
 	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
-	//free(bitmap);
+	free(bitmap);
 	return 0;
 }
 
@@ -88,6 +88,9 @@ static int get_dirlist(CalcHandle *h)
 	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
 	ticalcs_dirlist_display(vars);
 	ticalcs_dirlist_display(apps);
+	ticalcs_dirlist_destroy(&vars);
+	ticalcs_dirlist_destroy(&apps);
+
 	return 0;
 }
 
@@ -336,13 +339,13 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	//cable = ticables_handle_new(CABLE_BLK, PORT_2);
-	cable = ticables_handle_new(CABLE_VTI, PORT_2);
+	cable = ticables_handle_new(CABLE_BLK, PORT_2);
+	//cable = ticables_handle_new(CABLE_VTI, PORT_2);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI86);
+	calc = ticalcs_handle_new(CALC_TI89T);
 	if(calc == NULL)
 		return -1;
 
