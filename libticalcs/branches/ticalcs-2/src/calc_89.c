@@ -427,6 +427,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 			VarEntry *ve = (VarEntry *) (node->data);
 
+			/*
 			if(!i && !j)
 				mask = MODE_RECEIVE_FIRST_VAR;
 			else if((i == i_max - 1) && (j == j_max - 1) && b)
@@ -435,7 +436,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 				mask = MODE_RECEIVE_LAST_VAR;
 			else
 				mask = 0;
-
+*/
+			// we need to group files !
 		  TRYF(is_ready(handle));
 		  TRYF(recv_var(handle, 0, (FileContent *)content, ve));
 		  //TRYF(ti89_recv_var((char *) filename, mask, ve));

@@ -113,21 +113,20 @@ typedef enum
  **/
 typedef enum {
   MODE_NORMAL = 0,
-  // For receiving vars
-  MODE_RECEIVE_SINGLE_VAR = (1 << 0),	// Receive a single var
-  MODE_RECEIVE_FIRST_VAR = (1 << 1),	// Recv first var of group file
-  MODE_RECEIVE_LAST_VAR = (1 << 3),		// Recv last var of group file
+
   // For sending vars
-  MODE_SEND_ONE_VAR = (1 << 4),			// Send single var or first var (grp)
-  MODE_SEND_LAST_VAR = (1 << 5),		// Send last var of group file
-  MODE_SEND_VARS = (1 << 6),			// Send var of group file
-  MODE_SEND_TO_FLASH = (1 << 2),		// Send var to FLASH archive
+  MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
+  MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
+  
+  MODE_SEND_TO_FLASH = (1 << 3),	// Send var to FLASH archive
+
   // Miscellaneous
-  MODE_LOCAL_PATH = (1 << 7),			// Local path (full by default)
-  MODE_BACKUP = (1 << 8),				// Keep archive attribute
+  MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
+  MODE_BACKUP		= (1 << 5),		// Keep archive attribute
+
   // For sending FLASH (apps/AMS)
-  MODE_APPS = (1 << 11),				// Send a (free) FLASH application
-  MODE_AMS = (1 << 12),					// Send an Operating System (AMS)
+  MODE_APPS			= (1 << 6),		// Send a (free) FLASH application
+  MODE_AMS			= (1 << 7),		// Send an Operating System (AMS)
 } CalcMode;
 
 /**
@@ -208,16 +207,16 @@ typedef struct
 /**
  * TreeInfo:
  * @model: hand-held model
- * @type: var or app list
+ * @type: var or app list (VAR_NODE_NAME or APP_NODE_NAME)
  * @mem_used: memory used (depends on hand-held model)
  * @mem_free: memory free (depends on hand-held model)
  *
- * A structure used for storing information about a directory lsit tree.
+ * A structure used for storing information about a directory list tree.
  **/
 typedef struct
 {
 	CalcModel	model;
-	char*		type;	// VAR_NODE_NAME or APP_NODE_NAME
+	char*		type;
 	uint32_t	mem_used;
 	uint32_t	mem_free;
 } TreeInfo;
@@ -426,9 +425,9 @@ struct _CalcHandle
 	CalcFncts*	calc;
 	CalcUpdate*	updat;
 
-	void*		priv;	// used to store used memory
-	void*		priv2;	// used for sending buffer
-	void*		priv3;	
+	void*		priv;	// free of use
+	void*		priv2;	// used for sending buffer (packets.c)
+	void*		priv3;	// free of use
 
 	int			open;
 	int			busy;
@@ -542,7 +541,19 @@ struct _CalcHandle
 	TIEXPORT const CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
 	TIEXPORT const CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 	
-  
+  // special for MSVC (DLL partition -> memory violation, why ?!)
+#if defined(__WIN32__) && !defined(__MINGW32__)
+  TIEXPORT void* TICALL ticalcs_calloc(unsigned int nmemb, unsigned int size);
+  TIEXPORT void* TICALL ticalcs_malloc(unsigned int size);
+  TIEXPORT void  TICALL ticalcs_free(void *ptr);
+  TIEXPORT void* TICALL ticalcs_realloc(void *ptr, unsigned int size);
+#else
+# define ticalcs_calloc  calloc
+# define ticalcs_malloc  malloc
+# define ticalcs_free    free
+# define ticalcs_realloc realloc
+#endif
+	
   /************************/
   /* Deprecated functions */
   /************************/

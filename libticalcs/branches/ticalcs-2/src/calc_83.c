@@ -136,7 +136,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	*mem = GPOINTER_TO_UINT(handle->priv);
 	return ERR_UNSUPPORTED;
 }
 

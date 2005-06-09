@@ -88,11 +88,24 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
-	uint16_t unused;
+	TreeInfo *ti;
 	TNode *folder;
+	uint16_t unused;
 	uint8_t hl, ll, lh;
 	uint8_t mem[8];
 	char utf8[10];
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
+
+	(*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
 
 	TRYF(ti85_send_REQ(0x0000, TI86_DIR, ""));
 	TRYF(ti85_recv_ACK(&unused));
@@ -103,12 +116,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	hl = mem[0];
 	ll = mem[1];
 	lh = mem[2];
-	handle->priv = GUINT_TO_POINTER((hl << 16) | (lh << 8) | ll);
-
-	(*vars) = t_node_new(NULL);
-	(*vars)->data = strdup(VAR_NODE_NAME);
-	(*apps) = t_node_new(NULL);
-	(*apps)->data = strdup(APP_NODE_NAME);
+	ti->mem_free = (hl << 16) | (lh << 8) | ll;
 
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
@@ -142,8 +150,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	*mem = GPOINTER_TO_UINT(handle->priv);
-	return 0;
+	return ERR_UNSUPPORTED;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
@@ -168,7 +175,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     sprintf(update->text, _("Waiting user's action..."));
     update_label();
     do 
-	{				// wait user's action
+	{	// wait user's action
 		if (update->cancel)
 			return ERR_ABORT;
 		err = ti85_recv_SKP(&rej_code);

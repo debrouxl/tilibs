@@ -34,7 +34,7 @@
 
 #include "ticables.h"
 #include "tifiles.h"
-#include "ticalcs.h"
+#include "../src/ticalcs.h"
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
@@ -77,7 +77,7 @@ static int recv_screen(CalcHandle *h)
 	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
-	free(bitmap);
+	ticalcs_free(bitmap);
 	return 0;
 }
 
@@ -339,13 +339,13 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_BLK, PORT_2);
-	//cable = ticables_handle_new(CABLE_VTI, PORT_2);
+	//cable = ticables_handle_new(CABLE_BLK, PORT_2);
+	cable = ticables_handle_new(CABLE_VTI, PORT_2);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T);
+	calc = ticalcs_handle_new(CALC_TI86);
 	if(calc == NULL)
 		return -1;
 
