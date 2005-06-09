@@ -258,6 +258,10 @@ SOURCE=..\..\src\error.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\malloc.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\ticalcs.c
 # End Source File
 # Begin Source File

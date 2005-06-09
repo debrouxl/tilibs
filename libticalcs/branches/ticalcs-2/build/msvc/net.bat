@@ -12,3 +12,5 @@ del *.exe
 deltree /y output
 deltree /y debug
 deltree /y release
+
+cls
