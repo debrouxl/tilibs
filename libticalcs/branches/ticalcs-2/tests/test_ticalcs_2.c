@@ -339,13 +339,13 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	//cable = ticables_handle_new(CABLE_BLK, PORT_2);
-	cable = ticables_handle_new(CABLE_VTI, PORT_2);
+	cable = ticables_handle_new(CABLE_BLK, PORT_2);
+	//cable = ticables_handle_new(CABLE_VTI, PORT_2);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI86);
+	calc = ticalcs_handle_new(CALC_TI84P);
 	if(calc == NULL)
 		return -1;
 
