@@ -8,12 +8,12 @@ CFG=tifiles - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "tifiles.mak".
+!MESSAGE NMAKE /f "tifiles2.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "tifiles.mak" CFG="tifiles - Win32 Debug"
+!MESSAGE NMAKE /f "tifiles2.mak" CFG="tifiles - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -214,7 +214,7 @@ SOURCE=..\..\src\tifiles.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\tifiles.h
+SOURCE=..\..\src\tifiles2.h
 # End Source File
 # Begin Source File
 
@@ -235,7 +235,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\tifiles.rc
+SOURCE=.\tifiles2.rc
 # End Source File
 # Begin Source File
 
