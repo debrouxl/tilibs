@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="ticables" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="ticables2" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=ticables - Win32 Debug
+CFG=ticables2 - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ticables.mak".
+!MESSAGE NMAKE /f "ticables2.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ticables.mak" CFG="ticables - Win32 Debug"
+!MESSAGE NMAKE /f "ticables2.mak" CFG="ticables2 - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ticables - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ticables - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ticables2 - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ticables2 - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ticables - Win32 Release"
+!IF  "$(CFG)" == "ticables2 - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -39,7 +39,7 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
-# PROP Intermediate_Dir "C:\msvc\Output\ticables2"
+# PROP Intermediate_Dir "C:\msvc\Output\ticables22"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
@@ -53,9 +53,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"..\..\tests\ticables2.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"..\..\tests\ticables22.dll"
 
-!ELSEIF  "$(CFG)" == "ticables - Win32 Debug"
+!ELSEIF  "$(CFG)" == "ticables2 - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -65,7 +65,7 @@ LINK32=link.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "C:\msvc\tilp2"
-# PROP Intermediate_Dir "C:\msvc\Output\ticables2"
+# PROP Intermediate_Dir "C:\msvc\Output\ticables22"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
@@ -80,15 +80,15 @@ BSC32=bscmake.exe
 # SUBTRACT BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /debugtype:both /machine:I386 /out:"C:\msvc\tilp2\ticables2.dll" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /debugtype:both /machine:I386 /out:"C:\msvc\tilp2\ticables22.dll" /pdbtype:sept
 # SUBTRACT LINK32 /map
 
 !ENDIF 
 
 # Begin Target
 
-# Name "ticables - Win32 Release"
-# Name "ticables - Win32 Debug"
+# Name "ticables2 - Win32 Release"
+# Name "ticables2 - Win32 Debug"
 # Begin Group "Link cables"
 
 # PROP Default_Filter ""
@@ -186,7 +186,7 @@ SOURCE=..\..\src\ticables.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticables.h
+SOURCE=..\..\src\ticables2.h
 # End Source File
 # Begin Source File
 
@@ -199,7 +199,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\ticables.rc
+SOURCE=.\ticables2.rc
 # End Source File
 # Begin Source File
 
