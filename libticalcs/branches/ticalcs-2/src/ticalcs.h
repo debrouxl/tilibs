@@ -449,6 +449,26 @@ struct _CalcHandle
 	int			attached;
 };
 
+/**
+ * DeviceOptions:
+ * @count: number of bytes transferred
+ * @start: the time when transfer started
+ * @current: free of use
+ * @stop: the time when transfer finished
+ *
+ * A convenient structure free of use by the user.
+ **/
+typedef struct 
+{
+	CableModel	cable_model;
+	CablePort	cable_port;
+	int			cable_timeout;
+	int			cable_delay;
+
+	CalcModel	calc_model;
+	
+} DeviceOptions;
+
 // namespace scheme: library_class_function like ticalcs_fext_get
 
 	/****************/

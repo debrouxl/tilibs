@@ -33,7 +33,7 @@
  **/
 TIEXPORT const char *TICALL ticalcs_model_to_string(CalcModel model)
 {
-	return ticalcs_model_to_string(model);
+	return tifiles_model_to_string(model);
 }
 
 /**
@@ -46,7 +46,7 @@ TIEXPORT const char *TICALL ticalcs_model_to_string(CalcModel model)
  **/
 TIEXPORT CalcModel TICALL ticalcs_string_to_model(const char *str)
 {
-	return ticalcs_string_to_model(str);
+	return tifiles_string_to_model(str);
 }
 
 

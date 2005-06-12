@@ -266,7 +266,7 @@ SOURCE=..\..\src\ticalcs.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\ticalcs2.h
+SOURCE=..\..\src\ticalcs.h
 # End Source File
 # Begin Source File
 
