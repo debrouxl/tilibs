@@ -100,9 +100,9 @@ typedef enum
  **/
 typedef enum 
 {
-	MEMORY_NONE, 
-	MEMORY_FREE, 
-	MEMORY_USED
+	MEMORY_NONE = 0, 
+	MEMORY_FREE = (1<<0), 
+	MEMORY_USED = (1<<1),
 } CalcMemType;
 
 // To clean-up !
@@ -217,6 +217,8 @@ typedef struct
 {
 	CalcModel	model;
 	char*		type;
+
+	int			mem_mask;	//
 	uint32_t	mem_used;
 	uint32_t	mem_free;
 } TreeInfo;
@@ -573,6 +575,9 @@ typedef struct
 	TIEXPORT const CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
 	TIEXPORT const CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
 	TIEXPORT const CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
+
+	//probe.c
+	TIEXPORT int TICALL ticalcs_calc_isready_with_model(CalcHandle* handle, CalcModel* model);
 	
   // special for MSVC (DLL partition -> memory violation, why ?!)
 #if defined(__WIN32__) && !defined(__MINGW32__)

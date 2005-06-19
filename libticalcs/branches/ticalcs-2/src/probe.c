@@ -20,38 +20,36 @@
  */
 
 /*
-  This unit provides probing support.
+	Probing support.
 */
 
 #include <stdio.h>
 
+#include "ticalcs.h"
+#include "logging.h"
+#include "packets.h"
+#include "error.h"
 #include "gettext.h"
 
-#include "export.h"
-#include "headers.h"
-#include "calc_err.h"
-#include "calc_int.h"
-#include "externs.h"
-#include "packets.h"
-#include "update.h"
-#include "printl.h"
-
 /* 
-   Get the first uint8_t sent by the calc (Machine ID)
+	Get the first byte sent by the calc (Machine ID)
 */
-int tixx_recv_ACK(uint8_t * mid)
+#if 0
+int tixx_recv_ACK(uint8_t* mid)
 {
-  uint8_t host, cmd;
-  uint16_t status;
+	uint8_t host, cmd;
+	uint16_t status;
+	uint8_t buffer[256];
 
-  printl2(0, " TI->PC: ACK");
-  TRYF(recv_packet(&host, &cmd, &status, NULL));
+	TRYF(recv_packet(handle, &host, &cmd, &status, buffer));
+	ticalcs_info(" TI->PC: ACK");
 
-  *mid = host;
-  if (cmd != CMD_ACK)
-    return ERR_INVALID_CMD;
+	*mid = host;
+  
+	if (cmd != CMD_ACK)
+		return ERR_INVALID_CMD;
 
-  return 0;
+	return 0;
 }
 
 
@@ -190,79 +188,76 @@ TIEXPORT int TICALL ticalc_detect_calc(TicalcType * calc_type)
 
   return 0;
 }
+#endif
 
-
-/*
-  Check if the calculator is ready and detect the type.
-  Works only with TI73/83+/89/92+ calculators (FLASH). It could work with an 
-  V200 but it returns the same ID as TI92+...
-  Practically, call this function first, and call tixx_isready next.
-  Return 0 if successful, 0 otherwise.
-*/
-TIEXPORT int TICALL ticalc_isready(TicalcType * calc_type)
+/**
+ * ticalcs_calc_isready_with_model:
+ * @handle: a previously allocated handle
+ * @type: the calculator model
+ *
+ * Check if the calculator is ready and detect the type.
+ * Works only with TI73/83+/89/92+ calculators (FLASH). It could work with an 
+ * V200 but it returns the same ID as TI92+...
+ * Practically, call this function first, and call ticalcs_calc_isready next.
+ *
+ * Return value: 0 if ready else an error code.
+ **/
+TIEXPORT int TICALL ticalcs_calc_isready_with_model(CalcHandle* handle, CalcModel* model)
 {
-  uint8_t host, cmd, st1, st2;
-  uint16_t status;
-  TicalcType ct;
+	uint8_t host, cmd;
+	uint16_t status;
+	uint8_t buffer[256];
 
-  ticalc_get_calc(&ct);
-  if (
-	  (ct != CALC_TI73) && (ct != CALC_TI83P) && (ct != CALC_TI84P) &&
-	  (ct != CALC_TI89) && (ct != CALC_TI89T) && (ct != CALC_TI92P) && 
-	  (ct != CALC_V200)
-	 )
-    return 0;
+	if(!tifiles_is_flash(handle->model))
+	{
+		*model = CALC_NONE;
+		return 0;
+	}
 
-  TRYF(cable->open());
-  printl2(0, _("Is calculator ready (and check type) ?\n"));
+	ticalcs_info(" PC->TI: RDY?");
+	TRYF(send_packet(handle, PC_TIXX, CMD_RDY, 2, NULL));
 
-  printl2(0, " PC->TI: RDY?\n");
-  TRYF(send_packet(PC_TIXX, CMD_RDY, 2, NULL));
+	TRYF(recv_packet(handle, &host, &cmd, &status, buffer));
+	ticalcs_info(" TI->PC: ACK");
 
-  printl2(0, " TI->PC: ACK");
-  TRYF(cable->get(&host));
-  TRYF(cable->get(&cmd));
-  TRYF(cable->get(&st1));
-  TRYF(cable->get(&st2));
-  status = (st1 << 8) | st2;
-  if (cmd != CMD_ACK)
-    return ERR_INVALID_CMD;
-  printl2(0, _("\nStatus = %04X\n"), status);
-
-  // 0x98: TI89, 0x88: TI92+/V200, 0x73: TI83+, 0x74: TI73
-  switch (host) {
-    //case V200_PC:  *calc_type = CALC_V200; break;
-  case TI92p_PC:
-    *calc_type = CALC_TI92P;
+	// 0x98: TI89, 0x88: TI92+/V200, 0x73: TI83+, 0x74: TI73
+	switch (host) 
+	{
+		/*
+    case V200_PC:  
+		*model = CALC_V200; 
+		break;*/
+	case TI92p_PC:
+		*model = CALC_TI92P;
     break;
-  case TI89_PC:
-    *calc_type = CALC_TI89;
+	case TI89_PC:
+		*model = CALC_TI89;
     break;
-  case TI83p_PC:
-    *calc_type = CALC_TI83P;
+	case TI83p_PC:
+		*model = CALC_TI83P;
     break;
-  case TI73_PC:
-    *calc_type = CALC_TI73;
+	case TI73_PC:
+		*model = CALC_TI73;
     break;
-  default:
-    *calc_type = CALC_NONE;
+	default:
+		*model = CALC_NONE;
     return ERR_INVALID_HOST;
     break;
-  }
+	}
 
-  if (cmd != CMD_ACK)
-    return ERR_INVALID_CMD;
-  if ((status & 1) != 0)
-    return ERR_NOT_READY;
+	if (cmd != CMD_ACK)
+		return ERR_INVALID_CMD;
 
-  printl2(0, _("The calculator is ready.\n"));
-  printl2(0, _("Calculator type: %s\n"),
-	  (*calc_type == CALC_TI83P) ? "TI83+" :
-	  (*calc_type == CALC_TI84P) ? "TI84+" :
-	  (*calc_type == CALC_TI89) ? "TI89" :
-	  (*calc_type == CALC_TI89T) ? "TI89t" :
-	  (*calc_type == CALC_TI92P) ? "TI92+" :
-	  (*calc_type == CALC_V200) ? "V200" : "???");
+	if ((status & 1) != 0)
+		return ERR_NOT_READY;
+
+	ticalcs_info(_("Calculator type: %s"),
+	  (*model == CALC_TI83P) ? "TI83+" :
+	  (*model == CALC_TI84P) ? "TI84+" :
+	  (*model == CALC_TI89) ? "TI89" :
+	  (*model == CALC_TI89T) ? "TI89t" :
+	  (*model == CALC_TI92P) ? "TI92+" :
+	  (*model == CALC_V200) ? "V200" : "???");
 
   return 0;
 }

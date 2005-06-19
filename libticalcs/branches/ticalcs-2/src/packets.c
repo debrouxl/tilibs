@@ -98,6 +98,7 @@ int send_packet(CalcHandle* handle,
 		// send last chunk
 		{
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
 			handle->updat->pbar();
 			if (handle->updat->cancel)
@@ -208,6 +209,7 @@ int recv_packet(CalcHandle* handle,
 		// recv last chunk
 		{
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
 			handle->updat->pbar();
 			if (handle->updat->cancel)

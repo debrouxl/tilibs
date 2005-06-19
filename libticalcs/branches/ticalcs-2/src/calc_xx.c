@@ -152,6 +152,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
+	TreeInfo *ti;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -165,6 +166,14 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 	ticalcs_info(_("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
 	ret = calc->get_dirlist(handle, vars, apps);
+
+	ti = (*vars)->data;
+	ti->mem_mask |= MEMORY_USED;
+	ti->mem_used = ticalcs_dirlist_mem_used(*vars);
+	ti = (*apps)->data;
+	ti->mem_mask |= MEMORY_USED;
+	ti->mem_used = ticalcs_dirlist_mem_used(*apps);	
+
 	handle->busy = 0;
 
 	return ret;
