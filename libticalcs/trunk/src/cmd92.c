@@ -39,7 +39,7 @@
 int ti92_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
-  uint8_t trans[9];
+  uint8_t trans[32];
 
   tifiles_translate_varname(varname, trans, vartype);
   printl2(0, " PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)\n",

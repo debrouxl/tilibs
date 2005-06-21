@@ -65,7 +65,7 @@ static uint8_t pc_ti9x(void)
 int ti89_send_VAR(uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
-  uint8_t trans[9];
+  uint8_t trans[32];
   uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
   tifiles_translate_varname(varname, trans, vartype);
