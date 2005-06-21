@@ -67,12 +67,12 @@ const char *V200_CONST[V200_MAXTYPES + 1][4] = {
   {"", "v2?", "Unknown", N_("Unknown")},
   {"RDIR", "v2?", "Unknown"},
   {"LDIR", "v2?", "Unknown"},
-  {"ZIP", "v2?", "Zipped", N_("Zipped")},
+  {"ZIP", "v2y", "Zipped", N_("Zipped")},
   {"BKUP", "v2g", "Backup", N_("Backup")},
   {"", "v2?", "Unknown", N_("Unknown")},
   {"DIR", "v2?", "Unknown", N_("Unknown")},
   {"", "v2?", "Unknown", N_("Unknown")},
-  {"ASM", "v2z", "Asm Prog", N_("Asm Prog")},
+  {"ASM", "v2z", "Asm Prog", N_("Asm Program")},
   {"IDLIST", "v2idl", "ID-LIST", N_("ID-LIST")},
   {"AMS", "v2u", "OS upgrade", N_("OS upgrade")},
   {"APPL", "v2k", "Application", N_("Application")},
@@ -149,6 +149,7 @@ const char *v200_byte2desc(uint8_t data)
 // Return the icon name associated with the vartype
 const char *v200_byte2icon(uint8_t data)
 {
+	printf("data = <%02x>\n", data);
 	g_assert(data < V200_MAXTYPES);
 	return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
 }

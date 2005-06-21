@@ -64,7 +64,8 @@ TIEXPORT int TICALL tifiles_library_init()
   	
   	hDll = GetModuleHandle("tifiles2.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
-  	for (i = strlen(locale_dir); i >= 0; i--) {
+  	for (i = strlen(locale_dir); i >= 0; i--) 
+	{
     		if (locale_dir[i] == '\\')
       			break;
   	}
@@ -77,7 +78,7 @@ TIEXPORT int TICALL tifiles_library_init()
 
 	if (tifiles_instance)
 		return (++tifiles_instance);
-	tifiles_info( _("tifiles library version %s\n"), LIBFILES_VERSION);
+	tifiles_info( _("tifiles library version %s"), LIBFILES_VERSION);
 
 #if defined(ENABLE_NLS)
 	tifiles_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));

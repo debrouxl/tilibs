@@ -263,7 +263,7 @@ TIEXPORT char *TICALL tifiles_fext_get(const char *filename)
 
   d = strrchr(filename, '.');
   if (d == NULL)
-    return NULL;
+    return "";
 
   return (++d);
 }
@@ -279,12 +279,8 @@ TIEXPORT char *TICALL tifiles_fext_get(const char *filename)
  **/
 TIEXPORT char *TICALL tifiles_fext_dup(const char *filename)
 {
-  char *ext = tifiles_fext_get(filename);
-
-  if (ext != NULL)
+	char *ext = tifiles_fext_get(filename);
     return strdup(tifiles_fext_get(filename));
-  else
-    return strdup("");
 }
 
 /**************/
@@ -397,7 +393,7 @@ TIEXPORT int TICALL tifiles_file_is_group(const char *filename)
   int i;
   char *e = tifiles_fext_get(filename);
 
-  if (e == NULL)
+  if (!strcmp(e, ""))
     return 0;
 
   if (!tifiles_file_is_ti(filename))
@@ -442,7 +438,7 @@ TIEXPORT int TICALL tifiles_file_is_backup(const char *filename)
   int i;
   char *e = tifiles_fext_get(filename);
 
-  if (e == NULL)
+  if (!strcmp(e, ""))
     return 0;
 
   if (!tifiles_file_is_ti(filename))
@@ -470,7 +466,7 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
   int i;
   char *e = tifiles_fext_get(filename);
 
-  if (e == NULL)
+  if (!strcmp(e, ""))
     return 0;
 
   if (!tifiles_file_is_ti(filename))
@@ -498,7 +494,7 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 {
 	char *e = tifiles_fext_get(filename);
 
-	if (e == NULL)
+	if (!strcmp(e, ""))
 	  return 0;
 
 	if (!tifiles_file_is_ti(filename))
@@ -528,39 +524,38 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
  **/
 TIEXPORT CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
-  char *ext;
+  char *ext = tifiles_fext_get(filename);
   int type = CALC_NONE;
+  char str[3];
 
-  ext = tifiles_fext_dup(filename);
-  if (ext == NULL)
+  if (!strcmp(ext, ""))
     return CALC_NONE;
 
-  ext[2] = '\0';
+  strncpy(str, ext, 2);
+  str[2] = '\0';
 
-  if (!g_ascii_strcasecmp(ext, "73"))
+  if (!g_ascii_strcasecmp(str, "73"))
     type = CALC_TI73;
-  else if (!g_ascii_strcasecmp(ext, "82"))
+  else if (!g_ascii_strcasecmp(str, "82"))
     type = CALC_TI82;
-  else if (!g_ascii_strcasecmp(ext, "83"))
+  else if (!g_ascii_strcasecmp(str, "83"))
     type = CALC_TI83;
-  else if (!g_ascii_strcasecmp(ext, "8x"))
+  else if (!g_ascii_strcasecmp(str, "8x"))
     type = CALC_TI83P;
-  else if (!g_ascii_strcasecmp(ext, "85"))
+  else if (!g_ascii_strcasecmp(str, "85"))
     type = CALC_TI85;
-  else if (!g_ascii_strcasecmp(ext, "86"))
+  else if (!g_ascii_strcasecmp(str, "86"))
     type = CALC_TI86;
-  else if (!g_ascii_strcasecmp(ext, "89"))
+  else if (!g_ascii_strcasecmp(str, "89"))
     type = CALC_TI89;
-  else if (!g_ascii_strcasecmp(ext, "92"))
+  else if (!g_ascii_strcasecmp(str, "92"))
     type = CALC_TI92;
-  else if (!g_ascii_strcasecmp(ext, "9x"))
+  else if (!g_ascii_strcasecmp(str, "9x"))
     type = CALC_TI92P;
-  else if (!g_ascii_strcasecmp(ext, "v2"))
+  else if (!g_ascii_strcasecmp(str, "v2"))
     type = CALC_V200;
   else
     type = CALC_NONE;
-
-  free(ext);
 
   return type;
 }
@@ -600,7 +595,7 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
   char *ext;
 
   ext = tifiles_fext_get(filename);
-  if (ext == NULL)
+  if (!strcmp(ext, ""))
     return "";
 
   if (!g_ascii_strcasecmp(ext, "tib"))
@@ -673,7 +668,7 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
   char *ext;
 
   ext = tifiles_fext_get(filename);
-  if (ext == NULL)
+  if (!strcmp(ext, ""))
     return "";
 
   if (!g_ascii_strcasecmp(ext, "tib"))
