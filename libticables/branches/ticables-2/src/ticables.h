@@ -89,7 +89,7 @@ typedef enum
 } CableStatus;
 
 /**
- * TiDataRate:
+ * DataRate:
  * @count: number of bytes transferred
  * @start: the time when transfer started
  * @current: free of use

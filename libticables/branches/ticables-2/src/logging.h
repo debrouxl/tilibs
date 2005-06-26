@@ -24,7 +24,7 @@
 
 #include <glib.h>
 
-#define LOG_DOMAIN	"Cables"
+#define LOG_DOMAIN	"ticables"
 
 void ticables_debug(const gchar *format, ...);
 void ticables_info(const gchar *format, ...);
