@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 	// test error.c
 	tifiles_error_get(515, &msg);
 	printf("Error message: <%s>\n", msg);
-	tifiles_free(msg);
+	free(msg);
 	printf("--\n");
 
 	// test type2str.c

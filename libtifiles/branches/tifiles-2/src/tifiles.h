@@ -378,19 +378,6 @@ extern "C" {
 
   TIEXPORT int TICALL tifiles_content_free_group(FileContent **array);
 
-  // special for MSVC (DLL partition -> memory violation, why ?!)
-#if defined(__WIN32__) && !defined(__MINGW32__)
-  TIEXPORT void* TICALL tifiles_calloc(unsigned int nmemb, unsigned int size);
-  TIEXPORT void* TICALL tifiles_malloc(unsigned int size);
-  TIEXPORT void  TICALL tifiles_free(void *ptr);
-  TIEXPORT void* TICALL tifiles_realloc(void *ptr, unsigned int size);
-#else
-# define tifiles_calloc  calloc
-# define tifiles_malloc  malloc
-# define tifiles_free    free
-# define tifiles_realloc realloc
-#endif
-
   /************************/
   /* Deprecated functions */
   /************************/

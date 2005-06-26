@@ -149,7 +149,6 @@ const char *v200_byte2desc(uint8_t data)
 // Return the icon name associated with the vartype
 const char *v200_byte2icon(uint8_t data)
 {
-	printf("data = <%02x>\n", data);
 	g_assert(data < V200_MAXTYPES);
 	return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
 }
