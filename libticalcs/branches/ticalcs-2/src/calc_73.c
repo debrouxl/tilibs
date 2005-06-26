@@ -236,17 +236,17 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->max2 = 3;
 	update->cnt2 = 0;
 
-	content->data_part1 = tifiles_calloc(65536, 1);
+	content->data_part1 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
 
-	content->data_part2 = tifiles_calloc(65536, 1);
+	content->data_part2 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
 
-	content->data_part3 = tifiles_calloc(65536, 1);
+	content->data_part3 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
@@ -311,7 +311,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     strcpy(content->comment, "Single file received by TiLP");
     content->model = handle->model;
     content->num_entries = 1;
-    content->entries = (VarEntry *) tifiles_calloc(1, sizeof(VarEntry));
+    content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
     ve = &(content->entries[0]);
     memcpy(ve, vr, sizeof(VarEntry));
 
@@ -330,7 +330,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     TRYF(ti73_send_CTS());
     TRYF(ti73_recv_ACK(NULL));
 
-    ve->data = tifiles_calloc(ve->size, 1);
+    ve->data = calloc(ve->size, 1);
     TRYF(ti73_recv_XDP((uint16_t *) & ve->size, ve->data));
     TRYF(ti73_send_ACK());
 
@@ -402,7 +402,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 	content->model = handle->model;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
-	content->pages = (FlashPage *)tifiles_calloc(content->num_pages, sizeof(FlashPage));
+	content->pages = (FlashPage *)calloc(content->num_pages, sizeof(FlashPage));
 
 	sprintf(update->text, _("Receiving '%s'"), vr->name);
 	update_label();
@@ -429,7 +429,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		TRYF(ti73_send_CTS());
 		TRYF(ti73_recv_ACK(NULL));
 
-		fp->data = tifiles_calloc(fp->size, 1);
+		fp->data = calloc(fp->size, 1);
 		TRYF(ti73_recv_XDP((uint16_t *) & fp->size, fp->data));
 		fixup(fp->size);
 		TRYF(ti73_send_ACK());

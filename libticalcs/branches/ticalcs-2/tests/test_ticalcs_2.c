@@ -77,7 +77,7 @@ static int recv_screen(CalcHandle *h)
 	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
-	ticalcs_free(bitmap);
+	free(bitmap);
 	return 0;
 }
 
@@ -345,7 +345,7 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI84P);
+	calc = ticalcs_handle_new(CALC_TI89T);
 	if(calc == NULL)
 		return -1;
 

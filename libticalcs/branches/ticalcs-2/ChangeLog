@@ -3,15 +3,13 @@ SubVersion: $Id$
 Set svn:eol property to native on all files
 	
 To do : 
-- review of code:
-  - clean-up
-  - defining some coding style (var name, similitudes)
-- use localized strings for labels/printf
-
 - update the link guide
 - update code according to link guide
 
 - ROM dumping: new protocol and make clac returns ROM size (automatic probing)
+
+- cable/calc autodetect
+- key codes for TI8x
 
 Log:
 

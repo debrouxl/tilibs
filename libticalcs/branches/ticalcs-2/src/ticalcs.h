@@ -136,6 +136,7 @@ typedef enum {
  **/
 typedef enum 
 {
+	ROMSIZE_AUTO  = 0,
     ROMSIZE_128KB = 128, /* TI82, 85 */
     ROMSIZE_256KB = 256, /* TI83, 86 */
     ROMSIZE_512KB = 512, /* TI83+ */
@@ -578,20 +579,7 @@ typedef struct
 
 	//probe.c
 	TIEXPORT int TICALL ticalcs_calc_isready_with_model(CalcHandle* handle, CalcModel* model);
-	
-  // special for MSVC (DLL partition -> memory violation, why ?!)
-#if defined(__WIN32__) && !defined(__MINGW32__)
-  TIEXPORT void* TICALL ticalcs_calloc(unsigned int nmemb, unsigned int size);
-  TIEXPORT void* TICALL ticalcs_malloc(unsigned int size);
-  TIEXPORT void  TICALL ticalcs_free(void *ptr);
-  TIEXPORT void* TICALL ticalcs_realloc(void *ptr, unsigned int size);
-#else
-# define ticalcs_calloc  calloc
-# define ticalcs_malloc  malloc
-# define ticalcs_free    free
-# define ticalcs_realloc realloc
-#endif
-	
+		
   /************************/
   /* Deprecated functions */
   /************************/

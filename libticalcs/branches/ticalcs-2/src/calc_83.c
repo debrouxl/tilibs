@@ -215,17 +215,17 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->max2 = 3;
 	content->data_part4 = NULL;
 
-	content->data_part1 = tifiles_calloc(65536, 1);
+	content->data_part1 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti82_send_ACK());
 	update->cnt2 = 1;
 
-	content->data_part2 = tifiles_calloc(65536, 1);
+	content->data_part2 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti82_send_ACK());
 	update->cnt2 = 2;
 
-	content->data_part3 = tifiles_calloc(65536, 1);
+	content->data_part3 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti82_send_ACK());
 	update->cnt2 = 3;
@@ -287,7 +287,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI83;
-	content->entries = (VarEntry *) tifiles_calloc(1, sizeof(VarEntry));
+	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
@@ -306,7 +306,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti82_send_CTS());
 	TRYF(ti82_recv_ACK(NULL));
 
-	ve->data = tifiles_calloc(ve->size, 1);
+	ve->data = calloc(ve->size, 1);
 	TRYF(ti82_recv_XDP((uint16_t *) & ve->size, ve->data));
 	TRYF(ti82_send_ACK());
 

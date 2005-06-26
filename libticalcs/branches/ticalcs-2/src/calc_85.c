@@ -177,17 +177,17 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   TRYF(ti85_recv_ACK(NULL));
 
   update->max2 = 4;
-  content->data_part1 = tifiles_calloc(65536, 1);
+  content->data_part1 = calloc(65536, 1);
   TRYF(ti85_recv_XDP(&content->data_length1, content->data_part1));
   TRYF(ti85_send_ACK());
   update->cnt2 = 1;
 
-  content->data_part2 = tifiles_calloc(65536, 1);
+  content->data_part2 = calloc(65536, 1);
   TRYF(ti85_recv_XDP(&content->data_length2, content->data_part2));
   TRYF(ti85_send_ACK());
   update->cnt2 = 2;
 
-  content->data_part3 = tifiles_calloc(65536, 1);
+  content->data_part3 = calloc(65536, 1);
   TRYF(ti85_recv_XDP(&content->data_length3, content->data_part3));
   TRYF(ti85_send_ACK());
   update->cnt2 = 3;
@@ -286,7 +286,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     VarEntry *ve;
 
     content->entries =
-	(VarEntry *) tifiles_realloc(content->entries,
+	(VarEntry *) realloc(content->entries,
 				       (nvar + 2) * sizeof(VarEntry));
     ve = &(content->entries[nvar]);
 
@@ -312,7 +312,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
     update_label();
 
-    ve->data = tifiles_calloc(ve->size, 1);
+    ve->data = calloc(ve->size, 1);
     TRYF(ti85_recv_XDP((uint16_t *) & ve->size, ve->data));
     TRYF(ti85_send_ACK());
   }

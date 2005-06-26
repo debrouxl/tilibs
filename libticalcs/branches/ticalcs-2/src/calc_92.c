@@ -231,7 +231,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	content->model = CALC_TI92;
 	strcpy(content->comment, "Backup file received by TiLP");
-	content->data_part = (uint8_t *) tifiles_calloc(128 * 1024, 1);
+	content->data_part = (uint8_t *) calloc(128 * 1024, 1);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
 
@@ -309,7 +309,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI92;
 	content->num_entries = 1;
-	content->entries = (VarEntry *) tifiles_calloc(1, sizeof(VarEntry));
+	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));
 
@@ -330,7 +330,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti92_send_CTS());
 	TRYF(ti92_recv_ACK(NULL));
 
-	ve->data = tifiles_calloc(ve->size + 4, 1);
+	ve->data = calloc(ve->size + 4, 1);
 	TRYF(ti92_recv_XDP(&unused, ve->data));
 	memmove(ve->data, ve->data + 4, ve->size);
 	TRYF(ti92_send_ACK());
@@ -365,7 +365,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *ve;
 
-		content->entries = (VarEntry *) tifiles_realloc(content->entries, nvar * sizeof(VarEntry));
+		content->entries = (VarEntry *) realloc(content->entries, nvar * sizeof(VarEntry));
 		ve = &(content->entries[nvar-1]);
 		strcpy(ve->folder, "main");	
 
@@ -396,7 +396,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti92_send_CTS());
 		TRYF(ti92_recv_ACK(NULL));
 
-		ve->data = tifiles_calloc(ve->size + 4, 1);
+		ve->data = calloc(ve->size + 4, 1);
 		TRYF(ti92_recv_XDP(&unused, ve->data));
 		memmove(ve->data, ve->data + 4, ve->size);
 		TRYF(ti92_send_ACK());
