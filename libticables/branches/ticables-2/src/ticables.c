@@ -54,10 +54,10 @@ static CableFncts const *const cables[] =
 #ifndef NO_CABLE_PAR
 	&cable_par,
 #endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB) || defined(__WIN32__)
 	&cable_slv,
 #endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB)
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB) || defined(__WIN32__)
 	&cable_raw,
 #endif
 #ifndef NO_CABLE_VTI
@@ -195,15 +195,17 @@ TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort por
  **/
 TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
 {
-    if(handle->priv2)
-	free(handle->priv2);
+	if(handle)
+	{
+		if(handle->priv2)
+			free(handle->priv2);
 
-    if(handle->device)
-	free(handle->device);
+		if(handle->device)
+			free(handle->device);
 
-    if(handle)
-	free(handle);
-    handle = NULL;
+    	free(handle);
+	    handle = NULL;
+	}
     
     return 0;
 }

@@ -72,10 +72,7 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* resu
 
 	// Do the check itself
 	ret = cable->probe(handle);
-	if(ret == ERR_PROBE_FAILED)
-		*result = 0;
-	else
-		*result = !0;
+	*result = !ret;
 
 	// If it was opened for this, close it
 	if(!already && cable->need_open)

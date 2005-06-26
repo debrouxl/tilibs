@@ -257,6 +257,10 @@ struct _CableHandle
 
 	TIEXPORT const char* TICALL ticables_port_to_string(CablePort port);
 	TIEXPORT CablePort   TICALL ticables_string_to_port(const char *str);
+
+	// probe.c
+	TIEXPORT int TICALL ticables_probe(int ***result, int);
+	TIEXPORT int TICALL ticables_probe_finished(int ***result);
   
   /************************/
   /* Deprecated functions */

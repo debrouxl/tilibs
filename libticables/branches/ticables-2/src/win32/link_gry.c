@@ -143,7 +143,7 @@ static int gry_close(CableHandle *h)
 	if (hCom) 
 	{
 		CloseHandle(hCom);
-		hCom = 0;
+		hCom = INVALID_HANDLE_VALUE;
 	}
 
 	return 0;
@@ -170,35 +170,30 @@ static int gry_probe(CableHandle *h)
     EscapeCommFunction(hCom, SETDTR);
     EscapeCommFunction(hCom, SETRTS);
     GetCommModemStatus(hCom, &status);	// Get MCR values
-    fprintf(stdout, "status: %i\n", status);
     if (status != 0x20)
       return ERR_PROBE_FAILED;
   
     EscapeCommFunction(hCom, SETDTR);
     EscapeCommFunction(hCom, CLRRTS);
     GetCommModemStatus(hCom, &status);
-    fprintf(stdout, "status: %i\n", status);
     if (status != 0x20)
       return ERR_PROBE_FAILED;
   
     EscapeCommFunction(hCom, CLRDTR);
     EscapeCommFunction(hCom, CLRRTS);
     GetCommModemStatus(hCom, &status);
-    fprintf(stdout, "status: %i\n", status);
     if (status != 0x00)
       return ERR_PROBE_FAILED;
 
     EscapeCommFunction(hCom, CLRDTR);
     EscapeCommFunction(hCom, SETRTS);
     GetCommModemStatus(hCom, &status);
-    fprintf(stdout, "status: %i\n", status);
     if (status != 0x00)
       return ERR_PROBE_FAILED;
   
     EscapeCommFunction(hCom, SETDTR);
     EscapeCommFunction(hCom, SETRTS);
     GetCommModemStatus(hCom, &status);
-	fprintf(stdout, "status: %i\n", status);
 	if (status != 0x20)
 		return ERR_PROBE_FAILED;
 

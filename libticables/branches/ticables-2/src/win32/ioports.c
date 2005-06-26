@@ -171,8 +171,12 @@ int io_close(unsigned long from)
 {
 	if(win32_detect_os() == WIN_NT)
 	{
-		if(--instance)
+		instance--;
+		if(!instance)
+		{
 			CloseHandle(hDll);
+			hDll = INVALID_HANDLE_VALUE;
+		}
 	}
 
 	return 0;
@@ -269,7 +273,7 @@ int win32_comport_close(PHANDLE hCom)
   if (*hCom) 
   {
     CloseHandle(*hCom);
-    *hCom = 0;
+    *hCom = INVALID_HANDLE_VALUE;
   }
 
   return 0;

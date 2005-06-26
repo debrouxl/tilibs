@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 To do: 
 	- use overlapped I/O for GrayLink
-	- pack structure in handle
+	- probing fault when SilverLink not plugged
 	
 Log:
 

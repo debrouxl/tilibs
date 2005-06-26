@@ -65,7 +65,7 @@ int start_logging()
 	fn2 = g_strconcat(g_get_home_dir(), "/", TIME_FILE, NULL);
 #endif
 
-  	ticables_info(_("Logging started."));
+  	//ticables_info(_("Logging started."));
 
   	log1 = fopen(fn1, "wt");
   	if (log1 == NULL) 
@@ -141,7 +141,7 @@ int log_n_data(uint8_t* d, int n)
 
 int stop_logging()
 {
-  	ticables_info("Logging stopped.");
+  	//ticables_info("Logging stopped.");
 
   	if (log1 != NULL)
     		fclose(log1);

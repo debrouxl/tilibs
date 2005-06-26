@@ -52,6 +52,14 @@ int main(int argc, char **argv)
 	uint8_t buf[4], data;
 	int status, result;
 	uint8_t scr[3840 + 6];
+	int **probing;
+
+#if 1
+	ticables_probe(&probing, 5);
+	for(i = 1; i <= 5; i++)
+		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
+	ticables_probe_finished(&probing);
+#endif
 
 #if 0
 	printf("check_for_root: %i \n", check_for_root());
@@ -91,7 +99,7 @@ int main(int argc, char **argv)
 	printf("result = %i\n", result);
 #endif
 
-#if 1
+#if 0
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);
