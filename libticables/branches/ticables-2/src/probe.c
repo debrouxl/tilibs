@@ -33,13 +33,13 @@
  * ticables_probe:
  * @array: address of an array of integers to put result. 
  *
- * Returns cables which have been detected.
+ * Returns cables which have been detected. All cables must be CLOSED before !
  * The array contains 5 columns (PORT_0 to PORT_4) and 5 lines (CABLE_GRY to CABLE_USB).
  * The array must be freed when no longer used.
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_probe_do(int ***result, int timeout)
+TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
 {
 	CablePort port;
 	CableModel model;
@@ -75,7 +75,7 @@ TIEXPORT int TICALL ticables_probe_do(int ***result, int timeout)
 	return 0;
 }
 
-TIEXPORT int TICALL ticables_probe_finish(int ***result)
+TIEXPORT int TICALL ticables_probing_finish(int ***result)
 {
 	int i;
 

@@ -90,6 +90,7 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* resu
 		free(handle->device);
 	}
 
+	handle = NULL;
 	return 0;
 }
 
