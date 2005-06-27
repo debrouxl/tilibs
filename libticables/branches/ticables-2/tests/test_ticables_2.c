@@ -55,10 +55,10 @@ int main(int argc, char **argv)
 	int **probing;
 
 #if 1
-	ticables_probe(&probing, 5);
+	ticables_probe_do(&probing, 5);
 	for(i = 1; i <= 5; i++)
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
-	ticables_probe_finished(&probing);
+	ticables_probe_finish(&probing);
 #endif
 
 #if 0

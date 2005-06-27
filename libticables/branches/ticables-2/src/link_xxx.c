@@ -68,7 +68,13 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* resu
 
 	// Check if device is already opened
 	if(!already && cable->need_open)
+	{
 	    TRYC(ticables_cable_open(handle));
+	}
+	else
+	{
+		TRYC(handle->cable->prepare(handle));
+	}
 
 	// Do the check itself
 	ret = cable->probe(handle);

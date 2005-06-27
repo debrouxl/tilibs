@@ -216,12 +216,47 @@ static int slv_probe(CableHandle *h)
 {
 	int ret;
 	unsigned int *list;
+	int open = 0;
+
+	if(dynTiglUsbProbe == NULL)
+	{
+		open = !0;
+		hDLL = LoadLibrary("TIGLUSB.DLL");
+		if (hDLL == NULL) 
+		{
+			ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
+			return ERR_SLV_LOADLIBRARY;
+		}
+
+		dynTiglUsbProbe = (TIGLUSB_PROBE2) GetProcAddress(hDLL, "TiglUsbProbe2");
+		if (!dynTiglUsbProbe) 
+		{
+			ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
+			FreeLibrary(hDLL);
+			return ERR_SLV_FREELIBRARY;
+		}
+	}
 
 	ret = dynTiglUsbProbe(&list);
     
 	if(ret > 0)
+	{
 		if(list[h->address-1] == PID_TIGLUSB)
+		{
+			if(open)
+			{
+				FreeLibrary(hDLL);
+				dynTiglUsbProbe = NULL;
+			}
 			return 0;
+		}
+	}
+
+	if(open)
+	{
+		FreeLibrary(hDLL);
+		dynTiglUsbProbe = NULL;
+	}
 
 	return ERR_PROBE_FAILED;
 }
@@ -230,12 +265,47 @@ static int raw_probe(CableHandle *h)
 {
 	int ret;
 	unsigned int *list;
+	int open = 0;
+
+	if(dynTiglUsbProbe == NULL)
+	{
+		open = !0;
+		hDLL = LoadLibrary("TIGLUSB.DLL");
+		if (hDLL == NULL) 
+		{
+			ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
+			return ERR_SLV_LOADLIBRARY;
+		}
+
+		dynTiglUsbProbe = (TIGLUSB_PROBE2) GetProcAddress(hDLL, "TiglUsbProbe2");
+		if (!dynTiglUsbProbe) 
+		{
+			ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
+			FreeLibrary(hDLL);
+			return ERR_SLV_FREELIBRARY;
+		}
+	}
 
 	ret = dynTiglUsbProbe(&list);
     
 	if(ret > 0)
+	{
 		if(list[h->address-1] == PID_TI89TM || list[h->address-1] == PID_TI84P)
+		{
+			if(open)
+			{
+				FreeLibrary(hDLL);
+				dynTiglUsbProbe = NULL;
+			}
 			return 0;
+		}
+	}
+
+	if(open)
+	{
+		FreeLibrary(hDLL);
+		dynTiglUsbProbe = NULL;
+	}
 
 	return ERR_PROBE_FAILED;
 }

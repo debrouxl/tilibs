@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 To do: 
 	- use overlapped I/O for GrayLink
-	- probing fault when SilverLink not plugged
+	- h-> device is not freed ?!
 	
 Log:
 

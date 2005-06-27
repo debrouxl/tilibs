@@ -39,12 +39,11 @@
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_probe(int ***result, int timeout)
+TIEXPORT int TICALL ticables_probe_do(int ***result, int timeout)
 {
 	CablePort port;
 	CableModel model;
 	int **array;
-	int old_timeout;
 
 	ticables_info(_("Link cable probing:"));
 	array = *result = (int **)calloc(5, sizeof(int));
@@ -52,9 +51,6 @@ TIEXPORT int TICALL ticables_probe(int ***result, int timeout)
 	for(model = CABLE_GRY; model <= CABLE_USB; model++)
 	{
 		array[model] = (int *)calloc(5, sizeof(int));
-
-		if(model == CABLE_SLV || model == CABLE_USB)
-			continue;
 
 		for(port = PORT_1; port <= PORT_4; port++)
 		{
@@ -70,14 +66,16 @@ TIEXPORT int TICALL ticables_probe(int ***result, int timeout)
 			}
 			ticables_handle_del(handle);
 		}
-		ticables_info(_(" %i: %c %c %c %c"), model, 
+		/*
+		ticables_info(_(" %i: %i %i %i %i"), model, 
 			array[model][1], array[model][2], array[model][3], array[model][4]);
+		*/
 	}
 
 	return 0;
 }
 
-TIEXPORT int TICALL ticables_probe_finished(int ***result)
+TIEXPORT int TICALL ticables_probe_finish(int ***result)
 {
 	int i;
 
