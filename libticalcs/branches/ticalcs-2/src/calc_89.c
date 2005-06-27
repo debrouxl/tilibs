@@ -326,7 +326,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		if(mode & MODE_BACKUP) 
 		{
-			update->cnt2 = i;		  
+			update->cnt2 = i+1;
+			update->max2 = content->num_entries;
+			update->pbar();
 			if(update->cancel)
 				return ERR_ABORT;
 		}
@@ -413,7 +415,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	b = t_node_n_children(t_node_nth_child(vars, t_node_n_children(vars) - 1));
 
 	// Receive all variables, except FLASH apps
-	update->max2 = nvars;
 	i_max = t_node_n_children(vars);
 
 	for(i = 0; i < i_max; i++) 
@@ -427,22 +428,14 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 			VarEntry *ve = (VarEntry *) (node->data);
 
-			/*
-			if(!i && !j)
-				mask = MODE_RECEIVE_FIRST_VAR;
-			else if((i == i_max - 1) && (j == j_max - 1) && b)
-				mask = MODE_RECEIVE_LAST_VAR;
-			else if((i == i_max - 2) && (j == j_max - 1) && !b)
-				mask = MODE_RECEIVE_LAST_VAR;
-			else
-				mask = 0;
-*/
 			// we need to group files !
 		  TRYF(is_ready(handle));
 		  TRYF(recv_var(handle, 0, (FileContent *)content, ve));
 		  //TRYF(ti89_recv_var((char *) filename, mask, ve));
 
-		  update->cnt2 = ivars++;
+		  update->cnt2 = ++ivars;
+		  update->max2 = nvars;
+		  update->pbar();
 		  if(update->cancel)
 				return ERR_ABORT;
 		}

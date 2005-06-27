@@ -578,7 +578,9 @@ typedef struct
 	TIEXPORT const CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 
 	//probe.c
-	TIEXPORT int TICALL ticalcs_calc_isready_with_model(CalcHandle* handle, CalcModel* model);
+	TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model);
+	TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model);
+	TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
 		
   /************************/
   /* Deprecated functions */

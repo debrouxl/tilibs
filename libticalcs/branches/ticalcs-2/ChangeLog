@@ -6,7 +6,7 @@ To do :
 - update the link guide
 - update code according to link guide
 
-- ROM dumping: new protocol and make clac returns ROM size (automatic probing)
+- ROM dumping: new protocol and make calc returns ROM size (automatic probing)
 
 - cable/calc autodetect
 - key codes for TI8x

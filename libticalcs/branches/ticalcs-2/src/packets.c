@@ -32,7 +32,7 @@
 #include "macros.h"
 
 // We split packets into chucks to get control regularly and update statistics.
-#define BLK_SIZE	1024
+#define BLK_SIZE	256
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -175,8 +175,11 @@ int recv_packet(CalcHandle* handle,
 	*cmd = buf[1];
 	*length = buf[2] | (buf[3] << 8);
 
+	//removed for probing
+/*
 	if(*host != host_ids(handle)) 
 		return ERR_INVALID_HOST;
+		*/
 
 	if(*cmd == CMD_ERR) 
 		return ERR_CHECKSUM;

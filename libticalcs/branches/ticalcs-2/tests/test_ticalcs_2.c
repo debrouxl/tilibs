@@ -280,7 +280,17 @@ static int get_clock(CalcHandle *h)
 	return 0;
 }
 
-static const char *str_menu[18] = 
+static int probe_calc(CalcHandle *h)
+{
+	CalcModel model;
+
+	ticalcs_probe_calc(h->cable, &model);
+	printf("Found: <%s>", ticalcs_model_to_string(model));
+
+	return 0;
+}
+
+static const char *str_menu[19] = 
 {
 	"Exit",
 	"Check whether calc is ready",
@@ -300,11 +310,12 @@ static const char *str_menu[18] =
 	"Dump ROM",
 	"Set clock",
 	"Get clock",
+	"Probe calc",
 };
 
 typedef int (*FNCT_MENU) (CalcHandle*);
 
-static FNCT_MENU fnct_menu[18] = 
+static FNCT_MENU fnct_menu[19] = 
 {
 	NULL,
 	is_ready,
@@ -324,6 +335,7 @@ static FNCT_MENU fnct_menu[18] =
 	dump_rom,
 	set_clock,
 	get_clock,
+	probe_calc,
 };
 
 int main(int argc, char **argv)
@@ -345,7 +357,7 @@ int main(int argc, char **argv)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T);
+	calc = ticalcs_handle_new(CALC_TI83);
 	if(calc == NULL)
 		return -1;
 
@@ -366,7 +378,7 @@ int main(int argc, char **argv)
 restart:
 		// Display menu
 		printf("Choose an action:\n");
-		for(i = 0; i < 18; i++)
+		for(i = 0; i < 19; i++)
 			printf("%2i. %s\n", i, str_menu[i]);
 		printf("Your choice: ");
 

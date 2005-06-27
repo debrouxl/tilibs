@@ -273,6 +273,7 @@ TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
 	
 	handle->attached = 0;
 	handle->cable = NULL;
+	handle = NULL;
 
 	return 0;
 }
