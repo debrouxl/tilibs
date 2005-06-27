@@ -75,7 +75,7 @@ static int gry_open(CableHandle *h)
 #endif
     
     //dev_fd = (int)open(h->device, flags);
-    h->device = (void *)open(h->device, flags);
+    h->priv = (void *)open(h->device, flags);
     if (dev_fd == -1) 
     {
 	if(errno == EACCES)

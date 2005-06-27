@@ -82,7 +82,13 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* resu
 
 	// If it was opened for this, close it
 	if(!already && cable->need_open)
+	{
 	    TRYC(ticables_cable_close(handle));
+	}
+	else
+	{
+		free(handle->device);
+	}
 
 	return 0;
 }
@@ -107,6 +113,7 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
 	{
 	    cable->close(handle);
 	    handle->open = 0;
+		free(handle->device);
 	}
 
 	return 0;
