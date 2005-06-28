@@ -99,17 +99,21 @@ typedef enum
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @size: size of data (uint16_t for TI8x)
  * @data: pure data
+ * @action: used by ticalcs library (must be set to 0)
  *
  * A generic structure used to store the content of a TI variable.
  **/
 typedef struct 
 {
-  char		folder[9];
-  char		name[9];
-  uint8_t	type;
-  uint8_t	attr;
-  uint32_t	size;
-  uint8_t*	data;
+	char		folder[9];
+	char		name[9];
+
+	uint8_t		type;
+	uint8_t		attr;
+	uint32_t	size;
+	uint8_t*	data;
+
+	int			action;
 
 } VarEntry;
 
