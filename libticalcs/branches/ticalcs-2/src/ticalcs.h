@@ -185,6 +185,17 @@ typedef enum
 } CalcFeatures;
 
 /**
+ * CalcAction:
+ *
+ * An enumeration which contains the action taken on a variable:
+ **/
+typedef enum 
+{
+	ACT_NONE = 0,
+	ACT_RENAME, ACT_OVER, ACT_SKIP,
+} CalcAction;
+
+/**
  * CalcScreenCoord:
  * @format: returns full or clipped image (#CalcScreenFormat)
  * @width: real width
