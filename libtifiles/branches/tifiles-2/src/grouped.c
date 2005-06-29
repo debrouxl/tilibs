@@ -39,6 +39,20 @@
 /***********/
 
 /**
+ * tifiles_content_create_group:
+ * @n: number of variables to allocate
+ *
+ * Convenient function which create a NULL-terminated array of #FileContent 
+ * structures (typically used to store a group file).
+ *
+ * Return value: the array or NULL if failed.
+ **/
+TIEXPORT FileContent** TICALL tifiles_content_create_group(int n_entries)
+{
+	return (FileContent **)calloc(n_entries + 1, sizeof(FileContent *));
+}
+
+/**
  * tifiles_content_free_group:
  *
  * Convenient function which free a NULL-terminated array of #FileContent 

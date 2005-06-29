@@ -374,13 +374,14 @@ extern "C" {
   TIEXPORT int TICALL tifiles_file_display(const char *filename);
 
   // grouped.c
+  TIEXPORT FileContent** TICALL tifiles_content_create_group(int n_entries);
+  TIEXPORT int           TICALL tifiles_content_free_group(FileContent **array);
+
   TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content);
   TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src_content, FileContent ***dst_contents);
 
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
-
-  TIEXPORT int TICALL tifiles_content_free_group(FileContent **array);
 
   /************************/
   /* Deprecated functions */
