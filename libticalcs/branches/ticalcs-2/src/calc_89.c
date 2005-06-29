@@ -274,6 +274,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		uint8_t vartype = entry->type;
 		uint8_t varname[18], utf8[35];
 
+		if(entry->action == ACT_SKIP)
+			continue;
+
 		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
 		{	
 			// local & not backup
@@ -309,7 +312,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		} 
 		else 
 		{
-		  TRYF(ti89_send_VAR(entry->size, vartype, varname));
+			TRYF(ti89_send_VAR(entry->size, vartype, varname));
 		}
 
 		TRYF(ti89_recv_ACK(NULL));
@@ -329,6 +332,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			update->cnt2 = i+1;
 			update->max2 = content->num_entries;
 			update->pbar();
+
 			if(update->cancel)
 				return ERR_ABORT;
 		}
@@ -398,12 +402,14 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	int i, j;
+	int i, j, k;
 	int i_max, j_max;
 	int mask = MODE_BACKUP;
 	TNode *vars, *apps;
 	int nvars, ivars = 0;
 	int b = 0;
+	FileContent **array;
+	FileContent *group;
 
 	// Do a directory list and check for something to backup
 	TRYF(get_dirlist(handle, &vars, &apps));
@@ -414,9 +420,12 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	// Check whether the last folder is empty
 	b = t_node_n_children(t_node_nth_child(vars, t_node_n_children(vars) - 1));
 
-	// Receive all variables, except FLASH apps
-	i_max = t_node_n_children(vars);
+	// Create a group file
+	k = 0;
+	array = tifiles_content_create_group(nvars);
 
+	// Receive all vars except for FLASH apps
+	i_max = t_node_n_children(vars);
 	for(i = 0; i < i_max; i++) 
 	{
 		TNode *parent = t_node_nth_child(vars, i);
@@ -425,24 +434,38 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		for(j = 0; j < j_max; j++) 
 		{
 			TNode *node = t_node_nth_child(parent, j);
-
 			VarEntry *ve = (VarEntry *) (node->data);
 
 			// we need to group files !
-		  TRYF(is_ready(handle));
-		  TRYF(recv_var(handle, 0, (FileContent *)content, ve));
-		  //TRYF(ti89_recv_var((char *) filename, mask, ve));
+			TRYF(is_ready(handle));
+			array[k] = tifiles_content_create_regular();
+			TRYF(recv_var(handle, 0, array[k++], ve));
 
-		  update->cnt2 = ++ivars;
-		  update->max2 = nvars;
-		  update->pbar();
-		  if(update->cancel)
+			update->cnt2 = ++ivars;
+			update->max2 = nvars;
+			update->pbar();
+
+			if(update->cancel)
 				return ERR_ABORT;
 		}
 	}
 
 	ticalcs_dirlist_destroy(&vars);
 	ticalcs_dirlist_destroy(&apps);
+
+	tifiles_group_contents(array, &group);
+	tifiles_content_free_group(array);
+
+	// Swap content and group because content has already been allocated
+	{
+		VarEntry *src, *dst;
+		
+		src = ((FileContent *)content)->entries;
+		dst = group->entries;
+		memcpy(content, group, sizeof(FileContent));
+		group->entries = src;
+		tifiles_content_free_regular(group);
+	}
 
 	return 0;
 }
