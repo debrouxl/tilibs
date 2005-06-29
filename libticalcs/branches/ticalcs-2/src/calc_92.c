@@ -346,6 +346,11 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	return ERR_UNSUPPORTED;
 }
 
+static int		new_folder  (CalcHandle* handle, VarRequest* vr)
+{
+	return ERR_UNSUPPORTED;
+}
+
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	return send_var(handle, mode, content);
@@ -557,6 +562,7 @@ const CalcFncts calc_92 =
 	&send_var,
 	&recv_var,
 	&del_var,
+	&new_folder,
 	&send_var_ns,
 	&recv_var_ns,
 	&send_flash,

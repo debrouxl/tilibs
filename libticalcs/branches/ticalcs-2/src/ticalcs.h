@@ -415,7 +415,9 @@ struct _CalcFncts
 
 	int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
 	int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+	
 	int		(*del_var)		(CalcHandle*, VarRequest*);
+	int		(*new_folder)	(CalcHandle*, VarRequest*);
 
 	int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
 	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
