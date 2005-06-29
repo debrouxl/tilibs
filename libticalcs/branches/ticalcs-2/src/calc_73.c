@@ -215,7 +215,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t varname[9] = { 0 };
 	uint8_t attr;
 
-	strcpy(content->comment, "Backup file received by TiLP");
 	content->model = handle->model;
 	sprintf(update->text, _("Receiving backup..."));
 	update_label();
@@ -308,7 +307,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
     VarEntry *ve;
 
-    strcpy(content->comment, "Single file received by TiLP");
     content->model = handle->model;
     content->num_entries = 1;
     content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));

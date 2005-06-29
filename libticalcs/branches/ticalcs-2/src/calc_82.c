@@ -162,7 +162,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	uint8_t varname[9] = { 0 };
 
-	strcpy(content->comment, "Backup file received by TiLP");
 	content->model = handle->model;
 
   TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, varname));
@@ -281,7 +280,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   sprintf(update->text, _("Waiting var(s)..."));
   update_label();
 
-  strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI82;
 
   for (nvar = 0;; nvar++) 

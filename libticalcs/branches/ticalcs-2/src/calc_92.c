@@ -231,7 +231,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti92_recv_ACK(&unused2));
 
 	content->model = CALC_TI92;
-	strcpy(content->comment, "Backup file received by TiLP");
 	content->data_part = (uint8_t *) calloc(128 * 1024, 1);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
@@ -307,7 +306,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint32_t unused;
 	uint8_t varname[18], utf8[35];
 
-	strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI92;
 	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));

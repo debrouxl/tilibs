@@ -230,7 +230,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update_label();
 
 	content->model = CALC_TI86;
-	strcpy(content->comment, "Backup file received by TiLP");
 
     TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
     content->data_length2 = varname[0] | (varname[1] << 8);
@@ -317,7 +316,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t unused;
 	VarEntry *ve;
 
-	strcpy(content->comment, "Single file received by TiLP");
 	content->model = CALC_TI86;
 	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
