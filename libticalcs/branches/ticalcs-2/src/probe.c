@@ -30,6 +30,7 @@
 #include "packets.h"
 #include "error.h"
 #include "gettext.h"
+#include "pause.h"
 
 /* 
 	Get the first byte sent by the calc (Machine ID)
@@ -68,27 +69,6 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 	uint8_t data;
 
 	ticalcs_info(_("Probing calculator...\n"));
-
-	/* Test for a TI92 */
-#if 0
-	ticalcs_info(_("Trying TI92... "));
-	TRYF(send_packet(h, PC_TI92, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
-
-	ticalcs_info("<%02X-%02X> ", PC_TI92, data);
-
-	if (!err && (data == TI92_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI92;
-
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-	}
-#endif
 
 	/* Test for a TI86 before a TI85 */
 	ticalcs_info(_("Trying TI86... "));
@@ -196,16 +176,33 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	{
 		ticalcs_info(" PC->TI: RDY?");
 		err = send_packet(handle, PC_TIXX, CMD_RDY, 2, NULL);
-		if(err)
-			continue;
+		if(err) continue;
 
 		err = recv_packet(handle, &host, &cmd, &status, buffer);
 		ticalcs_info(" TI->PC: ACK");
-		if(err)
-			continue;
+		if(err) continue;
+
+		break;
 	}
+	
+	// TI92
 	if(err)
-		return err;
+	{
+		PAUSE(500);	// needed !
+		for(i = 0; i < 2; i++)
+		{
+			ticalcs_info(" PC->TI: RDY?");
+			err = send_packet(handle, PC_TI92, CMD_RDY, 2, NULL);
+			if(err) continue;
+
+			err = recv_packet(handle, &host, &cmd, &status, buffer);
+			ticalcs_info(" TI->PC: ACK");
+			if(err) continue;
+
+			break;
+		}
+	}
+	
 
 	// 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
 	switch (host) 
@@ -222,9 +219,11 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	case TI73_PC:
 		*model = CALC_TI73;
     break;
+	case TI92_PC:
+		*model = CALC_TI92;
+			break;
 	default:
 		*model = CALC_NONE;
-    return ERR_INVALID_HOST;
     break;
 	}
 
@@ -237,23 +236,8 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	ticalcs_info(_("Calculator type: %s"),
 	  (*model == CALC_TI83P) ? "TI83+ or TI84+" :
 	  (*model == CALC_TI89) ? "TI89 or TI89t" :
-	  (*model == CALC_TI92P) ? "TI92+ or V200" : "???");
-
-	  /*
-	  // TI92
-	ticalcs_info(" PC->TI: RDY?");
-	TRYF(send_packet(handle, PC_TI92, CMD_RDY, 2, NULL));
-
-	TRYF(recv_packet(handle, &host, &cmd, &status, buffer));
-	ticalcs_info(" TI->PC: ACK");
-
-	if(host == TI92_PC)
-	{
-		*model = CALC_TI92;
-		ticalcs_info(_("Calculator type: TI92"));
-		return 0;
-	}
-	  */
+	  (*model == CALC_TI92P) ? "TI92+ or V200" : 
+	  (*model == CALC_TI92) ? "TI92" : "???");
 
   return 0;
 }
