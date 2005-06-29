@@ -32,7 +32,8 @@
 #include "macros.h"
 
 // We split packets into chucks to get control regularly and update statistics.
-#define BLK_SIZE	256
+//#define BLK_SIZE	1024	//256
+static unsigned int BLK_SIZE = 1024;	// heuristic
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -80,9 +81,13 @@ int send_packet(CalcHandle* handle,
 		buf[len+4+1] = MSB(sum);
 
 		// compute chunks
+		BLK_SIZE = length / 20;
+		if(BLK_SIZE == 0) BLK_SIZE = 1;
+
 		q = (len + 6) / BLK_SIZE;
 		r = (len + 6) % BLK_SIZE;
 		handle->updat->max1 = length;
+		handle->updat->cnt1 = 0;
 
 		// send full chunks
 		for(i = 0; i < q; i++)
@@ -194,9 +199,13 @@ int recv_packet(CalcHandle* handle,
 	case CMD_IND:
 	case CMD_RTS:		
 		// compute chunks
+		BLK_SIZE = *length / 20;
+		if(BLK_SIZE == 0) BLK_SIZE = 1;
+
 		q = *length / BLK_SIZE;
 		r = *length % BLK_SIZE;
 		handle->updat->max1 = *length;
+		handle->updat->cnt1 = 0;
 
 		// recv full chunks
 		for(i = 0; i < q; i++)
