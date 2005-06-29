@@ -4,13 +4,13 @@
 /*  libtifiles - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  This program is free software; you can redistribufe it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  This program is distribufed in the hope that it will be useful,
+ *  buf WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
@@ -24,8 +24,8 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "tifiles.h"
 
@@ -40,11 +40,11 @@ static char comment[41];
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 {
-	char but1[128];
-	char but2[128];
+	char buf1[128];
+	char buf2[128];
 
-	strtime(buf1);
-	strtime(buf2);
+	_strtime(buf1);
+	_strtime(buf2);
 
 	//snprintf(comment, sizeof(comment), "Single file dated %02i/%02i/%02i, %02i:%02i");
 	sprintf(comment, "Single file dated %s, %s", buf1, buf2);
@@ -60,7 +60,14 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 {
-	return "";
+	char buf1[128];
+	char buf2[128];
+
+	_strtime(buf1);
+	_strtime(buf2);
+
+	sprintf(comment, "Group file dated %s, %s", buf1, buf2);
+	return comment;
 }
 
 /**
@@ -72,5 +79,12 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 {
-	return "";
+	char buf1[128];
+	char buf2[128];
+
+	_strtime(buf1);
+	_strtime(buf2);
+
+	sprintf(comment, "Backup file dated %s, %s", buf1, buf2);
+	return comment;
 }
