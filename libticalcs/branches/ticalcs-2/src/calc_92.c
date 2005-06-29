@@ -100,6 +100,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint8_t buffer[65536];
 	int err;
 	char folder_name[9] = "";
+	TNode *folder = NULL;
 
 	// get list of folders & FLASH apps
     (*vars) = t_node_new(NULL);
@@ -122,13 +123,13 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	{
 		VarEntry *ve = calloc(1, sizeof(VarEntry));
 		TNode *node;
-		TNode *folder = NULL;
 
 		TRYF(ti92_send_ACK());
 		TRYF(ti92_send_CTS());
 
 		TRYF(ti92_recv_ACK(NULL));
 		TRYF(ti92_recv_XDP(&unused, buffer));
+
 		memcpy(ve->name, buffer + 4, 8);	// skip 4 extra 00s
 		ve->name[8] = '\0';
 		ve->type = buffer[12];
