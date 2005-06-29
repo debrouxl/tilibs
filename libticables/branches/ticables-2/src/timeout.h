@@ -31,8 +31,8 @@
   mine. This allowed me to find why my routines was so slow !
 */
 
-#ifndef __Cable_TIMEOUT__
-#define __Cable_TIMEOUT__
+#ifndef __CABLE_TIMEOUT__
+#define __CABLE_TIMEOUT__
 
 /*
   Platform independant time measurement & timeout management
