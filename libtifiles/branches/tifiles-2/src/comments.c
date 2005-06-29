@@ -43,11 +43,11 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 	char buf1[128];
 	char buf2[128];
 
-	_strtime(buf1);
+	_strdate(buf1);
 	_strtime(buf2);
 
 	//snprintf(comment, sizeof(comment), "Single file dated %02i/%02i/%02i, %02i:%02i");
-	sprintf(comment, "Single file dated %s, %s", buf1, buf2);
+	sprintf(comment, "Single file dated %s %s", buf1, buf2);
 	return comment;
 }
 
@@ -63,10 +63,10 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 	char buf1[128];
 	char buf2[128];
 
-	_strtime(buf1);
+	_strdate(buf1);
 	_strtime(buf2);
 
-	sprintf(comment, "Group file dated %s, %s", buf1, buf2);
+	sprintf(comment, "Group file dated %s %s", buf1, buf2);
 	return comment;
 }
 
@@ -82,9 +82,9 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 	char buf1[128];
 	char buf2[128];
 
-	_strtime(buf1);
+	_strdate(buf1);
 	_strtime(buf2);
 
-	sprintf(comment, "Backup file dated %s, %s", buf1, buf2);
+	sprintf(comment, "Backup file dated %s %s", buf1, buf2);
 	return comment;
 }

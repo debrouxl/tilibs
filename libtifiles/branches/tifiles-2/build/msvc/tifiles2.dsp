@@ -158,6 +158,10 @@ SOURCE=..\..\src\files9x.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\comments.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\files8X.c
 # End Source File
 # Begin Source File
