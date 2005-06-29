@@ -383,6 +383,11 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
 
+  //comment.c
+  TIEXPORT const char* TICALL tifiles_comment_set_single(void);
+  TIEXPORT const char* TICALL tifiles_comment_set_group(void);
+  TIEXPORT const char* TICALL tifiles_comment_set_backup(void);
+
   /************************/
   /* Deprecated functions */
   /************************/
