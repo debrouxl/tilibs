@@ -58,7 +58,7 @@ void (*io_wr) (unsigned int addr, int data);
 #ifdef __WIN32__
 static void print_last_error(char *s)
 {
-        LPVOID lpMsgBuf;
+        LPTSTR lpMsgBuf;
 
         FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
@@ -66,6 +66,9 @@ static void print_last_error(char *s)
 		NULL, GetLastError(),
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		(LPTSTR) & lpMsgBuf, 0, NULL);
+
+		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
+
         ticables_info("%s (%i -> %s)", s, GetLastError(), lpMsgBuf);
 }
 #endif				//__WIN32__
