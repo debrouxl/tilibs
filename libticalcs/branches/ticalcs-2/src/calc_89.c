@@ -349,6 +349,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint8_t varname[20], utf8[35];
 
 	content->model = handle->model;
+	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);
@@ -464,6 +465,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 		dst = group->entries;
 		memcpy(content, group, sizeof(FileContent));
 		group->entries = src;
+		strcpy(group->comment, tifiles_comment_set_single());
 		tifiles_content_free_regular(group);
 	}
 

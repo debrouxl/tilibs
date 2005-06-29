@@ -231,6 +231,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti92_recv_ACK(&unused2));
 
 	content->model = CALC_TI92;
+	strcpy(content->comment, tifiles_comment_set_backup());
 	content->data_part = (uint8_t *) calloc(128 * 1024, 1);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
