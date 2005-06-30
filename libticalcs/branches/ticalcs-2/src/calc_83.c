@@ -93,7 +93,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	char utf8[10];
 
 	// get list of folders & FLASH apps
-    (*vars) = t_node_new(NULL);
+  (*vars) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
@@ -250,9 +250,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint8_t rej_code;
 	uint16_t status;
-
-	sprintf(update->text, _("Sending..."));
-	update_label();
 
 	for (i = 0; i < content->num_entries; i++) 
 	{

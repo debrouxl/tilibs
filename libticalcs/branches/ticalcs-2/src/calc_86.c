@@ -95,17 +95,18 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint8_t mem[8];
 	char utf8[10];
 
+	// get list of folders & FLASH apps
+  (*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
-
-	(*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
 
 	TRYF(ti85_send_REQ(0x0000, TI86_DIR, ""));
 	TRYF(ti85_recv_ACK(&unused));
@@ -226,10 +227,11 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	uint8_t varname[9] = { 0 };
 
+	content->model = CALC_TI86;
+	strcpy(content->comment, tifiles_comment_set_backup());
+
 	sprintf(update->text, _("Waiting backup..."));
 	update_label();
-
-	content->model = CALC_TI86;
 
     TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
     content->data_length2 = varname[0] | (varname[1] << 8);
@@ -277,6 +279,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = &(content->entries[i]);
+		
+		if(entry->action == ACT_SKIP)
+			continue;
 
 		TRYF(ti85_send_RTS((uint16_t)entry->size, entry->type, entry->name));
 		TRYF(ti85_recv_ACK(&status));
@@ -317,6 +322,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 
 	content->model = CALC_TI86;
+	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);
