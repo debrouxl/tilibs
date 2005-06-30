@@ -313,7 +313,8 @@ static char *ti8x_detokenize_varname(CalcModel model, char *dst, const char *src
 	sprintf(dst, "Str%c", '\x80');
       break;
     default:
-      strcpy(dst, src);
+      strncpy(dst, src, 8);
+	  dst[8] = '\0';
       break;
     }
 
@@ -350,7 +351,9 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
-    return strcpy(dst, src);
+	  strncpy(dst, src, 8);
+	  dst[8] = '\0';
+    return dst;
     break;
   default:
     return strcpy(dst, "________");
@@ -371,7 +374,10 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
  **/
 TIEXPORT char* TICALL tifiles_transcode_tokenize(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
-	return strcpy(dst, src);
+	strncpy(dst, src, 8);
+	dst[8] = '\0';
+
+	return dst;
 }
 
 
