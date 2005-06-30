@@ -630,7 +630,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 	TRYF(ti89_recv_VAR(&content->data_length, &content->data_type, content->name));
 
-	update->cnt2 = vr->size;
 	for(i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
@@ -651,7 +650,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			break;
 		TRYF(err);
 
-		update->cnt2 += content->data_length;
+		update->max2 = vr->size;
+		update->cnt2 += block_size;
 		if(update->cancel)
 		  return ERR_ABORT;
 	}

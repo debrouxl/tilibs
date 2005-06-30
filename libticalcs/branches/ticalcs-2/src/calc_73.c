@@ -430,6 +430,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		return 0;
 
 	content->model = handle->model;
+	strcpy(content->name, vr->name);
+	content->data_type = vr->type;
+	content->device_type = (handle->model == CALC_TI73) ? 0x73 : 0x74;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
 	content->pages = (FlashPage *)calloc(content->num_pages, sizeof(FlashPage));
 
