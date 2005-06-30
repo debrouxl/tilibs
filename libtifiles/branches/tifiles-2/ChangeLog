@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
 
+To do:
+	- tifiles_is_varname_tokenized
+	- tifiles_tokenize_varname
+
 Log:
 
 - 04/06/2005, version 0.0.4: roms

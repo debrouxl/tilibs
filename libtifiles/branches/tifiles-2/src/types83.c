@@ -87,7 +87,7 @@ const char *TI83_CONST[TI83_MAXTYPES + 1][4] =
 // Return the type corresponding to the value
 const char *ti83_byte2type(uint8_t data)
 {
-	g_assert(data < TI83_MAXTYPES);
+	//g_assert(data < TI83_MAXTYPES);
 	return (data < TI83_MAXTYPES) ? TI83_CONST[data][0] : "";
 }
 
@@ -142,7 +142,7 @@ const char *ti83_byte2desc(uint8_t data)
 // Return the icon name associated with the vartype
 const char *ti83_byte2icon(uint8_t data)
 {
-	g_assert(data < TI83_MAXTYPES);
+	//g_assert(data < TI83_MAXTYPES);
 	return (data < TI83_MAXTYPES) ? TI83_CONST[data][3] : "Unknown";
 }
 

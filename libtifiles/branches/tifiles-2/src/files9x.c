@@ -188,9 +188,13 @@ void ti9x_content_free_regular(Ti9xRegular *content)
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = &(content->entries[i]);
+#ifndef __WIN32__
     free(entry->data);
+#endif
   }
+#ifndef __WIN32__
   free(content->entries);
+#endif
 }
 
 /**
@@ -202,7 +206,9 @@ void ti9x_content_free_regular(Ti9xRegular *content)
  **/
 void ti9x_content_free_backup(Ti9xBackup *content)
 {
+#ifndef __WIN32__
   free(content->data_part);
+#endif
 }
 
 /**
