@@ -34,6 +34,7 @@
 // We split packets into chucks to get control regularly and update statistics.
 //#define BLK_SIZE	1024	//256
 static unsigned int BLK_SIZE = 1024;	// heuristic
+#define MIN_SIZE	512					// don't refresh is block is lower than 512 bytes
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -95,7 +96,8 @@ int send_packet(CalcHandle* handle,
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += BLK_SIZE;
-			handle->updat->pbar();
+			if(len > MIN_SIZE)
+				handle->updat->pbar();
 			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
@@ -105,7 +107,8 @@ int send_packet(CalcHandle* handle,
 			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
-			handle->updat->pbar();
+			if(len > MIN_SIZE)
+				handle->updat->pbar();
 			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
@@ -213,7 +216,8 @@ int recv_packet(CalcHandle* handle,
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += BLK_SIZE;
-			handle->updat->pbar();
+			if(*length > MIN_SIZE)
+				handle->updat->pbar();
 			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
@@ -223,7 +227,8 @@ int recv_packet(CalcHandle* handle,
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
-			handle->updat->pbar();
+			if(*length > MIN_SIZE)
+				handle->updat->pbar();
 			if (handle->updat->cancel)
 				return ERR_ABORT;
 		}
