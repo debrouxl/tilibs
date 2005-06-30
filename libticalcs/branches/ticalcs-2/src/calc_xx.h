@@ -28,6 +28,7 @@ extern const CalcFncts calc_00;
 
 extern const CalcFncts calc_73;
 extern const CalcFncts calc_82;
+extern const CalcFncts calc_82s;
 extern const CalcFncts calc_83;
 extern const CalcFncts calc_83p;
 extern const CalcFncts calc_84p;

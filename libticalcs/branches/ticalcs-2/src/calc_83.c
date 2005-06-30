@@ -496,3 +496,32 @@ const CalcFncts calc_83 =
 	&set_clock,
 	&get_clock,
 };
+
+const CalcFncts calc_82s = 
+{
+	CALC_TI82S,
+	"TI82 STATS",
+	N_("TI-82 STATS"),
+	N_("TI-82 STATS"),
+	OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	FTS_SILENT | FTS_MEMFREE,
+	&is_ready,
+	&send_key,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&recv_backup,
+	&send_var,
+	&recv_var,
+	&del_var,
+	&new_folder,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&recv_idlist,
+	&dump_rom,
+	&set_clock,
+	&get_clock,
+};
