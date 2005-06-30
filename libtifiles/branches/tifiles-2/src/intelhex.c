@@ -241,7 +241,7 @@ TIEXPORT int TICALL test_hex_read(void)
 static int write_byte(uint8_t b, FILE * f)
 {
   fprintf(f, "%02X", b);
-  return 1;
+  return 2;
 }
 
 /*

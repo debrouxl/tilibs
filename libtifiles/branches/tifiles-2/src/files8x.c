@@ -794,6 +794,7 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
   FILE *f, *file;
   int i, j;
   int bytes_written = 0;
+  long pos;
 
   f = fopen(filename, "wb");
   if (f == NULL) 
@@ -820,6 +821,7 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
   fwrite_byte(f, content->data_type);
   for (j = 0; j < 24; j++)
     fputc(0, f);
+  pos = ftell(f);
   fwrite_long(f, content->data_length);
 
   // data
@@ -832,8 +834,10 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
   }
 
   // final block
-  bytes_written += hex_block_write(file, 0, 0, 0, NULL, 0);  
-  //printf("bytes_written = %06x (%i) \n", bytes_written, bytes_written);
+  bytes_written += hex_block_write(file, 0, 0, 0, NULL, 0);
+  fseek(f, -bytes_written - 4, SEEK_CUR);
+  fwrite_long(f, bytes_written);
+  fseek(f, SEEK_END, 0L);
 
   fclose(f);
 
