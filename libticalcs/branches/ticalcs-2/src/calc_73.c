@@ -329,7 +329,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     TRYF(ti73_recv_ACK(NULL));
 
     ve->data = calloc(ve->size, 1);
-    TRYF(ti73_recv_XDP((uint16_t *) & ve->size, ve->data));
+    TRYF(ti73_recv_XDP((uint16_t *)&ve->size, ve->data));
     TRYF(ti73_send_ACK());
 
 	return 0;
@@ -423,36 +423,40 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	int npages;
-	uint32_t size = 0;
-
-	if(handle->model == CALC_TI84P)
-		return 0;
-
-	content->model = handle->model;
-	strcpy(content->name, vr->name);
-	content->data_type = vr->type;
-	content->device_type = (handle->model == CALC_TI73) ? 0x73 : 0x74;
-	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
-	content->pages = (FlashPage *)calloc(content->num_pages, sizeof(FlashPage));
+	FlashPage *fp;
+	uint16_t data_addr;
+	uint16_t old_page;
+	uint16_t data_page;
+	uint16_t data_length;
+	uint8_t data_type;
+	uint32_t size;
+	int first_block;
+	int page;
+	int offset = 0;
+	uint8_t buf[FLASH_PAGE_SIZE];
 
 	sprintf(update->text, _("Receiving '%s'"), vr->name);
 	update_label();
 
-	// silent request
+	content->model = handle->model;
+	strcpy(content->name, vr->name);
+	content->data_type = vr->type;
+	content->device_type = 0x73;
+	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
+	content->pages = (FlashPage *)calloc(content->num_pages, sizeof(FlashPage));
+
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
 	update->max2 = vr->size;
-	for (size = 0, npages = 0;; npages++) 
+	for(page = 0, size = 0, first_block = 1;;)
 	{
 		int err;
-		uint16_t data_length;
-		uint8_t data_type;
 		char name[9];
-		FlashPage *fp = &(content->pages[npages]);
 
-		err = ti73_recv_VAR2(&data_length, &data_type, name, &fp->addr, &fp->page);
+		fp = &(content->pages[page]);
+
+		err = ti73_recv_VAR2(&data_length, &data_type, name, &data_addr, &data_page);
 		TRYF(ti73_send_ACK());
 		if (err == ERR_EOT)
 			goto exit;
@@ -461,19 +465,52 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		TRYF(ti73_send_CTS());
 		TRYF(ti73_recv_ACK(NULL));
 
-		fp->data = calloc(fp->size, 1);
-		TRYF(ti73_recv_XDP((uint16_t *) & fp->size, fp->data));
-		fixup(fp->size);
+		TRYF(ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]));
 		TRYF(ti73_send_ACK());
 
-		size += fp->size;
+		size += data_length;
+		offset += data_length;
+
+		if(first_block)
+		{
+			old_page = data_page;
+			first_block = 0;
+			printf("first init !\n");
+
+			fp->addr = data_addr & 0x4000;
+			fp->page = data_page;
+		}
+		if(old_page != data_page)
+		{
+			fp->addr = data_addr & 0x4000;
+			fp->page = data_page;
+			fp->flag = 0x80;
+			fp->size = offset;			
+			fp->data = calloc(FLASH_PAGE_SIZE, 1);
+			memcpy(fp->data, buf, fp->size);
+
+			page++;
+			offset = 0;
+		}
+
 		update->cnt2 = size;
 		if (update->cancel)
 			return ERR_ABORT;
 	}
 
 exit:
-	content->num_pages = npages;
+	{
+		fp->addr = data_addr & 0x4000;
+		fp->page = data_page;
+		fp->flag = 0x80;
+		fp->size = offset;			
+		fp->data = calloc(FLASH_PAGE_SIZE, 1);
+		memcpy(fp->data, buf, fp->size);
+		page++;
+	}
+
+	printf("size = %04x = %i\n", size);
+	content->num_pages = page;
 
 	return 0;
 }
