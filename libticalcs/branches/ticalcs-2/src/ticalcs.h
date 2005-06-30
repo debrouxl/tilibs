@@ -118,8 +118,6 @@ typedef enum {
   // For sending vars
   MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
   MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
-  
-  MODE_SEND_TO_FLASH = (1 << 3),	// Send var to FLASH archive
 
   // Miscellaneous
   MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)

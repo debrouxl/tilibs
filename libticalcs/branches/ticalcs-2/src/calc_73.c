@@ -259,16 +259,15 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint8_t rej_code;
-	uint8_t attrb;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = &(content->entries[i]);
-		uint8_t varname[18];
+		
+		if(entry->action == ACT_SKIP)
+			continue;
 
-		attrb = (mode & MODE_SEND_TO_FLASH) ?
-		ATTRB_ARCHIVED : entry->attr;
-		TRYF(ti73_send_RTS((uint16_t)entry->size, entry->type, varname, attrb));
+		TRYF(ti73_send_RTS((uint16_t)entry->size, entry->type, entry->name, entry->attr));
 		TRYF(ti73_recv_ACK(NULL));
 
 		TRYF(ti73_recv_SKP(&rej_code));
@@ -308,6 +307,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     VarEntry *ve;
 
     content->model = handle->model;
+	strcpy(content->comment, tifiles_comment_set_single());
     content->num_entries = 1;
     content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
     ve = &(content->entries[0]);
@@ -357,24 +357,54 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	int i;
+	int i, j, k;
+	int size;
 
-	sprintf(update->text, ("Sending FLASH OS/App..."));
-	update_label();
-
-	update->max2 = content->num_pages;
+	if(content->data_type == TI83p_AMS)
+		size = 0x100;
+	else if(content->data_type == TI83p_APPL)
+		size = 0x80;
+	else
+		return -1;
+/*
+	printf("#pages: %i\n", content->num_pages);
+	printf("type: %02x\n", content->data_type);
 	for (i = 0; i < content->num_pages; i++) 
 	{
 		FlashPage *fp = &(content->pages[i]);
 
-		TRYF(ti73_send_VAR2(fp->size, content->data_type, fp->flag, fp->addr, fp->page));
-		TRYF(ti73_recv_ACK(NULL));
+		printf("page #%i: %04x %02x %02x %04x\n", i,
+		content->pages[i].addr,
+		content->pages[i].page,
+		content->pages[i].flag,
+		content->pages[i].size);		
+	}
 
-		TRYF(ti73_recv_CTS(10));
-		TRYF(ti73_send_ACK());
+	return 0;
+*/
+	update->max2 = content->num_pages * FLASH_PAGE_SIZE / size;
+	for (k= i = 0; i < content->num_pages; i++) 
+	{
+		FlashPage *fp = &(content->pages[i]);
 
-		TRYF(ti73_send_XDP(fp->size, fp->data));
-		TRYF(ti73_recv_ACK(NULL));
+		for(j = 0; j < FLASH_PAGE_SIZE; j += size)
+		{
+			uint16_t addr = fp->addr + j;
+			uint8_t* data = fp->data + j;
+
+			TRYF(ti73_send_VAR2(size, content->data_type, fp->flag, addr, fp->page));
+			TRYF(ti73_recv_ACK(NULL));
+
+			TRYF(ti73_recv_CTS(10));
+			TRYF(ti73_send_ACK());
+
+			TRYF(ti73_send_XDP(size, data));
+			TRYF(ti73_recv_ACK(NULL));
+
+			update->cnt2 = ++k;
+			if (update->cancel)
+				return ERR_ABORT;
+		}
 
 		if(handle->model != CALC_TI84P)
 		{
@@ -383,10 +413,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			if (i == content->num_pages - 2)
 			  PAUSE(2500);		// This pause is NEEDED !
 		}
-
-		update->cnt2 = i;
-		if (update->cancel)
-			return ERR_ABORT;
 	}
 
 	TRYF(ti73_send_EOT());
@@ -594,7 +620,7 @@ const CalcFncts calc_73 =
 	N_("TI-73"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
-	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -624,7 +650,7 @@ const CalcFncts calc_83p =
 	N_("TI-83 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
-	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -654,7 +680,7 @@ const CalcFncts calc_84p =
 	N_("TI-84 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
-	FTS_SILENT | FTS_FOLDER | FTS_MEMFREE | FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,

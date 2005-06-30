@@ -55,7 +55,7 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI83
 	&calc_83,
 #endif
-#ifndef NO_TI83P2
+#ifndef NO_TI83P
 	&calc_83p,
 #endif
 #ifndef NO_TI84P
