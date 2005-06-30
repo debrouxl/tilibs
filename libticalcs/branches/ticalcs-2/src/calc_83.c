@@ -52,12 +52,12 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
@@ -71,7 +71,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI83_ROWS;
 
 	*bitmap = (uint8_t *)malloc(TI83_COLS * TI83_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap != NULL)
+	if(*bitmap == NULL)
 		return ERR_MALLOC;
 
 	TRYF(ti82_send_SCR());
@@ -86,10 +86,24 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	TreeInfo *ti;
 	uint16_t unused;
 	TNode *folder;
 	uint32_t memory;
 	char utf8[10];
+
+	// get list of folders & FLASH apps
+    (*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
 
 	TRYF(ti82_send_REQ(0x0000, TI83_DIR, ""));
 	TRYF(ti82_recv_ACK(&unused));
@@ -98,11 +112,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	fixup(memory);
 	TRYF(ti82_send_ACK());
 	handle->priv = GUINT_TO_POINTER(memory);
-
-	(*vars) = t_node_new(NULL);
-	(*vars)->data = strdup(VAR_NODE_NAME);
-	(*apps) = t_node_new(NULL);
-	(*apps)->data = strdup(APP_NODE_NAME);
 
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
@@ -124,7 +133,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		node = t_node_new(ve);
 		t_node_append(folder, node);
 
-		tifiles_transcode_detokenize(handle->model, utf8, ve->name, ve->type);
+		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
 		sprintf(update->text, _("Reading of '%s'"), utf8);
 		update_label();
 		if (update->cancel)
@@ -146,6 +155,9 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     uint8_t rej_code;
     uint16_t status;
 
+	printf("%04x %04x %04x %04x\n", 
+		content->data_length1, content->data_length2, 
+		content->data_length3, content->mem_address); 
     length = content->data_length1;
     varname[0] = LSB(content->data_length2);
     varname[1] = MSB(content->data_length2);
@@ -197,6 +209,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint16_t unused;
 
 	content->model = CALC_TI83;
+	strcpy(content->comment, tifiles_comment_set_backup());
 
 	// silent request
 	TRYF(ti82_send_REQ(0x0000, TI83_BKUP, ""));
@@ -229,7 +242,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti82_send_ACK());
 	update->cnt2 = 3;
 
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -244,9 +257,11 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = &(content->entries[i]);
-		uint8_t varname[18];
 
-		TRYF(ti82_send_RTS((uint16_t)entry->size, entry->type, varname));
+		if(entry->action == ACT_SKIP)
+			continue;
+
+		TRYF(ti82_send_RTS((uint16_t)entry->size, entry->type, entry->name));
 		TRYF(ti82_recv_ACK(&status));
 
 		TRYF(ti82_recv_SKP(&rej_code));
@@ -285,6 +300,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
   VarEntry *ve;
 
 	content->model = CALC_TI83;
+	strcpy(content->comment, tifiles_comment_set_single());
+	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);
 	memcpy(ve, vr, sizeof(VarEntry));

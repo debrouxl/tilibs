@@ -272,6 +272,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t varname[18], utf8[35];
 
+		if(entry->action == ACT_SKIP)
+			continue;
+
 		if (mode & MODE_LOCAL_PATH)
 		  strcpy(varname, entry->name);
 		else 
