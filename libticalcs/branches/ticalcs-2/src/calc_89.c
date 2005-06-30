@@ -258,7 +258,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -474,12 +474,12 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)

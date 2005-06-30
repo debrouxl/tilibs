@@ -178,7 +178,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
 	*mem = -1;
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
@@ -346,12 +346,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -419,17 +419,17 @@ exit:
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -539,12 +539,12 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 const CalcFncts calc_92 = 

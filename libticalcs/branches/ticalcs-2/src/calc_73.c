@@ -155,7 +155,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
@@ -337,7 +337,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
@@ -347,12 +347,12 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
 {
-	return ERR_UNSUPPORTED;
+	return 0;
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
@@ -401,7 +401,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	uint32_t size = 0;
 
 	if(handle->model == CALC_TI84P)
-		return ERR_UNSUPPORTED;
+		return 0;
 
 	content->model = handle->model;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
