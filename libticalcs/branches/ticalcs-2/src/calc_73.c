@@ -432,8 +432,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	uint32_t size;
 	int first_block;
 	int page;
-	int offset = 0;
-	uint8_t buf[FLASH_PAGE_SIZE];
+	int offset;
+	uint8_t buf[FLASH_PAGE_SIZE + 4];
 
 	sprintf(update->text, _("Receiving '%s'"), vr->name);
 	update_label();
@@ -449,7 +449,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_recv_ACK(NULL));
 
 	update->max2 = vr->size;
-	for(page = 0, size = 0, first_block = 1;;)
+	for(page = 0, size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
 		char name[9];
@@ -461,15 +461,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		if (err == ERR_EOT)
 			goto exit;
 		TRYF(err);
-
-		TRYF(ti73_send_CTS());
-		TRYF(ti73_recv_ACK(NULL));
-
-		TRYF(ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]));
-		TRYF(ti73_send_ACK());
-
-		size += data_length;
-		offset += data_length;
 
 		if(first_block)
 		{
@@ -491,7 +482,17 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 			page++;
 			offset = 0;
+			old_page = data_page;
 		}
+
+		TRYF(ti73_send_CTS());
+		TRYF(ti73_recv_ACK(NULL));
+
+		TRYF(ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]));
+		TRYF(ti73_send_ACK());
+
+		size += data_length;
+		offset += data_length;
 
 		update->cnt2 = size;
 		if (update->cancel)
