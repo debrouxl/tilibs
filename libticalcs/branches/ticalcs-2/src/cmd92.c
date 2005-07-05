@@ -170,15 +170,15 @@ int ti92_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 {
   uint8_t buffer[32] = { 0 };
 
-  buffer[0] = 0;
-  buffer[1] = 0;
-  buffer[2] = 0;
-  buffer[3] = 0;
+  buffer[0] = LSB(LSW(varsize));
+  buffer[1] = MSB(LSW(varsize));
+  buffer[2] = LSB(MSW(varsize));
+  buffer[3] = MSB(MSW(varsize));
   buffer[4] = vartype;
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, varname);
   TRYF(send_packet(handle, PC_TI92, CMD_RTS, 6 + strlen(varname), buffer));
 

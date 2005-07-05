@@ -539,11 +539,60 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	int i;
+	char varname[18];
+
+	send_key(handle, KEY92P_ON);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, KEY92P_ESC);
+	send_key(handle, 4360/*KEY92P_QUIT*/);
+	send_key(handle, 4360/*KEY92P_QUIT*/);
+	send_key(handle, 8273/*KEY92P_HOME*/);
+	send_key(handle, KEY92P_CLEAR);
+	send_key(handle, KEY92P_CLEAR);
+	send_key(handle, KEY92P_d);
+	send_key(handle, KEY92P_e);
+	send_key(handle, KEY92P_l);
+	send_key(handle, KEY92P_v);
+	send_key(handle, KEY92P_a);
+	send_key(handle, KEY92P_r);
+	send_key(handle, KEY92P_SPACE);
+
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
+
+	for(i = 0; i < (int)strlen(varname); i++)
+		send_key(handle, varname[i]);
+
+	send_key(handle, KEY92P_ENTER);
+
 	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
+	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
+	uint8_t varname[18];
+
+	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
+
+	// send empty expression
+	TRYF(ti92_send_RTS(0x10, 0x00, varname));
+	TRYF(ti92_recv_ACK(NULL));
+
+	TRYF(ti92_recv_CTS());
+	TRYF(ti92_send_ACK());
+
+	TRYF(ti92_send_XDP(0x10, data));
+	TRYF(ti92_recv_ACK(NULL));
+
+	TRYF(ti92_send_EOT());
+	TRYF(ti92_recv_ACK(NULL));
+
+	// delete 'a1234567' variable
+	strcpy(vr->name, "a1234567");
+	TRYF(del_var(handle, vr));
+
 	return 0;
 }
 
@@ -559,6 +608,7 @@ const CalcFncts calc_92 =
 	N_("TI-92"),
 	N_("TI-92"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD |
 	FTS_SILENT | FTS_FOLDER,
 	&is_ready,
 	&send_key,

@@ -340,37 +340,6 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 }
 
 /**
- * ticalcs_calc_del_var:
- * @handle: a previously allocated handle
- * @var: var to delete
- *
- * Request deleting of a variable (if possible ??).
- *
- * Return value: 0 if ready else ERR_NOT_READY.
- **/
-TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
-{
-	const CalcFncts *calc = handle->calc;
-	int ret;
-
-	if(!handle->attached)
-		return ERR_NO_CABLE;
-
-	if(!handle->open)
-		return ERR_NO_CABLE;
-
-	if(handle->busy)
-		return ERR_BUSY;
-
-	ticalcs_info(_("Requesting deletion of variable '%s':"), vr->name);
-	handle->busy = 1;
-	ret = calc->del_var(handle, vr);
-	handle->busy = 0;
-
-	return ret;
-}
-
-/**
  * ticalcs_calc_send_var_ns:
  * @handle: a previously allocated handle
  * @mode:
@@ -919,4 +888,88 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* fil
 	TRYF(tifiles_content_free_flash(content));
 
 	return 0;
+}
+
+/**
+ * ticalcs_calc_new_fld:
+ * @handle: a previously allocated handle
+ * @vr: name of folder to create (vr->folder)
+ *
+ * Request creation of a folder.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Creating folder '%s':"), vr->folder);
+	handle->busy = 1;
+	ret = calc->new_fld(handle, vr);
+	handle->busy = 0;
+
+	return ret;	
+}
+
+/**
+ * ticalcs_calc_del_var:
+ * @handle: a previously allocated handle
+ * @var: var to delete
+ *
+ * Request deleting of a variable (if possible ??).
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Deleting variable '%s':"), vr->name);
+	handle->busy = 1;
+	ret = calc->del_var(handle, vr);
+	handle->busy = 0;
+
+	return ret;
+}
+
+TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Requesting version infos:"));
+	handle->busy = 1;
+	ret = calc->get_version(handle, infos);
+	handle->busy = 0;
+
+	return ret;
 }
