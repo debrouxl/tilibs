@@ -66,8 +66,8 @@ extern "C" {
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI82S, CALC_TI83, CALC_TI83P, CALC_TI84P, 
-	CALC_TI85, CALC_TI86,
+	CALC_TI73, CALC_TI82, CALC_TI82S, CALC_TI83, 
+	CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 } CalcModel;
 #endif
@@ -112,7 +112,8 @@ typedef enum
  *
  * An enumeration which contains different mask modes:
  **/
-typedef enum {
+typedef enum 
+{
   MODE_NORMAL = 0,
 
   // For sending vars
@@ -122,10 +123,6 @@ typedef enum {
   // Miscellaneous
   MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
   MODE_BACKUP		= (1 << 5),		// Keep archive attribute
-
-  // For sending FLASH (apps/AMS)
-  MODE_APPS			= (1 << 6),		// Send a (free) FLASH application
-  MODE_AMS			= (1 << 7),		// Send an Operating System (AMS)
 } CalcMode;
 
 /**
@@ -175,6 +172,9 @@ typedef enum
   OPS_IDLIST	= (1 << 7),
   OPS_CLOCK		= (1 << 8),
   OPS_ROMDUMP	= (1 << 9),
+  OPS_VERSION	= (1 << 10),
+  OPS_NEWFLD	= (1 << 11),
+  OPS_DELVAR	= (1 << 12),
 
   FTS_SILENT	= (1 << 15),
   FTS_FOLDER	= (1 << 16),
@@ -362,6 +362,24 @@ typedef struct _CalcHandle	CalcHandle;
 typedef VarEntry	VarRequest;	// alias
 
 /**
+ * CalcInfos:
+ * @os: OS version like "3.01"
+ * @bios: BIOS (boot) version like 2.01
+ *
+ * A structure used to pass arguments.
+ **/
+typedef struct 
+{
+	char		os[5];
+	char		bios[5];
+	uint16_t	unknown1;
+	uint16_t	unknown2;
+	uint16_t	unknown3;
+	uint16_t	unknown4;
+	uint16_t	unknown5;
+} CalcInfos;
+
+/**
  * TiCable:
  * @model: link cable model (CalcModel).
  * @name: name of hand-held like "TI89"
@@ -388,6 +406,9 @@ typedef VarEntry	VarRequest;	// alias
  * @dump_rom: dump the hand-held ROM
  * @set_clock: set date/time
  * @get_clock: get date/time
+ * @del_var: delete variable
+ * @new_fld: create new folder (if supported)
+ * @get_version: returns BIOS & OS version
  *
  * A structure used for handling a hand-held.
  * !!! This structure is for private use !!!
@@ -414,9 +435,6 @@ struct _CalcFncts
 
 	int		(*send_var)		(CalcHandle*, CalcMode, FileContent*);
 	int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
-	
-	int		(*del_var)		(CalcHandle*, VarRequest*);
-	int		(*new_folder)	(CalcHandle*, VarRequest*);
 
 	int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
 	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
@@ -429,6 +447,11 @@ struct _CalcFncts
 
 	int		(*set_clock)	(CalcHandle*, CalcClock* clock);
 	int		(*get_clock)	(CalcHandle*, CalcClock* clock);
+
+	int		(*del_var)		(CalcHandle*, VarRequest*);
+	int		(*new_fld)		(CalcHandle*, VarRequest*);
+
+	int		(*get_version)	(CalcHandle*, CalcInfos*);
 };
 
 /**
@@ -528,7 +551,6 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
-	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry*);
@@ -542,6 +564,10 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_show_clock(CalcClock* clock);
+
+	TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle*, CalcInfos*);
 
 	// calc.c: convenient functions
 	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char *filename);

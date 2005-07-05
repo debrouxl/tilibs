@@ -350,16 +350,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return 0;
 }
 
-static int		del_var		(CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		new_folder  (CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	return 0;
@@ -494,6 +484,21 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	return 0;
 }
 
+static int		del_var		(CalcHandle* handle, VarRequest* vr)
+{
+	return 0;
+}
+
+static int		new_folder  (CalcHandle* handle, VarRequest* vr)
+{
+	return 0;
+}
+
+static int		get_version	(CalcHandle* handle, CalcInfos* infos)
+{
+	return 0;
+}
+
 const CalcFncts calc_86 = 
 {
 	CALC_TI86,
@@ -511,8 +516,6 @@ const CalcFncts calc_86 =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&del_var,
-	&new_folder,
 	&send_var_ns,
 	&recv_var_ns,
 	&send_flash,
@@ -521,4 +524,7 @@ const CalcFncts calc_86 =
 	&dump_rom,
 	&set_clock,
 	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
 };
