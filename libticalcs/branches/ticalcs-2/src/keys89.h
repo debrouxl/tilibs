@@ -24,41 +24,17 @@
 
 // Keys of the TI89 (to update: tiams.h, line 38)
 
-#define KEY89_F1     268
-#define KEY89_F2     269
-#define KEY89_F3     270
-#define KEY89_F4     271
-#define KEY89_F5     272
-#define KEY89_F6     273
-#define KEY89_F7     274
-#define KEY89_F8     275
-#define KEY89_ESC    264
-#define KEY89_APPS   265
-#define KEY89_HOME   277
-#define KEY89_MODE   266
-#define KEY89_CATLG  278
-#define KEY89_BS	 257
-#define KEY89_CLEAR  263
-#define KEY89_X      120
-#define KEY89_Y      121
-#define KEY89_Z      122
-#define KEY89_T      116
-#define KEY89_POWER  94
-#define KEY89_TUBE	 124
-#define KEY89_LP     40		// Left parenthesis
-#define KEY89_RP     41		// Right parenthesis
-#define KEY89_COMMA  44
-#define KEY89_DIVIDE 47
-#define KEY89_MULT   42
-#define KEY89_MINUS  45
-#define KEY89_PLUS   43
 #define KEY89_CR     13
 #define KEY89_ENTER  13
-#define KEY89_STO    258
-#define KEY89_EQUALS 61
-#define KEY89_EE     149
-#define KEY89_NEG    173
+
+#define KEY89_LP     40		// Left parenthesis
+#define KEY89_RP     41		// Right parenthesis
+#define KEY89_MULT   42
+#define KEY89_PLUS   43
+#define KEY89_COMMA  44
+#define KEY89_MINUS  45
 #define KEY89_DOT    46
+#define KEY89_DIVIDE 47
 #define KEY89_0      48
 #define KEY89_1      49
 #define KEY89_2      50
@@ -70,10 +46,43 @@
 #define KEY89_8      56
 #define KEY89_9      57
 
+#define KEY89_EQUALS 61
+
+#define KEY89_POWER  94
+
+#define KEY89_T      116
+#define KEY89_X      120
+#define KEY89_Y      121
+#define KEY89_Z      122
+#define KEY89_TUBE	 124
+
+#define KEY89_EE     149
+#define KEY89_NEG    173
+
+#define KEY89_BS	 257
+#define KEY89_STO    258
+
+#define KEY89_CLEAR  263
+#define KEY89_ESC    264
+#define KEY89_APPS   265
+#define KEY89_MODE   266
+#define KEY89_ON	 267
+#define KEY89_F1     268
+#define KEY89_F2     269
+#define KEY89_F3     270
+#define KEY89_F4     271
+#define KEY89_F5     272
+#define KEY89_F6     273
+#define KEY89_F7     274
+#define KEY89_F8     275
+#define KEY89_CHS	 276
+#define KEY89_HOME   277
+#define KEY89_CATLG  278
+
+#define KEY89_LEFT   337
 #define KEY89_UP     338
 #define KEY89_RIGHT  340
 #define KEY89_DOWN   344
-#define KEY89_LEFT   337
 
 // Key modifiers
 

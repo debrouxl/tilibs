@@ -24,39 +24,19 @@
 
 // Keys codes of the TI92/TI92+
 
-#define KEY92P_F1     268
-#define KEY92P_F2     269
-#define KEY92P_F3     270
-#define KEY92P_F4     271
-#define KEY92P_F5     272
-#define KEY92P_F6     273
-#define KEY92P_F7     274
-#define KEY92P_F8     275
-#define KEY92P_MODE   266
-#define KEY92P_CLEAR  263
-#define KEY92P_LN     262
-#define KEY92P_ESC    264
-#define KEY92P_APPS   265
+
 #define KEY92P_CR     13
 #define KEY92P_ENTER  13
-#define KEY92P_SIN    259
-#define KEY92P_COS    260
-#define KEY92P_TAN    261
-#define KEY92P_POWER  94
+#define KEY92P_SPACE  32
+
 #define KEY92P_LP     40	// Left parenthesis
 #define KEY92P_RP     41	// Right parenthesis
-#define KEY92P_COMMA  44
-#define KEY92P_DIVIDE 47
 #define KEY92P_MULT   42
-#define KEY92P_MINUS  45
 #define KEY92P_PLUS   43
-#define KEY92P_STO    258
-#define KEY92P_SPACE  32
-#define KEY92P_EQUALS 61
-#define KEY92P_BS     257
-#define KEY92P_THETA  136
-#define KEY92P_NEG    173
+#define KEY92P_COMMA  44
+#define KEY92P_MINUS  45
 #define KEY92P_DOT    46
+#define KEY92P_DIVIDE 47
 #define KEY92P_0      48
 #define KEY92P_1      49
 #define KEY92P_2      50
@@ -67,6 +47,11 @@
 #define KEY92P_7      55
 #define KEY92P_8      56
 #define KEY92P_9      57
+
+#define KEY92P_EQUALS 61
+
+#define KEY92P_POWER  94
+
 #define KEY92P_a      97
 #define KEY92P_b      98
 #define KEY92P_c      99
@@ -94,14 +79,38 @@
 #define KEY92P_y      121
 #define KEY92P_z      122
 
+#define KEY92P_THETA  136
+#define KEY92P_NEG    173
+
+#define KEY92P_BS     257
+#define KEY92P_STO    258
+#define KEY92P_SIN    259
+#define KEY92P_COS    260
+#define KEY92P_TAN    261
+#define KEY92P_LN     262
+#define KEY92P_CLEAR  263
+#define KEY92P_ESC    264
+#define KEY92P_APPS   265
+#define KEY92P_MODE   266
+#define KEY92P_ON	  267
+#define KEY92P_F1     268
+#define KEY92P_F2     269
+#define KEY92P_F3     270
+#define KEY92P_F4     271
+#define KEY92P_F5     272
+#define KEY92P_F6     273
+#define KEY92P_F7     274
+#define KEY92P_F8     275
+#define KEY92P_CHS	  276
+
+#define KEY92P_LEFT   337
 #define KEY92P_UP     338
-#define KEY92P_UP_RG  342
+#define KEY92P_UP_LF  339
 #define KEY92P_RIGHT  340
-#define KEY92P_DW_RG  348
+#define KEY92P_UP_RG  342
 #define KEY92P_DOWN   344
 #define KEY92P_DW_LF  345
-#define KEY92P_LEFT   337
-#define KEY92P_UP_LF  339
+#define KEY92P_DW_RG  348
 
 // Key modifiers
 
