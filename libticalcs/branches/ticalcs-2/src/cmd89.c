@@ -252,6 +252,36 @@ int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char
   return 0;
 }
 
+int ti89_send_VER_h(CalcHandle* handle)
+{
+  ticalcs_info(" PC->TI: VER");
+  TRYF(send_packet(handle, PC_TI9X, CMD_VER, 2, NULL));
+
+  return 0;
+}
+
+int ti89_send_DEL_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+{
+  uint8_t buffer[32] = { 0 };
+  uint16_t len;
+
+  buffer[0] = LSB(LSW(varsize));
+  buffer[1] = MSB(LSW(varsize));
+  buffer[2] = LSB(MSW(varsize));
+  buffer[3] = MSB(MSW(varsize));
+  buffer[4] = vartype;
+  buffer[5] = strlen(varname);
+  memcpy(buffer + 6, varname, strlen(varname));
+
+  len = 6 + strlen(varname);
+  tifiles_hexdump(buffer, 16);
+
+  ticalcs_info(" PC->TI: DEL (size=0x%08X=%i, id=%02X, name=<%s>)",
+	  varsize, varsize, vartype, varname);
+  TRYF(send_packet(handle, PC_TI9X, CMD_DEL, len, buffer));
+
+  return 0;
+}
 
 /* Variable (std var header: variable length) */
 int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)

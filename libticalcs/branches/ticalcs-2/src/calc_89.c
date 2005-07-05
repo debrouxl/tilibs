@@ -37,6 +37,7 @@
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
+#include "macros.h"
 
 #include "cmd89.h"
 #include "rom89.h"
@@ -292,29 +293,15 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		sprintf(update->text, _("Sending '%s'"), utf8);
 		update_label();
 
-		if(mode & MODE_BACKUP) 
-		{	
-			// backup: keep attributes
-			switch (entry->attr) 
-			{
-			case TI89_VNONE:
-				vartype = TI89_BKUP;
-			break;
-			case TI89_VLOCK:
-				vartype = 0x26;
-			break;
-			case TI89_VARCH:
-				vartype = 0x27;
-			break;
-			}
-
-			TRYF(ti89_send_RTS(entry->size, vartype, varname));
-		} 
-		else 
+		switch (entry->attr) 
 		{
-			TRYF(ti89_send_VAR(entry->size, vartype, varname));
+		//case ATTRB_NONE:     vartype = TI89_BKUP; break;
+		case ATTRB_LOCKED:   vartype = 0x26; break;
+		case ATTRB_PROTECTED:
+		case ATTRB_ARCHIVED: vartype = 0x27; break;
 		}
 
+		TRYF(ti89_send_RTS(entry->size, vartype, varname));
 		TRYF(ti89_recv_ACK(NULL));
 
 		TRYF(ti89_recv_CTS());
@@ -474,7 +461,60 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return send_var(handle, mode, content);
+	int i;
+	uint16_t status;
+
+	update->max2 = content->num_entries;
+	for(i = 0; i < content->num_entries; i++) 
+	{
+		VarEntry *entry = &(content->entries[i]);
+		uint8_t buffer[65536 + 4] = { 0 };
+		uint8_t vartype = entry->type;
+		uint8_t varname[18], utf8[35];
+
+		if(entry->action == ACT_SKIP)
+			continue;
+
+		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
+		{	
+			// local & not backup
+			strcpy(varname, entry->name);
+		} 
+		else 
+		{
+			// full or backup
+			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
+		}
+
+		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
+		sprintf(update->text, _("Sending '%s'"), utf8);
+		update_label();
+
+		TRYF(ti89_send_VAR(entry->size, vartype, varname));
+		TRYF(ti89_recv_ACK(NULL));
+
+		TRYF(ti89_recv_CTS());
+		TRYF(ti89_send_ACK());
+
+		memcpy(buffer + 4, entry->data, entry->size);
+		TRYF(ti89_send_XDP(entry->size + 4, buffer));
+		TRYF(ti89_recv_ACK(&status));
+
+		TRYF(ti89_send_EOT());
+		TRYF(ti89_recv_ACK(NULL));
+
+		if(mode & MODE_BACKUP) 
+		{
+			update->cnt2 = i+1;
+			update->max2 = content->num_entries;
+			update->pbar();
+
+			if(update->cancel)
+				return ERR_ABORT;
+		}
+	}
+
+	return 0;
 }
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
@@ -861,16 +901,75 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	char varname[18];
+
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
+
+	TRYF(ti89_send_DEL(vr->size, vr->type, varname));
+	TRYF(ti89_recv_ACK(NULL));
+
+	PAUSE(500);
+
 	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
+	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
+	uint8_t varname[18];
+
+	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
+
+	// send empty expression
+	TRYF(ti89_send_RTS(0x10, 0x00, varname));
+	TRYF(ti89_recv_ACK(NULL));
+
+	TRYF(ti89_recv_CTS());
+	TRYF(ti89_send_ACK());
+
+	TRYF(ti89_send_XDP(0x10, data));
+	TRYF(ti89_recv_ACK(NULL));
+
+	TRYF(ti89_send_EOT());
+	TRYF(ti89_recv_ACK(NULL));
+
+	// delete 'a1234567' variable
+	strcpy(vr->name, "a1234567");
+	TRYF(del_var(handle, vr));
+
 	return 0;
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
+	uint32_t length;
+	uint8_t buf[32];
+
+	TRYF(ti89_send_VER());
+	TRYF(ti89_recv_ACK(NULL));
+
+	TRYF(ti89_send_CTS());
+    TRYF(ti89_recv_ACK(NULL));
+
+	TRYF(ti89_recv_XDP(&length, buf));
+    TRYF(ti89_send_ACK());
+
+	ticalcs_info(_("  OS: %i.%2i"), buf[0], buf[1]);
+	ticalcs_info(_("  BIOS: %i.%2i"), buf[2], buf[3]);
+
+	memset(infos, 0, sizeof(CalcInfos));
+	infos->os[0] = buf[0] + '0';
+	infos->os[1] = '.';
+	infos->os[2] = MSN(buf[1]) + '0';
+	infos->os[3] = LSN(buf[1]) + '0';
+	infos->os[4] = '\0';
+
+	infos->bios[0] = buf[2] + '0';
+	infos->bios[1] = '.';
+	infos->bios[2] = MSN(buf[3]) + '0';
+	infos->bios[3] = LSN(buf[3]) + '0';
+	infos->bios[4] = '\0';
+
 	return 0;
 }
 
@@ -882,6 +981,7 @@ const CalcFncts calc_89 =
 	N_("TI-89"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -913,6 +1013,7 @@ const CalcFncts calc_92p =
 	N_("TI-92 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -943,7 +1044,8 @@ const CalcFncts calc_89t =
 	N_("TI-89 Titanium"),
 	N_("TI-89 Titanium"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -975,6 +1077,7 @@ const CalcFncts calc_v2 =
 	N_("V200 Portable Learning Tool"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
 	&is_ready,
 	&send_key,

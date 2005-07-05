@@ -36,6 +36,8 @@ int ti89_send_EOT_h(CalcHandle*);
 int ti89_send_REQ_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_RTS_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_RTS2_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);	// titanium
+int ti89_send_VER_h(CalcHandle*);
+int ti89_send_DEL_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 
 int ti89_recv_VAR_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
 int ti89_recv_CTS_h(CalcHandle*);
@@ -62,6 +64,8 @@ int ti89_recv_RTS_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *va
 #define ti89_send_REQ(a,b,c)		ti89_send_REQ_h(handle, a, b, c)
 #define ti89_send_RTS(a,b,c)		ti89_send_RTS_h(handle, a, b, c)
 #define ti89_send_RTS2(a,b,c)		ti89_send_RTS2_h(handle, a, b, c)
+#define ti89_send_VER()				ti89_send_VER_h(handle)
+#define ti89_send_DEL(a,b,c)		ti89_send_DEL_h(handle, a, b, c)
 
 #define ti89_recv_VAR(a,b,c)		ti89_recv_VAR_h(handle, a, b, c)		
 #define ti89_recv_CTS()				ti89_recv_CTS_h(handle)

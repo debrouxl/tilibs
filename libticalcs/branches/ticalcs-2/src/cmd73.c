@@ -109,14 +109,6 @@ int ti73_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
   return 0;
 }
 
-int ti73_send_VER_h(CalcHandle* handle)
-{
-  ticalcs_info(" PC->TI: FLASH app is following...");
-  TRYF(send_packet(handle, PC_TI7383, CMD_VER, 2, NULL));
-
-  return 0;
-}
-
 /*
   Skip variable
   - rej_code [in]: a rejection code
@@ -266,6 +258,37 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 
   return 0;
 }
+
+int ti73_send_VER_h(CalcHandle* handle)
+{
+  ticalcs_info(" PC->TI: VER");
+  TRYF(send_packet(handle, PC_TI7383, CMD_VER, 2, NULL));
+
+  return 0;
+}
+
+int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname,
+		  uint8_t varattr)
+{
+	uint8_t buffer[16] = { 0 };
+	uint8_t trans[9];
+
+	buffer[0] = LSB(varsize);
+	buffer[1] = MSB(varsize);
+	buffer[2] = vartype == TI83p_APPL ? 0x14 : vartype;
+	memcpy(buffer + 3, varname, 8);
+	pad_buffer(buffer + 3, '\0');
+	buffer[11] = 0x00;
+	tifiles_hexdump(buffer, 16);
+
+	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+	ticalcs_info(" PC->TI: DEL (name=<%s>)", trans);
+
+	TRYF(send_packet(handle, PC_TI7383, CMD_DEL, 11, buffer));
+  
+	return 0;
+}
+
 
 int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname,
 		  uint8_t * varattr)

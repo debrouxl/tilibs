@@ -633,18 +633,123 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	return 0;
 }
 
+static int days_in_months[12] = 
+{
+	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+};
+
+static int days_elapsed(int month)
+{
+	int i;
+	int days;
+
+	if(!month || month > 11)
+		return 0;
+
+	for(i = 0, days = 0; i < month-1; i++)
+		days += days_in_months[i];
+
+	printf("days = %i\n", days);
+
+	return days;
+}
+
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	uint8_t buffer[16] = { 0 };
+	uint32_t time;
+
+	time = clock->seconds + 60 * clock->minutes + 3600 * clock->hours + 
+		86400 * days_elapsed(clock->month) + 365*86400 * (clock->year - 1997);
+	printf("time = %08x = %i\n", time, time);
+
+    buffer[2] = MSB(MSW(time));
+    buffer[3] = LSB(MSW(time));
+    buffer[4] = MSB(LSW(time));
+    buffer[5] = LSB(LSW(time));
+    buffer[6] = clock->date_format;
+    buffer[7] = clock->time_format;
+    buffer[8] = 0xff;
+
+    sprintf(update->text, _("Setting clock..."));
+    update_label();
+
+	TRYF(ti73_send_RTS(13, TI73_CLK, "\0x08", 0x00));
+    TRYF(ti73_recv_ACK(NULL));
+
+    TRYF(ti73_recv_CTS(13));
+    TRYF(ti73_send_ACK());
+
+    TRYF(ti73_send_XDP(9, buffer));
+    TRYF(ti73_recv_ACK(NULL));
+
+    TRYF(ti73_send_EOT());
+
 	return 0;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	uint16_t varsize;
+    uint8_t vartype;
+	uint8_t varattr;
+    uint8_t varname[9];
+    uint8_t buffer[32];
+	uint32_t time;
+
+    sprintf(update->text, _("Getting clock..."));
+    update_label();
+
+	TRYF(ti73_send_REQ(0x0000, TI73_CLK, "\0x08", 0x00));
+    TRYF(ti73_recv_ACK(NULL));
+
+    TRYF(ti73_recv_VAR(&varsize, &vartype, varname, &varattr));
+    TRYF(ti73_send_ACK());
+
+    TRYF(ti73_send_CTS());
+    TRYF(ti73_recv_ACK(NULL));
+
+    TRYF(ti73_recv_XDP(&varsize, buffer));
+    TRYF(ti73_send_ACK());
+
+	time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
+
+    clock->year = (int)(time / (365 * 24 *60 * 60));
+	time = time - clock->year * (365 * 24 *60 * 60);
+	
+	clock->month = (int)(time / (30 * 24 *60 * 60));
+	time = time - clock->month * (30 * 24 *60 * 60);
+
+	clock->day = (int)(time / (24 *60 * 60));
+	time = time - clock->day * (24 *60 * 60);
+
+	clock->hours = (int)(time / (60 * 60));
+	time = time - clock->hours * (60 * 60);
+
+	clock->minutes = (int)(time / (60));
+	time = time - clock->minutes * (60);
+
+	clock->seconds = (uint8_t)time;
+
+	clock->year += 1997;
+	clock->month++;
+	clock->day++;
+
+    clock->date_format = buffer[6];
+    clock->time_format = buffer[7];
+
+	//tifiles_hexdump(buffer, 9);
+
 	return 0;
 }
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	TRYF(ti73_send_DEL((uint16_t)vr->size, vr->type, vr->name, vr->attr));
+	TRYF(ti73_recv_ACK(NULL));
+
+	PAUSE(500);
+
 	return 0;
 }
 
@@ -655,6 +760,34 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
+	uint16_t length;
+	uint8_t buf[32];
+
+	TRYF(ti73_send_VER());
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_send_CTS());
+    TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_XDP(&length, buf));
+    TRYF(ti73_send_ACK());
+
+	ticalcs_info(_("  OS: %i.%2i"), buf[0], buf[1]);
+	ticalcs_info(_("  BIOS: %i.%2i"), buf[2], buf[3]);
+
+	memset(infos, 0, sizeof(CalcInfos));
+	infos->os[0] = buf[0] + '0';
+	infos->os[1] = '.';
+	infos->os[2] = MSN(buf[1]) + '0';
+	infos->os[3] = LSN(buf[1]) + '0';
+	infos->os[4] = '\0';
+
+	infos->bios[0] = buf[2] + '0';
+	infos->bios[1] = '.';
+	infos->bios[2] = MSN(buf[3]) + '0';
+	infos->bios[3] = LSN(buf[3]) + '0';
+	infos->bios[4] = '\0';
+
 	return 0;
 }
 
@@ -666,6 +799,7 @@ const CalcFncts calc_73 =
 	N_("TI-73"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -693,7 +827,8 @@ const CalcFncts calc_83p =
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -724,7 +859,8 @@ const CalcFncts calc_84p =
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
