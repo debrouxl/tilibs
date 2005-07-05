@@ -109,10 +109,10 @@ int ti73_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
   return 0;
 }
 
-int ti73_send_FLSH_h(CalcHandle* handle)
+int ti73_send_VER_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: FLASH app is following...");
-  TRYF(send_packet(handle, PC_TI7383, CMD_FLSH, 2, NULL));
+  TRYF(send_packet(handle, PC_TI7383, CMD_VER, 2, NULL));
 
   return 0;
 }
