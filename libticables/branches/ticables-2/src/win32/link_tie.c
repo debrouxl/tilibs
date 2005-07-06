@@ -29,6 +29,7 @@
  */
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -60,10 +61,10 @@ typedef struct
 	int end;
 } LinkBuffer;
 
-static HANDLE hSendBuf;
-static HANDLE hRecvBuf;
-static LinkBuffer *pSendBuf;
-static LinkBuffer *pRecvBuf;
+static HANDLE hSendBuf = NULL;
+static HANDLE hRecvBuf = NULL;
+static LinkBuffer *pSendBuf = NULL;
+static LinkBuffer *pRecvBuf = NULL;
 
 static int tie_prepare(CableHandle *h)
 {
@@ -109,16 +110,28 @@ static int tie_open(CableHandle *h)
 static int tie_close(CableHandle *h)
 {
   if (hSendBuf) 
+  {
     UnmapViewOfFile(pSendBuf);
+	pSendBuf = NULL;
+  }
 
-  if (hRecvBuf) 
+  if (hRecvBuf)
+  {
     UnmapViewOfFile(pRecvBuf);
+	pRecvBuf = NULL;
+  }
 
   return 0;
 }
 
 static int tie_reset(CableHandle *h)
 {
+	if(!hSendBuf) return 0;
+	if(!hRecvBuf) return 0;
+
+	assert(pSendBuf);
+	assert(pRecvBuf);
+
 	pSendBuf->start = pSendBuf->end = 0;
 	pRecvBuf->start = pRecvBuf->end = 0;
 
@@ -134,6 +147,9 @@ static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
+
+	if(!hSendBuf) return 0;
+	assert(pSendBuf);
 
 	for(i = 0; i < len; i++)
 	{
@@ -157,6 +173,9 @@ static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
 	int i;
 	tiTIME clk;
 
+	if(!hRecvBuf) return 0;
+	assert(pRecvBuf);
+
 	for(i = 0; i < len; i++)
 	{
 		TO_START(clk);
@@ -176,10 +195,10 @@ static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
 
 static int tie_check(CableHandle *h, int *status)
 {
-	if (pRecvBuf->start == pRecvBuf->end)
-		*status = STATUS_NONE;
-	else
-		*status = STATUS_RX;
+	if(!hRecvBuf) return 0;
+	assert(pRecvBuf);
+
+	*status = !(pRecvBuf->start == pRecvBuf->end);
 
 	return 0;
 }
