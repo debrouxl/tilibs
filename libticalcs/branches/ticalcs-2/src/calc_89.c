@@ -129,18 +129,17 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
     int i, j;
     uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
 
-	// get list of folders & FLASH apps
-    (*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
-
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
+
+    (*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
 
     TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
     TRYF(ti89_recv_ACK(NULL));

@@ -328,3 +328,16 @@ int tixx_directorylist2(TNode** vars, TNode** apps, uint32_t * memory)
   return 0;
 }
 */
+
+
+/* Dirlist format */
+/*
+
+  top = NULL (data = TreeInfo)
+  |
+  + folder (= NULL if TI8x, data = VarEntry if TI9x)
+	  |
+	  +- var1 (data = VarEntry)
+	  +- var2 (data = VarEntry)
+
+*/

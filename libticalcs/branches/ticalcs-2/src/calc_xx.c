@@ -172,6 +172,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 	ti = (*vars)->data;
 	ti->mem_mask |= MEMORY_USED;
 	ti->mem_used = ticalcs_dirlist_mem_used(*vars);
+
 	ti = (*apps)->data;
 	ti->mem_mask |= MEMORY_USED;
 	ti->mem_used = ticalcs_dirlist_mem_used(*apps);	

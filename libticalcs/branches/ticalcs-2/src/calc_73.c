@@ -100,17 +100,17 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TNode *folder;	
 	char utf8[10];
 
-	(*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
-	ti->model = handle->model;
-	ti->type = VAR_NODE_NAME;
-	(*vars)->data = ti;
-
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
+
+	(*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
 
 	TRYF(ti73_send_REQ(0x0000, TI73_DIR, "", 0x00));
 	TRYF(ti73_recv_ACK(NULL));
@@ -118,7 +118,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TRYF(ti73_recv_XDP(&unused, (uint8_t *)&memory));
 	fixup(memory);
 	TRYF(ti73_send_ACK());
-	handle->priv = GUINT_TO_POINTER(memory);
+	ti->mem_free = (uint32_t)GUINT_TO_POINTER(memory);
 
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
