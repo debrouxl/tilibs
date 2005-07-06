@@ -46,6 +46,7 @@
 #define TI83p_AMS    0x23
 #define TI83p_APPL   0x24
 #define TI83p_IDLIST 0x26
+#define TI83p_CLK	 0x29
 
 // libtifiles: for internal use only, not exported !
 

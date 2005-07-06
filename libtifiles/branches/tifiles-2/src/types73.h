@@ -46,6 +46,7 @@
 #define TI73_AMS    0x23
 #define TI73_APPL   0x24
 #define TI73_IDLIST 0x26
+#define TI73_CLK	0x29
 
 // libtifiles: for internal use only, not exported !
 

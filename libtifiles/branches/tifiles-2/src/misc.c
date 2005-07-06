@@ -180,7 +180,7 @@ char *TICALL tifiles_get_fldname(const char *full_name)
  * @fldname: the name of folder or "".
  * @varname: the name of variable
  *
- * Build the complete path from fodler name and variable name.
+ * Build the complete path from folder name and variable name.
  * Not all of calculators supports folder.
  *
  * Return value: a full path as string like 'fldname\varname'.
@@ -188,14 +188,20 @@ char *TICALL tifiles_get_fldname(const char *full_name)
 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 				  const char *fldname, const char *varname)
 {
-  if (tifiles_has_folder(model)) {
-    if (strcmp(fldname, "")) {
+  if (tifiles_has_folder(model)) 
+  {
+    if (strcmp(fldname, "")) 
+	{
       strcpy(full_name, fldname);
       strcat(full_name, "\\");
     }
     strcat(full_name, varname);
-  } else
-    strcpy(full_name, varname);
+  } 
+  else
+  {
+	  strncpy(full_name, varname, 8);
+	  full_name[8] = '\0';
+  }
 
   return full_name;
 }
