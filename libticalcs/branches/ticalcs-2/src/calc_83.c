@@ -76,8 +76,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI83_ROWS;
 
 	*bitmap = (uint8_t *)malloc(TI83_COLS * TI83_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap == NULL)
-		return ERR_MALLOC;
+	if(*bitmap == NULL) return ERR_MALLOC;
 
 	TRYF(ti82_send_SCR());
 	TRYF(ti82_recv_ACK(NULL));
@@ -92,13 +91,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
 	TreeInfo *ti;
-	uint16_t unused;
 	TNode *folder;
+	uint16_t unused;	
+
 	uint32_t memory;
 	char utf8[10];
 
 	// get list of folders & FLASH apps
-  (*vars) = t_node_new(NULL);
+	(*vars) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
@@ -118,6 +118,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TRYF(ti82_send_ACK());
 	handle->priv = GUINT_TO_POINTER(memory);
 
+
+
+	
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
 
@@ -160,9 +163,6 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     uint8_t rej_code;
     uint16_t status;
 
-	printf("%04x %04x %04x %04x\n", 
-		content->data_length1, content->data_length2, 
-		content->data_length3, content->mem_address); 
     length = content->data_length1;
     varname[0] = LSB(content->data_length2);
     varname[1] = MSB(content->data_length2);
@@ -190,18 +190,20 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
 	}
 
-	update->max2 = 4;
+	update->max2 = 3;
+	update->cnt2 = 0;
+
 	TRYF(ti82_send_XDP(content->data_length1, content->data_part1));
 	TRYF(ti82_recv_ACK(&status));
-	update->cnt2 = 1;
+	update->cnt2++;
 
 	TRYF(ti82_send_XDP(content->data_length2, content->data_part2));
 	TRYF(ti82_recv_ACK(&status));
-	update->cnt2 = 2;
+	update->cnt2++;
 
 	TRYF(ti82_send_XDP(content->data_length3, content->data_part3));
 	TRYF(ti82_recv_ACK(&status));
-	update->cnt2 = 3;
+	update->cnt2++;
 
 	TRYF(ti82_send_ACK());
 
@@ -230,22 +232,23 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti82_recv_ACK(NULL));
 
 	update->max2 = 3;
+	update->cnt2 = 0;
 	content->data_part4 = NULL;
 
 	content->data_part1 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti82_send_ACK());
-	update->cnt2 = 1;
+	update->cnt2++;
 
 	content->data_part2 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti82_send_ACK());
-	update->cnt2 = 2;
+	update->cnt2++;
 
 	content->data_part3 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti82_send_ACK());
-	update->cnt2 = 3;
+	update->cnt2++;
 
 	return 0;
 }
@@ -465,8 +468,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	int i;
-	//0004 (DOWN), 0004 (DOWN), 0004 (DOWN), 0005 (ENTER), 0009B (B), 0005 (ENTER).
+	unsigned int i;
+
 	send_key(handle, 0x0040);	// Quit
 	send_key(handle, 0x0009);	// Clear
 	send_key(handle, 0x0009);	// Clear
@@ -482,12 +485,12 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 		char c = vr->name[i];
 
 		if(isdigit(c))
-			send_key(handle, 0x008e + c);
+			send_key(handle, (uint16_t)(0x008e + c));
 		else
-			send_key(handle, 0x009a + c);
+			send_key(handle, (uint16_t)(0x009a + c));
 	}
 
-	//send_key(handle, 0x0005);	// Enter
+	send_key(handle, 0x0005);	// Enter
 
 	return 0;
 }

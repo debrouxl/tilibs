@@ -565,7 +565,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	}
 
 exit:
-	// write file content
 	nvar--;
 
 	return 0;

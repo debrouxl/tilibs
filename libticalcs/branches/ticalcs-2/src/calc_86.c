@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "ticalcs.h"
 #include "gettext.h"
@@ -42,6 +43,7 @@
 #include "packets.h"
 #include "cmd85.h"
 #include "rom86.h"
+//#include "keys83p.h"
 
 // Screen coordinates of the TI86
 #define TI86_ROWS  64
@@ -96,7 +98,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	char utf8[10];
 
 	// get list of folders & FLASH apps
-  (*vars) = t_node_new(NULL);
+	(*vars) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
@@ -201,24 +203,26 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     update_label();
 
 	update->max2 = 4;
+	update->cnt2 = 0;
+
     TRYF(ti85_send_XDP(content->data_length1, content->data_part1));
     TRYF(ti85_recv_ACK(&status));
-    update->cnt2 = 1;
+    update->cnt2++;
 
     TRYF(ti85_send_XDP(content->data_length2, content->data_part2));
     TRYF(ti85_recv_ACK(&status));
-    update->cnt2 = 2;
+    update->cnt2++;
 
     if (content->data_length3) 
 	{
       TRYF(ti85_send_XDP(content->data_length3, content->data_part3));
       TRYF(ti85_recv_ACK(&status));
     }
-    update->cnt2 = 3;
+    update->cnt2++;
 
     TRYF(ti85_send_XDP(content->data_length4, content->data_part4));
     TRYF(ti85_recv_ACK(&status));
-    update->cnt2 = 4;
+    update->cnt2++;
 
 	return 0;
 }
@@ -243,15 +247,17 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
     TRYF(ti85_recv_ACK(NULL));
 
 	update->max2 = 4;
+	update->cnt2 = 0;
+
     content->data_part1 = calloc(65536, 1);
     TRYF(ti85_recv_XDP(&content->data_length1, content->data_part1));
     TRYF(ti85_send_ACK());
-    update->cnt2 = 1;
+    update->cnt2++;
 
     content->data_part2 = calloc(65536, 1);
     TRYF(ti85_recv_XDP(&content->data_length2, content->data_part2));
     TRYF(ti85_send_ACK());
-    update->cnt2 = 2;
+    update->cnt2++;
 
     if (content->data_length3) 
 	{
@@ -260,12 +266,12 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
       TRYF(ti85_send_ACK());
     } else
       content->data_part3 = NULL;
-    update->cnt2 = 3;
+    update->cnt2++;
 
     content->data_part4 = calloc(65536, 1);
     TRYF(ti85_recv_XDP(&content->data_length4, content->data_part4));
     TRYF(ti85_send_ACK());
-    update->cnt2 = 4;
+    update->cnt2++;
 
 	return 0;
 }
