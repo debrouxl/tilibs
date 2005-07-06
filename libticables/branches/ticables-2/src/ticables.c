@@ -111,7 +111,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	ticables_info("setlocale: <%s>\n", setlocale(LC_ALL, ""));
+  	ticables_info("setlocale: <%s>", setlocale(LC_ALL, ""));
   	ticables_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	ticables_info("textdomain: <%s>", textdomain(PACKAGE));
