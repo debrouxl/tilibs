@@ -270,7 +270,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
 	int nvar = 0;
   int err = 0;
-  char *fn = NULL;
 
   sprintf(update->text, _("Waiting var(s)..."));
   update_label();

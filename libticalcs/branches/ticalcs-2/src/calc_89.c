@@ -392,7 +392,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	int i, j, k;
 	int i_max, j_max;
-	int mask = MODE_BACKUP;
 	TNode *vars, *apps;
 	int nvars, ivars = 0;
 	int b = 0;

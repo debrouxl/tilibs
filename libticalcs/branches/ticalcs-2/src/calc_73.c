@@ -415,7 +415,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 {
 	FlashPage *fp;
 	uint16_t data_addr;
-	uint16_t old_page;
+	uint16_t old_page = 0;
 	uint16_t data_page;
 	uint16_t data_length;
 	uint8_t data_type;
@@ -500,7 +500,6 @@ exit:
 		page++;
 	}
 
-	printf("size = %04x = %i\n", size);
 	content->num_pages = page;
 
 	return 0;

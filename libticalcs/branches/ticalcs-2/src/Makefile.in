@@ -205,6 +205,7 @@ libticalcs2_la_SOURCES = *.h \
 	keys73.c keys83p.c keys89.c keys92p.c \
 	logging.c \
 	packets.c \
+	probe.c \
 	ticalcs.c \
 	tikeys.c \
 	tnode.c \
@@ -231,9 +232,9 @@ am_libticalcs2_la_OBJECTS = libticalcs2_la-calc_00.lo \
 	libticalcs2_la-keys73.lo libticalcs2_la-keys83p.lo \
 	libticalcs2_la-keys89.lo libticalcs2_la-keys92p.lo \
 	libticalcs2_la-logging.lo libticalcs2_la-packets.lo \
-	libticalcs2_la-ticalcs.lo libticalcs2_la-tikeys.lo \
-	libticalcs2_la-tnode.lo libticalcs2_la-type2str.lo \
-	libticalcs2_la-update.lo
+	libticalcs2_la-probe.lo libticalcs2_la-ticalcs.lo \
+	libticalcs2_la-tikeys.lo libticalcs2_la-tnode.lo \
+	libticalcs2_la-type2str.lo libticalcs2_la-update.lo
 libticalcs2_la_OBJECTS = $(am_libticalcs2_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -262,6 +263,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-keys92p.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-logging.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-packets.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-probe.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-ticalcs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-tikeys.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-tnode.Plo \
@@ -350,6 +352,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-keys92p.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-logging.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-packets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-probe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-ticalcs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-tikeys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-tnode.Plo@am__quote@
@@ -1147,6 +1150,39 @@ libticalcs2_la-packets.lo: packets.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-packets.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-packets.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-packets.lo `test -f 'packets.c' || echo '$(srcdir)/'`packets.c
+
+libticalcs2_la-probe.o: probe.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-probe.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-probe.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-probe.o `test -f 'probe.c' || echo '$(srcdir)/'`probe.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-probe.Tpo" "$(DEPDIR)/libticalcs2_la-probe.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-probe.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='probe.c' object='libticalcs2_la-probe.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-probe.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-probe.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-probe.o `test -f 'probe.c' || echo '$(srcdir)/'`probe.c
+
+libticalcs2_la-probe.obj: probe.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-probe.obj -MD -MP -MF "$(DEPDIR)/libticalcs2_la-probe.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-probe.obj `if test -f 'probe.c'; then $(CYGPATH_W) 'probe.c'; else $(CYGPATH_W) '$(srcdir)/probe.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-probe.Tpo" "$(DEPDIR)/libticalcs2_la-probe.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-probe.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='probe.c' object='libticalcs2_la-probe.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-probe.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-probe.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-probe.obj `if test -f 'probe.c'; then $(CYGPATH_W) 'probe.c'; else $(CYGPATH_W) '$(srcdir)/probe.c'; fi`
+
+libticalcs2_la-probe.lo: probe.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-probe.lo -MD -MP -MF "$(DEPDIR)/libticalcs2_la-probe.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-probe.lo `test -f 'probe.c' || echo '$(srcdir)/'`probe.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-probe.Tpo" "$(DEPDIR)/libticalcs2_la-probe.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-probe.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='probe.c' object='libticalcs2_la-probe.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-probe.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-probe.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-probe.lo `test -f 'probe.c' || echo '$(srcdir)/'`probe.c
 
 libticalcs2_la-ticalcs.o: ticalcs.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-ticalcs.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-ticalcs.Tpo" \

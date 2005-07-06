@@ -38,7 +38,7 @@
 int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
-  uint8_t trans[9];
+  uint8_t trans[20];
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
 

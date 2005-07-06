@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "ticalcs.h"
 #include "gettext.h"
@@ -531,7 +532,7 @@ const CalcFncts calc_83 =
 	&new_folder,
 	&get_version,
 };
-
+/*
 const CalcFncts calc_82s = 
 {
 	CALC_TI82S,
@@ -561,3 +562,4 @@ const CalcFncts calc_82s =
 	&new_folder,
 	&get_version,
 };
+*/

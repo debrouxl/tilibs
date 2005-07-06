@@ -28,6 +28,7 @@ libticalcs2_la_SOURCES = *.h \
 	keys73.c keys83p.c keys89.c keys92p.c \
 	logging.c \
 	packets.c \
+	probe.c \
 	ticalcs.c \
 	tikeys.c \
 	tnode.c \

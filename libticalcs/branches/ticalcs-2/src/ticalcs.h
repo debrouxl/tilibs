@@ -62,11 +62,11 @@ extern "C" {
  *
  * An enumeration which contains the following calculator types:
  **/
-#ifndef __TIFILES_H__
+#if !defined(__TIFILES_H__)
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI82S, CALC_TI83, 
+	CALC_TI73, CALC_TI82, /*CALC_TI82S,*/ CALC_TI83, 
 	CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 } CalcModel;

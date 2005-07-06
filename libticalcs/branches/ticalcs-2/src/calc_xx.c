@@ -609,7 +609,6 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
  **/
 TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
 {
-	const CalcFncts *calc = handle->calc;
 	BackupContent *content1;
 	FileContent *content2;
 
@@ -660,7 +659,6 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
  **/
 TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
 {
-	const CalcFncts *calc = handle->calc;
 	BackupContent content1;
 	FileContent content2;
 
@@ -708,7 +706,6 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
 										   const char* filename)
 {
-	const CalcFncts *calc = handle->calc;
 	FileContent content;
 
 	if(!handle->attached)
@@ -741,7 +738,6 @@ TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
 											const char* filename, VarRequest* vr)
 {
-	const CalcFncts *calc = handle->calc;
 	FileContent* content;
 
 	if(!handle->attached)
@@ -774,7 +770,6 @@ TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename)
 {
-	const CalcFncts *calc = handle->calc;
 	FileContent content;
 
 	if(!handle->attached)
@@ -807,7 +802,6 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename, VarEntry* vr)
 {
-	const CalcFncts *calc = handle->calc;
 	FileContent *content;
 
 	if(!handle->attached)
@@ -838,7 +832,6 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
  **/
 TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* filename)
 {
-	const CalcFncts *calc = handle->calc;
 	FlashContent content;
 
 	if(!handle->attached)
@@ -870,7 +863,6 @@ TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* fil
 TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* filename, 
 											VarRequest* vr)
 {
-	const CalcFncts *calc = handle->calc;
 	FlashContent *content;
 
 	if(!handle->attached)
@@ -901,7 +893,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* fil
  **/
 TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 {
-	const CalcFncts *calc = handle->calc;
+    const CalcFncts *calc = handle->calc;
 	int ret;
 
 	if(!handle->attached)
