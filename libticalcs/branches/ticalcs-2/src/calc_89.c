@@ -442,6 +442,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	tifiles_group_contents(array, &group);
 	tifiles_content_free_group(array);
+	tifiles_info("group = %p %p\n", &group, group);
 
 	// Swap content and group because content has already been allocated
 	{

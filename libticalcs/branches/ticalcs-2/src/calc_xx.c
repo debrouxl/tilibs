@@ -23,6 +23,8 @@
 #  include <config.h>
 #endif
 
+#include <stdio.h>
+
 #include "ticalcs.h"
 #include "error.h"
 #include "logging.h"
@@ -641,7 +643,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
 		content2 = tifiles_content_create_regular();
 		TRYF(ticalcs_calc_recv_backup(handle, (BackupContent *)content2));
 		TRYF(tifiles_file_write_regular(filename, content2, NULL));
-		//TRYF(tifiles_content_free_regular(content2));
+		TRYF(tifiles_content_free_regular(content2));
 		break;
 	}
 
