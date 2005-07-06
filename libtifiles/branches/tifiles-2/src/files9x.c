@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <assert.h>
 
 #include "tifiles.h"
 #include "error.h"
@@ -185,15 +186,15 @@ void ti9x_content_free_regular(Ti9xRegular *content)
 {
   int i;
 
-  tifiles_info("ti9x_content_free_regular: content: %p\n", content);
+  assert(content != NULL);
+
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = &(content->entries[i]);
-#ifndef __WIN32__
-    tifiles_info("ti9x_content_free_regular: entry: %p\n", entry);
-    tifiles_info("ti9x_content_free_regular: entry->data: %p\n", entry->data);
+//#ifndef __WIN32__
+	assert(entry != NULL);
     free(entry->data);
-#endif
+//#endif
   }
 #ifndef __WIN32__
   free(content->entries);
@@ -209,6 +210,8 @@ void ti9x_content_free_regular(Ti9xRegular *content)
  **/
 void ti9x_content_free_backup(Ti9xBackup *content)
 {
+	assert(content != NULL);
+
 #ifndef __WIN32__
   free(content->data_part);
 #endif
@@ -225,6 +228,7 @@ void ti9x_content_free_flash(Ti9xFlash *content)
 {
   Ti9xFlash *ptr;
 
+  assert(content != NULL);
   free(content->data_part);
 
   ptr = content->next;

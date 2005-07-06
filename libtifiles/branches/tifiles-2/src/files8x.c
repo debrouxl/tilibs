@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "tifiles.h"
 #include "error.h"
@@ -184,9 +185,13 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 {
   int i;
 
+  assert(content != NULL);
+
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = &(content->entries[i]);
+
+	assert(entry != NULL);
 #ifndef __WIN32__
     free(entry->data);
 #endif
@@ -205,6 +210,7 @@ void ti8x_content_free_regular(Ti8xRegular *content)
  **/
 void ti8x_content_free_backup(Ti8xBackup *content)
 {
+  assert(content != NULL);
 #ifndef __WIN32__
   free(content->data_part1);
   free(content->data_part2);
@@ -224,6 +230,8 @@ void ti8x_content_free_flash(Ti8xFlash *content)
 {
 #if !defined(__WIN32__) || defined(__MINGW32__)
 	int i;
+
+	assert(content != NULL);
 
     for(i = 0; i < content->num_pages; i++)
 		free(content->pages[i].data);
