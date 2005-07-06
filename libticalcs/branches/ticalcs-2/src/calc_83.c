@@ -42,6 +42,7 @@
 #include "packets.h"
 #include "cmd82.h"
 #include "rom83.h"
+#include "keys83p.h"
 
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
@@ -57,6 +58,9 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
+	TRYF(ti83_send_KEY(key));
+	TRYF(ti82_recv_ACK(NULL));
+
 	return 0;
 }
 
@@ -460,6 +464,30 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	int i;
+	//0004 (DOWN), 0004 (DOWN), 0004 (DOWN), 0005 (ENTER), 0009B (B), 0005 (ENTER).
+	send_key(handle, 0x0040);	// Quit
+	send_key(handle, 0x0009);	// Clear
+	send_key(handle, 0x0009);	// Clear
+	send_key(handle, 0x003e);	// Catalog
+	send_key(handle, 0x009d);	// D
+	send_key(handle, 0x0004);	// Down
+	send_key(handle, 0x0004);	// Down
+	send_key(handle, 0x0004);	// Down
+	send_key(handle, 0x0005);	// Enter
+	
+	for(i = 0; i < strlen(vr->name); i++)
+	{
+		char c = vr->name[i];
+
+		if(isdigit(c))
+			send_key(handle, 0x008e + c);
+		else
+			send_key(handle, 0x009a + c);
+	}
+
+	//send_key(handle, 0x0005);	// Enter
+
 	return 0;
 }
 
@@ -479,7 +507,8 @@ const CalcFncts calc_83 =
 	"TI83",
 	N_("TI-83"),
 	N_("TI-83"),
-	OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
+	OPS_DELVAR |
 	FTS_SILENT | FTS_MEMFREE,
 	&is_ready,
 	&send_key,

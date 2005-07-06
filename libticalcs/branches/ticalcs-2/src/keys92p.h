@@ -82,7 +82,7 @@
 #define KEY92P_THETA  136
 #define KEY92P_NEG    173
 
-#define KEY92P_BS     257
+#define KEY92P_DELETE 257
 #define KEY92P_STO    258
 #define KEY92P_SIN    259
 #define KEY92P_COS    260
@@ -90,7 +90,7 @@
 #define KEY92P_LN     262
 #define KEY92P_CLEAR  263
 #define KEY92P_ESC    264
-#define KEY92P_APPS   265
+#define KEY92P_MENU   265
 #define KEY92P_MODE   266
 #define KEY92P_ON	  267
 #define KEY92P_F1     268
@@ -117,7 +117,7 @@
 #define KEY92P_2ND    4096
 #define KEY92P_CTRL   8192
 #define KEY92P_SHIFT  16384
-#define KEY92P_LOCK   32768
+#define KEY92P_DRAG   32768
 
 // Array of keys
 

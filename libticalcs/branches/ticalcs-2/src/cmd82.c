@@ -122,18 +122,20 @@ int ti82_send_SCR_h(CalcHandle* handle)
   return 0;
 }
 
+int ti83_send_KEY_h(CalcHandle* handle, uint16_t scancode)
+{
+	uint8_t buf[5];
+  
+	buf[0] = PC_TI83;
+	buf[1] = CMD_KEY;
+	buf[2] = LSB(scancode);
+	buf[3] = MSB(scancode);
 
+	ticalcs_info(" PC->TI: KEY");
+	TRYF(ticables_cable_send(handle->cable, buf, 4));
 
-
-
-
-
-
-
-
-
-
-
+	return 0;
+}
 
 int ti82_send_EOT_h(CalcHandle* handle)
 {

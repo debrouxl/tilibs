@@ -29,6 +29,7 @@ int ti82_send_SKP_h(CalcHandle*, uint8_t rej_code);
 int ti82_send_ACK_h(CalcHandle*);
 int ti82_send_ERR_h(CalcHandle*);
 int ti82_send_SCR_h(CalcHandle*);
+int ti83_send_KEY_h(CalcHandle*, uint16_t scancode);
 int ti82_send_KEY_h(CalcHandle*, uint16_t scancode);
 int ti82_send_EOT_h(CalcHandle*);
 int ti82_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
@@ -50,6 +51,7 @@ int ti82_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *va
 #define ti82_send_ACK()				ti82_send_ACK_h(handle)	
 #define ti82_send_ERR()				ti82_send_ERR_h(handle)			
 #define ti82_send_SCR()				ti82_send_SCR_h(handle)			
+#define ti83_send_KEY(a)			ti83_send_KEY_h(handle,a)
 #define ti82_send_KEY(a)			ti82_send_KEY_h(handle, a)
 #define ti82_send_EOT()				ti82_send_EOT_h(handle)	
 #define ti82_send_REQ(a,b,c)		ti82_send_REQ_h(handle, a, b, c)
