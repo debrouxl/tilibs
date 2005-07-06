@@ -22,6 +22,7 @@ libticables2_la_SOURCES = *.h \
 	link_gry.c link_nul.c link_par.c link_blk.c \
 	link_slv.c link_tie.c link_vti.c link_xxx.c \
 	logging.c \
+	probe.c \
 	ticables.c \
 	type2str.c
 

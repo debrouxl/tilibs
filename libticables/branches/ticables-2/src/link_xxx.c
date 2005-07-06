@@ -114,7 +114,8 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
 	{
 	    cable->close(handle);
 	    handle->open = 0;
-		free(handle->device);
+	    free(handle->device);
+	    handle->device = NULL;
 	}
 
 	return 0;
