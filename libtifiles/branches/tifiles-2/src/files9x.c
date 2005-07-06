@@ -185,10 +185,13 @@ void ti9x_content_free_regular(Ti9xRegular *content)
 {
   int i;
 
+  tifiles_info("ti9x_content_free_regular: content: %p\n", content);
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = &(content->entries[i]);
 #ifndef __WIN32__
+    tifiles_info("ti9x_content_free_regular: entry: %p\n", entry);
+    tifiles_info("ti9x_content_free_regular: entry->data: %p\n", entry->data);
     free(entry->data);
 #endif
   }
