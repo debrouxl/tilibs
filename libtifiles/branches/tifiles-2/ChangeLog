@@ -1,6 +1,7 @@
 SubVersion: $Id$
 
-Run './configure --enable-static=yes --enable-shared=no' for use with ValGrind !
+Run './configure --enable-static=yes --enable-shared=no' for use with 
+ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
 To do:
 	- tifiles_is_varname_tokenized
