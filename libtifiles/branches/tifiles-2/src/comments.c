@@ -40,6 +40,7 @@ static char comment[41];
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 {
+#ifdef __WIN32__
 	char buf1[128];
 	char buf2[128];
 
@@ -49,6 +50,10 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 	//snprintf(comment, sizeof(comment), "Single file dated %02i/%02i/%02i, %02i:%02i");
 	sprintf(comment, "Single file dated %s %s", buf1, buf2);
 	return comment;
+#else
+// Use asctime ?
+	return "No comment !";
+#endif
 }
 
 /**
@@ -60,6 +65,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 {
+#ifdef __WIN32__
 	char buf1[128];
 	char buf2[128];
 
@@ -68,6 +74,9 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 
 	sprintf(comment, "Group file dated %s %s", buf1, buf2);
 	return comment;
+#else
+        return "No comment !";
+#endif
 }
 
 /**
@@ -79,6 +88,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 {
+#ifdef __WIN32__
 	char buf1[128];
 	char buf2[128];
 
@@ -87,4 +97,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 
 	sprintf(comment, "Backup file dated %s %s", buf1, buf2);
 	return comment;
+#else
+        return "No comment !";
+#endif
 }

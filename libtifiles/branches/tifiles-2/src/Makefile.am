@@ -16,6 +16,7 @@ libtifiles2_la_CPPFLAGS = @GLIB_CFLAGS@
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h \
+	comments.c \
 	error.c \
 	files8x.c files9x.c filesxx.c \
 	filetypes.c \
