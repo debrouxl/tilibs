@@ -22,6 +22,7 @@
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+#include <stdlib.h>
 
 #include "ticables.h"
 #include "data_log.h"
