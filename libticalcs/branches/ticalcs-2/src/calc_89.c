@@ -395,8 +395,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TNode *vars, *apps;
 	int nvars, ivars = 0;
 	int b = 0;
-	FileContent **array;
-	FileContent *group;
+	FileContent **group;
+	FileContent *single;
 
 	// Do a directory list and check for something to backup
 	TRYF(get_dirlist(handle, &vars, &apps));
@@ -409,7 +409,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	// Create a group file
 	k = 0;
-	array = tifiles_content_create_group(nvars);
+	group = tifiles_content_create_group(nvars);
 
 	// Receive all vars except for FLASH apps
 	i_max = t_node_n_children(vars);
@@ -425,8 +425,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 			// we need to group files !
 			TRYF(is_ready(handle));
-			array[k] = tifiles_content_create_regular();
-			TRYF(recv_var(handle, 0, array[k++], ve));
+			group[k] = tifiles_content_create_regular();
+			TRYF(recv_var(handle, 0, group[k++], ve));
 
 			update->cnt2 = ++ivars;
 			update->max2 = nvars;
@@ -440,20 +440,16 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	ticalcs_dirlist_destroy(&vars);
 	ticalcs_dirlist_destroy(&apps);
 
-	tifiles_group_contents(array, &group);
-	tifiles_content_free_group(array);
-	tifiles_info("group = %p %p\n", &group, group);
+	tifiles_group_contents(group, &single);
+	tifiles_content_free_group(group);
 
-	// Swap content and group because content has already been allocated
+	// Swap content and single because we have a pointer on an allocated content
 	{
-		VarEntry *src, *dst;
-		
-		src = ((FileContent *)content)->entries;
-		dst = group->entries;
-		memcpy(content, group, sizeof(FileContent));
-		group->entries = src;
-		strcpy(group->comment, tifiles_comment_set_single());
-		tifiles_content_free_regular(group);
+		FileContent* cnt = (FileContent *)content;
+
+		memcpy(content, single, sizeof(FileContent));
+		cnt->entries = single->entries;
+		strcpy(cnt->comment, tifiles_comment_set_group());
 	}
 
 	return 0;
