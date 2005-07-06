@@ -22,6 +22,7 @@
 /* "VTi" virtual link cable unit */
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -48,8 +49,8 @@ typedef struct
 	int	end;
 } LinkBuffer;
 
-static LinkBuffer*	vSendBuf;
-static LinkBuffer*	vRecvBuf;
+static LinkBuffer*	vSendBuf = NULL;
+static LinkBuffer*	vRecvBuf = NULL;
 static HANDLE		hMap = NULL;		// Handle on file-mapping object
 static HWND			otherWnd = NULL;	// Handle on the VTi window
 
@@ -58,7 +59,7 @@ static int vti_prepare(CableHandle *h)
 	switch(h->port)
 	{
 	case PORT_1: h->address = 0; h->device = strdup("VTi"); break;
-	case PORT_2: h->address = 1; h->device = strdup("libCables"); break;
+	case PORT_2: h->address = 1; h->device = strdup("TiLP"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -154,7 +155,11 @@ static int vti_close(CableHandle *h)
 	if (hMap) 
 	{
 		UnmapViewOfFile(vSendBuf);
+		vSendBuf = NULL;
+
 		UnmapViewOfFile(vRecvBuf);
+		vRecvBuf = NULL;
+
 		CloseHandle(hMap);
 	}
 
@@ -163,6 +168,11 @@ static int vti_close(CableHandle *h)
 
 static int vti_reset(CableHandle *h)
 {
+	if(!hMap) return 0;
+
+	assert(vSendBuf);
+	assert(vRecvBuf);
+
 	vSendBuf->start = vSendBuf->end = 0;
 	vRecvBuf->start = vRecvBuf->end = 0;
 
@@ -178,6 +188,9 @@ static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 {
 	int i;
 	tiTIME clk;
+
+	if(!hMap) return 0;
+	assert(vSendBuf);
 
 	for(i = 0; i < len; i++)
 	{
@@ -201,6 +214,9 @@ static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
 	int i;
 	tiTIME clk;
 
+	if(!hMap) return 0;
+	assert(vRecvBuf);
+
 	/* Wait that the buffer has been filled */
 	for(i = 0; i < len; i++)
 	{
@@ -222,6 +238,9 @@ static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
 
 static int vti_check(CableHandle *h, int *status)
 {
+	if(!hMap) return 0;
+	assert(vRecvBuf);
+
 	*status = !(vRecvBuf->start == vRecvBuf->end);
 
 	return 0;

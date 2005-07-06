@@ -221,7 +221,9 @@ TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
  **/
 TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
-	return handle->timeout = timeout;
+	int old_timeout = handle->timeout;
+	handle->timeout = timeout;
+	return old_timeout;
 }
 	
 /**
@@ -235,7 +237,9 @@ TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeou
  **/
 TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
-	return handle->delay = delay;
+	int old_delay = handle->delay;
+	handle->delay = delay;
+	return old_delay;
 }
 
 /**
