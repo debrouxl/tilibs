@@ -200,7 +200,7 @@ static int gry_probe(CableHandle *h)
 	return 0;
 }
 
-static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesWritten;
@@ -231,7 +231,7 @@ static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int gry_get(CableHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;

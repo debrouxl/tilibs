@@ -131,10 +131,11 @@ static int ser_probe(CableHandle *h)
 	return 0;
 }
 
-static int ser_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	int i, j;
+  	int i;
+	unsigned int j;
   	tiTIME clk;
 
 	for(j = 0; j < len; j++)
@@ -189,10 +190,11 @@ static int ser_put(CableHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int ser_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	int i, j;
+  	int i;
+	unsigned int j;
   	tiTIME clk;
 
 	for(j = 0; j < len; j++)

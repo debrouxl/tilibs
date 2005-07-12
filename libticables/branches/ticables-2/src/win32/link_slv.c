@@ -310,7 +310,7 @@ static int raw_probe(CableHandle *h)
 	return ERR_PROBE_FAILED;
 }
 
-static int slv_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int slv_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int ret;
 
@@ -329,7 +329,7 @@ static int slv_put(CableHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int slv_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int slv_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int ret;
 

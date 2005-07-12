@@ -155,7 +155,7 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint16_t len)
+TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
 	int ret;
@@ -215,7 +215,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint16_t len)
+TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
 	int ret;

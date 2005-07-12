@@ -144,9 +144,9 @@ static int tie_probe(CableHandle *h)
 	return (ref_cnt > 0) ? 0 : ERR_PROBE_FAILED;
 }
 
-static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
+	unsigned int i;
 	tiTIME clk;
 
 	if(!hSendBuf) return 0;
@@ -169,9 +169,9 @@ static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
+	unsigned int i;
 	tiTIME clk;
 
 	if(!hRecvBuf) return 0;

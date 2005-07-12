@@ -57,12 +57,12 @@ int nul_reset(CableHandle *h)
 	return 0;
 }
 
-int nul_put(CableHandle *h, uint8_t *data, uint16_t len)
+int nul_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }
 
-int nul_get(CableHandle *h, uint8_t *data, uint16_t len)
+int nul_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }

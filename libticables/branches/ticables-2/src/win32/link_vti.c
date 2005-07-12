@@ -193,9 +193,9 @@ static int vti_probe(CableHandle *h)
 	return 0;
 }
 
-static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
+	unsigned int i;
 	tiTIME clk;
 
 	if(!hMap) return 0;
@@ -218,9 +218,9 @@ static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
+	unsigned int i;
 	tiTIME clk;
 
 	if(!hMap) return 0;
