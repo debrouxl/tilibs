@@ -58,6 +58,10 @@ typedef enum
 	ERR_MISSING_VAR,		// The requested var does not exist
 	ERR_NO_VARS,			// No vars to backup
 
+// ---
+
+	ERR_ROM_ERROR,
+
 } CalcError;
 
 #endif

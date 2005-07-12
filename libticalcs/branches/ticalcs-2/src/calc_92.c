@@ -311,6 +311,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint8_t varname[18], utf8[35];
 
 	content->model = CALC_TI92;
+	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
 	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
 	ve = &(content->entries[0]);

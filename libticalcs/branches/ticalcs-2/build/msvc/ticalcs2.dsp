@@ -248,6 +248,14 @@ SOURCE=..\..\src\Rom89.h
 
 SOURCE=..\..\src\Rom92f2.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\romdump.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\romdump.txt
+# End Source File
 # End Group
 # Begin Group "API"
 

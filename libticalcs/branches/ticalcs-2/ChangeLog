@@ -6,9 +6,6 @@ To do :
 - ROM dumping: new protocol and make calc returns ROM size (automatic probing)
 - key codes for TI8x
 
-- ve->action to support
-- internal comments
-
 Log:
 
 - 15/05/2005, version 0.0.1: roms

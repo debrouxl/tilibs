@@ -667,9 +667,32 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	uint8_t buffer[16] = { 0 };
 	uint32_t time;
 
-	time = clock->seconds + 60 * clock->minutes + 3600 * clock->hours + 
-		86400 * days_elapsed(clock->month) + 365*86400 * (clock->year - 1997);
-	printf("time = %08x = %i\n", time, time);
+	struct tm ref, cur;
+	time_t r, c;
+
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	ref.tm_isdst = 1;
+	r = mktime(&ref);
+	//printf("<%s>\n", asctime(&ref));
+
+	cur.tm_year = clock->year - 1900;
+	cur.tm_mon = clock->month - 1;
+	cur.tm_mday = clock->day;	
+	cur.tm_hour = clock->hours;
+	cur.tm_min = clock->minutes;
+	cur.tm_sec = clock->seconds;
+	cur.tm_isdst = 1;
+	c = mktime(&cur);
+	//printf("<%s>\n", asctime(&cur));
+	
+	time = c - r;
 
     buffer[2] = MSB(MSW(time));
     buffer[3] = LSB(MSW(time));
@@ -705,6 +728,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     uint8_t buffer[32];
 	uint32_t time;
 
+	struct tm ref, *cur;
+	time_t r, c;
+
     sprintf(update->text, _("Getting clock..."));
     update_label();
 
@@ -721,33 +747,33 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     TRYF(ti73_send_ACK());
 
 	time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
-	printf("<%08x>\n", time);
+	//printf("<%08x>\n", time);
 
-    clock->year = (int)(time / (365 * 24 *60 * 60));
-	time = time - clock->year * (365 * 24 *60 * 60);
-	
-	clock->month = (int)(time / (30 * 24 *60 * 60));
-	time = time - clock->month * (30 * 24 *60 * 60);
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	ref.tm_isdst = 1;
+	r = mktime(&ref);
+	//printf("<%s>\n", asctime(&ref));
 
-	clock->day = (int)(time / (24 *60 * 60));
-	time = time - clock->day * (24 *60 * 60);
+	c = r + time;
+	cur = localtime(&c);
+	//printf("<%s>\n", asctime(cur));
 
-	clock->hours = (int)(time / (60 * 60));
-	time = time - clock->hours * (60 * 60);
-
-	clock->minutes = (int)(time / (60));
-	time = time - clock->minutes * (60);
-
-	clock->seconds = (uint8_t)time;
-
-	clock->year += 1997;
-	clock->month++;
-	clock->day++;
+	clock->year = cur->tm_year + 1900;
+	clock->month = cur->tm_mon + 1;
+	clock->day = cur->tm_mday;
+	clock->hours = cur->tm_hour;
+	clock->minutes = cur->tm_min;
+	clock->seconds = cur->tm_sec;
 
     clock->date_format = buffer[6];
     clock->time_format = buffer[7];
-
-	//tifiles_hexdump(buffer, 9);
 
 	return 0;
 }
