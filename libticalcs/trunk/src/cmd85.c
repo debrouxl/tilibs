@@ -197,7 +197,7 @@ int ti85_send_RTS(uint16_t varsize, uint8_t vartype, char *varname)
 int ti85_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16] = { 0 };
+  uint8_t buffer[65536+6] = { 0 };
   uint16_t length;
   uint8_t trans[9];
   uint8_t strl;
@@ -312,7 +312,7 @@ int ti85_recv_ACK(uint16_t * status)
 int ti85_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16];
+  uint8_t buffer[65536+6];
   uint8_t trans[9];
   uint8_t strl;
 

@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 12/07/2005, version 4.6.0: roms
+	Fixed possible buffer overflow with recv_packet (usually occurs with virtual links
+		because the received length is invalid).
+
 - 24/04/2005, version 4.5.9: roms
 	Adding new function for non-silent variable receiving support.
 	Needed for TiEmu (receive file).

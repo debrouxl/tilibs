@@ -260,7 +260,7 @@ int ti89_send_RTS2(uint32_t varsize, uint8_t vartype, char *varname)
 int ti89_recv_VAR(uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[32] = { 0 };
+  uint8_t buffer[65536+6] = { 0 };
   uint16_t length;
   uint8_t strl;
   uint8_t flag;
@@ -297,7 +297,7 @@ int ti89_recv_CTS(void)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
 
   printl2(0, " TI->PC: CTS");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
@@ -316,7 +316,7 @@ int ti89_recv_SKIP(uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
   *rej_code = 0;
 
   printl2(0, " TI->PC: SKIP");
@@ -360,7 +360,7 @@ int ti89_recv_ACK(uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
 
   printl2(0, " TI->PC: ACK");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
@@ -412,7 +412,7 @@ int ti89_recv_EOT(void)
 int ti89_recv_RTS(uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[32] = { 0 };
+  uint8_t buffer[65536+6] = { 0 };
   uint16_t length;
   uint8_t strl;
 

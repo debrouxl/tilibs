@@ -268,7 +268,7 @@ int ti73_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname,
 		  uint8_t * varattr)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16] = { 0 };
+  uint8_t buffer[65536+6] = { 0 };
   uint16_t length;
   uint8_t trans[9];
 
@@ -302,7 +302,7 @@ int ti73_recv_VAR2(uint16_t * length, uint8_t * type, char *name,
 		   uint16_t * offset, uint16_t * page)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16] = { 0 };
+  uint8_t buffer[65536+6] = { 0 };
   uint16_t len;
 
   printl2(0, " TI->PC: VAR");
@@ -334,7 +334,7 @@ int ti73_recv_CTS(uint16_t length)
 {
   uint8_t host, cmd;
   uint16_t len;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
 
   printl2(0, " TI->PC: CTS");
   TRYF(recv_packet(&host, &cmd, &len, buffer));
@@ -353,7 +353,7 @@ int ti73_recv_SKIP(uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
   *rej_code = 0;
 
   printl2(0, " TI->PC: SKIP");
@@ -394,7 +394,7 @@ int ti73_recv_ACK(uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t buffer[65536+6];
 
   printl2(0, " TI->PC: ACK");
   TRYF(recv_packet(&host, &cmd, &length, buffer));
@@ -414,7 +414,7 @@ int ti73_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname,
 		  uint8_t * varattr)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16];
+  uint8_t buffer[65536+6];
   uint8_t trans[9];
 
 
