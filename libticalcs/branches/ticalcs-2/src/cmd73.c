@@ -309,7 +309,7 @@ int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
 
-  if ((length != (11 + EXTRAS)) && (length != 9))
+  if(length < 9 || length > 13)	//if ((length != (11 + EXTRAS)) && (length != 9))
     return ERR_INVALID_PACKET;
 
   *varsize = buffer[0] | (buffer[1] << 8);

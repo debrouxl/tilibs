@@ -220,10 +220,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t attr;
 
 	content->model = handle->model;
-	sprintf(update->text, _("Receiving backup..."));
-	update_label();
+	strcpy(content->comment, tifiles_comment_set_backup());
 
-	// silent request
 	TRYF(ti73_send_REQ(0x0000, TI73_BKUP, "", 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
@@ -837,7 +835,7 @@ const CalcFncts calc_83p =
 	"TI83+",
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
@@ -869,7 +867,7 @@ const CalcFncts calc_84p =
 	"TI84+",
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,

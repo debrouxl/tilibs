@@ -3,15 +3,11 @@ SubVersion: $Id$
 Set svn:eol property to native on all files
 	
 To do : 
-- update the link guide
-- update code according to link guide
-
 - ROM dumping: new protocol and make calc returns ROM size (automatic probing)
 - key codes for TI8x
 
 - ve->action to support
 - internal comments
-- add pbar2() updates due to packet update heuristic
 
 Log:
 

@@ -222,7 +222,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	content->model = CALC_TI83;
 	strcpy(content->comment, tifiles_comment_set_backup());
 
-	// silent request
 	TRYF(ti82_send_REQ(0x0000, TI83_BKUP, ""));
 	TRYF(ti82_recv_ACK(&unused));
 
@@ -238,7 +237,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->max2 = 3;
 	update->cnt2 = 0;
 	update->pbar();
-	content->data_part4 = NULL;
 
 	content->data_part1 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
@@ -257,6 +255,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti82_send_ACK());
 	update->cnt2++;
 	update->pbar();
+
+	content->data_part4 = NULL;
 
 	return 0;
 }
