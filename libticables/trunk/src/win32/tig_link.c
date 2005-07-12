@@ -291,10 +291,5 @@ int tig_register_cable(TicableLinkCable * lc)
   lc->probe = tig_probe;
   lc->check = tig_check;
 
-  lc->set_red_wire = NULL;
-  lc->set_white_wire = NULL;
-  lc->get_red_wire = NULL;
-  lc->get_white_wire = NULL;
-
   return 0;
 }

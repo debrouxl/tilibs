@@ -8,6 +8,10 @@ Checking: valgrind & splint
 	
 Log:
 
+- 12/07/2005, versioon 3.9.3: roms
+	"Low-level access cable functions may be set to NULL on some cables: set to nul_cable instead."
+		Done for the Gray Link !
+
 - 25/05/2005, version 3.9.2: roms
 	Removed AVRlink support (avoid clashing on exported baud_rate symbol).
 

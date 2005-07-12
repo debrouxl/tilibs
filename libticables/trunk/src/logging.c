@@ -144,8 +144,8 @@ int stop_logging()
   	if (log2 != NULL)
     		fclose(log2);
 
-  	free(fn1);
-  	free(fn2);
+  	//free(fn1);
+  	//free(fn2);
 
   	return 0;
 }
