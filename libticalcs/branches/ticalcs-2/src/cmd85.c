@@ -204,7 +204,7 @@ int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 int ti85_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16] = { 0 };
+  uint8_t *buffer = (uint8_t *)handle->priv2;
   uint16_t length;
   uint8_t trans[9];
   uint8_t strl;
@@ -327,7 +327,7 @@ int ti85_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 int ti85_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[16];
+  uint8_t *buffer = (uint8_t *)handle->priv2;
   uint8_t trans[9];
   uint8_t strl;
 

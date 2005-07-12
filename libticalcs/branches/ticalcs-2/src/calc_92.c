@@ -508,6 +508,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 		
 		update->cnt2 = i;
+		update->pbar();
 		if (update->cancel)
 			return -1;
 

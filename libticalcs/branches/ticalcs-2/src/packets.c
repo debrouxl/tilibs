@@ -50,7 +50,7 @@ int send_packet(CalcHandle* handle,
 	int i;
 	uint16_t sum;
 	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
-	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+4];
+	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+6];
 	int r, q;
 
 	ticables_progress_reset(handle->cable);

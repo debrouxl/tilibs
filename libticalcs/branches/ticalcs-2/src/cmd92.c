@@ -190,7 +190,7 @@ int ti92_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 int ti92_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[32] = { 0 };
+  uint8_t *buffer = (uint8_t *)handle->priv2;
   uint16_t length;
   uint8_t strl;
 
@@ -227,7 +227,7 @@ int ti92_recv_CTS_h(CalcHandle* handle)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t *buffer = (uint8_t *)handle->priv2;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
 
@@ -248,7 +248,7 @@ int ti92_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t *buffer = (uint8_t *)handle->priv2;
   *rej_code = 0;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
@@ -294,7 +294,7 @@ int ti92_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
-  uint8_t buffer[5];
+  uint8_t *buffer = (uint8_t *)handle->priv2;
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
 
@@ -347,7 +347,7 @@ int ti92_recv_EOT_h(CalcHandle* handle)
 int ti92_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
-  uint8_t buffer[32] = { 0 };
+  uint8_t *buffer = (uint8_t *)handle->priv2;
   uint16_t length;
   uint8_t strl;
 

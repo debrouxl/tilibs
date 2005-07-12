@@ -192,18 +192,22 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 	update->max2 = 3;
 	update->cnt2 = 0;
+	update->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length1, content->data_part1));
 	TRYF(ti73_recv_ACK(NULL));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length2, content->data_part2));
 	TRYF(ti73_recv_ACK(NULL));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length3, content->data_part3));
 	TRYF(ti73_recv_ACK(NULL));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti73_send_ACK());
 
@@ -234,21 +238,25 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	update->max2 = 3;
 	update->cnt2 = 0;
+	update->pbar();
 
 	content->data_part1 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
+	update->pbar();
 
 	content->data_part2 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
+	update->pbar();
 
 	content->data_part3 = calloc(65536, 1);
 	TRYF(ti73_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
+	update->pbar();
   
 	content->data_part4 = NULL;
   
@@ -392,6 +400,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_recv_ACK(NULL));
 
 			update->cnt2 = ++k;
+			update->pbar();
 			if (update->cancel)
 				return ERR_ABORT;
 		}
@@ -485,6 +494,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		offset += data_length;
 
 		update->cnt2 = size;
+		update->pbar();
 		if (update->cancel)
 			return ERR_ABORT;
 	}
@@ -615,6 +625,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 
 		handle->updat->cnt2 = i;
+		update->pbar();
 		if (handle->updat->cancel)
 		  return -1;
 
@@ -712,6 +723,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     TRYF(ti73_send_ACK());
 
 	time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
+	printf("<%08x>\n", time);
 
     clock->year = (int)(time / (365 * 24 *60 * 60));
 	time = time - clock->year * (365 * 24 *60 * 60);
@@ -796,7 +808,7 @@ const CalcFncts calc_73 =
 	"TI73",
 	N_("TI-73"),
 	N_("TI-73"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
@@ -825,7 +837,7 @@ const CalcFncts calc_83p =
 	"TI83+",
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
@@ -857,7 +869,7 @@ const CalcFncts calc_84p =
 	"TI84+",
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,

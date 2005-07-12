@@ -627,6 +627,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		update->cnt2 = i;
+		update->pbar();
 		if(update->cancel)
 			return ERR_ABORT;
 	}
@@ -676,6 +677,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 		update->max2 = vr->size;
 		update->cnt2 += block_size;
+		update->pbar();
 		if(update->cancel)
 		  return ERR_ABORT;
 	}
@@ -803,6 +805,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 
 		handle->updat->cnt2 = i;
+		update->pbar();
 		if(handle->updat->cancel)
 			return -1;
 

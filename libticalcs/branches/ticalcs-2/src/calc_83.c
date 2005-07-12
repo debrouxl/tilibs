@@ -192,18 +192,22 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 	update->max2 = 3;
 	update->cnt2 = 0;
+	update->pbar();
 
 	TRYF(ti82_send_XDP(content->data_length1, content->data_part1));
 	TRYF(ti82_recv_ACK(&status));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti82_send_XDP(content->data_length2, content->data_part2));
 	TRYF(ti82_recv_ACK(&status));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti82_send_XDP(content->data_length3, content->data_part3));
 	TRYF(ti82_recv_ACK(&status));
 	update->cnt2++;
+	update->pbar();
 
 	TRYF(ti82_send_ACK());
 
@@ -233,22 +237,26 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	update->max2 = 3;
 	update->cnt2 = 0;
+	update->pbar();
 	content->data_part4 = NULL;
 
 	content->data_part1 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti82_send_ACK());
 	update->cnt2++;
+	update->pbar();
 
 	content->data_part2 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti82_send_ACK());
 	update->cnt2++;
+	update->pbar();
 
 	content->data_part3 = calloc(65536, 1);
 	TRYF(ti82_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti82_send_ACK());
 	update->cnt2++;
+	update->pbar();
 
 	return 0;
 }
@@ -439,6 +447,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		TRYF(ticables_cable_put(handle->cable, 0xDA));
 
 		handle->updat->cnt2 = i;
+		update->pbar();
 		if (handle->updat->cancel)
 		  return -1;
 
