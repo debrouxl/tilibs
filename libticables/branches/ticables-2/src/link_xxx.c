@@ -53,6 +53,31 @@ TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
 }
 
 /**
+ * ticables_cable_reset:
+ * @handle: a previously allocated handle
+ *
+ * Reset link cable status (flush buffers, set ready).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
+{
+	const CableFncts *cable = handle->cable;
+	int ret;
+
+	if(!handle->open)
+		return -1;
+	if(handle->busy)
+		return ERR_BUSY;
+
+	handle->busy = 1;
+	ret = cable->reset(handle);
+	handle->busy = 0;
+
+	return 0;
+}
+
+/**
  * ticables_cable_probe:
  * @handle: a previously allocated handle
  * @result: cable found (!0) or not (0)
@@ -94,8 +119,6 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* resu
 	handle = NULL;
 	return 0;
 }
-
-
 
 /**
  * ticables_cable_close:
