@@ -75,6 +75,11 @@ static int vti_open(CableHandle *h)
 	HANDLE Handle;	
 	ATOM a;
 
+	/* Get an handle on the VTi window */
+    otherWnd = FindWindow("TEmuWnd", NULL);
+    if (!otherWnd)
+		return ERR_VTI_FINDWINDOW;
+
     /* Create a file mapping handle for the 'lib->VTi' communication channel */
     for (i = 0;; i++) 
     {
@@ -87,13 +92,8 @@ static int vti_open(CableHandle *h)
 			break;
     }
     
-    ticables_info("Virtual Link L->V %i\n", i);
+    ticables_info("Virtual Link L->V %i", i);
 	vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  
-    /* Get an handle on the VTi window */
-    otherWnd = FindWindow("TEmuWnd", NULL);
-    if (!otherWnd)
-		return ERR_VTI_FINDWINDOW;
   
     /* Get the current DLL handle */
     Handle = GetModuleHandle("ticables2.dll");
@@ -102,9 +102,9 @@ static int vti_open(CableHandle *h)
   
     if (!Handle) 
     {
-      ticables_warning(_("Unable to get an handle on the ticables-2 library.\n"));
-      ticables_warning(_("Did you rename the library ?!\n"));
-      ticables_warning(_("Fatal error. Program terminated.\n"));
+      ticables_warning(_("Unable to get an handle on the ticables-2 library."));
+      ticables_warning(_("Did you rename the library ?!"));
+      ticables_warning(_("Fatal error. Program terminated."));
       exit(-1);
 	}
   
@@ -117,12 +117,12 @@ static int vti_open(CableHandle *h)
 	//WaitMessage();                                                                                // Waits VTi answer
   
     /* Create a file mapping handle for the 'Vti->lib' communication channel */
-    ticables_info("Virtual Link V->L %i\n", i-1);
+    ticables_info("Virtual Link V->L %i", i-1);
     sprintf(name, "Virtual Link %d", i - 1);
     hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
     if (hMap) 
     {
-      ticables_info(_("Opened %s\n"), name);
+      ticables_info(_("Opened %s"), name);
       vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
     } 
     else
@@ -149,6 +149,8 @@ static int vti_close(CableHandle *h)
 	{
 		SendMessage(otherWnd, WM_DISABLE_LINK, 0, 0);
 		SendMessage(otherWnd, WM_GOODBYE, 0, 0);
+
+		otherWnd = NULL;
 	}
 
 	/* Close the shared buffer */
@@ -181,7 +183,14 @@ static int vti_reset(CableHandle *h)
 
 static int vti_probe(CableHandle *h)
 {
-	return 1;
+	/* Get an handle on the VTi window */
+    otherWnd = FindWindow("TEmuWnd", NULL);
+    if (!otherWnd)
+		return ERR_VTI_FINDWINDOW;
+	else
+		otherWnd = NULL;
+
+	return 0;
 }
 
 static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)

@@ -59,7 +59,7 @@ static int gry_open(CableHandle *h)
 			NULL);
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
-		ticables_warning("CreateFile\n");
+		ticables_warning("CreateFile");
 		return ERR_GRY_CREATEFILE;
 	}
   
@@ -67,7 +67,7 @@ static int gry_open(CableHandle *h)
 	fSuccess = SetupComm(hCom, 1024, 1024);
 	if (!fSuccess) 
 	{
-		ticables_warning("SetupComm\n");
+		ticables_warning("SetupComm");
 		return ERR_GRY_SETUPCOMM;
 	}
 
@@ -75,7 +75,7 @@ static int gry_open(CableHandle *h)
 	fSuccess = GetCommState(hCom, &dcb);
 	if (!fSuccess) 
 	{
-		ticables_warning("GetCommState\n");
+		ticables_warning("GetCommState");
 		return ERR_GRY_GETCOMMSTATE;
 	}
 
@@ -102,14 +102,14 @@ static int gry_open(CableHandle *h)
     fSuccess = SetCommState(hCom, &dcb);
     if (!fSuccess) 
     {
-		ticables_warning("SetCommState\n");
+		ticables_warning("SetCommState");
 		return ERR_GRY_SETCOMMSTATE;
     }
   
     fSuccess = GetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
-		ticables_warning("GetCommTimeouts\n");
+		ticables_warning("GetCommTimeouts");
 		return ERR_GRY_GETCOMMTIMEOUT;
     }
   
@@ -124,14 +124,14 @@ static int gry_open(CableHandle *h)
     fSuccess = SetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
-		ticables_warning("SetCommTimeouts\n");
+		ticables_warning("SetCommTimeouts");
 		return ERR_GRY_SETCOMMTIMEOUT;
     }
 
 	fSuccess = SetCommMask(hCom, EV_RXCHAR);
 	if (!fSuccess)
     {
-		ticables_warning("SetCommMask\n");
+		ticables_warning("SetCommMask");
 		return ERR_GRY_SETCOMMMASK;
     }
 
@@ -156,7 +156,7 @@ static int gry_reset(CableHandle *h)
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if (!fSuccess) 
 	{
-		ticables_warning("PurgeComm\n");
+		ticables_warning("PurgeComm");
 		return ERR_GRY_PURGECOMM;
 	}
 
@@ -214,17 +214,17 @@ static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
 	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesWritten, FALSE);
     if (!fSuccess) 
     {
-		ticables_warning("WriteFile\n");
+		ticables_warning("WriteFile");
 		return ERR_WRITE_ERROR;
     } 
     else if (nBytesWritten == 0) 
     {
-		ticables_warning("WriteFile\n");
+		ticables_warning("WriteFile");
 		return ERR_WRITE_TIMEOUT;
     }
 	else if (nBytesWritten < len)
 	{
-		ticables_warning("WriteFile\n");
+		ticables_warning("WriteFile");
 		return ERR_WRITE_ERROR;
 	}
 
@@ -245,17 +245,17 @@ static int gry_get(CableHandle* h, uint8_t *data, uint16_t len)
 	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesRead, FALSE);
 	if (!fSuccess) 
     {
-		ticables_warning("ReadFile\n");
+		ticables_warning("ReadFile");
 		return ERR_READ_ERROR;
     }
 	else if (nBytesRead == 0) 
     {
-		ticables_warning("ReadFile\n");
+		ticables_warning("ReadFile");
 		return ERR_READ_TIMEOUT;
     }
 	else if (nBytesRead < len)
 	{
-		ticables_warning("ReadFile\n");
+		ticables_warning("ReadFile");
 		return ERR_READ_ERROR;
 	}
   	

@@ -74,7 +74,6 @@ static int tie_prepare(CableHandle *h)
 	case PORT_2: h->address = 1; h->device = strdup("1->0"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
-	ref_cnt++;
 
 	return 0;
 }
@@ -103,6 +102,8 @@ static int tie_open(CableHandle *h)
 
 	pSendBuf->start = pSendBuf->end = 0;
     pRecvBuf->start = pRecvBuf->end = 0;
+
+	ref_cnt++;
 
 	return 0;
 }
@@ -140,7 +141,7 @@ static int tie_reset(CableHandle *h)
 
 static int tie_probe(CableHandle *h)
 {
-	return 1;
+	return (ref_cnt > 0) ? 0 : ERR_PROBE_FAILED;
 }
 
 static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)

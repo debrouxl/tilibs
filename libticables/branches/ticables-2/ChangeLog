@@ -1,9 +1,5 @@
 SubVersion: $Id$
 
-To do: 
-	- use overlapped I/O for GrayLink
-	- h-> device is not freed ?!
-	
 Log:
 
 - 02/05/2005, version 0.0.1: roms
