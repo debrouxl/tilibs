@@ -791,8 +791,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	TRYF(ti73_send_DEL((uint16_t)vr->size, vr->type, vr->name, vr->attr));
 	TRYF(ti73_recv_ACK(NULL));
-
-	PAUSE(500);
+	TRYF(ti73_recv_ACK(NULL));
 
 	return 0;
 }

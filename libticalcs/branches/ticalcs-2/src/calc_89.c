@@ -904,8 +904,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	TRYF(ti89_send_DEL(vr->size, vr->type, varname));
 	TRYF(ti89_recv_ACK(NULL));
-
-	PAUSE(500);
+	TRYF(ti89_recv_ACK(NULL));
 
 	return 0;
 }
