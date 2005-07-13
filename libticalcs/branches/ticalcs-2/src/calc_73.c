@@ -520,6 +520,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t vartype;
 	uint8_t varname[9];
 	uint8_t varattr;
+	uint8_t data[16];
+	int i;
 
 	sprintf(update->text, _("Getting variable..."));
 	update_label();
@@ -534,9 +536,16 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(ti73_send_CTS());
 	TRYF(ti73_recv_ACK(NULL));
 
-	TRYF(ti73_recv_XDP((uint16_t *) & varsize, id));
-	id[varsize] = '\0';
+	TRYF(ti73_recv_XDP((uint16_t *) & varsize, data));
 	TRYF(ti73_send_ACK());
+
+	i = data[9];
+	data[9] = data[10];
+	data[10] = i;
+
+	for(i = 4; i < varsize; i++)
+		sprintf(&id[2 * (i-4)], "%02x", data[i]);
+	id[7*2] = '\0';
 
 	return 0;
 }
