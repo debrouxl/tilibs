@@ -5,6 +5,7 @@ Set svn:eol property to native on all files
 To do : 
 - ROM dumping: new protocol and make calc returns ROM size (automatic probing)
 - key codes for TI8x
+- remove cancel action from calc (only in packets)
 
 Log:
 

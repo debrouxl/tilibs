@@ -166,8 +166,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			((VarEntry *) (folder->data))->name, 
 			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
 		update->label();
-		if (update->cancel)
-			return -1;
 	}
 
 	TRYF(ti92_send_ACK());
@@ -210,8 +208,6 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 		handle->updat->cnt2 = i;
 		update_pbar();
-		if (update->cancel)
-			return -1;
 	}
 
 	TRYF(ti92_send_EOT());
@@ -496,8 +492,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 			update->cnt1 = j;
 			update->pbar();
-			if (update->cancel)
-				return -1;
 		}
 
 		TRYF(ticables_cable_get(handle->cable, &data));
@@ -510,8 +504,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		
 		update->cnt2 = i;
 		update->pbar();
-		if (update->cancel)
-			return -1;
 
 		elapsed = (long) difftime(time(NULL), start);
 		estimated = (long) (elapsed * (float) (1024 * size) / i);

@@ -146,8 +146,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
 		sprintf(update->text, _("Reading of '%s'"), utf8);
 		update_label();
-		if (update->cancel)
-		  return ERR_ABORT;
   }
 
 	return 0;
@@ -399,8 +397,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 			update->cnt2 = ++k;
 			update->pbar();
-			if (update->cancel)
-				return ERR_ABORT;
 		}
 
 		if(handle->model != CALC_TI84P)
@@ -493,8 +489,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 		update->cnt2 = size;
 		update->pbar();
-		if (update->cancel)
-			return ERR_ABORT;
 	}
 
 exit:
@@ -618,8 +612,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 			handle->updat->cnt1 = j;
 			handle->updat->pbar();
-			if (handle->updat->cancel)
-				return -1;
 		}
 		b = 1;
 
@@ -633,8 +625,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 		handle->updat->cnt2 = i;
 		update->pbar();
-		if (handle->updat->cancel)
-		  return -1;
 
 		elapsed = (long) difftime(time(NULL), start);
 		estimated = (long) (elapsed * (float) (ROMSIZE) / i);

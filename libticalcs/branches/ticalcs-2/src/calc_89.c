@@ -232,8 +232,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			sprintf(update->text, _("Reading of '%s/%s'"),
 			  ((VarEntry *) (folder->data))->name, ve->name);
 			update_label();
-			if(update->cancel)
-				return -1;
 
 			if(ve->type == TI89_APPL) 
 			{
@@ -318,9 +316,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			update->cnt2 = i+1;
 			update->max2 = content->num_entries;
 			update->pbar();
-
-			if(update->cancel)
-				return ERR_ABORT;
 		}
 	}
 
@@ -430,9 +425,6 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 			update->cnt2 = ++ivars;
 			update->max2 = nvars;
 			update->pbar();
-
-			if(update->cancel)
-				return ERR_ABORT;
 		}
 	}
 
@@ -503,9 +495,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			update->cnt2 = i+1;
 			update->max2 = content->num_entries;
 			update->pbar();
-
-			if(update->cancel)
-				return ERR_ABORT;
 		}
 	}
 
@@ -628,8 +617,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		update->cnt2 = i;
 		update->pbar();
-		if(update->cancel)
-			return ERR_ABORT;
 	}
 
 	if(ptr->data_type == TI89_AMS)
@@ -678,8 +665,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		update->max2 = vr->size;
 		update->cnt2 += block_size;
 		update->pbar();
-		if(update->cancel)
-		  return ERR_ABORT;
 	}
 
 	TRYF(ti89_send_ACK());
@@ -792,8 +777,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 			handle->updat->cnt1 = j;
 			handle->updat->pbar();
-			if(handle->updat->cancel)
-				return -1;
 		}
 
 		TRYF(ticables_cable_get(handle->cable, &data));
@@ -806,8 +789,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 		handle->updat->cnt2 = i;
 		update->pbar();
-		if(handle->updat->cancel)
-			return -1;
 
 		elapsed = (long) difftime(time(NULL), start);
 		estimated = (long) (elapsed * (float) (ROMSIZE) / i);

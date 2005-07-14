@@ -279,7 +279,6 @@ int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	memcpy(buffer + 3, varname, 8);
 	pad_buffer(buffer + 3, '\0');
 	buffer[11] = 0x00;
-	tifiles_hexdump(buffer, 16);
 
 	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
 	ticalcs_info(" PC->TI: DEL (name=<%s>)", trans);
