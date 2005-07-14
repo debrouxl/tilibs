@@ -208,7 +208,10 @@ static int slv_reset(CableHandle *h)
     ret = dynTiglUsbReset(hLNK);
     if(ret == TIGLERR2_RESET_FAILED)
         return ERR_SLV_RESET;
-
+/*
+	slv_close(h);
+	slv_open(h);
+*/
 	return 0;
 }
 
@@ -310,6 +313,13 @@ static int raw_probe(CableHandle *h)
 	return ERR_PROBE_FAILED;
 }
 
+static int slv_timeout(CableHandle *h)
+{
+	dynTiglUsbSetTimeout(hLNK, h->timeout);
+
+	return 0;
+}
+
 static int slv_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int ret;
@@ -393,7 +403,7 @@ const CableFncts cable_slv =
 	N_("SilverLink (TI-GRAPH LINK USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &slv_probe,
+	&slv_open, &slv_close, &slv_reset, &slv_probe, &slv_timeout,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
@@ -407,7 +417,7 @@ const CableFncts cable_raw =
 	N_("DirectLink (direct USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &raw_probe,
+	&slv_open, &slv_close, &slv_reset, &raw_probe, &slv_timeout,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,

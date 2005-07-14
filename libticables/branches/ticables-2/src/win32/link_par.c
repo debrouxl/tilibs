@@ -295,7 +295,7 @@ const CableFncts cable_par =
 	N_("Home-made parallel cable"),
 	!0,
 	&par_prepare,
-	&par_open, &par_close, &par_reset, &par_probe,
+	&par_open, &par_close, &par_reset, &par_probe, NULL,
 	&par_put, &par_get, &par_check,
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,

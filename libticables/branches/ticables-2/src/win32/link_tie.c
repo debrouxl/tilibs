@@ -232,7 +232,7 @@ const CableFncts cable_tie =
 	N_("Virtual link for TiEmu"),
 	0,
 	&tie_prepare,
-	&tie_open, &tie_close, &tie_reset, &tie_probe,
+	&tie_open, &tie_close, &tie_reset, &tie_probe, NULL,
 	&tie_put, &tie_get, &tie_check,
 	&tie_set_red_wire, &tie_set_white_wire,
 	&tie_get_red_wire, &tie_get_white_wire,

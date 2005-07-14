@@ -118,6 +118,7 @@ typedef struct _CableHandle  CableHandle;
  * @need_open: set if cable need to be 'open'/'close' before calling 'probe'
  * @prepare: detect and map I/O
  * @probe: check for cable presence
+ * @timeout: used to update timeout
  * @open: open I/O port or device
  * @close: close I/O port or device
  * @reset: reset I/O port or device
@@ -147,6 +148,7 @@ struct _CableFncts
 	int (*close)	(CableHandle *);
 	int (*reset)	(CableHandle *);
 	int (*probe)	(CableHandle *);
+	int (*timeout)	(CableHandle *);
 
 	int (*send)		(CableHandle *, uint8_t *, uint32_t);
 	int (*recv)		(CableHandle *, uint8_t *, uint32_t);

@@ -298,6 +298,29 @@ static int gry_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int gry_timeout(CableHandle *h)
+{
+	BOOL fSuccess;
+	COMMTIMEOUTS cto;
+
+    cto.ReadIntervalTimeout = 100 * h->timeout;
+
+    cto.ReadTotalTimeoutMultiplier = 0;
+    cto.ReadTotalTimeoutConstant = 100 * h->timeout;  
+    
+    cto.WriteTotalTimeoutMultiplier = 0;
+    cto.WriteTotalTimeoutConstant = 100 * h->timeout;
+  
+    fSuccess = SetCommTimeouts(hCom, &cto);
+    if (!fSuccess) 
+    {
+		ticables_warning("SetCommTimeouts");
+		return ERR_GRY_SETCOMMTIMEOUT;
+    }
+
+	return 0;
+}
+
 const CableFncts cable_gry = 
 {
 	CABLE_GRY,
@@ -306,7 +329,7 @@ const CableFncts cable_gry =
 	N_("GrayLink serial cable"),
 	!0,
 	&gry_prepare,
-	&gry_open, &gry_close, &gry_reset, &gry_probe,
+	&gry_open, &gry_close, &gry_reset, &gry_probe, &gry_timeout,
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,

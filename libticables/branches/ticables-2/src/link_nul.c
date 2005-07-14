@@ -101,7 +101,7 @@ const CableFncts cable_nul =
 	N_("Dummy link used when no cable is set"),
 	0,
 	&nul_prepare,
-	&nul_open, &nul_close, &nul_reset, &nul_probe,
+	&nul_open, &nul_close, &nul_reset, &nul_probe, NULL,
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,

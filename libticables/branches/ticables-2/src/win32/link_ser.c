@@ -301,7 +301,7 @@ const CableFncts cable_ser =
 	N_("BlackLink or home-made serial cable"),
 	!0,
 	&ser_prepare,
-	&ser_open, &ser_close, &ser_reset, &ser_probe,
+	&ser_open, &ser_close, &ser_reset, &ser_probe, NULL,
 	&ser_put, &ser_get, &ser_check,
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,

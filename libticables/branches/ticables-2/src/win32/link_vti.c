@@ -283,7 +283,7 @@ const CableFncts cable_vti =
 	N_("Virtual link for VTi"),
 	0,
 	&vti_prepare,
-	&vti_open, &vti_close, &vti_reset, &vti_probe,
+	&vti_open, &vti_close, &vti_reset, &vti_probe, NULL,
 	&vti_put, &vti_get, &vti_check,
 	&vti_set_red_wire, &vti_set_white_wire,
 	&vti_get_red_wire, &vti_get_white_wire,

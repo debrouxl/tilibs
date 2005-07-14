@@ -223,6 +223,22 @@ TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeou
 {
 	int old_timeout = handle->timeout;
 	handle->timeout = timeout;
+
+	if(handle)
+	{
+		const CableFncts *cable = handle->cable;
+
+		if(!handle->open)
+			return -1;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		if(cable->timeout)
+			cable->timeout(handle);
+		handle->busy = 0;
+	}
+
 	return old_timeout;
 }
 	
