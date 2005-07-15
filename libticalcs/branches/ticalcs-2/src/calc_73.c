@@ -360,7 +360,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		size = 0x80;
 	else
 		return -1;
-/*
+
+#if 1
 	printf("#pages: %i\n", content->num_pages);
 	printf("type: %02x\n", content->data_type);
 	for (i = 0; i < content->num_pages; i++) 
@@ -373,15 +374,17 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		content->pages[i].flag,
 		content->pages[i].size);		
 	}
+#endif
 
-	return 0;
-*/
 	update->max2 = content->num_pages * FLASH_PAGE_SIZE / size;
-	for (k= i = 0; i < content->num_pages; i++) 
+	for (k = i = 0; i < content->num_pages; i++) 
 	{
 		FlashPage *fp = &(content->pages[i]);
 
-		for(j = 0; j < FLASH_PAGE_SIZE; j += size)
+		if((content->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
+			fp->addr = 0x4000;
+
+		for(j = 0; j < fp->size/*FLASH_PAGE_SIZE*/; j += size)
 		{
 			uint16_t addr = fp->addr + j;
 			uint8_t* data = fp->data + j;
