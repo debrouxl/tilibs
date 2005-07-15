@@ -33,7 +33,7 @@
 
 // We split packets into chucks to get control regularly and update statistics.
 //#define BLK_SIZE	1024	//256
-static unsigned int BLK_SIZE = 1024;	// heuristic (1024)
+static unsigned int BLK_SIZE = 1024;	// heuristic (1024 & > 32)
 #define MIN_SIZE	512					// don't refresh is block is small (512)
 
 /*
@@ -78,17 +78,21 @@ int send_packet(CalcHandle* handle,
 
 		// add checksum of packet
 		sum = tifiles_checksum(data, length);
-		buf[len+4+0] = LSB(sum);
-		buf[len+4+1] = MSB(sum);
+		buf[length+4+0] = LSB(sum);
+		buf[length+4+1] = MSB(sum);
 
 		// compute chunks
-		BLK_SIZE = length / 20;
-		if(BLK_SIZE == 0) BLK_SIZE = 1;
+		BLK_SIZE = (length + 6) / 20;
+		if(BLK_SIZE == 0) BLK_SIZE = length + 6;
+		if(BLK_SIZE < 32) BLK_SIZE = 64;	// speed-up SilverLink !
 
-		q = (len + 6) / BLK_SIZE;
-		r = (len + 6) % BLK_SIZE;
-		handle->updat->max1 = length;
+		q = (length + 6) / BLK_SIZE;
+		r = (length + 6) % BLK_SIZE;
+
+		handle->updat->max1 = length + 6;
 		handle->updat->cnt1 = 0;
+
+		//printf("<<%i %i %i %i>>\n", length+6, q, r, BLK_SIZE);
 
 		// send full chunks
 		for(i = 0; i < q; i++)
