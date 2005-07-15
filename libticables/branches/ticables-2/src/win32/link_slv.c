@@ -41,7 +41,7 @@
 
 #include "tiglusb.h"
 
-#define MIN_VERSION "3.2"
+#define MIN_VERSION "3.3"
 
 #define hDLL	(HANDLE)(h->priv)	// DLL handle on TiglUsb.dll
 #define hLNK	(int)(h->priv3)		// Link handle as return by dynTiglUsbOpen
@@ -55,8 +55,8 @@ TIGLUSB_CLOSE2  dynTiglUsbClose = NULL;
 
 TIGLUSB_CHECK2	dynTiglUsbCheck = NULL;
 
-TIGLUSB_READ2	dynTiglUsbRead = NULL;
-TIGLUSB_WRITE2	dynTiglUsbWrite = NULL;
+TIGLUSB_READS2	dynTiglUsbReads = NULL;
+TIGLUSB_WRITES2	dynTiglUsbWrites = NULL;
 
 TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 
@@ -135,16 +135,16 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbRead = (TIGLUSB_READ2) GetProcAddress(hDLL, "TiglUsbRead2");
-	if (!dynTiglUsbRead) 
+	dynTiglUsbReads = (TIGLUSB_READS2) GetProcAddress(hDLL, "TiglUsbReads2");
+	if (!dynTiglUsbReads) 
 	{
 		ticables_warning(_("Unable to load TiglUsbRead2 symbol."));
 		FreeLibrary(hDLL);
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbWrite = (TIGLUSB_WRITE2) GetProcAddress(hDLL, "TiglUsbWrite2");
-	if (!dynTiglUsbWrite) 
+	dynTiglUsbWrites = (TIGLUSB_WRITES2) GetProcAddress(hDLL, "TiglUsbWrites2");
+	if (!dynTiglUsbWrites) 
 	{
 	    ticables_warning(_("Unable to load TiglUsbWrite2 symbol."));
 		FreeLibrary(hDLL);
@@ -178,8 +178,8 @@ static int slv_open(CableHandle *h)
 	ret = hLNK = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
-		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
-		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
+		case TIGLERR_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
+		case TIGLERR_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
 		default: break;
 	}
 
@@ -206,7 +206,7 @@ static int slv_reset(CableHandle *h)
 	int ret;
 
     ret = dynTiglUsbReset(hLNK);
-    if(ret == TIGLERR2_RESET_FAILED)
+    if(ret == TIGLERR_RESET_FAILED)
         return ERR_SLV_RESET;
 
 	return 0;
@@ -321,7 +321,7 @@ static int slv_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int ret;
 
-	ret = dynTiglUsbWrite(hLNK, data, len);
+	ret = dynTiglUsbWrites(hLNK, data, len);
 
 	switch (ret) 
 	{
@@ -340,7 +340,7 @@ static int slv_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int ret;
 
-	ret = dynTiglUsbRead(hLNK, data, len);
+	ret = dynTiglUsbReads(hLNK, data, len);
 
 	switch (ret) 
 	{
@@ -361,9 +361,9 @@ static int slv_check(CableHandle *h, int *status)
 
     switch (ret) 
 	{
-    case TIGLERR2_READ_TIMEOUT:
+    case TIGLERR_READ_TIMEOUT:
         return ERR_READ_TIMEOUT;
-    case TIGLERR2_READ_ERROR:
+    case TIGLERR_READ_ERROR:
         return ERR_READ_ERROR;
     default:
         break;

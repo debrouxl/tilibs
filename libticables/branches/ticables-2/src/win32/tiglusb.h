@@ -77,7 +77,7 @@ extern "C" {
 	// API: Win32 functions (exports)
 	//
 
-// Versionning
+// Versionning (3.0 & 3.2)
 TIGLUSB_EXP PCHAR TIGLUSB_API TiglUsbVersion (VOID);	// Get version
 
 // 3.0: I/O operations on device (use it if you have just 1 link cable)
@@ -95,20 +95,28 @@ TIGLUSB_EXP INT TIGLUSB_API TiglUsbReset (VOID);	    // Reset r/w pipes
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbSetTimeout (INT ts);	// Set timeout value (in tenth of seconds)
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbGetTimeout (INT *ts);// Retrieve timeout value
 
-// 3.2: use it for multiple cable support
+// 3.4: use it for multiple cable support
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbProbe2 (PUINT* list);// Parse available cables (0-terminated array)
 
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbOpen2  (INT id);		// Open a device instance
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbClose2 (INT handle); // Close the device instance
 
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbFlush2 (INT handle);	// Flush write buffer (for use with Read2/Write2 only)
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbReset2 (INT handle); // Reset r/w pipes
 
-TIGLUSB_EXP INT TIGLUSB_API TiglUsbWrite2 (INT handle,
-										   UCHAR *data,
-										   INT len);	// Write a byte to cable
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbRead2  (INT handle,
+										   UCHAR *data);// Read a byte from cable
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbWrite2 (INT handle,
+										   UCHAR data);	// Write a byte to cable
+
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbReads2 (INT handle,
 										   UCHAR *data,
-										   INT len);	// Read a byte from cable
+										   INT len);	// Read bytes from cable
+
+TIGLUSB_EXP INT TIGLUSB_API TiglUsbWrites2(INT handle,
+										   UCHAR *data,
+										   INT len);	// Write bytes to cable
+
 TIGLUSB_EXP INT TIGLUSB_API TiglUsbCheck2 (INT handle, 
 										   INT *status);// Check whether data is available
 
@@ -134,7 +142,7 @@ typedef INT (TIGLUSB_API *TIGLUSB_RESET)        (VOID);
 typedef INT	(TIGLUSB_API *TIGLUSB_SETTIMEOUT)	(INT);
 typedef INT	(TIGLUSB_API *TIGLUSB_GETTIMEOUT)	(PINT);
 
-// 3.2:
+// 3.2: function pointers for dynamic loading
 typedef INT (TIGLUSB_API *TIGLUSB_PROBE2)		(PUINT*);
 
 typedef INT (TIGLUSB_API *TIGLUSB_OPEN2)	    (INT);
@@ -142,8 +150,12 @@ typedef INT (TIGLUSB_API *TIGLUSB_CLOSE2)       (INT);
 
 typedef INT (TIGLUSB_API *TIGLUSB_RESET2)       (INT);
 
-typedef INT (TIGLUSB_API *TIGLUSB_WRITE2)	    (INT,PUCHAR,INT);
-typedef INT (TIGLUSB_API *TIGLUSB_READ2)	    (INT,PUCHAR,INT);
+typedef INT (TIGLUSB_API *TIGLUSB_READ2)        (INT,PUCHAR);
+typedef INT (TIGLUSB_API *TIGLUSB_WRITE2)	    (INT, UCHAR);
+
+typedef INT (TIGLUSB_API *TIGLUSB_READS2)	    (INT,PUCHAR,INT);
+typedef INT (TIGLUSB_API *TIGLUSB_WRITES2)	    (INT,PUCHAR,INT);
+
 typedef INT (TIGLUSB_API *TIGLUSB_CHECK2)       (INT,PINT);
 
 typedef INT	(TIGLUSB_API *TIGLUSB_SETTIMEOUT2)	(INT,INT);
@@ -163,7 +175,7 @@ typedef INT	(TIGLUSB_API *TIGLUSB_GETTIMEOUT2)	(INT,PINT);
 #define TIGLERR_MALLOC					9
 #define TIGLERR_ERRMAX                  10
 
-// Error codes (TIGLERR for 3.2)
+// Error codes (TIGLERR2 for 3.2)
 #define TIGLERR2_NO_ERROR			    0
 
 #define TIGLERR2_DEV_ALREADY_OPEN		-1
@@ -236,6 +248,10 @@ typedef struct
 	UCHAR	rBuf[64];	// rx buf
 	DWORD	nBytesRead;
 	PUCHAR	rBufPtr;
+
+	UCHAR	wBuf[64];	// tx buf
+	DWORD	nBytesWrite;
+	PUCHAR	wBufPtr;
 
 	OVERLAPPED olp;		// for overlapped i/o
 

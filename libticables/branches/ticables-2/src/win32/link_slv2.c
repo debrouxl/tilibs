@@ -41,7 +41,7 @@
 
 #include "tiglusb.h"
 
-#define MIN_VERSION "3.2"
+#define MIN_VERSION "3.3"
 
 #define hDLL	(HANDLE)(h->priv)	// DLL handle on TiglUsb.dll
 #define hLNK	(int)(h->priv3)		// Link handle as return by dynTiglUsbOpen
@@ -50,18 +50,18 @@ TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic load
 
 TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
 
-TIGLUSB_OPEN	dynTiglUsbOpen = NULL;
-TIGLUSB_CLOSE   dynTiglUsbClose = NULL;
+TIGLUSB_OPEN2	dynTiglUsbOpen = NULL;
+TIGLUSB_CLOSE2  dynTiglUsbClose = NULL;
 
-TIGLUSB_CHECK	dynTiglUsbCheck = NULL;
+TIGLUSB_CHECK2	dynTiglUsbCheck = NULL;
 
-TIGLUSB_READ	dynTiglUsbRead = NULL;
-TIGLUSB_WRITE	dynTiglUsbWrite = NULL;
+TIGLUSB_READ2	dynTiglUsbRead = NULL;
+TIGLUSB_WRITE2	dynTiglUsbWrite = NULL;
 
-TIGLUSB_RESET   dynTiglUsbReset = NULL;
+TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 
-TIGLUSB_SETTIMEOUT		dynTiglUsbSetTimeout = NULL;
-TIGLUSB_GETTIMEOUT		dynTiglUsbGetTimeout = NULL;
+TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
+TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
 
 static int slv_prepare(CableHandle *h)
 {
@@ -111,7 +111,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbOpen = (TIGLUSB_OPEN) GetProcAddress(hDLL, "TiglUsbOpen");
+	dynTiglUsbOpen = (TIGLUSB_OPEN2) GetProcAddress(hDLL, "TiglUsbOpen2");
 	if (!dynTiglUsbOpen) 
 	{
 		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
@@ -119,7 +119,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-    dynTiglUsbClose = (TIGLUSB_CLOSE) GetProcAddress(hDLL, "TiglUsbClose");
+    dynTiglUsbClose = (TIGLUSB_CLOSE2) GetProcAddress(hDLL, "TiglUsbClose2");
 	if (!dynTiglUsbClose) 
 	{
 		ticables_warning(_("Unable to load TiglUsbClose symbol."));
@@ -127,7 +127,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbCheck = (TIGLUSB_CHECK) GetProcAddress(hDLL, "TiglUsbCheck");
+	dynTiglUsbCheck = (TIGLUSB_CHECK2) GetProcAddress(hDLL, "TiglUsbCheck2");
 	if (!dynTiglUsbCheck) 
 	{
 		ticables_warning(_("Unable to load TiglUsbCheck symbol."));
@@ -135,7 +135,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbRead = (TIGLUSB_READ) GetProcAddress(hDLL, "TiglUsbRead");
+	dynTiglUsbRead = (TIGLUSB_READ2) GetProcAddress(hDLL, "TiglUsbRead2");
 	if (!dynTiglUsbRead) 
 	{
 		ticables_warning(_("Unable to load TiglUsbRead2 symbol."));
@@ -143,7 +143,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbWrite = (TIGLUSB_WRITE) GetProcAddress(hDLL, "TiglUsbWrite");
+	dynTiglUsbWrite = (TIGLUSB_WRITE2) GetProcAddress(hDLL, "TiglUsbWrite2");
 	if (!dynTiglUsbWrite) 
 	{
 	    ticables_warning(_("Unable to load TiglUsbWrite2 symbol."));
@@ -151,7 +151,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-    dynTiglUsbReset = (TIGLUSB_RESET) GetProcAddress(hDLL, "TiglUsbReset");
+    dynTiglUsbReset = (TIGLUSB_RESET2) GetProcAddress(hDLL, "TiglUsbReset2");
 	if (!dynTiglUsbReset) 
 	{
 	    ticables_warning(_("Unable to load dynTiglUsbReset symbol."));
@@ -159,7 +159,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT) GetProcAddress(hDLL, "TiglUsbSetTimeout");
+	dynTiglUsbSetTimeout = (TIGLUSB_SETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbSetTimeout2");
 	if (!dynTiglUsbSetTimeout) 
 	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
@@ -167,7 +167,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
 
-    dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT) GetProcAddress(hDLL, "TiglUsbGetTimeout");
+    dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbGetTimeout2");
 	if (!dynTiglUsbSetTimeout) 
 	{
 		ticables_warning(_("Unable to load TiglUsbSetTimeout2 symbol."));
@@ -175,15 +175,15 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
   
-	ret = hLNK = dynTiglUsbOpen();
+	ret = hLNK = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
-		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
-		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
+		case TIGLERR_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
+		case TIGLERR_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
 		default: break;
 	}
 
-	dynTiglUsbSetTimeout(h->timeout);
+	dynTiglUsbSetTimeout(hLNK, h->timeout);
 
 	return 0;
 }
@@ -192,7 +192,7 @@ static int slv_close(CableHandle *h)
 {
 	int ret;
 
-    ret = dynTiglUsbClose();
+    ret = dynTiglUsbClose(hLNK);
 
     if (hDLL != NULL)
         FreeLibrary(hDLL);
@@ -205,8 +205,8 @@ static int slv_reset(CableHandle *h)
 {
 	int ret;
 
-    ret = dynTiglUsbReset();
-    if(ret == TIGLERR2_RESET_FAILED)
+    ret = dynTiglUsbReset(hLNK);
+    if(ret == TIGLERR_RESET_FAILED)
         return ERR_SLV_RESET;
 
 	return 0;
@@ -312,7 +312,7 @@ static int raw_probe(CableHandle *h)
 
 static int slv_timeout(CableHandle *h)
 {
-	dynTiglUsbSetTimeout(h->timeout);
+	dynTiglUsbSetTimeout(hLNK, h->timeout);
 
 	return 0;
 }
@@ -324,13 +324,13 @@ static int slv_put(CableHandle *h, uint8_t *data, uint32_t len)
 
 	for(i = 0; i < len; i++)
 	{
-		ret = dynTiglUsbWrite(data[i]);
+		ret = dynTiglUsbWrite(hLNK, data[i]);
 
 		switch (ret) 
 		{
-		case TIGLERR2_WRITE_TIMEOUT:
+		case TIGLERR_WRITE_TIMEOUT:
 			return ERR_WRITE_TIMEOUT;
-		case TIGLERR2_WRITE_ERROR:
+		case TIGLERR_WRITE_ERROR:
 			return ERR_WRITE_ERROR;
 		default:
 			break;
@@ -347,13 +347,13 @@ static int slv_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 	for(i = 0; i < len; i++)
 	{
-		ret = dynTiglUsbRead(&data[i]);
+		ret = dynTiglUsbRead(hLNK, &data[i]);
 
 		switch (ret) 
 		{
-		case TIGLERR2_READ_TIMEOUT:
+		case TIGLERR_READ_TIMEOUT:
 			return ERR_READ_TIMEOUT;
-		case TIGLERR2_READ_ERROR:
+		case TIGLERR_READ_ERROR:
 			return ERR_READ_ERROR;
 		default:
 			break;
@@ -365,13 +365,13 @@ static int slv_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int slv_check(CableHandle *h, int *status)
 {
-	int ret = dynTiglUsbCheck(status);
+	int ret = dynTiglUsbCheck(hLNK, status);
 
     switch (ret) 
 	{
-    case TIGLERR2_READ_TIMEOUT:
+    case TIGLERR_READ_TIMEOUT:
         return ERR_READ_TIMEOUT;
-    case TIGLERR2_READ_ERROR:
+    case TIGLERR_READ_ERROR:
         return ERR_READ_ERROR;
     default:
         break;
