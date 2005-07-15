@@ -178,8 +178,8 @@ static int slv_open(CableHandle *h)
 	ret = hLNK = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
-		case TIGLERR_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
-		case TIGLERR_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
+		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
+		case TIGLERR2_DEV_ALREADY_OPEN: return ERR_SLV_OPEN;
 		default: break;
 	}
 
@@ -206,7 +206,7 @@ static int slv_reset(CableHandle *h)
 	int ret;
 
     ret = dynTiglUsbReset(hLNK);
-    if(ret == TIGLERR_RESET_FAILED)
+    if(ret == TIGLERR2_RESET_FAILED)
         return ERR_SLV_RESET;
 
 	return 0;
@@ -361,9 +361,9 @@ static int slv_check(CableHandle *h, int *status)
 
     switch (ret) 
 	{
-    case TIGLERR_READ_TIMEOUT:
+    case TIGLERR2_READ_TIMEOUT:
         return ERR_READ_TIMEOUT;
-    case TIGLERR_READ_ERROR:
+    case TIGLERR2_READ_ERROR:
         return ERR_READ_ERROR;
     default:
         break;

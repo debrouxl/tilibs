@@ -31,7 +31,7 @@
 #include "linux/link_slv.c"
 
 #elif defined(__BSD__)
-#include "linux/link_slv2.c"
+#include "linux/link_slv.c"
 
 #elif defined(__WIN32__)
 #include "win32/link_slv.c"
