@@ -68,10 +68,22 @@ static LinkBuffer *pRecvBuf = NULL;
 
 static int tie_prepare(CableHandle *h)
 {
+	printf("ref_cnt = %i\n", ref_cnt);
+
+	// in fact, address & device are unused
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0; h->device = strdup("0->1"); break;
-	case PORT_2: h->address = 1; h->device = strdup("1->0"); break;
+	case PORT_0:	// automatic setting
+		h->address = ref_cnt;
+		break;
+	case PORT_1:	// forced setting, for compatibility
+	case PORT_3: 
+		h->address = 0; h->device = strdup("0->1"); 
+		break;
+	case PORT_2:
+	case PORT_4:
+		h->address = 1; h->device = strdup("1->0"); 
+		break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -104,6 +116,7 @@ static int tie_open(CableHandle *h)
     pRecvBuf->start = pRecvBuf->end = 0;
 
 	ref_cnt++;
+	if(ref_cnt > 1) ref_cnt = 1;
 
 	return 0;
 }
@@ -121,6 +134,9 @@ static int tie_close(CableHandle *h)
     UnmapViewOfFile(pRecvBuf);
 	pRecvBuf = NULL;
   }
+
+  ref_cnt--;
+  if(ref_cnt < 0) ref_cnt = 0;
 
   return 0;
 }

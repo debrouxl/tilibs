@@ -56,10 +56,18 @@ static HWND			otherWnd = NULL;	// Handle on the VTi window
 
 static int vti_prepare(CableHandle *h)
 {
+	// in fact, address & device are unused
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0; h->device = strdup("VTi"); break;
-	case PORT_2: h->address = 1; h->device = strdup("TiLP"); break;
+	case PORT_0:	// automatic setting
+		h->address = 1; h->device = strdup("TiLP"); 
+		break;
+	case PORT_1:	// forced setting, for compat
+		h->address = 0; h->device = strdup("VTi"); 
+		break;
+	case PORT_2: 
+		h->address = 1; h->device = strdup("TiLP"); 
+		break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 
