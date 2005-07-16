@@ -592,6 +592,23 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version(CalcHandle* handle, CalcInfos* infos)
 {
+	uint32_t size;
+	uint8_t type;
+	uint8_t name[32];
+
+	TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\version"));
+	TRYF(ti92_recv_ACK(NULL));
+    
+	TRYF(ti92_recv_VAR(&size, &type, name));
+	TRYF(ti92_send_EOT());
+
+	memset(infos, 0, sizeof(CalcInfos));
+	strncpy(infos->os, name, 4);
+	strcpy(infos->bios, "n/a");
+
+	ticalcs_info(_("  OS: %s"), infos->os);
+	ticalcs_info(_("  BIOS: %s"), infos->bios);
+
 	return 0;
 }
 
@@ -602,7 +619,7 @@ const CalcFncts calc_92 =
 	N_("TI-92"),
 	N_("TI-92"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER,
 	&is_ready,
 	&send_key,
