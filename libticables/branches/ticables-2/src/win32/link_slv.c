@@ -198,6 +198,17 @@ static int slv_close(CableHandle *h)
         FreeLibrary(hDLL);
     hDLL = NULL;
 
+	dynTiglUsbVersion = NULL;
+	dynTiglUsbProbe = NULL;
+	dynTiglUsbOpen = NULL;
+	dynTiglUsbClose = NULL;
+	dynTiglUsbCheck = NULL;
+	dynTiglUsbReads = NULL;
+	dynTiglUsbWrites = NULL;
+	dynTiglUsbReset = NULL;
+	dynTiglUsbSetTimeout = NULL;
+	dynTiglUsbGetTimeout = NULL;
+
 	return 0;
 }
 
