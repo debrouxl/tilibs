@@ -183,7 +183,7 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 
   free(content->entries);
 #ifndef __WIN32__
-  //free(content);
+  free(content);
 #endif
 }
 

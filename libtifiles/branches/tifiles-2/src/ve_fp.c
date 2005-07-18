@@ -98,7 +98,6 @@ TIEXPORT void			TICALL tifiles_ve_delete(VarEntry* ve)
 	assert(ve != NULL);
 
 	free(ve->data);
-	ve->data = NULL;
 	free(ve);
 }
 
@@ -242,7 +241,6 @@ TIEXPORT void			TICALL tifiles_fp_delete(FlashPage* fp)
 	assert(fp != NULL);
 
 	free(fp->data);
-	fp->data = NULL;
 	free(fp);
 }
 

@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 	// no file
 
 	// TI82 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti82"));
 	test_ti82_backup_support();
 	test_ti82_regular_support();
@@ -298,10 +298,10 @@ int main(int argc, char **argv)
 #endif
 
 	// TI89 support
-#if 0
+#if 1
 	change_dir(BUILD_PATH("ti89"));
 	test_ti89_regular_support();
-	test_ti89_flash_support();
+	//test_ti89_flash_support();
 #endif
 
 	// TI92 support
