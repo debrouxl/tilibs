@@ -47,60 +47,6 @@
 
 static int fsignature[2] = { 1, 0 };
 
-/**************/
-/* Allocating */
-/**************/
-
-/**
- * ti9x_create_regular_content:
- *
- * Allocates a #Ti9xRegular structure.
- *
- * Return value: the allocated block.
- **/
-Ti9xRegular *ti9x_content_create_regular(void)
-{
-  return (Ti9xRegular *) calloc(1, sizeof(Ti9xRegular));
-}
-
-/**
- * ti9x_create_backup_content:
- *
- * Allocates a #Ti9xBackup structure.
- *
- * Return value: the allocated block.
- **/
-Ti9xBackup *ti9x_content_create_backup(void)
-{
-  return (Ti9xBackup *) calloc(1, sizeof(Ti9xBackup));
-}
-
-/**
- * ti9x_content_create_flash:
- *
- * Allocates a #Ti9xFlashr structure.
- *
- * Return value: the allocated block.
- **/
-Ti9xFlash *ti9x_content_create_flash(void)
-{
-  Ti9xFlash *content = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
-  time_t tt;
-  struct tm *lt;
-
-  time(&tt);
-  lt = localtime(&tt);
-  content->revision_major = 1;
-  content->revision_minor = 0;
-  content->flags = 0;
-  content->object_type = 0;
-  content->revision_day = lt->tm_mday;
-  content->revision_month = lt->tm_mon;
-  content->revision_year = lt->tm_year + 1900;
-
-  return content;
-}
-
 /*************************/
 /* Copying (duplicating) */
 /*************************/

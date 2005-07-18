@@ -86,8 +86,8 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 
 /**
  * tifiles_group_contents:
- * @src_contents: a pointer on an array of #FileContent structures. The array must be terminated by NULL.
- * @dst_content: the address of a pointer. This pointer will contain the allocated group file.
+ * @src_contents: a pointer on an array of #FileContent structures. The array must be NULL-terminated.
+ * @dst_content: the address of a pointer. This pointer will see the allocated group file.
  *
  * Must be freed when no longer needed as well as the content of each #FileContent structure
  * (use #tifiles_content_free_regular as usual).

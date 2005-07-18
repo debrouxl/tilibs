@@ -62,49 +62,6 @@ static int is_ti83p(CalcModel model)
   return (model == CALC_TI83P) || (model == CALC_TI84P);
 }
 
-/**************/
-/* Allocating */
-/**************/
-
-/**
- * ti8x_create_regular_content:
- *
- * Allocates a #Ti8xRegular structure.
- *
- * Return value: the allocated block.
- **/
-Ti8xRegular *ti8x_content_create_regular(void)
-{
-	Ti8xRegular* r = calloc(1, sizeof(Ti8xRegular));
-
-	printf("<<%p>>\n", r);
-	return r;
-}
-
-/**
- * ti8x_create_backup_content:
- *
- * Allocates a #Ti8xBackup structure.
- *
- * Return value: the allocated block.
- **/
-Ti8xBackup *ti8x_content_create_backup(void)
-{
-	return (Ti8xBackup *) calloc(1, sizeof(Ti8xBackup));
-}
-
-/**
- * ti8x_create_flash_content:
- *
- * Allocates a #Ti8xFlashr structure.
- *
- * Return value: the allocated block.
- **/
-Ti8xFlash *ti8x_content_create_flash(void)
-{
-	return (Ti8xFlash *) calloc(1, sizeof(Ti8xFlash));
-}
-
 /*************************/
 /* Copying (duplicating) */
 /*************************/
@@ -530,9 +487,8 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
 		uint16_t page;
 		uint8_t flag = 0x80;
 		uint8_t data[PAGE_SIZE];
-		FlashPage* fp = calloc(1, sizeof(FlashPage));
+		FlashPage* fp = content->pages[i] = calloc(1, sizeof(FlashPage));
 
-		content->pages[i] = fp;
 		ret = hex_block_read(file, &size, &addr, &flag, data, &page);
 
 		fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);

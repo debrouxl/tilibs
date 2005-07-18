@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "tifiles.h"
 #include "error.h"
@@ -42,12 +43,7 @@
  **/
 TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 {
-#if !defined(DISABLE_TI8X)
-	return (FileContent*)ti8x_content_create_regular();
-#endif
-#if !defined(DISABLE_TI9X)
-    return (FileContent*)ti9x_content_create_regular();
-#endif
+	return calloc(1, sizeof(FileContent));
 }
 
 /**
@@ -168,12 +164,7 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
  **/
 TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
 {
-#if !defined(DISABLE_TI8X)
-	return (BackupContent*)ti8x_content_create_backup();
-#endif
-#if !defined(DISABLE_TI9X)
-    return (BackupContent*)ti9x_content_create_backup();
-#endif
+	return calloc(1, sizeof(BackupContent));
 }
 
 /**
@@ -294,12 +285,25 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
  **/
 TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
 {
-#if !defined(DISABLE_TI8X)
-	return (FlashContent*)ti8x_content_create_flash();
-#endif
-#if !defined(DISABLE_TI9X)
-    return (FlashContent*)ti9x_content_create_flash();
-#endif
+	FlashContent* content = calloc(1, sizeof(FlashContent));
+
+	if(tifiles_calc_is_ti9x(content->model))
+	{
+	  time_t tt;
+	  struct tm *lt;
+
+	  time(&tt);
+	  lt = localtime(&tt);
+	  content->revision_major = 1;
+	  content->revision_minor = 0;
+	  content->flags = 0;
+	  content->object_type = 0;
+	  content->revision_day = lt->tm_mday;
+	  content->revision_month = lt->tm_mon;
+	  content->revision_year = lt->tm_year + 1900;
+	}
+
+	return content;
 }
 
 /**
