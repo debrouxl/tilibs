@@ -132,7 +132,7 @@ int ti9x_dup_Ti9xRegular(Ti9xRegular * dst, Ti9xRegular * src)
 
   memcpy(dst, src, sizeof(Ti9xRegular));
 
-  dst->entries = (VarEntry *) calloc(src->num_entries,
+  dst->entries = (VarEntry *) calloc(src->num_entries + 1,
 					 sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
@@ -191,14 +191,14 @@ void ti9x_content_free_regular(Ti9xRegular *content)
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = &(content->entries[i]);
-//#ifndef __WIN32__
+
 	assert(entry != NULL);
     free(entry->data);
-//#endif
+	free(entry);
   }
-#ifndef __WIN32__
+
   free(content->entries);
-#endif
+  free(content);
 }
 
 /**
@@ -210,11 +210,10 @@ void ti9x_content_free_regular(Ti9xRegular *content)
  **/
 void ti9x_content_free_backup(Ti9xBackup *content)
 {
-	assert(content != NULL);
+  assert(content != NULL);
 
-#ifndef __WIN32__
   free(content->data_part);
-#endif
+  free(content);
 }
 
 /**
@@ -241,6 +240,8 @@ void ti9x_content_free_flash(Ti9xFlash *content)
 
     ptr = next;
   }
+
+  free(content);
 }
 
 /***********/
@@ -294,7 +295,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   fread_word(f, &tmp);
   content->num_entries = tmp;
 
-  content->entries = (VarEntry *) calloc(content->num_entries,
+  content->entries = (VarEntry *) calloc(content->num_entries + 1,
 					     sizeof(VarEntry));
   if (content->entries == NULL) 
   {

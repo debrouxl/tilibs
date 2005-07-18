@@ -7,6 +7,8 @@ To do:
 	- tifiles_is_varname_tokenized
 	- tifiles_tokenize_varname
 
+	entries: NULL terminated array
+
 Log:
 
 - 04/06/2005, version 0.0.4: roms

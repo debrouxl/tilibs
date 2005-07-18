@@ -107,7 +107,7 @@ Ti8xFlash *ti8x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy an VarEntry structure (data included).
+  Copy a VarEntry structure (data included).
   Memory must be freed when no longer used.
 */
 int ti8x_dup_VarEntry(VarEntry *dst, VarEntry *src)
@@ -132,7 +132,7 @@ int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
 
   memcpy(dst, src, sizeof(Ti8xRegular));
 
-  dst->entries = (VarEntry *) calloc(src->num_entries,
+  dst->entries = (VarEntry *) calloc(src->num_entries + 1,
 					 sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
@@ -192,13 +192,13 @@ void ti8x_content_free_regular(Ti8xRegular *content)
     VarEntry *entry = &(content->entries[i]);
 
 	assert(entry != NULL);
-#ifndef __WIN32__
     free(entry->data);
-#endif
+	free(entry);
   }
-#ifndef __WIN32__
+
   free(content->entries);
-#endif
+  free(content);
+
 }
 
 /**
@@ -211,12 +211,13 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 void ti8x_content_free_backup(Ti8xBackup *content)
 {
   assert(content != NULL);
-#ifndef __WIN32__
+
   free(content->data_part1);
   free(content->data_part2);
   free(content->data_part3);
   free(content->data_part4);
-#endif
+
+  free(content);
 }
 
 /**
@@ -228,7 +229,6 @@ void ti8x_content_free_backup(Ti8xBackup *content)
  **/
 void ti8x_content_free_flash(Ti8xFlash *content)
 {
-#if !defined(__WIN32__) || defined(__MINGW32__)
 	int i;
 
 	assert(content != NULL);
@@ -236,7 +236,8 @@ void ti8x_content_free_flash(Ti8xFlash *content)
     for(i = 0; i < content->num_pages; i++)
 		free(content->pages[i].data);
     free(content->pages);
-#endif
+
+	free(content);
 }
 
 /***********/
@@ -323,7 +324,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   fseek(f, offset, SEEK_SET);
 
   content->num_entries = i;
-  content->entries = (VarEntry *) calloc(content->num_entries,
+  content->entries = (VarEntry *) calloc(content->num_entries + 1,
 					     sizeof(VarEntry));
   if (content->entries == NULL) 
   {

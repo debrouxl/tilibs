@@ -392,6 +392,18 @@ extern "C" {
   TIEXPORT const char* TICALL tifiles_comment_set_group(void);
   TIEXPORT const char* TICALL tifiles_comment_set_backup(void);
 
+  // varentry.c
+  TIEXPORT VarEntry*	TICALL tifiles_ve_create(void);
+  TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
+  TIEXPORT VarEntry*	TICALL tifiles_ve_create_array(int nelts);
+
+  TIEXPORT void			TICALL tifiles_ve_delete(VarEntry*);
+  TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry*);
+
+  TIEXPORT VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
+  TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src);
+
+
   /************************/
   /* Deprecated functions */
   /************************/

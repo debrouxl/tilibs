@@ -228,6 +228,10 @@ SOURCE=..\..\src\type2str.c
 
 SOURCE=..\..\src\typesXX.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\varentry.c
+# End Source File
 # End Group
 # Begin Source File
 

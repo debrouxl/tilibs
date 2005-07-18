@@ -70,8 +70,10 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 	// release allocated memory in structures
 	for (i = 0; i < n; i++) 
 	{
+#ifndef __WIN32__
 	    TRYC(tifiles_content_free_regular(array[i]));
 		free(array[i]);
+#endif
 	}
 	free(array);
 
@@ -122,7 +124,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   memcpy(dst, src_contents[0], sizeof(FileContent));
 
   dst->num_entries = n;
-  dst->entries = (VarEntry *) calloc(n, sizeof(VarEntry));
+  dst->entries = (VarEntry *) calloc(n + 1, sizeof(VarEntry));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
@@ -175,7 +177,7 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
     memcpy(dst[i], src, sizeof(FileContent));
 
     // allocate and duplicate entry
-    dst[i]->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
+    dst[i]->entries = (VarEntry *) calloc(1+1, sizeof(VarEntry));
     dst_entry = &(dst[i]->entries[0]);
     TRYC(tixx_dup_VarEntry(dst_entry, src_entry));
 
