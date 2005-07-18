@@ -181,7 +181,7 @@ void ti9x_content_free_regular(Ti9xRegular *content)
 
   free(content->entries);
 #ifndef __WIN32__
-  free(content);
+  //free(content);
 #endif
 }
 
@@ -198,7 +198,7 @@ void ti9x_content_free_backup(Ti9xBackup *content)
 
   free(content->data_part);
 #ifndef __WIN32__
-  free(content);
+  //free(content);
 #endif
 }
 
@@ -228,7 +228,7 @@ void ti9x_content_free_flash(Ti9xFlash *content)
   }
 
 #ifndef __WIN32__
-  free(content);
+  //free(content);
 #endif
 }
 
@@ -292,9 +292,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
   for (i = 0, j = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry;
-	
-	entry = content->entries[j] = calloc(1, sizeof(VarEntry));
+    VarEntry *entry = content->entries[j] = calloc(1, sizeof(VarEntry));
 
     fread_long(f, &curr_offset);
     fread_8_chars(f, entry->name);
@@ -305,6 +303,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 	{
       strcpy(current_folder, entry->name);
+      free(entry);
       continue;			// folder: skip entry
     } 
 	else 

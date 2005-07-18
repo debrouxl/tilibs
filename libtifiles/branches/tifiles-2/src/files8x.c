@@ -176,16 +176,14 @@ void ti8x_content_free_regular(Ti8xRegular *content)
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
-
-	assert(entry != NULL);
+ 	assert(entry != NULL);
     free(entry->data);
 	free(entry);
   }
 
-  printf("<%p>\n", content->entries);
-  //free(content->entries);
+  free(content->entries);
 #ifndef __WIN32__
-  free(content);
+  //free(content);
 #endif
 }
 
@@ -206,7 +204,7 @@ void ti8x_content_free_backup(Ti8xBackup *content)
   free(content->data_part4);
 
 #ifndef __WIN32__
-  free(content);
+  //free(content);
 #endif
 }
 
@@ -224,11 +222,14 @@ void ti8x_content_free_flash(Ti8xFlash *content)
 	assert(content != NULL);
 
     for(i = 0; i < content->num_pages; i++)
+    {
 		free(content->pages[i]->data);
+		free(content->pages[i]);
+    }
     free(content->pages);
 
 #ifndef __WIN32__
-  free(content);
+    //free(content);
 #endif
 }
 
