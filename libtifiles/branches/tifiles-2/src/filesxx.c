@@ -472,7 +472,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
   // determine how many folders we have
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
 
     // scan for an existing folder entry
     for (ptr = folder_list; *ptr != NULL; ptr++) 
@@ -509,7 +509,7 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
 
     for (i = 0, k = 0; i < content->num_entries; i++) 
 	{
-      VarEntry *entry = &(content->entries[i]);
+      VarEntry *entry = content->entries[i];
 
       if (!strcmp(folder_list[j], entry->folder)) 
 	  {

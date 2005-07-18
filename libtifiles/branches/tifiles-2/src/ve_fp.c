@@ -80,7 +80,7 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT VarEntry*	TICALL tifiles_ve_create_array(int nelts)
+TIEXPORT VarEntry**	TICALL tifiles_ve_create_array(int nelts)
 {
 	return calloc(nelts + 1, sizeof(VarEntry));
 }
@@ -110,14 +110,14 @@ TIEXPORT void			TICALL tifiles_ve_delete(VarEntry* ve)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry* array)
+TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry** array)
 {
-	VarEntry* ptr;
+	VarEntry** ptr;
 
 	assert(array != NULL);
 
 	for(ptr = array; ptr; ptr++)
-		tifiles_ve_delete(ptr);
+		tifiles_ve_delete(*ptr);
 	free(array);
 }
 
@@ -224,9 +224,9 @@ TIEXPORT FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT FlashPage*	TICALL tifiles_fp_create_array(int nelts)
+TIEXPORT FlashPage**	TICALL tifiles_fp_create_array(int nelts)
 {
-	return calloc(nelts + 1, sizeof(FlashPage));
+	return calloc(nelts + 1, sizeof(FlashPage*));
 }
 
 /**
@@ -237,13 +237,13 @@ TIEXPORT FlashPage*	TICALL tifiles_fp_create_array(int nelts)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_fp_delete(FlashPage* ve)
+TIEXPORT void			TICALL tifiles_fp_delete(FlashPage* fp)
 {
-	assert(ve != NULL);
+	assert(fp != NULL);
 
-	free(ve->data);
-	ve->data = NULL;
-	free(ve);
+	free(fp->data);
+	fp->data = NULL;
+	free(fp);
 }
 
 /**
@@ -254,13 +254,13 @@ TIEXPORT void			TICALL tifiles_fp_delete(FlashPage* ve)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_fp_delete_array(FlashPage* array)
+TIEXPORT void			TICALL tifiles_fp_delete_array(FlashPage** array)
 {
-	FlashPage* ptr;
+	FlashPage** ptr;
 
 	assert(array != NULL);
 
 	for(ptr = array; ptr; ptr++)
-		tifiles_fp_delete(ptr);
+		tifiles_fp_delete(*ptr);
 	free(array);
 }

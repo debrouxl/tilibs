@@ -110,22 +110,6 @@ Ti8xFlash *ti8x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy a VarEntry structure (data included).
-  Memory must be freed when no longer used.
-*/
-int ti8x_dup_VarEntry(VarEntry *dst, VarEntry *src)
-{
-  memcpy(dst, src, sizeof(VarEntry));
-
-  dst->data = (uint8_t *) calloc(dst->size, 1);
-  if (dst->data == NULL)
-    return ERR_MALLOC;
-  memcpy(dst->data, src->data, dst->size);
-
-  return 0;
-}
-
-/*
   Copy an Ti8xRegular structure.
   Memory must be freed when no longer used.
 */
@@ -135,13 +119,12 @@ int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
 
   memcpy(dst, src, sizeof(Ti8xRegular));
 
-  dst->entries = (VarEntry *) calloc(src->num_entries + 1,
-					 sizeof(VarEntry));
+  dst->entries = calloc(src->num_entries + 1, sizeof(VarEntry*));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRYC(ti8x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
+	  dst->entries[i] = tifiles_ve_dup(src->entries[i]);
 
   return 0;
 }
@@ -192,7 +175,7 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
 
 	assert(entry != NULL);
     free(entry->data);
@@ -201,8 +184,9 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 
   printf("<%p>\n", content->entries);
   //free(content->entries);
+#ifndef __WIN32__
   free(content);
-
+#endif
 }
 
 /**
@@ -221,7 +205,9 @@ void ti8x_content_free_backup(Ti8xBackup *content)
   free(content->data_part3);
   free(content->data_part4);
 
+#ifndef __WIN32__
   free(content);
+#endif
 }
 
 /**
@@ -238,10 +224,12 @@ void ti8x_content_free_flash(Ti8xFlash *content)
 	assert(content != NULL);
 
     for(i = 0; i < content->num_pages; i++)
-		free(content->pages[i].data);
+		free(content->pages[i]->data);
     free(content->pages);
 
-	free(content);
+#ifndef __WIN32__
+  free(content);
+#endif
 }
 
 /***********/
@@ -328,8 +316,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   fseek(f, offset, SEEK_SET);
 
   content->num_entries = i;
-  content->entries = (VarEntry *) calloc(content->num_entries + 1,
-					     sizeof(VarEntry));
+  content->entries = calloc(content->num_entries + 1, sizeof(VarEntry*));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -338,7 +325,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &((content->entries)[i]);
+    VarEntry *entry = content->entries[i] = calloc(1, sizeof(VarEntry));
 
     fread_word(f, NULL);
     fread_word(f, (uint16_t *) & (entry->size));
@@ -530,7 +517,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
   content->pages = NULL;
 
   // we should determine the number of pages, to do...
-  content->pages = (Ti8xFlashPage *) calloc(50+1, sizeof(Ti8xFlashPage *));
+  content->pages = calloc(50+1, sizeof(Ti8xFlashPage *));
   if (content->pages == NULL)
 	return ERR_MALLOC;
 
@@ -541,20 +528,22 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
 		uint16_t addr;
 		uint16_t page;
 		uint8_t flag = 0x80;
-		uint8_t data[PAGE_SIZE];  
+		uint8_t data[PAGE_SIZE];
+		FlashPage* fp = calloc(1, sizeof(FlashPage));
 
+		content->pages[i] = fp;
 		ret = hex_block_read(file, &size, &addr, &flag, data, &page);
 
-		content->pages[i].data = (uint8_t *) calloc(PAGE_SIZE, 1);
-		memset(content->pages[i].data, 0xff, PAGE_SIZE);
-		if (content->pages[i].data == NULL)
+		fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);
+		memset(fp->data, 0xff, PAGE_SIZE);
+		if (fp->data == NULL)
 			return ERR_MALLOC;
 
-		content->pages[i].addr = addr;
-		content->pages[i].page = page;
-		content->pages[i].flag = flag;
-		content->pages[i].size = size;
-		memcpy(content->pages[i].data, data, size);		
+		fp->addr = addr;
+		fp->page = page;
+		fp->flag = flag;
+		fp->size = size;
+		memcpy(fp->data, data, size);		
 	} 
   content->num_pages = i;
 
@@ -599,13 +588,13 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0].name, 
-			   content->entries[0].type );
+    tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
+			   content->entries[0]->type );
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0].type));
+    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -625,7 +614,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   fwrite_n_bytes(f, 42, content->comment);
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
     data_length += entry->size + 15;
     if (is_ti8586(content->model))
       data_length += 1;
@@ -657,7 +646,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   // write data section
   for (i = 0, sum = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
 
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
@@ -841,9 +830,9 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
   for (i = 0; i < content->num_pages; i++)
   {
 	  bytes_written += hex_block_write(f, 
-		  content->pages[i].size, content->pages[i].addr,
-		  content->pages[i].flag, content->pages[i].data, 
-		  content->pages[i].page);
+		  content->pages[i]->size, content->pages[i]->addr,
+		  content->pages[i]->flag, content->pages[i]->data, 
+		  content->pages[i]->page);
   }
 
   // final block
@@ -885,16 +874,16 @@ int ti8x_content_display_regular(Ti8xRegular *content)
     tifiles_info("Entry #%i", i);
     tifiles_info("  name:        <%s>",
 	    tifiles_transcode_varname(content->model, trans,
-					content->entries[i].name,				   
-				   content->entries[i].type
+					content->entries[i]->name,				   
+				   content->entries[i]->type
 				   ));
     tifiles_info("  type:        %02X (%s)",
-	    content->entries[i].type,
-	    tifiles_vartype2string(content->model, content->entries[i].type));
+	    content->entries[i]->type,
+	    tifiles_vartype2string(content->model, content->entries[i]->type));
     tifiles_info("  attr:        %s",
-	    tifiles_attribute_to_string(content->entries[i].attr));
+	    tifiles_attribute_to_string(content->entries[i]->attr));
     tifiles_info("  length:      %04X (%i)",
-	    content->entries[i].size, content->entries[i].size);
+	    content->entries[i]->size, content->entries[i]->size);
   }
 
   tifiles_info("Checksum:      %04X (%i) ", content->checksum,

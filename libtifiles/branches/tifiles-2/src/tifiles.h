@@ -125,7 +125,7 @@ typedef struct
  * @default_folder: name of the default folder (TI9x only)
  * @comment: comment aembedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
- * @entries: an array of #TiVarEntry structures which contains data
+ * @entries: a NULL-terminated array of #TiVarEntry structures
  * @checksum: checksum of file
  *
  * A generic structure used to store the content of a single/grouped TI file.
@@ -138,7 +138,7 @@ typedef struct
   char			comment[43];		// Ti8x: 41 max
 
   int			num_entries;
-  VarEntry*		entries;
+  VarEntry**	entries;
 
   uint16_t		checksum;
 
@@ -220,7 +220,7 @@ typedef struct
  * @data_length: length of data part
  * @data_part: pure FLASH data (TI9x only)
  * @num_pages: number of FLASH pages (TI8x only)
- * @pages: array of FLASH pages (TI8x only)
+ * @pages: NULL-terminated array of FLASH pages (TI8x only)
  * @next: pointer to next structure (linked list) (TI9x only).
  *
  * A generic structure used to store the content of a FLASH file (os or app).
@@ -244,7 +244,7 @@ struct _FlashContent
   uint8_t*		data_part;	// TI9x only
 
   int			num_pages;	// TI8x only
-  FlashPage*	pages;		// TI8x only
+  FlashPage**	pages;		// TI8x only
 
   FlashContent*	next;		// TI9x only
 };
@@ -394,25 +394,25 @@ extern "C" {
 
   // varentry.c
   TIEXPORT VarEntry*	TICALL tifiles_ve_create(void);
-  TIEXPORT VarEntry*	TICALL tifiles_ve_create_array(int nelts);
+  TIEXPORT VarEntry**	TICALL tifiles_ve_create_array(int nelts);
 
   TIEXPORT void*		tifiles_ve_alloc_data(size_t size);
   TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
 
   TIEXPORT void			TICALL tifiles_ve_delete(VarEntry*);
-  TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry*);
+  TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry**);
 
   TIEXPORT VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
   TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src);
 
   TIEXPORT FlashPage*	TICALL tifiles_fp_create(void);
-  TIEXPORT FlashPage*	TICALL tifiles_fp_create_array(int nelts);
+  TIEXPORT FlashPage**	TICALL tifiles_fp_create_array(int nelts);
 
   TIEXPORT void*		tifiles_fp_alloc_data(size_t size);
   TIEXPORT FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size);
 
   TIEXPORT void			TICALL tifiles_fp_delete(FlashPage*);
-  TIEXPORT void			TICALL tifiles_fp_delete_array(FlashPage*);
+  TIEXPORT void			TICALL tifiles_fp_delete_array(FlashPage**);
 
   /************************/
   /* Deprecated functions */

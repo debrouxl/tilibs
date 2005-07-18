@@ -106,23 +106,6 @@ Ti9xFlash *ti9x_content_create_flash(void)
 /*************************/
 
 /*
-  Copy an VarEntry structure (data included).
-  Memory must be freed when no longer used.
-*/
-int ti9x_dup_VarEntry(VarEntry * dst, VarEntry * src)
-{
-  memcpy(dst, src, sizeof(VarEntry));
-
-  dst->data = (uint8_t *) calloc(dst->size, 1);
-  if (dst->data == NULL)
-    return ERR_MALLOC;
-  memcpy(dst->data, src->data, dst->size);
-
-  return 0;
-}
-
-
-/*
   Copy an Ti9xRegular structure.
   Memory must be freed when no longer used.
 */
@@ -132,13 +115,12 @@ int ti9x_dup_Ti9xRegular(Ti9xRegular * dst, Ti9xRegular * src)
 
   memcpy(dst, src, sizeof(Ti9xRegular));
 
-  dst->entries = (VarEntry *) calloc(src->num_entries + 1,
-					 sizeof(VarEntry));
+  dst->entries = calloc(src->num_entries + 1, sizeof(VarEntry*));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
   for (i = 0; i < src->num_entries; i++)
-    TRYC(ti9x_dup_VarEntry(&(dst->entries[i]), &(src->entries[i])));
+	  dst->entries[i] = tifiles_ve_dup(src->entries[i]);
 
   return 0;
 }
@@ -190,7 +172,7 @@ void ti9x_content_free_regular(Ti9xRegular *content)
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
 
 	assert(entry != NULL);
     free(entry->data);
@@ -198,7 +180,9 @@ void ti9x_content_free_regular(Ti9xRegular *content)
   }
 
   free(content->entries);
+#ifndef __WIN32__
   free(content);
+#endif
 }
 
 /**
@@ -213,7 +197,9 @@ void ti9x_content_free_backup(Ti9xBackup *content)
   assert(content != NULL);
 
   free(content->data_part);
+#ifndef __WIN32__
   free(content);
+#endif
 }
 
 /**
@@ -241,7 +227,9 @@ void ti9x_content_free_flash(Ti9xFlash *content)
     ptr = next;
   }
 
+#ifndef __WIN32__
   free(content);
+#endif
 }
 
 /***********/
@@ -295,8 +283,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   fread_word(f, &tmp);
   content->num_entries = tmp;
 
-  content->entries = (VarEntry *) calloc(content->num_entries + 1,
-					     sizeof(VarEntry));
+  content->entries = calloc(content->num_entries + 1, sizeof(VarEntry*));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -305,7 +292,9 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
   for (i = 0, j = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &((content->entries)[j]);
+    VarEntry *entry;
+	
+	entry = content->entries[j] = calloc(1, sizeof(VarEntry));
 
     fread_long(f, &curr_offset);
     fread_8_chars(f, entry->name);
@@ -340,9 +329,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     }
   }
   content->num_entries = j;
-  content->entries = (VarEntry *) realloc(content->entries,
-					      content->num_entries *
-					      sizeof(VarEntry));
+  content->entries = realloc(content->entries, content->num_entries * sizeof(VarEntry*));
   fread_long(f, &next_offset);
   fseek(f, next_offset - 2, SEEK_SET);
   fread_word(f, &(content->checksum));
@@ -567,13 +554,13 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0].name, 
-			   content->entries[0].type);
+    tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
+			   content->entries[0]->type);
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
     strcpy(filename, trans);
     strcat(filename, ".");
-    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0].type));
+    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
@@ -596,7 +583,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   fwrite_8_chars(f, tifiles_calctype2signature(content->model));
   fwrite(fsignature, 1, 2, f);
   if (content->num_entries == 1)	// folder entry for single var is placed here
-    strcpy(content->default_folder, content->entries[0].folder);
+    strcpy(content->default_folder, content->entries[0]->folder);
   fwrite_8_chars(f, content->default_folder);
   fwrite_n_bytes(f, 40, content->comment);
   if (content->num_entries > 1) 
@@ -612,7 +599,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   {
     VarEntry *fentry;
     int j, index = table[i][0];
-    fentry = &(content->entries[index]);
+    fentry = content->entries[index];
 
     if (content->num_entries > 1)	// single var does not have folder entry
     {
@@ -627,7 +614,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     for (j = 0; table[i][j] != -1; j++) 
 	{
       int index = table[i][j];
-      VarEntry *entry = &(content->entries[index]);
+      VarEntry *entry = content->entries[index];
 
       fwrite_long(f, offset);
       fwrite_8_chars(f, entry->name);
@@ -650,7 +637,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     for (j = 0; table[i][j] != -1; j++) 
 	{
       int index = table[i][j];
-      VarEntry *entry = &(content->entries[index]);
+      VarEntry *entry = content->entries[index];
       uint16_t sum;
 
       fwrite_long(f, 0);
@@ -785,17 +772,17 @@ int ti9x_content_display_regular(Ti9xRegular *content)
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) 
   {
     tifiles_info("Entry #%i", i);
-    tifiles_info("  folder:    <%s>", content->entries[i].folder);
+    tifiles_info("  folder:    <%s>", content->entries[i]->folder);
     tifiles_info("  name:      <%s>",
-	    tifiles_transcode_varname(content->model, trans, content->entries[i].name,
-				   content->entries[i].type));
+	    tifiles_transcode_varname(content->model, trans, content->entries[i]->name,
+				   content->entries[i]->type));
     tifiles_info("  type:      %02X (%s)",
-	    content->entries[i].type,
-	    tifiles_vartype2string(content->model, content->entries[i].type));
+	    content->entries[i]->type,
+	    tifiles_vartype2string(content->model, content->entries[i]->type));
     tifiles_info("  attr:      %s",
-	    tifiles_attribute_to_string(content->entries[i].attr));
+	    tifiles_attribute_to_string(content->entries[i]->attr));
     tifiles_info("  length:    %04X (%i)",
-	    content->entries[i].size, content->entries[i].size);
+	    content->entries[i]->size, content->entries[i]->size);
   }
 
   tifiles_info("Checksum:    %04X (%i) ", content->checksum,

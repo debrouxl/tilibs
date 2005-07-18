@@ -84,20 +84,6 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 /* (Un)grouping content */
 /************************/
 
-int ti8x_dup_VarEntry(VarEntry *dst, VarEntry *src);
-int ti9x_dup_VarEntry(VarEntry *dst, VarEntry *src);
-
-static int tixx_dup_VarEntry(VarEntry *dst, VarEntry *src)
-{
-#if !defined(DISABLE_TI8X)
-	return ti8x_dup_VarEntry(dst, src);
-#elif !defined(DISABLE_TI9X)
-    return ti9x_dup_VarEntry(dst, src);
-#else
-#error "You can't disable TI8x & TI9x support both".
-#endif
-}
-
 /**
  * tifiles_group_contents:
  * @src_contents: a pointer on an array of #FileContent structures. The array must be terminated by NULL.
@@ -124,7 +110,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   memcpy(dst, src_contents[0], sizeof(FileContent));
 
   dst->num_entries = n;
-  dst->entries = (VarEntry *) calloc(n + 1, sizeof(VarEntry));
+  dst->entries = calloc(n + 1, sizeof(VarEntry*));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
@@ -132,7 +118,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   {
     FileContent *src = src_contents[i];
 
-    TRYC(tixx_dup_VarEntry(&(dst->entries[i]), &(src->entries[0])));
+	dst->entries[i] = tifiles_ve_dup(src->entries[0]);
   }
 
   *dst_content = dst;
@@ -167,7 +153,6 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
   // parse each entry and duplicate it into a single content  
   for (i = 0; i < src->num_entries; i++) 
   {
-    VarEntry *src_entry = &(src->entries[i]);
     VarEntry *dst_entry = NULL;
 
     // allocate and duplicate content
@@ -177,16 +162,15 @@ TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***des
     memcpy(dst[i], src, sizeof(FileContent));
 
     // allocate and duplicate entry
-    dst[i]->entries = (VarEntry *) calloc(1+1, sizeof(VarEntry));
-    dst_entry = &(dst[i]->entries[0]);
-    TRYC(tixx_dup_VarEntry(dst_entry, src_entry));
+    dst[i]->entries = calloc(1+1, sizeof(VarEntry*));
+	dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
 
     // update some fields
     dst[i]->num_entries = 1;
     dst[i]->checksum +=
-	tifiles_checksum((uint8_t *) dst_entry, 15);
+		tifiles_checksum((uint8_t *) dst_entry, 15);
     dst[i]->checksum +=
-	tifiles_checksum(dst_entry->data, dst_entry->size);
+		tifiles_checksum(dst_entry->data, dst_entry->size);
   }
   dst[i] = NULL;
 
