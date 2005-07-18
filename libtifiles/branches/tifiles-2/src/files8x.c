@@ -114,83 +114,6 @@ int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
 }
 
 /***********/
-/* Freeing */
-/***********/
-
-/**
- * ti8x_content_free_regular:
- *
- * Free the whole content of a #Ti8xRegular structure.
- *
- * Return value: none.
- **/
-void ti8x_content_free_regular(Ti8xRegular *content)
-{
-  int i;
-
-  assert(content != NULL);
-
-  for (i = 0; i < content->num_entries; i++) 
-  {
-    VarEntry *entry = content->entries[i];
- 	assert(entry != NULL);
-    free(entry->data);
-	free(entry);
-  }
-
-  free(content->entries);
-#ifndef __WIN32__
-  free(content);
-#endif
-}
-
-/**
- * ti8x_content_free_backup:
- *
- * Free the whole content of a Ti8xBackup structure.
- *
- * Return value: none.
- **/
-void ti8x_content_free_backup(Ti8xBackup *content)
-{
-  assert(content != NULL);
-
-  free(content->data_part1);
-  free(content->data_part2);
-  free(content->data_part3);
-  free(content->data_part4);
-
-#ifndef __WIN32__
-  //free(content);
-#endif
-}
-
-/**
- * ti8x_content_free_flash:
- *
- * Free the whole content of a Ti8xFlash structure.
- *
- * Return value: none.
- **/
-void ti8x_content_free_flash(Ti8xFlash *content)
-{
-	int i;
-
-	assert(content != NULL);
-
-    for(i = 0; i < content->num_pages; i++)
-    {
-		free(content->pages[i]->data);
-		free(content->pages[i]);
-    }
-    free(content->pages);
-
-#ifndef __WIN32__
-    //free(content);
-#endif
-}
-
-/***********/
 /* Reading */
 /***********/
 
@@ -201,7 +124,7 @@ void ti8x_content_free_flash(Ti8xFlash *content)
  *
  * Load the single/group file into a Ti8xRegular structure.
  *
- * Structure content must be freed with #ti8x_content_free_regular when
+ * Structure content must be freed with #tifiles_content_free_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -324,7 +247,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
  *
  * Load the backup file into a Ti8xBackup structure.
  *
- * Structure content must be freed with #ti8x_content_free_backup when
+ * Structure content must be freed with #tifiles_content_free_backup when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -426,7 +349,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
  *
  * Load the flash file into a Ti8xFlash structure.
  *
- * Structure content must be freed with #ti8x_content_free_flash when
+ * Structure content must be freed with #tifiles_content_free_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -953,19 +876,19 @@ int ti8x_file_display(const char *filename)
   {
     ti8x_file_read_flash(filename, &content3);
     ti8x_content_display_flash(&content3);
-    ti8x_content_free_flash(&content3);
+    tifiles_content_free_flash(&content3);
   } 
   else if (tifiles_file_is_backup(filename)) 
   {
     ti8x_file_read_backup(filename, &content2);
     ti8x_content_display_backup(&content2);
-    ti8x_content_free_backup(&content2);
+    tifiles_content_free_backup(&content2);
   } 
   else if (tifiles_file_is_regular(filename)) 
   {
     ti8x_file_read_regular(filename, &content1);
     ti8x_content_display_regular(&content1);
-    ti8x_content_free_regular(&content1);
+    tifiles_content_free_regular(&content1);
   } 
   else 
   {

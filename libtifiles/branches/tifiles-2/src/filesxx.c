@@ -23,6 +23,7 @@
   This unit contains a TI file independant API
 */
 
+#include <assert.h>
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,19 +56,25 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
  **/
 TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
 {
-#if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(content->model))
-		ti8x_content_free_regular((Ti8xRegular *)content);
-	else 
-#endif
-#if !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(content->model))
-		ti9x_content_free_regular((Ti9xRegular *)content);
-	else
-#endif
-    return ERR_BAD_CALC;
+  int i;
 
-	return 0;
+  assert(content != NULL);
+
+  for (i = 0; i < content->num_entries; i++) 
+  {
+    VarEntry *entry = content->entries[i];
+
+	assert(entry != NULL);
+    free(entry->data);
+	free(entry);
+  }
+
+  free(content->entries);
+#ifndef __WIN32__
+  //free(content);
+#endif
+
+  return 0;
 }
 
 /**
@@ -176,19 +183,19 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
  **/
 TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
 {
-#if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(content->model))
-		ti8x_content_free_backup(content);
-	else 
-#endif
-#if !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(content->model))
-		ti9x_content_free_backup(content);
-	else
-#endif
-    return ERR_BAD_CALC;
+  assert(content != NULL);
 
-	return 0;
+  free(content->data_part);
+  free(content->data_part1);
+  free(content->data_part2);
+  free(content->data_part3);
+  free(content->data_part4);
+
+#ifndef __WIN32__
+  //free(content);
+#endif
+
+  return 0;
 }
 
 /**
@@ -315,17 +322,47 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
  **/
 TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
 {
+	assert(content != NULL);
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		ti8x_content_free_flash(content);
+	{
+		int i;
+
+		for(i = 0; i < content->num_pages; i++)
+		{
+			free(content->pages[i]->data);
+			free(content->pages[i]);
+		}
+		free(content->pages);
+	}
 	else
 #endif 
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		ti9x_content_free_flash(content);
+	{
+		Ti9xFlash *ptr;
+
+		free(content->data_part);
+
+		ptr = content->next;
+		while (ptr != NULL) 
+		{
+			Ti9xFlash *next = ptr->next;
+
+			free(ptr->data_part);
+			free(ptr);
+
+			ptr = next;
+		}
+	}
 	else
 #endif
     return ERR_BAD_CALC;
+
+#ifndef __WIN32__
+  //free(content);
+#endif
 
 	return 0;
 }
