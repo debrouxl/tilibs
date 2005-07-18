@@ -75,7 +75,10 @@ static int is_ti83p(CalcModel model)
  **/
 Ti8xRegular *ti8x_content_create_regular(void)
 {
-	return (Ti8xRegular *) calloc(1, sizeof(Ti8xRegular));
+	Ti8xRegular* r = calloc(1, sizeof(Ti8xRegular));
+
+	printf("<<%p>>\n", r);
+	return r;
 }
 
 /**
@@ -196,7 +199,8 @@ void ti8x_content_free_regular(Ti8xRegular *content)
 	free(entry);
   }
 
-  free(content->entries);
+  printf("<%p>\n", content->entries);
+  //free(content->entries);
   free(content);
 
 }
@@ -526,7 +530,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
   content->pages = NULL;
 
   // we should determine the number of pages, to do...
-  content->pages = (Ti8xFlashPage *) calloc(50, sizeof(Ti8xFlashPage *));
+  content->pages = (Ti8xFlashPage *) calloc(50+1, sizeof(Ti8xFlashPage *));
   if (content->pages == NULL)
 	return ERR_MALLOC;
 

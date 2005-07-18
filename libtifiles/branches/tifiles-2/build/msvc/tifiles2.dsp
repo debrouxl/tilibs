@@ -176,6 +176,10 @@ SOURCE=..\..\src\filesxx.c
 
 SOURCE=..\..\src\grouped.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\ve_fp.c
+# End Source File
 # End Group
 # Begin Group "Others"
 
@@ -227,10 +231,6 @@ SOURCE=..\..\src\type2str.c
 # Begin Source File
 
 SOURCE=..\..\src\typesXX.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\varentry.c
 # End Source File
 # End Group
 # Begin Source File

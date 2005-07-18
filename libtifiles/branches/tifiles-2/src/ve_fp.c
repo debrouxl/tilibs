@@ -43,6 +43,19 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_create(void)
 }
 
 /**
+ * tifiles_ve_alloc_data:
+ * @size: length of data.
+ *
+ * Allocate space for data field of VarEntry.
+ *
+ * Return value: allocated space or NULL if error.
+ **/
+TIEXPORT void *tifiles_ve_alloc_data(size_t size)
+{
+	return calloc(size+1, sizeof(uint8_t));
+}
+
+/**
  * tifiles_ve_create_with_data:
  * @size: length of data.
  *
@@ -157,4 +170,97 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 	memcpy(dst->data, src->data, dst->size);
 
 	return dst;
+}
+
+// ---
+
+/**
+ * tifiles_fp_create:
+ *
+ * Allocate a new FlashPage structure.
+ *
+ * Return value: the entry or NULL if error.
+ **/
+TIEXPORT FlashPage*	TICALL tifiles_fp_create(void)
+{
+	return calloc(1, sizeof(FlashPage));
+}
+
+/**
+ * tifiles_fp_alloc_data:
+ * @size: length of data.
+ *
+ * Allocate space for data field of FlashPage.
+ *
+ * Return value: allocated space or NULL if error.
+ **/
+TIEXPORT void *tifiles_fp_alloc_data(size_t size)
+{
+	return calloc(size+1, sizeof(uint8_t));
+}
+
+/**
+ * tifiles_fp_create_with_data:
+ * @size: length of data.
+ *
+ * Allocate a new FlashPage structure and space for data.
+ *
+ * Return value: the entry or NULL if error.
+ **/
+TIEXPORT FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size)
+{
+	FlashPage* ve = tifiles_fp_create();
+	ve->data = (uint8_t *) calloc(size, 1);
+
+	return ve;
+}
+
+/**
+ * tifiles_fp_create_array:
+ * @nelts: size of NULL-terminated array (number of FlashPage structures).
+ *
+ * Allocate a NULL-terminated array of FlashPage structures. You have to allocate
+ * each elements of the array by yourself.
+ *
+ * Return value: the array or NULL if error.
+ **/
+TIEXPORT FlashPage*	TICALL tifiles_fp_create_array(int nelts)
+{
+	return calloc(nelts + 1, sizeof(FlashPage));
+}
+
+/**
+ * tifiles_fp_delete:
+ * @ve: var entry.
+ *
+ * Free data buffer and the structure itself.
+ *
+ * Return value: none.
+ **/
+TIEXPORT void			TICALL tifiles_fp_delete(FlashPage* ve)
+{
+	assert(ve != NULL);
+
+	free(ve->data);
+	ve->data = NULL;
+	free(ve);
+}
+
+/**
+ * tifiles_fp_delete_array:
+ * @array: an NULL-terminated array of FlashPage structures.
+ *
+ * Free the whole array (data buffer, FlashPage structure and array itself).
+ *
+ * Return value: none.
+ **/
+TIEXPORT void			TICALL tifiles_fp_delete_array(FlashPage* array)
+{
+	FlashPage* ptr;
+
+	assert(array != NULL);
+
+	for(ptr = array; ptr; ptr++)
+		tifiles_fp_delete(ptr);
+	free(array);
 }
