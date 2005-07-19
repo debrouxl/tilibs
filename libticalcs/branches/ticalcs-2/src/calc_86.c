@@ -233,11 +233,11 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
 	uint8_t varname[9] = { 0 };
 
+	sprintf(update->text, _("Waiting for backup..."));
+    update_label();
+
 	content->model = CALC_TI86;
 	strcpy(content->comment, tifiles_comment_set_backup());
-
-	sprintf(update->text, _("Waiting backup..."));
-	update_label();
 
     TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
     content->data_length2 = varname[0] | (varname[1] << 8);
@@ -251,13 +251,13 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->max2 = 4;
 	update->cnt2 = 0;
 
-    content->data_part1 = calloc(65536, 1);
+    content->data_part1 = tifiles_ve_alloc_data(65536);
     TRYF(ti85_recv_XDP(&content->data_length1, content->data_part1));
     TRYF(ti85_send_ACK());
     update->cnt2++;
 	update->pbar();
 
-    content->data_part2 = calloc(65536, 1);
+    content->data_part2 = tifiles_ve_alloc_data(65536);
     TRYF(ti85_recv_XDP(&content->data_length2, content->data_part2));
     TRYF(ti85_send_ACK());
     update->cnt2++;
@@ -265,7 +265,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
     if (content->data_length3) 
 	{
-      content->data_part3 = calloc(65536, 1);
+      content->data_part3 = tifiles_ve_alloc_data(65536);
       TRYF(ti85_recv_XDP(&content->data_length3, content->data_part3));
       TRYF(ti85_send_ACK());
     } else
@@ -273,7 +273,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
     update->cnt2++;
 	update->pbar();
 
-    content->data_part4 = calloc(65536, 1);
+    content->data_part4 = tifiles_ve_alloc_data(65536);
     TRYF(ti85_recv_XDP(&content->data_length4, content->data_part4));
     TRYF(ti85_send_ACK());
     update->cnt2++;
@@ -355,7 +355,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti85_send_CTS());
 	TRYF(ti85_recv_ACK(NULL));
 
-	ve->data = calloc(ve->size, 1);
+	ve->data = tifiles_ve_alloc_data(ve->size);
 	TRYF(ti85_recv_XDP((uint16_t *) & ve->size, ve->data));
 	TRYF(ti85_send_ACK());
 

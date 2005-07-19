@@ -236,19 +236,19 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update->cnt2 = 0;
 	update->pbar();
 
-	content->data_part1 = calloc(65536, 1);
+	content->data_part1 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
 	update->pbar();
 
-	content->data_part2 = calloc(65536, 1);
+	content->data_part2 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;
 	update->pbar();
 
-	content->data_part3 = calloc(65536, 1);
+	content->data_part3 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti73_send_ACK());
 	update->cnt2++;

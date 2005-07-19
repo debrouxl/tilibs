@@ -168,6 +168,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   update_label();
 
   content->model = CALC_TI85;
+  strcpy(content->comment, tifiles_comment_set_backup());
 
   TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
   content->data_length2 = varname[0] | (varname[1] << 8);
