@@ -126,7 +126,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 	for (;;) 
 	{
-		VarEntry *ve = calloc(1, sizeof(VarEntry));
+		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 		int err;
 
@@ -290,7 +290,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = &(content->entries[i]);
+		VarEntry *entry = content->entries[i];
 		
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -336,8 +336,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	content->model = CALC_TI86;
 	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
-	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
-	ve = &(content->entries[0]);
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	sprintf(update->text, _("Receiving '%s'"),

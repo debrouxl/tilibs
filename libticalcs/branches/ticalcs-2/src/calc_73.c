@@ -125,11 +125,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 	for (;;) 
 	{
-		VarEntry *ve = calloc(1, sizeof(VarEntry));
+		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 		int err;
 
-		err = ti73_recv_VAR((uint16_t *) & ve->size, &ve->type, ve->name, &ve->attr);
+		err = ti73_recv_VAR((uint16_t *)&ve->size, &ve->type, ve->name, &ve->attr);
 		fixup(ve->size);
 		TRYF(ti73_send_ACK());
 		if (err == ERR_EOT)
@@ -266,7 +266,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = &(content->entries[i]);
+		VarEntry *entry = content->entries[i];
 		
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -313,8 +313,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
     content->num_entries = 1;
-    content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
-    ve = &(content->entries[0]);
+
+    content->entries = tifiles_ve_create_array(1);	
+    ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
     sprintf(update->text, _("Receiving '%s'"),
@@ -332,7 +333,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     TRYF(ti73_send_CTS());
     TRYF(ti73_recv_ACK(NULL));
 
-    ve->data = calloc(ve->size, 1);
+    ve->data = tifiles_ve_alloc_data(ve->size);
     TRYF(ti73_recv_XDP((uint16_t *)&ve->size, ve->data));
     TRYF(ti73_send_ACK());
 
@@ -361,7 +362,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	else
 		return -1;
 
-#if 1
+#if 0
 	printf("#pages: %i\n", content->num_pages);
 	printf("type: %02x\n", content->data_type);
 	for (i = 0; i < content->num_pages; i++) 
@@ -379,7 +380,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	update->max2 = content->num_pages * FLASH_PAGE_SIZE / size;
 	for (k = i = 0; i < content->num_pages; i++) 
 	{
-		FlashPage *fp = &(content->pages[i]);
+		FlashPage *fp = content->pages[i];
 
 		if((content->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
 			fp->addr = 0x4000;
@@ -439,7 +440,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->data_type = vr->type;
 	content->device_type = 0x73;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
-	content->pages = (FlashPage *)calloc(content->num_pages, sizeof(FlashPage));
+	content->pages = tifiles_fp_create_array(content->num_pages);
 
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
@@ -450,7 +451,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		int err;
 		char name[9];
 
-		fp = &(content->pages[page]);
+		fp = content->pages[page] = tifiles_fp_create();
 
 		err = ti73_recv_VAR2(&data_length, &data_type, name, &data_addr, &data_page);
 		TRYF(ti73_send_ACK());
@@ -473,7 +474,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			fp->page = data_page;
 			fp->flag = 0x80;
 			fp->size = offset;			
-			fp->data = calloc(FLASH_PAGE_SIZE, 1);
+			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 			memcpy(fp->data, buf, fp->size);
 
 			page++;
@@ -500,7 +501,7 @@ exit:
 		fp->page = data_page;
 		fp->flag = 0x80;
 		fp->size = offset;			
-		fp->data = calloc(FLASH_PAGE_SIZE, 1);
+		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, buf, fp->size);
 		page++;
 	}

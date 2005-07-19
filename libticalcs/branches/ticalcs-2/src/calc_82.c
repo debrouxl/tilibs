@@ -218,7 +218,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = &(content->entries[i]);
+    VarEntry *entry = content->entries[i];
 
     TRYF(ti82_send_VAR((uint16_t)entry->size, entry->type, entry->name));
     TRYF(ti82_recv_ACK(&status));
@@ -280,10 +280,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   {
     VarEntry *ve;
 
-    content->entries =
-	(VarEntry *) realloc(content->entries,
-				       (nvar + 2) * sizeof(VarEntry));
-    ve = &(content->entries[nvar]);
+    content->entries = realloc(content->entries, (nvar + 2) * sizeof(VarEntry*));
+    ve = content->entries[nvar];
 
     do {
       update_refresh();

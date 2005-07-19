@@ -105,10 +105,7 @@ int send_packet(CalcHandle* handle,
 				handle->updat->pbar();
 
 			if (handle->updat->cancel)
-			{
-				printf("Abort in send_packet\n");
 				return ERR_ABORT;
-			}
 		}
 
 		// send last chunk

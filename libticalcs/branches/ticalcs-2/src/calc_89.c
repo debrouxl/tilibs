@@ -158,7 +158,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 	for(j = 4; j < (int)block_size;) 
 	{
-		VarEntry *fe = calloc(1, sizeof(VarEntry));
+		VarEntry *fe = tifiles_ve_create();
         TNode *node;
 
         memcpy(fe->name, buffer + j, 8);
@@ -212,7 +212,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 		for(j = 4 + 14 + extra; j < (int)block_size;) 
 		{
-			VarEntry *ve = calloc(1, sizeof(VarEntry));
+			VarEntry *ve = tifiles_ve_create();
 			TNode *node;
 
 			memcpy(ve->name, buffer + j, 8);
@@ -267,7 +267,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	update->max2 = content->num_entries;
 	for(i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = &(content->entries[i]);
+		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
 		uint8_t varname[18], utf8[35];
@@ -332,8 +332,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
-	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
-	ve = &(content->entries[0]);
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
@@ -454,7 +454,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	update->max2 = content->num_entries;
 	for(i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = &(content->entries[i]);
+		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
 		uint8_t varname[18], utf8[35];
@@ -515,8 +515,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *ve;
 
-		content->entries = (VarEntry *) realloc(content->entries, nvar * sizeof(VarEntry));
-		ve = &(content->entries[nvar-1]);
+		content->entries = realloc(content->entries, nvar * sizeof(VarEntry*));
+		ve = content->entries[nvar-1];
 		strcpy(ve->folder, "main");	
 
 		err = ti89_recv_VAR(&ve->size, &ve->type, tipath);

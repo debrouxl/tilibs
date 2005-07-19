@@ -53,7 +53,7 @@ int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
   ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
-		varsize, varsize, vartype, varname, varattr);
+		varsize, vartype, varname, varattr);
 
   if (vartype != TI7383_BKUP) 
   {	// backup: special header
@@ -86,7 +86,7 @@ int ti73_send_VAR2_h(CalcHandle* handle, uint32_t length, uint8_t type, uint8_t 
   buffer[9] = MSB(page);
 
   ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, flag=%02X, offset=%04X, page=%02X)",
-       length, length, type, flag, offset, page);
+       length, type, flag, offset, page);
 
   TRYF(send_packet(handle, PC_TI7383, CMD_VAR, 10, buffer));
 
@@ -103,7 +103,7 @@ int ti73_send_CTS_h(CalcHandle* handle)
 
 int ti73_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
 {
-  ticalcs_info(" PC->TI: XDP (0x%04X = %i bytes)", length, length);
+  ticalcs_info(" PC->TI: XDP (0x%04X bytes)", length);
   TRYF(send_packet(handle, PC_TI7383, CMD_XDP, length, data));
 
   return 0;
@@ -194,7 +194,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
-       varsize, varsize, vartype, trans, varattr);
+       varsize, vartype, trans, varattr);
 
   if (vartype != TI83p_IDLIST) 
   {
@@ -221,7 +221,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, char
   pad_buffer(buffer + 3, '\0');
 
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>)",
-	  appsize, appsize, apptype, appname);
+	  appsize, apptype, appname);
   TRYF(send_packet(handle, TI83p_PC, CMD_REQ, 11, buffer));	// TI_PC73 !
 
   return 0;
@@ -243,7 +243,7 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
-       varsize, varsize, vartype, trans, varattr);
+       varsize, vartype, trans, varattr);
 
   if (vartype != TI7383_BKUP) 
   {	
@@ -319,7 +319,7 @@ int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
   ticalcs_info(" TI->PC: VAR (size=0x%04X, id=%02X, name=<%s>, attrb=%i)",
-	  *varsize, *varsize, *vartype, trans, *varattr);
+	  *varsize, *vartype, trans, *varattr);
 
   return 0;
 }
@@ -354,7 +354,7 @@ int ti73_recv_VAR2_h(CalcHandle* handle, uint16_t * length, uint8_t * type, char
   *page = buffer[8] | (buffer[9] << 8);
 
   ticalcs_info(" TI->PC: VAR (size=0x%04X, type=%02X, name=<%s>, offset=%04X, page=%02X)",
-       *length, *length, *type, name, *offset, *page & 0xff);
+       *length, *type, name, *offset, *page & 0xff);
 
   return 0;
 }
@@ -412,7 +412,7 @@ int ti73_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
 
-  ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
+  ticalcs_info(" TI->PC: XDP (%04X bytes)", *length);
 
   return 0;
 }
@@ -464,7 +464,7 @@ int ti73_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 
   tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
   ticalcs_info(" TI->PC: RTS (size=0x%04X, id=%02X, name=<%s>, attrb=%i)",
-	  *varsize, *varsize, *vartype, trans, *varattr);
+	  *varsize, *vartype, trans, *varattr);
 
   return 0;
 }

@@ -121,7 +121,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 	for (;;) 
 	{
-		VarEntry *ve = calloc(1, sizeof(VarEntry));
+		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 
 		TRYF(ti92_send_ACK());
@@ -264,7 +264,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
-		VarEntry *entry = &(content->entries[i]);
+		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t varname[18], utf8[35];
 
@@ -309,8 +309,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	content->model = CALC_TI92;
 	strcpy(content->comment, tifiles_comment_set_single());
 	content->num_entries = 1;
-	content->entries = (VarEntry *) calloc(1, sizeof(VarEntry));
-	ve = &(content->entries[0]);
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
@@ -360,8 +360,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *ve;
 
-		content->entries = (VarEntry *) realloc(content->entries, nvar * sizeof(VarEntry));
-		ve = &(content->entries[nvar-1]);
+		content->entries = realloc(content->entries, nvar * sizeof(VarEntry*));
+		ve = content->entries[nvar-1];
 		strcpy(ve->folder, "main");	
 
 		err = ti92_recv_VAR(&ve->size, &ve->type, tipath);
