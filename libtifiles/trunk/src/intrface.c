@@ -23,6 +23,14 @@
   This unit contains the interface of the libtifiles library.
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#if HAVE_LOCALE_H
+#include <locale.h>
+#endif
+#include "gettext.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
