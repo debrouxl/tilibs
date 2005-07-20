@@ -62,57 +62,6 @@ static int is_ti83p(CalcModel model)
   return (model == CALC_TI83P) || (model == CALC_TI84P);
 }
 
-/*************************/
-/* Copying (duplicating) */
-/*************************/
-
-/*
-  Copy an Ti8xRegular structure.
-  Memory must be freed when no longer used.
-*/
-int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
-{
-  int i;
-
-  memcpy(dst, src, sizeof(Ti8xRegular));
-
-  dst->entries = calloc(src->num_entries + 1, sizeof(VarEntry*));
-  if (dst->entries == NULL)
-    return ERR_MALLOC;
-
-  for (i = 0; i < src->num_entries; i++)
-	  dst->entries[i] = tifiles_ve_dup(src->entries[i]);
-
-  return 0;
-}
-
-/*
-  Copy an Ti8xBackup structure.
-  Memory must be freed when no longer used.
-*/
-int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
-{
-  memcpy(dst, src, sizeof(Ti8xBackup));
-
-  dst->data_part1 = (uint8_t *) calloc(dst->data_length1 , 1);
-  dst->data_part2 = (uint8_t *) calloc(dst->data_length2, 1);
-  dst->data_part3 = (uint8_t *) calloc(dst->data_length3, 1);
-  dst->data_part4 = (uint8_t *) calloc(dst->data_length4, 1);
-
-  if ((dst->data_part1 == NULL) ||
-      (dst->data_part2 == NULL) ||
-      (dst->data_part3 == NULL) || 
-	  (dst->data_part4 == NULL))
-    return ERR_MALLOC;
-
-  memcpy(dst->data_part1, src->data_part1, dst->data_length1);
-  memcpy(dst->data_part2, src->data_part2, dst->data_length2);
-  memcpy(dst->data_part3, src->data_part3, dst->data_length3);
-  memcpy(dst->data_part4, src->data_part4, dst->data_length4);
-
-  return 0;
-}
-
 /***********/
 /* Reading */
 /***********/
@@ -124,7 +73,7 @@ int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
  *
  * Load the single/group file into a Ti8xRegular structure.
  *
- * Structure content must be freed with #tifiles_content_free_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -247,7 +196,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
  *
  * Load the backup file into a Ti8xBackup structure.
  *
- * Structure content must be freed with #tifiles_content_free_backup when
+ * Structure content must be freed with #tifiles_content_delete_backup when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -349,7 +298,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
  *
  * Load the flash file into a Ti8xFlash structure.
  *
- * Structure content must be freed with #tifiles_content_free_flash when
+ * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -876,19 +825,19 @@ int ti8x_file_display(const char *filename)
   {
     ti8x_file_read_flash(filename, &content3);
     ti8x_content_display_flash(&content3);
-    tifiles_content_free_flash(&content3);
+    tifiles_content_delete_flash(&content3);
   } 
   else if (tifiles_file_is_backup(filename)) 
   {
     ti8x_file_read_backup(filename, &content2);
     ti8x_content_display_backup(&content2);
-    tifiles_content_free_backup(&content2);
+    tifiles_content_delete_backup(&content2);
   } 
   else if (tifiles_file_is_regular(filename)) 
   {
     ti8x_file_read_regular(filename, &content1);
     ti8x_content_display_regular(&content1);
-    tifiles_content_free_regular(&content1);
+    tifiles_content_delete_regular(&content1);
   } 
   else 
   {

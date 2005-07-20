@@ -53,14 +53,14 @@ TIEXPORT FileContent** TICALL tifiles_content_create_group(int n_entries)
 }
 
 /**
- * tifiles_content_free_group:
+ * tifiles_content_delete_group:
  *
  * Convenient function which free a NULL-terminated array of #FileContent 
  * structures (typically used to store a group file) and the array itself.
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
+TIEXPORT int TICALL tifiles_content_delete_group(FileContent **array)
 {
 	int i, n;
 	
@@ -71,7 +71,7 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
 	for (i = 0; i < n; i++) 
 	{
 #ifndef __WIN32__
-	    TRYC(tifiles_content_free_regular(array[i]));
+	    TRYC(tifiles_content_delete_regular(array[i]));
 		free(array[i]);
 #endif
 	}
@@ -90,7 +90,7 @@ TIEXPORT int TICALL tifiles_content_free_group(FileContent **array)
  * @dst_content: the address of a pointer. This pointer will see the allocated group file.
  *
  * Must be freed when no longer needed as well as the content of each #FileContent structure
- * (use #tifiles_content_free_regular as usual).
+ * (use #tifiles_content_delete_regular as usual).
  *
  * Group several #FileContent structures into a single one.
  *
@@ -135,7 +135,7 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
  * Ungroup a TI file by exploding the structure into an array of structures.
  *
  * Array must be freed when no longer needed as well as the content of each #FileContent 
- * structure (use #tifiles_content_free_regular as usual).
+ * structure (use #tifiles_content_delete_regular as usual).
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
@@ -220,13 +220,13 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   TRYC(tifiles_group_contents(src, &dst));
 
   // release allocated memory
-  tifiles_content_free_group(src);
+  tifiles_content_delete_group(src);
 
   // write grouped file
   TRYC(tifiles_file_write_regular(dst_filename, dst, &unused));
 
   // release allocated memory
-  tifiles_content_free_regular(dst);
+  tifiles_content_delete_regular(dst);
   free(dst);
 
   return 0;
@@ -277,8 +277,8 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   }
 
   // release allocated memory
-  tifiles_content_free_regular(&src);
-  tifiles_content_free_group(dst);
+  tifiles_content_delete_regular(&src);
+  tifiles_content_delete_group(dst);
 
   return 0;
 }

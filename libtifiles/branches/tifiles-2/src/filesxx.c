@@ -48,13 +48,13 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 }
 
 /**
- * tifiles_content_free_regular:
+ * tifiles_content_delete_regular:
  *
  * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
+TIEXPORT int TICALL tifiles_content_delete_regular(FileContent *content)
 {
   int i;
 
@@ -70,8 +70,8 @@ TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
   }
 
   free(content->entries);
-#ifndef __WIN32__
-  //free(content);
+#if 0
+  free(content);
 #endif
 
   return 0;
@@ -84,7 +84,7 @@ TIEXPORT int TICALL tifiles_content_free_regular(FileContent *content)
  *
  * Load the single/group file into a FileContent structure.
  *
- * Structure content must be freed with #tifiles_content_free_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -175,24 +175,28 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
 }
 
 /**
- * tifiles_content_free_regular:
+ * tifiles_content_delete_regular:
  *
  * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
+TIEXPORT int TICALL tifiles_content_delete_backup(BackupContent *content)
 {
   assert(content != NULL);
 
-  free(content->data_part);
-  free(content->data_part1);
-  free(content->data_part2);
-  free(content->data_part3);
-  free(content->data_part4);
+  if (tifiles_calc_is_ti9x(content->model))
+		free(content->data_part);
+  else if (tifiles_calc_is_ti8x(content->model))
+  {
+	  free(content->data_part1);
+	  free(content->data_part2);
+	  free(content->data_part3);
+	  free(content->data_part4);
+  }
 
-#ifndef __WIN32__
-  //free(content);
+#if 0
+  free(content);
 #endif
 
   return 0;
@@ -205,7 +209,7 @@ TIEXPORT int TICALL tifiles_content_free_backup(BackupContent *content)
  *
  * Load the single/group file into a FileContent structure.
  *
- * Structure content must be freed with #tifiles_content_free_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -314,13 +318,13 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
 }
 
 /**
- * tifiles_content_free_flash:
+ * tifiles_content_delete_flash:
  *
  * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
+TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
 	assert(content != NULL);
 
@@ -360,8 +364,8 @@ TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
 #endif
     return ERR_BAD_CALC;
 
-#ifndef __WIN32__
-  //free(content);
+#if 0
+  free(content);
 #endif
 
 	return 0;
@@ -374,7 +378,7 @@ TIEXPORT int TICALL tifiles_content_free_flash(FlashContent *content)
  *
  * Load the single/group file into a FileContent structure.
  *
- * Structure content must be freed with #tifiles_content_free_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -569,3 +573,111 @@ TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int 
 
   return table;
 }
+
+// --- unused code
+
+#if 0
+/*************************/
+/* Copying (duplicating) */
+/*************************/
+
+/*
+  Copy an Ti8xRegular structure.
+  Memory must be freed when no longer used.
+*/
+int ti8x_dup_Ti8xRegular(Ti8xRegular *dst, Ti8xRegular *src)
+{
+  int i;
+
+  memcpy(dst, src, sizeof(Ti8xRegular));
+
+  dst->entries = calloc(src->num_entries + 1, sizeof(VarEntry*));
+  if (dst->entries == NULL)
+    return ERR_MALLOC;
+
+  for (i = 0; i < src->num_entries; i++)
+	  dst->entries[i] = tifiles_ve_dup(src->entries[i]);
+
+  return 0;
+}
+
+/*
+  Copy an Ti8xBackup structure.
+  Memory must be freed when no longer used.
+*/
+int ti8x_dup_Backup(Ti8xBackup *dst, Ti8xBackup *src)
+{
+  memcpy(dst, src, sizeof(Ti8xBackup));
+
+  dst->data_part1 = (uint8_t *) calloc(dst->data_length1 , 1);
+  dst->data_part2 = (uint8_t *) calloc(dst->data_length2, 1);
+  dst->data_part3 = (uint8_t *) calloc(dst->data_length3, 1);
+  dst->data_part4 = (uint8_t *) calloc(dst->data_length4, 1);
+
+  if ((dst->data_part1 == NULL) ||
+      (dst->data_part2 == NULL) ||
+      (dst->data_part3 == NULL) || 
+	  (dst->data_part4 == NULL))
+    return ERR_MALLOC;
+
+  memcpy(dst->data_part1, src->data_part1, dst->data_length1);
+  memcpy(dst->data_part2, src->data_part2, dst->data_length2);
+  memcpy(dst->data_part3, src->data_part3, dst->data_length3);
+  memcpy(dst->data_part4, src->data_part4, dst->data_length4);
+
+  return 0;
+}
+
+/*************************/
+/* Copying (duplicating) */
+/*************************/
+
+/*
+  Copy an Ti9xRegular structure.
+  Memory must be freed when no longer used.
+*/
+int ti9x_dup_Ti9xRegular(Ti9xRegular * dst, Ti9xRegular * src)
+{
+  int i;
+
+  memcpy(dst, src, sizeof(Ti9xRegular));
+
+  dst->entries = calloc(src->num_entries + 1, sizeof(VarEntry*));
+  if (dst->entries == NULL)
+    return ERR_MALLOC;
+
+  for (i = 0; i < src->num_entries; i++)
+	  dst->entries[i] = tifiles_ve_dup(src->entries[i]);
+
+  return 0;
+}
+
+/*
+  Copy an Ti9xBackup structure.
+  Memory must be freed when no longer used.
+*/
+int ti9x_dup_Backup(Ti9xBackup * dst, Ti9xBackup * src)
+{
+  memcpy(dst, src, sizeof(Ti9xBackup));
+
+  dst->data_part = (uint8_t *) calloc(dst->data_length, 1);
+  if (dst->data_part == NULL)
+    return ERR_MALLOC;
+
+  memcpy(dst->data_part, src->data_part, dst->data_length);
+
+  return 0;
+}
+
+/*
+  Copy an Ti9xFlash structure.
+  Memory must be freed when no longer used.
+*/
+int ti9x_dup_Flash(Ti9xFlash * dst, Ti9xFlash * src)
+{
+  // to do...
+
+  return 0;
+}
+
+#endif

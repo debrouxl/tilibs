@@ -357,19 +357,19 @@ extern "C" {
 
   // filesXX.c
   TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
-  TIEXPORT int          TICALL tifiles_content_free_regular(FileContent *content);
+  TIEXPORT int          TICALL tifiles_content_delete_regular(FileContent *content);
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
   TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content);
 
   TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void);
-  TIEXPORT int            TICALL tifiles_content_free_backup(BackupContent *content);
+  TIEXPORT int            TICALL tifiles_content_delete_backup(BackupContent *content);
   TIEXPORT int TICALL tifiles_file_read_backup(const char *filename, BackupContent *content);
   TIEXPORT int TICALL tifiles_file_write_backup(const char *filename, BackupContent *content);
   TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content);
 
   TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void);
-  TIEXPORT int           TICALL tifiles_content_free_flash(FlashContent *content);
+  TIEXPORT int           TICALL tifiles_content_delete_flash(FlashContent *content);
   TIEXPORT int TICALL tifiles_file_read_flash(const char *filename, FlashContent *content);
   TIEXPORT int TICALL tifiles_file_write_flash(const char *filename, FlashContent *content);
   TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content);
@@ -379,7 +379,7 @@ extern "C" {
 
   // grouped.c
   TIEXPORT FileContent** TICALL tifiles_content_create_group(int n_entries);
-  TIEXPORT int           TICALL tifiles_content_free_group(FileContent **array);
+  TIEXPORT int           TICALL tifiles_content_delete_group(FileContent **array);
 
   TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content);
   TIEXPORT int TICALL tifiles_ungroup_content(FileContent *src_content, FileContent ***dst_contents);

@@ -7,6 +7,9 @@ To do:
 	- tifiles_is_varname_tokenized
 	- tifiles_tokenize_varname
 
+	- replace tifiles_content_free_regular by tifiles_content_delete_regular
+	- clean-up char & uint8_t
+
 Log:
 
 - 04/06/2005, version 0.0.4: roms
