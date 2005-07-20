@@ -256,7 +256,7 @@ static int send_fblock2(uint8_t *data, int length)
 {
 	int ret;
 
-	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
+	ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, (char *)data, length, to);
 
 	if(ret == -ETIMEDOUT) {
 		printl1(2, "usb_bulk_write (%s).\n", usb_strerror());
@@ -412,7 +412,7 @@ int slv_get2(uint8_t * data)
   	if (nBytesRead2 <= 0) {
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, (char*)rBuf2, 
 					    max_ps, to);
 					    
 	      		if (toELAPSED(clk, time_out))
@@ -473,8 +473,8 @@ int slv_check2(int *status)
 
 	    	toSTART(clk);
 	    	do {
-	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf2, 
-					    max_ps, to);
+	      		ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, 
+					    (char*)rBuf2, max_ps, to);
 					    
 	      		if (toELAPSED(clk, time_out))
 				return ERR_READ_TIMEOUT;
