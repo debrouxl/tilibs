@@ -364,7 +364,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	// Transfer program to calc
 	tifiles_file_read_regular(DUMP_ROM85_FILE, &content);
 	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_free_regular(&content);
+	tifiles_content_delete_regular(&content);
 	unlink(DUMP_ROM85_FILE);
 
 	// Open file

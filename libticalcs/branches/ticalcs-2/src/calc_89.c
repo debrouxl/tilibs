@@ -353,7 +353,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti89_send_CTS());
 	TRYF(ti89_recv_ACK(NULL));
 
-	ve->data = calloc(ve->size + 4, 1);
+	ve->data = tifiles_ve_alloc_data(ve->size + 4);
 	TRYF(ti89_recv_XDP(&unused, ve->data));
 	memmove(ve->data, ve->data + 4, ve->size);
 	TRYF(ti89_send_ACK());
@@ -432,7 +432,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	ticalcs_dirlist_destroy(&apps);
 
 	tifiles_group_contents(group, &single);
-	tifiles_content_free_group(group);
+	tifiles_content_delete_group(group);
 
 	// Swap content and single because we have a pointer on an allocated content
 	{
@@ -546,7 +546,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		TRYF(ti89_send_CTS());
 		TRYF(ti89_recv_ACK(NULL));
 
-		ve->data = calloc(ve->size + 4, 1);
+		ve->data = tifiles_ve_alloc_data(ve->size + 4);
 		TRYF(ti89_recv_XDP(&unused, ve->data));
 		memmove(ve->data, ve->data + 4, ve->size);
 		TRYF(ti89_send_ACK());
@@ -726,7 +726,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	// Transfer program to calc
 	tifiles_file_read_regular(DUMP_ROM89_FILE, &content);
 	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_free_regular(&content);
+	tifiles_content_delete_regular(&content);
 	unlink(DUMP_ROM89_FILE);
 
 	// Launch calculator program by remote control

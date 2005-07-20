@@ -573,7 +573,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	// Transfer program to calc
 	tifiles_file_read_regular(DUMP_ROM73_FILE, &content);
 	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_free_regular(&content);
+	tifiles_content_delete_regular(&content);
 	unlink(DUMP_ROM73_FILE);
 
 	// Open file
@@ -750,7 +750,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     TRYF(ti73_send_ACK());
 
 	time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
-	//printf("<%08x>\n", time);
+	printf("<%08x>\n", time);
 
 	ref.tm_year = 1997 - 1900;
 	ref.tm_mon = 0;
