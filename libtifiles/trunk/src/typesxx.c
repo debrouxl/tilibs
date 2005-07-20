@@ -515,7 +515,7 @@ TIEXPORT const char *TICALL tifiles_flash_os_file_ext()
   return NULL;
 }
 
-TIEXPORT const int TICALL tifiles_folder_type()
+TIEXPORT int TICALL tifiles_folder_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:
@@ -550,7 +550,7 @@ TIEXPORT const int TICALL tifiles_folder_type()
   return -1;
 }
 
-TIEXPORT const int TICALL tifiles_flash_type()
+TIEXPORT int TICALL tifiles_flash_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:
@@ -585,7 +585,7 @@ TIEXPORT const int TICALL tifiles_flash_type()
   return -1;
 }
 
-TIEXPORT const int TICALL tifiles_idlist_type()
+TIEXPORT int TICALL tifiles_idlist_type()
 {
   switch (tifiles_calc_type) {
   case CALC_NONE:

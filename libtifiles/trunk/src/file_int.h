@@ -122,9 +122,9 @@ extern "C" {
   TIEXPORT const char *TICALL tifiles_calctype2signature(TicalcType calc_type);
   TIEXPORT TicalcType TICALL tifiles_signature2calctype(const char *signat);
 	
-  TIEXPORT const int TICALL tifiles_folder_type(void);
-  TIEXPORT const int TICALL tifiles_flash_type(void);
-  TIEXPORT const int TICALL tifiles_idlist_type(void);
+  TIEXPORT int TICALL tifiles_folder_type(void);
+  TIEXPORT int TICALL tifiles_flash_type(void);
+  TIEXPORT int TICALL tifiles_idlist_type(void);
   
   TIEXPORT int TICALL tifiles_is_ti8x(TicalcType calc_type);
   TIEXPORT int TICALL tifiles_is_ti9x(TicalcType calc_type);

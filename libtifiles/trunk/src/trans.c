@@ -336,7 +336,7 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname,
   case CALC_TI83:
   case CALC_TI83P:
   case CALC_TI84P:
-    return ti8x_detokenize_varname(varname, translate, vartype);
+    return (uint8_t *)ti8x_detokenize_varname(varname, translate, vartype);
     break;
   case CALC_TI85:
   case CALC_TI86:
@@ -345,10 +345,10 @@ TIEXPORT uint8_t TICALL *tixx_detokenize_varname(const char *varname,
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
-    return strcpy(translate, varname);
+    return (uint8_t *)strcpy(translate, varname);
     break;
   default:
-    return strcpy(translate, "________");
+    return (uint8_t *)strcpy(translate, "________");
     break;
   }
 }
