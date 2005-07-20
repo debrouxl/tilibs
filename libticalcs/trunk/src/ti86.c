@@ -198,7 +198,7 @@ int ti86_recv_backup(const char *filename, int mask_mode)
   sprintf(update->label_text, _("Waiting backup..."));
   update_label();
 
-  TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
+  TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, (char*)varname));
   content->data_length2 = varname[0] | (varname[1] << 8);
   content->data_length3 = varname[2] | (varname[3] << 8);
   content->data_length4 = varname[4] | (varname[5] << 8);
@@ -267,7 +267,7 @@ int ti86_send_backup(const char *filename, int mask_mode)
   varname[4] = LSB(content.data_length4);
   varname[5] = MSB(content.data_length4);
 
-  TRYF(ti85_send_VAR(content.data_length1, TI86_BKUP, varname));
+  TRYF(ti85_send_VAR(content.data_length1, TI86_BKUP, (char*)varname));
   TRYF(ti85_recv_ACK(&status));
 
   sprintf(update->label_text, _("Waiting user's action..."));
@@ -410,14 +410,14 @@ int ti86_send_var(const char *filename, int mask_mode, char **actions)
     uint8_t varname[18];
 
     if (actions == NULL)	// backup or old behaviour
-      strcpy(varname, entry->name);
+      strcpy((char*)varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
       printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
-      strcpy(varname, actions[i] + 1);
+      strcpy((char*)varname, actions[i] + 1);
 
-    TRYF(ti85_send_RTS(entry->size, entry->type, varname));
+    TRYF(ti85_send_RTS(entry->size, entry->type, (char*)varname));
     TRYF(ti85_recv_ACK(&status));
 
     TRYF(ti85_recv_SKIP(&rej_code));

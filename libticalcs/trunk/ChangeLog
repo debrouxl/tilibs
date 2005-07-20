@@ -2,9 +2,12 @@ SubVersion: $Id$
 
 Log:
 
+- 20/07/2005, version 4.6.1: roms
+	Fixed new gcc4.0 warnings.
+	
 - 12/07/2005, version 4.6.0: roms
-	Fixed possible buffer overflow with recv_packet (usually occurs with virtual links
-		because the received length is invalid).
+	Fixed possible buffer overflow with recv_packet (usually occurs with 
+	virtual links because the received length is invalid).
 
 - 24/04/2005, version 4.5.9: roms
 	Adding new function for non-silent variable receiving support.

@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include <unistd.h>
+#include <unistd.h>
 
 #include "gettext.h"
 
@@ -130,7 +130,7 @@ int ti82_recv_backup(const char *filename, int mask_mode)
   sprintf(update->label_text, _("Waiting for backup..."));
   update_label();
 
-  TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, varname));
+  TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, (char*)varname));
   content->data_length2 = varname[0] | (varname[1] << 8);
   content->data_length3 = varname[2] | (varname[3] << 8);
   content->mem_address = varname[4] | (varname[5] << 8);
@@ -190,7 +190,7 @@ int ti82_send_backup(const char *filename, int mask_mode)
   varname[3] = MSB(content.data_length3);
   varname[4] = LSB(content.mem_address);
   varname[5] = MSB(content.mem_address);
-  TRYF(ti82_send_VAR(content.data_length1, TI82_BKUP, varname));
+  TRYF(ti82_send_VAR(content.data_length1, TI82_BKUP, (char*)varname));
   TRYF(ti82_recv_ACK(&status));
 
   sprintf(update->label_text, _("Waiting user's action..."));

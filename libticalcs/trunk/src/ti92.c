@@ -351,15 +351,15 @@ int ti92_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   ve = &(content->entries[nvar]);
   memcpy(ve, entry, sizeof(TiVarEntry));
 
-  strcpy(varname, entry->folder);
-  strcat(varname, "\\");
-  strcat(varname, entry->name);
+  strcpy((char*)varname, entry->folder);
+  strcat((char*)varname, "\\");
+  strcat((char*)varname, entry->name);
 
-  tifiles_translate_varname(varname, utf8, entry->type);
+  tifiles_translate_varname((char*)varname, (char*)utf8, entry->type);
   sprintf(update->label_text, _("Receiving '%s'"), utf8);
   update_label();
 
-  TRYF(ti92_send_REQ(0, entry->type, varname));
+  TRYF(ti92_send_REQ(0, entry->type, (char*)varname));
   TRYF(ti92_recv_ACK(&status));
   if (status != 0)
     return ERR_MISSING_VAR;
@@ -425,26 +425,26 @@ int ti92_send_var(const char *filename, int mask_mode, char **actions)
     uint8_t full_name[18], varname[18], utf8[35];
 
     if (actions == NULL)	// backup or old behaviour
-      strcpy(varname, entry->name);
+      strcpy((char*)varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
       printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
-      strcpy(varname, actions[i] + 1);
+      strcpy((char*)varname, actions[i] + 1);
 
     if (mask_mode & MODE_LOCAL_PATH)
-      strcpy(full_name, varname);
+      strcpy((char*)full_name, (char*)varname);
     else {
-      strcpy(full_name, entry->folder);
-      strcat(full_name, "\\");
-      strcat(full_name, varname);
+      strcpy((char*)full_name, entry->folder);
+      strcat((char*)full_name, "\\");
+      strcat((char*)full_name, (char*)varname);
     }
 
-    tifiles_translate_varname(full_name, utf8, entry->type);
+    tifiles_translate_varname((char*)full_name, (char*)utf8, entry->type);
     sprintf(update->label_text, _("Sending '%s'"), utf8);
     update_label();
 
-    TRYF(ti92_send_VAR(entry->size, entry->type, varname));
+    TRYF(ti92_send_VAR(entry->size, entry->type, (char*)varname));
     TRYF(ti92_recv_ACK(NULL));
 
     TRYF(ti92_recv_CTS());
@@ -518,7 +518,7 @@ int ti92_recv_var_2(char *filename, int mask_mode, TiVarEntry *entry)
             strcpy(ve->name, tipath);
         }
 
-		tifiles_translate_varname(ve->name, utf8, ve->type);
+		tifiles_translate_varname((char*)ve->name, (char*)utf8, ve->type);
 		sprintf(update->label_text, _("Receiving '%s'"), utf8);
 		update_label();
 

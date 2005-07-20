@@ -186,9 +186,9 @@ int recv_packet(uint8_t * host, uint8_t * cmd, uint16_t * length,
 }
 
 /* Complete a 8-chars buffer with NUL chars */
-void pad_buffer(char *varname, uint8_t value)
+void pad_buffer(uint8_t* varname, uint8_t value)
 {
-  int i, len = strlen(varname);
+  int i, len = strlen((char *)varname);
 
   for (i = len; i < 8; i++)
     varname[i] = value;

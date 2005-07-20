@@ -193,7 +193,7 @@ int ti73_send_REQ(uint16_t varsize, uint8_t vartype, char *varname,
   uint8_t buffer[16] = { 0 };
   uint8_t trans[9];
 
-  tifiles_translate_varname(varname, trans, vartype);
+  tifiles_translate_varname(varname, (char*)trans, vartype);
   DISPLAY
       (" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n",
        varsize, varsize, vartype, trans, varattr);
@@ -242,7 +242,7 @@ int ti73_send_RTS(uint16_t varsize, uint8_t vartype, char *varname,
   uint8_t buffer[16];
   uint8_t trans[9];
 
-  tifiles_translate_varname(varname, trans, vartype);
+  tifiles_translate_varname(varname, (char*)trans, vartype);
   DISPLAY
       (" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>, attr=%i)\n",
        varsize, varsize, vartype, trans, varattr);
@@ -289,7 +289,7 @@ int ti73_recv_VAR(uint16_t * varsize, uint8_t * vartype, char *varname,
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  tifiles_translate_varname(varname, trans, *vartype);
+  tifiles_translate_varname(varname, (char*)trans, *vartype);
   printl2(0, " (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *varsize, *vartype, trans, *varattr);
   printl2(0, ".\n");
@@ -428,7 +428,7 @@ int ti73_recv_RTS(uint16_t * varsize, uint8_t * vartype, char *varname,
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  tifiles_translate_varname(varname, trans, *vartype);
+  tifiles_translate_varname(varname, (char*)trans, *vartype);
   printl2(0, " (size=0x%04X=%i, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *varsize, *vartype, trans, *varattr);
   printl2(0, ".\n");

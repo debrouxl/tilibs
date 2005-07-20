@@ -409,15 +409,15 @@ int ti89_recv_var(char *filename, int mask_mode, TiVarEntry * entry)
   ve = &(content->entries[nvar]);
   memcpy(ve, entry, sizeof(TiVarEntry));
 
-  strcpy(varname, entry->folder);
-  strcat(varname, "\\");
-  strcat(varname, entry->name);
+  strcpy((char*)varname, entry->folder);
+  strcat((char*)varname, "\\");
+  strcat((char*)varname, entry->name);
 
-  tifiles_translate_varname(varname, utf8, entry->type);
+  tifiles_translate_varname((char*)varname, (char*)utf8, entry->type);
   sprintf(update->label_text, _("Receiving '%s'"), utf8);
   update_label();
 
-  TRYF(ti89_send_REQ(0, entry->type, varname));
+  TRYF(ti89_send_REQ(0, entry->type, (char*)varname));
   TRYF(ti89_recv_ACK(&status));
   if (status != 0)
     return ERR_MISSING_VAR;
@@ -484,22 +484,22 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
     uint8_t full_name[18], varname[18], utf8[35];
 
     if (actions == NULL)	// backup or old behaviour
-      strcpy(varname, entry->name);
+      strcpy((char*)varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
       printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
-      strcpy(varname, actions[i] + 1);
+      strcpy((char*)varname, actions[i] + 1);
 
     if ((mask_mode & MODE_LOCAL_PATH) && !(mask_mode & MODE_BACKUP)) {	// local & not backup
-      strcpy(full_name, varname);
+      strcpy((char*)full_name, (char*)varname);
     } else {			// full or backup
-      strcpy(full_name, entry->folder);
-      strcat(full_name, "\\");
-      strcat(full_name, varname);
+      strcpy((char*)full_name, entry->folder);
+      strcat((char*)full_name, "\\");
+      strcat((char*)full_name, (char*)varname);
     }
 
-    tifiles_translate_varname(full_name, utf8, entry->type);
+    tifiles_translate_varname((char*)full_name, (char*)utf8, entry->type);
     sprintf(update->label_text, _("Sending '%s'"), utf8);
     update_label();
 
@@ -515,9 +515,9 @@ int ti89_send_var(const char *filename, int mask_mode, char **actions)
 	vartype = 0x27;
 	break;
       }
-      TRYF(ti89_send_RTS(entry->size, vartype, full_name));
+      TRYF(ti89_send_RTS(entry->size, vartype, (char*)full_name));
     } else {
-      TRYF(ti89_send_VAR(entry->size, vartype, full_name));
+      TRYF(ti89_send_VAR(entry->size, vartype, (char*)full_name));
     }
 
     TRYF(ti89_recv_ACK(NULL));
@@ -601,7 +601,7 @@ int ti89_recv_var_2(char *filename, int mask_mode, TiVarEntry * entry)
             strcpy(ve->name, tipath);
         }
 
-		tifiles_translate_varname(ve->name, utf8, ve->type);
+		tifiles_translate_varname(ve->name, (char*)utf8, ve->type);
 		sprintf(update->label_text, _("Receiving '%s'"), utf8);
 		update_label();
 
@@ -913,13 +913,13 @@ int ti89_get_idlist(char *id)
   TRYF(ti89_send_REQ(0x0000, TI89_IDLIST, ""));
   TRYF(ti89_recv_ACK(NULL));
 
-  TRYF(ti89_recv_VAR(&varsize, &vartype, varname));
+  TRYF(ti89_recv_VAR(&varsize, &vartype, (char*)varname));
   TRYF(ti89_send_ACK());
 
   TRYF(ti89_send_CTS());
   TRYF(ti89_recv_ACK(NULL));
 
-  TRYF(ti89_recv_XDP(&varsize, id));
+  TRYF(ti89_recv_XDP(&varsize, (uint8_t*)id));
   id[varsize] = '\0';
   TRYF(ti89_send_ACK());
 
@@ -951,7 +951,7 @@ int ti89_get_clock(TicalcClock * clock, int mode)
   TRYF(ti89_send_REQ(0x0000, TI89_CLK, "Clock"));
   TRYF(ti89_recv_ACK(NULL));
 
-  TRYF(ti89_recv_VAR(&varsize, &vartype, varname));
+  TRYF(ti89_recv_VAR(&varsize, &vartype, (char*)varname));
   TRYF(ti89_send_ACK());
 
   TRYF(ti89_send_CTS());

@@ -219,7 +219,7 @@ int ti73_recv_backup(const char *filename, int mask_mode)
   TRYF(ti73_recv_ACK(NULL));
 
   TRYF(ti73_recv_VAR
-       (&content->data_length1, &content->type, varname, &attr));
+       (&content->data_length1, &content->type, (char*)varname, &attr));
   content->data_length2 = varname[0] | (varname[1] << 8);
   content->data_length3 = varname[2] | (varname[3] << 8);
   content->mem_address = varname[4] | (varname[5] << 8);
@@ -279,7 +279,7 @@ int ti73_send_backup(const char *filename, int mask_mode)
   varname[4] = LSB(content.mem_address);
   varname[5] = MSB(content.mem_address);
 
-  TRYF(ti73_send_RTS(content.data_length1, TI73_BKUP, varname, 0x00));
+  TRYF(ti73_send_RTS(content.data_length1, TI73_BKUP, (char*)varname, 0x00));
   TRYF(ti73_recv_ACK(NULL));
 
   TRYF(ti73_recv_SKIP(&rej_code))
@@ -410,16 +410,16 @@ int ti73_send_var(const char *filename, int mask_mode, char **actions)
     uint8_t varname[18];
 
     if (actions == NULL)	// backup or old behaviour
-      strcpy(varname, entry->name);
+      strcpy((char*)varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
       printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
-      strcpy(varname, actions[i] + 1);
+      strcpy((char*)varname, actions[i] + 1);
 
     attrb = (mask_mode & MODE_SEND_TO_FLASH) ?
 	ATTRB_ARCHIVED : entry->attr;
-    TRYF(ti73_send_RTS(entry->size, entry->type, varname, attrb));
+    TRYF(ti73_send_RTS(entry->size, entry->type, (char*)varname, attrb));
     TRYF(ti73_recv_ACK(NULL));
 
     TRYF(ti73_recv_SKIP(&rej_code));
@@ -707,14 +707,14 @@ int ti73_get_idlist(char *id)
   TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
   TRYF(ti73_recv_ACK(&unused));
 
-  TRYF(ti73_recv_VAR((uint16_t *) & varsize, &vartype, varname, &varattr));
+  TRYF(ti73_recv_VAR((uint16_t *) & varsize, &vartype, (char*)varname, &varattr));
   fixup(varsize);
   TRYF(ti73_send_ACK());
 
   TRYF(ti73_send_CTS());
   TRYF(ti73_recv_ACK(NULL));
 
-  TRYF(ti73_recv_XDP((uint16_t *) & varsize, id));
+  TRYF(ti73_recv_XDP(&varsize, (uint8_t *)id));
   id[varsize] = '\0';
   TRYF(ti73_send_ACK());
 

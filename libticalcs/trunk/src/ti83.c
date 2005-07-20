@@ -188,7 +188,7 @@ int ti83_recv_backup(const char *filename, int mask_mode)
   TRYF(ti82_send_REQ(0x0000, TI83_BKUP, ""));
   TRYF(ti82_recv_ACK(&unused));
 
-  TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, varname));
+  TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, (char*)varname));
   content->data_length2 = varname[0] | (varname[1] << 8);
   content->data_length3 = varname[2] | (varname[3] << 8);
   content->mem_address = varname[4] | (varname[5] << 8);
@@ -248,7 +248,7 @@ int ti83_send_backup(const char *filename, int mask_mode)
   varname[4] = LSB(content.mem_address);
   varname[5] = MSB(content.mem_address);
 
-  TRYF(ti82_send_RTS(content.data_length1, TI83_BKUP, varname));
+  TRYF(ti82_send_RTS(content.data_length1, TI83_BKUP, (char*)varname));
   TRYF(ti82_recv_ACK(&status));
 
   TRYF(ti82_recv_SKIP(&rej_code))
@@ -379,14 +379,14 @@ int ti83_send_var(const char *filename, int mask_mode, char **actions)
     uint8_t varname[18];
 
     if (actions == NULL)	// backup or old behaviour
-      strcpy(varname, entry->name);
+      strcpy((char*)varname, entry->name);
     else if (actions[i][0] == ACT_SKIP) {
       printl2(0, _(" '%s' has been skipped !\n"), entry->name);
       continue;
     } else if (actions[i][0] == ACT_OVER)
-      strcpy(varname, actions[i] + 1);
+      strcpy((char*)varname, actions[i] + 1);
 
-    TRYF(ti82_send_RTS(entry->size, entry->type, varname));
+    TRYF(ti82_send_RTS(entry->size, entry->type, (char*)varname));
     TRYF(ti82_recv_ACK(&status));
 
     TRYF(ti82_recv_SKIP(&rej_code));

@@ -78,13 +78,13 @@ extern "C" {
   TIEXPORT void TICALL ticalc_action_destroy_array(char **array);
 
   // tikeys.c
-  TIEXPORT const TicalcKey TICALL ticalc_73_keys(unsigned char
+  TIEXPORT TicalcKey TICALL ticalc_73_keys(unsigned char
 						 ascii_code);
-  TIEXPORT const TicalcKey TICALL ticalc_83p_keys(unsigned char
+  TIEXPORT TicalcKey TICALL ticalc_83p_keys(unsigned char
 						  ascii_code);
-  TIEXPORT const TicalcKey TICALL ticalc_89_keys(unsigned char
+  TIEXPORT TicalcKey TICALL ticalc_89_keys(unsigned char
 						 ascii_code);
-  TIEXPORT const TicalcKey TICALL ticalc_92p_keys(unsigned char
+  TIEXPORT TicalcKey TICALL ticalc_92p_keys(unsigned char
 						  ascii_code);
 
   // clock.c
