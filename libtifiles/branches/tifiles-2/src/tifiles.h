@@ -394,16 +394,16 @@ extern "C" {
 
   // varentry.c
   TIEXPORT VarEntry*	TICALL tifiles_ve_create(void);
-  TIEXPORT VarEntry**	TICALL tifiles_ve_create_array(int nelts);
+  TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
+  TIEXPORT void			TICALL tifiles_ve_delete(VarEntry*);
 
   TIEXPORT void*		tifiles_ve_alloc_data(size_t size);
-  TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
-
-  TIEXPORT void			TICALL tifiles_ve_delete(VarEntry*);
-  TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry**);
-
   TIEXPORT VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
   TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src);
+
+  TIEXPORT VarEntry**	TICALL tifiles_ve_create_array(int nelts);
+  TIEXPORT VarEntry**	TICALL tifiles_ve_resize_array(VarEntry**, int nelts);
+  TIEXPORT void			TICALL tifiles_ve_delete_array(VarEntry**);
 
   TIEXPORT FlashPage*	TICALL tifiles_fp_create(void);
   TIEXPORT FlashPage**	TICALL tifiles_fp_create_array(int nelts);

@@ -82,7 +82,22 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size)
  **/
 TIEXPORT VarEntry**	TICALL tifiles_ve_create_array(int nelts)
 {
-	return calloc(nelts + 1, sizeof(VarEntry));
+	return calloc(nelts + 1, sizeof(VarEntry *));
+}
+
+/**
+ * tifiles_ve_resize_array:
+ * @array: address of array
+ * @nelts: size of NULL-terminated array (number of VarEntry structures).
+ *
+ * Re-allocate a NULL-terminated array of VarEntry structures. You have to allocate
+ * each elements of the array by yourself.
+ *
+ * Return value: the array or NULL if error.
+ **/
+TIEXPORT VarEntry**	TICALL tifiles_ve_resize_array(VarEntry** array, int nelts)
+{
+	return realloc(array, (nelts + 1) * sizeof(VarEntry *));
 }
 
 /**

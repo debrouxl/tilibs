@@ -444,38 +444,43 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
-    data_length += entry->size + 15;
-    if (is_ti8586(content->model))
-      data_length += 1;
-    if (is_ti83p(content->model))
-      data_length += 2;
+
+	if(content->model == CALC_TI85)
+		data_length += entry->size + 8 + strlen(entry->name);
+	else if(content->model == CALC_TI86)
+      data_length += entry->size + 16;
+    else if (is_ti83p(content->model))
+      data_length += entry->size + 17;
   }
+
   if (data_length > 65535)
     return ERR_GROUP_SIZE;
   fwrite_word(f, (uint16_t) data_length);
-
-  switch (content->model) 
-  {
-  case CALC_TI85:
-  case CALC_TI86:
-    packet_length = 0x0C;
-    break;
-  case CALC_TI83P:
-  case CALC_TI84P:
-    packet_length = 0x0D;
-    break;
-  case CALC_TI82:
-  case CALC_TI83:
-    packet_length = 0x0B;
-    break;
-  default:
-    break;
-  }
 
   // write data section
   for (i = 0, sum = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
+
+	switch (content->model) 
+	  {
+	  case CALC_TI85:
+		packet_length = 4 + strlen(entry->name);	//offset to data length
+		break;
+	  case CALC_TI86:
+		packet_length = 0x0C;
+		break;
+	  case CALC_TI83P:
+	  case CALC_TI84P:
+		packet_length = 0x0D;
+		break;
+	  case CALC_TI82:
+	  case CALC_TI83:
+		packet_length = 0x0B;
+		break;
+	  default:
+		break;
+	  }
 
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
