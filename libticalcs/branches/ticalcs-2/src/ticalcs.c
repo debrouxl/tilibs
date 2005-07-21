@@ -61,6 +61,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI84P
 	&calc_84p,
 #endif
+#ifndef NO_TI85
+	&calc_85,
+#endif
 #ifndef NO_TI86
 	&calc_86,
 #endif
@@ -261,7 +264,7 @@ TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 }
 
 /**
- * ticalcs_cable_attach:
+ * ticalcs_cable_detach:
  * @handle: the handle
  * @cable: a cable to use
  *

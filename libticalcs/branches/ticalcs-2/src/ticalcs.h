@@ -437,7 +437,7 @@ struct _CalcFncts
 	int		(*recv_var)		(CalcHandle*, CalcMode, FileContent*, VarRequest*);
 
 	int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
-	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry*);
+	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry**);
 
 	int		(*send_flash)	(CalcHandle*, FlashContent*);
 	int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
@@ -553,7 +553,7 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry**);
 
 	TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle*, FlashContent*, VarRequest*);
@@ -577,7 +577,7 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle*, CalcMode, const char*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle*, CalcMode, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry*);
+	TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry**);
 	
 	TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle*, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle*, const char*, VarRequest*);

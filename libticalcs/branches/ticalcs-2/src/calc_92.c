@@ -346,7 +346,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	return send_var(handle, mode, content);
 }
 
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry* ve)
+static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
 {
 	uint32_t unused;
 	int nvar, err;

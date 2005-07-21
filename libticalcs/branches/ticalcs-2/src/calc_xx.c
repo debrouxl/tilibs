@@ -380,14 +380,14 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
  * @handle: a previously allocated handle
  * @mode:
  * @content: where to store variables
- * @var: informations on the received variable
+ * @var: informations on the received variable (if single) or NULL (if group)
  *
  * Receive one or more variable (non-silent mode).
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
 TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, 
-											 FileContent* content, VarEntry* var)
+											 FileContent* content, VarEntry** var)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
@@ -631,6 +631,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
+	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI92:
 		// true backup capability
@@ -680,6 +681,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
+	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI92:
 		// true backup capability
@@ -797,15 +799,15 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode,
  * ticalcs_calc_recv_var_ns2:
  * @handle: a previously allocated handle
  * @mode:
- * @content: where to store variables
- * @var: informations on the received variable
+ * @filename: where to store variables
+ * @var: informations on the received variable (if single) or NULL (if group)
  *
  * Receive one or more variable (non-silent mode).
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
 TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
-											 const char* filename, VarEntry* vr)
+											 const char* filename, VarEntry** vr)
 {
 	FileContent *content;
 

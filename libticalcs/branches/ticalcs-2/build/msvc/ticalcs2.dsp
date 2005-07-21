@@ -177,6 +177,10 @@ SOURCE=..\..\src\cmd92.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dusb_pkt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\packets.c
 # End Source File
 # End Group
