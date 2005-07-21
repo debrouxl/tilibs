@@ -29,7 +29,6 @@
 #if HAVE_LOCALE_H
 #include <locale.h>
 #endif
-#include "gettext.h"
 
 #include <stdio.h>
 #include <stdlib.h>
