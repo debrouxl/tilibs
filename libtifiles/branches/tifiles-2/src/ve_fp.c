@@ -153,7 +153,7 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
  * tifiles_ve_dup:
  * @src: source entry.
  *
- * Duplicate VarEntry and its content from src to dst.
+ * Duplicate VarEntry and its content from src to dst (full copy).
  *
  * Return value: a newly allocated entry (must be freed with #tifiles_ve_delete when no longer needed).
  **/
@@ -163,9 +163,11 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 
 	assert(src != NULL);
 
+	memcpy(dst, src, sizeof(VarEntry));
 	dst->data = (uint8_t *) calloc(dst->size, 1);
 	if (dst->data == NULL)
 		return NULL;
+
 	memcpy(dst->data, src->data, dst->size);
 
 	return dst;

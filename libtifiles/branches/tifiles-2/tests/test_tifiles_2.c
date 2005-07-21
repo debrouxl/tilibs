@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 	// no file
 
 	// TI82 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti82"));
 	test_ti82_backup_support();
 	test_ti82_regular_support();
@@ -279,7 +279,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI83+ support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti84p"));
 	//test_ti84p_backup_support();
 	test_ti84p_regular_support();
@@ -289,7 +289,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI86 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti86"));
 	test_ti86_backup_support();
 	test_ti86_regular_support();
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI89 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti89"));
 	test_ti89_regular_support();
 	//test_ti89_flash_support();
