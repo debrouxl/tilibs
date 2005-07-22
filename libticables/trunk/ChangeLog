@@ -8,6 +8,9 @@ Checking: valgrind & splint
 	
 Log:
 
+- 22/07/2005: jb
+	configure.ac: Generic fallback case for all Linux hosts.
+
 - 20/07/2005, version 3.9.4: roms
 	Fixed new gcc4.0 warnings.
 	
