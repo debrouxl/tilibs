@@ -8,7 +8,7 @@ GNU Assembler Switches=
 Assembler Switches=-g -t
 GNU Linker Switches=
 Linker Switches=
-Debug Info=0
+Debug Info=1
 Standard Library=1
 Command Line=
 Post-Build Process=
@@ -29,6 +29,7 @@ Cut Unused Ranges=1
 Binary Output=0
 Reorder Sections=1
 Merge Constants=1
+Initialize BSS=1
 
 
 [Library Options]
@@ -41,10 +42,10 @@ Use PreOS=0
 Minimum AMS Version Defined=0
 Minimum AMS Version=1.00
 Unofficial OS Support=0
-Reloc Format=Unknown
-ROM Call Format=Unknown
-BSS Ref Format=Unknown
-Data Ref Format=Unknown
+Reloc Format=AMS
+ROM Call Format=Direct
+BSS Ref Format=Kernel
+Data Ref Format=Kernel
 Use F-Line Jumps=0
 Use 4-Byte F-Line Jumps=0
 Optimize ROM Calls=0
@@ -53,6 +54,7 @@ Use Return Value=0
 Enable Error Return=0
 Save Screen=0
 [File Editing]
-Open File=C:\sources\roms\ticalcs\src\romdump\romdump.c
+Open File=C:\sources\roms\ticalcs2\src\romdump92p\romdump.c
 [Included Files]
 C File 1=romdump.c
+Header File 1=romdump.h

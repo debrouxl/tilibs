@@ -1,9 +1,9 @@
 ///* Hey EMACS -*- linux-c -*- */
 /* $Id: main.c 347 2004-05-31 09:39:53Z roms $ */
 
-/*  RomDumper - an TI89/92+/V200PLT ROM dumper
+/*  RomDumper - an TI89/92/92+/V200PLT/Titanium ROM dumper
  *
- *  Copyright (c) 2004, Romain Liévin for the TiLP and TiEmu projects
+ *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
  */
  
 /*
-	Note: this program is compatible with the built-in VTi ROM dumper as well as
-	TiLP.
+	Note: this program could be optimized because I didn't write it 
+	with embedded view in mind.
 */
 
 #define USE_TI89              // Compile for TI-89
@@ -34,102 +34,189 @@
 #define SAVE_SCREEN           // Save/Restore LCD Contents
 
 #include <tigcclib.h>         // Include All Header Files
+#include "romdump.h"
 
-#define VERSION		"1.00"			// Version
+// --- Packet Layer
 
-/*
-	Function: send a byte and check keyboard
-	- [in] c : character to send
-	- [out] int : 1 if successful, 0 otherwise.
-*/
-int SendByte(BYTE c)
+#define BLK_SIZE	1024
+static uint8_t buf[BLK_SIZE + 3*2];
+
+uint16_t CheckSum(uint8_t* data, uint16_t len)
 {
-	while(OSWriteLinkBlock(&c, 1))
+	uint16_t i;	
+	uint16_t sum = 0;
+	
+	for(i = 0; i < len; i++)
+		sum += data[i];
+		
+		return sum;
+}
+
+int SendPacket(uint16_t cmd, uint16_t len, uint8_t* data)
+{
+	short ret;
+	uint16_t sum;
+
+	// command & length
+	buf[0] = MSB(cmd);
+	buf[1] = LSB(cmd);
+	buf[2] = MSB(len);
+	buf[3] = LSB(len);
+
+  ret = LIO_SendData(buf, 4);
+  if(ret) return ret;
+
+	// data
+	ret = LIO_SendData(data, len);
+  if(ret) return ret;
+	
+	// checksum
+	sum = CheckSum(buf, 4) + CheckSum(data, len);
+	buf[0] = MSB(sum);
+	buf[1] = LSB(sum);
+
+  // send
+	ret = LIO_SendData(buf, 2);
+  if(ret) return ret;
+	
+	return 0;
+}
+
+int RecvPacket(uint16_t* cmd, uint16_t* len, uint8_t* data)
+{
+	short ret;
+	uint16_t sum, tmp;
+	
+	// default values
+	*cmd = CMD_NONE;
+	*len = 0;
+	
+  // any packet has always at least 4 bytes (cmd, len)
+	ret = LIO_RecvData(buf, 4, TIMEOUT);
+	if(ret) return ret;
+	
+  *cmd = (buf[0] << 8) | buf[1];
+	*len = (buf[2] << 8) | buf[3];
+  tmp =	CheckSum(buf, 4);
+	
+	// data part
+	if(data)
 	{
-//		if(kbhit())
-//			return 0;
-  }
-    
-  return 1;
+		ret = LIO_RecvData(data, *len, TIMEOUT);	
+		if(ret) return ret;
+	}
+	
+	// checksum
+  ret = LIO_RecvData(buf+*len, 2, TIMEOUT);
+	if(ret) return ret;
+	
+	sum = (buf[*len+0] << 8) | buf[*len+1];
+
+	if (sum != CheckSum(data, *len) + tmp)
+		return -1;
+
+	return 0;
 }
 
-/*
-	Function: receive a byte and check keyboard
-	- [out] c : character to receive
-	- [out] int : 1 if successful, 0 otherwise.
-*/
-int GetByte(BYTE *c)
+// --- Command Layer
+
+inline int Send_OK(void)
 {
-    while(1)
-    {
-        if(OSReadLinkBlock(c, 1))
-            return 1;
-            
-//        if(kbhit())
-//        	return 0;
-    }
-    
-    return 0;
+	return SendPacket(CMD_OK, 0, NULL);
 }
 
-/*
-	Function: send a 1024-bytes block + 2 bytes of checksum
-	- [in] ptr : pointer to ROM area
-	- [out] int : 1 if successful, 0 otherwise.
-*/
-int SendBlock(char *ptr)
+inline int Send_KO(void)
 {
-  WORD csum;
-  int i;
-  BYTE c;
-	int retry = 0;
+	return SendPacket(CMD_KO, 0, NULL);
+}
 
-	while(1)
+inline int Send_SIZE(uint32_t size)
+{
+	uint32_t le_size = LE_BE(size);
+	
+	return SendPacket(CMD_REQ_SIZE, 4, (uint8_t *)&le_size);
+}
+
+inline int Send_DATA(uint16_t len, uint8_t* data)
+{
+	return SendPacket(CMD_DATA1, len, data);
+}
+
+inline int Send_EXIT(void)
+{
+	return SendPacket(CMD_EXIT, 0, NULL);
+}
+
+inline int Send_ERR(void)
+{
+	return SendPacket(CMD_ERROR, 0, NULL);
+}
+
+// --- Dumper Layer
+
+#define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
+
+int Dump(void)
+{
+	int exit = 0;
+	int ret;
+	uint16_t cmd, len;
+	uint32_t addr;
+	char str[30];
+	
+	while(!exit)
 	{
-        for (i = 0, csum = 0; i < 1024; i++)
-        {
-            BYTE ch = ptr[i];
-            
-            if(!SendByte(ch)) 
-            	return 0;
-            csum += (WORD)((BYTE)(ch));
-        }
-        
-        if(!SendByte(csum >> 8)) 
-        	return 0;
-        if(!SendByte(csum & 0xff)) 
-        	return 0;
-        	
-        i = GetByte(&c);
-  
-        if (!i)
-            return 0;
-            
-        if (c != 0xda)	// chksum error: retry
-        {
-        	if(retry++ < 3)
-            	continue;
-            else
-            	return 0;	//2;
-        }
-        
-        return 1;
-    }
-    
-    return 0;
+		// wait for command
+		ret = RecvPacket(&cmd, &len, buf);
+		//if(ret) continue;	// pb with ret val
+		
+		// or keypress
+		if(kbhit()) 
+			exit = !0;
+					
+		// and process
+		switch(cmd)
+		{
+			case CMD_IS_READY: 
+				Send_OK();
+			break;
+			case CMD_EXIT: 
+				Send_EXIT();
+				exit = !0; 
+			break;
+			case CMD_REQ_SIZE: 
+				Send_SIZE(ROM_size);
+				
+				sprintf(str, "Size: %lu KB", ROM_size >> 10);
+				DrawStr(0, 60, str, A_REPLACE	);
+			break;
+			case CMD_REQ_BLOCK: 
+				addr = buf[0] | (buf[1] << 8) | ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
+				if(addr > ROM_size)
+					Send_ERR();
+			
+				sprintf(str, "Done: %lu/%luKB     ", addr >> 10, ROM_size >> 10);
+				DrawStr(0, 60, str, A_REPLACE	);
+				
+				Send_DATA(BLK_SIZE, (uint8_t *)(ROM_base + addr));
+			break;
+			case CMD_NONE:
+			break;
+			default:
+				Send_ERR();
+				continue;
+			break;			
+		}
+	}	
+	
+	return 0;
 }
 
-#define ROM_size (0x200000 << (V200 || ((unsigned long)ROM_base == 0x800000)))
+// --- Main Function
 
-// Main Function
 void _main(void)
 {
-	unsigned long rom_size = ROM_size;
-	unsigned long rom_base = (unsigned long)ROM_base;
-	
-  unsigned long i;
-  unsigned char *p;
-  char str[30];
+  char str[30];  
   
   ClrScr ();
   FontSetSys (F_8x10);
@@ -140,33 +227,59 @@ void _main(void)
   sprintf(str, "Type: HW%i", HW_VERSION);
   DrawStr(0, 20, str, A_NORMAL);
   
-  sprintf(str, "ROM base: 0x%lx", rom_base);
+  sprintf(str, "ROM base: 0x%lx", (uint32_t)ROM_base);
   DrawStr(0, 40, str, A_NORMAL);  
   
   sprintf(str, "by The TiLP Team");
   DrawStr(0, 80, str, A_NORMAL);  
-  
-  for(i = 0, p = (char *)rom_base; i < rom_size; i += 1024, p += 1024)
-  {  	
-		sprintf(str, "Done: %ld/%ldKB", i >> 10, rom_size >> 10);
-		
-		switch(CALCULATOR)
-		{
-			case 0: // TI89
-				DrawStr(0, 60, str, A_REPLACE	);
-			break;
-			case 1: // TI92+
-				DrawStr(0, 60, str, A_REPLACE	);
-			break;
-			case 3: // V200
-				DrawStr(0, 60, str, A_REPLACE	);
-			break;			
-		}
-		
-		if (!SendBlock(p))
-      		break;
-  }
+
+	Dump();
+	OSLinkReset();
   
   return;
 }
 
+void test(void)
+{
+	//  uint16_t cmd, len;
+//  char tmp[256] = { 0X12, 0x34, 0x56, 0x78 };
+//	int i = 0;
+//	int ret;
+	
+	/*  
+  n = LIO_SendData(tmp, 4);
+  
+  sprintf(str, "Done: %i", n);
+  DrawStr(0, 60, str, A_REPLACE);
+*/   
+ 
+/*
+  while(!kbhit())
+  {
+  	LIO_RecvData(tmp, 1, 0);
+  	LIO_SendData(tmp, 1);
+  }
+  */
+  
+  /*
+  while(!kbhit())
+  {
+  	SendPacket(0x1234, 0, NULL);
+  }
+  */
+  
+/*  
+  while(!kbhit())
+  {
+  	ret = RecvPacket(&cmd, &len, tmp);
+  #if 0
+  	if(ret)
+  	{
+  	sprintf(str, "Done: %i", ret);
+	  DrawStr(0, 0+20*i++, str, A_REPLACE);
+  	}
+  	#endif
+  	SendPacket(cmd, len, tmp);
+  }
+  */
+}
