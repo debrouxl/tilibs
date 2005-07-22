@@ -1,7 +1,7 @@
-This document covers the protocol used between hand-held and ticalcs2 library for ROM dumping.
+This document covers the protocol used between hand-helds and ticalcs2 library for ROM dumping.
 Copyright (c) 2005 Romain Liévin et Benjamin Moody
 
-This protocol has been designed to be easy, reliable, extendable and resume-able.
+This protocol has been designed to be easy, reliable, extendable and resumable.
 
 ROM dumping protocol:
 
@@ -12,30 +12,30 @@ command | data length | data (if any) | checksum
 
 The protocol uses words/longs whenever possible (even number of bytes)
 
-Data are sent in Little Endian (LE) format which is the natural format
-of Z80 (TI8x) and i86 processors. m68k processor (TI9x) uses Big Endian (BE).
+Data are sent in Little Endian (LE) format (LSB, MSB) which is the natural format
+of Z80 (TI8x) and i86 processors. m68k processor (TI9x) uses Big Endian (BE) format.
 
 Checksum is calculated in a byte fashion on the whole block (from command to data).
 
 Possible commands are:
-- AA55: is ready ? (data length is 0)
-- 0000: ready (data length is 0)
-- 0001: not ready (data length is 0)
-- 0002: end of transmission (data length is 0)
-- 0003: request ROM dump size (data length is 0)
-- 0004: error => resend packet (data length is 0)
-- 0005: request block at addr (this is a base addr, not the real ROM address) (data length is 4 bytes)
-- 0006: data
-- 0007: repeated data
+- AA55 (pc): is ready ? (data length is 0)
+- 0000 (ti): ready (data length is 0)
+- 0001 (ti): not ready (data length is 0)
+- 0002 (pc): exit (data length is 0)
+- 0003 (pc): request ROM dump size (data length is 0)
+
+- 0005 (pc): request block at addr (this is a base addr, not the real ROM address) (data length is 4 bytes)
+- 0006 (ti): data
+- 0007 (ti): repeated data
 
 
 2°) TI can reply with the following packets (example of transmission)
 
-PC: AA55 0000 AA55		check whether ready (for sync after a transfer interrupt)
-TI: 0000 0000 0000		ready
+PC: AA55 0000 AA55			check whether ready (for sync after a transfer interrupt)
+TI: 0000 0000 0000			ready
 
-PC: 0003 0000 0003		request ROM size
-TI: 0003 0004 HHHLLHLL chk	returns size as a long
+PC: 0003 0000 0003			request ROM size
+TI: 0003 0004 LLLHHLHH chk	returns size as a long
 
 PC: 0005 0004 00000000 0009	request block at addr
 TI: 0006 0400 1024 bytes of data chk
@@ -43,20 +43,17 @@ TI: 0006 0400 1024 bytes of data chk
 PC: 0005 0004 00000400 0409	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
-PC: 0004 0000 0004		error: resend packet
-TI: 0004 0400 1024 bytes of data chk
-
-PC: 0002 0000 0002		end of transmission
-TI: 0002 0000 0002		ack EOT
-
-PC: AA55 0000 AA55		check whether ready (for sync after a transfer interrupt)
-TI: 0000 0000 0000		ready
+PC: AA55 0000 AA55			check whether ready (for sync after a transfer interrupt)
+TI: 0000 0000 0000			ready
 
 PC: 0005 0004 00000400 0009	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
 PC: 0005 0004 00000800 0009	request block at addr
 TI: 0007 0002 FFFF chk		1024 bytes filled with 0xFF
+
+PC: 0002 0000 0002			exit dumper
+TI: 0002 0000 0002
 
 3°) transmission error (timeout with SilverLink for instance)
 
@@ -69,4 +66,4 @@ goes on...
 4°) unknown packet
 
 PC: 1234 0000 1234		unknown packet
-TI: 0004 0000 0004		error: resend your request
+TI:						error: ignored => wait for next command

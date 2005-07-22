@@ -3,7 +3,7 @@
 
 #define VERSION		"1.00"			// Version
 
-#define TIMEOUT		30			// 1.5s x 20 ticks
+#define TIMEOUT		20			// 1s x 20 ticks
 
 /* CMD | LEN | DATA | CHK */
 #define	CMD_IS_READY	0xAA55

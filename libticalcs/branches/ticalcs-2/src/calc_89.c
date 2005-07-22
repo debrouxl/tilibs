@@ -701,42 +701,30 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
+extern int rom_dump(CalcHandle* h, FILE* f);
+
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int i, j;
-	uint8_t data;
-	time_t start, elapsed, estimated, remaining;
-	char buffer[257];
-	char tmp[257];
-	int pad;
-	FILE *f, *file;
-	uint16_t checksum, sum;
-	int ROMSIZE = (handle->model == CALC_TI89T) || 
-  					(handle->model == CALC_V200) ? 4*1024 : 2*1024;
-	FileContent content;
+	const char *prgname = "romdump.89z";
+	FILE *f;
 
 	// Copies ROM dump program into a file
-	f = fopen(DUMP_ROM89_FILE, "wb");
-	if(f == NULL)
+	f = fopen(prgname, "wb");
+	if (f == NULL)
 		return ERR_FILE_OPEN;
-
-	fwrite(romDump89, sizeof(unsigned char), romDumpSize89, f);
+	fwrite(romDump89, sizeof(uint8_t), romDumpSize89, f);
 	fclose(f);
 
 	// Transfer program to calc
-	tifiles_file_read_regular(DUMP_ROM89_FILE, &content);
-	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_delete_regular(&content);
-	unlink(DUMP_ROM89_FILE);
+	handle->busy = 0;
+	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
+	unlink(prgname);
 
-	// Launch calculator program by remote control
-	sprintf(handle->updat->text, _("Launching..."));
-	handle->updat->label();
-
+	// Launch program by remote control
 	TRYF(send_key(handle, KEY89_CLEAR));
 	PAUSE(50);
-    TRYF(send_key(handle, KEY89_CLEAR));
-    PAUSE(50);
+	TRYF(send_key(handle, KEY89_CLEAR));
+	PAUSE(50);
     TRYF(send_key(handle, 'm'));
     TRYF(send_key(handle, 'a'));
     TRYF(send_key(handle, 'i'));
@@ -753,55 +741,16 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
     TRYF(send_key(handle, KEY89_RP));
     TRYF(send_key(handle, KEY89_ENTER));
 
-	// Open file
-	file = fopen(filename, "wb");
-	if(file == NULL)
+	PAUSE(200);
+
+	// Get dump
+	f = fopen(filename, "wb");
+	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	// Receive it now blocks per blocks (1024 + CHK)
-	sprintf(handle->updat->text, _("Receiving..."));
-	handle->updat->label();
+	rom_dump(handle, f);
 
-	start = time(NULL);
-	handle->updat->max1 = 1024;
-	handle->updat->max2 = 1024 * size;
-
-	for(i = 0; i < ROMSIZE; i++) 
-	{
-		sum = 0;
-		for(j = 0; j < 1024; j++) 
-		{
-			TRYF(ticables_cable_get(handle->cable, &data));
-			fprintf(file, "%c", data);
-			sum += data;
-
-			handle->updat->cnt1 = j;
-			handle->updat->pbar();
-		}
-
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum = data << 8;
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum |= data;
-		if(sum != checksum)
-		return ERR_CHECKSUM;
-		TRYF(ticables_cable_put(handle->cable, 0xDA));
-
-		handle->updat->cnt2 = i;
-		update->pbar();
-
-		elapsed = (long) difftime(time(NULL), start);
-		estimated = (long) (elapsed * (float) (ROMSIZE) / i);
-		remaining = (long) difftime(estimated, elapsed);
-		sprintf(buffer, "%s", ctime(&remaining));
-		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
-		sprintf(handle->updat->text, _("Remaining (mm:ss): %s"), tmp + 3);
-		handle->updat->label();
-	}
-
-	// make ROM dumping program exit.
-	TRYF(ticables_cable_put(handle->cable, 0xCC));
-	fclose(file);
+	fclose(f);
 
 	return 0;
 }
@@ -1077,3 +1026,47 @@ const CalcFncts calc_v2 =
 	&new_folder,
 	&get_version,
 };
+
+/* ROM dumper testing
+	/*
+	for(i = 0; i < 256; i++)
+	{
+		uint8_t data;
+
+		TRYF(ticables_cable_put(handle->cable, (uint8_t)i));
+		TRYF(ticables_cable_get(handle->cable, &data));
+
+		printf("%02x ", data);
+	}
+	*/
+
+	/*
+	for(i = 0; i < 256; i++)
+	{
+		uint8_t data;
+
+		//TRYF(ticables_cable_put(handle->cable, (uint8_t)i));
+		TRYF(ticables_cable_get(handle->cable, &data));
+		printf("%02x ", data);
+	}*/
+
+	/*
+	for(i = 0; i < 5; i++)
+	{
+		uint8_t data;
+
+		TRYF(ticables_cable_put(handle->cable, 0xAA));
+		TRYF(ticables_cable_put(handle->cable, 0x55));
+		TRYF(ticables_cable_put(handle->cable, 0x00));
+		TRYF(ticables_cable_put(handle->cable, 0x00));
+		TRYF(ticables_cable_put(handle->cable, 0xAA));
+		TRYF(ticables_cable_put(handle->cable, 0x55));
+
+		for(j = 0; j < 6; j++)
+		{
+			TRYF(ticables_cable_get(handle->cable, &data));
+			if(j == 1)
+				printf("%02x ", data);
+		}
+	}
+	*/

@@ -203,8 +203,6 @@ int Dump(void)
 			case CMD_NONE:
 			break;
 			default:
-				Send_ERR();
-				continue;
 			break;			
 		}
 	}	

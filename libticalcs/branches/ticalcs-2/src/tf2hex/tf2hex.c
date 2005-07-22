@@ -5,6 +5,8 @@
 
 #define STEP	8
 
+#define	FILENAME	"romdump.89z"
+
 int main(int argc, char **argv)
 {
 	FILE *fi, *fo;
@@ -15,7 +17,7 @@ int main(int argc, char **argv)
 	int i, j;
 
 	// read input file
-	fi = fopen("romdump.8xp", "rb");
+	fi = fopen(FILENAME, "rb");
 	if(fi == NULL)
 	{
 		fprintf(stderr, "Unable to open input file.\n");
@@ -31,7 +33,7 @@ int main(int argc, char **argv)
 	fclose(fi);
 
 	// write output file
-	fo = fopen("rom83p.h", "wt");
+	fo = fopen("rom_hdr.h", "wt");
 	if(fi == NULL)
 	{
 		fprintf(stderr, "Unable to open output file.\n");
