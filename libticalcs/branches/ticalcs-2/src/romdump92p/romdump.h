@@ -11,7 +11,7 @@
 #define CMD_OK				0x0001
 #define CMD_EXIT			0x0002
 #define CMD_REQ_SIZE	0x0003
-#define CMD_ERROR			0x0004
+#define CMD_ERROR			0x0004	// unused !
 #define CMD_REQ_BLOCK	0x0005
 #define CMD_DATA1			0x0006
 #define CMD_DATA2			0x0007

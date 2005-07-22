@@ -4,6 +4,7 @@
 /*  RomDumper - an TI89/92/92+/V200PLT/Titanium ROM dumper
  *
  *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
+ *  Copyright (c) 2005, Kevin Kofler for the Fargo-II port
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,10 +59,10 @@ int SendPacket(uint16_t cmd, uint16_t len, uint8_t* data)
 	uint16_t sum;
 
 	// command & length
-	buf[0] = MSB(cmd);
-	buf[1] = LSB(cmd);
-	buf[2] = MSB(len);
-	buf[3] = LSB(len);
+	buf[0] = LSB(cmd);
+	buf[1] = MSB(cmd);
+	buf[2] = LSB(len);
+	buf[3] = MSB(len);
 
   ret = LIO_SendData(buf, 4);
   if(ret) return ret;
@@ -72,8 +73,8 @@ int SendPacket(uint16_t cmd, uint16_t len, uint8_t* data)
 	
 	// checksum
 	sum = CheckSum(buf, 4) + CheckSum(data, len);
-	buf[0] = MSB(sum);
-	buf[1] = LSB(sum);
+	buf[0] = LSB(sum);
+	buf[1] = MSB(sum);
 
   // send
 	ret = LIO_SendData(buf, 2);
@@ -95,8 +96,8 @@ int RecvPacket(uint16_t* cmd, uint16_t* len, uint8_t* data)
 	ret = LIO_RecvData(buf, 4, TIMEOUT);
 	if(ret) return ret;
 	
-  *cmd = (buf[0] << 8) | buf[1];
-	*len = (buf[2] << 8) | buf[3];
+  *cmd = (buf[1] << 8) | buf[0];
+	*len = (buf[3] << 8) | buf[2];
   tmp =	CheckSum(buf, 4);
 	
 	// data part
@@ -110,7 +111,7 @@ int RecvPacket(uint16_t* cmd, uint16_t* len, uint8_t* data)
   ret = LIO_RecvData(buf+*len, 2, TIMEOUT);
 	if(ret) return ret;
 	
-	sum = (buf[*len+0] << 8) | buf[*len+1];
+	sum = (buf[*len+1] << 8) | buf[*len+0];
 
 	if (sum != CheckSum(data, *len) + tmp)
 		return -1;
@@ -191,15 +192,21 @@ int Dump(void)
 				DrawStr(0, 60, str, A_REPLACE	);
 			break;
 			case CMD_REQ_BLOCK: 
-				addr = buf[0] | (buf[1] << 8) | ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
+			  addr  = ((uint32_t)buf[0] <<  0); addr |= ((uint32_t)buf[1] <<  8);
+			  addr |= ((uint32_t)buf[2] << 16); addr |= ((uint32_t)buf[3] << 24);
+				
 				if(addr > ROM_size)
 					Send_ERR();
-				
+
+#if 0				
 				if(addr >= 0x10000 && addr < 0x12000)	// read protected (certificate)
 					addr = 0;	
 				if(addr >= 0x18000 && addr < 0x1A000)	// read protected (certificate)
 					addr = 0;
+#endif
 			
+			  //sprintf(str, "%02x %02x %02x %02x     ", buf[0], buf[1], buf[2], buf[3]);
+			  //DrawStr(0, 80, str, A_REPLACE	);
 				sprintf(str, "Done: %lu/%luKB     ", addr >> 10, ROM_size >> 10);
 				DrawStr(0, 60, str, A_REPLACE	);
 				
