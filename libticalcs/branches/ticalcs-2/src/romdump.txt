@@ -13,7 +13,8 @@ command | data length | data (if any) | checksum
 The protocol uses words/longs whenever possible (even number of bytes)
 
 Data are sent in Little Endian (LE) format (LSB, MSB) which is the natural format
-of Z80 (TI8x) and i86 processors. m68k processor (TI9x) uses Big Endian (BE) format.
+of Z80 (TI8x) and i86 processors (LSB at first); m68k processor (TI9x) uses 
+Big Endian (BE) format (MSB at first).
 
 Checksum is calculated in a byte fashion on the whole block (from command to data).
 

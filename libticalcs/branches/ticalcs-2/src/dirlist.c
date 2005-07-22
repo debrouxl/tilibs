@@ -47,9 +47,11 @@ static tboolean free_varentry(TNode* node, tpointer data)
 		}
 	}
 #else
+	/*
 	if (node)
 		if(node->data)
 			tifiles_ve_delete(node->data);
+			*/
 #endif
 
 	return FALSE;

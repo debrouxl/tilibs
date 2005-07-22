@@ -57,12 +57,12 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	uint16_t sum;
 
 	// command
-	buf[0] = MSB(cmd);
-	buf[1] = LSB(cmd);
+	buf[0] = LSB(cmd);
+	buf[1] = MSB(cmd);
 
 	// length
-	buf[2] = MSB(len);
-	buf[3] = LSB(len);
+	buf[2] = LSB(len);
+	buf[3] = MSB(len);
 
 	// data
 	if(data)
@@ -70,8 +70,8 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 
 	// checksum
 	sum = tifiles_checksum(buf, 4 + len);
-	buf[len+4+0] = MSB(sum);
-	buf[len+4+1] = LSB(sum);
+	buf[len+4+0] = LSB(sum);
+	buf[len+4+1] = MSB(sum);
 
 	TRYF(ticables_cable_send(handle->cable, buf, len+6));
 
@@ -106,8 +106,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 	// Any packet has always at least 4 bytes (cmd, len)
 	TRYF(ticables_cable_recv(handle->cable, buf, 4));
 
-	*cmd = (buf[0] << 8) | buf[1];
-	*len = (buf[2] << 8) | buf[3];
+	*cmd = (buf[1] << 8) | buf[0];
+	*len = (buf[3] << 8) | buf[2];
 
 	if(!cmd_is_valid(*cmd))
 		return ERR_INVALID_CMD;
@@ -148,9 +148,9 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 	}
 
 	// verify checksum
-	chksum = (buf[*len+4 + 0] << 8) | buf[*len+4 + 1];
+	chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
 	sum = tifiles_checksum(buf, *len + 4);
-	//printf("<%04x %04x>\n", chksum, sum);
+	//printf("<%04x %04x>\n", sum, chksum);
 
 	if (chksum != sum)
 		return ERR_CHECKSUM;
@@ -284,7 +284,7 @@ int rom_dump(CalcHandle* h, FILE* f)
 	TRYF(rom_recv_SIZE(h, &size));
 
 	// get packets
-	for(addr = 0; addr < size; )
+	for(addr = 0x0000; addr < size; )
 	{
 		// resync if error
 		if(err)
@@ -299,6 +299,15 @@ int rom_dump(CalcHandle* h, FILE* f)
 			if(i == MAX_RETRY && err)
 				return err;
 			err = 0;
+		}
+
+		if(addr >= 0x10000 && addr < 0x12000)
+		{
+			// certificate is read protected: skip
+			memset(data, 0xff, length);
+			fwrite(data, length, 1, f);
+			addr += length;
+			continue;
 		}
 
 		// receive data

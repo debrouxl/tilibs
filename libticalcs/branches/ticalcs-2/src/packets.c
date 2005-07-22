@@ -20,7 +20,7 @@
  */
 
 /*
-	This unit manages packets
+	This unit manages packets from/to D-BUS.
 */
 
 #include <string.h>

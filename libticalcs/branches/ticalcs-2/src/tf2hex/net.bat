@@ -8,7 +8,7 @@ del *.exp
 del *.idb
 del *.obj
 del *.pch
-del *.exe
+rem del *.exe
 del *.bak
 deltree /y output
 deltree /y debug
