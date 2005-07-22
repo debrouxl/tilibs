@@ -194,6 +194,11 @@ int Dump(void)
 				addr = buf[0] | (buf[1] << 8) | ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
 				if(addr > ROM_size)
 					Send_ERR();
+				
+				if(addr >= 0x10000 && addr < 0x12000)	// read protected (certificate)
+					addr = 0;	
+				if(addr >= 0x18000 && addr < 0x1A000)	// read protected (certificate)
+					addr = 0;
 			
 				sprintf(str, "Done: %lu/%luKB     ", addr >> 10, ROM_size >> 10);
 				DrawStr(0, 60, str, A_REPLACE	);
