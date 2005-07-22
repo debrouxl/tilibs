@@ -372,7 +372,7 @@ typedef struct
 {
 	char		os[5];
 	char		bios[5];
-	uint16_t	unknown1;
+	uint16_t	battery;
 	uint16_t	unknown2;
 	uint16_t	unknown3;
 	uint16_t	unknown4;

@@ -882,6 +882,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	ticalcs_info(_("  OS: %i.%2i"), buf[0], buf[1]);
 	ticalcs_info(_("  BIOS: %i.%2i"), buf[2], buf[3]);
+	ticalcs_info(_("  Battery: %s"), buf[4] ? "low" : "good");
 
 	memset(infos, 0, sizeof(CalcInfos));
 	infos->os[0] = buf[0] + '0';
@@ -895,6 +896,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->bios[2] = MSN(buf[3]) + '0';
 	infos->bios[3] = LSN(buf[3]) + '0';
 	infos->bios[4] = '\0';
+
+	infos->battery = !buf[4];
 
 	return 0;
 }

@@ -259,6 +259,7 @@ int rom_send_ERR(CalcHandle* handle)
 
 int rom_dump(CalcHandle* h, FILE* f)
 {
+	CalcHandle* handle = h;
 	int err;
 	uint32_t size;
 	uint32_t addr;
@@ -308,6 +309,10 @@ int rom_dump(CalcHandle* h, FILE* f)
 
 		fwrite(data, length, 1, f);
 		addr += length;
+
+		update->cnt2 = addr;
+		update->max2 = size;
+		update->pbar();
 	}
 
 	// finished
