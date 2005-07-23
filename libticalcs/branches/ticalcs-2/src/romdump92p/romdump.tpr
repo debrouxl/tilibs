@@ -3,12 +3,12 @@ Archive=0
 Pack=0
 Packed Variable=
 Project Name=RomDump
-GCC Switches=-Os -Wall -W -Wwrite-strings
+GCC Switches=-Os -ffunction-sections -fdata-sections -Wall -W -Wwrite-strings
 GNU Assembler Switches=
 Assembler Switches=-g -t
 GNU Linker Switches=
 Linker Switches=
-Debug Info=1
+Debug Info=0
 Standard Library=1
 Command Line=
 Post-Build Process=
@@ -29,32 +29,34 @@ Cut Unused Ranges=1
 Binary Output=0
 Reorder Sections=1
 Merge Constants=1
-Initialize BSS=1
+Initialize BSS=0
 
 
 [Library Options]
-Use TI-89=0
-Use TI-92 Plus=0
-Use V200=0
+Use TI-89=1
+Use TI-92 Plus=1
+Use V200=1
 Optimize Calc Consts=0
 Use Kernel=0
 Use PreOS=0
-Minimum AMS Version Defined=0
+Minimum AMS Version Defined=1
 Minimum AMS Version=1.00
-Unofficial OS Support=0
+Unofficial OS Support=1
 Reloc Format=AMS
 ROM Call Format=Direct
 BSS Ref Format=Kernel
 Data Ref Format=Kernel
 Use F-Line Jumps=0
 Use 4-Byte F-Line Jumps=0
-Optimize ROM Calls=0
+Optimize ROM Calls=1
 Use Internal F-Line Emulator=0
 Use Return Value=0
 Enable Error Return=0
-Save Screen=0
+Save Screen=1
 [File Editing]
-Open File=C:\sources\roms\ticalcs2\src\romdump92p\romdump.c
+Open File=E:\TI-89\romdump\romdump.c
+
 [Included Files]
 C File 1=romdump.c
 Header File 1=romdump.h
+

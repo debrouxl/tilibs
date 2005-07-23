@@ -52,7 +52,7 @@ Enable Error Return=0
 Save Screen=0
 
 [File Editing]
-Open File=E:\TI-89\romdump\fargodef.h
+Open File=E:\TI-89\romdump\romdump.c
 
 [Included Files]
 C File 1=romdump.c

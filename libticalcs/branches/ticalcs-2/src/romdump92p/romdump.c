@@ -32,14 +32,6 @@
 
 #else
 
-#define USE_TI89              // Compile for TI-89
-#define USE_TI92PLUS          // Compile for TI-92 Plus
-#define USE_V200              // Compile for V200
-
-#define MIN_AMS 100           // Compile for AMS 1.00 or higher
-
-#define SAVE_SCREEN           // Save/Restore LCD Contents
-
 #include <tigcclib.h>         // Include All Header Files
 
 #define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
