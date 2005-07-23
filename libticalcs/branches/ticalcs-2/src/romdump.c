@@ -31,6 +31,7 @@
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
+#include "pause.h"
 
 #define MAX_RETRY	3
 
@@ -260,7 +261,7 @@ int rom_send_ERR(CalcHandle* handle)
 int rom_dump(CalcHandle* h, FILE* f)
 {
 	CalcHandle* handle = h;
-	int err;
+	int err = 0;
 	uint32_t size;
 	uint32_t addr;
 	uint16_t length;
@@ -297,7 +298,7 @@ int rom_dump(CalcHandle* h, FILE* f)
 				if(err) continue;
 			}
 			if(i == MAX_RETRY && err)
-				return err;
+				goto exit;
 			err = 0;
 		}
 
@@ -312,7 +313,7 @@ int rom_dump(CalcHandle* h, FILE* f)
 
 		// receive data
 		err = rom_send_DATA(h, addr);
-		if(err)	continue;
+		if(err) continue;
 		err = rom_recv_DATA(h, &length, data);
 		if(err) continue;
 
@@ -325,9 +326,10 @@ int rom_dump(CalcHandle* h, FILE* f)
 	}
 
 	// finished
+exit:
 	TRYF(rom_send_EXIT(h));
 	TRYF(rom_recv_EXIT(h));
 
-	return 0;
+	return err;
 }
 

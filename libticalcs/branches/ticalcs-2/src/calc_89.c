@@ -49,9 +49,6 @@
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
 
-#define DUMP_ROM89_FILE "dumprom.89z"
-//#define ROMSIZE (2*1024)	// 2MB or 4MB (Titanium)
-
 static int		is_ready	(CalcHandle* handle)
 {
 	uint16_t status;
@@ -702,11 +699,12 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 }
 
 extern int rom_dump(CalcHandle* h, FILE* f);
-
+// same code as calc_92.c
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	const char *prgname = "romdump.89z";
 	FILE *f;
+	int err;
 
 	// Copies ROM dump program into a file
 #if 1
@@ -749,10 +747,14 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	rom_dump(handle, f);
+	err = rom_dump(handle, f);
+	if(err)
+	{
+		fclose(f);
+		return err;
+	}
 
 	fclose(f);
-
 	return 0;
 }
 

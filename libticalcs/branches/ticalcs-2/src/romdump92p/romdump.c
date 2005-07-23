@@ -26,15 +26,26 @@
 	with embedded view in mind.
 */
 
+#ifdef FARGO
+
+#include "fargodef.h"
+
+#else
+
 #define USE_TI89              // Compile for TI-89
 #define USE_TI92PLUS          // Compile for TI-92 Plus
 #define USE_V200              // Compile for V200
 
-#define MIN_AMS 200           // Compile for AMS 2.00 or higher
+#define MIN_AMS 100           // Compile for AMS 1.00 or higher
 
 #define SAVE_SCREEN           // Save/Restore LCD Contents
 
 #include <tigcclib.h>         // Include All Header Files
+
+#define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
+
+#endif
+
 #include "romdump.h"
 
 // --- Packet Layer
@@ -155,8 +166,6 @@ inline int Send_ERR(void)
 
 // --- Dumper Layer
 
-#define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
-
 int Dump(void)
 {
 	int exit = 0;
@@ -228,13 +237,27 @@ void _main(void)
 {
   char str[30];  
   
+#ifdef FARGO
+  // Ugly hack to find LIO_SendData and LIO_RecvData...
+  LIO_SendData=(void*)ERD_dialog;
+  while (*(void**)LIO_SendData!=OSLinkTxQueueInquire) LIO_SendData+=2;
+  LIO_RecvData=(void*)LIO_SendData;
+  LIO_SendData-=28;
+  while (*(void**)LIO_RecvData!=OSReadLinkBlock) LIO_RecvData+=2;
+  LIO_RecvData-=150;
+#endif
+
   ClrScr ();
   FontSetSys (F_8x10);
   
   sprintf(str, "RomDumper v%s", VERSION);
   DrawStr(0, 0, str, A_NORMAL);
   
+#ifdef FARGO
+  sprintf(str, "Type: TI-92 %i", TI92_VERSION);
+#else
   sprintf(str, "Type: HW%i", HW_VERSION);
+#endif
   DrawStr(0, 20, str, A_NORMAL);
   
   sprintf(str, "ROM base: 0x%lx", (uint32_t)ROM_base);

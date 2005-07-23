@@ -46,10 +46,6 @@
 #define TI92_ROWS  128
 #define TI92_COLS  240
 
-// Rom dumping
-#define DUMP_ROM92_FILE "dumprom.92p"
-#define ROMSIZE (1024*1024)
-
 static int		is_ready	(CalcHandle* handle)
 {
 	uint16_t status;
@@ -419,35 +415,28 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
+extern int rom_dump(CalcHandle* h, FILE* f);
+// same code as calc_89.c
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int i, j, k;
-	uint8_t data;
-	time_t start, elapsed, estimated, remaining;
-	char buffer[257];
-	char tmp[257];
-	int pad;
-	FILE *f, *file;
-	uint16_t checksum, sum;
-	FileContent content;
+	const char *prgname = "romdump-fargo.92p";
+	FILE *f;
+	int err;
 
 	// Copies ROM dump program into a file
-	f = fopen(DUMP_ROM92_FILE, "wb");
+#if 1
+	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump92f2, sizeof(unsigned char), romDumpSize92f2, f);
+	fwrite(romDump92, sizeof(uint8_t), romDumpSize92, f);
 	fclose(f);
 
 	// Transfer program to calc
-	tifiles_file_read_regular(DUMP_ROM92_FILE, &content);
-	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_delete_regular(&content);
-	unlink(DUMP_ROM92_FILE);
-
-	// Launch calculator program by remote control
-	sprintf(update->text, _("Launching..."));
-	update->label();
-
+	handle->busy = 0;
+	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
+	unlink(prgname);
+#endif
+	// Launch program by remote control
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
@@ -457,67 +446,32 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
     TRYF(send_key(handle, 'i'));
     TRYF(send_key(handle, 'n'));
     TRYF(send_key(handle, '\\'));
+    TRYF(send_key(handle, 'r'));
+    TRYF(send_key(handle, 'o'));
+    TRYF(send_key(handle, 'm'));
     TRYF(send_key(handle, 'd'));
     TRYF(send_key(handle, 'u'));
     TRYF(send_key(handle, 'm'));
     TRYF(send_key(handle, 'p'));
-    TRYF(send_key(handle, 'r'));
-    TRYF(send_key(handle, 'o'));
-    TRYF(send_key(handle, 'm'));
     TRYF(send_key(handle, KEY92P_LP));
     TRYF(send_key(handle, KEY92P_RP));
     TRYF(send_key(handle, KEY92P_ENTER));
 
-	// Open file
-	file = fopen(filename, "wb");
-	if (file == NULL)
+	PAUSE(200);
+
+	// Get dump
+	f = fopen(filename, "wb");
+	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	// Receive it now blocks per blocks (1024 + CHK)
-	sprintf(update->text, _("Receiving..."));
-	update->label();
-
-	start = time(NULL);
-	update->max1 = 1024;
-	update->max2 = 1024 * size;
-
-	for (i = 0, k = 0; i < size * 1024; i++) 
+	err = rom_dump(handle, f);
+	if(err)
 	{
-		sum = 0;
-		for (j = 0; j < 1024; j++) 
-		{
-			TRYF(ticables_cable_get(handle->cable, &data));
-			fprintf(file, "%c", data);
-			sum += data;
-
-			update->cnt1 = j;
-			update->pbar();
-		}
-
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum = data << 8;
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum |= data;
-		if (sum != checksum)
-		  return ERR_CHECKSUM;
-		TRYF(ticables_cable_put(handle->cable, 0xDA));
-		
-		update->cnt2 = i;
-		update->pbar();
-
-		elapsed = (long) difftime(time(NULL), start);
-		estimated = (long) (elapsed * (float) (1024 * size) / i);
-		remaining = (long) difftime(estimated, elapsed);
-		sprintf(buffer, "%s", ctime(&remaining));
-		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
-		sprintf(update->text, _("Remaining (mm:ss): %s"), tmp + 3);
-		update->label();
+		fclose(f);
+		return err;
 	}
 
-	// make ROM dumping program exit.
-	TRYF(ticables_cable_put(handle->cable, 0xCC));
-	fclose(file);
-
+	fclose(f);
 	return 0;
 }
 
