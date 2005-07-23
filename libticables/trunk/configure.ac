@@ -59,22 +59,6 @@ AC_PROG_AWK
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.13.1)
 
-case "$host" in
-  arm*-*-linux-*)        ;;
-  *)
-AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
-if test x$LIBUSB_CONFIG = xyes; then
-  LIBUSB_CFLAGS=`libusb-config --cflags`
-  LIBUSB_LIBS=`libusb-config --libs`
-  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
-else
-  LIBUSB_CFLAGS=
-  LIBUSB_LIBS=
-fi
-AC_SUBST(LIBUSB_CFLAGS)
-AC_SUBST(LIBUSB_LIBS)
-esac
-
 # USB support depends on the IOKit framework on Mac OS X
 # CW 2005-05-03
 case "$host_os" in
@@ -86,6 +70,18 @@ case "$host_os" in
   ;;
 esac
 AC_SUBST(IOKIT_LIBS)
+
+AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
+if test x$LIBUSB_CONFIG = xyes; then
+  LIBUSB_CFLAGS=`libusb-config --cflags`
+  LIBUSB_LIBS=`libusb-config --libs`
+  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
+else
+  LIBUSB_CFLAGS=
+  LIBUSB_LIBS=
+fi
+AC_SUBST(LIBUSB_CFLAGS)
+AC_SUBST(LIBUSB_LIBS)
 
 # Checks for header files.
 AC_HEADER_DIRENT
