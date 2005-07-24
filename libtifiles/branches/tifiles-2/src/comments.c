@@ -29,7 +29,7 @@
 
 #include "tifiles.h"
 
-//static char comment[41];
+static char comment[64/*41*/];
 
 /**
  * tifiles_comment_set_single:
@@ -40,19 +40,11 @@
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 {
-#ifdef __WIN32__
-	char buf1[128];
-	char buf2[128];
-
-	_strdate(buf1);
-	_strtime(buf2);
-
-	sprintf(comment, "Single file dated %s %s", buf1, buf2);
-	return comment;
-#else
 	time_t t = time(NULL);
-	return asctime(localtime(&t));
-#endif
+	char *str = asctime(localtime(&t));
+
+	sprintf(comment, "Single file dated %s", str);
+	return comment;
 }
 
 /**
@@ -64,19 +56,11 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 {
-#ifdef __WIN32__
-	char buf1[128];
-	char buf2[128];
+time_t t = time(NULL);
+	char *str = asctime(localtime(&t));
 
-	_strdate(buf1);
-	_strtime(buf2);
-
-	sprintf(comment, "Group file dated %s %s", buf1, buf2);
+	sprintf(comment, "Group file dated %s", str);
 	return comment;
-#else
-	time_t t = time(NULL);
-        return asctime(localtime(&t));
-#endif
 }
 
 /**
@@ -88,17 +72,9 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
  **/
 TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 {
-#ifdef __WIN32__
-	char buf1[128];
-	char buf2[128];
-
-	_strdate(buf1);
-	_strtime(buf2);
-
-	sprintf(comment, "Backup file dated %s %s", buf1, buf2);
-	return comment;
-#else
 	time_t t = time(NULL);
-        return asctime(localtime(&t));
-#endif
+	char *str = asctime(localtime(&t));
+
+	sprintf(comment, "Backup file dated %s", str);
+	return comment;
 }
