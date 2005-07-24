@@ -29,7 +29,7 @@
 
 #include "tifiles.h"
 
-static char comment[41];
+//static char comment[41];
 
 /**
  * tifiles_comment_set_single:
@@ -47,12 +47,11 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 	_strdate(buf1);
 	_strtime(buf2);
 
-	//snprintf(comment, sizeof(comment), "Single file dated %02i/%02i/%02i, %02i:%02i");
 	sprintf(comment, "Single file dated %s %s", buf1, buf2);
 	return comment;
 #else
-// Use asctime ?
-	return "No comment !";
+	time_t t = time(NULL);
+	return asctime(localtime(&t));
 #endif
 }
 
@@ -75,7 +74,8 @@ TIEXPORT const char* TICALL tifiles_comment_set_group(void)
 	sprintf(comment, "Group file dated %s %s", buf1, buf2);
 	return comment;
 #else
-        return "No comment !";
+	time_t t = time(NULL);
+        return asctime(localtime(&t));
 #endif
 }
 
@@ -98,6 +98,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 	sprintf(comment, "Backup file dated %s %s", buf1, buf2);
 	return comment;
 #else
-        return "No comment !";
+	time_t t = time(NULL);
+        return asctime(localtime(&t));
 #endif
 }

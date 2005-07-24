@@ -334,9 +334,9 @@ extern "C" {
   TIEXPORT const char*  TICALL tifiles_calctype2signature (CalcModel model);
   TIEXPORT CalcModel    TICALL tifiles_signature2calctype (const char *signature);
 
-  TIEXPORT const uint8_t TICALL tifiles_folder_type (CalcModel model);
-  TIEXPORT const uint8_t TICALL tifiles_flash_type (CalcModel model);
-  TIEXPORT const uint8_t TICALL tifiles_idlist_type (CalcModel model);
+  TIEXPORT uint8_t TICALL tifiles_folder_type (CalcModel model);
+  TIEXPORT uint8_t TICALL tifiles_flash_type (CalcModel model);
+  TIEXPORT uint8_t TICALL tifiles_idlist_type (CalcModel model);
 
   // misc.c
   TIEXPORT int TICALL tifiles_calc_is_ti8x (CalcModel model);

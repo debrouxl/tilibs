@@ -436,7 +436,7 @@ static const int TIXX_IDLIST[NCALCS + 1] =
  *
  * Return value: a type ID.
  **/
-TIEXPORT const uint8_t TICALL tifiles_folder_type(CalcModel model)
+TIEXPORT uint8_t TICALL tifiles_folder_type(CalcModel model)
 {
   switch (model) 
   {
@@ -480,7 +480,7 @@ TIEXPORT const uint8_t TICALL tifiles_folder_type(CalcModel model)
  *
  * Return value: a type ID.
  **/
-TIEXPORT const uint8_t TICALL tifiles_flash_type(CalcModel model)
+TIEXPORT uint8_t TICALL tifiles_flash_type(CalcModel model)
 {
   switch (model) 
   {
@@ -524,7 +524,7 @@ TIEXPORT const uint8_t TICALL tifiles_flash_type(CalcModel model)
  *
  * Return value: a type ID.
  **/
-TIEXPORT const uint8_t TICALL tifiles_idlist_type(CalcModel model)
+TIEXPORT uint8_t TICALL tifiles_idlist_type(CalcModel model)
 {
   switch (model) 
   {
