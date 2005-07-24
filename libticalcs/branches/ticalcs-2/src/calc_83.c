@@ -40,7 +40,7 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "packets.h"
+#include "dbus_pkt.h"
 #include "cmd82.h"
 #include "rom83.h"
 #include "keys83p.h"

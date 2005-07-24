@@ -177,11 +177,15 @@ SOURCE=..\..\src\cmd92.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dusb_pkt.c
+SOURCE=..\..\src\dbus_pkt.c
 # End Source File
+# End Group
+# Begin Group "usb"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\packets.c
+SOURCE=..\..\src\dusb_pkt.c
 # End Source File
 # End Group
 # Begin Source File

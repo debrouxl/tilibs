@@ -39,7 +39,7 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "packets.h"
+#include "dbus_pkt.h"
 #include "cmd85.h"
 #include "rom85u.h"
 #include "rom85z.h"
