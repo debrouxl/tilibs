@@ -51,7 +51,7 @@ BUILD_INCLUDED_LIBINTL = no
 CATOBJEXT = .gmo
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2 -D__I386__ -D__LINUX__
+CFLAGS = -g -O2 -D__I386__ -D__LINUX__ -fvisibility=hidden
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++

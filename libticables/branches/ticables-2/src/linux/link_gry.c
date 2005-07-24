@@ -132,7 +132,7 @@ static int gry_reset(CableHandle *h)
     return 0;
 }
 
-static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
+static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int err;
 
@@ -150,7 +150,7 @@ static int gry_put(CableHandle* h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int gry_get(CableHandle* h, uint8_t *data, uint16_t len)
+static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int err;
     
@@ -270,6 +270,13 @@ static int gry_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int gry_timeout(CableHandle *h)
+{
+    termset->c_cc[VTIME] = h->timeout;
+    tcsetattr(dev_fd, TCSANOW, termset);
+    return 0;
+}
+
 const CableFncts cable_gry = 
 {
 	CABLE_GRY,
@@ -278,7 +285,7 @@ const CableFncts cable_gry =
 	N_("GrayLink serial cable"),
 	!0,
 	&gry_prepare,
-	&gry_open, &gry_close, &gry_reset, &gry_probe,
+	&gry_open, &gry_close, &gry_reset, &gry_probe, &gry_timeout,
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,

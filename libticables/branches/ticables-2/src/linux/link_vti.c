@@ -160,7 +160,7 @@ static int vti_reset(CableHandle *h)
 	return 0;
 }
 
-static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int i;
 	tiTIME clk;
@@ -182,7 +182,7 @@ static int vti_put(CableHandle *h, uint8_t *data, uint16_t len)
 	return 0;
 }
 
-static int vti_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int i;
 	tiTIME clk;
@@ -213,6 +213,7 @@ static int vti_probe(CableHandle *h)
 static int vti_check(CableHandle *h, int *status)
 {
 	*status = !(recv_buf[p]->start == recv_buf[p]->end);
+	return 0;
 }
 
 static int vti_set_red_wire(CableHandle *h, int b)
@@ -243,7 +244,7 @@ const CableFncts cable_vti =
 	N_("Virtual link for VTi"),
 	0,
 	&vti_prepare,
-	&vti_open, &vti_close, &vti_reset, &vti_probe,
+	&vti_open, &vti_close, &vti_reset, &vti_probe, NULL,
 	&vti_put, &vti_get, &vti_check,
 	&vti_set_red_wire, &vti_set_white_wire,
 	&vti_get_red_wire, &vti_get_white_wire,

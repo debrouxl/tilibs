@@ -64,9 +64,6 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-case "$host" in
-  arm*-*-linux-*)        ;;
-  *)
 AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
 if test x$LIBUSB_CONFIG = xyes; then
   LIBUSB_CFLAGS=`libusb-config --cflags`
@@ -78,7 +75,6 @@ else
 fi
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
-esac
 
 # Checks for header files.
 AC_HEADER_DIRENT

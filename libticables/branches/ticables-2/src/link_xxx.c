@@ -86,7 +86,7 @@ TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, unsigned int* result)
+TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 {
 	const CableFncts *cable = handle->cable;
 	int already = handle->open;

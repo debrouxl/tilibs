@@ -69,7 +69,7 @@ static int par_reset(CableHandle *h)
     return 0;
 }
 
-static int par_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
     int i, j;
@@ -128,7 +128,7 @@ static int par_put(CableHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int par_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
     int i, j;
@@ -280,7 +280,7 @@ const CableFncts cable_par =
 	N_("Home-made parallel cable"),
 	!0,
 	&par_prepare,
-	&par_open, &par_close, &par_reset, &par_probe,
+	&par_open, &par_close, &par_reset, &par_probe, NULL,
 	&par_put, &par_get, &par_check,
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,

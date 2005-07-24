@@ -232,7 +232,7 @@ struct _CableHandle
 	TIEXPORT int TICALL ticables_cable_close(CableHandle*);
 
 	TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle);
-	TIEXPORT int TICALL ticables_cable_probe(CableHandle*, unsigned int* result);
+	TIEXPORT int TICALL ticables_cable_probe(CableHandle*, int* result);
 
 	TIEXPORT int TICALL ticables_cable_send(CableHandle*, uint8_t *data, uint32_t len);
 	TIEXPORT int TICALL ticables_cable_recv(CableHandle*, uint8_t *data, uint32_t len);

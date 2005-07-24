@@ -346,7 +346,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 {
     int ret;
     
-    ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, data, length, to);
+    ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, (char*)data, length, to);
     
     if(ret == -ETIMEDOUT) 
     {
@@ -367,7 +367,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
     return 0;
 }
 
-static int slv_put(CableHandle* h, uint8_t *data, uint16_t len)
+static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int q = len / max_ps;
     int r = len % max_ps;
@@ -394,7 +394,8 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	TO_START(clk);
 	do 
 	{
-	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, rBuf, max_ps, to);
+	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, 
+				(char*)rBuf, max_ps, to);
 
 	    if (TO_ELAPSED(clk, h->timeout))
 	    {
@@ -435,7 +436,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
     return 0;
 }
 
-static int slv_get(CableHandle* h, uint8_t *data, uint16_t len)
+static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int i;
 
@@ -503,6 +504,11 @@ static int slv_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int slv_timeout(CableHandle *h)
+{
+     return 0;
+}
+
 const CableFncts cable_slv =
 {
 	CABLE_SLV,
@@ -511,7 +517,7 @@ const CableFncts cable_slv =
 	N_("SilverLink (TI-GRAPH LINK USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &slv_probe,
+	&slv_open, &slv_close, &slv_reset, &slv_probe, &slv_timeout,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
@@ -525,7 +531,7 @@ const CableFncts cable_raw =
 	N_("DirectLink (direct USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &raw_probe,
+	&slv_open, &slv_close, &slv_reset, &raw_probe, &slv_timeout,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,

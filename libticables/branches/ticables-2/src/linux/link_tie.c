@@ -142,7 +142,7 @@ static int tie_reset(CableHandle *h)
     return 0;
 }
 
-static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
+static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int n = 0;
     tiTIME clk;
@@ -173,7 +173,7 @@ static int tie_put(CableHandle *h, uint8_t *data, uint16_t len)
     return 0;
 }
 
-static int tie_get(CableHandle *h, uint8_t *data, uint16_t len)
+static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     static int n = 0;
     tiTIME clk;
@@ -254,7 +254,7 @@ const CableFncts cable_tie =
 	N_("Virtual link for TiEmu"),
 	0,
 	&tie_prepare,
-	&tie_open, &tie_close, &tie_reset, &tie_probe,
+	&tie_open, &tie_close, &tie_reset, &tie_probe, NULL,
 	&tie_put, &tie_get, &tie_check,
 	&tie_set_red_wire, &tie_set_white_wire,
 	&tie_get_red_wire, &tie_get_white_wire,
