@@ -369,17 +369,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 
 static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    int q = len / max_ps;
-    int r = len % max_ps;
-    int i, j;
-
-    for(i = 0; i < q; i++)
-	TRYC(send_block(h, data + i * max_ps, max_ps));
-
-    for(j = 0; j < r; j++)
-	TRYC(send_block(h, data + i * max_ps + j, 1));
-
-  return 0;
+    return send_block(h, data, len);
 }
 
 static int slv_get_(CableHandle *h, uint8_t *data)
@@ -394,8 +384,8 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	TO_START(clk);
 	do 
 	{
-	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, 
-				(char*)rBuf, max_ps, to);
+	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, (char*)rBuf, 
+				max_ps, to);
 
 	    if (TO_ELAPSED(clk, h->timeout))
 	    {
@@ -440,7 +430,7 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int i;
 
-    // we can't do that in any other way because TiglUsbRead can returns
+    // we can't do that in any other way because slv_get_ can returns
     // 1, 2, ..., len bytes.
     for(i = 0; i < len; i++)
 	slv_get_(h, data+i);
@@ -481,6 +471,7 @@ static int raw_probe(CableHandle *h)
 
 static int slv_check(CableHandle *h, int *status)
 {
+    // no way to check yet
   	return 0;
 }
 
@@ -504,11 +495,6 @@ static int slv_get_white_wire(CableHandle *h)
 	return 1;
 }
 
-static int slv_timeout(CableHandle *h)
-{
-     return 0;
-}
-
 const CableFncts cable_slv =
 {
 	CABLE_SLV,
@@ -517,7 +503,7 @@ const CableFncts cable_slv =
 	N_("SilverLink (TI-GRAPH LINK USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &slv_probe, &slv_timeout,
+	&slv_open, &slv_close, &slv_reset, &slv_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
@@ -528,10 +514,10 @@ const CableFncts cable_raw =
 	CABLE_USB,
 	"USB",
 	N_("DirectLink"),
-	N_("DirectLink (direct USB) cable"),
+	N_("DirectLink (DIRECT USB) cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &raw_probe, &slv_timeout,
+	&slv_open, &slv_close, &slv_reset, &raw_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
