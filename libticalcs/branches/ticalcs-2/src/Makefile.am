@@ -27,8 +27,9 @@ libticalcs2_la_SOURCES = *.h \
 	error.c \
 	keys73.c keys83p.c keys89.c keys92p.c \
 	logging.c \
-	packets.c \
+	dbus_pkt.c \
 	probe.c \
+	romdump.c \
 	ticalcs.c \
 	tikeys.c \
 	tnode.c \

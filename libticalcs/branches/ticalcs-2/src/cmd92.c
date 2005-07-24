@@ -26,7 +26,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
-#include "packets.h"
+#include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
 #include "macros.h"
@@ -38,7 +38,7 @@
 int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
-  uint8_t trans[20];
+  char trans[20];
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
 

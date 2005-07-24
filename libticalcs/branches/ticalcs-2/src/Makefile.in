@@ -204,8 +204,9 @@ libticalcs2_la_SOURCES = *.h \
 	error.c \
 	keys73.c keys83p.c keys89.c keys92p.c \
 	logging.c \
-	packets.c \
+	dbus_pkt.c \
 	probe.c \
+	romdump.c \
 	ticalcs.c \
 	tikeys.c \
 	tnode.c \
@@ -231,10 +232,11 @@ am_libticalcs2_la_OBJECTS = libticalcs2_la-calc_00.lo \
 	libticalcs2_la-dirlist.lo libticalcs2_la-error.lo \
 	libticalcs2_la-keys73.lo libticalcs2_la-keys83p.lo \
 	libticalcs2_la-keys89.lo libticalcs2_la-keys92p.lo \
-	libticalcs2_la-logging.lo libticalcs2_la-packets.lo \
-	libticalcs2_la-probe.lo libticalcs2_la-ticalcs.lo \
-	libticalcs2_la-tikeys.lo libticalcs2_la-tnode.lo \
-	libticalcs2_la-type2str.lo libticalcs2_la-update.lo
+	libticalcs2_la-logging.lo libticalcs2_la-dbus_pkt.lo \
+	libticalcs2_la-probe.lo libticalcs2_la-romdump.lo \
+	libticalcs2_la-ticalcs.lo libticalcs2_la-tikeys.lo \
+	libticalcs2_la-tnode.lo libticalcs2_la-type2str.lo \
+	libticalcs2_la-update.lo
 libticalcs2_la_OBJECTS = $(am_libticalcs2_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -255,6 +257,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-cmd85.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-cmd89.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-cmd92.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-dbus_pkt.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-dirlist.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-keys73.Plo \
@@ -262,8 +265,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-keys89.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-keys92p.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-logging.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-packets.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-probe.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-romdump.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-ticalcs.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-tikeys.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libticalcs2_la-tnode.Plo \
@@ -344,6 +347,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd85.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd89.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd92.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-dbus_pkt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-dirlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-keys73.Plo@am__quote@
@@ -351,8 +355,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-keys89.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-keys92p.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-logging.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-packets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-probe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-romdump.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-ticalcs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-tikeys.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-tnode.Plo@am__quote@
@@ -1118,38 +1122,38 @@ libticalcs2_la-logging.lo: logging.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
 
-libticalcs2_la-packets.o: packets.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-packets.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-packets.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-packets.o `test -f 'packets.c' || echo '$(srcdir)/'`packets.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-packets.Tpo" "$(DEPDIR)/libticalcs2_la-packets.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-packets.Tpo"; exit 1; \
+libticalcs2_la-dbus_pkt.o: dbus_pkt.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-dbus_pkt.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-dbus_pkt.o `test -f 'dbus_pkt.c' || echo '$(srcdir)/'`dbus_pkt.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" "$(DEPDIR)/libticalcs2_la-dbus_pkt.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='packets.c' object='libticalcs2_la-packets.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-packets.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-packets.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus_pkt.c' object='libticalcs2_la-dbus_pkt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-packets.o `test -f 'packets.c' || echo '$(srcdir)/'`packets.c
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-dbus_pkt.o `test -f 'dbus_pkt.c' || echo '$(srcdir)/'`dbus_pkt.c
 
-libticalcs2_la-packets.obj: packets.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-packets.obj -MD -MP -MF "$(DEPDIR)/libticalcs2_la-packets.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-packets.obj `if test -f 'packets.c'; then $(CYGPATH_W) 'packets.c'; else $(CYGPATH_W) '$(srcdir)/packets.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-packets.Tpo" "$(DEPDIR)/libticalcs2_la-packets.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-packets.Tpo"; exit 1; \
+libticalcs2_la-dbus_pkt.obj: dbus_pkt.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-dbus_pkt.obj -MD -MP -MF "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-dbus_pkt.obj `if test -f 'dbus_pkt.c'; then $(CYGPATH_W) 'dbus_pkt.c'; else $(CYGPATH_W) '$(srcdir)/dbus_pkt.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" "$(DEPDIR)/libticalcs2_la-dbus_pkt.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='packets.c' object='libticalcs2_la-packets.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-packets.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-packets.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus_pkt.c' object='libticalcs2_la-dbus_pkt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-packets.obj `if test -f 'packets.c'; then $(CYGPATH_W) 'packets.c'; else $(CYGPATH_W) '$(srcdir)/packets.c'; fi`
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-dbus_pkt.obj `if test -f 'dbus_pkt.c'; then $(CYGPATH_W) 'dbus_pkt.c'; else $(CYGPATH_W) '$(srcdir)/dbus_pkt.c'; fi`
 
-libticalcs2_la-packets.lo: packets.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-packets.lo -MD -MP -MF "$(DEPDIR)/libticalcs2_la-packets.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-packets.lo `test -f 'packets.c' || echo '$(srcdir)/'`packets.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-packets.Tpo" "$(DEPDIR)/libticalcs2_la-packets.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-packets.Tpo"; exit 1; \
+libticalcs2_la-dbus_pkt.lo: dbus_pkt.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-dbus_pkt.lo -MD -MP -MF "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-dbus_pkt.lo `test -f 'dbus_pkt.c' || echo '$(srcdir)/'`dbus_pkt.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo" "$(DEPDIR)/libticalcs2_la-dbus_pkt.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-dbus_pkt.Tpo"; exit 1; \
 @am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='packets.c' object='libticalcs2_la-packets.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-packets.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-packets.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='dbus_pkt.c' object='libticalcs2_la-dbus_pkt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-dbus_pkt.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-packets.lo `test -f 'packets.c' || echo '$(srcdir)/'`packets.c
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-dbus_pkt.lo `test -f 'dbus_pkt.c' || echo '$(srcdir)/'`dbus_pkt.c
 
 libticalcs2_la-probe.o: probe.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-probe.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-probe.Tpo" \
@@ -1183,6 +1187,39 @@ libticalcs2_la-probe.lo: probe.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-probe.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-probe.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-probe.lo `test -f 'probe.c' || echo '$(srcdir)/'`probe.c
+
+libticalcs2_la-romdump.o: romdump.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-romdump.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-romdump.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-romdump.o `test -f 'romdump.c' || echo '$(srcdir)/'`romdump.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo" "$(DEPDIR)/libticalcs2_la-romdump.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='romdump.c' object='libticalcs2_la-romdump.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-romdump.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-romdump.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-romdump.o `test -f 'romdump.c' || echo '$(srcdir)/'`romdump.c
+
+libticalcs2_la-romdump.obj: romdump.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-romdump.obj -MD -MP -MF "$(DEPDIR)/libticalcs2_la-romdump.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-romdump.obj `if test -f 'romdump.c'; then $(CYGPATH_W) 'romdump.c'; else $(CYGPATH_W) '$(srcdir)/romdump.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo" "$(DEPDIR)/libticalcs2_la-romdump.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='romdump.c' object='libticalcs2_la-romdump.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-romdump.Po' tmpdepfile='$(DEPDIR)/libticalcs2_la-romdump.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-romdump.obj `if test -f 'romdump.c'; then $(CYGPATH_W) 'romdump.c'; else $(CYGPATH_W) '$(srcdir)/romdump.c'; fi`
+
+libticalcs2_la-romdump.lo: romdump.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-romdump.lo -MD -MP -MF "$(DEPDIR)/libticalcs2_la-romdump.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libticalcs2_la-romdump.lo `test -f 'romdump.c' || echo '$(srcdir)/'`romdump.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo" "$(DEPDIR)/libticalcs2_la-romdump.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libticalcs2_la-romdump.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='romdump.c' object='libticalcs2_la-romdump.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libticalcs2_la-romdump.Plo' tmpdepfile='$(DEPDIR)/libticalcs2_la-romdump.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-romdump.lo `test -f 'romdump.c' || echo '$(srcdir)/'`romdump.c
 
 libticalcs2_la-ticalcs.o: ticalcs.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-ticalcs.o -MD -MP -MF "$(DEPDIR)/libticalcs2_la-ticalcs.Tpo" \

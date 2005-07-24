@@ -262,7 +262,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
-		uint8_t varname[18], utf8[35];
+		char varname[18], utf8[35];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -300,7 +300,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	uint8_t varname[18], utf8[35];
+	char varname[18], utf8[35];
 
 	content->model = CALC_TI92;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -519,7 +519,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
-	uint8_t varname[18];
+	char varname[18];
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
 
@@ -547,7 +547,7 @@ static int		get_version(CalcHandle* handle, CalcInfos* infos)
 {
 	uint32_t size;
 	uint8_t type;
-	uint8_t name[32];
+	char name[32];
 
 	TRYF(ti92_send_REQ(0, TI92_BKUP, "main\\version"));
 	TRYF(ti92_recv_ACK(NULL));

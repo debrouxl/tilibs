@@ -32,22 +32,22 @@ extern const CalcKey TI89_KEYS[];
 extern const CalcKey TI92P_KEYS[];
 
 
-TIEXPORT const CalcKey TICALL ticalcs_keys_73s(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_73s(unsigned char ascii_code)
 {
   return TI73_KEYS[ascii_code];
 }
 
-TIEXPORT const CalcKey TICALL ticalcs_keys_83p(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_83p(unsigned char ascii_code)
 {
   return TI83P_KEYS[ascii_code];
 }
 
-TIEXPORT const CalcKey TICALL ticalcs_keys_89(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_89(unsigned char ascii_code)
 {
   return TI89_KEYS[ascii_code];
 }
 
-TIEXPORT const CalcKey TICALL ticalcs_keys_92p(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_92p(unsigned char ascii_code)
 {
   return TI92P_KEYS[ascii_code];
 }

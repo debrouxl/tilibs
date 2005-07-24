@@ -156,7 +156,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
 	uint16_t length;
-	uint8_t varname[9];
+	char varname[9];
 	uint8_t rej_code;
 
 	length = content->data_length1;
@@ -211,7 +211,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	uint8_t varname[9] = { 0 };
+	char varname[9] = { 0 };
 	uint8_t attr;
 
 	content->model = handle->model;
@@ -513,7 +513,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint16_t unused;
 	uint16_t varsize;
 	uint8_t vartype;
-	uint8_t varname[9];
+	char varname[9];
 	uint8_t varattr;
 	uint8_t data[16];
 	int i;
@@ -531,7 +531,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(ti73_send_CTS());
 	TRYF(ti73_recv_ACK(NULL));
 
-	TRYF(ti73_recv_XDP((uint16_t *) & varsize, data));
+	TRYF(ti73_recv_XDP((uint16_t *)&varsize, data));
 	TRYF(ti73_send_ACK());
 
 	i = data[9];
@@ -539,7 +539,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	data[10] = i;
 
 	for(i = 4; i < varsize; i++)
-		sprintf(&id[2 * (i-4)], "%02x", data[i]);
+		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
 	id[7*2] = '\0';
 
 	return 0;
@@ -660,7 +660,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	uint16_t varsize;
     uint8_t vartype;
 	uint8_t varattr;
-    uint8_t varname[9];
+    char varname[9];
     uint8_t buffer[32];
 	uint32_t time;
 

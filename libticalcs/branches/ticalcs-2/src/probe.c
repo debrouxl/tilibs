@@ -24,10 +24,11 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ticalcs.h"
 #include "logging.h"
-#include "packets.h"
+#include "dbus_pkt.h"
 #include "error.h"
 #include "gettext.h"
 #include "pause.h"

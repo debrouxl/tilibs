@@ -98,7 +98,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
   int err = 0;
   uint16_t length;
-  uint8_t varname[9];
+  char varname[9];
   uint8_t rej_code;
   uint16_t status;
 
@@ -170,7 +170,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	uint8_t varname[9] = { 0 };
+	char varname[9] = { 0 };
 
   sprintf(update->text, _("Waiting for backup..."));
   update_label();

@@ -157,7 +157,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
     uint16_t length;
-    uint8_t varname[9];
+    char varname[9];
     uint8_t rej_code;
     uint16_t status;
 
@@ -214,7 +214,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	uint8_t varname[9] = { 0 };
+	char varname[9] = { 0 };
 	uint16_t unused;
 
 	content->model = CALC_TI83;
@@ -482,10 +482,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	send_key(handle, 0x0004);	// Down
 	send_key(handle, 0x0005);	// Enter
 	
-	strupr(vr->name);
 	for(i = 0; i < strlen(vr->name); i++)
 	{
-		char c = vr->name[i];
+		char c = toupper(vr->name[i]);
 
 		if(isdigit(c))
 			send_key(handle, (uint16_t)(0x008e + c - '0'));

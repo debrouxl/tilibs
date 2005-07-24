@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
-#include "packets.h"
+#include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
 #include "macros.h"
@@ -44,7 +44,7 @@
 int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
 	uint8_t buffer[16];
-	uint8_t trans[9];
+	char trans[9];
 
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
@@ -149,7 +149,7 @@ int ti82_send_EOT_h(CalcHandle* handle)
 int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[16] = { 0 };
-  uint8_t trans[9];
+  char trans[9];
 
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
@@ -178,7 +178,7 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[16];
-  uint8_t trans[9];
+  char trans[9];
 
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
@@ -207,7 +207,7 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint8_t host, cmd;
   uint8_t *buffer = (uint8_t *)handle->priv2;
   uint16_t length;
-  uint8_t trans[9];
+  char trans[9];
 
   TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
 
@@ -325,7 +325,7 @@ int ti82_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 {
   uint8_t host, cmd;
   uint8_t *buffer = (uint8_t *)handle->priv2;
-  uint8_t trans[9];
+  char trans[9];
 
   TRYF(recv_packet(handle, &host, &cmd, varsize, buffer));
 

@@ -610,10 +610,10 @@ typedef struct
 	TIEXPORT int		 TICALL ticalcs_clock_date2format(const char *format);
 
 	// tikeys.c
-        TIEXPORT const CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
-        TIEXPORT const CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
-	TIEXPORT const CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
-	TIEXPORT const CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
+        TIEXPORT CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
+        TIEXPORT CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
+	TIEXPORT CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
+	TIEXPORT CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 
 	//probe.c
 	TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model);

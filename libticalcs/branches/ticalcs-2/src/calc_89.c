@@ -267,7 +267,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
-		uint8_t varname[18], utf8[35];
+		char varname[18], utf8[35];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -324,7 +324,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	uint8_t varname[20], utf8[35];
+	char  varname[20], utf8[35];
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -454,7 +454,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
-		uint8_t varname[18], utf8[35];
+		char varname[18], utf8[35];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -673,7 +673,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 {
 	uint32_t varsize;
 	uint8_t vartype;
-	uint8_t varname[9];
+	char varname[9];
 
 	sprintf(update->text, _("Getting variable..."));
 	update_label();
@@ -795,7 +795,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
 	uint32_t varsize;
     uint8_t vartype;
-    uint8_t varname[9];
+   char varname[9];
     uint8_t buffer[32];
 
     sprintf(update->text, _("Getting clock..."));
@@ -844,7 +844,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
-	uint8_t varname[18];
+	char varname[18];
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
 
@@ -1031,47 +1031,3 @@ const CalcFncts calc_v2 =
 	&new_folder,
 	&get_version,
 };
-
-/* ROM dumper testing
-	/*
-	for(i = 0; i < 256; i++)
-	{
-		uint8_t data;
-
-		TRYF(ticables_cable_put(handle->cable, (uint8_t)i));
-		TRYF(ticables_cable_get(handle->cable, &data));
-
-		printf("%02x ", data);
-	}
-	*/
-
-	/*
-	for(i = 0; i < 256; i++)
-	{
-		uint8_t data;
-
-		//TRYF(ticables_cable_put(handle->cable, (uint8_t)i));
-		TRYF(ticables_cable_get(handle->cable, &data));
-		printf("%02x ", data);
-	}*/
-
-	/*
-	for(i = 0; i < 5; i++)
-	{
-		uint8_t data;
-
-		TRYF(ticables_cable_put(handle->cable, 0xAA));
-		TRYF(ticables_cable_put(handle->cable, 0x55));
-		TRYF(ticables_cable_put(handle->cable, 0x00));
-		TRYF(ticables_cable_put(handle->cable, 0x00));
-		TRYF(ticables_cable_put(handle->cable, 0xAA));
-		TRYF(ticables_cable_put(handle->cable, 0x55));
-
-		for(j = 0; j < 6; j++)
-		{
-			TRYF(ticables_cable_get(handle->cable, &data));
-			if(j == 1)
-				printf("%02x ", data);
-		}
-	}
-	*/

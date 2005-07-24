@@ -263,9 +263,10 @@ int recv_packet(CalcHandle* handle,
 }
 
 /* Fill-up a 8-chars buffer with NUL chars */
-void pad_buffer(char *varname, uint8_t value)
+void pad_buffer(uint8_t *varname, uint8_t value)
 {
-	int i, len = strlen(varname);
+	unsigned int i;
+	unsigned int len = strlen((char*)varname);
 
 	for (i = len; i < 8; i++)
 		varname[i] = value;
