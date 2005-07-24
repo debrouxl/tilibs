@@ -38,12 +38,12 @@
    only 1 byte) and to store them in a buffer for subsequent accesses. 
    In fact, if we try and get byte per byte, it will not work.
 
-   - for writing, we don't store bytes in a buffer. It seems better to send
+   - [ for writing, we don't store bytes in a buffer. It seems better to send
    data byte per byte (latency ?!). But, this make data-rate significantly 
    decrease (1KB/s instead of 5KB/s).
    Another way is to use partially buffered write operations: send consecutive
    blocks as a whole but partial block byte per byte. This is the best 
-   compromise and it works fine !
+   compromise and it works fine ! ] => not needed any more
 
    - another particular effect (quirk): sometimes (usually when calc need to 
    reply and takes a while), a read call can returns with neither data 

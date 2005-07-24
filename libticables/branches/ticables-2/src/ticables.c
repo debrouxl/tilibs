@@ -54,10 +54,10 @@ static CableFncts const *const cables[] =
 #ifndef NO_CABLE_PAR
 	&cable_par,
 #endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB) || defined(__WIN32__)
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBUSB) || defined(__WIN32__)
 	&cable_slv,
 #endif
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBSUB) || defined(__WIN32__)
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LIBUSB) || defined(__WIN32__)
 	&cable_raw,
 #endif
 #ifndef NO_CABLE_VTI
