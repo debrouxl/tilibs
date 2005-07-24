@@ -424,7 +424,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	int err;
 
 	// Copies ROM dump program into a file
-#if 1
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
@@ -435,8 +434,9 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	handle->busy = 0;
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
-#endif
+
 	// Launch program by remote control
+	PAUSE(200);
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
@@ -456,7 +456,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
     TRYF(send_key(handle, KEY92P_LP));
     TRYF(send_key(handle, KEY92P_RP));
     TRYF(send_key(handle, KEY92P_ENTER));
-
 	PAUSE(200);
 
 	// Get dump

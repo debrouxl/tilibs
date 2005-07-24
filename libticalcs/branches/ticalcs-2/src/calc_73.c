@@ -47,9 +47,6 @@
 #define TI73_ROWS  64
 #define TI73_COLS  96
 
-#define DUMP_ROM73_FILE "dumprom.8Xp"
-//#define ROMSIZE 512		// 512KB (TI83+) or 1MB (TI84+) or 2MB (SilverEdition)
-
 static int		is_ready	(CalcHandle* handle)
 {
 	uint16_t status;
@@ -548,121 +545,57 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
+extern int rom_dump(CalcHandle* h, FILE* f);
+
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int i, j;
-	uint8_t data;
-	time_t start, elapsed, estimated, remaining;
-	char buffer[256];
-	char tmp[256];
-	int pad;
-	FILE *f, *file;
-	uint16_t checksum, sum;
-	int err;
-	int b = 0;
-	int ROMSIZE = (size == ROMSIZE_2MB) ? 2048 : (handle->model == CALC_TI84P) ? 1024 : 512;
-	FileContent content;
+	const char *prgname = "romdump.8Xp";
+	FILE *f;
+	int err, i;
+	uint16_t keys[] = { 
+		0x40, 0x09, 0x09, 0x3e, 0x04, 0x04, 0x04, 0x04, 
+		0x04, 0x04, 0x05, 0xAB, 0xA8, 0xA6, 0x9D, 0xAE, 
+		0xA6, 0xA9, 0x86, 0x05 };
 
 	// Copies ROM dump program into a file
-	f = fopen(DUMP_ROM73_FILE, "wb");
+#if 0
+	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump83p, sizeof(unsigned char), romDumpSize83p, f);
+	fwrite(romDump83p, sizeof(uint8_t), romDumpSize83p, f);
 	fclose(f);
 
 	// Transfer program to calc
-	tifiles_file_read_regular(DUMP_ROM73_FILE, &content);
-	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_delete_regular(&content);
-	unlink(DUMP_ROM73_FILE);
+	handle->busy = 0;
+	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
+	unlink(prgname);
+#endif
+#if 0
+	// Launch program by remote control
+	PAUSE(200);
+	for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
+	{
+		TRYF(send_key(handle, keys[i]));
+		PAUSE(100);
+	}
+	PAUSE(200);
+#endif
+	return -1;
 
-	// Open file
-	file = fopen(filename, "wb");
-	if (file == NULL)
+	// Get dump
+	f = fopen(filename, "wb");
+	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting user's action..."));
-	handle->updat->label();
-	do 
+	err = rom_dump(handle, f);
+	if(err)
 	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		err = ticables_cable_get(handle->cable, &data);
-		sum = data;
-	}
-	while (err == ERROR_READ_TIMEOUT);
-	fprintf(file, "%c", data);
-
-	// Receive it now blocks per blocks (1024 + CHK)
-	sprintf(handle->updat->text, _("Receiving..."));
-	handle->updat->label();
-
-	start = time(NULL);
-	handle->updat->max1 = 1024;
-	handle->updat->max2 = ROMSIZE;
-
-	for (i = 0; i < ROMSIZE; i++) 
-	{
-		if (b)
-			sum = 0;
-
-		for (j = 0; j < 1023 + b; j++) 
-		{
-			TRYF(ticables_cable_get(handle->cable, &data));
-			fprintf(file, "%c", data);
-			sum += data;
-
-			handle->updat->cnt1 = j;
-			handle->updat->pbar();
-		}
-		b = 1;
-
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum = data << 8;
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum |= data;
-		if (sum != checksum)
-		  return ERR_CHECKSUM;
-		TRYF(ticables_cable_put(handle->cable, 0xDA));
-
-		handle->updat->cnt2 = i;
-		update->pbar();
-
-		elapsed = (long) difftime(time(NULL), start);
-		estimated = (long) (elapsed * (float) (ROMSIZE) / i);
-		remaining = (long) difftime(estimated, elapsed);
-		sprintf(buffer, "%s", ctime(&remaining));
-		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
-		sprintf(handle->updat->text, _("Remaining (mm:ss): %s"), tmp + 3);
-		handle->updat->label();
+		fclose(f);
+		return err;
 	}
 
-	fclose(file);	
-
+	fclose(f);
 	return 0;
-}
-
-static int days_in_months[12] = 
-{
-	31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-};
-
-static int days_elapsed(int month)
-{
-	int i;
-	int days;
-
-	if(!month || month > 11)
-		return 0;
-
-	for(i = 0, days = 0; i < month-1; i++)
-		days += days_in_months[i];
-
-	printf("days = %i\n", days);
-
-	return days;
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)

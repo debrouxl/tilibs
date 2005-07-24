@@ -482,14 +482,15 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	send_key(handle, 0x0004);	// Down
 	send_key(handle, 0x0005);	// Enter
 	
+	strupr(vr->name);
 	for(i = 0; i < strlen(vr->name); i++)
 	{
 		char c = vr->name[i];
 
 		if(isdigit(c))
-			send_key(handle, (uint16_t)(0x008e + c));
+			send_key(handle, (uint16_t)(0x008e + c - '0'));
 		else
-			send_key(handle, (uint16_t)(0x009a + c));
+			send_key(handle, (uint16_t)(0x009a + c - 'A'));
 	}
 
 	send_key(handle, 0x0005);	// Enter
