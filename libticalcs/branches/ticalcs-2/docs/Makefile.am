@@ -3,7 +3,6 @@
 EXTRA_DIST = gen_doc.c api.txt
 
 all: gen_doc
-	cp ./tmpl/*.* ./html
 	./gen_doc .
 
 gen_doc: gen_doc.c
@@ -14,9 +13,9 @@ else
 endif
 
 clean:
-	rm -f ./text/*~ ./html/*.*
+	rm -f html/*.c.html html/*.h.html html/api.html
 
-calcs:
-	@calcs=`ls $(DISTcalcs) 2> /dev/null `; for p in $$calcs; do \
+files:
+	@files=`ls $(DISTFILES) 2> /dev/null `; for p in $$files; do \
 	  echo $$p; \
 	done
