@@ -31,8 +31,9 @@
 #include "ticables.h"
 
 /**
- * ticables_probe:
- * @array: address of an array of integers to put result. 
+ * ticables_probing_do:
+ * @result: address of an array of integers to put result. 
+ * @timeout: timeout to set during probing
  *
  * Returns cables which have been detected. All cables must be CLOSED before !
  * The array contains 5 columns (PORT_0 to PORT_4) and 7 lines (CABLE_GRY to CABLE_USB).
@@ -76,6 +77,14 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
 	return 0;
 }
 
+/**
+ * ticables_probing_finish:
+ * @result: address of an array of integers. 
+ *
+ * Free the array created by #ticables_probing_do.
+ *
+ * Return value: always 0.
+ **/
 TIEXPORT int TICALL ticables_probing_finish(int ***result)
 {
 	int i;

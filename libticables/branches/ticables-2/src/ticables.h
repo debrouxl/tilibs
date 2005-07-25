@@ -227,7 +227,7 @@ struct _CableHandle
 
 	TIEXPORT int TICALL ticables_handle_show(CableHandle*);
 
-	// link.c
+	// link_xxx.c
 	TIEXPORT int TICALL ticables_cable_open(CableHandle*);
 	TIEXPORT int TICALL ticables_cable_close(CableHandle*);
 

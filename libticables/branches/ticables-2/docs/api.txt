@@ -1,5 +1,6 @@
-tifiles.h : Enumerations, structures and type definitions
-tifiles.c : Entry Points
+ticables.h : Enumerations, structures and type definitions
+ticables.c : Entry Points
 error.c : General Functions
 type2str.c : Types / Strings conversions
 link_xxx.c : Link cable management layer
+probe.c : Automatic probing of cables
