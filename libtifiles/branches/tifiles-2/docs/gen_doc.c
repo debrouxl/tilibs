@@ -1,3 +1,5 @@
+// Note: the latest version is always the one located in tifiles2 library !
+
 #include <stdio.h>
 #include <glib.h>
 #include <string.h>
@@ -287,8 +289,8 @@ int main(int argc, char **argv)
 #else
 	// test
 #ifdef __WIN32__
-	src_folder = "C:\\sources\\roms\\tifiles-2\\src\\";
-	doc_folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
+	src_folder = "C:\\sources\\roms\\tifiles2\\src\\";
+	doc_folder = "C:\\sources\\roms\\tifiles2\\docs\\";
 #else
 	src_folder = "/home/devel/tilp_project/libs/files-2/src";
 	doc_folder = "/home/devel/tilp_project/libs/files-2/docs";
