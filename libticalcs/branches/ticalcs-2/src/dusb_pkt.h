@@ -49,30 +49,61 @@
 	| packet header    | data hdr (1st pkt)  | data	(244 bytes max)			 |
 	| size		  | ty | size		 | code	 |								 |
 	|			  |    |			 |		 |								 |
-	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |	
+	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |
+
+	Examples:
+
+	00 00 00 05 | 02 | 00 00 00 fa
+	00 00 00 02 | 05 | e0 00
+	LL LL LL LL | 03 | hdr, data
+	LL LL LL LL | 04 | data
 */
 
 typedef struct
 {
-	uint32_t	size;
-	uint16_t	code;
-	uint8_t		data[250];
+	uint8_t		type;
+	uint16_t	size;
+	uint8_t*	data;
+} Packet;
+
+typedef struct
+{
+	uint32_t	size;	// size information
+	uint16_t	code;	// opcode
+	uint8_t		data[244];
 } DataHdr;
+
+typedef struct
+{
+	uint32_t	size;	// length of data
+	uint8_t		type;	// packet type
+
+	union
+	{
+		uint8_t	d[250];	// used for pure data (no header)
+		DataHdr	h;		// used for data with header
+	} data;
+
+} PacketHdr;
 
 typedef struct
 {
 	uint32_t	size;
 	uint8_t		type;
-	DataHdr*	data;	// NULL if no data
-} PacketHdr;
-
-typedef PacketHdr	UsbPacket;
+	uint8_t		data[250];
+} UsbPacket;
 
 /*************/
 /* Functions */
 /*************/
 
+// layer 0 (manage raw packets)
+
 int send_dusb(CalcHandle* cable, UsbPacket* pkt);
 int recv_dusb(CalcHandle* cable, UsbPacket* pkt);
+
+// layer 1 (split into packets)
+
+///...
 
 #endif

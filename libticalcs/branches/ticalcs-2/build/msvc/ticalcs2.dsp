@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /w /W0 /GX /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "C:\Gtk2Dev\Include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /YX /FD /c
+# ADD CPP /nologo /w /W0 /GX /I "." /I "../../../ticables2/src" /I "../../../tifiles2/src" /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TICALCS_EXPORTS" /D "__WIN32__" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "NDEBUG"

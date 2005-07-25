@@ -59,11 +59,11 @@ int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	{	
 		// backup: special header
 		pad_buffer(buffer + 3, '\0');
-		TRYF(send_packet(handle, PC_TI8283, CMD_VAR, 11, buffer));
+		TRYF(dbus_send(handle, PC_TI8283, CMD_VAR, 11, buffer));
 	} 
 	else 
 	{
-		TRYF(send_packet(handle, PC_TI8283, CMD_VAR, 9, buffer));
+		TRYF(dbus_send(handle, PC_TI8283, CMD_VAR, 9, buffer));
 	}
 
 	return 0;
@@ -72,7 +72,7 @@ int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 int ti82_send_CTS_h(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: CTS");
-	TRYF(send_packet(handle, PC_TI8283, CMD_CTS, 0, NULL));
+	TRYF(dbus_send(handle, PC_TI8283, CMD_CTS, 0, NULL));
 
   return 0;
 }
@@ -80,7 +80,7 @@ int ti82_send_CTS_h(CalcHandle* handle)
 int ti82_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
 {
   ticalcs_info(" PC->TI: XDP (0x%04X = %i bytes)", length, length);
-  TRYF(send_packet(handle, PC_TI8283, CMD_XDP, length, data));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_XDP, length, data));
 
   return 0;
 }
@@ -92,7 +92,7 @@ int ti82_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
  */
 int ti82_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 {
-  TRYF(send_packet(handle, PC_TI8283, CMD_SKP, 1, &rej_code));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_SKP, 1, &rej_code));
   ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
 
   return 0;
@@ -101,7 +101,7 @@ int ti82_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
 int ti82_send_ACK_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ACK");
-  TRYF(send_packet(handle, PC_TI8283, CMD_ACK, 2, NULL));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_ACK, 2, NULL));
 
   return 0;
 }
@@ -109,7 +109,7 @@ int ti82_send_ACK_h(CalcHandle* handle)
 int ti82_send_ERR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ERR");
-  TRYF(send_packet(handle, PC_TI8283, CMD_ERR, 2, NULL));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_ERR, 2, NULL));
 
   return 0;
 }
@@ -117,7 +117,7 @@ int ti82_send_ERR_h(CalcHandle* handle)
 int ti82_send_SCR_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: SCR");
-  TRYF(send_packet(handle, PC_TI8283, CMD_SCR, 2, NULL));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_SCR, 2, NULL));
 
   return 0;
 }
@@ -140,7 +140,7 @@ int ti83_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 int ti82_send_EOT_h(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: EOT");
-  TRYF(send_packet(handle, PC_TI8283, CMD_EOT, 2, NULL));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_EOT, 2, NULL));
 
   return 0;
 }
@@ -160,7 +160,7 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
-  TRYF(send_packet(handle, PC_TI8283, CMD_REQ, 11, buffer));
+  TRYF(dbus_send(handle, PC_TI8283, CMD_REQ, 11, buffer));
 
   return 0;
 }
@@ -192,11 +192,11 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   if (vartype != TI8283_BKUP) 
   {	// backup: special header
     pad_buffer(buffer + 3, '\0');
-    TRYF(send_packet(handle, PC_TI8283, CMD_RTS, 11, buffer));
+    TRYF(dbus_send(handle, PC_TI8283, CMD_RTS, 11, buffer));
   } 
   else 
   {
-    TRYF(send_packet(handle, PC_TI8283, CMD_RTS, 9, buffer));
+    TRYF(dbus_send(handle, PC_TI8283, CMD_RTS, 9, buffer));
   }
 
   return 0;
@@ -209,7 +209,7 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint16_t length;
   char trans[9];
 
-  TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+  TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
   if (cmd == CMD_EOT)
     return ERR_EOT;		// not really an error
@@ -244,7 +244,7 @@ int ti82_recv_CTS_h(CalcHandle* handle)
   uint8_t host, cmd;
   uint16_t length;
 
-  TRYF(recv_packet(handle, &host, &cmd, &length, NULL));
+  TRYF(dbus_recv(handle, &host, &cmd, &length, NULL));
 
   if (cmd == CMD_SKP)
     return ERR_VAR_REJECTED;
@@ -265,7 +265,7 @@ int ti82_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   uint16_t length;
   *rej_code = 0;
 
-  TRYF(recv_packet(handle, &host, &cmd, &length, rej_code));
+  TRYF(dbus_recv(handle, &host, &cmd, &length, rej_code));
 
   if (cmd == CMD_CTS) 
   {
@@ -285,7 +285,7 @@ int ti82_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
 
-  TRYF(recv_packet(handle, &host, &cmd, length, data));
+  TRYF(dbus_recv(handle, &host, &cmd, length, data));
 
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;
@@ -306,7 +306,7 @@ int ti82_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   uint8_t host, cmd;
   uint16_t sts;
 
-  TRYF(recv_packet(handle, &host, &cmd, &sts, NULL));
+  TRYF(dbus_recv(handle, &host, &cmd, &sts, NULL));
 
   if (status != NULL)
     *status = sts;
@@ -327,7 +327,7 @@ int ti82_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint8_t *buffer = (uint8_t *)handle->priv2;
   char trans[9];
 
-  TRYF(recv_packet(handle, &host, &cmd, varsize, buffer));
+  TRYF(dbus_recv(handle, &host, &cmd, varsize, buffer));
 
   if (cmd != CMD_RTS)
     return ERR_INVALID_CMD;

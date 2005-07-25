@@ -44,8 +44,7 @@ static unsigned int BLK_SIZE = 1024;	// heuristic (1024 & > 32)
     - data [in]	  : data to send (or 0x00 if NULL)
     - int [out]	  : an error code
 */
-int send_packet(CalcHandle* handle,
-				uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
+int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
 	int i;
 	uint16_t sum;
@@ -173,8 +172,7 @@ static uint8_t host_ids(CalcHandle *handle)
   - data [out]	 : received data (depending on command)
   - int [out]	 : an error code
 */
-int recv_packet(CalcHandle* handle, 
-				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
+int dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
 	int i;
 	uint16_t chksum;

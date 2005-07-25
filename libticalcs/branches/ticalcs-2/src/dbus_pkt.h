@@ -102,9 +102,9 @@
 /* Functions */
 /*************/
 
-int send_packet(CalcHandle* cable,
+int dbus_send(CalcHandle* cable,
 				uint8_t target, uint8_t cmd, uint16_t length, uint8_t* data);
-int recv_packet(CalcHandle* cable,
+int dbus_recv(CalcHandle* cable,
 				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
 
 void pad_buffer(uint8_t *varname, uint8_t value);
