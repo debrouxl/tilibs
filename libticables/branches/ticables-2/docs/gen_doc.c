@@ -356,7 +356,7 @@ int main(int argc, char **argv)
 
 	// Open "api.html" file
 	src_file = g_strconcat(doc_folder, G_DIR_SEPARATOR_S, 
-			       "tmpl", G_DIR_SEPARATOR_S, "api.html", 
+			       "html", G_DIR_SEPARATOR_S, "api_.html", 
 			       NULL);
 	fi = fopen(src_file, "rt");
 	if(fi == NULL)
