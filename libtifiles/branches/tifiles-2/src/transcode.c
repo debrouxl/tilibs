@@ -342,12 +342,14 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
   case CALC_TI83:
   case CALC_TI83P:
   case CALC_TI84P:
+  case CALC_TI84P_USB:
     return ti8x_detokenize_varname(model, dst, src, vartype);
     break;
   case CALC_TI85:
   case CALC_TI86:
   case CALC_TI89:
   case CALC_TI89T:
+  case CALC_TI89T_USB:
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
@@ -865,6 +867,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(CalcModel model, char *dst, con
     case CALC_TI83:
     case CALC_TI83P: 
 	case CALC_TI84P: 
+	case CALC_TI84P_USB:
 		f = transcode_from_ti83_charset_to_ascii; 
       break;
     case CALC_TI82:  
@@ -876,6 +879,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_ascii(CalcModel model, char *dst, con
       break;
     case CALC_TI89:
     case CALC_TI89T:
+    case CALC_TI89T_USB:
     case CALC_TI92:
     case CALC_TI92P:
     case CALC_V200:  
@@ -913,7 +917,8 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(CalcModel model, char *dst, co
     case CALC_TI73:
     case CALC_TI83:
     case CALC_TI83P: 
-	case CALC_TI84P:
+	case CALC_TI84P: 
+	case CALC_TI84P_USB:
 		f = transcode_from_ti83_charset_to_latin1; 
       break;
     case CALC_TI82:  
@@ -925,6 +930,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_latin1(CalcModel model, char *dst, co
       break;
     case CALC_TI89:
     case CALC_TI89T:
+	case CALC_TI89T_USB:
     case CALC_TI92:
     case CALC_TI92P:
     case CALC_V200:  
@@ -966,7 +972,8 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(CalcModel model, char *dst, cons
     case CALC_TI73:
     case CALC_TI83:
     case CALC_TI83P: 
-	case CALC_TI84P: 
+	case CALC_TI84P:  
+	case CALC_TI84P_USB:
 		f = transcode_from_ti83_charset_to_utf8; 
       break;
     case CALC_TI82:  
@@ -978,6 +985,7 @@ TIEXPORT char* TICALL tifiles_transcode_to_utf8(CalcModel model, char *dst, cons
       break;
     case CALC_TI89:
 	case CALC_TI89T:
+	case CALC_TI89T_USB:
     case CALC_TI92:
     case CALC_TI92P:
     case CALC_V200:  

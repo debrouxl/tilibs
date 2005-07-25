@@ -49,6 +49,8 @@ TIEXPORT const char *TICALL tifiles_model_to_string(CalcModel model)
 //	case CALC_TI82S: return "TI82s";
   	case CALC_TI82:  return "TI82";
   	case CALC_TI73:  return "TI73";
+	case CALC_TI84P_USB: return "TI84+ USB";
+	case CALC_TI89T_USB: return "TI89t USB";
   	default: return "unknown";
   	}
 }
@@ -89,6 +91,10 @@ TIEXPORT CalcModel TICALL tifiles_string_to_model(const char *str)
 		return CALC_TI92P;
 	else if(!strcmp(str, "V200"))
 		return CALC_V200;
+	else if(!strcmp(str, "TI84+ USB"))
+		return CALC_TI84P_USB;
+	else if(!strcmp(str, "TI89t USB"))
+		return CALC_TI89T_USB;
 		
 	return CALC_NONE;
 }

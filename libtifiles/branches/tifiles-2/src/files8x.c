@@ -59,7 +59,7 @@ static int is_ti8586(CalcModel model)
 
 static int is_ti83p(CalcModel model)
 {
-  return (model == CALC_TI83P) || (model == CALC_TI84P);
+  return (model == CALC_TI83P) || (model == CALC_TI84P)|| (model == CALC_TI84P_USB);
 }
 
 /***********/
@@ -136,7 +136,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
        fread_byte(f, &name_length);
        fskip(f, content->model == CALC_TI85 ? name_length : 8);
     }
-    else if ((content->model == CALC_TI83P) || (content->model == CALC_TI84P))
+    else if ((content->model == CALC_TI83P) || (content->model == CALC_TI84P) || (content->model == CALC_TI84P_USB))
       fskip(f, 13);
     else
       fskip(f, 11);
@@ -472,6 +472,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		break;
 	  case CALC_TI83P:
 	  case CALC_TI84P:
+	  case CALC_TI84P_USB:
 		packet_length = 0x0D;
 		break;
 	  case CALC_TI82:

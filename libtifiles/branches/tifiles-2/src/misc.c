@@ -42,7 +42,8 @@ TIEXPORT int TICALL tifiles_calc_is_ti8x(CalcModel model)
   return ((model == CALC_TI73) || (model == CALC_TI82) ||
 	  (model == CALC_TI82) || (model == CALC_TI83) ||
 	  (model == CALC_TI83P) || (model == CALC_TI84P) ||
-	  (model == CALC_TI85) || (model == CALC_TI86));
+	  (model == CALC_TI85) || (model == CALC_TI86) ||
+	  (model == CALC_TI84P_USB)|| (model == CALC_TI89T_USB));
 }
 
 /**
@@ -56,8 +57,8 @@ TIEXPORT int TICALL tifiles_calc_is_ti8x(CalcModel model)
 TIEXPORT int TICALL tifiles_calc_is_ti9x(CalcModel model)
 {
   return ((model == CALC_TI89) || (model == CALC_TI89T) ||
-	  (model == CALC_TI92) ||
-	  (model == CALC_TI92P) || (model == CALC_V200));
+	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
+	  (model == CALC_TI89T_USB));
 }
 
 /**
@@ -72,7 +73,7 @@ TIEXPORT int TICALL tifiles_has_folder(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
-	  (calc_type == CALC_V200));
+	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB));
 }
 
 /**
@@ -86,9 +87,10 @@ TIEXPORT int TICALL tifiles_has_folder(CalcModel calc_type)
 TIEXPORT int TICALL tifiles_is_flash(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
-	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI89T) ||
-	  (calc_type == CALC_TI89) || (calc_type == CALC_TI92P) ||
-	  (calc_type == CALC_V200));
+	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
+	  (calc_type == CALC_TI89T) || (calc_type == CALC_TI89) || 
+	  (calc_type == CALC_TI92P) ||
+	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB));
 }
 
 
