@@ -31,22 +31,53 @@ extern const CalcKey TI83P_KEYS[];
 extern const CalcKey TI89_KEYS[];
 extern const CalcKey TI92P_KEYS[];
 
-
-TIEXPORT CalcKey TICALL ticalcs_keys_73s(unsigned char ascii_code)
+/**
+ * ticalcs_keys_73:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
+TIEXPORT CalcKey TICALL ticalcs_keys_73(unsigned char ascii_code)
 {
   return TI73_KEYS[ascii_code];
 }
 
+/**
+ * ticalcs_keys_83p:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
 TIEXPORT CalcKey TICALL ticalcs_keys_83p(unsigned char ascii_code)
 {
   return TI83P_KEYS[ascii_code];
 }
 
+/**
+ * ticalcs_keys_89:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
 TIEXPORT CalcKey TICALL ticalcs_keys_89(unsigned char ascii_code)
 {
   return TI89_KEYS[ascii_code];
 }
 
+/**
+ * ticalcs_keys_92p:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
 TIEXPORT CalcKey TICALL ticalcs_keys_92p(unsigned char ascii_code)
 {
   return TI92P_KEYS[ascii_code];

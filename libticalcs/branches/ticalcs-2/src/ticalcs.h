@@ -69,6 +69,7 @@ typedef enum
 	CALC_TI73, CALC_TI82, /*CALC_TI82S,*/ CALC_TI83, 
 	CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
+	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
 #endif
 
@@ -563,7 +564,6 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
-	TIEXPORT int TICALL ticalcs_calc_show_clock(CalcClock* clock);
 
 	TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle*, VarRequest*);
 	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
@@ -606,12 +606,13 @@ typedef struct
 	TIEXPORT CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
 
 	// clock.c
-	TIEXPORT const char* TICALL ticalcs_clock_format2date(int value);
-	TIEXPORT int		 TICALL ticalcs_clock_date2format(const char *format);
+	TIEXPORT const char* TICALL ticalcs_clock_format2date(CalcModel model, int value);
+	TIEXPORT int		 TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
+	TIEXPORT int		 TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
 
 	// tikeys.c
-        TIEXPORT CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
-        TIEXPORT CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
+    TIEXPORT CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
+    TIEXPORT CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
 	TIEXPORT CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
 	TIEXPORT CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 

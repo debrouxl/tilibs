@@ -32,9 +32,10 @@
 #define strcasecmp _stricmp
 #endif
 
-#define MAX_FORMAT 8
+#define MAX_FORMAT_89	8
+#define MAX_FORMAT_84	3
 
-const char *TI_CLOCK[MAX_FORMAT + 2] = 
+static const char *TI_CLOCK_89[] = 
 {
   "",
   "MM/DD/YY",
@@ -48,40 +49,108 @@ const char *TI_CLOCK[MAX_FORMAT + 2] =
   ""
 };
 
-TIEXPORT const char *TICALL ticalcs_clock_format2date(int value)
+static const char *TI_CLOCK_84[] = 
+{
+  "",
+  "M/D/Y",
+  "D/M/Y",
+  "Y/M/D",
+  ""
+};
+
+/**
+ * ticalcs_clock_format2date:
+ * @model: a calculator model
+ * @value: a format type
+ *
+ * Convert a format type into a format string.
+ * Example: 1 -> "MM/DD/YY"
+ *
+ * Return value: a format string.
+ **/
+TIEXPORT const char *TICALL ticalcs_clock_format2date(CalcModel model, int value)
 {
   int v;
 
-  if (value < 1)
-    v = 1;
-  else if (value > MAX_FORMAT)
-    v = MAX_FORMAT;
-  else
-    v = value;
+  if(tifiles_calc_is_ti9x(model))
+  {
+	  if (value < 1)
+		v = 1;
+	  else if (value > MAX_FORMAT_89)
+		v = MAX_FORMAT_89;
+	  else
+		v = value;
 
-  return TI_CLOCK[v];
+	  return TI_CLOCK_89[v];
+  }
+  else if(tifiles_calc_is_ti8x(model))
+  {
+		if (value < 1)
+		v = 1;
+	  else if (value > MAX_FORMAT_84)
+		v = MAX_FORMAT_84;
+	  else
+		v = value;
+
+	  return TI_CLOCK_84[v];
+  }
+
+  return "";
 }
 
-TIEXPORT int TICALL ticalcs_clock_date2format(const char *format)
+/**
+ * ticalcs_clock_date2format:
+ * @model: a calculator model
+ * @format: a format string
+ *
+ * Convert a format string into a format type.
+ * Example: "MM/DD/YY" -> 1
+ *
+ * Return value: a format string.
+ **/
+TIEXPORT int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
 {
-  int i;
+  int i = 1;
 
-  for (i = 1; i <= MAX_FORMAT; i++) 
+  if(tifiles_calc_is_ti9x(model))
   {
-    if (!strcasecmp(TI_CLOCK[i], format))
-      break;
+	  for (i = 1; i <= MAX_FORMAT_89; i++) 
+	  {
+		if (!strcasecmp(TI_CLOCK_89[i], format))
+		  break;
+	  }
+	  if (i > MAX_FORMAT_89)
+		return 1;
   }
-  if (i > MAX_FORMAT)
-    return 1;
+  else if(tifiles_calc_is_ti8x(model))
+  {
+	  for (i = 1; i <= MAX_FORMAT_84; i++) 
+	  {
+		if (!strcasecmp(TI_CLOCK_84[i], format))
+		  break;
+	  }
+	  if (i > MAX_FORMAT_84)
+		return 1;
+  }
 
   return i;
 }
 
-TIEXPORT int TICALL ticalcs_calc_show_clock(CalcClock* s)
+/**
+ * ticalcs_clock_show:
+ * @model: calc model
+ * @clock: a #CalcClock structure
+ *
+ * Display to stdout the content of the structure.
+ *
+ * Return value: always 0.
+ **/
+TIEXPORT int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
 {
 	ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
 	ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);
 	ticalcs_info("Time format: %02i", s->time_format);
-	ticalcs_info("Date format: %s", ticalcs_clock_format2date(s->date_format));
+	ticalcs_info("Date format: %s", ticalcs_clock_format2date(model, s->date_format));
+
 	return 0;
 }

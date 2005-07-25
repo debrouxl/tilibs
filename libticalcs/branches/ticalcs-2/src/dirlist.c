@@ -57,6 +57,14 @@ static tboolean free_varentry(TNode* node, tpointer data)
 	return FALSE;
 }
 
+/**
+ * ticalcs_dirlist_destroy:
+ * @tree: the tree to destroy (var or app).
+ *
+ * Destroy the whole tree create by #ticalcs_calc_get_dirlist.
+ *
+ * Return value: none.
+ **/
 TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree)
 {
 	if (*tree != NULL) 
@@ -177,6 +185,14 @@ static void dirlist_display_apps(TNode* tree)
   printf("\n");
 }
 
+/**
+ * ticalcs_dirlist_display:
+ * @tree: the tree to display (var or app).
+ *
+ * Display to stdout the tree content formatted in a tab.
+ *
+ * Return value: none.
+ **/
 TIEXPORT void TICALL ticalcs_dirlist_display(TNode* tree)
 {
 	TreeInfo *info = (TreeInfo *)(tree->data);
@@ -191,7 +207,15 @@ TIEXPORT void TICALL ticalcs_dirlist_display(TNode* tree)
 	    dirlist_display_apps(tree);
 }
 
-
+/**
+ * ticalcs_dirlist_var_exist:
+ * @tree: the tree to display (var or app).
+ * @full_name: the full name of var to search for.
+ *
+ * Parse the tree for the given varname & folder.
+ *
+ * Return value: a pointer on the #VarEntry found or NULL if not found.
+ **/
 TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char *full_name)
 {
 	int i, j;
@@ -231,7 +255,15 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char *full_name
 	return NULL;
 }
 
-
+/**
+ * ticalcs_dirlist_app_exist:
+ * @tree: the tree to display (var or app).
+ * @app_name: the name of app to search for.
+ *
+ * Parse the tree for the given application name.
+ *
+ * Return value: a pointer on the #VarEntry found or NULL if not found.
+ **/
 TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char *appname)
 {
 	int i;
@@ -257,6 +289,14 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char *appname)
 	return NULL;
 }
 
+/**
+ * ticalcs_dirlist_num_vars:
+ * @tree: a tree (var or app).
+ *
+ * Count how many variables are listed in the tree.
+ *
+ * Return value: the number of variables.
+ **/
 TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree)
 {
 	int i, j;
@@ -282,7 +322,14 @@ TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree)
 	return nvars;
 }
 
-
+/**
+ * ticalcs_dirlist_mem_used:
+ * @tree: a tree (var only).
+ *
+ * Count how much memory is used by variables listed in the tree.
+ *
+ * Return value: size of all variables in bytes.
+ **/
 TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 {
 	int i, j;

@@ -42,7 +42,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 	uint16_t length;
 	uint8_t buffer[5];
 
-	TRYF(recv_packet(handle, &host, &cmd, &length, buffer));
+	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 	ticalcs_info(" TI->PC: ACK");
 
 	*mid = host;
@@ -53,16 +53,22 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 	return 0;
 }
 
-/* 
-   This function try to detect the calculator type for non-silent models
-   by requesting a screedump and analyzing the Machine ID uint8_t. 
-   It supposes your calc is on and plugged.
-
-   PC: 08  6D 00 00		PC request a screen dump
-   TI: MId 56 00 00		TI reply OK
-   
-   Beware: the call sequence is very important: 86, 85, 83, 82 !!!
-*/
+/**
+ * ticalcs_probe_calc_2:
+ * @handle: a previously allocated handle
+ * @type: the calculator model
+ *
+ * This function try to detect the calculator type for non-silent models
+ * by requesting a screedump and analyzing the Machine ID. 
+ * It supposes your calc is on and plugged.
+ * 
+ * PC: 08  6D 00 00		PC request a screen dump
+ * TI: MId 56 00 00		TI reply OK
+ *
+ * Beware: the call sequence is very important: 86, 85, 83, 82 !!!
+ *
+ * Return value: 0 if ready else an error code.
+ **/
 TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 {
 	CalcHandle* h = handle;
@@ -73,7 +79,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI86 before a TI85 */
 	ticalcs_info(_("Trying TI86... "));
-	TRYF(send_packet(h, PC_TI86, CMD_SCR, 2, NULL));
+	TRYF(dbus_send(h, PC_TI86, CMD_SCR, 2, NULL));
 	err = tixx_recv_ACK(h, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI86, data);
@@ -92,7 +98,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI85 */
 	ticalcs_info(_("Trying TI85... "));
-	TRYF(send_packet(h, PC_TI85, CMD_SCR, 2, NULL));
+	TRYF(dbus_send(h, PC_TI85, CMD_SCR, 2, NULL));
 	err = tixx_recv_ACK(h, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI85, data);
@@ -111,7 +117,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI83 before a TI82 */
 	ticalcs_info(_("Trying TI83... "));
-	TRYF(send_packet(h, PC_TI83, CMD_SCR, 2, NULL));
+	TRYF(dbus_send(h, PC_TI83, CMD_SCR, 2, NULL));
 	err = tixx_recv_ACK(h, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI83, data);
@@ -130,7 +136,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI82 */
 	ticalcs_info(_("Trying TI82... "));
-	TRYF(send_packet(h, PC_TI83, CMD_SCR, 2, NULL));
+	TRYF(dbus_send(h, PC_TI83, CMD_SCR, 2, NULL));
 	err = tixx_recv_ACK(h, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI82, data);
@@ -176,10 +182,10 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	for(i = 0; i < 2; i++)
 	{
 		ticalcs_info(" PC->TI: RDY?");
-		err = send_packet(handle, PC_TIXX, CMD_RDY, 2, NULL);
+		err = dbus_send(handle, PC_TIXX, CMD_RDY, 2, NULL);
 		if(err) continue;
 
-		err = recv_packet(handle, &host, &cmd, &status, buffer);
+		err = dbus_recv(handle, &host, &cmd, &status, buffer);
 		ticalcs_info(" TI->PC: ACK");
 		if(err) continue;
 
@@ -193,10 +199,10 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		for(i = 0; i < 2; i++)
 		{
 			ticalcs_info(" PC->TI: RDY?");
-			err = send_packet(handle, PC_TI92, CMD_RDY, 2, NULL);
+			err = dbus_send(handle, PC_TI92, CMD_RDY, 2, NULL);
 			if(err) continue;
 
-			err = recv_packet(handle, &host, &cmd, &status, buffer);
+			err = dbus_recv(handle, &host, &cmd, &status, buffer);
 			ticalcs_info(" TI->PC: ACK");
 			if(err) continue;
 
