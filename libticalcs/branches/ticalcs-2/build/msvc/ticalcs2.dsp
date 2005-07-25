@@ -185,7 +185,15 @@ SOURCE=..\..\src\dbus_pkt.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\direct-usb-protocol.txt"
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dusb_pkt.c
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\screenshot.log"
 # End Source File
 # End Group
 # Begin Source File

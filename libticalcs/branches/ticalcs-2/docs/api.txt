@@ -1,5 +1,9 @@
-tifiles.h : Enumerations, structures and type definitions
-tifiles.c : Entry Points
+ticalcs.h : Enumerations, structures and type definitions
+ticalcs.c : Entry Points
 error.c : General Functions
 type2str.c : Types / Strings conversions
-link_xxx.c : Link cable management layer
+calc_xx.c : Hand-held management layer
+dirlist.c : Directory listing management
+clock.c : Clock support
+tikeys.c : Getting scancode for TI keys
+probe.c : Automatic probing of hand-held model

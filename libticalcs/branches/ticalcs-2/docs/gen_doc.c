@@ -287,11 +287,11 @@ int main(int argc, char **argv)
 #else
 	// test
 #ifdef __WIN32__
-	src_folder = "C:\\sources\\roms\\tifiles-2\\src\\";
-	doc_folder = "C:\\sources\\roms\\tifiles-2\\docs\\";
+	src_folder = "C:\\sources\\roms\\ticalcs2\\src\\";
+	doc_folder = "C:\\sources\\roms\\ticalcs2\\docs\\";
 #else
-	src_folder = "/home/devel/tilp_project/libs/files-2/src";
-	doc_folder = "/home/devel/tilp_project/libs/files-2/docs";
+	src_folder = "/home/devel/tilp_project/libs/cables-2/src";
+	doc_folder = "/home/devel/tilp_project/libs/cables-2/docs";
 #endif
 #endif
 	printf("Doc folder: <%s>\n", doc_folder);
