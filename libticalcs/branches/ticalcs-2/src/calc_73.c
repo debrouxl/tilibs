@@ -761,6 +761,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return 0;
 }
 
+static int		send_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
+static int		recv_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
 const CalcFncts calc_73 = 
 {
 	CALC_TI73,
@@ -788,6 +798,8 @@ const CalcFncts calc_73 =
 	&dump_rom,
 	&set_clock,
 	&get_clock,
+	&send_cert,
+	&recv_cert,
 };
 
 const CalcFncts calc_83p = 
@@ -820,6 +832,8 @@ const CalcFncts calc_83p =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };
 
 const CalcFncts calc_84p = 
@@ -852,4 +866,6 @@ const CalcFncts calc_84p =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };

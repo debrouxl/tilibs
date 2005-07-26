@@ -629,12 +629,12 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int i;
 
 	content->model = handle->model;
-	content->data_part = (uint8_t *) calloc(2 * 1024 * 1024, 1);	// 2MB max
+	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
 	sprintf(update->text, _("Receiving '%s'"), vr->name);
 	update_label();
 
-	TRYF(ti89_send_REQ(0x00, TI89_APPL, vr->name));
+	TRYF(ti89_send_REQ(0x00, vr->type, vr->name));
 	TRYF(ti89_recv_ACK(NULL));
 
 	TRYF(ti89_recv_VAR(&content->data_length, &content->data_type, content->name));
@@ -904,6 +904,27 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return 0;
 }
 
+static int		send_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
+static int		recv_cert	(CalcHandle* handle, FlashContent* content)
+{
+	VarEntry ve = { 0 };
+	int ret = 0;
+
+	ve.type = TI89_GETCERT;
+	strcpy(ve.name, "");
+
+	ret = recv_flash(handle, content, &ve);
+
+	// do we need to skip the first 4 bytes ?
+	memmove(content->data_part, content->data_part + 4, content->data_length - 4);
+
+	return ret;
+}
+
 const CalcFncts calc_89 = 
 {
 	CALC_TI89,
@@ -934,6 +955,8 @@ const CalcFncts calc_89 =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };
 
 const CalcFncts calc_92p = 
@@ -966,6 +989,8 @@ const CalcFncts calc_92p =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };
 
 const CalcFncts calc_89t = 
@@ -998,6 +1023,8 @@ const CalcFncts calc_89t =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };
 
 const CalcFncts calc_v2 = 
@@ -1030,4 +1057,6 @@ const CalcFncts calc_v2 =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };

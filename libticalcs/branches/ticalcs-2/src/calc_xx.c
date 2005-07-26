@@ -69,7 +69,8 @@ TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
 
 	ticalcs_info(_("Checking hand-held status:"));
 	handle->busy = 1;
-	ret = calc->is_ready(handle);
+	if(calc->is_ready)
+		ret = calc->is_ready(handle);
 	handle->busy = 0;
 
 	return ret;
@@ -100,7 +101,8 @@ TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 
 	ticalcs_info(_("Sending key %04x:"));
 	handle->busy = 1;
-	ret = calc->send_key(handle, key);
+	if(calc->send_key)
+		ret = calc->send_key(handle, key);
 	handle->busy = 0;
 
 	return ret;
@@ -133,7 +135,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
 
 	ticalcs_info(_("Requesting screenshot:"));
 	handle->busy = 1;
-	ret = calc->recv_screen(handle, sc, bitmap);
+	if(calc->recv_screen)
+		ret = calc->recv_screen(handle, sc, bitmap);
 	handle->busy = 0;
 
 	return ret;
@@ -167,7 +170,8 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 
 	ticalcs_info(_("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
-	ret = calc->get_dirlist(handle, vars, apps);
+	if(calc->get_dirlist)
+		ret = calc->get_dirlist(handle, vars, apps);
 
 	ti = (*vars)->data;
 	ti->mem_mask |= MEMORY_USED;
@@ -207,7 +211,8 @@ TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memor
 
 	ticalcs_info(_("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
-	ret = calc->get_memfree(handle, memory);
+	if(calc->get_memfree)
+		ret = calc->get_memfree(handle, memory);
 	handle->busy = 0;
 
 	return ret;
@@ -238,7 +243,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* 
 
 	ticalcs_info(_("Requesting backup:"));
 	handle->busy = 1;
-	ret = calc->recv_backup(handle, content);
+	if(calc->recv_backup)
+		ret = calc->recv_backup(handle, content);
 	handle->busy = 0;
 
 	return ret;
@@ -269,7 +275,8 @@ TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* 
 
 	ticalcs_info(_("Sending backup:"));
 	handle->busy = 1;
-	ret = calc->send_backup(handle, content);
+	if(calc->send_backup)
+		ret = calc->send_backup(handle, content);
 	handle->busy = 0;
 
 	return ret;
@@ -302,7 +309,8 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
 
 	ticalcs_info(_("Sending one or more variables:"));
 	handle->busy = 1;
-	ret = calc->send_var(handle, mode, content);
+	if(calc->send_var)
+		ret = calc->send_var(handle, mode, content);
 	handle->busy = 0;
 
 	return ret;
@@ -336,7 +344,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 
 	ticalcs_info(_("Requesting variable '%s':"), vr->name);
 	handle->busy = 1;
-	ret = calc->recv_var(handle, mode, content, vr);
+	if(calc->recv_var)
+		ret = calc->recv_var(handle, mode, content, vr);
 	handle->busy = 0;
 
 	return ret;
@@ -369,7 +378,8 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 
 	ticalcs_info(_("Sending variable (non-silent mode):"));
 	handle->busy = 1;
-	ret = calc->send_var_ns(handle, mode, content);
+	if(calc->send_var_ns)
+		ret = calc->send_var_ns(handle, mode, content);
 	handle->busy = 0;
 
 	return ret;
@@ -403,7 +413,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 
 	ticalcs_info(_("Receiving variable (non-silent mode):"));
 	handle->busy = 1;
-	ret = calc->recv_var_ns(handle, mode, content, var);
+	if(calc->recv_var_ns)
+		ret = calc->recv_var_ns(handle, mode, content, var);
 	handle->busy = 0;
 
 	return ret;
@@ -434,7 +445,8 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 
 	ticalcs_info(_("Sending FLASH app/os:"));
 	handle->busy = 1;
-	ret = calc->send_flash(handle, content);
+	if(calc->send_flash)
+		ret = calc->send_flash(handle, content);
 	handle->busy = 0;
 
 	return ret;
@@ -467,7 +479,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 
 	ticalcs_info(_("Requesting receiving of FLASH app:"));
 	handle->busy = 1;
-	ret = calc->recv_flash(handle, content, var);
+	if(calc->recv_flash)
+		ret = calc->recv_flash(handle, content, var);
 	handle->busy = 0;
 
 	return ret;
@@ -498,7 +511,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist
 
 	ticalcs_info(_("Requesting ID-LIST:"));
 	handle->busy = 1;
-	ret = calc->recv_idlist(handle, idlist);
+	if(calc->recv_idlist)
+		ret = calc->recv_idlist(handle, idlist);
 	handle->busy = 0;
 
 	return ret;
@@ -531,7 +545,8 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 
 	ticalcs_info(_("Dumping ROM:"));
 	handle->busy = 1;
-	ret = calc->dump_rom(handle, size, filename);
+	if(calc->dump_rom)
+		ret = calc->dump_rom(handle, size, filename);
 	handle->busy = 0;
 
 	return ret;
@@ -562,7 +577,8 @@ TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 
 	ticalcs_info(_("Setting clock:"));
 	handle->busy = 1;
-	ret = calc->set_clock(handle, clock);
+	if(calc->set_clock)
+		ret = calc->set_clock(handle, clock);
 	handle->busy = 0;
 
 	return ret;
@@ -593,11 +609,77 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 
 	ticalcs_info(_("Getting clock:"));
 	handle->busy = 1;
-	ret = calc->get_clock(handle, clock);
+	if(calc->get_clock)
+		ret = calc->get_clock(handle, clock);
 	handle->busy = 0;
 
 	return ret;
 }
+
+/**
+ * ticalcs_calc_send_cert:
+ * @handle: a previously allocated handle
+ * @content: content to send
+ *
+ * Send a certificate.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Sending certificate:"));
+	handle->busy = 1;
+	if(calc->send_cert)
+		ret = calc->send_cert(handle, content);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_recv_cert:
+ * @handle: a previously allocated handle
+ * @content: where to store content
+ *
+ * Request receiving of a FLASH app.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Requesting receiving of certificate:"));
+	handle->busy = 1;
+	if(calc->recv_cert)
+		ret = calc->recv_cert(handle, content);
+	handle->busy = 0;
+
+	return ret;
+}
+
 
 // ---
 
@@ -971,4 +1053,65 @@ TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* info
 	handle->busy = 0;
 
 	return ret;
+}
+
+/**
+ * ticalcs_calc_send_cert2:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ *
+ * Send a certificate.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
+{
+	FlashContent content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	TRYF(tifiles_file_read_flash(filename, &content));
+	TRYF(ticalcs_calc_send_cert(handle, &content));
+	TRYF(tifiles_content_delete_flash(&content));
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_cert2:
+ * @handle: a previously allocated handle
+ * @content: where to store content
+ * @var: FLASH app to request
+ *
+ * Request certificate.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
+{
+	FlashContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_flash();
+	TRYF(ticalcs_calc_recv_cert(handle, content));
+	TRYF(tifiles_file_write_flash(filename, content));
+
+	TRYF(tifiles_content_delete_flash(content));
+
+	return 0;
 }

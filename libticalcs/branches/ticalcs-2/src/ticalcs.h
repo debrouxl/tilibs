@@ -453,6 +453,9 @@ struct _CalcFncts
 	int		(*new_fld)		(CalcHandle*, VarRequest*);
 
 	int		(*get_version)	(CalcHandle*, CalcInfos*);
+
+	int		(*send_cert)	(CalcHandle*, FlashContent*);
+	int		(*recv_cert)	(CalcHandle*, FlashContent*);
 };
 
 /**
@@ -536,7 +539,7 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
 
-	// calc.c
+	// calc_xx.c
 	TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle*);
 
 	TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle*);
@@ -569,9 +572,12 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
 	TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle*, CalcInfos*);
 
-	// calc.c: convenient functions
-	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char *filename);
-	TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char *filename);
+	TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle*, FlashContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle*, FlashContent*);
+
+	// calc_xx.c: convenient functions
+	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char*);
 	
 	TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle*, CalcMode, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle*, CalcMode, const char*, VarRequest*);
@@ -581,6 +587,9 @@ typedef struct
 	
 	TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle*, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle*, const char*, VarRequest*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle*, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);
 
 	// dirlist.c
 	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);

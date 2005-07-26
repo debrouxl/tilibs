@@ -58,7 +58,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
  * @handle: a previously allocated handle
  * @type: the calculator model
  *
- * This function try to detect the calculator type for non-silent models
+ * This function tries and detect the calculator type for non-silent models
  * by requesting a screedump and analyzing the Machine ID. 
  * It supposes your calc is on and plugged.
  * 

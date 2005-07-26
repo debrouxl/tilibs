@@ -129,6 +129,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return 0;
 }
 
+static int		send_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
+static int		recv_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
 const CalcFncts calc_00 = 
 {
 	CALC_NONE,
@@ -156,4 +166,6 @@ const CalcFncts calc_00 =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };

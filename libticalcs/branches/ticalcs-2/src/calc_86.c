@@ -508,6 +508,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return 0;
 }
 
+static int		send_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
+static int		recv_cert	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
 const CalcFncts calc_86 = 
 {
 	CALC_TI86,
@@ -536,4 +546,6 @@ const CalcFncts calc_86 =
 	&del_var,
 	&new_folder,
 	&get_version,
+	&send_cert,
+	&recv_cert,
 };
