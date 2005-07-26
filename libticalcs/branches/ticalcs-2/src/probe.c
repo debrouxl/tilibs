@@ -42,7 +42,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 	uint16_t length;
 	uint8_t buffer[5];
 
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	TRYF(dbus_recv_2(handle, &host, &cmd, &length, buffer));
 	ticalcs_info(" TI->PC: ACK");
 
 	*mid = host;
@@ -185,7 +185,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		err = dbus_send(handle, PC_TIXX, CMD_RDY, 2, NULL);
 		if(err) continue;
 
-		err = dbus_recv(handle, &host, &cmd, &status, buffer);
+		err = dbus_recv_2(handle, &host, &cmd, &status, buffer);
 		ticalcs_info(" TI->PC: ACK");
 		if(err) continue;
 
@@ -202,7 +202,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 			err = dbus_send(handle, PC_TI92, CMD_RDY, 2, NULL);
 			if(err) continue;
 
-			err = dbus_recv(handle, &host, &cmd, &status, buffer);
+			err = dbus_recv_2(handle, &host, &cmd, &status, buffer);
 			ticalcs_info(" TI->PC: ACK");
 			if(err) continue;
 

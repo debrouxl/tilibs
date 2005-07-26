@@ -164,15 +164,7 @@ static uint8_t host_ids(CalcHandle *handle)
   return 0x00;
 }
 
-/*
-  Receive a packet from TI (target) to PC (host):
-  - host [out]	 : a machine ID uint8_t
-  - cmd [out]	 : a command ID uint8_t
-  - length [out] : length of buffer
-  - data [out]	 : received data (depending on command)
-  - int [out]	 : an error code
-*/
-int dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
+static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data, int host_check)
 {
 	int i;
 	uint16_t chksum;
@@ -187,10 +179,8 @@ int dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length,
 	*length = buf[2] | (buf[3] << 8);
 
 	//removed for probing
-/*
-	if(*host != host_ids(handle)) 
+	if(host_check && (*host != host_ids(handle))) 
 		return ERR_INVALID_HOST;
-		*/
 
 	if(*cmd == CMD_ERR) 
 		return ERR_CHECKSUM;
@@ -258,6 +248,24 @@ int dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length,
 	}
 
 	return 0;
+}
+
+/*
+  Receive a packet from TI (target) to PC (host):
+  - host [out]	 : a machine ID uint8_t
+  - cmd [out]	 : a command ID uint8_t
+  - length [out] : length of buffer
+  - data [out]	 : received data (depending on command)
+  - int [out]	 : an error code
+*/
+int dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
+{
+	return dbus_recv_(handle, host, cmd, length, data, !0);
+}
+
+int dbus_recv_2(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
+{
+	return dbus_recv_(handle, host, cmd, length, data, 0);
 }
 
 /* Fill-up a 8-chars buffer with NUL chars */

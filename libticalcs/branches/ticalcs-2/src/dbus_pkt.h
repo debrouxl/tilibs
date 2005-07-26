@@ -107,6 +107,10 @@ int dbus_send(CalcHandle* cable,
 int dbus_recv(CalcHandle* cable,
 				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
 
+// used for probing only
+int dbus_recv_2(CalcHandle* cable,
+				uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
+
 void pad_buffer(uint8_t *varname, uint8_t value);
 
 #ifndef WORDS_BIGENDIAN
