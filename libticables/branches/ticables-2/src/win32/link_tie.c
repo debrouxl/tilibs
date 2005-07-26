@@ -68,8 +68,6 @@ static LinkBuffer *pRecvBuf = NULL;
 
 static int tie_prepare(CableHandle *h)
 {
-	printf("ref_cnt = %i\n", ref_cnt);
-
 	// in fact, address & device are unused
 	switch(h->port)
 	{

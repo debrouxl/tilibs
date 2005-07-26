@@ -61,6 +61,7 @@ static int par_open(CableHandle *h)
   	TRYC(io_open(h->address))
 #endif
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
+	io_wr(lpt_out, 3);
 
 	return 0;
 }

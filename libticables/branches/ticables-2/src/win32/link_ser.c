@@ -70,6 +70,8 @@ static int ser_open(CableHandle *h)
   	TRYC(io_open(com_out));
   	TRYC(io_open(com_in));
 
+	io_wr(com_out, 3);
+
 	return 0;
 }
 
