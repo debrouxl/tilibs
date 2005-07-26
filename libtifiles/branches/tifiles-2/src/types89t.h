@@ -44,7 +44,8 @@
 #define TI89t_BKUP 0x1D
 #define TI89t_FDIR 0x1F		// full
 #define TI89t_DIR  TI89t_FDIR	//type
-#define TI89t_ASM  0x21
+#define TI89r_GETCERT 0x20
+#define TI89t_ASM	  0x21
 #define TI89t_IDLIST  0x22
 #define TI89t_AMS     0x23
 #define TI89t_APPL    0x24

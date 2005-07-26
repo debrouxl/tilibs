@@ -656,20 +656,20 @@ int ti9x_content_display_flash(Ti9xFlash *content)
     tifiles_info("Name:           <%s>", ptr->name);
     tifiles_info("Device type:    %s",
 	    ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
-    tifiles_info("Data type:      ");
     switch (ptr->data_type) 
 	{
     case 0x23:
-      tifiles_info("OS data");
+      tifiles_info("Data type:      OS data");
       break;
     case 0x24:
-      tifiles_info("APP data");
+      tifiles_info("Data type:      APP data");
       break;
+	case 0x20:
     case 0x25:
-      tifiles_info("certificate");
+      tifiles_info("Data type:      certificate");
       break;
     case 0x3E:
-      tifiles_info("license");
+      tifiles_info("Data type:      license");
       break;
     default:
       tifiles_info("Unknown (mailto roms@lpg.ticalc.org)");

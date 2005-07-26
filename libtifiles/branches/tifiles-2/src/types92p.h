@@ -45,7 +45,8 @@
 #define TI92p_BKUP 0x1D
 #define TI92p_FDIR 0x1F
 #define TI92p_DIR  TI92p_FDIR
-#define TI92p_ASM  0x21
+#define TI92p_GETCERT 0x20
+#define TI92p_ASM	  0x21
 #define TI92p_IDLIST  0x22
 #define TI92p_AMS     0x23
 #define TI92p_APPL    0x24
