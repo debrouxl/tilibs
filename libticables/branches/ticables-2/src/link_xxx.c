@@ -63,7 +63,7 @@ TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
 TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 
 	if(!handle->open)
 		return -1;
@@ -74,7 +74,7 @@ TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
 	ret = cable->reset(handle);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -158,7 +158,7 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
 TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 
 	if(!handle->open)
 		return -1;
@@ -173,7 +173,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	LOG_N_DATA(data, len);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -189,7 +189,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 
 	if(!handle->open)
 		return -1;
@@ -202,7 +202,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 	LOG_DATA(data);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }	
 
 /**
@@ -218,7 +218,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -233,7 +233,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 	LOG_N_DATA(data, len);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -249,7 +249,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -262,7 +262,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 	LOG_DATA(*data);
 	handle->busy = 0;
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -277,7 +277,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -303,7 +303,7 @@ TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *statu
 TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -329,7 +329,7 @@ TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -354,7 +354,7 @@ TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;
@@ -379,7 +379,7 @@ TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
 TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
-	int ret;
+	int ret = 0;
 	
 	if(!handle->open)
 		return -1;

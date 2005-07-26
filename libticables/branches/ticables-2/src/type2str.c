@@ -40,7 +40,7 @@ TIEXPORT const char *TICALL ticables_model_to_string(CableModel model)
 	case CABLE_BLK: return "BlackLink";
 	case CABLE_PAR: return "Parallel";
 	case CABLE_SLV: return "SilverLink";
-	case CABLE_VTI: return "Virtual TI";
+	case CABLE_VTI: return "VTi";
 	case CABLE_TIE: return "TiEmu";
 	case CABLE_VTL: return "virtual";
 	default: return "unknown";
@@ -67,7 +67,7 @@ TIEXPORT CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_PAR;
 	else if(!strcmp(str, "SilverLink"))
 		return CABLE_SLV;
-	else if(!strcmp(str, "Virtual TI"))
+	else if(!strcmp(str, "VTi"))
 		return CABLE_VTI;
 	else if(!strcmp(str, "TiEmu"))
 		return CABLE_TIE;
