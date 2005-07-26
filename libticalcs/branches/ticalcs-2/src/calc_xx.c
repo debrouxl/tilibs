@@ -1111,6 +1111,20 @@ TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* file
 	TRYF(ticalcs_calc_recv_cert(handle, content));
 	TRYF(tifiles_file_write_flash(filename, content));
 
+#if 1
+	{
+		gchar *basename = g_strdup(filename);
+		FILE *f;
+		gchar *e = strrchr(basename, '.');
+
+		memcpy(e, ".crt", 4);
+
+		f = fopen(basename, "wb");
+		fwrite(content->data_part, content->data_length, 1, f);
+		fclose(f);
+	}
+#endif
+
 	TRYF(tifiles_content_delete_flash(content));
 
 	return 0;

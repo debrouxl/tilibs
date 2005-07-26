@@ -551,7 +551,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 {
 	const char *prgname = "romdump.8Xp";
 	FILE *f;
-	int err, i;
+	int err/*, i*/;
 	uint16_t keys[] = { 
 		0x40, 0x09, 0x09, 0x3e, 0x04, 0x04, 0x04, 0x04, 
 		0x04, 0x04, 0x05, 0xAB, 0xA8, 0xA6, 0x9D, 0xAE, 
@@ -768,6 +768,56 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 {
+	FlashPage *fp;
+	uint8_t buf[FLASH_PAGE_SIZE + 4];
+	uint16_t varsize, unused, data_length, offset;
+	uint8_t vartype, varattr, hst, cmd;
+	char varname[9];
+
+	sprintf(update->text, _("Receiving certificate"));
+	update_label();
+
+	content->model = handle->model;
+	strcpy(content->name, "");
+	content->data_type = TI83p_CERTIF;
+	content->device_type = 0x73;
+	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
+	content->pages = tifiles_fp_create_array(content->num_pages);
+
+	TRYF(ti73_send_REQ(0x0000, TI83p_CERTIF, "", 0x00));
+	TRYF(ti73_recv_ACK(&unused));
+
+	//TRYF(dbus_recv(handle, &hst, &cmd, &unused, buf));
+	TRYF(ti73_recv_VAR((uint16_t *)&varsize, &vartype, varname, &varattr));
+	TRYF(ti73_send_ACK());
+
+	fp = content->pages[0] = tifiles_fp_create();
+	for(;;)
+	{
+		int err;
+
+		TRYF(ti73_send_CTS());
+		TRYF(ti73_recv_ACK(NULL));
+
+		err = ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]);
+		TRYF(ti73_send_ACK());
+
+		if (err == ERR_EOT)
+			goto exit;
+		TRYF(err);
+
+		offset += data_length;
+
+		update->cnt2 = offset;
+		update->pbar();
+	}
+
+exit:
+	fp->size = offset;			
+	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+	memcpy(fp->data, buf, fp->size);
+	content->num_pages = 1;
+
 	return 0;
 }
 
@@ -811,7 +861,7 @@ const CalcFncts calc_83p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -845,7 +895,7 @@ const CalcFncts calc_84p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -919,8 +919,11 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 
 	ret = recv_flash(handle, content, &ve);
 
-	// do we need to skip the first 4 bytes ?
+	// fix up for certificate
 	memmove(content->data_part, content->data_part + 4, content->data_length - 4);
+	content->data_type = TI89_CERTIF;
+	content->device_type = 0x98;
+	strcpy(content->name, "");
 
 	return ret;
 }
@@ -934,7 +937,7 @@ const CalcFncts calc_89 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -968,7 +971,7 @@ const CalcFncts calc_92p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -1002,7 +1005,7 @@ const CalcFncts calc_89t =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -1036,7 +1039,7 @@ const CalcFncts calc_v2 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_FOLDER | FTS_FLASH,
+	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,

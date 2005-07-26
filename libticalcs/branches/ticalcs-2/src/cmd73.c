@@ -196,7 +196,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
        varsize, vartype, trans, varattr);
 
-  if (vartype != TI83p_IDLIST) 
+  if (vartype != TI83p_IDLIST && vartype != TI83p_CERTIF) 
   {
     TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer));
   } 

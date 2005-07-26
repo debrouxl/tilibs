@@ -181,6 +181,7 @@ typedef enum
   FTS_FOLDER	= (1 << 16),
   FTS_MEMFREE	= (1 << 17),
   FTS_FLASH		= (1 << 18),
+  FTS_CERT		= (1 << 19),
 
 } CalcFeatures;
 
