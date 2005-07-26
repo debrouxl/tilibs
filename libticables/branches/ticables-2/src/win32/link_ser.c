@@ -200,8 +200,6 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 	for(j = 0; j < len; j++)
 	{
 		uint8_t v, byte = 0;
-
-		printf(".");
   	
 		for (bit = 0; bit < 8; bit++) 
 		{
