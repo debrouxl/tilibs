@@ -301,10 +301,11 @@ extern "C" {
   TIEXPORT char *TICALL tifiles_transcode_varname_static (CalcModel model, const char *src, uint8_t vartype);
 
   // filetypes.c
-  TIEXPORT const char* TICALL tifiles_fext_of_group (CalcModel model);
-  TIEXPORT const char* TICALL tifiles_fext_of_backup (CalcModel model);
-  TIEXPORT const char* TICALL tifiles_fext_of_flash_app (CalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_group    (CalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_backup   (CalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_flash_app(CalcModel model);
   TIEXPORT const char* TICALL tifiles_fext_of_flash_os (CalcModel model);
+  TIEXPORT const char* TICALL tifiles_fext_of_certif   (CalcModel model);
 
   TIEXPORT char* TICALL tifiles_fext_get (const char *filename);
   TIEXPORT char* TICALL tifiles_fext_dup (const char *filename);
