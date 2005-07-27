@@ -908,7 +908,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 static int		send_cert	(CalcHandle* handle, FlashContent* content)
 {
-	return 0;
+	return send_flash(handle, content);
 }
 
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
@@ -924,7 +924,13 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	// fix up for certificate
 	memmove(content->data_part, content->data_part + 4, content->data_length - 4);
 	content->data_type = TI89_CERTIF;
-	content->device_type = 0x98;
+	switch(handle->model)
+	{
+	case CALC_TI89:  content->device_type = DEVICE_TYPE_89; break;
+	case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
+	case CALC_TI92P: content->device_type = DEVICE_TYPE_92P; break;
+	case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
+	}
 	strcpy(content->name, "");
 
 	return ret;
