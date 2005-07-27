@@ -163,11 +163,9 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
  * @type: the calculator model
  *
  * Check if the calculator is ready and detect the type.
- * Works only with TI73/83+/84+/89/89t/92+/V200 calculators (FLASH). 
- * Note: TI83+/84+, TI89/TI89t, TI92+/V200 can be distinguished ;-(
- * Practically, call this function first, and call ticalcs_calc_isready next.
- *
- * Ti-Connect has a better way to detect calc type. We will have to study that.
+ * Works only with FLASH calculators and a AMS2.08 (?!) mini by requesting
+ * version. A previous version was based on MID but TI83+/84+, TI89/TI89t, TI92+/V200 
+ * could not be distinguished ;-(
  *
  * Return value: 0 if ready else an error code.
  **/
@@ -178,7 +176,11 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	uint8_t buffer[256];
 	int i, err;
 
-	// others
+	// init value
+	*model = CALC_NONE;
+
+	// test for FLASH hand-helds (00 68 00 00 -> XX 56 00 00)
+	// where XX is 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
 	for(i = 0; i < 2; i++)
 	{
 		ticalcs_info(" PC->TI: RDY?");
@@ -192,7 +194,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 		break;
 	}
 	
-	// TI92
+	// test for TI92 (09 68 00 00 -> 89 56 00 00)
 	if(err)
 	{
 		PAUSE(500);	// needed !
@@ -208,30 +210,9 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 			break;
 		}
-	}
-	
 
-	// 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
-	switch (host) 
-	{
-	case TI92p_PC:
-		*model = CALC_TI92P;
-    break;
-	case TI89_PC:
-		*model = CALC_TI89;
-    break;
-	case TI83p_PC:
-		*model = CALC_TI83P;
-    break;
-	case TI73_PC:
-		*model = CALC_TI73;
-    break;
-	case TI92_PC:
-		*model = CALC_TI92;
-			break;
-	default:
-		*model = CALC_NONE;
-    break;
+		if(!err)
+			*model = CALC_TI92;
 	}
 
 	if (cmd != CMD_ACK)
@@ -239,14 +220,36 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 	if ((status & 1) != 0)
 		return ERR_NOT_READY;
+	
+	// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
+	if(!err && (host != TI73_PC) && (host != TI83p_PC))
+	{
+		CalcInfos infos = { 0 };
 
-	ticalcs_info(_("Calculator type: %s"),
-	  (*model == CALC_TI83P) ? "TI83+ or TI84+" :
-	  (*model == CALC_TI89) ? "TI89 or TI89t" :
-	  (*model == CALC_TI92P) ? "TI92+ or V200" : 
-	  (*model == CALC_TI92) ? "TI92" : "???");
+		handle->model = CALC_TI89;
+		TRYF(ticalcs_calc_get_version(handle, &infos));
 
-  return 0;
+		switch(infos.hw_id)
+		{
+		case 1: *model = CALC_TI92P; break;
+		case 3: *model = CALC_TI89;  break;
+		case 8: *model = CALC_V200; break;
+		case 9: *model = CALC_TI89T; break;
+		}
+	}
+	else
+	{
+		switch (host) 
+		{
+		case TI83p_PC: *model = CALC_TI83P; break;
+		case TI73_PC:  *model = CALC_TI73;  break;
+		default: break;
+		}
+	}
+
+	ticalcs_info(_("Calculator type: %s"), tifiles_model_to_string(*model));
+
+	return 0;
 }
 
 extern const CalcUpdate default_update;

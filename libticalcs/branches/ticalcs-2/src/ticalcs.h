@@ -374,11 +374,13 @@ typedef struct
 {
 	char		os[5];
 	char		bios[5];
-	uint16_t	battery;
+	uint8_t		battery;
+	uint8_t		hw_rev;
+	uint16_t	unknown1;
 	uint16_t	unknown2;
 	uint16_t	unknown3;
-	uint16_t	unknown4;
-	uint16_t	unknown5;
+	uint8_t		unknown4;
+	uint8_t		hw_id;
 } CalcInfos;
 
 /**

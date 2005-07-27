@@ -900,6 +900,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->bios[4] = '\0';
 
 	infos->battery = !buf[4];
+	infos->hw_rev  = buf[5];
+	infos->hw_id   = buf[13];
 
 	return 0;
 }
