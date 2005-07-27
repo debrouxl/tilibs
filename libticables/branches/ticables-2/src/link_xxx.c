@@ -71,7 +71,8 @@ TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
 		return ERR_BUSY;
 
 	handle->busy = 1;
-	ret = cable->reset(handle);
+	if(cable->reset)
+		ret = cable->reset(handle);
 	handle->busy = 0;
 
 	return ret;
