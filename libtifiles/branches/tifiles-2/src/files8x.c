@@ -445,7 +445,11 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   {
     VarEntry *entry = content->entries[i];
 
-	if(content->model == CALC_TI85)
+	if(content->model == CALC_TI82)
+      data_length += entry->size + 15;
+	if(content->model == CALC_TI83)
+      data_length += entry->size + 15;
+	else if(content->model == CALC_TI85)
 		data_length += entry->size + 8 + strlen(entry->name);
 	else if(content->model == CALC_TI86)
       data_length += entry->size + 16;
