@@ -36,16 +36,16 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_triplet = i686-pc-linux-gnu
-ACLOCAL = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run aclocal-1.7
 ALLOCA = 
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run tar
+AMTAR = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run tar
 AR = ar
 AS = as
-AUTOCONF = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run automake-1.7
+AUTOCONF = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run automake-1.7
 AWK = gawk
 BUILD_INCLUDED_LIBINTL = no
 CATOBJEXT = .gmo
@@ -108,7 +108,7 @@ LT_LIBVERSION = 0:1:0
 MAINT = #
 MAINTAINER_MODE_FALSE = 
 MAINTAINER_MODE_TRUE = #
-MAKEINFO = ${SHELL} /home/devel/tilp_project/libs/cables-2/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/devel/tilp_project/libs/cables2/missing --run makeinfo
 MKINSTALLDIRS = $(top_builddir)/./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
 MSGMERGE = /usr/bin/msgmerge
@@ -164,7 +164,7 @@ host_os = linux-gnu
 host_vendor = pc
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/devel/tilp_project/libs/cables-2/install-sh
+install_sh = /home/devel/tilp_project/libs/cables2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
@@ -326,7 +326,6 @@ uninstall-am: uninstall-info-am
 
 
 all: gen_doc
-	cp ./tmpl/*.* ./html
 	./gen_doc .
 
 gen_doc: gen_doc.c
@@ -334,7 +333,7 @@ gen_doc: gen_doc.c
 	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
 
 clean:
-	rm -f ./text/*~ ./html/*.*
+	rm -f html/*.c.html html/*.h.html html/api.html
 
 files:
 	@files=`ls $(DISTFILES) 2> /dev/null `; for p in $$files; do \
