@@ -51,6 +51,7 @@ static unsigned int BLK_SIZE = 1024;// heuristic
 #define CMD_DATA2		0x0007
 
 static uint8_t buf[65536 + 3*2];
+static int saved_blk = 0;
 
 // --- Packet Layer
 
@@ -244,6 +245,7 @@ int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 		rpt = (data[0] << 8) | data[1];
 		memset(data, rpt, *size);
 		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+		saved_blk++;
 		return 0;
 	}
 
@@ -287,7 +289,8 @@ int rom_dump(CalcHandle* h, FILE* f)
 	TRYF(rom_recv_SIZE(h, &size));
 
 	// get packets
-	for(addr = 0x0000; addr < size; )
+	saved_blk = 0;
+	for(addr = 0x0000; addr < 0x1000 /*size*/; )
 	{
 		// resync if error
 		if(err)
@@ -327,15 +330,18 @@ int rom_dump(CalcHandle* h, FILE* f)
 		update->pbar();
 	}
 
+	ticalcs_info("Saved blocks : %i\n", saved_blk);
+
 	// finished
 exit:
 	if(h->model == CALC_TI83P || h->model == CALC_TI84P)
 	{
-		TRYF(ti73_recv_ACK(NULL));	// ACK send after ENTER key when dumper exits
+		//TRYF(ti73_recv_ACK(NULL));	// ACK sent after ENTER key when dumper exits
 	}
 
+	PAUSE(200);
 	TRYF(rom_send_EXIT(h));
-	TRYF(rom_recv_EXIT(h));
+	//TRYF(rom_recv_EXIT(h));
 
 	return err;
 }

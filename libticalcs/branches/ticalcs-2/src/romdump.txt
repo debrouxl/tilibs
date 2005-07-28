@@ -29,6 +29,9 @@ Possible commands are:
 - 0006 (ti): data
 - 0007 (ti): repeated data
 
+The 0007 command saves :
+~ 830 blocks on TI92+ (2048) => 40%
+~1730 blocks on TI84+ (2048) => 85%
 
 2°) TI can reply with the following packets (example of transmission)
 

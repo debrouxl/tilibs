@@ -146,6 +146,16 @@ inline int Send_DATA(uint16_t len, uint8_t* data)
 	return SendPacket(CMD_DATA1, len, data);
 }
 
+inline int Send_RDATA(uint16_t data)
+{
+	uint8_t tmp[3];
+	
+	tmp[0] = LSB(data);
+	tmp[1] = MSB(data);
+	
+	return SendPacket(CMD_DATA2, 2, tmp);
+}
+
 inline int Send_EXIT(void)
 {
 	return SendPacket(CMD_EXIT, 0, NULL);
@@ -165,6 +175,8 @@ int Dump(void)
 	uint16_t cmd, len;
 	uint32_t addr;
 	char str[30];
+	unsigned int i;
+	uint8_t* ptr;
 	
 	while(!exit)
 	{
@@ -211,7 +223,16 @@ int Dump(void)
 				sprintf(str, "Done: %lu/%luKB     ", addr >> 10, ROM_size >> 10);
 				DrawStr(0, 60, str, A_REPLACE	);
 				
-				Send_DATA(BLK_SIZE, (uint8_t *)(ROM_base + addr));
+				// Check for filled blocks (like 0xff)
+				ptr = (uint8_t *)(ROM_base + addr);
+				for(i = 0; i < BLK_SIZE; i++)
+					if(ptr[i] != ptr[0])
+						break;
+				
+				if(i == BLK_SIZE)
+					Send_RDATA(ptr[0]);
+				else
+					Send_DATA(BLK_SIZE, (uint8_t *)(ROM_base + addr));
 			break;
 			case CMD_NONE:
 			break;
