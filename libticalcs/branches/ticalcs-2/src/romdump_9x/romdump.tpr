@@ -54,9 +54,8 @@ Use Return Value=0
 Enable Error Return=0
 Save Screen=1
 [File Editing]
-Open File=E:\TI-89\romdump\romdump.c
+Open File=C:\sources\roms\ticalcs2\src\romdump_9x\romdump.c
 
 [Included Files]
 C File 1=romdump.c
 Header File 1=romdump.h
-

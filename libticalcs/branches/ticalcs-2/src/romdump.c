@@ -88,6 +88,7 @@ static int cmd_is_valid(uint16_t cmd)
 	case CMD_IS_READY:
 	case CMD_OK:
 	case CMD_KO:
+	case CMD_EXIT:
 	case CMD_REQ_SIZE:
 	case CMD_ERROR:
 	case CMD_REQ_BLOCK:	
@@ -195,11 +196,12 @@ int rom_send_EXIT(CalcHandle* handle)
 int rom_recv_EXIT(CalcHandle* handle)
 {
 	uint16_t cmd, len;
+	int err = 0;
 
-	TRYF(recv_pkt(handle, &cmd, &len, NULL));
+	err = recv_pkt(handle, &cmd, &len, NULL);
 	ticalcs_info(" TI->PC: EXIT");
 
-	return 0;
+	return err;
 }
 
 int rom_send_SIZE(CalcHandle* handle)
@@ -341,7 +343,7 @@ exit:
 
 	PAUSE(200);
 	TRYF(rom_send_EXIT(h));
-	//TRYF(rom_recv_EXIT(h));
+	TRYF(rom_recv_EXIT(h));
 
 	return err;
 }

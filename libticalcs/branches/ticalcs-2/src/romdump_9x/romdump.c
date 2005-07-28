@@ -280,7 +280,7 @@ void _main(void)
   DrawStr(0, 80, str, A_NORMAL);  
 
 	Dump();
-	OSLinkReset();
+	//OSLinkReset();
   
   return;
 }
