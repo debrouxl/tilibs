@@ -60,7 +60,8 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti73_send_KEY(key));
-	TRYF(ti73_recv_ACK(NULL));
+	TRYF(ti73_recv_ACK(NULL));	// when the key is received
+	TRYF(ti73_recv_ACK(NULL));	// after it completes the resulting action
 
 	return 0;
 }
@@ -551,14 +552,15 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 {
 	const char *prgname = "romdump.8Xp";
 	FILE *f;
-	int err/*, i*/;
+	int err, i;
 	uint16_t keys[] = { 
-		0x40, 0x09, 0x09, 0x3e, 0x04, 0x04, 0x04, 0x04, 
-		0x04, 0x04, 0x05, 0xAB, 0xA8, 0xA6, 0x9D, 0xAE, 
-		0xA6, 0xA9, 0x86, 0x05 };
+        0x40, 0x09, 0x09, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
+        0xDA, 0xAB, 0xA8, 0xA6,     /* prgm, R, O, M */
+        0x9D, 0xAE, 0xA6, 0xA9,     /* D, U, M, P */
+		0x86, 0x05 };               /* ), Enter */
 
 	// Copies ROM dump program into a file
-#if 0
+#if 1
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
@@ -570,17 +572,19 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
 #endif
-#if 0
+
 	// Launch program by remote control
-	PAUSE(200);
-	for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
-	{
-		TRYF(send_key(handle, keys[i]));
-		PAUSE(100);
+	if (handle->model != CALC_TI73)
+    {
+		// Launch program by remote control
+        PAUSE(200);
+        for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
+        {
+			TRYF(send_key(handle, keys[i]));
+            PAUSE(100);
+		}
+		PAUSE(200);
 	}
-	PAUSE(200);
-#endif
-	return -1;
 
 	// Get dump
 	f = fopen(filename, "wb");

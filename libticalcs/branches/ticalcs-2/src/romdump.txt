@@ -20,9 +20,9 @@ Checksum is calculated in a byte fashion on the whole block (from command to dat
 
 Possible commands are:
 - AA55 (pc): is ready ? (data length is 0)
-- 0000 (ti): ready (data length is 0)
-- 0001 (ti): not ready (data length is 0)
-- 0002 (pc): exit (data length is 0)
+- 0000 (ti): not ready	(data length is 0)
+- 0001 (ti): ready		(data length is 0)
+- 0002 (pc): exit		(data length is 0)
 - 0003 (pc): request ROM dump size (data length is 0)
 
 - 0005 (pc): request block at addr (this is a base addr, not the real ROM address) (data length is 4 bytes)

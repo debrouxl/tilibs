@@ -239,6 +239,7 @@ int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 	}
 	else if(cmd == CMD_DATA2)
 	{
+		*size = 1024;
 		rpt = (data[0] << 8) | data[1];
 		memset(data, rpt, *size);
 		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
