@@ -234,6 +234,10 @@ SOURCE=..\..\src\update.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\rom73.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\rom82.h
 # End Source File
 # Begin Source File

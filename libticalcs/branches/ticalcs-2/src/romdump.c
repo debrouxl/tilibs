@@ -32,6 +32,7 @@
 #include "error.h"
 #include "macros.h"
 #include "pause.h"
+#include "cmd73.h"
 
 #define MAX_RETRY	3
 
@@ -303,7 +304,7 @@ int rom_dump(CalcHandle* h, FILE* f)
 			err = 0;
 		}
 
-		if(addr >= 0x10000 && addr < 0x12000)
+		if(tifiles_calc_is_ti9x(h->model) && addr >= 0x10000 && addr < 0x12000)
 		{
 			// certificate is read protected: skip
 			memset(data, 0xff, length);
@@ -328,6 +329,11 @@ int rom_dump(CalcHandle* h, FILE* f)
 
 	// finished
 exit:
+	if(h->model == CALC_TI83P || h->model == CALC_TI84P)
+	{
+		TRYF(ti73_recv_ACK(NULL));	// ACK send after ENTER key when dumper exits
+	}
+
 	TRYF(rom_send_EXIT(h));
 	TRYF(rom_recv_EXIT(h));
 

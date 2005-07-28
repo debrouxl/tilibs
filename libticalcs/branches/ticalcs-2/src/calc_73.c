@@ -2,7 +2,8 @@
 /* $Id: link_nul.c 1059 2005-05-14 09:45:42Z roms $ */
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (c) 1999-2005  Romain Lievin
+ *  Copyright (c) 2005, Benjamin Moody (ROM dumper)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -564,7 +565,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump83p, sizeof(uint8_t), romDumpSize83p, f);
+	fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f);
 	fclose(f);
 
 	// Transfer program to calc
@@ -578,11 +579,14 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
     {
 		// Launch program by remote control
         PAUSE(200);
-        for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
+        for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
         {
 			TRYF(send_key(handle, keys[i]));
             PAUSE(100);
 		}
+
+		// Enter send 2nd ACK after ROM dumper has finished to exec
+		send_key(handle, keys[i]);
 		PAUSE(200);
 	}
 
