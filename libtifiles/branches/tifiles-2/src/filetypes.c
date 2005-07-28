@@ -536,7 +536,8 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
   for (i = 1; i < NCALCS + 1; i++) 
   {
     if ((!g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[i])) ||
-	(!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i])))
+	(!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i])) ||
+	(!g_ascii_strcasecmp(e, CERTIF_FILE_EXT[i])))
       return !0;
   }
 
