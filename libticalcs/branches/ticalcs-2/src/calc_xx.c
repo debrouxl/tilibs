@@ -443,7 +443,7 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Sending FLASH app/os:"));
+	ticalcs_info(_("Sending FLASH content:"));
 	handle->busy = 1;
 	if(calc->send_flash)
 		ret = calc->send_flash(handle, content);

@@ -569,8 +569,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	for(i = 0, ptr = content; i < nheaders - 1; i++)
 		ptr = ptr->next;
 
-	ticalcs_info(_("FLASH app/os name: \"%s\"\n"), ptr->name);
-	ticalcs_info(_("FLASH app/os size: %i bytes.\n"), ptr->data_length);
+	ticalcs_info(_("FLASH name: \"%s\"\n"), ptr->name);
+	ticalcs_info(_("FLASH size: %i bytes.\n"), ptr->data_length);
 
 	if(ptr->data_type == TI89_AMS) 
 	{
@@ -616,8 +616,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		update->pbar();
 	}
 
-	if(ptr->data_type == TI89_AMS)
-		TRYF(ti89_recv_ACK(NULL));
+	//if(ptr->data_type == TI89_AMS || ptr->data_type == TI89_CERTIF)
+	TRYF(ti89_recv_ACK(NULL));
 
 	ticalcs_info(_("Flash application/os sent completely.\n"));
 

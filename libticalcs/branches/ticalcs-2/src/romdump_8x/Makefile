@@ -31,12 +31,12 @@ romdump.85s: romdump.asm header.asm
 	rm -f romdump.bin
 	$(MAKE) romdump.bin CALCMODEL=TI85
 	$(CHECK85) romdump.bin
-	$(TICONV) romdump.bin $@ "ROMDump"
+	$(TICONV) romdump.bin $@ "ROMDUMP"
 
 romdump.86p: romdump.asm header.asm
 	rm -f romdump.bin
 	$(MAKE) romdump.bin CALCMODEL=TI86
-	$(TICONV) romdump.bin $@ "ROMDump"
+	$(TICONV) romdump.bin $@ "ROMDUMP"
 
 romdump.bin: romdump.asm header.asm
 	$(Z80ASM) -b $(Z80ASMFLAGS) -D$(CALCMODEL) -a -80 -c -fff -o20 -s $< $@ $(CALCMODEL).lst $(CALCMODEL).exp $(CALCMODEL).sym
