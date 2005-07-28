@@ -292,11 +292,13 @@ int rom_dump(CalcHandle* h, FILE* f)
 
 	// get packets
 	saved_blk = 0;
-	for(addr = 0x0000; addr < 0x1000 /*size*/; )
+	for(addr = 0x0000; addr < size; )
 	{
 		// resync if error
 		if(err)
 		{
+			PAUSE(500);
+
 			for(i = 0; i < MAX_RETRY; i++)
 			{
 				err = rom_send_RDY(h);
@@ -348,3 +350,10 @@ exit:
 	return err;
 }
 
+int rom_dump_ready(CalcHandle* h)
+{
+	TRYF(rom_send_RDY(h));
+	TRYF(rom_recv_RDY(h));
+
+	return 0;
+}
