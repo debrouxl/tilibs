@@ -23,7 +23,6 @@ libtifiles2_la_SOURCES = *.h \
 	grouped.c \
 	intelhex.c \
 	logging.c \
-	malloc.c \
 	misc.c \
 	rwfile.c \
 	tifiles.c \

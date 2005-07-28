@@ -292,8 +292,8 @@ int main(int argc, char **argv)
 	src_folder = "C:\\sources\\roms\\tifiles2\\src\\";
 	doc_folder = "C:\\sources\\roms\\tifiles2\\docs\\";
 #else
-	src_folder = "/home/devel/tilp_project/libs/files-2/src";
-	doc_folder = "/home/devel/tilp_project/libs/files-2/docs";
+	src_folder = "/home/devel/tilp_project/libs/files2/src";
+	doc_folder = "/home/devel/tilp_project/libs/files2/docs";
 #endif
 #endif
 	printf("Doc folder: <%s>\n", doc_folder);
@@ -363,7 +363,7 @@ int main(int argc, char **argv)
 	fi = fopen(src_file, "rt");
 	if(fi == NULL)
 	{
-		printf("Can't open input file: <%s>.\n", txt_file);
+		printf("Can't open input file: <%s>.\n", src_file);
 		return -1;
 	}
 

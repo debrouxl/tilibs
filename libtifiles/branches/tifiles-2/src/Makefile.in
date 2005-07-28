@@ -197,7 +197,6 @@ libtifiles2_la_SOURCES = *.h \
 	grouped.c \
 	intelhex.c \
 	logging.c \
-	malloc.c \
 	misc.c \
 	rwfile.c \
 	tifiles.c \
@@ -222,16 +221,16 @@ am_libtifiles2_la_OBJECTS = libtifiles2_la-comments.lo \
 	libtifiles2_la-files9x.lo libtifiles2_la-filesxx.lo \
 	libtifiles2_la-filetypes.lo libtifiles2_la-grouped.lo \
 	libtifiles2_la-intelhex.lo libtifiles2_la-logging.lo \
-	libtifiles2_la-malloc.lo libtifiles2_la-misc.lo \
-	libtifiles2_la-rwfile.lo libtifiles2_la-tifiles.lo \
-	libtifiles2_la-transcode.lo libtifiles2_la-type2str.lo \
-	libtifiles2_la-types73.lo libtifiles2_la-types82.lo \
-	libtifiles2_la-types83.lo libtifiles2_la-types83p.lo \
-	libtifiles2_la-types84p.lo libtifiles2_la-types85.lo \
-	libtifiles2_la-types86.lo libtifiles2_la-types89.lo \
-	libtifiles2_la-types89t.lo libtifiles2_la-types92.lo \
-	libtifiles2_la-types92p.lo libtifiles2_la-typesv2.lo \
-	libtifiles2_la-typesxx.lo libtifiles2_la-ve_fp.lo
+	libtifiles2_la-misc.lo libtifiles2_la-rwfile.lo \
+	libtifiles2_la-tifiles.lo libtifiles2_la-transcode.lo \
+	libtifiles2_la-type2str.lo libtifiles2_la-types73.lo \
+	libtifiles2_la-types82.lo libtifiles2_la-types83.lo \
+	libtifiles2_la-types83p.lo libtifiles2_la-types84p.lo \
+	libtifiles2_la-types85.lo libtifiles2_la-types86.lo \
+	libtifiles2_la-types89.lo libtifiles2_la-types89t.lo \
+	libtifiles2_la-types92.lo libtifiles2_la-types92p.lo \
+	libtifiles2_la-typesv2.lo libtifiles2_la-typesxx.lo \
+	libtifiles2_la-ve_fp.lo
 libtifiles2_la_OBJECTS = $(am_libtifiles2_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -246,7 +245,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-grouped.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-intelhex.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-logging.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-malloc.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-misc.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-rwfile.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtifiles2_la-tifiles.Plo \
@@ -335,7 +333,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-grouped.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-intelhex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-logging.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-malloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-rwfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-tifiles.Plo@am__quote@
@@ -685,39 +682,6 @@ libtifiles2_la-logging.lo: logging.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtifiles2_la-logging.Plo' tmpdepfile='$(DEPDIR)/libtifiles2_la-logging.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c
-
-libtifiles2_la-malloc.o: malloc.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-malloc.o -MD -MP -MF "$(DEPDIR)/libtifiles2_la-malloc.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libtifiles2_la-malloc.o `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo" "$(DEPDIR)/libtifiles2_la-malloc.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='libtifiles2_la-malloc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtifiles2_la-malloc.Po' tmpdepfile='$(DEPDIR)/libtifiles2_la-malloc.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-malloc.o `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c
-
-libtifiles2_la-malloc.obj: malloc.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-malloc.obj -MD -MP -MF "$(DEPDIR)/libtifiles2_la-malloc.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libtifiles2_la-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo" "$(DEPDIR)/libtifiles2_la-malloc.Po"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='libtifiles2_la-malloc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtifiles2_la-malloc.Po' tmpdepfile='$(DEPDIR)/libtifiles2_la-malloc.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`
-
-libtifiles2_la-malloc.lo: malloc.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-malloc.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-malloc.Tpo" \
-@am__fastdepCC_TRUE@	  -c -o libtifiles2_la-malloc.lo `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo" "$(DEPDIR)/libtifiles2_la-malloc.Plo"; \
-@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtifiles2_la-malloc.Tpo"; exit 1; \
-@am__fastdepCC_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='malloc.c' object='libtifiles2_la-malloc.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtifiles2_la-malloc.Plo' tmpdepfile='$(DEPDIR)/libtifiles2_la-malloc.TPlo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-malloc.lo `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c
 
 libtifiles2_la-misc.o: misc.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-misc.o -MD -MP -MF "$(DEPDIR)/libtifiles2_la-misc.Tpo" \
