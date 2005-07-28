@@ -93,6 +93,19 @@ typedef enum
   ENCODING_ASCII = 1, ENCODING_LATIN1, ENCODING_UNICODE,
 } FileEncoding;
 
+/**
+ * DeviceType:
+ *
+ * An enumeration which contains soem device IDs for FLASH apps:
+ **/
+typedef enum
+{
+	DEVICE_TYPE_83P = 0x73,
+	DEVICE_TYPE_73	= 0x74,
+	DEVICE_TYPE_89  = 0x98,
+	DEVICE_TYPE_92P = 0x88,
+} DeviceType;
+
 /* Structures (common to all calcs) */
 
 /**

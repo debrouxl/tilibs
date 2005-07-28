@@ -27,8 +27,8 @@
 
 /* Constants */
 
-#define DEVICE_TYPE_89  0x98
-#define DEVICE_TYPE_92P 0x88
+//#define DEVICE_TYPE_89  0x98
+//#define DEVICE_TYPE_92P 0x88
 
 /* Structures */
 
