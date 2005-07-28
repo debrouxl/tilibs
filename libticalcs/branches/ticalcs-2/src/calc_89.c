@@ -913,9 +913,10 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 {
-	VarEntry ve = { 0 };
+	VarEntry ve;
 	int ret = 0;
 
+	memset(&ve, 0, sizeof(VarEntry));
 	ve.type = TI89_GETCERT;
 	strcpy(ve.name, "");
 
@@ -930,6 +931,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
 	case CALC_TI92P: content->device_type = DEVICE_TYPE_92P; break;
 	case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
+	default: content->device_type = DEVICE_TYPE_89; break;
 	}
 	strcpy(content->name, "");
 

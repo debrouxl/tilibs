@@ -290,8 +290,8 @@ int main(int argc, char **argv)
 	src_folder = "C:\\sources\\roms\\ticalcs2\\src\\";
 	doc_folder = "C:\\sources\\roms\\ticalcs2\\docs\\";
 #else
-	src_folder = "/home/devel/tilp_project/libs/cables-2/src";
-	doc_folder = "/home/devel/tilp_project/libs/cables-2/docs";
+	src_folder = "/home/devel/tilp_project/libs/cables2/src";
+	doc_folder = "/home/devel/tilp_project/libs/cables2/docs";
 #endif
 #endif
 	printf("Doc folder: <%s>\n", doc_folder);

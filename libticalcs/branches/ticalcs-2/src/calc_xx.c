@@ -24,6 +24,8 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "ticalcs.h"
 #include "error.h"
@@ -56,7 +58,7 @@ TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -88,7 +90,7 @@ TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
 TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -122,7 +124,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
 												 uint8_t** bitmap)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -156,7 +158,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 											 TNode** vars, TNode **apps)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 	TreeInfo *ti;
 
 	if(!handle->attached)
@@ -198,7 +200,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memory)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -230,7 +232,7 @@ TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memor
 TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -262,7 +264,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* 
 TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -296,7 +298,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
 										  FileContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -331,7 +333,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
 											FileContent* content, VarRequest* vr)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -365,7 +367,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 											 FileContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -400,7 +402,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 											 FileContent* content, VarEntry** var)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -432,7 +434,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -466,7 +468,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 											VarRequest* var)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -498,7 +500,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -532,7 +534,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 										  const char *filename)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -564,7 +566,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -596,7 +598,7 @@ TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -628,7 +630,7 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -660,7 +662,7 @@ TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* con
 TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
-	int ret;
+	int ret = 0;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;

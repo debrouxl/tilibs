@@ -183,7 +183,7 @@ static int recv_var_ns(CalcHandle* h)
 {
 	const char filename[1024] = "";
 	int ret;
-	VarEntry ve = { 0 };
+	VarRequest *ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%s", filename);
@@ -275,7 +275,7 @@ static int get_clock(CalcHandle *h)
 	CalcClock clk;
 
 	TRYF(ticalcs_calc_get_clock(h, &clk));
-	ticalcs_calc_show_clock(&clk);
+	ticalcs_clock_show(h->model, &clk);
 
 	return 0;
 }

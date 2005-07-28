@@ -398,11 +398,11 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		0x86, 0x05 };               /* ), Enter */
 
 	// Copies ROM dump program into a file
-#if 0
+#if 1
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f);
+	fwrite(romDump86, sizeof(uint8_t), romDumpSize86, f);
 	fclose(f);
 
 	// Transfer program to calc

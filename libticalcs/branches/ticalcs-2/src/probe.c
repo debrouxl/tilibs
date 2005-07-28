@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ticalcs.h"
 #include "logging.h"
@@ -237,10 +238,11 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
 	if(!err && (host != TI73_PC) && (host != TI83p_PC))
 	{
-		CalcInfos infos = { 0 };
+		CalcInfos infos;
 
 		ticalcs_info(_("Check for TI9X... "));
 		handle->model = CALC_TI89;
+		memset(&infos, 0, sizeof(CalcInfos));
 		TRYF(ticalcs_calc_get_version(handle, &infos));
 
 		switch(infos.hw_id)

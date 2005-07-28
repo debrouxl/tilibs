@@ -774,6 +774,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 {
+#if 0
 	FlashPage *fp;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
 	uint16_t varsize, unused, data_length, offset;
@@ -823,7 +824,7 @@ exit:
 	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 	memcpy(fp->data, buf, fp->size);
 	content->num_pages = 1;
-
+#endif
 	return 0;
 }
 
@@ -854,6 +855,9 @@ const CalcFncts calc_73 =
 	&dump_rom,
 	&set_clock,
 	&get_clock,
+	&del_var,
+        &new_folder,
+        &get_version,
 	&send_cert,
 	&recv_cert,
 };
