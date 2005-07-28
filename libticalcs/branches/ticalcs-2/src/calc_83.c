@@ -365,12 +365,11 @@ extern int rom_dump_ready(CalcHandle* h);
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	const char *prgname = "romdump.8Xp";
+	const char *prgname = "romdump.83p";
 	FILE *f;
 	int err = 0;
 
 	// Copies ROM dump program into a file
-#if 1
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
@@ -381,7 +380,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	handle->busy = 0;
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
-#endif
 
 	// Wait for user's action (execing program)
 	sprintf(handle->updat->text, _("Waiting user's action..."));

@@ -49,9 +49,6 @@
 #define TI86_ROWS  64
 #define TI86_COLS  128
 
-#define DUMP_ROM86_FILE "dumprom.86p"
-#define ROMSIZE 256
-
 static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
@@ -387,99 +384,58 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
+extern int rom_dump(CalcHandle* h, FILE* f);
+
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int i, j;
-	uint8_t data;
-	time_t start, elapsed, estimated, remaining;
-	char buffer[257];
-	char tmp[257];
-	int pad;
-	FILE *f, *file;
-	uint16_t checksum, sum;
-	int err = 0;
-	int b = 0;
-	FileContent content;
+	const char *prgname = "romdump.86p";
+	FILE *f;
+	int err, i;
+	uint16_t keys[] = { 
+        0x40, 0x09, 0x09, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
+        0xDA, 0xAB, 0xA8, 0xA6,     /* prgm, R, O, M */
+        0x9D, 0xAE, 0xA6, 0xA9,     /* D, U, M, P */
+		0x86, 0x05 };               /* ), Enter */
 
 	// Copies ROM dump program into a file
-	f = fopen(DUMP_ROM86_FILE, "wb");
+#if 0
+	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	
-	fwrite(romDump86, sizeof(unsigned char), romDumpSize86, f);
+	fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f);
 	fclose(f);
 
 	// Transfer program to calc
-	tifiles_file_read_regular(DUMP_ROM86_FILE, &content);
-	TRYF(send_var(handle, MODE_SEND_ONE_VAR, &content));
-	tifiles_content_delete_regular(&content);
-	unlink(DUMP_ROM86_FILE);
+	handle->busy = 0;
+	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
+	unlink(prgname);
+#endif
 
-	// Open file
-	file = fopen(filename, "wb");
-	if (file == NULL)
+	// Launch program by remote control
+    PAUSE(200);
+    for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
+    {
+		TRYF(send_key(handle, keys[i]));
+        PAUSE(100);
+	}
+
+	// Enter send 2nd ACK after ROM dumper has finished to exec
+	send_key(handle, keys[i]);
+	PAUSE(200);
+
+	// Get dump
+	f = fopen(filename, "wb");
+	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting user's action..."));
-	handle->updat->label();
-	do 
+	err = rom_dump(handle, f);
+	if(err)
 	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		TRYF(ticables_cable_get(handle->cable, &data));
-		sum = data;
-	}
-	while (err == ERROR_READ_TIMEOUT);
-	fprintf(file, "%c", data);
-
-	// Receive it now blocks per blocks (1024 + CHK)
-	sprintf(handle->updat->text, _("Receiving..."));
-	handle->updat->label();
-
-	start = time(NULL);
-	handle->updat->max1 = 1024;
-	handle->updat->max2 = ROMSIZE;
-
-	for (i = 0; i < ROMSIZE; i++) 
-	{
-		if (b)
-			sum = 0;
-		
-		for (j = 0; j < 1023 + b; j++) 
-		{
-			TRYF(ticables_cable_get(handle->cable, &data));
-			fprintf(file, "%c", data);
-			sum += data;
-
-			handle->updat->cnt1 = j;
-			handle->updat->pbar();
-		}
-		b = 1;
-
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum = data << 8;
-		TRYF(ticables_cable_get(handle->cable, &data));
-		checksum |= data;
-		if (sum != checksum)
-		  return ERR_CHECKSUM;
-		TRYF(ticables_cable_put(handle->cable, 0xDA));
-
-		handle->updat->cnt2 = i;
-		update->pbar();
-
-		elapsed = (long) difftime(time(NULL), start);
-		estimated = (long) (elapsed * (float) (ROMSIZE) / i);
-		remaining = (long) difftime(estimated, elapsed);
-		sprintf(buffer, "%s", ctime(&remaining));
-		sscanf(buffer, "%3s %3s %i %s %i", tmp, tmp, &pad, tmp, &pad);
-		sprintf(handle->updat->text, _("Remaining (mm:ss): %s"), tmp + 3);
-		handle->updat->label();
+		fclose(f);
+		return err;
 	}
 
-	fclose(file);	
-
+	fclose(f);
 	return 0;
 }
 
