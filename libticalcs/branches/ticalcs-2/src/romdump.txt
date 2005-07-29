@@ -54,7 +54,7 @@ PC: 0005 0004 00000400 0009	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
 PC: 0005 0004 00000800 0009	request block at addr
-TI: 0007 0002 FFFF chk		1024 bytes filled with 0xFF
+TI: 0007 0004 0400 FF00		1024 bytes filled with 0x00FF
 
 PC: 0002 0000 0002			exit dumper
 TI: 0002 0000 0002

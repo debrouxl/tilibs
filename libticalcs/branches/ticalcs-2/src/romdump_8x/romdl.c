@@ -36,8 +36,8 @@
 #include <ticables.h>
 
 #define CMD_PING 0xAA55
-#define CMD_OK 0
-#define CMD_NOK 1
+#define CMD_NOK 0
+#define CMD_OK 1
 #define CMD_EOT 2
 #define CMD_SIZE 3
 #define CMD_RETRY 4
@@ -103,8 +103,8 @@ struct linkinfo {
 }
 li[]={{"tgl", LINK_TGL, {SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4}},
       {"ser", LINK_SER, {SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4}},
-      {"par", LINK_SER, {PARALLEL_PORT_1, PARALLEL_PORT_2, PARALLEL_PORT_3, NULL_PORT}},
-      {"avr", LINK_SER, {SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4}},
+      {"par", LINK_PAR, {PARALLEL_PORT_1, PARALLEL_PORT_2, PARALLEL_PORT_3, NULL_PORT}},
+      {"avr", LINK_AVR, {SERIAL_PORT_1, SERIAL_PORT_2, SERIAL_PORT_3, SERIAL_PORT_4}},
       {"vtl", LINK_VTL, {VIRTUAL_PORT_1, VIRTUAL_PORT_2, NULL_PORT, NULL_PORT}},
       {"tie", LINK_TIE, {VIRTUAL_PORT_1, VIRTUAL_PORT_2, NULL_PORT, NULL_PORT}},
       {"vti", LINK_VTI, {VIRTUAL_PORT_1, VIRTUAL_PORT_2, NULL_PORT, NULL_PORT}},
@@ -132,6 +132,7 @@ int main(int argc, char **argv)
   word rcmd, rlen;
   byte *rbuf = NULL;
   byte cbuf[4];
+  int replen;
 
   if (argc != 4 || !sscanf(argv[2],"%i",&portnum) || portnum<1 || portnum>4) {
     usage(argv[0]);
@@ -195,11 +196,18 @@ int main(int argc, char **argv)
       }
     } while (rcmd != CMD_DATA && rcmd != CMD_REPEAT);
 
-    if (rcmd == CMD_REPEAT)
-      rlen = 1024;
-
-    fwrite(rbuf, 1, rlen, rfile);
-    currentPos += rlen;
+    if (rcmd == CMD_REPEAT) {
+      rlen -= 2;
+      replen = rbuf[0] | (rbuf[1]<<8);
+      for (i=0; i<replen; i+=rlen) {
+	fwrite(rbuf+2, 1, rlen, rfile);
+	currentPos += rlen;
+      }
+    }
+    else {
+      fwrite(rbuf, 1, rlen, rfile);
+      currentPos += rlen;
+    }
   }
 
   putGetPacket(CMD_EOT, 0, NULL,

@@ -148,12 +148,14 @@ inline int Send_DATA(uint16_t len, uint8_t* data)
 
 inline int Send_RDATA(uint16_t data)
 {
-	uint8_t tmp[3];
+	uint8_t tmp[4];
 	
-	tmp[0] = LSB(data);
-	tmp[1] = MSB(data);
+	tmp[0] = LSB(BLK_SIZE);
+	tmp[1] = MSB(BLK_SIZE);
+	tmp[2] = LSB(data);
+	tmp[3] = MSB(data);
 	
-	return SendPacket(CMD_DATA2, 2, tmp);
+	return SendPacket(CMD_DATA2, 4, tmp);
 }
 
 inline int Send_EXIT(void)

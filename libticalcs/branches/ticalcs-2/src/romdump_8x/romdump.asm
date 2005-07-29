@@ -35,8 +35,8 @@
 #include "header.asm"
 
 #define CMD_PING 0AA55h
-#define CMD_OK 0
-#define CMD_NOK 1
+#define CMD_NOK 0
+#define CMD_OK 1
 #define CMD_EOT 2
 #define CMD_SIZE 3
 #define CMD_RETRY 4
@@ -54,9 +54,10 @@ blockCount        = safeRAM+5	; 2  Count of blocks transferred
 sendPacketCmd     = safeRAM+7	; 2  Command to send
 sendPacketLength  = safeRAM+9	; 2  Length of packet to send
 sendPacketDataPtr = safeRAM+11	; 2  Pointer to data to send
-recPacketCmd      = safeRAM+13	; 2  Last command received
-recPacketLength   = safeRAM+15	; 2  Length of last packet received
-recPacketData     = safeRAM+17	; 64 Data received in last packet
+sendPacketData    = safeRAM+13	; 4  Buffer for data to send
+recPacketCmd      = safeRAM+17	; 2  Last command received
+recPacketLength   = safeRAM+19	; 2  Length of last packet received
+recPacketData     = safeRAM+21	; 64 Data received in last packet
 
 ;;; Initialization
 
@@ -152,9 +153,9 @@ ReceivedLink:
 
 	ld a,e
 	or a
-	jr z,MainLoop		; OK
-	dec a
 	jr z,ReceivedBadCommand	; !OK
+	dec a
+	jr z,MainLoop		; OK
 	dec a
 	jr z,ReceivedEOT	; EOT
 	dec a
@@ -188,6 +189,14 @@ Quit:
 	;; Re-protect Flash
 	ld c,0
 	call TryFlashWE
+#endif
+#ifdef TI86
+	set 1,(iy+13)
+	ld hl,safeRAM
+	ld de,safeRAM+1
+	ld (hl),' '
+	ld bc,167
+	ldir
 #endif
 	ld hl,0
 	ld (curRow),hl
@@ -282,7 +291,13 @@ ReceivedBlockReq_Loop:
 
 ReceivedBlockReq_Empty:
 	;; Empty block, send a REPEAT packet
-	ld hl,2
+	ld e,d
+	ld (sendPacketData+2),de
+	ld hl,BLOCK_SIZE
+	ld (sendPacketData),hl
+	ld hl,sendPacketData
+	ld (sendPacketDataPtr),hl
+	ld hl,4
 	ld de,CMD_REPEAT
 	jr ReceivedBlockReq_SetPacket
 
