@@ -45,6 +45,10 @@ static void print_lc_error(int errnum)
 
 }
 
+# define  to_START(ref)         { (ref) = ((1000*clock()) / CLOCKS_PER_SEC); }
+# define  to_CURRENT(ref)       ( (1000*clock()) / CLOCKS_PER_SEC - (ref) )
+# define  to_ELAPSED(ref, max)  ( TO_CURRENT(ref) > (100*(max)) )
+
 int main(int argc, char **argv)
 {
 	CableHandle *handle;
@@ -53,6 +57,20 @@ int main(int argc, char **argv)
 	int status, result;
 	uint8_t scr[3840 + 6];
 	int **probing = NULL;
+
+#if 0
+	tiTIME ref, end;
+	unsigned long k;
+
+	to_START(ref);
+	for(k = 0; k < 1000000; k++) printf(" ");
+	to_START(end);
+	printf("%lu %lu\n", ref, end);
+	printf("%lu\n", to_CURRENT(ref));
+	printf("%i\n", to_ELAPSED(ref, 60));
+
+	return 0;
+#endif
 
 #if 1
 	ticables_probing_do(&probing, 5);

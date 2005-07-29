@@ -35,27 +35,30 @@
 #define __CABLE_TIMEOUT__
 
 /*
-  Platform independant time measurement & timeout management
-  - TO_START: init variable
+  Platform independant time measurement (ms) & timeout management (0.1s)
+  - TO_START:   retrieve time (starting point)
+  - TO_CURRENT: return the number of milli-seconds elapsed since TO_START()
   - TO_ELAPSED: return TRUE if max tenth of seconds have elapsed
-  - TO_CURRENT: return the number of elapsed seconds
 */
 
-#if defined(__WIN32__) && !defined(__MINGW32__)
+// I don't want to include windows.h here.
 //# include <windows.h>
 //typedef DWORD tiTIME;
-// I don't want to include windows.h here:
 typedef unsigned long tiTIME;
-# define  TO_START(ref)          { (ref)=GetTickCount(); }
-# define  TO_ELAPSED(ref, max)   ( (int)(GetTickCount()-(ref)) > (100*max) )
-# define  TO_CURRENT(ref)        ( (float)(GetTickCount()-(ref)) / 1000 )
+
+#if defined(__WIN32__) && !defined(__MINGW32__)
+
+# define  TO_START(ref)          { (ref) = GetTickCount(); }
+# define  TO_CURRENT(ref)        ( GetTickCount() - (ref) )
+# define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (100*max) )
 
 #else
+
 # include <time.h>
-typedef clock_t tiTIME;
-# define  TO_START(ref)	       { (ref)=clock(); }
-# define  TO_ELAPSED(ref, max)  ( (clock()-(ref)) > ((max)/10.0*CLOCKS_PER_SEC))
-# define  TO_CURRENT(ref)       ( (float)(clock()-(ref))/CLOCKS_PER_SEC )
+# define  TO_START(ref)         { (ref) = ((1000*clock()) / CLOCKS_PER_SEC); }
+# define  TO_CURRENT(ref)       ( (1000*clock()) / CLOCKS_PER_SEC - (ref) )
+# define  TO_ELAPSED(ref, max)  ( TO_CURRENT(ref) > (100*(max)) )
+
 #endif
 
 #endif
