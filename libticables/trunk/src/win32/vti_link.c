@@ -254,6 +254,13 @@ int vti_supported()
   return SUPPORT_ON;
 }
 
+int vti_reset()
+{
+	vSendBuf->start = vSendBuf->end = 0;
+	vRecvBuf->start = vRecvBuf->end = 0;
+	return 0;
+}
+
 int vti_register_cable(TicableLinkCable * lc)
 {
   lc->init = vti_init;
@@ -264,6 +271,7 @@ int vti_register_cable(TicableLinkCable * lc)
   lc->exit = vti_exit;
   lc->probe = vti_probe;
   lc->check = vti_check;
+  lc->reset = vti_reset;
 
   return 0;
 }

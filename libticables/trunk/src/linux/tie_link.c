@@ -242,6 +242,11 @@ int tie_supported()
   return SUPPORT_OFF;
 }
 
+int tie_reset()
+{
+	return tie_open();
+}
+
 int tie_register_cable(TicableLinkCable * lc)
 {
   lc->init = tie_init;
@@ -252,6 +257,7 @@ int tie_register_cable(TicableLinkCable * lc)
   lc->exit = tie_exit;
   lc->probe = tie_probe;
   lc->check = tie_check;
+  lc->reset = tie_reset;
 
   return 0;
 }

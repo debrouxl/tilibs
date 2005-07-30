@@ -280,6 +280,11 @@ int tig_supported()
   return SUPPORT_ON;
 }
 
+int tig_reset()
+{
+	return tig_open();
+}
+
 int tig_register_cable(TicableLinkCable * lc)
 {
   lc->init = tig_init;
@@ -290,6 +295,7 @@ int tig_register_cable(TicableLinkCable * lc)
   lc->exit = tig_exit;
   lc->probe = tig_probe;
   lc->check = tig_check;
+  lc->reset = tig_reset;
 
   return 0;
 }

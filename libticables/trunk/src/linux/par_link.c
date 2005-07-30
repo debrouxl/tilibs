@@ -277,6 +277,12 @@ int par_supported()
     		return SUPPORT_OFF;
 }
 
+int par_reset()
+{
+	io_wr(lpt_out, 3);
+	return 0;
+}
+
 int par_register_cable(TicableLinkCable * lc)
 {
   lc->init = par_init;
@@ -287,6 +293,7 @@ int par_register_cable(TicableLinkCable * lc)
   lc->exit = par_exit;
   lc->probe = par_probe;
   lc->check = par_check;
+  lc->reset = par_reset;
 
   lc->set_red_wire = par_set_red_wire;
   lc->set_white_wire = par_set_white_wire;

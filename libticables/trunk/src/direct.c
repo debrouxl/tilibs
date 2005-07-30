@@ -101,3 +101,8 @@ TIEXPORT int TICALL ticable_link_get_white(void)
 {
   return tlc.get_white_wire();
 }
+
+TIEXPORT int TICALL ticable_link_reset(void)
+{
+	return tlc.reset();
+}

@@ -104,6 +104,11 @@ int nul_supported()
   return SUPPORT_OFF;
 }
 
+int nul_reset()
+{
+	return 0;
+}
+
 int nul_register_cable(TicableLinkCable * lc, TicableMethod method)
 {
   lc->init = nul_init;
@@ -114,6 +119,7 @@ int nul_register_cable(TicableLinkCable * lc, TicableMethod method)
   lc->exit = nul_exit;
   lc->probe = nul_probe;
   lc->check = nul_check;
+  lc->reset = nul_reset;
 
   lc->set_red_wire = nul_set_red_wire;
   lc->set_white_wire = nul_set_white_wire;

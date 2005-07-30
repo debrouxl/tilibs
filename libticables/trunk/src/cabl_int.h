@@ -112,11 +112,16 @@ extern "C" {
 
   TIEXPORT int TICALL ticable_link_init(void);
   TIEXPORT int TICALL ticable_link_open(void);
-  TIEXPORT int TICALL ticable_link_put(uint8_t data);
-  TIEXPORT int TICALL ticable_link_get(uint8_t * data);
-  TIEXPORT int TICALL ticable_link_probe(void);
+
+  TIEXPORT int TICALL ticable_link_reset(void);
+
   TIEXPORT int TICALL ticable_link_close(void);
   TIEXPORT int TICALL ticable_link_exit(void);
+
+  TIEXPORT int TICALL ticable_link_put(uint8_t data);
+  TIEXPORT int TICALL ticable_link_get(uint8_t * data);
+  
+  TIEXPORT int TICALL ticable_link_probe(void);  
   TIEXPORT int TICALL ticable_link_check(int *status);
 
   TIEXPORT int TICALL ticable_link_set_red(int w);

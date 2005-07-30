@@ -218,6 +218,11 @@ int dev_supported()
 #endif
 }
 
+int dev_reset()
+{
+	return 0;
+}
+
 int dev_register_cable(TicableLinkCable * lc)
 {
   lc->init = dev_init;
@@ -228,6 +233,7 @@ int dev_register_cable(TicableLinkCable * lc)
   lc->exit = dev_exit;
   lc->probe = dev_probe;
   lc->check = dev_check;
+  lc->reset = dev_reset;
 
   return 0;
 }

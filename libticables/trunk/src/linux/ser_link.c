@@ -287,6 +287,12 @@ int ser_supported()
   	return SUPPORT_ON | ((method & IOM_API) ? SUPPORT_DCB : SUPPORT_IO);
 }
 
+int ser_reset()
+{
+	io_wr(com_out, 3);
+	return 0;
+}
+
 int ser_register_cable_1(TicableLinkCable * lc)
 {
   lc->init = ser_init;
@@ -297,6 +303,7 @@ int ser_register_cable_1(TicableLinkCable * lc)
   lc->exit = ser_exit;
   lc->probe = ser_probe;
   lc->check = ser_check;
+  lc->reset = ser_reset;
 
   lc->set_red_wire = ser_set_red_wire;
   lc->set_white_wire = ser_set_white_wire;

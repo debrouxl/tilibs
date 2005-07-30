@@ -215,6 +215,13 @@ int tie_supported()
   return SUPPORT_ON;
 }
 
+int tie_reset()
+{
+	pSendBuf->start = pSendBuf->end = 0;
+	pRecvBuf->start = pRecvBuf->end = 0;
+	return 0;
+}
+
 int tie_register_cable(TicableLinkCable * lc)
 {
   lc->init = tie_init;
@@ -225,6 +232,7 @@ int tie_register_cable(TicableLinkCable * lc)
   lc->exit = tie_exit;
   lc->probe = tie_probe;
   lc->check = tie_check;
+  lc->reset = tie_reset;
 
   return 0;
 }

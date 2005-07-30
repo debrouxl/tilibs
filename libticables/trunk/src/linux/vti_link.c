@@ -261,6 +261,11 @@ int vti_supported()
 #endif
 }
 
+int vti_reset()
+{
+	return vti_open();
+}
+
 int vti_register_cable(TicableLinkCable * lc)
 {
   lc->init = vti_init;
@@ -271,6 +276,7 @@ int vti_register_cable(TicableLinkCable * lc)
   lc->exit = vti_exit;
   lc->probe = vti_probe;
   lc->check = vti_check;
+  lc->reset = vti_reset;
 
   return 0;
 }

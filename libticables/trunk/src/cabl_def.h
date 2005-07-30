@@ -129,6 +129,7 @@ typedef struct {
   int (*close) ();
   int (*exit) ();
   int (*check) (int *);
+  int (*reset) ();
 
   // raw access
   int (*set_red_wire) (int);

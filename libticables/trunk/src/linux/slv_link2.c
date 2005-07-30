@@ -524,6 +524,18 @@ int slv_supported2()
   	return SUPPORT_ON;
 }
 
+int slv_reset2()
+{
+#if !defined(__BSD__)
+	{
+		/* Reset both endpoints */
+		int ret = reset_pipes();
+		if(ret) return ret;
+	}
+#endif
+	return 0;
+}
+
 int slv_register_cable_2(TicableLinkCable * lc)
 {
   lc->init = slv_init2;
@@ -534,6 +546,7 @@ int slv_register_cable_2(TicableLinkCable * lc)
   lc->exit = slv_exit2;
   lc->probe = slv_probe2;
   lc->check = slv_check2;
+  lc->reset = slv_reset2;
 
   return 0;
 }
