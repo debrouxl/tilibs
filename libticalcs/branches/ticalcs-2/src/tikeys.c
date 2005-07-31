@@ -22,7 +22,9 @@
 #include "ticalcs.h"
 
 #include "keys73.h"
+#include "keys83.h"
 #include "keys83p.h"
+#include "keys86.h"
 #include "keys89.h"
 #include "keys92p.h"
 
