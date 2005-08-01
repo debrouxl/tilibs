@@ -351,37 +351,42 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
+	FlashContent *ptr;
 	int i, j, k;
 	int size;
 
-	if(content->data_type == TI83p_AMS)
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+		if(ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+			break;
+	if(ptr == NULL)
+		return -1;
+
+	if(ptr->data_type == TI83p_AMS)
 		size = 0x100;
-	else if(content->data_type == TI83p_APPL)
+	else if(ptr->data_type == TI83p_APPL)
 		size = 0x80;
 	else
 		return -1;
 
 #if 0
-	printf("#pages: %i\n", content->num_pages);
-	printf("type: %02x\n", content->data_type);
-	for (i = 0; i < content->num_pages; i++) 
+	printf("#pages: %i\n", ptr->num_pages);
+	printf("type: %02x\n", ptr->data_type);
+	for (i = 0; i < ptr->num_pages; i++) 
 	{
-		FlashPage *fp = &(content->pages[i]);
+		FlashPage *fp = ptr->pages[i];
 
 		printf("page #%i: %04x %02x %02x %04x\n", i,
-		content->pages[i].addr,
-		content->pages[i].page,
-		content->pages[i].flag,
-		content->pages[i].size);		
+			fp->addr,fp->page, fp->flag, fp->size);		
 	}
 #endif
 
-	update->max2 = content->num_pages * FLASH_PAGE_SIZE / size;
-	for (k = i = 0; i < content->num_pages; i++) 
+	update->max2 = ptr->num_pages * FLASH_PAGE_SIZE / size;
+	for (k = i = 0; i < ptr->num_pages; i++) 
 	{
-		FlashPage *fp = content->pages[i];
+		FlashPage *fp = ptr->pages[i];
 
-		if((content->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
+		if((ptr->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
 			fp->addr = 0x4000;
 
 		for(j = 0; j < fp->size/*FLASH_PAGE_SIZE*/; j += size)
@@ -389,7 +394,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			uint16_t addr = fp->addr + j;
 			uint8_t* data = fp->data + j;
 
-			TRYF(ti73_send_VAR2(size, content->data_type, fp->flag, addr, fp->page));
+			TRYF(ti73_send_VAR2(size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(NULL));
 
 			TRYF(ti73_recv_CTS(10));
@@ -406,7 +411,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		{
 			if (i == 1)
 			  PAUSE(1000);		// This pause is NEEDED !
-			if (i == content->num_pages - 2)
+			if (i == ptr->num_pages - 2)
 			  PAUSE(2500);		// This pause is NEEDED !
 		}
 	}
@@ -774,17 +779,54 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 static int		send_cert	(CalcHandle* handle, FlashContent* content)
 {
+	FlashContent *ptr;
+	int i, nblocks;
+	uint16_t size = 0xE8;
+
+	// search for cert header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+		if(ptr->data_type == TI83p_CERTIF)
+			break;
+
+	// send content
+	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
+	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+
+	nblocks = ptr->data_length / size;
+	update->max2 = nblocks;
+
+	TRYF(ti73_send_VAR2(size, ptr->data_type, 0x04, 0x4000, 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_CTS(10));
+	TRYF(ti73_send_ACK());
+
+	for(i = 0; i <= nblocks; i++) 
+	{
+		uint32_t length = size;
+
+		TRYF(ti73_send_XDP(length, (ptr->data_part) + length * i))
+		TRYF(ti73_recv_ACK(NULL));
+
+		TRYF(ti73_recv_CTS(size));
+		TRYF(ti73_send_ACK());
+
+		update->cnt2 = i;
+		update->pbar();
+	}
+
+	TRYF(ti73_send_EOT());
+
+	ticalcs_info(_("Header sent completely."));
+
 	return 0;
 }
 
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 {
-#if 0
-	FlashPage *fp;
-	uint8_t buf[FLASH_PAGE_SIZE + 4];
-	uint16_t varsize, unused, data_length, offset;
-	uint8_t vartype, varattr, hst, cmd;
-	char varname[9];
+	int i;
+	uint16_t unused;
+	uint8_t buf[256];
 
 	sprintf(update->text, _("Receiving certificate"));
 	update_label();
@@ -793,43 +835,39 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	strcpy(content->name, "");
 	content->data_type = TI83p_CERTIF;
 	content->device_type = 0x73;
-	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
-	content->pages = tifiles_fp_create_array(content->num_pages);
+	content->num_pages = 0;
+	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	TRYF(ti73_send_REQ(0x0000, TI83p_CERTIF, "", 0x00));
+	TRYF(ti73_send_REQ(0x0000, TI83p_GETCERT, "", 0x00));
 	TRYF(ti73_recv_ACK(&unused));
 
-	//TRYF(dbus_recv(handle, &hst, &cmd, &unused, buf));
-	TRYF(ti73_recv_VAR((uint16_t *)&varsize, &vartype, varname, &varattr));
+	TRYF(ticables_cable_recv(handle->cable, buf, 4));
+	ticalcs_info(" TI->PC: VAR");
+	//TRYF(ti73_recv_VAR((uint16_t *)&varsize, &vartype, varname, &varattr));
 	TRYF(ti73_send_ACK());
 
-	fp = content->pages[0] = tifiles_fp_create();
-	for(;;)
+	for(i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
+		uint32_t block_size;
 
 		TRYF(ti73_send_CTS());
 		TRYF(ti73_recv_ACK(NULL));
 
-		err = ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]);
+		err = ti73_recv_XDP((uint16_t *)&block_size, content->data_part);
 		TRYF(ti73_send_ACK());
+
+		content->data_length += block_size;
 
 		if (err == ERR_EOT)
 			goto exit;
 		TRYF(err);
 
-		offset += data_length;
-
-		update->cnt2 = offset;
+		update->cnt2 += block_size;
 		update->pbar();
 	}
 
 exit:
-	fp->size = offset;			
-	fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
-	memcpy(fp->data, buf, fp->size);
-	content->num_pages = 1;
-#endif
 	return 0;
 }
 

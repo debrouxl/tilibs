@@ -190,7 +190,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TNode *folder = t_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
 
-		ticalcs_info(_("Directory listing in %8s...\n"), folder_name);
+		ticalcs_info(_("Directory listing in %8s..."), folder_name);
 
 		TRYF(ti89_send_REQ(TI89_LDIR << 24, TI89_RDIR, folder_name));
 		TRYF(ti89_recv_ACK(NULL));
@@ -245,7 +245,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			}
 		}
 		
-		ticalcs_info("\n");
+		ticalcs_info("");
 	}
 
 	return 0;
@@ -567,8 +567,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		if(ptr->data_type == TI89_LICENSE)
 			continue;
 
-		ticalcs_info(_("FLASH name: \"%s\"\n"), ptr->name);
-		ticalcs_info(_("FLASH size: %i bytes.\n"), ptr->data_length);
+		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
+		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
 		if(ptr->data_type == TI89_AMS) 
 		{
@@ -615,7 +615,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		TRYF(ti89_recv_ACK(NULL));
-		ticalcs_info(_("Header sent completely.\n"));
+		ticalcs_info(_("Header sent completely."));
 	}
 
 	return 0;
