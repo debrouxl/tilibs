@@ -148,6 +148,9 @@ static int test_ti92_regular_support(void);
 static int test_ti92_group_support(void);
 static int test_ti92_ungroup_support(void);
 
+static int test_ti8x_cert_support();
+static int test_ti9x_cert_support();
+
 /*
   The main function
 */
@@ -286,7 +289,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI83 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti83"));
 	test_ti83_backup_support();
 	test_ti83_regular_support();
@@ -333,6 +336,13 @@ int main(int argc, char **argv)
 	test_ti92_regular_support();
 	test_ti92_group_support();
 	test_ti92_ungroup_support();
+#endif
+
+	// TIXX certificates
+#if 1
+	change_dir(BUILD_PATH("certs"));
+	test_ti8x_cert_support();
+	//test_ti9x_cert_support();
 #endif
 
 	// end of test
@@ -635,10 +645,8 @@ static int test_ti84p_flash_support()
 
   tifiles_file_display(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"));
   tifiles_file_read_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), &content);
-
-//special_test(&content);
-
   tifiles_file_write_flash(BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"), &content);
+  tifiles_content_delete_flash(&content);
   compare_files(BUILD_PATH("ti84p/TI84Plus_OS.8Xu"), BUILD_PATH("ti84p/TI84Plus_OS.8Xu_"));
 
   return 0;
@@ -872,6 +880,40 @@ static int test_v200_regular_support()
   tifiles_file_read_regular("./v200/xy.v2g", &content);
   tifiles_file_write_regular("./v200/xy.v2g_", &content, &unused);
   compare_files("./v200/xy.v2g", "./v200/xy.v2g_");
+
+  return 0;
+}
+
+/*********/
+/* TI-XX */
+/*********/
+
+static int test_ti8x_cert_support()
+{
+  FlashContent content;
+
+  printf("--> Testing TI8X certif support...\n");
+
+  tifiles_file_display(BUILD_PATH("certs/celsheet1.8Xk"));
+  tifiles_file_read_flash(BUILD_PATH("certs/celsheet1.8Xk"), &content);
+  tifiles_file_write_flash(BUILD_PATH("certs/celsheet1.8Xk_"), &content);
+  tifiles_content_delete_flash(&content);
+  compare_files(BUILD_PATH("certs/celsheet1.8Xk"), BUILD_PATH("certs/celsheet1.8Xk_"));
+
+  return 0;
+}
+
+static int test_ti9x_cert_support()
+{
+	FlashContent content;
+
+	printf("--> Testing TI9X certif support...\n");
+
+  tifiles_file_display(BUILD_PATH("certs/ticsheet.9xk"));
+  tifiles_file_read_flash(BUILD_PATH("certs/ticsheet.9xk"), &content);
+  tifiles_file_write_flash(BUILD_PATH("certs/ticsheet.9xk_"), &content);
+  tifiles_content_delete_flash(&content);
+  compare_files(BUILD_PATH("certs/ticsheet.9xk"), BUILD_PATH("certs/ticsheet.9xk_"));
 
   return 0;
 }

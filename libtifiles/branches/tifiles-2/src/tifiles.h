@@ -200,6 +200,37 @@ typedef struct
 #define FLASH_PAGE_SIZE	16384
 
 /**
+ * FlashHeader:
+ * @revision_major:
+ * @revision_minor:
+ * @flags:
+ * @object_type:
+ * @revision_day:
+ * @revision_month:
+ * @revision_year: 
+ * @name: name of FLASH app or "basecode" for OS or '' for certificate
+ * @device_type: a device ID (TI89: 0x88, TI92+:0x98, ...)
+ * @data_type: var type ID (app, os, certificate, ...)
+ * @data_length: length of data part
+ *
+ * A generic structure used to store the header before data of a FLASH file.
+ **/
+typedef struct 
+{
+  uint8_t		revision_major;
+  uint8_t		revision_minor;
+  uint8_t		flags;
+  uint8_t		object_type;
+  uint8_t		revision_day;
+  uint8_t		revision_month;
+  uint16_t		revision_year;
+  char			name[9];
+  uint8_t		device_type;
+  uint8_t		data_type;
+  uint32_t		data_length;
+} FlashHeader;
+
+/**
  * FlashPage:
  * @offset: FLASH offset (see TI link guide).
  * @page: FLASH page (see TI link guide).
@@ -222,21 +253,11 @@ typedef struct
 /**
  * FlashContent:
  * @model: a calculator model.
- * @revision_major:
- * @revision_minor:
- * @flags:
- * @object_type:
- * @revision_day:
- * @revision_month:
- * @revision_year: 
- * @name: name of FLASH app or "basecode" for OS
- * @device_type: a device ID (TI89: 0x88, TI92+:0x98)
- * @data_type: var type ID (app, os, certificate, ...)
- * @data_length: length of data part
- * @data_part: pure FLASH data (TI9x only)
+ * @header : a FLASH header
+ * @data_part: pure FLASH data (TI9x only) or license or certificate
  * @num_pages: number of FLASH pages (TI8x only)
  * @pages: NULL-terminated array of FLASH pages (TI8x only)
- * @next: pointer to next structure (linked list) (TI9x only).
+ * @next: pointer to next structure (linked list)
  *
  * A generic structure used to store the content of a FLASH file (os or app).
  **/
@@ -245,6 +266,7 @@ struct _FlashContent
 {
   CalcModel		model;
 
+  //FlashHeader	header;
   uint8_t		revision_major;
   uint8_t		revision_minor;
   uint8_t		flags;
@@ -256,8 +278,8 @@ struct _FlashContent
   uint8_t		device_type;
   uint8_t		data_type;
   uint32_t		data_length;
-  uint8_t*		data_part;	// TI9x only
 
+  uint8_t*		data_part;	// TI9x only
   int			num_pages;	// TI8x only
   FlashPage**	pages;		// TI8x only
 

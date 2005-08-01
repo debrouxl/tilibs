@@ -220,7 +220,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
  * @filename: name of flash file to open.
  * @content: where to store the file content.
  *
- * Load the flash file into a Ti9xFlash structure.
+ * Load the flash file into a #FlashContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used.
@@ -229,13 +229,14 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
  **/
 int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 {
-  FILE *f;
+	FILE *f;
 	Ti9xFlash *content = head;
-	int j, tib = 0;
+	int tib = 0;
 	char signature[9];
 
 	if (!tifiles_file_is_ti(filename))
 		return ERR_INVALID_FILE;
+
 	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
 		return ERR_INVALID_FILE;
 
@@ -250,7 +251,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	}  
 
 	if (tib) 
-	{	// tib is an old format but still in use (by developers)
+	{	// tib is an old format but mainly used by developers
 		memset(content, 0, sizeof(Ti9xFlash));
 		fseek(f, 0, SEEK_END);
 		content->data_length = (uint32_t) ftell(f);
@@ -272,7 +273,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
 		case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
 		// value added by the TI community according to HWID parameter
-		// doesn't have any 'legal existence'
+		// doesn't have any 'legal' existence.
 		case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
 		case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
 		}
@@ -292,14 +293,12 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		    fread_byte(f, &(content->revision_day));
 		    fread_byte(f, &(content->revision_month));
 		    fread_word(f, &(content->revision_year));
-		    fread_byte(f, NULL);
+		    fskip(f, 1);
 		    fread_8_chars(f, content->name);
-		    for (j = 0; j < 23; j++)
-			fgetc(f);
+		    fskip(f, 23);
 		    fread_byte(f, &(content->device_type));
 		    fread_byte(f, &(content->data_type));
-		    for (j = 0; j < 24; j++)
-			fgetc(f);
+		    fskip(f, 24);
 		    fread_long(f, &(content->data_length));
 
 			content->data_part = (uint8_t *) calloc(content->data_length, 1);

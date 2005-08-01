@@ -296,16 +296,17 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
  * @filename: name of flash file to open.
  * @content: where to store the file content.
  *
- * Load the flash file into a Ti8xFlash structure.
+ * Load the flash file into a #FlashContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
+int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 {
-  FILE *f, *file;
+  FILE *f;
+  Ti8xFlash *content = head;
   int i, ret;
   char signature[9];
 
@@ -315,66 +316,97 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *content)
   if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;
 
-  content->model = tifiles_file_get_model(filename);
   f = fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
-  file = f;
 
-  fread_8_chars(f, signature);
-  if (strcmp(signature, "**TIFL**"))
-    return ERR_INVALID_FILE;
-  fread_byte(f, &(content->revision_major));
-  fread_byte(f, &(content->revision_minor));
-  fread_byte(f, &(content->flags));
-  fread_byte(f, &(content->object_type));
-  fread_byte(f, &(content->revision_day));
-  fread_byte(f, &(content->revision_month));
-  fread_word(f, &(content->revision_year));
-  fskip(f, 1);
-  fread_8_chars(f, content->name);
-  fskip(f, 23);
-  fread_byte(f, &(content->device_type));
-  fread_byte(f, &(content->data_type));
-  fskip(f, 24);
-  fread_long(f, &content->data_length);
 
-  // reset/initialize block reader
-  hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
-  content->pages = NULL;
+  for (content = head;; content = content->next) 
+  {
+	  fread_8_chars(f, signature);
+	  content->model = tifiles_file_get_model(filename);
+	  fread_byte(f, &(content->revision_major));
+	  fread_byte(f, &(content->revision_minor));
+	  fread_byte(f, &(content->flags));
+	  fread_byte(f, &(content->object_type));
+	  fread_byte(f, &(content->revision_day));
+	  fread_byte(f, &(content->revision_month));
+	  fread_word(f, &(content->revision_year));
+	  fskip(f, 1);
+	  fread_8_chars(f, content->name);
+	  fskip(f, 23);
+	  fread_byte(f, &(content->device_type));
+	  fread_byte(f, &(content->data_type));
+	  fskip(f, 24);
+	  fread_long(f, &content->data_length);
 
-  // we should determine the number of pages, to do...
-  content->pages = calloc(50+1, sizeof(Ti8xFlashPage *));
-  if (content->pages == NULL)
-	return ERR_MALLOC;
+	  if(content->data_type == TI83p_CERTIF || content->data_type == TI83p_LICENSE)
+	  {
+		  // get data like TI9X
+		  content->data_part = (uint8_t *) calloc(content->data_length, 1);
+		  if (content->data_part == NULL) 
+		  {
+			fclose(f);
+			return ERR_MALLOC;
+		  }
+		  fread(content->data_part, content->data_length, 1, f);
 
-  // read FLASH pages
-	for(i = 0, ret = 0; !ret; i++)
-	{
-		uint16_t size;
-		uint16_t addr;
-		uint16_t page;
-		uint8_t flag = 0x80;
-		uint8_t data[PAGE_SIZE];
-		FlashPage* fp = content->pages[i] = calloc(1, sizeof(FlashPage));
+		  content->next = NULL;
+	  }
+	  else if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
+	  {
+		  // reset/initialize block reader
+		  hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
+		  content->pages = NULL;
 
-		ret = hex_block_read(file, &size, &addr, &flag, data, &page);
-
-		fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);
-		memset(fp->data, 0xff, PAGE_SIZE);
-		if (fp->data == NULL)
+		  // we should determine the number of pages, to do...
+		  content->pages = calloc(50+1, sizeof(Ti8xFlashPage *));
+		  if (content->pages == NULL)
 			return ERR_MALLOC;
 
-		fp->addr = addr;
-		fp->page = page;
-		fp->flag = flag;
-		fp->size = size;
-		memcpy(fp->data, data, size);		
-	} 
-  content->num_pages = i;
+		  // read FLASH pages
+			for(i = 0, ret = 0; !ret; i++)
+			{
+				uint16_t size;
+				uint16_t addr;
+				uint16_t page;
+				uint8_t flag = 0x80;
+				uint8_t data[PAGE_SIZE];
+				FlashPage* fp = content->pages[i] = calloc(1, sizeof(FlashPage));
+
+				ret = hex_block_read(f, &size, &addr, &flag, data, &page);
+
+				fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);
+				memset(fp->data, 0xff, PAGE_SIZE);
+				if (fp->data == NULL)
+					return ERR_MALLOC;
+
+				fp->addr = addr;
+				fp->page = page;
+				fp->flag = flag;
+				fp->size = size;
+				memcpy(fp->data, data, size);		
+			} 
+		  content->num_pages = i;
+		  content->next = NULL;
+	  }
+
+	  // check for end of file
+		fread_8_chars(f, signature);
+		if(strcmp(signature, "**TIFL**") || feof(f))
+			break;
+		fseek(f, -8, SEEK_CUR);
+
+		content->next = (Ti8xFlash *) calloc(1, sizeof(Ti8xFlash));
+		if (content->next == NULL) 
+		{
+			fclose(f);
+			return ERR_MALLOC;
+		}
+  }
 
   fclose(f);
 
@@ -630,10 +662,11 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
+int ti8x_file_write_flash(const char *filename, Ti8xFlash *head)
 {
-  FILE *f, *file;
-  int i, j;
+  FILE *f;
+  Ti8xFlash *content = head;
+  int i;
   int bytes_written = 0;
   long pos;
 
@@ -643,42 +676,49 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *content)
     tifiles_info("Unable to open this file: <%s>", filename);
     return ERR_FILE_OPEN;
   }
-  file = f;
-
-  // header
-  fwrite_8_chars(f, "**TIFL**");
-  fwrite_byte(f, content->revision_major);
-  fwrite_byte(f, content->revision_minor);
-  fwrite_byte(f, content->flags);
-  fwrite_byte(f, content->object_type);
-  fwrite_byte(f, content->revision_day);
-  fwrite_byte(f, content->revision_month);
-  fwrite_word(f, content->revision_year);
-  fwrite_byte(f, (uint8_t)strlen(content->name));
-  fwrite_8_chars(f, content->name);
-  for (j = 0; j < 23; j++)
-    fputc(0, f);
-  fwrite_byte(f, content->device_type);
-  fwrite_byte(f, content->data_type);
-  for (j = 0; j < 24; j++)
-    fputc(0, f);
-  pos = ftell(f);
-  fwrite_long(f, content->data_length);
-
-  // data
-  for (i = 0; i < content->num_pages; i++)
+  
+  for (content = head; content != NULL; content = content->next) 
   {
-	  bytes_written += hex_block_write(f, 
-		  content->pages[i]->size, content->pages[i]->addr,
-		  content->pages[i]->flag, content->pages[i]->data, 
-		  content->pages[i]->page);
-  }
+	  // header
+    fwrite_8_chars(f, "**TIFL**");
+    fwrite_byte(f, content->revision_major);
+    fwrite_byte(f, content->revision_minor);
+    fwrite_byte(f, content->flags);
+    fwrite_byte(f, content->object_type);
+    fwrite_byte(f, content->revision_day);
+    fwrite_byte(f, content->revision_month);
+    fwrite_word(f, content->revision_year);
+    fwrite_byte(f, (uint8_t) strlen(content->name));
+    fwrite_8_chars(f, content->name);
+    fwrite_n_chars(f, 23, "");
+    fwrite_byte(f, content->device_type);
+    fwrite_byte(f, content->data_type);
+    fwrite_n_chars(f, 24, "");
+	pos = ftell(f);
+    fwrite_long(f, content->data_length);
 
-  // final block
-  bytes_written += hex_block_write(file, 0, 0, 0, NULL, 0);
-  fseek(f, -bytes_written - 4, SEEK_CUR);
-  fwrite_long(f, bytes_written);
-  fseek(f, SEEK_END, 0L);
+	// data
+	if(content->data_type == TI83p_CERTIF || content->data_type == TI83p_LICENSE)
+	{
+		fwrite(content->data_part, content->data_length, 1, f);
+	}
+	else if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
+	{
+		for (i = 0; i < content->num_pages; i++)
+		  {
+			  bytes_written += hex_block_write(f, 
+				  content->pages[i]->size, content->pages[i]->addr,
+				  content->pages[i]->flag, content->pages[i]->data, 
+				  content->pages[i]->page);
+		  }
+
+		  // final block
+		  bytes_written += hex_block_write(f, 0, 0, 0, NULL, 0);
+		  fseek(f, -bytes_written - 4, SEEK_CUR);
+		  fwrite_long(f, bytes_written);
+		  fseek(f, SEEK_END, 0L);
+	}
+  }  
 
   fclose(f);
 
@@ -777,42 +817,47 @@ int ti8x_content_display_backup(Ti8xBackup *content)
  **/
 int ti8x_content_display_flash(Ti8xFlash *content)
 {
-  Ti8xFlash *ptr = content;
+  Ti8xFlash *ptr;
 
-  tifiles_info("Signature:       <%s>",
-	  tifiles_calctype2signature(ptr->model));
-  tifiles_info("Revision:        %i.%i", ptr->revision_major,
-	  ptr->revision_minor);
-  tifiles_info("Flags:           %02X", ptr->flags);
-  tifiles_info("Object type:     %02X", ptr->object_type);
-  tifiles_info("Date:            %02X/%02X/%02X%02X",
-	  ptr->revision_day, ptr->revision_month,
-	  ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-  tifiles_info("Name:            <%s>", ptr->name);
-  tifiles_info("Device type:     %s",
-	  ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");
-  tifiles_info("Data type:       ");
-  switch (ptr->data_type) 
+  for (ptr = content; ptr != NULL; ptr = ptr->next) 
   {
-  case 0x23:
-    tifiles_info("OS data");
-    break;
-  case 0x24:
-    tifiles_info("APP data");
-    break;
-  case 0x25:
-    tifiles_info("certificate");
-    break;
-  case 0x3E:
-    tifiles_info("license");
-    break;
-  default:
-    tifiles_info("Unknown (mailto roms@lpg.ticalc.org)\n");
-    break;
+	  tifiles_info("Signature:       <%s>",
+		  tifiles_calctype2signature(ptr->model));
+	  tifiles_info("Revision:        %i.%i", ptr->revision_major,
+		  ptr->revision_minor);
+	  tifiles_info("Flags:           %02X", ptr->flags);
+	  tifiles_info("Object type:     %02X", ptr->object_type);
+	  tifiles_info("Date:            %02X/%02X/%02X%02X",
+		  ptr->revision_day, ptr->revision_month,
+		  ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+	  tifiles_info("Name:            <%s>", ptr->name);
+	  tifiles_info("Device type:     %s",
+		  ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");
+	  tifiles_info("Data type:       ");
+	  switch (ptr->data_type) 
+	  {
+	  case 0x23:
+		tifiles_info("OS data");
+		break;
+	  case 0x24:
+		tifiles_info("APP data");
+		break;
+	  case 0x20:
+	  case 0x25:
+		tifiles_info("certificate");
+		break;
+	  case 0x3E:
+		tifiles_info("license");
+		break;
+	  default:
+		tifiles_info("Unknown (mailto roms@lpg.ticalc.org)\n");
+		break;
+	  }
+	  tifiles_info("Length:          %08X (%i)", ptr->data_length,
+			ptr->data_length);
+	  tifiles_info("");
+	  tifiles_info("Number of pages: %i", ptr->num_pages);
   }
-  tifiles_info("Length:          %08X (%i)", ptr->data_length,
-	    ptr->data_length);
-  tifiles_info("Number of pages: %i", ptr->num_pages);
 
   return 0;
 }

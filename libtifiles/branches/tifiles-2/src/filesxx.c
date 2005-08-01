@@ -326,23 +326,10 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
  **/
 TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
+	int i;
 	assert(content != NULL);
 
-#if !defined(DISABLE_TI8X)
-	if (tifiles_calc_is_ti8x(content->model))
-	{
-		int i;
-
-		for(i = 0; i < content->num_pages; i++)
-		{
-			free(content->pages[i]->data);
-			free(content->pages[i]);
-		}
-		free(content->pages);
-	}
-	else
-#endif 
-#if !defined(DISABLE_TI9X)
+#if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
 	{
 		Ti9xFlash *ptr;
@@ -356,6 +343,13 @@ TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
 
 			free(ptr->data_part);
 			free(ptr);
+
+			for(i = 0; i < content->num_pages; i++)
+			{
+				free(content->pages[i]->data);
+				free(content->pages[i]);
+			}
+			free(content->pages);
 
 			ptr = next;
 		}

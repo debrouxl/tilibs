@@ -45,9 +45,11 @@
 #define TI84p_DIR    0x19
 #define TI84p_AMS    0x23
 #define TI84p_APPL   0x24
+#define TI84p_CERTIF	0x25
 #define TI84p_IDLIST 0x26
-#define TI83p_CERTIF 0x27
+#define TI83p_GETCERT 0x27
 #define TI84p_CLK    0x29
+#define TI84p_LICENSE	0x3e
 
 // libtifiles: for internal use only, not exported !
 

@@ -1,0 +1,28 @@
+b220b37.8xq
+
+For calculator 041B220B37[4483] (note that the last 4 digits are not
+included in the certificate file.)  Revision number 3.  Contains keys
+04 (OS), 0104 (free App), 5204 (CelSheet), 35F04, 3204, 2204.
+
+
+cert1.8xq
+
+For calculator 041B220B37[4483].  Revision number 7.  Same keys as
+above; this is identical to the previous certificate except the date
+stamp and revision number.
+
+
+celsheet1.8xk
+
+CelSheet app including the same certificate data as cert1.8xq above.
+
+
+cert2.8xq
+
+For calculator 040268A126[FEEF].  Revision number 6.  Contains keys
+04, 0104, and 5204.
+
+
+celsheet2.8xk
+
+CelSheet app including the same data as cert2.8xq.
