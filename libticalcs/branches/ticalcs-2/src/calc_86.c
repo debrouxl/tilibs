@@ -392,13 +392,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	FILE *f;
 	int err, i;
 	uint16_t keys[] = { 
-        0x40, 0x09, 0x09, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
-        0xDA, 0xAB, 0xA8, 0xA6,     /* prgm, R, O, M */
-        0x9D, 0xAE, 0xA6, 0xA9,     /* D, U, M, P */
-		0x86, 0x05 };               /* ), Enter */
+		0xFE63, 0x97, 0xDA,			/* Send(, 9, prgm */
+		0xAB, 0xA8, 0xA6, 0x9D,		/* R, O, M, D */
+		0xAE, 0xA6, 0xA9, 0x05		/* U, M, P, Enter */
+	};
 
 	// Copies ROM dump program into a file
-#if 1
+#if 0
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
@@ -422,6 +422,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	// Enter send 2nd ACK after ROM dumper has finished to exec
 	send_key(handle, keys[i]);
 	PAUSE(200);
+
+	return -1;
 
 	// Get dump
 	f = fopen(filename, "wb");

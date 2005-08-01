@@ -111,11 +111,11 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	case ERR_VAR_REJECTED:
 		strcpy(error_msg,
-		   _("Msg: The variable or FLASH application has been refused."));
+		   _("Msg: The content has been refused."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: you attempted to send a variable which is locked/archived on the target calculator. The calculator may be out of memory, too."));
+		   ("Cause: you attempted to send a variable which is locked/archived on the target calculator. The calculator may be out of memory. The certificate may be invalid or already installed."));
 		*message = g_strdup(error_msg);
     break;
 

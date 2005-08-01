@@ -561,65 +561,62 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int i, nblocks;
 	int nheaders = 0;
 
-	// count headers
+	// send all headers except license
 	for(ptr = content; ptr != NULL; ptr = ptr->next)
-		nheaders++;
-
-	// use the last one (data)
-	for(i = 0, ptr = content; i < nheaders - 1; i++)
-		ptr = ptr->next;
-
-	ticalcs_info(_("FLASH name: \"%s\"\n"), ptr->name);
-	ticalcs_info(_("FLASH size: %i bytes.\n"), ptr->data_length);
-
-	if(ptr->data_type == TI89_AMS) 
 	{
-	  if(handle->model == CALC_TI89T)
-	  {
-		TRYF(ti89_send_RTS2(ptr->data_length, ptr->data_type, ""));
-	  }
-	  else
-	  {
-		TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ""));
-	  }
-	} 
-	else 
-	{
-		TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ptr->name));
-	}
+		if(ptr->data_type == TI89_LICENSE)
+			continue;
 
-	nblocks = ptr->data_length / 65536;
-	update->max2 = nblocks;
+		ticalcs_info(_("FLASH name: \"%s\"\n"), ptr->name);
+		ticalcs_info(_("FLASH size: %i bytes.\n"), ptr->data_length);
 
-	for(i = 0; i <= nblocks; i++) 
-	{
-		uint32_t length = (i != nblocks) ? 65536 : ptr->data_length % 65536;
-
-		TRYF(ti89_recv_ACK(NULL));
-
-		TRYF(ti89_recv_CTS());
-		TRYF(ti89_send_ACK());
-
-		TRYF(ti89_send_XDP(length, (ptr->data_part) + 65536 * i));
-		TRYF(ti89_recv_ACK(NULL));
-
-		if(i != nblocks) 
+		if(ptr->data_type == TI89_AMS) 
 		{
-		  TRYF(ti89_send_CNT());
+		  if(handle->model == CALC_TI89T)
+		  {
+			TRYF(ti89_send_RTS2(ptr->data_length, ptr->data_type, ""));
+		  }
+		  else
+		  {
+			TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ""));
+		  }
 		} 
 		else 
 		{
-		  TRYF(ti89_send_EOT());
+			TRYF(ti89_send_RTS(ptr->data_length, ptr->data_type, ptr->name));
 		}
 
-		update->cnt2 = i;
-		update->pbar();
+		nblocks = ptr->data_length / 65536;
+		update->max2 = nblocks;
+
+		for(i = 0; i <= nblocks; i++) 
+		{
+			uint32_t length = (i != nblocks) ? 65536 : ptr->data_length % 65536;
+
+			TRYF(ti89_recv_ACK(NULL));
+
+			TRYF(ti89_recv_CTS());
+			TRYF(ti89_send_ACK());
+
+			TRYF(ti89_send_XDP(length, (ptr->data_part) + 65536 * i));
+			TRYF(ti89_recv_ACK(NULL));
+
+			if(i != nblocks) 
+			{
+			  TRYF(ti89_send_CNT());
+			} 
+			else 
+			{
+			  TRYF(ti89_send_EOT());
+			}
+
+			update->cnt2 = i;
+			update->pbar();
+		}
+
+		TRYF(ti89_recv_ACK(NULL));
+		ticalcs_info(_("Header sent completely.\n"));
 	}
-
-	//if(ptr->data_type == TI89_AMS || ptr->data_type == TI89_CERTIF)
-	TRYF(ti89_recv_ACK(NULL));
-
-	ticalcs_info(_("Flash application/os sent completely.\n"));
 
 	return 0;
 }

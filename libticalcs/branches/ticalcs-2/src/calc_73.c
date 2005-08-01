@@ -607,10 +607,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
 	uint8_t buffer[16] = { 0 };
-	uint32_t time;
+	uint32_t calc_time;
 
 	struct tm ref, cur;
-	time_t r, c;
+	time_t r, c, now;
+
+	time(&now);	// retrieve current DST setting
+	memcpy(&ref, localtime(&now), sizeof(struct tm));
 
 	ref.tm_year = 1997 - 1900;
 	ref.tm_mon = 0;
@@ -620,7 +623,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	ref.tm_hour = 0;
 	ref.tm_min = 0;
 	ref.tm_sec = 0;
-	ref.tm_isdst = 1;
+	//ref.tm_isdst = 1;
 	r = mktime(&ref);
 	//printf("<%s>\n", asctime(&ref));
 
@@ -634,12 +637,12 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	c = mktime(&cur);
 	//printf("<%s>\n", asctime(&cur));
 	
-	time = c - r;
+	calc_time = (uint32_t)difftime(c, r);
 
-    buffer[2] = MSB(MSW(time));
-    buffer[3] = LSB(MSW(time));
-    buffer[4] = MSB(LSW(time));
-    buffer[5] = LSB(LSW(time));
+    buffer[2] = MSB(MSW(calc_time));
+    buffer[3] = LSB(MSW(calc_time));
+    buffer[4] = MSB(LSW(calc_time));
+    buffer[5] = LSB(LSW(calc_time));
     buffer[6] = clock->date_format;
     buffer[7] = clock->time_format;
     buffer[8] = 0xff;
@@ -668,10 +671,10 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	uint8_t varattr;
     char varname[9];
     uint8_t buffer[32];
-	uint32_t time;
+	uint32_t calc_time;
 
 	struct tm ref, *cur;
-	time_t r, c;
+	time_t r, c, now;
 
     sprintf(update->text, _("Getting clock..."));
     update_label();
@@ -688,9 +691,11 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     TRYF(ti73_recv_XDP(&varsize, buffer));
     TRYF(ti73_send_ACK());
 
-	time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
-	printf("<%08x>\n", time);
+	calc_time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
+	//printf("<%08x>\n", time);
 
+	time(&now);	// retrieve current DST setting
+	memcpy(&ref, localtime(&now), sizeof(struct tm));;
 	ref.tm_year = 1997 - 1900;
 	ref.tm_mon = 0;
 	ref.tm_yday = 0;
@@ -699,11 +704,11 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	ref.tm_hour = 0;
 	ref.tm_min = 0;
 	ref.tm_sec = 0;
-	ref.tm_isdst = 1;
+	//ref.tm_isdst = 1;
 	r = mktime(&ref);
 	//printf("<%s>\n", asctime(&ref));
 
-	c = r + time;
+	c = r + calc_time;
 	cur = localtime(&c);
 	//printf("<%s>\n", asctime(cur));
 

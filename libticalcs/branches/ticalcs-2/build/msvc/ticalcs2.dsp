@@ -137,7 +137,23 @@ SOURCE=..\..\src\keys73.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\keys73.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\keys83.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\keys83p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\keys83p.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\keys86.h
 # End Source File
 # Begin Source File
 
@@ -145,7 +161,15 @@ SOURCE=..\..\src\keys89.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\keys89.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\keys92p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\keys92p.h
 # End Source File
 # Begin Source File
 
