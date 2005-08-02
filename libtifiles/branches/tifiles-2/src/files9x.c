@@ -336,9 +336,6 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		}
 	}
 
-	fseek(f, -8, SEEK_CUR);
-	fread_word(f, &(content->checksum));
-
 	fclose(f);
 
 	return 0;

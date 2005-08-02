@@ -62,6 +62,32 @@ static int is_ti83p(CalcModel model)
   return (model == CALC_TI83P) || (model == CALC_TI84P)|| (model == CALC_TI84P_USB);
 }
 
+static uint16_t compute_backup_sum(BackupContent* content)
+{
+	uint16_t sum= 0;
+
+  sum += 9;
+  sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
+  sum += content->type;
+  sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2);
+  sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2);
+  if (content->model != CALC_TI86)
+    sum += tifiles_checksum((uint8_t *)&(content->mem_address), 2);
+  else
+    sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2);
+
+  sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
+  sum += tifiles_checksum(content->data_part1, content->data_length1);
+  sum += tifiles_checksum((uint8_t *)&(content->data_length2), 2);
+  sum += tifiles_checksum(content->data_part2, content->data_length2);
+  sum += tifiles_checksum((uint8_t *)&(content->data_length3), 2);
+  sum += tifiles_checksum(content->data_part3, content->data_length3);
+  sum += tifiles_checksum((uint8_t *)&(content->data_length4), 2);
+  sum += tifiles_checksum(content->data_part4, content->data_length4);
+
+  return sum;
+}
+
 /***********/
 /* Reading */
 /***********/
@@ -86,7 +112,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   int i;
   int ti83p_flag = 0;
   uint8_t name_length = 8;	// ti85/86 only
-  uint16_t data_size;
+  uint16_t data_size, sum = 0;
   char signature[9];
 
   if (!tifiles_file_is_ti(filename))
@@ -156,9 +182,10 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i] = calloc(1, sizeof(VarEntry));
+	uint16_t packet_length;
 
-    fread_word(f, NULL);
-    fread_word(f, (uint16_t *) & (entry->size));
+    fread_word(f, &packet_length);
+    fread_word(f, (uint16_t *)&(entry->size));
     fread_byte(f, &(entry->type));
     if (is_ti8586(content->model))
       fread_byte(f, &name_length);
@@ -180,9 +207,21 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     }
 
     fread(entry->data, entry->size, 1, f);
+
+	sum += packet_length;
+    sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
+    sum += entry->type;
+    if (is_ti8586(content->model))
+      sum += strlen(entry->name);
+    sum += tifiles_checksum((uint8_t *)entry->name, 8);
+    sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
+    sum += tifiles_checksum(entry->data, entry->size);
   }
 
   fread_word(f, &(content->checksum));
+
+  if(sum != content->checksum)
+	  return ERR_FILE_CHECKSUM;
 
   fclose(f);
 
@@ -205,6 +244,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 {
   FILE *f;
   char signature[9];
+  uint16_t sum;
 
   if (!tifiles_file_is_ti(filename))
     return ERR_INVALID_FILE;
@@ -285,6 +325,10 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   }
 
   fread_word(f, &(content->checksum));
+  sum = compute_backup_sum(content);
+
+  if(sum != content->checksum)
+	  return ERR_FILE_CHECKSUM;
 
   fclose(f);
 
@@ -541,12 +585,12 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     fwrite(entry->data, entry->size, 1, f);
 
     sum += packet_length;
-    sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
+    sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
     sum += entry->type;
     if (is_ti8586(content->model))
       sum += strlen(entry->name);
-    sum += tifiles_checksum((uint8_t *) entry->name, 8);
-    sum += tifiles_checksum((uint8_t *) & (entry->size), 2);
+    sum += tifiles_checksum((uint8_t *)entry->name, 8);
+    sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
     sum += tifiles_checksum(entry->data, entry->size);
   }
 
@@ -613,41 +657,9 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
     fwrite_word(f, content->data_length4);
     fwrite(content->data_part4, 1, content->data_length4, f);
   }
+
   // checksum = sum of all bytes in bachup headers and data num_entries
-  sum = 0;
-  sum += 9;
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
-  sum += content->type;
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length2), 2);
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length3), 2);
-  if (content->model != CALC_TI86)
-    sum +=
-	tifiles_checksum((uint8_t *) & (content->mem_address), 2);
-  else
-    sum +=
-	tifiles_checksum((uint8_t *) & (content->data_length4), 2);
-
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length1), 2);
-  sum +=
-      tifiles_checksum(content->data_part1, content->data_length1);
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length2), 2);
-  sum +=
-      tifiles_checksum(content->data_part2, content->data_length2);
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length3), 2);
-  sum +=
-      tifiles_checksum(content->data_part3, content->data_length3);
-  sum +=
-      tifiles_checksum((uint8_t *) & (content->data_length4), 2);
-  sum +=
-      tifiles_checksum(content->data_part4, content->data_length4);
-
-  content->checksum = sum;
+  content->checksum = compute_backup_sum(content);
   fwrite_word(f, content->checksum);
 
   fclose(f);
@@ -831,7 +843,7 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 	  tifiles_info("Object type:     %02X", ptr->object_type);
 	  tifiles_info("Date:            %02X/%02X/%02X%02X",
 		  ptr->revision_day, ptr->revision_month,
-		  ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+		  ptr->revision_year&0xff, (ptr->revision_year&0xff00) >> 8);
 	  tifiles_info("Name:            <%s>", ptr->name);
 	  tifiles_info("Device type:     %s",
 		  ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");

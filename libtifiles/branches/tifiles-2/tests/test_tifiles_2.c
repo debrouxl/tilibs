@@ -330,7 +330,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI92 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti92"));
 	test_ti92_backup_support();
 	test_ti92_regular_support();
@@ -687,11 +687,11 @@ static int test_ti86_backup_support()
   BackupContent content;
 
   printf("--> Testing TI86 backup support...\n");
-  tifiles_file_display(BUILD_PATH("ti86/backup.85b"));
-  tifiles_file_read_backup(BUILD_PATH("ti86/backup.85b"), &content);
-  tifiles_file_write_backup(BUILD_PATH("ti86/backup.85b_"), &content);
+  tifiles_file_display(BUILD_PATH("ti86/backup.86b"));
+  tifiles_file_read_backup(BUILD_PATH("ti86/backup.86b"), &content);
+  tifiles_file_write_backup(BUILD_PATH("ti86/backup.86b_"), &content);
   tifiles_content_delete_backup(&content);
-  compare_files(BUILD_PATH("ti86/backup.85b"), BUILD_PATH("ti86/backup.85b_"));
+  compare_files(BUILD_PATH("ti86/backup.86b"), BUILD_PATH("ti86/backup.86b_"));
 
   return 0;
 }
