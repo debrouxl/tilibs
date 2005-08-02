@@ -346,12 +346,14 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 	  if(content->data_type == TI83p_CERTIF || content->data_type == TI83p_LICENSE)
 	  {
 		  // get data like TI9X
-		  content->data_part = (uint8_t *) calloc(content->data_length, 1);
+		  content->data_part = (uint8_t *) calloc(content->data_length + 256, 1);
 		  if (content->data_part == NULL) 
 		  {
 			fclose(f);
 			return ERR_MALLOC;
 		  }
+
+		  memset(content->data_part, 0xff, content->data_length + 256);
 		  fread(content->data_part, content->data_length, 1, f);
 
 		  content->next = NULL;

@@ -330,7 +330,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI92 support
-#if 0
+#if 1
 	change_dir(BUILD_PATH("ti92"));
 	test_ti92_backup_support();
 	test_ti92_regular_support();
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TIXX certificates
-#if 1
+#if 0
 	change_dir(BUILD_PATH("certs"));
 	test_ti8x_cert_support();
 	//test_ti9x_cert_support();

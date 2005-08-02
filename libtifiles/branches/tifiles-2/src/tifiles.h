@@ -257,6 +257,7 @@ typedef struct
  * @data_part: pure FLASH data (TI9x only) or license or certificate
  * @num_pages: number of FLASH pages (TI8x only)
  * @pages: NULL-terminated array of FLASH pages (TI8x only)
+ * @checksum: checksum of file
  * @next: pointer to next structure (linked list)
  *
  * A generic structure used to store the content of a FLASH file (os or app).
@@ -282,6 +283,8 @@ struct _FlashContent
   uint8_t*		data_part;	// TI9x only
   int			num_pages;	// TI8x only
   FlashPage**	pages;		// TI8x only
+
+  uint16_t		checksum;
 
   FlashContent*	next;		// TI9x only
 };

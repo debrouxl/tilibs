@@ -70,7 +70,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   char current_folder[9];
   uint32_t curr_offset = 0;
   uint32_t next_offset = 0;
-  uint16_t tmp;
+  uint16_t tmp, sum = 0;
   int i, j;
   char signature[9];
 
@@ -140,6 +140,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
       fread(entry->data, entry->size, 1, f);
       fread_word(f, NULL);	//checksum
       fseek(f, cur_pos, SEEK_SET);
+
+	  sum += tifiles_checksum(entry->data, entry->size);
     }
   }
   content->num_entries = j;
@@ -147,6 +149,9 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   fread_long(f, &next_offset);
   fseek(f, next_offset - 2, SEEK_SET);
   fread_word(f, &(content->checksum));
+
+  if(sum != content->checksum)
+	  return ERR_FILE_CHECKSUM;
 
   fclose(f);
 
@@ -170,6 +175,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   FILE *f;
   uint32_t file_size;
   char signature[9];
+  uint16_t sum;
 
   if (!tifiles_file_is_ti(filename))
     return ERR_INVALID_FILE;
@@ -209,6 +215,10 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   fread(content->data_part, 1, content->data_length, f);
 
   fread_word(f, &(content->checksum));
+
+  sum = tifiles_checksum(content->data_part, content->data_length);
+  if(sum != content->checksum)
+	  return ERR_FILE_CHECKSUM;
 
   fclose(f);
 
@@ -325,6 +335,9 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			}
 		}
 	}
+
+	fseek(f, -8, SEEK_CUR);
+	fread_word(f, &(content->checksum));
 
 	fclose(f);
 

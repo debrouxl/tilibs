@@ -355,8 +355,9 @@ TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
 		}
 	}
 	else
-#endif
+#else
     return ERR_BAD_CALC;
+#endif
 
 #if 0
   free(content);
