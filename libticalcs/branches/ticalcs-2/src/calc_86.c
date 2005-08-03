@@ -57,7 +57,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti85_send_KEY(key));
-	TRYF(ti85_recv_ACK(NULL));
+	TRYF(ti85_recv_ACK(&key));
 
 	return 0;
 }
@@ -398,7 +398,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	};
 
 	// Copies ROM dump program into a file
-#if 0
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
@@ -409,7 +408,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	handle->busy = 0;
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
-#endif
 
 	// Launch program by remote control
     PAUSE(200);

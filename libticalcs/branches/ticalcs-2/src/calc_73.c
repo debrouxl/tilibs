@@ -61,7 +61,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti73_send_KEY(key));
-	TRYF(ti73_recv_ACK(NULL));	// when the key is received
+	TRYF(ti73_recv_ACK(&key));	// when the key is received
 	TRYF(ti73_recv_ACK(NULL));	// after it completes the resulting action
 
 	return 0;

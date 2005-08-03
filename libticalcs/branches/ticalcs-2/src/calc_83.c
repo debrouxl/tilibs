@@ -57,7 +57,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti83_send_KEY(key));
-	TRYF(ti82_recv_ACK(NULL));
+	TRYF(ti82_recv_ACK(&key));
 
 	return 0;
 }
@@ -367,7 +367,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 {
 	const char *prgname = "romdump.83p";
 	FILE *f;
-	int err = 0;
+	int i, err = 0;
+	uint16_t keys[] = {				
+		0x40, 0x09, 0x09,			/* Quit, Clear, Clear, */
+		0xFE63, 0x97, 0xDA,			/* Send(, 9, prgm */
+		0xAB, 0xA8, 0xA6, 0x9D,		/* R, O, M, D */
+		0xAE, 0xA6, 0xA9, 0x05		/* U, M, P, Enter */
+	};
 
 	// Copies ROM dump program into a file
 	f = fopen(prgname, "wb");
@@ -381,9 +387,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
 
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting user's action..."));
-	handle->updat->label();
+	// Launch program by remote control
+    PAUSE(1500);
+    for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
+    {
+		TRYF(send_key(handle, keys[i]));
+        PAUSE(100);
+	}
 
 	do
 	{

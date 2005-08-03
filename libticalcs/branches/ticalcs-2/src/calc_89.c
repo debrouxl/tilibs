@@ -62,7 +62,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti89_send_KEY(key));
-	TRYF(ti89_recv_ACK(NULL));
+	TRYF(ti89_recv_ACK(&key));
 
 	return 0;
 }
