@@ -385,17 +385,19 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 }
 
 extern int rom_dump(CalcHandle* h, FILE* f);
+extern int rom_dump_ready(CalcHandle* h);
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	const char *prgname = "romdump.86p";
 	FILE *f;
-	int err, i;
+	int err;
 	uint16_t keys[] = { 
-		0xFE63, 0x97, 0xDA,			/* Send(, 9, prgm */
-		0xAB, 0xA8, 0xA6, 0x9D,		/* R, O, M, D */
-		0xAE, 0xA6, 0xA9, 0x05		/* U, M, P, Enter */
-	};
+		0x76, 0x08, 0x08, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
+        0x83, 0x39, 0x36, 0x34,     /* prgm, R, O, M */
+        0x2B, 0x56, 0x4E, 0x51,     /* D, u, m, p */
+		0x86, 0x12					/* ), Enter */
+	};               
 
 	// Copies ROM dump program into a file
 	f = fopen(prgname, "wb");
@@ -409,19 +411,21 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
 	unlink(prgname);
 
-	// Launch program by remote control
-    PAUSE(200);
-    for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
-    {
-		TRYF(send_key(handle, keys[i]));
-        PAUSE(100);
+	// Wait for user's action (execing program)
+	sprintf(handle->updat->text, _("Waiting user's action..."));
+	handle->updat->label();
+
+	do
+	{
+		handle->updat->refresh();
+		if (handle->updat->cancel)
+			return ERR_ABORT;
+		
+		//send RDY request ???
+		PAUSE(1000);
+		err = rom_dump_ready(handle);
 	}
-
-	// Enter send 2nd ACK after ROM dumper has finished to exec
-	send_key(handle, keys[i]);
-	PAUSE(200);
-
-	return -1;
+	while (err == ERROR_READ_TIMEOUT);
 
 	// Get dump
 	f = fopen(filename, "wb");
