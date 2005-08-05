@@ -27,7 +27,7 @@
 #endif
 
 #include "stdints.h"
-#include "export.h"
+#include "export1.h"
 #include "timeout.h"
 
 #ifdef __cplusplus
@@ -183,8 +183,8 @@ struct _CableHandle
 {
 	CableModel		model;	
 	CablePort		port;	
-	int				timeout;
-	int				delay;	
+	unsigned int	timeout;
+	unsigned int	delay;	
 
 	char *			device;	
 	unsigned int	address;

@@ -128,7 +128,7 @@ static int par_probe(CableHandle *h)
 static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	int i;
+  	unsigned int i;
 	unsigned int j;
   	tiTIME clk;
 
@@ -190,7 +190,7 @@ static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-	int i;
+	unsigned int i;
 	unsigned int j;
   	tiTIME clk;
 

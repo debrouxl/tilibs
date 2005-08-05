@@ -93,7 +93,7 @@ static int ser_reset(CableHandle *h)
 
 static int ser_probe(CableHandle *h)
 {
-	int timeout = 1;
+	unsigned int timeout = 1;
 	tiTIME clk;
 
 	// 1
@@ -136,7 +136,7 @@ static int ser_probe(CableHandle *h)
 static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	int i;
+  	unsigned int i;
 	unsigned int j;
   	tiTIME clk;
 
@@ -195,7 +195,7 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	int bit;
-  	int i;
+  	unsigned int i;
 	unsigned int j;
   	tiTIME clk;
 

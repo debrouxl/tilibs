@@ -35,7 +35,8 @@
 #define __CABLE_TIMEOUT__
 
 /*
-  Platform independant time measurement (ms) & timeout management (0.1s)
+  Platform independant time measurement (in milli-seconds) 
+  and timeout management (in tenth of seconds)
   - TO_START:   retrieve time (starting point)
   - TO_CURRENT: return the number of milli-seconds elapsed since TO_START()
   - TO_ELAPSED: return TRUE if max tenth of seconds have elapsed
@@ -50,7 +51,7 @@ typedef unsigned long tiTIME;
 
 # define  TO_START(ref)          { (ref) = GetTickCount(); }
 # define  TO_CURRENT(ref)        ( GetTickCount() - (ref) )
-# define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (100*max) )
+# define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (unsigned int)(100*max) )
 
 #else
 
