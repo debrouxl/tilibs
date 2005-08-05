@@ -29,7 +29,7 @@
 #include <ticables.h>
 #include <tifiles.h>
 
-#include "export.h"
+#include "export2.h"
 #include "tnode.h"	// to replace by glib !
 
 #ifdef __cplusplus

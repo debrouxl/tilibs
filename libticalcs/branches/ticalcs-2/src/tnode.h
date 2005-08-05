@@ -34,7 +34,7 @@
 #define __TICALCS_TNODE__
 
 // by roms (start)
-#include "export.h"
+#include "export3.h"
 
 typedef char         tchar;
 typedef	int	     tint;

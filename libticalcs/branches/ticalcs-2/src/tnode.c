@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 #include "tnode.h"
-#include "export.h"
+#include "export3.h"
 
 // glib allocators
 #define t_new0(struct_type, n_structs)		\
