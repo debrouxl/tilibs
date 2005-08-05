@@ -65,35 +65,35 @@ TIEXPORT const char *TICALL tifiles_model_to_string(CalcModel model)
  **/
 TIEXPORT CalcModel TICALL tifiles_string_to_model(const char *str)
 {
-	if(!strcmp(str, "TI73"))
+	if(!g_ascii_strcasecmp(str, "TI73"))
 		return CALC_TI73;
-	else if(!strcmp(str, "TI82"))
+	else if(!g_ascii_strcasecmp(str, "TI82"))
 		return CALC_TI82;
-		    /*else if(!strcmp(str, "TI82s"))
+		    /*else if(!g_ascii_strcasecmp(str, "TI82s"))
 		      return CALC_TI82S;*/
-	else if(!strcmp(str, "TI83"))
+	else if(!g_ascii_strcasecmp(str, "TI83"))
 		return CALC_TI83;
-	else if(!strcmp(str, "TI83+"))
+	else if(!g_ascii_strcasecmp(str, "TI83+"))
 		return CALC_TI83P;
-	else if(!strcmp(str, "TI84+"))
+	else if(!g_ascii_strcasecmp(str, "TI84+"))
 		return CALC_TI84P;
-	else if(!strcmp(str, "TI85"))
+	else if(!g_ascii_strcasecmp(str, "TI85"))
 		return CALC_TI85;
-	else if(!strcmp(str, "TI86"))
+	else if(!g_ascii_strcasecmp(str, "TI86"))
 		return CALC_TI86;
-	else if(!strcmp(str, "TI89"))
+	else if(!g_ascii_strcasecmp(str, "TI89"))
 		return CALC_TI89;
-	else if(!strcmp(str, "TI89t"))
+	else if(!g_ascii_strcasecmp(str, "TI89t"))
 		return CALC_TI89T;
-	else if(!strcmp(str, "TI92"))
+	else if(!g_ascii_strcasecmp(str, "TI92"))
 		return CALC_TI92;
-	else if(!strcmp(str, "TI92+"))
+	else if(!g_ascii_strcasecmp(str, "TI92+"))
 		return CALC_TI92P;
-	else if(!strcmp(str, "V200"))
+	else if(!g_ascii_strcasecmp(str, "V200"))
 		return CALC_V200;
-	else if(!strcmp(str, "TI84+ USB"))
+	else if(!g_ascii_strcasecmp(str, "TI84+ USB"))
 		return CALC_TI84P_USB;
-	else if(!strcmp(str, "TI89t USB"))
+	else if(!g_ascii_strcasecmp(str, "TI89t USB"))
 		return CALC_TI89T_USB;
 		
 	return CALC_NONE;
@@ -129,13 +129,13 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(FileAttr attrb)
  **/
 TIEXPORT FileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
-	if(!strcmp(str, _("none     ")))
+	if(!g_ascii_strcasecmp(str, _("none     ")))
 		return ATTRB_NONE;
-	else if(!strcmp(str, _("locked   ")))
+	else if(!g_ascii_strcasecmp(str, _("locked   ")))
 		return ATTRB_LOCKED;
-	else if(!strcmp(str, _("archived ")))
+	else if(!g_ascii_strcasecmp(str, _("archived ")))
 		return ATTRB_ARCHIVED;
-	else if(!strcmp(str, _("protected")))
+	else if(!g_ascii_strcasecmp(str, _("protected")))
 		return ATTRB_PROTECTED;
 	
 	return ATTRB_NONE;
@@ -171,13 +171,13 @@ TIEXPORT const char *TICALL tifiles_class_to_string(FileClass klass)
  **/
 TIEXPORT FileClass TICALL tifiles_string_to_class(const char *str)
 {
-	if(!strcmp(str, _("single")))
+	if(!g_ascii_strcasecmp(str, _("single")))
 		return TIFILE_SINGLE;
-	else if(!strcmp(str, _("group")))
+	else if(!g_ascii_strcasecmp(str, _("group")))
 		return TIFILE_GROUP;
-	else if(!strcmp(str, _("backup")))
+	else if(!g_ascii_strcasecmp(str, _("backup")))
 		return TIFILE_BACKUP;
-	else if(!strcmp(str, _("flash")))
+	else if(!g_ascii_strcasecmp(str, _("flash")))
 		return TIFILE_FLASH;
 		
 	return TIFILE_SINGLE;

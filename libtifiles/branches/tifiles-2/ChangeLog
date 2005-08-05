@@ -7,20 +7,19 @@ To do:
 	- tifiles_is_varname_tokenized
 	- tifiles_tokenize_varname
 
-	- manage checksums
-
 Log:
 
-- 04/06/2005, version 0.0.4: roms
+- 04/06/2005, version 0.0.1: roms
 	- added transcode function to API for future implementation
 	- removed 'name' field of VarEntry: make confusion
 	- changed 'var_name' into name and 'fld_name' into 'folder'
+	- added checksum verification
 
-- 14/05/2005, version 0.0.3: roms
+- 14/05/2005, version 0.0.1: roms
 	- merged some types into a single type
 	- common file handling API
 
-- 10/04/2005, version 0.0.2: roms
+- 10/04/2005, version 0.0.1: roms
 	- rewritten TI8X+ FLASH support
 	- fixed memory errors at:
 		* test_tifiles_2.c:168

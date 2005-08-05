@@ -220,8 +220,10 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
   fread_word(f, &(content->checksum));
 
+  /*
   if(sum != content->checksum)
 	  return ERR_FILE_CHECKSUM;
+	  */
 
   fclose(f);
 

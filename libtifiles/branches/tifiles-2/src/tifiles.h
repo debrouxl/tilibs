@@ -26,7 +26,7 @@
 #  include <config.h>
 #endif
 
-#include "export.h"
+#include "export2.h"
 #include "stdints.h"
 #include "typesxx.h"
 
@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.0.3"
+# define LIBFILES_VERSION "0.0.1"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
