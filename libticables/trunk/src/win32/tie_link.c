@@ -85,6 +85,7 @@ int tie_init(void)
 
     p = io_address - 1;
     ref_cnt++;
+	printf("ref_cnt = %i\n", ref_cnt);
 
 /* Automatic setting: if port #1 is already used, bind to port #2 */
     if(ref_cnt == 2 && p == 0)
@@ -151,6 +152,8 @@ int tie_put(uint8_t data)
 
   //if(!hMap)
   //      return ERR_OPEN_FILE_MAP;
+  if(ref_cnt < 2)
+     return 0;
 
   tdr.count++;
   LOG_DATA(data);
@@ -175,6 +178,8 @@ int tie_get(uint8_t * data)
 
   //if(!hMap)
   //      return ERR_OPEN_FILE_MAP;
+  if(ref_cnt < 2)
+     return 0;
 
   //printl1(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
 
@@ -200,6 +205,9 @@ int tie_get(uint8_t * data)
 
 int tie_check(int *status)
 {
+	if(ref_cnt < 2)
+     return 0;
+
   /* Check if positions are the same */
   if (pRecvBuf->start == pRecvBuf->end)
     *status = STATUS_NONE;
