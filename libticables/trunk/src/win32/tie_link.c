@@ -82,11 +82,13 @@ int tie_init(void)
     printl1(2, _("invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
   } 
-  else 
-  {
+
     p = io_address - 1;
     ref_cnt++;
-  }
+
+/* Automatic setting: if port #1 is already used, bind to port #2 */
+    if(ref_cnt == 2 && p == 0)
+	p = 1;
 
   /* Create a FileMapping objects */
   hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
@@ -121,6 +123,8 @@ int tie_exit()
 
   if (hRecvBuf) 
     UnmapViewOfFile(pRecvBuf);
+
+  ref_cnt--;
 
   return 0;
 }
