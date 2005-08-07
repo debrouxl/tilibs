@@ -81,7 +81,7 @@ int tie_init()
   p = io_address - 1;
 
 /* Count number of instances */
-  if ((ipc_key = ftok("/root", 0x1234)) == -1)
+  if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
       return ERR_OPEN_PIPE;
   if ((shmid = shmget(ipc_key, 1, IPC_CREAT | 0666)) < 0)
       return ERR_OPEN_PIPE;

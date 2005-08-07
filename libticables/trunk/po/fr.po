@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables 3.8.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2004-06-29 18:11+0200\n"
+"POT-Creation-Date: 2005-08-07 09:54+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -457,71 +457,51 @@ msgstr ""
 "Ceci est un bogue. Veuillez le signaler.\n"
 "."
 
-#: src/intrface.c:98
+#: src/intrface.c:104
 #, c-format
 msgid "ticables library version %s\n"
 msgstr "librairie ticables version %s\n"
 
-#: src/intrface.c:109
+#: src/intrface.c:115
 #, c-format
 msgid "built for %s target.\n"
 msgstr "Compilé pour %s.\n"
 
-#: src/intrface.c:351
+#: src/intrface.c:357
 msgid "list of settings:\n"
 msgstr "liste des réglages :\n"
 
-#: src/intrface.c:353
+#: src/intrface.c:359
 #, c-format
 msgid "  cable: %s\n"
 msgstr "  câble : %s\n"
 
-#: src/intrface.c:356
+#: src/intrface.c:362
 #, c-format
 msgid "  port: %s\n"
 msgstr "  port : %s\n"
 
-#: src/intrface.c:358
+#: src/intrface.c:364
 #, c-format
 msgid "  method: %s\n"
 msgstr "  méthode : %s\n"
 
-#: src/intrface.c:361
-#, c-format
-msgid "  baud-rate: %i\n"
-msgstr "  débit (bits/s) : %i\n"
-
-#: src/intrface.c:362
-#, c-format
-msgid "  hardware flow control: %s\n"
-msgstr "  contrôle de flux matériel : %s\n"
-
-#: src/intrface.c:363 src/type2str.c:92 src/type2str.c:100 src/type2str.c:172
-#: src/type2str.c:182
-msgid "on"
-msgstr "activé"
-
-#: src/intrface.c:363 src/type2str.c:94 src/type2str.c:170 src/type2str.c:176
-#: src/type2str.c:184
-msgid "off"
-msgstr "désactivé"
-
-#: src/intrface.c:368
+#: src/intrface.c:374
 #, c-format
 msgid "  address: 0x%03x\n"
 msgstr "  adresse : 0x%03x\n"
 
-#: src/intrface.c:370
+#: src/intrface.c:376
 #, c-format
 msgid "  device name: %s\n"
 msgstr "  nom du périphérique : %s\n"
 
-#: src/intrface.c:373
+#: src/intrface.c:379
 #, c-format
 msgid "  timeout value: %i\n"
 msgstr "  limite de temps : %i\n"
 
-#: src/intrface.c:375
+#: src/intrface.c:381
 #, c-format
 msgid "  delay value: %i\n"
 msgstr "  délai : %i\n"
@@ -584,6 +564,14 @@ msgstr "obsolète"
 #: src/type2str.c:30
 msgid "SilverLink"
 msgstr "SilverLink (argent)"
+
+#: src/type2str.c:92 src/type2str.c:100 src/type2str.c:172 src/type2str.c:182
+msgid "on"
+msgstr "activé"
+
+#: src/type2str.c:94 src/type2str.c:170 src/type2str.c:176 src/type2str.c:184
+msgid "off"
+msgstr "désactivé"
 
 #: src/type2str.c:107
 msgid "custom"
@@ -736,14 +724,14 @@ msgstr "échec de ioctl dans bsd_ioctl_read_io.\n"
 msgid "ioctl failed in bsd_ioctl_write_io !\n"
 msgstr "échec de ioctl dans bsd_ioctl_write_io.\n"
 
-#: src/bsd/bsd_ioports.c:121 src/linux/avr_link.c:75 src/linux/tig_link.c:71
-#: src/linux/linux_ioports.c:130
+#: src/bsd/bsd_ioports.c:121 src/linux/tig_link.c:71
+#: src/linux/linux_ioports.c:134
 #, c-format
 msgid "unable to open this serial port: %s (wrong permissions).\n"
 msgstr "impossible d'ouvrir ce port série : %s (permissions insuffisantes).\n"
 
-#: src/bsd/bsd_ioports.c:123 src/linux/avr_link.c:77 src/linux/tig_link.c:73
-#: src/linux/linux_ioports.c:132
+#: src/bsd/bsd_ioports.c:123 src/linux/tig_link.c:73
+#: src/linux/linux_ioports.c:136
 #, c-format
 msgid "unable to open this serial port: %s\n"
 msgstr "impossible d'ouvrir ce port série : %s\n"
@@ -759,99 +747,115 @@ msgid "getting method from resources (user-forced):\n"
 msgstr "détermination de la méthode utilisée (manuelle) :\n"
 
 #: src/bsd/bsd_mapping.c:85 src/bsd/bsd_mapping.c:100
-#: src/linux/linux_mapping.c:105 src/linux/linux_mapping.c:134
+#: src/linux/linux_mapping.c:102 src/linux/linux_mapping.c:131
 msgid "  warning: can't use IO_ASM\n"
 msgstr "  attention : impossible d'utiliser IO_ASM\n"
 
-#: src/bsd/bsd_mapping.c:138 src/linux/linux_mapping.c:201
+#: src/bsd/bsd_mapping.c:138 src/linux/linux_mapping.c:199
 #: src/win32/win32_mapping.c:123
 msgid "mapping I/O...\n"
 msgstr "carte des E/S...\n"
 
-#: src/bsd/bsd_mapping.c:217 src/linux/linux_mapping.c:308
-#: src/win32/win32_mapping.c:203
+#: src/bsd/bsd_mapping.c:217 src/linux/linux_mapping.c:309
+#: src/win32/win32_mapping.c:206
 msgid "registering cable...\n"
 msgstr "enregistrement du câble...\n"
 
-#: src/bsd/bsd_mapping.c:300 src/linux/linux_mapping.c:400
-#: src/win32/win32_mapping.c:292
+#: src/bsd/bsd_mapping.c:300 src/linux/linux_mapping.c:395
+#: src/win32/win32_mapping.c:289
 msgid "invalid argument (bad cable)."
 msgstr "argument non valide (câble incorrect)."
 
-#: src/bsd/bsd_mapping.c:317 src/linux/linux_mapping.c:609
+#: src/bsd/bsd_mapping.c:317 src/linux/linux_mapping.c:613
 #, c-format
 msgid "  check for asm usability: %s\n"
 msgstr "  disponibilité de l'asm : %s\n"
 
-#: src/linux/dev_link.c:81
+#: src/linux/dev_link.c:80
 #, c-format
 msgid "unable to open character device: %s.\n"
 msgstr "impossible d'ouvrir ce périphérique de type caractère : %s.\n"
 
-#: src/linux/dev_link.c:82
+#: src/linux/dev_link.c:81
 #, c-format
 msgid "unable to open character device: %s (wrong permissions).\n"
 msgstr ""
 "impossible d'ouvrir ce périphérique de type caractère : %s (permissions "
 "insuffisantes).\n"
 
-#: src/linux/dev_link.c:83
+#: src/linux/dev_link.c:82
 #, c-format
 msgid "unable to open character device: %s\n"
 msgstr "impossible d'ouvrir ce périphérique de type caractère : %s\n"
 
-#: src/linux/dev_link.c:93 src/linux/dev_link.c:104
+#: src/linux/dev_link.c:92 src/linux/dev_link.c:103
 msgid "failed to set delay.\n"
 msgstr "impossible de définir le délai.\n"
 
-#: src/linux/dev_link.c:97 src/linux/dev_link.c:108
+#: src/linux/dev_link.c:96 src/linux/dev_link.c:107
 msgid "failed to set timeout.\n"
 msgstr "impossible de définir la limite de temps.\n"
 
-#: src/linux/slv_link.c:100
+#: src/linux/slv_link.c:105
 #, c-format
 msgid "unable to open this device: %s.\n"
 msgstr "impossible d'ouvrir ce périphérique : %s.\n"
 
-#: src/linux/slv_link.c:129
+#: src/linux/slv_link.c:114
+#, fuzzy
+msgid "unable to get max packet size (ioctl).\n"
+msgstr "impossible de définir la limite de temps (ioctl).\n"
+
+#: src/linux/slv_link.c:120
+#, fuzzy
+msgid "unable to get device id (ioctl).\n"
+msgstr "impossible de définir la limite de temps (ioctl).\n"
+
+#: src/linux/slv_link.c:123
+#, fuzzy, c-format
+msgid "device type: %04X.\n"
+msgstr "  nom du périphérique : %s\n"
+
+#: src/linux/slv_link.c:160
 msgid "unable to set timeout (ioctl).\n"
 msgstr "impossible de définir la limite de temps (ioctl).\n"
 
-#: src/linux/slv_link.c:141
+#: src/linux/slv_link.c:172
 msgid "unable to reset pipes (ioctl).\n"
 msgstr "impossible d'initialiser les tubes (ioctl).\n"
 
-#: src/linux/slv_link.c:227
+#: src/linux/slv_link.c:258
 msgid ""
 "weird, read returns without any data; retrying to circumvent the quirk...\n"
 msgstr "la lecture n'a retourné aucune donnée. Nouvel essai...\n"
 
-#: src/linux/slv_link2.c:122
-msgid "TIGL-USB found.\n"
-msgstr "TIGL-USB trouvé.\n"
+#: src/linux/slv_link2.c:142
+#, c-format
+msgid "Found <%s>.\n"
+msgstr ""
 
-#: src/linux/slv_link2.c:145
+#: src/linux/slv_link2.c:167
 #, c-format
 msgid "usb_find_busses (%s).\n"
 msgstr "usb_find_busses (%s).\n"
 
-#: src/linux/slv_link2.c:152
+#: src/linux/slv_link2.c:174
 #, c-format
 msgid "usb_find_devices (%s).\n"
 msgstr "usb_find_devices (%s).\n"
 
-#: src/linux/slv_link2.c:383
+#: src/linux/slv_link2.c:421
 #, fuzzy
 msgid ""
 "\n"
 "weird, usb_bulk_read returns without any data & error; retrying...\n"
 msgstr "usb_bulk_read n'a retourné aucune donnée. Nouvel essai...\n"
 
-#: src/linux/tie_link.c:72
+#: src/linux/tie_link.c:78
 msgid "Invalid io_address parameter passed to libticables.\n"
 msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 
-#: src/linux/tie_link.c:86
+#: src/linux/tie_link.c:105
 #, c-format
 msgid "error: %s\n"
 msgstr "Erreur : %s\n"
@@ -968,15 +972,15 @@ msgid "  IO_TISER: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
 msgstr "  IO_TISER : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
 
 #: src/linux/linux_detect.c:265
-#, c-format
-msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
-msgstr "  IO_TIUSB : %s trouvé lors de la compilation (HAVE_LINUX_TIGLUSB_H)\n"
+#, fuzzy, c-format
+msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TICABLE_H)\n"
+msgstr "  IO_TISER : %s trouvé lors de la compilation (HAVE_LINUX_TICABLE_H)\n"
 
-#: src/linux/linux_ioports.c:86
+#: src/linux/linux_ioports.c:90
 msgid "ioctl failed in linux_ioctl_read_io !\n"
 msgstr "échec de ioctl dans linux_ioctl_read_io.\n"
 
-#: src/linux/linux_ioports.c:102
+#: src/linux/linux_ioports.c:106
 msgid "ioctl failed in linux_ioctl_write_io !\n"
 msgstr "échec de ioctl dans linux_ioctl_write_io.\n"
 
@@ -984,185 +988,185 @@ msgstr "échec de ioctl dans linux_ioctl_write_io.\n"
 msgid "  warning, can't use IO_API\n"
 msgstr "  attention : impossible d'utiliser IO_API\n"
 
-#: src/linux/linux_mapping.c:88 src/linux/linux_mapping.c:114
-msgid "  warning: can't use IO_API\n"
-msgstr "  attention : impossible d'utiliser IO_API\n"
-
-#: src/linux/linux_mapping.c:96
+#: src/linux/linux_mapping.c:93
 msgid "  warning: can't use IO_TISER\n"
 msgstr "  attention : impossible d'utiliser IO_TISER\n"
 
-#: src/linux/linux_mapping.c:125
+#: src/linux/linux_mapping.c:111
+msgid "  warning: can't use IO_API\n"
+msgstr "  attention : impossible d'utiliser IO_API\n"
+
+#: src/linux/linux_mapping.c:122
 msgid "  warning: can't use IO_TIPAR\n"
 msgstr "  attention : impossible d'utiliser IO_TIPAR\n"
 
-#: src/linux/linux_mapping.c:145
+#: src/linux/linux_mapping.c:142
 msgid "  warning: can't use IO_TIUSB\n"
 msgstr "  attention : impossible d'utiliser IO_TIUSB\n"
 
-#: src/linux/linux_mapping.c:154
+#: src/linux/linux_mapping.c:151
 msgid "  warning: can't use IO_LIBUSB\n"
 msgstr "  attention : impossible d'utiliser IO_LIBUSB\n"
 
-#: src/linux/linux_mapping.c:522
+#: src/linux/linux_mapping.c:526
 msgid "Unable to open the '/etc/group' file\n"
 msgstr "Impossible d'ouvrir le fichier \"/etc/group\".\n"
 
-#: src/linux/linux_mapping.c:549
+#: src/linux/linux_mapping.c:553
 #, c-format
 msgid "    node %s: exists\n"
 msgstr "    le nœud %s existe\n"
 
-#: src/linux/linux_mapping.c:551
+#: src/linux/linux_mapping.c:555
 #, c-format
 msgid "    node %s: does not exists\n"
 msgstr "    le nœud %s n'existe pas\n"
 
-#: src/linux/linux_mapping.c:552
+#: src/linux/linux_mapping.c:556
 msgid "    => you will have to create the node.\n"
 msgstr "    => vous devez créer le nœud.\n"
 
-#: src/linux/linux_mapping.c:560
+#: src/linux/linux_mapping.c:564
 #, c-format
 msgid "    permissions/user/group:%s%s %s\n"
 msgstr "    permissions /user/group :%s%s %s\n"
 
-#: src/linux/linux_mapping.c:569
+#: src/linux/linux_mapping.c:573
 msgid "    is user can r/w on device: yes\n"
 msgstr ""
 "    l'utilisateur a le droit de lecture/écriture sur le périphérique : oui\n"
 
-#: src/linux/linux_mapping.c:572
+#: src/linux/linux_mapping.c:576
 msgid "    is user can r/w on device: no\n"
 msgstr ""
 "    l'utilisateur a le droit de lecture/écriture sur le périphérique : non\n"
 
-#: src/linux/linux_mapping.c:576
+#: src/linux/linux_mapping.c:580
 msgid "    are others can r/w on device: yes\n"
 msgstr ""
 "    les autres utilisateurs ont le droit de lecture/écriture sur le "
 "périphérique : oui\n"
 
-#: src/linux/linux_mapping.c:580
+#: src/linux/linux_mapping.c:584
 msgid "    are others can r/w on device: no\n"
 msgstr ""
 "    les autres utilisateurs ont le droit de lecture/écriture sur le "
 "périphérique : non\n"
 
-#: src/linux/linux_mapping.c:586
+#: src/linux/linux_mapping.c:590
 #, c-format
 msgid "    is the user '%s' in the group '%s': yes\n"
 msgstr "    l'utilisateur \"%s\" est dans le groupe \"%s\" : oui\n"
 
-#: src/linux/linux_mapping.c:588
+#: src/linux/linux_mapping.c:592
 #, c-format
 msgid "    is the user '%s' in the group '%s': no\n"
 msgstr "    l'utilisateur \"%s\" est dans le groupe \"%s\" : non\n"
 
-#: src/linux/linux_mapping.c:589
+#: src/linux/linux_mapping.c:593
 #, c-format
 msgid "    => you should add your username at the group '%s' in '/etc/group'\n"
 msgstr ""
 "    => vous devriez ajouter votre nom d'utilisateur au groupe \"%s\" dans \"/"
 "etc/group\"\n"
 
-#: src/linux/linux_mapping.c:590
+#: src/linux/linux_mapping.c:594
 msgid "    => you will have to restart you session, too\n"
 msgstr "    => vous devrez ensuite redémarrer une session.\n"
 
-#: src/linux/linux_mapping.c:618
+#: src/linux/linux_mapping.c:622
 msgid "  check for tty usability:\n"
 msgstr "  disponibilité de tty :\n"
 
-#: src/linux/linux_mapping.c:628
+#: src/linux/linux_mapping.c:632
 msgid "  check for tipar usability:\n"
 msgstr "  disponibilité de tipar :\n"
 
-#: src/linux/linux_mapping.c:632
+#: src/linux/linux_mapping.c:636
 #, c-format
 msgid "      using devfs: %s\n"
 msgstr "      utilisation de devfs : %s\n"
 
-#: src/linux/linux_mapping.c:643
+#: src/linux/linux_mapping.c:647
 msgid "      module: loaded\n"
 msgstr "      module : chargé\n"
 
-#: src/linux/linux_mapping.c:645
+#: src/linux/linux_mapping.c:649
 msgid "      module: not loaded\n"
 msgstr "      module : non chargé\n"
 
-#: src/linux/linux_mapping.c:646 src/linux/linux_mapping.c:710
+#: src/linux/linux_mapping.c:650 src/linux/linux_mapping.c:714
 msgid "    => check the module exists (either as module, either as built-in)\n"
 msgstr ""
 "    => vérifiez que le module existe (comme module ou directement intégré au "
 "noyau)\n"
 
-#: src/linux/linux_mapping.c:647 src/linux/linux_mapping.c:711
+#: src/linux/linux_mapping.c:651 src/linux/linux_mapping.c:715
 msgid "    => add an entry into your modutils file to automatically load it\n"
 msgstr ""
 "    => ajoutez une ligne dans le fichier modutils pour le charger "
 "automatiquement.\n"
 
-#: src/linux/linux_mapping.c:660
+#: src/linux/linux_mapping.c:664
 msgid "  check for tiser usability:\n"
 msgstr "  disponibilité de tiser :\n"
 
-#: src/linux/linux_mapping.c:664 src/linux/linux_mapping.c:696
+#: src/linux/linux_mapping.c:668 src/linux/linux_mapping.c:700
 #, c-format
 msgid "    using devfs: %s\n"
 msgstr "      utilisation de devfs : %s\n"
 
-#: src/linux/linux_mapping.c:675 src/linux/linux_mapping.c:707
+#: src/linux/linux_mapping.c:679 src/linux/linux_mapping.c:711
 msgid "    module: loaded\n"
 msgstr "      module : chargé\n"
 
-#: src/linux/linux_mapping.c:677 src/linux/linux_mapping.c:709
+#: src/linux/linux_mapping.c:681 src/linux/linux_mapping.c:713
 msgid "    module: not loaded\n"
 msgstr "      module : non chargé\n"
 
-#: src/linux/linux_mapping.c:678
+#: src/linux/linux_mapping.c:682
 msgid "    => check the module exists (compiled as module)\n"
 msgstr "    => vérifiez que le module existe (compilé comme module)\n"
 
-#: src/linux/linux_mapping.c:679
+#: src/linux/linux_mapping.c:683
 msgid "    => add an entry into your modutils file to automatically load it.\n"
 msgstr ""
 "    => ajoutez une ligne dans le fichier modutils pour le charger "
 "automatiquement.\n"
 
-#: src/linux/linux_mapping.c:692
+#: src/linux/linux_mapping.c:696
 msgid "  check for tiusb usability:\n"
 msgstr "  disponibilité de tiusb :\n"
 
-#: src/linux/linux_mapping.c:724
+#: src/linux/linux_mapping.c:728
 msgid "  check for lib-usb usability:\n"
 msgstr "  disponibilité de lib-usb :\n"
 
-#: src/linux/linux_mapping.c:727 src/linux/linux_mapping.c:729
+#: src/linux/linux_mapping.c:731 src/linux/linux_mapping.c:733
 #, c-format
 msgid "    usb filesystem (/proc/bus/usb): %s\n"
 msgstr "    système de fichiers usb (/proc/bus/usb) : %s\n"
 
-#: src/linux/linux_mapping.c:730
+#: src/linux/linux_mapping.c:734
 msgid ""
 "    => the usbfs must be supported by your kernel and you have to mount it\n"
 msgstr ""
 "    => usbfs doit être pris en charge par votre noyau et doit être "
 "préalablement monté\n"
 
-#: src/linux/linux_mapping.c:731
+#: src/linux/linux_mapping.c:735
 msgid ""
 "    => add an 'none /proc/bus/usb usbfs defaults 0 0' in your /etc/fstab'\n"
 msgstr ""
 "    => ajoutez \"none /proc/bus/usb usbfs defaults 0 0\" dans le fichier \"/"
 "etc/fstab\"\n"
 
-#: src/win32/slv_link.c:76
+#: src/win32/slv_link.c:74
 msgid "TiglUsb library not found. Have you installed the TiglUsb driver ?\n"
 msgstr ""
 "Librairie TiglUsb introuvable. Avez-vous installé le pilote TiglUsb ?\n"
 
-#: src/win32/slv_link.c:83
+#: src/win32/slv_link.c:81
 #, c-format
 msgid ""
 "TiglUsb.dll: version %s mini needed, got version %s.\n"
@@ -1172,56 +1176,56 @@ msgstr ""
 "version %s.\n"
 "Veuillez télécharger la dernière version sur <http://ti-lpg.org/prj_usb>."
 
-#: src/win32/slv_link.c:90
+#: src/win32/slv_link.c:88
 #, fuzzy, c-format
 msgid "using TiglUsb.dll version %s\n"
 msgstr "  version : %s\n"
 
-#: src/win32/slv_link.c:94
+#: src/win32/slv_link.c:92
 msgid "Unable to load TiglUsbOpen symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsb.\n"
 
-#: src/win32/slv_link.c:101
+#: src/win32/slv_link.c:99
 msgid "Unable to load TiglUsbClose symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbClose.\n"
 
-#: src/win32/slv_link.c:108 src/win32/slv_link.c:115
+#: src/win32/slv_link.c:106 src/win32/slv_link.c:113
 msgid "Unable to load TiglUsbFlush symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbFlush.\n"
 
-#: src/win32/slv_link.c:122
+#: src/win32/slv_link.c:120
 msgid "Unable to load TiglUsbCheck symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbCheck.\n"
 
-#: src/win32/slv_link.c:129
+#: src/win32/slv_link.c:127
 msgid "Unable to load TiglUsbRead symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbRead.\n"
 
-#: src/win32/slv_link.c:136
+#: src/win32/slv_link.c:134
 msgid "Unable to load TiglUsbWrite symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbWrite.\n"
 
-#: src/win32/slv_link.c:143 src/win32/slv_link.c:150
+#: src/win32/slv_link.c:141 src/win32/slv_link.c:148
 msgid "Unable to load TiglUsbSetTimeout symbol.\n"
 msgstr "Impossible de charger le symbole TiglUsbSetTimeout.\n"
 
-#: src/win32/tie_link.c:81
+#: src/win32/tie_link.c:82
 msgid "invalid io_address parameter passed to libticables.\n"
 msgstr "Un paramètre io_address non valide a été passé à libticables.\n"
 
-#: src/win32/vti_link.c:103
+#: src/win32/vti_link.c:109
 msgid "Unable to get an handle on the libTIcables.\n"
 msgstr "Impossible de mettre la main sur libTIcables.\n"
 
-#: src/win32/vti_link.c:104
+#: src/win32/vti_link.c:110
 msgid "Did you rename the library ?!\n"
 msgstr "Avez-vous renommé la librairie ?\n"
 
-#: src/win32/vti_link.c:105
+#: src/win32/vti_link.c:111
 msgid "Fatal error. Program terminated.\n"
 msgstr "Erreur fatale. Programme terminé.\n"
 
-#: src/win32/vti_link.c:121
+#: src/win32/vti_link.c:129
 #, c-format
 msgid "Opened %s\n"
 msgstr "%s a été ouvert\n"
@@ -1369,6 +1373,19 @@ msgstr "Le pilote du périphérique PortTalk a lancé IOPM avec l'ID %d.\n"
 #, c-format
 msgid "serial port %s successfully reconfigured.\n"
 msgstr "Le port série %s a été reconfiguré avec succès.\n"
+
+#~ msgid "  baud-rate: %i\n"
+#~ msgstr "  débit (bits/s) : %i\n"
+
+#~ msgid "  hardware flow control: %s\n"
+#~ msgstr "  contrôle de flux matériel : %s\n"
+
+#~ msgid "TIGL-USB found.\n"
+#~ msgstr "TIGL-USB trouvé.\n"
+
+#~ msgid "  IO_TIUSB: %sfound at compile time (HAVE_LINUX_TIGLUSB_H)\n"
+#~ msgstr ""
+#~ "  IO_TIUSB : %s trouvé lors de la compilation (HAVE_LINUX_TIGLUSB_H)\n"
 
 #~ msgid ""
 #~ "The file '/proc/tty/driver/serial' does not exist or is not accessible. "
