@@ -39,6 +39,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <fcntl.h>
 #include <errno.h>
 
@@ -55,8 +57,11 @@
 #define HIGH 666		// upper limit (used for avoiding 'uint8_t timeout')
 #define LOW  333		// lower limit
 
+static key_t ipc_key;
+static int shmid;
+static int *shmaddr;
+#define ref_cnt (*shmaddr) // counter of instances
 static int p;
-static int ref_cnt = 0;		// Counter of library instances
 
 static int rd[2] = { 0, 0 };	// Pipe 0 <- 1 or 1 <- 0
 static int wr[2] = { 0, 0 };	// Pipe 0 -> 1 or 1 -> 0
@@ -68,12 +73,26 @@ static const char fifo_names[4][256] = {
 
 int tie_init()
 {
+/* Check for valid argument */
   if ((io_address < 1) || (io_address > 2)) {
     printl1(2, _("Invalid io_address parameter passed to libticables.\n"));
     io_address = 2;
   }
   p = io_address - 1;
 
+/* Count number of instances */
+  if ((ipc_key = ftok("/root", 0x1234)) == -1)
+      return ERR_OPEN_PIPE;
+  if ((shmid = shmget(ipc_key, 1, IPC_CREAT | 0666)) < 0)
+      return ERR_OPEN_PIPE;
+  if ((shmaddr = shmat(shmid, NULL, 0)) == (int *)-1)
+      return ERR_OPEN_PIPE;
+  ref_cnt++;
+
+  /* Automatic setting: if port #1 is already used, bind to port #2 */
+  if(ref_cnt == 2 && p == 0)
+      p = 1;
+  
   /* Check if the pipes already exist else create them */
   if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) {
     mkfifo(fifo_names[0], O_RDONLY | O_WRONLY | O_NONBLOCK | S_IRWXU);
@@ -93,9 +112,8 @@ int tie_init()
   if ((wr[p] = open(fifo_names[2 * (p) + 1], O_WRONLY | O_NONBLOCK)) == -1) {
     return ERR_OPEN_PIPE;
   }
-  ref_cnt++;
   START_LOGGING();
-
+ 
   return 0;
 }
 
@@ -117,7 +135,16 @@ int tie_exit()
     }
     wr[p] = 0;
   }
+
   ref_cnt--;
+  if (!ref_cnt)
+  {
+      struct shmid_ds shmid_ds;
+      shmdt(shmaddr);
+      shmctl(shmid, IPC_RMID, &shmid_ds);
+  }
+  else
+      shmdt(shmaddr);
 
   return 0;
 }
@@ -150,10 +177,10 @@ int tie_put(uint8_t data)
   struct stat s;
 
   tdr.count++;
+
   /* Check if the other pipe is used */
-  /* if(ref_cnt < 2)
-     return ERR_OPP_NOT_AVAIL;
-   */
+  if(ref_cnt < 2)
+     return 0;
 
   LOG_DATA(data);
   /* Transfer rate modulation */
@@ -186,6 +213,10 @@ int tie_get(uint8_t * data)
   static int n = 0;
   tiTIME clk;
 
+  /* Check if the other pipe is used */
+  if(ref_cnt < 2)
+      return 0;
+
   // Read the uint8_t in a defined delay
   toSTART(clk);
   do {
@@ -210,6 +241,10 @@ int tie_check(int *status)
   fd_set rdfs;
   struct timeval tv;
   int retval;
+
+  /* Check if the other pipe is used */
+  if(ref_cnt < 2)
+      return 0;
 
   *status = STATUS_NONE;
 

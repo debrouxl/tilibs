@@ -8,6 +8,11 @@ Checking: valgrind & splint
 	
 Log:
 
+- 07/08:2005, version 3.9.6: roms
+	Added count number of TiEmu VL instances so that read are non-blocking
+	if the other side is not present.
+	Automatically bind TiEmu to port #2 if port #1 is already in use.
+
 - 29/07/2005, version 3.9.5: roms
 	Added ticable_link_reset function (needed by TiEmu for proper operation and present
 	in ticables2).
