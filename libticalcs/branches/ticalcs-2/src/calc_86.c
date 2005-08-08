@@ -392,12 +392,12 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	const char *prgname = "romdump.86p";
 	FILE *f;
 	int err;
-	uint16_t keys[] = { 
-		0x76, 0x08, 0x08, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
-        0x83, 0x39, 0x36, 0x34,     /* prgm, R, O, M */
-        0x2B, 0x56, 0x4E, 0x51,     /* D, u, m, p */
-		0x86, 0x12					/* ), Enter */
-	};               
+	//uint16_t keys[] = { 
+	//    0x76, 0x08, 0x08, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
+	//    0x83, 0x39, 0x36, 0x34,     /* prgm, R, O, M */
+	//    0x2B, 0x56, 0x4E, 0x51,     /* D, u, m, p */
+	//    0x86, 0x12					/* ), Enter */
+	//};               
 
 	// Copies ROM dump program into a file
 	f = fopen(prgname, "wb");

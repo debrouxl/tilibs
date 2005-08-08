@@ -24,7 +24,7 @@
 #include <glib.h>
 
 #include "gettext.h"
-#include "export.h"
+#include "export3.h"
 #include "error.h"
 #include "logging.h"
 

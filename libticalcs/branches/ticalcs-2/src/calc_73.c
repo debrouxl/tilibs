@@ -849,12 +849,12 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	for(i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
-		uint32_t block_size;
+		uint16_t block_size;
 
 		TRYF(ti73_send_CTS());
 		TRYF(ti73_recv_ACK(NULL));
 
-		err = ti73_recv_XDP((uint16_t *)&block_size, content->data_part);
+		err = ti73_recv_XDP(&block_size, content->data_part);
 		TRYF(ti73_send_ACK());
 
 		content->data_length += block_size;

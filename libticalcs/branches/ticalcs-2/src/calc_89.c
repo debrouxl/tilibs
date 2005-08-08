@@ -559,7 +559,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
 	int i, nblocks;
-	int nheaders = 0;
 
 	// send all headers except license
 	for(ptr = content; ptr != NULL; ptr = ptr->next)
