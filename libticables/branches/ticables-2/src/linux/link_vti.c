@@ -52,9 +52,9 @@
 /* Circular buffer (O: TIEmu, 1: TiLP) */
 typedef struct
 {
-  uint8_t buf[BUF_SIZE];
-  int start;
-  int end;
+    uint8_t buf[BUF_SIZE];
+    int start;
+    int end;
 } LinkBuffer;
 
 /* Shm variables */
@@ -65,158 +65,151 @@ static LinkBuffer *shm[2];	// Shm address
 static LinkBuffer* send_buf[2];	// Swapped buffer
 static LinkBuffer* recv_buf[2];
 
-static int p = 0;		// a shortcut
-
 static int vti_prepare(CableHandle *h)
 {
-	// in fact, address & device are unused
-	switch(h->port)
-	{
-	case PORT_0:	// automatic setting
-		h->address = ref_cnt;
-		break;
-	case PORT_1:	// forced setting, for compatibility
-	case PORT_3: 
-		h->address = 0; h->device = strdup("0->1"); 
-		break;
-	case PORT_2:
-	case PORT_4:
-		h->address = 1; h->device = strdup("1->0"); 
-		break;
-	default: return ERR_ILLEGAL_ARG;
-	}
-
-		return 0;
+    // in fact, address & device are unused
+    switch(h->port)
+    {
+    case PORT_0:	// automatic setting
+	h->address = 0; //ref_cnt;
+	break;
+    case PORT_1:	// forced setting, for compatibility
+    case PORT_3: 
+	h->address = 0; h->device = strdup("0->1"); 
+	break;
+    case PORT_2:
+    case PORT_4:
+	h->address = 1; h->device = strdup("1->0"); 
+	break;
+    default: return ERR_ILLEGAL_ARG;
+    }
+    
+    return 0;
 }
 
 static int vti_open(CableHandle *h)
 {
-	int p = h->address;
-	int i;
-
-	if ((h->address < 1) || (h->address > 2)) 
+    int i;
+    
+    /* Get a unique (if possible) key */
+    for (i = 0; i < 2; i++) 
+    {
+	if ((ipc_key[i] = ftok("/tmp", i)) == -1) 
 	{
-		ticables_warning("invalid h->address (bad port).\n");
-		return ERR_ILLEGAL_ARG;
-		h->address = 1;
+	    ticables_warning("unable to get unique key (ftok).\n");
+	    return ERR_VTI_IPCKEY;
 	}
-
-	/* Get a unique (if possible) key */
-	for (i = 0; i < 2; i++) 
+    }
+    
+    /* Open a shared memory segment */
+    for (i = 0; i < 2; i++) 
+    {
+	if ((shmid[i] = shmget(ipc_key[i], sizeof(LinkBuffer), 
+			       IPC_CREAT | 0666)) == -1) 
 	{
-		if ((ipc_key[i] = ftok("/tmp", i)) == -1) 
-		{
-			ticables_warning("unable to get unique key (ftok).\n");
-			return ERR_VTI_IPCKEY;
-		}
+	    ticables_warning("unable to open shared memory (shmget).\n");
+	    return ERR_VTI_SHMGET;
 	}
-
-	/* Open a shared memory segment */
-	for (i = 0; i < 2; i++) 
+    }
+    
+    /* Attach the shm */
+    for (i = 0; i < 2; i++) 
+    {
+	if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) 
 	{
-		if ((shmid[i] = shmget(ipc_key[i], sizeof(LinkBuffer), IPC_CREAT | 0666)) == -1) 
-		{
-			ticables_warning("unable to open shared memory (shmget).\n");
-			return ERR_VTI_SHMGET;
-		}
+	    ticables_warning("unable to attach shared memory (shmat).\n");
+	    return ERR_VTI_SHMAT;
 	}
+    }
+    
+    /* Swap shm */
+    send_buf[0] = shm[0];		// 0 -> 1: writing
+    recv_buf[0] = shm[1];		// 0 <- 1: reading
+    send_buf[1] = shm[1];		// 1 -> 0: writing
+    recv_buf[1] = shm[0];		// 1 <- 0: reading
 
-	/* Attach the shm */
-	for (i = 0; i < 2; i++) 
-	{
-		if ((shm[i] = shmat(shmid[i], NULL, 0)) == NULL) 
-		{
-			ticables_warning("unable to attach shared memory (shmat).\n");
-			return ERR_VTI_SHMAT;
-		}
-	}
-
-	/* Swap shm */
-	send_buf[0] = shm[0];		// 0 -> 1: writing
-	recv_buf[0] = shm[1];		// 0 <- 1: reading
-	send_buf[1] = shm[1];		// 1 -> 0: writing
-	recv_buf[1] = shm[0];		// 1 <- 0: reading
-
-	return 0;
+    return 0;
 }
 
 static int vti_close(CableHandle *h)
 {
-	int i;
-
-	/* Detach segment */
-	for (i = 0; i < 2; i++) 
-	{
-		if (shmdt(shm[i]) == -1) 
-		{
-			ticables_warning("shmdt\n");
-			return ERR_VTI_SHMDT;
-		}
+    int i;
     
-		/* and destroy it */
-		if (shmctl(shmid[i], IPC_RMID, NULL) == -1) 
-		{
-			ticables_warning("shmctl\n");
-			return ERR_VTI_SHMCTL;
-		}
+    /* Detach segment */
+    for (i = 0; i < 2; i++) 
+    {
+	if (shmdt(shm[i]) == -1) 
+	{
+	    ticables_warning("shmdt\n");
+	    return ERR_VTI_SHMDT;
 	}
-
-	return 0;
+	
+	/* and destroy it */
+	if (shmctl(shmid[i], IPC_RMID, NULL) == -1) 
+	{
+	    ticables_warning("shmctl\n");
+	    return ERR_VTI_SHMCTL;
+	}
+    }
+    
+    return 0;
 }
 
 static int vti_reset(CableHandle *h)
 {
 	int i;
-
+	
 	for (i = 0; i < 2; i++) 
-		shm[i]->start = shm[i]->end = 0;
-
+	    shm[i]->start = shm[i]->end = 0;
+	
 	return 0;
 }
 
 static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
-	tiTIME clk;
-
-	for(i = 0; i < len; i++)
+    int p = h->address;
+    int i;
+    tiTIME clk;
+    
+    for(i = 0; i < len; i++)
+    {
+	TO_START(clk);
+	do 
 	{
-		TO_START(clk);
-		do 
-		{
-			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_WRITE_TIMEOUT;
-		}
-		while (((send_buf[p]->end + 1) & 255) == send_buf[p]->start);
-
-		send_buf[p]->buf[send_buf[p]->end] = data[i];
-		send_buf[p]->end = (send_buf[p]->end + 1) & 255;
+	    if (TO_ELAPSED(clk, h->timeout))
+		return ERR_WRITE_TIMEOUT;
 	}
-
-	return 0;
+	while (((send_buf[p]->end + 1) & 255) == send_buf[p]->start);
+	
+	send_buf[p]->buf[send_buf[p]->end] = data[i];
+	send_buf[p]->end = (send_buf[p]->end + 1) & 255;
+    }
+    
+    return 0;
 }
 
 static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
-	int i;
-	tiTIME clk;
-
-	for(i = 0; i < len; i++)
+    int p = h->address;
+    int i;
+    tiTIME clk;
+    
+    for(i = 0; i < len; i++)
+    {
+	TO_START(clk);
+	do 
 	{
-		TO_START(clk);
-		do 
-		{
-			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_READ_TIMEOUT;
-		}
-		while (recv_buf[p]->start == recv_buf[p]->end);
-
-
-		data[i] = recv_buf[p]->buf[recv_buf[p]->start];
-		recv_buf[p]->start = (recv_buf[p]->start + 1) & 255;
+	    if (TO_ELAPSED(clk, h->timeout))
+		return ERR_READ_TIMEOUT;
 	}
-
-	return 0;
+	while (recv_buf[p]->start == recv_buf[p]->end);
+	
+	
+	data[i] = recv_buf[p]->buf[recv_buf[p]->start];
+	recv_buf[p]->start = (recv_buf[p]->start + 1) & 255;
+    }
+    
+    return 0;
 }
 
 static int vti_probe(CableHandle *h)
@@ -226,8 +219,9 @@ static int vti_probe(CableHandle *h)
 
 static int vti_check(CableHandle *h, int *status)
 {
-	*status = !(recv_buf[p]->start == recv_buf[p]->end);
-	return 0;
+    int p = h->address;
+    *status = !(recv_buf[p]->start == recv_buf[p]->end);
+    return 0;
 }
 
 static int vti_set_red_wire(CableHandle *h, int b)

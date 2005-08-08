@@ -28,7 +28,7 @@
 #include <errno.h>
 
 #include "gettext.h"
-#include "export.h"
+#include "export1.h"
 #include "error.h"
 #include "logging.h"
 
