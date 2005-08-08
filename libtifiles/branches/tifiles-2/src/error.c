@@ -22,7 +22,7 @@
 #include <glib.h>
 #include <string.h>
 #include "gettext.h"
-#include "export.h"
+#include "export2.h"
 #include "error.h"
 #include "logging.h"
 

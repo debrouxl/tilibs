@@ -617,7 +617,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
 {
   FILE *f;
-  uint16_t sum = 0;
   uint16_t data_length;
 
   f = fopen(filename, "wb");
