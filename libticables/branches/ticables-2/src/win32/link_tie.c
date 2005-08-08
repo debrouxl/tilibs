@@ -141,6 +141,9 @@ static int tie_close(CableHandle *h)
 
 static int tie_reset(CableHandle *h)
 {
+	if(ref_cnt < 2)
+     return 0;
+
 	if(!hSendBuf) return 0;
 	if(!hRecvBuf) return 0;
 
@@ -162,6 +165,9 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	unsigned int i;
 	tiTIME clk;
+
+	if(ref_cnt < 2)
+     return 0;
 
 	if(!hSendBuf) return 0;
 	assert(pSendBuf);
@@ -188,6 +194,9 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
+	if(ref_cnt < 2) 
+		return 0;
+
 	if(!hRecvBuf) return 0;
 	assert(pRecvBuf);
 
@@ -210,6 +219,9 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int tie_check(CableHandle *h, int *status)
 {
+	if(ref_cnt < 2)
+     return 0;
+
 	if(!hRecvBuf) return 0;
 	assert(pRecvBuf);
 

@@ -50,8 +50,10 @@
 #define HIGH 666		// upper limit (used for avoiding timeout)
 #define LOW  333		// lower limit
 
-static int p;
-static int ref_cnt = 0;		// Counter of library instances
+static key_t ipc_key;
+static int   shmid;
+static int*  shmaddr;
+#define ref_cnt (*shmaddr) // counter of instances
 
 static int rd[2] = { 0, 0 };	// Pipe 0 <- 1 or 1 <- 0
 static int wr[2] = { 0, 0 };	// Pipe 0 -> 1 or 1 -> 0
@@ -63,19 +65,42 @@ static const char fifo_names[4][256] = {
 
 static int tie_prepare(CableHandle *h)
 {
-	h->address = 0;
-	h->device = strdup("");
+	// in fact, address & device are unused
+	switch(h->port)
+	{
+	case PORT_0:	// automatic setting
+		h->address = ref_cnt;
+		break;
+	case PORT_1:	// forced setting, for compatibility
+	case PORT_3: 
+		h->address = 0; h->device = strdup("0->1"); 
+		break;
+	case PORT_2:
+	case PORT_4:
+		h->address = 1; h->device = strdup("1->0"); 
+		break;
+	default: return ERR_ILLEGAL_ARG;
+	}
 
 	return 0;
 }
 
 static int tie_open(CableHandle *h)
 {
+	int p = h->address;
+
     if ((h->address < 1) || (h->address > 2)) {
 	ticables_warning(_("Invalid h->address parameter passed to libCables.\n"));
-    h->address = 2;
+    h->address = 1;
     }
-    p = h->address - 1;
+
+	if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
+      return ERR_OPEN_PIPE;
+	if ((shmid = shmget(ipc_key, 1, IPC_CREAT | 0666)) < 0)
+      return ERR_OPEN_PIPE;
+	if ((shmaddr = shmat(shmid, NULL, 0)) == (int *)-1)
+      return ERR_OPEN_PIPE;
+	ref_cnt++;
     
     /* Check if the pipes already exist else create them */
     if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) {
@@ -99,13 +124,14 @@ static int tie_open(CableHandle *h)
     {
 	return ERR_TIE_OPEN;
     }
-    ref_cnt++;
 
   return 0;
 }
 
 static int tie_close(CableHandle *h)
 {
+	int p = h->address;
+
     if (rd[p]) 
     {
 	/* Close the pipe */
@@ -123,7 +149,16 @@ static int tie_close(CableHandle *h)
 	}
 	wr[p] = 0;
     }
-    ref_cnt--;
+    
+	ref_cnt--;
+  if (!ref_cnt)
+  {
+      struct shmid_ds shmid_ds;
+      shmdt(shmaddr);
+      shmctl(shmid, IPC_RMID, &shmid_ds);
+  }
+  else
+      shmdt(shmaddr);
     
     return 0;
 }
@@ -132,6 +167,9 @@ static int tie_reset(CableHandle *h)
 {
     uint8_t d;
     int n;
+
+	if(ref_cnt < 2)
+     return 0;
     
     /* Flush the pipe */
     do 
@@ -147,6 +185,9 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
     int n = 0;
     tiTIME clk;
     struct stat s;
+
+	if(ref_cnt < 2)
+     return 0;
     
     /* Transfer rate modulation */
     TO_START(clk);
@@ -177,6 +218,9 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     static int n = 0;
     tiTIME clk;
+
+	if(ref_cnt < 2)
+     return 0;
     
     // Read the uint8_t in a defined delay
     TO_START(clk);
@@ -204,6 +248,9 @@ static int tie_check(CableHandle *h, int *status)
     fd_set rdfs;
     struct timeval tv;
     int retval;
+
+	if(ref_cnt < 2)
+     return 0;
     
     *status = STATUS_NONE;
     

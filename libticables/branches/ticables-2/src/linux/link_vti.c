@@ -58,8 +58,8 @@ typedef struct
 } LinkBuffer;
 
 /* Shm variables */
-static key_t ipc_key[2];// IPC key
-static int shmid[2];	// Shm ID
+static key_t ipc_key[2];	// IPC key
+static int shmid[2];		// Shm ID
 static LinkBuffer *shm[2];	// Shm address
 
 static LinkBuffer* send_buf[2];	// Swapped buffer
@@ -69,23 +69,37 @@ static int p = 0;		// a shortcut
 
 static int vti_prepare(CableHandle *h)
 {
-		h->address = 0;
-		h->device = strdup("");
+	// in fact, address & device are unused
+	switch(h->port)
+	{
+	case PORT_0:	// automatic setting
+		h->address = ref_cnt;
+		break;
+	case PORT_1:	// forced setting, for compatibility
+	case PORT_3: 
+		h->address = 0; h->device = strdup("0->1"); 
+		break;
+	case PORT_2:
+	case PORT_4:
+		h->address = 1; h->device = strdup("1->0"); 
+		break;
+	default: return ERR_ILLEGAL_ARG;
+	}
 
 		return 0;
 }
 
 static int vti_open(CableHandle *h)
 {
+	int p = h->address;
 	int i;
 
 	if ((h->address < 1) || (h->address > 2)) 
 	{
 		ticables_warning("invalid h->address (bad port).\n");
 		return ERR_ILLEGAL_ARG;
-		h->address = 2;
+		h->address = 1;
 	}
-	p = h->address - 1;
 
 	/* Get a unique (if possible) key */
 	for (i = 0; i < 2; i++) 
