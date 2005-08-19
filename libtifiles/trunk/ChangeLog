@@ -9,7 +9,7 @@ Log:
 	Fixed new gcc4.0 warnings.
 	
 - 25/05/2005, version 0.6.5: roms
-	Fixed detection of TI file signaure (not case sensitive).
+	Fixed detection of TI file signature (not case sensitive).
 
 - 04/05/2005, version 0.6.4: roms
 	Make loading of FLASH OS more robust against file 'garbaged' by TI !
