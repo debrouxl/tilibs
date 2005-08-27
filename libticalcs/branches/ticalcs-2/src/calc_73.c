@@ -592,6 +592,24 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		send_key(handle, keys[i]);
 		PAUSE(200);
 	}
+	else
+	{
+		// else wait for user's action
+		sprintf(handle->updat->text, _("Waiting user's action..."));
+		handle->updat->label();
+
+		do
+		{
+			handle->updat->refresh();
+			if (handle->updat->cancel)
+				return ERR_ABORT;
+			
+			//send RDY request ???
+			PAUSE(1000);
+			err = rom_dump_ready(handle);
+		}
+		while (err == ERROR_READ_TIMEOUT);
+	}
 
 	// Get dump
 	f = fopen(filename, "wb");
@@ -758,9 +776,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(ti73_recv_XDP(&length, buf));
     TRYF(ti73_send_ACK());
 
-	ticalcs_info(_("  OS: %i.%2i"), buf[0], buf[1]);
-	ticalcs_info(_("  BIOS: %i.%2i"), buf[2], buf[3]);
-
 	memset(infos, 0, sizeof(CalcInfos));
 	infos->os[0] = buf[0] + '0';
 	infos->os[1] = '.';
@@ -773,6 +788,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->bios[2] = MSN(buf[3]) + '0';
 	infos->bios[3] = LSN(buf[3]) + '0';
 	infos->bios[4] = '\0';
+
+	infos->battery = !buf[4];
+
+	tifiles_hexdump(buf, length);
+	ticalcs_info(_("  OS: %s"), infos->os);
+	ticalcs_info(_("  BIOS: %s"), infos->bios);
+	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "log");
 
 	return 0;
 }
@@ -877,9 +899,8 @@ const CalcFncts calc_73 =
 	"TI73",
 	N_("TI-73"),
 	N_("TI-73"),
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | /*OPS_BACKUP |*/ OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -912,8 +933,7 @@ const CalcFncts calc_83p =
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -946,8 +966,7 @@ const CalcFncts calc_84p =
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
