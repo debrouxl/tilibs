@@ -161,7 +161,7 @@ char *TICALL tifiles_get_fldname(const char *full_name)
   {
     i = strlen(full_name) - strlen(bs);
     strncpy(folder, full_name, i);
-    folder[i + 1] = '\0';
+    folder[i] = '\0';
   }
   return folder;
 }

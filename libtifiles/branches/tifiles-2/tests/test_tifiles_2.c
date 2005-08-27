@@ -403,11 +403,11 @@ static int test_ti73_regular_support()
   char *unused;
 
   printf("--> Testing TI73 regular support (single)...\n");
-  tifiles_file_display(BUILD_PATH("ti73/math.73p"));
-  tifiles_file_read_regular(BUILD_PATH("ti73/math.73p"), &content);
-  tifiles_file_write_regular(BUILD_PATH("ti73/math.73p_"), &content, &unused);
+  tifiles_file_display(BUILD_PATH("ti73/romdump.73p"));
+  tifiles_file_read_regular(BUILD_PATH("ti73/romdump.73p"), &content);
+  tifiles_file_write_regular(BUILD_PATH("ti73/romdump.73p_"), &content, &unused);
   tifiles_content_delete_regular(&content);
-  compare_files(BUILD_PATH("ti73/math.73p"), BUILD_PATH("ti73/math.73p_"));
+  compare_files(BUILD_PATH("ti73/romdump.73p"), BUILD_PATH("ti73/romdump.73p_"));
 
   printf("--> Testing TI73 regular support (group)...\n");
   tifiles_file_display(BUILD_PATH("ti73/group.73g"));  
@@ -421,19 +421,19 @@ static int test_ti73_regular_support()
 
 static int test_ti73_group_support()
 {
-  //char *array[] = { "ti73/aa.73n", "ti73/bb.73n", NULL };
+  //char *array[] = { "ti73/L1.73l", "ti73/bb.73l", NULL };
   char files[2][1024];
   char *array[3] = { 0 };
 
-  strcpy(files[0], BUILD_PATH("ti73/aa.73n"));
-  strcpy(files[1], BUILD_PATH("ti73/bb.73n"));
+  strcpy(files[0], BUILD_PATH("ti73/L1L1.73l"));
+  strcpy(files[1], BUILD_PATH("ti73/L2L2.73l"));
   array[0] = files[0];
   array[1] = files[1];
   
   printf("--> Testing TI73 grouping of files...\n");
-  tifiles_group_files(array, BUILD_PATH("ti73/aabb.73g_"));
-  tifiles_file_display(BUILD_PATH("ti73/aabb.73g_"));
-  compare_files(BUILD_PATH("ti73/group.73g"), BUILD_PATH("ti73/aabb.73g_"));
+  tifiles_group_files(array, BUILD_PATH("ti73/L1L2.73g_"));
+  tifiles_file_display(BUILD_PATH("ti73/L1L2.73g_"));
+  compare_files(BUILD_PATH("ti73/group.73g"), BUILD_PATH("ti73/L1L2.73g_"));
   
   return 0;
 }
@@ -442,10 +442,10 @@ static int test_ti73_ungroup_support()
 {
   printf("--> Testing TI73 ungrouping of files...\n");
   tifiles_ungroup_file(BUILD_PATH("ti73/group.73g"), NULL);
-  move_file("A.73n", "ti73/A.73n");
-  move_file("B.73n", "ti73/B.73n");
-  compare_files(BUILD_PATH("ti73/A.73n"), BUILD_PATH("ti73/aa.73n"));
-  compare_files(BUILD_PATH("ti73/B.73n"), BUILD_PATH("ti73/bb.73n"));
+  move_file("L1.73l", "ti73/L1.73l");
+  move_file("L2.73l", "ti73/L2.73l");
+  compare_files(BUILD_PATH("ti73/L1.73l"), BUILD_PATH("ti73/L1L1.73l"));
+  compare_files(BUILD_PATH("ti73/L2.73l"), BUILD_PATH("ti73/L2L2.73l"));
 
   return 0;
 }

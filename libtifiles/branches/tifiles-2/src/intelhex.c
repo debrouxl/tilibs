@@ -30,7 +30,7 @@
 #include "stdints.h"
 #include "macros.h"
 #include "intelhex.h"
-#include "export.h"
+#include "export2.h"
 
 /* Constants */
 

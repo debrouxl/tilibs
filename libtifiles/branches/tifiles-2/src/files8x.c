@@ -49,7 +49,7 @@
 /********/
 
 static uint8_t fsignature85[3] = { 0x1A, 0x0C, 0x00 };	//TI85
-static uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI82, 83, 86
+static uint8_t fsignature8x[3] = { 0x1A, 0x0A, 0x00 };	//TI73, 82, 83, 86
 
 
 static int is_ti8586(CalcModel model)
@@ -220,10 +220,8 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
   fread_word(f, &(content->checksum));
 
-  /*
   if(sum != content->checksum)
 	  return ERR_FILE_CHECKSUM;
-	  */
 
   fclose(f);
 
@@ -525,7 +523,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   {
     VarEntry *entry = content->entries[i];
 
-	if(content->model == CALC_TI82)
+	if(content->model == CALC_TI82 || content->model == CALC_TI73)
       data_length += entry->size + 15;
 	if(content->model == CALC_TI83)
       data_length += entry->size + 15;
@@ -559,6 +557,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 	  case CALC_TI84P_USB:
 		packet_length = 0x0D;
 		break;
+	  case CALC_TI73:
 	  case CALC_TI82:
 	  case CALC_TI83:
 		packet_length = 0x0B;
