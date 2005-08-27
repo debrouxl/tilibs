@@ -200,9 +200,13 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   {
     TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer));
   } 
-  else 
+  else if(vartype != TI83p_GETCERT && handle->model != CALC_TI73)
   {
     TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11, buffer));
+  }
+  else
+  {
+	  TRYF(dbus_send(handle, PC_TI73, CMD_REQ, 3, buffer));
   }
 
   return 0;

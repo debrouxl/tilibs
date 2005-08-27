@@ -274,7 +274,7 @@ int ti89_send_DEL_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   memcpy(buffer + 6, varname, strlen(varname));
 
   len = 6 + strlen(varname);
-  tifiles_hexdump(buffer, 16);
+  //tifiles_hexdump(buffer, 16);
 
   ticalcs_info(" PC->TI: DEL (size=0x%08X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, varname);

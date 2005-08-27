@@ -857,6 +857,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	TRYF(ti89_send_EOT());
 	TRYF(ti89_recv_ACK(NULL));
 
+	PAUSE(250);
+
 	// delete 'a1234567' variable
 	strcpy(vr->name, "a1234567");
 	TRYF(del_var(handle, vr));
@@ -878,10 +880,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(ti89_recv_XDP(&length, buf));
     TRYF(ti89_send_ACK());
 
-	ticalcs_info(_("  OS: %i.%2i"), buf[0], buf[1]);
-	ticalcs_info(_("  BIOS: %i.%2i"), buf[2], buf[3]);
-	ticalcs_info(_("  Battery: %s"), buf[4] ? "low" : "good");
-
 	memset(infos, 0, sizeof(CalcInfos));
 	infos->os[0] = buf[0] + '0';
 	infos->os[1] = '.';
@@ -898,6 +896,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->battery = !buf[4];
 	infos->hw_rev  = buf[5];
 	infos->hw_id   = buf[13];
+
+	tifiles_hexdump(buf, length);
+	ticalcs_info(_("  OS: %s"), infos->os);
+	ticalcs_info(_("  BIOS: %s"), infos->bios);
+	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "log");
 
 	return 0;
 }
