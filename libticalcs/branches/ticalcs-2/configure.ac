@@ -37,8 +37,8 @@ AC_CONFIG_FILES([
   po/Makefile.in
   src/Makefile
   tests/Makefile
-  libticalcs.lsm
-  libticalcs.spec
+  libticalcs2.lsm
+  libticalcs2.spec
   ticalcs2.pc
 ])
 
