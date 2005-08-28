@@ -160,7 +160,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   update->cnt2++;
     update->pbar();
 
-	//TRYF(ti85_send_EOT());
+  //TRYF(ti82_send_EOT());
 
   return 0;
 }
@@ -377,11 +377,11 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 	// Transfer program to calc
 	handle->busy = 0;
-	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
+	TRYF(ticalcs_calc_send_var2(handle, MODE_SEND_ONE_VAR, prgname));
 	unlink(prgname);
 
 	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting user's action..."));
+	sprintf(handle->updat->text, _("Waiting execing of program..."));
 	handle->updat->label();
 
 	do
