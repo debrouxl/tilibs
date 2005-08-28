@@ -176,9 +176,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   strcpy(content->comment, tifiles_comment_set_backup());
 
   TRYF(ti82_recv_VAR(&(content->data_length1), &content->type, varname));
-  content->data_length2 = varname[0] | (varname[1] << 8);
-  content->data_length3 = varname[2] | (varname[3] << 8);
-  content->mem_address = varname[4] | (varname[5] << 8);
+  content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
+  content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
+  content->mem_address  = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
   TRYF(ti82_send_ACK());
 
   TRYF(ti82_send_CTS());
@@ -379,6 +379,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	handle->busy = 0;
 	TRYF(ticalcs_calc_send_var2(handle, MODE_SEND_ONE_VAR, prgname));
 	unlink(prgname);
+	PAUSE(1000);
 
 	// Wait for user's action (execing program)
 	sprintf(handle->updat->text, _("Waiting execing of program..."));
