@@ -74,9 +74,8 @@ int bsd_get_method(TicableType type, int resources, TicableMethod *method)
 		break;
 
 	case LINK_AVR:
-		if(resources & IO_API) {
-			*method |= IOM_API | IOM_OK;	
-		}
+		printl1(2, "AVR link support has been removed !\n");
+		return ERR_ILLEGAL_ARG;
 		break;
 
 	case LINK_SER:
@@ -114,6 +113,7 @@ int bsd_get_method(TicableType type, int resources, TicableMethod *method)
 
 	case LINK_TIE:
 	case LINK_VTI:
+	case LINK_VTL:
  		*method |= IOM_API | IOM_OK;
 		break;
 
@@ -212,6 +212,9 @@ int bsd_register_cable(TicableType type, TicableLinkCable *lc)
 	ret = bsd_map_io((TicableMethod)method, port);
 	if(ret)
 		return ret;
+
+        // set fields to default values
+        nul_register_cable(lc);
 	
 	// set the link cable
 	printl1(0, _("registering cable...\n"));
@@ -245,13 +248,7 @@ int bsd_register_cable(TicableType type, TicableLinkCable *lc)
 		break;
 
     	case LINK_AVR:
-      		if ((port != SERIAL_PORT_1) &&
-	  		(port != SERIAL_PORT_2) &&
-	  		(port != SERIAL_PORT_3) &&
-	  		(port != SERIAL_PORT_4) && (port != USER_PORT))
 		return ERR_INVALID_PORT;
-
-		avr_register_cable(lc);
 		break;
 
     	case LINK_VTL:
