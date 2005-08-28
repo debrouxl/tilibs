@@ -120,8 +120,9 @@ int dusb_recv_handskake_response(CalcHandle *h)
 
 int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t* data)
 {
-	int r, q;
 /*
+	int r, q;
+
 	q = (length + 6) / BLK_SIZE;
 	r = (length + 6) % BLK_SIZE;
 */

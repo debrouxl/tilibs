@@ -356,8 +356,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *ve;
 
-		content->entries = realloc(content->entries, nvar * sizeof(VarEntry*));
-		ve = content->entries[nvar-1];
+		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
+		ve = content->entries[nvar-1] = tifiles_ve_create();;
 		strcpy(ve->folder, "main");	
 
 		err = ti92_recv_VAR(&ve->size, &ve->type, tipath);
@@ -394,7 +394,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	}
 
 exit:
-	// write file content
 	nvar--;
 
 	return 0;

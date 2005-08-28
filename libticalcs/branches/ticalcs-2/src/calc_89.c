@@ -512,7 +512,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	{
 		VarEntry *ve;
 
-		content->entries = realloc(content->entries, nvar * sizeof(VarEntry*));
+		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
 		ve = content->entries[nvar-1];
 		strcpy(ve->folder, "main");	
 
