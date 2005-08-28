@@ -282,7 +282,7 @@ int main(int argc, char **argv)
 	// test filesxx.c & grouped.c
 
 	// TI73 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti73"));
 	test_ti73_backup_support();
 	test_ti73_regular_support();
@@ -325,7 +325,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI86 support
-#if 0
+#if 1
 	change_dir(BUILD_PATH("ti86"));
 	test_ti86_backup_support();
 	test_ti86_regular_support();

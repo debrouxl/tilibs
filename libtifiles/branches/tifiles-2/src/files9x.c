@@ -150,7 +150,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   fseek(f, next_offset - 2, SEEK_SET);
   fread_word(f, &(content->checksum));
 
-  //if(sum != content->checksum) return ERR_FILE_CHECKSUM;
+  if(sum != content->checksum) 
+	  return ERR_FILE_CHECKSUM;
 
   fclose(f);
 
