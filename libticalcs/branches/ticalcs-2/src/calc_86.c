@@ -394,10 +394,11 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	FILE *f;
 	int err;
 	//uint16_t keys[] = { 
-	//    0x76, 0x08, 0x08, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
-	//    0x83, 0x39, 0x36, 0x34,     /* prgm, R, O, M */
-	//    0x2B, 0x56, 0x4E, 0x51,     /* D, u, m, p */
-	//    0x86, 0x12					/* ), Enter */
+	//    0x76, 0x08, 0x08, 		/* Quit, Clear, Clear,	*/
+	//	  0x28, 0x3A, 0x34,	0x11,	/* A, S, M, (,			*/
+	//    0x39, 0x36, 0x34, 0x2B,   /* R, O, M, D	*/
+	//    0x56, 0x4E, 0x51, 0x12,	/* u, m, p, )	*/
+	//    0x06						/* Enter		*/
 	//};               
 
 	// Copies ROM dump program into a file
