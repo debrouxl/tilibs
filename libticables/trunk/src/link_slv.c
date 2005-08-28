@@ -27,12 +27,14 @@
 
 
 #if defined(__LINUX__)
+static int max_ps = 32; // max packet size (32 or 64)
 #include "linux/slv_link.c"
 #if defined(HAVE_LIBUSB)
 #include "linux/slv_link2.c"
 #endif
 
 #elif defined(__BSD__)
+static int max_ps = 32; // max packet size (32 or 64)
 #include "linux/slv_link2.c"
 
 #elif defined(__WIN32__)

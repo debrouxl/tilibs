@@ -78,7 +78,7 @@
 #define BUFFERED_W    /* enable buffered write operations	  */ 
 #define BUFFERED_R    /* enable buffered read operations (always) */
 
-static int max_ps = 32;  // max packet size (32 ot 64)
+/* max_ps defined in src/link_slv.c */
 
 static int nBytesWrite = 0;
 static uint8_t *wBuf = NULL;

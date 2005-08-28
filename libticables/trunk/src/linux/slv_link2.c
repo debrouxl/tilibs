@@ -111,7 +111,7 @@ static usb_dev_infos tiglusb_infos[] = {
         {}
 };
 
-//static int max_ps = 32;  // max packet size (32 ot 64)
+/* max_ps defined in src/link_slv.c */
 
 static int nBytesWrite2 = 0;
 static uint8_t *wBuf2 = NULL;
