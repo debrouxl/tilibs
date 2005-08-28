@@ -113,7 +113,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   TRYF(ti85_recv_ACK(&status));
 
   do 
-  {				// wait user's action
+  {				
+	  // wait user's action
     update_refresh();
 
     if (update->cancel)
@@ -296,7 +297,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   {
     VarEntry *ve;
 
-    content->entries = tifiles_ve_resize_array(content->entries, (nvar + 2));
+    content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
     ve = content->entries[nvar] = tifiles_ve_create();;
 
     do 

@@ -68,8 +68,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI82_ROWS;
 
 	*bitmap = (uint8_t *)malloc(TI82_COLS * TI82_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap != NULL)
-		return ERR_MALLOC;
+	if(*bitmap == NULL)	return ERR_MALLOC;
 
 	TRYF(ti82_send_SCR());
 	TRYF(ti82_recv_ACK(NULL));
@@ -153,11 +152,12 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
   TRYF(ti82_send_XDP(content->data_length2, content->data_part2));
   TRYF(ti82_recv_ACK(&status));
+  update->cnt2++;
     update->pbar();
-
 
   TRYF(ti82_send_XDP(content->data_length3, content->data_part3));
   TRYF(ti82_recv_ACK(&status));
+  update->cnt2++;
     update->pbar();
 
 	//TRYF(ti85_send_EOT());
@@ -167,7 +167,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	char varname[9] = { 0 };
+  char varname[9] = { 0 };
 
   sprintf(update->text, _("Waiting for backup..."));
   update_label();
@@ -208,7 +208,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
   content->data_part4 = NULL;
 
-	return 0;
+  return 0;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content);
@@ -285,20 +285,20 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
-	int nvar = 0;
+  int nvar = 0;
   int err = 0;
 
   sprintf(update->text, _("Waiting var(s)..."));
   update_label();
 
-	content->model = CALC_TI82;
+  content->model = CALC_TI82;
 
   for (nvar = 0;; nvar++) 
   {
     VarEntry *ve;
 
-    content->entries = realloc(content->entries, (nvar + 2) * sizeof(VarEntry*));
-    ve = content->entries[nvar];
+	content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
+    ve = content->entries[nvar] = tifiles_ve_create();
 
     do 
 	{
@@ -306,7 +306,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       if (update->cancel)
 		return ERR_ABORT;
 
-      err = ti82_recv_VAR((uint16_t *) & (ve->size), &(ve->type), ve->name);
+      err = ti82_recv_VAR((uint16_t *)&(ve->size), &(ve->type), ve->name);
       fixup(ve->size);
     }
     while (err == ERROR_READ_TIMEOUT);
@@ -323,8 +323,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
     update_label();
 
-    ve->data = calloc(ve->size, 1);
-    TRYF(ti82_recv_XDP((uint16_t *) & ve->size, ve->data));
+	ve->data = tifiles_ve_alloc_data(ve->size);
+    TRYF(ti82_recv_XDP((uint16_t *)&(ve->size), ve->data));
     TRYF(ti82_send_ACK());
   }
 

@@ -63,6 +63,7 @@ int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	} 
 	else 
 	{
+
 		TRYF(dbus_send(handle, PC_TI8283, CMD_VAR, 9, buffer));
 	}
 
@@ -160,10 +161,17 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
+
   TRYF(dbus_send(handle, PC_TI8283, CMD_REQ, 11, buffer));
 
   return 0;
 }
+
+
+
+
+
+
 
 
 
@@ -184,6 +192,8 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
+
+
 
   tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
@@ -209,6 +219,7 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint16_t length;
   char trans[9];
 
+
   TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
   if (cmd == CMD_EOT)
@@ -227,6 +238,10 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   *vartype = buffer[2];
   memcpy(varname, buffer + 3, 8);
   varname[8] = '\0';
+
+
+
+
 
 
 
@@ -326,6 +341,7 @@ int ti82_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   uint8_t host, cmd;
   uint8_t *buffer = (uint8_t *)handle->priv2;
   char trans[9];
+
 
   TRYF(dbus_recv(handle, &host, &cmd, varsize, buffer));
 

@@ -762,6 +762,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 	switch(handle->model)
 	{
 	case CALC_TI73:
+	case CALC_TI82:
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:

@@ -553,6 +553,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 }
 
 extern int rom_dump(CalcHandle* h, FILE* f);
+extern int rom_dump_ready(CalcHandle* h);
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
