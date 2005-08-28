@@ -284,7 +284,7 @@ int ti82_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
 
   if (cmd == CMD_CTS) 
   {
-    ticalcs_info("->CTS.");
+    ticalcs_info(" TI->PC: CTS");
     return 0;
   }
 

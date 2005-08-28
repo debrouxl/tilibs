@@ -295,6 +295,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti82_send_XDP(entry->size, entry->data));
 		TRYF(ti82_recv_ACK(&status));
 
+		TRYF(ti82_send_EOT());
 		ticalcs_info("");
   }
 
