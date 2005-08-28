@@ -29,7 +29,7 @@
 
 #include "tifiles.h"
 
-static char comment[64/*41*/];
+static char comment[64];	// 40 bytes max
 
 /**
  * tifiles_comment_set_single:
@@ -44,6 +44,8 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
 	char *str = asctime(localtime(&t));
 
 	sprintf(comment, "Single file dated %s", str);
+	comment[40] = '\0';
+
 	return comment;
 }
 
@@ -60,6 +62,8 @@ time_t t = time(NULL);
 	char *str = asctime(localtime(&t));
 
 	sprintf(comment, "Group file dated %s", str);
+	comment[40] = '\0';
+
 	return comment;
 }
 
@@ -76,5 +80,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 	char *str = asctime(localtime(&t));
 
 	sprintf(comment, "Backup file dated %s", str);
+	comment[40] = '\0';
+
 	return comment;
 }

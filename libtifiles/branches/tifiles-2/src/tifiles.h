@@ -150,7 +150,7 @@ typedef struct
   CalcModel		model;
 
   char			default_folder[9];	// TI9x only
-  char			comment[43];		// Ti8x: 41 max
+  char			comment[43];		// Ti8x: 42 max, Ti9x: 40 max
 
   int			num_entries;
   VarEntry**	entries;
