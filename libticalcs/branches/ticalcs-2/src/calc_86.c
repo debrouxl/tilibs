@@ -237,9 +237,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	strcpy(content->comment, tifiles_comment_set_backup());
 
     TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
-    content->data_length2 = varname[0] | (varname[1] << 8);
-    content->data_length3 = varname[2] | (varname[3] << 8);
-    content->data_length4 = varname[4] | (varname[5] << 8);
+    content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
+    content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
+    content->data_length4 = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
     TRYF(ti85_send_ACK());
 
     TRYF(ti85_send_CTS());
@@ -319,6 +319,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti85_send_XDP(entry->size, entry->data));
 		TRYF(ti85_recv_ACK(&status));
 
+		TRYF(ti85_send_EOT());
 		ticalcs_info("\n");
 	}
 

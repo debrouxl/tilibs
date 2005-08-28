@@ -223,9 +223,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti73_recv_ACK(NULL));
 
 	TRYF(ti73_recv_VAR(&content->data_length1, &content->type, varname, &attr));
-	content->data_length2 = varname[0] | (varname[1] << 8);
-	content->data_length3 = varname[2] | (varname[3] << 8);
-	content->mem_address = varname[4] | (varname[5] << 8);
+	content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
+	content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
+	content->mem_address  = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
 	TRYF(ti73_send_ACK());
 
 	TRYF(ti73_send_CTS());
@@ -297,10 +297,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti73_send_XDP(entry->size, entry->data));
 		TRYF(ti73_recv_ACK(NULL));
 
+		TRYF(ti73_send_EOT());
 		ticalcs_info("");
   }
-
-	TRYF(ti73_send_EOT());
 
 	return 0;
 }
