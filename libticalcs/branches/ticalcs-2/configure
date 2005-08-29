@@ -1962,7 +1962,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                          ac_config_files="$ac_config_files Makefile build/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile libticalcs.lsm libticalcs.spec ticalcs2.pc"
+                                                                      ac_config_files="$ac_config_files Makefile build/Makefile src/Makefile tests/Makefile libticalcs2.lsm libticalcs2.spec ticalcs2.pc"
 
 
 # Setup libtool.
@@ -28797,12 +28797,10 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
-  "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
-  "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "libticalcs.lsm" ) CONFIG_FILES="$CONFIG_FILES libticalcs.lsm" ;;
-  "libticalcs.spec" ) CONFIG_FILES="$CONFIG_FILES libticalcs.spec" ;;
+  "libticalcs2.lsm" ) CONFIG_FILES="$CONFIG_FILES libticalcs2.lsm" ;;
+  "libticalcs2.spec" ) CONFIG_FILES="$CONFIG_FILES libticalcs2.spec" ;;
   "ticalcs2.pc" ) CONFIG_FILES="$CONFIG_FILES ticalcs2.pc" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;

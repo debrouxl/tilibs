@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = build intl po src tests
+SUBDIRS = build src tests
 
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO

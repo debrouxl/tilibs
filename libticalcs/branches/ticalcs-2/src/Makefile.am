@@ -8,7 +8,7 @@ AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libticalcs2.la
 libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
-	ticalcs.h export.h \
+	ticalcs.h export3.h \
 	keys73.h keys83p.h keys89.h keys92p.h \
 	tnode.h
 

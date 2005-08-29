@@ -33,8 +33,6 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
-  intl/Makefile
-  po/Makefile.in
   src/Makefile
   tests/Makefile
   libticalcs2.lsm
