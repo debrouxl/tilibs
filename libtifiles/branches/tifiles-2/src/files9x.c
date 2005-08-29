@@ -70,7 +70,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   char current_folder[9];
   uint32_t curr_offset = 0;
   uint32_t next_offset = 0;
-  uint16_t tmp, sum = 0;
+  uint16_t tmp;
   int i, j;
   char signature[9];
 
@@ -123,6 +123,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     } 
 	else 
 	{
+	  uint16_t checksum, sum = 0;
+
       j++;
       strcpy(entry->folder, current_folder);
       cur_pos = ftell(f);
@@ -138,20 +140,21 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
       fseek(f, curr_offset, SEEK_SET);
       fread_long(f, NULL);	// 4 bytes (NULL)
       fread(entry->data, entry->size, 1, f);
-      fread_word(f, NULL);	//checksum
+
+      fread_word(f, &checksum);
       fseek(f, cur_pos, SEEK_SET);
 
-	  sum += tifiles_checksum(entry->data, entry->size);
+	  sum = tifiles_checksum(entry->data, entry->size);
+	  if(sum != checksum) 
+	    return ERR_FILE_CHECKSUM;
+	  content->checksum += sum;	// sum of all checksums but unused
     }
   }
   content->num_entries = j;
   content->entries = realloc(content->entries, content->num_entries * sizeof(VarEntry*));
-  fread_long(f, &next_offset);
-  fseek(f, next_offset - 2, SEEK_SET);
-  fread_word(f, &(content->checksum));
-
-  if(sum != content->checksum) 
-	  return ERR_FILE_CHECKSUM;
+  //fread_long(f, &next_offset);
+  //fseek(f, next_offset - 2, SEEK_SET);
+  //fread_word(f, &(content->checksum));
 
   fclose(f);
 

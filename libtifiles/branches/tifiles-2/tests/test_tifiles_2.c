@@ -325,7 +325,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI86 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti86"));
 	test_ti86_backup_support();
 	test_ti86_regular_support();
