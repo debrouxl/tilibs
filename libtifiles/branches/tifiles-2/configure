@@ -1964,7 +1964,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                                    ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile libtifiles.lsm libtifiles.spec tifiles2.pc"
+                                                                                ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile src/Makefile tests/Makefile libtifiles2.lsm libtifiles2.spec tifiles2.pc"
 
 
 # Setup libtool.
@@ -28623,12 +28623,10 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
-  "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
-  "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "libtifiles.lsm" ) CONFIG_FILES="$CONFIG_FILES libtifiles.lsm" ;;
-  "libtifiles.spec" ) CONFIG_FILES="$CONFIG_FILES libtifiles.spec" ;;
+  "libtifiles2.lsm" ) CONFIG_FILES="$CONFIG_FILES libtifiles2.lsm" ;;
+  "libtifiles2.spec" ) CONFIG_FILES="$CONFIG_FILES libtifiles2.spec" ;;
   "tifiles2.pc" ) CONFIG_FILES="$CONFIG_FILES tifiles2.pc" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
