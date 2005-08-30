@@ -143,7 +143,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			t_node_append(*apps, node);
 
 		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
-		sprintf(update->text, _("Reading of '%s'"), utf8);
+		sprintf(update_->text, _("Reading of '%s'"), utf8);
 		update_label();
   }
 
@@ -187,24 +187,24 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
 	}
 
-	update->max2 = 3;
-	update->cnt2 = 0;
-	update->pbar();
+	update_->max2 = 3;
+	update_->cnt2 = 0;
+	update_->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length1, content->data_part1));
 	TRYF(ti73_recv_ACK(NULL));
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length2, content->data_part2));
 	TRYF(ti73_recv_ACK(NULL));
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length3, content->data_part3));
 	TRYF(ti73_recv_ACK(NULL));
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
 
 	TRYF(ti73_send_ACK());
 
@@ -231,27 +231,27 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti73_send_CTS());
 	TRYF(ti73_recv_ACK(NULL));
 
-	update->max2 = 3;
-	update->cnt2 = 0;
-	update->pbar();
+	update_->max2 = 3;
+	update_->cnt2 = 0;
+	update_->pbar();
 
 	content->data_part1 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length1, content->data_part1));
 	TRYF(ti73_send_ACK());
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
 
 	content->data_part2 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length2, content->data_part2));
 	TRYF(ti73_send_ACK());
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
 
 	content->data_part3 = tifiles_ve_alloc_data(65536);
 	TRYF(ti73_recv_XDP(&content->data_length3, content->data_part3));
 	TRYF(ti73_send_ACK());
-	update->cnt2++;
-	update->pbar();
+	update_->cnt2++;
+	update_->pbar();
   
 	content->data_part4 = NULL;
   
@@ -290,7 +290,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
-		sprintf(update->text, _("Sending '%s'"),
+		sprintf(update_->text, _("Sending '%s'"),
 			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
 		update_label();
 
@@ -316,7 +316,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
-    sprintf(update->text, _("Receiving '%s'"),
+    sprintf(update_->text, _("Receiving '%s'"),
 	  tifiles_transcode_varname_static(handle->model, vr->name, vr->type));
     update_label();
 
@@ -380,7 +380,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 #endif
 
-	update->max2 = ptr->num_pages * FLASH_PAGE_SIZE / size;
+	update_->max2 = ptr->num_pages * FLASH_PAGE_SIZE / size;
 	for (k = i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
@@ -402,8 +402,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_XDP(size, data));
 			TRYF(ti73_recv_ACK(NULL));
 
-			update->cnt2 = ++k;
-			update->pbar();
+			update_->cnt2 = ++k;
+			update_->pbar();
 		}
 
 		if(handle->model != CALC_TI84P)
@@ -435,7 +435,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int offset;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
 
-	sprintf(update->text, _("Receiving '%s'"), vr->name);
+	sprintf(update_->text, _("Receiving '%s'"), vr->name);
 	update_label();
 
 	content->model = handle->model;
@@ -448,7 +448,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
-	update->max2 = vr->size;
+	update_->max2 = vr->size;
 	for(page = 0, size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
@@ -494,8 +494,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		size += data_length;
 		offset += data_length;
 
-		update->cnt2 = size;
-		update->pbar();
+		update_->cnt2 = size;
+		update_->pbar();
 	}
 
 exit:
@@ -524,7 +524,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t data[16];
 	int i;
 
-	sprintf(update->text, _("Getting variable..."));
+	sprintf(update_->text, _("Getting variable..."));
 	update_label();
 
 	TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
@@ -670,7 +670,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     buffer[7] = clock->time_format;
     buffer[8] = 0xff;
 
-    sprintf(update->text, _("Setting clock..."));
+    sprintf(update_->text, _("Setting clock..."));
     update_label();
 
 	TRYF(ti73_send_RTS(13, TI73_CLK, "\0x08", 0x00));
@@ -699,7 +699,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	struct tm ref, *cur;
 	time_t r, c, now;
 
-    sprintf(update->text, _("Getting clock..."));
+    sprintf(update_->text, _("Getting clock..."));
     update_label();
 
 	TRYF(ti73_send_REQ(0x0000, TI73_CLK, "\0x08", 0x00));
@@ -815,7 +815,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
 	nblocks = ptr->data_length / size;
-	update->max2 = nblocks;
+	update_->max2 = nblocks;
 
 	TRYF(ti73_send_VAR2(size, ptr->data_type, 0x04, 0x4000, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
@@ -833,8 +833,8 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		TRYF(ti73_recv_CTS(size));
 		TRYF(ti73_send_ACK());
 
-		update->cnt2 = i;
-		update->pbar();
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 
 	TRYF(ti73_send_EOT());
@@ -850,7 +850,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	uint16_t unused;
 	uint8_t buf[256];
 
-	sprintf(update->text, _("Receiving certificate"));
+	sprintf(update_->text, _("Receiving certificate"));
 	update_label();
 
 	content->model = handle->model;
@@ -885,8 +885,8 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 			goto exit;
 		TRYF(err);
 
-		update->cnt2 += block_size;
-		update->pbar();
+		update_->cnt2 += block_size;
+		update_->pbar();
 	}
 
 exit:

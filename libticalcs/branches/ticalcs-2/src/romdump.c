@@ -329,9 +329,9 @@ int rom_dump(CalcHandle* h, FILE* f)
 		fwrite(data, length, 1, f);
 		addr += length;
 
-		update->cnt2 = addr;
-		update->max2 = size;
-		update->pbar();
+		update_->cnt2 = addr;
+		update_->max2 = size;
+		update_->pbar();
 	}
 
 	ticalcs_info("Saved blocks : %i\n", saved_blk);

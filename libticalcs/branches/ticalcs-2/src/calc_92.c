@@ -158,10 +158,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			break;
 		TRYF(err);
 
-		sprintf(update->text, _("Reading of '%s/%s'"),
+		sprintf(update_->text, _("Reading of '%s/%s'"),
 			((VarEntry *) (folder->data))->name, 
 			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
-		update->label();
+		update_->label();
 	}
 
 	TRYF(ti92_send_ACK());
@@ -180,7 +180,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	int i;
 	int nblocks;
 
-	sprintf(update->text, _("Sending backup..."));
+	sprintf(update_->text, _("Sending backup..."));
 	update_label();
 
 	TRYF(ti92_send_VAR(content->data_length, TI92_BKUP, content->rom_version));
@@ -230,7 +230,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	for (block = 0;; block++) 
 	{
-		sprintf(update->text, _("Receiving block %2i"), block);
+		sprintf(update_->text, _("Receiving block %2i"), block);
 		update_label();
     
 		err = ti92_recv_VAR(&block_size, &content->type, content->rom_version);
@@ -273,7 +273,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
 		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
-		sprintf(update->text, _("Sending '%s'"), utf8);
+		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
 		TRYF(ti92_send_VAR(entry->size, entry->type, varname));
@@ -312,7 +312,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
 	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
-	sprintf(update->text, _("Receiving '%s'"), utf8);
+	sprintf(update_->text, _("Receiving '%s'"), utf8);
 	update_label();
 
 	TRYF(ti92_send_REQ(0, vr->type, varname));
@@ -381,7 +381,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		sprintf(update->text, _("Receiving '%s'"), ve->name);
+		sprintf(update_->text, _("Receiving '%s'"), ve->name);
 		update_label();
 
 		TRYF(ti92_send_CTS());

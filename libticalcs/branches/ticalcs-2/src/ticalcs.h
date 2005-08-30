@@ -354,7 +354,7 @@ typedef struct _CalcFncts	CalcFncts;
 typedef struct _CalcHandle	CalcHandle;
 
 // convenient wrappers: will be removed later !
-#define update				(handle->updat)
+#define update_				(handle->updat)
 #define update_start()		handle->updat->start()
 #define update_pbar()       handle->updat->pbar()
 #define update_label()      handle->updat->label()
@@ -496,10 +496,11 @@ struct _CalcHandle
 
 /**
  * DeviceOptions:
- * @count: number of bytes transferred
- * @start: the time when transfer started
- * @current: free of use
- * @stop: the time when transfer finished
+ * @cable_model: model
+ * @cable_port: port
+ * @cable_timeout: timeout in tenth of seconds
+ * @cable_delay: inter-bit delay in µs
+ * @calc_model: calculator model
  *
  * A convenient structure free of use by the user.
  **/

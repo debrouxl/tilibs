@@ -98,7 +98,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   uint8_t rej_code;
   uint16_t status;
 
-  sprintf(update->text, _("Waiting user's action..."));
+  sprintf(update_->text, _("Waiting user's action..."));
   update_label();
 
   length = content->data_length1;
@@ -117,7 +117,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	  // wait user's action
 		update_refresh();
 
-		if (update->cancel)
+		if (update_->cancel)
 		return ERR_ABORT;
 
 		err = ti82_recv_SKP(&rej_code);
@@ -138,27 +138,27 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
   }
 
-  sprintf(update->text, _("Sending..."));
+  sprintf(update_->text, _("Sending..."));
   update_label();
 
-  update->max2 = 3;
-  update->cnt2 = 0;
-  update->pbar();
+  update_->max2 = 3;
+  update_->cnt2 = 0;
+  update_->pbar();
 
   TRYF(ti82_send_XDP(content->data_length1, content->data_part1));
   TRYF(ti82_recv_ACK(&status));
-  update->cnt2++;
-  update->pbar();
+  update_->cnt2++;
+  update_->pbar();
 
   TRYF(ti82_send_XDP(content->data_length2, content->data_part2));
   TRYF(ti82_recv_ACK(&status));
-  update->cnt2++;
-    update->pbar();
+  update_->cnt2++;
+    update_->pbar();
 
   TRYF(ti82_send_XDP(content->data_length3, content->data_part3));
   TRYF(ti82_recv_ACK(&status));
-  update->cnt2++;
-    update->pbar();
+  update_->cnt2++;
+    update_->pbar();
 
   //TRYF(ti82_send_EOT());
 
@@ -169,7 +169,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
   char varname[9] = { 0 };
 
-  sprintf(update->text, _("Waiting for backup..."));
+  sprintf(update_->text, _("Waiting for backup..."));
   update_label();
 
   content->model = CALC_TI82;
@@ -184,27 +184,27 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   TRYF(ti82_send_CTS());
   TRYF(ti82_recv_ACK(NULL));
 
-  update->max2 = 3;
-  update->cnt2 = 0;
-  update->pbar();
+  update_->max2 = 3;
+  update_->cnt2 = 0;
+  update_->pbar();
 
   content->data_part1 = tifiles_ve_alloc_data(65536);
   TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
   TRYF(ti82_send_ACK());
-  update->cnt2++;
-  update->pbar();
+  update_->cnt2++;
+  update_->pbar();
 
   content->data_part2 = tifiles_ve_alloc_data(65536);
   TRYF(ti82_recv_XDP(&content->data_length2, content->data_part2));
   TRYF(ti82_send_ACK());
-  update->cnt2++;
-  update->pbar();
+  update_->cnt2++;
+  update_->pbar();
 
   content->data_part3 = tifiles_ve_alloc_data(65536);
   TRYF(ti82_recv_XDP(&content->data_length3, content->data_part3));
   TRYF(ti82_send_ACK());
-  update->cnt2++;
-  update->pbar();
+  update_->cnt2++;
+  update_->pbar();
 
   content->data_part4 = NULL;
 
@@ -229,7 +229,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   uint8_t rej_code;
   uint16_t status;
 
-  sprintf(update->text, _("Sending..."));
+  sprintf(update_->text, _("Sending..."));
   update_label();
 
   for (i = 0; i < content->num_entries; i++) 
@@ -239,12 +239,12 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_VAR((uint16_t)entry->size, entry->type, entry->name));
     TRYF(ti82_recv_ACK(&status));
 
-    sprintf(update->text, _("Waiting user's action..."));
+    sprintf(update_->text, _("Waiting user's action..."));
     update_label();
     do 
 	{			// wait user's action
       update_refresh();
-      if (update->cancel)
+      if (update_->cancel)
 		return ERR_ABORT;
       
 	  err = ti82_recv_SKP(&rej_code);
@@ -266,7 +266,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
-    sprintf(update->text, _("Sending '%s'"),
+    sprintf(update_->text, _("Sending '%s'"),
 			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
     update_label();
 
@@ -288,7 +288,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int nvar = 0;
   int err = 0;
 
-  sprintf(update->text, _("Waiting var(s)..."));
+  sprintf(update_->text, _("Waiting var(s)..."));
   update_label();
 
   content->model = CALC_TI82;
@@ -303,7 +303,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     do 
 	{
       update_refresh();
-      if (update->cancel)
+      if (update_->cancel)
 		return ERR_ABORT;
 
       err = ti82_recv_VAR((uint16_t *)&(ve->size), &(ve->type), ve->name);
@@ -319,7 +319,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_CTS());
     TRYF(ti82_recv_ACK(NULL));
 
-    sprintf(update->text, _("Sending '%s'"),
+    sprintf(update_->text, _("Sending '%s'"),
 			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
     update_label();
 
