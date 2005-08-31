@@ -106,3 +106,17 @@ const CableFncts cable_nul =
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
 };
+
+const CableFncts cable_ilp =
+{
+	CABLE_ILP,
+	"ILP",
+	N_("Dummy link for TiEmu"),
+	N_("Internal Link Port cable for TiEmu (internal use)"),
+	!0,
+	&nul_prepare,
+	&nul_open, &nul_close, &nul_reset, &nul_probe, NULL,
+	&nul_put, &nul_get, &nul_check,
+	&nul_set_red_wire, &nul_set_white_wire,
+	&nul_get_red_wire, &nul_get_white_wire,
+};

@@ -52,6 +52,7 @@ extern "C" {
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
 #define ERROR_READ_TIMEOUT	4
+#define ERROR_WRITE_TIMEOUT	6
 
 /**
  * CableModel:
@@ -62,7 +63,7 @@ typedef enum
 {
 	CABLE_NUL = 0,
 	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
-	CABLE_VTI, CABLE_TIE, CABLE_VTL, 
+	CABLE_VTI, CABLE_TIE, CABLE_VTL, CABLE_ILP,
 } CableModel;
 
 /**

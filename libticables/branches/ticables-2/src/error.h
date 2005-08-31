@@ -34,7 +34,7 @@ typedef enum
 	ERR_READ_ERROR,
     ERR_READ_TIMEOUT=4,		// Must be 4
     ERR_WRITE_ERROR,
-    ERR_WRITE_TIMEOUT,
+    ERR_WRITE_TIMEOUT=6,	// Must be 6
     ERR_PROBE_FAILED,
     
     ERR_GRY_CREATEFILE,
