@@ -107,7 +107,7 @@ const CableFncts cable_nul =
 	&nul_get_red_wire, &nul_get_white_wire,
 };
 
-const CableFncts cable_ilp =
+/* no const ! */ CableFncts cable_ilp =
 {
 	CABLE_ILP,
 	"ILP",
