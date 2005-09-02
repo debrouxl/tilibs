@@ -37,8 +37,6 @@ AC_CONFIG_FILES([
   po/Makefile.in
   src/Makefile
   tests/Makefile
-  libtifiles.lsm
-  libtifiles.spec
   tifiles.pc
 ])
 
