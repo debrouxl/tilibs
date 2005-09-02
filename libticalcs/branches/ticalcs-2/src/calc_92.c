@@ -342,7 +342,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	return send_var(handle, mode, content);
 }
 
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
+static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	uint32_t unused;
 	int nvar, err;
@@ -395,6 +395,10 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 exit:
 	nvar--;
+	if(nvar > 1) 
+		*vr = NULL;
+	else
+		*vr = tifiles_ve_dup(content->entries[0]);
 
 	return 0;
 }

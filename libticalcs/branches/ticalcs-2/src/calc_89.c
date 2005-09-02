@@ -498,7 +498,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	return 0;
 }
 
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
+static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** vr)
 {
 	uint32_t unused;
 	int nvar, err;
@@ -513,7 +513,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		VarEntry *ve;
 
 		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
-		ve = content->entries[nvar-1];
+		ve = content->entries[nvar-1] = tifiles_ve_create();
 		strcpy(ve->folder, "main");	
 
 		err = ti89_recv_VAR(&ve->size, &ve->type, tipath);
@@ -551,6 +551,10 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 exit:
 	nvar--;
+	if(nvar > 1) 
+		*vr = NULL;
+	else
+		*vr = tifiles_ve_dup(content->entries[0]);
 
 	return 0;
 }
