@@ -38,8 +38,6 @@ AC_CONFIG_FILES([
   po/Makefile.in
   src/Makefile
   tests/Makefile
-  libticables2.lsm
-  libticables2.spec
   ticables2.pc
 ])
 
