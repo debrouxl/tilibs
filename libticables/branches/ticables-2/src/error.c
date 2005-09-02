@@ -283,8 +283,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		break;		
 
   	default:
-	    *message = strdup(_("Error code not handled; this is a bug"));
-	    ticables_warning(*message);
+	    // propagate error code
 	    return number;
     break;
   	}
