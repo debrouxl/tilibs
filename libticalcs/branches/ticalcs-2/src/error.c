@@ -60,6 +60,7 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
     		 _("Cause: the user !"),
 			 NULL);
 		break;
+
 	case ERR_NOT_READY:
 		*message = g_strconcat(
     		_("Msg: Calculator is not ready."),
@@ -218,8 +219,7 @@ case ERR_OUT_OF_MEMORY:
 
 
 	default:
-	    *message = strdup(_("Error code not handled; this is a bug"));
-	    ticalcs_warning(*message);
+		// propagate error code
 	    return number;
     break;
 	}
