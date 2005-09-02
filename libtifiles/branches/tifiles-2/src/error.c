@@ -102,6 +102,7 @@ TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
     break;
 
 	default:
+		// propagate error code
 		return number;
     break;
 	}
