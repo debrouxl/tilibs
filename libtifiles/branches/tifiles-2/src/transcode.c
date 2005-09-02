@@ -325,7 +325,7 @@ static char *ti8x_detokenize_varname(CalcModel model, char *dst, const char *src
  * tifiles_transcode_detokenize:
  * @model: a calculator model.
  * @src: a name of variable to detokenize.
- * @dst: a buffer of 20 chars to contain the detokenized name.
+ * @dst: a buffer of 18 chars to contain the detokenized name.
  * @vartype: the type of variable.
  *
  * Some calculators (like TI83) does not returns real name of the variable (like List1) but
@@ -353,8 +353,8 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
   case CALC_TI92:
   case CALC_TI92P:
   case CALC_V200:
-	  strncpy(dst, src, 8);
-	  dst[8] = '\0';
+	  strncpy(dst, src, 17);
+	  dst[17] = '\0';
     return dst;
     break;
   default:
@@ -367,7 +367,7 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
  * tifiles_transcode_tokenize:
  * @model: a calculator model.
  * @src: a name of variable to detokenize.
- * @dst: a buffer of 20 chars to contain the detokenized name.
+ * @dst: a buffer of 18 chars to contain the detokenized name.
  * @vartype: the type of variable.
  *
  * Not implemented yet.
@@ -376,8 +376,8 @@ TIEXPORT char* TICALL tifiles_transcode_detokenize(CalcModel model, char *dst, c
  **/
 TIEXPORT char* TICALL tifiles_transcode_tokenize(CalcModel model, char *dst, const char *src, uint8_t vartype)
 {
-	strncpy(dst, src, 8);
-	dst[8] = '\0';
+	strncpy(dst, src, 17);
+	dst[17] = '\0';
 
 	return dst;
 }
