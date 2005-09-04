@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables 3.8.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2005-06-06 15:17+0200\n"
+"POT-Creation-Date: 2005-09-04 16:05+0200\n"
 "PO-Revision-Date: 2004-04-14 21:55+0000\n"
 "Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
 "Language-Team: Français <kde-francophone@kde.org>\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.1\n"
-
-#: src/data_log.c:68
-msgid "Logging started."
-msgstr ""
 
 #: src/data_log.c:73 src/data_log.c:80
 #, c-format
@@ -301,52 +297,51 @@ msgstr ""
 "Cause : Vérifiez que votre câble est connecté et qu'il n'est pas figé. "
 "Vérifiez également libusb et usbfs."
 
-#: src/error.c:286
-#, fuzzy
-msgid "Error code not handled; this is a bug"
-msgstr ""
-"Code d'erreur inexistant dans la liste.\n"
-"Ceci est un bogue. Veuillez le signaler.\n"
-"."
-
-#: src/ticables.c:110
+#: src/ticables.c:111
 #, fuzzy, c-format
-msgid "Cables library version %s"
+msgid "cables library version %s"
 msgstr "librairie ticables version %s\n"
 
-#: src/ticables.c:275
+#: src/ticables.c:298
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:276
+#: src/ticables.c:299
 #, fuzzy, c-format
 msgid "  model   : %s"
 msgstr "  nom du nœud : %s\n"
 
-#: src/ticables.c:277
+#: src/ticables.c:300
 #, fuzzy, c-format
 msgid "  port    : %s"
 msgstr "  port : %s\n"
 
-#: src/ticables.c:278
+#: src/ticables.c:301
 #, fuzzy, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  limite de temps : %i\n"
 
-#: src/ticables.c:279
+#: src/ticables.c:302
 #, fuzzy, c-format
 msgid "  delay   : %i us"
 msgstr "  délai : %i\n"
 
-#: src/ticables.c:282
+#: src/ticables.c:305
 #, fuzzy, c-format
 msgid "  device  : %s"
 msgstr "  nom du périphérique : %s\n"
 
-#: src/ticables.c:283
+#: src/ticables.c:306
 #, fuzzy, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x\n"
+
+#, fuzzy
+#~ msgid "Error code not handled; this is a bug"
+#~ msgstr ""
+#~ "Code d'erreur inexistant dans la liste.\n"
+#~ "Ceci est un bogue. Veuillez le signaler.\n"
+#~ "."
 
 #~ msgid "unknown"
 #~ msgstr "inconnu"

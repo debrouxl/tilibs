@@ -19,14 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __LINUX_MAPPING_H__
-#define __LINUX_MAPPING_H__
+#ifndef __LINUX_DETECT_H__
+#define __LINUX_DETECT_H__
 
 #include <stdio.h>
 
-#include "cabl_def.h"
-
-int bsd_get_method(CableType type, int resources, CableMethod *method);
-int bsd_register_cable(CableType type, CableLinkCable *lc);
+int check_for_root(void);
+int check_for_tty(const char *devname);
+int check_for_parport(const char *devname);
+int check_for_libusb(void);
 
 #endif

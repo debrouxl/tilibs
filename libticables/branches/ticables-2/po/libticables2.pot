@@ -1,0 +1,282 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Romain Lievin
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
+"POT-Creation-Date: 2005-09-04 17:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/data_log.c:73 src/data_log.c:80
+#, c-format
+msgid "Unable to open <%s> for logging.\n"
+msgstr ""
+
+#: src/error.c:61
+msgid "Msg: link cable is busy."
+msgstr ""
+
+#: src/error.c:63
+msgid "Cause: a transfer is in progress."
+msgstr ""
+
+#: src/error.c:69
+msgid "Msg: nable to use parallel/serial port: access refused."
+msgstr ""
+
+#: src/error.c:71
+msgid "Cause: you are not running program as root or setuid root."
+msgstr ""
+
+#: src/error.c:77
+msgid "Msg: unable to use serial (/dev/ttySx) device."
+msgstr ""
+
+#: src/error.c:79
+msgid ""
+"Cause: the /dev/ttySx node doesn't exist or you don't have required "
+"permissions. See the log output for testing details."
+msgstr ""
+
+#: src/error.c:84
+msgid "Msg: unable to use parport (/dev/parportX) device."
+msgstr ""
+
+#: src/error.c:86
+msgid ""
+"Cause: the /dev/parportX node doesn't exist or you don't have required "
+"permissions. See the log output for testing details."
+msgstr ""
+
+#: src/error.c:91
+msgid "Msg: unable to use USB pseudo file system."
+msgstr ""
+
+#: src/error.c:93
+msgid ""
+"Cause: the USB fs is not mounted or you don't have permissions to use it. "
+"See the log oupput for testing details."
+msgstr ""
+
+#: src/error.c:98
+msgid "Msg: illegal operation or argument."
+msgstr ""
+
+#: src/error.c:100
+msgid ""
+"Cause: the program which uses this library is buggy. Fire-up the developer !"
+msgstr ""
+
+#: src/error.c:106
+msgid "Msg: PortTalk driver and/or library not found."
+msgstr ""
+
+#: src/error.c:108
+msgid ""
+"Cause: the driver may have been not started yet; it maye have been "
+"uninstalled; the library has been installed without NT administrator "
+"privileges."
+msgstr ""
+
+#: src/error.c:114
+msgid "Msg: error occured while writing to the device."
+msgstr ""
+
+#: src/error.c:120
+msgid "Msg: timeout occured while writing to the device."
+msgstr ""
+
+#: src/error.c:122 src/error.c:136
+msgid ""
+"Cause: check that your link cable is plugged and/or the calculator is ready."
+msgstr ""
+
+#: src/error.c:128
+msgid "Msg: error occured while reading to the device."
+msgstr ""
+
+#: src/error.c:134
+msgid "Msg: timeout occured while reading to the device."
+msgstr ""
+
+#: src/error.c:142
+msgid "Msg: the probing od device failed."
+msgstr ""
+
+#: src/error.c:144
+msgid "Cause: internal error. If you get it, this is a bug !"
+msgstr ""
+
+#: src/error.c:157
+msgid "Msg: unable to open COM port."
+msgstr ""
+
+#: src/error.c:159
+msgid "Cause: check your device is not used/locked by another application."
+msgstr ""
+
+#: src/error.c:165
+msgid "Msg: unable to load TiglUsb library."
+msgstr ""
+
+#: src/error.c:167
+msgid "Cause: is the LPG's SilverLink driver installed ?"
+msgstr ""
+
+#: src/error.c:173
+msgid "Msg: unable to release TiglUsb library."
+msgstr ""
+
+#: src/error.c:175
+msgid "Cause: internal error"
+msgstr ""
+
+#: src/error.c:181
+msgid "Msg: TiglUsb library version is wrong."
+msgstr ""
+
+#: src/error.c:183
+msgid "Cause: the library may require an earlier version. Update your driver !"
+msgstr ""
+
+#: src/error.c:189
+msgid "Msg: failed to open SilverLink access."
+msgstr ""
+
+#: src/error.c:191
+msgid "Cause: check your USB cable is well plugged !"
+msgstr ""
+
+#: src/error.c:197
+msgid "Msg: failed to reset SilverLink cable."
+msgstr ""
+
+#: src/error.c:199
+msgid ""
+"Cause: check your USB cable is well plugged ! It may be stalled, too: unplug/"
+"replug it."
+msgstr ""
+
+#: src/error.c:207
+msgid "Msg: failed to get VTI handle."
+msgstr ""
+
+#: src/error.c:209
+msgid "Cause: VTi may not be running. VTi must be launched before."
+msgstr ""
+
+#: src/error.c:218
+msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
+msgstr ""
+
+#: src/error.c:220
+msgid ""
+"Cause: check that you have enough resources for allocating a shared memory "
+"segment."
+msgstr ""
+
+#: src/error.c:227
+msgid "Msg: unable to open/close pipes for virtual linking."
+msgstr ""
+
+#: src/error.c:229
+msgid ""
+"Cause: check that you have permissions to create a pipe in the /tmp "
+"directory."
+msgstr ""
+
+#: src/error.c:236
+msgid "Msg: unable to open serial device."
+msgstr ""
+
+#: src/error.c:238 src/error.c:247
+msgid ""
+"Cause: check that you permissions on /dev/ttySx device. Check your device is "
+"not locked."
+msgstr ""
+
+#: src/error.c:245
+msgid "Msg: unable to issue a specific command on serial device."
+msgstr ""
+
+#: src/error.c:253
+msgid "Msg: unable to open parallel device."
+msgstr ""
+
+#: src/error.c:255 src/error.c:263
+msgid ""
+"Cause: check that you permissions on /dev/parportX device. Check your device "
+"is not locked."
+msgstr ""
+
+#: src/error.c:261
+msgid "Msg: unable to issue a specific command on parallel device."
+msgstr ""
+
+#: src/error.c:271
+msgid "Msg: unable to open USB device."
+msgstr ""
+
+#: src/error.c:273
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Check your libusb "
+"and usbfs, too."
+msgstr ""
+
+#: src/error.c:279
+msgid "Msg: unable to reset USB device."
+msgstr ""
+
+#: src/error.c:281
+msgid ""
+"Cause: Check that your cable is connected or not stalled. Try to unplug/plug "
+"it."
+msgstr ""
+
+#: src/ticables.c:111
+#, c-format
+msgid "cables library version %s"
+msgstr ""
+
+#: src/ticables.c:298
+msgid "Link cable handle details:"
+msgstr ""
+
+#: src/ticables.c:299
+#, c-format
+msgid "  model   : %s"
+msgstr ""
+
+#: src/ticables.c:300
+#, c-format
+msgid "  port    : %s"
+msgstr ""
+
+#: src/ticables.c:301
+#, c-format
+msgid "  timeout : %2.1fs"
+msgstr ""
+
+#: src/ticables.c:302
+#, c-format
+msgid "  delay   : %i us"
+msgstr ""
+
+#: src/ticables.c:305
+#, c-format
+msgid "  device  : %s"
+msgstr ""
+
+#: src/ticables.c:306
+#, c-format
+msgid "  address : 0x%03x"
+msgstr ""

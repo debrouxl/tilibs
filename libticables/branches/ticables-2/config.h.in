@@ -113,9 +113,6 @@
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
 
-/* Define if your <locale.h> file defines LC_MESSAGES. */
-#undef HAVE_LC_MESSAGES
-
 /* Define to 1 to enable libusb support. */
 #undef HAVE_LIBUSB
 
@@ -277,7 +274,7 @@
    slash. */
 #undef LSTAT_FOLLOWS_SLASHED_SYMLINK
 
-/* Define to 1 to disable the SilverLink support */
+/* Defined to disable the SilverLink support */
 #undef NO_CABLE_SLV
 
 /* Name of package */

@@ -42,7 +42,7 @@
 /* Internal data */
 /*****************/
 
-static CableFncts const *const cables[] = 
+static CableFncts const *const cables[] =
 {
 	&cable_nul,
 #ifndef NO_CABLE_GRY
@@ -51,7 +51,7 @@ static CableFncts const *const cables[] =
 #ifndef NO_CABLE_BLK
 	&cable_ser,
 #endif
-#ifndef NO_CABLE_PAR
+#if !defined(NO_CABLE_PAR) && defined(HAVE_LINUX_PARPORT_H)
 	&cable_par,
 #endif
 #if !defined(NO_CABLE_SLV) && defined(HAVE_LIBUSB) || defined(__WIN32__)
@@ -87,19 +87,19 @@ int ticables_instance = 0;	// counts # of instances
 TIEXPORT int TICALL ticables_library_init(void)
 {
     char locale_dir[65536];
-	
+
 #ifdef __WIN32__
   	HANDLE hDll;
   	int i;
-  	
+
   	hDll = GetModuleHandle("cables2.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
-  	
+
   	for (i = strlen(locale_dir); i >= 0; i--) {
     	if (locale_dir[i] == '\\')
       		break;
   	}
-  	
+
   	locale_dir[i] = '\0';
   	strcat(locale_dir, "\\locale");
 #else
@@ -179,7 +179,7 @@ TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort por
 			handle->cable = (CableFncts *)cables[i];
 			break;
 		}
-	
+
 	if(handle->cable == NULL)
 		return NULL;
 
@@ -207,7 +207,7 @@ TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
     	free(handle);
 	    handle = NULL;
 	}
-    
+
     return 0;
 }
 
@@ -242,7 +242,7 @@ TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeou
 
 	return old_timeout;
 }
-	
+
 /**
  * ticables_options_set_delay:
  * @handle: the handle

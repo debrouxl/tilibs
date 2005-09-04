@@ -30,7 +30,7 @@
 #if defined(__LINUX__) && defined(HAVE_LINUX_PARPORT_H)
 #include "linux/link_par.c"
 
-#elif defined(__BSD__)
+#elif defined(__BSD__) && defined(HAVE_LINUX_PARPORT_H)
 #include "linux/link_par.c"
 
 #elif defined(__WIN32__)

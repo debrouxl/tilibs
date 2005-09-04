@@ -55,7 +55,7 @@ int par_io_open(const char *dev_name, int *dev_fd)
 
     // Open device
     *dev_fd = open(dev_name, O_RDWR);
-    if (*dev_fd == -1) 
+    if (*dev_fd == -1)
     {
 	ticables_warning("unable to open parallel device '%s'.", dev_name);
 	return ERR_PPT_OPEN;
@@ -69,7 +69,7 @@ int par_io_open(const char *dev_name, int *dev_fd)
     }
 
     // Claim access
-    if (ioctl(*dev_fd, PPCLAIM) == -1) 
+    if (ioctl(*dev_fd, PPCLAIM) == -1)
     {
 	ticables_warning(_("ioctl failed on parallel device: can't claim parport."));
 	return ERR_PPT_IOCTL;
@@ -132,8 +132,11 @@ int par_io_wr(int dev_fd, uint8_t data)
 
 int ser_io_open(const char *dev_name, int *dev_fd)
 {
+#ifndef O_SYNC
+# define O_SYNC O_FSYNC
+#endif
     *dev_fd = open(dev_name, O_RDWR | O_SYNC);
-    if (*dev_fd == -1) 
+    if (*dev_fd == -1)
     {
 	ticables_warning("unable to open serial device '%s'", dev_name);
 	return ERR_TTY_OPEN;
@@ -151,7 +154,7 @@ int ser_io_rd(int dev_fd)
 {
     unsigned int flags = 0;
 
-    if (ioctl(dev_fd, TIOCMGET, &flags) == -1) 
+    if (ioctl(dev_fd, TIOCMGET, &flags) == -1)
     {
 	ticables_warning(_("ioctl failed on serial device."));
 	return ERR_TTY_IOCTL;
@@ -166,13 +169,13 @@ int ser_io_wr(int dev_fd, uint8_t data)
 
     flags |= (data & 2) ? TIOCM_RTS : 0;
     flags |= (data & 1) ? TIOCM_DTR : 0;
-    
-    if (ioctl(dev_fd, TIOCMSET, &flags) == -1) 
+
+    if (ioctl(dev_fd, TIOCMSET, &flags) == -1)
     {
 	ticables_warning(_("ioctl failed on serial device."));
         return ERR_TTY_IOCTL;
     }
-    
+
     return 0;
 }
 

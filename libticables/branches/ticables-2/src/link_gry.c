@@ -31,7 +31,7 @@
 #include "linux/link_gry.c"
 
 #elif defined(__BSD__)
-#include "linux/link_gry.c"
+#include "bsd/link_gry.c"
 
 #elif defined(__WIN32__)
 #include "win32/link_gry.c"
