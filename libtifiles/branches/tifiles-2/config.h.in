@@ -8,10 +8,10 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
-/* Define to 1 to disable the TI8x support */
+/* Defined to disable the TI8x support */
 #undef DISABLE_TI8X
 
-/* Define to 1 to disable the TI9x support */
+/* Defined to disable the TI9x support */
 #undef DISABLE_TI9X
 
 /* Define to 1 if translation of program messages to the user's native
@@ -108,9 +108,6 @@
 
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
-
-/* Define if your <locale.h> file defines LC_MESSAGES. */
-#undef HAVE_LC_MESSAGES
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H

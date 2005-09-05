@@ -2,7 +2,10 @@
 
 EXTRA_DIST = gen_doc.c api.txt
 
-all: gen_doc
+all:
+	@echo "To build the documentation, run \"make docs\"."
+
+docs: gen_doc
 	./gen_doc .
 
 gen_doc: gen_doc.c
