@@ -55,13 +55,23 @@ static int par_prepare(CableHandle *h)
 
 static int par_open(CableHandle *h)
 {
+	tiTIME clk;
+
 	TRYC(io_open(h->address));
 #ifdef __WIN32__
 	// needed for circumventing a strange problem with PortTalk & Win2k
   	TRYC(io_open(h->address))
 #endif
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
+	
+	// wait for releasing of lines
 	io_wr(lpt_out, 3);
+    TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, h->timeout))
+	  		return 0;
+    } while ((io_rd(lpt_in) & 0x30) != 0x30);
 
 	return 0;
 }
@@ -138,7 +148,8 @@ static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 
   		for (bit = 0; bit < 8; bit++) 
 		{
-    			if (byte & 1) {
+    			if (byte & 1) 
+				{
       				io_wr(lpt_out, 2);
       				TO_START(clk);
 	      			do 
@@ -211,6 +222,7 @@ static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 				{
       				byte = (byte >> 1) | 0x80;
       				io_wr(lpt_out, 1);
+
       				TO_START(clk);
       				while ((io_rd(lpt_in) & 0x20) == 0x00) 
 					{
@@ -223,6 +235,7 @@ static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 				{
       				byte = (byte >> 1) & 0x7F;
       				io_wr(lpt_out, 2);
+
       				TO_START(clk);
       				while ((io_rd(lpt_in) & 0x10) == 0x00) 
 					{

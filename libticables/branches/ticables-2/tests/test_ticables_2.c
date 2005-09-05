@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	return 0;
 #endif
 
-#if 1
+#if 0
 	ticables_probing_do(&probing, 5);
 	for(i = 1; i <= 7; i++)
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_BLK, PORT_1);
+	handle = ticables_handle_new(CABLE_BLK, PORT_2);
 	if(handle == NULL)
 	    return -1;
 
@@ -108,13 +108,6 @@ int main(int argc, char **argv)
 	Sleep(1000);
 #else
 	sleep(1);
-#endif
-
-#if 0
-	err = ticables_cable_probe(handle, &result);
-	if(err) print_lc_error(err);
-        if(err) return -1;
-	printf("result = %i\n", result);
 #endif
 
 #if 0

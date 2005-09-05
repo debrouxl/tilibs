@@ -60,6 +60,8 @@ static int ser_prepare(CableHandle *h)
 
 static int ser_open(CableHandle *h)
 {
+	tiTIME clk;
+
 	// Under Win2k: if we do not open the serial device as a COM
 	// port, it may be impossible to transfer data.
 	// This problem exists with Win2k and some UARTs.
@@ -70,7 +72,14 @@ static int ser_open(CableHandle *h)
   	TRYC(io_open(com_out));
   	TRYC(io_open(com_in));
 
+	// wait for releasing of lines
 	io_wr(com_out, 3);
+    TO_START(clk);
+	do 
+	{
+		if (TO_ELAPSED(clk, h->timeout))
+	  		return 0;
+    } while ((io_rd(com_in) & 0x30) != 0x30);
 
 	return 0;
 }
@@ -154,7 +163,8 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 	  					return ERR_WRITE_TIMEOUT;
-      			} while ((io_rd(com_in) & 0x10));
+      			} 
+				while ((io_rd(com_in) & 0x10));
       			
       			io_wr(com_out, 3);
       			TO_START(clk);
@@ -162,7 +172,8 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 	  					return ERR_WRITE_TIMEOUT;
-      			} while ((io_rd(com_in) & 0x10) == 0x00);
+      			} 
+				while ((io_rd(com_in) & 0x10) == 0x00);
     		} 
 			else 
 			{
@@ -172,7 +183,8 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 	  					return ERR_WRITE_TIMEOUT;
-      			} while (io_rd(com_in) & 0x20);
+      			} 
+				while (io_rd(com_in) & 0x20);
       		
       			io_wr(com_out, 3);
       			TO_START(clk);
@@ -180,7 +192,8 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 				{
 					if (TO_ELAPSED(clk, h->timeout))
 	  					return ERR_WRITE_TIMEOUT;
-      			} while ((io_rd(com_in) & 0x20) == 0x00);
+      			} 
+				while ((io_rd(com_in) & 0x20) == 0x00);
     		}
 
     		byte >>= 1;
@@ -254,7 +267,7 @@ static int ser_check(CableHandle *h, int *status)
 	*status = STATUS_NONE;
 
   	if (!((io_rd(com_in) & 0x30) == 0x30)) 
-    		*status = (STATUS_RX | STATUS_TX);
+    		*status = STATUS_RX;
 
 	return 0;
 }
