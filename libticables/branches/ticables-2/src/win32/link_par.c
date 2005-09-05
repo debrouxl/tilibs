@@ -53,6 +53,7 @@ static int par_prepare(CableHandle *h)
 	return 0;
 }
 
+static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
 	tiTIME clk;
@@ -64,14 +65,7 @@ static int par_open(CableHandle *h)
 #endif
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
 	
-	// wait for releasing of lines
-	io_wr(lpt_out, 3);
-    TO_START(clk);
-	do 
-	{
-		if (TO_ELAPSED(clk, h->timeout))
-	  		return 0;
-    } while ((io_rd(lpt_in) & 0x30) != 0x30);
+	par_reset(h);
 
 	return 0;
 }
@@ -85,7 +79,18 @@ static int par_close(CableHandle *h)
 
 static int par_reset(CableHandle *h)
 {
-	io_wr(lpt_out, 3);
+	tiTIME clk;
+
+	// wait for releasing of lines
+    TO_START(clk);
+	do 
+	{
+		io_wr(lpt_out, 3);
+		if (TO_ELAPSED(clk, h->timeout))
+	  		return 0;
+    } 
+	while ((io_rd(lpt_in) & 0x30) != 0x30);
+
 	return 0;
 }
 

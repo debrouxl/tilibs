@@ -55,13 +55,13 @@ static int ser_prepare(CableHandle *h)
 			return ERR_PORTTALK_NOT_FOUND;
 	}
 
+	printf("<prepare>\n");
 	return 0;
 }
 
+static int ser_reset(CableHandle *h);
 static int ser_open(CableHandle *h)
 {
-	tiTIME clk;
-
 	// Under Win2k: if we do not open the serial device as a COM
 	// port, it may be impossible to transfer data.
 	// This problem exists with Win2k and some UARTs.
@@ -72,15 +72,9 @@ static int ser_open(CableHandle *h)
   	TRYC(io_open(com_out));
   	TRYC(io_open(com_in));
 
-	// wait for releasing of lines
-	io_wr(com_out, 3);
-    TO_START(clk);
-	do 
-	{
-		if (TO_ELAPSED(clk, h->timeout))
-	  		return 0;
-    } while ((io_rd(com_in) & 0x30) != 0x30);
+	ser_reset(h);
 
+	printf("<open>\n");
 	return 0;
 }
 
@@ -91,12 +85,29 @@ static int ser_close(CableHandle *h)
 
     TRYC(win32_comport_close(&hCom));
 
+	printf("<close>\n");
 	return 0;
 }
 
 static int ser_reset(CableHandle *h)
 {
-	io_wr(com_out, 3);
+	tiTIME clk;
+
+	// wait for releasing of lines
+    TO_START(clk);
+	do 
+	{
+		io_wr(com_out, 3);
+		if (TO_ELAPSED(clk, h->timeout))
+		{
+			printf("<reset failed>\n");
+	  		return 0;
+		}
+		//printf("%i", io_rd(com_in) >> 4);
+    } 
+	while ((io_rd(com_in) & 0x30) != 0x30);
+
+	printf("<reset>\n");
 	return 0;
 }
 
@@ -139,6 +150,7 @@ static int ser_probe(CableHandle *h)
 	  		return ERR_WRITE_TIMEOUT;
     } while ((io_rd(com_in) & 0x20) == 0x00);
 
+	printf("<probe>\n");
 	return 0;
 }
 
@@ -202,6 +214,7 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
   		}
 	}
 
+	printf("<put>\n");
 	return 0;
 }
 
@@ -259,6 +272,7 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
   		data[j] = byte;
 	}
 
+	printf("<get>\n");
 	return 0;
 }
 
@@ -269,6 +283,7 @@ static int ser_check(CableHandle *h, int *status)
   	if (!((io_rd(com_in) & 0x30) == 0x30)) 
     		*status = STATUS_RX;
 
+	printf("<check>\n");
 	return 0;
 }
 
@@ -283,6 +298,7 @@ static int ser_set_red_wire(CableHandle *h, int b)
   	else
     		io_wr(com_out, v & ~0x02);
 
+	printf("<set_d0>\n");
 	return 0;
 }
 
@@ -295,16 +311,19 @@ static int ser_set_white_wire(CableHandle *h, int b)
   	else
     		io_wr(com_out, v & ~0x01);
 
+	printf("<set_d1>\n");
 	return 0;
 }
 
 static int ser_get_red_wire(CableHandle *h)
 {
+	printf("<get_d0>\n");
 	return ((0x10 & io_rd(com_in)) ? 1 : 0);
 }
 
 static int ser_get_white_wire(CableHandle *h)
 {
+	printf("<get_d1>\n");
 	return ((0x20 & io_rd(com_in)) ? 1 : 0);
 }
 

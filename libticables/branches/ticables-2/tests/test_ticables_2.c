@@ -110,6 +110,8 @@ int main(int argc, char **argv)
 	sleep(1);
 #endif
 
+	exit(0);
+
 #if 0
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
