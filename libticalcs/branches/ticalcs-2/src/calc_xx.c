@@ -1041,8 +1041,8 @@ TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* info
 	const CalcFncts *calc = handle->calc;
 	int ret;
 
-	if(!handle->attached)
-		return ERR_NO_CABLE;
+	//if(!handle->attached)
+	//	return ERR_NO_CABLE;
 
 	if(!handle->open)
 		return ERR_NO_CABLE;

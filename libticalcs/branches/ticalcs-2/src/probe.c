@@ -33,6 +33,7 @@
 #include "error.h"
 #include "gettext.h"
 #include "pause.h"
+#include "calc_xx.h"
 
 #define DEAD_TIME	250
 
@@ -185,6 +186,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	uint16_t status;
 	uint8_t buffer[256];
 	int i, err;
+	CalcInfos infos;
 
 	// init value
 	*model = CALC_NONE;
@@ -238,28 +240,39 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
 	if(!err && (host != TI73_PC) && (host != TI83p_PC))
 	{
-		CalcInfos infos;
-
 		ticalcs_info(_("Check for TI9X... "));
+
 		handle->model = CALC_TI89;
-		memset(&infos, 0, sizeof(CalcInfos));
+		handle->calc = (CalcFncts *)&calc_89;
+
+		memset(&infos, 0, sizeof(CalcInfos));		
 		TRYF(ticalcs_calc_get_version(handle, &infos));
 
 		switch(infos.hw_id)
 		{
 		case 1: *model = CALC_TI92P; break;
 		case 3: *model = CALC_TI89;  break;
-		case 8: *model = CALC_V200; break;
+		case 8: *model = CALC_V200;  break;
 		case 9: *model = CALC_TI89T; break;
+		default: break;
 		}
 	}
 	else
 	{
 		ticalcs_info(_("Check for TI8X... "));
-		switch (host) 
+
+		handle->model = CALC_TI83P;
+		handle->calc = (CalcFncts *)&calc_83p;
+
+		memset(&infos, 0, sizeof(CalcInfos));
+		TRYF(ticalcs_calc_get_version(handle, &infos));
+
+		switch (infos.hw_id) 
 		{
-		case TI83p_PC: *model = CALC_TI83P; break;
-		case TI73_PC:  *model = CALC_TI73;  break;
+		case 0: *model = CALC_TI83P; break;
+		case 1: *model = CALC_TI83P; break;	// SE
+		case 2: *model = CALC_TI84P; break;
+		case 3: *model = CALC_TI84P; break;	// SE
 		default: break;
 		}
 	}
@@ -273,7 +286,7 @@ extern const CalcUpdate default_update;
 
 /**
  * ticalcs_probe_calc:
- * @cable: a link cable handle
+ * @cable: a valid (=opened/attached) link cable handle
  * @model: the calculator model which have been detected
  *
  * This function attempts to detect the calculator model plugged onto the cable.
@@ -286,11 +299,14 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 	CalcHandle calc;
 	int err = 0;
 
-	// we construct the structure here because we don't really need it
+	// Hack: we construct the structure here because we don't really need it.
+	// I want to use ticalcs functions with a non-foxed calculator
+	memset(&calc, 0, sizeof(CalcHandle));
 	calc.model = *model = CALC_NONE;
 	calc.updat = (CalcUpdate *)&default_update;
 	calc.priv2 = (uint8_t *)malloc(65536 + 4);
 	calc.cable = cable;
+	calc.open = !0;
 
 	// first: search for FLASH hand-helds (fast)
 	err = ticalcs_probe_calc_1(&calc, model);

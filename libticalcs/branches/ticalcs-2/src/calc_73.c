@@ -791,6 +791,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	infos->battery = !buf[4];
 
+	infos->hw_id   = buf[5];
+
 	tifiles_hexdump(buf, length);
 	ticalcs_info(_("  OS: %s"), infos->os);
 	ticalcs_info(_("  BIOS: %s"), infos->bios);
