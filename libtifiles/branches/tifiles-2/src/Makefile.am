@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
-AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
@@ -12,7 +10,9 @@ libtifilesinclude_HEADERS = \
 	types*.h
 
 # build instructions
-libtifiles2_la_CPPFLAGS = @GLIB_CFLAGS@
+libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	@GLIB_CFLAGS@
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h \
