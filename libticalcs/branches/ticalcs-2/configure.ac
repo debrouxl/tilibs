@@ -33,6 +33,9 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
   build/Makefile
+  docs/Makefile
+  intl/Makefile
+  po/Makefile.in
   src/Makefile
   tests/Makefile
   ticalcs2.pc
@@ -53,7 +56,7 @@ AC_PROG_AWK
 
 # Checks for libraries.
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.13.1)
+AM_GNU_GETTEXT_VERSION(0.14.5)
 
 PKG_CHECK_MODULES(TICABLES, ticables2 >= 0.0.1)
 AC_SUBST(TICABLES_CFLAGS)
@@ -127,7 +130,7 @@ AM_CONDITIONAL(OS_WIN32, test "$msnative_struct")
 # Check for the new -fvisibility=hidden flag introduced in gcc 4.0
 # Allow to reduce shared library size and avoid symbol clash
 case $host_os in
-*mingw*) 
+*mingw*)
   ;;
 *)
 	if test x$GCC = xyes; then

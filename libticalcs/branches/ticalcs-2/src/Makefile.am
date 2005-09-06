@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
-AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
@@ -13,7 +11,8 @@ libticalcsinclude_HEADERS = \
 	tnode.h
 
 # build instructions
-libticalcs2_la_CPPFLAGS = -DLOCALEDIR=\"$(datadir)/locale\" \
+libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \
+	-DLOCALEDIR=\"$(datadir)/locale\" \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
 libticalcs2_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
 libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
