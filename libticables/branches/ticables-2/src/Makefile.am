@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-DEFS = @DEFS@ -DLOCALEDIR=\"$(datadir)/locale\"
-AM_CPPFLAGS = -I$(top_srcdir)/intl
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
@@ -10,8 +8,9 @@ libticablesincludedir = $(includedir)/tilp2
 libticablesinclude_HEADERS = ticables.h export1.h stdints.h timeout.h
 
 # build instructions
-libticables2_la_CPPFLAGS = @GLIB_CFLAGS@ @LIBUSB_CFLAGS@ \
-	-DLOCALEDIR=\"$(datadir)/locale\"
+libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
+	-DLOCALEDIR=\"$(datadir)/locale\" \
+	@GLIB_CFLAGS@ @LIBUSB_CFLAGS@
 libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
 libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables2_la_SOURCES = *.h \
