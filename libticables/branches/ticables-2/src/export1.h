@@ -22,6 +22,10 @@
 #ifndef __TICABLES_EXPORT__
 #define __TICABLES_EXPORT__
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
