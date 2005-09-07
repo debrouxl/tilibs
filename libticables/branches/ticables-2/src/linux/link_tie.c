@@ -88,6 +88,7 @@ static int tie_prepare(CableHandle *h)
     return 0;
 }
 
+static int tie_reset(CableHandle *h);
 static int tie_open(CableHandle *h)
 {
     int p = h->address;
@@ -123,6 +124,8 @@ static int tie_open(CableHandle *h)
     {
 	return ERR_TIE_OPEN;
     }
+
+    TRYC(tie_reset(h));
 
   return 0;
 }

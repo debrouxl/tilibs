@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_BLK, PORT_2);
+	handle = ticables_handle_new(CABLE_GRY, PORT_2);
 	if(handle == NULL)
 	    return -1;
 
@@ -110,9 +110,7 @@ int main(int argc, char **argv)
 	sleep(1);
 #endif
 
-	exit(0);
-
-#if 0
+#if 1
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);

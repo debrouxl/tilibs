@@ -2015,7 +2015,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                            ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile src/Makefile tests/Makefile ticables2.pc"
+                                                                                ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile ticables2.pc"
 
 
 # Setup libtool.
@@ -29971,6 +29971,8 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "build/Makefile" ) CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
+  "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
+  "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
   "ticables2.pc" ) CONFIG_FILES="$CONFIG_FILES ticables2.pc" ;;

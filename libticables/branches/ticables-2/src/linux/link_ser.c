@@ -59,9 +59,12 @@ static int ser_prepare(CableHandle *h)
     return 0;
 }
 
+static int ser_reset(CableHandle *h);
 static int ser_open(CableHandle *h)
 {
     TRYC(ser_io_open(h->device, (int *)&(h->priv)));
+    TRYC(ser_reset(h));
+
     return 0;
 }
 
@@ -73,7 +76,22 @@ static int ser_close(CableHandle *h)
 
 static int ser_reset(CableHandle *h)
 {
-    ser_io_wr(dev_fd, 3);
+    tiTIME clk;
+    
+    // wait for releasing of lines
+    TO_START(clk);
+    do
+    {
+	ser_io_wr(dev_fd, 3);
+	if (TO_ELAPSED(clk, h->timeout))
+	{
+	    printf("<reset failed>\n");
+	    return 0;
+	}
+	//printf("%i", ser_io_rd(dev_fd) >> 4);
+    }
+    while ((ser_io_rd(dev_fd) & 0x30) != 0x30);
+    
     return 0;
 }
 

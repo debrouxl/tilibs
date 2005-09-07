@@ -34,6 +34,8 @@ AC_CONFIG_FILES([
   Makefile
   build/Makefile
   docs/Makefile
+  intl/Makefile
+  po/Makefile.in
   src/Makefile
   tests/Makefile
   ticables2.pc

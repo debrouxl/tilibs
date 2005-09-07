@@ -128,6 +128,9 @@ static int vti_open(CableHandle *h)
     send_buf[1] = shm[1];		// 1 -> 0: writing
     recv_buf[1] = shm[0];		// 1 <- 0: reading
 
+    for (i = 0; i < 2; i++)
+	shm[i]->start = shm[i]->end = 0;
+
     return 0;
 }
 

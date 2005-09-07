@@ -62,6 +62,7 @@ static int gry_prepare(CableHandle *h)
 	return 0;
 }
 
+static int gry_reset(CableHandle *h);
 static int gry_open(CableHandle *h)
 {
     int flags = 0;
@@ -98,6 +99,8 @@ static int gry_open(CableHandle *h)
 
     cfsetispeed(termset, B9600);
     cfsetospeed(termset, B9600);
+
+    gry_reset(h);
 
     return 0;
 }

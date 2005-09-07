@@ -51,9 +51,12 @@ static int par_prepare(CableHandle *h)
 	return 0;
 }
 
+static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
     TRYC(par_io_open(h->device, (int *)&(h->priv)));
+    TRYC(par_reset(h));
+
     return 0;
 }
 
@@ -65,7 +68,18 @@ static int par_close(CableHandle *h)
 
 static int par_reset(CableHandle *h)
 {
-    par_io_wr(dev_fd, 3);
+    tiTIME clk;
+    
+    // wait for releasing of lines
+    TO_START(clk);
+    do
+    {
+	par_io_wr(dev_fd, 3);
+	if (TO_ELAPSED(clk, h->timeout))
+	    return 0;
+    }
+    while ((par_io_rd(dev_fd) & 0x30) != 0x30);
+    
     return 0;
 }
 

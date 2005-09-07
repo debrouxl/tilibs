@@ -68,11 +68,9 @@ static int ser_open(CableHandle *h)
 	// It seems I got the same problem as FlashZ when I changed my 
 	// motherboard. Are some port broken ?
   	TRYC(win32_comport_open(h->device, &hCom));
-
   	TRYC(io_open(com_out));
   	TRYC(io_open(com_in));
-
-	ser_reset(h);
+	TRYC(ser_reset(h));
 
 	printf("<open>\n");
 	return 0;
@@ -82,8 +80,7 @@ static int ser_close(CableHandle *h)
 {
 	TRYC(io_close(com_out));
   	TRYC(io_close(com_in));
-
-    TRYC(win32_comport_close(&hCom));
+	TRYC(win32_comport_close(&hCom));
 
 	printf("<close>\n");
 	return 0;
