@@ -19,8 +19,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFILES_EXPORT__
-#define __TIFILES_EXPORT__
+#ifndef __TIFILES2_EXPORT__
+#define __TIFILES2_EXPORT__
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
