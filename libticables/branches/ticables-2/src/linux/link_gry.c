@@ -94,8 +94,9 @@ static int gry_open(CableHandle *h)
     termset->c_oflag = 0;
     termset->c_cflag = CS8 | CLOCAL | CREAD;
     termset->c_lflag = 0;
-    termset->c_cc[VTIME] = h->timeout;
 #endif
+    termset->c_cc[VMIN] = 0;
+    termset->c_cc[VTIME] = h->timeout;
     tcsetattr(dev_fd, TCSANOW, termset);
 
     cfsetispeed(termset, B9600);
@@ -155,8 +156,7 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
     
     for(i = 0; i < len; )
     {
-	ret = read(dev_fd, (void *)(data+i), len);
-	//printf("err = %i (%i)\n", ret, len);
+	ret = read(dev_fd, (void *)(data+i), len - i);
 	switch (ret) 
 	{
 	case -1:		//error
