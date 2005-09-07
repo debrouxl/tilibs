@@ -62,7 +62,6 @@ static int gry_prepare(CableHandle *h)
 	return 0;
 }
 
-static int gry_reset(CableHandle *h);
 static int gry_open(CableHandle *h)
 {
     int flags = 0;
@@ -95,12 +94,15 @@ static int gry_open(CableHandle *h)
     termset->c_oflag = 0;
     termset->c_cflag = CS8 | CLOCAL | CREAD;
     termset->c_lflag = 0;
+    termset->c_cc[VTIME] = h->timeout;
 #endif
+    tcsetattr(dev_fd, TCSANOW, termset);
 
     cfsetispeed(termset, B9600);
     cfsetospeed(termset, B9600);
 
-    gry_reset(h);
+    if(tcflush(dev_fd, TCIOFLUSH) == -1)
+        return ERR_FLUSH_ERROR;
 
     return 0;
 }
@@ -116,36 +118,23 @@ static int gry_close(CableHandle *h)
 
 static int gry_reset(CableHandle *h)
 {
-    uint8_t unused[1024];
-    int n;
+    if(tcflush(dev_fd, TCIOFLUSH) == -1)
+	return ERR_FLUSH_ERROR;
 
-    /* Flush the input */
-    termset->c_cc[VMIN] = 0;
-    termset->c_cc[VTIME] = 0;
-    tcsetattr(dev_fd, TCSANOW, termset);
-    do
-    {
-	n = read(dev_fd, (void *) unused, 1024);
-    } while ((n != 0) && (n != -1));
-
-    /* and set/restore the timeout */
-    termset->c_cc[VTIME] = h->timeout;
-    tcsetattr(dev_fd, TCSANOW, termset);
-    
     return 0;
 }
 
 static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    int err;
+    ssize_t ret;
 
-    err = write(dev_fd, (void *)data, len);
-    switch (err) 
+    ret = write(dev_fd, (void *)data, len);
+    switch (ret) 
     {
     case -1:		//error
 	return ERR_WRITE_ERROR;
     	break;
-    case 0:			// timeout
+    case 0:		// timeout
 	return ERR_WRITE_TIMEOUT;
     	break;
     }
@@ -155,19 +144,30 @@ static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 
 static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    int err;
-    
+    ssize_t ret;
+    ssize_t i;
+
     tcdrain(dev_fd);	// waits for all output written
+
+    // Doesn't work as expected by the manpage. Use a 'for' loop instead.
+    //termset->c_cc[VMIN] = len;
+    //tcsetattr(dev_fd, TCSANOW, termset);
     
-    err = read(dev_fd, (void *)data, len);
-    switch (err) 
+    for(i = 0; i < len; )
     {
-    case -1:		//error
-	return ERR_READ_ERROR;
-    	break;
-    case 0:		// timeout
-	return ERR_READ_TIMEOUT;
-    	break;
+	ret = read(dev_fd, (void *)(data+i), len);
+	//printf("err = %i (%i)\n", ret, len);
+	switch (ret) 
+	{
+	case -1:		//error
+	    return ERR_READ_ERROR;
+	    break;
+	case 0:		// timeout
+	    return ERR_READ_TIMEOUT;
+	    break;
+	}
+
+	i += ret;
     }
     
     return 0;
@@ -277,6 +277,7 @@ static int gry_timeout(CableHandle *h)
 {
     termset->c_cc[VTIME] = h->timeout;
     tcsetattr(dev_fd, TCSANOW, termset);
+    
     return 0;
 }
 

@@ -36,6 +36,7 @@ typedef enum
     ERR_WRITE_ERROR,
     ERR_WRITE_TIMEOUT=6,	// Must be 6
     ERR_PROBE_FAILED,
+    ERR_FLUSH_ERROR,
     
     ERR_GRY_CREATEFILE,
     ERR_GRY_SETUPCOMM,

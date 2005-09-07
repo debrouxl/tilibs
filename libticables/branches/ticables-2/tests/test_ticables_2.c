@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 
 #if 1
 	// do a simple test with a TI89/92+ calculator
-	buf[0] = 0x09; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
+	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);
 	if(err) print_lc_error(err);
 
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 0
+#if 1
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);
