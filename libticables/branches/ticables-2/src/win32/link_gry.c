@@ -135,6 +135,13 @@ static int gry_open(CableHandle *h)
 		return ERR_GRY_SETCOMMMASK;
     }
 
+	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
+	if (!fSuccess) 
+	{
+		ticables_warning("PurgeComm");
+		return ERR_GRY_PURGECOMM;
+	}
+
 	return 0;
 }
 

@@ -56,8 +56,6 @@ static int par_prepare(CableHandle *h)
 static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
-	tiTIME clk;
-
 	TRYC(io_open(h->address));
 #ifdef __WIN32__
 	// needed for circumventing a strange problem with PortTalk & Win2k
