@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_GRY, PORT_2);
+	handle = ticables_handle_new(CABLE_BLK, PORT_2);
 	if(handle == NULL)
 	    return -1;
 
