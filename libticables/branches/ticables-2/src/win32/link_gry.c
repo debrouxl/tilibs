@@ -55,7 +55,7 @@ static int gry_open(CableHandle *h)
 	// Open device
 	hCom = CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
 		    NULL, OPEN_EXISTING, 
-			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED | FILE_FLAG_NO_BUFFERING,
+			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED /*| FILE_FLAG_NO_BUFFERING*/,
 			NULL);
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
@@ -105,7 +105,11 @@ static int gry_open(CableHandle *h)
 		ticables_warning("SetCommState");
 		return ERR_GRY_SETCOMMSTATE;
     }
+
+	// Wait for GrayLink to be ready
+	Sleep(250);
   
+	// Set timeouts
     fSuccess = GetCommTimeouts(hCom, &cto);
     if (!fSuccess) 
     {
@@ -128,6 +132,7 @@ static int gry_open(CableHandle *h)
 		return ERR_GRY_SETCOMMTIMEOUT;
     }
 
+	// Monitor receiving of chars
 	fSuccess = SetCommMask(hCom, EV_RXCHAR);
 	if (!fSuccess)
     {
@@ -135,6 +140,7 @@ static int gry_open(CableHandle *h)
 		return ERR_GRY_SETCOMMMASK;
     }
 
+	// Flush/Dicard buffers
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if (!fSuccess) 
 	{
@@ -272,15 +278,30 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 static int gry_check(CableHandle *h, int *status)
 {
 	BOOL fSuccess;
-	DWORD dwEvtMask;
-	OVERLAPPED ol;
+	static DWORD dwEvtMask = 0;
+	static OVERLAPPED ol = { 0 };
 
-	memset(&ol, 0, sizeof(OVERLAPPED));
-    fSuccess = WaitCommEvent(hCom, &dwEvtMask, &ol);
-	
-	if(HasOverlappedIoCompleted(&ol))
-		if(dwEvtMask & EV_RXCHAR)
-			*status = STATUS_RX;
+	static BOOL iop;
+	static BOOL ioPending = FALSE;
+
+	if(ioPending == FALSE)
+	{
+		memset(&ol, 0, sizeof(OVERLAPPED));
+		fSuccess = WaitCommEvent(hCom, &dwEvtMask, &ol);
+
+		ioPending = TRUE;
+		printf("$ (%i)\n", ioPending);
+	}
+	else
+	{
+		if(HasOverlappedIoCompleted(&ol))
+			if(dwEvtMask & EV_RXCHAR)
+			{
+				*status = STATUS_RX;
+				printf("#\n");
+				ioPending = FALSE;
+			}
+	}
 
 	return 0;
 }

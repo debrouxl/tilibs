@@ -70,7 +70,9 @@ static int ser_open(CableHandle *h)
   	TRYC(win32_comport_open(h->device, &hCom));
   	TRYC(io_open(com_out));
   	TRYC(io_open(com_in));
+
 	TRYC(ser_reset(h));
+	Sleep(2000);	// needs this because serial lines can be low at startup
 
 	printf("<open>\n");
 	return 0;
@@ -90,21 +92,23 @@ static int ser_reset(CableHandle *h)
 {
 	tiTIME clk;
 
+	printf("<reset state before> : %i\n", io_rd(com_in) >> 4);
+#if 1
 	// wait for releasing of lines
     TO_START(clk);
 	do 
 	{
 		io_wr(com_out, 3);
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, 30/*h->timeout*/))
 		{
-			printf("<reset failed>\n");
+			printf("<reset failed> : %i\n", io_rd(com_in) >> 4);
 	  		return 0;
 		}
 		//printf("%i", io_rd(com_in) >> 4);
     } 
 	while ((io_rd(com_in) & 0x30) != 0x30);
-
-	printf("<reset>\n");
+#endif
+	printf("<reset state after> : %i\n", io_rd(com_in) >> 4);
 	return 0;
 }
 
@@ -209,9 +213,10 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
     		for (i = 0; i < h->delay; i++)
       			io_rd(com_in);
   		}
+
+		printf("<put>\n");
 	}
 
-	printf("<put>\n");
 	return 0;
 }
 
@@ -267,9 +272,9 @@ static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
   		}
 
   		data[j] = byte;
+		printf("<get>\n");
 	}
 
-	printf("<get>\n");
 	return 0;
 }
 
