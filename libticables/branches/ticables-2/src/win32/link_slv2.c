@@ -31,6 +31,8 @@
 #include "detect.h"
 #include "../error.h"
 
+//!!!!!!!!!!!!!!! Not used, for testing purposes !!!!!!!!!!!!!!
+
 /* 
    This part talk with the USB device driver through the TiglUsb library.
    This module need TiglUsb.h (interface) but does not need TiglUsb.lib (linkage).

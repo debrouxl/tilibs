@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_BLK, PORT_2);
+	handle = ticables_handle_new(CABLE_GRY, PORT_2);
 	if(handle == NULL)
 	    return -1;
 
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 #endif
 
-#if 1
+#if 0
 	// simple test for data arrival detection
 	buf[0] = 0x08;  buf[1] = 0x87; buf[2] = 'A'; buf[3] = 0x00;		// KEY
 	err = ticables_cable_send(handle, buf, 4);
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 0
+#if 1
 	for(status = 0; !status;)
 	{
 		err = ticables_cable_check(handle, &status);

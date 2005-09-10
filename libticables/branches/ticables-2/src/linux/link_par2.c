@@ -19,6 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+//!!!!!!!!!!!!!! Not used, for testing purposes !!!!!!!!!!!!!!
+
 /* "Home-made parallel" link cable unit */
 
 #include <stdio.h>

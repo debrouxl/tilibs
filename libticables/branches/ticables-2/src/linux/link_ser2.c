@@ -19,6 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+//!!!!!!!!!!!!!! Not used, for testing purposes !!!!!!!!!!!!!!
+
 /* "Home-made serial" link & "Black TIGraphLink" link unit (low-level I/O routines) */
 
 #ifdef HAVE_CONFIG_H
