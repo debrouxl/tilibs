@@ -41,7 +41,7 @@ static void print_lc_error(int errnum)
 	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", 
 		errnum, msg);
 
-	free(msg);
+	//free(msg);
 
 }
 
@@ -102,14 +102,6 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 	if(err) return -1;
 
-	//wait
-	printf("Wait 1 second...\n");
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	Sleep(1000);
-#else
-	sleep(1);
-#endif
-
 #if 1
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
@@ -126,7 +118,7 @@ int main(int argc, char **argv)
 	printf("\n");
 #endif
 
-#if 1
+#if 0
 	// do a screendump
 	buf[0] = 0x08;  buf[1] = 0x6D; buf[2] = 0x00; buf[3] = 0x00;	// SCR
 	err = ticables_cable_send(handle, buf, 4);
@@ -145,10 +137,49 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 #endif
 
+#if 1
+	// simple test for data arrival detection
+	buf[0] = 0x08;  buf[1] = 0x87; buf[2] = 'A'; buf[3] = 0x00;		// KEY
+	err = ticables_cable_send(handle, buf, 4);
+	if(err) print_lc_error(err);
+
+	for(status = 0; !status;)
+	{
+		err = ticables_cable_check(handle, &status);
+		if(err) print_lc_error(err);
+	}
+
+	// display answer
+	memset(buf, 0xff, 4);
+	err = ticables_cable_recv(handle, buf, 4);
+	if(err) print_lc_error(err);
+
+	for(i = 0; i < 4; i++)
+		printf("%02x ", buf[i]);
+	printf("\n");
+#endif
+
+#if 0
+	for(status = 0; !status;)
+	{
+		err = ticables_cable_check(handle, &status);
+		if(err) print_lc_error(err);
+	}
+
+	// display answer
+	memset(buf, 0xff, 4);
+	err = ticables_cable_recv(handle, buf, 4);
+	if(err) print_lc_error(err);
+
+	for(i = 0; i < 4; i++)
+		printf("%02x ", buf[i]);
+	printf("\n");
+#endif
+
 	// close cable
 	ticables_cable_close(handle);
 
-        // release handle
+    // release handle
 	ticables_handle_del(handle);
 	
 	// exit lib

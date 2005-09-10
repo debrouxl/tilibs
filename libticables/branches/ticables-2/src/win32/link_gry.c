@@ -30,7 +30,14 @@
 #include "../gettext.h"
 #include "detect.h"
 
-#define hCom	(HANDLE)(h->priv)
+typedef struct 
+{
+  uint8_t	data;
+  BOOL		avail;
+} CHK;
+
+#define hCom	((HANDLE)(h->priv))
+#define	sCheck	((CHK*)(h->priv2))
 
 static int gry_prepare(CableHandle *h)
 {
@@ -42,6 +49,8 @@ static int gry_prepare(CableHandle *h)
 	case PORT_4: h->address = 0x3e8; h->device = strdup("COM4"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
+
+	h->priv2 = calloc(1, sizeof(CHK));
 
 	return 0;
 }
@@ -55,7 +64,7 @@ static int gry_open(CableHandle *h)
 	// Open device
 	hCom = CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
 		    NULL, OPEN_EXISTING, 
-			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED /*| FILE_FLAG_NO_BUFFERING*/,
+			FILE_ATTRIBUTE_NORMAL /*| FILE_FLAG_NO_BUFFERING*/,
 			NULL);
 	if (hCom == INVALID_HANDLE_VALUE) 
 	{
@@ -117,10 +126,10 @@ static int gry_open(CableHandle *h)
 		return ERR_GRY_GETCOMMTIMEOUT;
     }
   
-    cto.ReadIntervalTimeout = 100 * h->timeout;
+    cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
 
     cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 100 * h->timeout;  
+    cto.ReadTotalTimeoutConstant = 0;	
     
     cto.WriteTotalTimeoutMultiplier = 0;
     cto.WriteTotalTimeoutConstant = 100 * h->timeout;
@@ -157,6 +166,9 @@ static int gry_close(CableHandle *h)
 	{
 		CloseHandle(hCom);
 		hCom = INVALID_HANDLE_VALUE;
+
+		free(h->priv2);
+		h->priv2 = NULL;
 	}
 
 	return 0;
@@ -217,14 +229,9 @@ static int gry_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesWritten;
-	OVERLAPPED ol;
 
-	memset(&ol, 0, sizeof(OVERLAPPED));
-    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, &ol);
+    fSuccess = WriteFile(hCom, data, len, &nBytesWritten, NULL);
 
-	while(HasOverlappedIoCompleted(&ol) == FALSE) Sleep(0);
-
-	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesWritten, FALSE);
     if (!fSuccess) 
     {
 		ticables_warning("WriteFile");
@@ -248,28 +255,42 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
 	BOOL fSuccess;
 	DWORD nBytesRead;
-	OVERLAPPED ol;
+	tiTIME clk;
+	uint32_t i;
 
-	memset(&ol, 0, sizeof(OVERLAPPED));
-    fSuccess = ReadFile(hCom, data, len, &nBytesRead, &ol);
-
-	while(HasOverlappedIoCompleted(&ol) == FALSE) Sleep(0);
-
-	fSuccess = GetOverlappedResult(hCom, &ol, &nBytesRead, FALSE);
-	if (!fSuccess) 
-    {
-		ticables_warning("ReadFile");
-		return ERR_READ_ERROR;
-    }
-	else if (nBytesRead == 0) 
-    {
-		ticables_warning("ReadFile");
-		return ERR_READ_TIMEOUT;
-    }
-	else if (nBytesRead < len)
+	if(sCheck->avail) 
 	{
-		ticables_warning("ReadFile");
-		return ERR_READ_ERROR;
+		*data = sCheck->data;
+		sCheck->avail = FALSE;
+
+		data++;
+		len--;
+	}
+
+	// get data per chunks
+	for(i = 0; i < len;)
+	{
+		TO_START(clk);
+		do
+		{
+			fSuccess = ReadFile(hCom, data + i, len - i, &nBytesRead, NULL);
+			if (TO_ELAPSED(clk, h->timeout))
+				return ERR_READ_TIMEOUT;
+		}
+		while(nBytesRead == 0);
+
+		if (!fSuccess) 
+		{
+			ticables_warning("ReadFile");
+			return ERR_READ_ERROR;
+		}
+		else if (nBytesRead == 0) 
+		{
+			ticables_warning("ReadFile");
+			return ERR_READ_TIMEOUT;
+		}
+
+		i += nBytesRead;
 	}
   	
   	return 0;
@@ -278,30 +299,20 @@ static int gry_get(CableHandle* h, uint8_t *data, uint32_t len)
 static int gry_check(CableHandle *h, int *status)
 {
 	BOOL fSuccess;
-	static DWORD dwEvtMask = 0;
-	static OVERLAPPED ol = { 0 };
+	DWORD nBytesRead;
+	uint8_t data;
+	
+	*status = 0;
+	fSuccess = ReadFile(hCom, &sCheck->data, 1, &nBytesRead, NULL);
 
-	static BOOL iop;
-	static BOOL ioPending = FALSE;
-
-	if(ioPending == FALSE)
+    if (fSuccess && (nBytesRead == 1)) 
 	{
-		memset(&ol, 0, sizeof(OVERLAPPED));
-		fSuccess = WaitCommEvent(hCom, &dwEvtMask, &ol);
+		data = sCheck->data;
+		sCheck->avail = TRUE;
+		*status = STATUS_RX;
 
-		ioPending = TRUE;
-		printf("$ (%i)\n", ioPending);
-	}
-	else
-	{
-		if(HasOverlappedIoCompleted(&ol))
-			if(dwEvtMask & EV_RXCHAR)
-			{
-				*status = STATUS_RX;
-				printf("#\n");
-				ioPending = FALSE;
-			}
-	}
+		return 0;
+    } 
 
 	return 0;
 }
@@ -331,10 +342,10 @@ static int gry_timeout(CableHandle *h)
 	BOOL fSuccess;
 	COMMTIMEOUTS cto;
 
-    cto.ReadIntervalTimeout = 100 * h->timeout;
+    cto.ReadIntervalTimeout = MAXDWORD;	// don't use time-outs (make non-blocking)
 
     cto.ReadTotalTimeoutMultiplier = 0;
-    cto.ReadTotalTimeoutConstant = 100 * h->timeout;  
+    cto.ReadTotalTimeoutConstant = 0;	
     
     cto.WriteTotalTimeoutMultiplier = 0;
     cto.WriteTotalTimeoutConstant = 100 * h->timeout;
