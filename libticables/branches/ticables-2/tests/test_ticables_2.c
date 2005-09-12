@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ticables_library_init();
 
 	// set cable
-	handle = ticables_handle_new(CABLE_GRY, PORT_2);
+	handle = ticables_handle_new(CABLE_SLV, PORT_1);
 	if(handle == NULL)
 	    return -1;
 
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);
 	if(err) print_lc_error(err);
-
+	 
 	// display answer
 	memset(buf, 0xff, 4);
 	err = ticables_cable_recv(handle, buf, 4);
@@ -162,6 +162,8 @@ int main(int argc, char **argv)
 #if 1
 	for(status = 0; !status;)
 	{
+	    //fprintf(stdout, "$\n");
+	    //fflush(stdout);
 		err = ticables_cable_check(handle, &status);
 		if(err) print_lc_error(err);
 	}

@@ -4,6 +4,9 @@
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *  Copyright (C) 2001 Julien Blache (original author)
+ *  Portions lifted from libusb (LGPL):
+ *  Copyright (c) 2000-2003 Johannes Erdfelt <johannes@erdfelt.com>
+ *  Modifications for libticables Copyright (C) 2005 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,6 +52,11 @@
    reply and takes a while), a read call can returns with neither data 
    nor timeout. Simply retry a read call and it works fine. The best example 
    is to get IDLIST.
+
+   - for checking, under Linux, we use a hack by Kevin Kofler (based on the
+   libusb source code, and inspired by Romain's Windows driver). This is for
+   Linux ONLY, not for other POSIX-like systems (it directly uses Linux kernel
+   interfaces).
 */
 
 #ifdef HAVE_CONFIG_H
@@ -58,11 +66,105 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 #include <usb.h>
+#include <sys/ioctl.h>
+
+#ifdef __LINUX__
+/* the libusb internal structure from usbi.h */
+struct usb_dev_handle {
+  int fd;
+
+  struct usb_bus *bus;
+  struct usb_device *device;
+
+  int config;
+  int interface;
+  int altsetting;
+
+  void *impl_info;
+};
+
+/* another pair of libusb internal structures from linux.h */
+struct usb_iso_packet_desc {
+	unsigned int length;
+	unsigned int actual_length;
+	unsigned int status;
+};
+struct usb_urb {
+	unsigned char type;
+	unsigned char endpoint;
+	int status;
+	unsigned int flags;
+	void *buffer;
+	int buffer_length;
+	int actual_length;
+	int start_frame;
+	int number_of_packets;
+	int error_count;
+	unsigned int signr;
+	void *usercontext;
+	struct usb_iso_packet_desc iso_frame_desc[];
+};
+
+/* definitions from the libusb linux.h */
+#define USB_URB_TYPE_BULK	3
+#define IOCTL_USB_CONTROL	_IOWR('U', 0, struct usb_ctrltransfer)
+#define IOCTL_USB_BULK		_IOWR('U', 2, struct usb_bulktransfer)
+#define IOCTL_USB_RESETEP	_IOR('U', 3, unsigned int)
+#define IOCTL_USB_SETINTF	_IOR('U', 4, struct usb_setinterface)
+#define IOCTL_USB_SETCONFIG	_IOR('U', 5, unsigned int)
+#define IOCTL_USB_GETDRIVER	_IOW('U', 8, struct usb_getdriver)
+#define IOCTL_USB_SUBMITURB	_IOR('U', 10, struct usb_urb)
+#define IOCTL_USB_DISCARDURB	_IO('U', 11)
+#define IOCTL_USB_REAPURB	_IOW('U', 12, void *)
+#define IOCTL_USB_REAPURBNDELAY	_IOW('U', 13, void *)
+#define IOCTL_USB_CLAIMINTF	_IOR('U', 15, unsigned int)
+#define IOCTL_USB_RELEASEINTF	_IOR('U', 16, unsigned int)
+#define IOCTL_USB_CONNECTINFO	_IOW('U', 17, struct usb_connectinfo)
+#define IOCTL_USB_IOCTL         _IOWR('U', 18, struct usb_ioctl)
+#define IOCTL_USB_HUB_PORTINFO	_IOR('U', 19, struct usb_hub_portinfo)
+#define IOCTL_USB_RESET		_IO('U', 20)
+#define IOCTL_USB_CLEAR_HALT	_IOR('U', 21, unsigned int)
+#define IOCTL_USB_DISCONNECT	_IO('U', 22)
+#define IOCTL_USB_CONNECT	_IO('U', 23)
+
+/* definitions to set the libusb error string from the libusb error.h */
+typedef enum {
+  USB_ERROR_TYPE_NONE = 0,
+  USB_ERROR_TYPE_STRING,
+  USB_ERROR_TYPE_ERRNO,
+} usb_error_type_t;
+
+extern char usb_error_str[1024];
+extern int usb_error_errno;
+extern usb_error_type_t usb_error_type;
+extern int usb_debug;
+
+#define USB_ERROR(x) \
+	do { \
+          usb_error_type = USB_ERROR_TYPE_ERRNO; \
+          usb_error_errno = x; \
+	  return x; \
+	} while (0)
+
+#define USB_ERROR_STR(x, format, args...) \
+	do { \
+	  usb_error_type = USB_ERROR_TYPE_STRING; \
+	  snprintf(usb_error_str, sizeof(usb_error_str) - 1, format, ## args); \
+          if (usb_debug >= 2) \
+            fprintf(stderr, "USB error: %s\n", usb_error_str); \
+	  return x; \
+	} while (0)
+
+/* variables for slv_check and slv_bulk_read */
+static int io_pending = 0;
+static struct usb_urb urb;
+#endif
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -372,6 +474,121 @@ static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
     return send_block(h, data, len);
 }
 
+#ifdef __LINUX__
+#define MAX_READ_WRITE  (16 * 1024)
+static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
+	int timeout)
+{
+	// This is a variant of usb_bulk_read in libusb, edited to take the
+	// io_pending variable set in slv_check into account.
+	unsigned int bytesdone = 0, requested;
+	struct timeval tv, tv_ref, tv_now;
+	void *context;
+	int ret, waiting;
+
+	/*
+	 * FIXME: The use of the URB interface is incorrect here if there are
+	 * multiple callers at the same time. We assume we're the only caller
+	 * and if we get completions from another caller, this code will fail
+	 * in interesting ways.
+	 */
+
+	/*
+	 * Get actual time, and add the timeout value. The result is the absolute
+	 * time where we have to quit waiting for an message.
+	 */
+	gettimeofday(&tv_ref, NULL);
+	tv_ref.tv_sec = tv_ref.tv_sec + timeout / 1000;
+	tv_ref.tv_usec = tv_ref.tv_usec + (timeout % 1000) * 1000;
+
+	if (tv_ref.tv_usec > 1000000) {
+		tv_ref.tv_usec -= 1000000;
+		tv_ref.tv_sec++;
+	}
+
+	do {
+		fd_set writefds;
+
+		requested = size - bytesdone;
+		if (requested > MAX_READ_WRITE)
+			requested = MAX_READ_WRITE;
+
+		if (io_pending)
+			io_pending = FALSE;
+		else
+		{
+			urb.type = USB_URB_TYPE_BULK;
+			urb.endpoint = ep;
+			urb.flags = 0;
+			urb.buffer = bytes + bytesdone;
+			urb.buffer_length = requested;
+			urb.usercontext = (void *)ep;
+			urb.signr = 0;
+			urb.actual_length = 0;
+			urb.number_of_packets = 0;	/* don't do isochronous yet */
+
+			ret = ioctl(dev->fd, IOCTL_USB_SUBMITURB, &urb);
+			if (ret < 0) {
+				USB_ERROR_STR(-errno, "error submitting URB: %s", strerror(errno));
+				return ret;
+			}
+		}
+
+		FD_ZERO(&writefds);
+		FD_SET(dev->fd, &writefds);
+
+		waiting = 1;
+		while (((ret = ioctl(dev->fd, IOCTL_USB_REAPURBNDELAY, &context)) == -1) && waiting) {
+			tv.tv_sec = 0;
+			tv.tv_usec = 1000; // 1 msec
+			select(dev->fd + 1, NULL, &writefds, NULL, &tv); //sub second wait
+
+			/* compare with actual time, as the select timeout is not that precise */
+			gettimeofday(&tv_now, NULL);
+
+			if ((tv_now.tv_sec > tv_ref.tv_sec) ||
+			    ((tv_now.tv_sec == tv_ref.tv_sec) && (tv_now.tv_usec >= tv_ref.tv_usec)))
+				waiting = 0;
+		}
+
+		/*
+		 * If there was an error, that wasn't EAGAIN (no completion), then
+		 * something happened during the reaping and we should return that
+		 * error now
+		 */
+		if (ret < 0 && errno != EAGAIN)
+			USB_ERROR_STR(-errno, "error reaping URB: %s", strerror(errno));
+
+		bytesdone += urb.actual_length;
+	} while (ret == 0 && bytesdone < size && urb.actual_length == requested);
+
+	/* If the URB didn't complete in success or error, then let's unlink it */
+	if (ret < 0) {
+		int rc;
+
+		if (!waiting)
+			rc = -ETIMEDOUT;
+		else
+			rc = urb.status;
+
+		ret = ioctl(dev->fd, IOCTL_USB_DISCARDURB, &urb);
+		if (ret < 0 && errno != EINVAL && usb_debug >= 1)
+			fprintf(stderr, "error discarding URB: %s", strerror(errno));
+
+		/*
+		 * When the URB is unlinked, it gets moved to the completed list and
+		 * then we need to reap it or else the next time we call this function,
+		 * we'll get the previous completion and exit early
+		 */
+		ioctl(dev->fd, IOCTL_USB_REAPURB, &context);
+
+		return rc;
+	}
+
+	return bytesdone;
+}
+#endif
+
 static int slv_get_(CableHandle *h, uint8_t *data)
 {
     int ret = 0;
@@ -384,8 +601,13 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	TO_START(clk);
 	do 
 	{
+#ifdef __LINUX__
+	    ret = slv_bulk_read2(tigl_han, TIGL_BULK_IN, (char*)rBuf, 
+				max_ps, to);
+#else
 	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
+#endif
 
 	    if (TO_ELAPSED(clk, h->timeout))
 	    {
@@ -399,19 +621,19 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	
 	if(ret == -ETIMEDOUT) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_TIMEOUT;
 	} 
 	else if(ret == -EPIPE) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	} 
 	else if(ret < 0) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	}
@@ -471,8 +693,64 @@ static int raw_probe(CableHandle *h)
 
 static int slv_check(CableHandle *h, int *status)
 {
-    // no way to check yet
-  	return 0;
+#ifdef __LINUX__
+    // This really should be in libusb, but alas it isn't, so their code was
+    // adapted by Kevin Kofler for use here. It's required to get TiEmu 3 to
+    // work with the SilverLink.
+
+	void *context;
+	int ret;
+
+	if (!io_pending)
+	{
+		urb.type = USB_URB_TYPE_BULK;
+		urb.endpoint = TIGL_BULK_IN;
+		urb.flags = 0;
+		urb.buffer = (char*)rBuf;
+		urb.buffer_length = max_ps;
+		urb.usercontext = (void *)TIGL_BULK_IN;
+		urb.signr = 0;
+		urb.actual_length = 0;
+		urb.number_of_packets = 0;
+
+		ret = ioctl(tigl_han->fd, IOCTL_USB_SUBMITURB, &urb);
+		if (ret < 0)
+			return ERR_READ_ERROR;
+		io_pending = TRUE;
+	}
+
+	ret = ioctl(tigl_han->fd, IOCTL_USB_REAPURBNDELAY, &context);
+	if (ret < 0 && errno != EAGAIN)
+	{
+		// Error, unlink URB and return failure.
+		ioctl(tigl_han->fd, IOCTL_USB_DISCARDURB, &urb);
+
+		/*
+		 * When the URB is unlinked, it gets moved to the completed list and
+		 * then we need to reap it or else the next time we call this function,
+		 * we'll get the previous completion and exit early
+		 */
+		ioctl(tigl_han->fd, IOCTL_USB_REAPURB, &context);
+
+		io_pending = FALSE;
+		return ERR_READ_ERROR;
+	}
+
+	if (ret >= 0)
+	{
+		io_pending = FALSE;
+		if (urb.actual_length > 0)
+		{
+			nBytesRead = urb.actual_length;
+			rBufPtr = rBuf;
+			*status = STATUS_RX; // data available
+		}
+	}
+	return 0;
+#else
+	// no way to check yet
+	return 0;
+#endif
 }
 
 static int slv_set_red_wire(CableHandle *h, int b)
