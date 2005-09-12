@@ -399,19 +399,19 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	
 	if(ret == -ETIMEDOUT) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_TIMEOUT;
 	} 
 	else if(ret == -EPIPE) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	} 
 	else if(ret < 0) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	}
