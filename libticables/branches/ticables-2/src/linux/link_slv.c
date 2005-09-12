@@ -701,6 +701,12 @@ static int slv_check(CableHandle *h, int *status)
 	void *context;
 	int ret;
 
+	if(nBytesRead > 0)
+        {
+	    *status = !0;
+	    return 0;
+        }
+
 	if (!io_pending)
 	{
 		urb.type = USB_URB_TYPE_BULK;
