@@ -7,7 +7,7 @@ lib_LTLIBRARIES = libtifiles2.la
 libtifilesincludedir = $(includedir)/tilp2
 libtifilesinclude_HEADERS = \
 	export2.h stdints.h tifiles.h files8x.h files9x.h \
-	types*.h
+	types*.h macros.h
 
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
