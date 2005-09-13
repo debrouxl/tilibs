@@ -23,6 +23,7 @@
 #define __WIN32_IOPORTS__
 
 #include <stdio.h>
+#include <windows.h>
 
 int io_open(unsigned long from);
 int io_close(unsigned long from);

@@ -27,6 +27,10 @@
 #include "detect.h"
 #include "porttalk.h"
 
+#ifdef __MINGW32__
+#include "porttalk.c"
+#endif
+
 int win32_detect_os(void)
 {
 	OSVERSIONINFO os;

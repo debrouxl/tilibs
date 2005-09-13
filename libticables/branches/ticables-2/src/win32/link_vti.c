@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <windows.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -44,9 +45,9 @@
 /* VTi's LinkBuffer structure */
 typedef struct 
 {
-	BYTE	buf[BUFSIZE];
-	int	start;
-	int	end;
+	uint8_t	buf[BUFSIZE];
+	int		start;
+	int		end;
 } LinkBuffer;
 
 static LinkBuffer*	vSendBuf = NULL;

@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <windows.h>
 
 #include "../ticables.h"
 #include "../logging.h"
@@ -56,9 +57,9 @@ static int volatile	ref_cnt = 0;	// Counter of library instances
 
 typedef struct 
 {
-	BYTE buf[BUFSIZE];
-	int start;
-	int end;
+	uint8_t buf[BUFSIZE];
+	int		start;
+	int		end;
 } LinkBuffer;
 
 static HANDLE hSendBuf = NULL;
