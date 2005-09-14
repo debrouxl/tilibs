@@ -9,6 +9,12 @@ To do:
 
 Log:
 
+- 14/09/2005, version 0.0.2: roms
+	- file checksums
+	- buffer overflow in tixx_translate functions
+	- fixed build of docs/ (Tijl)
+	- export missing macros.h
+
 - 04/06/2005, version 0.0.1: roms
 	- added transcode function to API for future implementation
 	- removed 'name' field of VarEntry: make confusion
