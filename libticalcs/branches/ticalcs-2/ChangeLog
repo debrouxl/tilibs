@@ -8,6 +8,14 @@ To do :
 
 Log:
 
+- 14/09/2005, version 0.0.2: roms
+	- fixed/updated recv_var_ns routines
+	- fixed build of /docs (Tijl)
+	- TI73/8X+ auto-probe support updated. Calculator probing updated.
+		Note: host check has been disabled in dbus_recv_ because ticalcs_probe 
+		may be used on any TI9x calc.
+	- fixed non-exported symbol because exportX.h didn't include config.h (fvisibility).
+
 - 15/05/2005, version 0.0.1: roms
 	- logging reworked (use glib)
 	- a single public header with functions & defs, others are private
