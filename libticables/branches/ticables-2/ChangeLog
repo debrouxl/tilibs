@@ -2,6 +2,17 @@ SubVersion: $Id$
 
 Log:
 
+- 14/09/2005, version 0.0.2: roms
+	- fixed compilation issues with MinGW
+	- check mode supported by SilverLink under Linux (Kevin)
+	- rewritten GrayLink support (WaitCommEvent is broken)
+	- tempo for link opening
+	- reset cable at opening stage
+	- fixed build of doc/ (Tijl)
+	- *BSD port (Tijl)
+	- linkport cable for specific TiEmu use
+	- some enhancements
+
 - 02/05/2005, version 0.0.1: roms
 	- API frozen
 	- added working probing support
