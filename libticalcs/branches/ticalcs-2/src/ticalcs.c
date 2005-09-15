@@ -117,13 +117,18 @@ hDll = GetModuleHandle("ticalcs2.dll");
 #endif
   	GetModuleFileName(hDll, locale_dir, 65535);
   	
-  	for (i = strlen(locale_dir); i >= 0; i--) {
+  	for (i = strlen(locale_dir); i >= 0; i--) 
+	{
     	if (locale_dir[i] == '\\')
       		break;
-  	}
-  	
+  	}  	
   	locale_dir[i] = '\0';
-  	strcat(locale_dir, "\\locale");
+
+#ifdef __MINGW32__
+   strcat(locale_dir, "\\..\\share\\locale");
+#else
+   strcat(locale_dir, "\\locale");
+#endif
 #else
 	strcpy(locale_dir, LOCALEDIR);
 #endif
