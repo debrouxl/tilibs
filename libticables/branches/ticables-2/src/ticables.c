@@ -92,7 +92,11 @@ TIEXPORT int TICALL ticables_library_init(void)
   	HANDLE hDll;
   	int i;
 
-  	hDll = GetModuleHandle("cables2.dll");
+#ifdef __MINGW32__
+hDll = GetModuleHandle("libticabes2-0.dll");
+#else
+hDll = GetModuleHandle("ticables2.dll");
+#endif
   	GetModuleFileName(hDll, locale_dir, 65535);
 
   	for (i = strlen(locale_dir); i >= 0; i--) {
