@@ -73,10 +73,14 @@ hDll = GetModuleHandle("tifiles2.dll");
 	{
     		if (locale_dir[i] == '\\')
       			break;
-  	}
-  	
+  	}  	
   	locale_dir[i] = '\0';
-  	strcat(locale_dir, "\\locale");
+
+#ifdef __MINGW32__
+   strcat(locale_dir, "\\..\\share\\locale");
+#else
+   strcat(locale_dir, "\\locale");
+#endif
 #else
 	strcpy(locale_dir, LOCALEDIR);
 #endif
