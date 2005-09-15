@@ -9,6 +9,9 @@ To do:
 
 Log:
 
+- 15/09/2005, roms
+	- Fixed reading of TIB files.
+
 - 14/09/2005, version 0.0.2: roms
 	- file checksums
 	- buffer overflow in tixx_translate functions

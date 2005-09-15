@@ -383,7 +383,7 @@ TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
-	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
+	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)) || tifiles_file_is_tib(filename))
 		return ti9x_file_read_flash(filename, content);
 	else
 #endif
