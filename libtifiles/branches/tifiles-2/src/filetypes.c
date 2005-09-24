@@ -616,6 +616,8 @@ TIEXPORT CalcModel TICALL tifiles_file_get_model(const char *filename)
     type = CALC_TI92P;
   else if (!g_ascii_strcasecmp(str, "V2"))
     type = CALC_V200;
+  //else if (!g_ascii_strcasecmp(str, "tib"))
+    //type = CALC_TI89;	// consider .tib as TI89
   else
     type = CALC_NONE;
 
