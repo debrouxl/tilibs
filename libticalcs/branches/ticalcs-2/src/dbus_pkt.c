@@ -73,7 +73,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 		buf[3] = MSB(length);
 
 		// copy data
-		memcpy(buf+4, data, len);
+		memcpy(buf+4, data, length);
 
 		// add checksum of packet
 		sum = tifiles_checksum(data, length);
@@ -91,8 +91,6 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 		handle->updat->max1 = length + 6;
 		handle->updat->cnt1 = 0;
 
-		//printf("<<%i %i %i %i>>\n", length+6, q, r, BLK_SIZE);
-
 		// send full chunks
 		for(i = 0; i < q; i++)
 		{
@@ -100,7 +98,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += BLK_SIZE;
-			if(len > MIN_SIZE)
+			if(length > MIN_SIZE)
 				handle->updat->pbar();
 
 			if (handle->updat->cancel)
@@ -113,7 +111,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += 1;
-			if(len > MIN_SIZE)
+			if(length > MIN_SIZE)
 				handle->updat->pbar();
 		}
 	}
@@ -177,8 +175,6 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	*host = buf[0];
 	*cmd = buf[1];
 	*length = buf[2] | (buf[3] << 8);
-
-	tifiles_hexdump(buf, 4);
 
 	//removed for probing (pb here !)
 	//if(host_check && (*host != host_ids(handle))) 

@@ -8,6 +8,9 @@ To do :
 
 Log:
 
+- 24/09/2005, version 0.0.3: roms
+	- fixed critical bug in dbus_send: use len instead of length which makes 64KB blocks copied as 0B blocks :-(
+
 - 14/09/2005, version 0.0.2: roms
 	- fixed/updated recv_var_ns routines
 	- fixed build of /docs (Tijl)
