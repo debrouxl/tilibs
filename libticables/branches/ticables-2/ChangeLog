@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 25/09/2005, version 0.0.3: roms
+	- modified TiEmu virtual link: don't use .shared section any more.
+		This breaks compat with older revision of the library but we are still in beta stage.
+
 - 14/09/2005, version 0.0.2: roms
 	- fixed compilation issues with MinGW
 	- check mode supported by SilverLink under Linux (Kevin)

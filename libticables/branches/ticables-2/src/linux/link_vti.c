@@ -49,7 +49,7 @@
 
 #define BUF_SIZE 1*1024
 
-/* Circular buffer (O: TIEmu, 1: TiLP) */
+/* Circular buffer (0: TIEmu, 1: TiLP) */
 typedef struct
 {
     uint8_t buf[BUF_SIZE];

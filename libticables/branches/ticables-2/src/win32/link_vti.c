@@ -80,7 +80,7 @@ static int vti_open(CableHandle *h)
 	int i;
 	char vLinkFileName[32];
 	char name[32];
-	HANDLE hVLinkFileMap = NULL;	// Handle on the 
+	HANDLE hVLinkFileMap = NULL;
 	HANDLE Handle;	
 	ATOM a;
 

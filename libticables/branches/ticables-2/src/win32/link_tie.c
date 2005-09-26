@@ -22,7 +22,7 @@
 /* "TiEmulator" virtual link cable unit */
 
 /* 
- *  This unit use two FIFOs between 2 program which use this lib.
+ *  This unit use two FIFOs (shm) between 2 program which use this lib.
  *  Convention used: 0 is an emulator and 1 is a linking program.
  *  One pipe is used for transferring information from 0 to 1 and the other
  *  pipe is used for transferring from 1 to 0.
@@ -40,20 +40,13 @@
 
 #define BUFSIZE 256
 
+static const char cnt_name[] = "TiEmu Virtual Link (2)";
+
 static const char name[4][256] = 
 {
 	"GtkTiEmu Virtual Link 0", "GtkTiEmu Virtual Link 1",
 	"GtkTiEmu Virtual Link 1", "GtkTiEmu Virtual Link 0"
 };
-
-#ifdef __GNUC__						// Kevin Kofler
-static int ref_cnt __attribute__ ((section(".shared"), shared)) = 0;
-#else
-#pragma comment(linker, "/SECTION:.shared,RWS")
-#pragma data_seg(".shared")			// Share these variables between different instances
-static int volatile	ref_cnt = 0;	// Counter of library instances
-#pragma data_seg()
-#endif
 
 typedef struct 
 {
@@ -62,10 +55,27 @@ typedef struct
 	int		end;
 } LinkBuffer;
 
+static HANDLE hRefCnt  = NULL;
 static HANDLE hSendBuf = NULL;
 static HANDLE hRecvBuf = NULL;
+
+static int		  *pRefCnt  = NULL;
 static LinkBuffer *pSendBuf = NULL;
 static LinkBuffer *pRecvBuf = NULL;
+
+static int shm_check(void)
+{
+	int ret;
+
+	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
+	if (hRefCnt == NULL) 
+		return ERR_TIE_OPENFILEMAPPING;
+	ret = GetLastError() == ERROR_ALREADY_EXISTS ? 1 : 0;
+	if(GetLastError() != ERROR_ALREADY_EXISTS)
+		CloseHandle(hRefCnt);
+
+	return ret ? 1 : 0;
+}
 
 static int tie_prepare(CableHandle *h)
 {
@@ -73,16 +83,19 @@ static int tie_prepare(CableHandle *h)
 	switch(h->port)
 	{
 	case PORT_0:	// automatic setting
-		h->address = ref_cnt;
+		h->address = shm_check();
 		break;
+
 	case PORT_1:	// forced setting, for compatibility
 	case PORT_3: 
 		h->address = 0; h->device = strdup("0->1"); 
 		break;
+
 	case PORT_2:
 	case PORT_4:
 		h->address = 1; h->device = strdup("1->0"); 
 		break;
+
 	default: return ERR_ILLEGAL_ARG;
 	}
 
@@ -92,6 +105,13 @@ static int tie_prepare(CableHandle *h)
 static int tie_open(CableHandle *h)
 {
 	int p = h->address;
+	int ret;
+
+	/* Create shared counter */
+	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
+	if (hRefCnt == NULL) 
+		return ERR_TIE_OPENFILEMAPPING;
+	ret = GetLastError() == ERROR_ALREADY_EXISTS;
 
     /* Create a FileMapping objects */
     hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
@@ -111,38 +131,56 @@ static int tie_open(CableHandle *h)
     if (pRecvBuf == NULL) 
 		return ERR_TIE_MAPVIEWOFFILE;
 
+	/* Reset buffers */
 	pSendBuf->start = pSendBuf->end = 0;
     pRecvBuf->start = pRecvBuf->end = 0;
 
-	ref_cnt++;
-	if(ref_cnt > 1) ref_cnt = 1;
+	/* Increase ref counter */
+	pRefCnt = (int *)MapViewOfFile(hRefCnt, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(int));
+	if(ret)
+		*pRefCnt = 1;
+	else
+		*pRefCnt = 0;
+	printf("ref_cnt = %i\n", *pRefCnt);
 
 	return 0;
 }
 
 static int tie_close(CableHandle *h)
 {
+	/* Close mappings */
   if (hSendBuf) 
   {
     UnmapViewOfFile(pSendBuf);
 	pSendBuf = NULL;
+	CloseHandle(hSendBuf);
   }
 
   if (hRecvBuf)
   {
     UnmapViewOfFile(pRecvBuf);
 	pRecvBuf = NULL;
+	CloseHandle(hRecvBuf);
   }
 
-  ref_cnt--;
-  if(ref_cnt < 0) ref_cnt = 0;
+  /* Decrease ref counter */
+  assert(pRefCnt);
+  (*pRefCnt)--;
+  if(*pRefCnt < 0) 
+  {
+	  *pRefCnt = 0;
+	  UnmapViewOfFile(pRecvBuf);
+	  CloseHandle(hRefCnt);
+  }
 
   return 0;
 }
 
 static int tie_reset(CableHandle *h)
 {
-	if(ref_cnt < 2)
+	assert(pRefCnt);
+
+	if(*pRefCnt < 1)
      return 0;
 
 	if(!hSendBuf) return 0;
@@ -158,8 +196,8 @@ static int tie_reset(CableHandle *h)
 }
 
 static int tie_probe(CableHandle *h)
-{
-	return (ref_cnt > 0) ? 0 : ERR_PROBE_FAILED;
+{	
+	return shm_check() ? 0 : ERR_PROBE_FAILED;
 }
 
 static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
@@ -167,7 +205,8 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	if(ref_cnt < 2)
+	assert(pRefCnt);
+	if(*pRefCnt < 1)
      return 0;
 
 	if(!hSendBuf) return 0;
@@ -195,7 +234,8 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	if(ref_cnt < 2) 
+	assert(pRefCnt);
+	if(*pRefCnt < 1) 
 		return 0;
 
 	if(!hRecvBuf) return 0;
@@ -220,7 +260,8 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int tie_check(CableHandle *h, int *status)
 {
-	if(ref_cnt < 2)
+	assert(pRefCnt);
+	if(*pRefCnt < 1)
      return 0;
 
 	if(!hRecvBuf) return 0;

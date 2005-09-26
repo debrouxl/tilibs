@@ -22,7 +22,7 @@
 /* "TiEmu" virtual link cable unit */
 
 /* 
- *  This unit use two FIFOs between 2 programs which use this lib.
+ *  This unit use two pipes between 2 programs which use this lib.
  *  Convention used: 0 is an emulator and 1 is a linking program.
  *  One pipe is used for transferring information from 0 to 1 and the other
  *  pipe is used for transferring from 1 to 0.
