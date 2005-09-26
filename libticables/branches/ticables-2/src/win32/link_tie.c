@@ -137,11 +137,7 @@ static int tie_open(CableHandle *h)
 
 	/* Increase ref counter */
 	pRefCnt = (int *)MapViewOfFile(hRefCnt, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(int));
-	if(ret)
-		*pRefCnt = 1;
-	else
-		*pRefCnt = 0;
-	printf("ref_cnt = %i\n", *pRefCnt);
+	*pRefCnt = ret ? 2 : 1;
 
 	return 0;
 }
@@ -166,9 +162,8 @@ static int tie_close(CableHandle *h)
   /* Decrease ref counter */
   assert(pRefCnt);
   (*pRefCnt)--;
-  if(*pRefCnt < 0) 
+  if(*pRefCnt == 0) 
   {
-	  *pRefCnt = 0;
 	  UnmapViewOfFile(pRecvBuf);
 	  CloseHandle(hRefCnt);
   }
@@ -180,7 +175,7 @@ static int tie_reset(CableHandle *h)
 {
 	assert(pRefCnt);
 
-	if(*pRefCnt < 1)
+	if(*pRefCnt < 2)
      return 0;
 
 	if(!hSendBuf) return 0;
@@ -206,7 +201,7 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 	tiTIME clk;
 
 	assert(pRefCnt);
-	if(*pRefCnt < 1)
+	if(*pRefCnt < 2)
      return 0;
 
 	if(!hSendBuf) return 0;
@@ -235,7 +230,7 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 	tiTIME clk;
 
 	assert(pRefCnt);
-	if(*pRefCnt < 1) 
+	if(*pRefCnt < 2) 
 		return 0;
 
 	if(!hRecvBuf) return 0;
@@ -261,7 +256,7 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 static int tie_check(CableHandle *h, int *status)
 {
 	assert(pRefCnt);
-	if(*pRefCnt < 1)
+	if(*pRefCnt < 2)
      return 0;
 
 	if(!hRecvBuf) return 0;

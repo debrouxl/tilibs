@@ -8,6 +8,7 @@ Log:
 	we are still in beta stage.
 	- "fixed" TiEmu virtual link for Linux: it seems it has never been
 	used/tested because it was un-finished ?!
+	- check for shm existence (tie_prepare)
 	
 - 14/09/2005, version 0.0.2: roms
 	- fixed compilation issues with MinGW

@@ -66,13 +66,29 @@ static const char fifo_names[4][256] =
   "/tmp/.vlc_0_1", "/tmp/.vlc_1_0"
 };
 
+static int shm_check(void)
+{
+    int shmid;
+
+    if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
+        return ERR_TIE_OPEN;
+    shmid = shmget(ipc_key, 1, IPC_CREAT | IPC_EXCL | 0666);
+
+    if((shmid == -1) && (errno == EEXIST))
+	return 1;
+    else
+	shmctl(shmid, IPC_RMID, NULL);
+   
+    return 0;
+}
+
 static int tie_prepare(CableHandle *h)
 {
     // in fact, address & device are unused
     switch(h->port)
     {
     case PORT_0:	// automatic setting
-	h->address = ref_cnt;
+	h->address = shm_check();
 	break;
     case PORT_1:	// forced setting, for compatibility
     case PORT_3: 
@@ -92,16 +108,19 @@ static int tie_reset(CableHandle *h);
 static int tie_open(CableHandle *h)
 {
     int p = h->address;
-    
+    int new = 0;
+
     if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
 	return ERR_TIE_OPEN;
-    if ((shmid = shmget(ipc_key, 1, IPC_CREAT | 0666)) < 0)
-	return ERR_TIE_OPEN;
+    shmid = shmget(ipc_key, 1, IPC_CREAT | IPC_EXCL | 0666);
+    if(shmid != -1)
+	new = 1;
+    else if((shmid == -1) && (errno == EEXIST))
+	if ((shmid = shmget(ipc_key, 1, IPC_CREAT | 0666)) < 0)
+	    return ERR_TIE_OPEN;
     if ((shmaddr = shmat(shmid, NULL, 0)) == (int *)-1)
 	return ERR_TIE_OPEN;
-    ref_cnt++;
-    printf("ref_cnt2 = %i\n", ref_cnt);
-    
+ 
     /* Check if the pipes already exist else create them */
     if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) 
     {
@@ -126,9 +145,10 @@ static int tie_open(CableHandle *h)
 	return ERR_TIE_OPEN;
     }
 
+    ref_cnt = new ? 2 : 1;
     TRYC(tie_reset(h));
 
-  return 0;
+    return 0;
 }
 
 static int tie_close(CableHandle *h)
@@ -233,10 +253,7 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
                 return ERR_READ_TIMEOUT;
 
 	    if (ret == -1 && errno != EAGAIN)
-	    {
 		return ERR_READ_ERROR;
-		printf("err = %i, errno = %i\n", ret, errno);
-	    }
 	}
 	while (ret <= 0);
 	
@@ -248,7 +265,7 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int tie_probe(CableHandle *h)
 {
-	return 0;
+    return shm_check() ? 0 : ERR_PROBE_FAILED;
 }
 
 static int tie_check(CableHandle *h, int *status)
