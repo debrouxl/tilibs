@@ -100,6 +100,7 @@ static int tie_open(CableHandle *h)
     if ((shmaddr = shmat(shmid, NULL, 0)) == (int *)-1)
 	return ERR_TIE_OPEN;
     ref_cnt++;
+    printf("ref_cnt2 = %i\n", ref_cnt);
     
     /* Check if the pipes already exist else create them */
     if (access(fifo_names[0], F_OK) | access(fifo_names[1], F_OK)) 
@@ -177,9 +178,9 @@ static int tie_reset(CableHandle *h)
 static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int p = h->address;
-    int n = 0;
     tiTIME clk;
     struct stat s;
+    ssize_t n = 0;
     
     if(ref_cnt < 2)
 	return 0;
@@ -198,13 +199,14 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
     }
     while (n <= 0);
     
-    /* Write the data in a defined delay */
+    /* Write the data with byte timeout */
     TO_START(clk);
     do 
     {
+	n = write(wr[p], (void *)data, len);
+
 	if (TO_ELAPSED(clk, h->timeout))
 	    return ERR_WRITE_TIMEOUT;
-	n = write(wr[p], (void *) (&data), 1);
     }
     while (n <= 0);
     
@@ -214,25 +216,33 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int p = h->address;
-    static int n = 0;
     tiTIME clk;
+    ssize_t i, ret;
 
     if(ref_cnt < 2)
 	return 0;
-    
-    // Read the uint8_t in a defined delay
-    TO_START(clk);
-    do 
+
+    for(i = 0; i < len; )    
     {
-	if (TO_ELAPSED(clk, h->timeout))
-	    return ERR_READ_TIMEOUT;
-	n = read(rd[p], (void *) data, 1);
-    }
-    while (n <= 0);
-    
-    if (n == -1)
-	return ERR_READ_ERROR;
-    
+	TO_START(clk);
+	do 
+	{
+	    ret = read(rd[p], (void *)(data + i), len - i);
+
+	    if (TO_ELAPSED(clk, h->timeout))
+                return ERR_READ_TIMEOUT;
+
+	    if (ret == -1 && errno != EAGAIN)
+	    {
+		return ERR_READ_ERROR;
+		printf("err = %i, errno = %i\n", ret, errno);
+	    }
+	}
+	while (ret <= 0);
+	
+	i += ret;
+    }    
+
     return 0;
 }
 

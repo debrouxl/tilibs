@@ -26,3 +26,6 @@ libticables2_la_SOURCES = *.h \
 	type2str.c
 
 EXTRA_DIST = bsd/* linux/* macos/* win32/*
+
+wc:
+	wc *.c *.h ./linux/*.c ./linux/*.h ./win32/*.c ./win32/*.h ./bsd/*.c ./bsd/*.h ./macos/*.c ./macos/*.h
