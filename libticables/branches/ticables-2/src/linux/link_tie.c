@@ -145,7 +145,7 @@ static int tie_open(CableHandle *h)
 	return ERR_TIE_OPEN;
     }
 
-    ref_cnt = new ? 2 : 1;
+    ref_cnt = new ? 1 : 2;
     TRYC(tie_reset(h));
 
     return 0;
