@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <time.h>
+#include <assert.h>
 #include "gettext.h"
 
 #include "timeout.h"
@@ -46,6 +47,8 @@
 #include "printl.h"
 
 #define BUFSIZE 256
+
+static const char cnt_name[] = "TiEmu Virtual Link (2)";	// ticables2 compat
 
 static const char name[4][256] = 
 {
@@ -69,65 +72,105 @@ typedef struct
   int end;
 } LinkBuffer;
 
-static HANDLE hSendBuf, hRecvBuf;
-static LinkBuffer *pSendBuf, *pRecvBuf;
+static HANDLE hRefCnt  = NULL;
+static HANDLE hSendBuf = NULL;
+static HANDLE hRecvBuf = NULL;
+
+static int		  *pRefCnt  = NULL;
+static LinkBuffer *pSendBuf = NULL;
+static LinkBuffer *pRecvBuf = NULL;
+
+#define gbl_ref_cnt	(ref_cnt + *pRefCnt)
+
+static int shm_check(void)
+{
+	HANDLE hRefCnt;
+	int ret;
+
+	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
+	if (hRefCnt == NULL) 
+		return ERR_OPP_NOT_AVAIL;
+	ret = GetLastError() == ERROR_ALREADY_EXISTS ? 1 : 0;
+	if(GetLastError() != ERROR_ALREADY_EXISTS)
+		CloseHandle(hRefCnt);
+
+	return ret ? 1 : 0;
+}
 
 int tie_init(void)
 {
 	int p;
+	int ret;
 
-  /* Check if valid argument */
-  if ((io_address < 1) || (io_address > 2)) 
-  {
-    printl1(2, _("invalid io_address parameter passed to libticables.\n"));
-    io_address = 2;
-  } 
+	/* Check if valid argument */
+	if ((io_address < 1) || (io_address > 2)) 
+	{
+		printl1(2, _("invalid io_address parameter passed to libticables.\n"));
+		io_address = 2;
+	}
 
     p = io_address - 1;
-    ref_cnt++;
-	printf("ref_cnt = %i\n", ref_cnt);
 
-/* Automatic setting: if port #1 is already used, bind to port #2 */
-    if(ref_cnt == 2 && p == 0)
-	p = 1;
+	/* Create shared counter */
+	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
+	if (hRefCnt == NULL) 
+		return ERR_OPP_NOT_AVAIL;
+	ret = GetLastError() == ERROR_ALREADY_EXISTS;
 
-  /* Create a FileMapping objects */
-  hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
-  if (hSendBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+	/* Increase ref counter */
+	pRefCnt = (int *)MapViewOfFile(hRefCnt, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(int));
+	*pRefCnt = ret ? 2 : 1;
+	printf("DLL-REF counters: %i %i %i\n", ref_cnt, *pRefCnt, gbl_ref_cnt);
 
-  hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
-  if (hRecvBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+	/* Automatic setting: if port #1 is already used, bind to port #2 */
+    if(gbl_ref_cnt == 2 && p == 0) 
+		p = 1;
 
-  /* Map them */
-  pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  if (pSendBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+	/* Create a FileMapping objects */
+	hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
+	if (hSendBuf == NULL) 
+		return ERR_OPP_NOT_AVAIL;
 
-  pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  if (pRecvBuf == NULL) 
-    return ERR_OPP_NOT_AVAIL;
+	hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
+	if (hRecvBuf == NULL) 
+		return ERR_OPP_NOT_AVAIL;
 
-  START_LOGGING();
+	/* Map them */
+	pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+	if (pSendBuf == NULL) 
+		return ERR_OPP_NOT_AVAIL;
 
-  return 0;
+	pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+	if (pRecvBuf == NULL) 
+		return ERR_OPP_NOT_AVAIL;
+
+	START_LOGGING();
+
+	return 0;
 }
 
 int tie_exit()
 {
-  STOP_LOGGING();
+	STOP_LOGGING();
 
-  /* Close the shared buffer */
-  if (hSendBuf) 
-    UnmapViewOfFile(pSendBuf);
+	/* Close the shared buffer */
+	if (hSendBuf) 
+		UnmapViewOfFile(pSendBuf);
 
-  if (hRecvBuf) 
-    UnmapViewOfFile(pRecvBuf);
+	if (hRecvBuf) 
+		UnmapViewOfFile(pRecvBuf);
 
-  ref_cnt--;
+	/* Decrease ref counter */
+	assert(pRefCnt);
+	(*pRefCnt)--;
+	if(*pRefCnt == 0) 
+	{
+		UnmapViewOfFile(pRecvBuf);
+		CloseHandle(hRefCnt);
+	}
+	printf("ref: %i %i %i\n", ref_cnt, *pRefCnt, gbl_ref_cnt);
 
-  return 0;
+	return 0;
 }
 
 int tie_open()
@@ -150,9 +193,8 @@ int tie_put(uint8_t data)
 {
   tiTIME clk;
 
-  //if(!hMap)
-  //      return ERR_OPEN_FILE_MAP;
-  if(ref_cnt < 2)
+  printf("gbl = %i\n", gbl_ref_cnt);
+  if(gbl_ref_cnt < 2)
      return 0;
 
   tdr.count++;
@@ -176,9 +218,8 @@ int tie_get(uint8_t * data)
 {
   tiTIME clk;
 
-  //if(!hMap)
-  //      return ERR_OPEN_FILE_MAP;
-  if(ref_cnt < 2)
+  printf("gbl = %i\n", gbl_ref_cnt);
+  if(gbl_ref_cnt < 2)
      return 0;
 
   //printl1(0, "s: %i, e: %i\n", pSendBuf->start, pSendBuf->end);
@@ -205,7 +246,7 @@ int tie_get(uint8_t * data)
 
 int tie_check(int *status)
 {
-	if(ref_cnt < 2)
+	if(gbl_ref_cnt < 2)
      return 0;
 
   /* Check if positions are the same */
