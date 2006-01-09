@@ -36,7 +36,7 @@
 #include <windows.h>
 #include <process.h>		// getpid
 #include <winioctl.h>		// PortTalk
-#include "porttalk_IOCTL.h"	// PortTalk
+#include "porttalk_ioctl.h"	// PortTalk
 
 #include "../error.h"
 #include "../logging.h"
