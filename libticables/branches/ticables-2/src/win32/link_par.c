@@ -103,7 +103,7 @@ static int par_probe(CableHandle *h)
     TO_START(clk);
 	do 
 	{
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, timeout))
 			return ERR_WRITE_TIMEOUT;
 	}
 	while ((io_rd(lpt_in) & 0x10));
@@ -112,7 +112,7 @@ static int par_probe(CableHandle *h)
 	TO_START(clk);
 	do 
 	{
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, timeout))
 			return ERR_WRITE_TIMEOUT;
 	}
 	while (!(io_rd(lpt_in) & 0x10));
@@ -122,7 +122,7 @@ static int par_probe(CableHandle *h)
     TO_START(clk);
 	do 
 	{
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, timeout))
 			return ERR_WRITE_TIMEOUT;
 	}
 	while (io_rd(lpt_in) & 0x20);
@@ -131,7 +131,7 @@ static int par_probe(CableHandle *h)
 	TO_START(clk);
 	do 
 	{
-		if (TO_ELAPSED(clk, h->timeout))
+		if (TO_ELAPSED(clk, timeout))
 			return ERR_WRITE_TIMEOUT;
 	}
 	while (!(io_rd(lpt_in) & 0x20));
