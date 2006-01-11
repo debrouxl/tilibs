@@ -27723,7 +27723,13 @@ fi
 
 
 
-# Extract the first word of "libusb-config", so it can be a program name with args.
+case $host_os in
+*mingw*)
+	LIBUSB_CFLAGS=
+        LIBUSB_LIBS=
+;;
+*)
+	# Extract the first word of "libusb-config", so it can be a program name with args.
 set dummy libusb-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -27759,18 +27765,20 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-if test x$LIBUSB_CONFIG = xyes; then
-  LIBUSB_CFLAGS=`libusb-config --cflags`
-  LIBUSB_LIBS=`libusb-config --libs`
+	if test x$LIBUSB_CONFIG = xyes; then
+	   LIBUSB_CFLAGS=`libusb-config --cflags`
+	   LIBUSB_LIBS=`libusb-config --libs`
 
 cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBUSB 1
 _ACEOF
 
-else
-  LIBUSB_CFLAGS=
-  LIBUSB_LIBS=
-fi
+	else
+	   LIBUSB_CFLAGS=
+	   LIBUSB_LIBS=
+	fi
+;;
+esac
 
 
 
