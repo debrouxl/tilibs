@@ -201,6 +201,27 @@ struct _CableHandle
 	int				busy;	
 };
 
+/**
+ * CableOptions:
+ * @cable_model: model
+ * @cable_port: port
+ * @cable_timeout: timeout in tenth of seconds
+ * @cable_delay: inter-bit delay in µs
+ * @calc_model: calculator model
+ *
+ * A convenient structure free of use by the user.
+ **/
+typedef struct
+{
+    CableModel      model;
+    CablePort       port;
+    int             timeout;
+    int             delay;
+
+    int             calc; // unused
+
+} CableOptions;
+
 // namespace scheme: library_class_function like ticables_fext_get
 
 	/****************/

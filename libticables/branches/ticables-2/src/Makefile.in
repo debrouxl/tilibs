@@ -676,6 +676,9 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-libticablesincludeHEADERS
 
+
+wc:
+	wc *.c *.h ./linux/*.c ./linux/*.h ./win32/*.c ./win32/*.h ./bsd/*.c ./bsd/*.h ./macos/*.c ./macos/*.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
