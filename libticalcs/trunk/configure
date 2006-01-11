@@ -1963,7 +1963,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                          ac_config_files="$ac_config_files Makefile build/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile libticalcs.lsm libticalcs.spec ticalcs.pc"
+                                                                      ac_config_files="$ac_config_files Makefile build/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile ticalcs.pc"
 
 
 # Setup libtool.
@@ -28983,8 +28983,6 @@ do
   "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "libticalcs.lsm" ) CONFIG_FILES="$CONFIG_FILES libticalcs.lsm" ;;
-  "libticalcs.spec" ) CONFIG_FILES="$CONFIG_FILES libticalcs.spec" ;;
   "ticalcs.pc" ) CONFIG_FILES="$CONFIG_FILES ticalcs.pc" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
