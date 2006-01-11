@@ -47,7 +47,7 @@
 #define MIN_VERSION "3.0"
 
 static HINSTANCE hDLL = NULL;	// DLL handle on TiglUsb.dll
-static dllOk = FALSE;		// Dll loading is OK
+static int dllOk = FALSE;		// Dll loading is OK
 
 TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic loading
 
@@ -191,7 +191,7 @@ int slv_open()
     int ret;
 
     if (!hDLL)
-        ERR_TIGLUSB_VERSION;
+        return ERR_TIGLUSB_VERSION;
 
     dynTiglUsbSetTimeout(time_out);
 
@@ -210,7 +210,7 @@ int slv_close()
     int ret;
 
     if (!hDLL)
-        ERR_TIGLUSB_VERSION;
+        return ERR_TIGLUSB_VERSION;
 
     ret = dynTiglUsbFlush();
 
