@@ -175,7 +175,8 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
   
-	ret = hLNK = dynTiglUsbOpen(h->port);
+	//ret = hLNK = dynTiglUsbOpen(h->port);
+	ret = h->priv3 = dynTiglUsbOpen(h->port);
 	switch (ret) 
 	{
 		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
