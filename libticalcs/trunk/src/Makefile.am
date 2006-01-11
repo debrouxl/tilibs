@@ -8,7 +8,7 @@ lib_LTLIBRARIES = libticalcs.la
 libticalcsincludedir = $(includedir)/tilp
 libticalcsinclude_HEADERS = \
 	calc_def.h calc_err.h calc_int.h calc_ver.h \
-	headers.h export3.h \
+	headers.h export.h \
 	keys73.h keys83p.h keys89.h keys92p.h \
 	pause.h \
 	ticalcs.h \
