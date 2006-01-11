@@ -1965,7 +1965,7 @@ fi
 
           ac_config_headers="$ac_config_headers config.h"
 
-                                                                                          ac_config_files="$ac_config_files Makefile build/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile libticables.lsm libticables.spec ticables.pc"
+                                                                      ac_config_files="$ac_config_files Makefile build/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile ticables.pc"
 
 
 # Setup libtool.
@@ -29727,8 +29727,6 @@ do
   "po/Makefile.in" ) CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
-  "libticables.lsm" ) CONFIG_FILES="$CONFIG_FILES libticables.lsm" ;;
-  "libticables.spec" ) CONFIG_FILES="$CONFIG_FILES libticables.spec" ;;
   "ticables.pc" ) CONFIG_FILES="$CONFIG_FILES ticables.pc" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
