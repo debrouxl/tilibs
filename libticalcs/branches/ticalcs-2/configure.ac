@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticalcs2, 0.0.2, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticalcs2, 0.0.3, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.0.2"
+VERSION="0.0.3"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -17,7 +17,7 @@ dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
 LT_CURRENT=0
-LT_REVISION=1
+LT_REVISION=3
 LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2005-09-06 15:54+0200\n"
+"POT-Creation-Date: 2005-09-14 20:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,49 +69,49 @@ msgstr ""
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:795 src/calc_89.c:905 src/calc_92.c:565
+#: src/calc_73.c:797 src/calc_89.c:905 src/calc_92.c:565
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:796 src/calc_89.c:906 src/calc_92.c:566
+#: src/calc_73.c:798 src/calc_89.c:906 src/calc_92.c:566
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:797 src/calc_89.c:907
+#: src/calc_73.c:799 src/calc_89.c:907
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:814 src/calc_89.c:573
+#: src/calc_73.c:816 src/calc_89.c:573
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:815 src/calc_89.c:574
+#: src/calc_73.c:817 src/calc_89.c:574
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:842 src/calc_89.c:621
+#: src/calc_73.c:844 src/calc_89.c:621
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:853
+#: src/calc_73.c:855
 #, c-format
 msgid "Receiving certificate"
 msgstr ""
 
-#: src/calc_73.c:900 src/calc_73.c:901
+#: src/calc_73.c:902 src/calc_73.c:903
 msgid "TI-73"
 msgstr ""
 
-#: src/calc_73.c:933 src/calc_73.c:934
+#: src/calc_73.c:935 src/calc_73.c:936
 msgid "TI-83 Plus"
 msgstr ""
 
-#: src/calc_73.c:966 src/calc_73.c:967
+#: src/calc_73.c:968 src/calc_73.c:969
 msgid "TI-84 Plus"
 msgstr ""
 
@@ -470,31 +470,31 @@ msgstr ""
 msgid "Cause: 0 variables stored onto your calculator.\n"
 msgstr ""
 
-#: src/probe.c:81
+#: src/probe.c:82
 msgid "Probing calculator...\n"
 msgstr ""
 
-#: src/probe.c:84
+#: src/probe.c:85
 msgid "Check for TI86... "
 msgstr ""
 
-#: src/probe.c:105
+#: src/probe.c:106
 msgid "Check for TI85... "
 msgstr ""
 
-#: src/probe.c:126
+#: src/probe.c:127
 msgid "Check for TI83... "
 msgstr ""
 
-#: src/probe.c:147
+#: src/probe.c:148
 msgid "Check for TI82... "
 msgstr ""
 
-#: src/probe.c:194
+#: src/probe.c:196
 msgid "Check for TIXX... "
 msgstr ""
 
-#: src/probe.c:211
+#: src/probe.c:213
 msgid "Check for TI92... "
 msgstr ""
 
@@ -502,11 +502,11 @@ msgstr ""
 msgid "Check for TI9X... "
 msgstr ""
 
-#: src/probe.c:258
+#: src/probe.c:262
 msgid "Check for TI8X... "
 msgstr ""
 
-#: src/probe.c:267
+#: src/probe.c:280
 #, c-format
 msgid "Calculator type: %s"
 msgstr ""
