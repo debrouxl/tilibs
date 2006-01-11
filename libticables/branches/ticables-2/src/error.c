@@ -317,7 +317,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 			0, 
 			NULL);
 
-		str = g_strdup_printf("(%li) %s\n", GetLastError, lpMsgBuf);
+		str = g_strdup_printf("(%li) %s\n", (long)GetLastError, (char *)lpMsgBuf);
 		*message = g_strconcat(tmp, "\n", "System: ", str, NULL);
 		g_free(tmp);
 		g_free(str);
