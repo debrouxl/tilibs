@@ -27,12 +27,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-//#include "../src/headers.h"
 #include "../src/ticalcs.h"
 #include "../src/calc_def.h"
 
@@ -106,7 +108,7 @@ int main(int argc, char **argv)
     }
 
   DISPLAY("Wait 1 second...\n");
-#if defined(__WIN32__) && !defined(__MINGW32__)
+#if defined(__WIN32__)
 	Sleep(1000);
 #else
 	sleep(1);
