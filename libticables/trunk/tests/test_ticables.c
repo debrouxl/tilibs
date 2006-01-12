@@ -27,7 +27,9 @@
 #ifndef __WIN32__
 #include <unistd.h>
 #endif
-//#include <sys/time.h>
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 #ifdef HAVE_TILP_CABL_INT_H
 # include <tilp/ticables.h>
@@ -91,7 +93,7 @@ int main(int argc, char **argv)
 	}
 
 	DISPLAY("Wait 1 second...\n");
-#if defined(__WIN32__) && !defined(__MINGW32__)
+#if defined(__WIN32__)
 	Sleep(1000);
 #else
 	sleep(1);
