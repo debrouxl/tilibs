@@ -193,7 +193,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = gen_doc.c api.txt
+EXTRA_DIST = api.txt
 all: all-am
 
 .SUFFIXES:
@@ -356,12 +356,9 @@ uninstall-am: uninstall-info-am
 all:
 	@echo "To build the documentation, run \"make docs\"."
 
-docs: gen_doc
-	./gen_doc .
-
-gen_doc: gen_doc.c
-@OS_WIN32_TRUE@	gcc `pkg-config.exe glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc.exe
-@OS_WIN32_FALSE@	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
+docs:
+@OS_WIN32_TRUE@	tfdocgen.exe .
+@OS_WIN32_FALSE@	tfdocgen .
 
 clean:
 	rm -f html/*.c.html html/*.h.html html/api.html

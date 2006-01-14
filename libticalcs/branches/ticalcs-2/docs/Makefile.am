@@ -1,18 +1,15 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = gen_doc.c api.txt
+EXTRA_DIST = api.txt
 
 all:
 	@echo "To build the documentation, run \"make docs\"."
 
-docs: gen_doc
-	./gen_doc .
-
-gen_doc: gen_doc.c
+docs:
 if OS_WIN32
-	gcc `pkg-config.exe glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc.exe
+	tfdocgen.exe .
 else
-	gcc `pkg-config glib-2.0 --cflags --libs` -Wall gen_doc.c -o gen_doc
+	tfdocgen .
 endif
 
 clean:
