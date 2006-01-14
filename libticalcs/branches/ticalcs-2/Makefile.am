@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = build docs intl po src tests
+SUBDIRS = build intl po src tests
 
 if USE_DOCGEN
 SUBDIRS += docs
