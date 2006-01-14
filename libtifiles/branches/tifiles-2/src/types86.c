@@ -87,7 +87,8 @@ const char *TI86_CONST[TI86_MAXTYPES + 1][4] =
 // Return the type corresponding to the value
 const char *ti86_byte2type(uint8_t data)
 {
-	g_assert(data < TI86_MAXTYPES);
+	if(data < TI86_MAXTYPES)
+		tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
 	return (data < TI86_MAXTYPES) ? TI86_CONST[data][0] : "";
 }
 
@@ -111,7 +112,8 @@ uint8_t ti86_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *ti86_byte2fext(uint8_t data)
 {
-	g_assert(data < TI86_MAXTYPES);
+	if(data < TI86_MAXTYPES)
+		tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
 	return (data < TI86_MAXTYPES) ? TI86_CONST[data][1] : "86?";
 }
 
@@ -135,14 +137,16 @@ uint8_t ti86_fext2byte(const char *s)
 // Return the descriptive associated with the vartype
 const char *ti86_byte2desc(uint8_t data)
 {
-	g_assert(data < TI86_MAXTYPES);
+	if(data < TI86_MAXTYPES)
+		tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
 	return (data < TI86_MAXTYPES) ? TI86_CONST[data][2] : _("Unknown");
 }
 
 // Return the icon name associated with the vartype
 const char *ti86_byte2icon(uint8_t data)
 {
-	g_assert(data < TI86_MAXTYPES);
+	if(data < TI86_MAXTYPES)
+		tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
 	return (data < TI86_MAXTYPES) ? TI86_CONST[data][3] : "Unknown";
 }
 

@@ -9,8 +9,11 @@ To do:
 
 Log:
 
+- 14/01/2006, version 0.0.4: roms
+	- replaced assertion checks by warnings in the typesXX.c modules.
+
 - 15/09/2005, version 0.0.3: roms
-	- Fixed reading of TIB files.
+	- fixed reading of TIB files.
 
 - 14/09/2005, version 0.0.2: roms
 	- file checksums
