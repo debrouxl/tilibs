@@ -36,6 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@USE_DOCGEN_TRUE@am__append_1 = docs
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(srcdir)/ticalcs2.pc.in $(top_srcdir)/configure \
@@ -71,7 +72,7 @@ pkgconfigDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(pkgconfig_DATA)
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = build docs intl po src tests
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -171,10 +172,13 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TFDOCGEN = @TFDOCGEN@
 TICABLES_CFLAGS = @TICABLES_CFLAGS@
 TICABLES_LIBS = @TICABLES_LIBS@
 TIFILES_CFLAGS = @TIFILES_CFLAGS@
 TIFILES_LIBS = @TIFILES_LIBS@
+USE_DOCGEN_FALSE = @USE_DOCGEN_FALSE@
+USE_DOCGEN_TRUE = @USE_DOCGEN_TRUE@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -228,7 +232,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # Subdirectories to scan
-SUBDIRS = build docs intl po src tests
+SUBDIRS = build docs intl po src tests $(am__append_1)
 
 # Extra files to add to the (distributed) package
 EXTRA_DIST = LOGO
