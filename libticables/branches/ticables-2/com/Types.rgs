@@ -1,0 +1,26 @@
+HKCR
+{
+	Cticables2.Types.1 = s 'Types Class'
+	{
+		CLSID = s '{4766347A-54D0-4F60-B43A-8F8F5618ECFE}'
+	}
+	Cticables2.Types = s 'Types Class'
+	{
+		CLSID = s '{4766347A-54D0-4F60-B43A-8F8F5618ECFE}'
+		CurVer = s 'Cticables2.Types.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4766347A-54D0-4F60-B43A-8F8F5618ECFE} = s 'Types Class'
+		{
+			ProgID = s 'Cticables2.Types.1'
+			VersionIndependentProgID = s 'Cticables2.Types'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Free'
+			}
+			'TypeLib' = s '{0C0B9EE6-F05D-4519-9086-1E4CCA123A50}'
+		}
+	}
+}

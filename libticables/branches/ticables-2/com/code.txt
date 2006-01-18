@@ -1,0 +1,28 @@
+[
+    uuid(97FF0431-798F-11D4-828A-000000000000), 
+    version(1.0), 
+    helpstring("List of cable models")
+  ]
+  typedef enum
+  {
+    [helpstring("Null cable")]
+    CABLE_NUL = 0, 
+    [helpstring("GrayLink cable")]
+    CABLE_GRY = 1, 
+    [helpstring("BlackLink cable")]
+    CABLE_BLK = 2,
+	[helpstring("Parallel cable")]
+    CABLE_PAR = 3,
+	[helpstring("SilverLink cable")]
+    CABLE_SLV = 4,
+	[helpstring("DirectUsb cable")]
+    CABLE_USB = 5,
+	[helpstring("VTi virtual cable")]
+    CABLE_VTI = 6,
+	[helpstring("TiEmu virtual cable")]
+    CABLE_TIE = 7,
+	[helpstring("Generic virtual cable")]
+    CABLE_VTL = 8,
+	[helpstring("Internal Link Port cable for TiEmu")]
+    CABLE_ILP = 9,
+  } CableModel;

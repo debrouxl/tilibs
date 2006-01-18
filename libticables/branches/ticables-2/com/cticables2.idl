@@ -1,0 +1,157 @@
+// cticables2.idl : IDL source for cticables2.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (cticables2.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+	[
+    uuid(D1A63901-1F94-47b6-A678-955B89B3974F), 
+    version(1.0), 
+    helpstring("Defaults settings")
+    ]
+    typedef enum
+    {
+		[helpstring("Default timeout")]
+		IDFLT_TIMEOUT = 15, 
+		[helpstring("Default delay")]
+		IDFLT_DELAY = 10, 
+	} IDefaults;
+
+	[
+    uuid(1CA9E2DD-211F-4934-B81C-D5C223D12F86), 
+    version(1.0), 
+    helpstring("List of cable models")
+    ]
+    typedef enum
+    {
+		[helpstring("Null cable (default)")]
+		ICABLE_NUL = 0, 
+		[helpstring("GrayLink cable")]
+		ICABLE_GRY = 1, 
+		[helpstring("BlackLink cable")]
+		ICABLE_BLK = 2,
+		[helpstring("Parallel cable")]
+		ICABLE_PAR = 3,
+		[helpstring("SilverLink cable")]
+		ICABLE_SLV = 4,
+		[helpstring("DirectUsb cable")]
+		ICABLE_USB = 5,
+		[helpstring("VTi virtual cable")]
+		ICABLE_VTI = 6,
+		[helpstring("TiEmu virtual cable")]
+		ICABLE_TIE = 7,
+		[helpstring("Generic virtual cable")]
+		ICABLE_VTL = 8,
+		[helpstring("Internal Link Port cable for TiEmu")]
+		ICABLE_ILP = 9,
+	} ICableModel;
+
+	[
+    uuid(1BC55CA7-B3A2-43f3-8A44-19AFAA8CA654), 
+    version(1.0), 
+    helpstring("List of ports")
+    ]
+    typedef enum
+    {
+		[helpstring("Null port (default)")]
+		IPORT_0 = 0, 
+		[helpstring("First port")]
+		IPORT_1 = 1, 
+		[helpstring("Second port")]
+		IPORT_2 = 2,
+		[helpstring("Third port")]
+		IPORT_3 = 3,
+		[helpstring("Fourth port")]
+		IPORT_4 = 4,
+	} ICablePort;
+
+	[
+    uuid(03F9A8D5-5DE8-4a5e-ACD4-39AA1472E562), 
+    version(1.0), 
+    helpstring("Link cable handle")
+    ]
+	typedef long ICableHandle;
+
+	[
+		object,
+		uuid(295A0BCE-428D-4251-B432-9DE5100205E5),
+		dual,
+		helpstring("ICables Interface"),
+		pointer_default(unique)
+	]
+	interface ICables : IDispatch
+	{
+		[id(1), helpstring("Initialize the library")] HRESULT LibraryInit([out, retval] long *ret);
+		[id(2), helpstring("Relase the library")] HRESULT LibraryExit([out, retval] long *ret);
+		[id(3), helpstring("method VersionGet")] HRESULT VersionGet([out, retval] BSTR *version);
+		[propget, id(4), helpstring("property ErrorCode")] HRESULT ErrorCode([out, retval] long *pVal);
+		[id(5), helpstring("method HandleNew")] HRESULT HandleNew([in] ICableModel model, [in] ICablePort port, [out, retval] long *handle);
+		[id(6), helpstring("method HandleDel")] HRESULT HandleDel([in] long handle);
+		[id(7), helpstring("method OptionsSetTimeout")] HRESULT OptionsSetTimeout([in] long handle, [in] short timeout, [out, retval] short *old_timeout);
+		[id(8), helpstring("method OptionsSetDelay")] HRESULT OptionsSetDelay([in] long handle, [in] short delay, [out, retval] short *old_delay);
+		[id(9), helpstring("method ModelGet")] HRESULT ModelGet([in] long handle, [out, retval] ICableModel *model);
+		[id(10), helpstring("method PortGet")] HRESULT PortGet([in] long handle, [out, retval] ICablePort *port);
+		[id(11), helpstring("method HandleShow")] HRESULT HandleShow([in] long handle);
+		[id(12), helpstring("method CableOpen")] HRESULT CableOpen([in] long handle);
+		[id(13), helpstring("method CableClose")] HRESULT CableClose([in] long handle);
+		[id(14), helpstring("method CableReset")] HRESULT CableReset([in] long handle);
+		[id(15), helpstring("method CableProbe")] HRESULT CableProbe([in] long handle, [out, retval] BOOL *result);
+		[id(16), helpstring("method CableSend")] HRESULT CableSend([in] long handle, [in] SAFEARRAY(unsigned char) data, [in] long count);
+		[id(17), helpstring("method CableRecv")] HRESULT CableRecv([in] long handle, [out] SAFEARRAY(unsigned char) *data, [in] long count);
+		[id(18), helpstring("method CableCheck")] HRESULT CableCheck([in] long handle, [out] short *status);
+		[id(19), helpstring("method CableSetD0")] HRESULT CableSetD0([in] long handle, [in] BOOL state);
+		[id(20), helpstring("method CableSetD1")] HRESULT CableSetD1([in] long handle, [in] BOOL state);
+		[id(21), helpstring("method CableGetD0")] HRESULT CableGetD0([in] long handle, [out, retval] BOOL *state);
+		[id(22), helpstring("method CableGetD1")] HRESULT CableGetD1([in] long handle, [out, retval] BOOL *state);
+		[id(23), helpstring("method ProgressReset")] HRESULT ProgressReset([in] long handle);
+		[id(24), helpstring("method ProgressGet")] HRESULT ProgressGet([in] long handle, [out] long *count, [out] long *msec, [out] float *rate);
+		[id(25), helpstring("method CablePut")] HRESULT CablePut([in] long handle, [in] unsigned char data);
+		[id(26), helpstring("method CableGet")] HRESULT CableGet([in] long handle, [out] unsigned char *data);
+		[id(27), helpstring("method ErrorGet")] HRESULT ErrorGet([in] long code, [out] BSTR *message, [out, retval] long *ret);
+	};
+	[
+		object,
+		uuid(03353B2B-A497-4B42-A6F6-892FB945BA7E),
+		dual,
+		helpstring("ITypes Interface"),
+		pointer_default(unique)
+	]
+	interface ITypes : IDispatch
+	{
+		[id(1), helpstring("method ModelToString")] HRESULT ModelToString([in] ICableModel model, [out, retval] BSTR *ret);
+		[id(2), helpstring("method StringToModel")] HRESULT StringToModel([in] BSTR model, [out, retval] ICableModel *ret);
+		[id(3), helpstring("method PortToString")] HRESULT PortToString([in] ICablePort port, [out, retval] BSTR *ret);
+		[id(4), helpstring("method StringToPort")] HRESULT StringToPort([in] BSTR port, [out, retval] ICablePort *ret);
+	};
+
+	[
+		uuid(0C0B9EE6-F05D-4519-9086-1E4CCA123A50),
+		version(1.0),
+		helpstring("cticables2 1.0 Type Library")
+	]
+	library CTICABLES2Lib
+	{
+		importlib("stdole32.tlb");
+		importlib("stdole2.tlb");	
+
+		[
+			uuid(EA25011A-AC84-4498-9E50-05EBC57AE012),
+			helpstring("Cables Class")
+		]
+		coclass Cables
+		{
+			[default] interface ICables;
+		};
+
+		[
+			uuid(4766347A-54D0-4F60-B43A-8F8F5618ECFE),
+			helpstring("Types Class")
+		]
+		coclass Types
+		{
+			[default] interface ITypes;
+		};
+	};

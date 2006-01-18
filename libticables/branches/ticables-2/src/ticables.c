@@ -259,7 +259,7 @@ TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeou
  *
  * Set inter-bit delay for parallel or BlackLink cable.
  *
- * Return value: always 0.
+ * Return value: the previous delay.
  **/
 TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
@@ -274,7 +274,7 @@ TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
  *
  * Retrieve link cable model.
  *
- * Return value: a #CableModel value.
+ * Return value: the previous #CableModel value.
  **/
 TIEXPORT CableModel TICALL ticables_get_model(CableHandle* handle)
 {
