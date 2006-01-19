@@ -52,8 +52,6 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 
 	g_assert (message != NULL);
 
-	*message = g_strdup("test");
-
 	switch(number)
 	{
 	case ERR_BUSY:

@@ -73,7 +73,7 @@ static int slv_prepare(CableHandle *h)
 
 	// detect driver
 	if(!win32_detect_tiglusb())
-		return -1;
+		return ERR_SLV_LOADLIBRARY;
 
 	return 0;
 }

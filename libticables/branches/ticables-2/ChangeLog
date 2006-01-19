@@ -1,5 +1,7 @@
 SubVersion: $Id$
 
+Bug: when SilverLink driver is not installed, error is not propagated
+
 Log:
 
 - 25/09/2005, version 0.0.3: roms
