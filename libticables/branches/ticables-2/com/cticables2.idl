@@ -86,31 +86,31 @@ import "ocidl.idl";
 	{
 		[id(1), helpstring("Initialize the library")] HRESULT LibraryInit([out, retval] long *ret);
 		[id(2), helpstring("Relase the library")] HRESULT LibraryExit([out, retval] long *ret);
-		[id(3), helpstring("method VersionGet")] HRESULT VersionGet([out, retval] BSTR *version);
-		[propget, id(4), helpstring("property ErrorCode")] HRESULT ErrorCode([out, retval] long *pVal);
-		[id(5), helpstring("method HandleNew")] HRESULT HandleNew([in] ICableModel model, [in] ICablePort port, [out, retval] long *handle);
-		[id(6), helpstring("method HandleDel")] HRESULT HandleDel([in] long handle);
-		[id(7), helpstring("method OptionsSetTimeout")] HRESULT OptionsSetTimeout([in] long handle, [in] short timeout, [out, retval] short *old_timeout);
-		[id(8), helpstring("method OptionsSetDelay")] HRESULT OptionsSetDelay([in] long handle, [in] short delay, [out, retval] short *old_delay);
-		[id(9), helpstring("method ModelGet")] HRESULT ModelGet([in] long handle, [out, retval] ICableModel *model);
-		[id(10), helpstring("method PortGet")] HRESULT PortGet([in] long handle, [out, retval] ICablePort *port);
-		[id(11), helpstring("method HandleShow")] HRESULT HandleShow([in] long handle);
-		[id(12), helpstring("method CableOpen")] HRESULT CableOpen([in] long handle);
-		[id(13), helpstring("method CableClose")] HRESULT CableClose([in] long handle);
-		[id(14), helpstring("method CableReset")] HRESULT CableReset([in] long handle);
-		[id(15), helpstring("method CableProbe")] HRESULT CableProbe([in] long handle, [out, retval] BOOL *result);
-		[id(16), helpstring("method CableSend")] HRESULT CableSend([in] long handle, [in] SAFEARRAY(unsigned char) data, [in] long count);
-		[id(17), helpstring("method CableRecv")] HRESULT CableRecv([in] long handle, [out] SAFEARRAY(unsigned char) *data, [in] long count);
-		[id(18), helpstring("method CableCheck")] HRESULT CableCheck([in] long handle, [out] short *status);
-		[id(19), helpstring("method CableSetD0")] HRESULT CableSetD0([in] long handle, [in] BOOL state);
-		[id(20), helpstring("method CableSetD1")] HRESULT CableSetD1([in] long handle, [in] BOOL state);
-		[id(21), helpstring("method CableGetD0")] HRESULT CableGetD0([in] long handle, [out, retval] BOOL *state);
-		[id(22), helpstring("method CableGetD1")] HRESULT CableGetD1([in] long handle, [out, retval] BOOL *state);
-		[id(23), helpstring("method ProgressReset")] HRESULT ProgressReset([in] long handle);
-		[id(24), helpstring("method ProgressGet")] HRESULT ProgressGet([in] long handle, [out] long *count, [out] long *msec, [out] float *rate);
-		[id(25), helpstring("method CablePut")] HRESULT CablePut([in] long handle, [in] unsigned char data);
-		[id(26), helpstring("method CableGet")] HRESULT CableGet([in] long handle, [out] unsigned char *data);
-		[id(27), helpstring("method ErrorGet")] HRESULT ErrorGet([in] long code, [out] BSTR *message, [out, retval] long *ret);
+		[id(3), helpstring("Get library version")] HRESULT VersionGet([out, retval] BSTR *version);
+		[propget, id(4), helpstring("Last returned error code")] HRESULT ErrorCode([out, retval] long *pVal);
+		[id(5), helpstring("Create a new handle")] HRESULT HandleNew([in] ICableModel model, [in] ICablePort port, [out, retval] long *handle);
+		[id(6), helpstring("Delete an handle")] HRESULT HandleDel([in] long handle);
+		[id(7), helpstring("Change timeout")] HRESULT OptionsSetTimeout([in] long handle, [in] short timeout, [out, retval] short *old_timeout);
+		[id(8), helpstring("Change inter-bit delay")] HRESULT OptionsSetDelay([in] long handle, [in] short delay, [out, retval] short *old_delay);
+		[id(9), helpstring("Retrieve model")] HRESULT ModelGet([in] long handle, [out, retval] ICableModel *model);
+		[id(10), helpstring("Retrieve port")] HRESULT PortGet([in] long handle, [out, retval] ICablePort *port);
+		[id(11), helpstring("Internal use")] HRESULT HandleShow([in] long handle);
+		[id(12), helpstring("Open communication")] HRESULT CableOpen([in] long handle, [out, retval] long *ret);
+		[id(13), helpstring("Close communication")] HRESULT CableClose([in] long handle, [out, retval] long *ret);
+		[id(14), helpstring("Reset commnication")] HRESULT CableReset([in] long handle, [out, retval] long *ret);
+		[id(15), helpstring("Detect if cable is present")] HRESULT CableProbe([in] long handle, [out] BOOL *result, [out, retval] long *ret);
+		[id(16), helpstring("Send a buffer")] HRESULT CableSend([in] long handle, [in] SAFEARRAY(unsigned char) *data, [in] long count, [out, retval] long *ret);
+		[id(17), helpstring("Receive a buffer")] HRESULT CableRecv([in] long handle, [out] SAFEARRAY(unsigned char) *data, [in] long count, [out, retval] long *ret);
+		[id(18), helpstring("Check for data arrival")] HRESULT CableCheck([in] long handle, [out] short *status, [out, retval] long *ret);
+		[id(19), helpstring("Set D0 wire state")] HRESULT CableSetD0([in] long handle, [in] BOOL state);
+		[id(20), helpstring("Set D1 wire state")] HRESULT CableSetD1([in] long handle, [in] BOOL state);
+		[id(21), helpstring("Retrieve D0 wire state")] HRESULT CableGetD0([in] long handle, [out, retval] BOOL *state);
+		[id(22), helpstring("Retrieve D1 wire state")] HRESULT CableGetD1([in] long handle, [out, retval] BOOL *state);
+		[id(23), helpstring("Reset progress statistics")] HRESULT ProgressReset([in] long handle, [out, retval] long *ret);
+		[id(24), helpstring("Get progress statistics")] HRESULT ProgressGet([in] long handle, [out] long *count, [out] long *msec, [out] float *rate, [out, retval] long *ret);
+		[id(25), helpstring("Send one byte")] HRESULT CablePut([in] long handle, [in] unsigned char data, [out, retval] long *ret);
+		[id(26), helpstring("Receive one byte")] HRESULT CableGet([in] long handle, [out] unsigned char *data, [out, retval] long *ret);
+		[id(27), helpstring("Convert error code into human-readable message")] HRESULT ErrorGet([in] long code, [out] BSTR *message, [out, retval] long *ret);
 	};
 	[
 		object,
@@ -121,10 +121,10 @@ import "ocidl.idl";
 	]
 	interface ITypes : IDispatch
 	{
-		[id(1), helpstring("method ModelToString")] HRESULT ModelToString([in] ICableModel model, [out, retval] BSTR *ret);
-		[id(2), helpstring("method StringToModel")] HRESULT StringToModel([in] BSTR model, [out, retval] ICableModel *ret);
-		[id(3), helpstring("method PortToString")] HRESULT PortToString([in] ICablePort port, [out, retval] BSTR *ret);
-		[id(4), helpstring("method StringToPort")] HRESULT StringToPort([in] BSTR port, [out, retval] ICablePort *ret);
+		[id(1), helpstring("Returns model as string")] HRESULT ModelToString([in] ICableModel model, [out, retval] BSTR *ret);
+		[id(2), helpstring("Returns string as model")] HRESULT StringToModel([in] BSTR model, [out, retval] ICableModel *ret);
+		[id(3), helpstring("Returns port as string")] HRESULT PortToString([in] ICablePort port, [out, retval] BSTR *ret);
+		[id(4), helpstring("Returns string as port")] HRESULT StringToPort([in] BSTR port, [out, retval] ICablePort *ret);
 	};
 
 	[

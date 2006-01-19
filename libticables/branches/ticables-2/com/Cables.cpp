@@ -137,50 +137,82 @@ STDMETHODIMP CCables::PortGet(long handle, ICablePort *port)
 	return S_OK;
 }
 
-STDMETHODIMP CCables::HandleShow(long handle)
+STDMETHODIMP CCables::HandleShow(long hnd)
 {
+	char str1[512];
+	char str2[512];
+	char str[1024];
+	CableHandle* handle = CD_DEREF(hnd);
+
 	// TODO: Add your implementation code here
-	ticables_handle_show(CD_DEREF(handle));
+	ticables_handle_show(CD_DEREF(hnd));
+	
+	sprintf(str1, 
+		"Link cable handle details:\n" \
+		"  model   : %s\n"		\
+		"  port    : %s\n"		\
+		"  timeout : %2.1fs\n"	\
+		"  delay   : %i us\n",
+		ticables_model_to_string(handle->model),
+		ticables_port_to_string(handle->port),
+		(float)handle->timeout / 10,
+		handle->delay);
+
+	if(handle->device)
+	{
+		sprintf(str2,
+			"  device  : %s\n",
+			"  address : 0x%03x",
+			handle->device,
+			handle->address);
+	}
+	else
+		strcpy(str2, "");
+
+	strcpy(str, str1);
+	strcat(str, str2);
+
+	MessageBox(NULL, str, "HandleShow", MB_OK);
 
 	return S_OK;
 }
 
-STDMETHODIMP CCables::CableOpen(long handle)
+STDMETHODIMP CCables::CableOpen(long handle, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_open(CD_DEREF(handle));
+	errnum = *ret = ticables_cable_open(CD_DEREF(handle));
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableClose(long handle)
+STDMETHODIMP CCables::CableClose(long handle, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_close(CD_DEREF(handle));
+	errnum = *ret = ticables_cable_close(CD_DEREF(handle));
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableReset(long handle)
+STDMETHODIMP CCables::CableReset(long handle, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_reset(CD_DEREF(handle));
+	errnum = *ret = ticables_cable_reset(CD_DEREF(handle));
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableProbe(long handle, BOOL *result)
+STDMETHODIMP CCables::CableProbe(long handle, BOOL *result, long *ret)
 {
 	int res;
 
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_probe(CD_DEREF(handle), &res);
+	errnum = *ret = ticables_cable_probe(CD_DEREF(handle), &res);
 	*result = res ? TRUE : FALSE;
 
 	return S_OK;
 }
 
-STDMETHODIMP CCables::CableSend(long handle, SAFEARRAY __RPC_FAR * data, long count)
+STDMETHODIMP CCables::CableSend(long handle, SAFEARRAY __RPC_FAR * __RPC_FAR *data, long count, long *ret)
 {
 	unsigned char buf[65540];
 	long index[1]; index[0]=0;
@@ -189,42 +221,52 @@ STDMETHODIMP CCables::CableSend(long handle, SAFEARRAY __RPC_FAR * data, long co
 	// TODO: Add your implementation code here
 	for(i = 0; i < count; i++)
 	{
-		SafeArrayGetElement(data, index, &buf[i]);
-		index[0]++;
-	}
+		unsigned char v;
 
-	errnum = ticables_cable_send(CD_DEREF(handle), buf, count);
+		SafeArrayGetElement(*data, index, &v);
+		index[0]++;
+		buf[i] = v;
+	}
+	SafeArrayDestroy(*data);
+
+	errnum = *ret = ticables_cable_send(CD_DEREF(handle), buf, count);
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableRecv(long handle, SAFEARRAY __RPC_FAR * __RPC_FAR *data, long count)
+STDMETHODIMP CCables::CableRecv(long handle, SAFEARRAY __RPC_FAR * __RPC_FAR *data, long count, long *ret)
 {
-	unsigned char buf[65540];
+	unsigned char buf[65540] = { 0x01, 0x02, 0x04, 0x08 };
 	long index[1]; index[0]=0;
 	int i;
 
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_recv(CD_DEREF(handle), buf, count);
+	errnum = *ret = ticables_cable_recv(CD_DEREF(handle), buf, count);
 
 	// Allocation d'un tableau SAFEARRAY compatible OLE
-	*data = SafeArrayCreateVector(VT_I1, 0, count);
+	SAFEARRAYBOUND rgsabound[1];
+	rgsabound[0].lLbound = 0;
+	rgsabound[0].cElements = count;
+
+	*data = SafeArrayCreate(VT_I1, 1, rgsabound);
 	if(*data == NULL)
 		return E_OUTOFMEMORY;
 
 	for(i = 0; i < count; i++)
 	{
-		SafeArrayPutElement(*data, index, &data[i]);
+		unsigned char v = buf[i];
+
+		SafeArrayPutElement(*data, index, &v);
 		index[0]++;
 	}
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableCheck(long handle, short *status)
+STDMETHODIMP CCables::CableCheck(long handle, short *status, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_check(CD_DEREF(handle), (CableStatus *)status);
+	errnum = *ret = ticables_cable_check(CD_DEREF(handle), (CableStatus *)status);
 
 	return errnum ? S_FALSE : S_OK;
 }
@@ -262,35 +304,35 @@ STDMETHODIMP CCables::CableGetD1(long handle, BOOL *state)
 	return S_OK;
 }
 
-STDMETHODIMP CCables::ProgressReset(long handle)
+STDMETHODIMP CCables::ProgressReset(long handle, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_progress_reset(CD_DEREF(handle));
+	errnum = *ret = ticables_progress_reset(CD_DEREF(handle));
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::ProgressGet(long handle, long *count, long *msec, float *rate)
+STDMETHODIMP CCables::ProgressGet(long handle, long *count, long *msec, float *rate, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_progress_get(CD_DEREF(handle), (int *)count, (int *)msec, rate);
+	errnum = *ret = ticables_progress_get(CD_DEREF(handle), (int *)count, (int *)msec, rate);
 
 	return errnum ? S_FALSE : S_OK;
 }
 
 
-STDMETHODIMP CCables::CablePut(long handle, unsigned char data)
+STDMETHODIMP CCables::CablePut(long handle, unsigned char data, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_put(CD_DEREF(handle), data);
+	errnum = *ret = ticables_cable_put(CD_DEREF(handle), data);
 
 	return errnum ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CCables::CableGet(long handle, unsigned char *data)
+STDMETHODIMP CCables::CableGet(long handle, unsigned char *data, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = ticables_cable_get(CD_DEREF(handle), data);
+	errnum = *ret = ticables_cable_get(CD_DEREF(handle), data);
 
 	return errnum ? S_FALSE : S_OK;
 }

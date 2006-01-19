@@ -2,7 +2,7 @@
 
 
 /* File created by MIDL compiler version 5.01.0164 */
-/* at Wed Jan 18 22:49:13 2006
+/* at Thu Jan 19 21:41:44 2006
  */
 /* Compiler settings for C:\sources\roms\ticables2\com\cticables2.idl:
     Oicf (OptLev=i2), W1, Zp8, env=Win32, ms_ext, c_ext
@@ -176,31 +176,38 @@ EXTERN_C const IID IID_ICables;
             /* [in] */ long handle) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableOpen( 
-            /* [in] */ long handle) = 0;
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableClose( 
-            /* [in] */ long handle) = 0;
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableReset( 
-            /* [in] */ long handle) = 0;
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableProbe( 
             /* [in] */ long handle,
-            /* [retval][out] */ BOOL __RPC_FAR *result) = 0;
+            /* [out] */ BOOL __RPC_FAR *result,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableSend( 
             /* [in] */ long handle,
-            /* [in] */ SAFEARRAY __RPC_FAR * data,
-            /* [in] */ long count) = 0;
+            /* [in] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
+            /* [in] */ long count,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableRecv( 
             /* [in] */ long handle,
             /* [out] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
-            /* [in] */ long count) = 0;
+            /* [in] */ long count,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableCheck( 
             /* [in] */ long handle,
-            /* [out] */ short __RPC_FAR *status) = 0;
+            /* [out] */ short __RPC_FAR *status,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableSetD0( 
             /* [in] */ long handle,
@@ -219,21 +226,25 @@ EXTERN_C const IID IID_ICables;
             /* [retval][out] */ BOOL __RPC_FAR *state) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ProgressReset( 
-            /* [in] */ long handle) = 0;
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ProgressGet( 
             /* [in] */ long handle,
             /* [out] */ long __RPC_FAR *count,
             /* [out] */ long __RPC_FAR *msec,
-            /* [out] */ float __RPC_FAR *rate) = 0;
+            /* [out] */ float __RPC_FAR *rate,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CablePut( 
             /* [in] */ long handle,
-            /* [in] */ unsigned char data) = 0;
+            /* [in] */ unsigned char data,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE CableGet( 
             /* [in] */ long handle,
-            /* [out] */ unsigned char __RPC_FAR *data) = 0;
+            /* [out] */ unsigned char __RPC_FAR *data,
+            /* [retval][out] */ long __RPC_FAR *ret) = 0;
         
         virtual /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ErrorGet( 
             /* [in] */ long code,
@@ -342,37 +353,44 @@ EXTERN_C const IID IID_ICables;
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableOpen )( 
             ICables __RPC_FAR * This,
-            /* [in] */ long handle);
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableClose )( 
             ICables __RPC_FAR * This,
-            /* [in] */ long handle);
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableReset )( 
             ICables __RPC_FAR * This,
-            /* [in] */ long handle);
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableProbe )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
-            /* [retval][out] */ BOOL __RPC_FAR *result);
+            /* [out] */ BOOL __RPC_FAR *result,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableSend )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
-            /* [in] */ SAFEARRAY __RPC_FAR * data,
-            /* [in] */ long count);
+            /* [in] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
+            /* [in] */ long count,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableRecv )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
             /* [out] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
-            /* [in] */ long count);
+            /* [in] */ long count,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableCheck )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
-            /* [out] */ short __RPC_FAR *status);
+            /* [out] */ short __RPC_FAR *status,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableSetD0 )( 
             ICables __RPC_FAR * This,
@@ -396,24 +414,28 @@ EXTERN_C const IID IID_ICables;
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *ProgressReset )( 
             ICables __RPC_FAR * This,
-            /* [in] */ long handle);
+            /* [in] */ long handle,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *ProgressGet )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
             /* [out] */ long __RPC_FAR *count,
             /* [out] */ long __RPC_FAR *msec,
-            /* [out] */ float __RPC_FAR *rate);
+            /* [out] */ float __RPC_FAR *rate,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CablePut )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
-            /* [in] */ unsigned char data);
+            /* [in] */ unsigned char data,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *CableGet )( 
             ICables __RPC_FAR * This,
             /* [in] */ long handle,
-            /* [out] */ unsigned char __RPC_FAR *data);
+            /* [out] */ unsigned char __RPC_FAR *data,
+            /* [retval][out] */ long __RPC_FAR *ret);
         
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *ErrorGet )( 
             ICables __RPC_FAR * This,
@@ -490,26 +512,26 @@ EXTERN_C const IID IID_ICables;
 #define ICables_HandleShow(This,handle)	\
     (This)->lpVtbl -> HandleShow(This,handle)
 
-#define ICables_CableOpen(This,handle)	\
-    (This)->lpVtbl -> CableOpen(This,handle)
+#define ICables_CableOpen(This,handle,ret)	\
+    (This)->lpVtbl -> CableOpen(This,handle,ret)
 
-#define ICables_CableClose(This,handle)	\
-    (This)->lpVtbl -> CableClose(This,handle)
+#define ICables_CableClose(This,handle,ret)	\
+    (This)->lpVtbl -> CableClose(This,handle,ret)
 
-#define ICables_CableReset(This,handle)	\
-    (This)->lpVtbl -> CableReset(This,handle)
+#define ICables_CableReset(This,handle,ret)	\
+    (This)->lpVtbl -> CableReset(This,handle,ret)
 
-#define ICables_CableProbe(This,handle,result)	\
-    (This)->lpVtbl -> CableProbe(This,handle,result)
+#define ICables_CableProbe(This,handle,result,ret)	\
+    (This)->lpVtbl -> CableProbe(This,handle,result,ret)
 
-#define ICables_CableSend(This,handle,data,count)	\
-    (This)->lpVtbl -> CableSend(This,handle,data,count)
+#define ICables_CableSend(This,handle,data,count,ret)	\
+    (This)->lpVtbl -> CableSend(This,handle,data,count,ret)
 
-#define ICables_CableRecv(This,handle,data,count)	\
-    (This)->lpVtbl -> CableRecv(This,handle,data,count)
+#define ICables_CableRecv(This,handle,data,count,ret)	\
+    (This)->lpVtbl -> CableRecv(This,handle,data,count,ret)
 
-#define ICables_CableCheck(This,handle,status)	\
-    (This)->lpVtbl -> CableCheck(This,handle,status)
+#define ICables_CableCheck(This,handle,status,ret)	\
+    (This)->lpVtbl -> CableCheck(This,handle,status,ret)
 
 #define ICables_CableSetD0(This,handle,state)	\
     (This)->lpVtbl -> CableSetD0(This,handle,state)
@@ -523,17 +545,17 @@ EXTERN_C const IID IID_ICables;
 #define ICables_CableGetD1(This,handle,state)	\
     (This)->lpVtbl -> CableGetD1(This,handle,state)
 
-#define ICables_ProgressReset(This,handle)	\
-    (This)->lpVtbl -> ProgressReset(This,handle)
+#define ICables_ProgressReset(This,handle,ret)	\
+    (This)->lpVtbl -> ProgressReset(This,handle,ret)
 
-#define ICables_ProgressGet(This,handle,count,msec,rate)	\
-    (This)->lpVtbl -> ProgressGet(This,handle,count,msec,rate)
+#define ICables_ProgressGet(This,handle,count,msec,rate,ret)	\
+    (This)->lpVtbl -> ProgressGet(This,handle,count,msec,rate,ret)
 
-#define ICables_CablePut(This,handle,data)	\
-    (This)->lpVtbl -> CablePut(This,handle,data)
+#define ICables_CablePut(This,handle,data,ret)	\
+    (This)->lpVtbl -> CablePut(This,handle,data,ret)
 
-#define ICables_CableGet(This,handle,data)	\
-    (This)->lpVtbl -> CableGet(This,handle,data)
+#define ICables_CableGet(This,handle,data,ret)	\
+    (This)->lpVtbl -> CableGet(This,handle,data,ret)
 
 #define ICables_ErrorGet(This,code,message,ret)	\
     (This)->lpVtbl -> ErrorGet(This,code,message,ret)
@@ -687,7 +709,8 @@ void __RPC_STUB ICables_HandleShow_Stub(
 
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableOpen_Proxy( 
     ICables __RPC_FAR * This,
-    /* [in] */ long handle);
+    /* [in] */ long handle,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableOpen_Stub(
@@ -699,7 +722,8 @@ void __RPC_STUB ICables_CableOpen_Stub(
 
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableClose_Proxy( 
     ICables __RPC_FAR * This,
-    /* [in] */ long handle);
+    /* [in] */ long handle,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableClose_Stub(
@@ -711,7 +735,8 @@ void __RPC_STUB ICables_CableClose_Stub(
 
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableReset_Proxy( 
     ICables __RPC_FAR * This,
-    /* [in] */ long handle);
+    /* [in] */ long handle,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableReset_Stub(
@@ -724,7 +749,8 @@ void __RPC_STUB ICables_CableReset_Stub(
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableProbe_Proxy( 
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
-    /* [retval][out] */ BOOL __RPC_FAR *result);
+    /* [out] */ BOOL __RPC_FAR *result,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableProbe_Stub(
@@ -737,8 +763,9 @@ void __RPC_STUB ICables_CableProbe_Stub(
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableSend_Proxy( 
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
-    /* [in] */ SAFEARRAY __RPC_FAR * data,
-    /* [in] */ long count);
+    /* [in] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
+    /* [in] */ long count,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableSend_Stub(
@@ -752,7 +779,8 @@ void __RPC_STUB ICables_CableSend_Stub(
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
     /* [out] */ SAFEARRAY __RPC_FAR * __RPC_FAR *data,
-    /* [in] */ long count);
+    /* [in] */ long count,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableRecv_Stub(
@@ -765,7 +793,8 @@ void __RPC_STUB ICables_CableRecv_Stub(
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableCheck_Proxy( 
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
-    /* [out] */ short __RPC_FAR *status);
+    /* [out] */ short __RPC_FAR *status,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableCheck_Stub(
@@ -829,7 +858,8 @@ void __RPC_STUB ICables_CableGetD1_Stub(
 
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_ProgressReset_Proxy( 
     ICables __RPC_FAR * This,
-    /* [in] */ long handle);
+    /* [in] */ long handle,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_ProgressReset_Stub(
@@ -844,7 +874,8 @@ void __RPC_STUB ICables_ProgressReset_Stub(
     /* [in] */ long handle,
     /* [out] */ long __RPC_FAR *count,
     /* [out] */ long __RPC_FAR *msec,
-    /* [out] */ float __RPC_FAR *rate);
+    /* [out] */ float __RPC_FAR *rate,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_ProgressGet_Stub(
@@ -857,7 +888,8 @@ void __RPC_STUB ICables_ProgressGet_Stub(
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CablePut_Proxy( 
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
-    /* [in] */ unsigned char data);
+    /* [in] */ unsigned char data,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CablePut_Stub(
@@ -870,7 +902,8 @@ void __RPC_STUB ICables_CablePut_Stub(
 /* [helpstring][id] */ HRESULT STDMETHODCALLTYPE ICables_CableGet_Proxy( 
     ICables __RPC_FAR * This,
     /* [in] */ long handle,
-    /* [out] */ unsigned char __RPC_FAR *data);
+    /* [out] */ unsigned char __RPC_FAR *data,
+    /* [retval][out] */ long __RPC_FAR *ret);
 
 
 void __RPC_STUB ICables_CableGet_Stub(
