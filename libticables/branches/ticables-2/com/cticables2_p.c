@@ -2,7 +2,7 @@
 
 
 /* File created by MIDL compiler version 5.01.0164 */
-/* at Thu Jan 19 21:41:44 2006
+/* at Thu Jan 19 22:19:42 2006
  */
 /* Compiler settings for C:\sources\roms\ticables2\com\cticables2.idl:
     Oicf (OptLev=i2), W1, Zp8, env=Win32, ms_ext, c_ext
