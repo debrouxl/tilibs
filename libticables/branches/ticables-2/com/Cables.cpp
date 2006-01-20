@@ -26,6 +26,9 @@
 #include <ticables.h>
 #include "helpers.h"
 
+#include <stdio.h>
+#include <wchar.h>
+
 /////////////////////////////////////////////////////////////////////////////
 
 #define MAX_DESCRIPTORS	16							/* Maximum number of handles */
@@ -92,7 +95,6 @@ STDMETHODIMP CCables::HandleNew(ICableModel model, ICablePort port, long *handle
 	// TODO: Add your implementation code here
 	int cd;
 	CableHandle* ch;
-	char str[1024];
 
 	ch = ticables_handle_new((CableModel)model, (CablePort)port);
 
@@ -105,9 +107,6 @@ STDMETHODIMP CCables::HandleNew(ICableModel model, ICablePort port, long *handle
 
 	CD_DEREF(cd) = ch;
 	*handle = cd;
-
-	sprintf(str, "%p %i", ch, cd);
-	//MessageBox(NULL, "Debug", str, MB_OK);
 
 	return S_OK;
 }
@@ -159,6 +158,7 @@ STDMETHODIMP CCables::PortGet(long handle, ICablePort *port)
 
 STDMETHODIMP CCables::HandleShow(long hnd)
 {
+#ifndef _UNICODE
 	char str1[512];
 	char str2[512];
 	char str[1024];
@@ -193,6 +193,7 @@ STDMETHODIMP CCables::HandleShow(long hnd)
 	strcat(str, str2);
 
 	MessageBox(NULL, str, "HandleShow", MB_OK);
+#endif
 
 	return S_OK;
 }
