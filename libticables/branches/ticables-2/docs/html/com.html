@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Header File Index</title>
+  <link rel="STYLESHEET" type="TEXT/CSS" href="style.css">
+</head>
+<body bgcolor="#fffff8">
+<table class="INVTABLE" width="100%">
+  <tbody>
+    <tr>
+      <td class="NOBORDER" width="40"><img src="info.gif" border="0"
+ height="32" width="32"> </td>
+      <td class="TITLE">COM wrapper API</td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<p>As of Jan the 20th, 2006, I have managed to provide some VB binding
+thru a COM (<span style="text-decoration: underline;">Component Object
+Model</span>) wrapper. For short: the ticables2 library is now useable
+from <span style="text-decoration: underline;">Visual Basic</span> !<br>
+&nbsp;<br>
+The API provided with the wrapper is almost the <span
+ style="text-decoration: underline;">same</span> as the ticables2 one.
+This page discuss about the minor changes because COM/Automation
+defines the use of types and the passing of arguments.<br>
+</p>
+<p>1&deg;) The API's are the same thus the COM/VB developers will refer
+to
+the pure-C ticables2 <a href="apiindex.html">documentation</a>.</p>
+<p>2&deg;) The following typedefs have been renamed: <br>
+- <span style="font-style: italic;">CablePort </span>=&gt; <span
+ style="font-style: italic;">ICablePort</span>, <br>
+- <span style="font-style: italic;">CableModel </span>=&gt; <span
+ style="font-style: italic;">ICableModel.<br>
+<br>
+</span>3&deg;) The following types have been changed: <br>
+- <span style="font-style: italic;">unsigned char </span>=&gt; <span
+ style="font-style: italic;">Byte,</span><br>
+- <span style="font-style: italic;">int </span>=&gt; <span
+ style="font-style: italic;">short </span>or <span
+ style="font-style: italic;">long </span>or <span
+ style="font-style: italic;">BOOL </span>depending on the usage.<br>
+</p>
+<p>4&deg;) The ticables heaviliy relies on handles. The <span
+ style="font-style: italic;">CableHandle</span> structure has been
+replaced by a <span style="font-style: italic;">Long </span>handle.<br>
+</p>
+<p>5&deg;) A property named <span style="font-style: italic;">ErrorCode</span>
+has been added for your convenience. This lets you retrieve the last
+error code from function call or from this variable.<br>
+</p>
+<p>Examples:<br>
+</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="font-style: italic;">const char *</span>ticables_model_to_string(<span
+ style="font-style: italic;">CableModel </span>model) =&gt;
+ModelToString(<span style="font-style: italic;">ICableModel </span>model,
+<span style="font-style: italic;">BSTR </span>*ret)<br>
+<span style="font-style: italic;">&nbsp;&nbsp;&nbsp; int </span>ticables_cable_send(<span
+ style="font-style: italic;">CableHandle</span>* handle, <span
+ style="font-style: italic;">uint8_t </span>*data, <span
+ style="font-style: italic;">uint32_t </span>len) =&gt; CableSend(<span
+ style="font-style: italic;">long </span>handle, <span
+ style="font-style: italic;">SAFEARRAY </span>*data, <span
+ style="font-style: italic;">long </span>count, <span
+ style="font-style: italic;">long </span>*ret)<br>
+</p>
+<p>6&deg;) VB sample program (see test_vba.doc):<br>
+</p>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">Private Sub
+CommandButton1_Click()<br>
+      <br>
+' Define COM object interface and load object<br>
+&nbsp;&nbsp;&nbsp; Dim ticable As Cables<br>
+&nbsp;&nbsp;&nbsp; Set ticable = CreateObject("Cticables2.Cables")<br>
+&nbsp; <br>
+' Affiche la version de l'objet<br>
+&nbsp;&nbsp;&nbsp; TextBox1.Text = ticable.VersionGet<br>
+      <br>
+End Sub<br>
+      <br>
+Private Sub CommandButton2_Click()<br>
+      <br>
+&nbsp;&nbsp;&nbsp; Dim SendBuf(4) As Byte<br>
+&nbsp;&nbsp;&nbsp; Dim RecvBuf() As Byte<br>
+&nbsp;&nbsp;&nbsp; Dim err As Long<br>
+&nbsp;&nbsp;&nbsp; Dim old As Integer<br>
+&nbsp;&nbsp;&nbsp; Dim msg As String<br>
+      <br>
+' Define COM object and instanciate (same as above)<br>
+&nbsp;&nbsp;&nbsp; Dim ticable As New Cables<br>
+&nbsp;&nbsp;&nbsp; <br>
+' Init library<br>
+&nbsp;&nbsp;&nbsp; ticable.LibraryInit<br>
+&nbsp;<br>
+' Initialize a BlackLink cable on COM1<br>
+&nbsp;&nbsp;&nbsp; Dim handle As Long<br>
+&nbsp;&nbsp;&nbsp; handle = ticable.HandleNew(ICABLE_SLV, IPORT_1)<br>
+&nbsp;&nbsp;&nbsp; 'ticable.HandleShow (handle)<br>
+      <br>
+' Optionnal<br>
+&nbsp;&nbsp;&nbsp; 'ticable.OptionsSetDelay handle, IDFLT_DELAY<br>
+&nbsp;&nbsp;&nbsp; 'ticable.OptionsSetTimeout handle, IDFLT_TIMEOUT<br>
+      <br>
+' Does communication<br>
+&nbsp;&nbsp;&nbsp; TextBox2.Text = "Opening..."<br>
+&nbsp;&nbsp;&nbsp; err = ticable.CableOpen(handle)<br>
+&nbsp;&nbsp;&nbsp; If err &lt;&gt; 0 Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ticables.ErrorGet err, msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TextBox2.Texte = msg<br>
+&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; err = ticable.CableReset(handle)<br>
+&nbsp; <br>
+&nbsp;&nbsp;&nbsp; ' Possible way (CableSend may be better)<br>
+&nbsp;&nbsp;&nbsp; SendBuf(0) = &amp;H8<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CablePut handle, SndBuf(0)<br>
+&nbsp;&nbsp;&nbsp; SendBuf(1) = &amp;H87<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CablePut handle, SndBuf(1)<br>
+&nbsp;&nbsp;&nbsp; SendBuf(2) = &amp;H41<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CablePut handle, SndBuf(2)<br>
+&nbsp;&nbsp;&nbsp; SendBuf(3) = &amp;H0<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CablePut handle, SndBuf(3)<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; TextBox2.Text = "Sending..."<br>
+&nbsp;&nbsp;&nbsp; err = ticable.CableSend(handle, SendBuf, 4)<br>
+&nbsp;&nbsp;&nbsp; If err &lt;&gt; 0 Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ticables.ErrorGet err, msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TextBox2.Texte = msg<br>
+&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; ' Possible way (CableRecv may be better)<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CableGet handle, RecvBuf(0)<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CableGet handle, RecvBuf(1)<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CableGet handle, RecvBuf(2)<br>
+&nbsp;&nbsp;&nbsp; 'ticable.CableGet handle, RecvBuf(3)<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; TextBox2.Text = "Receiving..."<br>
+&nbsp;&nbsp;&nbsp; err = ticable.CableRecv(handle, RecvBuf, 4)<br>
+&nbsp;&nbsp;&nbsp; If err &lt;&gt; 0 Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ticables.ErrorGet err, msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TextBox2.Texte = msg<br>
+&nbsp;&nbsp;&nbsp; End If<br>
+      <br>
+&nbsp;&nbsp;&nbsp; TextBox2.Text = "Closing..."<br>
+&nbsp;&nbsp;&nbsp; ticable.CableClose (handle)<br>
+      <br>
+' Release handle<br>
+&nbsp;&nbsp;&nbsp; ticable.HandleDel (handle)<br>
+&nbsp;<br>
+' Release library<br>
+&nbsp;&nbsp;&nbsp; ticable.LibraryExit<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; TextBox2.Text = "Success !!!"<br>
+      <br>
+End Sub</td>
+    </tr>
+  </tbody>
+</table>
+<p>7&deg;) About registering:<br>
+</p>
+<p>before using this wrapper into you own project, you need to register
+it. There are 2 ways:<br>
+- merge registry entries into the Windows registry,<br>
+- type 'regsvr32.exe cticables2.dll /v" because the wrapper is a
+self-registered component.<br>
+</p>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">-&gt; Windows Registry Editor
+Version 5.00<br>
+      <br>
+[HKEY_CLASSES_ROOT\Cticables2.Cables]<br>
+@="Cables Class"<br>
+      <br>
+[HKEY_CLASSES_ROOT\Cticables2.Cables\CLSID]<br>
+@="{EA25011A-AC84-4498-9E50-05EBC57AE012}"<br>
+      <br>
+[HKEY_CLASSES_ROOT\Cticables2.Cables\CurVer]<br>
+@="Cticables2.Cables.1"<br>
+      <br>
+-&gt; Windows Registry Editor Version 5.00<br>
+      <br>
+[HKEY_CLASSES_ROOT\Cticables2.Cables.1]<br>
+@="Cables Class"<br>
+      <br>
+[HKEY_CLASSES_ROOT\Cticables2.Cables.1\CLSID]<br>
+@="{EA25011A-AC84-4498-9E50-05EBC57AE012}"<br>
+      <br>
+-&gt; Windows Registry Editor Version 5.00<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}]<br>
+@="Cables Class"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}\InprocServer32]<br>
+@="C:\\sources\\roms\\TICABL~2\\com\\Debug\\CTICABLES2.DLL"<br>
+"ThreadingModel"="Free"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}\ProgID]<br>
+@="Cticables2.Cables.1"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}\Programmable]<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}\TypeLib]<br>
+@="{0C0B9EE6-F05D-4519-9086-1E4CCA123A50}"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{EA25011A-AC84-4498-9E50-05EBC57AE012}\VersionIndependentProgID]<br>
+@="Cticables2.Cables"<br>
+      <br>
+-&gt; Windows Registry Editor Version 5.00<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}]<br>
+@="Types Class"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}\InprocServer32]<br>
+@="C:\\sources\\roms\\TICABL~2\\com\\Debug\\CTICABLES2.DLL"<br>
+"ThreadingModel"="Free"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}\ProgID]<br>
+@="Cticables2.Types.1"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}\Programmable]<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}\TypeLib]<br>
+@="{0C0B9EE6-F05D-4519-9086-1E4CCA123A50}"<br>
+      <br>
+[HKEY_CLASSES_ROOT\CLSID\{4766347A-54D0-4F60-B43A-8F8F5618ECFE}\VersionIndependentProgID]<br>
+@="Cticables2.Types"<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p><span style="text-decoration: underline;">Note:</span> ticables2.dll
+must be belonged with the cticables2.dll !<br>
+<br>
+</p>
+<h3> <a
+ href="file:///home/devel/tilp_project/libs/cables/docs/hand/index.html">Return
+to the main index</a> </h3>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</body>
+</html>

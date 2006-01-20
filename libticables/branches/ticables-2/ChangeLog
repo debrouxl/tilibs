@@ -4,6 +4,10 @@ Bug: when SilverLink driver is not installed, error is not propagated
 
 Log:
 
+- 19/01/2006, version 0.0.4: roms
+	- fixed bad error code in 'slv_prepare' for SilverLink
+	- added a COM wrapper with VBA sample program
+
 - 25/09/2005, version 0.0.3: roms
 	- modified TiEmu virtual link for Windows: don't use .shared section 
 	any more. This breaks compat with older revision of the library but 
