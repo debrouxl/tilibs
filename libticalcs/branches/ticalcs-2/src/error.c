@@ -49,8 +49,6 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	g_assert (message != NULL);
 
-	*message = g_strdup("test");
-
 	switch(number)
 	{
 	case ERR_ABORT:
