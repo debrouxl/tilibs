@@ -91,7 +91,8 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 
 	for(i = CABLE_GRY; i <= CABLE_TIE; i++)
 		free((*result)[i]);
-#ifndef __WIN32__
+
+#ifndef __WIN32__	//bug
 	free(*result);
 #endif
 	*result = NULL;

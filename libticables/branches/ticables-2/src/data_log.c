@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* This unit allows to trace uint8_ts which are transferred between PC
+/* This unit allows to trace bytes which are transferred between PC
    and TI calculator.
 */
 
@@ -27,12 +27,10 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#ifndef __WIN32__
-#include <sys/time.h>
-#endif
 #include <string.h>
 
 #include "stdints.h"
@@ -49,10 +47,7 @@ static char *fn2 = NULL;
 static FILE *log1 = NULL;
 static FILE *log2 = NULL;
 
-#ifndef __WIN32__
-static struct timeval tv_start;
-static struct timezone tz;
-#endif
+GTimeVal tv_start, tv;
 
 int start_logging()
 {
@@ -80,10 +75,8 @@ int start_logging()
     		ticables_error(_("Unable to open <%s> for logging.\n"), fn2);
     		return -1;
   	}
-#ifndef __WIN32__
-  	memset((void *) (&tz), 0, sizeof(tz));
-  	gettimeofday(&tv_start, &tz);
-#endif
+
+	g_get_current_time(&tv_start);
 
   	return 0;
 }
@@ -94,10 +87,8 @@ int log_data(uint8_t d)
   	static int i = 0;
   	int j;
   	int c;
-#ifndef __WIN32__
-  	struct timeval tv;
   	static int k = 0;
-#endif
+	long sec, us;
 
   	if (log1 == NULL)
     		return -1;
@@ -118,13 +109,17 @@ int log_data(uint8_t d)
     	fprintf(log1, "\n");
     	i = 0;
   	}
-#ifndef __WIN32__
-  	gettimeofday(&tv, &tz);
+
+	g_get_current_time(&tv);
   	k++;
-  	fprintf(log2, "%i: %i.%2i\n", k,
-	  (int) (tv.tv_sec - tv_start.tv_sec),
-	  (int) (tv.tv_usec - tv_start.tv_usec));
-#endif
+	sec = tv.tv_sec - tv_start.tv_sec;
+	us = tv.tv_usec - tv_start.tv_usec;
+	if(us < 0)
+	{
+		us += 1000000;
+		sec++;
+	}
+  	fprintf(log2, "%i: %li.%2li\n", k, sec, us);
 
   	return 0;
 }
