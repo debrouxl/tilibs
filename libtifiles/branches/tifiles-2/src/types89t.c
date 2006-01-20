@@ -110,9 +110,7 @@ uint8_t ti89t_type2byte(const char *s)
 			break;
 	}
 
-	if (i == TI89t_MAXTYPES)
-		tifiles_info( _("ti89t_type2byte: unknown type.\n"));
-
+	//if (i == TI89t_MAXTYPES) tifiles_info( _("ti89t_type2byte: unknown type.\n"));
 	return i;
 }
 
@@ -134,10 +132,8 @@ uint8_t ti89t_fext2byte(const char *s)
 			break;
 	}
 
-	if (i == TI89t_MAXTYPES)
-		tifiles_warning(_("ti89t_fext2byte: unknown type."));
-
-  return i;
+	//if (i == TI89t_MAXTYPES)tifiles_warning(_("ti89t_fext2byte: unknown type."));
+	return i;
 }
 
 // Return the descriptive associated with the vartype

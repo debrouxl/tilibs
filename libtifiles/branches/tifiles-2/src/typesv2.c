@@ -109,9 +109,7 @@ uint8_t v200_type2byte(const char *s)
 			break;
 	}
 
-	if (i == V200_MAXTYPES)
-		tifiles_warning( _("v200_type2byte: unknown type."));
-
+	//if (i == V200_MAXTYPES) tifiles_warning( _("v200_type2byte: unknown type."));
 	return i;
 }
 
@@ -133,9 +131,7 @@ uint8_t v200_fext2byte(const char *s)
 			break;
 	}
 
-	if (i == V200_MAXTYPES)
-		tifiles_warning( _("v200_fext2byte: unknown type.\n"));
-
+	//if (i == V200_MAXTYPES)	tifiles_warning( _("v200_fext2byte: unknown type.\n"));
 	return i;
 }
 

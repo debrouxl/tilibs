@@ -110,9 +110,7 @@ uint8_t ti89_type2byte(const char *s)
 			break;
 	}
 
-	if (i == TI89_MAXTYPES)
-		tifiles_warning(_("ti89_type2byte: unknown type."));
-
+	//if (i == TI89_MAXTYPES)tifiles_warning(_("ti89_type2byte: unknown type."));
 	return i;
 }
 
@@ -134,9 +132,7 @@ uint8_t ti89_fext2byte(const char *s)
 			break;
 	}
 
-	if (i == TI89_MAXTYPES)
-		tifiles_warning(_("ti89_fext2byte: unknown type."));
-
+	//if (i == TI89_MAXTYPES)tifiles_warning(_("ti89_fext2byte: unknown type."));
 	return i;
 }
 
