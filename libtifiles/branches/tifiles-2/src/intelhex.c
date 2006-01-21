@@ -23,7 +23,7 @@
 	IntelHex format reader/writer for TI8X FLASH calculators.
 */
 
-#include <stdio.h>
+#include <stdio.h>	// replace fopen by g_fopen which is locale independant
 #include <stdlib.h>
 #include <string.h>
 
@@ -215,7 +215,7 @@ TIEXPORT int TICALL test_hex_read(void)
 	uint8_t type, data[BLK_MAX];
 	int ret;
 
-	f = fopen(filename, "rb");
+	f = gfopen(filename, "rb");
 	if (f == NULL) 
 	{
 		printf("Unable to open this file: <%s>", filename);

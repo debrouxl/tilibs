@@ -19,15 +19,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <glib/gstdio.h>	// replace fopen by g_fopen which is locale independant
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef __WIN32__
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
 
 #include "gettext.h"
 #include "tifiles.h"
@@ -348,20 +344,26 @@ TIEXPORT char *TICALL tifiles_fext_dup(const char *filename)
 /* File types */
 /**************/
 
+#ifndef __WIN32__
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 static int is_regfile(const char *filename)
 {
 #ifndef __WIN32__
-  struct stat buf;
+	struct stat buf;
 
-  if (stat(filename, &buf) < 0)
-    return 0;
+	if (stat(filename, &buf) < 0)
+		return 0;
 
-  if (S_ISREG(buf.st_mode))
-    return !0;
-  else
-    return 0;
+	if (S_ISREG(buf.st_mode))
+		return !0;
+	else
+		return 0;
 #else
-  return !0;
+	return !0;
 #endif
 }
 
@@ -382,14 +384,13 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
   char str[64];
   char *p;
 
-  // bug: check the file is not an fifo
+  // bug: check that file is not a FIFO
   if (!is_regfile(filename))
     return 0;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL)
 	  return 0;
-
   // read header
   fread_8_chars(f, buf);
 

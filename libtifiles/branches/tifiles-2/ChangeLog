@@ -11,6 +11,7 @@ Log:
 
 - 14/01/2006, version 0.0.4: roms
 	- replaced assertion checks by warnings in the typesXX.c modules.
+	- support UTF-8 filenames
 
 - 15/09/2005, version 0.0.3: roms
 	- fixed reading of TIB files.
