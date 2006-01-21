@@ -143,6 +143,10 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 	  break;
 
   case ERR_NO_CABLE:
+		strcpy(error_msg, _("The cable can not be used."));
+		strcat(error_msg, "\n");
+		strcat(error_msg, _("Cause: the cable has not been initialized due to a previous/current error.\n"));
+		*message = g_strdup(error_msg);
 	  break;
 
   case ERR_BUSY:
