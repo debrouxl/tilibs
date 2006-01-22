@@ -250,6 +250,9 @@ int main(int argc, char **argv)
 
 	ret = tifiles_file_is_tib(BUILD_PATH("misc/ams100.tib"));
         printf("tifiles_file_is_tib: %i\n", ret);
+
+	ret = tifiles_file_is_tig(BUILD_PATH("misc/test.tig"));
+        printf("tifiles_file_is_tig: %i\n", ret);
 	printf("--\n");
 
 	// test typesxx.c

@@ -368,6 +368,7 @@ static int is_regfile(const char *filename)
 }
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
+#define TIG_SIGNATURE	"PK"
 
 /**
  * tifiles_file_is_ti:
@@ -567,8 +568,44 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 		return !0;
 
 	// no need to do more test, TIB signature has already been checked 
-	// by is_ti_file()
+	// by tifiles_file_is_ti()
 
+	return 0;
+}
+
+/**
+ * tifiles_file_is_tig:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a TiGroup formatted file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
+{
+	FILE *f;
+	char str[4];
+	char *e = tifiles_fext_get(filename);
+
+	if (!strcmp(e, ""))
+	  return 0;
+
+	if(g_ascii_strcasecmp(e, "tig"))
+		return 0;
+
+	f = gfopen(filename, "rb");
+	if(f == NULL)
+		return 0;
+
+	fread_n_chars(f, 2, str);
+	str[strlen(TIG_SIGNATURE)] = '\0';
+	if(!strcmp(str, TIG_SIGNATURE)) 
+	{
+		fclose(f);
+		return !0;
+	}
+
+	fclose(f);
 	return 0;
 }
 

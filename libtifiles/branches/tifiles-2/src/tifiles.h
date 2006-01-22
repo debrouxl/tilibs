@@ -352,6 +352,7 @@ extern "C" {
   TIEXPORT int TICALL tifiles_file_is_backup (const char *filename);
   TIEXPORT int TICALL tifiles_file_is_flash (const char *filename);
   TIEXPORT int TICALL tifiles_file_is_tib (const char *filename);
+  TIEXPORT int TICALL tifiles_file_is_tig (const char *filename);
 
   TIEXPORT CalcModel TICALL tifiles_file_get_model (const char *filename);
   TIEXPORT FileClass TICALL tifiles_file_get_class (const char *filename);
