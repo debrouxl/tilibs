@@ -13,6 +13,7 @@ Log:
 	- replaced assertion checks by warnings in the typesXX.c modules.
 	- support UTF-8 filenames
 	- added tifiles_file_is_tig function
+	- the content->comment field is now initialized in tifiles_content_create_xxx
 
 - 15/09/2005, version 0.0.3: roms
 	- fixed reading of TIB files.

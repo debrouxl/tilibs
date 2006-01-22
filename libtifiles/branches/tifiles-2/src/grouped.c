@@ -282,3 +282,10 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
 
   return 0;
 }
+
+#include <zlib.h>
+
+TIEXPORT int TICALL tifiles_content_create_tig(void)
+{
+
+}

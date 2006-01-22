@@ -44,7 +44,10 @@
  **/
 TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
 {
-	return calloc(1, sizeof(FileContent));
+	FileContent* content = calloc(1, sizeof(FileContent));
+	strcpy(content->comment, tifiles_comment_set_single());
+
+	return content;
 }
 
 /**
@@ -171,7 +174,10 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
  **/
 TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
 {
-	return calloc(1, sizeof(BackupContent));
+	BackupContent* content = calloc(1, sizeof(BackupContent));
+	strcpy(content->comment, tifiles_comment_set_backup());
+
+	return content;
 }
 
 /**
