@@ -72,9 +72,9 @@ int main(int argc, char **argv)
 	return 0;
 #endif
 
-#if 0
+#if 1
 	ticables_probing_do(&probing, 5);
-	for(i = 1; i <= 7; i++)
+	for(i = 1; i <= 7; i++) 
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
 	ticables_probing_finish(&probing);
 #endif
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 	if(err) return -1;
 
-#if 1
+#if 0
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
 	err = ticables_cable_send(handle, buf, 4);
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 #endif
 
-#if 1
+#if 0
 	// simple test for data arrival detection
 	buf[0] = 0x08;  buf[1] = 0x87; buf[2] = 'A'; buf[3] = 0x00;		// KEY
 	err = ticables_cable_send(handle, buf, 4);

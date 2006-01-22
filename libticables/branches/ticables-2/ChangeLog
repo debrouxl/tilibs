@@ -7,6 +7,9 @@ Log:
 - 19/01/2006, version 0.0.4: roms
 	- fixed bad error code in 'slv_prepare' for SilverLink
 	- added a COM wrapper with VBA sample program
+	- free'd pointers are systematically NULL'ified
+	- fixed mis-behaviour in ticables_cable_probe
+	- fixed severe bug in ticable_probe_finished (the allocated array was too small)
 
 - 25/09/2005, version 0.0.3: roms
 	- modified TiEmu virtual link for Windows: don't use .shared section 
