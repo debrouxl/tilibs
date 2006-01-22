@@ -39,6 +39,8 @@
 
 static int ser_prepare(CableHandle *h)
 {
+	int ret;
+
     switch(h->port)
     {
     case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0");
@@ -53,8 +55,12 @@ static int ser_prepare(CableHandle *h)
     }
 
     // detect stuffs
-    //TRYC(check_for_tty(h->device));
-
+    err = check_for_tty(h->device);
+	if(ret)
+	{
+		free(h->device); h->device = NULL;
+		return ret;
+	}
 
     return 0;
 }

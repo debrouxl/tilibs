@@ -39,6 +39,8 @@
 
 static int par_prepare(CableHandle *h)
 {
+	int ret;
+
 	switch(h->port)
 	{
 	case PORT_1: h->address = 0x378; h->device = strdup("/dev/lp0"); break;
@@ -48,7 +50,12 @@ static int par_prepare(CableHandle *h)
 	}
 
 	// detect stuffs 
-	TRYC(check_for_root());
+	ret = check_for_root();
+	if(ret)
+	{
+		free(h->device); h->device = NULL;
+		return ret;
+	}
 
 	return 0;
 }

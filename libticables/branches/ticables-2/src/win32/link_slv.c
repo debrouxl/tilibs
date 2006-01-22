@@ -73,7 +73,10 @@ static int slv_prepare(CableHandle *h)
 
 	// detect driver
 	if(!win32_detect_tiglusb())
-		return ERR_SLV_LOADLIBRARY;
+	{
+		free(h->device); h->device = NULL;
+		return ERR_SLV_LOADLIBRARY;		
+	}
 
 	return 0;
 }

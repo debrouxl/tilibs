@@ -55,7 +55,12 @@ static int ser_prepare(CableHandle *h)
 	}
 
 	// detect stuffs 
-	TRYC(check_for_root());
+	err = check_for_root();
+	if(ret)
+	{
+		free(h->device); h->device = NULL;
+		return ret;
+	}
 
 	return 0;
 }

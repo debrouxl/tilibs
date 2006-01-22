@@ -32,12 +32,13 @@
 
 /**
  * ticables_probing_do:
- * @result: address of an array of integers to put result. 
+ * @result: address of an array of integers to put the result.
  * @timeout: timeout to set during probing
  *
- * Returns cables which have been detected. All cables must be CLOSED before !
- * The array contains 5 columns (PORT_0 to PORT_4) and 7 lines (CABLE_GRY to CABLE_USB).
- * The array must be freed when no longer used.
+ * Returns cables which have been detected. All cables should be closed before !
+ * The array is like a matrix which contains 5 columns (PORT_0 to PORT_4) and 
+ * 7 lines (CABLE_GRY to CABLE_USB).
+ * The array must be freed by #ticables_probing_finish when no longer used.
  *
  * Return value: always 0.
  **/
@@ -48,7 +49,7 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
 	int **array;
 
 	ticables_info(_("Link cable probing:"));
-	array = *result = (int **)calloc(5, sizeof(int));
+	array = (int **)calloc(CABLE_MAX, sizeof(int));
 
 	for(model = CABLE_GRY; model <= CABLE_TIE; model++)
 	{
@@ -68,12 +69,12 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
 			}
 			ticables_handle_del(handle);
 		}
-		/*
+		
 		ticables_info(_(" %i: %i %i %i %i"), model, 
-			array[model][1], array[model][2], array[model][3], array[model][4]);
-		*/
+			array[model][1], array[model][2], array[model][3], array[model][4]);	
 	}
 
+	*result = array;
 	return 0;
 }
 
@@ -92,9 +93,7 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 	for(i = CABLE_GRY; i <= CABLE_TIE; i++)
 		free((*result)[i]);
 
-#ifndef __WIN32__	//bug
 	free(*result);
-#endif
 	*result = NULL;
 
 	return 0;

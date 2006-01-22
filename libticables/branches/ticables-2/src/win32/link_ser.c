@@ -52,7 +52,10 @@ static int ser_prepare(CableHandle *h)
 	{
 		// detect porttalk if Windows NT
 		if(!win32_detect_porttalk())
+		{
+			free(h->device); h->device = NULL;
 			return ERR_PORTTALK_NOT_FOUND;
+		}
 	}
 
 	return 0;
@@ -71,7 +74,9 @@ static int ser_open(CableHandle *h)
   	TRYC(io_open(com_in));
 
 	TRYC(ser_reset(h));
+#if 0
 	Sleep(2000);	// needs this because serial lines can be low at startup
+#endif
 
 	return 0;
 }

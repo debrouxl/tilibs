@@ -47,6 +47,8 @@
 
 static int gry_prepare(CableHandle *h)
 {
+	int ret;
+
 	switch(h->port)
 	{
 	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/cuaa0"); break;
@@ -57,7 +59,13 @@ static int gry_prepare(CableHandle *h)
 	}
 	h->priv2 = (struct termios *)calloc(1, sizeof(struct termios));
 
-	TRYC(check_for_tty(h->device));
+	ret = check_for_tty(h->device);
+	if(ret)
+	{
+		free(h->device); h->device = NULL;
+		free(h->priv2);  h->priv2 = NULL;
+		return ret;
+	}
 
 	return 0;
 }
