@@ -394,5 +394,18 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
  **/
 TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename)
 {
+	CalcModel dst_model;
+	FileContent* dst_content;
+
+	dst_model = tifiles_file_get_model(dst_filename);
+	dst_content = tifiles_content_create_regular(dst_model);
+	TRYC(tifiles_file_read_regular(dst_filename, dst_content));
+
+	tifiles_content_del_entry(dst_content, entry);
+	tifiles_file_display_regular(dst_content);
+
+	TRYC(tifiles_file_write_regular(dst_filename, dst_content, NULL));
+	TRYC(tifiles_content_delete_regular(dst_content));
+
 	return 0;
 }

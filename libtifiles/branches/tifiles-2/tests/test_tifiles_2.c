@@ -1033,7 +1033,15 @@ static int test_ti9x_cert_support()
 
 int test_ti8x_group_merge()
 {
+	VarEntry ve;
+
 	tifiles_group_add_file(BUILD_PATH("misc/group1.8Xg"), BUILD_PATH2("misc/group2.8Xg"));
+
+	strcpy(ve.name, "A");
+	tifiles_group_del_file(&ve, BUILD_PATH("misc/group2.8Xg"));
+
+	strcpy(ve.name, "B");
+	tifiles_group_del_file(&ve, BUILD_PATH("misc/group2.8Xg"));
 
 	return 0;
 }
