@@ -11,8 +11,8 @@ Log:
 
 - 22/01/2006, version 0.0.5: roms
 	- removed 'tifiles_create_table_of_entries' from export
-	- pass CalcModel to 'tifiles_content_create_xxxx' => increased so minor number
-	- added functions for adding/removing entry in regular file
+	- pass CalcModel to 'tifiles_content_create_xxxx' => increased so major number
+	- added functions for adding/removing entr(y)ies in regular file
 		=> the last two changes have been done to avoid/minimize manipulation of
 			internal fields in FileContent structure (make them opaque/private).
 

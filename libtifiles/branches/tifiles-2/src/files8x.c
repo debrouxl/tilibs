@@ -117,8 +117,6 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   uint8_t test_pad = 0xff;
   int padded86 = 0;
 
-  if (!tifiles_file_is_ti(filename))
-    return ERR_INVALID_FILE;
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
@@ -269,8 +267,6 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   char signature[9];
   uint16_t sum;
 
-  if (!tifiles_file_is_ti(filename))
-    return ERR_INVALID_FILE;
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
@@ -376,9 +372,6 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
   Ti8xFlash *content = head;
   int i, ret;
   char signature[9];
-
-  if (!tifiles_file_is_ti(filename))
-    return ERR_INVALID_FILE;
 
   if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;

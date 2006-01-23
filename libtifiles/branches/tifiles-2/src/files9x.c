@@ -74,9 +74,6 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   int i, j;
   char signature[9];
 
-  if (!tifiles_file_is_ti(filename))
-    return ERR_INVALID_FILE;
-
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
@@ -180,8 +177,6 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   char signature[9];
   uint16_t sum;
 
-  if (!tifiles_file_is_ti(filename))
-    return ERR_INVALID_FILE;
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
@@ -246,9 +241,6 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	Ti9xFlash *content = head;
 	int tib = 0;
 	char signature[9];
-
-	if (!tifiles_file_is_ti(filename))
-		return ERR_INVALID_FILE;
 
 	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
 		return ERR_INVALID_FILE;
