@@ -246,6 +246,14 @@ SOURCE=..\..\src\minizip\iowin32.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\minizip\miniunz.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\minizip\minizip.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\tigroup.c
 # End Source File
 # Begin Source File

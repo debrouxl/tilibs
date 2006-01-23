@@ -178,6 +178,8 @@ static int test_ti9x_cert_support();
 
 static int test_ti8x_group_merge();
 
+static int test_tigroup();
+
 /*
   The main function
 */
@@ -382,9 +384,13 @@ int main(int argc, char **argv)
 #endif
 
 	// Add/Del files
-#if 1
+#if 0
 	change_dir(BUILD_PATH("misc"));
 	test_ti8x_group_merge();
+#endif
+
+#if 1
+	test_tigroup();
 #endif
 
 	// end of test
@@ -1042,6 +1048,19 @@ int test_ti8x_group_merge()
 
 	strcpy(ve.name, "B");
 	tifiles_group_del_file(&ve, BUILD_PATH("misc/group2.8Xg"));
+
+	return 0;
+}
+
+int test_tigroup()
+{
+	FileContent content = { 0 };
+
+	tifiles_file_display_tigroup(BUILD_PATH("misc/test.tig"));
+
+	tifiles_file_read_tigroup(BUILD_PATH("misc/test.tig"), &content);
+	tifiles_file_display_regular(&content);
+	tifiles_content_delete_regular(&content);
 
 	return 0;
 }

@@ -10,3 +10,4 @@ filesxx.c : Operations on TI files (single/group only)
 grouped.c : Grouping/Ungrouping of TI files
 comments.c : Automatic comments in files
 ve_fp.c : VarEntry & FlashPage structures creation/deletion
+tigroup.c : Operations on Ti Groups (*.tig)
