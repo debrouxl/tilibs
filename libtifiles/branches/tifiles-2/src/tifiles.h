@@ -431,7 +431,9 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename);
   TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
-  // tig.c (later)
+  // tigroup.c (later)
+  TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent *content);
+  TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent *content);
 
   //comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);

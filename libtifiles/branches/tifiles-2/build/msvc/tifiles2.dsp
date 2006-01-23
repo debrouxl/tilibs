@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /w /W0 /GX /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /YX /FD /c
+# ADD CPP /nologo /w /W0 /GX /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /D "HAVE_ZLIB" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /ML /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /FD /c
+# ADD CPP /nologo /ML /W3 /GX /ZI /Od /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "_CONSOLE" /D "WIN32" /D "TIFILES_EXPORTS" /D "__WIN32__" /D "HAVE_ZLIB" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
@@ -233,6 +233,42 @@ SOURCE=..\..\src\type2str.c
 SOURCE=..\..\src\typesXX.c
 # End Source File
 # End Group
+# Begin Group "TI groups"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\minizip\ioapi.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\minizip\iowin32.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tigroup.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\minizip\unzip.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\minizip\zip.c
+# End Source File
+# End Group
+# Begin Group "Libraries"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\GTK2DEV\lib\z.lib
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\ChangeLog
@@ -240,10 +276,6 @@ SOURCE=..\..\ChangeLog
 # Begin Source File
 
 SOURCE=.\tifiles2.rc
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
 # End Project
