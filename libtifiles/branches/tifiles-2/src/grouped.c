@@ -283,9 +283,62 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   return 0;
 }
 
-#include <zlib.h>
-
-TIEXPORT int TICALL tifiles_content_create_tig(void)
+/**
+ * tifiles_content_add_entry:
+ * @content: a file content (single/group only).
+ * @ve: the entry to add
+ *
+ * Adds the entry to the file content and updates internal structures.
+ * Beware: the entry is not duplicated.
+ *
+ * Return value: the number of entries.
+ **/
+TIEXPORT int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve)
 {
+	content->entries = tifiles_ve_resize_array(content->entries, content->num_entries + 1);
+    content->entries[content->num_entries] = ve;
+	content->num_entries++;
 
+	return content->num_entries;
+}
+
+/**
+ * tifiles_content_del_entry:
+ * @content: a file content (single/group only).
+ * @ve: the entry to remove
+ *
+ * Search for entry name and remove it from file content (not tested !).
+ *
+ * Return value: the number of entries or -1 if not found.
+ **/
+TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve)
+{
+	int i, j;
+
+	// Search for entry
+	for(i = 0; i < content->num_entries; i++, j++)
+	{
+		VarEntry *s = content->entries[i];
+
+		if(!strcmp(s->folder, ve->folder) && !strcmp(s->name, ve->name));
+			break;
+	}
+
+	// Not found ? Exit !
+	if(j == content->num_entries)
+		return -1;
+
+	// Release
+	tifiles_ve_delete(content->entries[i]);
+
+	// And shift
+	for(j = i; j < content->num_entries; j++)
+		content->entries[j] = content->entries[j+1];
+	content->entries[j] = NULL;
+
+	// And resize
+	content->entries = tifiles_ve_resize_array(content->entries, content->num_entries - 1);
+	content->num_entries--;
+
+	return content->num_entries;
 }

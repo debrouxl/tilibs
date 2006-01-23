@@ -66,4 +66,6 @@ int ti9x_file_write_flash(const char *filename, Ti9xFlash *content);
 // displaying
 int ti9x_file_display(const char *filename);
 
+int** tifiles_create_table_of_entries(FileContent *content, int *nfolders);
+
 #endif

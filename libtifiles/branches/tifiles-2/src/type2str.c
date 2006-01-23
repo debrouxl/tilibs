@@ -20,6 +20,8 @@
  */
 
 #include <string.h>
+#include <glib.h>
+
 #include "gettext.h"
 #include "tifiles.h"
 

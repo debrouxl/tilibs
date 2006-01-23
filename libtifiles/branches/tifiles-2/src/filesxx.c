@@ -37,14 +37,17 @@
 
 /**
  * tifiles_content_create_regular:
+ * @model: a calculator model.
  *
  * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FileContent* TICALL tifiles_content_create_regular(void)
+TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = calloc(1, sizeof(FileContent));
+
+	content->model = model;
 	strcpy(content->comment, tifiles_comment_set_single());
 
 	return content;
@@ -167,14 +170,17 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
 
 /**
  * tifiles_content_create_backup:
+ * @model: a calculator model.
  *
  * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void)
+TIEXPORT BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
 	BackupContent* content = calloc(1, sizeof(BackupContent));
+
+	content->model = model;
 	strcpy(content->comment, tifiles_comment_set_backup());
 
 	return content;
@@ -295,15 +301,17 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
 
 /**
  * tifiles_content_create_flash:
+ * @model: a calculator model.
  *
  * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void)
+TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
 	FlashContent* content = calloc(1, sizeof(FlashContent));
 
+	content->model = model;
 	if(tifiles_calc_is_ti9x(content->model))
 	{
 	  time_t tt;
@@ -505,7 +513,7 @@ TIEXPORT int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed when no
  * longer used.
  **/
-TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int *nfolders)
+int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 {
   int num_folders = 0;
   int i, j;

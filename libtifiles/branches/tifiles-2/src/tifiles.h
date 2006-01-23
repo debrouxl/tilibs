@@ -395,25 +395,24 @@ extern "C" {
 					     const char *varname);
 
   // filesXX.c
-  TIEXPORT FileContent* TICALL tifiles_content_create_regular(void);
+  TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model);
   TIEXPORT int          TICALL tifiles_content_delete_regular(FileContent *content);
   TIEXPORT int TICALL tifiles_file_read_regular(const char *filename, FileContent *content);
   TIEXPORT int TICALL tifiles_file_write_regular(const char *filename, FileContent *content, char **filename2);
   TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content);
 
-  TIEXPORT BackupContent* TICALL tifiles_content_create_backup(void);
+  TIEXPORT BackupContent* TICALL tifiles_content_create_backup(CalcModel model);
   TIEXPORT int            TICALL tifiles_content_delete_backup(BackupContent *content);
   TIEXPORT int TICALL tifiles_file_read_backup(const char *filename, BackupContent *content);
   TIEXPORT int TICALL tifiles_file_write_backup(const char *filename, BackupContent *content);
   TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content);
 
-  TIEXPORT FlashContent* TICALL tifiles_content_create_flash(void);
+  TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model);
   TIEXPORT int           TICALL tifiles_content_delete_flash(FlashContent *content);
   TIEXPORT int TICALL tifiles_file_read_flash(const char *filename, FlashContent *content);
   TIEXPORT int TICALL tifiles_file_write_flash(const char *filename, FlashContent *content);
   TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content);
 
-  TIEXPORT int** TICALL tifiles_create_table_of_entries(FileContent *content, int *nfolders);
   TIEXPORT int TICALL tifiles_file_display(const char *filename);
 
   // grouped.c
@@ -425,6 +424,14 @@ extern "C" {
 
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
+
+  TIEXPORT int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve);
+  TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve);
+
+  TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename);
+  TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry, const char *dst_filename);
+
+  // tig.c (later)
 
   //comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);
