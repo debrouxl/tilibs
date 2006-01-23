@@ -117,6 +117,26 @@ static const char* BUILD_PATH(const char *path)
 #endif
 }
 
+// Build a portable path for Linux/Win32
+static const char* BUILD_PATH2(const char *path)
+{
+	static char str[1024];
+	unsigned int i;
+
+#if defined(__WIN32__) && !defined(__MINGW32__)
+	strcpy(str, "C:\\sources\\roms\\tifiles2\\tests\\");
+	strcat(str, path);
+
+	for(i = 0; i < strlen(str); i++)
+		if(str[i] == '/')
+			str[i] = '\\';
+
+	return str;
+#else
+	return path;
+#endif
+}
+
 static int test_ti73_backup_support(void);
 static int test_ti73_regular_support(void);
 static int test_ti73_group_support(void);
@@ -155,6 +175,8 @@ static int test_ti92_ungroup_support(void);
 
 static int test_ti8x_cert_support();
 static int test_ti9x_cert_support();
+
+static int test_ti8x_group_merge();
 
 /*
   The main function
@@ -357,6 +379,12 @@ int main(int argc, char **argv)
 	change_dir(BUILD_PATH("certs"));
 	test_ti8x_cert_support();
 	//test_ti9x_cert_support();
+#endif
+
+	// Add/Del files
+#if 1
+	change_dir(BUILD_PATH("misc"));
+	test_ti8x_group_merge();
 #endif
 
 	// end of test
@@ -1001,4 +1029,11 @@ static int test_ti9x_cert_support()
   compare_files(BUILD_PATH("certs/ticsheet.9xk"), BUILD_PATH("certs/ticsheet.9xk_"));
 
   return 0;
+}
+
+int test_ti8x_group_merge()
+{
+	tifiles_group_add_file(BUILD_PATH("misc/group1.8Xg"), BUILD_PATH2("misc/group2.8Xg"));
+
+	return 0;
 }

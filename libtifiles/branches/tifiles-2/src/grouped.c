@@ -342,3 +342,57 @@ TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve
 
 	return content->num_entries;
 }
+
+/**
+ * tifiles_group_add_file:
+ * @src_filename: the file to add to group file
+ * @dst_filename: the group file
+ *
+ * Add src_filename content to dst_filename content and write to dst_filename.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename)
+{
+	CalcModel src_model;
+	CalcModel dst_model;
+	FileContent* src_content;
+	FileContent* dst_content;
+	int i;
+
+	src_model = tifiles_file_get_model(src_filename);
+	dst_model = tifiles_file_get_model(dst_filename);
+	
+	src_content = tifiles_content_create_regular(src_model);
+	dst_content = tifiles_content_create_regular(dst_model);
+
+	TRYC(tifiles_file_read_regular(src_filename, src_content));	
+	TRYC(tifiles_file_read_regular(dst_filename, dst_content));
+
+	for(i = 0; i < src_content->num_entries; i++)
+		tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));	
+
+	//tifiles_file_display_regular(src_content);
+	//tifiles_file_display_regular(dst_content);
+
+	TRYC(tifiles_file_write_regular(dst_filename, dst_content, NULL));
+
+	TRYC(tifiles_content_delete_regular(src_content));
+	TRYC(tifiles_content_delete_regular(dst_content));
+
+	return 0;
+}
+
+/**
+ * tifiles_group_del_file:
+ * @src_filename: the file to add to group file
+ * @dst_filename: the group file
+ *
+ * Add src_filename content to dst_filename content and write.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename)
+{
+	return 0;
+}
