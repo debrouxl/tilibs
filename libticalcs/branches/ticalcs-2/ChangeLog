@@ -8,6 +8,9 @@ To do :
 
 Log:
 
+- 23/01/2006, version 0.0.4: roms
+	- modified to follow ticables2 API changes.
+
 - 24/09/2005, version 0.0.3: roms
 	- fixed critical bug in dbus_send: use len instead of length which makes 64KB blocks copied as 0B blocks :-(
 

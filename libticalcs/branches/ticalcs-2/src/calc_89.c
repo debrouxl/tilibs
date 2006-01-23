@@ -416,7 +416,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 			// we need to group files !
 			TRYF(is_ready(handle));
-			group[k] = tifiles_content_create_regular();
+			group[k] = tifiles_content_create_regular(handle->model);
 			TRYF(recv_var(handle, 0, group[k++], ve));
 
 			update_->cnt2 = ++ivars;
