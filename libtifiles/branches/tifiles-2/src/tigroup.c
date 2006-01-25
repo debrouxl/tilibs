@@ -28,7 +28,8 @@
 #  include <config.h>
 #endif
 
-#include <stdio.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 
 #ifdef HAVE_ZLIB
 //#undef WIN32
@@ -41,6 +42,9 @@
 #include "logging.h"
 
 #define WRITEBUFFERSIZE (8192)
+
+extern uLong filetime(f, tmzip, dt);
+extern int do_list(uf);
 
 /**
  * tifiles_file_read_tigroup:
@@ -56,10 +60,10 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	unzFile uf = NULL;
 	unz_global_info gi;
 	unz_file_info file_info;
-	int err = UNZ_OK;
+	int cnt, err = UNZ_OK;
 	char filename_inzip[256];
 	unsigned i;
-	void* buf;
+	void* buf = NULL;
     unsigned size_buf = WRITEBUFFERSIZE;
 	const char *password = NULL;
 
@@ -91,8 +95,8 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	// Parse archive for files
 	for (i = 0; i < gi.number_entry; i++)
     {
-		//VarEntry *ve = tifiles_ve_create_with_data(file_info.uncompressed_size);
-		//VarEntry *p = ve;
+		FILE *f;
+		gchar *filename;
 
 		// get infos
 		err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
@@ -107,27 +111,62 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
         if (err!=UNZ_OK)
         {
             printf("error %d with zipfile in unzOpenCurrentFilePassword\n",err);
+			goto tfrt_exit;
         }
 
-		// extract/uncompress
+		// extract/uncompress into temporary file
+		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, filename_inzip, NULL);
+		f = /*g_*/fopen(filename, "wb");
+
 		do
         {
             err = unzReadCurrentFile(uf,buf,size_buf);
             if (err<0)
             {
                 printf("error %d with zipfile in unzReadCurrentFile\n",err);
-                break;
+				fclose(f);
+                goto tfrt_exit;
             }
             if (err>0)
 			{
-				// place data
-				//memcpy(p, buf, err);
-				//p += err;
+				cnt = fwrite(buf, 1, err, f);
+				if(cnt == -1)
+                {
+                    printf("error in writing extracted file\n");
+                    err=UNZ_ERRNO;
+					fclose(f);
+                    goto tfrt_exit;
+                }
             }
         }
-		    while (err>0);
+		while (err>0);
+		fclose(f);
 
-		//tifiles_content_add_entry(content, ve);
+		// add to array
+		{
+			FileContent *src;
+			FileContent *dst = content;
+
+			content->model = tifiles_file_get_model(filename);
+		
+			src = tifiles_content_create_regular(content->model);
+			tifiles_file_read_regular(filename, src);
+			tifiles_content_add_entry(dst, tifiles_ve_dup(src->entries[0]));
+			tifiles_content_delete_regular(src);
+		}
+		g_free(filename);
+
+		// next file
+		if ((i+1) < gi.number_entry)
+		{
+			err = unzGoToNextFile(uf);
+			if (err!=UNZ_OK)
+			{
+				printf("error %d with zipfile in unzGoToNextFile\n",err);
+				goto tfrt_exit;
+			}
+		}
+
 	}	
 
 	// Close

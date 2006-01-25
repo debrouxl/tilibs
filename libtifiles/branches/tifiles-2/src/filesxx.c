@@ -39,7 +39,8 @@
  * tifiles_content_create_regular:
  * @model: a calculator model.
  *
- * Allocates a #FileContent structure.
+ * Allocates a #FileContent structure. Note: the calculator model is not required
+ * if the content is used for file reading but is compulsory for file writing.
  *
  * Return value: the allocated block.
  **/
