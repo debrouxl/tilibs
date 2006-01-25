@@ -30,8 +30,10 @@
 
 #include <glib.h>
 #include <glib/gstdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
 #include "minizip/zip.h"
 #include "minizip/unzip.h"
 #endif
@@ -43,8 +45,8 @@
 
 #define WRITEBUFFERSIZE (8192)
 
-extern uLong filetime(f, tmzip, dt);
-extern int do_list(uf);
+extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
+extern int do_list(unzFile uf);
 
 /**
  * tifiles_file_read_tigroup:
@@ -89,7 +91,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 		printf("error %d with zipfile in unzGetGlobalInfo \n",err);
 		goto tfrt_exit;
 	}        
-	printf("# entries: %u\n", gi.number_entry);
+	printf("# entries: %lu\n", gi.number_entry);
 
 	// Parse archive for files
 	for (i = 0; i < gi.number_entry; i++)
@@ -104,7 +106,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 			printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
 			goto tfrt_exit;
 		}
-		printf("Extracting <%s> with %u bytes\n", filename_inzip, file_info.uncompressed_size);
+		printf("Extracting <%s> with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
 
 		err = unzOpenCurrentFilePassword(uf,password);
         if (err!=UNZ_OK)

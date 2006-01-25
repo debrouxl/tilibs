@@ -64,15 +64,18 @@ am_libtifiles2_la_OBJECTS = libtifiles2_la-comments.lo \
 	libtifiles2_la-filetypes.lo libtifiles2_la-grouped.lo \
 	libtifiles2_la-intelhex.lo libtifiles2_la-logging.lo \
 	libtifiles2_la-misc.lo libtifiles2_la-rwfile.lo \
-	libtifiles2_la-tifiles.lo libtifiles2_la-transcode.lo \
-	libtifiles2_la-type2str.lo libtifiles2_la-types73.lo \
-	libtifiles2_la-types82.lo libtifiles2_la-types83.lo \
-	libtifiles2_la-types83p.lo libtifiles2_la-types84p.lo \
-	libtifiles2_la-types85.lo libtifiles2_la-types86.lo \
-	libtifiles2_la-types89.lo libtifiles2_la-types89t.lo \
-	libtifiles2_la-types92.lo libtifiles2_la-types92p.lo \
-	libtifiles2_la-typesv2.lo libtifiles2_la-typesxx.lo \
-	libtifiles2_la-ve_fp.lo
+	libtifiles2_la-tifiles.lo libtifiles2_la-tigroup.lo \
+	libtifiles2_la-transcode.lo libtifiles2_la-type2str.lo \
+	libtifiles2_la-types73.lo libtifiles2_la-types82.lo \
+	libtifiles2_la-types83.lo libtifiles2_la-types83p.lo \
+	libtifiles2_la-types84p.lo libtifiles2_la-types85.lo \
+	libtifiles2_la-types86.lo libtifiles2_la-types89.lo \
+	libtifiles2_la-types89t.lo libtifiles2_la-types92.lo \
+	libtifiles2_la-types92p.lo libtifiles2_la-typesv2.lo \
+	libtifiles2_la-typesxx.lo libtifiles2_la-ve_fp.lo \
+	libtifiles2_la-ioapi.lo libtifiles2_la-miniunz.lo \
+	libtifiles2_la-minizip.lo libtifiles2_la-unzip.lo \
+	libtifiles2_la-zip.lo
 libtifiles2_la_OBJECTS = $(am_libtifiles2_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -153,6 +156,7 @@ LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIBZ = @LIBZ@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -189,6 +193,7 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+ZLIB = @ZLIB@
 ac_ct_AR = @ac_ct_AR@
 ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
@@ -251,7 +256,7 @@ libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
 	@GLIB_CFLAGS@
 
-libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
+libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h \
 	comments.c \
@@ -264,13 +269,19 @@ libtifiles2_la_SOURCES = *.h \
 	misc.c \
 	rwfile.c \
 	tifiles.c \
+	tigroup.c \
 	transcode.c \
 	type2str.c \
 	types73.c types82.c types83.c types83p.c types84p.c \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesxx.c \
-	ve_fp.c
+	ve_fp.c \
+	minizip/ioapi.c \
+	minizip/miniunz.c \
+	minizip/minizip.c \
+	minizip/unzip.c \
+	minizip/zip.c
 
 all: all-am
 
@@ -349,10 +360,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-filetypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-grouped.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-intelhex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-ioapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-logging.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-miniunz.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-minizip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-rwfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-tifiles.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-tigroup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-transcode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-type2str.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-types73.Plo@am__quote@
@@ -368,7 +383,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-types92p.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-typesv2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-typesxx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-unzip.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-ve_fp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-zip.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -474,6 +491,13 @@ libtifiles2_la-tifiles.lo: tifiles.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tifiles.c' object='libtifiles2_la-tifiles.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-tifiles.lo `test -f 'tifiles.c' || echo '$(srcdir)/'`tifiles.c
+
+libtifiles2_la-tigroup.lo: tigroup.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-tigroup.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-tigroup.Tpo" -c -o libtifiles2_la-tigroup.lo `test -f 'tigroup.c' || echo '$(srcdir)/'`tigroup.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-tigroup.Tpo" "$(DEPDIR)/libtifiles2_la-tigroup.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-tigroup.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tigroup.c' object='libtifiles2_la-tigroup.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-tigroup.lo `test -f 'tigroup.c' || echo '$(srcdir)/'`tigroup.c
 
 libtifiles2_la-transcode.lo: transcode.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-transcode.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-transcode.Tpo" -c -o libtifiles2_la-transcode.lo `test -f 'transcode.c' || echo '$(srcdir)/'`transcode.c; \
@@ -586,6 +610,41 @@ libtifiles2_la-ve_fp.lo: ve_fp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='ve_fp.c' object='libtifiles2_la-ve_fp.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-ve_fp.lo `test -f 've_fp.c' || echo '$(srcdir)/'`ve_fp.c
+
+libtifiles2_la-ioapi.lo: minizip/ioapi.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-ioapi.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-ioapi.Tpo" -c -o libtifiles2_la-ioapi.lo `test -f 'minizip/ioapi.c' || echo '$(srcdir)/'`minizip/ioapi.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-ioapi.Tpo" "$(DEPDIR)/libtifiles2_la-ioapi.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-ioapi.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='minizip/ioapi.c' object='libtifiles2_la-ioapi.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-ioapi.lo `test -f 'minizip/ioapi.c' || echo '$(srcdir)/'`minizip/ioapi.c
+
+libtifiles2_la-miniunz.lo: minizip/miniunz.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-miniunz.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-miniunz.Tpo" -c -o libtifiles2_la-miniunz.lo `test -f 'minizip/miniunz.c' || echo '$(srcdir)/'`minizip/miniunz.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-miniunz.Tpo" "$(DEPDIR)/libtifiles2_la-miniunz.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-miniunz.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='minizip/miniunz.c' object='libtifiles2_la-miniunz.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-miniunz.lo `test -f 'minizip/miniunz.c' || echo '$(srcdir)/'`minizip/miniunz.c
+
+libtifiles2_la-minizip.lo: minizip/minizip.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-minizip.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-minizip.Tpo" -c -o libtifiles2_la-minizip.lo `test -f 'minizip/minizip.c' || echo '$(srcdir)/'`minizip/minizip.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-minizip.Tpo" "$(DEPDIR)/libtifiles2_la-minizip.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-minizip.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='minizip/minizip.c' object='libtifiles2_la-minizip.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-minizip.lo `test -f 'minizip/minizip.c' || echo '$(srcdir)/'`minizip/minizip.c
+
+libtifiles2_la-unzip.lo: minizip/unzip.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-unzip.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-unzip.Tpo" -c -o libtifiles2_la-unzip.lo `test -f 'minizip/unzip.c' || echo '$(srcdir)/'`minizip/unzip.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-unzip.Tpo" "$(DEPDIR)/libtifiles2_la-unzip.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-unzip.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='minizip/unzip.c' object='libtifiles2_la-unzip.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-unzip.lo `test -f 'minizip/unzip.c' || echo '$(srcdir)/'`minizip/unzip.c
+
+libtifiles2_la-zip.lo: minizip/zip.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-zip.lo -MD -MP -MF "$(DEPDIR)/libtifiles2_la-zip.Tpo" -c -o libtifiles2_la-zip.lo `test -f 'minizip/zip.c' || echo '$(srcdir)/'`minizip/zip.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtifiles2_la-zip.Tpo" "$(DEPDIR)/libtifiles2_la-zip.Plo"; else rm -f "$(DEPDIR)/libtifiles2_la-zip.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='minizip/zip.c' object='libtifiles2_la-zip.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-zip.lo `test -f 'minizip/zip.c' || echo '$(srcdir)/'`minizip/zip.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

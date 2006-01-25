@@ -13,7 +13,7 @@ libtifilesinclude_HEADERS = \
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
 	@GLIB_CFLAGS@
-libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@
+libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h \
 	comments.c \
@@ -26,10 +26,16 @@ libtifiles2_la_SOURCES = *.h \
 	misc.c \
 	rwfile.c \
 	tifiles.c \
+	tigroup.c \
 	transcode.c \
 	type2str.c \
 	types73.c types82.c types83.c types83p.c types84p.c \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesxx.c \
-	ve_fp.c
+	ve_fp.c \
+	minizip/ioapi.c \
+	minizip/miniunz.c \
+	minizip/minizip.c \
+	minizip/unzip.c \
+	minizip/zip.c

@@ -64,6 +64,13 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
+# Check for zlib
+AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)
+LIBZ="$LIBS"
+LIBS=""
+AC_SUBST(LIBZ)
+AC_SUBST(ZLIB)
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([inttypes.h stdint.h stdlib.h string.h])
