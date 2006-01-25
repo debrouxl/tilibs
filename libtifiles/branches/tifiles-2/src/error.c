@@ -103,6 +103,14 @@ TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 			NULL);
     break;
 
+	case ERR_FILE_ZIP:
+		*message = g_strconcat(
+			_("Msg: (Un)Zip error."),
+			"\n",
+			_("Cause: pfff, I don't know..."),
+			NULL);
+	break;
+
 	default:
 		// propagate error code
 		return number;

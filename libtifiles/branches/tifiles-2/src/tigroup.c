@@ -32,14 +32,14 @@
 #include <glib/gstdio.h>
 
 #ifdef HAVE_ZLIB
-//#undef WIN32
-//#include "minizip/iowin32.h"
 #include "minizip/zip.h"
 #include "minizip/unzip.h"
 #endif
 
 #include "tifiles.h"
 #include "logging.h"
+#include "error.h"
+#include "rwfile.h"
 
 #define WRITEBUFFERSIZE (8192)
 
@@ -64,7 +64,6 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	char filename_inzip[256];
 	unsigned i;
 	void* buf = NULL;
-    unsigned size_buf = WRITEBUFFERSIZE;
 	const char *password = NULL;
 
 	// Open ZIP archive
@@ -72,11 +71,11 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	if (uf == NULL)
     {
 		printf("Can't open this file: <%s>", filename);
-		return -1;
+		return ERR_FILE_ZIP;
 	}
 
 	// Allocate
-	buf = (void*)malloc(size_buf);
+	buf = (void*)malloc(WRITEBUFFERSIZE);
     if (buf==NULL)
     {
         printf("Error allocating memory\n");
@@ -116,11 +115,16 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 
 		// extract/uncompress into temporary file
 		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, filename_inzip, NULL);
-		f = /*g_*/fopen(filename, "wb");
+		f = gfopen(filename, "wb");
+		if(f == NULL)
+		{
+			err = ERR_FILE_OPEN;
+			goto tfrt_exit;
+		}
 
 		do
         {
-            err = unzReadCurrentFile(uf,buf,size_buf);
+            err = unzReadCurrentFile(uf,buf,WRITEBUFFERSIZE);
             if (err<0)
             {
                 printf("error %d with zipfile in unzReadCurrentFile\n",err);
@@ -155,6 +159,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 			tifiles_content_delete_regular(src);
 		}
 		g_free(filename);
+		unlink(filename);
 
 		// next file
 		if ((i+1) < gi.number_entry)
@@ -173,7 +178,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 tfrt_exit:
 	free(buf);
 	unzCloseCurrentFile(uf);
-	return err;
+	return err ? ERR_FILE_ZIP : 0;
 }
 
 /**
@@ -189,29 +194,54 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 {
 	zipFile zf;
 	zip_fileinfo zi;
-	int err=ZIP_OK;
+	int err = ZIP_OK;
 	int i;
-	int size_buf=0;
     void* buf=NULL;
+	gchar *old_dir = g_get_current_dir();
+	FileContent **ptr, **contents;
+
+	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
+	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
+	// So, use the hard way and do it by hand :-(
+	chdir(g_get_tmp_dir());
+	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive
-	zf = zipOpen(filename,APPEND_STATUS_ADDINZIP);
+	zf = zipOpen(filename,APPEND_STATUS_CREATE);
 	if (zf == NULL)
     {
 		printf("Can't open this file: <%s>", filename);
-		return -1;
+		return ERR_FILE_ZIP;
+	}
+
+	// Allocate buffer
+	buf = (void*)malloc(WRITEBUFFERSIZE);
+	if (buf==NULL)
+	{
+		printf("Error allocating memory\n");
+		goto tfwt_exit;
 	}
 
 	// Parse
-	for(i = 0; i < content->num_entries; i++)
+	for(i = 0, ptr = contents; i < content->num_entries; i++, ptr++)
 	{
-		FILE * fin;
-        int size_read;
+		FILE *f;
 		char filenameinzip[256];
 		unsigned long crcFile=0;
-		int size_buf=0;
-		void* buf=NULL;
+		char *filename;
+		int size_read;
 
+		// write TI file into tmp folder
+		TRYC(tifiles_file_write_regular(NULL, *ptr, &filename));
+		f = gfopen(filename, "rb");
+		if(f == NULL)
+		{
+			err = ERR_FILE_OPEN;
+			goto tfwt_exit;
+		}
+		strcpy(filenameinzip, filename);
+
+		// update time stamp (to do ?)
 		zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
         zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
         zi.dosDate = 0;
@@ -220,41 +250,39 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
         filetime(filenameinzip,&zi.tmz_date,&zi.dosDate);
 
 		err = zipOpenNewFileInZip3(zf,filenameinzip,&zi,
-                                 NULL,0,NULL,0,NULL /* comment*/,
+                                 NULL,0,NULL,0,content->comment /* comment*/,
                                  0 /* store, no comp */,
                                  0 /*comp level */,0,
                                  -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
                                  NULL /* no pwd*/,crcFile);
         if (err != ZIP_OK)
-            printf("error in opening %s in zipfile\n",filenameinzip);
-
-		size_buf = WRITEBUFFERSIZE;
-		buf = (void*)malloc(size_buf);
-		if (buf==NULL)
 		{
-			printf("Error allocating memory\n");
-			return ZIP_INTERNALERROR;
-		}
+            printf("error in opening %s in zipfile\n",filenameinzip);
+			return ERR_FILE_ZIP;
+		}		
 
 		do
         {
-			// feed with data
+			// feed with our data
             err = ZIP_OK;
-            //size_read = (int)fread(buf,1,size_buf,fin);
-            if (size_read < size_buf)
-                if (feof(fin)==0)
-            {
-                printf("error in reading %s\n",filenameinzip);
-                err = ZIP_ERRNO;
-            }
+			size_read = fread(buf, 1, WRITEBUFFERSIZE, f);
 
-            if (size_read>0)
+            if (size_read < WRITEBUFFERSIZE)
+			{
+				if (!feof(f))
+				{
+					printf("error in reading %s\n",filenameinzip);
+					err = ZIP_ERRNO;
+					goto tfwt_exit;
+				}
+			}
+            if (size_read > 0)
             {
                 err = zipWriteInFileInZip (zf,buf,size_read);
                 if (err<0)
                 {
-                    printf("error in writing %s in the zipfile\n",
-                                     filenameinzip);
+                    printf("error in writing %s in the zipfile\n", filenameinzip);
+					goto tfwt_exit;
                 }
 
             }
@@ -262,19 +290,27 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 
 		// close file
 		err = zipCloseFileInZip(zf);
-                    if (err!=ZIP_OK)
-                        printf("error in closing %s in the zipfile\n",
-                                    filenameinzip);
+        if (err!=ZIP_OK)
+		{
+            printf("error in closing %s in the zipfile\n", filenameinzip);
+			goto tfwt_exit;
+		}
+
+		fclose(f);
+		unlink(filename);
+		free(filename);
 	}
 
 	// close archive
+tfwt_exit:
+	tifiles_content_delete_group(contents);
+
 	err = zipClose(zf,NULL);
-        if (err != ZIP_OK)
-            printf("error in closing %s\n",filename);
-
-		free(buf);
-
-	return 0;
+    if (err != ZIP_OK)
+        printf("error in closing %s\n",filename);
+	free(buf);
+	chdir(old_dir);
+	return err;
 }
 
 /**

@@ -1060,6 +1060,8 @@ int test_tigroup()
 
 	tifiles_file_read_tigroup(BUILD_PATH("misc/test.tig"), &content);
 	tifiles_file_display_regular(&content);
+
+	tifiles_file_write_tigroup(BUILD_PATH("misc/test_.tig"), &content);
 	tifiles_content_delete_regular(&content);
 
 	return 0;
