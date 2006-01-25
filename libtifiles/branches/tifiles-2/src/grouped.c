@@ -317,7 +317,7 @@ TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve
 	int i, j;
 
 	// Search for entry
-	for(i = 0; i < content->num_entries; i++, j++)
+	for(i = 0, j = 0; i < content->num_entries; i++, j++)
 	{
 		VarEntry *s = content->entries[i];
 
