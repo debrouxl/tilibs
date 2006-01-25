@@ -16,6 +16,8 @@ Log:
 		=> the last two changes have been done to avoid/minimize manipulation of
 			internal fields in FileContent structure (make them opaque/private)
 	- added full TiGroup (*.tig) support: read, write, list
+	- removed a limitation in 'tifiles_group_contents': the src content is now
+		fully copied (not limited to first element like single file)
 
 - 14/01/2006, version 0.0.4: roms
 	- replaced assertion checks by warnings in the typesXX.c modules.

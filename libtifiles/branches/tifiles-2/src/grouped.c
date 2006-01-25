@@ -99,7 +99,7 @@ TIEXPORT int TICALL tifiles_content_delete_group(FileContent **array)
 TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content)
 {
   FileContent *dst;
-  int i, n;
+  int i, j, n;
 
   for (n = 0; src_contents[n] != NULL; n++);
 
@@ -118,7 +118,8 @@ TIEXPORT int TICALL tifiles_group_contents(FileContent **src_contents, FileConte
   {
     FileContent *src = src_contents[i];
 
-	dst->entries[i] = tifiles_ve_dup(src->entries[0]);
+	for(j = 0; j < src->num_entries; j++)
+		dst->entries[i] = tifiles_ve_dup(src->entries[j]);
   }
 
   *dst_content = dst;
@@ -371,9 +372,6 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
 
 	for(i = 0; i < src_content->num_entries; i++)
 		tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));	
-
-	//tifiles_file_display_regular(src_content);
-	//tifiles_file_display_regular(dst_content);
 
 	TRYC(tifiles_file_write_regular(dst_filename, dst_content, NULL));
 
