@@ -8,5 +8,5 @@ Description: TI's calculator management library
 Version: @VERSION@
 Requires: glib-2.0,ticables2,tifiles2
 Libs: -L${libdir} -lticalcs2
-Cflags: -I${includedir}/tilp
+Cflags: -I${includedir}/tilp2
 

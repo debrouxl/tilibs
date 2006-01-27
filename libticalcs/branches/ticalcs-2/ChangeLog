@@ -10,6 +10,7 @@ Log:
 
 - 23/01/2006, version 0.0.4: roms
 	- modified to follow ticables2 API changes.
+	- fixed critical bug in ticalcs2.pc.in: the header location was include/tilp instead of include/tilp2
 
 - 24/09/2005, version 0.0.3: roms
 	- fixed critical bug in dbus_send: use len instead of length which makes 64KB blocks copied as 0B blocks :-(
