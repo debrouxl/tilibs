@@ -88,7 +88,7 @@ AC_SUBST(LIBUSB_LIBS)
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdint.h termios.h linux/parport.h linux/ppdev.h])
+AC_CHECK_HEADERS([stdint.h termios.h linux/parport.h linux/ppdev.h linux/serial.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UID_T

@@ -10,6 +10,8 @@ Log:
 	- free'd pointers are systematically NULL'ified
 	- fixed mis-behaviour in ticables_cable_probe
 	- fixed severe bug in ticable_probe_finished (the allocated array was too small)
+	- check_for_tty & check_for_parport now tests for hardware presence
+	  => don't probe unavailable port any longer
 
 - 25/09/2005, version 0.0.3: roms
 	- modified TiEmu virtual link for Windows: don't use .shared section 

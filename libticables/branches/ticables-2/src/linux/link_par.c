@@ -65,7 +65,7 @@ static int par_open(CableHandle *h)
 {
     TRYC(par_io_open(h->device, (int *)&(h->priv)));
     TRYC(par_reset(h));
-#if OPEN_DELAYED
+#ifdef OPEN_DELAYED
 	usleep(2000);	// needs this because serial lines can be low at startup
 #endif
 
