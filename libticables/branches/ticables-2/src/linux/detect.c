@@ -36,6 +36,13 @@
 #include <grp.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#ifdef HAVE_LINUX_PARPORT_H
+#include <linux/parport.h>
+#include <linux/ppdev.h>
+#endif
+#ifdef HAVE_LINUX_SERIAL_H
+#include <linux/serial.h>
+#endif
 
 #include "../gettext.h"
 #include "../error.h"
@@ -279,18 +286,70 @@ int check_for_root(void)
 
 int check_for_tty(const char *devname)
 {
+    struct serial_struct serinfo;
+    int fd;
+
+    // check for node usability
     ticables_info(_("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
 	return ERR_TTDEV;
+
+#ifdef HAVE_LINUX_SERIAL_H
+    // check for device availability
+    fd = open(devname, 0);
+    if (fd == -1)
+    {
+        ticables_warning("unable to open serial device '%s'", devname);
+        return ERR_TTDEV;
+    }
     
+    serinfo.reserved_char[0] = 0;
+    if (ioctl(fd, TIOCGSERIAL, &serinfo) < 0)
+    {
+        close(fd);
+        return ERR_TTDEV;
+    }
+
+    if(serinfo.type == PORT_UNKNOWN || serinfo.type == PORT_MAX)
+    {
+	ticables_info(_("    is useable: no"));
+        close(fd);
+        return ERR_TTDEV;
+    }
+
+    ticables_info(_("    is useable: yes"));
+    close(fd);
+#endif
+
     return 0;
 }
 
 int check_for_parport(const char *devname)
 {
+    int fd;
+
+    // check for node usability
     ticables_info(_("Check for parport usability:"));
     if(check_for_node_usability(devname) == -1)
         return ERR_PPDEV;
+    
+    // check for device availability
+    fd = open(devname, 0);
+    if (fd == -1)
+    {
+        ticables_warning("unable to open parallel device '%s'.", devname);
+        return ERR_PPDEV;
+    }
+
+    if (ioctl(fd, PPCLAIM) == -1)
+    {
+	ticables_info(_("    is useable: no"));
+	close(fd);
+        return ERR_PPDEV;
+    }
+
+    ticables_info(_("    is useable: yes"));
+    close(fd);
 
     return 0;
 }

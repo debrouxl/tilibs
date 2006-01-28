@@ -94,10 +94,7 @@ static int ser_reset(CableHandle *h)
     {
 	ser_io_wr(dev_fd, 3);
 	if (TO_ELAPSED(clk, h->timeout))
-	{
-	    printf("<reset failed>\n");
 	    return 0;
-	}
 	//printf("%i", ser_io_rd(dev_fd) >> 4);
     }
     while ((ser_io_rd(dev_fd) & 0x30) != 0x30);

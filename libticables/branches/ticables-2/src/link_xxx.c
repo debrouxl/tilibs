@@ -100,7 +100,7 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 	}
 	else if(!opened && !cable->need_open)
 	{
-		TRYC(handle->cable->prepare(handle));
+	    TRYC(handle->cable->prepare(handle));
 	}
 
 	// Do the check itself

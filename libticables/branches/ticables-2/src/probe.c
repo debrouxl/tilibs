@@ -70,8 +70,7 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
 			ticables_handle_del(handle);
 		}
 		
-		ticables_info(_(" %i: %i %i %i %i"), model, 
-			array[model][1], array[model][2], array[model][3], array[model][4]);	
+		//ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);	
 	}
 
 	*result = array;

@@ -40,6 +40,9 @@
 #include <linux/parport.h>
 #include <linux/ppdev.h>
 #endif
+#ifdef HAVE_LINUX_SERIAL_H
+#include <linux/serial.h>
+#endif
 #include <errno.h>
 #include <string.h>
 
