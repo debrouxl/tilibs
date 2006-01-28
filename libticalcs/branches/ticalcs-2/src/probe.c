@@ -300,7 +300,7 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 	int err = 0;
 
 	// Hack: we construct the structure here because we don't really need it.
-	// I want to use ticalcs functions with a non-foxed calculator
+	// I want to use ticalcs functions with a non-fixed calculator
 	memset(&calc, 0, sizeof(CalcHandle));
 	calc.model = *model = CALC_NONE;
 	calc.updat = (CalcUpdate *)&default_update;
