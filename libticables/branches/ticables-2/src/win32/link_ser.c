@@ -74,7 +74,7 @@ static int ser_open(CableHandle *h)
   	TRYC(io_open(com_in));
 
 	TRYC(ser_reset(h));
-#if 0
+#if OPEN_DELAYED
 	Sleep(2000);	// needs this because serial lines can be low at startup
 #endif
 

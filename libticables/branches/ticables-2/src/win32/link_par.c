@@ -67,7 +67,7 @@ static int par_open(CableHandle *h)
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
 	
 	TRYC(par_reset(h));
-#if 0
+#if RESET_DELAYED
 	Sleep(2000);
 #endif
 
