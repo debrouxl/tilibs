@@ -70,6 +70,8 @@ LIBZ="$LIBS"
 LIBS=""
 AC_SUBST(LIBZ)
 AC_SUBST(ZLIB)
+dnl AC_CHECK_PROG(TFDOCGEN, tfdocgen, yes, no)
+dnl AM_CONDITIONAL(USE_DOCGEN, test "$TFDOCGEN" != "no")
 
 # Checks for header files.
 AC_HEADER_STDC

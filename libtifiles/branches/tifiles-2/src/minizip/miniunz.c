@@ -16,6 +16,8 @@
 #ifdef unix
 # include <unistd.h>
 # include <utime.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #else
 # include <direct.h>
 # include <io.h>
@@ -253,7 +255,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
     uInt size_buf;
 
     unz_file_info file_info;
-    uLong ratio=0;
+    //uLong ratio=0;
     err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
 
     if (err!=UNZ_OK)
@@ -411,7 +413,7 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     uLong i;
     unz_global_info gi;
     int err;
-    FILE* fout=NULL;
+    //FILE* fout=NULL;
 
     err = unzGetGlobalInfo (uf,&gi);
     if (err!=UNZ_OK)
@@ -445,7 +447,7 @@ int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,passwo
     int opt_overwrite;
     const char* password;
 {
-    int err = UNZ_OK;
+    //int err = UNZ_OK;
     if (unzLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
     {
         printf("file %s not found in the zipfile\n",filename);
