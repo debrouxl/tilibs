@@ -258,7 +258,7 @@ libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libtifiles2_la_SOURCES = *.h \
+libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
 	error.c \
 	files8x.c files9x.c filesxx.c \
@@ -283,6 +283,7 @@ libtifiles2_la_SOURCES = *.h \
 	minizip/unzip.c \
 	minizip/zip.c
 
+EXTRA_DIST = minizip/*
 all: all-am
 
 .SUFFIXES:
@@ -722,6 +723,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/minizip
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

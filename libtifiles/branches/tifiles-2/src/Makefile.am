@@ -15,7 +15,7 @@ libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	@GLIB_CFLAGS@
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libtifiles2_la_SOURCES = *.h \
+libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
 	error.c \
 	files8x.c files9x.c filesxx.c \
@@ -39,3 +39,5 @@ libtifiles2_la_SOURCES = *.h \
 	minizip/minizip.c \
 	minizip/unzip.c \
 	minizip/zip.c
+
+EXTRA_DIST = minizip/*
