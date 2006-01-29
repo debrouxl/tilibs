@@ -1,0 +1,18 @@
+[Main]
+Name=ticalc_set_calc
+Type=Function
+Header=calc_int.h
+Definition=void ticalc_set_calc(@TifileCalcType@ type, @TicalcFunctions@ *calc);
+
+[Parameters]
+type : a calculator model.
+calc : a set of functions to handle the calculator.
+
+[Summary]
+Set a current calculator model to use.
+
+[Description]
+This function fills the @TicalcFncts@ structure according to the calculator model. In this way, you use the same set of functions for all calculators.
+
+[See also]
+Error codes are listed in error.h and messages are in error.c

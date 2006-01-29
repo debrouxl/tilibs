@@ -1,0 +1,20 @@
+[Main]
+Name=send_backup
+Type=Function
+Header=calc_int.h
+Definition=int (*send_backup) (const char *filename, int mode);
+
+[Parameters]
+filename : a file containing a backup
+mode : a set of mask from @TicalcMaskMode@
+status : an informational value
+Returns : 0 if error, an error code otherwise
+
+[Summary]
+Restore the calculator memory.
+
+[Description]
+This function send a backup to the calculator.
+
+[See also]
+@ticalcfunctions.recv_backup@

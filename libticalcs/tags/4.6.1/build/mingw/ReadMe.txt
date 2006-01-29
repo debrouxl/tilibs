@@ -1,0 +1,1 @@
+See the TiLP/build/mingw/ReadMe.txt.
