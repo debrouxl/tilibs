@@ -1,0 +1,14 @@
+[Main]
+Name=ticable_get_param
+Type=Function
+Header=cabl_int.h
+Definition=int ticable_get_param(@TicableLinkParam@ *lp);
+
+[Parameters]
+lp : link parameters.
+
+[Summary]
+Get link parameters used by the library.
+
+[See also]
+@ticable_set_param@, @ticable_get_default_param@, @TicableLinkParam@
