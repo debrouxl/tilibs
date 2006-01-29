@@ -1,6 +1,0 @@
-In order to compile under MinGW:
-./config4mingw
-./make
-./make install
-
-The scripts located in this folder comes from the GLib <http://www.gtk.org>.
