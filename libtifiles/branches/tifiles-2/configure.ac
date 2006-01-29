@@ -67,11 +67,8 @@ AC_SUBST(GLIB_LIBS)
 # Check for zlib
 AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)
 LIBZ="$LIBS"
-LIBS=""
 AC_SUBST(LIBZ)
-AC_SUBST(ZLIB)
-dnl AC_CHECK_PROG(TFDOCGEN, tfdocgen, yes, no)
-dnl AM_CONDITIONAL(USE_DOCGEN, test "$TFDOCGEN" != "no")
+AM_CONDITIONAL(USE_LIBZ, test "$LIBZ")
 
 # Checks for header files.
 AC_HEADER_STDC
