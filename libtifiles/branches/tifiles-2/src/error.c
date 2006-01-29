@@ -111,6 +111,14 @@ TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 			NULL);
 	break;
 
+	case ERR_UNSUPPORTED:
+		*message = g_strconcat(
+			_("Msg: unsupported function."),
+			"\n",
+			_("Cause: the function you attempted to use is not available."),
+			NULL);
+		break;
+
 	default:
 		// propagate error code
 		return number;

@@ -36,6 +36,7 @@ typedef enum {
 	ERR_BAD_FILE,			// Same as above
 	ERR_FILE_CHECKSUM,		// Checksum file error
 	ERR_FILE_ZIP,			// (Un)Zip internal error
+	ERR_UNSUPPORTED			// Function not supported
 } FileError;
 
 #endif

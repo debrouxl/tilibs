@@ -92,7 +92,7 @@ int mymkdir(dirname)
 {
     int ret=0;
 #ifdef WIN32
-    ret = mkdir(dirname,0775);
+    ret = _mkdir(dirname);
 #else
 #ifdef unix
     ret = mkdir (dirname,0775);

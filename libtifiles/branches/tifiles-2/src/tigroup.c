@@ -45,8 +45,10 @@
 
 #define WRITEBUFFERSIZE (8192)
 
+#ifdef HAVE_LIBZ
 extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
 extern int do_list(unzFile uf);
+#endif
 
 /**
  * tifiles_file_read_tigroup:
@@ -59,6 +61,7 @@ extern int do_list(unzFile uf);
  **/
 TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent *content)
 {
+#ifdef HAVE_LIBZ
 	unzFile uf = NULL;
 	unz_global_info gi;
 	unz_file_info file_info;
@@ -181,6 +184,9 @@ tfrt_exit:
 	free(buf);
 	unzCloseCurrentFile(uf);
 	return err ? ERR_FILE_ZIP : 0;
+#else
+	return ERR_UNSUPPORTED;
+#endif
 }
 
 /**
@@ -194,6 +200,7 @@ tfrt_exit:
  **/
 TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent *content)
 {
+#ifdef HAVE_LIBZ
 	zipFile zf;
 	zip_fileinfo zi;
 	int err = ZIP_OK;
@@ -313,6 +320,9 @@ tfwt_exit:
 	free(buf);
 	chdir(old_dir);
 	return err;
+#else
+	return ERR_UNSUPPORTED;
+#endif
 }
 
 /**
@@ -325,6 +335,7 @@ tfwt_exit:
  **/
 TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename)
 {
+#ifdef HAVE_LIBZ
 	unzFile uf = NULL;
 
 	uf = unzOpen(filename);
@@ -338,4 +349,7 @@ TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename)
 	unzCloseCurrentFile(uf);
 
 	return 0;
+#else
+	return ERR_UNSUPPORTED;
+#endif
 }
