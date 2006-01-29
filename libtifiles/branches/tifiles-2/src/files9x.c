@@ -77,7 +77,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
