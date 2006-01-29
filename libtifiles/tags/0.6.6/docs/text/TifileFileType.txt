@@ -1,0 +1,18 @@
+[Main]
+Name=TifileFileType
+Type=Enum
+Header=file_def.h
+Definition=enum TifileFileType
+
+[Fields]
+TIFILE_SINGLE : a single file (program, string, ...)
+TIFILE_GROUP : a group file
+TIFILE_BACKUP : a  backup file
+TIFILE_FLASH : a file which contains a FLASH app or an OS upgrade
+
+
+[Summary]
+Used to categorize a file.
+
+[Description]
+Note: these types are not exclusive. With some calculators (89/92+/V200), a backup file is in fact a group file with some internal informations.

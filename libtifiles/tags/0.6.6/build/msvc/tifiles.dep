@@ -1,0 +1,486 @@
+# Microsoft Developer Studio Generated Dependency File, included by tifiles.mak
+
+..\..\src\types73.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types82.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types83.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types83p.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types85.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types86.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types89.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types92.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\types92p.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\typesv2.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\typesXX.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\files8X.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\intelhex.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\files9X.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\misc.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\filesxx.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\grp_ops.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\intelhex.c : \
+	"..\..\src\intelhex.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\stdints.h"\
+	
+
+..\..\src\error.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_err.h"\
+	"..\..\src\gettext.h"\
+	
+
+..\..\src\intrface.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\file_ver.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\grp_ops.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\Trans.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\misc.c : \
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\printl.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\trans.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\file_int.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\macros.h"\
+	"..\..\src\printl.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
+
+..\..\src\type2str.c : \
+	"..\..\..\..\..\Gtk2Dev\include\libintl.h"\
+	"..\..\src\export.h"\
+	"..\..\src\file_def.h"\
+	"..\..\src\files8X.h"\
+	"..\..\src\files9X.h"\
+	"..\..\src\filesXX.h"\
+	"..\..\src\gettext.h"\
+	"..\..\src\stdints.h"\
+	"..\..\src\types73.h"\
+	"..\..\src\types82.h"\
+	"..\..\src\types83.h"\
+	"..\..\src\types83p.h"\
+	"..\..\src\types85.h"\
+	"..\..\src\types86.h"\
+	"..\..\src\types89.h"\
+	"..\..\src\types92.h"\
+	"..\..\src\types92p.h"\
+	"..\..\src\typesv2.h"\
+	"..\..\src\typesXX.h"\
+	
