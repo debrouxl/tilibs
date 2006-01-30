@@ -368,7 +368,7 @@ static int is_regfile(const char *filename)
 }
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
-#define TIG_SIGNATURE	"PK\0x04\0x03"	// 0x04034b50)
+#define TIG_SIGNATURE	"PK\0x04\0x03"	// 0x04034b50
 
 /**
  * tifiles_file_is_ti:
@@ -409,7 +409,8 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
   }
 
   // check for TIB file
-  fread_n_chars(f, 14, str);
+  rewind(f);
+  fread_n_chars(f, 0x16, NULL);
   fread_n_chars(f, strlen(TIB_SIGNATURE), str);
   str[strlen(TIB_SIGNATURE)] = '\0';
   if(!strcmp(str, TIB_SIGNATURE)) 
@@ -417,6 +418,16 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 	fclose(f);
 	return !0;
   }
+
+	// check for TIG file
+	rewind(f);
+	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
+	str[strlen(TIG_SIGNATURE)] = '\0';
+	if(!strcmp(str, TIG_SIGNATURE)) 
+	{
+		fclose(f);
+		return !0;
+	}
 
   fclose(f);
   return 0;
@@ -597,7 +608,7 @@ TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 	if(f == NULL)
 		return 0;
 
-	fread_n_chars(f, 2, str);
+	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
 	str[strlen(TIG_SIGNATURE)] = '\0';
 	if(!strcmp(str, TIG_SIGNATURE)) 
 	{
@@ -781,6 +792,9 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
 
   if (!tifiles_file_is_ti(filename))
     return "";
+
+  if(tifiles_file_is_tig(filename))
+	  return "TiGroup";
 
   if (tifiles_file_is_group(filename)) 
   {
