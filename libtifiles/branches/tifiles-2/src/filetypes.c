@@ -389,7 +389,7 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
   if (!is_regfile(filename))
     return 0;
 
-  f = gfopen(filename, "rb");
+  f = fopen(filename, "rb");
   if (f == NULL)
 	  return 0;
   // read header
@@ -593,7 +593,7 @@ TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 	if(g_ascii_strcasecmp(e, "tig"))
 		return 0;
 
-	f = gfopen(filename, "rb");
+	f = fopen(filename, "rb");
 	if(f == NULL)
 		return 0;
 

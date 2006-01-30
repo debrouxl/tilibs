@@ -120,7 +120,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 
 		// extract/uncompress into temporary file
 		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, filename_inzip, NULL);
-		f = gfopen(filename, "wb");
+		f = fopen(filename, "wb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;
@@ -242,7 +242,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 
 		// write TI file into tmp folder
 		TRYC(tifiles_file_write_regular(NULL, *ptr, &filename));
-		f = gfopen(filename, "rb");
+		f = fopen(filename, "rb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;

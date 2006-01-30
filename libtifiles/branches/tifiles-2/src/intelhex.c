@@ -215,7 +215,7 @@ TIEXPORT int TICALL test_hex_read(void)
 	uint8_t type, data[BLK_MAX];
 	int ret;
 
-	f = gfopen(filename, "rb");
+	f = fopen(filename, "rb");
 	if (f == NULL) 
 	{
 		printf("Unable to open this file: <%s>", filename);

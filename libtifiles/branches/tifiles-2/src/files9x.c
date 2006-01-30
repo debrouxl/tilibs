@@ -24,7 +24,7 @@
 	Calcs: 89/89tm/92/92+/V200
 */
 
-#include <stdio.h>	// replace fopen by g_fopen which is locale independant
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -77,7 +77,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -180,7 +180,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -248,7 +248,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	// detect file type (old or new format)
 	tib = tifiles_file_is_tib(filename);
 
-	f = gfopen(filename, "rb");
+	f = fopen(filename, "rb");
 	if (f == NULL) 
 	{
 	    tifiles_info("Unable to open this file: <%s>\n", filename);
@@ -383,7 +383,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
       *real_fname = strdup(filename);
   }
 
-  f = gfopen(filename, "wb");
+  f = fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -488,7 +488,7 @@ int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 {
   FILE *f;
 
-  f = gfopen(filename, "wb");
+  f = fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: <%s>", filename);
@@ -532,7 +532,7 @@ int ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
   FILE *f;
   Ti9xFlash *content = head;
 
-  f = gfopen(filename, "wb");
+  f = fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: <%s>", filename);
