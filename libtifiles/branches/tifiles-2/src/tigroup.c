@@ -22,14 +22,15 @@
 /*
 	TiGroup (*.tig) management
 	A TiGroup file is in fact a ZIP archive with no compression (stored).
+
+  Please note that I don't use USEWIN32IOAPI.
 */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-#include <glib.h>
-#include <glib/gstdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -120,7 +121,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 
 		// extract/uncompress into temporary file
 		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, filename_inzip, NULL);
-		f = fopen(filename, "wb");
+		f = gfopen(filename, "wb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;
@@ -212,7 +213,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
 	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
 	// So, use the hard way and do it by hand :-(
-	chdir(g_get_tmp_dir());
+	g_chdir(g_get_tmp_dir());
 	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive
@@ -242,7 +243,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 
 		// write TI file into tmp folder
 		TRYC(tifiles_file_write_regular(NULL, *ptr, &filename));
-		f = fopen(filename, "rb");
+		f = gfopen(filename, "rb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;

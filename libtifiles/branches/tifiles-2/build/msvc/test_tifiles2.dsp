@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "__WIN32__" /YX /FD /c
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "__WIN32__" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "ENABLE_NLS" /YX /FD /GZ /c
+# ADD CPP /nologo /ML /W3 /Gm /GX /ZI /Od /I "C:\Gtk2Dev\include" /I "c:\gtk2dev\include\glib-2.0" /I "C:\GTK2DEV\lib\glib-2.0\include" /D "_DEBUG" /D "__WIN32__" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "ENABLE_NLS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
 # ADD RSC /l 0x40c /d "_DEBUG"
 BSC32=bscmake.exe
@@ -101,6 +101,10 @@ SOURCE=..\..\tests\test_tifiles_2.c
 # Begin Source File
 
 SOURCE="..\..\..\..\..\msvc\tilp2\tifiles2.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
 # End Project

@@ -3,11 +3,11 @@ SubVersion: $Id$
 Run './configure --enable-static=yes --enable-shared=no' for use with 
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
-To do:
-	- tifiles_is_varname_tokenized
-	- tifiles_tokenize_varname
-
 Log:
+
+- 02/02/2006, version 0.0.6: roms
+	- replaced fopen calls by g_fopen calls: the library uses GLib encoding on
+	filenames for now (UTF-8 on Windows, locale on Linux (usually UTF-8, too)).
 
 - 22/01/2006, version 0.0.5: roms
 	- removed 'tifiles_create_table_of_entries' from export
@@ -19,6 +19,7 @@ Log:
 	- added full TiGroup (*.tig) support: read, write, list
 	- removed a limitation in 'tifiles_group_contents': the src content is now
 		fully copied (not limited to first element like single file)
+	- reverted back the changes made on 'fopen' and 'UTF-8'
 
 - 14/01/2006, version 0.0.4: roms
 	- replaced assertion checks by warnings in the typesXX.c modules.

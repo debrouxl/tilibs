@@ -28,6 +28,7 @@
 #include <config.h>
 #endif
 
+#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef __WIN32__
@@ -1055,6 +1056,10 @@ int test_ti8x_group_merge()
 int test_tigroup()
 {
 	FileContent content = { 0 };
+
+	//tifiles_file_display(BUILD_PATH("misc/str.92s"));
+	//tifiles_file_display(BUILD_PATH(g_locale_to_utf8("misc/pépé.92s", -1, NULL, NULL, NULL)));
+	//return 0;
 
 	tifiles_file_display_tigroup(BUILD_PATH("misc/test.tig"));
 

@@ -19,7 +19,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <glib/gstdio.h>	// replace fopen by g_fopen which is locale independant
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -389,7 +388,7 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
   if (!is_regfile(filename))
     return 0;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL)
 	  return 0;
   // read header
@@ -604,7 +603,7 @@ TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 	if(g_ascii_strcasecmp(e, "tig"))
 		return 0;
 
-	f = fopen(filename, "rb");
+	f = gfopen(filename, "rb");
 	if(f == NULL)
 		return 0;
 

@@ -22,8 +22,7 @@
 #ifndef __TIFILES_MISC__
 #define __TIFILES_MISC__
 
-FILE *
-gfopen (const char *filename, const char *mode);
+FILE* gfopen (const char *filename, const char *mode);
 
 int fread_n_bytes(FILE * f, int n, char *s);
 int fwrite_n_bytes(FILE * f, int n, const char *s);

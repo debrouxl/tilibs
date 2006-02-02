@@ -120,7 +120,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_warning( "Unable to open this file: <%s>\n", filename);
@@ -270,7 +270,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -376,7 +376,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
   if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;
 
-  f = fopen(filename, "rb");
+  f = gfopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: <%s>", filename);
@@ -523,7 +523,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
       *real_fname = strdup(filename);
   }
 
-  f = fopen(filename, "wb");
+  f = gfopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -639,7 +639,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   FILE *f;
   uint16_t data_length;
 
-  f = fopen(filename, "wb");
+  f = gfopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: <%s>", filename);
@@ -705,7 +705,7 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *head)
   int bytes_written = 0;
   long pos;
 
-  f = fopen(filename, "wb");
+  f = gfopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: <%s>", filename);
