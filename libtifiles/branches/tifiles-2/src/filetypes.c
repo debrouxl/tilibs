@@ -368,7 +368,7 @@ static int is_regfile(const char *filename)
 }
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
-#define TIG_SIGNATURE	"PK\0x04\0x03"	// 0x04034b50
+#define TIG_SIGNATURE	"PK\x04\x03"	// 0x04034b50
 
 /**
  * tifiles_file_is_ti:
