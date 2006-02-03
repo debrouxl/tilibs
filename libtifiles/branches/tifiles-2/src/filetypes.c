@@ -366,9 +366,6 @@ static int is_regfile(const char *filename)
 #endif
 }
 
-#define TIB_SIGNATURE	"Advanced Mathematics Software"
-#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
-
 /**
  * tifiles_file_is_single:
  * @filename: a filename as string.
@@ -493,6 +490,9 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
   return 0;
 }
 
+#define TIB_SIGNATURE	"Advanced Mathematics Software"
+#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
+
 /**
  * tifiles_file_is_tib:
  * @filename: a filename as string.
@@ -504,14 +504,14 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
 TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 {
 	FILE *f;
-	char str[8];
+	char str[128];
 	char *e = tifiles_fext_get(filename);
 
 	if (!strcmp(e, ""))
 	  return 0;
 
-	if(!g_ascii_strcasecmp(e, "tib"))
-		return !0;
+	if(g_ascii_strcasecmp(e, "tib"))
+		return 0;
 
 	f = gfopen(filename, "rb");
 	if(f == NULL)
@@ -540,7 +540,7 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 {
 	FILE *f;
-	char str[8];
+	char str[5];
 	char *e = tifiles_fext_get(filename);
 
 	if (!strcmp(e, ""))
@@ -604,8 +604,6 @@ static int tifiles_file_has_header(const char *filename)
 TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 {
 	FILE *f;
-	char buf[9];
-	char *p;
 
 	// bug: check that file is not a FIFO
 	if (!is_regfile(filename))
