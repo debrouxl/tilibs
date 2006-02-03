@@ -30,7 +30,8 @@
 #  include <config.h>
 #endif
 
-#include <stdio.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -102,6 +103,8 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
     {
 		FILE *f;
 		gchar *filename;
+		gchar *utf8;
+		gchar *gfe;
 
 		// get infos
 		err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
@@ -120,7 +123,12 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
         }
 
 		// extract/uncompress into temporary file
-		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, filename_inzip, NULL);
+		utf8 = g_locale_to_utf8(filename_inzip, -1, NULL, NULL, NULL);
+		gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);		
+		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, gfe, NULL);
+		g_free(utf8);
+		g_free(gfe);
+
 		f = gfopen(filename, "wb");
 		if(f == NULL)
 		{
@@ -319,7 +327,7 @@ tfwt_exit:
     if (err != ZIP_OK)
         printf("error in closing %s\n",filename);
 	free(buf);
-	chdir(old_dir);
+	g_chdir(old_dir);
 	return err;
 #else
 	return ERR_UNSUPPORTED;
