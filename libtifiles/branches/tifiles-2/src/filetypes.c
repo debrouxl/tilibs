@@ -367,70 +367,7 @@ static int is_regfile(const char *filename)
 }
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
-#define TIG_SIGNATURE	"PK\x04\x03"	// 0x04034b50
-
-/**
- * tifiles_file_is_ti:
- * @filename: a filename as string.
- *
- * Check whether file is a TI file by checking the signature.
- *
- * Return value: a boolean value.
- **/
-TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
-{
-  FILE *f;
-  char buf[9];
-  char str[64];
-  char *p;
-
-  // bug: check that file is not a FIFO
-  if (!is_regfile(filename))
-    return 0;
-
-  f = gfopen(filename, "rb");
-  if (f == NULL)
-	  return 0;
-  // read header
-  fread_8_chars(f, buf);
-
-  for(p = buf; *p != '\0'; p++)
-      *p = toupper(*p);
-
-  if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
-      !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
-      !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
-      !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
-      !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
-      !strcmp(buf, "**TIFL**")) {
-    fclose(f);
-    return !0;
-  }
-
-  // check for TIB file
-  rewind(f);
-  fread_n_chars(f, 0x16, NULL);
-  fread_n_chars(f, strlen(TIB_SIGNATURE), str);
-  str[strlen(TIB_SIGNATURE)] = '\0';
-  if(!strcmp(str, TIB_SIGNATURE)) 
-  {
-	fclose(f);
-	return !0;
-  }
-
-	// check for TIG file
-	rewind(f);
-	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
-	str[strlen(TIG_SIGNATURE)] = '\0';
-	if(!strcmp(str, TIG_SIGNATURE)) 
-	{
-		fclose(f);
-		return !0;
-	}
-
-  fclose(f);
-  return 0;
-}
+#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
 
 /**
  * tifiles_file_is_single:
@@ -566,20 +503,29 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
  **/
 TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 {
+	FILE *f;
+	char str[8];
 	char *e = tifiles_fext_get(filename);
 
 	if (!strcmp(e, ""))
 	  return 0;
 
-	if (!tifiles_file_is_ti(filename))
-		return 0;
-
 	if(!g_ascii_strcasecmp(e, "tib"))
 		return !0;
 
-	// no need to do more test, TIB signature has already been checked 
-	// by tifiles_file_is_ti()
+	f = gfopen(filename, "rb");
+	if(f == NULL)
+		return 0;
 
+	fread_n_chars(f, strlen(TIB_SIGNATURE), str);
+	str[strlen(TIB_SIGNATURE)] = '\0';
+	if(!strcmp(str, TIB_SIGNATURE)) 
+	{
+		fclose(f);
+		return !0;
+	}
+
+	fclose(f);
 	return 0;
 }
 
@@ -594,7 +540,7 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 {
 	FILE *f;
-	char str[4];
+	char str[8];
 	char *e = tifiles_fext_get(filename);
 
 	if (!strcmp(e, ""))
@@ -616,6 +562,64 @@ TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 	}
 
 	fclose(f);
+	return 0;
+}
+
+static int tifiles_file_has_header(const char *filename)
+{
+	FILE *f;
+	char buf[9];
+	char *p;
+
+	f = gfopen(filename, "rb");
+	if (f == NULL)
+		return 0;
+	
+	fread_8_chars(f, buf);
+	for(p = buf; *p != '\0'; p++)
+		*p = toupper(*p);
+
+	if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
+      !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
+      !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
+      !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
+      !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
+      !strcmp(buf, "**TIFL**")) {
+		fclose(f);
+		return !0;
+	}
+
+	fclose(f);
+	return 0;
+}
+
+/**
+ * tifiles_file_is_ti:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a TI file by checking the signature.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
+{
+	FILE *f;
+	char buf[9];
+	char *p;
+
+	// bug: check that file is not a FIFO
+	if (!is_regfile(filename))
+		return 0;
+
+	if(tifiles_file_has_header(filename))
+		return !0;
+
+	if(tifiles_file_is_tib(filename))
+		return !0;
+
+	if(tifiles_file_is_tig(filename))
+		return !0;
+
 	return 0;
 }
 
