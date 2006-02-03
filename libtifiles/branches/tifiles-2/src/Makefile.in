@@ -260,6 +260,8 @@ libtifilesinclude_HEADERS = \
 	tifiles.h export2.h stdints.h macros.h \
 	files8x.h files9x.h types*.h 
 
+
+# build minizip package only if lib have been detected
 @USE_LIBZ_TRUE@zip_sources = \
 @USE_LIBZ_TRUE@	minizip/ioapi.c   \
 @USE_LIBZ_TRUE@        minizip/miniunz.c \

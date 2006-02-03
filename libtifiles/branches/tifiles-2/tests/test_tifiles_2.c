@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
+//#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef __WIN32__
