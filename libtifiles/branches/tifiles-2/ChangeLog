@@ -9,6 +9,7 @@ Log:
 	- replaced fopen calls by g_fopen calls: the library uses GLib encoding on
 	filenames for now (UTF-8 on Windows, locale on Linux (usually UTF-8, too)).
 	- optimized tifiles_file_is_ti()
+	- fixed tifiles_file_get_type for TiGroup support
 
 - 22/01/2006, version 0.0.5: roms
 	- removed 'tifiles_create_table_of_entries' from export

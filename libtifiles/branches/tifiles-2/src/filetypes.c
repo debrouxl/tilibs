@@ -379,12 +379,14 @@ TIEXPORT int TICALL tifiles_file_is_single(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return 0;
 
-  if (tifiles_file_is_group(filename) ||
-      tifiles_file_is_backup(filename) ||
-      tifiles_file_is_flash(filename))
-    return 0;
-  else
+  if (!tifiles_file_is_group(filename) &&
+      !tifiles_file_is_backup(filename) &&
+      !tifiles_file_is_flash(filename) &&
+	  !tifiles_file_is_tib(filename) &&
+	  !tifiles_file_is_tigroup(filename))
     return !0;
+
+    return 0;
 }
 
 /**
@@ -530,14 +532,14 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 }
 
 /**
- * tifiles_file_is_tig:
+ * tifiles_file_is_tigroup:
  * @filename: a filename as string.
  *
  * Check whether file is a TiGroup formatted file.
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
+TIEXPORT int TICALL tifiles_file_is_tigroup(const char *filename)
 {
 	FILE *f;
 	char str[5];
@@ -563,6 +565,11 @@ TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
 
 	fclose(f);
 	return 0;
+}
+
+TIEXPORT int TICALL tifiles_file_is_tig(const char *filename)
+{
+	return tifiles_file_is_tigroup(filename);
 }
 
 static int tifiles_file_has_header(const char *filename)
@@ -603,8 +610,6 @@ static int tifiles_file_has_header(const char *filename)
  **/
 TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 {
-	FILE *f;
-
 	// bug: check that file is not a FIFO
 	if (!is_regfile(filename))
 		return 0;
@@ -615,7 +620,7 @@ TIEXPORT int TICALL tifiles_file_is_ti(const char *filename)
 	if(tifiles_file_is_tib(filename))
 		return !0;
 
-	if(tifiles_file_is_tig(filename))
+	if(tifiles_file_is_tigroup(filename))
 		return !0;
 
 	return 0;
@@ -718,6 +723,9 @@ TIEXPORT const char *TICALL tifiles_file_get_type(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return "";
 
+  if(tifiles_file_is_tigroup(filename))
+	  return "TiGroup";
+
   if (tifiles_file_is_group(filename)) 
   {
     switch (tifiles_file_get_model(filename)) 
@@ -794,7 +802,7 @@ TIEXPORT const char *TICALL tifiles_file_get_icon(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return "";
 
-  if(tifiles_file_is_tig(filename))
+  if(tifiles_file_is_tigroup(filename))
 	  return "TiGroup";
 
   if (tifiles_file_is_group(filename)) 
