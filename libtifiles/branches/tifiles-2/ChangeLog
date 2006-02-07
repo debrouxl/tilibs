@@ -5,6 +5,7 @@ ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
 To do:
 - add check for 8x/9x compat (allow sending of .9kx on a V200 altough it's not a .v2k for instance)
+- add tifiles_file_is_targetted(filename, model, class) avec class = ALL
 
 Log:
 

@@ -697,6 +697,8 @@ TIEXPORT FileClass TICALL tifiles_file_get_class(const char *filename)
     return TIFILE_BACKUP;
   else if (tifiles_file_is_flash(filename))
     return TIFILE_FLASH;
+  else if (tifiles_file_is_tigroup(filename))
+    return TIFILE_TIGROUP;
   else
     return 0;
 }

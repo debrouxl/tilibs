@@ -159,6 +159,7 @@ TIEXPORT const char *TICALL tifiles_class_to_string(FileClass klass)
   	case TIFILE_GROUP:  return _("group");
   	case TIFILE_BACKUP: return _("backup");
   	case TIFILE_FLASH:  return _("flash");
+	case TIFILE_TIGROUP:  return _("tigroup");
   	default: return _("unknown");
   	}
 }
@@ -181,6 +182,8 @@ TIEXPORT FileClass TICALL tifiles_string_to_class(const char *str)
 		return TIFILE_BACKUP;
 	else if(!g_ascii_strcasecmp(str, _("flash")))
 		return TIFILE_FLASH;
+	else if(!g_ascii_strcasecmp(str, _("tigroup")))
+		return TIFILE_TIGROUP;
 		
 	return TIFILE_SINGLE;
 }

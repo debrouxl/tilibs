@@ -81,6 +81,7 @@ typedef enum
 typedef enum 
 {
   TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
+  TIFILE_TIGROUP = 16,
 } FileClass;
 
 /**
