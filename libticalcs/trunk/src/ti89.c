@@ -708,8 +708,7 @@ int ti89_send_flash(const char *filename, int mask_mode)
 	return ERR_ABORT;
   }
 
-  if (ptr->data_type == TI89_AMS)
-    TRYF(ti89_recv_ACK(NULL));
+  TRYF(ti89_recv_ACK(NULL));
 
   printl2(0, _("Flash application/os sent completely.\n"));
 
