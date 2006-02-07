@@ -381,6 +381,8 @@ extern "C" {
   TIEXPORT int TICALL tifiles_calc_is_ti8x (CalcModel model);
   TIEXPORT int TICALL tifiles_calc_is_ti9x (CalcModel model);
 
+  TIEXPORT int TICALL tifiles_calc_are_compat(CalcModel model1, CalcModel model2);
+
   TIEXPORT int TICALL tifiles_has_folder (CalcModel model);
   TIEXPORT int TICALL tifiles_is_flash (CalcModel model);
 

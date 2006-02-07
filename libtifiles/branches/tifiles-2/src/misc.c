@@ -62,6 +62,27 @@ TIEXPORT int TICALL tifiles_calc_is_ti9x(CalcModel model)
 }
 
 /**
+ * tifiles_calc_are_compat:
+ * @model: a calculator model.
+ * @ref: a calculator model.
+ *
+ * Check whether %model is compatible (in term of file types) with %ref.
+ * Example: a .92t can be sent to a TI92 (of course) as well as a 
+ * TI89, 92+, V200 and a Titanium.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
+{
+	if(tifiles_calc_is_ti8x(model) && tifiles_calc_is_ti8x(ref))
+		return !0;
+	else if(tifiles_calc_is_ti9x(model) && tifiles_calc_is_ti9x(ref))
+		return !0;
+
+	return 0;
+}
+
+/**
  * tifiles_has_folder:
  * @model: a calculator model.
  *
