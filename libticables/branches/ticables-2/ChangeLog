@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 08/02/2006, version 0.0.5: roms
+	- changed information message in check_for_libusb according to bug #1372369.
+
 - 19/01/2006, version 0.0.4: roms
 	- fixed bad error code in 'slv_prepare' for SilverLink
 	- added a COM wrapper with VBA sample program
