@@ -6,8 +6,13 @@ ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 To do:
 - add check for 8x/9x compat (allow sending of .9kx on a V200 altough it's not a .v2k for instance)
 - add tifiles_file_is_targetted(filename, model, class) avec class = ALL
+- API: préciser que les varnames sont en UTF-8 !
 
 Log:
+
+- 08/02/2006, version 0.0.7: roms
+	- added tifiles_varname_to_filename which converts varname with sepcial characters
+		(like alpha, beta, ...) into valid filename according to locale
 
 - 02/02/2006, version 0.0.6: roms
 	- replaced fopen calls by g_fopen calls: the library uses GLib encoding on

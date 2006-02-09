@@ -36,6 +36,7 @@
 #include "logging.h"
 #include "typesxx.h"
 
+#define RANGE(a,x,b)	(((a) <= (x)) && ((x) <= (b)))
 
 /* 
    Variable name detokenization. This is needed for the following calcs:
@@ -788,26 +789,35 @@ static uint16_t transcode_from_ti85_charset_to_utf8(const char c)
 
 static char transcode_from_ti9x_charset_to_ascii(const char c)
 {
-  return (((uint8_t)c >= 0x20) && ((uint8_t)c < 0x80)) ? c : '_';
+	return (((uint8_t)c >= 0x20) && ((uint8_t)c < 0x80)) ? c : '_';
 }
+
+static const char greeks[] = { 
+	'a', 'b', 'G', 'g', 'D', 'd', 'e', 'z', 'o',
+	'l', 'x', 'P', 'p', 'r', 'S', 's', 't', 'f', 'i', 'W', 'w',
+};
 
 static char transcode_from_ti9x_charset_to_latin1(const char c)
 {
-  return (((uint8_t)c >= 0x80) && ((uint8_t)c < 0xA0)) ? '_' : c;
+	if(RANGE(32, (uint8_t)c, 127))
+		return c;
+	else if(RANGE(128, (uint8_t)c, 148))
+		return greeks[((uint8_t)c) - 128];
+	else if(RANGE(192, (uint8_t)c, 255))
+		return c;
+
+	return '_';
+  //return (((uint8_t)c >= 0x80) && ((uint8_t)c < 0xA0)) ? '_' : c;
 }
 
 static uint16_t transcode_from_ti9x_charset_to_utf8(const char c)
 {
   uint16_t wchar;
 
-  if((uint8_t)c < 0x80)       // ASCII part
+  if((uint8_t)c < 0x80)       // ASCII part (< 0x80=
     wchar = c;
-  else if((uint8_t)c >= 0xA0) // ISO8859-1 part
-    switch((uint8_t)c) 
-      {
-      case 0xb5: wchar = 0x03bc; break; // mu
-      default:   wchar = c & 0xff; break;
-      }
+  else if((uint8_t)c >= 0xA0) // ISO8859-1 part (>= 0xC0)
+	wchar = c & 0xff;
   else 
     {                         // greek characters
       switch((uint8_t)c) 
@@ -833,6 +843,7 @@ static uint16_t transcode_from_ti9x_charset_to_utf8(const char c)
 	case 0x92: wchar = 0x03a8; break; // psi (capital)
 	case 0x93: wchar = 0x03a9; break; // omega (capital)
 	case 0x94: wchar = 0x03c9; break; // omega
+	case 0xb5: wchar = 0x03bc; break; // mu
 	default:   wchar = '_';
 	}
     }
@@ -1100,4 +1111,103 @@ TIEXPORT char *TICALL tifiles_transcode_varname_static(CalcModel model, const ch
 {
 	static char trans[18];  
 	return tixx_translate_varname(model, trans, src, vartype);
+}
+
+/**
+ * tifiles_varname_to_filename:
+ * @model: a calculator model taken in #CalcModel.
+ * @dst: a buffer to place result of transcoding (64 bytes max).
+ * @src: the name of variable to convert (transcoded name (utf8), not raw one !) .
+ *
+ * This function converts a varname into a valid filename (depends on locale).
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ * 
+ * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ * if locale is different of UTF-8).
+ *
+ * Return value: %dst.
+ **/
+TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, const char *src)
+{
+// Windows: varnames are UTF-8, glib filenames use UTF-8, filesystem use locale
+// Linux: varnames are UTF-8, glib filenames use UTF-8, filesystem use locale/utf8
+// Linux: varnames are UTF-8, glib filenames use locale, filesystem use locale/utf8
+	int i;
+	int is_utf8 = g_get_charset(NULL);
+
+	if(tifiles_calc_is_ti9x(model) && !is_utf8)
+	{
+		for(i = 0; i < (int)strlen(src);)
+		{
+			uint8_t schar = (uint8_t)src[i];
+			uint16_t wchar = (((uint8_t)src[i]) << 8) | ((uint8_t)src[i+1]);
+
+			if(schar < 0x80)		// ASCII
+				dst[i++] = src[i];
+			else if(wchar < 0xc3c0)	// Latin-1
+			{
+				dst[i++] = src[i];
+				dst[i++] = src[i];
+			}
+			else if(wchar >= 0xC3C0/*schar >= 0xC0*/)
+			{
+				dst[0] = '\0';
+				strcat(dst, "_");
+				switch(wchar)
+				{
+					case 0xcebc: strcat(dst, "mu"); break;
+					case 0xceb1: strcat(dst, "alpha"); break;
+					case 0xceb2: strcat(dst, "beta");break;
+					case 0xce93: strcat(dst, "GAMMA");break;
+					case 0xceb3: strcat(dst, "gamma");break;
+					case 0xce94: strcat(dst, "DELTA");break;
+					case 0xceb4: strcat(dst, "delta");break;
+					case 0xceb5: strcat(dst, "epsilon");break;
+					case 0xceb6: strcat(dst, "dzeta");break;
+					case 0xceb8: strcat(dst, "theta");break;
+					case 0xcebb: strcat(dst, "lambda"); break;
+					case 0xcebe: strcat(dst, "ksi"); break;
+					case 0xcea0: strcat(dst, "PI"); break;
+					case 0xcec0: strcat(dst, "pi"); break;
+					case 0xcec1: strcat(dst, "rho"); break;
+					case 0xcea3: strcat(dst, "SIGMA"); break; 
+					case 0xcec3: strcat(dst, "sigma"); break; 
+					case 0xcec4: strcat(dst, "tau"); break;
+					case 0xced5: strcat(dst, "PHI"); break;
+					case 0xcea8: strcat(dst, "PSI"); break;
+					case 0xcea9: strcat(dst, "OMEGA"); break; 
+					case 0xcec9: strcat(dst, "omega"); break;
+					default: break;
+				}
+				strcat(dst, "_");
+				i++; i++;
+			}
+		}
+	}
+	else if(tifiles_calc_is_ti8x(model))
+	{
+		// already managed by detokenize
+		strncpy(dst, src, 17);
+	}
+	else
+		strncpy(dst, src, 17);
+
+	return dst;
+}
+
+/**
+ * tifiles_transcode_varname_static:
+ * @model: a calculator model taken in #CalcModel.
+ * @dst: a buffer to place result of transcoding.
+ * @src: the name of variable to convert.
+ *
+ * Same function as tifiles_varname_to_filename but it uses an internal static buffer to return result.
+ * Note: you can convert a varname, not a full path !
+ *
+ * Return value: a statically allocated string.
+ **/
+TIEXPORT char *TICALL tifiles_varname_to_filename_static(CalcModel model, const char *src)
+{
+	static char buf[64];  
+	return tifiles_varname_to_filename(model, buf, src);
 }

@@ -336,6 +336,9 @@ extern "C" {
   TIEXPORT char *TICALL tifiles_transcode_varname (CalcModel model, char *dst, const char *src, uint8_t vartype);
   TIEXPORT char *TICALL tifiles_transcode_varname_static (CalcModel model, const char *src, uint8_t vartype);
 
+  TIEXPORT char *TICALL tifiles_varname_to_filename (CalcModel model, char *dst, const char *src);
+  TIEXPORT char *TICALL tifiles_varname_to_filename_static (CalcModel model, const char *src);
+
   // filetypes.c
   TIEXPORT const char* TICALL tifiles_fext_of_group    (CalcModel model);
   TIEXPORT const char* TICALL tifiles_fext_of_backup   (CalcModel model);
