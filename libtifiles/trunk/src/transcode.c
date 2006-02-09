@@ -1136,7 +1136,7 @@ TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, co
 	int is_utf8 = g_get_charset(NULL);
 
 	dst[0] = '\0';
-	if(tifiles_calc_is_ti9x(model) && !is_utf8)
+	if(tifiles_calc_is_ti9x(model) && !is_utf8 && (tifiles_encoding == ENCODING_UNICODE))
 	{
 		for(i = 0; i < (int)strlen(src);)
 		{
@@ -1183,6 +1183,7 @@ TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, co
 				i++; i++;
 			}
 		}
+		dst[i] = '\0';
 	}
 	else if(tifiles_calc_is_ti8x(model))
 	{
