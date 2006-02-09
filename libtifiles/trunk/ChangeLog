@@ -13,6 +13,7 @@ Log:
 - 08/02/2006, version 0.0.7: roms
 	- added tifiles_varname_to_filename which converts varname with sepcial characters
 		(like alpha, beta, ...) into valid filename according to locale
+	- tifiles_file_write_regular can now auto-saves files with greek characters
 
 - 02/02/2006, version 0.0.6: roms
 	- replaced fopen calls by g_fopen calls: the library uses GLib encoding on

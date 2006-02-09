@@ -360,6 +360,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   int i;
   char *filename = NULL;
   char trans[17];
+  char basename[64];
   uint32_t offset = 0x52;
   int **table;
   int num_folders;
@@ -374,9 +375,10 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   {
     tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
 			   content->entries[0]->type);
+	tifiles_varname_to_filename(content->model, basename, trans);
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
-    strcpy(filename, trans);
+    strcpy(filename, basename);
     strcat(filename, ".");
     strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
     if (real_fname != NULL)

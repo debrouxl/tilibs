@@ -500,6 +500,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   uint16_t sum = 0;
   char *filename = NULL;
   char trans[17];
+  char basename[64];
   uint32_t data_length;
   uint16_t packet_length = 0x0B;
   uint8_t name_length = 8;
@@ -514,9 +515,10 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   {
     tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
 			   content->entries[0]->type );
+	tifiles_varname_to_filename(content->model, basename, trans);
 
     filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
-    strcpy(filename, trans);
+    strcpy(filename, basename);
     strcat(filename, ".");
     strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
     if (real_fname != NULL)
