@@ -1134,8 +1134,12 @@ TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, co
 // Linux: varnames are UTF-8, glib filenames use locale, filesystem use locale/utf8
 	int i;
 	int is_utf8 = g_get_charset(NULL);
+	const char *str;
+	char *p;
 
-	dst[0] = '\0';
+	p = dst;
+	*p = '\0';
+
 	if(tifiles_calc_is_ti9x(model) && !is_utf8 && (tifiles_encoding == ENCODING_UNICODE))
 	{
 		for(i = 0; i < (int)strlen(src);)
@@ -1147,43 +1151,47 @@ TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, co
 				dst[i++] = src[i];
 			else if(wchar < 0xc3c0)	// Latin-1
 			{
-				dst[i++] = src[i];
-				dst[i++] = src[i];
+				*p++ = src[i++];
+				*p++ = src[i++];
 			}
 			else if(wchar >= 0xC3C0/*schar >= 0xC0*/)
 			{
-				strcat(dst, "_");
 				switch(wchar)
 				{
-					case 0xcebc: strcat(dst, "mu"); break;
-					case 0xceb1: strcat(dst, "alpha"); break;
-					case 0xceb2: strcat(dst, "beta");break;
-					case 0xce93: strcat(dst, "GAMMA");break;
-					case 0xceb3: strcat(dst, "gamma");break;
-					case 0xce94: strcat(dst, "DELTA");break;
-					case 0xceb4: strcat(dst, "delta");break;
-					case 0xceb5: strcat(dst, "epsilon");break;
-					case 0xceb6: strcat(dst, "dzeta");break;
-					case 0xceb8: strcat(dst, "theta");break;
-					case 0xcebb: strcat(dst, "lambda"); break;
-					case 0xcebe: strcat(dst, "ksi"); break;
-					case 0xcea0: strcat(dst, "PI"); break;
-					case 0xcec0: strcat(dst, "pi"); break;
-					case 0xcec1: strcat(dst, "rho"); break;
-					case 0xcea3: strcat(dst, "SIGMA"); break; 
-					case 0xcec3: strcat(dst, "sigma"); break; 
-					case 0xcec4: strcat(dst, "tau"); break;
-					case 0xced5: strcat(dst, "PHI"); break;
-					case 0xcea8: strcat(dst, "PSI"); break;
-					case 0xcea9: strcat(dst, "OMEGA"); break; 
-					case 0xcec9: strcat(dst, "omega"); break;
+					case 0xcebc: str = "mu"; break;
+					case 0xceb1: str = "alpha"; break;
+					case 0xceb2: str = "beta";break;
+					case 0xce93: str = "GAMMA";break;
+					case 0xceb3: str = "gamma";break;
+					case 0xce94: str = "DELTA";break;
+					case 0xceb4: str = "delta";break;
+					case 0xceb5: str = "epsilon";break;
+					case 0xceb6: str = "dzeta";break;
+					case 0xceb8: str = "theta";break;
+					case 0xcebb: str = "lambda"; break;
+					case 0xcebe: str = "ksi"; break;
+					case 0xcea0: str = "PI"; break;
+					case 0xcec0: str = "pi"; break;
+					case 0xcec1: str = "rho"; break;
+					case 0xcea3: str = "SIGMA"; break; 
+					case 0xcec3: str = "sigma"; break; 
+					case 0xcec4: str = "tau"; break;
+					case 0xced5: str = "PHI"; break;
+					case 0xcea8: str = "PSI"; break;
+					case 0xcea9: str = "OMEGA"; break; 
+					case 0xcec9: str = "omega"; break;
 					default: break;
 				}
-				strcat(dst, "_");
+
+				strcat(p, "_");
+				strcat(p, str);
+				strcat(p, "_");
+
+				p += 1+strlen(str)+1;
 				i++; i++;
 			}
 		}
-		dst[i] = '\0';
+		*p = '\0';
 	}
 	else if(tifiles_calc_is_ti8x(model))
 	{
