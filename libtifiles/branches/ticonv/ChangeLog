@@ -1,0 +1,9 @@
+SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
+
+Log:
+
+
+- 11/02/2006, version 0.0.1: roms
+	- creation of library (idea suggested by Kevin Kofler)
+	- imported code from TiEmu (Kevin's ticonv.c) and tifiles2 (Romain's transcode.c)
+	
