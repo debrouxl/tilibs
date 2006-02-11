@@ -28,7 +28,7 @@ AM_MAINTAINER_MODE
 AC_PREFIX_DEFAULT(/usr/local)
 
 dnl Files to configure.
-AC_CONFIG_SRCDIR([src/tifiles.c])
+AC_CONFIG_SRCDIR([src/ticonv.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile

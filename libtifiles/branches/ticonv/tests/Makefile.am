@@ -2,6 +2,6 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 
-noinst_PROGRAMS = test_titiconv
+noinst_PROGRAMS = test_ticonv
 
-test_titiconv_LDADD = $(top_builddir)/src/libtiticonv.la
+test_ticonv_LDADD = $(top_builddir)/src/libticonv.la
