@@ -40,6 +40,14 @@
 # define LIBCONV_VERSION VERSION
 #endif
 
+/**
+ * CalcModel:
+ *
+ * An enumeration which contains the following calculator types:
+ **/
+typedef unsigned short	utf16c;
+typedef char			utf8c;
+
 /* Functions */
 
 // namespace scheme: library_class_function like ticonv_fext_get
@@ -61,6 +69,12 @@ extern "C" {
 
   // ticonv.c
   TIEXPORT const char* TICALL ticonv_version_get (void);
+
+  TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
+  TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str);
+
+  TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti);
+  TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
 
   /************************/
   /* Deprecated functions */

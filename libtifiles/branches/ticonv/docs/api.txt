@@ -1,2 +1,2 @@
-ticonv.h : Enumerations, structures and type definitions
+ticonv.h : Type definitions and Exports
 ticonv.c : Entry Points
