@@ -40,11 +40,6 @@
 # define LIBCONV_VERSION VERSION
 #endif
 
-/**
- * CalcModel:
- *
- * An enumeration which contains the following calculator types:
- **/
 //typedef unsigned short	utf16c;
 //typedef char			utf8c;
 

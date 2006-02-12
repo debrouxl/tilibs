@@ -121,6 +121,16 @@ TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str)
 	return dst;
 }
 
+/**
+ * ticonv_charset_utf16_to_ti:
+ * @model: calculator model
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI charset conversion.
+ *
+ * Return value: a newly allocated string, NULL otherwise (error).
+ **/
 TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16, char *ti)
 {
 	/*
@@ -141,6 +151,15 @@ TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsi
 	return g_strdup("");
 }
 
+/**
+ * ticonv_charset_ti_to_utf16:
+ * @ti: null terminated string (input)
+ * @utf16: null terminated string (output)
+ *
+ * TI charset to UTF-16 conversion.
+ *
+ * Return value: a newly allocated string, NULL otherwise (error).
+ **/
 TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti, unsigned short *utf16)
 {
 	switch(model)

@@ -1,2 +1,5 @@
 ticonv.h : Type definitions and Exports
 ticonv.c : Entry Points
+charset.c : TI8x & TI9x charset <=> UTF-16 conversion routines
+tokens.c : TI8x detokenization support
+filename.c : TI8x & TI9x charset to filename transcoding

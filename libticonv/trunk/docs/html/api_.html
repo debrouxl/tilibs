@@ -10,13 +10,13 @@
     <tr>
       <td class="NOBORDER" width="40"><img src="info.gif" border="0"
  height="32" width="32"> </td>
-      <td class="TITLE">TiFiles Library API</td>
+      <td class="TITLE">TiConv Library API</td>
     </tr>
   </tbody>
 </table>
 <hr>
-<p>The tifiles library provide a complete API (Application Programming
-Interface) &nbsp;which makes use of TI files easy and transparent. <br>
+<p>The ticonv library provide a complete API (Application Programming
+Interface) &nbsp;which makes use of TI charsets easy and transparent. <br>
 <br>
 Functions and data types are grouped in different topics, depending on
 their purpose. Click on a topic for the description of all functions
@@ -25,28 +25,10 @@ data types defined in this topic.<br>
 </p>
 <p><span
  style="text-decoration: underline; font-style: italic; font-weight: bold;">Important
-note:</span> due to the fact that TiLP &amp; TiEmu heavily use the GLib
-library, the tifiles2 library use the '<span
- style="font-style: italic; font-weight: bold;">glib filename encoding</span>'
-for filenames.<br>
-The 'glib filename encoding' encodes filenames with the following
-charsets:<br>
-- <span style="font-weight: bold;">UTF-8</span> charset on <span
- style="font-weight: bold;">Windows</span>,<br>
-- <span style="font-weight: bold;">locale </span>charset on <span
- style="font-weight: bold;">Linux </span>(usually UTF-8 but this is <span
- style="font-weight: bold;">not </span>always true).<br>
-</p>
-<p>Please note that UTF-8 does not change encoding of ASCII characters
-(0x00-0x7f). For more information, take a look at &lt;<a
+note:</span> the library use UTF-16 natively but some functions allow
+use of UTF-8. For more information, take a look at &lt;<a
  href="http://www.unicode.org/charts">http://www.unicode.org/charts</a>&gt;
 and &lt;<a href="http://www.czyborra.com/utf">http://www.czyborra.com/utf</a>&gt;<br>
-</p>
-<p><span style="font-style: italic;">Beware:</span>
-tifiles_transcode_varname_static returns varnames in the locale
-selected by tifiles_transcoding_set (UTF-8 usually). If you want to use
-varname for buidling filenames, you need to convert from UTF-8 to glib
-filename encoding. Take care !<br>
 </p>
 <p>==========[ List of entries ]==========<br>
 </p>
