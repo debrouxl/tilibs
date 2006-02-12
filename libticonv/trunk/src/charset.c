@@ -310,7 +310,7 @@ static unsigned long ti9x_utf16pair_code[256] =
  *
  * Return value: a newly allocated string, NULL otherwise (error).
  **/
-TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti)
+TIEXPORT char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti)
 {
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
@@ -630,6 +630,20 @@ TIEXPORT unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned sh
 	return utf16;
 }
 
+/**
+ * ticonv_utf16_to_ti82:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI82 charset conversion.
+ *
+ * Return value: a newly allocated string, NULL otherwise (error).
+ **/
+TIEXPORT char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti)
+{
+	return "";
+}
+
 ///////////// TI83 /////////////
 
 static unsigned long ti83_charset[256] = { 
@@ -700,6 +714,20 @@ TIEXPORT unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned sh
 	return utf16;
 }
 
+/**
+ * ticonv_utf16_to_ti83:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI83 charset conversion.
+ *
+ * Return value: a newly allocated string, NULL otherwise (error).
+ **/
+TIEXPORT char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti)
+{
+	return "";
+}
+
 ///////////// TI83-84+ /////////////
 
 ///////////// TI85 /////////////
@@ -744,7 +772,7 @@ static unsigned long ti85_charset[256] = {
  * @ti: null terminated string (input)
  * @utf16: null terminated string (output)
  *
- * TI82 charset to UTF-16 conversion.
+ * TI85 charset to UTF-16 conversion.
  *
  * Return value: a newly allocated string, NULL otherwise (error).
  **/
@@ -770,6 +798,20 @@ TIEXPORT unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned sh
 	*q=0;
 
 	return utf16;
+}
+
+/**
+ * ticonv_utf16_to_ti85:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI85 charset conversion.
+ *
+ * Return value: a newly allocated string, NULL otherwise (error).
+ **/
+TIEXPORT char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti)
+{
+	return "";
 }
 
 ///////////// TI86 /////////////
