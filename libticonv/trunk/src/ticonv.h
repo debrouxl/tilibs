@@ -62,6 +62,7 @@ typedef enum
 /* Functions */
 
 // namespace scheme: library_class_function like ticonv_library_init
+// functions suffixed with _s means 'static', no memory allocation
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,10 +89,14 @@ extern "C" {
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti, unsigned short *utf16);
 
   // charset.c
+  TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x_s(const unsigned short *utf16, char *ti);
+  TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16_s(const char *ti, unsigned short *utf16);
+
   TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti);
   TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
 
   // tokens.c
+  TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
   TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype);
 
   // filenames.c

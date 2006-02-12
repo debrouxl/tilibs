@@ -25,7 +25,7 @@
 	This is used to translate some varnames into a more readable name.
 	Depends on the calculator type and the variable type.
 
-	This is needed for the following calcs: 73/82/83/83+ only.
+	This is needed for the following calcs: 73/82/83/83+/84+ only.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -319,20 +319,19 @@ static char *detokenize_varname(ConvModel model, const char *src, char *dst, uns
 }
 
 /**
- * ticonv_varname_detokenize:
+ * ticonv_varname_detokenize_s:
  * @model: a calculator model.
  * @src: a name of variable to detokenize.
  * @vartype: the type of variable.
  *
- * Some calculators (like TI83) does not returns real name of the variable (like List1) but
- * in a specially encoded way. This functions expands the name like it should do.
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like List1) but in a specially encoded way. This functions expands the name like it 
+ * should be.
  *
  * Return value: a newly allocated string with the detokenized name (TI charset).
  **/
-TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype)
+TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
 {
-	static char dst[17];
-
 	switch (model) 
 	{
 	case CALC_TI73:
@@ -341,7 +340,7 @@ TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src
 	case CALC_TI83P:
 	case CALC_TI84P:
 	case CALC_TI84P_USB:
-		return g_strdup(detokenize_varname(model, src, dst, vartype));
+		return detokenize_varname(model, src, dst, vartype);
 	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI89:
@@ -350,9 +349,29 @@ TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src
 	case CALC_TI92:
 	case CALC_TI92P:
 	case CALC_V200:
-		return g_strdup(src);
+		return strncpy(dst, src, 9);
 	default:
-		return g_strdup("________");
+		return strcpy(dst, "________");
   }
+
+	return dst;
+}
+
+/**
+ * ticonv_varname_detokenize:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize.
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like List1) but in a specially encoded way. This functions expands the name like it 
+ * should be.
+ *
+ * Return value: a newly allocated string with the detokenized name (TI charset).
+ **/
+TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype)
+{
+	static char dst[17];
+	return g_strdup(ticonv_varname_detokenize_s(model, src, dst, vartype));
 }
 
