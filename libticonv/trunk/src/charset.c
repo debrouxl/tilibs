@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit contains the interface of the libticonv library.
+  This unit contains charset conversion routines.
 */
 
 #ifdef HAVE_CONFIG_H

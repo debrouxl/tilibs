@@ -104,6 +104,10 @@ SOURCE=..\..\src\ticonv.c
 
 SOURCE=..\..\src\ticonv.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\tokens.c
+# End Source File
 # End Group
 # Begin Group "Libraries"
 

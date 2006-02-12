@@ -92,7 +92,7 @@ extern "C" {
   TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
 
   // tokens.c
-  // to write/import...
+  TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype);
 
   // filenames.c
   // to write/import
