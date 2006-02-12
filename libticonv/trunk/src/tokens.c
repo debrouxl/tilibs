@@ -119,18 +119,18 @@ static char *detokenize_varname(ConvModel model, const char *src, char *dst, uns
 		case 0x18: sprintf(dst, "Y%c", '\x89'); break;
 		case 0x19: sprintf(dst, "Y%c", '\x80'); break;
 
-		case 0x20: sprintf(dst, "X%c%c", '\x81\x0d'); break;
-		case 0x21: sprintf(dst, "Y%c%c", '\x81\x0d'); break;
-		case 0x22: sprintf(dst, "X%c%c", '\x82\x0d'); break;
-		case 0x23: sprintf(dst, "Y%c%c", '\x82\x0d'); break;
-		case 0x24: sprintf(dst, "X%c%c", '\x83\x0d'); break;
-		case 0x25: sprintf(dst, "Y%c%c", '\x83\x0d'); break;
-		case 0x26: sprintf(dst, "X%c%c", '\x84\x0d'); break;
-		case 0x27: sprintf(dst, "Y%c%c", '\x84\x0d'); break;
-		case 0x28: sprintf(dst, "X%c%c", '\x85\x0d'); break;
-		case 0x29: sprintf(dst, "Y%c%c", '\x85\x0d'); break;
-		case 0x2a: sprintf(dst, "X%c%c", '\x86\x0d'); break;
-		case 0x2b: sprintf(dst, "Y%c%c", '\x86\x0d'); break;
+		case 0x20: sprintf(dst, "X%c%c", '\x81', '\x0d'); break;
+		case 0x21: sprintf(dst, "Y%c%c", '\x81', '\x0d'); break;
+		case 0x22: sprintf(dst, "X%c%c", '\x82', '\x0d'); break;
+		case 0x23: sprintf(dst, "Y%c%c", '\x82', '\x0d'); break;
+		case 0x24: sprintf(dst, "X%c%c", '\x83', '\x0d'); break;
+		case 0x25: sprintf(dst, "Y%c%c", '\x83', '\x0d'); break;
+		case 0x26: sprintf(dst, "X%c%c", '\x84', '\x0d'); break;
+		case 0x27: sprintf(dst, "Y%c%c", '\x84', '\x0d'); break;
+		case 0x28: sprintf(dst, "X%c%c", '\x85', '\x0d'); break;
+		case 0x29: sprintf(dst, "Y%c%c", '\x85', '\x0d'); break;
+		case 0x2a: sprintf(dst, "X%c%c", '\x86', '\x0d'); break;
+		case 0x2b: sprintf(dst, "Y%c%c", '\x86', '\x0d'); break;
 
 		case 0x40: sprintf(dst, "r%c", '\x81'); break;
 		case 0x41: sprintf(dst, "r%c", '\x82'); break;
