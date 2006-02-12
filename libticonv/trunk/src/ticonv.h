@@ -85,15 +85,15 @@ extern "C" {
   TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
   TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str);
 
-  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16, char *ti);
-  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti, unsigned short *utf16);
+  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsigned short *utf16, char *ti);
+  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, const char *ti, unsigned short *utf16);
+
+  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16);
+  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti);
 
   // charset.c
-  TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x_s(const unsigned short *utf16, char *ti);
-  TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16_s(const char *ti, unsigned short *utf16);
-
-  TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti);
-  TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
+  //TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
+  //TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti);
 
   // tokens.c
   TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
