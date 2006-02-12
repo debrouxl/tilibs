@@ -45,12 +45,28 @@
  *
  * An enumeration which contains the following calculator types:
  **/
-typedef unsigned short	utf16c;
-typedef char			utf8c;
+//typedef unsigned short	utf16c;
+//typedef char			utf8c;
+
+/**
+ * ConvModel:
+ *
+ * An enumeration which contains the following calculator types:
+ **/
+typedef enum 
+{
+	CALC_NONE = 0,
+	CALC_TI73, CALC_TI82, /*CALC_TI82S, */ CALC_TI83, 
+	CALC_TI83P, CALC_TI84P, 
+	CALC_TI85, CALC_TI86,
+	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
+
+	CALC_TI84P_USB, CALC_TI89T_USB,
+} ConvModel;
 
 /* Functions */
 
-// namespace scheme: library_class_function like ticonv_fext_get
+// namespace scheme: library_class_function like ticonv_library_init
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,8 +89,19 @@ extern "C" {
   TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
   TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str);
 
+  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16, char *ti);
+  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti, unsigned short *utf16);
+
+  // charset.c
   TIEXPORT char*		   TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti);
   TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
+
+  // tokens.c
+  // to write/import...
+
+  // filenames.c
+  // to write/import
+
 
   /************************/
   /* Deprecated functions */

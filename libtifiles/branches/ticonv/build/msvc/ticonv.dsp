@@ -94,6 +94,10 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\src\charset.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\ticonv.c
 # End Source File
 # Begin Source File
