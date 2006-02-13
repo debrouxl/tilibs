@@ -33,20 +33,30 @@
 
 #include "../src/ticonv.h"
 
+TIEXPORT unsigned long ti82_charset[];
+
 /*
   The main function
 */
 int main(int argc, char **argv)
 {
-	// init library
-	ticonv_library_init();
+	int i, j;
 
 	// test ticonv.c
 	printf("Library version : <%s>\n", ticonv_version_get());
 	printf("--\n");
 
-	// end of test
-	ticonv_library_exit();
+	printf("  0 1 2 3 4 5 6 7 8 9 A B C D E F\n");
 
-  return 0;
+	for(i = 0; i < 16; i++)
+	{
+		printf("%i ", i);
+		for(j = 0; j < 16; j++)
+		{
+			printf("%c ", ti82_charset[16*i+j]);
+		}
+		printf("\n");
+	}
+
+	return 0;
 }

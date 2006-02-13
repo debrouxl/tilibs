@@ -98,6 +98,10 @@ SOURCE=..\..\src\charset.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\filename.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\ticonv.c
 # End Source File
 # Begin Source File

@@ -34,9 +34,17 @@
 #include "ticonv.h"
 #include "charset.h"
 
+#ifdef _DEBUG
+#define TIE		TIEXPORT
+#define TIC		TICALL
+#else
+#define TIE		static
+#define TIC
+#endif
+
 ///////////// TI89,92,92+,V200,Titanium /////////////
 
-static unsigned long ti9x_utf16pair_code[256] =
+TIE unsigned long TIC ti9x_utf16pair_code[256] =
 {
 // control chars
  0,
@@ -562,7 +570,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned sh
 
 ///////////// TI82 /////////////
 
-static unsigned long ti82_charset[256] = { 
+TIE unsigned long TIC ti82_charset[256] = { 
 	'?',    'b',    'o',    'd',    'h',  0x25b6, 0x2191, 0x2193, 
 	0x222b, 'x',    176,    184,    183,  0x22ba, 179,    'F',
 
@@ -587,8 +595,8 @@ static unsigned long ti82_charset[256] = {
 	'p',    'q',    'r',    's',    't',    'u',    'v',    'w',
 	'x',    'y',    'z',    '{',    '|',    '}',    '~',    '=',
 
-	'0',    '1',    '2',    '3',    '4',    '5',    '6',    '7',
-	'8',    '9',    192+1,  192+0,  192+2,  192+4,  224+1,  224+0,
+	0x2080, 0x2081, 0x2082, 0x2083, 0x2084, 0x2085, 0x2086, 0x2087,
+	0x2088, 0x2089, 192+1,  192+0,  192+2,  192+4,  224+1,  224+0,
 
 	224+2,  224+4,  200+1,  200+0,  200+2,  200+4,  231+1,  231+0,
 	231+2,  231+4,  204+1,  204+0,  204+2,  204+3,  236+1,  236+0,
@@ -661,7 +669,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti
 
 ///////////// TI83 /////////////
 
-static unsigned long ti83_charset[256] = { 
+TIE unsigned long TIC ti83_charset[256] = { 
   0x3b7, 'u',   'v',   'w',   '_',   '_',   '_',   '_', 
   '_',   'X',   '_',   '_',   '_',   '_',   '_',   'F',
   '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_', 
@@ -747,7 +755,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti
 
 ///////////// TI85 /////////////
 
-static unsigned long ti85_charset[256] = { 
+TIE unsigned long TIC ti85_charset[256] = { 
   0x3b7, 'u',   'v',   'w',   '_',   '_',   '_',   '_', 
   '_',   'X',   '_',   '_',   '_',   '_',   '_',   'F',
   '_',   '_',   '_',   '_',   '_',   '_',   '_',   '_', 
