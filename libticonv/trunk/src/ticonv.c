@@ -76,7 +76,7 @@ TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str)
  *
  * Return value: a newly allocated string, NULL otherwise (error).
  **/
-TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str)
+TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short* str)
 {
 	const gunichar2*  src = str;
 	gchar* dst;

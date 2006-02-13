@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 
 #include "../src/ticonv.h"
 
@@ -53,7 +54,11 @@ int main(int argc, char **argv)
 		printf("%i ", i);
 		for(j = 0; j < 16; j++)
 		{
-			printf("%c ", ti82_charset[16*i+j]);
+			char *str = ticonv_utf16_to_utf8((unsigned short *)ti82_charset[16*i+j]);
+
+			printf("%s ", str);
+
+			g_free(str);
 		}
 		printf("\n");
 	}

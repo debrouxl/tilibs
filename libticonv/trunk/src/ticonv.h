@@ -83,7 +83,7 @@ extern "C" {
   TIEXPORT const char* TICALL ticonv_version_get (void);
 
   TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
-  TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str);
+  TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short* str);
 
   TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsigned short *utf16, char *ti);
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, const char *ti, unsigned short *utf16);
