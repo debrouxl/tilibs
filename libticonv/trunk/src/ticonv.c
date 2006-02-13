@@ -34,41 +34,6 @@
 #include "ticonv.h"
 #include "charset.h"
 
-/****************/
-/* Entry points */
-/****************/
-
-// not static, must be shared between instances
-int ticonv_instance = 0;	// counts # of instances
-
-/**
- * ticonv_library_init:
- *
- * This function must be the first one to call. It inits library internals.
- *
- * Return value: the handle count.
- **/
-TIEXPORT int TICALL ticonv_library_init()
-{
-	if (ticonv_instance)
-		return (++ticonv_instance);
-	printf("ticonv library version %s", LIBCONV_VERSION);
-
-  	return (++ticonv_instance);
-}
-
-/**
- * ticonv_library_exit:
- *
- * This function must be the last one to call. Used to release internal resources.
- *
- * Return value: the handle count.
- **/
-TIEXPORT int TICALL ticonv_library_exit()
-{
-  	return (--ticonv_instance);
-}
-
 /***********/
 /* Methods */
 /***********/

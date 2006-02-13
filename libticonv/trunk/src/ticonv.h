@@ -72,8 +72,8 @@ extern "C" {
   /* Entry points */
   /****************/
   
-  TIEXPORT int TICALL ticonv_library_init(void);
-  TIEXPORT int TICALL ticonv_library_exit(void);
+  //TIEXPORT int TICALL ticonv_library_init(void);
+  //TIEXPORT int TICALL ticonv_library_exit(void);
 
   /*********************/
   /* General functions */
@@ -99,9 +99,9 @@ extern "C" {
   TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
   TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype);
 
-  // filenames.c
-  // to write/import
-
+  // filename.c
+  TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_to_filename(ConvModel model, const char *src);
 
   /************************/
   /* Deprecated functions */
