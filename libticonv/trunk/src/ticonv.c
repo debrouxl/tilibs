@@ -98,6 +98,7 @@ TIEXPORT const char*	   ticonv_utf16_to_utf8(const unsigned short* str)
  **/
 TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsigned short *utf16, char *ti)
 {
+	// to do...
 	/*
 	switch(model)
 	{
@@ -109,7 +110,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsign
 		case CALC_TI92:
 		case CALC_TI92P:
 		case CALC_V200: return ticonv_utf16_to_ti9x(utf16, ti); break;
-		default: return "???";	// to do...
+		default: return "???";
 	}
 	*/
 
@@ -157,7 +158,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, co
 		case CALC_TI92:
 		case CALC_TI92P:
 		case CALC_V200: return ticonv_ti9x_to_utf16(ti, utf16); break;
-		default: return 0x0000;	// to do...
+		default: return ticonv_utf8_to_utf16("");
 	}
 
 	return ticonv_utf8_to_utf16("");
