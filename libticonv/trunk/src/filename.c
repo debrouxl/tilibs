@@ -41,8 +41,7 @@
 static int tifiles_calc_is_ti9x(ConvModel model)
 {
   return ((model == CALC_TI89) || (model == CALC_TI89T) ||
-	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
-	  (model == CALC_TI89T_USB));
+	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200));
 }
 
 static int tifiles_calc_is_ti8x(ConvModel model)
@@ -50,8 +49,7 @@ static int tifiles_calc_is_ti8x(ConvModel model)
   return ((model == CALC_TI73) || (model == CALC_TI82) ||
 	  (model == CALC_TI82) || (model == CALC_TI83) ||
 	  (model == CALC_TI83P) || (model == CALC_TI84P) ||
-	  (model == CALC_TI85) || (model == CALC_TI86) ||
-	  (model == CALC_TI84P_USB)|| (model == CALC_TI89T_USB));
+	  (model == CALC_TI85) || (model == CALC_TI86));
 }
 
 /**

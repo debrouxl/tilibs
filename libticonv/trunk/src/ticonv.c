@@ -43,7 +43,7 @@
  *
  * This function returns the library version like "X.Y.Z".
  *
- * Return value: a string.
+ * Return value: a constant string.
  **/
 TIEXPORT const char *TICALL ticonv_version_get(void)
 {
@@ -56,7 +56,7 @@ TIEXPORT const char *TICALL ticonv_version_get(void)
  *
  * UTF-8 to UTF-16 conversion.
  *
- * Return value: a newly allocated string, NULL otherwise (error).
+ * Return value: a newly allocated string or NULL if error.
  **/
 TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str)
 {
@@ -74,7 +74,7 @@ TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str)
  *
  * UTF-16 to UTF-8 conversion.
  *
- * Return value: a newly allocated string, NULL otherwise (error).
+ * Return value: a newly allocated string or NULL if error.
  **/
 TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short* str)
 {
@@ -125,7 +125,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsign
  *
  * UTF-16 to TI charset conversion.
  *
- * Return value: a newly allocated string, NULL otherwise (error).
+ * Return value: a newly allocated string or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16)
 {
@@ -143,6 +143,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned
  * @utf16: null terminated string (output)
  *
  * TI charset to UTF-16 conversion.
+ * The %utf16 destination buffer will hold the result. It must be big enough.
  *
  * Return value: the %utf16 string.
  **/
@@ -175,7 +176,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, co
  *
  * TI charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string, NULL otherwise (error).
+ * Return value: a newly allocated string or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti)
 {
