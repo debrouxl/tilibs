@@ -32,9 +32,18 @@
 #include <string.h>
 #include <glib.h>
 
+#define _DEBUG
 #include "../src/ticonv.h"
 
-TIEXPORT unsigned long ti82_charset[];
+unsigned long* charsets[] = {
+    ti73_charset,
+    ti82_charset,
+    ti83_charset,
+    ti83p_charset,
+    ti85_charset,
+    ti86_charset,
+    ti9x_charset,
+};
 
 /*
   The main function
@@ -42,10 +51,20 @@ TIEXPORT unsigned long ti82_charset[];
 int main(int argc, char **argv)
 {
 	int i, j;
+	int n = 0;
+	int m = sizeof(charsets) / sizeof(unsigned long*);
+
+	printf("m = %i\n", m);
 
 	// test ticonv.c
 	printf("Library version : <%s>\n", ticonv_version_get());
 	printf("--\n");
+
+	printf("Choose your charset: ");
+	if(!scanf("%i", &n))
+	    n = 0;
+	if(n >= m)
+	    n = m-1;
 
 	printf("  0 1 2 3 4 5 6 7 8 9 A B C D E F\n");
 
@@ -54,11 +73,27 @@ int main(int argc, char **argv)
 		printf("%i ", i);
 		for(j = 0; j < 16; j++)
 		{
-			char *str = ticonv_utf16_to_utf8((unsigned short *)ti82_charset[16*i+j]);
+		    unsigned long wc = charsets[n][16*i+j];
+		    gchar *str = NULL;
 
+		    if(wc && wc != '\n')
+		    {
+			gunichar2 buf[4] = { 0 };
+
+			buf[0] = wc;
+			str = ticonv_utf16_to_utf8(buf);
+		    }
+		    else
+		    {
+			str = NULL;
+		    }
+
+		    if(str)
 			printf("%s ", str);
-
-			g_free(str);
+		    else
+			printf("");
+		    
+		    g_free(str);
 		}
 		printf("\n");
 	}

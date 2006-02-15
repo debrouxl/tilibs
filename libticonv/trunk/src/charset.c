@@ -44,7 +44,7 @@
 
 ///////////// TI89,92,92+,V200,Titanium /////////////
 
-TIE unsigned long TIC ti9x_utf16pair_code[256] =
+TIE unsigned long TIC ti9x_charset[256] =
 {
 // control chars
  0,
@@ -548,7 +548,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned sh
 
 	while (*p) 
 	{
-		c=ti9x_utf16pair_code[*(p++)];
+		c=ti9x_charset[*(p++)];
 		if (c<0x10000) 
 		{
 			*(q++)=(unsigned short)c;
@@ -566,7 +566,8 @@ TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned sh
 
 ///////////// TI73 /////////////
 
-// ???
+TIE unsigned long TIC ti73_charset[256] = {
+};
 
 ///////////// TI82 /////////////
 
@@ -767,6 +768,9 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti
 }
 
 ///////////// TI83-84+ /////////////
+
+TIE unsigned long TIC ti83p_charset[256] = {
+};
 
 ///////////// TI85 /////////////
 

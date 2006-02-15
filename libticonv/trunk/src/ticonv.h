@@ -107,6 +107,20 @@ extern "C" {
   /* Deprecated functions */
   /************************/
 
+    /********************/
+    /* Testing purposes */
+    /********************/
+
+#ifdef _DEBUG
+    TIEXPORT unsigned long TICALL ti73_charset[256];
+    TIEXPORT unsigned long TICALL ti82_charset[256];
+    TIEXPORT unsigned long TICALL ti83_charset[256];
+    TIEXPORT unsigned long TICALL ti83p_charset[256];
+    TIEXPORT unsigned long TICALL ti85_charset[256];
+    TIEXPORT unsigned long TICALL ti86_charset[256];
+    TIEXPORT unsigned long TICALL ti9x_charset[256];
+#endif
+
 #ifdef __cplusplus
 }
 #endif

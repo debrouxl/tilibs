@@ -9,9 +9,9 @@ libticonvinclude_HEADERS = \
 	ticonv.h export4.h
 
 # build instructions
-libticon2_la_CPPFLAGS = -I$(top_srcdir)/intl \
+libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@
+	@GLIB_CFLAGS@ -D_DEBUG
 libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
