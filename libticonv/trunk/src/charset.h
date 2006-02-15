@@ -23,9 +23,12 @@
 
 #include "export4.h"
 
+TIEXPORT unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned short *utf16);
 TIEXPORT unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned short *utf16);
 TIEXPORT unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned short *utf16);
+TIEXPORT unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned short *utf16);
 TIEXPORT unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned short *utf16);
+TIEXPORT unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned short *utf16);
 TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
 
 #endif

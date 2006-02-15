@@ -26,6 +26,8 @@
 	Depends on the calculator type and the variable type.
 
 	This is needed for the following calcs: 73/82/83/83+/84+ only.
+
+	Beware: this module uses TI charset encoding.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -318,19 +320,7 @@ static char *detokenize_varname(ConvModel model, const char *src, char *dst, uns
     return dst;
 }
 
-/**
- * ticonv_varname_detokenize_s:
- * @model: a calculator model.
- * @src: a name of variable to detokenize.
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
- * (like List1) but in a specially encoded way. This functions expands the name like it 
- * should be.
- *
- * Return value: a newly allocated string with the detokenized name (TI charset).
- **/
-TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
+static char* ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
 {
 	switch (model) 
 	{
@@ -357,21 +347,108 @@ TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *s
 	return dst;
 }
 
-/**
- * ticonv_varname_detokenize:
- * @model: a calculator model.
- * @src: a name of variable to detokenize.
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
- * (like List1) but in a specially encoded way. This functions expands the name like it 
- * should be.
- *
- * Return value: a newly allocated string with the detokenized name (TI charset).
- **/
-TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype)
+static char* ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype)
 {
 	static char dst[17];
 	return g_strdup(ticonv_varname_detokenize_s(model, src, dst, vartype));
 }
 
+/**
+ * ticonv_varname_to_utf16_s:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate.
+ * @dst: a buffer where to placed the result (18 chars min).
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like L1) but in a specially encoded way. This functions expands the name and
+ * converts it to UTF-16.
+ *
+ * Return value: the %dst string.
+ **/
+TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(ConvModel model, const char *src, unsigned short *dst, unsigned int vartype)
+{
+	char tmp[32];
+
+	ticonv_varname_detokenize_s(model, src, tmp, vartype);
+	ticonv_charset_ti_to_utf16_s(model, tmp, dst);
+
+	return dst;
+}
+
+/**
+ * ticonv_varname_to_utf16_s:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate.
+ * @dst: a buffer where to placed the result (18 chars min).
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like L1) but in a specially encoded way. This functions expands the name and
+ * converts it to UTF-16.
+ *
+ * Return value: the %dst string.
+ **/
+TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(ConvModel model, const char *src, unsigned int vartype)
+{
+	char *tmp;
+	unsigned short *utf16;
+
+	tmp = ticonv_varname_detokenize(model, src, vartype);
+	utf16 = ticonv_charset_ti_to_utf16(model, tmp);
+
+	g_free(tmp);
+	return utf16;
+}
+
+/**
+ * ticonv_varname_to_utf8_s:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate.
+ * @dst: a buffer where to placed the result (18 chars min).
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like L1) but in a specially encoded way. This functions expands the name and
+ * converts it to UTF-16.
+ *
+ * Return value: the %dst string.
+ **/
+TIEXPORT char* TICALL ticonv_varname_to_utf8_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
+{
+	unsigned short tmp[32];
+	gchar *utf8;
+
+	ticonv_varname_to_utf16_s(model, src, tmp, vartype);
+	utf8 = ticonv_utf16_to_utf8(tmp);
+
+	strcpy(dst, utf8);
+	g_free(utf8);
+
+	return dst;
+}
+
+/**
+ * ticonv_varname_to_utf8:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate.
+ * @dst: a buffer where to placed the result (18 chars min).
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return real name of the variable 
+ * (like L1) but in a specially encoded way. This functions expands the name and
+ * converts it to UTF-16.
+ *
+ * Return value: the %dst string.
+ **/
+TIEXPORT char* TICALL ticonv_varname_to_utf8(ConvModel model, const char *src, unsigned int vartype)
+{
+	unsigned short *utf16;
+	gchar *utf8;
+
+	utf16 = ticonv_varname_to_utf16(model, src, vartype);
+	utf8 = ticonv_utf16_to_utf8(utf16);
+
+	g_free(utf16);
+	return utf8;
+}

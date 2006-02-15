@@ -23,10 +23,9 @@
 	This unit contains varname to filename conversion routines.
   
 	This is used to translate some varnames into a filename supported
-	by on-disk encoding.
-	Depends on the calculator type.
+	by on-disk encoding. Depends on the calculator type.
 
-	This is needed for the following calcs: TI9x only.
+	This is needed for all hand-helds.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -72,71 +71,127 @@ static int tifiles_calc_is_ti8x(ConvModel model)
  **/
 TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *src, char *dst)
 {
-	int i;
 	int is_utf8 = g_get_charset(NULL);
 	const char *str;
-	char *p;
+	unsigned short *p;
+	unsigned short utf16[16];	
+	char *q;
 
-	p = dst;
-	*p = '\0';
+	// detokenization to UTF-16
+	ticonv_varname_to_utf16_s(model, src, utf16, -1);
+
+	p = utf16;
+	q = dst;
+	*q = '\0';
 
 	if(tifiles_calc_is_ti9x(model) && !is_utf8)
 	{
-		for(i = 0; i < (int)strlen(src);)
+		while(*p)
 		{
-			unsigned char schar = (unsigned char)src[i];
-			unsigned int  wchar = (((unsigned char)src[i]) << 8) | ((unsigned char)src[i+1]);
+			unsigned long msb = *p & 0xff00;
 
-			if(schar < 0x80)		// ASCII
-				dst[i++] = src[i];
-			else if(wchar < 0xc3c0)	// Latin-1
+			if(!msb)
 			{
-				*p++ = src[i++];
-				*p++ = src[i++];
+				*q = *p & 0xff;
+				*p++;
+				*q++;
 			}
-			else if(wchar >= 0xC3C0/*schar >= 0xC0*/)
+			else
 			{
-				switch(wchar)
+				switch(*p)
 				{
-					case 0x0ebc: str = "mu"; break;
-					case 0x0eb1: str = "alpha"; break;
-					case 0x0eb2: str = "beta"; break;
-					case 0x0e93: str = "GAMMA"; break;
-					case 0x0eb3: str = "gamma"; break;
-					case 0x0e94: str = "DELTA"; break;
-					case 0x0eb4: str = "delta"; break;
-					case 0x0eb5: str = "epsilon";break;
-					case 0x0eb6: str = "zeta"; break;
-					case 0x0eb8: str = "theta"; break;
-					case 0x0ebb: str = "lambda"; break;
-					case 0x0ebe: str = "ksi"; break;
-					case 0x0ea0: str = "PI"; break;
-					case 0x0ec0: str = "pi"; break;
-					case 0x0ec1: str = "rho"; break;
-					case 0x0ea3: str = "SIGMA"; break; 
-					case 0x0ec3: str = "sigma"; break; 
-					case 0x0ec4: str = "tau"; break;
-					case 0x0ed5: str = "PHI"; break;
-					case 0x0ea8: str = "PSI"; break;
-					case 0x0ea9: str = "OMEGA"; break; 
-					case 0x0ec9: str = "omega"; break;
+					case 0x03bc: str = "mu"; break;
+					case 0x03b1: str = "alpha"; break;
+					case 0x03b2: str = "beta"; break;
+					case 0x0393: str = "GAMMA"; break;
+					case 0x03b3: str = "gamma"; break;
+					case 0x0394: str = "DELTA"; break;
+					case 0x03b4: str = "delta"; break;
+					case 0x03b5: str = "epsilon";break;
+					case 0x03b6: str = "zeta"; break;
+					case 0x03b8: str = "theta"; break;
+					case 0x03bb: str = "lambda"; break;
+					case 0x03be: str = "ksi"; break;
+					case 0x03a0: str = "PI"; break;
+					case 0x03c0: str = "pi"; break;
+					case 0x03c1: str = "rho"; break;
+					case 0x03a3: str = "SIGMA"; break; 
+					case 0x03c3: str = "sigma"; break; 
+					case 0x03c4: str = "tau"; break;
+					case 0x03d5: str = "PHI"; break;
+					case 0x03a8: str = "PSI"; break;
+					case 0x03a9: str = "OMEGA"; break; 
+					case 0x03c9: str = "omega"; break;
 					default: break;
 				}
 
-				strcat(p, "_");
-				strcat(p, str);
-				strcat(p, "_");
+				strcat(q, "_");
+				strcat(q, str);
+				strcat(q, "_");
 
-				p += 1+strlen(str)+1;
-				i++; i++;
+				q += 1+strlen(str)+1;
+				*p++;
 			}
 		}
-		*p = '\0';
+		*q = '\0';
 	}
-	else if(tifiles_calc_is_ti8x(model))
+	else if(tifiles_calc_is_ti8x(model) && !is_utf8)
 	{
-		// already managed by detokenize
-		strncpy(dst, src, 17);
+		while(*p)
+		{
+			unsigned long msb = *p & 0xff00;
+
+			if(!msb)
+			{
+				*q = *p & 0xff;
+				*p++;
+				*q++;
+			}
+			else
+			{
+				if(*p >= 0x2080 && *p <= 0x2089)
+				{
+					*q++ = (*p++ - 0x2080) + '0';
+				}
+				else
+				{
+					switch(*p)
+					{
+						case 0x03bc: str = "mu"; break;
+						case 0x03b1: str = "alpha"; break;
+						case 0x03b2: str = "beta"; break;
+						case 0x0393: str = "GAMMA"; break;
+						case 0x03b3: str = "gamma"; break;
+						case 0x0394: str = "DELTA"; break;
+						case 0x03b4: str = "delta"; break;
+						case 0x03b5: str = "epsilon";break;
+						case 0x03b6: str = "zeta"; break;
+						case 0x03b8: str = "theta"; break;
+						case 0x03bb: str = "lambda"; break;
+						case 0x03be: str = "ksi"; break;
+						case 0x03a0: str = "PI"; break;
+						case 0x03c0: str = "pi"; break;
+						case 0x03c1: str = "rho"; break;
+						case 0x03a3: str = "SIGMA"; break; 
+						case 0x03c3: str = "sigma"; break; 
+						case 0x03c4: str = "tau"; break;
+						case 0x03d5: str = "PHI"; break;
+						case 0x03a8: str = "PSI"; break;
+						case 0x03a9: str = "OMEGA"; break; 
+						case 0x03c9: str = "omega"; break;
+						default: break;
+					}
+
+					strcat(q, "_");
+					strcat(q, str);
+					strcat(q, "_");
+
+					q += 1+strlen(str)+1;
+					*p++;
+				}
+			}
+		}
+		*q = '\0';
 	}
 	else
 		strncpy(dst, src, 17);

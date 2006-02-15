@@ -150,9 +150,13 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, co
 {
 	switch(model)
 	{
+		case CALC_TI73: return ticonv_ti73_to_utf16(ti, utf16); break;
 		case CALC_TI82: return ticonv_ti82_to_utf16(ti, utf16); break;
 		case CALC_TI83: return ticonv_ti83_to_utf16(ti, utf16); break;
+		case CALC_TI83P: 
+		case CALC_TI84P:return ticonv_ti83p_to_utf16(ti, utf16); break;
 		case CALC_TI85: return ticonv_ti85_to_utf16(ti, utf16); break;
+		case CALC_TI86: return ticonv_ti86_to_utf16(ti, utf16); break;
 		case CALC_TI89:
 		case CALC_TI89T:
 		case CALC_TI92:

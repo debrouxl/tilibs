@@ -92,12 +92,13 @@ extern "C" {
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti);
 
   // charset.c
-  //TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16);
-  //TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti);
 
   // tokens.c
-  TIEXPORT char* TICALL ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
-  TIEXPORT char* TICALL ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype);
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(ConvModel model, const char *src, unsigned short *dst, unsigned int vartype);
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(ConvModel model, const char *src, unsigned int vartype);
+
+  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
+  TIEXPORT char* TICALL ticonv_varname_to_utf8(ConvModel model, const char *src, unsigned int vartype);
 
   // filename.c
   TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *src, char *dst);
@@ -107,18 +108,18 @@ extern "C" {
   /* Deprecated functions */
   /************************/
 
-    /********************/
-    /* Testing purposes */
-    /********************/
+  /********************/
+  /* Testing purposes */
+  /********************/
 
 #ifdef _DEBUG
-    TIEXPORT unsigned long TICALL ti73_charset[256];
-    TIEXPORT unsigned long TICALL ti82_charset[256];
-    TIEXPORT unsigned long TICALL ti83_charset[256];
-    TIEXPORT unsigned long TICALL ti83p_charset[256];
-    TIEXPORT unsigned long TICALL ti85_charset[256];
-    TIEXPORT unsigned long TICALL ti86_charset[256];
-    TIEXPORT unsigned long TICALL ti9x_charset[256];
+    TIEXPORT const unsigned long TICALL ti73_charset[256];
+    TIEXPORT const unsigned long TICALL ti82_charset[256];
+    TIEXPORT const unsigned long TICALL ti83_charset[256];
+    TIEXPORT const unsigned long TICALL ti83p_charset[256];
+    TIEXPORT const unsigned long TICALL ti85_charset[256];
+    TIEXPORT const unsigned long TICALL ti86_charset[256];
+    TIEXPORT const unsigned long TICALL ti9x_charset[256];
 #endif
 
 #ifdef __cplusplus
