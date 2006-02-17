@@ -52,14 +52,56 @@ extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
 extern int do_list(unzFile uf);
 #endif
 
-#if GLIB_CHECK_VERSION(2, 8, 0)
-#define gchdir(d)	g_chdir(d)
+#if !GLIB_CHECK_VERSION(2, 8, 0)
+#include <errno.h>
+// Code taken from Glib
+int g_chdir (const gchar *path)
+{
+#ifdef __WIN32__
+  if (G_WIN32_HAVE_WIDECHAR_API ())
+    {
+      wchar_t *wpath = g_utf8_to_utf16 (path, -1, NULL, NULL, NULL);
+      int retval;
+      int save_errno;
+
+      if (wpath == NULL)
+	{
+	  errno = EINVAL;
+	  return -1;
+	}
+
+      retval = _wchdir (wpath);
+      save_errno = errno;
+
+      g_free (wpath);
+      
+      errno = save_errno;
+      return retval;
+    }
+  else
+    {
+      gchar *cp_path = g_locale_from_utf8 (path, -1, NULL, NULL, NULL);
+      int retval;
+      int save_errno;
+
+      if (cp_path == NULL)
+	{
+	  errno = EINVAL;
+	  return -1;
+	}
+
+      retval = chdir (cp_path);
+      save_errno = errno;
+
+      g_free (cp_path);
+
+      errno = save_errno;
+      return retval;
+    }
 #else
-# ifdef __WIN32__
-#  define gchdir(d)	_chdir(d)
-# else
-#  define gchdir(d)	chdir((d),0666)
-# endif
+  return chdir (path);
+#endif
+}
 #endif
 
 
@@ -232,7 +274,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
 	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
 	// So, use the hard way and do it by hand :-(
-	gchdir(g_get_tmp_dir());
+	g_chdir(g_get_tmp_dir());
 	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive
@@ -338,7 +380,7 @@ tfwt_exit:
     if (err != ZIP_OK)
         printf("error in closing %s\n",filename);
 	free(buf);
-	gchdir(old_dir);
+	g_chdir(old_dir);
 	return err;
 #else
 	return ERR_UNSUPPORTED;
