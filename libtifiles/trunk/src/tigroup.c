@@ -52,6 +52,17 @@ extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
 extern int do_list(unzFile uf);
 #endif
 
+#if GLIB_CHECK_VERSION(2, 8, 0)
+#define gchdir(d)	g_chdir(d)
+#else
+# ifdef __WIN32__
+#  define gchdir(d)	_chdir(d)
+# else
+#  define gchdir(d)	chdir((d),0666)
+# endif
+#endif
+
+
 /**
  * tifiles_file_read_tigroup:
  * @filename: the name of file to load.
@@ -221,7 +232,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
 	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
 	// So, use the hard way and do it by hand :-(
-	g_chdir(g_get_tmp_dir());
+	gchdir(g_get_tmp_dir());
 	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive
@@ -327,7 +338,7 @@ tfwt_exit:
     if (err != ZIP_OK)
         printf("error in closing %s\n",filename);
 	free(buf);
-	g_chdir(old_dir);
+	gchdir(old_dir);
 	return err;
 #else
 	return ERR_UNSUPPORTED;
