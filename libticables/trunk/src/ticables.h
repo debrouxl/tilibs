@@ -41,7 +41,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCABLES_VERSION "0.0.4"
+# define LIBCABLES_VERSION "0.0.6"
 #else
 # define LIBCABLES_VERSION VERSION
 #endif

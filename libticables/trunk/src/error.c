@@ -36,7 +36,7 @@
 /**
  * ticables_error_get:
  * @number: error number (see error.h for list).
- * @message: a newly allocated string which contains corresponding error *message.
+ * @message: a newly GLib allocated string which contains corresponding error *message.
  *
  * Attempt to match the message corresponding to the error number. The returned
  * string must be freed when no longer needed.
@@ -322,11 +322,6 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		g_free(str);
   	}
 #endif
-
-  	// don't use GLib allocator
-	tmp = strdup(*message);
-	g_free(*message);
-	*message = tmp;
 
 	return 0;
 }
