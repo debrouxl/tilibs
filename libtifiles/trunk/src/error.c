@@ -31,7 +31,7 @@
 /**
  * tifiles_get_error:
  * @number: error number (see file_err.h for list).
- * @message: a newly allocated string which contains corresponding error *message.
+ * @message: a newly glib allocated string which contains corresponding error *message.
  *
  * Attempt to match the message corresponding to the error number. The returned
  * string must be freed when no longer needed.
@@ -40,8 +40,6 @@
  **/
 TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 {
-	char *tmp;
-
 	g_assert (message != NULL);
 
 	switch (number) 
@@ -124,11 +122,6 @@ TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 		return number;
     break;
 	}
-
-	// don't use GLib allocator
-	tmp = strdup(*message);
-	g_free(*message);
-	*message = tmp;
 
 	return 0;
 }

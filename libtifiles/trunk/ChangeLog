@@ -10,6 +10,9 @@ To do:
 
 Log:
 
+- 20/02/2006, version 0.0.8: roms
+	- error message is a glib allocated string for now.
+
 - 08/02/2006, version 0.0.7: roms
 	- added tifiles_varname_to_filename which converts varname with sepcial characters
 		(like alpha, beta, ...) into valid filename according to locale
