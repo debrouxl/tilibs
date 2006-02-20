@@ -31,7 +31,7 @@
 /**
  * ticalcs_error_get:
  * @number: error number (see error.h for list).
- * @message: a newly allocated string which contains corresponding error *message.
+ * @message: a newly glib allocated string which contains corresponding error *message.
  *
  * Attempt to match the message corresponding to the error number. The returned
  * string must be freed when no longer needed.
@@ -225,11 +225,6 @@ case ERR_OUT_OF_MEMORY:
 	    return number;
     break;
 	}
-
-	// don't use GLib allocator
-	tmp = strdup(*message);
-	g_free(*message);
-	*message = tmp;
 
 	return 0;
 }
