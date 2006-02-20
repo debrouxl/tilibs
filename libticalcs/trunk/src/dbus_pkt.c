@@ -119,6 +119,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 	return 0;
 }
 
+#if 0
 static uint8_t host_ids(CalcHandle *handle)
 {
   switch (handle->model) 
@@ -161,6 +162,7 @@ static uint8_t host_ids(CalcHandle *handle)
   }
   return 0x00;
 }
+#endif
 
 static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data, int host_check)
 {

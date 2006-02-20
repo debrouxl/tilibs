@@ -44,7 +44,6 @@
  **/
 TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 {
-	char *tmp;
 	char error_msg[2048];
 
 	g_assert (message != NULL);
