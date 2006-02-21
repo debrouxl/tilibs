@@ -48,7 +48,7 @@
 #define TI82_ROWS  64
 #define TI82_COLS  96
 
-static char utf8[17];
+static char utf8[64];
 
 static int		is_ready	(CalcHandle* handle)
 {

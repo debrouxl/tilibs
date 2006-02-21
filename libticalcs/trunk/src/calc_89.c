@@ -50,7 +50,7 @@
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
 
-static char utf8[35];
+static char utf8[64];
 
 static int		is_ready	(CalcHandle* handle)
 {
