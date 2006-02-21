@@ -48,6 +48,8 @@
 #define TI82_ROWS  64
 #define TI82_COLS  96
 
+static char utf8[17];
+
 static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
@@ -229,7 +231,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int err;
   uint8_t rej_code;
   uint16_t status;
-  char utf8[17];
 
   sprintf(update_->text, _("Sending..."));
   update_label();
@@ -289,7 +290,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
   int nvar = 0;
   int err = 0;
-  char utf8[17];
 
   sprintf(update_->text, _("Waiting var(s)..."));
   update_label();

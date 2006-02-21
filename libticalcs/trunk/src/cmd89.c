@@ -25,6 +25,7 @@
 
 #include <string.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "dbus_pkt.h"
 #include "error.h"
@@ -62,10 +63,10 @@ static uint8_t pc_ti9x(CalcModel model)
 int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
-  char trans[20];
+  char trans[17];
   uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));

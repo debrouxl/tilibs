@@ -50,6 +50,8 @@
 #define TI83_ROWS  64
 #define TI83_COLS  96
 
+static char utf8[17];
+
 static int		is_ready	(CalcHandle* handle)
 {
 	return 0;
@@ -92,7 +94,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TNode *folder;
 	uint16_t unused;	
 	uint32_t memory;
-	char utf8[17];
 
 	// get list of folders & FLASH apps
 	(*apps) = t_node_new(NULL);
@@ -260,7 +261,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint8_t rej_code;
 	uint16_t status;
-	char utf8[17];
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -316,8 +316,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	sprintf(update_->text, _("Receiving '%s'"),
-		tifiles_transcode_varname_static(handle->model, vr->name, vr->type));
+	ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
+	sprintf(update_->text, _("Receiving '%s'"), utf8);
 	update_label();
 
 	// silent request

@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -45,6 +46,8 @@
 // Screen coordinates of the TI92
 #define TI92_ROWS  128
 #define TI92_COLS  240
+
+static char utf8[35];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -158,9 +161,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			break;
 		TRYF(err);
 
+		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
 		sprintf(update_->text, _("Reading of '%s/%s'"),
-			((VarEntry *) (folder->data))->name, 
-			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
+			((VarEntry *) (folder->data))->name, utf8);
 		update_->label();
 	}
 
@@ -262,7 +265,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
-		char varname[18], utf8[35];
+		char varname[18];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -272,7 +275,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		else 
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
-		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
+		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
 		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
@@ -300,7 +303,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	char varname[18], utf8[35];
+	char varname[18];
 
 	content->model = CALC_TI92;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -311,7 +314,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
+	ticonv_varname_to_utf8_s(handle->model, varname, utf8, vr->type);
 	sprintf(update_->text, _("Receiving '%s'"), utf8);
 	update_label();
 

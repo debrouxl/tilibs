@@ -49,6 +49,8 @@
 #define TI73_ROWS  64
 #define TI73_COLS  96
 
+static char utf8[17];
+
 static int		is_ready	(CalcHandle* handle)
 {
 	uint16_t status;
@@ -98,7 +100,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint16_t unused;
 	uint32_t memory;
 	TNode *folder;	
-	char utf8[17];
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -263,7 +264,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint8_t rej_code;
-	char utf8[17];
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -311,7 +311,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
     VarEntry *ve;
-    char utf8[17];
 
     content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());

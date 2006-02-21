@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -46,6 +47,8 @@
 // Screen coordinates of the TI86
 #define TI85_ROWS  64
 #define TI85_COLS  128
+
+static char utf8[17];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -266,8 +269,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
-    sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+	ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, entry->type);
+    sprintf(update_->text, _("Sending '%s'"), utf8);
     update_label();
 
     TRYF(ti85_send_XDP(entry->size, entry->data));
@@ -319,8 +322,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti85_send_CTS());
     TRYF(ti85_recv_ACK(NULL));
 
-    sprintf(update_->text, _("Receiving '%s'"),
-		tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
+	ticonv_varname_to_utf8_s(handle->model, ve->name, utf8, ve->type);
+    sprintf(update_->text, _("Receiving '%s'"), utf8);
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);

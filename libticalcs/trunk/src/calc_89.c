@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -48,6 +49,8 @@
 #define TI89_COLS          240
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
+
+static char utf8[35];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -267,7 +270,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
-		char varname[18], utf8[35];
+		char varname[18];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -283,7 +286,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
+		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
 		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
@@ -326,7 +329,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t status;
 	VarEntry *ve;
 	uint32_t unused;
-	char  varname[20], utf8[35];
+	char  varname[20];
 
 #ifndef TEST
 	content->model = handle->model;
@@ -340,8 +343,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 #endif
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-
-	tifiles_transcode_varname(handle->model, utf8, varname, vr->type);
+	ticonv_varname_to_utf8_s(handle->model, varname, utf8, vr->type);
 	sprintf(update_->text, _("Receiving '%s'"), utf8);
 	update_label();
 
@@ -464,7 +466,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		VarEntry *entry = content->entries[i];
 		uint8_t buffer[65536 + 4] = { 0 };
 		uint8_t vartype = entry->type;
-		char varname[18], utf8[35];
+		char varname[18];
 
 		if(entry->action == ACT_SKIP)
 			continue;
@@ -480,7 +482,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		tifiles_transcode_varname(handle->model, utf8, varname, entry->type);
+		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
 		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 

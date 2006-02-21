@@ -25,6 +25,7 @@
 
 #include <string.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "dbus_pkt.h"
 #include "error.h"
@@ -182,7 +183,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 		  uint8_t varattr)
 {
   uint8_t buffer[16] = { 0 };
-  char trans[9];
+  char trans[17];
 
   buffer[0] = LSB(varsize);
   buffer[1] = MSB(varsize);
@@ -192,7 +193,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans,vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
        varsize, vartype, trans, varattr);
 
@@ -245,7 +246,7 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=<%s>, attr=%i)",
        varsize, vartype, trans, varattr);
 
@@ -284,7 +285,7 @@ int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	pad_buffer(buffer + 3, '\0');
 	buffer[11] = 0x00;
 
-	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: DEL (name=<%s>)", trans);
 
 	TRYF(dbus_send(handle, PC_TI7383, CMD_DEL, 11, buffer));
@@ -321,7 +322,7 @@ int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: VAR (size=0x%04X, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *vartype, trans, *varattr);
 
@@ -466,7 +467,7 @@ int ti73_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: RTS (size=0x%04X, id=%02X, name=<%s>, attrb=%i)",
 	  *varsize, *vartype, trans, *varattr);
 

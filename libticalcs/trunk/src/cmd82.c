@@ -26,6 +26,7 @@
 
 #include <string.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "dbus_pkt.h"
 #include "error.h"
@@ -44,14 +45,14 @@
 int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
 {
 	uint8_t buffer[16];
-	char trans[9];
+	char trans[17];
 
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
 	memcpy(buffer + 3, varname, 8);
 
-	tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
 
@@ -158,7 +159,7 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   memcpy(buffer + 3, varname, 8);
   pad_buffer(buffer + 3, '\0');
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
 
@@ -195,7 +196,7 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 
 
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  varsize, varsize, vartype, trans);
 
@@ -247,7 +248,7 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 
 
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: VAR (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
 
@@ -353,7 +354,7 @@ int ti82_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   memcpy(varname, buffer + 3, 8);
   varname[8] = '\0';
 
-  tifiles_transcode_detokenize(handle->model, trans, varname, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: RTS (size=0x%04X=%i, id=%02X, name=<%s>)",
 	  *varsize, *varsize, *vartype, trans);
 

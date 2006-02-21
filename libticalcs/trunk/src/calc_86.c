@@ -33,6 +33,7 @@
 #include <time.h>
 #include <ctype.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -48,6 +49,8 @@
 // Screen coordinates of the TI86
 #define TI86_ROWS  64
 #define TI86_COLS  128
+
+static char utf8[17];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -92,7 +95,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint16_t unused;
 	uint8_t hl, ll, lh;
 	uint8_t mem[8];
-	char utf8[10];
 
 	// get list of folders & FLASH apps
 	(*vars) = t_node_new(NULL);
@@ -138,7 +140,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		node = t_node_new(ve);
 		t_node_append(folder, node);
 
-		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
+		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
 		sprintf(update_->text, _("Reading of '%s'"), utf8);
 		update_label();
 	}
@@ -312,8 +314,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
-		sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+		ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, entry->type);
+		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
 		TRYF(ti85_send_XDP(entry->size, entry->data));
@@ -338,8 +340,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	sprintf(update_->text, _("Receiving '%s'"),
-		tifiles_transcode_varname_static(handle->model, vr->name, vr->type));
+	ticonv_varname_to_utf8_s(handle->model, vr->name, utf8, vr->type);
+	sprintf(update_->text, _("Receiving '%s'"), utf8);
 	update_label();
 
 	// silent request
