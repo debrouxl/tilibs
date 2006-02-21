@@ -45,6 +45,7 @@
  *
  * An enumeration which contains the following calculator types:
  **/
+#if !defined(__TIFILES_H__)
 typedef enum 
 {
 	CALC_NONE = 0,
@@ -55,6 +56,7 @@ typedef enum
 
 	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
+#endif
 
 /* Functions */
 
