@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: TiConv
-Description: TI file format management library
+Description: TI charset <=> UTF charset conversion library
 Version: @VERSION@
 Requires: glib-2.0
 Libs: -L${libdir} -lticonv
