@@ -13,8 +13,9 @@ libticalcsinclude_HEADERS = \
 # build instructions
 libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@
-libticalcs2_la_LIBADD = @LTLIBINTL@ @TICABLES_LIBS@ @TIFILES_LIBS@
+	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICONV_CFLAGS@
+libticalcs2_la_LIBADD = @LTLIBINTL@ \
+	@TICABLES_LIBS@ @TIFILES_LIBS@ @TICONV_LIBS@
 libticalcs2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticalcs2_la_SOURCES = *.h \
 	calc_00.c calc_xx.c \
