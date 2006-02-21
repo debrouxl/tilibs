@@ -71,7 +71,7 @@ extern "C" {
 #  endif
 
 # elif defined(_MSC_VER)		// MSVC 5.0 mini
-#  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS)
+#  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS) || defined(TICONV_EXPORTS)
 #   define TIEXPORT __declspec(dllexport)
 #  else
 #   define TIEXPORT __declspec(dllimport)
