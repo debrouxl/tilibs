@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libtifiles2, 0.0.6, [tilp-users@lists.sourceforge.net])
+AC_INIT(libtifiles2, 0.0.9, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.0.6"
+VERSION="0.0.9"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -63,6 +63,10 @@ AM_GNU_GETTEXT_VERSION(0.14.5)
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+
+PKG_CHECK_MODULES(TICONV, ticonv >= 0.0.1)
+AC_SUBST(TICONV_CFLAGS)
+AC_SUBST(TICONV_LIBS)
 
 # Check for zlib
 AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)

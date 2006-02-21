@@ -274,7 +274,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
 	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
 	// So, use the hard way and do it by hand :-(
-	g_chdir(g_get_tmp_dir());
+	chdir(g_get_tmp_dir());
 	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive

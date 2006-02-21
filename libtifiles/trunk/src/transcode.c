@@ -1134,7 +1134,7 @@ TIEXPORT char *TICALL tifiles_varname_to_filename(CalcModel model, char *dst, co
 // Linux: varnames are UTF-8, glib filenames use locale, filesystem use locale/utf8
 	int i;
 	int is_utf8 = g_get_charset(NULL);
-	const char *str;
+	const char *str = "";
 	char *p;
 
 	p = dst;

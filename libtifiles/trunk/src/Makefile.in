@@ -196,6 +196,8 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 TFDOCGEN = @TFDOCGEN@
+TICONV_CFLAGS = @TICONV_CFLAGS@
+TICONV_LIBS = @TICONV_LIBS@
 USE_DOCGEN_FALSE = @USE_DOCGEN_FALSE@
 USE_DOCGEN_TRUE = @USE_DOCGEN_TRUE@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
@@ -273,9 +275,9 @@ libtifilesinclude_HEADERS = \
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@
+	@GLIB_CFLAGS@ @TICONV_CFLAGS@
 
-libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@
+libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@ @TICONV_LIBS@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
