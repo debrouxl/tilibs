@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_EXPORT__
-#define __TICALCS_EXPORT__
+#ifndef __TICALCS2_EXPORT__
+#define __TICALCS2_EXPORT__
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>

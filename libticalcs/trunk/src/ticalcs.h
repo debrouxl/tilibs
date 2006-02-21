@@ -638,6 +638,9 @@ typedef struct
   /* Deprecated functions */
   /************************/
 
+#ifdef TICALCS_DEPRECATED
+#endif
+
 #ifdef __cplusplus
 }
 #endif
