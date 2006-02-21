@@ -96,7 +96,7 @@ TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short* str)
  *
  * Return value: the %ti string.
  **/
-TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsigned short *utf16, char *ti)
+TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
 {
 	// to do...
 	/*
@@ -127,7 +127,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsign
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16)
+TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
 {
 	char *ti; 
 
@@ -147,7 +147,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned
  *
  * Return value: the %utf16 string.
  **/
-TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, const char *ti, unsigned short *utf16)
+TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
 {
 	switch(model)
 	{
@@ -178,7 +178,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, co
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti)
+TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
 {
 	unsigned short *utf16; 
 

@@ -38,7 +38,7 @@
 
 #include "ticonv.h"
 
-static char *detokenize_varname(ConvModel model, const char *src, char *dst, unsigned int vartype)
+static char *detokenize_varname(CalcModel model, const char *src, char *dst, unsigned int vartype)
 {
 	int i;
 	unsigned int tok1 = src[0] & 0xff;
@@ -318,7 +318,7 @@ static char *detokenize_varname(ConvModel model, const char *src, char *dst, uns
     return dst;
 }
 
-static char* ticonv_varname_detokenize_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
+static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
 {
 	switch (model) 
 	{
@@ -343,7 +343,7 @@ static char* ticonv_varname_detokenize_s(ConvModel model, const char *src, char 
 	return dst;
 }
 
-static char* ticonv_varname_detokenize(ConvModel model, const char *src, unsigned int vartype)
+static char* ticonv_varname_detokenize(CalcModel model, const char *src, unsigned int vartype)
 {
 	static char dst[17];
 	return g_strdup(ticonv_varname_detokenize_s(model, src, dst, vartype));
@@ -364,7 +364,7 @@ static char* ticonv_varname_detokenize(ConvModel model, const char *src, unsigne
  *
  * Return value: the %dst string.
  **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(ConvModel model, const char *src, unsigned short *dst, unsigned int vartype)
+TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype)
 {
 	char tmp[32];
 
@@ -388,7 +388,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(ConvModel model, const
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(ConvModel model, const char *src, unsigned int vartype)
+TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned int vartype)
 {
 	char *tmp;
 	unsigned short *utf16;
@@ -415,7 +415,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(ConvModel model, const c
  *
  * Return value: the %dst string.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8_s(ConvModel model, const char *src, char *dst, unsigned int vartype)
+TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
 {
 	unsigned short tmp[32];
 	gchar *utf8;
@@ -443,7 +443,7 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8_s(ConvModel model, const char *src,
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8(ConvModel model, const char *src, unsigned int vartype)
+TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned int vartype)
 {
 	unsigned short *utf16;
 	gchar *utf8;

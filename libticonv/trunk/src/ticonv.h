@@ -41,18 +41,20 @@
 #endif
 
 /**
- * ConvModel:
+ * CalcModel:
  *
  * An enumeration which contains the following calculator types:
  **/
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI83, 
+	CALC_TI73, CALC_TI82, /*CALC_TI82S, */ CALC_TI83, 
 	CALC_TI83P, CALC_TI84P, 
 	CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-} ConvModel;
+
+	CALC_TI84P_USB, CALC_TI89T_USB,
+} CalcModel;
 
 /* Functions */
 
@@ -80,28 +82,31 @@ extern "C" {
   TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
   TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short* str);
 
-  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(ConvModel model, const unsigned short *utf16, char *ti);
-  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(ConvModel model, const char *ti, unsigned short *utf16);
+  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
+  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
 
-  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(ConvModel model, const unsigned short *utf16);
-  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(ConvModel model, const char *ti);
+  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
+  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 
   // charset.c
 
   // tokens.c
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(ConvModel model, const char *src, unsigned short *dst, unsigned int vartype);
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(ConvModel model, const char *src, unsigned int vartype);
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype);
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned int vartype);
 
-  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(ConvModel model, const char *src, char *dst, unsigned int vartype);
-  TIEXPORT char* TICALL ticonv_varname_to_utf8(ConvModel model, const char *src, unsigned int vartype);
+  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned int vartype);
+  TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned int vartype);
 
   // filename.c
-  TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_filename(ConvModel model, const char *src);
+  TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src);
 
   /************************/
   /* Deprecated functions */
   /************************/
+
+#ifdef TICONV_DEPRECATED
+#endif
 
   /********************/
   /* Testing purposes */

@@ -38,13 +38,13 @@
 
 #include "ticonv.h"
 
-static int tifiles_calc_is_ti9x(ConvModel model)
+static int tifiles_calc_is_ti9x(CalcModel model)
 {
   return ((model == CALC_TI89) || (model == CALC_TI89T) ||
 	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200));
 }
 
-static int tifiles_calc_is_ti8x(ConvModel model)
+static int tifiles_calc_is_ti8x(CalcModel model)
 {
   return ((model == CALC_TI73) || (model == CALC_TI82) ||
 	  (model == CALC_TI82) || (model == CALC_TI83) ||
@@ -67,7 +67,7 @@ static int tifiles_calc_is_ti8x(ConvModel model)
  *
  * Return value: %dst.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *src, char *dst)
+TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
 	int is_utf8 = g_get_charset(NULL);
 	const char *str;
@@ -213,7 +213,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(ConvModel model, const char *
  *
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_filename(ConvModel model, const char *src)
+TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src)
 {
 	static char dst[256];
 	return g_strdup(ticonv_varname_to_filename_s(model, src, dst));
