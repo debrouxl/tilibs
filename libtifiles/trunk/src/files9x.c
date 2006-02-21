@@ -30,6 +30,7 @@
 #include <time.h>
 #include <assert.h>
 
+#include <ticonv.h>
 #include "tifiles.h"
 #include "error.h"
 #include "logging.h"
@@ -359,7 +360,6 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   FILE *f;
   int i;
   char *filename = NULL;
-  char trans[17];
   char basename[64];
   uint32_t offset = 0x52;
   int **table;
@@ -373,11 +373,9 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
-			   content->entries[0]->type);
-	tifiles_varname_to_filename(content->model, basename, trans);
+	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
 
-    filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
+    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
     strcpy(filename, basename);
     strcat(filename, ".");
     strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
@@ -594,8 +592,7 @@ int ti9x_content_display_regular(Ti9xRegular *content)
     tifiles_info("Entry #%i", i);
     tifiles_info("  folder:    <%s>", content->entries[i]->folder);
     tifiles_info("  name:      <%s>",
-	    tifiles_transcode_varname(content->model, trans, content->entries[i]->name,
-				   content->entries[i]->type));
+	    ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans, content->entries[i]->type));
     tifiles_info("  type:      %02X (%s)",
 	    content->entries[i]->type,
 	    tifiles_vartype2string(content->model, content->entries[i]->type));

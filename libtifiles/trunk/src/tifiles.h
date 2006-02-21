@@ -52,6 +52,7 @@
  *
  * An enumeration which contains the following calculator types:
  **/
+#if !defined(__TICONV_H__)
 typedef enum 
 {
 	CALC_NONE = 0,
@@ -62,6 +63,7 @@ typedef enum
 
 	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
+#endif
 
 /**
  * FileAttr:
@@ -322,23 +324,6 @@ extern "C" {
   TIEXPORT const char* TICALL tifiles_class_to_string (FileClass type);
   TIEXPORT FileClass   TICALL tifiles_string_to_class (const char *str);
 
-  // transcode.c
-  TIEXPORT char* TICALL tifiles_transcode_tokenize   (CalcModel model, char *dst, const char *src, uint8_t vartype);
-  TIEXPORT char* TICALL tifiles_transcode_detokenize (CalcModel model, char *dst, const char *src, uint8_t vartype);
-
-  TIEXPORT char* TICALL tifiles_transcode_to_ascii   (CalcModel model, char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_latin1  (CalcModel model, char* dst, const char *src);
-  TIEXPORT char* TICALL tifiles_transcode_to_unicode (CalcModel model, char* dst, const char *src);
-
-  TIEXPORT void         TICALL tifiles_transcoding_set (FileEncoding encoding);
-  TIEXPORT FileEncoding TICALL tifiles_transcoding_get (void);
-
-  TIEXPORT char *TICALL tifiles_transcode_varname (CalcModel model, char *dst, const char *src, uint8_t vartype);
-  TIEXPORT char *TICALL tifiles_transcode_varname_static (CalcModel model, const char *src, uint8_t vartype);
-
-  TIEXPORT char *TICALL tifiles_varname_to_filename (CalcModel model, char *dst, const char *src);
-  TIEXPORT char *TICALL tifiles_varname_to_filename_static (CalcModel model, const char *src);
-
   // filetypes.c
   TIEXPORT const char* TICALL tifiles_fext_of_group    (CalcModel model);
   TIEXPORT const char* TICALL tifiles_fext_of_backup   (CalcModel model);
@@ -472,7 +457,30 @@ extern "C" {
   /************************/
   /* Deprecated functions */
   /************************/
+
+#ifdef TIFILES_DEPRECATED
+  // transcode.c
+  TIEXPORT char* TICALL tifiles_transcode_tokenize   (CalcModel model, char *dst, const char *src, uint8_t vartype);
+  TIEXPORT char* TICALL tifiles_transcode_detokenize (CalcModel model, char *dst, const char *src, uint8_t vartype);
+
+  TIEXPORT char* TICALL tifiles_transcode_to_ascii   (CalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_latin1  (CalcModel model, char* dst, const char *src);
+  TIEXPORT char* TICALL tifiles_transcode_to_unicode (CalcModel model, char* dst, const char *src);
+
+  TIEXPORT void         TICALL tifiles_transcoding_set (FileEncoding encoding);
+  TIEXPORT FileEncoding TICALL tifiles_transcoding_get (void);
+
+  TIEXPORT char *TICALL tifiles_transcode_varname (CalcModel model, char *dst, const char *src, uint8_t vartype);
+  TIEXPORT char *TICALL tifiles_transcode_varname_static (CalcModel model, const char *src, uint8_t vartype);
+
+  TIEXPORT char *TICALL tifiles_varname_to_filename (CalcModel model, char *dst, const char *src);
+  TIEXPORT char *TICALL tifiles_varname_to_filename_static (CalcModel model, const char *src);
+
+  // tigroup.c
   TIEXPORT int TICALL tifiles_file_is_tig (const char *filename);
+
+
+#endif
 
 #ifdef __cplusplus
 }

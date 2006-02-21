@@ -33,6 +33,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include <ticonv.h>
 #include "tifiles.h"
 #include "error.h"
 #include "logging.h"
@@ -40,7 +41,6 @@
 #include "files8x.h"
 #include "rwfile.h"
 #include "intelhex.h"
-#include "transcode.h"
 
 #ifndef DISABLE_TI8X
 
@@ -59,7 +59,7 @@ static int is_ti8586(CalcModel model)
 
 static int is_ti83p(CalcModel model)
 {
-  return (model == CALC_TI83P) || (model == CALC_TI84P)|| (model == CALC_TI84P_USB);
+  return ((model == CALC_TI83P) || (model == CALC_TI84P) || (model == CALC_TI84P_USB));
 }
 
 static uint16_t compute_backup_sum(BackupContent* content)
@@ -499,7 +499,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   int i;
   uint16_t sum = 0;
   char *filename = NULL;
-  char trans[17];
   char basename[64];
   uint32_t data_length;
   uint16_t packet_length = 0x0B;
@@ -513,11 +512,9 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-    tifiles_transcode_varname(content->model, trans, content->entries[0]->name, 
-			   content->entries[0]->type );
-	tifiles_varname_to_filename(content->model, basename, trans);
+	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
 
-    filename = (char *) malloc(strlen(trans) + 1 + 5 + 1);
+    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
     strcpy(filename, basename);
     strcat(filename, ".");
     strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
@@ -789,10 +786,7 @@ int ti8x_content_display_regular(Ti8xRegular *content)
   {
     tifiles_info("Entry #%i", i);
     tifiles_info("  name:        <%s>",
-	    tifiles_transcode_varname(content->model, trans,
-					content->entries[i]->name,				   
-				   content->entries[i]->type
-				   ));
+		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans, content->entries[i]->type));
     tifiles_info("  type:        %02X (%s)",
 	    content->entries[i]->type,
 	    tifiles_vartype2string(content->model, content->entries[i]->type));

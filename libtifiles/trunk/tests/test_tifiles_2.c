@@ -187,7 +187,6 @@ static int test_tigroup();
 int main(int argc, char **argv)
 {
 	char *msg = NULL;
-	char str[16];
 	char buffer[256];
 	int i;
 	int ret;
@@ -214,19 +213,6 @@ int main(int argc, char **argv)
 	       tifiles_string_to_attribute(tifiles_attribute_to_string(ATTRB_LOCKED)));
 	printf("tifiles_string_to_class: <%i> <%i>\n", TIFILE_SINGLE, 
 	       tifiles_string_to_class(tifiles_class_to_string(TIFILE_SINGLE)));
-	printf("--\n");
-
-	// test transcode.c
-	tifiles_transcode_detokenize (CALC_TI82, buffer, "", 0x0C/*TI82_ZSTO*/);
-	printf("<%s>\n", buffer);
-
-	tifiles_transcode_varname(CALC_TI82, buffer, "", 0x0C/*TI82_ZSTO*/);
-	printf("<%s>\n", buffer);
-
-	tifiles_transcoding_set(ENCODING_ASCII);
-	str[0] = 0x5d; str[1] = 0x02;
-	tifiles_transcode_varname(CALC_TI82, buffer, str, -1);
-	printf("<%s>\n", buffer);
 	printf("--\n");
 
 	// test filetypes.c
@@ -276,7 +262,7 @@ int main(int argc, char **argv)
 	ret = tifiles_file_is_tib(BUILD_PATH("misc/ams100.tib"));
         printf("tifiles_file_is_tib: %i\n", ret);
 
-	ret = tifiles_file_is_tig(BUILD_PATH("misc/test.tig"));
+	ret = tifiles_file_is_tigroup(BUILD_PATH("misc/test.tig"));
         printf("tifiles_file_is_tig: %i\n", ret);
 	printf("--\n");
 

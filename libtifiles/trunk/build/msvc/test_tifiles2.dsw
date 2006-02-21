@@ -18,6 +18,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "ticonv"=..\..\..\ticonv\build\msvc\ticonv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "tifiles2"=.\tifiles2.dsp - Package Owner=<4>
 
 Package=<5>
@@ -26,6 +38,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name ticonv
+    End Project Dependency
 }}}
 
 ###############################################################################
