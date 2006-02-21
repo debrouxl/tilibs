@@ -23,7 +23,7 @@
 	This unit contains varname to filename conversion routines.
   
 	This is used to translate some varnames into a filename supported
-	by on-disk encoding. Depends on the calculator type.
+	by on-disk encoding (GLib filename in fact). Depends on the calculator type.
 
 	This is needed for all hand-helds.
 */
@@ -55,8 +55,8 @@ static int tifiles_calc_is_ti8x(CalcModel model)
 /**
  * ticonv_varname_to_filename_s:
  * @model: a calculator model taken in #CalcModel.
- * @src: the name of variable to convert (transcoded name as UTF-16).
- * @dst: a buffer to place result of transcoding (64 bytes max).
+ * @src: the name of variable to convert (raw/binary name).
+ * @dst: a buffer to place result in the GLib filename encoding (64 bytes max).
  *
  * This function converts a varname into a valid filename (depends on locale).
  * Example: 'foobar' => foobar, 'alpha' => _alpha_.
@@ -69,7 +69,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  **/
 TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
-	int is_utf8 = g_get_charset(NULL);
+	//int is_utf8 = g_get_charset(NULL);
 	const char *str;
 	unsigned short *p;
 	unsigned short utf16[16];	
@@ -82,7 +82,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 	q = dst;
 	*q = '\0';
 
-	if(tifiles_calc_is_ti9x(model) && !is_utf8)
+	if(tifiles_calc_is_ti9x(model)/* && !is_utf8*/)
 	{
 		while(*p)
 		{
@@ -133,7 +133,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 		}
 		*q = '\0';
 	}
-	else if(tifiles_calc_is_ti8x(model) && !is_utf8)
+	else if(tifiles_calc_is_ti8x(model)/* && !is_utf8*/)
 	{
 		while(*p)
 		{
@@ -191,9 +191,15 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 		}
 		*q = '\0';
 	}
-	else
-		strncpy(dst, src, 17);
-
+/*
+	{
+		gchar *utf8 = g_utf16_to_utf8(utf16, -1, NULL, NULL, NULL);
+		gchar *gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
+		strcpy(dst, gfe);
+		g_free(utf8);
+		g_free(gfe);
+	}
+*/
 	return dst;
 }
 
@@ -202,7 +208,6 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
  * ticonv_varname_to_filename:
  * @model: a calculator model taken in #CalcModel.
  * @src: the name of variable to convert (raw/binary name).
- * @dst: a buffer to place result of transcoding (18 bytes max).
  *
  * This function converts a varname into a valid filename (depends on locale).
  * Example: 'foobar' => foobar, 'alpha' => _alpha_.

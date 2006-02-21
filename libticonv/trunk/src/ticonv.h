@@ -89,6 +89,7 @@ extern "C" {
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 
   // charset.c
+  // none
 
   // tokens.c
   TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype);
