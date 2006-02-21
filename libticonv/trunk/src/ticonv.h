@@ -26,6 +26,13 @@
 #  include <config.h>
 #endif
 
+// Need size_t declaration.
+#ifdef __cplusplus
+#include <cstddef>
+#else
+#include <stddef.h>
+#endif
+
 #include "export4.h"
 
 	/***********************/
@@ -79,15 +86,9 @@ extern "C" {
   /*********************/
 
   // ticonv.c
-// Need size_t declaration.
-#ifdef __cplusplus
-#include <cstddef>
-#else
-#include <stddef.h>
-#endif
-  TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str);
-
   TIEXPORT const char* TICALL ticonv_version_get (void);
+
+  TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str);
 
   TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str);
   TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short *str);
