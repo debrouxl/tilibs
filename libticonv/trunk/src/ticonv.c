@@ -51,6 +51,23 @@ TIEXPORT const char *TICALL ticonv_version_get(void)
 }
 
 /**
+ * ticonv_utf16_strlen:
+ * @str: null terminated UTF-16 string
+ *
+ * UTF-16 version of strlen (same as wcslen if wchar_t is UTF-16, but portable).
+ *
+ * Return value: number of characters. Surrogate pairs are counted as 2
+ *               characters each.
+ **/
+TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
+{
+	const unsigned short *p = str;
+	size_t l = 0;
+	while (*(p++)) l++;
+	return l;
+}
+
+/**
  * ticonv_utf8_to_utf16:
  * @src: null terminated UTF-8 string
  *
@@ -58,7 +75,7 @@ TIEXPORT const char *TICALL ticonv_version_get(void)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str)
+TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str)
 {
 	gunichar2*  dst;
 	const gchar* src = str;
@@ -76,7 +93,7 @@ TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short* str)
+TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short *str)
 {
 	const gunichar2* src = str;
 	gchar* dst;
@@ -131,7 +148,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned
 {
 	char *ti; 
 
-	ti = g_malloc0(strlen((char *)utf16) / 2 + 1);	// valid ?
+	ti = g_malloc0(ticonv_utf16_strlen(utf16) + 1);	// upper bound
 	ticonv_charset_utf16_to_ti_s(model, utf16, ti);
 
 	return ti;
@@ -182,7 +199,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, cons
 {
 	unsigned short *utf16; 
 
-	utf16 = g_malloc0(4 * strlen(ti) + 4);	// valid ?
+	utf16 = g_malloc0(4 * strlen(ti) + 2);	// upper bound
 	ticonv_charset_ti_to_utf16_s(model, ti, utf16);
 
 	return utf16;

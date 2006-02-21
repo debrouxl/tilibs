@@ -2,7 +2,7 @@
 /* $Id: ticonv.h 1825 2006-02-09 20:43:07Z roms $ */
 
 /*  libTICONV - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2006  Romain Lievin and Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,10 +79,18 @@ extern "C" {
   /*********************/
 
   // ticonv.c
+// Need size_t declaration.
+#ifdef __cplusplus
+#include <cstddef>
+#else
+#include <stddef.h>
+#endif
+  TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str);
+
   TIEXPORT const char* TICALL ticonv_version_get (void);
 
-  TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char* str);
-  TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short* str);
+  TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str);
+  TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short *str);
 
   TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
