@@ -71,17 +71,17 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 {
 	//int is_utf8 = g_get_charset(NULL);
 	const char *str;
-	unsigned short *p;
-	unsigned short utf16[16];	
-	char *q;
+	unsigned short utf16_src[16] = { 0 };
+	unsigned short utf16_dst[128] = { 0 };
+	unsigned short *p, *q;
 
 	// detokenization to UTF-16
-	ticonv_varname_to_utf16_s(model, src, utf16, -1);
+	ticonv_varname_to_utf16_s(model, src, utf16_src, -1);
 
-	p = utf16;
-	q = dst;
-	*q = '\0';
+	p = utf16_src;
+	q = utf16_dst;
 
+	// conversion from UTF-16 to UTF-16
 	if(tifiles_calc_is_ti9x(model)/* && !is_utf8*/)
 	{
 		while(*p)
@@ -96,39 +96,41 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 			}
 			else
 			{
+				gunichar2 *str2;
+				glong ir, iw;
+
 				switch(*p)
 				{
-					case 0x03bc: str = "mu"; break;
-					case 0x03b1: str = "alpha"; break;
-					case 0x03b2: str = "beta"; break;
-					case 0x0393: str = "GAMMA"; break;
-					case 0x03b3: str = "gamma"; break;
-					case 0x0394: str = "DELTA"; break;
-					case 0x03b4: str = "delta"; break;
-					case 0x03b5: str = "epsilon";break;
-					case 0x03b6: str = "zeta"; break;
-					case 0x03b8: str = "theta"; break;
-					case 0x03bb: str = "lambda"; break;
-					case 0x03be: str = "ksi"; break;
-					case 0x03a0: str = "PI"; break;
-					case 0x03c0: str = "pi"; break;
-					case 0x03c1: str = "rho"; break;
-					case 0x03a3: str = "SIGMA"; break; 
-					case 0x03c3: str = "sigma"; break; 
-					case 0x03c4: str = "tau"; break;
-					case 0x03d5: str = "PHI"; break;
-					case 0x03a8: str = "PSI"; break;
-					case 0x03a9: str = "OMEGA"; break; 
-					case 0x03c9: str = "omega"; break;
+					case 0x03bc: str = "_mu_"; break;
+					case 0x03b1: str = "_alpha_"; break;
+					case 0x03b2: str = "_beta_"; break;
+					case 0x0393: str = "_GAMMA_"; break;
+					case 0x03b3: str = "_gamma_"; break;
+					case 0x0394: str = "_DELTA_"; break;
+					case 0x03b4: str = "_delta_"; break;
+					case 0x03b5: str = "_epsilon_";break;
+					case 0x03b6: str = "_zeta_"; break;
+					case 0x03b8: str = "_theta_"; break;
+					case 0x03bb: str = "_lambda_"; break;
+					case 0x03be: str = "_ksi_"; break;
+					case 0x03a0: str = "_PI_"; break;
+					case 0x03c0: str = "_pi_"; break;
+					case 0x03c1: str = "_rho_"; break;
+					case 0x03a3: str = "_SIGMA_"; break; 
+					case 0x03c3: str = "_sigma_"; break; 
+					case 0x03c4: str = "_tau_"; break;
+					case 0x03d5: str = "_PHI_"; break;
+					case 0x03a8: str = "_PSI_"; break;
+					case 0x03a9: str = "_OMEGA_"; break; 
+					case 0x03c9: str = "_omega_"; break;
 					default: break;
 				}
 
-				strcat(q, "_");
-				strcat(q, str);
-				strcat(q, "_");
-
-				q += 1+strlen(str)+1;
-				*p++;
+				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
+				g_free(str2);
+				q += iw;
+				p++;
 			}
 		}
 		*q = '\0';
@@ -153,53 +155,55 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 				}
 				else
 				{
-					switch(*p)
-					{
-						case 0x03bc: str = "mu"; break;
-						case 0x03b1: str = "alpha"; break;
-						case 0x03b2: str = "beta"; break;
-						case 0x0393: str = "GAMMA"; break;
-						case 0x03b3: str = "gamma"; break;
-						case 0x0394: str = "DELTA"; break;
-						case 0x03b4: str = "delta"; break;
-						case 0x03b5: str = "epsilon";break;
-						case 0x03b6: str = "zeta"; break;
-						case 0x03b8: str = "theta"; break;
-						case 0x03bb: str = "lambda"; break;
-						case 0x03be: str = "ksi"; break;
-						case 0x03a0: str = "PI"; break;
-						case 0x03c0: str = "pi"; break;
-						case 0x03c1: str = "rho"; break;
-						case 0x03a3: str = "SIGMA"; break; 
-						case 0x03c3: str = "sigma"; break; 
-						case 0x03c4: str = "tau"; break;
-						case 0x03d5: str = "PHI"; break;
-						case 0x03a8: str = "PSI"; break;
-						case 0x03a9: str = "OMEGA"; break; 
-						case 0x03c9: str = "omega"; break;
-						default: break;
-					}
+					gunichar2 *str2;
+				glong ir, iw;
 
-					strcat(q, "_");
-					strcat(q, str);
-					strcat(q, "_");
+				switch(*p)
+				{
+					case 0x03bc: str = "_mu_"; break;
+					case 0x03b1: str = "_alpha_"; break;
+					case 0x03b2: str = "_beta_"; break;
+					case 0x0393: str = "_GAMMA_"; break;
+					case 0x03b3: str = "_gamma_"; break;
+					case 0x0394: str = "_DELTA_"; break;
+					case 0x03b4: str = "_delta_"; break;
+					case 0x03b5: str = "_epsilon_";break;
+					case 0x03b6: str = "_zeta_"; break;
+					case 0x03b8: str = "_theta_"; break;
+					case 0x03bb: str = "_lambda_"; break;
+					case 0x03be: str = "_ksi_"; break;
+					case 0x03a0: str = "_PI_"; break;
+					case 0x03c0: str = "_pi_"; break;
+					case 0x03c1: str = "_rho_"; break;
+					case 0x03a3: str = "_SIGMA_"; break; 
+					case 0x03c3: str = "_sigma_"; break; 
+					case 0x03c4: str = "_tau_"; break;
+					case 0x03d5: str = "_PHI_"; break;
+					case 0x03a8: str = "_PSI_"; break;
+					case 0x03a9: str = "_OMEGA_"; break; 
+					case 0x03c9: str = "_omega_"; break;
+					default: break;
+				}
 
-					q += 1+strlen(str)+1;
-					*p++;
+				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
+				g_free(str2);
+				q += iw;
+				p++;
 				}
 			}
 		}
 		*q = '\0';
 	}
-/*
+
 	{
-		gchar *utf8 = g_utf16_to_utf8(utf16, -1, NULL, NULL, NULL);
+		gchar *utf8 = g_utf16_to_utf8(utf16_dst, -1, NULL, NULL, NULL);
 		gchar *gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
 		strcpy(dst, gfe);
 		g_free(utf8);
 		g_free(gfe);
 	}
-*/
+
 	return dst;
 }
 
