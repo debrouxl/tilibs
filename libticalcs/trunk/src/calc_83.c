@@ -33,6 +33,7 @@
 #include <time.h>
 #include <ctype.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -90,9 +91,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TreeInfo *ti;
 	TNode *folder;
 	uint16_t unused;	
-
 	uint32_t memory;
-	char utf8[10];
+	char utf8[17];
 
 	// get list of folders & FLASH apps
 	(*apps) = t_node_new(NULL);
@@ -138,7 +138,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		node = t_node_new(ve);
 		t_node_append(folder, node);
 
-		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
+		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
 		sprintf(update_->text, _("Reading of '%s'"), utf8);
 		update_label();
 	}
@@ -260,6 +260,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint8_t rej_code;
 	uint16_t status;
+	char utf8[17];
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -288,8 +289,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
-		sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+		ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, 
+					 entry->type);
+		    sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
 		TRYF(ti82_send_XDP(entry->size, entry->data));

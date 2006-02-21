@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -228,6 +229,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int err;
   uint8_t rej_code;
   uint16_t status;
+  char utf8[17];
 
   sprintf(update_->text, _("Sending..."));
   update_label();
@@ -266,8 +268,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
-    sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+    ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, entry->type);
+    sprintf(update_->text, _("Sending '%s'"), utf8);
     update_label();
 
     TRYF(ti82_send_XDP(entry->size, entry->data));
@@ -287,6 +289,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
   int nvar = 0;
   int err = 0;
+  char utf8[17];
 
   sprintf(update_->text, _("Waiting var(s)..."));
   update_label();
@@ -319,8 +322,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_CTS());
     TRYF(ti82_recv_ACK(NULL));
 
-    sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, ve->name, ve->type));
+    ticonv_varname_to_utf8_s(handle->model, ve->name, utf8, ve->type);
+    sprintf(update_->text, _("Sending '%s'"), utf8);
     update_label();
 
 	ve->data = tifiles_ve_alloc_data(ve->size);

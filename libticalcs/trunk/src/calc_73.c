@@ -33,6 +33,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "ticonv.h"
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"
@@ -97,7 +98,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint16_t unused;
 	uint32_t memory;
 	TNode *folder;	
-	char utf8[10];
+	char utf8[17];
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -142,7 +143,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else
 			t_node_append(*apps, node);
 
-		tifiles_transcode_varname(handle->model, utf8, ve->name, ve->type);
+		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
 		sprintf(update_->text, _("Reading of '%s'"), utf8);
 		update_label();
   }
@@ -262,6 +263,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint8_t rej_code;
+	char utf8[17];
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -290,8 +292,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
-		sprintf(update_->text, _("Sending '%s'"),
-			tifiles_transcode_varname_static(handle->model, entry->name, entry->type));
+
+		ticonv_varname_to_utf8_s(handle->model,entry->name,
+					 utf8,entry->type);
+		sprintf(update_->text, _("Sending '%s'"), utf8);
 		update_label();
 
 		TRYF(ti73_send_XDP(entry->size, entry->data));
@@ -307,6 +311,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
     VarEntry *ve;
+    char utf8[17];
 
     content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -316,8 +321,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
-    sprintf(update_->text, _("Receiving '%s'"),
-	  tifiles_transcode_varname_static(handle->model, vr->name, vr->type));
+    ticonv_varname_to_utf8_s(handle->model, vr->name, utf8, vr->type);
+    sprintf(update_->text, _("Receiving '%s'"), utf8);
     update_label();
 
     // silent request
