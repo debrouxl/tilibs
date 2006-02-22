@@ -118,7 +118,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 					case 0x03a8: str = "_PSI_"; break;
 					case 0x03a9: str = "_OMEGA_"; break; 
 					case 0x03c9: str = "_omega_"; break;
-					default: break;
+					default: str = ""; break;
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
@@ -176,7 +176,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 					case 0x03a8: str = "_PSI_"; break;
 					case 0x03a9: str = "_OMEGA_"; break; 
 					case 0x03c9: str = "_omega_"; break;
-					default: break;
+					default: str = ""; break;
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
