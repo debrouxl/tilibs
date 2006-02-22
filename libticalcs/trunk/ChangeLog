@@ -6,6 +6,7 @@ To do :
 - key codes for TI8x (check)
 //- manage ERR packets which can be received at any time
 - import Kevin's code for UTF16 <-> TI keys (tiemu3) ?
+- replace static buf by dynamic ones !
 
 Log:
 

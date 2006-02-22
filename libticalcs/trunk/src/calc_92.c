@@ -47,7 +47,7 @@
 #define TI92_ROWS  128
 #define TI92_COLS  240
 
-static char utf8[64];
+static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
