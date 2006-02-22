@@ -317,7 +317,7 @@ TIE const unsigned long TIC ti9x_charset[256] =
  *
  * UTF-16 to TI89,92,92+,V200,Titanium charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti)
 {
@@ -539,7 +539,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti
  *
  * TI89,92,92+,V200,Titanium charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -608,7 +608,7 @@ TIE const unsigned long TIC ti73_charset[256] = {
 	0x3c4,  0x3d5,  0x3a9,  'x',    'y',    '?',    0x2026, 0x25c0,
 
 	0x25fe, '?',    0x2212, 178,    176,    179,    '\n',   '_',
-	'_',    169,    'L',    0x212f, 'L',   'N',     '\x41\x41',0x2192,
+	'_',    169,    'L',    0x212f, 'L',   'N',     '_' /*))*/,0x2192,
 
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
@@ -624,7 +624,7 @@ TIE const unsigned long TIC ti73_charset[256] = {
  *
  * TI73 charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -657,7 +657,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned sh
  *
  * UTF-16 to TI73 charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *ti)
 {
@@ -723,7 +723,7 @@ TIE const unsigned long TIC ti82_charset[256] = {
  *
  * TI82 charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -756,7 +756,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned sh
  *
  * UTF-16 to TI82 charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti)
 {
@@ -806,7 +806,7 @@ TIE const unsigned long TIC ti83_charset[256] = {
 	0x3c4,  0x3d5,  0x3a9,  'x',    'y',    '?',    0x2026, 0x25c0,
 
 	0x25fe, '?',    0x2212, 178,    176,    179,    '\n',   0xd875dc8a,
-	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '\x41\x41',0x2192,
+	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '_' /*))*/,0x2192,
 
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
@@ -822,7 +822,7 @@ TIE const unsigned long TIC ti83_charset[256] = {
  *
  * TI82 charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -855,7 +855,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned sh
  *
  * UTF-16 to TI83 charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti)
 {
@@ -905,7 +905,7 @@ TIE const unsigned long TIC ti83p_charset[256] = {
 	0x3c4,  0x3d5,  0x3a9,  'x',    'y',    '?',    0x2026, 0x25c0,
 
 	0x25fe, '?',    0x2212, 178,    176,    179,    '\n',   0xd875dc8a,
-	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '\x41\x41',0x2192,
+	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '_' /*))*/,0x2192,
 
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
@@ -921,7 +921,7 @@ TIE const unsigned long TIC ti83p_charset[256] = {
  *
  * TI83+ charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -954,7 +954,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI83+ charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *ti)
 {
@@ -1021,7 +1021,7 @@ TIE const unsigned long TIC ti85_charset[256] = {
  *
  * TI85 charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -1054,7 +1054,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned sh
  *
  * UTF-16 to TI85 charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti)
 {
@@ -1120,7 +1120,7 @@ TIE const unsigned long TIC ti86_charset[256] = {
  *
  * TI86 charset to UTF-16 conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned short *utf16)
 {
@@ -1153,7 +1153,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned sh
  *
  * UTF-16 to TI86 charset conversion.
  *
- * Return value: a newly allocated string or NULL if error.
+ * Return value: returns the destination pointer or NULL if error.
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti)
 {
