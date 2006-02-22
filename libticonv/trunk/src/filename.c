@@ -71,15 +71,13 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 {
 	//int is_utf8 = g_get_charset(NULL);
 	const char *str;
-	unsigned short utf16_src[16] = { 0 };
-	unsigned short utf16_dst[128] = { 0 };
-	unsigned short *p, *q;
+	unsigned short *utf16_src, *p;
+	unsigned short *utf16_dst, *q;
+	unsigned short *tmp;
 
 	// detokenization to UTF-16
-	ticonv_varname_to_utf16_s(model, src, utf16_src, -1);
-
-	p = utf16_src;
-	q = utf16_dst;
+	p = utf16_src = ticonv_varname_to_utf16(model, src, 1);
+	q = utf16_dst = g_malloc0(4 * ticonv_utf16_strlen(utf16_src) + 2);
 
 	// conversion from UTF-16 to UTF-16
 	if(tifiles_calc_is_ti9x(model)/* && !is_utf8*/)
@@ -127,8 +125,14 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+
+				//tmp = utf16_dst;
+				//utf16_dst = g_realloc(utf16_dst, (iw+1) * sizeof(gunichar2));
+				//q = (q - tmp) + utf16_dst;		
+
 				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
 				g_free(str2);
+
 				q += iw;
 				p++;
 			}
@@ -186,8 +190,14 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+
+				tmp = utf16_dst;
+				utf16_dst = g_realloc(utf16_dst, (iw+1) * sizeof(gunichar2));
+				q = (q - tmp) + utf16_dst;		
+
 				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
 				g_free(str2);
+
 				q += iw;
 				p++;
 				}
@@ -196,11 +206,20 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 		*q = '\0';
 	}
 
+	// UTF-16 to UTF-8 to GFE encoding
 	{
-		gchar *utf8 = g_utf16_to_utf8(utf16_dst, -1, NULL, NULL, NULL);
-		gchar *gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
-		strcpy(dst, gfe);
+		gchar *utf8;
+		gchar *gfe;
+
+		g_free(utf16_src);
+
+		utf8 = g_utf16_to_utf8(utf16_dst, -1, NULL, NULL, NULL);
+		g_free(utf16_dst);
+
+		gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
 		g_free(utf8);
+
+		strcpy(dst, gfe);
 		g_free(gfe);
 	}
 

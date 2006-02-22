@@ -320,6 +320,11 @@ static char *detokenize_varname(CalcModel model, const char *src, char *dst, uns
 
 static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
 {
+	char src_[18];
+	
+	strncpy(src_, src, 17);
+	src_[18] = '\0';
+
 	switch (model) 
 	{
 	case CALC_TI73:
@@ -327,7 +332,7 @@ static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char 
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
-		return detokenize_varname(model, src, dst, vartype);
+		return detokenize_varname(model, src_, dst, vartype);
 	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI89:
@@ -335,7 +340,7 @@ static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char 
 	case CALC_TI92:
 	case CALC_TI92P:
 	case CALC_V200:
-		return strncpy(dst, src, 9);
+		return strncpy(dst, src_, 17);
 	default:
 		return strcpy(dst, "________");
   }
@@ -345,15 +350,15 @@ static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char 
 
 static char* ticonv_varname_detokenize(CalcModel model, const char *src, unsigned int vartype)
 {
-	static char dst[17];
+	char dst[18];
 	return g_strdup(ticonv_varname_detokenize_s(model, src, dst, vartype));
 }
 
 /**
  * ticonv_varname_to_utf16_s:
  * @model: a calculator model.
- * @src: a name of variable to detokenize and translate.
- * @dst: a buffer where to placed the result (18 chars max).
+ * @src: a name of variable to detokenize and translate (17 chars max).
+ * @dst: a buffer where to placed the result (big enough).
  * @vartype: the type of variable.
  *
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
@@ -366,7 +371,7 @@ static char* ticonv_varname_detokenize(CalcModel model, const char *src, unsigne
  **/
 TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype)
 {
-	char tmp[32];
+	char tmp[18];
 
 	ticonv_varname_detokenize_s(model, src, tmp, vartype);
 	ticonv_charset_ti_to_utf16_s(model, tmp, dst);
@@ -377,7 +382,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const
 /**
  * ticonv_varname_to_utf16:
  * @model: a calculator model.
- * @src: a name of variable to detokenize and translate.
+ * @src: a name of variable to detokenize and translate (17 chars max).
  * @vartype: the type of variable.
  *
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
@@ -403,8 +408,8 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const c
 /**
  * ticonv_varname_to_utf8_s:
  * @model: a calculator model.
- * @src: a name of variable to detokenize and translate.
- * @dst: a buffer where to placed the result (18 chars max).
+ * @src: a name of variable to detokenize and translate (17 chars max).
+ * @dst: a buffer where to placed the result (big enough).
  * @vartype: the type of variable.
  *
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
@@ -417,13 +422,14 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const c
  **/
 TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
 {
-	unsigned short tmp[32];
 	gchar *utf8;
+	unsigned short *utf16;
 
-	ticonv_varname_to_utf16_s(model, src, tmp, vartype);
-	utf8 = ticonv_utf16_to_utf8(tmp);
+	utf16 = ticonv_varname_to_utf16(model, src, vartype);
+	utf8 = ticonv_utf16_to_utf8(utf16);
 
 	strcpy(dst, utf8);
+	g_free(utf16);
 	g_free(utf8);
 
 	return dst;
