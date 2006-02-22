@@ -69,7 +69,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  **/
 TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
-	//int is_utf8 = g_get_charset(NULL);
+	int is_utf8 = g_get_charset(NULL);
 	const char *str;
 	unsigned short *utf16_src, *p;
 	unsigned short *utf16_dst, *q;
@@ -79,7 +79,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
 
 	// conversion from UTF-16 to UTF-16
-	if(tifiles_calc_is_ti9x(model)/* && !is_utf8*/)
+	if(tifiles_calc_is_ti9x(model) && !is_utf8)
 	{
 		while(*p)
 		{
@@ -131,7 +131,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 		}
 		*q = '\0';
 	}
-	else if(tifiles_calc_is_ti8x(model)/* && !is_utf8*/)
+	else if(tifiles_calc_is_ti8x(model) && !is_utf8)
 	{
 		while(*p)
 		{
