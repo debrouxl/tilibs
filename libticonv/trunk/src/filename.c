@@ -73,11 +73,10 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 	const char *str;
 	unsigned short *utf16_src, *p;
 	unsigned short *utf16_dst, *q;
-	unsigned short *tmp;
 
 	// detokenization to UTF-16
 	p = utf16_src = ticonv_varname_to_utf16(model, src, 1);
-	q = utf16_dst = g_malloc0((ticonv_utf16_strlen(utf16_src) + 1) * sizeof(unsigned short));
+	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
 
 	// conversion from UTF-16 to UTF-16
 	if(tifiles_calc_is_ti9x(model)/* && !is_utf8*/)
@@ -88,9 +87,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 
 			if(!msb)
 			{
-				*q = *p & 0xff;
-				*p++;
-				*q++;
+				*q++ = *p++ & 0xff;
 			}
 			else
 			{
@@ -125,11 +122,6 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
-
-				tmp = utf16_dst;
-				utf16_dst = g_realloc(utf16_dst, (ticonv_utf16_strlen(utf16_dst) + 1 + iw + 1) * sizeof(unsigned short));
-				q = (q - tmp) + utf16_dst;	// relocate pointer (g_realloc)
-
 				memcpy(q, str2, (iw+1) * sizeof(unsigned short));
 				g_free(str2);
 
@@ -147,9 +139,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 
 			if(!msb)
 			{
-				*q = *p & 0xff;
-				*p++;
-				*q++;
+				*q++ = *p++ & 0xff;
 			}
 			else
 			{
@@ -190,11 +180,6 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 				}
 
 				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
-
-				tmp = utf16_dst;
-				utf16_dst = g_realloc(utf16_dst, (ticonv_utf16_strlen(utf16_dst) + 1 + iw + 1) * sizeof(unsigned short));
-				q = (q - tmp) + utf16_dst;	// relocate pointer (g_realloc)
-
 				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
 				g_free(str2);
 
