@@ -43,7 +43,7 @@ TIEXPORT int TICALL tifiles_calc_is_ti8x(CalcModel model)
 	  (model == CALC_TI82) || (model == CALC_TI83) ||
 	  (model == CALC_TI83P) || (model == CALC_TI84P) ||
 	  (model == CALC_TI85) || (model == CALC_TI86) ||
-	  (model == CALC_TI84P_USB)|| (model == CALC_TI89T_USB));
+	  (model == CALC_TI84P_USB));
 }
 
 /**
