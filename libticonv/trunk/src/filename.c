@@ -69,7 +69,11 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  **/
 TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
+#ifdef __WIN32__
+	int is_utf8 = G_WIN32_HAVE_WIDECHAR_API();
+#else
 	int is_utf8 = g_get_charset(NULL);
+#endif
 	const char *str;
 	unsigned short *utf16_src, *p;
 	unsigned short *utf16_dst, *q;
@@ -189,6 +193,10 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 			}
 		}
 		*q = '\0';
+	}
+	else
+	{
+		while(*p) *q++ = *p++;
 	}
 
 	// UTF-16 to UTF-8 to GFE encoding
