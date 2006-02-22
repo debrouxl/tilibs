@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ticonv.h"
 #include "gettext.h"
 #include "ticalcs.h"
 #include "logging.h"
@@ -80,7 +81,7 @@ static void dirlist_display_vars(TNode* tree)
   TNode *vars = tree;
   TreeInfo *info = (TreeInfo *)(tree->data);
   int i, j, k;
-  char trans[10];
+  char *utf8;
 
   printf(  "+------------------+----------+----+----+----------+----------+\n");
   printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
@@ -93,13 +94,13 @@ static void dirlist_display_vars(TNode* tree)
 
     if (fe != NULL) 
 	{
-	  tifiles_transcode_varname (info->model, trans, fe->name, fe->type);
+		utf8 = ticonv_varname_to_utf8(info->model, fe->name, fe->type);
 
       printf("| ");
       for (k = 0; k < 8; k++)
 		printf("%02X", (uint8_t) (fe->name)[k]);
       printf(" | ");	
-      printf("%8s", trans);
+      printf("%8s", utf8);
       printf(" | ");
       printf("%2i", fe->attr);
       printf(" | ");
@@ -110,6 +111,8 @@ static void dirlist_display_vars(TNode* tree)
       printf("%8s", fe->folder);
       printf(" |");
 	  printf("\n");
+
+	  g_free(utf8);
     }
 
     for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
@@ -117,13 +120,13 @@ static void dirlist_display_vars(TNode* tree)
       TNode *child = t_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
-	  tifiles_transcode_varname (info->model, trans, ve->name, ve->type);
+	  utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
 
       printf("| ");
       for (k = 0; k < 8; k++) 
 		printf("%02X", (uint8_t) (ve->name)[k]);
       printf(" | ");
-      printf("%8s", trans);
+      printf("%8s", utf8);
       printf(" | ");
       printf("%2i", ve->attr);
       printf(" | ");
@@ -134,6 +137,8 @@ static void dirlist_display_vars(TNode* tree)
       printf("%8s", ve->folder);
       printf(" |");
 	  printf("\n");
+
+	  g_free(utf8);
     }
   }
   if (!i)
@@ -148,7 +153,7 @@ static void dirlist_display_apps(TNode* tree)
 	TNode *apps = tree;
   TreeInfo *info = (TreeInfo *)(tree->data);
   int i, k;
-  char trans[10];
+  char *utf8;
 
   printf(  "+------------------+----------+----+----+----------+\n");
   printf(_("| B. name          | T. name  |Attr|Type| Size     |\n"));
@@ -159,13 +164,13 @@ static void dirlist_display_apps(TNode* tree)
     TNode *child = t_node_nth_child(apps, i);
     VarEntry *ve = (VarEntry *) (child->data);
 
-	tifiles_transcode_varname (info->model, trans, ve->name, ve->type);
+	utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
 
     printf("| ");
     for (k = 0; k < 8; k++)
       printf("%02X", (uint8_t) (ve->name)[k]);
     printf(" | ");
-    printf("%8s", trans);
+    printf("%8s", utf8);
     printf(" | ");
     printf("%2i", ve->attr);
     printf(" | ");
@@ -174,6 +179,8 @@ static void dirlist_display_apps(TNode* tree)
     printf("%08X", ve->size);
     printf(" |");
 	printf("\n");
+
+	g_free(utf8);
   }
   if (!i)
   {
