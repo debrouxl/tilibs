@@ -361,9 +361,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
-	g_free(utf8);
 	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
-	printf("%i: <%s>\n", strlen(utf8), utf8);
+	g_free(utf8);
 	update_label();
 
 	TRYF(ti89_send_REQ(0, vr->type, varname));
