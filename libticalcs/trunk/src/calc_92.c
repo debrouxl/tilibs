@@ -149,8 +149,17 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else 
 		{
 			strcpy(ve->folder, folder_name);
-			node = t_node_new(ve);
-			t_node_append(folder, node);
+
+			if(!strcmp(ve->folder, "main") && 
+					(!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+			{
+				tifiles_ve_delete(ve);
+			}
+			else
+			{
+				node = t_node_new(ve);
+				t_node_append(folder, node);
+			}
 		}
 
 		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
