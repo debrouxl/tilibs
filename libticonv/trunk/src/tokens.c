@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ticonv.c 1721 2006-01-21 13:58:14Z roms $ */
+/* $Id$ */
 
 /*  libticonv - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 2006-2006 Romain Lievin and Kevin Kofler

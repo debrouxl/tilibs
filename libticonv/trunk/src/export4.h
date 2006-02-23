@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: export2.h 1614 2005-09-07 08:57:27Z roms $ */
+/* $Id$ */
 
 /*  libticonv - TI-charset <-> UTF-16 conversion routines
  *  Copyright (C) 1999-2005  Romain Lievin
