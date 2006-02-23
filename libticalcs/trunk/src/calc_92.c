@@ -369,6 +369,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int nvar, err;
     char tipath[18];
     char *tiname;
+	char *utf8;
 
 	content->model = handle->model;
 
@@ -402,7 +403,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		TRYF(ti92_send_CTS());

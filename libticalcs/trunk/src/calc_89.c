@@ -195,6 +195,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	{
 		TNode *folder = t_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
+		char *u1, *u2;
 
 		ticalcs_info(_("Directory listing in %8s..."), folder_name);
 
@@ -232,8 +233,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			ve->attr,
 			ve->size);
 
-			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"),
-			  ((VarEntry *) (folder->data))->name, ve->name);
+			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, ve->type);
+			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);
+			g_free(u1); g_free(u2);
 			update_label();
 
 			if(ve->type == TI89_APPL) 
@@ -534,6 +537,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	int nvar, err;
     char tipath[18];
     char *tiname;
+	char *utf8;
 
 	content->model = handle->model;
 
@@ -567,8 +571,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), ve->name);
-		update_label();
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+		g_free(utf8);
 
 		TRYF(ti89_send_CTS());
 		TRYF(ti89_recv_ACK(NULL));
@@ -657,11 +662,14 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
 	int i;
+	char *utf8;
 
 	content->model = handle->model;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	g_free(utf8);
 	update_label();
 
 	TRYF(ti89_send_REQ(0x00, vr->type, vr->name));
