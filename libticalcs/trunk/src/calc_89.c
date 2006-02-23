@@ -741,7 +741,10 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	unlink(prgname);
 
 	// Launch program by remote control
+
 	PAUSE(200);
+	TRYF(send_key(handle, KEY89_HOME));
+	PAUSE(50);
 	TRYF(send_key(handle, KEY89_CLEAR));
 	PAUSE(50);
 	TRYF(send_key(handle, KEY89_CLEAR));

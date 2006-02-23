@@ -12,6 +12,7 @@ Log:
 
 - 21/02/2006, version 0.0.6: roms
 	- switched to ticonv library
+	- send HOME key before dumping
 	
 - 20/02/2006, version 0.0.5: roms
 	- error message is a glib allocated string for now.
