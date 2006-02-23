@@ -10,6 +10,9 @@ To do:
 
 Log:
 
+- 23/02/2006, version 0.1.0: roms
+	- removed deprecated functions
+
 - 21/02/2006, version 0.0.9: roms
 	- moved transcode support as deprecated (superseded by ticonv libary)
 	- switched to ticonv

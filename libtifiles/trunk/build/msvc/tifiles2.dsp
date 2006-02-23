@@ -222,10 +222,6 @@ SOURCE=..\..\src\tifiles.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\transcode.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\type2str.c
 # End Source File
 # Begin Source File
