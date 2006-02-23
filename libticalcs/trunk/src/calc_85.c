@@ -44,11 +44,14 @@
 #include "cmd85.h"
 #include "rom85.h"
 
+#ifdef __WIN32__
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 // Screen coordinates of the TI86
 #define TI85_ROWS  64
 #define TI85_COLS  128
-
-static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -101,7 +104,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   uint8_t rej_code;
   uint16_t status;
 
-  sprintf(update_->text, _("Waiting user's action..."));
+  snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
   update_label();
 
   length = content->data_length1;
@@ -141,7 +144,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
   }
   
-  sprintf(update_->text, _("Sending..."));
+  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
   update_label();
 
   update_->max2 = 3;
@@ -172,7 +175,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
   char varname[9] = { 0 };
 
-  sprintf(update_->text, _("Waiting for backup..."));
+  snprintf(update_->text, sizeof(update_->text), _("Waiting for backup..."));
   update_label();
 
   content->model = CALC_TI85;
@@ -231,8 +234,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int err;
   uint8_t rej_code;
   uint16_t status;
+  char *utf8;
 
-  sprintf(update_->text, _("Sending..."));
+  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
   update_label();
 
   for (i = 0; i < content->num_entries; i++) 
@@ -242,7 +246,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti85_send_VAR((uint16_t)entry->size, entry->type, entry->name));
     TRYF(ti85_recv_ACK(&status));
 
-    sprintf(update_->text, _("Waiting user's action..."));
+    snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
     update_label();
 
     do {			// wait user's action
@@ -269,8 +273,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
-	ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, entry->type);
-    sprintf(update_->text, _("Sending '%s'"), utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
+    snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+	g_free(utf8);
     update_label();
 
     TRYF(ti85_send_XDP(entry->size, entry->data));
@@ -290,8 +295,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
   int nvar = 0;
   int err = 0;
+  char *utf8;
 
-  sprintf(update_->text, _("Waiting var(s)..."));
+  snprintf(update_->text, sizeof(update_->text), _("Waiting var(s)..."));
   update_label();
 
   content->model = CALC_TI85;
@@ -322,8 +328,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti85_send_CTS());
     TRYF(ti85_recv_ACK(NULL));
 
-	ticonv_varname_to_utf8_s(handle->model, ve->name, utf8, ve->type);
-    sprintf(update_->text, _("Receiving '%s'"), utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+    snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);

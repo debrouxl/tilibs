@@ -45,11 +45,14 @@
 #include "cmd73.h"
 #include "rom83p.h"
 
+#ifdef __WIN32__
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 // Screen coordinates of the TI83+
 #define TI73_ROWS  64
 #define TI73_COLS  96
-
-static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -100,6 +103,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint16_t unused;
 	uint32_t memory;
 	TNode *folder;	
+	char *utf8;
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -144,8 +148,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else
 			t_node_append(*apps, node);
 
-		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
-		sprintf(update_->text, _("Reading of '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);
+		g_free(utf8);
 		update_label();
   }
 
@@ -264,6 +269,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint8_t rej_code;
+	char *utf8;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -293,9 +299,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		  break;
 		}
 
-		ticonv_varname_to_utf8_s(handle->model,entry->name,
-					 utf8,entry->type);
-		sprintf(update_->text, _("Sending '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model,entry->name, entry->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		TRYF(ti73_send_XDP(entry->size, entry->data));
@@ -311,6 +317,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
     VarEntry *ve;
+	char *utf8;
 
     content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -320,8 +327,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
-    ticonv_varname_to_utf8_s(handle->model, vr->name, utf8, vr->type);
-    sprintf(update_->text, _("Receiving '%s'"), utf8);
+    utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+    snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	g_free(utf8);
     update_label();
 
     // silent request
@@ -439,7 +447,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int offset;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
 
-	sprintf(update_->text, _("Receiving '%s'"), vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
 	update_label();
 
 	content->model = handle->model;
@@ -528,7 +536,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t data[16];
 	int i;
 
-	sprintf(update_->text, _("Getting variable..."));
+	snprintf(update_->text, sizeof(update_->text), _("Getting variable..."));
 	update_label();
 
 	TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
@@ -674,7 +682,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     buffer[7] = clock->time_format;
     buffer[8] = 0xff;
 
-    sprintf(update_->text, _("Setting clock..."));
+    snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
 	TRYF(ti73_send_RTS(13, TI73_CLK, "\0x08", 0x00));
@@ -703,7 +711,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	struct tm ref, *cur;
 	time_t r, c, now;
 
-    sprintf(update_->text, _("Getting clock..."));
+    snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
 	TRYF(ti73_send_REQ(0x0000, TI73_CLK, "\0x08", 0x00));
@@ -856,7 +864,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	uint16_t unused;
 	uint8_t buf[256];
 
-	sprintf(update_->text, _("Receiving certificate"));
+	snprintf(update_->text, sizeof(update_->text), _("Receiving certificate"));
 	update_label();
 
 	content->model = handle->model;

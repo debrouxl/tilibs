@@ -46,11 +46,14 @@
 #include "rom83.h"
 #include "keys83p.h"
 
+#ifdef __WIN32__
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
 #define TI83_COLS  96
-
-static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -94,6 +97,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TNode *folder;
 	uint16_t unused;	
 	uint32_t memory;
+	char *utf8;
 
 	// get list of folders & FLASH apps
 	(*apps) = t_node_new(NULL);
@@ -139,8 +143,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		node = t_node_new(ve);
 		t_node_append(folder, node);
 
-		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
-		sprintf(update_->text, _("Reading of '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model,ve->name, ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 	}
 
@@ -261,6 +266,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	uint8_t rej_code;
 	uint16_t status;
+	char *utf8;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -289,9 +295,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
-		ticonv_varname_to_utf8_s(handle->model, entry->name, utf8, 
-					 entry->type);
-		    sprintf(update_->text, _("Sending '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		TRYF(ti82_send_XDP(entry->size, entry->data));
@@ -308,6 +314,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
   uint16_t unused;
   VarEntry *ve;
+  char *utf8;
 
 	content->model = CALC_TI83;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -316,8 +323,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
-	sprintf(update_->text, _("Receiving '%s'"), utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model,ve->name, ve->type);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	g_free(utf8);
 	update_label();
 
 	// silent request

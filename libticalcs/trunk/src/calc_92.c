@@ -43,11 +43,14 @@
 #include "keys92p.h"
 #include "rom92f2.h"
 
+#ifdef __WIN32__
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 // Screen coordinates of the TI92
 #define TI92_ROWS  128
 #define TI92_COLS  240
-
-static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -100,6 +103,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	int err;
 	char folder_name[9] = "";
 	TNode *folder = NULL;
+	char *utf8;
 
 	// get list of folders & FLASH apps
     (*vars) = t_node_new(NULL);
@@ -161,9 +165,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			break;
 		TRYF(err);
 
-		ticonv_varname_to_utf8_s(handle->model,ve->name,utf8,ve->type);
-		sprintf(update_->text, _("Reading of '%s/%s'"),
+		utf8 = ticonv_varname_to_utf8(handle->model,ve->name,ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"),
 			((VarEntry *) (folder->data))->name, utf8);
+		g_free(utf8);
 		update_->label();
 	}
 
@@ -183,7 +188,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	int i;
 	int nblocks;
 
-	sprintf(update_->text, _("Sending backup..."));
+	snprintf(update_->text, sizeof(update_->text), _("Sending backup..."));
 	update_label();
 
 	TRYF(ti92_send_VAR(content->data_length, TI92_BKUP, content->rom_version));
@@ -233,7 +238,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	for (block = 0;; block++) 
 	{
-		sprintf(update_->text, _("Receiving block %2i"), block);
+		snprintf(update_->text, sizeof(update_->text), _("Receiving block %2i"), block);
 		update_label();
     
 		err = ti92_recv_VAR(&block_size, &content->type, content->rom_version);
@@ -260,6 +265,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint16_t status;
+	char *utf8;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -275,8 +281,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		else 
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
-		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
-		sprintf(update_->text, _("Sending '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		TRYF(ti92_send_VAR(entry->size, entry->type, varname));
@@ -304,6 +311,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	uint32_t unused;
 	char varname[18];
+	char *utf8;
 
 	content->model = CALC_TI92;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -314,8 +322,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	ticonv_varname_to_utf8_s(handle->model, varname, utf8, vr->type);
-	sprintf(update_->text, _("Receiving '%s'"), utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	g_free(utf8);
 	update_label();
 
 	TRYF(ti92_send_REQ(0, vr->type, varname));
@@ -384,7 +393,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		sprintf(update_->text, _("Receiving '%s'"), ve->name);
+		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), ve->name);
 		update_label();
 
 		TRYF(ti92_send_CTS());

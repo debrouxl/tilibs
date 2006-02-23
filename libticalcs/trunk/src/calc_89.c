@@ -44,13 +44,16 @@
 #include "rom89.h"
 #include "keys89.h"
 
+#ifdef __WIN32__
+#undef snprintf
+#define snprintf _snprintf
+#endif
+
 // Screen coordinates of the TI89
 #define TI89_ROWS          128
 #define TI89_COLS          240
 #define TI89_ROWS_VISIBLE  100
 #define TI89_COLS_VISIBLE  160
-
-static char utf8[128];
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -229,7 +232,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			ve->attr,
 			ve->size);
 
-			sprintf(update_->text, _("Reading of '%s/%s'"),
+			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"),
 			  ((VarEntry *) (folder->data))->name, ve->name);
 			update_label();
 
@@ -263,6 +266,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	uint16_t status;
+	char *utf8;
 
 	update_->max2 = content->num_entries;
 	for(i = 0; i < content->num_entries; i++) 
@@ -286,8 +290,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
-		sprintf(update_->text, _("Sending '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		switch (entry->attr) 
@@ -330,6 +335,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	uint32_t unused;
 	char  varname[20];
+	char *utf8;
 
 #ifndef TEST
 	content->model = handle->model;
@@ -343,8 +349,10 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 #endif
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	ticonv_varname_to_utf8_s(handle->model, varname, utf8, vr->type);
-	sprintf(update_->text, _("Receiving '%s'"), utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
+	g_free(utf8);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	printf("%i: <%s>\n", strlen(utf8), utf8);
 	update_label();
 
 	TRYF(ti89_send_REQ(0, vr->type, varname));
@@ -459,6 +467,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
 	int i;
 	uint16_t status;
+	char *utf8;
 
 	update_->max2 = content->num_entries;
 	for(i = 0; i < content->num_entries; i++) 
@@ -482,8 +491,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		ticonv_varname_to_utf8_s(handle->model, varname, utf8, entry->type);
-		sprintf(update_->text, _("Sending '%s'"), utf8);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
 		update_label();
 
 		TRYF(ti89_send_VAR(entry->size, vartype, varname));
@@ -549,7 +559,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		sprintf(update_->text, _("Receiving '%s'"), ve->name);
+		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), ve->name);
 		update_label();
 
 		TRYF(ti89_send_CTS());
@@ -643,7 +653,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->model = handle->model;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	sprintf(update_->text, _("Receiving '%s'"), vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
 	update_label();
 
 	TRYF(ti89_send_REQ(0x00, vr->type, vr->name));
@@ -687,7 +697,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	uint8_t vartype;
 	char varname[9];
 
-	sprintf(update_->text, _("Getting variable..."));
+	snprintf(update_->text, sizeof(update_->text), _("Getting variable..."));
 	update_label();
 
 	TRYF(ti89_send_REQ(0x0000, TI89_IDLIST, ""));
@@ -785,7 +795,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     buffer[14] = clock->time_format;
     buffer[15] = 0xff;
 
-    sprintf(update_->text, _("Setting clock..."));
+    snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
     TRYF(ti89_send_RTS(0x10, TI89_CLK, "Clock"));
@@ -810,7 +820,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
    char varname[9];
     uint8_t buffer[32];
 
-    sprintf(update_->text, _("Getting clock..."));
+    snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
     TRYF(ti89_send_REQ(0x0000, TI89_CLK, "Clock"));
