@@ -33,26 +33,43 @@
 #include "ticalcs.h"
 #include "logging.h"
 
+/* Dirlist format:
+
+- Vars:
+
+  top (data = TreeInfo)
+  |
+  + folder (= NULL if TI8x, data = VarEntry if TI9x)
+	  |
+	  +- var1 (data = VarEntry)
+	  +- var2 (data = VarEntry)
+
+- Apps:
+
+  top (data = TreeInfo)
+  |
+  +- app1 (data = VarEntry)
+  +- app2 (data = VarEntry)
+
+*/
+
+
 static tboolean free_varentry(TNode* node, tpointer data)
 {
 #if 0
 	if(node)
 	{
-		printf("<%p> ", node);
+		//printf("<%p> ", node);
 		if(node->data)
 		{
 			VarEntry* ve = node->data;
 
-			printf("<<%p>> ", ve);
-			printf("<%s>\n", tifiles_transcode_varname_static(CALC_TI84P, ve->name, ve->type));
+			//printf("<<%p>> ", ve);
+			//printf("<%s>\n", tifiles_transcode_varname_static(CALC_TI84P, ve->name, ve->type));
 		}
 	}
 #else
-	/*
-	if (node)
-		if(node->data)
-			tifiles_ve_delete(node->data);
-			*/
+	//if (node)	if(node->data) tifiles_ve_delete(node->data);
 #endif
 
 	return FALSE;
@@ -365,51 +382,81 @@ TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 	return mem;
 }
 
-// Reminder of new format...
-/*
-int tixx_directorylist2(TNode** vars, TNode** apps, uint32_t * memory)
+/**
+ * ticalcs_dirlist_merge:
+ * @src: source tree.
+ * @st: destination tree.
+ *
+ * Merge two trees into a single one ie dst = src + dst;
+ *
+ * Return value: destination tree (%dst pointer).
+ **/
+TIEXPORT TNode* TICALL ticalcs_dirlist_merge(TNode* src, TNode* dst)
 {
-  TNode *tree;
-  TNode *var_node, *app_node;
-  int err;
+	TreeInfo *src_info = (TreeInfo *)(src->data);
+	TreeInfo *dst_info = (TreeInfo *)(dst->data);
+	int i, j;
+	int k, l;
+	int found = 0;
+	
+	if (src == NULL || dst == NULL)
+		return NULL;
 
-  // Get old directory list
-  err = tcf->directorylist(&tree, memory);
-  if (err) {
-    *vars = *apps = NULL;
-    return err;
-  }
+	if (strcmp(src_info->type, dst_info->type))
+		return NULL;
 
-  // Get Vars tree
-  var_node = t_node_nth_child(tree, 0);
-  var_node->data = strdup(VAR_NODE_NAME); // so that it can be freed !
+	// Parse folders
+	for (i = 0; i < (int)t_node_n_children(src); i++)
+	{
+		TNode *parent_src = t_node_nth_child(src, i);
+		VarEntry *fe_src = (VarEntry *) (parent_src->data);
 
-  // Get Apps tree
-  app_node = t_node_nth_child(tree, 1);
-  app_node->data = strdup(APP_NODE_NAME);
+		TNode *parent_dst;
+		VarEntry *fe_dst;
 
-  // Split trees
-  t_node_unlink(var_node);
-  t_node_unlink(app_node);
-  t_node_destroy(tree);
+		// and seach for existing folder in dst
+		for (found = 0, k = 0; k < (int)t_node_n_children(dst); k++)
+		{
+			parent_dst = t_node_nth_child(dst, k);
+			fe_dst = (VarEntry *) (parent_dst->data);
 
-  // Returns new trees
-  *vars = var_node;
-  *apps = app_node;
+			if(!strcmp(fe_dst->name, fe_src->name))
+			{
+				found = !0;
+				break;
+			}
+		}
+		
+		// folder doesn't exist ? => create !
+		if(!found)
+		{	
+			fe_dst = tifiles_ve_create();
+			strcpy(fe_dst->name, fe_src->name);
+			fe_dst->type = TI89_DIR;
 
-  return 0;
+			parent_dst = t_node_new(fe_dst);
+			t_node_append(dst, parent_dst);
+		}
+
+		// next, add variables bneath this folder
+		
+		if (fe_src != NULL) 
+		{
+			for (j = 0; j < (int)t_node_n_children(parent_src); j++)	//parse variables
+			{
+				TNode *child_src = t_node_nth_child(parent_src, j);
+				VarEntry *ve_src = (VarEntry *) (child_src->data);
+
+				TNode *child_dst;
+				VarEntry *ve_dst;
+
+				ve_dst = tifiles_ve_dup(ve_src);
+				child_dst = t_node_new(ve_dst);
+				t_node_append(parent_dst, child_dst);
+			}
+			fe_dst->size = j;
+		}
+	}
+
+	return NULL;
 }
-*/
-
-
-/* Dirlist format */
-/*
-
-  top = NULL (data = TreeInfo)
-  |
-  + folder (= NULL if TI8x, data = VarEntry if TI9x)
-	  |
-	  +- var1 (data = VarEntry)
-	  +- var2 (data = VarEntry)
-
-*/

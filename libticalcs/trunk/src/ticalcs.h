@@ -605,6 +605,8 @@ typedef struct
 	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
 	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);
 
+	TIEXPORT TNode* TICALL ticalcs_dirlist_merge(TNode* src, TNode* dst);
+
 	// type2str.c
 	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
 	TIEXPORT CalcModel    TICALL ticalcs_string_to_model (const char *str);
