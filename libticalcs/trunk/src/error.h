@@ -29,7 +29,7 @@ typedef enum
     ERR_NO_ERROR = 0,		// No error (returns 0)
 
 	ERR_ABORT = 256,		// Operation aborted
-	ERR_NOT_READY,			// Calculator is not ready
+	ERR_NOT_READY,			// Calculator is not ready (don't change it !)
 	ERR_CHECKSUM,			// Checksum error
 	ERR_INVALID_HOST,		// Invalid host ID
 	ERR_INVALID_TARGET,		// Invalid target ID

@@ -101,7 +101,7 @@ TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Sending key %04x:"));
+	ticalcs_info(_("Sending key %04x:"), key);
 	handle->busy = 1;
 	if(calc->send_key)
 		ret = calc->send_key(handle, key);
