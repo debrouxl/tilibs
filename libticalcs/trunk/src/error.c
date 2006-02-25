@@ -62,7 +62,7 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strconcat(
     		_("Msg: Calculator is not ready."),
     		"\n",
-    		 _("Cause: the calculator is off, your link cable is not plugged correctly, your calculator is busy, ..."),
+    		 _("Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."),
 			 NULL);
 		break;
 

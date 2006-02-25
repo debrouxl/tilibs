@@ -5,7 +5,8 @@ Set svn:eol property to native on all files
 To do : 
 - key codes for TI8x (check)
 //- manage ERR packets which can be received at any time
-- import Kevin's code for UTF16 <-> TI keys (tiemu3) ?
+- dirlist.c: 51
+- check ready and send HOME key if not (VarLink)
 
 Log:
 
@@ -13,6 +14,7 @@ Log:
 	- switched to ticonv library
 	- send HOME key before dumping
 	- don't list some system variables which appears in dirlist: regCoef and regEq.
+	- fixed is_ready which checked the LSB instead of the MSB status word
 	
 - 20/02/2006, version 0.0.5: roms
 	- error message is a glib allocated string for now.
