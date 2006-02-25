@@ -39,7 +39,7 @@
 
   top (data = TreeInfo)
   |
-  + folder (= NULL if TI8x, data = VarEntry if TI9x)
+  + folder (data = NULL if TI8x, data = VarEntry if TI9x)
 	  |
 	  +- var1 (data = VarEntry)
 	  +- var2 (data = VarEntry)
@@ -383,80 +383,166 @@ TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 }
 
 /**
- * ticalcs_dirlist_merge:
- * @src: source tree.
- * @st: destination tree.
+ * ticalcs_dirlist_add_entry:
+ * @tree: source tree.
+ * @entry: entry to add.
  *
- * Merge two trees into a single one ie dst = src + dst;
+ * Add an entry into the main tree (if it doesn't exist yet).
  *
- * Return value: destination tree (%dst pointer).
+ * Return value: the tree (%dst pointer).
  **/
-TIEXPORT TNode* TICALL ticalcs_dirlist_merge(TNode* src, TNode* dst)
+TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry)
 {
-	TreeInfo *src_info = (TreeInfo *)(src->data);
-	TreeInfo *dst_info = (TreeInfo *)(dst->data);
+	TreeInfo *info = (TreeInfo *)(tree->data);
 	int i, j;
-	int k, l;
 	int found = 0;
+
+	TNode *parent;
+	VarEntry *fe;
+
+	TNode *child;
+	VarEntry *ve;
+
+	char *folder;
 	
-	if (src == NULL || dst == NULL)
+	if (tree == NULL)
 		return NULL;
 
-	if (strcmp(src_info->type, dst_info->type))
+	if (strcmp(info->type, VAR_NODE_NAME))
 		return NULL;
+
+	if(!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+		folder = "main";
+	else
+		folder = entry->folder;
 
 	// Parse folders
-	for (i = 0; i < (int)t_node_n_children(src); i++)
+	for (found = 0, i = 0; i < (int)t_node_n_children(tree); i++)
 	{
-		TNode *parent_src = t_node_nth_child(src, i);
-		VarEntry *fe_src = (VarEntry *) (parent_src->data);
+		parent = t_node_nth_child(tree, i);
+		fe = (VarEntry *) (parent->data);
 
-		TNode *parent_dst;
-		VarEntry *fe_dst;
+		if(fe == NULL)
+			break;
 
-		// and seach for existing folder in dst
-		for (found = 0, k = 0; k < (int)t_node_n_children(dst); k++)
+		if(!strcmp(fe->name, folder))
 		{
-			parent_dst = t_node_nth_child(dst, k);
-			fe_dst = (VarEntry *) (parent_dst->data);
-
-			if(!strcmp(fe_dst->name, fe_src->name))
-			{
-				found = !0;
-				break;
-			}
+			found = !0;
+			break;
 		}
+	}
 		
-		// folder doesn't exist ? => create !
-		if(!found)
-		{	
-			fe_dst = tifiles_ve_create();
-			strcpy(fe_dst->name, fe_src->name);
-			fe_dst->type = TI89_DIR;
+	// folder doesn't exist ? => create !
+	if(!found && fe)
+	{	
+		fe = tifiles_ve_create();
+		strcpy(fe->name, entry->folder);
+		fe->type = TI89_DIR;
 
-			parent_dst = t_node_new(fe_dst);
-			t_node_append(dst, parent_dst);
-		}
+		parent = t_node_new(fe);
+		t_node_append(tree, parent);
+	}
 
-		// next, add variables bneath this folder
-		
-		if (fe_src != NULL) 
+	// next, add variables beneath this folder
+	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
+	{
+		child = t_node_nth_child(parent, i);
+		ve = (VarEntry *) (child->data);
+
+		if(!strcmp(ve->name, entry->name))
 		{
-			for (j = 0; j < (int)t_node_n_children(parent_src); j++)	//parse variables
-			{
-				TNode *child_src = t_node_nth_child(parent_src, j);
-				VarEntry *ve_src = (VarEntry *) (child_src->data);
-
-				TNode *child_dst;
-				VarEntry *ve_dst;
-
-				ve_dst = tifiles_ve_dup(ve_src);
-				child_dst = t_node_new(ve_dst);
-				t_node_append(parent_dst, child_dst);
-			}
-			fe_dst->size = j;
+			found = !0;
+			break;
 		}
 	}
 
-	return NULL;
+	if(!found)
+	{
+		ve = tifiles_ve_dup(entry);
+		child = t_node_new(ve);
+		t_node_append(parent, child);
+	}
+
+	if(fe)
+		fe->size++;
+
+	return tree;
+}
+
+/**
+ * ticalcs_dirlist_entry_del:
+ * @tree: source tree.
+ * @entry: entry to remove.
+ *
+ * Remove an entry into the main tree (if it doesn't exist yet).
+ *
+ * Return value: the tree (%dst pointer).
+ **/
+TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry)
+{
+	TreeInfo *info = (TreeInfo *)(tree->data);
+	int i, j;
+	int found = 0;
+
+	TNode *parent;
+	VarEntry *fe;
+
+	TNode *child;
+	VarEntry *ve;
+
+	char *folder;
+	
+	if (tree == NULL)
+		return NULL;
+
+	if (strcmp(info->type, VAR_NODE_NAME))
+		return NULL;
+
+	if(!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+		folder = "main";
+	else
+		folder = entry->folder;
+
+	// Parse folders
+	for (found = 0, i = 0; i < (int)t_node_n_children(tree); i++)
+	{
+		parent = t_node_nth_child(tree, i);
+		fe = (VarEntry *) (parent->data);
+
+		if(fe == NULL)
+			break;
+
+		if(!strcmp(fe->name, folder))
+		{
+			found = !0;
+			break;
+		}
+	}
+
+	if(!found && fe)
+		return NULL;
+		
+	// next, delete variables beneath this folder
+	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
+	{
+		child = t_node_nth_child(parent, j);
+		ve = (VarEntry *) (child->data);
+
+		if(!strcmp(ve->name, entry->name))
+		{
+			found = !0;
+			break;
+		}
+	}
+
+	if(found)
+	{
+		tifiles_ve_delete(child->data);
+		t_node_destroy(child);
+	}
+
+	if(fe)
+		fe->size--;
+
+	return tree;
 }
