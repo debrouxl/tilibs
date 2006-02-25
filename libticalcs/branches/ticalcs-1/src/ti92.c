@@ -87,7 +87,7 @@ int ti92_isready(void)
   TRYF(cable->close());
   UNLOCK_TRANSFER();
 
-  return (status & 0x01) ? ERR_NOT_READY : 0;
+  return (status & 0x0100) ? ERR_NOT_READY : 0;
 }
 
 int ti92_screendump(uint8_t ** bitmap, int mask_mode,

@@ -78,7 +78,7 @@ int ti89_isready(void)
   TRYF(cable->close());
   UNLOCK_TRANSFER();
 
-  return (status & 0x01) ? ERR_NOT_READY : 0;
+  return (status & 0x0100) ? ERR_NOT_READY : 0;
 }
 
 int ti89_send_key(uint16_t key)

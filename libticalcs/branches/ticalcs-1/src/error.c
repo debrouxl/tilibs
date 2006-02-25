@@ -60,7 +60,7 @@ TIEXPORT int TICALL ticalc_get_error(int err_num, char *error_msg)
     strcat(error_msg, "\n");
     strcat(error_msg,
 	   _
-	   ("Cause: the calculator is off, your link cable is not plugged correctly, your calculator is busy, ..."));
+	   ("Cause: the calculator is busy. Return to HOME.."));
     break;
 
   case ERR_VOID_FUNCTION:

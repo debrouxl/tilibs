@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 25/02/2006, version 4.6.2: roms
+	fixed isready: the status word was not checked as it should be
+
 - 20/07/2005, version 4.6.1: roms
 	Fixed new gcc4.0 warnings.
 	
