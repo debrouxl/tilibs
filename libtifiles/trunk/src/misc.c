@@ -217,8 +217,10 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 	{
       strcpy(full_name, fldname);
       strcat(full_name, "\\");
+	  strcat(full_name, varname);
     }
-    strcat(full_name, varname);
+	else
+		strcpy(full_name, varname);
   } 
   else
   {
