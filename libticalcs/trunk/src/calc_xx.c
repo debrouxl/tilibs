@@ -979,7 +979,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* fil
  * @handle: a previously allocated handle
  * @vr: name of folder to create (vr->folder)
  *
- * Request creation of a folder.
+ * Request creation of a folder. Beware: %vr.name may be modified !
  *
  * Return value: 0 if successful, an error code otherwise.
  **/

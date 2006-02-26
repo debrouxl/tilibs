@@ -443,6 +443,9 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry)
 		t_node_append(tree, parent);
 	}
 
+	if(!strcmp(entry->name, ""))
+		return tree;
+
 	// next, add variables beneath this folder
 	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
 	{
