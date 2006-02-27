@@ -61,7 +61,7 @@ static int		is_ready	(CalcHandle* handle)
 	TRYF(ti73_send_RDY());
 	TRYF(ti73_recv_ACK(&status));
 
-	return (status & 0x0100) ? ERR_NOT_READY : 0;
+	return (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)

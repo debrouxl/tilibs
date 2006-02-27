@@ -6,7 +6,7 @@ To do :
 - key codes for TI8x (check)
 //- manage ERR packets which can be received at any time
 - dirlist.c: 51
-- check ready and send HOME key if not (VarLink)
+- macros.h should be endian dependant (configure check ?)
 
 Log:
 

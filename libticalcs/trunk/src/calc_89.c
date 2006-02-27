@@ -62,7 +62,7 @@ static int		is_ready	(CalcHandle* handle)
 	TRYF(ti89_send_RDY());
 	TRYF(ti89_recv_ACK(&status));
 
-	return (status & 0x0100) ? ERR_NOT_READY : 0;
+	return (MSB(status) & 0x01) ? ERR_NOT_READY : 0;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
@@ -338,8 +338,6 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	return 0;
 }
 
-#define TEST
-
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	uint16_t status;
@@ -348,16 +346,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char  varname[20];
 	char *utf8;
 
-#ifndef TEST
-	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_single());
-	content->num_entries = 1;
-	content->entries = tifiles_ve_create_array(1);
-	ve = content->entries[0] = tifiles_ve_create();
-	memcpy(ve, vr, sizeof(VarEntry));
-#else	// for test of the new tifiles2 API capabilities
 	ve = tifiles_ve_create();
-#endif
+	memcpy(ve, vr, sizeof(VarEntry));
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
@@ -386,9 +376,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	PAUSE(250);
 
-#ifdef TEST
 	tifiles_content_add_entry(content, ve);
-#endif
 
 	return 0;
 }
