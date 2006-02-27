@@ -5,7 +5,6 @@ Set svn:eol property to native on all files
 To do : 
 - key codes for TI8x (check)
 //- manage ERR packets which can be received at any time
-- dirlist.c: 51
 - macros.h should be endian dependant (configure check ?)
 
 Log:
@@ -16,6 +15,7 @@ Log:
 	- don't list some system variables which appears in dirlist: regCoef and regEq.
 	- fixed is_ready which checked the LSB instead of the MSB status word
 	- added 2 functions for adding/removing an entry from a dirlist tree
+	- directory list is now free'd
 	
 - 20/02/2006, version 0.0.5: roms
 	- error message is a glib allocated string for now.
