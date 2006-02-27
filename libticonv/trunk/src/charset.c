@@ -103,7 +103,7 @@ TIE const unsigned long TIC ti9x_charset[256] =
  51,
  52,
  53,
- 44,
+ 54,
  55,
  56,
  57,
