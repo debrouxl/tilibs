@@ -450,7 +450,7 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry)
 	// next, add variables beneath this folder
 	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
 	{
-		child = t_node_nth_child(parent, i);
+		child = t_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
 
 		if(!strcmp(ve->name, entry->name))
@@ -467,7 +467,7 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry)
 		t_node_append(parent, child);
 	}
 
-	if(fe)
+	if(fe && found)
 		fe->size++;
 
 	return tree;
@@ -545,7 +545,7 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry)
 		t_node_destroy(child);
 	}
 
-	if(fe)
+	if(fe && found)
 		fe->size--;
 
 	return tree;
