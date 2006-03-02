@@ -322,7 +322,7 @@ int open_tigl_device(int id, usb_dev_handle **udh)
 	{
 	    ticables_warning("usb_set_configuration (%s).\n",
 			     usb_strerror());
-	    return ERR_LIBUSB_CONFIG;
+	    //return ERR_LIBUSB_CONFIG;
 	}
 	return 0;
     } 

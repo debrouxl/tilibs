@@ -4,6 +4,8 @@ Log:
 
 - 20/02/2006, version 0.0.6: roms
 	- error message is a glib allocated string for now
+	- does not raise an error any longer if usb_set_configuration fails 
+	(seems to be needed with latest lib-usb release...)
 
 - 08/02/2006, version 0.0.5: roms
 	- changed information message in check_for_libusb according to bug #1372369.
