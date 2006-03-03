@@ -932,7 +932,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	tifiles_hexdump(buf, length);
 	ticalcs_info(_("  OS: %s"), infos->os);
 	ticalcs_info(_("  BIOS: %s"), infos->bios);
-	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "log");
+	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;
 }
