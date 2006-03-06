@@ -204,11 +204,8 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 	// '/' is not allowed in filenames
 	for(q = utf16_dst; *q; q++)
 	{
-		printf("%04x (%c) ", *q, *q);
 		if(*q == '/') 
-		{
 			*q = '_';
-		}
 	}
 
 	// UTF-16 to UTF-8 to GFE encoding
