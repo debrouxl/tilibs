@@ -358,9 +358,10 @@ int ti73_recv_VAR2_h(CalcHandle* handle, uint16_t * length, uint8_t * type, char
   name[3] = '\0';
   *offset = buffer[6] | (buffer[7] << 8);
   *page = buffer[8] | (buffer[9] << 8);
+  *page &= 0xff;
 
   ticalcs_info(" TI->PC: VAR (size=0x%04X, type=%02X, name=<%s>, offset=%04X, page=%02X)",
-       *length, *type, name, *offset, *page & 0xff);
+       *length, *type, name, *offset, *page);
 
   return 0;
 }
