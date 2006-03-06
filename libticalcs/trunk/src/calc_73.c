@@ -457,16 +457,16 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
 	content->pages = tifiles_fp_create_array(content->num_pages);
 
+	fp = content->pages[page = 0] = tifiles_fp_create();
+
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
 	update_->max2 = handle->model == CALC_TI73 ? vr->size * 8 : vr->size;
-	for(page = 0, size = 0, first_block = 1, offset = 0;;)
+	for(size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
 		char name[9];
-
-		fp = content->pages[page] = tifiles_fp_create();
 
 		err = ti73_recv_VAR2(&data_length, &data_type, name, &data_addr, &data_page);
 		TRYF(ti73_send_ACK());
@@ -485,15 +485,16 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		if(old_page != data_page)
 		{
 			fp->addr = data_addr & 0x4000;
-			fp->page = data_page;
+			fp->page = old_page;
 			fp->flag = 0x80;
 			fp->size = offset;			
 			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 			memcpy(fp->data, buf, fp->size);
 
-			page++;
 			offset = 0;
 			old_page = data_page;
+
+			fp = content->pages[page++] = tifiles_fp_create();
 		}
 
 		TRYF(ti73_send_CTS());
@@ -512,7 +513,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 exit:
 	{
 		fp->addr = data_addr & 0x4000;
-		fp->page = data_page;
+		fp->page = old_page;
 		fp->flag = 0x80;
 		fp->size = offset;			
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
