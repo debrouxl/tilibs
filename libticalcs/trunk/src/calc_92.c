@@ -586,9 +586,11 @@ static int		get_version(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	strncpy(infos->os, name, 4);
 	strcpy(infos->bios, "n/a");
+	infos->hw_rev = 1;
 
 	ticalcs_info(_("  OS: %s"), infos->os);
 	ticalcs_info(_("  BIOS: %s"), infos->bios);
+	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;
 }

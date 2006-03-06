@@ -17,6 +17,7 @@ Log:
 	- added 2 functions for adding/removing an entry from a dirlist tree
 	- directory list is now free'd
 	- fixed TI73 sending & receiving of FLASH apps
+	- fixed OS version formatting
 	
 - 20/02/2006, version 0.0.5: roms
 	- error message is a glib allocated string for now.

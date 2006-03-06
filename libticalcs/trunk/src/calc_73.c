@@ -791,20 +791,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     TRYF(ti73_send_ACK());
 
 	memset(infos, 0, sizeof(CalcInfos));
-	infos->os[0] = buf[0] + '0';
-	infos->os[1] = '.';
-	infos->os[2] = MSN(buf[1]) + '0';
-	infos->os[3] = LSN(buf[1]) + '0';
-	infos->os[4] = '\0';
-
-	infos->bios[0] = buf[2] + '0';
-	infos->bios[1] = '.';
-	infos->bios[2] = MSN(buf[3]) + '0';
-	infos->bios[3] = LSN(buf[3]) + '0';
-	infos->bios[4] = '\0';
-
+	snprintf(infos->os, 4, "%1i.%2i", buf[0], buf[1]);
+	snprintf(infos->bios, 4, "%1i.%2i", buf[2], buf[3]);
 	infos->battery = !buf[4];
-
 	infos->hw_id   = buf[5];
 
 	tifiles_hexdump(buf, length);
@@ -863,7 +852,6 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 {
 	int i;
-	uint16_t unused;
 	uint8_t buf[256];
 
 	snprintf(update_->text, sizeof(update_->text), _("Receiving certificate"));
