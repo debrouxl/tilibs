@@ -123,6 +123,27 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		PAUSE(DEAD_TIME);
 	}
 
+	/* Test for a TI73 before a TI83 */
+	ticalcs_info(_("Check for TI73... "));
+	TRYF(dbus_send(h, PC_TI73, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(h, &data);
+
+	ticalcs_info("<%02X-%02X> ", PC_TI73, data);
+
+	if (!err && (data == TI73_PC)) 
+	{
+		ticalcs_info("OK !\n");
+		*model = CALC_TI73;
+
+		return 0;
+	} 
+	else 
+	{
+		ticalcs_info("NOK.\n");
+		ticables_cable_reset(handle->cable);
+		PAUSE(DEAD_TIME);
+	}
+
 	/* Test for a TI83 before a TI82 */
 	ticalcs_info(_("Check for TI83... "));
 	TRYF(dbus_send(h, PC_TI83, CMD_SCR, 2, NULL));
