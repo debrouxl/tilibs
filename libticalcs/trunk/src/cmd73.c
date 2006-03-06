@@ -38,6 +38,7 @@
 
 // Shares some commands between TI73 & 83+ & 84+
 #define PC_TI7383 ((handle->model == CALC_TI73) ? PC_TI73 : PC_TI83p)
+#define TI7383_PC ((handle->model == CALC_TI73) ? TI73_PC : TI83p_PC)
 #define TI7383_BKUP ((handle->model == CALC_TI73) ? TI73_BKUP : TI83p_BKUP)
 #define EXTRAS ((handle->model == CALC_TI83P) || (handle->model == CALC_TI84P) ? 2 : 0)
 
@@ -227,7 +228,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, char
 
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>)",
 	  appsize, apptype, appname);
-  TRYF(dbus_send(handle, TI83p_PC, CMD_REQ, 11, buffer));	// TI_PC73 !
+  TRYF(dbus_send(handle, TI7383_PC, CMD_REQ, 11, buffer));
 
   return 0;
 }
