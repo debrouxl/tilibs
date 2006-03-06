@@ -791,8 +791,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     TRYF(ti73_send_ACK());
 
 	memset(infos, 0, sizeof(CalcInfos));
-	snprintf(infos->os, 4, "%1i.%2i", buf[0], buf[1]);
-	snprintf(infos->bios, 4, "%1i.%2i", buf[2], buf[3]);
+	snprintf(infos->os, 4, "%1i.%02i", buf[0], buf[1]);
+	snprintf(infos->bios, 4, "%1i.%02i", buf[2], buf[3]);
 	infos->battery = !buf[4];
 	infos->hw_id   = buf[5];
 
