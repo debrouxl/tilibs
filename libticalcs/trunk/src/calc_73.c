@@ -457,7 +457,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
 	content->pages = tifiles_fp_create_array(content->num_pages);
 
-	fp = content->pages[page = 0] = tifiles_fp_create();
+	page = 0;
+	fp = content->pages[page] = tifiles_fp_create();
 
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
@@ -491,10 +492,11 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 			memcpy(fp->data, buf, fp->size);
 
+			page++;
 			offset = 0;
 			old_page = data_page;
 
-			fp = content->pages[page++] = tifiles_fp_create();
+			fp = content->pages[page] = tifiles_fp_create();
 		}
 
 		TRYF(ti73_send_CTS());
