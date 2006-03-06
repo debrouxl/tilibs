@@ -873,12 +873,11 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	content->num_pages = 0;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	TRYF(ti73_send_REQ(0x0000, TI83p_GETCERT, "", 0x00));
-	TRYF(ti73_recv_ACK(&unused));
+	TRYF(ti73_send_REQ2(0x00, TI83p_GETCERT, "", 0x00));
+	TRYF(ti73_recv_ACK(NULL));
 
-	TRYF(ticables_cable_recv(handle->cable, buf, 4));
+	TRYF(ticables_cable_recv(handle->cable, buf, 4));	//VAR w/ no header
 	ticalcs_info(" TI->PC: VAR");
-	//TRYF(ti73_recv_VAR((uint16_t *)&varsize, &vartype, varname, &varattr));
 	TRYF(ti73_send_ACK());
 
 	for(i = 0, content->data_length = 0;; i++) 

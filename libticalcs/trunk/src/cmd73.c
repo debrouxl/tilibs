@@ -228,7 +228,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, char
 
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>)",
 	  appsize, apptype, appname);
-  TRYF(dbus_send(handle, TI7383_PC, CMD_REQ, 11, buffer));
+  TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11, buffer));
 
   return 0;
 }
