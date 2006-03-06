@@ -18,6 +18,7 @@ Log:
 	- directory list is now free'd
 	- fixed TI73 sending & receiving of FLASH apps
 	- fixed OS version formatting
+	- set hw revision to -1 (n/a) for TI8x calcs
 	
 - 20/02/2006, version 0.0.5: roms
 	- error message is a glib allocated string for now.
