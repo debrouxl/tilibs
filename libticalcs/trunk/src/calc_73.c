@@ -460,7 +460,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
-	update_->max2 = vr->size;
+	update_->max2 = vr->size * 8;
 	for(page = 0, size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
