@@ -388,7 +388,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		FlashPage *fp = ptr->pages[i];
 
 		printf("page #%i: %04x %02x %02x %04x\n", i,
-			fp->addr,fp->page, fp->flag, fp->size);		
+			fp->addr, fp->page, fp->flag, fp->size);		
 	}
 #endif
 
@@ -408,7 +408,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_VAR2(size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(NULL));
 
-			TRYF(ti73_recv_CTS(10));
+			TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));
 			TRYF(ti73_send_ACK());
 
 			TRYF(ti73_send_XDP(size, data));
