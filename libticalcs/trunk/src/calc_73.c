@@ -460,7 +460,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
-	update_->max2 = vr->size * 8;
+	update_->max2 = handle->model == CALC_TI73 ? vr->size * 8 : vr->size;
 	for(page = 0, size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;
@@ -478,7 +478,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		{
 			old_page = data_page;
 			first_block = 0;
-			printf("first init !\n");
 
 			fp->addr = data_addr & 0x4000;
 			fp->page = data_page;
