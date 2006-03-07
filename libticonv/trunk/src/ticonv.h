@@ -124,8 +124,6 @@ extern "C" {
   /* Testing purposes */
   /********************/
 
-  /*
-#ifdef _DEBUG
     TIEXPORT const unsigned long TICALL ti73_charset[256];
     TIEXPORT const unsigned long TICALL ti82_charset[256];
     TIEXPORT const unsigned long TICALL ti83_charset[256];
@@ -133,8 +131,6 @@ extern "C" {
     TIEXPORT const unsigned long TICALL ti85_charset[256];
     TIEXPORT const unsigned long TICALL ti86_charset[256];
     TIEXPORT const unsigned long TICALL ti9x_charset[256];
-#endif
-	*/
 
 #ifdef __cplusplus
 }

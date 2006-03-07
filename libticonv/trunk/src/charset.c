@@ -35,13 +35,8 @@
 #include "ticonv.h"
 #include "charset.h"
 
-#ifdef _DEBUG
 #define TIE		TIEXPORT
 #define TIC		TICALL
-#else
-#define TIE		static
-#define TIC
-#endif
 
 ///////////// TI89,92,92+,V200,Titanium /////////////
 
