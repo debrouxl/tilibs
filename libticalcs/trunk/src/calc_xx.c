@@ -747,8 +747,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
  **/
 TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
 {
-	BackupContent content1;
-	FileContent content2;
+	BackupContent *content1;
+	FileContent *content2;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -770,15 +770,17 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 	case CALC_TI86:
 	case CALC_TI92:
 		// true backup capability
-		TRYF(tifiles_file_read_backup(filename, &content1));
-		TRYF(ticalcs_calc_send_backup(handle, &content1));
-		TRYF(tifiles_content_delete_backup(&content1));
+		content1 = tifiles_content_create_backup(handle->model);
+		TRYF(tifiles_file_read_backup(filename, content1));
+		TRYF(ticalcs_calc_send_backup(handle, content1));
+		TRYF(tifiles_content_delete_backup(content1));
 		break;
 	default:
 		// pseudo-backup
-		TRYF(tifiles_file_read_regular(filename, &content2));
-		TRYF(ticalcs_calc_send_backup(handle, (BackupContent *)&content2));
-		TRYF(tifiles_content_delete_regular(&content2));
+		content2 = tifiles_content_create_regular(handle->model);
+		TRYF(tifiles_file_read_regular(filename, content2));
+		TRYF(ticalcs_calc_send_backup(handle, (BackupContent *)content2));
+		TRYF(tifiles_content_delete_regular(content2));
 		break;
 	}
 
@@ -798,7 +800,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
 										   const char* filename)
 {
-	FileContent content;
+	FileContent *content;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -809,9 +811,10 @@ TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
-	TRYF(tifiles_file_read_regular(filename, &content));
-	TRYF(ticalcs_calc_send_var(handle, mode, &content));
-	TRYF(tifiles_content_delete_regular(&content));
+	content = tifiles_content_create_regular(handle->model);
+	TRYF(tifiles_file_read_regular(filename, content));
+	TRYF(ticalcs_calc_send_var(handle, mode, content));
+	TRYF(tifiles_content_delete_regular(content));
 
 	return 0;
 }
@@ -830,7 +833,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
 											const char* filename, VarRequest* vr)
 {
-	FileContent* content;
+	FileContent *content;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -862,7 +865,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode,
 TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename)
 {
-	FileContent content;
+	FileContent *content;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -873,9 +876,10 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode,
 	if(handle->busy)
 		return ERR_BUSY;
 
-	TRYF(tifiles_file_read_regular(filename, &content));
-	TRYF(ticalcs_calc_send_var_ns(handle, mode, &content));
-	TRYF(tifiles_content_delete_regular(&content));
+	content = tifiles_content_create_regular(handle->model);
+	TRYF(tifiles_file_read_regular(filename, content));
+	TRYF(ticalcs_calc_send_var_ns(handle, mode, content));
+	TRYF(tifiles_content_delete_regular(content));
 
 	return 0;
 }
@@ -924,7 +928,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
  **/
 TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* filename)
 {
-	FlashContent content;
+	FlashContent *content;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -935,9 +939,10 @@ TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* fil
 	if(handle->busy)
 		return ERR_BUSY;
 
-	TRYF(tifiles_file_read_flash(filename, &content));
-	TRYF(ticalcs_calc_send_flash(handle, &content));
-	TRYF(tifiles_content_delete_flash(&content));
+	content = tifiles_content_create_flash(handle->model);
+	TRYF(tifiles_file_read_flash(filename, content));
+	TRYF(ticalcs_calc_send_flash(handle, content));
+	TRYF(tifiles_content_delete_flash(content));
 
 	return 0;
 }
@@ -1069,7 +1074,7 @@ TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* info
  **/
 TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 {
-	FlashContent content;
+	FlashContent *content;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1080,9 +1085,10 @@ TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* file
 	if(handle->busy)
 		return ERR_BUSY;
 
-	TRYF(tifiles_file_read_flash(filename, &content));
-	TRYF(ticalcs_calc_send_cert(handle, &content));
-	TRYF(tifiles_content_delete_flash(&content));
+	content = tifiles_content_create_flash(handle->model);
+	TRYF(tifiles_file_read_flash(filename, content));
+	TRYF(ticalcs_calc_send_cert(handle, content));
+	TRYF(tifiles_content_delete_flash(content));
 
 	return 0;
 }
