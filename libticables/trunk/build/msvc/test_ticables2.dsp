@@ -87,7 +87,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\tests\test_ticables2.c
+SOURCE=..\..\tests\test_ticables_2.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
