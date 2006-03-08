@@ -32,9 +32,8 @@
 #include "macros.h"
 
 // We split packets into chucks to get control regularly and update statistics.
-//#define BLK_SIZE	1024	//256
-static unsigned int BLK_SIZE = 1024;	// heuristic (1024 & > 32)
-#define MIN_SIZE	512					// don't refresh is block is small (512)
+static unsigned int BLK_SIZE;	// refresh pbars every 5%
+#define MIN_SIZE	512			// don't refresh at all if packet is < 512 bytes
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -81,9 +80,9 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 		buf[length+4+1] = MSB(sum);
 
 		// compute chunks
-		BLK_SIZE = (length + 6) / 20;
+		BLK_SIZE = (length + 6) / 20;		// 5%
 		if(BLK_SIZE == 0) BLK_SIZE = length + 6;
-		if(BLK_SIZE < 32) BLK_SIZE = 64;	// speed-up SilverLink !
+		if(BLK_SIZE < 32) BLK_SIZE = 128;	// SilverLink doesn't like small block (< 32)
 
 		q = (length + 6) / BLK_SIZE;
 		r = (length + 6) % BLK_SIZE;
@@ -113,6 +112,9 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 			handle->updat->cnt1 += 1;
 			if(length > MIN_SIZE)
 				handle->updat->pbar();
+
+			if (handle->updat->cancel)
+				return ERR_ABORT;
 		}
 	}
 
@@ -210,7 +212,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += BLK_SIZE;
-			if(*length > MIN_SIZE)
+			if(*length > MIN_SIZE) 
 				handle->updat->pbar();
 
 			if (handle->updat->cancel)
@@ -221,10 +223,13 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		{
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			handle->updat->cnt1 += 1;
 
-			if(*length > MIN_SIZE)
+			handle->updat->cnt1 += 1;
+			if(*length > MIN_SIZE) 
 				handle->updat->pbar();
+
+			if (handle->updat->cancel)
+				return ERR_ABORT;
 		}
 
 		// verify checksum
