@@ -149,7 +149,7 @@ static int gry_open(CableHandle *h)
 		return ERR_GRY_SETCOMMMASK;
     }
 
-	// Flush/Dicard buffers
+	// Flush/Dicard buffers (= gry_reset)
 	fSuccess = PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	if (!fSuccess) 
 	{

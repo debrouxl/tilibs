@@ -4,6 +4,7 @@ Log:
 
 - 07/03/2006, version 0.0.7: roms
 	- ParallelLink support was not compiled under Windows
+	- reset SilverLink cable when opened (like other cables)
 
 - 20/02/2006, version 0.0.6: roms
 	- error message is a glib allocated string for now

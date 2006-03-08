@@ -189,6 +189,11 @@ static int slv_open(CableHandle *h)
 
 	dynTiglUsbSetTimeout(hLNK, h->timeout);
 
+	// Reset cable (=slv_reset)
+	ret = dynTiglUsbReset(hLNK);
+    if(ret == TIGLERR2_RESET_FAILED)
+        return ERR_SLV_RESET;
+
 	return 0;
 }
 
