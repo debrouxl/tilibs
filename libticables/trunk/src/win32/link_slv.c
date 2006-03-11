@@ -178,7 +178,6 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
   
-	//ret = hLNK = dynTiglUsbOpen(h->port);
 	h->priv3 = (void *)(ret = dynTiglUsbOpen(h->port));
 	switch (ret) 
 	{
@@ -224,10 +223,17 @@ static int slv_close(CableHandle *h)
 static int slv_reset(CableHandle *h)
 {
 	int ret;
-
+#if 1
     ret = dynTiglUsbReset(hLNK);
     if(ret == TIGLERR2_RESET_FAILED)
         return ERR_SLV_RESET;
+#else
+	ret = slv_close(h);
+	if(ret) return ret;
+
+	ret = slv_open(h);
+	if(ret) return ret;
+#endif
 
 	return 0;
 }
