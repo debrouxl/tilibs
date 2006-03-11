@@ -1,7 +1,7 @@
 SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
-To do:
-- avoid buffer overflow by allowing a max chars on passed strings
+Run './configure --enable-static=yes --enable-shared=no' for use with
+	ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
 Log:
 

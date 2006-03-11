@@ -51,6 +51,8 @@ int main(int argc, char **argv)
 	int n = 0;
 	int is_utf8 = g_get_charset(NULL);
 
+	goto pass2;
+
 	charsets[0] = ti73_charset;
 	charsets[1] = ti82_charset;
 	charsets[2] = ti83_charset;
@@ -107,7 +109,7 @@ int main(int argc, char **argv)
 		}
 		printf("\n");
 	}
-
+	pass2:
 	{
 		char ti82_varname[9] = { 0 };
 		char ti92_varname[9] = { 0 };
@@ -116,21 +118,31 @@ int main(int argc, char **argv)
 
 		ti82_varname[0] = 0x5d;
 		ti82_varname[1] = 0x01;
+		ti82_varname[2] = 0;
+
 		ti92_varname[0] = (char)132;	//delta
 		ti92_varname[1] = (char)'é';
+		ti92_varname[2] = 0;
 
 		// TI -> UTF-8
+/*
 		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname, -1);
 		g_free(utf8);
-
+*/  
 		// TI -> filename
+
+		printf("varname: <%s> (%i)\n",
+		       ti92_varname, strlen(ti92_varname));
 		filename = ticonv_varname_to_filename(CALC_TI92, ti92_varname);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
-
+/*
+		printf("varname: <%s> (%i)\n",
+                       ti82_varname, strlen(ti82_varname));
 		filename = ticonv_varname_to_filename(CALC_TI82, ti82_varname);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
+*/
 	}
 
 #ifdef __WIN32__
