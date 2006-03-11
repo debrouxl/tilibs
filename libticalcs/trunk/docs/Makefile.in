@@ -359,8 +359,8 @@ all:
 	@echo "To build the documentation, run \"make docs\"."
 
 docs:
-@OS_WIN32_TRUE@	tfdocgen.exe .
-@OS_WIN32_FALSE@	tfdocgen .
+@OS_WIN32_TRUE@	tfdocgen.exe ../
+@OS_WIN32_FALSE@	tfdocgen ../
 
 clean:
 	rm -f html/*.c.html html/*.h.html html/api.html
