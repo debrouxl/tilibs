@@ -7,9 +7,9 @@ all:
 
 docs:
 if OS_WIN32
-	tfdocgen.exe .
+	tfdocgen.exe ../
 else
-	tfdocgen .
+	tfdocgen ../
 endif
 
 clean:
