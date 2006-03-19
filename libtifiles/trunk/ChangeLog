@@ -4,11 +4,15 @@ Run './configure --enable-static=yes --enable-shared=no' for use with
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
 To do:
-- add check for 8x/9x compat (allow sending of .9kx on a V200 altough it's not a .v2k for instance)
+- make tifiles_calc_are_compat more powerful
 - add tifiles_file_is_targetted(filename, model, class) avec class = ALL
 - API: préciser que les varnames sont en UTF-8 !
 
 Log:
+
+- 16/03/2006, version 0.1.1: roms
+	- free the block itself in tifiles_content_delete_xxxxx
+	- clean-up (removed dead code)
 
 - 23/02/2006, version 0.1.0: roms
 	- removed deprecated functions
