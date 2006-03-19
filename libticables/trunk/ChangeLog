@@ -5,7 +5,8 @@ Log:
 - 07/03/2006, version 0.0.7: roms
 	- ParallelLink support was not compiled under Windows
 	- reset SilverLink cable when opened (like other cables)
-	- close/re-open cable in slv_reset. Reseting it is not enough on both Linux & Windows.
+	- close/re-open cable in slv_reset. Reseting is not enough on both Linux & Windows.
+	- reverted back to previous behaviour (reset instead of close/open)
 
 - 20/02/2006, version 0.0.6: roms
 	- error message is a glib allocated string for now

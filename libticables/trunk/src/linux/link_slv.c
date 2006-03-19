@@ -438,7 +438,12 @@ static int slv_close(CableHandle *h)
 static int slv_reset(CableHandle *h)
 {
     /* Reset both endpoints */
+#if SLV_RESET
     TRYC(reset_pipes(tigl_han));
+#else
+	TRYC(slv_close(h);
+	TRYC(slv_open(h);
+#endif
     
     return 0;
 }
