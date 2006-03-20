@@ -50,6 +50,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
 	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+6];
 	int r, q;
+	static int ref = 0;
 
 	ticables_progress_reset(handle->cable);
 
@@ -118,6 +119,10 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 		}
 	}
 
+	// force periodic refresh
+	if(!(ref++ % 4))
+		handle->updat->refresh();
+
 	return 0;
 }
 
@@ -172,6 +177,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	uint16_t chksum;
 	uint8_t buf[4];
 	int r, q;
+	static int ref = 0;
 
 	// Any packet has always at least 4 bytes (MID, CID, LEN)
 	TRYF(ticables_cable_recv(handle->cable, buf, 4));
@@ -251,6 +257,10 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	default:
 		return ERR_INVALID_CMD;
 	}
+
+	// force periodic refresh
+	if(!(ref++ % 4))
+		handle->updat->refresh();
 
 	return 0;
 }
