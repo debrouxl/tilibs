@@ -223,7 +223,7 @@ static int slv_close(CableHandle *h)
 static int slv_reset(CableHandle *h)
 {
 	int ret;
-#if SLV_RESET
+#ifdef SLV_RESET
     ret = dynTiglUsbReset(hLNK);
     if(ret == TIGLERR2_RESET_FAILED)
         return ERR_SLV_RESET;

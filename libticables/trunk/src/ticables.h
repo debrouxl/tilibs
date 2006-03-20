@@ -54,7 +54,7 @@ extern "C" {
 #define ERROR_READ_TIMEOUT	4
 #define ERROR_WRITE_TIMEOUT	6
 #define OPEN_DELAYED
-//#define SLV_RESET
+#define SLV_RESET
 
 /**
  * CableModel:
