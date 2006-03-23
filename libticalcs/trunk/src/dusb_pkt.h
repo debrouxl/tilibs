@@ -46,7 +46,7 @@
 	Format:
 
 	| packet header    | data (250 bytes max)								 |
-	|				   | data hdr (1st pkt)  |								 |
+	|				   |  or												 |
 	| size		  | ty | size		 | code	 | data	(246 bytes)				 |
 	|			  |    |			 |		 |								 |
 	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |
@@ -61,7 +61,7 @@
 
 typedef struct
 {
-	uint16_t	size;	// size of packet
+	uint32_t	size;	// size of packet
 	uint8_t		type;	// type of packet
 } PacketHdr;
 
@@ -86,7 +86,7 @@ typedef struct
 
 typedef struct
 {
-	uint16_t	size;	// size of packet
+	uint32_t	size;	// size of packet
 	uint8_t		type;	// type of packet
 
 	union {
@@ -99,13 +99,18 @@ typedef struct
 /* Functions */
 /*************/
 
-// layer 0 (manage raw packets)
+// layer 0 (manage simple packets)
 
 int dusb_send(CalcHandle* cable, UsbPacket* pkt);
 int dusb_recv(CalcHandle* cable, UsbPacket* pkt);
 
-// layer 1 (split into packets)
+// layer 1 (manage packet types)
 
-///...
+int dusb_send_handshake(CalcHandle *h);
+int dusb_recv_response (CalcHandle *h);
+int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data);
+int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data);
+int dusb_send_acknowledge(CalcHandle* h);
+int dusb_recv_acknowledge(CalcHandle *h);
 
 #endif

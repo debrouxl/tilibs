@@ -32,8 +32,9 @@
 #include "macros.h"
 
 #define BLK_SIZE	255		// USB packets have this max length
-#define PURE_DATA_SIZE	250	// max length of pure data after packet header
-#define DATA_SIZE	244		// max legnth of data after a data header
+#define PH_SIZE		5		// packet header size
+#define DH_SIZE		6		// data header size
+#define DATA_SIZE	250		// max length of data
 
 // lower layer: transmit packets formatted with an header
 
@@ -99,13 +100,12 @@ int dusb_send_handshake(CalcHandle* h)
 	return 0;
 }
 
-int dusb_recv_handskake_response(CalcHandle *h)
+int dusb_recv_response(CalcHandle *h)
 {
 	UsbPacket pkt = { 0 };
 
 	TRYF(dusb_recv(h, &pkt));
 	
-	pkt.size = pkt.size;
 	if(pkt.size != 4)
 		return ERR_INVALID_PACKET;
 
@@ -118,18 +118,61 @@ int dusb_recv_handskake_response(CalcHandle *h)
 	return 0;
 }
 
-int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t* data)
+int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 {
-/*
-	int r, q;
+	UsbPacket pkt = { 0 };
+	int i, r, q;
 
-	q = (length + 6) / BLK_SIZE;
-	r = (length + 6) % BLK_SIZE;
-*/
+	if(size <= DATA_SIZE - DH_SIZE)
+	{
+		// we have a single packet which is the last one, too
+		pkt.size = size + PH_SIZE;
+		pkt.type = PT_LAST;
+		pkt.hdr.size = size;
+		pkt.hdr.code = code;
+		memcpy(&pkt.data[DH_SIZE], data, size);
+	
+		TRYF(dusb_send(h, &pkt));
+	}
+	else
+	{
+		// we have more than one packet: first packet have data header
+		pkt.size = DATA_SIZE + PH_SIZE;
+		pkt.type = PT_DATA;
+		pkt.hdr.size = size;
+		pkt.hdr.code = code;
+		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
+
+		TRYF(dusb_send(h, &pkt));
+
+		// other packets doesn't have data header but last one has a different type
+		q = size / DATA_SIZE;
+		r = size % DATA_SIZE;
+
+		// send full chunks (no header)
+		for(i = 1; i < q; i++)
+		{
+			pkt.size = DATA_SIZE + PH_SIZE;
+			pkt.type = PT_DATA;
+			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
+
+			TRYF(dusb_send(h, &pkt));
+		}
+
+		// send last chunk (type)
+		{
+			pkt.size = r + PH_SIZE;
+			pkt.type = PT_LAST;
+			memcpy(pkt.data, data + i*DATA_SIZE, r);
+			
+			TRYF(dusb_send(h, &pkt));
+		}
+	}
+
 	return 0;
 }
 
-int dusb_recv_data(CalcHandle* h, uint32_t* size, uint16_t* code, uint8_t* data)
+int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
 {
 	return 0;
 }
@@ -140,7 +183,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 
 	pkt.size = 2;
 	pkt.type = PT_ACK;
-	pkt.data[0] = 0xE0;
+	pkt.data[0] = 0x00;
 	pkt.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &pkt));
@@ -161,7 +204,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PT_ACK)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.data[0] != 0xE0)
+	if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
 		return ERR_INVALID_PACKET;
 
 	return 0;
