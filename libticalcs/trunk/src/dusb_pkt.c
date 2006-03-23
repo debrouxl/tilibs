@@ -35,17 +35,17 @@
 #define PURE_DATA_SIZE	250	// max length of pure data after packet header
 #define DATA_SIZE	244		// max legnth of data after a data header
 
-// lower layer: transmit formatted packets
+// lower layer: transmit packets formatted with an header
 
-int send_dusb(CalcHandle* handle, UsbPacket* pkt)
+int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 {
 	uint8_t buf[256]= { 0 };
-	uint32_t size = pkt->type + 5;
+	uint32_t size = pkt->size + 5;
 
-	buf[0] = LSB(LSW(pkt->size));
-	buf[1] = MSB(LSW(pkt->size));
-	buf[2] = LSB(MSW(pkt->size));
-	buf[3] = MSB(MSW(pkt->size));
+	buf[0] = MSB(MSW(pkt->size));
+	buf[1] = LSB(MSW(pkt->size));
+	buf[2] = MSB(LSW(pkt->size));
+	buf[3] = LSB(LSW(pkt->size));
 	buf[4] = pkt->type;
 	memcpy(buf+5, pkt->data, pkt->size);
 
@@ -59,14 +59,14 @@ int send_dusb(CalcHandle* handle, UsbPacket* pkt)
 	return 0;
 }
 
-int recv_dusb(CalcHandle* handle, UsbPacket* pkt)
+int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 {
 	uint8_t buf[256];
 
-	// Any packet has always at least 5 bytes (size & type)
+	// Any packet has always an header of 5 bytes (size & type)
 	TRYF(ticables_cable_recv(handle->cable, buf, 5));
 
-	pkt->size = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	pkt->size = buf[3] | (buf[2] << 8) | (buf[1] << 16) | (buf[0] << 24);
 	pkt->type = buf[4];
 
 	if(pkt->size > 250)
@@ -83,7 +83,7 @@ int recv_dusb(CalcHandle* handle, UsbPacket* pkt)
 	return 0;
 }
 
-// upper layer: manage packet types and format
+// upper layer: formats packets with type and split
 
 int dusb_send_handshake(CalcHandle* h)
 {
@@ -94,7 +94,7 @@ int dusb_send_handshake(CalcHandle* h)
 	pkt.data[2] = 0x04;
 	pkt.data[3] = 0x00;
 
-	TRYF(send_dusb(h, &pkt));
+	TRYF(dusb_send(h, &pkt));
 
 	return 0;
 }
@@ -103,7 +103,7 @@ int dusb_recv_handskake_response(CalcHandle *h)
 {
 	UsbPacket pkt = { 0 };
 
-	TRYF(recv_dusb(h, &pkt));
+	TRYF(dusb_recv(h, &pkt));
 	
 	pkt.size = pkt.size;
 	if(pkt.size != 4)
@@ -143,7 +143,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 	pkt.data[0] = 0xE0;
 	pkt.data[1] = 0x00;
 
-	TRYF(send_dusb(h, &pkt));
+	TRYF(dusb_send(h, &pkt));
 
 	return 0;
 }
@@ -152,7 +152,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 {
 	UsbPacket pkt = { 0 };
 
-	TRYF(recv_dusb(h, &pkt));
+	TRYF(dusb_recv(h, &pkt));
 	
 	pkt.size = pkt.size;
 	if(pkt.size != 2)

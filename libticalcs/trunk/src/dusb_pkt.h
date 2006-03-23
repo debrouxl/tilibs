@@ -31,7 +31,7 @@
 #define PT_HANDSHAKE	0x01
 #define PT_RESPONSE		0x02
 #define PT_DATA			0x03
-#define PT_DATA_LAST	0x04
+#define PT_LAST			0x04
 #define PT_ACK			0x05
 
 // Data Types (or opcodes)
@@ -45,9 +45,9 @@
 /*
 	Format:
 
-    |				   |		(250 bytes max)								 |
-	| packet header    | data hdr (1st pkt)  | data	(244 bytes max)			 |
-	| size		  | ty | size		 | code	 |								 |
+	| packet header    | data (250 bytes max)								 |
+	|				   | data hdr (1st pkt)  |								 |
+	| size		  | ty | size		 | code	 | data	(246 bytes)				 |
 	|			  |    |			 |		 |								 |
 	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |
 
@@ -55,42 +55,44 @@
 
 	00 00 00 05 | 02 | 00 00 00 fa
 	00 00 00 02 | 05 | e0 00
-	LL LL LL LL | 03 | hdr, data
-	LL LL LL LL | 04 | data
+	HH HL LH LL | 03 | hdr, data or data
+	HH HL LH LL | 04 | data
 */
 
 typedef struct
 {
-	uint8_t		type;
-	uint16_t	size;
-	uint8_t*	data;
-} Packet;
-
-typedef struct
-{
-	uint32_t	size;	// size information
-	uint16_t	code;	// opcode
-	uint8_t		data[244];
-} DataHdr;
-
-typedef struct
-{
-	uint32_t	size;	// length of data
-	uint8_t		type;	// packet type
-
-	union
-	{
-		uint8_t	d[250];	// used for pure data (no header)
-		DataHdr	h;		// used for data with header
-	} data;
-
+	uint16_t	size;	// size of packet
+	uint8_t		type;	// type of packet
 } PacketHdr;
 
+
 typedef struct
 {
-	uint32_t	size;
-	uint8_t		type;
-	uint8_t		data[250];
+	uint32_t	size;	// size of data
+	uint16_t	code;	// opcode
+} DataHdr;
+
+/*
+typedef struct
+{
+	PacketHdr	ph;
+
+	union {
+	DataHdr		dh;			// used for data with header (first block)
+	uint8_t		data[250];	// used for pure data (no data header)
+	};
+} UsbPacket;
+*/
+
+typedef struct
+{
+	uint16_t	size;	// size of packet
+	uint8_t		type;	// type of packet
+
+	union {
+	DataHdr		hdr;		// used for data with header (first block)
+	uint8_t		data[250];	// used for pure data (no data header)
+	};
 } UsbPacket;
 
 /*************/
@@ -99,8 +101,8 @@ typedef struct
 
 // layer 0 (manage raw packets)
 
-int send_dusb(CalcHandle* cable, UsbPacket* pkt);
-int recv_dusb(CalcHandle* cable, UsbPacket* pkt);
+int dusb_send(CalcHandle* cable, UsbPacket* pkt);
+int dusb_recv(CalcHandle* cable, UsbPacket* pkt);
 
 // layer 1 (split into packets)
 
