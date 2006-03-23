@@ -91,7 +91,7 @@ int dusb_send_handshake(CalcHandle* h)
 	UsbPacket pkt = { 0 };
 
 	pkt.size = 4;
-	pkt.type = PT_HANDSHAKE;
+	pkt.type = PKT_HANDSHAKE;
 	pkt.data[2] = 0x04;
 	pkt.data[3] = 0x00;
 
@@ -109,7 +109,7 @@ int dusb_recv_response(CalcHandle *h)
 	if(pkt.size != 4)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.type != PT_RESPONSE)
+	if(pkt.type != PKT_RESPONSE)
 		return ERR_INVALID_PACKET;
 
 	if(pkt.data[3] != 0xfa)
@@ -127,7 +127,7 @@ int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 	{
 		// we have a single packet which is the last one, too
 		pkt.size = size + PH_SIZE;
-		pkt.type = PT_LAST;
+		pkt.type = PKT_LAST;
 		pkt.hdr.size = size;
 		pkt.hdr.code = code;
 		memcpy(&pkt.data[DH_SIZE], data, size);
@@ -138,7 +138,7 @@ int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 	{
 		// we have more than one packet: first packet have data header
 		pkt.size = DATA_SIZE + PH_SIZE;
-		pkt.type = PT_DATA;
+		pkt.type = PKT_DATA;
 		pkt.hdr.size = size;
 		pkt.hdr.code = code;
 		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
@@ -153,7 +153,7 @@ int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 		for(i = 1; i < q; i++)
 		{
 			pkt.size = DATA_SIZE + PH_SIZE;
-			pkt.type = PT_DATA;
+			pkt.type = PKT_DATA;
 			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
 
 			TRYF(dusb_send(h, &pkt));
@@ -162,7 +162,7 @@ int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 		// send last chunk (type)
 		{
 			pkt.size = r + PH_SIZE;
-			pkt.type = PT_LAST;
+			pkt.type = PKT_LAST;
 			memcpy(pkt.data, data + i*DATA_SIZE, r);
 			
 			TRYF(dusb_send(h, &pkt));
@@ -174,6 +174,33 @@ int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 
 int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
 {
+	UsbPacket pkt = { 0 };
+	int i;
+
+	i = 0;
+	do
+	{
+		TRYF(dusb_recv(h, &pkt));
+		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
+			return ERR_INVALID_PACKET;
+
+		if(!i)
+		{
+			// first packet has a data header
+			*size = pkt.hdr.size;
+			*code = pkt.hdr.code;
+			memcpy(data, pkt.data, pkt.size - DH_SIZE);
+		}
+		else
+		{
+			// others have more data
+			memcpy(data, pkt.data, pkt.size);
+		}
+
+		i++;
+
+	} while(pkt.type != PKT_LAST);
+
 	return 0;
 }
 
@@ -182,7 +209,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 	UsbPacket pkt = { 0 };
 
 	pkt.size = 2;
-	pkt.type = PT_ACK;
+	pkt.type = PKT_ACK;
 	pkt.data[0] = 0x00;
 	pkt.data[1] = 0x00;
 
@@ -201,7 +228,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	if(pkt.size != 2)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.type != PT_ACK)
+	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
 	if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)

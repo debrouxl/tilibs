@@ -28,15 +28,17 @@
 
 // Packet Types
 
-#define PT_HANDSHAKE	0x01
-#define PT_RESPONSE		0x02
-#define PT_DATA			0x03
-#define PT_LAST			0x04
-#define PT_ACK			0x05
+#define PKT_HANDSHAKE	0x01
+#define PKT_RESPONSE	0x02
+#define PKT_DATA		0x03
+#define PKT_LAST		0x04
+#define PKT_ACK			0x05
 
 // Data Types (or opcodes)
 
-#define DT_NONE			0x0000
+#define OPC_NONE		0x0000
+#define OPC_SCR1		0x0001
+#define OPC_SCR2		0x0007
 
 /*********/
 /* Types */
