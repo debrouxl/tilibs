@@ -67,6 +67,22 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint8_t data1[] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0};
+	uint8_t data2[] = { 0x00, 0x01, 0x00, 0x22 };
+	uint8_t buf[65536];
+	uint32_t size;
+	uint16_t code;
+
+	TRYF(is_ready(handle));
+
+	TRYF(dusb_send_data(handle, 10, 0x0001, data1));
+	TRYF(dusb_recv_data(handle, &size, &code, buf));
+
+	TRYF(dusb_send_data(handle, 4, 0x0007, data2));
+	TRYF(dusb_recv_data(handle, &size, &code, buf));
+
+	TRYF(dusb_recv_data(handle, &size, &code, buf));
+
 	return 0;
 }
 
