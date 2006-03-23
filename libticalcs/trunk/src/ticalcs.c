@@ -85,6 +85,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI89T
 	&calc_89t,
 #endif
+#ifndef NO_TI84P_USB
+	&calc_84p_usb,
+#endif
 	NULL
 };
 

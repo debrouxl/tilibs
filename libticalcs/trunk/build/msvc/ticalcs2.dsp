@@ -217,6 +217,10 @@ SOURCE=..\..\src\dusb_pkt.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dusb_pkt.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\linkguide\analysis\snif2pkt\test.pkt
 # End Source File
 # End Group

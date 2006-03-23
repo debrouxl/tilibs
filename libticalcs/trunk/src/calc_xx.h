@@ -40,6 +40,8 @@ extern const CalcFncts calc_92;
 extern const CalcFncts calc_92p;
 extern const CalcFncts calc_v2;
 
+extern const CalcFncts calc_84p_usb;
+
 #endif
 
 
