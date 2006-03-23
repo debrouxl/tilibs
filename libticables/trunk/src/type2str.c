@@ -69,6 +69,8 @@ TIEXPORT CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_PAR;
 	else if(!strcmp(str, "SilverLink"))
 		return CABLE_SLV;
+	else if(!strcmp(str, "DirectLink"))
+		return CABLE_USB;
 	else if(!strcmp(str, "VTi"))
 		return CABLE_VTI;
 	else if(!strcmp(str, "TiEmu"))
