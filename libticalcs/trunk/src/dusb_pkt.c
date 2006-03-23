@@ -118,92 +118,6 @@ int dusb_recv_response(CalcHandle *h)
 	return 0;
 }
 
-int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
-{
-	UsbPacket pkt = { 0 };
-	int i, r, q;
-
-	if(size <= DATA_SIZE - DH_SIZE)
-	{
-		// we have a single packet which is the last one, too
-		pkt.size = size + PH_SIZE;
-		pkt.type = PKT_LAST;
-		pkt.hdr.size = size;
-		pkt.hdr.code = code;
-		memcpy(&pkt.data[DH_SIZE], data, size);
-	
-		TRYF(dusb_send(h, &pkt));
-	}
-	else
-	{
-		// we have more than one packet: first packet have data header
-		pkt.size = DATA_SIZE + PH_SIZE;
-		pkt.type = PKT_DATA;
-		pkt.hdr.size = size;
-		pkt.hdr.code = code;
-		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
-
-		TRYF(dusb_send(h, &pkt));
-
-		// other packets doesn't have data header but last one has a different type
-		q = size / DATA_SIZE;
-		r = size % DATA_SIZE;
-
-		// send full chunks (no header)
-		for(i = 1; i < q; i++)
-		{
-			pkt.size = DATA_SIZE + PH_SIZE;
-			pkt.type = PKT_DATA;
-			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
-
-			TRYF(dusb_send(h, &pkt));
-		}
-
-		// send last chunk (type)
-		{
-			pkt.size = r + PH_SIZE;
-			pkt.type = PKT_LAST;
-			memcpy(pkt.data, data + i*DATA_SIZE, r);
-			
-			TRYF(dusb_send(h, &pkt));
-		}
-	}
-
-	return 0;
-}
-
-int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
-{
-	UsbPacket pkt = { 0 };
-	int i;
-
-	i = 0;
-	do
-	{
-		TRYF(dusb_recv(h, &pkt));
-		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
-			return ERR_INVALID_PACKET;
-
-		if(!i)
-		{
-			// first packet has a data header
-			*size = pkt.hdr.size;
-			*code = pkt.hdr.code;
-			memcpy(data, pkt.data, pkt.size - DH_SIZE);
-		}
-		else
-		{
-			// others have more data
-			memcpy(data, pkt.data, pkt.size);
-		}
-
-		i++;
-
-	} while(pkt.type != PKT_LAST);
-
-	return 0;
-}
-
 int dusb_send_acknowledge(CalcHandle* h)
 {
 	UsbPacket pkt = { 0 };
@@ -231,8 +145,99 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
-		return ERR_INVALID_PACKET;
+	//if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
+	//	return ERR_INVALID_PACKET;
+
+	return 0;
+}
+
+int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
+{
+	UsbPacket pkt = { 0 };
+	int i, r, q;
+
+	if(size <= DATA_SIZE - DH_SIZE)
+	{
+		// we have a single packet which is the last one, too
+		pkt.size = size + DH_SIZE;
+		pkt.type = PKT_LAST;
+		pkt.hdr.size = GUINT32_TO_BE(size);
+		pkt.hdr.code = GUINT16_TO_BE(code);
+		memcpy(&pkt.data[DH_SIZE], data, size);
+	
+		TRYF(dusb_send(h, &pkt));
+		TRYF(dusb_recv_acknowledge(h));
+	}
+	else
+	{
+		// we have more than one packet: first packet have data header
+		pkt.size = DATA_SIZE;
+		pkt.type = PKT_DATA;
+		pkt.hdr.size = GUINT32_TO_BE(size);
+		pkt.hdr.code = GUINT16_TO_BE(code);
+		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
+
+		TRYF(dusb_send(h, &pkt));
+		TRYF(dusb_recv_acknowledge(h));
+
+		// other packets doesn't have data header but last one has a different type
+		q = size / DATA_SIZE;
+		r = size % DATA_SIZE;
+
+		// send full chunks (no header)
+		for(i = 1; i < q; i++)
+		{
+			pkt.size = DATA_SIZE;
+			pkt.type = PKT_DATA;
+			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
+
+			TRYF(dusb_send(h, &pkt));
+			TRYF(dusb_recv_acknowledge(h));
+		}
+
+		// send last chunk (type)
+		{
+			pkt.size = r;
+			pkt.type = PKT_LAST;
+			memcpy(pkt.data, data + i*DATA_SIZE, r);
+			
+			TRYF(dusb_send(h, &pkt));
+			TRYF(dusb_recv_acknowledge(h));
+		}
+	}
+
+	return 0;
+}
+
+int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
+{
+	UsbPacket pkt = { 0 };
+	int i;
+
+	i = 0;
+	do
+	{
+		TRYF(dusb_recv(h, &pkt));
+		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
+			return ERR_INVALID_PACKET;
+		TRYF(dusb_send_acknowledge(h));
+
+		if(!i)
+		{
+			// first packet has a data header
+			*size = GUINT32_FROM_BE(pkt.hdr.size);
+			*code = GUINT16_FROM_BE(pkt.hdr.code);
+			memcpy(data, pkt.data, pkt.size - DH_SIZE);
+		}
+		else
+		{
+			// others have more data
+			memcpy(data, pkt.data, pkt.size);
+		}
+
+		i++;
+
+	} while(pkt.type != PKT_LAST);
 
 	return 0;
 }

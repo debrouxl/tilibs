@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Group "TI calcs"
 
 # PROP Default_Filter ""
-# Begin Group "calcs"
+# Begin Group "calcs_dbus"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -176,7 +176,7 @@ SOURCE=..\..\src\keys92p.h
 SOURCE=..\..\src\tikeys.c
 # End Source File
 # End Group
-# Begin Group "cmds"
+# Begin Group "dbus"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -204,7 +204,7 @@ SOURCE=..\..\src\cmd92.c
 SOURCE=..\..\src\dbus_pkt.c
 # End Source File
 # End Group
-# Begin Group "usb"
+# Begin Group "dusb"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -222,6 +222,14 @@ SOURCE=..\..\src\dusb_pkt.h
 # Begin Source File
 
 SOURCE=..\..\..\linkguide\analysis\snif2pkt\test.pkt
+# End Source File
+# End Group
+# Begin Group "calcs_dusb"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\calc_84p_usb.c
 # End Source File
 # End Group
 # Begin Source File
