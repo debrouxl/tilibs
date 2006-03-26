@@ -100,71 +100,92 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
       return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft);
     }
   } else {
-    /* FIXME: This function isn't quite compliant to the iconv spec... */
+    /* FIXME: This function stops at the first \0 in the data, which isn't correct. */
     unsigned short *temp=NULL;
     void *iconv_src;
-    size_t inbytes;
     size_t iconv_inbytes;
-    size_t bufsize=1024;
+    size_t bufsize=2;
+    size_t inputlen=0;
     char *buf=NULL;
+    char *iconv_dest=NULL;
     void *out;
     size_t result;
 
     if (cd.src_calc) {
-      /* FIXME: This doesn't honor inbytesleft. */
+      char *input=g_malloc(*inbytesleft+1);
+      strncpy(input,*inbuf,*inbytesleft);
+      input[*inbytesleft]=0;
+      inputlen=strlen(input);
       temp=ticonv_charset_ti_to_utf16(cd.src_calc,*inbuf);
-      iconv_src=&temp;
-      inbytes=(ticonv_utf16_strlen(temp)+1)<<1;
-      iconv_inbytes=inbytes;
+      g_free(input);
+      iconv_src=temp;
+      iconv_inbytes=(ticonv_utf16_strlen(temp)+1)<<1;
     } else {
-      iconv_src=inbuf;
+      iconv_src=*inbuf;
       iconv_inbytes=*inbytesleft;
     }
 
-    while(1) {
-      void *iconv_temp_src=*inbuf;
-      void *iconv_temp_dest;
-      size_t iconv_size=bufsize;
-      size_t iconv_temp_inbytes=iconv_inbytes;
-      iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
-      buf=g_realloc(buf,bufsize);
-      iconv_temp_dest=buf;
-      result=iconv(cd.iconv_desc,(void*)&iconv_temp_src,&iconv_temp_inbytes,(void*)&iconv_temp_dest,&iconv_size);
-      if (result!=(size_t)-1 || errno!=E2BIG) {
-        bufsize-=iconv_size;
-        break;
+    if (cd.dest_calc) {
+      /* FIXME: This part of the function isn't quite compliant to the iconv spec... */
+      while(1) {
+        size_t iconv_size;
+        size_t iconv_dest_pos;
+        iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
+        iconv_dest_pos=iconv_dest-buf;
+        buf=g_realloc(buf,bufsize);
+        iconv_dest=buf+iconv_dest_pos;
+        iconv_size=bufsize-iconv_dest_pos;
+        result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+        if (result!=(size_t)-1 || errno!=E2BIG) {
+          bufsize-=iconv_size;
+          break;
+        }
+        bufsize+=2;
       }
-      bufsize<<=1;
-    }
 
-    if (result!=(size_t)-1) {
-      if (cd.dest_calc) {
+      if (result!=(size_t)-1) {
         out=ticonv_charset_utf16_to_ti(cd.dest_calc,(unsigned short *)buf);
         bufsize=strlen(out)+1;
-      } else {
-        out=buf;
-      }
 
-      if (bufsize>*outbytesleft) {
-        memcpy(*outbuf,out,*outbytesleft);
-        *outbuf+=*outbytesleft;
-        *outbytesleft=0;
-        result=-1;
-        errno=E2BIG;
-        /* FIXME: *inbuf, *inbytesleft not set properly. */
-      } else {
-        memcpy(*outbuf,out,bufsize);
-        *outbuf+=bufsize;
-        *outbytesleft-=bufsize;
-      }
+        if (bufsize>*outbytesleft) {
+          memcpy(*outbuf,out,*outbytesleft);
+          *outbuf+=*outbytesleft;
+          *outbytesleft=0;
+          result=-1;
+          errno=E2BIG;
+          /* FIXME: *inbuf, *inbytesleft not set properly. */
+        } else {
+          memcpy(*outbuf,out,bufsize);
+          *outbuf+=bufsize;
+          *outbytesleft-=bufsize;
+        }
 
-      if (out!=buf) g_free(out);
+        g_free(out);
+      }
+      /* FIXME: *outbuf, *outbytesleft not set properly if result==(size_t)-1. */
+
+      g_free(buf);
+      /* FIXME: Need to add lossy conversion count to result. */
+    } else {
+      result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,outbuf,outbytesleft);
+
+      if (cd.src_calc) {
+        if (iconv_inbytes) {
+          char *tmp=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src);
+          size_t l=strlen(tmp);
+          g_free(tmp);
+          *inbuf+=inputlen-l;
+          *inbytesleft-=inputlen-l;
+        } else {
+          *inbuf+=*inbytesleft;
+          *inbytesleft=0;
+        }
+      } else {
+        *inbuf=iconv_src;
+        *inbytesleft=iconv_inbytes;
+      }
     }
-    /* FIXME: *outbuf, *outbytesleft not set properly if result==(size_t)-1. */
-
-    g_free(buf);
     g_free(temp);
-    /* FIXME: This isn't quite the correct return value. */
     return result;
   }
 }
