@@ -33,6 +33,9 @@
 #include <stddef.h>
 #endif
 
+// Need iconv_t declaration.
+#include <iconv.h>
+
 #include "export4.h"
 
 	/***********************/
@@ -42,7 +45,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCONV_VERSION "0.0.1"
+# define LIBCONV_VERSION "0.0.2"
 #else
 # define LIBCONV_VERSION VERSION
 #endif
@@ -64,6 +67,14 @@ typedef enum
 	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
 #endif
+
+/* Identifier for conversion method from one codeset to another.  */
+typedef struct
+{
+	CalcModel src_calc;
+	iconv_t iconv_desc;
+	CalcModel dest_calc;
+} ticonv_iconv_t;
 
 /* Functions */
 
@@ -112,6 +123,20 @@ extern "C" {
   // filename.c
   TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
   TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src);
+
+  // iconv.c
+  /* Allocate descriptor for code conversion from codeset FROMCODE to
+     codeset TOCODE.  */
+  TIEXPORT ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode);
+  /* Convert at most *INBYTESLEFT bytes from *INBUF according to the
+     code conversion algorithm specified by CD and place up to
+     *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
+  TIEXPORT size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
+                                       size_t *__restrict inbytesleft,
+                                       char **__restrict outbuf,
+                                       size_t *__restrict outbytesleft);
+  /* Free resources allocated for descriptor CD for code conversion.  */
+  TIEXPORT int TICALL ticonv_iconv_close (ticonv_iconv_t cd);
 
   /************************/
   /* Deprecated functions */
