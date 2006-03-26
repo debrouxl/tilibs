@@ -100,26 +100,34 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
       return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft);
     }
   } else {
-    /* FIXME: This function stops at the first \0 in the data, which isn't correct. */
     unsigned short *temp=NULL;
     void *iconv_src;
     size_t iconv_inbytes;
     size_t bufsize=2;
-    size_t inputlen=0;
     char *buf=NULL;
     char *iconv_dest=NULL;
     void *out;
     size_t result;
 
     if (cd.src_calc) {
-      char *input=g_malloc(*inbytesleft+1);
+      char *input=g_malloc(*inbytesleft+1), *inputp=input;
+      size_t tempsize;
       strncpy(input,*inbuf,*inbytesleft);
       input[*inbytesleft]=0;
-      inputlen=strlen(input);
-      temp=ticonv_charset_ti_to_utf16(cd.src_calc,*inbuf);
+      temp=ticonv_charset_ti_to_utf16(cd.src_calc,input);
+      tempsize=ticonv_utf16_strlen(temp)+1;
+      for (inputp=input; strchr(inputp,0)<input+*inbytesleft; inputp=strchr(inputp,0)+1) {
+        unsigned short *temp2=ticonv_charset_ti_to_utf16(cd.src_calc,inputp);
+        size_t temp2size=ticonv_utf16_strlen(temp2)+1;
+        temp=g_realloc(temp,(tempsize+temp2size)<<1);
+        memcpy(temp+tempsize,temp2,temp2size);
+        tempsize+=temp2size;
+        g_free(temp2);
+      }
       g_free(input);
       iconv_src=temp;
-      iconv_inbytes=(ticonv_utf16_strlen(temp)+1)<<1;
+      iconv_inbytes=tempsize<<1;
+      if ((*inbuf)[*inbytesleft]) iconv_inbytes-=2;
     } else {
       iconv_src=*inbuf;
       iconv_inbytes=*inbytesleft;
@@ -127,6 +135,7 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
 
     if (cd.dest_calc) {
       /* FIXME: This part of the function isn't quite compliant to the iconv spec... */
+      /* FIXME: This part stops at the first \0 in the data, which isn't correct. */
       while(1) {
         size_t iconv_size;
         size_t iconv_dest_pos;
@@ -171,11 +180,19 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
 
       if (cd.src_calc) {
         if (iconv_inbytes) {
-          char *tmp=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src);
-          size_t l=strlen(tmp);
-          g_free(tmp);
-          *inbuf+=inputlen-l;
-          *inbytesleft-=inputlen-l;
+          char *tmp1=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src),*tmp2;
+          unsigned short *p;
+          size_t l1,l2;
+          for (p=temp; p<(unsigned short *)iconv_src; p++) {
+            if (!*p) *p='_';
+          }
+          l1=strlen(tmp1);
+          g_free(tmp1);
+          tmp2=ticonv_charset_utf16_to_ti(cd.src_calc,temp);
+          l2=strlen(tmp2);
+          g_free(tmp2);
+          *inbuf+=l2-l1;
+          *inbytesleft-=l2-l1;
         } else {
           *inbuf+=*inbytesleft;
           *inbytesleft=0;
