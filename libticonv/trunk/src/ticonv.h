@@ -74,6 +74,7 @@ typedef struct
 	CalcModel src_calc;
 	iconv_t iconv_desc;
 	CalcModel dest_calc;
+	size_t lossy_count;
 } ticonv_iconv_t;
 
 /* Functions */

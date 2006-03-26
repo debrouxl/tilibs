@@ -82,6 +82,7 @@ TIE ticonv_iconv_t TIC ticonv_iconv_open (const char *tocode, const char *fromco
   cd.src_calc=ticonv_string_to_model(fromcode);
   cd.dest_calc=ticonv_string_to_model(tocode);
   cd.iconv_desc=iconv_open(cd.src_calc?"UTF-16":fromcode,cd.dest_calc?"UTF-16":tocode);
+  cd.lossy_count=0;
   return cd;
 }
 
@@ -93,11 +94,16 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
                              char **__restrict outbuf,
                              size_t *__restrict outbytesleft)
 {
+  size_t result;
   if (!inbuf || !inbuf) {
     if (!outbuf || !*outbuf || cd.dest_calc) {
-      return iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
+      result=iconv(cd.iconv_desc,NULL,NULL,NULL,NULL)+cd.lossy_count;
+      cd.lossy_count=0;
+      return result;
     } else {
-      return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft);
+      return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft)+cd.lossy_count;
+      cd.lossy_count=0;
+      return result;
     }
   } else {
     unsigned short *temp=NULL;
@@ -106,8 +112,6 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
     size_t bufsize=2;
     char *buf=NULL;
     char *iconv_dest=NULL;
-    void *out;
-    size_t result;
 
     if (cd.src_calc) {
       char *input=g_malloc(*inbytesleft+1), *inputp=input;
@@ -134,73 +138,85 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
     }
 
     if (cd.dest_calc) {
-      /* FIXME: This part of the function isn't quite compliant to the iconv spec... */
-      /* FIXME: This part stops at the first \0 in the data, which isn't correct. */
+      unsigned short *convchar=NULL;
+      result=0;
       while(1) {
-        size_t iconv_size;
-        size_t iconv_dest_pos;
+        size_t iconv_size, iconv_dest_pos;
         iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
         iconv_dest_pos=iconv_dest-buf;
-        buf=g_realloc(buf,bufsize);
+        buf=g_realloc(buf,bufsize+2);
         iconv_dest=buf+iconv_dest_pos;
+        if (!convchar) {
+          convchar=(unsigned short *)iconv_dest;
+        }
         iconv_size=bufsize-iconv_dest_pos;
         result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
-        if (result!=(size_t)-1 || errno!=E2BIG) {
-          bufsize-=iconv_size;
+        if (result==(size_t)-1 && errno!=E2BIG) {
           break;
+        }
+        if (result!=(size_t)-1) {
+          result+=cd.lossy_count;
+          cd.lossy_count=0;
+          break;
+        }
+        ((unsigned short *)buf)[bufsize>>1]=0;
+        if (!*convchar) {
+          if (!*outbytesleft) {
+            break;
+          }
+          *((*outbuf)++)=0;
+          (*outbytesleft)--;
+          convchar=NULL;
+        } else {
+          char out[3];
+          ticonv_charset_utf16_to_ti_s(cd.dest_calc,convchar,out);
+          if (*out=='?' && *convchar!='?') {
+            /* FIXME: Need lookahead. */
+            if (!*outbytesleft) {
+              break;
+            }
+            cd.lossy_count++;
+            *((*outbuf)++)='?';
+            (*outbytesleft)--;
+            convchar=NULL;
+          } else {
+            if (!*outbytesleft) {
+              break;
+            }
+            *((*outbuf)++)=*out;
+            (*outbytesleft)--;
+            convchar=NULL;
+          }
         }
         bufsize+=2;
       }
-
-      if (result!=(size_t)-1) {
-        out=ticonv_charset_utf16_to_ti(cd.dest_calc,(unsigned short *)buf);
-        bufsize=strlen(out)+1;
-
-        if (bufsize>*outbytesleft) {
-          memcpy(*outbuf,out,*outbytesleft);
-          *outbuf+=*outbytesleft;
-          *outbytesleft=0;
-          result=-1;
-          errno=E2BIG;
-          /* FIXME: *inbuf, *inbytesleft not set properly. */
-        } else {
-          memcpy(*outbuf,out,bufsize);
-          *outbuf+=bufsize;
-          *outbytesleft-=bufsize;
-        }
-
-        g_free(out);
-      }
-      /* FIXME: *outbuf, *outbytesleft not set properly if result==(size_t)-1. */
-
       g_free(buf);
-      /* FIXME: Need to add lossy conversion count to result. */
     } else {
       result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,outbuf,outbytesleft);
+    }
 
-      if (cd.src_calc) {
-        if (iconv_inbytes) {
-          char *tmp1=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src),*tmp2;
-          unsigned short *p;
-          size_t l1,l2;
-          for (p=temp; p<(unsigned short *)iconv_src; p++) {
-            if (!*p) *p='_';
-          }
-          l1=strlen(tmp1);
-          g_free(tmp1);
-          tmp2=ticonv_charset_utf16_to_ti(cd.src_calc,temp);
-          l2=strlen(tmp2);
-          g_free(tmp2);
-          *inbuf+=l2-l1;
-          *inbytesleft-=l2-l1;
-        } else {
-          *inbuf+=*inbytesleft;
-          *inbytesleft=0;
+    if (cd.src_calc) {
+      if (iconv_inbytes) {
+        char *tmp1=ticonv_charset_utf16_to_ti(cd.src_calc,iconv_src),*tmp2;
+        unsigned short *p;
+        size_t l1,l2;
+        for (p=temp; p<(unsigned short *)iconv_src; p++) {
+          if (!*p) *p='_';
         }
+        l1=strlen(tmp1);
+        g_free(tmp1);
+        tmp2=ticonv_charset_utf16_to_ti(cd.src_calc,temp);
+        l2=strlen(tmp2);
+        g_free(tmp2);
+        *inbuf+=l2-l1;
+        *inbytesleft-=l2-l1;
       } else {
-        *inbuf=iconv_src;
-        *inbytesleft=iconv_inbytes;
+        *inbuf+=*inbytesleft;
+        *inbytesleft=0;
       }
+    } else {
+      *inbuf=iconv_src;
+      *inbytesleft=iconv_inbytes;
     }
     g_free(temp);
     return result;

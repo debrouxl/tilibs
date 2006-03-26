@@ -6,7 +6,7 @@ Run './configure --enable-static=yes --enable-shared=no' for use with
 Log:
 
 - ??/03/2006, version 0.0.2: kevinkofler
-	- added iconv.c for an iconv-compatible (well, not quite yet) interface
+	- added iconv.c for an iconv-compatible interface
 
 - 11/02/2006, version 0.0.1: roms
 	- creation of library (idea suggested by Kevin Kofler)
