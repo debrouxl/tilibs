@@ -144,11 +144,13 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
       unsigned short *convchar=NULL;
       result=0;
       while(1) {
-        size_t iconv_size, iconv_dest_pos;
+        size_t iconv_size, iconv_dest_pos, convchar_pos;
         iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
         iconv_dest_pos=iconv_dest-buf;
+        convchar_pos=(char*)convchar-buf;
         buf=g_realloc(buf,bufsize+4);
         iconv_dest=buf+iconv_dest_pos;
+        convchar=(unsigned short *)(buf+convchar_pos);
         iconv_size=bufsize-iconv_dest_pos;
         if (cd.lookahead) {
           if (!convchar) {
@@ -156,13 +158,14 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
             convchar=(unsigned short *)iconv_dest;
             iconv_dest+=2;
             iconv_size-=2;
-          } else {
-            convchar=(unsigned short *)iconv_dest-1;
           }
           result=cd.lookahead_result;
           if (result==(size_t)-1) errno=cd.lookahead_errno;
+          cd.lookahead=0;
         } else {
-          convchar=(unsigned short *)iconv_dest;
+          if (!convchar) {
+            convchar=(unsigned short *)iconv_dest;
+          }
           result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
         }
         if (result==(size_t)-1 && errno!=E2BIG) {
@@ -171,6 +174,9 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
         if (result!=(size_t)-1) {
           result+=cd.lossy_count;
           cd.lossy_count=0;
+        } else if (iconv_size) { /* no output */
+          bufsize+=2;
+          continue;
         }
         ((unsigned short *)buf)[bufsize>>1]=0;
         if (!*convchar) {
@@ -195,9 +201,12 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
               }
               ticonv_charset_utf16_to_ti_s(cd.dest_calc,convchar,out);
               if (*out=='?') { /* lookahead failed to produce anything */
-                cd.lookahead=convchar[1];
-                cd.lookahead_result=result;
-                if (result==(size_t)-1) cd.lookahead_errno=errno;
+                if (result!=(size_t)-1 || !iconv_size) { /* only save lookahead if it produced anything */
+                  cd.lookahead=convchar[1];
+                  cd.lookahead_result=result;
+                  if (result==(size_t)-1) cd.lookahead_errno=errno;
+                }
+                result=(size_t)-1;
                 cd.lossy_count++;
                 *((*outbuf)++)='?';
                 (*outbytesleft)--;
