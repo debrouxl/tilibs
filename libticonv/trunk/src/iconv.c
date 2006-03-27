@@ -82,6 +82,7 @@ TIE ticonv_iconv_t TIC ticonv_iconv_open (const char *tocode, const char *fromco
   cd.src_calc=ticonv_string_to_model(fromcode);
   cd.dest_calc=ticonv_string_to_model(tocode);
   cd.iconv_desc=iconv_open(cd.src_calc?"UTF-16":fromcode,cd.dest_calc?"UTF-16":tocode);
+  cd.lookahead=0;
   cd.lossy_count=0;
   return cd;
 }
@@ -98,10 +99,12 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
   if (!inbuf || !inbuf) {
     if (!outbuf || !*outbuf || cd.dest_calc) {
       result=iconv(cd.iconv_desc,NULL,NULL,NULL,NULL)+cd.lossy_count;
+      cd.lookahead=0;
       cd.lossy_count=0;
       return result;
     } else {
       return iconv(cd.iconv_desc,NULL,NULL,outbuf,outbytesleft)+cd.lossy_count;
+      cd.lookahead=0;
       cd.lossy_count=0;
       return result;
     }
@@ -144,20 +147,30 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
         size_t iconv_size, iconv_dest_pos;
         iconv(cd.iconv_desc,NULL,NULL,NULL,NULL);
         iconv_dest_pos=iconv_dest-buf;
-        buf=g_realloc(buf,bufsize+2);
+        buf=g_realloc(buf,bufsize+4);
         iconv_dest=buf+iconv_dest_pos;
-        if (!convchar) {
-          convchar=(unsigned short *)iconv_dest;
-        }
         iconv_size=bufsize-iconv_dest_pos;
-        result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+        if (cd.lookahead) {
+          if (!convchar) {
+            *(unsigned short*)iconv_dest=cd.lookahead;
+            convchar=(unsigned short *)iconv_dest;
+            iconv_dest+=2;
+            iconv_size-=2;
+          } else {
+            convchar=(unsigned short *)iconv_dest-1;
+          }
+          result=cd.lookahead_result;
+          if (result==(size_t)-1) errno=cd.lookahead_errno;
+        } else {
+          convchar=(unsigned short *)iconv_dest;
+          result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+        }
         if (result==(size_t)-1 && errno!=E2BIG) {
           break;
         }
         if (result!=(size_t)-1) {
           result+=cd.lossy_count;
           cd.lossy_count=0;
-          break;
         }
         ((unsigned short *)buf)[bufsize>>1]=0;
         if (!*convchar) {
@@ -171,14 +184,39 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
           char out[3];
           ticonv_charset_utf16_to_ti_s(cd.dest_calc,convchar,out);
           if (*out=='?' && *convchar!='?') {
-            /* FIXME: Need lookahead. */
             if (!*outbytesleft) {
               break;
             }
-            cd.lossy_count++;
-            *((*outbuf)++)='?';
-            (*outbytesleft)--;
-            convchar=NULL;
+            if (result==(size_t)-1) {
+              iconv_size+=2; /* look 1 codepoint ahead */
+              result=iconv(cd.iconv_desc,(void*)&iconv_src,&iconv_inbytes,&iconv_dest,&iconv_size);
+              if (result==(size_t)-1 && errno!=E2BIG) {
+                break;
+              }
+              ticonv_charset_utf16_to_ti_s(cd.dest_calc,convchar,out);
+              if (*out=='?') { /* lookahead failed to produce anything */
+                cd.lookahead=convchar[1];
+                cd.lookahead_result=result;
+                if (result==(size_t)-1) cd.lookahead_errno=errno;
+                cd.lossy_count++;
+                *((*outbuf)++)='?';
+                (*outbytesleft)--;
+                convchar++;
+              } else { /* lookahead succeeded */
+                if (result!=(size_t)-1) {
+                  result+=cd.lossy_count;
+                  cd.lossy_count=0;
+                }
+                *((*outbuf)++)=*out;
+                (*outbytesleft)--;
+                convchar=NULL;
+              }
+            } else {
+              cd.lossy_count++;
+              *((*outbuf)++)='?';
+              (*outbytesleft)--;
+              convchar=NULL;
+            }
           } else {
             if (!*outbytesleft) {
               break;
@@ -187,6 +225,9 @@ TIE size_t TIC ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
             (*outbytesleft)--;
             convchar=NULL;
           }
+        }
+        if (result!=(size_t)-1) {
+          break;
         }
         bufsize+=2;
       }

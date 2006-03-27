@@ -75,6 +75,9 @@ typedef struct
 	iconv_t iconv_desc;
 	CalcModel dest_calc;
 	size_t lossy_count;
+	size_t lookahead_result;
+	int lookahead_errno;
+	unsigned short lookahead;
 } ticonv_iconv_t;
 
 /* Functions */
