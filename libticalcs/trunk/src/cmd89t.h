@@ -19,20 +19,20 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_CMD84P__
-#define __TICALCS_CMD84P__
+#ifndef __TICALCS_CMD89T__
+#define __TICALCS_CMD89T__
 
 // Data Types (or opcodes)
 
-#define TI84P_OPC_NONE		0x0000
-#define TI84P_OPC_SCR1		0x0001
-#define TI84P_OPC_SCR2		0x0007
+#define TI89T_OPC_NONE		0x0000
+#define TI89T_OPC_SCR1		0x0001
+#define TI89T_OPC_SCR2		0x0007
 
-int ti84p_send_handshake(CalcHandle *h);
-int ti84p_recv_response (CalcHandle *h);
-int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data);
-int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data);
-int ti84p_send_acknowledge(CalcHandle* h);
-int ti84p_recv_acknowledge(CalcHandle *h);
+int ti89t_send_handshake(CalcHandle *h);
+int ti89t_recv_response (CalcHandle *h);
+int ti89t_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data);
+int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data);
+int ti89t_send_acknowledge(CalcHandle* h);
+int ti89t_recv_acknowledge(CalcHandle *h);
 
 #endif

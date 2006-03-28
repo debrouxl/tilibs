@@ -237,7 +237,11 @@ SOURCE=..\..\..\..\..\ticables.log
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\cmd84p_usb.c
+SOURCE=..\..\src\cmd84p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmd89t.c
 # End Source File
 # Begin Source File
 
@@ -249,7 +253,11 @@ SOURCE=..\..\src\dusb_pkt.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\calc_84p_usb.c
+SOURCE=..\..\src\calc_84p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_89t.c
 # End Source File
 # End Group
 # Begin Source File

@@ -41,7 +41,7 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "cmd84p_usb.h"
+#include "cmd84p.h"
 
 #ifdef __WIN32__
 #undef snprintf

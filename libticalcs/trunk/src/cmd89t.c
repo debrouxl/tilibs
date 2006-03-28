@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit handles TI84+ commands with DirectLink.
+  This unit handles Titanium commands with DirectLink.
 */
 
 #include <string.h>
@@ -31,14 +31,14 @@
 #include "error.h"
 #include "macros.h"
 
-#define BLK_SIZE	255		// USB packets have this max length
+#define BLK_SIZE	1023	// USB packets have this max length
 #define PH_SIZE		5		// packet header size
 #define DH_SIZE		6		// data header size
-#define DATA_SIZE	250		// max length of data
+#define DATA_SIZE	1018	// max length of data (BLK_SIZE - PH_SIZE)
 
 // upper layer: formats packets with type and split
 
-int ti84p_send_handshake(CalcHandle* h)
+int ti89t_send_handshake(CalcHandle* h)
 {
 	UsbPacket pkt = { 0 };
 
@@ -52,7 +52,7 @@ int ti84p_send_handshake(CalcHandle* h)
 	return 0;
 }
 
-int ti84p_recv_response(CalcHandle *h)
+int ti89t_recv_response(CalcHandle *h)
 {
 	UsbPacket pkt = { 0 };
 
@@ -64,13 +64,13 @@ int ti84p_recv_response(CalcHandle *h)
 	if(pkt.type != PKT_RESPONSE)
 		return ERR_INVALID_PACKET;
 
-	//if(pkt.data[3] != 0xfa)
-	//	return ERR_INVALID_PACKET;
+	if(pkt.data[2] != 0x03 && pkt.data[3] != 0xff)
+		return ERR_INVALID_PACKET;
 
 	return 0;
 }
 
-int ti84p_send_acknowledge(CalcHandle* h)
+int ti89t_send_acknowledge(CalcHandle* h)
 {
 	UsbPacket pkt = { 0 };
 
@@ -84,7 +84,7 @@ int ti84p_send_acknowledge(CalcHandle* h)
 	return 0;
 }
 
-int ti84p_recv_acknowledge(CalcHandle *h)
+int ti89t_recv_acknowledge(CalcHandle *h)
 {
 	UsbPacket pkt = { 0 };
 
@@ -97,13 +97,13 @@ int ti84p_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
-	//if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
-	//	return ERR_INVALID_PACKET;
+	if(pkt.data[0] != 0xe0 && pkt.data[1] != 0x00)
+		return ERR_INVALID_PACKET;
 
 	return 0;
 }
 
-int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
+int ti89t_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
 {
 	UsbPacket pkt = { 0 };
 	int i, r, q;
@@ -118,7 +118,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 		memcpy(&pkt.data[DH_SIZE], data, size);
 	
 		TRYF(dusb_send(h, &pkt));
-		TRYF(ti84p_recv_acknowledge(h));
+		TRYF(ti89t_recv_acknowledge(h));
 	}
 	else
 	{
@@ -130,7 +130,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
 
 		TRYF(dusb_send(h, &pkt));
-		TRYF(ti84p_recv_acknowledge(h));
+		TRYF(ti89t_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
 		q = size / DATA_SIZE;
@@ -144,7 +144,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
 
 			TRYF(dusb_send(h, &pkt));
-			TRYF(ti84p_recv_acknowledge(h));
+			TRYF(ti89t_recv_acknowledge(h));
 		}
 
 		// send last chunk (type)
@@ -154,14 +154,14 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 			memcpy(pkt.data, data + i*DATA_SIZE, r);
 			
 			TRYF(dusb_send(h, &pkt));
-			TRYF(ti84p_recv_acknowledge(h));
+			TRYF(ti89t_recv_acknowledge(h));
 		}
 	}
 
 	return 0;
 }
 
-int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
+int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
 {
 	UsbPacket pkt = { 0 };
 	int i;
@@ -172,7 +172,7 @@ int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 		TRYF(dusb_recv(h, &pkt));
 		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
 			return ERR_INVALID_PACKET;
-		TRYF(ti84p_send_acknowledge(h));
+		TRYF(ti89t_send_acknowledge(h));
 
 		if(!i)
 		{

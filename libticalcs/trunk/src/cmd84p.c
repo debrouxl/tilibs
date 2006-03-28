@@ -34,7 +34,7 @@
 #define BLK_SIZE	255		// USB packets have this max length
 #define PH_SIZE		5		// packet header size
 #define DH_SIZE		6		// data header size
-#define DATA_SIZE	250		// max length of data
+#define DATA_SIZE	250		// max length of data (BLK_SIZE - PH_SIZE)
 
 // upper layer: formats packets with type and split
 
@@ -64,8 +64,8 @@ int ti84p_recv_response(CalcHandle *h)
 	if(pkt.type != PKT_RESPONSE)
 		return ERR_INVALID_PACKET;
 
-	//if(pkt.data[3] != 0xfa)
-	//	return ERR_INVALID_PACKET;
+	if(pkt.data[3] != 0xfa)
+		return ERR_INVALID_PACKET;
 
 	return 0;
 }
@@ -97,8 +97,8 @@ int ti84p_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
-	//if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
-	//	return ERR_INVALID_PACKET;
+	if(pkt.data[0] != 0xe0 && pkt.data[1] != 0x00)
+		return ERR_INVALID_PACKET;
 
 	return 0;
 }

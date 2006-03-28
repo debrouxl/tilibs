@@ -21,7 +21,7 @@
  */
 
 /*
-	TI84+ support thru DirectUsb link.
+	TI89 Titanium support thru DirectUsb link.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -41,7 +41,7 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "cmd84p_usb.h"
+#include "cmd89t.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -54,8 +54,8 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYF(ti84p_send_handshake(handle));
-	TRYF(ti84p_recv_response(handle));
+	TRYF(ti89t_send_handshake(handle));
+	TRYF(ti89t_recv_response(handle));
 
 	return 0;
 }
@@ -75,13 +75,13 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 	//TRYF(is_ready(handle));
 
-	TRYF(ti84p_send_data(handle, 10, 0x0001, data1));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	TRYF(ti89t_send_data(handle, 10, 0x0001, data1));
+	TRYF(ti89t_recv_data(handle, &size, &code, buf));
 
-	TRYF(ti84p_send_data(handle, 4, 0x0007, data2));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	TRYF(ti89t_send_data(handle, 4, 0x0007, data2));
+	TRYF(ti89t_recv_data(handle, &size, &code, buf));
 
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	TRYF(ti89t_recv_data(handle, &size, &code, buf));
 
 	return 0;
 }
@@ -181,12 +181,12 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return 0;
 }
 
-const CalcFncts calc_84p_usb = 
+const CalcFncts calc_89t_usb = 
 {
-	CALC_TI84P_USB,
-	"TI84+ (USB)",
-	N_("TI-84 Plus thru DirectLink USB"),
-	N_("TI-84 Plus thru DirectLink USB"),
+	CALC_TI89T_USB,
+	"Titanium (USB)",
+	N_("TI-89 Titanium thru DirectLink USB"),
+	N_("TI-89 Titanium thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN,
 	&is_ready,
 	&send_key,
