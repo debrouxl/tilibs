@@ -34,32 +34,9 @@
 #define PKT_LAST		0x04
 #define PKT_ACK			0x05
 
-// Data Types (or opcodes)
-
-#define OPC_NONE		0x0000
-#define OPC_SCR1		0x0001
-#define OPC_SCR2		0x0007
-
 /*********/
 /* Types */
 /*********/
-
-/*
-	Format:
-
-	| packet header    | data (250 bytes max)								 |
-	|				   |  or												 |
-	| size		  | ty | size		 | code	 | data	(246 bytes)				 |
-	|			  |    |			 |		 |								 |
-	| 00 00 00 10 | 04 | 00 00 00 0A | 00 01 | 00 03 00 01 00 00 00 00 07 D0 |
-
-	Examples:
-
-	00 00 00 05 | 02 | 00 00 00 fa
-	00 00 00 02 | 05 | e0 00
-	HH HL LH LL | 03 | hdr, data or data
-	HH HL LH LL | 04 | data
-*/
 
 typedef struct
 {
@@ -73,18 +50,6 @@ typedef struct
 	uint32_t	size;	// size of data
 	uint16_t	code;	// opcode
 } DataHdr;
-
-/*
-typedef struct
-{
-	PacketHdr	ph;
-
-	union {
-	DataHdr		dh;			// used for data with header (first block)
-	uint8_t		data[250];	// used for pure data (no data header)
-	};
-} UsbPacket;
-*/
 
 typedef struct
 {
@@ -101,18 +66,7 @@ typedef struct
 /* Functions */
 /*************/
 
-// layer 0 (manage simple packets)
-
 int dusb_send(CalcHandle* cable, UsbPacket* pkt);
 int dusb_recv(CalcHandle* cable, UsbPacket* pkt);
-
-// layer 1 (manage packet types)
-
-int dusb_send_handshake(CalcHandle *h);
-int dusb_recv_response (CalcHandle *h);
-int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data);
-int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data);
-int dusb_send_acknowledge(CalcHandle* h);
-int dusb_recv_acknowledge(CalcHandle *h);
 
 #endif

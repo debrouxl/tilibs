@@ -207,21 +207,41 @@ SOURCE=..\..\src\dbus_pkt.c
 # Begin Group "dusb"
 
 # PROP Default_Filter ""
+# Begin Group "debug"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE="..\..\..\linkguide\analysis\snif2pkt\direct-usb-protocol.txt"
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\linkguide\analysis\snif2pkt\screenshot_84.log
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\linkguide\analysis\snif2pkt\screenshot_84.pkt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\linkguide\analysis\snif2pkt\screenshot_89.log
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\linkguide\analysis\snif2pkt\screenshot_89.pkt
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\ticables.log
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\src\cmd84p_usb.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dusb_pkt.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dusb_pkt.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\linkguide\analysis\snif2pkt\test.pkt
 # End Source File
 # End Group
 # Begin Group "calcs_dusb"

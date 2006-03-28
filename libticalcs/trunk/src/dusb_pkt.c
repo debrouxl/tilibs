@@ -31,16 +31,11 @@
 #include "error.h"
 #include "macros.h"
 
-#define BLK_SIZE	255		// USB packets have this max length
-#define PH_SIZE		5		// packet header size
-#define DH_SIZE		6		// data header size
-#define DATA_SIZE	250		// max length of data
-
-// lower layer: transmit packets formatted with an header
+#define BUF_SIZE	1024
 
 int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 {
-	uint8_t buf[256]= { 0 };
+	uint8_t buf[BUF_SIZE]= { 0 };
 	uint32_t size = pkt->size + 5;
 
 	buf[0] = MSB(MSW(pkt->size));
@@ -62,7 +57,7 @@ int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 
 int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 {
-	uint8_t buf[256];
+	uint8_t buf[BUF_SIZE];
 
 	// Any packet has always an header of 5 bytes (size & type)
 	TRYF(ticables_cable_recv(handle->cable, buf, 5));
@@ -70,7 +65,9 @@ int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 	pkt->size = buf[3] | (buf[2] << 8) | (buf[1] << 16) | (buf[0] << 24);
 	pkt->type = buf[4];
 
-	if(pkt->size > 250)
+	if(handle->model == CALC_TI84P_USB && pkt->size > 250)
+		return ERR_INVALID_PACKET;
+	if(handle->model == CALC_TI89T_USB && pkt->size > 1023)
 		return ERR_INVALID_PACKET;
 
 	// Next, follows data
@@ -80,164 +77,6 @@ int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 			
 	if (handle->updat->cancel)
 		return ERR_ABORT;
-
-	return 0;
-}
-
-// upper layer: formats packets with type and split
-
-int dusb_send_handshake(CalcHandle* h)
-{
-	UsbPacket pkt = { 0 };
-
-	pkt.size = 4;
-	pkt.type = PKT_HANDSHAKE;
-	pkt.data[2] = 0x04;
-	pkt.data[3] = 0x00;
-
-	TRYF(dusb_send(h, &pkt));
-
-	return 0;
-}
-
-int dusb_recv_response(CalcHandle *h)
-{
-	UsbPacket pkt = { 0 };
-
-	TRYF(dusb_recv(h, &pkt));
-	
-	if(pkt.size != 4)
-		return ERR_INVALID_PACKET;
-
-	if(pkt.type != PKT_RESPONSE)
-		return ERR_INVALID_PACKET;
-
-	if(pkt.data[3] != 0xfa)
-		return ERR_INVALID_PACKET;
-
-	return 0;
-}
-
-int dusb_send_acknowledge(CalcHandle* h)
-{
-	UsbPacket pkt = { 0 };
-
-	pkt.size = 2;
-	pkt.type = PKT_ACK;
-	pkt.data[0] = 0x00;
-	pkt.data[1] = 0x00;
-
-	TRYF(dusb_send(h, &pkt));
-
-	return 0;
-}
-
-int dusb_recv_acknowledge(CalcHandle *h)
-{
-	UsbPacket pkt = { 0 };
-
-	TRYF(dusb_recv(h, &pkt));
-	
-	pkt.size = pkt.size;
-	if(pkt.size != 2)
-		return ERR_INVALID_PACKET;
-
-	if(pkt.type != PKT_ACK)
-		return ERR_INVALID_PACKET;
-
-	//if(pkt.data[0] != 0x00 && pkt.data[1] != 0x00)
-	//	return ERR_INVALID_PACKET;
-
-	return 0;
-}
-
-int dusb_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data)
-{
-	UsbPacket pkt = { 0 };
-	int i, r, q;
-
-	if(size <= DATA_SIZE - DH_SIZE)
-	{
-		// we have a single packet which is the last one, too
-		pkt.size = size + DH_SIZE;
-		pkt.type = PKT_LAST;
-		pkt.hdr.size = GUINT32_TO_BE(size);
-		pkt.hdr.code = GUINT16_TO_BE(code);
-		memcpy(&pkt.data[DH_SIZE], data, size);
-	
-		TRYF(dusb_send(h, &pkt));
-		TRYF(dusb_recv_acknowledge(h));
-	}
-	else
-	{
-		// we have more than one packet: first packet have data header
-		pkt.size = DATA_SIZE;
-		pkt.type = PKT_DATA;
-		pkt.hdr.size = GUINT32_TO_BE(size);
-		pkt.hdr.code = GUINT16_TO_BE(code);
-		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
-
-		TRYF(dusb_send(h, &pkt));
-		TRYF(dusb_recv_acknowledge(h));
-
-		// other packets doesn't have data header but last one has a different type
-		q = size / DATA_SIZE;
-		r = size % DATA_SIZE;
-
-		// send full chunks (no header)
-		for(i = 1; i < q; i++)
-		{
-			pkt.size = DATA_SIZE;
-			pkt.type = PKT_DATA;
-			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
-
-			TRYF(dusb_send(h, &pkt));
-			TRYF(dusb_recv_acknowledge(h));
-		}
-
-		// send last chunk (type)
-		{
-			pkt.size = r;
-			pkt.type = PKT_LAST;
-			memcpy(pkt.data, data + i*DATA_SIZE, r);
-			
-			TRYF(dusb_send(h, &pkt));
-			TRYF(dusb_recv_acknowledge(h));
-		}
-	}
-
-	return 0;
-}
-
-int dusb_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
-{
-	UsbPacket pkt = { 0 };
-	int i;
-
-	i = 0;
-	do
-	{
-		TRYF(dusb_recv(h, &pkt));
-		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
-			return ERR_INVALID_PACKET;
-		TRYF(dusb_send_acknowledge(h));
-
-		if(!i)
-		{
-			// first packet has a data header
-			*size = GUINT32_FROM_BE(pkt.hdr.size);
-			*code = GUINT16_FROM_BE(pkt.hdr.code);
-			memcpy(data, pkt.data, pkt.size - DH_SIZE);
-		}
-		else
-		{
-			// others have more data
-			memcpy(data, pkt.data, pkt.size);
-		}
-
-		i++;
-
-	} while(pkt.type != PKT_LAST);
 
 	return 0;
 }
