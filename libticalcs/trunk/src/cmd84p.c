@@ -76,7 +76,7 @@ int ti84p_send_acknowledge(CalcHandle* h)
 
 	pkt.size = 2;
 	pkt.type = PKT_ACK;
-	pkt.data[0] = 0x00;
+	pkt.data[0] = 0xE0;
 	pkt.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &pkt));
@@ -97,7 +97,7 @@ int ti84p_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.data[0] != 0xe0 && pkt.data[1] != 0x00)
+	if(pkt.data[0] != 0xE0 && pkt.data[1] != 0x00)
 		return ERR_INVALID_PACKET;
 
 	return 0;

@@ -70,13 +70,45 @@ int ti89t_recv_response(CalcHandle *h)
 	return 0;
 }
 
+int ti89t_send_response(CalcHandle* h)
+{
+	UsbPacket pkt = { 0 };
+
+	pkt.size = 4;
+	pkt.type = PKT_RESPONSE;
+	pkt.data[2] = 0x03;
+	pkt.data[3] = 0xff;
+
+	TRYF(dusb_send(h, &pkt));
+
+	return 0;
+}
+
+int ti89t_recv_handshake(CalcHandle *h)
+{
+	UsbPacket pkt = { 0 };
+
+	TRYF(dusb_recv(h, &pkt));
+	
+	if(pkt.size != 4)
+		return ERR_INVALID_PACKET;
+
+	if(pkt.type != PKT_HANDSHAKE)
+		return ERR_INVALID_PACKET;
+
+	if(pkt.data[2] != 0x03 && pkt.data[3] != 0xff)
+		return ERR_INVALID_PACKET;
+
+	return 0;
+}
+
 int ti89t_send_acknowledge(CalcHandle* h)
 {
 	UsbPacket pkt = { 0 };
 
 	pkt.size = 2;
 	pkt.type = PKT_ACK;
-	pkt.data[0] = 0x00;
+	pkt.data[0] = 0xE0;
 	pkt.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &pkt));
@@ -97,7 +129,7 @@ int ti89t_recv_acknowledge(CalcHandle *h)
 	if(pkt.type != PKT_ACK)
 		return ERR_INVALID_PACKET;
 
-	if(pkt.data[0] != 0xe0 && pkt.data[1] != 0x00)
+	if(pkt.data[0] != 0xE0 && pkt.data[1] != 0x00)
 		return ERR_INVALID_PACKET;
 
 	return 0;
@@ -165,8 +197,9 @@ int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 {
 	UsbPacket pkt = { 0 };
 	int i;
+	long offset = 0;
 
-	i = 0;
+	offset = i = 0;
 	do
 	{
 		TRYF(dusb_recv(h, &pkt));
@@ -174,20 +207,20 @@ int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 			return ERR_INVALID_PACKET;
 		TRYF(ti89t_send_acknowledge(h));
 
-		if(!i)
+		if(!i++)
 		{
 			// first packet has a data header
 			*size = GUINT32_FROM_BE(pkt.hdr.size);
 			*code = GUINT16_FROM_BE(pkt.hdr.code);
-			memcpy(data, pkt.data, pkt.size - DH_SIZE);
+			memcpy(data, &pkt.data[DH_SIZE], pkt.size - DH_SIZE);
+			offset = pkt.size - DH_SIZE;
 		}
 		else
 		{
 			// others have more data
-			memcpy(data, pkt.data, pkt.size);
+			memcpy(data + offset, pkt.data, pkt.size);
+			offset += pkt.size;
 		}
-
-		i++;
 
 	} while(pkt.type != PKT_LAST);
 
