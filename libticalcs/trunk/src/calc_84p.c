@@ -69,19 +69,30 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 {
 	uint8_t data1[10] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0};
 	uint8_t data2[4] = { 0x00, 0x01, 0x00, 0x22 };
-	uint8_t buf[65536];
+	uint8_t buf[1024];
 	uint32_t size;
 	uint16_t code;
 
-	//TRYF(is_ready(handle));
+	sc->width = TI84P_COLS;
+	sc->height = TI84P_ROWS;
+	sc->clipped_width = TI84P_COLS;
+	sc->clipped_height = TI84P_ROWS;
 
 	TRYF(ti84p_send_data(handle, 10, 0x0001, data1));
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
 
 	TRYF(ti84p_send_data(handle, 4, 0x0007, data2));
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-
+	printf("code = %04x\n", code);
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	printf("code = %04x\n", code);
+	printf("size = %04x\n", size);
+
+	// Allocate and copy into bitmap
+	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS * sizeof(uint8_t) / 8);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+	memcpy(*bitmap, buf+7, size-7);
 
 	return 0;
 }

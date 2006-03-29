@@ -196,10 +196,9 @@ int ti89t_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
 {
 	UsbPacket pkt = { 0 };
-	int i;
+	int i = 0;
 	long offset = 0;
 
-	offset = i = 0;
 	do
 	{
 		TRYF(dusb_recv(h, &pkt));

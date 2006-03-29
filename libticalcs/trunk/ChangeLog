@@ -10,6 +10,9 @@ To do :
 
 Log:
 
+- 25/03/2006, version 0.0.8: roms
+	Work on DirectLink in progress.
+
 - 16/03/2006, version 0.0.7: roms
 	- fixed bug in TI92 recv_backup
 	- added periodic refresh from callbacks

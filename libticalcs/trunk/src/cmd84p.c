@@ -164,9 +164,9 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data)
 {
 	UsbPacket pkt = { 0 };
-	int i;
+	int i = 0;
+	long offset = 0;
 
-	i = 0;
 	do
 	{
 		TRYF(dusb_recv(h, &pkt));
@@ -174,20 +174,20 @@ int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 			return ERR_INVALID_PACKET;
 		TRYF(ti84p_send_acknowledge(h));
 
-		if(!i)
+		if(!i++)
 		{
 			// first packet has a data header
 			*size = GUINT32_FROM_BE(pkt.hdr.size);
 			*code = GUINT16_FROM_BE(pkt.hdr.code);
-			memcpy(data, pkt.data, pkt.size - DH_SIZE);
+			memcpy(data, &pkt.data[DH_SIZE], pkt.size - DH_SIZE);
+			offset = pkt.size - DH_SIZE;
 		}
 		else
 		{
 			// others have more data
-			memcpy(data, pkt.data, pkt.size);
+			memcpy(data + offset, pkt.data, pkt.size);
+			offset += pkt.size;
 		}
-
-		i++;
 
 	} while(pkt.type != PKT_LAST);
 
