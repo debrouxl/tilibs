@@ -48,6 +48,7 @@ int ti84p_send_handshake(CalcHandle* h)
 	pkt.data[3] = 0x00;
 
 	TRYF(dusb_send(h, &pkt));
+	ticalcs_info(" PC->TI: HSK");
 
 	return 0;
 }
@@ -57,6 +58,7 @@ int ti84p_recv_response(CalcHandle *h)
 	UsbPacket pkt = { 0 };
 
 	TRYF(dusb_recv(h, &pkt));
+	ticalcs_info(" TI->PC: ANS");
 	
 	if(pkt.size != 4)
 		return ERR_INVALID_PACKET;
@@ -80,6 +82,7 @@ int ti84p_send_acknowledge(CalcHandle* h)
 	pkt.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &pkt));
+	ticalcs_info(" PC->TI: ACK");
 
 	return 0;
 }
@@ -89,6 +92,7 @@ int ti84p_recv_acknowledge(CalcHandle *h)
 	UsbPacket pkt = { 0 };
 
 	TRYF(dusb_recv(h, &pkt));
+	ticalcs_info(" TI->PC: ACK");
 	
 	pkt.size = pkt.size;
 	if(pkt.size != 2)
@@ -118,6 +122,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 		memcpy(&pkt.data[DH_SIZE], data, size);
 	
 		TRYF(dusb_send(h, &pkt));
+		ticalcs_info(" PC->TI: DATA (code = %04x, size = %08x)", code, size);
 		TRYF(ti84p_recv_acknowledge(h));
 	}
 	else
@@ -130,6 +135,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 		memcpy(&pkt.data[DH_SIZE], data, DATA_SIZE);
 
 		TRYF(dusb_send(h, &pkt));
+		ticalcs_info(" PC->TI: DATA (code = %04x, size = %08x)", code, size);
 		TRYF(ti84p_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
@@ -144,6 +150,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 			memcpy(pkt.data, data + i*DATA_SIZE, DATA_SIZE);
 
 			TRYF(dusb_send(h, &pkt));
+			ticalcs_info(" PC->TI: DATA");
 			TRYF(ti84p_recv_acknowledge(h));
 		}
 
@@ -154,6 +161,7 @@ int ti84p_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data
 			memcpy(pkt.data, data + i*DATA_SIZE, r);
 			
 			TRYF(dusb_send(h, &pkt));
+			ticalcs_info(" PC->TI: DATA");
 			TRYF(ti84p_recv_acknowledge(h));
 		}
 	}
@@ -172,7 +180,6 @@ int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 		TRYF(dusb_recv(h, &pkt));
 		if(pkt.type != PKT_DATA && pkt.type != PKT_LAST)
 			return ERR_INVALID_PACKET;
-		TRYF(ti84p_send_acknowledge(h));
 
 		if(!i++)
 		{
@@ -181,13 +188,17 @@ int ti84p_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data
 			*code = GUINT16_FROM_BE(pkt.hdr.code);
 			memcpy(data, &pkt.data[DH_SIZE], pkt.size - DH_SIZE);
 			offset = pkt.size - DH_SIZE;
+			ticalcs_info(" TI->PC: DATA (code = %04x, size = %08x)", *code, *size);
 		}
 		else
 		{
 			// others have more data
 			memcpy(data + offset, pkt.data, pkt.size);
 			offset += pkt.size;
+			ticalcs_info(" TI->PC: %s", pkt.type == PKT_LAST ? "LAST" : "DATA");
 		}
+
+		TRYF(ti84p_send_acknowledge(h));
 
 	} while(pkt.type != PKT_LAST);
 
