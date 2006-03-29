@@ -31,7 +31,7 @@
 #include "error.h"
 #include "macros.h"
 
-#define BUF_SIZE	1024
+#define BUF_SIZE	(1023+5)	// 255 or 1023 or 1023+5
 
 int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 {
@@ -57,7 +57,7 @@ int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 
 int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 {
-	uint8_t buf[BUF_SIZE];
+	uint8_t buf[5];
 
 	// Any packet has always an header of 5 bytes (size & type)
 	TRYF(ticables_cable_recv(handle->cable, buf, 5));
@@ -72,6 +72,7 @@ int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 
 	// Next, follows data
 	ticables_progress_reset(handle->cable);
+
 	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->size));
 	ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			

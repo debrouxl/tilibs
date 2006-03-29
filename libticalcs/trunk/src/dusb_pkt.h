@@ -56,9 +56,10 @@ typedef struct
 	uint32_t	size;	// size of packet
 	uint8_t		type;	// type of packet
 
-	union {
-	DataHdr		hdr;		// used for data with header (first block)
-	uint8_t		data[250];	// used for pure data (no data header)
+	union
+	{
+		DataHdr		hdr;		// used for data with header (first block)
+		uint8_t		data[1023];	// used for pure data (no data header)
 	};
 } UsbPacket;
 
