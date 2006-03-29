@@ -48,7 +48,7 @@
 #define snprintf _snprintf
 #endif
 
-// Screen coordinates of the TI83+
+// Screen coordinates of the Titanium
 #define TI89T_ROWS			128
 #define TI89T_COLS			240
 #define TI89T_ROWS_VISIBLE	100
@@ -69,7 +69,6 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	//uint8_t data1[10] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0};
 	uint8_t data2[4] = { 0x00, 0x01, 0x00, 0x22 };
 	uint8_t buf[4096];
 	uint32_t size;
@@ -80,11 +79,11 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_width = TI89T_COLS_VISIBLE;
 	sc->clipped_height = TI89T_ROWS_VISIBLE;
 
-	//TRYF(ti89t_send_data(handle, 10, 0x0001, data1));
-	//TRYF(ti89t_recv_data(handle, &size, &code, buf));
-
 	TRYF(ti89t_send_data(handle, 4, 0x0007, data2));
+
 	TRYF(ti89t_recv_data(handle, &size, &code, buf));
+	if(code != 0x0008)
+		return ERR_INVALID_PACKET;
 
 	// Allocate and copy into bitmap
 	*bitmap = (uint8_t *) malloc(TI89T_COLS * TI89T_ROWS * sizeof(uint8_t) / 8);
