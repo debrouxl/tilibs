@@ -49,8 +49,10 @@
 #endif
 
 // Screen coordinates of the TI83+
-#define TI73_ROWS  64
-#define TI73_COLS  96
+#define TI89T_ROWS			128
+#define TI89T_COLS			240
+#define TI89T_ROWS_VISIBLE	100
+#define TI89T_COLS_VISIBLE	160
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -69,11 +71,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 {
 	uint8_t data1[10] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0};
 	uint8_t data2[4] = { 0x00, 0x01, 0x00, 0x22 };
-	uint8_t buf[65536];
+	uint8_t buf[4096];
 	uint32_t size;
 	uint16_t code;
 
-	//TRYF(is_ready(handle));
+	sc->width = TI89T_COLS;
+	sc->height = TI89T_ROWS;
+	sc->clipped_width = TI89T_COLS_VISIBLE;
+	sc->clipped_height = TI89T_ROWS_VISIBLE;
 
 	TRYF(ti89t_send_data(handle, 10, 0x0001, data1));
 	TRYF(ti89t_recv_data(handle, &size, &code, buf));
@@ -81,7 +86,21 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti89t_send_data(handle, 4, 0x0007, data2));
 	TRYF(ti89t_recv_data(handle, &size, &code, buf));
 
-	TRYF(ti89t_recv_data(handle, &size, &code, buf));
+	// Allocate and copy into bitmap
+	*bitmap = (uint8_t *) malloc(TI89T_COLS * TI89T_ROWS * sizeof(uint8_t) / 8);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+	memcpy(*bitmap, buf+7, size-7);
+
+	// Clip the unused part of the screen
+	if(sc->format == SCREEN_CLIPPED)
+	{
+		int i, j, k;
+
+		for(i = 0, j = 0; j < TI89T_ROWS_VISIBLE; j++)
+			for(k = 0; k < (TI89T_COLS_VISIBLE >> 3); k++)
+				(*bitmap)[i++] = (*bitmap)[j * (TI89T_COLS >> 3) + k];
+	}
 
 	return 0;
 }

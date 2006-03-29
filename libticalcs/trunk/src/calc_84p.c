@@ -49,8 +49,8 @@
 #endif
 
 // Screen coordinates of the TI83+
-#define TI73_ROWS  64
-#define TI73_COLS  96
+#define TI84P_ROWS  64
+#define TI84P_COLS  96
 
 static int		is_ready	(CalcHandle* handle)
 {
