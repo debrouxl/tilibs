@@ -168,6 +168,66 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	uint8_t buf[16] = { 0 };
+	uint32_t size;
+	uint16_t code;
+
+	uint32_t calc_time;
+	struct tm ref, cur;
+	time_t r, c, now;
+
+	time(&now);
+	memcpy(&ref, localtime(&now), sizeof(struct tm));
+
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	//ref.tm_isdst = 1;
+	r = mktime(&ref);
+
+	cur.tm_year = clock->year - 1900;
+	cur.tm_mon = clock->month - 1;
+	cur.tm_mday = clock->day;	
+	cur.tm_hour = clock->hours;
+	cur.tm_min = clock->minutes;
+	cur.tm_sec = clock->seconds;
+	cur.tm_isdst = 1;
+	c = mktime(&cur);
+	
+	calc_time = (uint32_t)difftime(c, r);
+
+    snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+    update_label();
+
+	buf[0] = 0x00; buf[1] = 0x25; buf[2] = 0x00; buf[3] = 0x04;
+	buf[4] = MSB(MSW(calc_time));
+    buf[5] = LSB(MSW(calc_time));
+    buf[6] = MSB(LSW(calc_time));
+    buf[7] = LSB(LSW(calc_time));
+	TRYF(ti84p_send_data(handle, 8, 0x000e, buf));
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0xaa00)
+		return ERR_INVALID_OPC;
+
+	buf[0] = 0x00; buf[1] = 0x27; buf[2] = 0x00; buf[3] = 0x01;
+	buf[4] = clock->date_format == 3 ? 0 : clock->date_format;
+	TRYF(ti84p_send_data(handle, 5, 0x000e, buf));
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0xaa00)
+		return ERR_INVALID_OPC;
+
+	buf[0] = 0x00; buf[1] = 0x28; buf[2] = 0x00; buf[3] = 0x01;
+	buf[4] = clock->time_format == 24 ? 1 : 0;
+	TRYF(ti84p_send_data(handle, 5, 0x000e, buf));
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0xaa00)
+		return ERR_INVALID_OPC;
+
 	return 0;
 }
 
@@ -183,6 +243,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	time_t r, c, now;
 
 	// get raw clock
+	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+    update_label();
+
 	TRYF(ti84p_send_data(handle, sizeof(req), 0x0007, req));
 
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
@@ -222,8 +285,6 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     clock->date_format = buf[16] == 0 ? 3 : buf[16];
     clock->time_format = buf[22] ? 24 : 12;
 	//printf("(%i %i %i)\n", buf[16], buf[22], buf[28]);
-
-	tifiles_hexdump(buf, size);
 
 	return 0;
 }

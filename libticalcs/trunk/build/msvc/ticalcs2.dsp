@@ -216,6 +216,10 @@ SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\clock_get.pkt"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\clock_set.pkt"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\..\linkguide\analysis\snif2pkt\direct-usb-protocol.txt"
 # End Source File
 # Begin Source File
