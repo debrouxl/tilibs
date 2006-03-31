@@ -218,6 +218,15 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
+  case ERR_INVALID_OPC:
+		strcpy(error_msg, _("Msg: Invalid USB opcode."));
+		strcat(error_msg, "\n");
+		strcat(error_msg,
+		   _
+		   ("Cause: TiLP received an unexpected opcode ID, probably due to a transmission error."));
+		*message = g_strdup(error_msg);
+    break;
+
 
 	default:
 		// propagate error code

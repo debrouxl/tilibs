@@ -25,8 +25,7 @@
 // Data Types (or opcodes)
 
 #define TI84P_OPC_NONE		0x0000
-#define TI84P_OPC_SCR1		0x0001
-#define TI84P_OPC_SCR2		0x0007
+#define TI84P_OPC_SCR		0x0007
 
 int ti84p_send_handshake(CalcHandle *h);
 int ti84p_recv_response (CalcHandle *h);

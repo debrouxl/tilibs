@@ -34,6 +34,8 @@
 #define PKT_LAST		0x04
 #define PKT_ACK			0x05
 
+#define OPC_SCREEN		0x0007	// screenshot request
+
 /*********/
 /* Types */
 /*********/

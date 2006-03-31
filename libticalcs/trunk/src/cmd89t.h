@@ -25,8 +25,7 @@
 // Data Types (or opcodes)
 
 #define TI89T_OPC_NONE		0x0000
-#define TI89T_OPC_SCR1		0x0001
-#define TI89T_OPC_SCR2		0x0007
+#define TI89T_OPC_SCR		0x0007
 
 int ti89t_send_handshake(CalcHandle *h);
 int ti89t_recv_response (CalcHandle *h);

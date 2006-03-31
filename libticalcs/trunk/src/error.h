@@ -62,6 +62,9 @@ typedef enum
 
 	ERR_ROM_ERROR,
 
+// ---
+	ERR_INVALID_OPC,		// Invalid opcode
+
 } CalcError;
 
 #endif

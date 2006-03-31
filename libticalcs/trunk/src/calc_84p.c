@@ -54,8 +54,18 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
+	uint8_t req[] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0 };
+	uint8_t buf[16];
+	uint32_t size;
+	uint16_t code;
+
 	TRYF(ti84p_send_handshake(handle));
 	TRYF(ti84p_recv_response(handle));
+
+	TRYF(ti84p_send_data(handle, sizeof(req), 0x0001, req));
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0x0012)
+		return ERR_INVALID_OPC;
 
 	return 0;
 }
@@ -67,7 +77,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint8_t data2[4] = { 0x00, 0x01, 0x00, 0x22 };
+	uint8_t req[] = { 0x00, 0x01, 0x00, 0x22 };
 	uint8_t buf[1024];
 	uint32_t size;
 	uint16_t code;
@@ -77,15 +87,15 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_width = TI84P_COLS;
 	sc->clipped_height = TI84P_ROWS;
 
-	TRYF(ti84p_send_data(handle, 4, 0x0007, data2));
+	TRYF(ti84p_send_data(handle, sizeof(req), 0x0007, req));
 
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
 	if(code != 0xbb00)
-		return ERR_INVALID_PACKET;
+		return ERR_INVALID_OPC;
 
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
 	if(code != 0x0008)
-		return ERR_INVALID_PACKET;
+		return ERR_INVALID_OPC;
 
 	// Allocate and copy into bitmap
 	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS * sizeof(uint8_t) / 8);
@@ -163,6 +173,58 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	uint8_t req[] = { 0x00, 0x04, 0x00, 0x25, 0x00, 0x27, 0x00, 0x28, 0x00, 0x24 };
+	uint8_t buf[32];
+	uint32_t size;
+	uint16_t code;
+
+	uint32_t calc_time;
+	struct tm ref, *cur;
+	time_t r, c, now;
+
+	// get raw clock
+	TRYF(ti84p_send_data(handle, sizeof(req), 0x0007, req));
+
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0xbb00)
+		return ERR_INVALID_OPC;
+
+	TRYF(ti84p_recv_data(handle, &size, &code, buf));
+	if(code != 0x0008)
+		return ERR_INVALID_OPC;
+
+	// and computes
+	calc_time = (buf[7+0] << 24) | (buf[7+1] << 16) | (buf[7+2] << 8) | buf[7+3];
+
+	time(&now);	// retrieve current DST setting
+	memcpy(&ref, localtime(&now), sizeof(struct tm));;
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	//ref.tm_isdst = 1;
+	r = mktime(&ref);
+
+	c = r + calc_time;
+	cur = localtime(&c);
+
+	clock->year = cur->tm_year + 1900;
+	clock->month = cur->tm_mon + 1;
+	clock->day = cur->tm_mday;
+	clock->hours = cur->tm_hour;
+	clock->minutes = cur->tm_min;
+	clock->seconds = cur->tm_sec;
+
+    clock->date_format = buf[16] == 0 ? 3 : buf[16];
+    clock->time_format = buf[22] ? 24 : 12;
+	//printf("(%i %i %i)\n", buf[16], buf[22], buf[28]);
+
+	tifiles_hexdump(buf, size);
+
 	return 0;
 }
 
@@ -197,7 +259,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN,
+	OPS_ISREADY | OPS_SCREEN | OPS_CLOCK,
 	&is_ready,
 	&send_key,
 	&recv_screen,
