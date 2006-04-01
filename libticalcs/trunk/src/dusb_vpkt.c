@@ -39,6 +39,22 @@
 #define BLK_SIZE	255		// USB packets have this max length
 #define DATA_SIZE	250		// max length of data (BLK_SIZE - PH_SIZE)
 
+// Buffer allocation
+
+VirtualPacket*  vtl_pkt_new(uint32_t size)
+{
+	VirtualPacket* vtl = calloc(1, sizeof(VirtualPacket));
+	vtl->data = calloc(1, size + DH_SIZE);
+
+	return vtl;
+}
+
+void			vtl_pkt_del(VirtualPacket* vtl)
+{
+	free(vtl->data);
+	free(vtl);
+}
+
 // Raw packets
 
 int dusb_buffer_size_request(CalcHandle* h)
@@ -61,7 +77,7 @@ int dusb_buffer_size_alloc(CalcHandle* h)
 	RawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
-	ticalcs_info(" TI->PC: response");
+	ticalcs_info(" TI->PC: Buffer Size Allocation");
 	
 	if(raw.size != 4)
 		return ERR_INVALID_PACKET;

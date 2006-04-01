@@ -92,7 +92,7 @@ LINK32=link.exe
 # Begin Group "TI calcs"
 
 # PROP Default_Filter ""
-# Begin Group "calcs_dbus"
+# Begin Group "dbus_calcs"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -176,7 +176,59 @@ SOURCE=..\..\src\keys92p.h
 SOURCE=..\..\src\tikeys.c
 # End Source File
 # End Group
-# Begin Group "dbus"
+# Begin Group "dusb_cmds"
+
+# PROP Default_Filter ""
+# Begin Group "debug"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\screenshot.pkt"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\..\..\ticables.log
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\usb-protocol.txt"
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\..\src\cmd84p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dusb_rpkt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dusb_rpkt.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dusb_vpkt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dusb_vpkt.h
+# End Source File
+# End Group
+# Begin Group "dusb_calcs"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\calc_84p.c
+# End Source File
+# End Group
+# Begin Group "dbus_cmds"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -203,42 +255,6 @@ SOURCE=..\..\src\cmd92.c
 
 SOURCE=..\..\src\dbus_pkt.c
 # End Source File
-# End Group
-# Begin Group "dusb"
-
-# PROP Default_Filter ""
-# Begin Group "debug"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\linkguide\usb-protocol.txt"
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\..\src\dusb_rpkt.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dusb_rpkt.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dusb_vpkt.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\dusb_vpkt.h
-# End Source File
-# End Group
-# Begin Group "calcs_dusb"
-
-# PROP Default_Filter ""
 # End Group
 # Begin Source File
 

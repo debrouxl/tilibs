@@ -41,6 +41,7 @@
 #include "pause.h"
 #include "macros.h"
 
+#include "dusb_vpkt.h"
 #include "cmd84p.h"
 
 #ifdef __WIN32__
@@ -54,19 +55,7 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	uint8_t req[] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0 };
-	uint8_t buf[16];
-	uint32_t size;
-	uint16_t code;
-
-	TRYF(ti84p_send_handshake(handle));
-	TRYF(ti84p_recv_response(handle));
-
-	TRYF(ti84p_send_data(handle, sizeof(req), 0x0001, req));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0x0012)
-		return ERR_INVALID_OPC;
-
+	TRYF(ti84p_set_mode(handle));
 	return 0;
 }
 
@@ -77,6 +66,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	/*
 	uint8_t req[] = { 0x00, 0x01, 0x00, 0x22 };
 	uint8_t buf[1024];
 	uint32_t size;
@@ -102,7 +92,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
 	memcpy(*bitmap, buf+7, size-7);
-
+*/
 	return 0;
 }
 
@@ -168,6 +158,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	/*
 	uint8_t buf[16] = { 0 };
 	uint32_t size;
 	uint16_t code;
@@ -227,12 +218,13 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	TRYF(ti84p_recv_data(handle, &size, &code, buf));
 	if(code != 0xaa00)
 		return ERR_INVALID_OPC;
-
+*/
 	return 0;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	/*
 	uint8_t req[] = { 0x00, 0x04, 0x00, 0x25, 0x00, 0x27, 0x00, 0x28, 0x00, 0x24 };
 	uint8_t buf[32];
 	uint32_t size;
@@ -285,7 +277,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     clock->date_format = buf[16] == 0 ? 3 : buf[16];
     clock->time_format = buf[22] ? 24 : 12;
 	//printf("(%i %i %i)\n", buf[16], buf[22], buf[28]);
-
+*/
 	return 0;
 }
 
@@ -320,7 +312,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN | OPS_CLOCK,
+	OPS_ISREADY,
 	&is_ready,
 	&send_key,
 	&recv_screen,
