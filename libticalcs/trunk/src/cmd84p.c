@@ -40,12 +40,26 @@ int ti84p_set_mode(CalcHandle *h)
 
 	mode.arg1 = 3;
 	mode.arg2 = 1;
-	mode.arg5 = 0x7d0;
+	mode.arg5 = 0x07d0;
 
 	TRYF(dusb_buffer_size_request(h));
 	TRYF(dusb_buffer_size_alloc(h));
 
+	vtl->data[0] = MSB(mode.arg1);
+	vtl->data[1] = LSB(mode.arg1);
+	vtl->data[2] = MSB(mode.arg2);
+	vtl->data[3] = LSB(mode.arg2);
+	vtl->data[4] = MSB(mode.arg3);
+	vtl->data[5] = LSB(mode.arg3);
+	vtl->data[6] = MSB(mode.arg4);
+	vtl->data[7] = LSB(mode.arg4);
+	vtl->data[8] = MSB(mode.arg5);
+	vtl->data[9] = LSB(mode.arg5);
+	vtl->size = sizeof(mode);
+	vtl->type = VPKT_PING;
+
 	TRYF(dusb_send_data(h, vtl));
+	TRYF(dusb_recv_data(h, vtl));
 
 	return 0;
 }

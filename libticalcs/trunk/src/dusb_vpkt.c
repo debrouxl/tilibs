@@ -216,7 +216,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->type = (raw.data[4] << 8) || (raw.data[5] << 0);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
-			ticalcs_info(" TI->PC: data (type = %04x, size = %08x)", vtl->type, vtl->size);
+			ticalcs_info(" TI->PC: Virtual Packet Data Final (type = %04x, size = %08x)", vtl->type, vtl->size);
 		}
 		else
 		{
