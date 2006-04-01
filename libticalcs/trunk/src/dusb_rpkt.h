@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id$ */
+/* $Id: packets.h 1179 2005-06-06 14:42:32Z roms $ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Liévin
@@ -19,19 +19,44 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS_CMD89T__
-#define __TICALCS_CMD89T__
+#ifndef __DUSB_RPKT__
+#define __DUSB_RPKT__
 
-// Data Types (or opcodes)
+#define MAX_RAW_SIZE	1023
 
-#define TI89T_OPC_NONE		0x0000
-#define TI89T_OPC_SCR		0x0007
+// Raw packet types
 
-int ti89t_send_handshake(CalcHandle *h);
-int ti89t_recv_response (CalcHandle *h);
-int ti89t_send_data(CalcHandle *h, uint32_t  size, uint16_t  code, uint8_t *data);
-int ti89t_recv_data(CalcHandle *h, uint32_t *size, uint16_t *code, uint8_t *data);
-int ti89t_send_acknowledge(CalcHandle* h);
-int ti89t_recv_acknowledge(CalcHandle *h);
+#define RPKT_BUF_SIZE_REQ		1
+#define RPKT_BUF_SIZE_ALLOC		2
+
+#define RPKT_VIRT_DATA			3
+#define RPKT_VIRT_DATA_LAST		4
+#define RPKT_VIRT_DATA_ACK		5
+
+// Convenient structures
+
+typedef struct
+{
+	uint32_t	size;	// raw packet size
+	uint8_t		type;	// raw packet type
+} RawPktHdr;
+
+typedef struct
+{
+	uint32_t	size;	// raw packet size
+	uint8_t		type;	// raw packet type
+
+	uint8_t		data[MAX_RAW_SIZE];	// raw packet data (should be allocated)
+} RawPacket;
+
+#define PH_SIZE		(4+1)
+
+// Functions
+
+RawPacket*  raw_pkt_new(uint32_t size);
+void		raw_pkt_del(RawPacket* pkt);
+
+int dusb_send(CalcHandle* cable, RawPacket* pkt);
+int dusb_recv(CalcHandle* cable, RawPacket* pkt);
 
 #endif

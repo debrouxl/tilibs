@@ -212,45 +212,33 @@ SOURCE=..\..\src\dbus_pkt.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\clock_get.pkt"
+SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\clock_set.pkt"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\linkguide\analysis\snif2pkt\direct-usb-protocol.txt"
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\..\..\ticables.log
+SOURCE="..\..\..\linkguide\usb-protocol.txt"
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\cmd84p.c
+SOURCE=..\..\src\dusb_rpkt.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\cmd89t.c
+SOURCE=..\..\src\dusb_rpkt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\dusb_pkt.c
+SOURCE=..\..\src\dusb_vpkt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\dusb_vpkt.h
 # End Source File
 # End Group
 # Begin Group "calcs_dusb"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\calc_84p.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\calc_89t.c
-# End Source File
 # End Group
 # Begin Source File
 

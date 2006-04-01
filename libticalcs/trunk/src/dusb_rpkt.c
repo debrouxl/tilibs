@@ -20,22 +20,21 @@
  */
 
 /*
-	This unit manages packets from/to D-USB (DirectLink).
+	This unit manages raw packets from/to D-USB (Direct Cable).
+	Note: negociated buffer sizes are not handled at the time being.
 */
 
 #include <string.h>
 
 #include "ticalcs.h"
-#include "dusb_pkt.h"
+#include "dusb_rpkt.h"
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
 
-#define BUF_SIZE	(1023+5)	// 255 or 1023 or 1023+5
-
-int dusb_send(CalcHandle* handle, UsbPacket* pkt)
+int dusb_send(CalcHandle* handle, RawPacket* pkt)
 {
-	uint8_t buf[BUF_SIZE]= { 0 };
+	uint8_t buf[MAX_RAW_SIZE+5]= { 0 };
 	uint32_t size = pkt->size + 5;
 
 	buf[0] = MSB(MSW(pkt->size));
@@ -55,7 +54,7 @@ int dusb_send(CalcHandle* handle, UsbPacket* pkt)
 	return 0;
 }
 
-int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
+int dusb_recv(CalcHandle* handle, RawPacket* pkt)
 {
 	uint8_t buf[5];
 
@@ -81,3 +80,5 @@ int dusb_recv(CalcHandle* handle, UsbPacket* pkt)
 
 	return 0;
 }
+
+
