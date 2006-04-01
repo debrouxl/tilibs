@@ -696,28 +696,31 @@ int ti9x_content_display_flash(Ti9xFlash *content)
  **/
 int ti9x_file_display(const char *filename)
 {
-  Ti9xRegular content1;
-  Ti9xBackup content2;
-  Ti9xFlash content3;
+  Ti9xRegular *content1;
+  Ti9xBackup *content2;
+  Ti9xFlash *content3;
 
   // the testing order is important: regular before backup (due to TI89/92+)
   if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) 
   {
-    ti9x_file_read_flash(filename, &content3);
-    ti9x_content_display_flash(&content3);
-    tifiles_content_delete_flash(&content3);
+	content3 = tifiles_content_create_flash(CALC_TI92);
+    ti9x_file_read_flash(filename, content3);
+    ti9x_content_display_flash(content3);
+    tifiles_content_delete_flash(content3);
   } 
   else if (tifiles_file_is_regular(filename)) 
   {
-    ti9x_file_read_regular(filename, &content1);
-    ti9x_content_display_regular(&content1);
-    tifiles_content_delete_regular(&content1);
+	content1 = tifiles_content_create_regular(CALC_TI92);
+    ti9x_file_read_regular(filename, content1);
+    ti9x_content_display_regular(content1);
+    tifiles_content_delete_regular(content1);
   } 
   else if (tifiles_file_is_backup(filename)) 
   {
-    ti9x_file_read_backup(filename, &content2);
-    ti9x_content_display_backup(&content2);
-    tifiles_content_delete_backup(&content2);
+	content2 = tifiles_content_create_backup(CALC_TI92);
+    ti9x_file_read_backup(filename, content2);
+    ti9x_content_display_backup(content2);
+    tifiles_content_delete_backup(content2);
   } 
   else
   {

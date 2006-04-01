@@ -903,27 +903,30 @@ int ti8x_content_display_flash(Ti8xFlash *content)
  **/
 int ti8x_file_display(const char *filename)
 {
-  Ti8xRegular content1;
-  Ti8xBackup content2;
-  Ti8xFlash content3;
+  Ti8xRegular *content1;
+  Ti8xBackup *content2;
+  Ti8xFlash *content3;
 
   if (tifiles_file_is_flash(filename)) 
   {
-    ti8x_file_read_flash(filename, &content3);
-    ti8x_content_display_flash(&content3);
-    tifiles_content_delete_flash(&content3);
+	content3 = tifiles_content_create_flash(CALC_TI83P);
+    ti8x_file_read_flash(filename, content3);
+    ti8x_content_display_flash(content3);
+    tifiles_content_delete_flash(content3);
   } 
   else if (tifiles_file_is_backup(filename)) 
   {
-    ti8x_file_read_backup(filename, &content2);
-    ti8x_content_display_backup(&content2);
-    tifiles_content_delete_backup(&content2);
+	content2 = tifiles_content_create_backup(CALC_NONE);
+    ti8x_file_read_backup(filename, content2);
+    ti8x_content_display_backup(content2);
+    tifiles_content_delete_backup(content2);
   } 
   else if (tifiles_file_is_regular(filename)) 
   {
-    ti8x_file_read_regular(filename, &content1);
-    ti8x_content_display_regular(&content1);
-    tifiles_content_delete_regular(&content1);
+	content1 = tifiles_content_create_regular(CALC_NONE);
+    ti8x_file_read_regular(filename, content1);
+    ti8x_content_display_regular(content1);
+    tifiles_content_delete_regular(content1);
   } 
   else 
   {

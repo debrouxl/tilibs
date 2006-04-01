@@ -37,7 +37,7 @@
 
 /**
  * tifiles_content_create_regular:
- * @model: a calculator model.
+ * @model: a calculator model or CALC_NONE.
  *
  * Allocates a #FileContent structure. Note: the calculator model is not required
  * if the content is used for file reading but is compulsory for file writing.
@@ -169,7 +169,7 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
 
 /**
  * tifiles_content_create_backup:
- * @model: a calculator model.
+ * @model: a calculator model or CALC_NONE.
  *
  * Allocates a #FileContent structure.
  *
@@ -298,7 +298,7 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
 
 /**
  * tifiles_content_create_flash:
- * @model: a calculator model.
+ * @model: a calculator model (compulsory).
  *
  * Allocates a #FileContent structure.
  *
