@@ -35,15 +35,17 @@
 #else
 # if defined(__WIN32__)
 #  include <windows.h>
-typedef BYTE uint8_t;
-typedef WORD uint16_t;
-typedef DWORD uint32_t;
-#pragma warning( push )
-#pragma warning( disable : 4142 )
-typedef unsigned char int8_t;
-typedef unsigned short int16_t;
-typedef unsigned long int32_t;
-#pragma warning( pop )
+
+typedef unsigned __int8		uint8_t;
+typedef unsigned __int16	uint16_t;
+typedef unsigned __int32	uint32_t;
+typedef unsigned __int64	uint64_t;
+
+typedef __int8 		int8_t;
+typedef __int16 	int16_t;
+typedef __int32 	int32_t;
+typedef __int64		int64_t;
+
 # elif defined(__BSD__)
 #  include <inttypes.h>
 # else
