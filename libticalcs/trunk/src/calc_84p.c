@@ -186,6 +186,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 	param.pid = PID84P_CLK_SEC;
 	param.size = 4;
+	param.data = (uint8_t *)malloc(param.size);
 	param.data[0] = MSB(MSW(calc_time));
     param.data[1] = LSB(MSW(calc_time));
     param.data[2] = MSB(LSW(calc_time));
@@ -204,7 +205,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 	param.pid = PID84P_CLK_ON;
 	param.size = 1;
-	param.data[0] = clock->on;
+	param.data[0] = clock->state;
 	ti84p_params_set(handle, &param);	
 
 	return 0;
@@ -256,7 +257,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
     clock->date_format = params[1].data[0] == 0 ? 3 : params[1].data[0];
     clock->time_format = params[2].data[0] ? 24 : 12;
-	clock->on = params[3].data[0];
+	clock->state = params[3].data[0];
 
 	del_params_array(1, params);
 

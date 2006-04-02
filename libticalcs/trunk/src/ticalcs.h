@@ -294,7 +294,7 @@ typedef struct
   uint8_t	time_format;
   uint8_t	date_format;
 
-  int		on;
+  int		state;
 } CalcClock;
 
 /**
