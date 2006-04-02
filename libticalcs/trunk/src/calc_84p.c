@@ -275,6 +275,20 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
+	uint16_t pids[] = { PID84P_OS_VERSION, PID84P_PRODUCT_NUMBER, };
+	CalcParam *params;
+
+	snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
+    update_label();
+
+	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids, &params));
+	
+	memset(infos, 0, sizeof(CalcInfos));
+	snprintf(infos->os_version, 4, "%1i.%02i", params[0].data[1], params[0].data[2]);
+	infos->mask |= INFOS_OS_VERSION;
+
+	tifiles_hexdump(params[1].data, params[1].size);
+
 	return 0;
 }
 
