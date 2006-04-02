@@ -7,12 +7,13 @@ To do :
 //- manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - allocated screenshot memory once screen is received completely
-- create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get
+- create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
 
 Log:
 
 - 25/03/2006, version 0.0.8: roms
-	Work on DirectLink in progress.
+	- bitmap for screenshot is now allocated at the end of transfer.
+	- work on DirectLink in progress.
 
 - 16/03/2006, version 0.0.7: roms
 	- fixed bug in TI92 recv_backup

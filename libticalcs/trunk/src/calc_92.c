@@ -586,12 +586,11 @@ static int		get_version(CalcHandle* handle, CalcInfos* infos)
 	TRYF(ti92_send_EOT());
 
 	memset(infos, 0, sizeof(CalcInfos));
-	strncpy(infos->os, name, 4);
-	strcpy(infos->bios, "n/a");
-	infos->hw_rev = 1;
+	strncpy(infos->os_version, name, 4);
+	infos->hw_version = 1;
+	infos->mask = INFOS_OS_VERSION | INFOS_HW_VERSION;
 
-	ticalcs_info(_("  OS: %s"), infos->os);
-	ticalcs_info(_("  BIOS: %s"), infos->bios);
+	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;

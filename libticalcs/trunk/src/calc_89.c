@@ -915,15 +915,22 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     TRYF(ti89_send_ACK());
 
 	memset(infos, 0, sizeof(CalcInfos));
-	snprintf(infos->os, 4, "%1i.%02i", buf[0], buf[1]);
-	snprintf(infos->bios, 4, "%1i.%02i", buf[2], buf[3]);
+	snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
+	snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
 	infos->battery = !buf[4];
-	infos->hw_rev  = buf[5];
-	infos->hw_id   = buf[13];
+	infos->hw_version = buf[5];
+	switch(buf[13])
+	{
+	case 1: infos->device_type = CALC_TI92P; break;
+	case 3: infos->device_type = CALC_TI89; break;
+	case 8: infos->device_type = CALC_V200; break;
+	case 9: infos->device_type = CALC_TI89T; break;
+	}
+	infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_DEVICE_TYPE | INFOS_BATTERY | INFOS_HW_VERSION;
 
 	tifiles_hexdump(buf, length);
-	ticalcs_info(_("  OS: %s"), infos->os);
-	ticalcs_info(_("  BIOS: %s"), infos->bios);
+	ticalcs_info(_("  OS: %s"), infos->os_version);
+	ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;

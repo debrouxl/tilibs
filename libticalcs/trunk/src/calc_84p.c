@@ -294,7 +294,8 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_CLOCK,
+	OPS_ISREADY | OPS_CLOCK | OPS_VERSION |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
 	&recv_screen,

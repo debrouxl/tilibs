@@ -366,6 +366,33 @@ typedef struct _CalcHandle	CalcHandle;
 typedef VarEntry	VarRequest;	// alias
 
 /**
+ * InfosMask:
+ *
+ * An enumeration which contains the different flags supported by CalcInfos:
+ **/
+typedef enum 
+{
+	INFOS_PRODUCT_NUMBER = 0, 
+	INFOS_PRODUCT_NAME,
+	INFOS_CALC_ID,
+	INFOS_HW_VERSION,
+	INFOS_LANG_ID,
+	INFOS_SUB_LANG_ID,
+	INFOS_DEVICE_TYPE,
+	INFOS_BOOT_VERSION,
+	INFOS_OS_VERSION,
+	INFOS_RAM_PHYS,
+	INFOS_RAM_USER,
+	INFOS_RAM_FREE,
+	INFOS_FLASH_PHYS,
+	INFOS_FLASH_USER,
+	INFOS_FLASH_FREE,
+	INFOS_LCD_WIDTH,
+	INFOS_LCD_HEIGHT,
+	INFOS_BATTERY,	
+} InfosMask;
+
+/**
  * CalcInfos:
  * @os: OS version like "3.01"
  * @bios: BIOS (boot) version like 2.01
@@ -374,15 +401,26 @@ typedef VarEntry	VarRequest;	// alias
  **/
 typedef struct 
 {
-	char		os[5];
-	char		bios[5];
+	uint32_t	product_number;
+	char		product_name[65];
+	uint8_t		main_calc_id[5];
+	uint16_t	hw_version;
+	uint8_t		language_id;
+	uint8_t		sub_lang_id;
+	uint16_t	device_type;
+	char		boot_version[5];
+	char		os_version[5];
+	uint64_t	ram_phys;
+	uint64_t	ram_user;
+	uint64_t	ram_free;
+	uint64_t	flash_phys;
+	uint64_t	flash_user;
+	uint64_t	flash_free;
+	uint16_t	lcd_width;
+	uint16_t	lcd_height;
 	uint8_t		battery;
-	uint8_t		hw_rev;
-	uint16_t	unknown1;
-	uint16_t	unknown2;
-	uint16_t	unknown3;
-	uint8_t		unknown4;
-	uint8_t		hw_id;
+
+	InfosMask	mask;
 } CalcInfos;
 
 /**
