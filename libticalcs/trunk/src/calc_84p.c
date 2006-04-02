@@ -83,7 +83,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		return ERR_MALLOC;
 	memcpy(*bitmap, param->data, TI84P_COLS * TI84P_ROWS / 8);
 
-	del_params_array(1, param);
+	cp_del_array(1, param);
 
 	return 0;
 }
@@ -150,7 +150,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	CalcParam param = { 0 };
+	CalcParam *param;
 
 	uint32_t calc_time;
 	struct tm ref, cur;
@@ -184,29 +184,28 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
-	param.id = PID84P_CLK_SEC;
-	param.size = 4;
-	param.data = (uint8_t *)malloc(param.size);
-	param.data[0] = MSB(MSW(calc_time));
-    param.data[1] = LSB(MSW(calc_time));
-    param.data[2] = MSB(LSW(calc_time));
-    param.data[3] = LSB(LSW(calc_time));
-	ti84p_params_set(handle, &param);
+	param = cp_new(PID84P_CLK_SEC, 4);
+	param->data[0] = MSB(MSW(calc_time));
+    param->data[1] = LSB(MSW(calc_time));
+    param->data[2] = MSB(LSW(calc_time));
+    param->data[3] = LSB(LSW(calc_time));
+	TRYF(ti84p_params_set(handle, param));
+	cp_del(param);
 
-	param.id = PID84P_CLK_DATE_FMT;
-	param.size = 1;
-	param.data[0] = clock->date_format == 3 ? 0 : clock->date_format;
-	ti84p_params_set(handle, &param);
+	param = cp_new(PID84P_CLK_DATE_FMT, 1);
+	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
+	TRYF(ti84p_params_set(handle, param));
+	cp_del(param);
 
-	param.id = PID84P_CLK_TIME_FMT;
-	param.size = 1;
-	param.data[0] = clock->time_format == 24 ? 1 : 0;
-	ti84p_params_set(handle, &param);
+	param = cp_new(PID84P_CLK_TIME_FMT, 1);
+	param->data[0] = clock->time_format == 24 ? 1 : 0;
+	TRYF(ti84p_params_set(handle, param));
+	cp_del(param);
 
-	param.id = PID84P_CLK_ON;
-	param.size = 1;
-	param.data[0] = clock->state;
-	ti84p_params_set(handle, &param);	
+	param = cp_new(PID84P_CLK_ON, 1);
+	param->data[0] = clock->state;
+	TRYF(ti84p_params_set(handle, param));	
+	cp_del(param);
 
 	return 0;
 }
@@ -259,7 +258,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     clock->time_format = params[2].data[0] ? 24 : 12;
 	clock->state = params[3].data[0];
 
-	del_params_array(1, params);
+	cp_del_array(1, params);
 
 	return 0;
 }

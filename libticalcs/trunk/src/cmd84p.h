@@ -81,7 +81,7 @@ typedef struct
 
 CalcParam*	cp_new(uint16_t id, uint16_t size);
 void		cp_del(CalcParam* cp);
-void del_params_array(int nparams, CalcParam *params);
+void		cp_del_array(int n, CalcParam *params);
 
 int ti84p_mode_set(CalcHandle *h);
 

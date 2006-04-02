@@ -66,6 +66,33 @@ int ti84p_mode_set(CalcHandle *h)
 	return 0;
 }
 
+CalcParam*	cp_new(uint16_t id, uint16_t size)
+{
+	CalcParam* cp = calloc(1, sizeof(CalcParam));
+
+	cp->id = id;
+	cp->size = size;
+	cp->data = calloc(1, size);
+
+	return cp;
+}
+
+void		cp_del(CalcParam* cp)
+{
+	free(cp->data);
+	free(cp);
+}
+
+void cp_del_array(int nparams, CalcParam *params)
+{
+	int i;
+
+	for(i = 0; i < nparams; i++)
+		if(params[i].ok)
+			free(params[i].data);
+	free(params);
+}
+
 // Request one or more calc parameters
 int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam **params)
 {
@@ -112,16 +139,6 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam *
 	vtl_pkt_del(pkt);
 
 	return 0;
-}
-
-void del_params_array(int nparams, CalcParam *params)
-{
-	int i;
-
-	for(i = 0; i < nparams; i++)
-		if(params[i].ok)
-			free(params[i].data);
-	free(params);
 }
 
 // Request one or more calc parameters
