@@ -68,7 +68,7 @@ static const VtlPktName vpkt_types[] =
 
 const char* vpkt_type2name(uint16_t id)
 {
-	VtlPktName *p;
+	const VtlPktName *p;
 
 	for(p = vpkt_types; p->name != NULL; p++)
 		if(p->id == id)
@@ -79,9 +79,12 @@ const char* vpkt_type2name(uint16_t id)
 
 // Buffer allocation
 
-VirtualPacket*  vtl_pkt_new(uint32_t size)
+VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 {
 	VirtualPacket* vtl = calloc(1, sizeof(VirtualPacket));
+
+	vtl->size = size;
+	vtl->type = type;
 	vtl->data = calloc(1, size + DH_SIZE);
 
 	return vtl;
@@ -237,6 +240,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 	return 0;
 }
 
+// beware: data field may be re-allocated in size !
 int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 {
 	RawPacket raw = { 0 };
@@ -254,6 +258,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			// first packet has a data header
 			vtl->size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
 			vtl->type = (raw.data[4] << 8) | (raw.data[5] << 0);
+			vtl->data = realloc(vtl->data, vtl->size);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
 			ticalcs_info("  TI->PC: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
