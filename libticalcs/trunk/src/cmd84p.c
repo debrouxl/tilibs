@@ -38,10 +38,11 @@ int ti84p_set_mode(CalcHandle *h)
 	ModeSet mode = { 0 };
 	VirtualPacket* vtl = vtl_pkt_new(sizeof(mode));
 
-	mode.arg1 = 3;
+	mode.arg1 = 3;	// normal operation mode
 	mode.arg2 = 1;
 	mode.arg5 = 0x07d0;
 
+	ticalcs_info("Ping / Set Mode");
 	TRYF(dusb_buffer_size_request(h));
 	TRYF(dusb_buffer_size_alloc(h));
 

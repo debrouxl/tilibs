@@ -39,6 +39,44 @@
 #define BLK_SIZE	255		// USB packets have this max length
 #define DATA_SIZE	250		// max length of data (BLK_SIZE - PH_SIZE)
 
+// Type to string
+
+static const VtlPktName vpkt_types[] = 
+{
+	{ 0x0001, "Ping / Set Mode"},
+	{ 0x0002, "Begin OS Transfer"},
+	{ 0x0003, "Acknowledgement of OS Transfer"},
+	{ 0x0005, "OS Data"},
+	{ 0x0006, "Acknowledgement of EOT"},
+	{ 0x0007, "Parameter Request"},
+	{ 0x0008, "Parameter Data"},
+	{ 0x0009, "Request Directory Listing"},
+	{ 0x000A, "Variable Header"},
+	{ 0x000B, "Request to Send"},
+	{ 0x000C, "Request Variable"},
+	{ 0x000D, "Variable Contents"},
+	{ 0x000E, "Parameter Set"},
+	{ 0x0010, "Delete Variable"},
+	{ 0x0011, "Unknown"},
+	{ 0x0012, "Acknowledgement of Mode Setting"},
+	{ 0xAA00, "Acknowledgement of Data"},
+	{ 0xBB00, "Acknowledgement of Parameter Request"},
+	{ 0xDD00, "End of Transmission"},
+	{ 0xEE00, "Error"},
+	{ -1, NULL},
+};
+
+const char* vpkt_type2name(uint16_t id)
+{
+	VtlPktName *p;
+
+	for(p = vpkt_types; p->name != NULL; p++)
+		if(p->id == id)
+			return p->name;
+
+	return "unknown: not listed";
+}
+
 // Buffer allocation
 
 VirtualPacket*  vtl_pkt_new(uint32_t size)
@@ -67,7 +105,7 @@ int dusb_buffer_size_request(CalcHandle* h)
 	raw.data[3] = 0x00;
 
 	TRYF(dusb_send(h, &raw));
-	ticalcs_info(" PC->TI: Buffer Size Request");
+	ticalcs_info("  PC->TI: Buffer Size Request");
 
 	return 0;
 }
@@ -77,7 +115,7 @@ int dusb_buffer_size_alloc(CalcHandle* h)
 	RawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
-	ticalcs_info(" TI->PC: Buffer Size Allocation");
+	ticalcs_info("  TI->PC: Buffer Size Allocation");
 	
 	if(raw.size != 4)
 		return ERR_INVALID_PACKET;
@@ -98,7 +136,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 	raw.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &raw));
-	ticalcs_info(" PC->TI: Virtual Packet Data Acknowledgement");
+	ticalcs_info("  PC->TI: Virtual Packet Data Acknowledgement");
 
 	return 0;
 }
@@ -108,7 +146,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	RawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
-	ticalcs_info(" TI->PC: Virtual Packet Data Acknowledgement");
+	ticalcs_info("  TI->PC: Virtual Packet Data Acknowledgement");
 	
 	raw.size = raw.size;
 	if(raw.size != 2)
@@ -145,7 +183,8 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		memcpy(&raw.data[DH_SIZE], vtl->data, vtl->size);
 	
 		TRYF(dusb_send(h, &raw));
-		ticalcs_info(" PC->TI: Virtual Packet Data with Continuation (type = %04x, size = %08x)", vtl->type, vtl->size);
+		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
+			vtl->size, vpkt_type2name(vtl->type));
 		TRYF(dusb_recv_acknowledge(h));
 	}
 	else
@@ -163,7 +202,8 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		memcpy(&raw.data[DH_SIZE], vtl->data, DATA_SIZE);
 
 		TRYF(dusb_send(h, &raw));
-		ticalcs_info(" PC->TI: Virtual Packet Data with Continuation (type = %04x, size = %08x)", vtl->type, vtl->size);
+		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
+			vtl->size, vpkt_type2name(vtl->type));
 		TRYF(dusb_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
@@ -178,7 +218,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			memcpy(raw.data, vtl->data + i*DATA_SIZE, DATA_SIZE);
 
 			TRYF(dusb_send(h, &raw));
-			ticalcs_info(" PC->TI: Virtual Packet Data with Continuation");
+			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
 			TRYF(dusb_recv_acknowledge(h));
 		}
 
@@ -189,7 +229,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			memcpy(raw.data, vtl->data + i*DATA_SIZE, r);
 			
 			TRYF(dusb_send(h, &raw));
-			ticalcs_info(" PC->TI: Virtual Packet Data Final");
+			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 			TRYF(dusb_recv_acknowledge(h));
 		}
 	}
@@ -212,18 +252,19 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 		if(!i++)
 		{
 			// first packet has a data header
-			vtl->size = (raw.data[0] << 24) || (raw.data[1] << 16) || (raw.data[2] << 8) || (raw.data[3] << 0);
-			vtl->type = (raw.data[4] << 8) || (raw.data[5] << 0);
+			vtl->size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+			vtl->type = (raw.data[4] << 8) | (raw.data[5] << 0);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
-			ticalcs_info(" TI->PC: Virtual Packet Data Final (type = %04x, size = %08x)", vtl->type, vtl->size);
+			ticalcs_info("  TI->PC: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
+				vtl->size, vpkt_type2name(vtl->type));
 		}
 		else
 		{
 			// others have more data
 			memcpy(vtl->data + offset, raw.data, raw.size);
 			offset += raw.size;
-			ticalcs_info(" TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+			ticalcs_info("  TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
 		}
 
 		TRYF(dusb_send_acknowledge(h));

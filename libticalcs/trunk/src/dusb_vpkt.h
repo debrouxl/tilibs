@@ -40,6 +40,12 @@ typedef struct
 
 #define DH_SIZE		(4+2)
 
+typedef struct
+{
+	uint16_t	id;
+	const char *name;
+} VtlPktName;
+
 // Virtual packet types
 
 #define VPKT_PING		0x0001
@@ -74,5 +80,7 @@ void			vtl_pkt_del(VirtualPacket* pkt);
 
 int dusb_send_data(CalcHandle* h, VirtualPacket* pkt);
 int dusb_recv_data(CalcHandle* h, VirtualPacket* pkt);
+
+const char* vpkt_type2name(uint16_t id);
 
 #endif
