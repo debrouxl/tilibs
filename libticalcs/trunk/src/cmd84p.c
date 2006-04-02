@@ -43,7 +43,6 @@ int ti84p_mode_set(CalcHandle *h)
 	mode.arg2 = 1;
 	mode.arg5 = 0x07d0;
 
-	ticalcs_info("Ping / Set Mode");
 	TRYF(dusb_buffer_size_request(h));
 	TRYF(dusb_buffer_size_alloc(h));
 
@@ -97,7 +96,7 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **
 	*params = (CalcParm *)calloc(nparams + 1, sizeof(CalcParm));
 	for(i = 0, j = 2; i < nparams; i++)
 	{
-		CalcParm *s = &(*params[i]);
+		CalcParm *s = *params + i;
 
 		s->pid = pkt->data[j++] << 8; s->pid |= pkt->data[j++];
 		s->ok = !pkt->data[j++];

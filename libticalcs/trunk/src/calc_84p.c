@@ -228,8 +228,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 		return ERR_INVALID_PACKET;
 	
 	// and computes
-	calc_time = (params[0].data[0] << 24) | (params[0].data[7+1] << 16) | 
-				(params[0].data[2] << 8) | params[0].data[3];
+	calc_time = (params[0].data[0] << 24) | (params[0].data[1] << 16) | 
+				(params[0].data[2] <<  8) | (params[0].data[3] <<  0);
 
 	time(&now);	// retrieve current DST setting
 	memcpy(&ref, localtime(&now), sizeof(struct tm));;
