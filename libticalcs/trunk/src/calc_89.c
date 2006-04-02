@@ -77,6 +77,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 {
 	uint32_t max_cnt;
 	int err;
+	uint8_t buf[TI89_COLS * TI89_ROWS / 8];
 
 	sc->width = TI89_COLS;
 	sc->height = TI89_ROWS;
@@ -98,16 +99,17 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	    break;
 	}
 
-	*bitmap = (uint8_t *) malloc(TI89_COLS * TI89_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap == NULL) 
-		return ERR_MALLOC;
-
 	TRYF(ti89_send_SCR());
 	TRYF(ti89_recv_ACK(NULL));
 
-	err = ti89_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+	err = ti89_recv_XDP(&max_cnt, buf);	// pb with checksum
 	if(err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti89_send_ACK());
+
+	*bitmap = (uint8_t *) malloc(TI89_COLS * TI89_ROWS / 8);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+	memcpy(*bitmap, buf, TI89_COLS * TI89_ROWS / 8);
 
 	// Clip the unused part of the screen (nethertheless useable witha asm prog)
 	if(((handle->model == CALC_TI89) || (handle->model == CALC_TI89T))

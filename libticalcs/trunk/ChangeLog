@@ -7,6 +7,7 @@ To do :
 //- manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - allocated screenshot memory once screen is received completely
+- create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get
 
 Log:
 

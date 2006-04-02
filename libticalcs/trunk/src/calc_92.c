@@ -75,22 +75,24 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 {
 	uint32_t max_cnt;
 	int err;
+	uint8_t buf[TI92_COLS * TI92_ROWS / 8];
 
 	sc->width = TI92_COLS;
 	sc->height = TI92_ROWS;
 	sc->clipped_width = TI92_COLS;
 	sc->clipped_height = TI92_ROWS;
 
-	*bitmap = (uint8_t *) malloc(TI92_COLS * TI92_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap == NULL)
-		return ERR_MALLOC;
-
 	TRYF(ti92_send_SCR());
 	TRYF(ti92_recv_ACK(NULL));
 
-	err = ti92_recv_XDP(&max_cnt, *bitmap);	// pb with checksum
+	err = ti92_recv_XDP(&max_cnt, buf);	// pb with checksum
 	if (err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti92_send_ACK());
+
+	*bitmap = (uint8_t *) malloc(TI92_COLS * TI92_ROWS / 8);
+	if(*bitmap == NULL)
+		return ERR_MALLOC;
+	memcpy(*bitmap, buf, TI92_COLS * TI92_ROWS / 8);
 
 	return 0;
 }

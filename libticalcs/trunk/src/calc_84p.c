@@ -55,7 +55,7 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYF(ti84p_set_mode(handle));
+	TRYF(ti84p_mode_set(handle));
 	return 0;
 }
 
