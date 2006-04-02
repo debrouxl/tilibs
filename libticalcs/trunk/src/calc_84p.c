@@ -67,7 +67,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t pid[] = { PID84P_SCREENSHOT };
-	CalcParm *param;
+	CalcParam *param;
 
 	sc->width = TI84P_COLS;
 	sc->height = TI84P_ROWS;
@@ -150,7 +150,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	CalcParm param = { 0 };
+	CalcParam param = { 0 };
 
 	uint32_t calc_time;
 	struct tm ref, cur;
@@ -184,7 +184,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
-	param.pid = PID84P_CLK_SEC;
+	param.id = PID84P_CLK_SEC;
 	param.size = 4;
 	param.data = (uint8_t *)malloc(param.size);
 	param.data[0] = MSB(MSW(calc_time));
@@ -193,17 +193,17 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     param.data[3] = LSB(LSW(calc_time));
 	ti84p_params_set(handle, &param);
 
-	param.pid = PID84P_CLK_DATE_FMT;
+	param.id = PID84P_CLK_DATE_FMT;
 	param.size = 1;
 	param.data[0] = clock->date_format == 3 ? 0 : clock->date_format;
 	ti84p_params_set(handle, &param);
 
-	param.pid = PID84P_CLK_TIME_FMT;
+	param.id = PID84P_CLK_TIME_FMT;
 	param.size = 1;
 	param.data[0] = clock->time_format == 24 ? 1 : 0;
 	ti84p_params_set(handle, &param);
 
-	param.pid = PID84P_CLK_ON;
+	param.id = PID84P_CLK_ON;
 	param.size = 1;
 	param.data[0] = clock->state;
 	ti84p_params_set(handle, &param);	
@@ -214,7 +214,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
 	uint16_t pids[4] = { PID84P_CLK_SEC, PID84P_CLK_DATE_FMT, PID84P_CLK_TIME_FMT, PID84P_CLK_ON };
-	CalcParm *params;
+	CalcParam *params;
 
 	uint32_t calc_time;
 	struct tm ref, *cur;

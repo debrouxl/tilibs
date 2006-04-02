@@ -73,19 +73,22 @@ typedef struct
 
 typedef struct
 {
-	uint16_t	pid;
+	uint16_t	id;
 	uint8_t		ok;
 	uint16_t	size;
 	uint8_t*	data;
-} CalcParm;
+} CalcParam;
+
+CalcParam*	cp_new(uint16_t id, uint16_t size);
+void		cp_del(CalcParam* cp);
+void del_params_array(int nparams, CalcParam *params);
 
 int ti84p_mode_set(CalcHandle *h);
 
 int ti84p_os_begin(CalcHandle *h);
 int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint8_t* data);
 
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **params);
-void del_params_array(int nparams, CalcParm *params);
-int ti84p_params_set(CalcHandle *h, const CalcParm *param);
+int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam **params);
+int ti84p_params_set(CalcHandle *h, const CalcParam *param);
 
 #endif

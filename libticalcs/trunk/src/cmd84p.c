@@ -67,7 +67,7 @@ int ti84p_mode_set(CalcHandle *h)
 }
 
 // Request one or more calc parameters
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **params)
+int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam **params)
 {
 	VirtualPacket* pkt;
 	int i, j;
@@ -93,12 +93,12 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
 		return ERR_INVALID_PACKET;
 
-	*params = (CalcParm *)calloc(nparams + 1, sizeof(CalcParm));
+	*params = (CalcParam *)calloc(nparams + 1, sizeof(CalcParam));
 	for(i = 0, j = 2; i < nparams; i++)
 	{
-		CalcParm *s = *params + i;
+		CalcParam *s = *params + i;
 
-		s->pid = pkt->data[j++] << 8; s->pid |= pkt->data[j++];
+		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
 		s->ok = !pkt->data[j++];
 		if(s->ok)
 		{
@@ -114,7 +114,7 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **
 	return 0;
 }
 
-void del_params_array(int nparams, CalcParm *params)
+void del_params_array(int nparams, CalcParam *params)
 {
 	int i;
 
@@ -125,14 +125,14 @@ void del_params_array(int nparams, CalcParm *params)
 }
 
 // Request one or more calc parameters
-int ti84p_params_set(CalcHandle *h, const CalcParm *param)
+int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
 	pkt = vtl_pkt_new((2 + 2 + param->size) * sizeof(uint16_t), VPKT_PARM_SET);
 
-	pkt->data[0] = MSB(param->pid);
-	pkt->data[1] = LSB(param->pid);
+	pkt->data[0] = MSB(param->id);
+	pkt->data[1] = LSB(param->id);
 	pkt->data[2] = MSB(param->size);
 	pkt->data[3] = LSB(param->size);
 	memcpy(pkt->data + 4, param->data, param->size);
