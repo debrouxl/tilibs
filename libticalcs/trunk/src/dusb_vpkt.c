@@ -261,7 +261,8 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->data = realloc(vtl->data, vtl->size);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
-			ticalcs_info("  TI->PC: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
+			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
+				raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				vtl->size, vpkt_type2name(vtl->type));
 		}
 		else

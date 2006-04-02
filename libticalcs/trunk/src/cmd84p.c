@@ -33,10 +33,11 @@
 #include "dusb_vpkt.h"
 #include "cmd84p.h"
 
-int ti84p_set_mode(CalcHandle *h)
+// Ping or Set Mode
+int ti84p_mode_set(CalcHandle *h)
 {
 	ModeSet mode = { 0 };
-	VirtualPacket* vtl = vtl_pkt_new(sizeof(mode));
+	VirtualPacket* pkt;
 
 	mode.arg1 = 3;	// normal operation mode
 	mode.arg2 = 1;
@@ -46,21 +47,81 @@ int ti84p_set_mode(CalcHandle *h)
 	TRYF(dusb_buffer_size_request(h));
 	TRYF(dusb_buffer_size_alloc(h));
 
-	vtl->data[0] = MSB(mode.arg1);
-	vtl->data[1] = LSB(mode.arg1);
-	vtl->data[2] = MSB(mode.arg2);
-	vtl->data[3] = LSB(mode.arg2);
-	vtl->data[4] = MSB(mode.arg3);
-	vtl->data[5] = LSB(mode.arg3);
-	vtl->data[6] = MSB(mode.arg4);
-	vtl->data[7] = LSB(mode.arg4);
-	vtl->data[8] = MSB(mode.arg5);
-	vtl->data[9] = LSB(mode.arg5);
-	vtl->size = sizeof(mode);
-	vtl->type = VPKT_PING;
+	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);
+	pkt->data[0] = MSB(mode.arg1);
+	pkt->data[1] = LSB(mode.arg1);
+	pkt->data[2] = MSB(mode.arg2);
+	pkt->data[3] = LSB(mode.arg2);
+	pkt->data[4] = MSB(mode.arg3);
+	pkt->data[5] = LSB(mode.arg3);
+	pkt->data[6] = MSB(mode.arg4);
+	pkt->data[7] = LSB(mode.arg4);
+	pkt->data[8] = MSB(mode.arg5);
+	pkt->data[9] = LSB(mode.arg5);
 
-	TRYF(dusb_send_data(h, vtl));
-	TRYF(dusb_recv_data(h, vtl));
+	TRYF(dusb_send_data(h, pkt));	// set mode
+	TRYF(dusb_recv_data(h, pkt));	// ack
+
+	vtl_pkt_del(pkt);
 
 	return 0;
+}
+
+// Request one or more calc parameters
+int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **params)
+{
+	VirtualPacket* pkt;
+	int i, j;
+
+	pkt = vtl_pkt_new((nparams + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
+
+	pkt->data[0] = MSB(nparams);
+	pkt->data[1] = LSB(nparams);
+
+	for(i = 0; i < nparams; i++)
+	{
+		pkt->data[2*(i+1) + 0] = MSB(pids[i]);
+		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
+	}
+
+	TRYF(dusb_send_data(h, pkt));	// param request
+	TRYF(dusb_recv_data(h, pkt));	// ack
+	if(pkt->type != VPKT_PARM_ACK)
+		return ERR_INVALID_PACKET;
+
+	TRYF(dusb_recv_data(h, pkt));	// param data
+
+	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
+		return ERR_INVALID_PACKET;
+
+	tifiles_hexdump(pkt->data+2, 16);
+	*params = (CalcParm *)calloc(nparams + 1, sizeof(CalcParm));
+	for(i = 0, j = 2; i < nparams; i++)
+	{
+		CalcParm *s = &(*params[i]);
+
+		s->pid = pkt->data[j++] << 8; s->pid |= pkt->data[j++];
+		s->ok = !pkt->data[j++];
+		if(s->ok)
+		{
+			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
+			s->data = (uint8_t *)calloc(1, s->size);
+			memcpy(s->data, &pkt->data[j], s->size);
+			j += s->size;
+		}
+	}
+	
+	vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+void del_params_array(int nparams, CalcParm *params)
+{
+	int i;
+
+	for(i = 0; i < nparams; i++)
+		if(params[i].ok)
+			free(params[i].data);
+	free(params);
 }

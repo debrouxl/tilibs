@@ -66,33 +66,25 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	/*
-	uint8_t req[] = { 0x00, 0x01, 0x00, 0x22 };
-	uint8_t buf[1024];
-	uint32_t size;
-	uint16_t code;
+	uint16_t pid[] = { 0x0022 };
+	CalcParm *param;
 
 	sc->width = TI84P_COLS;
 	sc->height = TI84P_ROWS;
 	sc->clipped_width = TI84P_COLS;
 	sc->clipped_height = TI84P_ROWS;
 
-	TRYF(ti84p_send_data(handle, sizeof(req), 0x0007, req));
-
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0xbb00)
-		return ERR_INVALID_OPC;
-
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0x0008)
-		return ERR_INVALID_OPC;
-
-	// Allocate and copy into bitmap
-	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS * sizeof(uint8_t) / 8);
+	TRYF(ti84p_params_request(handle, 1, pid, &param));
+	if(!param->ok)
+		return ERR_INVALID_PACKET;
+	
+	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS / 8);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
-	memcpy(*bitmap, buf+7, size-7);
-*/
+	memcpy(*bitmap, param->data, TI84P_COLS * TI84P_ROWS / 8);
+
+	del_params_array(1, param);
+
 	return 0;
 }
 
