@@ -22,45 +22,45 @@
 #ifndef __TICALCS_CMD84P__
 #define __TICALCS_CMD84P__
 
-#define PID_PRODUCT_NUMBER	0x0001
-#define PID_PRODUCT_NAME	0x0002
-#define PID_MAIN_PART_ID	0x0003
-#define PID_HW_VERSION		0x0004
-#define PID_UNKNOWN1		0x0005
-#define PID_LANGUAGE_ID		0x0006
-#define PID_SUBLANG_ID		0x0007
-#define PID_DEVICE_TYPE		0x0008
-#define PID_BOOT_VERSION	0x0009
-#define PID_OS_MODE			0x000A
-#define PID_OS_VERSION		0x000B
-#define PID_PHYS_RAM		0x000C
-#define PID_USER_RAM		0x000D
-#define PID_FREE_RAM		0x000E
-#define PID_PHYS_FLASH		0x000F
-#define PID_USER_FLASH		0x0010
-#define PID_FREE_FLASH		0x0011
-#define PID_USER_PAGES		0x0012
-#define PID_FREE_PAGES		0x0013
-#define PID_UNKNOWN2		0x0019
-#define PID_UNKNOWN3		0x001A
-#define PID_UNKNOWN4		0x001B
-#define PID_UNKNOWN5		0x001C
-#define PID_UNKNOWN6		0x001D
-#define PID_LCD_WIDTH		0x001E
-#define PID_LCD_HEIGHT		0x001F
-#define PID_SCREENSHOT		0x0022
-#define PID_UNKNOWN7		0x0023
-#define PID_CLK_ON			0x0024
-#define PID_CLK_SEC			0x0025
-#define PID_CLK_DATE_FMT	0x0027
-#define PID_CLK_TIME_FMT	0x0028
-#define PID_UNKNOWN8		0x0029
-#define PID_BATTERY			0x002D
-#define PID_UNKNOWN9		0x0030
-#define PID_UNKNOWN10		0x0031
-#define PID_UNKNOWN11		0x0032
-#define PID_HOMESCREEN		0x0037
-#define PID_SCREEN_SPLIT	0x0039 
+#define PID84P_PRODUCT_NUMBER	0x0001
+#define PID84P_PRODUCT_NAME		0x0002
+#define PID84P_MAIN_PART_ID		0x0003
+#define PID84P_HW_VERSION		0x0004
+#define PID84P_UNKNOWN1			0x0005
+#define PID84P_LANGUAGE_ID		0x0006
+#define PID84P_SUBLANG_ID		0x0007
+#define PID84P_DEVICE_TYPE		0x0008
+#define PID84P_BOOT_VERSION		0x0009
+#define PID84P_OS_MODE			0x000A
+#define PID84P_OS_VERSION		0x000B
+#define PID84P_PHYS_RAM			0x000C
+#define PID84P_USER_RAM			0x000D
+#define PID84P_FREE_RAM			0x000E
+#define PID84P_PHYS_FLASH		0x000F
+#define PID84P_USER_FLASH		0x0010
+#define PID84P_FREE_FLASH		0x0011
+#define PID84P_USER_PAGES		0x0012
+#define PID84P_FREE_PAGES		0x0013
+#define PID84P_UNKNOWN2			0x0019
+#define PID84P_UNKNOWN3			0x001A
+#define PID84P_UNKNOWN4			0x001B
+#define PID84P_UNKNOWN5			0x001C
+#define PID84P_UNKNOWN6			0x001D
+#define PID84P_LCD_WIDTH		0x001E
+#define PID84P_LCD_HEIGHT		0x001F
+#define PID84P_SCREENSHOT		0x0022
+#define PID84P_UNKNOWN7			0x0023
+#define PID84P_CLK_ON			0x0024
+#define PID84P_CLK_SEC			0x0025
+#define PID84P_CLK_DATE_FMT		0x0027
+#define PID84P_CLK_TIME_FMT		0x0028
+#define PID84P_UNKNOWN8			0x0029
+#define PID84P_BATTERY			0x002D
+#define PID84P_UNKNOWN9			0x0030
+#define PID84P_UNKNOWN10		0x0031
+#define PID84P_UNKNOWN11		0x0032
+#define PID84P_HOMESCREEN		0x0037
+#define PID84P_SCREEN_SPLIT		0x0039 
 
 typedef struct
 {
@@ -86,5 +86,6 @@ int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint
 
 int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **params);
 void del_params_array(int nparams, CalcParm *params);
+int ti84p_params_set(CalcHandle *h, const CalcParm *param);
 
 #endif

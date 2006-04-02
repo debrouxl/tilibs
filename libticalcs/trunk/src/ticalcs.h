@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.0.7"
+# define LIBCALCS_VERSION "0.0.8"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -293,6 +293,8 @@ typedef struct
 
   uint8_t	time_format;
   uint8_t	date_format;
+
+  int		on;
 } CalcClock;
 
 /**

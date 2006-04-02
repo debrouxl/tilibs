@@ -94,7 +94,6 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParm **
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
 		return ERR_INVALID_PACKET;
 
-	tifiles_hexdump(pkt->data+2, 16);
 	*params = (CalcParm *)calloc(nparams + 1, sizeof(CalcParm));
 	for(i = 0, j = 2; i < nparams; i++)
 	{
@@ -124,4 +123,27 @@ void del_params_array(int nparams, CalcParm *params)
 		if(params[i].ok)
 			free(params[i].data);
 	free(params);
+}
+
+// Request one or more calc parameters
+int ti84p_params_set(CalcHandle *h, const CalcParm *param)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new((2 + 2 + param->size) * sizeof(uint16_t), VPKT_PARM_SET);
+
+	pkt->data[0] = MSB(param->pid);
+	pkt->data[1] = LSB(param->pid);
+	pkt->data[2] = MSB(param->size);
+	pkt->data[3] = LSB(param->size);
+	memcpy(pkt->data + 4, param->data, param->size);
+
+	TRYF(dusb_send_data(h, pkt));	// param set
+	TRYF(dusb_recv_data(h, pkt));	// ack
+	if(pkt->type != VPKT_DATA_ACK)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+
+	return 0;
 }

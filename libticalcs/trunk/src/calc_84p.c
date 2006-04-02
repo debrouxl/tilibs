@@ -66,7 +66,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t pid[] = { 0x0022 };
+	uint16_t pid[] = { PID84P_SCREENSHOT };
 	CalcParm *param;
 
 	sc->width = TI84P_COLS;
@@ -150,10 +150,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	/*
-	uint8_t buf[16] = { 0 };
-	uint32_t size;
-	uint16_t code;
+	CalcParm param = { 0 };
 
 	uint32_t calc_time;
 	struct tm ref, cur;
@@ -187,40 +184,36 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
-	buf[0] = 0x00; buf[1] = 0x25; buf[2] = 0x00; buf[3] = 0x04;
-	buf[4] = MSB(MSW(calc_time));
-    buf[5] = LSB(MSW(calc_time));
-    buf[6] = MSB(LSW(calc_time));
-    buf[7] = LSB(LSW(calc_time));
-	TRYF(ti84p_send_data(handle, 8, 0x000e, buf));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0xaa00)
-		return ERR_INVALID_OPC;
+	param.pid = PID84P_CLK_SEC;
+	param.size = 4;
+	param.data[0] = MSB(MSW(calc_time));
+    param.data[1] = LSB(MSW(calc_time));
+    param.data[2] = MSB(LSW(calc_time));
+    param.data[3] = LSB(LSW(calc_time));
+	ti84p_params_set(handle, &param);
 
-	buf[0] = 0x00; buf[1] = 0x27; buf[2] = 0x00; buf[3] = 0x01;
-	buf[4] = clock->date_format == 3 ? 0 : clock->date_format;
-	TRYF(ti84p_send_data(handle, 5, 0x000e, buf));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0xaa00)
-		return ERR_INVALID_OPC;
+	param.pid = PID84P_CLK_DATE_FMT;
+	param.size = 1;
+	param.data[0] = clock->date_format == 3 ? 0 : clock->date_format;
+	ti84p_params_set(handle, &param);
 
-	buf[0] = 0x00; buf[1] = 0x28; buf[2] = 0x00; buf[3] = 0x01;
-	buf[4] = clock->time_format == 24 ? 1 : 0;
-	TRYF(ti84p_send_data(handle, 5, 0x000e, buf));
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0xaa00)
-		return ERR_INVALID_OPC;
-*/
+	param.pid = PID84P_CLK_TIME_FMT;
+	param.size = 1;
+	param.data[0] = clock->time_format == 24 ? 1 : 0;
+	ti84p_params_set(handle, &param);
+
+	param.pid = PID84P_CLK_ON;
+	param.size = 1;
+	param.data[0] = clock->on;
+	ti84p_params_set(handle, &param);	
+
 	return 0;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	/*
-	uint8_t req[] = { 0x00, 0x04, 0x00, 0x25, 0x00, 0x27, 0x00, 0x28, 0x00, 0x24 };
-	uint8_t buf[32];
-	uint32_t size;
-	uint16_t code;
+	uint16_t pids[4] = { PID84P_CLK_SEC, PID84P_CLK_DATE_FMT, PID84P_CLK_TIME_FMT, PID84P_CLK_ON };
+	CalcParm *params;
 
 	uint32_t calc_time;
 	struct tm ref, *cur;
@@ -230,18 +223,13 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
-	TRYF(ti84p_send_data(handle, sizeof(req), 0x0007, req));
-
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0xbb00)
-		return ERR_INVALID_OPC;
-
-	TRYF(ti84p_recv_data(handle, &size, &code, buf));
-	if(code != 0x0008)
-		return ERR_INVALID_OPC;
-
+	TRYF(ti84p_params_request(handle, 4, pids, &params));
+	if(!params[0].ok)
+		return ERR_INVALID_PACKET;
+	
 	// and computes
-	calc_time = (buf[7+0] << 24) | (buf[7+1] << 16) | (buf[7+2] << 8) | buf[7+3];
+	calc_time = (params[0].data[0] << 24) | (params[0].data[7+1] << 16) | 
+				(params[0].data[2] << 8) | params[0].data[3];
 
 	time(&now);	// retrieve current DST setting
 	memcpy(&ref, localtime(&now), sizeof(struct tm));;
@@ -266,10 +254,12 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	clock->minutes = cur->tm_min;
 	clock->seconds = cur->tm_sec;
 
-    clock->date_format = buf[16] == 0 ? 3 : buf[16];
-    clock->time_format = buf[22] ? 24 : 12;
-	//printf("(%i %i %i)\n", buf[16], buf[22], buf[28]);
-*/
+    clock->date_format = params[1].data[0] == 0 ? 3 : params[1].data[0];
+    clock->time_format = params[2].data[0] ? 24 : 12;
+	clock->on = params[3].data[0];
+
+	del_params_array(1, params);
+
 	return 0;
 }
 
@@ -304,7 +294,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY,
+	OPS_ISREADY | OPS_CLOCK,
 	&is_ready,
 	&send_key,
 	&recv_screen,
