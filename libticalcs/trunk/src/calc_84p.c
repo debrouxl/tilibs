@@ -95,6 +95,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
 	uint16_t aids[] = { AID84P_VAR_SIZE, AID84P_VAR_TYPE, AID84P_ARCHIVED, };
 	TreeInfo *ti;
+	int err;
+	CalcAttr *attr;
+	TNode *folder;	
+	char varname[40];
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -108,7 +112,38 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	//TRYF(ti84p_dirlist_request(h, aids));
+	folder = t_node_new(NULL);
+	t_node_append(*vars, folder);
+
+	TRYF(ti84p_dirlist_request(handle, sizeof(aids) / sizeof(uint16_t), aids));
+	do
+	{
+		VarEntry *ve = tifiles_ve_create();
+		TNode *node;
+
+		err = ti84p_var_header(handle, varname, &attr);
+		if (err == ERR_EOT)
+			break;
+		else if (err != 0)
+			return err;
+
+		strcpy(ve->name, varname);
+		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0].data)));
+		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1].data))) & 0xff;
+		ve->attr = attr[2].data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
+
+		node = t_node_new(ve);
+
+		node = t_node_new(ve);
+		if (ve->type != TI73_APPL)
+			t_node_append(folder, node);
+		else
+			t_node_append(*apps, node);
+
+		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), varname);
+		update_label();
+
+	} while(1);
 
 	return 0;
 }
@@ -406,7 +441,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_CLOCK | OPS_VERSION |
+	OPS_ISREADY | OPS_DIRLIST | OPS_CLOCK | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,

@@ -109,4 +109,7 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids);
 int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params);
 int ti84p_params_set(CalcHandle *h, const CalcParam *param);
 
+int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids);
+int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr);
+
 #endif

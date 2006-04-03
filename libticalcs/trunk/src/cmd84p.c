@@ -23,6 +23,8 @@
   This unit handles TI84+ commands with DirectLink.
 */
 
+// Some functions should be renamed...
+
 #include <string.h>
 
 #include "ticalcs.h"
@@ -60,6 +62,9 @@ int ti84p_mode_set(CalcHandle *h)
 
 	TRYF(dusb_send_data(h, pkt));	// set mode
 	TRYF(dusb_recv_data(h, pkt));	// ack
+
+	if(pkt->type != VPKT_MODE_SET)
+		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
 	return 0;
@@ -109,7 +114,7 @@ void		ca_del(CalcAttr* cp)
 	free(cp);
 }
 
-// Request one or more calc parameters (to rename in param_get)
+// Request one or more calc parameters
 int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 {
 	VirtualPacket* pkt;
@@ -142,6 +147,9 @@ int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));	// param data
+
+	if(pkt->type != VPKT_PARM_DATA)
+		return ERR_INVALID_PACKET;
 
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
 		return ERR_INVALID_PACKET;
@@ -189,7 +197,7 @@ int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 	return 0;
 }
 
-// Request dirlist (to rename ??)
+// Request dirlist
 int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 {
 	VirtualPacket* pkt;
@@ -215,7 +223,52 @@ int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
 	pkt->data[i+0] = 0x01;
 
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
-//int ti84p_var_header(CalcHandle *h, CalcParm
+// name is utf-8 => 18 chars max
+int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
+{
+	VirtualPacket* pkt;
+	uint16_t name_length;
+	int nattr;
+	int i, j;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));	// variable header
+
+	if(pkt->type == VPKT_EOT)
+	{
+		vtl_pkt_del(pkt);
+		return ERR_EOT;
+	}
+	else if(pkt->type != VPKT_VAR_HDR)
+		return ERR_INVALID_PACKET;
+
+	name_length = (pkt->data[0] << 8) | pkt->data[1];
+	memcpy(name, pkt->data + 2, name_length+1);
+
+	nattr = (pkt->data[name_length+3] << 8) | pkt->data[name_length+4];
+	*attr = (CalcAttr *)calloc(nattr + 1, sizeof(CalcAttr));
+
+	for(i = 0, j = name_length+5; i < nattr; i++)
+	{
+		CalcAttr *s = *attr + i;
+
+		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
+		s->ok = !pkt->data[j++];
+		if(s->ok)
+		{
+			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
+			s->data = (uint8_t *)calloc(1, s->size);
+			memcpy(s->data, &pkt->data[j], s->size);
+			j += s->size;
+		}
+	}
+	
+	vtl_pkt_del(pkt);
+	return 0;
+}
