@@ -132,7 +132,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1].data))) & 0xff;
 		ve->attr = attr[2].data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-		node = t_node_new(ve);
+		tifiles_hexdump(varname, 16);
+		ca_del_array(1, attr);
 
 		node = t_node_new(ve);
 		if (ve->type != TI73_APPL)
@@ -321,6 +322,18 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	CalcAttr *attr[2];
+
+	attr[0] = ca_new(AID84P_UNKNOWN1, 4);
+	attr[0]->data[0] = 0xF0; attr[0]->data[0] = 0x0B;
+	attr[0]->data[0] = 0x00; attr[0]->data[0] = 0x00;
+	attr[1] = ca_new(AID84P_UNKNOWN2, 1);
+	attr[0]->data[0] = 0;
+
+	TRYF(ti84p_var_delete(handle, vr->name, 2, attr));
+
+	ca_del_array(2, attr);
+
 	return 0;
 }
 
@@ -441,7 +454,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_DIRLIST | OPS_CLOCK | OPS_VERSION |
+	OPS_ISREADY | OPS_DIRLIST | OPS_CLOCK | OPS_VERSION | OPS_DELVAR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,

@@ -35,40 +35,7 @@
 #include "dusb_vpkt.h"
 #include "cmd84p.h"
 
-// Ping or Set Mode
-int ti84p_mode_set(CalcHandle *h)
-{
-	ModeSet mode = { 0 };
-	VirtualPacket* pkt;
-
-	mode.arg1 = 3;	// normal operation mode
-	mode.arg2 = 1;
-	mode.arg5 = 0x07d0;
-
-	TRYF(dusb_buffer_size_request(h));
-	TRYF(dusb_buffer_size_alloc(h));
-
-	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);
-	pkt->data[0] = MSB(mode.arg1);
-	pkt->data[1] = LSB(mode.arg1);
-	pkt->data[2] = MSB(mode.arg2);
-	pkt->data[3] = LSB(mode.arg2);
-	pkt->data[4] = MSB(mode.arg3);
-	pkt->data[5] = LSB(mode.arg3);
-	pkt->data[6] = MSB(mode.arg4);
-	pkt->data[7] = LSB(mode.arg4);
-	pkt->data[8] = MSB(mode.arg5);
-	pkt->data[9] = LSB(mode.arg5);
-
-	TRYF(dusb_send_data(h, pkt));	// set mode
-	TRYF(dusb_recv_data(h, pkt));	// ack
-
-	if(pkt->type != VPKT_MODE_SET)
-		return ERR_INVALID_PACKET;
-
-	vtl_pkt_del(pkt);
-	return 0;
-}
+/////////////----------------
 
 CalcParam*	cp_new(uint16_t id, uint16_t size)
 {
@@ -112,6 +79,53 @@ void		ca_del(CalcAttr* cp)
 {
 	free(cp->data);
 	free(cp);
+}
+
+void ca_del_array(int nattrs, CalcAttr *attrs)
+{
+	int i;
+
+	for(i = 0; i < nattrs; i++)
+		if(attrs[i].ok)
+			free(attrs[i].data);
+	free(attrs);
+}
+
+/////////////----------------
+
+// Ping or Set Mode
+int ti84p_mode_set(CalcHandle *h)
+{
+	ModeSet mode = { 0 };
+	VirtualPacket* pkt;
+
+	mode.arg1 = 3;	// normal operation mode
+	mode.arg2 = 1;
+	mode.arg5 = 0x07d0;
+
+	TRYF(dusb_buffer_size_request(h));
+	TRYF(dusb_buffer_size_alloc(h));
+
+	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);
+	pkt->data[0] = MSB(mode.arg1);
+	pkt->data[1] = LSB(mode.arg1);
+	pkt->data[2] = MSB(mode.arg2);
+	pkt->data[3] = LSB(mode.arg2);
+	pkt->data[4] = MSB(mode.arg3);
+	pkt->data[5] = LSB(mode.arg3);
+	pkt->data[6] = MSB(mode.arg4);
+	pkt->data[7] = LSB(mode.arg4);
+	pkt->data[8] = MSB(mode.arg5);
+	pkt->data[9] = LSB(mode.arg5);
+
+	TRYF(dusb_send_data(h, pkt));	// set mode
+	TRYF(dusb_recv_data(h, pkt));	// ack
+
+	if(pkt->type != VPKT_MODE_SET)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+	return 0;
 }
 
 // Request one or more calc parameters
@@ -174,7 +188,7 @@ int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
 	return 0;
 }
 
-// Set one  calc parameter
+// Set one calc parameter
 int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
@@ -202,26 +216,25 @@ int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 {
 	VirtualPacket* pkt;
 	int i;
+	int j = 0;
 
 	pkt = vtl_pkt_new(4 + 2*n + 7, VPKT_DIR_REQ);
 
-	pkt->data[0] = MSB(MSW(n));
-	pkt->data[1] = LSB(MSW(n));
-	pkt->data[2] = MSB(LSW(n));
-	pkt->data[3] = LSB(LSW(n));
+	pkt->data[j++] = MSB(MSW(n));
+	pkt->data[j++] = LSB(MSW(n));
+	pkt->data[j++] = MSB(LSW(n));
+	pkt->data[j++] = LSB(LSW(n));
 
 	for(i = 0; i < n; i++)
 	{
-		pkt->data[4+2*i+0] = MSB(aids[i]);
-		pkt->data[4+2*i+1] = LSB(aids[i]);
+		pkt->data[j++] = MSB(aids[i]);
+		pkt->data[j++] = LSB(aids[i]);
 	}
 
-	i = 2*i;
-	i += 4;
-	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
-	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
-	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
-	pkt->data[i+0] = 0x01;
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x01;
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x01;
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x01;
+	pkt->data[j++] = 0x01;
 
 	TRYF(dusb_send_data(h, pkt));
 
@@ -270,5 +283,48 @@ int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 	}
 	
 	vtl_pkt_del(pkt);
+	return 0;
+}
+
+int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
+{
+	VirtualPacket* pkt;
+	int i;
+	int j = 0;
+	int pks;
+
+	pks = 2 + strlen(name)+1 + 2;
+	for(i = 0; i < n; i++) pks += 4 + attr[i].size;
+	pkt = vtl_pkt_new(pks, VPKT_DEL_VAR);
+
+	pkt->data[j++] = MSB(strlen(name)+1);
+	pkt->data[j++] = LSB(strlen(name)+1);
+	memcpy(pkt->data + j, name, strlen(name)+1);
+	j += strlen(name)+1;
+	pkt->data[j++] = MSB(n);
+	pkt->data[j++] = LSB(n);
+
+	for(i = 0; i < n; i++)
+	{
+		pkt->data[j++] = MSB(attr[i].id);
+		pkt->data[j++] = LSB(attr[i].id);
+		pkt->data[j++] = LSB(attr[i].size);
+		pkt->data[j++] = LSB(attr[i].size);
+		memcpy(pkt->data + j, attr[i].data, attr[i].size);
+		j += attr[i].size;
+	}
+
+	pkt->data[j++] = 0x01; pkt->data[j++] = 0x00;
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
+	pkt->data[j++] = 0x00;
+
+	TRYF(dusb_send_data(h, pkt));
+	TRYF(dusb_recv_data(h, pkt));
+	if(pkt->type != VPKT_DATA_ACK)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+	return 0;	
+
 	return 0;
 }

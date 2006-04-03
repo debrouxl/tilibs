@@ -68,6 +68,9 @@
 #define AID84P_VAR_TYPE		2
 #define AID84P_ARCHIVED		3
 
+#define AID84P_UNKNOWN1		0x11
+#define AID84P_UNKNOWN2		0x13
+
 typedef struct
 {
 	uint16_t	arg1;
@@ -99,6 +102,7 @@ void		cp_del_array(int n, CalcParam *params);
 
 CalcAttr*	ca_new(uint16_t id, uint16_t size);
 void		ca_del(CalcAttr* cp);
+void		ca_del_array(int nattrs, CalcAttr *attrs);
 
 int ti84p_mode_set(CalcHandle *h);
 
@@ -111,5 +115,7 @@ int ti84p_params_set(CalcHandle *h, const CalcParam *param);
 
 int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids);
 int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr);
+
+int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr);
 
 #endif
