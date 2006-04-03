@@ -56,6 +56,8 @@
 static int		is_ready	(CalcHandle* handle)
 {
 	TRYF(ti84p_mode_set(handle));
+	// use PID84P_HOMESCREEN ?
+
 	return 0;
 }
 
@@ -275,19 +277,95 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
-	uint16_t pids[] = { PID84P_OS_VERSION, PID84P_PRODUCT_NUMBER, };
+	uint16_t pids[] = { 
+		PID84P_PRODUCT_NAME, PID84P_MAIN_PART_ID,
+		PID84P_HW_VERSION, PID84P_LANGUAGE_ID, PID84P_SUBLANG_ID, PID84P_DEVICE_TYPE,
+		PID84P_BOOT_VERSION, PID84P_OS_VERSION, 
+		PID84P_PHYS_RAM, PID84P_USER_RAM, PID84P_FREE_RAM,
+		PID84P_PHYS_FLASH, PID84P_FREE_FLASH, PID84P_FREE_FLASH,
+		PID84P_LCD_WIDTH, PID84P_LCD_HEIGHT, PID84P_BATTERY,
+	};
 	CalcParam *params;
+	int i = 0;
 
 	snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
     update_label();
 
-	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids, &params));
-	
 	memset(infos, 0, sizeof(CalcInfos));
-	snprintf(infos->os_version, 4, "%1i.%02i", params[0].data[1], params[0].data[2]);
-	infos->mask |= INFOS_OS_VERSION;
+	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids, &params));
 
-	tifiles_hexdump(params[1].data, params[1].size);
+	strncpy(infos->product_name, params[i].data, params[i].size);
+	infos->mask |= INFOS_PRODUCT_NAME;
+	i++;
+
+	snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
+		params[i].data[0], params[i].data[1], params[i].data[2], params[i].data[3], params[i].data[4]);
+	infos->mask |= INFOS_MAIN_CALC_ID;
+	i++;
+
+	infos->hw_version = (params[i].data[0] << 8) | params[i].data[1];
+	infos->mask |= INFOS_HW_VERSION; // hw version or model ?
+	i++;
+
+	infos->language_id = params[i].data[0];
+	infos->mask |= INFOS_LANG_ID;
+	i++;
+
+	infos->sub_lang_id = params[i].data[0];
+	infos->mask |= INFOS_SUB_LANG_ID;
+	i++;
+
+	infos->device_type = params[i].data[1];
+	infos->mask |= INFOS_DEVICE_TYPE;
+	i++;
+
+	snprintf(infos->boot_version, 4, "%1i.%02i", params[i].data[1], params[i].data[2]);
+	infos->mask |= INFOS_BOOT_VERSION;
+	i++;
+
+	snprintf(infos->os_version, 4, "%1i.%02i", params[i].data[1], params[i].data[2]);
+	infos->mask |= INFOS_OS_VERSION;
+	i++;
+
+	infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_RAM_PHYS;
+	i++;
+	infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_RAM_USER;
+	i++;
+	infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_RAM_FREE;
+	i++;
+
+	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_FLASH_PHYS;
+	i++;
+		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_FLASH_USER;
+	i++;
+	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->mask |= INFOS_FLASH_FREE;
+	i++;
+
+	infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i].data)));
+	infos->mask |= INFOS_LCD_WIDTH;
+	i++;
+	infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i].data)));
+	infos->mask |= INFOS_LCD_HEIGHT;
+	i++;
+
+	infos->battery = params[i].data[0];
+	infos->mask |= INFOS_BATTERY;
+	i++;
+
+	switch(infos->hw_version)
+	{
+		case 0: infos->device_type = CALC_TI83P; break;
+		case 1: infos->device_type = CALC_TI83P; break;
+		case 2: infos->device_type = CALC_TI84P; break;
+		case 3: infos->device_type = CALC_TI84P; break;
+	}
+	infos->mask |= INFOS_CALC_MODEL;
 
 	return 0;
 }

@@ -374,7 +374,7 @@ typedef enum
 {
 	INFOS_PRODUCT_NUMBER = (1 << 0), 
 	INFOS_PRODUCT_NAME	= (1 << 1),
-	INFOS_CALC_ID		= (1 << 2),
+	INFOS_MAIN_CALC_ID	= (1 << 2),
 	INFOS_HW_VERSION	= (1 << 3),
 	INFOS_LANG_ID		= (1 << 4),
 	INFOS_SUB_LANG_ID	= (1 << 5),
@@ -390,6 +390,8 @@ typedef enum
 	INFOS_LCD_WIDTH		= (1 << 15),
 	INFOS_LCD_HEIGHT	= (1 << 16),
 	INFOS_BATTERY		= (1 << 17),	
+
+	INFOS_CALC_MODEL	= (1 << 31),
 } InfosMask;
 
 /**
@@ -403,7 +405,7 @@ typedef struct
 {
 	uint32_t	product_number;
 	char		product_name[65];
-	uint8_t		main_calc_id[5];
+	char		main_calc_id[11];
 	uint16_t	hw_version;
 	uint8_t		language_id;
 	uint8_t		sub_lang_id;
@@ -419,6 +421,8 @@ typedef struct
 	uint16_t	lcd_width;
 	uint16_t	lcd_height;
 	uint8_t		battery;
+
+	CalcModel	model;
 
 	InfosMask	mask;
 } CalcInfos;

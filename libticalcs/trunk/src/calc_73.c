@@ -796,18 +796,20 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
 	snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
 	infos->battery = !buf[4];
+	infos->hw_version = buf[5];
 	switch(buf[5])
 	{
-	case 0: infos->device_type = CALC_TI83P; break;
-	case 1: infos->device_type = CALC_TI83P; break;
-	case 2: infos->device_type = CALC_TI84P; break;
-	case 3: infos->device_type = CALC_TI84P; break;
+	case 0: infos->model = CALC_TI83P; break;
+	case 1: infos->model = CALC_TI83P; break;
+	case 2: infos->model = CALC_TI84P; break;
+	case 3: infos->model = CALC_TI84P; break;
 	}
-	infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_DEVICE_TYPE | INFOS_BATTERY;
+	infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_DEVICE_TYPE | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL;
 
 	tifiles_hexdump(buf, length);
 	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  BIOS: %s"), infos->boot_version);
+	ticalcs_info(_("  HW: %i"), infos->hw_version);
 	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
 
 	return 0;
