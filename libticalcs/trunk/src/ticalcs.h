@@ -231,7 +231,7 @@ typedef struct
 	CalcModel	model;
 	char*		type;
 
-	int			mem_mask;	//
+	int			mem_mask;	// tells which fields is filled
 	uint32_t	mem_used;
 	uint32_t	mem_free;
 } TreeInfo;

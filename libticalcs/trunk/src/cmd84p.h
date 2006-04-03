@@ -22,6 +22,7 @@
 #ifndef __TICALCS_CMD84P__
 #define __TICALCS_CMD84P__
 
+// Parameter IDs
 #define PID84P_PRODUCT_NUMBER	0x0001
 #define PID84P_PRODUCT_NAME		0x0002
 #define PID84P_MAIN_PART_ID		0x0003
@@ -62,6 +63,11 @@
 #define PID84P_HOMESCREEN		0x0037
 #define PID84P_SCREEN_SPLIT		0x0039 
 
+// Attributes IDs
+#define AID84P_VAR_SIZE		1
+#define AID84P_VAR_TYPE		2
+#define AID84P_ARCHIVED		3
+
 typedef struct
 {
 	uint16_t	arg1;
@@ -79,16 +85,28 @@ typedef struct
 	uint8_t*	data;
 } CalcParam;
 
+typedef struct
+{
+	uint16_t	id;
+	uint8_t		ok;
+	uint16_t	size;
+	uint8_t*	data;
+} CalcAttr;
+
 CalcParam*	cp_new(uint16_t id, uint16_t size);
 void		cp_del(CalcParam* cp);
 void		cp_del_array(int n, CalcParam *params);
+
+CalcAttr*	ca_new(uint16_t id, uint16_t size);
+void		ca_del(CalcAttr* cp);
 
 int ti84p_mode_set(CalcHandle *h);
 
 int ti84p_os_begin(CalcHandle *h);
 int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint8_t* data);
 
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam **params);
+int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids);
+int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params);
 int ti84p_params_set(CalcHandle *h, const CalcParam *param);
 
 #endif

@@ -76,7 +76,8 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_width = TI84P_COLS;
 	sc->clipped_height = TI84P_ROWS;
 
-	TRYF(ti84p_params_request(handle, 1, pid, &param));
+	TRYF(ti84p_params_request(handle, 1, pid));
+	TRYF(ti84p_params_get(handle, 1, &param));
 	if(!param->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -92,6 +93,23 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	uint16_t aids[] = { AID84P_VAR_SIZE, AID84P_VAR_TYPE, AID84P_ARCHIVED, };
+	TreeInfo *ti;
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
+
+	(*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	//TRYF(ti84p_dirlist_request(h, aids));
+
 	return 0;
 }
 
@@ -225,7 +243,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
-	TRYF(ti84p_params_request(handle, 4, pids, &params));
+	TRYF(ti84p_params_request(handle, 4, pids));
+	TRYF(ti84p_params_get(handle, 4, &params));
 	if(!params[0].ok)
 		return ERR_INVALID_PACKET;
 	
@@ -292,7 +311,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
-	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids, &params));
+	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids));
+	TRYF(ti84p_params_get(handle, sizeof(pids) / sizeof(uint16_t), &params));
 
 	strncpy(infos->product_name, params[i].data, params[i].size);
 	infos->mask |= INFOS_PRODUCT_NAME;

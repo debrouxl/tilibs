@@ -62,7 +62,6 @@ int ti84p_mode_set(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));	// ack
 
 	vtl_pkt_del(pkt);
-
 	return 0;
 }
 
@@ -93,11 +92,28 @@ void cp_del_array(int nparams, CalcParam *params)
 	free(params);
 }
 
-// Request one or more calc parameters
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam **params)
+CalcAttr*	ca_new(uint16_t id, uint16_t size)
+{
+	CalcAttr* cp = calloc(1, sizeof(CalcAttr));
+
+	cp->id = id;
+	cp->size = size;
+	cp->data = calloc(1, size);
+
+	return cp;
+}
+
+void		ca_del(CalcAttr* cp)
+{
+	free(cp->data);
+	free(cp);
+}
+
+// Request one or more calc parameters (to rename in param_get)
+int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 {
 	VirtualPacket* pkt;
-	int i, j;
+	int i;
 
 	pkt = vtl_pkt_new((nparams + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
 
@@ -115,6 +131,16 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam *
 	if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
 
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
+{
+	VirtualPacket* pkt;
+	int i, j;
+
+	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));	// param data
 
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
@@ -137,11 +163,10 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids, CalcParam *
 	}
 	
 	vtl_pkt_del(pkt);
-
 	return 0;
 }
 
-// Request one or more calc parameters
+// Set one  calc parameter
 int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
@@ -163,3 +188,34 @@ int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 
 	return 0;
 }
+
+// Request dirlist (to rename ??)
+int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
+{
+	VirtualPacket* pkt;
+	int i;
+
+	pkt = vtl_pkt_new(4 + 2*n + 7, VPKT_DIR_REQ);
+
+	pkt->data[0] = MSB(MSW(n));
+	pkt->data[1] = LSB(MSW(n));
+	pkt->data[2] = MSB(LSW(n));
+	pkt->data[3] = LSB(LSW(n));
+
+	for(i = 0; i < n; i++)
+	{
+		pkt->data[4+2*i+0] = MSB(aids[i]);
+		pkt->data[4+2*i+1] = LSB(aids[i]);
+	}
+
+	i = 2*i;
+	i += 4;
+	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
+	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
+	pkt->data[i+0] = 0x00; pkt->data[i+0] = 0x01;
+	pkt->data[i+0] = 0x01;
+
+	return 0;
+}
+
+//int ti84p_var_header(CalcHandle *h, CalcParm
