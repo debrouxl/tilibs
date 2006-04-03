@@ -268,15 +268,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 		memset(&infos, 0, sizeof(CalcInfos));		
 		TRYF(ticalcs_calc_get_version(handle, &infos));
-
-		switch(infos.device_type)
-		{
-		case CALC_TI92P: *model = CALC_TI92P; break;
-		case CALC_TI89:  *model = CALC_TI89;  break;
-		case CALC_V200:  *model = CALC_V200;  break;
-		case CALC_TI89T: *model = CALC_TI89T; break;
-		default: break;
-		}
+		*model = infos.model;
 	}
 	else
 	{
@@ -287,13 +279,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 		memset(&infos, 0, sizeof(CalcInfos));
 		TRYF(ticalcs_calc_get_version(handle, &infos));
-
-		switch (infos.device_type) 
-		{
-		case CALC_TI83P: *model = CALC_TI83P; break;
-		case CALC_TI84P: *model = CALC_TI84P; break;
-		default: break;
-		}
+		*model = infos.model;
 	}
 
 	ticalcs_info(_("Calculator type: %s"), tifiles_model_to_string(*model));

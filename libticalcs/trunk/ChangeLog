@@ -8,6 +8,7 @@ To do :
 - macros.h should be endian dependant (configure check ?)
 - allocated screenshot memory once screen is received completely
 - create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
+- TI89 get_version to review (HW1/2/3)
 
 Log:
 
