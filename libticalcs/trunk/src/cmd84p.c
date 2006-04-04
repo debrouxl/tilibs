@@ -35,7 +35,7 @@
 #include "dusb_vpkt.h"
 #include "cmd84p.h"
 
-/////////////----------------
+// Helpers
 
 CalcParam*	cp_new(uint16_t id, uint16_t size)
 {
@@ -92,13 +92,22 @@ void		ca_del(CalcAttr* cp)
 	free(cp);
 }
 
-void ca_del_array(int nattrs, CalcAttr *attrs)
+CalcAttr** ca_new_array(int size)
+{
+	CalcAttr** array = calloc(size+1, sizeof(CalcParam *));
+	return array;
+}
+
+void ca_del_array(int size, CalcAttr **attrs)
 {
 	int i;
 
-	for(i = 0; i < nattrs; i++)
-		if(attrs[i].ok)
-			free(attrs[i].data);
+	for(i = 0; i < size && attrs[i]; i++)
+	{
+		if(attrs[i]->ok)
+			free(attrs[i]->data);
+		free(attrs[i]);
+	}
 	free(attrs);
 }
 
@@ -196,7 +205,6 @@ int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
 		return ERR_INVALID_PACKET;
 
-	//*params = (CalcParam *)calloc(nparams + 1, sizeof(CalcParam));
 	for(i = 0, j = 2; i < nparams; i++)
 	{
 		CalcParam *s = params[i] = cp_new(0, 0);
@@ -247,7 +255,8 @@ int cmd84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 	return 0;
 }
 
-// 0x000A: variabel header (name is utf-8)
+// 0x000A: variable header (name is utf-8)
+// beware: attr array is allocated by function
 int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
@@ -270,11 +279,10 @@ int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 	memcpy(name, pkt->data + 2, name_length+1);
 
 	nattr = (pkt->data[name_length+3] << 8) | pkt->data[name_length+4];
-	*attr = (CalcAttr *)calloc(nattr + 1, sizeof(CalcAttr));
-
+	
 	for(i = 0, j = name_length+5; i < nattr; i++)
 	{
-		CalcAttr *s = *attr + i;
+		CalcAttr *s = attr[i] = ca_new(0, 0);
 
 		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
 		s->ok = !pkt->data[j++];

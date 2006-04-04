@@ -99,7 +99,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
-	CalcAttr *attr;
+	CalcAttr **attr;
 	TNode *folder;	
 	char varname[40];
 
@@ -124,19 +124,20 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 
-		err = cmd84p_var_header(handle, varname, &attr);
+		attr = ca_new_array(size);
+		err = cmd84p_var_header(handle, varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
 			return err;
 
 		strcpy(ve->name, varname);
-		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0].data)));
-		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1].data))) & 0xff;
-		ve->attr = attr[2].data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
+		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
+		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
+		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
 
 		tifiles_hexdump(varname, 16);
-		ca_del_array(1, attr);
+		ca_del_array(size, attr);
 
 		node = t_node_new(ve);
 		if (ve->type != TI73_APPL)
@@ -276,6 +277,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
 	uint16_t pids[4] = { PID84P_CLK_SEC, PID84P_CLK_DATE_FMT, PID84P_CLK_TIME_FMT, PID84P_CLK_ON };
+	const int size = sizeof(pids) / sizeof(uint16_t);
 	CalcParam **params;
 
 	uint32_t calc_time;
@@ -286,10 +288,10 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
-	params = cp_new_array(4);
-	TRYF(cmd84p_param_request(handle, 4, pids));
+	params = cp_new_array(size);
+	TRYF(cmd84p_param_request(handle, size, pids));
 	TRYF(cmd84p_param_ack(handle));
-	TRYF(cmd84p_param_data(handle, 4, params));
+	TRYF(cmd84p_param_data(handle, size, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	

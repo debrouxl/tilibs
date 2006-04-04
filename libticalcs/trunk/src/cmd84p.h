@@ -106,7 +106,7 @@ void		cp_del_array(int size, CalcParam **params);
 CalcAttr*	ca_new(uint16_t id, uint16_t size);
 void		ca_del(CalcAttr* cp);
 CalcAttr**	ca_new_array(int size);
-void		ca_del_array(int nattrs, CalcAttr *attrs);
+void		ca_del_array(int size, CalcAttr **attrs);
 
 // Command wrappers
 int cmd84p_mode_set(CalcHandle *h);
