@@ -333,18 +333,22 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	/*
-	CalcAttr *attr[2];
+	CalcAttr **attr;
+	const int size = 2;
 
-	attr[0] = ca_new(AID84P_UNKNOWN1, 4);
-	attr[0]->data[0] = 0xF0; attr[0]->data[0] = 0x0B;
-	attr[0]->data[0] = 0x00; attr[0]->data[0] = 0x00;
-	attr[1] = ca_new(AID84P_UNKNOWN2, 1);
-	attr[0]->data[0] = 0;
+	attr = ca_new_array(size);
 
-	//TRYF(cmd84p_var_delete(handle, vr->name, 2, attr));
+	attr[0] = ca_new(0x0011, 4);
+	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = 0x00;
+	
+	attr[1] = ca_new(0x0013, 1);
+	attr[1]->data[0] = 0;
 
-	ca_del_array(2, attr);*/
+	TRYF(cmd84p_var_delete(handle, vr->name, size, attr));
+	TRYF(cmd84p_data_ack(handle));
+
+	ca_del_array(size, attr);
 	return 0;
 }
 

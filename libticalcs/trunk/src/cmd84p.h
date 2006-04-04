@@ -122,7 +122,7 @@ int cmd84p_rts(CalcHandle *h);
 int cmd84p_var_request(CalcHandle *h);
 int cmd84p_var_content(CalcHandle *h);
 int cmd84p_param_set(CalcHandle *h, const CalcParam *param);
-int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr);
+int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr);
 int cmd84p_mode_ack(CalcHandle *h);
 int cmd84p_data_ack(CalcHandle *h);
 int cmd84p_param_ack(CalcHandle *h);

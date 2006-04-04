@@ -336,8 +336,8 @@ int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
 	return 0;
 }
 
-// 0x0010: variabel delete
-int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
+// 0x0010: variable delete
+int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -345,11 +345,12 @@ int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 	int pks;
 
 	pks = 2 + strlen(name)+1 + 2;
-	for(i = 0; i < n; i++) pks += 4 + attr[i].size;
+	for(i = 0; i < n; i++) pks += 4 + attr[i]->size;
+	pks += 5;
 	pkt = vtl_pkt_new(pks, VPKT_DEL_VAR);
 
-	pkt->data[j++] = MSB(strlen(name)+1);
-	pkt->data[j++] = LSB(strlen(name)+1);
+	pkt->data[j++] = MSB(strlen(name));
+	pkt->data[j++] = LSB(strlen(name));
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
 	pkt->data[j++] = MSB(n);
@@ -357,12 +358,12 @@ int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 
 	for(i = 0; i < n; i++)
 	{
-		pkt->data[j++] = MSB(attr[i].id);
-		pkt->data[j++] = LSB(attr[i].id);
-		pkt->data[j++] = LSB(attr[i].size);
-		pkt->data[j++] = LSB(attr[i].size);
-		memcpy(pkt->data + j, attr[i].data, attr[i].size);
-		j += attr[i].size;
+		pkt->data[j++] = MSB(attr[i]->id);
+		pkt->data[j++] = LSB(attr[i]->id);
+		pkt->data[j++] = MSB(attr[i]->size);
+		pkt->data[j++] = LSB(attr[i]->size);
+		memcpy(pkt->data + j, attr[i]->data, attr[i]->size);
+		j += attr[i]->size;
 	}
 
 	pkt->data[j++] = 0x01; pkt->data[j++] = 0x00;
