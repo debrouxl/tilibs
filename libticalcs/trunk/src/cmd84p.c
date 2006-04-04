@@ -104,7 +104,7 @@ void ca_del_array(int nattrs, CalcAttr *attrs)
 
 /////////////----------------
 
-// Ping or Set Mode
+// 0x0001: set mode or ping
 int ti84p_mode_set(CalcHandle *h)
 {
 	ModeSet mode = { 0 };
@@ -134,21 +134,31 @@ int ti84p_mode_set(CalcHandle *h)
 	return 0;
 }
 
-int ti84p_mode_ack(CalcHandle *h)
+// 0x0002: begin OS transfer
+int ti84p_os_begin(CalcHandle *h)
 {
-	VirtualPacket* pkt;
-
-	pkt = vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
-
-	if(pkt->type != VPKT_MODE_SET)
-		return ERR_INVALID_PACKET;
-
-	vtl_pkt_del(pkt);
 	return 0;
 }
 
-// Request one or more calc parameters
+// 0x0003: acknowledgement of OS transfer
+int ti84p_os_ack(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x0005: OS data
+int ti84p_os_data(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x0006: acknowledgement of EOT
+int ti84p_eot_ack(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x0007: parameter request
 int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 {
 	VirtualPacket* pkt;
@@ -171,21 +181,8 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 	return 0;
 }
 
-int ti84p_params_ack(CalcHandle *h)
-{
-	VirtualPacket* pkt;
-
-	pkt = vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
-
-	if(pkt->type != VPKT_PARM_ACK)
-		return ERR_INVALID_PACKET;
-
-	vtl_pkt_del(pkt);
-	return 0;
-}
-
-int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
+// 0x0008: parameter data
+int ti84p_params_data(CalcHandle *h, int nparams, CalcParam **params)
 {
 	VirtualPacket* pkt;
 	int i, j;
@@ -219,40 +216,7 @@ int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
 	return 0;
 }
 
-// Set one calc parameter
-int ti84p_params_set(CalcHandle *h, const CalcParam *param)
-{
-	VirtualPacket* pkt;
-
-	pkt = vtl_pkt_new((2 + 2 + param->size) * sizeof(uint16_t), VPKT_PARM_SET);
-
-	pkt->data[0] = MSB(param->id);
-	pkt->data[1] = LSB(param->id);
-	pkt->data[2] = MSB(param->size);
-	pkt->data[3] = LSB(param->size);
-	memcpy(pkt->data + 4, param->data, param->size);
-
-	TRYF(dusb_send_data(h, pkt));	// param set
-
-	vtl_pkt_del(pkt);
-	return 0;
-}
-
-int ti84p_data_ack(CalcHandle *h)
-{
-	VirtualPacket* pkt;
-
-	pkt = vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
-
-	if(pkt->type != VPKT_DATA_ACK)
-		return ERR_INVALID_PACKET;
-
-	vtl_pkt_del(pkt);
-	return 0;
-}
-
-// Request dirlist
+// 0x0009: request directory listing
 int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 {
 	VirtualPacket* pkt;
@@ -283,7 +247,7 @@ int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 	return 0;
 }
 
-// name is utf-8 => 18 chars max
+// 0x000A: variabel header (name is utf-8)
 int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
@@ -327,6 +291,44 @@ int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 	return 0;
 }
 
+// 0x000B: request to send
+int ti84p_rts(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x000C: variable request
+int ti84p_var_request(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x000D: variable contents
+int ti84p_var_content(CalcHandle *h)
+{
+	return 0;
+}
+
+// 0x000E: parameter set
+int ti84p_params_set(CalcHandle *h, const CalcParam *param)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new((2 + 2 + param->size) * sizeof(uint16_t), VPKT_PARM_SET);
+
+	pkt->data[0] = MSB(param->id);
+	pkt->data[1] = LSB(param->id);
+	pkt->data[2] = MSB(param->size);
+	pkt->data[3] = LSB(param->size);
+	memcpy(pkt->data + 4, param->data, param->size);
+
+	TRYF(dusb_send_data(h, pkt));	// param set
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0x0010: variabel delete
 int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 {
 	VirtualPacket* pkt;
@@ -364,3 +366,52 @@ int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 	vtl_pkt_del(pkt);
 	return 0;
 }
+
+// 0x0012: acknowledgement of mode setting
+int ti84p_mode_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type != VPKT_MODE_SET)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0xAA00: acknowledgement of data
+int ti84p_data_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type != VPKT_DATA_ACK)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0xBB00: acknowledgement of parameter request
+int ti84p_params_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type != VPKT_PARM_ACK)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0xDD00: end of transmission
+
+// 0xEE00: error

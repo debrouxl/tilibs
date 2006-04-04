@@ -109,11 +109,11 @@ int ti84p_mode_set(CalcHandle *h);
 int ti84p_mode_ack(CalcHandle *h);
 
 int ti84p_os_begin(CalcHandle *h);
-int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint8_t* data);
+//int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint8_t* data);
 
 int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids);
 int ti84p_params_ack(CalcHandle *h);
-int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params);
+int ti84p_params_data(CalcHandle *h, int nparams, CalcParam **params);
 int ti84p_params_set(CalcHandle *h, const CalcParam *param);
 int ti84p_data_ack(CalcHandle *h);
 

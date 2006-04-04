@@ -80,7 +80,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	param = cp_new_array(1);
 	TRYF(ti84p_params_request(handle, 1, pid));
 	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, 1, param));
+	TRYF(ti84p_params_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -289,7 +289,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	params = cp_new_array(4);
 	TRYF(ti84p_params_request(handle, 4, pids));
 	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, 4, params));
+	TRYF(ti84p_params_data(handle, 4, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -373,7 +373,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	TRYF(ti84p_params_request(handle, size, pids));
 	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, size, params));
+	TRYF(ti84p_params_data(handle, size, params));
 
 	strncpy(infos->product_name, params[i]->data, params[i]->size);
 	infos->mask |= INFOS_PRODUCT_NAME;
