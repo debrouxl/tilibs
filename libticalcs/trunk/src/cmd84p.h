@@ -71,6 +71,7 @@
 #define AID84P_UNKNOWN1		0x11
 #define AID84P_UNKNOWN2		0x13
 
+// Structures
 typedef struct
 {
 	uint16_t	arg1;
@@ -96,6 +97,7 @@ typedef struct
 	uint8_t*	data;
 } CalcAttr;
 
+// Helpers
 CalcParam*	cp_new(uint16_t id, uint16_t size);
 void		cp_del(CalcParam* cp);
 CalcParam** cp_new_array(int size);
@@ -103,23 +105,28 @@ void		cp_del_array(int size, CalcParam **params);
 
 CalcAttr*	ca_new(uint16_t id, uint16_t size);
 void		ca_del(CalcAttr* cp);
+CalcAttr**	ca_new_array(int size);
 void		ca_del_array(int nattrs, CalcAttr *attrs);
 
-int ti84p_mode_set(CalcHandle *h);
-int ti84p_mode_ack(CalcHandle *h);
-
-int ti84p_os_begin(CalcHandle *h);
-//int ti84p_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint8_t* data);
-
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids);
-int ti84p_params_ack(CalcHandle *h);
-int ti84p_params_data(CalcHandle *h, int nparams, CalcParam **params);
-int ti84p_params_set(CalcHandle *h, const CalcParam *param);
-int ti84p_data_ack(CalcHandle *h);
-
-int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids);
-int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr);
-
-int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr);
+// Command wrappers
+int cmd84p_mode_set(CalcHandle *h);
+int cmd84p_os_begin(CalcHandle *h);
+int cmd84p_os_ack(CalcHandle *h);
+int cmd84p_os_data(CalcHandle *h);
+int cmd84p_eot_ack(CalcHandle *h);
+int cmd84p_param_request(CalcHandle *h, int nparams, uint16_t *pids);
+int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params);
+int cmd84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids);
+int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr);
+int cmd84p_rts(CalcHandle *h);
+int cmd84p_var_request(CalcHandle *h);
+int cmd84p_var_content(CalcHandle *h);
+int cmd84p_param_set(CalcHandle *h, const CalcParam *param);
+int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr);
+int cmd84p_mode_ack(CalcHandle *h);
+int cmd84p_data_ack(CalcHandle *h);
+int cmd84p_param_ack(CalcHandle *h);
+int cmd84p_eot(CalcHandle *h);
+int cmd84p_error(CalcHandle *h);
 
 #endif

@@ -105,7 +105,7 @@ void ca_del_array(int nattrs, CalcAttr *attrs)
 /////////////----------------
 
 // 0x0001: set mode or ping
-int ti84p_mode_set(CalcHandle *h)
+int cmd84p_mode_set(CalcHandle *h)
 {
 	ModeSet mode = { 0 };
 	VirtualPacket* pkt;
@@ -135,31 +135,31 @@ int ti84p_mode_set(CalcHandle *h)
 }
 
 // 0x0002: begin OS transfer
-int ti84p_os_begin(CalcHandle *h)
+int cmd84p_os_begin(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0003: acknowledgement of OS transfer
-int ti84p_os_ack(CalcHandle *h)
+int cmd84p_os_ack(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0005: OS data
-int ti84p_os_data(CalcHandle *h)
+int cmd84p_os_data(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0006: acknowledgement of EOT
-int ti84p_eot_ack(CalcHandle *h)
+int cmd84p_eot_ack(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0007: parameter request
-int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
+int cmd84p_param_request(CalcHandle *h, int nparams, uint16_t *pids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -182,7 +182,7 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 }
 
 // 0x0008: parameter data
-int ti84p_params_data(CalcHandle *h, int nparams, CalcParam **params)
+int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
 {
 	VirtualPacket* pkt;
 	int i, j;
@@ -217,7 +217,7 @@ int ti84p_params_data(CalcHandle *h, int nparams, CalcParam **params)
 }
 
 // 0x0009: request directory listing
-int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
+int cmd84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -248,7 +248,7 @@ int ti84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
 }
 
 // 0x000A: variabel header (name is utf-8)
-int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
+int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
 	uint16_t name_length;
@@ -292,25 +292,25 @@ int ti84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int ti84p_rts(CalcHandle *h)
+int cmd84p_rts(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x000C: variable request
-int ti84p_var_request(CalcHandle *h)
+int cmd84p_var_request(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x000D: variable contents
-int ti84p_var_content(CalcHandle *h)
+int cmd84p_var_content(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x000E: parameter set
-int ti84p_params_set(CalcHandle *h, const CalcParam *param)
+int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
@@ -329,7 +329,7 @@ int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 }
 
 // 0x0010: variabel delete
-int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
+int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -368,7 +368,7 @@ int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 }
 
 // 0x0012: acknowledgement of mode setting
-int ti84p_mode_ack(CalcHandle *h)
+int cmd84p_mode_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -383,7 +383,7 @@ int ti84p_mode_ack(CalcHandle *h)
 }
 
 // 0xAA00: acknowledgement of data
-int ti84p_data_ack(CalcHandle *h)
+int cmd84p_data_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -398,7 +398,7 @@ int ti84p_data_ack(CalcHandle *h)
 }
 
 // 0xBB00: acknowledgement of parameter request
-int ti84p_params_ack(CalcHandle *h)
+int cmd84p_param_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -413,5 +413,13 @@ int ti84p_params_ack(CalcHandle *h)
 }
 
 // 0xDD00: end of transmission
+int cmd84p_eot(CalcHandle *h)
+{
+	return 0;
+}
 
 // 0xEE00: error
+int cmd84p_error(CalcHandle *h)
+{
+	return 0;
+}
