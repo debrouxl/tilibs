@@ -56,7 +56,8 @@
 static int		is_ready	(CalcHandle* handle)
 {
 	TRYF(ti84p_mode_set(handle));
-	// use PID84P_HOMESCREEN ?
+	TRYF(ti84p_mode_ack(handle));
+	// use PID84P_HOMESCREEN to return status ?
 
 	return 0;
 }
@@ -77,6 +78,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI84P_ROWS;
 
 	TRYF(ti84p_params_request(handle, 1, pid));
+	TRYF(ti84p_params_ack(handle));
 	TRYF(ti84p_params_get(handle, 1, &param));
 	if(!param->ok)
 		return ERR_INVALID_PACKET;
@@ -246,21 +248,25 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     param->data[2] = MSB(LSW(calc_time));
     param->data[3] = LSB(LSW(calc_time));
 	TRYF(ti84p_params_set(handle, param));
+	TRYF(ti84p_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_DATE_FMT, 1);
 	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
 	TRYF(ti84p_params_set(handle, param));
+	TRYF(ti84p_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_TIME_FMT, 1);
 	param->data[0] = clock->time_format == 24 ? 1 : 0;
 	TRYF(ti84p_params_set(handle, param));
+	TRYF(ti84p_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_ON, 1);
 	param->data[0] = clock->state;
 	TRYF(ti84p_params_set(handle, param));	
+	TRYF(ti84p_data_ack(handle));
 	cp_del(param);
 
 	return 0;
@@ -280,6 +286,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     update_label();
 
 	TRYF(ti84p_params_request(handle, 4, pids));
+	TRYF(ti84p_params_ack(handle));
 	TRYF(ti84p_params_get(handle, 4, &params));
 	if(!params[0].ok)
 		return ERR_INVALID_PACKET;
@@ -330,7 +337,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[1] = ca_new(AID84P_UNKNOWN2, 1);
 	attr[0]->data[0] = 0;
 
-	TRYF(ti84p_var_delete(handle, vr->name, 2, attr));
+	//TRYF(ti84p_var_delete(handle, vr->name, 2, attr));
 
 	ca_del_array(2, attr);
 
@@ -360,6 +367,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	memset(infos, 0, sizeof(CalcInfos));
 	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids));
+	TRYF(ti84p_params_ack(handle));
 	TRYF(ti84p_params_get(handle, sizeof(pids) / sizeof(uint16_t), &params));
 
 	strncpy(infos->product_name, params[i].data, params[i].size);

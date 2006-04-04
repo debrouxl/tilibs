@@ -23,7 +23,7 @@
   This unit handles TI84+ commands with DirectLink.
 */
 
-// Some functions should be renamed...
+// Some functions should be renamed or re-organized...
 
 #include <string.h>
 
@@ -117,9 +117,18 @@ int ti84p_mode_set(CalcHandle *h)
 	pkt->data[7] = LSB(mode.arg4);
 	pkt->data[8] = MSB(mode.arg5);
 	pkt->data[9] = LSB(mode.arg5);
-
 	TRYF(dusb_send_data(h, pkt));	// set mode
-	TRYF(dusb_recv_data(h, pkt));	// ack
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+int ti84p_mode_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
@@ -145,8 +154,19 @@ int ti84p_params_request(CalcHandle *h, int nparams, uint16_t *pids)
 		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
 	}
 
-	TRYF(dusb_send_data(h, pkt));	// param request
-	TRYF(dusb_recv_data(h, pkt));	// ack
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+int ti84p_params_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
 	if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -202,12 +222,22 @@ int ti84p_params_set(CalcHandle *h, const CalcParam *param)
 	memcpy(pkt->data + 4, param->data, param->size);
 
 	TRYF(dusb_send_data(h, pkt));	// param set
-	TRYF(dusb_recv_data(h, pkt));	// ack
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+int ti84p_data_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
 	if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
-
 	return 0;
 }
 
@@ -319,12 +349,7 @@ int ti84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr *attr)
 	pkt->data[j++] = 0x00;
 
 	TRYF(dusb_send_data(h, pkt));
-	TRYF(dusb_recv_data(h, pkt));
-	if(pkt->type != VPKT_DATA_ACK)
-		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
-	return 0;	
-
 	return 0;
 }
