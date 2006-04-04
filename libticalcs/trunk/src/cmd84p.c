@@ -54,15 +54,26 @@ void		cp_del(CalcParam* cp)
 	free(cp);
 }
 
-void cp_del_array(int nparams, CalcParam *params)
+CalcParam** cp_new_array(int size)
+{
+	CalcParam** array = calloc(size+1, sizeof(CalcParam *));
+	return array;
+}
+
+void cp_del_array(int size, CalcParam **params)
 {
 	int i;
 
-	for(i = 0; i < nparams; i++)
-		if(params[i].ok)
-			free(params[i].data);
+	for(i = 0; i < size && params[i]; i++)
+	{
+		if(params[i]->ok)
+			free(params[i]->data);
+		free(params[i]);
+	}
 	free(params);
 }
+
+/////////////----------------
 
 CalcAttr*	ca_new(uint16_t id, uint16_t size)
 {
@@ -188,11 +199,11 @@ int ti84p_params_get(CalcHandle *h, int nparams, CalcParam **params)
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
 		return ERR_INVALID_PACKET;
 
-	*params = (CalcParam *)calloc(nparams + 1, sizeof(CalcParam));
+	//*params = (CalcParam *)calloc(nparams + 1, sizeof(CalcParam));
 	for(i = 0, j = 2; i < nparams; i++)
 	{
-		CalcParam *s = *params + i;
-
+		CalcParam *s = params[i] = cp_new(0, 0);
+		
 		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
 		s->ok = !pkt->data[j++];
 		if(s->ok)

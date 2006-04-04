@@ -70,32 +70,33 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t pid[] = { PID84P_SCREENSHOT };
-	CalcParam *param;
+	CalcParam **param;
 
 	sc->width = TI84P_COLS;
 	sc->height = TI84P_ROWS;
 	sc->clipped_width = TI84P_COLS;
 	sc->clipped_height = TI84P_ROWS;
 
+	param = cp_new_array(1);
 	TRYF(ti84p_params_request(handle, 1, pid));
 	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, 1, &param));
-	if(!param->ok)
+	TRYF(ti84p_params_get(handle, 1, param));
+	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 	
 	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS / 8);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
-	memcpy(*bitmap, param->data, TI84P_COLS * TI84P_ROWS / 8);
+	memcpy(*bitmap, param[0]->data, TI84P_COLS * TI84P_ROWS / 8);
 
 	cp_del_array(1, param);
-
 	return 0;
 }
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
 	uint16_t aids[] = { AID84P_VAR_SIZE, AID84P_VAR_TYPE, AID84P_ARCHIVED, };
+	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
 	CalcAttr *attr;
@@ -117,7 +118,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
 
-	TRYF(ti84p_dirlist_request(handle, sizeof(aids) / sizeof(uint16_t), aids));
+	TRYF(ti84p_dirlist_request(handle, size, aids));
 	do
 	{
 		VarEntry *ve = tifiles_ve_create();
@@ -275,7 +276,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
 	uint16_t pids[4] = { PID84P_CLK_SEC, PID84P_CLK_DATE_FMT, PID84P_CLK_TIME_FMT, PID84P_CLK_ON };
-	CalcParam *params;
+	CalcParam **params;
 
 	uint32_t calc_time;
 	struct tm ref, *cur;
@@ -285,15 +286,16 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
+	params = cp_new_array(4);
 	TRYF(ti84p_params_request(handle, 4, pids));
 	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, 4, &params));
-	if(!params[0].ok)
+	TRYF(ti84p_params_get(handle, 4, params));
+	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	
 	// and computes
-	calc_time = (params[0].data[0] << 24) | (params[0].data[1] << 16) | 
-				(params[0].data[2] <<  8) | (params[0].data[3] <<  0);
+	calc_time = (params[0]->data[0] << 24) | (params[0]->data[1] << 16) | 
+				(params[0]->data[2] <<  8) | (params[0]->data[3] <<  0);
 
 	time(&now);	// retrieve current DST setting
 	memcpy(&ref, localtime(&now), sizeof(struct tm));;
@@ -318,9 +320,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	clock->minutes = cur->tm_min;
 	clock->seconds = cur->tm_sec;
 
-    clock->date_format = params[1].data[0] == 0 ? 3 : params[1].data[0];
-    clock->time_format = params[2].data[0] ? 24 : 12;
-	clock->state = params[3].data[0];
+    clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
+    clock->time_format = params[2]->data[0] ? 24 : 12;
+	clock->state = params[3]->data[0];
 
 	cp_del_array(1, params);
 
@@ -329,6 +331,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	/*
 	CalcAttr *attr[2];
 
 	attr[0] = ca_new(AID84P_UNKNOWN1, 4);
@@ -339,8 +342,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	//TRYF(ti84p_var_delete(handle, vr->name, 2, attr));
 
-	ca_del_array(2, attr);
-
+	ca_del_array(2, attr);*/
 	return 0;
 }
 
@@ -359,78 +361,81 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID84P_PHYS_FLASH, PID84P_FREE_FLASH, PID84P_FREE_FLASH,
 		PID84P_LCD_WIDTH, PID84P_LCD_HEIGHT, PID84P_BATTERY,
 	};
-	CalcParam *params;
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	CalcParam **params;
 	int i = 0;
 
 	snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
     update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
-	TRYF(ti84p_params_request(handle, sizeof(pids) / sizeof(uint16_t), pids));
-	TRYF(ti84p_params_ack(handle));
-	TRYF(ti84p_params_get(handle, sizeof(pids) / sizeof(uint16_t), &params));
+	params = cp_new_array(size);
 
-	strncpy(infos->product_name, params[i].data, params[i].size);
+	TRYF(ti84p_params_request(handle, size, pids));
+	TRYF(ti84p_params_ack(handle));
+	TRYF(ti84p_params_get(handle, size, params));
+
+	strncpy(infos->product_name, params[i]->data, params[i]->size);
 	infos->mask |= INFOS_PRODUCT_NAME;
 	i++;
 
 	snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
-		params[i].data[0], params[i].data[1], params[i].data[2], params[i].data[3], params[i].data[4]);
+		params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 	i++;
 
-	infos->hw_version = (params[i].data[0] << 8) | params[i].data[1];
+	infos->hw_version = (params[i]->data[0] << 8) | params[i]->data[1];
 	infos->mask |= INFOS_HW_VERSION; // hw version or model ?
 	i++;
 
-	infos->language_id = params[i].data[0];
+	infos->language_id = params[i]->data[0];
 	infos->mask |= INFOS_LANG_ID;
 	i++;
 
-	infos->sub_lang_id = params[i].data[0];
+	infos->sub_lang_id = params[i]->data[0];
 	infos->mask |= INFOS_SUB_LANG_ID;
 	i++;
 
-	infos->device_type = params[i].data[1];
+	infos->device_type = params[i]->data[1];
 	infos->mask |= INFOS_DEVICE_TYPE;
 	i++;
 
-	snprintf(infos->boot_version, 4, "%1i.%02i", params[i].data[1], params[i].data[2]);
+	snprintf(infos->boot_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
 	infos->mask |= INFOS_BOOT_VERSION;
 	i++;
 
-	snprintf(infos->os_version, 4, "%1i.%02i", params[i].data[1], params[i].data[2]);
+	snprintf(infos->os_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
 	infos->mask |= INFOS_OS_VERSION;
 	i++;
 
-	infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_RAM_PHYS;
 	i++;
-	infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_RAM_USER;
 	i++;
-	infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_RAM_FREE;
 	i++;
 
-	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_FLASH_PHYS;
 	i++;
-		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_FLASH_USER;
 	i++;
-	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i].data)));
+	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_FLASH_FREE;
 	i++;
 
-	infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i].data)));
+	infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
 	infos->mask |= INFOS_LCD_WIDTH;
 	i++;
-	infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i].data)));
+	infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
 	infos->mask |= INFOS_LCD_HEIGHT;
 	i++;
 
-	infos->battery = params[i].data[0];
+	infos->battery = params[i]->data[0];
 	infos->mask |= INFOS_BATTERY;
 	i++;
 
@@ -443,6 +448,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	}
 	infos->mask |= INFOS_CALC_MODEL;
 
+	cp_del_array(size, params);
 	return 0;
 }
 
