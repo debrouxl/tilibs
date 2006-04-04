@@ -4,9 +4,9 @@ code derived from Marcel De Kogel's z80em
 (http://www.komkon.org/~dekogel/misc.html) it includes, and distribute linked 
 combinations including the two. You must obey the GNU General Public License 
 in all respects for all of the code used other than the z80em-derived code in 
-TilEm. If you modify this file, you may extend this exception to your version 
-of the file, but you are not obligated to do so. If you do not wish to do so, 
-delete this exception statement from your version.
+TilEm. If you modify this library, you may extend this exception to your 
+version of the library, but you are not obligated to do so. If you do not 
+wish to do so, delete this exception statement from your version.
 
 ------------------------------------------------------------------------------
 
