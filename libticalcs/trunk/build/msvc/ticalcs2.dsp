@@ -184,11 +184,15 @@ SOURCE=..\..\src\tikeys.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\device_info.pkt"
+SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
 # End Source File
 # Begin Source File
 
-SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\recv_var_a.pkt"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\send_var_b.pkt"
 # End Source File
 # Begin Source File
 
@@ -206,6 +210,10 @@ SOURCE=..\..\src\calc_84p.c
 # Begin Source File
 
 SOURCE=..\..\src\cmd84p.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\cmd84p.h
 # End Source File
 # Begin Source File
 

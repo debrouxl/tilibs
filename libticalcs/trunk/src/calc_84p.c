@@ -55,8 +55,8 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYF(cmd84p_mode_set(handle));
-	TRYF(cmd84p_mode_ack(handle));
+	TRYF(cmd84p_s_mode_set(handle));
+	TRYF(cmd84p_r_mode_ack(handle));
 	// use PID84P_HOMESCREEN to return status ?
 
 	return 0;
@@ -78,9 +78,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI84P_ROWS;
 
 	param = cp_new_array(1);
-	TRYF(cmd84p_param_request(handle, 1, pid));
-	TRYF(cmd84p_param_ack(handle));
-	TRYF(cmd84p_param_data(handle, 1, param));
+	TRYF(cmd84p_s_param_request(handle, 1, pid));
+	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd84p_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -118,14 +118,14 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
 
-	TRYF(cmd84p_dirlist_request(handle, size, aids));
+	TRYF(cmd84p_s_dirlist_request(handle, size, aids));
 	do
 	{
 		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 
 		attr = ca_new_array(size);
-		err = cmd84p_var_header(handle, varname, attr);
+		err = cmd84p_r_var_header(handle, varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
@@ -170,6 +170,38 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
+	int i;
+	char *utf8;
+	CalcAttr **attrs;
+	const int nattrs = 3;
+
+	for (i = 0; i < content->num_entries; i++) 
+	{
+		VarEntry *ve = content->entries[i];
+		
+		if(ve->action == ACT_SKIP)
+			continue;
+
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
+		update_label();
+
+		attrs = ca_new_array(nattrs);
+		attrs[0] = ca_new(AID84P_VAR_TYPE, 4);
+		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
+		attrs[1] = ca_new(AID84P_ARCHIVED, 1);
+		attrs[1]->data[0] = ve->type;
+		attrs[2] = ca_new(AID84P_VAR_VERSION, 4);
+
+		TRYF(cmd84p_s_rts(handle, ve->name, nattrs, attrs));
+		TRYF(cmd84p_r_data_ack(handle));
+		TRYF(cmd84p_s_var_content(handle, ve->size, ve->data));
+		TRYF(cmd84p_r_data_ack(handle));
+		TRYF(cmd84p_s_eot(handle));
+	}
+
 	return 0;
 }
 
@@ -181,7 +213,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	const int nattrs = 1;
 	char name[40];
 	uint8_t *data;
-	int i, varsize;
 	VarEntry *ve;
 
 	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
@@ -192,11 +223,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd84p_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	TRYF(cmd84p_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd84p_var_header(handle, name, attrs));
-	TRYF(cmd84p_var_content(handle, &varsize, &data));
+	TRYF(cmd84p_r_var_header(handle, name, attrs));
+	TRYF(cmd84p_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -249,11 +280,11 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	TRYF(cmd84p_var_request(handle, "IDList", naids, aids, nattrs, attrs));
+	TRYF(cmd84p_s_var_request(handle, "IDList", naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd84p_var_header(handle, name, attrs));
-	TRYF(cmd84p_var_content(handle, &varsize, &data));
+	TRYF(cmd84p_r_var_header(handle, name, attrs));
+	TRYF(cmd84p_r_var_content(handle, &varsize, &data));
 
 	i = data[9];
 	data[9] = data[10];
@@ -313,26 +344,26 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     param->data[1] = LSB(MSW(calc_time));
     param->data[2] = MSB(LSW(calc_time));
     param->data[3] = LSB(LSW(calc_time));
-	TRYF(cmd84p_param_set(handle, param));
-	TRYF(cmd84p_data_ack(handle));
+	TRYF(cmd84p_s_param_set(handle, param));
+	TRYF(cmd84p_r_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_DATE_FMT, 1);
 	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
-	TRYF(cmd84p_param_set(handle, param));
-	TRYF(cmd84p_data_ack(handle));
+	TRYF(cmd84p_s_param_set(handle, param));
+	TRYF(cmd84p_r_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_TIME_FMT, 1);
 	param->data[0] = clock->time_format == 24 ? 1 : 0;
-	TRYF(cmd84p_param_set(handle, param));
-	TRYF(cmd84p_data_ack(handle));
+	TRYF(cmd84p_s_param_set(handle, param));
+	TRYF(cmd84p_r_data_ack(handle));
 	cp_del(param);
 
 	param = cp_new(PID84P_CLK_ON, 1);
 	param->data[0] = clock->state;
-	TRYF(cmd84p_param_set(handle, param));	
-	TRYF(cmd84p_data_ack(handle));
+	TRYF(cmd84p_s_param_set(handle, param));	
+	TRYF(cmd84p_r_data_ack(handle));
 	cp_del(param);
 
 	return 0;
@@ -353,9 +384,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     update_label();
 
 	params = cp_new_array(size);
-	TRYF(cmd84p_param_request(handle, size, pids));
-	TRYF(cmd84p_param_ack(handle));
-	TRYF(cmd84p_param_data(handle, size, params));
+	TRYF(cmd84p_s_param_request(handle, size, pids));
+	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd84p_r_param_data(handle, size, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -409,8 +440,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = 0;
 
-	TRYF(cmd84p_var_delete(handle, vr->name, size, attr));
-	TRYF(cmd84p_data_ack(handle));
+	TRYF(cmd84p_s_var_delete(handle, vr->name, size, attr));
+	TRYF(cmd84p_r_data_ack(handle));
 
 	ca_del_array(size, attr);
 	return 0;
@@ -441,9 +472,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	params = cp_new_array(size);
 
-	TRYF(cmd84p_param_request(handle, size, pids));
-	TRYF(cmd84p_param_ack(handle));
-	TRYF(cmd84p_param_data(handle, size, params));
+	TRYF(cmd84p_s_param_request(handle, size, pids));
+	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd84p_r_param_data(handle, size, params));
 
 	strncpy(infos->product_name, params[i]->data, params[i]->size);
 	infos->mask |= INFOS_PRODUCT_NAME;

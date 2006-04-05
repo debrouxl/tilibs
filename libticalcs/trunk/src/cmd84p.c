@@ -114,7 +114,7 @@ void ca_del_array(int size, CalcAttr **attrs)
 /////////////----------------
 
 // 0x0001: set mode or ping
-int cmd84p_mode_set(CalcHandle *h)
+int cmd84p_s_mode_set(CalcHandle *h)
 {
 	ModeSet mode = { 0 };
 	VirtualPacket* pkt;
@@ -144,31 +144,31 @@ int cmd84p_mode_set(CalcHandle *h)
 }
 
 // 0x0002: begin OS transfer
-int cmd84p_os_begin(CalcHandle *h)
+int cmd84p_s_os_begin(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0003: acknowledgement of OS transfer
-int cmd84p_os_ack(CalcHandle *h)
+int cmd84p_r_os_ack(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0005: OS data
-int cmd84p_os_data(CalcHandle *h)
+int cmd84p_s_os_data(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0006: acknowledgement of EOT
-int cmd84p_eot_ack(CalcHandle *h)
+int cmd84p_s_eot_ack(CalcHandle *h)
 {
 	return 0;
 }
 
 // 0x0007: parameter request
-int cmd84p_param_request(CalcHandle *h, int npids, uint16_t *pids)
+int cmd84p_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -191,7 +191,7 @@ int cmd84p_param_request(CalcHandle *h, int npids, uint16_t *pids)
 }
 
 // 0x0008: parameter data
-int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
+int cmd84p_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 {
 	VirtualPacket* pkt;
 	int i, j;
@@ -227,7 +227,7 @@ int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
 }
 
 // 0x0009: request directory listing
-int cmd84p_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
+int cmd84p_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -259,7 +259,7 @@ int cmd84p_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 
 // 0x000A: variable header (name is utf-8)
 // beware: attr array is allocated by function
-int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
+int cmd84p_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
 	uint16_t name_length;
@@ -304,7 +304,7 @@ int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int cmd84p_rts(CalcHandle *h, const char *name, int naids, uint16_t *aids, const CalcAttr **attrs)
+int cmd84p_s_rts(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int pks;
@@ -312,7 +312,7 @@ int cmd84p_rts(CalcHandle *h, const char *name, int naids, uint16_t *aids, const
 	int j = 0;
 
 	pks = 2 + strlen(name)+1 + 5 + 2;
-	for(i = 0; i < naids; i++) pks += 4 + attrs[i]->size;
+	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pkt = vtl_pkt_new(pks, VPKT_RTS);
 
 	pkt->data[j++] = MSB(strlen(name));
@@ -324,12 +324,16 @@ int cmd84p_rts(CalcHandle *h, const char *name, int naids, uint16_t *aids, const
 	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
 	pkt->data[j++] = 0x09; pkt->data[j++] = 0x01;
 
-	pkt->data[j++] = MSB(naids);
-	pkt->data[j++] = LSB(naids);
-	for(i = 0; i < naids; i++)
+	pkt->data[j++] = MSB(nattrs);
+	pkt->data[j++] = LSB(nattrs);
+	for(i = 0; i < nattrs; i++)
 	{
-		pkt->data[j++] = MSB(aids[i]);
-		pkt->data[j++] = LSB(aids[i]);
+		pkt->data[j++] = MSB(attrs[i]->id);
+		pkt->data[j++] = LSB(attrs[i]->id);
+		pkt->data[j++] = MSB(attrs[i]->size);
+		pkt->data[j++] = LSB(attrs[i]->size);
+		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		j += attrs[i]->size;
 	}
 
 	TRYF(dusb_send_data(h, pkt));
@@ -339,7 +343,8 @@ int cmd84p_rts(CalcHandle *h, const char *name, int naids, uint16_t *aids, const
 }
 
 // 0x000C: variable request
-int cmd84p_var_request(CalcHandle *h, const char *name, int naids, uint16_t *aids, 
+int cmd84p_s_var_request(CalcHandle *h, const char *name, 
+						int naids, uint16_t *aids, 
 						int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
@@ -388,8 +393,8 @@ int cmd84p_var_request(CalcHandle *h, const char *name, int naids, uint16_t *aid
 	return 0;
 }
 
-// 0x000D: variable contents
-int cmd84p_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
+// 0x000D: variable contents (recv)
+int cmd84p_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	VirtualPacket* pkt;
 
@@ -411,8 +416,22 @@ int cmd84p_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	return 0;
 }
 
+// 0x000D: variable contents (send)
+int cmd84p_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(size, VPKT_VAR_CNTS);
+
+	memcpy(pkt->data, data, size);
+	TRYF(dusb_send_data(h, pkt));
+	
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
 // 0x000E: parameter set
-int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
+int cmd84p_s_param_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
@@ -431,7 +450,7 @@ int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
 }
 
 // 0x0010: variable delete
-int cmd84p_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
+int cmd84p_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -471,7 +490,7 @@ int cmd84p_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAtt
 }
 
 // 0x0012: acknowledgement of mode setting
-int cmd84p_mode_ack(CalcHandle *h)
+int cmd84p_r_mode_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -488,7 +507,7 @@ int cmd84p_mode_ack(CalcHandle *h)
 }
 
 // 0xAA00: acknowledgement of data
-int cmd84p_data_ack(CalcHandle *h)
+int cmd84p_r_data_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -505,7 +524,7 @@ int cmd84p_data_ack(CalcHandle *h)
 }
 
 // 0xBB00: acknowledgement of parameter request
-int cmd84p_param_ack(CalcHandle *h)
+int cmd84p_r_param_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -551,7 +570,7 @@ int cmd84p_r_eot(CalcHandle *h)
 }
 
 // 0xEE00: error
-int cmd84p_error(CalcHandle *h)
+int cmd84p_s_error(CalcHandle *h)
 {
 	return 0;
 }
