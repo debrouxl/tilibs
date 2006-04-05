@@ -932,7 +932,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	case 8: infos->model = CALC_V200; break;
 	case 9: infos->model = CALC_TI89T; break;
 	}
-	infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION |INFOS_CALC_MODEL;
+	infos->language_id = buf[6];
+	infos->sub_lang_id = buf[7];
+	infos->mask = INFOS_BOOT_VERSION | INFOS_OS_VERSION | INFOS_BATTERY | INFOS_HW_VERSION | INFOS_CALC_MODEL | INFOS_LANG_ID | INFOS_SUB_LANG_ID;
 
 	tifiles_hexdump(buf, length);
 	ticalcs_info(_("  OS: %s"), infos->os_version);
