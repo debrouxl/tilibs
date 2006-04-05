@@ -195,7 +195,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[1]->data[0] = ve->type;
 		attrs[2] = ca_new(AID84P_VAR_VERSION, 4);
 
-		TRYF(cmd84p_s_rts(handle, ve->name, nattrs, attrs));
+		TRYF(cmd84p_s_rts(handle, ve->name, ve->size, nattrs, attrs));
 		TRYF(cmd84p_r_data_ack(handle));
 		TRYF(cmd84p_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd84p_r_data_ack(handle));

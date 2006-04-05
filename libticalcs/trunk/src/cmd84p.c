@@ -304,7 +304,7 @@ int cmd84p_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int cmd84p_s_rts(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
+int cmd84p_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int pks;
@@ -320,9 +320,11 @@ int cmd84p_s_rts(CalcHandle *h, const char *name, int nattrs, const CalcAttr **a
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
 	
-	pkt->data[j++] = 0x00; 
-	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
-	pkt->data[j++] = 0x09; pkt->data[j++] = 0x01;
+	pkt->data[j++] = MSB(MSW(size));
+	pkt->data[j++] = LSB(MSW(size));
+	pkt->data[j++] = MSB(LSW(size));
+	pkt->data[j++] = LSB(LSW(size));
+	pkt->data[j++] = 0x01;
 
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);

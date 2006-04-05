@@ -121,7 +121,7 @@ int cmd84p_s_param_request(CalcHandle *h, int npids, uint16_t *pids);
 int cmd84p_r_param_data(CalcHandle *h, int nparams, CalcParam **params);
 int cmd84p_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);
 int cmd84p_r_var_header(CalcHandle *h, char *name, CalcAttr **attr);
-int cmd84p_s_rts(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs);
+int cmd84p_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs);
 int cmd84p_s_var_request(CalcHandle *h, const char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs);
 int cmd84p_s_var_content(CalcHandle *h, uint32_t  size, uint8_t  *data);
 int cmd84p_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
