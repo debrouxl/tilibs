@@ -175,6 +175,42 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
+	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	CalcAttr **attrs;
+	const int nattrs = 1;
+	char name[40];
+	uint8_t *data;
+	int i, varsize;
+	VarEntry *ve;
+
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+    update_label();
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+
+	TRYF(cmd84p_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	ca_del_array(nattrs, attrs);
+	attrs = ca_new_array(nattrs);
+	TRYF(cmd84p_var_header(handle, name, attrs));
+	TRYF(cmd84p_var_content(handle, &varsize, &data));
+
+	content->model = handle->model;
+	strcpy(content->comment, tifiles_comment_set_single());
+    content->num_entries = 1;
+
+    content->entries = tifiles_ve_create_array(1);	
+    ve = content->entries[0] = tifiles_ve_create();
+    memcpy(ve, vr, sizeof(VarEntry));
+
+	ve->data = tifiles_ve_alloc_data(ve->size);
+	memcpy(ve->data, data, ve->size);
+	free(data);
+	
+	ca_del_array(nattrs, attrs);
 	return 0;
 }
 
@@ -213,7 +249,6 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	printf("naids = %i\n", naids);
 	TRYF(cmd84p_var_request(handle, "IDList", naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
@@ -503,8 +538,9 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_DIRLIST | OPS_CLOCK | OPS_VERSION | OPS_DELVAR |
-	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | 
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
