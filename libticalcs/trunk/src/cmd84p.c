@@ -304,13 +304,43 @@ int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int cmd84p_rts(CalcHandle *h)
+int cmd84p_rts(CalcHandle *h, const char *name, int naids, uint16_t *aids, const CalcAttr **attrs)
 {
+	VirtualPacket* pkt;
+	int pks;
+	int i;
+	int j = 0;
+
+	pks = 2 + strlen(name)+1 + 5 + 2;
+	for(i = 0; i < naids; i++) pks += 4 + attrs[i]->size;
+	pkt = vtl_pkt_new(pks, VPKT_RTS);
+
+	pkt->data[j++] = MSB(strlen(name));
+	pkt->data[j++] = LSB(strlen(name));
+	memcpy(pkt->data + j, name, strlen(name)+1);
+	j += strlen(name)+1;
+	
+	pkt->data[j++] = 0x00; 
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
+	pkt->data[j++] = 0x09; pkt->data[j++] = 0x01;
+
+	pkt->data[j++] = MSB(naids);
+	pkt->data[j++] = LSB(naids);
+	for(i = 0; i < naids; i++)
+	{
+		pkt->data[j++] = MSB(aids[i]);
+		pkt->data[j++] = LSB(aids[i]);
+	}
+
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
 // 0x000C: variable request
-int cmd84p_var_request(CalcHandle *h, char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs)
+int cmd84p_var_request(CalcHandle *h, const char *name, int naids, uint16_t *aids, 
+						int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int pks;
@@ -401,7 +431,7 @@ int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
 }
 
 // 0x0010: variable delete
-int cmd84p_var_delete(CalcHandle *h, char *name, int nattrs, const CalcAttr **attrs)
+int cmd84p_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -417,9 +447,9 @@ int cmd84p_var_delete(CalcHandle *h, char *name, int nattrs, const CalcAttr **at
 	pkt->data[j++] = LSB(strlen(name));
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
+
 	pkt->data[j++] = MSB(nattrs);
 	pkt->data[j++] = LSB(nattrs);
-
 	for(i = 0; i < nattrs; i++)
 	{
 		pkt->data[j++] = MSB(attrs[i]->id);
@@ -491,9 +521,32 @@ int cmd84p_param_ack(CalcHandle *h)
 	return 0;
 }
 
-// 0xDD00: end of transmission
-int cmd84p_eot(CalcHandle *h)
+// 0xDD00: end of transmission (send)
+int cmd84p_s_eot(CalcHandle *h)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, VPKT_EOT);
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0xDD00: end of transmission (recv)
+int cmd84p_r_eot(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_EOT)
+		return ERR_INVALID_PACKET;
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
