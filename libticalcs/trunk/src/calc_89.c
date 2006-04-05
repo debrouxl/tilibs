@@ -918,7 +918,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
 	snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
 	infos->battery = buf[4] == 1 ? 0 : 1;
-	infos->hw_version = buf[5];
+	switch(buf[13])
+	{
+	case 1:
+	case 3: infos->hw_version = buf[5] + 1;
+	case 8: infos->hw_version = buf[5];
+	case 9: infos->hw_version = buf[5] + 1;
+	}
 	switch(buf[13])
 	{
 	case 1: infos->model = CALC_TI92P; break;

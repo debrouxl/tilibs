@@ -7,9 +7,10 @@ To do :
 //- manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - allocated screenshot memory once screen is received completely
+	-> same for other functions
+
 - create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
 - TI89 get_version to review (HW1/2/3)
-- some functions should be renamed in cmd84p.c and the ack should be placed in another functions (ACKs)
 
 Log:
 
