@@ -64,12 +64,15 @@
 #define PID84P_SCREEN_SPLIT		0x0039 
 
 // Attributes IDs
-#define AID84P_VAR_SIZE		1
-#define AID84P_VAR_TYPE		2
-#define AID84P_ARCHIVED		3
+#define AID84P_VAR_SIZE		0x01
+#define AID84P_VAR_TYPE		0x02
+#define AID84P_ARCHIVED		0x03
+#define AID84P_UNKNOWN_04	0x04
+#define AID84P_4APPVAR		0x05
+#define AID84P_VAR_VERSION	0x08
 
-#define AID84P_UNKNOWN1		0x11
-#define AID84P_UNKNOWN2		0x13
+#define AID84P_VAR_TYPE2	0x11
+#define AID84P_UNKNOWN_13	0x13
 
 // Structures
 typedef struct
@@ -114,15 +117,15 @@ int cmd84p_os_begin(CalcHandle *h);
 int cmd84p_os_ack(CalcHandle *h);
 int cmd84p_os_data(CalcHandle *h);
 int cmd84p_eot_ack(CalcHandle *h);
-int cmd84p_param_request(CalcHandle *h, int nparams, uint16_t *pids);
+int cmd84p_param_request(CalcHandle *h, int npids, uint16_t *pids);
 int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params);
-int cmd84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids);
-int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr);
+int cmd84p_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);
+int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attrs);
 int cmd84p_rts(CalcHandle *h);
-int cmd84p_var_request(CalcHandle *h);
-int cmd84p_var_content(CalcHandle *h);
+int cmd84p_var_request(CalcHandle *h, char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attr);
+int cmd84p_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
 int cmd84p_param_set(CalcHandle *h, const CalcParam *param);
-int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr);
+int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attrs);
 int cmd84p_mode_ack(CalcHandle *h);
 int cmd84p_data_ack(CalcHandle *h);
 int cmd84p_param_ack(CalcHandle *h);

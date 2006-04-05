@@ -137,7 +137,7 @@ int cmd84p_mode_set(CalcHandle *h)
 	pkt->data[7] = LSB(mode.arg4);
 	pkt->data[8] = MSB(mode.arg5);
 	pkt->data[9] = LSB(mode.arg5);
-	TRYF(dusb_send_data(h, pkt));	// set mode
+	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
 	return 0;
@@ -168,17 +168,17 @@ int cmd84p_eot_ack(CalcHandle *h)
 }
 
 // 0x0007: parameter request
-int cmd84p_param_request(CalcHandle *h, int nparams, uint16_t *pids)
+int cmd84p_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
 	VirtualPacket* pkt;
 	int i;
 
-	pkt = vtl_pkt_new((nparams + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
+	pkt = vtl_pkt_new((npids + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
 
-	pkt->data[0] = MSB(nparams);
-	pkt->data[1] = LSB(nparams);
+	pkt->data[0] = MSB(npids);
+	pkt->data[1] = LSB(npids);
 
-	for(i = 0; i < nparams; i++)
+	for(i = 0; i < npids; i++)
 	{
 		pkt->data[2*(i+1) + 0] = MSB(pids[i]);
 		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
@@ -197,9 +197,11 @@ int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	int i, j;
 
 	pkt = vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));	// param data
+	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type != VPKT_PARM_DATA)
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
 	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
@@ -225,20 +227,20 @@ int cmd84p_param_data(CalcHandle *h, int nparams, CalcParam **params)
 }
 
 // 0x0009: request directory listing
-int cmd84p_dirlist_request(CalcHandle *h, int n, uint16_t *aids)
+int cmd84p_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 {
 	VirtualPacket* pkt;
 	int i;
 	int j = 0;
 
-	pkt = vtl_pkt_new(4 + 2*n + 7, VPKT_DIR_REQ);
+	pkt = vtl_pkt_new(4 + 2*naids + 7, VPKT_DIR_REQ);
 
-	pkt->data[j++] = MSB(MSW(n));
-	pkt->data[j++] = LSB(MSW(n));
-	pkt->data[j++] = MSB(LSW(n));
-	pkt->data[j++] = LSB(LSW(n));
+	pkt->data[j++] = MSB(MSW(naids));
+	pkt->data[j++] = LSB(MSW(naids));
+	pkt->data[j++] = MSB(LSW(naids));
+	pkt->data[j++] = LSB(LSW(naids));
 
-	for(i = 0; i < n; i++)
+	for(i = 0; i < naids; i++)
 	{
 		pkt->data[j++] = MSB(aids[i]);
 		pkt->data[j++] = LSB(aids[i]);
@@ -265,13 +267,15 @@ int cmd84p_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 	int i, j;
 
 	pkt = vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));	// variable header
+	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_EOT)
 	{
 		vtl_pkt_del(pkt);
 		return ERR_EOT;
 	}
+	else if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
 	else if(pkt->type != VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
@@ -306,14 +310,74 @@ int cmd84p_rts(CalcHandle *h)
 }
 
 // 0x000C: variable request
-int cmd84p_var_request(CalcHandle *h)
+int cmd84p_var_request(CalcHandle *h, char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs)
 {
+	VirtualPacket* pkt;
+	int pks;
+	int i;
+	int j = 0;
+
+	pks = 2 + strlen(name)+1 + 5 + 2 + 2*naids + 2;
+	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
+	pks += 2;
+	pkt = vtl_pkt_new(pks, VPKT_VAR_REQ);
+
+	pkt->data[j++] = MSB(strlen(name));
+	pkt->data[j++] = LSB(strlen(name));
+	memcpy(pkt->data + j, name, strlen(name)+1);
+	j += strlen(name)+1;
+	
+	pkt->data[j++] = 0x01; 
+	pkt->data[j++] = 0xFF; pkt->data[j++] = 0xFF;
+	pkt->data[j++] = 0xFF; pkt->data[j++] = 0xFF;
+
+	pkt->data[j++] = MSB(naids);
+	pkt->data[j++] = LSB(naids);
+	for(i = 0; i < naids; i++)
+	{
+		pkt->data[j++] = MSB(aids[i]);
+		pkt->data[j++] = LSB(aids[i]);
+	}
+
+	pkt->data[j++] = MSB(nattrs);
+	pkt->data[j++] = LSB(nattrs);
+	for(i = 0; i < nattrs; i++)
+	{
+		pkt->data[j++] = MSB(attrs[i]->id);
+		pkt->data[j++] = LSB(attrs[i]->id);
+		pkt->data[j++] = MSB(attrs[i]->size);
+		pkt->data[j++] = LSB(attrs[i]->size);
+		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		j += attrs[i]->size;
+	}
+	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
+
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
 // 0x000D: variable contents
-int cmd84p_var_content(CalcHandle *h)
+int cmd84p_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_VAR_CNTS)
+		return ERR_INVALID_PACKET;
+
+	if(size != NULL)
+		*size = pkt->size;
+
+	*data = calloc(pkt->size, 1);
+	memcpy(*data, pkt->data, pkt->size);
+	
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
@@ -330,14 +394,14 @@ int cmd84p_param_set(CalcHandle *h, const CalcParam *param)
 	pkt->data[3] = LSB(param->size);
 	memcpy(pkt->data + 4, param->data, param->size);
 
-	TRYF(dusb_send_data(h, pkt));	// param set
+	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
 	return 0;
 }
 
 // 0x0010: variable delete
-int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr)
+int cmd84p_var_delete(CalcHandle *h, char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -345,7 +409,7 @@ int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr)
 	int pks;
 
 	pks = 2 + strlen(name)+1 + 2;
-	for(i = 0; i < n; i++) pks += 4 + attr[i]->size;
+	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 5;
 	pkt = vtl_pkt_new(pks, VPKT_DEL_VAR);
 
@@ -353,17 +417,17 @@ int cmd84p_var_delete(CalcHandle *h, char *name, int n, const CalcAttr **attr)
 	pkt->data[j++] = LSB(strlen(name));
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
-	pkt->data[j++] = MSB(n);
-	pkt->data[j++] = LSB(n);
+	pkt->data[j++] = MSB(nattrs);
+	pkt->data[j++] = LSB(nattrs);
 
-	for(i = 0; i < n; i++)
+	for(i = 0; i < nattrs; i++)
 	{
-		pkt->data[j++] = MSB(attr[i]->id);
-		pkt->data[j++] = LSB(attr[i]->id);
-		pkt->data[j++] = MSB(attr[i]->size);
-		pkt->data[j++] = LSB(attr[i]->size);
-		memcpy(pkt->data + j, attr[i]->data, attr[i]->size);
-		j += attr[i]->size;
+		pkt->data[j++] = MSB(attrs[i]->id);
+		pkt->data[j++] = LSB(attrs[i]->id);
+		pkt->data[j++] = MSB(attrs[i]->size);
+		pkt->data[j++] = LSB(attrs[i]->size);
+		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		j += attrs[i]->size;
 	}
 
 	pkt->data[j++] = 0x01; pkt->data[j++] = 0x00;
@@ -384,7 +448,9 @@ int cmd84p_mode_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type != VPKT_MODE_SET)
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
@@ -399,7 +465,9 @@ int cmd84p_data_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type != VPKT_DATA_ACK)
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
@@ -414,7 +482,9 @@ int cmd84p_param_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type != VPKT_PARM_ACK)
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);

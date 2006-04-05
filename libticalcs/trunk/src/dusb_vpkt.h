@@ -58,7 +58,7 @@ typedef struct
 #define VPKT_DIR_REQ	0x0009
 #define VPKT_VAR_HDR	0x000A
 #define VPKT_RTS		0x000B
-#define VPKT_REQ_VAR	0x000C
+#define VPKT_VAR_REQ	0x000C
 #define VPKT_VAR_CNTS	0x000D
 #define VPKT_PARM_SET	0x000E
 #define VPKT_DEL_VAR	0x0010

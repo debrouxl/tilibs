@@ -200,6 +200,35 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
+	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	CalcAttr **attrs;
+	const int nattrs = 1;
+	char name[40];
+	uint8_t *data;
+	int i, varsize;
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
+
+	printf("naids = %i\n", naids);
+	TRYF(cmd84p_var_request(handle, "IDList", naids, aids, nattrs, attrs));
+	ca_del_array(nattrs, attrs);
+	attrs = ca_new_array(nattrs);
+	TRYF(cmd84p_var_header(handle, name, attrs));
+	TRYF(cmd84p_var_content(handle, &varsize, &data));
+
+	i = data[9];
+	data[9] = data[10];
+	data[10] = i;
+
+	for(i = 4; i < varsize && i < 16; i++)
+		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
+	id[7*2] = '\0';
+
+	ca_del_array(nattrs, attrs);
 	return 0;
 }
 
@@ -340,7 +369,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	attr[0] = ca_new(0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = 0x00;
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 	
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = 0;

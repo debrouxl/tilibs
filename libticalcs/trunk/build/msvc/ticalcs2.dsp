@@ -184,15 +184,11 @@ SOURCE=..\..\src\tikeys.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\device_info.pkt"
+# End Source File
+# Begin Source File
+
 SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\dirlist.pkt"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\screenshot.pkt"
 # End Source File
 # Begin Source File
 
