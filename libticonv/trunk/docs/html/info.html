@@ -14,7 +14,8 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
   </style>
   <meta name="author" content="Romain Li&eacute;vin">
 </head>
-<body alink="#ff0000" bgcolor="#ffffff" text="#000000" vlink="#0000ff">
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 248);"
+ alink="#ff0000" link="#000099" vlink="#0000ff">
 <h1> General Information about the TiConv library </h1>
 <hr>
 <pre>&nbsp;<em>&nbsp;</em></pre>
@@ -29,8 +30,60 @@ The library provides a complete API which is very easy to use and makes
 things easier.<br>
 <br>
 The library supports all the currently available calculators:<br>
-- TI8x calculators: TI73, 82, 83, TI83+, 85 and 86<br>
-- TI9x calculators: TI89, 92, 92+ and V200PLT.<br>
+- TI8x calculators: TI73, 82, 83, TI83+, 85 and 86,<br>
+- TI9x calculators: TI89, 92, 92+ and V200PLT,<br>
+- built-in USB calculators: TI84+ and Titanium.<br>
+<br>
+Why this library? <br>
+Kevin is interested in the ability to directly use in a C program some
+characters from the TI charset.<br>
+I (Romain) need to do some particular conversions at many stages in the
+TiLP framework and TiLP/TiEmu itself.<br>
+This is needed because the varname (name of variable, for short):<br>
+- may be tokenized on some calcs (TI8x),<br>
+- use a charset dependant of the calculator model,<br>
+<br>
+The varname need to be converted into:<br>
+- valid UTF-8 to be displayed correctly by GTK,<br>
+- valid 'GLib Filename Encoding' to be saved correctly.<br>
+<br>
+The following charsets are supported:<br>
+- TI8x: raw varnames (may be tokenized and use TI-8x charset),<br>
+- TI9x: raw varnames (use TI-9x charset),<br>
+- USB calcs: TI-UTF-8 encoded varnames (use UTF-8).<br>
+<br>
+To sum up:<br>
+<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><span
+ style="font-family: courier new,courier,monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+detokenized
+(TI8x)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(char maps)<br>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
++-------------------+&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;&nbsp;&nbsp; +-------------+-&gt; UTF-8 for display<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp; copied (TI9x)&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+raw varname -+-------------------+-&gt; TI charset
+-+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp; copied (USB)&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp; (switch case)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++-------------------+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++----------------&gt; Glib Filename Encoding for files<br>
+      </span></td>
+    </tr>
+  </tbody>
+</table>
 <br>
 If you want to look at the TI charsets, you will find them in the
 docs/charset <a href="../charsets">folder</a> of the ticonv archive or
