@@ -42,11 +42,18 @@ charsets:<br>
  href="http://www.unicode.org/charts">http://www.unicode.org/charts</a>&gt;
 and &lt;<a href="http://www.czyborra.com/utf">http://www.czyborra.com/utf</a>&gt;<br>
 </p>
-<p><span style="font-style: italic;">Beware:</span>
-tifiles_transcode_varname_static returns varnames in the locale
-selected by tifiles_transcoding_set (UTF-8 usually). If you want to use
-varname for buidling filenames, you need to convert from UTF-8 to glib
-filename encoding. Take care !<br>
+<p><span style="font-style: italic;"></span><span
+ style="text-decoration: underline; font-style: italic; font-weight: bold;">Important
+note 2:</span> due to the new USB hand-helds, the folder &amp; variable
+names are not always encoded as 'raw' any longer.<br>
+The varname can be encoded as raw/TI8x-charset (TI8x), TI9x-charset
+(TI9x) or pseudo UTF-8 (TI84+ USB &amp; Titanium USB). The real string
+type depends on the calculator model and relies on ticonv conversion
+routines to be handled fine (eg to you have to convert it with <a
+ href="../../../ticonv/docs/html/tokens.c.html#ticonv_varname_to_utf8">ticonv_varname_to_utf8/utf16</a>
+before displaying it or <a
+ href="../../../ticonv/docs/html/filename.c.html#ticonv_varname_to_filename">ticonv_varname_to_filename</a>
+to save it).
 </p>
 <p>==========[ List of entries ]==========<br>
 </p>
