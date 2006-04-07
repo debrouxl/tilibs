@@ -1165,7 +1165,25 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti
  **/
 TIEXPORT unsigned short* TICALL ticonv_ti84pusb_to_utf16(const char *ti, unsigned short *utf16)
 {
-	return 0x0000;
+	const unsigned char *p = (const unsigned char *)ti;
+	unsigned short *q = utf16;
+
+	while (*p) 
+	{
+		if(*p == 0xE2)
+		{
+			if(*(p+1) == 0x82)
+			{
+				*q++ = *(p+2) -0x80 + '0';
+				p += 3;
+			}
+		}
+		else
+			*q++ = (unsigned short)*p++;
+	}
+	*q=0;
+
+	return utf16;
 }
 
 /**
