@@ -45,7 +45,7 @@
 /* Types */
 
 #define VARNAME_MAX		18	// group/name: 8 + 1 + 8 + 1
-#define FILES_NCALCS	12	// # of supported calcs
+#define FILES_NCALCS	14	// # of supported calcs
 
 /**
  * CalcModel:
@@ -56,11 +56,8 @@
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, /*CALC_TI82S, */ CALC_TI83, 
-	CALC_TI83P, CALC_TI84P, 
-	CALC_TI85, CALC_TI86,
+	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-
 	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
 #endif
@@ -113,8 +110,8 @@ typedef enum
 
 /**
  * VarEntry:
- * folder: name of folder (TI9x only) or ""
- * @name: name of variable (binary, on-calc)
+ * @folder: name of folder (TI9x only) or ""
+ * @name: name of variable (raw on-calc encoding)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
  * @size: size of data (uint16_t for TI8x)
@@ -125,8 +122,8 @@ typedef enum
  **/
 typedef struct 
 {
-	char		folder[9];
-	char		name[9];
+	char		folder[36];
+	char		name[36];
 
 	uint8_t		type;
 	uint8_t		attr;
@@ -152,7 +149,7 @@ typedef struct
 {
   CalcModel		model;
 
-  char			default_folder[9];	// TI9x only
+  char			default_folder[36];	// TI9x only
   char			comment[43];		// Ti8x: 42 max, Ti9x: 40 max
 
   int			num_entries;

@@ -48,7 +48,6 @@ TIEXPORT const char *TICALL tifiles_model_to_string(CalcModel model)
 	case CALC_TI84P: return "TI84+";
   	case CALC_TI83P: return "TI83+";
   	case CALC_TI83:  return "TI83";
-//	case CALC_TI82S: return "TI82s";
   	case CALC_TI82:  return "TI82";
   	case CALC_TI73:  return "TI73";
 	case CALC_TI84P_USB: return "TI84+ USB";
@@ -71,8 +70,6 @@ TIEXPORT CalcModel TICALL tifiles_string_to_model(const char *str)
 		return CALC_TI73;
 	else if(!g_ascii_strcasecmp(str, "TI82"))
 		return CALC_TI82;
-		    /*else if(!g_ascii_strcasecmp(str, "TI82s"))
-		      return CALC_TI82S;*/
 	else if(!g_ascii_strcasecmp(str, "TI83"))
 		return CALC_TI83;
 	else if(!g_ascii_strcasecmp(str, "TI83+"))
