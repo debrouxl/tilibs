@@ -112,7 +112,7 @@ static void dirlist_display_vars(TNode* tree)
 
     if (fe != NULL) 
 	{
-		utf8 = ticonv_varname_to_utf8(info->model, fe->name, fe->type);
+		utf8 = ticonv_varname_to_utf8(info->model, fe->name);
 
       printf("| ");
       for (k = 0; k < 8; k++)
@@ -138,7 +138,7 @@ static void dirlist_display_vars(TNode* tree)
       TNode *child = t_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
-	  utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
+	  utf8 = ticonv_varname_to_utf8(info->model, ve->name);
 
       printf("| ");
       for (k = 0; k < 8; k++) 
@@ -182,7 +182,7 @@ static void dirlist_display_apps(TNode* tree)
     TNode *child = t_node_nth_child(apps, i);
     VarEntry *ve = (VarEntry *) (child->data);
 
-	utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
+	utf8 = ticonv_varname_to_utf8(info->model, ve->name);
 
     printf("| ");
     for (k = 0; k < 8; k++)

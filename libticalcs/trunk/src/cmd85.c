@@ -52,7 +52,7 @@ int ti85_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[2] = vartype;
 
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans);
   ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, name=<%s>)",
 	  varsize, vartype, trans);
 
@@ -159,7 +159,7 @@ int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[3] = strlen(varname);
   memcpy(buffer + 4, varname, 8);
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans);
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=<%s>)",
 	  varsize, vartype, trans);
   if ((handle->model == CALC_TI86) && (vartype >= TI86_DIR) && (vartype <= TI86_ZRCL)) 
@@ -196,7 +196,7 @@ int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   memcpy(buffer + 4, varname, 8);
   pad_buffer(buffer + 4, ' ');
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans);
   ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=<%s>)",
 	  varsize, vartype, trans);
 
@@ -248,7 +248,7 @@ int ti85_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
     memcpy(varname, buffer + 3, 8);
   }
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans);
   ticalcs_info(" TI->PC: VAR (size=0x%04X, id=%02X, name=<%s>)",
 	  *varsize, *vartype, trans);
 
@@ -355,7 +355,7 @@ int ti85_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   memcpy(varname, buffer + 4, strl);
   varname[strl] = '\0';
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans);
   ticalcs_info(" TI->PC: RTS (size=0x%04X, id=%02X, name=<%s>)",
 	  *varsize, *vartype, trans);
 

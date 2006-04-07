@@ -177,7 +177,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			break;
 		TRYF(err);
 
-		utf8 = ticonv_varname_to_utf8(handle->model,ve->name,ve->type);
+		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
 		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"),
 			((VarEntry *) (folder->data))->name, utf8);
 		g_free(utf8);
@@ -293,7 +293,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		else 
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname);
 		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
 		g_free(utf8);
 		update_label();
@@ -334,7 +334,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname);
 	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
 	g_free(utf8);
 	update_label();
@@ -406,7 +406,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
 		g_free(utf8);
 		update_label();

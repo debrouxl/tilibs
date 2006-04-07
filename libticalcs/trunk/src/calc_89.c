@@ -235,8 +235,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			ve->attr,
 			ve->size);
 
-			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, ve->type);
-			u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
+			u2 = ticonv_varname_to_utf8(handle->model, ve->name);
 			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);
 			g_free(u1); g_free(u2);
 			update_label();
@@ -303,7 +303,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname);
 		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
 		g_free(utf8);
 		update_label();
@@ -352,7 +352,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname);
 	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
 	g_free(utf8);
 	update_label();
@@ -491,7 +491,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname);
 		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
 		g_free(utf8);
 		update_label();
@@ -560,7 +560,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
 		g_free(utf8);
 
@@ -656,7 +656,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->model = handle->model;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
 	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
 	g_free(utf8);
 	update_label();

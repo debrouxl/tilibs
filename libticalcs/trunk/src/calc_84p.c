@@ -182,7 +182,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		if(ve->action == ACT_SKIP)
 			continue;
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
 		g_free(utf8);
 		update_label();
