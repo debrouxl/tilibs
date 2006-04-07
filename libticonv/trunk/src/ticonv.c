@@ -316,3 +316,55 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src)
 	g_free(utf16);
 	return utf8;
 }
+
+/**
+ * ticonv_varname_to_filename_s:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ * @dst: a buffer to place result in the GLib filename encoding (64 bytes max).
+ *
+ * This function converts a varname into a valid filename (depends on locale).
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ * 
+ * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ * if locale is different of UTF-8) because greek characters are often missed or mis-converted
+ * when converting to locale.
+ *
+ * Return value: %dst.
+ **/
+TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
+{
+	unsigned short *utf16;
+	char *gfe;
+
+	utf16 = ticonv_varname_to_utf16(model, src);
+	gfe = ticonv_utf16_to_gfe(model, utf16);
+
+	strcpy(dst, gfe);
+
+	g_free(utf16);
+	g_free(gfe);
+
+	return dst;
+}
+
+/**
+ * ticonv_varname_to_filename:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ *
+ * This function converts a varname into a valid filename (depends on locale).
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ * 
+ * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ * if locale is different of UTF-8) because greek characters are often missed or mis-converted
+ * when converting to locale.
+ *
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src)
+{
+	unsigned short *tmp = ticonv_varname_to_utf16(model, src);
+	return ticonv_utf16_to_gfe(model, tmp);
+}
+

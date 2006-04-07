@@ -20,8 +20,8 @@
  */
 
 /*
-	This unit contains tokenization & detokenization routines.
-  
+	This unit contains raw varname to TI-charset conversion routines.
+ 
 	The detokenization is used to translate some raw varnames into TI-charset 
 	encoded varnames. Tokenization is used for TI84+ USB only.
 	Depends on the calculator type.

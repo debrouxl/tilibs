@@ -134,8 +134,7 @@ extern "C" {
   TIEXPORT char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src);
 
   // filename.c
-  TIEXPORT char* TICALL ticonv_utf16_to_gfe_s(CalcModel model, const unsigned short *src, const unsigned short *dst);
-  TIEXPORT char* TICALL ticonv_utf16_to_gfe  (CalcModel model, const unsigned short *src);
+  TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
 
   // iconv.c
   /* Allocate descriptor for code conversion from codeset FROMCODE to
