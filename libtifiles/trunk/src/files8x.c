@@ -786,7 +786,7 @@ int ti8x_content_display_regular(Ti8xRegular *content)
   {
     tifiles_info("Entry #%i", i);
     tifiles_info("  name:        <%s>",
-		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans, content->entries[i]->type));
+		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans));
     tifiles_info("  type:        %02X (%s)",
 	    content->entries[i]->type,
 	    tifiles_vartype2string(content->model, content->entries[i]->type));

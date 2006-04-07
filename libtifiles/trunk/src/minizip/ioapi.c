@@ -13,7 +13,7 @@
 #include "zlib.h"
 #include "ioapi.h"
 
-
+#include <glib/gstdio.h>
 
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
