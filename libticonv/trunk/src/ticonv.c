@@ -122,14 +122,14 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsign
 		case CALC_TI83: return ticonv_utf16_to_ti83(utf16, ti); break;
 		case CALC_TI83P:
 		case CALC_TI84P:
-		case CALC_TI84P_USB: return ticonv_utf16_to_ti83p(utf16, ti); break;
 		case CALC_TI85: return ticonv_utf16_to_ti85(utf16, ti); break;
 		case CALC_TI89:
 		case CALC_TI89T:
-		case CALC_TI89T_USB:
 		case CALC_TI92:
 		case CALC_TI92P:
 		case CALC_V200: return ticonv_utf16_to_ti9x(utf16, ti); break;
+		case CALC_TI84P_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
+		case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 		default: return strcpy(ti, "");
 	}
 
@@ -175,15 +175,15 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, co
 		case CALC_TI83: return ticonv_ti83_to_utf16(ti, utf16); break;
 		case CALC_TI83P:
 		case CALC_TI84P:
-		case CALC_TI84P_USB: return ticonv_ti83p_to_utf16(ti, utf16); break;
 		case CALC_TI85: return ticonv_ti85_to_utf16(ti, utf16); break;
 		case CALC_TI86: return ticonv_ti86_to_utf16(ti, utf16); break;
 		case CALC_TI89:
 		case CALC_TI89T:
-		case CALC_TI89T_USB:
 		case CALC_TI92:
 		case CALC_TI92P:
 		case CALC_V200: return ticonv_ti9x_to_utf16(ti, utf16); break;
+		case CALC_TI84P_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
+		case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 		default: return memcpy(utf16, "\0", 2);
 	}
 

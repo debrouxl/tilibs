@@ -1152,4 +1152,64 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti
 	return "";
 }
 
+///////////// TI84+ USB /////////////
+
+/**
+ * ticonv_ti84pusb_to_utf16:
+ * @ti: null terminated string (input)
+ * @utf16: null terminated string (output)
+ *
+ * TI84+/USB charset to UTF-16 conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT unsigned short* TICALL ticonv_ti84pusb_to_utf16(const char *ti, unsigned short *utf16)
+{
+	return 0x0000;
+}
+
+/**
+ * ticonv_utf16_to_ti84pusb:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI84+/USB charset conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT char* TICALL ticonv_utf16_to_ti84pusb(const unsigned short *utf16, char *ti)
+{
+	return "";
+}
+
+///////////// Titanium USB /////////////
+
+/**
+ * ticonv_ti89tpusb_to_utf16:
+ * @ti: null terminated string (input)
+ * @utf16: null terminated string (output)
+ *
+ * Titanium/USB charset to UTF-16 conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsigned short *utf16)
+{
+	return 0x0000;
+}
+
+/**
+ * ticonv_utf16_to_ti89tpusb:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to Titanium/USB charset conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT char* TICALL ticonv_utf16_to_ti89tusb(const unsigned short *utf16, char *ti)
+{
+	return "";
+}
+
 ////////////////////////////////
