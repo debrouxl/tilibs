@@ -13,6 +13,7 @@ Log:
 - 07/04/2006, version 0.1.2: roms
 	- increased buffer length of variable & folder names (9 -> 36) due to TI-UTF-8
 	- checked for usb calcs support
+	- fixed warnings
 
 - 16/03/2006, version 0.1.1: roms
 	- free the block itself in tifiles_content_delete_xxxxx

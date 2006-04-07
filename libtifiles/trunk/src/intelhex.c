@@ -337,9 +337,13 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 
 	// write a block (=page)
 	for(i = 0; i < n * PKT_MAX; i += PKT_MAX)
-		bytes_written += hex_packet_write(f, PKT_MAX, addr + i, HEX_DATA, data + i);
+		bytes_written += hex_packet_write(f, 
+		PKT_MAX, 
+		(uint16_t)(addr + i), 
+		HEX_DATA, 
+		data + i);
 	if(r > 0)
-		bytes_written += hex_packet_write(f, r, addr + i, HEX_DATA, data + i);
+		bytes_written += hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
 	
 	return bytes_written;
 }
