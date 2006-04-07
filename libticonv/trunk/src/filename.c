@@ -81,7 +81,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
 	unsigned short *utf16_dst, *q;
 
 	// detokenization to UTF-16
-	p = utf16_src = ticonv_varname_to_utf16(model, src, 1);
+	p = utf16_src = ticonv_varname_to_utf16(model, src);
 	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
 
 	// conversion from UTF-16 to UTF-16

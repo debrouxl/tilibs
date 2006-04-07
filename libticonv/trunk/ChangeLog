@@ -5,6 +5,10 @@ Run './configure --enable-static=yes --enable-shared=no' for use with
 
 Log:
 
+- 07/04/2006, version 0.0.3: roms
+	- added support of the new TI84+ & TItanium USB hand-helds.
+	- increased SO major number due to API changes
+
 - ??/03/2006, version 0.0.2: kevinkofler
 	- added iconv.c for an iconv-compatible interface
 

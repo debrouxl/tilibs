@@ -20,12 +20,13 @@
  */
 
 /*
-	This unit contains detokenization routines.
+	This unit contains tokenization & detokenization routines.
   
-	This is used to translate some varnames into a more readable name.
-	Depends on the calculator type and the variable type.
+	The detokenization is used to translate some raw varnames into TI-charset 
+	encoded varnames. Tokenization is used for TI84+ USB only.
+	Depends on the calculator type.
 
-	This is needed for the following calcs: 73/82/83/83+/84+ only.
+	This is needed for the following calcs: 73/82/83/83+/84+.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -38,68 +39,62 @@
 
 #include "ticonv.h"
 
-static char *detokenize_varname(CalcModel model, const char *src, char *dst, unsigned int vartype)
+//---
+
+#define MAXCHARS	((8+1+8+1) * 4)
+
+//---
+
+// beware: raw varname is not always NUL-terminated
+static char *detokenize_varname(CalcModel model, const char *src)
 {
 	int i;
 	unsigned int tok1 = src[0] & 0xff;
 	unsigned int tok2 = src[1] & 0xff;
+	char *dst;
 
-	switch (vartype) 
-    {
-    case 0x0B:	// TI82_WDW
-		strcpy(dst, "Window");
-		return dst;
-    case 0x0C:	// TI82_ZSTO
-		strcpy(dst, "RclWin");
-		return dst;
-    case 0x0D:	// TI82_TAB
-		strcpy(dst, "TblSet");
-		return dst;
-    default:
-		break;
-    }
-  
 	switch (tok1) 
     {
     case 0x5C:			/* Matrix: [A] to [E]/[J] */
 		switch(tok2)
 		{
-		case 0x00: sprintf(dst, "%cA]", '\xc1'); break;
-		case 0x01: sprintf(dst, "%cB]", '\xc1'); break;
-		case 0x02: sprintf(dst, "%cC]", '\xc1'); break;
-		case 0x03: sprintf(dst, "%cD]", '\xc1'); break;
-		case 0x04: sprintf(dst, "%cE]", '\xc1'); break;
-		case 0x05: sprintf(dst, "%cF]", '\xc1'); break;
-		case 0x06: sprintf(dst, "%cG]", '\xc1'); break;
-		case 0x07: sprintf(dst, "%cH]", '\xc1'); break;
-		case 0x08: sprintf(dst, "%cI]", '\xc1'); break;
-		case 0x09: sprintf(dst, "%cJ]", '\xc1'); break;
+		case 0x00: dst = g_strdup_printf("%cA]", '\xc1'); break;
+		case 0x01: dst = g_strdup_printf("%cB]", '\xc1'); break;
+		case 0x02: dst = g_strdup_printf("%cC]", '\xc1'); break;
+		case 0x03: dst = g_strdup_printf("%cD]", '\xc1'); break;
+		case 0x04: dst = g_strdup_printf("%cE]", '\xc1'); break;
+		case 0x05: dst = g_strdup_printf("%cF]", '\xc1'); break;
+		case 0x06: dst = g_strdup_printf("%cG]", '\xc1'); break;
+		case 0x07: dst = g_strdup_printf("%cH]", '\xc1'); break;
+		case 0x08: dst = g_strdup_printf("%cI]", '\xc1'); break;
+		case 0x09: dst = g_strdup_printf("%cJ]", '\xc1'); break;
 
-		default:   sprintf(dst, "%c?]", '\xc1'); break;
+		default:   dst = g_strdup_printf("%c?]", '\xc1'); break;
 		}
 		break;
 
     case 0x5D:			/* List: L1 to L6/L0 */
 		if(model == CALC_TI73) //TI73 != TI83 here
-			sprintf(dst, "L%c", src[1] + '\x80');	
+			dst = g_strdup_printf("L%c", src[1] + '\x80');	
 		else 
 		{// TI73 begins at L0, others at L1
 			switch(tok2)
 			{
-			case 0x00: sprintf(dst, "L%c", '\x81'); break;
-			case 0x01: sprintf(dst, "L%c", '\x82'); break;
-			case 0x02: sprintf(dst, "L%c", '\x83'); break;
-			case 0x03: sprintf(dst, "L%c", '\x84'); break;
-			case 0x04: sprintf(dst, "L%c", '\x85'); break;
-			case 0x05: sprintf(dst, "L%c", '\x86'); break;
-			case 0x06: sprintf(dst, "L%c", '\x87'); break;
-			case 0x07: sprintf(dst, "L%c", '\x88'); break;
-			case 0x08: sprintf(dst, "L%c", '\x89'); break;
-			case 0x09: sprintf(dst, "L%c", '\x80'); break;
+			case 0x00: dst = g_strdup_printf("L%c", '\x81'); break;
+			case 0x01: dst = g_strdup_printf("L%c", '\x82'); break;
+			case 0x02: dst = g_strdup_printf("L%c", '\x83'); break;
+			case 0x03: dst = g_strdup_printf("L%c", '\x84'); break;
+			case 0x04: dst = g_strdup_printf("L%c", '\x85'); break;
+			case 0x05: dst = g_strdup_printf("L%c", '\x86'); break;
+			case 0x06: dst = g_strdup_printf("L%c", '\x87'); break;
+			case 0x07: dst = g_strdup_printf("L%c", '\x88'); break;
+			case 0x08: dst = g_strdup_printf("L%c", '\x89'); break;
+			case 0x09: dst = g_strdup_printf("L%c", '\x80'); break;
 			  
 			default: // named list
+			  dst = g_strdup_printf("1234567");
 			  for (i = 0; i < 7; i++)
-			dst[i] = src[i + 1];
+				dst[i] = src[i + 1];
 			  break;
 			}
 		}
@@ -108,208 +103,209 @@ static char *detokenize_varname(CalcModel model, const char *src, char *dst, uns
     case 0x5E:			/* Equations: Y1 to Y0, ... */
 		switch(tok2)
 		{
-		case 0x10: sprintf(dst, "Y%c", '\x81'); break;
-		case 0x11: sprintf(dst, "Y%c", '\x82'); break;
-		case 0x12: sprintf(dst, "Y%c", '\x83'); break;
-		case 0x13: sprintf(dst, "Y%c", '\x84'); break;
-		case 0x14: sprintf(dst, "Y%c", '\x85'); break;
-		case 0x15: sprintf(dst, "Y%c", '\x86'); break;
-		case 0x16: sprintf(dst, "Y%c", '\x87'); break;
-		case 0x17: sprintf(dst, "Y%c", '\x88'); break;
-		case 0x18: sprintf(dst, "Y%c", '\x89'); break;
-		case 0x19: sprintf(dst, "Y%c", '\x80'); break;
+		case 0x10: dst = g_strdup_printf("Y%c", '\x81'); break;
+		case 0x11: dst = g_strdup_printf("Y%c", '\x82'); break;
+		case 0x12: dst = g_strdup_printf("Y%c", '\x83'); break;
+		case 0x13: dst = g_strdup_printf("Y%c", '\x84'); break;
+		case 0x14: dst = g_strdup_printf("Y%c", '\x85'); break;
+		case 0x15: dst = g_strdup_printf("Y%c", '\x86'); break;
+		case 0x16: dst = g_strdup_printf("Y%c", '\x87'); break;
+		case 0x17: dst = g_strdup_printf("Y%c", '\x88'); break;
+		case 0x18: dst = g_strdup_printf("Y%c", '\x89'); break;
+		case 0x19: dst = g_strdup_printf("Y%c", '\x80'); break;
 
-		case 0x20: sprintf(dst, "X%c%c", '\x81', '\x0d'); break;
-		case 0x21: sprintf(dst, "Y%c%c", '\x81', '\x0d'); break;
-		case 0x22: sprintf(dst, "X%c%c", '\x82', '\x0d'); break;
-		case 0x23: sprintf(dst, "Y%c%c", '\x82', '\x0d'); break;
-		case 0x24: sprintf(dst, "X%c%c", '\x83', '\x0d'); break;
-		case 0x25: sprintf(dst, "Y%c%c", '\x83', '\x0d'); break;
-		case 0x26: sprintf(dst, "X%c%c", '\x84', '\x0d'); break;
-		case 0x27: sprintf(dst, "Y%c%c", '\x84', '\x0d'); break;
-		case 0x28: sprintf(dst, "X%c%c", '\x85', '\x0d'); break;
-		case 0x29: sprintf(dst, "Y%c%c", '\x85', '\x0d'); break;
-		case 0x2a: sprintf(dst, "X%c%c", '\x86', '\x0d'); break;
-		case 0x2b: sprintf(dst, "Y%c%c", '\x86', '\x0d'); break;
+		case 0x20: dst = g_strdup_printf("X%c%c", '\x81', '\x0d'); break;
+		case 0x21: dst = g_strdup_printf("Y%c%c", '\x81', '\x0d'); break;
+		case 0x22: dst = g_strdup_printf("X%c%c", '\x82', '\x0d'); break;
+		case 0x23: dst = g_strdup_printf("Y%c%c", '\x82', '\x0d'); break;
+		case 0x24: dst = g_strdup_printf("X%c%c", '\x83', '\x0d'); break;
+		case 0x25: dst = g_strdup_printf("Y%c%c", '\x83', '\x0d'); break;
+		case 0x26: dst = g_strdup_printf("X%c%c", '\x84', '\x0d'); break;
+		case 0x27: dst = g_strdup_printf("Y%c%c", '\x84', '\x0d'); break;
+		case 0x28: dst = g_strdup_printf("X%c%c", '\x85', '\x0d'); break;
+		case 0x29: dst = g_strdup_printf("Y%c%c", '\x85', '\x0d'); break;
+		case 0x2a: dst = g_strdup_printf("X%c%c", '\x86', '\x0d'); break;
+		case 0x2b: dst = g_strdup_printf("Y%c%c", '\x86', '\x0d'); break;
 
-		case 0x40: sprintf(dst, "r%c", '\x81'); break;
-		case 0x41: sprintf(dst, "r%c", '\x82'); break;
-		case 0x42: sprintf(dst, "r%c", '\x83'); break;
-		case 0x43: sprintf(dst, "r%c", '\x84'); break;
-		case 0x44: sprintf(dst, "r%c", '\x85'); break;
-		case 0x45: sprintf(dst, "r%c", '\x86'); break;
+		case 0x40: dst = g_strdup_printf("r%c", '\x81'); break;
+		case 0x41: dst = g_strdup_printf("r%c", '\x82'); break;
+		case 0x42: dst = g_strdup_printf("r%c", '\x83'); break;
+		case 0x43: dst = g_strdup_printf("r%c", '\x84'); break;
+		case 0x44: dst = g_strdup_printf("r%c", '\x85'); break;
+		case 0x45: dst = g_strdup_printf("r%c", '\x86'); break;
 
 		case 0x80: 
 		  if(model == CALC_TI82)
-			sprintf(dst, "U%c", '\xd7'); 
+			dst = g_strdup_printf("U%c", '\xd7'); 
 		  else
-			sprintf(dst, "u");
+			dst = g_strdup_printf("u");
 		  break;
 
 		case 0x81:
 		  if(model == CALC_TI82)
-			sprintf(dst, "V%c", '\xd7'); 
+			dst = g_strdup_printf("V%c", '\xd7'); 
 		  else
-			sprintf(dst, "v");
+			dst = g_strdup_printf("v");
 		  break;
 
 		case 0x82:
 		  if(model == CALC_TI82)
-			sprintf(dst, "W%c", '\xd7'); 
+			dst = g_strdup_printf("W%c", '\xd7'); 
 		  else
-			sprintf(dst, "w");
+			dst = g_strdup_printf("w");
 		  break; 
 		
-		default: sprintf(dst, "?"); break;
+		default: dst = g_strdup_printf("?"); break;
 		}
 		break;
 
     case 0x60:			/* Pictures */
 		if (tok2 != 0x09)
-			sprintf(dst, "Pic%c", tok2 + '\x81');
+			dst = g_strdup_printf("Pic%c", tok2 + '\x81');
 		else
-			sprintf(dst, "Pic%c", '\x80');
+			dst = g_strdup_printf("Pic%c", '\x80');
 		break;
 
     case 0x61:			/* GDB */
 		if (tok2 != 0x09)
-			sprintf(dst, "GDB%c", tok2 + '\x81');
+			dst = g_strdup_printf("GDB%c", tok2 + '\x81');
 		else
-			sprintf(dst, "GDB%c", '\x80');
+			dst = g_strdup_printf("GDB%c", '\x80');
 		break;
 
     case 0x62:
 		switch(tok2)
 		{
-		case 0x01: sprintf(dst, "ReqEq"); break;
-		case 0x02: sprintf(dst, "n"); break;
-		case 0x03: sprintf(dst, "%c", '\xcb'); break;
-		case 0x04: sprintf(dst, "%c%c", '\xc6', 'x'); break;
-		case 0x05: sprintf(dst, "%c%c%c", '\xc6', 'x', '\x12'); break;
-		case 0x06: sprintf(dst, "%c%c", 'S', 'x'); break;
-		case 0x07: sprintf(dst, "%c%c", '\xc7', 'x'); break;
-		case 0x08: sprintf(dst, "minX"); break;
-		case 0x09: sprintf(dst, "maxX"); break;
-		case 0x0a: sprintf(dst, "minY"); break;
-		case 0x0b: sprintf(dst, "maxY"); break;
-		case 0x0c: sprintf(dst, "%c", '\xcc'); break;
-		case 0x0d: sprintf(dst, "%c%c", '\xc6', 'y'); break;
-		case 0x0e: sprintf(dst, "%c%c%c", '\xc6', 'y', '\x12'); break;
-		case 0x0f: sprintf(dst, "%c%c", 'S', 'y'); break;
-		case 0x10: sprintf(dst, "%c%c", '\xc7', 'y'); break;
-		case 0x11: sprintf(dst, "%c%c%c", '\xc6', 'x', 'y'); break;
-		case 0x12: sprintf(dst, "%c", 'r'); break; 
-		case 0x13: sprintf(dst, "Med"); break;
-		case 0x14: sprintf(dst, "%c%c", 'Q', '\x81'); break;
-		case 0x15: sprintf(dst, "%c%c", 'Q', '\x83'); break;
-		case 0x16: sprintf(dst, "a"); break;
-		case 0x17: sprintf(dst, "b"); break;
-		case 0x18: sprintf(dst, "c"); break;
-		case 0x19: sprintf(dst, "d"); break;
-		case 0x1a: sprintf(dst, "e"); break;
-		case 0x1b: sprintf(dst, "%c%c", 'x', '\x81'); break;
-		case 0x1c: sprintf(dst, "%c%c", 'x', '\x82'); break;
-		case 0x1d: sprintf(dst, "%c%c", 'x', '\x83'); break;
-		case 0x1e: sprintf(dst, "%c%c", 'y', '\x81'); break;
-		case 0x1f: sprintf(dst, "%c%c", 'y', '\x82'); break;
-		case 0x20: sprintf(dst, "%c%c", 'y', '\x83'); break;
-		case 0x21: sprintf(dst, "%c", '\xd7'); break;
-		case 0x22: sprintf(dst, "p"); break;
-		case 0x23: sprintf(dst, "z"); break;
-		case 0x24: sprintf(dst, "t"); break;
-		case 0x25: sprintf(dst, "%c%c", '\xd9', '\x12'); break;
-		case 0x26: sprintf(dst, "%c", '\xda'); break;
-		case 0x27: sprintf(dst, "df"); break;
-		case 0x28: sprintf(dst, "%c", '\xd8'); break;
-		case 0x29: sprintf(dst, "%c%c", '\xd8', '\x81'); break;
-		case 0x2a: sprintf(dst, "%c%c", '\xd8', '\x82'); break;
-		case 0x2b: sprintf(dst, "%c%c", '\xd8', '\x81'); break;
-		case 0x2c: sprintf(dst, "Sx%c", '\x81'); break;
-		case 0x2d: sprintf(dst, "n%c", '\x81'); break;
-		case 0x2e: sprintf(dst, "%c%c", '\xcb', '\x82'); break;
-		case 0x2f: sprintf(dst, "Sx%c", '\x82'); break;
-		case 0x30: sprintf(dst, "n%c", '\x82'); break;
-		case 0x31: sprintf(dst, "Sxp"); break;
-		case 0x32: sprintf(dst, "lower"); break;
-		case 0x33: sprintf(dst, "upper"); break;
-		case 0x34: sprintf(dst, "s"); break;
-		case 0x35: sprintf(dst, "r%c", '\x12'); break;
-		case 0x36: sprintf(dst, "R%c", '\x12'); break;
-		case 0x37: sprintf(dst, "df"); break;
-		case 0x38: sprintf(dst, "SS"); break;
-		case 0x39: sprintf(dst, "MS"); break;
-		case 0x3a: sprintf(dst, "df"); break;
-		case 0x3b: sprintf(dst, "SS"); break;
-		case 0x3c: sprintf(dst, "MS"); break;
-		default: sprintf(dst, "_"); break;
+		case 0x01: dst = g_strdup_printf("ReqEq"); break;
+		case 0x02: dst = g_strdup_printf("n"); break;
+		case 0x03: dst = g_strdup_printf("%c", '\xcb'); break;
+		case 0x04: dst = g_strdup_printf("%c%c", '\xc6', 'x'); break;
+		case 0x05: dst = g_strdup_printf("%c%c%c", '\xc6', 'x', '\x12'); break;
+		case 0x06: dst = g_strdup_printf("%c%c", 'S', 'x'); break;
+		case 0x07: dst = g_strdup_printf("%c%c", '\xc7', 'x'); break;
+		case 0x08: dst = g_strdup_printf("minX"); break;
+		case 0x09: dst = g_strdup_printf("maxX"); break;
+		case 0x0a: dst = g_strdup_printf("minY"); break;
+		case 0x0b: dst = g_strdup_printf("maxY"); break;
+		case 0x0c: dst = g_strdup_printf("%c", '\xcc'); break;
+		case 0x0d: dst = g_strdup_printf("%c%c", '\xc6', 'y'); break;
+		case 0x0e: dst = g_strdup_printf("%c%c%c", '\xc6', 'y', '\x12'); break;
+		case 0x0f: dst = g_strdup_printf("%c%c", 'S', 'y'); break;
+		case 0x10: dst = g_strdup_printf("%c%c", '\xc7', 'y'); break;
+		case 0x11: dst = g_strdup_printf("%c%c%c", '\xc6', 'x', 'y'); break;
+		case 0x12: dst = g_strdup_printf("%c", 'r'); break; 
+		case 0x13: dst = g_strdup_printf("Med"); break;
+		case 0x14: dst = g_strdup_printf("%c%c", 'Q', '\x81'); break;
+		case 0x15: dst = g_strdup_printf("%c%c", 'Q', '\x83'); break;
+		case 0x16: dst = g_strdup_printf("a"); break;
+		case 0x17: dst = g_strdup_printf("b"); break;
+		case 0x18: dst = g_strdup_printf("c"); break;
+		case 0x19: dst = g_strdup_printf("d"); break;
+		case 0x1a: dst = g_strdup_printf("e"); break;
+		case 0x1b: dst = g_strdup_printf("%c%c", 'x', '\x81'); break;
+		case 0x1c: dst = g_strdup_printf("%c%c", 'x', '\x82'); break;
+		case 0x1d: dst = g_strdup_printf("%c%c", 'x', '\x83'); break;
+		case 0x1e: dst = g_strdup_printf("%c%c", 'y', '\x81'); break;
+		case 0x1f: dst = g_strdup_printf("%c%c", 'y', '\x82'); break;
+		case 0x20: dst = g_strdup_printf("%c%c", 'y', '\x83'); break;
+		case 0x21: dst = g_strdup_printf("%c", '\xd7'); break;
+		case 0x22: dst = g_strdup_printf("p"); break;
+		case 0x23: dst = g_strdup_printf("z"); break;
+		case 0x24: dst = g_strdup_printf("t"); break;
+		case 0x25: dst = g_strdup_printf("%c%c", '\xd9', '\x12'); break;
+		case 0x26: dst = g_strdup_printf("%c", '\xda'); break;
+		case 0x27: dst = g_strdup_printf("df"); break;
+		case 0x28: dst = g_strdup_printf("%c", '\xd8'); break;
+		case 0x29: dst = g_strdup_printf("%c%c", '\xd8', '\x81'); break;
+		case 0x2a: dst = g_strdup_printf("%c%c", '\xd8', '\x82'); break;
+		case 0x2b: dst = g_strdup_printf("%c%c", '\xd8', '\x81'); break;
+		case 0x2c: dst = g_strdup_printf("Sx%c", '\x81'); break;
+		case 0x2d: dst = g_strdup_printf("n%c", '\x81'); break;
+		case 0x2e: dst = g_strdup_printf("%c%c", '\xcb', '\x82'); break;
+		case 0x2f: dst = g_strdup_printf("Sx%c", '\x82'); break;
+		case 0x30: dst = g_strdup_printf("n%c", '\x82'); break;
+		case 0x31: dst = g_strdup_printf("Sxp"); break;
+		case 0x32: dst = g_strdup_printf("lower"); break;
+		case 0x33: dst = g_strdup_printf("upper"); break;
+		case 0x34: dst = g_strdup_printf("s"); break;
+		case 0x35: dst = g_strdup_printf("r%c", '\x12'); break;
+		case 0x36: dst = g_strdup_printf("R%c", '\x12'); break;
+		case 0x37: dst = g_strdup_printf("df"); break;
+		case 0x38: dst = g_strdup_printf("SS"); break;
+		case 0x39: dst = g_strdup_printf("MS"); break;
+		case 0x3a: dst = g_strdup_printf("df"); break;
+		case 0x3b: dst = g_strdup_printf("SS"); break;
+		case 0x3c: dst = g_strdup_printf("MS"); break;
+		default: dst = g_strdup_printf("_"); break;
 		}
 		break;
 
     case 0x63:
 		switch(tok2)
 		{
-		case 0x00: sprintf(dst, "ZXscl"); break;
-		case 0x01: sprintf(dst, "ZYscl"); break;
-		case 0x02: sprintf(dst, "Xscl"); break;
-		case 0x03: sprintf(dst, "Yscl"); break;
-		case 0x04: sprintf(dst, "U%cStart", '\xd7'); break;
-		case 0x05: sprintf(dst, "V%cStart", '\xd7'); break;
-		case 0x06: sprintf(dst, "U%c-%c", '\xd7', '\x81'); break;
-		case 0x07: sprintf(dst, "V%c-%c", '\xd7', '\x81'); break;
-		case 0x08: sprintf(dst, "ZU%cStart", '\xd7'); break;
-		case 0x09: sprintf(dst, "ZV%cStart", '\xd7'); break;
-		case 0x0a: sprintf(dst, "Xmin"); break;
-		case 0x0b: sprintf(dst, "Xmax"); break;
-		case 0x0c: sprintf(dst, "Ymin"); break;
-		case 0x0d: sprintf(dst, "Ymax"); break;
-		case 0x0e: sprintf(dst, "Tmin"); break;
-		case 0x0f: sprintf(dst, "Tmax"); break;
-		case 0x10: sprintf(dst, "%cmin", '\x5b'); break;
-		case 0x11: sprintf(dst, "%cmax", '\x5b'); break;
-		case 0x12: sprintf(dst, "ZXmin"); break;
-		case 0x13: sprintf(dst, "ZXmax"); break;
-		case 0x14: sprintf(dst, "ZYmin"); break;
-		case 0x15: sprintf(dst, "ZYmax"); break;
-		case 0x16: sprintf(dst, "Z%cmin", '\x5b'); break;
-		case 0x17: sprintf(dst, "Z%cmax", '\x5b'); break;
-		case 0x18: sprintf(dst, "ZTmin"); break;
-		case 0x19: sprintf(dst, "ZTmax"); break;
-		case 0x1a: sprintf(dst, "TblMin"); break;
-		case 0x1b: sprintf(dst, "%cMin", '\xd7'); break;
-		case 0x1c: sprintf(dst, "Z%cMin", '\xd7'); break;
-		case 0x1d: sprintf(dst, "%cMax", '\xd7'); break;
-		case 0x1e: sprintf(dst, "Z%cMax", '\xd7'); break;
-		case 0x1f: sprintf(dst, "%cStart", '\xd7'); break;
-		case 0x20: sprintf(dst, "Z%cStart", '\xd7'); break;
-		case 0x21: sprintf(dst, "%cTbl", '\xbe'); break;
-		case 0x22: sprintf(dst, "Tstep"); break;
-		case 0x23: sprintf(dst, "%cstep", '\x5b'); break;
-		case 0x24: sprintf(dst, "ZTstep"); break;
-		case 0x25: sprintf(dst, "Z%cstep", '\x5b'); break;
-		case 0x26: sprintf(dst, "%cX", '\xbe'); break;
-		case 0x27: sprintf(dst, "%cY", '\xbe'); break;
-		case 0x28: sprintf(dst, "XFact"); break;
-		case 0x29: sprintf(dst, "YFact"); break;
-		case 0x2a: sprintf(dst, "TblInput"); break;
-		case 0x2b: sprintf(dst, "N"); break;
-		case 0x2c: sprintf(dst, "I%c", '\x25'); break;
-		case 0x2d: sprintf(dst, "PV"); break;
-		case 0x2e: sprintf(dst, "PMT"); break;
-		case 0x2f: sprintf(dst, "FV"); break;
-		case 0x30: sprintf(dst, "Xres"); break;
-		case 0x31: sprintf(dst, "ZXres"); break;
-		default: sprintf(dst, "_"); break;
+		case 0x00: dst = g_strdup_printf("ZXscl"); break;
+		case 0x01: dst = g_strdup_printf("ZYscl"); break;
+		case 0x02: dst = g_strdup_printf("Xscl"); break;
+		case 0x03: dst = g_strdup_printf("Yscl"); break;
+		case 0x04: dst = g_strdup_printf("U%cStart", '\xd7'); break;
+		case 0x05: dst = g_strdup_printf("V%cStart", '\xd7'); break;
+		case 0x06: dst = g_strdup_printf("U%c-%c", '\xd7', '\x81'); break;
+		case 0x07: dst = g_strdup_printf("V%c-%c", '\xd7', '\x81'); break;
+		case 0x08: dst = g_strdup_printf("ZU%cStart", '\xd7'); break;
+		case 0x09: dst = g_strdup_printf("ZV%cStart", '\xd7'); break;
+		case 0x0a: dst = g_strdup_printf("Xmin"); break;
+		case 0x0b: dst = g_strdup_printf("Xmax"); break;
+		case 0x0c: dst = g_strdup_printf("Ymin"); break;
+		case 0x0d: dst = g_strdup_printf("Ymax"); break;
+		case 0x0e: dst = g_strdup_printf("Tmin"); break;
+		case 0x0f: dst = g_strdup_printf("Tmax"); break;
+		case 0x10: dst = g_strdup_printf("%cmin", '\x5b'); break;
+		case 0x11: dst = g_strdup_printf("%cmax", '\x5b'); break;
+		case 0x12: dst = g_strdup_printf("ZXmin"); break;
+		case 0x13: dst = g_strdup_printf("ZXmax"); break;
+		case 0x14: dst = g_strdup_printf("ZYmin"); break;
+		case 0x15: dst = g_strdup_printf("ZYmax"); break;
+		case 0x16: dst = g_strdup_printf("Z%cmin", '\x5b'); break;
+		case 0x17: dst = g_strdup_printf("Z%cmax", '\x5b'); break;
+		case 0x18: dst = g_strdup_printf("ZTmin"); break;
+		case 0x19: dst = g_strdup_printf("ZTmax"); break;
+		case 0x1a: dst = g_strdup_printf("TblMin"); break;
+		case 0x1b: dst = g_strdup_printf("%cMin", '\xd7'); break;
+		case 0x1c: dst = g_strdup_printf("Z%cMin", '\xd7'); break;
+		case 0x1d: dst = g_strdup_printf("%cMax", '\xd7'); break;
+		case 0x1e: dst = g_strdup_printf("Z%cMax", '\xd7'); break;
+		case 0x1f: dst = g_strdup_printf("%cStart", '\xd7'); break;
+		case 0x20: dst = g_strdup_printf("Z%cStart", '\xd7'); break;
+		case 0x21: dst = g_strdup_printf("%cTbl", '\xbe'); break;
+		case 0x22: dst = g_strdup_printf("Tstep"); break;
+		case 0x23: dst = g_strdup_printf("%cstep", '\x5b'); break;
+		case 0x24: dst = g_strdup_printf("ZTstep"); break;
+		case 0x25: dst = g_strdup_printf("Z%cstep", '\x5b'); break;
+		case 0x26: dst = g_strdup_printf("%cX", '\xbe'); break;
+		case 0x27: dst = g_strdup_printf("%cY", '\xbe'); break;
+		case 0x28: dst = g_strdup_printf("XFact"); break;
+		case 0x29: dst = g_strdup_printf("YFact"); break;
+		case 0x2a: dst = g_strdup_printf("TblInput"); break;
+		case 0x2b: dst = g_strdup_printf("N"); break;
+		case 0x2c: dst = g_strdup_printf("I%c", '\x25'); break;
+		case 0x2d: dst = g_strdup_printf("PV"); break;
+		case 0x2e: dst = g_strdup_printf("PMT"); break;
+		case 0x2f: dst = g_strdup_printf("FV"); break;
+		case 0x30: dst = g_strdup_printf("Xres"); break;
+		case 0x31: dst = g_strdup_printf("ZXres"); break;
+		default: dst = g_strdup_printf("_"); break;
 		}
 		break;
 
     case 0xAA:
 		if (tok2 != 0x09)
-			sprintf(dst, "Str%c", tok2 + '\x81');
+			dst = g_strdup_printf("Str%c", tok2 + '\x81');
 		else
-			sprintf(dst, "Str%c", '\x80');
+			dst = g_strdup_printf("Str%c", '\x80');
 		break;
     
 	default:
+		dst = g_strdup("12345678");
 		strncpy(dst, src, 8);
 		dst[8] = '\0';
 		break;
@@ -318,13 +314,8 @@ static char *detokenize_varname(CalcModel model, const char *src, char *dst, uns
     return dst;
 }
 
-static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
+TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src)
 {
-	char src_[18];
-	
-	strncpy(src_, src, 17);
-	src_[18] = '\0';
-
 	switch (model) 
 	{
 	case CALC_TI73:
@@ -332,7 +323,7 @@ static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char 
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
-		return detokenize_varname(model, src_, dst, vartype);
+		return detokenize_varname(model, src);
 	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI89:
@@ -340,123 +331,19 @@ static char* ticonv_varname_detokenize_s(CalcModel model, const char *src, char 
 	case CALC_TI92:
 	case CALC_TI92P:
 	case CALC_V200:
-		return strncpy(dst, src_, 17);
+		return g_strdup(src);
+	case CALC_TI84P_USB:
+	case CALC_TI89T_USB:
+		return g_strdup(src);
 	default:
-		return strcpy(dst, "________");
+		return g_strdup("________");
   }
-
-	return dst;
 }
 
-static char* ticonv_varname_detokenize(CalcModel model, const char *src, unsigned int vartype)
+//---
+
+// to do for TI84+ & Titanium
+TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src)
 {
-	char dst[18];
-	return g_strdup(ticonv_varname_detokenize_s(model, src, dst, vartype));
-}
-
-/**
- * ticonv_varname_to_utf16_s:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate (17 chars max).
- * @dst: a buffer where to placed the result (big enough).
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- * 
- * Static version.
- *
- * Return value: the %dst string.
- **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype)
-{
-	char tmp[18];
-
-	ticonv_varname_detokenize_s(model, src, tmp, vartype);
-	ticonv_charset_ti_to_utf16_s(model, tmp, dst);
-
-	return dst;
-}
-
-/**
- * ticonv_varname_to_utf16:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate (17 chars max).
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- *
- * Dynamic version.
- *
- * Return value: a newly allocated string or NULL if error.
- **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned int vartype)
-{
-	char *tmp;
-	unsigned short *utf16;
-
-	tmp = ticonv_varname_detokenize(model, src, vartype);
-	utf16 = ticonv_charset_ti_to_utf16(model, tmp);
-
-	g_free(tmp);
-	return utf16;
-}
-
-/**
- * ticonv_varname_to_utf8_s:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate (17 chars max).
- * @dst: a buffer where to placed the result (big enough).
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- *
- * Static version.
- *
- * Return value: the %dst string.
- **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned int vartype)
-{
-	gchar *utf8;
-	unsigned short *utf16;
-
-	utf16 = ticonv_varname_to_utf16(model, src, vartype);
-	utf8 = ticonv_utf16_to_utf8(utf16);
-
-	strcpy(dst, utf8);
-	g_free(utf16);
-	g_free(utf8);
-
-	return dst;
-}
-
-/**
- * ticonv_varname_to_utf8:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate.
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- *
- * Dynamic version.
- *
- * Return value: a newly allocated string or NULL if error.
- **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned int vartype)
-{
-	unsigned short *utf16;
-	gchar *utf8;
-
-	utf16 = ticonv_varname_to_utf16(model, src, vartype);
-	utf8 = ticonv_utf16_to_utf8(utf16);
-
-	g_free(utf16);
-	return utf8;
+	return g_strdup("");
 }

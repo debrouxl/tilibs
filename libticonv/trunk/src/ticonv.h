@@ -45,7 +45,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCONV_VERSION "0.0.2"
+# define LIBCONV_VERSION "0.0.3"
 #else
 # define LIBCONV_VERSION VERSION
 #endif
@@ -59,11 +59,8 @@
 typedef enum 
 {
 	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, /*CALC_TI82S, */ CALC_TI83, 
-	CALC_TI83P, CALC_TI84P, 
-	CALC_TI85, CALC_TI86,
+	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-
 	CALC_TI84P_USB, CALC_TI89T_USB,
 } CalcModel;
 #endif
@@ -114,19 +111,31 @@ extern "C" {
   TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
   TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst);
+  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src);
+
+  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src           );
+
+  TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src);
+
   // charset.c
-  // none
+  TIEXPORT const unsigned long TICALL ti73_charset[256];
+  TIEXPORT const unsigned long TICALL ti82_charset[256];
+  TIEXPORT const unsigned long TICALL ti83_charset[256];
+  TIEXPORT const unsigned long TICALL ti83p_charset[256];
+  TIEXPORT const unsigned long TICALL ti85_charset[256];
+  TIEXPORT const unsigned long TICALL ti86_charset[256];
+  TIEXPORT const unsigned long TICALL ti9x_charset[256];
 
   // tokens.c
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned int vartype);
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src, unsigned int vartype);
-
-  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned int vartype);
-  TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src, unsigned int vartype);
+  TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src);
+  TIEXPORT char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src);
 
   // filename.c
-  TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src);
+  TIEXPORT char* TICALL ticonv_utf16_to_gfe_s(CalcModel model, const unsigned short *src, const unsigned short *dst);
+  TIEXPORT char* TICALL ticonv_utf16_to_gfe  (CalcModel model, const unsigned short *src);
 
   // iconv.c
   /* Allocate descriptor for code conversion from codeset FROMCODE to
@@ -148,18 +157,6 @@ extern "C" {
 
 #ifdef TICONV_DEPRECATED
 #endif
-
-  /********************/
-  /* Testing purposes */
-  /********************/
-
-    TIEXPORT const unsigned long TICALL ti73_charset[256];
-    TIEXPORT const unsigned long TICALL ti82_charset[256];
-    TIEXPORT const unsigned long TICALL ti83_charset[256];
-    TIEXPORT const unsigned long TICALL ti83p_charset[256];
-    TIEXPORT const unsigned long TICALL ti85_charset[256];
-    TIEXPORT const unsigned long TICALL ti86_charset[256];
-    TIEXPORT const unsigned long TICALL ti9x_charset[256];
 
 #ifdef __cplusplus
 }

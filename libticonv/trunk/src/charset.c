@@ -35,12 +35,9 @@
 #include "ticonv.h"
 #include "charset.h"
 
-#define TIE		TIEXPORT
-#define TIC		TICALL
-
 ///////////// TI89,92,92+,V200,Titanium /////////////
 
-TIE const unsigned long TIC ti9x_charset[256] =
+TIEXPORT const unsigned long TICALL ti9x_charset[256] =
 {
 // control chars
  0,
@@ -562,7 +559,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned sh
 
 ///////////// TI73 /////////////
 
-TIE const unsigned long TIC ti73_charset[256] = {
+TIEXPORT const unsigned long TICALL ti73_charset[256] = {
 	'\0',   0x3b7,  'u',    'v',    'w',    0x25b6, 0x2191, 0x2193, // [0x01-0x05] != TI83
 	0x222b, 'x',    176,    184,    183,    0x22ba, 179,    'F',
 
@@ -661,7 +658,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *ti
 
 ///////////// TI82 /////////////
 
-TIE const unsigned long TIC ti82_charset[256] = { 
+TIEXPORT const unsigned long TICALL ti82_charset[256] = { 
 	'\0',    'b',    'o',    'd',    'h',   0x25b6, 0x2191, 0x2193, 
 	0x222b, 'x',    176,    184,    183,    0x22ba, 179,    'F',
 
@@ -760,7 +757,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti
 
 ///////////// TI83 /////////////
 
-TIE const unsigned long TIC ti83_charset[256] = { 
+TIEXPORT const unsigned long TICALL ti83_charset[256] = { 
 	'\0',   0x3b7,  'u',    'v',    'w',    0x25b6, 0x2191, 0x2193, // [0x01-0x05] != TI83
 	0x222b, 'x',    176,    184,    183,    0x22ba, 179,    'F',
 
@@ -859,7 +856,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti
 
 ///////////// TI83+/84+ /////////////
 
-TIE const unsigned long TIC ti83p_charset[256] = { 
+TIEXPORT const unsigned long TICALL ti83p_charset[256] = { 
 	'\0',   0x3b7,  'u',    'v',    'w',    0x25b6, 0x2191, 0x2193, // [0x01-0x05] != TI83
 	0x222b, 'x',    176,    184,    183,    0x22ba, 179,    'F',
 
@@ -959,7 +956,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 ///////////// TI85 /////////////
 
 // I'm not sure this is the right TI85 charset, my doc is incomplete
-TIE const unsigned long TIC ti85_charset[256] = { 
+TIEXPORT const unsigned long TICALL ti85_charset[256] = { 
 	'\0',   'b',   'o',    'd',    'h',   0x25b6, 0x2191, 0x2193, 
 	0x222b, 'x',   'A',     'B',    'C',   'D',    'E',    'F',
 
@@ -1058,7 +1055,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti
 
 ///////////// TI86 /////////////
 
-TIE const unsigned long TIC ti86_charset[256] = { 
+TIEXPORT const unsigned long TICALL ti86_charset[256] = { 
 	'\0',    'b',  'o',     'd',    'h',   0x25b6, 0x2191, 0x2193, 
 	0x222b, 'x',   'A',     'B',    'C',   'D',    'E',    'F',
 
