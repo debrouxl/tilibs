@@ -364,7 +364,93 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
  **/ 
 TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src)
 {
-	unsigned short *tmp = ticonv_varname_to_utf16(model, src);
-	return ticonv_utf16_to_gfe(model, tmp);
+	unsigned short *utf16;
+	char *gfe;
+	
+	utf16 = ticonv_varname_to_utf16(model, src);
+	gfe = ticonv_utf16_to_gfe(model, utf16);
+	g_free(utf16);
+
+	return gfe;
 }
 
+/**
+ * ticonv_varname_to_varname_s:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ * @dst: the location where to place the result (big enough).
+ *
+ * This function converts a raw varname into a TI file varname.
+ * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
+ * raw varname encoding.
+ * 
+ *
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_to_varname_s(CalcModel model, const char *src, char *dst)
+{
+	unsigned short utf16[1024];
+	char tmp[512];
+	char *raw;
+
+	if(model == CALC_TI84P_USB)
+	{
+		ticonv_ti84pusb_to_utf16(src, utf16);
+		ticonv_utf16_to_ti83p(utf16, tmp);
+		raw = ticonv_varname_tokenize(CALC_TI84P, tmp);
+		strcpy(dst, raw);
+		g_free(raw);
+	}
+	else if(model == CALC_TI89T_USB)
+	{
+		ticonv_ti89tusb_to_utf16(src, utf16);
+		ticonv_utf16_to_ti9x(utf16, dst);
+	}
+	else
+		strcpy(dst, src);
+
+	return dst;
+}
+
+/**
+ * ticonv_varname_to_varname:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ *
+ * This function converts a raw varname into a TI file varname.
+ * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
+ * raw varname encoding.
+ * 
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_to_varname(CalcModel model, const char *src)
+{
+	unsigned short *utf16;
+	char *ti;
+	char *dst;
+
+	// Do TI-UTF-8 -> UTF-16,UTF-16 -> TI-8x/9x charset
+	if(model == CALC_TI84P_USB)
+	{
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P_USB, src);
+		
+		ti = ticonv_charset_utf16_to_ti(CALC_TI84P, utf16);
+		g_free(utf16);
+		
+		dst = ticonv_varname_tokenize(CALC_TI84P, ti);
+		g_free(ti);
+	}
+	else if(model == CALC_TI89T_USB)
+	{
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T_USB, src);
+
+		ti = ticonv_charset_utf16_to_ti(CALC_TI89T, utf16);
+		g_free(utf16);
+
+		dst = ti;
+	}
+	else
+		g_strdup(src);
+
+	return dst;
+}
