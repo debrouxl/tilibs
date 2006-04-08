@@ -375,7 +375,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *sr
 }
 
 /**
- * ticonv_varname_to_varname_s:
+ * ticonv_varname_to_tifile_s:
  * @model: a calculator model taken in #CalcModel.
  * @src: the name of variable to convert (raw/binary name).
  * @dst: the location where to place the result (big enough).
@@ -384,10 +384,9 @@ TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *sr
  * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
  * raw varname encoding.
  * 
- *
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_varname_s(CalcModel model, const char *src, char *dst)
+TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst)
 {
 	unsigned short utf16[1024];
 	char tmp[512];
@@ -413,7 +412,7 @@ TIEXPORT char* TICALL ticonv_varname_to_varname_s(CalcModel model, const char *s
 }
 
 /**
- * ticonv_varname_to_varname:
+ * ticonv_varname_to_tifile:
  * @model: a calculator model taken in #CalcModel.
  * @src: the name of variable to convert (raw/binary name).
  *
@@ -423,7 +422,7 @@ TIEXPORT char* TICALL ticonv_varname_to_varname_s(CalcModel model, const char *s
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_varname(CalcModel model, const char *src)
+TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
 {
 	unsigned short *utf16;
 	char *ti;
@@ -453,4 +452,39 @@ TIEXPORT char* TICALL ticonv_varname_to_varname(CalcModel model, const char *src
 		g_strdup(src);
 
 	return dst;
+}
+
+/**
+ * ticonv_varname_from_tifile_s:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ * @dst: the location where to place the result (big enough).
+ *
+ * This function converts a raw varname into a TI file varname.
+ * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
+ * raw varname encoding.
+ * 
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst)
+{
+	// to do...
+	strcpy(dst, src);
+}
+
+/**
+ * ticonv_varname_from_tifile:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ *
+ * This function converts a raw varname into a TI file varname.
+ * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
+ * raw varname encoding.
+ * 
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src)
+{
+	// to do...
+	return g_strdup(src);
 }

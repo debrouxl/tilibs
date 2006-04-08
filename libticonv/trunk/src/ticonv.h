@@ -120,8 +120,10 @@ extern "C" {
   TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
   TIEXPORT char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src);
 
-  TIEXPORT char* TICALL ticonv_varname_to_varname_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_varname  (CalcModel model, const char *src);
+  TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src);
+  TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src);
 
   // charset.c
   TIEXPORT const unsigned long TICALL ti73_charset[256];

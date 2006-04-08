@@ -39,15 +39,16 @@ Kevin is interested in the ability to directly use in a C program some
 characters from the TI charset.<br>
 I (Romain) need to do some particular conversions at many stages in the
 TiLP framework and TiLP/TiEmu itself.<br>
-This is needed because the varname (name of variable, for short):<br>
+This is needed because the name of variable (varname, for short):<br>
 - may be tokenized on some calcs (TI8x),<br>
 - use a charset dependant of the calculator model,<br>
 <br>
 Some vocabulary:<br>
 - GFE : GLib Filename Encoding, the encoding used by GLib for filenames,<br>
-- RVE : Raw Varname Encoding, the encoding used by hand-helds in the
+- LVE : Linking Varname Encoding, the encoding used by hand-helds in
+the
 transfer protocol,<br>
-- TVE : TI File Varname Encoding, the encoding used by hand-helds
+- TVE : TI-File Varname Encoding, the encoding used by hand-helds
 (except built-in USB ones) and TI files; <br>
 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; RVE and TVE are the same except for USB,<br>
@@ -113,7 +114,7 @@ raw varname ----------------------&gt; TIUTF8 charset --+<br>
 maps)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp; &nbsp; tokenized (TI8x)<br>
 TI-UTF-8 -------------&gt; TI-8X/9X charset -+------------------+-&gt;
-raw varname for TI files contents<br>
+TI-file varname encoding for TI files contents<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
