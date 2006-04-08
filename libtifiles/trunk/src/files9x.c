@@ -68,12 +68,14 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 {
   FILE *f;
   long cur_pos = 0;
-  char current_folder[9];
+  char default_folder[FLDNAME_MAX];
+  char current_folder[FLDNAME_MAX];
   uint32_t curr_offset = 0;
   uint32_t next_offset = 0;
   uint16_t tmp;
   int i, j;
   char signature[9];
+  char varname[VARNAME_MAX];
 
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
@@ -90,7 +92,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   if (content->model == CALC_NONE)
     return ERR_INVALID_FILE;
   fread_word(f, NULL);
-  fread_8_chars(f, content->default_folder);
+  fread_8_chars(f, default_folder);
+  ticonv_varname_from_tifile_s(content->model, default_folder, content->default_folder);
   strcpy(current_folder, content->default_folder);
   fread_n_chars(f, 40, content->comment);
   fread_word(f, &tmp);
@@ -108,7 +111,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     VarEntry *entry = content->entries[j] = calloc(1, sizeof(VarEntry));
 
     fread_long(f, &curr_offset);
-    fread_8_chars(f, entry->name);
+    fread_8_chars(f, varname);
+	ticonv_varname_from_tifile_s(content->model, varname, entry->name);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
     fread_word(f, NULL);
@@ -364,6 +368,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   uint32_t offset = 0x52;
   int **table;
   int num_folders;
+  char default_folder[FLDNAME_MAX];
+  char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
 
   if (fname != NULL) 
   {
@@ -402,7 +408,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   fwrite(fsignature, 1, 2, f);
   if (content->num_entries == 1)	// folder entry for single var is placed here
     strcpy(content->default_folder, content->entries[0]->folder);
-  fwrite_8_chars(f, content->default_folder);
+  ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder);
+  fwrite_8_chars(f, default_folder);
   fwrite_n_bytes(f, 40, content->comment);
   if (content->num_entries > 1) 
   {
@@ -422,7 +429,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     if (content->num_entries > 1)	// single var does not have folder entry
     {
       fwrite_long(f, offset);
-      fwrite_8_chars(f, fentry->folder);
+	  ticonv_varname_to_tifile_s(content->model, fentry->folder, fldname);
+      fwrite_8_chars(f, fldname);
       fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model));
       fwrite_byte(f, 0x00);
       for (j = 0; table[i][j] != -1; j++);
@@ -435,7 +443,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
       VarEntry *entry = content->entries[index];
 
       fwrite_long(f, offset);
-      fwrite_8_chars(f, entry->name);
+	  ticonv_varname_to_tifile_s(content->model, entry->name, varname);
+      fwrite_8_chars(f, varname);
       fwrite_byte(f, entry->type);
       fwrite_byte(f, entry->attr);
       fwrite_word(f, 0);
