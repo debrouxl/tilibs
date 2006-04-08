@@ -200,6 +200,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
 	else
 	{
 		while(*p) *q++ = *p++;
+		*q = '\0';
 	}
 
 	// '/' is not allowed in filenames
@@ -212,8 +213,6 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
 	// UTF-16 to UTF-8 to GFE encoding
 	{
 		gchar *utf8;
-
-		g_free(utf16_src);
 
 		utf8 = g_utf16_to_utf8(utf16_dst, -1, NULL, NULL, NULL);
 		g_free(utf16_dst);

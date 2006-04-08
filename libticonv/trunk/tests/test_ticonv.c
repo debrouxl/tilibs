@@ -113,36 +113,59 @@ int main(int argc, char **argv)
 	{
 		char ti82_varname[9] = { 0 };
 		char ti92_varname[9] = { 0 };
+		char ti84p_varname[36] = { 0 };
 		char *utf8;
 		char *filename;
+		char *varname;
 
-		ti82_varname[0] = 0x5d;
+		ti82_varname[0] = 0x5d;			// L1
 		ti82_varname[1] = 0x01;
 		ti82_varname[2] = 0;
 
-		ti92_varname[0] = (char)132;	//delta
+		ti92_varname[0] = (char)132;	// delta
 		ti92_varname[1] = (char)'é';
 		ti92_varname[2] = 0;
 
-		// TI -> UTF-8
-/*
-		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname, -1);
-		g_free(utf8);
-*/  
-		// TI -> filename
+		ti84p_varname[0] = 'L';			// L1 in TI-UTF-8
+		ti84p_varname[1] = (char)0xE2;
+		ti84p_varname[2] = (char)0x82;
+		ti84p_varname[3] = (char)0x81;
 
-		printf("varname: <%s> (%i)\n",
-		       ti92_varname, strlen(ti92_varname));
+		// TI -> UTF-8
+		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname);
+		printf("UTF-8 varname: <%s> (%i)\n", ti82_varname, strlen(ti82_varname));
+		g_free(utf8);
+
+		utf8 = ticonv_varname_to_utf8(CALC_TI92, ti92_varname);
+		printf("UTF-8 varname: <%s> (%i)\n", ti92_varname, strlen(ti92_varname));
+		g_free(utf8);
+
+		utf8 = ticonv_varname_to_utf8(CALC_TI84P_USB, ti84p_varname);
+		printf("UTF-8 varname: <%s> (%i)\n", ti84p_varname, strlen(ti84p_varname));
+		g_free(utf8);
+
+
+		// TI -> filename
+		printf("raw varname: <%s> (%i)\n", ti92_varname, strlen(ti92_varname));
 		filename = ticonv_varname_to_filename(CALC_TI92, ti92_varname);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
-/*
-		printf("varname: <%s> (%i)\n",
-                       ti82_varname, strlen(ti82_varname));
+
+		printf("raw varname: <%s> (%i)\n", ti82_varname, strlen(ti82_varname));
 		filename = ticonv_varname_to_filename(CALC_TI82, ti82_varname);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
-*/
+
+		printf("raw varname: <%s> (%i)\n", ti84p_varname, strlen(ti84p_varname));
+		filename = ticonv_varname_to_filename(CALC_TI84P_USB, ti84p_varname);
+		printf("filename: <%s>\n", filename);
+		g_free(filename);
+
+		// varname -> varname
+		printf("raw varname: <%s> (%i)\n", ti84p_varname, strlen(ti84p_varname));
+		varname = ticonv_varname_to_varname(CALC_TI84P_USB, ti84p_varname);
+		printf("varname: <%s>\n", varname);
+		g_free(varname);
 	}
 
 #ifdef __WIN32__
