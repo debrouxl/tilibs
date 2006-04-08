@@ -210,32 +210,6 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, cons
 }
 
 /**
- * ticonv_varname_to_utf16_s:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate (17 chars max).
- * @dst: a buffer where to placed the result (big enough).
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- * 
- * Static version.
- *
- * Return value: the %dst string.
- **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst)
-{
-	char *tmp;
-
-	tmp = ticonv_varname_detokenize(model, src);
-	ticonv_charset_ti_to_utf16_s(model, tmp, dst);
-	g_free(tmp);
-
-	return dst;
-}
-
-/**
  * ticonv_varname_to_utf16:
  * @model: a calculator model.
  * @src: a name of variable to detokenize and translate (17 chars max).
@@ -262,7 +236,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const c
 }
 
 /**
- * ticonv_varname_to_utf8_s:
+ * ticonv_varname_to_utf16_s:
  * @model: a calculator model.
  * @src: a name of variable to detokenize and translate (17 chars max).
  * @dst: a buffer where to placed the result (big enough).
@@ -271,22 +245,18 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const c
  * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
  * variable (like L1) but uses a special encoded way. This functions expands the name 
  * and converts it to UTF-16.
- *
+ * 
  * Static version.
  *
  * Return value: the %dst string.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst)
+TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst)
 {
-	gchar *utf8;
-	unsigned short *utf16;
+	char *tmp;
 
-	utf16 = ticonv_varname_to_utf16(model, src);
-	utf8 = ticonv_utf16_to_utf8(utf16);
-
-	strcpy(dst, utf8);
-	g_free(utf16);
-	g_free(utf8);
+	tmp = ticonv_varname_detokenize(model, src);
+	ticonv_charset_ti_to_utf16_s(model, tmp, dst);
+	g_free(tmp);
 
 	return dst;
 }
@@ -318,32 +288,26 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src)
 }
 
 /**
- * ticonv_varname_to_filename_s:
- * @model: a calculator model taken in #CalcModel.
- * @src: the name of variable to convert (raw/binary name).
- * @dst: a buffer to place result in the GLib filename encoding (64 bytes max).
+ * ticonv_varname_to_utf8_s:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate (17 chars max).
+ * @dst: a buffer where to placed the result (big enough).
+ * @vartype: the type of variable.
  *
- * This function converts a varname into a valid filename (depends on locale).
- * Example: 'foobar' => foobar, 'alpha' => _alpha_.
- * 
- * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
- * if locale is different of UTF-8) because greek characters are often missed or mis-converted
- * when converting to locale.
+ * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
+ * variable (like L1) but uses a special encoded way. This functions expands the name 
+ * and converts it to UTF-16.
  *
- * Return value: %dst.
+ * Static version.
+ *
+ * Return value: the %dst string.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
+TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst)
 {
-	unsigned short *utf16;
-	char *gfe;
+	char *tmp = ticonv_varname_to_utf8(model, src);
 
-	utf16 = ticonv_varname_to_utf16(model, src);
-	gfe = ticonv_utf16_to_gfe(model, utf16);
-
-	strcpy(dst, gfe);
-
-	g_free(utf16);
-	g_free(gfe);
+	strcpy(dst, tmp);
+	g_free(tmp);
 
 	return dst;
 }
@@ -375,38 +339,26 @@ TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *sr
 }
 
 /**
- * ticonv_varname_to_tifile_s:
+ * ticonv_varname_to_filename_s:
  * @model: a calculator model taken in #CalcModel.
  * @src: the name of variable to convert (raw/binary name).
- * @dst: the location where to place the result (big enough).
+ * @dst: a buffer to place result in the GLib filename encoding (64 bytes max).
  *
- * This function converts a raw varname into a TI file varname.
- * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
- * raw varname encoding.
+ * This function converts a varname into a valid filename (depends on locale).
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_.
  * 
- * Return value: %dst as a newly allocated string.
- **/ 
-TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst)
+ * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
+ * if locale is different of UTF-8) because greek characters are often missed or mis-converted
+ * when converting to locale.
+ *
+ * Return value: %dst.
+ **/
+TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
-	unsigned short utf16[1024];
-	char tmp[512];
-	char *raw;
+	char *tmp = ticonv_varname_to_filename(model, src);
 
-	if(model == CALC_TI84P_USB)
-	{
-		ticonv_ti84pusb_to_utf16(src, utf16);
-		ticonv_utf16_to_ti83p(utf16, tmp);
-		raw = ticonv_varname_tokenize(CALC_TI84P, tmp);
-		strcpy(dst, raw);
-		g_free(raw);
-	}
-	else if(model == CALC_TI89T_USB)
-	{
-		ticonv_ti89tusb_to_utf16(src, utf16);
-		ticonv_utf16_to_ti9x(utf16, dst);
-	}
-	else
-		strcpy(dst, src);
+	strcpy(dst, tmp);
+	g_free(tmp);
 
 	return dst;
 }
@@ -455,7 +407,7 @@ TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
 }
 
 /**
- * ticonv_varname_from_tifile_s:
+ * ticonv_varname_to_tifile_s:
  * @model: a calculator model taken in #CalcModel.
  * @src: the name of variable to convert (raw/binary name).
  * @dst: the location where to place the result (big enough).
@@ -466,10 +418,14 @@ TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst)
+TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst)
 {
-	// to do...
-	strcpy(dst, src);
+	char *tmp = ticonv_varname_to_tifile(model, src);
+
+	strcpy(dst, tmp);
+	g_free(tmp);
+
+	return dst;
 }
 
 /**
@@ -485,6 +441,52 @@ TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *
  **/ 
 TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src)
 {
-	// to do...
+	unsigned short *utf16;
+	char *ti;
+	char *dst;
+
+	if(model == CALC_TI84P_USB)
+	{
+		ti = ticonv_varname_detokenize(model, src);
+
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P, ti);
+		g_free(ti);
+		
+		dst = ticonv_charset_utf16_to_ti(CALC_TI84P_USB, utf16);
+		g_free(utf16);
+	}
+	else if(model == CALC_TI89T_USB)
+	{
+		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T, src);
+		
+		dst = ticonv_charset_utf16_to_ti(CALC_TI89T_USB, utf16);
+		g_free(utf16);
+	}
+	else
+		dst = g_strdup(src);
+	
 	return g_strdup(src);
 }
+
+/**
+ * ticonv_varname_from_tifile_s:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert (raw/binary name).
+ * @dst: the location where to place the result (big enough).
+ *
+ * This function converts a raw varname into a TI file varname.
+ * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
+ * raw varname encoding.
+ * 
+ * Return value: %dst as a newly allocated string.
+ **/ 
+TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst)
+{
+	char *tmp = ticonv_varname_from_tifile(model, src);;
+
+	strcpy(dst, tmp);
+	g_free(tmp);
+
+	return dst;
+}
+
