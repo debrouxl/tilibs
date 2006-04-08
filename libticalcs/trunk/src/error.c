@@ -54,7 +54,7 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strconcat(
     		_("Msg: transfer aborted."),
     		"\n",
-    		 _("Cause: the user !"),
+    		 _("Cause: the user!"),
 			 NULL);
 		break;
 
@@ -101,9 +101,9 @@ TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
     break;
 
 	case ERR_EOT:
-		strcpy(error_msg, _("Msg: Not really an error, should not appear !"));
+		strcpy(error_msg, _("Msg: Not really an error, should not appear!"));
 		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a bug. Drop us an email !"));
+		strcat(error_msg, _("Cause: a bug. Drop us an email!"));
 		*message = g_strdup(error_msg);
     break;
 
@@ -194,7 +194,7 @@ case ERR_OUT_OF_MEMORY:
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: this should not happen. Probably a bug: drop us an email !"));
+		   ("Cause: this should not happen. Probably a bug: drop us an email!"));
 		*message = g_strdup(error_msg);
     break;
 
