@@ -44,7 +44,9 @@
 
 /* Types */
 
-#define VARNAME_MAX		18	// group/name: 8 + 1 + 8 + 1
+#define FLDNAME_MAX		33	// 4*8 + 1 (UTF-8)
+#define VARNAME_MAX		33	// idem
+#define FULNAME_MAX		66	// 4*8 + 1 + 4*8 + 1 (UTF-8)
 #define FILES_NCALCS	14	// # of supported calcs
 
 /**
@@ -122,8 +124,8 @@ typedef enum
  **/
 typedef struct 
 {
-	char		folder[36];
-	char		name[36];
+	char		folder[FLDNAME_MAX];
+	char		name[VARNAME_MAX];
 
 	uint8_t		type;
 	uint8_t		attr;
@@ -149,8 +151,8 @@ typedef struct
 {
   CalcModel		model;
 
-  char			default_folder[36];	// TI9x only
-  char			comment[43];		// Ti8x: 42 max, Ti9x: 40 max
+  char			default_folder[FLDNAME_MAX];	// TI9x only
+  char			comment[43];	// Ti8x: 42 max, Ti9x: 40 max
 
   int			num_entries;
   VarEntry**	entries;

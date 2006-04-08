@@ -172,7 +172,7 @@ char *TICALL tifiles_get_varname(const char *full_name)
  **/
 char *TICALL tifiles_get_fldname(const char *full_name)
 {
-  static char folder[9];
+  static char folder[FLDNAME_MAX];
   char *bs = strchr(full_name, '\\');
   int i;
 
@@ -224,8 +224,9 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
   } 
   else
   {
-	  strncpy(full_name, varname, 8);
-	  full_name[8] = '\0';
+	  strcpy(full_name, varname);
+	  //strncpy(full_name, varname, 8);
+	  //full_name[8] = '\0';
   }
 
   return full_name;

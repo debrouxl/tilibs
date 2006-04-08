@@ -25,11 +25,6 @@
 #include "stdints.h"
 #include "tifiles.h"
 
-/* Constants */
-
-//#define DEVICE_TYPE_83P 0x73
-//#define DEVICE_TYPE_73  0x74
-
 /* Structures */
 
 typedef FileContent		Ti8xRegular;
