@@ -163,7 +163,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: unable to load TiglUsb library."),
     		"\n",
-    		_("Cause: is the LPG's SilverLink driver installed ?"),
+    		_("Cause: is the LPG's SilverLink/DirectLink driver installed ?"),
 			NULL);
 		break;
 
@@ -185,7 +185,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 
 	case ERR_SLV_OPEN:
 		*message = g_strconcat(
-    		_("Msg: failed to open SilverLink access."),
+    		_("Msg: failed to open SilverLink/DirectLink access."),
     		"\n",
     		_("Cause: check your USB cable is plugged and/or the calculator is ON!"),
 			NULL);
@@ -193,7 +193,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 
 	case ERR_SLV_RESET:
 		*message = g_strconcat(
-    		_("Msg: failed to reset SilverLink cable."),
+    		_("Msg: failed to reset SilverLink/DirectLink cable."),
     		"\n",
     		_("Cause: check your USB cable is well plugged ! It may be stalled, too: unplug/replug it."),
 			NULL);
