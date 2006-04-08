@@ -96,7 +96,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: illegal operation or argument."),
 			"\n",
-			_("Cause: the program which uses this library is buggy. Fire-up the developer !"),
+			_("Cause: the program which uses this library is buggy. Fire-up the developer!"),
 			NULL);
     break;
 
@@ -140,7 +140,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: the probing od device failed."),
     		"\n",
-    		_("Cause: internal error. If you get it, this is a bug !"),
+    		_("Cause: internal error. If you get it, this is a bug!"),
 			NULL);
     	break;
 
@@ -179,7 +179,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: TiglUsb library version is wrong."),
     		"\n",
-    		_("Cause: the library may require an earlier version. Update your driver !"),
+    		_("Cause: the library may require an earlier version. Update your driver!"),
 			NULL);
 		break;
 
@@ -187,7 +187,7 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: failed to open SilverLink access."),
     		"\n",
-    		_("Cause: check your USB cable is well plugged !"),
+    		_("Cause: check your USB cable is plugged and/or the calculator is ON!"),
 			NULL);
 		break;
 
