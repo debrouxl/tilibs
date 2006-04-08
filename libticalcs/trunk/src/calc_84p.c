@@ -102,6 +102,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	CalcAttr **attr;
 	TNode *folder;	
 	char varname[40];
+	char *utf8;
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -145,9 +146,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else
 			t_node_append(*apps, node);
 
-		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), varname);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
+		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);
+		g_free(utf8);
 		update_label();
-
 	} while(1);
 
 	return 0;
