@@ -28,8 +28,10 @@
 #include "keys89.h"
 #include "keys92p.h"
 
+#ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4028 )
+#endif
 
 extern const CalcKey TI73_KEYS[];
 extern const CalcKey TI83P_KEYS[];
@@ -88,4 +90,6 @@ TIEXPORT CalcKey TICALL ticalcs_keys_92p(unsigned char ascii_code)
   return TI92P_KEYS[ascii_code];
 }
 
+#ifdef _MSC_VER
 #pragma warning( pop ) 
+#endif
