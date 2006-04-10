@@ -887,7 +887,7 @@ TIEXPORT const unsigned long TICALL ti83p_charset[256] = {
 	224+2,  224+4,  200+1,  200+0,  200+2,  200+4,  231+1,  231+0,
 	231+2,  231+4,  204+1,  204+0,  204+2,  204+3,  236+1,  236+0,
 
-	236+2,  236+3,  210+1,  210+0,  210+2,  210+4,  242+1,  242+0,
+	236+2,  236+3,  210+1,  210+0,  210+2,  210+4,  242+1,  242+0,	//+3 or +4 ?? to check !
 	242+2,  242+4,  217+1,  217+0,  217+2,  217+3,  249+1,  249+0,
 
 	249+2,  249+3,  199,    231,    209,    204,    '\'',   '`',
@@ -897,7 +897,7 @@ TIEXPORT const unsigned long TICALL ti83p_charset[256] = {
 	0x3c4,  0x3d5,  0x3a9,  'x',    'y',    '?',    0x2026, 0x25c0,
 
 	0x25fe, '?',    0x2212, 178,    176,    179,    '\n',   0xd875dc8a,
-	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '_' /*))*/,0x2192,
+	'?',    0x3c7,  'F',    0x212f, 'L',   'N',     '_',	  0x2192,
 
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
 	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
@@ -950,7 +950,108 @@ TIEXPORT unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *ti)
 {
-	return "";
+#if 0
+	const unsigned short *p = utf16;
+	unsigned char *q = (unsigned char *)ti;
+
+	while (*p) 
+	{
+	    if ((*p >= 32 && *p <= 35)	// 36 out
+		|| (*p >= 37 && *p <= 90)	// 91 out
+		|| (*p >= 92 && *p <= 126)) 
+	    {
+		      *(q++)=(unsigned char)*(p++);
+	    } 
+	    else 
+		switch (*(p++)) 
+	{
+	case 0x03b7: *(q++) = 1; break;	// eta
+	case 0x2074: *(q++) = 36; break;
+	case 0x03b8: *(q++) = 91; break;	// theta
+	
+	case 0x2080: *(q++) = 128; break;	// 0 to 9 in underscript
+	case 0x2081: *(q++) = 129; break;
+	case 0x2082: *(q++) = 130; break;
+	case 0x2083: *(q++) = 131; break;
+	case 0x2084: *(q++) = 132; break;
+	case 0x2085: *(q++) = 133; break;
+	case 0x2086: *(q++) = 134; break;
+	case 0x2087: *(q++) = 135; break;
+	case 0x2088: *(q++) = 136; break;
+	case 0x2089: *(q++) = 137; break;
+
+	case 192+1: *(q++) = 138; break;	// i18n characters
+	case 192+0: *(q++) = 139; break;
+	case 192+2: *(q++) = 140; break;
+	case 192+4: *(q++) = 141; break;
+	case 224+1: *(q++) = 142; break;
+	case 224+0: *(q++) = 143; break;
+	case 224+2: *(q++) = 144; break;
+	case 224+4: *(q++) = 145; break;
+	case 200+1: *(q++) = 146; break;
+	case 200+0: *(q++) = 147; break;
+	case 200+2: *(q++) = 148; break;
+	case 200+4: *(q++) = 149; break;
+	case 231+1: *(q++) = 150; break;
+	case 231+0: *(q++) = 151; break;
+	case 231+2: *(q++) = 152; break;
+	case 231+4: *(q++) = 153; break;
+	case 204+1: *(q++) = 154; break;
+	case 204+0: *(q++) = 155; break;
+	case 204+2: *(q++) = 156; break;
+	case 204+4: *(q++) = 157; break;
+	case 236+1: *(q++) = 158; break;
+	case 236+0: *(q++) = 159; break;
+	case 236+2: *(q++) = 160; break;
+	case 236+3: *(q++) = 161; break;
+	case 210+1: *(q++) = 162; break;
+	case 210+0: *(q++) = 163; break;
+	case 210+2: *(q++) = 164; break;
+	case 210+4: *(q++) = 165; break;
+	case 242+1: *(q++) = 166; break;
+	case 242+0: *(q++) = 167; break;
+	case 242+2: *(q++) = 168; break;
+	case 242+4: *(q++) = 169; break;
+	case 217+1: *(q++) = 170; break;
+	case 217+0: *(q++) = 171; break;
+	case 217+2: *(q++) = 172; break;
+	case 217+4: *(q++) = 173; break;
+	case 249+1: *(q++) = 174; break;
+	case 249+0: *(q++) = 175; break;
+	case 249+2: *(q++) = 176; break;
+	case 249+3: *(q++) = 177; break;
+	case 199 :	*(q++) = 178; break;
+	case 231:	*(q++) = 179; break;
+	case 209:	*(q++) = 180; break;
+	case 204:	*(q++) = 181; break;
+
+	case 0x3b1: *(q++) = 187; break;	// greek characters
+	case 0x3b2: *(q++) = 188; break;
+	case 0x3b3: *(q++) = 189; break;
+	case 0x394: *(q++) = 190; break;
+	case 0x3b4: *(q++) = 191; break;
+	case 0x3b5: *(q++) = 192; break;
+	case '[':	*(q++) = 193; break;
+	case 0x3bb: *(q++) = 194; break;
+	case 0x3bc: *(q++) = 195; break;
+	case 0x3c0: *(q++) = 196; break;
+	case 0x3c1: *(q++) = 197; break;
+	case 0x3a3: *(q++) = 198; break;
+	case 0x3c3: *(q++) = 199; break;
+	case 0x3c4: *(q++) = 200; break;
+	case 0x3d5: *(q++) = 201; break;
+	case 0x3a9: *(q++) = 202; break;
+
+      default:
+        if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
+          p++;
+        *(q++)='?';
+        break;
+    }
+  }
+  *q=0;
+#endif
+	return ti;
 }
 
 ///////////// TI85 /////////////
