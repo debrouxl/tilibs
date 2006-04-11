@@ -987,18 +987,18 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 		case 224+0: *(q++) = 143; break;
 		case 224+2: *(q++) = 144; break;
 		case 224+4: *(q++) = 145; break;
-		case 200+1: *(q++) = 146; break;
-		case 200+0: *(q++) = 147; break;
-		case 200+2: *(q++) = 148; break;
-		case 200+4: *(q++) = 149; break;
-		case 231+1: *(q++) = 150; break;
-		case 231+0: *(q++) = 151; break;
-		case 231+2: *(q++) = 152; break;
-		case 231+4: *(q++) = 153; break;
+		case 242+1: *(q++) = 146; break;
+		case 242+0: *(q++) = 147; break;
+		case 242+2: *(q++) = 148; break;
+		case 242+4: *(q++) = 149; break;
+		case 232+1: *(q++) = 150; break;
+		case 232+0: *(q++) = 151; break;
+		case 232+2: *(q++) = 152; break;
+		case 232+4: *(q++) = 153; break;
 		case 204+1: *(q++) = 154; break;
 		case 204+0: *(q++) = 155; break;
 		case 204+2: *(q++) = 156; break;
-		case 204+4: *(q++) = 157; break;
+		case 204+3: *(q++) = 157; break;
 		case 236+1: *(q++) = 158; break;
 		case 236+0: *(q++) = 159; break;
 		case 236+2: *(q++) = 160; break;
@@ -1014,7 +1014,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 		case 217+1: *(q++) = 170; break;
 		case 217+0: *(q++) = 171; break;
 		case 217+2: *(q++) = 172; break;
-		case 217+4: *(q++) = 173; break;
+		case 217+3: *(q++) = 173; break;
 		case 249+1: *(q++) = 174; break;
 		case 249+0: *(q++) = 175; break;
 		case 249+2: *(q++) = 176; break;
@@ -1022,7 +1022,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 		case 199 :	*(q++) = 178; break;
 		case 231:	*(q++) = 179; break;
 		case 209:	*(q++) = 180; break;
-		case 204:	*(q++) = 181; break;
+		case 241:	*(q++) = 181; break;
 
 		case 0x3b1: *(q++) = 187; break;	// greek characters
 		case 0x3b2: *(q++) = 188; break;
