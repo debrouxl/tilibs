@@ -24,7 +24,7 @@
  
 	The detokenization is used to translate some raw varnames into TI-charset 
 	encoded varnames. Tokenization is used for TI84+ USB only.
-	Depends on the calculator type.
+	Depends on the calculator model.
 
 	This is needed for the following calcs: 73/82/83/83+/84+.
 */
@@ -74,10 +74,14 @@ static char *detokenize_varname(CalcModel model, const char *src)
 		break;
 
     case 0x5D:			/* List: L1 to L6/L0 */
-		if(model == CALC_TI73) //TI73 != TI83 here
+		if(model == CALC_TI73)
+		{
+			// TI73 begins at L0
 			dst = g_strdup_printf("L%c", src[1] + '\x80');	
+		}
 		else 
-		{// TI73 begins at L0, others at L1
+		{
+			// TI8x begins at L1
 			switch(tok2)
 			{
 			case 0x00: dst = g_strdup_printf("L%c", '\x81'); break;
@@ -342,8 +346,65 @@ TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src
 
 //---
 
-// to do for TI84+ & Titanium
 TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src)
 {
+	if(src[0] == '[' && src[2] == ']' && strlen(src) == 3)
+	{
+		// matrices
+		return g_strdup_printf("%c%c", 0x5C, src[1] - 'A');
+	}
+	else if(src[0] == 'L' && (src[1] >= 128 && src[1] <= 137) && strlen(src) == 2)
+	{
+		// lists
+		return g_strdup_printf("%c%c", 0x5D, ((src[1] - 0x80) + 1) % 10);
+	} 
+	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && src[2] == 0x13 && strlen(src) == 2)
+	{
+		// cart. equations
+		return g_strdup_printf("%c%c", 0x5E, 0x10 + (((src[1] - 0x80) + 1) % 10));
+	}
+	else if(src[0] == 'X' && (src[1] >= 128 && src[1] <= 133) && src[2] == 0x13 && strlen(src) == 3)
+	{
+		// parametric equations
+		return g_strdup_printf("%c%c", 0x5E, 0x20 + 2*(src[1] - 0x81)+0);
+	}
+	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 133) && src[2] == 0x13 && strlen(src) == 3)
+	{
+		// parametric equations
+		return g_strdup_printf("%c%c", 0x5E, 0x20 + 2*(src[1] - 0x81)+1);
+	}
+	else if(src[0] == 'r' && (src[1] >= 128 && src[1] <= 133) && strlen(src) == 2)
+	{
+		// polar equations
+		return g_strdup_printf("%c%c", 0x5E, 0x40 + (src[1] - 0x81));
+	}
+	else if(src[0] == 2 && strlen(src) == 1)
+	{
+		return g_strdup_printf("%c%c", 0x5E, 0x80);
+	}
+	else if(src[0] == 3 && strlen(src) == 1)
+	{
+		return g_strdup_printf("%c%c", 0x5E, 0x81);
+	}	
+	else if(src[0] == 4 && strlen(src) == 1)
+	{
+		return g_strdup_printf("%c%c", 0x5E, 0x82);
+	}
+	else if(src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
+	{
+		// pictures
+		return g_strdup_printf("%c%c", 0x60, ((src[1] - 0x80) + 1) % 10);
+	}
+	else if(src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
+	{
+		// pictures
+		return g_strdup_printf("%c%c", 0x61, ((src[1] - 0x80) + 1) % 10);
+	}
+	else if(src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
+	{
+		// pictures
+		return g_strdup_printf("%c%c", 0xAA, ((src[1] - 0x80) + 1) % 10);
+	}
+
 	return g_strdup("");
 }

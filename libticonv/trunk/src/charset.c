@@ -884,8 +884,8 @@ TIEXPORT const unsigned long TICALL ti83p_charset[256] = {
 	'0',	'1',    '2',    '3',    '4',	'5',	'6',	'7',
 	'8',	'9',	192+1,  192+0,  192+2,  192+4,  224+1,  224+0,
 
-	224+2,  224+4,  242+1,  242+0,  242+2,  242+4,  232+1,  232+0,
-	232+2,  232+4,  204+1,  204+0,  204+2,  204+3,  236+1,  236+0,
+	224+2,  224+4,  200+1,  200+0,  200+2,  200+3,  232+1,  232+0,
+	232+2,  232+3,  204+1,  204+0,  204+2,  204+3,  236+1,  236+0,
 
 	236+2,  236+3,  210+1,  210+0,  210+2,  210+4,  242+1,  242+0,
 	242+2,  242+4,  217+1,  217+0,  217+2,  217+3,  249+1,  249+0,
@@ -987,14 +987,14 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 		case 224+0: *(q++) = 143; break;
 		case 224+2: *(q++) = 144; break;
 		case 224+4: *(q++) = 145; break;
-		case 242+1: *(q++) = 146; break;
-		case 242+0: *(q++) = 147; break;
-		case 242+2: *(q++) = 148; break;
-		case 242+4: *(q++) = 149; break;
+		case 200+1: *(q++) = 146; break;
+		case 200+0: *(q++) = 147; break;
+		case 200+2: *(q++) = 148; break;
+		case 200+3: *(q++) = 149; break;
 		case 232+1: *(q++) = 150; break;
 		case 232+0: *(q++) = 151; break;
 		case 232+2: *(q++) = 152; break;
-		case 232+4: *(q++) = 153; break;
+		case 232+3: *(q++) = 153; break;
 		case 204+1: *(q++) = 154; break;
 		case 204+0: *(q++) = 155; break;
 		case 204+2: *(q++) = 156; break;
@@ -1049,7 +1049,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *t
 		}
 	}
 	*q=0;
-#endif
+
 	return ti;
 }
 
