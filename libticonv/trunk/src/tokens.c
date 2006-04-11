@@ -55,7 +55,7 @@ static char *detokenize_varname(CalcModel model, const char *src)
 
 	switch (tok1) 
     {
-    case 0x5C:			/* Matrix: [A] to [E]/[J] */
+    case 0x5C:			/* Matrix: [A] to [E] or [J] */
 		switch(tok2)
 		{
 		case 0x00: dst = g_strdup_printf("%cA]", '\xc1'); break;
@@ -73,7 +73,7 @@ static char *detokenize_varname(CalcModel model, const char *src)
 		}
 		break;
 
-    case 0x5D:			/* List: L1 to L6/L0 */
+    case 0x5D:			/* List: L1 to L6 or L1 to L0 */
 		if(model == CALC_TI73)
 		{
 			// TI73 begins at L0
@@ -104,7 +104,7 @@ static char *detokenize_varname(CalcModel model, const char *src)
 		}
 		break;
 		
-    case 0x5E:			/* Equations: Y1 to Y0, ... */
+    case 0x5E:			/* Equations: Y1 to Y0, X1t, ... */
 		switch(tok2)
 		{
 		case 0x10: dst = g_strdup_printf("Y%c", '\x81'); break;
