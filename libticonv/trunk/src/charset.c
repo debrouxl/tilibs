@@ -1288,7 +1288,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti84pusb(const unsigned short *utf16, char
 	char *tmp;
 
 	tmp = ticonv_utf16_to_utf8(utf16);
-	strcpy(ti, tmp, strlen(tmp);
+	strcpy(ti, tmp);
 	g_free(tmp);
 
 	return ti;
