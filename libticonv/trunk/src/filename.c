@@ -199,7 +199,17 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
 	}
 	else
 	{
-		while(*p) *q++ = *p++;
+		while(*p) 
+		{
+#ifdef __WIN32__
+			if(*p >= 0x2080 && *p <= 0x2089)
+			{
+				*q++ = (*p++ - 0x2080) + '0';
+			}
+			else		
+#endif
+			*q++ = *p++;
+		}
 		*q = '\0';
 	}
 
