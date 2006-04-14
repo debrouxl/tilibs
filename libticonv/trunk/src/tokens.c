@@ -416,5 +416,5 @@ TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
 		return g_strdup_printf("%c%c", 0xAA, shift(src[1] - 0x80));
 	}
 
-	return g_strdup("");
+	return g_strdup(src_);
 }
