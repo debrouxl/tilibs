@@ -346,8 +346,18 @@ TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src
 
 //---
 
-TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src)
+static int shift(int v)
 {
+	if(v == 0)
+		return 9;
+	else 
+		return v-1; 
+}
+
+TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
+{
+	const unsigned char *src = src_;
+
 	if(src[0] == '[' && src[2] == ']' && strlen(src) == 3)
 	{
 		// matrices
@@ -356,12 +366,12 @@ TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src)
 	else if(src[0] == 'L' && (src[1] >= 128 && src[1] <= 137) && strlen(src) == 2)
 	{
 		// lists
-		return g_strdup_printf("%c%c", 0x5D, ((src[1] - 0x80) + 1) % 10);
+		return g_strdup_printf("%c%c", 0x5D, shift(src[1] - 0x80));
 	} 
 	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && src[2] == 0x13 && strlen(src) == 2)
 	{
 		// cart. equations
-		return g_strdup_printf("%c%c", 0x5E, 0x10 + (((src[1] - 0x80) + 1) % 10));
+		return g_strdup_printf("%c%c", 0x5E, 0x10 + shift(src[1] - 0x80));
 	}
 	else if(src[0] == 'X' && (src[1] >= 128 && src[1] <= 133) && src[2] == 0x13 && strlen(src) == 3)
 	{
@@ -393,17 +403,17 @@ TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src)
 	else if(src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
 	{
 		// pictures
-		return g_strdup_printf("%c%c", 0x60, ((src[1] - 0x80) + 1) % 10);
+		return g_strdup_printf("%c%c", 0x60, shift(src[1] - 0x80));
 	}
 	else if(src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
 	{
 		// pictures
-		return g_strdup_printf("%c%c", 0x61, ((src[1] - 0x80) + 1) % 10);
+		return g_strdup_printf("%c%c", 0x61, shift(src[1] - 0x80));
 	}
 	else if(src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[4] <= '9' && strlen(src) == 4)
 	{
 		// pictures
-		return g_strdup_printf("%c%c", 0xAA, ((src[1] - 0x80) + 1) % 10);
+		return g_strdup_printf("%c%c", 0xAA, shift(src[1] - 0x80));
 	}
 
 	return g_strdup("");
