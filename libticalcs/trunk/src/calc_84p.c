@@ -202,6 +202,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(cmd84p_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd84p_r_data_ack(handle));
 		TRYF(cmd84p_s_eot(handle));
+
+		PAUSE(50);	// needed
 	}
 
 	return 0;
