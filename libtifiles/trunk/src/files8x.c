@@ -588,9 +588,9 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
     fwrite_byte(f, entry->type);
+	ticonv_varname_to_tifile_s(content->model, entry->name, varname);
     if (is_ti8586(content->model)) 
 	{
-	  ticonv_varname_to_tifile_s(content->model, entry->name, varname);
       name_length = strlen(varname);
       fwrite_byte(f, (uint8_t)name_length);
 	  if(content->model == CALC_TI85)
@@ -599,7 +599,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		fwrite_n_chars2(f, 8, varname); // space padded
     }
     else
-    	fwrite_n_chars(f, 8, entry->name);
+    	fwrite_n_chars(f, 8, varname);
     if (is_ti83p(content->model))
       fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00));
     fwrite_word(f, (uint16_t)entry->size);
