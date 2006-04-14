@@ -258,7 +258,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 		{
 			// first packet has a data header
 			vtl->size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
-			vtl->type = (uint16_t)((raw.data[4] << 8) | (raw.data[5] << 0);
+			vtl->type = (uint16_t)((raw.data[4] << 8) | (raw.data[5] << 0));
 			vtl->data = realloc(vtl->data, vtl->size);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
