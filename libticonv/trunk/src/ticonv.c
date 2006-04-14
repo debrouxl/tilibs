@@ -401,7 +401,7 @@ TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
 		dst = ti;
 	}
 	else
-		g_strdup(src);
+		dst = g_strdup(src);
 
 	return dst;
 }

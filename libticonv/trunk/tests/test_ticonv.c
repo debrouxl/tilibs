@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 
 		// varname -> varname
 		printf("raw varname: <%s> (%i)\n", ti84p_varname, strlen(ti84p_varname));
-		varname = ticonv_varname_to_varname(CALC_TI84P_USB, ti84p_varname);
+		varname = ticonv_varname_to_tifile(CALC_TI84P_USB, ti84p_varname);
 		printf("varname: <%s>\n", varname);
 		g_free(varname);
 	}
