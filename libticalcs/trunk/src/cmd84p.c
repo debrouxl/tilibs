@@ -25,6 +25,7 @@
 
 // Some functions should be renamed or re-organized...
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "ticalcs.h"

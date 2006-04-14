@@ -21,13 +21,14 @@ libticalcs2_la_SOURCES = *.h \
 	calc_00.c calc_xx.c \
 	calc_73.c calc_82.c calc_83.c calc_85.c calc_86.c \
 	calc_89.c calc_92.c \
+	calc_84p.c \
 	clock.c \
-	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c \
+	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c cmd84p.c \
 	dirlist.c \
 	error.c \
 	keys73.c keys83p.c keys89.c keys92p.c \
 	logging.c \
-	dbus_pkt.c \
+	dbus_pkt.c dusb_rpkt.c dusb_vpkt.c \
 	probe.c \
 	romdump.c \
 	ticalcs.c \

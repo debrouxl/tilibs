@@ -398,8 +398,8 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry)
 	int i, j;
 	int found = 0;
 
-	TNode *parent;
-	VarEntry *fe;
+	TNode *parent = NULL;
+	VarEntry *fe = NULL;
 
 	TNode *child;
 	VarEntry *ve;
@@ -488,8 +488,8 @@ TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry)
 	int i, j;
 	int found = 0;
 
-	TNode *parent;
-	VarEntry *fe;
+	TNode *parent = NULL;
+	VarEntry *fe = NULL;
 
 	TNode *child;
 	VarEntry *ve;
