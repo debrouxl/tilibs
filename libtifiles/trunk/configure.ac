@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libtifiles2, 0.1.0, [tilp-users@lists.sourceforge.net])
+AC_INIT(libtifiles2, 0.1.2, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.1.0"
+VERSION="0.1.2"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(TICONV, ticonv >= 0.0.1)
+PKG_CHECK_MODULES(TICONV, ticonv >= 0.0.3)
 AC_SUBST(TICONV_CFLAGS)
 AC_SUBST(TICONV_LIBS)
 
