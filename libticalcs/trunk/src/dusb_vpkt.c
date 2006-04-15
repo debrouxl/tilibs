@@ -240,7 +240,6 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			memcpy(raw.data, vtl->data + offset, r);
 			offset += r;
 			
-			printf("%u %i %i %i\n", vtl->size, vtl->size, q, r);
 			TRYF(dusb_send(h, &raw));
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 			TRYF(dusb_recv_acknowledge(h));

@@ -197,7 +197,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
 		attrs[1] = ca_new(AID84P_ARCHIVED, 1);
-		attrs[1]->data[0] = ve->type;
+		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = ca_new(AID84P_VAR_VERSION, 4);
 
 		TRYF(cmd84p_s_rts(handle, ve->name, ve->size, nattrs, attrs));
@@ -264,7 +264,71 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-	// to do....
+	FlashContent *ptr;
+	int i;
+	char *utf8;
+	CalcAttr **attrs;
+	const int nattrs = 2;
+
+	uint8_t *data;
+	uint32_t size;
+
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+		if(ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+			break;
+	if(ptr == NULL)
+		return -1;
+	if(ptr->data_type != TI83p_APPL)
+		return -1;
+
+#if 0
+	printf("#pages: %i\n", ptr->num_pages);
+	printf("type: %02x\n", ptr->data_type);
+	for (i = 0; i < ptr->num_pages; i++) 
+	{
+		FlashPage *fp = ptr->pages[i];
+
+		printf("page #%i: %04x %02x %02x %04x\n", i,
+			fp->addr, fp->page, fp->flag, fp->size);		
+	}
+	printf("data length: %08x\n", ptr->data_length);
+#endif
+
+	data = tifiles_fp_alloc_data(ptr->data_length);
+	size = ptr->num_pages * FLASH_PAGE_SIZE;
+
+	for (i = 0; i < ptr->num_pages; i++) 
+	{
+		FlashPage *fp = ptr->pages[i];
+		memcpy(data + i*FLASH_PAGE_SIZE, fp->data, FLASH_PAGE_SIZE);
+	}
+	{
+		FlashPage *fp = ptr->pages[--i];
+		memset(data + i*FLASH_PAGE_SIZE + fp->size, 0x00, FLASH_PAGE_SIZE - fp->size); 
+	}
+
+	// send
+	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+	g_free(utf8);
+	update_label();
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID84P_VAR_TYPE, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+	attrs[1] = ca_new(AID84P_ARCHIVED, 1);
+	attrs[1]->data[0] = 0;
+	
+	TRYF(cmd84p_s_rts(handle, ptr->name, size, nattrs, attrs));
+	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd84p_s_var_content(handle, size, data));
+	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd84p_s_eot(handle));
+
 	return 0;
 }
 
