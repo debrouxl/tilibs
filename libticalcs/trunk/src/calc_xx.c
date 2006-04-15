@@ -423,7 +423,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 }
 
 /**
- * ticalcs_calc_send_flash:
+ * ticalcs_calc_send_app:
  * @handle: a previously allocated handle
  * @content: content to send
  *
@@ -431,7 +431,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* content)
+TIEXPORT int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -447,15 +447,15 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 
 	ticalcs_info(_("Sending FLASH application:"));
 	handle->busy = 1;
-	if(calc->send_flash)
-		ret = calc->send_flash(handle, content);
+	if(calc->send_app)
+		ret = calc->send_app(handle, content);
 	handle->busy = 0;
 
 	return ret;
 }
 
 /**
- * ticalcs_calc_recv_flash:
+ * ticalcs_calc_recv_app:
  * @handle: a previously allocated handle
  * @content: where to store content
  * @var: FLASH app to request
@@ -464,7 +464,7 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* content, 
+TIEXPORT int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, 
 											VarRequest* var)
 {
 	const CalcFncts *calc = handle->calc;
@@ -481,8 +481,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 
 	ticalcs_info(_("Requesting receiving of FLASH application:"));
 	handle->busy = 1;
-	if(calc->recv_flash)
-		ret = calc->recv_flash(handle, content, var);
+	if(calc->recv_app)
+		ret = calc->recv_app(handle, content, var);
 	handle->busy = 0;
 
 	return ret;
@@ -513,7 +513,7 @@ TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* conte
 
 	ticalcs_info(_("Sending FLASH os:"));
 	handle->busy = 1;
-	if(calc->send_flash)
+	if(calc->send_app)
 		ret = calc->send_os(handle, content);
 	handle->busy = 0;
 
@@ -950,7 +950,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
 }
 
 /**
- * ticalcs_calc_send_flash2:
+ * ticalcs_calc_send_app2:
  * @handle: a previously allocated handle
  * @filename: name of file
  *
@@ -958,7 +958,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* filename)
+TIEXPORT int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
 
@@ -973,14 +973,14 @@ TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* fil
 
 	content = tifiles_content_create_flash(handle->model);
 	TRYF(tifiles_file_read_flash(filename, content));
-	TRYF(ticalcs_calc_send_flash(handle, content));
+	TRYF(ticalcs_calc_send_app(handle, content));
 	TRYF(tifiles_content_delete_flash(content));
 
 	return 0;
 }
 
 /**
- * ticalcs_calc_recv_flash2:
+ * ticalcs_calc_recv_app2:
  * @handle: a previously allocated handle
  * @content: where to store content
  * @var: FLASH app to request
@@ -989,7 +989,7 @@ TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle* handle, const char* fil
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* filename, 
+TIEXPORT int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, 
 											VarRequest* vr)
 {
 	FlashContent *content;
@@ -1004,7 +1004,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle* handle, const char* fil
 		return ERR_BUSY;
 
 	content = tifiles_content_create_flash(handle->model);
-	TRYF(ticalcs_calc_recv_flash(handle, content, vr));
+	TRYF(ticalcs_calc_recv_app(handle, content, vr));
 	TRYF(tifiles_file_write_flash(filename, content));
 	TRYF(tifiles_content_delete_flash(content));
 

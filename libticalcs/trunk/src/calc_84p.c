@@ -717,6 +717,7 @@ const CalcFncts calc_84p_usb =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,

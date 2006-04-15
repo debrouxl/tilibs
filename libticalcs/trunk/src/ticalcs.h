@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.0.8"
+# define LIBCALCS_VERSION "0.1.0"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -487,8 +487,8 @@ struct _CalcFncts
 	int		(*send_var_ns)	(CalcHandle*, CalcMode, FileContent*);
 	int		(*recv_var_ns)	(CalcHandle*, CalcMode, FileContent*, VarEntry**);
 
-	int		(*send_flash)	(CalcHandle*, FlashContent*);
-	int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
+	int		(*send_app)		(CalcHandle*, FlashContent*);
+	int		(*recv_app)		(CalcHandle*, FlashContent*, VarRequest*);
 	
 	int		(*send_os)		(CalcHandle*, FlashContent*);
 	int		(*recv_idlist)	(CalcHandle*, uint8_t*);
@@ -609,8 +609,8 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry**);
 
-	TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle*, FlashContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle*, FlashContent*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_send_app(CalcHandle*, FlashContent*);
+	TIEXPORT int TICALL ticalcs_calc_recv_app(CalcHandle*, FlashContent*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
@@ -637,8 +637,8 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle*, CalcMode, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry**);
 	
-	TIEXPORT int TICALL ticalcs_calc_send_flash2(CalcHandle*, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_flash2(CalcHandle*, const char*, VarRequest*);
+	TIEXPORT int TICALL ticalcs_calc_send_app2(CalcHandle*, const char*);
+	TIEXPORT int TICALL ticalcs_calc_recv_app2(CalcHandle*, const char*, VarRequest*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle*, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);

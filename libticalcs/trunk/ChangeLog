@@ -11,6 +11,10 @@ To do :
 
 Log:
 
+- 15/04/2006, version 0.1.0: roms
+	- split sending of FLASH app & os into 2 functions.
+	- renamed some function of the API (send/recv_flash into send/recv_app)
+
 - 25/03/2006, version 0.0.8: roms
 	- bitmap for screenshot is now allocated at the end of transfer.
 	- work on DirectLink in progress.
