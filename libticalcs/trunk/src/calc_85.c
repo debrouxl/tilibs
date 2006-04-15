@@ -479,6 +479,7 @@ const CalcFncts calc_85 =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,

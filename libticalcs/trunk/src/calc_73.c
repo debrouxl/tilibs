@@ -916,7 +916,7 @@ const CalcFncts calc_73 =
 	N_("TI-73"),
 	N_("TI-73"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
@@ -931,6 +931,7 @@ const CalcFncts calc_73 =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
@@ -949,7 +950,7 @@ const CalcFncts calc_83p =
 	N_("TI-83 Plus"),
 	N_("TI-83 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -964,6 +965,7 @@ const CalcFncts calc_83p =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
@@ -982,7 +984,7 @@ const CalcFncts calc_84p =
 	N_("TI-84 Plus"),
 	N_("TI-84 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
-	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -997,6 +999,7 @@ const CalcFncts calc_84p =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,

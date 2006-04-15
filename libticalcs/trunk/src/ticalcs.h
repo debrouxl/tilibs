@@ -175,6 +175,7 @@ typedef enum
   OPS_VERSION	= (1 << 10),
   OPS_NEWFLD	= (1 << 11),
   OPS_DELVAR	= (1 << 12),
+  OPS_OS		= (1 << 13),
 
   FTS_SILENT	= (1 << 15),
   FTS_FOLDER	= (1 << 16),
@@ -488,6 +489,8 @@ struct _CalcFncts
 
 	int		(*send_flash)	(CalcHandle*, FlashContent*);
 	int		(*recv_flash)	(CalcHandle*, FlashContent*, VarRequest*);
+	
+	int		(*send_os)		(CalcHandle*, FlashContent*);
 	int		(*recv_idlist)	(CalcHandle*, uint8_t*);
 
 	int		(*dump_rom)		(CalcHandle*, CalcDumpSize, const char *filename);
@@ -608,6 +611,8 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle*, FlashContent*, VarRequest*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
 
 	TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
@@ -637,6 +642,8 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle*, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle*, const char*);
 
 	// dirlist.c
 	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);

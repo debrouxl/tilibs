@@ -94,6 +94,11 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	return 0;
 }
 
+static int		send_os 	(CalcHandle* handle, FlashContent* content)
+{
+	return 0;
+}
+
 static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 {
 	return 0;
@@ -159,6 +164,7 @@ const CalcFncts calc_00 =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_os,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,

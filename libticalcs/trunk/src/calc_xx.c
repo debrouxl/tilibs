@@ -427,7 +427,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
  * @handle: a previously allocated handle
  * @content: content to send
  *
- * Send a FLASH app or os.
+ * Send a FLASH app.
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
@@ -445,7 +445,7 @@ TIEXPORT int TICALL ticalcs_calc_send_flash(CalcHandle* handle, FlashContent* co
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Sending FLASH content:"));
+	ticalcs_info(_("Sending FLASH application:"));
 	handle->busy = 1;
 	if(calc->send_flash)
 		ret = calc->send_flash(handle, content);
@@ -479,10 +479,42 @@ TIEXPORT int TICALL ticalcs_calc_recv_flash(CalcHandle* handle, FlashContent* co
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Requesting receiving of FLASH app:"));
+	ticalcs_info(_("Requesting receiving of FLASH application:"));
 	handle->busy = 1;
 	if(calc->recv_flash)
 		ret = calc->recv_flash(handle, content, var);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_send_os:
+ * @handle: a previously allocated handle
+ * @content: content to send
+ *
+ * Send a FLASH os.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret = 0;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Sending FLASH os:"));
+	handle->busy = 1;
+	if(calc->send_flash)
+		ret = calc->send_os(handle, content);
 	handle->busy = 0;
 
 	return ret;
@@ -1144,6 +1176,36 @@ TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* file
 		TRYF(tifiles_file_write_flash(filename, content));
 		TRYF(tifiles_content_delete_flash(content));
 	}	
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_send_os2:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ *
+ * Send a FLASH app.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
+{
+	FlashContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_flash(handle->model);
+	TRYF(tifiles_file_read_flash(filename, content));
+	TRYF(ticalcs_calc_send_os(handle, content));
+	TRYF(tifiles_content_delete_flash(content));
 
 	return 0;
 }

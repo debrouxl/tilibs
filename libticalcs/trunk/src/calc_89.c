@@ -999,6 +999,7 @@ const CalcFncts calc_89 =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
@@ -1018,7 +1019,7 @@ const CalcFncts calc_92p =
 	N_("TI-92 Plus"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -1033,6 +1034,7 @@ const CalcFncts calc_92p =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
@@ -1052,7 +1054,7 @@ const CalcFncts calc_89t =
 	N_("TI-89 Titanium"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -1067,6 +1069,7 @@ const CalcFncts calc_89t =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
@@ -1086,7 +1089,7 @@ const CalcFncts calc_v2 =
 	N_("V200 Portable Learning Tool"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
-	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	&is_ready,
 	&send_key,
@@ -1101,6 +1104,7 @@ const CalcFncts calc_v2 =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_flash,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
