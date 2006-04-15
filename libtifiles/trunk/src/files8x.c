@@ -755,7 +755,6 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *head)
 				  content->pages[i]->size, content->pages[i]->addr,
 				  content->pages[i]->flag, content->pages[i]->data, 
 				  content->pages[i]->page);
-			  printf("-> %04x\n", content->pages[i]->size);
 		  }
 
 		  // final block
