@@ -157,16 +157,19 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
+	// to do....
 	return 0;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
+	// to do....
 	return 0;
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
+	// to do....
 	return 0;
 }
 
@@ -261,11 +264,72 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
+	// to do....
 	return 0;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
+	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	CalcAttr **attrs;
+	const int nattrs = 1;
+	char name[40];
+	uint8_t *data;
+	
+	int page;
+	uint16_t data_addr = 0x4000;
+	uint16_t data_page = 0;
+	int r, q;
+
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+    update_label();
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+
+	TRYF(cmd84p_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	ca_del_array(nattrs, attrs);
+	attrs = ca_new_array(nattrs);
+	TRYF(cmd84p_r_var_header(handle, name, attrs));
+	TRYF(cmd84p_r_var_content(handle, NULL, &data));
+
+	content->model = handle->model;
+	strcpy(content->name, vr->name);
+	content->data_type = vr->type;
+	content->device_type = 0x73;
+	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
+	content->pages = tifiles_fp_create_array(content->num_pages);
+
+	q = vr->size / FLASH_PAGE_SIZE;
+	r = vr->size % FLASH_PAGE_SIZE;
+
+	for(page = 0; page < q; page++)
+	{
+		FlashPage *fp = content->pages[page] = tifiles_fp_create();
+
+		fp->addr = data_addr;
+		fp->page = data_page++;
+		fp->flag = 0x80;
+		fp->size = FLASH_PAGE_SIZE;			
+		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, FLASH_PAGE_SIZE);
+	}
+	{
+		FlashPage *fp = content->pages[page] = tifiles_fp_create();
+
+		fp->addr = data_addr;
+		fp->page = data_page++;
+		fp->flag = 0x80;
+		fp->size = r;			
+		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
+		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
+	}
+	content->num_pages = page+1;
+	
+	ca_del_array(nattrs, attrs);
 	return 0;
 }
 
@@ -573,7 +637,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | 
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | 
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
