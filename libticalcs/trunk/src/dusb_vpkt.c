@@ -171,6 +171,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 {
 	RawPacket raw = { 0 };
 	int i, r, q;
+	long offset;
 
 	if(vtl->size <= DATA_SIZE - DH_SIZE)
 	{
@@ -203,7 +204,8 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		raw.data[3] = LSB(LSW(vtl->size));
 		raw.data[4] = MSB(vtl->type);
 		raw.data[5] = LSB(vtl->type);
-		memcpy(&raw.data[DH_SIZE], vtl->data, DATA_SIZE);
+		memcpy(&raw.data[DH_SIZE], vtl->data, DATA_SIZE - DH_SIZE);
+		offset = DATA_SIZE - DH_SIZE;
 
 		TRYF(dusb_send(h, &raw));
 		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
@@ -211,15 +213,16 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		TRYF(dusb_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
-		q = vtl->size / DATA_SIZE;
-		r = vtl->size % DATA_SIZE;
+		q = (vtl->size - offset) / DATA_SIZE;
+		r = (vtl->size - offset) % DATA_SIZE;
 
 		// send full chunks (no header)
 		for(i = 1; i < q; i++)
 		{
 			raw.size = DATA_SIZE;
 			raw.type = RPKT_VIRT_DATA;
-			memcpy(raw.data, vtl->data + i*DATA_SIZE, DATA_SIZE);
+			memcpy(raw.data, vtl->data + offset, DATA_SIZE);
+			offset += DATA_SIZE;
 
 			TRYF(dusb_send(h, &raw));
 			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
@@ -234,8 +237,10 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		{
 			raw.size = r;
 			raw.type = RPKT_VIRT_DATA_LAST;
-			memcpy(raw.data, vtl->data + i*DATA_SIZE, r);
+			memcpy(raw.data, vtl->data + offset, r);
+			offset += r;
 			
+			printf("%u %i %i %i\n", vtl->size, vtl->size, q, r);
 			TRYF(dusb_send(h, &raw));
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 			TRYF(dusb_recv_acknowledge(h));
