@@ -60,6 +60,7 @@ int dusb_recv(CalcHandle* handle, RawPacket* pkt)
 	uint8_t buf[5];
 
 	// Any packet has always an header of 5 bytes (size & type)
+	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_recv(handle->cable, buf, 5));
 
 	pkt->size = buf[3] | (buf[2] << 8) | (buf[1] << 16) | (buf[0] << 24);
@@ -71,7 +72,6 @@ int dusb_recv(CalcHandle* handle, RawPacket* pkt)
 		return ERR_INVALID_PACKET;
 
 	// Next, follows data
-	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->size));
 	if(pkt->size >= 128)
 		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
