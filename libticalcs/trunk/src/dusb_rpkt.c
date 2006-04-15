@@ -46,7 +46,8 @@ int dusb_send(CalcHandle* handle, RawPacket* pkt)
 
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_send(handle->cable, buf, size));
-	ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	if(size >= 128)
+		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 	if (handle->updat->cancel)
 		return ERR_ABORT;
@@ -71,9 +72,9 @@ int dusb_recv(CalcHandle* handle, RawPacket* pkt)
 
 	// Next, follows data
 	ticables_progress_reset(handle->cable);
-
 	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->size));
-	ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	if(pkt->size >= 128)
+		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			
 	if (handle->updat->cancel)
 		return ERR_ABORT;
