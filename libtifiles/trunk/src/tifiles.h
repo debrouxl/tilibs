@@ -237,7 +237,7 @@ typedef struct
  * @offset: FLASH offset (see TI link guide).
  * @page: FLASH page (see TI link guide).
  * @flag: see link guide.
- * @length: length of pure data (up to 16384 bytes)
+ * @size: length of pure data (up to 16384 bytes)
  * @data: pure FLASH data.
  *
  * A generic structure used to store the content of a TI8x memory page for FLASH.
