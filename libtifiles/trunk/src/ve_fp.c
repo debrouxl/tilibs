@@ -212,7 +212,12 @@ TIEXPORT FlashPage*	TICALL tifiles_fp_create(void)
  **/
 TIEXPORT void *tifiles_fp_alloc_data(size_t size)
 {
-	return calloc(size+1, sizeof(uint8_t));
+	uint8_t *data;
+	
+	data = calloc(size+1, sizeof(uint8_t));
+	memset(data, 0xFF, size);
+
+	return data;
 }
 
 /**

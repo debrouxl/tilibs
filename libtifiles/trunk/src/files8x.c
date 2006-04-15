@@ -742,12 +742,20 @@ int ti8x_file_write_flash(const char *filename, Ti8xFlash *head)
 	}
 	else if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
 	{
+		int r;
+		
+		// pad to 256 bytes
+		r = 0x20 - (content->pages[content->num_pages-1]->size & 0x1F);
+		content->pages[content->num_pages-1]->size += r;
+
+		// write
 		for (i = 0; i < content->num_pages; i++)
 		  {
 			  bytes_written += hex_block_write(f, 
 				  content->pages[i]->size, content->pages[i]->addr,
 				  content->pages[i]->flag, content->pages[i]->data, 
 				  content->pages[i]->page);
+			  printf("-> %04x\n", content->pages[i]->size);
 		  }
 
 		  // final block
