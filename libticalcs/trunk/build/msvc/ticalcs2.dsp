@@ -188,6 +188,14 @@ SOURCE="..\..\..\linkguide\direct-usb-protocol.txt"
 # End Source File
 # Begin Source File
 
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\recv_flash_app.pkt"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\send_flash_app.pkt"
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\..\..\ticables.log
 # End Source File
 # Begin Source File

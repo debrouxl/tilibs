@@ -224,6 +224,11 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			TRYF(dusb_send(h, &raw));
 			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
 			TRYF(dusb_recv_acknowledge(h));
+
+			//ticables_progress_get(h->cable, NULL, NULL, &h->updat->rate);
+			h->updat->max1 = vtl->size;
+			h->updat->cnt1 += DATA_SIZE;
+			h->updat->pbar();
 		}
 
 		// send last chunk (type)
@@ -272,6 +277,11 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			memcpy(vtl->data + offset, raw.data, raw.size);
 			offset += raw.size;
 			ticalcs_info("  TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+
+			//ticables_progress_get(h->cable, NULL, NULL, &h->updat->rate);
+			h->updat->max1 = vtl->size;
+			h->updat->cnt1 += DATA_SIZE;
+			h->updat->pbar();
 		}
 
 		TRYF(dusb_send_acknowledge(h));
