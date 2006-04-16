@@ -432,6 +432,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 			return ERR_MALLOC;
 
 		  // read FLASH pages
+		  content->data_length = 0;
 			for(i = 0, ret = 0; !ret; i++)
 			{
 				uint16_t size;
@@ -453,6 +454,8 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				fp->flag = flag;
 				fp->size = size;
 				memcpy(fp->data, data, size);		
+
+				content->data_length += size;
 			} 
 		  content->num_pages = i;
 		  content->next = NULL;

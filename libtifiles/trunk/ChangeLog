@@ -12,6 +12,8 @@ Log:
 
 - 16/04/2006, version 0.1.3: roms
 	- thanks to O. Armand, fixed a bug in the file attribute (archived flag)
+	- ti8x_read_flash now returns in FlashContent.data_length the length of pure data
+		instead of file size (TI8x FLASH file format)
 
 - 07/04/2006, version 0.1.2: roms
 	- increased buffer length of variable & folder names (9 -> 36) due to TI-UTF-8
