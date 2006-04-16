@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 16/04/2006, version 0.6.7: roms
+	- thanks to O. Armand, fixed a bug in the file attribute (archived flag)
+
 - 20/07/2005, version 0.6.6: roms
 	Fixed new gcc4.0 warnings.
 	

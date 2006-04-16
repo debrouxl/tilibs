@@ -251,6 +251,7 @@ TIEXPORT int TICALL ti9x_read_regular_file(const char *filename,
 			   entry->type, content->calc_type);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
+	entry->attr == (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
     fread_word(f, NULL);
 
     if (entry->type == tifiles_folder_type()) {
@@ -532,11 +533,13 @@ TIEXPORT int TICALL ti9x_write_regular_file(const char *fname,
     for (j = 0; table[i][j] != -1; j++) {
       int index = table[i][j];
       Ti9xVarEntry *entry = &(content->entries[index]);
+	  uint8_t attr = ATTRB_NONE;
 
       fwrite_long(f, offset);
       fwrite_8_chars(f, entry->name);
       fwrite_byte(f, entry->type);
-      fwrite_byte(f, entry->attr);
+      attr == (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
+      fwrite_byte(f, attr);
       fwrite_word(f, 0);
 
       offset += entry->size + 4 + 2;
