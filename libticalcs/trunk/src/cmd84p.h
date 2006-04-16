@@ -74,6 +74,11 @@
 #define AID84P_VAR_TYPE2	0x11
 #define AID84P_UNKNOWN_13	0x13
 
+// Modes
+#define MODE_STARTUP	{ 1, 1, 0, 0x07, 0xd0 }
+#define MODE_BASIC		{ 2, 1, 0, 0x07, 0xd0 }
+#define MODE_NORMAL		{ 3, 1, 0, 0x07, 0xd0 }
+
 // Structures
 typedef struct
 {
@@ -112,11 +117,12 @@ CalcAttr**	ca_new_array(int size);
 void		ca_del_array(int size, CalcAttr **attrs);
 
 // Command wrappers
-int cmd84p_s_mode_set(CalcHandle *h);
-int cmd84p_s_os_begin(CalcHandle *h);
-int cmd84p_r_os_ack(CalcHandle *h);
-int cmd84p_s_os_data(CalcHandle *h);
-int cmd84p_s_eot_ack(CalcHandle *h);
+int cmd84p_s_mode_set(CalcHandle *h, ModeSet mode);
+int cmd84p_s_os_begin(CalcHandle *h, uint32_t size);
+int cmd84p_r_os_ack(CalcHandle *h, uint32_t *size);
+int cmd84p_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+int cmd84p_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+int cmd84p_r_eot_ack(CalcHandle *h);
 int cmd84p_s_param_request(CalcHandle *h, int npids, uint16_t *pids);
 int cmd84p_r_param_data(CalcHandle *h, int nparams, CalcParam **params);
 int cmd84p_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);

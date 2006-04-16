@@ -32,6 +32,7 @@
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
+#include "pause.h"
 
 #include "dusb_vpkt.h"
 #include "cmd84p.h"
@@ -115,14 +116,9 @@ void ca_del_array(int size, CalcAttr **attrs)
 /////////////----------------
 
 // 0x0001: set mode or ping
-int cmd84p_s_mode_set(CalcHandle *h)
+int cmd84p_s_mode_set(CalcHandle *h, ModeSet mode)
 {
-	ModeSet mode = { 0 };
 	VirtualPacket* pkt;
-
-	mode.arg1 = 3;	// normal operation mode
-	mode.arg2 = 1;
-	mode.arg5 = 0x07d0;
 
 	TRYF(dusb_buffer_size_request(h));
 	TRYF(dusb_buffer_size_alloc(h));
@@ -145,26 +141,84 @@ int cmd84p_s_mode_set(CalcHandle *h)
 }
 
 // 0x0002: begin OS transfer
-int cmd84p_s_os_begin(CalcHandle *h)
+int cmd84p_s_os_begin(CalcHandle *h, uint32_t size)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(11, VPKT_OS_BEGIN);
+
+	pkt->data[7] = MSB(MSW(size));
+	pkt->data[8] = LSB(MSW(size));
+	pkt->data[9] = MSB(LSW(size));
+	pkt->data[10]= LSB(LSW(size));
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
 // 0x0003: acknowledgement of OS transfer
-int cmd84p_r_os_ack(CalcHandle *h)
+int cmd84p_r_os_ack(CalcHandle *h, uint32_t *size)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_OS_ACK)
+		return ERR_INVALID_PACKET;
+	
+	*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
+
+	vtl_pkt_del(pkt);
 	return 0;
+}
+
+static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(4 + size, type);
+
+	pkt->data[0] = MSB(addr);
+	pkt->data[1] = LSB(addr);
+	pkt->data[2] = page;
+	pkt->data[3] = flag;
+	memcpy(pkt->data+4, data, size);
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0x0004: OS header
+int cmd84p_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+{
+	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);	
 }
 
 // 0x0005: OS data
-int cmd84p_s_os_data(CalcHandle *h)
+int cmd84p_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return 0;
+	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);	
 }
 
 // 0x0006: acknowledgement of EOT
-int cmd84p_s_eot_ack(CalcHandle *h)
+int cmd84p_r_eot_ack(CalcHandle *h)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(0, 0);
+	TRYF(dusb_recv_data(h, pkt));
+
+	if(pkt->type == VPKT_ERROR)
+		return ERR_INVALID_PACKET;
+	else if(pkt->type != VPKT_EOT_ACK)
+		return ERR_INVALID_PACKET;
+	
+	vtl_pkt_del(pkt);
 	return 0;
 }
 
@@ -538,6 +592,8 @@ int cmd84p_r_param_ack(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 	else if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
+
+	PAUSE(100);
 
 	vtl_pkt_del(pkt);
 	return 0;

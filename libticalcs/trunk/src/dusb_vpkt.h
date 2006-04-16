@@ -51,6 +51,7 @@ typedef struct
 #define VPKT_PING		0x0001
 #define VPKT_OS_BEGIN	0x0002
 #define VPKT_OS_ACK		0x0003
+#define VPKT_OS_HEADER	0x0004
 #define VPKT_OS_DATA	0x0005
 #define VPKT_EOT_ACK	0x0006
 #define VPKT_PARM_REQ	0x0007
