@@ -47,6 +47,7 @@ static const VtlPktName vpkt_types[] =
 	{ 0x0001, "Ping / Set Mode"},
 	{ 0x0002, "Begin OS Transfer"},
 	{ 0x0003, "Acknowledgement of OS Transfer"},
+	{ 0x0004, "OS Header"},
 	{ 0x0005, "OS Data"},
 	{ 0x0006, "Acknowledgement of EOT"},
 	{ 0x0007, "Parameter Request"},
