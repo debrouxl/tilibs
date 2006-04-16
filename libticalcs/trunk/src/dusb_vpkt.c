@@ -99,33 +99,74 @@ void			vtl_pkt_del(VirtualPacket* vtl)
 
 // Raw packets
 
-int dusb_buffer_size_request(CalcHandle* h)
+int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 {
 	RawPacket raw = { 0 };
 
 	raw.size = 4;
 	raw.type = RPKT_BUF_SIZE_REQ;
-	raw.data[2] = 0x04;	// 0x400 = 1024 bytes
-	raw.data[3] = 0x00;
+	raw.data[2] = MSB(size);
+	raw.data[3] = LSB(size);
 
 	TRYF(dusb_send(h, &raw));
-	ticalcs_info("  PC->TI: Buffer Size Request");
+	ticalcs_info("  PC->TI: Buffer Size Request (%i bytes)", size);
 
 	return 0;
 }
 
-int dusb_buffer_size_alloc(CalcHandle* h)
+int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size)
 {	
 	RawPacket raw = { 0 };
+	uint32_t tmp;
 
 	TRYF(dusb_recv(h, &raw));
-	ticalcs_info("  TI->PC: Buffer Size Allocation");
 	
 	if(raw.size != 4)
 		return ERR_INVALID_PACKET;
 
 	if(raw.type != RPKT_BUF_SIZE_ALLOC)
 		return ERR_INVALID_PACKET;
+
+	tmp = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+	if(size)
+		*size = tmp;
+	ticalcs_info("  TI->PC: Buffer Size Allocation (%i bytes)", tmp);
+
+	return 0;
+}
+
+int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
+{
+	RawPacket raw = { 0 };
+	uint32_t tmp;
+
+	TRYF(dusb_recv(h, &raw));
+	
+	if(raw.size != 4)
+		return ERR_INVALID_PACKET;
+
+	if(raw.type != RPKT_BUF_SIZE_REQ)
+		return ERR_INVALID_PACKET;
+
+	tmp = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+	if(size)
+		*size = tmp;
+	ticalcs_info("  TI->PC: Buffer Size Request (%i bytes)", tmp);
+
+	return 0;
+}
+
+int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
+{	
+	RawPacket raw = { 0 };
+
+	raw.size = 4;
+	raw.type = RPKT_BUF_SIZE_ALLOC;
+	raw.data[2] = MSB(size);
+	raw.data[3] = LSB(size);
+
+	TRYF(dusb_send(h, &raw));
+	ticalcs_info("  PC->TI: Buffer Size Allocation (%i bytes)", size);
 
 	return 0;
 }

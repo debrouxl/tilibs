@@ -22,6 +22,8 @@
 #ifndef __TICALCS_CMD84P__
 #define __TICALCS_CMD84P__
 
+#define CMD84P_BUF_SIZE		1024
+
 // Parameter IDs
 #define PID84P_PRODUCT_NUMBER	0x0001
 #define PID84P_PRODUCT_NAME		0x0002
@@ -75,9 +77,9 @@
 #define AID84P_UNKNOWN_13	0x13
 
 // Modes
-#define MODE_STARTUP	{ 1, 1, 0, 0x07, 0xd0 }
-#define MODE_BASIC		{ 2, 1, 0, 0x07, 0xd0 }
-#define MODE_NORMAL		{ 3, 1, 0, 0x07, 0xd0 }
+#define MODE_STARTUP	{ 1, 1, 0, 0, 0x07d0 }
+#define MODE_BASIC		{ 2, 1, 0, 0, 0x07d0 }
+#define MODE_NORMAL		{ 3, 1, 0, 0, 0x07d0 }
 
 // Structures
 typedef struct

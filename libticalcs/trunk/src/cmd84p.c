@@ -120,8 +120,8 @@ int cmd84p_s_mode_set(CalcHandle *h, ModeSet mode)
 {
 	VirtualPacket* pkt;
 
-	TRYF(dusb_buffer_size_request(h));
-	TRYF(dusb_buffer_size_alloc(h));
+	TRYF(dusb_send_buf_size_request(h, CMD84P_BUF_SIZE));
+	TRYF(dusb_recv_buf_size_alloc(h, NULL));
 
 	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);
 	pkt->data[0] = MSB(mode.arg1);
