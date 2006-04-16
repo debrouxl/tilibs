@@ -255,11 +255,21 @@ typedef struct
 /**
  * FlashContent:
  * @model: a calculator model.
- * @header : a FLASH header
+ * @revision_major:
+ * @revision_minor:
+ * @flags:
+ * @object_type:
+ * @revision_day:
+ * @revision_month:
+ * @revision_year:
+ * @name: name of FLASH app or OS
+ * @device_type: a device ID
+ * @data_type: a type ID
+ * @data_length: length of pure data
  * @data_part: pure FLASH data (TI9x only) or license or certificate
  * @num_pages: number of FLASH pages (TI8x only)
  * @pages: NULL-terminated array of FLASH pages (TI8x only)
- * @next: pointer to next structure (linked list)
+ * @next: pointer to next structure (linked list of contents)
  *
  * A generic structure used to store the content of a FLASH file (os or app).
  **/
