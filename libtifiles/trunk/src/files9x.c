@@ -115,6 +115,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	ticonv_varname_from_tifile_s(content->model, varname, entry->name);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
+	entry->attr == (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
     fread_word(f, NULL);
 
     if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
@@ -441,12 +442,14 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 	{
       int index = table[i][j];
       VarEntry *entry = content->entries[index];
+	  uint8_t attr = ATTRB_NONE;
 
       fwrite_long(f, offset);
 	  ticonv_varname_to_tifile_s(content->model, entry->name, varname);
       fwrite_8_chars(f, varname);
       fwrite_byte(f, entry->type);
-      fwrite_byte(f, entry->attr);
+	  attr == (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
+      fwrite_byte(f, attr);
       fwrite_word(f, 0);
 
       offset += entry->size + 4 + 2;
