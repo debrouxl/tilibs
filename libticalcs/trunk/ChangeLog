@@ -7,7 +7,7 @@ To do :
 //- manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
-- split send_flash & send_os
+- check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
 
 Log:
 

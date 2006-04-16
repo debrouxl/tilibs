@@ -55,7 +55,9 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYF(cmd84p_s_mode_set(handle));
+	ModeSet mode = MODE_NORMAL;
+
+	TRYF(cmd84p_s_mode_set(handle, mode));
 	TRYF(cmd84p_r_mode_ack(handle));
 	// use PID84P_HOMESCREEN to return status ?
 
@@ -136,8 +138,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
 		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
 		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
-
-		tifiles_hexdump(varname, 16);
 		ca_del_array(size, attr);
 
 		node = t_node_new(ve);
@@ -157,7 +157,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
-	// to do....
 	return 0;
 }
 
@@ -394,6 +393,104 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->num_pages = page+1;
 	
 	ca_del_array(nattrs, attrs);
+	return 0;
+}
+
+static int		send_os    (CalcHandle* handle, FlashContent* content)
+{
+	ModeSet mode = MODE_BASIC;
+	uint32_t pkt_size = 266;
+	uint32_t os_size = 0;
+	FlashContent *ptr;
+	int i, j;
+
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+		if(ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+			break;
+	if(ptr == NULL)
+		return -1;
+	if(ptr->data_type != TI83p_AMS)
+		return -1;
+
+#if 1
+	printf("#pages: %i\n", ptr->num_pages);
+	printf("type: %02x\n", ptr->data_type);
+	for (i = 0; i < ptr->num_pages; i++) 
+	{
+		FlashPage *fp = ptr->pages[i];
+
+		printf("page #%i: %04x %02x %02x %04x\n", i,
+			fp->addr, fp->page, fp->flag, fp->size);		
+		//tifiles_hexdump(fp->data, 16);
+	}
+	printf("data length = %08x %i\n", ptr->data_length, ptr->data_length);
+#endif
+
+	for(i = 0; i < ptr->num_pages; i++)
+	{
+		FlashPage *fp = ptr->pages[i];
+
+		if(fp->size < 256)
+			os_size += 4;
+		else
+			os_size += 4*(fp->size / 260);
+	}
+	printf("os_size overhead = %i\n", os_size);
+	os_size += ptr->data_length;
+	printf("os_size new = %i\n", os_size);
+
+	return -1;
+
+	// switch to BASIC mode
+	TRYF(cmd84p_s_mode_set(handle, mode));
+	TRYF(cmd84p_r_mode_ack(handle));
+
+	// start OS transfer
+	TRYF(cmd84p_s_os_begin(handle, os_size));
+	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
+	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
+	TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+
+	// send OS header/signature
+	TRYF(cmd84p_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size, ptr->pages[0]->data));
+	TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+
+	// send OS data
+	for(i = 0; i < ptr->num_pages; i++)
+	{
+		FlashPage *fp = ptr->pages[i];
+
+		fp->addr = 0x4000;
+
+		if(i == 0)	// need relocation
+		{
+			TRYF(cmd84p_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size, fp->data));
+			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+		}
+		else if(i == ptr->num_pages-1)	// idem
+		{
+			TRYF(cmd84p_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size, fp->data));
+			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+		}
+		else
+		{
+			for(j = 0; j < fp->size; j += 256/*(pkt_size-4)*/)
+			{
+				uint16_t addr = fp->addr + j;
+				uint8_t* data = fp->data + j;
+				
+				TRYF(cmd84p_s_os_data(handle, fp->addr, fp->page, fp->flag, pkt_size, fp->data + j));
+				TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+			}
+		}
+	}
+	
+	TRYF(cmd84p_s_eot(handle));
+	TRYF(cmd84p_r_param_ack(handle));
+	PAUSE(500);
+	TRYF(cmd84p_r_eot_ack(handle));
+
 	return 0;
 }
 
@@ -701,7 +798,7 @@ const CalcFncts calc_84p_usb =
 	"TI84+ (USB)",
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | 
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
@@ -717,7 +814,7 @@ const CalcFncts calc_84p_usb =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
-	&send_flash,
+	&send_os,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
