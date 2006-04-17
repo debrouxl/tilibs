@@ -22,8 +22,6 @@
 #ifndef __DUSB_RPKT__
 #define __DUSB_RPKT__
 
-#define MAX_RAW_SIZE	1023
-
 // Raw packet types
 
 #define RPKT_BUF_SIZE_REQ		1
@@ -34,6 +32,8 @@
 #define RPKT_VIRT_DATA_ACK		5
 
 // Convenient structures
+
+#define PH_SIZE		(4+1)	// size + type
 
 typedef struct
 {
@@ -46,10 +46,8 @@ typedef struct
 	uint32_t	size;	// raw packet size
 	uint8_t		type;	// raw packet type
 
-	uint8_t		data[MAX_RAW_SIZE];	// raw packet data (should be allocated)
+	uint8_t		data[1023];	// raw packet data (should be allocated)
 } RawPacket;
-
-#define PH_SIZE		(4+1)
 
 // Functions
 

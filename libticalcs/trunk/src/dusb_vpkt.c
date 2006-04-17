@@ -22,6 +22,7 @@
 /*
 	This unit manages virtual packets from/to D-USB (Direct Cable).
 	Virtual packets are fragmented into 1 or more raw packets.
+	The size of packet can be negotiated on both sides.
 */
 
 #include <stdlib.h>

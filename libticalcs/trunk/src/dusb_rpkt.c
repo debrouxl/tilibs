@@ -21,7 +21,6 @@
 
 /*
 	This unit manages raw packets from/to D-USB (Direct Cable).
-	Note: negociated buffer sizes are not handled at the time being.
 */
 
 #include <string.h>
@@ -34,7 +33,7 @@
 
 int dusb_send(CalcHandle* handle, RawPacket* pkt)
 {
-	uint8_t buf[MAX_RAW_SIZE+5]= { 0 };
+	uint8_t buf[1023 + 5]= { 0 };
 	uint32_t size = pkt->size + 5;
 
 	buf[0] = MSB(MSW(pkt->size));

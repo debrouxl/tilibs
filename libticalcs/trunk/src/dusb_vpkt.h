@@ -24,6 +24,8 @@
 
 // Convenients structures
 
+#define DH_SIZE		(4+2)	// size + type
+
 typedef struct
 {
 	uint32_t	size;	// virtual packet size
@@ -37,8 +39,6 @@ typedef struct
 
 	uint8_t		*data;		// virtual packet data
 } VirtualPacket;
-
-#define DH_SIZE		(4+2)
 
 typedef struct
 {
