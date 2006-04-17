@@ -440,8 +440,6 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	os_size += ptr->data_length;
 	printf("os_size new = %i\n", os_size);
 
-	return -1;
-
 	// switch to BASIC mode
 	TRYF(cmd84p_s_mode_set(handle, mode));
 	TRYF(cmd84p_r_mode_ack(handle));
@@ -480,7 +478,8 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				uint16_t addr = fp->addr + j;
 				uint8_t* data = fp->data + j;
 				
-				TRYF(cmd84p_s_os_data(handle, fp->addr, fp->page, fp->flag, pkt_size, fp->data + j));
+				TRYF(cmd84p_s_os_data(handle, 
+					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size, fp->data + j));
 				TRYF(cmd84p_r_os_ack(handle, &pkt_size));
 			}
 		}
