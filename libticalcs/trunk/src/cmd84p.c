@@ -202,7 +202,7 @@ int cmd84p_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag,
 // 0x0005: OS data
 int cmd84p_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);	
+	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);	
 }
 
 // 0x0006: acknowledgement of EOT
