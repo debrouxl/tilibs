@@ -38,8 +38,8 @@
 
 // Constants
 
-#define BLK_SIZE	255		// USB packets have this max length
-#define DATA_SIZE	250		// max length of data (BLK_SIZE - PH_SIZE)
+#define RPKT_SIZE	255						// USB packets have max length
+#define DATA_SIZE	(RPKT_SIZE - PH_SIZE)	// max length of pure data on first packet
 
 // Type to string
 
