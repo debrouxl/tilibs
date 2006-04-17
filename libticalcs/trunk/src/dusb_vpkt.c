@@ -36,10 +36,17 @@
 #include "dusb_rpkt.h"
 #include "dusb_vpkt.h"
 
-// Constants
+// Pseudo-Constants
 
-#define RPKT_SIZE	255						// USB packets have max length
+unsigned int RPKT_SIZE = 255;				// USB packets have max length
 #define DATA_SIZE	(RPKT_SIZE - PH_SIZE)	// max length of pure data on first packet
+
+/*
+#define RPKT_SIZE	255
+#define RPKT_DATA	255-5
+#define VPKT_SIZE	RPKT_DATA
+#define VPKT_DATA	VPKT_SIZE-6
+*/
 
 // Type to string
 

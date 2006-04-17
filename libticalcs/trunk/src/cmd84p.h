@@ -22,7 +22,7 @@
 #ifndef __TICALCS_CMD84P__
 #define __TICALCS_CMD84P__
 
-#define CMD84P_BUF_SIZE		1024
+#define CMD84P_DFL_BUF_SIZE		1024
 
 // Parameter IDs
 #define PID84P_PRODUCT_NUMBER	0x0001
