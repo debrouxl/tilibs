@@ -8,6 +8,7 @@ To do :
 - macros.h should be endian dependant (configure check ?)
 - create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
 - check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
+- mode_set done in is_ready but is_ready not always called (especially before OS flashing)
 
 Log:
 

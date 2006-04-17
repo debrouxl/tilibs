@@ -36,10 +36,11 @@
 #include "dusb_rpkt.h"
 #include "dusb_vpkt.h"
 
+//#define FULL_DEBUG
+
 // Pseudo-Constants
 
-unsigned int RPKT_SIZE = 255;				// USB packets have max length
-#define DATA_SIZE	(RPKT_SIZE - PH_SIZE)	// max length of pure data on first packet
+unsigned int DATA_SIZE = 250;	// max length of data in raw packet
 
 /*
 #define RPKT_SIZE	255
@@ -123,10 +124,10 @@ int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 	return 0;
 }
 
-int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size)
+int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 {	
 	RawPacket raw = { 0 };
-	uint32_t tmp;
+	uint32_t size;
 
 	TRYF(dusb_recv(h, &raw));
 	
@@ -136,10 +137,12 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size)
 	if(raw.type != RPKT_BUF_SIZE_ALLOC)
 		return ERR_INVALID_PACKET;
 
-	tmp = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
-	if(size)
-		*size = tmp;
-	ticalcs_info("  TI->PC: Buffer Size Allocation (%i bytes)", tmp);
+	size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+	if(size_)
+		*size_ = size;
+	ticalcs_info("  TI->PC: Buffer Size Allocation (%i bytes)", size);
+
+	DATA_SIZE = size;
 
 	return 0;
 }
@@ -177,6 +180,8 @@ int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
 	TRYF(dusb_send(h, &raw));
 	ticalcs_info("  PC->TI: Buffer Size Allocation (%i bytes)", size);
 
+	DATA_SIZE = size;
+
 	return 0;
 }
 
@@ -190,7 +195,9 @@ int dusb_send_acknowledge(CalcHandle* h)
 	raw.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &raw));
+#ifdef FULL_DEBUG
 	ticalcs_info("  PC->TI: Virtual Packet Data Acknowledgement");
+#endif
 
 	return 0;
 }
@@ -200,7 +207,9 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	RawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
+#ifdef FULL_DEBUG
 	ticalcs_info("  TI->PC: Virtual Packet Data Acknowledgement");
+#endif
 	
 	raw.size = raw.size;
 	if(raw.size != 2)
@@ -238,8 +247,12 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		memcpy(&raw.data[DH_SIZE], vtl->data, vtl->size);
 	
 		TRYF(dusb_send(h, &raw));
-		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
+#ifdef FULL_DEBUG
+		ticalcs_info("  PC->TI: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
+#else
+		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
+#endif
 		TRYF(dusb_recv_acknowledge(h));
 	}
 	else
@@ -258,8 +271,12 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		offset = DATA_SIZE - DH_SIZE;
 
 		TRYF(dusb_send(h, &raw));
+#ifdef FULL_DEBUG
 		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
+#else
+		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
+#endif
 		TRYF(dusb_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
@@ -275,7 +292,9 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			offset += DATA_SIZE;
 
 			TRYF(dusb_send(h, &raw));
+#ifdef FULL_DEBUG
 			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
+#endif
 			TRYF(dusb_recv_acknowledge(h));
 
 			h->updat->max1 = vtl->size;
@@ -291,7 +310,9 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			offset += r;
 			
 			TRYF(dusb_send(h, &raw));
+#ifdef FULL_DEBUG
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
+#endif
 			TRYF(dusb_recv_acknowledge(h));
 		}
 	}
@@ -320,16 +341,22 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->data = realloc(vtl->data, vtl->size);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
+#ifdef FULL_DEBUG
 			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
 				raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				vtl->size, vpkt_type2name(vtl->type));
+#else
+			ticalcs_info("  TI->PC: %s", vpkt_type2name(vtl->type));
+#endif
 		}
 		else
 		{
 			// others have more data
 			memcpy(vtl->data + offset, raw.data, raw.size);
 			offset += raw.size;
+#ifdef FULL_DEBUG
 			ticalcs_info("  TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+#endif
 
 			h->updat->max1 = vtl->size;
 			h->updat->cnt1 += DATA_SIZE;
