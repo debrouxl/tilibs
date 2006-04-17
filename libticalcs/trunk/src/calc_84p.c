@@ -398,7 +398,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
-	ModeSet mode = MODE_BASIC;
+	ModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
 	uint32_t pkt_size = 266;
 	uint32_t os_size = 0;
 	FlashContent *ptr;
@@ -446,12 +446,14 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd84p_s_os_begin(handle, os_size));
+	/*
 	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
 	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
-	TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+	*/
+	TRYF(cmd84p_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
-	TRYF(cmd84p_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size, ptr->pages[0]->data));
+	TRYF(cmd84p_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size-4, ptr->pages[0]->data));
 	TRYF(cmd84p_r_os_ack(handle, &pkt_size));
 
 	// send OS data
@@ -463,13 +465,15 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 		if(i == 0)	// need relocation
 		{
-			TRYF(cmd84p_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size, fp->data));
+			TRYF(cmd84p_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
 			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+			PAUSE(500);
 		}
 		else if(i == ptr->num_pages-1)	// idem
 		{
-			TRYF(cmd84p_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size, fp->data));
+			TRYF(cmd84p_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
 			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+			PAUSE(500);
 		}
 		else
 		{
@@ -479,8 +483,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				uint8_t* data = fp->data + j;
 				
 				TRYF(cmd84p_s_os_data(handle, 
-					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size, fp->data + j));
+					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size-4, fp->data + j));
 				TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+				PAUSE(500);
 			}
 		}
 	}
