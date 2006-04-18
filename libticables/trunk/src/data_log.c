@@ -19,8 +19,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* This unit allows to trace bytes which are transferred between PC
-   and TI calculator.
+/* 
+	This unit allows to trace bytes which are transferred between PC
+	and TI calculator.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -46,8 +47,8 @@ int log_start(void)
 {
 	//ticables_info(_("Logging started."));
 	log_hex_start();
-	//log_dusb_start();
-	//log_dbus_start();
+	log_dusb_start();
+	log_dbus_start();
 
   	return 0;
 }
@@ -56,26 +57,32 @@ int log_1(int dir, uint8_t data)
 {
 	printf("%02x-", data);
 	log_hex_1(dir, data);
-	//log_dusb_1(dir, data);
-	//log_dbus_1(dir, data);
+	log_dusb_1(dir, data);
+	log_dbus_1(dir, data);
 
   	return 0;
 }
 
 int log_N(int dir, uint8_t *data, int len)
 {
-	log_hex_N(dir, data, len);
-	//log_dusb_N(dir, data);
-	//log_dbus_N(dir, data);
+	int i;
+
+	for(i = 0; i < len; i++)
+	{
+		
+		log_hex_1(dir, data[i]);
+		log_dusb_1(dir, data[i]);
+		log_dbus_1(dir, data[i]);
+	}
   	
   	return 0;
 }
 
 int log_stop(void)
 {
-	log_hex_start();
-	//log_dusb_start();
-	//log_dbus_start();
+	log_hex_stop();
+	log_dusb_stop();
+	log_dbus_stop();
 	//ticables_info(_("Logging stopped."));
 
   	return 0;

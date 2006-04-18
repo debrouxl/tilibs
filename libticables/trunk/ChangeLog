@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 17/04/2006, version 0.0.8: roms
+	- rewritten data logging system
+	- embedded HEX to PKT D-BUS decompiler
+
 - 07/03/2006, version 0.0.7: roms
 	- ParallelLink support was not compiled under Windows
 	- reset SilverLink cable when opened (like other cables)

@@ -20,87 +20,62 @@
  */
 
 /* 
-	Hexadecimal logging.
+	D-BUS logging.
 */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include <stdio.h>
 #include <glib.h>
 
 #include "logging.h"
 #include "data_log.h"
-#include "ticables.h"
 
-#define LOG_FILE  "ticables-hex.log"
+#define HEX_FILE	"ticables-hex.log"
+#define LOG_FILE	"ticables-dbus.log"
 
-static char *fn = NULL;
-static FILE *log = NULL;
+static char *ifn = NULL;
+static char *ofn = NULL;
 
-int log_hex_start(void)
+int log_dbus_start(void)
 {
   // build filenames
 #ifdef __WIN32__
-	fn = g_strconcat("C:\\", LOG_FILE, NULL);
+	ifn = g_strconcat("C:\\", HEX_FILE, NULL);
+	ofn = g_strconcat("C:\\", LOG_FILE, NULL);
 #else
-	fn = g_strconcat(g_get_home_dir(), "/", LOG_FILE, NULL);
+	ifn = g_strconcat(g_get_home_dir(), "/", HEX_FILE, NULL);
+	ofn = g_strconcat(g_get_home_dir(), "/", LOG_FILE, NULL);
 #endif
 
-  	log = fopen(fn, "wt");
-  	if (log == NULL) 
-	{
-    		ticables_error("Unable to open <%s> for logging.\n", fn);
-    		return -1;
-  	}
-
-	fprintf(log, "TiCables-2 data logger\n");	// needed by log_dbus.c
-	fprintf(log, "Version %s\n", ticables_version_get());
-	fprintf(log, "\n");
-
   	return 0;
 }
 
-int log_hex_1(int dir, uint8_t data)
+int log_dbus_1(int dir, uint8_t data)
 {
-  	static int array[20];
-  	static int i = 0;
-  	int j;
-  	int c;
-
-  	if (log == NULL)
-    		return -1;
-  	
-	array[i++] = data;
-  	fprintf(log, "%02X ", data);
-
-  	if ((i > 1 ) && !(i % 16)) 
-	{
-    	fprintf(log, "| ");
-    	for (j = 0; j < 16; j++) 
-		{
-      		c = array[j];
-      		if ((c < 32) || (c > 127))
-				fprintf(log, " ");
-      		else
-				fprintf(log, "%c", c);
-    	}
-    	fprintf(log, "\n");
-    	i = 0;
-  	}
-
   	return 0;
 }
 
-int log_hex_stop(void)
+extern int pkdecomp(const char *filename, int resync);
+
+int log_dbus_stop(void)
 {
-  	if (log != NULL)
-	{
-    		fclose(log);
-			log = NULL;
-	}
-  	g_free(fn);
+	char *r;
+	
+	r = strrchr(ifn, '.');
+	if(r) *r = '\0';
+
+	pkdecomp(ifn, 0);	// ticables-hex.log -> ticables-hex.pkt
+	strcat(ifn, ".pkt");
+
+	g_unlink(ofn);
+	g_rename(ifn, ofn);
+	
+	g_free(ifn);
+	g_free(ofn);
 
   	return 0;
 }
