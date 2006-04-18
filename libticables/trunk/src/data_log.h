@@ -28,19 +28,28 @@
 
 #include "stdints.h"
 
-int start_logging();
-int log_data(uint8_t data);
-int log_n_data(uint8_t* data, int len);
-int stop_logging();
+// Constants
+
+#define LOG_IN	0
+#define LOG_OUT	1
+
+// Functions
+
+int log_start(void);
+int log_1(int dir, uint8_t data);
+int log_N(int dir, uint8_t *data, int len);
+int log_stop(void);
+
+// Wrappers
 
 #ifdef ENABLE_LOGGING
-# define START_LOGGING();	start_logging();
-# define LOG_DATA(d);		log_data(d);
-# define LOG_N_DATA(d,n);	log_n_data(d,n);
-# define STOP_LOGGING();	stop_logging();
+# define START_LOGGING();		log_start();
+# define LOG_1_DATA(w,d);		log_1(w,d);
+# define LOG_N_DATA(w,d,n);		log_N(w,d,n);
+# define STOP_LOGGING();		log_stop();
 #else
 # define START_LOGGING();
-# define LOG_DATA(d);
+# define LOG_1_DATA(d);
 # define LOG_N_DATA(d,n);
 # define STOP_LOGGING();
 #endif

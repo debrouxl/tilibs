@@ -172,7 +172,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->send(handle, data, len);
-	LOG_N_DATA(data, len);
+	LOG_N_DATA(LOG_OUT, data, len);
 	handle->busy = 0;
 
 	return ret;
@@ -201,7 +201,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 	handle->busy = 1;
 	handle->rate.count += 1;
 	ret = cable->send(handle, &data, 1);
-	LOG_DATA(data);
+	LOG_1_DATA(LOG_OUT, data);
 	handle->busy = 0;
 
 	return ret;
@@ -232,7 +232,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->recv(handle, data, len);
-	LOG_N_DATA(data, len);
+	LOG_N_DATA(LOG_IN, data, len);
 	handle->busy = 0;
 
 	return ret;
@@ -261,7 +261,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 	handle->busy = 1;
 	handle->rate.count += 1;
 	ret = cable->recv(handle, data, 1);
-	LOG_DATA(*data);
+	LOG_1_DATA(LOG_IN, *data);
 	handle->busy = 0;
 
 	return ret;

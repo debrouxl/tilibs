@@ -49,7 +49,7 @@ static FILE *log2 = NULL;
 
 GTimeVal tv_start, tv;
 
-int start_logging()
+int log_start(void)
 {
   // build filenames
 #ifdef __WIN32__
@@ -81,7 +81,7 @@ int start_logging()
   	return 0;
 }
 
-int log_data(uint8_t d)
+int log_1(int dir, uint8_t d)
 {
   	static int array[16];
   	static int i = 0;
@@ -124,17 +124,17 @@ int log_data(uint8_t d)
   	return 0;
 }
 
-int log_n_data(uint8_t* d, int n)
+int log_N(int dir, uint8_t* d, int n)
 {
 	int i;
 
 	for(i = 0; i < n; i++)
-		log_data(d[i]);
+		log_1(dir, d[i]);
   	
   	return 0;
 }
 
-int stop_logging()
+int log_stop()
 {
   	//ticables_info("Logging stopped.");
 
@@ -146,22 +146,5 @@ int stop_logging()
   	g_free(fn1);
   	g_free(fn2);
 
-  	return 0;
-}
-
-// ---
-
-int start_void()
-{
-  	return 0;
-}
-
-int log_void(int d)
-{
-  	return 0;
-}
-
-int stop_void()
-{
   	return 0;
 }
