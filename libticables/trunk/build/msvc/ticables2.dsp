@@ -130,10 +130,6 @@ SOURCE=..\..\src\link_xxx.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\data_log.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\win32\detect.c
 # End Source File
 # Begin Source File
@@ -195,6 +191,18 @@ SOURCE=..\..\src\ticables.h
 # Begin Source File
 
 SOURCE=..\..\src\type2str.c
+# End Source File
+# End Group
+# Begin Group "Data Logger"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\data_log.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\log_hex.c
 # End Source File
 # End Group
 # Begin Source File
