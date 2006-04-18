@@ -202,6 +202,10 @@ SOURCE=..\..\src\data_log.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\log2pkt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\log_dbus.c
 # End Source File
 # Begin Source File

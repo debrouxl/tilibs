@@ -48,17 +48,120 @@ int log_dusb_start(void)
 #endif
 
   	log = fopen(fn, "wt");
-  	if (log == NULL) 
-	{
-    		ticables_error("Unable to open <%s> for logging.\n", fn);
-    		return -1;
-  	}
+  	if (log == NULL)
+		return -1;
+
+	fprintf(log, "TI packet decompiler for D-USB\n");
 
   	return 0;
 }
 
 int log_dusb_1(int dir, uint8_t data)
 {
+	static int array[16];
+  	static int i = 0;
+	static int state = 1;
+	static uint32_t raw_size;
+	static uint8_t raw_type;
+	static uint32_t vtl_size;
+	static uint16_t vtl_type;
+	static int cnt;
+
+  	if (log == NULL)
+    		return -1;
+
+	//printf("<%i %i> ", i, state);
+	array[i++ % 16] = data;
+
+	switch(state)	// Finite State Machine
+	{
+	case 1: break;
+	case 2: break;
+	case 3: break;
+	case 4: 
+		raw_size = (array[0] << 24) | (array[1] << 16) | (array[2] << 8) | (array[3] << 0);
+		fprintf(log, "%08x ", raw_size);
+		break;
+	case 5: 
+		raw_type = array[4];
+		fprintf(log, "(%02X)\n", raw_type);
+		break;
+	case 6: break;
+	case 7:
+		if(raw_type == 5)
+		{
+			uint16_t tmp = (array[5] << 8) | (array[6] << 0);
+			fprintf(log, "\t[%04x]\n", tmp);
+			state = 0;
+		}
+		break;
+	case 8: break;
+	case 9:
+		if(raw_type == 1 || raw_type == 2)
+		{
+			uint32_t tmp = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
+			fprintf(log, "\t[%08x]\n", tmp);
+			state = 0;
+		}
+		else if(raw_type == 3 || raw_type == 4)
+		{
+			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
+			fprintf(log, "\t%08x ", vtl_size);
+			cnt = 0;
+		}
+		break;
+	case 10: break;
+	case 11:
+		vtl_type = (array[9] << 8) | (array[10] << 0);
+		fprintf(log, "{%04x}\n\t\t", vtl_type);
+
+		if(!vtl_size)
+		{
+			fprintf(log, "\n");
+			state = 0;
+		}
+		break;
+	default: 
+		fprintf(log, "%02X ", data);
+
+		if(!(++cnt % 12))
+			fprintf(log, "\n\t\t");
+		
+		if(--vtl_size == 0)
+		{
+			fprintf(log, "\n");
+			state = 0;
+		}
+		break;
+	}
+
+	if(state == 0)
+	{
+		fprintf(log, "\n");
+		i = 0;
+	}
+	state++;	
+
+	return 0;
+#if 0
+	array[i++] = data;
+  	fprintf(log, "%02X ", data);
+
+  	if ((i > 1 ) && !(i % 16)) 
+	{
+    	fprintf(log, "| ");
+    	for (j = 0; j < 16; j++) 
+		{
+      		c = array[j];
+      		if ((c < 32) || (c > 127))
+				fprintf(log, " ");
+      		else
+				fprintf(log, "%c", c);
+    	}
+    	fprintf(log, "\n");
+    	i = 0;
+  	}
+#endif
   	return 0;
 }
 
