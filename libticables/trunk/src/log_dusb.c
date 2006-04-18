@@ -60,16 +60,19 @@ int log_dusb_1(int dir, uint8_t data)
 {
 	static int array[16];
   	static int i = 0;
-	static int state = 1;
+	static unsigned long state = 1;
 	static uint32_t raw_size;
 	static uint8_t raw_type;
 	static uint32_t vtl_size;
 	static uint16_t vtl_type;
 	static int cnt;
+	static int first = 1;
 
   	if (log == NULL)
     		return -1;
 
+	if(i == 0)
+		printf("<%02x> ", data);
 	//printf("<%i %i> ", i, state);
 	array[i++ % 16] = data;
 
@@ -103,12 +106,30 @@ int log_dusb_1(int dir, uint8_t data)
 			fprintf(log, "\t[%08x]\n", tmp);
 			state = 0;
 		}
-		else if(raw_type == 3 || raw_type == 4)
+		else if(raw_type == 4)
 		{
 			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
 			fprintf(log, "\t%08x ", vtl_size);
 			cnt = 0;
+			raw_size -= 6;
+			first = 1;
 		}
+		else if(first && (raw_type == 3))
+		{
+			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
+			fprintf(log, "\t%08x ", vtl_size);
+			cnt = 0;
+			raw_size -= 6;
+			first = 0;
+		}
+		else if(!first && (raw_type == 3))
+		{
+			fprintf(log, "\t\t");
+			cnt = 0;
+
+			state = 11;
+			goto push;
+		}			
 		break;
 	case 10: break;
 	case 11:
@@ -121,13 +142,13 @@ int log_dusb_1(int dir, uint8_t data)
 			state = 0;
 		}
 		break;
-	default: 
+	default: push:
 		fprintf(log, "%02X ", data);
 
 		if(!(++cnt % 12))
 			fprintf(log, "\n\t\t");
 		
-		if(--vtl_size == 0)
+		if(--raw_size == 0)
 		{
 			fprintf(log, "\n");
 			state = 0;
@@ -142,26 +163,6 @@ int log_dusb_1(int dir, uint8_t data)
 	}
 	state++;	
 
-	return 0;
-#if 0
-	array[i++] = data;
-  	fprintf(log, "%02X ", data);
-
-  	if ((i > 1 ) && !(i % 16)) 
-	{
-    	fprintf(log, "| ");
-    	for (j = 0; j < 16; j++) 
-		{
-      		c = array[j];
-      		if ((c < 32) || (c > 127))
-				fprintf(log, " ");
-      		else
-				fprintf(log, "%c", c);
-    	}
-    	fprintf(log, "\n");
-    	i = 0;
-  	}
-#endif
   	return 0;
 }
 

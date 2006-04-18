@@ -64,7 +64,7 @@ extern int pkdecomp(const char *filename, int resync);
 int log_dbus_stop(void)
 {
 	char *r;
-	
+#if 0
 	r = strrchr(ifn, '.');
 	if(r) *r = '\0';
 
@@ -73,7 +73,7 @@ int log_dbus_stop(void)
 
 	g_unlink(ofn);
 	g_rename(ifn, ofn);
-	
+#endif
 	g_free(ifn);
 	g_free(ofn);
 
