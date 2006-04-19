@@ -26,7 +26,7 @@
 # include <config.h>
 #endif
 
-#include "stdints.h"
+#include "ticables.h"
 
 // Constants
 
@@ -35,23 +35,23 @@
 
 // Functions
 
-int log_start(void);
-int log_1(int dir, uint8_t data);
-int log_N(int dir, uint8_t *data, int len);
-int log_stop(void);
+int log_start(CableHandle *h);
+int log_1(CableHandle *h, int dir, uint8_t data);
+int log_N(CableHandle *h, int dir, uint8_t *data, int len);
+int log_stop(CableHandle *h);
 
 // Wrappers
 
 #ifdef ENABLE_LOGGING
-# define START_LOGGING();		log_start();
-# define LOG_1_DATA(w,d);		log_1(w,d);
-# define LOG_N_DATA(w,d,n);		log_N(w,d,n);
-# define STOP_LOGGING();		log_stop();
+# define START_LOGGING(h);		log_start(h);
+# define LOG_1_DATA(h,w,d);		log_1(h,w,d);
+# define LOG_N_DATA(h,w,d,n);	log_N(h,w,d,n);
+# define STOP_LOGGING(h);		log_stop(h);
 #else
-# define START_LOGGING();
-# define LOG_1_DATA(d);
-# define LOG_N_DATA(d,n);
-# define STOP_LOGGING();
+# define START_LOGGING(h);
+# define LOG_1_DATA(h,w,d);
+# define LOG_N_DATA(h,w,d,n);
+# define STOP_LOGGING(h);
 #endif
 
 #endif

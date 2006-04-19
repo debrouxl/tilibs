@@ -43,26 +43,29 @@
 #include "log_dbus.h"
 #include "log_dusb.h"
 
-int log_start(void)
+int log_start(CableHandle *h)
 {
-	//ticables_info(_("Logging started."));
 	log_hex_start();
-	log_dusb_start();
-	log_dbus_start();
+	if(h->model == CABLE_USB)
+		log_dusb_start();
+	if(h->model != CABLE_USB)
+		log_dbus_start();
 
   	return 0;
 }
 
-int log_1(int dir, uint8_t data)
+int log_1(CableHandle *h, int dir, uint8_t data)
 {
 	log_hex_1(dir, data);
-	log_dusb_1(dir, data);
-	log_dbus_1(dir, data);
+	if(h->model == CABLE_USB)
+		log_dusb_1(dir, data);
+	if(h->model != CABLE_USB)
+		log_dbus_1(dir, data);
 
   	return 0;
 }
 
-int log_N(int dir, uint8_t *data, int len)
+int log_N(CableHandle *h, int dir, uint8_t *data, int len)
 {
 	int i;
 
@@ -78,12 +81,13 @@ int log_N(int dir, uint8_t *data, int len)
   	return 0;
 }
 
-int log_stop(void)
+int log_stop(CableHandle *h)
 {
 	log_hex_stop();
-	log_dusb_stop();
-	log_dbus_stop();
-	//ticables_info(_("Logging stopped."));
+	if(h->model == CABLE_USB)
+		log_dusb_stop();
+	if(h->model != CABLE_USB)
+		log_dbus_stop();
 
   	return 0;
 }

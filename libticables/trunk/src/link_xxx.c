@@ -47,7 +47,7 @@ TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
 	TRYC(cable->open(handle));
 	
 	handle->open = 1;
-	START_LOGGING();
+	START_LOGGING(handle);
 
 	return 0;
 }
@@ -135,7 +135,7 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 
-	STOP_LOGGING();
+	STOP_LOGGING(handle);
 	if(handle->open)
 	{
 	    cable->close(handle);
@@ -172,7 +172,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->send(handle, data, len);
-	LOG_N_DATA(LOG_OUT, data, len);
+	LOG_N_DATA(handle, LOG_OUT, data, len);
 	handle->busy = 0;
 
 	return ret;
@@ -201,7 +201,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 	handle->busy = 1;
 	handle->rate.count += 1;
 	ret = cable->send(handle, &data, 1);
-	LOG_1_DATA(LOG_OUT, data);
+	LOG_1_DATA(handle, LOG_OUT, data);
 	handle->busy = 0;
 
 	return ret;
@@ -232,7 +232,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 	handle->busy = 1;
 	handle->rate.count += len;
 	ret = cable->recv(handle, data, len);
-	LOG_N_DATA(LOG_IN, data, len);
+	LOG_N_DATA(handle, LOG_IN, data, len);
 	handle->busy = 0;
 
 	return ret;
@@ -261,7 +261,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 	handle->busy = 1;
 	handle->rate.count += 1;
 	ret = cable->recv(handle, data, 1);
-	LOG_1_DATA(LOG_IN, *data);
+	LOG_1_DATA(handle, LOG_IN, *data);
 	handle->busy = 0;
 
 	return ret;
