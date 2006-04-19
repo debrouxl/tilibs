@@ -55,7 +55,6 @@ int log_start(void)
 
 int log_1(int dir, uint8_t data)
 {
-	printf("%02x-", data);
 	log_hex_1(dir, data);
 	log_dusb_1(dir, data);
 	log_dbus_1(dir, data);
@@ -67,6 +66,7 @@ int log_N(int dir, uint8_t *data, int len)
 {
 	int i;
 
+	//printf("<%i> ", len);
 	for(i = 0; i < len; i++)
 	{
 		

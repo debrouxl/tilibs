@@ -58,7 +58,7 @@ int log_dusb_start(void)
 
 int log_dusb_1(int dir, uint8_t data)
 {
-	static int array[16];
+	static int array[20];
   	static int i = 0;
 	static unsigned long state = 1;
 	static uint32_t raw_size;
@@ -71,8 +71,6 @@ int log_dusb_1(int dir, uint8_t data)
   	if (log == NULL)
     		return -1;
 
-	if(i == 0)
-		printf("<%02x> ", data);
 	//printf("<%i %i> ", i, state);
 	array[i++ % 16] = data;
 
@@ -111,23 +109,25 @@ int log_dusb_1(int dir, uint8_t data)
 			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
 			fprintf(log, "\t%08x ", vtl_size);
 			cnt = 0;
-			raw_size -= 6;
 			first = 1;
+			raw_size -= 6;
 		}
 		else if(first && (raw_type == 3))
 		{
 			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
 			fprintf(log, "\t%08x ", vtl_size);
 			cnt = 0;
-			raw_size -= 6;
 			first = 0;
+			raw_size -= 6;
 		}
 		else if(!first && (raw_type == 3))
 		{
 			fprintf(log, "\t\t");
-			cnt = 0;
+			fprintf(log, "%02X %02X %02X ", array[5], array[6], array[7]);
+			cnt = 3;
+			raw_size -= 3;
 
-			state = 11;
+			state = 12;
 			goto push;
 		}			
 		break;
