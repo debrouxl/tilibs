@@ -104,28 +104,21 @@ int log_dusb_1(int dir, uint8_t data)
 			fprintf(log, "\t[%08x]\n", tmp);
 			state = 0;
 		}
-		else if(raw_type == 4)
+		else if(first && ((raw_type == 3) || (raw_type == 4)))
 		{
 			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
 			fprintf(log, "\t%08x ", vtl_size);
 			cnt = 0;
-			first = 1;
+			first = (raw_type == 3) ? 0 : 1;
 			raw_size -= 6;
 		}
-		else if(first && (raw_type == 3))
+		else if(!first && ((raw_type == 3) || (raw_type == 4)))
 		{
-			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
-			fprintf(log, "\t%08x ", vtl_size);
-			cnt = 0;
-			first = 0;
-			raw_size -= 6;
-		}
-		else if(!first && (raw_type == 3))
-		{
-			fprintf(log, "\t\t");
+			fprintf(log, "\t");
 			fprintf(log, "%02X %02X %02X ", array[5], array[6], array[7]);
 			cnt = 3;
 			raw_size -= 3;
+			first = (raw_type == 3) ? 0 : 1;
 
 			state = 12;
 			goto push;
@@ -134,7 +127,7 @@ int log_dusb_1(int dir, uint8_t data)
 	case 10: break;
 	case 11:
 		vtl_type = (array[9] << 8) | (array[10] << 0);
-		fprintf(log, "{%04x}\n\t\t", vtl_type);
+		fprintf(log, "{%04x}\n\t", vtl_type);
 
 		if(!vtl_size)
 		{
@@ -146,7 +139,7 @@ int log_dusb_1(int dir, uint8_t data)
 		fprintf(log, "%02X ", data);
 
 		if(!(++cnt % 12))
-			fprintf(log, "\n\t\t");
+			fprintf(log, "\n\t");
 		
 		if(--raw_size == 0)
 		{
