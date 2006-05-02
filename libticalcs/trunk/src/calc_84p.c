@@ -449,10 +449,10 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd84p_s_os_begin(handle, os_size));
-	/*
+#if 0
 	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
 	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
-	*/
+#endif
 	TRYF(cmd84p_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
@@ -469,13 +469,13 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		if(i == 0)	// need relocation
 		{
 			TRYF(cmd84p_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+			TRYF(cmd84p_r_data_ack(handle));
 			PAUSE(500);
 		}
 		else if(i == ptr->num_pages-1)	// idem
 		{
 			TRYF(cmd84p_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+			TRYF(cmd84p_r_data_ack(handle));
 			PAUSE(500);
 		}
 		else
