@@ -284,7 +284,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		r = (vtl->size - offset) % DATA_SIZE;
 
 		// send full chunks (no header)
-		for(i = 1; i < q; i++)
+		for(i = 1; i <= q; i++)
 		{
 			raw.size = DATA_SIZE;
 			raw.type = RPKT_VIRT_DATA;

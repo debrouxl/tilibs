@@ -192,13 +192,17 @@ SOURCE="..\..\..\linkguide\analysis\logs\ti84+_usb\send_flash_os.pkt"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\..\..\ticables.log
+SOURCE="..\..\..\..\..\ticables-dusb.log"
 # End Source File
 # Begin Source File
 
 SOURCE="..\..\..\linkguide\usb-protocol.txt"
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\src\calc_84p.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\src\cmd84p.c
@@ -227,10 +231,6 @@ SOURCE=..\..\src\dusb_vpkt.h
 # Begin Group "dusb_calcs"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\src\calc_84p.c
-# End Source File
 # End Group
 # Begin Group "dbus_cmds"
 

@@ -292,10 +292,13 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			fp->addr, fp->page, fp->flag, fp->size);		
 	}
 	printf("data length: %08x\n", ptr->data_length);
+
+	return 0;
 #endif
 
 	data = tifiles_fp_alloc_data(ptr->data_length);
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
+	//size = ptr->data_length
 
 	for (i = 0; i < ptr->num_pages; i++) 
 	{
