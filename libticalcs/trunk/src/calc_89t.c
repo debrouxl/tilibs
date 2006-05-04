@@ -82,7 +82,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
     
 	param = cp_new_array(1);
 	TRYF(cmd_s_param_request(handle, 1, pid));
-	TRYF(cmd_r_param_ack(handle));
+	//TRYF(cmd_r_param_ack(handle));
 	TRYF(cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
