@@ -120,26 +120,36 @@ void		ca_del_array(int size, CalcAttr **attrs);
 
 // Command wrappers
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode);
+
 int cmd_s_os_begin(CalcHandle *h, uint32_t size);
 int cmd_r_os_ack(CalcHandle *h, uint32_t *size);
 int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
 int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+
 int cmd_r_eot_ack(CalcHandle *h);
+
 int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids);
 int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params);
+
 int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);
-int cmd_r_var_header(CalcHandle *h, char *name, CalcAttr **attr);
-int cmd_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs);
-int cmd_s_var_request(CalcHandle *h, const char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs);
+int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr);
+
+int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs);
+int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs);
+
 int cmd_s_var_content(CalcHandle *h, uint32_t  size, uint8_t  *data);
 int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
+
 int cmd_s_param_set(CalcHandle *h, const CalcParam *param);
-int cmd_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs);
+int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs);
+
 int cmd_r_mode_ack(CalcHandle *h);
 int cmd_r_data_ack(CalcHandle *h);
 int cmd_r_param_ack(CalcHandle *h);
+
 int cmd_s_eot(CalcHandle *h);
 int cmd_r_eot(CalcHandle *h);
+
 int cmd_s_error(CalcHandle *h);
 
 

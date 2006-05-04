@@ -128,7 +128,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TNode *node;
 
 		attr = ca_new_array(size);
-		err = cmd_r_var_header(handle, varname, attr);
+		err = cmd_r_var_header(handle, "", varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
@@ -199,7 +199,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = ca_new(AID_VAR_VERSION, 4);
 
-		TRYF(cmd_s_rts(handle, ve->name, ve->size, nattrs, attrs));
+		TRYF(cmd_s_rts(handle, "", ve->name, ve->size, nattrs, attrs));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd_r_data_ack(handle));
@@ -229,10 +229,10 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_header(handle, "", name, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
@@ -323,7 +323,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	attrs[1] = ca_new(AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 	
-	TRYF(cmd_s_rts(handle, ptr->name, size, nattrs, attrs));
+	TRYF(cmd_s_rts(handle, "", ptr->name, size, nattrs, attrs));
 	TRYF(cmd_r_param_ack(handle));
 	TRYF(cmd_r_data_ack(handle));
 	TRYF(cmd_s_var_content(handle, size, data));
@@ -356,10 +356,10 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_header(handle, "", name, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
@@ -516,10 +516,10 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	TRYF(cmd_s_var_request(handle, "IDList", naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, "", "IDList", naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_header(handle, "", name, attrs));
 	TRYF(cmd_r_var_content(handle, &varsize, &data));
 
 	i = data[9];
@@ -676,7 +676,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = 0;
 
-	TRYF(cmd_s_var_delete(handle, vr->name, size, attr));
+	TRYF(cmd_s_var_delete(handle, "", vr->name, size, attr));
 	TRYF(cmd_r_data_ack(handle));
 
 	ca_del_array(size, attr);

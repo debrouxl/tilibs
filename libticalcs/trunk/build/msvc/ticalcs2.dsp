@@ -201,11 +201,11 @@ SOURCE="..\..\..\linkguide\usb-protocol.txt"
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\cmd84p.c
+SOURCE=..\..\src\dusb_cmd.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\cmd84p.h
+SOURCE=..\..\src\dusb_cmd.h
 # End Source File
 # Begin Source File
 

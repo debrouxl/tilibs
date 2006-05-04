@@ -314,10 +314,11 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 
 // 0x000A: variable header (name is utf-8)
 // beware: attr array is allocated by function
-int cmd_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
+int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
-	uint16_t name_length;
+	uint8_t fld_len;
+	uint8_t var_len;
 	int nattr;
 	int i, j;
 
@@ -334,12 +335,22 @@ int cmd_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 	else if(pkt->type != VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
-	name_length = (pkt->data[0] << 8) | pkt->data[1];
-	memcpy(name, pkt->data + 2, name_length+1);
-
-	nattr = (pkt->data[name_length+3] << 8) | pkt->data[name_length+4];
+	j = 0;
+	fld_len = pkt->data[j++];
+	if(fld_len)
+	{
+		memcpy(folder, &pkt->data[j], fld_len+1);
+		j += fld_len+1;
+	}
 	
-	for(i = 0, j = name_length+5; i < nattr; i++)
+	var_len = pkt->data[j++];
+	memcpy(name, &pkt->data[j], var_len+1);
+	j += var_len+1;
+
+	nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
+	j += 2;
+	
+	for(i = 0; i < nattr; i++)
 	{
 		CalcAttr *s = attr[i] = ca_new(0, 0);
 
@@ -359,7 +370,7 @@ int cmd_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int cmd_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
+int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int pks;
@@ -367,11 +378,21 @@ int cmd_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const 
 	int j = 0;
 
 	pks = 2 + strlen(name)+1 + 5 + 2;
+	if(strlen(folder))
+		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pkt = vtl_pkt_new(pks, VPKT_RTS);
 
-	pkt->data[j++] = MSB(strlen(name));
-	pkt->data[j++] = LSB(strlen(name));
+	if(strlen(folder))
+	{
+		pkt->data[j++] = strlen(folder);
+		memcpy(pkt->data + j, folder, strlen(folder)+1);
+		j += strlen(folder)+1;
+	}
+	else
+		pkt->data[j++] = 0;
+
+	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
 	
@@ -400,7 +421,7 @@ int cmd_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const 
 }
 
 // 0x000C: variable request
-int cmd_s_var_request(CalcHandle *h, const char *name, 
+int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, 
 						int naids, uint16_t *aids, 
 						int nattrs, const CalcAttr **attrs)
 {
@@ -410,12 +431,21 @@ int cmd_s_var_request(CalcHandle *h, const char *name,
 	int j = 0;
 
 	pks = 2 + strlen(name)+1 + 5 + 2 + 2*naids + 2;
+	if(strlen(folder)) pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 2;
 	pkt = vtl_pkt_new(pks, VPKT_VAR_REQ);
 
-	pkt->data[j++] = MSB(strlen(name));
-	pkt->data[j++] = LSB(strlen(name));
+	if(strlen(folder))
+	{
+		pkt->data[j++] = strlen(folder);
+		memcpy(pkt->data + j, folder, strlen(folder)+1);
+		j += strlen(folder)+1;
+	}
+	else
+		pkt->data[j++] = 0;
+
+	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
 	
@@ -507,7 +537,7 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 }
 
 // 0x0010: variable delete
-int cmd_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
+int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -515,12 +545,22 @@ int cmd_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr
 	int pks;
 
 	pks = 2 + strlen(name)+1 + 2;
+	if(strlen(folder))
+		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 5;
 	pkt = vtl_pkt_new(pks, VPKT_DEL_VAR);
 
-	pkt->data[j++] = MSB(strlen(name));
-	pkt->data[j++] = LSB(strlen(name));
+	if(strlen(folder))
+	{
+		pkt->data[j++] = strlen(folder);
+		memcpy(pkt->data + j, folder, strlen(folder)+1);
+		j += strlen(folder)+1;
+	}
+	else
+		pkt->data[j++] = 0;
+
+	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
 
