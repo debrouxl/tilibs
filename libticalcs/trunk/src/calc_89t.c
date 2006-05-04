@@ -161,6 +161,20 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
+	uint16_t pid[] = { PID_FULL_ID };
+	CalcParam **param;
+
+	param = cp_new_array(1);
+	TRYF(cmd_s_param_request(handle, 1, pid));
+	TRYF(cmd_r_param_data(handle, 1, param));
+	if(!param[0]->ok)
+		return ERR_INVALID_PACKET;
+
+	memcpy(&id[0], &(param[0]->data[1]), 5);
+	memcpy(&id[5], &(param[0]->data[7]), 5);
+	memcpy(&id[10], &(param[0]->data[13]), 5);
+	id[17] = '\0';
+
 	return 0;
 }
 

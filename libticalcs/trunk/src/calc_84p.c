@@ -157,18 +157,19 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
 {
+	// to do...
 	return 0;
 }
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	// to do....
+	// to do...
 	return 0;
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
-	// to do....
+	// to do...
 	return 0;
 }
 
