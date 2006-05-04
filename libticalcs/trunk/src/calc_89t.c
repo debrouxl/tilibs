@@ -41,7 +41,8 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "cmd89t.h"
+#include "dusb_vpkt.h"
+#include "dusb_cmd.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -56,6 +57,11 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
+	ModeSet mode = MODE_NORMAL;
+
+	TRYF(cmd_s_mode_set(handle, mode));
+	TRYF(cmd_r_mode_ack(handle));
+
 	return 0;
 }
 
@@ -66,6 +72,35 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint16_t pid[] = { PID_SCREENSHOT };
+	CalcParam **param;
+
+	sc->width = TI89T_COLS;
+	sc->height = TI89T_ROWS;
+	sc->clipped_width = TI89T_COLS_VISIBLE;
+	sc->clipped_height = TI89T_ROWS_VISIBLE;
+    
+	param = cp_new_array(1);
+	TRYF(cmd_s_param_request(handle, 1, pid));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_param_data(handle, 1, param));
+	if(!param[0]->ok)
+		return ERR_INVALID_PACKET;
+	
+	*bitmap = (uint8_t *) malloc(TI89T_COLS * TI89T_ROWS / 8);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+	memcpy(*bitmap, param[0]->data, TI89T_COLS * TI89T_ROWS / 8);
+
+	{
+		int i, j, k;
+
+		for(i = 0, j = 0; j < TI89T_ROWS_VISIBLE; j++)
+			for(k = 0; k < (TI89T_COLS_VISIBLE >> 3); k++)
+				(*bitmap)[i++] = (*bitmap)[j * (TI89T_COLS >> 3) + k];
+	}
+
+	cp_del_array(1, param);
 	return 0;
 }
 
@@ -115,6 +150,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
+{
+	return 0;
+}
+
+static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
 	return 0;
 }
@@ -170,7 +210,9 @@ const CalcFncts calc_89t_usb =
 	"Titanium (USB)",
 	N_("TI-89 Titanium thru DirectLink USB"),
 	N_("TI-89 Titanium thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN,
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -184,6 +226,7 @@ const CalcFncts calc_89t_usb =
 	&recv_var_ns,
 	&send_flash,
 	&recv_flash,
+	&send_os,
 	&recv_idlist,
 	&dump_rom,
 	&set_clock,
