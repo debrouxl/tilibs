@@ -337,18 +337,24 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 
 	j = 0;
 	fld_len = pkt->data[j++];
+	strcpy(folder, "");
 	if(fld_len)
 	{
 		memcpy(folder, &pkt->data[j], fld_len+1);
 		j += fld_len+1;
 	}
-	
 	var_len = pkt->data[j++];
-	memcpy(name, &pkt->data[j], var_len+1);
-	j += var_len+1;
+	strcpy(name, "");
+	if(var_len)
+	{
+		memcpy(name, &pkt->data[j], var_len+1);
+		j += var_len+1;
+	}
 
 	nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
 	j += 2;
+
+	printf("fld = <%s>, var = <%s>\n", folder, name);
 	
 	for(i = 0; i < nattr; i++)
 	{

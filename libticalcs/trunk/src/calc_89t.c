@@ -106,6 +106,85 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
+	uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED, };
+	const int size = sizeof(aids) / sizeof(uint16_t);
+	TreeInfo *ti;
+	int err;
+	CalcAttr **attr;
+	TNode *folder = NULL;	
+	char fldname[40];
+	char varname[40];
+	char folder_name[40] = "";
+	char *u1, *u2;
+
+	(*apps) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
+
+    (*vars) = t_node_new(NULL);
+	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	folder = t_node_new(NULL);
+	t_node_append(*vars, folder);
+
+	TRYF(cmd_s_dirlist_request(handle, size, aids));
+	for(;;)
+	{
+		VarEntry *ve = tifiles_ve_create();
+		TNode *node;
+
+		attr = ca_new_array(size);
+		err = cmd_r_var_header(handle, fldname, varname, attr);
+		if (err == ERR_EOT)
+			break;
+		else if (err != 0)
+			return err;
+
+		strcpy(ve->folder, fldname);
+		strcpy(ve->name, varname);
+		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
+		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
+		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
+		ca_del_array(size, attr);
+
+		if(ve->type == TI89_DIR)
+		{
+			strcpy(folder_name, ve->folder);
+			strcpy(ve->name, ve->folder);
+			strcpy(ve->folder, "");
+			
+			node = t_node_new(ve);
+			folder = t_node_append(*vars, node);
+		}
+		else
+		{
+			if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+				tifiles_ve_delete(ve);
+			else
+			{
+				node = t_node_new(ve);
+				t_node_append(folder, node);
+			}
+		}
+
+		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
+			ve->name, 
+			tifiles_vartype2string(handle->model, ve->type),
+			ve->attr,
+			ve->size);
+
+		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
+		u2 = ticonv_varname_to_utf8(handle->model, ve->name);
+			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);
+			g_free(u1); g_free(u2);
+			update_label();
+	}
+
 	return 0;
 }
 
