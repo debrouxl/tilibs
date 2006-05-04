@@ -779,10 +779,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	switch(infos->hw_version)
 	{
-		case 0: infos->device_type = CALC_TI83P; break;
-		case 1: infos->device_type = CALC_TI83P; break;
-		case 2: infos->device_type = CALC_TI84P; break;
-		case 3: infos->device_type = CALC_TI84P; break;
+		case 0: infos->model = CALC_TI83P; break;
+		case 1: infos->model = CALC_TI83P; break;
+		case 2: infos->model = CALC_TI84P; break;
+		case 3: infos->model = CALC_TI84P; break;
 	}
 	infos->mask |= INFOS_CALC_MODEL;
 

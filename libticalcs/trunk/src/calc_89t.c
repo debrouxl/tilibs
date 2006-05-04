@@ -318,6 +318,95 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
+	uint16_t pids[] = { 
+		PID_PRODUCT_NAME, PID_MAIN_PART_ID,
+		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID, PID_DEVICE_TYPE,
+		PID_BOOT_VERSION, PID_OS_VERSION, 
+		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
+		PID_PHYS_FLASH, PID_FREE_FLASH, PID_FREE_FLASH,
+		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY,
+	};
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	CalcParam **params;
+	int i = 0;
+
+	snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
+    update_label();
+
+	memset(infos, 0, sizeof(CalcInfos));
+	params = cp_new_array(size);
+
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_data(handle, size, params));
+
+	strncpy(infos->product_name, params[i]->data, params[i]->size);
+	infos->mask |= INFOS_PRODUCT_NAME;
+	i++;
+
+	strncpy(infos->main_calc_id, &(params[i]->data[1]), 5);
+	strncpy(infos->main_calc_id+5, &(params[i]->data[7]), 5);
+	infos->mask |= INFOS_MAIN_CALC_ID;
+	i++;
+
+	infos->hw_version = ((params[i]->data[0] << 8) | params[i]->data[1]) + 1;
+	infos->mask |= INFOS_HW_VERSION; // hw version or model ?
+	i++;
+
+	infos->language_id = params[i]->data[0];
+	infos->mask |= INFOS_LANG_ID;
+	i++;
+
+	infos->sub_lang_id = params[i]->data[0];
+	infos->mask |= INFOS_SUB_LANG_ID;
+	i++;
+
+	infos->device_type = params[i]->data[1];
+	infos->mask |= INFOS_DEVICE_TYPE;
+	i++;
+
+	snprintf(infos->boot_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+	infos->mask |= INFOS_BOOT_VERSION;
+	i++;
+
+	snprintf(infos->os_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+	infos->mask |= INFOS_OS_VERSION;
+	i++;
+
+	infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_RAM_PHYS;
+	i++;
+	infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_RAM_USER;
+	i++;
+	infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_RAM_FREE;
+	i++;
+
+	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_FLASH_PHYS;
+	i++;
+		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_FLASH_USER;
+	i++;
+	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->mask |= INFOS_FLASH_FREE;
+	i++;
+
+	infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	infos->mask |= INFOS_LCD_WIDTH;
+	i++;
+	infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	infos->mask |= INFOS_LCD_HEIGHT;
+	i++;
+
+	infos->battery = params[i]->data[0];
+	infos->mask |= INFOS_BATTERY;
+	i++;
+
+	infos->model = CALC_TI89T;
+	infos->mask |= INFOS_CALC_MODEL;
+
+	cp_del_array(size, params);
 	return 0;
 }
 
