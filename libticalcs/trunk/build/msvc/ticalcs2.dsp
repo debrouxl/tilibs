@@ -231,6 +231,10 @@ SOURCE=..\..\src\dusb_vpkt.h
 
 SOURCE=..\..\src\calc_84p.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_89t.c
+# End Source File
 # End Group
 # Begin Group "dbus_cmds"
 

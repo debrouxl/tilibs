@@ -308,6 +308,22 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	CalcAttr **attr;
+	const int size = 2;
+
+	attr = ca_new_array(size);
+
+	attr[0] = ca_new(0x0011, 4);
+	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
+	
+	attr[1] = ca_new(0x0013, 1);
+	attr[1]->data[0] = 0;
+
+	TRYF(cmd_s_var_delete(handle, vr->folder, vr->name, size, attr));
+	TRYF(cmd_r_data_ack(handle));
+
+	ca_del_array(size, attr);
 	return 0;
 }
 
