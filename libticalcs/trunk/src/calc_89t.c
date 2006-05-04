@@ -168,7 +168,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			else
 			{
 				node = t_node_new(ve);
-				t_node_append(folder, node);
+				if (ve->type != TI73_APPL)
+					t_node_append(folder, node);
+				else
+					t_node_append(*apps, node);
 			}
 		}
 
