@@ -611,6 +611,7 @@ int cmd_r_data_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
+	/*tifiles_hexdump(pkt, pkt->size);*/
 	if(pkt->type == VPKT_ERROR)
 		return ERR_INVALID_PACKET;
 	else if(pkt->type != VPKT_DATA_ACK)

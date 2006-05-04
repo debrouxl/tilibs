@@ -185,11 +185,124 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	CalcParam *param;
+
+	uint32_t calc_time;
+	struct tm ref, cur;
+	time_t r, c, now;
+
+	time(&now);
+	memcpy(&ref, localtime(&now), sizeof(struct tm));
+
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	//ref.tm_isdst = 1;
+	r = mktime(&ref);
+
+	cur.tm_year = clock->year - 1900;
+	cur.tm_mon = clock->month - 1;
+	cur.tm_mday = clock->day;	
+	cur.tm_hour = clock->hours;
+	cur.tm_min = clock->minutes;
+	cur.tm_sec = clock->seconds;
+	cur.tm_isdst = 1;
+	c = mktime(&cur);
+	
+	calc_time = (uint32_t)difftime(c, r);
+
+    snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+    update_label();
+
+	param = cp_new(PID_CLK_SEC, 4);
+	param->data[0] = MSB(MSW(calc_time));
+    param->data[1] = LSB(MSW(calc_time));
+    param->data[2] = MSB(LSW(calc_time));
+    param->data[3] = LSB(LSW(calc_time));
+	tifiles_hexdump(param->data, param->size);
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+#if 0
+	param = cp_new(PID_CLK_DATE_FMT, 1);
+	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+
+	param = cp_new(PID_CLK_TIME_FMT, 1);
+	param->data[0] = clock->time_format == 24 ? 1 : 0;
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+
+	param = cp_new(PID_CLK_ON, 1);
+	param->data[0] = clock->state;
+	TRYF(cmd_s_param_set(handle, param));	
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+#endif
 	return 0;
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
+	uint16_t pids[4] = { PID_CLK_SEC, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	CalcParam **params;
+
+	uint32_t calc_time;
+	struct tm ref, *cur;
+	time_t r, c, now;
+
+	// get raw clock
+	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+    update_label();
+
+	params = cp_new_array(size);
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_data(handle, size, params));
+	if(!params[0]->ok)
+		return ERR_INVALID_PACKET;
+	
+	// and computes
+	calc_time = (params[0]->data[0] << 24) | (params[0]->data[1] << 16) | 
+				(params[0]->data[2] <<  8) | (params[0]->data[3] <<  0);
+
+	time(&now);	// retrieve current DST setting
+	memcpy(&ref, localtime(&now), sizeof(struct tm));;
+	ref.tm_year = 1997 - 1900;
+	ref.tm_mon = 0;
+	ref.tm_yday = 0;
+	ref.tm_mday = 1;
+	ref.tm_wday = 3;
+	ref.tm_hour = 0;
+	ref.tm_min = 0;
+	ref.tm_sec = 0;
+	//ref.tm_isdst = 1;
+	r = mktime(&ref);
+
+	c = r + calc_time;
+	cur = localtime(&c);
+
+	clock->year = cur->tm_year + 1900;
+	clock->month = cur->tm_mon + 1;
+	clock->day = cur->tm_mday;
+	clock->hours = cur->tm_hour;
+	clock->minutes = cur->tm_min;
+	clock->seconds = cur->tm_sec;
+
+    clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
+    clock->time_format = params[2]->data[0] ? 24 : 12;
+	clock->state = params[3]->data[0];
+
+	cp_del_array(1, params);
+
 	return 0;
 }
 
