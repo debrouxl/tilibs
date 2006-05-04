@@ -56,19 +56,6 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	uint8_t req[] = { 0x00, 0x03, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x07, 0xD0 };
-	uint8_t buf[16];
-	uint32_t size;
-	uint16_t code;
-
-	TRYF(ti89t_send_handshake(handle));
-	TRYF(ti89t_recv_response(handle));
-
-	TRYF(ti89t_send_data(handle, sizeof(req), 0x0001, req));
-	TRYF(ti89t_recv_data(handle, &size, &code, buf));
-	if(code != 0x0012)
-		return ERR_INVALID_OPC;
-
 	return 0;
 }
 
@@ -79,38 +66,6 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint8_t data2[4] = { 0x00, 0x01, 0x00, 0x22 };
-	uint8_t buf[4096];
-	uint32_t size;
-	uint16_t code;
-
-	sc->width = TI89T_COLS;
-	sc->height = TI89T_ROWS;
-	sc->clipped_width = TI89T_COLS_VISIBLE;
-	sc->clipped_height = TI89T_ROWS_VISIBLE;
-
-	TRYF(ti89t_send_data(handle, 4, TI89T_OPC_SCR, data2));
-
-	TRYF(ti89t_recv_data(handle, &size, &code, buf));
-	if(code != 0x0008)
-		return ERR_INVALID_OPC;
-
-	// Allocate and copy into bitmap
-	*bitmap = (uint8_t *) malloc(TI89T_COLS * TI89T_ROWS * sizeof(uint8_t) / 8);
-	if(*bitmap == NULL) 
-		return ERR_MALLOC;
-	memcpy(*bitmap, buf+7, size-7);
-
-	// Clip the unused part of the screen
-	if(sc->format == SCREEN_CLIPPED)
-	{
-		int i, j, k;
-
-		for(i = 0, j = 0; j < TI89T_ROWS_VISIBLE; j++)
-			for(k = 0; k < (TI89T_COLS_VISIBLE >> 3); k++)
-				(*bitmap)[i++] = (*bitmap)[j * (TI89T_COLS >> 3) + k];
-	}
-
 	return 0;
 }
 

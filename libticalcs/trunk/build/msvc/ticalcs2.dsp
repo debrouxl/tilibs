@@ -201,10 +201,6 @@ SOURCE="..\..\..\linkguide\usb-protocol.txt"
 # End Group
 # Begin Source File
 
-SOURCE=..\..\src\calc_84p.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\cmd84p.c
 # End Source File
 # Begin Source File
@@ -231,6 +227,10 @@ SOURCE=..\..\src\dusb_vpkt.h
 # Begin Group "dusb_calcs"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\calc_84p.c
+# End Source File
 # End Group
 # Begin Group "dbus_cmds"
 

@@ -20,7 +20,7 @@
  */
 
 /*
-  This unit handles TI84+ commands with DirectLink.
+	This unit handles virtual packet types (commands) thru DirectLink.
 */
 
 // Some functions should be renamed or re-organized...
@@ -35,7 +35,7 @@
 #include "pause.h"
 
 #include "dusb_vpkt.h"
-#include "cmd84p.h"
+#include "dusb_cmd.h"
 
 // Helpers
 
@@ -116,7 +116,7 @@ void ca_del_array(int size, CalcAttr **attrs)
 /////////////----------------
 
 // 0x0001: set mode or ping
-int cmd84p_s_mode_set(CalcHandle *h, ModeSet mode)
+int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
 	VirtualPacket* pkt;
 
@@ -141,7 +141,7 @@ int cmd84p_s_mode_set(CalcHandle *h, ModeSet mode)
 }
 
 // 0x0002: begin OS transfer
-int cmd84p_s_os_begin(CalcHandle *h, uint32_t size)
+int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 {
 	VirtualPacket* pkt;
 
@@ -158,7 +158,7 @@ int cmd84p_s_os_begin(CalcHandle *h, uint32_t size)
 }
 
 // 0x0003: acknowledgement of OS transfer
-int cmd84p_r_os_ack(CalcHandle *h, uint32_t *size)
+int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 {
 	VirtualPacket* pkt;
 
@@ -194,19 +194,19 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 }
 
 // 0x0004: OS header
-int cmd84p_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);	
 }
 
 // 0x0005: OS data
-int cmd84p_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);	
 }
 
 // 0x0006: acknowledgement of EOT
-int cmd84p_r_eot_ack(CalcHandle *h)
+int cmd_r_eot_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -223,7 +223,7 @@ int cmd84p_r_eot_ack(CalcHandle *h)
 }
 
 // 0x0007: parameter request
-int cmd84p_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
+int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -246,7 +246,7 @@ int cmd84p_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 }
 
 // 0x0008: parameter data
-int cmd84p_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
+int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 {
 	VirtualPacket* pkt;
 	int i, j;
@@ -282,7 +282,7 @@ int cmd84p_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 }
 
 // 0x0009: request directory listing
-int cmd84p_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
+int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -314,7 +314,7 @@ int cmd84p_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 
 // 0x000A: variable header (name is utf-8)
 // beware: attr array is allocated by function
-int cmd84p_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
+int cmd_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
 	uint16_t name_length;
@@ -359,7 +359,7 @@ int cmd84p_r_var_header(CalcHandle *h, char *name, CalcAttr **attr)
 }
 
 // 0x000B: request to send
-int cmd84p_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
+int cmd_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int pks;
@@ -400,7 +400,7 @@ int cmd84p_s_rts(CalcHandle *h, const char *name, uint32_t size, int nattrs, con
 }
 
 // 0x000C: variable request
-int cmd84p_s_var_request(CalcHandle *h, const char *name, 
+int cmd_s_var_request(CalcHandle *h, const char *name, 
 						int naids, uint16_t *aids, 
 						int nattrs, const CalcAttr **attrs)
 {
@@ -451,7 +451,7 @@ int cmd84p_s_var_request(CalcHandle *h, const char *name,
 }
 
 // 0x000D: variable contents (recv)
-int cmd84p_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
+int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	VirtualPacket* pkt;
 
@@ -474,7 +474,7 @@ int cmd84p_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 }
 
 // 0x000D: variable contents (send)
-int cmd84p_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
+int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	VirtualPacket* pkt;
 
@@ -488,7 +488,7 @@ int cmd84p_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 }
 
 // 0x000E: parameter set
-int cmd84p_s_param_set(CalcHandle *h, const CalcParam *param)
+int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
@@ -507,7 +507,7 @@ int cmd84p_s_param_set(CalcHandle *h, const CalcParam *param)
 }
 
 // 0x0010: variable delete
-int cmd84p_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
+int cmd_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcAttr **attrs)
 {
 	VirtualPacket* pkt;
 	int i;
@@ -547,7 +547,7 @@ int cmd84p_s_var_delete(CalcHandle *h, const char *name, int nattrs, const CalcA
 }
 
 // 0x0012: acknowledgement of mode setting
-int cmd84p_r_mode_ack(CalcHandle *h)
+int cmd_r_mode_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -564,7 +564,7 @@ int cmd84p_r_mode_ack(CalcHandle *h)
 }
 
 // 0xAA00: acknowledgement of data
-int cmd84p_r_data_ack(CalcHandle *h)
+int cmd_r_data_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -581,7 +581,7 @@ int cmd84p_r_data_ack(CalcHandle *h)
 }
 
 // 0xBB00: acknowledgement of parameter request
-int cmd84p_r_param_ack(CalcHandle *h)
+int cmd_r_param_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -600,7 +600,7 @@ int cmd84p_r_param_ack(CalcHandle *h)
 }
 
 // 0xDD00: end of transmission (send)
-int cmd84p_s_eot(CalcHandle *h)
+int cmd_s_eot(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -612,7 +612,7 @@ int cmd84p_s_eot(CalcHandle *h)
 }
 
 // 0xDD00: end of transmission (recv)
-int cmd84p_r_eot(CalcHandle *h)
+int cmd_r_eot(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -629,7 +629,7 @@ int cmd84p_r_eot(CalcHandle *h)
 }
 
 // 0xEE00: error
-int cmd84p_s_error(CalcHandle *h)
+int cmd_s_error(CalcHandle *h)
 {
 	return 0;
 }

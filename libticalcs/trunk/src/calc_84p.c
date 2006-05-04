@@ -42,7 +42,7 @@
 #include "macros.h"
 
 #include "dusb_vpkt.h"
-#include "cmd84p.h"
+#include "dusb_cmd.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -57,9 +57,9 @@ static int		is_ready	(CalcHandle* handle)
 {
 	ModeSet mode = MODE_NORMAL;
 
-	TRYF(cmd84p_s_mode_set(handle, mode));
-	TRYF(cmd84p_r_mode_ack(handle));
-	// use PID84P_HOMESCREEN to return status ?
+	TRYF(cmd_s_mode_set(handle, mode));
+	TRYF(cmd_r_mode_ack(handle));
+	// use PID_HOMESCREEN to return status ?
 
 	return 0;
 }
@@ -71,7 +71,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t pid[] = { PID84P_SCREENSHOT };
+	uint16_t pid[] = { PID_SCREENSHOT };
 	CalcParam **param;
 
 	sc->width = TI84P_COLS;
@@ -80,9 +80,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_height = TI84P_ROWS;
 
 	param = cp_new_array(1);
-	TRYF(cmd84p_s_param_request(handle, 1, pid));
-	TRYF(cmd84p_r_param_ack(handle));
-	TRYF(cmd84p_r_param_data(handle, 1, param));
+	TRYF(cmd_s_param_request(handle, 1, pid));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -97,7 +97,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
-	uint16_t aids[] = { AID84P_VAR_SIZE, AID84P_VAR_TYPE, AID84P_ARCHIVED, };
+	uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED, };
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
@@ -121,14 +121,14 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
 
-	TRYF(cmd84p_s_dirlist_request(handle, size, aids));
+	TRYF(cmd_s_dirlist_request(handle, size, aids));
 	do
 	{
 		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 
 		attr = ca_new_array(size);
-		err = cmd84p_r_var_header(handle, varname, attr);
+		err = cmd_r_var_header(handle, varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
@@ -192,18 +192,18 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		update_label();
 
 		attrs = ca_new_array(nattrs);
-		attrs[0] = ca_new(AID84P_VAR_TYPE, 4);
+		attrs[0] = ca_new(AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
-		attrs[1] = ca_new(AID84P_ARCHIVED, 1);
+		attrs[1] = ca_new(AID_ARCHIVED, 1);
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
-		attrs[2] = ca_new(AID84P_VAR_VERSION, 4);
+		attrs[2] = ca_new(AID_VAR_VERSION, 4);
 
-		TRYF(cmd84p_s_rts(handle, ve->name, ve->size, nattrs, attrs));
-		TRYF(cmd84p_r_data_ack(handle));
-		TRYF(cmd84p_s_var_content(handle, ve->size, ve->data));
-		TRYF(cmd84p_r_data_ack(handle));
-		TRYF(cmd84p_s_eot(handle));
+		TRYF(cmd_s_rts(handle, ve->name, ve->size, nattrs, attrs));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_eot(handle));
 
 		PAUSE(50);	// needed
 	}
@@ -213,7 +213,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
@@ -225,15 +225,15 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     update_label();
 
 	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd84p_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd84p_r_var_header(handle, name, attrs));
-	TRYF(cmd84p_r_var_content(handle, NULL, &data));
+	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -317,26 +317,26 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	update_label();
 
 	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID84P_VAR_TYPE, 4);
+	attrs[0] = ca_new(AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = ca_new(AID84P_ARCHIVED, 1);
+	attrs[1] = ca_new(AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
 	
-	TRYF(cmd84p_s_rts(handle, ptr->name, size, nattrs, attrs));
-	TRYF(cmd84p_r_param_ack(handle));
-	TRYF(cmd84p_r_data_ack(handle));
-	TRYF(cmd84p_s_var_content(handle, size, data));
-	TRYF(cmd84p_r_param_ack(handle));
-	TRYF(cmd84p_r_data_ack(handle));
-	TRYF(cmd84p_s_eot(handle));
+	TRYF(cmd_s_rts(handle, ptr->name, size, nattrs, attrs));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_data_ack(handle));
+	TRYF(cmd_s_var_content(handle, size, data));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_data_ack(handle));
+	TRYF(cmd_s_eot(handle));
 
 	return 0;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
-	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
@@ -352,15 +352,15 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
     update_label();
 
 	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd84p_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd84p_r_var_header(handle, name, attrs));
-	TRYF(cmd84p_r_var_content(handle, NULL, &data));
+	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
 	strcpy(content->name, vr->name);
@@ -444,20 +444,20 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	printf("os_size new = %i\n", os_size);
 
 	// switch to BASIC mode
-	TRYF(cmd84p_s_mode_set(handle, mode));
-	TRYF(cmd84p_r_mode_ack(handle));
+	TRYF(cmd_s_mode_set(handle, mode));
+	TRYF(cmd_r_mode_ack(handle));
 
 	// start OS transfer
-	TRYF(cmd84p_s_os_begin(handle, os_size));
+	TRYF(cmd_s_os_begin(handle, os_size));
 #if 0
 	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
 	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
 #endif
-	TRYF(cmd84p_r_os_ack(handle, &pkt_size));	// this pkt_size is important
+	TRYF(cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
-	TRYF(cmd84p_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size-4, ptr->pages[0]->data));
-	TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+	TRYF(cmd_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size-4, ptr->pages[0]->data));
+	TRYF(cmd_r_os_ack(handle, &pkt_size));
 
 	// send OS data
 	for(i = 0; i < ptr->num_pages; i++)
@@ -468,14 +468,14 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 		if(i == 0)	// need relocation
 		{
-			TRYF(cmd84p_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd84p_r_data_ack(handle));
+			TRYF(cmd_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
+			TRYF(cmd_r_data_ack(handle));
 			PAUSE(500);
 		}
 		else if(i == ptr->num_pages-1)	// idem
 		{
-			TRYF(cmd84p_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd84p_r_data_ack(handle));
+			TRYF(cmd_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
+			TRYF(cmd_r_data_ack(handle));
 			PAUSE(500);
 		}
 		else
@@ -485,25 +485,25 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				uint16_t addr = fp->addr + j;
 				uint8_t* data = fp->data + j;
 				
-				TRYF(cmd84p_s_os_data(handle, 
+				TRYF(cmd_s_os_data(handle, 
 					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size-4, fp->data + j));
-				TRYF(cmd84p_r_os_ack(handle, &pkt_size));
+				TRYF(cmd_r_os_ack(handle, &pkt_size));
 				PAUSE(500);
 			}
 		}
 	}
 	
-	TRYF(cmd84p_s_eot(handle));
-	TRYF(cmd84p_r_param_ack(handle));
+	TRYF(cmd_s_eot(handle));
+	TRYF(cmd_r_param_ack(handle));
 	PAUSE(500);
-	TRYF(cmd84p_r_eot_ack(handle));
+	TRYF(cmd_r_eot_ack(handle));
 
 	return 0;
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
-	uint16_t aids[] = { AID84P_ARCHIVED, AID84P_VAR_VERSION };
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
@@ -512,15 +512,15 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	int i, varsize;
 
 	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID84P_VAR_TYPE2, 4);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	TRYF(cmd84p_s_var_request(handle, "IDList", naids, aids, nattrs, attrs));
+	TRYF(cmd_s_var_request(handle, "IDList", naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd84p_r_var_header(handle, name, attrs));
-	TRYF(cmd84p_r_var_content(handle, &varsize, &data));
+	TRYF(cmd_r_var_header(handle, name, attrs));
+	TRYF(cmd_r_var_content(handle, &varsize, &data));
 
 	i = data[9];
 	data[9] = data[10];
@@ -575,31 +575,31 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
-	param = cp_new(PID84P_CLK_SEC, 4);
+	param = cp_new(PID_CLK_SEC, 4);
 	param->data[0] = MSB(MSW(calc_time));
     param->data[1] = LSB(MSW(calc_time));
     param->data[2] = MSB(LSW(calc_time));
     param->data[3] = LSB(LSW(calc_time));
-	TRYF(cmd84p_s_param_set(handle, param));
-	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
 
-	param = cp_new(PID84P_CLK_DATE_FMT, 1);
+	param = cp_new(PID_CLK_DATE_FMT, 1);
 	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
-	TRYF(cmd84p_s_param_set(handle, param));
-	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
 
-	param = cp_new(PID84P_CLK_TIME_FMT, 1);
+	param = cp_new(PID_CLK_TIME_FMT, 1);
 	param->data[0] = clock->time_format == 24 ? 1 : 0;
-	TRYF(cmd84p_s_param_set(handle, param));
-	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
 
-	param = cp_new(PID84P_CLK_ON, 1);
+	param = cp_new(PID_CLK_ON, 1);
 	param->data[0] = clock->state;
-	TRYF(cmd84p_s_param_set(handle, param));	
-	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd_s_param_set(handle, param));	
+	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
 
 	return 0;
@@ -607,7 +607,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
-	uint16_t pids[4] = { PID84P_CLK_SEC, PID84P_CLK_DATE_FMT, PID84P_CLK_TIME_FMT, PID84P_CLK_ON };
+	uint16_t pids[4] = { PID_CLK_SEC, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	CalcParam **params;
 
@@ -620,9 +620,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     update_label();
 
 	params = cp_new_array(size);
-	TRYF(cmd84p_s_param_request(handle, size, pids));
-	TRYF(cmd84p_r_param_ack(handle));
-	TRYF(cmd84p_r_param_data(handle, size, params));
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_param_data(handle, size, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -676,8 +676,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = 0;
 
-	TRYF(cmd84p_s_var_delete(handle, vr->name, size, attr));
-	TRYF(cmd84p_r_data_ack(handle));
+	TRYF(cmd_s_var_delete(handle, vr->name, size, attr));
+	TRYF(cmd_r_data_ack(handle));
 
 	ca_del_array(size, attr);
 	return 0;
@@ -691,12 +691,12 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	uint16_t pids[] = { 
-		PID84P_PRODUCT_NAME, PID84P_MAIN_PART_ID,
-		PID84P_HW_VERSION, PID84P_LANGUAGE_ID, PID84P_SUBLANG_ID, PID84P_DEVICE_TYPE,
-		PID84P_BOOT_VERSION, PID84P_OS_VERSION, 
-		PID84P_PHYS_RAM, PID84P_USER_RAM, PID84P_FREE_RAM,
-		PID84P_PHYS_FLASH, PID84P_FREE_FLASH, PID84P_FREE_FLASH,
-		PID84P_LCD_WIDTH, PID84P_LCD_HEIGHT, PID84P_BATTERY,
+		PID_PRODUCT_NAME, PID_MAIN_PART_ID,
+		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID, PID_DEVICE_TYPE,
+		PID_BOOT_VERSION, PID_OS_VERSION, 
+		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
+		PID_PHYS_FLASH, PID_FREE_FLASH, PID_FREE_FLASH,
+		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY,
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	CalcParam **params;
@@ -708,9 +708,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	params = cp_new_array(size);
 
-	TRYF(cmd84p_s_param_request(handle, size, pids));
-	TRYF(cmd84p_r_param_ack(handle));
-	TRYF(cmd84p_r_param_data(handle, size, params));
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_param_data(handle, size, params));
 
 	strncpy(infos->product_name, params[i]->data, params[i]->size);
 	infos->mask |= INFOS_PRODUCT_NAME;
