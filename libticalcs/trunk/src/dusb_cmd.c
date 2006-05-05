@@ -115,6 +115,33 @@ void ca_del_array(int size, CalcAttr **attrs)
 
 /////////////----------------
 
+static void byteswap(uint8_t *data, uint32_t len)
+{/*
+	if(len == 2)
+	{
+		uint8_t tmp;
+
+		tmp = data[0];
+		data[0] = data[1];
+		data[1] = tmp;
+	}
+	else if(len == 4)
+	{
+		uint8_t tmp;
+
+		tmp = data[0];
+		data[0] = data[3];
+		data[3] = tmp;
+
+		tmp = data[1];
+		data[1] = data[2];
+		data[2] = tmp;
+	}
+	*/
+}
+
+/////////////----------------
+
 // 0x0001: set mode or ping
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
@@ -415,6 +442,7 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 		pkt->data[j++] = MSB(attrs[i]->size);
 		pkt->data[j++] = LSB(attrs[i]->size);
 		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		byteswap(pkt->data + j, attrs[i]->size);
 		j += attrs[i]->size;
 	}
 
@@ -474,6 +502,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 		pkt->data[j++] = MSB(attrs[i]->size);
 		pkt->data[j++] = LSB(attrs[i]->size);
 		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		byteswap(pkt->data + j, attrs[i]->size);
 		j += attrs[i]->size;
 	}
 	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
@@ -577,6 +606,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 		pkt->data[j++] = MSB(attrs[i]->size);
 		pkt->data[j++] = LSB(attrs[i]->size);
 		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
+		byteswap(pkt->data + j, attrs[i]->size);
 		j += attrs[i]->size;
 	}
 

@@ -246,8 +246,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
-	free(data);
 	
+	free(data);	
 	ca_del_array(nattrs, attrs);
 	return 0;
 }
@@ -395,7 +395,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
 	}
 	content->num_pages = page+1;
-	
+
+	free(data);	
 	ca_del_array(nattrs, attrs);
 	return 0;
 }
@@ -531,6 +532,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
 	id[7*2] = '\0';
 
+	free(data);
 	ca_del_array(nattrs, attrs);
 	return 0;
 }

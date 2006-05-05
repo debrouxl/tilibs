@@ -282,8 +282,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
-	free(data);
-	
+	free(data);	
+
 	ca_del_array(nattrs, attrs);
 	return 0;
 }
@@ -300,11 +300,80 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
+	FlashContent *ptr;
+	char *utf8;
+	CalcAttr **attrs;
+	const int nattrs = 4;
+
+	// send all headers except license
+	for(ptr = content; ptr != NULL; ptr = ptr->next)
+	{
+		if(ptr->data_type == TI89_LICENSE)
+			continue;
+
+		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
+		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+
+		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
+		update_label();
+
+		attrs = ca_new_array(nattrs);
+		attrs[0] = ca_new(AID_VAR_TYPE, 4);
+		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+		attrs[1] = ca_new(AID_ARCHIVED, 1);
+		attrs[1]->data[0] = 0;
+		attrs[2] = ca_new(AID_VAR_VERSION, 4);
+		attrs[2]->data[0] = 1 << 24;
+		attrs[3] = ca_new(AID_LOCKED, 1);
+		attrs[3]->data[0] = 0;
+		
+		TRYF(cmd_s_rts(handle, "", ptr->name, ptr->data_length, nattrs, attrs));
+		TRYF(cmd_r_param_ack(handle));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_var_content(handle, ptr->data_length, ptr->data_part));
+		TRYF(cmd_r_param_ack(handle));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_eot(handle));
+	}
+
 	return 0;
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION, AID_LOCKED };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	CalcAttr **attrs;
+	const int nattrs = 1;
+	char fldname[40], varname[40];
+	uint8_t *data;
+	
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+    update_label();
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+
+	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, attrs));
+	ca_del_array(nattrs, attrs);
+	attrs = ca_new_array(nattrs);
+	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
+	TRYF(cmd_r_var_content(handle, NULL, &data));
+
+	content->model = handle->model;
+	strcpy(content->name, vr->name);
+	content->data_length = vr->size;
+	content->data_part = (uint8_t *)tifiles_ve_alloc_data(vr->size);
+
+	memcpy(content->data_part, data, content->data_length);
+	free(data);
+
+	ca_del_array(nattrs, attrs);
 	return 0;
 }
 
