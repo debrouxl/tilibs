@@ -555,7 +555,7 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new((2 + 2 + param->size) * sizeof(uint16_t), VPKT_PARM_SET);
+	pkt = vtl_pkt_new(2 + 2 + param->size, VPKT_PARM_SET);
 
 	pkt->data[0] = MSB(param->id);
 	pkt->data[1] = LSB(param->id);

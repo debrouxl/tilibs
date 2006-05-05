@@ -447,11 +447,10 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     param->data[1] = LSB(MSW(calc_time));
     param->data[2] = MSB(LSW(calc_time));
     param->data[3] = LSB(LSW(calc_time));
-	tifiles_hexdump(param->data, param->size);
 	TRYF(cmd_s_param_set(handle, param));
 	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
-#if 0
+
 	param = cp_new(PID_CLK_DATE_FMT, 1);
 	param->data[0] = clock->date_format == 3 ? 0 : clock->date_format;
 	TRYF(cmd_s_param_set(handle, param));
@@ -469,7 +468,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	TRYF(cmd_s_param_set(handle, param));	
 	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
-#endif
+
 	return 0;
 }
 
