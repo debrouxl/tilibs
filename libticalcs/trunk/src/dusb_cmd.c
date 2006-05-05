@@ -193,7 +193,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_OS_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -241,7 +241,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -282,7 +282,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
@@ -358,7 +358,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 		return ERR_EOT;
 	}
 	else if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
@@ -522,7 +522,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_VAR_CNTS)
 		return ERR_INVALID_PACKET;
 
@@ -629,7 +629,7 @@ int cmd_r_mode_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
@@ -646,7 +646,7 @@ int cmd_r_data_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -663,7 +663,7 @@ int cmd_r_param_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -694,7 +694,7 @@ int cmd_r_eot(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_INVALID_PACKET;
+		return ERR_CALC_ERROR;
 	else if(pkt->type != VPKT_EOT)
 		return ERR_INVALID_PACKET;
 

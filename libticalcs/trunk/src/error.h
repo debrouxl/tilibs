@@ -63,7 +63,7 @@ typedef enum
 	ERR_ROM_ERROR,
 
 // ---
-	ERR_INVALID_OPC,		// Invalid opcode
+	ERR_CALC_ERROR,			// Hand-held returned an error code
 
 } CalcError;
 
