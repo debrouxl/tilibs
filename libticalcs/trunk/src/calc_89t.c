@@ -213,6 +213,41 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	CalcAttr **attrs;
+	const int nattrs = 1;
+	char fldname[40], varname[40];
+	uint8_t *data;
+	VarEntry *ve;
+
+	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+    update_label();
+
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+
+	TRYF(cmd_s_var_request(handle, vr->folder, vr->name, naids, aids, nattrs, attrs));
+	ca_del_array(nattrs, attrs);
+	attrs = ca_new_array(nattrs);
+	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
+	TRYF(cmd_r_var_content(handle, NULL, &data));
+
+	content->model = handle->model;
+	strcpy(content->comment, tifiles_comment_set_single());
+    content->num_entries = 1;
+
+    content->entries = tifiles_ve_create_array(1);	
+    ve = content->entries[0] = tifiles_ve_create();
+    memcpy(ve, vr, sizeof(VarEntry));
+
+	ve->data = tifiles_ve_alloc_data(ve->size);
+	memcpy(ve->data, data, ve->size);
+	free(data);
+	
+	ca_del_array(nattrs, attrs);
 	return 0;
 }
 
