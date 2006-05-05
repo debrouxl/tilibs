@@ -213,6 +213,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	CalcAttr **attrs;
 	const int nattrs = 4;
 
+	update_->max2 = content->num_entries;
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *ve = content->entries[i];
@@ -241,6 +242,13 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_eot(handle));
+
+		if(mode & MODE_BACKUP) 
+		{
+			update_->cnt2 = i+1;
+			update_->max2 = content->num_entries;
+			update_->pbar();
+		}
 
 		PAUSE(50);	// needed
 	}
@@ -552,6 +560,42 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
+	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
+	char *fldname = vr->folder;
+	char varname[40] = "a1234567";
+	CalcParam *param;
+	CalcAttr **attrs;
+	const int nattrs = 4;
+
+	// send empty expression in specified folder
+	attrs = ca_new_array(nattrs);
+	attrs[0] = ca_new(AID_VAR_TYPE, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = 0x00;
+	attrs[1] = ca_new(AID_ARCHIVED, 1);
+	attrs[1]->data[0] = 0;
+	attrs[2] = ca_new(AID_VAR_VERSION, 4);
+	attrs[2]->data[0] = 0;
+	attrs[3] = ca_new(AID_LOCKED, 1);
+	attrs[3]->data[0] = 0;
+
+	TRYF(cmd_s_rts(handle, fldname, varname, sizeof(data), nattrs, attrs));
+	TRYF(cmd_r_data_ack(handle));
+	TRYF(cmd_s_var_content(handle, sizeof(data), data));
+	TRYF(cmd_r_data_ack(handle));
+	TRYF(cmd_s_eot(handle));
+
+	// go back to HOME screen
+	param = cp_new(PID_HOMESCREEN, 1);
+	param->data[0] = 1;
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+
+	// delete 'a1234567' variable
+	strcpy(vr->name, "a1234567");
+	TRYF(del_var(handle, vr));
+
 	return 0;
 }
 
