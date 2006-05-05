@@ -353,8 +353,6 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 
 	nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
 	j += 2;
-
-	printf("fld = <%s>, var = <%s>\n", folder, name);
 	
 	for(i = 0; i < nattr; i++)
 	{

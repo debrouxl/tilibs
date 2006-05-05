@@ -106,7 +106,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 {
-	uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED, };
+	uint16_t aids[] = { AID_VAR_TYPE, AID_ARCHIVED, AID_4APPVAR, AID_VAR_SIZE, AID_LOCKED, AID_UNKNOWN_42 };
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
@@ -147,9 +147,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 		strcpy(ve->folder, fldname);
 		strcpy(ve->name, varname);
-		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
-		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
-		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
+		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[3]->data)));
+		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data))) & 0xff;
+		ve->attr = attr[1]->data[0] ? ATTRB_ARCHIVED : attr[4]->data[0] ? ATTRB_LOCKED : ATTRB_NONE;
 		ca_del_array(size, attr);
 
 		if(ve->type == TI89_DIR)
@@ -208,7 +208,41 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	return 0;
+	int i;
+	char *utf8;
+	CalcAttr **attrs;
+	const int nattrs = 3;
+
+	for (i = 0; i < content->num_entries; i++) 
+	{
+		VarEntry *ve = content->entries[i];
+		
+		if(ve->action == ACT_SKIP)
+			continue;
+
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
+		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		g_free(utf8);
+		update_label();
+
+		attrs = ca_new_array(nattrs);
+		attrs[0] = ca_new(AID_VAR_TYPE, 4);
+		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
+		attrs[1] = ca_new(AID_ARCHIVED, 1);
+		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
+		attrs[2] = ca_new(AID_VAR_VERSION, 4);
+
+		TRYF(cmd_s_rts(handle, "", ve->name, ve->size, nattrs, attrs));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
+		TRYF(cmd_r_data_ack(handle));
+		TRYF(cmd_s_eot(handle));
+
+		PAUSE(50);	// needed
+	}
+
+	return 0;	
 }
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)

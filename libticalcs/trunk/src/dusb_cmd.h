@@ -72,9 +72,10 @@
 #define AID_UNKNOWN_04		0x04
 #define AID_4APPVAR			0x05
 #define AID_VAR_VERSION		0x08
-
 #define AID_VAR_TYPE2		0x11
 #define AID_UNKNOWN_13		0x13
+#define AID_LOCKED			0x41
+#define AID_UNKNOWN_42		0x42
 
 // Modes
 #define MODE_STARTUP	{ 1, 1, 0, 0, 0x07d0 }
