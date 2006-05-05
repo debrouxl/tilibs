@@ -211,7 +211,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	int i;
 	char *utf8;
 	CalcAttr **attrs;
-	const int nattrs = 3;
+	const int nattrs = 4;
 
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -232,6 +232,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[1] = ca_new(AID_ARCHIVED, 1);
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = ca_new(AID_VAR_VERSION, 4);
+		attrs[2]->data[0] = 0;
+		attrs[3] = ca_new(AID_LOCKED, 1);
+		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
 
 		TRYF(cmd_s_rts(handle, "", ve->name, ve->size, nattrs, attrs));
 		TRYF(cmd_r_data_ack(handle));
@@ -247,7 +250,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION, AID_LOCKED };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
