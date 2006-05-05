@@ -103,7 +103,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	int err;
 	CalcAttr **attr;
 	TNode *folder;	
-	char varname[40];
+	char fldname[40], varname[40];
 	char *utf8;
 
 	(*apps) = t_node_new(NULL);
@@ -128,7 +128,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TNode *node;
 
 		attr = ca_new_array(size);
-		err = cmd_r_var_header(handle, "", varname, attr);
+		err = cmd_r_var_header(handle, fldname, varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
@@ -218,7 +218,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
-	char name[40];
+	char fldname[40], varname[40];
 	uint8_t *data;
 	VarEntry *ve;
 
@@ -233,7 +233,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, "", name, attrs));
+	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
@@ -341,7 +341,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
-	char name[40];
+	char fldname[40], varname[40];
 	uint8_t *data;
 	
 	int page;
@@ -360,7 +360,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, attrs));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, "", name, attrs));
+	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
