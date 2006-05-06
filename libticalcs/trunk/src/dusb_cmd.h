@@ -22,7 +22,7 @@
 #ifndef __DUSB_CMD__
 #define __DUSB_CMDS__
 
-#define CMD84P_DFL_BUF_SIZE		1024
+#define DUSB_DFL_BUF_SIZE	1024
 
 // Parameter IDs
 #define PID_PRODUCT_NUMBER	0x0001

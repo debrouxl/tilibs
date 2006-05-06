@@ -174,18 +174,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	return 0;
 }
 
-static int		send_backup	(CalcHandle* handle, BackupContent* content)
-{
-	// to do...
-	return 0;
-}
-
-static int		recv_backup	(CalcHandle* handle, BackupContent* content)
-{
-	// to do...
-	return 0;
-}
-
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
@@ -262,6 +250,72 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	
 	free(data);	
 	ca_del_array(nattrs, attrs);
+	return 0;
+}
+
+static int		send_backup	(CalcHandle* handle, BackupContent* content)
+{
+	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
+	return 0;
+}
+
+static int		recv_backup	(CalcHandle* handle, BackupContent* content)
+{
+	int i, j, k;
+	int i_max, j_max;
+	TNode *vars, *apps;
+	int nvars, ivars = 0;
+	int b = 0;
+	FileContent **group;
+	FileContent *single;
+
+	// Do a directory list and check for something to backup
+	TRYF(get_dirlist(handle, &vars, &apps));
+	nvars = ticalcs_dirlist_num_vars(vars);
+	PAUSE(100);
+
+	// Create a group file
+	group = tifiles_content_create_group(nvars);
+
+	// Receive all vars except for FLASH apps
+	// Receive all vars except for FLASH apps
+	i_max = t_node_n_children(vars);
+	for(i = 0; i < i_max; i++) 
+	{
+		TNode *parent = t_node_nth_child(vars, i);
+
+		j_max = t_node_n_children(parent);
+		for(j = 0; j < j_max; j++) 
+		{
+			TNode *node = t_node_nth_child(parent, j);
+			VarEntry *ve = (VarEntry *) (node->data);
+
+			// we need to group files !
+			TRYF(is_ready(handle));
+			group[k] = tifiles_content_create_regular(handle->model);
+			TRYF(recv_var(handle, 0, group[k++], ve));
+
+			update_->cnt2 = ++ivars;
+			update_->max2 = nvars;
+			update_->pbar();
+		}
+	}
+
+	ticalcs_dirlist_destroy(&vars);
+	ticalcs_dirlist_destroy(&apps);
+
+	tifiles_group_contents(group, &single);
+	tifiles_content_delete_group(group);
+
+	// Swap content and single because we have a pointer on an allocated content
+	{
+		FileContent* cnt = (FileContent *)content;
+
+		memcpy(content, single, sizeof(FileContent));
+		cnt->entries = single->entries;
+		strcpy(cnt->comment, tifiles_comment_set_group());
+	}
+
 	return 0;
 }
 
@@ -822,7 +876,7 @@ const CalcFncts calc_84p_usb =
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
-	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION |
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | 
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,

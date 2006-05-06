@@ -147,7 +147,7 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
 	VirtualPacket* pkt;
 
-	TRYF(dusb_send_buf_size_request(h, CMD84P_DFL_BUF_SIZE));
+	TRYF(dusb_send_buf_size_request(h, DUSB_DFL_BUF_SIZE));
 	TRYF(dusb_recv_buf_size_alloc(h, NULL));
 
 	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);

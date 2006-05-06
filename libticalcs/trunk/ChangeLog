@@ -13,6 +13,7 @@ To do (USB):
 - check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
 - s/r backup
 - send OS
+- a common function which emulates a backup by grouping
 
 Log:
 

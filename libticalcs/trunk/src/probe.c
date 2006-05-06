@@ -34,6 +34,8 @@
 #include "gettext.h"
 #include "pause.h"
 #include "calc_xx.h"
+#include "dusb_vpkt.h"
+#include "dusb_cmd.h"
 
 #define DEAD_TIME	250
 
@@ -331,4 +333,72 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 
 	free(calc.priv2);
 	return 0;
+}
+
+/**
+ * ticalcs_probe_calc_1:
+ * @handle: a previously allocated handle
+ * @type: the calculator model
+ *
+ * Check if the calculator is ready and detect the type.
+ * Works only with FLASH calculators and a AMS2.08 (?!) mini by requesting
+ * version. A previous version was based on MID but TI83+/84+, TI89/TI89t, TI92+/V200 
+ * could not be distinguished ;-(
+ *
+ * Return value: 0 if ready else an error code.
+ **/
+static int ticalcs_probe_calc_3(CalcHandle* handle, CalcModel* model)
+{
+	return 0;
+}
+
+/**
+ * ticalcs_probe_usb_calc:
+ * @cable: a valid (=opened/attached) link cable handle
+ * @model: the calculator model which have been detected
+ *
+ * This function attempts to detect the calculator model plugged onto the cable.
+ * It works in a heuristic fashion.
+ *
+ * Return value: 0 if ready else an error code.
+ **/
+TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
+{
+	CalcHandle calc;
+	int err = 0;
+	int ret = -1;
+
+	// Hack: we construct the structure here because we don't really need it.
+	// I want to use ticalcs functions with a non-fixed calculator
+	memset(&calc, 0, sizeof(CalcHandle));
+	calc.model = *model = CALC_NONE;
+	calc.updat = (CalcUpdate *)&default_update;
+	calc.priv2 = (uint8_t *)malloc(65536 + 4);
+	calc.cable = cable;
+	calc.open = !0;
+
+	if(cable->model == CABLE_SLV)
+	{
+		err = ticalcs_probe_calc_1(&calc, model);
+		if(!err && (*model != CALC_NONE))
+			ret = 0;
+		else
+			ret = -1;
+	}
+	else if(cable->model == CABLE_USB)
+	{
+		uint32_t size;
+
+		TRYF(dusb_send_buf_size_request(&calc, DUSB_DFL_BUF_SIZE));
+		TRYF(dusb_recv_buf_size_alloc(&calc, &size));
+		if(size == 1023)
+			*model = CALC_TI89T_USB;
+		else if(size == 250)
+			*model = CALC_TI84P_USB;
+		else
+			ret = -1;
+	}
+
+	free(calc.priv2);
+	return ret;
 }

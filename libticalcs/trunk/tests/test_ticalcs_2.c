@@ -215,7 +215,7 @@ static int send_flash(CalcHandle *h)
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_flash_app(h->model));
 
-	TRYF(ticalcs_calc_send_flash2(h, filename));
+	TRYF(ticalcs_calc_send_app2(h, filename));
 	return 0;
 }
 
@@ -235,7 +235,7 @@ static int recv_flash(CalcHandle *h)
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_recv_flash2(h, filename, &ve));
+	TRYF(ticalcs_calc_recv_app2(h, filename, &ve));
 	return 0;
 }
 
@@ -284,7 +284,8 @@ static int probe_calc(CalcHandle *h)
 {
 	CalcModel model;
 
-	ticalcs_probe_calc(h->cable, &model);
+	//ticalcs_probe_calc(h->cable, &model);
+	ticalcs_probe_usb_calcs(h->cable, &model);
 	printf("Found: <%s>", ticalcs_model_to_string(model));
 
 	return 0;
@@ -351,8 +352,9 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_BLK, PORT_2);
+	//cable = ticables_handle_new(CABLE_BLK, PORT_2);
 	//cable = ticables_handle_new(CABLE_VTI, PORT_2);
+	cable = ticables_handle_new(CABLE_SLV, PORT_1);
 	if(cable == NULL)
 	    return -1;
 
