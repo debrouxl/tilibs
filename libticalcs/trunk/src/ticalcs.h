@@ -685,7 +685,9 @@ typedef struct
 	//probe.c
 	TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model);
 	TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model);
+
 	TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
+	TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
 		
   /************************/
   /* Deprecated functions */
