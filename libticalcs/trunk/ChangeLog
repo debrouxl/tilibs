@@ -16,7 +16,11 @@ To do (USB):
 
 Log:
 
+- 06/05/2006, version 0.1.1: roms
+	- 
+
 - 15/04/2006, version 0.1.0: roms
+	- implemented USB hand-helds support
 	- split sending of FLASH app & os into 2 functions.
 	- renamed some function of the API (send/recv_flash into send/recv_app)
 
