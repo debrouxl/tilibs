@@ -13,7 +13,6 @@ To do (USB):
 - check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
 - s/r backup
 - send OS
-- a common function which emulates a backup by grouping
 - recv pseudo-backup as tigroups; see tifiles2, too
 
 Log:
@@ -23,6 +22,7 @@ Log:
 	- implemented get_memfree functions
 	- added a new probing method for USB hand-helds only (faster)
 	- added FTS_BACKUP flag for hand-helds with real backup capability
+	- added common function which emulates a backup by grouping
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support
