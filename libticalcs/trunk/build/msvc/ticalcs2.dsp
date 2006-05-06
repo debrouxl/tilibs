@@ -266,6 +266,10 @@ SOURCE=..\..\src\dbus_pkt.c
 # End Group
 # Begin Source File
 
+SOURCE=..\..\src\backup.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\calc_xx.c
 # End Source File
 # End Group
