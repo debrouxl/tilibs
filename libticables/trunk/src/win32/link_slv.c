@@ -63,6 +63,8 @@ TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
 TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
 
+int probed_usb_devices[USB_MAX] = { 0 };
+
 static int slv_prepare(CableHandle *h)
 {
 	char str[64];
@@ -267,6 +269,7 @@ static int slv_probe(CableHandle *h)
     
 	if(ret > 0)
 	{
+		memcpy(probed_usb_devices, list, USB_MAX);
 		if(list[h->address-1] == PID_TIGLUSB)
 		{
 			if(open)
@@ -316,6 +319,7 @@ static int raw_probe(CableHandle *h)
     
 	if(ret > 0)
 	{
+		memcpy(probed_usb_devices, list, USB_MAX);
 		if(list[h->address-1] == PID_TI89TM || list[h->address-1] == PID_TI84P)
 		{
 			if(open)

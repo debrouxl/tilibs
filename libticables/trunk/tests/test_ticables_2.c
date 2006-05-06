@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 #endif
 
 #if 1
-	ticables_probing_do(&probing, 5);
+	ticables_probing_do(&probing, 5, PROBE_USB);
 	for(i = 1; i <= 7; i++) 
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
 	ticables_probing_finish(&probing);

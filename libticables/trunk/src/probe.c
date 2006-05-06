@@ -34,6 +34,7 @@
  * ticables_probing_do:
  * @result: address of an array of integers to put the result.
  * @timeout: timeout to set during probing
+ * @method: defines whether you want to probe all cables, the first cable found or USB only.
  *
  * Returns cables which have been detected. All cables should be closed before !
  * The array is like a matrix which contains 5 columns (PORT_0 to PORT_4) and 
@@ -42,19 +43,31 @@
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout)
+TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
 	CablePort port;
-	CableModel model;
+	CableModel model, start, stop;
 	int **array;
 
 	ticables_info(_("Link cable probing:"));
 	array = (int **)calloc(CABLE_MAX, sizeof(int));
 
-	for(model = CABLE_GRY; model <= CABLE_TIE; model++)
+	if(method == PROBE_USB)
 	{
+		start = CABLE_SLV; 
+		stop = CABLE_USB;
+	}
+	else
+	{
+		start = CABLE_GRY; 
+		stop = CABLE_TIE;
+	}
+
+	for(model = CABLE_GRY; model <= CABLE_TIE; model++)
 		array[model] = (int *)calloc(5, sizeof(int));
 
+	for(model = start; model <= stop; model++)
+	{
 		for(port = PORT_1; port <= PORT_4; port++)
 		{
 			CableHandle* handle;
@@ -94,6 +107,30 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 
 	free(*result);
 	*result = NULL;
+
+	return 0;
+}
+
+/**
+ * ticables_get_usb_devices:
+ * @array: address of a NULL-terminated allocated array of integers.
+ * @length: number of detected USB devices.
+ *
+ * Returns the list of USB PIDs as detected after a call to #ticables_cable_probe or
+ * #ticables_probing_do(,,PROBE_USB).
+ * The array must be freed when no longer used.
+ *
+ * Return value: always 0.
+ **/
+TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len)
+{
+	extern int probed_usb_devices[];
+	int *p;
+
+	for(p = probed_usb_devices, *len = 0; *p; p++, (*len)++);
+
+	*array = (int *)calloc(*len, sizeof(int));
+	memcpy(*array, probed_usb_devices, *len);
 
 	return 0;
 }

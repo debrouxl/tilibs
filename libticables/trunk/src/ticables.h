@@ -41,7 +41,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCABLES_VERSION "0.0.8"
+# define LIBCABLES_VERSION "0.0.9"
 #else
 # define LIBCABLES_VERSION VERSION
 #endif
@@ -90,6 +90,18 @@ typedef enum
 	STATUS_RX = 1, 
 	STATUS_TX = 2,
 } CableStatus;
+
+/**
+ * ProbingMethod:
+ *
+ * Defines how to probe cables:
+ **/
+typedef enum
+{
+	PROBE_ALL = 0,
+	PROBE_FIRST,
+	PROBE_USB,
+} ProbingMethod;
 
 /**
  * DataRate:
@@ -286,8 +298,10 @@ typedef struct
 	TIEXPORT CablePort   TICALL ticables_string_to_port(const char *str);
 
 	// probe.c
-	TIEXPORT int TICALL ticables_probing_do(int ***result, int);
+	TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);
 	TIEXPORT int TICALL ticables_probing_finish(int ***result);
+
+	TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len);
   
   /************************/
   /* Deprecated functions */

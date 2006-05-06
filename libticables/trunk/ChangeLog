@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 06/05/2006, version 0.0.9: roms
+	- added ability to retrieve the USB hand-held connected from its PID
+	- improved ticables_probing_do which can probes all cables or USB cables only (faster).
+
 - 17/04/2006, version 0.0.8: roms
 	- rewritten data logging system
 	- embedded HEX to PKT D-BUS decompiler
