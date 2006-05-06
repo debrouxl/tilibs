@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.1.0"
+# define LIBCALCS_VERSION "0.1.1"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -231,7 +231,7 @@ typedef struct
 	CalcModel	model;
 	char*		type;
 
-	int			mem_mask;	// tells which fields is filled
+	int			mem_mask;	// tells which field is filled
 	uint32_t	mem_used;
 	uint32_t	mem_free;
 } TreeInfo;
