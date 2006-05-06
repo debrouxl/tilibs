@@ -360,20 +360,32 @@ TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 	int i, j;
 	TNode *vars = tree;
 	uint32_t mem = 0;
+	TreeInfo *info = (TreeInfo *)(tree->data);
+	char *node_name = info->type;
 
 	if (tree == NULL)
 		return 0;
 
-	if (strcmp(((TreeInfo *)(vars->data))->type, VAR_NODE_NAME))
-		return 0;
-
-	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+	if (!strcmp(node_name, VAR_NODE_NAME))
 	{
-	    TNode *parent = t_node_nth_child(vars, i);
-
-		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+		for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
 		{
-			TNode *child = t_node_nth_child(parent, j);
+			TNode *parent = t_node_nth_child(vars, i);
+
+			for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+			{
+				TNode *child = t_node_nth_child(parent, j);
+				VarEntry *ve = (VarEntry *) (child->data);
+
+				mem += ve->size;
+			}
+		}
+	}
+	else if (!strcmp(node_name, APP_NODE_NAME))
+	{
+		for (i = 0; i < (int)t_node_n_children(vars); i++) 
+		{
+			TNode *child = t_node_nth_child(vars, i);
 			VarEntry *ve = (VarEntry *) (child->data);
 
 			mem += ve->size;
