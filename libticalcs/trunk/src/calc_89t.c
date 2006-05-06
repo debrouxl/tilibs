@@ -191,8 +191,21 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	return 0;
 }
 
-static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
+static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
+	uint16_t pids[] = { PID_FREE_RAM, PID_FREE_FLASH };
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	CalcParam **params;
+	int i = 0;
+
+	params = cp_new_array(size);
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_data(handle, size, params));
+
+	*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
+	*flash = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[1]->data)));
+
+	cp_del_array(size, params);
 	return 0;
 }
 
@@ -711,7 +724,7 @@ const CalcFncts calc_89t_usb =
 	N_("TI-89 Titanium thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | /*FTS_MEMFREE |*/ FTS_FLASH,
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
 	&recv_screen,

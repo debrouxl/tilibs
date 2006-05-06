@@ -197,7 +197,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memory)
+TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -211,10 +211,10 @@ TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* memor
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Requesting folder & vars & apps listing:"));
+	ticalcs_info(_("Requesting RAM & FLASH free"));
 	handle->busy = 1;
 	if(calc->get_memfree)
-		ret = calc->get_memfree(handle, memory);
+		ret = calc->get_memfree(handle, ram, flash);
 	handle->busy = 0;
 
 	return ret;

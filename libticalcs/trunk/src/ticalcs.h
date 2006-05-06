@@ -476,7 +476,7 @@ struct _CalcFncts
 	int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
 
 	int		(*get_dirlist)	(CalcHandle*, TNode** vars, TNode** apps);
-	int		(*get_memfree)	(CalcHandle*, uint32_t*);
+	int		(*get_memfree)	(CalcHandle*, uint32_t* ram, uint32_t* flash);
 
 	int		(*send_backup)	(CalcHandle*, BackupContent*);
 	int		(*recv_backup)	(CalcHandle*, BackupContent*);
@@ -598,7 +598,7 @@ typedef struct
 												 uint8_t** bitmap);
 
 	TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, TNode** vars, TNode **apps);
-	TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t*);
+	TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash);
 
 	TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);

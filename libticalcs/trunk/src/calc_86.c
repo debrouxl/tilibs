@@ -155,8 +155,24 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	return 0;
 }
 
-static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
+static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
+	uint16_t unused;
+	uint8_t hl, ll, lh;
+	uint8_t mem[8];
+
+	TRYF(ti85_send_REQ(0x0000, TI86_DIR, ""));
+	TRYF(ti85_recv_ACK(&unused));
+
+	TRYF(ti85_recv_XDP(&unused, mem));
+	TRYF(ti85_send_EOT());
+
+	hl = mem[0];
+	ll = mem[1];
+	lh = mem[2];
+	*ram = (hl << 16) | (lh << 8) | ll;
+	*flash = -1;
+
 	return 0;
 }
 

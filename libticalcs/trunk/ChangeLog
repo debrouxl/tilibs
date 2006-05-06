@@ -11,7 +11,6 @@ To do :
 To do (USB):
 - create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
 - check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
-- check pbar updating
 - s/r backup
 - send OS
 
@@ -19,6 +18,7 @@ Log:
 
 - 06/05/2006, version 0.1.1: roms
 	- make ticalcs_dirlist_mem_used useable with apps tree
+	- implemented get_memfree functions
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support

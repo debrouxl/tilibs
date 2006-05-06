@@ -49,7 +49,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	return 0;
 }
 
-static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
+static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
 	return 0;
 }

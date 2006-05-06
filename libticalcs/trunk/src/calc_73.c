@@ -159,8 +159,20 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	return 0;
 }
 
-static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
+static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
+	uint16_t unused;
+	uint32_t memory;
+
+	TRYF(ti73_send_REQ(0x0000, TI73_DIR, "", 0x00));
+	TRYF(ti73_recv_ACK(NULL));
+
+	TRYF(ti73_recv_XDP(&unused, (uint8_t *)&memory));
+	fixup(memory);
+	TRYF(ti73_send_EOT());
+	*ram = (uint32_t)GUINT_TO_POINTER(memory);
+	*flash = -1;
+
 	return 0;
 }
 

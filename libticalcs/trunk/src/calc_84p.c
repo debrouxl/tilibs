@@ -155,9 +155,22 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	return 0;
 }
 
-static int		get_memfree	(CalcHandle* handle, uint32_t* mem)
+static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
-	// to do...
+	uint16_t pids[] = { PID_FREE_RAM, PID_FREE_FLASH };
+	const int size = sizeof(pids) / sizeof(uint16_t);
+	CalcParam **params;
+	int i = 0;
+
+	params = cp_new_array(size);
+	TRYF(cmd_s_param_request(handle, size, pids));
+	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_param_data(handle, size, params));
+
+	*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
+	*flash = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[1]->data)));
+
+	cp_del_array(size, params);
 	return 0;
 }
 
@@ -698,7 +711,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID_HW_VERSION, PID_LANGUAGE_ID, PID_SUBLANG_ID, PID_DEVICE_TYPE,
 		PID_BOOT_VERSION, PID_OS_VERSION, 
 		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
-		PID_PHYS_FLASH, PID_FREE_FLASH, PID_FREE_FLASH,
+		PID_PHYS_FLASH, PID_USER_FLASH, PID_FREE_FLASH,
 		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY,
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
