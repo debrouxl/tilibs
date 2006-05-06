@@ -516,7 +516,7 @@ const CalcFncts calc_86 =
 	N_("TI-86"),
 	N_("TI-86"),
 	OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
-	FTS_SILENT | FTS_MEMFREE,
+	FTS_SILENT | FTS_MEMFREE | FTS_BACKUP,
 	&is_ready,
 	&send_key,
 	&recv_screen,

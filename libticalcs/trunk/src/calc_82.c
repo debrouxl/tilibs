@@ -468,8 +468,8 @@ const CalcFncts calc_82 =
 	"TI82",
 	N_("TI-82"),
 	N_("TI-82"),
-	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
-	FTS_MEMFREE,
+	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
+	FTS_BACKUP,
 	&is_ready,
 	&send_key,
 	&recv_screen,

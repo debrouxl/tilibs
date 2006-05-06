@@ -466,7 +466,8 @@ const CalcFncts calc_85 =
 	"TI85",
 	N_("TI-85"),
 	N_("TI-85"),
-	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP,
+	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
+	FTS_BACKUP,
 	&is_ready,
 	&send_key,
 	&recv_screen,

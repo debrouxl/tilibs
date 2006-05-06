@@ -182,6 +182,7 @@ typedef enum
   FTS_MEMFREE	= (1 << 17),
   FTS_FLASH		= (1 << 18),
   FTS_CERT		= (1 << 19),
+  FTS_BACKUP	= (1 << 20),
 
 } CalcFeatures;
 

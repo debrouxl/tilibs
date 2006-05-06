@@ -614,7 +614,7 @@ const CalcFncts calc_92 =
 	N_("TI-92"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
-	FTS_SILENT | FTS_FOLDER,
+	FTS_SILENT | FTS_FOLDER | FTS_BACKUP,
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -740,29 +740,21 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
 	if(handle->busy)
 		return ERR_BUSY;
 
-	switch(handle->model)
+	if(ticalcs_calc_features(handle) & FTS_BACKUP)
 	{
-	case CALC_TI73:
-	case CALC_TI82:
-	case CALC_TI83:
-	case CALC_TI83P:
-	case CALC_TI84P:
-	case CALC_TI85:
-	case CALC_TI86:
-	case CALC_TI92:
 		// true backup capability
 		content1 = tifiles_content_create_backup(handle->model);
 		TRYF(ticalcs_calc_recv_backup(handle, content1));
 		TRYF(tifiles_file_write_backup(filename, content1));
 		TRYF(tifiles_content_delete_backup(content1));
-		break;
-	default:
+	}
+	else
+	{
 		// pseudo-backup
 		content2 = tifiles_content_create_regular(handle->model);
 		TRYF(ticalcs_calc_recv_backup(handle, (BackupContent *)content2));
 		TRYF(tifiles_file_write_regular(filename, content2, NULL));
 		TRYF(tifiles_content_delete_regular(content2));
-		break;
 	}
 
 	return 0;
@@ -791,29 +783,21 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
 	if(handle->busy)
 		return ERR_BUSY;
 
-	switch(handle->model)
+	if(ticalcs_calc_features(handle) & FTS_BACKUP)
 	{
-	case CALC_TI73:
-	case CALC_TI82:
-	case CALC_TI83:
-	case CALC_TI83P:
-	case CALC_TI84P:
-	case CALC_TI85:
-	case CALC_TI86:
-	case CALC_TI92:
 		// true backup capability
 		content1 = tifiles_content_create_backup(handle->model);
 		TRYF(tifiles_file_read_backup(filename, content1));
 		TRYF(ticalcs_calc_send_backup(handle, content1));
 		TRYF(tifiles_content_delete_backup(content1));
-		break;
-	default:
+	}
+	else
+	{
 		// pseudo-backup
 		content2 = tifiles_content_create_regular(handle->model);
 		TRYF(tifiles_file_read_regular(filename, content2));
 		TRYF(ticalcs_calc_send_backup(handle, (BackupContent *)content2));
 		TRYF(tifiles_content_delete_regular(content2));
-		break;
 	}
 
 	return 0;

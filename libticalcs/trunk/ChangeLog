@@ -14,6 +14,7 @@ To do (USB):
 - s/r backup
 - send OS
 - a common function which emulates a backup by grouping
+- recv pseudo-backup as tigroups; see tifiles2, too
 
 Log:
 
@@ -21,6 +22,7 @@ Log:
 	- make ticalcs_dirlist_mem_used useable with apps tree
 	- implemented get_memfree functions
 	- added a new probing method for USB hand-helds only (faster)
+	- added FTS_BACKUP flag for hand-helds with real backup capability
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support
