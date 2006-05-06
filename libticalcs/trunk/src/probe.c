@@ -382,8 +382,6 @@ TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 		err = ticalcs_probe_calc_1(&calc, model);
 		if(!err && (*model != CALC_NONE))
 			ret = 0;
-		else
-			ret = -1;
 	}
 	else if(cable->model == CABLE_USB)
 	{
@@ -392,11 +390,15 @@ TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 		TRYF(dusb_send_buf_size_request(&calc, DUSB_DFL_BUF_SIZE));
 		TRYF(dusb_recv_buf_size_alloc(&calc, &size));
 		if(size == 1023)
+		{
 			*model = CALC_TI89T_USB;
+			ret = 0;
+		}
 		else if(size == 250)
+		{
 			*model = CALC_TI84P_USB;
-		else
-			ret = -1;
+			ret = 0;
+		}
 	}
 
 	free(calc.priv2);
