@@ -41,13 +41,14 @@
  * 7 lines (CABLE_GRY to CABLE_USB).
  * The array must be freed by #ticables_probing_finish when no longer used.
  *
- * Return value: always 0.
+ * Return value: !0 if succesful, 0 if no cables found.
  **/
 TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
 	CablePort port;
 	CableModel model, start, stop;
 	int **array;
+	int found = -1;
 
 	ticables_info(_("Link cable probing:"));
 	array = (int **)calloc(CABLE_MAX, sizeof(int));
@@ -79,15 +80,15 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMetho
 				ticables_options_set_timeout(handle, timeout);
 				err = ticables_cable_probe(handle, &ret);
 				array[model][port] = (ret && !err) ? 1: 0;
+				if(array[model][port]) found = !0;
 			}
 			ticables_handle_del(handle);
 		}
-		
 		//ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);	
 	}
 
 	*result = array;
-	return 0;
+	return found;
 }
 
 /**
