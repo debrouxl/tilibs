@@ -209,16 +209,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	return 0;
 }
 
-static int		send_backup	(CalcHandle* handle, BackupContent* content)
-{
-	return 0;
-}
-
-static int		recv_backup	(CalcHandle* handle, BackupContent* content)
-{
-	return 0;
-}
-
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
@@ -306,6 +296,17 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	free(data);	
 
 	ca_del_array(nattrs, attrs);
+	return 0;
+}
+
+static int		send_backup	(CalcHandle* handle, BackupContent* content)
+{
+	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
+	return 0;
+}
+
+static int		recv_backup	(CalcHandle* handle, BackupContent* content)
+{
 	return 0;
 }
 
