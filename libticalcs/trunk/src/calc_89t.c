@@ -240,7 +240,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[3] = ca_new(AID_LOCKED, 1);
 		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
 
-		TRYF(cmd_s_rts(handle, "", ve->name, ve->size, nattrs, attrs));
+		TRYF(cmd_s_rts(handle, ve->folder, ve->name, ve->size, nattrs, attrs));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd_r_data_ack(handle));
