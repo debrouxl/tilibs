@@ -22,6 +22,7 @@ Log:
 	- added a new probing method for USB hand-helds only (faster)
 	- added FTS_BACKUP flag for hand-helds with real backup capability
 	- added common function which emulates a backup by grouping
+	- definitely fixed return value for probing functions
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support

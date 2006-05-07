@@ -73,7 +73,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
  *
  * Beware: the call sequence is very important: 86, 85, 83, 82 !!!
  *
- * Return value: 0 if ready else an error code.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 {
@@ -82,6 +82,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 	uint8_t data;
 
 	ticalcs_info(_("Probing calculator...\n"));
+	*model = CALC_NONE;
 
 	/* Test for a TI86 before a TI85 */
 	ticalcs_info(_("Check for TI86... "));
@@ -188,7 +189,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		PAUSE(DEAD_TIME);
 	}
 
-	return 0;
+	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 }
 
 /**
@@ -201,7 +202,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
  * version. A previous version was based on MID but TI83+/84+, TI89/TI89t, TI92+/V200 
  * could not be distinguished ;-(
  *
- * Return value: 0 if ready else an error code.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 {
@@ -286,7 +287,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 	ticalcs_info(_("Calculator type: %s"), tifiles_model_to_string(*model));
 
-	return 0;
+	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 }
 
 extern const CalcUpdate default_update;
@@ -299,7 +300,7 @@ extern const CalcUpdate default_update;
  * This function attempts to detect the calculator model plugged onto the cable.
  * It works in a heuristic fashion.
  *
- * Return value: 0 if ready else an error code.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 {
@@ -332,24 +333,7 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 	}
 
 	free(calc.priv2);
-	return 0;
-}
-
-/**
- * ticalcs_probe_calc_1:
- * @handle: a previously allocated handle
- * @type: the calculator model
- *
- * Check if the calculator is ready and detect the type.
- * Works only with FLASH calculators and a AMS2.08 (?!) mini by requesting
- * version. A previous version was based on MID but TI83+/84+, TI89/TI89t, TI92+/V200 
- * could not be distinguished ;-(
- *
- * Return value: 0 if ready else an error code.
- **/
-static int ticalcs_probe_calc_3(CalcHandle* handle, CalcModel* model)
-{
-	return 0;
+	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 }
 
 /**
@@ -360,13 +344,13 @@ static int ticalcs_probe_calc_3(CalcHandle* handle, CalcModel* model)
  * This function attempts to detect the calculator model plugged onto the cable.
  * It works in a heuristic fashion.
  *
- * Return value: 0 if ready else an error code.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
-	int ret = -1;
+	int ret = ERR_NO_CALC;
 
 	// Hack: we construct the structure here because we don't really need it.
 	// I want to use ticalcs functions with a non-fixed calculator

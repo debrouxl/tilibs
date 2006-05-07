@@ -64,6 +64,7 @@ typedef enum
 
 // ---
 	ERR_CALC_ERROR,			// Hand-held returned an error code
+	ERR_NO_CALC,			// No calc probed
 
 } CalcError;
 
