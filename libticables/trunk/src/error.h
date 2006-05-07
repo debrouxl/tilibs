@@ -90,6 +90,8 @@ typedef enum
     ERR_PPT_OPEN,
     ERR_PPT_IOCTL, //48
 
+	ERR_NO_CABLE = 50,
+
 } CableError;
 
 #endif

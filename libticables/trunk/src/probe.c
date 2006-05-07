@@ -29,6 +29,7 @@
 #include "gettext.h"
 #include "logging.h"
 #include "ticables.h"
+#include "error.h"
 
 /**
  * ticables_probing_do:
@@ -41,7 +42,7 @@
  * 7 lines (CABLE_GRY to CABLE_USB).
  * The array must be freed by #ticables_probing_finish when no longer used.
  *
- * Return value: !0 if successful, 0 if no cables found.
+ * Return value: 0 if successful, ERR_NO_CABLE if no cables found.
  **/
 TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
@@ -88,7 +89,7 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMetho
 	}
 
 	*result = array;
-	return found;
+	return found ? 0 : ERR_NO_CABLE;
 }
 
 /**
@@ -121,7 +122,7 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
  * #ticables_probing_do(,,PROBE_USB).
  * The array must be freed when no longer used.
  *
- * Return value: always 0.
+ * Return value: 0 if successful, ER_NO_CABLE if none found.
  **/
 TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len)
 {
@@ -133,5 +134,5 @@ TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len)
 	*array = (int *)calloc(*len, sizeof(int));
 	memcpy(*array, probed_usb_devices, *len);
 
-	return 0;
+	return len ? 0 : ERR_NO_CABLE;
 }
