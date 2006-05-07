@@ -41,7 +41,7 @@
  * 7 lines (CABLE_GRY to CABLE_USB).
  * The array must be freed by #ticables_probing_finish when no longer used.
  *
- * Return value: !0 if succesful, 0 if no cables found.
+ * Return value: !0 if successful, 0 if no cables found.
  **/
 TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
