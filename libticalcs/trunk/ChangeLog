@@ -9,11 +9,6 @@ To do :
 - make dirlist more generic (merge apps & vars)
 - check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
 
-To do (USB):
-- create a linked list of allocated virtual packet and clear/release them on ticalcs_error_get. Same for calcparam
-- send OS
-- recv pseudo-backup as tigroups; see tifiles2, too
-
 Log:
 
 - 06/05/2006, version 0.1.1: roms
@@ -23,6 +18,9 @@ Log:
 	- added FTS_BACKUP flag for hand-helds with real backup capability
 	- added common function which emulates a backup by grouping
 	- definitely fixed return value for probing functions
+	- implemented a garbage collector for virtual packets, calc attributes anc calc parameters.
+		Needed because a DUSB function may returns an error without releasing allocated memory
+		(easier by this way).
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support

@@ -90,6 +90,8 @@ const char* vpkt_type2name(uint16_t id)
 
 // Buffer allocation
 
+GList *vtl_pkt_list = NULL;
+
 VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 {
 	VirtualPacket* vtl = calloc(1, sizeof(VirtualPacket));
@@ -98,13 +100,24 @@ VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 	vtl->type = type;
 	vtl->data = calloc(1, size + DH_SIZE);
 
+	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 	return vtl;
 }
 
 void			vtl_pkt_del(VirtualPacket* vtl)
 {
+	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
+
 	free(vtl->data);
 	free(vtl);
+}
+
+void			vtl_pkt_purge(void)
+{
+	//printf("vtl_pkt_purge: %p %i\n", vtl_pkt_list, g_list_length(vtl_pkt_list));
+	g_list_foreach(vtl_pkt_list, (GFunc)vtl_pkt_del, NULL);
+	g_list_free(vtl_pkt_list);
+	vtl_pkt_list = NULL;
 }
 
 // Raw packets

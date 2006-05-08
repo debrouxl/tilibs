@@ -39,6 +39,8 @@
 
 // Helpers
 
+GList *cpca_list = NULL;
+
 CalcParam*	cp_new(uint16_t id, uint16_t size)
 {
 	CalcParam* cp = calloc(1, sizeof(CalcParam));
@@ -47,11 +49,14 @@ CalcParam*	cp_new(uint16_t id, uint16_t size)
 	cp->size = size;
 	cp->data = calloc(1, size);
 
+	cpca_list = g_list_append(cpca_list, cp);
 	return cp;
 }
 
 void		cp_del(CalcParam* cp)
 {
+	cpca_list = g_list_remove(cpca_list, cp);
+
 	free(cp->data);
 	free(cp);
 }
@@ -85,11 +90,14 @@ CalcAttr*	ca_new(uint16_t id, uint16_t size)
 	cp->size = size;
 	cp->data = calloc(1, size);
 
+	cpca_list = g_list_append(cpca_list, cp);
 	return cp;
 }
 
 void		ca_del(CalcAttr* cp)
 {
+	cpca_list = g_list_remove(cpca_list, cp);
+
 	free(cp->data);
 	free(cp);
 }
@@ -111,6 +119,14 @@ void ca_del_array(int size, CalcAttr **attrs)
 		free(attrs[i]);
 	}
 	free(attrs);
+}
+
+void cpca_purge(void)
+{
+	//printf("cpca_purge: %p %i\n", cpca_list, g_list_length(cpca_list));
+	g_list_foreach(cpca_list, (GFunc)ca_del, NULL);
+	g_list_free(cpca_list);
+	cpca_list = NULL;
 }
 
 /////////////----------------
