@@ -726,7 +726,7 @@ const CalcFncts calc_89t_usb =
 	N_("TI-89 Titanium thru DirectLink USB"),
 	N_("TI-89 Titanium thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
-	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | 
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
 	&send_key,
