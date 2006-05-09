@@ -361,6 +361,8 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 #else
 			ticalcs_info("  TI->PC: %s", vpkt_type2name(vtl->type));
 #endif
+			if(vtl->type == 0xEE00)
+				ticalcs_info("    Error Code : %04x\n", (vtl->data[0] << 8) | vtl->data[1]);
 		}
 		else
 		{

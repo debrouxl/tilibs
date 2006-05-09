@@ -37,6 +37,8 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
+#define err_code(vtl)		((vtl->data[0] << 8) | vtl->data[1])
+
 // Helpers
 
 GList *cpca_list = NULL;
