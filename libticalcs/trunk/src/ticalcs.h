@@ -652,6 +652,7 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree);
 	TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
 
 	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
 	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);

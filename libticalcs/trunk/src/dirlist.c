@@ -366,7 +366,47 @@ TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 	if (tree == NULL)
 		return 0;
 
-	if (!strcmp(node_name, VAR_NODE_NAME))
+	if (strcmp(node_name, VAR_NODE_NAME))
+		return 0;
+
+	
+	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+	{
+		TNode *parent = t_node_nth_child(vars, i);
+
+		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+		{
+			TNode *child = t_node_nth_child(parent, j);
+			VarEntry *ve = (VarEntry *) (child->data);
+
+			mem += ve->size;
+		}
+	}
+
+	return mem;
+}
+
+/**
+ * ticalcs_dirlist_flash_used:
+ * @tree: a tree (app only).
+ *
+ * Count how much memory is used by archived variables and apps listed in the trees.
+ *
+ * Return value: size of all FLASH in bytes.
+ **/
+TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
+{
+	int i, j;
+	uint32_t mem = 0;
+	TreeInfo *info1 = (TreeInfo *)(vars->data);
+	TreeInfo *info2 = (TreeInfo *)(apps->data);
+	char *node_name_1 = info1->type;
+	char *node_name_2 = info2->type;
+
+	if (!vars && !apps)
+		return 0;
+
+	if (!strcmp(node_name_1, VAR_NODE_NAME))
 	{
 		for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
 		{
@@ -377,15 +417,17 @@ TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree)
 				TNode *child = t_node_nth_child(parent, j);
 				VarEntry *ve = (VarEntry *) (child->data);
 
-				mem += ve->size;
+				if(ve->attr == ATTRB_ARCHIVED)
+					mem += ve->size;
 			}
 		}
 	}
-	else if (!strcmp(node_name, APP_NODE_NAME))
+
+	if (!strcmp(node_name_2, APP_NODE_NAME))
 	{
-		for (i = 0; i < (int)t_node_n_children(vars); i++) 
+		for (i = 0; i < (int)t_node_n_children(apps); i++) 
 		{
-			TNode *child = t_node_nth_child(vars, i);
+			TNode *child = t_node_nth_child(apps, i);
 			VarEntry *ve = (VarEntry *) (child->data);
 
 			mem += ve->size;
