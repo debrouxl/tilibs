@@ -72,11 +72,7 @@ void cp_del_array(int size, CalcParam **params)
 	int i;
 
 	for(i = 0; i < size && params[i]; i++)
-	{
-		if(params[i]->ok)
-			free(params[i]->data);
-		free(params[i]);
-	}
+		cp_del(params[i]);
 	free(params);
 }
 
@@ -113,11 +109,7 @@ void ca_del_array(int size, CalcAttr **attrs)
 	int i;
 
 	for(i = 0; i < size && attrs[i]; i++)
-	{
-		if(attrs[i]->ok)
-			free(attrs[i]->data);
-		free(attrs[i]);
-	}
+		ca_del(attrs[i]);
 	free(attrs);
 }
 
