@@ -4,10 +4,9 @@ Set svn:eol property to native on all files
 	
 To do : 
 - key codes for TI8x (check)
-//- manage ERR packets which can be received at any time
+- manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - make dirlist more generic (merge apps & vars)
-- check sending of FLASH on TI84+/D-BUS (FlashContent.data_length)
 
 Log:
 
@@ -21,6 +20,8 @@ Log:
 	- implemented a garbage collector for virtual packets, calc attributes anc calc parameters.
 		Needed because a DUSB function may returns an error without releasing allocated memory
 		(easier by this way).
+	- added ticalcs_dirlist_flash_used which count memory used by both archived variables and apps
+	- fixed pbar with TI73/84+ sending of FLASH app
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support

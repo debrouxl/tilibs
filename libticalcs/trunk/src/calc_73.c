@@ -395,6 +395,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		return -1;
 
 #if 0
+	printf("size = %08x\n", ptr->data_length);
 	printf("#pages: %i\n", ptr->num_pages);
 	printf("type: %02x\n", ptr->data_type);
 	for (i = 0; i < ptr->num_pages; i++) 
@@ -404,9 +405,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		printf("page #%i: %04x %02x %02x %04x\n", i,
 			fp->addr, fp->page, fp->flag, fp->size);		
 	}
+
+	return 0;
 #endif
 
-	update_->max2 = ptr->num_pages * FLASH_PAGE_SIZE / size;
+	update_->max2 = ptr->data_length;
 	for (k = i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
@@ -414,7 +417,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		if((ptr->data_type == TI83p_AMS) && (i == 1))	// need relocation ?
 			fp->addr = 0x4000;
 
-		for(j = 0; j < fp->size/*FLASH_PAGE_SIZE*/; j += size)
+		for(j = 0; j < fp->size; j += size)
 		{
 			uint16_t addr = fp->addr + j;
 			uint8_t* data = fp->data + j;
@@ -428,7 +431,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_XDP(size, data));
 			TRYF(ti73_recv_ACK(NULL));
 
-			update_->cnt2 = ++k;
+			update_->cnt2 += size;
 			update_->pbar();
 		}
 
