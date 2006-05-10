@@ -23,6 +23,8 @@ Log:
 	- added ticalcs_dirlist_flash_used which count memory used by both archived variables and apps
 	- fixed pbar with TI73/84+ sending of FLASH app
 	- fixed ca_del_array & cp_del_array for garbage collector
+	- manage hand-held error codes
+	- manage delaying packets
 
 - 15/04/2006, version 0.1.0: roms
 	- implemented USB hand-helds support
