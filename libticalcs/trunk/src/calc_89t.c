@@ -82,7 +82,6 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
     
 	param = cp_new_array(1);
 	TRYF(cmd_s_param_request(handle, 1, pid));
-	//TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
@@ -353,10 +352,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		attrs[3]->data[0] = 0;
 		
 		TRYF(cmd_s_rts(handle, "", ptr->name, ptr->data_length, nattrs, attrs));
-		TRYF(cmd_r_delay_ack(handle));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_var_content(handle, ptr->data_length, ptr->data_part));
-		TRYF(cmd_r_delay_ack(handle));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_eot(handle));
 	}
@@ -565,7 +562,6 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[1]->data[0] = 0;
 
 	TRYF(cmd_s_var_delete(handle, vr->folder, vr->name, size, attr));
-	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_data_ack(handle));	
 
 	ca_del_array(size, attr);
