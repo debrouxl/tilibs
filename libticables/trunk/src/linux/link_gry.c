@@ -105,10 +105,10 @@ static int gry_open(CableHandle *h)
 #endif
     termset->c_cc[VMIN] = 0;
     termset->c_cc[VTIME] = h->timeout;
-    tcsetattr(dev_fd, TCSANOW, termset);
 
     cfsetispeed(termset, B9600);
     cfsetospeed(termset, B9600);
+    tcsetattr(dev_fd, TCSANOW, termset);
 
     if(tcflush(dev_fd, TCIOFLUSH) == -1)
         return ERR_FLUSH_ERROR;

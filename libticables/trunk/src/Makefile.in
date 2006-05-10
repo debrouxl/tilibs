@@ -64,7 +64,9 @@ am_libticables2_la_OBJECTS = libticables2_la-data_log.lo \
 	libticables2_la-link_nul.lo libticables2_la-link_par.lo \
 	libticables2_la-link_blk.lo libticables2_la-link_slv.lo \
 	libticables2_la-link_tie.lo libticables2_la-link_vti.lo \
-	libticables2_la-link_xxx.lo libticables2_la-logging.lo \
+	libticables2_la-link_xxx.lo libticables2_la-log_dbus.lo \
+	libticables2_la-log_dusb.lo libticables2_la-log_hex.lo \
+	libticables2_la-log2pkt.lo libticables2_la-logging.lo \
 	libticables2_la-probe.lo libticables2_la-ticables.lo \
 	libticables2_la-type2str.lo
 libticables2_la_OBJECTS = $(am_libticables2_la_OBJECTS)
@@ -254,6 +256,7 @@ libticables2_la_SOURCES = *.h \
 	ioports.c \
 	link_gry.c link_nul.c link_par.c link_blk.c \
 	link_slv.c link_tie.c link_vti.c link_xxx.c \
+	log_dbus.c log_dusb.c log_hex.c log2pkt.c \
 	logging.c \
 	probe.c \
 	ticables.c \
@@ -341,6 +344,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_tie.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_vti.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_xxx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-log2pkt.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-log_dbus.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-log_dusb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-log_hex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-logging.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-probe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-ticables.Plo@am__quote@
@@ -450,6 +457,34 @@ libticables2_la-link_xxx.lo: link_xxx.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='link_xxx.c' object='libticables2_la-link_xxx.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-link_xxx.lo `test -f 'link_xxx.c' || echo '$(srcdir)/'`link_xxx.c
+
+libticables2_la-log_dbus.lo: log_dbus.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-log_dbus.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-log_dbus.Tpo" -c -o libticables2_la-log_dbus.lo `test -f 'log_dbus.c' || echo '$(srcdir)/'`log_dbus.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-log_dbus.Tpo" "$(DEPDIR)/libticables2_la-log_dbus.Plo"; else rm -f "$(DEPDIR)/libticables2_la-log_dbus.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log_dbus.c' object='libticables2_la-log_dbus.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-log_dbus.lo `test -f 'log_dbus.c' || echo '$(srcdir)/'`log_dbus.c
+
+libticables2_la-log_dusb.lo: log_dusb.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-log_dusb.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-log_dusb.Tpo" -c -o libticables2_la-log_dusb.lo `test -f 'log_dusb.c' || echo '$(srcdir)/'`log_dusb.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-log_dusb.Tpo" "$(DEPDIR)/libticables2_la-log_dusb.Plo"; else rm -f "$(DEPDIR)/libticables2_la-log_dusb.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log_dusb.c' object='libticables2_la-log_dusb.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-log_dusb.lo `test -f 'log_dusb.c' || echo '$(srcdir)/'`log_dusb.c
+
+libticables2_la-log_hex.lo: log_hex.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-log_hex.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-log_hex.Tpo" -c -o libticables2_la-log_hex.lo `test -f 'log_hex.c' || echo '$(srcdir)/'`log_hex.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-log_hex.Tpo" "$(DEPDIR)/libticables2_la-log_hex.Plo"; else rm -f "$(DEPDIR)/libticables2_la-log_hex.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log_hex.c' object='libticables2_la-log_hex.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-log_hex.lo `test -f 'log_hex.c' || echo '$(srcdir)/'`log_hex.c
+
+libticables2_la-log2pkt.lo: log2pkt.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-log2pkt.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-log2pkt.Tpo" -c -o libticables2_la-log2pkt.lo `test -f 'log2pkt.c' || echo '$(srcdir)/'`log2pkt.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticables2_la-log2pkt.Tpo" "$(DEPDIR)/libticables2_la-log2pkt.Plo"; else rm -f "$(DEPDIR)/libticables2_la-log2pkt.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='log2pkt.c' object='libticables2_la-log2pkt.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-log2pkt.lo `test -f 'log2pkt.c' || echo '$(srcdir)/'`log2pkt.c
 
 libticables2_la-logging.lo: logging.c
 @am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-logging.lo -MD -MP -MF "$(DEPDIR)/libticables2_la-logging.Tpo" -c -o libticables2_la-logging.lo `test -f 'logging.c' || echo '$(srcdir)/'`logging.c; \

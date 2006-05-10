@@ -213,6 +213,8 @@ static usb_infos tigl_infos[] =
 static usb_infos tigl_devices[MAX_CABLES];// = { 0 }; 
 static int ndevices = 0;
 
+int probed_usb_devices[MAX_CABLES] = { 0 };
+
 // internal structure for holding data
 typedef struct
 {
@@ -670,6 +672,9 @@ static int slv_probe(CableHandle *h)
     int i;
     
     TRYC(enumerate_tigl_devices());
+
+    for( i =0; i < MAX_CABLES; i++)
+	probed_usb_devices[i] = tigl_devices[i].pid;
     
     for(i = 0; i < MAX_CABLES; i++)
     {
@@ -685,6 +690,9 @@ static int raw_probe(CableHandle *h)
     int i;
 
     TRYC(enumerate_tigl_devices());
+
+    for( i =0; i < MAX_CABLES; i++)
+        probed_usb_devices[i] = tigl_devices[i].pid;
 
     for(i = 0; i < MAX_CABLES; i++)
     {
