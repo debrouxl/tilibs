@@ -362,8 +362,6 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 #endif
 			if(vtl->type == 0xEE00)
 				ticalcs_info("    Error Code : %04x\n", (vtl->data[0] << 8) | vtl->data[1]);
-			if(vtl->type == 0xBB00)
-				tifiles_hexdump(vtl->data, vtl->size);
 		}
 		else
 		{

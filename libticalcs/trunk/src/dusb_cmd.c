@@ -153,6 +153,19 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 /////////////----------------
 
+#define CATCH_DELAY()					\
+	if(pkt->type == VPKT_DELAY_ACK)		\
+	{									\
+		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);	\
+		ticalcs_info("    delay = %u\n", delay);	\
+										\
+		PAUSE(50);						\
+										\
+		vtl_pkt_del(pkt);				\
+		pkt = vtl_pkt_new(0, 0);		\
+		TRYF(dusb_recv_data(h, pkt));	\
+	}
+
 // 0x0001: set mode or ping
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
@@ -203,6 +216,8 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
+	CATCH_DELAY();
+
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_OS_ACK)
@@ -251,6 +266,8 @@ int cmd_r_eot_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
+	CATCH_DELAY();
+
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_EOT_ACK)
@@ -291,6 +308,8 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
+
+	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
@@ -362,6 +381,8 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
+
+	CATCH_DELAY();
 
 	if(pkt->type == VPKT_EOT)
 	{
@@ -532,6 +553,8 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
+	CATCH_DELAY();
+
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_VAR_CNTS)
@@ -639,6 +662,8 @@ int cmd_r_mode_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
+	CATCH_DELAY();
+
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_MODE_SET)
@@ -655,6 +680,8 @@ int cmd_r_data_ack(CalcHandle *h)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
+
+	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
@@ -703,6 +730,8 @@ int cmd_r_eot(CalcHandle *h)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
+
+	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
