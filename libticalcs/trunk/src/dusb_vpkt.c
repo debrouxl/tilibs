@@ -71,7 +71,7 @@ static const VtlPktName vpkt_types[] =
 	{ 0x0011, "Unknown"},
 	{ 0x0012, "Acknowledgement of Mode Setting"},
 	{ 0xAA00, "Acknowledgement of Data"},
-	{ 0xBB00, "Acknowledgement of Parameter Request"},
+	{ 0xBB00, "Delay Answer"},
 	{ 0xDD00, "End of Transmission"},
 	{ 0xEE00, "Error"},
 	{ -1, NULL},
@@ -114,7 +114,6 @@ void			vtl_pkt_del(VirtualPacket* vtl)
 
 void			vtl_pkt_purge(void)
 {
-	//printf("vtl_pkt_purge: %p %i\n", vtl_pkt_list, g_list_length(vtl_pkt_list));
 	g_list_foreach(vtl_pkt_list, (GFunc)vtl_pkt_del, NULL);
 	g_list_free(vtl_pkt_list);
 	vtl_pkt_list = NULL;
@@ -363,6 +362,8 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 #endif
 			if(vtl->type == 0xEE00)
 				ticalcs_info("    Error Code : %04x\n", (vtl->data[0] << 8) | vtl->data[1]);
+			if(vtl->type == 0xBB00)
+				tifiles_hexdump(vtl->data, vtl->size);
 		}
 		else
 		{
