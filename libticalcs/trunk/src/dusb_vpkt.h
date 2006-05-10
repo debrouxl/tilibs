@@ -67,7 +67,7 @@ typedef struct
 #define VPKT_MODE_SET	0x0012
 
 #define VPKT_DATA_ACK	0xAA00
-#define VPKT_PARM_ACK	0xBB00
+#define VPKT_DELAY_ACK	0xBB00
 #define VPKT_EOT		0xDD00
 #define VPKT_ERROR		0xEE00
 

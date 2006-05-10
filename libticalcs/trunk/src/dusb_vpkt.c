@@ -71,7 +71,7 @@ static const VtlPktName vpkt_types[] =
 	{ 0x0011, "Unknown"},
 	{ 0x0012, "Acknowledgement of Mode Setting"},
 	{ 0xAA00, "Acknowledgement of Data"},
-	{ 0xBB00, "Delay Answer"},
+	{ 0xBB00, "Delay Acknowledgment"},
 	{ 0xDD00, "End of Transmission"},
 	{ 0xEE00, "Error"},
 	{ -1, NULL},

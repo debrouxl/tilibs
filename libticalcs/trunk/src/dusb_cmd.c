@@ -665,8 +665,8 @@ int cmd_r_data_ack(CalcHandle *h)
 	return 0;
 }
 
-// 0xBB00: acknowledgement of parameter request
-int cmd_r_param_ack(CalcHandle *h)
+// 0xBB00: delay acknowledgement
+int cmd_r_delay_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
@@ -675,7 +675,7 @@ int cmd_r_param_ack(CalcHandle *h)
 
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR + err_code(pkt);
-	else if(pkt->type != VPKT_PARM_ACK)
+	else if(pkt->type != VPKT_DELAY_ACK)
 		return ERR_INVALID_PACKET;
 
 	PAUSE(100);

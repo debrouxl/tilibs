@@ -146,7 +146,8 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 
 int cmd_r_mode_ack(CalcHandle *h);
 int cmd_r_data_ack(CalcHandle *h);
-int cmd_r_param_ack(CalcHandle *h);
+
+int cmd_r_delay_ack(CalcHandle *h);
 
 int cmd_s_eot(CalcHandle *h);
 int cmd_r_eot(CalcHandle *h);

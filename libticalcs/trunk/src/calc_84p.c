@@ -81,7 +81,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 	param = cp_new_array(1);
 	TRYF(cmd_s_param_request(handle, 1, pid));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
@@ -164,7 +164,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 	params = cp_new_array(size);
 	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_param_data(handle, size, params));
 
 	*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
@@ -337,10 +337,10 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	attrs[1]->data[0] = 0;
 	
 	TRYF(cmd_s_rts(handle, "", ptr->name, size, nattrs, attrs));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_data_ack(handle));
 	TRYF(cmd_s_var_content(handle, size, data));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_data_ack(handle));
 	TRYF(cmd_s_eot(handle));
 
@@ -508,7 +508,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	}
 	
 	TRYF(cmd_s_eot(handle));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	PAUSE(500);
 	TRYF(cmd_r_eot_ack(handle));
 
@@ -636,7 +636,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 	params = cp_new_array(size);
 	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_param_data(handle, size, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
@@ -689,7 +689,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 	
 	attr[1] = ca_new(0x0013, 1);
-	attr[1]->data[0] = 0;
+	attr[1]->data[0] = vr->attr == ATTRB_ARCHIVED ? 1 : 0;
 
 	TRYF(cmd_s_var_delete(handle, "", vr->name, size, attr));
 	TRYF(cmd_r_data_ack(handle));
@@ -724,7 +724,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	params = cp_new_array(size);
 
 	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_ack(handle));
+	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_param_data(handle, size, params));
 
 	strncpy(infos->product_name, params[i]->data, params[i]->size);
