@@ -151,7 +151,7 @@ int cmd_r_param_ack(CalcHandle *h);
 int cmd_s_eot(CalcHandle *h);
 int cmd_r_eot(CalcHandle *h);
 
-int cmd_s_error(CalcHandle *h);
+int cmd_s_error(CalcHandle *h, uint16_t code);
 
 
 #endif

@@ -37,7 +37,8 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
-#define err_code(vtl)		((vtl->data[0] << 8) | vtl->data[1])
+//#define err_code(vtl)		((vtl->data[0] << 8) | vtl->data[1])
+#define err_code(vtl)	(0)
 
 // Helpers
 
@@ -203,7 +204,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_OS_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -251,7 +252,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -292,7 +293,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
@@ -368,7 +369,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 		return ERR_EOT;
 	}
 	else if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
@@ -532,7 +533,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_VAR_CNTS)
 		return ERR_INVALID_PACKET;
 
@@ -639,7 +640,7 @@ int cmd_r_mode_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
@@ -655,10 +656,8 @@ int cmd_r_data_ack(CalcHandle *h)
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
-	printf("<%02x>\n", pkt->type);
-	tifiles_hexdump(pkt->data, pkt->size);
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -675,7 +674,7 @@ int cmd_r_param_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_PARM_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -706,7 +705,7 @@ int cmd_r_eot(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR;
+		return ERR_CALC_ERROR + err_code(pkt);
 	else if(pkt->type != VPKT_EOT)
 		return ERR_INVALID_PACKET;
 
@@ -715,7 +714,16 @@ int cmd_r_eot(CalcHandle *h)
 }
 
 // 0xEE00: error
-int cmd_s_error(CalcHandle *h)
+int cmd_s_error(CalcHandle *h, uint16_t code)
 {
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(2, VPKT_ERROR);
+
+	pkt->data[0] = MSB(code);
+	pkt->data[1] = LSB(code);
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
 	return 0;
 }
