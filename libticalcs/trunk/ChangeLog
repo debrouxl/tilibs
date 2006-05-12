@@ -7,6 +7,7 @@ To do :
 - manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - make dirlist more generic (merge apps & vars)
+- USB OS, ROM dumper & certs
 
 Log:
 
