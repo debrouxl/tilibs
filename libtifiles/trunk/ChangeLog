@@ -10,6 +10,9 @@ To do:
 
 Log:
 
+- 16/05/2006, version 0.1.4: roms
+	- fixed bug in tifiles_file_is_tib which didn't detect TIB files.
+
 - 16/04/2006, version 0.1.3: roms
 	- thanks to O. Armand, fixed a bug in the file attribute (archived flag)
 	- ti8x_read_flash now returns in FlashContent.data_length the length of pure data

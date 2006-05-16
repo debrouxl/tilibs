@@ -521,6 +521,7 @@ TIEXPORT int TICALL tifiles_file_is_tib(const char *filename)
 	if(f == NULL)
 		return 0;
 
+	fread_n_chars(f, 22, str);
 	fread_n_chars(f, strlen(TIB_SIGNATURE), str);
 	str[strlen(TIB_SIGNATURE)] = '\0';
 	if(!strcmp(str, TIB_SIGNATURE)) 
