@@ -398,6 +398,69 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
+	ModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
+	uint32_t pkt_size = 0x3ff;
+	uint32_t hdr_size = 0;
+	uint32_t hdr_offset = 0;
+	FlashContent *ptr;
+	uint8_t *d;
+	int i, r, q;
+
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+		if(ptr->data_type == TI89_AMS || ptr->data_type == TI89_APPL)
+			break;
+	if(ptr == NULL)
+		return -1;
+	if(ptr->data_type != TI89_AMS)
+		return -1;
+
+#if 1
+	printf("data length = %08x %i\n", ptr->data_length, ptr->data_length);
+#endif
+
+	// search for OS header (offset & size)
+	hdr_offset = 2+4;
+	for(i = 6, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
+	hdr_size = i - hdr_offset - 6;
+	
+	printf("hdr_size = %04x\n", hdr_size);
+	tifiles_hexdump(ptr->data_part + hdr_offset, hdr_size);
+
+	// switch to BASIC mode
+	TRYF(cmd_s_mode_set(handle, mode));
+	TRYF(cmd_r_mode_ack(handle));
+
+	// start OS transfer
+	TRYF(cmd_s_os_begin(handle, ptr->data_length));
+#if 1
+	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
+	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
+#endif
+	TRYF(cmd_r_os_ack(handle, &pkt_size));
+
+	// send OS header/signature
+	TRYF(cmd_s_os_header_89(handle, hdr_size, ptr->data_part + hdr_offset));
+	TRYF(cmd_r_os_ack(handle, &pkt_size));
+
+	// send OS data
+	q = ptr->data_length / 0x2000;
+	r = ptr->data_length % 0x2000;
+
+	for(i = 0; i < q; i++)
+	{
+		TRYF(cmd_s_os_data_89(handle, 0x2000, ptr->data_part + i*0x2000));
+		TRYF(cmd_r_os_ack(handle, &pkt_size));
+	}
+	{
+		TRYF(cmd_s_os_data_89(handle, r, ptr->data_part + i*0x2000));
+		TRYF(cmd_r_os_ack(handle, &pkt_size));
+	}
+	
+	TRYF(cmd_s_eot(handle));
+	PAUSE(500);
+	TRYF(cmd_r_eot_ack(handle));
+
 	return 0;
 }
 

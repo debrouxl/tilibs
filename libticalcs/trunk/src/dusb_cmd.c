@@ -258,6 +258,32 @@ int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint
 	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);	
 }
 
+// 0x0004: OS header
+int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(size, VPKT_OS_HEADER);
+	memcpy(pkt->data, data, size);
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
+// 0x0005: OS data
+int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
+{
+	VirtualPacket* pkt;
+
+	pkt = vtl_pkt_new(size, VPKT_OS_DATA);
+	memcpy(pkt->data, data, size);
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	return 0;
+}
+
 // 0x0006: acknowledgement of EOT
 int cmd_r_eot_ack(CalcHandle *h)
 {

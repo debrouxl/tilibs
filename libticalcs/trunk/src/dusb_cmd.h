@@ -124,8 +124,12 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode);
 
 int cmd_s_os_begin(CalcHandle *h, uint32_t size);
 int cmd_r_os_ack(CalcHandle *h, uint32_t *size);
+
 int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
 int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+
+int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data);
+int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data);
 
 int cmd_r_eot_ack(CalcHandle *h);
 
