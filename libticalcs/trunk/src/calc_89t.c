@@ -415,17 +415,10 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	if(ptr->data_type != TI89_AMS)
 		return -1;
 
-#if 1
-	printf("data length = %08x %i\n", ptr->data_length, ptr->data_length);
-#endif
-
 	// search for OS header (offset & size)
 	hdr_offset = 2+4;
 	for(i = 6, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
 	hdr_size = i - hdr_offset - 6;
-	
-	printf("hdr_size = %04x\n", hdr_size);
-	tifiles_hexdump(ptr->data_part + hdr_offset, hdr_size);
 
 	// switch to BASIC mode
 	TRYF(cmd_s_mode_set(handle, mode));
@@ -433,10 +426,6 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd_s_os_begin(handle, ptr->data_length));
-#if 1
-	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
-	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
-#endif
 	TRYF(cmd_r_os_ack(handle, &pkt_size));
 
 	// send OS header/signature

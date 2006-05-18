@@ -459,10 +459,6 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd_s_os_begin(handle, os_size));
-#if 0
-	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
-	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
-#endif
 	TRYF(cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature

@@ -224,9 +224,24 @@ int dusb_recv_acknowledge(CalcHandle *h)
 #endif
 	
 	raw.size = raw.size;
-	if(raw.size != 2)
+	if(raw.size != 2 && raw.size != 4)
 		return ERR_INVALID_PACKET;
 
+	if(raw.type == RPKT_BUF_SIZE_REQ)
+	{
+		uint32_t size;
+
+		if(raw.size != 4)
+			return ERR_INVALID_PACKET;
+
+		size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+		ticalcs_info("  TI->PC: Buffer Size Request (%i bytes)", size);
+		
+		TRYF(dusb_send_buf_size_alloc(h, size));
+
+		TRYF(dusb_recv(h, &raw));
+	}
+	
 	if(raw.type != RPKT_VIRT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
