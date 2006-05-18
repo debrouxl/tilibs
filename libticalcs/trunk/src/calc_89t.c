@@ -439,11 +439,11 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	for(i = 0; i < q; i++)
 	{
 		TRYF(cmd_s_os_data_89(handle, 0x2000, ptr->data_part + i*0x2000));
-		TRYF(cmd_r_os_ack(handle, &pkt_size));
+		TRYF(cmd_r_data_ack(handle));
 	}
 	{
 		TRYF(cmd_s_os_data_89(handle, r, ptr->data_part + i*0x2000));
-		TRYF(cmd_r_os_ack(handle, &pkt_size));
+		TRYF(cmd_r_data_ack(handle));
 	}
 	
 	TRYF(cmd_s_eot(handle));
