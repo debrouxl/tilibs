@@ -459,6 +459,10 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd_s_os_begin(handle, os_size));
+#if 1
+	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
+	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
+#endif
 	TRYF(cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
@@ -476,13 +480,11 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		{
 			TRYF(cmd_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
 			TRYF(cmd_r_data_ack(handle));
-			PAUSE(500);
 		}
 		else if(i == ptr->num_pages-1)	// idem
 		{
 			TRYF(cmd_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
 			TRYF(cmd_r_data_ack(handle));
-			PAUSE(500);
 		}
 		else
 		{
@@ -493,8 +495,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				
 				TRYF(cmd_s_os_data(handle, 
 					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size-4, fp->data + j));
-				TRYF(cmd_r_os_ack(handle, &pkt_size));
-				PAUSE(500);
+				TRYF(cmd_r_data_ack(handle));
 			}
 		}
 	}
