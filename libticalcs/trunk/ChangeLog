@@ -7,13 +7,14 @@ To do :
 - manage ERR packets which can be received at any time
 - macros.h should be endian dependant (configure check ?)
 - make dirlist more generic (merge apps & vars)
-- USB OS, ROM dumper & certs
+- ROM dumper
+- certificates
 
 Log:
 
 - 16/05/2006, version 0.1.2: roms
-	- implemented send_os for Titanium and fixed soem commands
-	- ...
+	- implemented send_os for Titanium/USB and fixed some commands
+	- implemented send_os for TI84+/USB
 
 - 06/05/2006, version 0.1.1: roms
 	- make ticalcs_dirlist_mem_used useable with apps tree
