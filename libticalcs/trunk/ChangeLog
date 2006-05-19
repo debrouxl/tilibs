@@ -11,6 +11,10 @@ To do :
 
 Log:
 
+- 16/05/2006, version 0.1.2: roms
+	- implemented send_os for Titanium and fixed soem commands
+	- ...
+
 - 06/05/2006, version 0.1.1: roms
 	- make ticalcs_dirlist_mem_used useable with apps tree
 	- implemented get_memfree functions

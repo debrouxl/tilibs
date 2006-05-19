@@ -436,10 +436,14 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	q = ptr->data_length / 0x2000;
 	r = ptr->data_length % 0x2000;
 
+	update_->max2 = q;
 	for(i = 0; i < q; i++)
 	{
 		TRYF(cmd_s_os_data_89(handle, 0x2000, ptr->data_part + i*0x2000));
 		TRYF(cmd_r_data_ack(handle));
+
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 	{
 		TRYF(cmd_s_os_data_89(handle, r, ptr->data_part + i*0x2000));
