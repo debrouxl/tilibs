@@ -338,6 +338,10 @@ SOURCE=..\..\src\Rom89.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\rom89t.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\Rom92f2.h
 # End Source File
 # Begin Source File
@@ -346,7 +350,11 @@ SOURCE=..\..\src\romdump.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\romdump.txt
+SOURCE=..\..\docs\romdump.txt
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\..\..\ticables-hex.log"
 # End Source File
 # End Group
 # Begin Group "API"

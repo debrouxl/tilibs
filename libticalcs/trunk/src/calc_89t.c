@@ -487,21 +487,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	FILE *f;
 	int err;
 
-/*uint8_t data[256] = { 0x87, 0x65, 0x43, 0x21 };*/
-
-	/*
-	printf("waiting...\n");
-	TRYF(ticables_cable_recv(handle->cable, data, 4));
-	tifiles_hexdump(data, 4);
-	printf("done...\n");
-	*/
-	/*
-	printf("waiting...\n");
-	TRYF(ticables_cable_send(handle->cable, data, 4));
-	tifiles_hexdump(data, 4);
-	printf("done...\n");
-	*/
-
 	// Copies ROM dump program into a file
 	f = fopen(prgname, "wb");
 	if (f == NULL)
@@ -525,7 +510,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 			return ERR_ABORT;
 		
 		//send RDY request ???
-		PAUSE(1000);
+		PAUSE(1500);
 		err = rom_dump_ready(handle);
 	}
 	while (err == ERROR_READ_TIMEOUT);
