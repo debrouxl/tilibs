@@ -1,3 +1,5 @@
+Kevin Kofler's doc. Thanks from roms !
+
 Preliminary doc:
 
 unsigned char DetectLinkInterface(void); (0x8d2572/0x8d2c92/0x949c72)
