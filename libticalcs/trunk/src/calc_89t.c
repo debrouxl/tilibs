@@ -44,6 +44,8 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
+#include "rom89t.h"
+
 #ifdef __WIN32__
 #undef snprintf
 #define snprintf _snprintf
@@ -476,8 +478,71 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
+extern int rom_dump(CalcHandle* h, FILE* f);
+extern int rom_dump_ready(CalcHandle* h);
+
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
+	const char *prgname = "romdump.89z";
+	FILE *f;
+	int err;
+
+/*uint8_t data[256] = { 0x87, 0x65, 0x43, 0x21 };*/
+
+	/*
+	printf("waiting...\n");
+	TRYF(ticables_cable_recv(handle->cable, data, 4));
+	tifiles_hexdump(data, 4);
+	printf("done...\n");
+	*/
+	/*
+	printf("waiting...\n");
+	TRYF(ticables_cable_send(handle->cable, data, 4));
+	tifiles_hexdump(data, 4);
+	printf("done...\n");
+	*/
+
+	// Copies ROM dump program into a file
+	f = fopen(prgname, "wb");
+	if (f == NULL)
+		return ERR_FILE_OPEN;
+	fwrite(romDump89t, sizeof(uint8_t), romDumpSize89t, f);
+	fclose(f);
+
+	// Transfer program to calc
+	handle->busy = 0;
+	TRYF(ticalcs_calc_send_var2(handle, 0, prgname));
+	unlink(prgname);
+
+	// Wait for user's action (execing program)
+	sprintf(handle->updat->text, _("Waiting user's action..."));
+	handle->updat->label();
+
+	do
+	{
+		handle->updat->refresh();
+		if (handle->updat->cancel)
+			return ERR_ABORT;
+		
+		//send RDY request ???
+		PAUSE(1000);
+		err = rom_dump_ready(handle);
+	}
+	while (err == ERROR_READ_TIMEOUT);
+
+	// Get dump
+	f = fopen(filename, "wb");
+	if (f == NULL)
+		return ERR_OPEN_FILE;
+
+	err = rom_dump(handle, f);
+	if(err)
+	{
+		fclose(f);
+		return err;
+	}
+
+	fclose(f);
 	return 0;
 }
 
@@ -777,7 +842,7 @@ const CalcFncts calc_89t_usb =
 	"Titanium (USB)",
 	N_("TI-89 Titanium thru DirectLink USB"),
 	N_("TI-89 Titanium thru DirectLink USB"),
-	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS | OPS_ROMDUMP |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | 
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	&is_ready,
