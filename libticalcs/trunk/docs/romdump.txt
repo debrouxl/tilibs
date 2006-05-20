@@ -1,9 +1,9 @@
 This document covers the protocol used between hand-helds and ticalcs2 library for ROM dumping.
-Copyright (c) 2005 Romain Liévin et Benjamin Moody
+Copyright (c) 2005-2006 Romain Liévin et Benjamin Moody
 
 This protocol has been designed to be easy, reliable, extendable and resumable.
 
-ROM dumping protocol:
+ROM dumping protocol (LIO or USB are the same):
 
 1°) PC/TI always send data like this:
 
@@ -32,6 +32,7 @@ Possible commands are:
 The 0007 command saves :
 ~ 830 blocks on TI92+ (2048) => 40%
 ~1730 blocks on TI84+ (2048) => 85%
+~1408 blocks on Titanium (4MB) => 35%
 
 2°) TI can reply with the following packets (example of transmission)
 
