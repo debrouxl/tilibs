@@ -34,7 +34,7 @@
 
 // --- Packet Layer
 
-#define BLK_SIZE	1024
+#define BLK_SIZE	32768
 static uint8_t buf[BLK_SIZE + 3*2];
 
 uint16_t CheckSum(uint8_t* data, uint16_t len)
@@ -63,7 +63,7 @@ int SendPacket(uint16_t cmd, uint16_t len, uint8_t* data)
   if(ret) return ret;
 
 	// data
-	ret = USB_SendData(buf, len, TIMEOUT);
+	ret = USB_SendData(data, len, TIMEOUT);
   if(ret) return ret;
 	
 	// checksum
