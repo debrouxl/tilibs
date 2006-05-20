@@ -35,8 +35,8 @@ The 0007 command saves :
 
 2°) TI can reply with the following packets (example of transmission)
 
-PC: AA55 0000 AA55			check whether ready (for sync after a transfer interrupt)
-TI: 0000 0000 0000			ready
+PC: AA55 0000 FF00			check whether ready (for sync after a transfer interrupt)
+TI: 0001 0000 0001			ready
 
 PC: 0003 0000 0003			request ROM size
 TI: 0003 0004 LLLHHLHH chk	returns size as a long
@@ -47,14 +47,14 @@ TI: 0006 0400 1024 bytes of data chk
 PC: 0005 0004 00000400 0409	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
-PC: AA55 0000 AA55			check whether ready (for sync after a transfer interrupt)
-TI: 0000 0000 0000			ready
+PC: AA55 0000 FF00			check whether ready (for sync after a transfer interrupt)
+TI: 0001 0000 0001			ready
 
 PC: 0005 0004 00000400 0009	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
 PC: 0005 0004 00000800 0009	request block at addr
-TI: 0007 0004 0400 FF00		1024 bytes filled with 0x00FF
+TI: 0007 0004 0400 0411		1024 bytes filled with 0x00FF
 
 PC: 0002 0000 0002			exit dumper
 TI: 0002 0000 0002
@@ -62,8 +62,8 @@ TI: 0002 0000 0002
 3°) transmission error (timeout with SilverLink for instance)
 
 Send this until dumper replies (used to synchronize again):
-PC: AA55 0000 AA55		check whether ready (for sync after a transfer interrupt)
-TI: 0000 0000 0000		ready
+PC: AA55 0000 FF00		check whether ready (for sync after a transfer interrupt)
+TI: 0001 0000 0001		ready
 
 goes on...
 
