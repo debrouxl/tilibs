@@ -1,0 +1,116 @@
+Preliminary doc:
+
+unsigned char DetectLinkInterface(void); (0x8d2572/0x8d2c92/0x949c72)
+Detects if the USB link is usable. Returns 1 (USB preferred) if it is and 2
+(legacy DBus IO preferred) if it isn't. This routine uses DetectUSB first,
+and then runs a complex test transfer to double-check. This test transfer
+needs to be handled on the receiving side as well, so it is usually easier
+to just use DetectUSB.
+
+short DetectUSB(void); (0x94a174/0x950fdc/0x8864de)
+Quickly detects if the USB link is usable. Returns 0 if USB is available,
+or a non-zero error code if it isn't.
+
+unsigned char DetectReceiveInterface(short allowLIO); (0x8d25a4/0x8d2cc4/0x949ca4)
+Waits for a calculator to connect on either the USB or the LIO interface.
+Returns:
+* 0 if something is detected on the USB link.
+* 2 if allowLIO is non-zero, nothing is detected on the USB link and
+  something is detected on the LIO link.
+* 3 if interrupted by the user ([ON] key).
+If you want to wait for something to be received on the USB link,
+DetectReceiveInterface(FALSE) is the function to use, but there's a catch:
+only one calculator can use DetectReceiveInterface for each transfer. (USB is
+a host/client protocol.) You absolutely MUST call USBReset on both calculators
+before using DetectReceiveInterface on the other calculator. This is very much
+unlike the LIO interface, which is peer-to-peer. Also, the other calculator
+MUST call DetectUSB to synchronize with a DetectReceiveInterface call. To sum
+up, for a transfer which is synchronized by the sender (such as a move in a
+turn-based game), the sending calculator should call: USBLinkClose();
+USBLinkReset(); DetectUSB(); USB_SendData(src,size,2000);, the receiving
+calculator should call: USBLinkClose(); USBLinkReset();
+DetectReceiveInterface(FALSE); USB_RecvData(src,size,2000);.
+
+short USB_SendData(const void *buffer, size_t size, long timeout); (0x949b86/0x94a36e/0x9433d2)
+Sends size bytes from buffer over the USB link. For "timeout", try 2000. (I
+am not sure this is actually a timeout. AMS always uses 2000, so you should
+do the same.) Returns 0 if successful, some non-0 error code otherwise.
+
+short USB_RecvData(void *buffer, size_t size, long timeout); (0x949c7e/0x94a466/0x9434ca)
+Receives size bytes into buffer from the USB link. For "timeout", try 2000. (I
+am not sure this is actually a timeout. AMS always uses 2000, so you should
+do the same.) Returns 0 if successful, some non-0 error code otherwise.
+
+short USBLinkClose(void); (0x949c6a/0x94a452/0x9434b6)
+This function is used by AMS to finalize a file transfer.
+Returns 0 if successful, some non-0 error code otherwise.
+
+void USBLinkReset(void); (0x94a284/0x950ffe/0x886500)
+This function closes and resets the USB link. It is used by AMS when done with
+an USB transfer, and sometimes also before initiating one. You should always
+call this function when done with a transfer.
+
+void USBCheckReceived(void); (0x9480d4/0x9488bc/0x9416f6)
+Subroutine of DetectReceiveInterface. Checks whether something is received on
+the USB link. See USBCheckStatus.
+Important: The "catch" described for DetectReceiveInterface also applies to
+           this subroutine.
+
+short USBCheckStatus(void); (0x949d74/0x94a55c/0x9435c0)
+Subroutine of DetectReceiveInterface. Checks whether USBCheckReceived was
+successful, i.e. something was received on the USB link. USBCheckReceived (or
+possibly some other status checking routine, but that's the one I know about)
+must have been called first for this routine to return meaningful results.
+Returns 1 on success, 0 on failure.
+
+Hacks (AMS 3.00/3.01):
+IsSupportedAMS300: long long at XR_stringPtr-116 is 76021003261f4e75
+DetectLinkInterface = XR_stringPtr-158
+DetectReceiveInterface = XR_stringPtr-108
+
+Hacks (AMS 3.10):
+IsSupportedAMS300: long long at push_offset_array-1112 is 76021003261f4e75
+DetectLinkInterface = push_offset_array-1154
+DetectReceiveInterface = push_offset_array-1104
+
+Hacks (all AMS):
+DetectUSB: address is at DetectLinkInterface+4.
+USBCheckReceived: address is at DetectReceiveInterface+16
+USBCheckStatus: address is at DetectReceiveInterface+22
+USB_SendData = USBCheckStatus-494
+USB_RecvData = USBCheckStatus-246
+USBLinkClose = USBCheckStatus-266
+USBLinkReset: address is at DetectLinkInterface+36.
+
+// USB link routines
+#define XR_stringPtr_addr (_rom_call_addr(293))
+#define push_offset_array_addr (_rom_call_addr(3c4))
+#define IsSupportedAMS300 IsSupportedUSBAMS /* deprecated */
+#define IsSupportedUSBAMS() (IsSupportedUSBAMS30x()||IsSupportedUSBAMS31x())
+#define IsSupportedUSBAMS30x() (*(long long*)(XR_stringPtr_addr-116)==0x76021003261f4e75ll)
+#define IsSupportedUSBAMS31x() (*(long long*)(push_offset_array_addr-1112)==0x76021003261f4e75ll)
+#define DetectLinkInterface30x ((unsigned char(*)(void))(XR_stringPtr_addr-158))
+#define DetectReceiveInterface30x ((unsigned char(*)(short))(XR_stringPtr_addr-108))
+#define DetectLinkInterface31x ((unsigned char(*)(void))(push_offset_array_addr-1154))
+#define DetectReceiveInterface31x ((unsigned char(*)(short))(push_offset_array_addr-1104))
+#define DetectLinkInterface (IsSupportedUSBAMS31x()?DetectLinkInterface31x:DetectLinkInterface30x)
+#define DetectReceiveInterface (IsSupportedUSBAMS31x()?DetectReceiveInterface31x:DetectReceiveInterface30x)
+#define DetectUSB (*(short(**)(void))(DetectLinkInterface+4))
+#define USBCheckReceived (*(void(**)(void))(DetectReceiveInterface+16))
+#define USBCheckStatus (*(short(**)(void))(DetectReceiveInterface+22))
+#define USB_SendData ((short (*)(const void *, size_t, long))(USBCheckStatus-494))
+#define USB_RecvData ((short (*)(void *, size_t, long))(USBCheckStatus-246))
+#define USBLinkClose ((short(*)(void))(USBCheckStatus-266))
+#define USBLinkReset (*(void(**)(void))(DetectLinkInterface+36))
+
+Possible hacks:
+DetectLinkInterface: search for 76021003261f4e75, subtract 42. (Backwards
+search from XR_stringPtr=0x2d2610? XR_stringPtr-158?)
+DetectReceiveInterface: search for 76021003261f4e75, add 8. (Backwards
+search from XR_stringPtr=0x2d2610? XR_stringPtr-108?)
+USB_SendData = USBLinkClose-228
+USB_RecvData = USBLinkClose+20
+
+Signatures:
+USB_SendData, USB_RecvData: 4e56ffe848ee1c18ffec4a79
+USB_LinkClose: 3f3900008xxx4ebafdc8548f (xxx=55C for 3.00, 560 for 3.01, a84 for 3.10)
