@@ -28,6 +28,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 #include "ticonv.h"
 #include "ticalcs.h"

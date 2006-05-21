@@ -284,8 +284,8 @@ static int probe_calc(CalcHandle *h)
 {
 	CalcModel model;
 
-	//ticalcs_probe_calc(h->cable, &model);
-	ticalcs_probe_usb_calcs(h->cable, &model);
+	ticalcs_probe_calc(h->cable, &model);
+	//ticalcs_probe_usb_calcs(h->cable, &model);
 	printf("Found: <%s>", ticalcs_model_to_string(model));
 
 	return 0;

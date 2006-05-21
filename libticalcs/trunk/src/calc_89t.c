@@ -197,7 +197,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	uint16_t pids[] = { PID_FREE_RAM, PID_FREE_FLASH };
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	CalcParam **params;
-	int i = 0;
 
 	params = cp_new_array(size);
 	TRYF(cmd_s_param_request(handle, size, pids));
@@ -303,11 +302,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
 	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
-	return 0;
-}
-
-static int		recv_backup	(CalcHandle* handle, BackupContent* content)
-{
 	return 0;
 }
 
