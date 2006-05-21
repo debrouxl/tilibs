@@ -261,30 +261,7 @@ void _main(void)
   sprintf(str, "by The TiLP Team");
   DrawStr(0, 80, str, A_NORMAL);  
   
-  /*
-	{
-		char tmp[256] = { 0X12, 0x34, 0x56, 0x78 };
-		int n;
-	
-	  n = USB_SendData(tmp, 4, TIMEOUT);
-  
-	  sprintf(str, "Done: %i", n);
-	  DrawStr(0, 60, str, A_REPLACE);
-	}
-	*/
-	/*
-	{
-		char tmp[256] = { 0X12, 0x34, 0x56, 0x78 };
-		int n;
-	
-	  n = USB_RecvData(tmp, 4, TIMEOUT);
-  
-	  sprintf(str, "%i: %02x%02x%02x%02x", n, tmp[0], tmp[1], tmp[2], tmp[3]);
-	  DrawStr(0, 60, str, A_REPLACE);
-	}
-	*/
-
-	Dump();
+  Dump();
   
   return;
 }

@@ -243,6 +243,7 @@ int Dump(void)
 		}
 	}	
 	
+	//OSLinkClose();
 	return 0;
 }
 
@@ -281,53 +282,7 @@ void _main(void)
   sprintf(str, "by The TiLP Team");
   DrawStr(0, 80, str, A_NORMAL);  
 
-	Dump();
-	//OSLinkReset();
+  Dump();
   
   return;
-}
-
-void test(void)
-{
-	//  uint16_t cmd, len;
-//  char tmp[256] = { 0X12, 0x34, 0x56, 0x78 };
-//	int i = 0;
-//	int ret;
-	
-	/*  
-  n = LIO_SendData(tmp, 4);
-  
-  sprintf(str, "Done: %i", n);
-  DrawStr(0, 60, str, A_REPLACE);
-*/   
- 
-/*
-  while(!kbhit())
-  {
-  	LIO_RecvData(tmp, 1, 0);
-  	LIO_SendData(tmp, 1);
-  }
-  */
-  
-  /*
-  while(!kbhit())
-  {
-  	SendPacket(0x1234, 0, NULL);
-  }
-  */
-  
-/*  
-  while(!kbhit())
-  {
-  	ret = RecvPacket(&cmd, &len, tmp);
-  #if 0
-  	if(ret)
-  	{
-  	sprintf(str, "Done: %i", ret);
-	  DrawStr(0, 0+20*i++, str, A_REPLACE);
-  	}
-  	#endif
-  	SendPacket(cmd, len, tmp);
-  }
-  */
 }
