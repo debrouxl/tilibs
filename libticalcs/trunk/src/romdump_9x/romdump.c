@@ -220,8 +220,6 @@ int Dump(void)
 					addr = 0;
 #endif
 			
-			  //sprintf(str, "%02x %02x %02x %02x     ", buf[0], buf[1], buf[2], buf[3]);
-			  //DrawStr(0, 80, str, A_REPLACE	);
 				sprintf(str, "Done: %lu/%luKB     ", addr >> 10, ROM_size >> 10);
 				DrawStr(0, 60, str, A_REPLACE	);
 				
