@@ -37,7 +37,6 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	rwfile.c \
 	tifiles.c \
 	tigroup.c \
-	transcode.c \
 	type2str.c \
 	types73.c types82.c types83.c types83p.c types84p.c \
 	types85.c types86.c \
