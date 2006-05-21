@@ -15,6 +15,7 @@ Log:
 	- implemented send_os for Titanium/USB and fixed some commands
 	- implemented send_os for TI84+/USB
 	- added Titanium/USB ROM dumper
+	- increased ROM dumper block size from 1KB to 4KB (faster)
 
 - 06/05/2006, version 0.1.1: roms
 	- make ticalcs_dirlist_mem_used useable with apps tree

@@ -42,7 +42,7 @@
 
 // --- Packet Layer
 
-#define BLK_SIZE	1024
+#define BLK_SIZE	4096
 static uint8_t buf[BLK_SIZE + 3*2];
 
 uint16_t CheckSum(uint8_t* data, uint16_t len)
