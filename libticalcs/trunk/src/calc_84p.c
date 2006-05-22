@@ -484,11 +484,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		{
 			for(j = 0; j < fp->size; j += 256/*(pkt_size-4)*/)
 			{
-				uint16_t addr = fp->addr + j;
-				uint8_t* data = fp->data + j;
-				
 				TRYF(cmd_s_os_data(handle, 
-					fp->addr, (uint8_t)fp->page, fp->flag, pkt_size-4, fp->data + j));
+					(uint16_t)(fp->addr + j), (uint8_t)fp->page, fp->flag, 
+					pkt_size-4, fp->data + j));
 				TRYF(cmd_r_data_ack(handle));
 			}
 		}
