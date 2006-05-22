@@ -130,9 +130,6 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	folder = t_node_new(NULL);
-	t_node_append(*vars, folder);
-
 	TRYF(cmd_s_dirlist_request(handle, size, aids));
 	for(;;)
 	{
