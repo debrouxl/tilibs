@@ -66,7 +66,7 @@ TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
 	int ret = 0;
 
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -163,7 +163,10 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	int ret = 0;
 
 	if(!handle->open)
-		return -1;
+	{
+		printf("merde !!!\n");
+		return ERR_NOT_OPEN;
+	}
 	if(handle->busy)
 		return ERR_BUSY;
 	if(!len)
@@ -194,7 +197,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 	int ret = 0;
 
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -223,7 +226,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 	if(!len)
@@ -254,7 +257,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -282,7 +285,7 @@ TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *statu
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -308,7 +311,7 @@ TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -334,7 +337,7 @@ TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -359,7 +362,7 @@ TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 
@@ -384,7 +387,7 @@ TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
 	int ret = 0;
 	
 	if(!handle->open)
-		return -1;
+		return ERR_NOT_OPEN;
 	if(handle->busy)
 		return ERR_BUSY;
 

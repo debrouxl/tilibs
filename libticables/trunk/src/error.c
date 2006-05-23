@@ -279,7 +279,14 @@ TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
 			"\n",
 			_("Cause: Check that your cable is connected or not stalled. Try to unplug/plug it."),
 			NULL);
-		break;		
+		break;	
+	case ERR_NOT_OPEN:
+		*message = g_strconcat(
+			_("Msg: attempting to use a cable which has not been open before."),
+			"\n",
+			_("Cause: Internal error."),
+			NULL);
+		break;
 
   	default:
 	    // propagate error code
