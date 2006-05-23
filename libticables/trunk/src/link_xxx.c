@@ -163,10 +163,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
 	int ret = 0;
 
 	if(!handle->open)
-	{
-		printf("merde !!!\n");
 		return ERR_NOT_OPEN;
-	}
 	if(handle->busy)
 		return ERR_BUSY;
 	if(!len)
