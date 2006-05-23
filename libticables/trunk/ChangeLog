@@ -6,6 +6,7 @@ Log:
 	- added ability to retrieve the USB hand-held connected from its PID
 	- improved ticables_probing_do which can probes all cables or USB cables only (faster).
 	- definitely fixed return value for probing functions
+	- fixed link_xxx which returns -1 instead of ERR_NOT_OPEN. Thanks to Tyler Cassidy !
 
 - 17/04/2006, version 0.0.8: roms
 	- rewritten data logging system
