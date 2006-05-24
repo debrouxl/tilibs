@@ -1,5 +1,8 @@
 SubVersion: $Id$
 
+To do:
+- remove /proc/bus/usb from ticables2 => deprecated !
+
 Log:
 
 - 06/05/2006, version 0.0.9: roms
