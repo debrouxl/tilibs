@@ -8,7 +8,7 @@ SUBDIRS += docs
 endif
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST =
+EXTRA_DIST = LOGO
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticonv.pc

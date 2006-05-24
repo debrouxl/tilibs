@@ -204,7 +204,7 @@ target_alias = @target_alias@
 SUBDIRS = src tests $(am__append_1)
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = 
+EXTRA_DIST = LOGO
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticonv.pc
 all: config.h

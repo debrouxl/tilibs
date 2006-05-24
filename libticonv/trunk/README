@@ -1,11 +1,11 @@
- _______ _____   _____      _     _
-|__   __|_   _| / ____|    | |   | |
-   | |    | |  | |     __ _| |__ | | ___  ___
-   | |    | |  | |    / _` | '_ \| |/ _ \/ __|
-   | |   _| |_ | |___| (_| | |_) | |  __/\__ \
-   |_|  |_____(_)_____\__,_|_.__/|_|\___||___/
+ _______ _____    ____    ___   \ \______   __         __
+|__   __|_   _|  / ___|  /   \  /  __ _  \ \  \       /  /
+   | |    | |   | /     |  _  | | /    \ |  \  \     /  /
+   | |    | |   | |     | / \ | | |    | |   \  \   /  /
+   | |   _| |_  | \___  | \_/ | | |    | |    \  \_/  /
+   |_|  |_____|  \____|  \___/  |_|    |_|     \_____/
 
-   Library v0.x.x            by Romain Liévin
+   v0.1.2             by Romain Liévin
 
 
 Persons who want reuse this library (Linux, Windows, Mac OS-X, FreeBSD)
@@ -37,8 +37,8 @@ and
 Compilation
 --------------------------------------------------------------------------
 
-Untar the libtifiles-X.X.X.tar.gz archive (tar -xvzf),
-change directory to libtifiles directory.
+Untar the libticonv-X.X.X.tar.gz archive (tar -xvzf),
+change directory to libticonv directory.
 
 Type "./configure"
 
@@ -54,7 +54,7 @@ Availability
 Copyright
 --------------------------------------------------------------------------
 
-tifiles library is Copyright (C) 1999-2006 by the TiLP team:
+ticonv library is Copyright (C) 1999-2006 by the TiLP team:
 <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public
