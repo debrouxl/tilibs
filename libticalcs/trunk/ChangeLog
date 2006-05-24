@@ -5,9 +5,7 @@ Set svn:eol property to native on all files
 To do : 
 - key codes for TI8x (check)
 - manage ERR packets which can be received at any time
-- macros.h should be endian dependant (configure check ?)
 - make dirlist more generic (merge apps & vars)
-- certificates
 
 Log:
 
