@@ -119,6 +119,9 @@ void		ca_del(CalcAttr* cp);
 CalcAttr**	ca_new_array(int size);
 void		ca_del_array(int size, CalcAttr **attrs);
 
+#define CA(x)   (const CalcAttr **)(x)
+#define CP(x)   (const CalcParam **)(x)
+
 // Command wrappers
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode);
 
