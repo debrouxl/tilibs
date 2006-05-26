@@ -276,8 +276,4 @@
 #define KEY83P_vnA            0xFA
 #define KEY83P_wnA            0xFB
 
-// Array of keys
-
-extern const CalcKey TI83P_KEYS[];
-
 #endif

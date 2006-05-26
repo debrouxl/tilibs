@@ -119,8 +119,4 @@
 #define KEY92P_SHIFT  16384
 #define KEY92P_DRAG   32768
 
-// Array of keys
-
-extern const CalcKey TI92P_KEYS[];
-
 #endif

@@ -707,10 +707,6 @@
 #define KEY83_DiagOff          fc97
 #define KEY83_un1              fc98
 #define KEY83_vn1              fc99
-
-// Array of keys
- 
-extern const CalcKey TI83_KEYS[];
  
 #endif
 

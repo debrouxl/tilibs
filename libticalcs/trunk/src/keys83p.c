@@ -28,7 +28,7 @@
   From 0x00 to 0x80, ASCII codes
   From 0x80, I do not know where I can put them...
 */
-const CalcKey TI83P_KEYS[] = 
+const OldCalcKeys_ TI83P_KEYS[] = 
 {
 /* 0x00 */
   {"", "", 0, "", 0, "", 0, "", 0, "", 0},

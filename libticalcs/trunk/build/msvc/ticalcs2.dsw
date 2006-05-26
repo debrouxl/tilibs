@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "ticables2"=..\..\cables\win32\ticables2.dsp - Package Owner=<4>
+Project: "ticables2"=..\..\..\ticables2\build\msvc\ticables2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -29,11 +29,26 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name tifiles2
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ticonv
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "tifiles2"=..\..\files\win32\tifiles2.dsp - Package Owner=<4>
+Project: "ticonv"=..\..\..\ticonv\build\msvc\ticonv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "tifiles2"=..\..\..\tifiles2\build\msvc\tifiles2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

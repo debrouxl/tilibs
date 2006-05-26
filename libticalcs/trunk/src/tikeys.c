@@ -28,11 +28,6 @@
 #include "keys89.h"
 #include "keys92p.h"
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4028 )
-#endif
-
 extern const CalcKey TI73_KEYS[];
 extern const CalcKey TI83P_KEYS[];
 extern const CalcKey TI89_KEYS[];
@@ -46,7 +41,7 @@ extern const CalcKey TI92P_KEYS[];
  *
  * Return value: a TI key.
  **/
-TIEXPORT CalcKey TICALL ticalcs_keys_73(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_73(uint8_t ascii_code)
 {
   return TI73_KEYS[ascii_code];
 }
@@ -59,7 +54,7 @@ TIEXPORT CalcKey TICALL ticalcs_keys_73(unsigned char ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT CalcKey TICALL ticalcs_keys_83p(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code)
 {
   return TI83P_KEYS[ascii_code];
 }
@@ -72,7 +67,7 @@ TIEXPORT CalcKey TICALL ticalcs_keys_83p(unsigned char ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT CalcKey TICALL ticalcs_keys_89(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_89(uint8_t ascii_code)
 {
   return TI89_KEYS[ascii_code];
 }
@@ -85,11 +80,7 @@ TIEXPORT CalcKey TICALL ticalcs_keys_89(unsigned char ascii_code)
  *
  * Return value: a TI key.
  **/
-TIEXPORT CalcKey TICALL ticalcs_keys_92p(unsigned char ascii_code)
+TIEXPORT CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code)
 {
   return TI92P_KEYS[ascii_code];
 }
-
-#ifdef _MSC_VER
-#pragma warning( pop ) 
-#endif

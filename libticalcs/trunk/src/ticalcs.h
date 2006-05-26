@@ -269,6 +269,22 @@ typedef struct
 
 } CalcKey;
 
+typedef struct
+{
+	char		*key_name;
+	
+	char		*normal_name;
+	uint16_t	normal_value;
+	char		*shift_name;
+	uint16_t	shift_value;
+	char		*second_name;
+	uint16_t	second_value;
+	char		*diamond_name;
+	uint16_t	diamond_value;
+	char		*alpha_name;
+	uint16_t	alpha_value;
+} OldCalcKeys_;
+
 /**
  * CalcClock:
  * @year: year

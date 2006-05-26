@@ -171,8 +171,4 @@
 #define KEY86_F9               0xCA
 #define KEY86_F10              0xCB
 
-// Array of keys
-
-extern const CalcKey TI86_KEYS[];
-
 #endif

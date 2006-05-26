@@ -266,9 +266,5 @@
 #define KEY73_ConvMass              0xfa
 #define KEY73_ConvSpeed             0xfb
 
-// Array of keys
-
-extern const CalcKey TI73_KEYS[];
-
 #endif
 

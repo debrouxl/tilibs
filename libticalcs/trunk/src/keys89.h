@@ -91,8 +91,4 @@
 #define KEY89_SHIFT  16384
 #define KEY89_ALPHA  32768
 
-// Array of keys
-
-extern const CalcKey TI89_KEYS[];
-
 #endif
