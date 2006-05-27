@@ -624,7 +624,6 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
         // Anyways, lets Hit that Enter Key!
 		TRYF(ti73_send_KEY(keys[i]));
 	    TRYF(ti73_recv_ACK(&keys[i]));	// when the key is received
-		send_key(handle, keys[i]);
 		PAUSE(200);
 	}
 	else
