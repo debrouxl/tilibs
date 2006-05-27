@@ -619,7 +619,11 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
             PAUSE(100);
 		}
 
-		// Enter send 2nd ACK after ROM dumper has finished to exec
+		// This fixes the bug with it always timing out, send_key normally requests an ACK
+		// but when the program is running it will timeout, so lets do it this way.
+        // Anyways, lets Hit that Enter Key!
+		TRYF(ti73_send_KEY(keys[i]));
+	    TRYF(ti73_recv_ACK(&keys[i]));	// when the key is received
 		send_key(handle, keys[i]);
 		PAUSE(200);
 	}
