@@ -8,8 +8,9 @@ To do :
 
 Log:
 
-- 26/05/2006, version 0.1.3: roms
-	- definetely fixed warnings on TI keys structures
+- 26/05/2006, version 0.1.3: roms/tyler
+	- definetely fixed warnings on TI keys structures (roms)
+	- fixed TI-83+/TI-84+ ROM Dumping Timeout Error Bug (tyler)
 
 - 16/05/2006, version 0.1.2: roms
 	- implemented send_os for Titanium/USB and fixed some commands
