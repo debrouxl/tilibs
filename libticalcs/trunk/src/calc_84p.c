@@ -433,6 +433,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		//tifiles_hexdump(fp->data, 16);
 	}
 	printf("data length = %08x %i\n", ptr->data_length, ptr->data_length);
+	return ERR_ABORT;
 #endif
 
 	for(i = 0; i < ptr->num_pages; i++)
