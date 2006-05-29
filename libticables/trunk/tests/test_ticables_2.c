@@ -72,13 +72,6 @@ int main(int argc, char **argv)
 	return 0;
 #endif
 
-#if 1
-	ticables_probing_do(&probing, 5, PROBE_USB);
-	for(i = 1; i <= 7; i++) 
-		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
-	ticables_probing_finish(&probing);
-#endif
-
 #if 0
 	printf("check_for_root: %i \n", check_for_root());
 	printf("check_for_tty: %i\n", check_for_tty("/dev/ttyS2"));
@@ -87,6 +80,22 @@ int main(int argc, char **argv)
 
 	// init lib
 	ticables_library_init();
+
+#if 0
+	ticables_probing_do(&probing, 5, PROBE_ALL);
+	for(i = 1; i <= 7; i++) 
+		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
+	ticables_probing_finish(&probing);
+#endif
+
+#if 1
+	{
+		int *list = NULL;
+		int n;
+
+		ticables_get_usb_devices(&list, &n);
+	}
+#endif
 
 	// set cable
 	handle = ticables_handle_new(CABLE_SLV, PORT_1);

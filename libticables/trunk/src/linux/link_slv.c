@@ -210,10 +210,8 @@ static usb_infos tigl_infos[] =
 };
 
 // list of devices found 
-static usb_infos tigl_devices[MAX_CABLES];// = { 0 }; 
+static usb_infos tigl_devices[MAX_CABLES];
 static int ndevices = 0;
-
-int probed_usb_devices[MAX_CABLES] = { 0 };
 
 // internal structure for holding data
 typedef struct
@@ -245,7 +243,9 @@ static void find_tigl_devices(void)
     struct usb_device *dev;
     int i;
     
+	memset(tigl_devices, MAX_CABLES+1, sizeof(usb_infos));
     ndevices = 0;
+
     /* loop taken from testlibusb.c */
     for (bus = usb_busses; bus; bus = bus->next)
     {
@@ -673,9 +673,6 @@ static int slv_probe(CableHandle *h)
     
     TRYC(enumerate_tigl_devices());
 
-    for( i =0; i < MAX_CABLES; i++)
-	probed_usb_devices[i] = tigl_devices[i].pid;
-    
     for(i = 0; i < MAX_CABLES; i++)
     {
 	if(tigl_devices[i].pid == PID_TIGLUSB)
@@ -690,9 +687,6 @@ static int raw_probe(CableHandle *h)
     int i;
 
     TRYC(enumerate_tigl_devices());
-
-    for( i =0; i < MAX_CABLES; i++)
-        probed_usb_devices[i] = tigl_devices[i].pid;
 
     for(i = 0; i < MAX_CABLES; i++)
     {
@@ -819,3 +813,19 @@ const CableFncts cable_raw =
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
 };
+
+//=======================
+
+// returns number of devices and list of PIDs (dynamically allocated)
+TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
+{
+	int i;
+
+    TRYC(enumerate_tigl_devices());
+
+	*list = (int *)calloc(MAX_CABLES+1, sizeof(int));
+    for( i =0; i < MAX_CABLES; i++)
+        (*list)[i] = tigl_devices[i].pid;
+
+    return 0;
+}

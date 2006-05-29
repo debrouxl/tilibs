@@ -63,8 +63,6 @@ TIGLUSB_RESET2  dynTiglUsbReset = NULL;
 TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
 TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
 
-int probed_usb_devices[USB_MAX] = { 0 };
-
 static int slv_prepare(CableHandle *h)
 {
 	char str[64];
@@ -269,7 +267,6 @@ static int slv_probe(CableHandle *h)
     
 	if(ret > 0)
 	{
-		memcpy(probed_usb_devices, list, USB_MAX);
 		if(list[h->address-1] == PID_TIGLUSB)
 		{
 			if(open)
@@ -319,7 +316,6 @@ static int raw_probe(CableHandle *h)
     
 	if(ret > 0)
 	{
-		memcpy(probed_usb_devices, list, USB_MAX);
 		if(list[h->address-1] == PID_TI89TM || list[h->address-1] == PID_TI84P)
 		{
 			if(open)
@@ -449,3 +445,42 @@ const CableFncts cable_raw =
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
 };
+
+//=======================
+
+// returns number of devices and list of PIDs (dynamically allocated)
+TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
+{
+	HANDLE	hDll;
+	TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
+	int ret;
+	int open = 0;
+	PUINT tmp;
+
+	hDll = LoadLibrary("TIGLUSB.DLL");
+	if (hDll == NULL) 
+	{
+		ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
+		return ERR_SLV_LOADLIBRARY;
+	}
+
+	dynTiglUsbProbe = (TIGLUSB_PROBE2) GetProcAddress(hDll, "TiglUsbProbe2");
+	if (!dynTiglUsbProbe) 
+	{
+		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
+		FreeLibrary(hDll);
+		return ERR_SLV_FREELIBRARY;
+	}
+
+	ret = dynTiglUsbProbe(&tmp);
+	// we need to copy the result; tmp points on DLL space 
+	// which is not valid after call to FreeLibrary
+	*list = (int *)calloc(USB_MAX+1, sizeof(int));
+	if(ret > 0)
+		memcpy(*list, tmp, USB_MAX+1);
+
+	FreeLibrary(hDll);
+	dynTiglUsbProbe = NULL;
+
+	return 0;
+}

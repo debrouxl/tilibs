@@ -114,6 +114,8 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 	return 0;
 }
 
+extern int usb_probe_devices(unsigned int **list);
+
 /**
  * ticables_get_usb_devices:
  * @array: address of a NULL-terminated allocated array of integers (PIDs).
@@ -123,17 +125,21 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
  * #ticables_probing_do(,,PROBE_USB).
  * The array must be freed when no longer used.
  *
- * Return value: 0 if successful, ER_NO_CABLE if none found.
+ * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len)
+TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
 {
-	extern int probed_usb_devices[];
-	int *p;
+	int i, *p;
+	int ret = 0;
 
-	for(p = probed_usb_devices, *len = 0; *p; p++, (*len)++);
+	ret = usb_probe_devices(list);
+	if(ret)
+		return ret;
 
-	*array = (int *)calloc(*len, sizeof(int));
-	memcpy(*array, probed_usb_devices, *len);
+	for(p = *list, i = 0; *p; p++, i++);
+		//printf("%i: %04x\n", i, (*list)[i]);
 
-	return len ? 0 : ERR_NO_CABLE;
+	if(len) *len = i;
+
+	return 0;
 }
