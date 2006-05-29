@@ -116,7 +116,7 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 
 /**
  * ticables_get_usb_devices:
- * @array: address of a NULL-terminated allocated array of integers.
+ * @array: address of a NULL-terminated allocated array of integers (PIDs).
  * @length: number of detected USB devices.
  *
  * Returns the list of USB PIDs as detected after a call to #ticables_cable_probe or
