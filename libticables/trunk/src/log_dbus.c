@@ -75,8 +75,10 @@ int log_dbus_stop(void)
 	g_unlink(ofn);
 	g_rename(ifn, ofn);
 
-	g_free(ifn);
-	g_free(ofn);
+	g_free(ifn); 
+	ifn = NULL;
+	g_free(ofn); 
+	ofn = NULL;
 
   	return 0;
 }

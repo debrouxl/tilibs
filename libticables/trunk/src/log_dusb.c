@@ -166,7 +166,9 @@ int log_dusb_stop(void)
     		fclose(log);
 			log = NULL;
 	}
+
   	g_free(fn);
+	fn = NULL;
 
   	return 0;
 }

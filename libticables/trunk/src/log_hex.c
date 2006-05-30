@@ -100,7 +100,9 @@ int log_hex_stop(void)
     		fclose(log);
 			log = NULL;
 	}
+
   	g_free(fn);
+	fn = NULL;
 
   	return 0;
 }
