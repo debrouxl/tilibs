@@ -80,6 +80,19 @@ typedef enum
 } CablePort;
 
 /**
+ * UsbPid:
+ *
+ * An enumeration which contains the following devices:
+ **/
+typedef enum 
+{
+	PID_UNKNOWN	= 0,
+	PID_TIGLUSB = 0xE001,
+	PID_TI89TM	= 0xE004,
+	PID_TI84P	= 0xE008,
+} UsbPid;
+
+/**
  * CableStatus:
  *
  * An enumeration which contains the following values:
@@ -296,6 +309,9 @@ typedef struct
 
 	TIEXPORT const char* TICALL ticables_port_to_string(CablePort port);
 	TIEXPORT CablePort   TICALL ticables_string_to_port(const char *str);
+
+	TIEXPORT const char* TICALL ticables_usbpid_to_string(UsbPid pid);
+	TIEXPORT UsbPid		 TICALL ticables_string_to_usbpid(const char *str);
 
 	// probe.c
 	TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);

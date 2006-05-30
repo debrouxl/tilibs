@@ -127,3 +127,42 @@ TIEXPORT CablePort TICALL ticables_string_to_port(const char *str)
 
 	return PORT_0;
 }
+
+/**
+ * ticables_usbpid_to_string:
+ * @pid: a Usb Product Id.
+ *
+ * Do an integer to string conversion.
+ *
+ * Return value: a string like "SilverLink".
+ **/
+TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
+{
+  	switch (pid) 
+	{
+	case PID_TIGLUSB: return "TI-GRAPH LINK USB";
+	case PID_TI89TM: return "TI-89 Titanium";
+	case PID_TI84P: return "TI-84 Plus";
+	default: return "unknown";	
+	}
+}
+
+/**
+ * ticables_usbpid_to_port:
+ * @str: a Usb Product Id as string like "SilverLink".
+ *
+ * Do a string to integer conversion.
+ *
+ * Return value: a Usb Product Id.
+ **/
+TIEXPORT UsbPid TICALL ticables_usbpid_to_port(const char *str)
+{
+	if(!strcmp(str, "TI-GRAPH LINK USB"))
+		return PID_TIGLUSB;
+	else if(!strcmp(str, "TI-89 Titanium"))
+		return PID_TI89TM;
+	else if(!strcmp(str, "TI-84 Plus"))
+		return PID_TI84P;
+
+	return PID_UNKNOWN;
+}
