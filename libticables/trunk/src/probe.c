@@ -121,8 +121,7 @@ extern int usb_probe_devices(unsigned int **list);
  * @array: address of a NULL-terminated allocated array of integers (PIDs).
  * @length: number of detected USB devices.
  *
- * Returns the list of USB PIDs as detected after a call to #ticables_cable_probe or
- * #ticables_probing_do(,,PROBE_USB).
+ * Returns the list of detected USB PIDs.
  * The array must be freed when no longer used.
  *
  * Return value: 0 if successful, an error code otherwise.
