@@ -91,9 +91,13 @@ int main(int argc, char **argv)
 #if 1
 	{
 		int *list = NULL;
-		int n;
+		int i, n;
+		int *p;
 
 		ticables_get_usb_devices(&list, &n);
+		printf("List of devices:\n");
+		for(i = 0; i < n; i++)
+		    printf("%i: %04x\n", i, list[i]);
 	}
 #endif
 
