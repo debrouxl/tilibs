@@ -204,7 +204,7 @@ TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
+static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 {
 	uint8_t host, cmd;
 	uint16_t status;
@@ -302,7 +302,7 @@ extern const CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
+static int ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
