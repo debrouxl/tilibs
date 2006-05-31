@@ -43,25 +43,36 @@
 
 #define MIN_VERSION "3.3"
 
-#define hDLL	(HANDLE)(h->priv)	// DLL handle on TiglUsb.dll
-#define hLNK	(int)(h->priv3)		// Link handle as return by dynTiglUsbOpen
+// Functions pointers for dynamic loading
+typedef struct
+{
+	TIGLUSB_VERSION		TiglUsbVersion;	
+	TIGLUSB_PROBE2		TiglUsbProbe;
+	TIGLUSB_OPEN2		TiglUsbOpen;
+	TIGLUSB_CLOSE2		TiglUsbClose;
+	TIGLUSB_CHECK2		TiglUsbCheck;
+	TIGLUSB_READS2		TiglUsbReads;
+	TIGLUSB_WRITES2		TiglUsbWrites;
+	TIGLUSB_RESET2		TiglUsbReset;
+	TIGLUSB_SETTIMEOUT2	TiglUsbSetTimeout;
+	TIGLUSB_GETTIMEOUT2	TiglUsbGetTimeout;
+} TIGLFNCTS;
 
-TIGLUSB_VERSION dynTiglUsbVersion = NULL;	// Functions pointers for dynamic loading
+// Convenient wrappers
+#define hDLL	(HANDLE)(h->priv)		// DLL handle on TiglUsb.dll
+#define dTGL	((TIGLFNCTS*)(h->priv2))// Function pointers
+#define hLNK	(int)(h->priv3)			// Link handle as return by dynTiglUsbOpen
 
-TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
-
-TIGLUSB_OPEN2	dynTiglUsbOpen = NULL;
-TIGLUSB_CLOSE2  dynTiglUsbClose = NULL;
-
-TIGLUSB_CHECK2	dynTiglUsbCheck = NULL;
-
-TIGLUSB_READS2	dynTiglUsbReads = NULL;
-TIGLUSB_WRITES2	dynTiglUsbWrites = NULL;
-
-TIGLUSB_RESET2  dynTiglUsbReset = NULL;
-
-TIGLUSB_SETTIMEOUT2		dynTiglUsbSetTimeout = NULL;
-TIGLUSB_GETTIMEOUT2		dynTiglUsbGetTimeout = NULL;
+#define dynTiglUsbVersion	(dTGL->TiglUsbVersion)
+#define dynTiglUsbProbe		(dTGL->TiglUsbProbe)
+#define dynTiglUsbOpen		(dTGL->TiglUsbOpen)
+#define dynTiglUsbClose		(dTGL->TiglUsbClose)
+#define dynTiglUsbCheck		(dTGL->TiglUsbCheck)
+#define dynTiglUsbReads		(dTGL->TiglUsbReads)
+#define dynTiglUsbWrites	(dTGL->TiglUsbWrites)
+#define dynTiglUsbReset		(dTGL->TiglUsbReset)
+#define dynTiglUsbSetTimeout (dTGL->TiglUsbSetTimeout)
+#define dynTiglUsbGetTimeout (dTGL->TiglUsbGetTimeout)
 
 static int slv_prepare(CableHandle *h)
 {
@@ -77,6 +88,8 @@ static int slv_prepare(CableHandle *h)
 		free(h->device); h->device = NULL;
 		return ERR_SLV_LOADLIBRARY;		
 	}
+
+	h->priv2 = calloc(1, sizeof(TIGLFNCTS));
 
 	return 0;
 }
@@ -198,24 +211,16 @@ static int slv_open(CableHandle *h)
 
 static int slv_close(CableHandle *h)
 {
-	int ret;
-
-    ret = dynTiglUsbClose(hLNK);
-
+	int ret = dynTiglUsbClose(hLNK);
+	
     if (hDLL != NULL)
+	{
         FreeLibrary(hDLL);
-    hDLL = NULL;
+		hDLL = NULL;
 
-	dynTiglUsbVersion = NULL;
-	dynTiglUsbProbe = NULL;
-	dynTiglUsbOpen = NULL;
-	dynTiglUsbClose = NULL;
-	dynTiglUsbCheck = NULL;
-	dynTiglUsbReads = NULL;
-	dynTiglUsbWrites = NULL;
-	dynTiglUsbReset = NULL;
-	dynTiglUsbSetTimeout = NULL;
-	dynTiglUsbGetTimeout = NULL;
+		free(h->priv2);
+		h->priv2 = NULL;
+	}
 
 	return 0;
 }
@@ -452,7 +457,7 @@ const CableFncts cable_raw =
 TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
 {
 	HANDLE	hDll;
-	TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
+	TIGLUSB_PROBE2	dynProbe = NULL;
 	int ret;
 	PUINT tmp;
 
@@ -463,22 +468,22 @@ TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
 		return ERR_SLV_LOADLIBRARY;
 	}
 
-	dynTiglUsbProbe = (TIGLUSB_PROBE2) GetProcAddress(hDll, "TiglUsbProbe2");
-	if (!dynTiglUsbProbe) 
+	dynProbe = (TIGLUSB_PROBE2) GetProcAddress(hDll, "TiglUsbProbe2");
+	if (!dynProbe) 
 	{
 		ticables_warning(_("Unable to load TiglUsbOpen2 symbol."));
 		FreeLibrary(hDll);
 		return ERR_SLV_FREELIBRARY;
 	}
 
-	ret = dynTiglUsbProbe(&tmp);
+	ret = dynProbe(&tmp);
 	// we need to copy the result; tmp points on DLL space 
 	// which is not valid after call to FreeLibrary
 	*list = (int *)calloc(USB_MAX+1, sizeof(int));
 	if(ret > 0)	memcpy(*list, tmp, (USB_MAX+1) * sizeof(UINT));
 
 	FreeLibrary(hDll);
-	dynTiglUsbProbe = NULL;
+	dynProbe = NULL;
 
 	return 0;
 }

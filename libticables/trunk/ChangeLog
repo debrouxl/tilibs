@@ -9,6 +9,7 @@ Log:
 	- reworked USB/PID retrieval to make it independant of handle close/open/probe.
 		Please note that API external behaviour didn't change !
 	- added USB PIDs values and support to the API
+	- fixed bug in SilverLink/Win32 support: the API was not reentrant => violation in TiLP after probing
 
 - 06/05/2006, version 0.0.9: roms
 	- added ability to retrieve the USB hand-held connected from its PID
