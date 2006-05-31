@@ -155,7 +155,7 @@ TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
  *
  * Return value: a Usb Product Id.
  **/
-TIEXPORT UsbPid TICALL ticables_usbpid_to_port(const char *str)
+TIEXPORT UsbPid TICALL ticables_string_to_usbpid(const char *str)
 {
 	if(!strcmp(str, "TI-GRAPH LINK USB"))
 		return PID_TIGLUSB;
