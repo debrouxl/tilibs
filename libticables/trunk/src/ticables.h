@@ -114,6 +114,7 @@ typedef enum
 	PROBE_ALL = 0,
 	PROBE_FIRST,
 	PROBE_USB,
+	PROBE_DBUS,
 } ProbingMethod;
 
 /**

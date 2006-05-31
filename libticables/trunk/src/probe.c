@@ -36,7 +36,7 @@
  * ticables_probing_do:
  * @result: address of an array of integers to put the result.
  * @timeout: timeout to set during probing
- * @method: defines whether you want to probe all cables, the first cable found or USB only.
+ * @method: defines which link cables you want to search for.
  *
  * Returns cables which have been detected. All cables should be closed before !
  * The array is like a matrix which contains 5 columns (PORT_0 to PORT_4) and 
@@ -55,15 +55,11 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMetho
 	ticables_info(_("Link cable probing:"));
 	array = (int **)calloc(CABLE_MAX, sizeof(int));
 
-	if(method == PROBE_USB)
+	switch(method)
 	{
-		start = CABLE_SLV; 
-		stop = CABLE_USB;
-	}
-	else
-	{
-		start = CABLE_GRY; 
-		stop = CABLE_TIE;
+	case PROBE_USB:		start = CABLE_SLV; stop = CABLE_USB; break;
+	case PROBE_DBUS:	start = CABLE_GRY; stop = CABLE_PAR; break;
+	default:			start = CABLE_GRY; stop = CABLE_TIE; break;
 	}
 
 	for(model = CABLE_GRY; model <= CABLE_TIE; model++)
