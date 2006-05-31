@@ -140,9 +140,9 @@ TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
 {
   	switch (pid) 
 	{
-	case PID_TIGLUSB: return "TI-GRAPH LINK USB";
-	case PID_TI89TM: return "TI-89 Titanium";
-	case PID_TI84P: return "TI-84 Plus";
+	case PID_TIGLUSB: return "SilverLink";	// must match ticables name
+	case PID_TI89TM: return "TI89t";		// must match tifiles name
+	case PID_TI84P: return "TI84+";			// must match tifiles name
 	default: return "unknown";	
 	}
 }
@@ -157,11 +157,11 @@ TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
  **/
 TIEXPORT UsbPid TICALL ticables_string_to_usbpid(const char *str)
 {
-	if(!strcmp(str, "TI-GRAPH LINK USB"))
+	if(!strcmp(str, "SilverLink"))
 		return PID_TIGLUSB;
-	else if(!strcmp(str, "TI-89 Titanium"))
+	else if(!strcmp(str, "TI89t"))
 		return PID_TI89TM;
-	else if(!strcmp(str, "TI-84 Plus"))
+	else if(!strcmp(str, "TI84+"))
 		return PID_TI84P;
 
 	return PID_UNKNOWN;
