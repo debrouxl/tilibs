@@ -454,7 +454,6 @@ TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
 	HANDLE	hDll;
 	TIGLUSB_PROBE2	dynTiglUsbProbe = NULL;
 	int ret;
-	int open = 0;
 	PUINT tmp;
 
 	hDll = LoadLibrary("TIGLUSB.DLL");
@@ -476,8 +475,7 @@ TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
 	// we need to copy the result; tmp points on DLL space 
 	// which is not valid after call to FreeLibrary
 	*list = (int *)calloc(USB_MAX+1, sizeof(int));
-	if(ret > 0)
-		memcpy(*list, tmp, USB_MAX+1);
+	if(ret > 0)	memcpy(*list, tmp, (USB_MAX+1) * sizeof(UINT));
 
 	FreeLibrary(hDll);
 	dynTiglUsbProbe = NULL;
