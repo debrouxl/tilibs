@@ -75,7 +75,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
+static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 {
 	CalcHandle* h = handle;
 	int err;
@@ -302,7 +302,7 @@ extern const CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-static int ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
+TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
