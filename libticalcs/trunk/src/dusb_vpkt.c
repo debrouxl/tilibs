@@ -330,6 +330,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		}
 
 		// send last chunk (type)
+		if(r)
 		{
 			raw.size = r;
 			raw.type = RPKT_VIRT_DATA_LAST;
