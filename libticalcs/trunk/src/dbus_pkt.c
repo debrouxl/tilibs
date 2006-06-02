@@ -226,7 +226,6 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		}
 
 		// recv last chunk
-		if(r)
 		{
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
