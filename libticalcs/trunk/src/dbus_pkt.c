@@ -227,8 +227,12 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 
 		// recv last chunk
 		{
-			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)(r+2)));
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			TRYF(ticables_cable_recv(handle->cable, 
+						 &data[i*BLK_SIZE], 
+						 (uint16_t)r));
+			ticables_progress_get(handle->cable, NULL, NULL, 
+					      &handle->updat->rate);
+			TRYF(ticables_cable_recv(handle->cable, buf, 2));
 
 			handle->updat->cnt1 += 1;
 			if(*length > MIN_SIZE) 
@@ -239,7 +243,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		}
 
 		// verify checksum
-		chksum = data[*length] | (data[*length+1] << 8);
+		chksum = buf[0] | (buf[1] << 8);
 		if (chksum != tifiles_checksum(data, *length))
 			return ERR_CHECKSUM;
 
