@@ -506,7 +506,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
-	char name[40];
+	char folder[40], name[40];
 	uint8_t *data;
 	int i, varsize;
 
@@ -519,13 +519,14 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 			       nattrs, CA(attrs)));
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(nattrs);
-	TRYF(cmd_r_var_header(handle, "", name, attrs));
+	TRYF(cmd_r_var_header(handle, folder, name, attrs));
 	TRYF(cmd_r_var_content(handle, (uint32_t *)&varsize, &data));
 
 	i = data[9];
 	data[9] = data[10];
 	data[10] = i;
 
+	tifiles_hexdump(data, varsize);
 	for(i = 4; i < varsize && i < 16; i++)
 		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
 	id[7*2] = '\0';
