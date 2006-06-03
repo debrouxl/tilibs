@@ -355,6 +355,7 @@ int check_for_parport(const char *devname)
 }
 
 #define	USBFS	"/proc/bus/usb"
+#define DEVFS    "/dev/bus/usb"
 
 int check_for_libusb(void)
 {
@@ -362,11 +363,15 @@ int check_for_libusb(void)
     
     if(!access(USBFS, F_OK))
     {
-	ticables_info(_("    usb filesystem (/proc/bus/usb): %s"), "mounted");
-    }    
+	ticables_info(_("    usb filesystem (%s): %s"), USBFS, "mounted");
+    }
+    else if(!access(DEVFS, F_OK))
+    {
+	ticables_info(_("    usb filesystem (%s): %s"), DEVFS, "mounted");
+    }
     else 
     {
-	ticables_info(_("    usb filesystem (/proc/bus/usb): %s"), "not mounted");
+	ticables_info(_("    usb filesystem (/proc|dev/bus/usb): %s"), "not mounted");
 	ticables_info(_("    => the usbfs must be supported by your kernel and you have to mount it"));
 	ticables_info(_("    => add a 'none /proc/bus/usb usbfs defaults 0 0' in your '/etc/fstab'."));
 	ticables_info(_("    => This line is enough for 'root' user. If you want to use it as a single user,"));
@@ -375,7 +380,7 @@ int check_for_libusb(void)
 	return ERR_USBFS;
     }
 
-    if(check_for_node_usability(USBFS "/devices"))
+    if(!access(USBFS, F_OK) && check_for_node_usability(USBFS "/devices"))
 	return ERR_USBFS;
     
     return 0;

@@ -310,7 +310,15 @@ int open_tigl_device(int id, usb_dev_handle **udh)
     *udh = usb_open(tigl_devices[id].dev);
     if (*udh != NULL) 
     {
-	/* interface 0, configuration 1 */
+	/* only one configuration: #1 */
+	ret = usb_set_configuration(*udh, 1);
+        if (ret < 0)
+        {
+            //ticables_warning("usb_set_configuration (%s).\n",usb_strerror());
+            //return ERR_LIBUSB_CONFIG;
+        }
+
+	/* configuration #1, interface #0 */
 	ret = usb_claim_interface(*udh, 0);
 	if (ret < 0) 
 	{
@@ -318,14 +326,7 @@ int open_tigl_device(int id, usb_dev_handle **udh)
 			     usb_strerror());
 	    return ERR_LIBUSB_CLAIM;
 	}
-	
-	ret = usb_set_configuration(*udh, 1);
-	if (ret < 0) 
-	{
-	    ticables_warning("usb_set_configuration (%s).\n",
-			     usb_strerror());
-	    //return ERR_LIBUSB_CONFIG;
-	}
+
 	return 0;
     } 
     else
@@ -443,8 +444,8 @@ static int slv_reset(CableHandle *h)
 #ifdef SLV_RESET
     TRYC(reset_pipes(tigl_han));
 #else
-	TRYC(slv_close(h);
-	TRYC(slv_open(h);
+	TRYC(slv_close(h));
+	TRYC(slv_open(h));
 #endif
     
     return 0;
