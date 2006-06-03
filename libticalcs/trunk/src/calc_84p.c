@@ -526,7 +526,6 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	data[9] = data[10];
 	data[10] = i;
 
-	tifiles_hexdump(data, varsize);
 	for(i = 4; i < varsize && i < 16; i++)
 		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
 	id[7*2] = '\0';
