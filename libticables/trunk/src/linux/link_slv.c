@@ -339,8 +339,6 @@ static int reset_pipes(usb_dev_handle *udh)
 {
 	int ret;
 
-	ticables_info("resetting pipes... ");
-
   	// Reset out pipe
   	ret = usb_clear_halt(udh, TIGL_BULK_OUT);
   	if (ret < 0) 
@@ -622,8 +620,10 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 		nBytesRead = 0;
 		return ERR_READ_TIMEOUT;
 	    }
+/*
 	    if (ret == 0)
 		ticables_warning("\nweird, usb_bulk_read returns without any data & error; retrying...\n");
+*/
 	}
 	while(!ret);
 	
