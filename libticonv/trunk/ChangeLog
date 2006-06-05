@@ -5,6 +5,9 @@ Run './configure --enable-static=yes --enable-shared=no' for use with
 
 Log:
 
+- 05/06/2006, version 0.0.4: roms
+	- renamed stdints.h into stdints4.h
+	
 - 07/04/2006, version 0.0.3: roms
 	- added support of the new TI84+ & TItanium USB hand-helds.
 	- increased SO major number due to API changes

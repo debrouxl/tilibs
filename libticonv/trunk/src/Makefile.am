@@ -6,7 +6,7 @@ AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libticonv.la
 libticonvincludedir = $(includedir)/tilp2
 libticonvinclude_HEADERS = \
-	ticonv.h export4.h charset.h stdints.h
+	ticonv.h export4.h charset.h stdints4.h
 
 # build instructions
 libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
