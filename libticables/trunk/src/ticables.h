@@ -26,7 +26,7 @@
 # include <config.h>
 #endif
 
-#include "stdints.h"
+#include "stdints1.h"
 #include "export1.h"
 #include "timeout.h"
 
@@ -41,7 +41,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCABLES_VERSION "0.1.0"
+# define LIBCABLES_VERSION "0.1.1"
 #else
 # define LIBCABLES_VERSION VERSION
 #endif

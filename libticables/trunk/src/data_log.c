@@ -34,7 +34,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "stdints.h"
+#include "stdints1.h"
 #include "gettext.h"
 #include "logging.h"
 #include "data_log.h"

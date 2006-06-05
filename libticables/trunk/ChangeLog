@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 05/06/2006, version 0.1.1: roms
+	- renamed stdints.h into stdints1.h
+	
 - 29/05/2006, version 0.1.0: roms
 	- reworked USB/PID retrieval to make it independant of handle 
 	close/open/probe. Please note that API external behaviour 

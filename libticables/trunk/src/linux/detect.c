@@ -30,7 +30,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "stdints.h"
+#include "stdints1.h"
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
