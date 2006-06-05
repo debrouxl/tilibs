@@ -22,7 +22,7 @@
 #ifndef __TICALCS_MACROS__
 #define __TICALCS_MACROS__
 
-#include "stdints.h"
+#include "stdints3.h"
 
 /* Macros, part 1 */
 // extract a word from a longword
