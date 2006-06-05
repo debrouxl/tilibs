@@ -6,7 +6,7 @@ AM_CFLAGS = -Wall
 lib_LTLIBRARIES = libtifiles2.la
 libtifilesincludedir = $(includedir)/tilp2
 libtifilesinclude_HEADERS = \
-	tifiles.h export2.h stdints.h macros.h \
+	tifiles.h export2.h stdints2.h macros.h \
 	files8x.h files9x.h types*.h 
 
 # build minizip package only if lib have been detected

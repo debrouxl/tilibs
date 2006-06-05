@@ -22,7 +22,7 @@
 #ifndef __TIFILES_FILES9X_H__
 #define __TIFILES_FILES9X_H__
 
-#include "stdints.h"
+#include "stdints2.h"
 #include "tifiles.h"
 
 /* Structures */

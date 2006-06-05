@@ -21,7 +21,7 @@
 #ifndef __TIFILES_DEFS89__
 #define __TIFILES_DEFS89__
 
-#include "stdints.h"
+#include "stdints2.h"
 
 #define TI89_MAXTYPES 48
 

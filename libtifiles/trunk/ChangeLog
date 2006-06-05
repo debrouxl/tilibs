@@ -10,6 +10,9 @@ To do:
 
 Log:
 
+- 05/06/2006, version 0.1.5: roms
+	- renamed stdints.h into stdints2.h
+	
 - 16/05/2006, version 0.1.4: roms
 	- fixed bug in tifiles_file_is_tib which didn't detect TIB files.
 

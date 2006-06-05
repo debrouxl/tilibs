@@ -22,7 +22,7 @@
 #ifndef __TIFILES_DEFS73__
 #define __TIFILES_DEFS73__
 
-#include "stdints.h"
+#include "stdints2.h"
 
 #define TI73_MAXTYPES 48
 

@@ -22,7 +22,7 @@
 #ifndef __TIFILES_MACROS__
 #define __TIFILES_MACROS__
 
-#include "stdints.h"
+#include "stdints2.h"
 
 /* Macros, part 1 */
 // extract a word from a longword

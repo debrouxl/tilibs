@@ -27,7 +27,7 @@
 #endif
 
 #include "export2.h"
-#include "stdints.h"
+#include "stdints2.h"
 #include "typesxx.h"
 
 	/***********************/
@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.1.4"
+# define LIBFILES_VERSION "0.1.5"
 #else
 # define LIBFILES_VERSION VERSION
 #endif

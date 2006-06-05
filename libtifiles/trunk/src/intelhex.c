@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "stdints.h"
+#include "stdints2.h"
 #include "macros.h"
 #include "intelhex.h"
 #include "export2.h"
