@@ -53,6 +53,7 @@ unsigned int DATA_SIZE = 250;	// max length of data in raw packet
 
 static const VtlPktName vpkt_types[] = 
 {
+	{ 0x0000, ""},
 	{ 0x0001, "Ping / Set Mode"},
 	{ 0x0002, "Begin OS Transfer"},
 	{ 0x0003, "Acknowledgement of OS Transfer"},
@@ -67,6 +68,7 @@ static const VtlPktName vpkt_types[] =
 	{ 0x000C, "Request Variable"},
 	{ 0x000D, "Variable Contents"},
 	{ 0x000E, "Parameter Set"},
+	{ 0x000F, ""},
 	{ 0x0010, "Delete Variable"},
 	{ 0x0011, "Unknown"},
 	{ 0x0012, "Acknowledgement of Mode Setting"},

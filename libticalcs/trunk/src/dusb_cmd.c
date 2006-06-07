@@ -153,6 +153,8 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 /////////////----------------
 
+extern const VtlPktName vpkt_types[];
+
 #define CATCH_DELAY()					\
 	if(pkt->type == VPKT_DELAY_ACK)		\
 	{									\
@@ -188,6 +190,9 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Ping / Set Mode");
+	ticalcs_info("   %04x %04x %04x %04x %04x", mode.arg1, mode.arg2, mode.arg3, mode.arg4, mode.arg5);
+
 	return 0;
 }
 
@@ -197,7 +202,6 @@ int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 	VirtualPacket* pkt;
 
 	pkt = vtl_pkt_new(11, VPKT_OS_BEGIN);
-
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
 	pkt->data[9] = MSB(LSW(size));
@@ -205,6 +209,9 @@ int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: OS Transfer Begin");
+	ticalcs_info("   size = %08x (%i)", size, size);
+
 	return 0;
 }
 
@@ -226,6 +233,9 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: OS Transfer Ack");
+	ticalcs_info("   size = %08x (%i)", *size, *size);
+
 	return 0;
 }
 
@@ -243,6 +253,9 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: %s", type == VPKT_OS_HEADER ? "OS Header" : "OS Data");
+	ticalcs_info("   addr=%04x, page=%02x, flag=%02x, size=%04x", addr, page, flag, size);
+
 	return 0;
 }
 
@@ -268,6 +281,9 @@ int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: OS Header");
+	ticalcs_info("   size = %08x (%i)", size, size);
+
 	return 0;
 }
 
@@ -281,6 +297,9 @@ int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: OS Data");
+	ticalcs_info("   size = %08x (%i)", size, size);
+
 	return 0;
 }
 
@@ -300,6 +319,8 @@ int cmd_r_eot_ack(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 	
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: EOT Ack");
+
 	return 0;
 }
 
@@ -323,6 +344,9 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Parameter Request");
+	ticalcs_info("   npids=%i", npids);
+
 	return 0;
 }
 
@@ -361,6 +385,9 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	}
 	
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: Parameter Data");
+	ticalcs_info("   nparams=%i", nparams);
+
 	return 0;
 }
 
@@ -392,6 +419,9 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Directory Listing");
+	ticalcs_info("   naids=%i", naids);
+
 	return 0;
 }
 
@@ -455,6 +485,9 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 	}
 	
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: Variable Header");
+	ticalcs_info("   folder=<%s>, name=<%s>", folder, name);
+
 	return 0;
 }
 
@@ -507,6 +540,9 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Request to Send");
+	ticalcs_info("   folder=<%s>, name=<%s>, size=%i, nattrs=%i", folder, name, size, nattrs);
+
 	return 0;
 }
 
@@ -568,6 +604,9 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Request Variable");
+	ticalcs_info("   folder=<%s>, name=<%s>, naids=%i, nattrs=%i", folder, name, naids, nattrs);
+
 	return 0;
 }
 
@@ -593,6 +632,9 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	memcpy(*data, pkt->data, pkt->size);
 	
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Variable Contents");
+	ticalcs_info("   size=%i", size);
+
 	return 0;
 }
 
@@ -607,6 +649,9 @@ int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 	TRYF(dusb_send_data(h, pkt));
 	
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Variable Contents");
+	ticalcs_info("   size=%i", size);
+
 	return 0;
 }
 
@@ -626,6 +671,8 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	ticalcs_info("   pid=%04x, size=%04x", param->id, param->size);
+
 	return 0;
 }
 
@@ -677,6 +724,9 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Delete Variable");
+	ticalcs_info("   folder=<%s>, name=<%s>, nattrs=%i", folder, name, nattrs);
+
 	return 0;
 }
 
@@ -696,6 +746,8 @@ int cmd_r_mode_ack(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  TI->PC: Mode Setting Ack");
+
 	return 0;
 }
 
@@ -715,6 +767,8 @@ int cmd_r_data_ack(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
+	ticalcs_info("  TI->PC: Data Ack");
+
 	return 0;
 }
 
@@ -734,6 +788,8 @@ int cmd_r_delay_ack(CalcHandle *h)
 	PAUSE(100);
 
 	vtl_pkt_del(pkt);
+	ticalcs_info("  TI->PC: Delay Ack");
+
 	return 0;
 }
 
@@ -746,6 +802,8 @@ int cmd_s_eot(CalcHandle *h)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	ticalcs_info("  PC->TI: End of Transmission");
+
 	return 0;
 }
 
@@ -765,6 +823,8 @@ int cmd_r_eot(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
+	ticalcs_info("  TI->PC: End of Transmission");
+
 	return 0;
 }
 
@@ -780,5 +840,8 @@ int cmd_s_error(CalcHandle *h, uint16_t code)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Error");
+	ticalcs_info("   code = %04x", code);
+
 	return 0;
 }

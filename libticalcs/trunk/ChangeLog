@@ -10,6 +10,7 @@ Log:
 
 - 05/06/2006, version 0.1.5: roms
 	- added stdints3.h header
+	- increased verbosity of USB commands layer
 	
 - 31/05/2006, version 0.1.4: roms
 	- don't export ticalcs_probe_calc_1/2 any longer because they can't 
