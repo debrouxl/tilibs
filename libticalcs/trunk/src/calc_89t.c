@@ -172,13 +172,13 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 					t_node_append(*apps, node);
 			}
 		}
-
+/*
 		ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
 			ve->name, 
 			tifiles_vartype2string(handle->model, ve->type),
 			ve->attr,
 			ve->size);
-
+*/
 		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
 		u2 = ticonv_varname_to_utf8(handle->model, ve->name);
 			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);

@@ -36,7 +36,7 @@
 #include "dusb_rpkt.h"
 #include "dusb_vpkt.h"
 
-//#define FULL_DEBUG
+#define VPKT_DBG	1	// 1 = verbose, 2 = more verbose
 
 // Pseudo-Constants
 
@@ -207,7 +207,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 	raw.data[1] = 0x00;
 
 	TRYF(dusb_send(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 	ticalcs_info("  PC->TI: Virtual Packet Data Acknowledgement");
 #endif
 
@@ -219,7 +219,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	RawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 	ticalcs_info("  TI->PC: Virtual Packet Data Acknowledgement");
 #endif
 	
@@ -274,10 +274,10 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		memcpy(&raw.data[DH_SIZE], vtl->data, vtl->size);
 	
 		TRYF(dusb_send(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 		ticalcs_info("  PC->TI: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
-#else
+#elif (VPKT_DBG == 1)
 		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
 #endif
 		TRYF(dusb_recv_acknowledge(h));
@@ -298,10 +298,10 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		offset = DATA_SIZE - DH_SIZE;
 
 		TRYF(dusb_send(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
-#else
+#elif (VPKT_DBG == 1)
 		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
 #endif
 		TRYF(dusb_recv_acknowledge(h));
@@ -319,7 +319,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			offset += DATA_SIZE;
 
 			TRYF(dusb_send(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 			ticalcs_info("  PC->TI: Virtual Packet Data with Continuation");
 #endif
 			TRYF(dusb_recv_acknowledge(h));
@@ -338,7 +338,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 			offset += r;
 			
 			TRYF(dusb_send(h, &raw));
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
 			TRYF(dusb_recv_acknowledge(h));
@@ -369,11 +369,11 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->data = realloc(vtl->data, vtl->size);
 			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
 			offset = raw.size - DH_SIZE;
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
 				raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				vtl->size, vpkt_type2name(vtl->type));
-#else
+#elif (VPKT_DBG == 1)
 			ticalcs_info("  TI->PC: %s", vpkt_type2name(vtl->type));
 #endif
 			if(vtl->type == 0xEE00)
@@ -384,7 +384,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			// others have more data
 			memcpy(vtl->data + offset, raw.data, raw.size);
 			offset += raw.size;
-#ifdef FULL_DEBUG
+#if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
 #endif
 
