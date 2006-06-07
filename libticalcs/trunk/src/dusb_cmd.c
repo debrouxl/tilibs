@@ -767,7 +767,7 @@ int cmd_r_data_ack(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("  TI->PC: Data Ack");
+	//ticalcs_info("  TI->PC: Data Ack");
 
 	return 0;
 }
@@ -788,7 +788,7 @@ int cmd_r_delay_ack(CalcHandle *h)
 	PAUSE(100);
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("  TI->PC: Delay Ack");
+	//ticalcs_info("  TI->PC: Delay Ack");
 
 	return 0;
 }
@@ -802,7 +802,7 @@ int cmd_s_eot(CalcHandle *h)
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("  PC->TI: End of Transmission");
+	//ticalcs_info("  PC->TI: End of Transmission");
 
 	return 0;
 }
@@ -823,7 +823,7 @@ int cmd_r_eot(CalcHandle *h)
 		return ERR_INVALID_PACKET;
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("  TI->PC: End of Transmission");
+	//ticalcs_info("  TI->PC: End of Transmission");
 
 	return 0;
 }

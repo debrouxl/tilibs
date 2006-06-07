@@ -421,7 +421,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	if(ptr->data_type != TI83p_AMS)
 		return -1;
 
-#if 1
+#if 0
 	printf("#pages: %i\n", ptr->num_pages);
 	printf("type: %02x\n", ptr->data_type);
 	for (i = 0; i < ptr->num_pages; i++) 
@@ -454,7 +454,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// start OS transfer
 	TRYF(cmd_s_os_begin(handle, os_size));
-#if 1
+#if 0
 	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
 	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
 #endif
