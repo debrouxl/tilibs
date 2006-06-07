@@ -411,6 +411,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	uint32_t os_size = 0;
 	FlashContent *ptr;
 	int i, j;
+	int boot = 0;
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -452,12 +453,25 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	TRYF(cmd_s_mode_set(handle, mode));
 	TRYF(cmd_r_mode_ack(handle));
 
+	// test for boot mode
+	{
+		uint16_t pids[] = { PID_OS_MODE };
+		const int size = sizeof(pids) / sizeof(uint16_t);
+		CalcParam **params;
+
+		params = cp_new_array(size);
+		TRYF(cmd_s_param_request(handle, size, pids));
+		TRYF(cmd_r_param_data(handle, size, params));
+		boot = !params[0]->data[0];
+	}
+
 	// start OS transfer
 	TRYF(cmd_s_os_begin(handle, os_size));
-#if 0
-	TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
-	TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
-#endif
+	if(!boot)
+	{
+		TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
+		TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
+	}
 	TRYF(cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
