@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.1.4"
+# define LIBCALCS_VERSION "0.1.6"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -666,15 +666,13 @@ typedef struct
 	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);
 	TIEXPORT void TICALL ticalcs_dirlist_display(TNode*  tree);
 
-	TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree);
-	TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_ram_used(TNode* tree);
 	TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
 
-	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
-	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);
-
-	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry);
-	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry);
+	TIEXPORT int TICALL ticalcs_dirlist_ve_count(TNode* tree);
+	TIEXPORT VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char* name);
+	TIEXPORT void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry);
+	TIEXPORT void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry);
 
 	// type2str.c
 	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
@@ -707,6 +705,17 @@ typedef struct
   /************************/
   /* Deprecated functions */
   /************************/
+
+	TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree);
+	TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
+
+	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
+	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);
+
+	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry);
+	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry);
+
 
 #ifdef TICALCS_DEPRECATED
 #endif

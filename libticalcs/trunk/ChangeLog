@@ -8,6 +8,10 @@ To do :
 
 Log:
 
+- 08/06/2006, version 0.1.6: roms
+	- reworked dirlist API
+	- ...
+
 - 05/06/2006, version 0.1.5: roms
 	- added stdints3.h header
 	- increased verbosity of USB commands layer
