@@ -105,7 +105,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TreeInfo *ti;
 	uint16_t unused;
 	uint32_t memory;
-	TNode *folder;	
+	TNode *folder, *root;	
 	char *utf8;
 
 	(*apps) = t_node_new(NULL);
@@ -131,6 +131,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
 
+	root = t_node_new(NULL);
+	t_node_append(*apps, root);
+
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
@@ -149,7 +152,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		if (ve->type != TI73_APPL)
 			t_node_append(folder, node);
 		else
-			t_node_append(*apps, node);
+			t_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);

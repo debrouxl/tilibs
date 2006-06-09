@@ -133,6 +133,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint8_t buffer[65536];
     int i, j;
     uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
+	TNode *root;
 
 	(*apps) = t_node_new(NULL);
 	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
@@ -145,6 +146,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
+
+	root = t_node_new(NULL);
+	t_node_append(*apps, root);
 
     TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
     TRYF(ti89_recv_ACK(NULL));
@@ -245,8 +249,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			{
 				if(!ticalcs_dirlist_ve_exist(*apps, ve->name))
 				{
+					strcpy(ve->folder, "");
 					node = t_node_new(ve);
-					t_node_append(*apps, node);
+					t_node_append(root, node);
 				}
 			} 
 			else

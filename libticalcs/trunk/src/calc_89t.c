@@ -112,7 +112,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TreeInfo *ti;
 	int err;
 	CalcAttr **attr;
-	TNode *folder = NULL;	
+	TNode *root, *folder = NULL;
 	char fldname[40];
 	char varname[40];
 	char folder_name[40] = "";
@@ -129,6 +129,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
+
+	root = t_node_new(NULL);
+	t_node_append(*apps, root);
 
 	TRYF(cmd_s_dirlist_request(handle, size, aids));
 	for(;;)
@@ -169,7 +172,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 				if (ve->type != TI73_APPL)
 					t_node_append(folder, node);
 				else
-					t_node_append(*apps, node);
+					t_node_append(root, node);
 			}
 		}
 /*

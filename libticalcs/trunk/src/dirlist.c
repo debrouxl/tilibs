@@ -334,7 +334,7 @@ TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
 	{
 		for (i = 0; i < (int)t_node_n_children(apps); i++) 
 		{
-			TNode *parent = t_node_nth_child(vars, i);
+			TNode *parent = t_node_nth_child(apps, i);
 
 			for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse apps
 			{

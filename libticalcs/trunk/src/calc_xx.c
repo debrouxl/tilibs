@@ -175,15 +175,6 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 	if(calc->get_dirlist)
 		ret = calc->get_dirlist(handle, vars, apps);
 
-	{	// switch to new format
-		TNode *folder = t_node_new(NULL);
-		TNode *children = t_node_first_child(*apps);
-
-		t_node_unlink(children);
-		t_node_append(*apps, folder);
-		t_node_append(folder, children);
-	}
-
 	ti = (*vars)->data;
 	ti->mem_mask |= MEMORY_USED;
 	ti->mem_used = ticalcs_dirlist_ram_used(*vars);
