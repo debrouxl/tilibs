@@ -53,7 +53,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 
 	// Do a directory list and check for something to backup
 	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
-	nvars = ticalcs_dirlist_num_vars(vars);
+	nvars = ticalcs_dirlist_ve_count(vars);
 	if(!nvars)
 		return ERR_NO_VARS;
 

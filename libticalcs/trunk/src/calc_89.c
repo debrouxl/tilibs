@@ -243,7 +243,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 			if(ve->type == TI89_APPL) 
 			{
-				if(!ticalcs_dirlist_app_exist(*apps, ve->name))
+				if(!ticalcs_dirlist_ve_exist(*apps, ve->name))
 				{
 					node = t_node_new(ve);
 					t_node_append(*apps, node);

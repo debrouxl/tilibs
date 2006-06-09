@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.1.6"
+# define LIBCALCS_VERSION "0.2.0"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -705,17 +705,6 @@ typedef struct
   /************************/
   /* Deprecated functions */
   /************************/
-
-	TIEXPORT int TICALL ticalcs_dirlist_num_vars(TNode* tree);
-	TIEXPORT int TICALL ticalcs_dirlist_mem_used(TNode* tree);
-	TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
-
-	TIEXPORT VarEntry *TICALL ticalcs_dirlist_var_exist(TNode* tree, char* varname);
-	TIEXPORT VarEntry *TICALL ticalcs_dirlist_app_exist(TNode* tree, char* appname);
-
-	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_add(TNode* tree, VarEntry *entry);
-	TIEXPORT TNode* TICALL ticalcs_dirlist_entry_del(TNode* tree, VarEntry *entry);
-
 
 #ifdef TICALCS_DEPRECATED
 #endif

@@ -8,9 +8,9 @@ To do :
 
 Log:
 
-- 08/06/2006, version 0.1.6: roms
+- 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API
-	- ...
+	- changed FLASH app dirlist format to be the same as var one
 
 - 05/06/2006, version 0.1.5: roms
 	- added stdints3.h header
