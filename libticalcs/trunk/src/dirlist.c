@@ -58,7 +58,6 @@
 
 */
 
-
 static tboolean free_varentry(TNode* node, tpointer data)
 {
 	if(node)
@@ -109,7 +108,6 @@ TIEXPORT void TICALL ticalcs_dirlist_display(TNode* tree)
 {
 	TNode *vars = tree;
 	TreeInfo *info = (TreeInfo *)(tree->data);
-	char *node_name = info->type;
 	int i, j, k;
 	char *utf8;
   
@@ -197,12 +195,11 @@ TIEXPORT VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char *full_name)
 	char fldname[18];
 	char varname[18];
 	TreeInfo *info = (TreeInfo *)(tree->data);
-	char *node_name = info->type;
 
 	if (tree == NULL)
 		return NULL;
 
-	if (strcmp(node_name, VAR_NODE_NAME) && strcmp(node_name, APP_NODE_NAME))
+	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
 		return NULL;
 
 	strcpy(fldname, tifiles_get_fldname(full_name));
@@ -243,11 +240,11 @@ TIEXPORT int TICALL ticalcs_dirlist_ve_count(TNode* tree)
 	TNode *vars = tree;
 	int nvars = 0;
 	TreeInfo *info = (TreeInfo *)(tree->data);
-	char *node_name = info->type;
 
 	if (tree == NULL)
 		return 0;
-	if (strcmp(node_name, VAR_NODE_NAME) && strcmp(node_name, APP_NODE_NAME))
+
+	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
 		return 0;
 
 	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
@@ -275,12 +272,11 @@ TIEXPORT int TICALL ticalcs_dirlist_ram_used(TNode* tree)
 	TNode *vars = tree;
 	uint32_t mem = 0;
 	TreeInfo *info = (TreeInfo *)(tree->data);
-	char *node_name = info->type;
 
 	if (tree == NULL)
 		return 0;
 
-	if (strcmp(node_name, VAR_NODE_NAME))
+	if (strcmp(info->type, VAR_NODE_NAME))
 		return 0;
 	
 	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
@@ -313,13 +309,11 @@ TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
 	uint32_t mem = 0;
 	TreeInfo *info1 = (TreeInfo *)(vars->data);
 	TreeInfo *info2 = (TreeInfo *)(apps->data);
-	char *node_name_1 = info1->type;
-	char *node_name_2 = info2->type;
 
 	if (!vars && !apps)
 		return 0;
 
-	if (!strcmp(node_name_1, VAR_NODE_NAME))
+	if (!strcmp(info1->type, VAR_NODE_NAME))
 	{
 		for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
 		{
@@ -336,7 +330,7 @@ TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
 		}
 	}
 
-	if (!strcmp(node_name_2, APP_NODE_NAME))
+	if (!strcmp(info2->type, APP_NODE_NAME))
 	{
 		for (i = 0; i < (int)t_node_n_children(apps); i++) 
 		{
@@ -381,7 +375,7 @@ TIEXPORT void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
 	if (tree == NULL)
 		return;
 
-	if (strcmp(info->type, VAR_NODE_NAME))
+	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
 		return;
 
 	if(!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
