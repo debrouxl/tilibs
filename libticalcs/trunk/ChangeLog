@@ -11,6 +11,7 @@ Log:
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API
 	- changed FLASH app dirlist format to be the same as var one
+	- don't count archived (=FLASH) variables in ticalcs_dirlist_ram_used
 
 - 05/06/2006, version 0.1.5: roms
 	- added stdints3.h header

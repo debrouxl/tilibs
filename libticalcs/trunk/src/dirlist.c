@@ -288,7 +288,8 @@ TIEXPORT int TICALL ticalcs_dirlist_ram_used(TNode* tree)
 			TNode *child = t_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
-			mem += ve->size;
+			if(ve->attr != ATTRB_ARCHIVED)
+				mem += ve->size;
 		}
 	}
 
