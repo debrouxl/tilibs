@@ -3,6 +3,7 @@
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2006 Tyler Cassidy
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,8 +24,8 @@
    Encapsulate the ISO-C99 'stdint.h' header for platforms which haven't it
 */
 
-#ifndef __TIFILES_STDINT__
-#define __TIFILES_STDINT__
+#ifndef __TILIBS_STDINT__
+#define __TILIBS_STDINT__
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
