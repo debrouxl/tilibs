@@ -332,15 +332,13 @@ typedef struct
  * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled
  * @rate: data rate of cable
- * @cnt1: current counter for local operation
+ * @cnt1: current counter for link transfer operations (ticables2)
  * @max1: max value of this counter
- * @cnt2: current counter for global operation
+ * @cnt2: current count for intermediate operations (used by ticalcs2 only)
  * @max2: max value of this counter
- * @percentage: percentage of the current operation
- * @prev_percentage: Previous percentage of current operation
- * @main_percentage: Percentage of all operations
- * @prev_main_percentage: Previous percentage of all operations
- 
+ * @cnt3: current counter for global operations (used by ticalcs2 or tilp)
+ * @max3: max value of this counter
+ * @mask: which cntX is/are used (binary)
  * @start: init internal vars
  * @stop: release internal vars
  * @refresh: pass control to GUI for refresh
@@ -359,8 +357,14 @@ typedef struct
 	float	rate;
     int		cnt1;
 	int		max1;
+
 	int		cnt2;
 	int		max2;
+
+	int		cnt3;
+	int		max3;
+
+	int		mask;
 
 	void	(*start)	(void);
 	void	(*stop)		(void);
