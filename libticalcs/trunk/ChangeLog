@@ -4,7 +4,7 @@ Set svn:eol property to native on all files
 	
 To do : 
 - manage ERR packets which can be received at any time
-- make dirlist more generic (merge apps & vars)
+- check up progress bars: they should only show the total amount of the operation (no blocks)
 
 Log:
 
