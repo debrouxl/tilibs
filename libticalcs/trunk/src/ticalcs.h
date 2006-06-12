@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.2.0"
+# define LIBCALCS_VERSION "0.2.1"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -339,6 +339,7 @@ typedef struct
  * @cnt3: current counter for global operations (used by ticalcs2 or tilp)
  * @max3: max value of this counter
  * @mask: which cntX is/are used (binary)
+ * @type: pbar type
  * @start: init internal vars
  * @stop: release internal vars
  * @refresh: pass control to GUI for refresh
@@ -365,6 +366,7 @@ typedef struct
 	int		max3;
 
 	int		mask;
+	int		type;
 
 	void	(*start)	(void);
 	void	(*stop)		(void);

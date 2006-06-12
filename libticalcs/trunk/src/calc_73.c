@@ -289,6 +289,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint8_t rej_code;
 	char *utf8;
 
+	update_->max2 = content->num_entries;
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
@@ -327,6 +328,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		TRYF(ti73_send_EOT());
 		ticalcs_info("");
+
+		update_->cnt2 = i+1;
+		update_->max2 = content->num_entries;
+		update_->pbar();
   }
 
 	return 0;

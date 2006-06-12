@@ -8,11 +8,13 @@ To do :
 
 Log:
 
+- 11/06/2006, version 0.2.1: roms
+	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
+
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API (API compat broken here)
 	- changed FLASH app dirlist format to be the same as var one
 	- don't count archived (=FLASH) variables in ticalcs_dirlist_ram_used
-	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
 	- updated 68k ROM dumpers to dump 8 MB on HW4 and rebuilt them with the latest CVS TIGCC (GCC 4.1.1, reduces size) (kevin)
 
 - 05/06/2006, version 0.1.5: roms

@@ -311,6 +311,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint16_t status;
 	char *utf8;
 
+	update_->max2 = content->num_entries;
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
@@ -348,6 +349,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		TRYF(ti85_send_EOT());
 		ticalcs_info("\n");
+
+		update_->cnt2 = i+1;
+		update_->max2 = content->num_entries;
+		update_->pbar();
 	}
 
 	return 0;

@@ -242,6 +242,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   snprintf(update_->text, sizeof(update_->text), _("Sending..."));
   update_label();
 
+  update_->max2 = content->num_entries;
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
@@ -283,6 +284,10 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
     TRYF(ti85_send_XDP(entry->size, entry->data));
     TRYF(ti85_recv_ACK(&status));
+
+	update_->cnt2 = i+1;
+	update_->max2 = content->num_entries;
+	update_->pbar();
   }
 
   if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR)) 

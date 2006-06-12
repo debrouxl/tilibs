@@ -335,12 +335,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(ti89_send_EOT());
 		TRYF(ti89_recv_ACK(NULL));
 
-		if(mode & MODE_BACKUP) 
-		{
-			update_->cnt2 = i+1;
-			update_->max2 = content->num_entries;
-			update_->pbar();
-		}
+		update_->cnt2 = i+1;
+		update_->max2 = content->num_entries;
+		update_->pbar();
 	}
 
 	return 0;

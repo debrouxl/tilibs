@@ -30,7 +30,7 @@ static void ticalcs_update_label(void) {};
 CalcUpdate default_update =
 {
 	"", 0,
-	0.0, 0, 0, 0, 0, 0, 0, (1 << 0),
+	0.0, 0, 0, 0, 0, 0, 0, (1 << 0), 0,
 	ticalcs_update_start,
 	ticalcs_update_stop,
 	ticalcs_update_refresh,
