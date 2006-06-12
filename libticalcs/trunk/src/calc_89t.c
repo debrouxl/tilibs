@@ -184,7 +184,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 */
 		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
 		u2 = ticonv_varname_to_utf8(handle->model, ve->name);
-			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);
+			snprintf(update_->text, sizeof(update_->text), "%s/%s", u1, u2);
 			g_free(u1); g_free(u2);
 			update_label();
 	}
@@ -225,7 +225,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -270,7 +270,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint8_t *data;
 	VarEntry *ve;
 
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
     update_label();
 
 	attrs = ca_new_array(nattrs);
@@ -334,7 +334,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -369,7 +369,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	char fldname[40], varname[40];
 	uint8_t *data;
 	
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
     update_label();
 
 	attrs = ca_new_array(nattrs);
@@ -829,6 +829,8 @@ const CalcFncts calc_89t_usb =
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS | OPS_ROMDUMP |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | 
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -278,7 +278,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       break;
     }
 	utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
-    snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 
@@ -337,7 +337,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti85_recv_ACK(NULL));
 
 	utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-    snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);
@@ -473,6 +473,8 @@ const CalcFncts calc_85 =
 	N_("TI-85"),
 	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
 	FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "2P", "", "", "2P1L", "1P1L", "", "",
+		"", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

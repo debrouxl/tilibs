@@ -241,7 +241,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name);
-			snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"), u1, u2);
+			snprintf(update_->text, sizeof(update_->text), "%s/%s", u1, u2);
 			g_free(u1); g_free(u2);
 			update_label();
 
@@ -310,7 +310,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -356,7 +356,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname);
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -431,7 +431,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -500,7 +500,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
         }
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 
 		TRYF(ti89_send_CTS());
@@ -596,7 +596,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -641,7 +641,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	uint8_t vartype;
 	char varname[9];
 
-	snprintf(update_->text, sizeof(update_->text), _("Getting variable..."));
+	snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
 
 	TRYF(ti89_send_REQ(0x0000, TI89_IDLIST, ""));
@@ -927,6 +927,8 @@ const CalcFncts calc_89 =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -962,6 +964,8 @@ const CalcFncts calc_92p =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -997,6 +1001,8 @@ const CalcFncts calc_89t =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -1032,6 +1038,8 @@ const CalcFncts calc_v2 =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

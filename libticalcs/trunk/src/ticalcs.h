@@ -338,8 +338,8 @@ typedef struct
  * @max2: max value of this counter
  * @cnt3: current counter for global operations (used by ticalcs2 or tilp)
  * @max3: max value of this counter
- * @mask: which cntX is/are used (binary)
- * @type: pbar type
+ * @mask: which cntX is/are used (unused)
+ * @type: pbar type (unused)
  * @start: init internal vars
  * @stop: release internal vars
  * @refresh: pass control to GUI for refresh
@@ -456,7 +456,8 @@ typedef struct
  * @name: name of hand-held like "TI89"
  * @fullname: complete name of hand-held like "TI-89"
  * @description: description of hand-held like "TI89 calculator"
- * @operations: supported operations (CalcOperations)
+ * @features: supported operations (CalcOperations)
+ * @counters: defines which CalcUpdate counters have to be refreshed (for future use)
  * @silent: TRUE if hand-held has silent technology, 0 otherwise
  * @folder: TRUE if hand-held can store folders
  * @memory: memory used/free on hand-held (CalcMemType)
@@ -491,6 +492,7 @@ struct _CalcFncts
 	const char*		fullname;		
 	const char*		description;
 	const int		features;
+	const char*		counters[23];
 
 	int		(*is_ready)		(CalcHandle*);
 

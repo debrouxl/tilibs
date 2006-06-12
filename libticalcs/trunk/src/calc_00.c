@@ -151,6 +151,7 @@ const CalcFncts calc_00 =
 	N_("Dummy hand-held"),
 	N_("Dummy hand-held used when no calc is set"),
 	FTS_NONE,
+	{""},
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -178,7 +178,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TRYF(err);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s/%s'"),
+		snprintf(update_->text, sizeof(update_->text), "%s/%s",
 			((VarEntry *) (folder->data))->name, utf8);
 		g_free(utf8);
 		update_->label();
@@ -250,7 +250,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	for (block = 0;; block++) 
 	{
-		snprintf(update_->text, sizeof(update_->text), _("Receiving block %2i"), block);
+		snprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
 		update_label();
     
 		err = ti92_recv_VAR(&block_size, &content->type, content->rom_version);
@@ -295,7 +295,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -340,7 +340,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
 	utf8 = ticonv_varname_to_utf8(handle->model, varname);
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -412,7 +412,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
         }
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -620,6 +620,8 @@ const CalcFncts calc_92 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "1P1L", "2P1L", "1P1L", "2P1L", "1P1L", "", "",
+	"", "", "2P", "", "", "1L", "1L", "", "", "" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

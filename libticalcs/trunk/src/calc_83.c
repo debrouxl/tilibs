@@ -146,7 +146,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		t_node_append(folder, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 	}
@@ -311,7 +311,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		  break;
 		}
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -343,7 +343,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -521,6 +521,8 @@ const CalcFncts calc_83 =
 	OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	OPS_DELVAR |
 	FTS_SILENT | FTS_MEMFREE | FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "", "",
+		"", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

@@ -155,7 +155,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			t_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Reading of '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
   }
@@ -319,7 +319,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model,entry->name);
-		snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -351,7 +351,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     memcpy(ve, vr, sizeof(VarEntry));
 
     utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-    snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), utf8);
+    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 
@@ -473,7 +473,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int offset;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
 
-	snprintf(update_->text, sizeof(update_->text), _("Receiving '%s'"), vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
 	update_label();
 
 	content->model = handle->model;
@@ -945,6 +945,8 @@ const CalcFncts calc_73 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -979,6 +981,8 @@ const CalcFncts calc_83p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
@@ -1013,6 +1017,8 @@ const CalcFncts calc_84p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
