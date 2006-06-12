@@ -241,7 +241,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 			u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
 			u2 = ticonv_varname_to_utf8(handle->model, ve->name);
-			snprintf(update_->text, sizeof(update_->text), "%s/%s", u1, u2);
+			snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
 			g_free(u1); g_free(u2);
 			update_label();
 

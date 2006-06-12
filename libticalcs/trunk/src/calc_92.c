@@ -178,7 +178,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TRYF(err);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-		snprintf(update_->text, sizeof(update_->text), "%s/%s",
+		snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"),
 			((VarEntry *) (folder->data))->name, utf8);
 		g_free(utf8);
 		update_->label();
