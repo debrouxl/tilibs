@@ -418,6 +418,36 @@ typedef enum
 } InfosMask;
 
 /**
+ * CalcFnctsIdx:
+ *
+ * Index of function in the #CalcFncts structure:
+ **/
+typedef enum 
+{
+	IS_READY=0,
+	SEND_KEY,
+	RECV_SCREEN,
+	GET_DIRLIST,
+	GET_MEMFREE,
+	SEND_BACKUP,
+	RECV_BACKUP,
+	SEND_VAR,
+	RECV_VAR,
+	SEND_VAR_NS,
+	RECV_VAR_NS,
+	SEND_APP,
+	RECV_APP,
+	SEND_OS,
+	RECV_IDLIST,
+	DUMP_ROM,
+	SET_CLOCK,
+	GET_CLOCK,
+	DEL_VAR,
+	NEW_FOLDER,
+	GET_VERSION,
+} CalcFnctsIdx;
+
+/**
  * CalcInfos:
  * @os: OS version like "3.01"
  * @bios: BIOS (boot) version like 2.01
@@ -457,7 +487,7 @@ typedef struct
  * @fullname: complete name of hand-held like "TI-89"
  * @description: description of hand-held like "TI89 calculator"
  * @features: supported operations (CalcOperations)
- * @counters: defines which CalcUpdate counters have to be refreshed (for future use)
+ * @counters: defines which CalcUpdate counters have to be refreshed (indexed by CalcFnctsIdx)
  * @silent: TRUE if hand-held has silent technology, 0 otherwise
  * @folder: TRUE if hand-held can store folders
  * @memory: memory used/free on hand-held (CalcMemType)
