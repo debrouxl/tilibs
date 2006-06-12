@@ -1,10 +1,10 @@
 ///* Hey EMACS -*- linux-c -*- */
-/* $Id: main.c 347 2004-05-31 09:39:53Z roms $ */
 
 /*  RomDumper - an TI89/92/92+/V200PLT/Titanium ROM dumper
  *
  *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
- *  Copyright (c) 2005, Kevin Kofler for the Fargo-II port
+ *  Copyright (c) 2006, Romain Liévin for the Direct USB port
+ *  Copyright (c) 2006, Kevin Kofler for the HW4 port
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@
 #include <tigcclib.h>         // Include All Header Files
 #include "romdump.h"
 #include "dusb.h"
-
-#define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
 
 // --- Packet Layer
 
@@ -171,6 +169,14 @@ int Dump(void)
 	char str[30];
 	unsigned int i;
 	uint8_t* ptr;
+	uint32_t ROM_size;
+	
+	// determine ROM size
+	if (HW_VERSION <= 3) { // 4 MB on TI-89 Titanium HW3
+		ROM_size = 0x400000;
+	} else { // 8 MB on TI-89 Titanium HW4
+		ROM_size = 0x800000;
+	}
 	
 	while(!exit)
 	{
@@ -244,7 +250,6 @@ int Dump(void)
 void _main(void)
 {
   char str[30];  
-  int ret;
   
   ClrScr ();
   FontSetSys (F_8x10);

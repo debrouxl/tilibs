@@ -1,7 +1,25 @@
-// Header File
-// Created 12/07/2005; 18:32:26
+/*  RomDumper - an TI89/92/92+/V200PLT/Titanium ROM dumper
+ *
+ *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
+ *  Copyright (c) 2005, Kevin Kofler for the Fargo-II port
+ *  Copyright (c) 2006, Kevin Kofler for the HW4 port
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
-#define VERSION		"1.00"			// Version
+#define VERSION		"1.01"			// Version
 
 #define TIMEOUT		20			// 1s x 20 ticks
 
@@ -24,4 +42,4 @@ typedef unsigned long int		uint32_t;
 #define MSB(v)	(v >> 8)
 #define LSB(v)	(v & 0xff)
 
-#define LE_BE(v) (((v & 0xff000000) >> 24) | ((v & 0x00ff0000) >>  8) | ((v & 0x0000ff00) <<  8) | ((v & 0x000000ff) << 24))	
+#define LE_BE(v) (((v & 0xff000000) >> 24) | ((v & 0x00ff0000) >>  8) | ((v & 0x0000ff00) <<  8) | ((v & 0x000000ff) << 24))

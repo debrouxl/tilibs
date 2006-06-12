@@ -1,4 +1,20 @@
 // Miscellaneous defines - there are no official TIGCC headers for Fargo yet.
+// Copyright (c) 2004-2006 Kevin Kofler
+
+/*  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #define NULL ((void *) 0) 
 
@@ -18,8 +34,8 @@ enum Attrs {A_REVERSE, A_NORMAL, A_XOR, A_SHADED, A_REPLACE, A_OR, A_AND, A_THIC
 extern void __attribute__((may_alias)) __ROM_base;
 #define ROM_base (&__ROM_base)
 // ROM_base + 0xc4 (49*4) contains the used ROM size - 4, round up to full 1 or 2 MB
-#define ROM_size ((49[(unsigned long *)ROM_base] + 0xffffful) & 0xfff00000ul)
-#define TI92_VERSION ((int)(ROM_size>>20))
+#define ROM_SIZE ((49[(unsigned long *)ROM_base] + 0xffffful) & 0xfff00000ul)
+#define TI92_VERSION ((int)(ROM_SIZE>>20))
 #define ERD_dialog tios__002F
 short ERD_dialog (short err_no, short prog_flag);
 #define OSLinkTxQueueInquire tios__0008
