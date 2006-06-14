@@ -33,7 +33,7 @@
 
 // We split packets into chucks to get control regularly and update statistics.
 static unsigned int BLK_SIZE;	// refresh pbars every 5%
-#define MIN_SIZE	512			// don't refresh at all if packet is < 512 bytes
+static unsigned int MIN_SIZE;	// don't refresh at all if packet is < 512 bytes
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -81,6 +81,7 @@ int dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uin
 		buf[length+4+1] = MSB(sum);
 
 		// compute chunks
+		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
 		BLK_SIZE = (length + 6) / 20;		// 5%
 		if(BLK_SIZE == 0) BLK_SIZE = length + 6;
 		if(BLK_SIZE < 32) BLK_SIZE = 128;	// SilverLink doesn't like small block (< 32)
@@ -202,7 +203,8 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	case CMD_REQ:
 	case CMD_IND:
 	case CMD_RTS:		
-		// compute chunks
+		// compute chunks*
+		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
 		BLK_SIZE = *length / 20;
 		if(BLK_SIZE == 0) BLK_SIZE = 1;
 
