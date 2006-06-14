@@ -147,7 +147,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
   }
   
-  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
+  snprintf(update_->text, sizeof(update_->text), "");
   update_label();
 
   update_->max2 = 3;
@@ -192,6 +192,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
   TRYF(ti85_send_CTS());
   TRYF(ti85_recv_ACK(NULL));
+
+  snprintf(update_->text, sizeof(update_->text), "");
+  update_label();
 
   update_->max2 = 3;
   update_->cnt2 = 0;
@@ -239,9 +242,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   uint16_t status;
   char *utf8;
 
-  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
-  update_label();
-
   update_->max2 = content->num_entries;
   for (i = 0; i < content->num_entries; i++) 
   {
@@ -277,6 +277,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
+
 	utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
     snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
@@ -338,6 +339,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 	utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
     snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);

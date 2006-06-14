@@ -197,6 +197,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 
     snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
     update_label();
+
     do 
 	{	// wait user's action
 		if (update_->cancel)
@@ -219,7 +220,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
       break;
     }
     
-	snprintf(update_->text, sizeof(update_->text), _("Sending..."));
+	snprintf(update_->text, sizeof(update_->text), "");
     update_label();
 
 	update_->max2 = 4;
@@ -270,8 +271,12 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
     TRYF(ti85_send_CTS());
     TRYF(ti85_recv_ACK(NULL));
 
+	snprintf(update_->text, sizeof(update_->text), "");
+	update_label();
+
 	update_->max2 = 4;
 	update_->cnt2 = 0;
+	update_->pbar();
 
     content->data_part1 = tifiles_ve_alloc_data(65536);
     TRYF(ti85_recv_XDP(&content->data_length1, content->data_part1));
@@ -339,6 +344,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
+
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
 		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);

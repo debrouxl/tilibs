@@ -310,6 +310,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		default:			// RTS
 		  break;
 		}
+
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
 		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
@@ -466,6 +467,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	unsigned int i;
+
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
 
 	send_key(handle, 0x0040);	// Quit
 	send_key(handle, 0x0009);	// Clear

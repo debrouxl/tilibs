@@ -274,8 +274,8 @@ int rom_dump(CalcHandle* h, FILE* f)
 	uint32_t i;
 	uint8_t data[65536];
 
-	sprintf(h->updat->text, "Receiving...");
-	h->updat->label();
+	sprintf(update_->text, "Receiving data...");
+	update_label();
 
 	// check if ready
 	for(i = 0; i < 3; i++)

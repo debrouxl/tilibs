@@ -147,7 +147,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
   }
 
-  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
+  snprintf(update_->text, sizeof(update_->text), "");
   update_label();
 
   update_->max2 = 3;
@@ -192,6 +192,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
   TRYF(ti82_send_CTS());
   TRYF(ti82_recv_ACK(NULL));
+
+  snprintf(update_->text, sizeof(update_->text), "");
+  update_label();
 
   update_->max2 = 3;
   update_->cnt2 = 0;
@@ -239,9 +242,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   uint16_t status;
   char *utf8;
 
-  snprintf(update_->text, sizeof(update_->text), _("Sending..."));
-  update_label();
-
   update_->max2 = content->num_entries;
   for (i = 0; i < content->num_entries; i++) 
   {
@@ -252,6 +252,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
     snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
     update_label();
+
     do 
 	{			// wait user's action
       update_refresh();
@@ -277,8 +278,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     default:			// RTS
       break;
     }
+
     utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
-    snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 
@@ -337,7 +339,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_recv_ACK(NULL));
 
     utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-    snprintf(update_->text, sizeof(update_->text), _("Sending '%s'"), utf8);
+    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 

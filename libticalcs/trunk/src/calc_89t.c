@@ -184,7 +184,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 */
 		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name);
 		u2 = ticonv_varname_to_utf8(handle->model, ve->name);
-			snprintf(update_->text, sizeof(update_->text), "%s/%s", u1, u2);
+			snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
 			g_free(u1); g_free(u2);
 			update_label();
 	}
@@ -247,12 +247,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_eot(handle));
 
-		if(mode & MODE_BACKUP) 
-		{
-			update_->cnt2 = i+1;
-			update_->max2 = content->num_entries;
-			update_->pbar();
-		}
+		update_->cnt2 = i+1;
+		update_->max2 = content->num_entries;
+		update_->pbar();
 
 		PAUSE(50);	// needed
 	}
@@ -269,9 +266,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char fldname[40], varname[40];
 	uint8_t *data;
 	VarEntry *ve;
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
 
 	attrs = ca_new_array(nattrs);
 	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -448,6 +448,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	{
 		TRYF(cmd_s_os_data_89(handle, r, ptr->data_part + i*0x2000));
 		TRYF(cmd_r_data_ack(handle));
+
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 	
 	TRYF(cmd_s_eot(handle));
@@ -461,6 +464,9 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
 	uint16_t pid[] = { PID_FULL_ID };
 	CalcParam **param;
+
+	snprintf(update_->text, sizeof(update_->text), "ID-LIST");
+	update_label();
 
 	param = cp_new_array(1);
 	TRYF(cmd_s_param_request(handle, 1, pid));
@@ -656,12 +662,13 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	CalcAttr **attr;
 	const int size = 2;
 
-	attr = ca_new_array(size);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
 
+	attr = ca_new_array(size);
 	attr[0] = ca_new(AID_VAR_TYPE2, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0C;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
-	
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;	
 	attr[1] = ca_new(AID_UNKNOWN_13, 1);
 	attr[1]->data[0] = 0;
 
@@ -680,6 +687,9 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	CalcParam *param;
 	CalcAttr **attrs;
 	const int nattrs = 4;
+
+	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), vr->folder);
+    update_label();
 
 	// send empty expression in specified folder
 	attrs = ca_new_array(nattrs);

@@ -149,7 +149,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			t_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
 	} while(1);
@@ -222,9 +222,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char fldname[40], varname[40];
 	uint8_t *data;
 	VarEntry *ve;
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
 
 	attrs = ca_new_array(nattrs);
 	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -308,14 +311,21 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
 	//size = ptr->data_length
 
+	update_->max2 = ptr->num_pages;
 	for (i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
 		memcpy(data + i*FLASH_PAGE_SIZE, fp->data, FLASH_PAGE_SIZE);
+
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 	{
 		FlashPage *fp = ptr->pages[--i];
 		memset(data + i*FLASH_PAGE_SIZE + fp->size, 0x00, FLASH_PAGE_SIZE - fp->size); 
+
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 
 	// send
@@ -348,14 +358,17 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
+	char *utf8;
 	
 	int page;
 	uint16_t data_addr = 0x4000;
 	uint16_t data_page = 0;
 	int r, q;
 
-	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
 
 	attrs = ca_new_array(nattrs);
 	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -379,6 +392,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	q = vr->size / FLASH_PAGE_SIZE;
 	r = vr->size % FLASH_PAGE_SIZE;
 
+	update_->max2 = q;
 	for(page = 0; page < q; page++)
 	{
 		FlashPage *fp = content->pages[page] = tifiles_fp_create();
@@ -389,6 +403,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		fp->size = FLASH_PAGE_SIZE;			
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, FLASH_PAGE_SIZE);
+
+		update_->cnt2 = page;
+		update_->pbar();
 	}
 	{
 		FlashPage *fp = content->pages[page] = tifiles_fp_create();
@@ -399,6 +416,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		fp->size = r;			
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
+
+		update_->cnt2 = page;
+		update_->pbar();
 	}
 	content->num_pages = page+1;
 
@@ -482,6 +502,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	TRYF(cmd_r_os_ack(handle, &pkt_size));
 
 	// send OS data
+	update_->max2 = ptr->num_pages;
 	for(i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];
@@ -508,6 +529,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 				TRYF(cmd_r_data_ack(handle));
 			}
 		}
+
+		update_->cnt2 = i;
+		update_->pbar();
 	}
 	
 	TRYF(cmd_s_eot(handle));
@@ -526,6 +550,9 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	char folder[40], name[40];
 	uint8_t *data;
 	int i, varsize;
+
+	snprintf(update_->text, sizeof(update_->text), "ID-LIST");
+	update_label();
 
 	attrs = ca_new_array(nattrs);
 	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -684,12 +711,13 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	CalcAttr **attr;
 	const int size = 2;
 
-	attr = ca_new_array(size);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
 
+	attr = ca_new_array(size);
 	attr[0] = ca_new(0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
-	
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;	
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = vr->attr == ATTRB_ARCHIVED ? 1 : 0;
 

@@ -564,7 +564,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t data[16];
 	int i;
 
-	snprintf(update_->text, sizeof(update_->text), _("Getting variable..."));
+	snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
 
 	TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
@@ -638,8 +638,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	else
 	{
 		// else wait for user's action
-		sprintf(handle->updat->text, _("Waiting user's action..."));
-		handle->updat->label();
+		sprintf(update_->text, _("Waiting user's action..."));
+		update_label();
 
 		do
 		{
@@ -793,6 +793,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
+
 	TRYF(ti73_send_DEL((uint16_t)vr->size, vr->type, vr->name, vr->attr));
 	TRYF(ti73_recv_ACK(NULL));
 	TRYF(ti73_recv_ACK(NULL));

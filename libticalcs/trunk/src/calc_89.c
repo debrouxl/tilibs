@@ -502,6 +502,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
+		update_label();
 
 		TRYF(ti89_send_CTS());
 		TRYF(ti89_recv_ACK(NULL));
@@ -526,6 +527,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
 	int i, nblocks;
+	char *utf8;
 
 	// send all headers except license
 	for(ptr = content; ptr != NULL; ptr = ptr->next)
@@ -535,6 +537,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+
+		utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
+		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_free(utf8);
+		update_label();
 
 		if(ptr->data_type == TI89_AMS) 
 		{
@@ -802,6 +809,8 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char varname[18];
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
 
 	TRYF(ti89_send_DEL(vr->size, vr->type, varname));
 	TRYF(ti89_recv_ACK(NULL));
@@ -816,6 +825,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	char varname[18];
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
+	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), vr->folder);
+    update_label();
 
 	// send empty expression
 	TRYF(ti89_send_RTS(0x10, 0x00, varname));

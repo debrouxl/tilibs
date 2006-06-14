@@ -11,6 +11,8 @@ Log:
 - 11/06/2006, version 0.2.1: roms
 	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
 	- added field in the CalcFncts structure which tells which counter may be used for refresh
+	- checked/fixed all pbar counters
+	- 
 
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API (API compat broken here)

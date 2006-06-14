@@ -200,9 +200,6 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	int i;
 	int nblocks;
 
-	snprintf(update_->text, sizeof(update_->text), _("Sending backup..."));
-	update_label();
-
 	TRYF(ti92_send_VAR(content->data_length, TI92_BKUP, content->rom_version));
 	TRYF(ti92_recv_ACK(NULL));
 
@@ -524,6 +521,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	int i;
 	char varname[18];
 
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
+    update_label();
+
 	send_key(handle, KEY92P_ON);
 	send_key(handle, KEY92P_ESC);
 	send_key(handle, KEY92P_ESC);
@@ -557,6 +557,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	char varname[18];
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
+	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), vr->folder);
+    update_label();
 
 	// send empty expression
 	TRYF(ti92_send_RTS(0x10, 0x00, varname));
