@@ -638,7 +638,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	else
 	{
 		// else wait for user's action
-		sprintf(update_->text, _("Waiting user's action..."));
+		sprintf(update_->text, _("Waiting for user's action..."));
 		update_label();
 
 		do

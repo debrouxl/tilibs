@@ -12,7 +12,7 @@ Log:
 	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
 	- added field in the CalcFncts structure which tells which counter may be used for refresh
 	- checked/fixed all pbar counters
-	- 
+	- fixed typo (waiting -> waiting for)
 
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API (API compat broken here)

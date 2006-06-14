@@ -195,7 +195,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     TRYF(ti85_send_VAR(content->data_length1, TI86_BKUP, varname));
     TRYF(ti85_recv_ACK(&status));
 
-    snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
+    snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
     update_label();
 
     do 
@@ -454,7 +454,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	unlink(prgname);
 
 	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting user's action..."));
+	sprintf(handle->updat->text, _("Waiting for user's action..."));
 	handle->updat->label();
 
 	do

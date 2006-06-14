@@ -107,7 +107,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   uint8_t rej_code;
   uint16_t status;
 
-  snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
+  snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
   update_label();
 
   length = content->data_length1;
@@ -250,7 +250,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_VAR((uint16_t)entry->size, entry->type, entry->name));
     TRYF(ti82_recv_ACK(&status));
 
-    snprintf(update_->text, sizeof(update_->text), _("Waiting user's action..."));
+    snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
     update_label();
 
     do 
@@ -307,7 +307,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int err = 0;
   char *utf8;
 
-  snprintf(update_->text, sizeof(update_->text), _("Waiting var(s)..."));
+  snprintf(update_->text, sizeof(update_->text), _("Waiting for var(s)..."));
   update_label();
 
   content->model = CALC_TI82;
@@ -402,7 +402,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	PAUSE(1000);
 
 	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting execing of program..."));
+	sprintf(handle->updat->text, _("Waiting for execing of program..."));
 	handle->updat->label();
 
 	do
