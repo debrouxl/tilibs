@@ -807,10 +807,13 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	char varname[18];
+	char *utf8;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, varname);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	TRYF(ti89_send_DEL(vr->size, vr->type, varname));
 	TRYF(ti89_recv_ACK(NULL));
@@ -823,10 +826,13 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
 	char varname[18];
+	char *utf8;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
-	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), vr->folder);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder);
+	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	// send empty expression
 	TRYF(ti89_send_RTS(0x10, 0x00, varname));

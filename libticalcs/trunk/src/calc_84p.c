@@ -710,9 +710,12 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	CalcAttr **attr;
 	const int size = 2;
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	attr = ca_new_array(size);
 	attr[0] = ca_new(0x0011, 4);

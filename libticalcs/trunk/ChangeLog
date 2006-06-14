@@ -14,6 +14,7 @@ Log:
 	- checked/fixed all pbar counters
 	- fixed typo (waiting -> waiting for)
 	- some calcs needs 2P1L refresh for ROM dumper
+	- some varname<->utf conversions were missing
 
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API (API compat broken here)

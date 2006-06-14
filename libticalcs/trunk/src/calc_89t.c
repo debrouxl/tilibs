@@ -368,9 +368,12 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
+	char *utf8;
 	
-	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
 
 	attrs = ca_new_array(nattrs);
 	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -661,9 +664,14 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	CalcAttr **attr;
 	const int size = 2;
+	char varname[68];
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
-    update_label();
+	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	attr = ca_new_array(size);
 	attr[0] = ca_new(AID_VAR_TYPE2, 4);
@@ -687,9 +695,12 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	CalcParam *param;
 	CalcAttr **attrs;
 	const int nattrs = 4;
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), vr->folder);
-    update_label();
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder);
+	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	// send empty expression in specified folder
 	attrs = ca_new_array(nattrs);

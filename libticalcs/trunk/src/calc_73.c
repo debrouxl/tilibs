@@ -472,8 +472,11 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int page;
 	int offset;
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
+	char *utf8;
 
-	snprintf(update_->text, sizeof(update_->text), "%s", vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
 	update_label();
 
 	content->model = handle->model;
@@ -793,8 +796,12 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), vr->name);
-    update_label();
+	char *utf8;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_free(utf8);
+	update_label();
 
 	TRYF(ti73_send_DEL((uint16_t)vr->size, vr->type, vr->name, vr->attr));
 	TRYF(ti73_recv_ACK(NULL));
