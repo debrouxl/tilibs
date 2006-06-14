@@ -212,8 +212,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
 	}
 
-	update_->max2 = 3;
 	update_->cnt2 = 0;
+	update_->max2 = 3;
 	update_->pbar();
 
 	TRYF(ti73_send_XDP(content->data_length1, content->data_part1));
@@ -256,8 +256,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti73_send_CTS());
 	TRYF(ti73_recv_ACK(NULL));
 
-	update_->max2 = 3;
 	update_->cnt2 = 0;
+	update_->max2 = 3;
 	update_->pbar();
 
 	content->data_part1 = tifiles_ve_alloc_data(65536);
@@ -289,7 +289,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint8_t rej_code;
 	char *utf8;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
@@ -418,7 +420,9 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	return 0;
 #endif
 
+	update_->cnt2 = 0;
 	update_->max2 = ptr->data_length;
+
 	for (k = i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
@@ -492,7 +496,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_send_REQ2(0x00, TI73_APPL, vr->name, 0x00));
 	TRYF(ti73_recv_ACK(NULL));
 
+	update_->cnt2 = 0;
 	update_->max2 = handle->model == CALC_TI73 ? vr->size * 8 : vr->size;
+
 	for(size = 0, first_block = 1, offset = 0;;)
 	{
 		int err;

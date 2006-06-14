@@ -216,7 +216,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	CalcAttr **attrs;
 	const int nattrs = 4;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *ve = content->entries[i];
@@ -439,7 +441,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	q = ptr->data_length / 0x2000;
 	r = ptr->data_length % 0x2000;
 
+	update_->cnt2 = 0;
 	update_->max2 = q;
+
 	for(i = 0; i < q; i++)
 	{
 		TRYF(cmd_s_os_data_89(handle, 0x2000, ptr->data_part + i*0x2000));

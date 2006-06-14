@@ -150,8 +150,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   snprintf(update_->text, sizeof(update_->text), "");
   update_label();
 
-  update_->max2 = 3;
   update_->cnt2 = 0;
+  update_->max2 = 3;
   update_->pbar();
 
   TRYF(ti85_send_XDP(content->data_length1, content->data_part1));
@@ -196,8 +196,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   snprintf(update_->text, sizeof(update_->text), "");
   update_label();
 
-  update_->max2 = 3;
   update_->cnt2 = 0;
+  update_->max2 = 3;
   update_->pbar();
 
   content->data_part1 = tifiles_ve_alloc_data(65536);
@@ -242,7 +242,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   uint16_t status;
   char *utf8;
 
+  update_->cnt2 = 0;
   update_->max2 = content->num_entries;
+
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];

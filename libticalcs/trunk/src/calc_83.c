@@ -205,8 +205,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     break;
 	}
 
-	update_->max2 = 3;
 	update_->cnt2 = 0;
+	update_->max2 = 3;
 	update_->pbar();
 
 	TRYF(ti82_send_XDP(content->data_length1, content->data_part1));
@@ -249,8 +249,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti82_send_CTS());
 	TRYF(ti82_recv_ACK(NULL));
 
-	update_->max2 = 3;
 	update_->cnt2 = 0;
+	update_->max2 = 3;
 
 	content->data_part1 = tifiles_ve_alloc_data(65536);
 	TRYF(ti82_recv_XDP(&content->data_length1, content->data_part1));
@@ -282,7 +282,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint16_t status;
 	char *utf8;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];

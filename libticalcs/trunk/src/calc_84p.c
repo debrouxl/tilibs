@@ -311,7 +311,9 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
 	//size = ptr->data_length
 
+	update_->cnt2 = 0;
 	update_->max2 = ptr->num_pages;
+
 	for (i = 0; i < ptr->num_pages; i++) 
 	{
 		FlashPage *fp = ptr->pages[i];
@@ -392,7 +394,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	q = vr->size / FLASH_PAGE_SIZE;
 	r = vr->size % FLASH_PAGE_SIZE;
 
+	update_->cnt2 = 0;
 	update_->max2 = q;
+
 	for(page = 0; page < q; page++)
 	{
 		FlashPage *fp = content->pages[page] = tifiles_fp_create();
@@ -502,7 +506,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	TRYF(cmd_r_os_ack(handle, &pkt_size));
 
 	// send OS data
+	update_->cnt2 = 0;
 	update_->max2 = ptr->num_pages;
+
 	for(i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];

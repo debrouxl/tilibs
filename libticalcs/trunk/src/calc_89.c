@@ -287,7 +287,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint16_t status;
 	char *utf8;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for(i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
@@ -408,7 +410,9 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	uint16_t status;
 	char *utf8;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for(i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
@@ -612,6 +616,9 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 	TRYF(ti89_recv_VAR(&content->data_length, &content->data_type, content->name));
 
+	update_->cnt2 = 0;
+	update_->max2 = vr->size;
+
 	for(i = 0, content->data_length = 0;; i++) 
 	{
 		int err;
@@ -632,7 +639,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			break;
 		TRYF(err);
 
-		update_->max2 = vr->size;
 		update_->cnt2 += block_size;
 		update_->pbar();
 	}

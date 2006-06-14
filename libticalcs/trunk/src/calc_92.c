@@ -203,6 +203,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti92_send_VAR(content->data_length, TI92_BKUP, content->rom_version));
 	TRYF(ti92_recv_ACK(NULL));
 
+	update_->cnt2 = 0;
 	nblocks = content->data_length / 1024;
 	handle->updat->max2 = nblocks;
 
@@ -276,7 +277,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	uint16_t status;
 	char *utf8;
 
+	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
+
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[i];
