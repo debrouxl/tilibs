@@ -13,6 +13,7 @@ Log:
 	- added field in the CalcFncts structure which tells which counter may be used for refresh
 	- checked/fixed all pbar counters
 	- fixed typo (waiting -> waiting for)
+	- some calcs needs 2P1L refresh for ROM dumper
 
 - 08/06/2006, version 0.2.0: roms
 	- reworked dirlist API (API compat broken here)

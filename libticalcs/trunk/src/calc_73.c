@@ -949,7 +949,7 @@ const CalcFncts calc_73 =
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,

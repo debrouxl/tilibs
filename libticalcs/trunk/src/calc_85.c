@@ -476,7 +476,7 @@ const CalcFncts calc_85 =
 	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
 	FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "", "", "2P1L", "1P1L", "", "",
-		"", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
 	&recv_screen,
