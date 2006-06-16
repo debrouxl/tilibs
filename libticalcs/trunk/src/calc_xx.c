@@ -1193,3 +1193,33 @@ TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filena
 
 	return 0;
 }
+
+/**
+ * ticalcs_calc_send_tigroup:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ * @mode: which vars/apps to send
+ *
+ * Send a TiGroup file.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, const char* filename, TigMode mode)
+{
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_tigroup:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ * @mode: which vars/apps to receive
+ *
+ * Receive a TiGroup file.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, const char* filename, TigMode mode)
+{
+	return 0;
+}

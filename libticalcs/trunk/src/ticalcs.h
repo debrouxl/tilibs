@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.2.1"
+# define LIBCALCS_VERSION "0.2.2"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -196,6 +196,81 @@ typedef enum
 	ACT_NONE = 0,
 	ACT_RENAME, ACT_OVER, ACT_SKIP,
 } CalcAction;
+
+/**
+ * InfosMask:
+ *
+ * An enumeration which contains the different flags supported by CalcInfos:
+ **/
+typedef enum 
+{
+	INFOS_PRODUCT_NUMBER = (1 << 0), 
+	INFOS_PRODUCT_NAME	= (1 << 1),
+	INFOS_MAIN_CALC_ID	= (1 << 2),
+	INFOS_HW_VERSION	= (1 << 3),
+	INFOS_LANG_ID		= (1 << 4),
+	INFOS_SUB_LANG_ID	= (1 << 5),
+	INFOS_DEVICE_TYPE	= (1 << 6),
+	INFOS_BOOT_VERSION	= (1 << 7),
+	INFOS_OS_VERSION	= (1 << 8),
+	INFOS_RAM_PHYS		= (1 << 9),
+	INFOS_RAM_USER		= (1 << 10),
+	INFOS_RAM_FREE		= (1 << 11),
+	INFOS_FLASH_PHYS	= (1 << 12),
+	INFOS_FLASH_USER	= (1 << 13),
+	INFOS_FLASH_FREE	= (1 << 14),
+	INFOS_LCD_WIDTH		= (1 << 15),
+	INFOS_LCD_HEIGHT	= (1 << 16),
+	INFOS_BATTERY		= (1 << 17),	
+
+	INFOS_CALC_MODEL	= (1 << 31),
+} InfosMask;
+
+/**
+ * CalcFnctsIdx:
+ *
+ * Index of function in the #CalcFncts structure:
+ **/
+typedef enum 
+{
+	FNCT_IS_READY=0,
+	FNCT_SEND_KEY,
+	FNCT_RECV_SCREEN,
+	FNCT_GET_DIRLIST,
+	FNCT_GET_MEMFREE,
+	FNCT_SEND_BACKUP,
+	FNCT_RECV_BACKUP,
+	FNCT_SEND_VAR,
+	FNCT_RECV_VAR,
+	FNCT_SEND_VAR_NS,
+	FNCT_RECV_VAR_NS,
+	FNCT_SEND_APP,
+	FNCT_RECV_APP,
+	FNCT_SEND_OS,
+	FNCT_RECV_IDLIST,
+	FNCT_DUMP_ROM,
+	FNCT_SET_CLOCK,
+	FNCT_GET_CLOCK,
+	FNCT_DEL_VAR,
+	FNCT_NEW_FOLDER,
+	FNCT_GET_VERSION,
+	FNCT_SEND_CERT,
+	FNCT_RECV_CERT,
+} CalcFnctsIdx;
+
+/**
+ * TigMode:
+ *
+ * An enumeration which contains the data to save in tigroup:
+ **/
+typedef enum 
+{
+	TIG_NONE	= 0,
+	TIG_RAM		= (1 << 0),
+	TIG_ARCHIVE = (1 << 1),
+	TIG_FLASH	= (1 << 2),
+	TIG_ALL		= 7,
+} TigMode;
 
 /**
  * CalcScreenCoord:
@@ -387,67 +462,6 @@ typedef struct _CalcHandle	CalcHandle;
 #define update_stop()       handle->updat->stop()
 
 typedef VarEntry	VarRequest;	// alias
-
-/**
- * InfosMask:
- *
- * An enumeration which contains the different flags supported by CalcInfos:
- **/
-typedef enum 
-{
-	INFOS_PRODUCT_NUMBER = (1 << 0), 
-	INFOS_PRODUCT_NAME	= (1 << 1),
-	INFOS_MAIN_CALC_ID	= (1 << 2),
-	INFOS_HW_VERSION	= (1 << 3),
-	INFOS_LANG_ID		= (1 << 4),
-	INFOS_SUB_LANG_ID	= (1 << 5),
-	INFOS_DEVICE_TYPE	= (1 << 6),
-	INFOS_BOOT_VERSION	= (1 << 7),
-	INFOS_OS_VERSION	= (1 << 8),
-	INFOS_RAM_PHYS		= (1 << 9),
-	INFOS_RAM_USER		= (1 << 10),
-	INFOS_RAM_FREE		= (1 << 11),
-	INFOS_FLASH_PHYS	= (1 << 12),
-	INFOS_FLASH_USER	= (1 << 13),
-	INFOS_FLASH_FREE	= (1 << 14),
-	INFOS_LCD_WIDTH		= (1 << 15),
-	INFOS_LCD_HEIGHT	= (1 << 16),
-	INFOS_BATTERY		= (1 << 17),	
-
-	INFOS_CALC_MODEL	= (1 << 31),
-} InfosMask;
-
-/**
- * CalcFnctsIdx:
- *
- * Index of function in the #CalcFncts structure:
- **/
-typedef enum 
-{
-	FNCT_IS_READY=0,
-	FNCT_SEND_KEY,
-	FNCT_RECV_SCREEN,
-	FNCT_GET_DIRLIST,
-	FNCT_GET_MEMFREE,
-	FNCT_SEND_BACKUP,
-	FNCT_RECV_BACKUP,
-	FNCT_SEND_VAR,
-	FNCT_RECV_VAR,
-	FNCT_SEND_VAR_NS,
-	FNCT_RECV_VAR_NS,
-	FNCT_SEND_APP,
-	FNCT_RECV_APP,
-	FNCT_SEND_OS,
-	FNCT_RECV_IDLIST,
-	FNCT_DUMP_ROM,
-	FNCT_SET_CLOCK,
-	FNCT_GET_CLOCK,
-	FNCT_DEL_VAR,
-	FNCT_NEW_FOLDER,
-	FNCT_GET_VERSION,
-	FNCT_SEND_CERT,
-	FNCT_RECV_CERT,
-} CalcFnctsIdx;
 
 /**
  * CalcInfos:
@@ -701,6 +715,9 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);
 
 	TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle*, const char*);
+
+	TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle*, const char*, TigMode);
+	TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle*, const char*, TigMode);
 
 	// dirlist.c
 	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);

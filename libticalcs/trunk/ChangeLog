@@ -4,9 +4,11 @@ Set svn:eol property to native on all files
 	
 To do : 
 - manage ERR packets which can be received at any time
-- check up progress bars: they should only show the total amount of the operation (no blocks)
 
 Log:
+
+- 16/06/2006, version 0.2.2: roms
+	- added full backup capability thru TiGroup files
 
 - 11/06/2006, version 0.2.1: roms
 	- reworked/added field in CalcUpdate structure (API compat broken here, again) 
