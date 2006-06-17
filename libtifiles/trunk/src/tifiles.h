@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.1.5"
+# define LIBFILES_VERSION "0.2.0"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -298,6 +298,30 @@ struct _FlashContent
   FlashContent*	next;		// TI9x only
 };
 
+/**
+ * TigContent:
+ * @model: a calculator model
+ * @regular_files: NULL-terminated array of internal name of files
+ * @flash_files: NULL-terminated array of internal name of files
+ * @comment: comment to store in archive
+ * @regular: a NULL-terminated array of file contents or NULL
+ * @flash: a NULL-terminated array of file contents or NULL
+ *
+ * A generic structure used to store the content of a TiGroup file.
+ **/
+typedef struct 
+{
+  CalcModel			model;
+  char*				comment;
+
+  char**			regular_files;
+  FileContent**		regular;
+
+  char**			flash_files;
+  FlashContent**	flash;
+
+} TigContent;
+
 /* Functions */
 
 // namespace scheme: library_class_function like tifiles_fext_get
@@ -432,14 +456,18 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
   // tigroup.c (later)
-  TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent *content);
-  TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent *content);
+  TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int, int);
+  TIEXPORT int         TICALL tifiles_content_delete_tigroup(TigContent *content);
+
+  TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
+  TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename);
 
   //comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);
   TIEXPORT const char* TICALL tifiles_comment_set_group(void);
   TIEXPORT const char* TICALL tifiles_comment_set_backup(void);
+  TIEXPORT const char* TICALL tifiles_comment_set_tigroup(void);
 
   // varentry.c
   TIEXPORT VarEntry*	TICALL tifiles_ve_create(void);

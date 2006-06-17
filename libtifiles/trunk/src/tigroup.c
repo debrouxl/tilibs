@@ -104,6 +104,71 @@ int g_chdir (const gchar *path)
 }
 #endif
 
+/**
+ * tifiles_content_create_tigroup:
+ * @model: a calculator model or CALC_NONE.
+ * @r: number of #FileContent entries
+ * @f: number of #FlashContent entries
+ *
+ * Allocates a TigContent structure. Note: the calculator model is not required
+ * if the content is used for file reading but is compulsory for file writing.
+ *
+ * Return value: the allocated block.
+ **/
+TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int r, int f)
+{
+	TigContent* content = calloc(1, sizeof(FileContent));
+
+	content->model = model;
+	content->comment = (char *)tifiles_comment_set_tigroup();
+
+	content->regular_files = (char **)calloc(r + 1, sizeof(char *));
+	content->flash_files = (char **)calloc(f + 1, sizeof(char *));
+
+	content->regular = (FileContent **)calloc(r + 1, sizeof(FileContent *));
+	content->flash = (FlashContent **)calloc(f + 1, sizeof(FileContent *));
+
+	return content;
+}
+
+/**
+ * tifiles_content_delete_tigroup:
+ *
+ * Free the whole content of a @TigContent structure and the content itself.
+ *
+ * Return value: none.
+ **/
+TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
+{
+	int i, r, f;
+	
+	// counter number of files to group
+	for (r = 0; content->regular[r] != NULL; r++);
+	for (f = 0; content->regular[f] != NULL; f++);
+
+	// release allocated memory in structures
+	for (i = 0; i < r; i++) 
+	{
+		tifiles_content_delete_regular(content->regular[i]);
+	}
+
+	for (i = 0; i < f; i++) 
+	{
+		tifiles_content_delete_flash(content->flash[i]);
+	}
+
+	for(i = 0; i < r; i++)
+		free(content->regular_files[i]);
+	free(content->regular_files);
+
+	for(i = 0; i < r; i++)
+		free(content->flash_files[i]);
+	free(content->flash_files);
+
+	free(content);
+
+  return 0;
+}
 
 /**
  * tifiles_file_read_tigroup:
@@ -114,7 +179,7 @@ int g_chdir (const gchar *path)
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent *content)
+TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 {
 #ifdef HAVE_LIBZ
 	unzFile uf = NULL;
@@ -125,6 +190,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	unsigned i;
 	void* buf = NULL;
 	const char *password = NULL;
+	int ri =0, fi = 0;
 
 	// Open ZIP archive
 	uf = unzOpen(filename);
@@ -155,7 +221,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 	for (i = 0; i < gi.number_entry; i++)
     {
 		FILE *f;
-		gchar *filename;
+		gchar *filename;	// beware: mask global 'filename' !
 		gchar *utf8;
 		gchar *gfe;
 
@@ -213,17 +279,28 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, FileContent 
 		while (err>0);
 		fclose(f);
 
-		// add to array
+		// add to TigContent
 		{
-			FileContent *src;
-			FileContent *dst = content;
-
 			content->model = tifiles_file_get_model(filename);
-		
-			src = tifiles_content_create_regular(content->model);
-			tifiles_file_read_regular(filename, src);
-			tifiles_content_add_entry(dst, tifiles_ve_dup(src->entries[0]));
-			tifiles_content_delete_regular(src);
+
+			if(tifiles_file_is_regular(filename))
+			{
+				content->regular_files[ri] = strdup(filename_inzip);
+				content->regular[ri] = tifiles_content_create_regular(CALC_NONE);
+				tifiles_file_read_regular(filename, content->regular[ri]);
+				ri++;
+			}
+			else if(tifiles_file_is_flash(filename))
+			{
+				content->flash_files[fi] = strdup(filename_inzip);
+				content->flash[fi] = tifiles_content_create_flash(CALC_NONE);
+				tifiles_file_read_flash(filename, content->flash[fi]);
+				fi++;
+			}
+			else
+			{
+				// skip
+			}
 		}
 		g_free(filename);
 		unlink(filename);
@@ -260,7 +337,7 @@ tfrt_exit:
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent *content)
+TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 {
 #ifdef HAVE_LIBZ
 	zipFile zf;
@@ -269,13 +346,12 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 	int i;
     void* buf=NULL;
 	gchar *old_dir = g_get_current_dir();
-	FileContent **ptr, **contents;
+	
+	FileContent** ptr1;
+	FlashContent** ptr2;
+	int ri = 0, rf = 0;
 
-	// Explode content (we can't use the easy way: tifiles_ungroup_file because we will 
-	// need to use tifiles_file_write_regular which is limited to 64KB for TI8x groups). 
-	// So, use the hard way and do it by hand :-(
 	g_chdir(g_get_tmp_dir());
-	tifiles_ungroup_content(content, &contents);		
 
 	// Open ZIP archive
 	zf = zipOpen(filename,APPEND_STATUS_CREATE);
@@ -293,8 +369,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 		goto tfwt_exit;
 	}
 
-	// Parse
-	for(i = 0, ptr = contents; i < content->num_entries; i++, ptr++)
+	for(ptr1 = content->regular, ri=0; ptr1; ri++)
 	{
 		FILE *f;
 		char filenameinzip[256];
@@ -303,7 +378,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 		int size_read;
 
 		// write TI file into tmp folder
-		TRYC(tifiles_file_write_regular(NULL, *ptr, &filename));
+		TRYC(tifiles_file_write_regular(content->regular_files[ri], ptr1[ri], NULL));
 		f = gfopen(filename, "rb");
 		if(f == NULL)
 		{
@@ -374,7 +449,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, FileContent
 
 	// close archive
 tfwt_exit:
-	tifiles_content_delete_group(contents);
+	//tifiles_content_delete_group(contents);
 
 	err = zipClose(zf,NULL);
     if (err != ZIP_OK)

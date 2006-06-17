@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <glib.h>
 
 #include "tifiles.h"
 
@@ -83,4 +84,19 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
 	comment[40] = '\0';
 
 	return comment;
+}
+
+/**
+ * tifiles_comment_set_tigroup:
+ *
+ * Returns a string which contains a comment such as "TiGroup file dated 12/31/99, 15:15".
+ *
+ * Return value: a _dynamically allocated_ .
+ **/
+TIEXPORT const char* TICALL tifiles_comment_set_tigroup(void)
+{
+	time_t t = time(NULL);
+	char *str = asctime(localtime(&t));
+
+	return g_strdup_printf("Single file dated %s", str);
 }

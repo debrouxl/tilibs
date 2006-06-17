@@ -70,10 +70,7 @@ TIEXPORT int TICALL tifiles_content_delete_group(FileContent **array)
 	// release allocated memory in structures
 	for (i = 0; i < n; i++) 
 	{
-#ifndef __WIN32__	// bug ?
 	    TRYC(tifiles_content_delete_regular(array[i]));
-		free(array[i]);
-#endif
 	}
 	free(array);
 
