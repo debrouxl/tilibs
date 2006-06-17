@@ -120,13 +120,13 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
 	TigContent* content = calloc(1, sizeof(FileContent));
 
 	content->model = model;
-	content->comment = (char *)tifiles_comment_set_tigroup();
+	content->comment = strdup(tifiles_comment_set_tigroup());
 
-	content->regular_files = (char **)calloc(r + 1, sizeof(char *));
-	content->flash_files = (char **)calloc(f + 1, sizeof(char *));
+	content->regular_files = (char **)calloc(r+1, sizeof(char *));
+	content->flash_files = (char **)calloc(f+1, sizeof(char *));
 
-	content->regular = (FileContent **)calloc(r + 1, sizeof(FileContent *));
-	content->flash = (FlashContent **)calloc(f + 1, sizeof(FileContent *));
+	content->regular = (FileContent **)calloc(r+1, sizeof(FileContent *));
+	content->flash = (FlashContent **)calloc(f+1, sizeof(FileContent *));
 
 	return content;
 }
@@ -144,12 +144,12 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	
 	// counter number of files to group
 	for (r = 0; content->regular[r] != NULL; r++);
-	for (f = 0; content->regular[f] != NULL; f++);
+	for (f = 0; content->flash[f] != NULL; f++);
 
 	// release allocated memory in structures
 	for (i = 0; i < r; i++) 
 	{
-		tifiles_content_delete_regular(content->regular[i]);
+		//tifiles_content_delete_regular(content->regular[i]);
 	}
 
 	for (i = 0; i < f; i++) 
@@ -161,7 +161,7 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 		free(content->regular_files[i]);
 	free(content->regular_files);
 
-	for(i = 0; i < r; i++)
+	for(i = 0; i < f; i++)
 		free(content->flash_files[i]);
 	free(content->flash_files);
 
@@ -173,7 +173,7 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 /**
  * tifiles_file_read_tigroup:
  * @filename: the name of file to load.
- * @content: where to store content.
+ * @content: where to store content (may be re-allocated).
  *
  * This function load & TiGroup and place its content into content.
  *
@@ -216,6 +216,11 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 		goto tfrt_exit;
 	}        
 	printf("# entries: %lu\n", gi.number_entry);
+
+	// Get comment
+	free(content->comment);
+	content->comment = (char *)malloc((gi.size_comment+1) * sizeof(char));
+	err = unzGetGlobalComment(uf, content->comment, gi.size_comment);
 
 	// Parse archive for files
 	for (i = 0; i < gi.number_entry; i++)
@@ -285,25 +290,37 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 			if(tifiles_file_is_regular(filename))
 			{
+				content->regular_files = (char **)realloc(content->regular_files, (ri+1)*sizeof(char *));
+				content->regular = (FileContent**)realloc(content->regular, (ri+1)*sizeof(FileContent*));
+
 				content->regular_files[ri] = strdup(filename_inzip);
 				content->regular[ri] = tifiles_content_create_regular(CALC_NONE);
 				tifiles_file_read_regular(filename, content->regular[ri]);
+
 				ri++;
+				content->regular[ri] = NULL;
+				content->regular_files[ri] = NULL;
 			}
 			else if(tifiles_file_is_flash(filename))
 			{
+				content->flash_files = (char **)realloc(content->flash_files, (fi+1)*sizeof(char *));
+				content->flash = (FlashContent**)realloc(content->flash, (fi+1)*sizeof(FlashContent*));
+
 				content->flash_files[fi] = strdup(filename_inzip);
 				content->flash[fi] = tifiles_content_create_flash(CALC_NONE);
 				tifiles_file_read_flash(filename, content->flash[fi]);
+
 				fi++;
+				content->flash[fi] = NULL;
+				content->flash_files[fi] = NULL;
 			}
 			else
 			{
 				// skip
 			}
 		}
-		g_free(filename);
 		unlink(filename);
+		g_free(filename);
 
 		// next file
 		if ((i+1) < gi.number_entry)

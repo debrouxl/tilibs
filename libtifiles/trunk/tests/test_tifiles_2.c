@@ -350,7 +350,7 @@ int main(int argc, char **argv)
 #endif
 
 	// TI89 support
-#if 1
+#if 0
 	change_dir(BUILD_PATH("ti89"));
 	test_ti89_regular_support();
 	test_ti89_flash_support();
@@ -378,7 +378,7 @@ int main(int argc, char **argv)
 	test_ti8x_group_merge();
 #endif
 
-#if 0
+#if 1
 	test_tigroup();
 #endif
 
@@ -1095,7 +1095,7 @@ int test_ti8x_group_merge()
 
 int test_tigroup()
 {
-	FileContent *content = { 0 };
+	TigContent *content = { 0 };
 
 	//tifiles_file_display(BUILD_PATH("misc/str.92s"));
 	//tifiles_file_display(BUILD_PATH(g_locale_to_utf8("misc/pépé.92s", -1, NULL, NULL, NULL)));
@@ -1103,12 +1103,11 @@ int test_tigroup()
 
 	tifiles_file_display_tigroup(BUILD_PATH("misc/test.tig"));
 
-	content = tifiles_content_create_regular(CALC_NONE);
+	content = tifiles_content_create_tigroup(CALC_NONE, 0, 0);
 	tifiles_file_read_tigroup(BUILD_PATH("misc/test.tig"), content);
-	tifiles_file_display_regular(content);
-
-	tifiles_file_write_tigroup(BUILD_PATH("misc/test_.tig"), content);
-	tifiles_content_delete_regular(content);
+	
+	//tifiles_file_write_tigroup(BUILD_PATH("misc/test_.tig"), content);
+	tifiles_content_delete_tigroup(content);
 
 	return 0;
 }

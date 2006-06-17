@@ -98,5 +98,8 @@ TIEXPORT const char* TICALL tifiles_comment_set_tigroup(void)
 	time_t t = time(NULL);
 	char *str = asctime(localtime(&t));
 
-	return g_strdup_printf("Single file dated %s", str);
+	sprintf(comment, "TiGroup file dated %s", str);
+	comment[64] = 0;
+	
+	return comment;
 }
