@@ -104,7 +104,17 @@ int g_chdir (const gchar *path)
 }
 #endif
 
-static TigEntry* tifiles_tigentry_create(const char *filename, FileClass type, CalcModel model)
+/**
+ * tifiles_te_create:
+ * @filename: internal filename in archive.
+ * @type: file type (regular or flash)
+ * @model: calculator model
+ *
+ * Allocates a TigEntry structure and allocates fields.
+ *
+ * Return value: the allocated block.
+ **/
+TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model)
 {
 	TigEntry *entry;
 
@@ -121,7 +131,15 @@ static TigEntry* tifiles_tigentry_create(const char *filename, FileClass type, C
 	return entry;
 }
 
-static int tifiles_tigentry_delete(TigEntry* entry)
+/**
+ * tifiles_te_delete:
+ * @entry: a #TigEntry structure.
+ *
+ * Destroy a #TigEntry structure as well as fields.
+ *
+ * Return value: none.
+ **/
+TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
 {
 	free(entry->filename);
 	if(entry->type == TIFILE_FLASH)
@@ -172,7 +190,7 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	for (i = 0; i < n; i++) 
 	{
 		TigEntry* entry = content->entries[i];
-		tifiles_tigentry_delete(entry);
+		tifiles_te_delete(entry);
 	}
 	free(content);
 
@@ -302,14 +320,14 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 			if(tifiles_file_is_regular(filename))
 			{
-				TigEntry *entry = tifiles_tigentry_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
 				tifiles_file_read_regular(filename, entry->content.regular);
 				content->entries[ri++] = entry;
 			}
 			else if(tifiles_file_is_flash(filename))
 			{
-				TigEntry *entry = tifiles_tigentry_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
 				tifiles_file_read_flash(filename, entry->content.flash);
 				content->entries[ri++] = entry;

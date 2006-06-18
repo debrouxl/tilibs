@@ -7,11 +7,12 @@ To do:
 - make tifiles_calc_are_compat more powerful
 - add tifiles_file_is_targetted(filename, model, class) avec class = ALL
 - API: préciser que les varnames sont en UTF-8 !
+- tigroup: g_fopen/fopen in ZIP I/O callbacks to fix
 
 Log:
 
 - 17/06/2006, version 0.2.0: roms
-	- full TiGroup support (both regular & flash)
+	- full TiGroup support (both regular & flash with deflate compression)
 
 - 05/06/2006, version 0.1.5: roms
 	- renamed stdints.h into stdints2.h
