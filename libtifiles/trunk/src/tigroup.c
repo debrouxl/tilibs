@@ -166,18 +166,12 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	int i, n;
 	
 	// counter number of files to group
-	for(n = 0; content->entries[n]->content.data; n++);
+	for(n = 0; content->entries[n]; n++);
 
 	// release allocated memory in structures
 	for (i = 0; i < n; i++) 
 	{
 		TigEntry* entry = content->entries[i];
-
-		if(entry->type == TIFILE_FLASH)
-			tifiles_content_delete_flash(entry->content.flash);
-		else
-			tifiles_content_delete_regular(entry->content.regular);
-
 		tifiles_tigentry_delete(entry);
 	}
 	free(content);

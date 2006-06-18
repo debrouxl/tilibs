@@ -1103,7 +1103,7 @@ int test_tigroup()
 
 	tifiles_file_display_tigroup(BUILD_PATH("misc/test.tig"));
 
-	content = tifiles_content_create_tigroup(CALC_NONE, 0, 0);
+	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	tifiles_file_read_tigroup(BUILD_PATH("misc/test.tig"), content);
 	
 	//tifiles_file_write_tigroup(BUILD_PATH("misc/test_.tig"), content);
