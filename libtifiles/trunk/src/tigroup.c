@@ -197,6 +197,24 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
   return 0;
 }
 
+TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
+{
+	int n;
+
+	for(n = 0; content->entries[n]; n++);
+
+	content->entries = realloc(content->entries, (n + 2) * sizeof(TigEntry *));
+	content->entries[n++] = te;
+	content->entries[n] = NULL;
+
+	return n;
+}
+
+TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
+{
+	return 0;
+}
+
 /**
  * tifiles_file_read_tigroup:
  * @filename: the name of file to load.

@@ -463,15 +463,17 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
   // tigroup.c
-  TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
-  TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry);
-
   TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int);
   TIEXPORT int         TICALL tifiles_content_delete_tigroup(TigContent *content);
-
   TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename);
+
+  TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
+  TIEXPORT int		 TICALL tifiles_te_delete(TigEntry* entry);
+
+  TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te);
+  TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te);
 
   //comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);
