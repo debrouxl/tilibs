@@ -698,6 +698,9 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle*, FlashContent*);
 
+	TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle*, TigContent*, TigMode);
+	TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle*, TigContent*, TigMode);
+
 	// calc_xx.c: convenient functions
 	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char*);
 	TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char*);
@@ -716,8 +719,8 @@ typedef struct
 
 	TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle*, const char*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle*, const char*, TigMode);
-	TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle*, const char*, TigMode);
+	TIEXPORT int TICALL ticalcs_calc_send_tigroup2(CalcHandle*, const char*, TigMode);
+	TIEXPORT int TICALL ticalcs_calc_recv_tigroup2(CalcHandle*, const char*, TigMode);
 
 	// dirlist.c
 	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);

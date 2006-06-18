@@ -106,3 +106,115 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	return 0;
 }
 
+/*
+	Pseudo full-backup support (common).
+*/
+
+/**
+ * ticalcs_calc_send_tigroup:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ * @mode: which vars/apps to send
+ *
+ * Send a TiGroup file.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+{
+	
+
+	return 0;
+}
+
+/**
+ * ticalcs_calc_recv_tigroup:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ * @mode: which vars/apps to receive
+ *
+ * Receive a TiGroup file.
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+{
+	int i, j;
+	int i_max, j_max;
+	TNode *vars, *apps;
+	int nvars, ivars = 0;
+	int napps, iapps = 0;
+	int b = 0;
+
+	// Do a directory list and check for something to backup
+	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
+	nvars = ticalcs_dirlist_ve_count(vars);
+	napps = ticalcs_dirlist_ve_count(apps);
+
+	if(!nvars && !napps)
+		return ERR_NO_VARS;
+
+	// Check whether the last folder is empty
+	b = t_node_n_children(t_node_nth_child(vars, t_node_n_children(vars) - 1));
+	PAUSE(100); // needed by TI84+/USB
+
+	// Receive all vars
+	i_max = t_node_n_children(vars);
+	for(i = 0; i < i_max; i++) 
+	{
+		TNode *parent = t_node_nth_child(vars, i);
+
+		j_max = t_node_n_children(parent);
+		for(j = 0; j < j_max; j++) 
+		{
+			TNode *node = t_node_nth_child(parent, j);
+			VarEntry *ve = (VarEntry *) (node->data);
+			TigEntry *te;
+			char *filename;
+
+			TRYF(handle->calc->is_ready(handle));
+
+			filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+			te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
+			g_free(filename);
+			TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
+			tifiles_content_add_te(content, te);
+
+			update_->cnt2 = ++ivars;
+			update_->max2 = nvars;
+			update_->pbar();
+		}
+	}
+	ticalcs_dirlist_destroy(&vars);
+
+	// Receive all apps
+	i_max = t_node_n_children(apps);
+	for(i = 0; i < i_max; i++) 
+	{
+		TNode *parent = t_node_nth_child(apps, i);
+
+		j_max = t_node_n_children(parent);
+		for(j = 0; j < j_max; j++) 
+		{
+			TNode *node = t_node_nth_child(parent, j);
+			VarEntry *ve = (VarEntry *) (node->data);
+			TigEntry *te;
+			char *filename;
+
+			TRYF(handle->calc->is_ready(handle));
+
+			filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+			te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
+			g_free(filename);
+			TRYF(handle->calc->recv_app(handle, te->content.flash, ve));
+			tifiles_content_add_te(content, te);
+
+			update_->cnt2 = ++ivars;
+			update_->max2 = nvars;
+			update_->pbar();
+		}
+	}	
+	ticalcs_dirlist_destroy(&apps);
+
+	return 0;
+}

@@ -1195,7 +1195,7 @@ TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filena
 }
 
 /**
- * ticalcs_calc_send_tigroup:
+ * ticalcs_calc_send_tigroup2:
  * @handle: a previously allocated handle
  * @filename: name of file
  * @mode: which vars/apps to send
@@ -1204,13 +1204,29 @@ TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filena
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, const char* filename, TigMode mode)
+TIEXPORT int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
+	TigContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_tigroup(handle->model, 0);
+	TRYF(tifiles_file_read_tigroup(filename, content));
+	TRYF(ticalcs_calc_send_tigroup(handle, content, mode));
+	TRYF(tifiles_content_delete_tigroup(content));
+
 	return 0;
 }
 
 /**
- * ticalcs_calc_recv_tigroup:
+ * ticalcs_calc_recv_tigroup2:
  * @handle: a previously allocated handle
  * @filename: name of file
  * @mode: which vars/apps to receive
@@ -1219,7 +1235,23 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, const char* fi
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, const char* filename, TigMode mode)
+TIEXPORT int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
+	TigContent *content;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	content = tifiles_content_create_tigroup(handle->model, 0);
+	TRYF(ticalcs_calc_recv_tigroup(handle, content, mode));
+	TRYF(tifiles_file_write_tigroup(filename, content));
+	TRYF(tifiles_content_delete_tigroup(content));
+
 	return 0;
 }
