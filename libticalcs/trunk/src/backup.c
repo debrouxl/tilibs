@@ -122,7 +122,28 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
  **/
 TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
-	
+	TigEntry **ptr;
+	int i;
+
+	// Send vars
+	for(ptr = content->entries; *ptr; ptr++)
+	{
+		TigEntry *te = *ptr;
+		if(te->type != TIFILE_SINGLE)
+			continue;
+
+		TRYF(handle->calc->send_var(handle, 0, te->content.regular));
+	}
+
+	// Send apps
+	for(ptr = content->entries; *ptr; ptr++)
+	{
+		TigEntry *te = *ptr;
+		if(te->type != TIFILE_FLASH)
+			continue;
+
+		TRYF(handle->calc->send_app(handle, te->content.flash));
+	}
 
 	return 0;
 }
