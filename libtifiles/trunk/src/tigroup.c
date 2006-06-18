@@ -420,8 +420,8 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 
 		err = zipOpenNewFileInZip3(zf,filenameinzip,&zi,
                                  NULL,0,NULL,0,content->comment /* comment*/,
-                                 0 /* store, no comp */,
-                                 0 /*comp level */,0,
+                                 Z_DEFLATED /* deflate as comp method */,
+                                 1 /*comp level */,0,
                                  -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
                                  NULL /* no pwd*/,crcFile);
         if (err != ZIP_OK)
@@ -467,13 +467,10 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 
 		fclose(f);
 		unlink(filename);
-		free(filename);
 	}
 
 	// close archive
 tfwt_exit:
-	//tifiles_content_delete_group(contents);
-
 	err = zipClose(zf,NULL);
     if (err != ZIP_OK)
         printf("error in closing %s\n",filename);
