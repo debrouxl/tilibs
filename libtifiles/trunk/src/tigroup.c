@@ -371,6 +371,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 	if (zf == NULL)
     {
 		printf("Can't open this file: <%s>", filename);
+		g_chdir(old_dir);
 		return ERR_FILE_ZIP;
 	}
 
