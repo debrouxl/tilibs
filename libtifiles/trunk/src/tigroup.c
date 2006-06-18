@@ -104,29 +104,52 @@ int g_chdir (const gchar *path)
 }
 #endif
 
+static TigEntry* tifiles_tigentry_create(const char *filename, FileClass type, CalcModel model)
+{
+	TigEntry *entry;
+
+	entry = (TigEntry *)calloc(1, sizeof(TigEntry));
+
+	entry->filename = strdup(filename);
+	entry->type = type;
+
+	if(type == TIFILE_FLASH)
+		entry->content.flash = tifiles_content_create_flash(model);
+	else
+		entry->content.regular = tifiles_content_create_regular(model);
+
+	return entry;
+}
+
+static int tifiles_tigentry_delete(TigEntry* entry)
+{
+	free(entry->filename);
+	if(entry->type == TIFILE_FLASH)
+		tifiles_content_delete_flash(entry->content.flash);
+	else
+		tifiles_content_delete_regular(entry->content.regular);
+
+	free(entry);
+	return 0;
+}
+
 /**
  * tifiles_content_create_tigroup:
  * @model: a calculator model or CALC_NONE.
- * @r: number of #FileContent entries
- * @f: number of #FlashContent entries
+ * @n: number of #FileContent or #FlashContent entries
  *
  * Allocates a TigContent structure. Note: the calculator model is not required
  * if the content is used for file reading but is compulsory for file writing.
  *
  * Return value: the allocated block.
  **/
-TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int r, int f)
+TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int n)
 {
 	TigContent* content = calloc(1, sizeof(FileContent));
 
 	content->model = model;
 	content->comment = strdup(tifiles_comment_set_tigroup());
-
-	content->regular_files = (char **)calloc(r+1, sizeof(char *));
-	content->flash_files = (char **)calloc(f+1, sizeof(char *));
-
-	content->regular = (FileContent **)calloc(r+1, sizeof(FileContent *));
-	content->flash = (FlashContent **)calloc(f+1, sizeof(FileContent *));
+	content->entries = (TigEntry **)calloc(n + 1, sizeof(TigEntry *));
 
 	return content;
 }
@@ -140,31 +163,23 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
  **/
 TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 {
-	int i, r, f;
+	int i, n;
 	
 	// counter number of files to group
-	for (r = 0; content->regular[r] != NULL; r++);
-	for (f = 0; content->flash[f] != NULL; f++);
+	for(n = 0; content->entries[n]->content.data; n++);
 
 	// release allocated memory in structures
-	for (i = 0; i < r; i++) 
+	for (i = 0; i < n; i++) 
 	{
-		//tifiles_content_delete_regular(content->regular[i]);
+		TigEntry* entry = content->entries[i];
+
+		if(entry->type == TIFILE_FLASH)
+			tifiles_content_delete_flash(entry->content.flash);
+		else
+			tifiles_content_delete_regular(entry->content.regular);
+
+		tifiles_tigentry_delete(entry);
 	}
-
-	for (i = 0; i < f; i++) 
-	{
-		tifiles_content_delete_flash(content->flash[i]);
-	}
-
-	for(i = 0; i < r; i++)
-		free(content->regular_files[i]);
-	free(content->regular_files);
-
-	for(i = 0; i < f; i++)
-		free(content->flash_files[i]);
-	free(content->flash_files);
-
 	free(content);
 
   return 0;
@@ -216,6 +231,9 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 		goto tfrt_exit;
 	}        
 	printf("# entries: %lu\n", gi.number_entry);
+
+	free(content->entries);
+	content->entries = (TigEntry **)calloc(gi.number_entry + 1, sizeof(TigEntry *));
 
 	// Get comment
 	free(content->comment);
@@ -290,29 +308,17 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 			if(tifiles_file_is_regular(filename))
 			{
-				content->regular_files = (char **)realloc(content->regular_files, (ri+1)*sizeof(char *));
-				content->regular = (FileContent**)realloc(content->regular, (ri+1)*sizeof(FileContent*));
+				TigEntry *entry = tifiles_tigentry_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
-				content->regular_files[ri] = strdup(filename_inzip);
-				content->regular[ri] = tifiles_content_create_regular(CALC_NONE);
-				tifiles_file_read_regular(filename, content->regular[ri]);
-
-				ri++;
-				content->regular[ri] = NULL;
-				content->regular_files[ri] = NULL;
+				tifiles_file_read_regular(filename, entry->content.regular);
+				content->entries[ri++] = entry;
 			}
 			else if(tifiles_file_is_flash(filename))
 			{
-				content->flash_files = (char **)realloc(content->flash_files, (fi+1)*sizeof(char *));
-				content->flash = (FlashContent**)realloc(content->flash, (fi+1)*sizeof(FlashContent*));
+				TigEntry *entry = tifiles_tigentry_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
-				content->flash_files[fi] = strdup(filename_inzip);
-				content->flash[fi] = tifiles_content_create_flash(CALC_NONE);
-				tifiles_file_read_flash(filename, content->flash[fi]);
-
-				fi++;
-				content->flash[fi] = NULL;
-				content->flash_files[fi] = NULL;
+				tifiles_file_read_flash(filename, entry->content.flash);
+				content->entries[ri++] = entry;
 			}
 			else
 			{
@@ -360,13 +366,9 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 	zipFile zf;
 	zip_fileinfo zi;
 	int err = ZIP_OK;
-	int i;
     void* buf=NULL;
 	gchar *old_dir = g_get_current_dir();
-	
-	FileContent** ptr1;
-	FlashContent** ptr2;
-	int ri = 0, rf = 0;
+	TigEntry **ptr;
 
 	g_chdir(g_get_tmp_dir());
 
@@ -386,16 +388,26 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		goto tfwt_exit;
 	}
 
-	for(ptr1 = content->regular, ri=0; ptr1; ri++)
+	for(ptr = content->entries; *ptr; ptr++)
 	{
 		FILE *f;
 		char filenameinzip[256];
 		unsigned long crcFile=0;
-		char *filename;
 		int size_read;
+		TigEntry* entry = *ptr;
+		char *filename = entry->filename;	// beware: mask global 'filename' !
 
 		// write TI file into tmp folder
-		TRYC(tifiles_file_write_regular(content->regular_files[ri], ptr1[ri], NULL));
+		if(entry->type == TIFILE_FLASH)
+		{
+			TRYC(tifiles_file_write_flash(entry->filename, entry->content.flash));
+		}
+		else
+		{	
+			TRYC(tifiles_file_write_regular(entry->filename, entry->content.regular, NULL));
+		}
+
+		// missing tmp file !
 		f = gfopen(filename, "rb");
 		if(f == NULL)
 		{

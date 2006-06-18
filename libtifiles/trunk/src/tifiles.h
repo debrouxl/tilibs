@@ -298,6 +298,17 @@ struct _FlashContent
   FlashContent*	next;		// TI9x only
 };
 
+typedef struct
+{
+	char*		filename;
+	FileClass	type;
+	union {
+		FileContent*	regular;
+		FlashContent*	flash;
+		void*			data;
+	} content;
+} TigEntry;
+
 /**
  * TigContent:
  * @model: a calculator model
@@ -314,11 +325,7 @@ typedef struct
   CalcModel			model;
   char*				comment;
 
-  char**			regular_files;
-  FileContent**		regular;
-
-  char**			flash_files;
-  FlashContent**	flash;
+  TigEntry**		entries;
 
 } TigContent;
 
@@ -456,7 +463,7 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
   // tigroup.c (later)
-  TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int, int);
+  TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int);
   TIEXPORT int         TICALL tifiles_content_delete_tigroup(TigContent *content);
 
   TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
