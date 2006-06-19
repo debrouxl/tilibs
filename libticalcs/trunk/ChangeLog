@@ -4,6 +4,8 @@ Set svn:eol property to native on all files
 	
 To do : 
 - manage ERR packets which can be received at any time
+- test TiGroup with variables like 'Beta'
+- fopen/g_fopen issue in tigroup support
 
 Log:
 

@@ -123,7 +123,6 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	TigEntry **ptr;
-	int i;
 
 	// Send vars
 	for(ptr = content->entries; *ptr; ptr++)
@@ -172,6 +171,9 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 	nvars = ticalcs_dirlist_ve_count(vars);
 	napps = ticalcs_dirlist_ve_count(apps);
 
+	update_->cnt2 = update_->cnt3 = 0;
+	update_->max2 = update_->max3 = nvars + napps;
+
 	if(!nvars && !napps)
 		return ERR_NO_VARS;
 
@@ -201,8 +203,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
 			tifiles_content_add_te(content, te);
 
-			update_->cnt2 = ++ivars;
-			update_->max2 = nvars;
+			update_->cnt2++; update_->cnt3++;
 			update_->pbar();
 		}
 	}
@@ -230,8 +231,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			TRYF(handle->calc->recv_app(handle, te->content.flash, ve));
 			tifiles_content_add_te(content, te);
 
-			update_->cnt2 = ++ivars;
-			update_->max2 = nvars;
+			update_->cnt2++; update_->cnt3++;
 			update_->pbar();
 		}
 	}	
