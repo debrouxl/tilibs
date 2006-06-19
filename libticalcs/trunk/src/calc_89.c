@@ -390,6 +390,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
+	// erase memory
 	TRYF(ti89_send_VAR(0, TI89_BKUP, "main"));
 	TRYF(ti89_recv_ACK(NULL));
 
@@ -399,6 +400,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti89_send_EOT());
 	TRYF(ti89_recv_ACK(NULL));
 
+	// next, send var(s)
 	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
 
 	return 0;
