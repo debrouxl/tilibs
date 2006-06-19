@@ -35,6 +35,7 @@
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
+#include "cmd89.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -124,6 +125,20 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 {
 	TigEntry **ptr;
 
+	if(handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
+		handle->model == CALC_TI89T ||handle->model == CALC_V200)
+	{
+		// erase memory
+		TRYF(ti89_send_VAR(0, TI89_BKUP, "main"));
+		TRYF(ti89_recv_ACK(NULL));
+
+		TRYF(ti89_recv_CTS());
+		TRYF(ti89_send_ACK());
+
+		TRYF(ti89_send_EOT());
+		TRYF(ti89_recv_ACK(NULL));
+	}
+
 	// Send vars
 	for(ptr = content->entries; *ptr; ptr++)
 	{
@@ -134,6 +149,9 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 		TRYF(handle->calc->send_var(handle, 0, te->content.regular));
 	}
 
+	PAUSE(500);
+	TRYF(handle->calc->is_ready(handle));
+
 	// Send apps
 	for(ptr = content->entries; *ptr; ptr++)
 	{
@@ -142,6 +160,7 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 			continue;
 
 		TRYF(handle->calc->send_app(handle, te->content.flash));
+		PAUSE(500);
 	}
 
 	return 0;
