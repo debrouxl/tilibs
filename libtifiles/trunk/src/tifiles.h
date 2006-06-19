@@ -312,11 +312,10 @@ typedef struct
 /**
  * TigContent:
  * @model: a calculator model
- * @regular_files: NULL-terminated array of internal name of files
- * @flash_files: NULL-terminated array of internal name of files
- * @comment: comment to store in archive
- * @regular: a NULL-terminated array of file contents or NULL
- * @flash: a NULL-terminated array of file contents or NULL
+ * @comment: a global comment for archive
+ * @comp_level: compression level (0: store, 1 to 4: slow to fast)
+ * @num_entries: the number of entries
+ * @entries: a NULL-terminated array of #TigEntry structures
  *
  * A generic structure used to store the content of a TiGroup file.
  **/
@@ -324,7 +323,9 @@ typedef struct
 {
   CalcModel			model;
   char*				comment;
+  int				comp_level;
 
+  int				num_entries;
   TigEntry**		entries;
 
 } TigContent;

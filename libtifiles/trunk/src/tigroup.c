@@ -23,7 +23,7 @@
 	TiGroup (*.tig) management
 	A TiGroup file is in fact a ZIP archive with no compression (stored).
 
-  Please note that I don't use USEWIN32IOAPI.
+	Please note that I don't use USEWIN32IOAPI!
 */
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +39,12 @@
 #include "minizip/zip.h"
 #include "minizip/unzip.h"
 #endif
+/*
+#ifdef WIN32
+# define USEWIN32IOAPI
+# include "minizip/iowin32.h"
+#endif
+*/
 
 #include "tifiles.h"
 #include "logging.h"
@@ -154,7 +160,7 @@ TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
 /**
  * tifiles_content_create_tigroup:
  * @model: a calculator model or CALC_NONE.
- * @n: number of #FileContent or #FlashContent entries
+ * @n: number of #tigEntry entries
  *
  * Allocates a TigContent structure. Note: the calculator model is not required
  * if the content is used for file reading but is compulsory for file writing.
@@ -167,6 +173,8 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
 
 	content->model = model;
 	content->comment = strdup(tifiles_comment_set_tigroup());
+	content->comp_level = 3;
+	content->num_entries = n;
 	content->entries = (TigEntry **)calloc(n + 1, sizeof(TigEntry *));
 
 	return content;
@@ -206,8 +214,9 @@ TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 	content->entries = realloc(content->entries, (n + 2) * sizeof(TigEntry *));
 	content->entries[n++] = te;
 	content->entries[n] = NULL;
+	content->num_entries = n;
 
-	return n;
+	return content->num_entries;
 }
 
 TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
@@ -264,6 +273,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 	free(content->entries);
 	content->entries = (TigEntry **)calloc(gi.number_entry + 1, sizeof(TigEntry *));
+	content->num_entries = 0;
 
 	// Get comment
 	free(content->comment);
@@ -342,6 +352,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 				tifiles_file_read_regular(filename, entry->content.regular);
 				content->entries[ri++] = entry;
+				content->num_entries++;
 			}
 			else if(tifiles_file_is_flash(filename))
 			{
@@ -349,6 +360,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 				tifiles_file_read_flash(filename, entry->content.flash);
 				content->entries[ri++] = entry;
+				content->num_entries++;
 			}
 			else
 			{
@@ -400,10 +412,17 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 	gchar *old_dir = g_get_current_dir();
 	TigEntry **ptr;
 
-	g_chdir(g_get_tmp_dir());
+	// Open ZIP archive (and set comment)
+#ifdef USEWIN32IOAPI
+        zlib_filefunc_def ffunc;
+        fill_win32_filefunc(&ffunc);
 
-	// Open ZIP archive
-	zf = zipOpen(filename,APPEND_STATUS_CREATE);
+		g_chdir(g_get_tmp_dir());
+        zf = zipOpen2(filename, APPEND_STATUS_CREATE, &(content->comment), &ffunc);
+#else
+		g_chdir(g_get_tmp_dir());
+        zf = zipOpen(filename, APPEND_STATUS_CREATE);
+#endif
 	if (zf == NULL)
     {
 		printf("Can't open this file: <%s>", filename);
@@ -419,6 +438,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		goto tfwt_exit;
 	}
 
+	// Parse entries and store
 	for(ptr = content->entries; *ptr; ptr++)
 	{
 		FILE *f;
@@ -456,8 +476,8 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
         filetime(filenameinzip,&zi.tmz_date,&zi.dosDate);
 
 		err = zipOpenNewFileInZip3(zf,filenameinzip,&zi,
-                                 NULL,0,NULL,0,content->comment /* comment*/,
-                                 Z_DEFLATED /* deflate as comp method */,
+                                 NULL,0,NULL,0,NULL /* comment*/,
+                                 content->comp_level ? Z_DEFLATED : 0 /* comp method */,
                                  1 /*comp level */,0,
                                  -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
                                  NULL /* no pwd*/,crcFile);
