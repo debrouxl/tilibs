@@ -181,8 +181,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 	int i, j;
 	int i_max, j_max;
 	TNode *vars, *apps;
-	int nvars, ivars = 0;
-	int napps, iapps = 0;
+	int nvars;
+	int napps;
 	int b = 0;
 
 	// Do a directory list and check for something to backup

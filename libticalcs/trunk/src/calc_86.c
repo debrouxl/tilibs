@@ -220,7 +220,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
       break;
     }
     
-	snprintf(update_->text, sizeof(update_->text), "");
+    strcpy(update_->text, "");
     update_label();
 
 	update_->cnt2 = 0;
@@ -271,7 +271,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
     TRYF(ti85_send_CTS());
     TRYF(ti85_recv_ACK(NULL));
 
-	snprintf(update_->text, sizeof(update_->text), "");
+    strcpy(update_->text, "");
 	update_label();
 
 	update_->cnt2 = 0;
