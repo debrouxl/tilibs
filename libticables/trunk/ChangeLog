@@ -23,9 +23,11 @@ Log:
 	
 - 06/05/2006, version 0.0.9: roms
 	- added ability to retrieve the USB hand-held connected from its PID
-	- improved ticables_probing_do which can probes all cables or USB cables only (faster).
+	- improved ticables_probing_do which can probes all cables or 
+	  USB cables only (faster).
 	- definitely fixed return value for probing functions
-	- fixed link_xxx which returns -1 instead of ERR_NOT_OPEN. Thanks to Tyler Cassidy !
+	- fixed link_xxx which returns -1 instead of ERR_NOT_OPEN. 
+	  Thanks to Tyler Cassidy !
 
 - 17/04/2006, version 0.0.8: roms
 	- rewritten data logging system
@@ -34,7 +36,8 @@ Log:
 - 07/03/2006, version 0.0.7: roms
 	- ParallelLink support was not compiled under Windows
 	- reset SilverLink cable when opened (like other cables)
-	- close/re-open cable in slv_reset. Reseting is not enough on both Linux & Windows.
+	- close/re-open cable in slv_reset. Reseting is not enough on both 
+	Linux & Windows.
 	- reverted back to previous behaviour (reset instead of close/open)
 
 - 20/02/2006, version 0.0.6: roms
@@ -43,14 +46,16 @@ Log:
 	(seems to be needed with latest lib-usb release...)
 
 - 08/02/2006, version 0.0.5: roms
-	- changed information message in check_for_libusb according to bug #1372369.
+	- changed information message in check_for_libusb according to 
+	  bug #1372369.
 
 - 19/01/2006, version 0.0.4: roms
 	- fixed bad error code in 'slv_prepare' for SilverLink
 	- added a COM wrapper with VBA sample program
 	- free'd pointers are systematically NULL'ified
 	- fixed mis-behaviour in ticables_cable_probe
-	- fixed severe bug in ticable_probe_finished (the allocated array was too small)
+	- fixed severe bug in ticable_probe_finished 
+	  (the allocated array was too small)
 	- check_for_tty & check_for_parport now tests for hardware presence
 	  => don't probe unavailable port any longer
 

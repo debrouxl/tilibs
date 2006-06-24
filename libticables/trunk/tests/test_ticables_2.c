@@ -115,9 +115,27 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 	if(err) return -1;
 
+#if 1
+	// simple test with DirectLink hand-helds
+	buf[0]=0x00; buf[1]=0x00; buf[2]=0x00; buf[3]=0x04;
+	buf[4]=0x01;
+	buf[5]=0x00; buf[6]=0x00; buf[7]=0x04; buf[8]=0x00;
+	err = ticables_cable_send(handle, buf, 9);
+        if(err) print_lc_error(err);
+
+	// display answer
+	memset(buf, 0xff, 9);
+        err = ticables_cable_recv(handle, buf, 9);
+        if(err) print_lc_error(err);
+
+        for(i = 0; i < 9; i++)
+	    printf("%02x ", buf[i]);
+        printf("\n");
+#endif
+
 #if 0
 	// do a simple test with a TI89/92+ calculator
-	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY
+	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;	// RDY
 	err = ticables_cable_send(handle, buf, 4);
 	if(err) print_lc_error(err);
 	 
@@ -193,8 +211,7 @@ int main(int argc, char **argv)
 
 	// close cable
 	ticables_cable_close(handle);
-
-    // release handle
+	// release handle
 	ticables_handle_del(handle);
 	
 	// exit lib
