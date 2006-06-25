@@ -146,10 +146,9 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 		if(te->type != TIFILE_SINGLE)
 			continue;
 
-		TRYF(handle->calc->send_var(handle, 0, te->content.regular));
+		TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
 	}
 
-	PAUSE(500);
 	TRYF(handle->calc->is_ready(handle));
 
 	// Send apps
@@ -160,7 +159,6 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 			continue;
 
 		TRYF(handle->calc->send_app(handle, te->content.flash));
-		PAUSE(500);
 	}
 
 	return 0;
