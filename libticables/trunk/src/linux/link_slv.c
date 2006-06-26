@@ -216,8 +216,8 @@ static int ndevices = 0;
 // internal structure for holding data
 typedef struct
 {
-    struct usb_device *tigl_dev;
-    usb_dev_handle    *tigl_han;
+    struct usb_device *device;
+    usb_dev_handle    *handle;
 
     int               nBytesRead;
     uint8_t           rBuf[64];
@@ -227,8 +227,8 @@ typedef struct
 } usb_struct;
 
 // convenient macros
-#define tigl_dev (((usb_struct *)(h->priv2))->tigl_dev)
-#define tigl_han (((usb_struct *)(h->priv2))->tigl_han)
+#define device (((usb_struct *)(h->priv2))->device)
+#define handle (((usb_struct *)(h->priv2))->handle)
 #define max_ps   (((usb_struct *)(h->priv2))->max_ps)
 #define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
 #define rBuf       (((usb_struct *)(h->priv2))->rBuf)
@@ -404,8 +404,8 @@ static int slv_prepare(CableHandle *h)
 static int slv_open(CableHandle *h)
 {
     // open device
-    tigl_dev = tigl_devices[h->address].dev;
-    TRYC(open_tigl_device(h->address, &tigl_han));
+    device = tigl_devices[h->address].dev;
+    TRYC(open_tigl_device(h->address, &handle));
     
     // get max packet size
     max_ps = 32;
@@ -413,7 +413,7 @@ static int slv_open(CableHandle *h)
     
 #if !defined(__BSD__)
     /* Reset both endpoints */
-//    TRYC(reset_pipes(tigl_han));
+//    TRYC(reset_pipes(handle));
 #endif
 
     return 0;
@@ -421,13 +421,13 @@ static int slv_open(CableHandle *h)
 
 static int slv_close(CableHandle *h)
 {
-    tigl_dev = NULL;
+    device = NULL;
     
-    if (tigl_han != NULL) 
+    if (handle != NULL) 
     {
-	usb_release_interface(tigl_han, 0);
-	usb_close(tigl_han);
-	tigl_han = NULL;
+	usb_release_interface(handle, 0);
+	usb_close(handle);
+	handle = NULL;
     }
 
     free(h->priv2);
@@ -440,7 +440,7 @@ static int slv_reset(CableHandle *h)
 {
     /* Reset both endpoints */
 #ifdef SLV_RESET
-    TRYC(reset_pipes(tigl_han));
+    TRYC(reset_pipes(handle));
 #else
 	TRYC(slv_close(h));
 	TRYC(slv_open(h));
@@ -454,7 +454,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 {
     int ret;
     
-    ret = usb_bulk_write(tigl_han, TIGL_BULK_OUT, (char*)data, length, to);
+    ret = usb_bulk_write(handle, TIGL_BULK_OUT, (char*)data, length, to);
     
     if(ret == -ETIMEDOUT) 
     {
@@ -608,10 +608,10 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	do 
 	{
 #ifdef __LINUX__
-	    ret = slv_bulk_read2(tigl_han, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = slv_bulk_read2(handle, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
 #else
-	    ret = usb_bulk_read(tigl_han, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = usb_bulk_read(handle, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
 #endif
 
@@ -727,24 +727,24 @@ static int slv_check(CableHandle *h, int *status)
 		urb.actual_length = 0;
 		urb.number_of_packets = 0;
 
-		ret = ioctl(tigl_han->fd, IOCTL_USB_SUBMITURB, &urb);
+		ret = ioctl(handle->fd, IOCTL_USB_SUBMITURB, &urb);
 		if (ret < 0)
 			return ERR_READ_ERROR;
 		io_pending = TRUE;
 	}
 
-	ret = ioctl(tigl_han->fd, IOCTL_USB_REAPURBNDELAY, &context);
+	ret = ioctl(handle->fd, IOCTL_USB_REAPURBNDELAY, &context);
 	if (ret < 0 && errno != EAGAIN)
 	{
 		// Error, unlink URB and return failure.
-		ioctl(tigl_han->fd, IOCTL_USB_DISCARDURB, &urb);
+		ioctl(handle->fd, IOCTL_USB_DISCARDURB, &urb);
 
 		/*
 		 * When the URB is unlinked, it gets moved to the completed list and
 		 * then we need to reap it or else the next time we call this function,
 		 * we'll get the previous completion and exit early
 		 */
-		ioctl(tigl_han->fd, IOCTL_USB_REAPURB, &context);
+		ioctl(handle->fd, IOCTL_USB_REAPURB, &context);
 
 		io_pending = FALSE;
 		return ERR_READ_ERROR;

@@ -7,6 +7,7 @@ Log:
 
 - 05/06/2006, version 0.1.1: roms
 	- renamed stdints.h into stdints1.h
+	- fixed ERR_INVALID_ARG in SilverLink (linux) support
 	
 - 29/05/2006, version 0.1.0: roms
 	- reworked USB/PID retrieval to make it independant of handle 
