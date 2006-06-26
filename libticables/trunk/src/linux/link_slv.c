@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2006  Romain Lievin
  *  Copyright (C) 2001 Julien Blache (original author)
  *  Portions lifted from libusb (LGPL):
  *  Copyright (c) 2000-2003 Johannes Erdfelt <johannes@erdfelt.com>
@@ -227,23 +227,22 @@ typedef struct
 } usb_struct;
 
 // convenient macros
-#define device (((usb_struct *)(h->priv2))->device)
-#define handle (((usb_struct *)(h->priv2))->handle)
-#define max_ps   (((usb_struct *)(h->priv2))->max_ps)
+#define uDev       (((usb_struct *)(h->priv2))->device)
+#define uHdl       (((usb_struct *)(h->priv2))->handle)
+#define max_ps     (((usb_struct *)(h->priv2))->max_ps)
 #define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
 #define rBuf       (((usb_struct *)(h->priv2))->rBuf)
 #define rBufPtr    (((usb_struct *)(h->priv2))->rBufPtr)
 
+/* Helpers (=driver API) */
 
-/* Helpers */
-
-static void find_tigl_devices(void)
+static int tigl_find(void)
 {
     struct usb_bus    *bus;
     struct usb_device *dev;
     int i;
     
-	memset(tigl_devices, MAX_CABLES+1, sizeof(usb_infos));
+    memset(tigl_devices, MAX_CABLES+1, sizeof(usb_infos));
     ndevices = 0;
 
     /* loop taken from testlibusb.c */
@@ -257,7 +256,7 @@ static void find_tigl_devices(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			ticables_info("found <%s>.", tigl_infos[i].str);
+			ticables_info(" found <%s>.", tigl_infos[i].str);
 
 			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
 			       sizeof(usb_infos));
@@ -267,9 +266,11 @@ static void find_tigl_devices(void)
 	    }
 	}
     }
+
+    return ndevices;
 }
 
-static int enumerate_tigl_devices(void)
+static int tigl_enum(void)
 {
     int ret = 0;
     
@@ -292,20 +293,25 @@ static int enumerate_tigl_devices(void)
 	return ERR_LIBUSB_OPEN;
     }
     
-    /* iterate through the busses/devices */
-    find_tigl_devices();
+    /* find all TI products on all discovered busses/devices */
+    ret = tigl_find();
+    if(ret == 0)
+    {
+	ticables_warning(_("no devices found!\n"));
+	return ERR_LIBUSB_OPEN;
+    }
 
     return 0;
 }    
 
-int open_tigl_device(int id, usb_dev_handle **udh)
+static int tigl_open(int id, usb_dev_handle **udh)
 {
     int ret; 
 
-    TRYC(enumerate_tigl_devices());
+    TRYC(tigl_enum());
 
     if(tigl_devices[id].dev == NULL)
-	return ERR_ILLEGAL_ARG;
+	return ERR_LIBUSB_OPEN;
 
     *udh = usb_open(tigl_devices[id].dev);
     if (*udh != NULL) 
@@ -335,7 +341,16 @@ int open_tigl_device(int id, usb_dev_handle **udh)
     return 0;
 }
 
-static int reset_pipes(usb_dev_handle *udh)
+static int tigl_close(usb_dev_handle **udh)
+{
+    usb_release_interface(*udh, 0);
+    usb_close(*udh);
+    *udh = NULL;
+
+    return 0;
+}
+
+static int tigl_reset(usb_dev_handle *udh)
 {
 	int ret;
 
@@ -404,16 +419,16 @@ static int slv_prepare(CableHandle *h)
 static int slv_open(CableHandle *h)
 {
     // open device
-    device = tigl_devices[h->address].dev;
-    TRYC(open_tigl_device(h->address, &handle));
-    
+    TRYC(tigl_open(h->address, &uHdl));
+    uDev = tigl_devices[h->address].dev;    
+
     // get max packet size
     max_ps = 32;
     nBytesRead = 0;
     
 #if !defined(__BSD__)
     /* Reset both endpoints */
-//    TRYC(reset_pipes(handle));
+    TRYC(tigl_reset(uHdl));
 #endif
 
     return 0;
@@ -421,14 +436,9 @@ static int slv_open(CableHandle *h)
 
 static int slv_close(CableHandle *h)
 {
-    device = NULL;
-    
-    if (handle != NULL) 
-    {
-	usb_release_interface(handle, 0);
-	usb_close(handle);
-	handle = NULL;
-    }
+    if (uHdl != NULL) 
+	tigl_close(&uHdl);
+    uDev = NULL; 
 
     free(h->priv2);
     h->priv2 = NULL;
@@ -440,7 +450,7 @@ static int slv_reset(CableHandle *h)
 {
     /* Reset both endpoints */
 #ifdef SLV_RESET
-    TRYC(reset_pipes(handle));
+    TRYC(tigl_reset(uHdl));
 #else
 	TRYC(slv_close(h));
 	TRYC(slv_open(h));
@@ -454,7 +464,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 {
     int ret;
     
-    ret = usb_bulk_write(handle, TIGL_BULK_OUT, (char*)data, length, to);
+    ret = usb_bulk_write(uHdl, TIGL_BULK_OUT, (char*)data, length, to);
     
     if(ret == -ETIMEDOUT) 
     {
@@ -608,10 +618,10 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	do 
 	{
 #ifdef __LINUX__
-	    ret = slv_bulk_read2(handle, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = slv_bulk_read2(uHdl, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
 #else
-	    ret = usb_bulk_read(handle, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = usb_bulk_read(uHdl, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
 #endif
 
@@ -672,7 +682,7 @@ static int slv_probe(CableHandle *h)
 {
     int i;
     
-    TRYC(enumerate_tigl_devices());
+    TRYC(tigl_enum());
 
     for(i = 0; i < MAX_CABLES; i++)
     {
@@ -687,7 +697,7 @@ static int raw_probe(CableHandle *h)
 {
     int i;
 
-    TRYC(enumerate_tigl_devices());
+    TRYC(tigl_enum());
 
     for(i = 0; i < MAX_CABLES; i++)
     {
@@ -727,24 +737,24 @@ static int slv_check(CableHandle *h, int *status)
 		urb.actual_length = 0;
 		urb.number_of_packets = 0;
 
-		ret = ioctl(handle->fd, IOCTL_USB_SUBMITURB, &urb);
+		ret = ioctl(uHdl->fd, IOCTL_USB_SUBMITURB, &urb);
 		if (ret < 0)
 			return ERR_READ_ERROR;
 		io_pending = TRUE;
 	}
 
-	ret = ioctl(handle->fd, IOCTL_USB_REAPURBNDELAY, &context);
+	ret = ioctl(uHdl->fd, IOCTL_USB_REAPURBNDELAY, &context);
 	if (ret < 0 && errno != EAGAIN)
 	{
 		// Error, unlink URB and return failure.
-		ioctl(handle->fd, IOCTL_USB_DISCARDURB, &urb);
+		ioctl(uHdl->fd, IOCTL_USB_DISCARDURB, &urb);
 
 		/*
 		 * When the URB is unlinked, it gets moved to the completed list and
 		 * then we need to reap it or else the next time we call this function,
 		 * we'll get the previous completion and exit early
 		 */
-		ioctl(handle->fd, IOCTL_USB_REAPURB, &context);
+		ioctl(uHdl->fd, IOCTL_USB_REAPURB, &context);
 
 		io_pending = FALSE;
 		return ERR_READ_ERROR;
@@ -822,9 +832,9 @@ TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
 {
 	int i;
 
-    TRYC(enumerate_tigl_devices());
+    TRYC(tigl_enum());
 
-	*list = (int *)calloc(MAX_CABLES+1, sizeof(int));
+    *list = (unsigned int *)calloc(MAX_CABLES+1, sizeof(int));
     for( i =0; i < MAX_CABLES; i++)
         (*list)[i] = tigl_devices[i].pid;
 
