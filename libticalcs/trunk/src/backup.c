@@ -140,6 +140,7 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 	}
 
 	// Send vars
+	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 	for(ptr = content->entries; *ptr; ptr++)
 	{
 		TigEntry *te = *ptr;
@@ -152,6 +153,7 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 	TRYF(handle->calc->is_ready(handle));
 
 	// Send apps
+	if(mode & TIG_FLASH)
 	for(ptr = content->entries; *ptr; ptr++)
 	{
 		TigEntry *te = *ptr;
@@ -201,6 +203,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 
 	// Receive all vars
 	i_max = t_node_n_children(vars);
+	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 	for(i = 0; i < i_max; i++) 
 	{
 		TNode *parent = t_node_nth_child(vars, i);
@@ -215,11 +218,15 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 
 			TRYF(handle->calc->is_ready(handle));
 
-			filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
-			te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
-			g_free(filename);
-			TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
-			tifiles_content_add_te(content, te);
+			if((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED) ||
+				(mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED)
+			{
+				filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+				te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
+				g_free(filename);
+				TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
+				tifiles_content_add_te(content, te);
+			}
 
 			update_->cnt3++;
 			update_->pbar();
@@ -229,6 +236,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 
 	// Receive all apps
 	i_max = t_node_n_children(apps);
+	if(mode & TIG_FLASH)
 	for(i = 0; i < i_max; i++) 
 	{
 		TNode *parent = t_node_nth_child(apps, i);
