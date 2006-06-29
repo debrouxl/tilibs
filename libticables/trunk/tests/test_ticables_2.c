@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 {
 	CableHandle *handle;
 	int err, i;
-	uint8_t buf[256], data;
+	uint8_t buf[65536], data;
 	int status, result;
 	uint8_t scr[3840 + 6];
 	int **probing = NULL;
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	if(err) return -1;
 
 #if 1
-	// simple test with DirectLink hand-helds
+	// simple test with DirectLink hand-helds (buf size req/neg)
 	buf[0]=0x00; buf[1]=0x00; buf[2]=0x00; buf[3]=0x04;
 	buf[4]=0x01;
 	buf[5]=0x00; buf[6]=0x00; buf[7]=0x04; buf[8]=0x00;
@@ -131,6 +131,92 @@ int main(int argc, char **argv)
     for(i = 0; i < 9; i++)
 		printf("%02x ", buf[i]);
     printf("\n");
+#endif
+
+#if 1
+	// mode set
+	i = 0;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x10;
+	buf[i++]=0x04;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x0a;
+	buf[i++]=0x00; buf[i++]=0x01;
+	buf[i++]=0x00; buf[i++]=0x03; 
+	buf[i++]=0x00; buf[i++]=0x01;
+	buf[i++]=0x00; buf[i++]=0x00; 
+	buf[i++]=0x00; buf[i++]=0x00; 
+	buf[i++]=0x07; buf[i++]=0xd0;
+
+	err = ticables_cable_send(handle, buf, i);
+    if(err) print_lc_error(err);
+
+	err = ticables_cable_recv(handle, buf, 7);
+    if(err) print_lc_error(err);
+	for(i = 0; i < 7; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
+
+	// mode ack
+	err = ticables_cable_recv(handle, buf, 15);
+    if(err) print_lc_error(err);
+	for(i = 0; i < 15; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
+
+	i = 0;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x02;
+	buf[i++]=0x05;
+	buf[i++]=0xe0; buf[i++]=0x00;
+
+	err = ticables_cable_send(handle, buf, i);
+    if(err) print_lc_error(err);
+
+	// param req
+	i = 0;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0xa;
+	buf[i++]=0x04;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x04;
+	buf[i++]=0x00; buf[i++]=0x07;
+	buf[i++]=0x00; buf[i++]=0x01; 
+	buf[i++]=0x00; buf[i++]=0x22;
+
+	err = ticables_cable_send(handle, buf, i);
+    if(err) print_lc_error(err);
+
+	err = ticables_cable_recv(handle, buf, 7);
+    if(err) print_lc_error(err);
+	for(i = 0; i < 7; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
+
+	// delay ack
+	err = ticables_cable_recv(handle, buf, 15);
+    if(err) print_lc_error(err);
+	for(i = 0; i < 15; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
+
+	i = 0;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x02;
+	buf[i++]=0x05;
+	buf[i++]=0xe0; buf[i++]=0x00;
+
+	err = ticables_cable_send(handle, buf, i);
+    if(err) print_lc_error(err);
+
+	// param data
+	err = ticables_cable_recv(handle, buf, 250);
+    if(err) print_lc_error(err);
+	for(i = 0; i < 16; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
+
+	i = 0;
+	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x02;
+	buf[i++]=0x05;
+	buf[i++]=0xe0; buf[i++]=0x00;
+
+	err = ticables_cable_send(handle, buf, i);
+    if(err) print_lc_error(err);
 #endif
 
 #if 0
