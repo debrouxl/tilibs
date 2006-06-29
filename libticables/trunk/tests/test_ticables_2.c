@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 {
 	CableHandle *handle;
 	int err, i;
-	uint8_t buf[4], data;
+	uint8_t buf[256], data;
 	int status, result;
 	uint8_t scr[3840 + 6];
 	int **probing = NULL;
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 	ticables_probing_finish(&probing);
 #endif
 
-#if 1
+#if 0
 	{
 		int *list = NULL;
 		int i, n;
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 #endif
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	handle = ticables_handle_new(CABLE_USB, PORT_1);
 	if(handle == NULL)
 	    return -1;
 
@@ -121,16 +121,16 @@ int main(int argc, char **argv)
 	buf[4]=0x01;
 	buf[5]=0x00; buf[6]=0x00; buf[7]=0x04; buf[8]=0x00;
 	err = ticables_cable_send(handle, buf, 9);
-        if(err) print_lc_error(err);
+    if(err) print_lc_error(err);
 
 	// display answer
-	memset(buf, 0xff, 9);
-        err = ticables_cable_recv(handle, buf, 9);
-        if(err) print_lc_error(err);
+	memset(buf, 0, sizeof(buf));
+    err = ticables_cable_recv(handle, buf, 9);
+    if(err) print_lc_error(err);
 
-        for(i = 0; i < 9; i++)
-	    printf("%02x ", buf[i]);
-        printf("\n");
+    for(i = 0; i < 9; i++)
+		printf("%02x ", buf[i]);
+    printf("\n");
 #endif
 
 #if 0
