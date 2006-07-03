@@ -58,7 +58,7 @@
    Linux ONLY, not for other POSIX-like systems (it directly uses Linux kernel
    interfaces).
 */
-
+                                     
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -203,9 +203,9 @@ typedef struct
 // list of known devices
 static usb_infos tigl_infos[] =
 {
-        {0x0451, 0xe001, "SilverLink", NULL},
-        {0x0451, 0xe004, "TI89 Titanium", NULL},
-        {0x0451, 0xe008, "TI84 Plus", NULL},
+        {0x0451, 0xe001, "TI-GRAPH LINK USB", NULL},
+        {0x0451, 0xe004, "TI-89 Titanium Calculator", NULL},
+        {0x0451, 0xe008, "TI-84 Plus Silver Calculator", NULL},
         {}
 };
 
@@ -256,7 +256,10 @@ static int tigl_find(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			ticables_info(" found <%s>.", tigl_infos[i].str);
+			ticables_info(" found <%s>, version <%x.%02x>", 
+				      tigl_infos[i].str, 
+				      dev->descriptor.bcdDevice >> 8,
+				      dev->descriptor.bcdDevice & 0xff);
 
 			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
 			       sizeof(usb_infos));
@@ -418,12 +421,22 @@ static int slv_prepare(CableHandle *h)
 
 static int slv_open(CableHandle *h)
 {
+    struct usb_config_descriptor *config;
+    struct usb_interface *interface_;
+    struct usb_interface_descriptor *interface;
+    struct usb_endpoint_descriptor *endpoint;    
+
     // open device
     TRYC(tigl_open(h->address, &uHdl));
     uDev = tigl_devices[h->address].dev;    
 
     // get max packet size
-    max_ps = 32;
+    config = &(uDev->config[0]);
+    interface_ = &(config->interface[0]);
+    interface = &(interface_->altsetting[0]);
+    endpoint = &(interface->endpoint[0]);
+    max_ps = endpoint->wMaxPacketSize;
+    //printf("max_ps = %i\n", max_ps);
     nBytesRead = 0;
     
 #if !defined(__BSD__)
