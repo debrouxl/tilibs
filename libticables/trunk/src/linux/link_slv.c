@@ -236,6 +236,27 @@ typedef struct
 
 /* Helpers (=driver API) */
 
+static const char* tigl_get_product(struct usb_device *dev)
+{
+    struct usb_dev_handle *han;
+    int ret;
+    static char string[64];
+
+    if (dev->descriptor.iProduct)
+    {
+	han = usb_open(dev);
+	ret = usb_get_string_simple(han, dev->descriptor.iProduct, 
+				    string, sizeof(string));
+	if (ret > 0)
+	    return string;
+	else
+	    return "";
+	usb_close(han);
+    }
+
+    return string;
+}
+
 static int tigl_find(void)
 {
     struct usb_bus    *bus;
@@ -257,7 +278,7 @@ static int tigl_find(void)
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
 			ticables_info(" found <%s>, version <%x.%02x>", 
-				      tigl_infos[i].str, 
+				      tigl_get_product(dev), 
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 
