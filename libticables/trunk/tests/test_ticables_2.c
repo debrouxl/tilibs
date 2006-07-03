@@ -170,6 +170,7 @@ int main(int argc, char **argv)
 	err = ticables_cable_send(handle, buf, i);
     if(err) print_lc_error(err);
 
+#if 1
 	// param req
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0xa;
@@ -235,6 +236,7 @@ int main(int argc, char **argv)
 		err = ticables_cable_send(handle, buf, i);
 		if(err) print_lc_error(err);
 	}
+#endif
 #endif
 
 #if 0

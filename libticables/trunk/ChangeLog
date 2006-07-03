@@ -5,6 +5,9 @@ To do:
 
 Log:
 
+- 02/07/2006, version 0.1.2: roms
+	- fixed DirectLink issue under Linux (TI84+ only)
+	
 - 05/06/2006, version 0.1.1: roms
 	- renamed stdints.h into stdints1.h
 	- fixed ERR_INVALID_ARG in SilverLink (linux) support
