@@ -30,6 +30,9 @@
 #if defined(__WIN32__)
 #include <windows.h>
 #endif
+#ifdef __LINUX__
+#include <sys/utsname.h>
+#endif
 
 #include "gettext.h"
 #include "ticables.h"
@@ -125,6 +128,14 @@ TIEXPORT int TICALL ticables_library_init(void)
   	ticables_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	ticables_info("textdomain: <%s>", textdomain(PACKAGE));
+#endif
+#ifdef __LINUX__
+	{
+	    struct utsname buf;
+	    
+	    uname(&buf);
+	    ticables_info("kernel: %s", buf.release);
+	}
 #endif
 
   	return (++ticables_instance);
