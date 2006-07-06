@@ -38,7 +38,7 @@ const char *TI83p_CONST[TI83p_MAXTYPES + 1][4] =
   {"EQU", "8Xe", "Equation", N_("Equation")},
   {"STR", "8Xs", "String", N_("String")},
   {"PRGM", "8Xp", "Program", N_("Program")},
-  {"PRGM", "8Xz", "Program", N_("Program")},
+  {"PPRGM", "8Xp", "Program", N_("Program")},
   {"PIC", "8Xi", "Picture", N_("Picture")},
   {"GDB", "8Xg", "GDB", N_("GDB")},
   {"", "8X?", "Unknown", N_("Unknown")},
