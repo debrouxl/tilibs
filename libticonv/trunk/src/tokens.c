@@ -94,6 +94,8 @@ static char *detokenize_varname(CalcModel model, const char *src)
 			case 0x07: dst = g_strdup_printf("L%c", '\x88'); break;
 			case 0x08: dst = g_strdup_printf("L%c", '\x89'); break;
 			case 0x09: dst = g_strdup_printf("L%c", '\x80'); break;
+
+			case 0x40: dst = g_strdup("IDList"); break;
 			  
 			default: // named list
 			  dst = g_strdup_printf("1234567");
