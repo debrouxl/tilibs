@@ -9,6 +9,7 @@ Log:
 
 - 07/07/2006, version 0.2.3: roms
 	- refresh total counter (cnt3) when sending TiGroup file
+	- begins count at 1 instead of 0 (cnt3)
 
 - 16/06/2006, version 0.2.2: roms
 	- added full backup capability thru TiGroup files
