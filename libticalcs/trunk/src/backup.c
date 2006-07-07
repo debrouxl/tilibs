@@ -131,9 +131,9 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 	{
 		TigEntry *te = *ptr;
 
-		if(te->type == TIFILE_SINGLE && (mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+		if(te->type == TIFILE_SINGLE && ((mode & TIG_RAM) || (mode & TIG_ARCHIVE)))
 			nvars++;
-		else if(te->type == TIFILE_FLASH && mode & TIG_ARCHIVE)
+		else if(te->type == TIFILE_FLASH && (mode & TIG_FLASH))
 			napps++;
 	}
 
