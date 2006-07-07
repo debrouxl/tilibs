@@ -124,6 +124,22 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	TigEntry **ptr;
+	int nvars = 0;
+	int napps = 0;
+
+	for(ptr = content->entries; *ptr; ptr++)
+	{
+		TigEntry *te = *ptr;
+
+		if(te->type == TIFILE_SINGLE && (mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+			nvars++;
+		else if(te->type == TIFILE_FLASH && mode & TIG_ARCHIVE)
+			napps++;
+	}
+
+	update_->cnt3 = 0;
+	update_->max3 = nvars + napps;
+	update_->pbar();
 
 	if(handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
 		handle->model == CALC_TI89T ||handle->model == CALC_V200)
@@ -148,6 +164,9 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 			continue;
 
 		TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
+
+		update_->cnt3++;
+		update_->pbar();
 	}
 
 	TRYF(handle->calc->is_ready(handle));
@@ -161,6 +180,9 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 			continue;
 
 		TRYF(handle->calc->send_app(handle, te->content.flash));
+
+		update_->cnt3++;
+		update_->pbar();
 	}
 
 	return 0;

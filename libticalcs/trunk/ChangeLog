@@ -4,10 +4,11 @@ Set svn:eol property to native on all files
 	
 To do : 
 - manage ERR packets which can be received at any time
-- test TiGroup with variables like 'Beta'
-- fopen/g_fopen issue in tigroup support
 
 Log:
+
+- 07/07/2006, version 0.2.3: roms
+	- refresh total counter (cnt3) when sending TiGroup file
 
 - 16/06/2006, version 0.2.2: roms
 	- added full backup capability thru TiGroup files
