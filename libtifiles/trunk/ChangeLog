@@ -17,6 +17,7 @@ Log:
 		because	this code had no effect. Moreover, it will imply to pass target hand-held
 		to convert varname in the right encoding. For now, this step is postponed on ticalcs2
 		library.
+	- reverted back again
 
 - 17/06/2006, version 0.2.0: roms
 	- full TiGroup support (both regular & flash with deflate compression)
