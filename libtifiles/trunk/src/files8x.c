@@ -116,7 +116,6 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   char signature[9];
   uint8_t test_pad = 0xff;
   int padded86 = 0;
-  char varname[VARNAME_MAX];
 
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
@@ -209,8 +208,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     fread_byte(f, &(entry->type));
     if (is_ti8586(content->model))
       fread_byte(f, &name_length);
-    fread_n_chars(f, name_length, varname);
-	ticonv_varname_from_tifile_s(content->model, varname, entry->name);
+    fread_n_chars(f, name_length, entry->name);
 	if((content->model == CALC_TI86) && padded86)
 		fskip(f, 8 - name_length);
     if (ti83p_flag) 
@@ -234,7 +232,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     sum += entry->type;
     if(is_ti8586(content->model))
       sum += strlen(entry->name);
-    sum += tifiles_checksum((uint8_t *)varname, name_length);
+    sum += tifiles_checksum((uint8_t *)entry->name, name_length);
 	if((content->model == CALC_TI86) && padded86)
 		sum += (8 - name_length) * test_pad;
     sum += tifiles_checksum((uint8_t *)&(entry->size), 2);
@@ -518,7 +516,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   else 
   {
 	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
-
+	
     filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
     strcpy(filename, basename);
     strcat(filename, ".");
@@ -564,7 +562,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   for (i = 0, sum = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
-	char varname[VARNAME_MAX];
 
 	switch (content->model) 
 	  {
@@ -591,18 +588,17 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
     fwrite_byte(f, entry->type);
-	ticonv_varname_to_tifile_s(content->model, entry->name, varname);
     if (is_ti8586(content->model)) 
 	{
-      name_length = strlen(varname);
+      name_length = strlen(entry->name);
       fwrite_byte(f, (uint8_t)name_length);
 	  if(content->model == CALC_TI85)
-		fwrite_n_chars(f, name_length, varname);
+		fwrite_n_chars(f, name_length, entry->name);
 	  else
-		fwrite_n_chars2(f, 8, varname); // space padded
+		fwrite_n_chars2(f, 8, entry->name); // space padded
     }
     else
-    	fwrite_n_chars(f, 8, varname);
+    	fwrite_n_chars(f, 8, entry->name);
     if (is_ti83p(content->model))
       fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00));
     fwrite_word(f, (uint16_t)entry->size);

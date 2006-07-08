@@ -6,8 +6,6 @@ ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 To do:
 - make tifiles_calc_are_compat more powerful
 - add tifiles_file_is_targetted(filename, model, class) avec class = ALL
-- API: préciser que les varnames sont en UTF-8 !
-- tigroup: g_fopen/fopen in ZIP I/O callbacks to fix
 
 Log:
 
@@ -15,6 +13,10 @@ Log:
 	- bug #1499672: every edit-locked BASIC and AMS program is marked ASM
 	and received as *.8xz, of course this has to be *.8xp for both locked 
 	BASIC and ASM.
+	- reverted back changes made on tifile encoding <-> raw varname encoding (v0.1.2)
+		because	this code had no effect. Moreover, it will imply to pass target hand-held
+		to convert varname in the right encoding. For now, this step is postponed on ticalcs2
+		library.
 
 - 17/06/2006, version 0.2.0: roms
 	- full TiGroup support (both regular & flash with deflate compression)
