@@ -120,7 +120,7 @@ TIEXPORT int TICALL ticables_library_init(void)
 
 	if (ticables_instance)
 		return (++ticables_instance);
-	ticables_info(_("cables library version %s"), LIBCABLES_VERSION);
+	ticables_info(_("ticables library version %s"), LIBCABLES_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
