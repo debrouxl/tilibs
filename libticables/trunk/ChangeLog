@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 11/07/2006, version 0.1.3: roms
+	- requires TiglUbs.dll version 3.6 due to Win98/Me/2k fix
+
 - 02/07/2006, version 0.1.2: roms
 	- fixed DirectLink issue under Linux (TI84+ only)
 	

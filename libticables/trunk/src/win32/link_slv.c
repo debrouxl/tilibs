@@ -41,7 +41,7 @@
 
 #include "tiglusb.h"
 
-#define MIN_VERSION "3.3"
+#define MIN_VERSION "3.6"
 
 // Functions pointers for dynamic loading
 typedef struct
