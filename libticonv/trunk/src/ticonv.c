@@ -318,7 +318,7 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src,
  * @src: the name of variable to convert (raw/binary name).
  *
  * This function converts a varname into a valid filename (depends on locale).
- * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_/alpha.
  * 
  * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
  * if locale is different of UTF-8) because greek characters are often missed or mis-converted
@@ -345,7 +345,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *sr
  * @dst: a buffer to place result in the GLib filename encoding (64 bytes max).
  *
  * This function converts a varname into a valid filename (depends on locale).
- * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_/alpha.
  * 
  * Greeks characters need conversion if the locale is not UTF-8 (Windows for sure, Linux
  * if locale is different of UTF-8) because greek characters are often missed or mis-converted

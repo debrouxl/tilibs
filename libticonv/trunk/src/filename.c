@@ -71,7 +71,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  **/ 
 TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
-#ifdef __WIN32__
+	#ifdef __WIN32__
 	int is_utf8 = G_WIN32_HAVE_WIDECHAR_API();
 #else
 	int is_utf8 = g_get_charset(NULL);
@@ -234,4 +234,69 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
 	return dst;	
 }
 
+/**
+ * ticonv_utf16_to_zfe:
+ * @model: a calculator model taken in #CalcModel.
+ * @src: the name of variable to convert from UTF-16
+ *
+ * This function converts a locale dependent filename into a 
+ * valid ZIP filename.
+ * Example: 'foobar' => foobar, 'alpha' => _alpha_.
+ *
+ * Return value: %dst as a newly allocated string.
+ **/
+TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
+{
+	 char *src, *p;
+	 char *dst, *q;
 
+	// detokenization to UTF-16
+	p = src = (char *)src_;
+	q = dst = g_malloc0(18*strlen(src)+1);
+
+	while(*p)
+	{
+		if((*p & 0xFF) == 0xCE)
+		{
+			const char *str;
+
+			p++;
+			switch(*p & 0xff)
+			{
+				case 0xbc: str = "_mu_"; break;
+				case 0xb1: str = "_alpha_"; break;
+				case 0xb2: str = "_beta_"; break;
+				case 0x93: str = "_GAMMA_"; break;
+				case 0xb3: str = "_gamma_"; break;
+				case 0x94: str = "_DELTA_"; break;
+				case 0xb4: str = "_delta_"; break;
+				case 0xb5: str = "_epsilon_";break;
+				case 0xb6: str = "_zeta_"; break;
+				case 0xb8: str = "_theta_"; break;
+				case 0xbb: str = "_lambda_"; break;
+				case 0xbe: str = "_ksi_"; break;
+				case 0xa0: str = "_PI_"; break;
+				case 0xc0: str = "_pi_"; break;
+				case 0xc1: str = "_rho_"; break;
+				case 0xa3: str = "_SIGMA_"; break; 
+				case 0xc3: str = "_sigma_"; break; 
+				case 0xc4: str = "_tau_"; break;
+				case 0xd5: str = "_PHI_"; break;
+				case 0xa8: str = "_PSI_"; break;
+				case 0xa9: str = "_OMEGA_"; break; 
+				case 0xc9: str = "_omega_"; break;
+				default: str = ""; break;
+			}
+
+			memcpy(q, str, strlen(str) + 1);
+			
+			q += strlen(str);
+			p++;
+		}
+		else
+			*q++ = *p++;
+	}
+	*q = '\0';
+				
+	return dst;
+}

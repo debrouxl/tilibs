@@ -7,6 +7,7 @@ Log:
 
 - 07/07/2006, version 0.0.5: roms
 	- added 0x5d0x40 => IDList detokenization (TI84+)
+	- added ticonv_gfe_to_zfe for TiGroup support (ZIP archives don't like greek chars).
 
 - 05/06/2006, version 0.0.4: roms
 	- renamed stdints.h into stdints4.h

@@ -142,6 +142,7 @@ extern "C" {
 
   // filename.c
   TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
+  TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
 
   // iconv.c
   /* Allocate descriptor for code conversion from codeset FROMCODE to
