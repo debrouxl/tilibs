@@ -237,7 +237,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			VarEntry *ve = (VarEntry *) (node->data);
 			TigEntry *te;
 			char *filename;
-			char *basename;
+			char *varname;
+			char *fldname;
 
 			TRYF(handle->calc->is_ready(handle));
 
@@ -247,9 +248,16 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			if((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED) ||
 				(mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED)
 			{
-				basename = ticonv_varname_to_filename(handle->model, ve->name);
-				filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
-				g_free(basename);
+				fldname = ticonv_varname_to_filename(handle->model, ve->folder);
+				varname = ticonv_varname_to_filename(handle->model, ve->name);
+				if(handle->calc->features & FTS_FOLDER)
+					filename = g_strconcat(fldname, ".", varname, ".", 
+						tifiles_vartype2fext(handle->model, ve->type), NULL);
+				else
+					filename = g_strconcat(varname, ".", 
+						tifiles_vartype2fext(handle->model, ve->type), NULL);
+				g_free(fldname);
+				g_free(varname);
 
 				te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
 				g_free(filename);

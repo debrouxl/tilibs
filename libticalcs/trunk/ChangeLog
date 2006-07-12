@@ -11,6 +11,7 @@ Log:
 	- refresh total counter (cnt3) when sending TiGroup file
 	- begins count at 1 instead of 0 (cnt3)
 	- fixed filename translation in TiGroup support
+	- for now, use this naming scheme for TI9x var filenames: folder.var.extension (as tifiles2).
 
 - 16/06/2006, version 0.2.2: roms
 	- added full backup capability thru TiGroup files
