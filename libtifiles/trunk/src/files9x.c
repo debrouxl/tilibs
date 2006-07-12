@@ -380,11 +380,16 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   } 
   else 
   {
-	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
-
-    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
+    filename = (char *) malloc(8+1+8+1+3+1);
+	
+	ticonv_varname_to_filename_s(content->model, content->entries[0]->folder, basename);	
     strcpy(filename, basename);
     strcat(filename, ".");
+	
+	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
+    strcat(filename, basename);
+    strcat(filename, ".");
+
     strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
