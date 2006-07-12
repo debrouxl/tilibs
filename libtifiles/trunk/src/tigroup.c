@@ -46,6 +46,7 @@
 #endif
 */
 
+#include <ticonv.h>
 #include "tifiles.h"
 #include "logging.h"
 #include "error.h"
@@ -446,16 +447,19 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		unsigned long crcFile=0;
 		int size_read;
 		TigEntry* entry = *ptr;
-		char *filename = entry->filename;	// beware: mask global 'filename' !
+		char *filename;	// beware: mask global 'filename' !
+
+		// ZIP archives don't like greek chars
+		filename = ticonv_gfe_to_zfe(content->model, entry->filename);
 
 		// write TI file into tmp folder
 		if(entry->type == TIFILE_FLASH)
 		{
-			TRYC(tifiles_file_write_flash(entry->filename, entry->content.flash));
+			TRYC(tifiles_file_write_flash(filename, entry->content.flash));
 		}
 		else
 		{	
-			TRYC(tifiles_file_write_regular(entry->filename, entry->content.regular, NULL));
+			TRYC(tifiles_file_write_regular(filename, entry->content.regular, NULL));
 		}
 
 		// missing tmp file !
@@ -466,6 +470,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 			goto tfwt_exit;
 		}
 		strcpy(filenameinzip, filename);
+		g_free(filename);
 
 		// update time stamp (to do ?)
 		zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
