@@ -237,6 +237,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			VarEntry *ve = (VarEntry *) (node->data);
 			TigEntry *te;
 			char *filename;
+			char *basename;
 
 			TRYF(handle->calc->is_ready(handle));
 
@@ -246,9 +247,13 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			if((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED) ||
 				(mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED)
 			{
-				filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+				basename = ticonv_varname_to_filename(handle->model, ve->name);
+				filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+				g_free(basename);
+
 				te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
 				g_free(filename);
+
 				TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
 				tifiles_content_add_te(content, te);
 			}
@@ -270,15 +275,20 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			VarEntry *ve = (VarEntry *) (node->data);
 			TigEntry *te;
 			char *filename;
+			char *basename;
 
 			TRYF(handle->calc->is_ready(handle));
 
 			update_->cnt3++;
 			update_->pbar();
 
-			filename = g_strconcat(ve->name, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+			basename = ticonv_varname_to_filename(handle->model, ve->name);
+			filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+			g_free(basename);
+
 			te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
 			g_free(filename);
+
 			TRYF(handle->calc->recv_app(handle, te->content.flash, ve));
 			tifiles_content_add_te(content, te);
 		}
