@@ -359,6 +359,14 @@ int check_for_parport(const char *devname)
 
 int check_for_libusb(void)
 {
+	ticables_info(_("Check for lib-usb support:"));
+#if defined(HAVE_LIBUSB)
+	ticables_info(_("    usb support: available."));
+#else
+	ticables_info(_("    usb support: not compiled."));
+	return ERR_USBFS;
+#endif
+
     ticables_info(_("Check for lib-usb usability:"));
     
     if(!access(USBFS, F_OK))

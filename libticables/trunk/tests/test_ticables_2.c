@@ -78,6 +78,8 @@ int main(int argc, char **argv)
 	printf("check_for_libusb: %i\n", check_for_libusb());
 #endif
 
+	printf("USB support: %i\n", ticables_is_usb_enabled());
+
 	// init lib
 	ticables_library_init();
 
@@ -115,7 +117,7 @@ int main(int argc, char **argv)
 	if(err) print_lc_error(err);
 	if(err) return -1;
 
-#if 1
+#if 0
 	// simple test with DirectLink hand-helds (buf size req/neg)
 	buf[0]=0x00; buf[1]=0x00; buf[2]=0x00; buf[3]=0x04;
 	buf[4]=0x01;
@@ -133,7 +135,7 @@ int main(int argc, char **argv)
     printf("\n");
 #endif
 
-#if 1
+#if 0
 	// mode set
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x10;
@@ -170,7 +172,7 @@ int main(int argc, char **argv)
 	err = ticables_cable_send(handle, buf, i);
     if(err) print_lc_error(err);
 
-#if 1
+#if 0
 	// param req
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0xa;

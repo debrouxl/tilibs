@@ -112,6 +112,8 @@ int win32_detect_tiglusb(void)
 	}
 
     ticables_info("TiglUsb driver%sfound.", result ? " " : " not ");
+	if(!result)
+		ticables_info("TiglUsb support will be unavailable...");
 	
 	return result;
 }

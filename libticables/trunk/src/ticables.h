@@ -318,6 +318,8 @@ typedef struct
 	TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);
 	TIEXPORT int TICALL ticables_probing_finish(int ***result);
 
+	TIEXPORT int TICALL ticables_is_usb_enabled(void);
+
 	TIEXPORT int TICALL ticables_get_usb_devices(int **array, int *len);
   
   /************************/

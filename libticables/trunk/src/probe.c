@@ -32,6 +32,10 @@
 #include "ticables.h"
 #include "error.h"
 
+#include "linux/detect.h"
+#include "win32/detect.h"
+#include "bsd/detect.h"
+
 /**
  * ticables_probing_do:
  * @result: address of an array of integers to put the result.
@@ -106,6 +110,26 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
 
 	free(*result);
 	*result = NULL;
+
+	return 0;
+}
+
+/**
+ * ticables_is_usb_enabled:
+ *
+ * Checks whether USB support is available. Can be called at any time.
+ *
+ * Return value: !0 if available, 0 otherwise.
+ **/
+TIEXPORT int TICALL ticables_is_usb_enabled(void)
+{
+#if defined(__WIN32__)
+	return win32_detect_tiglusb();
+#elif defined(__LINUX__) && defined(HAVE_LIBUSB)
+	return check_for_libusb();
+#else
+	return 0;
+#endif
 
 	return 0;
 }
