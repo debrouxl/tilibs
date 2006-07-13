@@ -1096,13 +1096,12 @@ int test_ti8x_group_merge()
 int test_tigroup()
 {
 	TigContent *content = { 0 };
-	char *name = g_locale_to_utf8("misc/pépé.tig", -1, NULL, NULL, NULL);
 
 	//tifiles_file_display(BUILD_PATH("misc/str.92s"));
 	//tifiles_file_display(BUILD_PATH(g_locale_to_utf8("misc/pépé.92s", -1, NULL, NULL, NULL)));
 	//return 0;
 
-	tifiles_file_display_tigroup(BUILD_PATH(name));
+	tifiles_file_display_tigroup(BUILD_PATH("misc/p\xC3\xA9p\xC3\xA9.tig"));
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	tifiles_file_read_tigroup(BUILD_PATH("misc/test.tig"), content);
