@@ -71,7 +71,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  **/ 
 TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
-	#ifdef __WIN32__
+#ifdef __WIN32__
 	int is_utf8 = G_WIN32_HAVE_WIDECHAR_API();
 #else
 	int is_utf8 = g_get_charset(NULL);
@@ -235,9 +235,9 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
 }
 
 /**
- * ticonv_utf16_to_zfe:
+ * ticonv_gfe_to_zfe:
  * @model: a calculator model taken in #CalcModel.
- * @src: the name of variable to convert from UTF-16
+ * @src: the name of variable to convert from GLib filename encoding
  *
  * This function converts a locale dependent filename into a 
  * valid ZIP filename.
@@ -250,7 +250,11 @@ TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	 char *src, *p;
 	 char *dst, *q;
 
-	// detokenization to UTF-16
+	// This conversion is needed and works only if the filename charset
+	// is UTF-8. Otherwise, the equivalent conversion is done in
+	// ticonv_utf16_to_gfe.
+	if (!g_get_filename_charsets(NULL)) return g_strdup(src_);
+
 	p = src = (char *)src_;
 	q = dst = g_malloc0(18*strlen(src)+1);
 
