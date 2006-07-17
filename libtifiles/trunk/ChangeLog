@@ -13,6 +13,7 @@ Log:
 	- variables like 'beta' can't be handled by TiGroup file nor ZIP archives.
 	Translate filenames again!
 	- for now, use this naming scheme for TI9x var filenames: folder.var.extension
+	- look for the correct module file name on MinGW in tifiles_library_init (kevin)
 
 - 06/07/2006, version 0.2.1: roms
 	- bug #1499672: every edit-locked BASIC and AMS program is marked ASM

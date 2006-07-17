@@ -63,7 +63,7 @@ TIEXPORT int TICALL tifiles_library_init()
   	int i;
   	
 #ifdef __MINGW32__
-	hDll = GetModuleHandle("libtifiles2-0.dll");
+	hDll = GetModuleHandle("libtifiles2-3.dll");
 #else
 	hDll = GetModuleHandle("tifiles2.dll");
 #endif
