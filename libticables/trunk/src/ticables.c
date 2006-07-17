@@ -244,7 +244,7 @@ TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
  *
  * Set timeout for any cable.
  *
- * Return value: always 0.
+ * Return value: the previous timeout.
  **/
 TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
