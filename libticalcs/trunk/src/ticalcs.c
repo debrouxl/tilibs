@@ -117,7 +117,7 @@ TIEXPORT int TICALL ticalcs_library_init(void)
   	int i;
   	
 #ifdef __MINGW32__
-hDll = GetModuleHandle("libticalcs2-0.dll");
+hDll = GetModuleHandle("libticalcs2-3.dll");
 #else
 hDll = GetModuleHandle("ticalcs2.dll");
 #endif
