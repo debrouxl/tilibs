@@ -6,7 +6,7 @@ AC_PREREQ(2.57)
 AC_INIT(libtifiles2, 0.2.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.2.1
+VERSION="0.2.1"
 AC_SUBST(VERSION)
 
 dnl Library version.
