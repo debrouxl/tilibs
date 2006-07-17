@@ -96,7 +96,7 @@ TIEXPORT int TICALL ticables_library_init(void)
   	int i;
 
 #ifdef __MINGW32__
-	hDll = GetModuleHandle("libticables2-0.dll");
+	hDll = GetModuleHandle("libticables2-1.dll");
 #else
 	hDll = GetModuleHandle("ticables2.dll");
 #endif
