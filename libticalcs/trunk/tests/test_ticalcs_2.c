@@ -282,9 +282,15 @@ static int get_clock(CalcHandle *h)
 
 static int probe_calc(CalcHandle *h)
 {
+	CableModel m;
+	CablePort p;
 	CalcModel model;
 
-	ticalcs_probe_calc(h->cable, &model);
+	printf("Enter cable & port for probing (c p): ");
+	scanf("%i %i", &m, &p);
+
+	ticalcs_probe(m, p, &model, !0);
+	//ticalcs_probe_calc(h->cable, &model);
 	//ticalcs_probe_usb_calcs(h->cable, &model);
 	printf("Found: <%s>", ticalcs_model_to_string(model));
 

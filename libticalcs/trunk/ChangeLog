@@ -7,6 +7,10 @@ To do :
 
 Log:
 
+- 18/07/2006, version 0.2.4: roms
+	- added ticalcs_probe for Kevin and I. This function is complete because it handles 
+		all of the probing (open/close handle, probe for all/FLASH only devices).
+
 - 07/07/2006, version 0.2.3: roms
 	- refresh total counter (cnt3) when sending TiGroup file
 	- begins count at 1 instead of 0 (cnt3)

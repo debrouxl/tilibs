@@ -71,7 +71,7 @@ int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
  * PC: 08  6D 00 00		PC request a screen dump
  * TI: MId 56 00 00		TI reply OK
  *
- * Beware: the call sequence is very important: 86, 85, 83, 82 !!!
+ * Beware: the call sequence is very important: 86, 85, 73, 83, 82 !!!
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
@@ -342,7 +342,7 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
  * @model: the calculator model which have been detected
  *
  * This function attempts to detect the calculator model plugged onto the cable.
- * It works in a heuristic fashion.
+ * It works in a heuristic fashion and with FLASH hand-helds only.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
@@ -387,4 +387,69 @@ TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 
 	free(calc.priv2);
 	return ret;
+}
+
+/**
+ * ticalcs_probe:
+ * @c_model: link cable model
+ * @c_port: link cable port
+ * @model: hand-held model detected/found [out]
+ * @all: which hand-helds to detect (FLASH only or all)
+ *
+ * This function attempts to detect the calculator model plugged onto a
+ * given link cable model/port. It works in a heuristic fashion.
+ * This function handles device opening/closing for you.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
+{
+	CableHandle *handle;
+	int err = 0;
+	CalcHandle calc;
+
+	// get handle
+	handle = ticables_handle_new(c_model, c_port);
+	ticables_options_set_timeout(handle, 10);
+
+	// hack: we construct the structure here because we don't really need it.
+	// I want to use ticalcs functions with a non-fixed calculator
+	memset(&calc, 0, sizeof(CalcHandle));
+	calc.model = *model = CALC_NONE;
+	calc.updat = (CalcUpdate *)&default_update;
+	calc.priv2 = (uint8_t *)malloc(65536 + 4);
+	calc.cable = handle;
+	calc.open = !0;
+
+	// open cable
+	err = ticables_cable_open(handle);
+	if(err)
+	{
+		ticables_handle_del(handle);
+		return err;
+	}
+
+	// probe
+	if(c_model == CABLE_USB)
+		err = ticalcs_probe_usb_calc(handle, model);
+	else
+	{
+		if(all)
+			err = ticalcs_probe_calc(handle, model);
+		else
+			err = ticalcs_probe_calc_1(&calc, model);
+	}
+		
+	if(err)
+	{
+		ticables_cable_close(handle);
+		ticables_handle_del(handle);
+		return err;
+	}
+
+	// close
+	ticables_cable_close(handle);
+	ticables_handle_del(handle);
+
+	return err;
 }

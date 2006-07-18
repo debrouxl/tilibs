@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.2.2"
+# define LIBCALCS_VERSION "0.2.4"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -761,6 +761,8 @@ typedef struct
 	//probe.c
 	TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
 	TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
+
+	TIEXPORT int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
 		
   /************************/
   /* Deprecated functions */
