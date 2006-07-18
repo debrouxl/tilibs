@@ -245,8 +245,8 @@ TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* co
 			update_->cnt3++;
 			update_->pbar();
 
-			if((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED) ||
-				(mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED)
+			if(((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED)) ||
+			   ((mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED))
 			{
 				fldname = ticonv_varname_to_filename(handle->model, ve->folder);
 				varname = ticonv_varname_to_filename(handle->model, ve->name);
