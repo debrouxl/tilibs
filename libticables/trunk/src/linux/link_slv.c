@@ -277,8 +277,8 @@ static int tigl_find(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			ticables_info(" found <%s>, version <%x.%02x>", 
-				      tigl_get_product(dev), 
+			ticables_info(" found <%s> on #%i, version <%x.%02x>", 
+				      tigl_get_product(dev), i, 
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 
@@ -720,7 +720,7 @@ static int slv_probe(CableHandle *h)
 
     for(i = 0; i < MAX_CABLES; i++)
     {
-	if(tigl_devices[i].pid == PID_TIGLUSB)
+	if(tigl_devices[h->address].pid == PID_TIGLUSB)
 	    return 0;
     }
     

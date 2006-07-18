@@ -132,7 +132,7 @@ TIEXPORT int TICALL ticables_is_usb_enabled(void)
 #if defined(__WIN32__)
 	return win32_detect_tiglusb();
 #elif defined(__LINUX__) && defined(HAVE_LIBUSB)
-	return check_for_libusb();
+	return !check_for_libusb();
 #else
 	return 0;
 #endif
