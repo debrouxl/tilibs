@@ -83,6 +83,9 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMetho
 				err = ticables_cable_probe(handle, &ret);
 				array[model][port] = (ret && !err) ? 1: 0;
 				if(array[model][port]) found = !0;
+
+				if(found && method == PROBE_FIRST)
+					break;
 			}
 			ticables_handle_del(handle);
 		}
