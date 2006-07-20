@@ -283,6 +283,7 @@ static int probe_calc(CalcHandle *h)
 {
 	int m;
 	int p;
+	int ret;
 	CalcModel model;
 
 	printf("Enter cable & port for probing (c p): ");
