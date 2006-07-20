@@ -2,8 +2,8 @@
 /* $Id$ */
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (c) 1999-2005  Romain Lievin
- *  Copyright (c) 2005, Benjamin Moody (ROM dumper)
+ *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -502,8 +502,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump89t, sizeof(uint8_t), romDumpSize89t, f);
-	fclose(f);
+	if (fwrite(romDump89t, sizeof(uint8_t), romDumpSize89t, f) < romDumpSize89t)
+	{
+		fclose(f);
+		return ERR_SAVE_FILE;
+	}
+	if (fclose(f))
+		return ERR_SAVE_FILE;
 
 	// Transfer program to calc
 	handle->busy = 0;

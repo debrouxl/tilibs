@@ -3,6 +3,7 @@
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1139,18 +1140,29 @@ TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* file
 		gchar *basename = strdup(filename);
 		FILE *f;
 		gchar *e = tifiles_fext_get(basename);
+		int err;
 
 		memcpy(e, "crt", 3);
-		f = fopen(basename, "wb");
 
 		content = tifiles_content_create_flash(handle->model);
-		TRYF(ticalcs_calc_recv_cert(handle, content));
+		if ((err = ticalcs_calc_recv_cert(handle, content))) {
+			free(basename);
+			return err;
+		}
 
-		fwrite(content->data_part, content->data_length, 1, f);
+		f = fopen(basename, "wb");
+		free(basename);
+		if (!f)
+			return ERR_SAVE_FILE;
+		if (fwrite(content->data_part, content->data_length, 1, f) < 1)
+		{
+			fclose(f);
+			return ERR_SAVE_FILE;
+		}
+		if (fclose(f))
+			return ERR_SAVE_FILE;
 		TRYF(tifiles_content_delete_flash(content));
 
-		fclose(f);
-		free(basename);
 	}
 	else
 	{

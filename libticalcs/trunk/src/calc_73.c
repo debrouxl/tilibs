@@ -3,8 +3,9 @@
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (c) 1999-2005  Romain Lievin
- *  Copyright (c) 2005, Benjamin Moody (ROM dumper)
- *  Copyright (c) 2006, Tyler Cassidy
+ *  Copyright (c) 2005  Benjamin Moody (ROM dumper)
+ *  Copyright (c) 2006  Tyler Cassidy
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -139,9 +140,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 		int err;
+		uint16_t ve_size;
 
-		err = ti73_recv_VAR((uint16_t *)&ve->size, &ve->type, ve->name, &ve->attr);
-		fixup(ve->size);
+		err = ti73_recv_VAR(&ve_size, &ve->type, ve->name, &ve->attr);
+		ve->size = ve_size;
 		TRYF(ti73_send_ACK());
 		if (err == ERR_EOT)
 			break;
@@ -342,7 +344,8 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
     VarEntry *ve;
-	char *utf8;
+    char *utf8;
+    uint16_t ve_size;
 
     content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -361,15 +364,16 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     TRYF(ti73_send_REQ((uint16_t)vr->size, vr->type, vr->name, vr->attr));
     TRYF(ti73_recv_ACK(NULL));
 
-    TRYF(ti73_recv_VAR((uint16_t *)&ve->size, &ve->type, ve->name, &vr->attr));
-    fixup(ve->size);
+    TRYF(ti73_recv_VAR(&ve_size, &ve->type, ve->name, &vr->attr));
+    ve->size = ve_size;
     TRYF(ti73_send_ACK());
 
     TRYF(ti73_send_CTS());
     TRYF(ti73_recv_ACK(NULL));
 
     ve->data = tifiles_ve_alloc_data(ve->size);
-    TRYF(ti73_recv_XDP((uint16_t *)&ve->size, ve->data));
+    TRYF(ti73_recv_XDP(&ve_size, ve->data));
+    ve->size = ve_size;
     TRYF(ti73_send_ACK());
 
 	return 0;
@@ -579,14 +583,13 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(ti73_send_REQ(0x0000, TI73_IDLIST, "", 0x00));
 	TRYF(ti73_recv_ACK(&unused));
 
-	TRYF(ti73_recv_VAR((uint16_t *) & varsize, &vartype, varname, &varattr));
-	fixup(varsize);
+	TRYF(ti73_recv_VAR(&varsize, &vartype, varname, &varattr));
 	TRYF(ti73_send_ACK());
 
 	TRYF(ti73_send_CTS());
 	TRYF(ti73_recv_ACK(NULL));
 
-	TRYF(ti73_recv_XDP((uint16_t *)&varsize, data));
+	TRYF(ti73_recv_XDP(&varsize, data));
 	TRYF(ti73_send_ACK());
 
 	i = data[9];
@@ -605,7 +608,7 @@ extern int rom_dump_ready(CalcHandle* h);
 
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	const char *prgname = "romdump.8Xp";
+	const char *prgname = (handle->model == CALC_TI73) ? "romdump.73p" : "romdump.8Xp";
 	FILE *f;
 	int err, i;
 	uint16_t keys[] = { 
@@ -618,8 +621,15 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f);
-	fclose(f);
+	if ((handle->model == CALC_TI73)
+	    ? (fwrite(romDump73, sizeof(uint8_t), romDumpSize73, f) < romDumpSize73)
+	    : (fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f) < romDumpSize8Xp))
+	{
+		fclose(f);
+		return ERR_SAVE_FILE;
+	}
+	if (fclose(f))
+		return ERR_SAVE_FILE;
 
 	// Transfer program to calc
 	handle->busy = 0;

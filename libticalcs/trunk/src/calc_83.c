@@ -3,6 +3,7 @@
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,9 +134,10 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		VarEntry *ve = tifiles_ve_create();
 		TNode *node;
 		int err;
+		uint16_t ve_size;
 
-		err = ti82_recv_VAR((uint16_t *) & ve->size, &ve->type, ve->name);
-		fixup(ve->size);
+		err = ti82_recv_VAR(&ve_size, &ve->type, ve->name);
+		ve->size = ve_size;
 		TRYF(ti82_send_ACK());
 		if (err == ERR_EOT)
 			break;
@@ -337,6 +339,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
   uint16_t unused;
   VarEntry *ve;
   char *utf8;
+  uint16_t ve_size;
 
 	content->model = CALC_TI83;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -354,15 +357,16 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti82_send_REQ((uint16_t)vr->size, vr->type, vr->name));
 	TRYF(ti82_recv_ACK(&unused));
 
-	TRYF(ti82_recv_VAR((uint16_t *) & ve->size, &ve->type, ve->name));
+	TRYF(ti82_recv_VAR(&ve_size, &ve->type, ve->name));
+	ve->size = ve_size;
 	TRYF(ti82_send_ACK());
-	fixup(ve->size);
 
 	TRYF(ti82_send_CTS());
 	TRYF(ti82_recv_ACK(NULL));
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
-	TRYF(ti82_recv_XDP((uint16_t *) & ve->size, ve->data));
+	TRYF(ti82_recv_XDP(&ve_size, ve->data));
+	ve->size = ve_size;
 	TRYF(ti82_send_ACK());
 
 	return 0;
@@ -412,8 +416,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump83, sizeof(uint8_t), romDumpSize83, f);
-	fclose(f);
+	if (fwrite(romDump83, sizeof(uint8_t), romDumpSize83, f) < romDumpSize83)
+	{
+		fclose(f);
+		return ERR_SAVE_FILE;
+	}
+	if (fclose(f))
+		return ERR_SAVE_FILE;
 
 	// Transfer program to calc
 	handle->busy = 0;

@@ -10,6 +10,8 @@ Log:
 - 18/07/2006, version 0.2.4: roms
 	- added ticalcs_probe for Kevin and I. This function is complete because it handles 
 		all of the probing (open/close handle, probe for all/FLASH only devices).
+	- fixed TI-73 ROM dumps (untested, but the previous code definitely didn't work) (kevin)
+	- fixed _FORTIFY_SOURCE and strict-aliasing warnings (kevin)
 
 - 07/07/2006, version 0.2.3: roms
 	- refresh total counter (cnt3) when sending TiGroup file

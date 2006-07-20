@@ -369,9 +369,10 @@ int ti89_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
   int err;
+  uint16_t len;
 
-  err = dbus_recv(handle, &host, &cmd, (uint16_t *) length, data);
-  fixup(*length);
+  err = dbus_recv(handle, &host, &cmd, &len, data);
+  *length = len;
 
   if (cmd != CMD_XDP)
     return ERR_INVALID_CMD;

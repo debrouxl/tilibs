@@ -3,6 +3,7 @@
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -307,6 +308,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   int nvar = 0;
   int err = 0;
   char *utf8;
+  uint16_t ve_size;
 
   snprintf(update_->text, sizeof(update_->text), _("Waiting for var(s)..."));
   update_label();
@@ -326,8 +328,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       if (update_->cancel)
 		return ERR_ABORT;
 
-      err = ti85_recv_VAR((uint16_t *) & (ve->size), &(ve->type), ve->name);
-      fixup(ve->size);
+      err = ti85_recv_VAR(&ve_size, &(ve->type), ve->name);
+      ve->size = ve_size;
     }
     while (err == ERROR_READ_TIMEOUT);
 
@@ -345,7 +347,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);
-    TRYF(ti85_recv_XDP((uint16_t *)(&ve->size), ve->data));
+    TRYF(ti85_recv_XDP(&ve_size, ve->data));
+    ve->size = ve_size;
     TRYF(ti85_send_ACK());
   }
 
@@ -393,8 +396,13 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	f = fopen(prgname, "wb");
 	if (f == NULL)
 		return ERR_FILE_OPEN;
-	fwrite(romDump85, sizeof(unsigned char), romDumpSize85, f);
-	fclose(f);
+	if (fwrite(romDump85, sizeof(unsigned char), romDumpSize85, f) < romDumpSize85)
+	{
+		fclose(f);
+		return ERR_SAVE_FILE;
+	}
+	if (fclose(f))
+		return ERR_SAVE_FILE;
 
 	// Transfer program to calc
 	handle->busy = 0;

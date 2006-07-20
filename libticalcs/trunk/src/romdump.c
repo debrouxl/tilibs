@@ -3,6 +3,7 @@
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -315,7 +316,8 @@ int rom_dump(CalcHandle* h, FILE* f)
 		{
 			// certificate is read protected: skip
 			memset(data, 0xff, length);
-			fwrite(data, length, 1, f);
+			if (fwrite(data, length, 1, f) < 1)
+				return ERR_SAVE_FILE;
 			addr += length;
 			continue;
 		}
@@ -326,7 +328,8 @@ int rom_dump(CalcHandle* h, FILE* f)
 		err = rom_recv_DATA(h, &length, data);
 		if(err) continue;
 
-		fwrite(data, length, 1, f);
+		if (fwrite(data, length, 1, f) < 1)
+			return ERR_SAVE_FILE;
 		addr += length;
 
 		update_->cnt2 = addr;
