@@ -228,10 +228,10 @@ TIEXPORT const unsigned long TICALL ti9x_charset[256] =
  181,
  182,
  183,
- 184,
+ 0x207a,
  185,
  186,
- 0x207a,
+ 187,
  0x2202,
  0x222b,
  0x221e,
@@ -480,7 +480,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti
         *(q++)=173;
         break;
       case 0x207a:
-        *(q++)=187;
+        *(q++)=184;
         break;
       case 0x2202:
         *(q++)=188;

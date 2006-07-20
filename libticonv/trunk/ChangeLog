@@ -7,7 +7,8 @@ Log:
 
 - 07/07/2006, version 0.0.5: roms
 	- added 0x5d0x40 => IDList detokenization (TI84+)
-	- added ticonv_gfe_to_zfe for TiGroup support (ZIP archives don't like greek chars).
+	- added ticonv_gfe_to_zfe for TiGroup support (ZIP archives don't like greek chars)
+	- fixed an error in the 68k charset tables, also one less difference from TI's (kevin)
 
 - 05/06/2006, version 0.0.4: roms
 	- renamed stdints.h into stdints4.h
@@ -16,10 +17,9 @@ Log:
 	- added support of the new TI84+ & TItanium USB hand-helds.
 	- increased SO major number due to API changes
 
-- ??/03/2006, version 0.0.2: kevinkofler
+- 27/03/2006, version 0.0.2: kevinkofler
 	- added iconv.c for an iconv-compatible interface
 
 - 11/02/2006, version 0.0.1: roms
 	- creation of library (idea suggested by Kevin Kofler)
 	- imported code from TiEmu (Kevin's ticonv.c) and tifiles2 (Romain's transcode.c)
-	
