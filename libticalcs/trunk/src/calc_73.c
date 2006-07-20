@@ -45,6 +45,7 @@
 
 #include "dbus_pkt.h"
 #include "cmd73.h"
+#include "rom73.h"
 #include "rom83p.h"
 
 #ifdef __WIN32__
