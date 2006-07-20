@@ -178,7 +178,8 @@ static int search_for_user_in_group(const char *user, const char *group)
     
     while (!feof(f)) 
     {
-	fgets(buffer, 256, f);
+	if (!fgets(buffer, 256, f))
+		break;
 	
 	if (strstr(buffer, group)) 
 	{

@@ -140,7 +140,7 @@ TIEXPORT int TICALL ticables_is_usb_enabled(void)
 	return 0;
 }
 
-extern int usb_probe_devices(unsigned int **list);
+extern int usb_probe_devices(int **list);
 
 /**
  * ticables_get_usb_devices:

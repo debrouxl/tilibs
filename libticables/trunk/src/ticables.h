@@ -221,7 +221,11 @@ struct _CableHandle
 	CableFncts*		cable;	
 	DataRate		rate;	
 
+#if defined(__GNUC__) && (__GNUC__>=4 || (__GNUC__==3 && __GNUC_MINOR__>=3))
+	void*			priv __attribute__((may_alias));	
+#else
 	void*			priv;	
+#endif
 	void*			priv2;	
 	void*			priv3;	
 

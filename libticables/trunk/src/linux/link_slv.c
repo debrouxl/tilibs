@@ -862,13 +862,13 @@ const CableFncts cable_raw =
 //=======================
 
 // returns number of devices and list of PIDs (dynamically allocated)
-TIEXPORT int TICALL usb_probe_devices(unsigned int **list)
+TIEXPORT int TICALL usb_probe_devices(int **list)
 {
 	int i;
 
     TRYC(tigl_enum());
 
-    *list = (unsigned int *)calloc(MAX_CABLES+1, sizeof(int));
+    *list = (int *)calloc(MAX_CABLES+1, sizeof(int));
     for( i =0; i < MAX_CABLES; i++)
         (*list)[i] = tigl_devices[i].pid;
 

@@ -165,16 +165,28 @@ int pkdecomp(const char *filename, int resync)
     fprintf(fo, "TI packet decompiler for D-BUS, version 1.2\n");
 
 	// skip comments
-	fgets(str, sizeof(str), fi);
-	fgets(str, sizeof(str), fi);
-	fgets(str, sizeof(str), fi);
+	if (!fgets(str, sizeof(str), fi)) {
+		ret = -1;
+		goto exit;
+	}
+	if (!fgets(str, sizeof(str), fi)) {
+		ret = -1;
+		goto exit;
+	}
+	if (!fgets(str, sizeof(str), fi)) {
+		ret = -1;
+		goto exit;
+	}
 
 	// read source file
 	for(i = 0; !feof(fi);)
     {
         for(j = 0; j < 16 && !feof(fi); j++)
 		{
-			fscanf(fi, "%02X", &(buffer[i+j]));
+			unsigned int temp;
+			if (fscanf(fi, "%02X", &temp) < 1)
+				break;
+			buffer[i+j] = temp;
 			fgetc(fi);
 		}
         i += j;
