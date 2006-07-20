@@ -202,10 +202,11 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   for (i = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i] = calloc(1, sizeof(VarEntry));
-	uint16_t packet_length;
+	uint16_t packet_length, entry_size;
 
     fread_word(f, &packet_length);
-    fread_word(f, (uint16_t *)&(entry->size));
+    fread_word(f, &entry_size);
+    entry->size = entry_size;
     fread_byte(f, &(entry->type));
     if (is_ti8586(content->model))
       fread_byte(f, &name_length);

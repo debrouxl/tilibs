@@ -148,6 +148,7 @@ int makedir (newdir)
   return 1;
 }
 
+#if 0
 static void do_banner()
 {
     printf("MiniUnz 1.01b, demo of zLib + Unz package written by Gilles Vollant\n");
@@ -165,6 +166,7 @@ static void do_help()
            "  -o  overwrite files without prompting\n" \
            "  -p  extract crypted file using password\n\n");
 }
+#endif /* 0 */
 
 
 int do_list(uf)
@@ -184,7 +186,7 @@ int do_list(uf)
         char filename_inzip[256];
         unz_file_info file_info;
         uLong ratio=0;
-        const char *string_method;
+        const char *string_method="Unkn. ";
         char charCrypt=' ';
         err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
         if (err!=UNZ_OK)

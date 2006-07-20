@@ -189,12 +189,14 @@ local void init_linkedlist(ll)
     ll->first_block = ll->last_block = NULL;
 }
 
+#if 0
 local void free_linkedlist(ll)
     linkedlist_data* ll;
 {
     free_datablock(ll->first_block);
     ll->first_block = ll->last_block = NULL;
 }
+#endif /* 0 */
 
 
 local int add_data_in_datablock(ll,buf,len)

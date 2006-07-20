@@ -46,9 +46,10 @@
 /* TI8X+ FLASH files contains text data. */
 static uint8_t read_byte(FILE * f)
 {
-  int b;
+  unsigned int b;
 
-  fscanf(f, "%02X", &b);
+  if (fscanf(f, "%02X", &b) < 1)
+    b = 0; /* FIXME: 0 is better than random garbage, but real error handling needed! */
   return b;
 }
 

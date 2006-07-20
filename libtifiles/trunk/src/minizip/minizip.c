@@ -127,6 +127,7 @@ int check_exist_file(filename)
     return ret;
 }
 
+#if 0
 static void do_banner()
 {
     printf("MiniZip 1.01b, demo of zLib + Zip package written by Gilles Vollant\n");
@@ -142,6 +143,7 @@ static void do_help()
            "  -1  Compress faster\n" \
            "  -9  Compress better\n\n");
 }
+#endif /* 0 */
 
 /* calculate the CRC32 of a file,
    because to encrypt a file, we need known the CRC32 of the file before */

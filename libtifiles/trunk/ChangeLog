@@ -4,6 +4,8 @@ Run './configure --enable-static=yes --enable-shared=no' for use with
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
 To do:
+- ALWAYS check the return value of ALL file read/write functions. Failing to do
+  so 1. can be dangerous and 2. causes the RPM build to spit out warnings.
 - make tifiles_calc_are_compat more powerful
 - add tifiles_file_is_targetted(filename, model, class) avec class = ALL
 
@@ -14,6 +16,7 @@ Log:
 	Translate filenames again!
 	- for now, use this naming scheme for TI9x var filenames: folder.var.extension
 	- look for the correct module file name on MinGW in tifiles_library_init (kevin)
+	- fixed _FORTIFY_SOURCE and strict-aliasing (and a few harmless) warnings (kevin)
 
 - 06/07/2006, version 0.2.1: roms
 	- bug #1499672: every edit-locked BASIC and AMS program is marked ASM

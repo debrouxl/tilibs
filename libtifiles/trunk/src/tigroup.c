@@ -245,7 +245,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 	unsigned i;
 	void* buf = NULL;
 	const char *password = NULL;
-	int ri =0, fi = 0;
+	int ri = 0;
 
 	// Open ZIP archive
 	uf = unzOpen(filename);
