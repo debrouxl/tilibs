@@ -12,6 +12,7 @@ Log:
 		all of the probing (open/close handle, probe for all/FLASH only devices).
 	- fixed TI-73 ROM dumps (untested, but the previous code definitely didn't work) (kevin)
 	- fixed _FORTIFY_SOURCE and strict-aliasing warnings (kevin)
+	- fixed warnings and bugs in the test program (kevin)
 
 - 07/07/2006, version 0.2.3: roms
 	- refresh total counter (cnt3) when sending TiGroup file

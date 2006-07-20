@@ -100,7 +100,7 @@ static int send_backup(CalcHandle* h)
 	int ret;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 	strcat(filename, ".");
@@ -116,7 +116,7 @@ static int recv_backup(CalcHandle* h)
 	int ret;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 	strcat(filename, ".");
@@ -128,11 +128,11 @@ static int recv_backup(CalcHandle* h)
 
 static int send_var(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
@@ -142,22 +142,22 @@ static int send_var(CalcHandle* h)
 
 static int recv_var(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
-	VarEntry ve = { 0 };
+	VarEntry ve = {};
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
 	printf("Enter folder name: ");
-	ret = scanf("%s", ve.folder);
+	ret = scanf("%1023s", ve.folder);
 	if(ret < 1)
 		return 0;
 
 	printf("Enter variable name: ");
-	ret = scanf("%s", ve.name);
+	ret = scanf("%1023s", ve.name);
 	if(ret < 1)
 		return 0;
 
@@ -167,11 +167,11 @@ static int recv_var(CalcHandle* h)
 
 static int send_var_ns(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
@@ -181,12 +181,12 @@ static int send_var_ns(CalcHandle* h)
 
 static int recv_var_ns(CalcHandle* h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
 	VarRequest *ve;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
@@ -197,7 +197,7 @@ static int recv_var_ns(CalcHandle* h)
 
 static int del_var(CalcHandle* h)
 {
-	VarEntry ve = { 0 };
+	VarEntry ve = {};
 
 	TRYF(ticalcs_calc_del_var(h, &ve));
 	return 0;
@@ -209,7 +209,7 @@ static int send_flash(CalcHandle *h)
 	int ret;
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 	strcat(filename, ".");
@@ -221,17 +221,17 @@ static int send_flash(CalcHandle *h)
 
 static int recv_flash(CalcHandle *h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
-	VarEntry ve = { 0 };
+	VarEntry ve = {};
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
 	printf("Enter application name: ");
-	ret = scanf("%s", ve.name);
+	ret = scanf("%1023s", ve.name);
 	if(ret < 1)
 		return 0;
 
@@ -251,12 +251,11 @@ static int recv_idlist(CalcHandle *h)
 
 static int dump_rom(CalcHandle *h)
 {
-	const char filename[1024] = "";
+	char filename[1024] = "";
 	int ret;
-	VarEntry ve = { 0 };
 
 	printf("Enter filename: ");
-	ret = scanf("%s", filename);
+	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
@@ -282,14 +281,16 @@ static int get_clock(CalcHandle *h)
 
 static int probe_calc(CalcHandle *h)
 {
-	CableModel m;
-	CablePort p;
+	int m;
+	int p;
 	CalcModel model;
 
 	printf("Enter cable & port for probing (c p): ");
-	scanf("%i %i", &m, &p);
+	ret = scanf("%i %i", &m, &p);
+	if(ret < 2)
+		return 0;
 
-	ticalcs_probe(m, p, &model, !0);
+	ticalcs_probe((CableModel)m, (CablePort)p, &model, !0);
 	//ticalcs_probe_calc(h->cable, &model);
 	//ticalcs_probe_usb_calcs(h->cable, &model);
 	printf("Found: <%s>", ticalcs_model_to_string(model));
