@@ -167,7 +167,7 @@ TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
 
 	if(len) *len = i;
 #else
-	*list = (int *)0;
+	*list = calloc(1, sizeof(int));
 	if(len) *len = 0;
 #endif
 
