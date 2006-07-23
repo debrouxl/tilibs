@@ -3,7 +3,7 @@ SubVersion: $Id$
 Log:
 
 - 11/07/2006, version 0.1.3: roms
-	- requires TiglUbs.dll version 3.6 due to Win98/Me/2k fix
+	- requires TiglUsb.dll version 3.6 due to Win98/Me/2k fix
 	- added function to detect whether USB support is available
 		(suggestion of FTP 83+ <webmaster@ftp83plus.net>).
 	- look for the correct module file name on MinGW in ticables_library_init (kevin)
