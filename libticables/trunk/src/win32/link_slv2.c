@@ -88,7 +88,7 @@ static int slv_open(CableHandle *h)
 	int ret;
 
 	// Create an handle on library and retrieve symbols
-	hDLL = LoadLibrary("TIGLUSB.DLL");
+	h->priv = (void *)LoadLibrary("TIGLUSB.DLL");
 	if (hDLL == NULL) 
 	{
 		ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
@@ -180,7 +180,7 @@ static int slv_open(CableHandle *h)
 		return ERR_SLV_FREELIBRARY;
 	}
   
-	ret = hLNK = dynTiglUsbOpen(h->port);
+	h->priv3 = (void *)(ret = dynTiglUsbOpen(h->port));
 	switch (ret) 
 	{
 		case TIGLERR2_DEV_OPEN_FAILED: return ERR_SLV_OPEN;
@@ -201,7 +201,7 @@ static int slv_close(CableHandle *h)
 
     if (hDLL != NULL)
         FreeLibrary(hDLL);
-    hDLL = NULL;
+    h->priv = NULL;
 
 	return 0;
 }
@@ -226,7 +226,7 @@ static int slv_probe(CableHandle *h)
 	if(dynTiglUsbProbe == NULL)
 	{
 		open = !0;
-		hDLL = LoadLibrary("TIGLUSB.DLL");
+		h->priv = (void *)LoadLibrary("TIGLUSB.DLL");
 		if (hDLL == NULL) 
 		{
 			ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));
@@ -275,7 +275,7 @@ static int raw_probe(CableHandle *h)
 	if(dynTiglUsbProbe == NULL)
 	{
 		open = !0;
-		hDLL = LoadLibrary("TIGLUSB.DLL");
+		h->priv = (void *)LoadLibrary("TIGLUSB.DLL");
 		if (hDLL == NULL) 
 		{
 			ticables_warning(_("TiglUsb library not found. Have you installed the TiglUsb driver ?"));

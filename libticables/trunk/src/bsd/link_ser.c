@@ -65,7 +65,9 @@ static int ser_prepare(CableHandle *h)
 
 static int ser_open(CableHandle *h)
 {
-    TRYC(ser_io_open(h->device, (int *)&(h->priv)));
+    int fd;
+    TRYC(ser_io_open(h->device, &fd));
+    h->priv = (void *)fd;
     return 0;
 }
 

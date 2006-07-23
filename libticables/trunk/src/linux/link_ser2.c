@@ -40,7 +40,6 @@
 #define com_out (h->address + 4)
 #define com_in  (h->address + 6)
 
-#define hCom	(HANDLE)(h->priv)
 #define BUFFER_SIZE 1024
 
 static int ser_prepare(CableHandle *h)

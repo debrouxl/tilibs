@@ -70,7 +70,9 @@ static int ser_prepare(CableHandle *h)
 static int ser_reset(CableHandle *h);
 static int ser_open(CableHandle *h)
 {
-    TRYC(ser_io_open(h->device, (int *)&(h->priv)));
+    int fd;
+    TRYC(ser_io_open(h->device, &fd));
+    h->priv = (void *)fd;
     TRYC(ser_reset(h));
 #ifdef OPEN_DELAYED
 	usleep(2000);	// needs this because serial lines can be low at startup

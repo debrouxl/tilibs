@@ -55,7 +55,7 @@ static int gry_open(CableHandle *h)
 	COMMTIMEOUTS cto;
 
 	// Open device
-	hCom = CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
+	h->priv = (void *)CreateFile(h->device, GENERIC_READ | GENERIC_WRITE, 0,
 		    NULL, OPEN_EXISTING, 
 			FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED /*| FILE_FLAG_NO_BUFFERING*/,
 			NULL);

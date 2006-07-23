@@ -69,9 +69,11 @@ static int ser_open(CableHandle *h)
 	// This problem exists with Win2k and some UARTs.
 	// It seems I got the same problem as FlashZ when I changed my 
 	// motherboard. Are some port broken ?
-  	TRYC(win32_comport_open(h->device, &hCom));
-  	TRYC(io_open(com_out));
-  	TRYC(io_open(com_in));
+	HANDLE hcom;
+	TRYC(win32_comport_open(h->device, &hcom));
+	h->priv = (void *)hcom;
+	TRYC(io_open(com_out));
+	TRYC(io_open(com_in));
 
 	TRYC(ser_reset(h));
 #ifdef OPEN_DELAYED
@@ -84,8 +86,12 @@ static int ser_open(CableHandle *h)
 static int ser_close(CableHandle *h)
 {
 	TRYC(io_close(com_out));
-  	TRYC(io_close(com_in));
-	TRYC(win32_comport_close(&hCom));
+	TRYC(io_close(com_in));
+	{
+		HANDLE hcom = hCom;
+		TRYC(win32_comport_close(&hcom));
+		h->priv = (void *)hcom;
+	}
 
 	return 0;
 }
