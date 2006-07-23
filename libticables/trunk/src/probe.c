@@ -154,6 +154,7 @@ extern int usb_probe_devices(int **list);
  **/
 TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
 {
+#if defined(__WIN32__) || (defined(__LINUX__) && defined(HAVE_LIBUSB))
 	int i, *p;
 	int ret = 0;
 
@@ -165,6 +166,9 @@ TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
 		//printf("%i: %04x\n", i, (*list)[i]);
 
 	if(len) *len = i;
+#else
+	if(len) *len = 0;
+#endif
 
 	return 0;
 }

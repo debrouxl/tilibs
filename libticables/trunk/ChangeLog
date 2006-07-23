@@ -10,6 +10,7 @@ Log:
 	- added support of PROBE_FIRST in ticables_probing_do
 	- fixed strict-aliasing, incompatible pointer type and _FORTIFY_SOURCE warnings (kevin)
 	- fixed endianness dependency in Linux/BSD code and lvalue casts in Win32 code (kevin)
+	- fixed unconditional use of USB function reported by Lionel Debroux (kevin)
 
 - 02/07/2006, version 0.1.2: roms
 	- fixed DirectLink issue under Linux (TI84+ only)
