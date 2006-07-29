@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 		fprintf(fo, "\n");
 		//fprintf(so, "\n");
 	}
-	fprintf(fo, "};\nstatic int romDumpSize%s = %i;\n", pat, length);
+	fprintf(fo, "};\nstatic unsigned int romDumpSize%s = %i;\n", pat, length);
 
 	fclose(fi);
 	fclose(fo);

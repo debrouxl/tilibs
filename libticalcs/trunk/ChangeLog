@@ -13,6 +13,7 @@ Log:
 	- fixed TI-73 ROM dumps (untested, but the previous code definitely didn't work) (kevin)
 	- fixed _FORTIFY_SOURCE and strict-aliasing warnings (kevin)
 	- fixed warnings and bugs in the test program (kevin)
+	- fixed "warning C4018: '<' : signed/unsigned mismatch" with MSVC
 
 - 07/07/2006, version 0.2.3: roms
 	- refresh total counter (cnt3) when sending TiGroup file
