@@ -673,19 +673,19 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	
 	if(ret == -ETIMEDOUT) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_TIMEOUT;
 	} 
 	else if(ret == -EPIPE) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	} 
 	else if(ret < 0) 
 	{
-	    ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
 	    nBytesRead = 0;
 	    return ERR_READ_ERROR;
 	}
@@ -707,7 +707,7 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
     // we can't do that in any other way because slv_get_ can returns
     // 1, 2, ..., len bytes.
     for(i = 0; i < len; i++)
-	slv_get_(h, data+i);
+	TRYC(slv_get_(h, data+i));
     
     return 0;
 }
