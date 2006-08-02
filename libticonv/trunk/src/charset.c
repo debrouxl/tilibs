@@ -322,7 +322,8 @@ TIEXPORT char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *ti
         || (*p>=32 && *p<=126)
         || (*p>=161 && *p<=167)
         || (*p>=169 && *p<=172)
-        || (*p>=174 && *p<=186)
+        || (*p>=174 && *p<=183)
+        || (*p>=185 && *p<=187)
         || (*p>=191 && *p<=255)) {
       *(q++)=(unsigned char)*(p++);
     } else switch (*(p++)) {
