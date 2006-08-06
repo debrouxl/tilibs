@@ -447,7 +447,7 @@ TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *sr
 
 	if(model == CALC_TI84P_USB)
 	{
-		ti = ticonv_varname_detokenize(model, src);
+		ti = ticonv_varname_detokenize(CALC_TI84P, src);
 
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P, ti);
 		g_free(ti);
@@ -465,7 +465,7 @@ TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *sr
 	else
 		dst = g_strdup(src);
 	
-	return g_strdup(src);
+	return dst;
 }
 
 /**
