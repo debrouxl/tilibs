@@ -93,7 +93,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     return ERR_INVALID_FILE;
   fread_word(f, NULL);
   fread_8_chars(f, default_folder);
-  ticonv_varname_from_tifile_s(content->model, default_folder, content->default_folder);
+  ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder);
   strcpy(current_folder, content->default_folder);
   fread_n_chars(f, 40, content->comment);
   fread_word(f, &tmp);
@@ -112,7 +112,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
     fread_long(f, &curr_offset);
     fread_8_chars(f, varname);
-	ticonv_varname_from_tifile_s(content->model, varname, entry->name);
+	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name);
     fread_byte(f, &(entry->type));
     fread_byte(f, &(entry->attr));
     entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
@@ -382,15 +382,15 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   {
     filename = (char *) malloc(8+1+8+1+3+1);
 	
-	ticonv_varname_to_filename_s(content->model, content->entries[0]->folder, basename);	
+	ticonv_varname_to_filename_s(content->model_dst, content->entries[0]->folder, basename);	
     strcpy(filename, basename);
     strcat(filename, ".");
 	
-	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
+	ticonv_varname_to_filename_s(content->model_dst, content->entries[0]->name, basename);
     strcat(filename, basename);
     strcat(filename, ".");
 
-    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
+    strcat(filename, tifiles_vartype2fext(content->model_dst, content->entries[0]->type));
     if (real_fname != NULL)
       *real_fname = strdup(filename);
   }

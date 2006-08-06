@@ -37,10 +37,9 @@
 
 /**
  * tifiles_content_create_regular:
- * @model: a calculator model or CALC_NONE.
+ * @model: a calculator model (required).
  *
- * Allocates a #FileContent structure. Note: the calculator model is not required
- * if the content is used for file reading but is compulsory for file writing.
+ * Allocates a #FileContent structure.
  *
  * Return value: the allocated block.
  **/
@@ -48,7 +47,7 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = calloc(1, sizeof(FileContent));
 
-	content->model = model;
+	content->model = content->model_dst = model;
 	strcpy(content->comment, tifiles_comment_set_single());
 
 	return content;

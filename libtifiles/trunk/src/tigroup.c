@@ -172,7 +172,7 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
 {
 	TigContent* content = calloc(1, sizeof(FileContent));
 
-	content->model = model;
+	content->model = content->model_dst = model;
 	content->comment = strdup(tifiles_comment_set_tigroup());
 	content->comp_level = 3;
 	content->num_entries = n;

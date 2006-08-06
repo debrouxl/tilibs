@@ -211,7 +211,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     if (is_ti8586(content->model))
       fread_byte(f, &name_length);
     fread_n_chars(f, name_length, varname);
-	ticonv_varname_from_tifile_s(content->model, varname, entry->name);
+	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name);
 	if((content->model == CALC_TI86) && padded86)
 		fskip(f, 8 - name_length);
     if (ti83p_flag) 
@@ -518,7 +518,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-	ticonv_varname_to_filename_s(content->model, content->entries[0]->name, basename);
+	ticonv_varname_to_filename_s(content->model_dst, content->entries[0]->name, basename);
 
     filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
     strcpy(filename, basename);
@@ -592,7 +592,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     fwrite_word(f, packet_length);
     fwrite_word(f, (uint16_t)entry->size);
     fwrite_byte(f, entry->type);
-	ticonv_varname_to_tifile_s(content->model, entry->name, varname);
+	ticonv_varname_to_tifile_s(content->model_dst, entry->name, varname);
     if (is_ti8586(content->model)) 
 	{
       name_length = strlen(varname);

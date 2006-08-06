@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.2.1"
+# define LIBFILES_VERSION "0.2.3"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -158,6 +158,8 @@ typedef struct
   VarEntry**	entries;
 
   uint16_t		checksum;
+
+  CalcModel		model_dst;
 
 } FileContent;
 
@@ -327,6 +329,8 @@ typedef struct
 
   int				num_entries;
   TigEntry**		entries;
+
+  CalcModel			model_dst;
 
 } TigContent;
 
