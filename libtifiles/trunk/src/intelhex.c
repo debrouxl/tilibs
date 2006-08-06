@@ -31,7 +31,6 @@
 #include "macros.h"
 #include "intelhex.h"
 #include "export2.h"
-#include "logging.h"
 
 /* Constants */
 
@@ -45,9 +44,13 @@
 
 
 /* TI8X+ FLASH files contains text data. */
-static int read_byte(FILE * f, uint8_t *b)
+static uint8_t read_byte(FILE * f)
 {
-	return (fscanf(f, "%02X", b) < 1) ? -1 : 0;
+  unsigned int b;
+
+  if (fscanf(f, "%02X", &b) < 1)
+    b = 0; /* FIXME: 0 is better than random garbage, but real error handling needed! */
+  return b;
 }
 
 /*
@@ -63,33 +66,22 @@ static int read_byte(FILE * f, uint8_t *b)
 	- ': 00 0000 01 FF'
 	- ': 02 0000 02 0000 FC'
 
-	Returns : 0 if success, a negative value otherwise:
-		-1: stream error
-		-2: bad size
-		-3: bad checksum
-		-4: semicolon not found
-		-5: end of file
+	Returns : 0 if success, a negative value otherwise.
 */
 static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
   int c, i;
   uint8_t sum, checksum;
-  uint8_t tmp;
 
   sum = 0;
   c = fgetc(f);
-  if(c == EOF)
-  {
-    *type = HEX_EOF;
-    return 0;
-  }
-  else if (c != ':')
-    return -4;
+  if (c != ':')
+    return -1;
 
-  TRYC(read_byte(f, size));
-  TRYC(read_byte(f, &tmp)); *addr = tmp << 8;
-  TRYC(read_byte(f, &tmp)); *addr |= tmp;
-  TRYC(read_byte(f, type));
+  *size = read_byte(f);
+  *addr = read_byte(f) << 8;
+  *addr |= read_byte(f);
+  *type = read_byte(f);
 
   if(*size > PKT_MAX)
 	  return -2;
@@ -98,18 +90,17 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 
   for (i = 0; i < *size; i++) 
   {
-    TRYC(read_byte(f, data + i));
+    data[i] = read_byte(f);
     sum += data[i];
   }
 
-  TRYC(read_byte(f, &checksum));
+  checksum = read_byte(f);	// verify checksum of block
   if (LSB(sum + checksum))
     return -3;
 
   c = fgetc(f);
   if (c == '\r')
     c = fgetc(f);		// skip \r\n (Win32) or \n (Linux)  
-
   if ((c == EOF) || (c == ' ')) 
   {	
 	// end of file
@@ -132,12 +123,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	Read a data block (page or segment) from FLASH file. 
 	If all args are set to NULL, this resets the parser.
 
-	Returns : 0 if success, a negative value otherwise:
-		-1: stream error
-		-2: bad size
-		-3: bad checksum
-		-4: semicolon not found
-		-5: end of file
+	Returns : 0 if success, EOF if end of file has been reached.
 */
 int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page)
 {
@@ -210,7 +196,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_EOF: 
 			// end of file
-			return -5;
+			return EOF;
 
 		default: 
 			return -1;
@@ -253,9 +239,10 @@ TIEXPORT int TICALL test_hex_read(void)
 }
 #endif
 
-static int write_byte(FILE * f, uint8_t b)
+static int write_byte(uint8_t b, FILE * f)
 {
-	return fprintf(f, "%02X", b);
+  fprintf(f, "%02X", b);
+  return 2;
 }
 
 /*
@@ -271,37 +258,30 @@ static int write_byte(FILE * f, uint8_t b)
 	- ': 00 0000 01 FF'
 	- ': 02 0000 02 0000 FC'
 
-	Returns : number of chars written to file or -1 if error.
+	Returns : number of chars written to file.
 */
 static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, uint8_t *data)
 {
   int i;
   int sum;
   int num = 0;
-  int ret;
 
   fputc(':', f); num++;
-  ret = write_byte(f, (uint8_t)size);
-  if(ret < 0) return ret; num += ret;
-  ret = write_byte(f, MSB(addr));
-  if(ret < 0) return ret; num += ret;
-  ret = write_byte(f, LSB(addr));
-  if(ret < 0) return ret; num += ret;
-  ret = write_byte(f, type);
-  if(ret < 0) return ret; num += ret;
+  num += write_byte((uint8_t)size, f);
+  num += write_byte(MSB(addr), f);
+  num += write_byte(LSB(addr), f);
+  num += write_byte(type, f);
 
   sum = size + MSB(addr) + LSB(addr) + type;
   for (i = 0; i < size; i++) 
   {
-	  ret = write_byte(f, data[i]);
-	  if(ret < 0) return ret; num += ret;
-      sum += data[i];
+    num += write_byte(data[i], f);
+    sum += data[i];
   }
 
-  ret = write_byte(f, (uint8_t)(0x100 - LSB(sum)));
-  if(ret < 0) return ret; num += ret;
+  num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
 
-  fputc(0x0D, f); num++;	// CR
+  fputc(0x0D, f);	num++;	// CR
   fputc(0x0A, f); num++;	// LF
 
   return num;
@@ -318,7 +298,7 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, 
 
 	Write a data block (page/segment) to FLASH file. 
 
-	Returns : number of chars written to file or -1 if error
+	Returns : number of chars written to file.
 */
 int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t *data, uint16_t page)
 {
@@ -328,7 +308,6 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	int r = size % PKT_MAX;
 	uint8_t buf[3];
 	int  new_section = 0;
-	int ret;
 
 	// write end block
 	if(!size && !addr && !type && !data && !page)
@@ -341,8 +320,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	if(old_flag != type)
 	{
 		old_flag = type;
-		ret = hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
-		if(ret < 0) return ret;	bytes_written += ret;
+		bytes_written += hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
 	}
 
 	// write page
@@ -354,26 +332,19 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	{
 		buf[0] = page >> 8;
 		buf[1] = page & 0xff;
-		ret = hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
-		if(ret < 0) return ret;	bytes_written += ret;
+		bytes_written += hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
 		new_section = 0;
 	}
 
 	// write a block (=page)
 	for(i = 0; i < n * PKT_MAX; i += PKT_MAX)
-	{
-		ret = hex_packet_write(f, 
+		bytes_written += hex_packet_write(f, 
 		PKT_MAX, 
 		(uint16_t)(addr + i), 
 		HEX_DATA, 
 		data + i);
-		if(ret < 0) return ret;	bytes_written += ret;
-	}
 	if(r > 0)
-	{
-		ret = hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
-		if(ret < 0) return ret;	bytes_written += ret;
-	}
+		bytes_written += hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
 	
 	return bytes_written;
 }
