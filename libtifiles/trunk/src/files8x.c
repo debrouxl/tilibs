@@ -434,7 +434,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 
 		  // read FLASH pages
 		  content->data_length = 0;
-			for(i = 0, ret = 0; !ret; i++)
+			for(i = 0;; i++)
 			{
 				uint16_t size;
 				uint16_t addr;
@@ -444,8 +444,11 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				FlashPage* fp = content->pages[i] = calloc(1, sizeof(FlashPage));
 
 				ret = hex_block_read(f, &size, &addr, &flag, data, &page);
-				printf("ret = %i\n", ret);
-				if(ret == -5) break; else if(ret < 0) return ERR_BAD_FILE;				
+				if(ret == -5) 
+				{
+					free(content->pages[i]);
+					break; 
+				} else if(ret < 0) return ERR_BAD_FILE;				
 
 				fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);
 				memset(fp->data, 0xff, PAGE_SIZE);

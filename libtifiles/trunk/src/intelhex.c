@@ -132,7 +132,12 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	Read a data block (page or segment) from FLASH file. 
 	If all args are set to NULL, this resets the parser.
 
-	Returns : 0 if success, EOF if end of file has been reached.
+	Returns : 0 if success, a negative value otherwise:
+		-1: stream error
+		-2: bad size
+		-3: bad checksum
+		-4: semicolon not found
+		-5: end of file
 */
 int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page)
 {
