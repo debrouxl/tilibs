@@ -68,6 +68,7 @@ static int read_byte(FILE * f, uint8_t *b)
 		-2: bad size
 		-3: bad checksum
 		-4: semicolon not found
+		-5: end of file
 */
 static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
@@ -77,7 +78,12 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 
   sum = 0;
   c = fgetc(f);
-  if (c != ':')
+  if(c == EOF)
+  {
+    *type = HEX_EOF;
+    return 0;
+  }
+  else if (c != ':')
     return -4;
 
   TRYC(read_byte(f, size));
@@ -103,6 +109,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
   c = fgetc(f);
   if (c == '\r')
     c = fgetc(f);		// skip \r\n (Win32) or \n (Linux)  
+
   if ((c == EOF) || (c == ' ')) 
   {	
 	// end of file
@@ -198,7 +205,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_EOF: 
 			// end of file
-			return EOF;
+			return -5;
 
 		default: 
 			return -1;
