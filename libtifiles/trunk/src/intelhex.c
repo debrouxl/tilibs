@@ -31,6 +31,7 @@
 #include "macros.h"
 #include "intelhex.h"
 #include "export2.h"
+#include "logging.h"
 
 /* Constants */
 
@@ -44,13 +45,9 @@
 
 
 /* TI8X+ FLASH files contains text data. */
-static uint8_t read_byte(FILE * f)
+static int read_byte(FILE * f, uint8_t *b)
 {
-  unsigned int b;
-
-  if (fscanf(f, "%02X", &b) < 1)
-    b = 0; /* FIXME: 0 is better than random garbage, but real error handling needed! */
-  return b;
+	return (fscanf(f, "%02X", b) < 1) ? -1 : 0;
 }
 
 /*
@@ -66,22 +63,27 @@ static uint8_t read_byte(FILE * f)
 	- ': 00 0000 01 FF'
 	- ': 02 0000 02 0000 FC'
 
-	Returns : 0 if success, a negative value otherwise.
+	Returns : 0 if success, a negative value otherwise:
+		-1: stream error
+		-2: bad size
+		-3: bad checksum
+		-4: semicolon not found
 */
 static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
   int c, i;
   uint8_t sum, checksum;
+  uint8_t tmp;
 
   sum = 0;
   c = fgetc(f);
   if (c != ':')
-    return -1;
+    return -4;
 
-  *size = read_byte(f);
-  *addr = read_byte(f) << 8;
-  *addr |= read_byte(f);
-  *type = read_byte(f);
+  TRYC(read_byte(f, size));
+  TRYC(read_byte(f, &tmp)); *addr = tmp << 8;
+  TRYC(read_byte(f, &tmp)); *addr |= tmp;
+  TRYC(read_byte(f, type));
 
   if(*size > PKT_MAX)
 	  return -2;
@@ -90,11 +92,11 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 
   for (i = 0; i < *size; i++) 
   {
-    data[i] = read_byte(f);
+    TRYC(read_byte(f, data + i));
     sum += data[i];
   }
 
-  checksum = read_byte(f);	// verify checksum of block
+  TRYC(read_byte(f, &checksum));
   if (LSB(sum + checksum))
     return -3;
 
