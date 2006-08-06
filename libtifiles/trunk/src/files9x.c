@@ -38,7 +38,6 @@
 #include "typesxx.h"
 #include "files9x.h"
 #include "rwfile.h"
-#include "transcode.h"
 
 #ifndef DISABLE_TI9X
 
