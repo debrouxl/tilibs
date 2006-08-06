@@ -351,7 +351,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 			{
 				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
-				tifiles_file_read_regular(filename, entry->content.regular);
+				TRYC(tifiles_file_read_regular(filename, entry->content.regular));
 				content->entries[ri++] = entry;
 				content->num_entries++;
 			}
@@ -359,7 +359,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 			{
 				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
 
-				tifiles_file_read_flash(filename, entry->content.flash);
+				TRYC(tifiles_file_read_flash(filename, entry->content.flash));
 				content->entries[ri++] = entry;
 				content->num_entries++;
 			}

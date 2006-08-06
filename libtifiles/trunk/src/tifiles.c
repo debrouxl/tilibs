@@ -126,19 +126,3 @@ TIEXPORT const char *TICALL tifiles_version_get(void)
 {
 	return LIBFILES_VERSION;
 }
-
-int tve = CALC_NONE;
-
-/**
- * tifiles_set_tve:
- *
- * Set the Ti-File Varname Encoding (TVE) for varname translation.
- * Needed by USB hand-helds (TI-files use raw varname, USB hand-helds use UTF-8).
- * By default, encoding is set to raw (no translation).
- *
- * Return value: a string.
- **/
-TIEXPORT void TICALL tifiles_set_tve(CalcModel model)
-{
-	tve = model;
-}

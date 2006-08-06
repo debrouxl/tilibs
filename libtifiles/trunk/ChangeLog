@@ -6,8 +6,6 @@ ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 To do:
 - ALWAYS check the return value of ALL file read/write functions. Failing to do
   so 1. can be dangerous and 2. causes the RPM build to spit out warnings.
-- make tifiles_calc_are_compat more powerful
-- add tifiles_file_is_targetted(filename, model, class) avec class = ALL
 
 Log:
 
