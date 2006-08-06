@@ -241,10 +241,9 @@ TIEXPORT int TICALL test_hex_read(void)
 }
 #endif
 
-static int write_byte(uint8_t b, FILE * f)
+static int write_byte(FILE * f, uint8_t b)
 {
-  fprintf(f, "%02X", b);
-  return 2;
+	return fprintf(f, "%02X", b);
 }
 
 /*
@@ -260,30 +259,37 @@ static int write_byte(uint8_t b, FILE * f)
 	- ': 00 0000 01 FF'
 	- ': 02 0000 02 0000 FC'
 
-	Returns : number of chars written to file.
+	Returns : number of chars written to file or -1 if error.
 */
 static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, uint8_t *data)
 {
   int i;
   int sum;
   int num = 0;
+  int ret;
 
   fputc(':', f); num++;
-  num += write_byte((uint8_t)size, f);
-  num += write_byte(MSB(addr), f);
-  num += write_byte(LSB(addr), f);
-  num += write_byte(type, f);
+  ret = write_byte(f, (uint8_t)size);
+  if(ret < 0) return ret; num += ret;
+  ret = write_byte(f, MSB(addr));
+  if(ret < 0) return ret; num += ret;
+  ret = write_byte(f, LSB(addr));
+  if(ret < 0) return ret; num += ret;
+  ret = write_byte(f, type);
+  if(ret < 0) return ret; num += ret;
 
   sum = size + MSB(addr) + LSB(addr) + type;
   for (i = 0; i < size; i++) 
   {
-    num += write_byte(data[i], f);
-    sum += data[i];
+	  ret = write_byte(f, data[i]);
+	  if(ret < 0) return ret; num += ret;
+      sum += data[i];
   }
 
-  num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
+  ret = write_byte(f, (uint8_t)(0x100 - LSB(sum)));
+  if(ret < 0) return ret; num += ret;
 
-  fputc(0x0D, f);	num++;	// CR
+  fputc(0x0D, f); num++;	// CR
   fputc(0x0A, f); num++;	// LF
 
   return num;
@@ -300,7 +306,7 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, 
 
 	Write a data block (page/segment) to FLASH file. 
 
-	Returns : number of chars written to file.
+	Returns : number of chars written to file or -1 if error
 */
 int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t *data, uint16_t page)
 {
@@ -310,6 +316,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	int r = size % PKT_MAX;
 	uint8_t buf[3];
 	int  new_section = 0;
+	int ret;
 
 	// write end block
 	if(!size && !addr && !type && !data && !page)
@@ -322,7 +329,8 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	if(old_flag != type)
 	{
 		old_flag = type;
-		bytes_written += hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
+		ret = hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
+		if(ret < 0) return ret;	bytes_written += ret;
 	}
 
 	// write page
@@ -334,19 +342,26 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	{
 		buf[0] = page >> 8;
 		buf[1] = page & 0xff;
-		bytes_written += hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
+		ret = hex_packet_write(f, 2, 0x0000, HEX_PAGE, buf);
+		if(ret < 0) return ret;	bytes_written += ret;
 		new_section = 0;
 	}
 
 	// write a block (=page)
 	for(i = 0; i < n * PKT_MAX; i += PKT_MAX)
-		bytes_written += hex_packet_write(f, 
+	{
+		ret = hex_packet_write(f, 
 		PKT_MAX, 
 		(uint16_t)(addr + i), 
 		HEX_DATA, 
 		data + i);
+		if(ret < 0) return ret;	bytes_written += ret;
+	}
 	if(r > 0)
-		bytes_written += hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
+	{
+		ret = hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
+		if(ret < 0) return ret;	bytes_written += ret;
+	}
 	
 	return bytes_written;
 }
