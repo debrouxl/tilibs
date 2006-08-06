@@ -356,6 +356,7 @@ static int shift(int v)
 		return v-1; 
 }
 
+//FIXME: does not work with named list because we should pass the vartype, too
 TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
 {
 	const unsigned char *src = (const unsigned char *)src_;
