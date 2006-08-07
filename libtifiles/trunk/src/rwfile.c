@@ -269,7 +269,7 @@ int fskip(FILE * f, int n)
 int fread_byte(FILE * f, uint8_t * data)
 {
   if (data != NULL)
-	  return (fread((void *) data, sizeof(uint8_t), 1, f) < sizeof(uint8_t)) ? -1 : 0;
+	  return (fread((void *) data, sizeof(uint8_t), 1, f) < 1) ? -1 : 0;
   else
     return fskip(f, 1);
 
@@ -282,7 +282,7 @@ int fread_word(FILE * f, uint16_t * data)
 
   if (data != NULL)
   {
-	  ret = (fread((void *) data, sizeof(uint16_t), 1, f) < sizeof(uint16_t)) ? -1 : 0;
+	  ret = (fread((void *) data, sizeof(uint16_t), 1, f) < 1) ? -1 : 0;
 	*data = GUINT16_FROM_LE(*data);
   }
   else
@@ -297,7 +297,7 @@ int fread_long(FILE * f, uint32_t * data)
 
   if (data != NULL)
   {
-	  ret = (fread((void *) data, sizeof(uint32_t), 1, f) < sizeof(uint32_t)) ? -1 : 0;
+	  ret = (fread((void *) data, sizeof(uint32_t), 1, f) < 1) ? -1 : 0;
 	*data = GUINT32_FROM_LE(*data);
   }
   else

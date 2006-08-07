@@ -117,6 +117,15 @@ TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
 			NULL);
 		break;
 
+	case ERR_FILE_IO:
+		*message = g_strconcat(
+			_("Msg: I/O file error."),
+			"\n",
+			_("Cause: file is corrupted or invalid."),
+			NULL);
+		break;
+
+
 	default:
 		// propagate error code
 		return number;
