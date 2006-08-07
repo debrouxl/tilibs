@@ -123,7 +123,7 @@ int hexdump(uint8_t * ptr, int len)
    Read a block of 'n' n bytes from a file
    - s [out]: a buffer for storing the data
    - f [in]: a file descriptor
-   - [out]: the result of the operation (0 if failed)
+   - [out]: -1 if error, 0 otherwise.
 */
 int fread_n_bytes(FILE * f, int n, char *s)
 {
@@ -148,14 +148,15 @@ int fread_n_bytes(FILE * f, int n, char *s)
   Write a string of 'n' chars max (NULL padded) to a file
   - s [in]: a string
   - f [in]: a file descriptor
-  - [out]: always different of 0
+  - [out]: -1 if error, 0 otherwise.
 */
 int fwrite_n_bytes(FILE * f, int n, const char *s)
 {
   int i;
 
   for (i = 0; i < n; i++)
-    fputc(s[i], f);
+    if(fputc(s[i], f) == EOF)
+		return -1;
 
   return 0;
 }
@@ -165,7 +166,7 @@ int fwrite_n_bytes(FILE * f, int n, const char *s)
    Read a string of 'n' chars max from a file
    - s [out]: a buffer for storing the string
    - f [in]: a file descriptor
-   - [out]: the result of the operation (0 if failed)
+   - [out]: -1 if error, 0 otherwise.
 */
 int fread_n_chars(FILE * f, int n, char *s)
 {
@@ -173,6 +174,7 @@ int fread_n_chars(FILE * f, int n, char *s)
 	int ret;
 	
 	ret = fread_n_bytes(f, n, s);
+	if(!ret) return ret;
 
 	if(s != NULL)
 	{	
@@ -181,14 +183,14 @@ int fread_n_chars(FILE * f, int n, char *s)
 			s[i] = '\0';
 	}
 
-	return ret;
+	return 0;
 }
 
 /*
   Write a string of 'n' chars max (NULL padded) to a file
   - s [in]: a string
   - f [in]: a file descriptor
-  - [out]: always different of 0
+  - [out]: -1 if error, 0 otherwise.
 */
 int fwrite_n_chars(FILE * f, int n, const char *s)
 {
@@ -205,9 +207,11 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
   }
 
   for (i = 0; i < l; i++)
-    fputc(s[i], f);
+    if(fputc(s[i], f) == EOF)
+		return -1;
   for (i = l; i < n; i++) 
-    fputc(0x00, f);
+    if(fputc(0x00, f) == EOF)
+		return -1;
 
   return 0;
 }
@@ -216,7 +220,7 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
   Write a string of 'n' chars max (SPC padded) to a file
   - s [in]: a string
   - f [in]: a file descriptor
-  - [out]: always different of 0
+  - [out]: -1 if error, 0 otherwise.
 */
 int fwrite_n_chars2(FILE * f, int n, const char *s)
 {
@@ -233,9 +237,11 @@ int fwrite_n_chars2(FILE * f, int n, const char *s)
   }
 
   for (i = 0; i < l; i++)
-    fputc(s[i], f);
+    if(fputc(s[i], f) == EOF)
+		return -1;
   for (i = l; i < n; i++) 
-    fputc(0x20, f);
+    if(fputc(0x20, f) == EOF)
+		return -1;
 
   return 0;
 }
@@ -263,9 +269,9 @@ int fskip(FILE * f, int n)
 int fread_byte(FILE * f, uint8_t * data)
 {
   if (data != NULL)
-    return fread((void *) data, sizeof(uint8_t), 1, f);
+	  return (fread((void *) data, sizeof(uint8_t), 1, f) < sizeof(uint8_t)) ? -1 : 0;
   else
-    fskip(f, 1);
+    return fskip(f, 1);
 
   return 0;
 }
@@ -273,13 +279,14 @@ int fread_byte(FILE * f, uint8_t * data)
 int fread_word(FILE * f, uint16_t * data)
 {
   int ret = 0;
+
   if (data != NULL)
   {
-    ret = fread((void *) data, sizeof(uint16_t), 1, f);
+	  ret = (fread((void *) data, sizeof(uint16_t), 1, f) < sizeof(uint16_t)) ? -1 : 0;
 	*data = GUINT16_FROM_LE(*data);
   }
   else
-    fskip(f, 2);
+    ret = fskip(f, 2);
 
   return ret;
 }
@@ -287,13 +294,14 @@ int fread_word(FILE * f, uint16_t * data)
 int fread_long(FILE * f, uint32_t * data)
 {
   int ret = 0;
+
   if (data != NULL)
   {
-    ret = fread((void *) data, sizeof(uint32_t), 1, f);
+	  ret = (fread((void *) data, sizeof(uint32_t), 1, f) < sizeof(uint32_t)) ? -1 : 0;
 	*data = GUINT32_FROM_LE(*data);
   }
   else
-    fskip(f, 4);
+    ret = fskip(f, 4);
 
   return ret;
 }
@@ -304,17 +312,17 @@ int fread_long(FILE * f, uint32_t * data)
 
 int fwrite_byte(FILE * f, uint8_t data)
 {
-  return fwrite(&data, sizeof(uint8_t), 1, f);
+	return (fwrite(&data, sizeof(uint8_t), 1, f) < sizeof(uint8_t)) ? -1 : 0;
 }
 
 int fwrite_word(FILE * f, uint16_t data)
 {
 	data = GUINT16_TO_LE(data);
-  return fwrite(&data, sizeof(uint16_t), 1, f);
+	return (fwrite(&data, sizeof(uint16_t), 1, f) < sizeof(uint16_t)) ? -1 : 0;
 }
 
 int fwrite_long(FILE * f, uint32_t data)
 {
 	data = GUINT32_TO_LE(data);
-  return fwrite(&data, sizeof(uint32_t), 1, f);
+  return (fwrite(&data, sizeof(uint32_t), 1, f) < sizeof(uint32_t)) ? -1 : 0;
 }
