@@ -11,6 +11,7 @@ Log:
 
 - 06/08/2006, version 0.2.3: roms
 	- target hand-held is passed by tifiles_content_create_xxxx
+	- fortified tigroup.c
 
 - 12/07/2006, version 0.2.2: roms
 	- variables like 'beta' can't be handled by TiGroup file nor ZIP archives.

@@ -350,16 +350,22 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 			if(tifiles_file_is_regular(filename))
 			{
 				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				int ret;
 
-				TRYC(tifiles_file_read_regular(filename, entry->content.regular));
+				ret = tifiles_file_read_regular(filename, entry->content.regular);
+				if(ret) { free(entry); unlink(filename); g_free(filename); goto tfrt_exit; }
+
 				content->entries[ri++] = entry;
 				content->num_entries++;
 			}
 			else if(tifiles_file_is_flash(filename))
 			{
 				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				int ret;
 
-				TRYC(tifiles_file_read_flash(filename, entry->content.flash));
+				ret = tifiles_file_read_flash(filename, entry->content.flash);
+				if(ret) { free(entry); unlink(filename); g_free(filename); goto tfrt_exit; }
+
 				content->entries[ri++] = entry;
 				content->num_entries++;
 			}
@@ -381,7 +387,6 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 				goto tfrt_exit;
 			}
 		}
-
 	}	
 
 	// Close
