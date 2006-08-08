@@ -114,6 +114,22 @@ TIEXPORT int TICALL tifiles_is_flash(CalcModel calc_type)
 	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB));
 }
 
+/**
+ * tifiles_has_backup:
+ * @model: a calculator model.
+ *
+ * Returns TRUE if the calculator supports true backup.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT int TICALL tifiles_has_backup(CalcModel calc_type)
+{
+  return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
+	  (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
+	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI85) ||
+	  (calc_type == CALC_TI86) || (calc_type == CALC_TI92) || 
+	  (calc_type == CALC_TI84P_USB) || (calc_type == CALC_TI89T_USB));
+}
 
 /**
  * tifiles_checksum:

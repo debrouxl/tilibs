@@ -419,6 +419,7 @@ extern "C" {
 
   TIEXPORT int TICALL tifiles_has_folder (CalcModel model);
   TIEXPORT int TICALL tifiles_is_flash (CalcModel model);
+  TIEXPORT int TICALL tifiles_has_backup(CalcModel model);
 
   TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size);
   TIEXPORT int             tifiles_hexdump(uint8_t* ptr, unsigned int length);
