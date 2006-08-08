@@ -141,8 +141,8 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
 	update_->max3 = nvars + napps;
 	update_->pbar();
 
-	if(handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
-		handle->model == CALC_TI89T ||handle->model == CALC_V200)
+	if((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
+		handle->model == CALC_TI89T || handle->model == CALC_V200) && (mode & TIG_BACKUP))
 	{
 		// erase memory
 		TRYF(ti89_send_VAR(0, TI89_BKUP, "main"));

@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.2.4"
+# define LIBCALCS_VERSION "0.2.5"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -269,6 +269,7 @@ typedef enum
 	TIG_RAM		= (1 << 0),
 	TIG_ARCHIVE = (1 << 1),
 	TIG_FLASH	= (1 << 2),
+	TIG_BACKUP	= (1 << 3),
 	TIG_ALL		= 7,
 } TigMode;
 
