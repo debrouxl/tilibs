@@ -24,8 +24,8 @@
 
 FILE* gfopen (const char *filename, const char *mode);
 
-int fread_n_bytes(FILE * f, int n, char *s);
-int fwrite_n_bytes(FILE * f, int n, const char *s);
+int fread_n_bytes(FILE * f, int n, uint8_t *s);
+int fwrite_n_bytes(FILE * f, int n, const uint8_t *s);
 
 int fread_n_chars(FILE * f, int n, char *s);
 int fwrite_n_chars(FILE * f, int n, const char *s);
