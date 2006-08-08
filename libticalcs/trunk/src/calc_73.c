@@ -395,6 +395,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	FlashContent *ptr;
 	int i, j, k;
 	int size;
+	char *utf8;
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -424,6 +425,14 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 	return 0;
 #endif
+
+	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
+	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
+
+	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
+	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
 
 	update_->cnt2 = 0;
 	update_->max2 = ptr->data_length;
