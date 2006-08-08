@@ -144,7 +144,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
       if(fseek(f, curr_offset, SEEK_SET)) goto tffr;
       if(fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
-      if(fread(entry->data, entry->size, 1, f) < entry->size) goto tffr;
+      if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
 
       if(fread_word(f, &checksum) < 0) goto tffr;
       if(fseek(f, cur_pos, SEEK_SET)) goto tffr;
@@ -298,7 +298,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			return ERR_MALLOC;
 		}
 
-		if(fread(content->data_part, content->data_length, 1, f) < content->data_length) goto tfrf;
+		if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 		switch(content->data_part[8])
 		{
 		case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
@@ -340,7 +340,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 				return ERR_MALLOC;
 			}
 
-			if(fread(content->data_part, content->data_length, 1, f) < content->data_length) goto tfrf;
+			if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 			content->next = NULL;
 
 			// check for end of file
