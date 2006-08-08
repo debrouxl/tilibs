@@ -344,7 +344,8 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			content->next = NULL;
 
 			// check for end of file
-			if(fread_8_chars(f, signature) < 0) goto tfrf;
+			if(fread_8_chars(f, signature) < 0)
+				break;
 			if(strcmp(signature, "**TIFL**") || feof(f))
 				break;
 			if(fseek(f, -8, SEEK_CUR)) goto tfrf;
