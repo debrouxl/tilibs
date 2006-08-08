@@ -502,7 +502,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
       uint16_t sum;
 
       if(fwrite_long(f, 0) < 0) goto tfwr;
-      if(fwrite(entry->data, entry->size, 1, f) < entry->size) goto tfwr;
+      if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
       sum = tifiles_checksum(entry->data, entry->size);
       if(fwrite_word(f, sum) < 0) goto tfwr;
     }
@@ -604,7 +604,7 @@ int ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
     if(fwrite_byte(f, content->data_type) < 0) goto tfwf;
     if(fwrite_n_chars(f, 24, "") < 0) goto tfwf;
     if(fwrite_long(f, content->data_length) < 0) goto tfwf;
-    if(fwrite(content->data_part, content->data_length, 1, f) < content->data_length) goto tfwf;
+    if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
   }
 
   fclose(f);
