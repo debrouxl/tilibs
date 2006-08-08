@@ -3,11 +3,12 @@ SubVersion: $Id$
 Run './configure --enable-static=yes --enable-shared=no' for use with 
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
-for (i = 0; i < n; i++)
-      s[i] = 0xff & fgetc(f);
-    s[i] = '\0';
-
 Log:
+
+- 07/08/2006, version 0.2.4: roms
+	- fortified rwfile.c
+	- fortified files8x.c
+	- fortified files9x.c
 
 - 06/08/2006, version 0.2.3: roms
 	- target hand-held is passed by tifiles_content_create_xxxx
