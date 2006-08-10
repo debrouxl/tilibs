@@ -37,9 +37,6 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
-//#define err_code(vtl)		((vtl->data[0] << 8) | vtl->data[1])
-#define err_code(vtl)	(0)
-
 // Helpers
 
 GList *cpca_list = NULL;
@@ -149,6 +146,24 @@ static void byteswap(uint8_t *data, uint32_t len)
 		data[2] = tmp;
 	}
 	*/
+}
+
+/////////////----------------
+
+static uint16_t usb_errors[] = { 0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000e, 0x002b };
+
+static int err_code(VirtualPacket *pkt)
+{
+	int i;
+	int code = (pkt->data[0] << 8) | pkt->data[1];
+
+	for(i = 0; i < sizeof(usb_errors) / sizeof(uint16_t); i++)
+		if(usb_errors[i] == code)
+			return i+1;
+
+	ticalcs_warning("USB error code not found in list. Please report it at <tilp-devel@lists.sf.net>.");
+	
+	return 0;
 }
 
 /////////////----------------

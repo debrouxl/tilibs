@@ -9,6 +9,7 @@ Log:
 
 - 08/08/2006, version 0.2.5: roms
 	- added TIG_BACKUP flag (needed to avoid clearing of RAM)
+	- convert USB error packets into error message (O. Armand request)
 
 - 18/07/2006, version 0.2.4: roms
 	- added ticalcs_probe for Kevin and I. This function is complete because it handles 

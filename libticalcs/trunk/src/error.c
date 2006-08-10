@@ -225,14 +225,41 @@ case ERR_OUT_OF_MEMORY:
     break;
 
   case ERR_CALC_ERROR:
-		strcpy(error_msg, _("Msg: Hand-held returned an error."));
+		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: the hand-held received an unexpected/illegal request/argument."));
+		   ("Cause: hand-held returned an uncatched error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
-
+  case ERR_CALC_ERROR+1:
+	    strcpy(error_msg, _("Msg: invalid argument or name."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+2:
+	    strcpy(error_msg, _("Msg: can not delete application."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+3:
+	    strcpy(error_msg, _("Msg: transmission error."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+4:
+	    strcpy(error_msg, _("Msg: using basic mode while being in boot mode."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+5:
+	    strcpy(error_msg, _("Msg: out of memory."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+6:
+	    strcpy(error_msg, _("Msg: invalid name."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR+7:
+	    strcpy(error_msg, _("Msg: battery low."));
+		*message = g_strdup(error_msg);
+    break;
 
 	default:
 		// propagate error code
