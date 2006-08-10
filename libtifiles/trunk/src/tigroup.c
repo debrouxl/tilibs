@@ -577,3 +577,23 @@ TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename)
 	return ERR_UNSUPPORTED;
 #endif
 }
+
+TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
+{
+	return 0;
+}
+
+TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
+{
+	return 0;
+}

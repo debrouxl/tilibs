@@ -8,6 +8,9 @@ To do: write TiGroup management API (group/ungroup) aha tigroup.c should provide
 
 Log:
 
+- 10/08/2006, version 0.2.5: roms
+	- improved TiGroup support API
+
 - 07/08/2006, version 0.2.4: roms
 	- fortified rwfile.c
 	- fortified files8x.c

@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.2.4"
+# define LIBFILES_VERSION "0.2.5"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -471,6 +471,7 @@ extern "C" {
   // tigroup.c
   TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int);
   TIEXPORT int         TICALL tifiles_content_delete_tigroup(TigContent *content);
+
   TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename);
@@ -481,13 +482,20 @@ extern "C" {
   TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te);
   TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te);
 
+  ///----
+  TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content);
+  TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2);
+
+  TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename);
+  TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames);
+
   //comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);
   TIEXPORT const char* TICALL tifiles_comment_set_group(void);
   TIEXPORT const char* TICALL tifiles_comment_set_backup(void);
   TIEXPORT const char* TICALL tifiles_comment_set_tigroup(void);
 
-  // varentry.c
+  // ve_fp.c
   TIEXPORT VarEntry*	TICALL tifiles_ve_create(void);
   TIEXPORT VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
   TIEXPORT void			TICALL tifiles_ve_delete(VarEntry*);
