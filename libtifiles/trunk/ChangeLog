@@ -3,6 +3,9 @@ SubVersion: $Id$
 Run './configure --enable-static=yes --enable-shared=no' for use with 
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
+To do: write TiGroup management API (group/ungroup) aha tigroup.c should provide the same
+	API as grouped.c
+
 Log:
 
 - 07/08/2006, version 0.2.4: roms
