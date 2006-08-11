@@ -63,9 +63,13 @@ typedef enum
 	ERR_ROM_ERROR,
 	ERR_NO_CALC,			// No calc probed
 
-// --- 300 to 350 are reserved for hand-held status
+// --- 300 to 349 are reserved for hand-held status (DUSB)
 	
-	ERR_CALC_ERROR = 300,	// Hand-held returned an error code
+	ERR_CALC_ERROR2 = 300,	// Hand-held returned an error code
+
+// --- 350 to 399 are reserved for hand-held status (DBUS)
+	
+	ERR_CALC_ERROR1 = 350,	// Hand-held returned an error code
 
 // ---
 

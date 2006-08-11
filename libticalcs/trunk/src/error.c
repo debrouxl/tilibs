@@ -224,7 +224,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
-  case ERR_CALC_ERROR:
+  case ERR_CALC_ERROR1:
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -232,31 +232,48 @@ case ERR_OUT_OF_MEMORY:
 		   ("Cause: hand-held returned an uncatched error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+1:
-	    strcpy(error_msg, _("Msg: invalid argument or name."));
-		*message = g_strdup(error_msg);
-    break;
-  case ERR_CALC_ERROR+2:
+  case ERR_CALC_ERROR1+1:
 	    strcpy(error_msg, _("Msg: can not delete application."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+3:
+  case ERR_CALC_ERROR1+2:
+	    strcpy(error_msg, _("Msg: invalid variable name."));
+		*message = g_strdup(error_msg);
+    break;
+
+  case ERR_CALC_ERROR2:
+		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
+		strcat(error_msg, "\n");
+		strcat(error_msg,
+		   _
+		   ("Cause: hand-held returned an uncatched error. Please report log."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+1:
+	    strcpy(error_msg, _("Msg: invalid argument or name."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+2:
+	    strcpy(error_msg, _("Msg: can not delete application."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+3:
 	    strcpy(error_msg, _("Msg: transmission error."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+4:
+  case ERR_CALC_ERROR2+4:
 	    strcpy(error_msg, _("Msg: using basic mode while being in boot mode."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+5:
+  case ERR_CALC_ERROR2+5:
 	    strcpy(error_msg, _("Msg: out of memory."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+6:
+  case ERR_CALC_ERROR2+6:
 	    strcpy(error_msg, _("Msg: invalid name."));
 		*message = g_strdup(error_msg);
     break;
-  case ERR_CALC_ERROR+7:
+  case ERR_CALC_ERROR2+7:
 	    strcpy(error_msg, _("Msg: battery low."));
 		*message = g_strdup(error_msg);
     break;

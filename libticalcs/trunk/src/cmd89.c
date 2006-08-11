@@ -60,6 +60,23 @@ static uint8_t pc_ti9x(CalcModel model)
 #define PC_TI9X pc_ti9x(handle->model)
 #define TI9X_BKUP TI89_BKUP
 
+static uint8_t dbus_errors[] = { 0x03, 0x25 };
+
+static int err_code(uint8_t *data)
+{
+	int i;
+	int code = data[2];
+
+	tifiles_hexdump(data, 5);
+	for(i = 0; i < sizeof(dbus_errors) / sizeof(uint8_t); i++)
+		if(dbus_errors[i] == code)
+			return i+1;
+
+	ticalcs_warning("D-BUS error code not found in list. Please report it at <tilp-devel@lists.sf.net>.");
+	
+	return 0;
+}
+
 int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
 {
   uint8_t buffer[32];
@@ -298,7 +315,7 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
     return ERR_EOT;		// not really an error
 
   if (cmd == CMD_SKP)
-    return ERR_VAR_REJECTED;
+    return ERR_CALC_ERROR1 + err_code(buffer);
 
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;
@@ -330,8 +347,9 @@ int ti89_recv_CTS_h(CalcHandle* handle)
   TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
   if (cmd == CMD_SKP)
-    return ERR_VAR_REJECTED;
-  else if (cmd != CMD_CTS)
+    return ERR_CALC_ERROR1 + err_code(buffer);
+
+  if (cmd != CMD_CTS)
     return ERR_INVALID_CMD;
 
   if (length != 0x0000)
@@ -399,7 +417,7 @@ int ti89_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
   if (cmd == CMD_SKP)
-    return ERR_VAR_REJECTED;
+    return ERR_CALC_ERROR1 + err_code(buffer);
 
   if (status != NULL)
     *status = length;
@@ -460,7 +478,7 @@ int ti89_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
     return ERR_EOT;		// not really an error
 
   if (cmd == CMD_SKP)
-    return ERR_VAR_REJECTED;
+    return ERR_CALC_ERROR1 + err_code(buffer);
 
   if (cmd != CMD_VAR)
     return ERR_INVALID_CMD;

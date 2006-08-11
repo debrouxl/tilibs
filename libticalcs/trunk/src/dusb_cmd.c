@@ -241,7 +241,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_OS_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -329,7 +329,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
 	
@@ -377,7 +377,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
@@ -461,7 +461,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 		return ERR_EOT;
 	}
 	else if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
@@ -636,7 +636,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_VAR_CNTS)
 		return ERR_INVALID_PACKET;
 
@@ -756,7 +756,7 @@ int cmd_r_mode_ack(CalcHandle *h)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
@@ -777,7 +777,7 @@ int cmd_r_data_ack(CalcHandle *h)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -796,7 +796,7 @@ int cmd_r_delay_ack(CalcHandle *h)
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_DELAY_ACK)
 		return ERR_INVALID_PACKET;
 
@@ -833,7 +833,7 @@ int cmd_r_eot(CalcHandle *h)
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_ERROR)
-		return ERR_CALC_ERROR + err_code(pkt);
+		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_EOT)
 		return ERR_INVALID_PACKET;
 
