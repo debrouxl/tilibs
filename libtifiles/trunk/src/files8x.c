@@ -109,7 +109,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   FILE *f;
   uint16_t tmp = 0x000B;
   long offset = 0;
-  int i;
+  int i, j;
   int ti83p_flag = 0;
   uint8_t name_length = 8;	// ti85/86 only
   uint16_t data_size, sum = 0;
@@ -212,7 +212,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name);
 	if((content->model == CALC_TI86) && padded86)
 	{
-		for(i = 0; i < 8-name_length; i++)
+		for(j = 0; j < 8-name_length; j++)
 			sum += fgetc(f);
 	}
     if (ti83p_flag) 
