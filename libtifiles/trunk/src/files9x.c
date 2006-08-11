@@ -90,6 +90,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   content->model = tifiles_signature2calctype(signature);
   if (content->model == CALC_NONE)
     return ERR_INVALID_FILE;
+  if(content->model_dst == CALC_NONE) content->model_dst = content->model;
 
   if(fread_word(f, NULL) < 0) goto tffr;
   if(fread_8_chars(f, default_folder) < 0) goto tffr;

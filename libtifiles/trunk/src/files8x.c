@@ -131,6 +131,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   content->model = tifiles_signature2calctype(signature);
   if (content->model == CALC_NONE)
     return ERR_INVALID_FILE;
+  if(content->model_dst == CALC_NONE) content->model_dst = content->model;
   if(fskip(f, 3) < 0) goto tfrr;
   if(fread_n_chars(f, 42, content->comment) < 0) goto tfrr;
   if(fread_word(f, &data_size) < 0) goto tfrr;
