@@ -10,6 +10,7 @@ Log:
 
 - 10/08/2006, version 0.2.5: roms
 	- improved TiGroup support API
+	- fixed Travis Evans' bug: can't read some TI86 files due to bad padding of varname
 
 - 07/08/2006, version 0.2.4: roms
 	- fortified rwfile.c
