@@ -246,17 +246,18 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
  **/
 TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
-  FileContent src;
+  FileContent *src;
   FileContent **dst, **ptr;
   char *real_name;
   
   int i, n;
 
   // read group file
-  TRYC(tifiles_file_read_regular(src_filename, &src));
+  src = tifiles_content_create_regular(CALC_NONE);
+  TRYC(tifiles_file_read_regular(src_filename, src));
 
   // ungroup structure
-  TRYC(tifiles_ungroup_content(&src, &dst));
+  TRYC(tifiles_ungroup_content(src, &dst));
 
   // count number of structures and allocates array of strings
   for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
@@ -275,7 +276,7 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   }
 
   // release allocated memory
-  tifiles_content_delete_regular(&src);
+  tifiles_content_delete_regular(src);
   tifiles_content_delete_group(dst);
 
   return 0;
