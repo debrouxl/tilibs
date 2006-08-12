@@ -13,6 +13,7 @@ Log:
 	- fixed Travis Evans' bug: can't read some TI86 files due to bad padding of varname
 		=> there are 4 TI-86 file format!
 	- set model_dst to model if dst is not specified (=CALC_NONE)
+	- fixed tifiles_has_backup (don't include USB hand-helds)
 
 - 07/08/2006, version 0.2.4: roms
 	- fortified rwfile.c

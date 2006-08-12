@@ -127,8 +127,7 @@ TIEXPORT int TICALL tifiles_has_backup(CalcModel calc_type)
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
 	  (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
 	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI85) ||
-	  (calc_type == CALC_TI86) || (calc_type == CALC_TI92) || 
-	  (calc_type == CALC_TI84P_USB) || (calc_type == CALC_TI89T_USB));
+	  (calc_type == CALC_TI86) || (calc_type == CALC_TI92));
 }
 
 /**
