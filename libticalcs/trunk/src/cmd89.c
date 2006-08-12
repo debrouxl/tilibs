@@ -60,14 +60,14 @@ static uint8_t pc_ti9x(CalcModel model)
 #define PC_TI9X pc_ti9x(handle->model)
 #define TI9X_BKUP TI89_BKUP
 
-static uint8_t dbus_errors[] = { 0x03, 0x25 };
+static uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e };
 
 static int err_code(uint8_t *data)
 {
 	int i;
 	int code = data[2];
 
-	tifiles_hexdump(data, 5);
+	ticalcs_info(" TI->PC: SKP (%02x %02x %02x %02x %02x)", data[0], data[1], data[2], data[3], data[4]);
 	for(i = 0; i < sizeof(dbus_errors) / sizeof(uint8_t); i++)
 		if(dbus_errors[i] == code)
 			return i+1;

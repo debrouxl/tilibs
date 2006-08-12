@@ -240,6 +240,10 @@ case ERR_OUT_OF_MEMORY:
 	    strcpy(error_msg, _("Msg: invalid variable name."));
 		*message = g_strdup(error_msg);
     break;
+  case ERR_CALC_ERROR1+3:
+	    strcpy(error_msg, _("Msg: can not overwrite variable (locked/archived)."));
+		*message = g_strdup(error_msg);
+    break;
 
   case ERR_CALC_ERROR2:
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
