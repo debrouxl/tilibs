@@ -184,7 +184,7 @@ static int slv_open(CableHandle *h)
 	}
 
     dynTiglUsbGetTimeout = (TIGLUSB_GETTIMEOUT2) GetProcAddress(hDLL, "TiglUsbGetTimeout2");
-	if (!dynTiglUsbSetTimeout) 
+	if (!dynTiglUsbGetTimeout) 
 	{
 		ticables_warning(_("Unable to load TiglUsbGetTimeout2 symbol."));
 		FreeLibrary(hDLL);
