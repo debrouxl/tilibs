@@ -389,8 +389,5 @@ int check_for_libusb(void)
 	return ERR_USBFS;
     }
 
-    if(!access(USBFS, F_OK) && check_for_node_usability(USBFS "/devices"))
-	return ERR_USBFS;
-    
     return 0;
 }

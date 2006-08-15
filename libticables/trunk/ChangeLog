@@ -12,6 +12,7 @@ Log:
 	- fixed endianness dependency in Linux/BSD code and lvalue casts in Win32 code (kevin)
 	- fixed unconditional use of USB function reported by Lionel Debroux (kevin)
 	- merged Ben's patch about USB typos and function call not captured
+	- removed check for /proc/bus/usb/devices (kevin)
 
 - 02/07/2006, version 0.1.2: roms
 	- fixed DirectLink issue under Linux (TI84+ only)
