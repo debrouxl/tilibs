@@ -577,10 +577,30 @@ tfwb:	// release on exit
  *
  * Return value: an error code, 0 otherwise.
  **/
-int ti9x_file_write_flash(const char *filename, Ti9xFlash *head)
+int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 {
   FILE *f;
   Ti9xFlash *content = head;
+  char *filename;
+  char basename[64];
+
+  if (fname)
+  {
+	  filename = strdup(fname);
+	  if(filename == NULL)
+		  return ERR_MALLOC;
+  }
+  else
+  {
+	ticonv_varname_to_filename_s(content->model, content->name, basename);
+
+    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
+    strcpy(filename, basename);
+    strcat(filename, ".");
+    strcat(filename, tifiles_fext_of_flash_app(content->model));
+    if (real_fname != NULL)
+      *real_fname = strdup(filename);
+  }
 
   f = gfopen(filename, "wb");
   if (f == NULL) 

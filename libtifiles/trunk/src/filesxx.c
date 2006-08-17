@@ -114,7 +114,7 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *conten
  * tifiles_file_write_regular:
  * @filename: name of single/group file where to write or NULL.
  * @content: the file content to write.
- * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
@@ -170,7 +170,7 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
  * tifiles_content_create_backup:
  * @model: a calculator model or CALC_NONE.
  *
- * Allocates a #FileContent structure.
+ * Allocates a BackupContent structure.
  *
  * Return value: the allocated block.
  **/
@@ -185,9 +185,9 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 }
 
 /**
- * tifiles_content_delete_regular:
+ * tifiles_content_delete_backup:
  *
- * Free the whole content of a #FileContent structure.
+ * Free the whole content of a BackupContent structure.
  *
  * Return value: none.
  **/
@@ -212,12 +212,12 @@ TIEXPORT int TICALL tifiles_content_delete_backup(BackupContent *content)
 
 /**
  * tifiles_file_read_backup:
- * @filename: name of single/group file to open.
+ * @filename: name of backup file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a FileContent structure.
+ * Load the backup file into a BackupContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_regular when
+ * Structure content must be freed with #tifiles_content_delete_backup when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -241,15 +241,10 @@ TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *conte
 
 /**
  * tifiles_file_write_backup:
- * @filename: name of single/group file where to write or NULL.
+ * @filename: name of backup file where to write.
  * @content: the file content to write.
- * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
  *
- * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
- * the function build a filename from varname and allocates resulting filename in %real_fname.
- * %filename and %real_filename can be NULL but not both !
- *
- * %real_filename must be freed when no longer used.
+ * Write backup into file.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -271,7 +266,7 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
 }
 
 /**
- * tifiles_file_display_regular:
+ * tifiles_file_display_backup:
  * @content: the file content to show.
  *
  * Display file content informations.
@@ -299,7 +294,7 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
  * tifiles_content_create_flash:
  * @model: a calculator model (compulsory).
  *
- * Allocates a #FileContent structure.
+ * Allocates a #FlashContent structure.
  *
  * Return value: the allocated block.
  **/
@@ -330,7 +325,7 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 /**
  * tifiles_content_delete_flash:
  *
- * Free the whole content of a #FileContent structure.
+ * Free the whole content of a #FlashContent structure.
  *
  * Return value: none.
  **/
@@ -374,12 +369,12 @@ TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
 
 /**
  * tifiles_file_read_flash:
- * @filename: name of single/group file to open.
+ * @filename: name of FLASH file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a FileContent structure.
+ * Load the FLASH file into a FlashContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_regular when
+ * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -402,34 +397,53 @@ TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content
 }
 
 /**
- * tifiles_file_write_flash:
- * @filename: name of single/group file where to write or NULL.
+ * tifiles_file_write_flash2:
+ * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
- * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
- * the function build a filename from varname and allocates resulting filename in %real_fname.
- * %filename and %real_filename can be NULL but not both !
+ * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
+ * from appname and allocates resulting filename in %real_fname.
+ * %filename and %real_fname can be NULL but not both !
  *
- * %real_filename must be freed when no longer used.
+ * %real_fname must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *content)
+TIEXPORT int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
-		return ti8x_file_write_flash(filename, content);
+		return ti8x_file_write_flash(filename, content, real_fname);
 	else 
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(content->model))
-		return ti9x_file_write_flash(filename, content);
+		return ti9x_file_write_flash(filename, content, real_fname);
 	else
 #endif
     return ERR_BAD_CALC;
 
 	return 0;
+}
+
+/**
+ * tifiles_file_write_flash:
+ * @filename: name of flash file where to write or NULL.
+ * @content: the file content to write.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
+ *
+ * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
+ * from appname and allocates resulting filename in %real_fname.
+ * %filename and %real_fname can be NULL but not both !
+ *
+ * %real_fname must be freed when no longer used.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *content)
+{
+	return tifiles_file_write_flash2(filename, content, NULL);
 }
 
 /**

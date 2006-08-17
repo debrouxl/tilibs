@@ -447,7 +447,8 @@ extern "C" {
   TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model);
   TIEXPORT int           TICALL tifiles_content_delete_flash(FlashContent *content);
   TIEXPORT int TICALL tifiles_file_read_flash(const char *filename, FlashContent *content);
-  TIEXPORT int TICALL tifiles_file_write_flash(const char *filename, FlashContent *content);
+  TIEXPORT int TICALL tifiles_file_write_flash (const char *filename, FlashContent *content);
+  TIEXPORT int TICALL tifiles_file_write_flash2(const char *filename, FlashContent *content, char **filename2);
   TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content);
 
   TIEXPORT int TICALL tifiles_file_display(const char *filename);

@@ -571,7 +571,7 @@ TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst
 	TRYC(tifiles_file_read_tigroup(src_filename, src));
 
 	// ungroup structure
-	TRYC(tifiles_untigroup_content(src, &dst, &dst2));
+	TRYC(tifiles_untigroup_content(src, &dst1, &dst2));
 
 	// count number of structures and allocates array of strings
 	tifiles_te_size_of_array(src->entries, &m, &n);
@@ -896,7 +896,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		}
 		else
 		{	
-			TRYC(tifiles_file_write_regular(filename, entry->content.regular, NULL));
+			TRYC(tifiles_file_write_regular(filename, entry->content.regular));
 		}
 
 		// missing tmp file !

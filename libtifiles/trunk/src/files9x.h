@@ -56,7 +56,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *content);
 // writing
 int ti9x_file_write_regular(const char *filename, Ti9xRegular *content, char **filename2);
 int ti9x_file_write_backup(const char *filename, Ti9xBackup *content);
-int ti9x_file_write_flash(const char *filename, Ti9xFlash *content);
+int ti9x_file_write_flash(const char *filename, Ti9xFlash *content, char **filename2);
 
 // displaying
 int ti9x_file_display(const char *filename);

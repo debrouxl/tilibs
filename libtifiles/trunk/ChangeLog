@@ -13,6 +13,7 @@ Log:
 - 17/08/2006, version 0.2.6: roms
 	- added grouping/ungrouping support for TiGroup (eg tigroup.c provides the same API as grouped.c)
 		=note: no functions removed/renamed; just added new ones
+	- added tifiles_file_write_flash2 in order not to break API
 
 - 10/08/2006, version 0.2.5: roms
 	- improved TiGroup support API

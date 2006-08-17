@@ -193,7 +193,6 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   int i, n;
   FileContent **src = NULL;
   FileContent *dst = NULL;
-  char *unused;
 
   // counter number of files to group
   for (n = 0; src_filenames[n] != NULL; n++);
@@ -221,7 +220,7 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
   tifiles_content_delete_group(src);
 
   // write grouped file
-  TRYC(tifiles_file_write_regular(dst_filename, dst, &unused));
+  TRYC(tifiles_file_write_regular(dst_filename, dst, NULL));
 
   // release allocated memory
   tifiles_content_delete_regular(dst);

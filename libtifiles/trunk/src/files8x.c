@@ -716,18 +716,39 @@ tfwb:	// release on exit
  * ti8x_file_write_flash:
  * @filename: name of flash file where to write.
  * @content: the file content to write.
+ * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write content to a flash file (os or app).
  *
  * Return value: an error code, 0 otherwise.
  **/
-int ti8x_file_write_flash(const char *filename, Ti8xFlash *head)
+int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 {
   FILE *f;
   Ti8xFlash *content = head;
   int i;
   int bytes_written = 0;
   long pos;
+  char *filename;
+  char basename[64];
+
+  if (fname)
+  {
+	  filename = strdup(fname);
+	  if(filename == NULL)
+		  return ERR_MALLOC;
+  }
+  else
+  {
+	ticonv_varname_to_filename_s(content->model, content->name, basename);
+
+    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
+    strcpy(filename, basename);
+    strcat(filename, ".");
+    strcat(filename, tifiles_fext_of_flash_app(content->model));
+    if (real_fname != NULL)
+      *real_fname = strdup(filename);
+  }
 
   f = gfopen(filename, "wb");
   if (f == NULL) 
