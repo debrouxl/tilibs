@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.2.5"
+# define LIBFILES_VERSION "0.2.6"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -81,8 +81,8 @@ typedef enum
  **/
 typedef enum 
 {
-  TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_BACKUP = 4, TIFILE_FLASH = 8,
-  TIFILE_TIGROUP = 16,
+  TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_REGULAR = 3, TIFILE_BACKUP = 4, 
+  TIFILE_FLASH = 8, TIFILE_TIGROUP = 16, 
 } FileClass;
 
 /**
@@ -462,13 +462,14 @@ extern "C" {
   TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames);
 
+
   TIEXPORT int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve);
   TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve);
 
   TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char *dst_filename);
   TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
-  // tigroup.c
+  // tigroup.c -> filesXX.c
   TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int);
   TIEXPORT int         TICALL tifiles_content_delete_tigroup(TigContent *content);
 
@@ -476,20 +477,30 @@ extern "C" {
   TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content);
   TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename);
 
-  TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
-  TIEXPORT int		 TICALL tifiles_te_delete(TigEntry* entry);
-
-  TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te);
-  TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te);
-
-  ///----
+  /// tigroup.c -> grouped.c
   TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content);
   TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2);
 
   TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename);
   TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames);
 
-  //comment.c
+
+  TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te);
+  TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te);
+
+  TIEXPORT int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_filename);
+  TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const char *dst_filename);
+
+  // tigroup.c -> ve_fp.c
+  TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
+  TIEXPORT int		 TICALL tifiles_te_delete(TigEntry* entry);
+
+  TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts);
+  TIEXPORT TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, int nelts);
+  TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry**);
+  TIEXPORT void			TICALL tifiles_te_size_of_array(TigEntry**, int*, int*);
+
+  // comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);
   TIEXPORT const char* TICALL tifiles_comment_set_group(void);
   TIEXPORT const char* TICALL tifiles_comment_set_backup(void);

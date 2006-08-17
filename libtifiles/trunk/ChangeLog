@@ -3,10 +3,16 @@ SubVersion: $Id$
 Run './configure --enable-static=yes --enable-shared=no' for use with 
 ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
 
-To do: write TiGroup management API (group/ungroup) aha tigroup.c should provide the same
+To do: 
+- write TiGroup management API (group/ungroup) aha tigroup.c should provide the same
 	API as grouped.c
+- use of BUILD_PATH is buggy because static
 
 Log:
+
+- 17/08/2006, version 0.2.6: roms
+	- added grouping/ungrouping support for TiGroup (eg tigroup.c provides the same API as grouped.c)
+		=note: no functions removed/renamed; just added new ones
 
 - 10/08/2006, version 0.2.5: roms
 	- improved TiGroup support API

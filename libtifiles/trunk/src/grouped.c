@@ -384,7 +384,7 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
  * @src_filename: the file to add to group file
  * @dst_filename: the group file
  *
- * Add src_filename content to dst_filename content and write.
+ * Search for entry and remove it from file.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/

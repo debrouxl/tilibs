@@ -30,6 +30,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <stdlib.h>
@@ -111,13 +112,15 @@ int g_chdir (const gchar *path)
 }
 #endif
 
+// ---------------------------------------------------------------------------
+
 /**
  * tifiles_te_create:
  * @filename: internal filename in archive.
  * @type: file type (regular or flash)
  * @model: calculator model
  *
- * Allocates a TigEntry structure and allocates fields.
+ * Allocates a TigEntry structure and allocates fields (aka call #tifiles_content_create_flash/regular for you).
  *
  * Return value: the allocated block.
  **/
@@ -127,12 +130,12 @@ TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type
 
 	entry = (TigEntry *)calloc(1, sizeof(TigEntry));
 
-	entry->filename = strdup(filename);
+	entry->filename = strdup(filename);	// basename ???
 	entry->type = type;
 
 	if(type == TIFILE_FLASH)
 		entry->content.flash = tifiles_content_create_flash(model);
-	else
+	else if(type & TIFILE_REGULAR)
 		entry->content.regular = tifiles_content_create_regular(model);
 
 	return entry;
@@ -151,12 +154,460 @@ TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
 	free(entry->filename);
 	if(entry->type == TIFILE_FLASH)
 		tifiles_content_delete_flash(entry->content.flash);
-	else
+	else if(entry->type & TIFILE_REGULAR)
 		tifiles_content_delete_regular(entry->content.regular);
 
 	free(entry);
 	return 0;
 }
+
+/**
+ * tifiles_te_create_array:
+ * @nelts: size of NULL-terminated array (number of TigEntry structures).
+ *
+ * Allocate a NULL-terminated array of TigEntry structures. You have to allocate
+ * each elements of the array by yourself.
+ *
+ * Return value: the array or NULL if error.
+ **/
+TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts)
+{
+	return calloc(nelts + 1, sizeof(TigEntry *));
+}
+
+/**
+ * tifiles_te_resize_array:
+ * @array: address of array
+ * @nelts: size of NULL-terminated array (number of TigEntry structures).
+ *
+ * Re-allocate a NULL-terminated array of TigEntry structures. You have to allocate
+ * each elements of the array by yourself.
+ *
+ * Return value: the array or NULL if error.
+ **/
+TIEXPORT TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
+{
+	return realloc(array, (nelts + 1) * sizeof(TigEntry *));
+}
+
+/**
+ * tifiles_ve_delete_array:
+ * @array: an NULL-terminated array of TigEntry structures.
+ *
+ * Free the whole array (data buffer, TigEntry structure and array itself).
+ *
+ * Return value: none.
+ **/
+TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
+{
+	TigEntry** ptr;
+
+	assert(array != NULL);
+
+	for(ptr = array; ptr; ptr++)
+		tifiles_te_delete(*ptr);
+	free(array);
+}
+
+/**
+ * ²
+ * @array: an NULL-terminated array of TigEntry structures.
+ * @r: number of FileContent entries
+ * @f: number of FlashContent entries
+ *
+ * Returns the size of a #TigEntry array.
+ *
+ * Return value: none.
+ **/
+TIEXPORT void			TICALL tifiles_te_size_of_array(TigEntry** array, int* r, int* f)
+{
+	int i, m, n;
+	TigEntry **p;
+
+	for(i = m = n =0, p = array; *p; *p++)
+		if((*p)->type == TIFILE_FLASH)
+			m++;
+		else if((*p)->type & TIFILE_REGULAR)
+			n++;
+	*r = m;
+	*f = n;
+}
+
+// ---------------------------------------------------------------------------
+
+/**
+ * tifiles_content_add_te:
+ * @content: a file content (TiGroup).
+ * @te: the entry to add
+ *
+ * Adds the entry to the file content and updates internal structures.
+ * Beware: the entry is not duplicated.
+ *
+ * Return value: the number of entries.
+ **/
+TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
+{
+	int n;
+
+	for(n = 0; content->entries[n]; n++);
+
+	content->entries = tifiles_te_resize_array(content->entries, n+1);
+
+	content->entries = realloc(content->entries, (n + 2) * sizeof(TigEntry *));
+	content->entries[n++] = te;
+	content->entries[n] = NULL;
+	content->num_entries = n;
+
+	return content->num_entries;
+}
+
+/**
+ * tifiles_content_del_te:
+ * @content: a file content (TiGroup).
+ * @te: the entry to remove
+ *
+ * Search for entry name and remove it from file content.
+ *
+ * Return value: the number of entries or -1 if not found.
+ **/
+TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
+{
+	int i, j;
+
+	// Search for entry
+	for(i = 0, j = 0; i < content->num_entries; i++, j++)
+	{
+		TigEntry *s = content->entries[i];
+
+		if(!strcmp(s->filename, te->filename) && s->type == te->type);
+			break;
+	}
+
+	// Not found ? Exit !
+	if(j == content->num_entries)
+		return -1;
+
+	// Release
+	tifiles_te_delete(content->entries[i]);
+
+	// And shift
+	for(j = i; j < content->num_entries; j++)
+		content->entries[j] = content->entries[j+1];
+	content->entries[j] = NULL;
+
+	// And resize
+	content->entries = tifiles_te_resize_array(content->entries, content->num_entries - 1);
+	content->num_entries--;
+
+	return content->num_entries;
+}
+
+/**
+ * tifiles_tigroup_add_file:
+ * @src_filename: the file to add to TiGroup file
+ * @dst_filename: the TiGroup file
+ *
+ * Add src_filename content to dst_filename content and write to dst_filename.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_filename)
+{
+	CalcModel model;
+	FileClass type;
+	TigEntry *te;
+	TigContent *content;
+
+	// src can't be a TiGroup file but dst should be
+	if(!(tifiles_file_is_ti(src_filename) && !tifiles_file_is_tigroup(src_filename) &&
+		tifiles_file_is_tigroup(dst_filename)))
+		return -1;
+
+	// load src file
+	model = tifiles_file_get_model(src_filename);
+	type = tifiles_file_get_class(src_filename);
+	
+	te = tifiles_te_create(src_filename, type, model);
+	if(type == TIFILE_FLASH)
+		{ TRYC(tifiles_file_read_flash(src_filename, te->content.flash)); }
+	else if(type & TIFILE_REGULAR)
+		{ TRYC(tifiles_file_read_regular(src_filename, te->content.regular)); }
+
+	// load dst file
+	content = tifiles_content_create_tigroup(CALC_NONE, 0);
+	TRYC(tifiles_file_read_tigroup(dst_filename, content));
+
+	TRYC(tifiles_content_add_te(content, te));
+
+	TRYC(tifiles_file_write_tigroup(dst_filename, content));
+
+	TRYC(tifiles_content_delete_tigroup(content));
+
+	return 0;
+}
+
+/**
+ * tifiles_tigroup_del_file:
+ * @src_filename: the file to remove from TiGroup file
+ * @dst_filename: the TiGroup file
+ *
+ * Search for entry and remove it from file.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const char *filename)
+{
+	TigContent* content;
+
+	content = tifiles_content_create_tigroup(CALC_NONE, 0);
+	TRYC(tifiles_file_read_tigroup(filename, content));
+
+	tifiles_content_del_te(content, entry);
+	//tifiles_file_display_regular(dst_content);
+
+	TRYC(tifiles_file_write_tigroup(filename, content));
+	TRYC(tifiles_content_delete_tigroup(content));
+
+	return 0;
+}
+
+// ---------------------------------------------------------------------------
+
+/**
+ * tifiles_tigroup_contents:
+ * @src_contents1: a pointer on an array of #FileContent structures or NULL. The array must be NULL-terminated.
+ * @src_contents2: a pointer on an array of #FlashContent structures or NULL. The array must be NULL-terminated.
+ * @dst_content: the address of a pointer. This pointer will see the allocated TiGroup file.
+ *
+ * Group several #FileContent/#FlashContent structures into a single one.
+ * Must be freed when no longer used by a call to #tifiles_content_delete_tigroup.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
+{
+	TigContent *content;
+	int i, n=0, m=0;
+	CalcModel model;
+
+	if(src_contents1 == NULL && src_contents2 == NULL)
+		return -1;
+
+	if(src_contents1)
+		for (m = 0; src_contents1[m] != NULL; m++);
+	if(src_contents2)
+		for (n = 0; src_contents2[n] != NULL; n++);
+
+	if(src_contents2)
+		model = src_contents2[0]->model;
+	if(src_contents1)
+		model = src_contents1[0]->model;	// FileContent is more precise than FlashContent
+
+	content = tifiles_content_create_tigroup(model, m+n);
+
+	if(src_contents1)
+	{
+		for(i = 0; i < m; i++)
+		{
+			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
+			
+			te->filename = strdup("build filename");
+			te->type = TIFILE_GROUP;
+			te->content.regular = src_contents1[m]; // should be duplicated...
+			tifiles_content_add_te(content, te);
+		}
+	}
+
+	if(src_contents2)
+	{
+		for(i = 0; i < n; i++)
+		{
+			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
+			
+			te->filename = strdup("build filename");
+			te->type = TIFILE_FLASH;
+			te->content.flash = src_contents2[n]; // should be duplicated...
+			tifiles_content_add_te(content, te);
+		}
+	}
+
+	*dst_content = content;
+
+	return 0;
+}
+
+/**
+ * tifiles_untigroup_content:
+ * @src_content: a pointer on the structure to unpack.
+ * @dst_contents1: the address of your pointer. This pointers will point on a 
+ * @dst_contents2: the address of your pointer. This pointers will point on a 
+ * dynamically allocated array of structures. The array is terminated by NULL.
+ *
+ * Ungroup a TiGroup file by exploding the structure into an array of structures.
+ * Must be freed when no longer used by a call to #tifiles_content_delete_tigroup.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
+{
+	TigContent *src = src_content;
+	FileContent **dst1;
+	FlashContent **dst2;
+	int i, j, m, n, k;
+
+	// allocate an array of FileContent/FlashContent structures (NULL terminated)
+	tifiles_te_size_of_array(src->entries, &m, &n);
+
+	dst1 = (FileContent **)calloc(m + 1, sizeof(FileContent *));
+	if (dst1 == NULL)
+		return ERR_MALLOC;
+	dst2 = (FlashContent **)calloc(m + 1, sizeof(FlashContent *));
+	if (dst2 == NULL)
+		return ERR_MALLOC;
+
+	// parse each entry and duplicate it into a single content  
+	for (i = j = k = 0; k < src->num_entries; k++) 
+	{
+		TigEntry *te = src->entries[k];
+
+		if(te->type == TIFILE_FLASH)
+		{
+			dst2[j++] = te->content.flash;	// duplicate it
+		}
+		else if(te->type & TIFILE_REGULAR)
+		{
+			dst1[i++] = te->content.regular;	// duplicate it
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * tifiles_group_files:
+ * @src_filenames: a NULL-terminated array of strings (list of files to group).
+ * @dst_filename: the filename where to store the TiGroup.
+ *
+ * Group several TI files (regular/flash) into a single one (TiGroup file).
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
+{
+	FileContent **src1 = NULL;
+	FlashContent **src2 = NULL;
+	TigContent *dst = NULL;
+	CalcModel model;
+	int k, m, n;
+
+	// counts number of files to group and allocate space for that
+	for(m = n = k = 0; src_filenames[k]; k++)
+	{
+		if(tifiles_file_is_flash(src_filenames[k]))
+			n++;
+		else if(tifiles_file_is_regular(src_filenames[k]))
+			m++;
+	}
+	model = tifiles_file_get_model(src_filenames[0]);
+
+	// allocate space for that
+	src1 = (FileContent **) calloc(m + 1, sizeof(FileContent *));
+	if (src1 == NULL)
+		return ERR_MALLOC;
+
+	src2 = (FlashContent **) calloc(m + 1, sizeof(FlashContent *));
+	if (src2 == NULL)
+		return ERR_MALLOC;
+
+	dst = tifiles_content_create_tigroup(model, m+n);
+
+	for(k = 0; k < m+n; k++)
+	{
+		if(tifiles_file_is_regular(src_filenames[k]))
+		{
+			src1[k] = tifiles_content_create_regular(model);
+			TRYC(tifiles_file_read_regular(src_filenames[k], src1[k]));
+		}
+		else if(tifiles_file_is_flash(src_filenames[k]))
+		{
+			src2[k] = tifiles_content_create_flash(model);
+			TRYC(tifiles_file_read_flash(src_filenames[k], src2[k]));
+		}
+	}
+
+	free(src1);
+	free(src2);
+
+	TRYC(tifiles_file_write_tigroup(dst_filename, dst));
+	tifiles_content_delete_tigroup(dst);
+
+	return 0;
+}
+
+/**
+ * tifiles_ungroup_file:
+ * @src_filename: full path of file to ungroup.
+ * @dst_filenames: NULL or the address of a pointer where to store a NULL-terminated 
+ * array of strings which contain the list of ungrouped files (regular/flash).
+ *
+ * Ungroup a TiGroup file into several files. Resulting files have the
+ * same name as the variable stored within group file.
+ * Beware: there is no existence check; files may be overwritten !
+ *
+ * %dst_filenames must be freed when no longer used.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
+{
+	TigContent *src;
+	FileContent **dst1, **ptr1;
+	FlashContent **dst2, **ptr2;
+	char *real_name;
+	int i, m, n;
+
+	// read TiGroup file
+	src = tifiles_content_create_tigroup(CALC_NONE, 0);
+	TRYC(tifiles_file_read_tigroup(src_filename, src));
+
+	// ungroup structure
+	TRYC(tifiles_untigroup_content(src, &dst, &dst2));
+
+	// count number of structures and allocates array of strings
+	tifiles_te_size_of_array(src->entries, &m, &n);
+	
+	if(dst_filenames != NULL)
+		*dst_filenames = (char **)malloc((m + n + 1) * sizeof(char *));
+
+	// store each structure content to file
+	for (ptr1 = dst1, i = 0; *ptr1 != NULL; ptr1++, i++)
+	{
+		TRYC(tifiles_file_write_regular(NULL, *ptr1, &real_name));
+
+		if(dst_filenames != NULL)
+			*dst_filenames[i] = real_name;
+		else
+			free(real_name);
+	}
+
+	for (ptr2 = dst2; *ptr2 != NULL; ptr2++, i++)
+	{
+		//TRYC(tifiles_file_write_flash(NULL, *ptr1, &real_name));
+
+		if(dst_filenames != NULL)
+			*dst_filenames[i] = real_name;
+		else
+			free(real_name);
+	}
+
+	// release allocated memory
+	tifiles_content_delete_tigroup(src);
+	tifiles_content_delete_group(dst1);
+
+	return 0;
+}
+
+// ---------------------------------------------------------------------------
 
 /**
  * tifiles_content_create_tigroup:
@@ -204,25 +655,6 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	free(content);
 
   return 0;
-}
-
-TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
-{
-	int n;
-
-	for(n = 0; content->entries[n]; n++);
-
-	content->entries = realloc(content->entries, (n + 2) * sizeof(TigEntry *));
-	content->entries[n++] = te;
-	content->entries[n] = NULL;
-	content->num_entries = n;
-
-	return content->num_entries;
-}
-
-TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
-{
-	return 0;
 }
 
 /**
@@ -576,24 +1008,4 @@ TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename)
 #else
 	return ERR_UNSUPPORTED;
 #endif
-}
-
-TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
-{
-	return 0;
-}
-
-TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
-{
-	return 0;
-}
-
-TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
-{
-	return 0;
-}
-
-TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
-{
-	return 0;
 }
