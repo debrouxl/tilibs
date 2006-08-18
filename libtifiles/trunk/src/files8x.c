@@ -182,9 +182,9 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			if(fskip(f, 8 - name_length) < 0) goto tfrr;
     }
     else if ((content->model == CALC_TI83P) || (content->model == CALC_TI84P) || (content->model == CALC_TI84P_USB))
-      if(fskip(f, 13) < 0) goto tfrr;
+		{ if(fskip(f, 13) < 0) goto tfrr; }
     else
-      if(fskip(f, 11) < 0) goto tfrr;
+		{ if(fskip(f, 11) < 0) goto tfrr; }
     if(fread_word(f, &tmp) < 0) goto tfrr;
     if(fskip(f, tmp) < 0) goto tfrr;
   }
@@ -299,9 +299,9 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if(fread_word(f, &(content->data_length3)) < 0) goto tfrb;
   content->data_length4 = 0;
   if (content->model != CALC_TI86)
-    if(fread_word(f, &(content->mem_address)) < 0) goto tfrb;
+	{ if(fread_word(f, &(content->mem_address)) < 0) goto tfrb; }
   else
-    if(fread_word(f, &(content->data_length4)) < 0) goto tfrb;
+	{ if(fread_word(f, &(content->data_length4)) < 0) goto tfrb;}
 
   if(fread_word(f, NULL) < 0) goto tfrb;
   content->data_part1 = (uint8_t *) calloc(content->data_length1, 1);
@@ -609,9 +609,9 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
       name_length = strlen(varname);
       if(fwrite_byte(f, (uint8_t)name_length) < 0) goto tfwr;
 	  if(content->model == CALC_TI85)
-		if(fwrite_n_chars(f, name_length, varname) < 0) goto tfwr;
+		{ if(fwrite_n_chars(f, name_length, varname) < 0) goto tfwr; }
 	  else
-		if(fwrite_n_chars2(f, 8, varname) < 0) goto tfwr; // space padded
+		{ if(fwrite_n_chars2(f, 8, varname) < 0) goto tfwr; } // space padded
     }
     else
     	if(fwrite_n_chars(f, 8, varname) < 0) goto tfwr;
@@ -683,9 +683,9 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   if(fwrite_word(f, content->data_length2) < 0) goto tfwb;
   if(fwrite_word(f, content->data_length3) < 0) goto tfwb;
   if (content->model != CALC_TI86)
-    if(fwrite_word(f, content->mem_address) < 0) goto tfwb;
+	{ if(fwrite_word(f, content->mem_address) < 0) goto tfwb; }
   else
-    if(fwrite_word(f, content->data_length4) < 0) goto tfwb;
+	{ if(fwrite_word(f, content->data_length4) < 0) goto tfwb; }
 
   // write data num_entries
   if(fwrite_word(f, content->data_length1) < 0) goto tfwb;
