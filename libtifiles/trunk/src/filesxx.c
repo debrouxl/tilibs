@@ -82,6 +82,30 @@ TIEXPORT int TICALL tifiles_content_delete_regular(FileContent *content)
 }
 
 /**
+ * tifiles_content_dup_regular:
+ *
+ * Allocates and copies a new #FileContent structure.
+ *
+ * Return value: none.
+ **/
+TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
+{
+	FileContent *dup;
+	int i;
+
+	assert(content != NULL);
+
+	dup = tifiles_content_create_regular(content->model);
+	memcpy(dup, content, sizeof(FileContent));
+	dup->entries = tifiles_ve_create_array(content->num_entries);
+
+	for (i = 0; i < content->num_entries; i++) 
+		dup->entries[i] = tifiles_ve_dup(content->entries[i]);
+
+	return dup;
+}
+
+/**
  * tifiles_file_read_regular:
  * @filename: name of single/group file to open.
  * @content: where to store the file content.
@@ -444,6 +468,56 @@ TIEXPORT int tifiles_file_write_flash2(const char *filename, FlashContent *conte
 TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *content)
 {
 	return tifiles_file_write_flash2(filename, content, NULL);
+}
+
+/**
+ * tifiles_content_dup_flash:
+ *
+ * Allocates and copies a new FlashContent structure.
+ *
+ * Return value: none.
+ **/
+TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
+{
+	FlashContent *dup;
+	FlashContent *p, *q;
+
+	assert(content != NULL);
+
+	dup = tifiles_content_create_flash(content->model);
+	for(p = content, q = dup; p; p = p->next, q = q->next)
+	{
+		memcpy(q, p, sizeof(FlashContent));
+		
+		// TI9x part
+		if(tifiles_calc_is_ti9x(content->model))
+		{
+			if(content->data_part)
+				q->data_part = (uint8_t *)calloc(content->data_length+1, 1);
+		}
+
+		// TI8x part
+		if(tifiles_calc_is_ti8x(content->model))
+		{
+			int i;
+
+			// copy pages
+			q->pages = tifiles_fp_create_array(p->num_pages);	
+			for(i = 0; i < content->num_pages; i++)
+			{
+				q->pages[i] = (FlashPage *)calloc(1, sizeof(FlashPage));
+				memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
+
+				q->pages[i]->data = (uint8_t *) calloc(1, p->pages[i]->size);
+				memcpy(q->pages[i]->data, p->pages[i]->data, p->pages[i]->size);
+			}
+		}
+
+		if(p->next)
+			q->next = tifiles_content_create_flash(p->model);
+	}
+
+	return dup;
 }
 
 /**

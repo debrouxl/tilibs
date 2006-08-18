@@ -984,7 +984,7 @@ int ti8x_file_display(const char *filename)
     ti8x_file_read_backup(filename, content2);
     ti8x_content_display_backup(content2);
     tifiles_content_delete_backup(content2);
-  } '
+  }
   else 
   {
     tifiles_info("Unknown file type !");

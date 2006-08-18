@@ -896,7 +896,7 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		}
 		else
 		{	
-			TRYC(tifiles_file_write_regular(filename, entry->content.regular));
+			TRYC(tifiles_file_write_regular(filename, entry->content.regular, NULL));
 		}
 
 		// missing tmp file !
