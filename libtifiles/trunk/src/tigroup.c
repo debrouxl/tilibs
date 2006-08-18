@@ -210,7 +210,7 @@ TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
 }
 
 /**
- * ²
+ * tifiles_te_size_of_array:
  * @array: an NULL-terminated array of TigEntry structures.
  * @r: number of FileContent entries
  * @f: number of FlashContent entries
@@ -625,7 +625,7 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
 
 	content->model = content->model_dst = model;
 	content->comment = strdup(tifiles_comment_set_tigroup());
-	content->comp_level = 3;
+	content->comp_level = 0;
 	content->num_entries = n;
 	content->entries = (TigEntry **)calloc(n + 1, sizeof(TigEntry *));
 
