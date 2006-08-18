@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2006  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -492,8 +492,11 @@ TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 		// TI9x part
 		if(tifiles_calc_is_ti9x(content->model))
 		{
-			if(content->data_part)
-				q->data_part = (uint8_t *)calloc(content->data_length+1, 1);
+			if(p->data_part)
+			{
+				q->data_part = (uint8_t *)calloc(p->data_length+1, 1);
+				memcpy(q->data_part, p->data_part, p->data_length+1);
+			}
 		}
 
 		// TI8x part
