@@ -971,13 +971,6 @@ int ti8x_file_display(const char *filename)
     ti8x_content_display_flash(content3);
     tifiles_content_delete_flash(content3);
   } 
-  else if (tifiles_file_is_backup(filename)) 
-  {
-	content2 = tifiles_content_create_backup(CALC_NONE);
-    ti8x_file_read_backup(filename, content2);
-    ti8x_content_display_backup(content2);
-    tifiles_content_delete_backup(content2);
-  } 
   else if (tifiles_file_is_regular(filename)) 
   {
 	content1 = tifiles_content_create_regular(CALC_NONE);
@@ -985,6 +978,13 @@ int ti8x_file_display(const char *filename)
     ti8x_content_display_regular(content1);
     tifiles_content_delete_regular(content1);
   } 
+  else if (tifiles_file_is_backup(filename)) 
+  {
+	content2 = tifiles_content_create_backup(CALC_NONE);
+    ti8x_file_read_backup(filename, content2);
+    ti8x_content_display_backup(content2);
+    tifiles_content_delete_backup(content2);
+  } '
   else 
   {
     tifiles_info("Unknown file type !");
