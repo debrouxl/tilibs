@@ -130,7 +130,7 @@ TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type
 
 	entry = (TigEntry *)calloc(1, sizeof(TigEntry));
 
-	entry->filename = strdup(filename);	// basename ???
+	entry->filename = strdup(g_basename(filename));
 	entry->type = type;
 
 	if(type == TIFILE_FLASH)
@@ -152,6 +152,7 @@ TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type
 TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
 {
 	free(entry->filename);
+
 	if(entry->type == TIFILE_FLASH)
 		tifiles_content_delete_flash(entry->content.flash);
 	else if(entry->type & TIFILE_REGULAR)
@@ -163,9 +164,9 @@ TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
 
 /**
  * tifiles_te_create_array:
- * @nelts: size of NULL-terminated array (number of TigEntry structures).
+ * @nelts: size of NULL-terminated array (number of #TigEntry structures).
  *
- * Allocate a NULL-terminated array of TigEntry structures. You have to allocate
+ * Allocate a NULL-terminated array of #TigEntry structures. You have to allocate
  * each elements of the array by yourself.
  *
  * Return value: the array or NULL if error.
@@ -178,9 +179,9 @@ TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts)
 /**
  * tifiles_te_resize_array:
  * @array: address of array
- * @nelts: size of NULL-terminated array (number of TigEntry structures).
+ * @nelts: size of NULL-terminated array (number of #TigEntry structures).
  *
- * Re-allocate a NULL-terminated array of TigEntry structures. You have to allocate
+ * Re-allocate a NULL-terminated array of #TigEntry structures. You have to allocate
  * each elements of the array by yourself.
  *
  * Return value: the array or NULL if error.
@@ -210,7 +211,7 @@ TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
 }
 
 /**
- * tifiles_te_size_of_array:
+ * tifiles_te_sizeof_array:
  * @array: an NULL-terminated array of TigEntry structures.
  * @r: number of FileContent entries
  * @f: number of FlashContent entries
@@ -219,12 +220,12 @@ TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_te_size_of_array(TigEntry** array, int* r, int* f)
+TIEXPORT void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
 {
-	int i, m, n;
+	int m, n;
 	TigEntry **p;
 
-	for(i = m = n =0, p = array; *p; *p++)
+	for(m = n = 0, p = array; *p; *p++)
 		if((*p)->type == TIFILE_FLASH)
 			m++;
 		else if((*p)->type & TIFILE_REGULAR)
@@ -247,13 +248,10 @@ TIEXPORT void			TICALL tifiles_te_size_of_array(TigEntry** array, int* r, int* f
  **/
 TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 {
-	int n;
+	int n = content->num_entries;
 
-	for(n = 0; content->entries[n]; n++);
+	content->entries = tifiles_te_resize_array(content->entries, n + 1);
 
-	content->entries = tifiles_te_resize_array(content->entries, n+1);
-
-	content->entries = realloc(content->entries, (n + 2) * sizeof(TigEntry *));
 	content->entries[n++] = te;
 	content->entries[n] = NULL;
 	content->num_entries = n;
@@ -275,16 +273,16 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	int i, j;
 
 	// Search for entry
-	for(i = 0, j = 0; i < content->num_entries; i++, j++)
+	for(i = 0; i < content->num_entries; i++)
 	{
 		TigEntry *s = content->entries[i];
 
-		if(!strcmp(s->filename, te->filename) && s->type == te->type);
+		if(!strcmp(s->filename, te->filename));
 			break;
 	}
 
 	// Not found ? Exit !
-	if(j == content->num_entries)
+	if(i == content->num_entries)
 		return -1;
 
 	// Release
@@ -337,8 +335,7 @@ TIEXPORT int TICALL tifiles_tigroup_add_file(const char *src_filename, const cha
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	TRYC(tifiles_file_read_tigroup(dst_filename, content));
 
-	TRYC(tifiles_content_add_te(content, te));
-
+	tifiles_content_add_te(content, te);
 	TRYC(tifiles_file_write_tigroup(dst_filename, content));
 
 	TRYC(tifiles_content_delete_tigroup(content));
@@ -363,9 +360,8 @@ TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const cha
 	TRYC(tifiles_file_read_tigroup(filename, content));
 
 	tifiles_content_del_te(content, entry);
-	//tifiles_file_display_regular(dst_content);
-
 	TRYC(tifiles_file_write_tigroup(filename, content));
+
 	TRYC(tifiles_content_delete_tigroup(content));
 
 	return 0;
@@ -456,7 +452,7 @@ TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileConte
 	int i, j, m, n, k;
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
-	tifiles_te_size_of_array(src->entries, &m, &n);
+	tifiles_te_sizeof_array(src->entries, &m, &n);
 
 	dst1 = (FileContent **)calloc(m + 1, sizeof(FileContent *));
 	if (dst1 == NULL)
@@ -574,7 +570,7 @@ TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst
 	TRYC(tifiles_untigroup_content(src, &dst1, &dst2));
 
 	// count number of structures and allocates array of strings
-	tifiles_te_size_of_array(src->entries, &m, &n);
+	tifiles_te_sizeof_array(src->entries, &m, &n);
 	
 	if(dst_filenames != NULL)
 		*dst_filenames = (char **)malloc((m + n + 1) * sizeof(char *));

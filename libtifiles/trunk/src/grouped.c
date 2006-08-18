@@ -314,7 +314,7 @@ TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve
 	int i, j;
 
 	// Search for entry
-	for(i = 0, j = 0; i < content->num_entries; i++, j++)
+	for(i = 0; i < content->num_entries; i++)
 	{
 		VarEntry *s = content->entries[i];
 
@@ -323,7 +323,7 @@ TIEXPORT int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *ve
 	}
 
 	// Not found ? Exit !
-	if(j == content->num_entries)
+	if(i == content->num_entries)
 		return -1;
 
 	// Release
@@ -358,6 +358,10 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
 	FileContent* dst_content;
 	int i;
 
+	// src can be single/group file and dst must be group file
+	if(!tifiles_file_is_group(dst_filename))
+		return -1;
+
 	src_model = tifiles_file_get_model(src_filename);
 	dst_model = tifiles_file_get_model(dst_filename);
 	
@@ -380,7 +384,7 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
 
 /**
  * tifiles_group_del_file:
- * @src_filename: the file to add to group file
+ * @src_filename: the file to remove from group file
  * @dst_filename: the group file
  *
  * Search for entry and remove it from file.
@@ -391,6 +395,10 @@ TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char 
 {
 	CalcModel dst_model;
 	FileContent* dst_content;
+
+	// src can be single/group file and dst must be group file
+	if(!tifiles_file_is_group(dst_filename))
+		return -1;
 
 	dst_model = tifiles_file_get_model(dst_filename);
 	dst_content = tifiles_content_create_regular(dst_model);

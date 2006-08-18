@@ -499,7 +499,7 @@ extern "C" {
   TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts);
   TIEXPORT TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, int nelts);
   TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry**);
-  TIEXPORT void			TICALL tifiles_te_size_of_array(TigEntry**, int*, int*);
+  TIEXPORT void			TICALL tifiles_te_sizeof_array(TigEntry**, int*, int*);
 
   // comment.c
   TIEXPORT const char* TICALL tifiles_comment_set_single(void);

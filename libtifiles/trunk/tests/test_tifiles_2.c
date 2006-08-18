@@ -376,7 +376,7 @@ int main(int argc, char **argv)
 	test_ti8x_group_merge();
 #endif
 
-#if 0
+#if 1
 	test_tigroup();
 #endif
 
@@ -1082,6 +1082,7 @@ int test_ti8x_group_merge()
 {
 	VarEntry ve;
 
+	printf("--> Testing add/del from group support (r/w)...\n");
 	tifiles_group_add_file(PATH("misc/group1.8Xg"), PATH2("misc/group2.8Xg"));
 
 	strcpy(ve.name, "A");
@@ -1090,17 +1091,17 @@ int test_ti8x_group_merge()
 	strcpy(ve.name, "B");
 	tifiles_group_del_file(&ve, PATH("misc/group2.8Xg"));
 
+	compare_files(PATH("misc/group1.8Xg"), PATH2("misc/group2.8Xg"));
+
 	return 0;
 }
 
 int test_tigroup()
 {
 	TigContent *content = { 0 };
+	TigEntry te = { 0 };
 
-	//tifiles_file_display(PATH("misc/str.92s"));
-	//tifiles_file_display(PATH(g_locale_to_utf8("misc/pépé.92s", -1, NULL, NULL, NULL)));
-	//return 0;
-
+	printf("--> Testing TiGroup support (r/w)...\n");
 	tifiles_file_display_tigroup(PATH("misc/p\xC3\xA9p\xC3\xA9.tig"));
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
@@ -1109,5 +1110,26 @@ int test_tigroup()
 	tifiles_file_write_tigroup(PATH("misc/test_.tig"), content);
 	tifiles_content_delete_tigroup(content);
 
+	compare_files(PATH("misc/test.tig"), PATH2("misc/test_.tig"));
+
+	printf("--> Testing TiGroup support (group/ungroup)...\n");
+	//...
+
+	printf("--> Testing add/del from TiGroup support (r/w)...\n");
+	tifiles_tigroup_add_file(PATH("misc/C.8Xn"), PATH2("misc/test2.tig"));
+	tifiles_tigroup_add_file(PATH("misc/D.8Xn"), PATH2("misc/test2.tig"));
+
+	te.filename = strdup("C.8Xn");
+	tifiles_tigroup_del_file(&te, PATH("misc/test2.tig"));
+
+	te.filename = strdup("D.8Xn");
+	tifiles_tigroup_del_file(&te, PATH("misc/test2.tig"));
+
+	compare_files(PATH("misc/test.tig"), PATH2("misc/test2.tig"));
+
 	return 0;
 }
+
+//tifiles_file_display(PATH("misc/str.92s"));
+//tifiles_file_display(PATH(g_locale_to_utf8("misc/pépé.92s", -1, NULL, NULL, NULL)));
+//return 0;
