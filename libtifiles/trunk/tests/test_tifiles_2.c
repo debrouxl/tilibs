@@ -1125,6 +1125,7 @@ int test_tigroup()
 	te.filename = strdup("D.8Xn");
 	tifiles_tigroup_del_file(&te, PATH("misc/test2.tig"));
 
+	tifiles_file_display_tigroup(PATH("misc/test2.tig"));
 	compare_files(PATH("misc/test.tig"), PATH2("misc/test2.tig"));
 
 	return 0;
