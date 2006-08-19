@@ -277,7 +277,7 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	{
 		TigEntry *s = content->entries[i];
 
-		if(!strcmp(s->filename, te->filename));
+		if(!strcmp(s->filename, te->filename))
 			break;
 	}
 
@@ -698,7 +698,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 		printf("error %d with zipfile in unzGetGlobalInfo \n",err);
 		goto tfrt_exit;
 	}        
-	printf("# entries: %lu\n", gi.number_entry);
+	//printf("# entries: %lu\n", gi.number_entry);
 
 	free(content->entries);
 	content->entries = (TigEntry **)calloc(gi.number_entry + 1, sizeof(TigEntry *));
@@ -724,7 +724,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 			printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
 			goto tfrt_exit;
 		}
-		printf("Extracting <%s> with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
+		//printf("Extracting <%s> with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
 
 		err = unzOpenCurrentFilePassword(uf,password);
         if (err!=UNZ_OK)
