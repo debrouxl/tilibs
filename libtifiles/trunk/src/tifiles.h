@@ -146,6 +146,10 @@ typedef struct
  * @checksum: checksum of file
  *
  * A generic structure used to store the content of a single/grouped TI file.
+ * Please note that:
+ * - entries must be NULL-terminated. Parsing is based on this property.
+ * - num_entries must be exact. Counting relies on this.
+ *
  **/
 typedef struct 
 {

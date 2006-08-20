@@ -248,7 +248,7 @@ tgf:
  **/
 TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
-  FileContent *src;
+  FileContent *src = NULL;
   FileContent **ptr, **dst = NULL;
   char *real_name, **p;
   int i, n;
@@ -368,8 +368,8 @@ TIEXPORT int TICALL tifiles_group_add_file(const char *src_filename, const char 
 {
 	CalcModel src_model;
 	CalcModel dst_model;
-	FileContent* src_content;
-	FileContent* dst_content;
+	FileContent* src_content = NULL;
+	FileContent* dst_content = NULL;
 	int i;
 	int ret = 0;
 
@@ -413,7 +413,7 @@ tgaf:
 TIEXPORT int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename)
 {
 	CalcModel dst_model;
-	FileContent* dst_content;
+	FileContent* dst_content = NULL;
 	int ret = 0;
 
 	// src can be single/group file and dst must be group file
