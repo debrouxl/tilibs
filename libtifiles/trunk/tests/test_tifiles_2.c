@@ -1101,33 +1101,48 @@ int test_tigroup()
 	TigContent *content = { 0 };
 	TigEntry te = { 0 };
 
+	char *array[2];
+	char files[2][1024];
+
 	printf("--> Testing TiGroup support (r/w)...\n");
-	tifiles_file_display_tigroup(PATH("misc/p\xC3\xA9p\xC3\xA9.tig"));
+	tifiles_file_display_tigroup(PATH("tig/p\xC3\xA9p\xC3\xA9.tig"));
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
-	tifiles_file_read_tigroup(PATH("misc/test.tig"), content);
+	tifiles_file_read_tigroup(PATH("tig/test.tig"), content);
 	
-	tifiles_file_write_tigroup(PATH("misc/test_.tig"), content);
+	tifiles_file_write_tigroup(PATH("tig/test_.tig"), content);
 	tifiles_content_delete_tigroup(content);
 
-	compare_files(PATH("misc/test.tig"), PATH2("misc/test_.tig"));
-
-	printf("--> Testing TiGroup support (group/ungroup)...\n");
-	//...
+	compare_files(PATH("tig/test.tig"), PATH2("tig/test_.tig"));
 
 	printf("--> Testing add/del from TiGroup support (r/w)...\n");
-	tifiles_tigroup_add_file(PATH("misc/C.8Xn"), PATH2("misc/test2.tig"));
-	tifiles_tigroup_add_file(PATH("misc/D.8Xn"), PATH2("misc/test2.tig"));
+	tifiles_tigroup_add_file(PATH("tig/C.8Xn"), PATH2("tig/test2.tig"));
+	tifiles_tigroup_add_file(PATH("tig/D.8Xn"), PATH2("tig/test2.tig"));
 
 	te.filename = strdup("C.8Xn");
-	tifiles_tigroup_del_file(&te, PATH("misc/test2.tig"));
+	tifiles_tigroup_del_file(&te, PATH("tig/test2.tig"));
 
 	te.filename = strdup("D.8Xn");
-	tifiles_tigroup_del_file(&te, PATH("misc/test2.tig"));
+	tifiles_tigroup_del_file(&te, PATH("tig/test2.tig"));
 
-	tifiles_file_display_tigroup(PATH("misc/test2.tig"));
-	compare_files(PATH("misc/test.tig"), PATH2("misc/test2.tig"));
+	tifiles_file_display_tigroup(PATH("tig/test2.tig"));
+	compare_files(PATH("tig/test.tig"), PATH2("tig/test2.tig"));
 
+	printf("--> Testing TiGroup support (group/ungroup)...\n");
+	
+	strcpy(files[0], PATH("tig/str.89s"));
+	strcpy(files[1], PATH("tig/ticabfra.89k"));
+	array[0] = files[0];
+	array[1] = files[1];
+	tifiles_tigroup_files(array, PATH("tig/test_.tig"));
+	tifiles_file_display(PATH("tig/test_.tig"));
+/*
+	tifiles_untigroup_file(PATH("tig/test.tig"), NULL);
+	move_file("A.8Xn", "tig/A.8Xn");
+	move_file("B.8Xn", "tig/B.8Xn");
+	//compare_files(PATH("tig/L1.73l"), PATH2("tig/L1L1.73l"));
+	//compare_files(PATH("tig/L2.73l"), PATH2("tig/L2L2.73l"));	
+*/
 	return 0;
 }
 

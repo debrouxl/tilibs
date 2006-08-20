@@ -406,12 +406,11 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		for(i = 0; i < m; i++)
 		{
 			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
-			/*
-			te->filename = strdup(src_contents1[i]->entries[0]->name);	// filename should be built from varname
+
+			te->filename = tifiles_build_filename(model, src_contents1[i]->entries[0]);
 			te->type = TIFILE_GROUP;
-			te->content.regular = tifiles_content_dup_regular(src_contents[i]);
+			te->content.regular = tifiles_content_dup_regular(src_contents1[i]);
 			tifiles_content_add_te(content, te);
-			*/
 		}
 	}
 
@@ -420,12 +419,20 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		for(i = 0; i < n; i++)
 		{
 			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
-			/*
-			te->filename = strdup("build filename");
+			VarEntry ve;
+			FlashContent *ptr;
+
+			for (ptr = src_contents2[i]; ptr; ptr = ptr->next)
+				if(ptr->data_type == tifiles_flash_type(model))
+					break;
+			
+			strcpy(ve.folder, "");
+			strcpy(ve.name, ptr->name);
+			ve.type = ptr->data_type;
+			te->filename = tifiles_build_filename(model, &ve);
 			te->type = TIFILE_FLASH;
-			te->content.flash = tifiles_content_dup_flash(src_contents2[n]);
+			te->content.flash = tifiles_content_dup_flash(src_contents2[i]);
 			tifiles_content_add_te(content, te);
-			*/
 		}
 	}
 
@@ -626,7 +633,6 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
 	content->model = content->model_dst = model;
 	content->comment = strdup(tifiles_comment_set_tigroup());
 	content->comp_level = 0;
-	content->num_entries = n;
 	content->entries = (TigEntry **)calloc(n + 1, sizeof(TigEntry *));
 
 	return content;

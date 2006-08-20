@@ -583,7 +583,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 	  VarEntry ve;
 
 	  for (content = head; content != NULL; content = content->next)
-		if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
+		if(content->data_type == TI89_AMS || content->data_type == TI89_APPL)
 			break;
 
 	  strcpy(ve.name, content->name);
