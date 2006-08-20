@@ -496,6 +496,7 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
 #define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
+#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x04034b50
 
 /**
  * tifiles_file_is_tib:
@@ -560,7 +561,7 @@ TIEXPORT int TICALL tifiles_file_is_tigroup(const char *filename)
 
 	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
 	str[strlen(TIG_SIGNATURE)] = '\0';
-	if(!strcmp(str, TIG_SIGNATURE)) 
+	if(!strcmp(str, TIG_SIGNATURE) || !strcmp(str, TIG_SIGNATURE2)) 
 	{
 		fclose(f);
 		return !0;

@@ -1105,6 +1105,13 @@ int test_tigroup()
 	char *array[2];
 	char files[2][1024];
 
+#if 0
+		content = tifiles_content_create_tigroup(CALC_NONE, 0);
+		tifiles_file_write_tigroup(PATH("tig/test2.tig"), content);
+		tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
+		tifiles_content_delete_tigroup(content);
+#endif
+
 	printf("--> Testing TiGroup support (r/w)...\n");
 	tifiles_file_display_tigroup(PATH("tig/p\xC3\xA9p\xC3\xA9.tig"));
 

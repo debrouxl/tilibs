@@ -306,7 +306,7 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 /**
  * tifiles_tigroup_add_file:
  * @src_filename: the file to add to TiGroup file
- * @dst_filename: the TiGroup file
+ * @dst_filename: the TiGroup file (must exist!)
  *
  * Add src_filename content to dst_filename content and write to dst_filename.
  *
@@ -319,6 +319,17 @@ TIEXPORT int TICALL tifiles_tigroup_add_file(const char *src_filename, const cha
 	TigEntry *te;
 	TigContent *content = NULL;
 	int ret = 0;
+
+	// group file is created if non existent
+	if(!stricmp(tifiles_fext_get(dst_filename), "tig"))
+	{
+		if(!g_file_test(dst_filename, G_FILE_TEST_EXISTS))
+		{
+			content = tifiles_content_create_tigroup(CALC_NONE, 0);
+			tifiles_file_write_tigroup(dst_filename, content);
+			tifiles_content_delete_tigroup(content);
+		}
+	}
 
 	// src can't be a TiGroup file but dst should be
 	if(!(tifiles_file_is_ti(src_filename) && !tifiles_file_is_tigroup(src_filename) &&
@@ -891,7 +902,8 @@ tfrt_exit:
  * @filename: the name of file to load.
  * @content: where to store content.
  *
- * This function load & TiGroup and place its content into content.
+ * This function store TiGroup contents to file. Please note that contents can contains no data.
+ * In this case, the file is void but created.
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
