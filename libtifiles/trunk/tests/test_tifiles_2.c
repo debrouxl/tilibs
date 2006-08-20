@@ -377,6 +377,7 @@ int main(int argc, char **argv)
 #endif
 
 #if 1
+	change_dir(PATH("tig"));
 	test_tigroup();
 #endif
 
@@ -1136,13 +1137,11 @@ int test_tigroup()
 	array[1] = files[1];
 	tifiles_tigroup_files(array, PATH("tig/test_.tig"));
 	tifiles_file_display(PATH("tig/test_.tig"));
-/*
+
 	tifiles_untigroup_file(PATH("tig/test.tig"), NULL);
-	move_file("A.8Xn", "tig/A.8Xn");
-	move_file("B.8Xn", "tig/B.8Xn");
 	//compare_files(PATH("tig/L1.73l"), PATH2("tig/L1L1.73l"));
 	//compare_files(PATH("tig/L2.73l"), PATH2("tig/L2L2.73l"));	
-*/
+
 	return 0;
 }
 

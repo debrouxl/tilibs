@@ -226,10 +226,13 @@ TIEXPORT void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
 	TigEntry **p;
 
 	for(m = n = 0, p = array; *p; *p++)
+	{
 		if((*p)->type == TIFILE_FLASH)
-			m++;
-		else if((*p)->type & TIFILE_REGULAR)
 			n++;
+		else if((*p)->type & TIFILE_REGULAR)
+			m++;
+	}
+
 	*r = m;
 	*f = n;
 }
@@ -369,6 +372,9 @@ TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const cha
 
 // ---------------------------------------------------------------------------
 
+TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
+TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
+
 /**
  * tifiles_tigroup_contents:
  * @src_contents1: a pointer on an array of #FileContent structures or NULL. The array must be NULL-terminated.
@@ -456,19 +462,23 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
 {
 	TigContent *src = src_content;
-	FileContent **dst1;
-	FlashContent **dst2;
+	FileContent **dst1 = NULL;
+	FlashContent **dst2 = NULL;
 	int i, j, m, n, k;
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
 	tifiles_te_sizeof_array(src->entries, &m, &n);
 
-	dst1 = (FileContent **)calloc(m + 1, sizeof(FileContent *));
-	if (dst1 == NULL)
-		return ERR_MALLOC;
-	dst2 = (FlashContent **)calloc(m + 1, sizeof(FlashContent *));
-	if (dst2 == NULL)
-		return ERR_MALLOC;
+	{
+		dst1 = (FileContent **)calloc(m+1, sizeof(FileContent *));
+		if (dst1 == NULL)
+			return ERR_MALLOC;
+	}
+	{
+		dst2 = (FlashContent **)calloc(n+1, sizeof(FlashContent *));
+		if (dst2 == NULL)
+			return ERR_MALLOC;
+	}
 
 	// parse each entry and duplicate it into a single content  
 	for (i = j = k = 0; k < src->num_entries; k++) 
@@ -477,13 +487,16 @@ TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileConte
 
 		if(te->type == TIFILE_FLASH)
 		{
-			dst2[j++] = te->content.flash;	// duplicate it
+			dst2[j++] = tifiles_content_dup_flash(te->content.flash);
 		}
 		else if(te->type & TIFILE_REGULAR)
 		{
-			dst1[i++] = te->content.regular;	// duplicate it
+			dst1[i++] = tifiles_content_dup_regular(te->content.regular);
 		}
 	}
+
+	*dst_contents1 = dst1;
+	*dst_contents2 = dst2;
 
 	return 0;
 }
@@ -587,7 +600,7 @@ TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst
 		*dst_filenames = (char **)malloc((m + n + 1) * sizeof(char *));
 
 	// store each structure content to file
-	for (ptr1 = dst1, i = 0; *ptr1 != NULL; ptr1++, i++)
+	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < m; ptr1++, i++)
 	{
 		TRYC(tifiles_file_write_regular(NULL, *ptr1, &real_name));
 
@@ -597,7 +610,7 @@ TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst
 			free(real_name);
 	}
 
-	for (ptr2 = dst2; *ptr2 != NULL; ptr2++, i++)
+	for (ptr2 = dst2; *ptr2 != NULL || i < m+n; ptr2++, i++)
 	{
 		//TRYC(tifiles_file_write_flash(NULL, *ptr1, &real_name));
 
