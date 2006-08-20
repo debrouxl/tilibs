@@ -11,6 +11,9 @@ Log:
 	- added tifiles_file_write_flash2 in order not to break API
 	- added tifiles_content_dup_regular/flash (not exported)
 	- fixed TI8x file support (introduced bug with fortification)
+	- added tifiles_build_filename function (which replaces built-in/static code in various 
+		places and some built-in code in TiLP).
+	- tifiles_content_write_flash: build filename from the last header (=data).
 
 - 10/08/2006, version 0.2.5: roms
 	- improved TiGroup support API

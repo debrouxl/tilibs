@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <glib.h>
+#include "ticonv.h"
 #include "tifiles.h"
 #include "rwfile.h"
 
@@ -165,7 +167,7 @@ TIEXPORT int tifiles_hexdump(uint8_t* ptr, unsigned int length)
  *
  * Returns the name of the variable.
  *
- * Return value: varname as string. It should not be modified.
+ * Return value: varname as string. It should not be modified (static).
  **/
 char *TICALL tifiles_get_varname(const char *full_name)
 {
@@ -183,7 +185,7 @@ char *TICALL tifiles_get_varname(const char *full_name)
  *
  * Returns the folder within the variable is located..
  *
- * Return value: folder name as string. It should not be modified.
+ * Return value: folder name as string. It should not be modified (static).
  **/
 char *TICALL tifiles_get_fldname(const char *full_name)
 {
@@ -202,15 +204,6 @@ char *TICALL tifiles_get_fldname(const char *full_name)
   return folder;
 }
 
-
-/*
-  Build the complete path starting at varname & folder name.
-  This function is calculator independant.
-   - full_name [out]: a string such as 'fldname\varname'
-   - fldname [in]: the folder name or "" (local -> no path)
-   - varname [in]: the variable name
-   - [out]: aalways 0.
-*/
 /**
  * tifiles_build_fullname:
  * @model: a calculator model.
@@ -245,4 +238,56 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
   }
 
   return full_name;
+}
+
+/**
+ * tifiles_build_filename:
+ * @model: a calculator model.
+ * @ve: a #VarEntry structure.
+ *
+ * Build a valid filename from folder name, variable name and variable type.
+ * Example: real number x on TI89 in the 'main' folder will give 'main.x.89e'.
+ * Note: this function is useable with FLASH apps, too (but you have to fill the #VarEntry structure yourself).
+ *
+ * Return value: a newly allocated string which must be freed when no longer used.
+ **/
+TIEXPORT char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
+{
+	char *filename;
+
+	if(tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, ""))
+	{
+		char *part2;
+		const char *part3;
+		char *tmp;
+		
+		part2 = ticonv_varname_to_filename(model, ve->name);
+		part3 = tifiles_vartype2fext(model, ve->type);
+
+		tmp = g_strconcat(part2, ".", part3, NULL);
+		g_free(part2);
+
+		filename = strdup(tmp);
+		g_free(tmp);
+	}
+	else
+	{
+		char *part1;
+		char *part2;
+		const char *part3;
+		char *tmp;
+		
+		part1 = ticonv_varname_to_filename(model, ve->folder);
+		part2 = ticonv_varname_to_filename(model, ve->name);
+		part3 = tifiles_vartype2fext(model, ve->type);
+
+		tmp = g_strconcat(part1, ".", part2, ".", part3, NULL);
+		g_free(part1);
+		g_free(part2);
+
+		filename = strdup(tmp);
+		g_free(tmp);
+	}
+
+	return filename;
 }

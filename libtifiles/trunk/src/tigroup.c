@@ -383,7 +383,7 @@ TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const cha
 TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
 {
 	TigContent *content;
-	int i, n=0, m=0;
+	int i, m, n;
 	CalcModel model;
 
 	if(src_contents1 == NULL && src_contents2 == NULL)
@@ -406,11 +406,12 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		for(i = 0; i < m; i++)
 		{
 			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
-			
-			te->filename = strdup("build filename");
+			/*
+			te->filename = strdup(src_contents1[i]->entries[0]->name);	// filename should be built from varname
 			te->type = TIFILE_GROUP;
-			te->content.regular = src_contents1[m]; // should be duplicated...
+			te->content.regular = tifiles_content_dup_regular(src_contents[i]);
 			tifiles_content_add_te(content, te);
+			*/
 		}
 	}
 
@@ -419,11 +420,12 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		for(i = 0; i < n; i++)
 		{
 			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
-			
+			/*
 			te->filename = strdup("build filename");
 			te->type = TIFILE_FLASH;
-			te->content.flash = src_contents2[n]; // should be duplicated...
+			te->content.flash = tifiles_content_dup_flash(src_contents2[n]);
 			tifiles_content_add_te(content, te);
+			*/
 		}
 	}
 
@@ -494,15 +496,15 @@ TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_
 	FlashContent **src2 = NULL;
 	TigContent *dst = NULL;
 	CalcModel model;
-	int k, m, n;
+	int i, j, k, m, n;
 
 	// counts number of files to group and allocate space for that
-	for(m = n = k = 0; src_filenames[k]; k++)
+	for(k = m = n = 0; src_filenames[k]; k++)
 	{
-		if(tifiles_file_is_flash(src_filenames[k]))
-			n++;
-		else if(tifiles_file_is_regular(src_filenames[k]))
+		if(tifiles_file_is_regular(src_filenames[k]))
 			m++;
+		else if(tifiles_file_is_flash(src_filenames[k]))
+			n++;
 	}
 	model = tifiles_file_get_model(src_filenames[0]);
 
@@ -511,25 +513,27 @@ TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_
 	if (src1 == NULL)
 		return ERR_MALLOC;
 
-	src2 = (FlashContent **) calloc(m + 1, sizeof(FlashContent *));
+	src2 = (FlashContent **) calloc(n + 1, sizeof(FlashContent *));
 	if (src2 == NULL)
 		return ERR_MALLOC;
 
-	dst = tifiles_content_create_tigroup(model, m+n);
-
-	for(k = 0; k < m+n; k++)
+	for(i = j = k = 0; k < m+n; k++)
 	{
 		if(tifiles_file_is_regular(src_filenames[k]))
 		{
-			src1[k] = tifiles_content_create_regular(model);
-			TRYC(tifiles_file_read_regular(src_filenames[k], src1[k]));
+			src1[i] = tifiles_content_create_regular(model);
+			TRYC(tifiles_file_read_regular(src_filenames[k], src1[i]));
+			i++;
 		}
 		else if(tifiles_file_is_flash(src_filenames[k]))
 		{
-			src2[k] = tifiles_content_create_flash(model);
-			TRYC(tifiles_file_read_flash(src_filenames[k], src2[k]));
+			src2[j] = tifiles_content_create_flash(model);
+			TRYC(tifiles_file_read_flash(src_filenames[k], src2[j]));
+			j++;
 		}
 	}
+
+	TRYC(tifiles_tigroup_contents(src1, src2, &dst));
 
 	free(src1);
 	free(src2);

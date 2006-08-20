@@ -516,7 +516,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   int i;
   uint16_t sum = 0;
   char *filename = NULL;
-  char basename[64];
   uint32_t data_length;
   uint16_t packet_length = 0x0B;
   uint8_t name_length = 8;
@@ -529,13 +528,8 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-	ticonv_varname_to_filename_s(content->model_dst, content->entries[0]->name, basename);
-
-    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
-    strcpy(filename, basename);
-    strcat(filename, ".");
-    strcat(filename, tifiles_vartype2fext(content->model, content->entries[0]->type));
-    if (real_fname != NULL)
+	filename = tifiles_build_filename(content->model_dst, content->entries[0]);
+	if (real_fname != NULL)
       *real_fname = strdup(filename);
   }
 
@@ -730,7 +724,6 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
   int bytes_written = 0;
   long pos;
   char *filename;
-  char basename[64];
 
   if (fname)
   {
@@ -740,14 +733,18 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
   }
   else
   {
-	ticonv_varname_to_filename_s(content->model, content->name, basename);
+	  VarEntry ve;
 
-    filename = (char *) malloc(strlen(basename) + 1 + 5 + 1);
-    strcpy(filename, basename);
-    strcat(filename, ".");
-    strcat(filename, tifiles_fext_of_flash_app(content->model));
-    if (real_fname != NULL)
-      *real_fname = strdup(filename);
+	  for (content = head; content != NULL; content = content->next)
+		if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
+			break;
+
+	  strcpy(ve.name, content->name);
+	  ve.type = content->data_type;
+
+	  filename = tifiles_build_filename(content->model, &ve);
+	  if (real_fname != NULL)
+		*real_fname = strdup(filename);
   }
 
   f = gfopen(filename, "wb");

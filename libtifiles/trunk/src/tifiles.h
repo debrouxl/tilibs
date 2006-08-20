@@ -430,6 +430,7 @@ extern "C" {
 	                     char *full_name,
 					     const char *fldname,
 					     const char *varname);
+  TIEXPORT char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve);
 
   // filesXX.c
   TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model);
