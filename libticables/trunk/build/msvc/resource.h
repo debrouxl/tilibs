@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by ticables.rc
+// Used by ticables2.rc
 //
 
 // Next default values for new objects
