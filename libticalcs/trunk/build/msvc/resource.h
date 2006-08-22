@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by ticalcs.rc
+// Used by ticalcs2.rc
 //
 
 // Next default values for new objects
