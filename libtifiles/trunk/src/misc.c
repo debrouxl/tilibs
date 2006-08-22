@@ -255,7 +255,8 @@ TIEXPORT char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve
 {
 	char *filename;
 
-	if(tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, ""))
+	if(tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, "") || 
+		(ve->type == tifiles_flash_type(model)))
 	{
 		char *part2;
 		const char *part3;
