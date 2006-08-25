@@ -370,12 +370,12 @@ int main(int argc, char **argv)
 #endif
 
 	// Add/Del files
-#if 1
+#if 0
 	change_dir(PATH("misc"));
 	test_ti8x_group_merge();
 #endif
 
-#if 0
+#if 1
 	change_dir(PATH("tig"));
 	test_tigroup();
 #endif
@@ -1110,9 +1110,13 @@ int test_tigroup()
 		tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
 		tifiles_content_delete_tigroup(content);
 #endif
-
+#if 0
 	printf("--> Testing TiGroup support (r/w)...\n");
+#ifdef __WIN32__
 	tifiles_file_display_tigroup(PATH("tig/p\xC3\xA9p\xC3\xA9.tig"));
+#else
+	tifiles_file_display_tigroup(PATH("tig/pépé.tig"));
+#endif
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	tifiles_file_read_tigroup(PATH("tig/test.tig"), content);
@@ -1121,7 +1125,8 @@ int test_tigroup()
 	tifiles_content_delete_tigroup(content);
 
 	compare_files(PATH("tig/test.tig"), PATH2("tig/test_.tig"));
-
+#endif
+#if 0
 	printf("--> Testing add/del from TiGroup support (r/w)...\n");
 	tifiles_tigroup_add_file(PATH("tig/C.8Xn"), PATH2("tig/test2.tig"));
 	tifiles_tigroup_add_file(PATH("tig/D.8Xn"), PATH2("tig/test2.tig"));
@@ -1134,7 +1139,8 @@ int test_tigroup()
 
 	tifiles_file_display_tigroup(PATH("tig/test2.tig"));
 	compare_files(PATH("tig/test.tig"), PATH2("tig/test2.tig"));
-
+#endif
+#if 1
 	printf("--> Testing TiGroup support (group/ungroup)...\n");
 	
 	strcpy(files[0], PATH("tig/str.89s"));
@@ -1143,11 +1149,13 @@ int test_tigroup()
 	array[1] = files[1];
 	tifiles_tigroup_files(array, PATH("tig/test_.tig"));
 	tifiles_file_display(PATH("tig/test_.tig"));
-
+	
 	tifiles_untigroup_file(PATH("tig/test.tig"), NULL);
-	//compare_files(PATH("tig/L1.73l"), PATH2("tig/L1L1.73l"));
-	//compare_files(PATH("tig/L2.73l"), PATH2("tig/L2L2.73l"));	
-
+	move_file("A.8Xn", "tig/AA.8Xn");
+	move_file("B.8Xn", "tig/BB.8Xn");
+	compare_files(PATH("tig/A.8Xn"), PATH2("tig/AA.8Xn"));
+	compare_files(PATH("tig/B.8Xn"), PATH2("tig/BB.8Xn"));	
+#endif
 	return 0;
 }
 
