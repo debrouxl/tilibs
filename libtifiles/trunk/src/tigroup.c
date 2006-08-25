@@ -303,6 +303,10 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	return content->num_entries;
 }
 
+#ifdef __LINUX__
+# define stricmp strcasecmp
+#endif
+
 /**
  * tifiles_tigroup_add_file:
  * @src_filename: the file to add to TiGroup file
@@ -417,8 +421,8 @@ TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
 TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
 {
 	TigContent *content;
-	int i, m, n;
-	CalcModel model;
+	int i, m=0, n=0;
+	CalcModel model = CALC_NONE;
 
 	if(src_contents1 == NULL && src_contents2 == NULL)
 		return -1;

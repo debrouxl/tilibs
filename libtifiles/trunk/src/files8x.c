@@ -545,7 +545,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   // write header
   if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
   if(fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f) < 0) goto tfwr;
-  if(fwrite_n_bytes(f, 42, content->comment) < 0) goto tfwr;
+  if(fwrite_n_bytes(f, 42, (uint8_t *)content->comment) < 0) goto tfwr;
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
@@ -663,7 +663,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   // write header
   if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
   if(fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f) < 3) goto tfwb;
-  if(fwrite_n_bytes(f, 42, content->comment) < 0) goto tfwb;
+  if(fwrite_n_bytes(f, 42, (uint8_t *)content->comment) < 0) goto tfwb;
   data_length =
       content->data_length1 + content->data_length2 +
       content->data_length3 + 17;

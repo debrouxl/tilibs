@@ -167,7 +167,7 @@ int fread_n_chars(FILE * f, int n, char *s)
 {
 	int i;
 	
-	if(fread_n_bytes(f, n, s) < 0) 
+	if(fread_n_bytes(f, n, (uint8_t *)s) < 0) 
 		return -1;
 
 	if(s != NULL)

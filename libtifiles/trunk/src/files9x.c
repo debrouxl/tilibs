@@ -433,7 +433,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     strcpy(content->default_folder, content->entries[0]->folder);
   ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder);
   if(fwrite_8_chars(f, default_folder) < 0) goto tfwr;
-  if(fwrite_n_bytes(f, 40, content->comment) < 0) goto tfwr;
+  if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
   if (content->num_entries > 1) 
   {
     if(fwrite_word(f, (uint16_t) (content->num_entries + num_folders)) < 0) goto tfwr;
@@ -535,7 +535,7 @@ int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
   if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
   if(fwrite(fsignature, 1, 2, f) < 2) goto tfwb;
   if(fwrite_8_chars(f, "") < 0) goto tfwb;
-  if(fwrite_n_bytes(f, 40, content->comment) < 0) goto tfwb;
+  if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwb;
   if(fwrite_word(f, 1) < 0) goto tfwb;
   if(fwrite_long(f, 0x52) < 0) goto tfwb;
   if(fwrite_8_chars(f, content->rom_version) < 0) goto tfwb;
