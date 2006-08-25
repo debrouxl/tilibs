@@ -1,0 +1,22 @@
+#
+# Some valgrind suppressions handy for ignoring stuff we don't care
+# about when valgrinding TILP framework
+#
+# Library paths and versions from debian unstable, YMMV
+#
+
+#
+# GLib errors
+#
+
+#{
+#	libglib-2.0.so.0.1000.3(Cond)
+#	Memcheck:Cond
+#	obj:/usr/lib/libglib-2.0.so.0.1000.3
+#}
+
+{
+	libglib-2.0
+  	Memcheck:Leak
+	fun:*
+}

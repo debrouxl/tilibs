@@ -1,0 +1,3 @@
+#!/bin/sh
+make
+valgrind --tool=memcheck --leak-check=yes --suppressions=/usr/lib/valgrind/tifiles2.supp ./test_tifiles_2

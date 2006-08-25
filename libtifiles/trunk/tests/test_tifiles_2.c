@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 	test_ti82_backup_support();
 	test_ti82_regular_support();
 	test_ti82_group_support();
-	//test_ti82_ungroup_support();
+	test_ti82_ungroup_support();
 #endif
 
 	// TI83 support
@@ -325,7 +325,6 @@ int main(int argc, char **argv)
 	// TI83+ support
 #if 0
 	change_dir(PATH("ti84p"));
-	test_ti84p_backup_support();
 	test_ti84p_regular_support();
 	test_ti84p_group_support();
 	test_ti84p_ungroup_support();	
@@ -371,12 +370,12 @@ int main(int argc, char **argv)
 #endif
 
 	// Add/Del files
-#if 0
+#if 1
 	change_dir(PATH("misc"));
 	test_ti8x_group_merge();
 #endif
 
-#if 1
+#if 0
 	change_dir(PATH("tig"));
 	test_tigroup();
 #endif

@@ -227,7 +227,6 @@ TIEXPORT int TICALL tifiles_group_files(char **src_filenames, const char *dst_fi
 tgf:
   tifiles_content_delete_group(src);
   tifiles_content_delete_regular(dst);
-  free(dst);
 
   return 0;
 }
