@@ -1,8 +1,5 @@
 SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
-Run './configure --enable-static=yes --enable-shared=no' for use with
-	ValGrind. Run 'valgrind --tool=memcheck --leak-check=yes ./test'
-
 Log:
 
 - 07/07/2006, version 0.0.5: roms
