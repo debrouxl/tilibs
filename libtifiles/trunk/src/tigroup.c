@@ -789,7 +789,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 	for (i = 0; i < gi.number_entry; i++)
     {
 		FILE *f;
-		gchar *filename;	// beware: mask global 'filename' !
+		gchar *fname;
 		gchar *utf8;
 		gchar *gfe;
 
@@ -812,11 +812,11 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 		// extract/uncompress into temporary file
 		utf8 = g_locale_to_utf8(filename_inzip, -1, NULL, NULL, NULL);
 		gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);		
-		filename = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, gfe, NULL);
+		fname = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, gfe, NULL);
 		g_free(utf8);
 		g_free(gfe);
 
-		f = gfopen(filename, "wb");
+		f = gfopen(fname, "wb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;
@@ -849,26 +849,26 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 
 		// add to TigContent
 		{
-			content->model = tifiles_file_get_model(filename);
+			content->model = tifiles_file_get_model(fname);
 
-			if(tifiles_file_is_regular(filename))
+			if(tifiles_file_is_regular(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), tifiles_file_get_model(fname));
 				int ret;
 
-				ret = tifiles_file_read_regular(filename, entry->content.regular);
-				if(ret) { free(entry); unlink(filename); g_free(filename); goto tfrt_exit; }
+				ret = tifiles_file_read_regular(fname, entry->content.regular);
+				if(ret) { free(entry); unlink(fname); g_free(fname); goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
 			}
-			else if(tifiles_file_is_flash(filename))
+			else if(tifiles_file_is_flash(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(filename), tifiles_file_get_model(filename));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), tifiles_file_get_model(fname));
 				int ret;
 
-				ret = tifiles_file_read_flash(filename, entry->content.flash);
-				if(ret) { free(entry); unlink(filename); g_free(filename); goto tfrt_exit; }
+				ret = tifiles_file_read_flash(fname, entry->content.flash);
+				if(ret) { free(entry); unlink(fname); g_free(fname); goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
@@ -878,8 +878,8 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 				// skip
 			}
 		}
-		unlink(filename);
-		g_free(filename);
+		unlink(fname);
+		g_free(fname);
 
 		// next file
 		if ((i+1) < gi.number_entry)
@@ -891,7 +891,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 				goto tfrt_exit;
 			}
 		}
-	}	
+    }	
 
 	// Close
 tfrt_exit:
@@ -957,30 +957,30 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
 		unsigned long crcFile=0;
 		int size_read;
 		TigEntry* entry = *ptr;
-		char *filename;	// beware: mask global 'filename' !
+		char *fname = NULL;
 
 		// ZIP archives don't like greek chars
-		filename = ticonv_gfe_to_zfe(content->model, entry->filename);
+		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
 
 		// write TI file into tmp folder
 		if(entry->type == TIFILE_FLASH)
 		{
-			TRYC(tifiles_file_write_flash(filename, entry->content.flash));
+			TRYC(tifiles_file_write_flash(fname, entry->content.flash));
 		}
 		else
 		{	
-			TRYC(tifiles_file_write_regular(filename, entry->content.regular, NULL));
+			TRYC(tifiles_file_write_regular(fname, entry->content.regular, NULL));
 		}
 
 		// missing tmp file !
-		f = gfopen(filename, "rb");
+		f = gfopen(fname, "rb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;
 			goto tfwt_exit;
 		}
-		strcpy(filenameinzip, filename);
-		g_free(filename);
+		strcpy(filenameinzip, fname);
+		g_free(fname);
 
 		// update time stamp (to do ?)
 		zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
