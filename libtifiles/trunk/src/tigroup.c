@@ -734,6 +734,8 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
  *
  * This function load & TiGroup and place its content into content.
  *
+ * The temporary folder is used by this function to store temporary files.
+ * 
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
 TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
@@ -752,7 +754,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 	// Open ZIP archive
 	uf = unzOpen(filename);
 	if (uf == NULL)
-    {
+	{
 		printf("Can't open this file: <%s>", filename);
 		return ERR_FILE_ZIP;
 	}
@@ -906,8 +908,10 @@ tfrt_exit:
  * @filename: the name of file to load.
  * @content: where to store content.
  *
- * This function store TiGroup contents to file. Please note that contents can contains no data.
- * In this case, the file is void but created.
+ * This function store TiGroup contents to file. Please note that contents 
+ * can contains no data. In this case, the file is void but created.
+ *
+ * The temporary folder is used by this function to store temporary files.
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
@@ -926,18 +930,16 @@ TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent 
         zlib_filefunc_def ffunc;
         fill_win32_filefunc(&ffunc);
 
-		g_chdir(g_get_tmp_dir());
         zf = zipOpen2(filename, APPEND_STATUS_CREATE, &(content->comment), &ffunc);
 #else
-		g_chdir(g_get_tmp_dir());
         zf = zipOpen(filename, APPEND_STATUS_CREATE);
 #endif
 	if (zf == NULL)
-    {
+	{
 		printf("Can't open this file: <%s>", filename);
-		g_chdir(old_dir);
 		return ERR_FILE_ZIP;
 	}
+	g_chdir(g_get_tmp_dir());
 
 	// Allocate buffer
 	buf = (void*)malloc(WRITEBUFFERSIZE);

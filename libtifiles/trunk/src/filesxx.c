@@ -558,6 +558,8 @@ TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
  **/
 TIEXPORT int TICALL tifiles_file_display(const char *filename)
 {
+    if (tifiles_file_is_tigroup(filename))
+	return tifiles_file_display_tigroup(filename);
 #if !defined(DISABLE_TI8X)
     if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 	return ti8x_file_display(filename);
