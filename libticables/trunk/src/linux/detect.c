@@ -287,7 +287,7 @@ int check_for_root(void)
 
 int check_for_tty(const char *devname)
 {
-    struct serial_struct serinfo;
+    struct serial_struct serinfo = { 0 };
     int fd;
 
     // check for node usability
