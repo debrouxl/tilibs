@@ -147,7 +147,8 @@ extern int usb_probe_devices(int **list);
  * @array: address of a NULL-terminated allocated array of integers (PIDs).
  * @length: number of detected USB devices.
  *
- * Returns the list of detected USB PIDs. Note that list is in the same order as PORT#x.
+ * Returns the list of detected USB PIDs. Note that list is in the 
+ * same order as PORT#x.
  * The array must be freed when no longer used.
  *
  * Return value: 0 if successful, an error code otherwise.

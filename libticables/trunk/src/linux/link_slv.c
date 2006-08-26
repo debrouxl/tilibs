@@ -210,8 +210,7 @@ static usb_infos tigl_infos[] =
 };
 
 // list of devices found 
-static usb_infos tigl_devices[MAX_CABLES];
-static int ndevices = 0;
+static usb_infos tigl_devices[MAX_CABLES+1];
 
 // internal structure for holding data
 typedef struct
@@ -261,10 +260,10 @@ static int tigl_find(void)
 {
     struct usb_bus    *bus;
     struct usb_device *dev;
-    int i;
-    
-    memset(tigl_devices, MAX_CABLES+1, sizeof(usb_infos));
-    ndevices = 0;
+    int i, j;
+
+    memset(tigl_devices, 0, sizeof(tigl_devices) / sizeof(usb_infos));
+    j = 0;
 
     /* loop taken from testlibusb.c */
     for (bus = usb_busses; bus; bus = bus->next)
@@ -278,20 +277,20 @@ static int tigl_find(void)
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
 			ticables_info(" found <%s> on #%i, version <%x.%02x>", 
-				      tigl_get_product(dev), i, 
+				      tigl_get_product(dev), j+1, 
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 
-			memcpy(&tigl_devices[ndevices], &tigl_infos[i], 
+			memcpy(&tigl_devices[j], &tigl_infos[i], 
 			       sizeof(usb_infos));
-			tigl_devices[ndevices++].dev = dev;
+			tigl_devices[j++].dev = dev;
 		    }
 		}
 	    }
 	}
     }
 
-    return ndevices;
+    return j;
 }
 
 static int tigl_enum(void)
@@ -869,7 +868,7 @@ TIEXPORT int TICALL usb_probe_devices(int **list)
     TRYC(tigl_enum());
 
     *list = (int *)calloc(MAX_CABLES+1, sizeof(int));
-    for( i =0; i < MAX_CABLES; i++)
+    for(i = 0; i < MAX_CABLES; i++)
         (*list)[i] = tigl_devices[i].pid;
 
     return 0;
