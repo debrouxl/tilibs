@@ -151,10 +151,13 @@ static int recv_var(CalcHandle* h)
 	if(ret < 1)
 		return 0;
 
-	printf("Enter folder name: ");
-	ret = scanf("%1023s", ve.folder);
-	if(ret < 1)
+	if(tifiles_calc_is_ti9x(h->model))
+	{
+	    printf("Enter folder name: ");
+	    ret = scanf("%1023s", ve.folder);
+	    if(ret < 1)
 		return 0;
+	}
 
 	printf("Enter variable name: ");
 	ret = scanf("%1023s", ve.name);
@@ -198,7 +201,19 @@ static int recv_var_ns(CalcHandle* h)
 static int del_var(CalcHandle* h)
 {
 	VarEntry ve = {};
+	int ret;
 
+	if(tifiles_calc_is_ti9x(h->model))
+        {
+            printf("Enter folder name: ");
+            ret = scanf("%1023s", ve.folder);
+            if(ret < 1) return 0;
+        }
+
+	printf("Enter variable name: ");
+	ret = scanf("%1023s", ve.name);
+	if(ret < 1) return 0;
+	    
 	TRYF(ticalcs_calc_del_var(h, &ve));
 	return 0;
 }
@@ -360,14 +375,12 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	//cable = ticables_handle_new(CABLE_BLK, PORT_2);
-	//cable = ticables_handle_new(CABLE_VTI, PORT_2);
 	cable = ticables_handle_new(CABLE_SLV, PORT_1);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI83);
+	calc = ticalcs_handle_new(CALC_TI84P);
 	if(calc == NULL)
 		return -1;
 

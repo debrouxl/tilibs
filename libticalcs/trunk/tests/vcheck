@@ -1,0 +1,3 @@
+#!/bin/sh
+make
+valgrind --tool=memcheck --leak-check=yes --suppressions=/usr/lib/valgrind/glibc-2.3.supp --suppressions=/usr/lib/valgrind/ticalcs2.supp ./test_ticalcs_2
