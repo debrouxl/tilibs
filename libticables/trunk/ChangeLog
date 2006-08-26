@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 26/08/2006, version 0.1.4: roms
+	- checked with ValGring, tested and validated.
+	
 - 11/07/2006, version 0.1.3: roms
 	- requires TiglUsb.dll version 3.6 due to Win98/Me/2k fix
 	- added function to detect whether USB support is available

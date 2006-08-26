@@ -1,0 +1,24 @@
+#
+# Some valgrind suppressions handy for ignoring stuff we don't care
+# about when valgrinding TILP framework
+#
+# Library paths and versions from debian unstable, YMMV
+#
+
+{
+	libglib-2.0
+  	Memcheck:Leak
+	fun:*
+}
+
+{
+	ld-2.3
+	Memcheck:Overlap
+	fun:*
+}
+
+{
+	libc-2.3
+	Memcheck:Overlap
+	fun:*
+}
