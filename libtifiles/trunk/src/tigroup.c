@@ -861,7 +861,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 				int ret;
 
 				ret = tifiles_file_read_regular(fname, entry->content.regular);
-				if(ret) { free(entry); unlink(fname); g_free(fname); goto tfrt_exit; }
+				if(ret) { free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
@@ -872,7 +872,7 @@ TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *
 				int ret;
 
 				ret = tifiles_file_read_flash(fname, entry->content.flash);
-				if(ret) { free(entry); unlink(fname); g_free(fname); goto tfrt_exit; }
+				if(ret) { free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
