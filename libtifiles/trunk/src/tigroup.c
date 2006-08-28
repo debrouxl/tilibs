@@ -416,8 +416,6 @@ TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
  * Group several #FileContent/#FlashContent structures into a single one.
  * Must be freed when no longer used by a call to #tifiles_content_delete_tigroup.
  *
- * Note: dst_content can't be empty, it must contain at least one entry!
- *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
 TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
@@ -435,9 +433,11 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		for (n = 0; src_contents2[n] != NULL; n++);
 
 	if(src_contents2)
-		model = src_contents2[0]->model;
+		if(*src_contents2)
+			model = src_contents2[0]->model;
 	if(src_contents1)
-		model = src_contents1[0]->model;	// FileContent is more precise than FlashContent
+		if(src_contents1)
+			model = src_contents1[0]->model;	// FileContent is more precise than FlashContent
 
 	content = tifiles_content_create_tigroup(model, m+n);
 
@@ -541,8 +541,6 @@ TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileConte
  * @dst_filename: the filename where to store the TiGroup.
  *
  * Group several TI files (regular/flash) into a single one (TiGroup file).
- *
- * Note: dst_filename can't be empty, it must contain at least one file!
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
