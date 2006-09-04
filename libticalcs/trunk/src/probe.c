@@ -230,9 +230,24 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 
 		break;
 	}
+
+	// test for TI73
+	if(!err)
+	{
+		if(host == TI73_PC)
+		{
+			*model = CALC_TI73;
+			return 0;
+		}
+		else if(host == TI92_PC)
+		{
+			*model = CALC_TI92;
+			return 0;
+		}
+	}
 	
 	// test for TI92 (09 68 00 00 -> 89 56 00 00)
-	if(err)
+	else if(err)
 	{
 		ticalcs_info(_("Check for TI92... "));
 		ticables_cable_reset(handle->cable);

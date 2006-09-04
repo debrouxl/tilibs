@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 04/09/2006, version 0.2.7: roms
+	- fixed TI73 probing
+
 - 26/08/2006, version 0.2.6: roms
 	- checked with ValGring, tested and validated.
 	
