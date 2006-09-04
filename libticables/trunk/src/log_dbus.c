@@ -66,6 +66,9 @@ int log_dbus_stop(void)
 {
 	char *r;
 
+	if(!ifn || ! ofn)
+		return 0;
+
 	r = strrchr(ifn, '.');
 	if(r) *r = '\0';
 
