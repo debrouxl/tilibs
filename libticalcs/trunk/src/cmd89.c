@@ -60,7 +60,7 @@ static uint8_t pc_ti9x(CalcModel model)
 #define PC_TI9X pc_ti9x(handle->model)
 #define TI9X_BKUP TI89_BKUP
 
-static uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e };
+static uint8_t dbus_errors[] = { 0x03, 0x25, 0x1e, 0x21 };
 
 static int err_code(uint8_t *data)
 {
