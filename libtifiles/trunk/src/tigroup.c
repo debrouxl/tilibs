@@ -2,7 +2,8 @@
 /* $Id: grouped.c 1737 2006-01-23 12:54:47Z roms $ */
 
 /*  libtifiles - Ti File Format library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 1999-2006  Romain Lievin
+ *  Copyright (C) 2006  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -303,7 +304,7 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	return content->num_entries;
 }
 
-#ifdef __LINUX__
+#ifndef __WIN32__
 # define stricmp strcasecmp
 #endif
 
@@ -436,7 +437,7 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
 		if(*src_contents2)
 			model = src_contents2[0]->model;
 	if(src_contents1)
-		if(src_contents1)
+		if(*src_contents1)
 			model = src_contents1[0]->model;	// FileContent is more precise than FlashContent
 
 	content = tifiles_content_create_tigroup(model, m+n);
@@ -600,7 +601,7 @@ tgf:
 	for(i = 0; i < m; i++)
 		free(src1[i]);
 	free(src1);
-	for(i = 0; i < m; i++)
+	for(i = 0; i < n; i++)
 		free(src2[i]);
 	free(src2);
 	tifiles_content_delete_tigroup(dst);
