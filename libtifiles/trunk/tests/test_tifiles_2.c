@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-//#include <glib.h>
+#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef __WIN32__
@@ -1100,6 +1100,7 @@ int test_tigroup()
 {
 	TigContent *content = { 0 };
 	TigEntry te = { 0 };
+	char *name = g_filename_from_utf8("tig/p\xC3\xA9p\xC3\xA9.tig", -1, NULL, NULL, NULL);
 
 	char *array[2];
 	char files[2][1024];
@@ -1112,11 +1113,7 @@ int test_tigroup()
 #endif
 #if 0
 	printf("--> Testing TiGroup support (r/w)...\n");
-#ifdef __WIN32__
-	tifiles_file_display_tigroup(PATH("tig/p\xC3\xA9p\xC3\xA9.tig"));
-#else
-	tifiles_file_display_tigroup(PATH("tig/pépé.tig"));
-#endif
+	tifiles_file_display_tigroup(PATH(name));
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	tifiles_file_read_tigroup(PATH("tig/test.tig"), content);
