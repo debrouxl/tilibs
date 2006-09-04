@@ -496,7 +496,7 @@ TIEXPORT int TICALL tifiles_file_is_flash(const char *filename)
 
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
 #define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
-#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x04034b50
+#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
 
 /**
  * tifiles_file_is_tib:
