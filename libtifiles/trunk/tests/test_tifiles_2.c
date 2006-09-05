@@ -1111,10 +1111,11 @@ int test_tigroup()
 		tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
 		tifiles_content_delete_tigroup(content);
 #endif
-#if 0
+#if 1
 	printf("--> Testing TiGroup support (r/w)...\n");
 	tifiles_file_display_tigroup(PATH(name));
-
+#endif
+#if 0
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	tifiles_file_read_tigroup(PATH("tig/test.tig"), content);
 	
@@ -1137,7 +1138,7 @@ int test_tigroup()
 	tifiles_file_display_tigroup(PATH("tig/test2.tig"));
 	compare_files(PATH("tig/test.tig"), PATH2("tig/test2.tig"));
 #endif
-#if 1
+#if 0
 	printf("--> Testing TiGroup support (group/ungroup)...\n");
 	
 	strcpy(files[0], PATH("tig/str.89s"));
