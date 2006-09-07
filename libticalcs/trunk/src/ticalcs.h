@@ -57,6 +57,8 @@ extern "C" {
 #define VAR_NODE_NAME "Variables"
 #define APP_NODE_NAME "Applications"
 
+#define ERROR_ABORT	256	/* fixed in error.h */
+
 /**
  * CalcModel:
  *
