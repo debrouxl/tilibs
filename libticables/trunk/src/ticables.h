@@ -51,8 +51,8 @@ extern "C" {
 #define DFLT_TIMEOUT  15	/* 1.5 second */
 #define DFLT_DELAY    10	/* 10 micro-seconds */
 
-#define ERROR_READ_TIMEOUT	4
-#define ERROR_WRITE_TIMEOUT	6
+#define ERROR_READ_TIMEOUT	4	/* fixed in error.h */
+#define ERROR_WRITE_TIMEOUT	6	/* fixed in error.h */
 #define OPEN_DELAYED
 #define SLV_RESET
 

@@ -32,9 +32,9 @@ typedef enum
     ERR_ILLEGAL_ARG,
     
 	ERR_READ_ERROR,
-    ERR_READ_TIMEOUT=4,		// Must be 4
+    ERR_READ_TIMEOUT=4,		// exported in ticables.h
     ERR_WRITE_ERROR,
-    ERR_WRITE_TIMEOUT=6,	// Must be 6
+    ERR_WRITE_TIMEOUT=6,	// exported in ticables.h
     ERR_PROBE_FAILED,
     ERR_FLUSH_ERROR,
     
