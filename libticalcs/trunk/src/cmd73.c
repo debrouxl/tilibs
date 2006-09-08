@@ -440,7 +440,7 @@ int ti73_recv_ACK_h(CalcHandle* handle, uint16_t * status)
 
   if (status != NULL)
     *status = length;
-  else if (length != 0x0000)
+  else if (length != 0x0000)	// is an error code ? (=5 when app is rejected)
     return ERR_NACK;
 
   if (cmd != CMD_ACK)
