@@ -183,7 +183,8 @@ TIEXPORT VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 	if (dst->data == NULL)
 		return NULL;
 
-	memcpy(dst->data, src->data, dst->size);
+	if(src->data)
+		memcpy(dst->data, src->data, dst->size);
 
 	return dst;
 }

@@ -5,6 +5,9 @@ Log:
 	- tigroup.c: use #ifndef __WIN32__ instead of #ifdef __LINUX__ to check for strcasecmp vs. stricmp (kevin)
 	- tigroup.c: fixed code typos (missing asterisk, m instead of n) (kevin)
 
+- 08/09/2006, versin 0.2.8: roms
+	- fixed tifiles_ve_dup
+
 - 25/08/2006, version 0.2.7: roms
 	- checked with ValGring, tested and validated.
 	
