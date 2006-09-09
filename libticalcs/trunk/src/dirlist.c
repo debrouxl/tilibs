@@ -173,8 +173,12 @@ TIEXPORT void TICALL ticalcs_dirlist_display(TNode* tree)
     }
   }
   if (!i)
-    printf(_("  No variables"));
-
+  {
+	  if(!strcmp(info->type, VAR_NODE_NAME))
+		printf(_("| No variables     |\n"));
+	  else if(!strcmp(info->type, APP_NODE_NAME))
+		printf(_("| No applications  |\n"));
+  }
   printf(_("+------------------+----------+----+----+----------+----------+"));
   printf("\n");
 }
