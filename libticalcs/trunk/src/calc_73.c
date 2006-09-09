@@ -858,7 +858,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
 	snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
-	infos->battery = buf[4] == 1 ? 0 : 1;
+	infos->battery = (buf[4] & 1) ? 0 : 1;
 	infos->hw_version = buf[5];
 	switch(buf[5])
 	{
@@ -875,7 +875,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 	ticalcs_info(_("  HW: %i"), infos->hw_version);
-	ticalcs_info(_("  Battery: %s"), infos->battery ? "good" : "low");
+	ticalcs_info(_("  Battery: %s"), (infos->battery & 1) ? "low" : "good");
 
 	return 0;
 }

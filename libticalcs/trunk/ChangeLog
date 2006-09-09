@@ -6,6 +6,7 @@ Log:
 	- fixed TI73 probing
 	- added new TI89 error code (0x21: can't delete var)
 	- exported ERR_ABORT value
+	- fixed TI84+ battery status
 
 - 26/08/2006, version 0.2.6: roms
 	- checked with ValGring, tested and validated.
