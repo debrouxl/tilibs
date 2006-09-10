@@ -266,7 +266,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+2:
-	    strcpy(error_msg, _("Msg: can not delete application."));
+	    strcpy(error_msg, _("Msg: can not delete var/app from archive."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+3:
