@@ -248,6 +248,10 @@ case ERR_OUT_OF_MEMORY:
 		strcpy(error_msg, _("Msg: can not delete variable (locked/archived)."));
 		*message = g_strdup(error_msg);
     break;
+  case ERR_CALC_ERROR1+5:
+		strcpy(error_msg, _("Msg: FLASH application rejected (bad target model)."));
+		*message = g_strdup(error_msg);
+    break;
 
   case ERR_CALC_ERROR2:
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
