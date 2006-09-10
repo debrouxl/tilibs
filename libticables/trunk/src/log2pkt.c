@@ -195,7 +195,7 @@ int pkdecomp(const char *filename, int resync)
 			fgetc(fi);
     }
     num_bytes = i-1; // -1 due to EOF char
-    fprintf(stdout, "%i bytes read.\n", num_bytes);
+    //fprintf(stdout, "%i bytes read.\n", num_bytes);
 
 	// process data
 	for(i = 0; i < num_bytes;)
