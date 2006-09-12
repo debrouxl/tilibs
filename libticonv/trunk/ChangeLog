@@ -2,6 +2,9 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
+- 12/09/2006, version 0.0.6: roms
+	- fixed buffer overflow in ticonv_charset_utf16_to_ti
+
 - 07/07/2006, version 0.0.5: roms
 	- added 0x5d0x40 => IDList detokenization (TI84+)
 	- added ticonv_gfe_to_zfe for TiGroup support (ZIP archives don't like greek chars)

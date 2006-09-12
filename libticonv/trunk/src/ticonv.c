@@ -150,7 +150,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned
 {
 	char *ti; 
 
-	ti = g_malloc0(ticonv_utf16_strlen(utf16) + 1);	// upper bound
+	ti = g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
 	ticonv_charset_utf16_to_ti_s(model, utf16, ti);
 
 	return ti;

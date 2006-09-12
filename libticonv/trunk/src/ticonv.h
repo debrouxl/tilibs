@@ -45,7 +45,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCONV_VERSION "0.0.5"
+# define LIBCONV_VERSION "0.0.6"
 #else
 # define LIBCONV_VERSION VERSION
 #endif
