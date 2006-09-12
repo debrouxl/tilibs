@@ -286,7 +286,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+7:
-	    strcpy(error_msg, _("Msg: can't overwirte, variable is locked."));
+	    strcpy(error_msg, _("Msg: can't overwrite, variable is locked."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+8:
