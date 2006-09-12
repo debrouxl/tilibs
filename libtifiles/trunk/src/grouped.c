@@ -286,9 +286,12 @@ TIEXPORT int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_f
   return 0;
 
 tuf:
-  for(p = *dst_filenames; *p; p++)
-	  free(*p);
-  free(p);
+  if(dst_filenames != NULL)
+  {
+	  for(p = *dst_filenames; *p; p++)
+		  free(*p);
+	  free(p);
+  }
   tifiles_content_delete_regular(src);
   tifiles_content_delete_group(dst);
   return ret;
