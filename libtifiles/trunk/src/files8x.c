@@ -597,6 +597,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     if(fwrite_word(f, packet_length) < 0) goto tfwr;
     if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
     if(fwrite_byte(f, entry->type) < 0) goto tfwr;
+	memset(varname, 0, sizeof(varname));
 	ticonv_varname_to_tifile_s(content->model_dst, entry->name, varname);
     if (is_ti8586(content->model)) 
 	{
@@ -620,7 +621,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     sum += entry->type;
     if (is_ti8586(content->model))
       sum += strlen(entry->name);
-    sum += tifiles_checksum((uint8_t *)entry->name, name_length);
+    sum += tifiles_checksum((uint8_t *)varname, name_length);
 	if(content->model == CALC_TI86)
 		sum += (8 - name_length) * ' ';
     sum += MSB(entry->size);
