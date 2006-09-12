@@ -150,7 +150,9 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 /////////////----------------
 
-static uint16_t usb_errors[] = { 0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000e, 0x002b };
+static uint16_t usb_errors[] = { 
+	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000e, 
+	0x0012, 0x001c, 0x001d, 0x0022, 0x002b };
 
 static int err_code(VirtualPacket *pkt)
 {

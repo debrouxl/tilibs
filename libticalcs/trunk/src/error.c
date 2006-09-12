@@ -224,7 +224,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
-  case ERR_CALC_ERROR1:
+  case ERR_CALC_ERROR1:	// must be synch'ed with cmd89.c (static uint8_t dbus_errors[])
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -253,7 +253,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
-  case ERR_CALC_ERROR2:
+  case ERR_CALC_ERROR2:	// must be synch'ed with dusb_cmd.c (static uint16_t usb_errors[])
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -286,6 +286,22 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+7:
+	    strcpy(error_msg, _("Msg: can't overwirte, variable is locked."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+8:
+	    strcpy(error_msg, _("Msg: mode token too small."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+9:
+	    strcpy(error_msg, _("Msg: mode token too large."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+10:
+	    strcpy(error_msg, _("Msg: invalid parameter ID."));
+		*message = g_strdup(error_msg);
+    break;  
+  case ERR_CALC_ERROR2+11:
 	    strcpy(error_msg, _("Msg: battery low."));
 		*message = g_strdup(error_msg);
     break;
