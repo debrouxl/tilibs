@@ -1312,6 +1312,7 @@ TIEXPORT unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsigne
 
 	tmp = ticonv_utf8_to_utf16(ti);
 	memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
+	g_free(tmp);
 
 	return utf16;
 }
@@ -1327,7 +1328,13 @@ TIEXPORT unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsigne
  **/
 TIEXPORT char* TICALL ticonv_utf16_to_ti89tusb(const unsigned short *utf16, char *ti)
 {
-	return "";
+	char *tmp;
+
+	tmp = ticonv_utf16_to_utf8(utf16);
+	strcpy(ti, tmp);
+	g_free(tmp);
+
+	return ti;
 }
 
 ////////////////////////////////
