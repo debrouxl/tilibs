@@ -672,10 +672,16 @@ TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst
 
 	// release allocated memory
 tuf:
-	for(ptr1 = dst1; *ptr1; ptr1++)
-		tifiles_content_delete_regular(*ptr1);
-	for(ptr2 = dst2; *ptr2; ptr2++)
-		tifiles_content_delete_flash(*ptr2);
+	if(dst1)
+	{
+		for(ptr1 = dst1; *ptr1; ptr1++)
+			tifiles_content_delete_regular(*ptr1);
+	}
+	if(dst2)
+	{
+		for(ptr2 = dst2; *ptr2; ptr2++)
+			tifiles_content_delete_flash(*ptr2);
+	}
 	tifiles_content_delete_tigroup(src);
 
 	return ret;
