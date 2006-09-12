@@ -8,6 +8,7 @@ Log:
 	- exported ERR_ABORT value
 	- fixed TI84+ battery status
 	- updated/fixed TI86 dumper
+	- Titanium/USB didn't have the FTS_FOLDER flag
 
 - 26/08/2006, version 0.2.6: roms
 	- checked with ValGring, tested and validated.
