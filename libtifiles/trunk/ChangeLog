@@ -9,6 +9,7 @@ Log:
 	- fixed tifiles_ve_dup
 	- fixed grouped.c: check for NULL pointer
 	- fixed computation of checksum with TI8x files
+	- fixed tigroup.c: check for NULL pointer
 
 - 25/08/2006, version 0.2.7: roms
 	- checked with ValGring, tested and validated.
