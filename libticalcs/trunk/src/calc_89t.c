@@ -393,6 +393,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	strcpy(content->name, vr->name);
 	content->data_length = vr->size;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(vr->size);
+	content->data_type = vr->type;
+	content->device_type = DEVICE_TYPE_89;
 
 	memcpy(content->data_part, data, content->data_length);
 	free(data);

@@ -606,13 +606,21 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int i;
 	char *utf8;
 
-	content->model = handle->model;
-	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
-
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
 	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
+
+	content->model = handle->model;
+	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
+	content->data_type = vr->type;
+	switch(handle->model)
+	{
+	case CALC_TI89:
+	case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
+	case CALC_TI92P:
+	case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
+	}
 
 	TRYF(ti89_send_REQ(0x00, vr->type, vr->name));
 	TRYF(ti89_recv_ACK(NULL));

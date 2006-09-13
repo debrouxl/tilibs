@@ -387,7 +387,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->model = handle->model;
 	strcpy(content->name, vr->name);
 	content->data_type = vr->type;
-	content->device_type = 0x73;
+	content->device_type = DEVICE_TYPE_83P;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
 	content->pages = tifiles_fp_create_array(content->num_pages);
 
