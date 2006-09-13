@@ -250,6 +250,30 @@ tfrb:	// release on exit
 	return ERR_FILE_IO;
 }
 
+static int check_device_type(uint8_t id)
+{
+	const uint8_t types[] = { 0, DEVICE_TYPE_89, DEVICE_TYPE_92P };
+	int i;
+
+	for(i = 1; i <= sizeof(types)/sizeof(uint8_t); i++)
+		if(types[i] == id)
+			return i;
+
+	return 0;
+}
+
+static int check_data_type(uint8_t id)
+{
+	const uint8_t types[] = { 0, TI89_AMS, TI89_APPL, TI89_CERTIF, TI89_LICENSE  };
+	int i;
+
+	for(i = 1; i <= sizeof(types)/sizeof(uint8_t); i++)
+		if(types[i] == id)
+			return i;
+
+	return 0;
+}
+
 /**
  * ti9x_file_read_flash:
  * @filename: name of flash file to open.
@@ -332,6 +356,11 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		    if(fread_byte(f, &(content->data_type)) < 0) goto tfrf;
 		    if(fskip(f, 24) < 0) goto tfrf;
 		    if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
+
+			if(!check_device_type(content->device_type))
+				return ERR_INVALID_FILE;
+			if(!check_data_type(content->device_type))
+				return ERR_INVALID_FILE;
 
 			content->data_part = (uint8_t *) calloc(content->data_length, 1);
 			if (content->data_part == NULL) 
