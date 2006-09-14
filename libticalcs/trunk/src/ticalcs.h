@@ -393,19 +393,6 @@ typedef struct
 } CalcClock;
 
 /**
- * CalcDumpOptions:
- * @size: requested size of dump or 0 for automatic
- * @addr: address where dumping interrupted or address to resume or 0
- *
- * A structure used to pass arguments.
- **/
-typedef struct 
-{
-	CalcDumpSize	size;
-	uint32_t		addr;
-} CalcDumpArgs;
-
-/**
  * CalcUpdate:
  * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled

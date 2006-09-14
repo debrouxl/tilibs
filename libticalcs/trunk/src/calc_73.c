@@ -47,6 +47,7 @@
 #include "cmd73.h"
 #include "rom73.h"
 #include "rom83p.h"
+#include "romdump.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -613,9 +614,6 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
-extern int rom_dump(CalcHandle* h, FILE* f);
-extern int rom_dump_ready(CalcHandle* h);
-
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	const char *prgname = (handle->model == CALC_TI73) ? "romdump.73p" : "romdump.8Xp";
@@ -627,24 +625,11 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
         0x9D, 0xAE, 0xA6, 0xA9,     /* D, U, M, P */
 		0x86, 0x05 };               /* ), Enter */
 
-	// Copies ROM dump program into a file
-	f = fopen(prgname, "wb");
-	if (f == NULL)
-		return ERR_FILE_OPEN;
-	if ((handle->model == CALC_TI73)
-	    ? (fwrite(romDump73, sizeof(uint8_t), romDumpSize73, f) < romDumpSize73)
-	    : (fwrite(romDump8Xp, sizeof(uint8_t), romDumpSize8Xp, f) < romDumpSize8Xp))
-	{
-		fclose(f);
-		return ERR_SAVE_FILE;
-	}
-	if (fclose(f))
-		return ERR_SAVE_FILE;
-
-	// Transfer program to calc
-	handle->busy = 0;
-	TRYF(ticalcs_calc_send_var2(handle, MODE_NORMAL, prgname));
-	unlink(prgname);
+	// Send dumping program
+	if(handle->model == CALC_TI73)
+		{ TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73)); }
+	else
+		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
 
 	// Launch program by remote control
 	if (handle->model != CALC_TI73)
@@ -678,7 +663,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 			
 			//send RDY request ???
 			PAUSE(1000);
-			err = rom_dump_ready(handle);
+			err = rd_is_ready(handle);
 		}
 		while (err == ERROR_READ_TIMEOUT);
 	}
@@ -688,7 +673,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	err = rom_dump(handle, f);
+	err = rd_dump(handle, f);
 	if(err)
 	{
 		fclose(f);

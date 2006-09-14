@@ -265,7 +265,7 @@ int rom_send_ERR(CalcHandle* handle)
 
 // --- Dumping Layer
 
-int rom_dump(CalcHandle* h, FILE* f)
+int rd_dump(CalcHandle* h, FILE* f)
 {
 	CalcHandle* handle = h;
 	int err = 0;
@@ -353,10 +353,39 @@ exit:
 	return err;
 }
 
-int rom_dump_ready(CalcHandle* h)
+int rd_is_ready(CalcHandle* h)
 {
 	TRYF(rom_send_RDY(h));
 	TRYF(rom_recv_RDY(h));
+
+	return 0;
+}
+
+int rd_send(CalcHandle *h, const char *prgname, uint16_t size, uint8_t *data)
+{
+	FILE *f;
+
+	f = fopen(prgname, "wb");
+	if (f == NULL)
+		return ERR_FILE_OPEN;
+
+	if(fwrite(data, sizeof(uint8_t), size, f) < size)
+	{
+		fclose(f);
+		unlink(prgname);
+		return ERR_SAVE_FILE;
+	}
+
+	if(fclose(f))
+	{
+		unlink(prgname);
+		return ERR_SAVE_FILE;
+	}
+
+	// Transfer program to calc
+	h->busy = 0;
+	TRYF(ticalcs_calc_send_var2(h, MODE_NORMAL, prgname));
+	unlink(prgname);
 
 	return 0;
 }

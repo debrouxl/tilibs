@@ -44,6 +44,7 @@
 #include "dbus_pkt.h"
 #include "cmd82.h"
 #include "rom82.h"
+#include "romdump.h"
 
 #ifdef __WIN32__
 #undef snprintf
@@ -384,31 +385,13 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
-extern int rom_dump(CalcHandle* h, FILE* f);
-extern int rom_dump_ready(CalcHandle* h);
-
 static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	const char *prgname = "romdump.82p";
 	FILE *f;
 	int err;
 
-	// Copies ROM dump program into a file
-	f = fopen(prgname, "wb");
-	if (f == NULL)
-		return ERR_FILE_OPEN;
-	if (fwrite(romDump82, sizeof(unsigned char), romDumpSize82, f) < romDumpSize82)
-	{
-		fclose(f);
-		return ERR_SAVE_FILE;
-	}
-	if (fclose(f))
-		return ERR_SAVE_FILE;
-
-	// Transfer program to calc
-	handle->busy = 0;
-	TRYF(ticalcs_calc_send_var2(handle, MODE_SEND_ONE_VAR, prgname));
-	unlink(prgname);
+	// Send dumping program
+	TRYF(rd_send(handle, "romdump.82p", romDumpSize82, romDump82));
 	PAUSE(1000);
 
 	// Wait for user's action (execing program)
@@ -423,7 +406,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		
 		//send RDY request ???
 		PAUSE(1000);
-		err = rom_dump_ready(handle);
+		err = rd_is_ready(handle);
 	}
 	while (err == ERROR_READ_TIMEOUT);
 
@@ -432,7 +415,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	if (f == NULL)
 		return ERR_OPEN_FILE;
 
-	err = rom_dump(handle, f);
+	err = rd_dump(handle, f);
 	if(err)
 	{
 		fclose(f);
