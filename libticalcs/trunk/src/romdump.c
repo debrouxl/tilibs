@@ -265,8 +265,9 @@ int rom_send_ERR(CalcHandle* handle)
 
 // --- Dumping Layer
 
-int rd_dump(CalcHandle* h, FILE* f)
+int rd_dump(CalcHandle* h, const char *filename)
 {
+	FILE *f;
 	CalcHandle* handle = h;
 	int err = 0;
 	uint32_t size;
@@ -274,6 +275,10 @@ int rd_dump(CalcHandle* h, FILE* f)
 	uint16_t length;
 	uint32_t i;
 	uint8_t data[65536];
+
+	f = fopen(filename, "wb");
+	if (f == NULL)
+		return ERR_OPEN_FILE;
 
 	sprintf(update_->text, "Receiving data...");
 	update_label();
@@ -350,6 +355,7 @@ exit:
 	TRYF(rom_send_EXIT(h));
 	TRYF(rom_recv_EXIT(h));
 
+	fclose(f);
 	return err;
 }
 

@@ -2,6 +2,10 @@ SubVersion: $Id$
 	
 Log:
 
+- 14/09/2006, version 0.2.8: roms
+	- splitted ROM dumping into 2 parts (prgm sending and ROM receiving) so that user can have 
+		time to enter required commands
+
 - 04/09/2006, version 0.2.7: roms
 	- fixed TI73 probing
 	- added new TI89 error code (0x21: can't delete var)

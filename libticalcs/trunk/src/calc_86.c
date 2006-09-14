@@ -432,9 +432,17 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
-static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+static int		dump_rom_1	(CalcHandle* handle)
 {
-	FILE *f;
+	// Send dumping program
+	TRYF(rd_send(handle, "romdump.86p", romDumpSize86, romDump86));
+	PAUSE(1000);
+
+	return 0;
+}
+
+static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+{
 	int err;
 	//uint16_t keys[] = { 
 	//    0x76, 0x08, 0x08, 		/* Quit, Clear, Clear,	*/
@@ -464,18 +472,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	while (err == ERROR_READ_TIMEOUT);
 
 	// Get dump
-	f = fopen(filename, "wb");
-	if (f == NULL)
-		return ERR_OPEN_FILE;
+	TRYF(rd_dump(handle, filename));
 
-	err = rd_dump(handle, f);
-	if(err)
-	{
-		fclose(f);
-		return err;
-	}
-
-	fclose(f);
 	return 0;
 }
 
@@ -539,7 +537,8 @@ const CalcFncts calc_86 =
 	&recv_flash,
 	&send_flash,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,

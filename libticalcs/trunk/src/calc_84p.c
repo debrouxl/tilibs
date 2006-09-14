@@ -585,7 +585,11 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
-static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+static int		dump_rom_1	(CalcHandle* handle)
+{
+	return 0;
+}
+static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	return 0;
 }
@@ -880,7 +884,8 @@ const CalcFncts calc_84p_usb =
 	&recv_flash,
 	&send_os,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,

@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "0.2.7"
+# define LIBCALCS_VERSION "0.2.8"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -554,7 +554,8 @@ struct _CalcFncts
 	int		(*send_os)		(CalcHandle*, FlashContent*);
 	int		(*recv_idlist)	(CalcHandle*, uint8_t*);
 
-	int		(*dump_rom)		(CalcHandle*, CalcDumpSize, const char *filename);
+	int		(*dump_rom_1)	(CalcHandle*);
+	int		(*dump_rom_2)	(CalcHandle*, CalcDumpSize, const char *filename);
 
 	int		(*set_clock)	(CalcHandle*, CalcClock* clock);
 	int		(*get_clock)	(CalcHandle*, CalcClock* clock);
@@ -676,7 +677,8 @@ typedef struct
 	TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle*, FlashContent*);
 	TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
 
-	TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
+	TIEXPORT int TICALL ticalcs_calc_dump_rom_1(CalcHandle*);
+	TIEXPORT int TICALL ticalcs_calc_dump_rom_2(CalcHandle*, CalcDumpSize, const char *filename);
 
 	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
 	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
@@ -757,6 +759,7 @@ typedef struct
   /************************/
   /* Deprecated functions */
   /************************/
+	TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
 
 #ifdef TICALCS_DEPRECATED
 #endif

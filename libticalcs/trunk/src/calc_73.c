@@ -614,22 +614,25 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
-static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+static int		dump_rom_1	(CalcHandle* handle)
 {
-	const char *prgname = (handle->model == CALC_TI73) ? "romdump.73p" : "romdump.8Xp";
-	FILE *f;
+	// Send dumping program
+	if(handle->model == CALC_TI73)
+		{ TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73)); }
+	else
+		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
+
+	return 0;
+}
+
+static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+{
 	int err, i;
 	uint16_t keys[] = { 
         0x40, 0x09, 0x09, 0xFC9C,	/* Quit, Clear, Clear, Asm( */
         0xDA, 0xAB, 0xA8, 0xA6,     /* prgm, R, O, M */
         0x9D, 0xAE, 0xA6, 0xA9,     /* D, U, M, P */
 		0x86, 0x05 };               /* ), Enter */
-
-	// Send dumping program
-	if(handle->model == CALC_TI73)
-		{ TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73)); }
-	else
-		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
 
 	// Launch program by remote control
 	if (handle->model != CALC_TI73)
@@ -669,18 +672,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	}
 
 	// Get dump
-	f = fopen(filename, "wb");
-	if (f == NULL)
-		return ERR_OPEN_FILE;
+	TRYF(rd_dump(handle, filename));
 
-	err = rd_dump(handle, f);
-	if(err)
-	{
-		fclose(f);
-		return err;
-	}
-
-	fclose(f);
 	return 0;
 }
 
@@ -983,7 +976,8 @@ const CalcFncts calc_73 =
 	&recv_flash,
 	&send_flash,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,
@@ -1019,7 +1013,8 @@ const CalcFncts calc_83p =
 	&recv_flash,
 	&send_flash,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,
@@ -1055,7 +1050,8 @@ const CalcFncts calc_84p =
 	&recv_flash,
 	&send_flash,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,

@@ -554,16 +554,47 @@ TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist
 }
 
 /**
- * ticalcs_calc_dump_rom:
+ * ticalcs_calc_dump_rom_1:
+ * @handle: a previously allocated handle
+ *
+ * Send a ROM dumping program to hand-held.
+ *
+ * Return value: 0 if no error, an error code otherwise.
+ **/
+TIEXPORT int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
+{
+	const CalcFncts *calc = handle->calc;
+	int ret = 0;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Sending ROM dumper:"));
+	handle->busy = 1;
+	if(calc->dump_rom_1)
+		ret = calc->dump_rom_1(handle);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_dump_rom_2:
  * @handle: a previously allocated handle
  * @size: optional size of dump
  * @filename: where to store the dump
  *
- * Send a ROM dumping program to hand-held and start dumping (if possible).
+ * Start dumping (if possible).
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
+TIEXPORT int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, 
 										  const char *filename)
 {
 	const CalcFncts *calc = handle->calc;
@@ -580,11 +611,30 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
 
 	ticalcs_info(_("Dumping ROM:"));
 	handle->busy = 1;
-	if(calc->dump_rom)
-		ret = calc->dump_rom(handle, size, filename);
+	if(calc->dump_rom_2)
+		ret = calc->dump_rom_2(handle, size, filename);
 	handle->busy = 0;
 
 	return ret;
+}
+
+/**
+ * ticalcs_calc_dump_rom:
+ * @handle: a previously allocated handle
+ * @size: optional size of dump
+ * @filename: where to store the dump
+ *
+ * Deprecated: send a ROM dumping program to hand-held and start dumping (if possible).
+ *
+ * Return value: 0 if ready else ERR_NOT_READY.
+ **/
+TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
+										  const char *filename)
+{
+	TRYC(ticalcs_calc_dump_rom_1(handle));
+	TRYC(ticalcs_calc_dump_rom_2(handle, size, filename));
+
+	return 0;
 }
 
 /**

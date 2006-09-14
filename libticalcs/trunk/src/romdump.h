@@ -22,7 +22,7 @@
 #ifndef __ROMDUMP_H__
 #define __ROMDUMP_H__
 
-int rd_dump(CalcHandle* h, FILE* f);
+int rd_dump(CalcHandle* h, const char *filename);
 int rd_is_ready(CalcHandle* h);
 int rd_send(CalcHandle *h, const char *prgname, unsigned int size, unsigned char *data);
 

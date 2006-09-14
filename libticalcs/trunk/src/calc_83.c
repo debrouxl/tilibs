@@ -398,9 +398,17 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	return 0;
 }
 
-static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+static int		dump_rom_1	(CalcHandle* handle)
 {
-	FILE *f;
+	// Send dumping program
+	TRYF(rd_send(handle, "romdump.83p", romDumpSize83, romDump83));
+    PAUSE(1500);
+
+	return 0;
+}
+
+static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
+{
 	int i, err = 0;
 	uint16_t keys[] = {				
 		0x40, 0x09, 0x09,			/* Quit, Clear, Clear, */
@@ -409,12 +417,7 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 		0xAE, 0xA6, 0xA9, 0x05		/* U, M, P, Enter */
 	};
 
-
-	// Send dumping program
-	TRYF(rd_send(handle, "romdump.83p", romDumpSize83, romDump83));
-	
 	// Launch program by remote control
-    PAUSE(1500);
     for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
     {
 		TRYF(send_key(handle, keys[i]));
@@ -434,18 +437,8 @@ static int		dump_rom	(CalcHandle* handle, CalcDumpSize size, const char *filenam
 	while (err == ERROR_READ_TIMEOUT);
 
 	// Get dump
-	f = fopen(filename, "wb");
-	if (f == NULL)
-		return ERR_OPEN_FILE;
+	TRYF(rd_dump(handle, filename));
 
-	err = rd_dump(handle, f);
-	if(err)
-	{
-		fclose(f);
-		return err;
-	}
-
-	fclose(f);
 	return 0;
 }
 
@@ -540,7 +533,8 @@ const CalcFncts calc_83 =
 	&recv_flash,
 	&send_flash,
 	&recv_idlist,
-	&dump_rom,
+	&dump_rom_1,
+	&dump_rom_2,
 	&set_clock,
 	&get_clock,
 	&del_var,
