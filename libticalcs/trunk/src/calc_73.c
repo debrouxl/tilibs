@@ -835,6 +835,12 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     TRYF(ti73_send_ACK());
 
 	memset(infos, 0, sizeof(CalcInfos));
+	if(handle->model == CALC_TI73)
+	{
+		snprintf(infos->os_version, 4, "%1x.%02x", buf[0], buf[1]);
+		snprintf(infos->boot_version, 4, "%1x.%02x", buf[2], buf[3]);
+	}
+	else
 	{
 		snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
 		snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
