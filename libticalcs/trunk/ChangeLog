@@ -5,6 +5,8 @@ Log:
 - 14/09/2006, version 0.2.8: roms
 	- splitted ROM dumping into 2 parts (prgm sending and ROM receiving) so that user can have 
 		time to enter required commands
+	- fixed TI73 OS sending
+	- fixed TI73 version (BCD encoded)
 
 - 04/09/2006, version 0.2.7: roms
 	- fixed TI73 probing

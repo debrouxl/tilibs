@@ -453,7 +453,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_VAR2(size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(NULL));
 
-			TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));
+			//TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));
+			TRYF(ti73_recv_CTS(10));	// is depending of OS version?
 			TRYF(ti73_send_ACK());
 
 			TRYF(ti73_send_XDP(size, data));
@@ -834,8 +835,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
     TRYF(ti73_send_ACK());
 
 	memset(infos, 0, sizeof(CalcInfos));
-	snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
-	snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
+	{
+		snprintf(infos->os_version, 4, "%1i.%02i", buf[0], buf[1]);
+		snprintf(infos->boot_version, 4, "%1i.%02i", buf[2], buf[3]);
+	}
 	infos->battery = (buf[4] & 1) ? 0 : 1;
 	infos->hw_version = buf[5];
 	switch(buf[5])
