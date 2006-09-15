@@ -9,7 +9,7 @@ Log:
 	- tigroup.c: fixed code typos (missing asterisk, m instead of n) (kevin)
 	- fixed computation of checksum with TI8x files
 	- fixed tigroup.c: check for NULL pointer
-	- check for device/data typy in FLASH file 
+	- check for device/data type in FLASH file 
 
 - 25/08/2006, version 0.2.7: roms
 	- checked with ValGring, tested and validated.

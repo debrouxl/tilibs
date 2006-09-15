@@ -438,7 +438,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 
 	  if(!check_device_type(content->device_type))
 				return ERR_INVALID_FILE;
-			if(!check_data_type(content->device_type))
+	  if(!check_data_type(content->data_type))
 				return ERR_INVALID_FILE;
 
 	  if(content->data_type == TI83p_CERTIF || content->data_type == TI83p_LICENSE)
