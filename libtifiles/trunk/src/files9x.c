@@ -359,7 +359,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 
 			if(!check_device_type(content->device_type))
 				return ERR_INVALID_FILE;
-			if(!check_data_type(content->device_type))
+			if(!check_data_type(content->data_type))
 				return ERR_INVALID_FILE;
 
 			content->data_part = (uint8_t *) calloc(content->data_length, 1);
