@@ -553,9 +553,9 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 		if(ptr->data_type == TI89_AMS) 
 		{
-		  if(handle->model == CALC_TI89T)
+		  if(handle->model == CALC_TI89T || handle->model == CALC_V200)
 		  {
-			TRYF(ti89_send_RTS2(ptr->data_length, ptr->data_type, ""));
+			TRYF(ti89_send_RTS2(ptr->data_length, ptr->data_type, ptr->hw_id));
 		  }
 		  else
 		  {

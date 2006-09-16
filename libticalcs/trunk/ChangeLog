@@ -7,6 +7,7 @@ Log:
 		time to enter required commands
 	- fixed TI73 OS sending
 	- fixed TI73 version (BCD encoded)
+	- fixed sending of FLASH OS on V200PLT (need to pass HW_ID).
 
 - 04/09/2006, version 0.2.7: roms
 	- fixed TI73 probing

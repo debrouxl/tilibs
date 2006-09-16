@@ -247,7 +247,7 @@ int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   return 0;
 }
 
-int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, uint8_t hw_id)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -260,11 +260,11 @@ int ti89_send_RTS2_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char
   buffer[5] = 0x00;
   buffer[6] = 0x08;
   buffer[7] = 0x00;
-  buffer[8] = 0x09;
+  buffer[8] = hw_id;	// 0x08 -> V200, 0x09 -> Titanium (Hardware ID)
   len = 9;
 
-  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
-	  varsize, varsize, vartype, varname);
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, hw_id=%02x)",
+	  varsize, varsize, vartype, hw_id);
   TRYF(dbus_send(handle, PC_TI9X, CMD_RTS, len, buffer));
 
   return 0;

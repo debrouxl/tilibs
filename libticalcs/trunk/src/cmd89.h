@@ -35,7 +35,7 @@ int ti89_send_KEY_h(CalcHandle*, uint16_t scancode);
 int ti89_send_EOT_h(CalcHandle*);
 int ti89_send_REQ_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 int ti89_send_RTS_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
-int ti89_send_RTS2_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);	// titanium
+int ti89_send_RTS2_h(CalcHandle*, uint32_t varsize, uint8_t vartype, uint8_t hw_id);
 int ti89_send_VER_h(CalcHandle*);
 int ti89_send_DEL_h(CalcHandle*, uint32_t varsize, uint8_t vartype, char *varname);
 
