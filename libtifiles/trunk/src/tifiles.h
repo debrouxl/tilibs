@@ -37,7 +37,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "0.2.8"
+# define LIBFILES_VERSION "0.2.9"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -271,6 +271,7 @@ typedef struct
  * @name: name of FLASH app or OS
  * @device_type: a device ID
  * @data_type: a type ID
+ * @hw_id: hardware ID (used on TI9x only, 0 otherwise)
  * @data_length: length of pure data
  * @data_part: pure FLASH data (TI9x only) or license or certificate
  * @num_pages: number of FLASH pages (TI8x only)
@@ -295,6 +296,7 @@ struct _FlashContent
   char			name[9];
   uint8_t		device_type;
   uint8_t		data_type;
+  uint8_t		hw_id;
   uint32_t		data_length;
 
   uint8_t*		data_part;	// TI9x only

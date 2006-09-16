@@ -354,7 +354,8 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		    if(fskip(f, 23) < 0) goto tfrf;
 		    if(fread_byte(f, &(content->device_type)) < 0) goto tfrf;
 		    if(fread_byte(f, &(content->data_type)) < 0) goto tfrf;
-		    if(fskip(f, 24) < 0) goto tfrf;
+		    if(fskip(f, 23) < 0) goto tfrf;
+			if(fread_byte(f, &(content->hw_id)) < 0) goto tfrf;
 		    if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
 
 			if(!check_device_type(content->device_type))
@@ -645,7 +646,8 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
     if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
     if(fwrite_byte(f, content->device_type) < 0) goto tfwf;
     if(fwrite_byte(f, content->data_type) < 0) goto tfwf;
-    if(fwrite_n_chars(f, 24, "") < 0) goto tfwf;
+    if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
+	if(fwrite_byte(f, content->hw_id) < 0)  goto tfwf;
     if(fwrite_long(f, content->data_length) < 0) goto tfwf;
     if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
   }
