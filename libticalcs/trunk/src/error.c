@@ -252,6 +252,10 @@ case ERR_OUT_OF_MEMORY:
 		strcpy(error_msg, _("Msg: FLASH application rejected (bad target model)."));
 		*message = g_strdup(error_msg);
     break;
+  case ERR_CALC_ERROR1+6:
+		strcpy(error_msg, _("Msg: malformed RTS packet (AMS version conflict)."));
+		*message = g_strdup(error_msg);
+    break;
 
   case ERR_CALC_ERROR2:	// must be synch'ed with dusb_cmd.c (static uint16_t usb_errors[])
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
