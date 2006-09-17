@@ -621,6 +621,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	case CALC_TI89T: content->device_type = DEVICE_TYPE_89; break;
 	case CALC_TI92P:
 	case CALC_V200:  content->device_type = DEVICE_TYPE_92P; break;
+	default: return ERR_FATAL_ERROR;
 	}
 
 	TRYF(ti89_send_REQ(0x00, vr->type, vr->name));
