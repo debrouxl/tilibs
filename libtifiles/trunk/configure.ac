@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libtifiles2, 0.2.8, [tilp-users@lists.sourceforge.net])
+AC_INIT(libtifiles2, 1.0.0, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.2.8"
+VERSION="1.0.0"
 AC_SUBST(VERSION)
 
 dnl Library version.
