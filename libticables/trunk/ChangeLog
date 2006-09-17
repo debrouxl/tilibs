@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log:
 
+- 17/09/2006, tagged as version 1.0.0: roms
+	
 - 26/08/2006, version 0.1.4: roms
 	- checked with ValGring, tested and validated.
 	
