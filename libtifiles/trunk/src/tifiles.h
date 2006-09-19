@@ -540,9 +540,6 @@ extern "C" {
   /* Deprecated functions */
   /************************/
 
-#ifdef TIFILES_DEPRECATED
-#endif
-
 #ifdef __cplusplus
 }
 #endif

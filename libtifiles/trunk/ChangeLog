@@ -3,6 +3,7 @@ SubVersion: $Id$
 Log:
 
 - 17/09/2006, tagged as version 1.0.0: roms
+	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
 	
 - 16/09/2006, version 0.2.9: roms
 	- added hw_id field to FlashContent structure
