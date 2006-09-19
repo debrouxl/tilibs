@@ -28,8 +28,8 @@ LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,2,5,0
- PRODUCTVERSION 0,2,5,0
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -47,7 +47,7 @@ BEGIN
             VALUE "Comments", "This lib is placed under LGPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "The TiLP Team\0"
             VALUE "FileDescription", "TI calculators library\0"
-            VALUE "FileVersion", "0.2.5\0"
+            VALUE "FileVersion", "1.0.0\0"
             VALUE "InternalName", "libticalcs2\0"
             VALUE "LegalCopyright", "Copyright © 1999-2006, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
