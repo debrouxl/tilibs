@@ -65,7 +65,9 @@ typedef enum
 } CalcModel;
 #endif
 
-/* Identifier for conversion method from one codeset to another.  */
+/* Identifier for conversion method from one codeset to another. Exported if 
+	ICONV_INTERFACE is enabled. */
+#if defined(TICONV_ICONV_INTERFACE)
 typedef struct
 {
 	CalcModel src_calc;
@@ -76,6 +78,7 @@ typedef struct
 	int lookahead_errno;
 	unsigned short lookahead;
 } ticonv_iconv_t;
+#endif
 
 /* Functions */
 
@@ -144,7 +147,8 @@ extern "C" {
   TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
   TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
 
-  // iconv.c
+  // iconv.c: exported if ICONV_INTERFACE has been enabled from configure.
+#if defined(TICONV_ICONV_INTERFACE)
   /* Allocate descriptor for code conversion from codeset FROMCODE to
      codeset TOCODE.  */
   TIEXPORT ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode);
@@ -157,6 +161,7 @@ extern "C" {
                                        size_t *__restrict outbytesleft);
   /* Free resources allocated for descriptor CD for code conversion.  */
   TIEXPORT int TICALL ticonv_iconv_close (ticonv_iconv_t cd);
+#endif
 
   /************************/
   /* Deprecated functions */
