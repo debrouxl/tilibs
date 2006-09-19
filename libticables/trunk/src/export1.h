@@ -99,4 +99,24 @@ extern "C" {
 // Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
 // .def file; MSVC uses _cdecl by default (__declspec)
 
+#ifndef TILIBS_DEPRECATED
+# ifdef __GNUC__
+#  if (__GNUC__>3) || (__GNUC__==3 && __GNUC_MINOR__>=3)
+#   define TILIBS_DEPRECATED __attribute__((deprecated))
+#  else /* not GCC >= 3.3 */
+#   define TILIBS_DEPRECATED
+#  endif /* GCC >= 3.3 */
+# else /* not __GNUC__ */
+#  ifdef _MSC_VER
+#   if _MSC_VER >= 1300
+#    define TILIBS_DEPRECATED __declspec((deprecated))
+#   else /* not _MSC_VER >= 1300 */
+#    define TILIBS_DEPRECATED
+#   endif /* _MSC_VER >= 1300 */
+#  else /* not _MSC_VER */
+#   define TILIBS_DEPRECATED
+#  endif /* _MSC_VER */
+# endif /* __GNUC__ */
+#endif /* TILIBS_DEPRECATED */
+
 #endif
