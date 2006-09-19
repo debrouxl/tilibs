@@ -162,9 +162,6 @@ extern "C" {
   /* Deprecated functions */
   /************************/
 
-#ifdef TICONV_DEPRECATED
-#endif
-
 #ifdef __cplusplus
 }
 #endif
