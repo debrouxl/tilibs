@@ -2,6 +2,8 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
+--enable-iconv-interface
+
 - 12/09/2006, version 0.0.6: roms
 	- fixed buffer overflow in ticonv_charset_utf16_to_ti
 	- implemented ticonv_utf16_to_ti89tusb call
