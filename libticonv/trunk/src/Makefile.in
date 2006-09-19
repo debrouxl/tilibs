@@ -58,9 +58,12 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libticonv_la_DEPENDENCIES =
+am__libticonv_la_SOURCES_DIST = ticonv.c charset.c tokens.c filename.c \
+	iconv.c;
+am__objects_1 =
 am_libticonv_la_OBJECTS = libticonv_la-ticonv.lo \
 	libticonv_la-charset.lo libticonv_la-tokens.lo \
-	libticonv_la-filename.lo libticonv_la-iconv.lo
+	libticonv_la-filename.lo $(am__objects_1)
 libticonv_la_OBJECTS = $(am_libticonv_la_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -74,7 +77,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libticonv_la_SOURCES)
-DIST_SOURCES = $(libticonv_la_SOURCES)
+DIST_SOURCES = $(am__libticonv_la_SOURCES_DIST)
 libticonvincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(libticonvinclude_HEADERS)
 ETAGS = etags
@@ -148,6 +151,8 @@ STRIP = @STRIP@
 TFDOCGEN = @TFDOCGEN@
 USE_DOCGEN_FALSE = @USE_DOCGEN_FALSE@
 USE_DOCGEN_TRUE = @USE_DOCGEN_TRUE@
+USE_ICONV_FALSE = @USE_ICONV_FALSE@
+USE_ICONV_TRUE = @USE_ICONV_TRUE@
 VERSION = @VERSION@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
@@ -197,6 +202,9 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CFLAGS = -Wall
+@USE_ICONV_TRUE@BUILT_SOURCES = ticonv.h
+@USE_ICONV_FALSE@opt = 
+@USE_ICONV_TRUE@opt = iconv.c;
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticonv.la
@@ -213,10 +221,10 @@ libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
 libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
-	ticonv.c charset.c tokens.c filename.c iconv.c
+	ticonv.c charset.c tokens.c filename.c $(opt)
 
-EXTRA_DIST = 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -287,7 +295,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticonv_la-charset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticonv_la-filename.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticonv_la-iconv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticonv_la-ticonv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticonv_la-tokens.Plo@am__quote@
 
@@ -339,13 +346,6 @@ libticonv_la-filename.lo: filename.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filename.c' object='libticonv_la-filename.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticonv_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticonv_la-filename.lo `test -f 'filename.c' || echo '$(srcdir)/'`filename.c
-
-libticonv_la-iconv.lo: iconv.c
-@am__fastdepCC_TRUE@	if $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticonv_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticonv_la-iconv.lo -MD -MP -MF "$(DEPDIR)/libticonv_la-iconv.Tpo" -c -o libticonv_la-iconv.lo `test -f 'iconv.c' || echo '$(srcdir)/'`iconv.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libticonv_la-iconv.Tpo" "$(DEPDIR)/libticonv_la-iconv.Plo"; else rm -f "$(DEPDIR)/libticonv_la-iconv.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='iconv.c' object='libticonv_la-iconv.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticonv_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticonv_la-iconv.lo `test -f 'iconv.c' || echo '$(srcdir)/'`iconv.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -450,13 +450,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libticonvincludedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -480,6 +482,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -546,6 +549,14 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-am uninstall-info-am uninstall-libLTLIBRARIES \
 	uninstall-libticonvincludeHEADERS
 
+@USE_ICONV_TRUE@ticonv.h: Makefile
+@USE_ICONV_TRUE@	echo "Use iconv !";
+@USE_ICONV_TRUE@	sed -i -e 's/#undef TICONV_ICONV_INTERFACE/#define TICONV_ICONV_INTERFACE/g' ticonv.h;
+
+#if USE_ICONV
+#else
+#sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' ticonv.h
+#endif
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

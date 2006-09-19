@@ -3,10 +3,10 @@ dnl $Id: configure.ac 1798 2006-02-03 08:27:54Z roms $
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticonv, 0.0.6, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticonv, 1.0.0, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="0.0.6"
+VERSION="1.0.0"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -150,6 +150,20 @@ case $host_os in
 	fi
 	;;
 esac
+
+#iconv emulation interface
+AC_ARG_ENABLE(iconv,
+  AC_HELP_STRING([--enable-iconv], [enable iconv interface]),
+  [cab_cv_enable_iconv=$enableval], [])
+AC_CACHE_CHECK([whether to enable experimental iconv interface],
+  [cab_cv_enable_iconv], [cab_cv_enable_iconv=no])
+#if test x$cab_cv_enable_logging = xyes; then
+#  use_iconv='yes'
+#else
+#  use_iconv=''
+#fi
+#AM_CONDITIONAL(USE_ICONV, test "$use_iconv")
+AM_CONDITIONAL(USE_ICONV, test x$cab_cv_enable_iconv = xyes)
 
 # Output.
 AC_OUTPUT

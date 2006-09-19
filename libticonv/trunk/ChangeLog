@@ -2,13 +2,13 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
---enable-iconv-interface
+- 19/09/2006, version 1.0.0: roms
+	- export iconv emulation interface if TICONV_ICONV_INTERFACE is defined (kevin's request)
 
 - 12/09/2006, version 0.0.6: roms
 	- fixed buffer overflow in ticonv_charset_utf16_to_ti
 	- implemented ticonv_utf16_to_ti89tusb call
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
-	- export iconv emulation interface if TICONV_ICONV_INTERFACE is defined (kevin's request)
 
 - 07/07/2006, version 0.0.5: roms
 	- added 0x5d0x40 => IDList detokenization (TI84+)

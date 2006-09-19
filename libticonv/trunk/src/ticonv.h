@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#undef TICONV_ICONV_INTERFACE
+
 // Need size_t declaration.
 #ifdef __cplusplus
 #include <cstddef>
@@ -65,7 +67,6 @@ typedef enum
 } CalcModel;
 #endif
 
-#define TICONV_ICONV_INTERFACE
 /* Identifier for conversion method from one codeset to another. Exported if 
 	ICONV_INTERFACE is enabled. */
 #if defined(TICONV_ICONV_INTERFACE)
