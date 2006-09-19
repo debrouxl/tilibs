@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 17/09/2006, tagged as version 1.0.0: roms
+	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
+
 - 14/09/2006, version 0.2.8: roms
 	- splitted ROM dumping into 2 parts (prgm sending and ROM receiving) so that user can have 
 		time to enter required commands
