@@ -2,16 +2,6 @@
 
 AM_CFLAGS = -Wall
 
-if USE_ICONV
- BUILT_SOURCES = ticonv.h
- opt = iconv.c;
-ticonv.h: Makefile
-	echo "Use iconv !";
-	sed -i -e 's/#undef TICONV_ICONV_INTERFACE/#define TICONV_ICONV_INTERFACE/g' ticonv.h;
-else
- opt =
-endif
-
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticonv.la
 libticonvincludedir = $(includedir)/tilp2
@@ -27,7 +17,7 @@ libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
 	ticonv.c charset.c tokens.c filename.c $(opt)
 
-#if USE_ICONV
-#else
-#sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' ticonv.h
-#endif
+if !USE_ICONV
+install-data-hook:
+	sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
+endif
