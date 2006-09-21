@@ -171,7 +171,6 @@ static struct usb_urb urb;
 #include "../error.h"
 #include "../gettext.h"
 #include "detect.h"
-#include "ioports.h"
 #include "../timeout.h"
 
 /* Constants */

@@ -25,8 +25,6 @@
 
 #if defined(__LINUX__)
 #include "linux/ioports.c"
-#elif defined(__MACOSX__)
-#include "macos/ioports.c"
 #elif defined(__BSD__)
 #include "linux/ioports.c"
 #elif defined(__WIN32__)
