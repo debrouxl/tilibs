@@ -4,7 +4,7 @@ Log:
 
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)
 	  as __MACOSX__ (kevin)
-	- some work towards getting OS X builds to compile again (kevin)
+	- updated OS X port to compile again (kevin)
 	
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)

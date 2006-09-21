@@ -27,19 +27,14 @@
 
 #ifndef NO_CABLE_SLV
 
-#if defined(__LINUX__) && defined(HAVE_LIBUSB)
-#include "linux/link_slv.c"
-
-#elif defined(__BSD__)
-#include "linux/link_slv.c"
-
-#elif defined(__WIN32__)
+#if defined(__WIN32__)
 #include "win32/link_slv.c"
 
-#elif defined(__MACOSX__)
-#include "macos/link_slv.c"
+#elif defined(HAVE_LIBUSB)
+#include "linux/link_slv.c"
 
 #else
+/* nothing */
 #endif
 
 #endif

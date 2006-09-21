@@ -133,7 +133,7 @@ TIEXPORT int TICALL ticables_is_usb_enabled(void)
 	return win32_detect_tiglusb();
 #elif defined(__LINUX__) && defined(HAVE_LIBUSB)
 	return !check_for_libusb();
-#elif defined(__MACOSX__)
+#elif defined(HAVE_LIBUSB)
 	return 1;
 #else
 	return 0;
@@ -157,7 +157,7 @@ extern int usb_probe_devices(int **list);
  **/
 TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
 {
-#if defined(__WIN32__) || (defined(__LINUX__) && defined(HAVE_LIBUSB)) || defined(__MACOSX__)
+#if defined(__WIN32__) || defined(HAVE_LIBUSB)
 	int i, *p;
 	int ret = 0;
 
