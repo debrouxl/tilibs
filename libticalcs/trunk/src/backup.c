@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "ticonv.h"
+#include <ticonv.h>
 #include "ticalcs.h"
 #include "logging.h"
 #include "error.h"

@@ -33,7 +33,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "ticonv.h"
+#include <ticonv.h>
 #include "ticalcs.h"
 #include "gettext.h"
 #include "logging.h"

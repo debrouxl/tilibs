@@ -25,14 +25,14 @@
 
 #include <string.h>
 
-#include "ticonv.h"
+#include <ticonv.h>
 #include "ticalcs.h"
 #include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
 #include "macros.h"
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 #pragma warning( disable : 4761 )
 #endif
 

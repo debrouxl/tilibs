@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ticonv.h"
+#include <ticonv.h>
 #include "gettext.h"
 #include "ticalcs.h"
 #include "logging.h"
