@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include <glib.h>
-#include "ticonv.h"
+#include <ticonv.h>
 #include "tifiles.h"
 #include "rwfile.h"
 
