@@ -37,7 +37,7 @@
 #include "win32/link_vti.c"
 
 #elif defined(__MACOSX__)
-#include "none.c"
+#include "linux/link_vti.c"
 
 #else
 #endif

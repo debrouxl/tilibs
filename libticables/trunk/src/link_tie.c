@@ -37,7 +37,7 @@
 #include "win32/link_tie.c"
 
 #elif defined(__MACOSX__)
-#include "none.c"
+#include "linux/link_tie.c"
 
 #else
 #endif
