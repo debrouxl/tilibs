@@ -1,5 +1,5 @@
-/* Hey EMACS -*- macos-c -*- */
-/* $Id$ */
+/* Hey EMACS -*- linux-c -*- */
+/* $Id: detect.h 1603 2005-09-04 15:37:42Z tijl $ */
 
 /*  libCables - Ti Link Cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
@@ -19,15 +19,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __MACOS_DETECT_H__
-#define __MACOS_DETECT_H__
+#ifndef __LINUX_DETECT_H__
+#define __LINUX_DETECT_H__
 
 #include <stdio.h>
 
-#include "cabl_def.h"
-
-int macos_detect_os(char **os_type);
-int macos_detect_port(CablePortInfo * pi);
-int macos_detect_resources(void);
+int check_for_root(void);
+int check_for_tty(const char *devname);
+int check_for_parport(const char *devname);
+int check_for_libusb(void);
 
 #endif
