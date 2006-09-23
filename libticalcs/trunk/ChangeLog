@@ -2,6 +2,10 @@ SubVersion: $Id$
 	
 Log:
 
+- 21/02/2006, version 1.0.1: roms
+	- use angle brackets to include installed ticonv.h (kevin).
+	- conditionalize #pragma warning on #ifdef _MSC_VER, not #ifdef __WIN32_ (kevin).
+
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
 
