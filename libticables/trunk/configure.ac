@@ -64,6 +64,16 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
+# USB cable support
+AC_ARG_ENABLE(libusb,
+  AC_HELP_STRING([--disable-libusb], [disable USB support]),
+  [use_libusb=$enableval], [use_libusb=yes])
+AC_CACHE_CHECK([whether to disable USB],
+  [use_libusb], [use_libusb=no])
+if test x$use_libusb = xyes; then
+  AC_DEFINE(USE_LIBUSB, 1, [Defined to disable USB support])
+fi
+
 dnl Don't detect & use libusb when cross-compiling from MinGW under Linux
 case $host_os in
 *mingw*)
@@ -200,19 +210,11 @@ esac
 # Logging
 AC_ARG_ENABLE(logging,
   AC_HELP_STRING([--enable-logging], [enable logging]),
-  [cab_cv_enable_logging=$enableval], [])
+  [enable_logging=$enableval], [])
 AC_CACHE_CHECK([whether to enable logging],
-  [cab_cv_enable_logging], [cab_cv_enable_logging=no])
-if test x$cab_cv_enable_logging = xyes; then
+  [enable_logging], [enable_logging=no])
+if test x$enable_logging = xyes; then
   AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
-fi
-
-# Custom cable support
-AC_ARG_ENABLE(link_slv,
-  AC_HELP_STRING([--disable-SilverLink], [disable SilverLink support]),
-  [use_link_slv=$enableval], [use_link_slv=yes])
-if test x$use_link_slv = xno; then
-  AC_DEFINE(NO_CABLE_SLV, 1, [Defined to disable the SilverLink support])
 fi
 
 # Output.
@@ -232,3 +234,13 @@ else
  echo "enable logging. Log files are generated in a user's home directory."
  echo ""
 fi
+
+if test x$use_libusb = xno; then
+ echo "USB support has been DISABLED on user's request."
+ echo ""
+fi
+
+if test x$LIBUSB_CONFIG = xno; then
+ echo "BEWARE: libusb can not be found. USB support has been DISABLED."
+ echo ""
+fi 
