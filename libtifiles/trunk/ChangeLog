@@ -2,6 +2,7 @@ SubVersion: $Id$
 
 Log:
 
+- 21/09/2006, version 1.0.1:
 	- fixed miniunz.c and minizip.c trying to include DOS/Win32 headers under OS X (kevin)
 	
 - 17/09/2006, tagged as version 1.0.0: roms
