@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log:
 
+	- fixed miniunz.c and minizip.c trying to include DOS/Win32 headers under OS X (kevin)
+	
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
 	
