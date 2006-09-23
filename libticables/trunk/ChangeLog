@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log:
 
-21/02/2006, version 0.1.4: kevin
+- 21/02/2006, version 1.0.1: kevin
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)
 	  as __MACOSX__
 	- updated OS X and BSD ports to compile again
