@@ -131,15 +131,13 @@ extern "C" {
   TIEXPORT char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src);
 
   // charset.c
-#ifndef __cplusplus
-  TIEXPORT const unsigned long TICALL ti73_charset[256];
-  TIEXPORT const unsigned long TICALL ti82_charset[256];
-  TIEXPORT const unsigned long TICALL ti83_charset[256];
-  TIEXPORT const unsigned long TICALL ti83p_charset[256];
-  TIEXPORT const unsigned long TICALL ti85_charset[256];
-  TIEXPORT const unsigned long TICALL ti86_charset[256];
-  TIEXPORT const unsigned long TICALL ti9x_charset[256];
-#endif
+  extern TIEXPORT const unsigned long TICALL ti73_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti82_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti83_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti83p_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti85_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti86_charset[256];
+  extern TIEXPORT const unsigned long TICALL ti9x_charset[256];
 
   // tokens.c
   TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src);
