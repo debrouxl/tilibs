@@ -207,7 +207,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 }
 
 #if 0
-TIEXPORT int TICALL test_hex_read(void)
+TIEXPORT2 int TICALL test_hex_read(void)
 {
 	const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\chembio.8Xk";
 	//const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\TI84Plus_OS.8Xu";

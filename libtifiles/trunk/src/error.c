@@ -38,7 +38,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT int TICALL tifiles_error_get(FileError number, char **message)
+TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 {
 	g_assert (message != NULL);
 

@@ -39,7 +39,7 @@ static char comment[64];	// 40 bytes max
  *
  * Return value: a static string.
  **/
-TIEXPORT const char* TICALL tifiles_comment_set_single(void)
+TIEXPORT2 const char* TICALL tifiles_comment_set_single(void)
 {
 	time_t t = time(NULL);
 	char *str = asctime(localtime(&t));
@@ -57,7 +57,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_single(void)
  *
  * Return value: a static string.
  **/
-TIEXPORT const char* TICALL tifiles_comment_set_group(void)
+TIEXPORT2 const char* TICALL tifiles_comment_set_group(void)
 {
 time_t t = time(NULL);
 	char *str = asctime(localtime(&t));
@@ -75,7 +75,7 @@ time_t t = time(NULL);
  *
  * Return value: a static string.
  **/
-TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
+TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void)
 {
 	time_t t = time(NULL);
 	char *str = asctime(localtime(&t));
@@ -93,7 +93,7 @@ TIEXPORT const char* TICALL tifiles_comment_set_backup(void)
  *
  * Return value: a _dynamically allocated_ .
  **/
-TIEXPORT const char* TICALL tifiles_comment_set_tigroup(void)
+TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void)
 {
 	time_t t = time(NULL);
 	char *str = asctime(localtime(&t));

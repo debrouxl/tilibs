@@ -43,7 +43,7 @@
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model)
+TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = calloc(1, sizeof(FileContent));
 
@@ -60,7 +60,7 @@ TIEXPORT FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_delete_regular(FileContent *content)
+TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 {
   int i;
 
@@ -88,7 +88,7 @@ TIEXPORT int TICALL tifiles_content_delete_regular(FileContent *content)
  *
  * Return value: none.
  **/
-TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
+TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 {
 	FileContent *dup;
 	int i;
@@ -117,7 +117,7 @@ TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *content)
+TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -148,7 +148,7 @@ TIEXPORT int tifiles_file_read_regular(const char *filename, FileContent *conten
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
+TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -173,7 +173,7 @@ TIEXPORT int tifiles_file_write_regular(const char *filename, FileContent *conte
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
+TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -198,7 +198,7 @@ TIEXPORT int TICALL tifiles_file_display_regular(FileContent *content)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
+TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
 	BackupContent* content = calloc(1, sizeof(BackupContent));
 
@@ -215,7 +215,7 @@ TIEXPORT BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_delete_backup(BackupContent *content)
+TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
 {
   assert(content != NULL);
 
@@ -246,7 +246,7 @@ TIEXPORT int TICALL tifiles_content_delete_backup(BackupContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *content)
+TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -272,7 +272,7 @@ TIEXPORT int tifiles_file_read_backup(const char *filename, BackupContent *conte
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *content)
+TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -297,7 +297,7 @@ TIEXPORT int tifiles_file_write_backup(const char *filename, BackupContent *cont
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
+TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -322,7 +322,7 @@ TIEXPORT int TICALL tifiles_file_display_backup(BackupContent *content)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
+TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
 	FlashContent* content = calloc(1, sizeof(FlashContent));
 
@@ -353,7 +353,7 @@ TIEXPORT FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
+TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
 	int i;
 	assert(content != NULL);
@@ -403,7 +403,7 @@ TIEXPORT int TICALL tifiles_content_delete_flash(FlashContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content)
+TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
@@ -434,7 +434,7 @@ TIEXPORT int tifiles_file_read_flash(const char *filename, FlashContent *content
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
+TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -465,7 +465,7 @@ TIEXPORT int tifiles_file_write_flash2(const char *filename, FlashContent *conte
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *content)
+TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *content)
 {
 	return tifiles_file_write_flash2(filename, content, NULL);
 }
@@ -477,7 +477,7 @@ TIEXPORT int tifiles_file_write_flash(const char *filename, FlashContent *conten
  *
  * Return value: none.
  **/
-TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
+TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 {
 	FlashContent *dup;
 	FlashContent *p, *q;
@@ -531,7 +531,7 @@ TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
+TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
 {
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
@@ -556,7 +556,7 @@ TIEXPORT int TICALL tifiles_file_display_flash(FlashContent *content)
  *
  * Return value: an error code, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_display(const char *filename)
+TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
 {
     if (tifiles_file_is_tigroup(filename))
 	return tifiles_file_display_tigroup(filename);

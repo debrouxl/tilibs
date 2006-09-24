@@ -125,7 +125,7 @@ int g_chdir (const gchar *path)
  *
  * Return value: the allocated block.
  **/
-TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model)
+TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model)
 {
 	TigEntry *entry;
 
@@ -150,7 +150,7 @@ TIEXPORT TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
+TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 {
 	free(entry->filename);
 
@@ -172,7 +172,7 @@ TIEXPORT int TICALL tifiles_te_delete(TigEntry* entry)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts)
+TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts)
 {
 	return calloc(nelts + 1, sizeof(TigEntry *));
 }
@@ -187,7 +187,7 @@ TIEXPORT TigEntry**	TICALL tifiles_te_create_array(int nelts)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
+TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
 {
 	return realloc(array, (nelts + 1) * sizeof(TigEntry *));
 }
@@ -200,7 +200,7 @@ TIEXPORT TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
+TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
 {
 	TigEntry** ptr;
 
@@ -221,7 +221,7 @@ TIEXPORT void			TICALL tifiles_te_delete_array(TigEntry** array)
  *
  * Return value: none.
  **/
-TIEXPORT void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
+TIEXPORT2 void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
 {
 	int m, n;
 	TigEntry **p;
@@ -250,7 +250,7 @@ TIEXPORT void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
  *
  * Return value: the number of entries.
  **/
-TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
+TIEXPORT2 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 {
 	int n = content->num_entries;
 
@@ -272,7 +272,7 @@ TIEXPORT int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
  *
  * Return value: the number of entries or -1 if not found.
  **/
-TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
+TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 {
 	int i, j;
 
@@ -317,7 +317,7 @@ TIEXPORT int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_filename)
+TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const char *dst_filename)
 {
 	CalcModel model;
 	FileClass type;
@@ -385,7 +385,7 @@ ttaf:	// release on exit
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const char *filename)
+TIEXPORT2 int TICALL tifiles_tigroup_del_file(TigEntry *entry,          const char *filename)
 {
 	TigContent* content = NULL;
 	int err = 0;
@@ -405,8 +405,8 @@ tfdf:
 
 // ---------------------------------------------------------------------------
 
-TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
-TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
+TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
+TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
 
 /**
  * tifiles_tigroup_contents:
@@ -419,7 +419,7 @@ TIEXPORT FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
+TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashContent **src_contents2, TigContent **dst_content)
 {
 	TigContent *content;
 	int i, m=0, n=0;
@@ -494,7 +494,7 @@ TIEXPORT int TICALL tifiles_tigroup_contents(FileContent **src_contents1, FlashC
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
+TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileContent ***dst_contents1, FlashContent ***dst_contents2)
 {
 	TigContent *src = src_content;
 	FileContent **dst1 = NULL;
@@ -545,7 +545,7 @@ TIEXPORT int TICALL tifiles_untigroup_content(TigContent *src_content, FileConte
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
+TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst_filename)
 {
 	FileContent **src1 = NULL;
 	FlashContent **src2 = NULL;
@@ -623,7 +623,7 @@ tgf:
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
+TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***dst_filenames)
 {
 	TigContent *src = NULL;
 	FileContent **ptr1, **dst1 = NULL;
@@ -699,7 +699,7 @@ tuf:
  *
  * Return value: the allocated block.
  **/
-TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int n)
+TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int n)
 {
 	TigContent* content = calloc(1, sizeof(FileContent));
 
@@ -718,7 +718,7 @@ TIEXPORT TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int 
  *
  * Return value: none.
  **/
-TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
+TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 {
 	int i, n;
 	
@@ -747,7 +747,7 @@ TIEXPORT int TICALL tifiles_content_delete_tigroup(TigContent *content)
  * 
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
+TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 {
 #ifdef HAVE_LIBZ
 	unzFile uf = NULL;
@@ -924,7 +924,7 @@ tfrt_exit:
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
+TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 {
 #ifdef HAVE_LIBZ
 	zipFile zf;
@@ -1071,7 +1071,7 @@ tfwt_exit:
  *
  * Return value: an error code if unsuccessful, 0 otherwise.
  **/
-TIEXPORT int TICALL tifiles_file_display_tigroup(const char *filename)
+TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 {
 #ifdef HAVE_LIBZ
 	unzFile uf = NULL;

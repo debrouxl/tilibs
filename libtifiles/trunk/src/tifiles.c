@@ -54,7 +54,7 @@ int tifiles_instance = 0;	// counts # of instances
  *
  * Return value: the handle count.
  **/
-TIEXPORT int TICALL tifiles_library_init()
+TIEXPORT2 int TICALL tifiles_library_init()
 {
 	char locale_dir[65536];
 	
@@ -106,7 +106,7 @@ TIEXPORT int TICALL tifiles_library_init()
  *
  * Return value: the handle count.
  **/
-TIEXPORT int TICALL tifiles_library_exit()
+TIEXPORT2 int TICALL tifiles_library_exit()
 {
   	return (--tifiles_instance);
 }
@@ -122,7 +122,7 @@ TIEXPORT int TICALL tifiles_library_exit()
  *
  * Return value: a string.
  **/
-TIEXPORT const char *TICALL tifiles_version_get(void)
+TIEXPORT2 const char *TICALL tifiles_version_get(void)
 {
 	return LIBFILES_VERSION;
 }

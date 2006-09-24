@@ -39,7 +39,7 @@
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_calc_is_ti8x(CalcModel model)
+TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
 {
   return ((model == CALC_TI73) || (model == CALC_TI82) ||
 	  (model == CALC_TI82) || (model == CALC_TI83) ||
@@ -56,7 +56,7 @@ TIEXPORT int TICALL tifiles_calc_is_ti8x(CalcModel model)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_calc_is_ti9x(CalcModel model)
+TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
 {
   return ((model == CALC_TI89) || (model == CALC_TI89T) ||
 	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
@@ -74,7 +74,7 @@ TIEXPORT int TICALL tifiles_calc_is_ti9x(CalcModel model)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
+TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
 {
 	if(tifiles_calc_is_ti8x(model) && tifiles_calc_is_ti8x(ref))
 		return !0;
@@ -92,7 +92,7 @@ TIEXPORT int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_has_folder(CalcModel calc_type)
+TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
@@ -107,7 +107,7 @@ TIEXPORT int TICALL tifiles_has_folder(CalcModel calc_type)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_is_flash(CalcModel calc_type)
+TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
 	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
@@ -124,7 +124,7 @@ TIEXPORT int TICALL tifiles_is_flash(CalcModel calc_type)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT int TICALL tifiles_has_backup(CalcModel calc_type)
+TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
 	  (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
@@ -142,7 +142,7 @@ TIEXPORT int TICALL tifiles_has_backup(CalcModel calc_type)
  *
  * Return value: the ckecksum.
  **/
-TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
+TIEXPORT2 uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
 {
   int i;
   uint16_t c = 0;
@@ -156,7 +156,7 @@ TIEXPORT uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
   return c;
 }
 
-TIEXPORT int tifiles_hexdump(uint8_t* ptr, unsigned int length)
+TIEXPORT2 int tifiles_hexdump(uint8_t* ptr, unsigned int length)
 {
 	return hexdump(ptr, length);
 }
@@ -251,7 +251,7 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
  *
  * Return value: a newly allocated string which must be freed when no longer used.
  **/
-TIEXPORT char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
+TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
 {
 	char *filename;
 

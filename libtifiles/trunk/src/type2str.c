@@ -33,7 +33,7 @@
  *
  * Return value: a string like "TI92+".
  **/
-TIEXPORT const char *TICALL tifiles_model_to_string(CalcModel model)
+TIEXPORT2 const char *TICALL tifiles_model_to_string(CalcModel model)
 {
   	switch (model) 
 	{
@@ -64,7 +64,7 @@ TIEXPORT const char *TICALL tifiles_model_to_string(CalcModel model)
  *
  * Return value: a calculator model.
  **/
-TIEXPORT CalcModel TICALL tifiles_string_to_model(const char *str)
+TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 {
 	if(!g_ascii_strcasecmp(str, "TI73"))
 		return CALC_TI73;
@@ -106,7 +106,7 @@ TIEXPORT CalcModel TICALL tifiles_string_to_model(const char *str)
  *
  * Return value: a string like "archived".
  **/
-TIEXPORT const char *TICALL tifiles_attribute_to_string(FileAttr attrb)
+TIEXPORT2 const char *TICALL tifiles_attribute_to_string(FileAttr attrb)
 {
   	switch (attrb) 
 	{
@@ -126,7 +126,7 @@ TIEXPORT const char *TICALL tifiles_attribute_to_string(FileAttr attrb)
  *
  * Return value: a variable attribute.
  **/
-TIEXPORT FileAttr TICALL tifiles_string_to_attribute(const char *str)
+TIEXPORT2 FileAttr TICALL tifiles_string_to_attribute(const char *str)
 {
 	if(!g_ascii_strcasecmp(str, _("none     ")))
 		return ATTRB_NONE;
@@ -148,7 +148,7 @@ TIEXPORT FileAttr TICALL tifiles_string_to_attribute(const char *str)
  *
  * Return value: a string like "backup".
  **/
-TIEXPORT const char *TICALL tifiles_class_to_string(FileClass klass)
+TIEXPORT2 const char *TICALL tifiles_class_to_string(FileClass klass)
 {
   	switch (klass) 
 	{
@@ -169,7 +169,7 @@ TIEXPORT const char *TICALL tifiles_class_to_string(FileClass klass)
  *
  * Return value: a file class.
  **/
-TIEXPORT FileClass TICALL tifiles_string_to_class(const char *str)
+TIEXPORT2 FileClass TICALL tifiles_string_to_class(const char *str)
 {
 	if(!g_ascii_strcasecmp(str, _("single")))
 		return TIFILE_SINGLE;
