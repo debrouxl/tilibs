@@ -1,8 +1,8 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+/*  libticonv - TI-charset <-> UTF-16 conversion routines
+ *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TICALCS2_EXPORT__
-#define __TICALCS2_EXPORT__
+#ifndef __TICONV_EXPORT__
+#define __TICONV_EXPORT__
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -30,36 +30,15 @@
 extern "C" {
 #endif
 
-/*
- * Choose one of these calling conventions (override compiler settings)
- */
-//#define FORCE_STDCALL
-//#define FORCE_C_CALL
-//#define FORCE_FASTCALL
-//#define FORCE_NONE
-
-/*
- * Defines one of the previous definitions for forcing a calling convention.
- * VB & Delphi users will enable FORCE_STDCALL.
- */
-#if defined(__WIN32__)
-# if defined(FORCE_STDCALL)
-#  define TICALL    __stdcall
-
-# elif defined(FORCE_C_CALL)
-#  define TICALL    __cdecl
-
-# elif defined(FORCE_FASTCALL)
-#  define TICALL    __fastcall
-
-# else
-#  define TICALL
-# endif
-#else
+/* 
+	Calling convention: default 
+*/
 # define TICALL
-#endif
 
-#if defined(HAVE_FVISIBILITY)// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
+/* 
+	Symbols exporting 
+*/
+#if defined(HAVE_FVISIBILITY)	// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
 # define TIEXPORT __attribute__ ((visibility("default")))
 
 #elif defined(__WIN32__)
@@ -72,21 +51,18 @@ extern "C" {
 
 # elif defined(_MSC_VER)		// MSVC 5.0 mini
 #  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS) || defined(TICONV_EXPORTS)
-#   define TIEXPORT __declspec(dllexport)
+#   define TIEXPORT	__declspec(dllexport)
 #  else
 #   define TIEXPORT __declspec(dllimport)
 #  endif
 
 # elif defined(__MINGW32__)		// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
 #  if defined(DLL_EXPORT)		// defined by the configure script
-#   define TIEXPORT __declspec(dllexport)
+#   define TIEXPORT	__declspec(dllexport)
 #  else
-#   define TIEXPORT extern
+#   define TIEXPORT __declspec(dllimport)
 #  endif
 # endif
-
-#elif defined(__LINUX__) || defined(__BSD__)	// GNU
-# define TIEXPORT extern
 
 #else
 # define TIEXPORT				// default
@@ -96,9 +72,9 @@ extern "C" {
 }
 #endif
 
-// Note: VB requires __sdtcall but __stdcall make entry points disappear -> 
-// .def file; MSVC uses _cdecl by default (__declspec)
-
+/* 
+	Symbols deprecating
+*/
 #ifndef TILIBS_DEPRECATED
 # ifdef __GNUC__
 #  if (__GNUC__>3) || (__GNUC__==3 && __GNUC_MINOR__>=3)
