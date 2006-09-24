@@ -454,7 +454,7 @@ const CableFncts cable_raw =
 //=======================
 
 // returns number of devices and list of PIDs (dynamically allocated)
-TIEXPORT int TICALL usb_probe_devices(int **list)
+TIEXPORT1 int TICALL usb_probe_devices(int **list)
 {
 	HANDLE	hDll;
 	TIGLUSB_PROBE2	dynProbe = NULL;

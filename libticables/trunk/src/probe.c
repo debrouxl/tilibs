@@ -49,7 +49,7 @@
  *
  * Return value: 0 if successful, ERR_NO_CABLE if no cables found.
  **/
-TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
+TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
 	CablePort port;
 	CableModel model, start, stop;
@@ -107,7 +107,7 @@ TIEXPORT int TICALL ticables_probing_do(int ***result, int timeout, ProbingMetho
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_probing_finish(int ***result)
+TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
 {
 	int i;
 
@@ -127,7 +127,7 @@ TIEXPORT int TICALL ticables_probing_finish(int ***result)
  *
  * Return value: !0 if available, 0 otherwise.
  **/
-TIEXPORT int TICALL ticables_is_usb_enabled(void)
+TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
 {
 #if defined(__WIN32__)
 	return win32_detect_tiglusb();
@@ -155,7 +155,7 @@ extern int usb_probe_devices(int **list);
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_get_usb_devices(int **list, int *len)
+TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 {
 #if defined(__WIN32__) || defined(HAVE_LIBUSB)
 	int i, *p;

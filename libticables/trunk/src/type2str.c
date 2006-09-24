@@ -31,7 +31,7 @@
  *
  * Return value: a string like "BlackLink".
  **/
-TIEXPORT const char *TICALL ticables_model_to_string(CableModel model)
+TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
 {
   	switch (model) 
 	{
@@ -57,7 +57,7 @@ TIEXPORT const char *TICALL ticables_model_to_string(CableModel model)
  *
  * Return value: a cable model.
  **/
-TIEXPORT CableModel TICALL ticables_string_to_model(const char *str)
+TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 {
 	if(!strcmp(str, "null"))
 		return CABLE_NUL;
@@ -91,7 +91,7 @@ TIEXPORT CableModel TICALL ticables_string_to_model(const char *str)
  *
  * Return value: a string like "#1".
  **/
-TIEXPORT const char *TICALL ticables_port_to_string(CablePort port)
+TIEXPORT1 const char *TICALL ticables_port_to_string(CablePort port)
 {
   	switch (port) 
 	{
@@ -112,7 +112,7 @@ TIEXPORT const char *TICALL ticables_port_to_string(CablePort port)
  *
  * Return value: a link port.
  **/
-TIEXPORT CablePort TICALL ticables_string_to_port(const char *str)
+TIEXPORT1 CablePort TICALL ticables_string_to_port(const char *str)
 {
 	if(!strcmp(str, "null"))
 		return PORT_0;
@@ -136,7 +136,7 @@ TIEXPORT CablePort TICALL ticables_string_to_port(const char *str)
  *
  * Return value: a string like "SilverLink".
  **/
-TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
+TIEXPORT1 const char *TICALL ticables_usbpid_to_string(UsbPid pid)
 {
   	switch (pid) 
 	{
@@ -155,7 +155,7 @@ TIEXPORT const char *TICALL ticables_usbpid_to_string(UsbPid pid)
  *
  * Return value: a Usb Product Id.
  **/
-TIEXPORT UsbPid TICALL ticables_string_to_usbpid(const char *str)
+TIEXPORT1 UsbPid TICALL ticables_string_to_usbpid(const char *str)
 {
 	if(!strcmp(str, "SilverLink"))
 		return PID_TIGLUSB;

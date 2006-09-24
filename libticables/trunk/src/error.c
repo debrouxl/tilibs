@@ -47,7 +47,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT int TICALL ticables_error_get(CableError number, char **message)
+TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 {
 	char *tmp;
 

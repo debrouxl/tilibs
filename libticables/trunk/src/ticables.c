@@ -87,7 +87,7 @@ int ticables_instance = 0;	// counts # of instances
  *
  * Return value: the instance count.
  **/
-TIEXPORT int TICALL ticables_library_init(void)
+TIEXPORT1 int TICALL ticables_library_init(void)
 {
     char locale_dir[65536];
 
@@ -149,7 +149,7 @@ TIEXPORT int TICALL ticables_library_init(void)
  *
  * Return value: the instance count.
  **/
-TIEXPORT int
+TIEXPORT1 int
 TICALL ticables_library_exit(void)
 {
   	return (--ticables_instance);
@@ -166,7 +166,7 @@ TICALL ticables_library_exit(void)
  *
  * Return value: a string.
  **/
-TIEXPORT const char *TICALL ticables_version_get(void)
+TIEXPORT1 const char *TICALL ticables_version_get(void)
 {
 	return LIBCABLES_VERSION;
 }
@@ -182,7 +182,7 @@ TIEXPORT const char *TICALL ticables_version_get(void)
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
+TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort port)
 {
 	CableHandle *handle = (CableHandle *)calloc(1, sizeof(CableHandle));
 	int i;
@@ -214,7 +214,7 @@ TIEXPORT CableHandle* TICALL ticables_handle_new(CableModel model, CablePort por
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 {
 	if(handle)
 	{
@@ -246,7 +246,7 @@ TIEXPORT int TICALL ticables_handle_del(CableHandle* handle)
  *
  * Return value: the previous timeout.
  **/
-TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
+TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
 	int old_timeout = handle->timeout;
 	handle->timeout = timeout;
@@ -278,7 +278,7 @@ TIEXPORT int TICALL ticables_options_set_timeout(CableHandle* handle, int timeou
  *
  * Return value: the previous delay.
  **/
-TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
+TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
 	int old_delay = handle->delay;
 	handle->delay = delay;
@@ -293,7 +293,7 @@ TIEXPORT int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
  *
  * Return value: the previous #CableModel value.
  **/
-TIEXPORT CableModel TICALL ticables_get_model(CableHandle* handle)
+TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
 {
 	return handle->model;
 }
@@ -306,7 +306,7 @@ TIEXPORT CableModel TICALL ticables_get_model(CableHandle* handle)
  *
  * Return value: a #CablePort value.
  **/
-TIEXPORT CablePort  TICALL ticables_get_port(CableHandle* handle)
+TIEXPORT1 CablePort  TICALL ticables_get_port(CableHandle* handle)
 {
 	return handle->port;
 }
@@ -319,7 +319,7 @@ TIEXPORT CablePort  TICALL ticables_get_port(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_handle_show(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_handle_show(CableHandle* handle)
 {
 	ticables_info(_("Link cable handle details:"));
 	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));

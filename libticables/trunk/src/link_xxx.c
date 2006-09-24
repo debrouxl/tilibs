@@ -38,7 +38,7 @@
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 
@@ -60,7 +60,7 @@ TIEXPORT int TICALL ticables_cable_open(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -87,7 +87,7 @@ TIEXPORT int TICALL ticables_cable_reset(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, int* result)
+TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
 {
 	const CableFncts *cable = handle->cable;
 	int opened = handle->open;
@@ -131,7 +131,7 @@ TIEXPORT int TICALL ticables_cable_probe(CableHandle* handle, int* result)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 
@@ -157,7 +157,7 @@ TIEXPORT int TICALL ticables_cable_close(CableHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
+TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -188,7 +188,7 @@ TIEXPORT int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uint
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
+TIEXPORT1 int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -217,7 +217,7 @@ TIEXPORT int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
+TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint32_t len)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -248,7 +248,7 @@ TIEXPORT int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uint
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
+TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -276,7 +276,7 @@ TIEXPORT int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
+TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *status)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -302,7 +302,7 @@ TIEXPORT int TICALL ticables_cable_check(CableHandle* handle, CableStatus *statu
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
+TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -328,7 +328,7 @@ TIEXPORT int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
+TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -353,7 +353,7 @@ TIEXPORT int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -378,7 +378,7 @@ TIEXPORT int TICALL ticables_cable_get_d0(CableHandle* handle)
  *
  * Return value: 0 or 1.
  **/
-TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
 {
 	const CableFncts *cable = handle->cable;
 	int ret = 0;
@@ -403,7 +403,7 @@ TIEXPORT int TICALL ticables_cable_get_d1(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_progress_reset(CableHandle* handle)
+TIEXPORT1 int TICALL ticables_progress_reset(CableHandle* handle)
 {
 	handle->rate.count = 0;;
 	TO_START(handle->rate.start);
@@ -422,7 +422,7 @@ TIEXPORT int TICALL ticables_progress_reset(CableHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
+TIEXPORT1 int TICALL ticables_progress_get(CableHandle* handle, int* count, int* msec, float* rate)
 {
 	TO_START(handle->rate.current);
 
