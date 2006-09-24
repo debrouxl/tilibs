@@ -210,7 +210,7 @@ libticonvinclude_HEADERS = \
 # build instructions
 libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@ -D_DEBUG
+	@GLIB_CFLAGS@ -DTICONV_EXPORTS
 
 libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
@@ -544,7 +544,6 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 
 
 @USE_ICONV_FALSE@install-data-hook:
-@USE_ICONV_FALSE@	echo "Hello !";
 @USE_ICONV_FALSE@	sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

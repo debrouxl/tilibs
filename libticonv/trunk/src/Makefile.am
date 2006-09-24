@@ -11,7 +11,7 @@ libticonvinclude_HEADERS = \
 # build instructions
 libticonv_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@ -D_DEBUG
+	@GLIB_CFLAGS@ -DTICONV_EXPORTS
 libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
