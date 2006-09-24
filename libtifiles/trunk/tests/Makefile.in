@@ -217,7 +217,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AM_CPPFLAGS = -I$(top_srcdir)/src
-test_tifiles_2_CPPFLAGS = @GLIB_CFLAGS@  -fno-common
+test_tifiles_2_CPPFLAGS = @GLIB_CFLAGS@
 test_tifiles_2_LDADD = $(top_builddir)/src/libtifiles2.la @GLIB_LIBS@
 all: all-am
 
