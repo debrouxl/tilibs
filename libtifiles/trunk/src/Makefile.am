@@ -22,7 +22,7 @@ endif
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@ @TICONV_CFLAGS@
+	@GLIB_CFLAGS@ @TICONV_CFLAGS@ -DTIFILES_EXPORTS
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@ @TICONV_LIBS@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h minizip/*.h \
