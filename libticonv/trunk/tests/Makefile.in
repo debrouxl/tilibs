@@ -184,7 +184,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@ -fno-common
+AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@
 test_ticonv_LDADD = $(top_builddir)/src/libticonv.la @GLIB_LIBS@
 all: all-am
 

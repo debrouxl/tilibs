@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@ -fno-common
+AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@
 
 noinst_PROGRAMS = test_ticonv
 
