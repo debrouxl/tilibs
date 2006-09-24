@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 AM_CPPFLAGS = -I$(top_srcdir)/src \
-	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICONV_CFLAGS@
+	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICONV_CFLAGS@ -fno-common
 
 noinst_PROGRAMS = test_ticalcs_2
 
