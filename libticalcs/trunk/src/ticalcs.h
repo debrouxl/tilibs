@@ -629,137 +629,137 @@ typedef struct
 	/* Entry points */
 	/****************/
   
-	TIEXPORT int TICALL ticalcs_library_init(void);
-	TIEXPORT int TICALL ticalcs_library_exit(void);
+	TIEXPORT3 int TICALL ticalcs_library_init(void);
+	TIEXPORT3 int TICALL ticalcs_library_exit(void);
 
 	/*********************/
 	/* General functions */
 	/*********************/
 
 	// error.c
-	TIEXPORT int         TICALL ticalcs_error_get (int number, char **message);
+	TIEXPORT3 int         TICALL ticalcs_error_get (int number, char **message);
 
 	// ticalcs.c
-	TIEXPORT const char* TICALL ticalcs_version_get (void);
+	TIEXPORT3 const char* TICALL ticalcs_version_get (void);
 
-	TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel);
-	TIEXPORT int         TICALL ticalcs_handle_del(CalcHandle*);
-	TIEXPORT int         TICALL ticalcs_handle_show(CalcHandle*);
+	TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel);
+	TIEXPORT3 int         TICALL ticalcs_handle_del(CalcHandle*);
+	TIEXPORT3 int         TICALL ticalcs_handle_show(CalcHandle*);
 
-	TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle*, CableHandle*);
-	TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle*);
+	TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle*, CableHandle*);
+	TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle*);
 
-	TIEXPORT int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
+	TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle*, CalcUpdate*);
 
 	// calc_xx.c
-	TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle*);
+	TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle*);
 
-	TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle*);
-	TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
-	TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
+	TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
 												 uint8_t** bitmap);
 
-	TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, TNode** vars, TNode **apps);
-	TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash);
+	TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, TNode** vars, TNode **apps);
+	TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash);
 
-	TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle*, BackupContent*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle*, CalcMode, FileContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle*, CalcMode, FileContent*, VarRequest*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry**);
+	TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle*, CalcMode, FileContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle*, CalcMode, FileContent*, VarEntry**);
 
-	TIEXPORT int TICALL ticalcs_calc_send_app(CalcHandle*, FlashContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_app(CalcHandle*, FlashContent*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle*, FlashContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle*, FlashContent*, VarRequest*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle*, FlashContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle*, FlashContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle*, uint8_t*);
 
-	TIEXPORT int TICALL ticalcs_calc_dump_rom_1(CalcHandle*);
-	TIEXPORT int TICALL ticalcs_calc_dump_rom_2(CalcHandle*, CalcDumpSize, const char *filename);
+	TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle*);
+	TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle*, CalcDumpSize, const char *filename);
 
-	TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
-	TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
+	TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle*, CalcClock* clock);
+	TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle*, CalcClock* clock);
 
-	TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle*, VarRequest*);
-	TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
-	TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle*, CalcInfos*);
+	TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle*, CalcInfos*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle*, FlashContent*);
-	TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle*, FlashContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle*, FlashContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle*, FlashContent*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle*, TigContent*, TigMode);
-	TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle*, TigContent*, TigMode);
+	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle*, TigContent*, TigMode);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle*, TigContent*, TigMode);
 
 	// calc_xx.c: convenient functions
-	TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle*, const char*);
 	
-	TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle*, CalcMode, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle*, CalcMode, const char*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle*, CalcMode, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle*, CalcMode, const char*, VarRequest*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle*, CalcMode, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry**);
+	TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle*, CalcMode, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle*, CalcMode, const char*, VarEntry**);
 	
-	TIEXPORT int TICALL ticalcs_calc_send_app2(CalcHandle*, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_app2(CalcHandle*, const char*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle*, const char*, VarRequest*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle*, const char*);
-	TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle*, const char*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle*, const char*);
+	TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle*, const char*);
 
-	TIEXPORT int TICALL ticalcs_calc_send_tigroup2(CalcHandle*, const char*, TigMode);
-	TIEXPORT int TICALL ticalcs_calc_recv_tigroup2(CalcHandle*, const char*, TigMode);
+	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle*, const char*, TigMode);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle*, const char*, TigMode);
 
 	// dirlist.c
-	TIEXPORT void TICALL ticalcs_dirlist_destroy(TNode** tree);
-	TIEXPORT void TICALL ticalcs_dirlist_display(TNode*  tree);
+	TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree);
+	TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode*  tree);
 
-	TIEXPORT int TICALL ticalcs_dirlist_ram_used(TNode* tree);
-	TIEXPORT int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
+	TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(TNode* tree);
+	TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
 
-	TIEXPORT int TICALL ticalcs_dirlist_ve_count(TNode* tree);
-	TIEXPORT VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char* name);
-	TIEXPORT void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry);
-	TIEXPORT void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry);
+	TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(TNode* tree);
+	TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char* name);
+	TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry);
+	TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry);
 
 	// type2str.c
-	TIEXPORT const char*  TICALL ticalcs_model_to_string(CalcModel model);
-	TIEXPORT CalcModel    TICALL ticalcs_string_to_model (const char *str);
+	TIEXPORT3 const char*  TICALL ticalcs_model_to_string(CalcModel model);
+	TIEXPORT3 CalcModel    TICALL ticalcs_string_to_model (const char *str);
 
-	TIEXPORT const char*      TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format);
-	TIEXPORT CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str);
+	TIEXPORT3 const char*      TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format);
+	TIEXPORT3 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str);
 
-	TIEXPORT const char*  TICALL ticalcs_pathtype_to_string(CalcPathType type);
-	TIEXPORT CalcPathType TICALL ticalcs_string_to_pathtype(const char *str);
+	TIEXPORT3 const char*  TICALL ticalcs_pathtype_to_string(CalcPathType type);
+	TIEXPORT3 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str);
 
-	TIEXPORT const char*  TICALL ticalcs_memtype_to_string(CalcMemType type);
-	TIEXPORT CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
+	TIEXPORT3 const char*  TICALL ticalcs_memtype_to_string(CalcMemType type);
+	TIEXPORT3 CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
 
 	// clock.c
-	TIEXPORT const char* TICALL ticalcs_clock_format2date(CalcModel model, int value);
-	TIEXPORT int		 TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
-	TIEXPORT int		 TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
+	TIEXPORT3 const char* TICALL ticalcs_clock_format2date(CalcModel model, int value);
+	TIEXPORT3 int		 TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
+	TIEXPORT3 int		 TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
 
 	// tikeys.c
-    TIEXPORT CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
-    TIEXPORT CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
-	TIEXPORT CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
-	TIEXPORT CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
+    TIEXPORT3 CalcKey TICALL ticalcs_keys_73 (uint8_t ascii_code);
+    TIEXPORT3 CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code);
+	TIEXPORT3 CalcKey TICALL ticalcs_keys_89 (uint8_t ascii_code);
+	TIEXPORT3 CalcKey TICALL ticalcs_keys_92p(uint8_t ascii_code);
 
 	//probe.c
-	TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
-	TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
+	TIEXPORT3 int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
+	TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
 
-	TIEXPORT int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
+	TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
 		
   /************************/
   /* Deprecated functions */
   /************************/
-	TILIBS_DEPRECATED TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
+	TILIBS_DEPRECATED TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename);
 
 #ifdef __cplusplus
 }

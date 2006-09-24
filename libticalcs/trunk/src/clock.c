@@ -68,7 +68,7 @@ static const char *TI_CLOCK_84[] =
  *
  * Return value: a format string.
  **/
-TIEXPORT const char *TICALL ticalcs_clock_format2date(CalcModel model, int value)
+TIEXPORT3 const char *TICALL ticalcs_clock_format2date(CalcModel model, int value)
 {
   int v;
 
@@ -108,7 +108,7 @@ TIEXPORT const char *TICALL ticalcs_clock_format2date(CalcModel model, int value
  *
  * Return value: a format string.
  **/
-TIEXPORT int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
+TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
 {
   int i = 1;
 
@@ -145,7 +145,7 @@ TIEXPORT int TICALL ticalcs_clock_date2format(CalcModel model, const char *forma
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
+TIEXPORT3 int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
 {
 	ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
 	ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);

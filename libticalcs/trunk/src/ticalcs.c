@@ -108,7 +108,7 @@ int ticalcs_instance = 0;	// counts # of instances
  *
  * Return value: the instance count.
  **/
-TIEXPORT int TICALL ticalcs_library_init(void)
+TIEXPORT3 int TICALL ticalcs_library_init(void)
 {
     char locale_dir[65536];
 	
@@ -162,7 +162,7 @@ hDll = GetModuleHandle("ticalcs2.dll");
  *
  * Return value: the instance count.
  **/
-TIEXPORT int
+TIEXPORT3 int
 TICALL ticalcs_library_exit(void)
 {
   	return (--ticalcs_instance);
@@ -179,7 +179,7 @@ TICALL ticalcs_library_exit(void)
  *
  * Return value: a string.
  **/
-TIEXPORT const char *TICALL ticalcs_version_get(void)
+TIEXPORT3 const char *TICALL ticalcs_version_get(void)
 {
 	return LIBCALCS_VERSION;
 }
@@ -194,7 +194,7 @@ TIEXPORT const char *TICALL ticalcs_version_get(void)
  *
  * Return value: NULL if error, an handle otherwise.
  **/
-TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
+TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
 	CalcHandle *handle = (CalcHandle *)calloc(1, sizeof(CalcHandle));
 	int i;
@@ -230,7 +230,7 @@ TIEXPORT CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticalcs_handle_del(CalcHandle* handle)
+TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
 	if(handle->attached)
 		ticalcs_cable_detach(handle);
@@ -253,7 +253,7 @@ TIEXPORT int TICALL ticalcs_handle_del(CalcHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticalcs_handle_show(CalcHandle* handle)
+TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
 	ticalcs_info(_("Link calc handle details:"));
 	ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
@@ -270,7 +270,7 @@ TIEXPORT int TICALL ticalcs_handle_show(CalcHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
+TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 {
 	handle->cable = cable;
 	handle->attached = !0;
@@ -290,7 +290,7 @@ TIEXPORT int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
+TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
 	TRYC(ticables_cable_close(handle->cable));
 	handle->open = 0;
@@ -311,7 +311,7 @@ TIEXPORT int TICALL ticalcs_cable_detach(CalcHandle* handle)
  *
  * Return value: always 0.
  **/
-TIEXPORT int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
+TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
 	handle->updat = upd;
 

@@ -317,7 +317,7 @@ extern const CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
+TIEXPORT3 int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
@@ -361,7 +361,7 @@ TIEXPORT int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
+TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
@@ -417,7 +417,7 @@ TIEXPORT int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
+TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
 {
 	CableHandle *handle;
 	int err = 0;

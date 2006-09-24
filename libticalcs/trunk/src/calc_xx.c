@@ -41,7 +41,7 @@
  *
  * Return value: a mask of features (CalcFeatures).
  **/
-TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
+TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 {
 	const CalcFncts *calc = handle->calc;
 
@@ -56,7 +56,7 @@ TIEXPORT CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
+TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -88,7 +88,7 @@ TIEXPORT int TICALL ticalcs_calc_isready(CalcHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
+TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -121,7 +121,7 @@ TIEXPORT int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc,
+TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc,
 												 uint8_t** bitmap)
 {
 	const CalcFncts *calc = handle->calc;
@@ -155,7 +155,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, 
+TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, 
 											 TNode** vars, TNode **apps)
 {
 	const CalcFncts *calc = handle->calc;
@@ -198,7 +198,7 @@ TIEXPORT int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
+TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -230,7 +230,7 @@ TIEXPORT int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, 
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -262,7 +262,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* 
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -295,7 +295,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent* 
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, 
 										  FileContent* content)
 {
 	const CalcFncts *calc = handle->calc;
@@ -330,7 +330,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, 
 											FileContent* content, VarRequest* vr)
 {
 	const CalcFncts *calc = handle->calc;
@@ -364,7 +364,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, 
 											 FileContent* content)
 {
 	const CalcFncts *calc = handle->calc;
@@ -399,7 +399,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, 
 											 FileContent* content, VarEntry** var)
 {
 	const CalcFncts *calc = handle->calc;
@@ -432,7 +432,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -465,7 +465,7 @@ TIEXPORT int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* cont
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, 
 											VarRequest* var)
 {
 	const CalcFncts *calc = handle->calc;
@@ -498,7 +498,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* cont
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -530,7 +530,7 @@ TIEXPORT int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* conte
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
+TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -561,7 +561,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist
  *
  * Return value: 0 if no error, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
+TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -594,7 +594,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, 
+TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, 
 										  const char *filename)
 {
 	const CalcFncts *calc = handle->calc;
@@ -628,7 +628,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize siz
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
+TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
 										  const char *filename)
 {
 	TRYC(ticalcs_calc_dump_rom_1(handle));
@@ -646,7 +646,7 @@ TIEXPORT int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
+TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -678,7 +678,7 @@ TIEXPORT int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
+TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -710,7 +710,7 @@ TIEXPORT int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -742,7 +742,7 @@ TIEXPORT int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* con
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret = 0;
@@ -777,7 +777,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* con
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
+TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
 {
 	BackupContent *content1;
 	FileContent *content2;
@@ -820,7 +820,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *fi
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
 {
 	BackupContent *content1;
 	FileContent *content2;
@@ -864,7 +864,7 @@ TIEXPORT int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* fi
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
 										   const char* filename)
 {
 	FileContent *content;
@@ -897,7 +897,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
 											const char* filename, VarRequest* vr)
 {
 	FileContent *content;
@@ -929,7 +929,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename)
 {
 	FileContent *content;
@@ -962,7 +962,7 @@ TIEXPORT int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename, VarEntry** vr)
 {
 	FileContent *content;
@@ -993,7 +993,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
 
@@ -1024,7 +1024,7 @@ TIEXPORT int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filen
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, 
+TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, 
 											VarRequest* vr)
 {
 	FlashContent *content;
@@ -1055,7 +1055,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filen
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
+TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 {
     const CalcFncts *calc = handle->calc;
 	int ret;
@@ -1086,7 +1086,7 @@ TIEXPORT int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
+TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
@@ -1108,7 +1108,7 @@ TIEXPORT int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 	return ret;
 }
 
-TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
+TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
 {
 	const CalcFncts *calc = handle->calc;
 	int ret;
@@ -1139,7 +1139,7 @@ TIEXPORT int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* info
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
 
@@ -1170,7 +1170,7 @@ TIEXPORT int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* file
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
 	char *ext = tifiles_fext_get(filename);
@@ -1235,7 +1235,7 @@ TIEXPORT int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* file
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
 
@@ -1266,7 +1266,7 @@ TIEXPORT int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filena
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
+TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
 	TigContent *content;
 
@@ -1297,7 +1297,7 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* f
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
+TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
 	TigContent *content;
 

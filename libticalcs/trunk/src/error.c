@@ -45,7 +45,7 @@ extern void cpca_purge(void);
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT int TICALL ticalcs_error_get(CalcError number, char **message)
+TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 {
 	char error_msg[2048];
 

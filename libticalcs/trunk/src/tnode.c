@@ -726,7 +726,7 @@ t_node_last_child (TNode *node)
   return node;
 }
 
-TIEXPORT  TNode*
+TIEXPORT3  TNode*
 TICALL t_node_nth_child (TNode *node,
 		  tuint	 n)
 {
@@ -740,7 +740,7 @@ TICALL t_node_nth_child (TNode *node,
   return node;
 }
 
-TIEXPORT tuint
+TIEXPORT3 tuint
 TICALL t_node_n_children (TNode *node)
 {
   tuint n = 0;

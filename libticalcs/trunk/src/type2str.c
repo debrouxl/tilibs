@@ -31,7 +31,7 @@
  *
  * Return value: a string like "TI92+".
  **/
-TIEXPORT const char *TICALL ticalcs_model_to_string(CalcModel model)
+TIEXPORT3 const char *TICALL ticalcs_model_to_string(CalcModel model)
 {
 	return tifiles_model_to_string(model);
 }
@@ -44,13 +44,13 @@ TIEXPORT const char *TICALL ticalcs_model_to_string(CalcModel model)
  *
  * Return value: a calculator model.
  **/
-TIEXPORT CalcModel TICALL ticalcs_string_to_model(const char *str)
+TIEXPORT3 CalcModel TICALL ticalcs_string_to_model(const char *str)
 {
 	return tifiles_string_to_model(str);
 }
 
 
-TIEXPORT const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
+TIEXPORT3 const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
 {
   	switch (format) 
 	{
@@ -60,7 +60,7 @@ TIEXPORT const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
   	}
 }
 
-TIEXPORT CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str)
+TIEXPORT3 CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str)
 {
   	if(!strcmp(str, _("full")))
   		return SCREEN_FULL;
@@ -71,7 +71,7 @@ TIEXPORT CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str)
 }
 
 
-TIEXPORT const char *TICALL ticalc_pathtype_to_string(CalcPathType type)
+TIEXPORT3 const char *TICALL ticalc_pathtype_to_string(CalcPathType type)
 {
   	switch (type) 
 	{
@@ -81,7 +81,7 @@ TIEXPORT const char *TICALL ticalc_pathtype_to_string(CalcPathType type)
   	}
 }
 
-TIEXPORT CalcPathType TICALL ticalc_string_to_pathtype(const char *str)
+TIEXPORT3 CalcPathType TICALL ticalc_string_to_pathtype(const char *str)
 {
   	if(!strcmp(str, _("full")))
   		return PATH_FULL;
@@ -92,7 +92,7 @@ TIEXPORT CalcPathType TICALL ticalc_string_to_pathtype(const char *str)
 }
 
 
-TIEXPORT const char *TICALL ticalc_memtype_to_string(CalcMemType type)
+TIEXPORT3 const char *TICALL ticalc_memtype_to_string(CalcMemType type)
 {
   	switch (type) 
 	{
@@ -102,7 +102,7 @@ TIEXPORT const char *TICALL ticalc_memtype_to_string(CalcMemType type)
   	}
 }
 
-TIEXPORT CalcMemType TICALL ticalc_string_to_memtype(const char *str)
+TIEXPORT3 CalcMemType TICALL ticalc_string_to_memtype(const char *str)
 {
   	if(!strcmp(str, _("free")))
   		return MEMORY_FREE;

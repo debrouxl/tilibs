@@ -121,7 +121,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	TigEntry **ptr;
 	int nvars = 0;
@@ -198,7 +198,7 @@ TIEXPORT int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* co
  *
  * Return value: 0 if ready else ERR_NOT_READY.
  **/
-TIEXPORT int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
+TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	int i, j;
 	int i_max, j_max;
