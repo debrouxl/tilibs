@@ -45,7 +45,7 @@
  *
  * Return value: a constant string.
  **/
-TIEXPORT const char *TICALL ticonv_version_get(void)
+TIEXPORT4 const char *TICALL ticonv_version_get(void)
 {
 	return LIBCONV_VERSION;
 }
@@ -59,7 +59,7 @@ TIEXPORT const char *TICALL ticonv_version_get(void)
  * Return value: number of characters. Surrogate pairs are counted as 2
  *               characters each.
  **/
-TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
+TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 {
 	const unsigned short *p = str;
 	size_t l = 0;
@@ -75,7 +75,7 @@ TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str)
+TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 {
 	gunichar2*  dst;
 	const gchar* src = str;
@@ -93,7 +93,7 @@ TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str)
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short *str)
+TIEXPORT4 char*	   ticonv_utf16_to_utf8(const unsigned short *str)
 {
 	const gunichar2* src = str;
 	gchar* dst;
@@ -113,7 +113,7 @@ TIEXPORT char*	   ticonv_utf16_to_utf8(const unsigned short *str)
  *
  * Return value: the %ti string.
  **/
-TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
+TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti)
 {
 	switch(model)
 	{
@@ -146,7 +146,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsign
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
+TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16)
 {
 	char *ti; 
 
@@ -166,7 +166,7 @@ TIEXPORT char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned
  *
  * Return value: the %utf16 string.
  **/
-TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
+TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16)
 {
 	switch(model)
 	{
@@ -199,7 +199,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, co
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
+TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti)
 {
 	unsigned short *utf16; 
 
@@ -223,7 +223,7 @@ TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, cons
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src)
+TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const char *src)
 {
 	char *tmp;
 	unsigned short *utf16;
@@ -250,7 +250,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const c
  *
  * Return value: the %dst string.
  **/
-TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst)
+TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst)
 {
 	char *tmp;
 
@@ -275,7 +275,7 @@ TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const
  *
  * Return value: a newly allocated string or NULL if error.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src)
 {
 	unsigned short *utf16;
 	gchar *utf8;
@@ -302,7 +302,7 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8(CalcModel model, const char *src)
  *
  * Return value: the %dst string.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst)
+TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst)
 {
 	char *tmp = ticonv_varname_to_utf8(model, src);
 
@@ -326,7 +326,7 @@ TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src,
  *
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_to_filename(CalcModel model, const char *src)
 {
 	unsigned short *utf16;
 	char *gfe;
@@ -353,7 +353,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename(CalcModel model, const char *sr
  *
  * Return value: %dst.
  **/
-TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
+TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst)
 {
 	char *tmp = ticonv_varname_to_filename(model, src);
 
@@ -374,7 +374,7 @@ TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
 {
 	unsigned short *utf16;
 	char *ti;
@@ -418,7 +418,7 @@ TIEXPORT char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src)
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst)
+TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst)
 {
 	char *tmp = ticonv_varname_to_tifile(model, src);
 
@@ -439,7 +439,7 @@ TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *sr
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *src)
 {
 	unsigned short *utf16;
 	char *ti;
@@ -480,7 +480,7 @@ TIEXPORT char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *sr
  * 
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst)
+TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst)
 {
 	char *tmp = ticonv_varname_from_tifile(model, src);;
 

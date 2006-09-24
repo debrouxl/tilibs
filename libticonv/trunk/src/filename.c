@@ -69,7 +69,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  *
  * Return value: %dst as a newly allocated string.
  **/ 
-TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
+TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
 #ifdef __WIN32__
 	int is_utf8 = G_WIN32_HAVE_WIDECHAR_API();
@@ -245,7 +245,7 @@ TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short 
  *
  * Return value: %dst as a newly allocated string.
  **/
-TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
+TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 {
 	 char *src, *p;
 	 char *dst, *q;

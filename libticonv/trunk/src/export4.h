@@ -39,33 +39,33 @@ extern "C" {
 	Symbols exporting 
 */
 #if defined(HAVE_FVISIBILITY)	// GCC 4.0 has introduced the -fvisibility flag (similar to declspec)
-# define TIEXPORT __attribute__ ((visibility("default")))
+# define TIEXPORT4 __attribute__ ((visibility("default")))
 
 #elif defined(__WIN32__)
 # if defined(__BORLANDC__)		// BCC32 v5.x (or C++Builder)
 #  if __BORLANDC__ >= 0x0500	// (c) 2001 Thomas Wolf (two@chello.at)
-#   define TIEXPORT
+#   define TIEXPORT4
 #  else
-#   define TIEXPORT
+#   define TIEXPORT4
 #  endif
 
 # elif defined(_MSC_VER)		// MSVC 5.0 mini
-#  if defined(DLL_EXPORT) || defined(TICABLES_EXPORTS) || defined(TIFILES_EXPORTS) || defined(TICALCS_EXPORTS) || defined(TICONV_EXPORTS)
-#   define TIEXPORT	__declspec(dllexport)
+#  if defined(TICONV_EXPORTS)
+#   define TIEXPORT4 __declspec(dllexport)
 #  else
-#   define TIEXPORT __declspec(dllimport)
+#   define TIEXPORT4 __declspec(dllimport)
 #  endif
 
 # elif defined(__MINGW32__)		// MinGW - GCC for Windows, (c) 2002 Kevin Kofler
-#  if defined(DLL_EXPORT)		// defined by the configure script
-#   define TIEXPORT	__declspec(dllexport)
+#  if defined(TICONV_EXPORTS)		// defined by the configure script
+#   define TIEXPORT4 __declspec(dllexport)
 #  else
-#   define TIEXPORT __declspec(dllimport)
+#   define TIEXPORT4 __declspec(dllimport)
 #  endif
 # endif
 
 #else
-# define TIEXPORT				// default
+# define TIEXPORT4				// default
 #endif
 
 #ifdef __cplusplus

@@ -320,7 +320,7 @@ static char *detokenize_varname(CalcModel model, const char *src)
     return dst;
 }
 
-TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src)
 {
 	switch (model) 
 	{
@@ -357,7 +357,7 @@ static int shift(int v)
 }
 
 //FIXME: does not work with named list because we should pass the vartype, too
-TIEXPORT char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
+TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
 {
 	const unsigned char *src = (const unsigned char *)src_;
 

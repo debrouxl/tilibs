@@ -4,6 +4,7 @@ Log:
 
 - 19/09/2006, version 1.0.0: roms
 	- export iconv emulation interface if TICONV_ICONV_INTERFACE is defined (kevin's request)
+	- changed TIEXPORT into TIEXPORT4
 
 - 12/09/2006, version 0.0.6: roms
 	- fixed buffer overflow in ticonv_charset_utf16_to_ti

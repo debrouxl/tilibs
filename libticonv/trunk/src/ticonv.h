@@ -95,72 +95,72 @@ extern "C" {
   /* Entry points */
   /****************/
   
-  //TIEXPORT int TICALL ticonv_library_init(void);
-  //TIEXPORT int TICALL ticonv_library_exit(void);
+  //TIEXPORT4 int TICALL ticonv_library_init(void);
+  //TIEXPORT4 int TICALL ticonv_library_exit(void);
 
   /*********************/
   /* General functions */
   /*********************/
 
   // ticonv.c
-  TIEXPORT const char* TICALL ticonv_version_get (void);
+  TIEXPORT4 const char* TICALL ticonv_version_get (void);
 
-  TIEXPORT size_t TICALL ticonv_utf16_strlen(const unsigned short *str);
+  TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str);
 
-  TIEXPORT unsigned short* ticonv_utf8_to_utf16(const char *str);
-  TIEXPORT char*	       ticonv_utf16_to_utf8(const unsigned short *str);
+  TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str);
+  TIEXPORT4 char*	       ticonv_utf16_to_utf8(const unsigned short *str);
 
-  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
-  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
+  TIEXPORT4 char*		   TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsigned short *utf16, char *ti);
+  TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, const char *ti, unsigned short *utf16);
 
-  TIEXPORT char*		   TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
-  TIEXPORT unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
+  TIEXPORT4 char*		   TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
+  TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst);
-  TIEXPORT unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src);
+  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst);
+  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src);
 
-  TIEXPORT char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src           );
+  TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT4 char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src           );
 
-  TIEXPORT char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT4 char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src);
 
-  TIEXPORT char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src);
-  TIEXPORT char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT4 char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst);
+  TIEXPORT4 char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src);
 
   // charset.c
-  extern TIEXPORT const unsigned long TICALL ti73_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti82_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti83_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti83p_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti85_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti86_charset[256];
-  extern TIEXPORT const unsigned long TICALL ti9x_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti73_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti82_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti83_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti83p_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti85_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti86_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti9x_charset[256];
 
   // tokens.c
-  TIEXPORT char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src);
-  TIEXPORT char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src);
 
   // filename.c
-  TIEXPORT char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
-  TIEXPORT char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
+  TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src);
 
   // iconv.c: exported if ICONV_INTERFACE has been enabled from configure.
 #if defined(TICONV_ICONV_INTERFACE)
   /* Allocate descriptor for code conversion from codeset FROMCODE to
      codeset TOCODE.  */
-  TIEXPORT ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode);
+  TIEXPORT4 ticonv_iconv_t TICALL ticonv_iconv_open (const char *tocode, const char *fromcode);
   /* Convert at most *INBYTESLEFT bytes from *INBUF according to the
      code conversion algorithm specified by CD and place up to
      *OUTBYTESLEFT bytes in buffer at *OUTBUF.  */
-  TIEXPORT size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
+  TIEXPORT4 size_t TICALL ticonv_iconv (ticonv_iconv_t cd, char **__restrict inbuf,
                                        size_t *__restrict inbytesleft,
                                        char **__restrict outbuf,
                                        size_t *__restrict outbytesleft);
   /* Free resources allocated for descriptor CD for code conversion.  */
-  TIEXPORT int TICALL ticonv_iconv_close (ticonv_iconv_t cd);
+  TIEXPORT4 int TICALL ticonv_iconv_close (ticonv_iconv_t cd);
 #endif
 
   /************************/

@@ -37,7 +37,7 @@
 #include "ticonv.h"
 #include "charset.h"
 
-#define TIE		TIEXPORT
+#define TIE		TIEXPORT4
 #define TIC		TICALL
 
 
