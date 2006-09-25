@@ -673,7 +673,7 @@ static int test_ti83_group_ungroup_support()
 /* TI-84+ */
 /**********/
 
-TIEXPORT FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
+TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
 
 static int test_ti84p_regular_support()
 {
