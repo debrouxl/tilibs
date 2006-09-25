@@ -12,7 +12,7 @@ libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
 	@GLIB_CFLAGS@ @LIBUSB_CFLAGS@ -DTICABLES_EXPORTS
 libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
-libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@x
+libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticables2_la_SOURCES = *.h \
 	data_log.c \
 	detect.c \
