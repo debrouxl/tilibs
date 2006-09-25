@@ -3,7 +3,7 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 Log:
 
 - 19/09/2006, version 1.0.0: roms
-	- export iconv emulation interface if TICONV_ICONV_INTERFACE is defined (kevin's request)
+	- export iconv emulation interface only if TICONV_ICONV_INTERFACE is defined (kevin's request)
 	- changed TIEXPORT into TIEXPORT4
 
 - 12/09/2006, version 0.0.6: roms
