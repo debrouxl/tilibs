@@ -23,7 +23,7 @@ Log:
 	- check for device/data type in FLASH file 
 
 - 25/08/2006, version 0.2.7: roms
-	- checked with ValGring, tested and validated.
+	- checked with Valgrind, tested and validated.
 	
 - 17/08/2006, version 0.2.6: roms
 	- added grouping/ungrouping support for TiGroup (eg tigroup.c provides the same API as grouped.c)
