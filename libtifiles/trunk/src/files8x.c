@@ -244,8 +244,10 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   }
 
   if(fread_word(f, &(content->checksum)) < 0) goto tfrr;
+#if defined(CHECKSUM_ENABLED)
   if(sum != content->checksum) 
 	return ERR_FILE_CHECKSUM;
+#endif
 
   fclose(f);
   return 0;
@@ -352,8 +354,10 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 
   if(fread_word(f, &(content->checksum)) < 0) goto tfrb;
   sum = compute_backup_sum(content);
-  if(sum != content->checksum)
-	  return ERR_FILE_CHECKSUM;
+#if defined(CHECKSUM_ENABLED)
+  if(sum != content->checksum) 
+	return ERR_FILE_CHECKSUM;
+#endif
 
   fclose(f);
   return 0;

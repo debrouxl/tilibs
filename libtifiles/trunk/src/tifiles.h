@@ -34,6 +34,10 @@
 	/* Types & Definitions */
 	/***********************/
 
+/* Conditionnals */
+
+//#define CHECKSUM_ENABLED
+
 /* Versioning */
 
 #ifdef __WIN32__

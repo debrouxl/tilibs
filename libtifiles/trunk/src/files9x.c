@@ -234,12 +234,14 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   if(fread_word(f, &(content->checksum)) < 0) goto tfrb;
 
   sum = tifiles_checksum(content->data_part, content->data_length);
+#if defined(CHECKSUM_ENABLED)
   if(sum != content->checksum)
   {
 	  fclose(f);
 	  tifiles_content_delete_backup(content);
 	  return ERR_FILE_CHECKSUM;
   }
+#endif
 
   fclose(f);
   return 0;
