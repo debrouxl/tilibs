@@ -48,11 +48,6 @@
 #include "romdump.h"
 #include "keys83p.h"
 
-#ifdef __WIN32__
-#undef snprintf
-#define snprintf _snprintf
-#endif
-
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
 #define TI83_COLS  96
@@ -149,7 +144,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		t_node_append(folder, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
 	}
@@ -317,7 +312,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
-		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -350,7 +345,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -458,7 +453,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
 

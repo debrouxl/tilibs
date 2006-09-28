@@ -46,11 +46,6 @@
 #include "rom92f2.h"
 #include "romdump.h"
 
-#ifdef __WIN32__
-#undef snprintf
-#define snprintf _snprintf
-#endif
-
 // Screen coordinates of the TI92
 #define TI92_ROWS  128
 #define TI92_COLS  240
@@ -180,7 +175,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		TRYF(err);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"),
+		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"),
 			((VarEntry *) (folder->data))->name, utf8);
 		g_free(utf8);
 		update_->label();
@@ -250,7 +245,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 	for (block = 0;; block++) 
 	{
-		snprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
+		g_snprintf(update_->text, sizeof(update_->text), _("Block #%2i"), block);
 		update_label();
     
 		err = ti92_recv_VAR(&block_size, &content->type, content->rom_version);
@@ -297,7 +292,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname);
-		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -342,7 +337,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
 	utf8 = ticonv_varname_to_utf8(handle->model, varname);
-	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -414,7 +409,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
         }
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -511,7 +506,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 	utf8 = ticonv_varname_to_utf8(handle->model, varname);
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
 
@@ -548,7 +543,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder);
-	snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
 	g_free(utf8);
 	update_label();
 

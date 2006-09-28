@@ -37,11 +37,6 @@
 #include "pause.h"
 #include "cmd89.h"
 
-#ifdef __WIN32__
-#undef snprintf
-#define snprintf _snprintf
-#endif
-
 int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 {
 	int i, j, k;

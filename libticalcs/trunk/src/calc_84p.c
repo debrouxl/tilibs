@@ -44,11 +44,6 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
-#ifdef __WIN32__
-#undef snprintf
-#define snprintf _snprintf
-#endif
-
 // Screen coordinates of the TI83+
 #define TI84P_ROWS  64
 #define TI84P_COLS  96
@@ -149,7 +144,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			t_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
+		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
 	} while(1);
@@ -189,7 +184,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-		snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
 
@@ -225,7 +220,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -332,7 +327,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 
 	// send
 	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
-	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -368,7 +363,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	int r, q;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-	snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
 
@@ -557,7 +552,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint8_t *data;
 	int i, varsize;
 
-	snprintf(update_->text, sizeof(update_->text), "ID-LIST");
+	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
 
 	attrs = ca_new_array(nattrs);
@@ -627,7 +622,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	
 	calc_time = (uint32_t)difftime(c, r);
 
-    snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+    g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
     update_label();
 
 	param = cp_new(PID_CLK_SEC, 4);
@@ -671,7 +666,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	time_t r, c, now;
 
 	// get raw clock
-	snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
     update_label();
 
 	params = cp_new_array(size);
@@ -723,7 +718,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
-	snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
 
@@ -760,7 +755,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	CalcParam **params;
 	int i = 0;
 
-	snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
+	g_snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
     update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
@@ -773,7 +768,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_PRODUCT_NAME;
 	i++;
 
-	snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
+	g_snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
 		params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 	i++;
@@ -794,11 +789,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_DEVICE_TYPE;
 	i++;
 
-	snprintf(infos->boot_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+	g_snprintf(infos->boot_version, 5, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
 	infos->mask |= INFOS_BOOT_VERSION;
 	i++;
 
-	snprintf(infos->os_version, 4, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
+	g_snprintf(infos->os_version, 5, "%1i.%02i", params[i]->data[1], params[i]->data[2]);
 	infos->mask |= INFOS_OS_VERSION;
 	i++;
 

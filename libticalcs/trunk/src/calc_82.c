@@ -46,11 +46,6 @@
 #include "rom82.h"
 #include "romdump.h"
 
-#ifdef __WIN32__
-#undef snprintf
-#define snprintf _snprintf
-#endif
-
 // Screen coordinates of the TI83
 #define TI82_ROWS  64
 #define TI82_COLS  96
@@ -109,7 +104,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   uint8_t rej_code;
   uint16_t status;
 
-  snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
+  g_snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
   update_label();
 
   length = content->data_length1;
@@ -180,7 +175,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 {
   char varname[9] = { 0 };
 
-  snprintf(update_->text, sizeof(update_->text), _("Waiting for backup..."));
+  g_snprintf(update_->text, sizeof(update_->text), _("Waiting for backup..."));
   update_label();
 
   content->model = CALC_TI82;
@@ -254,7 +249,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_VAR((uint16_t)entry->size, entry->type, entry->name));
     TRYF(ti82_recv_ACK(&status));
 
-    snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
+    g_snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
     update_label();
 
     do 
@@ -284,7 +279,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     }
 
     utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
-    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+    g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 
@@ -312,7 +307,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   char *utf8;
   uint16_t ve_size;
 
-  snprintf(update_->text, sizeof(update_->text), _("Waiting for var(s)..."));
+  g_snprintf(update_->text, sizeof(update_->text), _("Waiting for var(s)..."));
   update_label();
 
   content->model = CALC_TI82;
@@ -344,7 +339,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_recv_ACK(NULL));
 
     utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
-    snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+    g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
 
