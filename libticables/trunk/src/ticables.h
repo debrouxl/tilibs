@@ -38,6 +38,10 @@ extern "C" {
 	/* Types & Definitions */
 	/***********************/
 
+/* Conditionnals */
+#define OPEN_DELAYED
+#define SLV_RESET
+
 /* Versioning */
 
 #ifdef __WIN32__
@@ -53,8 +57,6 @@ extern "C" {
 
 #define ERROR_READ_TIMEOUT	4	/* fixed in error.h */
 #define ERROR_WRITE_TIMEOUT	6	/* fixed in error.h */
-#define OPEN_DELAYED
-#define SLV_RESET
 
 /**
  * CableModel:
