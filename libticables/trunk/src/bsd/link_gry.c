@@ -51,10 +51,10 @@ static int gry_prepare(CableHandle *h)
 
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/cuaa0"); break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/cuaa1"); break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/cuaa2"); break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/cuaa3"); break;
+	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/cuad0"); break;
+	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/cuad1"); break;
+	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/cuad2"); break;
+	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/cuad3"); break;
 	default: return ERR_ILLEGAL_ARG;
 	}
 	h->priv2 = (struct termios *)calloc(1, sizeof(struct termios));

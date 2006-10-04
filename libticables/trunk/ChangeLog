@@ -7,6 +7,7 @@ Log:
 	  as __MACOSX__ (kevin)
 	- updated OS X and BSD ports to compile again (kevin)
 	- changed TIEXPORT into TIEXPORT1
+	- fixed TTY device names in Gray/BlackLink support (Sean McLaughlin)
 	
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
