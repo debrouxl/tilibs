@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 	uint8_t scr[3840 + 6];
 	int **probing = NULL;
 
-#if 0
+ #if 0
 	tiTIME ref, end;
 	unsigned long k;
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	ticables_probing_finish(&probing);
 #endif
 
-#if 1
+#if 0
 	{
 		int *list = NULL;
 		int i, n;
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 #endif
 
 	// set cable
-	handle = ticables_handle_new(CABLE_SLV, PORT_1);
+	handle = ticables_handle_new(CABLE_DEV, PORT_1);
 	if(handle == NULL)
 	    return -1;
 
@@ -110,8 +110,7 @@ int main(int argc, char **argv)
 	err = ticables_cable_open(handle);
 	if(err) print_lc_error(err);
 	if(err) return -1;
-
-#if 0
+#if 1
 	// simple test with DirectLink hand-helds (buf size req/neg)
 	buf[0]=0x00; buf[1]=0x00; buf[2]=0x00; buf[3]=0x04;
 	buf[4]=0x01;
@@ -235,7 +234,7 @@ int main(int argc, char **argv)
 #endif
 #endif
 
-#if 1
+#if 0
 	// do a simple test with a TI89/92+ calculator
 	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;	// RDY
 	err = ticables_cable_send(handle, buf, 4);

@@ -43,9 +43,9 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 	const CableFncts *cable = handle->cable;
 
 	TRYC(handle->cable->prepare(handle));
-	
+
 	TRYC(cable->open(handle));
-	
+
 	handle->open = 1;
 	START_LOGGING(handle);
 

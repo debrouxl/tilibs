@@ -45,6 +45,7 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
 	case CABLE_TIE: return "TiEmu";
 	case CABLE_VTL: return "virtual";
 	case CABLE_ILP: return "linkport";
+	case CABLE_DEV: return "UsbKernel";
 	default: return "unknown";
 	}
 }
@@ -79,6 +80,8 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_VTL;
 	else if(!strcmp(str, "linkport"))
 		return CABLE_ILP;
+	else if(!strcmp(str, "UsbKernel"))
+	    return CABLE_DEV;
 
 	return CABLE_NUL;
 }

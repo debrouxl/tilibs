@@ -43,6 +43,10 @@
 #ifdef HAVE_LINUX_SERIAL_H
 #include <linux/serial.h>
 #endif
+#ifdef HAVE_LINUX_TICABLE_H
+# include <linux/ticable.h>     //ioctl codes
+#endif
+
 
 #include "../gettext.h"
 #include "../error.h"
@@ -388,6 +392,36 @@ int check_for_libusb(void)
 	
 	return ERR_USBFS;
     }
+
+    return 0;
+}
+
+int check_for_tiusb(const char *devname)
+{
+    int fd;
+    int arg;
+
+    // check for node usability
+    ticables_info(_("Check for tiusb usability:"));
+    if(check_for_node_usability(devname) == -1)
+        return ERR_TTDEV;
+
+#ifdef HAVE_LINUX_TICABLE_H
+    // check for device availability
+    fd = open(devname, 0);
+    if (fd == -1)
+    {
+        ticables_warning("unable to open USB device '%s'", devname);
+        return ERR_TTDEV;
+    }
+
+    if (ioctl(fd, IOCTL_TIUSB_GET_MXPS, &arg) == -1)
+	return ERR_TTDEV;
+
+    ticables_info(_("    is useable: yes"));
+    close(fd);
+#endif
+    
 
     return 0;
 }

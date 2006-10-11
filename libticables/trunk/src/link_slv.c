@@ -32,7 +32,7 @@
 
 #elif defined(HAVE_LIBUSB)
 #include "linux/link_slv.c"
-
+#include "linux/link_dev.c"
 #else
 /* nothing */
 #endif

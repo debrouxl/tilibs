@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 11/10/2006, version 1.0.2: roms
+	- re-added USB kernel module support for Titanium (still investigating
+	Titanium/USB issue, seems to be libusb related).
+	
 - 21/02/2006, version 1.0.1: roms
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)
 	  as __MACOSX__ (kevin)

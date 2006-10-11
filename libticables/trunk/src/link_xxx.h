@@ -34,6 +34,8 @@ extern const CableFncts cable_tie;
 extern const CableFncts cable_raw;
 extern const CableFncts cable_ilp;
 
+extern const CableFncts cable_dev;
+
 #endif
 
 

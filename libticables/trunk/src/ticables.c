@@ -70,6 +70,7 @@ static CableFncts const *const cables[] =
 	&cable_tie,
 #endif
 	&cable_ilp,
+	&cable_dev,
 	NULL
 };
 
