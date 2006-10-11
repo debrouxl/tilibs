@@ -70,7 +70,9 @@ static CableFncts const *const cables[] =
 	&cable_tie,
 #endif
 	&cable_ilp,
+#if !defined(NO_CABLE_SLV) &&  defined(HAVE_LINUX_TICABLE_H)
 	&cable_dev,
+#endif
 	NULL
 };
 
