@@ -34,8 +34,8 @@ enum Attrs {A_REVERSE, A_NORMAL, A_XOR, A_SHADED, A_REPLACE, A_OR, A_AND, A_THIC
 extern void __attribute__((may_alias)) __ROM_base;
 #define ROM_base (&__ROM_base)
 // ROM_base + 0xc4 (49*4) contains the used ROM size - 4, round up to full 1 or 2 MB
-#define ROM_SIZE ((49[(unsigned long *)ROM_base] + 0xffffful) & 0xfff00000ul)
-#define TI92_VERSION ((int)(ROM_SIZE>>20))
+#define ROM_size ((49[(unsigned long *)ROM_base] + 0xffffful) & 0xfff00000ul)
+#define TI92_VERSION ((int)(ROM_size>>20))
 #define ERD_dialog tios__002F
 short ERD_dialog (short err_no, short prog_flag);
 #define OSLinkTxQueueInquire tios__0008
@@ -53,3 +53,4 @@ unsigned char FontSetSys (short Font);
 enum Fonts {F_4x6, F_6x8, F_8x10};
 #define OSLinkReset tios__0006
 void OSLinkReset (void);
+

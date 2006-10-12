@@ -2,7 +2,6 @@
  *
  *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
  *  Copyright (c) 2005, Kevin Kofler for the Fargo-II port
- *  Copyright (c) 2006, Kevin Kofler for the HW4 port
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#define VERSION		"1.01"			// Version
+#define VERSION		"1.02"			// Version
 
 #define TIMEOUT		20			// 1s x 20 ticks
 
@@ -43,3 +42,4 @@ typedef unsigned long int		uint32_t;
 #define LSB(v)	(v & 0xff)
 
 #define LE_BE(v) (((v & 0xff000000) >> 24) | ((v & 0x00ff0000) >>  8) | ((v & 0x0000ff00) <<  8) | ((v & 0x000000ff) << 24))
+

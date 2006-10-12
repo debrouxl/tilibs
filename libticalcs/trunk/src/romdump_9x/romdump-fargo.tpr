@@ -1,20 +1,19 @@
 [Settings]
 Archive=0
-Flash OS=0
-Fargo=1
-Use Data Variable=0
-Data Variable=
-Copy Data Variable=1
-Copy Data Variable if Archived=1
 Pack=0
 Packed Variable=
 Project Name=RomDump
 GCC Switches=-Os -ffunction-sections -fdata-sections -Wall -W -Wwrite-strings
-GNU Assembler Switches=
 Assembler Switches=-g -t
+GNU Assembler Switches=
 Debug Info=0
 Standard Library=1
-Initialize BSS=0
+Command Line=
+Post-Build Process=
+Use Data Variable=0
+Data Variable=
+Copy Data Variable=1
+Copy Data Variable if Archived=1
 Optimize NOPs=1
 Optimize Returns=1
 Optimize Branches=1
@@ -22,12 +21,13 @@ Optimize Moves=1
 Optimize Tests=1
 Optimize Calculations=1
 Remove Unused Sections=1
+Binary Output=0
+Fargo=1
+Flash OS=0
 Cut Unused Ranges=1
 Reorder Sections=1
 Merge Constants=1
-Binary Output=0
-Command Line=
-Post-Build Process=
+Initialize BSS=0
 
 [Library Options]
 Use TI-89=0
@@ -45,16 +45,17 @@ BSS Ref Format=Kernel
 Data Ref Format=Kernel
 Use F-Line Jumps=0
 Use 4-Byte F-Line Jumps=0
-Optimize ROM Calls=0
 Use Internal F-Line Emulator=0
 Use Return Value=0
 Enable Error Return=0
 Save Screen=0
+Optimize ROM Calls=0
 
 [File Editing]
-Open File=
+Open File=/root/tiemuii/libticalcs/src/romdump_9x/fargodef.h
 
 [Included Files]
 C File 1=romdump.c
 Header File 1=romdump.h
 Header File 2=fargodef.h
+

@@ -4,7 +4,6 @@
  *
  *  Copyright (c) 2004-2005, Romain Liévin for the TiLP and TiEmu projects
  *  Copyright (c) 2005, Kevin Kofler for the Fargo-II port
- *  Copyright (c) 2006, Kevin Kofler for the HW4 port
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +32,8 @@
 #else
 
 #include <tigcclib.h>         // Include All Header Files
+
+#define ROM_size ((uint32_t)(0x200000 << (V200 || ((uint32_t)ROM_base == 0x800000))))
 
 #endif
 
@@ -177,25 +178,6 @@ int Dump(void)
 	char str[30];
 	unsigned int i;
 	uint8_t* ptr;
-	uint32_t ROM_size;
-	
-	// determine ROM size
-#ifdef FARGO
-	ROM_size = ROM_SIZE;
-#else
-	switch (HW_VERSION) {
-		case 0 ... 2: // 2 MB on TI-89/92+, 4 MB on V200
-			ROM_size = 0x200000 << V200;
-			break;
-		case 3: // 4 MB on TI-89 Titanium HW3
-			ROM_size = 0x400000;
-			break;
-		default: // 8 MB on TI-89 Titanium HW4
-			ROM_size = 0x800000;
-			break;
-	}
-#endif
-	
 	
 	while(!exit)
 	{
@@ -301,3 +283,4 @@ void _main(void)
   
   return;
 }
+
