@@ -26,6 +26,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../ticables.h"
@@ -51,7 +52,7 @@ static int ser_prepare(CableHandle *h)
     }
 
     // detect stuffs
-    err = check_for_tty(h->device));
+    ret = check_for_tty(h->device);
 	if(ret)
 	{
 		free(h->device); h->device = NULL;
