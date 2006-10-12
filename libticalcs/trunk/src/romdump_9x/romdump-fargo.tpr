@@ -52,7 +52,7 @@ Save Screen=0
 Optimize ROM Calls=0
 
 [File Editing]
-Open File=/root/tiemuii/libticalcs/src/romdump_9x/fargodef.h
+Open File=
 
 [Included Files]
 C File 1=romdump.c

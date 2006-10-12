@@ -52,7 +52,7 @@ Save Screen=1
 Optimize ROM Calls=1
 
 [File Editing]
-Open File=/root/tiemuii/libticalcs/src/romdump_89t_usb/romdump.c
+Open File=
 
 [Included Files]
 C File 1=romdump.c
