@@ -245,11 +245,11 @@ static const char* tigl_get_product(struct usb_device *dev)
 	han = usb_open(dev);
 	ret = usb_get_string_simple(han, dev->descriptor.iProduct, 
 				    string, sizeof(string));
+	usb_close(han);
 	if (ret > 0)
 	    return string;
 	else
 	    return "";
-	usb_close(han);
     }
 
     return string;
@@ -276,7 +276,7 @@ static int tigl_find(void)
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
 			ticables_info(" found <%s> on #%i, version <%x.%02x>", 
-				      tigl_get_product(dev), j+1, 
+				      /*tigl_get_product(dev)*/ "", j+1,
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 
@@ -295,9 +295,6 @@ static int tigl_find(void)
 static int tigl_enum(void)
 {
     int ret = 0;
-    
-    /* init the libusb */
-    usb_init();
     
     /* find all usb busses on the system */
     ret = usb_find_busses();
@@ -480,6 +477,7 @@ static int slv_close(CableHandle *h)
 
 static int slv_reset(CableHandle *h)
 {
+#if !defined(__BSD__)
     /* Reset both endpoints */
 #ifdef SLV_RESET
     TRYC(tigl_reset(uHdl));
@@ -487,7 +485,7 @@ static int slv_reset(CableHandle *h)
 	TRYC(slv_close(h));
 	TRYC(slv_open(h));
 #endif
-    
+#endif
     return 0;
 }
 

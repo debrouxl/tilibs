@@ -33,6 +33,9 @@
 #ifdef __LINUX__
 #include <sys/utsname.h>
 #endif
+#if defined(HAVE_LIBUSB)
+#include <usb.h>
+#endif
 
 #include "gettext.h"
 #include "ticables.h"
@@ -139,6 +142,10 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	    uname(&buf);
 	    ticables_info("kernel: %s", buf.release);
 	}
+#endif
+#if defined(HAVE_LIBUSB)
+	/* init the libusb */
+	usb_init();
 #endif
 
   	return (++ticables_instance);
