@@ -236,6 +236,10 @@ typedef struct
 
 static const char* tigl_get_product(struct usb_device *dev)
 {
+#if defined(__BSD__)
+    /* The code below causes problems on FreeBSD (libusb bug?). */
+    return "";
+#else
     struct usb_dev_handle *han;
     int ret;
     static char string[64];
@@ -253,6 +257,7 @@ static const char* tigl_get_product(struct usb_device *dev)
     }
 
     return string;
+#endif
 }
 
 static int tigl_find(void)
@@ -276,12 +281,7 @@ static int tigl_find(void)
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
 			ticables_info(" found <%s> on #%i, version <%x.%02x>",
-#if defined(__BSD__)
-				      "" /* has problems */
-#else
-				      tigl_get_product(dev), 
-#endif
-				      j+1,
+				      tigl_get_product(dev), j+1,
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 
