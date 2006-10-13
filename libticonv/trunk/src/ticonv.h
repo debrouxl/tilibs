@@ -36,7 +36,9 @@
 #endif
 
 // Need iconv_t declaration.
+#if defined(TICONV_ICONV_INTERFACE)
 #include <iconv.h>
+#endif
 
 #include "export4.h"
 
