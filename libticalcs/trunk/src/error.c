@@ -224,6 +224,14 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
+  case ERR_INVALID_HANDLE:
+		strcpy(error_msg, _("Invalid TiCalcs handle."));
+		strcat(error_msg, "\n");
+		strcat(error_msg,
+		   _("Cause: bad cable or calc model.\n"));
+		*message = g_strdup(error_msg);
+    break;
+
   case ERR_CALC_ERROR1:	// must be synch'ed with cmd89.c (static uint8_t dbus_errors[])
 		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");

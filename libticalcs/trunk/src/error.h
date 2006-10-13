@@ -62,6 +62,7 @@ typedef enum
 
 	ERR_ROM_ERROR,
 	ERR_NO_CALC,			// No calc probed
+	ERR_INVALID_HANDLE,		// Invalid handle
 
 // --- 300 to 349 are reserved for hand-held status (DUSB)
 	

@@ -313,7 +313,8 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
-	handle->updat = upd;
+	if(handle)
+		handle->updat = upd;
 
 	return 0;
 }
