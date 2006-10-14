@@ -146,6 +146,7 @@ TIEXPORT1 const char *TICALL ticables_usbpid_to_string(UsbPid pid)
 	case PID_TIGLUSB: return "SilverLink";	// must match ticables name
 	case PID_TI89TM: return "TI89t";		// must match tifiles name
 	case PID_TI84P: return "TI84+";			// must match tifiles name
+	case PID_TI84P_SE: return "TI84+";		// remap
 	default: return "unknown";	
 	}
 }

@@ -45,7 +45,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCABLES_VERSION "1.0.0"
+# define LIBCABLES_VERSION "1.0.2"
 #else
 # define LIBCABLES_VERSION VERSION
 #endif
@@ -92,7 +92,8 @@ typedef enum
 	PID_UNKNOWN	= 0,
 	PID_TIGLUSB = 0xE001,
 	PID_TI89TM	= 0xE004,
-	PID_TI84P	= 0xE008,
+	PID_TI84P	= 0xE003,
+	PID_TI84P_SE= 0xE008,
 } UsbPid;
 
 /**

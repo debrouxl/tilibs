@@ -321,7 +321,9 @@ static int raw_probe(CableHandle *h)
     
 	if(ret > 0)
 	{
-		if(list[h->address-1] == PID_TI89TM || list[h->address-1] == PID_TI84P)
+		if(list[h->address-1] == PID_TI89TM || 
+			list[h->address-1] == PID_TI84P ||
+			list[h->address-1] == PID_TI84P_SE)
 		{
 			if(open)
 			{

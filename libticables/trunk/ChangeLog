@@ -4,7 +4,9 @@ Log:
 
 - 11/10/2006, version 1.0.2: roms
 	- re-added USB kernel module support for Titanium (still investigating
-	Titanium/USB issue, seems to be libusb related).
+	Titanium/USB issue, seems to be libusb related)
+	- changed PID_TI84P	to 0xE003 and added PID_TI84P_SE as 0xE008
+	- added probing of TI84+ non-SE
 	
 - 21/02/2006, version 1.0.1: roms
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)

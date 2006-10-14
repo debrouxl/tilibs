@@ -288,6 +288,14 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
+	case ERR_NO_CABLE:
+		*message = g_strconcat(
+			_("Msg: no cable found."),
+			"\n",
+			_("Cause: probing failed or invalid parameters."),
+			NULL);
+		break;
+
   	default:
 	    // propagate error code
 	    return number;
