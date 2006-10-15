@@ -415,7 +415,7 @@ int check_for_tiusb(const char *devname)
         return ERR_TTDEV;
     }
 
-    if (ioctl(fd, IOCTL_TIUSB_GET_MXPS, &arg) == -1)
+    if (ioctl(fd, IOCTL_TIUSB_GET_MAXPS, &arg) == -1)
 	return ERR_TTDEV;
 
     ticables_info(_("    is useable: yes"));
