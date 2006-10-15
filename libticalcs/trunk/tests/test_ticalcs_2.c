@@ -41,6 +41,12 @@
 #undef VERSION
 #define VERSION "Test program"
 
+#ifdef _MSC_VER
+# define SNULL	{ 0 }
+#else
+# define SNULL	{}
+#endif
+
 static void print_lc_error(int errnum)
 {
 	char *msg;
@@ -77,7 +83,7 @@ static int recv_screen(CalcHandle *h)
 	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
-	free(bitmap);
+	//free(bitmap);
 	return 0;
 }
 
@@ -144,7 +150,7 @@ static int recv_var(CalcHandle* h)
 {
 	char filename[1024] = "";
 	int ret;
-	VarEntry ve = {};
+	VarEntry ve = SNULL;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
@@ -198,26 +204,6 @@ static int recv_var_ns(CalcHandle* h)
 	return 0;
 }
 
-static int del_var(CalcHandle* h)
-{
-	VarEntry ve = {};
-	int ret;
-
-	if(tifiles_calc_is_ti9x(h->model))
-        {
-            printf("Enter folder name: ");
-            ret = scanf("%1023s", ve.folder);
-            if(ret < 1) return 0;
-        }
-
-	printf("Enter variable name: ");
-	ret = scanf("%1023s", ve.name);
-	if(ret < 1) return 0;
-	    
-	TRYF(ticalcs_calc_del_var(h, &ve));
-	return 0;
-}
-
 static int send_flash(CalcHandle *h)
 {
 	char filename[1024] = "";
@@ -238,7 +224,7 @@ static int recv_flash(CalcHandle *h)
 {
 	char filename[1024] = "";
 	int ret;
-	VarEntry ve = {};
+	VarEntry ve = SNULL;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
@@ -294,6 +280,52 @@ static int get_clock(CalcHandle *h)
 	return 0;
 }
 
+static int del_var(CalcHandle* h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(tifiles_calc_is_ti9x(h->model))
+        {
+            printf("Enter folder name: ");
+            ret = scanf("%1023s", ve.folder);
+            if(ret < 1) return 0;
+        }
+
+	printf("Enter variable name: ");
+	ret = scanf("%1023s", ve.name);
+	if(ret < 1) return 0;
+	    
+	TRYF(ticalcs_calc_del_var(h, &ve));
+	return 0;
+}
+
+static int new_folder(CalcHandle* h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(tifiles_calc_is_ti9x(h->model))
+        {
+            printf("Enter folder name: ");
+            ret = scanf("%1023s", ve.folder);
+            if(ret < 1) return 0;
+        }
+	    
+	TRYF(ticalcs_calc_new_fld(h, &ve));
+	return 0;
+}
+
+static int get_version(CalcHandle *h)
+{
+	CalcInfos infos;
+
+	TRYF(ticalcs_calc_get_version(h, &infos));
+	//ticalcs_clock_show(h->model, &clk);
+
+	return 0;
+}
+
 static int probe_calc(CalcHandle *h)
 {
 	int m;
@@ -314,7 +346,9 @@ static int probe_calc(CalcHandle *h)
 	return 0;
 }
 
-static const char *str_menu[19] = 
+#define NITEMS	21
+
+static const char *str_menu[NITEMS] = 
 {
 	"Exit",
 	"Check whether calc is ready",
@@ -325,7 +359,6 @@ static const char *str_menu[19] =
 	"Recv backup",
 	"Send var",
 	"Recv var",
-	"Delete var",
 	"Send var (ns)",
 	"Recv var (ns)",
 	"Send flash",
@@ -334,12 +367,15 @@ static const char *str_menu[19] =
 	"Dump ROM",
 	"Set clock",
 	"Get clock",
+	"Delete var",
+	"New folder",
+	"Get version",
 	"Probe calc",
 };
 
 typedef int (*FNCT_MENU) (CalcHandle*);
 
-static FNCT_MENU fnct_menu[19] = 
+static FNCT_MENU fnct_menu[NITEMS] = 
 {
 	NULL,
 	is_ready,
@@ -350,7 +386,6 @@ static FNCT_MENU fnct_menu[19] =
 	recv_backup,
 	send_var,
 	recv_var,
-	del_var,
 	send_var_ns,
 	recv_var_ns,
 	send_flash,
@@ -359,6 +394,9 @@ static FNCT_MENU fnct_menu[19] =
 	dump_rom,
 	set_clock,
 	get_clock,
+	del_var,
+	new_folder,
+	get_version,
 	probe_calc,
 };
 
@@ -375,7 +413,7 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_DEV, PORT_1);
+	cable = ticables_handle_new(CABLE_USB, PORT_1);
 	if(cable == NULL)
 	    return -1;
 
@@ -387,21 +425,12 @@ int main(int argc, char **argv)
 	// attach cable to calc (and open cable)
 	err = ticalcs_cable_attach(calc, cable);
 
-/*
-	printf("Wait 1 second...\n");
-#if defined(__WIN32__) && !defined(__MINGW32__)
-	Sleep(1000);
-#else
-	sleep(1);
-#endif
-	*/
-
 	do
 	{
 restart:
 		// Display menu
 		printf("Choose an action:\n");
-		for(i = 0; i < 19; i++)
+		for(i = 0; i < NITEMS; i++)
 			printf("%2i. %s\n", i, str_menu[i]);
 		printf("Your choice: ");
 
