@@ -375,12 +375,12 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_SLV, PORT_1);
+	cable = ticables_handle_new(CABLE_DEV, PORT_1);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI84P);
+	calc = ticalcs_handle_new(CALC_TI89T_USB);
 	if(calc == NULL)
 		return -1;
 
