@@ -482,7 +482,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	memcpy(&id[0], &(param[0]->data[1]), 5);
 	memcpy(&id[5], &(param[0]->data[7]), 5);
 	memcpy(&id[10], &(param[0]->data[13]), 5);
-	id[17] = '\0';
+	id[14] = '\0';
 
 	return 0;
 }
