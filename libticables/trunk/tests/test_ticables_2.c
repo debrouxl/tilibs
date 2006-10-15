@@ -49,6 +49,14 @@ static void print_lc_error(int errnum)
 # define  to_CURRENT(ref)       ( (1000*clock()) / CLOCKS_PER_SEC - (ref) )
 # define  to_ELAPSED(ref, max)  ( TO_CURRENT(ref) > (100*(max)) )
 
+#if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__)
+# include <unistd.h>
+# define PAUSE(x)  usleep(1000*(x));
+#elif defined(__WIN32__)
+# include <windows.h>
+# define PAUSE(x)  Sleep((x));
+#endif
+
 int main(int argc, char **argv)
 {
 	CableHandle *handle;
@@ -116,19 +124,19 @@ int main(int argc, char **argv)
 	buf[4]=0x01;
 	buf[5]=0x00; buf[6]=0x00; buf[7]=0x04; buf[8]=0x00;
 	err = ticables_cable_send(handle, buf, 9);
-    if(err) print_lc_error(err);
+        if(err) print_lc_error(err);
 
 	// display answer
 	memset(buf, 0, sizeof(buf));
-    err = ticables_cable_recv(handle, buf, 9);
-    if(err) print_lc_error(err);
+	err = ticables_cable_recv(handle, buf, 9);
+	if(err) print_lc_error(err);
 
-    for(i = 0; i < 9; i++)
-		printf("%02x ", buf[i]);
-    printf("\n");
+	for(i = 0; i < 9; i++)
+	    printf("%02x ", buf[i]);
+	printf("\n");
 #endif
 
-#if 0
+#if 1
 	// mode set
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x10;
@@ -142,20 +150,20 @@ int main(int argc, char **argv)
 	buf[i++]=0x07; buf[i++]=0xd0;
 
 	err = ticables_cable_send(handle, buf, i);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 
 	err = ticables_cable_recv(handle, buf, 7);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 	for(i = 0; i < 7; i++)
-		printf("%02x ", buf[i]);
-    printf("\n");
+	    printf("%02x ", buf[i]);
+	printf("\n");
 
 	// mode ack
 	err = ticables_cable_recv(handle, buf, 15);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 	for(i = 0; i < 15; i++)
 		printf("%02x ", buf[i]);
-    printf("\n");
+	printf("\n");
 
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x02;
@@ -163,10 +171,12 @@ int main(int argc, char **argv)
 	buf[i++]=0xe0; buf[i++]=0x00;
 
 	err = ticables_cable_send(handle, buf, i);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
+	PAUSE(500);
+#endif
 
 #if 0
-	// param req
+	// param req (TI84+ only)
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0xa;
 	buf[i++]=0x04;
@@ -176,20 +186,20 @@ int main(int argc, char **argv)
 	buf[i++]=0x00; buf[i++]=0x22;
 
 	err = ticables_cable_send(handle, buf, i);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 
 	err = ticables_cable_recv(handle, buf, 7);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 	for(i = 0; i < 7; i++)
 		printf("%02x ", buf[i]);
-    printf("\n");
+	printf("\n");
 
 	// delay ack
 	err = ticables_cable_recv(handle, buf, 15);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 	for(i = 0; i < 15; i++)
-		printf("%02x ", buf[i]);
-    printf("\n");
+	    printf("%02x ", buf[i]);
+	printf("\n");
 
 	i = 0;
 	buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x00; buf[i++]=0x02;
@@ -197,7 +207,7 @@ int main(int argc, char **argv)
 	buf[i++]=0xe0; buf[i++]=0x00;
 
 	err = ticables_cable_send(handle, buf, i);
-    if(err) print_lc_error(err);
+	if(err) print_lc_error(err);
 
 	// param data
 	for(j = 0; j < 3; j++)
@@ -231,7 +241,7 @@ int main(int argc, char **argv)
 		err = ticables_cable_send(handle, buf, i);
 		if(err) print_lc_error(err);
 	}
-#endif
+	PAUSE(500);
 #endif
 
 #if 0
