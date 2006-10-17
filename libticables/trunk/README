@@ -66,6 +66,9 @@ libusb applications:
  - listuid=xxx, listgid=xxx, listmode=xxx respectively set the uid, the gid
    and the mode of /proc/bus/usb/devices
 
+Clearly, add this to you fstab:
+	none /proc/bus/usb usbfs defaults,rw,listuid=1000,listgid=1000,devuid=1000,devgid=1000,busuid=1000,busgid=1000
+
  -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
 >>
 

@@ -45,6 +45,9 @@
 #endif
 #ifdef HAVE_LINUX_TICABLE_H
 # include <linux/ticable.h>     //ioctl codes
+# ifndef IOCTL_TIUSB_GET_MAXPS
+#  define IOCTL_TIUSB_GET_MAXPS      _IOR('N', 0x23, int) /* max packet size */
+# endif
 #endif
 
 
