@@ -202,17 +202,17 @@ static int dev_put(CableHandle* h, uint8_t *data, uint32_t len)
     ret = write(dev_fd, (void *)data, len);    
     if(ret == -ETIMEDOUT) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	ticables_warning("write (%s).\n", usb_strerror());
 	return ERR_WRITE_TIMEOUT;
     } 
     else if(ret == -EPIPE) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	ticables_warning("write (%s).\n", usb_strerror());
 	return ERR_WRITE_ERROR;
     } 
     else if(ret < 0) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+	ticables_warning("write (%s).\n", usb_strerror());
 	return ERR_WRITE_ERROR;
     }
     
@@ -240,26 +240,26 @@ static int dev_get_(CableHandle *h, uint8_t *data)
 	    }
 
 	    if (ret == 0)
-		ticables_warning("\nweird, usb_bulk_read returns without any data & error; retrying...\n");
+		ticables_warning("\nweird, read returns without any data & error; retrying...\n");
 	    
 	}
 	while(!ret);
 	
 	if(ret == -ETIMEDOUT) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("read (%s).\n", usb_strerror());
 	    nBytesRead2 = 0;
 	    return ERR_READ_TIMEOUT;
 	} 
 	else if(ret == -EPIPE) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("read (%s).\n", usb_strerror());
 	    nBytesRead2 = 0;
 	    return ERR_READ_ERROR;
 	} 
 	else if(ret < 0) 
 	{
-	    ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+	    ticables_warning("read (%s).\n", usb_strerror());
 	    nBytesRead2 = 0;
 	    return ERR_READ_ERROR;
 	}
