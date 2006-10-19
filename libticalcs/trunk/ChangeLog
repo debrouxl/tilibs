@@ -10,6 +10,7 @@ Log:
 	- 68k ROM dumpers: only dump 4 MB on HW4 (same as HW3)
 	- check handle to avoid NULL dereference
 	- dusb_cmd.c: uses BB00 packet value as delay
+	- Titanium can't handle more that 16 parameters at a time => get_version split
 
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
