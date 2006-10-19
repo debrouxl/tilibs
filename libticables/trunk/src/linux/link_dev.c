@@ -379,8 +379,8 @@ const CableFncts cable_dev =
 {
 	CABLE_DEV,
 	"USB-DEV",
-	N_("Silver/Direct Link"),
-	N_("Silver/Direct Link cable"),
+	N_("Direct Link"),
+	N_("Direct Link cable"),
 	0,
 	&dev_prepare,
 	&dev_open, &dev_close, &dev_reset, &dev_probe, NULL,
@@ -396,7 +396,7 @@ TIEXPORT1 int TICALL usb_probe_devices2(int **list)
 {
     int i;
 
-    TRYC(tigl_enum());
+    TRYC(dev_enum());
 
     *list = (int *)calloc(MAX_CABLES+1, sizeof(int));
     for(i = 0; i < MAX_CABLES; i++)
