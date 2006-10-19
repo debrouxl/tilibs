@@ -9,6 +9,7 @@ Log:
 	- B. Moody fix: replaced all snprintf by g_snprintf (truncate OS version under Linux)
 	- 68k ROM dumpers: only dump 4 MB on HW4 (same as HW3)
 	- check handle to avoid NULL dereference
+	- dusb_cmd.c: uses BB00 packet value as delay
 
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)

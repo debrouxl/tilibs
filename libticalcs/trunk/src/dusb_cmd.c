@@ -178,7 +178,7 @@ extern const VtlPktName vpkt_types[];
 		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);	\
 		ticalcs_info("    delay = %u\n", delay);	\
 										\
-		PAUSE(50);						\
+		PAUSE(delay/1000);				\
 										\
 		vtl_pkt_del(pkt);				\
 		pkt = vtl_pkt_new(0, 0);		\
