@@ -238,7 +238,7 @@ static int dev_get_(CableHandle *h, uint8_t *data)
 	{
 	    ret = read(dev_fd, (void *) rBuf2, max_ps2);
 	    if (ret == 0)
-	      ticables_warning("\nweird, read returns without any data and/or error; retrying...\n");
+	      ticables_warning("weird, read returns without any data and/or error; retrying...\n");
 
 	}
 	while(!ret);
