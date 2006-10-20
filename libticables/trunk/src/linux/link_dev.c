@@ -113,7 +113,7 @@ static int dev_prepare(CableHandle *h)
 
 static int dev_open(CableHandle *h)
 {
-    int mask = O_RDWR | O_NONBLOCK | O_SYNC;
+    int mask = O_RDWR | O_SYNC;
 
     if ((dev_fd = open(h->device, mask)) == -1) 
     {
@@ -198,24 +198,31 @@ static int dev_reset(CableHandle *h)
 static int dev_put(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int ret;
+    int bytesdone = 0;
 
-    ret = write(dev_fd, (void *)data, len);    
-    if(ret == -ETIMEDOUT) 
-    {
-	ticables_warning("write (%s).\n", usb_strerror());
-	return ERR_WRITE_TIMEOUT;
-    } 
-    else if(ret == -EPIPE) 
-    {
-	ticables_warning("write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
-    } 
-    else if(ret < 0) 
-    {
-	ticables_warning("write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
-    }
-    
+    do
+      {
+	ret = write(dev_fd, (void *)(data + bytesdone), len - bytesdone);
+  
+	if(ret == -ETIMEDOUT) 
+	  {
+	    ticables_warning("write (%s).\n", usb_strerror());
+	    return ERR_WRITE_TIMEOUT;
+	  } 
+	else if(ret == -EPIPE) 
+	  {
+	    ticables_warning("write (%s).\n", usb_strerror());
+	    return ERR_WRITE_ERROR;
+	  } 
+	else if(ret < 0) 
+	  {
+	    ticables_warning("write (%s).\n", usb_strerror());
+	    return ERR_WRITE_ERROR;
+	  }
+	
+	bytesdone += ret;
+      } while(bytesdone < len);
+
     return 0;
 }
 
@@ -277,6 +284,8 @@ static int dev_get_(CableHandle *h, uint8_t *data)
 static int dev_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int i;
+
+    printf("r: len = %i\n", len);
     
     // we can't do that in any other way because dev_get_ can returns
     // 1, 2, ..., len bytes.
