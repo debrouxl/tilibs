@@ -229,26 +229,17 @@ static int dev_put(CableHandle* h, uint8_t *data, uint32_t len)
 static int dev_get_(CableHandle *h, uint8_t *data)
 {
     int ret = 0;
-    tiTIME clk;
     
     /* Read up to 32/64 bytes and store them in a buffer for 
        subsequent accesses */
     if (nBytesRead2 <= 0) 
     {
-	TO_START(clk);
 	do 
 	{
 	    ret = read(dev_fd, (void *) rBuf2, max_ps2);
-	    
-	    if (TO_ELAPSED(clk, h->timeout))
-	    {
-		nBytesRead2 = 0;
-		return ERR_READ_TIMEOUT;
-	    }
-
 	    if (ret == 0)
-		ticables_warning("\nweird, read returns without any data & error; retrying...\n");
-	    
+	      ticables_warning("\nweird, read returns without any data & erro\r; retrying...\n");
+
 	}
 	while(!ret);
 	
@@ -285,8 +276,6 @@ static int dev_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
     int i;
 
-    printf("r: len = %i\n", len);
-    
     // we can't do that in any other way because dev_get_ can returns
     // 1, 2, ..., len bytes.
     for(i = 0; i < len; i++)
