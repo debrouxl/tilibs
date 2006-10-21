@@ -238,7 +238,7 @@ static int dev_get_(CableHandle *h, uint8_t *data)
 	{
 	    ret = read(dev_fd, (void *) rBuf2, max_ps2);
 	    if (ret == 0)
-	      ticables_warning("weird, read returns without any data and/or error; retrying...\n");
+	      ticables_warning("weird, read returns without any data and/or error; retrying...");
 
 	}
 	while(!ret);
@@ -292,17 +292,23 @@ static int dev_enum(void)
     for(i = 0; i < MAX_CABLES; i++)
     {
         int fd = -1;
-        int arg = 0;
-        int mask = O_RDWR | O_NONBLOCK | O_SYNC;
+        unsigned int arg = 0;
+        int mask = O_RDWR | O_NONBLOCK;
 	char devname[64];
 
 	sprintf(devname, "/dev/tiusb%i", i);
-        if((fd = open(devname, mask)) == -1)
-            return ERR_PROBE_FAILED;
+	fd = open(devname, mask);
+        if((fd == -1) && (errno != EBUSY))
+	  continue;
+	//printf("fd = %i, errno = %i\n", fd, errno);
+	//perror(strerror(errno));
 
         if(ioctl(fd, IOCTL_TIUSB_GET_DEVID, &arg) == -1)
-            return ERR_PROBE_FAILED;
-	devlist[i] = arg;
+	  {
+	    close(fd);
+	    continue;
+	  }
+	devlist[i] = arg & 0xffff;
 
         close(fd);
     }    
@@ -395,7 +401,7 @@ TIEXPORT1 int TICALL usb_probe_devices2(int **list)
     int i;
 
     TRYC(dev_enum());
-
+    
     *list = (int *)calloc(MAX_CABLES+1, sizeof(int));
     for(i = 0; i < MAX_CABLES; i++)
         (*list)[i] = devlist[i];
