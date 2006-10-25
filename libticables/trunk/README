@@ -41,7 +41,8 @@ or
 	mounted). For ease of use, use the 'root' account.
 	Else, see the libusb documentation for more details.
 
-	Otherwise, you will find below a quick overview:
+	Otherwise, you will find below a quick overview which applies to
+	Debian systems:
 <<
 libusb uses a pseudo-filesystem known as 'usbdevfs` or 'usbfs` to access
 the USB devices connected to your machine. This filesystem must be mounted
@@ -66,12 +67,25 @@ libusb applications:
  - listuid=xxx, listgid=xxx, listmode=xxx respectively set the uid, the gid
    and the mode of /proc/bus/usb/devices
 
+ -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
+
 Clearly, add this to you fstab:
 	none /proc/bus/usb usbfs defaults,rw,listuid=1000,listgid=1000,devuid=1000,devgid=1000,busuid=1000,busgid=1000
-
- -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
 >>
 
+	Fedora is set up differently. For one, /proc/bus/usb (or /dev/bus/usb
+	as it is now called, but /proc/bus/usb still works as of Fedora Core 6)
+	isn't mounted as a file system. (It's apparently taken care of by udev.)
+	And secondly, you don't have to play with the permissions, because a
+	nice tool called pam_console takes care of that for you. (The user
+	physically in front of the computer, if any, gets access to what's
+	assumed to be his/her calculator automatically.) The libticables2 Fedora
+	RPM automatically installs the required udev and pam_console
+	configurations for a regular user to be able to access the linked
+	calculator (when logged in locally).
+
+	To sum up, USB links Just Work in Fedora without any manual user
+	intervention, as long as my Fedora RPMs are used. -- Kevin Kofler
 
 --------------------------------------------------------------------------
 Compilation
