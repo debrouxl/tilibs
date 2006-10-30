@@ -3,18 +3,18 @@ SubVersion: $Id$
 Log:
 
 - 11/10/2006, version 1.0.2: roms
-	- re-added USB kernel module support for Titanium (still investigating
-	Titanium/USB issue, seems to be libusb related)
-	- changed PID_TI84P	to 0xE003 and added PID_TI84P_SE as 0xE008
+	- re-added USB kernel module support (testing purposes)
+	- synced BSD serial linking code with Linux code (tijl)
+	- BSD libusb fixes (tijl)
+	- changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008
 	- added probing of TI84+ non-SE
-	- added tiusb support again (testing purposes)
 	
 - 21/02/2006, version 1.0.1: roms
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)
 	  as __MACOSX__ (kevin)
 	- updated OS X and BSD ports to compile again (kevin)
 	- changed TIEXPORT into TIEXPORT1
-	- fixed TTY device names in Gray/BlackLink support (Sean McLaughlin)
+	- fixed BSD TTY device names in Gray/BlackLink support (Sean McLaughlin)
 	
 - 17/09/2006, tagged as version 1.0.0: roms
 	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
