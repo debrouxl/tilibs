@@ -117,7 +117,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TRYF(ti82_recv_XDP(&unused, (uint8_t *)&memory));
 	fixup(memory);
 	TRYF(ti82_send_ACK());
-	ti->mem_free = (uint32_t)GUINT_TO_POINTER(memory);
+	ti->mem_free = memory;
 
 
 
@@ -163,7 +163,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	TRYF(ti82_recv_XDP(&unused, (uint8_t *)&memory));
 	fixup(memory);
 	TRYF(ti82_send_EOT());
-	*ram = (uint32_t)GUINT_TO_POINTER(memory);
+	*ram = memory;
 	*flash = -1;
 
 	return 0;

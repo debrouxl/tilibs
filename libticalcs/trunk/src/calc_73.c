@@ -124,7 +124,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TRYF(ti73_recv_XDP(&unused, (uint8_t *)&memory));
 	fixup(memory);
 	TRYF(ti73_send_ACK());
-	ti->mem_free = (uint32_t)GUINT_TO_POINTER(memory);
+	ti->mem_free = memory;
 
 	folder = t_node_new(NULL);
 	t_node_append(*vars, folder);
@@ -173,7 +173,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	TRYF(ti73_recv_XDP(&unused, (uint8_t *)&memory));
 	fixup(memory);
 	TRYF(ti73_send_EOT());
-	*ram = (uint32_t)GUINT_TO_POINTER(memory);
+	*ram = memory;
 	*flash = -1;
 
 	return 0;
