@@ -37,7 +37,7 @@
 #include "detect.h"
 #include "ioports.h"
 
-#define dev_fd  ((int)(h->priv))
+#define dev_fd  (GPOINTER_TO_INT(h->priv))
 
 static int ser_prepare(CableHandle *h)
 {
@@ -71,8 +71,9 @@ static int ser_reset(CableHandle *h);
 static int ser_open(CableHandle *h)
 {
     int fd;
+
     TRYC(ser_io_open(h->device, &fd));
-    h->priv = (void *)fd;
+    h->priv = GINT_TO_POINTER(fd);
     TRYC(ser_reset(h));
 #ifdef OPEN_DELAYED
 	usleep(2000);	// needs this because serial lines can be low at startup

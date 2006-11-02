@@ -42,7 +42,7 @@
 #include "../gettext.h"
 #include "detect.h"
 
-#define dev_fd      ((int)(h->priv))
+#define dev_fd      (GPOINTER_TO_INT(h->priv))
 #define termset     ((struct termios *)(h->priv2))
 
 static int gry_prepare(CableHandle *h)
@@ -83,7 +83,7 @@ static int gry_open(CableHandle *h)
 #endif
     
     //dev_fd = (int)open(h->device, flags);
-    h->priv = (void *)open(h->device, flags);
+    h->priv = GINT_TO_POINTER(open(h->device, flags));
     if (dev_fd == -1) 
     {
 	if(errno == EACCES)

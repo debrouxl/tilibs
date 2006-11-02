@@ -33,7 +33,7 @@
 #include "detect.h"
 #include "ioports.h"
 
-#define dev_fd  ((int)(h->priv))
+#define dev_fd  (GPOINTER_TO_INT(h->priv))
 
 static int par_prepare(CableHandle *h)
 {
@@ -65,8 +65,9 @@ static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
     int fd;
+
     TRYC(par_io_open(h->device, &fd));
-    h->priv = (void *)fd;
+    h->priv = GINT_TO_POINTER(fd);
     TRYC(par_reset(h));
 #ifdef OPEN_DELAYED
 	usleep(2000);	// needs this because serial lines can be low at startup
