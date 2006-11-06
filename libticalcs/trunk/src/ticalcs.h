@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticables - Ti Link Cable library, a part of the TiLP project
+/*  libticables - hand-helds support library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 #define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.0.5"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBCABLES_VERSION "0.0.1"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_libticalcs2_VERSION "0.0.1"	// useless with pkg-config
 
 /* Types */
 
