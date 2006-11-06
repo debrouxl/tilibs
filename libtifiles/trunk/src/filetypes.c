@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: typesxx.c 912 2005-03-30 20:49:06Z roms $ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
+/*  libtifiles - file format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
