@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: test_tifiles_2.c 1798 2006-02-03 08:27:54Z roms $ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
+/*  libtifiles - charset library, a part of the TiLP project
  *  Copyright (C) 1999-2004  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify

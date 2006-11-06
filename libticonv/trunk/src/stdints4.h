@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
+/*  libtifiles - charset library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *  Copyright (C) 2006 Tyler Cassidy
  *

@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libticonv - Ti File Format library, a part of the TiLP project
+/*  libticonv - charset library, a part of the TiLP project
  *  Copyright (C) 2006-2006 Romain Lievin and Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
