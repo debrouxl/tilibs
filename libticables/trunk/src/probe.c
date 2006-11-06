@@ -57,17 +57,17 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMeth
 	int found = -1;
 
 	ticables_info(_("Link cable probing:"));
-	array = (int **)calloc(CABLE_MAX, sizeof(int));
+	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
 
 	switch(method)
 	{
 	case PROBE_USB:		start = CABLE_SLV; stop = CABLE_USB; break;
 	case PROBE_DBUS:	start = CABLE_GRY; stop = CABLE_PAR; break;
-	default:			start = CABLE_GRY; stop = CABLE_TIE; break;
+	default:		start = CABLE_GRY; stop = CABLE_TIE; break;
 	}
 
-	for(model = CABLE_GRY; model <= CABLE_TIE; model++)
-		array[model] = (int *)calloc(5, sizeof(int));
+	for(model = CABLE_NUL; model <= CABLE_MAX; model++)
+	    array[model] = (int *)calloc(5, sizeof(int));
 
 	for(model = start; model <= stop; model++)
 	{
@@ -96,6 +96,7 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMeth
 	}
 
 	*result = array;
+
 	return found ? 0 : ERR_NO_CABLE;
 }
 
@@ -112,7 +113,10 @@ TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
 	int i;
 
 	for(i = CABLE_GRY; i <= CABLE_TIE; i++)
-		free((*result)[i]);
+	  {
+	    free((*result)[i]);
+		(*result)[i] = NULL;
+	  }
 
 	free(*result);
 	*result = NULL;
