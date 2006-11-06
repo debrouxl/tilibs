@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: detect.c 2618 2006-07-20 08:44:49Z kevinkofler $ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *  Copyright (C) 2006  Kevin Kofler
  *

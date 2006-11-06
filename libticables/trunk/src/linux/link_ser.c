@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id: link_ser2.c 1033 2005-05-06 18:17:02Z roms $ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify

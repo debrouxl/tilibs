@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id$ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify

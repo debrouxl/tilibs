@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -126,7 +126,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 
 	if (ticables_instance)
 		return (++ticables_instance);
-	ticables_info(_("ticables library version %s"), LIBCABLES_VERSION);
+	ticables_info(_("ticables library version %s"), libticables2_VERSION);
   	errno = 0;
 
 #if defined(ENABLE_NLS)
@@ -178,7 +178,7 @@ TICALL ticables_library_exit(void)
  **/
 TIEXPORT1 const char *TICALL ticables_version_get(void)
 {
-	return LIBCABLES_VERSION;
+	return libticables2_VERSION;
 }
 
 /**

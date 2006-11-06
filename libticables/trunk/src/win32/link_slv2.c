@@ -1,7 +1,7 @@
 /* Hey EMACS -*- win32-c -*- */
 /* $Id: link_slv.c 1362 2005-07-12 15:34:10Z roms $ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify

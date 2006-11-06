@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
 /* $Id$ */
 
-/*  libCables - Ti Link Cable library, a part of the TiLP project
+/*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -45,9 +45,9 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCABLES_VERSION "1.0.2"
+# define libticables2_VERSION "1.0.2"
 #else
-# define LIBCABLES_VERSION VERSION
+# define libticables2_VERSION VERSION
 #endif
 
 /* Types */
