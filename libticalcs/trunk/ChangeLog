@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 12/11/2006, version 1.0.2: roms
+	- fixed memory overlap in send_flash_app (may be related to bug #1583155)
+
 - 21/02/2006, version 1.0.1: roms
 	- use angle brackets to include installed ticonv.h (kevin).
 	- conditionalize #pragma warning on #ifdef _MSC_VER, not #ifdef __WIN32_ (kevin).

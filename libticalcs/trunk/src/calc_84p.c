@@ -302,9 +302,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	return 0;
 #endif
 
-	data = tifiles_fp_alloc_data(ptr->data_length);
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
-	//size = ptr->data_length
+	data = tifiles_fp_alloc_data(size);	// must be rounded-up
 
 	update_->cnt2 = 0;
 	update_->max2 = ptr->num_pages;
