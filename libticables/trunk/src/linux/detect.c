@@ -297,6 +297,14 @@ int check_for_tty(const char *devname)
     struct serial_struct serinfo = { 0 };
     int fd;
 
+    ticables_info(_("Check for tty support:"));
+#ifdef HAVE_LINUX_SERIAL_H
+    ticables_info(_("    tty support: available."));
+#else
+    ticables_info(_("    tty support: not compiled."));
+    return ERR_USBFS;
+#endif
+
     // check for node usability
     ticables_info(_("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
@@ -336,11 +344,20 @@ int check_for_parport(const char *devname)
 {
     int fd;
 
+    ticables_info(_("Check for parport support:"));
+#ifdef HAVE_LINUX_PARPORT_H    
+    ticables_info(_("    parport support: available."));
+#else
+    ticables_info(_("    parport support: not compiled."));
+    return ERR_USBFS;
+#endif
+
     // check for node usability
     ticables_info(_("Check for parport usability:"));
     if(check_for_node_usability(devname) == -1)
         return ERR_PPDEV;
-    
+
+#ifdef HAVE_LINUX_PARPORT_H    
     // check for device availability
     fd = open(devname, 0);
     if (fd == -1)
@@ -358,6 +375,7 @@ int check_for_parport(const char *devname)
 
     ticables_info(_("    is useable: yes"));
     close(fd);
+#endif
 
     return 0;
 }
