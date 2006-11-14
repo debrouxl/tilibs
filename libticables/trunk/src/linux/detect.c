@@ -302,7 +302,7 @@ int check_for_tty(const char *devname)
     ticables_info(_("    tty support: available."));
 #else
     ticables_info(_("    tty support: not compiled."));
-    return ERR_USBFS;
+    return ERR_TTDEV;
 #endif
 
     // check for node usability
@@ -349,7 +349,7 @@ int check_for_parport(const char *devname)
     ticables_info(_("    parport support: available."));
 #else
     ticables_info(_("    parport support: not compiled."));
-    return ERR_USBFS;
+    return ERR_PPDEV;
 #endif
 
     // check for node usability
