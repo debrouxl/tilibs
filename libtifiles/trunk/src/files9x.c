@@ -360,7 +360,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			if(fread_byte(f, &(content->hw_id)) < 0) goto tfrf;
 		    if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
 
-			if(!check_device_type(content->device_type))
+			if(content->data_type != TI89_LICENSE && !check_device_type(content->device_type))
 				return ERR_INVALID_FILE;
 			if(!check_data_type(content->data_type))
 				return ERR_INVALID_FILE;

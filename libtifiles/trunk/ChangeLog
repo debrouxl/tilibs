@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 12/11/2006, version 1.0.2:
+	- don't check device_type if data_type is TI89_LICENSE, old 89u files use DEVICE_TYPE_73 (kevin)
+	
 - 21/09/2006, version 1.0.1:
 	- fixed miniunz.c and minizip.c trying to include DOS/Win32 headers under OS X (kevin)
 	- changed TIEXPORT into TIEXPORT2
