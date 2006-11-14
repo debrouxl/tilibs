@@ -462,7 +462,7 @@ static int slv_open(CableHandle *h)
     
 #if !defined(__BSD__)
     /* Reset both endpoints */
-    //TRYC(tigl_reset(uHdl));
+    TRYC(tigl_reset(uHdl));
 #endif
 
     return 0;
