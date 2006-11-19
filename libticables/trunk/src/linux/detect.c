@@ -441,8 +441,10 @@ int check_for_tiusb(const char *devname)
 
     ticables_info(_("    is useable: yes"));
     close(fd);
-#endif
-    
 
     return 0;
+#else
+    ticables_info(_("    tiusb support: not compiled."));
+    return ERR_TTDEV;
+#endif
 }

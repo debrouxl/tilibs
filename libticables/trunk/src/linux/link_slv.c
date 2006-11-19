@@ -855,10 +855,13 @@ const CableFncts cable_raw =
 //=======================
 
 TIEXPORT1 int TICALL usb_probe_devices1(int **list);
+#ifdef HAVE_LINUX_TICABLE_H
 TIEXPORT1 int TICALL usb_probe_devices2(int **list);
+#endif
 
 TIEXPORT1 int TICALL usb_probe_devices(int **list)
 {
+#ifdef HAVE_LINUX_TICABLE_H
   int fd;
 
   fd = open("/dev/tiusb0", O_NONBLOCK);
@@ -869,7 +872,10 @@ TIEXPORT1 int TICALL usb_probe_devices(int **list)
   if((fd == -1) && (errno != EBUSY))
     return usb_probe_devices1(list);
   else
-      return usb_probe_devices2(list);
+    return usb_probe_devices2(list);
+#else
+  return usb_probe_devices1(list);
+#endif
 }
 
 // returns number of devices and list of PIDs (dynamically allocated)

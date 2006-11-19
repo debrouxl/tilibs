@@ -408,3 +408,10 @@ TIEXPORT1 int TICALL usb_probe_devices2(int **list)
 
     return 0;
 }
+
+#ifndef HAVE_LIBUSB
+TIEXPORT1 int TICALL usb_probe_devices(int **list)
+{
+  return usb_probe_devices2(list);
+}
+#endif

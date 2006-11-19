@@ -30,11 +30,15 @@
 #if defined(__WIN32__)
 #include "win32/link_slv.c"
 
-#elif defined(HAVE_LIBUSB)
-#include "linux/link_slv.c"
-#include "linux/link_dev.c"
 #else
-/* nothing */
+
+#ifdef HAVE_LIBUSB
+#include "linux/link_slv.c"
+#endif
+#ifdef HAVE_LINUX_TICABLE_H
+#include "linux/link_dev.c"
+#endif
+
 #endif
 
 #endif

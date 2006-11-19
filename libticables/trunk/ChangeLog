@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- ??/??/2006, version 1.0.3: roms
+	- fixed build when linux/ticables.h is not available (kevin)
+
 - 11/10/2006, version 1.0.2: roms
 	- re-added USB kernel module support (testing purposes)
 	- synced BSD serial linking code with Linux code (tijl)
