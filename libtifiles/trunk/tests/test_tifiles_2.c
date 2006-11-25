@@ -1100,7 +1100,10 @@ int test_tigroup()
 {
 	TigContent *content = { 0 };
 	TigEntry te = { 0 };
-	char *name = g_filename_from_utf8("tig/p\xC3\xA9p\xC3\xA9.tig", -1, NULL, NULL, NULL);
+
+	// SVN can't handle file like 'pépé'. You will have to rename it from pepe to pépé and
+	// uncomment line below and another line.
+	//char *name = g_filename_from_utf8("tig/p\xC3\xA9p\xC3\xA9.tig", -1, NULL, NULL, NULL);
 
 	char *array[2];
 	char files[2][1024];
@@ -1113,7 +1116,7 @@ int test_tigroup()
 #endif
 #if 1
 	printf("--> Testing TiGroup support (r/w)...\n");
-	tifiles_file_display_tigroup(PATH(name));
+	//tifiles_file_display_tigroup(PATH(name));
 #endif
 #if 0
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
