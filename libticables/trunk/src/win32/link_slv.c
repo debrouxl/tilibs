@@ -41,7 +41,7 @@
 
 #include "tiglusb.h"
 
-#define MIN_VERSION "3.6"
+#define MIN_VERSION "3.5"	// 64-bit driver is v3.5, 32-bit one is v3.6
 
 // Functions pointers for dynamic loading
 typedef struct
