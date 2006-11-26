@@ -70,7 +70,7 @@ static int par_open(CableHandle *h)
     h->priv = GINT_TO_POINTER(fd);
     TRYC(par_reset(h));
 #ifdef OPEN_DELAYED
-	usleep(2000);	// needs this because serial lines can be low at startup
+    usleep(2000000);	// needs this because serial lines can be low at startup
 #endif
 
     return 0;

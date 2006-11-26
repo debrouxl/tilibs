@@ -5,6 +5,7 @@ Log:
 - 19/10/2006, version 1.0.3: roms
 	- fixed build when linux/ticables.h is not available (kevin)
 	- 64-bit driver is v3.5, 32-bit one is v3.6: request v3.5
+	- fixed pause in Linux support: usleep uses us rather than ms.
 
 - 11/10/2006, version 1.0.2: roms
 	- re-added USB kernel module support (testing purposes)
@@ -13,6 +14,8 @@ Log:
 	- changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008
 	- added probing of TI84+ non-SE
 	- probe_usb_devices: returns an empty array rather than garbage when function fails
+	- be a little more verbose about nodes permissions and compiled options
+	        (I received many mails which lacks those information)
 	
 - 21/02/2006, version 1.0.1: roms
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)

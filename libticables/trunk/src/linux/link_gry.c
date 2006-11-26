@@ -217,7 +217,7 @@ static int gry_probe(CableHandle *h)
     for (i = 0; i < 5; i++) 
     {
 	dcb_write_io(h, seq_in[i]);
-	usleep(1000);
+	usleep(1000000);
 	//printf("%i : %i\n", seq[i], dcb_read_io() & 0x3);
 
 	if ((dcb_read_io(h) & 0x3) != seq_out[i]) 
