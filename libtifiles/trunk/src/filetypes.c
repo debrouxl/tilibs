@@ -341,6 +341,99 @@ TIEXPORT2 char *TICALL tifiles_fext_dup(const char *filename)
     return strdup(tifiles_fext_get(filename));
 }
 
+/**********************/
+/* Signature checking */
+/**********************/
+
+static int tifiles_file_has_ti_header(const char *filename)
+{
+	FILE *f;
+	char buf[9];
+	char *p;
+
+	f = gfopen(filename, "rb");
+	if (f == NULL)
+		return 0;
+	
+	fread_8_chars(f, buf);
+	for(p = buf; *p != '\0'; p++)
+		*p = toupper(*p);
+
+	if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
+      !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
+      !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
+      !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
+      !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
+      !strcmp(buf, "**TIFL**")) {
+		fclose(f);
+		return !0;
+	}
+
+	fclose(f);
+	return 0;
+}
+
+#define TIB_SIGNATURE	"Advanced Mathematics Software"
+
+static int tifiles_file_has_tib_header(const char *filename)
+{
+	FILE *f;
+	char str[128];
+	char *e = tifiles_fext_get(filename);
+
+	if (!strcmp(e, ""))
+	  return 0;
+
+	if(g_ascii_strcasecmp(e, "tib"))
+		return 0;
+
+	f = gfopen(filename, "rb");
+	if(f == NULL)
+		return 0;
+
+	fread_n_chars(f, 22, str);
+	fread_n_chars(f, strlen(TIB_SIGNATURE), str);
+	str[strlen(TIB_SIGNATURE)] = '\0';
+	if(!strcmp(str, TIB_SIGNATURE)) 
+	{
+		fclose(f);
+		return !0;
+	}
+
+	return 0;
+}
+
+#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
+#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
+
+static int tifiles_file_has_tig_header(const char *filename)
+{
+	FILE *f;
+	char str[5];
+	char *e = tifiles_fext_get(filename);
+
+	if (!strcmp(e, ""))
+	  return 0;
+
+	if(g_ascii_strcasecmp(e, "tig"))
+		return 0;
+
+	f = gfopen(filename, "rb");
+	if(f == NULL)
+		return 0;
+
+	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
+	str[strlen(TIG_SIGNATURE)] = '\0';
+	if(!strcmp(str, TIG_SIGNATURE) || !strcmp(str, TIG_SIGNATURE2)) 
+	{
+		fclose(f);
+		return !0;
+	}
+
+	fclose(f);
+	return 0;
+}
+
 /**************/
 /* File types */
 /**************/
@@ -366,6 +459,32 @@ static int is_regfile(const char *filename)
 #else
 	return !0;
 #endif
+}
+
+/**
+ * tifiles_file_is_ti:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a TI file by checking the signature.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
+{
+	// bug: check that file is not a FIFO
+	if (!is_regfile(filename))
+		return 0;
+
+	if(tifiles_file_has_ti_header(filename))
+		return !0;
+
+	if(tifiles_file_has_tib_header(filename))
+		return !0;
+
+	if(tifiles_file_has_tig_header(filename))
+		return !0;
+
+	return 0;
 }
 
 /**
@@ -535,8 +654,6 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
   return tifiles_file_is_os(filename) || tifiles_file_is_app(filename);
 }
 
-#define TIB_SIGNATURE	"Advanced Mathematics Software"
-
 /**
  * tifiles_file_is_tib:
  * @filename: a filename as string.
@@ -548,35 +665,8 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
 //TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
 int tifiles_file_is_tib(const char *filename)
 {
-	FILE *f;
-	char str[128];
-	char *e = tifiles_fext_get(filename);
-
-	if (!strcmp(e, ""))
-	  return 0;
-
-	if(g_ascii_strcasecmp(e, "tib"))
-		return 0;
-
-	f = gfopen(filename, "rb");
-	if(f == NULL)
-		return 0;
-
-	fread_n_chars(f, 22, str);
-	fread_n_chars(f, strlen(TIB_SIGNATURE), str);
-	str[strlen(TIB_SIGNATURE)] = '\0';
-	if(!strcmp(str, TIB_SIGNATURE)) 
-	{
-		fclose(f);
-		return !0;
-	}
-
-	fclose(f);
-	return 0;
+	return tifiles_file_has_tib_header(filename);
 }
-
-#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
-#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
 
 /**
  * tifiles_file_is_tigroup:
@@ -588,89 +678,12 @@ int tifiles_file_is_tib(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
 {
-	FILE *f;
-	char str[5];
-	char *e = tifiles_fext_get(filename);
-
-	if (!strcmp(e, ""))
-	  return 0;
-
-	if(g_ascii_strcasecmp(e, "tig"))
-		return 0;
-
-	f = gfopen(filename, "rb");
-	if(f == NULL)
-		return 0;
-
-	fread_n_chars(f, strlen(TIG_SIGNATURE), str);
-	str[strlen(TIG_SIGNATURE)] = '\0';
-	if(!strcmp(str, TIG_SIGNATURE) || !strcmp(str, TIG_SIGNATURE2)) 
-	{
-		fclose(f);
-		return !0;
-	}
-
-	fclose(f);
-	return 0;
+	return tifiles_file_has_tig_header(filename);
 }
 
 TIEXPORT2 int TICALL tifiles_file_is_tig(const char *filename)
 {
 	return tifiles_file_is_tigroup(filename);
-}
-
-static int tifiles_file_has_header(const char *filename)
-{
-	FILE *f;
-	char buf[9];
-	char *p;
-
-	f = gfopen(filename, "rb");
-	if (f == NULL)
-		return 0;
-	
-	fread_8_chars(f, buf);
-	for(p = buf; *p != '\0'; p++)
-		*p = toupper(*p);
-
-	if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
-      !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
-      !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
-      !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
-      !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
-      !strcmp(buf, "**TIFL**")) {
-		fclose(f);
-		return !0;
-	}
-
-	fclose(f);
-	return 0;
-}
-
-/**
- * tifiles_file_is_ti:
- * @filename: a filename as string.
- *
- * Check whether file is a TI file by checking the signature.
- *
- * Return value: a boolean value.
- **/
-TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
-{
-	// bug: check that file is not a FIFO
-	if (!is_regfile(filename))
-		return 0;
-
-	if(tifiles_file_has_header(filename))
-		return !0;
-
-	if(tifiles_file_is_tib(filename))
-		return !0;
-
-	if(tifiles_file_is_tigroup(filename))
-		return !0;
-
-	return 0;
 }
 
 /**
@@ -687,7 +700,7 @@ TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
-
+	return 0;
 }
 
 /********/
