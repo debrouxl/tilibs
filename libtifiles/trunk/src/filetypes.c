@@ -717,54 +717,60 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 		return 0;
 	}
 
-	switch(type)
+	if(type & TIFILE_SINGLE)
 	{
-	case TIFILE_SINGLE:
 		if(target && !g_ascii_strncasecmp(e, GROUP_FILE_EXT[target], 2))
 			return !0;
 		else
 			return tifiles_file_is_single(filename);
-		break;
-
-	case TIFILE_GROUP:
+	}
+	
+	if(type & TIFILE_GROUP)
+	{
 		if(target && !g_ascii_strcasecmp(e, GROUP_FILE_EXT[target]))
 			return !0;
 		else
 			return tifiles_file_is_group(filename);
-		break;
-
-	case TIFILE_REGULAR:
+	}
+	
+	if(type & TIFILE_REGULAR)
+	{
 		return tifiles_file_test(filename, TIFILE_SINGLE, target) ||
 				tifiles_file_test(filename, TIFILE_GROUP, target);
-		break;
-
-	case TIFILE_BACKUP:
+	}
+	
+	if(type & TIFILE_BACKUP)
+	{
 		if(target && !g_ascii_strcasecmp(e, BACKUP_FILE_EXT[target]))
 			return !0;
 		else
 			return tifiles_file_is_group(filename);
-		break;
-
-	case TIFILE_OS:
+	}
+	
+	if(type & TIFILE_OS)
+	{
 		if(target && !g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[target]))
 			return !0;
 		else
 			return tifiles_file_is_group(filename);
-		break;
-
-	case TIFILE_APP:
+	}
+	
+	if(type & TIFILE_APP)
+	{
 		if(target && !g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[target]))
 			return !0;
 		else
 			return tifiles_file_is_group(filename);
-		break;
-
-	case TIFILE_FLASH:
+	}
+	
+	if(type & TIFILE_FLASH)
+	{
 		return tifiles_file_test(filename, TIFILE_OS, target) ||
 				tifiles_file_test(filename, TIFILE_APP, target);
-		break;
-
-	case TIFILE_TIGROUP:
+	}
+	
+	if(type & TIFILE_TIGROUP)
+	{
 		if(target)
 		{
 			// Not written yet... This should imply to load the whole file and to
@@ -772,9 +778,6 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 		}
 		else
 			return tifiles_file_is_tigroup(filename);
-		break;
-
-	default: return 0;
 	}
 
 	return 0;
