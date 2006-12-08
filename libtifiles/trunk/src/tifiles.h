@@ -400,7 +400,7 @@ extern "C" {
   TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_tigroup (const char *filename);
   
-  TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass class, CalcModel target);
+  TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target);
 
   TIEXPORT2 CalcModel TICALL tifiles_file_get_model (const char *filename);
   TIEXPORT2 FileClass TICALL tifiles_file_get_class (const char *filename);
