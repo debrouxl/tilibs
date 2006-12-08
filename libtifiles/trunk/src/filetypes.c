@@ -696,10 +696,87 @@ TIEXPORT2 int TICALL tifiles_file_is_tig(const char *filename)
  * This function is a generic one which overwrap and extends the tifiles_file_is_* 
  * functions.
  *
+ * This is a powerful function which allows checking of a specific file type for
+ * a given target.
+ *
  * Return value: a boolean value.
  **/
 TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
+	char *e = tifiles_fext_get(filename);
+
+	if (!tifiles_file_is_ti(filename))
+		return 0;
+
+	if (!strcmp(e, ""))
+		return 0;
+
+	if(target > NCALCS)
+	{
+		tifiles_error("tifiles_file_test: invalid target argument! This is a bug.");
+		return 0;
+	}
+
+	switch(type)
+	{
+	case TIFILE_SINGLE:
+		if(target && !g_ascii_strncasecmp(e, GROUP_FILE_EXT[target], 2))
+			return !0;
+		else
+			return tifiles_file_is_single(filename);
+		break;
+
+	case TIFILE_GROUP:
+		if(target && !g_ascii_strcasecmp(e, GROUP_FILE_EXT[target]))
+			return !0;
+		else
+			return tifiles_file_is_group(filename);
+		break;
+
+	case TIFILE_REGULAR:
+		return tifiles_file_test(filename, TIFILE_SINGLE, target) ||
+				tifiles_file_test(filename, TIFILE_GROUP, target);
+		break;
+
+	case TIFILE_BACKUP:
+		if(target && !g_ascii_strcasecmp(e, BACKUP_FILE_EXT[target]))
+			return !0;
+		else
+			return tifiles_file_is_group(filename);
+		break;
+
+	case TIFILE_OS:
+		if(target && !g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[target]))
+			return !0;
+		else
+			return tifiles_file_is_group(filename);
+		break;
+
+	case TIFILE_APP:
+		if(target && !g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[target]))
+			return !0;
+		else
+			return tifiles_file_is_group(filename);
+		break;
+
+	case TIFILE_FLASH:
+		return tifiles_file_test(filename, TIFILE_OS, target) ||
+				tifiles_file_test(filename, TIFILE_APP, target);
+		break;
+
+	case TIFILE_TIGROUP:
+		if(target)
+		{
+			// Not written yet... This should imply to load the whole file and to
+			// parse the TigEntry structures. There is no easy way...
+		}
+		else
+			return tifiles_file_is_tigroup(filename);
+		break;
+
+	default: return 0;
+	}
+
 	return 0;
 }
 
