@@ -750,7 +750,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	{
 		if(target && !g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[target]))
 			return !0;
-		else if(target && tifiles_file_is_tib(filename)
+		else if(target && tifiles_file_is_tib(filename))
 		{
 			// do more check (look for device type)
 			return !0;
