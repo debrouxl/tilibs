@@ -2,6 +2,15 @@ SubVersion: $Id$
 
 Log:
 
+has_header => has_ti_header, has_tib_header, has_tig_header
+
+Vérifier que les fonctions de filesXX.c n'autorise pas le chargement d'un fichier destiné à une autre calc
+Fonction de checking file type/model/target
+
+- 08/12/2006, version 1.0.3:
+	added new values to FileClass (os, app and tib) enumeration and added the following 
+	convenient functions: tifiles_file_is_os and tifiles_file_is_app.
+
 - 12/11/2006, version 1.0.2:
 	- don't check device_type if data_type is TI89_LICENSE, old 89u files use DEVICE_TYPE_73 (kevin)
 	

@@ -384,7 +384,6 @@ TIEXPORT2 int TICALL tifiles_file_is_single(const char *filename)
   if (!tifiles_file_is_group(filename) &&
       !tifiles_file_is_backup(filename) &&
       !tifiles_file_is_flash(filename) &&
-	  !tifiles_file_is_tib(filename) &&
 	  !tifiles_file_is_tigroup(filename))
     return !0;
 
@@ -465,14 +464,45 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
 }
 
 /**
- * tifiles_file_is_flash:
+ * tifiles_file_is_os:
  * @filename: a filename as string.
  *
- * Check whether file is a FLASH file (os or app).
+ * Check whether file is a FLASH OS file (tib or XXu)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
+TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
+{
+  int i;
+  char *e = tifiles_fext_get(filename);
+
+  if (!strcmp(e, ""))
+    return 0;
+
+  if (!tifiles_file_is_ti(filename))
+    return 0;
+
+  if(tifiles_file_is_tib(filename))
+	  return !0;
+
+  for (i = 1; i < NCALCS + 1; i++) 
+  {
+    if (!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i]))
+      return !0;
+  }
+
+  return 0;
+}
+
+/**
+ * tifiles_file_is_app:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a FLASH app file
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
 {
   int i;
   char *e = tifiles_fext_get(filename);
@@ -485,18 +515,27 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
 
   for (i = 1; i < NCALCS + 1; i++) 
   {
-    if ((!g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[i])) ||
-	(!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i])) ||
-	(!g_ascii_strcasecmp(e, CERTIF_FILE_EXT[i])))
+    if (!g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[i]))
       return !0;
   }
 
   return 0;
 }
 
+/**
+ * tifiles_file_is_flash:
+ * @filename: a filename as string.
+ *
+ * Check whether file is a FLASH file (os or app).
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
+{
+  return tifiles_file_is_os(filename) || tifiles_file_is_app(filename);
+}
+
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
-#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
-#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
 
 /**
  * tifiles_file_is_tib:
@@ -506,7 +545,8 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
  *
  * Return value: a boolean value.
  **/
-TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
+//TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
+int tifiles_file_is_tib(const char *filename)
 {
 	FILE *f;
 	char str[128];
@@ -534,6 +574,9 @@ TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
 	fclose(f);
 	return 0;
 }
+
+#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
+#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
 
 /**
  * tifiles_file_is_tigroup:
@@ -628,6 +671,23 @@ TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
 		return !0;
 
 	return 0;
+}
+
+/**
+ * tifiles_file_test:
+ * @filename: a filename as string.
+ * @type: type to check
+ * @target: hand-held model or CALC_NONE for no filtering
+ *
+ * Check whether #filename is a TI file of type #type useable on a #target model.
+ * This function is a generic one which overwrap and extends the tifiles_file_is_* 
+ * functions.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
+{
+
 }
 
 /********/

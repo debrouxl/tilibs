@@ -41,7 +41,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "1.0.0"
+# define LIBFILES_VERSION "1.0.3"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -86,7 +86,7 @@ typedef enum
 typedef enum 
 {
   TIFILE_SINGLE = 1, TIFILE_GROUP = 2, TIFILE_REGULAR = 3, TIFILE_BACKUP = 4, 
-  TIFILE_FLASH = 8, TIFILE_TIGROUP = 16, 
+  TIFILE_FLASH = 8, TIFILE_TIGROUP = 16, TIFILE_OS = 32, TIFILE_APP = 64,
 } FileClass;
 
 /**
@@ -394,9 +394,13 @@ extern "C" {
   TIEXPORT2 int TICALL tifiles_file_is_group (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_regular (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_backup (const char *filename);
-  TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
+  TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename);
+  TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_tib (const char *filename);
+  TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_tigroup (const char *filename);
+  
+  TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass class, CalcModel target);
 
   TIEXPORT2 CalcModel TICALL tifiles_file_get_model (const char *filename);
   TIEXPORT2 FileClass TICALL tifiles_file_get_class (const char *filename);
