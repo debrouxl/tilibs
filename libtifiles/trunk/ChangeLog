@@ -2,8 +2,6 @@ SubVersion: $Id$
 
 Log:
 
-Vérifier que les fonctions de filesXX.c n'autorise pas le chargement d'un fichier destiné à une autre calc
-
 - 08/12/2006, version 1.0.3:
 	- added new values to FileClass (os, app and tib) enumeration and added the following 
 		convenient functions: tifiles_file_is_os and tifiles_file_is_app.
