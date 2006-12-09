@@ -7,3 +7,4 @@ dirlist.c : Directory listing management
 clock.c : Clock support
 tikeys.c : Getting scancode for TI keys
 probe.c : Automatic probing of hand-held model
+backup.c : General backup support (backup and tig)
