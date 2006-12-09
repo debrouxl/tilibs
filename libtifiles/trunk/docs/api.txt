@@ -2,7 +2,6 @@ tifiles.h : Enumerations, structures and type definitions
 tifiles.c : Entry Points
 error.c : General Functions
 type2str.c : Types and strings conversions
-transcode.c : Variable name translation and charsets
 filetypes.c : File type checking
 misc.c : Miscelaneous
 typesxx.c : Types and strings conversions
