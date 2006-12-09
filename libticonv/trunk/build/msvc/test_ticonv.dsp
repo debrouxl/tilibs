@@ -100,10 +100,6 @@ SOURCE=..\..\tests\test_ticonv.c
 # End Group
 # Begin Source File
 
-SOURCE="..\..\..\..\..\msvc\tilp2\ticonv.lib"
-# End Source File
-# Begin Source File
-
 SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 # End Source File
 # End Target
