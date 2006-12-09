@@ -44,6 +44,7 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /Yu"stdafx.h" /FD /GZ /c
 # ADD CPP /nologo /MTd /W3 /Gm /ZI /Od /I "c:\sources\roms\ticables2\src" /D "_DEBUG" /D "_MBCS" /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FR /Yu"stdafx.h" /FD /GZ /c
@@ -118,6 +119,7 @@ SOURCE="$(InputPath)"
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "ReleaseMinSize"
 # PROP Intermediate_Dir "ReleaseMinSize"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /O1 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /D "_ATL_MIN_CRT" /Yu"stdafx.h" /FD /c
 # ADD CPP /nologo /MT /W3 /O1 /I "c:\sources\roms\ticables2\src" /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL" /D "_ATL_MIN_CRT" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "__WIN32__" /Yu"stdafx.h" /FD /c
@@ -186,6 +188,7 @@ SOURCE="$(InputPath)"
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "ReleaseUMinSize"
 # PROP Intermediate_Dir "ReleaseUMinSize"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /O1 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "_UNICODE" /D "_ATL_DLL" /D "_ATL_MIN_CRT" /Yu"stdafx.h" /FD /c
 # ADD CPP /nologo /MT /W3 /O1 /I "c:\sources\roms\ticables2\src" /D "NDEBUG" /D "_UNICODE" /D "_ATL_DLL" /D "_ATL_MIN_CRT" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "__WIN32__" /Yu"stdafx.h" /FD /c
@@ -340,7 +343,7 @@ SOURCE=.\Types.rgs
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\..\msvc\tilp2\ticables2.lib
+SOURCE="..\build\msvc\libticables2-1.lib"
 # End Source File
 # End Group
 # End Target

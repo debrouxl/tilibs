@@ -250,7 +250,7 @@ STDMETHODIMP CCables::CableSend(long handle, SAFEARRAY __RPC_FAR * __RPC_FAR *da
 	}
 	SafeArrayDestroy(*data);
 
-	errnum = *ret = ticables_cable_send(CD_DEREF(handle), buf, count);
+	errnum = *ret = ticables_cable_send(CD_DEREF(handle), (uint8_t *)buf, count);
 
 	return errnum ? S_FALSE : S_OK;
 }
@@ -262,7 +262,7 @@ STDMETHODIMP CCables::CableRecv(long handle, SAFEARRAY __RPC_FAR * __RPC_FAR *da
 	int i;
 
 	// TODO: Add your implementation code here
-	errnum = *ret = ticables_cable_recv(CD_DEREF(handle), buf, count);
+	errnum = *ret = ticables_cable_recv(CD_DEREF(handle), (uint8_t *)buf, count);
 
 	// Allocation d'un tableau SAFEARRAY compatible OLE
 	SAFEARRAYBOUND rgsabound[1];
@@ -353,7 +353,7 @@ STDMETHODIMP CCables::CablePut(long handle, unsigned char data, long *ret)
 STDMETHODIMP CCables::CableGet(long handle, unsigned char *data, long *ret)
 {
 	// TODO: Add your implementation code here
-	errnum = *ret = ticables_cable_get(CD_DEREF(handle), data);
+	errnum = *ret = ticables_cable_get(CD_DEREF(handle), (uint8_t *)data);
 
 	return errnum ? S_FALSE : S_OK;
 }
