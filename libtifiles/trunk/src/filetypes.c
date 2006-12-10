@@ -752,7 +752,24 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			return !0;
 		else if(target && tifiles_file_is_tib(filename))
 		{
-			// do more check (look for device type)
+			FILE *f;
+			uint8_t data[16];
+
+			f = gfopen(filename, "rb");
+			if(f == NULL)
+				return 0;
+
+			fread_n_chars(f, 16, data);
+			fclose(f);
+
+			switch(data[8])
+			{
+			case 1: if(target != CALC_TI92P) return 0;
+			case 3: if(target != CALC_TI89)  return 0;
+			case 8: if(target != CALC_V200)  return 0;
+			case 9: if(target != CALC_TI89T) return 0;
+			}
+
 			return !0;
 		}
 		else
