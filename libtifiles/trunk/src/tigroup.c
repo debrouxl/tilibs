@@ -985,6 +985,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		f = gfopen(fname, "rb");
 		if(f == NULL)
 		{
+		  printf("error in opening tmp file <%s>\n", fname);
 			err = ERR_FILE_OPEN;
 			goto tfwt_exit;
 		}
@@ -1047,14 +1048,16 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		}
 
 		fclose(f);
-		unlink(filename);
 	}
 
 	// close archive
 tfwt_exit:
 	err = zipClose(zf,NULL);
     if (err != ZIP_OK)
+      {
         printf("error in closing %s\n",filename);
+	unlink(filename);
+      }
 	free(buf);
 	g_chdir(old_dir);
 	return err;

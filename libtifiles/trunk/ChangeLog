@@ -8,7 +8,8 @@ Log:
 	tifiles_file_is_app.
 	- added tifiles_file_test function which was planned for a (long) 
 	while.
-
+	- fixed tifiles_file_write_tigroup which deleted the output file!
+	
 - 12/11/2006, version 1.0.2:
 	- don't check device_type if data_type is TI89_LICENSE, old 89u files 
 	use DEVICE_TYPE_73 (kevin)
