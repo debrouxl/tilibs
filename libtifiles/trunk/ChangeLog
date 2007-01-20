@@ -3,20 +3,25 @@ SubVersion: $Id$
 Log:
 
 - 08/12/2006, version 1.0.3:
-	- added new values to FileClass (os, app and tib) enumeration and added the following 
-		convenient functions: tifiles_file_is_os and tifiles_file_is_app.
-	- added tifiles_file_test function which was planned for a (long) while.
+	- added new values to FileClass (os, app and tib) enumeration and 
+	added the following convenient functions: tifiles_file_is_os and 
+	tifiles_file_is_app.
+	- added tifiles_file_test function which was planned for a (long) 
+	while.
 
 - 12/11/2006, version 1.0.2:
-	- don't check device_type if data_type is TI89_LICENSE, old 89u files use DEVICE_TYPE_73 (kevin)
+	- don't check device_type if data_type is TI89_LICENSE, old 89u files 
+	use DEVICE_TYPE_73 (kevin)
 	
 - 21/09/2006, version 1.0.1:
-	- fixed miniunz.c and minizip.c trying to include DOS/Win32 headers under OS X (kevin)
+	- fixed miniunz.c and minizip.c trying to include DOS/Win32 headers 
+	under OS X (kevin)
 	- changed TIEXPORT into TIEXPORT2
 	- again, disabled file checksum verification
 	
 - 17/09/2006, tagged as version 1.0.0: roms
-	- added support for TILIBS_DEPRECATED (exports symbols which have been tagged as deprecated)
+	- added support for TILIBS_DEPRECATED (exports symbols which have 
+	been tagged as deprecated)
 	
 - 16/09/2006, version 0.2.9: roms
 	- added hw_id field to FlashContent structure
