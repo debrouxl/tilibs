@@ -261,6 +261,10 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR1+6:
+		strcpy(error_msg, _("Msg: invalid folder name."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR1+7:
 		strcpy(error_msg, _("Msg: malformed RTS packet (AMS version conflict)."));
 		*message = g_strdup(error_msg);
     break;
