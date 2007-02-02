@@ -46,6 +46,7 @@
 
 #include "rom89t.h"
 #include "romdump.h"
+#include "keys89.h"
 
 // Screen coordinates of the Titanium
 #define TI89T_ROWS			128
@@ -65,6 +66,9 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
+	//TRYF(cmd_s_execute(handle, "", "hello", EID_PRGM, "1,2", 0));
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, KEY89_F1));
+
 	return 0;
 }
 
@@ -842,7 +846,7 @@ const CalcFncts calc_89t_usb =
 	N_("TI-89 Titanium thru DirectLink USB"),
 	N_("TI-89 Titanium thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS | OPS_ROMDUMP |
-	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | 
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },

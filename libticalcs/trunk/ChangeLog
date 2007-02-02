@@ -2,6 +2,10 @@ SubVersion: $Id$
 	
 Log:
 
+- 02/02/2007, version 1.0.3: roms
+	- Kevin discovered a new D-USB command (0x11) which is related to remote control!
+	- DirectLink remote control support implemented for Titanium
+
 - 12/11/2006, version 1.0.2: roms
 	- fixed memory overlap in send_flash_app (may be related to bug #1583155)
 

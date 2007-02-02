@@ -77,6 +77,13 @@
 #define AID_LOCKED			0x41
 #define AID_UNKNOWN_42		0x42
 
+// Execute commands
+#define EID_PRGM			0x00
+#define EID_ASM				0x01
+#define EID_APP				0x02
+#define EID_KEY				0x03
+#define EID_UNKNOWN			0x04
+
 // Modes
 #define MODE_STARTUP	{ 1, 1, 0, 0, 0x07d0 }
 #define MODE_BASIC		{ 2, 1, 0, 0, 0x07d0 }
@@ -149,7 +156,9 @@ int cmd_s_var_content(CalcHandle *h, uint32_t  size, uint8_t  *data);
 int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
 
 int cmd_s_param_set(CalcHandle *h, const CalcParam *param);
+
 int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs);
+int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code);
 
 int cmd_r_mode_ack(CalcHandle *h);
 int cmd_r_data_ack(CalcHandle *h);

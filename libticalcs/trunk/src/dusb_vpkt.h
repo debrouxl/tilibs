@@ -63,7 +63,7 @@ typedef struct
 #define VPKT_VAR_CNTS	0x000D
 #define VPKT_PARM_SET	0x000E
 #define VPKT_DEL_VAR	0x0010
-#define VPKT_UNKNOWN	0x0011
+#define VPKT_EXECUTE	0x0011
 #define VPKT_MODE_SET	0x0012
 
 #define VPKT_DATA_ACK	0xAA00

@@ -747,6 +747,56 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 	return 0;
 }
 
+// 0x0011: remote control
+int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, 
+					uint8_t action, const char *args, uint16_t code)
+{
+	VirtualPacket* pkt;
+	int pks;
+	int j = 0;
+
+	pks = 3;
+	if(args) pks += strlen(args); else pks += 2;
+	if(strlen(folder)) pks += strlen(folder)+1;
+	if(strlen(name)) pks += strlen(name)+1;
+	pkt = vtl_pkt_new(pks, VPKT_EXECUTE);
+
+	pkt->data[j++] = strlen(folder);
+	if(strlen(folder))
+	{		
+		memcpy(pkt->data + j, folder, strlen(folder)+1);
+		j += strlen(folder)+1;
+	}
+
+	pkt->data[j++] = strlen(name);
+	if(strlen(name))
+	{		
+		memcpy(pkt->data + j, name, strlen(name)+1);
+		j += strlen(name)+1;
+	}
+	
+	pkt->data[j++] = action;
+
+	if(action != EID_KEY && args != NULL)
+		memcpy(pkt->data + j, args, strlen(args));
+	else if(action == EID_KEY || args == NULL)
+	{
+		pkt->data[j++] = MSB(code);
+		pkt->data[j++] = LSB(code);
+	}
+
+	TRYF(dusb_send_data(h, pkt));
+
+	vtl_pkt_del(pkt);
+	//ticalcs_info("  PC->TI: Remote Execute");
+	if(args)
+		ticalcs_info("   action=%i, folder=<%s>, name=<%s>, args=%s", action, folder, name, args);
+	else
+		ticalcs_info("   action=%i, keycode=%04x", action, code);
+
+	return 0;
+}
+
 // 0x0012: acknowledgement of mode setting
 int cmd_r_mode_ack(CalcHandle *h)
 {
