@@ -68,6 +68,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	//TRYF(cmd_s_execute(handle, "", "hello", EID_PRGM, "1,2", 0));
 	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
+	TRYF(cmd_r_data_ack(handle));
 
 	return 0;
 }
