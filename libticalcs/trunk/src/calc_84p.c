@@ -44,6 +44,8 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 
+#include "keys83p.h"
+
 // Screen coordinates of the TI83+
 #define TI84P_ROWS  64
 #define TI84P_COLS  96
@@ -61,6 +63,10 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
+	TRYF(cmd_r_delay_ack(handle));
+	TRYF(cmd_r_data_ack(handle));
+
 	return 0;
 }
 
@@ -859,7 +865,7 @@ const CalcFncts calc_84p_usb =
 	N_("TI-84 Plus thru DirectLink USB"),
 	N_("TI-84 Plus thru DirectLink USB"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
-	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | 
+	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },

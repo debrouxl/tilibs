@@ -828,7 +828,6 @@ int cmd_r_delay_ack(CalcHandle *h)
 
 	pkt = vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
-	tifiles_hexdump(pkt->data, pkt->size);
 
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
