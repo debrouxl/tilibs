@@ -687,6 +687,15 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	// Go back to homescreen
+	PAUSE(200);
+	TRYF(send_key(handle, KEY89_HOME));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY89_CLEAR));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY89_CLEAR));
+	PAUSE(50);
+
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.89z", romDumpSize89, romDump89));
 	PAUSE(1000);
@@ -698,13 +707,6 @@ static int		dump_rom_1	(CalcHandle* handle)
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	// Launch program by remote control
-	PAUSE(200);
-	TRYF(send_key(handle, KEY89_HOME));
-	PAUSE(50);
-	TRYF(send_key(handle, KEY89_CLEAR));
-	PAUSE(50);
-	TRYF(send_key(handle, KEY89_CLEAR));
-	PAUSE(50);
     TRYF(send_key(handle, 'm'));
     TRYF(send_key(handle, 'a'));
     TRYF(send_key(handle, 'i'));
