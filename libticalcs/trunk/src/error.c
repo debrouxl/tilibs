@@ -302,23 +302,39 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+7:
-	    strcpy(error_msg, _("Msg: can't overwrite, variable is locked."));
+	    strcpy(error_msg, _("Msg: invalid name."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+8:
-	    strcpy(error_msg, _("Msg: mode token too small."));
+	    strcpy(error_msg, _("Msg: busy?."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+9:
-	    strcpy(error_msg, _("Msg: mode token too large."));
+	    strcpy(error_msg, _("Msg: can't overwrite, variable is locked."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+10:
+	    strcpy(error_msg, _("Msg: mode token too small."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+11:
+	    strcpy(error_msg, _("Msg: mode token too large."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+12:
 	    strcpy(error_msg, _("Msg: invalid parameter ID."));
 		*message = g_strdup(error_msg);
-    break;  
-  case ERR_CALC_ERROR2+11:
+    break;
+  case ERR_CALC_ERROR2+13:
+	    strcpy(error_msg, _("Msg: remote control?"));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+14:
 	    strcpy(error_msg, _("Msg: battery low."));
+		*message = g_strdup(error_msg);
+    break;
+  case ERR_CALC_ERROR2+15:
+	    strcpy(error_msg, _("Msg: hand-held is busy (set your calculator to HOME screen)."));
 		*message = g_strdup(error_msg);
     break;
 
