@@ -67,6 +67,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	//TRYF(cmd_s_execute(handle, "", "hello", EID_PRGM, "1,2", 0));
+	PAUSE(25);	// this pause is needed between 2 keys
 	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
 	TRYF(cmd_r_data_ack(handle));
 
@@ -494,6 +495,15 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	CalcParam *param;
+
+	// Go back to HOME screen
+	param = cp_new(PID_HOMESCREEN, 1);
+	param->data[0] = 1;
+	TRYF(cmd_s_param_set(handle, param));
+	TRYF(cmd_r_data_ack(handle));
+	cp_del(param);
+
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.89z", romDumpSize89t, romDump89t));
 	PAUSE(1000);
@@ -503,23 +513,9 @@ static int		dump_rom_1	(CalcHandle* handle)
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int err;
-
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting for user's action..."));
-	handle->updat->label();
-
-	do
-	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		
-		//send RDY request ???
-		PAUSE(1500);
-		err = rd_is_ready(handle);
-	}
-	while (err == ERROR_READ_TIMEOUT);
+	// Launch program by remote control	
+    TRYF(cmd_s_execute(handle, "main", "romdump", EID_ASM, "", 0));
+	TRYF(cmd_r_data_ack(handle));
 
 	// Get dump
 	TRYF(rd_dump(handle, filename));
