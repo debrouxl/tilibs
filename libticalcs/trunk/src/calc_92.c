@@ -451,9 +451,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, KEY92P_CTRL));
-	PAUSE(50);
-	TRYF(send_key(handle, KEY92P_q));
+	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
 	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	PAUSE(50);
