@@ -385,7 +385,7 @@ int ti89_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
 
 int ti89_recv_XDP_h(CalcHandle* handle, uint32_t * length, uint8_t * data)
 {
-  uint8_t host, cmd;
+  uint8_t host, cmd = CMD_XDP;
   int err;
   uint16_t len;
 
