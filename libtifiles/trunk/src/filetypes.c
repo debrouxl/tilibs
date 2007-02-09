@@ -743,7 +743,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 		if(target && !g_ascii_strcasecmp(e, BACKUP_FILE_EXT[target]))
 			return !0;
 		else
-			return tifiles_file_is_group(filename);
+			return tifiles_file_is_backup(filename);
 	}
 	
 	if(type & TIFILE_OS)
@@ -773,7 +773,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			return !0;
 		}
 		else
-			return tifiles_file_is_group(filename);
+			return tifiles_file_is_os(filename);
 	}
 	
 	if(type & TIFILE_APP)
@@ -781,7 +781,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 		if(target && !g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[target]))
 			return !0;
 		else
-			return tifiles_file_is_group(filename);
+			return tifiles_file_is_app(filename);
 	}
 	
 	if(type & TIFILE_FLASH)
