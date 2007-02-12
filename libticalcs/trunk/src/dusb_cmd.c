@@ -766,8 +766,16 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 		memcpy(pkt->data + j, args, strlen(args));
 	else if(action == EID_KEY || args == NULL)
 	{
-		pkt->data[j++] = MSB(code);
-		pkt->data[j++] = LSB(code);
+		if(h->model == CALC_TI89T_USB)
+		{
+			pkt->data[j++] = MSB(code);
+			pkt->data[j++] = LSB(code);
+		}
+		else if(h->model == CALC_TI84P_USB)
+		{
+			pkt->data[j++] = LSB(code);
+			pkt->data[j++] = MSB(code);
+		}
 	}
 
 	TRYF(dusb_send_data(h, pkt));

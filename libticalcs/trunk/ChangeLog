@@ -8,6 +8,7 @@ Log:
 	- rom dumping is now remote controlled
 	- 89/92/92+: set to HOME screen before sending dumping program
 	- fixed "Conditional jump or move depends on uninitialised value(s)" bug (kevin)
+	- fixed remote keys for TI84+/USB (little-endian)
 
 - 12/11/2006, version 1.0.2: roms
 	- fixed memory overlap in send_flash_app (may be related to bug #1583155)
