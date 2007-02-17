@@ -54,12 +54,13 @@
 # define LIBCONV_VERSION VERSION
 #endif
 
+#if !defined(__TIFILES_H__)
 /**
  * CalcModel:
  *
- * An enumeration which contains the following calculator types:
+ * An enumeration which contains several calculator models.
+ *
  **/
-#if !defined(__TIFILES_H__)
 typedef enum 
 {
 	CALC_NONE = 0,
@@ -69,9 +70,21 @@ typedef enum
 } CalcModel;
 #endif
 
-/* Identifier for conversion method from one codeset to another. Exported if 
-	ICONV_INTERFACE is enabled. */
 #if defined(TICONV_ICONV_INTERFACE)
+/**
+ * ticonv_iconv_t:
+ * @src_calc:
+ * @iconv_desc:
+ * @dest_calc:
+ * @lossy_count:
+ * @lookahead_result:
+ * @lookahead_errno:
+ * @lookahead:
+ *
+ * A structure which is an identifier for conversion method from one codeset to another. 
+ * Exported if ICONV_INTERFACE is enabled.
+ *
+ **/
 typedef struct
 {
 	CalcModel src_calc;
