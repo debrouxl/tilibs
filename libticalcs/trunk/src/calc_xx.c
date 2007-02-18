@@ -127,6 +127,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
  * @args: argument to pass to program (in TI-charset, aka native)
  *
  * Remotely execute a program or a FLASH application.
+ * Please note this is currently implemented on TI9x only!
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
