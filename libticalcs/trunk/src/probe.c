@@ -198,7 +198,7 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
  * @type: the calculator model
  *
  * Check if the calculator is ready and detect the type.
- * Works only with FLASH calculators and a AMS2.08 (?!) mini by requesting
+ * Works only on FLASH calculators with an AMS2.08 or OS2.00 by requesting the
  * version. A previous version was based on MID but TI83+/84+, TI89/TI89t, TI92+/V200 
  * could not be distinguished ;-(
  *
