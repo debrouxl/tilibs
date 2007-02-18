@@ -782,7 +782,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 
 	vtl_pkt_del(pkt);
 	if(args)
-		ticalcs_info("   action=%i, folder=<%s>, name=<%s>, args=%s", action, folder, name, args);
+		ticalcs_info("   action=%i, folder=<%s>, name=<%s>, args=<%s>", action, folder, name, args);
 	else
 		ticalcs_info("   action=%i, keycode=%04x", action, code);
 

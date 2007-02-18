@@ -72,6 +72,11 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	return 0;
 }
 
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+{
+	return 0;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t max_cnt;
@@ -967,6 +972,7 @@ const CalcFncts calc_73 =
 		"2P", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -1004,6 +1010,7 @@ const CalcFncts calc_83p =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -1041,6 +1048,7 @@ const CalcFncts calc_84p =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,

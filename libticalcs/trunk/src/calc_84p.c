@@ -70,6 +70,23 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	return 0;
 }
 
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+{
+	uint8_t action;
+
+	switch(ve->type)
+	{
+	case TI84p_ASM:  action = EID_ASM; break;
+	case TI84p_APPL: action = EID_APP; break;
+	default:		 action = EID_PRGM; break;
+	}
+
+	TRYF(cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
+	TRYF(cmd_r_data_ack(handle));
+
+	return 0;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t pid[] = { PID_SCREENSHOT };
@@ -871,6 +888,7 @@ const CalcFncts calc_84p_usb =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,

@@ -66,9 +66,25 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	//TRYF(cmd_s_execute(handle, "", "hello", EID_PRGM, "1,2", 0));
 	PAUSE(25);	// this pause is needed between 2 keys
 	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
+	TRYF(cmd_r_data_ack(handle));
+
+	return 0;
+}
+
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
+{
+	uint8_t action;
+
+	switch(ve->type)
+	{
+	case TI89t_ASM:  action = EID_ASM; break;
+	case TI89t_APPL: action = EID_APP; break;
+	default:		 action = EID_PRGM; break;
+	}
+
+	TRYF(cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
 	TRYF(cmd_r_data_ack(handle));
 
 	return 0;
@@ -849,6 +865,7 @@ const CalcFncts calc_89t_usb =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,

@@ -121,6 +121,42 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 }
 
 /**
+ * ticalcs_calc_execute:
+ * @handle: a previously allocated handle
+ * @ve: folder and variable name with type
+ * @args: argument to pass to program (in TI-charset, aka native)
+ *
+ * Remotely execute a program or a FLASH application.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, const char* args)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	calc = handle->calc;
+
+	if(!handle->attached)
+		return ERR_NO_CABLE;
+
+	if(!handle->open)
+		return ERR_NO_CABLE;
+
+	if(handle->busy)
+		return ERR_BUSY;
+
+	ticalcs_info(_("Executing %s/%s with <%s>:"), ve->folder, ve->name, args);
+	handle->busy = 1;
+	if(calc->execute)
+		ret = calc->execute(handle, ve, args);
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
  * ticalcs_calc_recv_screen:
  * @handle: a previously allocated handle
  * @sc: a structure which contains required screen format and returns screen sizes

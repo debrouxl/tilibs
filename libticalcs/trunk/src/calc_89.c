@@ -70,6 +70,43 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	return 0;
 }
 
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+{
+	unsigned int i;
+
+	// Go back to homescreen
+	PAUSE(200);
+	TRYF(send_key(handle, KEY89_HOME));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY89_CLEAR));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY89_CLEAR));
+	PAUSE(50);
+
+	// Launch program by remote control
+	for(i = 0; i < strlen(ve->folder); i++)
+		TRYF(send_key(handle, (ve->folder)[i]));
+
+    if(strcmp(ve->folder, ""))
+		TRYF(send_key(handle, '\\'));
+
+	for(i = 0; i < strlen(ve->name); i++)
+		TRYF(send_key(handle, (ve->name)[i]));
+
+	TRYF(send_key(handle, KEY89_LP));
+	if(args)
+	{
+		for(i = 0; i < strlen(args); i++)
+			TRYF(send_key(handle, args[i]));
+	}
+    TRYF(send_key(handle, KEY89_RP));
+
+    TRYF(send_key(handle, KEY89_ENTER));
+	PAUSE(200);
+
+	return 0;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint32_t max_cnt;
@@ -945,6 +982,7 @@ const CalcFncts calc_89 =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -983,6 +1021,7 @@ const CalcFncts calc_92p =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -1021,6 +1060,7 @@ const CalcFncts calc_89t =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -1059,6 +1099,7 @@ const CalcFncts calc_v2 =
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,

@@ -77,6 +77,26 @@ static int send_key(CalcHandle *h)
 	return 0;
 }
 
+static int execute(CalcHandle *h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(tifiles_calc_is_ti9x(h->model))
+        {
+            printf("Enter folder name: ");
+            ret = scanf("%1023s", ve.folder);
+            if(ret < 1) return 0;
+        }
+
+	printf("Enter variable name: ");
+	ret = scanf("%1023s", ve.name);
+	if(ret < 1) return 0;
+	    
+	TRYF(ticalcs_calc_execute(h, &ve, ""));
+	return 0;
+}
+
 static int recv_screen(CalcHandle *h)
 {
 	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0 };
@@ -346,13 +366,14 @@ static int probe_calc(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	21
+#define NITEMS	22
 
 static const char *str_menu[NITEMS] = 
 {
 	"Exit",
 	"Check whether calc is ready",
 	"Send a key",
+	"Execute program",
 	"Do a screenshot",
 	"Listing",
 	"Send backup",
@@ -380,6 +401,7 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	NULL,
 	is_ready,
 	send_key,
+	execute,
 	recv_screen,
 	get_dirlist,
 	send_backup,
@@ -413,12 +435,12 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_USB, PORT_1);
+	cable = ticables_handle_new(CABLE_SLV, PORT_1);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T_USB);
+	calc = ticalcs_handle_new(CALC_TI89T);
 	if(calc == NULL)
 		return -1;
 

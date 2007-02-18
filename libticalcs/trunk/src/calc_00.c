@@ -39,6 +39,11 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	return 0;
 }
 
+static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
+{
+	return 0;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	return 0;
@@ -158,6 +163,7 @@ const CalcFncts calc_00 =
 	{""},
 	&is_ready,
 	&send_key,
+	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,

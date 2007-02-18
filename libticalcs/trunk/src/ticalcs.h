@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "1.0.3"
+# define LIBCALCS_VERSION "1.0.4"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
@@ -487,7 +487,7 @@ typedef struct
 } CalcInfos;
 
 /**
- * TiCable:
+ * CalcFncts:
  * @model: link cable model (CalcModel).
  * @name: name of hand-held like "TI89"
  * @fullname: complete name of hand-held like "TI-89"
@@ -500,6 +500,7 @@ typedef struct
  * @flash: calculator has FLASH ROM
  * @is_ready: check whether calculator is ready
  * @send_key: send key value
+ * @execute: remotely execute a program or application
  * @recv_screen: request a screendump
  * @get_dirlist: request a listing of variables, folders (if any) and apps (if any)
  * @recv_backup: request a backup
@@ -533,6 +534,7 @@ struct _CalcFncts
 	int		(*is_ready)		(CalcHandle*);
 
 	int		(*send_key)		(CalcHandle*, uint16_t);
+	int		(*execute)		(CalcHandle*, VarEntry*, const char*);
 
 	int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
 
@@ -655,7 +657,10 @@ typedef struct
 	TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle*);
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
+	TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle*, VarEntry*, const char*);
+
 	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
 												 uint8_t** bitmap);
 
