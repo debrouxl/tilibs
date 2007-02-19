@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Liévin
+ *  Copyright (C) 1999-2005  Romain Liï¿½in
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_83p(uint8_t ascii_code)
  **/
 TIEXPORT3 const CalcKey*  TICALL ticalcs_keys_86(uint8_t ascii_code)
 {
-  return TI86_KEYS[ascii_code];
+  return &TI86_KEYS[ascii_code];
 }
 
 /**
