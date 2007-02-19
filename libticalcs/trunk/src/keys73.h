@@ -590,7 +590,7 @@
 
 // FC (ExtendEcho2) prefixed keys:
 
-#define KE2BT2					0
+#define KE2BT2					0xfc00
 #define KEY73_GDB1             0xfc00
 #define KEY73_GDB2             0xfc01
 #define KEY73_GDB3             0xfc02

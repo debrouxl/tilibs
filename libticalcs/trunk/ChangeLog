@@ -4,7 +4,7 @@ Log:
 
 - 18/02/2007, version 1.0.4: roms
 	- added a new CalcFncts function entry: can execute a program remotely
-	- added/fixed arrays for TI73,TI83+ and TI86 keys
+	- added/fixed arrays for TI73,TI83+ and TI86 keys (needed by remote exec)
 
 - 02/02/2007, version 1.0.3: roms
 	- Kevin discovered a new D-USB command (0x11) which is related to remote control!

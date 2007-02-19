@@ -272,6 +272,8 @@
 
 // FE (ExtendEcho) prefixed keys:
 
+#define KE1BT					0xfe00
+
 #define KEY83_DrawInv          0xfe00
 #define KEY83_DrawF            0xfe01
 #define KEY83_PixelOn          0xfe02
@@ -552,6 +554,8 @@
 #define KEY83_ZFitA            0xfefd
 
 // FC (ExtendEcho2) prefixed keys:
+
+#define KE2BT2					0xfc00
 
 #define KEY83_GDB1             0xfc00
 #define KEY83_GDB2             0xfc01
