@@ -84,7 +84,7 @@ TIEXPORT3 CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code)
  **/
 TIEXPORT3 CalcKey TICALL ticalcs_keys_86(uint8_t ascii_code)
 {
-  return TI83_KEYS[ascii_code];
+  return TI86_KEYS[ascii_code];
 }
 
 /**
