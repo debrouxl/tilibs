@@ -32,6 +32,7 @@
 #define TI83_EQU   0x03
 #define TI83_STRNG 0x04
 #define TI83_PRGM  0x05
+#define TI83_ASM   0x06
 #define TI83_PIC   0x07
 #define TI83_GDB   0x08
 #define TI83_CPLX  0x0C
