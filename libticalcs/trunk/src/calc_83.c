@@ -46,7 +46,7 @@
 #include "cmd82.h"
 #include "rom83.h"
 #include "romdump.h"
-#include "keys83p.h"
+#include "keys83.h"
 
 // Screen coordinates of the TI83
 #define TI83_ROWS  64
@@ -67,6 +67,34 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
+	unsigned int i;
+
+	// Go back to homescreen
+	PAUSE(200);
+	TRYF(send_key(handle, KEY83_Quit));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY83_Clear));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY83_Clear));
+	PAUSE(50);
+
+	// Launch program by remote control
+	TRYF(send_key(handle, KEY83_SendMBL));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY83_9));
+	PAUSE(50);
+	TRYF(send_key(handle, KEY83_Exec));
+	PAUSE(50);
+
+	for(i = 0; i < strlen(ve->name); i++)
+	{
+		const CalcKey *ck = ticalcs_keys_83((ve->name)[i]);
+		TRYF(send_key(handle, ck->normal.value));
+	}
+
+	TRYF(send_key(handle, KEY83_Enter));
+	PAUSE(200);
+
 	return 0;
 }
 

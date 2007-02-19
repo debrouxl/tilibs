@@ -71,9 +71,9 @@ static int is_ready(CalcHandle* h)
 
 static int send_key(CalcHandle *h)
 {
-	CalcKey key = ticalcs_keys_92p('A');
+	const CalcKey *key = ticalcs_keys_92p('A');
 
-	TRYF(ticalcs_calc_send_key(h, key.normal.value));
+	TRYF(ticalcs_calc_send_key(h, key->normal.value));
 	return 0;
 }
 

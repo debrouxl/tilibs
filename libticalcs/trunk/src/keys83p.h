@@ -302,7 +302,7 @@
 
 // FE (ExtendEcho) prefixed keys:
 
-#define KE1BT					0xfe00
+#define kE1BT					0xfe00
 
 #define KEY83P_DrawInv          0xfe00
 #define KEY83P_DrawF            0xfe01
