@@ -141,6 +141,10 @@ SOURCE=..\..\src\keys73.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\keys83.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\keys83.h
 # End Source File
 # Begin Source File
@@ -150,6 +154,10 @@ SOURCE=..\..\src\keys83p.c
 # Begin Source File
 
 SOURCE=..\..\src\keys83p.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\keys86.c
 # End Source File
 # Begin Source File
 

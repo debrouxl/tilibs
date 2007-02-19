@@ -27,7 +27,7 @@ libticalcs2_la_SOURCES = *.h \
 	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c dusb_cmd.c \
 	dirlist.c \
 	error.c \
-	keys73.c keys83p.c keys89.c keys92p.c \
+	keys73.c keys83p.c keys86.c keys89.c keys92p.c \
 	logging.c \
 	dbus_pkt.c dusb_rpkt.c dusb_vpkt.c \
 	probe.c \

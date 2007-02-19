@@ -29,7 +29,9 @@
 #include "keys92p.h"
 
 extern const CalcKey TI73_KEYS[];
+extern const CalcKey TI83_KEYS[];
 extern const CalcKey TI83P_KEYS[];
+extern const CalcKey TI86_KEYS[];
 extern const CalcKey TI89_KEYS[];
 extern const CalcKey TI92P_KEYS[];
 
@@ -47,6 +49,19 @@ TIEXPORT3 CalcKey TICALL ticalcs_keys_73(uint8_t ascii_code)
 }
 
 /**
+ * ticalcs_keys_83:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
+TIEXPORT3 CalcKey TICALL ticalcs_keys_83(uint8_t ascii_code)
+{
+  return TI83_KEYS[ascii_code];
+}
+
+/**
  * ticalcs_keys_83p:
  * @code: an ASCII character
  *
@@ -57,6 +72,19 @@ TIEXPORT3 CalcKey TICALL ticalcs_keys_73(uint8_t ascii_code)
 TIEXPORT3 CalcKey TICALL ticalcs_keys_83p(uint8_t ascii_code)
 {
   return TI83P_KEYS[ascii_code];
+}
+
+/**
+ * ticalcs_keys_86:
+ * @code: an ASCII character
+ *
+ * Conversion of an ASCII code into a TI key.
+ *
+ * Return value: a TI key.
+ **/
+TIEXPORT3 CalcKey TICALL ticalcs_keys_86(uint8_t ascii_code)
+{
+  return TI83_KEYS[ascii_code];
 }
 
 /**
