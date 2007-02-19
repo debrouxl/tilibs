@@ -72,6 +72,9 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
 	unsigned int i;
 
+	if(ve->type == TI92P_APPL)
+		return ERR_VOID_FUNCTION;
+
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));

@@ -3,7 +3,7 @@ SubVersion: $Id$
 Log:
 
 - 18/02/2007, version 1.0.4: roms
-	- implemented 
+	- added a new CalcFncts function entry: can execute a program remotely
 
 - 02/02/2007, version 1.0.3: roms
 	- Kevin discovered a new D-USB command (0x11) which is related to remote control!
