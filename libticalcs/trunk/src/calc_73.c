@@ -77,35 +77,21 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 {
 	unsigned int i;
 
-	if (handle->model == CALC_TI73)
+	if (handle->model == CALC_TI73 && ve->type == TI73_ASM)
 		return ERR_VOID_FUNCTION;
 
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, KEY83P_Quit));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY83P_Clear));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY83P_Clear));
-	PAUSE(50);
 
 	// Launch program by remote control
 	if(ve->type == TI83p_ASM)
 	{
 		TRYF(send_key(handle, KEY83P_Asm));
-		PAUSE(50);
-		TRYF(send_key(handle, KEY83P_Exec));
-		PAUSE(50);
 	}
-	else
-	{
-		TRYF(send_key(handle, KEY83P_SendMBL));
-		PAUSE(50);
-		TRYF(send_key(handle, KEY83P_9));
-		PAUSE(50);
-		TRYF(send_key(handle, KEY83P_Exec));
-		PAUSE(50);
-	}
+	TRYF(send_key(handle, KEY83P_Exec));
 
 	for(i = 0; i < strlen(ve->name); i++)
 	{

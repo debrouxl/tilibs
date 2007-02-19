@@ -72,19 +72,16 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, KEY83_Quit));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY83_Clear));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY83_Clear));
-	PAUSE(50);
 
 	// Launch program by remote control
-	TRYF(send_key(handle, KEY83_SendMBL));
-	PAUSE(50);
-	TRYF(send_key(handle, KEY83_9));
-	PAUSE(50);
+	if(ve->type == TI83_ASM)
+	{
+		TRYF(send_key(handle, KEY83_SendMBL));
+		TRYF(send_key(handle, KEY83_9));
+	}
 	TRYF(send_key(handle, KEY83_Exec));
-	PAUSE(50);
 
 	for(i = 0; i < strlen(ve->name); i++)
 	{

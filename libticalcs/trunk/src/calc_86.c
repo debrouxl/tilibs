@@ -46,7 +46,7 @@
 #include "cmd85.h"
 #include "rom86.h"
 #include "romdump.h"
-//#include "keys83p.h"
+#include "keys86.h"
 
 // Screen coordinates of the TI86
 #define TI86_ROWS  64
