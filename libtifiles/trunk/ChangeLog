@@ -1,7 +1,5 @@
 SubVersion: $Id$
 
-To do: write support in filetypes.c:793
-
 Log:
 
 - 08/12/2006, version 1.0.3:
@@ -12,6 +10,7 @@ Log:
 	- fixed tifiles_file_write_tigroup which deleted the output file!
 	- fixed tifiles_file_test (some copy&paste errors)
 	- added missing type (TI83_ASM)
+	- implemented matching check for TiGroup in tifiles_file_test
 	
 - 12/11/2006, version 1.0.2:
 	- don't check device_type if data_type is TI89_LICENSE, old 89u files 

@@ -764,7 +764,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	uf = unzOpen(filename);
 	if (uf == NULL)
 	{
-		printf("Can't open this file: <%s>", filename);
+		printf("Can't open this file: <%s>\n", filename);
 		return ERR_FILE_ZIP;
 	}
 
@@ -945,7 +945,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 #endif
 	if (zf == NULL)
 	{
-		printf("Can't open this file: <%s>", filename);
+		printf("Can't open this file: <%s>\n", filename);
 		return ERR_FILE_ZIP;
 	}
 	g_chdir(g_get_tmp_dir());

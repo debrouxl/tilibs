@@ -794,8 +794,39 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	{
 		if(target)
 		{
-			// Not written yet... This should imply to load the whole file and to
-			// parse the TigEntry structures. There is no easy way...
+			// No easy/light way for this part: we have to load the whole file 
+			// and to parse the TigEntry structures.
+			TigContent *content;
+			int ret, ok=0;
+			int k, m, n;
+
+			if(!tifiles_file_has_tig_header(filename))
+				return 0;
+
+			content = tifiles_content_create_tigroup(CALC_NONE, 0);
+			ret = tifiles_file_read_tigroup(filename, content);
+			if(ret) return 0;
+
+			tifiles_te_sizeof_array(content->entries, &m, &n);
+
+			for (k = 0; k < content->num_entries; k++) 
+			{
+				TigEntry *te = content->entries[k];
+
+				if(te->type == TIFILE_FLASH)
+				{
+					if(tifiles_calc_are_compat(te->content.regular->model, target))
+						ok++;
+				}
+				else if(te->type & TIFILE_REGULAR)
+				{
+					if(tifiles_calc_are_compat(te->content.regular->model, target))
+						ok++;
+				}
+			}
+
+			tifiles_content_delete_tigroup(content);
+			return ok;
 		}
 		else
 			return tifiles_file_is_tigroup(filename);
