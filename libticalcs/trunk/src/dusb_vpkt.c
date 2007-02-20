@@ -40,7 +40,7 @@
 
 // Pseudo-Constants
 
-unsigned int DATA_SIZE = 250;	// max length of data in raw packet
+static unsigned int DATA_SIZE = 250;	// max length of data in raw packet
 
 /*
 #define RPKT_SIZE	255
@@ -197,6 +197,11 @@ int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
 	DATA_SIZE = size;
 
 	return 0;
+}
+
+uint32_t dusb_get_buf_size(void)
+{
+	return DATA_SIZE;
 }
 
 int dusb_send_acknowledge(CalcHandle* h)

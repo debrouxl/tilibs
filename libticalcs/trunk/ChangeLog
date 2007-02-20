@@ -5,6 +5,9 @@ Log:
 - 18/02/2007, version 1.0.4: roms
 	- added a new CalcFncts function entry: can execute a program remotely
 	- added/fixed arrays for TI73,TI83+ and TI86 keys (needed by remote exec)
+	- fixed bug #1657175: small program (309 bytes) are rejected by D-USB because too
+		small. Ti-Connect re-negotiate packet size to a smaller value before sending
+		variable contents.
 
 - 02/02/2007, version 1.0.3: roms
 	- Kevin discovered a new D-USB command (0x11) which is related to remote control!

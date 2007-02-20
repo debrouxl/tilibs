@@ -87,4 +87,6 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* pkt);
 
 const char* vpkt_type2name(uint16_t id);
 
+uint32_t dusb_get_buf_size(void);
+
 #endif

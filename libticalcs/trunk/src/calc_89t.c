@@ -229,10 +229,11 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	int i, ret;
 	char *utf8;
 	CalcAttr **attrs;
 	const int nattrs = 4;
+	uint32_t pkt_size;
 
 	update_->cnt2 = 0;
 	update_->max2 = content->num_entries;
@@ -260,9 +261,17 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[3] = ca_new(AID_LOCKED, 1);
 		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
 
-		TRYF(cmd_s_rts(handle, ve->folder, ve->name, ve->size, 
-			       nattrs, CA(attrs)));
+		TRYF(cmd_s_rts(handle, ve->folder, ve->name, ve->size, nattrs, CA(attrs)));
 		TRYF(cmd_r_data_ack(handle));
+
+		if((ve->size < dusb_get_buf_size()) && (ve->size > 255))
+		{
+			pkt_size = 0xff;
+
+			TRYF(dusb_send_buf_size_request(handle, pkt_size));
+			TRYF(dusb_recv_buf_size_alloc(handle, &pkt_size));
+		}
+
 		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
 		TRYF(cmd_r_data_ack(handle));
 		TRYF(cmd_s_eot(handle));
