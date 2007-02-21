@@ -229,7 +229,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i, ret;
+	int i;
 	char *utf8;
 	CalcAttr **attrs;
 	const int nattrs = 4;
