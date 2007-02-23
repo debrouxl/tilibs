@@ -85,6 +85,9 @@ int main(int argc, char **argv)
 	// init lib
 	ticables_library_init();
 
+
+print_lc_error(1);
+
 #if 1
 	ticables_probing_do(&probing, 5, PROBE_ALL);
 	for(i = 1; i <= 7; i++) 

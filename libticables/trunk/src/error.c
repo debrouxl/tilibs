@@ -65,7 +65,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 
 	case ERR_ROOT:
 	    	*message = g_strconcat(
-    		_("Msg: nable to use parallel/serial port: access refused."),
+    		_("Msg: unable to use parallel/serial port: access refused."),
 	    	"\n",
 	    	_("Cause: you are not running program as root or setuid root."),
 			NULL);
