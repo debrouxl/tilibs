@@ -82,7 +82,7 @@
 
 #if defined(__WIN32__) && !defined(__MINGW32__)
 # undef PACKAGE
-# define PACKAGE "ticalcs"	// name of package
+# define PACKAGE "libticalcs2"	// name of package
 #endif
 
 #endif /* _LIBGETTEXT_H */
