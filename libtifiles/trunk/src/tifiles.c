@@ -87,7 +87,7 @@ TIEXPORT2 int TICALL tifiles_library_init()
 
 #if defined(ENABLE_NLS)
 	tifiles_info("setlocale: <%s>", setlocale(LC_ALL, ""));
-  	tifiles_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, LOCALEDIR));
+  	tifiles_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
   	tifiles_info("textdomain: <%s>", textdomain(PACKAGE));
 #endif
