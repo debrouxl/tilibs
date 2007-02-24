@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 23/02/2007, version 1.0.4: roms
+	- enabled i18n
+
 - 08/12/2006, version 1.0.3:
 	- added new values to FileClass enumeration (os, app and tib) and 
 	added the following convenient functions: 
