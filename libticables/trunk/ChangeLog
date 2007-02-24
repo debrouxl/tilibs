@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 23/02/2007, version 1.0.4: roms
+	- enabled i18n
+
 - 19/10/2006, version 1.0.3: roms
 	- fixed build when linux/ticables.h is not available (kevin)
 	- 64-bit driver is v3.5, 32-bit one is v3.6: request v3.5

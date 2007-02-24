@@ -104,7 +104,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: PortTalk driver and/or library not found."),
 			"\n",
-			_("Cause: the driver may have been not started yet; it maye have been uninstalled; the library has been installed without NT administrator privileges."),
+			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
 			NULL);
     break;
 
@@ -118,7 +118,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
     	*message = g_strconcat(
     		_("Msg: timeout occured while writing to the device."),
     		"\n",
-    		_("Cause: check that your link cable is plugged and/or the calculator is ready."),
+    		_("Cause: check that link cable is plugged and/or the calculator is ready."),
 			NULL);
     	break;
 
@@ -132,13 +132,13 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
     	*message = g_strconcat(
     		_("Msg: timeout occured while reading to the device."),
     		"\n",
-    		_("Cause: check that your link cable is plugged and/or the calculator is ready."),
+    		_("Cause: check that link cable is plugged and/or the calculator is ready."),
 			NULL);
     	break;
 
 	case ERR_PROBE_FAILED:
 		*message = g_strconcat(
-    		_("Msg: the probing od device failed."),
+    		_("Msg: the probing of device failed."),
     		"\n",
     		_("Cause: internal error. If you get it, this is a bug!"),
 			NULL);
@@ -153,9 +153,9 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	case ERR_GRY_PURGECOMM:
 	case ERR_GRY_SETCOMMMASK:
 		*message = g_strconcat(
-    		_("Msg: unable to open COM port."),
+    		_("Msg: unable to open serial port."),
     		"\n",
-    		_("Cause: check your device is not used/locked by another application."),
+    		_("Cause: check that device is not used/locked by another application."),
 			NULL);
 		break;
 
@@ -163,7 +163,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: unable to load TiglUsb library."),
     		"\n",
-    		_("Cause: is the LPG's SilverLink/DirectLink driver installed ?"),
+    		_("Cause: is the LPG's SilverLink/DirectLink driver installed?"),
 			NULL);
 		break;
 
@@ -179,7 +179,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: TiglUsb library version is wrong."),
     		"\n",
-    		_("Cause: the library may require an earlier version. Update your driver!"),
+    		_("Cause: the library may require an earlier version. Update driver!"),
 			NULL);
 		break;
 
@@ -187,7 +187,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: failed to open SilverLink/DirectLink access."),
     		"\n",
-    		_("Cause: check your USB cable is plugged and/or the calculator is ON!"),
+    		_("Cause: check that USB cable is plugged and/or the calculator is ON!"),
 			NULL);
 		break;
 
@@ -195,7 +195,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: failed to reset SilverLink/DirectLink cable."),
     		"\n",
-    		_("Cause: check your USB cable is well plugged ! It may be stalled, too: unplug/replug it."),
+    		_("Cause: check that USB cable is well plugged! It may be stalled, too: unplug/replug it."),
 			NULL);
 		break;
 
@@ -234,7 +234,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
 			_("Msg: unable to open serial device."),
 			"\n",
-			_("Cause: check that you permissions on /dev/ttySx device. Check your device is not locked."),
+			_("Cause: check that you have permissions on /dev/ttySx device. Check that device is not locked."),
 			NULL);
 		break;
 
@@ -243,7 +243,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
 			_("Msg: unable to issue a specific command on serial device."),
 			"\n",
-			_("Cause: check that you permissions on /dev/ttySx device. Check your device is not locked."),
+			_("Cause: check that you have permissions on /dev/ttySx device. Check that device is not locked."),
 			NULL);
 		break;
 
@@ -251,7 +251,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	    *message = g_strconcat(
 		_("Msg: unable to open parallel device."),
 		"\n",
-		_("Cause: check that you permissions on /dev/parportX device. Check your device is not locked."),
+		_("Cause: check that you have permissions on /dev/parportX device. Check that device is not locked."),
 		NULL);
 	    break;
 
@@ -259,7 +259,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	    *message = g_strconcat(
 		_("Msg: unable to issue a specific command on parallel device."),
 		"\n",
-		_("Cause: check that you permissions on /dev/parportX device. Check your device is not locked."),
+		_("Cause: check that you have permissions on /dev/parportX device. Check that device is not locked."),
 		NULL);
 	    break;
 
@@ -269,7 +269,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
 			_("Msg: failed to open USB device."),
 			"\n",
-			_("Cause: check your USB cable is plugged and/or the calculator is ON! Check your libusb and usbfs permissions, too."),
+			_("Cause: check that USB cable is plugged and/or the calculator is ON! Check libusb and usbfs permissions, too."),
 			NULL);
 		break;
 
@@ -277,7 +277,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
 			_("Msg: unable to reset USB device."),
 			"\n",
-			_("Cause: Check that your cable is connected or not stalled. Try to unplug/plug it."),
+			_("Cause: Check that cable is connected or not stalled. Try to unplug/plug it."),
 			NULL);
 		break;	
 	case ERR_NOT_OPEN:

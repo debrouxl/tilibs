@@ -3,6 +3,7 @@
 src/data_log.c
 src/error.c
 src/logging.c
+src/probe.c
 src/ticables.c
 src/type2str.c
 
