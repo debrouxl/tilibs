@@ -43,13 +43,13 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "1.0.4"
+# define LIBCALCS_VERSION "1.0.5"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
 
-#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "0.0.5"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_libticalcs2_VERSION "0.0.1"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "1.0.4"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION "1.0.4"	// useless with pkg-config
 
 /* Types */
 

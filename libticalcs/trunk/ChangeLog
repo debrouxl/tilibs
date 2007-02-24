@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 23/02/2007, version 1.0.5: roms
+	- enabled i18n
+
 - 18/02/2007, version 1.0.4: roms
 	- added a new CalcFncts function entry: can execute a program remotely
 	- added/fixed arrays for TI73,TI83+ and TI86 keys (needed by remote exec)
