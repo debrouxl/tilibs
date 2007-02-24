@@ -56,7 +56,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 		*message = g_strconcat(
 			_("Msg: unable to open file."),
 			"\n",
-			_("either the file does not exist, either there is no room."),
+			_("Cause: either the file does not exist, either there is no room."),
 			NULL);
     break;
 
@@ -78,7 +78,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 
 	case ERR_BAD_CALC:
 		*message = g_strconcat(
-			_("Msg: Unknown calculator type."),
+			_("Msg: unknown calculator type."),
 			"\n",
 			_("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."),
 			NULL);

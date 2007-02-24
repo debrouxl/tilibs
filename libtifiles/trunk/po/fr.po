@@ -1,80 +1,177 @@
-# traduction de tifiles.po en FranÃ§ais
 # French locale for libtifiles.
-# Copyright (C) 2003
+# Copyright (C) 2003 Sylvain Garsault
+# Copyright (C) 2007 Romain Liévin
 # This file is distributed under the same license as the libtifiles package.
-# Sylvain Garsault <sylvain.garsault@freesbee.fr>, 2003,2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles 0.5.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-02-03 09:28+0100\n"
+"POT-Creation-Date: 2007-02-24 16:20+0100\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
-"Last-Translator: Sylvain Garsault <sylvain.garsault@freesbee.fr>\n"
-"Language-Team: FranÃ§ais <kde-francophone@kde.org>\n"
+"Last-Translator: Romain Liévin <roms@tilp.info>\n"
+"Language-Team: Français <tilp-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/filetypes.c:716 src/types73.c:76 src/types83p.c:70 src/types84p.c:70
+#: src/error.c:49
+msgid "Msg: unable to allocate memory (malloc)."
+msgstr "Msg : impossible d'allouer de la mémoire (malloc)."
+
+#: src/error.c:51
+msgid "Cause: memory too low ?"
+msgstr "Cause : pas assez de mémoire ?"
+
+#: src/error.c:57
+msgid "Msg: unable to open file."
+msgstr "Msg : impossible d'ouvrir le fichier."
+
+#: src/error.c:59 src/error.c:67
+msgid "Cause: either the file does not exist, either there is no room."
+msgstr ""
+"Cause : le fichier n'existe pas, ou il n'y a pas assez de place sur le "
+"disque."
+
+#: src/error.c:65
+msgid "Msg: unable to close file."
+msgstr "Msg : impossible de fermer le fichier."
+
+#: src/error.c:73
+msgid "Msg: the size of a group file can not exceed 64KB."
+msgstr "Msg : la taille d'un groupe ne peut pas dépasser 64Ko."
+
+#: src/error.c:75
+msgid "Cause: too many variables/data."
+msgstr "Cause : trop de variables/données."
+
+#: src/error.c:81
+msgid "Msg: unknown calculator type."
+msgstr "Msg : type de calculatrice inconnu."
+
+#: src/error.c:83
+msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
+msgstr ""
+"Cause : il s'agit probablement d'un bogue, signalez-le à tilp-users@lists.sf."
+"net."
+
+#: src/error.c:90
+msgid "Msg: invalid file."
+msgstr "Msg : fichier non valide."
+
+#: src/error.c:92
+msgid "Cause: it's probably not a TI formatted file."
+msgstr "Cause : il ne s'agit probablement pas d'un fichier TI."
+
+#: src/error.c:98
+msgid "Msg: checksum error."
+msgstr "Msg : erreur de somme de contrôle (checksum)."
+
+#: src/error.c:100
+msgid "Cause: the file has an incorrect checksum and may be corrupted."
+msgstr ""
+"Cause : le fichier a une somme de contrôle incorrecte et est peut être "
+"corrompu."
+
+#: src/error.c:106
+msgid "Msg: (Un)Zip error."
+msgstr "Msg : erreur ZIP/UNZIP."
+
+#: src/error.c:108
+msgid "Cause: pfff, I don't know..."
+msgstr "Cause : pfff, qu'est-ce que j'en sais..."
+
+#: src/error.c:114
+msgid "Msg: unsupported function."
+msgstr "Msg : fonction non supportée"
+
+#: src/error.c:116
+msgid "Cause: the function you attempted to use is not available."
+msgstr "Cause : la fonction n'est pas disponible."
+
+#: src/error.c:122
+msgid "Msg: I/O file error."
+msgstr "Msg : erreur d'E/S."
+
+#: src/error.c:124
+msgid "Cause: file is corrupted or invalid."
+msgstr "Cause : le fichier est corrompu ou invalide"
+
+#: src/filetypes.c:932 src/types73.c:76 src/types83p.c:70 src/types84p.c:70
 #: src/types89.c:78 src/types89t.c:78 src/types92p.c:80 src/typesv2.c:77
 msgid "OS upgrade"
-msgstr "MAJ OS"
+msgstr "m-à-j d'OS"
 
-#: src/filetypes.c:730
+#: src/filetypes.c:949
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.c:732
+#: src/filetypes.c:951
 msgid "Group"
 msgstr "Groupe"
 
-#: src/tifiles.c:90
-#, fuzzy, c-format
+#: src/tifiles.c:86
+#, c-format
 msgid "tifiles library version %s"
-msgstr "librairie tifiles version %s\n"
+msgstr "librairie tifiles version %s"
 
-#: src/type2str.c:116 src/type2str.c:134
+#: src/type2str.c:113 src/type2str.c:131
 msgid "none     "
 msgstr "aucun    "
 
-#: src/type2str.c:117 src/type2str.c:136
+#: src/type2str.c:114 src/type2str.c:133
 msgid "locked   "
-msgstr "vÃ©rrouillÃ©"
+msgstr "verrouil."
 
-#: src/type2str.c:118 src/type2str.c:138
+#: src/type2str.c:115 src/type2str.c:135
 msgid "archived "
-msgstr "archivÃ©  "
+msgstr "archivé  "
 
-#: src/type2str.c:119 src/type2str.c:140
+#: src/type2str.c:116 src/type2str.c:137
 msgid "protected"
-msgstr "protÃ©gÃ©  "
+msgstr "protégé  "
 
-#: src/type2str.c:158 src/type2str.c:176
+#: src/type2str.c:155 src/type2str.c:177
 msgid "single"
 msgstr "simple"
 
-#: src/type2str.c:159 src/type2str.c:178
+#: src/type2str.c:156 src/type2str.c:179
 msgid "group"
 msgstr "groupe"
 
-#: src/type2str.c:160 src/type2str.c:180
+#: src/type2str.c:157 src/type2str.c:181
+msgid "regular"
+msgstr "régulier"
+
+#: src/type2str.c:158 src/type2str.c:183
 msgid "backup"
 msgstr "sauvegarde"
 
-#: src/type2str.c:161 src/type2str.c:182
+#: src/type2str.c:159 src/type2str.c:191
+msgid "tigroup"
+msgstr "groupe"
+
+#: src/type2str.c:160 src/type2str.c:185
+msgid "os"
+msgstr "os"
+
+#: src/type2str.c:161 src/type2str.c:187
+msgid "application"
+msgstr "application"
+
+#: src/type2str.c:162 src/type2str.c:189
 msgid "flash"
 msgstr "flash"
 
-#: src/type2str.c:162
+#: src/type2str.c:163
 msgid "unknown"
 msgstr "inconnu"
 
 #: src/types73.c:41 src/types82.c:35 src/types83.c:35 src/types83p.c:35
 #: src/types84p.c:35 src/types85.c:35 src/types86.c:35
 msgid "Real"
-msgstr "RÃ©el"
+msgstr "Réel"
 
 #: src/types73.c:42 src/types82.c:36 src/types83.c:36 src/types83p.c:36
 #: src/types84p.c:36 src/types85.c:39 src/types86.c:39 src/types89.c:47
@@ -91,25 +188,25 @@ msgstr "Matrice"
 #: src/types73.c:44 src/types83p.c:38 src/types84p.c:38 src/types85.c:45
 #: src/types86.c:45
 msgid "Equation"
-msgstr "Ã‰quation"
+msgstr "Équation"
 
 #: src/types73.c:45 src/types83.c:39 src/types83p.c:39 src/types84p.c:39
 #: src/types85.c:47 src/types86.c:47 src/types89.c:55 src/types89t.c:55
 #: src/types92.c:55 src/types92p.c:57 src/typesv2.c:54
 msgid "String"
-msgstr "ChaÃ®ne"
+msgstr "Chaîne"
 
 #: src/types73.c:46 src/types82.c:40 src/types83.c:40 src/types83p.c:40
-#: src/types84p.c:40 src/types85.c:53 src/types86.c:53 src/types89.c:61
-#: src/types89t.c:61 src/types92.c:61 src/types92p.c:63 src/typesv2.c:60
+#: src/types83p.c:41 src/types84p.c:40 src/types84p.c:41 src/types85.c:53
+#: src/types86.c:53 src/types89.c:61 src/types89t.c:61 src/types92.c:61
+#: src/types92p.c:63 src/typesv2.c:60
 msgid "Program"
 msgstr "Programme"
 
-#: src/types73.c:47 src/types83.c:41 src/types83p.c:41 src/types84p.c:41
-#: src/types89.c:76 src/types89t.c:76 src/types92.c:76 src/types92p.c:78
-#: src/typesv2.c:75
+#: src/types73.c:47 src/types83.c:41 src/types89.c:76 src/types89t.c:76
+#: src/types92.c:76 src/types92p.c:78 src/typesv2.c:75
 msgid "Asm Program"
-msgstr "Programme assembleur"
+msgstr "Programme Asm"
 
 #: src/types73.c:48 src/types82.c:42 src/types83.c:42 src/types83p.c:42
 #: src/types84p.c:42 src/types85.c:52 src/types86.c:52 src/types89.c:59
@@ -220,16 +317,16 @@ msgstr "Inconnu"
 #: src/types73.c:52 src/types82.c:46 src/types83p.c:50 src/types84p.c:50
 #: src/types85.c:58
 msgid "Window Setup"
-msgstr "Config fenÃªtre"
+msgstr "Config fenêtre"
 
 #: src/types73.c:53 src/types83.c:47 src/types83p.c:47 src/types84p.c:47
 #: src/types85.c:36 src/types86.c:36
 msgid "Complex"
-msgstr "Nombre complexe"
+msgstr "Complexe"
 
 #: src/types73.c:56 src/types83p.c:46 src/types84p.c:46
 msgid "Window"
-msgstr "FenÃªtre"
+msgstr "Fenêtre"
 
 #: src/types73.c:57 src/types82.c:47 src/types83.c:48 src/types83p.c:51
 #: src/types84p.c:51 src/types85.c:62 src/types86.c:62
@@ -259,11 +356,11 @@ msgstr "Certificat"
 
 #: src/types82.c:38 src/types83.c:38 src/types85.c:77 src/types86.c:58
 msgid "Y-Var"
-msgstr "Variable Y"
+msgstr "Var-Y"
 
 #: src/types82.c:41
 msgid "Protected Program"
-msgstr "Programme protÃ©gÃ©"
+msgstr "Programme Protégé"
 
 #: src/types82.c:49
 msgid "LCD"
@@ -271,11 +368,11 @@ msgstr "LCD"
 
 #: src/types83p.c:56 src/types84p.c:56
 msgid "App Var"
-msgstr "Variable application"
+msgstr "Variable Application"
 
 #: src/types83p.c:58 src/types84p.c:58
 msgid "Group Var"
-msgstr "Groupe de vars"
+msgstr "Groupe de Variables"
 
 #: src/types85.c:37 src/types86.c:37
 msgid "Vector"
@@ -283,15 +380,15 @@ msgstr "Vecteur"
 
 #: src/types85.c:38 src/types86.c:38
 msgid "Complex Vector"
-msgstr "Vecteur complexe"
+msgstr "Vecteur Complexe"
 
 #: src/types85.c:40 src/types86.c:40
 msgid "Complex List"
-msgstr "Liste complexe"
+msgstr "Liste Complexe"
 
 #: src/types85.c:42 src/types86.c:42
 msgid "Complex Matrix"
-msgstr "Matrice complexe"
+msgstr "Matrice Complexe"
 
 #: src/types85.c:43 src/types86.c:43
 msgid "Constant"
@@ -299,7 +396,7 @@ msgstr "Constante"
 
 #: src/types85.c:44 src/types86.c:44
 msgid "Complex Constant"
-msgstr "Constante complexe"
+msgstr "Constante Complexe"
 
 #: src/types85.c:54 src/types86.c:54
 msgid "Range"
@@ -307,11 +404,11 @@ msgstr "Intervalle"
 
 #: src/types85.c:55 src/types86.c:55
 msgid "Screen"
-msgstr "Ã‰cran"
+msgstr "Ecran"
 
 #: src/types85.c:56 src/types86.c:56
 msgid "Directory"
-msgstr "RÃ©pertoire"
+msgstr "Répertoire"
 
 #: src/types85.c:59 src/types86.c:59
 msgid "Polar"
@@ -319,11 +416,11 @@ msgstr "Polaire"
 
 #: src/types85.c:60 src/types86.c:60
 msgid "Parametric"
-msgstr "ParamÃ©trique"
+msgstr "Paramétrique"
 
 #: src/types85.c:61 src/types86.c:61
 msgid "Diff Equ"
-msgstr "Ã‰qua diff"
+msgstr "Equa diff"
 
 #: src/types89.c:43 src/types89t.c:43 src/types92.c:43 src/types92p.c:45
 #: src/typesv2.c:42
@@ -333,7 +430,7 @@ msgstr "Expression"
 #: src/types89.c:53 src/types89t.c:53 src/types92.c:53 src/types92p.c:55
 #: src/typesv2.c:52
 msgid "Data"
-msgstr "DonnÃ©e"
+msgstr "Donnée"
 
 #: src/types89.c:54 src/types89t.c:54 src/types92.c:54 src/types92p.c:56
 #: src/typesv2.c:53
@@ -358,7 +455,7 @@ msgstr "Macro"
 #: src/types89.c:71 src/types89t.c:71 src/types92.c:71 src/types92p.c:73
 #: src/typesv2.c:70
 msgid "Zipped"
-msgstr "CompressÃ©"
+msgstr "Compressé"
 
 #: src/types89.c:77 src/types89t.c:77 src/types92p.c:79 src/typesv2.c:76
 msgid "ID-LIST"
@@ -367,109 +464,4 @@ msgstr "ID-LIST"
 #: src/types92p.c:100 src/types92p.c:122 src/types92p.c:144 src/types92p.c:151
 #, c-format
 msgid "types92p: unknown type (%02x).\n"
-msgstr ""
-
-#~ msgid "unknown type. It is a bug. Please report this information.\n"
-#~ msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler.\n"
-
-#~ msgid "Msg: unable to allocate memory (malloc)."
-#~ msgstr "MsgÂ : impossible d'allouer de la mÃ©moire (malloc)."
-
-#~ msgid "Cause: memory too low ?"
-#~ msgstr "CauseÂ : pas assez de mÃ©moire ?"
-
-#~ msgid "Msg: unable to open file."
-#~ msgstr "MsgÂ : impossible d'ouvrir le fichier."
-
-#~ msgid "either the file does not exist, either there is no room."
-#~ msgstr ""
-#~ "CauseÂ : le fichier n'existe pas, ou il n'est pas dans ce rÃ©pertoire."
-
-#~ msgid "Msg: unable to close file."
-#~ msgstr "MsgÂ : impossible de fermer le fichier."
-
-#~ msgid "Cause: either the file does not exist, either there is no room."
-#~ msgstr ""
-#~ "CauseÂ : le fichier n'existe pas, ou il n'est pas dans ce rÃ©pertoire."
-
-#~ msgid "Msg: the size of a group file can not exceed 64KB."
-#~ msgstr "MsgÂ : la taille d'un groupe ne peut pas dÃ©passer 64Ko."
-
-#~ msgid "Cause: too many variables/data."
-#~ msgstr "CauseÂ : trop de variables/donnÃ©es."
-
-#~ msgid "Msg: Unknown calculator type."
-#~ msgstr "MsgÂ : Type de calculatrice inconnu."
-
-#~ msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
-#~ msgstr ""
-#~ "CauseÂ : il s'agit probablement d'un bogue, signalez-le Ã  tilp-users@lists."
-#~ "sf.net."
-
-#~ msgid "Msg: invalid file."
-#~ msgstr "MsgÂ : fichier non valide."
-
-#~ msgid "Cause: it's probably not a TI formatted file."
-#~ msgstr "CauseÂ : il ne s'agit probablement pas d'un fichier TI."
-
-#~ msgid "Msg: checksum error."
-#~ msgstr "MsgÂ : erreur de somme de contrÃ´le (checksum)."
-
-#~ msgid "Cause: the file has an incorrect checksum and may be corrupted."
-#~ msgstr ""
-#~ "CauseÂ : le fichier a une somme de contrÃ´le incorrecte et peut Ãªtre "
-#~ "corrompu."
-
-#~ msgid ""
-#~ "Error code not found in the list.\n"
-#~ "This is a bug. Please report it.\n"
-#~ "."
-#~ msgstr ""
-#~ "Code d'erreur inexistant dans la liste.\n"
-#~ "Ceci est un bogue. Signalez-le s'il vous plaÃ®t.\n"
-#~ "."
-
-#~ msgid "Function not implemented. There is a bug. Please report it."
-#~ msgstr "Fonction non implÃ©mentÃ©e. Ceci est un bogue. Veuillez le signaler."
-
-#~ msgid "Informations:\n"
-#~ msgstr "InformationsÂ :\n"
-
-#~ msgid "Calc: %i\n"
-#~ msgstr "CalculatriceÂ : %i\n"
-
-#~ msgid "Program halted before crashing...\n"
-#~ msgstr "Le programme s'est terminÃ© anormalement...\n"
-
-#~ msgid "settings:\n"
-#~ msgstr "rÃ©glagesÂ :\n"
-
-#~ msgid "  calc type: %s\n"
-#~ msgstr "  type de calculatriceÂ : %s\n"
-
-#~ msgid "wrn: "
-#~ msgstr "avrÂ : "
-
-#~ msgid "err: "
-#~ msgstr "errÂ : "
-
-#~ msgid ""
-#~ "libtifiles error: unknown calc type. Program halted before crashing !\n"
-#~ msgstr ""
-#~ "erreur dans libtifilesÂ : type de calculatrice inconnu. Le programme s'est "
-#~ "arrÃªtÃ© anormalement.\n"
-
-#~ msgid "unknown type. It is a bug. Please report this information."
-#~ msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler."
-
-#~ msgid "Asm Prog"
-#~ msgstr "Prog Asm"
-
-#~ msgid "unknown type. There is a bug. Please report this information.\n"
-#~ msgstr "Type inconnu. Ceci est un bogue. Veuillez le signaler.\n"
-
-#~ msgid ""
-#~ "Fatal error in '%s': unkown calc type. Program halted before crashing...\n"
-#~ msgstr ""
-#~ "Erreur fatale dans \"%s\"Â : type de calculatrice inconnu. Le programme "
-#~ "s'est terminÃ© anormalement...\n"
+msgstr "types92p: type inconnu (%02x).\n"
