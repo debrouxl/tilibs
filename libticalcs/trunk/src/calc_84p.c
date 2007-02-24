@@ -878,9 +878,9 @@ extern int tixx_recv_backup(CalcHandle* handle, BackupContent* content);
 const CalcFncts calc_84p_usb = 
 {
 	CALC_TI84P_USB,
-	"TI84+ (USB)",
-	N_("TI-84 Plus thru DirectLink USB"),
-	N_("TI-84 Plus thru DirectLink USB"),
+	"TI84+",
+	"TI-84 Plus",
+	N_("TI-84 Plus thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,

@@ -458,8 +458,8 @@ const CalcFncts calc_85 =
 {
 	CALC_TI85,
 	"TI85",
-	N_("TI-85"),
-	N_("TI-85"),
+	"TI-85",
+	"TI-85",
 	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
 	FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "", "", "2P1L", "1P1L", "", "",

@@ -516,8 +516,8 @@ const CalcFncts calc_86 =
 {
 	CALC_TI86,
 	"TI86",
-	N_("TI-86"),
-	N_("TI-86"),
+	"TI-86",
+	"TI-86",
 	OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	FTS_SILENT | FTS_MEMFREE | FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "", "",

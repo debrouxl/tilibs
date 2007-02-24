@@ -975,8 +975,8 @@ const CalcFncts calc_89 =
 {
 	CALC_TI89,
 	"TI89",
-	N_("TI-89"),
-	N_("TI-89"),
+	"TI-89",
+	"TI-89",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
@@ -1014,8 +1014,8 @@ const CalcFncts calc_92p =
 {
 	CALC_TI92P,
 	"TI92+",
-	N_("TI-92 Plus"),
-	N_("TI-92 Plus"),
+	"TI-92 Plus",
+	"TI-92 Plus",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
@@ -1052,9 +1052,9 @@ const CalcFncts calc_92p =
 const CalcFncts calc_89t = 
 {
 	CALC_TI89T,
-	"TI89t",
-	N_("TI-89 Titanium"),
-	N_("TI-89 Titanium"),
+	"Titanium",
+	"TI-89 Titanium",
+	"TI-89 Titanium",
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
@@ -1092,7 +1092,7 @@ const CalcFncts calc_v2 =
 {
 	CALC_V200,
 	"V200",
-	N_("V200PLT"),
+	"V200PLT",
 	N_("V200 Portable Learning Tool"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |

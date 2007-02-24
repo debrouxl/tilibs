@@ -66,21 +66,21 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	case ERR_NOT_READY:
 		*message = g_strconcat(
-    		_("Msg: Calculator is not ready."),
+    		_("Msg: calculator is not ready."),
     		"\n",
     		 _("Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."),
 			 NULL);
 		break;
 
 	case ERR_CHECKSUM:
-		strcpy(error_msg, _("Msg: Checksum error."));
+		strcpy(error_msg, _("Msg: checksum error."));
 		strcat(error_msg, "\n");
 		strcat(error_msg, _("Cause: a transmission error. Try again."));
 		*message = g_strdup(error_msg);
     break;
 
 	case ERR_INVALID_HOST:
-		strcpy(error_msg, _("Msg: Invalid host ID."));
+		strcpy(error_msg, _("Msg: invalid host ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -89,7 +89,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
     break;
 
 	case ERR_INVALID_TARGET:
-		strcpy(error_msg, _("Msg: Invalid target ID."));
+		strcpy(error_msg, _("Msg: invalid target ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -98,7 +98,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
     break;
 
 	case ERR_INVALID_CMD:
-		strcpy(error_msg, _("Msg: Invalid command ID."));
+		strcpy(error_msg, _("Msg: invalid command ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -107,7 +107,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
     break;
 
 	case ERR_EOT:
-		strcpy(error_msg, _("Msg: Not really an error, should not appear!"));
+		strcpy(error_msg, _("Msg: not really an error, should not appear!"));
 		strcat(error_msg, "\n");
 		strcat(error_msg, _("Cause: a bug. Drop us an email!"));
 		*message = g_strdup(error_msg);
@@ -115,7 +115,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	case ERR_VAR_REJECTED:
 		strcpy(error_msg,
-		   _("Msg: The content has been refused."));
+		   _("Msg: contents has been refused."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -133,14 +133,14 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 	case ERR_NACK:
 		strcpy(error_msg, _("NACK received."));
 		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: the command has been refused.\n"));
+		strcat(error_msg, _("Cause: the command has been refused."));
 		*message = g_strdup(error_msg);
     break;
 
 	case ERR_INVALID_PACKET:
 		strcpy(error_msg, _("Invalid packet."));
 		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a transmission error.\n"));
+		strcat(error_msg, _("Cause: a transmission error."));
 		*message = g_strdup(error_msg);
     break;
 
@@ -150,7 +150,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
   case ERR_NO_CABLE:
 		strcpy(error_msg, _("The cable can not be used."));
 		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: the cable has not been initialized due to a previous/current error.\n"));
+		strcat(error_msg, _("Cause: the cable has not been initialized due to a previous/current error."));
 		*message = g_strdup(error_msg);
 	  break;
 
@@ -163,7 +163,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
   case ERR_VOID_FUNCTION:
 	case ERR_UNSUPPORTED:
 		strcpy(error_msg,
-		   _("Msg: This function does not exist for this calculator."));
+		   _("Msg: this function does not exist for this calculator."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -172,7 +172,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
     break;
 
 case ERR_OUT_OF_MEMORY:
-		strcpy(error_msg, _("Msg: Calculator out of memory."));
+		strcpy(error_msg, _("Msg: calculator out of memory."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -181,14 +181,14 @@ case ERR_OUT_OF_MEMORY:
     break;
 
   case ERR_OPEN_FILE:
-		strcpy(error_msg, _("Msg: Unable to open (reading) the file."));
+		strcpy(error_msg, _("Msg: unable to open (reading) the file."));
 		strcat(error_msg, "\n");
 		strcat(error_msg, _("Cause: disk space or permissions."));
 		*message = g_strdup(error_msg);
     break;
 
   case ERR_SAVE_FILE:
-		strcpy(error_msg, _("Msg: Unable to open (writing) the file."));
+		strcpy(error_msg, _("Msg: unable to open (writing) the file."));
 		strcat(error_msg, "\n");
 		strcat(error_msg, _("Cause: disk space or permissions."));
 		*message = g_strdup(error_msg);
@@ -220,7 +220,7 @@ case ERR_OUT_OF_MEMORY:
 		strcpy(error_msg, _("There is nothing to backup."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		   _("Cause: 0 variables stored onto your calculator.\n"));
+		   _("Cause: 0 variables stored onto your calculator."));
 		*message = g_strdup(error_msg);
     break;
 
@@ -228,12 +228,12 @@ case ERR_OUT_OF_MEMORY:
 		strcpy(error_msg, _("Invalid TiCalcs handle."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		   _("Cause: bad cable or calc model.\n"));
+		   _("Cause: bad cable or calc model."));
 		*message = g_strdup(error_msg);
     break;
 
   case ERR_CALC_ERROR1:	// must be synch'ed with cmd89.c (static uint8_t dbus_errors[])
-		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
+		strcpy(error_msg, _("Msg: hand-held returned an error."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
@@ -270,7 +270,7 @@ case ERR_OUT_OF_MEMORY:
     break;
 
   case ERR_CALC_ERROR2:	// must be synch'ed with dusb_cmd.c (static uint16_t usb_errors[])
-		strcpy(error_msg, _("Msg: Hand-held returned an error (not catched)."));
+		strcpy(error_msg, _("Msg: hand-held returned an error (not catched)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
