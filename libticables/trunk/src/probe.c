@@ -166,7 +166,6 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 	int ret = 0;
 
 	ret = usb_probe_devices(list);
-	printf("ret = %i\n", ret);
 	if(ret)
 	{
 	        *list = calloc(1, sizeof(int));
