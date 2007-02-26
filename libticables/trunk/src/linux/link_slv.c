@@ -280,7 +280,7 @@ static int tigl_find(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			ticables_info(" found <%s> on #%i, version <%x.%02x>",
+			ticables_info(" found %s on #%i, version <%x.%02x>",
 				      tigl_get_product(dev), j+1,
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
