@@ -764,7 +764,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	uf = unzOpen(filename);
 	if (uf == NULL)
 	{
-		printf("Can't open this file: <%s>\n", filename);
+		printf("Can't open this file: %s\n", filename);
 		return ERR_FILE_ZIP;
 	}
 
@@ -809,7 +809,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 			printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
 			goto tfrt_exit;
 		}
-		//printf("Extracting <%s> with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
+		//printf("Extracting %s with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
 
 		err = unzOpenCurrentFilePassword(uf,password);
         if (err!=UNZ_OK)
@@ -945,7 +945,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 #endif
 	if (zf == NULL)
 	{
-		printf("Can't open this file: <%s>\n", filename);
+		printf("Can't open this file: %s\n", filename);
 		return ERR_FILE_ZIP;
 	}
 	g_chdir(g_get_tmp_dir());
@@ -985,7 +985,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		f = gfopen(fname, "rb");
 		if(f == NULL)
 		{
-		  printf("error in opening tmp file <%s>\n", fname);
+		  printf("error in opening tmp file %s\n", fname);
 			err = ERR_FILE_OPEN;
 			goto tfwt_exit;
 		}
@@ -1082,7 +1082,7 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 	uf = unzOpen(filename);
 	if (uf==NULL)
     {
-		tifiles_warning("Can't open this file: <%s>", filename);
+		tifiles_warning("Can't open this file: %s", filename);
 		return -1;
 	}
 

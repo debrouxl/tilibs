@@ -82,7 +82,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   f = gfopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -200,7 +200,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   f = gfopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -304,7 +304,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	f = gfopen(filename, "rb");
 	if (f == NULL) 
 	{
-	    tifiles_info("Unable to open this file: <%s>\n", filename);
+	    tifiles_info("Unable to open this file: %s\n", filename);
 		return ERR_FILE_OPEN;
 	}  
 
@@ -447,7 +447,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     free(filename);
     return ERR_FILE_OPEN;
   }
@@ -560,7 +560,7 @@ int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>", filename);
+    tifiles_info("Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -629,7 +629,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>", filename);
+    tifiles_info("Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -679,17 +679,17 @@ int ti9x_content_display_regular(Ti9xRegular *content)
   int i;
   char trans[17];
 
-  tifiles_info("Signature:         <%s>",
+  tifiles_info("Signature:         %s",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("Comment:           <%s>", content->comment);
-  tifiles_info("Default folder:    <%s>", content->default_folder);
+  tifiles_info("Comment:           %s", content->comment);
+  tifiles_info("Default folder:    %s", content->default_folder);
   tifiles_info("Number of entries: %i", content->num_entries);
 
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) 
   {
     tifiles_info("Entry #%i", i);
-    tifiles_info("  folder:    <%s>", content->entries[i]->folder);
-    tifiles_info("  name:      <%s>",
+    tifiles_info("  folder:    %s", content->entries[i]->folder);
+    tifiles_info("  name:      %s",
 	    ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans));
     tifiles_info("  type:      %02X (%s)",
 	    content->entries[i]->type,
@@ -716,10 +716,10 @@ int ti9x_content_display_regular(Ti9xRegular *content)
  **/
 int ti9x_content_display_backup(Ti9xBackup *content)
 {
-  tifiles_info("signature:      <%s>",
+  tifiles_info("signature:      %s",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("comment:        <%s>", content->comment);
-  tifiles_info("ROM version:    <%s>", content->rom_version);
+  tifiles_info("comment:        %s", content->comment);
+  tifiles_info("ROM version:    %s", content->rom_version);
   tifiles_info("type:           %02X (%s)",
 	  content->type, tifiles_vartype2string(content->model, content->type));
   tifiles_info("data length:    %08X (%i)",
@@ -745,7 +745,7 @@ int ti9x_content_display_flash(Ti9xFlash *content)
 
   for (ptr = content; ptr != NULL; ptr = ptr->next) 
   {
-    tifiles_info("Signature:      <%s>",
+    tifiles_info("Signature:      %s",
 	    tifiles_calctype2signature(ptr->model));
     tifiles_info("Revision:       %i.%i",
 	    ptr->revision_major, ptr->revision_minor);
@@ -754,7 +754,7 @@ int ti9x_content_display_flash(Ti9xFlash *content)
     tifiles_info("Date:           %02X/%02X/%02X%02X",
 	    ptr->revision_day, ptr->revision_month,
 	    ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-    tifiles_info("Name:           <%s>", ptr->name);
+    tifiles_info("Name:           %s", ptr->name);
     tifiles_info("Device type:    %s",
 	    ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
     switch (ptr->data_type) 

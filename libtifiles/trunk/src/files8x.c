@@ -123,7 +123,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   f = gfopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_warning( "Unable to open this file: <%s>\n", filename);
+    tifiles_warning( "Unable to open this file: %s\n", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -282,7 +282,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   f = gfopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -417,7 +417,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
   f = gfopen(filename, "rb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>", filename);
+    tifiles_info("Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
 
@@ -569,7 +569,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     free(filename);
     return ERR_FILE_OPEN;
   }
@@ -691,7 +691,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info( "Unable to open this file: <%s>", filename);
+    tifiles_info( "Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
   // write header
@@ -784,7 +784,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
-    tifiles_info("Unable to open this file: <%s>", filename);
+    tifiles_info("Unable to open this file: %s", filename);
     return ERR_FILE_OPEN;
   }
   
@@ -865,15 +865,15 @@ int ti8x_content_display_regular(Ti8xRegular *content)
   int i;
   char trans[17];
 
-  tifiles_info("Signature:     <%s>",
+  tifiles_info("Signature:     %s",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("Comment:       <%s>", content->comment);
+  tifiles_info("Comment:       %s", content->comment);
   tifiles_info("# of entries:  %i", content->num_entries);
 
   for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) 
   {
     tifiles_info("Entry #%i", i);
-    tifiles_info("  name:        <%s>",
+    tifiles_info("  name:        %s",
 		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans));
     tifiles_info("  type:        %02X (%s)",
 	    content->entries[i]->type,
@@ -900,9 +900,9 @@ int ti8x_content_display_regular(Ti8xRegular *content)
  **/
 int ti8x_content_display_backup(Ti8xBackup *content)
 {
-  tifiles_info("Signature:      <%s>",
+  tifiles_info("Signature:      %s",
 	  tifiles_calctype2signature(content->model));
-  tifiles_info("Comment:        <%s>", content->comment);
+  tifiles_info("Comment:        %s", content->comment);
   tifiles_info("Type:           %02X (%s)", content->type,
 	  tifiles_vartype2string(content->model, content->type));
   tifiles_info("Mem address:    %04X (%i)",
@@ -940,7 +940,7 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 
   for (ptr = content; ptr != NULL; ptr = ptr->next) 
   {
-	  tifiles_info("Signature:       <%s>",
+	  tifiles_info("Signature:       %s",
 		  tifiles_calctype2signature(ptr->model));
 	  tifiles_info("Revision:        %i.%i", ptr->revision_major,
 		  ptr->revision_minor);
@@ -949,7 +949,7 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 	  tifiles_info("Date:            %02X/%02X/%02X%02X",
 		  ptr->revision_day, ptr->revision_month,
 		  ptr->revision_year&0xff, (ptr->revision_year&0xff00) >> 8);
-	  tifiles_info("Name:            <%s>", ptr->name);
+	  tifiles_info("Name:            %s", ptr->name);
 	  tifiles_info("Device type:     %s",
 		  ptr->device_type == DEVICE_TYPE_83P ? "ti83+" : "ti73");
 	  tifiles_info("Data type:       ");

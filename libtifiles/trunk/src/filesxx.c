@@ -618,7 +618,7 @@ int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 	{
       if (!strcmp(*ptr, entry->folder)) 
 	  {
-		//printf("break: <%s>\n", entry->folder);
+		//printf("break: %s\n", entry->folder);
 		break;
       }
     }

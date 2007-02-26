@@ -219,7 +219,7 @@ TIEXPORT2 int TICALL test_hex_read(void)
 	f = gfopen(filename, "rb");
 	if (f == NULL) 
 	{
-		printf("Unable to open this file: <%s>", filename);
+		printf("Unable to open this file: %s", filename);
 		return -1;
 	}
 
