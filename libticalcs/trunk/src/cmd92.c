@@ -51,7 +51,7 @@ int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
-  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)", varsize, varsize, vartype, trans);
+  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=%s)", varsize, varsize, vartype, trans);
   TRYF(dbus_send(handle, PC_TI92, CMD_VAR, 6 + strlen(varname), buffer));
 
   return 0;
@@ -161,7 +161,7 @@ int ti92_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)", varsize, varsize, vartype, varname);
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=%s)", varsize, varsize, vartype, varname);
   TRYF(dbus_send(handle, PC_TI92, CMD_REQ, 6 + strlen(varname), buffer));
 
   return 0;
@@ -179,7 +179,7 @@ int ti92_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   buffer[5] = strlen(varname);
   memcpy(buffer + 6, varname, strlen(varname));
 
-  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=%s)",
 	  varsize, varsize, vartype, varname);
   TRYF(dbus_send(handle, PC_TI92, CMD_RTS, 6 + strlen(varname), buffer));
 
@@ -218,7 +218,7 @@ int ti92_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=%s)",
 	  *varsize, *varsize, *vartype, varname);
 
   return 0;
@@ -374,7 +374,7 @@ int ti92_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=%s)",
 	  *varsize, *varsize, *vartype, varname);
 
   return 0;

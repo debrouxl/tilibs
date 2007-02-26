@@ -493,7 +493,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 	}
 	
 	vtl_pkt_del(pkt);
-	ticalcs_info("   folder=<%s>, name=<%s>", folder, name);
+	ticalcs_info("   folder=%s, name=%s", folder, name);
 
 	return 0;
 }
@@ -547,7 +547,7 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("   folder=<%s>, name=<%s>, size=%i, nattrs=%i", folder, name, size, nattrs);
+	ticalcs_info("   folder=%s, name=%s, size=%i, nattrs=%i", folder, name, size, nattrs);
 
 	return 0;
 }
@@ -610,7 +610,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("   folder=<%s>, name=<%s>, naids=%i, nattrs=%i", folder, name, naids, nattrs);
+	ticalcs_info("   folder=%s, name=%s, naids=%i, nattrs=%i", folder, name, naids, nattrs);
 
 	return 0;
 }
@@ -727,7 +727,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 	TRYF(dusb_send_data(h, pkt));
 
 	vtl_pkt_del(pkt);
-	ticalcs_info("   folder=<%s>, name=<%s>, nattrs=%i", folder, name, nattrs);
+	ticalcs_info("   folder=%s, name=%s, nattrs=%i", folder, name, nattrs);
 
 	return 0;
 }
@@ -782,7 +782,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 
 	vtl_pkt_del(pkt);
 	if(args)
-		ticalcs_info("   action=%i, folder=<%s>, name=<%s>, args=<%s>", action, folder, name, args);
+		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder, name, args);
 	else
 		ticalcs_info("   action=%i, keycode=%04x", action, code);
 

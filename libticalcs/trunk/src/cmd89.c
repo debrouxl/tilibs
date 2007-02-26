@@ -94,7 +94,7 @@ int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   memcpy(buffer + 6, varname, strlen(varname));
   buffer[6 + strlen(varname)] = 0x03;
 
-  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: VAR (size=0x%08X=%i, id=%02X, name=%s)",
 	  varsize, varsize, vartype, trans);
   TRYF(dbus_send(handle, PC_TI9X, CMD_VAR, 6 + strlen(varname) + extra, buffer));
 
@@ -215,7 +215,7 @@ int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   if (vartype != TI89_CLK)
     len--;
 
-  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: REQ (size=0x%08X=%i, id=%02X, name=%s)",
 	  varsize, varsize, vartype, varname);
   TRYF(dbus_send(handle, PC_TI9X, CMD_REQ, len, buffer));
 
@@ -240,7 +240,7 @@ int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   // used by AMS <= 2.09 ?
   //if ((vartype == TI89_AMS) || (vartype == TI89_APPL)) len--;
 
-  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: RTS (size=0x%08X=%i, id=%02X, name=%s)",
 	  varsize, varsize, vartype, varname);
   TRYF(dbus_send(handle, PC_TI9X, CMD_RTS, len, buffer));
 
@@ -293,7 +293,7 @@ int ti89_send_DEL_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
 
   len = 6 + strlen(varname);
 
-  ticalcs_info(" PC->TI: DEL (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" PC->TI: DEL (size=0x%08X=%i, id=%02X, name=%s)",
 	  varsize, varsize, vartype, varname);
   TRYF(dbus_send(handle, PC_TI9X, CMD_DEL, len, buffer));
 
@@ -332,7 +332,7 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
       (length != (7 + strlen(varname))))
     return ERR_INVALID_PACKET;
 
-  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=<%s>, flag=%i)",
+  ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=%s, flag=%i)",
 	  *varsize, *varsize, *vartype, varname, flag);
 
   return 0;
@@ -493,7 +493,7 @@ int ti89_recv_RTS_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   if (length != (6 + strlen(varname)))
     return ERR_INVALID_PACKET;
 
-  ticalcs_info(" TI->PC: RTS (size=0x%08X=%i, id=%02X, name=<%s>)",
+  ticalcs_info(" TI->PC: RTS (size=0x%08X=%i, id=%02X, name=%s)",
 	  *varsize, *varsize, *vartype, varname);
 
   return 0;

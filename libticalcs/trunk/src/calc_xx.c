@@ -149,7 +149,7 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
 	if(handle->busy)
 		return ERR_BUSY;
 
-	ticalcs_info(_("Executing %s/%s with <%s>:"), ve->folder, ve->name, args);
+	ticalcs_info(_("Executing %s/%s with %s:"), ve->folder, ve->name, args);
 	handle->busy = 1;
 	if(calc->execute)
 		ret = calc->execute(handle, ve, args);

@@ -727,7 +727,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	ref.tm_sec = 0;
 	//ref.tm_isdst = 1;
 	r = mktime(&ref);
-	//printf("<%s>\n", asctime(&ref));
+	//printf("%s\n", asctime(&ref));
 
 	cur.tm_year = clock->year - 1900;
 	cur.tm_mon = clock->month - 1;
@@ -737,7 +737,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	cur.tm_sec = clock->seconds;
 	cur.tm_isdst = 1;
 	c = mktime(&cur);
-	//printf("<%s>\n", asctime(&cur));
+	//printf("%s\n", asctime(&cur));
 	
 	calc_time = (uint32_t)difftime(c, r);
 
@@ -808,11 +808,11 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	ref.tm_sec = 0;
 	//ref.tm_isdst = 1;
 	r = mktime(&ref);
-	//printf("<%s>\n", asctime(&ref));
+	//printf("%s\n", asctime(&ref));
 
 	c = r + calc_time;
 	cur = localtime(&c);
-	//printf("<%s>\n", asctime(cur));
+	//printf("%s\n", asctime(cur));
 
 	clock->year = cur->tm_year + 1900;
 	clock->month = cur->tm_mon + 1;

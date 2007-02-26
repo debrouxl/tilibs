@@ -141,10 +141,10 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
   	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	ticalcs_info("setlocale: <%s>", setlocale(LC_ALL, ""));
-  	ticalcs_info("bindtextdomain: <%s>", bindtextdomain(PACKAGE, locale_dir));
+  	ticalcs_info("setlocale: %s", setlocale(LC_ALL, ""));
+  	ticalcs_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
   	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	ticalcs_info("textdomain: <%s>", textdomain(PACKAGE));
+  	ticalcs_info("textdomain: %s", textdomain(PACKAGE));
 #endif
 
   	return (++ticalcs_instance);
