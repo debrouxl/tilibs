@@ -64,6 +64,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti92_send_KEY(key));
 	TRYF(ti92_recv_ACK(&key));
+	PAUSE(50);
 	
 	return 0;
 }
@@ -75,11 +76,8 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
-	PAUSE(50);
 
 	// Launch program by remote control
 	for(i = 0; i < strlen(ve->folder); i++)
@@ -489,11 +487,8 @@ static int		dump_rom_1	(CalcHandle* handle)
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
-	PAUSE(50);
 	TRYF(send_key(handle, KEY92P_CLEAR));
-	PAUSE(50);
 
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.92p", romDumpSize92, romDump92));
