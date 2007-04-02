@@ -545,7 +545,7 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES \
 
 
 @USE_ICONV_FALSE@install-data-hook:
-@USE_ICONV_FALSE@	sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
+@USE_ICONV_FALSE@	sed -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h >$(DESTDIR)$(prefix)/include/tilp2/ticonv.h.tmp && mv -f $(DESTDIR)$(prefix)/include/tilp2/ticonv.h.tmp $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

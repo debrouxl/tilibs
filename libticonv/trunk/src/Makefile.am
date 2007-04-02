@@ -19,5 +19,5 @@ libticonv_la_SOURCES = \
 
 if !USE_ICONV
 install-data-hook:
-	sed -i -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
+	sed -e 's/#define TICONV_ICONV_INTERFACE/#undef TICONV_ICONV_INTERFACE/g' $(DESTDIR)$(prefix)/include/tilp2/ticonv.h >$(DESTDIR)$(prefix)/include/tilp2/ticonv.h.tmp && mv -f $(DESTDIR)$(prefix)/include/tilp2/ticonv.h.tmp $(DESTDIR)$(prefix)/include/tilp2/ticonv.h;
 endif
