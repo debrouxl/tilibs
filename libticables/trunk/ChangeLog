@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- ??/??/2007, version 1.0.5: roms
+	- support NetBSD serial port device names (Jukka Salmi)
+
 - 23/02/2007, version 1.0.4: roms
 	- enabled i18n
 

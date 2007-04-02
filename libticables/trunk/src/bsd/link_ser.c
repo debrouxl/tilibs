@@ -38,16 +38,22 @@
 
 #define dev_fd  ((int)(h->priv))
 
+#if defined(__NetBSD__)
+#define DEVNAME "dty0"
+#else /* FreeBSD */
+#define DEVNAME "cuad"
+#endif
+
 static int ser_prepare(CableHandle *h)
 {
 	int ret;
 
     switch(h->port)
     {
-    case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/cuad0"); break;
-    case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/cuad1"); break;
-    case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/cuad2"); break;
-    case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/cuad3"); break;
+    case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/"DEVNAME"0"); break;
+    case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/"DEVNAME"1"); break;
+    case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/"DEVNAME"2"); break;
+    case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/"DEVNAME"3"); break;
     default: return ERR_ILLEGAL_ARG;
     }
 
