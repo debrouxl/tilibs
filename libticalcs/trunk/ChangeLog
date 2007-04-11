@@ -2,6 +2,10 @@ SubVersion: $Id$
 	
 Log:
 
+- 12/04/2007, version 1.0.6: roms
+	- wrong battery status (debug)
+	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)
+
 - 23/02/2007, version 1.0.5: roms
 	- enabled i18n
 	- fixed TiEmu bug #1675675 / TiLP bug #1676133
