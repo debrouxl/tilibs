@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticalcs2, 1.0.5, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticalcs2, 1.0.6, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.0.5"
+VERSION="1.0.6"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -64,7 +64,7 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(TICABLES, ticables2 >= 0.1.1)
+PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.0.4)
 AC_SUBST(TICABLES_CFLAGS)
 AC_SUBST(TICABLES_LIBS)
 
@@ -72,7 +72,7 @@ PKG_CHECK_MODULES(TICONV, ticonv >= 0.0.3)
 AC_SUBST(TICONV_CFLAGS)
 AC_SUBST(TICONV_LIBS)
 
-PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.0.3)
+PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.0.4)
 AC_SUBST(TIFILES_CFLAGS)
 AC_SUBST(TIFILES_LIBS)
 
