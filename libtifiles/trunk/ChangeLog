@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 16/04/2007, version 1.0.5: kevin
+	- requires glib >= 2.6.0 rather than 2.4.0 because libticonv requires
+	  it anyway
+
 - 23/02/2007, version 1.0.4: roms
 	- enabled i18n
 
