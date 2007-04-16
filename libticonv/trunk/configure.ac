@@ -3,10 +3,10 @@ dnl $Id: configure.ac 1798 2006-02-03 08:27:54Z roms $
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticonv, 1.0.1, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticonv, 1.0.2, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.0.1"
+VERSION="1.0.2"
 AC_SUBST(VERSION)
 
 dnl Library version.
