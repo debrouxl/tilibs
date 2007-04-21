@@ -427,15 +427,17 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int i, j, k;
 	int size;
 	char *utf8;
-	int se = 0;
+	int se = 1;
 
-	// check for SilverEdition
+	// check for SilverEdition (not useable in boot mode, sic!)
+#if 0
 	{
 		CalcInfos infos = { 0 };
 
 		TRYF(get_version(handle, &infos));
 		se = infos.hw_version & 1;
 	}
+#endif
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -507,6 +509,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TI83+/SE and TI84+/SE don't need a pause (otherwise transfer fails).
 			TI73,TI83+,TI84+ need a pause (otherwise transfer fails).
 		*/
+#if 0
 		if(!se)
 		{
 			if (i == 1)
@@ -514,6 +517,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			if (i == ptr->num_pages - 2)
 			  PAUSE(2500);		// This pause is NEEDED !
 		}
+#endif
 	}
 
 	TRYF(ti73_send_EOT());
