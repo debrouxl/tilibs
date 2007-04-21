@@ -419,12 +419,23 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	return 0;
 }
 
+static int		get_version	(CalcHandle* handle, CalcInfos* infos);
+
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
 	int i, j, k;
 	int size;
 	char *utf8;
+	int se = 0;
+
+	// check for SilverEdition
+	{
+		CalcInfos infos = { 0 };
+
+		TRYF(get_version(handle, &infos));
+		se = infos.hw_version & 1;
+	}
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -492,7 +503,11 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			update_->pbar();
 		}
 
-		if(handle->model != CALC_TI84P)
+		/* Note: 
+			TI83+/SE and TI84+/SE don't need a pause (otherwise transfer fails).
+			TI73,TI83+,TI84+ need a pause (otherwise transfer fails).
+		*/
+		if(!se)
 		{
 			if (i == 1)
 			  PAUSE(1000);		// This pause is NEEDED !
