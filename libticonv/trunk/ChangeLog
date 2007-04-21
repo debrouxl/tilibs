@@ -2,10 +2,10 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
-- ??/??/2006, version 1.0.2: kevinkofler
+- 02/04/2006, version 1.0.2: kevinkofler
 	- fixed sed invocation in makefile for NetBSD (patch by Jukka Salmi)
 
-- ??/??/2006, version 1.0.1: roms
+- 13/10/2006, version 1.0.1: roms
 	- don't include <iconv.h> if the iconv-compatible interface is disabled
 
 - 19/09/2006, version 1.0.0: roms
