@@ -5,6 +5,7 @@ Log:
 - 12/04/2007, version 1.0.6: roms
 	- wrong battery status (debug)
 	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)
+	- bug #1563667: impossible to flash TI-83+/SE
 
 - 23/02/2007, version 1.0.5: roms
 	- enabled i18n

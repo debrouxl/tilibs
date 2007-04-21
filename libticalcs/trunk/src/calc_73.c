@@ -905,7 +905,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	ticalcs_info(_("  OS: %s"), infos->os_version);
 	ticalcs_info(_("  BIOS: %s"), infos->boot_version);
 	ticalcs_info(_("  HW: %i"), infos->hw_version);
-	ticalcs_info(_("  Battery: %s"), infos->battery ? "low" : "good");
+	ticalcs_info(_("  Battery: %s"), infos->battery ? _("good") : _("low"));
 
 	return 0;
 }
