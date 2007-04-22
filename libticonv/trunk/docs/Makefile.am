@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = api.txt
+docdir = ${datadir}/doc/${PACKAGE}
 
 all: docs
 
@@ -14,10 +15,11 @@ endif
 install:
 	@INSTALL@ -d $(DESTDIR)${docdir}
 	@INSTALL@ -d $(DESTDIR)${docdir}/charsets
-	@INSTALL@ -m555 charsets/* $(DESTDIR)${docdir}/charsets
+	@INSTALL@ -m644 charsets/* $(DESTDIR)${docdir}/charsets
 	@INSTALL@ -d $(DESTDIR)${docdir}/html
-	@INSTALL@ -m555 html/* $(DESTDIR)${docdir}/html
-
+	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
+	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
+	$(DESTDIR)${docdir}
 uninstall:
 	rm -f $(DESTDIR)${docdir}/charsets/*
 	rm -f $(DESTDIR)${docdir}/html/*
