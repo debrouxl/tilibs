@@ -1,5 +1,5 @@
 # French translations for libticables2 package.
-# Copyright (C) 2003 Sylvain Garsault
+#  Copyright (C) 2003 Sylvain Garsault
 # Copyright (C) 2007 Romain Lievin
 # This file is distributed under the same license as the libticables2 package.
 # Romain Lievin <roms@tilp.info>, 2007.
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.0.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-24 11:51+0100\n"
+"POT-Creation-Date: 2007-04-24 08:31+0200\n"
 "PO-Revision-Date: 2007-02-23 16:08+0100\n"
 "Last-Translator: Romain Lievin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -26,7 +26,7 @@ msgid "Cause: a transfer is in progress."
 msgstr "Cause: transfert en cours."
 
 #: src/error.c:68
-msgid "Msg: nable to use parallel/serial port: access refused."
+msgid "Msg: unable to use parallel/serial port: access refused."
 msgstr "Msg: impossible d'utiliser le port série/parallèle: accès refusé."
 
 #: src/error.c:70
@@ -85,7 +85,6 @@ msgid "Msg: PortTalk driver and/or library not found."
 msgstr "Msg: pilote PortTalk et/ou librairie introuvable."
 
 #: src/error.c:107
-#, fuzzy
 msgid ""
 "Cause: the driver may have been not started yet; it may have been "
 "uninstalled; the library has been installed without NT administrator "
@@ -116,7 +115,6 @@ msgid "Msg: timeout occured while reading to the device."
 msgstr "Msg: délai dépassé lors de la lecture sur le périphérique."
 
 #: src/error.c:141
-#, fuzzy
 msgid "Msg: the probing of device failed."
 msgstr "Msg: la recherche du périphérique a échoué."
 
@@ -219,7 +217,6 @@ msgid "Msg: unable to open serial device."
 msgstr "Msg: impossible d'ouvrir le port série."
 
 #: src/error.c:237 src/error.c:246
-#, fuzzy
 msgid ""
 "Cause: check that you have permissions on /dev/ttySx device. Check that "
 "device is not locked."
