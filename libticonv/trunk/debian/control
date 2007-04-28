@@ -1,0 +1,29 @@
+Source: libticonv2
+Priority: optional
+Section: libs
+Maintainer: Romain LIEVIN <roms@tilp.info>
+Build-Depends: debhelper (>> 5.0.0), pkg-config, autotools-dev, libglib2.0-dev
+Standards-Version: 3.7.2
+
+Package: libticonv2-dev
+Section: libdevel
+Architecture: any
+Depends: libticonv2 (= ${Source-Version}), libc6-dev, pkg-config, libglib2.0-dev
+Description: Texas Instruments calculators charsets library [development files]
+ The libticonv is a library providing support for operations on Texas 
+ Instruments calculators charsets. All charsets for all calculators are 
+ supported; the library is also able to convert to/from UTF-8.
+ .
+ This package provides the development files for the library, static library 
+ and required headers.
+
+Package: libticonv2
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Texas Instruments calculators charsets library
+ The libticonv is a library providing support for operations on Texas
+ Instruments calculators charsets. All charsets for all calculators are 
+ supported; the library is also able to convert from/to UTF-8.
+ .
+ This package provides the shared library.
