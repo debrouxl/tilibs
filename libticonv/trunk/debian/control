@@ -14,8 +14,8 @@ Description: Texas Instruments calculators charsets library [development files]
  Instruments calculators charsets. All charsets for all calculators are 
  supported; the library is also able to convert to/from UTF-8.
  .
- This package provides the development files for the library, static library 
- and required headers.
+ This package provides the development files for the library, static library, 
+ required headers and documentation.
 
 Package: libticonv2
 Section: libs
