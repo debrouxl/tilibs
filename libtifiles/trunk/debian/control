@@ -2,7 +2,7 @@ Source: libtifiles2-3
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-0
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev
 Standards-Version: 3.7.2
 
 Package: libtifiles2-3-dev
