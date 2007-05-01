@@ -30,62 +30,19 @@ or
   - A *BSD (FreeBSD) computer and C compiler (gcc)
 
   - parallel link: your kernel must have parport support (PARPORT, PARPORT_PC 
-	and PPDEV) and the /dev/parportX device must have required permissions.
+	and PPDEV) and the /dev/parportX device must have required 
+	permissions (*).
 
-  - BlackLink: the /dev/ttySx device must have required permissions.
+  - BlackLink: the /dev/ttySx device must have required permissions (*).
 
   - GrayLink: idem.
 
   - SilverLink: your kernel must have USB device file-system and your system 
 	must have lib-usb properly installed and configured (USB fs must be
 	mounted). For ease of use, use the 'root' account.
-	Else, see the libusb documentation for more details.
+	Else, see the libusb documentation for more details (*).
 
-	Otherwise, you will find below a quick overview which applies to
-	Debian systems:
-<<
-libusb uses a pseudo-filesystem known as 'usbdevfs` or 'usbfs` to access
-the USB devices connected to your machine. This filesystem must be mounted
-under /proc/bus/usb for libusb to work.
-
-It could be done using the following command:
-        mount -t usbfs none /proc/bus/usb
-
-An alternative and more permanent method would be to add
-        none /proc/bus/usb usbfs defaults 0 0
-to your /etc/fstab file. It will mount the usbfs for you automatically at
-boot time ; only root will be able to access the USB devices with this
-setup.
-
-Several mount options are available, that allow you to set the permissions
-on the files created under /proc/bus/usb so that non-root users can use
-libusb applications:
- - devuid=xxx, devgid=xxx, devmode=xxx respectively set the uid, the gid
-   and the mode of the devices files, ie /proc/bus/usb/BBB/DDD
- - busuid=xxx, busgid=xxx, devmode=xxx respectively set the uid, the gid
-   and the mode of the bus files, ie /proc/bus/usb/BBB
- - listuid=xxx, listgid=xxx, listmode=xxx respectively set the uid, the gid
-   and the mode of /proc/bus/usb/devices
-
- -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
-
-Clearly, add this to you fstab:
-	none /proc/bus/usb usbfs defaults,rw,listuid=1000,listgid=1000,devuid=1000,devgid=1000,busuid=1000,busgid=1000
->>
-
-	Fedora is set up differently. For one, /proc/bus/usb (or /dev/bus/usb
-	as it is now called, but /proc/bus/usb still works as of Fedora Core 6)
-	isn't mounted as a file system. (It's apparently taken care of by udev.)
-	And secondly, you don't have to play with the permissions, because a
-	nice tool called pam_console takes care of that for you. (The user
-	physically in front of the computer, if any, gets access to what's
-	assumed to be his/her calculator automatically.) The libticables2 Fedora
-	RPM automatically installs the required udev and pam_console
-	configurations for a regular user to be able to access the linked
-	calculator (when logged in locally).
-
-	To sum up, USB links Just Work in Fedora without any manual user
-	intervention, as long as my Fedora RPMs are used. -- Kevin Kofler
+  (*) for a quickstart guide, see the CONFIG file.
 
 --------------------------------------------------------------------------
 Compilation
@@ -110,7 +67,7 @@ Availability
 Copyright
 --------------------------------------------------------------------------
 
-ticables library is Copyright (C) 1999-2004 by the TiLP team: 
+ticables library is Copyright (C) 1999-2007 by the TiLP team: 
 <tilp-users@lists.sf.net>
 
 Copying is allowed under the terms of GNU General Public

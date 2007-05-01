@@ -1,0 +1,101 @@
+--------------------------------------------------------------------------
+		Quick-Start Guide for ticables2 set-up
+--------------------------------------------------------------------------
+
+
+A burning issue with this library and Linux is good set-up of device access. 
+Linux is secure because it heavily relies on permissions. But, it may become
+a nightmare in some situations.
+
+On the first run, you should always run your program as root. By this way, 
+you will be almost sure to run it with success.
+ 
+If you want to run your program as a simple user, you must take care of 
+permissions. This is explained below.
+
+
+--------------------------------------------------------------------------
+ParallelLink cable
+--------------------------------------------------------------------------
+ 
+The node is '/dev/parportX". You must have r/w permissions on this device. 
+This can be done by:
+ - giving up r/w permissions to others (chmod ugo+rw /dev/parport?) or, better,
+ - adding your user to the group 'dialout' (edit /etc/group and your 
+username after the ':').
+ 
+ Example 1:
+     crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
+ Example 2:
+     dialout:x:20:romain
+ 
+
+--------------------------------------------------------------------------
+BlackLink & GrayLink cables
+--------------------------------------------------------------------------
+
+The node is '/dev/ttySx". You must have r/w permissions on this device. 
+This can be done by:
+ - giving up r/w permissions to others (chmod ugo+rw /dev/ttyS0) or, better,
+ - adding your user to the group 'dialout' (edit /etc/group and your 
+username after the ':').
+ 
+ Example 1:
+     crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
+ Example 2:
+     dialout:x:20:romain
+
+
+--------------------------------------------------------------------------
+SilverLink cable
+--------------------------------------------------------------------------
+
+For SilverLink cable, things are more complicated... 
+
+1) You will find below a quick overview which applies to Debian systems:
+
+<<
+libusb uses a pseudo-filesystem known as 'usbdevfs` or 'usbfs` to access
+the USB devices connected to your machine. This filesystem must be mounted
+under /proc/bus/usb for libusb to work.
+
+It could be done using the following command:
+        mount -t usbfs none /proc/bus/usb
+
+An alternative and more permanent method would be to add
+        none /proc/bus/usb usbfs defaults 0 0
+to your /etc/fstab file. It will mount the usbfs for you automatically at
+boot time ; only root will be able to access the USB devices with this
+setup.
+
+Several mount options are available, that allow you to set the permissions
+on the files created under /proc/bus/usb so that non-root users can use
+libusb applications:
+ - devuid=xxx, devgid=xxx, devmode=xxx respectively set the uid, the gid
+   and the mode of the devices files, ie /proc/bus/usb/BBB/DDD
+ - busuid=xxx, busgid=xxx, devmode=xxx respectively set the uid, the gid
+   and the mode of the bus files, ie /proc/bus/usb/BBB
+ - listuid=xxx, listgid=xxx, listmode=xxx respectively set the uid, the gid
+   and the mode of /proc/bus/usb/devices
+
+ -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
+>>
+
+Clearly, add this to you fstab:
+	none /proc/bus/usb usbfs defaults,rw,listuid=1000,listgid=1000,devuid=1000,devgid=1000,busuid=1000,busgid=1000
+
+where 1000 is the uid/gid of your user (you). -- Romain Lievin
+
+2) Fedora is set up differently. For one, /proc/bus/usb (or /dev/bus/usb
+as it is now called, but /proc/bus/usb still works as of Fedora Core 6)
+isn't mounted as a file system. (It's apparently taken care of by udev.)
+And secondly, you don't have to play with the permissions, because a
+nice tool called pam_console takes care of that for you. (The user
+physically in front of the computer, if any, gets access to what's
+assumed to be his/her calculator automatically.) The libticables2 Fedora
+RPM automatically installs the required udev and pam_console
+configurations for a regular user to be able to access the linked
+calculator (when logged in locally).
+
+To sum up, USB links Just Work in Fedora without any manual user
+intervention, as long as my Fedora RPMs are used. -- Kevin Kofler
