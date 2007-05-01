@@ -759,7 +759,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			if(f == NULL)
 				return 0;
 
-			fread_n_chars(f, 16, data);
+			fread_n_chars(f, 16, (char *)data);
 			fclose(f);
 
 			switch(data[8])
