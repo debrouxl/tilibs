@@ -2,7 +2,7 @@ Source: libticonv2
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen
 Standards-Version: 3.7.2
 
 Package: libticonv2-dev
