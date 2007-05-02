@@ -21,8 +21,9 @@ ParallelLink cable
 The node is '/dev/parportX". You must have r/w permissions on this device. 
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/parport?) or, better,
- - adding your user to the group 'dialout' (edit /etc/group and your 
-username after the ':').
+ - adding your user to the group 'dialout' (edit /etc/group and your
+username after the ':'). (On Fedora, the group is called 'lp'. Automatic
+configuration as in the USB case below is being considered.)
  
  Example 1:
      crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
@@ -37,8 +38,9 @@ BlackLink & GrayLink cables
 The node is '/dev/ttySx". You must have r/w permissions on this device. 
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/ttyS0) or, better,
- - adding your user to the group 'dialout' (edit /etc/group and your 
-username after the ':').
+ - adding your user to the group 'dialout' (edit /etc/group and your
+username after the ':'). (On Fedora, the group is called 'uucp'. Automatic
+configuration as in the USB case below is being considered.)
  
  Example 1:
      crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
