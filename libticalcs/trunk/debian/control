@@ -2,13 +2,13 @@ Source: libticalcs2-2
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1 (>= 1.0.5-1), libtifiles2-3 (>= 1.0.5-1), libticonv2 (>= 1.0.2-1), tfdocgen
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1-dev (>= 1.0.5-1), libtifiles2-3-dev (>= 1.0.5-1), libticonv2-dev (>= 1.0.2-1), tfdocgen
 Standards-Version: 3.7.2
 
 Package: libticalcs2-2-dev
 Section: libdevel
 Architecture: any
-Depends: libticalcs2-2 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticables2-1, libtifiles2-3, libticonv2
+Depends: libticalcs2-2 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-3-dev, libticonv2-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
  Instruments calculators link cables. All link cables are supported read/write.
