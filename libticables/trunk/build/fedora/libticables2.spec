@@ -54,9 +54,13 @@ cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
 
 # device classes -- these are shell-style globs
 <ticable>=/dev/ticable* /dev/usb/ticable*
+<serport>=/dev/ttyS*
+<parport>=/dev/parport*
 
 # permission definitions
 <console>  0600 <ticable>    0600 root
+<console>  0660 <serport>    0660 root.uucp
+<console>  0660 <parport>    0660 root.lp
 EOF2
 
 %post -p /sbin/ldconfig
@@ -79,6 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/ticables2.pc
 
 %changelog
+* Thu May 3 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Give access to serial and parallel ports in the pam_console configuration.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.5-1
 Bump Epoch.
 Use real version number instead of date.
