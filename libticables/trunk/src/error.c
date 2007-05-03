@@ -75,21 +75,35 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	    *message = g_strconcat(
                 _("Msg: unable to use serial (/dev/ttySx) device."),
                 "\n",
-                _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions. See the log output for testing details."),
+                _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions." \
+				"How to grant permission to devices to the user depends on the " \
+				"distribution, it may involve adding the user to a group such " \
+				"as 'dialout' or 'uucp'. This can be done by editing /etc/group " \
+				"and add the username after the ':'. Example: dialout:x:20:romain " \
+				""
+				),
 		NULL);
 
 	case ERR_PPDEV:
             *message = g_strconcat(
                 _("Msg: unable to use parport (/dev/parportX) device."),
                 "\n",
-                _("Cause: the /dev/parportX node doesn't exist or you don't have required permissions. See the log output for testing details."),
+                _("Cause: the /dev/parportX node doesn't exist or you don't have required permissions."
+				"How to grant permission to devices to the user depends on the " \
+				"distribution, it may involve adding the user to a group such " \
+				"as 'lp'. This can be done by editing /etc/group " \
+				"and add the username after the ':'. Example: lp:x:7:romain " \
+				""				
+				),
                 NULL);
 
 	case ERR_USBFS:
 	    *message = g_strconcat(
                 _("Msg: unable to use USB pseudo file system."),
                 "\n",
-                _("Cause: the USB fs is not mounted or you don't have permissions to use it. See the log oupput for testing details."),
+                _("Cause: the USB fs is not mounted or you don't have permissions to use it."
+				
+				),
                 NULL);
 
 	case ERR_ILLEGAL_ARG:
