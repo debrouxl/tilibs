@@ -101,8 +101,17 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	    *message = g_strconcat(
                 _("Msg: unable to use USB pseudo file system."),
                 "\n",
-                _("Cause: the USB fs is not mounted or you don't have permissions to use it."
-				
+                _("Cause: the USB filesystem is not mounted or " \
+				  "cannot access USB device because current user doesn't have the necessary " \
+				"permissions. How to grant permission to devices to the user depends on the " \
+				"distribution; it may involve adding udev and/or pam_console configuration " \
+				"files, and you may in addition have to add your user to a group such " \
+				"as 'usb' or set-up libusb mounting parameters." \
+				"If packages of TiLP and its libraries for your distribution exist, " \
+				"it is recommended to use those, as everything which can be configured " \
+				"automatically will be set up for you. Otherwise, manual setup steps, if any, are " \
+				"explained in the CONFIG file shipped with the ticables2 library. " \
+				""
 				),
                 NULL);
 

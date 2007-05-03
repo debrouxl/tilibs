@@ -409,7 +409,7 @@ int check_for_libusb(void)
 	ticables_info(_("    => the usbfs must be supported by your kernel and you have to mount it"));
 	ticables_info(_("    => add a 'none /proc/bus/usb usbfs defaults 0 0' in your '/etc/fstab'."));
 	ticables_info(_("    => This line is enough for 'root' user. If you want to use it as a single user,"));
-	ticables_info(_("	 => take a look at the ticables2/README file."));
+	ticables_info(_("	 => take a look at the ticables2/CONFIG file."));
 	
 	return ERR_USBFS;
     }
