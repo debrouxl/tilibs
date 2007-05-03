@@ -380,8 +380,8 @@ int check_for_parport(const char *devname)
     return 0;
 }
 
-#define	USBFS	"/proc/bus/usb"
-#define DEVFS    "/dev/bus/usb"
+#define	USBFS	"/proc/bus/usb/devices"
+#define DEVFS    "/dev/bus/usb/devices"
 
 int check_for_libusb(void)
 {
