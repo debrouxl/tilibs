@@ -2,7 +2,7 @@ Source: libticables2-1
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen, libusb-dev
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen, libusb-dev, gettext
 Standards-Version: 3.7.2
 
 Package: libticables2-1-dev
