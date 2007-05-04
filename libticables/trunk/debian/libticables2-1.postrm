@@ -1,0 +1,9 @@
+#!/bin/bash
+#File taken from previous Julien Blache's package
+
+if [ "$1" = "purge" ]; then
+	rm -f /etc/udev/rules.d/025_libticables.rules
+fi
+
+#DEBHELPER#
+

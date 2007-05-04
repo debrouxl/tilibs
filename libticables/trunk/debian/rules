@@ -84,6 +84,9 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install --sourcedir=debian/tmp
+ifeq (linux,$(DEB_HOST_ARCH_OS))
+	cp debian/udev/ticables.rules debian/libticables2-1/etc/udev
+endif
 	dh_installman
 	dh_link
 	dh_strip

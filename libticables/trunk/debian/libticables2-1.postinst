@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "$1" in
+    configure)
+    if [ "$(uname -s)" = "Linux" ]; then
+	# install the udev file only once:
+	# the first time the package is installed
+	ln -sf /etc/udev/ticables.rules /etc/udev/rules.d/025_ticables.rules
+    fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+    echo "$0 called with unknown argument '$1'" >&2
+    exit 1
+    ;;
+esac
+
+#DEBHELPER#
