@@ -394,22 +394,20 @@ int check_for_libusb(void)
 #endif
 
     ticables_info(_("Check for lib-usb usability:"));
-    
-    if(!access(USBFS, F_OK))
-    {
-	ticables_info(_("    usb filesystem (%s): %s"), USBFS, "mounted");
-    }
-    else if(!access(DEVFS, F_OK))
+
+    if(!access(DEVFS, F_OK))
     {
 	ticables_info(_("    usb filesystem (%s): %s"), DEVFS, "mounted");
     }
-    else 
+    else if(!access(USBFS, F_OK))
     {
-	ticables_info(_("    usb filesystem (/proc|dev/bus/usb): %s"), "not mounted");
-	ticables_info(_("    => the usbfs must be supported by your kernel and you have to mount it"));
-	ticables_info(_("    => add a 'none /proc/bus/usb usbfs defaults 0 0' in your '/etc/fstab'."));
-	ticables_info(_("    => This line is enough for 'root' user. If you want to use it as a single user,"));
-	ticables_info(_("	 => take a look at the ticables2/CONFIG file."));
+	ticables_info(_("    usb filesystem (%s): %s"), USBFS, "mounted");
+    }
+    else
+    {
+	ticables_info(_("    usb filesystem (/[proc|dev]/bus/usb): %s"), "not present");
+	ticables_info(_("    => you must have udev or usbfs support."));
+	ticables_info(_("    => take a look at the ticables2/CONFIG file."));
 	
 	return ERR_USBFS;
     }
