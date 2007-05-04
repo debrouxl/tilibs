@@ -6,6 +6,7 @@ Log:
 	- support NetBSD serial port device names (Jukka Salmi)
 	- cosmetic change in the name of the TiEmu virtual link
 	- fixed bug #1676861: VTi link failed due to library name (major)
+	- fixed missing 'break's in error management code
 
 - 23/02/2007, version 1.0.4: roms
 	- enabled i18n

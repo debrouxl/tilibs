@@ -21,8 +21,8 @@ ParallelLink cable
 The node is '/dev/parportX". You must have r/w permissions on this device. 
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/parport?) or, better,
- - adding your user to the group 'lp' (edit /etc/group and your
-username after the ':').
+ - adding your user to the group 'lp' (edit /etc/group and add your
+   username after the ':'). (On Fedora, the group is called 'lp'.)
    Example 1:
      crw-rw-rw- 1 root lp 99, 0 2005-02-26 07:39 parport0
    Example 2:
@@ -41,8 +41,8 @@ BlackLink & GrayLink cables
 The node is '/dev/ttySx". You must have r/w permissions on this device. 
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/ttyS0) or, better,
- - adding your user to the group 'dialout' (edit /etc/group and your
-username after the ':'). (On Fedora, the group is called 'uucp'.)
+ - adding your user to the group 'dialout' (edit /etc/group and add your
+  username after the ':'). (On Fedora, the group is called 'uucp'.)
    Example 1:
      crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
    Example 2:
@@ -62,9 +62,27 @@ For SilverLink cable, things are more complicated...
 
 1) You will find below a quick overview which applies to Debian systems:
 
+1.a) If you are using udev (preferred):
+
+it may depends on your distribution but you will have to add a rule to 
+/etc/udev. As a template, you can copy and modify the 
+debian/udev/ticables.rules file to /etc/udev. Next, do a symlink of 
+/etc/udev/ticables.rules to /etc/udev/rules.d/020_ticables.rules.
+When the SilverLink cable is plugged, you should see several 'ticable-*' 
+entries in /dev.
+
+The template rely on a group called 'plugdev'. If it doesn't exist, you will
+have to create it or choose another group which matches better your system.
+
+At last, you will have to add the user to the group 'plugdev' (edit /etc/group
+and add your username after the ':'). Like this:
+
+        plugdev:x:46:romain
+
+1.b) If you are using the USB filesystem (deprecated):
 <<
 libusb uses a pseudo-filesystem known as 'usbdevfs` or 'usbfs` to access
-the USB devices connected to your machine. This filesystem must be mounted
+the USB devices connected to your machine. This filesystem should be mounted
 under /proc/bus/usb for libusb to work.
 
 It could be done using the following command:

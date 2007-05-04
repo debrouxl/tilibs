@@ -75,7 +75,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	    *message = g_strconcat(
                 _("Msg: unable to use serial (/dev/ttySx) device."),
                 "\n",
-                _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions." \
+                _("Cause: the /dev/ttySx node doesn't exist or you don't have required permissions. " \
 				"How to grant permission to devices to the user depends on the " \
 				"distribution, it may involve adding the user to a group such " \
 				"as 'dialout' or 'uucp'. This can be done by editing /etc/group " \
@@ -83,12 +83,13 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 				""
 				),
 		NULL);
+	    break;
 
 	case ERR_PPDEV:
             *message = g_strconcat(
                 _("Msg: unable to use parport (/dev/parportX) device."),
                 "\n",
-                _("Cause: the /dev/parportX node doesn't exist or you don't have required permissions."
+                _("Cause: the /dev/parportX node doesn't exist or you don't have required permissions. "
 				"How to grant permission to devices to the user depends on the " \
 				"distribution, it may involve adding the user to a group such " \
 				"as 'lp'. This can be done by editing /etc/group " \
@@ -96,6 +97,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 				""				
 				),
                 NULL);
+	    break;
 
 	case ERR_USBFS:
 	    *message = g_strconcat(
@@ -114,6 +116,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 				""
 				),
                 NULL);
+	    break;
 
 	case ERR_ILLEGAL_ARG:
 		*message = g_strconcat(
@@ -121,7 +124,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			"\n",
 			_("Cause: the program which uses this library is buggy. Fire-up the developer!"),
 			NULL);
-    break;
+		break;
 
 	case ERR_PORTTALK_NOT_FOUND:
 		*message = g_strconcat(
@@ -129,7 +132,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			"\n",
 			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
 			NULL);
-    break;
+		break;
 
 	case ERR_WRITE_ERROR:
     	*message = g_strconcat(
@@ -229,7 +232,8 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
     		_("Msg: failed to get VTI handle."),
     		"\n",
     		_("Cause: VTi may not be running. VTi must be launched before."),
-			NULL);
+		NULL);
+		break;
 
 	case ERR_VTI_IPCKEY:
 	case ERR_VTI_SHMGET:
@@ -241,7 +245,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			"\n",
 			_("Cause: check that you have enough resources for allocating a shared memory segment."),
 			NULL);
-    break;
+		break;
 
 	case ERR_TIE_OPEN:
 	case ERR_TIE_CLOSE:
