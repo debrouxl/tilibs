@@ -49,7 +49,7 @@
 #  define IOCTL_TIUSB_GET_MAXPS      _IOR('N', 0x23, int) /* max packet size */
 # endif
 #endif
-
+#include <dirent.h>
 
 #include "../gettext.h"
 #include "../error.h"
@@ -380,8 +380,8 @@ int check_for_parport(const char *devname)
     return 0;
 }
 
-#define	USBFS	"/proc/bus/usb/devices"
-#define DEVFS    "/dev/bus/usb/devices"
+#define	USBFS	"/proc/bus/usb/"
+#define DEVFS    "/dev/bus/usb/"
 
 int check_for_libusb(void)
 {
@@ -401,7 +401,27 @@ int check_for_libusb(void)
     }
     else if(!access(USBFS, F_OK))
     {
+      DIR* dir;
+      struct dirent *dirent;
+      int i;
+
+      dir = opendir(USBFS);
+      if(dir == NULL)
+	{
+	  ticables_info(_("    usb filesystem (%s): %s"), USBFS, "not mounted");
+	  return ERR_USBFS;
+	}
+      
+      for(i = 0; dirent = readdir(dir); i++);
+      closedir(dir);
+
+      if(i > 2)
 	ticables_info(_("    usb filesystem (%s): %s"), USBFS, "mounted");
+      else
+	{
+	  ticables_info(_("    usb filesystem (%s): %s"), USBFS, "not mounted");
+	  return ERR_USBFS;
+	}
     }
     else
     {
