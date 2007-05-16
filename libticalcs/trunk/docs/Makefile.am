@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = api.txt
+docdir = ${datadir}/doc/${PACKAGE}
 
-all:
-	@echo "To build the documentation, run \"make docs\"."
+all: docs
 
 docs:
 if OS_WIN32
@@ -11,6 +11,15 @@ if OS_WIN32
 else
 	tfdocgen ../
 endif
+
+install:
+	@INSTALL@ -d $(DESTDIR)${docdir}
+	@INSTALL@ -d $(DESTDIR)${docdir}/html
+	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
+	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
+	$(DESTDIR)${docdir}
+uninstall:
+	rm -f $(DESTDIR)${docdir}/html/*
 
 clean:
 	rm -f html/*.c.html html/*.h.html html/api.html
