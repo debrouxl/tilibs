@@ -7,7 +7,7 @@ Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: glib2-devel >= 2.6.0
+BuildRequires: glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI link cables
 %description
@@ -20,11 +20,19 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
 Requires: glib2-devel >= 2.6.0
 %description devel
-This package contains the files necessary to develop
-applications using the %{name} library.
+This package contains the files necessary to develop applications using the
+%{name} library.
+
+%package apidocs
+Summary: API documentation for %{name}
+Group: Development/Documentation
+Requires: %{name} = %{epoch}:%{version}-%{release}
+%description apidocs
+This package contains the API documentation for the %{name} library in
+HTML format.
 
 %prep
-%setup -n libticonv
+%setup
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
@@ -46,14 +54,29 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %{_libdir}/libticonv.so.*
+%dir %{_datadir}/doc/%{name}
+%{_datadir}/doc/%{name}/AUTHORS
+%{_datadir}/doc/%{name}/COPYING
+%{_datadir}/doc/%{name}/ChangeLog
+%{_datadir}/doc/%{name}/README
 
 %files devel
 %defattr(-, root, root)
-/usr/include/tilp2
+%{_includedir}/tilp2
 %{_libdir}/libticonv.so
 %{_libdir}/pkgconfig/ticonv.pc
 
+%files apidocs
+%defattr(-, root, root)
+%{_datadir}/doc/%{name}/charsets
+%{_datadir}/doc/%{name}/html
+
 %changelog
+* Wed May 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Drop -n libticonv, the tarball uses name-version format now.
+Add BR tfdocgen and apidocs subpackage.
+Package non-API documentation files in main package.
+
 * Mon Apr 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.2-1
 Bump Epoch.
 Use real version number instead of date.
