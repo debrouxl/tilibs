@@ -412,7 +412,7 @@ int check_for_libusb(void)
 	  return ERR_USBFS;
 	}
       
-      for(i = 0; dirent = readdir(dir); i++);
+      for(i = 0; (dirent = readdir(dir)); i++);
       closedir(dir);
 
       if(i > 2)
