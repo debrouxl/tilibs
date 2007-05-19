@@ -62,9 +62,6 @@
 #define MAX_CABLES   4
 
 #define VID_TIGLUSB  0x0451     /* Texas Instruments, Inc.            */
-#define PID_TIGLUSB  0xE001     /* TI-GRAPH LINK USB (SilverLink)     */
-#define PID_TI89TM   0xE004     /* TI89 Titanium w/ embedded USB port */
-#define PID_TI84P    0xE008     /* TI84+ w/ embedded USB port         */
 
 typedef struct
 {
@@ -325,7 +322,7 @@ static int dev_probe(CableHandle *h)
     for(i = 0; i < MAX_CABLES; i++)
     {
         if(devlist[i] == PID_TIGLUSB || devlist[i] == PID_TI89TM ||
-	   devlist[i] == PID_TI84P)
+	   devlist[i] == PID_TI84P || devlist[i] == PID_TI84P_SE)
 	    return 0;
     }
 
