@@ -79,8 +79,10 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 {
 	gunichar2*  dst;
 	const gchar* src = str;
+	GError *error = NULL;
 	
-	dst = g_utf8_to_utf16(src, -1, NULL, NULL, NULL);
+	dst = g_utf8_to_utf16(src, -1, NULL, NULL, &error);
+	if(error) g_error("%s", error->message);
 
 	return dst;
 }
@@ -97,8 +99,10 @@ TIEXPORT4 char*	   ticonv_utf16_to_utf8(const unsigned short *str)
 {
 	const gunichar2* src = str;
 	gchar* dst;
+	GError *error = NULL;
 
-	dst = g_utf16_to_utf8(src, -1, NULL, NULL, NULL);
+	dst = g_utf16_to_utf8(src, -1, NULL, NULL, &error);
+	if(error) g_error("%s", error->message);
 
 	return dst;
 }
