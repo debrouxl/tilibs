@@ -189,7 +189,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: unable to load TiglUsb library."),
     		"\n",
-    		_("Cause: is the LPG's SilverLink/DirectLink driver installed?"),
+    		_("Cause: the LPG's SilverLink/DirectLink driver is not installed. TiLP can't use the Ti-Connect driver so you have to install the LPG's one. It can be download from <http://lpg.ticalc.org/prj_usb/index.html> and you will find installation instruction on the same web site."),
 			NULL);
 		break;
 
