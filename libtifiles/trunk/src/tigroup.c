@@ -858,11 +858,17 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 
 		// add to TigContent
 		{
-			content->model = tifiles_file_get_model(fname);
+			int model = tifiles_file_get_model(fname);
+
+			if(content->model == CALC_NONE)
+				content->model = model;
+
+			if(content->model == CALC_TI84P_USB && model == CALC_TI84P)
+				content->model = CALC_TI84P_USB;				
 
 			if(tifiles_file_is_regular(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), tifiles_file_get_model(fname));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 				int ret;
 
 				ret = tifiles_file_read_regular(fname, entry->content.regular);
@@ -873,7 +879,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 			}
 			else if(tifiles_file_is_flash(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), tifiles_file_get_model(fname));
+				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 				int ret;
 
 				ret = tifiles_file_read_flash(fname, entry->content.flash);
