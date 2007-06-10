@@ -4,6 +4,7 @@ Log:
 
 - 10/06/2007, version 1.0.3: roms
 	- fixed translation of Pic/Gdb/StrX variable names (TI84+/USB)
+	- fixed translation of Y? variable names (TI84+/USB)
 
 - 02/04/2006, version 1.0.2: kevinkofler
 	- fixed sed invocation in makefile for NetBSD (patch by Jukka Salmi)
