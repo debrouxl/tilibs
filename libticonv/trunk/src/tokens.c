@@ -406,17 +406,17 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	else if(src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[4] <= '9' && strlen(src_) == 4)
 	{
 		// pictures
-		return g_strdup_printf("%c%c", 0x60, shift(src[1] - 0x80));
+		return g_strdup_printf("%c%c", 0x60, shift(src[3] - '0'));
 	}
 	else if(src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[4] <= '9' && strlen(src_) == 4)
 	{
-		// pictures
-		return g_strdup_printf("%c%c", 0x61, shift(src[1] - 0x80));
+		// gdb
+		return g_strdup_printf("%c%c", 0x61, shift(src[3] - '0'));
 	}
 	else if(src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[4] <= '9' && strlen(src_) == 4)
 	{
-		// pictures
-		return g_strdup_printf("%c%c", 0xAA, shift(src[1] - 0x80));
+		// strings
+		return g_strdup_printf("%c%c", 0xAA, shift(src[3] - '0'));
 	}
 
 	return g_strdup(src_);
