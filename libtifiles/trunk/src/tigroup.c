@@ -863,9 +863,6 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 			if(content->model == CALC_NONE)
 				content->model = model;
 
-			if(content->model == CALC_TI84P_USB && model == CALC_TI84P)
-				content->model = CALC_TI84P_USB;				
-
 			if(tifiles_file_is_regular(fname))
 			{
 				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
