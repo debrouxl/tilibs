@@ -509,7 +509,7 @@ extern "C" {
 
   // tigroup.c -> ve_fp.c
   TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
-  TIEXPORT2 int		 TICALL tifiles_te_delete(TigEntry* entry);
+  TIEXPORT2 int		  TICALL tifiles_te_delete(TigEntry* entry);
 
   TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts);
   TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, int nelts);
