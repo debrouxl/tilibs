@@ -544,6 +544,9 @@ extern "C" {
   TIEXPORT2 void			TICALL tifiles_fp_delete(FlashPage*);
   TIEXPORT2 void			TICALL tifiles_fp_delete_array(FlashPage**);
 
+  // undocumented
+  TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders);
+
   /************************/
   /* Deprecated functions */
   /************************/

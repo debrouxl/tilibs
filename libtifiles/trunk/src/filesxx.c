@@ -601,7 +601,7 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed when no
  * longer used.
  **/
-int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
+TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 {
   int num_folders = 0;
   int i, j;
