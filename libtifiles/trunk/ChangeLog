@@ -4,6 +4,7 @@ Log:
 
 - 10/06/2007, version 1.0.6: roms
 	- fixed sending of TIG files: set model as TI84P_USB to enable UTF8 conversion
+	- fixed TI83 types: WINDW, ZSTO and TAB were missing
 
 - 16/04/2007, version 1.0.5: kevin
 	- requires glib >= 2.6.0 rather than 2.4.0 because libticonv requires
