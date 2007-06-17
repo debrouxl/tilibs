@@ -65,7 +65,7 @@ static tboolean free_varentry(TNode* node, tpointer data)
 		if(node->data)
 		{
 			VarEntry* ve = node->data;
-			printf("<%s>\n", ve->name);
+
 			tifiles_ve_delete(ve);
 		}
 	}
