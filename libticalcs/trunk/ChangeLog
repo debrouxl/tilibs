@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 17/06/2007, version 1.0.7: roms
+	- fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
+
 - 12/04/2007, version 1.0.6: roms
 	- wrong battery status (debug)
 	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)

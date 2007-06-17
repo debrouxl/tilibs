@@ -65,6 +65,7 @@ static tboolean free_varentry(TNode* node, tpointer data)
 		if(node->data)
 		{
 			VarEntry* ve = node->data;
+			printf("<%s>\n", ve->name);
 			tifiles_ve_delete(ve);
 		}
 	}
@@ -84,15 +85,18 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree)
 {
 	if (*tree != NULL) 
 	{
+		TreeInfo *ti;
+
 		if((*tree)->children != NULL)
 		{
 			t_node_traverse(*tree, T_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
-
-			free((*tree)->data);
-			t_node_destroy(*tree);
-
-			*tree = NULL;
 		}
+			
+		ti = (TreeInfo *)((*tree)->data);
+		free((*tree)->data);
+		t_node_destroy(*tree);
+
+		*tree = NULL;
 	}
 }
 
