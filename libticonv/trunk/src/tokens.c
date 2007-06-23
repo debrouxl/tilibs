@@ -320,6 +320,15 @@ static char *detokenize_varname(CalcModel model, const char *src)
     return dst;
 }
 
+/**
+ * ticonv_varname_detokenize:
+ * @model: hand-held model
+ * @src: binary string to detokenize
+ *
+ * This function translates a binary variable name (as used on TI8x) into a human readable one.
+ *
+ * Return value: a newly allocated string. Must be freed when no longer used.
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src)
 {
 	switch (model) 
@@ -357,6 +366,15 @@ static int shift(int v)
 }
 
 //FIXME: does not work with named list because we should pass the vartype, too
+/**
+ * ticonv_varname_tokenize:
+ * @model: hand-held model
+ * @src: binary string to tokenize
+ *
+ * This function tries andtranslates a human readable variable name into a binary name (as used on TI8x).
+ *
+ * Return value: a newly allocated string. Must be freed when no longer used.
+ **/
 TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
 {
 	const unsigned char *src = (const unsigned char *)src_;
@@ -373,7 +391,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	} 
 	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
 	{
-		// cart. equations
+		// cartesian equations
 		return g_strdup_printf("%c%c", 0x5E, 0x10 + shift(src[1] - 0x80));
 	}
 	else if(src[0] == 'X' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 3)
