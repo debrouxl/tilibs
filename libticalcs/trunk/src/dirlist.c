@@ -188,9 +188,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 }
 
 /**
- * ticalcs_dirlist_ve_exist (deprecated):
+ * ticalcs_dirlist_ve_exist:
  * @tree: the tree to parse.
- * @name: the full name of the variable or application to search for.
+ * @s: the full name of the variable or application to search for.
  *
  * Parse the tree for the given varname & folder or appname.
  *
@@ -387,24 +387,35 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	else
 		folder = entry->folder;
 
-	// Parse folders
-	for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
+	// If TI8x tree is empty, create pseudo-folder (NULL)
+	if(!g_node_n_children(tree) && !tifiles_has_folder(info->model))
 	{
-		parent = g_node_nth_child(tree, i);
-		fe = (VarEntry *) (parent->data);
+		parent = g_node_new(NULL);
+		g_node_append(tree, parent);
+	}
 
-		if(fe == NULL)
-			break;
-
-		if(!strcmp(fe->name, folder))
+	// Check for one folder at least...
+	if(g_node_n_children(tree) > 0)
+	{
+		// Parse folders
+		for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
 		{
-			found = !0;
-			break;
+			parent = g_node_nth_child(tree, i);
+			fe = (VarEntry *) (parent->data);
+
+			if(fe == NULL)
+				break;
+
+			if(!strcmp(fe->name, folder))
+			{
+				found = !0;
+				break;
+			}
 		}
 	}
 		
-	// folder doesn't exist ? => create !
-	if(!found && fe)
+	// folder doesn't exist? => create!
+	if(!found && fe || !g_node_n_children(tree) && tifiles_has_folder(info->model))
 	{	
 		fe = tifiles_ve_create();
 		strcpy(fe->name, entry->folder);

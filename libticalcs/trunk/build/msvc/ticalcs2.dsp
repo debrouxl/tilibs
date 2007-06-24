@@ -294,10 +294,6 @@ SOURCE=..\..\src\probe.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\tnode.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\update.c
 # End Source File
 # End Group

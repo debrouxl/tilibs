@@ -4,6 +4,11 @@ Log:
 
 - 17/06/2007, version 1.0.7: roms
 	- fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
+	- replaced malloc/free by g_malloc/g_free
+	- replaced TNode by GNode as provided by GLib
+	- changed args for ticalcs_dirlist_ve_exist, otherwise this function is buggy 
+		with TI8x varnames (like lists due to presence of the '\' character)
+	- fixed bug in ticalcs_dirlist_ve_add when no folder exists yet
 
 - 12/04/2007, version 1.0.6: roms
 	- wrong battery status (debug)

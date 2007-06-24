@@ -155,6 +155,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 			update_->cnt3++;
 			update_->pbar();
 
+			if((te->content.regular->entries[0]->attr == ATTRB_ARCHIVED) && !(mode & TIG_ARCHIVE))
+				continue;
+			if((te->content.regular->entries[0]->attr != ATTRB_ARCHIVED) && !(mode & TIG_RAM))
+				continue;
+
 			TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
 		}
 	}
