@@ -1,4 +1,4 @@
-libticalcs2-3 (1.0.7-1) unstable; urgency=low
+libticalcs2-6 (1.0.7-1) unstable; urgency=low
 
   - fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
 	- replaced malloc/free by g_malloc/g_free
