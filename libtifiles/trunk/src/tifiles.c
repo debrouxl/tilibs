@@ -62,7 +62,7 @@ TIEXPORT2 int TICALL tifiles_library_init()
   	HANDLE hDll;
   	int i;
   	
-	hDll = GetModuleHandle("libtifiles2-3.dll");
+	hDll = GetModuleHandle("libtifiles2-4.dll");
   	GetModuleFileName(hDll, locale_dir, 65535);
 
   	for (i = strlen(locale_dir); i >= 0; i--) 
