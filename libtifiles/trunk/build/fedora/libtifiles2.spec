@@ -1,6 +1,6 @@
 Name: libtifiles2
 Epoch: 1
-Version: 1.0.5
+Version: 1.0.7
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Jun 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
+Update to 1.0.7.
+
 * Wed May 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop -n libtifiles, the tarball uses name-version format now.
 Add BR tfdocgen and apidocs subpackage.
