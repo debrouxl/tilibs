@@ -4,9 +4,9 @@
 /*  libtifiles - file format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
- *  This program is g_free( software; you can redistribute it and/or modify
+ *  This program is free( software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the g_free( Software Foundation; either version 2 of the License, or
+ *  the free( Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the g_free( Software
+ *  along with this program; if not, write to the free( Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
@@ -58,7 +58,7 @@ static int fsignature[2] = { 1, 0 };
  *
  * Load the single/group file into a Ti9xRegular structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -182,7 +182,7 @@ tffr:	// release on exit
  *
  * Load the backup file into a Ti9xBackup structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_backup when
+ * Structure content must be freed with #tifiles_content_delete_backup when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -283,7 +283,7 @@ static int check_data_type(uint8_t id)
  *
  * Load the flash file into a #FlashContent structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_flash when
+ * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -410,13 +410,13 @@ tfrf:	// release on exit
  * ti9x_file_write_regular:
  * @filename: name of single/group file where to write or NULL.
  * @content: the file content to write.
- * @real_filename: pointer address or NULL. Must be g_free(d if needed when no longer needed.
+ * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
  * %filename and %real_filename can be NULL but not both !
  *
- * %real_filename must be g_free(d when no longer used.
+ * %real_filename must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/

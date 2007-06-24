@@ -4,7 +4,7 @@
 /*  libtifiles - file format library, a part of the TiLP project
  *  Copyright (C) 1999-2006  Romain Lievin
  *
- *  This program is g_free( software; you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the g_free( Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the g_free( Software
+ *  along with this program; if not, write to the free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
@@ -56,7 +56,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 /**
  * tifiles_content_delete_regular:
  *
- * g_free( the whole content of a #FileContent structure.
+ * Free the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
@@ -112,7 +112,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  *
  * Load the single/group file into a FileContent structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_regular when
+ * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -138,13 +138,13 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
  * tifiles_file_write_regular:
  * @filename: name of single/group file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
  * %filename and %real_filename can be NULL but not both !
  *
- * %real_filename must be g_free(d when no longer used.
+ * %real_filename must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -211,7 +211,7 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 /**
  * tifiles_content_delete_backup:
  *
- * g_free( the whole content of a BackupContent structure.
+ * Free the whole content of a BackupContent structure.
  *
  * Return value: none.
  **/
@@ -241,7 +241,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
  *
  * Load the backup file into a BackupContent structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_backup when
+ * Structure content must be freed with #tifiles_content_delete_backup when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -349,7 +349,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 /**
  * tifiles_content_delete_flash:
  *
- * g_free( the whole content of a #FlashContent structure.
+ * Free the whole content of a #FlashContent structure.
  *
  * Return value: none.
  **/
@@ -398,7 +398,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
  *
  * Load the FLASH file into a FlashContent structure.
  *
- * Structure content must be g_free(d with #tifiles_content_delete_flash when
+ * Structure content must be freed with #tifiles_content_delete_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -424,13 +424,13 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
  * tifiles_file_write_flash2:
  * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
  * from appname and allocates resulting filename in %real_fname.
  * %filename and %real_fname can be NULL but not both !
  *
- * %real_fname must be g_free(d when no longer used.
+ * %real_fname must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -455,13 +455,13 @@ TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *cont
  * tifiles_file_write_flash:
  * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
  * from appname and allocates resulting filename in %real_fname.
  * %filename and %real_fname can be NULL but not both !
  *
- * %real_fname must be g_free(d when no longer used.
+ * %real_fname must be freed when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -598,7 +598,7 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * This function may be difficult to understand but it avoids to use trees (and
  * linked list) which will require an implementation.
  *
- * Return value: a 2-dimensions allocated integer array. Must be g_free(d when no
+ * Return value: a 2-dimensions allocated integer array. Must be freed when no
  * longer used.
  **/
 TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
