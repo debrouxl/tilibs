@@ -1,12 +1,10 @@
 Name: libticalcs2
 Epoch: 1
-Version: 1.0.6
+Version: 1.0.7
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
-#LANG=C svn diff -r 3378:3379 >../libticalcs2-1.0.6-fix-docs.diff
-Patch0: libticalcs2-1.0.6-fix-docs.diff
 Group: System Environment/Libraries
 License: GPL
 BuildRequires: libticables2-devel >= 1:1.0.4, libticonv-devel >= 1:0.0.3, libtifiles2-devel >= 1:1.0.4, glib2-devel >= 2.6.0, tfdocgen
@@ -35,7 +33,6 @@ HTML format.
 
 %prep
 %setup
-%patch0 -p0
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
@@ -74,6 +71,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Jun 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
+Update to 1.0.7.
+Drop obsolete backported patch.
+
 * Wed May 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop -n libticalcs, the tarball uses name-version format now.
 Add BR tfdocgen and apidocs subpackage.
