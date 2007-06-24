@@ -1,14 +1,14 @@
-Source: libtifiles2-3
+Source: libtifiles2-4
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
 Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticonv2-dev (>= 1.0.2-1), tfdocgen, gettext, autoconf, automake1.9
 Standards-Version: 3.7.2
 
-Package: libtifiles2-3-dev
+Package: libtifiles2-4-dev
 Section: libdevel
 Architecture: any
-Depends: libtifiles2-3 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticonv2-dev
+Depends: libtifiles2-4 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticonv2-dev
 Description: Texas Instruments calculator files library [development files]
  The libtifiles is a library providing support for operations on Texas
  Instruments calculators files. All formats for all calculators are supported
@@ -18,7 +18,7 @@ Description: Texas Instruments calculator files library [development files]
  This package provides the development files for the library, static library, 
  required headers and documentation.
 
-Package: libtifiles2-3
+Package: libtifiles2-4
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
