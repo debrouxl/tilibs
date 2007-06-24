@@ -1,3 +1,9 @@
+libticonv2 (1.0.3-1) unstable; urgency=low
+
+  - fixed translation of Pic/Gdb/StrX variable names (TI84+/USB)
+	- fixed translation of Y? variable names (TI84+/USB)
+	- added catching of some critical errors
+
 libticonv2 (1.0.2-1) unstable; urgency=low
 
   * Initial release
