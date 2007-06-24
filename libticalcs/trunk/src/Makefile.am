@@ -34,6 +34,5 @@ libticalcs2_la_SOURCES = *.h \
 	romdump.c \
 	ticalcs.c \
 	tikeys.c \
-	tnode.c \
 	type2str.c \
 	update.c
