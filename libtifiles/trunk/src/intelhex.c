@@ -76,7 +76,10 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
   sum = 0;
   c = fgetc(f);
   if (c != ':')
-    return -1;
+  {
+	  printf("Unexpected char: <%c> = %02X\n", c, c);
+	  return -1;
+  }
 
   *size = read_byte(f);
   *addr = read_byte(f) << 8;
@@ -98,14 +101,24 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
   if (LSB(sum + checksum))
     return -3;
 
-  c = fgetc(f);
-  if (c == '\r')
-    c = fgetc(f);		// skip \r\n (Win32) or \n (Linux)  
-  if ((c == EOF) || (c == ' ')) 
-  {	
-	// end of file
-    *type = HEX_EOF;
-    return 0;
+  {
+	  // check for end of file without mangling data checksum
+	  int c1, c2, c3;
+	  long pos = ftell(f);
+
+	  c1 = fgetc(f);
+	  c2 = fgetc(f);
+	  c3 = fgetc(f);	//EOF checking is set to keep compatibility with old generated FLASH files (buggy)
+
+	  if((c1 != 0x0d) && (c2 != 0x0a) || (c3 == EOF))	
+	  {
+		// end of file
+		*type = HEX_EOF;
+		fseek(f, pos, SEEK_SET);
+		return 0;
+	  }
+
+	  fseek(f, pos+2, SEEK_SET);
   }
 
   return 0;
@@ -199,6 +212,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 			return EOF;
 
 		default: 
+			printf("Unexpected char: <%c> = %02x\n", pkt_type, pkt_type);
 			return -1;
 		}
 	}
@@ -260,11 +274,12 @@ static int write_byte(uint8_t b, FILE * f)
 
 	Returns : number of chars written to file.
 */
-static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, uint8_t *data)
+static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_, uint8_t *data)
 {
   int i;
   int sum;
   int num = 0;
+  uint8_t type = (type_ == HEX_EOF ? HEX_END : type_);
 
   fputc(':', f); num++;
   num += write_byte((uint8_t)size, f);
@@ -281,8 +296,11 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type, 
 
   num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
 
-  fputc(0x0D, f);	num++;	// CR
-  fputc(0x0A, f); num++;	// LF
+  if(type_ != HEX_EOF)
+  {
+	  fputc(0x0D, f);	num++;	// CR
+	  fputc(0x0A, f); num++;	// LF
+  }
 
   return num;
 }
@@ -311,7 +329,7 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 
 	// write end block
 	if(!size && !addr && !type && !data && !page)
-		return hex_packet_write(f, 0, 0x0000, HEX_END, NULL);
+		return hex_packet_write(f, 0, 0x0000, HEX_EOF, NULL);
 
 	// new section (FLASH OS only)
 	if(old_flag == 0x80 && type == 0x00)

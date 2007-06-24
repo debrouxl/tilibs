@@ -324,11 +324,11 @@ int main(int argc, char **argv)
 #endif
 
 	// TI83+ support
-#if 0
-	change_dir(PATH("ti84p"));
-	test_ti84p_regular_support();
-	test_ti84p_group_support();
-	test_ti84p_ungroup_support();	
+#if 1
+	//change_dir(PATH("ti84p"));
+	//test_ti84p_regular_support();
+	//test_ti84p_group_support();
+	//test_ti84p_ungroup_support();	
 	test_ti84p_flash_support();
 #endif
 
@@ -376,7 +376,7 @@ int main(int argc, char **argv)
 	test_ti8x_group_merge();
 #endif
 
-#if 1
+#if 0
 	change_dir(PATH("tig"));
 	test_tigroup();
 #endif
@@ -766,11 +766,11 @@ static int test_ti84p_flash_support()
 
   printf("--> Testing TI84+ flash support...\n");
 
-  tifiles_file_display(PATH("ti84p/chembio.8Xk"));
+  tifiles_file_display(PATH("ti84p/LogIn_1.8Xk"));	//chembio
 
   content = tifiles_content_create_flash(CALC_TI84P);
-  tifiles_file_read_flash(PATH("ti84p/chembio.8Xk"), content);
-  tifiles_file_write_flash(PATH("ti84p/chembio.8Xk_"), content);
+  tifiles_file_read_flash(PATH("ti84p/LogIn_1.8Xk"), content);
+  tifiles_file_write_flash(PATH("ti84p/LogIn_1.8Xk_"), content);
   tifiles_content_delete_flash(content);
   compare_files(PATH("ti84p/chembio.8Xk"), PATH2("ti84p/chembio.8Xk_"));
 
@@ -1110,14 +1110,14 @@ int test_tigroup()
 	char files[2][1024];
 
 #if 0
-		content = tifiles_content_create_tigroup(CALC_NONE, 0);
-		tifiles_file_write_tigroup(PATH("tig/test2.tig"), content);
-		tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
-		tifiles_content_delete_tigroup(content);
-#endif
-#if 1
 	printf("--> Testing TiGroup support (r/w)...\n");
-	//tifiles_file_display_tigroup(PATH(name));
+	tifiles_file_display_tigroup(PATH("tig/test.tig"));
+#endif
+#if 0
+	content = tifiles_content_create_tigroup(CALC_NONE, 0);
+	tifiles_file_read_tigroup(PATH("tig/test2.tig"), content);
+	tifiles_file_write_tigroup(PATH("tig/test2_.tig"), content);
+	tifiles_content_delete_tigroup(content);
 #endif
 #if 0
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);

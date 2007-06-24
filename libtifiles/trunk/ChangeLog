@@ -2,9 +2,16 @@ SubVersion: $Id$
 
 Log:
 
+- 20/06/2007, version 1.0.7: roms
+	- replaced malloc/free by g_malloc/g_free
+	- slightly modified TigContent structure
+	- fixed ti8x_file_write_read (better end of file check)
+
 - 10/06/2007, version 1.0.6: roms
 	- fixed sending of TIG files: set model as TI84P_USB to enable UTF8 conversion
 	- fixed TI83 types: WINDW, ZSTO and TAB were missing
+	- some functions (tifiles_content_dup_XXX) were present and exported but 
+		didn't appear in tifiles.h header
 
 - 16/04/2007, version 1.0.5: kevin
 	- requires glib >= 2.6.0 rather than 2.4.0 because libticonv requires
