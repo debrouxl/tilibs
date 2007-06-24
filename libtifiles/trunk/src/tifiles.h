@@ -337,8 +337,6 @@ typedef struct
   char*				comment;
   int				comp_level;
 
-  //int				num_entries;
-  //TigEntry**		entries;
   TigEntry**		var_entries;
   int				n_vars;
 

@@ -559,14 +559,14 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 	{
 		TigEntry *te = src->var_entries[i];
 
-		dst1[i++] = tifiles_content_dup_regular(te->content.regular);
+		dst1[i] = tifiles_content_dup_regular(te->content.regular);
 	}
 
-	for(j = 0; j < src->n_vars; j++)
+	for(j = 0; j < src->n_apps; j++)
 	{
-		TigEntry *te = src->var_entries[j];
+		TigEntry *te = src->app_entries[j];
 
-		dst1[j++] = tifiles_content_dup_regular(te->content.regular);
+		dst2[j] = tifiles_content_dup_flash(te->content.flash);
 	}
 
 	*dst_contents1 = dst1;
@@ -668,7 +668,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 	FileContent **ptr1, **dst1 = NULL;
 	FlashContent **ptr2, **dst2 = NULL;
 	char *real_name;
-	int i;
+	int i, j;
 	int ret = 0;
 
 	// read TiGroup file
@@ -696,13 +696,13 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 			g_free(real_name);
 	}
 
-	for (ptr2 = dst2; *ptr2 != NULL || i < src->n_apps; ptr2++, i++)
+	for (ptr2 = dst2, j = 0; *ptr2 != NULL || j < src->n_apps; ptr2++, j++)
 	{
 		ret = tifiles_file_write_flash2(NULL, *ptr2, &real_name);
 		if(ret) goto tuf;
 
 		if(dst_filenames != NULL)
-			*dst_filenames[i] = real_name;
+			*dst_filenames[i+j] = real_name;
 		else
 			g_free(real_name);
 	}
