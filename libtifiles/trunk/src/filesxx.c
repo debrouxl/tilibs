@@ -4,9 +4,9 @@
 /*  libtifiles - file format library, a part of the TiLP project
  *  Copyright (C) 1999-2006  Romain Lievin
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  This program is g_free( software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the g_free( Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the g_free( Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
@@ -45,7 +45,7 @@
  **/
 TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
-	FileContent* content = calloc(1, sizeof(FileContent));
+	FileContent* content = g_malloc0(sizeof(FileContent));
 
 	content->model = content->model_dst = model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -56,7 +56,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 /**
  * tifiles_content_delete_regular:
  *
- * Free the whole content of a #FileContent structure.
+ * g_free( the whole content of a #FileContent structure.
  *
  * Return value: none.
  **/
@@ -71,12 +71,12 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
     VarEntry *entry = content->entries[i];
 
 	assert(entry != NULL);
-    free(entry->data);
-	free(entry);
+    g_free(entry->data);
+	g_free(entry);
   }
 
-  free(content->entries);
-  free(content);
+  g_free(content->entries);
+  g_free(content);
 
   return 0;
 }
@@ -112,7 +112,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  *
  * Load the single/group file into a FileContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_regular when
+ * Structure content must be g_free(d with #tifiles_content_delete_regular when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -138,13 +138,13 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
  * tifiles_file_write_regular:
  * @filename: name of single/group file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
  * %filename and %real_filename can be NULL but not both !
  *
- * %real_filename must be freed when no longer used.
+ * %real_filename must be g_free(d when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -200,7 +200,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
  **/
 TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
-	BackupContent* content = calloc(1, sizeof(BackupContent));
+	BackupContent* content = g_malloc0(sizeof(BackupContent));
 
 	content->model = model;
 	strcpy(content->comment, tifiles_comment_set_backup());
@@ -211,7 +211,7 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 /**
  * tifiles_content_delete_backup:
  *
- * Free the whole content of a BackupContent structure.
+ * g_free( the whole content of a BackupContent structure.
  *
  * Return value: none.
  **/
@@ -220,16 +220,16 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
   assert(content != NULL);
 
   if (tifiles_calc_is_ti9x(content->model))
-		free(content->data_part);
+		g_free(content->data_part);
   else if (tifiles_calc_is_ti8x(content->model))
   {
-	  free(content->data_part1);
-	  free(content->data_part2);
-	  free(content->data_part3);
-	  free(content->data_part4);
+	  g_free(content->data_part1);
+	  g_free(content->data_part2);
+	  g_free(content->data_part3);
+	  g_free(content->data_part4);
   }
 
-  free(content);
+  g_free(content);
 
   return 0;
 }
@@ -241,7 +241,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
  *
  * Load the backup file into a BackupContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_backup when
+ * Structure content must be g_free(d with #tifiles_content_delete_backup when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -324,7 +324,7 @@ TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
  **/
 TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
-	FlashContent* content = calloc(1, sizeof(FlashContent));
+	FlashContent* content = g_malloc0(sizeof(FlashContent));
 
 	content->model = model;
 	if(tifiles_calc_is_ti9x(content->model))
@@ -349,7 +349,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 /**
  * tifiles_content_delete_flash:
  *
- * Free the whole content of a #FlashContent structure.
+ * g_free( the whole content of a #FlashContent structure.
  *
  * Return value: none.
  **/
@@ -362,27 +362,27 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 	{
 		FlashContent *ptr;
 
-		free(content->data_part);
+		g_free(content->data_part);
 
 		ptr = content->next;
 		while (ptr != NULL) 
 		{
 			FlashContent *next = ptr->next;
 
-			free(ptr->data_part);
-			free(ptr);
+			g_free(ptr->data_part);
+			g_free(ptr);
 
 			for(i = 0; i < content->num_pages; i++)
 			{
-				free(content->pages[i]->data);
-				free(content->pages[i]);
+				g_free(content->pages[i]->data);
+				g_free(content->pages[i]);
 			}
-			free(content->pages);
+			g_free(content->pages);
 
 			ptr = next;
 		}
 
-		free(content);
+		g_free(content);
 	}
 #else
     return ERR_BAD_CALC;
@@ -398,7 +398,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
  *
  * Load the FLASH file into a FlashContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_flash when
+ * Structure content must be g_free(d with #tifiles_content_delete_flash when
  * no longer used.
  *
  * Return value: an error code, 0 otherwise.
@@ -424,13 +424,13 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
  * tifiles_file_write_flash2:
  * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
  *
  * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
  * from appname and allocates resulting filename in %real_fname.
  * %filename and %real_fname can be NULL but not both !
  *
- * %real_fname must be freed when no longer used.
+ * %real_fname must be g_free(d when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -455,13 +455,13 @@ TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *cont
  * tifiles_file_write_flash:
  * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_fname: pointer address or NULL. Must be g_free(d if needed when no longer needed.
  *
  * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
  * from appname and allocates resulting filename in %real_fname.
  * %filename and %real_fname can be NULL but not both !
  *
- * %real_fname must be freed when no longer used.
+ * %real_fname must be g_free(d when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -494,7 +494,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 		{
 			if(p->data_part)
 			{
-				q->data_part = (uint8_t *)calloc(p->data_length+1, 1);
+				q->data_part = (uint8_t *)g_malloc0(p->data_length+1);
 				memcpy(q->data_part, p->data_part, p->data_length+1);
 			}
 		}
@@ -508,10 +508,10 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 			q->pages = tifiles_fp_create_array(p->num_pages);	
 			for(i = 0; i < content->num_pages; i++)
 			{
-				q->pages[i] = (FlashPage *)calloc(1, sizeof(FlashPage));
+				q->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
 				memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
 
-				q->pages[i]->data = (uint8_t *) calloc(1, p->pages[i]->size);
+				q->pages[i]->data = (uint8_t *) g_malloc0(p->pages[i]->size);
 				memcpy(q->pages[i]->data, p->pages[i]->data, p->pages[i]->size);
 			}
 		}
@@ -598,7 +598,7 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * This function may be difficult to understand but it avoids to use trees (and
  * linked list) which will require an implementation.
  *
- * Return value: a 2-dimensions allocated integer array. Must be freed when no
+ * Return value: a 2-dimensions allocated integer array. Must be g_free(d when no
  * longer used.
  **/
 TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
@@ -624,7 +624,7 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
     }
     if (*ptr == NULL) 
 	{		// add new folder entry
-      folder_list[num_folders] = (char *) calloc(10, sizeof(char));
+      folder_list[num_folders] = (char *) g_malloc0(10);
       //printf("%i: adding '%s'\n", num_folders, entry->folder);
       strcpy(folder_list[num_folders], entry->folder);
       folder_list[num_folders + 1] = NULL;
@@ -637,7 +637,7 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
   *nfolders = num_folders;
 
   // allocate the folder list
-  table = (int **) calloc((num_folders + 1), sizeof(int *));
+  table = (int **) g_malloc0((num_folders + 1) * sizeof(int *));
   table[num_folders] = NULL;
 
   // for each folder, determine how many variables we have
@@ -661,9 +661,9 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
     }
   }
 
-  // free memory
+  // g_free( memory
   for (j = 0; j < num_folders + 1; j++)
-    free(folder_list[j]);
+    g_free(folder_list[j]);
 
   return table;
 }

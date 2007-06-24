@@ -268,7 +268,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		tmp = g_strconcat(part2, ".", part3, NULL);
 		g_free(part2);
 
-		filename = strdup(tmp);
+		filename = g_strdup(tmp);
 		g_free(tmp);
 	}
 	else

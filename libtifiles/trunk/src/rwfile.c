@@ -104,13 +104,15 @@ gfopen (const gchar *filename, const gchar *mode)
  */
 int hexdump(uint8_t * ptr, int len)
 {
-	char *str = (char *)malloc(3*len + 8);
+	char *str = (char *)g_malloc(3*len + 8);
 	int i;
   
 	for (i = 0; i < len; i++)
 		sprintf(&str[3*i], "%02X ", ptr[i]);
 	sprintf(&str[3*i], "(%i)", len);
+
 	tifiles_info(str);
+	g_free(str);
 
   return 0;
 }

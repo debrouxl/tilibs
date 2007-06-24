@@ -49,7 +49,7 @@
  **/
 TIEXPORT2 FileContent** TICALL tifiles_content_create_group(int n_entries)
 {
-	return (FileContent **)calloc(n_entries + 1, sizeof(FileContent *));
+	return (FileContent **)g_malloc0((n_entries + 1) * sizeof(FileContent *));
 }
 
 /**
@@ -72,7 +72,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_group(FileContent **array)
 	{
 	    tifiles_content_delete_regular(array[i]);
 	}
-	free(array);
+	g_free(array);
 
   return 0;
 }
@@ -100,14 +100,14 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
 
   for (n = 0; src_contents[n] != NULL; n++);
 
-  dst = (FileContent *) calloc(1, sizeof(FileContent));
+  dst = (FileContent *)g_malloc0(sizeof(FileContent));
   if (dst == NULL)
     return ERR_MALLOC;
 
   memcpy(dst, src_contents[0], sizeof(FileContent));
 
   dst->num_entries = n;
-  dst->entries = calloc(n + 1, sizeof(VarEntry*));
+  dst->entries = g_malloc0((n + 1) * sizeof(VarEntry*));
   if (dst->entries == NULL)
     return ERR_MALLOC;
 
@@ -143,7 +143,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
   FileContent **dst;
 
   // allocate an array of FileContent structures (NULL terminated)
-  dst = *dest = (FileContent **) calloc(src->num_entries + 1,
+  dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) *
 				      sizeof(FileContent *));
   if (dst == NULL)
     return ERR_MALLOC;
@@ -154,13 +154,13 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
     VarEntry *dst_entry = NULL;
 
     // allocate and duplicate content
-    dst[i] = (FileContent *) calloc(1, sizeof(FileContent));
+    dst[i] = (FileContent *)g_malloc0(sizeof(FileContent));
     if (dst[i] == NULL)
       return ERR_MALLOC;
     memcpy(dst[i], src, sizeof(FileContent));
 
     // allocate and duplicate entry
-    dst[i]->entries = calloc(1+1, sizeof(VarEntry*));
+    dst[i]->entries = g_malloc0((1+1) * sizeof(VarEntry*));
 	dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
 
     // update some fields
@@ -199,14 +199,14 @@ TIEXPORT2 int TICALL tifiles_group_files(char **src_filenames, const char *dst_f
   for (n = 0; src_filenames[n] != NULL; n++);
 
   // allocate space for that
-  src = (FileContent **) calloc(n + 1, sizeof(FileContent *));
+  src = (FileContent **)g_malloc0((n + 1) * sizeof(FileContent *));
   if (src == NULL)
     return ERR_MALLOC;
 
   // allocate each structure and load file content
   for (i = 0; i < n; i++) 
   {
-    src[i] = (FileContent *) calloc(1, sizeof(FileContent));
+    src[i] = (FileContent *)g_malloc0(sizeof(FileContent));
     if (src[i] == NULL)
       return ERR_MALLOC;
 
@@ -265,7 +265,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
   // count number of structures and allocates array of strings
   for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
   if(dst_filenames != NULL)
-	  *dst_filenames = (char **)malloc((n + 1) * sizeof(char *));
+	  *dst_filenames = (char **)g_malloc((n + 1) * sizeof(char *));
 
   // store each structure content to file
   for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
@@ -276,7 +276,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	if(dst_filenames != NULL)
 		*dst_filenames[i] = real_name;
 	else
-		free(real_name);
+		g_free(real_name);
   }
 
   // release allocated memory
@@ -289,8 +289,8 @@ tuf:
   if(dst_filenames != NULL)
   {
 	  for(p = *dst_filenames; *p; p++)
-		  free(*p);
-	  free(p);
+		  g_free(*p);
+	  g_free(p);
   }
   tifiles_content_delete_regular(src);
   tifiles_content_delete_group(dst);

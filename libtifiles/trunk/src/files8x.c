@@ -191,7 +191,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   if(fseek(f, offset, SEEK_SET) < 0) goto tfrr;
 
   content->num_entries = i;
-  content->entries = calloc(content->num_entries + 1, sizeof(VarEntry*));
+  content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -200,7 +200,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
   for (i = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = content->entries[i] = calloc(1, sizeof(VarEntry));
+    VarEntry *entry = content->entries[i] = g_malloc0(sizeof(VarEntry));
 	uint16_t packet_length, entry_size;
 
     if(fread_word(f, &packet_length) < 0) goto tfrr;
@@ -223,7 +223,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     }
     if(fread_word(f, NULL) < 0) goto tfrr;
 
-    entry->data = (uint8_t *) calloc(entry->size, 1);
+    entry->data = (uint8_t *) g_malloc0(entry->size);
     if (entry->data == NULL) 
 	{
       fclose(f);
@@ -306,7 +306,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	{ if(fread_word(f, &(content->data_length4)) < 0) goto tfrb;}
 
   if(fread_word(f, NULL) < 0) goto tfrb;
-  content->data_part1 = (uint8_t *) calloc(content->data_length1, 1);
+  content->data_part1 = (uint8_t *)g_malloc0(content->data_length1);
   if (content->data_part1 == NULL) 
   {
     fclose(f);
@@ -315,7 +315,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if(fread(content->data_part1, 1, content->data_length1, f) < content->data_length1) goto tfrb;
 
   if(fread_word(f, NULL) < 0) goto tfrb;
-  content->data_part2 = (uint8_t *) calloc(content->data_length2, 1);
+  content->data_part2 = (uint8_t *)g_malloc0(content->data_length2);
   if (content->data_part2 == NULL) 
   {
     fclose(f);
@@ -326,7 +326,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if (content->data_length3)	// can be 0000 on TI86
   {
     if(fread_word(f, NULL) < 0) goto tfrb;
-    content->data_part3 = (uint8_t *) calloc(content->data_length3, 1);
+    content->data_part3 = (uint8_t *)g_malloc0(content->data_length3);
     if (content->data_part3 == NULL) 
 	{
       fclose(f);
@@ -338,7 +338,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if (content->model == CALC_TI86) 
   {
     if(fread_word(f, NULL) < 0) goto tfrb;
-    content->data_part4 = (uint8_t *) calloc(content->data_length4, 1);
+    content->data_part4 = (uint8_t *)g_malloc0(content->data_length4);
     if (content->data_part4 == NULL) 
 	{
       fclose(f);
@@ -448,7 +448,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 	  if(content->data_type == TI83p_CERTIF || content->data_type == TI83p_LICENSE)
 	  {
 		  // get data like TI9X
-		  content->data_part = (uint8_t *) calloc(content->data_length + 256, 1);
+		  content->data_part = (uint8_t *)g_malloc0(content->data_length + 256);
 		  if (content->data_part == NULL) 
 		  {
 			fclose(f);
@@ -467,7 +467,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 		  content->pages = NULL;
 
 		  // we should determine the number of pages, to do...
-		  content->pages = calloc(50+1, sizeof(Ti8xFlashPage *));
+		  content->pages = g_malloc0((50+1) * sizeof(Ti8xFlashPage *));
 		  if (content->pages == NULL)
 			return ERR_MALLOC;
 
@@ -480,11 +480,11 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				uint16_t page;
 				uint8_t flag = 0x80;
 				uint8_t data[PAGE_SIZE];
-				FlashPage* fp = content->pages[i] = calloc(1, sizeof(FlashPage));
+				FlashPage* fp = content->pages[i] = g_malloc0(sizeof(FlashPage));
 
 				ret = hex_block_read(f, &size, &addr, &flag, data, &page);
 
-				fp->data = (uint8_t *) calloc(PAGE_SIZE, 1);
+				fp->data = (uint8_t *) g_malloc0(PAGE_SIZE);
 				memset(fp->data, 0xff, PAGE_SIZE);
 				if (fp->data == NULL)
 					return ERR_MALLOC;
@@ -508,7 +508,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 			break;
 		if(fseek(f, -8, SEEK_CUR)) goto tfrf;
 
-		content->next = (Ti8xFlash *) calloc(1, sizeof(Ti8xFlash));
+		content->next = (Ti8xFlash *)g_malloc0(sizeof(Ti8xFlash));
 		if (content->next == NULL) 
 		{
 			fclose(f);
@@ -555,7 +555,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 
   if (fname != NULL) 
   {
-    filename = strdup(fname);
+    filename = g_strdup(fname);
     if (filename == NULL)
       return ERR_MALLOC;
   } 
@@ -563,17 +563,17 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   {
 	filename = tifiles_build_filename(content->model_dst, content->entries[0]);
 	if (real_fname != NULL)
-      *real_fname = strdup(filename);
+      *real_fname = g_strdup(filename);
   }
 
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
-    free(filename);
+    g_free(filename);
     return ERR_FILE_OPEN;
   }
-  free(filename);
+  g_free(filename);
 
   // write header
   if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
@@ -761,7 +761,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 
   if (fname)
   {
-	  filename = strdup(fname);
+	  filename = g_strdup(fname);
 	  if(filename == NULL)
 		  return ERR_MALLOC;
   }
@@ -778,7 +778,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 
 	  filename = tifiles_build_filename(content->model, &ve);
 	  if (real_fname != NULL)
-		*real_fname = strdup(filename);
+		*real_fname = g_strdup(filename);
   }
 
   f = gfopen(filename, "wb");

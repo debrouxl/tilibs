@@ -129,9 +129,9 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
 {
 	TigEntry *entry;
 
-	entry = (TigEntry *)calloc(1, sizeof(TigEntry));
+	entry = (TigEntry *)g_malloc0(sizeof(TigEntry));
 
-	entry->filename = strdup(g_basename(filename));
+	entry->filename = g_strdup(g_basename(filename));
 	entry->type = type;
 
 	if(type == TIFILE_FLASH)
@@ -152,14 +152,14 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
  **/
 TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 {
-	free(entry->filename);
+	g_free(entry->filename);
 
 	if(entry->type == TIFILE_FLASH)
 		tifiles_content_delete_flash(entry->content.flash);
 	else if(entry->type & TIFILE_REGULAR)
 		tifiles_content_delete_regular(entry->content.regular);
 
-	free(entry);
+	g_free(entry);
 	return 0;
 }
 
@@ -174,7 +174,7 @@ TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
  **/
 TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts)
 {
-	return calloc(nelts + 1, sizeof(TigEntry *));
+	return g_malloc0((nelts + 1) * sizeof(TigEntry *));
 }
 
 /**
@@ -208,7 +208,7 @@ TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
 
 	for(ptr = array; ptr; ptr++)
 		tifiles_te_delete(*ptr);
-	free(array);
+	g_free(array);
 }
 
 /**
@@ -446,7 +446,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 	{
 		for(i = 0; i < m; i++)
 		{
-			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
+			TigEntry *te = (TigEntry *)g_malloc0(sizeof(TigEntry));
 
 			te->filename = tifiles_build_filename(model, src_contents1[i]->entries[0]);
 			te->type = TIFILE_GROUP;
@@ -459,7 +459,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 	{
 		for(i = 0; i < n; i++)
 		{
-			TigEntry *te = (TigEntry *)calloc(1, sizeof(TigEntry));
+			TigEntry *te = (TigEntry *)g_malloc0(sizeof(TigEntry));
 			VarEntry ve;
 			FlashContent *ptr;
 
@@ -505,12 +505,12 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 	tifiles_te_sizeof_array(src->entries, &m, &n);
 
 	{
-		dst1 = (FileContent **)calloc(m+1, sizeof(FileContent *));
+		dst1 = (FileContent **)g_malloc0((m+1) * sizeof(FileContent *));
 		if (dst1 == NULL)
 			return ERR_MALLOC;
 	}
 	{
-		dst2 = (FlashContent **)calloc(n+1, sizeof(FlashContent *));
+		dst2 = (FlashContent **)g_malloc0((n+1) * sizeof(FlashContent *));
 		if (dst2 == NULL)
 			return ERR_MALLOC;
 	}
@@ -565,11 +565,11 @@ TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst
 	model = tifiles_file_get_model(src_filenames[0]);
 
 	// allocate space for that
-	src1 = (FileContent **) calloc(m + 1, sizeof(FileContent *));
+	src1 = (FileContent **)g_malloc0((m + 1) * sizeof(FileContent *));
 	if (src1 == NULL)
 		return ERR_MALLOC;
 
-	src2 = (FlashContent **) calloc(n + 1, sizeof(FlashContent *));
+	src2 = (FlashContent **)g_malloc0((n + 1) * sizeof(FlashContent *));
 	if (src2 == NULL)
 		return ERR_MALLOC;
 
@@ -599,11 +599,11 @@ TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst
 
 tgf:
 	for(i = 0; i < m; i++)
-		free(src1[i]);
-	free(src1);
+		g_free(src1[i]);
+	g_free(src1);
 	for(i = 0; i < n; i++)
-		free(src2[i]);
-	free(src2);
+		g_free(src2[i]);
+	g_free(src2);
 	tifiles_content_delete_tigroup(dst);
 
 	return ret;
@@ -645,7 +645,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 	tifiles_te_sizeof_array(src->entries, &m, &n);
 	
 	if(dst_filenames != NULL)
-		*dst_filenames = (char **)malloc((m + n + 1) * sizeof(char *));
+		*dst_filenames = (char **)g_malloc((m + n + 1) * sizeof(char *));
 
 	// store each structure content to file
 	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < m; ptr1++, i++)
@@ -656,7 +656,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 		if(dst_filenames != NULL)
 			*dst_filenames[i] = real_name;
 		else
-			free(real_name);
+			g_free(real_name);
 	}
 
 	for (ptr2 = dst2; *ptr2 != NULL || i < m+n; ptr2++, i++)
@@ -667,7 +667,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 		if(dst_filenames != NULL)
 			*dst_filenames[i] = real_name;
 		else
-			free(real_name);
+			g_free(real_name);
 	}
 
 	// release allocated memory
@@ -701,12 +701,12 @@ tuf:
  **/
 TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int n)
 {
-	TigContent* content = calloc(1, sizeof(FileContent));
+	TigContent* content = g_malloc0(sizeof(FileContent));
 
 	content->model = content->model_dst = model;
-	content->comment = strdup(tifiles_comment_set_tigroup());
+	content->comment = g_strdup(tifiles_comment_set_tigroup());
 	content->comp_level = 0;
-	content->entries = (TigEntry **)calloc(n + 1, sizeof(TigEntry *));
+	content->entries = (TigEntry **)g_malloc0((n + 1) * sizeof(TigEntry *));
 
 	return content;
 }
@@ -731,7 +731,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 		TigEntry* entry = content->entries[i];
 		tifiles_te_delete(entry);
 	}
-	free(content);
+	g_free(content);
 
 	return 0;
 }
@@ -785,13 +785,13 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	}        
 	//printf("# entries: %lu\n", gi.number_entry);
 
-	free(content->entries);
-	content->entries = (TigEntry **)calloc(gi.number_entry + 1, sizeof(TigEntry *));
+	g_free(content->entries);
+	content->entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
 	content->num_entries = 0;
 
 	// Get comment
-	free(content->comment);
-	content->comment = (char *)malloc((gi.size_comment+1) * sizeof(char));
+	g_free(content->comment);
+	content->comment = (char *)g_malloc((gi.size_comment+1) * sizeof(char));
 	err = unzGetGlobalComment(uf, content->comment, gi.size_comment);
 
 	// Parse archive for files
@@ -869,7 +869,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				int ret;
 
 				ret = tifiles_file_read_regular(fname, entry->content.regular);
-				if(ret) { free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
@@ -880,7 +880,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				int ret;
 
 				ret = tifiles_file_read_flash(fname, entry->content.flash);
-				if(ret) { free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
 				content->entries[ri++] = entry;
 				content->num_entries++;
@@ -907,7 +907,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 
 	// Close
 tfrt_exit:
-	free(buf);
+	g_free(buf);
 	unzCloseCurrentFile(uf);
 	return err ? ERR_FILE_ZIP : 0;
 #else
@@ -954,7 +954,7 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 	g_chdir(g_get_tmp_dir());
 
 	// Allocate buffer
-	buf = (void*)malloc(WRITEBUFFERSIZE);
+	buf = (void*)g_malloc(WRITEBUFFERSIZE);
 	if (buf==NULL)
 	{
 		printf("Error allocating memory\n");
@@ -1061,7 +1061,7 @@ tfwt_exit:
         printf("error in closing %s\n",filename);
 	unlink(filename);
       }
-	free(buf);
+	g_free(buf);
 	g_chdir(old_dir);
 	return err;
 #else

@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <glib.h>
 
 #include "tifiles.h"
 
@@ -39,7 +40,7 @@
  **/
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_create(void)
 {
-	return calloc(1, sizeof(VarEntry));
+	return g_malloc0(sizeof(VarEntry));
 }
 
 /**
@@ -52,7 +53,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_create(void)
  **/
 TIEXPORT2 void *tifiles_ve_alloc_data(size_t size)
 {
-	return calloc(size+1, sizeof(uint8_t));
+	return g_malloc0((size+1) * sizeof(uint8_t));
 }
 
 /**
@@ -66,7 +67,7 @@ TIEXPORT2 void *tifiles_ve_alloc_data(size_t size)
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size)
 {
 	VarEntry* ve = tifiles_ve_create();
-	ve->data = (uint8_t *) calloc(size, 1);
+	ve->data = (uint8_t *)g_malloc0(size);
 
 	return ve;
 }
@@ -82,7 +83,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size)
  **/
 TIEXPORT2 VarEntry**	TICALL tifiles_ve_create_array(int nelts)
 {
-	return calloc(nelts + 1, sizeof(VarEntry *));
+	return g_malloc0((nelts + 1) * sizeof(VarEntry *));
 }
 
 /**
@@ -112,8 +113,8 @@ TIEXPORT2 void			TICALL tifiles_ve_delete(VarEntry* ve)
 {
 	assert(ve != NULL);
 
-	free(ve->data);
-	free(ve);
+	g_free(ve->data);
+	g_free(ve);
 }
 
 /**
@@ -132,7 +133,7 @@ TIEXPORT2 void			TICALL tifiles_ve_delete_array(VarEntry** array)
 
 	for(ptr = array; ptr; ptr++)
 		tifiles_ve_delete(*ptr);
-	free(array);
+	g_free(array);
 }
 
 /**
@@ -155,7 +156,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 	memcpy(dst, src, sizeof(VarEntry));
 	if(alloc)
 	{
-		dst->data = (uint8_t *) calloc(dst->size, 1);
+		dst->data = (uint8_t *)g_malloc0(dst->size);
 		if (dst->data == NULL)
 			return NULL;
 	}
@@ -174,12 +175,12 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
  **/
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 {
-	VarEntry* dst = calloc(1, sizeof(VarEntry));
+	VarEntry* dst = g_malloc0(sizeof(VarEntry));
 
 	assert(src != NULL);
 
 	memcpy(dst, src, sizeof(VarEntry));
-	dst->data = (uint8_t *) calloc(dst->size, 1);
+	dst->data = (uint8_t *)g_malloc0(dst->size);
 	if (dst->data == NULL)
 		return NULL;
 
@@ -200,7 +201,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
  **/
 TIEXPORT2 FlashPage*	TICALL tifiles_fp_create(void)
 {
-	return calloc(1, sizeof(FlashPage));
+	return g_malloc0(sizeof(FlashPage));
 }
 
 /**
@@ -215,7 +216,7 @@ TIEXPORT2 void *tifiles_fp_alloc_data(size_t size)
 {
 	uint8_t *data;
 	
-	data = calloc(size+1, sizeof(uint8_t));
+	data = g_malloc0((size+1) * sizeof(uint8_t));
 	memset(data, 0xFF, size);
 
 	return data;
@@ -232,7 +233,7 @@ TIEXPORT2 void *tifiles_fp_alloc_data(size_t size)
 TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size)
 {
 	FlashPage* ve = tifiles_fp_create();
-	ve->data = (uint8_t *) calloc(size, 1);
+	ve->data = (uint8_t *)g_malloc0(size);
 
 	return ve;
 }
@@ -248,7 +249,7 @@ TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size)
  **/
 TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(int nelts)
 {
-	return calloc(nelts + 1, sizeof(FlashPage*));
+	return g_malloc0((nelts + 1) * sizeof(FlashPage*));
 }
 
 /**
@@ -263,8 +264,8 @@ TIEXPORT2 void			TICALL tifiles_fp_delete(FlashPage* fp)
 {
 	assert(fp != NULL);
 
-	free(fp->data);
-	free(fp);
+	g_free(fp->data);
+	g_free(fp);
 }
 
 /**
@@ -283,5 +284,5 @@ TIEXPORT2 void			TICALL tifiles_fp_delete_array(FlashPage** array)
 
 	for(ptr = array; ptr; ptr++)
 		tifiles_fp_delete(*ptr);
-	free(array);
+	g_free(array);
 }

@@ -4,9 +4,9 @@
 /*  libtifiles - file format library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  This program is g_free( software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the g_free( Software Foundation; either version 2 of the License, or
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
+ *  along with this program; if not, write to the g_free( Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
@@ -58,7 +58,7 @@ static int fsignature[2] = { 1, 0 };
  *
  * Load the single/group file into a Ti9xRegular structure.
  *
- * Structure content must be freed with #tifiles_content_delete_regular when
+ * Structure content must be g_free(d with #tifiles_content_delete_regular when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -100,7 +100,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   if(fread_word(f, &tmp) < 0) goto tffr;
   content->num_entries = tmp;
 
-  content->entries = calloc(content->num_entries + 1, sizeof(VarEntry*));
+  content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
   if (content->entries == NULL) 
   {
     fclose(f);
@@ -109,7 +109,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 
   for (i = 0, j = 0; i < content->num_entries; i++) 
   {
-    VarEntry *entry = content->entries[j] = calloc(1, sizeof(VarEntry));
+    VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
 
     if(fread_long(f, &curr_offset) < 0) goto tffr;
     if(fread_8_chars(f, varname) < 0)  goto tffr;
@@ -122,7 +122,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 	{
       strcpy(current_folder, entry->name);
-      free(entry);
+      g_free(entry);
       continue;			// folder: skip entry
     } 
 	else 
@@ -135,7 +135,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	  if(cur_pos == -1L) goto tffr;
       if(fread_long(f, &next_offset) < 0) goto tffr;
       entry->size = next_offset - curr_offset - 4 - 2;
-      entry->data = (uint8_t *) calloc(entry->size, 1);
+      entry->data = (uint8_t *)g_malloc0(entry->size);
       if (entry->data == NULL) 
 	  {
 		fclose(f);
@@ -182,7 +182,7 @@ tffr:	// release on exit
  *
  * Load the backup file into a Ti9xBackup structure.
  *
- * Structure content must be freed with #tifiles_content_delete_backup when
+ * Structure content must be g_free(d with #tifiles_content_delete_backup when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -222,7 +222,7 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
   content->data_length = file_size - 0x52 - 2;
   if(fread_word(f, NULL) < 0) goto tfrb;
 
-  content->data_part = (uint8_t *) calloc(content->data_length, 1);
+  content->data_part = (uint8_t *)g_malloc0(content->data_length);
   if (content->data_part == NULL) 
   {
     fclose(f);
@@ -283,7 +283,7 @@ static int check_data_type(uint8_t id)
  *
  * Load the flash file into a #FlashContent structure.
  *
- * Structure content must be freed with #tifiles_content_delete_flash when
+ * Structure content must be g_free(d with #tifiles_content_delete_flash when
  * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
@@ -318,7 +318,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		strcpy(content->name, "basecode");
 		content->data_type = 0x23;	// FLASH os
 
-		content->data_part = (uint8_t *) calloc(content->data_length, 1);
+		content->data_part = (uint8_t *)g_malloc0(content->data_length);
 		if (content->data_part == NULL) 
 		{
 			fclose(f);
@@ -365,7 +365,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			if(!check_data_type(content->data_type))
 				return ERR_INVALID_FILE;
 
-			content->data_part = (uint8_t *) calloc(content->data_length, 1);
+			content->data_part = (uint8_t *)g_malloc0(content->data_length);
 			if (content->data_part == NULL) 
 			{
 				fclose(f);
@@ -383,7 +383,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 				break;
 			if(fseek(f, -8, SEEK_CUR)) goto tfrf;
 
-			content->next = (Ti9xFlash *) calloc(1, sizeof(Ti9xFlash));
+			content->next = (Ti9xFlash *)g_malloc0(sizeof(Ti9xFlash));
 			if (content->next == NULL) 
 			{
 				fclose(f);
@@ -410,13 +410,13 @@ tfrf:	// release on exit
  * ti9x_file_write_regular:
  * @filename: name of single/group file where to write or NULL.
  * @content: the file content to write.
- * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
+ * @real_filename: pointer address or NULL. Must be g_free(d if needed when no longer needed.
  *
  * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
  * %filename and %real_filename can be NULL but not both !
  *
- * %real_filename must be freed when no longer used.
+ * %real_filename must be g_free(d when no longer used.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -433,7 +433,7 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
   if (fname != NULL) 
   {
-    filename = strdup(fname);
+    filename = g_strdup(fname);
     if (filename == NULL)
       return ERR_MALLOC;
   } 
@@ -441,17 +441,17 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   {
 	filename = tifiles_build_filename(content->model_dst, content->entries[0]);
 	if (real_fname != NULL)
-      *real_fname = strdup(filename);
+      *real_fname = g_strdup(filename);
   }
 
   f = gfopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
-    free(filename);
+    g_free(filename);
     return ERR_FILE_OPEN;
   }
-  free(filename);
+  g_free(filename);
 
   // build the table of folder & variable entries  
   table = tifiles_create_table_of_entries((FileContent *)content, &num_folders);
@@ -531,10 +531,10 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     }
   }
 
-  // free memory
+  // g_free( memory
   for (i = 0; i < num_folders; i++)
-    free(table[i]);
-  free(table);
+    g_free(table[i]);
+  g_free(table);
 
   fclose(f);
   return 0;
@@ -606,7 +606,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 
   if (fname)
   {
-	  filename = strdup(fname);
+	  filename = g_strdup(fname);
 	  if(filename == NULL)
 		  return ERR_MALLOC;
   }
@@ -623,7 +623,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 
 	  filename = tifiles_build_filename(content->model, &ve);
 	  if (real_fname != NULL)
-		*real_fname = strdup(filename);
+		*real_fname = g_strdup(filename);
   }
 
   f = gfopen(filename, "wb");

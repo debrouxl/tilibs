@@ -338,7 +338,7 @@ TIEXPORT2 char *TICALL tifiles_fext_get(const char *filename)
  **/
 TIEXPORT2 char *TICALL tifiles_fext_dup(const char *filename)
 {
-    return strdup(tifiles_fext_get(filename));
+    return g_strdup(tifiles_fext_get(filename));
 }
 
 /**********************/
