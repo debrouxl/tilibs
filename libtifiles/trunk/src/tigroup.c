@@ -776,10 +776,6 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	return 0;
 }
 
-static int zip_read(zipFile *zf, ...)
-{
-}
-
 /**
  * tifiles_file_read_tigroup:
  * @filename: the name of file to load.
