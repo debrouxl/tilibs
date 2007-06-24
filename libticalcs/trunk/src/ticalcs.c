@@ -192,7 +192,7 @@ TIEXPORT3 const char *TICALL ticalcs_version_get(void)
  **/
 TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
-	CalcHandle *handle = (CalcHandle *)calloc(1, sizeof(CalcHandle));
+	CalcHandle *handle = (CalcHandle *)g_malloc0(sizeof(CalcHandle));
 	int i;
 
 	handle->model = model;
@@ -209,7 +209,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 	handle->updat = (CalcUpdate *)&default_update;
 
-	handle->priv2 = (uint8_t *)malloc(65536 + 6);
+	handle->priv2 = (uint8_t *)g_malloc(65536 + 6);
 	if(handle->priv2 == NULL)
 		return NULL;
 
@@ -232,10 +232,10 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 		ticalcs_cable_detach(handle);
 
     if(handle->priv2)
-	free(handle->priv2);
+	g_free(handle->priv2);
 
     if(handle)
-	free(handle);
+	g_free(handle);
     handle = NULL;
 
     return 0;

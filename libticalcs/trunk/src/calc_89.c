@@ -141,7 +141,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if(err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti89_send_ACK());
 
-	*bitmap = (uint8_t *) malloc(TI89_COLS * TI89_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI89_COLS * TI89_ROWS / 8);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
 	memcpy(*bitmap, buf, TI89_COLS * TI89_ROWS / 8);
@@ -160,7 +160,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	TreeInfo *ti;
 	VarEntry info;
@@ -168,22 +168,22 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint8_t buffer[65536];
     int i, j;
     uint8_t extra = (handle->model == CALC_V200) ? 8 : 0;
-	TNode *root;
+	GNode *root;
 
-	(*apps) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-    (*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+    (*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	root = t_node_new(NULL);
-	t_node_append(*apps, root);
+	root = g_node_new(NULL);
+	g_node_append(*apps, root);
 
     TRYF(ti89_send_REQ(TI89_FDIR << 24, TI89_RDIR, ""));
     TRYF(ti89_recv_ACK(NULL));
@@ -203,7 +203,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	for(j = 4; j < (int)block_size;) 
 	{
 		VarEntry *fe = tifiles_ve_create();
-        TNode *node;
+        GNode *node;
 
         memcpy(fe->name, buffer + j, 8);
         fe->name[8] = '\0';
@@ -221,8 +221,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
         if(fe->type == TI89_DIR)
 		{
-			node = t_node_new(fe);
-			t_node_append(*vars, node);
+			node = g_node_new(fe);
+			g_node_append(*vars, node);
 		}
         else if(fe->type == TI89_APPL)
 		{
@@ -232,9 +232,9 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	}
 
 	// get list of variables into each folder
-	for(i = 0; i < (int)t_node_n_children(*vars); i++) 
+	for(i = 0; i < (int)g_node_n_children(*vars); i++) 
 	{
-		TNode *folder = t_node_nth_child(*vars, i);
+		GNode *folder = g_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
 		char *u1, *u2;
 
@@ -258,7 +258,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		for(j = 4 + 14 + extra; j < (int)block_size;) 
 		{
 			VarEntry *ve = tifiles_ve_create();
-			TNode *node;
+			GNode *node;
 
 			memcpy(ve->name, buffer + j, 8);
 			ve->name[8] = '\0';
@@ -282,11 +282,14 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 			if(ve->type == TI89_APPL) 
 			{
-				if(!ticalcs_dirlist_ve_exist(*apps, ve->name))
+				VarEntry arg = {0};
+
+				strcpy(arg.name, ve->name);
+				if(!ticalcs_dirlist_ve_exist(*apps, &arg))
 				{
 					strcpy(ve->folder, "");
-					node = t_node_new(ve);
-					t_node_append(root, node);
+					node = g_node_new(ve);
+					g_node_append(root, node);
 				}
 			} 
 			else
@@ -298,8 +301,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 				}
 				else
 				{
-					node = t_node_new(ve);
-					t_node_append(folder, node);
+					node = g_node_new(ve);
+					g_node_append(folder, node);
 				}
 			}
 		}

@@ -123,7 +123,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if (err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti73_send_ACK());
 
-	*bitmap = (uint8_t *) malloc(TI73_COLS * TI73_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI73_COLS * TI73_ROWS / 8);
 	if(*bitmap == NULL)
 		return ERR_MALLOC;
 	memcpy(*bitmap, buf, TI73_COLS * TI73_ROWS  / 8);
@@ -131,22 +131,22 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	TreeInfo *ti;
 	uint16_t unused;
 	uint32_t memory;
-	TNode *folder, *root;	
+	GNode *folder, *root;	
 	char *utf8;
 
-	(*apps) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-	(*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
@@ -159,16 +159,16 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	TRYF(ti73_send_ACK());
 	ti->mem_free = memory;
 
-	folder = t_node_new(NULL);
-	t_node_append(*vars, folder);
+	folder = g_node_new(NULL);
+	g_node_append(*vars, folder);
 
-	root = t_node_new(NULL);
-	t_node_append(*apps, root);
+	root = g_node_new(NULL);
+	g_node_append(*apps, root);
 
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
-		TNode *node;
+		GNode *node;
 		int err;
 		uint16_t ve_size;
 
@@ -180,11 +180,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else if (err != 0)
 			return err;
 
-		node = t_node_new(ve);
+		node = g_node_new(ve);
 		if (ve->type != TI73_APPL)
-			t_node_append(folder, node);
+			g_node_append(folder, node);
 		else
-			t_node_append(root, node);
+			g_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);

@@ -103,7 +103,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 	
-	*bitmap = (uint8_t *) malloc(TI84P_COLS * TI84P_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI84P_COLS * TI84P_ROWS / 8);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
 	memcpy(*bitmap, param[0]->data, TI84P_COLS * TI84P_ROWS / 8);
@@ -112,40 +112,40 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	uint16_t aids[] = { AID_VAR_SIZE, AID_VAR_TYPE, AID_ARCHIVED, };
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
 	CalcAttr **attr;
-	TNode *folder, *root;	
+	GNode *folder, *root;	
 	char fldname[40], varname[40];
 	char *utf8;
 
-	(*apps) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-	(*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	folder = t_node_new(NULL);
-	t_node_append(*vars, folder);
+	folder = g_node_new(NULL);
+	g_node_append(*vars, folder);
 
-	root = t_node_new(NULL);
-	t_node_append(*apps, root);
+	root = g_node_new(NULL);
+	g_node_append(*apps, root);
 
 	TRYF(cmd_s_dirlist_request(handle, size, aids));
 	do
 	{
 		VarEntry *ve = tifiles_ve_create();
-		TNode *node;
+		GNode *node;
 
 		attr = ca_new_array(size);
 		err = cmd_r_var_header(handle, fldname, varname, attr);
@@ -160,11 +160,11 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
 		ca_del_array(size, attr);
 
-		node = t_node_new(ve);
+		node = g_node_new(ve);
 		if (ve->type != TI73_APPL)
-			t_node_append(folder, node);
+			g_node_append(folder, node);
 		else
-			t_node_append(root, node);
+			g_node_append(root, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
@@ -269,7 +269,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
 	
-	free(data);	
+	g_free(data);	
 	ca_del_array(nattrs, attrs);
 	return 0;
 }
@@ -443,7 +443,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	}
 	content->num_pages = page+1;
 
-	free(data);	
+	g_free(data);	
 	ca_del_array(nattrs, attrs);
 	return 0;
 }
@@ -597,7 +597,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 		sprintf((char *)&id[2 * (i-4)], "%02x", data[i]);
 	id[7*2] = '\0';
 
-	free(data);
+	g_free(data);
 	ca_del_array(nattrs, attrs);
 	return 0;
 }

@@ -41,7 +41,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 {
 	int i, j, k;
 	int i_max, j_max;
-	TNode *vars, *apps;
+	GNode *vars, *apps;
 	int nvars, ivars = 0;
 	int b = 0;
 	FileContent **group;
@@ -54,7 +54,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 		return ERR_NO_VARS;
 
 	// Check whether the last folder is empty
-	b = t_node_n_children(t_node_nth_child(vars, t_node_n_children(vars) - 1));
+	b = g_node_n_children(g_node_nth_child(vars, g_node_n_children(vars) - 1));
 	PAUSE(100); // needed by TI84+/USB
 
 	// Create a group file
@@ -62,15 +62,15 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	group = tifiles_content_create_group(nvars);
 
 	// Receive all vars except for FLASH apps
-	i_max = t_node_n_children(vars);
+	i_max = g_node_n_children(vars);
 	for(i = 0; i < i_max; i++) 
 	{
-		TNode *parent = t_node_nth_child(vars, i);
+		GNode *parent = g_node_nth_child(vars, i);
 
-		j_max = t_node_n_children(parent);
+		j_max = g_node_n_children(parent);
 		for(j = 0; j < j_max; j++) 
 		{
-			TNode *node = t_node_nth_child(parent, j);
+			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 
 			// we need to group files !
@@ -197,7 +197,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 {
 	int i, j;
 	int i_max, j_max;
-	TNode *vars, *apps;
+	GNode *vars, *apps;
 	int nvars;
 	int napps;
 	int b = 0;
@@ -215,20 +215,20 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 		return ERR_NO_VARS;
 
 	// Check whether the last folder is empty
-	b = t_node_n_children(t_node_nth_child(vars, t_node_n_children(vars) - 1));
+	b = g_node_n_children(g_node_nth_child(vars, g_node_n_children(vars) - 1));
 	PAUSE(100); // needed by TI84+/USB
 
 	// Receive all vars
-	i_max = t_node_n_children(vars);
+	i_max = g_node_n_children(vars);
 	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 	for(i = 0; i < i_max; i++) 
 	{
-		TNode *parent = t_node_nth_child(vars, i);
+		GNode *parent = g_node_nth_child(vars, i);
 
-		j_max = t_node_n_children(parent);
+		j_max = g_node_n_children(parent);
 		for(j = 0; j < j_max; j++) 
 		{
-			TNode *node = t_node_nth_child(parent, j);
+			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 			TigEntry *te;
 			char *filename;
@@ -265,16 +265,16 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	ticalcs_dirlist_destroy(&vars);
 
 	// Receive all apps
-	i_max = t_node_n_children(apps);
+	i_max = g_node_n_children(apps);
 	if(mode & TIG_FLASH)
 	for(i = 0; i < i_max; i++) 
 	{
-		TNode *parent = t_node_nth_child(apps, i);
+		GNode *parent = g_node_nth_child(apps, i);
 
-		j_max = t_node_n_children(parent);
+		j_max = g_node_n_children(parent);
 		for(j = 0; j < j_max; j++) 
 		{
-			TNode *node = t_node_nth_child(parent, j);
+			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 			TigEntry *te;
 			char *filename;

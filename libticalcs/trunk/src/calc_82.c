@@ -83,14 +83,14 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if (err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti82_send_ACK());
 
-	*bitmap = (uint8_t *)malloc(TI82_COLS * TI82_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI82_COLS * TI82_ROWS / 8);
 	if(*bitmap == NULL)	return ERR_MALLOC;
 	memcpy(*bitmap, buf, TI82_COLS * TI82_ROWS / 8);
 
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {	
 	return 0;
 }

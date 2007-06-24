@@ -30,7 +30,7 @@
 #include <tifiles.h>
 
 #include "export3.h"
-#include "tnode.h"	// to replace by glib !
+#include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -538,7 +538,7 @@ struct _CalcFncts
 
 	int		(*recv_screen)	(CalcHandle*, CalcScreenCoord*, uint8_t**);
 
-	int		(*get_dirlist)	(CalcHandle*, TNode** vars, TNode** apps);
+	int		(*get_dirlist)	(CalcHandle*, GNode** vars, GNode** apps);
 	int		(*get_memfree)	(CalcHandle*, uint32_t* ram, uint32_t* flash);
 
 	int		(*send_backup)	(CalcHandle*, BackupContent*);
@@ -664,7 +664,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
 												 uint8_t** bitmap);
 
-	TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, TNode** vars, TNode **apps);
+	TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **apps);
 	TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle*, BackupContent*);
@@ -720,16 +720,16 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle*, const char*, TigMode);
 
 	// dirlist.c
-	TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree);
-	TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode*  tree);
+	TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree);
+	TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode*  tree);
 
-	TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(TNode* tree);
-	TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps);
+	TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree);
+	TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps);
 
-	TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(TNode* tree);
-	TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char* name);
-	TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry);
-	TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry);
+	TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree);
+	TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *entry);
+	TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry);
+	TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry);
 
 	// type2str.c
 	TIEXPORT3 const char*  TICALL ticalcs_model_to_string(CalcModel model);

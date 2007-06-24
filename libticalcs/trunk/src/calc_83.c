@@ -113,30 +113,30 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if (err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti82_send_ACK());
 
-	*bitmap = (uint8_t *)malloc(TI83_COLS * TI83_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI83_COLS * TI83_ROWS / 8);
 	if(*bitmap == NULL) return ERR_MALLOC;
 	memcpy(*bitmap, buf, TI83_COLS * TI83_ROWS / 8);
 
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	TreeInfo *ti;
-	TNode *folder;
+	GNode *folder;
 	uint16_t unused;	
 	uint32_t memory;
 	char *utf8;
 
 	// get list of folders & FLASH apps
-	(*apps) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-	(*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
@@ -152,13 +152,13 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 
 
 	
-	folder = t_node_new(NULL);
-	t_node_append(*vars, folder);
+	folder = g_node_new(NULL);
+	g_node_append(*vars, folder);
 
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
-		TNode *node;
+		GNode *node;
 		int err;
 		uint16_t ve_size;
 
@@ -170,8 +170,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		else if (err != 0)
 			return err;
 
-		node = t_node_new(ve);
-		t_node_append(folder, node);
+		node = g_node_new(ve);
+		g_node_append(folder, node);
 
 		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);

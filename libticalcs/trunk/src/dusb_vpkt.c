@@ -96,11 +96,11 @@ GList *vtl_pkt_list = NULL;
 
 VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 {
-	VirtualPacket* vtl = calloc(1, sizeof(VirtualPacket));
+	VirtualPacket* vtl = g_malloc0(sizeof(VirtualPacket));
 
 	vtl->size = size;
 	vtl->type = type;
-	vtl->data = calloc(1, size + DH_SIZE);
+	vtl->data = g_malloc0(size + DH_SIZE);
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 	return vtl;
@@ -110,8 +110,8 @@ void			vtl_pkt_del(VirtualPacket* vtl)
 {
 	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
-	free(vtl->data);
-	free(vtl);
+	g_free(vtl->data);
+	g_free(vtl);
 }
 
 void			vtl_pkt_purge(void)

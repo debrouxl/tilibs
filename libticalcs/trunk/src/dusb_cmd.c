@@ -43,11 +43,11 @@ GList *cpca_list = NULL;
 
 CalcParam*	cp_new(uint16_t id, uint16_t size)
 {
-	CalcParam* cp = calloc(1, sizeof(CalcParam));
+	CalcParam* cp = g_malloc0(sizeof(CalcParam));
 
 	cp->id = id;
 	cp->size = size;
-	cp->data = calloc(1, size);
+	cp->data = g_malloc0(size);
 
 	cpca_list = g_list_append(cpca_list, cp);
 	return cp;
@@ -57,13 +57,13 @@ void		cp_del(CalcParam* cp)
 {
 	cpca_list = g_list_remove(cpca_list, cp);
 
-	free(cp->data);
-	free(cp);
+	g_free(cp->data);
+	g_free(cp);
 }
 
 CalcParam** cp_new_array(int size)
 {
-	CalcParam** array = calloc(size+1, sizeof(CalcParam *));
+	CalcParam** array = g_malloc0((size+1) * sizeof(CalcParam *));
 	return array;
 }
 
@@ -73,18 +73,18 @@ void cp_del_array(int size, CalcParam **params)
 
 	for(i = 0; i < size && params[i]; i++)
 		cp_del(params[i]);
-	free(params);
+	g_free(params);
 }
 
 /////////////----------------
 
 CalcAttr*	ca_new(uint16_t id, uint16_t size)
 {
-	CalcAttr* cp = calloc(1, sizeof(CalcAttr));
+	CalcAttr* cp = g_malloc0(sizeof(CalcAttr));
 
 	cp->id = id;
 	cp->size = size;
-	cp->data = calloc(1, size);
+	cp->data = g_malloc0(size);
 
 	cpca_list = g_list_append(cpca_list, cp);
 	return cp;
@@ -94,13 +94,13 @@ void		ca_del(CalcAttr* cp)
 {
 	cpca_list = g_list_remove(cpca_list, cp);
 
-	free(cp->data);
-	free(cp);
+	g_free(cp->data);
+	g_free(cp);
 }
 
 CalcAttr** ca_new_array(int size)
 {
-	CalcAttr** array = calloc(size+1, sizeof(CalcParam *));
+	CalcAttr** array = g_malloc0((size+1) * sizeof(CalcParam *));
 	return array;
 }
 
@@ -110,7 +110,7 @@ void ca_del_array(int size, CalcAttr **attrs)
 
 	for(i = 0; i < size && attrs[i]; i++)
 		ca_del(attrs[i]);
-	free(attrs);
+	g_free(attrs);
 }
 
 void cpca_purge(void)
@@ -388,7 +388,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 		if(s->ok)
 		{
 			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
-			s->data = (uint8_t *)calloc(1, s->size);
+			s->data = (uint8_t *)g_malloc0(s->size);
 			memcpy(s->data, &pkt->data[j], s->size);
 			j += s->size;
 		}
@@ -486,7 +486,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 		if(s->ok)
 		{
 			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
-			s->data = (uint8_t *)calloc(1, s->size);
+			s->data = (uint8_t *)g_malloc0(s->size);
 			memcpy(s->data, &pkt->data[j], s->size);
 			j += s->size;
 		}
@@ -633,7 +633,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	if(size != NULL)
 		*size = pkt->size;
 
-	*data = calloc(pkt->size, 1);
+	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data, pkt->size);
 	
 	vtl_pkt_del(pkt);

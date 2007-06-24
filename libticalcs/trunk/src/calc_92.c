@@ -121,7 +121,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	if (err != ERR_CHECKSUM) { TRYF(err) };
 	TRYF(ti92_send_ACK());
 
-	*bitmap = (uint8_t *) malloc(TI92_COLS * TI92_ROWS / 8);
+	*bitmap = (uint8_t *)g_malloc(TI92_COLS * TI92_ROWS / 8);
 	if(*bitmap == NULL)
 		return ERR_MALLOC;
 	memcpy(*bitmap, buf, TI92_COLS * TI92_ROWS / 8);
@@ -129,7 +129,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	return 0;
 }
 
-static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
+static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
 	TreeInfo *ti;
 	VarEntry info;
@@ -137,18 +137,18 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	uint8_t buffer[65536];
 	int err;
 	char folder_name[9] = "";
-	TNode *folder = NULL;
+	GNode *folder = NULL;
 	char *utf8;
 
 	// get list of folders & FLASH apps
-    (*vars) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+    (*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	(*apps) = t_node_new(NULL);
-	ti = (TreeInfo *)malloc(sizeof(TreeInfo));
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
@@ -160,7 +160,7 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
-		TNode *node;
+		GNode *node;
 
 		TRYF(ti92_send_ACK());
 		TRYF(ti92_send_CTS());
@@ -178,8 +178,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 		if (ve->type == TI92_DIR) 
 		{
 			strcpy(folder_name, ve->name);
-			node = t_node_new(ve);
-			folder = t_node_append(*vars, node);
+			node = g_node_new(ve);
+			folder = g_node_append(*vars, node);
 		} 
 		else 
 		{
@@ -192,8 +192,8 @@ static int		get_dirlist	(CalcHandle* handle, TNode** vars, TNode** apps)
 			}
 			else
 			{
-				node = t_node_new(ve);
-				t_node_append(folder, node);
+				node = g_node_new(ve);
+				g_node_append(folder, node);
 			}
 		}
 

@@ -58,7 +58,7 @@
 
 */
 
-static tboolean free_varentry(TNode* node, tpointer data)
+static gboolean free_varentry(GNode* node, gpointer data)
 {
 	if(node)
 	{
@@ -81,7 +81,7 @@ static tboolean free_varentry(TNode* node, tpointer data)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree)
+TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 {
 	if (*tree != NULL) 
 	{
@@ -89,12 +89,12 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree)
 
 		if((*tree)->children != NULL)
 		{
-			t_node_traverse(*tree, T_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
+			g_node_traverse(*tree, G_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
 		}
 			
 		ti = (TreeInfo *)((*tree)->data);
-		free((*tree)->data);
-		t_node_destroy(*tree);
+		g_free((*tree)->data);
+		g_node_destroy(*tree);
 
 		*tree = NULL;
 	}
@@ -108,9 +108,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(TNode** tree)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode* tree)
+TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 {
-	TNode *vars = tree;
+	GNode *vars = tree;
 	TreeInfo *info = (TreeInfo *)(tree->data);
 	int i, j, k;
 	char *utf8;
@@ -122,9 +122,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode* tree)
   printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
   printf(  "+------------------+----------+----+----+----------+----------+\n");
 
-  for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+  for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
   {
-    TNode *parent = t_node_nth_child(vars, i);
+    GNode *parent = g_node_nth_child(vars, i);
     VarEntry *fe = (VarEntry *) (parent->data);
 
     if (fe != NULL) 
@@ -150,9 +150,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode* tree)
 	  g_free(utf8);
     }
 
-    for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+    for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
     {
-      TNode *child = t_node_nth_child(parent, j);
+      GNode *child = g_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
 	  utf8 = ticonv_varname_to_utf8(info->model, ve->name);
@@ -196,12 +196,10 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(TNode* tree)
  *
  * Return value: a pointer on the #VarEntry found or NULL if not found.
  **/
-TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char *full_name)
+TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 {
 	int i, j;
-	TNode *vars = tree;
-	char fldname[18];
-	char varname[18];
+	GNode *vars = tree;
 	TreeInfo *info = (TreeInfo *)(tree->data);
 
 	if (tree == NULL)
@@ -210,23 +208,20 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char *full_name
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
 		return NULL;
 
-	strcpy(fldname, tifiles_get_fldname(full_name));
-	strcpy(varname, tifiles_get_varname(full_name));
-
-	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
-		TNode *parent = t_node_nth_child(vars, i);
+		GNode *parent = g_node_nth_child(vars, i);
 		VarEntry *fe = (VarEntry *) (parent->data);
 
-		if ((fe != NULL) && strcmp(fe->name, fldname))
+		if ((fe != NULL) && strcmp(fe->name, s->folder))
 			continue;
 
-		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
 		{
-			TNode *child = t_node_nth_child(parent, j);
+			GNode *child = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
-			if (!strcmp(ve->name, varname))
+			if (!strcmp(ve->name, s->name))
 				return ve;
 		}
 	}
@@ -242,10 +237,10 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(TNode* tree, char *full_name
  *
  * Return value: the number of entries.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(TNode* tree)
+TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 {
 	int i, j;
-	TNode *vars = tree;
+	GNode *vars = tree;
 	int nvars = 0;
 	TreeInfo *info = (TreeInfo *)(tree->data);
 
@@ -255,11 +250,11 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(TNode* tree)
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
 		return 0;
 
-	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
-		TNode *parent = t_node_nth_child(vars, i);
+		GNode *parent = g_node_nth_child(vars, i);
 
-		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
 			nvars++;
 	}
 
@@ -274,10 +269,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(TNode* tree)
  *
  * Return value: size of all variables in bytes.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(TNode* tree)
+TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 {
 	int i, j;
-	TNode *vars = tree;
+	GNode *vars = tree;
 	uint32_t mem = 0;
 	TreeInfo *info = (TreeInfo *)(tree->data);
 
@@ -287,13 +282,13 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(TNode* tree)
 	if (strcmp(info->type, VAR_NODE_NAME))
 		return 0;
 	
-	for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
-		TNode *parent = t_node_nth_child(vars, i);
+		GNode *parent = g_node_nth_child(vars, i);
 
-		for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
 		{
-			TNode *child = t_node_nth_child(parent, j);
+			GNode *child = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
 			if(ve->attr != ATTRB_ARCHIVED)
@@ -312,7 +307,7 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(TNode* tree)
  *
  * Return value: size of all FLASH in bytes.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
+TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 {
 	int i, j;
 	uint32_t mem = 0;
@@ -324,13 +319,13 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
 
 	if (!strcmp(info1->type, VAR_NODE_NAME))
 	{
-		for (i = 0; i < (int)t_node_n_children(vars); i++)	// parse folders
+		for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 		{
-			TNode *parent = t_node_nth_child(vars, i);
+			GNode *parent = g_node_nth_child(vars, i);
 
-			for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse variables
+			for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
 			{
-				TNode *child = t_node_nth_child(parent, j);
+				GNode *child = g_node_nth_child(parent, j);
 				VarEntry *ve = (VarEntry *) (child->data);
 
 				if(ve->attr == ATTRB_ARCHIVED)
@@ -341,13 +336,13 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
 
 	if (!strcmp(info2->type, APP_NODE_NAME))
 	{
-		for (i = 0; i < (int)t_node_n_children(apps); i++) 
+		for (i = 0; i < (int)g_node_n_children(apps); i++) 
 		{
-			TNode *parent = t_node_nth_child(apps, i);
+			GNode *parent = g_node_nth_child(apps, i);
 
-			for (j = 0; j < (int)t_node_n_children(parent); j++)	//parse apps
+			for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse apps
 			{
-				TNode *child = t_node_nth_child(parent, i);
+				GNode *child = g_node_nth_child(parent, i);
 				VarEntry *ve = (VarEntry *) (child->data);
 
 				mem += ve->size;
@@ -367,16 +362,16 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(TNode* vars, TNode* apps)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
+TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 {
 	TreeInfo *info = (TreeInfo *)(tree->data);
 	int i, j;
 	int found = 0;
 
-	TNode *parent = NULL;
+	GNode *parent = NULL;
 	VarEntry *fe = NULL;
 
-	TNode *child;
+	GNode *child;
 	VarEntry *ve;
 
 	char *folder;
@@ -393,9 +388,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
 		folder = entry->folder;
 
 	// Parse folders
-	for (found = 0, i = 0; i < (int)t_node_n_children(tree); i++)
+	for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
 	{
-		parent = t_node_nth_child(tree, i);
+		parent = g_node_nth_child(tree, i);
 		fe = (VarEntry *) (parent->data);
 
 		if(fe == NULL)
@@ -415,17 +410,17 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
 		strcpy(fe->name, entry->folder);
 		fe->type = TI89_DIR;
 
-		parent = t_node_new(fe);
-		t_node_append(tree, parent);
+		parent = g_node_new(fe);
+		g_node_append(tree, parent);
 	}
 
 	if(!strcmp(entry->name, ""))
 		return;
 
 	// next, add variables beneath this folder
-	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
+	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
 	{
-		child = t_node_nth_child(parent, j);
+		child = g_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
 
 		if(!strcmp(ve->name, entry->name))
@@ -438,8 +433,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
 	if(!found)
 	{
 		ve = tifiles_ve_dup(entry);
-		child = t_node_new(ve);
-		t_node_append(parent, child);
+		child = g_node_new(ve);
+		g_node_append(parent, child);
 	}
 
 	if(fe && found)
@@ -456,16 +451,16 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(TNode* tree, VarEntry *entry)
  *
  * Return value: none.
  **/
-TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry)
+TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 {
 	TreeInfo *info = (TreeInfo *)(tree->data);
 	int i, j;
 	int found = 0;
 
-	TNode *parent = NULL;
+	GNode *parent = NULL;
 	VarEntry *fe = NULL;
 
-	TNode *child;
+	GNode *child;
 	VarEntry *ve;
 
 	char *folder;
@@ -482,9 +477,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry)
 		folder = entry->folder;
 
 	// Parse folders
-	for (found = 0, i = 0; i < (int)t_node_n_children(tree); i++)
+	for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
 	{
-		parent = t_node_nth_child(tree, i);
+		parent = g_node_nth_child(tree, i);
 		fe = (VarEntry *) (parent->data);
 
 		if(fe == NULL)
@@ -501,9 +496,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry)
 		return;
 		
 	// next, delete variables beneath this folder
-	for(found = 0, j = 0; j < (int)t_node_n_children(parent); j++)
+	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
 	{
-		child = t_node_nth_child(parent, j);
+		child = g_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
 
 		if(!strcmp(ve->name, entry->name))
@@ -516,7 +511,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(TNode* tree, VarEntry *entry)
 	if(found)
 	{
 		tifiles_ve_delete(child->data);
-		t_node_destroy(child);
+		g_node_destroy(child);
 	}
 
 	if(fe && found)
