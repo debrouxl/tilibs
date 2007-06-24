@@ -122,15 +122,10 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	int nvars = 0;
 	int napps = 0;
 
-	for(ptr = content->entries; *ptr; ptr++)
-	{
-		TigEntry *te = *ptr;
-
-		if(te->type == TIFILE_SINGLE && ((mode & TIG_RAM) || (mode & TIG_ARCHIVE)))
-			nvars++;
-		else if(te->type == TIFILE_FLASH && (mode & TIG_FLASH))
-			napps++;
-	}
+	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+		nvars = content->n_vars;
+	if(mode & TIG_FLASH)
+		napps = content->n_apps;
 
 	update_->cnt3 = 0;
 	update_->max3 = nvars + napps;
@@ -152,32 +147,32 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 
 	// Send vars
 	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
-	for(ptr = content->entries; *ptr; ptr++)
 	{
-		TigEntry *te = *ptr;
-		if(te->type != TIFILE_SINGLE)
-			continue;
+		for(ptr = content->var_entries; *ptr; ptr++)
+		{
+			TigEntry *te = *ptr;
 
-		update_->cnt3++;
-		update_->pbar();
+			update_->cnt3++;
+			update_->pbar();
 
-		TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
+			TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
+		}
 	}
 
 	TRYF(handle->calc->is_ready(handle));
 
 	// Send apps
 	if(mode & TIG_FLASH)
-	for(ptr = content->entries; *ptr; ptr++)
 	{
-		TigEntry *te = *ptr;
-		if(te->type != TIFILE_FLASH)
-			continue;
+		for(ptr = content->app_entries; *ptr; ptr++)
+		{
+			TigEntry *te = *ptr;
 
-		update_->cnt3++;
-		update_->pbar();
+			update_->cnt3++;
+			update_->pbar();
 
-		TRYF(handle->calc->send_app(handle, te->content.flash));
+			TRYF(handle->calc->send_app(handle, te->content.flash));
+		}
 	}
 
 	return 0;
