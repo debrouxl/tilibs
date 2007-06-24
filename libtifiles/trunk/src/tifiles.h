@@ -337,8 +337,13 @@ typedef struct
   char*				comment;
   int				comp_level;
 
-  int				num_entries;
-  TigEntry**		entries;
+  //int				num_entries;
+  //TigEntry**		entries;
+  TigEntry**		var_entries;
+  int				n_vars;
+
+  TigEntry**		app_entries;
+  int				n_apps;
 
   CalcModel			model_dst;
 
@@ -516,8 +521,8 @@ extern "C" {
 
   TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts);
   TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, int nelts);
-  TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry**);
-  TIEXPORT2 void			TICALL tifiles_te_sizeof_array(TigEntry**, int*, int*);
+  TIEXPORT2 void		TICALL tifiles_te_delete_array(TigEntry**);
+  TIEXPORT2 int			TICALL tifiles_te_sizeof_array(TigEntry**);
 
   // comment.c
   TIEXPORT2 const char* TICALL tifiles_comment_set_single(void);

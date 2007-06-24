@@ -221,21 +221,14 @@ TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
  *
  * Return value: none.
  **/
-TIEXPORT2 void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f)
+TIEXPORT2 int TICALL tifiles_te_sizeof_array(TigEntry** array)
 {
-	int m, n;
+	int i;
 	TigEntry **p;
 
-	for(m = n = 0, p = array; *p; *p++)
-	{
-		if((*p)->type == TIFILE_FLASH)
-			n++;
-		else if((*p)->type & TIFILE_REGULAR)
-			m++;
-	}
+	for(i = 0, p = array; *p; *p++, i++);
 
-	*r = m;
-	*f = n;
+	return i;
 }
 
 // ---------------------------------------------------------------------------
@@ -252,15 +245,32 @@ TIEXPORT2 void			TICALL tifiles_te_sizeof_array(TigEntry** array, int* r, int* f
  **/
 TIEXPORT2 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 {
-	int n = content->num_entries;
+	if(te->type == TIFILE_FLASH)
+	{
+		int n = content->n_apps;
 
-	content->entries = tifiles_te_resize_array(content->entries, n + 1);
+		content->app_entries = tifiles_te_resize_array(content->app_entries, n + 1);
 
-	content->entries[n++] = te;
-	content->entries[n] = NULL;
-	content->num_entries = n;
+		content->app_entries[n++] = te;
+		content->app_entries[n] = NULL;
+		content->n_apps = n;
 
-	return content->num_entries;
+		return n;
+	}
+	else if(te->type & TIFILE_REGULAR)
+	{
+		int n = content->n_vars;
+
+		content->var_entries = tifiles_te_resize_array(content->var_entries, n + 1);
+
+		content->var_entries[n++] = te;
+		content->var_entries[n] = NULL;
+		content->n_vars = n;
+
+		return n;
+	}
+	
+	return 0;
 }
 
 /**
@@ -274,34 +284,65 @@ TIEXPORT2 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
  **/
 TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 {
-	int i, j;
+	int i, j, k;
 
 	// Search for entry
-	for(i = 0; i < content->num_entries; i++)
+	for(i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
 	{
-		TigEntry *s = content->entries[i];
+		TigEntry *s = content->var_entries[i];
+
+		if(!strcmp(s->filename, te->filename))
+			break;
+	}
+
+	for(j = 0; j < content->n_apps && (te->type & TIFILE_FLASH); j++)
+	{
+		TigEntry *s = content->app_entries[i];
 
 		if(!strcmp(s->filename, te->filename))
 			break;
 	}
 
 	// Not found ? Exit !
-	if(i == content->num_entries)
+	if((i == content->n_vars) && (j == content->n_apps))
 		return -1;
 
 	// Release
-	tifiles_te_delete(content->entries[i]);
+	if(i < content->n_vars)
+	{
+		// Delete
+		tifiles_te_delete(content->var_entries[i]);
 
-	// And shift
-	for(j = i; j < content->num_entries; j++)
-		content->entries[j] = content->entries[j+1];
-	content->entries[j] = NULL;
+		// And shift
+		for(k = i; k < content->n_vars; k++)
+			content->var_entries[k] = content->var_entries[k+1];
+		content->var_entries[k] = NULL;
 
-	// And resize
-	content->entries = tifiles_te_resize_array(content->entries, content->num_entries - 1);
-	content->num_entries--;
+		// And resize
+		content->var_entries = tifiles_te_resize_array(content->var_entries, content->n_vars - 1);
+		content->n_vars--;
 
-	return content->num_entries;
+		return content->n_vars;
+	}
+
+	if(j < content->n_apps)
+	{
+		// Delete
+		tifiles_te_delete(content->app_entries[j]);
+
+		// And shift
+		for(k = j; k < content->n_apps; k++)
+			content->app_entries[k] = content->app_entries[k+1];
+		content->app_entries[k] = NULL;
+
+		// And resize
+		content->app_entries = tifiles_te_resize_array(content->app_entries, content->n_apps - 1);
+		content->n_apps--;
+
+		return content->n_apps;
+	}
+
+	return 0;
 }
 
 #ifndef __WIN32__
@@ -499,35 +540,33 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 	TigContent *src = src_content;
 	FileContent **dst1 = NULL;
 	FlashContent **dst2 = NULL;
-	int i, j, m, n, k;
+	int i, j;
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
-	tifiles_te_sizeof_array(src->entries, &m, &n);
-
 	{
-		dst1 = (FileContent **)g_malloc0((m+1) * sizeof(FileContent *));
+		dst1 = (FileContent **)g_malloc0((src->n_vars+1) * sizeof(FileContent *));
 		if (dst1 == NULL)
 			return ERR_MALLOC;
 	}
 	{
-		dst2 = (FlashContent **)g_malloc0((n+1) * sizeof(FlashContent *));
+		dst2 = (FlashContent **)g_malloc0((src->n_apps+1) * sizeof(FlashContent *));
 		if (dst2 == NULL)
 			return ERR_MALLOC;
 	}
 
-	// parse each entry and duplicate it into a single content  
-	for (i = j = k = 0; k < src->num_entries; k++) 
+	// parse each entry and duplicate it into a single content
+	for(i = 0; i < src->n_vars; i++)
 	{
-		TigEntry *te = src->entries[k];
+		TigEntry *te = src->var_entries[i];
 
-		if(te->type == TIFILE_FLASH)
-		{
-			dst2[j++] = tifiles_content_dup_flash(te->content.flash);
-		}
-		else if(te->type & TIFILE_REGULAR)
-		{
-			dst1[i++] = tifiles_content_dup_regular(te->content.regular);
-		}
+		dst1[i++] = tifiles_content_dup_regular(te->content.regular);
+	}
+
+	for(j = 0; j < src->n_vars; j++)
+	{
+		TigEntry *te = src->var_entries[j];
+
+		dst1[j++] = tifiles_content_dup_regular(te->content.regular);
 	}
 
 	*dst_contents1 = dst1;
@@ -629,7 +668,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 	FileContent **ptr1, **dst1 = NULL;
 	FlashContent **ptr2, **dst2 = NULL;
 	char *real_name;
-	int i, m, n;
+	int i;
 	int ret = 0;
 
 	// read TiGroup file
@@ -642,13 +681,11 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 	if(ret) goto tuf;
 
 	// count number of structures and allocates array of strings
-	tifiles_te_sizeof_array(src->entries, &m, &n);
-	
 	if(dst_filenames != NULL)
-		*dst_filenames = (char **)g_malloc((m + n + 1) * sizeof(char *));
+		*dst_filenames = (char **)g_malloc((src->n_vars + src->n_apps + 1) * sizeof(char *));
 
 	// store each structure content to file
-	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < m; ptr1++, i++)
+	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < src->n_vars; ptr1++, i++)
 	{
 		ret = tifiles_file_write_regular(NULL, *ptr1, &real_name);
 		if(ret) goto tuf;
@@ -659,7 +696,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 			g_free(real_name);
 	}
 
-	for (ptr2 = dst2; *ptr2 != NULL || i < m+n; ptr2++, i++)
+	for (ptr2 = dst2; *ptr2 != NULL || i < src->n_apps; ptr2++, i++)
 	{
 		ret = tifiles_file_write_flash2(NULL, *ptr2, &real_name);
 		if(ret) goto tuf;
@@ -706,7 +743,8 @@ TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int
 	content->model = content->model_dst = model;
 	content->comment = g_strdup(tifiles_comment_set_tigroup());
 	content->comp_level = 0;
-	content->entries = (TigEntry **)g_malloc0((n + 1) * sizeof(TigEntry *));
+	content->var_entries = (TigEntry **)g_malloc0(sizeof(TigEntry *));
+	content->app_entries = (TigEntry **)g_malloc0(sizeof(TigEntry *));
 
 	return content;
 }
@@ -720,20 +758,26 @@ TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 {
-	int i, n;
-	
-	// counter number of files to group
-	for(n = 0; content->entries[n]; n++);
+	int i;
 
-	// release allocated memory in structures
-	for (i = 0; i < n; i++) 
+	for(i = 0; i < content->n_vars; i++)
 	{
-		TigEntry* entry = content->entries[i];
+		TigEntry* entry = content->var_entries[i];
+		tifiles_te_delete(entry);
+	}
+
+	for(i = 0; i < content->n_apps; i++)
+	{
+		TigEntry* entry = content->app_entries[i];
 		tifiles_te_delete(entry);
 	}
 	g_free(content);
 
 	return 0;
+}
+
+static int zip_read(zipFile *zf, ...)
+{
 }
 
 /**
@@ -758,7 +802,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	unsigned i;
 	void* buf = NULL;
 	const char *password = NULL;
-	int ri = 0;
+	int vi = 0, ai = 0;
 
 	// Open ZIP archive
 	uf = unzOpen(filename);
@@ -785,9 +829,13 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	}        
 	//printf("# entries: %lu\n", gi.number_entry);
 
-	g_free(content->entries);
-	content->entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
-	content->num_entries = 0;
+	g_free(content->var_entries);
+	content->var_entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
+	content->n_vars = 0;
+
+	g_free(content->app_entries);
+	content->app_entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
+	content->n_apps = 0;
 
 	// Get comment
 	g_free(content->comment);
@@ -871,8 +919,8 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				ret = tifiles_file_read_regular(fname, entry->content.regular);
 				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				content->entries[ri++] = entry;
-				content->num_entries++;
+				content->var_entries[vi++] = entry;
+				content->n_vars++;
 			}
 			else if(tifiles_file_is_flash(fname))
 			{
@@ -882,8 +930,8 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				ret = tifiles_file_read_flash(fname, entry->content.flash);
 				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				content->entries[ri++] = entry;
-				content->num_entries++;
+				content->app_entries[ai++] = entry;
+				content->n_apps++;
 			}
 			else
 			{
@@ -915,74 +963,15 @@ tfrt_exit:
 #endif
 }
 
-/**
- * tifiles_file_write_tigroup:
- * @filename: the name of file to load.
- * @content: where to store content.
- *
- * This function store TiGroup contents to file. Please note that contents 
- * can contains no data. In this case, the file is void but created.
- *
- * The temporary folder is used by this function to store temporary files.
- *
- * Return value: an error code if unsuccessful, 0 otherwise.
- **/
-TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
+static int zip_write(zipFile *zf, const char *fname, int comp_level)
 {
-#ifdef HAVE_LIBZ
-	zipFile zf;
-	zip_fileinfo zi;
-	int err = ZIP_OK;
-    void* buf=NULL;
-	gchar *old_dir = g_get_current_dir();
-	TigEntry **ptr;
-
-	// Open ZIP archive (and set comment)
-#ifdef USEWIN32IOAPI
-        zlib_filefunc_def ffunc;
-        fill_win32_filefunc(&ffunc);
-
-        zf = zipOpen2(filename, APPEND_STATUS_CREATE, &(content->comment), &ffunc);
-#else
-        zf = zipOpen(filename, APPEND_STATUS_CREATE);
-#endif
-	if (zf == NULL)
-	{
-		printf("Can't open this file: %s\n", filename);
-		return ERR_FILE_ZIP;
-	}
-	g_chdir(g_get_tmp_dir());
-
-	// Allocate buffer
-	buf = (void*)g_malloc(WRITEBUFFERSIZE);
-	if (buf==NULL)
-	{
-		printf("Error allocating memory\n");
-		goto tfwt_exit;
-	}
-
-	// Parse entries and store
-	for(ptr = content->entries; *ptr; ptr++)
-	{
-		FILE *f;
+		int err = ZIP_OK;
+		FILE *f = NULL;
+		zip_fileinfo zi;
 		char filenameinzip[256];
 		unsigned long crcFile=0;
 		int size_read;
-		TigEntry* entry = *ptr;
-		char *fname = NULL;
-
-		// ZIP archives don't like greek chars
-		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
-
-		// write TI file into tmp folder
-		if(entry->type == TIFILE_FLASH)
-		{
-			TRYC(tifiles_file_write_flash(fname, entry->content.flash));
-		}
-		else
-		{	
-			TRYC(tifiles_file_write_regular(fname, entry->content.regular, NULL));
-		}
+		void* buf=NULL;
 
 		// missing tmp file !
 		f = gfopen(fname, "rb");
@@ -990,10 +979,17 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		{
 		  printf("error in opening tmp file %s\n", fname);
 			err = ERR_FILE_OPEN;
-			goto tfwt_exit;
+			goto zw_exit;
 		}
 		strcpy(filenameinzip, fname);
-		g_free(fname);
+
+		// Allocate buffer
+		buf = (void*)g_malloc(WRITEBUFFERSIZE);
+		if (buf==NULL)
+		{
+			printf("Error allocating memory\n");
+			goto zw_exit;
+		}
 
 		// update time stamp (to do ?)
 		zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
@@ -1003,9 +999,9 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
         zi.external_fa = 0;
         filetime(filenameinzip,&zi.tmz_date,&zi.dosDate);
 
-		err = zipOpenNewFileInZip3(zf,filenameinzip,&zi,
+		err = zipOpenNewFileInZip3(*zf,filenameinzip,&zi,
                                  NULL,0,NULL,0,NULL /* comment*/,
-                                 content->comp_level ? Z_DEFLATED : 0 /* comp method */,
+                                 comp_level ? Z_DEFLATED : 0 /* comp method */,
                                  1 /*comp level */,0,
                                  -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
                                  NULL /* no pwd*/,crcFile);
@@ -1027,41 +1023,116 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 				{
 					printf("error in reading %s\n",filenameinzip);
 					err = ZIP_ERRNO;
-					goto tfwt_exit;
+					goto zw_exit;
 				}
 			}
             if (size_read > 0)
             {
-                err = zipWriteInFileInZip (zf,buf,size_read);
+                err = zipWriteInFileInZip (*zf,buf,size_read);
                 if (err<0)
                 {
                     printf("error in writing %s in the zipfile\n", filenameinzip);
-					goto tfwt_exit;
+					goto zw_exit;
                 }
 
             }
         } while ((err == ZIP_OK) && (size_read>0));
 
 		// close file
-		err = zipCloseFileInZip(zf);
+		err = zipCloseFileInZip(*zf);
         if (err!=ZIP_OK)
 		{
             printf("error in closing %s in the zipfile\n", filenameinzip);
-			goto tfwt_exit;
+			goto zw_exit;
 		}
 
+zw_exit:
+		g_free(buf);
 		fclose(f);
+		return err;
+}
+
+/**
+ * tifiles_file_write_tigroup:
+ * @filename: the name of file to load.
+ * @content: where to store content.
+ *
+ * This function store TiGroup contents to file. Please note that contents 
+ * can contains no data. In this case, the file is void but created.
+ *
+ * The temporary folder is used by this function to store temporary files.
+ *
+ * Return value: an error code if unsuccessful, 0 otherwise.
+ **/
+TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
+{
+#ifdef HAVE_LIBZ
+	zipFile zf;
+	int err = ZIP_OK;
+	gchar *old_dir = g_get_current_dir();
+	TigEntry **ptr;
+
+	// Open ZIP archive (and set comment)
+#ifdef USEWIN32IOAPI
+        zlib_filefunc_def ffunc;
+        fill_win32_filefunc(&ffunc);
+
+        zf = zipOpen2(filename, APPEND_STATUS_CREATE, &(content->comment), &ffunc);
+#else
+        zf = zipOpen(filename, APPEND_STATUS_CREATE);
+#endif
+	if (zf == NULL)
+	{
+		printf("Can't open this file: %s\n", filename);
+		return ERR_FILE_ZIP;
+	}
+	g_chdir(g_get_tmp_dir());
+
+	// Parse entries and store
+	for(ptr = content->var_entries; *ptr; ptr++)
+	{
+		TigEntry* entry = *ptr;
+		char *fname = NULL;
+
+		// ZIP archives don't like greek chars
+		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
+
+		// write TI file into tmp folder
+		TRYC(tifiles_file_write_regular(fname, entry->content.regular, NULL));
+
+		err = zip_write(&zf, fname, content->comp_level);
+		g_free(fname);
+
+		if(err)
+			break;
+	}
+
+	for(ptr = content->app_entries; *ptr; ptr++)
+	{
+		TigEntry* entry = *ptr;
+		char *fname = NULL;
+
+		// ZIP archives don't like greek chars
+		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
+
+		// write TI file into tmp folder
+		TRYC(tifiles_file_write_flash(fname, entry->content.flash));
+
+		err = zip_write(&zf, fname, content->comp_level);
+		g_free(fname);
+
+		if(err)
+			break;
 	}
 
 	// close archive
-tfwt_exit:
 	err = zipClose(zf,NULL);
     if (err != ZIP_OK)
-      {
+    {
         printf("error in closing %s\n",filename);
-	unlink(filename);
-      }
-	g_free(buf);
+		unlink(filename);
+    }
+	
 	g_chdir(old_dir);
 	return err;
 #else

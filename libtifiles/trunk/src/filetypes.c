@@ -798,7 +798,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			// and to parse the TigEntry structures.
 			TigContent *content;
 			int ret, ok=0;
-			int k, m, n;
+			int k;
 
 			if(!tifiles_file_has_tig_header(filename))
 				return 0;
@@ -807,22 +807,20 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			ret = tifiles_file_read_tigroup(filename, content);
 			if(ret) return 0;
 
-			tifiles_te_sizeof_array(content->entries, &m, &n);
-
-			for (k = 0; k < content->num_entries; k++) 
+			for (k = 0; k < content->n_apps; k++)
 			{
-				TigEntry *te = content->entries[k];
+				TigEntry *te = content->app_entries[k];
 
-				if(te->type == TIFILE_FLASH)
-				{
-					if(tifiles_calc_are_compat(te->content.regular->model, target))
-						ok++;
-				}
-				else if(te->type & TIFILE_REGULAR)
-				{
-					if(tifiles_calc_are_compat(te->content.regular->model, target))
-						ok++;
-				}
+				if(tifiles_calc_are_compat(te->content.regular->model, target))
+					ok++;
+			}
+
+			for (k = 0; k < content->n_vars; k++)
+			{
+				TigEntry *te = content->var_entries[k];
+
+				if(tifiles_calc_are_compat(te->content.regular->model, target))
+					ok++;
 			}
 
 			tifiles_content_delete_tigroup(content);
