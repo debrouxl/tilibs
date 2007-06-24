@@ -466,6 +466,9 @@ extern "C" {
   TIEXPORT2 int TICALL tifiles_file_write_flash2(const char *filename, FlashContent *content, char **filename2);
   TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content);
 
+  TIEXPORT2 FileContent*  TICALL tifiles_content_dup_regular(FileContent *content);
+  TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
+
   TIEXPORT2 int TICALL tifiles_file_display(const char *filename);
 
   // grouped.c
@@ -525,7 +528,7 @@ extern "C" {
   // ve_fp.c
   TIEXPORT2 VarEntry*	TICALL tifiles_ve_create(void);
   TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
-  TIEXPORT2 void			TICALL tifiles_ve_delete(VarEntry*);
+  TIEXPORT2 void		TICALL tifiles_ve_delete(VarEntry*);
 
   TIEXPORT2 void*		tifiles_ve_alloc_data(size_t size);
   TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
@@ -533,16 +536,16 @@ extern "C" {
 
   TIEXPORT2 VarEntry**	TICALL tifiles_ve_create_array(int nelts);
   TIEXPORT2 VarEntry**	TICALL tifiles_ve_resize_array(VarEntry**, int nelts);
-  TIEXPORT2 void			TICALL tifiles_ve_delete_array(VarEntry**);
+  TIEXPORT2 void		TICALL tifiles_ve_delete_array(VarEntry**);
 
   TIEXPORT2 FlashPage*	TICALL tifiles_fp_create(void);
-  TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(int nelts);
-
-  TIEXPORT2 void*		tifiles_fp_alloc_data(size_t size);
   TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size);
+  TIEXPORT2 void		TICALL tifiles_fp_delete(FlashPage*);
 
-  TIEXPORT2 void			TICALL tifiles_fp_delete(FlashPage*);
-  TIEXPORT2 void			TICALL tifiles_fp_delete_array(FlashPage**);
+  TIEXPORT2 void*		TICALL tifiles_fp_alloc_data(size_t size);
+
+  TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(int nelts);  
+  TIEXPORT2 void		TICALL tifiles_fp_delete_array(FlashPage**);
 
   // undocumented
   TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders);
