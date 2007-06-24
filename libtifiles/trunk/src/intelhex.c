@@ -110,7 +110,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	  c2 = fgetc(f);
 	  c3 = fgetc(f);	//EOF checking is set to keep compatibility with old generated FLASH files (buggy)
 
-	  if((c1 != 0x0d) && (c2 != 0x0a) || (c3 == EOF))	
+	  if(((c1 != 0x0d) && (c2 != 0x0a)) || (c3 == EOF))	
 	  {
 		// end of file
 		*type = HEX_EOF;
