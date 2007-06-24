@@ -51,7 +51,7 @@ BEGIN
             VALUE "InternalName", "libtifiles2\0"
             VALUE "LegalCopyright", "Copyright © 2002-2007, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "tifiles2.dll\0"
+            VALUE "OriginalFilename", "libtifiles2-4.dll\0"
             VALUE "PrivateBuild", "$Id$\0"
             VALUE "ProductName", "TI files library\0"
             VALUE "ProductVersion", "1.0.7\0"
