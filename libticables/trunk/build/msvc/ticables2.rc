@@ -51,7 +51,7 @@ BEGIN
             VALUE "InternalName", "libticables2\0"
             VALUE "LegalCopyright", "Copyright © 1999-2007, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "ticables2.dll\0"
+            VALUE "OriginalFilename", "libticables2-1.dll\0"
             VALUE "PrivateBuild", "$Id$\0"
             VALUE "ProductName", "TI cables library\0"
             VALUE "ProductVersion", "1.0.5\0"
