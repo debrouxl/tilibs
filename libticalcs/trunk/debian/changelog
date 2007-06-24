@@ -1,3 +1,12 @@
+libticalcs2-3 (1.0.7-1) unstable; urgency=low
+
+  - fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
+	- replaced malloc/free by g_malloc/g_free
+	- replaced TNode by GNode as provided by GLib
+	- changed args for ticalcs_dirlist_ve_exist, otherwise this function is buggy 
+		with TI8x varnames (like lists due to presence of the '\' character)
+	- fixed bug in ticalcs_dirlist_ve_add when no folder exists yet
+
 libticalcs2-2 (1.0.6-1) unstable; urgency=low
 
   * Initial release
