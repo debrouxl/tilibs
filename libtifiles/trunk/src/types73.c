@@ -64,7 +64,7 @@ const char *TI73_CONST[TI73_MAXTYPES + 1][4] =
   {"", "73?", "Unknown", N_("Unknown")},
   {"", "73?", "Unknown", N_("Unknown")},
   {"DIR", "73?", "Unknown", N_("Unknown")},
-  {"", "73?", "Unknown", N_("Unknown")},
+  {"AVAR", "73v", "App Var", N_("App Var")},
   {"", "73?", "Unknown", N_("Unknown")},
   {"", "73?", "Unknown", N_("Unknown")},
   {"", "73?", "Unknown", N_("Unknown")},

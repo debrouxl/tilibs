@@ -43,6 +43,7 @@
 
 
 #define TI73_DIR    0x19
+#define TI73_AVAR	0x1A
 #define TI73_AMS    0x23
 #define TI73_APPL   0x24
 #define TI73_IDLIST 0x26
