@@ -43,7 +43,7 @@ const char *TI83p_CONST[TI83p_MAXTYPES + 1][4] =
   {"GDB", "8Xg", "GDB", N_("GDB")},
   {"", "8X?", "Unknown", N_("Unknown")},
   {"", "8X?", "Unknown", N_("Unknown")},
-  {"WINDW", "8Xw", "Window", N_("Window")},
+  {"WINDW", "8Xw", "Window Setup", N_("Window Setup")},
   {"CPLX", "8Xc", "Complex", N_("Complex")},
   {"", "8X?", "Unknown", N_("Unknown")},
   {"", "8X?", "Unknown", N_("Unknown")},
