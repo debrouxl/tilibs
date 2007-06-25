@@ -165,6 +165,30 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
+	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
+	{
+		GNode *node;
+		VarEntry *ve;
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "Window");
+		ve->type = TI84p_WINDW;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "RclWin");
+		ve->type = TI84p_ZSTO;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "TblSet");
+		ve->type = TI84p_TABLE;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+	}
+
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
@@ -922,7 +946,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 	// search for cert header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
-		if(ptr->data_type == TI83p_CERTIF)
+		if(ptr->data_type == TI83p_CERT)
 			break;
 
 	// send content
@@ -969,7 +993,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 
 	content->model = handle->model;
 	strcpy(content->name, "");
-	content->data_type = TI83p_CERTIF;
+	content->data_type = TI83p_CERT;
 	content->device_type = 0x73;
 	content->num_pages = 0;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max

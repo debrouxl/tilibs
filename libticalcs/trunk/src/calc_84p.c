@@ -141,6 +141,28 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
+	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
+	if(0)
+	{
+		GNode *node;
+		VarEntry *ve;
+
+		ve = tifiles_ve_create();
+		ve->type = TI84p_WINDW;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		ve->type = TI84p_ZSTO;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		ve->type = TI84p_TABLE;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+	}
+
 	TRYF(cmd_s_dirlist_request(handle, size, aids));
 	do
 	{

@@ -131,6 +131,42 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	folder = g_node_new(NULL);
 	g_node_append(*vars, folder);
 
+	// Add permanent variables (Func, Pol, Param, DifEq, ZRCL as WIND, WIND, WIND, WIND, WIND)
+	{
+		GNode *node;
+		VarEntry *ve;
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "Func");
+		ve->type = TI86_FUNC;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "Pol");
+		ve->type = TI86_POL;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "Param");
+		ve->type = TI86_PARAM;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "DifEq");
+		ve->type = TI86_DIFEQ;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+
+		ve = tifiles_ve_create();
+		strcpy(ve->name, "ZRCL");
+		ve->type = TI86_ZRCL;
+		node = g_node_new(ve);
+		g_node_append(folder, node);
+	}
+
 	for (;;) 
 	{
 		VarEntry *ve = tifiles_ve_create();
