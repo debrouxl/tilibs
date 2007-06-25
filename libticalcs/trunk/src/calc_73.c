@@ -176,11 +176,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
-		ve = tifiles_ve_create();
-		strcpy(ve->name, "RclWin");
-		ve->type = TI84p_ZSTO;
-		node = g_node_new(ve);
-		g_node_append(folder, node);
+		if(handle->model != CALC_TI73)
+		{
+			ve = tifiles_ve_create();
+			strcpy(ve->name, "RclWin");
+			ve->type = TI84p_ZSTO;
+			node = g_node_new(ve);
+			g_node_append(folder, node);
+		}
 
 		ve = tifiles_ve_create();
 		strcpy(ve->name, "TblSet");
