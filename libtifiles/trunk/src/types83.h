@@ -36,6 +36,9 @@
 #define TI83_PIC   0x07
 #define TI83_GDB   0x08
 #define TI83_CPLX  0x0C
+#define TI83_WINDW	0x0F
+#define TI83_ZSTO	0x10
+#define TI83_TABLE	0x11
 #define TI83_BKUP  0x13
 #define TI83_DIR   0x19
 
