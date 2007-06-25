@@ -148,6 +148,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	fixup(memory);
 	TRYF(ti82_send_ACK());
 	ti->mem_free = memory;
+	
+	folder = g_node_new(NULL);
+	g_node_append(*vars, folder);
 
 	// Add permanent variables (Window, RclWindow, TblSet aka WINDW, ZSTO, TABLE)
 	{
@@ -172,9 +175,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 	}
-	
-	folder = g_node_new(NULL);
-	g_node_append(*vars, folder);
 
 	for (;;) 
 	{
