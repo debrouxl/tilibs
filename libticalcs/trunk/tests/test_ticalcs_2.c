@@ -109,7 +109,7 @@ static int recv_screen(CalcHandle *h)
 
 static int get_dirlist(CalcHandle *h)
 {
-	TNode *vars, *apps;
+	GNode *vars, *apps;
 
 	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
 	ticalcs_dirlist_display(vars);

@@ -2,12 +2,12 @@
 # Copyright (C) 2003 Sylvain Garsault
 # Copyright (C) 2007 Romain Liévin
 # This file is distributed under the same license as the libtifiles package.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs 4.5.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-24 08:38+0200\n"
+"POT-Creation-Date: 2007-05-16 22:27+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
