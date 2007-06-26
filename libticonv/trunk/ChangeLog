@@ -2,6 +2,10 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
+- 26/06/2007, version 1.0.4: roms
+	- added vartype argument to tokenization & untokenization functions because TI84+/USB and Window Settings
+		variables need them. Modified functions which rely on these 2 functions, too.
+
 - 10/06/2007, version 1.0.3: roms
 	- fixed translation of Pic/Gdb/StrX variable names (TI84+/USB)
 	- fixed translation of Y? variable names (TI84+/USB)

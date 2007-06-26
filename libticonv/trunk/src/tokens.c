@@ -23,8 +23,8 @@
 	This unit contains raw varname to TI-charset conversion routines.
  
 	The detokenization is used to translate some raw varnames into TI-charset 
-	encoded varnames. Tokenization is used for TI84+ USB only.
-	Depends on the calculator model.
+	encoded varnames. Tokenization is the reverse way. 
+	Many functions depends on the calculator model and the variable type ID.
 
 	This is needed for the following calcs: 73/82/83/83+/84+.
 */
@@ -46,12 +46,47 @@
 //---
 
 // beware: raw varname is not always NUL-terminated
-static char *detokenize_varname(CalcModel model, const char *src)
+static char *detokenize_varname(CalcModel model, const char *src, unsigned char type)
 {
 	int i;
 	unsigned int tok1 = src[0] & 0xff;
 	unsigned int tok2 = src[1] & 0xff;
 	char *dst;
+
+	switch(model)
+	{
+	case CALC_TI73:
+		if(type == 0x0F)
+			return (dst = g_strdup_printf("Window"));
+		if(type == 0x11)
+			return (dst = g_strdup_printf("TblSet"));
+		break;
+	case CALC_TI83:
+	case CALC_TI83P:
+	case CALC_TI84P:
+	case CALC_TI84P_USB:
+		if(type == 0x0F)
+			return (dst = g_strdup_printf("Window"));
+		if(type == 0x10)
+			return (dst = g_strdup_printf("RclWin"));
+		if(type == 0x11)
+			return (dst = g_strdup_printf("TblSet"));
+		break;
+	case CALC_TI86:
+		if(type == 0x17)
+			return (dst = g_strdup_printf("Func"));
+		if(type == 0x18)
+			return (dst = g_strdup_printf("Pol"));
+		if(type == 0x19)
+			return (dst = g_strdup_printf("Param"));
+		if(type == 0x1A)
+			return (dst = g_strdup_printf("DifEq"));
+		if(type == 0x1B)
+			return (dst = g_strdup_printf("ZRCL"));
+		break;
+	default: 
+		break;
+	}
 
 	switch (tok1) 
     {
@@ -329,7 +364,7 @@ static char *detokenize_varname(CalcModel model, const char *src)
  *
  * Return value: a newly allocated string. Must be freed when no longer used.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src)
+TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type)
 {
 	switch (model) 
 	{
@@ -338,7 +373,7 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
-		return detokenize_varname(model, src);
+		return detokenize_varname(model, src, type);
 	case CALC_TI85:
 	case CALC_TI86:
 	case CALC_TI89:
@@ -375,9 +410,54 @@ static int shift(int v)
  *
  * Return value: a newly allocated string. Must be freed when no longer used.
  **/
-TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_)
+TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned char type)
 {
 	const unsigned char *src = (const unsigned char *)src_;
+
+	switch(model)
+	{
+		case CALC_TI73:
+			if(!strcmp("Window", src) || type == 0x0F)
+				return g_strdup("");
+			if(!strcmp("TblSet", src) || type == 0x11)
+				return g_strdup("");
+		break;
+		case CALC_TI83:
+		case CALC_TI83P:
+		case CALC_TI84P:
+			if(!strcmp("Window", src) || type == 0x0F)
+				return g_strdup("");
+			if(!strcmp("RclWin", src) || type == 0x10)
+				return g_strdup("");
+			if(!strcmp("TblSet", src) || type == 0x11)
+				return g_strdup("");
+		break;
+		case CALC_TI86:
+			if(!strcmp("Func", src)  || type == 0x17)
+				return g_strdup("");
+			if(!strcmp("Pol", src)   || type == 0x18)
+				return g_strdup("");
+			if(!strcmp("Param", src) || type == 0x19)
+				return g_strdup("");
+			if(!strcmp("DifEq", src) || type == 0x1A)
+				return g_strdup("");
+			if(!strcmp("ZRCL", src)  || type == 0x1B)
+				return g_strdup("");
+		break;
+		case CALC_TI84P_USB:
+			if(type == 0x01)	// Named Lists
+			{
+				gchar *str = g_malloc0(9);
+					
+				str[0] = 0x5D;
+				strncpy(str+1, src, 7);
+				str[8] = '\0';
+				return str;
+			}
+		break;
+		default: 
+		break;
+	}
 
 	if(src[0] == '[' && src[2] == ']' && strlen(src_) == 3)
 	{

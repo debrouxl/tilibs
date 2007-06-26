@@ -131,19 +131,19 @@ extern "C" {
   TIEXPORT4 char*		   TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigned short *utf16);
   TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, const char *ti);
 
-  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst);
-  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src);
+  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type);
+  TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16  (CalcModel model, const char *src, unsigned char type);
 
-  TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT4 char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src           );
+  TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src, char *dst, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_to_utf8  (CalcModel model, const char *src, unsigned char type);
 
-  TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT4 char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char *src, char *dst, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_to_filename  (CalcModel model, const char *src, unsigned char type);
 
-  TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT4 char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src);
-  TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst);
-  TIEXPORT4 char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_to_tifile  (CalcModel model, const char *src, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_from_tifile  (CalcModel model, const char *src, unsigned char type);
 
   // charset.c
   extern TIEXPORT4 const unsigned long TICALL ti73_charset[256];
@@ -155,8 +155,8 @@ extern "C" {
   extern TIEXPORT4 const unsigned long TICALL ti9x_charset[256];
 
   // tokens.c
-  TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src);
-  TIEXPORT4 char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src);
+  TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type);
+  TIEXPORT4 char* TICALL ticonv_varname_tokenize  (CalcModel model, const char *src, unsigned char type);
 
   // filename.c
   TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src);
