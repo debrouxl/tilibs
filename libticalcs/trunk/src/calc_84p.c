@@ -257,7 +257,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION, AID_VAR_SIZE };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
 	CalcAttr **attrs;
 	const int nattrs = 1;
@@ -278,7 +278,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	TRYF(cmd_s_var_request(handle,"",vr->name,naids,aids,nattrs,CA(attrs)));
 	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(nattrs);
+	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
@@ -290,11 +290,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
+	ve->size = GINT32_FROM_BE(*((uint32_t *)(attrs[2]->data)));
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
 	
 	g_free(data);	
-	ca_del_array(nattrs, attrs);
+	ca_del_array(naids, attrs);
 	return 0;
 }
 

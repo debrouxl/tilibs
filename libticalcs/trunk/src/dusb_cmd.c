@@ -434,7 +434,7 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 }
 
 // 0x000A: variable header (name is utf-8)
-// beware: attr array is allocated by function
+// beware: attr array contents is allocated by function
 int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 {
 	VirtualPacket* pkt;
