@@ -130,17 +130,18 @@ int main(int argc, char **argv)
 		ti84p_varname[3] = (char)0x81;
 
 		// TI -> UTF-8
-		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname);
+		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname, -1);
 		printf("UTF-8 varname: <%s> (%i)\n", ti82_varname, 
 		       (int)strlen(ti82_varname));
 		g_free(utf8);
 
-		utf8 = ticonv_varname_to_utf8(CALC_TI92, ti92_varname);
+		utf8 = ticonv_varname_to_utf8(CALC_TI92, ti92_varname, -1);
 		printf("UTF-8 varname: <%s> (%i)\n", ti92_varname, 
 		       (int)strlen(ti92_varname));
 		g_free(utf8);
 
-		utf8 = ticonv_varname_to_utf8(CALC_TI84P_USB, ti84p_varname);
+		utf8 = ticonv_varname_to_utf8(CALC_TI84P_USB, ti84p_varname,
+					      -1);
 		printf("UTF-8 varname: <%s> (%i)\n", ti84p_varname, 
 		       (int)strlen(ti84p_varname));
 		g_free(utf8);
@@ -149,26 +150,26 @@ int main(int argc, char **argv)
 		// TI -> filename
 		printf("raw varname: <%s> (%i)\n", ti92_varname, 
 		       (int)strlen(ti92_varname));
-		filename = ticonv_varname_to_filename(CALC_TI92, ti92_varname);
+		filename = ticonv_varname_to_filename(CALC_TI92, ti92_varname, -1);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
 
 		printf("raw varname: <%s> (%i)\n", ti82_varname, 
 		       (int)strlen(ti82_varname));
-		filename = ticonv_varname_to_filename(CALC_TI82, ti82_varname);
+		filename = ticonv_varname_to_filename(CALC_TI82, ti82_varname, -1);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
 
 		printf("raw varname: <%s> (%i)\n", ti84p_varname, 
 		       (int)strlen(ti84p_varname));
-		filename = ticonv_varname_to_filename(CALC_TI84P_USB, ti84p_varname);
+		filename = ticonv_varname_to_filename(CALC_TI84P_USB, ti84p_varname, -1);
 		printf("filename: <%s>\n", filename);
 		g_free(filename);
 
 		// varname -> varname
 		printf("raw varname: <%s> (%i)\n", ti84p_varname, 
 		       (int)strlen(ti84p_varname));
-		varname = ticonv_varname_to_tifile(CALC_TI84P_USB, ti84p_varname);
+		varname = ticonv_varname_to_tifile(CALC_TI84P_USB, ti84p_varname, -1);
 		printf("varname: <%s>\n", varname);
 		g_free(varname);
 	}
