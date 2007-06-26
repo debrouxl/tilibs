@@ -194,7 +194,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=%s, attr=%i)",
        varsize, vartype, trans, varattr);
 
@@ -247,7 +247,7 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=%s, attr=%i)",
        varsize, vartype, trans, varattr);
 
@@ -286,7 +286,7 @@ int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 	pad_buffer(buffer + 3, '\0');
 	buffer[11] = 0x00;
 
-	ticonv_varname_to_utf8_s(handle->model, varname, trans);
+	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: DEL (name=%s)", trans);
 
 	TRYF(dbus_send(handle, PC_TI7383, CMD_DEL, 11, buffer));
@@ -323,7 +323,7 @@ int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: VAR (size=0x%04X, id=%02X, name=%s, attrb=%i)",
 	  *varsize, *vartype, trans, *varattr);
 
@@ -469,7 +469,7 @@ int ti73_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   varname[8] = '\0';
   *varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: RTS (size=0x%04X, id=%02X, name=%s, attrb=%i)",
 	  *varsize, *vartype, trans, *varattr);
 

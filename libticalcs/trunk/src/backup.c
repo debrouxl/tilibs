@@ -243,8 +243,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 			if(((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED)) ||
 			   ((mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED))
 			{
-				fldname = ticonv_varname_to_filename(handle->model, ve->folder);
-				varname = ticonv_varname_to_filename(handle->model, ve->name);
+				fldname = ticonv_varname_to_filename(handle->model, ve->folder, -1);
+				varname = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
 				if(handle->calc->features & FTS_FOLDER)
 					filename = g_strconcat(fldname, ".", varname, ".", 
 						tifiles_vartype2fext(handle->model, ve->type), NULL);
@@ -285,7 +285,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 			update_->cnt3++;
 			update_->pbar();
 
-			basename = ticonv_varname_to_filename(handle->model, ve->name);
+			basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
 			filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
 			g_free(basename);
 

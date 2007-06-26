@@ -129,7 +129,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 
     if (fe != NULL) 
 	{
-		utf8 = ticonv_varname_to_utf8(info->model, fe->name);
+		utf8 = ticonv_varname_to_utf8(info->model, fe->name, -1);
 
       printf("| ");
       for (k = 0; k < 8; k++)
@@ -155,7 +155,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
       GNode *child = g_node_nth_child(parent, j);
       VarEntry *ve = (VarEntry *) (child->data);
 
-	  utf8 = ticonv_varname_to_utf8(info->model, ve->name);
+	  utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
 
       printf("| ");
       for (k = 0; k < 8; k++) 

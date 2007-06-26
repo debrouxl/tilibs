@@ -283,7 +283,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       break;
     }
 
-    utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
+    utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
     g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
@@ -343,7 +343,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     TRYF(ti82_send_CTS());
     TRYF(ti82_recv_ACK(NULL));
 
-    utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
+    utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
     g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();

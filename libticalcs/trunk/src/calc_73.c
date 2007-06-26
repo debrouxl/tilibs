@@ -171,7 +171,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Window");
 		ve->type = TI84p_WINDW;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -179,14 +178,12 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		if(handle->model != CALC_TI73)
 		{
 			ve = tifiles_ve_create();
-			strcpy(ve->name, "RclWin");
 			ve->type = TI84p_ZSTO;
 			node = g_node_new(ve);
 			g_node_append(folder, node);
 		}
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "TblSet");
 		ve->type = TI84p_TABLE;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -213,7 +210,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		else
 			g_node_append(root, node);
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
@@ -379,7 +376,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		  break;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model,entry->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
@@ -412,7 +409,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
     ve = content->entries[0] = tifiles_ve_create();
     memcpy(ve, vr, sizeof(VarEntry));
 
-    utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+    utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
     g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
     update_label();
@@ -498,7 +495,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
@@ -568,7 +565,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	uint8_t buf[FLASH_PAGE_SIZE + 4];
 	char *utf8;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
@@ -877,7 +874,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	char *utf8;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();

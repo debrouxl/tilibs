@@ -158,19 +158,16 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Window");
 		ve->type = TI83_WINDW;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "RclWin");
 		ve->type = TI83_ZSTO;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "TblSet");
 		ve->type = TI83_TABLE;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -194,7 +191,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
-		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
@@ -362,7 +359,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		  break;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
@@ -395,7 +392,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
@@ -503,7 +500,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	unsigned int i;
 	char *utf8;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();

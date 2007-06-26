@@ -48,8 +48,8 @@ extern "C" {
 # define LIBCALCS_VERSION VERSION
 #endif
 
-#define LIBCALCS_REQUIRES_LIBFILES_VERSION  "1.0.4"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION "1.0.4"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBFILES_VERSION		"1.0.7"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION	"1.0.4"	// useless with pkg-config
 
 /* Types */
 

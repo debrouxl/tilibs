@@ -41,7 +41,7 @@ int ti92_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   uint8_t buffer[32];
   char trans[17];
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));

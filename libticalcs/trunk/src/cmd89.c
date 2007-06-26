@@ -83,7 +83,7 @@ int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   char trans[17];
   uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
-  ticonv_varname_to_utf8_s(handle->model, varname, trans);
+  ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 
   buffer[0] = LSB(LSW(varsize));
   buffer[1] = MSB(LSW(varsize));

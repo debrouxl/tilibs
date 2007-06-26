@@ -137,31 +137,26 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Func");
 		ve->type = TI86_FUNC;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Pol");
 		ve->type = TI86_POL;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Param");
 		ve->type = TI86_PARAM;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "DifEq");
 		ve->type = TI86_DIFEQ;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "ZRCL");
 		ve->type = TI86_ZRCL;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -185,7 +180,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
-		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
@@ -386,7 +381,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		  break;
 		}
 
-		utf8 = ticonv_varname_to_utf8(handle->model, entry->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
@@ -419,7 +414,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();

@@ -209,7 +209,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			break;
 		TRYF(err);
 
-		utf8 = ticonv_varname_to_utf8(handle->model,ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"),
 			((VarEntry *) (folder->data))->name, utf8);
 		g_free(utf8);
@@ -326,7 +326,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		else 
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
 
-		utf8 = ticonv_varname_to_utf8(handle->model, varname);
+		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
@@ -371,7 +371,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
 
-	utf8 = ticonv_varname_to_utf8(handle->model, varname);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
 	update_label();
@@ -443,7 +443,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
             strcpy(ve->name, tipath);
         }
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name);
+		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();
@@ -541,7 +541,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	utf8 = ticonv_varname_to_utf8(handle->model, varname);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
@@ -578,7 +578,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, "a1234567");
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
 	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
 	g_free(utf8);
 	update_label();
