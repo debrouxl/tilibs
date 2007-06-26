@@ -132,8 +132,8 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 
 			case 0x40: dst = g_strdup("IDList"); break;
 			  
-			default: // named list
-			  dst = g_strdup_printf("1234567");
+			default: // named list (TI84+/USB)
+			  dst = g_malloc0(9);
 			  for (i = 0; i < 7; i++)
 				dst[i] = src[i + 1];
 			  break;
@@ -444,19 +444,20 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 			if(!strcmp("ZRCL", src)  || type == 0x1B)
 				return g_strdup("");
 		break;
-		case CALC_TI84P_USB:
-			if(type == 0x01)	// Named Lists
-			{
-				gchar *str = g_malloc0(9);
-					
-				str[0] = 0x5D;
-				strncpy(str+1, src, 7);
-				str[8] = '\0';
-				return str;
-			}
-		break;
 		default: 
 		break;
+	}
+
+	if(type == 0x01 && (model == CALC_TI83P || model == CALC_TI84P))
+	{
+		// Named Lists
+		gchar *str = g_malloc0(9);
+			
+		str[0] = 0x5D;
+		strncpy(str+1, src, 7);
+		str[8] = '\0';
+
+		return str;
 	}
 
 	if(src[0] == '[' && src[2] == ']' && strlen(src_) == 3)

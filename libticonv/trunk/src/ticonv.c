@@ -392,7 +392,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 		ti = ticonv_charset_utf16_to_ti(CALC_TI84P, utf16);
 		g_free(utf16);
 		
-		dst = ticonv_varname_tokenize(CALC_TI84P/*_USB*/, ti, type);
+		dst = ticonv_varname_tokenize(CALC_TI84P, ti, type);
 		g_free(ti);
 	}
 	else if(model == CALC_TI89T_USB)
