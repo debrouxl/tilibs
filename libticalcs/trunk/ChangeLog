@@ -10,6 +10,7 @@ Log:
 		with TI8x varnames (like lists due to presence of the '\' character)
 	- fixed bug in ticalcs_dirlist_ve_add when no folder exists yet
 	- added permanent TI83+/TI84+/83/86 variables to dirlist (Window Settings and others)
+	- updated to follow ticonv API changes
 
 - 12/04/2007, version 1.0.6: roms
 	- wrong battery status (debug)
