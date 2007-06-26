@@ -8,6 +8,7 @@ Log:
 	- fixed ti8x_file_write_read (better end of file check)
 	- fixed some TI-86 types (Window Settings)
 	- fixed names of TI83+/84+/86 types
+	- updated to follow some ticonv API changes
 
 - 10/06/2007, version 1.0.6: roms
 	- fixed sending of TIG files: set model as TI84P_USB to enable UTF8 conversion
