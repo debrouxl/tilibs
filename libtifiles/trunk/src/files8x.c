@@ -210,7 +210,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
     if (is_ti8586(content->model))
       if(fread_byte(f, &name_length) < 0) goto tfrr;
     if(fread_n_chars(f, name_length, varname) < 0) goto tfrr;
-	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name);
+	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
 	if((content->model == CALC_TI86) && padded86)
 	{
 		for(j = 0; j < 8-name_length; j++)
@@ -631,7 +631,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
     if(fwrite_byte(f, entry->type) < 0) goto tfwr;
 	memset(varname, 0, sizeof(varname));
-	ticonv_varname_to_tifile_s(content->model_dst, entry->name, varname);
+	ticonv_varname_to_tifile_s(content->model_dst, entry->name, varname, entry->type);
     if (is_ti8586(content->model)) 
 	{
       name_length = strlen(varname);
@@ -874,7 +874,8 @@ int ti8x_content_display_regular(Ti8xRegular *content)
   {
     tifiles_info("Entry #%i", i);
     tifiles_info("  name:        %s",
-		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, trans));
+		ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, 
+			trans, content->entries[i]->type));
     tifiles_info("  type:        %02X (%s)",
 	    content->entries[i]->type,
 	    tifiles_vartype2string(content->model, content->entries[i]->type));

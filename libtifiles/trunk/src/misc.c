@@ -262,7 +262,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		const char *part3;
 		char *tmp;
 		
-		part2 = ticonv_varname_to_filename(model, ve->name);
+		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);
 
 		tmp = g_strconcat(part2, ".", part3, NULL);
@@ -278,8 +278,8 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		const char *part3;
 		char *tmp;
 		
-		part1 = ticonv_varname_to_filename(model, ve->folder);
-		part2 = ticonv_varname_to_filename(model, ve->name);
+		part1 = ticonv_varname_to_filename(model, ve->folder, -1);
+		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);
 
 		tmp = g_strconcat(part1, ".", part2, ".", part3, NULL);
