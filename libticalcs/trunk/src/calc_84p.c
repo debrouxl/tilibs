@@ -422,7 +422,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, 
 			       nattrs, CA(attrs)));
 	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(nattrs);
+	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
@@ -469,7 +469,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	content->num_pages = page+1;
 
 	g_free(data);	
-	ca_del_array(nattrs, attrs);
+	ca_del_array(naids, attrs);
 	return 0;
 }
 
@@ -610,7 +610,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(cmd_s_var_request(handle, "", "IDList", naids, aids, 
 			       nattrs, CA(attrs)));
 	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(nattrs);
+	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, folder, name, attrs));
 	TRYF(cmd_r_var_content(handle, (uint32_t *)&varsize, &data));
 
@@ -623,7 +623,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	id[7*2] = '\0';
 
 	g_free(data);
-	ca_del_array(nattrs, attrs);
+	ca_del_array(naids, attrs);
 	return 0;
 }
 

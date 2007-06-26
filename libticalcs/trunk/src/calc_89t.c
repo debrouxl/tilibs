@@ -310,7 +310,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(cmd_s_var_request(handle, vr->folder, vr->name, naids, aids, 
 			       nattrs, CA(attrs)));
 	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(nattrs);
+	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
@@ -326,7 +326,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve->data, data, ve->size);
 	g_free(data);	
 
-	ca_del_array(nattrs, attrs);
+	ca_del_array(naids, attrs);
 	return 0;
 }
 
@@ -412,7 +412,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, 
 			       nattrs, CA(attrs)));
 	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(nattrs);
+	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
 	TRYF(cmd_r_var_content(handle, NULL, &data));
 
@@ -426,7 +426,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	memcpy(content->data_part, data, content->data_length);
 	g_free(data);
 
-	ca_del_array(nattrs, attrs);
+	ca_del_array(naids, attrs);
 	return 0;
 }
 
