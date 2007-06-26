@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = api.txt
+EXTRA_DIST = api.txt html
 docdir = ${datadir}/doc/${PACKAGE}
 
 all: docs
@@ -20,6 +20,7 @@ install:
 	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
 	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
 	$(DESTDIR)${docdir}
+
 uninstall:
 	rm -f $(DESTDIR)${docdir}/charsets/*
 	rm -f $(DESTDIR)${docdir}/html/*
