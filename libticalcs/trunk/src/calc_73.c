@@ -451,7 +451,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int i, j, k;
 	int size;
 	char *utf8;
-	int se = 1;
+	//	int se = 1;
 
 	// check for SilverEdition (not useable in boot mode, sic!)
 #if 0

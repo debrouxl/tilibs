@@ -7,8 +7,7 @@ lib_LTLIBRARIES = libticalcs2.la
 libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
 	ticalcs.h export3.h stdints3.h \
-	keys73.h keys83p.h keys89.h keys92p.h \
-	tnode.h
+	keys73.h keys83p.h keys89.h keys92p.h
 
 # build instructions
 libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \

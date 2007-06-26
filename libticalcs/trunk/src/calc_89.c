@@ -282,8 +282,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 			if(ve->type == TI89_APPL) 
 			{
-				VarEntry arg = {0};
+				VarEntry arg;
 
+				memset(&arg, 0, sizeof(arg));
 				strcpy(arg.name, ve->name);
 				if(!ticalcs_dirlist_ve_exist(*apps, &arg))
 				{

@@ -415,7 +415,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	}
 		
 	// folder doesn't exist? => create!
-	if(!found && fe || !g_node_n_children(tree) && tifiles_has_folder(info->model))
+	if((!found && fe) || 
+	   (!g_node_n_children(tree) && tifiles_has_folder(info->model)))
 	{	
 		fe = tifiles_ve_create();
 		strcpy(fe->name, entry->folder);
