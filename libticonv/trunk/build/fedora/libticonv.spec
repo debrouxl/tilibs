@@ -1,6 +1,6 @@
 Name: libticonv
 Epoch: 1
-Version: 1.0.3
+Version: 1.0.4
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -72,6 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.4-1
+Update to 1.0.4.
+
 * Sun Jun 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.3-1
 Update to 1.0.3.
 
