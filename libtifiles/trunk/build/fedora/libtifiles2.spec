@@ -7,7 +7,7 @@ Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: libticonv-devel >= 1:0.0.5, zlib-devel, glib2-devel >= 2.6.0, tfdocgen
+BuildRequires: libticonv-devel >= 1:1.0.4, zlib-devel, glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
@@ -18,7 +18,7 @@ Summary: Development files for %{name}
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticonv-devel >= 1:0.0.5, glib2-devel >= 2.6.0
+Requires: libticonv-devel >= 1:1.0.4, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop applications using the
 %{name} library.
@@ -71,8 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
-* Sun Jun 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
+* Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
 Update to 1.0.7.
+Update libticonv-devel BuildRequires.
 
 * Wed May 16 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
 Drop -n libtifiles, the tarball uses name-version format now.
