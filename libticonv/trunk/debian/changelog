@@ -1,13 +1,15 @@
 libticonv2 (1.0.4-1) unstable; urgency=low
 
-  - 
+  * See ChangeLog.
+
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:35 +0200
 
 libticonv2 (1.0.3-1) unstable; urgency=low
 
-  - fixed translation of Pic/Gdb/StrX variable names (TI84+/USB)
-  - fixed translation of Y? variable names (TI84+/USB)
-  - added catching of some critical errors
+  * See ChangeLog.
 
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:34 +0200
+	
 libticonv2 (1.0.2-1) unstable; urgency=low
 
   * Initial release
