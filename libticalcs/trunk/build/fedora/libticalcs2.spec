@@ -7,7 +7,7 @@ Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
 License: GPL
-BuildRequires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.3, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, tfdocgen
+BuildRequires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI calculators through a common API
 %description
@@ -18,7 +18,7 @@ Summary: Development files for %{name}
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.3, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0
+Requires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop applications using the
 %{name} library.
@@ -71,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
-* Mon Jun 25 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
+* Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
 Update to 1.0.7.
 Drop obsolete backported patch.
 Update tilibs BuildRequires.
