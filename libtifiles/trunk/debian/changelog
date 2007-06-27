@@ -1,18 +1,12 @@
 libtifiles2-4 (1.0.7-1) unstable; urgency=low
 
-  - fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
-	- replaced malloc/free by g_malloc/g_free
-	- replaced TNode by GNode as provided by GLib
-	- changed args for ticalcs_dirlist_ve_exist, otherwise this function is buggy 
-		with TI8x varnames (like lists due to presence of the '\' character)
-	- fixed bug in ticalcs_dirlist_ve_add when no folder exists yet
-	- wrong battery status (debug)
-	- no clock in TI83+ (SE); no clock in TI84+, too (not handled yet)
-	- bug #1563667: impossible to flash TI-83+/SE
+  * See ChangeLog.
 
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:35 +0200
+	
 libtifiles2-3 (1.0.5-1) unstable; urgency=low
 
-  * Initial release
+  * Initial release.
 
  -- Romain LIEVIN <roms@tilp.info>  Wed, 25 Apr 2007 15:18:33 +0200
 
