@@ -1,18 +1,5 @@
-libticonv2 (1.0.4-1) unstable; urgency=low
+libticonv3 (1.0.4-1) unstable; urgency=low
 
-  * See ChangeLog.
+  * Initial release.
 
  -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:35 +0200
-
-libticonv2 (1.0.3-1) unstable; urgency=low
-
-  * See ChangeLog.
-
- -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:34 +0200
-	
-libticonv2 (1.0.2-1) unstable; urgency=low
-
-  * Initial release
-
- -- Romain LIEVIN <roms@tilp.info>  Wed, 25 Apr 2007 15:18:33 +0200
-
