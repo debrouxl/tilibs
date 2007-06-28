@@ -279,7 +279,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\tifiles2.rc
+SOURCE=..\mingw\tifiles2.rc
 # End Source File
 # Begin Source File
 
