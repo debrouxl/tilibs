@@ -959,6 +959,7 @@ tfrt_exit:
 #endif
 }
 
+#ifdef HAVE_LIBZ
 static int zip_write(zipFile *zf, const char *fname, int comp_level)
 {
 		int err = ZIP_OK;
@@ -1047,6 +1048,7 @@ zw_exit:
 		fclose(f);
 		return err;
 }
+#endif
 
 /**
  * tifiles_file_write_tigroup:
