@@ -387,7 +387,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\ticalcs2.rc
+SOURCE=..\mingw\ticalcs2.rc
 # End Source File
 # Begin Source File
 
