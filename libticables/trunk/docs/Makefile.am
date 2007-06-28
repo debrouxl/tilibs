@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = api.txt
+EXTRA_DIST = api.txt html
 docdir = ${datadir}/doc/${PACKAGE}
 
 all: docs
