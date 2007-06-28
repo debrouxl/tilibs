@@ -127,7 +127,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\ticonv.rc
+SOURCE=..\mingw\ticonv.rc
 # End Source File
 # End Target
 # End Project
