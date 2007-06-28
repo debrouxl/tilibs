@@ -223,7 +223,7 @@ SOURCE=..\..\ChangeLog
 # End Source File
 # Begin Source File
 
-SOURCE=.\ticables2.rc
+SOURCE=..\mingw\ticables2.rc
 # End Source File
 # Begin Source File
 
