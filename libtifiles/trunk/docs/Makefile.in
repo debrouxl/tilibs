@@ -209,7 +209,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = api.txt
+EXTRA_DIST = api.txt html
 all: all-am
 
 .SUFFIXES:
@@ -379,6 +379,7 @@ install:
 	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
 	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
 	$(DESTDIR)${docdir}
+
 uninstall:
 	rm -f $(DESTDIR)${docdir}/html/*
 
