@@ -1,14 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = src tests
-
-if OS_WIN32
-SUBDIRS += build/mingw
-endif
+SUBDIRS = build/mingw src tests
 
 if USE_DOCGEN
-SUBDIRS += docs
+  SUBDIRS += docs
 endif
 
 EXTRA_DIST = LOGO build

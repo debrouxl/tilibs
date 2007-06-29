@@ -167,10 +167,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = \
-	ticonv.rc \
-	ticonv.rc.in
-
+EXTRA_DIST = ticonv.rc
 @OS_WIN32_TRUE@noinst_DATA = ticonv-rc.o
 all: all-am
 
@@ -333,8 +330,10 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
-ticonv-rc.o : ticonv.rc
-	windres.exe ticonv.rc $@
+@OS_WIN32_TRUE@all: ticonv-rc.o
+
+@OS_WIN32_TRUE@ticonv-rc.o : ticonv.rc
+@OS_WIN32_TRUE@	windres.exe ticonv.rc $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
