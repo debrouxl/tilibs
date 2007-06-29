@@ -37,6 +37,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@OS_WIN32_FALSE@libtifiles2_la_DEPENDENCIES =
+@OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/tifiles2-rc.o
 subdir = src
 DIST_COMMON = $(libtifilesinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -57,7 +59,6 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libtifilesincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libtifiles2_la_DEPENDENCIES =
 am__libtifiles2_la_SOURCES_DIST = *.h minizip/*.h comments.c error.c \
 	files8x.c files9x.c filesxx.c filetypes.c grouped.c intelhex.c \
 	logging.c misc.c rwfile.c tifiles.c tigroup.c type2str.c \
@@ -290,7 +291,8 @@ libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	@GLIB_CFLAGS@ @TICONV_CFLAGS@ -DTIFILES_EXPORTS
 
 libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@ @TICONV_LIBS@
-libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@ \
+	$(am__append_1)
 libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
 	error.c \
@@ -311,6 +313,7 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	ve_fp.c \
 	$(zip_sources)
 
+@OS_WIN32_TRUE@libtifiles2_la_DEPENDENCIES = ../build/mingw/tifiles2-rc.o
 EXTRA_DIST = minizip/*
 all: all-am
 
