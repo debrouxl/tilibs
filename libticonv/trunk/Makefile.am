@@ -7,7 +7,7 @@ if USE_DOCGEN
 SUBDIRS += docs
 endif
 
-EXTRA_DIST = LOGO
+EXTRA_DIST = LOGO build
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticonv.pc

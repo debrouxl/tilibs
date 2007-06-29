@@ -205,7 +205,7 @@ target_alias = @target_alias@
 
 # Subdirectories to scan
 SUBDIRS = src tests $(am__append_1)
-EXTRA_DIST = LOGO
+EXTRA_DIST = LOGO build
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticonv.pc
 all: config.h
