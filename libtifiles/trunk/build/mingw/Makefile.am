@@ -1,12 +1,15 @@
-EXTRA_DIST = tifiles2.rc
+BASE	 = tifiles2
+RC	?= windres
+
+EXTRA_DIST = $(BASE).rc
 
 if OS_WIN32
-  noinst_DATA = tifiles2-rc.o
+  noinst_DATA = $(BASE)-rc.o
 endif
 
 if OS_WIN32
-all: tifiles2-rc.o
+all: $(BASE)-rc.o
 
-tifiles2-rc.o : tifiles2.rc
-	windres.exe tifiles2.rc $@
+$(BASE)-rc.o : $(BASE).rc
+	$(RC) $(BASE).rc $@
 endif
