@@ -2,6 +2,8 @@ libticables2-1 (1.0.6-1) unstable; urgency=low
 
   * Changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008.
 
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 27 Jun 2007 23:04:35 +0200
+	
 libticables2-1 (1.0.5-1) unstable; urgency=low
 
   * Initial release

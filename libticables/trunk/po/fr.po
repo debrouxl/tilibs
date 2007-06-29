@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.0.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-19 08:27+0200\n"
+"POT-Creation-Date: 2007-06-29 10:46+0200\n"
 "PO-Revision-Date: 2007-02-23 16:08+0100\n"
 "Last-Translator: Romain Lievin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -144,8 +144,12 @@ msgid "Msg: unable to load TiglUsb library."
 msgstr "Msg: impossible de charger la librairie TiglUsb."
 
 #: src/error.c:192
-msgid "Cause: is the LPG's SilverLink/DirectLink driver installed?"
-msgstr "Cause: est-ce que le pilote du SilverLink/DirectLink est installé?"
+msgid ""
+"Cause: the LPG's SilverLink/DirectLink driver is not installed. TiLP can't "
+"use the Ti-Connect driver so you have to install the LPG's one. It can be "
+"download from <http://lpg.ticalc.org/prj_usb/index.html> and you will find "
+"installation instruction on the same web site."
+msgstr ""
 
 #: src/error.c:198
 msgid "Msg: unable to release TiglUsb library."
@@ -336,6 +340,9 @@ msgstr "  périph  : %s"
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x"
+
+#~ msgid "Cause: is the LPG's SilverLink/DirectLink driver installed?"
+#~ msgstr "Cause: est-ce que le pilote du SilverLink/DirectLink est installé?"
 
 #~ msgid ""
 #~ "Cause: the /dev/ttySx node doesn't exist or you don't have required "

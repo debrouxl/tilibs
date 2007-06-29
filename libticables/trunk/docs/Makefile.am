@@ -18,6 +18,7 @@ install:
 	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
 	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
 	$(DESTDIR)${docdir}
+
 uninstall:
 	rm -f $(DESTDIR)${docdir}/html/*
 

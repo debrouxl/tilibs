@@ -72,7 +72,7 @@ pkgconfigDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(pkgconfig_DATA)
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = build intl po src tests docs
+DIST_SUBDIRS = intl po src tests docs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -246,10 +246,10 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # Subdirectories to scan
-SUBDIRS = build intl po src tests $(am__append_1)
+SUBDIRS = intl po src tests $(am__append_1)
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO
+EXTRA_DIST = LOGO build
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticables2.pc
 all: config.h
