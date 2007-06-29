@@ -28,7 +28,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 1999-2007, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "libticalcs2-6.dll\0"
-            VALUE "PrivateBuild", "$Id$\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TI calculators library\0"
             VALUE "ProductVersion", "1.0.7\0"
             VALUE "SpecialBuild", "Windows9x/NT4 version\0"
