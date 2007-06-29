@@ -34,6 +34,8 @@ AC_CONFIG_FILES([
   Makefile
   docs/Makefile
   src/Makefile
+  src/rc/Makefile
+  src/rc/ticonv.rc
   tests/Makefile
   ticonv.pc
 ])

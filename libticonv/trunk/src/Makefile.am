@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = rc
+
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
@@ -16,6 +18,10 @@ libticonv_la_LIBADD = @GLIB_LIBS@
 libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
 	ticonv.c charset.c tokens.c filename.c $(opt)
+
+if OS_WIN32
+  libticonv_la_DEPENDENCIES = ./rc/ticonv-rc.o
+endif
 
 if !USE_ICONV
 install-data-hook:

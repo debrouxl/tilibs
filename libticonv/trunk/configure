@@ -2459,7 +2459,7 @@ fi
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile docs/Makefile src/Makefile tests/Makefile ticonv.pc"
+ac_config_files="$ac_config_files Makefile docs/Makefile src/Makefile src/rc/Makefile src/rc/ticonv.rc tests/Makefile ticonv.pc"
 
 
 # Setup libtool.
@@ -22399,6 +22399,8 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "src/rc/Makefile") CONFIG_FILES="$CONFIG_FILES src/rc/Makefile" ;;
+    "src/rc/ticonv.rc") CONFIG_FILES="$CONFIG_FILES src/rc/ticonv.rc" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "ticonv.pc") CONFIG_FILES="$CONFIG_FILES ticonv.pc" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
