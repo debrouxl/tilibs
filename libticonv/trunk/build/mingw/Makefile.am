@@ -1,12 +1,15 @@
-EXTRA_DIST = ticonv.rc
+BASE	 = ticonv
+RC	?= windres
+
+EXTRA_DIST = $(BASE).rc
 
 if OS_WIN32
-  noinst_DATA = ticonv-rc.o
+  noinst_DATA = $(BASE)-rc.o
 endif
 
 if OS_WIN32
-all: ticonv-rc.o
+all: $(BASE)-rc.o
 
-ticonv-rc.o : ticonv.rc
-	windres.exe ticonv.rc $@
+$(BASE)-rc.o : $(BASE).rc
+	$(RC) $(BASE).rc $@
 endif
