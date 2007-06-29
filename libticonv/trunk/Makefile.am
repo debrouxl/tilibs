@@ -3,6 +3,10 @@
 # Subdirectories to scan
 SUBDIRS = src tests
 
+if OS_WIN32
+SUBDIRS += build/mingw
+endif
+
 if USE_DOCGEN
 SUBDIRS += docs
 endif
