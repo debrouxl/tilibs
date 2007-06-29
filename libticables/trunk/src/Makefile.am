@@ -26,6 +26,11 @@ libticables2_la_SOURCES = *.h \
 	ticables.c \
 	type2str.c
 
+if OS_WIN32
+  libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
+  libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o
+endif
+
 EXTRA_DIST = bsd/* linux/* macos/* win32/*
 
 wc:

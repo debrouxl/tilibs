@@ -37,6 +37,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@OS_WIN32_FALSE@libticables2_la_DEPENDENCIES =
+@OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/ticables2-rc.o
 subdir = src
 DIST_COMMON = $(libticablesinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -57,7 +59,6 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libticablesincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libticables2_la_DEPENDENCIES =
 am_libticables2_la_OBJECTS = libticables2_la-data_log.lo \
 	libticables2_la-detect.lo libticables2_la-error.lo \
 	libticables2_la-ioports.lo libticables2_la-link_gry.lo \
@@ -261,7 +262,8 @@ libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	@GLIB_CFLAGS@ @LIBUSB_CFLAGS@ -DTICABLES_EXPORTS
 
 libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
-libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
+libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@ \
+	$(am__append_1)
 libticables2_la_SOURCES = *.h \
 	data_log.c \
 	detect.c \
@@ -275,6 +277,7 @@ libticables2_la_SOURCES = *.h \
 	ticables.c \
 	type2str.c
 
+@OS_WIN32_TRUE@libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
 EXTRA_DIST = bsd/* linux/* macos/* win32/*
 all: all-am
 
