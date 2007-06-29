@@ -28,7 +28,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © 2006-2007, Romain Liévin, Kevin Kofler\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "libticonv-3.dll\0"
-            VALUE "PrivateBuild", "$Id$\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TI Conv\0"
             VALUE "ProductVersion", "1.0.4\0"
             VALUE "SpecialBuild", "Windows 9x/Me, NT4/2000/XP version\0"
