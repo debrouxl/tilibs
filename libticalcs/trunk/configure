@@ -2555,7 +2555,7 @@ fi
 
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile build/Makefile docs/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile ticalcs2.pc"
+ac_config_files="$ac_config_files Makefile docs/Makefile intl/Makefile po/Makefile.in src/Makefile tests/Makefile ticalcs2.pc"
 
 
 # Setup libtool.
@@ -30856,7 +30856,6 @@ do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "build/Makefile") CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
     "intl/Makefile") CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
