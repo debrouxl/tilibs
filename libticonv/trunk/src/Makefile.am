@@ -1,7 +1,5 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = rc
-
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install
@@ -20,8 +18,8 @@ libticonv_la_SOURCES = \
 	ticonv.c charset.c tokens.c filename.c
 
 if OS_WIN32
-  libticonv_la_DEPENDENCIES = ./rc/ticonv-rc.o
-  libticonv_la_LDFLAGS += -Wl,./rc/ticonv-rc.o
+  libticonv_la_DEPENDENCIES = ../build/mingw/ticonv-rc.o
+  libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o
 endif
 
 if !USE_ICONV

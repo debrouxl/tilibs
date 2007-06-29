@@ -6,14 +6,7 @@ AC_PREREQ(2.57)
 AC_INIT(libticonv, 1.0.4, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-MAJOR_VERSION=1
-MINOR_VERSION=0
-MICRO_VERSION=4
-AC_SUBST(MAJOR_VERSION)
-AC_SUBST(MINOR_VERSION)
-AC_SUBST(MICRO_VERSION)
-
-VERSION="$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+VERSION="1.0.4"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -27,9 +20,7 @@ LT_CURRENT=3
 LT_REVISION=0
 LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
-LT_CURRENT_MINUS_AGE=`expr $LT_CURRENT - $LT_AGE`
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
-AC_SUBST(LT_CURRENT_MINUS_AGE)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
@@ -41,10 +32,9 @@ AC_CONFIG_SRCDIR([src/ticonv.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
+  build/mingw/Makefile
   docs/Makefile
   src/Makefile
-  src/rc/Makefile
-  src/rc/ticonv.rc
   tests/Makefile
   ticonv.pc
 ])

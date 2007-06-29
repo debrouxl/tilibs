@@ -26,7 +26,7 @@
 #  include <config.h>
 #endif
 
-#define TICONV_ICONV_INTERFACE
+//#define TICONV_ICONV_INTERFACE
 
 // Need size_t declaration.
 #ifdef __cplusplus
