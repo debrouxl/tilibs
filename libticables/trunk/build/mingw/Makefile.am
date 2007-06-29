@@ -1,12 +1,12 @@
-EXTRA_DIST = ticonv.rc
+EXTRA_DIST = ticables2.rc
 
 if OS_WIN32
-  noinst_DATA = ticonv-rc.o
+  noinst_DATA = ticables2-rc.o
 endif
 
 if OS_WIN32
-all: ticonv-rc.o
+all: ticables2-rc.o
 
-ticonv-rc.o : ticonv.rc
-	windres.exe ticonv.rc $@
+ticables2-rc.o : ticables2.rc
+	windres.exe ticables2.rc $@
 endif
