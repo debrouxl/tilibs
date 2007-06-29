@@ -94,11 +94,15 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_CURRENT_MINUX_AGE = @LT_CURRENT_MINUX_AGE@
 LT_LIBVERSION = @LT_LIBVERSION@
 MAINT = @MAINT@
 MAINTAINER_MODE_FALSE = @MAINTAINER_MODE_FALSE@
 MAINTAINER_MODE_TRUE = @MAINTAINER_MODE_TRUE@
+MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OS_WIN32_FALSE = @OS_WIN32_FALSE@
@@ -337,7 +341,7 @@ uninstall-am: uninstall-info-am
 
 
 ticonv-rc.o : ticonv.rc
-	$(WINDRES) ticonv.rc $@
+	windres.exe ticonv.rc $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
