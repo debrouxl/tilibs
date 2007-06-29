@@ -32,6 +32,7 @@ AC_CONFIG_SRCDIR([src/ticalcs.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
   Makefile
+  build/mingw/Makefile
   docs/Makefile
   intl/Makefile
   po/Makefile.in

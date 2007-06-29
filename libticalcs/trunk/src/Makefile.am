@@ -35,3 +35,8 @@ libticalcs2_la_SOURCES = *.h \
 	tikeys.c \
 	type2str.c \
 	update.c
+
+if OS_WIN32
+  libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o
+  libticalcs2_la_LDFLAGS += -Wl,../build/mingw/ticalcs2-rc.o
+endif

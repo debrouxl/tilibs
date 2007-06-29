@@ -13,13 +13,14 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -35,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = docs
+subdir = build/mingw
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -46,6 +47,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
+DATA = $(noinst_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
@@ -183,7 +185,7 @@ build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
 datarootdir = @datarootdir@
-docdir = ${datadir}/doc/${PACKAGE}
+docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
@@ -210,7 +212,8 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = api.txt html
+EXTRA_DIST = ticalcs2.rc
+@OS_WIN32_TRUE@noinst_DATA = ticalcs2-rc.o
 all: all-am
 
 .SUFFIXES:
@@ -223,9 +226,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  docs/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  build/mingw/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  docs/Makefile
+	  $(AUTOMAKE) --gnu  build/mingw/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -289,10 +292,12 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 installdirs:
+install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
@@ -313,6 +318,8 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-am
+
 clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
@@ -368,28 +375,10 @@ uninstall-am: uninstall-info-am
 	uninstall-info-am
 
 
-all: docs
+@OS_WIN32_TRUE@all: ticalcs2-rc.o
 
-docs:
-@OS_WIN32_TRUE@	tfdocgen.exe ../
-@OS_WIN32_FALSE@	tfdocgen ../
-
-install:
-	@INSTALL@ -d $(DESTDIR)${docdir}
-	@INSTALL@ -d $(DESTDIR)${docdir}/html
-	@INSTALL@ -m644 html/* $(DESTDIR)${docdir}/html
-	@INSTALL@ -m644 ../AUTHORS ../ChangeLog ../COPYING ../README \
-	$(DESTDIR)${docdir}
-uninstall:
-	rm -f $(DESTDIR)${docdir}/html/*
-
-clean:
-	rm -f html/*.c.html html/*.h.html html/api.html
-
-files:
-	@files=`ls $(DISTFILES) 2> /dev/null `; for p in $$files; do \
-	  echo $$p; \
-	done
+@OS_WIN32_TRUE@ticalcs2-rc.o : ticalcs2.rc
+@OS_WIN32_TRUE@	windres.exe ticalcs2.rc $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

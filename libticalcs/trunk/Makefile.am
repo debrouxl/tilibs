@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = intl po src tests
+SUBDIRS = build/mingw intl po src tests
 
 if USE_DOCGEN
-SUBDIRS += docs
+  SUBDIRS += docs
 endif
 
 # Extra files to add to the (distributed) package
