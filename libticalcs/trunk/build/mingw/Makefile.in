@@ -212,8 +212,9 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = ticalcs2.rc
-@OS_WIN32_TRUE@noinst_DATA = ticalcs2-rc.o
+BASE = ticalcs2
+EXTRA_DIST = $(BASE).rc
+@OS_WIN32_TRUE@noinst_DATA = $(BASE)-rc.o
 all: all-am
 
 .SUFFIXES:
@@ -374,11 +375,12 @@ uninstall-am: uninstall-info-am
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
 	uninstall-info-am
 
+RC	?= windres
 
-@OS_WIN32_TRUE@all: ticalcs2-rc.o
+@OS_WIN32_TRUE@all: $(BASE)-rc.o
 
-@OS_WIN32_TRUE@ticalcs2-rc.o : ticalcs2.rc
-@OS_WIN32_TRUE@	windres.exe ticalcs2.rc $@
+@OS_WIN32_TRUE@$(BASE)-rc.o : $(BASE).rc
+@OS_WIN32_TRUE@	$(RC) $(BASE).rc $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
