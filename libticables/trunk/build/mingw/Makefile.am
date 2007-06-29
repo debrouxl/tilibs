@@ -1,12 +1,15 @@
-EXTRA_DIST = ticables2.rc
+BASE	 = ticables2
+RC	?= windres
+
+EXTRA_DIST = $(BASE).rc
 
 if OS_WIN32
-  noinst_DATA = ticables2-rc.o
+  noinst_DATA = $(BASE)-rc.o
 endif
 
 if OS_WIN32
-all: ticables2-rc.o
+all: $(BASE)-rc.o
 
-ticables2-rc.o : ticables2.rc
-	windres.exe ticables2.rc $@
+$(BASE)-rc.o : $(BASE).rc
+	$(RC) $(BASE).rc $@
 endif
