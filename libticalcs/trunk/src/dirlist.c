@@ -472,7 +472,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 	GNode *parent = NULL;
 	VarEntry *fe = NULL;
 
-	GNode *child;
+	GNode *child = NULL;
 	VarEntry *ve;
 
 	char *folder;
