@@ -165,7 +165,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = api.txt html
+EXTRA_DIST = api.txt charsets html
 all: all-am
 
 .SUFFIXES:
