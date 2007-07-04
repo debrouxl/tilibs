@@ -294,9 +294,9 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	case ERR_LIBUSB_CLAIM:
 	case ERR_LIBUSB_CONFIG:
 		*message = g_strconcat(
-			_("Msg: failed to open USB device."),
+			_("Msg: failed to open the USB device."),
 			"\n",
-			_("Cause: check that USB cable is plugged and/or the calculator is ON! Check libusb and usbfs permissions, too."),
+			_("Cause: Check that the USB cable is plugged in and that the calculator is turned ON! Also, check libusb and usbfs for valid permissions."),
 			NULL);
 		break;
 

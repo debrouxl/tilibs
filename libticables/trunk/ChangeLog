@@ -5,6 +5,7 @@ Log:
 - 19/05/2007, version 1.0.6: roms
 	- changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008.
 	This has been done in 1.0.2 but not propagated under Linux.
+	- fixed bug #1707555: grammar correction in error message.
 	
 - 02/04/2007, version 1.0.5: roms
 	- support NetBSD serial port device names (Jukka Salmi)
