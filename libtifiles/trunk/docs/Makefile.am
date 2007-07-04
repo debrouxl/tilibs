@@ -6,11 +6,7 @@ docdir = ${datadir}/doc/${PACKAGE}
 all: docs
 
 docs:
-if OS_WIN32
-	tfdocgen.exe ../
-else
 	tfdocgen ../
-endif
 
 install:
 	@INSTALL@ -d $(DESTDIR)${docdir}
