@@ -55,17 +55,6 @@ am__installdirs = "$(DESTDIR)$(libdir)" \
 	"$(DESTDIR)$(libtifilesincludedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
-am__libtifiles2_la_SOURCES_DIST = *.h minizip/*.h comments.c error.c \
-	files8x.c files9x.c filesxx.c filetypes.c grouped.c intelhex.c \
-	logging.c misc.c rwfile.c tifiles.c tigroup.c type2str.c \
-	types73.c types82.c types83.c types83p.c types84p.c types85.c \
-	types86.c types89.c types89t.c types92.c types92p.c typesv2.c \
-	typesxx.c ve_fp.c minizip/ioapi.c minizip/miniunz.c \
-	minizip/minizip.c minizip/unzip.c minizip/zip.c
-@USE_LIBZ_TRUE@am__objects_1 = libtifiles2_la-ioapi.lo \
-@USE_LIBZ_TRUE@	libtifiles2_la-miniunz.lo \
-@USE_LIBZ_TRUE@	libtifiles2_la-minizip.lo \
-@USE_LIBZ_TRUE@	libtifiles2_la-unzip.lo libtifiles2_la-zip.lo
 am_libtifiles2_la_OBJECTS = libtifiles2_la-comments.lo \
 	libtifiles2_la-error.lo libtifiles2_la-files8x.lo \
 	libtifiles2_la-files9x.lo libtifiles2_la-filesxx.lo \
@@ -80,7 +69,9 @@ am_libtifiles2_la_OBJECTS = libtifiles2_la-comments.lo \
 	libtifiles2_la-types89.lo libtifiles2_la-types89t.lo \
 	libtifiles2_la-types92.lo libtifiles2_la-types92p.lo \
 	libtifiles2_la-typesv2.lo libtifiles2_la-typesxx.lo \
-	libtifiles2_la-ve_fp.lo $(am__objects_1)
+	libtifiles2_la-ve_fp.lo libtifiles2_la-ioapi.lo \
+	libtifiles2_la-miniunz.lo libtifiles2_la-minizip.lo \
+	libtifiles2_la-unzip.lo libtifiles2_la-zip.lo
 libtifiles2_la_OBJECTS = $(am_libtifiles2_la_OBJECTS)
 libtifiles2_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -98,7 +89,7 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libtifiles2_la_SOURCES)
-DIST_SOURCES = $(am__libtifiles2_la_SOURCES_DIST)
+DIST_SOURCES = $(libtifiles2_la_SOURCES)
 libtifilesincludeHEADERS_INSTALL = $(INSTALL_HEADER)
 HEADERS = $(libtifilesinclude_HEADERS)
 ETAGS = etags
@@ -273,15 +264,6 @@ libtifilesinclude_HEADERS = \
 	files8x.h files9x.h types*.h 
 
 
-# build minizip package only if lib have been detected
-@USE_LIBZ_TRUE@zip_sources = \
-@USE_LIBZ_TRUE@	minizip/ioapi.c   \
-@USE_LIBZ_TRUE@        minizip/miniunz.c \
-@USE_LIBZ_TRUE@        minizip/minizip.c \
-@USE_LIBZ_TRUE@        minizip/unzip.c   \
-@USE_LIBZ_TRUE@        minizip/zip.c
-
-
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
@@ -308,7 +290,11 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesxx.c \
 	ve_fp.c \
-	$(zip_sources)
+	minizip/ioapi.c   \
+        minizip/miniunz.c \
+        minizip/minizip.c \
+        minizip/unzip.c   \
+        minizip/zip.c
 
 @OS_WIN32_TRUE@libtifiles2_la_DEPENDENCIES = ../build/mingw/tifiles2-rc.o
 EXTRA_DIST = minizip/*

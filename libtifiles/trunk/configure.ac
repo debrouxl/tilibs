@@ -69,10 +69,10 @@ AC_SUBST(TICONV_CFLAGS)
 AC_SUBST(TICONV_LIBS)
 
 # Check for zlib
-AC_CHECK_HEADER(zlib.h,[AC_CHECK_LIB(z, compress,,)],)
+AC_CHECK_HEADER(zlib.h)
+AC_CHECK_LIB(z, compress)
 LIBZ="$LIBS"
 AC_SUBST(LIBZ)
-AM_CONDITIONAL(USE_LIBZ, test "$LIBZ")
 
 # Checks for header files.
 AC_HEADER_STDC

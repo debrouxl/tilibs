@@ -37,10 +37,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_LIBZ
 #include "minizip/zip.h"
 #include "minizip/unzip.h"
-#endif
+
 /*
 #ifdef WIN32
 # define USEWIN32IOAPI
@@ -56,10 +55,8 @@
 
 #define WRITEBUFFERSIZE (8192)
 
-#ifdef HAVE_LIBZ
 extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
 extern int do_list(unzFile uf);
-#endif
 
 #if !GLIB_CHECK_VERSION(2, 8, 0)
 #include <errno.h>
@@ -789,7 +786,6 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
  **/
 TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 {
-#ifdef HAVE_LIBZ
 	unzFile uf = NULL;
 	unz_global_info gi;
 	unz_file_info file_info;
@@ -954,12 +950,8 @@ tfrt_exit:
 	g_free(buf);
 	unzCloseCurrentFile(uf);
 	return err ? ERR_FILE_ZIP : 0;
-#else
-	return ERR_UNSUPPORTED;
-#endif
 }
 
-#ifdef HAVE_LIBZ
 static int zip_write(zipFile *zf, const char *fname, int comp_level)
 {
 		int err = ZIP_OK;
@@ -1048,7 +1040,6 @@ zw_exit:
 		fclose(f);
 		return err;
 }
-#endif
 
 /**
  * tifiles_file_write_tigroup:
@@ -1064,7 +1055,6 @@ zw_exit:
  **/
 TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 {
-#ifdef HAVE_LIBZ
 	zipFile zf;
 	int err = ZIP_OK;
 	gchar *old_dir = g_get_current_dir();
@@ -1133,9 +1123,6 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 	
 	g_chdir(old_dir);
 	return err;
-#else
-	return ERR_UNSUPPORTED;
-#endif
 }
 
 /**
@@ -1148,7 +1135,6 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
  **/
 TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 {
-#ifdef HAVE_LIBZ
 	unzFile uf = NULL;
 
 	uf = unzOpen(filename);
@@ -1162,7 +1148,4 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 	unzCloseCurrentFile(uf);
 
 	return 0;
-#else
-	return ERR_UNSUPPORTED;
-#endif
 }

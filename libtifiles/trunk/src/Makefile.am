@@ -9,16 +9,6 @@ libtifilesinclude_HEADERS = \
 	tifiles.h export2.h stdints2.h \
 	files8x.h files9x.h types*.h 
 
-# build minizip package only if lib have been detected
-if USE_LIBZ
-zip_sources = \
-	minizip/ioapi.c   \
-        minizip/miniunz.c \
-        minizip/minizip.c \
-        minizip/unzip.c   \
-        minizip/zip.c
-endif
-
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
@@ -43,7 +33,11 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesxx.c \
 	ve_fp.c \
-	$(zip_sources)
+	minizip/ioapi.c   \
+        minizip/miniunz.c \
+        minizip/minizip.c \
+        minizip/unzip.c   \
+        minizip/zip.c
 
 if OS_WIN32
   libtifiles2_la_DEPENDENCIES = ../build/mingw/tifiles2-rc.o
