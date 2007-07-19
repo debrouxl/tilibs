@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # Subdirectories to scan
-SUBDIRS = build/mingw intl po src tests
+SUBDIRS = build/mingw po src tests
 
 if USE_DOCGEN
   SUBDIRS += docs
