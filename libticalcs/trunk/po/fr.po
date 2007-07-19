@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs 4.5.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-16 22:27+0200\n"
+"POT-Creation-Date: 2007-07-19 16:32+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -24,78 +24,78 @@ msgstr "Calculatrice vide"
 msgid "Dummy hand-held used when no calc is set"
 msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
 
-#: src/calc_73.c:190 src/calc_83.c:177 src/calc_84p.c:170 src/calc_86.c:153
+#: src/calc_73.c:214 src/calc_83.c:195 src/calc_84p.c:194 src/calc_86.c:184
 #, c-format
 msgid "Parsing %s"
 msgstr "Parcourt %s"
 
-#: src/calc_73.c:471 src/calc_73.c:929 src/calc_89.c:579 src/calc_89t.c:362
+#: src/calc_73.c:495 src/calc_73.c:953 src/calc_89.c:583 src/calc_89t.c:362
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr "Nom FLASH:  \"%s\""
 
-#: src/calc_73.c:472 src/calc_73.c:930 src/calc_89.c:580 src/calc_89t.c:363
+#: src/calc_73.c:496 src/calc_73.c:954 src/calc_89.c:584 src/calc_89t.c:363
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.c:706 src/calc_82.c:112 src/calc_82.c:257 src/calc_85.c:112
-#: src/calc_85.c:257 src/calc_86.c:201 src/calc_86.c:459
+#: src/calc_73.c:730 src/calc_82.c:112 src/calc_82.c:257 src/calc_85.c:112
+#: src/calc_85.c:257 src/calc_86.c:232 src/calc_86.c:490
 #, c-format
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_73.c:771 src/calc_84p.c:647 src/calc_89.c:784 src/calc_89t.c:584
+#: src/calc_73.c:795 src/calc_84p.c:672 src/calc_89.c:788 src/calc_89t.c:584
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:800 src/calc_84p.c:691 src/calc_89.c:809 src/calc_89t.c:628
+#: src/calc_73.c:824 src/calc_84p.c:716 src/calc_89.c:813 src/calc_89t.c:628
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:854 src/calc_83.c:486 src/calc_84p.c:743 src/calc_89.c:846
+#: src/calc_73.c:878 src/calc_83.c:504 src/calc_84p.c:768 src/calc_89.c:850
 #: src/calc_89t.c:682 src/calc_92.c:545
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
 
-#: src/calc_73.c:909 src/calc_89.c:928 src/calc_92.c:623
+#: src/calc_73.c:933 src/calc_89.c:932 src/calc_92.c:623
 #, c-format
 msgid "  OS: %s"
 msgstr "  OS: %s"
 
-#: src/calc_73.c:910 src/calc_89.c:929
+#: src/calc_73.c:934 src/calc_89.c:933
 #, c-format
 msgid "  BIOS: %s"
 msgstr "  BIOS: %s"
 
-#: src/calc_73.c:911
+#: src/calc_73.c:935
 #, c-format
 msgid "  HW: %i"
 msgstr "  HW: %i"
 
-#: src/calc_73.c:912 src/calc_89.c:930 src/calc_92.c:624
+#: src/calc_73.c:936 src/calc_89.c:934 src/calc_92.c:624
 #, c-format
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.c:912
+#: src/calc_73.c:936
 msgid "good"
 msgstr "bon"
 
-#: src/calc_73.c:912
+#: src/calc_73.c:936
 msgid "low"
 msgstr "bas"
 
-#: src/calc_73.c:957 src/calc_89.c:632
+#: src/calc_73.c:981 src/calc_89.c:636
 msgid "Header sent completely."
 msgstr "En-tête envoyé complètement"
 
-#: src/calc_73.c:967
+#: src/calc_73.c:991
 msgid "Receiving certificate"
 msgstr "Réception du certificat"
 
-#: src/calc_82.c:183 src/calc_85.c:183 src/calc_86.c:262
+#: src/calc_82.c:183 src/calc_85.c:183 src/calc_86.c:293
 msgid "Waiting for backup..."
 msgstr "En attente pour sauvegarder..."
 
@@ -108,11 +108,11 @@ msgstr "Attente de variable(s)..."
 msgid "Waiting for execing of program..."
 msgstr "En attente de l'exécution du programme..."
 
-#: src/calc_84p.c:780 src/calc_89t.c:767
+#: src/calc_84p.c:805 src/calc_89t.c:767
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:883
+#: src/calc_84p.c:908
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
@@ -131,12 +131,12 @@ msgstr "Listage du dossier dans %8s..."
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:865 src/calc_89t.c:711 src/calc_92.c:582
+#: src/calc_89.c:869 src/calc_89t.c:711 src/calc_92.c:582
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
 
-#: src/calc_89.c:1091
+#: src/calc_89.c:1095
 msgid "V200 Portable Learning Tool"
 msgstr "V200 Portable Learning Tool"
 
@@ -254,22 +254,22 @@ msgstr "Suppression variable '%s':"
 msgid "Requesting version infos:"
 msgstr "Demande de version:"
 
-#: src/dirlist.c:118
+#: src/dirlist.c:122
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
-#: src/dirlist.c:178
+#: src/dirlist.c:182
 #, c-format
 msgid "| No variables     |\n"
 msgstr "| Pas de variable  |\n"
 
-#: src/dirlist.c:180
+#: src/dirlist.c:184
 #, c-format
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
 
-#: src/dirlist.c:182
+#: src/dirlist.c:186
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
 msgstr "+------------------+----------+----+----+----------+----------+"

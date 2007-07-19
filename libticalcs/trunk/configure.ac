@@ -34,7 +34,6 @@ AC_CONFIG_FILES([
   Makefile
   build/mingw/Makefile
   docs/Makefile
-  intl/Makefile
   po/Makefile.in
   src/Makefile
   tests/Makefile
@@ -58,7 +57,7 @@ AM_CONDITIONAL(USE_DOCGEN, test "$TFDOCGEN" != "no")
 
 # Checks for libraries.
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.14.5)
+AM_GNU_GETTEXT_VERSION([0.16.1])
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
