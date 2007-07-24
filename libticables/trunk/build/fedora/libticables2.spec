@@ -1,7 +1,7 @@
 Name: libticables2
 Epoch: 1
 Version: 1.0.6
-Release: 1
+Release: 2
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
-* Tue Jul 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+* Tue Jul 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.6-2
 Update udev rules for new kernel and udev.
 
 * Thu May 31 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.6-1
