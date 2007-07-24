@@ -48,13 +48,13 @@ cat >$RPM_BUILD_ROOT/etc/udev/rules.d/60-libticables.rules <<EOF1
 # This file was installed by the libticables2 Fedora package.
 
 # SilverLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e001", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", SYMLINK+="ticable-%%k"
 # TI-84+ DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e003", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", SYMLINK+="ticable-%%k"
 # TI-89 Titanium DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e004", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", SYMLINK+="ticable-%%k"
 # TI-84+ SE DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451", SYSFS{idProduct}=="e008", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", SYMLINK+="ticable-%%k"
 EOF1
 mkdir -p $RPM_BUILD_ROOT/etc/security/console.perms.d
 cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Tue Jul 24 2007 Kevin Kofler <Kevin@tigcc.ticalc.org>
+Update udev rules for new kernel and udev.
+
 * Thu May 31 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.6-1
 Update to 1.0.6.
 
