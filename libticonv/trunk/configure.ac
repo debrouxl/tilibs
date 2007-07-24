@@ -55,8 +55,8 @@ AC_CHECK_PROG(TFDOCGEN, tfdocgen, yes, no)
 AM_CONDITIONAL(USE_DOCGEN, test "$TFDOCGEN" != "no")
 
 # Checks for libraries.
+dnl No translatable strings in this library.
 dnl AM_GNU_GETTEXT
-dnl AM_GNU_GETTEXT_VERSION(0.14.5)
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
