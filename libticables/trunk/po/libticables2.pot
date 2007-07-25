@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Romain Lievin
+# Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-06-29 10:46+0200\n"
+"POT-Creation-Date: 2007-07-25 10:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -234,13 +234,13 @@ msgid "Msg: unable to issue a specific command on parallel device."
 msgstr ""
 
 #: src/error.c:297
-msgid "Msg: failed to open USB device."
+msgid "Msg: failed to open the USB device."
 msgstr ""
 
 #: src/error.c:299
 msgid ""
-"Cause: check that USB cable is plugged and/or the calculator is ON! Check "
-"libusb and usbfs permissions, too."
+"Cause: Check that the USB cable is plugged in and that the calculator is "
+"turned ON! Also, check libusb and usbfs for valid permissions."
 msgstr ""
 
 #: src/error.c:305
@@ -273,7 +273,7 @@ msgid "Link cable probing:"
 msgstr ""
 
 #: src/ticables.c:125
-#, c-format
+#, possible-c-format
 msgid "ticables library version %s"
 msgstr ""
 
@@ -282,31 +282,31 @@ msgid "Link cable handle details:"
 msgstr ""
 
 #: src/ticables.c:331
-#, c-format
+#, possible-c-format
 msgid "  model   : %s"
 msgstr ""
 
 #: src/ticables.c:332
-#, c-format
+#, possible-c-format
 msgid "  port    : %s"
 msgstr ""
 
 #: src/ticables.c:333
-#, c-format
+#, possible-c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
 #: src/ticables.c:334
-#, c-format
+#, possible-c-format
 msgid "  delay   : %i us"
 msgstr ""
 
 #: src/ticables.c:337
-#, c-format
+#, possible-c-format
 msgid "  device  : %s"
 msgstr ""
 
 #: src/ticables.c:338
-#, c-format
+#, possible-c-format
 msgid "  address : 0x%03x"
 msgstr ""
