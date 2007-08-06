@@ -35,6 +35,22 @@
 
 #ifdef __WIN32__
 
+static void print_last_error(char *s)
+{
+        LPTSTR lpMsgBuf;
+
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, GetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR) & lpMsgBuf, 0, NULL);
+
+		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
+
+        printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+}
+
 int dha_install(void)
 {
 	SC_HANDLE hSCManager = NULL;
@@ -68,7 +84,7 @@ int dha_install(void)
                              NULL);
     if(!hService)
 	{
-		printf("Unable to register " DRV_NAME " Service (0x%x).\n",GetLastError());
+		print_last_error("Unable to register DhaHelper Service");
 		result = -1;
     }
 	else
@@ -88,13 +104,16 @@ int dha_uninstall(void)
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
 	char szPath[MAX_PATH];
+	int result = 0;
 
 	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
 
 	dha_stop();
 
-	DeleteService(hService);
+	result = DeleteService(hService);
+	if(!result) print_last_error("Error while deleting service");
+
 	CloseServiceHandle(hService);
 	CloseServiceHandle(hSCManager);
 
@@ -109,11 +128,13 @@ int dha_start(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
+	int result;
 
 	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
 	
-	StartService(hService, 0, NULL);
+	result = StartService(hService, 0, NULL);
+	if(!result) print_last_error("Error while starting service");
 
 	CloseServiceHandle(hService);
 	CloseServiceHandle(hSCManager);
@@ -126,11 +147,13 @@ int dha_stop(void)
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
 	SERVICE_STATUS ServiceStatus;
+	int result;
 
 	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
     
-	ControlService(hService, SERVICE_CONTROL_STOP, &ServiceStatus);
+	result = ControlService(hService, SERVICE_CONTROL_STOP, &ServiceStatus);
+	if(!result) print_last_error("Error while stopping service");
     
 	CloseServiceHandle(hService);
 	CloseServiceHandle(hSCManager);
@@ -155,28 +178,14 @@ int dha_detect(int* result)
 			CloseHandle(hDriver);
 		}
     }
+	else
+	{
+		*result = 1;
+	}
 
 	printf(DRV_NAME "%sfound.", *result ? " " : " not ");
 	return 0;
 }
-
-#ifdef __WIN32__
-static void print_last_error(char *s)
-{
-        LPTSTR lpMsgBuf;
-
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL, GetLastError(),
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR) & lpMsgBuf, 0, NULL);
-
-		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
-
-        printf("%s (%i -> %s)", s, GetLastError(), lpMsgBuf);
-}
-#endif				//__WIN32__
 
 static HINSTANCE hDriver = NULL;
 
@@ -201,7 +210,7 @@ int dha_enable(void)
 		result = -1;
 	}
 	else
-		printf("I/O ports have been granted access.");
+		printf("I/O ports have been enabled.");
 
 	CloseHandle(hDriver);
 	hDriver = INVALID_HANDLE_VALUE;
@@ -230,7 +239,7 @@ int dha_disable(void)
 		result = -1;
 	}
 	else
-		printf("I/O ports have been locked access.");
+		printf("I/O ports have been disabled.");
 
 	CloseHandle(hDriver);
 	hDriver = INVALID_HANDLE_VALUE;

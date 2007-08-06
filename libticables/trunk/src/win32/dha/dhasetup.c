@@ -26,7 +26,7 @@ int main(int argc,char* argv[])
   SC_HANDLE hSCManager = NULL;
   SC_HANDLE hService = NULL;
   char path[MAX_PATH];
-  int ret;
+  int result;
 
   printf("dhasetup (c) 2004 Sascha Sommer\n");
 
@@ -81,11 +81,11 @@ int main(int argc,char* argv[])
     printf("Removing DhaHelper...\n");
     hService = OpenService(hSCManager, "DhaHelper", SERVICE_ALL_ACCESS);
 
-    ret = ControlService(hService, SERVICE_CONTROL_STOP, &ServiceStatus);
-	if(!ret) print_last_error("Error while stopping service");
+    result = ControlService(hService, SERVICE_CONTROL_STOP, &ServiceStatus);
+	if(!result) print_last_error("Error while stopping service");
 
-    ret = DeleteService(hService);
-	if(!ret) print_last_error("Error while deleting service");
+    result = DeleteService(hService);
+	if(!result) print_last_error("Error while deleting service");
 
     DeleteFile(path);
 	printf("Done!\n");
