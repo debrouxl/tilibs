@@ -144,10 +144,16 @@ int dha_detect(int* result)
 	*result = 0;
 
 	hDriver = CreateFile("\\\\.\\DhaHelper", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if(hDriver != INVALID_HANDLE_VALUE) 
+    if(hDriver == INVALID_HANDLE_VALUE) 
 	{
-		*result = 1;
-		CloseHandle(hDriver);
+		dha_start();
+
+		hDriver = CreateFile("\\\\.\\DhaHelper", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if(hDriver != INVALID_HANDLE_VALUE) 
+		{
+			*result = 1;
+			CloseHandle(hDriver);
+		}
     }
 
 	printf(DRV_NAME "%sfound.", *result ? " " : " not ");
