@@ -34,18 +34,15 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include <process.h>		// getpid
-#include <winioctl.h>		// PortTalk
-#include "porttalk_ioctl.h"	// PortTalk
 
 #include "../error.h"
 #include "../logging.h"
 #include "detect.h"
 #include "ioports.h"
+#include "dha.h"
 
 /* Variables */
 
-static HINSTANCE hDll = NULL;	// Handle for PortTalk Driver
 static int instance = 0;		// Instance counter
 
 /* Function pointers */
@@ -109,62 +106,20 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 
 int io_open(unsigned long from)
 {
-	DWORD BytesReturned;	// Bytes Returned for DeviceIoControl()
-	int offset;				// Offset for IOPM
-	int iError;				// Error Handling for DeviceIoControl()
-	DWORD pid;				// PID of the program which use the library
+	int ret;
 
 	io_rd = win32_asm_read_io;
     io_wr = win32_asm_write_io;
   
 	if(win32_detect_os() == WIN_NT)
 	{
-		// At this point, the driver should have been installed 
-		// and started in probe.c
-		hDll = CreateFile("\\\\.\\PortTalk",
-		      GENERIC_READ,
-		      0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		ret = dha_start();
+		if(ret) return ERR_DHA_NOT_FOUND;
 
-		if (hDll == INVALID_HANDLE_VALUE) 
-		{
-			ticables_info("couldn't access PortTalk Driver, Please ensure driver is installed/loaded.");
-			return ERR_PORTTALK_NOT_FOUND;
-		}
+		ret = dha_enable();
+		if(ret) return ERR_DHA_NOT_FOUND;
 
 		instance++;
-
-		// Turn off all access
-		iError = DeviceIoControl(hDll,
-					 IOCTL_IOPM_RESTRICT_ALL_ACCESS,
-					 NULL, 0, NULL, 0, &BytesReturned, NULL);
-
-		if (!iError)
-		  print_last_error("PortTalk: error %d occured in IOCTL_IOPM_RESTRICT_ALL_ACCESS");
-
-		// Turn on some access
-		offset = from / 8;
-		iError = DeviceIoControl(hDll,
-					 IOCTL_SET_IOPM,
-					 &offset, 3, NULL, 0, &BytesReturned, NULL);
-		if (!iError)
-		  print_last_error("Granting access");
-		else
-		  ticables_info("Address 0x%03X (IOPM Offset 0x%02X) has been granted access.",
-			  from, offset);
-
-		// Pass PID
-		pid = getpid();
-
-		iError = DeviceIoControl(hDll,
-					 IOCTL_ENABLE_IOPM_ON_PROCESSID,
-					 &pid, 4, NULL, 0, &BytesReturned, NULL);
-
-		if (!iError)
-		  print_last_error("Talking to device driver");
-		else
-		  ticables_info("PortTalk Device Driver has set IOPM for ProcessID %d.",
-			  pid);
-
 	}
 
   return 0;
@@ -172,13 +127,18 @@ int io_open(unsigned long from)
 
 int io_close(unsigned long from)
 {
+	int ret;
+
 	if(win32_detect_os() == WIN_NT)
 	{
 		instance--;
 		if(!instance)
 		{
-			CloseHandle(hDll);
-			hDll = INVALID_HANDLE_VALUE;
+			ret = dha_disable();
+			if(ret) return ERR_DHA_NOT_FOUND;
+
+			ret = dha_stop();
+			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}
 

@@ -46,10 +46,10 @@ static int par_prepare(CableHandle *h)
 
 	if(win32_detect_os() == WIN_NT)
 	{
-		if(!win32_detect_porttalk())
+		if(!win32_detect_dha())
 		{
 			free(h->device); h->device = NULL;
-			return ERR_PORTTALK_NOT_FOUND;
+			return ERR_DHA_NOT_FOUND;
 		}
 	}
 

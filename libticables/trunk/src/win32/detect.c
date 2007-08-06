@@ -25,10 +25,10 @@
 
 #include "../logging.h"
 #include "detect.h"
-#include "porttalk.h"
+#include "dha.h"
 
 #ifdef __MINGW32__
-#include "porttalk.c"
+#include "dha.c"
 #endif
 
 int win32_detect_os(void)
@@ -38,13 +38,7 @@ int win32_detect_os(void)
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
   	GetVersionEx(&os);
-	/*
-  	ticables_info("  operating System: %s",
-	  (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) ?
-	  "Windows9x" : "WindowsNT");
-  	ticables_info("  version: %i.%i\n",
-	  os.dwMajorVersion, os.dwMinorVersion);
-	*/
+
   	if (os.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
 		return WIN_9X;
   	else if (os.dwPlatformId == VER_PLATFORM_WIN32_NT)
@@ -55,46 +49,14 @@ int win32_detect_os(void)
 	return 0;
 }
 
-int win32_detect_porttalk(void)
+int win32_detect_dha(void)
 {
-	HANDLE PortTalk_Handle;	/* Handle for PortTalk Driver */
 	int result = 0;
+	int ret = 0;
 
-	PortTalk_Handle = CreateFile("\\\\.\\PortTalk",
-				   GENERIC_READ,
-				   0,
-				   NULL,
-				   OPEN_EXISTING,
-				   FILE_ATTRIBUTE_NORMAL, NULL);
-
-    if (PortTalk_Handle == INVALID_HANDLE_VALUE) 
-	{
-		// Start or Install PortTalk Driver
-		PortTalkStartDriver();
-
-		// Don't be too hurry !
-		Sleep(1000);
-
-		// Then try to open once more, before failing
-		PortTalk_Handle =
-			CreateFile("\\\\.\\PortTalk",
-				GENERIC_READ, 0, NULL,
-				OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-		if (PortTalk_Handle == INVALID_HANDLE_VALUE) 
-		{
-	  		ticables_info("PortTalk: Couldn't access PortTalk Driver, Please ensure driver is loaded.");
-	  		//return -1;
-		}
-    }
-
-    if (PortTalk_Handle != INVALID_HANDLE_VALUE) 
-	{
-		result = 1;
-		CloseHandle(PortTalk_Handle);
-    }
-
-	ticables_info("PorTalk%sfound.", result ? " " : " not ");
+	ret = dha_detect(&result);
+	if(ret) 
+		return 0;
 
 	return result;
 }

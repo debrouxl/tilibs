@@ -126,9 +126,9 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
-	case ERR_PORTTALK_NOT_FOUND:
+	case ERR_DHA_NOT_FOUND:
 		*message = g_strconcat(
-    		_("Msg: PortTalk driver and/or library not found."),
+    		_("Msg: DhaHelper driver and/or library not found."),
 			"\n",
 			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
 			NULL);

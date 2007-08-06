@@ -78,7 +78,7 @@ typedef enum
     ERR_LIBUSB_CONFIG,
     ERR_LIBUSB_RESET,		//40
     
-    ERR_PORTTALK_NOT_FOUND, 
+    ERR_DHA_NOT_FOUND, 
     ERR_ROOT,    
     ERR_TTDEV,
     ERR_PPDEV,

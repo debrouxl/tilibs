@@ -2,7 +2,7 @@
 /* $Id$ */
 
 /*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2007  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See t;he
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -19,10 +19,22 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PORTTALK_H__
-#define __PORTALLK_H__
+#ifndef __DHA_H__
+#define __DHA_H__
 
-void PortTalkInstallDriver(void);
-unsigned char PortTalkStartDriver(void);
+#define DRV_NAME		"DhaHelper"
+#define DRV_FILENAME	"dhahelper.sys"
+#define DRV_VERSION		"1.0"
+
+int dha_install(void);
+int dha_uninstall(void);
+
+int dha_start(void);
+int dha_stop(void);
+
+int dha_enable(void);
+int dha_disable(void);
+
+int dha_detect(int* result);
 
 #endif

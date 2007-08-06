@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 
 print_lc_error(1);
 
-#if 1
+#if 0
 	ticables_probing_do(&probing, 5, PROBE_ALL);
 	for(i = 1; i <= 7; i++) 
 		printf("%i: %i %i %i %i\n", i, probing[i][1], probing[i][2], probing[i][3], probing[i][4]);
@@ -109,7 +109,7 @@ print_lc_error(1);
 #endif
 
 	// set cable
-	handle = ticables_handle_new(CABLE_DEV, PORT_1);
+	handle = ticables_handle_new(CABLE_BLK, PORT_1);
 	if(handle == NULL)
 	    return -1;
 

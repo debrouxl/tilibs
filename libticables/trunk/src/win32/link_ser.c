@@ -50,11 +50,10 @@ static int ser_prepare(CableHandle *h)
 	// detect OS 
 	if(win32_detect_os() == WIN_NT)
 	{
-		// detect porttalk if Windows NT
-		if(!win32_detect_porttalk())
+		if(!win32_detect_dha())
 		{
 			free(h->device); h->device = NULL;
-			return ERR_PORTTALK_NOT_FOUND;
+			return ERR_DHA_NOT_FOUND;
 		}
 	}
 

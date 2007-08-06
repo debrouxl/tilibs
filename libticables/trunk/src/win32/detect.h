@@ -29,7 +29,7 @@
 
 int win32_detect_os(void);
 
-int win32_detect_porttalk(void);
+int win32_detect_dha(void);
 
 int win32_detect_tiglusb(void);
 

@@ -134,15 +134,15 @@ SOURCE=..\..\src\win32\detect.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\win32\dha.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\win32\ioports.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\logging.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\win32\porttalk.c
 # End Source File
 # Begin Source File
 
