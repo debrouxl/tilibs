@@ -4,8 +4,8 @@
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,6,0
- PRODUCTVERSION 1,0,6,0
+ FILEVERSION 1,0,7,0
+ PRODUCTVERSION 1,0,7,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -23,14 +23,14 @@ BEGIN
             VALUE "Comments", "This lib is placed under GPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "The TiLP Team\0"
             VALUE "FileDescription", "TI cables library\0"
-            VALUE "FileVersion", "1.0.6\0"
+            VALUE "FileVersion", "1.0.7\0"
             VALUE "InternalName", "libticables2\0"
             VALUE "LegalCopyright", "Copyright © 1999-2007, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "libticables2-1.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TI cables library\0"
-            VALUE "ProductVersion", "1.0.6\0"
+            VALUE "ProductVersion", "1.0.7\0"
             VALUE "SpecialBuild", "Windows 9x/Me, NT4/2000/XP version\0"
         END
     END
