@@ -33,6 +33,8 @@
 #include "dha.h"
 #include "./dha/dhahelper.h"
 
+#define DRV_NAME		"DhaHelper"
+
 #ifdef __WIN32__
 
 static void print_last_error(char *s)
@@ -51,116 +53,6 @@ static void print_last_error(char *s)
         printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
 }
 
-int dha_install(void)
-{
-	SC_HANDLE hSCManager = NULL;
-	SC_HANDLE hService = NULL;
-	char szPath[MAX_PATH];
-	int result = 0;
-
-	GetWindowsDirectory(szPath, MAX_PATH);
-	strcpy(szPath + strlen(szPath), "\\system32\\drivers\\" DRV_FILENAME);
-
-    if(!CopyFile(DRV_FILENAME, szPath, FALSE))
-	{
-		printf("Copying " DRV_FILENAME " failed.\nEither " DRV_FILENAME " is not in the current directory or you lack sufficient\nprivileges to write to %s.", szPath);
-		return -1;
-    }
-
-    // Install the driver
-	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-    hService = CreateService(hSCManager,
-                             DRV_NAME,
-                             DRV_NAME,
-                             SERVICE_ALL_ACCESS,
-                             SERVICE_KERNEL_DRIVER,
-                             SERVICE_SYSTEM_START,
-                             SERVICE_ERROR_NORMAL,
-                             szPath,
-                             NULL,
-                             NULL,
-                             NULL,
-                             NULL,
-                             NULL);
-    if(!hService)
-	{
-		print_last_error("Unable to register DhaHelper Service");
-		result = -1;
-    }
-	else
-	{
-		printf("Success!\n");
-		result = 0;
-	}
-
-	CloseServiceHandle(hService);
-	CloseServiceHandle(hSCManager);
-
-	return result;
-}
-
-int dha_uninstall(void)
-{
-	SC_HANDLE hSCManager = NULL;
-	SC_HANDLE hService = NULL;
-	char szPath[MAX_PATH];
-	int result = 0;
-
-	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
-
-	dha_stop();
-
-	result = DeleteService(hService);
-	if(!result) print_last_error("Error while deleting service");
-
-	CloseServiceHandle(hService);
-	CloseServiceHandle(hSCManager);
-
-	GetWindowsDirectory(szPath, MAX_PATH);
-	strcpy(szPath + strlen(szPath), "\\system32\\drivers\\" DRV_FILENAME);
-	DeleteFile(szPath);
-
-	return 0;
-}
-
-int dha_start(void)
-{
-	SC_HANDLE hSCManager = NULL;
-	SC_HANDLE hService = NULL;
-	int result;
-
-	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
-	
-	result = StartService(hService, 0, NULL);
-	if(!result) print_last_error("Error while starting service");
-
-	CloseServiceHandle(hService);
-	CloseServiceHandle(hSCManager);
-
-	return 0;
-}
-
-int dha_stop(void)
-{
-	SC_HANDLE hSCManager = NULL;
-	SC_HANDLE hService = NULL;
-	SERVICE_STATUS ServiceStatus;
-	int result;
-
-	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
-    
-	result = ControlService(hService, SERVICE_CONTROL_STOP, &ServiceStatus);
-	if(!result) print_last_error("Error while stopping service");
-    
-	CloseServiceHandle(hService);
-	CloseServiceHandle(hSCManager);
-
-	return 0;
-}
-
 int dha_detect(int* result)
 {
 	HANDLE hDriver;
@@ -169,8 +61,6 @@ int dha_detect(int* result)
 	hDriver = CreateFile("\\\\.\\DhaHelper", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if(hDriver == INVALID_HANDLE_VALUE) 
 	{
-		dha_start();
-
 		hDriver = CreateFile("\\\\.\\DhaHelper", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if(hDriver != INVALID_HANDLE_VALUE) 
 		{

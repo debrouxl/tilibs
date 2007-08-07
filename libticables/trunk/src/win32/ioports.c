@@ -113,9 +113,6 @@ int io_open(unsigned long from)
   
 	if(win32_detect_os() == WIN_NT)
 	{
-		ret = dha_start();
-		if(ret) return ERR_DHA_NOT_FOUND;
-
 		ret = dha_enable();
 		if(ret) return ERR_DHA_NOT_FOUND;
 
@@ -135,9 +132,6 @@ int io_close(unsigned long from)
 		if(!instance)
 		{
 			ret = dha_disable();
-			if(ret) return ERR_DHA_NOT_FOUND;
-
-			ret = dha_stop();
 			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}

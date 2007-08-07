@@ -22,19 +22,9 @@
 #ifndef __DHA_H__
 #define __DHA_H__
 
-#define DRV_NAME		"DhaHelper"
-#define DRV_FILENAME	"dhahelper.sys"
-#define DRV_VERSION		"1.0"
-
-int dha_install(void);
-int dha_uninstall(void);
-
-int dha_start(void);
-int dha_stop(void);
+int dha_detect(int* result);
 
 int dha_enable(void);
 int dha_disable(void);
-
-int dha_detect(int* result);
 
 #endif
