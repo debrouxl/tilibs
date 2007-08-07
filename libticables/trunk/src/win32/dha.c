@@ -174,23 +174,25 @@ int dha_detect(int* result)
 		hDriver = CreateFile("\\\\.\\DhaHelper", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if(hDriver != INVALID_HANDLE_VALUE) 
 		{
-			*result = 1;
 			CloseHandle(hDriver);
+			hDriver = INVALID_HANDLE_VALUE;
+			*result = 1;
 		}
     }
 	else
 	{
+		CloseHandle(hDriver);
+		hDriver = INVALID_HANDLE_VALUE;
 		*result = 1;
 	}
 
-	printf(DRV_NAME "%sfound.", *result ? " " : " not ");
+	printf(DRV_NAME "%sfound.\n", *result ? " " : " not ");
 	return 0;
 }
 
-static HINSTANCE hDriver = NULL;
-
 int dha_enable(void)
 {
+	HANDLE hDriver;
 	DWORD BytesReturned;
 	int iError;
 	int result = 0;
@@ -210,7 +212,7 @@ int dha_enable(void)
 		result = -1;
 	}
 	else
-		printf("I/O ports have been enabled.");
+		printf("I/O ports have been enabled.\n");
 
 	CloseHandle(hDriver);
 	hDriver = INVALID_HANDLE_VALUE;
@@ -220,6 +222,7 @@ int dha_enable(void)
 
 int dha_disable(void)
 {
+	HANDLE hDriver;
 	DWORD BytesReturned;
 	int iError;
 	int result = 0;
@@ -239,7 +242,7 @@ int dha_disable(void)
 		result = -1;
 	}
 	else
-		printf("I/O ports have been disabled.");
+		printf("I/O ports have been disabled.\n");
 
 	CloseHandle(hDriver);
 	hDriver = INVALID_HANDLE_VALUE;
