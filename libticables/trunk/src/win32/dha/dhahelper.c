@@ -258,7 +258,7 @@ static STDCALL NTSTATUS MapPhysicalMemoryToLinearSpace(PVOID pPhysAddress,ULONG 
   PHYSICAL_ADDRESS   pStartPhysAddress;
   OutputDebugString ("dhahelper: entering MapPhysicalMemoryToLinearSpace");
     
-  pStartPhysAddress.QuadPart = (ULONGLONG)pPhysAddress;
+  pStartPhysAddress.QuadPart = (ULONGLONG)(ULONG)pPhysAddress;
 #ifndef NO_SEH
   __try {
 #endif

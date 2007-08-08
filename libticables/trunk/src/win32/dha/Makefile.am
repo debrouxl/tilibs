@@ -22,7 +22,7 @@
 # Written by Marcel Telka <marcel@telka.sk>, 2003.
 #
 
-EXTRA_DIST = dhahelper.c dhahelper.rc ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES
+EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES
 
 if OS_WIN32
 noinst_PROGRAMS = dhasetup
@@ -35,19 +35,22 @@ endif
 dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
 	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
 
-base.tmp: dhahelper.$(OBJEXT)
+dhahelper-rc.$(OBJEXT): $(srcdir)/dhahelper.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
+	$(RC) -I. dhahelper.rc $@
+
+base.tmp: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT)
 	$(CC) 	-Wl,--base-file,base.tmp \
 		-Wl,--entry,_DriverEntry@8 \
 		-nostartfiles -nostdlib \
 		-o junk.tmp \
-		dhahelper.$(OBJEXT) \
+		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
 		-lntoskrnl
 	-rm -f junk.tmp
 
 temp.exp: base.tmp
 	$(DLLTOOL) --dllname dhahelper.sys --base-file base.tmp --output-exp temp.exp
 
-dhahelper.sys: dhahelper.$(OBJEXT) temp.exp
+dhahelper.sys: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) temp.exp
 	$(CC)	-Wl,--subsystem,native \
 		-Wl,--image-base,0x10000 \
 		-Wl,--file-alignment,0x1000 \
@@ -56,8 +59,8 @@ dhahelper.sys: dhahelper.$(OBJEXT) temp.exp
 		-Wl,temp.exp \
 		-mdll -nostartfiles -nostdlib \
 		-o dhahelper.sys \
-		dhahelper.$(OBJEXT) \
+		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
 		-lntoskrnl
 	$(STRIP) dhahelper.sys
 
-CLEANFILES = dhahelper.sys dhahelper.$(OBJEXT) base.tmp temp.exp
+CLEANFILES = dhahelper.sys dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) base.tmp temp.exp
