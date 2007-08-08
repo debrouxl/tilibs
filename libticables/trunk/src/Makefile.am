@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = win32/dha
+
 AM_CFLAGS = -Wall
 
 # libraries and files to compile and install

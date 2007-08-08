@@ -1,3 +1,3 @@
 echo "Building driver..."
-make
+nmake /F NMAKEFILE
 echo "Build done!"
