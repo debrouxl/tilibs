@@ -25,6 +25,9 @@
 
 #if defined(_MSC_VER)
 #include <ntddk.h>
+#ifndef STDCALL
+#define STDCALL /* nothing */
+#endif
 #elif defined(__MINGW32__)
 #include <ddk/ntddk.h>
 #define NO_SEH /* FIXME */
