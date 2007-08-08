@@ -276,8 +276,6 @@ int main(int argc,char* argv[])
 
 	dha_install();
 	dha_start();
-
-	printf("Please reboot to let the changes take effect.\n");
   }
   else if(!strcmp(argv[1], "remove"))
   {
@@ -285,8 +283,6 @@ int main(int argc,char* argv[])
     
 	dha_stop();
     dha_uninstall();
-
-	printf("Please reboot to let the changes take effect.\n");
   }
   else if(!strcmp(argv[1], "start"))
   {
