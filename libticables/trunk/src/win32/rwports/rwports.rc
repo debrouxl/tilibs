@@ -1,0 +1,17 @@
+#include <windows.h>
+
+#include <ntverp.h>
+
+#undef VER_COMPANYNAME_STR
+#undef VER_PRODUCTNAME_STR
+
+#define VER_FILETYPE									VFT_DRV
+#define VER_FILESUBTYPE								VFT2_DRV_SYSTEM
+#define VER_FILEDESCRIPTION_STR     	"RwPorts - R/W ports Driver"
+#define VER_INTERNALNAME_STR        	"RwPorts.sys"
+#define VER_ORIGINALFILENAME_STR    	"RwPorts.sys"
+#define VER_LEGALCOPYRIGHT_STR      	"(c) 2007 Romain Liévin"
+#define VER_COMPANYNAME_STR         	"TiLP/TiEmu team <http://lpg.ticalc.org>"
+#define VER_PRODUCTNAME_STR         	"RwPorts Driver V1.0"
+
+#include "common.ver"

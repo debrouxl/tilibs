@@ -282,7 +282,11 @@ static STDCALL NTSTATUS MapPhysicalMemoryToLinearSpace(PVOID pPhysAddress,ULONG 
     }
     OutputDebugString("dhahelper: Mdl 0x%x",Mdl);
     MmBuildMdlForNonPagedPool(Mdl);
+#ifdef _WIN64
+	UserVirtualAddress = (PVOID)(((ULONGLONG)PAGE_ALIGN(MmMapLockedPages(Mdl,UserMode))) + MmGetMdlByteOffset(Mdl));
+#else
     UserVirtualAddress = (PVOID)(((ULONG)PAGE_ALIGN(MmMapLockedPages(Mdl,UserMode))) + MmGetMdlByteOffset(Mdl));
+#endif
     if(!UserVirtualAddress){
       OutputDebugString("dhahelper: MmMapLockedPages failed");
       return STATUS_INSUFFICIENT_RESOURCES;
