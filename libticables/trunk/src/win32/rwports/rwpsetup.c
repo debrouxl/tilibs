@@ -45,7 +45,7 @@ static void print_last_error(char *s)
         printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
 }
 
-int dha_start(void)
+int rwp_start(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -63,7 +63,7 @@ int dha_start(void)
 	return 0;
 }
 
-int dha_stop(void)
+int rwp_stop(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -82,7 +82,7 @@ int dha_stop(void)
 	return 0;
 }
 
-int dha_install(void)
+int rwp_install(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -130,7 +130,7 @@ int dha_install(void)
 	return result;
 }
 
-int dha_uninstall(void)
+int rwp_uninstall(void)
 {
 	SC_HANDLE hSCManager = NULL;
 	SC_HANDLE hService = NULL;
@@ -140,7 +140,7 @@ int dha_uninstall(void)
 	hSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	hService = OpenService(hSCManager, DRV_NAME, SERVICE_ALL_ACCESS);
 
-	dha_stop();
+	rwp_stop();
 
 	result = DeleteService(hService);
 	if(!result) print_last_error("Error while deleting service");
@@ -155,7 +155,7 @@ int dha_uninstall(void)
 	return 0;
 }
 
-int dha_detect(int* result)
+int rwp_detect(int* result)
 {
 	HANDLE hDriver;
 	*result = 0;
@@ -182,7 +182,7 @@ int dha_detect(int* result)
 	return 0;
 }
 
-int dha_read_byte(unsigned long address, unsigned char *data)
+int rwp_read_byte(unsigned long address, unsigned char *data)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;
@@ -209,7 +209,7 @@ int dha_read_byte(unsigned long address, unsigned char *data)
 	else
 	{
 		*data = buf[0];
-		printf("I/O ports read at %0x04x: %02x\n", address, *data);
+		printf("I/O ports read at 0x%04x: %02x\n", address, *data);
 	}
 
 	CloseHandle(hDriver);
@@ -218,7 +218,7 @@ int dha_read_byte(unsigned long address, unsigned char *data)
 	return result;
 }
 
-int dha_write_byte(unsigned long address, unsigned char data)
+int rwp_write_byte(unsigned long address, unsigned char data)
 {
 	HANDLE hDriver;
 	DWORD BytesReturned;
@@ -255,7 +255,7 @@ int main(int argc,char* argv[])
   SC_HANDLE hSCManager = NULL;
   SC_HANDLE hService = NULL;
 
-  printf("dhasetup (c) 2004 Sascha Sommer\n");
+  printf("rwpsetup (c) 2007 Romain Liévin\n");
 
   if(argc==1)
   {
@@ -266,11 +266,11 @@ int main(int argc,char* argv[])
 	strcpy(szPath + strlen(szPath), "\\system32\\drivers\\");
 
     printf("Usage:\n");
-    printf("dhasetup install - Copies rwports.sys from the current directory to system \n                    directory and configures it to start at boot.\n");
-    printf("dhasetup remove  - Removes the RwPorts driver.\n");
-	printf("dhasetup start   - Start driver.\n");
-	printf("dhasetup stop    - Stop driver.\n");
-	printf("dhasetup check   - Check if driver is present and loaded.\n");
+    printf("rwpsetup install - Copies rwports.sys from the current directory to system \n                    directory and configures it to start at boot.\n");
+    printf("rwpsetup remove  - Removes the RwPorts driver.\n");
+	printf("rwpsetup start   - Start driver.\n");
+	printf("rwpsetup stop    - Stop driver.\n");
+	printf("rwpsetup check   - Check if driver is present and loaded.\n");
 	printf("\n");
 	printf("System directory: %s\n", szPath);
 
@@ -281,34 +281,41 @@ int main(int argc,char* argv[])
   {
     printf("Installing RwPorts...\n");
 
-	dha_install();
-	dha_start();
+	rwp_install();
+	rwp_start();
   }
   else if(!strcmp(argv[1], "remove"))
   {
     printf("Removing RwPorts...\n");
     
-	dha_stop();
-    dha_uninstall();
+	rwp_stop();
+    rwp_uninstall();
   }
   else if(!strcmp(argv[1], "start"))
   {
 	  printf("Starting RwPorts...\n");
-	  dha_start();
+	  rwp_start();
 	  printf("Done!\n");
   }
   else if(!strcmp(argv[1], "stop"))
   {
 	  printf("Stopping RwPorts...\n");
-	  dha_stop();
+	  rwp_stop();
 	  printf("Done!\n");
   }
   else if(!strcmp(argv[1], "check"))
   {
 	  int result;
 
-	  dha_detect(&result);
+	  rwp_detect(&result);
 	  printf("RwPorts driver is%spresent.\n", result ? " " : " not ");
+  }
+  else if(!strcmp(argv[1], "read"))
+  {
+	  unsigned char v;
+
+	  rwp_read_byte(0x378, &v);
+	  printf("v = %02x\n", v);
   }
   else 
   {

@@ -1,3 +1,3 @@
 echo "Building executable..."
-gcc -o dhasetup.exe dhasetup.c
+gcc -o rwports.exe rwports.c
 echo "Build done!"
