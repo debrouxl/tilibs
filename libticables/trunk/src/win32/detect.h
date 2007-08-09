@@ -26,10 +26,12 @@
 
 #define WIN_9X	1
 #define WIN_NT	2
+#define WIN_64	3
 
 int win32_detect_os(void);
 
 int win32_detect_dha(void);
+int win32_detect_rwp(void);
 
 int win32_detect_tiglusb(void);
 

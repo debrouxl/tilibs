@@ -39,11 +39,13 @@
 #include "../logging.h"
 #include "detect.h"
 #include "ioports.h"
+
 #include "dha.h"
+#include "rwp.h"
 
 /* Variables */
 
-static int instance = 0;		// Instance counter
+static int instance = 0;					// Instance counter
 
 /* Function pointers */
 
@@ -72,7 +74,7 @@ static void print_last_error(char *s)
 
 /* I/O thru assembly code */
 
-static int win32_asm_read_io(unsigned int addr)
+static int win32_read_io(unsigned int addr)
 {
         int c;
 
@@ -89,7 +91,7 @@ asm("movl $0,%%eax \n movw %1,%%dx \n inb %%dx,%%al \n movl %%eax,%0": "=g"(c): 
         return c;
 }
 
-static void win32_asm_write_io(unsigned int addr, int data)
+static void win32_write_io(unsigned int addr, int data)
 {
 #ifdef __GNUC__
 asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
@@ -102,19 +104,49 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 #endif
 }
 
+/* I/O thru device driver IOCTL calls */
+
+static int win64_read_io(unsigned int addr)
+{
+	unsigned char data;
+
+	rwp_read_byte((unsigned short)addr, &data);
+	return data;
+}
+
+static void win64_write_io(unsigned int addr, int data)
+{
+	rwp_write_byte((unsigned short)addr, (unsigned char)data);
+}
+
 /* Functions used for initializing the I/O routines */
 
 int io_open(unsigned long from)
 {
 	int ret;
 
-	io_rd = win32_asm_read_io;
-    io_wr = win32_asm_write_io;
-  
-	if(win32_detect_os() == WIN_NT)
+	if(win32_detect_os() == WIN_9X)
+	{
+		io_rd = win32_read_io;
+		io_wr = win32_write_io;
+	}
+	else if(win32_detect_os() == WIN_NT)
 	{
 		ret = dha_enable();
 		if(ret) return ERR_DHA_NOT_FOUND;
+
+		io_rd = win32_read_io;
+		io_wr = win32_write_io;
+
+		instance++;
+	}
+	else if(win32_detect_os() == WIN_64)
+	{
+		ret = rwp_open();
+		if(ret) return ERR_DHA_NOT_FOUND;
+
+		io_rd = win64_read_io;
+		io_wr = win64_write_io;
 
 		instance++;
 	}
@@ -132,6 +164,15 @@ int io_close(unsigned long from)
 		if(!instance)
 		{
 			ret = dha_disable();
+			if(ret) return ERR_DHA_NOT_FOUND;
+		}
+	}
+	else if(win32_detect_os() == WIN_64)
+	{
+		instance--;
+		if(!instance)
+		{
+			ret = rwp_close();
 			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}

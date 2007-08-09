@@ -25,10 +25,13 @@
 
 #include "../logging.h"
 #include "detect.h"
+
 #include "dha.h"
+#include "rwp.h"
 
 #ifdef __MINGW32__
 #include "dha.c"
+#include "rwp.c"
 #endif
 
 int win32_detect_os(void)
@@ -55,6 +58,18 @@ int win32_detect_dha(void)
 	int ret = 0;
 
 	ret = dha_detect(&result);
+	if(ret) 
+		return 0;
+
+	return result;
+}
+
+int win32_detect_rwp(void)
+{
+	int result = 0;
+	int ret = 0;
+
+	ret = rwp_detect(&result);
 	if(ret) 
 		return 0;
 

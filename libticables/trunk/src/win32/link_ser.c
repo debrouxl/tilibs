@@ -56,6 +56,14 @@ static int ser_prepare(CableHandle *h)
 			return ERR_DHA_NOT_FOUND;
 		}
 	}
+	else if(win32_detect_os() == WIN_64)
+	{
+		if(!win32_detect_rwp())
+		{
+			free(h->device); h->device = NULL;
+			return ERR_DHA_NOT_FOUND;
+		}
+	}
 
 	return 0;
 }
