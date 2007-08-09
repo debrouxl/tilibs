@@ -142,7 +142,7 @@ static STDCALL NTSTATUS RwPortsDispatch(IN PDEVICE_OBJECT DeviceObject,IN PIRP I
       switch (dwIoControlCode)
 	  {
         case IOCTL_RWPORTS_READ_BYTE:
-          OutputDebugString("rwports: IOCTL_RWPORTS_ENABLEDIRECTIO");
+          OutputDebugString("rwports: IOCTL_RWPORTS_READ_BYTE");
 
 		  if ((dwInputBufferLength >= 2) && (dwOutputBufferLength >= 1)) 
 		  {
@@ -157,7 +157,7 @@ static STDCALL NTSTATUS RwPortsDispatch(IN PDEVICE_OBJECT DeviceObject,IN PIRP I
           break;
 
         case IOCTL_RWPORTS_WRITE_BYTE:
-          OutputDebugString("rwports: IOCTL_RWPORTS_DISABLEDIRECTIO");
+          OutputDebugString("rwports: IOCTL_RWPORTS_WRITE_BYTE");
 
 		  if (dwInputBufferLength >= 3) 
 		  {
