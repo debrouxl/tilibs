@@ -3,10 +3,7 @@ TICONV = ticonv
 CHECK85 = check85
 UNSQUISH83 = unsquish83
 
-all: romdl romdump.8xp romdump.83p romdump.82p romdump.73p romdump.85s romdump.86p
-
-romdl: romdl.c
-	$(CC) $(CFLAGS) -W -Wall -g -o romdl romdl.c `pkg-config --cflags --libs ticables`
+all: romdump.8xp romdump.83p romdump.82p romdump.73p romdump.85s romdump.86p
 
 romdump.73p: romdump.asm header.asm
 	rm -f romdump.bin
@@ -44,7 +41,7 @@ romdump.bin: romdump.asm header.asm
 	$(Z80ASM) -b $(Z80ASMFLAGS) -D$(CALCMODEL) -a -80 -c -fff -o20 -s $< $@ $(CALCMODEL).lst $(CALCMODEL).exp $(CALCMODEL).sym
 
 clean:
-	rm -f romdl romdump.8xp romdump.83p romdump.82p romdump.73p romdump.85s romdump.86p
+	rm -f romdump.8xp romdump.83p romdump.82p romdump.73p romdump.85s romdump.86p
 	rm -f *.lst
 	rm -f *.exp
 	rm -f *.sym
