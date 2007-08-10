@@ -26,12 +26,12 @@
 #include "../logging.h"
 #include "detect.h"
 
-#include "dha.h"
-#include "rwp.h"
+#include "../win32/dha.h"
+#include "../win64/rwp.h"
 
 #ifdef __MINGW32__
-#include "dha.c"
-#include "rwp.c"
+#include "../win32/dha.c"
+#include "../win64/rwp.c"
 #endif
 
 int win32_detect_os(void)

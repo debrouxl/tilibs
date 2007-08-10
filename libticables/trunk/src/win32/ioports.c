@@ -40,8 +40,8 @@
 #include "detect.h"
 #include "ioports.h"
 
-#include "dha.h"
-#include "rwp.h"
+#include "../win32/dha.h"
+#include "../win64/rwp.h"
 
 /* Variables */
 
