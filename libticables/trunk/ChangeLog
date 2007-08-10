@@ -5,6 +5,7 @@ Log:
 - 06/08/2007, version 1.0.7: roms
 	- removed PortTalk I/O driver due to license issues. Replaced by GPL'ed
 		MPlayer's DhaHelper driver.
+	- fixed build with upcoming glibc 2.7 (kevin)
 
 - 19/05/2007, version 1.0.6: roms
 	- changed PID_TI84P to 0xE003 and added PID_TI84P_SE as 0xE008.

@@ -44,7 +44,7 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 
 	TRYC(handle->cable->prepare(handle));
 
-	TRYC(cable->open(handle));
+	TRYC((cable->open)(handle));
 
 	handle->open = 1;
 	START_LOGGING(handle);
