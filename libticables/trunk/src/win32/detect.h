@@ -26,7 +26,7 @@
 
 #define WIN_9X	1
 #define WIN_NT	2
-#define WIN_64	3
+#define WIN_64	4
 
 int win32_detect_os(void);
 

@@ -34,9 +34,17 @@
 #include "../win64/rwp.c"
 #endif
 
+// Note: the kernel version of XP x64 is 5.2, like Windows 2003, not 5.1 as 
+// Windows XP 32-Bit.
+
 int win32_detect_os(void)
 {
 	OSVERSIONINFO os;
+	SYSTEM_INFO si;
+
+	GetSystemInfo(&si);	// should use GetNativeSystemInfo(&si); & si.wProcessorArchitecture but MSVC too old
+	if(si.dwProcessorType > 586)
+		return WIN_64;
 
   	memset(&os, 0, sizeof(OSVERSIONINFO));
   	os.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);

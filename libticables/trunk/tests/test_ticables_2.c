@@ -109,7 +109,7 @@ print_lc_error(1);
 #endif
 
 	// set cable
-	handle = ticables_handle_new(CABLE_BLK, PORT_1);
+	handle = ticables_handle_new(CABLE_PAR, PORT_1);
 	if(handle == NULL)
 	    return -1;
 
