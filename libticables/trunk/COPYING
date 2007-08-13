@@ -8,7 +8,7 @@ TilEm. If you modify this library, you may extend this exception to your
 version of the library, but you are not obligated to do so. If you do not 
 wish to do so, delete this exception statement from your version.
 
-This exception does NOT apply to the dhahelper.sys driver.
+This exception does NOT apply to the dhahelper.sys and rwports.sys drivers.
 
 ------------------------------------------------------------------------------
 
