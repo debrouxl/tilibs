@@ -2,11 +2,12 @@
 /* $Id$ */
 
 /*  libticables2 - link cable library, a part of the TiLP project
- *  Copyright (C) 1999-2006  Romain Lievin
- *  Copyright (C) 2001 Julien Blache (original author)
+ *  Copyright (c) 1999-2006 Romain Lievin
+ *  Copyright (c) 2001 Julien Blache (original author)
  *  Portions lifted from libusb (LGPL):
  *  Copyright (c) 2000-2003 Johannes Erdfelt <johannes@erdfelt.com>
  *  Modifications for libticables Copyright (C) 2005 Kevin Kofler
+ *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -450,7 +451,7 @@ static int slv_prepare(CableHandle *h)
 	char str[64];
 
 #ifdef __WIN32__
-	TRYC(!win32_detect_libusb());
+	TRYC(win32_detect_libusb());
 #else
 	TRYC(check_for_libusb());
 #endif

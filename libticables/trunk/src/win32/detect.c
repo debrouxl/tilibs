@@ -23,6 +23,7 @@
 
 #include <windows.h>
 
+#include "../error.h"
 #include "../logging.h"
 #include "detect.h"
 
@@ -63,42 +64,33 @@ int win32_detect_os(void)
 int win32_detect_dha(void)
 {
 	int result = 0;
-	int ret = 0;
 
-	ret = dha_detect(&result);
-	if(ret) 
-		return 0;
+	dha_detect(&result);
 
-	return result;
+	return result ? 0 : ERR_DHA_NOT_FOUND;
 }
 
 int win32_detect_rwp(void)
 {
 	int result = 0;
-	int ret = 0;
 
-	ret = rwp_detect(&result);
-	if(ret) 
-		return 0;
+	rwp_detect(&result);
 
-	return result;
+	return result ? 0: ERR_RWP_NOT_FOUND;
 }
 
 int win32_detect_libusb(void)
 {
 	HINSTANCE hDll = NULL;	/* Handle for TiglUsb driver */
-	int result = 0;
+	int ret = -1;
 
 	hDll = LoadLibrary("libusb0.dll");
     if (hDll != NULL) 
 	{
-		result = 1;
+		ret = 0;
         FreeLibrary(hDll);
 	}
 
-    ticables_info("libusb-win32 driver%sfound.", result ? " " : " not ");
-	if(!result)
-		ticables_info("USB support will be unavailable...");
-	
-	return result;
+    ticables_info("libusb-win32 driver%sfound.", ret ? " not ": " ");
+	return ret;
 }

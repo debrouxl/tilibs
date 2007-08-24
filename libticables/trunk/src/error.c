@@ -134,6 +134,14 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
+	case ERR_RWP_NOT_FOUND:
+		*message = g_strconcat(
+    		_("Msg: RwPorts driver and/or library not found."),
+			"\n",
+			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
+			NULL);
+		break;
+
 	case ERR_WRITE_ERROR:
     	*message = g_strconcat(
     		_("Msg: error occured while writing to the device."),

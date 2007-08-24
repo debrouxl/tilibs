@@ -50,8 +50,8 @@ typedef enum
     ERR_LIBUSBWIN32_NOT_PRESENT,
     ERR_FREE2,
     ERR_FREE3,
-    ERR_FREE4,				//20
-    ERR_FREE5, 
+    ERR_DHA_NOT_FOUND,		//20
+    ERR_RWP_NOT_FOUND, 
     ERR_FREE6,
     
     ERR_VTI_FINDWINDOW,	// open
@@ -78,7 +78,7 @@ typedef enum
     ERR_LIBUSB_CONFIG,
     ERR_LIBUSB_RESET,		//40
     
-    ERR_DHA_NOT_FOUND, 
+    ERR_FREE7, 
     ERR_ROOT,    
     ERR_TTDEV,
     ERR_PPDEV,
