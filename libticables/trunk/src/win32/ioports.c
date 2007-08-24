@@ -106,6 +106,7 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 
 /* I/O thru device driver IOCTL calls */
 
+#ifdef _WIN64
 static int win64_read_io(unsigned int addr)
 {
 	unsigned char data;
@@ -118,6 +119,7 @@ static void win64_write_io(unsigned int addr, int data)
 {
 	rwp_write_byte((unsigned short)addr, (unsigned char)data);
 }
+#endif
 
 /* Functions used for initializing the I/O routines */
 
@@ -130,6 +132,7 @@ int io_open(unsigned long from)
 		io_rd = win32_read_io;
 		io_wr = win32_write_io;
 	}
+#ifndef _WIN64
 	else if(win32_check_os() == WIN_NT)
 	{
 		ret = dha_enable();
@@ -140,6 +143,7 @@ int io_open(unsigned long from)
 
 		instance++;
 	}
+#else
 	else if(win32_check_os() == WIN_64)
 	{
 		ret = rwp_open();
@@ -150,6 +154,7 @@ int io_open(unsigned long from)
 
 		instance++;
 	}
+#endif
 
   return 0;
 }
@@ -158,7 +163,9 @@ int io_close(unsigned long from)
 {
 	int ret;
 
-	if(win32_check_os() == WIN_NT)
+	if(0) {}
+#ifndef _WIN64
+	else if(win32_check_os() == WIN_NT)
 	{
 		instance--;
 		if(!instance)
@@ -167,6 +174,7 @@ int io_close(unsigned long from)
 			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}
+#else
 	else if(win32_check_os() == WIN_64)
 	{
 		instance--;
@@ -176,6 +184,7 @@ int io_close(unsigned long from)
 			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}
+#endif
 
 	return 0;
 }

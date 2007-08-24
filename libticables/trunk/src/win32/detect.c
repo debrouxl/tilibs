@@ -63,20 +63,28 @@ int win32_check_os(void)
 
 int win32_check_dha(void)
 {
+#ifndef _WIN64
 	int result = 0;
 
 	dha_detect(&result);
 
 	return result ? 0 : ERR_DHA_NOT_FOUND;
+#else
+	return 0;
+#endif
 }
 
 int win32_check_rwp(void)
 {
+#ifdef _WIN64
 	int result = 0;
 
 	rwp_detect(&result);
 
 	return result ? 0: ERR_RWP_NOT_FOUND;
+#else
+	return 0;
+#endif
 }
 
 int win32_check_libusb(void)

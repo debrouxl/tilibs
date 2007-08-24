@@ -33,9 +33,9 @@
 #include "dha.h"
 #include "./dha/dhahelper.h"
 
-#define DRV_NAME		"DhaHelper"
+#define DHA_DRV_NAME		"DhaHelper"
 
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(_WIN64)
 
 static void print_last_error(char *s)
 {
@@ -50,7 +50,7 @@ static void print_last_error(char *s)
 
 		lpMsgBuf[strlen(lpMsgBuf)-2] = '\0';
 
-        printf("%s (%i -> %s)\n", s, GetLastError(), lpMsgBuf);
+        printf("%s (%i -> %s)\n", s, (int)GetLastError(), lpMsgBuf);
 }
 
 int dha_detect(int* result)
@@ -76,7 +76,7 @@ int dha_detect(int* result)
 		*result = 1;
 	}
 
-	printf(DRV_NAME "%sfound.\n", *result ? " " : " not ");
+	printf(DHA_DRV_NAME "%sfound.\n", *result ? " " : " not ");
 	return 0;
 }
 
@@ -91,7 +91,7 @@ int dha_enable(void)
 		  GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hDriver == INVALID_HANDLE_VALUE) 
 	{
-		printf("Couldn't access " DRV_NAME " driver; Please ensure driver is installed/loaded.");
+		printf("Couldn't access " DHA_DRV_NAME " driver; Please ensure driver is installed/loaded.");
 		return -1;
 	}
 
@@ -121,7 +121,7 @@ int dha_disable(void)
 		      GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hDriver == INVALID_HANDLE_VALUE) 
 	{
-		printf("Couldn't access " DRV_NAME " driver; Please ensure driver is installed/loaded.");
+		printf("Couldn't access " DHA_DRV_NAME " driver; Please ensure driver is installed/loaded.");
 		return -1;
 	}
 
