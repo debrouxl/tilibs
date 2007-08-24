@@ -66,13 +66,34 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <errno.h>
+
+#ifndef __WIN32__
+#include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
-#include <usb.h>
 #include <sys/ioctl.h>
+#endif
+
+#ifdef __WIN32__
+# include "../win32/usb.h"
+#else
+# include <usb.h>
+#endif
+
+/* --- */
+
+#ifdef __WIN32__	// found in src/error.h of libusb-win32
+# define ETIMEDOUT	-116
+//# define EPIPE	-117
+#endif
+
+#ifdef __WIN32
+# define usb_busses	usb_get_busses()
+#endif
+
+/* --- */
 
 #ifdef __LINUX__
 /* the libusb internal structure from usbi.h */
@@ -166,6 +187,8 @@ static int io_pending = 0;
 static struct usb_urb urb;
 #endif
 
+/* --- */
+
 #include "../ticables.h"
 #include "../logging.h"
 #include "../error.h"
@@ -200,9 +223,11 @@ typedef struct
 static usb_infos tigl_infos[] =
 {
         {0x0451, 0xe001, "TI-GRAPH LINK USB", NULL},
-        {0x0451, 0xe004, "TI-89 Titanium Calculator", NULL},
-        {0x0451, 0xe008, "TI-84 Plus Silver Calculator", NULL},
-        {}
+		{0x0451, 0xe003, "TT-84 Plus Hand-Held", NULL},
+        {0x0451, 0xe004, "TI-89 Titanium Hand-Held", NULL},
+        {0x0451, 0xe008, "TI-84 Plus Silver Hand-Held", NULL},
+		{0x0451, 0xe012, "TI-Nspire Hand-Held", NULL},
+        { 0 }
 };
 
 // list of devices found 
@@ -424,7 +449,11 @@ static int slv_prepare(CableHandle *h)
 {
 	char str[64];
 
+#ifdef __WIN32__
+	TRYC(!win32_detect_libusb());
+#else
 	TRYC(check_for_libusb());
+#endif
 
 	if(h->port >= MAX_CABLES)
 	    return ERR_ILLEGAL_ARG;
@@ -696,7 +725,7 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 
     // we can't do that in any other way because slv_get_ can returns
     // 1, 2, ..., len bytes.
-    for(i = 0; i < len; i++)
+    for(i = 0; i < (int)len; i++)
 	TRYC(slv_get_(h, data+i));
     
     return 0;

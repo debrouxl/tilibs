@@ -185,46 +185,6 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
-	case ERR_SLV_LOADLIBRARY:
-		*message = g_strconcat(
-    		_("Msg: unable to load TiglUsb library."),
-    		"\n",
-    		_("Cause: the LPG's SilverLink/DirectLink driver is not installed. TiLP can't use the Ti-Connect driver so you have to install the LPG's one. It can be download from <http://lpg.ticalc.org/prj_usb/index.html> and you will find installation instruction on the same web site."),
-			NULL);
-		break;
-
-	case ERR_SLV_FREELIBRARY:
-		*message = g_strconcat(
-    		_("Msg: unable to release TiglUsb library."),
-    		"\n",
-    		_("Cause: internal error"),
-			NULL);
-		break;
-
-	case ERR_SLV_VERSION:
-		*message = g_strconcat(
-    		_("Msg: TiglUsb library version is wrong."),
-    		"\n",
-    		_("Cause: the library may require an earlier version. Update driver!"),
-			NULL);
-		break;
-
-	case ERR_SLV_OPEN:
-		*message = g_strconcat(
-    		_("Msg: failed to open SilverLink/DirectLink access."),
-    		"\n",
-    		_("Cause: check that USB cable is plugged and/or the calculator is ON!"),
-			NULL);
-		break;
-
-	case ERR_SLV_RESET:
-		*message = g_strconcat(
-    		_("Msg: failed to reset SilverLink/DirectLink cable."),
-    		"\n",
-    		_("Cause: check that USB cable is well plugged! It may be stalled, too: unplug/replug it."),
-			NULL);
-		break;
-
 	case ERR_VTI_FINDWINDOW:
 	case ERR_VTI_OPENFILEMAPPING:
 	case ERR_VTI_MAPVIEWOFFILE:
@@ -289,6 +249,14 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		_("Cause: check that you have permissions on /dev/parportX device. Check that device is not locked."),
 		NULL);
 	    break;
+
+	case ERR_LIBUSBWIN32_NOT_PRESENT:
+		*message = g_strconcat(
+			_("Msg: unable to find the LPG's driver (libusb-win32)."),
+			"\n",
+			_("Cause: the driver is not present and/or installed."),
+			NULL);
+		break;
 
 	case ERR_LIBUSB_OPEN:
 	case ERR_LIBUSB_CLAIM:

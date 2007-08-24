@@ -33,6 +33,6 @@ int win32_detect_os(void);
 int win32_detect_dha(void);
 int win32_detect_rwp(void);
 
-int win32_detect_tiglusb(void);
+int win32_detect_libusb(void);
 
 #endif

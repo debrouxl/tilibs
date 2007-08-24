@@ -84,21 +84,21 @@ int win32_detect_rwp(void)
 	return result;
 }
 
-int win32_detect_tiglusb(void)
+int win32_detect_libusb(void)
 {
 	HINSTANCE hDll = NULL;	/* Handle for TiglUsb driver */
 	int result = 0;
 
-	hDll = LoadLibrary("TiglUsb.DLL");
+	hDll = LoadLibrary("libusb0.dll");
     if (hDll != NULL) 
 	{
 		result = 1;
         FreeLibrary(hDll);
 	}
 
-    ticables_info("TiglUsb driver%sfound.", result ? " " : " not ");
+    ticables_info("libusb-win32 driver%sfound.", result ? " " : " not ");
 	if(!result)
-		ticables_info("TiglUsb support will be unavailable...");
+		ticables_info("USB support will be unavailable...");
 	
 	return result;
 }

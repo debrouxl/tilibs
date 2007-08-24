@@ -28,17 +28,14 @@
 #ifndef NO_CABLE_SLV
 
 #if defined(__WIN32__)
-#include "win32/link_slv.c"
-
-#else
+# define HAVE_LIBUSB
+#endif
 
 #ifdef HAVE_LIBUSB
-#include "linux/link_slv.c"
+# include "linux/link_slv.c"
 #endif
 #ifdef HAVE_LINUX_TICABLE_H
-#include "linux/link_dev.c"
-#endif
-
+# include "linux/link_dev.c"
 #endif
 
 #endif

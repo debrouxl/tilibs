@@ -237,5 +237,9 @@ SOURCE="..\..\..\..\..\GTK2DEV\lib\glib-2.0.lib"
 
 SOURCE=..\..\..\..\..\GTK2DEV\lib\intl.lib
 # End Source File
+# Begin Source File
+
+SOURCE="..\..\..\libusb-win32\lib\msvc\libusb.lib"
+# End Source File
 # End Target
 # End Project
