@@ -125,12 +125,12 @@ int io_open(unsigned long from)
 {
 	int ret;
 
-	if(win32_detect_os() == WIN_9X)
+	if(win32_check_os() == WIN_9X)
 	{
 		io_rd = win32_read_io;
 		io_wr = win32_write_io;
 	}
-	else if(win32_detect_os() == WIN_NT)
+	else if(win32_check_os() == WIN_NT)
 	{
 		ret = dha_enable();
 		if(ret) return ERR_DHA_NOT_FOUND;
@@ -140,7 +140,7 @@ int io_open(unsigned long from)
 
 		instance++;
 	}
-	else if(win32_detect_os() == WIN_64)
+	else if(win32_check_os() == WIN_64)
 	{
 		ret = rwp_open();
 		if(ret) return ERR_DHA_NOT_FOUND;
@@ -158,7 +158,7 @@ int io_close(unsigned long from)
 {
 	int ret;
 
-	if(win32_detect_os() == WIN_NT)
+	if(win32_check_os() == WIN_NT)
 	{
 		instance--;
 		if(!instance)
@@ -167,7 +167,7 @@ int io_close(unsigned long from)
 			if(ret) return ERR_DHA_NOT_FOUND;
 		}
 	}
-	else if(win32_detect_os() == WIN_64)
+	else if(win32_check_os() == WIN_64)
 	{
 		instance--;
 		if(!instance)

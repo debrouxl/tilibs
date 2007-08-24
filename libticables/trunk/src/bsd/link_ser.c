@@ -58,7 +58,7 @@ static int ser_prepare(CableHandle *h)
     }
 
     // detect stuffs
-    ret = check_for_tty(h->device);
+    ret = bsd_check_tty(h->device);
 	if(ret)
 	{
 		free(h->device); h->device = NULL;

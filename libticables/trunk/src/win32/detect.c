@@ -38,7 +38,7 @@
 // Note: the kernel version of XP x64 is 5.2, like Windows 2003, not 5.1 as 
 // Windows XP 32-Bit.
 
-int win32_detect_os(void)
+int win32_check_os(void)
 {
 	OSVERSIONINFO os;
 	SYSTEM_INFO si;
@@ -61,7 +61,7 @@ int win32_detect_os(void)
 	return 0;
 }
 
-int win32_detect_dha(void)
+int win32_check_dha(void)
 {
 	int result = 0;
 
@@ -70,7 +70,7 @@ int win32_detect_dha(void)
 	return result ? 0 : ERR_DHA_NOT_FOUND;
 }
 
-int win32_detect_rwp(void)
+int win32_check_rwp(void)
 {
 	int result = 0;
 
@@ -79,7 +79,7 @@ int win32_detect_rwp(void)
 	return result ? 0: ERR_RWP_NOT_FOUND;
 }
 
-int win32_detect_libusb(void)
+int win32_check_libusb(void)
 {
 	HINSTANCE hDll = NULL;	/* Handle for TiglUsb driver */
 	int ret = -1;

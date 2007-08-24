@@ -51,7 +51,7 @@ static int par_prepare(CableHandle *h)
 	}
 
 	// detect stuffs
-	ret = check_for_parport(h->device);
+	ret = linux_check_parport(h->device);
 	if(ret)
 	{
 		free(h->device); h->device = NULL;

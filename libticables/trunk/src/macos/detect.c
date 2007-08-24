@@ -269,7 +269,7 @@ static int check_for_node_usability(const char *pathname)
     return 0;
 }
 
-int check_for_root(void)
+int linux_check_root(void)
 {
     uid_t uid = getuid();
 
@@ -279,7 +279,7 @@ int check_for_root(void)
     return (uid ? ERR_ROOT : 0);
 }
 
-int check_for_tty(const char *devname)
+int linux_check_tty(const char *devname)
 {
     ticables_info(_("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
@@ -288,12 +288,12 @@ int check_for_tty(const char *devname)
     return 0;
 }
 
-int check_for_parport(const char *devname)
+int linux_check_parport(const char *devname)
 {
     return ERR_PPDEV;
 }
 
-int check_for_libusb(void)
+int linux_check_libusb(void)
 {
     return 0;
 }

@@ -24,10 +24,10 @@
 
 #include <stdio.h>
 
-int check_for_root(void);
-int check_for_tty(const char *devname);
-int check_for_parport(const char *devname);
-int check_for_libusb(void);
-int check_for_tiusb(const char *devname);
+int linux_check_root(void);
+int linux_check_tty(const char *devname);
+int linux_check_parport(const char *devname);
+int linux_check_libusb(void);
+int linux_check_tiusb(const char *devname);
 
 #endif

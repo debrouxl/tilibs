@@ -65,7 +65,7 @@ static int gry_prepare(CableHandle *h)
 	}
 	h->priv2 = (struct termios *)calloc(1, sizeof(struct termios));
 
-	ret = check_for_tty(h->device);
+	ret = bsd_check_tty(h->device);
 	if(ret)
 	{
 		free(h->device); h->device = NULL;

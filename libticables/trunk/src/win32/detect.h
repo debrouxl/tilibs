@@ -28,11 +28,11 @@
 #define WIN_NT	2
 #define WIN_64	4
 
-int win32_detect_os(void);
+int win32_check_os(void);
 
-int win32_detect_dha(void);
-int win32_detect_rwp(void);
+int win32_check_dha(void);
+int win32_check_rwp(void);
 
-int win32_detect_libusb(void);
+int win32_check_libusb(void);
 
 #endif

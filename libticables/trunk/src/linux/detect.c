@@ -282,7 +282,7 @@ static int check_for_node_usability(const char *pathname)
     return 0;
 }
 
-int check_for_root(void)
+int linux_check_root(void)
 {
     uid_t uid = getuid();
     
@@ -292,7 +292,7 @@ int check_for_root(void)
     return (uid ? ERR_ROOT : 0);
 }
 
-int check_for_tty(const char *devname)
+int linux_check_tty(const char *devname)
 {
     struct serial_struct serinfo = { 0 };
     int fd;
@@ -340,7 +340,7 @@ int check_for_tty(const char *devname)
     return 0;
 }
 
-int check_for_parport(const char *devname)
+int linux_check_parport(const char *devname)
 {
     int fd;
 
@@ -383,7 +383,7 @@ int check_for_parport(const char *devname)
 #define	USBFS	"/proc/bus/usb/"
 #define DEVFS    "/dev/bus/usb/"
 
-int check_for_libusb(void)
+int linux_check_libusb(void)
 {
 	ticables_info(_("Check for lib-usb support:"));
 #if defined(HAVE_LIBUSB)
@@ -435,7 +435,7 @@ int check_for_libusb(void)
     return 0;
 }
 
-int check_for_tiusb(const char *devname)
+int linux_check_tiusb(const char *devname)
 {
     int fd;
     int arg;

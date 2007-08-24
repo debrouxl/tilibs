@@ -5,6 +5,7 @@ Log:
 - 24/08/2007, version 1.0.8: roms
 	- removed TiglUsb driver support due to license issues. 
 		Replaced by libusb-win32 GPL'ed driver.
+	- some typo and return value changes for consistency with Linux detect.c.
 
 - 06/08/2007, version 1.0.7: roms
 	- removed PortTalk I/O driver due to license issues. Replaced by GPL'ed

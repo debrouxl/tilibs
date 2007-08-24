@@ -451,9 +451,9 @@ static int slv_prepare(CableHandle *h)
 	char str[64];
 
 #ifdef __WIN32__
-	TRYC(win32_detect_libusb());
+	TRYC(win32_check_libusb());
 #else
-	TRYC(check_for_libusb());
+	TRYC(linux_check_libusb());
 #endif
 
 	if(h->port >= MAX_CABLES)

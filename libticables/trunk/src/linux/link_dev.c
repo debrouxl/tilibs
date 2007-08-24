@@ -97,7 +97,7 @@ static int dev_prepare(CableHandle *h)
     h->priv2 = (usb_struct2 *)calloc(1, sizeof(usb_struct2));
 
     // detect stuffs
-    ret = check_for_tiusb(h->device);
+    ret = linux_check_tiusb(h->device);
     if(ret)
     {
 	free(h->priv2);  h->priv2 = NULL;
