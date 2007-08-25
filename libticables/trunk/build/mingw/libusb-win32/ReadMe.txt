@@ -16,5 +16,9 @@ libusb-win32-0.1.12
 Go to the libusb-win32 folder and run install.bat. That's all! Now, you have the libusb-win32
 package useable with MinGW thru libusb-config and PkgConfig.
 
+You may need to add the following line to the /etc/profile file:
+
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/lib/pkgconfig
+
 ---
 R. Liévin
