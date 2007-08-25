@@ -33,8 +33,11 @@
 #ifdef __LINUX__
 #include <sys/utsname.h>
 #endif
-#if defined(HAVE_LIBUSB)
-#include <usb.h>
+
+#ifdef __WIN32__
+# include "./win32/usb.h"
+#else
+# include <usb.h>
 #endif
 
 #include "gettext.h"
