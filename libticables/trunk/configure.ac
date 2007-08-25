@@ -63,36 +63,13 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-# USB cable support
-AC_ARG_ENABLE(libusb,
-  AC_HELP_STRING([--disable-libusb], [disable USB support]),
-  [use_libusb=$enableval], [use_libusb=yes])
-AC_CACHE_CHECK([whether to disable USB],
-  [use_libusb], [use_libusb=no])
-if test x$use_libusb = xyes; then
-  AC_DEFINE(USE_LIBUSB, 1, [Defined to disable USB support])
-fi
-
-dnl Don't detect & use libusb when cross-compiling from MinGW under Linux
-case $host_os in
-*mingw*)
-	LIBUSB_CFLAGS=
-        LIBUSB_LIBS=  
-;;
-*)
-	AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
-	if test x$LIBUSB_CONFIG = xyes; then
-	   LIBUSB_CFLAGS=`libusb-config --cflags`
-	   LIBUSB_LIBS=`libusb-config --libs`
-	   AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
-	else
-	   LIBUSB_CFLAGS=
-	   LIBUSB_LIBS=
-	fi
-;;
-esac
+PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.10)
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
+AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
+if test x$LIBUSB_CONFIG = xyes; then
+  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
+fi
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -234,12 +211,7 @@ else
  echo ""
 fi
 
-if test x$use_libusb = xno; then
- echo "USB support has been DISABLED on user's request."
- echo ""
-fi
-
-if test x$LIBUSB_CONFIG = xno; then
+if test x$HAVE_LIBUSB = xno; then
  echo "BEWARE: libusb can not be found. USB support has been DISABLED."
  echo ""
 fi 
