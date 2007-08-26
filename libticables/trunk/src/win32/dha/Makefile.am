@@ -32,6 +32,8 @@ else
 EXTRA_DIST += dhasetup.c dhahelper.h
 endif
 
+RC	?= windres
+
 dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
 	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
 
