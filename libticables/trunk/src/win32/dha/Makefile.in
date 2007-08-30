@@ -512,6 +512,8 @@ uninstall-am:
 	pdf pdf-am ps ps-am tags uninstall uninstall-am
 
 
+RC	?= windres
+
 dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
 	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
 

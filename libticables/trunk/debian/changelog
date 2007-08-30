@@ -1,3 +1,9 @@
+libticables2-1 (1.0.8-1) unstable; urgency=low
+
+  * Replaced my win32 USB driver by libusb-win32 one.
+
+ -- Romain LIEVIN <roms@tilp.info>  Wed, 26 Aug 2007 18:59:06 +0200	
+
 libticables2-1 (1.0.7-1) unstable; urgency=low
 
   * Replaced win32 PortTalk driver by MPLayer's dhahelper one.
