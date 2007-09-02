@@ -25,9 +25,9 @@
 EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES
 
 if OS_WIN32
-noinst_PROGRAMS = dhasetup
+bin_PROGRAMS = dhasetup
 dhasetup_SOURCES = dhasetup.c dhahelper.h
-noinst_SCRIPTS = dhahelper.sys
+bin_SCRIPTS = dhahelper.sys
 else
 EXTRA_DIST += dhasetup.c dhahelper.h
 endif

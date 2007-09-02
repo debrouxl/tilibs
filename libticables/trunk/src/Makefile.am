@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = win32/dha
+SUBDIRS = win32/dha win64/rwp
 
 AM_CFLAGS = -Wall
 
@@ -33,7 +33,14 @@ if OS_WIN32
   libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o
 endif
 
-EXTRA_DIST = bsd/* linux/* macos/* win32/*
+EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win64/*.c win64/*.h
+
+if OS_WIN32
+libusbdir = $(pkgdatadir)/libusb
+dist_libusb_DATA = win32/usb/*.cat win32/usb/*.inf
+else
+EXTRA_DIST += win32/usb/*.cat win32/usb/*.inf
+endif
 
 wc:
-	wc *.c *.h ./linux/*.c ./linux/*.h ./win32/*.c ./win32/*.h ./bsd/*.c ./bsd/*.h ./macos/*.c ./macos/*.h
+	wc *.c *.h ./linux/*.c ./linux/*.h ./win32/*.c ./win32/*.h ./win64/*.c ./win64/*.h ./bsd/*.c ./bsd/*.h ./macos/*.c ./macos/*.h

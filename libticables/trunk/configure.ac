@@ -37,6 +37,7 @@ AC_CONFIG_FILES([
   po/Makefile.in
   src/Makefile
   src/win32/dha/Makefile
+  src/win64/rwp/Makefile
   tests/Makefile
   ticables2.pc
 ])

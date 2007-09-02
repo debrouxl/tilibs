@@ -57,9 +57,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@OS_WIN32_TRUE@noinst_PROGRAMS = dhasetup$(EXEEXT)
-@OS_WIN32_FALSE@am__append_1 = dhasetup.c dhahelper.h
-subdir = src/win32/dha
+@OS_WIN32_TRUE@bin_PROGRAMS = rwpsetup$(EXEEXT)
+@OS_WIN32_FALSE@am__append_1 = rwpsetup.c rwports.h
+subdir = src/win64/rwp
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -68,12 +68,15 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-PROGRAMS = $(noinst_PROGRAMS)
-am__dhasetup_SOURCES_DIST = dhasetup.c dhahelper.h
-@OS_WIN32_TRUE@am_dhasetup_OBJECTS = dhasetup.$(OBJEXT)
-dhasetup_OBJECTS = $(am_dhasetup_OBJECTS)
-dhasetup_LDADD = $(LDADD)
-SCRIPTS = $(noinst_SCRIPTS)
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"
+binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+PROGRAMS = $(bin_PROGRAMS)
+am__rwpsetup_SOURCES_DIST = rwpsetup.c rwports.h
+@OS_WIN32_TRUE@am_rwpsetup_OBJECTS = rwpsetup.$(OBJEXT)
+rwpsetup_OBJECTS = $(am_rwpsetup_OBJECTS)
+rwpsetup_LDADD = $(LDADD)
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(bin_SCRIPTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -86,8 +89,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(dhasetup_SOURCES)
-DIST_SOURCES = $(am__dhasetup_SOURCES_DIST)
+SOURCES = $(rwpsetup_SOURCES)
+DIST_SOURCES = $(am__rwpsetup_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -159,7 +162,6 @@ LIBS = @LIBS@
 LIBTHREAD = @LIBTHREAD@
 LIBTOOL = @LIBTOOL@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
-LIBUSB_CONFIG = @LIBUSB_CONFIG@
 LIBUSB_LIBS = @LIBUSB_LIBS@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -249,12 +251,12 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt \
-	dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES \
+EXTRA_DIST = rwports.c rwports.rc common.ver ntverp.h ReadMe.txt \
+	rwports.bat rwpsetup.bat rwpsetup.dsp rwpsetup.dsw SOURCES \
 	$(am__append_1)
-@OS_WIN32_TRUE@dhasetup_SOURCES = dhasetup.c dhahelper.h
-@OS_WIN32_TRUE@noinst_SCRIPTS = dhahelper.sys
-CLEANFILES = dhahelper.sys dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) base.tmp temp.exp
+@OS_WIN32_TRUE@rwpsetup_SOURCES = rwpsetup.c rwports.h
+@OS_WIN32_TRUE@bin_SCRIPTS = rwports.sys
+CLEANFILES = rwports.sys rwports.$(OBJEXT) rwports-rc.$(OBJEXT) base.tmp temp.exp
 all: all-am
 
 .SUFFIXES:
@@ -268,9 +270,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/win32/dha/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  src/win64/rwp/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  src/win32/dha/Makefile
+	  $(AUTOMAKE) --gnu  src/win64/rwp/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -288,16 +290,56 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
+	  else :; fi; \
+	done
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; for p in $$list; do \
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	done
+
+clean-binPROGRAMS:
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
 	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-dhasetup$(EXEEXT): $(dhasetup_OBJECTS) $(dhasetup_DEPENDENCIES) 
-	@rm -f dhasetup$(EXEEXT)
-	$(LINK) $(dhasetup_OBJECTS) $(dhasetup_LDADD) $(LIBS)
+rwpsetup$(EXEEXT): $(rwpsetup_OBJECTS) $(rwpsetup_DEPENDENCIES) 
+	@rm -f rwpsetup$(EXEEXT)
+	$(LINK) $(rwpsetup_OBJECTS) $(rwpsetup_LDADD) $(LIBS)
+install-binSCRIPTS: $(bin_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	test -z "$(bindir)" || $(MKDIR_P) "$(DESTDIR)$(bindir)"
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f $$d$$p; then \
+	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	    echo " $(binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	    $(binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
+	  else :; fi; \
+	done
+
+uninstall-binSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	done
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -305,7 +347,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dhasetup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rwpsetup.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -412,6 +454,9 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(SCRIPTS)
 installdirs:
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(bindir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -439,8 +484,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -462,7 +506,7 @@ install-data-am:
 
 install-dvi: install-dvi-am
 
-install-exec-am:
+install-exec-am: install-binPROGRAMS install-binSCRIPTS
 
 install-html: install-html-am
 
@@ -494,54 +538,63 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-binPROGRAMS uninstall-binSCRIPTS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstPROGRAMS ctags distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic clean-libtool ctags distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-binPROGRAMS install-binSCRIPTS install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-binSCRIPTS
 
 
-dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
-	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
+# We will need a working x86_64-pc-mingw32 toolchain to build this.
+#
+#RC	?= windres
+#
+#rwports.$(OBJEXT): $(srcdir)/rwports.c $(srcdir)/rwports.h
+#	$(CC) -Wall -Os -c $(srcdir)/rwports.c -o rwports.$(OBJEXT)
+#
+#rwports-rc.$(OBJEXT): $(srcdir)/rwports.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
+#	$(RC) -I. rwports.rc $@
+#
+#base.tmp: rwports.$(OBJEXT) rwports-rc.$(OBJEXT)
+#	$(CC) 	-Wl,--base-file,base.tmp \
+#		-Wl,--entry,_DriverEntry@8 \
+#		-nostartfiles -nostdlib \
+#		-o junk.tmp \
+#		rwports.$(OBJEXT) rwports-rc.$(OBJEXT) \
+#		-lntoskrnl
+#	-rm -f junk.tmp
+#
+#temp.exp: base.tmp
+#	$(DLLTOOL) --dllname rwports.sys --base-file base.tmp --output-exp temp.exp
+#
+#rwports.sys: rwports.$(OBJEXT) rwports-rc.$(OBJEXT) temp.exp
+#	$(CC)	-Wl,--subsystem,native \
+#		-Wl,--image-base,0x10000 \
+#		-Wl,--file-alignment,0x1000 \
+#		-Wl,--section-alignment,0x1000 \
+#		-Wl,--entry,_DriverEntry@8 \
+#		-Wl,temp.exp \
+#		-mdll -nostartfiles -nostdlib \
+#		-o rwports.sys \
+#		rwports.$(OBJEXT) rwports-rc.$(OBJEXT) \
+#		-lntoskrnl
+#	$(STRIP) rwports.sys
 
-dhahelper-rc.$(OBJEXT): $(srcdir)/dhahelper.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
-	$(RC) -I. dhahelper.rc $@
-
-base.tmp: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT)
-	$(CC) 	-Wl,--base-file,base.tmp \
-		-Wl,--entry,_DriverEntry@8 \
-		-nostartfiles -nostdlib \
-		-o junk.tmp \
-		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
-		-lntoskrnl
-	-rm -f junk.tmp
-
-temp.exp: base.tmp
-	$(DLLTOOL) --dllname dhahelper.sys --base-file base.tmp --output-exp temp.exp
-
-dhahelper.sys: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) temp.exp
-	$(CC)	-Wl,--subsystem,native \
-		-Wl,--image-base,0x10000 \
-		-Wl,--file-alignment,0x1000 \
-		-Wl,--section-alignment,0x1000 \
-		-Wl,--entry,_DriverEntry@8 \
-		-Wl,temp.exp \
-		-mdll -nostartfiles -nostdlib \
-		-o dhahelper.sys \
-		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
-		-lntoskrnl
-	$(STRIP) dhahelper.sys
+rwports.sys: ../../../build/msvc/rwports.sys
+	cp -f ../../../build/msvc/rwports.sys rwports.sys
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

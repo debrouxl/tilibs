@@ -22,45 +22,52 @@
 # Written by Marcel Telka <marcel@telka.sk>, 2003.
 #
 
-EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES
+EXTRA_DIST = rwports.c rwports.rc common.ver ntverp.h ReadMe.txt rwports.bat rwpsetup.bat rwpsetup.dsp rwpsetup.dsw SOURCES
 
 if OS_WIN32
-noinst_PROGRAMS = dhasetup
-dhasetup_SOURCES = dhasetup.c dhahelper.h
-noinst_SCRIPTS = dhahelper.sys
+bin_PROGRAMS = rwpsetup
+rwpsetup_SOURCES = rwpsetup.c rwports.h
+bin_SCRIPTS = rwports.sys
 else
-EXTRA_DIST += dhasetup.c dhahelper.h
+EXTRA_DIST += rwpsetup.c rwports.h
 endif
 
-dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
-	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
+# We will need a working x86_64-pc-mingw32 toolchain to build this.
+#
+#RC	?= windres
+#
+#rwports.$(OBJEXT): $(srcdir)/rwports.c $(srcdir)/rwports.h
+#	$(CC) -Wall -Os -c $(srcdir)/rwports.c -o rwports.$(OBJEXT)
+#
+#rwports-rc.$(OBJEXT): $(srcdir)/rwports.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
+#	$(RC) -I. rwports.rc $@
+#
+#base.tmp: rwports.$(OBJEXT) rwports-rc.$(OBJEXT)
+#	$(CC) 	-Wl,--base-file,base.tmp \
+#		-Wl,--entry,_DriverEntry@8 \
+#		-nostartfiles -nostdlib \
+#		-o junk.tmp \
+#		rwports.$(OBJEXT) rwports-rc.$(OBJEXT) \
+#		-lntoskrnl
+#	-rm -f junk.tmp
+#
+#temp.exp: base.tmp
+#	$(DLLTOOL) --dllname rwports.sys --base-file base.tmp --output-exp temp.exp
+#
+#rwports.sys: rwports.$(OBJEXT) rwports-rc.$(OBJEXT) temp.exp
+#	$(CC)	-Wl,--subsystem,native \
+#		-Wl,--image-base,0x10000 \
+#		-Wl,--file-alignment,0x1000 \
+#		-Wl,--section-alignment,0x1000 \
+#		-Wl,--entry,_DriverEntry@8 \
+#		-Wl,temp.exp \
+#		-mdll -nostartfiles -nostdlib \
+#		-o rwports.sys \
+#		rwports.$(OBJEXT) rwports-rc.$(OBJEXT) \
+#		-lntoskrnl
+#	$(STRIP) rwports.sys
 
-dhahelper-rc.$(OBJEXT): $(srcdir)/dhahelper.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
-	$(RC) -I. dhahelper.rc $@
+rwports.sys: ../../../build/msvc/rwports.sys
+	cp -f ../../../build/msvc/rwports.sys rwports.sys
 
-base.tmp: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT)
-	$(CC) 	-Wl,--base-file,base.tmp \
-		-Wl,--entry,_DriverEntry@8 \
-		-nostartfiles -nostdlib \
-		-o junk.tmp \
-		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
-		-lntoskrnl
-	-rm -f junk.tmp
-
-temp.exp: base.tmp
-	$(DLLTOOL) --dllname dhahelper.sys --base-file base.tmp --output-exp temp.exp
-
-dhahelper.sys: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) temp.exp
-	$(CC)	-Wl,--subsystem,native \
-		-Wl,--image-base,0x10000 \
-		-Wl,--file-alignment,0x1000 \
-		-Wl,--section-alignment,0x1000 \
-		-Wl,--entry,_DriverEntry@8 \
-		-Wl,temp.exp \
-		-mdll -nostartfiles -nostdlib \
-		-o dhahelper.sys \
-		dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) \
-		-lntoskrnl
-	$(STRIP) dhahelper.sys
-
-CLEANFILES = dhahelper.sys dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) base.tmp temp.exp
+CLEANFILES = rwports.sys rwports.$(OBJEXT) rwports-rc.$(OBJEXT) base.tmp temp.exp
