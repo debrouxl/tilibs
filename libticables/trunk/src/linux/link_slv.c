@@ -4,10 +4,17 @@
 /*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (c) 1999-2006 Romain Lievin
  *  Copyright (c) 2001 Julien Blache (original author)
+ *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
+ *  Copyright (c) 2007 Kevin Kofler (libusb-win32 slv_check support)
+ *
  *  Portions lifted from libusb (LGPL):
  *  Copyright (c) 2000-2003 Johannes Erdfelt <johannes@erdfelt.com>
  *  Modifications for libticables Copyright (C) 2005 Kevin Kofler
- *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
+ *
+ *  Portions lifted from libusb-win32 (LGPL):
+ *  Copyright (c) 2002-2005 Stephan Meyer <ste_meyer@web.de>
+ *  Copyright (c) 2000-2005 Johannes Erdfelt <johannes@erdfelt.com>
+ *  Modifications for libticables Copyright (C) 2007 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,7 +64,8 @@
    - for checking, under Linux, we use a hack by Kevin Kofler (based on the
    libusb source code, and inspired by Romain's Windows driver). This is for
    Linux ONLY, not for other POSIX-like systems (it directly uses Linux kernel
-   interfaces).
+   interfaces). Under Windows, we use the asynchronous API provided by the
+   libusb-win32.
 */
                                      
 #ifdef HAVE_CONFIG_H
@@ -77,7 +85,7 @@
 #include <sys/ioctl.h>
 #endif
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 # include "../win32/usb.h"
 #else
 # include <usb.h>
@@ -86,12 +94,13 @@
 /* --- */
 
 #ifdef __WIN32__	// found in src/error.h of libusb-win32
-# define ETIMEDOUT	-116
-//# define EPIPE	-117
-#endif
+# define ETIMEDOUT	116
 
-#ifdef __WIN32
 # define usb_busses	usb_get_busses()
+
+/* variables for slv_check and slv_bulk_read2 */
+static int io_pending = 0;
+static void *context = 0;
 #endif
 
 /* --- */
@@ -183,7 +192,7 @@ extern int usb_debug;
 	  return x; \
 	} while (0)
 
-/* variables for slv_check and slv_bulk_read */
+/* variables for slv_check and slv_bulk_read2 */
 static int io_pending = 0;
 static struct usb_urb urb;
 #endif
@@ -194,7 +203,11 @@ static struct usb_urb urb;
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
+#ifdef __WIN32__
+#include "../win32/detect.h"
+#else
 #include "detect.h"
+#endif
 #include "../timeout.h"
 
 /* Constants */
@@ -659,6 +672,64 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 }
 #endif
 
+#ifdef _WIN32
+#define LIBUSB_MAX_READ_WRITE 0x10000
+int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
+                   int timeout)
+{
+  // This is a variant of usb_bulk_read in libusb-win32, edited to take the
+  // io_pending variable set in slv_check into account and to use the public
+  // async API instead of the private one.
+
+  int transmitted = 0;
+  int ret;
+  int requested;
+
+  if (!io_pending)
+    {
+      ret = usb_bulk_setup_async(dev, &context, ep);
+
+      if(ret < 0)
+        {
+          return ret;
+        }
+    }
+
+  do {
+    requested = size > LIBUSB_MAX_READ_WRITE ? LIBUSB_MAX_READ_WRITE : size;
+
+    if (io_pending)
+      io_pending = FALSE;
+    else
+      {
+        ret = usb_submit_async(context, bytes, requested);
+
+        if(ret < 0)
+          {
+            transmitted = ret;
+            break;
+          }
+      }
+
+    ret = usb_reap_async(context, timeout);
+
+    if(ret < 0)
+      {
+        transmitted = ret;
+        break;
+      }
+
+    transmitted += ret;
+    bytes += ret;
+    size -= ret;
+  } while(size > 0 && ret == requested);
+  
+  usb_free_async(&context);
+
+  return transmitted;
+}
+#endif
+
 static int slv_get_(CableHandle *h, uint8_t *data)
 {
     int ret = 0;
@@ -671,7 +742,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	TO_START(clk);
 	do 
 	{
-#ifdef __LINUX__
+#if defined(__LINUX__) || defined(__WIN32__)
 	    ret = slv_bulk_read2(uHdl, TIGL_BULK_IN, (char*)rBuf, 
 				max_ps, to);
 #else
@@ -766,7 +837,7 @@ static int raw_probe(CableHandle *h)
 
 static int slv_check(CableHandle *h, int *status)
 {
-#ifdef __LINUX__
+#if defined(__LINUX__)
     // This really should be in libusb, but alas it isn't, so their code was
     // adapted by Kevin Kofler for use here. It's required to get TiEmu 3 to
     // work with the SilverLink.
@@ -821,6 +892,51 @@ static int slv_check(CableHandle *h, int *status)
 		if (urb.actual_length > 0)
 		{
 			nBytesRead = urb.actual_length;
+			rBufPtr = rBuf;
+			*status = STATUS_RX; // data available
+		}
+	}
+	return 0;
+#elif defined(__WIN32__)
+	int ret;
+
+	if(nBytesRead > 0)
+        {
+	    *status = !0;
+	    return 0;
+        }
+
+	if (!io_pending)
+	{
+		ret = usb_bulk_setup_async(uHdl, &context, TIGL_BULK_IN);
+		if (ret < 0)
+			return ERR_READ_ERROR;
+		ret = usb_submit_async(context, (char*)rBuf, max_ps);
+		if (ret < 0)
+		{
+			usb_free_async(&context);
+			return ERR_READ_ERROR;
+		}
+		io_pending = TRUE;
+	}
+
+	ret = usb_reap_async_nocancel(context, 0);
+	if (ret < 0 && ret != -ETIMEDOUT)
+	{
+		// Error, unlink URB and return failure.
+		usb_cancel_async(context);
+		usb_free_async(&context);
+		io_pending = FALSE;
+		return ERR_READ_ERROR;
+	}
+
+	if (ret >= 0)
+	{
+		usb_free_async(&context);
+		io_pending = FALSE;
+		if (ret > 0)
+		{
+			nBytesRead = ret;
 			rBufPtr = rBuf;
 			*status = STATUS_RX; // data available
 		}

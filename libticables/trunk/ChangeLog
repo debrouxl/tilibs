@@ -3,9 +3,13 @@ SubVersion: $Id$
 Log:
 
 - 02/09/2007, version 1.0.9: roms & kevin
-	- fixed win32_check_libusb()
+	- fixed win32_check_libusb() (roms)
 	- check WIN64 platform at runtime in ioports.c (need to know whether we
-		are running a 32-bit app under Win32 or Win64).
+	  are running a 32-bit app under Win32 or Win64). (roms, kevin)
+	- driver installation for MinGW (make install): install into prefix,
+	  output message explaining how to fully install them (kevin)
+	- added support for slv_check (needed for TiEmu) on libusb-win32 (kevin)
+	- fixed value of ETIMEDOUT under Win32 (kevin)
 
 - 24/08/2007, version 1.0.8: roms
 	- removed TiglUsb driver support due to license issues. 
