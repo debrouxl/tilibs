@@ -35,7 +35,7 @@
 
 #define RWP_DRV_NAME	"RwPorts"
 
-#if defined(__WIN32__) && defined(_WIN64)
+#if defined(__WIN32__) || defined(_WIN64)
 
 static void print_last_error(char *s)
 {
