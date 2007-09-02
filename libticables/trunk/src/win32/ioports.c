@@ -72,6 +72,7 @@ static void print_last_error(char *s)
 }
 #endif				//__WIN32__
 
+#ifndef _WIN64
 /* I/O thru assembly code */
 
 static int win32_read_io(unsigned int addr)
@@ -103,6 +104,7 @@ asm("movw %0,%%dx \n movw %1,%%ax \n outb %%al,%%dx"::"g"(addr), "g"(data):"ax",
 	  out dx, al}
 #endif
 }
+#endif
 
 /* I/O thru device driver IOCTL calls */
 
@@ -125,6 +127,7 @@ int io_open(unsigned long from)
 {
 	int ret;
 
+#ifndef _WIN64
 	if(win32_check_os() == WIN_9X)
 	{
 		io_rd = win32_read_io;
@@ -141,6 +144,7 @@ int io_open(unsigned long from)
 		instance++;
 	}
 	else if(win32_check_os() == WIN_64)
+#endif
 	{
 		ret = rwp_open();
 		if(ret) return ERR_DHA_NOT_FOUND;
@@ -158,8 +162,8 @@ int io_close(unsigned long from)
 {
 	int ret;
 
-	if(0) {}
-	else if(win32_check_os() == WIN_NT)
+#ifndef _WIN64
+	if(win32_check_os() == WIN_NT)
 	{
 		instance--;
 		if(!instance)
@@ -169,6 +173,7 @@ int io_close(unsigned long from)
 		}
 	}
 	else if(win32_check_os() == WIN_64)
+#endif
 	{
 		instance--;
 		if(!instance)
