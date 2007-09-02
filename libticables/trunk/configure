@@ -28820,6 +28820,11 @@ else
 echo "${ECHO_T}yes" >&6; }
 	:
 fi
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBUSB 1
+_ACEOF
+
 else
   LIBUSB_CFLAGS=
   LIBUSB_LIBS=

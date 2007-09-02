@@ -71,6 +71,7 @@ AC_CACHE_CHECK([whether to disable USB],
   [use_libusb], [use_libusb=no])
 if test x$use_libusb = xyes; then
   PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.10)
+  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
 else
   LIBUSB_CFLAGS=
   LIBUSB_LIBS=

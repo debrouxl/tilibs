@@ -128,6 +128,9 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
+/* Define to 1 to enable libusb support. */
+#undef HAVE_LIBUSB
+
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
