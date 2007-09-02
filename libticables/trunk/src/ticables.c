@@ -34,7 +34,7 @@
 #include <sys/utsname.h>
 #endif
 
-#ifdef __WIN32__
+#ifdef _MSC_VER
 # include "./win32/usb.h"
 #elif defined(HAVE_LIBUSB)
 # include <usb.h>
