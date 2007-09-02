@@ -13,12 +13,11 @@ libusb-win32-0.1.12
  +- lib
 => +- libusb-win32
 
-Go to the libusb-win32 folder and run install.bat. That's all! Now, you have the libusb-win32
-package useable with MinGW thru libusb-config and PkgConfig.
+Go to the libusb-win32 folder and run ./install.sh within MSYS. That's all! Now, you have the
+libusb-win32 package useable with MinGW thru libusb-config and PkgConfig.
 
-You may need to add the following line to the /etc/profile file:
-
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/lib/pkgconfig
+For cross-MinGW, you may want to give a prefix to install.sh:
+PREFIX=/prefix ./install.sh
 
 ---
-R. Liévin
+Romain Liévin, Kevin Kofler
