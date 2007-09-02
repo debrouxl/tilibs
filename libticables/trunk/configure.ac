@@ -70,20 +70,11 @@ AC_ARG_ENABLE(libusb,
 AC_CACHE_CHECK([whether to disable USB],
   [use_libusb], [use_libusb=no])
 if test x$use_libusb = xyes; then
-  AC_DEFINE(USE_LIBUSB, 1, [Defined to disable USB support])
+  PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.10)
+else
+  LIBUSB_CFLAGS=
+  LIBUSB_LIBS=
 fi
-
-dnl Don't detect & use libusb when cross-compiling from MinGW under Linux
-	AC_CHECK_PROG(LIBUSB_CONFIG, libusb-config, yes, no)
-	if test x$LIBUSB_CONFIG = xyes; then
-	   LIBUSB_CFLAGS=`libusb-config --cflags`
-	   LIBUSB_LIBS=`libusb-config --libs`
-	   AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
-	else
-	   LIBUSB_CFLAGS=
-	   LIBUSB_LIBS=
-	fi
-
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
 
@@ -226,8 +217,3 @@ else
  echo "enable logging. Log files are generated in a user's home directory."
  echo ""
 fi
-
-if test x$HAVE_LIBUSB = xno; then
- echo "BEWARE: libusb can not be found. USB support has been DISABLED."
- echo ""
-fi 
