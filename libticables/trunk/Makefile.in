@@ -716,14 +716,16 @@ uninstall-am: uninstall-pkgconfigDATA
 
 
 install-exec-local:
-@OS_WIN32_TRUE@	echo 'To install drivers, please run:'
-@OS_WIN32_TRUE@	echo 'BlackLink, ParallelLink on Win32: dhasetup install'
-@OS_WIN32_TRUE@	echo 'BlackLink, ParallelLink on Win64: rwpsetup install'
-@OS_WIN32_TRUE@	echo 'USB: rundll32 libusb0.dll,usb_install_driver_np_rundll DRIVER where DRIVER is:'
-@OS_WIN32_TRUE@	echo '  SilverLink: $(libusbdir)/silverlk.inf'
-@OS_WIN32_TRUE@	echo '  DirectLink TI-89 Titanium: $(libusbdir)/titanium.inf'
-@OS_WIN32_TRUE@	echo '  DirectLink TI-84+: $(libusbdir)/ti84plus.inf'
-@OS_WIN32_TRUE@	echo '  DirectLink TI-84+ SE: $(libusbdir)/ti84pse.inf'
+@OS_WIN32_TRUE@	@echo '------------------------------------------------------------------------------'
+@OS_WIN32_TRUE@	@echo 'To install drivers, please run:'
+@OS_WIN32_TRUE@	@echo 'BlackLink, ParallelLink on Win32: dhasetup install'
+@OS_WIN32_TRUE@	@echo 'BlackLink, ParallelLink on Win64: rwpsetup install'
+@OS_WIN32_TRUE@	@echo 'USB: rundll32 libusb0.dll,usb_install_driver_np_rundll DRIVER where DRIVER is:'
+@OS_WIN32_TRUE@	@echo '  SilverLink: $(pkgdatadir)/libusb/silverlk.inf'
+@OS_WIN32_TRUE@	@echo '  DirectLink TI-89 Titanium: $(pkgdatadir)/libusb/titanium.inf'
+@OS_WIN32_TRUE@	@echo '  DirectLink TI-84+: $(pkgdatadir)/libusb/ti84plus.inf'
+@OS_WIN32_TRUE@	@echo '  DirectLink TI-84+ SE: $(pkgdatadir)/libusb/ti84pse.inf'
+@OS_WIN32_TRUE@	@echo '------------------------------------------------------------------------------'
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
