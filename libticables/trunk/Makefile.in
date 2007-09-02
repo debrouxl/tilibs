@@ -660,7 +660,7 @@ install-data-am: install-pkgconfigDATA
 
 install-dvi: install-dvi-recursive
 
-install-exec-am:
+install-exec-am: install-exec-local
 
 install-html: install-html-recursive
 
@@ -705,15 +705,25 @@ uninstall-am: uninstall-pkgconfigDATA
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-pkgconfigDATA install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am tags tags-recursive uninstall uninstall-am \
-	uninstall-pkgconfigDATA
+	install-exec install-exec-am install-exec-local install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
+	uninstall uninstall-am uninstall-pkgconfigDATA
 
+
+install-exec-local:
+@OS_WIN32_TRUE@	echo 'To install drivers, please run:'
+@OS_WIN32_TRUE@	echo 'BlackLink, ParallelLink on Win32: dhasetup install'
+@OS_WIN32_TRUE@	echo 'BlackLink, ParallelLink on Win64: rwpsetup install'
+@OS_WIN32_TRUE@	echo 'USB: rundll32 libusb0.dll,usb_install_driver_np_rundll DRIVER where DRIVER is:'
+@OS_WIN32_TRUE@	echo '  SilverLink: $(libusbdir)/silverlk.inf'
+@OS_WIN32_TRUE@	echo '  DirectLink TI-89 Titanium: $(libusbdir)/titanium.inf'
+@OS_WIN32_TRUE@	echo '  DirectLink TI-84+: $(libusbdir)/ti84plus.inf'
+@OS_WIN32_TRUE@	echo '  DirectLink TI-84+ SE: $(libusbdir)/ti84pse.inf'
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
