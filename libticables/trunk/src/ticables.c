@@ -36,7 +36,7 @@
 
 #ifdef __WIN32__
 # include "./win32/usb.h"
-#else
+#elif defined(HAVE_LIBUSB)
 # include <usb.h>
 #endif
 
