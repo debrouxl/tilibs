@@ -252,8 +252,8 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = rwports.c rwports.rc common.ver ntverp.h ReadMe.txt \
-	rwports.bat rwpsetup.bat rwpsetup.dsp rwpsetup.dsw SOURCES \
-	$(am__append_1)
+	rwports.bat rwpsetup.bat net.bat rwpsetup.dsp rwpsetup.dsw \
+	SOURCES NMAKEFILE $(am__append_1)
 @OS_WIN32_TRUE@rwpsetup_SOURCES = rwpsetup.c rwports.h
 @OS_WIN32_TRUE@bin_SCRIPTS = rwports.sys
 CLEANFILES = rwports.sys rwports.$(OBJEXT) rwports-rc.$(OBJEXT) base.tmp temp.exp

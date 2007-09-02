@@ -253,7 +253,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt \
 	dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES \
-	$(am__append_1)
+	NMAKEFILE $(am__append_1)
 @OS_WIN32_TRUE@dhasetup_SOURCES = dhasetup.c dhahelper.h
 @OS_WIN32_TRUE@bin_SCRIPTS = dhahelper.sys
 CLEANFILES = dhahelper.sys dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) base.tmp temp.exp

@@ -22,7 +22,7 @@
 # Written by Marcel Telka <marcel@telka.sk>, 2003.
 #
 
-EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES
+EXTRA_DIST = dhahelper.c dhahelper.rc common.ver ntverp.h ReadMe.txt dhahelper.bat dhasetup.bat dhasetup.dsp dhasetup.dsw SOURCES NMAKEFILE
 
 if OS_WIN32
 bin_PROGRAMS = dhasetup

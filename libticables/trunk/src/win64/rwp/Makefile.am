@@ -22,7 +22,7 @@
 # Written by Marcel Telka <marcel@telka.sk>, 2003.
 #
 
-EXTRA_DIST = rwports.c rwports.rc common.ver ntverp.h ReadMe.txt rwports.bat rwpsetup.bat rwpsetup.dsp rwpsetup.dsw SOURCES
+EXTRA_DIST = rwports.c rwports.rc common.ver ntverp.h ReadMe.txt rwports.bat rwpsetup.bat net.bat rwpsetup.dsp rwpsetup.dsw SOURCES NMAKEFILE
 
 if OS_WIN32
 bin_PROGRAMS = rwpsetup
