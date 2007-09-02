@@ -89,16 +89,5 @@ int win32_check_rwp(void)
 
 int win32_check_libusb(void)
 {
-	HINSTANCE hDll = NULL;	/* Handle for TiglUsb driver */
-	int ret = -1;
-
-	hDll = LoadLibrary("libusb0.dll");
-    if (hDll != NULL) 
-	{
-		ret = 0;
-        FreeLibrary(hDll);
-	}
-
-    ticables_info("libusb-win32 driver%sfound.", ret ? " not ": " ");
-	return ret;
+	return 0;
 }

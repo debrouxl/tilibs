@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 02/09/2007, version 1.0.9: roms & kevin
+	- fixed win32_check_libusb()
+	- 
+
 - 24/08/2007, version 1.0.8: roms
 	- removed TiglUsb driver support due to license issues. 
 		Replaced by libusb-win32 GPL'ed driver.
