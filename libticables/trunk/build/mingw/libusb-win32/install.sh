@@ -10,6 +10,7 @@ mkdir -p $PREFIX/lib
 mkdir -p $PREFIX/lib/pkgconfig
 
 cp -f ../bin/libusb0.dll  $PREFIX/bin
+cp -f ../bin/libusb0*.sys $PREFIX/bin
 cp -f ../include/usb.h    $PREFIX/include
 cp -f ../lib/gcc/libusb.a $PREFIX/lib
 
