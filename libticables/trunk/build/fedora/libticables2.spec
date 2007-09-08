@@ -1,7 +1,7 @@
 Name: libticables2
 Epoch: 1
-Version: 1.0.6
-Release: 3
+Version: 1.0.9
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
@@ -48,13 +48,13 @@ cat >$RPM_BUILD_ROOT/etc/udev/rules.d/60-libticables.rules <<EOF1
 # This file was installed by the libticables2 Fedora package.
 
 # SilverLink
-ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", SYMLINK+="ticable-%%k"
 # TI-84+ DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", SYMLINK+="ticable-%%k"
 # TI-89 Titanium DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", SYMLINK+="ticable-%%k"
 # TI-84+ SE DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", SYMLINK+="ticable-%%k"
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", SYMLINK+="ticable-%%k"
 EOF1
 mkdir -p $RPM_BUILD_ROOT/etc/security/console.perms.d
 cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
@@ -100,6 +100,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sat Aug 9 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.9-1
+Update to 1.0.9.
+Change usb_device back to usb (required with current kernel and udev).
+
 * Fri Jul 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.6-3
 Revert usb_device->usb change (update kernel has CONFIG_USB_DEVICE_CLASS on)
 
