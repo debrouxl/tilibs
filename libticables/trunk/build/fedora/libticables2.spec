@@ -100,7 +100,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
-* Sat Aug 9 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.9-1
+* Sat Sep 8 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.9-1
 Update to 1.0.9.
 Change usb_device back to usb (required with current kernel and udev).
 
