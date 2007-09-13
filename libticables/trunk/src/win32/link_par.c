@@ -46,7 +46,7 @@ static int par_prepare(CableHandle *h)
 
 	if(win32_check_os() == WIN_NT)
 	{
-		if(!win32_check_dha())
+		if(win32_check_dha())
 		{
 			free(h->device); h->device = NULL;
 			return ERR_DHA_NOT_FOUND;
@@ -54,7 +54,7 @@ static int par_prepare(CableHandle *h)
 	}
 	else if(win32_check_os() == WIN_64)
 	{
-		if(!win32_check_rwp())
+		if(win32_check_rwp())
 		{
 			free(h->device); h->device = NULL;
 			return ERR_DHA_NOT_FOUND;
