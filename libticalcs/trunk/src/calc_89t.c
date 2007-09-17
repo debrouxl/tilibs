@@ -242,11 +242,19 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	for (i = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *ve = content->entries[i];
+		char varname[18];
 		
 		if(ve->action == ACT_SKIP)
 			continue;
 
-		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+		if(ve->folder)
+		{
+			tifiles_build_fullname(handle->model, varname, ve->folder, ve->name);
+		}
+		else
+			strcpy(varname, ve->name);
+
+		utf8 = ticonv_varname_to_utf8(handle->model, varname, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 		g_free(utf8);
 		update_label();

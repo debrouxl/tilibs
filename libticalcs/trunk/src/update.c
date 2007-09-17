@@ -21,11 +21,11 @@
 
 #include "ticalcs.h"
 
-static void ticalcs_update_start(void) {};
-static void ticalcs_update_stop(void) {};
-static void ticalcs_update_refresh(void) {};
-static void ticalcs_update_pbar(void) {};
-static void ticalcs_update_label(void) {};
+static void ticalcs_update_start(void)	{};
+static void ticalcs_update_stop(void)	{};
+static void ticalcs_update_refresh(void){};
+static void ticalcs_update_pbar(void)	{};
+static void ticalcs_update_label(void)	{};
 
 CalcUpdate default_update =
 {
