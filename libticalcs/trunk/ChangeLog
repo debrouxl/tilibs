@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 17/09/2007, version 1.0.8: roms
+	- fixed full screen copy with Titanium
+
 - 17/06/2007, version 1.0.7: roms
 	- fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
 	- replaced malloc/free by g_malloc/g_free

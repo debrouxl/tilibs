@@ -111,6 +111,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		return ERR_MALLOC;
 	memcpy(*bitmap, param[0]->data, TI89T_COLS * TI89T_ROWS / 8);
 
+	if(sc->format == SCREEN_CLIPPED)
 	{
 		int i, j, k;
 
