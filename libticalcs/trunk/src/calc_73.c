@@ -517,7 +517,10 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_VAR2(size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(NULL));
 
-			TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));	// is depending of OS version?
+			if(handle->model == CALC_TI73 && ptr->data_type == TI83p_APPL)
+				{TRYF(ti73_recv_CTS(0));}	// is depending of OS version?
+			else
+				{TRYF(ti73_recv_CTS(10));}
 			TRYF(ti73_send_ACK());
 
 			TRYF(ti73_send_XDP(size, data));
