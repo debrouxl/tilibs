@@ -451,17 +451,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int i, j, k;
 	int size;
 	char *utf8;
-	//	int se = 1;
-
-	// check for SilverEdition (not useable in boot mode, sic!)
-#if 0
-	{
-		CalcInfos infos = { 0 };
-
-		TRYF(get_version(handle, &infos));
-		se = infos.hw_version & 1;
-	}
-#endif
+	int se = 1;
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -476,6 +466,15 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		size = 0x80;
 	else
 		return -1;
+
+	// check for SilverEdition (not useable in boot mode, sic!)
+	if(ptr->data_type == TI83p_APPL)
+	{
+		CalcInfos infos = { 0 };
+
+		TRYF(get_version(handle, &infos));
+		se = infos.hw_version & 1;
+	}
 
 #if 0
 	printf("size = %08x\n", ptr->data_length);
@@ -518,8 +517,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_send_VAR2(size, ptr->data_type, fp->flag, addr, fp->page));
 			TRYF(ti73_recv_ACK(NULL));
 
-			//TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));
-			TRYF(ti73_recv_CTS(10));	// is depending of OS version?
+			TRYF(ti73_recv_CTS((uint16_t)(handle->model == CALC_TI73 ? 0 : 10)));	// is depending of OS version?
 			TRYF(ti73_send_ACK());
 
 			TRYF(ti73_send_XDP(size, data));
@@ -533,7 +531,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TI83+/SE and TI84+/SE don't need a pause (otherwise transfer fails).
 			TI73,TI83+,TI84+ need a pause (otherwise transfer fails).
 		*/
-#if 0
 		if(!se)
 		{
 			if (i == 1)
@@ -541,7 +538,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			if (i == ptr->num_pages - 2)
 			  PAUSE(2500);		// This pause is NEEDED !
 		}
-#endif
 	}
 
 	TRYF(ti73_send_EOT());

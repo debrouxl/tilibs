@@ -5,6 +5,8 @@ Log:
 - 17/09/2007, version 1.0.8: roms
 	- fixed full screen copy with Titanium
 	- fixed displaying of full path with Titanium/USB
+	- fixed sending of FLASH apps on TI73
+	- fixed sending of FLASH apps on non-SE (bug introduced in rev. 3291)
 
 - 17/06/2007, version 1.0.7: roms
 	- fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
