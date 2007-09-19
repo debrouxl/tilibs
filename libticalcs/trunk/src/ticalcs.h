@@ -397,9 +397,9 @@ typedef struct
  * @text: a text to display about the current operation (locale used is those defined by tifiles_transcoding_set)
  * @cancel: set to 1 if transfer have to be cancelled
  * @rate: data rate of cable
- * @cnt1: current counter for link transfer operations (ticables2)
+ * @cnt1: current counter for link transfer operations (ticalcs2 only)
  * @max1: max value of this counter
- * @cnt2: current count for intermediate operations (used by ticalcs2 only)
+ * @cnt2: current count for intermediate operations (ticalcs2 only)
  * @max2: max value of this counter
  * @cnt3: current counter for global operations (used by ticalcs2 or tilp)
  * @max3: max value of this counter

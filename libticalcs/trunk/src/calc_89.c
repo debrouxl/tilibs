@@ -605,7 +605,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		nblocks = ptr->data_length / 65536;
-		update_->max2 = nblocks;
+		update_->max2 = nblocks+1;
 
 		for(i = 0; i <= nblocks; i++) 
 		{

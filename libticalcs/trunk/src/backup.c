@@ -77,13 +77,13 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
 
+			update_->cnt2 = update_->cnt3 = ++ivars;
+			update_->pbar();
+
 			// we need to group files !
 			TRYF(handle->calc->is_ready(handle));
 			group[k] = tifiles_content_create_regular(handle->model);
 			TRYF(handle->calc->recv_var(handle, 0, group[k++], ve));
-
-			update_->cnt2 = update_->cnt3 = ++ivars;
-			update_->pbar();
 		}
 	}
 
@@ -130,8 +130,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	if(mode & TIG_FLASH)
 		napps = content->n_apps;
 
-	update_->cnt2 = update_->cnt3 = 0;
-	update_->max2 = update_->max3 = nvars + napps;
+	update_->cnt3 = 0;
+	update_->max3 = nvars + napps;
 	update_->pbar();
 
 	if((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
@@ -155,7 +155,6 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		{
 			TigEntry *te = *ptr;
 
-			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -177,7 +176,6 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		{
 			TigEntry *te = *ptr;
 
-			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -203,17 +201,22 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	int i, j;
 	int i_max, j_max;
 	GNode *vars, *apps;
-	int nvars;
-	int napps;
+	int nvars = 0;
+	int napps = 0;
 	int b = 0;
+
+	update_->cnt3 = 0;
+	update_->pbar();
 
 	// Do a directory list and check for something to backup
 	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
-	nvars = ticalcs_dirlist_ve_count(vars);
-	napps = ticalcs_dirlist_ve_count(apps);
+	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+		nvars = ticalcs_dirlist_ve_count(vars);
+	if(mode & TIG_FLASH)
+		napps = ticalcs_dirlist_ve_count(apps);
 
-	update_->cnt2 = update_->cnt3 = 0;
-	update_->max2 = update_->max3 = nvars + napps;
+	update_->cnt3 = 0;
+	update_->max3 = nvars + napps;
 	update_->pbar();
 
 	if(!nvars && !napps)
@@ -242,7 +245,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 			TRYF(handle->calc->is_ready(handle));
 
-			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -288,7 +290,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 			TRYF(handle->calc->is_ready(handle));
 
-			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
