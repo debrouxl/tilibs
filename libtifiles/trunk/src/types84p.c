@@ -55,7 +55,7 @@ const char *TI84p_CONST[TI84p_MAXTYPES + 1][4] =
   {"", "8X?", "Unknown", N_("Unknown")},
   {"APPV", "8Xv", "App Var", N_("App Var")},
   {"", "8X?", "Unknown", N_("Unknown")},
-  {"GRP", "8X?", "Group Var", N_("Group Var")},
+  {"GRP", "8Xgrp", "Group Var", N_("Group Var")},
   {"", "8X?", "Unknown", N_("Unknown")},
   {"DIR", "8X?", "Unknown", N_("Unknown")},
   {"", "8X?", "Unknown", N_("Unknown")},

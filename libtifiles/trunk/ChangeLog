@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 18/09/2007, version 1.0.8: roms
+	- added file extension for GRP variables
+
 - 20/06/2007, version 1.0.7: roms
 	- replaced malloc/free by g_malloc/g_free
 	- slightly modified TigContent structure
