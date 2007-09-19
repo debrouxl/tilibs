@@ -53,6 +53,10 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	if(!nvars)
 		return ERR_NO_VARS;
 
+	update_->cnt2 = update_->cnt3 = 0;
+	update_->max2 = update_->max3 = nvars;
+	update_->pbar();
+
 	// Check whether the last folder is empty
 	b = g_node_n_children(g_node_nth_child(vars, g_node_n_children(vars) - 1));
 	PAUSE(100); // needed by TI84+/USB
@@ -78,8 +82,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 			group[k] = tifiles_content_create_regular(handle->model);
 			TRYF(handle->calc->recv_var(handle, 0, group[k++], ve));
 
-			update_->cnt2 = ++ivars;
-			update_->max2 = nvars;
+			update_->cnt2 = update_->cnt3 = ++ivars;
 			update_->pbar();
 		}
 	}
@@ -127,8 +130,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	if(mode & TIG_FLASH)
 		napps = content->n_apps;
 
-	update_->cnt3 = 0;
-	update_->max3 = nvars + napps;
+	update_->cnt2 = update_->cnt3 = 0;
+	update_->max2 = update_->max3 = nvars + napps;
 	update_->pbar();
 
 	if((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
@@ -152,6 +155,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		{
 			TigEntry *te = *ptr;
 
+			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -173,6 +177,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		{
 			TigEntry *te = *ptr;
 
+			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -207,8 +212,8 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	nvars = ticalcs_dirlist_ve_count(vars);
 	napps = ticalcs_dirlist_ve_count(apps);
 
-	update_->cnt3 = 0;
-	update_->max3 = nvars + napps;
+	update_->cnt2 = update_->cnt3 = 0;
+	update_->max2 = update_->max3 = nvars + napps;
 	update_->pbar();
 
 	if(!nvars && !napps)
@@ -237,6 +242,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 			TRYF(handle->calc->is_ready(handle));
 
+			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
@@ -282,6 +288,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 			TRYF(handle->calc->is_ready(handle));
 
+			update_->cnt2++;
 			update_->cnt3++;
 			update_->pbar();
 
