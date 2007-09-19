@@ -137,8 +137,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 		handle->updat->cnt1 += BLK_SIZE;
 		if(*len > MIN_SIZE)
 			handle->updat->pbar();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
+		//if (handle->updat->cancel) 
+		//	return ERR_ABORT;
 	}
 
 	// recv last chunk
@@ -300,6 +300,9 @@ int rd_dump(CalcHandle* h, const char *filename)
 	saved_blk = 0;
 	for(addr = 0x0000; addr < size; )
 	{
+		if(err == ERR_ABORT)
+			goto exit;
+
 		// resync if error
 		if(err)
 		{
@@ -354,6 +357,7 @@ exit:
 	PAUSE(200);
 	TRYF(rom_send_EXIT(h));
 	TRYF(rom_recv_EXIT(h));
+	PAUSE(1000);
 
 	fclose(f);
 	return err;
@@ -361,6 +365,7 @@ exit:
 
 int rd_is_ready(CalcHandle* h)
 {
+
 	TRYF(rom_send_RDY(h));
 	TRYF(rom_recv_RDY(h));
 
