@@ -45,12 +45,8 @@
 
 //---
 
-// beware: raw varname is not always NUL-terminated
-static char *detokenize_varname(CalcModel model, const char *src, unsigned char type)
+static char *detokenize_vartype(CalcModel model, const char *src, unsigned char type)
 {
-	int i;
-	unsigned int tok1 = src[0] & 0xff;
-	unsigned int tok2 = src[1] & 0xff;
 	char *dst;
 
 	switch(model)
@@ -87,6 +83,17 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	default: 
 		break;
 	}
+
+	return NULL;
+}
+
+// beware: raw varname is not always NUL-terminated
+static char *detokenize_varname(CalcModel model, const char *src, unsigned char type)
+{
+	int i;
+	unsigned int tok1 = src[0] & 0xff;
+	unsigned int tok2 = src[1] & 0xff;
+	char *dst;
 
 	switch (tok1) 
     {
@@ -366,6 +373,8 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
  **/
 TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type)
 {
+	char *dst;
+
 	switch (model) 
 	{
 	case CALC_TI73:
@@ -373,9 +382,15 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
+		dst = detokenize_vartype(model, src, type);
+		if(dst)
+			return dst;
 		return detokenize_varname(model, src, type);
 	case CALC_TI85:
 	case CALC_TI86:
+		dst = detokenize_vartype(model, src, type);
+		if(dst)
+			return dst;
 	case CALC_TI89:
 	case CALC_TI89T:
 	case CALC_TI92:

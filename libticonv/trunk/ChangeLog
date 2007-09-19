@@ -2,6 +2,9 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
+- 18/09/2007, version 1.0.5: roms
+	- moved 'untokenization' from vartype into another function (TI86)
+
 - 26/06/2007, version 1.0.4: roms
 	- added vartype argument to tokenization & untokenization functions because TI84+/USB and Window Settings
 		variables need them. Modified functions which rely on these 2 functions, too.
