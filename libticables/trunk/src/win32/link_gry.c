@@ -165,7 +165,7 @@ static int gry_close(CableHandle *h)
 	if (hCom) 
 	{
 		CloseHandle(hCom);
-		hCom = INVALID_HANDLE_VALUE;
+		h->priv = INVALID_HANDLE_VALUE;
 
 		free(h->priv2);
 		h->priv2 = NULL;
