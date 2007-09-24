@@ -1,5 +1,5 @@
 BASE	 = ticables2
-RC	?= windres
+#RC	?= windres
 
 EXTRA_DIST = $(BASE).rc
 
