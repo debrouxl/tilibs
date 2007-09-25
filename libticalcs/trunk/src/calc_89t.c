@@ -270,15 +270,28 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[3] = ca_new(AID_LOCKED, 1);
 		attrs[3]->data[0] = ve->attr == ATTRB_LOCKED ? 1 : 0;
 
+		if(!(ve->size & 1))
+			TRYF(is_ready(handle));
+
 		TRYF(cmd_s_rts(handle, ve->folder, ve->name, ve->size, nattrs, CA(attrs)));
 		TRYF(cmd_r_data_ack(handle));
 
-		if((ve->size < dusb_get_buf_size()) && (ve->size > 255))
+		/*
+			When sending variables with an odd varsize, bufer has to be negotiatied again with an even value.
+			Moreover, buffer has to be smaller. Ti-Connect always use 0x3A which is very small for big variables.
+			I prefer using an heuristic value to optimize data rate.
+		*/
+		if(ve->size & 1)
 		{
-			pkt_size = 0xff;
+			pkt_size = ve->size / 10;
+			pkt_size >>= 1;
+			pkt_size <<= 1;
+
+			if(pkt_size < 0x3a)
+				pkt_size = 0x3a;
 
 			TRYF(dusb_send_buf_size_request(handle, pkt_size));
-			TRYF(dusb_recv_buf_size_alloc(handle, &pkt_size));
+			TRYF(dusb_recv_buf_size_alloc(handle, NULL));
 		}
 
 		TRYF(cmd_s_var_content(handle, ve->size, ve->data));

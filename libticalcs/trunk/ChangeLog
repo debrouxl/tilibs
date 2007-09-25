@@ -9,6 +9,7 @@ Log:
 	- fixed sending of FLASH apps on non-SE (bug introduced in rev. 3291)
 	- fixed progress bar update for backup & tigroup receiving
 	- don't break USB communication if ROM dumping has been canceled
+	- some Titanium/USB transfer can fail: fixed.
 
 - 17/06/2007, version 1.0.7: roms
 	- fixed bug in ticalcs_dirlist_destroy: don't free TreeInfo when tree has no folder
