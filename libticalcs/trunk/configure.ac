@@ -6,7 +6,7 @@ AC_PREREQ(2.57)
 AC_INIT(libticalcs2, 1.0.8, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.0.7"
+VERSION="1.0.8"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -54,6 +54,7 @@ AC_ISC_POSIX
 AC_PROG_AWK
 AC_CHECK_PROG(TFDOCGEN, tfdocgen, yes, no)
 AM_CONDITIONAL(USE_DOCGEN, test "$TFDOCGEN" != "no")
+AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT
