@@ -242,11 +242,7 @@ static STDCALL void dhahelperunload(IN PDRIVER_OBJECT DriverObject){
 
 
 
-#ifdef PAGE_ALIGN
-# undef PAGE_ALIGN
-# define PAGE_ALIGN(Va) \
-  (PVOID) ((ULONG_PTR)(Va) & ~(PAGE_SIZE - 1))
-#endif
+
 
 /************************* memory mapping functions ******************************/
 //unlike the functions of other io helpers these functions allow to map adapter memory on windows xp
