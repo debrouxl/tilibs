@@ -826,9 +826,10 @@ static int raw_probe(CableHandle *h)
 
     for(i = 0; i < MAX_CABLES; i++)
     {
-	if(tigl_devices[h->address].pid == PID_TI89TM ||
-	   tigl_devices[h->address].pid == PID_TI84P ||
-	   tigl_devices[h->address].pid == PID_TI84P_SE)
+         tigl_devices[h->address].pid == PID_TI89TM ||
+         tigl_devices[h->address].pid == PID_TI84P ||
+         tigl_devices[h->address].pid == PID_TI84P_SE ||
+         tigl_devices[h->address].pid == PID_NSPIRE)
 	    return 0;
     }    
 
