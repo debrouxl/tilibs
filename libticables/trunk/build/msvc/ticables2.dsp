@@ -110,11 +110,11 @@ SOURCE=..\..\src\link_par.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\link_slv.c
+SOURCE=..\..\src\link_tie.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\link_tie.c
+SOURCE=..\..\src\link_usb.c
 # End Source File
 # Begin Source File
 

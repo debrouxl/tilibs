@@ -818,7 +818,7 @@ static int slv_probe(CableHandle *h)
     return ERR_PROBE_FAILED;
 }
 
-static int raw_probe(CableHandle *h)
+static int usb_probe(CableHandle *h)
 {
     int i;
 
@@ -826,9 +826,11 @@ static int raw_probe(CableHandle *h)
 
     for(i = 0; i < MAX_CABLES; i++)
     {
-	if(tigl_devices[h->address].pid == PID_TI89TM ||
-	   tigl_devices[h->address].pid == PID_TI84P ||
-	   tigl_devices[h->address].pid == PID_TI84P_SE)
+		if(tigl_devices[h->address].pid == PID_TIGLUSB   ||
+			tigl_devices[h->address].pid == PID_TI89TM   ||
+			tigl_devices[h->address].pid == PID_TI84P    ||
+			tigl_devices[h->address].pid == PID_TI84P_SE ||
+			tigl_devices[h->address].pid == PID_NSPIRE) 
 	    return 0;
     }    
 
@@ -982,15 +984,15 @@ const CableFncts cable_slv =
 	&slv_get_red_wire, &slv_get_white_wire,
 };
 
-const CableFncts cable_raw =
+const CableFncts cable_usb =
 {
 	CABLE_USB,
 	"USB",
-	N_("DirectLink"),
-	N_("DirectLink (DIRECT USB) cable"),
+	N_("UsbLink"),
+	N_("UsbLink cable"),
 	0,
 	&slv_prepare,
-	&slv_open, &slv_close, &slv_reset, &raw_probe, NULL,
+	&slv_open, &slv_close, &slv_reset, &usb_probe, NULL,
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,

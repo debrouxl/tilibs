@@ -39,7 +39,7 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
 	case CABLE_GRY: return "GrayLink";
 	case CABLE_BLK: return "BlackLink";
 	case CABLE_PAR: return "Parallel";
-	case CABLE_SLV: return "UsbLink"; // for compat
+	case CABLE_SLV: return "SilverLink";
 	case CABLE_USB: return "UsbLink";
 	case CABLE_VTI: return "VTi";
 	case CABLE_TIE: return "TiEmu/TilEm";
@@ -68,12 +68,10 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_BLK;
 	else if(!strcmp(str, "Parallel"))
 		return CABLE_PAR;
-	else if(!strcmp(str, "SilverLink")) // for compat
+	else if(!strcmp(str, "SilverLink"))
+		return CABLE_SLV;
+	else if(!strcmp(str, "DirectLink"))
 		return CABLE_USB;
-	else if(!strcmp(str, "DirectLink")) // for compat
-		return CABLE_USB;
-	else if(!strcmp(str, "UsbLink"))
-	        return CABLE_USB;
 	else if(!strcmp(str, "VTi"))
 		return CABLE_VTI;
 	else if(!strcmp(str, "TiEmu"))
@@ -88,6 +86,8 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_ILP;
 	else if(!strcmp(str, "UsbKernel"))
 	    return CABLE_DEV;
+	else if(!strcmp(str, "UsbLink"))
+	    return CABLE_USB;
 
 	return CABLE_NUL;
 }
@@ -150,9 +150,9 @@ TIEXPORT1 const char *TICALL ticables_usbpid_to_string(UsbPid pid)
   	switch (pid) 
 	{
 	case PID_TIGLUSB:  return "SilverLink";	// must match ticables name
-	case PID_TI89TM:   return "TI89t";	// must match tifiles name
-	case PID_TI84P:    return "TI84+";	// must match tifiles name
-	case PID_TI84P_SE: return "TI84+";	// remap
+	case PID_TI89TM:   return "TI89t";		// must match tifiles name
+	case PID_TI84P:    return "TI84+";		// must match tifiles name
+	case PID_TI84P_SE: return "TI84+";		// remap
 	case PID_NSPIRE:   return "NSpire";     // must match tifiles name
 	default: return "unknown";	
 	}

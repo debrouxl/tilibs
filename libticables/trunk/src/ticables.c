@@ -64,7 +64,7 @@ static CableFncts const *const cables[] =
 	&cable_par,
 #endif
 #if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(__WIN32__))
-	&cable_usb,
+	&cable_slv,
 #endif
 #if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(__WIN32__))
 	&cable_usb,
@@ -203,11 +203,16 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 	handle->timeout = DFLT_TIMEOUT;
 
 	for(i = 0; cables[i]; i++)
+	{
+		if(model == CABLE_SLV)
+			model = CABLE_USB;
+
 		if(cables[i]->model == model)
 		{
 			handle->cable = (CableFncts *)cables[i];
 			break;
 		}
+	}
 
 	if(handle->cable == NULL)
 		return NULL;
