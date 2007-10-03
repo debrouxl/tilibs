@@ -91,8 +91,8 @@ typedef enum
 {
 	PID_UNKNOWN	= 0,
 	PID_TIGLUSB     = 0xE001,
-	PID_TI89TM	= 0xE004,
 	PID_TI84P	= 0xE003,
+	PID_TI89TM	= 0xE004,
 	PID_TI84P_SE    = 0xE008,
 	PID_NSPIRE      = 0xE012,
 } UsbPid;

@@ -5,6 +5,7 @@ Log:
 - 03/10/2007, version 1.1.1: roms
 	- renamed link_slv into link_usb
 	- added NSpire support
+	- merged SLV & USB cables into USB cable; tried to keep compatibility
 	
 - 13/09/2007, version 1.1.0: roms
 	- fixed some checks (return value changed in rev. 3719 
