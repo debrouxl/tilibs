@@ -33,8 +33,8 @@ extern const CableFncts cable_vti;
 extern const CableFncts cable_tie;
 extern const CableFncts cable_raw;
 extern const CableFncts cable_ilp;
+
 extern const CableFncts cable_dev;
-extern const CableFncts cable_usb;
 
 #endif
 
