@@ -41,7 +41,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "1.0.8"
+# define LIBFILES_VERSION "1.0.9"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
@@ -51,7 +51,6 @@
 #define FLDNAME_MAX		33	// 4*8 + 1 (UTF-8)
 #define VARNAME_MAX		33	// idem
 #define FULNAME_MAX		66	// 4*8 + 1 + 4*8 + 1 (UTF-8)
-#define FILES_NCALCS	14	// # of supported calcs
 
 /**
  * CalcModel:
@@ -64,9 +63,11 @@ typedef enum
 	CALC_NONE = 0,
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB,
+	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_MAX
 } CalcModel;
 #endif
+
+#define FILES_NCALCS	CALC_MAX	// # of supported calcs
 
 /**
  * FileAttr:

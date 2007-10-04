@@ -35,37 +35,35 @@
 /* Global types */
 /****************/
 
-#define NCALCS FILES_NCALCS
-
-static const char GROUP_FILE_EXT[NCALCS + 1][4] = 
+static const char GROUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g", 
 	"89g", "89g", "92g", "9Xg", "V2g", "8Xg", "89g",
 };
 
-static const char BACKUP_FILE_EXT[NCALCS + 1][4] = 
+static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b", 
 	"89g", "89g", "92b", "9Xg", "V2g", "8Xg", "89g",
 };
 
-static const char FLASH_APP_FILE_EXT[NCALCS + 1][4] = 
+static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73k", "???", "???", "8Xk", "8Xk", "???", "???",
 	"89k", "89k", "???", "9Xk", "V2k", "8Xk", "89k",
 };
 
-static const char FLASH_OS_FILE_EXT[NCALCS + 1][4] = 
+static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73u", "???", "???", "8Xu", "8Xu", "???", "???",
 	"89u", "89u", "???", "9Xu", "V2u", "8Xu", "89u",
 };
 
-static const char CERTIF_FILE_EXT[NCALCS + 1][4] = 
+static const char CERTIF_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73q", "???", "???", "8Xq", "8Xq", "???", "???",
@@ -528,7 +526,7 @@ TIEXPORT2 int TICALL tifiles_file_is_group(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return 0;
 
-  for (i = 1; i < NCALCS + 1; i++) 
+  for (i = 1; i < CALC_MAX + 1; i++) 
   {
     if (!g_ascii_strcasecmp(e, GROUP_FILE_EXT[i]))
       return !0;
@@ -573,7 +571,7 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return 0;
 
-  for (i = 1; i < NCALCS + 1; i++) 
+  for (i = 1; i < CALC_MAX + 1; i++) 
   {
     if (!g_ascii_strcasecmp(e, BACKUP_FILE_EXT[i]))
       return !0;
@@ -604,7 +602,7 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
   if(tifiles_file_is_tib(filename))
 	  return !0;
 
-  for (i = 1; i < NCALCS + 1; i++) 
+  for (i = 1; i < CALC_MAX + 1; i++) 
   {
     if (!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i]))
       return !0;
@@ -632,7 +630,7 @@ TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
   if (!tifiles_file_is_ti(filename))
     return 0;
 
-  for (i = 1; i < NCALCS + 1; i++) 
+  for (i = 1; i < CALC_MAX + 1; i++) 
   {
     if (!g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[i]))
       return !0;
@@ -710,7 +708,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	if (!strcmp(e, ""))
 		return 0;
 
-	if(target > NCALCS)
+	if(target > CALC_MAX)
 	{
 		tifiles_error("tifiles_file_test: invalid target argument! This is a bug.");
 		return 0;
