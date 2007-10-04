@@ -119,13 +119,13 @@ ServiceBinary  = %12%\libusb0.sys
 ;--------------------------------------------------------------------------
 
 [Devices]
-"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e001
+"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e012
 
 [Devices.NT]
-"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e001
+"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e012
 
 [Devices.NTAMD64]
-"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e001
+"TI-Nspire USB Device"=LIBUSB_DEV, USB\VID_0451&PID_e012
 
 
 ;--------------------------------------------------------------------------
