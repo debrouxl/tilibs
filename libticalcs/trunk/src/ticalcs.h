@@ -43,13 +43,13 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "1.0.8"
+# define LIBCALCS_VERSION "1.0.9"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif
 
-#define LIBCALCS_REQUIRES_LIBFILES_VERSION		"1.0.7"	// useless with pkg-config
-#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION	"1.0.4"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBFILES_VERSION		"1.0.9"	// useless with pkg-config
+#define LIBCALCS_REQUIRES_LIBTICABLES_VERSION	"1.1.1"	// useless with pkg-config
 
 /* Types */
 
@@ -70,7 +70,7 @@ typedef enum
 	CALC_NONE = 0,
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB,
+	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_MAX
 } CalcModel;
 #endif
 

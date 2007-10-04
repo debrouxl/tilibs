@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- 04/10/2007, version 1.0.9: roms
+	- adding NSpire support...
+
 - 17/09/2007, version 1.0.8: roms
 	- fixed full screen copy with Titanium
 	- fixed displaying of full path with Titanium/USB

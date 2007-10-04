@@ -239,6 +239,10 @@ SOURCE=..\..\src\calc_84p.c
 
 SOURCE=..\..\src\calc_89t.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\calc_nsp.c
+# End Source File
 # End Group
 # Begin Group "dbus_cmds"
 
