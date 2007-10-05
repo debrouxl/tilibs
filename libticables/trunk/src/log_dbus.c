@@ -35,8 +35,8 @@
 #include "logging.h"
 #include "data_log.h"
 
-#define HEX_FILE	"ticables-hex.log"
-#define LOG_FILE	"ticables-dbus.log"
+#define HEX_FILE	"ticables.hex"
+#define LOG_FILE	"ticables-dbus.pkt"
 
 static char *ifn = NULL;
 static char *ofn = NULL;
@@ -60,7 +60,7 @@ int log_dbus_1(int dir, uint8_t data)
   	return 0;
 }
 
-extern int pkdecomp(const char *filename, int resync);
+extern int dbus_decomp(const char *filename, int resync);
 
 int log_dbus_stop(void)
 {
@@ -72,7 +72,7 @@ int log_dbus_stop(void)
 	r = strrchr(ifn, '.');
 	if(r) *r = '\0';
 
-	pkdecomp(ifn, 0);	// ticables-hex.log -> ticables-hex.pkt
+	dbus_decomp(ifn, 0);
 	strcat(ifn, ".pkt");
 
 	g_unlink(ofn);

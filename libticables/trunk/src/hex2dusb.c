@@ -17,8 +17,6 @@
  */
 
 
-/* !!! Not working yet !!! */
-
 #include <conio.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -332,19 +330,12 @@ int dusb_write(int dir, uint8_t data)
   	return 0;
 }
 
-int main(int argc, char **argv)
+int dusb_decomp(const char *filename)
 {
-	char* filename = argv[1];
 	char src_name[1024];
 	char dst_name[1024];
 	unsigned char data;
 	int i;
-
-	if(argc < 2)
-    {
-		fprintf(stderr, "Usage: hex2dusb [file]\n");
-		exit(0);
-    }
 
 	strcpy(src_name, filename);
     strcat(src_name, ".hex");
@@ -389,6 +380,21 @@ int main(int argc, char **argv)
 	fprintf(log, "\n");
 
 	fclose(hex);
-  
+
 	return 0;
 }
+
+#if 0
+int main(int argc, char **argv)
+{
+
+
+	if(argc < 2)
+    {
+		fprintf(stderr, "Usage: hex2dusb [file]\n");
+		exit(0);
+    }
+
+	return dusb_decomp(argv[1]);
+}
+#endif

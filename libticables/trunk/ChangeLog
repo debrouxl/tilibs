@@ -5,7 +5,7 @@ Log:
 - 03/10/2007, version 1.1.1: roms
 	- renamed link_slv into link_usb
 	- added NSpire support
-	- improved built-in DUSB packet decompiler
+	- improved built-in DUSB & DBUS packet decompilers
 	
 - 13/09/2007, version 1.1.0: roms
 	- fixed some checks (return value changed in rev. 3719 

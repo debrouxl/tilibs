@@ -206,7 +206,11 @@ SOURCE=..\..\src\data_log.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\log2pkt.c
+SOURCE=..\..\src\hex2dbus.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\hex2dusb.c
 # End Source File
 # Begin Source File
 

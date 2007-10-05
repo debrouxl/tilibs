@@ -1,5 +1,5 @@
-/*  pkdecomp - an TI packet decompiler for insulating packets
- *  Copyright (C) 2002, 2005  Romain Lievin
+/*  hex2dbus - an D-BUS packet decompiler
+ *  Copyright (C) 2002-2007  Romain Liévin
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ int fill_buf(FILE *f, char data, int flush)
 /*
   Format of data: 8 hexadecimal numbers with spaces
 */
-int pkdecomp(const char *filename, int resync)
+int dbus_decomp(const char *filename, int resync)
 {
     char src_name[1024];
     char dst_name[1024];
@@ -135,7 +135,7 @@ int pkdecomp(const char *filename, int resync)
     
 	// build filenames
     strcpy(src_name, filename);
-    strcat(src_name, ".log");
+    strcat(src_name, ".hex");
     
     strcpy(dst_name, filename);
     strcat(dst_name, ".pkt");
@@ -165,28 +165,16 @@ int pkdecomp(const char *filename, int resync)
     fprintf(fo, "TI packet decompiler for D-BUS, version 1.2\n");
 
 	// skip comments
-	if (!fgets(str, sizeof(str), fi)) {
-		ret = -1;
-		goto exit;
-	}
-	if (!fgets(str, sizeof(str), fi)) {
-		ret = -1;
-		goto exit;
-	}
-	if (!fgets(str, sizeof(str), fi)) {
-		ret = -1;
-		goto exit;
-	}
+	fgets(str, sizeof(str), fi);
+	fgets(str, sizeof(str), fi);
+	fgets(str, sizeof(str), fi);
 
 	// read source file
 	for(i = 0; !feof(fi);)
     {
         for(j = 0; j < 16 && !feof(fi); j++)
 		{
-			unsigned int temp;
-			if (fscanf(fi, "%02X", &temp) < 1)
-				break;
-			buffer[i+j] = temp;
+			fscanf(fi, "%02X", &(buffer[i+j]));
 			fgetc(fi);
 		}
         i += j;
@@ -195,7 +183,7 @@ int pkdecomp(const char *filename, int resync)
 			fgetc(fi);
     }
     num_bytes = i-1; // -1 due to EOF char
-    //fprintf(stdout, "%i bytes read.\n", num_bytes);
+    fprintf(stdout, "%i bytes read.\n", num_bytes);
 
 	// process data
 	for(i = 0; i < num_bytes;)
@@ -272,16 +260,15 @@ int main(int argc, char **argv)
 {
 	int resync = 0;
 
-
 	if(argc < 2)
     {
-		fprintf(stderr, "Usage: log2pkt [file]\n");
+		fprintf(stderr, "Usage: hex2dbus [file]\n");
 		exit(0);
     }
 
 	if(argc > 2)
 		resync = !0;
   
-	return pkdecomp(argv[1], resync);
+	return dbus_decomp(argv[1], resync);
 }
 #endif
