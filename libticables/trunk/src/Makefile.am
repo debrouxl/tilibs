@@ -22,7 +22,8 @@ libticables2_la_SOURCES = *.h \
 	ioports.c \
 	link_gry.c link_nul.c link_par.c link_blk.c \
 	link_usb.c link_tie.c link_vti.c link_xxx.c \
-	log_dbus.c log_dusb.c log_hex.c log2pkt.c \
+	log_dbus.c log_dusb.c log_hex.c \
+	hex2dbus.c hex2dusb.c \
 	logging.c \
 	probe.c \
 	ticables.c \
