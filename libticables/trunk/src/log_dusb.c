@@ -20,7 +20,7 @@
  */
 
 /* 
-	D-USB logging.
+	D-USB logging (taken from my TI link guide (hex2dusb program).
 */
 
 #ifdef HAVE_CONFIG_H
@@ -56,6 +56,156 @@ int log_dusb_start(void)
   	return 0;
 }
 
+typedef struct
+{
+	uint8_t		type;
+	const char*	name;
+	int			data_hdr;
+	int			data;
+} Packet;
+
+typedef struct
+{
+	uint16_t		type;
+	const char*		name;
+} Opcode;
+
+static const Packet packets[] = 
+{
+	{ 0x01, "Buffer Size Request", 0, 4 }, 
+	{ 0x02, "Buffer Size Allocation", 0, 4 }, 
+	{ 0x03, "Virtual Packet Data with Continuation", 1, 6 }, 
+	{ 0x04, "Virtual Packet Data Final", 1, 6 }, 
+	{ 0x05, "Virtual Packet Data Acknowledgement", 0, 2 }, 
+	{ 0 },
+};
+
+static const Opcode opcodes[] = 
+{
+	{ 0x0001, "Ping / Set Mode" }, 
+	{ 0x0002, "Begin OS Transfer" },
+	{ 0x0003, "Acknowledgement of OS Transfer" },
+	{ 0x0005, "OS Data" },
+	{ 0x0006, "Acknowledgement of EOT" },
+	{ 0x0007, "Parameter Request"}, 
+	{ 0x0008, "Parameter Data"}, 
+	{ 0x0009, "Request Directory Listing" },
+	{ 0x000a, "Variable Header" },
+	{ 0x000b, "Request to Send" },
+	{ 0x000c, "Request Variable" },
+	{ 0x000D, "Variable Contents" },
+	{ 0x000e, "Parameter Set"},
+	{ 0x0010, "Delete Variable"}, 
+	{ 0x0011, "Unknown"}, 
+	{ 0x0012, "Acknowledgement of Mode Setting"}, 
+	{ 0xaa00, "Acknowledgement of Data"}, 
+	{ 0xbb00, "Acknowledgement of Parameter Request"},	
+	{ 0xdd00, "End of Transmission"}, 
+	{ 0xee00, "Error"},
+	{ 0 },
+};
+
+/* */
+
+int is_a_packet(uint8_t id)
+{
+  int i;
+  
+  for(i=0; packets[i].name; i++)
+    if(id == packets[i].type)
+      break;
+  return i;
+}
+
+const char* name_of_packet(uint8_t id)
+{
+	int i;
+  
+	for(i=0; packets[i].name; i++)
+		if(id == packets[i].type)
+			return packets[i].name;
+	return "";
+}
+
+int is_a_packet_with_data_header(uint8_t id)
+{
+	int i;
+  
+  for(i=0; packets[i].name; i++)
+    if(id == packets[i].type)
+		if(packets[i].data_hdr)
+			return 1;
+
+  return 0;
+}
+
+int is_a_opcode(uint16_t id)
+{
+  int i;
+
+  for(i=0; opcodes[i].name; i++)
+    if(id == opcodes[i].type)
+      break;
+
+  return i;
+}
+
+const char* name_of_data(uint16_t id)
+{
+	int i;
+  
+	for(i=0; opcodes[i].name; i++)
+		if(id == opcodes[i].type)
+			return opcodes[i].name;
+
+	return "unknown";
+}
+
+const char* ep_way(int ep)
+{
+	if(ep == 0x01) return "TI>PC";
+	else if(ep == 0x02) return "PC>TI";
+	else return "XX>XX";
+}
+
+/* */
+
+int add_pkt_type(uint8_t* array, uint8_t type, int *count)
+{
+	int i;
+	
+	for(i = 0; i < *count; i++)
+		if(array[i] == type)
+			return 0;
+
+	array[++i] = type;
+	*count = i;
+
+	return i;
+}
+
+int add_data_code(uint16_t* array, uint16_t code, int *count)
+{
+	int i;
+	
+	for(i = 0; i < *count; i++)
+		if(array[i] == code)
+			return 0;
+
+	array[i++] = code;
+	*count = i;
+
+	return i;
+}
+
+/* */
+
+static uint8_t pkt_type_found[256] = { 0 };
+static uint16_t data_code_found[256] = { 0 };
+static int ptf=0, dcf=0;
+
+/* */
+
 int log_dusb_1(int dir, uint8_t data)
 {
 	static int array[20];
@@ -85,7 +235,12 @@ int log_dusb_1(int dir, uint8_t data)
 		break;
 	case 5: 
 		raw_type = array[4];
-		fprintf(log, "(%02X)\n", raw_type);
+		fprintf(log, "(%02X) ", raw_type);
+
+		fprintf(log, "\t\t\t\t\t\t\t");
+		fprintf(log, "| %s: %s\n", ep_way(dir), name_of_packet(raw_type));
+		add_pkt_type(pkt_type_found, raw_type, &ptf);
+
 		break;
 	case 6: break;
 	case 7:
@@ -127,7 +282,11 @@ int log_dusb_1(int dir, uint8_t data)
 	case 10: break;
 	case 11:
 		vtl_type = (array[9] << 8) | (array[10] << 0);
-		fprintf(log, "{%04x}\n\t", vtl_type);
+		fprintf(log, "{%04x}", vtl_type);
+		
+		fprintf(log, "\t\t\t\t\t\t");
+		fprintf(log, "| %s: %s\n\t\t", "CMD", name_of_data(vtl_type));
+		add_data_code(data_code_found, vtl_type, &dcf);
 
 		if(!vtl_size)
 		{
@@ -139,7 +298,7 @@ int log_dusb_1(int dir, uint8_t data)
 		fprintf(log, "%02X ", data);
 
 		if(!(++cnt % 12))
-			fprintf(log, "\n\t");
+			fprintf(log, "\n\t\t");
 		
 		if(--raw_size == 0)
 		{
