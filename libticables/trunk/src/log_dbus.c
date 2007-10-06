@@ -35,7 +35,7 @@
 #include "logging.h"
 #include "data_log.h"
 
-#define HEX_FILE	"ticables.hex"
+#define HEX_FILE	"ticables-log.hex"
 #define LOG_FILE	"ticables-dbus.pkt"
 
 static char *ifn = NULL;

@@ -34,7 +34,7 @@
 #include "data_log.h"
 #include "ticables.h"
 
-#define LOG_FILE  "ticables-hex.log"
+#define HEX_FILE  "ticables-log.hex"
 
 static char *fn = NULL;
 static FILE *log = NULL;
@@ -43,9 +43,9 @@ int log_hex_start(void)
 {
   // build filenames
 #ifdef __WIN32__
-	fn = g_strconcat("C:\\", LOG_FILE, NULL);
+	fn = g_strconcat("C:\\", HEX_FILE, NULL);
 #else
-	fn = g_strconcat(g_get_home_dir(), "/", LOG_FILE, NULL);
+	fn = g_strconcat(g_get_home_dir(), "/", HEX_FILE, NULL);
 #endif
 
   	log = fopen(fn, "wt");
