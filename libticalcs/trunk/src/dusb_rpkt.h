@@ -39,12 +39,6 @@ typedef struct
 {
 	uint32_t	size;	// raw packet size
 	uint8_t		type;	// raw packet type
-} RawPktHdr;
-
-typedef struct
-{
-	uint32_t	size;	// raw packet size
-	uint8_t		type;	// raw packet type
 
 	uint8_t		data[1023];	// raw packet data (should be allocated)
 } RawPacket;

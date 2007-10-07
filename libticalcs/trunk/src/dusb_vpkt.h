@@ -28,12 +28,6 @@
 
 typedef struct
 {
-	uint32_t	size;	// virtual packet size
-	uint16_t	code;	// virtual packet type
-} VtlPKtHdr;
-
-typedef struct
-{
 	uint32_t	size;		// virtual packet size
 	uint16_t	type;		// virtual packet type
 
