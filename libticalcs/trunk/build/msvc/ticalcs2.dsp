@@ -239,10 +239,6 @@ SOURCE=..\..\src\calc_84p.c
 
 SOURCE=..\..\src\calc_89t.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\src\calc_nsp.c
-# End Source File
 # End Group
 # Begin Group "dbus_cmds"
 
@@ -270,6 +266,22 @@ SOURCE=..\..\src\cmd92.c
 # Begin Source File
 
 SOURCE=..\..\src\dbus_pkt.c
+# End Source File
+# End Group
+# Begin Group "nspire"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\src\calc_nsp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\nsp_rpkt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\nsp_rpkt.h
 # End Source File
 # End Group
 # Begin Source File
