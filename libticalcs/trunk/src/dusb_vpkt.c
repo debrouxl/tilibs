@@ -20,8 +20,8 @@
  */
 
 /*
-	This unit manages virtual packets from/to D-USB (Direct Cable).
-	Virtual packets are fragmented into 1 or more raw packets.
+	This unit manages virtual packets from/to D-USB (DirectLink).
+	Virtual packets are fragmented into one or more raw packets.
 	The size of packet can be negotiated on both sides.
 */
 
@@ -41,13 +41,6 @@
 // Pseudo-Constants
 
 static unsigned int DATA_SIZE = 250;	// max length of data in raw packet
-
-/*
-#define RPKT_SIZE	255
-#define RPKT_DATA	255-5
-#define VPKT_SIZE	RPKT_DATA
-#define VPKT_DATA	VPKT_SIZE-6
-*/
 
 // Type to string
 
@@ -92,7 +85,7 @@ const char* vpkt_type2name(uint16_t id)
 
 // Buffer allocation
 
-GList *vtl_pkt_list = NULL;
+static GList *vtl_pkt_list = NULL;
 
 VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 {

@@ -283,6 +283,14 @@ SOURCE=..\..\src\nsp_rpkt.c
 
 SOURCE=..\..\src\nsp_rpkt.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\src\nsp_vpkt.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\nsp_vpkt.h
+# End Source File
 # End Group
 # Begin Source File
 

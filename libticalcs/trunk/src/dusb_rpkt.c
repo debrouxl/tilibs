@@ -20,7 +20,7 @@
  */
 
 /*
-	This unit manages raw packets from/to D-USB (Direct Cable).
+	This unit manages raw packets from/to D-USB (DirectLink).
 */
 
 #include <string.h>
