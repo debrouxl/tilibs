@@ -61,19 +61,20 @@ am_libticalcs2_la_OBJECTS = libticalcs2_la-backup.lo \
 	libticalcs2_la-calc_83.lo libticalcs2_la-calc_85.lo \
 	libticalcs2_la-calc_86.lo libticalcs2_la-calc_89.lo \
 	libticalcs2_la-calc_92.lo libticalcs2_la-calc_84p.lo \
-	libticalcs2_la-calc_89t.lo libticalcs2_la-clock.lo \
-	libticalcs2_la-cmd73.lo libticalcs2_la-cmd82.lo \
-	libticalcs2_la-cmd85.lo libticalcs2_la-cmd89.lo \
-	libticalcs2_la-cmd92.lo libticalcs2_la-dusb_cmd.lo \
-	libticalcs2_la-dirlist.lo libticalcs2_la-error.lo \
-	libticalcs2_la-keys73.lo libticalcs2_la-keys83.lo \
-	libticalcs2_la-keys83p.lo libticalcs2_la-keys86.lo \
-	libticalcs2_la-keys89.lo libticalcs2_la-keys92p.lo \
-	libticalcs2_la-logging.lo libticalcs2_la-dbus_pkt.lo \
-	libticalcs2_la-dusb_rpkt.lo libticalcs2_la-dusb_vpkt.lo \
-	libticalcs2_la-probe.lo libticalcs2_la-romdump.lo \
-	libticalcs2_la-ticalcs.lo libticalcs2_la-tikeys.lo \
-	libticalcs2_la-type2str.lo libticalcs2_la-update.lo
+	libticalcs2_la-calc_89t.lo libticalcs2_la-calc_nsp.lo \
+	libticalcs2_la-clock.lo libticalcs2_la-cmd73.lo \
+	libticalcs2_la-cmd82.lo libticalcs2_la-cmd85.lo \
+	libticalcs2_la-cmd89.lo libticalcs2_la-cmd92.lo \
+	libticalcs2_la-dusb_cmd.lo libticalcs2_la-dirlist.lo \
+	libticalcs2_la-error.lo libticalcs2_la-keys73.lo \
+	libticalcs2_la-keys83.lo libticalcs2_la-keys83p.lo \
+	libticalcs2_la-keys86.lo libticalcs2_la-keys89.lo \
+	libticalcs2_la-keys92p.lo libticalcs2_la-logging.lo \
+	libticalcs2_la-dbus_pkt.lo libticalcs2_la-dusb_rpkt.lo \
+	libticalcs2_la-dusb_vpkt.lo libticalcs2_la-probe.lo \
+	libticalcs2_la-romdump.lo libticalcs2_la-ticalcs.lo \
+	libticalcs2_la-tikeys.lo libticalcs2_la-type2str.lo \
+	libticalcs2_la-update.lo
 libticalcs2_la_OBJECTS = $(am_libticalcs2_la_OBJECTS)
 libticalcs2_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -285,13 +286,15 @@ libticalcs2_la_SOURCES = *.h \
 	calc_73.c calc_82.c calc_83.c calc_85.c calc_86.c \
 	calc_89.c calc_92.c \
 	calc_84p.c calc_89t.c \
+	calc_nsp.c \
 	clock.c \
 	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c dusb_cmd.c \
 	dirlist.c \
 	error.c \
 	keys73.c keys83.c keys83p.c keys86.c keys89.c keys92p.c \
 	logging.c \
-	dbus_pkt.c dusb_rpkt.c dusb_vpkt.c \
+	dbus_pkt.c \
+	dusb_rpkt.c dusb_vpkt.c \
 	probe.c \
 	romdump.c \
 	ticalcs.c \
@@ -380,6 +383,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_89.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_89t.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_92.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_nsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_xx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd73.Plo@am__quote@
@@ -511,6 +515,13 @@ libticalcs2_la-calc_89t.lo: calc_89t.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='calc_89t.c' object='libticalcs2_la-calc_89t.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-calc_89t.lo `test -f 'calc_89t.c' || echo '$(srcdir)/'`calc_89t.c
+
+libticalcs2_la-calc_nsp.lo: calc_nsp.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-calc_nsp.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-calc_nsp.Tpo -c -o libticalcs2_la-calc_nsp.lo `test -f 'calc_nsp.c' || echo '$(srcdir)/'`calc_nsp.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/libticalcs2_la-calc_nsp.Tpo $(DEPDIR)/libticalcs2_la-calc_nsp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='calc_nsp.c' object='libticalcs2_la-calc_nsp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-calc_nsp.lo `test -f 'calc_nsp.c' || echo '$(srcdir)/'`calc_nsp.c
 
 libticalcs2_la-clock.lo: clock.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-clock.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-clock.Tpo -c -o libticalcs2_la-clock.lo `test -f 'clock.c' || echo '$(srcdir)/'`clock.c
