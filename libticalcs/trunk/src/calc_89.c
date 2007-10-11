@@ -45,6 +45,7 @@
 #include "rom89.h"
 #include "romdump.h"
 #include "keys89.h"
+#include "keys92p.h"
 
 // Screen coordinates of the TI89
 #define TI89_ROWS          128
@@ -731,9 +732,19 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, KEY89_HOME));
-	TRYF(send_key(handle, KEY89_CLEAR));
-	TRYF(send_key(handle, KEY89_CLEAR));
+	if(handle->model == CALC_TI89)
+	  {
+	    TRYF(send_key(handle, KEY89_HOME));
+	    TRYF(send_key(handle, KEY89_CLEAR));
+	    TRYF(send_key(handle, KEY89_CLEAR));
+	  }
+	else
+	  {
+	    // TI92+ or V200
+	    TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
+	    TRYF(send_key(handle, KEY92P_CLEAR));
+	    TRYF(send_key(handle, KEY92P_CLEAR));
+	  }
 
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.89z", romDumpSize89, romDump89));
