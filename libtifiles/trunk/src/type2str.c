@@ -97,6 +97,8 @@ TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 		return CALC_TI89T_USB;
 	else if(!g_ascii_strcasecmp(str, "NSpire"))
 		return CALC_NSPIRE;
+	else if(!g_ascii_strcasecmp(str, "NSpire"))
+		return CALC_NSPIRE;
 		
 	return CALC_NONE;
 }
