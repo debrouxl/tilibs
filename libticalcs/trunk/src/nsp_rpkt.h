@@ -24,7 +24,8 @@
 
 // Convenient structures
 
-#define PH_SIZE		16
+#define HEADER_SIZE		16
+#define DATA_SIZE		254
 
 typedef struct
 {
@@ -39,7 +40,7 @@ typedef struct
 	uint8_t		seq;
 	uint8_t		hdr_sum;
 
-	uint8_t		data[254];
+	uint8_t		data[DATA_SIZE];
 } RawPacket;
 
 // Functions

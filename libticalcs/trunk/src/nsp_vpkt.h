@@ -59,8 +59,9 @@ typedef struct
 
 // Functions
 
-VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t src_addr, uint16_t src_id, uint16_t dst_addr, uint16_t dst_id);
-void			vtl_pkt_del(VirtualPacket* pkt);
+VirtualPacket*  nsp_vtl_pkt_new(uint32_t size, uint16_t src_addr, uint16_t src_id, uint16_t dst_addr, uint16_t dst_id);
+void			nsp_vtl_pkt_del(VirtualPacket* pkt);
+void			nsp_vtl_pkt_purge(void);
 
 int nsp_send_data(CalcHandle* h, VirtualPacket* pkt);
 int nsp_recv_data(CalcHandle* h, VirtualPacket* pkt);
