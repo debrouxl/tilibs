@@ -72,7 +72,7 @@ static const VtlPktName vpkt_types[] =
 	{ -1, NULL},
 };
 
-const char* vpkt_type2name(uint16_t id)
+const char* dusb_vpkt_type2name(uint16_t id)
 {
 	const VtlPktName *p;
 
@@ -87,7 +87,7 @@ const char* vpkt_type2name(uint16_t id)
 
 static GList *vtl_pkt_list = NULL;
 
-VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
+VirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type)
 {
 	VirtualPacket* vtl = g_malloc0(sizeof(VirtualPacket));
 
@@ -99,7 +99,7 @@ VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type)
 	return vtl;
 }
 
-void			vtl_pkt_del(VirtualPacket* vtl)
+void			dusb_vtl_pkt_del(VirtualPacket* vtl)
 {
 	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
@@ -107,9 +107,9 @@ void			vtl_pkt_del(VirtualPacket* vtl)
 	g_free(vtl);
 }
 
-void			vtl_pkt_purge(void)
+void			dusb_vtl_pkt_purge(void)
 {
-	g_list_foreach(vtl_pkt_list, (GFunc)vtl_pkt_del, NULL);
+	g_list_foreach(vtl_pkt_list, (GFunc)dusb_vtl_pkt_del, NULL);
 	g_list_free(vtl_pkt_list);
 	vtl_pkt_list = NULL;
 }
@@ -278,13 +278,13 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		ticalcs_info("  PC->TI: Virtual Packet Data Final\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)
-		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
+		ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
 #endif
 		TRYF(dusb_recv_acknowledge(h));
 	}
 	else
 	{
-		// we have more than one packet: first packet have data header
+		// we have more than one packet: first packet has data header
 		raw.size = DATA_SIZE;
 		raw.type = RPKT_VIRT_DATA;
 
@@ -302,7 +302,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		ticalcs_info("  PC->TI: Virtual Packet Data with Continuation\n\t\t(size = %08x, type = %s)", 
 			vtl->size, vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)
-		ticalcs_info("  PC->TI: %s", vpkt_type2name(vtl->type));
+		ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
 #endif
 		TRYF(dusb_recv_acknowledge(h));
 
@@ -374,7 +374,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 				raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				vtl->size, vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)
-			ticalcs_info("  TI->PC: %s", vpkt_type2name(vtl->type));
+			ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
 #endif
 			if(vtl->type == 0xEE00)
 				ticalcs_info("    Error Code : %04x\n", (vtl->data[0] << 8) | vtl->data[1]);

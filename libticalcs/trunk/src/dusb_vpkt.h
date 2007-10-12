@@ -67,8 +67,9 @@ typedef struct
 
 // Functions
 
-VirtualPacket*  vtl_pkt_new(uint32_t size, uint16_t type);
-void			vtl_pkt_del(VirtualPacket* pkt);
+VirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type);
+void			dusb_vtl_pkt_del(VirtualPacket* pkt);
+void			dusb_vtl_pkt_purge(void);
 
 int dusb_send_buf_size_request(CalcHandle* h, uint32_t size);
 int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size);
@@ -79,7 +80,7 @@ int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size);
 int dusb_send_data(CalcHandle* h, VirtualPacket* pkt);
 int dusb_recv_data(CalcHandle* h, VirtualPacket* pkt);
 
-const char* vpkt_type2name(uint16_t id);
+const char* dusb_vpkt_type2name(uint16_t id);
 
 uint32_t dusb_get_buf_size(void);
 

@@ -28,7 +28,7 @@
 #include "error.h"
 #include "logging.h"
 
-extern void vtl_pkt_purge(void);
+extern void dusb_vtl_pkt_purge(void);
 extern void cpca_purge(void);
 
 /**
@@ -49,7 +49,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 {
 	char error_msg[2048];
 
-	vtl_pkt_purge();
+	dusb_vtl_pkt_purge();
 	cpca_purge();
 
 	g_assert (message != NULL);

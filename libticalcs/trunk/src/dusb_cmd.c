@@ -181,8 +181,8 @@ extern const VtlPktName vpkt_types[];
 										\
 		PAUSE(delay/1000);				\
 										\
-		vtl_pkt_del(pkt);				\
-		pkt = vtl_pkt_new(0, 0);		\
+		dusb_vtl_pkt_del(pkt);				\
+		pkt = dusb_vtl_pkt_new(0, 0);		\
 		TRYF(dusb_recv_data(h, pkt));	\
 	}
 
@@ -194,7 +194,7 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 	TRYF(dusb_send_buf_size_request(h, DUSB_DFL_BUF_SIZE));
 	TRYF(dusb_recv_buf_size_alloc(h, NULL));
 
-	pkt = vtl_pkt_new(sizeof(mode), VPKT_PING);
+	pkt = dusb_vtl_pkt_new(sizeof(mode), VPKT_PING);
 	pkt->data[0] = MSB(mode.arg1);
 	pkt->data[1] = LSB(mode.arg1);
 	pkt->data[2] = MSB(mode.arg2);
@@ -207,7 +207,7 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 	pkt->data[9] = LSB(mode.arg5);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   %04x %04x %04x %04x %04x", mode.arg1, mode.arg2, mode.arg3, mode.arg4, mode.arg5);
 
 	return 0;
@@ -218,14 +218,14 @@ int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(11, VPKT_OS_BEGIN);
+	pkt = dusb_vtl_pkt_new(11, VPKT_OS_BEGIN);
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
 	pkt->data[9] = MSB(LSW(size));
 	pkt->data[10]= LSB(LSW(size));
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", size, size);
 
 	return 0;
@@ -236,7 +236,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -248,7 +248,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 	
 	*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", *size, *size);
 
 	return 0;
@@ -258,7 +258,7 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(4 + size, type);
+	pkt = dusb_vtl_pkt_new(4 + size, type);
 
 	pkt->data[0] = MSB(addr);
 	pkt->data[1] = LSB(addr);
@@ -267,7 +267,7 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 	memcpy(pkt->data+4, data, size);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   addr=%04x, page=%02x, flag=%02x, size=%04x", addr, page, flag, size);
 
 	return 0;
@@ -290,11 +290,11 @@ int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(size, VPKT_OS_HEADER);
+	pkt = dusb_vtl_pkt_new(size, VPKT_OS_HEADER);
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", size, size);
 
 	return 0;
@@ -305,11 +305,11 @@ int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(size, VPKT_OS_DATA);
+	pkt = dusb_vtl_pkt_new(size, VPKT_OS_DATA);
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", size, size);
 
 	return 0;
@@ -320,7 +320,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -330,7 +330,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 	else if(pkt->type != VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
 	
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -341,7 +341,7 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 	VirtualPacket* pkt;
 	int i;
 
-	pkt = vtl_pkt_new((npids + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
+	pkt = dusb_vtl_pkt_new((npids + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
 
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
@@ -354,7 +354,7 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   npids=%i", npids);
 
 	return 0;
@@ -366,7 +366,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	VirtualPacket* pkt;
 	int i, j;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -394,7 +394,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 		}
 	}
 	
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   nparams=%i", nparams);
 
 	return 0;
@@ -407,7 +407,7 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 	int i;
 	int j = 0;
 
-	pkt = vtl_pkt_new(4 + 2*naids + 7, VPKT_DIR_REQ);
+	pkt = dusb_vtl_pkt_new(4 + 2*naids + 7, VPKT_DIR_REQ);
 
 	pkt->data[j++] = MSB(MSW(naids));
 	pkt->data[j++] = LSB(MSW(naids));
@@ -427,7 +427,7 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   naids=%i", naids);
 
 	return 0;
@@ -443,14 +443,14 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 	int nattr;
 	int i, j;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
 	if(pkt->type == VPKT_EOT)
 	{
-		vtl_pkt_del(pkt);
+		dusb_vtl_pkt_del(pkt);
 		return ERR_EOT;
 	}
 	else if(pkt->type == VPKT_ERROR)
@@ -492,7 +492,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 		}
 	}
 	
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s", folder, name);
 
 	return 0;
@@ -510,7 +510,7 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 	if(strlen(folder))
 		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
-	pkt = vtl_pkt_new(pks, VPKT_RTS);
+	pkt = dusb_vtl_pkt_new(pks, VPKT_RTS);
 
 	if(strlen(folder))
 	{
@@ -546,7 +546,7 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s, size=%i, nattrs=%i", folder, name, size, nattrs);
 
 	return 0;
@@ -566,7 +566,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	if(strlen(folder)) pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 2;
-	pkt = vtl_pkt_new(pks, VPKT_VAR_REQ);
+	pkt = dusb_vtl_pkt_new(pks, VPKT_VAR_REQ);
 
 	if(strlen(folder))
 	{
@@ -609,7 +609,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s, naids=%i, nattrs=%i", folder, name, naids, nattrs);
 
 	return 0;
@@ -620,7 +620,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -636,7 +636,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data, pkt->size);
 	
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size=%i", size);
 
 	return 0;
@@ -647,12 +647,12 @@ int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(size, VPKT_VAR_CNTS);
+	pkt = dusb_vtl_pkt_new(size, VPKT_VAR_CNTS);
 
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
 	
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size=%i", size);
 
 	return 0;
@@ -663,7 +663,7 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(2 + 2 + param->size, VPKT_PARM_SET);
+	pkt = dusb_vtl_pkt_new(2 + 2 + param->size, VPKT_PARM_SET);
 
 	pkt->data[0] = MSB(param->id);
 	pkt->data[1] = LSB(param->id);
@@ -673,7 +673,7 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   pid=%04x, size=%04x", param->id, param->size);
 
 	return 0;
@@ -692,7 +692,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 5;
-	pkt = vtl_pkt_new(pks, VPKT_DEL_VAR);
+	pkt = dusb_vtl_pkt_new(pks, VPKT_DEL_VAR);
 
 	if(strlen(folder))
 	{
@@ -726,7 +726,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s, nattrs=%i", folder, name, nattrs);
 
 	return 0;
@@ -744,7 +744,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 	if(args) pks += strlen(args); else pks += 2;
 	if(strlen(folder)) pks += strlen(folder)+1;
 	if(strlen(name)) pks += strlen(name)+1;
-	pkt = vtl_pkt_new(pks, VPKT_EXECUTE);
+	pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
 
 	pkt->data[j++] = strlen(folder);
 	if(strlen(folder))
@@ -780,7 +780,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	if(args)
 		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder, name, args);
 	else
@@ -794,7 +794,7 @@ int cmd_r_mode_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -804,7 +804,7 @@ int cmd_r_mode_ack(CalcHandle *h)
 	else if(pkt->type != VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -814,7 +814,7 @@ int cmd_r_data_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -824,7 +824,7 @@ int cmd_r_data_ack(CalcHandle *h)
 	else if(pkt->type != VPKT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -834,7 +834,7 @@ int cmd_r_delay_ack(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	if(pkt->type == VPKT_ERROR)
@@ -844,7 +844,7 @@ int cmd_r_delay_ack(CalcHandle *h)
 
 	PAUSE(100);
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -854,10 +854,10 @@ int cmd_s_eot(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, VPKT_EOT);
+	pkt = dusb_vtl_pkt_new(0, VPKT_EOT);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -867,7 +867,7 @@ int cmd_r_eot(CalcHandle *h)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(0, 0);
+	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
@@ -877,7 +877,7 @@ int cmd_r_eot(CalcHandle *h)
 	else if(pkt->type != VPKT_EOT)
 		return ERR_INVALID_PACKET;
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 
 	return 0;
 }
@@ -887,13 +887,13 @@ int cmd_s_error(CalcHandle *h, uint16_t code)
 {
 	VirtualPacket* pkt;
 
-	pkt = vtl_pkt_new(2, VPKT_ERROR);
+	pkt = dusb_vtl_pkt_new(2, VPKT_ERROR);
 
 	pkt->data[0] = MSB(code);
 	pkt->data[1] = LSB(code);
 	TRYF(dusb_send_data(h, pkt));
 
-	vtl_pkt_del(pkt);
+	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   code = %04x", code);
 
 	return 0;
