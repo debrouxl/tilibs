@@ -51,11 +51,11 @@ TI: 0006 0400 1024 bytes of data chk
 PC: AA55 0000 FF00			check whether ready (for sync after a transfer interrupt)
 TI: 0001 0000 0001			ready
 
-PC: 0005 0004 00000400 0009	request block at addr
+PC: 0005 0004 00000400 000D	request block at addr
 TI: 0006 0400 1024 bytes of data chk
 
-PC: 0005 0004 00000800 0009	request block at addr
-TI: 0007 0004 0400 0411		1024 bytes filled with 0x00FF
+PC: 0005 0004 00000800 0011	request block at addr
+TI: 0007 0400 00FF 000A		1024 bytes filled with 0x00FF
 
 PC: 0002 0000 0002			exit dumper
 TI: 0002 0000 0002
