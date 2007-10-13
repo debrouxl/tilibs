@@ -489,6 +489,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	TRYF(send_key(handle, KEY92P_CLEAR));
+	PAUSE(200);
 
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.92p", romDumpSize92, romDump92));

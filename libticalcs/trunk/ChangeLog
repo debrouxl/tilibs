@@ -5,6 +5,8 @@ Log:
 - 04/10/2007, version 1.0.9: roms
 	- adding NSpire support...
 	- fixed ROM dumping on TI92+/V200: switching to HOME screen failed
+	- ROM dumping thru SilverLink under Linux is sometimes failing
+	- added pause between file sending and ready check (fix bug #1808645?)
 
 - 17/09/2007, version 1.0.8: roms
 	- fixed full screen copy with Titanium

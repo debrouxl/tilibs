@@ -243,7 +243,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 			char *varname;
 			char *fldname;
 
+			PAUSE(100);
 			TRYF(handle->calc->is_ready(handle));
+			PAUSE(100);
 
 			update_->cnt3++;
 			update_->pbar();
