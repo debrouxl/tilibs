@@ -1,6 +1,6 @@
 Name: libtifiles2
 Epoch: 1
-Version: 1.0.7
+Version: 1.0.8
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.8-1
+Update to 1.0.8.
+
 * Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
 Update to 1.0.7.
 Update libticonv-devel BuildRequires.
