@@ -1,10 +1,12 @@
 Name: libticalcs2
 Epoch: 1
-Version: 1.0.7
+Version: 1.0.8
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
+#LANG=C svn diff -r 3886:3887 src/calc_89.c >../libticalcs2-1.0.8-fix-ti92p-v200-romdump.diff
+Patch0: libticalcs2-1.0.8-fix-ti92p-v200-romdump.diff
 Group: System Environment/Libraries
 License: GPL
 BuildRequires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, tfdocgen
@@ -33,6 +35,7 @@ HTML format.
 
 %prep
 %setup
+%patch0 -p0
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
@@ -71,6 +74,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.8-1
+Update to 1.0.8.
+Backport fix for TI-92+/V200 ROM dumps from SVN.
+
 * Wed Jun 27 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.7-1
 Update to 1.0.7.
 Drop obsolete backported patch.
