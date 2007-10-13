@@ -52,7 +52,8 @@ static unsigned int BLK_SIZE = 1024;// heuristic
 #define CMD_DATA2		0x0007
 
 static uint8_t buf[65536 + 3*2];
-static int saved_blk = 0;
+static int std_blk = 0;
+static int sav_blk = 0;
 
 // --- Packet Layer
 
@@ -240,6 +241,7 @@ int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 	if(cmd == CMD_DATA1)
 	{
 		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+		std_blk++;
 		return 0;
 	}
 	else if(cmd == CMD_DATA2)
@@ -248,7 +250,7 @@ int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 		rpt = (data[3] << 8) | data[2];
 		memset(data, rpt, *size);
 		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
-		saved_blk++;
+		sav_blk++;
 		return 0;
 	}
 
@@ -297,7 +299,7 @@ int rd_dump(CalcHandle* h, const char *filename)
 	TRYF(rom_recv_SIZE(h, &size));
 
 	// get packets
-	saved_blk = 0;
+	std_blk = sav_blk = 0;
 	for(addr = 0x0000; addr < size; )
 	{
 		if(err == ERR_ABORT)
@@ -345,7 +347,7 @@ int rd_dump(CalcHandle* h, const char *filename)
 		update_->pbar();
 	}
 
-	ticalcs_info("Saved blocks : %i\n", saved_blk);
+	ticalcs_info("Saved %i blocks on %i blocks\n", sav_blk, sav_blk + std_blk);
 
 	// finished
 exit:
