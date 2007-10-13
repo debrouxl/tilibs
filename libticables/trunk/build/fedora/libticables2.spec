@@ -1,6 +1,6 @@
 Name: libticables2
 Epoch: 1
-Version: 1.0.9
+Version: 1.1.0
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
+Update to 1.1.0.
+
 * Sat Sep 8 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.9-1
 Update to 1.0.9.
 Change usb_device back to usb (required with current kernel and udev).
