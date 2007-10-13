@@ -81,9 +81,19 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, KEY89_HOME));
-	TRYF(send_key(handle, KEY89_CLEAR));
-	TRYF(send_key(handle, KEY89_CLEAR));
+	if(handle->model == CALC_TI89)
+	  {
+	    TRYF(send_key(handle, KEY89_HOME));
+	    TRYF(send_key(handle, KEY89_CLEAR));
+	    TRYF(send_key(handle, KEY89_CLEAR));
+	  }
+	else
+	  {
+	    // TI92+ or V200
+	    TRYF(send_key(handle, 8273));
+	    TRYF(send_key(handle, KEY92P_CLEAR));
+	    TRYF(send_key(handle, KEY92P_CLEAR));
+	  }
 
 	// Launch program by remote control
 	for(i = 0; i < strlen(ve->folder); i++)
@@ -741,7 +751,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	else
 	  {
 	    // TI92+ or V200
-	    TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
+	    TRYF(send_key(handle, 8273));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	  }
