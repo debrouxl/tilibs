@@ -3,6 +3,7 @@
 
 /*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2007  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -217,10 +218,16 @@ static int check_for_node_usability(const char *pathname)
     }
     else 
     {
-	ticables_info(_("    node %s: does not exists"), pathname);
+	ticables_info(_("    node %s: does not exist"), pathname);
 	ticables_info(_("    => you will have to create the node."));
 	
 	return -1;
+    }
+
+	if(access(pathname, R_OK | W_OK))
+    {
+       ticables_info(_("    node %s: accessible"), pathname);
+       return 0;
     }
     
     if(!stat(pathname, &st)) 
@@ -238,23 +245,24 @@ static int check_for_node_usability(const char *pathname)
     
     if(getuid() == st.st_uid) 
     {
-	ticables_info(_("    is user can r/w on device: yes"));
-	return 0;
+	ticables_info(_("    user can r/w on device: yes"));
+	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+    return -1;
     } 
     else 
     {
-	ticables_info(_("    is user can r/w on device: no"));
+	ticables_info(_("    user can r/w on device: no"));
     }
     
     if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
     {
-	ticables_info(_("    are others can r/w on device: yes"));
+	ticables_info(_("    others can r/w on device: yes"));
     }
     else 
     {
 	char *user, *group;
 	
-	ticables_info(_("    are others can r/w on device: no"));
+	ticables_info(_("    others can r/w on device: no"));
 	
 	user = strdup(get_user_name(getuid()));
 	group = strdup(get_group_name(st.st_gid));
@@ -268,7 +276,7 @@ static int check_for_node_usability(const char *pathname)
 	{
 	    ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
 	    ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-	    ticables_info(_("    => you will have to restart you session, too"), group);
+	    ticables_info(_("    => you will have to restart your session, too"));
 	    free(user); 
 	    free(group);
 	    
@@ -279,7 +287,8 @@ static int check_for_node_usability(const char *pathname)
 	free(group);
     }	
     
-    return 0;
+	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+    return -1;
 }
 
 int linux_check_root(void)
