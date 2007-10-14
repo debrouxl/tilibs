@@ -224,7 +224,7 @@ static int check_for_node_usability(const char *pathname)
 	return -1;
     }
 
-	if(access(pathname, R_OK | W_OK))
+    if(!access(pathname, R_OK | W_OK))
     {
        ticables_info(_("    node %s: accessible"), pathname);
        return 0;
