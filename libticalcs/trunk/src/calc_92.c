@@ -75,7 +75,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
+	TRYF(send_key(handle, (KEY92P_CTRL + 'Q')));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 
@@ -486,7 +486,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_q)));
+	TRYF(send_key(handle, (KEY92P_CTRL + 'Q')));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	PAUSE(200);
@@ -551,9 +551,9 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	send_key(handle, KEY92P_ESC);
 	send_key(handle, KEY92P_ESC);
 	send_key(handle, KEY92P_ESC);
-	send_key(handle, 4360/*KEY92P_QUIT*/);
-	send_key(handle, 4360/*KEY92P_QUIT*/);
-	send_key(handle, 8273/*KEY92P_HOME*/);
+	send_key(handle, KEY92P_2ND + KEY92P_ESC);
+	send_key(handle, KEY92P_2ND + KEY92P_ESC);
+	send_key(handle, KEY92P_CTRL + 'Q');
 	send_key(handle, KEY92P_CLEAR);
 	send_key(handle, KEY92P_CLEAR);
 	send_key(handle, KEY92P_d);
