@@ -75,7 +75,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, (KEY92P_CTRL + 'Q')));
+	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_Q)));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 
@@ -486,7 +486,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Go back to homescreen
 	PAUSE(200);
-	TRYF(send_key(handle, (KEY92P_CTRL + 'Q')));
+	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_Q)));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	TRYF(send_key(handle, KEY92P_CLEAR));
 	PAUSE(200);
@@ -553,15 +553,15 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	send_key(handle, KEY92P_ESC);
 	send_key(handle, KEY92P_2ND + KEY92P_ESC);
 	send_key(handle, KEY92P_2ND + KEY92P_ESC);
-	send_key(handle, KEY92P_CTRL + 'Q');
+	send_key(handle, KEY92P_CTRL + KEY92P_Q);
 	send_key(handle, KEY92P_CLEAR);
 	send_key(handle, KEY92P_CLEAR);
-	send_key(handle, KEY92P_d);
-	send_key(handle, KEY92P_e);
-	send_key(handle, KEY92P_l);
-	send_key(handle, KEY92P_v);
-	send_key(handle, KEY92P_a);
-	send_key(handle, KEY92P_r);
+	send_key(handle, 'd');
+	send_key(handle, 'e');
+	send_key(handle, 'l');
+	send_key(handle, 'v');
+	send_key(handle, 'a');
+	send_key(handle, 'r');
 	send_key(handle, KEY92P_SPACE);
 
 	for(i = 0; i < (int)strlen(varname); i++)

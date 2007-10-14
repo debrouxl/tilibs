@@ -90,7 +90,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
 	  {
 	    // TI92+ or V200
-	    TRYF(send_key(handle, KEY92P_CTRL + 'Q'));
+	    TRYF(send_key(handle, KEY92P_CTRL + KEY92P_Q));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	  }
@@ -751,7 +751,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
 	  {
 	    // TI92+ or V200
-	    TRYF(send_key(handle, KEY92P_CTRL + 'Q'));
+	    TRYF(send_key(handle, KEY92P_CTRL + KEY92P_Q));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	    TRYF(send_key(handle, KEY92P_CLEAR));
 	  }
