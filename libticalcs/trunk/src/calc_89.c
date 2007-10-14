@@ -81,13 +81,13 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 	// Go back to homescreen
 	PAUSE(200);
-	if(handle->model == CALC_TI89)
+	if(handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	  {
 	    TRYF(send_key(handle, KEY89_HOME));
 	    TRYF(send_key(handle, KEY89_CLEAR));
 	    TRYF(send_key(handle, KEY89_CLEAR));
 	  }
-	else
+	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
 	  {
 	    // TI92+ or V200
 	    TRYF(send_key(handle, 8273));
@@ -742,13 +742,13 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Go back to homescreen
 	PAUSE(200);
-	if(handle->model == CALC_TI89)
+	if(handle->model == CALC_TI89 || handle->model == CALC_TI89T)
 	  {
 	    TRYF(send_key(handle, KEY89_HOME));
 	    TRYF(send_key(handle, KEY89_CLEAR));
 	    TRYF(send_key(handle, KEY89_CLEAR));
 	  }
-	else
+	else if(handle->model == CALC_TI92P || handle->model == CALC_V200)
 	  {
 	    // TI92+ or V200
 	    TRYF(send_key(handle, 8273));
