@@ -1,10 +1,12 @@
 Name: libticables2
 Epoch: 1
 Version: 1.1.0
-Release: 1
+Release: 2
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
+#LANG=C svn diff -r 3902:3905 src/linux/detect.c >../libticables2-1.1.0-improve-device-perm-check.diff
+Patch0: libticables2-1.1.0-improve-device-perm-check.diff
 Group: System Environment/Libraries
 License: GPL
 BuildRequires: libusb-devel, glib2-devel >= 2.4.0, tfdocgen
@@ -33,6 +35,7 @@ HTML format.
 
 %prep
 %setup
+%patch0 -p0
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
@@ -100,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Oct 14 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-2
+Backport improved device node accessibility check from SVN.
+
 * Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
 Update to 1.1.0.
 
