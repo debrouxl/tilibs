@@ -10,6 +10,7 @@ Log:
 	- replaced some raw key codes by #defined ones
 	- fixed some keys defines to be compliant with the HandHeld User's Manual
 		(the manual defines the 'Q' key and not the 'q' one)
+	- skip existing app when sending a TiGroup file (apps can't be overwritten)
 
 - 17/09/2007, version 1.0.8: roms
 	- fixed full screen copy with Titanium

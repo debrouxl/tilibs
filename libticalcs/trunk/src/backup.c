@@ -122,8 +122,11 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	TigEntry **ptr;
+	GNode *vars, *apps;
 	int nvars = 0;
 	int napps = 0;
+
+	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
 
 	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 		nvars = content->n_vars;
@@ -175,13 +178,20 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		for(ptr = content->app_entries; *ptr; ptr++)
 		{
 			TigEntry *te = *ptr;
+			VarEntry ve = {0};
 
 			update_->cnt3++;
 			update_->pbar();
 
-			TRYF(handle->calc->send_app(handle, te->content.flash));
+			// can't overwrite apps so check before sending app
+			strcpy(ve.name, te->content.flash->name);
+			if(!ticalcs_dirlist_ve_exist(apps, &ve))
+				TRYF(handle->calc->send_app(handle, te->content.flash));
 		}
 	}
+
+	ticalcs_dirlist_destroy(&vars);
+	ticalcs_dirlist_destroy(&apps);
 
 	return 0;
 }
