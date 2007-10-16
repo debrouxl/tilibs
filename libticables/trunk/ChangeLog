@@ -7,6 +7,8 @@ Log:
 	- added NSpire support
 	- improved built-in DUSB & DBUS packet decompilers
 	- fixed bug #1731776 (kevin)
+	- reverted back a wrong commit done in rev. 3042 (31/10/2006 !!!): USB reset code 
+		had been removed from slv_reset.
 	
 - 13/09/2007, version 1.1.0: roms
 	- fixed some checks (return value changed in rev. 3719 
@@ -62,7 +64,7 @@ Log:
 	- be a little more verbose about nodes permissions and compiled options
 	        (I received many mails which lacks those information)
 	
-- 21/02/2006, version 1.0.1: roms
+- 21/09/2006, version 1.0.1: roms
 	- detect i[3456]86-apple-darwin* (Intel Macs) and x86_64-apple-darwin* (probably coming soon)
 	  as __MACOSX__ (kevin)
 	- updated OS X and BSD ports to compile again (kevin)
