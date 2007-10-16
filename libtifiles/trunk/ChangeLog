@@ -4,6 +4,7 @@ Log:
 
 - 04/10/2007, version 1.0.9: roms
 	- adding NSpire support...
+	- TiConnect compresses application in TiGroup; does (almost) the same
 
 - 18/09/2007, version 1.0.8: roms
 	- added file extension for GRP variables

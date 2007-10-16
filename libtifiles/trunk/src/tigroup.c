@@ -739,7 +739,7 @@ TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int
 
 	content->model = content->model_dst = model;
 	content->comment = g_strdup(tifiles_comment_set_tigroup());
-	content->comp_level = 0;
+	content->comp_level = 4;
 	content->var_entries = (TigEntry **)g_malloc0(sizeof(TigEntry *));
 	content->app_entries = (TigEntry **)g_malloc0(sizeof(TigEntry *));
 
