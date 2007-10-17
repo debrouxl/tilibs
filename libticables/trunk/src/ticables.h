@@ -40,7 +40,6 @@ extern "C" {
 
 /* Conditionnals */
 #define OPEN_DELAYED
-#define SLV_RESET
 
 /* Versioning */
 
