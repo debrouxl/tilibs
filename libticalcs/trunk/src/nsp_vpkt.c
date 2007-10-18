@@ -118,6 +118,12 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 	q = (vtl->size - offset) / DATA_SIZE;
 	r = (vtl->size - offset) % DATA_SIZE;
 
+#if (VPKT_DBG == 2)
+#elif (VPKT_DBG == 1)
+		ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
+			vtl->src_addr, vtl->src_id, vtl->dst_addr, vtl->dst_id, 0, 0, vtl->size);
+#endif
+
 	for(i = 1; i <= q; i++)
 	{
 		raw.data_size = DATA_SIZE;
@@ -168,6 +174,17 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 		h->updat->cnt1 += DATA_SIZE;
 		h->updat->pbar();
 	} while(raw.data_size >= DATA_SIZE);
+
+	vtl->src_addr = raw.src_addr;
+	vtl->src_id = raw.src_id;
+	vtl->dst_addr = raw.dst_addr;
+	vtl->dst_id = raw.dst_id;
+
+#if (VPKT_DBG == 2)
+#elif (VPKT_DBG == 1)
+		ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
+			vtl->src_addr, vtl->src_id, vtl->dst_addr, vtl->dst_id, 0, 0, vtl->size);
+#endif
 
 	return 0;
 }

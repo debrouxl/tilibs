@@ -99,21 +99,24 @@ int nsp_recv(CalcHandle* handle, RawPacket* pkt)
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_recv(handle->cable, buf, HEADER_SIZE));
 
-	pkt->unused		= (buf[1] << 8) | buf[0];
-	pkt->src_addr	= (buf[3] << 8) | buf[2];
-	pkt->src_id		= (buf[5] << 8) | buf[4];
-	pkt->dst_addr	= (buf[7] << 8) | buf[6];
-	pkt->dst_id		= (buf[9] << 8) | buf[8];
-	pkt->data_sum	= (buf[11] << 8) | buf[10];
+	pkt->unused		= (buf[0] << 8) | buf[1];
+	pkt->src_addr	= (buf[2] << 8) | buf[3];
+	pkt->src_id		= (buf[4] << 8) | buf[5];
+	pkt->dst_addr	= (buf[6] << 8) | buf[7];
+	pkt->dst_id		= (buf[8] << 8) | buf[9];
+	pkt->data_sum	= (buf[10] << 8) | buf[11];
 	pkt->data_size	= buf[12];
 	pkt->ack		= buf[13];
 	pkt->seq		= buf[14];
 	pkt->hdr_sum	= buf[15];
 
 	// Next, follows data
-	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->data_size));
-	if(pkt->data_size >= 128)
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	if(pkt->data_size)
+	{
+		TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->data_size));
+		if(pkt->data_size >= 128)
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	}
 			
 	if (handle->updat->cancel)
 		return ERR_ABORT;
