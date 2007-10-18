@@ -513,7 +513,11 @@ static int slv_reset(CableHandle *h)
 		// lib-usb doc: after calling usb_reset, the device will need to re-enumerate 
 		// and thusly, requires you to find the new device and open a new handle. The 
 		// handle used to call usb_reset will no longer work.
+#ifdef __WIN32__
 		Sleep(500);
+#else
+		usleep(500000);
+#endif
 		TRYC(slv_close(h));		
 
 		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
