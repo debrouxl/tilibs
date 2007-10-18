@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __DUSB_CMD__
+#ifndef __DUSB_CMDS__
 #define __DUSB_CMDS__
 
 #define DUSB_DFL_BUF_SIZE	1024

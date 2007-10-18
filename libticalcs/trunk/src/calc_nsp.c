@@ -41,8 +41,12 @@
 #include "pause.h"
 #include "macros.h"
 
+#include "nsp_cmd.h"
+
 static int		is_ready	(CalcHandle* handle)
 {
+	TRYC(cmd_r_dev_addr_request(handle));
+	TRYC(cmd_s_dev_addr_assign(handle, 0x6401));
 
 	return 0;
 }

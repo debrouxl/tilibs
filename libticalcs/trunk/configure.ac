@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticalcs2, 1.0.9, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticalcs2, 1.1.0, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.0.9"
+VERSION="1.1.0"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -17,7 +17,7 @@ dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
 LT_CURRENT=6
-LT_REVISION=2
+LT_REVISION=3
 LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
 AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
@@ -63,15 +63,15 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
-PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.1.0)
+PKG_CHECK_MODULES(TICABLES, ticables2 >= 1.2.0)
 AC_SUBST(TICABLES_CFLAGS)
 AC_SUBST(TICABLES_LIBS)
 
-PKG_CHECK_MODULES(TICONV, ticonv >= 1.0.4)
+PKG_CHECK_MODULES(TICONV, ticonv >= 1.0.6)
 AC_SUBST(TICONV_CFLAGS)
 AC_SUBST(TICONV_LIBS)
 
-PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.0.9)
+PKG_CHECK_MODULES(TIFILES, tifiles2 >= 1.1.0)
 AC_SUBST(TIFILES_CFLAGS)
 AC_SUBST(TIFILES_LIBS)
 

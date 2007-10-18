@@ -277,6 +277,14 @@ SOURCE=..\..\src\calc_nsp.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\nsp_cmd.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\nsp_cmd.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\nsp_rpkt.c
 # End Source File
 # Begin Source File
