@@ -419,19 +419,6 @@ static int tigl_reset(usb_dev_handle *udh)
   	if (ret < 0) 
 	{
 	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-	    
-	    ret = usb_resetep(udh, TIGL_BULK_OUT);
-	    if (ret < 0) 
-	    {
-		ticables_warning("usb_resetep (%s).\n", usb_strerror());
-		
-		ret = usb_reset(udh);
-		if (ret < 0) 
-		{
-		    ticables_warning("usb_reset (%s).\n", usb_strerror());
-		    return ERR_LIBUSB_RESET;
-		}
-	    }
   	}
 	
 	// Reset in pipe
@@ -439,19 +426,6 @@ static int tigl_reset(usb_dev_handle *udh)
   	if (ret < 0) 
 	{
 	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-	    
-	    ret = usb_resetep(udh, TIGL_BULK_OUT);
-	    if (ret < 0) 
-	    {
-		ticables_warning("usb_resetep (%s).\n", usb_strerror());
-		
-		ret = usb_reset(udh);
-		if (ret < 0) 
-		{
-		    ticables_warning("usb_reset (%s).\n", usb_strerror());
-		    return ERR_LIBUSB_RESET;
-		}
-	    }
   	}
 
 	return 0;

@@ -2,13 +2,17 @@ SubVersion: $Id$
 
 Log:
 
+- 16/10/2007, version 1.1.2: roms
+	- reverted back a wrong commit done in rev. 3042 (31/10/2006 !!!): USB reset code 
+		had been removed from slv_reset.
+	- don't reset cable at opening stage (need to be eventually managed by program)
+	- removed use of reset_ep which (deprecated) and use of usb_reset (handle is no longer valid)
+
 - 03/10/2007, version 1.1.1: roms
 	- renamed link_slv into link_usb
 	- added NSpire support
 	- improved built-in DUSB & DBUS packet decompilers
 	- fixed bug #1731776 (kevin)
-	- reverted back a wrong commit done in rev. 3042 (31/10/2006 !!!): USB reset code 
-		had been removed from slv_reset.
 	
 - 13/09/2007, version 1.1.0: roms
 	- fixed some checks (return value changed in rev. 3719 
