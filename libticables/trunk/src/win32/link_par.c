@@ -64,18 +64,12 @@ static int par_prepare(CableHandle *h)
 	return 0;
 }
 
-static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
 	TRYC(io_open(h->address));
 
   	io_wr(lpt_ctl, io_rd(lpt_ctl) & ~0x20);	// ouput mode only
 	
-	TRYC(par_reset(h));
-#ifdef OPEN_DELAYED
-	Sleep(2000);
-#endif
-
 	return 0;
 }
 

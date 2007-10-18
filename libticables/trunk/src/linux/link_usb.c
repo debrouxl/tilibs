@@ -61,11 +61,17 @@
    nor timeout. Simply retry a read call and it works fine. The best example 
    is to get IDLIST.
 
+  Moreover,
+
    - for checking, under Linux, we use a hack by Kevin Kofler (based on the
    libusb source code, and inspired by Romain's Windows driver). This is for
    Linux ONLY, not for other POSIX-like systems (it directly uses Linux kernel
    interfaces). Under Windows, we use the asynchronous API provided by the
    libusb-win32.
+
+  - NSpire support need a patched libusb library because libusb emits an
+	IOCTL_INTERNAL_USB_RESET_PORT followed by an IOCTL_INTERNAL_USB_CYCLE_PORT.
+	NSpire simply needs an RESET_PORT.
 */
                                      
 #ifdef HAVE_CONFIG_H
@@ -380,8 +386,7 @@ static int tigl_open(int id, usb_dev_handle **udh)
 	ret = usb_set_configuration(*udh, 1);
         if (ret < 0)
         {
-            //ticables_warning("usb_set_configuration (%s).\n",usb_strerror());
-            //return ERR_LIBUSB_CONFIG;
+            ticables_warning("usb_set_configuration (%s).\n",usb_strerror());
         }
 
 	/* configuration #1, interface #0 */
@@ -471,13 +476,7 @@ static int slv_open(CableHandle *h)
     interface = &(interface_->altsetting[0]);
     endpoint = &(interface->endpoint[0]);
     max_ps = endpoint->wMaxPacketSize;
-    //printf("max_ps = %i\n", max_ps);
     nBytesRead = 0;
-    
-#if !defined(__BSD__)
-    /* Reset both endpoints */
-    TRYC(tigl_reset(uHdl));
-#endif
 
     return 0;
 }
@@ -496,8 +495,30 @@ static int slv_close(CableHandle *h)
 
 static int slv_reset(CableHandle *h)
 {
+	int ret = 0;
+
 #if !defined(__BSD__)
+	/* Reset both endpoints (send an URB_FUNCTION_RESET_PIPE) */
     TRYC(tigl_reset(uHdl));
+
+	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+    ret = usb_reset(uHdl);
+	if (ret < 0) 
+	{
+		ticables_warning("usb_reset (%s).\n", usb_strerror());
+		return ERR_LIBUSB_RESET;
+	}
+	else
+	{
+		// lib-usb doc: after calling usb_reset, the device will need to re-enumerate 
+		// and thusly, requires you to find the new device and open a new handle. The 
+		// handle used to call usb_reset will no longer work.
+		Sleep(500);
+		TRYC(slv_close(h));		
+
+		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
+		TRYC(slv_open(h));
+	}
 #endif
     return 0;
 }

@@ -61,17 +61,12 @@ static int par_prepare(CableHandle *h)
 	return 0;
 }
 
-static int par_reset(CableHandle *h);
 static int par_open(CableHandle *h)
 {
     int fd;
 
     TRYC(par_io_open(h->device, &fd));
     h->priv = GINT_TO_POINTER(fd);
-    TRYC(par_reset(h));
-#ifdef OPEN_DELAYED
-    usleep(2000000);	// needs this because serial lines can be low at startup
-#endif
 
     return 0;
 }

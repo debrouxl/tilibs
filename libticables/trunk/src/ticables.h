@@ -38,13 +38,10 @@ extern "C" {
 	/* Types & Definitions */
 	/***********************/
 
-/* Conditionnals */
-#define OPEN_DELAYED
-
 /* Versioning */
 
 #ifdef __WIN32__
-# define libticables2_VERSION "1.1.1"
+# define libticables2_VERSION "1.2.0"
 #else
 # define libticables2_VERSION VERSION
 #endif
