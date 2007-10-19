@@ -22,6 +22,10 @@
 #ifndef __NSP_CMDS__
 #define __NSP_CMDS__
 
+// Common addresses
+#define NSP_SRC_ADDR	0x6400
+#define NSP_DEV_ADDR	0x6401
+
 // Device Information IDs
 #define DI_VERSION	1
 #define DI_MODEL	2
@@ -32,11 +36,16 @@
 
 // Command wrappers
 
+int nsp_session_open(CalcHandle *h, uint16_t port);
+int nsp_session_close(CalcHandle *h);
+
 int cmd_r_dev_addr_request(CalcHandle *h);
 int cmd_s_dev_addr_assign(CalcHandle *h, uint16_t dev_addr);
 
-int cmd_s_ack(CalcHandle *h, uint16_t  ack);
-int cmd_r_ack(CalcHandle *h, uint16_t *ack);
+int cmd_s_ack(CalcHandle *h);
+int cmd_r_ack(CalcHandle *h);
+
+int cmd_s_disconnect(CalcHandle *h);
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data);

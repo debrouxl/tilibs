@@ -20,10 +20,8 @@
  */
 
 /*
-	This unit handles virtual packet types (commands) thru DirectLink.
+	This unit handles commands and session management thru DirectLink.
 */
-
-// Some functions should be renamed or re-organized...
 
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +58,30 @@ static int err_code(VirtualPacket *pkt)
 
 /////////////----------------
 
+static uint16_t	src_port = 0x8001;
+static uint16_t dst_port = 0x4000;
+
+int nsp_session_open(CalcHandle *h, uint16_t port)
+{
+	src_port++;
+	dst_port = port;
+	ticalcs_info("   opening session from port #%04x to port #%04x.", src_port, dst_port);
+
+	return 0;
+}
+
+int nsp_session_close(CalcHandle *h)
+{
+	TRYF(cmd_s_disconnect(h));
+	TRYF(cmd_r_ack(h));
+
+	ticalcs_info("   closed session from port #%04x to port #%04x.", src_port, dst_port);
+
+	return 0;
+}
+
+/////////////----------------
+
 int cmd_r_dev_addr_request(CalcHandle *h)
 {
 	VirtualPacket* pkt;
@@ -67,39 +89,86 @@ int cmd_r_dev_addr_request(CalcHandle *h)
 	// Reset connection so that device send an address request packet
 	TRYC(h->cable->cable->reset(h->cable));
 
-	pkt = nsp_vtl_pkt_new(0, 0, 0, 0, 0);
+	pkt = nsp_vtl_pkt_new();
 	TRYF(nsp_recv_data(h, pkt));
 	
-	if(pkt->dst_addr != SID_ADDR_REQ)
+	if(pkt->dst_port != PORT_ADDR_REQUEST)
 		return ERR_INVALID_PACKET;
 
-	ticalcs_info("   device address request...\n");
-	printf("%04x\n", pkt->dst_addr);
-
+	ticalcs_info("   device address request...");
 	nsp_vtl_pkt_del(pkt);
+
 	return 0;
 }
 
 int cmd_s_dev_addr_assign(CalcHandle *h, uint16_t addr)
 {
-	
 	VirtualPacket* pkt;
 
-	pkt = nsp_vtl_pkt_new(4,  6400, 4003, 6401, 4003);
+	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, 4003, NSP_DEV_ADDR, 4003);
 	pkt->data[0] = MSB(addr);
 	pkt->data[1] = LSB(addr);
 	pkt->data[2] = 0xFF;
 	pkt->data[3] = 0x00;
 	TRYF(nsp_send_data(h, pkt));
 
+	ticalcs_info("   assigned address %04x.", addr);
 	nsp_vtl_pkt_del(pkt);
-	ticalcs_info("   assigned address %04x.\n", addr);
 
 	return 0;
 }
 
-int cmd_s_ack(CalcHandle *h, uint16_t  ack);
-int cmd_r_ack(CalcHandle *h, uint16_t *ack);
+int cmd_s_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, PORT_PKT_ACK2, NSP_DEV_ADDR, dst_port);
+	pkt->data[0] = MSB(dst_port);
+	pkt->data[1] = LSB(dst_port);
+	TRYF(nsp_send_data(h, pkt));
+
+	ticalcs_info("   sent ack to service %04x.", dst_port);
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_ack(CalcHandle *h)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	uint16_t ack;
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	if(pkt->src_port != PORT_PKT_ACK1 && pkt->src_port != PORT_PKT_ACK2)
+		return ERR_INVALID_PACKET;
+	if(pkt->ack != 0x0A)
+		return ERR_INVALID_PACKET;
+
+	ack = (pkt->data[0] << 8) | pkt->data[1];
+	if(ack != dst_port)
+		return ERR_NACK;
+
+	ticalcs_info("   received ack from service #%04x.", dst_port);
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_s_disconnect(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, PORT_DISCONNECT, NSP_DEV_ADDR, dst_port);
+	pkt->data[0] = MSB(src_port);
+	pkt->data[1] = LSB(src_port);
+	TRYF(nsp_send_data(h, pkt));
+
+	ticalcs_info("   disconnect from service #%04x.", dst_port);
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data);
