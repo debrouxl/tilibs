@@ -27,9 +27,12 @@
 typedef struct
 {
 	uint16_t	src_addr;
-	uint16_t	src_id;
+	uint16_t	src_port;
 	uint16_t	dst_addr;
-	uint16_t	dst_id;
+	uint16_t	dst_port;
+
+	uint8_t		ack;	// unused
+	uint8_t		seq;
 
 	uint32_t	size;
 	uint8_t		*data;
@@ -43,23 +46,24 @@ typedef struct
 
 // Constants
 
-#define SID_PAK_ACK1	0x00FE
-#define SID_PAK_ACK2	0x00FF
-#define SID_NULL		0x4001
-#define SID_ECHO		0x4002
-#define SID_ADDR_REQ	0x4003
-#define SID_ADDR_ASSIGN	0x4003
-#define SID_DEV_INFO	0x4020
-#define SID_SCREENSHOT	0x4021
-#define SID_SCREEN_RLE	0x4024
-#define SID_LOGIN		0x4050
-#define SID_FILE_MGMT	0x4060
-#define SID_OS_INSTALL	0x4080
-#define SID_DISCONNECT	0x40DE
+#define PORT_PKT_ACK1		0x00FE
+#define PORT_PKT_ACK2		0x00FF
+#define PORT_NULL			0x4001
+#define PORT_ECHO			0x4002
+#define PORT_ADDR_REQUEST	0x4003
+#define PORT_ADDR_ASSIGN	0x4003
+#define PORT_DEV_INFOS		0x4020
+#define PORT_SCREENSHOT		0x4021
+#define PORT_SCREEN_RLE		0x4024
+#define PORT_LOGIN			0x4050
+#define PORT_FILE_MGMT		0x4060
+#define PORT_OS_INSTALL		0x4080
+#define PORT_DISCONNECT		0x40DE
 
 // Functions
 
-VirtualPacket*  nsp_vtl_pkt_new(uint32_t size, uint16_t src_addr, uint16_t src_id, uint16_t dst_addr, uint16_t dst_id);
+VirtualPacket*  nsp_vtl_pkt_new(void);
+VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port);
 void			nsp_vtl_pkt_del(VirtualPacket* pkt);
 void			nsp_vtl_pkt_purge(void);
 

@@ -31,9 +31,9 @@ typedef struct
 {
 	uint16_t	unused;
 	uint16_t	src_addr;
-	uint16_t	src_id;
+	uint16_t	src_port;
 	uint16_t	dst_addr;
-	uint16_t	dst_id;
+	uint16_t	dst_port;
 	uint16_t	data_sum;
 	uint8_t		data_size;
 	uint8_t		ack;

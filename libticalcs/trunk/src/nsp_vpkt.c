@@ -71,20 +71,25 @@ const char* nsp_sid2name(uint16_t id)
 
 static GList *vtl_pkt_list = NULL;
 
-VirtualPacket*  nsp_vtl_pkt_new(uint32_t size, uint16_t src_addr, uint16_t src_id, uint16_t dst_addr, uint16_t dst_id)
+VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
 {
 	VirtualPacket* vtl = g_malloc0(sizeof(VirtualPacket));
 
 	vtl->src_addr = src_addr;
-	vtl->src_id = src_id;
+	vtl->src_port = src_port;
 	vtl->dst_addr = dst_addr;
-	vtl->dst_id = dst_id;
+	vtl->dst_port = dst_port;
 	vtl->size = size;
 	vtl->data = g_malloc0(size);
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 
 	return vtl;
+}
+
+VirtualPacket*  nsp_vtl_pkt_new(void)
+{
+	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0);
 }
 
 void			nsp_vtl_pkt_del(VirtualPacket* vtl)
@@ -111,9 +116,9 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 	long offset = 0;
 
 	raw.src_addr = vtl->src_addr;
-	raw.src_id = vtl->src_id;
+	raw.src_port = vtl->src_port;
 	raw.dst_addr = vtl->dst_addr;
-	raw.dst_id = vtl->dst_id;
+	raw.dst_port = vtl->dst_port;
 
 	q = (vtl->size - offset) / DATA_SIZE;
 	r = (vtl->size - offset) % DATA_SIZE;
@@ -121,7 +126,7 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 #if (VPKT_DBG == 2)
 #elif (VPKT_DBG == 1)
 		ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
-			vtl->src_addr, vtl->src_id, vtl->dst_addr, vtl->dst_id, 0, 0, vtl->size);
+			vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, 0, 0, vtl->size);
 #endif
 
 	for(i = 1; i <= q; i++)
@@ -176,14 +181,17 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 	} while(raw.data_size >= DATA_SIZE);
 
 	vtl->src_addr = raw.src_addr;
-	vtl->src_id = raw.src_id;
+	vtl->src_port = raw.src_port;
 	vtl->dst_addr = raw.dst_addr;
-	vtl->dst_id = raw.dst_id;
+	vtl->dst_port = raw.dst_port;
+
+	vtl->ack = raw.ack;
+	vtl->seq = raw.seq;
 
 #if (VPKT_DBG == 2)
 #elif (VPKT_DBG == 1)
 		ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
-			vtl->src_addr, vtl->src_id, vtl->dst_addr, vtl->dst_id, 0, 0, vtl->size);
+			vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->ack, vtl->seq, vtl->size);
 #endif
 
 	return 0;

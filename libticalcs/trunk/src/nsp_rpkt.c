@@ -66,12 +66,12 @@ int nsp_send(CalcHandle* handle, RawPacket* pkt)
 	buf[1] = 0xFD;
 	buf[2] = MSB(pkt->src_addr);
 	buf[3] = LSB(pkt->src_addr);
-	buf[4] = MSB(pkt->src_id);
-	buf[5] = LSB(pkt->src_id);
+	buf[4] = MSB(pkt->src_port);
+	buf[5] = LSB(pkt->src_port);
 	buf[6] = MSB(pkt->dst_addr);
 	buf[7] = LSB(pkt->dst_addr);
-	buf[8] = MSB(pkt->dst_id);
-	buf[9] = LSB(pkt->dst_id);
+	buf[8] = MSB(pkt->dst_port);
+	buf[9] = LSB(pkt->dst_port);
 	buf[10] = MSB(crc);
 	buf[11] = LSB(crc);
 	buf[12] = pkt->data_size;
@@ -101,9 +101,9 @@ int nsp_recv(CalcHandle* handle, RawPacket* pkt)
 
 	pkt->unused		= (buf[0] << 8) | buf[1];
 	pkt->src_addr	= (buf[2] << 8) | buf[3];
-	pkt->src_id		= (buf[4] << 8) | buf[5];
+	pkt->src_port		= (buf[4] << 8) | buf[5];
 	pkt->dst_addr	= (buf[6] << 8) | buf[7];
-	pkt->dst_id		= (buf[8] << 8) | buf[9];
+	pkt->dst_port		= (buf[8] << 8) | buf[9];
 	pkt->data_sum	= (buf[10] << 8) | buf[11];
 	pkt->data_size	= buf[12];
 	pkt->ack		= buf[13];
