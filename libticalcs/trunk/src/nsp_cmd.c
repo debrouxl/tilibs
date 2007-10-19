@@ -140,11 +140,6 @@ int cmd_r_ack(CalcHandle *h)
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	if(pkt->src_port != PORT_PKT_ACK1 && pkt->src_port != PORT_PKT_ACK2)
-		return ERR_INVALID_PACKET;
-	if(pkt->ack != 0x0A)
-		return ERR_INVALID_PACKET;
-
 	ack = (pkt->data[0] << 8) | pkt->data[1];
 	if(ack != dst_port)
 		return ERR_NACK;
@@ -170,8 +165,34 @@ int cmd_s_disconnect(CalcHandle *h)
 	return 0;
 }
 
-int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
-int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data);
+int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
+{
+	VirtualPacket* pkt;
+
+	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, PORT_DEV_INFOS, NSP_DEV_ADDR, dst_port);
+	pkt->data[0] = cmd;
+	TRYF(nsp_send_data(h, pkt));
+
+	ticalcs_info("   request device information (cmd = %02x).", cmd);
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	*data = g_malloc0(pkt->size);
+	memcpy(*data, pkt->data + 1, pkt->size);
+
+	ticalcs_info("   received device information (cmd = %02x).", pkt->data[0]);
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
 
 #if 0
 

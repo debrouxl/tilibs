@@ -194,5 +194,10 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->src_addr, vtl->src_port, vtl->dst_addr, vtl->dst_port, vtl->ack, vtl->seq, vtl->size);
 #endif
 
+	if(vtl->src_port != PORT_PKT_ACK1 && vtl->src_port != PORT_PKT_ACK2)
+		return ERR_INVALID_PACKET;
+	if(vtl->ack != 0x0A)
+		return ERR_INVALID_PACKET;
+
 	return 0;
 }
