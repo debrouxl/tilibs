@@ -61,6 +61,9 @@ int nsp_send(CalcHandle* handle, RawPacket* pkt)
 	uint8_t buf[sizeof(RawPacket)] = { 0 };
 	uint32_t size = pkt->data_size + HEADER_SIZE;
 	uint16_t crc = compute_crc(pkt->data, pkt->data_size);
+
+	ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
+			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, pkt->ack, pkt->seq, pkt->data_size);
 	
 	buf[0] = 0x54;
 	buf[1] = 0xFD;
@@ -120,6 +123,9 @@ int nsp_recv(CalcHandle* handle, RawPacket* pkt)
 			
 	if (handle->updat->cancel)
 		return ERR_ABORT;
+
+	ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
+			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, pkt->ack, pkt->seq, pkt->data_size);
 
 	return 0;
 }

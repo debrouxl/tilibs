@@ -31,9 +31,6 @@ typedef struct
 	uint16_t	dst_addr;
 	uint16_t	dst_port;
 
-	uint8_t		ack;	// unused
-	uint8_t		seq;
-
 	uint32_t	size;
 	uint8_t		*data;
 } VirtualPacket;
@@ -45,6 +42,9 @@ typedef struct
 } ServiceName;
 
 // Constants
+
+#define NSP_SRC_ADDR	0x6400
+#define NSP_DEV_ADDR	0x6401
 
 #define PORT_PKT_ACK1		0x00FE
 #define PORT_PKT_ACK2		0x00FF
@@ -60,6 +60,11 @@ typedef struct
 #define PORT_OS_INSTALL		0x4080
 #define PORT_DISCONNECT		0x40DE
 
+// Exports
+
+uint16_t nsp_src_port;
+uint16_t nsp_dst_port;
+
 // Functions
 
 VirtualPacket*  nsp_vtl_pkt_new(void);
@@ -67,8 +72,19 @@ VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t sr
 void			nsp_vtl_pkt_del(VirtualPacket* pkt);
 void			nsp_vtl_pkt_purge(void);
 
+int nsp_session_open(CalcHandle *h, uint16_t port);
+int nsp_session_close(CalcHandle *h);
+
+int nsp_addr_request(CalcHandle *h);
+int nsp_addr_assign(CalcHandle *h, uint16_t dev_addr);
+
+int nsp_send_ack(CalcHandle *h);
+int nsp_recv_ack(CalcHandle *h);
+
 int nsp_send_data(CalcHandle* h, VirtualPacket* pkt);
 int nsp_recv_data(CalcHandle* h, VirtualPacket* pkt);
+
+int nsp_disconnect(CalcHandle *h);
 
 const char* nsp_sid2name(uint16_t id);
 

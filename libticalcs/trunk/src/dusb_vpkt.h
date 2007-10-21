@@ -80,6 +80,9 @@ int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size);
 int dusb_send_data(CalcHandle* h, VirtualPacket* pkt);
 int dusb_recv_data(CalcHandle* h, VirtualPacket* pkt);
 
+int dusb_send_acknowledge(CalcHandle* h);
+int dusb_recv_acknowledge(CalcHandle *h);
+
 const char* dusb_vpkt_type2name(uint16_t id);
 
 uint32_t dusb_get_buf_size(void);
