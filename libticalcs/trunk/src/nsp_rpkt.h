@@ -43,6 +43,10 @@ typedef struct
 	uint8_t		data[DATA_SIZE];
 } RawPacket;
 
+// Exports;
+
+uint8_t	nsp_seq;
+
 // Functions
 
 RawPacket*  raw_pkt_new(uint32_t size);

@@ -139,6 +139,7 @@ int nsp_addr_request(CalcHandle *h)
 
 	// Reset connection so that device send an address request packet
 	TRYC(h->cable->cable->reset(h->cable));
+	nsp_seq = 1;
 
 	TRYF(nsp_recv(h, &pkt));
 	

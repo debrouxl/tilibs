@@ -56,11 +56,16 @@ static uint16_t compute_crc(uint8_t *data, uint32_t size)
 	return acc;
 }
 
+uint8_t		nsp_seq = 1;
+
 int nsp_send(CalcHandle* handle, RawPacket* pkt)
 {
 	uint8_t buf[sizeof(RawPacket)] = { 0 };
 	uint32_t size = pkt->data_size + HEADER_SIZE;
 	uint16_t crc = compute_crc(pkt->data, pkt->data_size);
+
+	pkt->seq = nsp_seq++;
+	if(!nsp_seq) nsp_seq++;
 
 	ticalcs_info("  %04x:%04x->%04x:%04x AK=%02x SQ=%02x (%i bytes)", 
 			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, pkt->ack, pkt->seq, pkt->data_size);
