@@ -41,12 +41,13 @@
 #include "pause.h"
 #include "macros.h"
 
+#include "nsp_vpkt.h"
 #include "nsp_cmd.h"
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYC(cmd_r_dev_addr_request(handle));
-	TRYC(cmd_s_dev_addr_assign(handle, 0x6401));
+	TRYC(nsp_addr_request(handle));
+	TRYC(nsp_addr_assign(handle, NSP_DEV_ADDR));
 
 	return 0;
 }
@@ -176,7 +177,15 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
+	uint8_t size, *data;
 
+	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
+
+	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYC(cmd_r_dev_infos(handle, &size, &data));
+
+	TRYC(nsp_session_close(handle));
+	
 	return 0;
 }
 
@@ -198,7 +207,7 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY ,
+	OPS_ISREADY | OPS_VERSION ,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,

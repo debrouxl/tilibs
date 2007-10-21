@@ -22,9 +22,15 @@
 #ifndef __NSP_CMDS__
 #define __NSP_CMDS__
 
-// Common addresses
-#define NSP_SRC_ADDR	0x6400
-#define NSP_DEV_ADDR	0x6401
+// Services IDs
+#define SID_NULL			0x4001
+#define SID_ECHO			0x4002
+#define SID_DEV_INFOS		0x4020
+#define SID_SCREENSHOT		0x4021
+#define SID_SCREEN_RLE		0x4024
+#define SID_LOGIN			0x4050
+#define SID_FILE_MGMT		0x4060
+#define SID_OS_INSTALL		0x4080
 
 // Device Information IDs
 #define DI_VERSION	1
@@ -35,17 +41,6 @@
 // ...
 
 // Command wrappers
-
-int nsp_session_open(CalcHandle *h, uint16_t port);
-int nsp_session_close(CalcHandle *h);
-
-int cmd_r_dev_addr_request(CalcHandle *h);
-int cmd_s_dev_addr_assign(CalcHandle *h, uint16_t dev_addr);
-
-int cmd_s_ack(CalcHandle *h);
-int cmd_r_ack(CalcHandle *h);
-
-int cmd_s_disconnect(CalcHandle *h);
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data);
