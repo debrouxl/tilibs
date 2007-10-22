@@ -857,7 +857,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_FLASH_PHYS;
 	i++;
-		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
 	infos->mask |= INFOS_FLASH_USER;
 	i++;
 	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));

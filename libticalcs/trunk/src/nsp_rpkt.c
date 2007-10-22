@@ -33,6 +33,8 @@
 #include "error.h"
 #include "macros.h"
 
+#define VPKT_DBG	1	// 1 = verbose, 2 = more verbose
+
 // CRC implementation from O. Armand (ExtendeD)
 static uint16_t compute_crc(uint8_t *data, uint32_t size)
 {
@@ -57,29 +59,38 @@ static uint16_t compute_crc(uint8_t *data, uint32_t size)
 	return acc;
 }
 
-uint8_t		nsp_seq = 1;
-
-void nsp_inc_seq(void)
-{
-	nsp_seq++;
-}
-
 static int hexdump(uint8_t *data, uint32_t size)
 {
+#if (VPKT_DBG == 2)
 	char *str = (char *)g_malloc(3*size + 8 + 10);
-	int i;
+	int i, j;
+	int step = 12;
   
 	for(i = 0; i < 4; i++)
 		str[i] = ' ';
 
-	for (i = 0; i < (int)size; i++)
-		sprintf(&str[3*i+4], "%02X ", data[i]);
-
-	ticalcs_info(str);
+	for (i = j = 0; i < (int)size; i++, j++)
+	{
+		sprintf(&str[3*j+4], "%02X ", data[i]);
+		if(!(i % step) && i)
+		{
+			ticalcs_info(str);
+			j = 0;
+		}
+	}
+	
 	g_free(str);
-
+#endif
   return 0;
 }
+
+uint8_t		nsp_seq = 1;
+/*
+void nsp_inc_seq(void)
+{
+	nsp_seq++;
+}
+*/
 
 int nsp_send(CalcHandle* handle, RawPacket* pkt)
 {

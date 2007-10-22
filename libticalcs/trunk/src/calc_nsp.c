@@ -46,8 +46,17 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	TRYC(nsp_addr_request(handle));
-	TRYC(nsp_addr_assign(handle, NSP_DEV_ADDR));
+	static int checked = 0;
+
+	// Init once
+	if(!checked)
+	{
+		TRYC(nsp_addr_request(handle));
+		TRYC(nsp_addr_assign(handle, NSP_DEV_ADDR));
+		checked++;
+	}
+
+	// Use ECHO packet for is_ready
 
 	return 0;
 }
@@ -178,11 +187,37 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	uint8_t size, *data;
+	int i;
 
 	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
 
+	TRYC(cmd_s_dev_infos(handle, DI_MODEL));
+	TRYC(cmd_r_dev_infos(handle, &size, &data));
+
+	strncpy(infos->product_name, (char*)data, 10);
+	infos->mask |= INFOS_MAIN_CALC_ID;
+
 	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
 	TRYC(cmd_r_dev_infos(handle, &size, &data));
+
+	i = 36;
+	g_snprintf(infos->os_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
+	infos->mask |= INFOS_OS_VERSION;
+
+	i = 40;
+	g_snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
+	infos->mask |= INFOS_BOOT_VERSION;
+
+	i = 44;
+	g_snprintf(infos->boot2_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
+	infos->mask |= INFOS_BOOT2_VERSION;
+
+	i = 82;
+	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
+	infos->mask |= INFOS_MAIN_CALC_ID;
 
 	TRYC(nsp_session_close(handle));
 	

@@ -62,11 +62,12 @@ int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 {
 	VirtualPacket* pkt;
 
+	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
+
 	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_DEV_INFOS);
 	pkt->data[0] = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
-	ticalcs_info("   request device information (cmd = %02x).", cmd);
 	nsp_vtl_pkt_del(pkt);
 
 	return 0;
@@ -76,12 +77,13 @@ int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
 
+	ticalcs_info("  receiving device information:");
+
 	TRYF(nsp_recv_data(h, pkt));
 
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data + 1, pkt->size);
 
-	ticalcs_info("   received device information (cmd = %02x).", pkt->data[0]);
 	nsp_vtl_pkt_del(pkt);
 
 	return 0;

@@ -224,6 +224,7 @@ typedef enum
 	INFOS_LCD_WIDTH		= (1 << 15),
 	INFOS_LCD_HEIGHT	= (1 << 16),
 	INFOS_BATTERY		= (1 << 17),	
+	INFOS_BOOT2_VERSION	= (1 << 18),
 
 	INFOS_CALC_MODEL	= (1 << 31),
 } InfosMask;
@@ -464,13 +465,14 @@ typedef struct
 {
 	uint32_t	product_number;
 	char		product_name[65];
-	char		main_calc_id[11];
+	char		main_calc_id[32];
 	uint16_t	hw_version;
 	uint8_t		language_id;
 	uint8_t		sub_lang_id;
 	uint16_t	device_type;
-	char		boot_version[5];
-	char		os_version[5];
+	char		boot_version[10];
+	char		boot2_version[10];
+	char		os_version[10];
 	uint64_t	ram_phys;
 	uint64_t	ram_user;
 	uint64_t	ram_free;
