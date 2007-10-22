@@ -82,7 +82,7 @@ int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data)
 	TRYF(nsp_recv_data(h, pkt));
 
 	*data = g_malloc0(pkt->size);
-	memcpy(*data, pkt->data + 1, pkt->size);
+	memcpy(*data, pkt->data + 1, pkt->size - 1);
 
 	nsp_vtl_pkt_del(pkt);
 

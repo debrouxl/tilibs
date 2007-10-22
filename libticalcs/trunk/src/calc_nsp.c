@@ -200,6 +200,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
 	TRYC(cmd_r_dev_infos(handle, &size, &data));
 
+	i = 4;
+	infos->ram_free = GINT32_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_RAM_FREE;
+
 	i = 36;
 	g_snprintf(infos->os_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
