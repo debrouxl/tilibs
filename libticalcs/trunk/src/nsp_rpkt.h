@@ -43,10 +43,6 @@ typedef struct
 	uint8_t		data[DATA_SIZE];
 } RawPacket;
 
-// Exports;
-
-uint8_t	nsp_seq;
-
 // Functions
 
 RawPacket*  raw_pkt_new(uint32_t size);
@@ -54,7 +50,5 @@ void		raw_pkt_del(RawPacket* pkt);
 
 int nsp_send(CalcHandle* cable, RawPacket* pkt);
 int nsp_recv(CalcHandle* cable, RawPacket* pkt);
-
-void nsp_inc_seq(void);
 
 #endif

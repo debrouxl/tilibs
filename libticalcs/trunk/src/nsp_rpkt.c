@@ -86,13 +86,7 @@ static int hexdump(uint8_t *data, uint32_t size)
   return 0;
 }
 
-uint8_t		nsp_seq = 1;
-/*
-void nsp_inc_seq(void)
-{
-	nsp_seq++;
-}
-*/
+uint8_t		nsp_seq;
 
 int nsp_send(CalcHandle* handle, RawPacket* pkt)
 {
@@ -101,7 +95,10 @@ int nsp_send(CalcHandle* handle, RawPacket* pkt)
 	
 	pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
-	if(!nsp_seq) nsp_seq++;
+	if(pkt->src_port != 0x00fe && pkt->src_port != 0x00ff)
+		nsp_seq++;
+	if(!nsp_seq) 
+		nsp_seq++;
 	pkt->seq = nsp_seq;
 
 	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
@@ -157,6 +154,8 @@ int nsp_recv(CalcHandle* handle, RawPacket* pkt)
 	pkt->ack		= buf[13];
 	pkt->seq		= buf[14];
 	pkt->hdr_sum	= buf[15];
+
+	nsp_seq = pkt->seq;
 
 	// Next, follows data
 	if(pkt->data_size)

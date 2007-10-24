@@ -134,6 +134,8 @@ int nsp_session_close(CalcHandle *h)
 
 // Address Request/Assignment
 
+extern uint8_t nsp_seq;
+
 int nsp_addr_request(CalcHandle *h)
 {
 	RawPacket pkt = {0};

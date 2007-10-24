@@ -43,6 +43,9 @@
 // Command wrappers
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
-int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data);
+int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
+
+int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
+int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
 #endif
