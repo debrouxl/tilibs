@@ -114,6 +114,7 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 	TRYF(nsp_recv_data(h, pkt));
 
 	*cmd = pkt->data[0];
+	*size = pkt->size - 1;
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data + 1, pkt->size - 1);
 

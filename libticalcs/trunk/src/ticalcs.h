@@ -290,11 +290,11 @@ typedef struct
 {
 	int		format;
 
-	uint8_t width;
-	uint8_t height;
+	unsigned int width;
+	unsigned int height;
 
-	uint8_t clipped_width;
-	uint8_t clipped_height;
+	unsigned int clipped_width;
+	unsigned int clipped_height;
 } CalcScreenCoord;
 
 /**

@@ -82,8 +82,18 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYC(nsp_session_open(handle, SID_SCREEN_RLE));
 
 	TRYC(cmd_s_screen_rle(handle, 0));
+
 	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	sc->width = sc->clipped_width = (data[8] << 8) | data[9];
+	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
+
 	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	printf("%i bytes\n", size);
+
+	*bitmap = (uint8_t *)g_malloc(sc->width * sc->height / 2);
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;
+	memcpy(*bitmap, data, size/*sc->width * sc->height / 2*/);
 	
 	g_free(data);
 	TRYC(nsp_session_close(handle));
