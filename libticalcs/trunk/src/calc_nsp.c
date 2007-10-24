@@ -63,14 +63,11 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-
 	return 0;
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 {
-
-
 	return 0;
 }
 
@@ -141,8 +138,6 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
-
-
 	return 0;
 }
 
@@ -159,7 +154,18 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
+	uint32_t size;
+	uint8_t cmd, *data;
 
+	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
+
+	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
+
+	strncpy(id, (char*)(data + 84), 28);
+
+	g_free(data);
+	TRYC(nsp_session_close(handle));
 
 	return 0;
 }
@@ -178,9 +184,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 {
-
-
-
 	return 0;
 }
 
@@ -269,7 +272,7 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY | OPS_VERSION | OPS_SCREEN,
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
