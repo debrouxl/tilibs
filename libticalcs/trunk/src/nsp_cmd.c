@@ -73,7 +73,7 @@ int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 	return 0;
 }
 
-int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data)
+int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
 
@@ -81,6 +81,39 @@ int cmd_r_dev_infos(CalcHandle *h,  uint8_t *size, uint8_t **data)
 
 	TRYF(nsp_recv_data(h, pkt));
 
+	*cmd = pkt->data[0];
+	*data = g_malloc0(pkt->size);
+	memcpy(*data, pkt->data + 1, pkt->size - 1);
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
+
+	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_SCREEN_RLE);
+	pkt->data[0] = cmd;
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  receiving RLE screenshot:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	*cmd = pkt->data[0];
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data + 1, pkt->size - 1);
 

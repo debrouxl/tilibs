@@ -76,6 +76,17 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
+	uint32_t size;
+	uint8_t cmd, *data;
+
+	TRYC(nsp_session_open(handle, SID_SCREEN_RLE));
+
+	TRYC(cmd_s_screen_rle(handle, 0));
+	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	
+	g_free(data);
+	TRYC(nsp_session_close(handle));
 
 	return 0;
 }
@@ -186,19 +197,20 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
-	uint8_t size, *data;
+	uint32_t size;
+	uint8_t cmd, *data;
 	int i;
 
 	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
 
 	TRYC(cmd_s_dev_infos(handle, DI_MODEL));
-	TRYC(cmd_r_dev_infos(handle, &size, &data));
+	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(infos->product_name, (char*)data, 10);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 
 	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
-	TRYC(cmd_r_dev_infos(handle, &size, &data));
+	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	i = 4;
 	infos->ram_free = GINT32_FROM_BE(*((uint64_t *)(data + i)));
@@ -223,6 +235,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 
+	g_free(data);
 	TRYC(nsp_session_close(handle));
 	
 	return 0;
@@ -246,7 +259,7 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY | OPS_VERSION ,
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
