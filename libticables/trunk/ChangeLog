@@ -9,8 +9,6 @@ Log:
 	- removed use of reset_ep which (deprecated) and use of usb_reset (handle is no longer valid)
 	- added NSpire packet decompiler
 
-	- move logging code to a subfolder...
-
 - 03/10/2007, version 1.1.1: roms
 	- renamed link_slv into link_usb
 	- added NSpire support

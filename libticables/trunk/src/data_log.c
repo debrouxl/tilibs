@@ -42,6 +42,7 @@
 #include "log_hex.h"
 #include "log_dbus.h"
 #include "log_dusb.h"
+#include "log_nsp.h"
 
 int log_start(CableHandle *h)
 {
