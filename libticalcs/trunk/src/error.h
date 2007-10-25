@@ -72,6 +72,10 @@ typedef enum
 	
 	ERR_CALC_ERROR1 = 350,	// Hand-held returned an error code
 
+// --- 400 to 459 are reserved for hand-held status (NSpire)
+
+	ERR_CALC_ERROR3 = 400,
+
 // ---
 
 } CalcError;

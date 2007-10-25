@@ -37,15 +37,31 @@
 #define DI_MODEL	2
 #define DI_FEXT		3
 
+// DirList command
+#define DL_INIT		0x0d
+#define DL_NEXT		0x0e
+#define DL_DONE		0x0f
+
 // Structures
 // ...
 
 // Command wrappers
+
+int cmd_r_status(CalcHandle *h, uint16_t *status);
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
 int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
 int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
+
+int cmd_s_dir_enum_init(CalcHandle *h, const char *name);
+int cmd_r_dir_enum_init(CalcHandle *h);
+
+int cmd_s_dir_enum_next(CalcHandle *h);
+int cmd_r_dir_enum_next(CalcHandle *h, uint8_t *data_size, char* name, uint32_t *size);
+
+int cmd_s_dir_enum_done(CalcHandle *h);
+int cmd_r_dir_enum_done(CalcHandle *h);
 
 #endif

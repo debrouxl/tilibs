@@ -100,7 +100,72 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 {
-	
+	TreeInfo *ti;
+	int err;
+	GNode *root, *folder = NULL;
+	char fldname[40];
+	char varname[40];
+	uint32_t varsize;
+	char *u1, *u2;
+
+	(*apps) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = APP_NODE_NAME;
+	(*apps)->data = ti;
+
+    (*vars) = g_node_new(NULL);
+	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
+	ti->model = handle->model;
+	ti->type = VAR_NODE_NAME;
+	(*vars)->data = ti;
+
+	root = g_node_new(NULL);
+	g_node_append(*apps, root);
+
+	TRYC(nsp_session_open(handle, SID_FILE_MGMT));
+
+	TRYF(cmd_s_dir_enum_init(handle, "/"));
+	TRYF(cmd_r_dir_enum_init(handle));
+
+	for(;;)
+	{
+		VarEntry *fe = tifiles_ve_create();
+		GNode *node;
+
+		TRYF(cmd_s_dir_enum_next(handle));
+		err = cmd_r_dir_enum_next(handle, NULL, fldname, &varsize);
+
+		if (err == ERR_EOT)
+			break;
+		else if (err != 0)
+			return err;
+
+		printf("varname = <%s>\n", fldname);
+		
+		strcpy(fe->folder, fldname);
+		strcpy(fe->name, fldname);
+		fe->size = 0;
+		fe->type = 0;
+		fe->attr = ATTRB_NONE;
+
+		node = g_node_new(fe);
+		folder = g_node_append(*vars, node);
+
+/*
+		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
+		u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
+			g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
+			g_free(u1); g_free(u2);
+			update_label();
+			*/
+	}
+
+	TRYF(cmd_s_dir_enum_done(handle));
+	TRYF(cmd_r_dir_enum_done(handle));
+
+	TRYC(nsp_session_close(handle));
+
 	return 0;
 }
 

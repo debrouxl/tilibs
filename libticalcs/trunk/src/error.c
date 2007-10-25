@@ -338,6 +338,15 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 
+  case ERR_CALC_ERROR3+0:
+		strcpy(error_msg, _("Msg: hand-held returned an error (not catched)."));
+		strcat(error_msg, "\n");
+		strcat(error_msg,
+		   _
+		   ("Cause: hand-held returned an uncatched error. Please report log."));
+		*message = g_strdup(error_msg);
+    break;
+
 	default:
 		// propagate error code
 	    return number;
