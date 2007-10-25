@@ -32,7 +32,7 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "logging.h"
+#include "../logging.h"
 #include "data_log.h"
 
 #define HEX_FILE	"ticables-log.hex"

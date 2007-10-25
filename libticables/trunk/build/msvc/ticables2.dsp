@@ -202,35 +202,35 @@ SOURCE=..\..\src\type2str.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\src\data_log.c
+SOURCE=..\..\src\loggers\data_log.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hex2dbus.c
+SOURCE=..\..\src\loggers\hex2dbus.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hex2dusb.c
+SOURCE=..\..\src\loggers\hex2dusb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\hex2nsp.c
+SOURCE=..\..\src\loggers\hex2nsp.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\log_dbus.c
+SOURCE=..\..\src\loggers\log_dbus.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\log_dusb.c
+SOURCE=..\..\src\loggers\log_dusb.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\log_hex.c
+SOURCE=..\..\src\loggers\log_hex.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\log_nsp.c
+SOURCE=..\..\src\loggers\log_nsp.c
 # End Source File
 # End Group
 # Begin Source File

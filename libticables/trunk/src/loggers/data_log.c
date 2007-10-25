@@ -34,14 +34,15 @@
 #include <stdarg.h>
 #include <string.h>
 
-#include "stdints1.h"
-#include "gettext.h"
-#include "logging.h"
+#include "../stdints1.h"
+#include "../gettext.h"
+#include "../logging.h"
 #include "data_log.h"
 
 #include "log_hex.h"
 #include "log_dbus.h"
 #include "log_dusb.h"
+#include "log_nsp.h"
 
 int log_start(CableHandle *h)
 {
