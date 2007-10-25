@@ -214,6 +214,10 @@ SOURCE=..\..\src\hex2dusb.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\hex2nsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\log_dbus.c
 # End Source File
 # Begin Source File
@@ -223,6 +227,10 @@ SOURCE=..\..\src\log_dusb.c
 # Begin Source File
 
 SOURCE=..\..\src\log_hex.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\log_nsp.c
 # End Source File
 # End Group
 # Begin Source File
