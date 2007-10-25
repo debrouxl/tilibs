@@ -26,7 +26,7 @@
 # include <config.h>
 #endif
 
-#include "../ticables.h"
+#include "ticables.h"
 
 // Constants
 

@@ -30,9 +30,9 @@
 #include <stdio.h>
 #include <glib.h>
 
-#include "../logging.h"
+#include "logging.h"
 #include "data_log.h"
-#include "../ticables.h"
+#include "ticables.h"
 
 #define HEX_FILE  "ticables-log.hex"
 

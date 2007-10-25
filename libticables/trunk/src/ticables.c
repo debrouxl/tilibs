@@ -45,7 +45,7 @@
 #include "logging.h"
 #include "error.h"
 #include "link_xxx.h"
-#include "./loggers/data_log.h"
+#include "data_log.h"
 
 /*****************/
 /* Internal data */

@@ -20,7 +20,7 @@
  */
 
 /* 
-	D-USB logging (taken from my TI link guide (hex2nsp program).
+	D-USB logging (taken from my TI link guide (hex2dusb program).
 */
 
 #ifdef HAVE_CONFIG_H
@@ -32,16 +32,16 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "../logging.h"
+#include "logging.h"
 #include "data_log.h"
 
 #define HEX_FILE	"ticables-log.hex"
-#define LOG_FILE	"ticables-nsp.pkt"
+#define LOG_FILE	"ticables-dusb.pkt"
 
 static char *ifn = NULL;
 static char *ofn = NULL;
 
-int log_nsp_start(void)
+int log_dusb_start(void)
 {
   // build filenames
 #ifdef __WIN32__
@@ -55,14 +55,14 @@ int log_nsp_start(void)
   	return 0;
 }
 
-int log_nsp_1(int dir, uint8_t data)
+int log_dusb_1(int dir, uint8_t data)
 {
   	return 0;
 }
 
-extern int nsp_decomp(const char *filename);
+extern int dusb_decomp(const char *filename);
 
-int log_nsp_stop(void)
+int log_dusb_stop(void)
 {
   	char *r;
 
@@ -72,7 +72,7 @@ int log_nsp_stop(void)
 	r = strrchr(ifn, '.');
 	if(r) *r = '\0';
 
-	nsp_decomp(ifn);
+	dusb_decomp(ifn);
 	strcat(ifn, ".pkt");
 
 	g_unlink(ofn);

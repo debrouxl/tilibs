@@ -25,9 +25,9 @@
 #include <stdlib.h>
 
 #include "ticables.h"
+#include "data_log.h"
 #include "error.h"
 #include "logging.h"
-#include "./loggers/data_log.h"
 
 /**
  * ticables_cable_open:
