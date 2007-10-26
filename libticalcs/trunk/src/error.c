@@ -237,7 +237,7 @@ case ERR_OUT_OF_MEMORY:
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: hand-held returned an uncatched error. Please report log."));
+		   ("Cause: hand-held returned an uncaught error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR1+1:
@@ -270,11 +270,11 @@ case ERR_OUT_OF_MEMORY:
     break;
 
   case ERR_CALC_ERROR2:	// must be synch'ed with dusb_cmd.c (static uint16_t usb_errors[])
-		strcpy(error_msg, _("Msg: hand-held returned an error (not catched)."));
+		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: hand-held returned an uncatched error. Please report log."));
+		   ("Cause: hand-held returned an uncaught error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR2+1:
@@ -339,11 +339,11 @@ case ERR_OUT_OF_MEMORY:
     break;
 
   case ERR_CALC_ERROR3+0:
-		strcpy(error_msg, _("Msg: hand-held returned an error (not catched)."));
+		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		   _
-		   ("Cause: hand-held returned an uncatched error. Please report log."));
+		   ("Cause: hand-held returned an uncaught error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
 
