@@ -59,7 +59,7 @@ int cmd_s_dir_enum_init(CalcHandle *h, const char *name);
 int cmd_r_dir_enum_init(CalcHandle *h);
 
 int cmd_s_dir_enum_next(CalcHandle *h);
-int cmd_r_dir_enum_next(CalcHandle *h, uint8_t *data_size, char* name, uint32_t *size);
+int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type);
 
 int cmd_s_dir_enum_done(CalcHandle *h);
 int cmd_r_dir_enum_done(CalcHandle *h);

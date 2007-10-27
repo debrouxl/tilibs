@@ -186,34 +186,38 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 	return 0;
 }
 
-int cmd_r_dir_enum_next(CalcHandle *h, uint8_t *data_size, char* name, uint32_t *size)
+int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
-	uint16_t value;
-	int i;
+	uint16_t answer;
+	uint8_t data_size;
+	uint32_t date;
+	int o;
 
 	ticalcs_info("  next directory entry:");
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	value = (pkt->data[0] << 8) | pkt->data[1];
-	if(value == 0xff11)
+	answer = (pkt->data[0] << 8) | pkt->data[1];
+	if(answer == 0xff11)
 	{
 		nsp_vtl_pkt_del(pkt);
 		return ERR_EOT;
 	}
-	else if((value & 0xff) == 0xff)
+	else if((answer & 0xff) == 0xff)
 		return ERR_CALC_ERROR3 + err_code(pkt);
-	else if(value != 0x1000)
+	else if(answer != 0x1000)
 		return ERR_INVALID_PACKET;
 
-	if(data_size)
-		*data_size = pkt->data[2] + 3;
+	data_size = pkt->data[2] + 3;
 	strcpy(name, pkt->data + 3);
-	for(i = 4; pkt->data[i]; i++); i++;
+	o = data_size - 10;
+	
 	if(size)
-		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + i)));
-	printf("dir flag = %i\n", pkt->data[i+8]);
+		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o)));
+	date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o + 4)));
+	if(type)
+		*type = pkt->data[o + 8];
 
 	nsp_vtl_pkt_del(pkt);
 
