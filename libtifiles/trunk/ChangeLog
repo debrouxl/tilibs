@@ -6,6 +6,8 @@ Log:
 	- adding NSpire support...
 	- TiConnect compresses application in TiGroup; does (almost) the same
 
+	- typesXX.c: are icon & desc fields swapped (icon should not be localized)
+
 - 18/09/2007, version 1.0.8: roms
 	- added file extension for GRP variables
 

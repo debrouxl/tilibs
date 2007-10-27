@@ -40,6 +40,7 @@ static const char GROUP_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g", 
 	"89g", "89g", "92g", "9Xg", "V2g", "8Xg", "89g",
+	"???",
 };
 
 static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] = 
@@ -47,6 +48,7 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b", 
 	"89g", "89g", "92b", "9Xg", "V2g", "8Xg", "89g",
+	"???",
 };
 
 static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] = 
@@ -54,6 +56,7 @@ static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73k", "???", "???", "8Xk", "8Xk", "???", "???",
 	"89k", "89k", "???", "9Xk", "V2k", "8Xk", "89k",
+	"???",
 };
 
 static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] = 
@@ -61,6 +64,7 @@ static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73u", "???", "???", "8Xu", "8Xu", "???", "???",
 	"89u", "89u", "???", "9Xu", "V2u", "8Xu", "89u",
+	"tno",
 };
 
 static const char CERTIF_FILE_EXT[CALC_MAX + 1][4] = 
@@ -68,6 +72,7 @@ static const char CERTIF_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73q", "???", "???", "8Xq", "8Xq", "???", "???",
 	"89q", "89q", "???", "9Xq", "V2q", "8Xq", "89q",
+	"???",
 };
 
 /*******************/
@@ -252,6 +257,8 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_os(CalcModel model)
     return "9Xu";
   case CALC_V200:
     return "V2u";
+  case CALC_NSPIRE:
+	return "tno";
   default:
     tifiles_error("tifiles_fext_of_flash_os: invalid calc_type argument.");
     break;
@@ -432,6 +439,34 @@ static int tifiles_file_has_tig_header(const char *filename)
 	return 0;
 }
 
+#define TNO_SIGNATURE	"TI-Nspire.tno "
+
+TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
+{
+	FILE *f;
+	char str[128];
+	char *e = tifiles_fext_get(filename);
+
+	if (!strcmp(e, ""))
+	  return 0;
+
+	if(g_ascii_strcasecmp(e, "tno"))
+		return 0;
+
+	f = gfopen(filename, "rb");
+	if(f == NULL)
+		return 0;
+
+	fread_n_chars(f, 14, str);
+	if(!strcmp(str, TNO_SIGNATURE)) 
+	{
+		fclose(f);
+		return !0;
+	}
+
+	return 0;
+}
+
 /**************/
 /* File types */
 /**************/
@@ -481,6 +516,19 @@ TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
 
 	if(tifiles_file_has_tig_header(filename))
 		return !0;
+
+	if(tifiles_file_has_tno_header(filename))
+		return !0;
+
+	{
+		char *e = tifiles_fext_get(filename);
+
+		if (!strcmp(e, ""))
+			return 0;
+
+		if(!g_ascii_strcasecmp(e, "tns"))
+			return !0;
+	}
 
 	return 0;
 }
@@ -580,6 +628,8 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
   return 0;
 }
 
+TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename);
+
 /**
  * tifiles_file_is_os:
  * @filename: a filename as string.
@@ -600,6 +650,9 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
     return 0;
 
   if(tifiles_file_is_tib(filename))
+	  return !0;
+
+  if(tifiles_file_is_tno(filename))
 	  return !0;
 
   for (i = 1; i < CALC_MAX + 1; i++) 
@@ -681,6 +734,11 @@ TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
 TIEXPORT2 int TICALL tifiles_file_is_tig(const char *filename)
 {
 	return tifiles_file_is_tigroup(filename);
+}
+
+TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
+{
+	return tifiles_file_has_tno_header(filename);
 }
 
 /**
@@ -848,7 +906,7 @@ TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
 {
   char *ext = tifiles_fext_get(filename);
   int type = CALC_NONE;
-  char str[3];
+  char str[4];
 
   if (!strcmp(ext, ""))
     return CALC_NONE;
@@ -878,6 +936,8 @@ TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
     type = CALC_V200;
   //else if (!g_ascii_strcasecmp(str, "tib"))
     //type = CALC_TI89;	// consider .tib as TI89
+  else if (!g_ascii_strcasecmp(str, "tn"))
+	  type = CALC_NSPIRE;
   else
     type = CALC_NONE;
 
@@ -926,6 +986,9 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 
   if (!g_ascii_strcasecmp(ext, "tib"))
     return _("OS upgrade");
+
+  if(!g_ascii_strcasecmp(ext, "tno"))
+	return _("OS upgrade");
 
   if (!tifiles_file_is_ti(filename))
     return "";
@@ -978,6 +1041,8 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
   case CALC_V200:
     return v200_byte2desc(v200_fext2byte(ext));
 #endif
+  case CALC_NSPIRE:
+	  return nsp_byte2desc(nsp_fext2byte(ext));
   case CALC_NONE:
   default:
     return "";
@@ -1004,6 +1069,9 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
     return "";
 
   if (!g_ascii_strcasecmp(ext, "tib"))
+    return "OS upgrade";
+
+  if (!g_ascii_strcasecmp(ext, "tno"))
     return "OS upgrade";
 
   if (!tifiles_file_is_ti(filename))
@@ -1057,6 +1125,8 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
   case CALC_V200:
     return v200_byte2icon(v200_fext2byte(ext));
 #endif
+  case CALC_NSPIRE:
+	  return nsp_byte2icon(nsp_fext2byte(ext));
   case CALC_NONE:
   default:
     return "";

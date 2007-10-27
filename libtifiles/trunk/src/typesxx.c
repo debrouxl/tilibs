@@ -85,6 +85,8 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
   case CALC_V200:
     return v200_byte2type(data);
     break;
+  case CALC_NSPIRE:
+	return nsp_byte2type(data);
 #endif
   default:
 	  tifiles_error("tifiles_vartype2string: invalid calc_type argument.");
@@ -143,6 +145,8 @@ case CALC_TI89T_USB:
   case CALC_V200:
     return v200_type2byte(s);
     break;
+  case CALC_NSPIRE:
+	return nsp_type2byte(s);
 #endif
   default:
     tifiles_error("tifiles_string2vartype: invalid calc_type argument.");
@@ -201,6 +205,9 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
   case CALC_V200:
     return v200_byte2fext(data);
     break;
+  case CALC_NSPIRE:
+	return nsp_byte2fext(data);
+    break;
 #endif
   default:
     tifiles_error("tifiles_vartype2file: invalid calc_type argument.");
@@ -258,6 +265,9 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
     break;
   case CALC_V200:
     return v200_fext2byte(s);
+    break;
+  case CALC_NSPIRE:
+    return nsp_fext2byte(s);
     break;
 #endif
   default:
@@ -318,6 +328,9 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
   case CALC_V200:
     return v200_byte2desc(vartype);
     break;
+  case CALC_NSPIRE:
+    return nsp_byte2desc(vartype);
+    break;
 #endif
   default:
     tifiles_error("tifiles_vartype2desc: invalid calc_type argument.");
@@ -377,6 +390,9 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
   case CALC_V200:
     return v200_byte2icon(vartype);
     break;
+  case CALC_NSPIRE:
+	return nsp_byte2icon(vartype);
+    break;
 #endif
   default:
     tifiles_error("tifiles_vartype2icon: invalid calc_type argument.");
@@ -393,42 +409,47 @@ static const char GROUP_FILE_EXT[CALC_MAX + 1][4] =
 {
 	"XxX", 
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g", 
-	"89g", "89g", "92g", "9Xg", "v2g",
+	"89g", "89g", "92g", "9Xg", "v2g", "???",
 };
 
 static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b", 
-	"89g", "89g", "92b", "9Xg", "v2g",
+	"89g", "89g", "92b", "9Xg", "v2g", 
+	"???",
 };
 
 static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73k", "???", "???", "8Xk", "8Xk", "???", "???",
-	"89k", "89k", "???", "9Xk", "v2k",
+	"89k", "89k", "???", "9Xk", "v2k", 
+	"???",
 };
 
 static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73u", "???", "???", "8Xu", "8Xu", "???", "???",
-	"89u", "89u", "???", "9Xu", "v2u",
+	"89u", "89u", "???", "9Xu", "v2u", 
+	"tno",
 };
 
 static const int TIXX_DIR[CALC_MAX + 1] = 
 {
 	-1, 
 	TI73_DIR, -1, TI83_DIR, TI83p_DIR, TI84p_DIR, -1, TI86_DIR,
-	TI89_DIR, TI89_DIR, TI92_DIR, V200_DIR,
+	TI89_DIR, TI89_DIR, TI92_DIR, V200_DIR, 
+	NSP_DIR,
 };
 
 static const int TIXX_FLASH[CALC_MAX + 1] = 
 {
 	-1, 
 	TI73_APPL, -1, -1, TI83p_APPL, TI84p_APPL, -1, -1,
-	TI89_APPL, TI89t_APPL, -1, TI92p_APPL, V200_APPL,
+	TI89_APPL, TI89t_APPL, -1, TI92p_APPL, V200_APPL, 
+	-1,
 };
 
 static const int TIXX_IDLIST[CALC_MAX + 1] = 
@@ -436,6 +457,7 @@ static const int TIXX_IDLIST[CALC_MAX + 1] =
 	-1, 
 	TI73_IDLIST, -1, -1, TI83p_IDLIST, TI84p_IDLIST, -1, -1,
 	TI89_IDLIST, TI89t_IDLIST, -1, TI92p_IDLIST, V200_IDLIST,
+	-1,
 };
 
 /**
@@ -476,6 +498,8 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
     return TI92p_DIR;
   case CALC_V200:
     return V200_DIR;
+  case CALC_NSPIRE:
+	return NSP_DIR;
   default:
     tifiles_error("tifiles_folder_type: invalid calc_type argument.");
     break;
@@ -514,7 +538,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
     return -1;
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return TI89_APPL;
   case CALC_TI92:
     return -1;
@@ -522,6 +546,8 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
     return TI92p_APPL;
   case CALC_V200:
     return V200_APPL;
+  case CALC_NSPIRE:
+	return -1;
   default:
     tifiles_error("tifiles_flash_type: invalid calc_type argument.");
     break;
@@ -568,6 +594,8 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
     return TI92p_IDLIST;
   case CALC_V200:
     return V200_IDLIST;
+  case CALC_NSPIRE:
+    return -1;
   default:
     tifiles_error("tifiles_idlist_type: invalid calc_type argument.");
     break;
@@ -621,6 +649,8 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
     return "**TI92P*";
   case CALC_V200:
     return "**TI92P*";
+  case CALC_NSPIRE:
+	return "";
   default:
     tifiles_error("tifiles_calctype2signature: invalid calc_type argument.");
     break;

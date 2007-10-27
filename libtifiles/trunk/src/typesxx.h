@@ -34,5 +34,6 @@
 #include "types92.h"
 #include "types92p.h"
 #include "typesv2.h"
+#include "typesnsp.h"
 
 #endif

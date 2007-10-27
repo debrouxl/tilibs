@@ -80,6 +80,8 @@ TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
 		return !0;
 	else if(tifiles_calc_is_ti9x(model) && tifiles_calc_is_ti9x(ref))
 		return !0;
+	else if((model == CALC_NSPIRE) && (ref == CALC_NSPIRE))
+		return !0;
 
 	return 0;
 }
@@ -96,7 +98,8 @@ TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
 {
   return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
 	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
-	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB));
+	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
+	  (calc_type == CALC_NSPIRE));
 }
 
 /**
@@ -113,7 +116,8 @@ TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
 	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
 	  (calc_type == CALC_TI89T) || (calc_type == CALC_TI89) || 
 	  (calc_type == CALC_TI92P) ||
-	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB));
+	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
+	  (calc_type == CALC_NSPIRE));
 }
 
 /**
@@ -228,13 +232,13 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 	  strcat(full_name, varname);
     }
 	else
+	{
 		strcpy(full_name, varname);
+	}
   } 
   else
   {
 	  strcpy(full_name, varname);
-	  //strncpy(full_name, varname, 8);
-	  //full_name[8] = '\0';
   }
 
   return full_name;

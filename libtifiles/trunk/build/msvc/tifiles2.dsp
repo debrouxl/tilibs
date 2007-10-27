@@ -138,6 +138,10 @@ SOURCE=..\..\src\types92p.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\typesnsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\typesv2.c
 # End Source File
 # End Group
