@@ -134,6 +134,14 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 		case CALC_V200: return ticonv_utf16_to_ti9x(utf16, ti); break;
 		case CALC_TI84P_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 		case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
+		case CALC_NSPIRE: 
+			{
+			char *tmp = ticonv_utf16_to_utf8(utf16);
+			strcpy(ti, tmp);
+			g_free(tmp);
+			return ti;
+			}
+			break;
 		default: return strcpy(ti, "");
 	}
 
@@ -188,6 +196,14 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 		case CALC_V200: return ticonv_ti9x_to_utf16(ti, utf16); break;
 		case CALC_TI84P_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 		case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
+		case CALC_NSPIRE: 
+			{
+			unsigned short *tmp = ticonv_utf8_to_utf16(ti);
+			memcpy(utf16, tmp, 2*ticonv_utf16_strlen(tmp));
+			g_free(tmp);
+			return utf16;
+			}
+			break;
 		default: return memcpy(utf16, "\0", 2);
 	}
 

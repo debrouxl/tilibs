@@ -2,8 +2,8 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
-- 04/10/2007, version 1.0.6: roms
-	- added NSpire constant
+- 04/10/2007, version 1.1.0: roms
+	- implemented NSpire support (temporary; NSpire varname encoding has not been determined yet).
 
 - 18/09/2007, version 1.0.5: roms
 	- moved 'untokenization' from vartype into another function (TI86)
