@@ -174,6 +174,10 @@ SOURCE=..\..\src\files9X.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\filesnsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\filesxx.c
 # End Source File
 # Begin Source File
