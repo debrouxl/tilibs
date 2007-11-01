@@ -19,8 +19,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __TIFILES_FILES9X_H__
-#define __TIFILES_FILES9X_H__
+#ifndef __TIFILES_FILES_9X_H__
+#define __TIFILES_FILES_9X_H__
 
 #include "stdints2.h"
 #include "tifiles.h"

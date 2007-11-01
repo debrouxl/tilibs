@@ -155,13 +155,15 @@ typedef struct
  * - entries must be NULL-terminated. Parsing is based on this property.
  * - num_entries must be exact. Counting relies on this.
  *
+ * Note: NSpire uses only one entry (no grouping support).
+ *
  **/
 typedef struct 
 {
   CalcModel		model;
 
   char			default_folder[FLDNAME_MAX];	// TI9x only
-  char			comment[43];	// Ti8x: 42 max, Ti9x: 40 max
+  char			comment[43];					// Ti8x: 42 max, Ti9x: 40 max
 
   int			num_entries;
   VarEntry**	entries;
