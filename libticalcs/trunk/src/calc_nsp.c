@@ -196,7 +196,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			strcpy(ve->name, varname);
 
 			node = g_node_new(ve);
-			folder = g_node_append(folder, node);
+			g_node_append(folder, node);
 
 			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
 				ve->name, 
