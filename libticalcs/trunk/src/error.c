@@ -346,6 +346,30 @@ case ERR_OUT_OF_MEMORY:
 		   ("Cause: hand-held returned an uncaught error. Please report log."));
 		*message = g_strdup(error_msg);
     break;
+	case ERR_CALC_ERROR3+1:
+	    strcpy(error_msg, _("Msg: the directory does not exist."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+2:
+	    strcpy(error_msg, _("Msg: the directory name is invalid."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+3:
+	    strcpy(error_msg, _("Msg: we are not currently listing a directory."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+4:
+	    strcpy(error_msg, _("Msg: no more files to list."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+5:
+	    strcpy(error_msg, _("Msg: the file name is invalid."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+6:
+	    strcpy(error_msg, _("Msg: no file extension."));
+		*message = g_strdup(error_msg);
+    break;
 
 	default:
 		// propagate error code
