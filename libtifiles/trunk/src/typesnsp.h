@@ -26,8 +26,8 @@
 
 #define NSP_MAXTYPES 2
 
-#define NSP_DIR		0x00
-#define NSP_TNS		0x01
+#define NSP_TNS		0x00
+#define NSP_DIR		0x01
 
 // libtifiles: for internal use only, not exported !
 
