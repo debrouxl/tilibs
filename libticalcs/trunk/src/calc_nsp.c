@@ -73,7 +73,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint32_t size, size2;
+	uint32_t size;
 	uint8_t cmd, *data;
 
 	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));

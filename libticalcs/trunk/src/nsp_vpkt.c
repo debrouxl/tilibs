@@ -78,7 +78,7 @@ VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t sr
 	vtl->dst_addr = dst_addr;
 	vtl->dst_port = dst_port;
 	vtl->size = size;
-	vtl->data = g_malloc0(size);
+	vtl->data = g_malloc0(size+1);
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 
@@ -255,6 +255,7 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 
 	q = (vtl->size - offset) / (DATA_SIZE-1);
 	r = (vtl->size - offset) % (DATA_SIZE-1);
+	if(!vtl->size) r = 1;
 
 	for(i = 1; i <= q; i++)
 	{
