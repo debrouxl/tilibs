@@ -32,21 +32,35 @@
 #define SID_FILE_MGMT		0x4060
 #define SID_OS_INSTALL		0x4080
 
+// Errors
+#define ERR_OK					0xff00
+#define ERR_DIR_UNKNOWN			0xff0a
+#define ERR_DIRNAME_INVALID		0xff0f
+#define ERR_LIST_FAILED			0xff10
+#define ERR_NO_MORE_TO_LIST		0xff11
+#define ERR_FILENAME_INVALID	0xff14
+#define ERR_NO_FILE_EXTENSION	0xff15
+
 // Device Information IDs
 #define DI_VERSION	1
 #define DI_MODEL	2
 #define DI_FEXT		3
 
-// DirList command
-#define DL_INIT		0x0d
-#define DL_NEXT		0x0e
-#define DL_DONE		0x0f
+// File Management commands
+#define FM_PUT_FILE		0x03
+#define FM_OK			0x04
+#define FM_CONTENTS		0x05
+#define FM_GET_FILE		0x07
+#define FM_DIRLIST_INIT	0x0d
+#define FM_DIRLIST_NEXT	0x0e
+#define FM_DIRLIST_DONE	0x0f
 
 // Structures
 // ...
 
 // Command wrappers
 
+int cmd_s_status(CalcHandle *h, uint16_t status);
 int cmd_r_status(CalcHandle *h, uint16_t *status);
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
@@ -63,5 +77,16 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 
 int cmd_s_dir_enum_done(CalcHandle *h);
 int cmd_r_dir_enum_done(CalcHandle *h);
+
+int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size);
+
+int cmd_s_get_file(CalcHandle *h, const char *name);
+int cmd_r_get_file(CalcHandle *h, uint32_t *size);
+
+int cmd_s_file_ok(CalcHandle *h);
+int cmd_r_file_ok(CalcHandle *h);
+
+int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data);
+int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data);
 
 #endif

@@ -38,7 +38,7 @@
 /////////////----------------
 
 static uint16_t usb_errors[] = { 
-	0xff0a, 0xff0f, 0xff10, 0xff11
+	0xff0a, 0xff0f, 0xff10, 0xff11, 0xff14, 0xff15,
 };
 
 static int err_code(VirtualPacket *pkt)
@@ -56,6 +56,39 @@ static int err_code(VirtualPacket *pkt)
 }
 
 /////////////----------------
+
+static int put_str(char *dst, const char *src)
+{
+	int i, j;
+
+	for(i = 0; i < (int)strlen(src); i++)
+		dst[i] = src[i];
+	dst[i++] = '\0';
+
+	if(i < 9)
+	{
+		for(j = i; j < 9; j++)
+			dst[j] = '\0';
+	}
+
+	return j;
+}
+
+int cmd_s_status(CalcHandle *h, uint16_t status)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  sending status (%04x):", status);
+
+	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, nsp_dst_port);
+	pkt->data[0] = MSB(status);
+	pkt->data[1] = LSB(status);
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
 
 int cmd_r_status(CalcHandle *h, uint16_t *status)
 {
@@ -148,18 +181,14 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
-	int i;
 	uint8_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
 	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = DL_INIT;
-	strcpy(pkt->data + 1, name);
-	if(strlen(name) < 8)
-		for(i = strlen(name); i < 8; i++)
-			pkt->data[i+1] = '\0';
-
+	pkt->data[0] = FM_DIRLIST_INIT;
+	put_str(pkt->data + 1, name);
+	
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
 
@@ -178,7 +207,7 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 	ticalcs_info("  requesting next directory entry:");
 
 	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = DL_NEXT;
+	pkt->data[0] = FM_DIRLIST_NEXT;
 
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
@@ -231,7 +260,7 @@ int cmd_s_dir_enum_done(CalcHandle *h)
 	ticalcs_info("  closing directory listing:");
 
 	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = DL_DONE;
+	pkt->data[0] = FM_DIRLIST_DONE;
 
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
@@ -244,3 +273,128 @@ int cmd_r_dir_enum_done(CalcHandle *h)
 	return cmd_r_status(h, NULL);
 }
 
+int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
+{
+	VirtualPacket* pkt;
+	int o;
+
+	ticalcs_info("  sending variable:");
+
+	pkt = nsp_vtl_pkt_new_ex(7 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->data[0] = FM_PUT_FILE;
+	pkt->data[1] = 0x01;
+	o = put_str(pkt->data + 2, name);
+	pkt->data[o+0] = MSB(MSW(size));
+	pkt->data[o+1] = LSB(MSW(size));
+	pkt->data[o+2] = MSB(LSW(size));
+	pkt->data[o+3] = LSB(LSW(size));
+
+	TRYF(nsp_send_data(h, pkt));
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_s_get_file(CalcHandle *h, const char *name)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  requesting variable:");
+
+	pkt = nsp_vtl_pkt_new_ex(3 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->data[0] = FM_GET_FILE;
+	pkt->data[1] = 0x01;
+	put_str(pkt->data + 2, name);
+
+	TRYF(nsp_send_data(h, pkt));
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_get_file(CalcHandle *h, uint32_t *size)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  file size:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	if(pkt->data[0] != 0x03)
+	{
+		nsp_vtl_pkt_del(pkt);
+		return ERR_INVALID_PACKET;
+	}
+	
+	if(size)
+		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 12)));
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_s_file_ok(CalcHandle *h)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  sending file contents:");
+
+	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->data[0] = FM_OK;
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_file_ok(CalcHandle *h)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  file status:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	if(pkt->data[0] != FM_OK)
+	{
+		nsp_vtl_pkt_del(pkt);
+		return ERR_INVALID_PACKET;
+	}
+
+	return 0;
+}
+
+int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  sending file contents:");
+
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->data[0] = FM_CONTENTS;
+	memcpy(pkt->data + 1, data, size);
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}
+
+int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  receiving file contents:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	*size = pkt->size - 1;
+	*data = g_malloc0(pkt->size);
+	memcpy(*data, pkt->data + 1, pkt->size - 1);
+
+	nsp_vtl_pkt_del(pkt);
+
+	return 0;
+}

@@ -51,8 +51,8 @@ static int		is_ready	(CalcHandle* handle)
 	// Init once
 	if(!checked)
 	{
-		TRYC(nsp_addr_request(handle));
-		TRYC(nsp_addr_assign(handle, NSP_DEV_ADDR));
+		TRYF(nsp_addr_request(handle));
+		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 		checked++;
 	}
 
@@ -76,15 +76,15 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	uint32_t size;
 	uint8_t cmd, *data;
 
-	TRYC(nsp_session_open(handle, SID_SCREEN_RLE));
+	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
 
-	TRYC(cmd_s_screen_rle(handle, 0));
+	TRYF(cmd_s_screen_rle(handle, 0));
 
-	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 	sc->width = sc->clipped_width = (data[8] << 8) | data[9];
 	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
 
-	TRYC(cmd_r_screen_rle(handle, &cmd, &size, &data));
+	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 	printf("%i bytes\n", size);
 
 	*bitmap = (uint8_t *)g_malloc(sc->width * sc->height / 2);
@@ -93,7 +93,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	memcpy(*bitmap, data, size/*sc->width * sc->height / 2*/);
 	
 	g_free(data);
-	TRYC(nsp_session_close(handle));
+	TRYF(nsp_session_close(handle));
 
 	return 0;
 }
@@ -123,7 +123,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
-	TRYC(nsp_session_open(handle, SID_FILE_MGMT));
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	TRYF(cmd_s_dir_enum_init(handle, "/"));
 	TRYF(cmd_r_dir_enum_init(handle));
@@ -140,8 +140,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			break;
 		else if (err != 0)
 			return err;
-
-		printf("varname = <%s>\n", varname);
 		
 		strcpy(fe->folder, varname);
 		strcpy(fe->name, varname);
@@ -190,7 +188,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ext = tifiles_fext_get(varname);
 			strcpy(ve->folder, folder_name);
 			ve->size = varsize;			
-			ve->type = tifiles_fext2vartype(CALC_NSPIRE, ext);
+			ve->type = tifiles_fext2vartype(handle->model, ext);
 			ve->attr = ATTRB_NONE;
 			if(ext) *(ext-1) = '\0';
 			strcpy(ve->name, varname);
@@ -215,7 +213,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		TRYF(cmd_r_dir_enum_done(handle));
 	}	
 
-	TRYC(nsp_session_close(handle));
+	TRYF(nsp_session_close(handle));
 
 	return 0;
 }
@@ -234,6 +232,43 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
+	char *path;
+	uint8_t *data;
+	VarEntry *ve;
+	char *utf8;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
+
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	path = g_strconcat("/", vr->folder, "/", vr->name, ".", 
+		tifiles_vartype2fext(handle->model, vr->type), NULL);
+	printf("<<%s>>\n", path);
+	TRYF(cmd_s_get_file(handle, path));
+	TRYF(cmd_r_get_file(handle, &(vr->size)));
+
+	TRYF(cmd_s_file_ok(handle));
+	TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
+	TRYF(cmd_s_status(handle, ERR_OK));
+
+	content->model = handle->model;
+	strcpy(content->comment, tifiles_comment_set_single());
+    content->num_entries = 1;
+
+    content->entries = tifiles_ve_create_array(1);	
+    ve = content->entries[0] = tifiles_ve_create();
+    memcpy(ve, vr, sizeof(VarEntry));
+
+	ve->data = tifiles_ve_alloc_data(ve->size);
+	memcpy(ve->data, data, ve->size);
+	g_free(data);
+
+	TRYF(nsp_session_close(handle));
+	g_free(path);
+
 	return 0;
 }
 
@@ -273,15 +308,15 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	uint32_t size;
 	uint8_t cmd, *data;
 
-	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
+	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
-	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(id, (char*)(data + 84), 28);
 
 	g_free(data);
-	TRYC(nsp_session_close(handle));
+	TRYF(nsp_session_close(handle));
 
 	return 0;
 }
@@ -330,16 +365,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	uint8_t cmd, *data;
 	int i;
 
-	TRYC(nsp_session_open(handle, SID_DEV_INFOS));
+	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYC(cmd_s_dev_infos(handle, DI_MODEL));
-	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(cmd_s_dev_infos(handle, DI_MODEL));
+	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(infos->product_name, (char*)data, 10);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 
-	TRYC(cmd_s_dev_infos(handle, DI_VERSION));
-	TRYC(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	i = 4;
 	infos->ram_free = GINT32_FROM_BE(*((uint64_t *)(data + i)));
@@ -365,7 +400,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_MAIN_CALC_ID;
 
 	g_free(data);
-	TRYC(nsp_session_close(handle));
+	TRYF(nsp_session_close(handle));
 	
 	return 0;
 }
@@ -388,7 +423,7 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST,
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
