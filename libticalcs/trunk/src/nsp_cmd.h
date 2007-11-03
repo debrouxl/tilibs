@@ -33,35 +33,39 @@
 #define SID_OS_INSTALL		0x4080
 
 // Errors
-#define ERR_OK					0xff00
-#define ERR_DIR_UNKNOWN			0xff0a
-#define ERR_DIRNAME_INVALID		0xff0f
-#define ERR_LIST_FAILED			0xff10
-#define ERR_NO_MORE_TO_LIST		0xff11
-#define ERR_FILENAME_INVALID	0xff14
-#define ERR_NO_FILE_EXTENSION	0xff15
+#define ERR_OK					0x00
+#define ERR_DIR_UNKNOWN			0x0a
+#define ERR_DIRNAME_INVALID		0x0f
+#define ERR_LIST_FAILED			0x10
+#define ERR_NO_MORE_TO_LIST		0x11
+#define ERR_FILENAME_INVALID	0x14
+#define ERR_NO_FILE_EXTENSION	0x15
 
-// Device Information IDs
-#define DI_VERSION	1
-#define DI_MODEL	2
-#define DI_FEXT		3
+// Status command
+#define CMD_STATUS		0xff
+
+// Device Information command
+#define CMD_DI_VERSION	0x01
+#define CMD_DI_MODEL	0x02
+#define CMD_DI_FEXT		0x03
 
 // File Management commands
-#define FM_PUT_FILE		0x03
-#define FM_OK			0x04
-#define FM_CONTENTS		0x05
-#define FM_GET_FILE		0x07
-#define FM_DIRLIST_INIT	0x0d
-#define FM_DIRLIST_NEXT	0x0e
-#define FM_DIRLIST_DONE	0x0f
+#define CMD_FM_PUT_FILE		0x03
+#define CMD_FM_OK			0x04
+#define CMD_FM_CONTENTS		0x05
+#define CMD_FM_GET_FILE		0x07
+#define CMD_FM_DIRLIST_INIT	0x0d
+#define CMD_FM_DIRLIST_NEXT	0x0e
+#define CMD_FM_DIRLIST_DONE	0x0f
+#define CMD_FM_DIRLIST_ENT	0x10
 
 // Structures
 // ...
 
 // Command wrappers
 
-int cmd_s_status(CalcHandle *h, uint16_t status);
-int cmd_r_status(CalcHandle *h, uint16_t *status);
+int cmd_s_status(CalcHandle *h, uint8_t status);
+int cmd_r_status(CalcHandle *h, uint8_t *status);
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);

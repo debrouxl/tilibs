@@ -73,7 +73,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint32_t size;
+	uint32_t size, size2;
 	uint8_t cmd, *data;
 
 	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
@@ -85,8 +85,6 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
 
 	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
-	printf("%i bytes\n", size);
-
 	*bitmap = (uint8_t *)g_malloc(sc->width * sc->height / 2);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
@@ -246,12 +244,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	path = g_strconcat("/", vr->folder, "/", vr->name, ".", 
 		tifiles_vartype2fext(handle->model, vr->type), NULL);
-	printf("<<%s>>\n", path);
 	TRYF(cmd_s_get_file(handle, path));
 	TRYF(cmd_r_get_file(handle, &(vr->size)));
 
 	TRYF(cmd_s_file_ok(handle));
-	TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
+	TRYF(cmd_r_file_contents(handle, NULL, &data));
 	TRYF(cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
@@ -310,7 +307,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYF(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(id, (char*)(data + 84), 28);
@@ -367,13 +364,13 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYF(cmd_s_dev_infos(handle, DI_MODEL));
+	TRYF(cmd_s_dev_infos(handle, CMD_DI_MODEL));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(infos->product_name, (char*)data, 10);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 
-	TRYF(cmd_s_dev_infos(handle, DI_VERSION));
+	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	i = 4;

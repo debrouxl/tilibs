@@ -37,14 +37,13 @@
 
 /////////////----------------
 
-static uint16_t usb_errors[] = { 
-	0xff0a, 0xff0f, 0xff10, 0xff11, 0xff14, 0xff15,
+static uint8_t usb_errors[] = { 
+	0x0a, 0x0f, 0x10, 0x11, 0x14, 0x15,
 };
 
-static int err_code(VirtualPacket *pkt)
+static int err_code(uint8_t code)
 {
 	int i;
-	int code = (pkt->data[0] << 8) | pkt->data[1];
 
 	for(i = 0; i < sizeof(usb_errors) / sizeof(uint16_t); i++)
 		if(usb_errors[i] == code)
@@ -74,15 +73,15 @@ static int put_str(char *dst, const char *src)
 	return j;
 }
 
-int cmd_s_status(CalcHandle *h, uint16_t status)
+int cmd_s_status(CalcHandle *h, uint8_t status)
 {
 	VirtualPacket* pkt;
 
 	ticalcs_info("  sending status (%04x):", status);
 
-	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, nsp_dst_port);
-	pkt->data[0] = MSB(status);
-	pkt->data[1] = LSB(status);
+	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, nsp_dst_port);
+	pkt->cmd = CMD_STATUS;
+	pkt->data[0] = status;
 	TRYF(nsp_send_data(h, pkt));
 
 	nsp_vtl_pkt_del(pkt);
@@ -90,25 +89,27 @@ int cmd_s_status(CalcHandle *h, uint16_t status)
 	return 0;
 }
 
-int cmd_r_status(CalcHandle *h, uint16_t *status)
+int cmd_r_status(CalcHandle *h, uint8_t *status)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
-	uint16_t value;
+	uint8_t value;
 
 	ticalcs_info("  receiving status:");
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	value = (pkt->data[0] << 8) | pkt->data[1];
-	//ticalcs_info("  %04x", value);
+	value = pkt->data[0] << 8;
 
 	nsp_vtl_pkt_del(pkt);
+
+	if(pkt->cmd != CMD_STATUS)
+		return ERR_INVALID_PACKET;
 
 	if(status)
 		*status = value;
 
-	if(value != 0xff00)
-		return ERR_CALC_ERROR3 + err_code(pkt);
+	if(value != 0x00)
+		return ERR_CALC_ERROR3 + err_code(value);
 
 	return 0;
 }
@@ -119,8 +120,8 @@ int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 
 	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_DEV_INFOS);
-	pkt->data[0] = cmd;
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_DEV_INFOS);
+	pkt->cmd = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
 	nsp_vtl_pkt_del(pkt);
@@ -136,9 +137,9 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	*cmd = pkt->data[0];
+	*cmd = pkt->cmd;
 	*data = g_malloc0(pkt->size);
-	memcpy(*data, pkt->data + 1, pkt->size - 1);
+	memcpy(*data, pkt->data, pkt->size);
 
 	nsp_vtl_pkt_del(pkt);
 
@@ -152,7 +153,7 @@ int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
 
 	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_SCREEN_RLE);
-	pkt->data[0] = cmd;
+	pkt->cmd = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
 	nsp_vtl_pkt_del(pkt);
@@ -168,10 +169,10 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	*cmd = pkt->data[0];
-	*size = pkt->size - 1;
+	*cmd = pkt->cmd;
+	*size = pkt->size;
 	*data = g_malloc0(pkt->size);
-	memcpy(*data, pkt->data + 1, pkt->size - 1);
+	memcpy(*data, pkt->data, pkt->size);
 
 	nsp_vtl_pkt_del(pkt);
 
@@ -185,8 +186,8 @@ int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_DIRLIST_INIT;
+	pkt = nsp_vtl_pkt_new_ex(1 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_DIRLIST_INIT;
 	put_str(pkt->data + 1, name);
 	
 	TRYF(nsp_send_data(h, pkt));
@@ -206,8 +207,8 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 
 	ticalcs_info("  requesting next directory entry:");
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_DIRLIST_NEXT;
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_DIRLIST_NEXT;
 
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
@@ -218,7 +219,6 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
-	uint16_t answer;
 	uint8_t data_size;
 	uint32_t date;
 	int o;
@@ -227,19 +227,19 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	answer = (pkt->data[0] << 8) | pkt->data[1];
-	if(answer == 0xff11)
+	if(pkt->cmd != CMD_FM_DIRLIST_ENT)
 	{
-		nsp_vtl_pkt_del(pkt);
-		return ERR_EOT;
+		if(pkt->data[0] == ERR_NO_MORE_TO_LIST)
+		{
+			nsp_vtl_pkt_del(pkt);
+			return ERR_EOT;
+		}
+		else
+			return ERR_CALC_ERROR3 + err_code(pkt->data[0]);
 	}
-	else if((answer & 0xff) == 0xff)
-		return ERR_CALC_ERROR3 + err_code(pkt);
-	else if(answer != 0x1000)
-		return ERR_INVALID_PACKET;
 
-	data_size = pkt->data[2] + 3;
-	strcpy(name, pkt->data + 3);
+	data_size = pkt->data[1] + 3;
+	strcpy(name, pkt->data + 2);
 	o = data_size - 10;
 	
 	if(size)
@@ -259,8 +259,8 @@ int cmd_s_dir_enum_done(CalcHandle *h)
 
 	ticalcs_info("  closing directory listing:");
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_DIRLIST_DONE;
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_DIRLIST_DONE;
 
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
@@ -280,10 +280,10 @@ int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 
 	ticalcs_info("  sending variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(7 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_PUT_FILE;
-	pkt->data[1] = 0x01;
-	o = put_str(pkt->data + 2, name);
+	pkt = nsp_vtl_pkt_new_ex(6 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_PUT_FILE;
+	pkt->data[0] = 0x01;
+	o = put_str(pkt->data + 1, name);
 	pkt->data[o+0] = MSB(MSW(size));
 	pkt->data[o+1] = LSB(MSW(size));
 	pkt->data[o+2] = MSB(LSW(size));
@@ -301,10 +301,10 @@ int cmd_s_get_file(CalcHandle *h, const char *name)
 
 	ticalcs_info("  requesting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(3 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_GET_FILE;
-	pkt->data[1] = 0x01;
-	put_str(pkt->data + 2, name);
+	pkt = nsp_vtl_pkt_new_ex(2 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_GET_FILE;
+	pkt->data[0] = 0x01;
+	put_str(pkt->data + 1, name);
 
 	TRYF(nsp_send_data(h, pkt));
 	nsp_vtl_pkt_del(pkt);
@@ -320,7 +320,7 @@ int cmd_r_get_file(CalcHandle *h, uint32_t *size)
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	if(pkt->data[0] != 0x03)
+	if(pkt->cmd != CMD_FM_PUT_FILE)
 	{
 		nsp_vtl_pkt_del(pkt);
 		return ERR_INVALID_PACKET;
@@ -340,8 +340,8 @@ int cmd_s_file_ok(CalcHandle *h)
 
 	ticalcs_info("  sending file contents:");
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_OK;
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_OK;
 	TRYF(nsp_send_data(h, pkt));
 
 	nsp_vtl_pkt_del(pkt);
@@ -357,7 +357,7 @@ int cmd_r_file_ok(CalcHandle *h)
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	if(pkt->data[0] != FM_OK)
+	if(pkt->cmd != CMD_FM_OK)
 	{
 		nsp_vtl_pkt_del(pkt);
 		return ERR_INVALID_PACKET;
@@ -373,8 +373,8 @@ int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data)
 	ticalcs_info("  sending file contents:");
 
 	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->data[0] = FM_CONTENTS;
-	memcpy(pkt->data + 1, data, size);
+	pkt->cmd = CMD_FM_CONTENTS;
+	memcpy(pkt->data, data, size);
 	TRYF(nsp_send_data(h, pkt));
 
 	nsp_vtl_pkt_del(pkt);
@@ -390,9 +390,10 @@ int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	*size = pkt->size - 1;
+	if(size)
+		*size = pkt->size;
 	*data = g_malloc0(pkt->size);
-	memcpy(*data, pkt->data + 1, pkt->size - 1);
+	memcpy(*data, pkt->data, pkt->size);
 
 	nsp_vtl_pkt_del(pkt);
 

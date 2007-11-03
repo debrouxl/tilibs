@@ -31,6 +31,8 @@ typedef struct
 	uint16_t	dst_addr;
 	uint16_t	dst_port;
 
+	uint8_t		cmd;
+
 	uint32_t	size;
 	uint8_t		*data;
 } VirtualPacket;

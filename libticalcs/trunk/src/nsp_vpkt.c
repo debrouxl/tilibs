@@ -253,14 +253,15 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 	raw.dst_addr = vtl->dst_addr;
 	raw.dst_port = vtl->dst_port;
 
-	q = (vtl->size - offset) / DATA_SIZE;
-	r = (vtl->size - offset) % DATA_SIZE;
+	q = (vtl->size - offset) / (DATA_SIZE-1);
+	r = (vtl->size - offset) % (DATA_SIZE-1);
 
 	for(i = 1; i <= q; i++)
 	{
 		raw.data_size = DATA_SIZE;
-		memcpy(raw.data, vtl->data + offset, DATA_SIZE);
-		offset += DATA_SIZE;
+		raw.data[0] = vtl->cmd;
+		memcpy(raw.data + 1, vtl->data + offset, DATA_SIZE-1);
+		offset += DATA_SIZE-1;
 
 		TRYF(nsp_send(h, &raw));
 		
@@ -275,7 +276,8 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 	if(r)
 	{
 		raw.data_size = r;
-		memcpy(raw.data, vtl->data + offset, r);
+		raw.data[0] = vtl->cmd;
+		memcpy(raw.data + 1, vtl->data + offset, r);
 		offset += r;
 		
 		TRYF(nsp_send(h, &raw));
@@ -300,11 +302,12 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 	do
 	{
 		TRYF(nsp_recv(h, &raw));
-		vtl->size += raw.data_size;
+		vtl->cmd = raw.data[0];
+		vtl->size += raw.data_size-1;
 
 		vtl->data = realloc(vtl->data, vtl->size);
-		memcpy(vtl->data + offset, &raw.data, raw.data_size);
-		offset += raw.data_size;
+		memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
+		offset += raw.data_size-1;
 
 		h->updat->max1 = vtl->size;
 		h->updat->cnt1 += DATA_SIZE;
