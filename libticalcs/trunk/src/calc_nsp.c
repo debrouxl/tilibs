@@ -71,6 +71,38 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 	return 0;
 }
 
+static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size)
+{
+	uint8_t *dst = g_malloc(sc->width * sc->height / 2);
+	uint8_t *q;
+	int i;
+
+	for(i = 0, q = dst; i < (int)size; i++)
+	{
+		int8_t rec = src[i];
+
+		if(rec >= 0)
+		{
+			uint8_t cnt = ((uint8_t )rec) + 1;
+			uint8_t val = src[i+1];
+
+			memset(q, val, cnt);
+			q += cnt;
+			i += 1;
+		}
+		else
+		{
+			uint8_t cnt = -(rec - 1);
+
+			memcpy(q, src, cnt);
+			q += cnt;
+			i += cnt;
+		}
+	}	
+
+	return dst;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint32_t size;
@@ -79,19 +111,18 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
 
 	TRYF(cmd_s_screen_rle(handle, 0));
-
 	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 	sc->width = sc->clipped_width = (data[8] << 8) | data[9];
 	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
-
 	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
-	*bitmap = (uint8_t *)g_malloc(sc->width * sc->height / 2);
-	if(*bitmap == NULL) 
-		return ERR_MALLOC;
-	memcpy(*bitmap, data, size/*sc->width * sc->height / 2*/);
-	
-	g_free(data);
+
 	TRYF(nsp_session_close(handle));
+
+	*bitmap = rle_uncompress(sc, data, size);
+	g_free(data);
+
+	if(*bitmap == NULL) 
+		return ERR_MALLOC;	
 
 	return 0;
 }
