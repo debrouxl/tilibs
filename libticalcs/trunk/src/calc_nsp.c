@@ -77,24 +77,23 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 	uint8_t *q;
 	int i;
 
-	for(i = 0, q = dst; i < (int)size; i++)
+	for(i = 0, q = dst; i < (int)size;)
 	{
-		int8_t rec = src[i];
+		int8_t rec = src[i++];
 
 		if(rec >= 0)
 		{
 			uint8_t cnt = ((uint8_t )rec) + 1;
-			uint8_t val = src[i+1];
+			uint8_t val = src[i++];
 
 			memset(q, val, cnt);
 			q += cnt;
-			i += 1;
 		}
 		else
 		{
 			uint8_t cnt = -(rec - 1);
 
-			memcpy(q, src, cnt);
+			memcpy(q, src+i, cnt);
 			q += cnt;
 			i += cnt;
 		}
