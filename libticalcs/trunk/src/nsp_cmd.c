@@ -220,6 +220,7 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 	ticalcs_info("  next directory entry:");
 
 	TRYF(nsp_recv_data(h, pkt));
+	tifiles_hexdump(pkt->data, pkt->size);
 
 	if(pkt->cmd != CMD_FM_DIRLIST_ENT)
 	{
@@ -232,7 +233,7 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 			return ERR_CALC_ERROR3 + err_code(pkt->data[0]);
 	}
 
-	data_size = pkt->data[1] + 3;
+	data_size = pkt->data[1] + 2;
 	strcpy(name, pkt->data + 2);
 	o = data_size - 10;
 	
