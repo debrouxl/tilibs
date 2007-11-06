@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <conio.h>
+//#include <conio.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -171,7 +171,7 @@ static FILE *log = NULL;
 
 static int hex_read(unsigned char *data)
 {
-	static char line[256];
+  //	static char line[256];
 	static int idx = 0;
 	int ret;
 
