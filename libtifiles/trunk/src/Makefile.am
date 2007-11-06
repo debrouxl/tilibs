@@ -18,7 +18,7 @@ libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
 	error.c \
-	files8x.c files9x.c filesxx.c \
+	files8x.c files9x.c filesnsp.c filesxx.c \
 	filetypes.c \
 	grouped.c \
 	intelhex.c \
@@ -31,6 +31,7 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	types73.c types82.c types83.c types83p.c types84p.c \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
+	typesnsp.c \
 	typesxx.c \
 	ve_fp.c \
 	minizip/ioapi.c   \

@@ -57,18 +57,19 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am_libtifiles2_la_OBJECTS = libtifiles2_la-comments.lo \
 	libtifiles2_la-error.lo libtifiles2_la-files8x.lo \
-	libtifiles2_la-files9x.lo libtifiles2_la-filesxx.lo \
-	libtifiles2_la-filetypes.lo libtifiles2_la-grouped.lo \
-	libtifiles2_la-intelhex.lo libtifiles2_la-logging.lo \
-	libtifiles2_la-misc.lo libtifiles2_la-rwfile.lo \
-	libtifiles2_la-tifiles.lo libtifiles2_la-tigroup.lo \
-	libtifiles2_la-type2str.lo libtifiles2_la-types73.lo \
-	libtifiles2_la-types82.lo libtifiles2_la-types83.lo \
-	libtifiles2_la-types83p.lo libtifiles2_la-types84p.lo \
-	libtifiles2_la-types85.lo libtifiles2_la-types86.lo \
-	libtifiles2_la-types89.lo libtifiles2_la-types89t.lo \
-	libtifiles2_la-types92.lo libtifiles2_la-types92p.lo \
-	libtifiles2_la-typesv2.lo libtifiles2_la-typesxx.lo \
+	libtifiles2_la-files9x.lo libtifiles2_la-filesnsp.lo \
+	libtifiles2_la-filesxx.lo libtifiles2_la-filetypes.lo \
+	libtifiles2_la-grouped.lo libtifiles2_la-intelhex.lo \
+	libtifiles2_la-logging.lo libtifiles2_la-misc.lo \
+	libtifiles2_la-rwfile.lo libtifiles2_la-tifiles.lo \
+	libtifiles2_la-tigroup.lo libtifiles2_la-type2str.lo \
+	libtifiles2_la-types73.lo libtifiles2_la-types82.lo \
+	libtifiles2_la-types83.lo libtifiles2_la-types83p.lo \
+	libtifiles2_la-types84p.lo libtifiles2_la-types85.lo \
+	libtifiles2_la-types86.lo libtifiles2_la-types89.lo \
+	libtifiles2_la-types89t.lo libtifiles2_la-types92.lo \
+	libtifiles2_la-types92p.lo libtifiles2_la-typesv2.lo \
+	libtifiles2_la-typesnsp.lo libtifiles2_la-typesxx.lo \
 	libtifiles2_la-ve_fp.lo libtifiles2_la-ioapi.lo \
 	libtifiles2_la-miniunz.lo libtifiles2_la-minizip.lo \
 	libtifiles2_la-unzip.lo libtifiles2_la-zip.lo
@@ -275,7 +276,7 @@ libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@ \
 libtifiles2_la_SOURCES = *.h minizip/*.h \
 	comments.c \
 	error.c \
-	files8x.c files9x.c filesxx.c \
+	files8x.c files9x.c filesnsp.c filesxx.c \
 	filetypes.c \
 	grouped.c \
 	intelhex.c \
@@ -288,6 +289,7 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	types73.c types82.c types83.c types83p.c types84p.c \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
+	typesnsp.c \
 	typesxx.c \
 	ve_fp.c \
 	minizip/ioapi.c   \
@@ -371,6 +373,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-files8x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-files9x.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-filesnsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-filesxx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-filetypes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-grouped.Plo@am__quote@
@@ -395,6 +398,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-types89t.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-types92.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-types92p.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-typesnsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-typesv2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-typesxx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtifiles2_la-unzip.Plo@am__quote@
@@ -449,6 +453,13 @@ libtifiles2_la-files9x.lo: files9x.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='files9x.c' object='libtifiles2_la-files9x.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-files9x.lo `test -f 'files9x.c' || echo '$(srcdir)/'`files9x.c
+
+libtifiles2_la-filesnsp.lo: filesnsp.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-filesnsp.lo -MD -MP -MF $(DEPDIR)/libtifiles2_la-filesnsp.Tpo -c -o libtifiles2_la-filesnsp.lo `test -f 'filesnsp.c' || echo '$(srcdir)/'`filesnsp.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/libtifiles2_la-filesnsp.Tpo $(DEPDIR)/libtifiles2_la-filesnsp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='filesnsp.c' object='libtifiles2_la-filesnsp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-filesnsp.lo `test -f 'filesnsp.c' || echo '$(srcdir)/'`filesnsp.c
 
 libtifiles2_la-filesxx.lo: filesxx.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-filesxx.lo -MD -MP -MF $(DEPDIR)/libtifiles2_la-filesxx.Tpo -c -o libtifiles2_la-filesxx.lo `test -f 'filesxx.c' || echo '$(srcdir)/'`filesxx.c
@@ -603,6 +614,13 @@ libtifiles2_la-typesv2.lo: typesv2.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='typesv2.c' object='libtifiles2_la-typesv2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-typesv2.lo `test -f 'typesv2.c' || echo '$(srcdir)/'`typesv2.c
+
+libtifiles2_la-typesnsp.lo: typesnsp.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-typesnsp.lo -MD -MP -MF $(DEPDIR)/libtifiles2_la-typesnsp.Tpo -c -o libtifiles2_la-typesnsp.lo `test -f 'typesnsp.c' || echo '$(srcdir)/'`typesnsp.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/libtifiles2_la-typesnsp.Tpo $(DEPDIR)/libtifiles2_la-typesnsp.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='typesnsp.c' object='libtifiles2_la-typesnsp.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libtifiles2_la-typesnsp.lo `test -f 'typesnsp.c' || echo '$(srcdir)/'`typesnsp.c
 
 libtifiles2_la-typesxx.lo: typesxx.c
 @am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libtifiles2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libtifiles2_la-typesxx.lo -MD -MP -MF $(DEPDIR)/libtifiles2_la-typesxx.Tpo -c -o libtifiles2_la-typesxx.lo `test -f 'typesxx.c' || echo '$(srcdir)/'`typesxx.c
