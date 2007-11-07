@@ -54,6 +54,10 @@ static int		is_ready	(CalcHandle* handle)
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 		checked++;
+
+		{
+			//TRYF(cmd_r_login(handle));
+		}
 	}
 
 	// Use ECHO packet for is_ready
@@ -151,6 +155,42 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
+#if 1
+	{
+		{
+			VarEntry *fe = tifiles_ve_create();
+			GNode *node;
+
+			strcpy(fe->folder, "Exemples");
+			strcpy(fe->name, "Exemples");
+			fe->size = 0;
+			fe->type = 01;
+			fe->attr = ATTRB_NONE;
+
+			node = g_node_new(fe);
+			folder = g_node_append(*vars, node);
+		}
+		{
+			VarEntry *ve = tifiles_ve_create();
+			GNode *node;
+			char varname[256];
+			char *ext;
+			
+			strcpy(varname, "Classeur1.tns");
+
+			ext = tifiles_fext_get(varname);
+			strcpy(ve->folder, "Exemples");
+			ve->size = 5000;			
+			ve->type = tifiles_fext2vartype(handle->model, ext);
+			ve->attr = ATTRB_NONE;
+			if(ext) *(ext-1) = '\0';
+			strcpy(ve->name, varname);
+
+			node = g_node_new(ve);
+			g_node_append(folder, node);
+		}
+	}
+#else
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	TRYF(cmd_s_dir_enum_init(handle, "/"));
@@ -242,7 +282,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	}	
 
 	TRYF(nsp_session_close(handle));
-
+#endif
 	return 0;
 }
 
@@ -403,9 +443,25 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
-	i = 4;
-	infos->ram_free = GINT32_FROM_BE(*((uint64_t *)(data + i)));
+	i = 0;
+	infos->ram_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_RAM_FREE;
+
+	i = 8;
+	infos->ram_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_RAM_PHYS;
+
+	i = 16;
+	infos->flash_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_FLASH_FREE;
+
+	i = 24;
+	infos->flash_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_FLASH_PHYS;
+
+	i = 32;
+	infos->battery = data[i];
+	infos->mask |= INFOS_BATTERY;
 
 	i = 36;
 	g_snprintf(infos->os_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
@@ -421,6 +477,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	g_snprintf(infos->boot2_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
 	infos->mask |= INFOS_BOOT2_VERSION;
+
+	i = 58;
+	infos->lcd_width = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
+	infos->mask |= INFOS_LCD_WIDTH;
+
+	i = 60;
+	infos->lcd_height = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
+	infos->mask |= INFOS_LCD_HEIGHT;
+	i++;
 
 	i = 82;
 	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
