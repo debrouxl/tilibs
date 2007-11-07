@@ -334,7 +334,7 @@ int cmd_r_get_file(CalcHandle *h, uint32_t *size)
 	}
 	
 	if(size)
-		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 12)));
+		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 10)));
 
 	nsp_vtl_pkt_del(pkt);
 	return 0;
