@@ -34,6 +34,7 @@
 #include "error.h"
 #include "files8x.h"
 #include "files9x.h"
+#include "filesnsp.h"
 
 /**
  * tifiles_content_create_regular:
@@ -129,7 +130,10 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
 #endif
-    return ERR_BAD_CALC;
+    if(content->model == CALC_NSPIRE)
+		return tnsp_file_read_regular(filename, (FileContent *)content);
+	else
+		return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -160,7 +164,10 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
 		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
 	else
 #endif
-    return ERR_BAD_CALC;
+	if(content->model == CALC_NSPIRE)
+		return tnsp_file_write_regular(filename, (FileContent *)content, real_fname);
+	else
+		return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -185,7 +192,10 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 		return ti9x_content_display_regular(content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	if(content->model == CALC_NSPIRE)
+		return tnsp_content_display_regular(content);
+	else
+		return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -415,7 +425,10 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
 		return ti9x_file_read_flash(filename, content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	if(content->model == CALC_NSPIRE)
+		return tnsp_file_read_flash(filename, content);
+	else
+		return ERR_BAD_CALC;
 
 	return 0;
 }

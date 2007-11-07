@@ -405,6 +405,7 @@ extern "C" {
   TIEXPORT2 int TICALL tifiles_file_is_tib (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
   TIEXPORT2 int TICALL tifiles_file_is_tigroup (const char *filename);
+  TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename);
   
   TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target);
 

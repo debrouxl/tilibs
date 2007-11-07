@@ -37,42 +37,42 @@
 
 static const char GROUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
-	"XxX", 
+	"XXx", 
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g", 
 	"89g", "89g", "92g", "9Xg", "V2g", "8Xg", "89g",
-	"???",
+	"XXx",
 };
 
 static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
-	"XxX", 
+	"XXx", 
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b", 
 	"89g", "89g", "92b", "9Xg", "V2g", "8Xg", "89g",
-	"???",
+	"XXx",
 };
 
 static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] = 
 {
-	"XxX", 
-	"73k", "???", "???", "8Xk", "8Xk", "???", "???",
-	"89k", "89k", "???", "9Xk", "V2k", "8Xk", "89k",
-	"???",
+	"XXx", 
+	"73k", "XXx", "XXx", "8Xk", "8Xk", "XXx", "XXx",
+	"89k", "89k", "XXx", "9Xk", "V2k", "8Xk", "89k",
+	"XXx",
 };
 
 static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] = 
 {
-	"XxX", 
-	"73u", "???", "???", "8Xu", "8Xu", "???", "???",
-	"89u", "89u", "???", "9Xu", "V2u", "8Xu", "89u",
+	"XXx", 
+	"73u", "XXx", "XXx", "8Xu", "8Xu", "XXx", "XXx",
+	"89u", "89u", "XXx", "9Xu", "V2u", "8Xu", "89u",
 	"tno",
 };
 
 static const char CERTIF_FILE_EXT[CALC_MAX + 1][4] = 
 {
-	"XxX", 
-	"73q", "???", "???", "8Xq", "8Xq", "???", "???",
-	"89q", "89q", "???", "9Xq", "V2q", "8Xq", "89q",
-	"???",
+	"XXx", 
+	"73q", "XXx", "XXx", "8Xq", "8Xq", "XXx", "XXx",
+	"89q", "89q", "XXx", "9Xq", "V2q", "8Xq", "89q",
+	"XXx",
 };
 
 /*******************/
@@ -92,7 +92,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_group (CalcModel model)
   switch (model) 
   {
   case CALC_NONE:
-    return "??g";
+    return "XXx";
   case CALC_TI73:
     return "73g";
   case CALC_TI82:
@@ -117,6 +117,8 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_group (CalcModel model)
     return "9Xg";
   case CALC_V200:
     return "V2g";
+  case CALC_NSPIRE:
+	  return "XXx";
   default:
     tifiles_error("tifiles_fext_of_group: invalid calc_type argument.");
     break;
@@ -165,6 +167,8 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_backup (CalcModel model)
 	return "8Xg";
   case CALC_TI89T_USB:
 	  return "89g";
+  case CALC_NSPIRE:
+	  return "XXx";
   default:
     tifiles_error("tifiles_fext_of_backup: invalid calc_type argument.");
     break;
@@ -190,27 +194,29 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_app (CalcModel model)
   case CALC_TI73:
     return "73k";
   case CALC_TI82:
-    return "???";
+    return "XXx";
   case CALC_TI83:
-    return "???";
+    return "XXx";
   case CALC_TI83P:
   case CALC_TI84P:
   case CALC_TI84P_USB:
     return "8Xk";
   case CALC_TI85:
-    return "???";
+    return "XXx";
   case CALC_TI86:
-    return "???";
+    return "XXx";
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
     return "89k";
   case CALC_TI92:
-    return "???";
+    return "XXx";
   case CALC_TI92P:
     return "9Xk";
   case CALC_V200:
     return "V2k";
+  case CALC_NSPIRE:
+	return "XXx";
   default:
     tifiles_error("tifiles_fext_of_flash_app: invalid calc_type argument.");
     break;
@@ -236,23 +242,23 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_os(CalcModel model)
   case CALC_TI73:
     return "73u";
   case CALC_TI82:
-    return "???";
+    return "XXx";
   case CALC_TI83:
-    return "???";
+    return "XXx";
   case CALC_TI83P:
   case CALC_TI84P:
   case CALC_TI84P_USB:
     return "8Xu";
   case CALC_TI85:
-    return "???";
+    return "XXx";
   case CALC_TI86:
-    return "???";
+    return "XXx";
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
     return "89u";
   case CALC_TI92:
-    return "???";
+    return "XXx";
   case CALC_TI92P:
     return "9Xu";
   case CALC_V200:
@@ -284,27 +290,29 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_certif(CalcModel model)
   case CALC_TI73:
     return "73q";
   case CALC_TI82:
-    return "???";
+    return "XXx";
   case CALC_TI83:
-    return "???";
+    return "XXx";
   case CALC_TI83P:
   case CALC_TI84P:
   case CALC_TI84P_USB:
     return "8Xq";
   case CALC_TI85:
-    return "???";
+    return "XXx";
   case CALC_TI86:
-    return "???";
+    return "XXx";
   case CALC_TI89:
   case CALC_TI89T:
   case CALC_TI89T_USB:
     return "89q";
   case CALC_TI92:
-    return "???";
+    return "XXx";
   case CALC_TI92P:
     return "9Xq";
   case CALC_V200:
     return "V2q";
+  case CALC_NSPIRE:
+	return "XXx";
   default:
     tifiles_error("tifiles_fext_of_flash_os: invalid calc_type argument.");
     break;
@@ -627,8 +635,6 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
 
   return 0;
 }
-
-TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename);
 
 /**
  * tifiles_file_is_os:

@@ -46,10 +46,10 @@
 
 /**
  * tnsp_file_read_regular:
- * @filename: name of single/group file to open.
+ * @filename: name of file to open.
  * @content: where to store the file content.
  *
- * Load the single/group file into a FileContent structure.
+ * Load the file into a FileContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_regular when
  * no longer used. If error occurs, the structure content is released for you.
@@ -88,17 +88,74 @@ tffr:	// release on exit
 	return ERR_FILE_IO;
 }
 
+/**
+ * tnsp_file_read_flash:
+ * @filename: name of flash file to open.
+ * @content: where to store the file content.
+ *
+ * Load the flash file into a #FlashContent structure.
+ *
+ * Structure content must be freed with #tifiles_content_delete_flash when
+ * no longer used. If error occurs, the structure content is released for you.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+int tnsp_file_read_flash(const char *filename, FlashContent *content)
+{
+	FILE *f;
+	int c;
+
+	if (!tifiles_file_is_tno(filename))
+		return ERR_INVALID_FILE;	
+
+	f = gfopen(filename, "rb");
+	if (f == NULL) 
+	{
+	    tifiles_info("Unable to open this file: %s\n", filename);
+		return ERR_FILE_OPEN;
+	}
+
+	content->model = CALC_NSPIRE;
+	for(c = 0; c != ' '; c=fgetc(f));
+	content->revision_major = fgetc(f);
+	fgetc(f);
+	content->revision_minor = fgetc(f);
+	fgetc(f);
+
+	for(c = 0; c != ' '; c=fgetc(f));
+	fscanf(f, "%i", &(content->data_length));
+
+	content->data_part = (uint8_t *)g_malloc0(content->data_length);
+	if (content->data_part == NULL) 
+	{
+		fclose(f);
+		tifiles_content_delete_flash(content);
+		return ERR_MALLOC;
+	}
+
+	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+	content->next = NULL;
+
+	fclose(f);
+	return 0;
+
+tfrf:	// release on exit
+    fclose(f);
+	tifiles_content_delete_flash(content);
+	return ERR_FILE_IO;
+}
+
 /***********/
 /* Writing */
 /***********/
 
 /**
  * tnsp_file_write_regular:
- * @filename: name of single/group file where to write or NULL.
+ * @filename: name of file where to write or NULL.
  * @content: the file content to write.
  * @real_filename: pointer address or NULL. Must be freed if needed when no longer needed.
  *
- * Write one (or several) variable(s) into a single (group) file. If filename is set to NULL,
+ * Write one variable into a single file. If filename is set to NULL,
  * the function build a filename from varname and allocates resulting filename in %real_fname.
  * %filename and %real_filename can be NULL but not both !
  *
@@ -111,11 +168,20 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
   FILE *f;
   char *filename = NULL;
 
+  if (fname != NULL) 
   {
     filename = g_strdup(fname);
     if (filename == NULL)
       return ERR_MALLOC;
-  } 
+  }
+  else
+  {
+	  VarEntry *ve = content->entries[0];
+	  filename = g_strconcat("/", ve->folder, "/", ve->name, ".", 
+		tifiles_vartype2fext(content->model, ve->type), NULL);
+	  if (real_fname != NULL)
+		*real_fname = g_strdup(filename);
+  }
 
   f = gfopen(filename, "wb");
   if (f == NULL) 
@@ -187,6 +253,38 @@ int tnsp_content_display_regular(FileContent *content)
 }
 
 /**
+ * tnsp_content_display_flash:
+ * @content: a FlashContent structure.
+ *
+ * Display fields of a FlashContent structure.
+ *
+ * Return value: an error code, 0 otherwise.
+ **/
+int tnsp_content_display_flash(FlashContent *content)
+{
+	FlashContent *ptr = content;
+
+    tifiles_info("Signature:      %s",
+	    tifiles_calctype2signature(ptr->model));
+    tifiles_info("Revision:       %i.%i",
+	    ptr->revision_major, ptr->revision_minor);
+    tifiles_info("Flags:          %02X", ptr->flags);
+    tifiles_info("Object type:    %02X", ptr->object_type);
+    tifiles_info("Date:           %02X/%02X/%02X%02X",
+	    ptr->revision_day, ptr->revision_month,
+	    ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+    tifiles_info("Name:           %s", ptr->name);
+    tifiles_info("Device type:    %s",
+	    ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
+    tifiles_info("Data type:      OS data");
+    tifiles_info("Length:         %08X (%i)", ptr->data_length,
+	    ptr->data_length);
+    tifiles_info("");
+
+  return 0;
+}
+
+/**
  * tnsp_file_display:
  * @filename: a TI file.
  *
@@ -197,16 +295,15 @@ int tnsp_content_display_regular(FileContent *content)
 int tnsp_file_display(const char *filename)
 {
   FileContent *content1;
+  FlashContent *content3;
 
   // the testing order is important: regular before backup (due to TI89/92+)
   if (tifiles_file_is_os(filename)) 
   {
-	  /*
-	content3 = tifiles_content_create_flash(CALC_TI92);
+	content3 = tifiles_content_create_flash(CALC_NSPIRE);
     tnsp_file_read_flash(filename, content3);
     tnsp_content_display_flash(content3);
     tifiles_content_delete_flash(content3);
-	*/
   } 
   else if (tifiles_file_is_regular(filename)) 
   {

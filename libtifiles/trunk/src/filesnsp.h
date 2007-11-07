@@ -29,18 +29,23 @@
 
 // allocating
 FileContent* tnsp_content_create_regular(void);
+FlashContent* tnsp_content_create_flash(void);
 
 // freeing
 void tnsp_content_free_regular(FileContent *content);
+void tnsp_content_free_flash(FlashContent *content);
 
 // displaying
 int tnsp_content_display_regular(FileContent *content);
+int tnsp_content_display_flash(FlashContent *content);
 
 // reading
 int tnsp_file_read_regular(const char *filename, FileContent *content);
+int tnsp_file_read_flash(const char *filename, FlashContent *content);
 
 // writing
 int tnsp_file_write_regular(const char *filename, FileContent *content, char **filename2);
+int tnsp_file_write_flash(const char *filename, FileContent *content, char **filename2);
 
 // displaying
 int tnsp_file_display(const char *filename);
