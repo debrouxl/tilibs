@@ -273,7 +273,6 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 
 	q = (vtl->size - offset) / (DATA_SIZE-1);
 	r = (vtl->size - offset) % (DATA_SIZE-1);
-	if(!vtl->size) r = 1;
 
 	for(i = 1; i <= q; i++)
 	{
@@ -292,9 +291,9 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 		h->updat->pbar();
 	}
 
-	if(r)
+	if(r || !vtl->size)
 	{
-		raw.data_size = r;
+		raw.data_size = r + 1;
 		raw.data[0] = vtl->cmd;
 		memcpy(raw.data + 1, vtl->data + offset, r);
 		offset += r;

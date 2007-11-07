@@ -161,7 +161,7 @@ int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 
 	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_SCREEN_RLE);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_SCREEN_RLE);
 	pkt->cmd = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
@@ -193,7 +193,7 @@ int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DIRLIST_INIT;
 	put_str(pkt->data, name);
 	
