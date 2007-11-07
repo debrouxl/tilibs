@@ -382,6 +382,13 @@ static int tifiles_file_has_ti_header(const char *filename)
 		return !0;
 	}
 
+	if(!strncmp(buf, "*TI", 3))
+	{
+		fclose(f);
+		return !0;
+	}
+
+
 	fclose(f);
 	return 0;
 }
