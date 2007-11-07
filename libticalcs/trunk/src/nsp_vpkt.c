@@ -196,6 +196,24 @@ int nsp_send_ack(CalcHandle* h)
 	return 0;
 }
 
+int nsp_send_nack(CalcHandle* h)
+{
+	RawPacket pkt = {0};
+
+	ticalcs_info("  sending nAck:");
+
+	pkt.data_size = 2;
+	pkt.src_addr = NSP_SRC_ADDR;
+	pkt.src_port = PORT_PKT_NACK;
+	pkt.dst_addr = NSP_DEV_ADDR;
+	pkt.dst_port = nsp_dst_port;
+	pkt.data[0] = MSB(PORT_LOGIN);
+	pkt.data[1] = LSB(PORT_LOGIN);
+	TRYF(nsp_send(h, &pkt));
+
+	return 0;
+}
+
 int nsp_recv_ack(CalcHandle *h)
 {
 	RawPacket pkt = {0};

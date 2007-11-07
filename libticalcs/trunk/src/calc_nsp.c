@@ -155,7 +155,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
-#if 1
+#if 0
 	{
 		{
 			VarEntry *fe = tifiles_ve_create();
@@ -288,6 +288,27 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
+	uint32_t size;
+	uint8_t cmd, *data;
+	int i;
+
+	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
+
+	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
+	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
+
+	i = 0;
+	*flash = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+
+	i = 16;
+	*ram = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+
+	g_free(data);
+	TRYF(nsp_session_close(handle));
+	
+	return 0;
+
+
 	return 0;
 }
 
@@ -444,20 +465,21 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	i = 0;
-	infos->ram_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
-	infos->mask |= INFOS_RAM_FREE;
-
-	i = 8;
-	infos->ram_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
-	infos->mask |= INFOS_RAM_PHYS;
-
-	i = 16;
 	infos->flash_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_FLASH_FREE;
 
-	i = 24;
+	i = 8;
 	infos->flash_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_FLASH_PHYS;
+
+	i = 16;
+	infos->ram_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_RAM_FREE;
+
+	i = 24;
+	infos->ram_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->mask |= INFOS_RAM_PHYS;
+	
 
 	i = 32;
 	infos->battery = data[i];
@@ -515,7 +537,8 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS,
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS |
+	FTS_MEMFREE,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,

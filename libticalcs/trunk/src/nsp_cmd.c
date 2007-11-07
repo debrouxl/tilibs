@@ -73,6 +73,19 @@ static int put_str(char *dst, const char *src)
 	return j;
 }
 
+int cmd_r_login(CalcHandle *h)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	uint8_t value;
+
+	ticalcs_info("  receiving login:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
 int cmd_s_status(CalcHandle *h, uint8_t status)
 {
 	VirtualPacket* pkt;

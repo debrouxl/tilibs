@@ -48,6 +48,7 @@ typedef struct
 #define NSP_SRC_ADDR	0x6400
 #define NSP_DEV_ADDR	0x6401
 
+#define PORT_PKT_NACK		0x00D3
 #define PORT_PKT_ACK1		0x00FE
 #define PORT_PKT_ACK2		0x00FF
 #define PORT_NULL			0x4001
@@ -82,6 +83,7 @@ int nsp_addr_assign(CalcHandle *h, uint16_t dev_addr);
 
 int nsp_send_ack(CalcHandle *h);
 int nsp_recv_ack(CalcHandle *h);
+int nsp_send_nack(CalcHandle *h);
 
 int nsp_send_data(CalcHandle* h, VirtualPacket* pkt);
 int nsp_recv_data(CalcHandle* h, VirtualPacket* pkt);

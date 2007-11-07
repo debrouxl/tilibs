@@ -64,6 +64,8 @@
 
 // Command wrappers
 
+int cmd_r_login(CalcHandle *h);
+
 int cmd_s_status(CalcHandle *h, uint8_t status);
 int cmd_r_status(CalcHandle *h, uint8_t *status);
 
