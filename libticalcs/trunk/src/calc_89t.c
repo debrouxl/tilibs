@@ -778,7 +778,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID_LCD_WIDTH, PID_LCD_HEIGHT,
 	};
 	uint16_t pids2[] = { 
-		 PID_BATTERY,
+		 PID_BATTERY, PID_OS_MODE,
 	};	// Titanium can't manage more than 16 parameters at a time
 	const int size1 = sizeof(pids1) / sizeof(uint16_t);
 	const int size2 = sizeof(pids2) / sizeof(uint16_t);
@@ -804,7 +804,11 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	strncpy(infos->main_calc_id, (char*)&(params1[i]->data[1]), 5);
 	strncpy(infos->main_calc_id+5, (char*)&(params1[i]->data[7]), 5);
+	strncpy(infos->main_calc_id+10, (char*)&(params1[i]->data[13]), 4);
+	infos->main_calc_id[14] = '\0';
 	infos->mask |= INFOS_MAIN_CALC_ID;
+	strcpy(infos->product_id, infos->main_calc_id);
+	infos->mask |= INFOS_PRODUCT_ID;
 	i++;
 
 	infos->hw_version = ((params1[i]->data[0] << 8) | params1[i]->data[1]) + 1;
@@ -844,7 +848,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->mask |= INFOS_FLASH_PHYS;
 	i++;
-		infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
+	infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->mask |= INFOS_FLASH_USER;
 	i++;
 	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
@@ -858,9 +862,16 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_LCD_HEIGHT;
 	i++;
 
+	infos->bits_per_pixel = 1;
+	infos->mask |= INFOS_BPP;
+
 	i = 0;
 	infos->battery = params2[i]->data[0];
 	infos->mask |= INFOS_BATTERY;
+	i++;
+
+	infos->run_level = params2[i]->data[0];
+	infos->mask |= INFOS_RUN_LEVEL;
 	i++;
 
 	infos->model = CALC_TI89T;

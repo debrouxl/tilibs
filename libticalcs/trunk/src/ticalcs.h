@@ -470,8 +470,8 @@ typedef struct
 	CalcModel	model;
 	InfosMask	mask;
 
-	char		product_name[65];
-	char		product_id[65];
+	char		product_name[64];
+	char		product_id[32];
 	uint32_t	product_number;		// obsolete, replaced by product_id
 	char		main_calc_id[32];	// obsolete, replaced by product_id
 	uint16_t	hw_version;			// hand-held dependent

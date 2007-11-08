@@ -508,7 +508,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_HW_VERSION;
 
 	i = 52;
-	infos->run_level = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
+	infos->run_level = (uint8_t)GUINT16_FROM_BE(*((uint16_t *)(data + i)));
 	infos->mask |= INFOS_RUN_LEVEL;
 
 	i = 58;

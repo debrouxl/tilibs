@@ -4,9 +4,7 @@ Log:
 
 - 16/10/2007, version 1.1.0: roms
 	- adding NSpire support...
-
-	- unify product_number & main_calc_id?
-	- format IDLIST into ticalcs instead of TiLP?
+	- unified Product Number & Main Calc Id into Product Id
 
 - 04/10/2007, version 1.0.9: roms
 	- fixed ROM dumping on TI92+/V200: switching to HOME screen failed

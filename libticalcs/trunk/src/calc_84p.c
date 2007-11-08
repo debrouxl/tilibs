@@ -796,7 +796,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID_BOOT_VERSION, PID_OS_VERSION, 
 		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
 		PID_PHYS_FLASH, PID_USER_FLASH, PID_FREE_FLASH,
-		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY,
+		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY, PID_OS_MODE,
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
 	CalcParam **params;
@@ -818,6 +818,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	g_snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
 		params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 	infos->mask |= INFOS_MAIN_CALC_ID;
+	strcpy(infos->product_id, infos->main_calc_id);
+	infos->mask |= INFOS_PRODUCT_ID;
 	i++;
 
 	infos->hw_version = (params[i]->data[0] << 8) | params[i]->data[1];
@@ -871,8 +873,15 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_LCD_HEIGHT;
 	i++;
 
+	infos->bits_per_pixel = 1;
+	infos->mask |= INFOS_BPP;
+
 	infos->battery = params[i]->data[0];
 	infos->mask |= INFOS_BATTERY;
+	i++;
+
+	infos->run_level = params[i]->data[0];
+	infos->mask |= INFOS_RUN_LEVEL;
 	i++;
 
 	switch(infos->hw_version)
