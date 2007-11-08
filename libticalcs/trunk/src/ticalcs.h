@@ -206,9 +206,9 @@ typedef enum
  **/
 typedef enum 
 {
-	INFOS_PRODUCT_NUMBER = (1 << 0), 
+	INFOS_PRODUCT_NUMBER = (1 << 0), /* obsolete (never used) */
 	INFOS_PRODUCT_NAME	= (1 << 1),
-	INFOS_MAIN_CALC_ID	= (1 << 2),
+	INFOS_MAIN_CALC_ID	= (1 << 2),	 /* obsolete, replaced by INFOS_PRODUCT_ID */
 	INFOS_HW_VERSION	= (1 << 3),
 	INFOS_LANG_ID		= (1 << 4),
 	INFOS_SUB_LANG_ID	= (1 << 5),
@@ -225,6 +225,10 @@ typedef enum
 	INFOS_LCD_HEIGHT	= (1 << 16),
 	INFOS_BATTERY		= (1 << 17),	
 	INFOS_BOOT2_VERSION	= (1 << 18),
+	INFOS_RUN_LEVEL		= (1 << 19),
+	INFOS_BPP			= (1 << 20),
+	INFOS_CLOCK_SPEED	= (1 << 21),
+	INFOS_PRODUCT_ID	= (1 << 22),
 
 	INFOS_CALC_MODEL	= (1 << 31),
 } InfosMask;
@@ -463,13 +467,17 @@ typedef VarEntry	VarRequest;	// alias
  **/
 typedef struct 
 {
-	uint32_t	product_number;
+	CalcModel	model;
+	InfosMask	mask;
+
 	char		product_name[65];
-	char		main_calc_id[32];
-	uint16_t	hw_version;
+	char		product_id[65];
+	uint32_t	product_number;		// obsolete, replaced by product_id
+	char		main_calc_id[32];	// obsolete, replaced by product_id
+	uint16_t	hw_version;			// hand-held dependent
 	uint8_t		language_id;
 	uint8_t		sub_lang_id;
-	uint16_t	device_type;
+	uint16_t	device_type;		// hand-held dependent
 	char		boot_version[10];
 	char		boot2_version[10];
 	char		os_version[10];
@@ -481,11 +489,10 @@ typedef struct
 	uint64_t	flash_free;
 	uint16_t	lcd_width;
 	uint16_t	lcd_height;
-	uint8_t		battery;
-
-	CalcModel	model;
-
-	InfosMask	mask;
+	uint8_t		battery;			// 0 = low, 1 = good
+	uint8_t		run_level;			// 1 = boot, 2 = OS
+	uint16_t	bits_per_pixel;		// 1 or 4
+	uint16_t	clock_speed;
 } CalcInfos;
 
 /**

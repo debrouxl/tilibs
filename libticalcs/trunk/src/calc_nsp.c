@@ -108,7 +108,7 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint32_t size;
+	uint32_t size = 0;
 	uint8_t cmd, *data;
 
 	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
@@ -314,9 +314,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-
-
-	return 0;	
+	return 0;
 }
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
@@ -339,7 +337,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(cmd_r_get_file(handle, &(vr->size)));
 
 	TRYF(cmd_s_file_ok(handle));
-	TRYF(cmd_r_file_contents(handle, NULL, &data));
+	TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
 	TRYF(cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
@@ -459,31 +457,36 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy(infos->product_name, (char*)data, 10);
-	infos->mask |= INFOS_MAIN_CALC_ID;
+	infos->mask |= INFOS_PRODUCT_NAME;
 
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
+	infos->model = CALC_NSPIRE;
+
 	i = 0;
-	infos->flash_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->flash_free = GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_FLASH_FREE;
 
 	i = 8;
-	infos->flash_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->flash_phys = GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_FLASH_PHYS;
 
 	i = 16;
-	infos->ram_free = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->ram_free = GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_RAM_FREE;
 
 	i = 24;
-	infos->ram_phys = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
+	infos->ram_phys = GUINT64_FROM_BE(*((uint64_t *)(data + i)));
 	infos->mask |= INFOS_RAM_PHYS;
 	
-
 	i = 32;
-	infos->battery = data[i];
+	infos->battery = (data[i] == 0x01) ? 0 : 1;
 	infos->mask |= INFOS_BATTERY;
+
+	i = 35;
+	infos->clock_speed = data[i];
+	infos->mask |= INFOS_CLOCK_SPEED;
 
 	i = 36;
 	g_snprintf(infos->os_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
@@ -500,6 +503,14 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
 	infos->mask |= INFOS_BOOT2_VERSION;
 
+	i = 48;
+	infos->hw_version = GUINT32_FROM_BE(*((uint32_t *)(data + i)));
+	infos->mask |= INFOS_HW_VERSION;
+
+	i = 52;
+	infos->run_level = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
+	infos->mask |= INFOS_RUN_LEVEL;
+
 	i = 58;
 	infos->lcd_width = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
 	infos->mask |= INFOS_LCD_WIDTH;
@@ -507,11 +518,20 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	i = 60;
 	infos->lcd_height = GUINT16_FROM_BE(*((uint16_t *)(data + i)));
 	infos->mask |= INFOS_LCD_HEIGHT;
-	i++;
+
+	i = 62;
+	infos->bits_per_pixel = data[i];
+	infos->mask |= INFOS_BPP;
+
+	i = 64;
+	infos->device_type = data[i];
+	infos->mask |= INFOS_DEVICE_TYPE;
 
 	i = 82;
 	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
 	infos->mask |= INFOS_MAIN_CALC_ID;
+	strncpy(infos->product_id, (char*)(data + 84), 28);
+	infos->mask |= INFOS_PRODUCT_ID;	
 
 	g_free(data);
 	TRYF(nsp_session_close(handle));
