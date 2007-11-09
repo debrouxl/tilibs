@@ -117,6 +117,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 	sc->width = sc->clipped_width = (data[8] << 8) | data[9];
 	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
+	size = GUINT32_FROM_BE(*((uint32_t *)(data)));
 	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 
 	TRYF(nsp_session_close(handle));
@@ -155,42 +156,6 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
-#if 0
-	{
-		{
-			VarEntry *fe = tifiles_ve_create();
-			GNode *node;
-
-			strcpy(fe->folder, "Exemples");
-			strcpy(fe->name, "Exemples");
-			fe->size = 0;
-			fe->type = 01;
-			fe->attr = ATTRB_NONE;
-
-			node = g_node_new(fe);
-			folder = g_node_append(*vars, node);
-		}
-		{
-			VarEntry *ve = tifiles_ve_create();
-			GNode *node;
-			char varname[256];
-			char *ext;
-			
-			strcpy(varname, "Classeur1.tns");
-
-			ext = tifiles_fext_get(varname);
-			strcpy(ve->folder, "Exemples");
-			ve->size = 5000;			
-			ve->type = tifiles_fext2vartype(handle->model, ext);
-			ve->attr = ATTRB_NONE;
-			if(ext) *(ext-1) = '\0';
-			strcpy(ve->name, varname);
-
-			node = g_node_new(ve);
-			g_node_append(folder, node);
-		}
-	}
-#else
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	TRYF(cmd_s_dir_enum_init(handle, "/"));
@@ -282,7 +247,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	}	
 
 	TRYF(nsp_session_close(handle));
-#endif
+
 	return 0;
 }
 
@@ -314,6 +279,39 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
+	char *utf8;
+	uint8_t status;
+
+	update_->cnt2 = 0;
+	update_->max2 = 1;
+	update_->pbar();
+
+	{
+		VarEntry *ve = content->entries[0];
+		gchar *path;
+		
+		if(ve->action == ACT_SKIP)
+			return 0;
+
+		path = g_strconcat("/", ve->folder, "/", ve->name, ".", 
+			tifiles_vartype2fext(handle->model, ve->type), NULL);
+
+		utf8 = ticonv_varname_to_utf8(handle->model, path, ve->type);
+		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+		g_free(utf8);
+		update_label();
+
+		TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+		TRYF(cmd_s_put_file(handle, path, ve->size));
+		TRYF(cmd_r_put_file(handle));
+
+		TRYF(cmd_s_file_contents(handle, ve->size, ve->data));
+		TRYF(cmd_r_status(handle, &status));
+
+		TRYF(nsp_session_close(handle));
+	}
+
 	return 0;
 }
 

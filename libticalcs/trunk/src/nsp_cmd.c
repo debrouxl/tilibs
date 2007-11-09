@@ -69,6 +69,8 @@ static int put_str(char *dst, const char *src)
 		for(j = i; j < 9; j++)
 			dst[j] = '\0';
 	}
+	else
+		j = i;
 
 	return j;
 }
@@ -292,6 +294,8 @@ int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 	pkt->cmd = CMD_FM_PUT_FILE;
 	pkt->data[0] = 0x01;
 	o = put_str(pkt->data + 1, name);
+	o++;
+
 	pkt->data[o+0] = MSB(MSW(size));
 	pkt->data[o+1] = LSB(MSW(size));
 	pkt->data[o+2] = MSB(LSW(size));
@@ -370,9 +374,21 @@ int cmd_r_file_ok(CalcHandle *h)
 
 	if(pkt->cmd != CMD_FM_OK)
 	{
-		nsp_vtl_pkt_del(pkt);
-		return ERR_INVALID_PACKET;
+		if(pkt->cmd == CMD_STATUS)
+		{
+			uint8_t value = pkt->data[0] << 8;
+
+			nsp_vtl_pkt_del(pkt);
+			return ERR_CALC_ERROR3 + err_code(value);
+		}
+		else
+		{
+			nsp_vtl_pkt_del(pkt);
+			return ERR_INVALID_PACKET;
+		}
 	}
+	else
+		ticalcs_info("  ok");
 
 	return 0;
 }
