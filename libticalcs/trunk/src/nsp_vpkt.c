@@ -313,6 +313,7 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 	RawPacket raw = { 0 };
 	int i = 0;
 	long offset = 0;
+	uint32_t size = vtl->size;
 
 	vtl->size = 0;
 	vtl->data = malloc(DATA_SIZE);
@@ -327,7 +328,7 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 		memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
 		offset += raw.data_size-1;
 
-		h->updat->max1 = vtl->size;
+		h->updat->max1 = size ? size : vtl->size;
 		h->updat->cnt1 += DATA_SIZE;
 		h->updat->pbar();
 

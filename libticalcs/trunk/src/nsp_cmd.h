@@ -85,6 +85,7 @@ int cmd_s_dir_enum_done(CalcHandle *h);
 int cmd_r_dir_enum_done(CalcHandle *h);
 
 int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size);
+int cmd_r_put_file(CalcHandle *h);
 
 int cmd_s_get_file(CalcHandle *h, const char *name);
 int cmd_r_get_file(CalcHandle *h, uint32_t *size);

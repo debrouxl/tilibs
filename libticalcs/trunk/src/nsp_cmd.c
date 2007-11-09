@@ -175,6 +175,7 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 	ticalcs_info("  receiving RLE screenshot:");
 
+	pkt->size = *size;
 	TRYF(nsp_recv_data(h, pkt));
 
 	*cmd = pkt->cmd;
@@ -302,6 +303,11 @@ int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 	return 0;
 }
 
+int cmd_r_put_file(CalcHandle *h)
+{
+	return cmd_r_file_ok(h);
+}
+
 int cmd_s_get_file(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
@@ -392,10 +398,10 @@ int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 	ticalcs_info("  receiving file contents:");
 
+	pkt->size = *size;
 	TRYF(nsp_recv_data(h, pkt));
 
-	if(size)
-		*size = pkt->size;
+	*size = pkt->size;
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data, pkt->size);
 
