@@ -355,7 +355,7 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+3:
-	    strcpy(error_msg, _("Msg: we are not currently listing a directory."));
+	    strcpy(error_msg, _("Msg: not currently listing a directory."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+4:

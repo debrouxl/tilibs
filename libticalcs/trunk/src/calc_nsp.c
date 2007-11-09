@@ -293,6 +293,9 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		if(ve->action == ACT_SKIP)
 			return 0;
 
+		if(!strlen(ve->folder))
+			return ERR_ABORT;
+
 		path = g_strconcat("/", ve->folder, "/", ve->name, ".", 
 			tifiles_vartype2fext(handle->model, ve->type), NULL);
 
