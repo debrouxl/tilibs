@@ -72,12 +72,32 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 
   content->model = CALC_NSPIRE;
   content->model_dst = content->model;
+
+  content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
       
   {
 	  VarEntry *entry = content->entries[0] = g_malloc0(sizeof(VarEntry));
-  
+	  
+	  gchar *basename = g_path_get_basename(filename);
+	  gchar *ext = tifiles_fext_get(basename);
+
+	  entry->type = tifiles_fext2vartype(content->model, ext);
+	  if(ext) *(ext-1) = '\0';
+
+	  strcpy(entry->folder, "");
+	  strcpy(entry->name, basename);
+	  g_free(basename);
+
+	  entry->attr = ATTRB_NONE;
+	  fseek(f, 0, SEEK_END);
+	  entry->size = (uint32_t)ftell(f);
+	  fseek(f, 0, SEEK_SET);
+
+	  entry->data = (uint8_t *)g_malloc0(entry->size);  
 	  if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
   }
+
+  content->num_entries++;
 
   fclose(f);
   return 0;

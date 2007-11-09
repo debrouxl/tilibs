@@ -98,6 +98,9 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
   FileContent *dst;
   int i, j, n;
 
+  if(src_contents[0]->model == CALC_NSPIRE)
+	  return ERR_BAD_CALC;
+
   for (n = 0; src_contents[n] != NULL; n++);
 
   dst = (FileContent *)g_malloc0(sizeof(FileContent));
@@ -141,6 +144,9 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
 {
   int i;
   FileContent **dst;
+
+  if(src->model == CALC_NSPIRE)
+	  return ERR_BAD_CALC;
 
   // allocate an array of FileContent structures (NULL terminated)
   dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) *
@@ -194,6 +200,9 @@ TIEXPORT2 int TICALL tifiles_group_files(char **src_filenames, const char *dst_f
   FileContent **src = NULL;
   FileContent *dst = NULL;
   int ret = 0;
+
+  if(tifiles_file_get_model(src_filenames[0]) == CALC_NSPIRE)
+	  return ERR_BAD_CALC;
 
   // counter number of files to group
   for (n = 0; src_filenames[n] != NULL; n++);
@@ -252,6 +261,9 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
   char *real_name, **p;
   int i, n;
   int ret;
+
+  if(tifiles_file_get_model(src_filename) == CALC_NSPIRE)
+	  return ERR_BAD_CALC;
 
   // read group file
   src = tifiles_content_create_regular(CALC_NONE);
