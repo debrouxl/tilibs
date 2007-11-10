@@ -59,6 +59,12 @@
 #define CMD_FM_DIRLIST_DONE	0x0f
 #define CMD_FM_DIRLIST_ENT	0x10
 
+// OS Installation commands
+#define CMD_OS_INSTALL		0x03
+#define CMD_OS_OK			0x04
+#define CMD_OS_CONTENTS		0x05
+#define CMD_OS_PROGRESS		0x06
+
 // Structures
 // ...
 
@@ -95,5 +101,11 @@ int cmd_r_file_ok(CalcHandle *h);
 
 int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data);
 int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data);
+
+int cmd_s_os_install(CalcHandle *h, uint32_t size);
+int cmd_r_os_install(CalcHandle *h);
+
+int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data);
+int cmd_r_progress(CalcHandle *h, uint8_t *value);
 
 #endif

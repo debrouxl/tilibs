@@ -75,10 +75,11 @@ static int put_str(char *dst, const char *src)
 	return j;
 }
 
+/////////////----------------
+
 int cmd_r_login(CalcHandle *h)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
-	uint8_t value;
 
 	ticalcs_info("  receiving login:");
 
@@ -87,6 +88,8 @@ int cmd_r_login(CalcHandle *h)
 	nsp_vtl_pkt_del(pkt);
 	return 0;
 }
+
+/////////////----------------
 
 int cmd_s_status(CalcHandle *h, uint8_t status)
 {
@@ -112,7 +115,7 @@ int cmd_r_status(CalcHandle *h, uint8_t *status)
 	ticalcs_info("  receiving status:");
 
 	TRYF(nsp_recv_data(h, pkt));
-	value = pkt->data[0] << 8;
+	value = pkt->data[0];
 
 	if(pkt->cmd != CMD_STATUS)
 		return ERR_INVALID_PACKET;
@@ -126,6 +129,8 @@ int cmd_r_status(CalcHandle *h, uint8_t *status)
 	nsp_vtl_pkt_del(pkt);
 	return 0;
 }
+
+/////////////----------------
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 {
@@ -156,6 +161,8 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 	nsp_vtl_pkt_del(pkt);
 	return 0;
 }
+
+/////////////----------------
 
 int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 {
@@ -188,6 +195,8 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 	nsp_vtl_pkt_del(pkt);
 	return 0;
 }
+
+/////////////----------------
 
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
@@ -283,6 +292,8 @@ int cmd_r_dir_enum_done(CalcHandle *h)
 	return cmd_r_status(h, NULL);
 }
 
+/////////////----------------
+
 int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 {
 	VirtualPacket* pkt;
@@ -376,7 +387,7 @@ int cmd_r_file_ok(CalcHandle *h)
 	{
 		if(pkt->cmd == CMD_STATUS)
 		{
-			uint8_t value = pkt->data[0] << 8;
+			uint8_t value = pkt->data[0];
 
 			nsp_vtl_pkt_del(pkt);
 			return ERR_CALC_ERROR3 + err_code(value);
@@ -424,3 +435,80 @@ int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 	nsp_vtl_pkt_del(pkt);
 	return 0;
 }
+
+/////////////----------------
+
+int cmd_s_os_install(CalcHandle *h, uint32_t size)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  installing OS:");
+
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
+	pkt->cmd = CMD_OS_INSTALL;
+	pkt->data[0] = MSB(MSW(size));
+	pkt->data[1] = LSB(MSW(size));
+	pkt->data[2] = MSB(LSW(size));
+	pkt->data[3] = LSB(LSW(size));
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_os_install(CalcHandle *h)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  receiving OS installation:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	if(pkt->cmd != CMD_OS_OK)
+		return ERR_INVALID_PACKET;
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
+
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  sending OS contents:");
+
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
+	pkt->cmd = CMD_OS_CONTENTS;
+	memcpy(pkt->data, data, size);
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_progress(CalcHandle *h, uint8_t *value)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  OS installation status:");
+
+	TRYF(nsp_recv_data(h, pkt));
+	*value = pkt->data[0];
+
+	switch(pkt->cmd)
+	{
+	case CMD_OS_PROGRESS:
+		ticalcs_info("  %i/100", *value);
+		break;
+	case CMD_STATUS:
+		nsp_vtl_pkt_del(pkt);
+		return ERR_CALC_ERROR3 + err_code(*value);
+	default:
+		nsp_vtl_pkt_del(pkt);
+		return ERR_INVALID_PACKET;
+	}
+
+	return 0;
+}
+
