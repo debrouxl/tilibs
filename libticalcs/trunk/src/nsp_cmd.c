@@ -512,3 +512,34 @@ int cmd_r_progress(CalcHandle *h, uint8_t *value)
 	return 0;
 }
 
+/////////////----------------
+
+int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
+{
+	VirtualPacket* pkt;
+
+	ticalcs_info("  sending echo:");
+
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_ECHO);
+	pkt->cmd = 0;
+	if(data) memcpy(pkt->data, data, size);
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  receiving echo:");
+
+	TRYF(nsp_recv_data(h, pkt));
+	if(size) *size = pkt->size;
+	if(data) *data = g_malloc0(pkt->size);
+	if(size && data) memcpy(*data, pkt->data, pkt->size);
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}

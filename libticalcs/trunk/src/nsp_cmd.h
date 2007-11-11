@@ -108,4 +108,7 @@ int cmd_r_os_install(CalcHandle *h);
 int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data);
 int cmd_r_progress(CalcHandle *h, uint8_t *value);
 
+int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
+int cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
+
 #endif
