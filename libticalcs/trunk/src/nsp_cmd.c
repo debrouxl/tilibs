@@ -444,7 +444,7 @@ int cmd_s_os_install(CalcHandle *h, uint32_t size)
 
 	ticalcs_info("  installing OS:");
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
+	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
 	pkt->cmd = CMD_OS_INSTALL;
 	pkt->data[0] = MSB(MSW(size));
 	pkt->data[1] = LSB(MSW(size));

@@ -60,7 +60,20 @@ static int		is_ready	(CalcHandle* handle)
 		}
 	}
 
-	// Use ECHO packet for is_ready
+	{
+		char str[] = "ready";
+		uint32_t size;
+		uint8_t *data;
+
+		// Use ECHO packet as ready check
+		TRYF(nsp_session_open(handle, SID_ECHO));
+
+		TRYF(cmd_s_echo(handle, strlen(str)+1, str));
+		TRYF(cmd_r_echo(handle, &size, &data));
+		g_free(data);
+
+		TRYF(nsp_session_close(handle));
+	}
 
 	return 0;
 }
@@ -386,6 +399,35 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
+	uint8_t status, value;
+
+	if(content == NULL)
+		return -1;
+
+	tifiles_hexdump(content->data_part + content->data_length - 16, 16);
+
+	TRYF(nsp_session_open(handle, SID_OS_INSTALL));
+
+	TRYF(cmd_s_os_install(handle, content->data_length));
+	TRYF(cmd_r_os_install(handle));
+
+	TRYF(cmd_s_os_contents(handle, 253, content->data_part));
+	TRYF(cmd_r_status(handle, &status));
+	TRYF(cmd_s_os_contents(handle, content->data_length - 253, content->data_part + 253));
+
+	update_->cnt2 = 0;
+	update_->max2 = 100;
+	update_->pbar();
+
+	do
+	{
+		TRYF(cmd_r_progress(handle, &value));
+
+		update_->cnt2 = value;
+		update_->pbar();
+	} while(value < 100 );
+
+	TRYF(nsp_session_close(handle));
 
 	return 0;
 }
@@ -558,8 +600,8 @@ const CalcFncts calc_nsp =
 	"NSPire",
 	"NSpire handheld",
 	N_("NSPire thru DirectLink"),
-	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS |
-	FTS_MEMFREE,
+	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
+	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
