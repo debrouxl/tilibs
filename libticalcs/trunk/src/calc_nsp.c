@@ -68,7 +68,7 @@ static int		is_ready	(CalcHandle* handle)
 		// Use ECHO packet as ready check
 		TRYF(nsp_session_open(handle, SID_ECHO));
 
-		TRYF(cmd_s_echo(handle, strlen(str)+1, str));
+		TRYF(cmd_s_echo(handle, strlen(str)+1, (uint8_t *)str));
 		TRYF(cmd_r_echo(handle, &size, &data));
 		g_free(data);
 
@@ -442,7 +442,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
-	strncpy(id, (char*)(data + 84), 28);
+	strncpy((char *)id, (char*)(data + 84), 28);
 
 	g_free(data);
 	TRYF(nsp_session_close(handle));

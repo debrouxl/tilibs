@@ -178,12 +178,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		for(ptr = content->app_entries; *ptr; ptr++)
 		{
 			TigEntry *te = *ptr;
-			VarEntry ve = {0};
+			VarEntry ve;
 
 			update_->cnt3++;
 			update_->pbar();
 
 			// can't overwrite apps so check before sending app
+			memset(&ve, 0, sizeof(VarEntry));
 			strcpy(ve.name, te->content.flash->name);
 			if(!ticalcs_dirlist_ve_exist(apps, &ve))
 				TRYF(handle->calc->send_app(handle, te->content.flash));

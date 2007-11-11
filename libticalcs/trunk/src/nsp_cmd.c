@@ -56,7 +56,7 @@ static int err_code(uint8_t code)
 
 /////////////----------------
 
-static int put_str(char *dst, const char *src)
+static int put_str(uint8_t *dst, const char *src)
 {
 	int i, j;
 
@@ -245,7 +245,6 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 	ticalcs_info("  next directory entry:");
 
 	TRYF(nsp_recv_data(h, pkt));
-	tifiles_hexdump(pkt->data, pkt->size);
 
 	if(pkt->cmd != CMD_FM_DIRLIST_ENT)
 	{
@@ -259,7 +258,7 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 	}
 
 	data_size = pkt->data[1] + 2;
-	strcpy(name, pkt->data + 2);
+	strcpy(name, (char *)pkt->data + 2);
 	o = data_size - 10;
 	
 	if(size)

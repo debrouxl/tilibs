@@ -311,7 +311,6 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 {
 	RawPacket raw = { 0 };
-	int i = 0;
 	long offset = 0;
 	uint32_t size = vtl->size;
 
