@@ -144,6 +144,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 
 	for(c = 0; c != ' '; c=fgetc(f));
 	fscanf(f, "%i", &(content->data_length));
+	rewind(f);
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
 	if (content->data_part == NULL) 
@@ -153,8 +154,8 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 		return ERR_MALLOC;
 	}
 
-	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 	content->next = NULL;
+	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;	
 
 	fclose(f);
 	return 0;
