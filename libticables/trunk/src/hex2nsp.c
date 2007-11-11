@@ -23,6 +23,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "stdints1.h"
+
 #define HEXDUMP_SIZE	12
 
 /*
@@ -30,12 +32,6 @@
 
 	54 FD SA SA SS SS DA DA DS DS DC DC SZ AK SQ CK [data part]
 */
-
-typedef unsigned char	uint8_t;
-typedef unsigned short	uint16_t;
-typedef unsigned long	uint32_t;
-
-/* */
 
 typedef struct
 {
