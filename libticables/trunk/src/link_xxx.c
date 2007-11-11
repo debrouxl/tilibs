@@ -433,11 +433,17 @@ TIEXPORT1 int TICALL ticables_progress_get(CableHandle* handle, int* count, int*
 		*msec = handle->rate.current - handle->rate.start;
 
 	if(rate)
-		*rate = (float)handle->rate.count / ((float)(handle->rate.current - handle->rate.start));
-/*
-	printf("<%u %u %u %u %f\n", 
-		handle->rate.count, handle->rate.start, handle->rate.current,
-		handle->rate.current - handle->rate.start, (float)handle->rate.count / ((float)(handle->rate.current - handle->rate.start)));
-*/
+	{
+		if(handle->rate.current > handle->rate.start)
+			*rate = (float)handle->rate.count / ((float)(handle->rate.current - handle->rate.start));
+	}
+
+#if 0
+	if(handle->rate.current > handle->rate.start)
+		printf("<%u %u %u %u %f\n", 
+			handle->rate.count, handle->rate.start, handle->rate.current,
+			handle->rate.current - handle->rate.start, (float)handle->rate.count / ((float)(handle->rate.current - handle->rate.start)));
+#endif
+
 	return 0;
 }
