@@ -48,9 +48,10 @@
 
 /* Types */
 
-#define FLDNAME_MAX		33	// 4*8 + 1 (UTF-8)
-#define VARNAME_MAX		33	// idem
-#define FULNAME_MAX		66	// 4*8 + 1 + 4*8 + 1 (UTF-8)
+// TI-XX: up to 4*8 chars + 1, NSpire, up to 4*255 chars + 1
+#define FLDNAME_MAX		1024
+#define VARNAME_MAX		1024
+#define FULNAME_MAX		2048
 
 /**
  * CalcModel:

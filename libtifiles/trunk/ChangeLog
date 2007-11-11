@@ -5,8 +5,9 @@ Log:
 - 04/10/2007, version 1.1.0: roms
 	- adding NSpire support...
 	- TiConnect compresses application in TiGroup; does (almost) the same
+	- increased string size of VarEntry structure from 33 to 1024 for NSpire
+	- typesXX.c: are icon & desc fields swapped? (icon should not be localized)
 
-	- typesXX.c: are icon & desc fields swapped (icon should not be localized)
 
 - 18/09/2007, version 1.0.8: roms
 	- added file extension for GRP variables
