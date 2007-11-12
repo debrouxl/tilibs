@@ -65,7 +65,7 @@ const char* nsp_sid2name(uint16_t id)
 	return "unknown: not listed";
 }
 
-// Creation/Destruction of packets
+// Creation/Destruction/Garbage Collecting of packets
 
 static GList *vtl_pkt_list = NULL;
 
@@ -262,7 +262,7 @@ int nsp_disconnect(CalcHandle *h)
 
 int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 {
-	RawPacket raw = { 0 };
+	RawPacket raw = {0};
 	int i, r, q;
 	long offset = 0;
 
@@ -310,7 +310,7 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 // Note: data field may be re-allocated.
 int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 {
-	RawPacket raw = { 0 };
+	RawPacket raw = {0};
 	long offset = 0;
 	uint32_t size = vtl->size;
 

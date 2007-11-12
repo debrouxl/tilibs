@@ -46,14 +46,14 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	static int checked = 0;
+	static int nsp_checked = 0;
 
 	// Init once
-	if(!checked)
+	if(!nsp_checked)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
-		checked++;
+		nsp_checked++;
 
 		{
 			//TRYF(cmd_r_login(handle));
@@ -149,7 +149,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	TreeInfo *ti;
 	int err;
 	GNode *root, *folder = NULL;
-	char varname[40];
+	char varname[VARNAME_MAX];
 	uint32_t varsize;
 	uint8_t vartype;
 	int i;

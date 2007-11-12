@@ -45,9 +45,6 @@ typedef struct
 
 // Functions
 
-RawPacket*  raw_pkt_new(uint32_t size);
-void		raw_pkt_del(RawPacket* pkt);
-
 int nsp_send(CalcHandle* cable, RawPacket* pkt);
 int nsp_recv(CalcHandle* cable, RawPacket* pkt);
 
