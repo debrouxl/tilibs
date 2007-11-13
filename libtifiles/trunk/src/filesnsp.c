@@ -198,7 +198,7 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
   else
   {
 	  VarEntry *ve = content->entries[0];
-	  filename = g_strconcat("/", ve->folder, "/", ve->name, ".", 
+	  filename = g_strconcat(ve->name, ".", 
 		tifiles_vartype2fext(content->model, ve->type), NULL);
 	  if (real_fname != NULL)
 		*real_fname = g_strdup(filename);
