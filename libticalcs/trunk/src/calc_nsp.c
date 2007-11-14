@@ -50,11 +50,6 @@ static int		is_ready	(CalcHandle* handle)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
-		nsp_checked++;
-
-		{
-			//TRYF(cmd_r_login(handle));
-		}
 	}
 
 	{
