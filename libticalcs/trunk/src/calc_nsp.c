@@ -46,12 +46,7 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	static int nsp_checked = 0;
-
-	// Init once
-#ifdef __WIN32__
-	if(!nsp_checked)
-#endif
+	// always reset device (work with ROM 1.1 & 1.2)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
