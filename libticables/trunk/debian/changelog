@@ -2,6 +2,8 @@ libticables2-1 (1.2.0-1) unstable; urgency=low
 
   * Added NSpire link support.
 
+ -- Romain LIEVIN <roms@tilp.info>  Sat, 01 Dec 2007 15:49:00 +0200
+
 libticables2-1 (1.0.8-1) unstable; urgency=low
 
   * Replaced my win32 USB driver by libusb-win32 one.
