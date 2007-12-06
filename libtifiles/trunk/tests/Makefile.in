@@ -392,6 +392,9 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS)
@@ -482,7 +485,7 @@ uninstall-am:
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstPROGRAMS ctags distclean \
+	clean-libtool clean-noinstPROGRAMS ctags dist-hook distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
@@ -494,6 +497,19 @@ uninstall-am:
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am
 
+
+dist-hook:
+	rm -rf $(distdir)/test/misc \
+	$(distdir)/test/cert \
+	$(distdir)/test/tig \
+	$(distdir)/test/ti73 \
+	$(distdir)/test/ti82 \
+	$(distdir)/test/ti83 \
+	$(distdir)/test/ti84p \
+	$(distdir)/test/ti85 \
+	$(distdir)/test/ti86 \
+	$(distdir)/test/ti89 \
+	$(distdir)/test/ti92
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
