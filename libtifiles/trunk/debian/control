@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: libtifiles2-5-dev
 Section: libdevel
 Architecture: any
-Depends: libtifiles2-5 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticonv3-dev, zlib1g-dev
+Depends: libtifiles2-5 (= ${binary:Version}), pkg-config, libglib2.0-dev, libticonv3-dev, zlib1g-dev
 Conflicts: libtifiles2-3-dev, libtifiles2-4-dev
 Description: Texas Instruments calculator files library [development files]
  The libtifiles is a library providing support for operations on Texas
