@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: libticonv3-dev
 Section: libdevel
 Architecture: any
-Depends: libticonv3 (= ${Source-Version}), pkg-config, libglib2.0-dev
+Depends: libticonv3 (= ${binary:Version}), pkg-config, libglib2.0-dev
 Conflicts: libticonv2-dev
 Description: Texas Instruments calculators charsets library [development files]
  The libticonv is a library providing support for operations on Texas 
