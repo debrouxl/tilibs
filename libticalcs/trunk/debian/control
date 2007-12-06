@@ -2,13 +2,13 @@ Source: libticalcs2-7
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1-dev (>= 1.0.5-1), libtifiles2-4-dev (>= 1.0.7-1), libticonv3-dev (>= 1.0.4-1), tfdocgen, gettext, autoconf, automake1.10
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1-dev (>= 1.2.0-1), libtifiles2-5-dev (>= 1.1.0-1), libticonv3-dev (>= 1.1.0-1), tfdocgen, gettext, autoconf, automake1.10
 Standards-Version: 3.7.2
 
 Package: libticalcs2-7-dev
 Section: libdevel
 Architecture: any
-Depends: libticalcs2-7 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-4-dev, libticonv3-dev
+Depends: libticalcs2-7 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-5-dev, libticonv3-dev
 Conflicts: libticalcs2-2-dev, libticalcs2-6-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
