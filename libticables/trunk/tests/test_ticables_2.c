@@ -60,11 +60,12 @@ static void print_lc_error(int errnum)
 int main(int argc, char **argv)
 {
 	CableHandle *handle;
-	int err, i, j;
-	uint8_t buf[65536], data;
-	int status, result;
-	uint8_t scr[3840 + 6];
-	int **probing = NULL;
+	int err;
+	//	int i, j;
+	//	uint8_t buf[65536], data;
+	//	int status, result;
+	//	uint8_t scr[3840 + 6];
+	//	int **probing = NULL;
 
  #if 0
 	tiTIME ref, end;

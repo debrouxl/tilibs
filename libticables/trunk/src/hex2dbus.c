@@ -174,7 +174,7 @@ int dbus_decomp(const char *filename, int resync)
     {
         for(j = 0; j < 16 && !feof(fi); j++)
 		{
-			fscanf(fi, "%02X", &(buffer[i+j]));
+			fscanf(fi, "%02X", (unsigned int *)&(buffer[i+j]));
 			fgetc(fi);
 		}
         i += j;

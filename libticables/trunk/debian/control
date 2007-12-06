@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: libticables2-1-dev
 Section: libdevel
 Architecture: any
-Depends: libticables2-1 (= ${Source-Version}), pkg-config, libglib2.0-dev
+Depends: libticables2-1 (= ${binary:Version}), pkg-config, libglib2.0-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
  Instruments calculators link cables. All link cables are supported read/write.
