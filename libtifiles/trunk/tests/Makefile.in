@@ -499,17 +499,20 @@ uninstall-am:
 
 
 dist-hook:
+	if test ! -d .svn; then \
+	rm -rf misc certs tig ti73 ti82 ti83 ti84p ti85 ti86 ti89 ti92; \
+	fi
 	rm -rf $(distdir)/test/misc \
-	$(distdir)/test/cert \
-	$(distdir)/test/tig \
-	$(distdir)/test/ti73 \
-	$(distdir)/test/ti82 \
-	$(distdir)/test/ti83 \
-	$(distdir)/test/ti84p \
-	$(distdir)/test/ti85 \
-	$(distdir)/test/ti86 \
-	$(distdir)/test/ti89 \
-	$(distdir)/test/ti92
+		$(distdir)/test/certs \
+		$(distdir)/test/tig \
+		$(distdir)/test/ti73 \
+		$(distdir)/test/ti82 \
+		$(distdir)/test/ti83 \
+		$(distdir)/test/ti84p \
+		$(distdir)/test/ti85 \
+		$(distdir)/test/ti86 \
+		$(distdir)/test/ti89 \
+		$(distdir)/test/ti92
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
