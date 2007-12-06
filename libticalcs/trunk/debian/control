@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: libticalcs2-7-dev
 Section: libdevel
 Architecture: any
-Depends: libticalcs2-7 (= ${Source-Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-5-dev, libticonv3-dev
+Depends: libticalcs2-7 (= ${binary:Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-5-dev, libticonv3-dev
 Conflicts: libticalcs2-2-dev, libticalcs2-6-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
