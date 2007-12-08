@@ -2,6 +2,8 @@
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 
+EXTRA_DIST = tifiles2.supp vcheck
+
 noinst_PROGRAMS = test_tifiles_2
 
 test_tifiles_2_CPPFLAGS = @GLIB_CFLAGS@
