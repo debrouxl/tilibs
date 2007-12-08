@@ -45,4 +45,4 @@ if OS_WIN32
   libtifiles2_la_LDFLAGS += -Wl,../build/mingw/tifiles2-rc.o
 endif
 
-EXTRA_DIST = minizip/*
+EXTRA_DIST = minizip/* vcheck tifiles2.supp
