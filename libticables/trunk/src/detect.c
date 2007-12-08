@@ -41,5 +41,5 @@
 #elif defined(__WIN32__)
 #include "win32/detect.c"
 #else
-#include "none.h"
+#include "none.c"
 #endif

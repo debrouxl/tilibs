@@ -8,7 +8,7 @@ if USE_DOCGEN
 endif
 
 # Extra files to add to the (distributed) package
-EXTRA_DIST = LOGO build
+EXTRA_DIST = CONFIG LOGO build
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticables2.pc

@@ -30,5 +30,5 @@
 #elif defined(__WIN32__)
 #include "win32/ioports.c"
 #else
-#include "none.h"
+#include "none.c"
 #endif

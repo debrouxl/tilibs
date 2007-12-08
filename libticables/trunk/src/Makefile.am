@@ -27,7 +27,8 @@ libticables2_la_SOURCES = *.h \
 	logging.c \
 	probe.c \
 	ticables.c \
-	type2str.c
+	type2str.c \
+	none.c
 
 if OS_WIN32
   libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
