@@ -36,6 +36,16 @@
 #include "win32/detect.h"
 #include "bsd/detect.h"
 
+static void ticables_probing_show(int **array)
+{
+	CableModel model;
+
+	for(model = CABLE_NUL; model < CABLE_MAX; model++)
+	{
+		ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);	
+	}
+}
+
 /**
  * ticables_probing_do:
  * @result: address of an array of integers to put the result.
@@ -52,51 +62,74 @@
 TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
 {
 	CablePort port;
-	CableModel model, start, stop;
+	CableModel model;
 	int **array;
-	int found = -1;
+	int found = 0;
 
 	ticables_info(_("Link cable probing:"));
+
 	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
-
-	switch(method)
-	{
-	case PROBE_USB:		start = CABLE_SLV; stop = CABLE_USB; break;
-	case PROBE_DBUS:	start = CABLE_GRY; stop = CABLE_PAR; break;
-	default:		start = CABLE_GRY; stop = CABLE_TIE; break;
-	}
-
 	for(model = CABLE_NUL; model <= CABLE_MAX; model++)
 	    array[model] = (int *)calloc(5, sizeof(int));
 
-	for(model = start; model <= stop; model++)
+	// look for USB devices (faster)
+	if(method & PROBE_USB)
 	{
-		for(port = PORT_1; port <= PORT_4; port++)
+		int *list, n, i;
+
+		ticables_get_usb_devices(&list, &n);
+
+		for(i = 0; i < n; i++)
 		{
-			CableHandle* handle;
-			int err, ret;
+			port = i+1;
 
-			handle = ticables_handle_new(model, port);
-			if(handle)
-			{
-				ticables_options_set_timeout(handle, timeout);
-				err = ticables_cable_probe(handle, &ret);
-				array[model][port] = (ret && !err) ? 1: 0;
-				if(array[model][port]) found = !0;
+			if(list[i] == PID_TIGLUSB)
+				array[CABLE_SLV][port] = !0;
 
-				if(found && method == PROBE_FIRST)
-				{
-					ticables_handle_del(handle);
-					break;
-				}
-			}
-			ticables_handle_del(handle);
+			if(list[i])
+				array[CABLE_USB][port] = !0;
+
+			if(list[i])
+				found = !0;
 		}
-		//ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);	
+	}
+
+	if((method & PROBE_FIRST) && found)
+	{
+		*result = array;
+		return found ? 0 : ERR_NO_CABLE;
+	}
+
+	// look for DBUS devices (slower)
+	if(method & PROBE_DBUS)
+	{
+		for(model = CABLE_GRY; model <= CABLE_PAR; model++)
+		{
+			for(port = PORT_1; port <= PORT_4; port++)
+			{
+				CableHandle* handle;
+				int err, ret;
+
+				handle = ticables_handle_new(model, port);
+				if(handle)
+				{
+					ticables_options_set_timeout(handle, timeout);
+					err = ticables_cable_probe(handle, &ret);
+					array[model][port] = (ret && !err) ? 1: 0;
+					if(array[model][port]) found = !0;
+
+					if(found && (method & PROBE_FIRST))
+					{
+						ticables_handle_del(handle);
+						break;
+					}
+				}
+				ticables_handle_del(handle);
+			}
+		}
 	}
 
 	*result = array;
-
 	return found ? 0 : ERR_NO_CABLE;
 }
 

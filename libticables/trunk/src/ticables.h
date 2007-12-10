@@ -112,10 +112,11 @@ typedef enum
  **/
 typedef enum
 {
-	PROBE_ALL = 0,
-	PROBE_FIRST,
-	PROBE_USB,
-	PROBE_DBUS,
+	PROBE_NONE	= 0,
+	PROBE_FIRST = 1,
+	PROBE_USB	= 2,
+	PROBE_DBUS	= 4,
+	PROBE_ALL	= 6,
 } ProbingMethod;
 
 /**
