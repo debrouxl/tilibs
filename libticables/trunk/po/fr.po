@@ -1,5 +1,5 @@
 # French translations for libticables2 package.
-#  Copyright (C) 2003 Sylvain Garsault
+# Â Copyright (C) 2003 Sylvain Garsault
 # Copyright (C) 2007 Romain Lievin
 # This file is distributed under the same license as the libticables2 package.
 # Romain Lievin <roms@tilp.info>, 2007.
@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.0.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-24 11:51+0200\n"
+"POT-Creation-Date: 2007-12-10 21:50+0100\n"
 "PO-Revision-Date: 2007-02-23 16:08+0100\n"
 "Last-Translator: Romain Lievin <roms@tilp.info>\n"
-"Language-Team: Français <tilp-users@list.sf.net>\n"
+"Language-Team: FranÃ§ais <tilp-users@list.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: src/error.c:60
 msgid "Msg: link cable is busy."
-msgstr "Msg: la connexion est occuppée."
+msgstr "Msg: la connexion est occuppÃ©e."
 
 #: src/error.c:62
 msgid "Cause: a transfer is in progress."
@@ -27,7 +27,7 @@ msgstr "Cause: transfert en cours."
 
 #: src/error.c:68
 msgid "Msg: unable to use parallel/serial port: access refused."
-msgstr "Msg: impossible d'utiliser le port série/parallèle: accès refusé."
+msgstr "Msg: impossible d'utiliser le port sÃ©rie/parallÃ¨le: accÃ¨s refusÃ©."
 
 #: src/error.c:70
 msgid "Cause: you are not running program as root or setuid root."
@@ -35,7 +35,7 @@ msgstr "Cause: le programme devrait fonctionner en root ou en setuid."
 
 #: src/error.c:76
 msgid "Msg: unable to use serial (/dev/ttySx) device."
-msgstr "Msg: impossible d'utiliser le port série (/dev/ttySx)."
+msgstr "Msg: impossible d'utiliser le port sÃ©rie (/dev/ttySx)."
 
 #: src/error.c:78
 msgid ""
@@ -45,15 +45,15 @@ msgid ""
 "'uucp'. This can be done by editing /etc/group and add the username after "
 "the ':'. Example: dialout:x:20:romain "
 msgstr ""
-"Cause: le périphérique /dev/ttySx n'existe pas ou vous n'avez pas les "
-"permissions requises. La manière de paramétrer les permissions dépend de la "
-"distribution mais vous pouvez ajouter l'utilisateur au groupe 'dialout' ou "
-"'uucp'. Pour cela, ouvrir le fichier /etc/group et ajouter le nom "
-"d'utilisateur après le ':'. Exemple: dialout:x:20:romain"
+"Cause: le pÃ©riphÃ©rique /dev/ttySx n'existe pas ou vous n'avez pas les "
+"permissions requises. La maniÃ¨re de paramÃ©trer les permissions dÃ©pend de "
+"la distribution mais vous pouvez ajouter l'utilisateur au groupe 'dialout' "
+"ou 'uucp'. Pour cela, ouvrir le fichier /etc/group et ajouter le nom "
+"d'utilisateur aprÃ¨s le ':'. Exemple: dialout:x:20:romain"
 
 #: src/error.c:90
 msgid "Msg: unable to use parport (/dev/parportX) device."
-msgstr "Msg: impossible d'utiliser le port parallèle (/dev/parportX)."
+msgstr "Msg: impossible d'utiliser le port parallÃ¨le (/dev/parportX)."
 
 #: src/error.c:92
 msgid ""
@@ -63,15 +63,15 @@ msgid ""
 "can be done by editing /etc/group and add the username after the ':'. "
 "Example: lp:x:7:romain "
 msgstr ""
-"Cause: le périphérique /dev/parportX n'existe pas ou vous n'avez pas les "
-"permissions requises. La manière de paramétrer les permissions dépend de la "
-"distribution mais vous pouvez ajouter l'utilisateur au groupe 'lp'. Pour "
-"cela, ouvrir le fichier /etc/group et ajouter le nom d'utilisateur après le "
+"Cause: le pÃ©riphÃ©rique /dev/parportX n'existe pas ou vous n'avez pas les "
+"permissions requises. La maniÃ¨re de paramÃ©trer les permissions dÃ©pend de "
+"la distribution mais vous pouvez ajouter l'utilisateur au groupe 'lp'. Pour "
+"cela, ouvrir le fichier /etc/group et ajouter le nom d'utilisateur aprÃ¨s le "
 "':'. Exemple: mlp:x:7:romain"
 
 #: src/error.c:104
 msgid "Msg: unable to use USB pseudo file system."
-msgstr "Msg: impossible d'utiliser le pseudo-système de fichier USB."
+msgstr "Msg: impossible d'utiliser le pseudo-systÃ¨me de fichier USB."
 
 #: src/error.c:106
 msgid ""
@@ -85,27 +85,27 @@ msgid ""
 "automatically will be set up for you. Otherwise, manual setup steps, if any, "
 "are explained in the CONFIG file shipped with the ticables2 library. "
 msgstr ""
-"Cause: le système de fichier USB n'est pas monté ou ne peut être accédé "
-"parce que l'utilisateur courant n'a pas les permissions nécessaires. Et ceci "
-"dépend de la distribution; il peut être nécessaire d'ajouter des règles udev "
-"et/ou des fichiers de configurations pam_console, et, de plus, il se peut "
-"que vous deviez ajouter l'utilisateur à un groupe tel que 'usb' ou "
-"configurer correctement les paramètres de montage de la libusb.Si des "
-"packages de TiLP et des librairies associées existent pour votre "
-"distribution, il est recommandé de les utiliser. Sinon, les étapes de "
-"configuration manuelles sont données dans le fichier CONFIG fourni avec la "
-"bibliothèque ticables2."
+"Cause: le systÃ¨me de fichier USB n'est pas montÃ© ou ne peut Ãªtre accÃ©dÃ© "
+"parce que l'utilisateur courant n'a pas les permissions nÃ©cessaires. Et "
+"ceci dÃ©pend de la distribution; il peut Ãªtre nÃ©cessaire d'ajouter des "
+"rÃ¨gles udev et/ou des fichiers de configurations pam_console, et, de plus, "
+"il se peut que vous deviez ajouter l'utilisateur Ã  un groupe tel que 'usb' "
+"ou configurer correctement les paramÃ¨tres de montage de la libusb.Si des "
+"packages de TiLP et des librairies associÃ©es existent pour votre "
+"distribution, il est recommandÃ© de les utiliser. Sinon, les Ã©tapes de "
+"configuration manuelles sont donnÃ©es dans le fichier CONFIG fourni avec la "
+"bibliothÃ¨que ticables2."
 
 #: src/error.c:123
 msgid "Msg: illegal operation or argument."
-msgstr "Msg: argument ou opération illégals."
+msgstr "Msg: argument ou opÃ©ration illÃ©gals."
 
 #: src/error.c:125
 msgid ""
 "Cause: the program which uses this library is buggy. Fire-up the developer!"
 msgstr ""
-"Cause: le programme qui utilise cette librairie est buggé. Virez le "
-"développeur!"
+"Cause: le programme qui utilise cette librairie est buggÃ©. Virez le "
+"dÃ©veloppeur!"
 
 #: src/error.c:131
 msgid "Msg: DhaHelper driver and/or library not found."
@@ -117,8 +117,9 @@ msgid ""
 "uninstalled; the library has been installed without NT administrator "
 "privileges."
 msgstr ""
-"Cause: le pilote n'a pas encore démarré; il peut avoir été désinstallé; la "
-"librairie a été installé sans les privilèges de l'administrateur NT."
+"Cause: le pilote n'a pas encore dÃ©marrÃ©; il peut avoir Ã©tÃ© "
+"dÃ©sinstallÃ©; la librairie a Ã©tÃ© installÃ© sans les privilÃ¨ges de "
+"l'administrateur NT."
 
 #: src/error.c:139
 msgid "Msg: RwPorts driver and/or library not found."
@@ -126,28 +127,29 @@ msgstr "Msg: pilote RwPorts et/ou librairie introuvable."
 
 #: src/error.c:147
 msgid "Msg: error occured while writing to the device."
-msgstr "Msg: erreur lors de l'écriture sur le périphérique."
+msgstr "Msg: erreur lors de l'Ã©criture sur le pÃ©riphÃ©rique."
 
 #: src/error.c:153
 msgid "Msg: timeout occured while writing to the device."
-msgstr "Msg: délai dépassé lors de l'écriture sur le périphérique."
+msgstr "Msg: dÃ©lai dÃ©passÃ© lors de l'Ã©criture sur le pÃ©riphÃ©rique."
 
 #: src/error.c:155 src/error.c:169
 msgid "Cause: check that link cable is plugged and/or the calculator is ready."
 msgstr ""
-"Cause: vérifier que le câble est branché et/ou que la calculatrice est prête."
+"Cause: vÃ©rifier que le cÃ¢ble est branchÃ© et/ou que la calculatrice est "
+"prÃªte."
 
 #: src/error.c:161
 msgid "Msg: error occured while reading to the device."
-msgstr "Msg: erreur lors de la lecture sur le périphérique."
+msgstr "Msg: erreur lors de la lecture sur le pÃ©riphÃ©rique."
 
 #: src/error.c:167
 msgid "Msg: timeout occured while reading to the device."
-msgstr "Msg: délai dépassé lors de la lecture sur le périphérique."
+msgstr "Msg: dÃ©lai dÃ©passÃ© lors de la lecture sur le pÃ©riphÃ©rique."
 
 #: src/error.c:175
 msgid "Msg: the probing of device failed."
-msgstr "Msg: la recherche du périphérique a échoué."
+msgstr "Msg: la recherche du pÃ©riphÃ©rique a Ã©chouÃ©."
 
 #: src/error.c:177
 msgid "Cause: internal error. If you get it, this is a bug!"
@@ -155,13 +157,13 @@ msgstr "Cause: erreur interne. Si vous avez ce message, c'est un bug!"
 
 #: src/error.c:190
 msgid "Msg: unable to open serial port."
-msgstr "Msg: impossible d'ouvrir le port série."
+msgstr "Msg: impossible d'ouvrir le port sÃ©rie."
 
 #: src/error.c:192
 msgid "Cause: check that device is not used/locked by another application."
 msgstr ""
-"Cause: vérifiez que le périphérique n'est pas utilisé/vérouillé par une "
-"autre application."
+"Cause: vÃ©rifiez que le pÃ©riphÃ©rique n'est pas utilisÃ©/vÃ©rouillÃ© par "
+"une autre application."
 
 #: src/error.c:200
 msgid "Msg: failed to get VTI handle."
@@ -169,7 +171,7 @@ msgstr "Msg: impossible d'obtenir un descripteur sur VTI."
 
 #: src/error.c:202
 msgid "Cause: VTi may not be running. VTi must be launched before."
-msgstr "Cause: VTi peut ne pas être lancé; il doit être lancé avant."
+msgstr "Cause: VTi peut ne pas Ãªtre lancÃ©; il doit Ãªtre lancÃ© avant."
 
 #: src/error.c:212
 msgid "Msg: unable to get a unique IPC (Inter Process Communication) key."
@@ -180,8 +182,8 @@ msgid ""
 "Cause: check that you have enough resources for allocating a shared memory "
 "segment."
 msgstr ""
-"Cause: vérifiez que vous avez assez de ressources pour allouer un segment de "
-"mémoire partagé."
+"Cause: vÃ©rifiez que vous avez assez de ressources pour allouer un segment "
+"de mÃ©moire partagÃ©."
 
 #: src/error.c:221
 msgid "Msg: unable to open/close pipes for virtual linking."
@@ -192,44 +194,44 @@ msgid ""
 "Cause: check that you have permissions to create a pipe in the /tmp "
 "directory."
 msgstr ""
-"Cause: vérifiez que vous avez les permissions pour créer un tube dans le "
-"répertoire /tmp."
+"Cause: vÃ©rifiez que vous avez les permissions pour crÃ©er un tube dans le "
+"rÃ©pertoire /tmp."
 
 #: src/error.c:230
 msgid "Msg: unable to open serial device."
-msgstr "Msg: impossible d'ouvrir le port série."
+msgstr "Msg: impossible d'ouvrir le port sÃ©rie."
 
 #: src/error.c:232 src/error.c:241
 msgid ""
 "Cause: check that you have permissions on /dev/ttySx device. Check that "
 "device is not locked."
 msgstr ""
-"Cause: vérifiez que vous avez les permissions sur /dev/ttySx. Vérifiez aussi "
-"que le périphérique n'est pas verrouillé par une autre application."
+"Cause: vÃ©rifiez que vous avez les permissions sur /dev/ttySx. VÃ©rifiez "
+"aussi que le pÃ©riphÃ©rique n'est pas verrouillÃ© par une autre application."
 
 #: src/error.c:239
 msgid "Msg: unable to issue a specific command on serial device."
 msgstr ""
-"Msg: impossible de mener à bien une commande spécifique sur le périphérique "
-"série."
+"Msg: impossible de mener Ã  bien une commande spÃ©cifique sur le "
+"pÃ©riphÃ©rique sÃ©rie."
 
 #: src/error.c:247
 msgid "Msg: unable to open parallel device."
-msgstr "Msg: impossible d'ouvrir le port parallèle."
+msgstr "Msg: impossible d'ouvrir le port parallÃ¨le."
 
 #: src/error.c:249 src/error.c:257
 msgid ""
 "Cause: check that you have permissions on /dev/parportX device. Check that "
 "device is not locked."
 msgstr ""
-"Cause: vérifiez que vous avez les permissions sur /dev/parportX. Vérifiez "
-"aussi que le périphérique n'est pas verrouillé par une autre application."
+"Cause: vÃ©rifiez que vous avez les permissions sur /dev/parportX. VÃ©rifiez "
+"aussi que le pÃ©riphÃ©rique n'est pas verrouillÃ© par une autre application."
 
 #: src/error.c:255
 msgid "Msg: unable to issue a specific command on parallel device."
 msgstr ""
-"Msg: impossible de mener à bien une commande spécifique sur le périphérique "
-"parallèle."
+"Msg: impossible de mener Ã  bien une commande spÃ©cifique sur le "
+"pÃ©riphÃ©rique parallÃ¨le."
 
 #: src/error.c:263
 msgid "Msg: unable to find the LPG's driver (libusb-win32)."
@@ -237,34 +239,34 @@ msgstr "Msg: impossible de trouver le pilote libusb-win32."
 
 #: src/error.c:265
 msgid "Cause: the driver is not present and/or installed."
-msgstr "Cause: le pilote n'est pas présent et/ou pas installé."
+msgstr "Cause: le pilote n'est pas prÃ©sent et/ou pas installÃ©."
 
 #: src/error.c:273
 msgid "Msg: failed to open the USB device."
-msgstr "Msg: impossible d'ouvrir le périphérique USB."
+msgstr "Msg: impossible d'ouvrir le pÃ©riphÃ©rique USB."
 
 #: src/error.c:275
 msgid ""
 "Cause: Check that the USB cable is plugged in and that the calculator is "
 "turned ON! Also, check libusb and usbfs for valid permissions."
 msgstr ""
-"Cause: Vérifiez que le câble USB est branché et/ou que la calculatrice est "
-"allumée! Vérifiez aussi les permissions sur la libusb et l'usbfs."
+"Cause: VÃ©rifiez que le cÃ¢ble USB est branchÃ© et/ou que la calculatrice "
+"est allumÃ©e! VÃ©rifiez aussi les permissions sur la libusb et l'usbfs."
 
 #: src/error.c:281
 msgid "Msg: unable to reset USB device."
-msgstr "Msg: impossible de réinitialiser le périphérique USB."
+msgstr "Msg: impossible de rÃ©initialiser le pÃ©riphÃ©rique USB."
 
 #: src/error.c:283
 msgid ""
 "Cause: Check that cable is connected or not stalled. Try to unplug/plug it."
 msgstr ""
-"Cause: vérifiez que le câble est connecté et n'est pas bloqué. Essayez de le "
-"débrancher puis de le rebrancher."
+"Cause: vÃ©rifiez que le cÃ¢ble est connectÃ© et n'est pas bloquÃ©. Essayez "
+"de le dÃ©brancher puis de le rebrancher."
 
 #: src/error.c:288
 msgid "Msg: attempting to use a cable which has not been open before."
-msgstr "Msg: tentative d'utilisation d'un câble sans ouverture préalable."
+msgstr "Msg: tentative d'utilisation d'un cÃ¢ble sans ouverture prÃ©alable."
 
 #: src/error.c:290
 msgid "Cause: Internal error."
@@ -272,15 +274,20 @@ msgstr "Cause: erreur interne."
 
 #: src/error.c:296
 msgid "Msg: no cable found."
-msgstr "Msg: aucun câble trouvé."
+msgstr "Msg: aucun cÃ¢ble trouvÃ©."
 
 #: src/error.c:298
 msgid "Cause: probing failed or invalid parameters."
-msgstr "Cause: la détection a échouée ou paramètres invalides."
+msgstr "Cause: la dÃ©tection a Ã©chouÃ©e ou paramÃ¨tres invalides."
 
-#: src/probe.c:59
+#: src/probe.c:45
+#, c-format
+msgid " %i: %i %i %i %i"
+msgstr " %i: %i %i %i %i"
+
+#: src/probe.c:69
 msgid "Link cable probing:"
-msgstr "Recherche de câble de connexion:"
+msgstr "Recherche de cÃ¢ble de connexion:"
 
 #: src/ticables.c:128
 #, c-format
@@ -289,12 +296,12 @@ msgstr "librairie ticables version %s"
 
 #: src/ticables.c:333
 msgid "Link cable handle details:"
-msgstr "Détails sur le descripteur du câble de connexion:"
+msgstr "DÃ©tails sur le descripteur du cÃ¢ble de connexion:"
 
 #: src/ticables.c:334
 #, c-format
 msgid "  model   : %s"
-msgstr "  modèle  : %s"
+msgstr "  modÃ¨le  : %s"
 
 #: src/ticables.c:335
 #, c-format
@@ -309,12 +316,12 @@ msgstr "  timeout  : %2.1fs"
 #: src/ticables.c:337
 #, c-format
 msgid "  delay   : %i us"
-msgstr "  délai   : %i us"
+msgstr "  dÃ©lai   : %i us"
 
 #: src/ticables.c:340
 #, c-format
 msgid "  device  : %s"
-msgstr "  périph  : %s"
+msgstr "  pÃ©riph  : %s"
 
 #: src/ticables.c:341
 #, c-format
