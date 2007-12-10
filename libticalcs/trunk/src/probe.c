@@ -384,19 +384,18 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 	}
 	else if(cable->model == CABLE_USB)
 	{
-		uint32_t size;
+		int n, *list;
+		int i;
 
-		TRYF(dusb_send_buf_size_request(&calc, DUSB_DFL_BUF_SIZE));
-		TRYF(dusb_recv_buf_size_alloc(&calc, &size));
-		if(size == 1023)
+		ticables_get_usb_devices(&list, &n);
+		i = cable->port-1 > n ? n-1 : cable->port-1;
+		switch(list[i])
 		{
-			*model = CALC_TI89T_USB;
-			ret = 0;
-		}
-		else if(size == 250)
-		{
-			*model = CALC_TI84P_USB;
-			ret = 0;
+		case PID_TI89TM:   *model = CALC_TI89T_USB; ret = 0; break;
+		case PID_TI84P:    *model = CALC_TI84P_USB; ret = 0; break;
+		case PID_TI84P_SE: *model = CALC_TI84P_USB; ret = 0; break;
+		case PID_NSPIRE:   *model = CALC_NSPIRE; ret = 0; break;
+		default: break;
 		}
 	}
 
