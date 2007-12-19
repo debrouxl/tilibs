@@ -262,6 +262,7 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = -Wall
+EXTRA_DIST = romdump_* tf2hex
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la

@@ -205,7 +205,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = api.txt html
+EXTRA_DIST = *.txt html
 all: all-am
 
 .SUFFIXES:

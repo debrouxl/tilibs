@@ -8,8 +8,9 @@ Standards-Version: 3.7.2
 Package: libticalcs2-7-dev
 Section: libdevel
 Architecture: any
+Replaces: libticalcs4-dev
+Conflicts: libticalcs-dev, libticalcs2-dev, libticalcs3-dev, libticalcs4-dev libticalcs2-2-dev, libticalcs2-6-dev
 Depends: libticalcs2-7 (= ${binary:Version}), pkg-config, libglib2.0-dev, libticables2-1-dev, libtifiles2-5-dev, libticonv3-dev
-Conflicts: libticalcs2-2-dev, libticalcs2-6-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
  Instruments calculators link cables. All link cables are supported read/write.
@@ -20,8 +21,9 @@ Description: Texas Instruments link cables library [development files]
 Package: libticalcs2-7
 Section: libs
 Architecture: any
+Replaces: libticalcs4
+Conflicts: libticalcs, libticalcs2, libticalcs3, libticalcs4 libticalcs2-2, libticalcs2-6
 Depends: ${shlibs:Depends}
-Conflicts: libticalcs2-2, libticalcs2-6
 Description: Texas Instruments link cables library
  The libticables is a library providing support for operations on Texas
  Instruments calculators link cables. All link cables are supported read/write.

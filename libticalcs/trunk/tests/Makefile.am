@@ -3,6 +3,8 @@
 AM_CPPFLAGS = -I$(top_srcdir)/src \
 	@TICABLES_CFLAGS@ @TIFILES_CFLAGS@ @TICONV_CFLAGS@
 
+EXTRA_DIST = ticalcs2.supp vcheck
+
 noinst_PROGRAMS = test_ticalcs_2
 
 test_ticalcs_2_LDADD = $(top_builddir)/src/libticalcs2.la \

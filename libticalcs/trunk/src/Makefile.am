@@ -2,6 +2,8 @@
 
 AM_CFLAGS = -Wall
 
+EXTRA_DIST = romdump_* tf2hex
+
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la
 libticalcsincludedir = $(includedir)/tilp2
