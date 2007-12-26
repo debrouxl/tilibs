@@ -1,9 +1,9 @@
-Source: libticonv3
+Source: libticonv
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen, autoconf, automake1.10
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen, autotools-dev
+Standards-Version: 3.7.3
 
 Package: libticonv3-dev
 Section: libdevel
