@@ -1,9 +1,9 @@
-Source: libtifiles2-5
+Source: libtifiles2
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticonv3-dev (>= 1.1.0-1), zlib1g-dev, tfdocgen, gettext, autoconf, automake1.10
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticonv3-dev (>= 1.1.0-1), zlib1g-dev, tfdocgen, gettext, autotools-dev
+Standards-Version: 3.7.3
 
 Package: libtifiles2-5-dev
 Section: libdevel
