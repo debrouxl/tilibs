@@ -1,10 +1,10 @@
-libticonv3 (1.1.0-1) stable; urgency=low
+libticonv (1.1.0-1) stable; urgency=low
 
   * Added NSpire support.
 
  -- Romain LIEVIN <roms@tilp.info>  Sun, 02 Dec 2007 22:50:45 +0100
 
-libticonv3 (1.0.4-1) unstable; urgency=low
+libticonv (1.0.4-1) unstable; urgency=low
 
   * Initial release.
 
