@@ -1,9 +1,9 @@
-Source: libticalcs2-7
+Source: libticalcs2
 Priority: optional
 Section: libs
 Maintainer: Romain LIEVIN <roms@tilp.info>
-Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1-dev (>= 1.2.0-1), libtifiles2-5-dev (>= 1.1.0-1), libticonv3-dev (>= 1.1.0-1), tfdocgen, gettext, autoconf, automake1.10
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, libticables2-1-dev (>= 1.2.0-1), libtifiles2-5-dev (>= 1.1.0-1), libticonv3-dev (>= 1.1.0-1), tfdocgen, gettext, autotools-dev
+Standards-Version: 3.7.3
 
 Package: libticalcs2-7-dev
 Section: libdevel
