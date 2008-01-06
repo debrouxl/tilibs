@@ -6,6 +6,7 @@ Log:
 	- adding NSpire support...
 	- unified Product Number & Main Calc Id into Product Id and maintained compatibility
 	- use ticables_get_usb_devices() to probe USB hand-helds rathen than heuristic method (more reliable)
+	- fixed printing of SKP packet (1 byte)
 
 - 04/10/2007, version 1.0.9: roms
 	- fixed ROM dumping on TI92+/V200: switching to HOME screen failed
