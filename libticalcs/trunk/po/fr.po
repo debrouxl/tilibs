@@ -1,6 +1,6 @@
 # French locale for libticalcs.
 # Copyright (C) 2003 Sylvain Garsault
-# Copyright (C) 2007 Romain Liévin
+# Copyright (C) 2007 Romain LiÃ©vin
 # This file is distributed under the same license as the libtifiles package.
 # 
 msgid ""
@@ -9,10 +9,10 @@ msgstr ""
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-07-19 16:32+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
-"Last-Translator: Romain Liévin <roms@tilp.info>\n"
-"Language-Team: Français <tilp-users@lists.sf.net>\n"
+"Last-Translator: Romain LiÃ©vin <roms@tilp.info>\n"
+"Language-Team: FranÃ§ais <tilp-users@lists.sf.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -22,7 +22,7 @@ msgstr "Calculatrice vide"
 
 #: src/calc_00.c:161
 msgid "Dummy hand-held used when no calc is set"
-msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
+msgstr "Calculatrice vide utilisÃ©e quand aucune calculatrice n'est spÃ©cifiÃ©e"
 
 #: src/calc_73.c:214 src/calc_83.c:195 src/calc_84p.c:194 src/calc_86.c:184
 #, c-format
@@ -47,11 +47,11 @@ msgstr "Attente d'une action de la part de l'utilisateur..."
 
 #: src/calc_73.c:795 src/calc_84p.c:672 src/calc_89.c:788 src/calc_89t.c:584
 msgid "Setting clock..."
-msgstr "Mise à jour de l'horloge..."
+msgstr "Mise Ã  jour de l'horloge..."
 
 #: src/calc_73.c:824 src/calc_84p.c:716 src/calc_89.c:813 src/calc_89t.c:628
 msgid "Getting clock..."
-msgstr "Réception de l'horloge..."
+msgstr "RÃ©ception de l'horloge..."
 
 #: src/calc_73.c:878 src/calc_83.c:504 src/calc_84p.c:768 src/calc_89.c:850
 #: src/calc_89t.c:682 src/calc_92.c:545
@@ -89,11 +89,11 @@ msgstr "bas"
 
 #: src/calc_73.c:981 src/calc_89.c:636
 msgid "Header sent completely."
-msgstr "En-tête envoyé complètement"
+msgstr "En-tÃªte envoyÃ© complÃ¨tement"
 
 #: src/calc_73.c:991
 msgid "Receiving certificate"
-msgstr "Réception du certificat"
+msgstr "RÃ©ception du certificat"
 
 #: src/calc_82.c:183 src/calc_85.c:183 src/calc_86.c:293
 msgid "Waiting for backup..."
@@ -106,11 +106,11 @@ msgstr "Attente de variable(s)..."
 #: src/calc_82.c:402 src/calc_85.c:401
 #, c-format
 msgid "Waiting for execing of program..."
-msgstr "En attente de l'exécution du programme..."
+msgstr "En attente de l'exÃ©cution du programme..."
 
 #: src/calc_84p.c:805 src/calc_89t.c:767
 msgid "Getting version..."
-msgstr "Récupération de la version..."
+msgstr "RÃ©cupÃ©ration de la version..."
 
 #: src/calc_84p.c:908
 msgid "TI-84 Plus thru DirectLink"
@@ -134,7 +134,7 @@ msgstr "Lecture de %s/%s"
 #: src/calc_89.c:869 src/calc_89t.c:711 src/calc_92.c:582
 #, c-format
 msgid "Creating %s..."
-msgstr "Création de %s..."
+msgstr "CrÃ©ation de %s..."
 
 #: src/calc_89.c:1095
 msgid "V200 Portable Learning Tool"
@@ -147,11 +147,11 @@ msgstr "TI-89 Titanium via DirectLink"
 #: src/calc_92.c:283
 #, c-format
 msgid "Block #%2i"
-msgstr "Bloc n°%2i"
+msgstr "Bloc nÂ°%2i"
 
 #: src/calc_xx.c:79
 msgid "Checking hand-held status:"
-msgstr "Vérification du status:"
+msgstr "VÃ©rification du status:"
 
 #: src/calc_xx.c:114
 #, c-format
@@ -165,7 +165,7 @@ msgstr "Execution de %s/%s avec %s:"
 
 #: src/calc_xx.c:189
 msgid "Requesting screenshot:"
-msgstr "Obtention capture écran:"
+msgstr "Obtention capture Ã©cran:"
 
 #: src/calc_xx.c:227
 msgid "Requesting folder & vars & apps listing:"
@@ -177,7 +177,7 @@ msgstr "Obtention de la RAM & FLASH libres"
 
 #: src/calc_xx.c:306
 msgid "Requesting backup:"
-msgstr "Réception sauvegarde:"
+msgstr "RÃ©ception sauvegarde:"
 
 #: src/calc_xx.c:341
 msgid "Sending backup:"
@@ -190,7 +190,7 @@ msgstr "Envoi de variable(s):"
 #: src/calc_xx.c:416
 #, c-format
 msgid "Requesting variable '%s':"
-msgstr "Réception de la variable '%s':"
+msgstr "RÃ©ception de la variable '%s':"
 
 #: src/calc_xx.c:453
 msgid "Sending variable (non-silent mode):"
@@ -198,7 +198,7 @@ msgstr "Envoi de variable(s):"
 
 #: src/calc_xx.c:491
 msgid "Receiving variable (non-silent mode):"
-msgstr "Réception de variable(s):"
+msgstr "RÃ©ception de variable(s):"
 
 #: src/calc_xx.c:526
 msgid "Sending FLASH application:"
@@ -206,7 +206,7 @@ msgstr "Envoi d'une application FLASH:"
 
 #: src/calc_xx.c:563
 msgid "Requesting receiving of FLASH application:"
-msgstr "Réception d'une application FLASH:"
+msgstr "RÃ©ception d'une application FLASH:"
 
 #: src/calc_xx.c:598
 msgid "Sending FLASH os:"
@@ -226,11 +226,11 @@ msgstr "Extraction ROM:"
 
 #: src/calc_xx.c:758
 msgid "Setting clock:"
-msgstr "Mise à jour de l'horloge:"
+msgstr "Mise Ã  jour de l'horloge:"
 
 #: src/calc_xx.c:793
 msgid "Getting clock:"
-msgstr "Réception de l'horloge:"
+msgstr "RÃ©ception de l'horloge:"
 
 #: src/calc_xx.c:828
 msgid "Sending certificate:"
@@ -238,12 +238,12 @@ msgstr "Envoi du certificat:"
 
 #: src/calc_xx.c:863
 msgid "Requesting receiving of certificate:"
-msgstr "Réception du certificat:"
+msgstr "RÃ©ception du certificat:"
 
 #: src/calc_xx.c:1179
 #, c-format
 msgid "Creating folder '%s':"
-msgstr "Création du dossier '%s':"
+msgstr "CrÃ©ation du dossier '%s':"
 
 #: src/calc_xx.c:1213
 #, c-format
@@ -276,7 +276,7 @@ msgstr "+------------------+----------+----+----+----------+----------+"
 
 #: src/error.c:61
 msgid "Msg: transfer aborted."
-msgstr "Msg: Transfert avorté."
+msgstr "Msg: Transfert avortÃ©."
 
 #: src/error.c:63
 msgid "Cause: the user!"
@@ -284,18 +284,18 @@ msgstr "Cause: l'utilisateur !"
 
 #: src/error.c:69
 msgid "Msg: calculator is not ready."
-msgstr "Msg: la calculatrice n'est pas prête."
+msgstr "Msg: la calculatrice n'est pas prÃªte."
 
 #: src/error.c:71
 msgid ""
 "Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."
 msgstr ""
-"Cause: la calculatrice est occuppée (menu Var-Link, Window, ...). Presser la "
+"Cause: la calculatrice est occuppÃ©e (menu Var-Link, Window, ...). Presser la "
 "touche HOME."
 
 #: src/error.c:76
 msgid "Msg: checksum error."
-msgstr "Msg: erreur de somme de contrôle (checksum)."
+msgstr "Msg: erreur de somme de contrÃ´le (checksum)."
 
 #: src/error.c:78
 msgid "Cause: a transmission error. Try again."
@@ -303,14 +303,14 @@ msgstr "Cause: une erreur de transmission. Essayez encore."
 
 #: src/error.c:83
 msgid "Msg: invalid host ID."
-msgstr "Msg: identifiant hôte invalide."
+msgstr "Msg: identifiant hÃ´te invalide."
 
 #: src/error.c:87
 msgid ""
 "Cause: TiLP received an unexpected Machine ID, probably due to a "
 "transmission error."
 msgstr ""
-"Cause: TiLP a reçu un mauvais identifiant machine, certainement causé par "
+"Cause: TiLP a reÃ§u un mauvais identifiant machine, certainement causÃ© par "
 "une erreur de transmission."
 
 #: src/error.c:92
@@ -322,7 +322,7 @@ msgid ""
 "Cause: TiLP received an unexpected Target ID, probably due to a transmission "
 "error."
 msgstr ""
-"Cause: TiLP a reçu un identifiant cible invalide, certainement causé par une "
+"Cause: TiLP a reÃ§u un identifiant cible invalide, certainement causÃ© par une "
 "erreur de transmission."
 
 #: src/error.c:101
@@ -334,7 +334,7 @@ msgid ""
 "Cause: TiLP received an unexpected Command ID, probably due to a "
 "transmission error."
 msgstr ""
-"Cause: TiLP a reçu un identifiant de commande invalide, certainement causé "
+"Cause: TiLP a reÃ§u un identifiant de commande invalide, certainement causÃ© "
 "par une erreur de transmission."
 
 #: src/error.c:110
@@ -347,7 +347,7 @@ msgstr "Cause: un bug. Envoyez-nous un e-mail !"
 
 #: src/error.c:118
 msgid "Msg: contents has been refused."
-msgstr "Msg: contenu refusé."
+msgstr "Msg: contenu refusÃ©."
 
 #: src/error.c:122
 msgid ""
@@ -355,8 +355,8 @@ msgid ""
 "target calculator. The calculator may be out of memory. The certificate may "
 "be invalid or already installed."
 msgstr ""
-"Cause: vous avez tenté d'envoyer une variable verrouillée/archivée sur la "
-"calculatrice. La calculatrice manque peut-être de mémoire."
+"Cause: vous avez tentÃ© d'envoyer une variable verrouillÃ©e/archivÃ©e sur la "
+"calculatrice. La calculatrice manque peut-Ãªtre de mÃ©moire."
 
 #: src/error.c:127
 msgid "Invalid CTS packet."
@@ -368,11 +368,11 @@ msgstr "Cause: une erreur de transmission."
 
 #: src/error.c:134
 msgid "NACK received."
-msgstr "NACK reçu."
+msgstr "NACK reÃ§u."
 
 #: src/error.c:136
 msgid "Cause: the command has been refused."
-msgstr "Cause: la commande a été refusée."
+msgstr "Cause: la commande a Ã©tÃ© refusÃ©e."
 
 #: src/error.c:141
 msgid "Invalid packet."
@@ -380,12 +380,12 @@ msgstr "Paquet invalide."
 
 #: src/error.c:151
 msgid "The cable can not be used."
-msgstr "Le cable ne peut pas être utilisé."
+msgstr "Le cable ne peut pas Ãªtre utilisÃ©."
 
 #: src/error.c:153
 msgid ""
 "Cause: the cable has not been initialized due to a previous/current error."
-msgstr "Cause: le cable n'a pas été initialisé à cause d'une erreur."
+msgstr "Cause: le cable n'a pas Ã©tÃ© initialisÃ© Ã  cause d'une erreur."
 
 #: src/error.c:166
 msgid "Msg: this function does not exist for this calculator."
@@ -395,17 +395,17 @@ msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 msgid ""
 "Cause: the operation you attempted is not supported by your calculator model."
 msgstr ""
-"Cause: cette option n'est pas supportée par votre modèle de calculatrice."
+"Cause: cette option n'est pas supportÃ©e par votre modÃ¨le de calculatrice."
 
 #: src/error.c:175
 msgid "Msg: calculator out of memory."
-msgstr "Msg: la calculatrice n'a plus de mémoire libre."
+msgstr "Msg: la calculatrice n'a plus de mÃ©moire libre."
 
 #: src/error.c:179
 msgid ""
 "Cause: the calculator does not have memory enough for doing the operation."
 msgstr ""
-"Cause: la calculatrice n'a pas assez de mémoire pour effectuer l'opération."
+"Cause: la calculatrice n'a pas assez de mÃ©moire pour effectuer l'opÃ©ration."
 
 #: src/error.c:184
 msgid "Msg: unable to open (reading) the file."
@@ -417,11 +417,11 @@ msgstr "Cause: espace disque ou permissions incorrectes."
 
 #: src/error.c:191
 msgid "Msg: unable to open (writing) the file."
-msgstr "Msg: Impossible d'ouvrir (en écriture) le fichier."
+msgstr "Msg: Impossible d'ouvrir (en Ã©criture) le fichier."
 
 #: src/error.c:199
 msgid "A transfer is in progress. You can not start a new one."
-msgstr "Un transfert est en cours. Vous ne pouvez pas en démarrer un autre."
+msgstr "Un transfert est en cours. Vous ne pouvez pas en dÃ©marrer un autre."
 
 #: src/error.c:203
 msgid "Cause: this should not happen. Probably a bug: drop us an email!"
@@ -431,23 +431,23 @@ msgstr ""
 
 #: src/error.c:211
 msgid "The requested var does not exist."
-msgstr "La variable demandée n'existe pas."
+msgstr "La variable demandÃ©e n'existe pas."
 
 #: src/error.c:215
 msgid ""
 "Cause: you attempted to download a variable which does not exist on the "
 "calculaotr any longer. Maybe you have manually deleted it ?"
 msgstr ""
-"Cause: vous avez tenté de télécharger une variable qui n'existe plus sur la "
-"calculatrice. Vous l'avez peut-être effacée manuellement ?"
+"Cause: vous avez tentÃ© de tÃ©lÃ©charger une variable qui n'existe plus sur la "
+"calculatrice. Vous l'avez peut-Ãªtre effacÃ©e manuellement ?"
 
 #: src/error.c:220
 msgid "There is nothing to backup."
-msgstr "Il n'y a rien à sauvegarder."
+msgstr "Il n'y a rien Ã  sauvegarder."
 
 #: src/error.c:223
 msgid "Cause: 0 variables stored onto your calculator."
-msgstr "Cause: aucune variable n'est stockée sur votre calculatrice."
+msgstr "Cause: aucune variable n'est stockÃ©e sur votre calculatrice."
 
 #: src/error.c:228
 msgid "Invalid TiCalcs handle."
@@ -459,12 +459,12 @@ msgstr "Cause: mauvais cable ou mauvaise calculatrice"
 
 #: src/error.c:236
 msgid "Msg: hand-held returned an error."
-msgstr "Msg: la calculatrice a retourné une erreur."
+msgstr "Msg: la calculatrice a retournÃ© une erreur."
 
 #: src/error.c:240 src/error.c:277
 msgid "Cause: hand-held returned an uncatched error. Please report log."
 msgstr ""
-"Cause: la calculatrace a retourné une erreur non prise en charge. Veuillez "
+"Cause: la calculatrace a retournÃ© une erreur non prise en charge. Veuillez "
 "le rapporter."
 
 #: src/error.c:244
@@ -477,15 +477,15 @@ msgstr "Msg: nom de variable invalide."
 
 #: src/error.c:252
 msgid "Msg: can not overwrite variable (locked/archived)."
-msgstr "Msg: ne peut pas écraser la variable (verrouillée/archivée)."
+msgstr "Msg: ne peut pas Ã©craser la variable (verrouillÃ©e/archivÃ©e)."
 
 #: src/error.c:256
 msgid "Msg: can not delete variable (locked/archived)."
-msgstr "Msg: ne peut pas effacer la variable (verrouillée/archivée)."
+msgstr "Msg: ne peut pas effacer la variable (verrouillÃ©e/archivÃ©e)."
 
 #: src/error.c:260
 msgid "Msg: FLASH application rejected (bad target model)."
-msgstr "Msg: application rejetée (mauvaise calculatrice)."
+msgstr "Msg: application rejetÃ©e (mauvaise calculatrice)."
 
 #: src/error.c:264
 msgid "Msg: invalid folder name."
@@ -497,7 +497,7 @@ msgstr "Msg: paquet RTS incorrect (conflit de version sur AMS)."
 
 #: src/error.c:273
 msgid "Msg: hand-held returned an error (not catched)."
-msgstr "Msg: la calculatrice a retourné une erreur."
+msgstr "Msg: la calculatrice a retournÃ© une erreur."
 
 #: src/error.c:281
 msgid "Msg: invalid argument or name."
@@ -506,7 +506,7 @@ msgstr "Msg: argument ou nom invalide."
 #: src/error.c:285
 msgid "Msg: can not delete var/app from archive."
 msgstr ""
-"Msg: ne peut pas effacer la variable ou l'application depuis la mémoire "
+"Msg: ne peut pas effacer la variable ou l'application depuis la mÃ©moire "
 "archive."
 
 #: src/error.c:289
@@ -517,11 +517,11 @@ msgstr "Msg: erreur de transmission."
 msgid "Msg: using basic mode while being in boot mode."
 msgstr ""
 "Msg: utilisation du mode de base alors que la calculatrice est en mode boot "
-"(dégradé)."
+"(dÃ©gradÃ©)."
 
 #: src/error.c:297
 msgid "Msg: out of memory."
-msgstr "Msg: plus de mémoire."
+msgstr "Msg: plus de mÃ©moire."
 
 #: src/error.c:301 src/error.c:305
 msgid "Msg: invalid name."
@@ -529,11 +529,11 @@ msgstr "Msg: nom invalide."
 
 #: src/error.c:309
 msgid "Msg: busy?."
-msgstr "Msg: occuppé ?"
+msgstr "Msg: occuppÃ© ?"
 
 #: src/error.c:313
 msgid "Msg: can't overwrite, variable is locked."
-msgstr "Msg: ne peut pas écraser la variable (verrouillée)."
+msgstr "Msg: ne peut pas Ã©craser la variable (verrouillÃ©e)."
 
 #: src/error.c:317
 msgid "Msg: mode token too small."
@@ -545,11 +545,11 @@ msgstr "Msg: valeur du mode trop grande."
 
 #: src/error.c:325
 msgid "Msg: invalid parameter ID."
-msgstr "Msg: identifiant de paramètre invalide."
+msgstr "Msg: identifiant de paramÃ¨tre invalide."
 
 #: src/error.c:329
 msgid "Msg: remote control?"
-msgstr "Msg: contrôle à distance ?"
+msgstr "Msg: contrÃ´le Ã  distance ?"
 
 #: src/error.c:333
 msgid "Msg: battery low."
@@ -557,7 +557,7 @@ msgstr "Msg: batterie faible."
 
 #: src/error.c:337
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
-msgstr "Msg: calculatrice occuppée (mettez la calculatrice sur HOME)."
+msgstr "Msg: calculatrice occuppÃ©e (mettez la calculatrice sur HOME)."
 
 #: src/probe.c:84
 msgid "Probing calculator...\n"
@@ -611,12 +611,12 @@ msgstr "librairie ticalcs version %s"
 
 #: src/ticalcs.c:254
 msgid "Link calc handle details:"
-msgstr "Détails du descripteur de calculatrice:"
+msgstr "DÃ©tails du descripteur de calculatrice:"
 
 #: src/ticalcs.c:255
 #, c-format
 msgid "  model   : %s"
-msgstr "  modèle  : %s"
+msgstr "  modÃ¨le  : %s"
 
 #: src/type2str.c:57 src/type2str.c:65 src/type2str.c:78 src/type2str.c:86
 msgid "full"
@@ -624,7 +624,7 @@ msgstr "plein"
 
 #: src/type2str.c:58 src/type2str.c:67
 msgid "clipped"
-msgstr "tronqué"
+msgstr "tronquÃ©"
 
 #: src/type2str.c:59 src/type2str.c:80 src/type2str.c:101
 msgid "unknown"
@@ -640,7 +640,7 @@ msgstr "libre"
 
 #: src/type2str.c:100 src/type2str.c:109
 msgid "used"
-msgstr "utilisé"
+msgstr "utilisÃ©"
 
 #~ msgid "TI-73"
 #~ msgstr "TI-73"
