@@ -1,17 +1,13 @@
 Name: libticalcs2
 Epoch: 1
-Version: 1.0.8
-Release: 2
+Version: 1.1.0
+Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
-#LANG=C svn diff -r 3886:3901 src/calc_89.c src/calc_92.c >../libticalcs2-1.0.8-fix-ti68k-romdump.diff
-Patch0: libticalcs2-1.0.8-fix-ti68k-romdump.diff
-#LANG=C svn diff -r 3897:3898 src/backup.c >../libticalcs2-1.0.8-fix-backup-timeout.diff
-Patch1: libticalcs2-1.0.8-fix-backup-timeout.diff
 Group: System Environment/Libraries
-License: GPL
-BuildRequires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0, tfdocgen
+License: GPLv2+
+BuildRequires: libticables2-devel >= 1:1.2.0, libticonv-devel >= 1:1.1.0, libtifiles2-devel >= 1:1.1.0, glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI calculators through a common API
 %description
@@ -22,7 +18,7 @@ Summary: Development files for %{name}
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticables2-devel >= 1:1.0.6, libticonv-devel >= 1:1.0.4, libtifiles2-devel >= 1:1.0.7, glib2-devel >= 2.6.0
+Requires: libticables2-devel >= 1:1.2.0, libticonv-devel >= 1:1.1.0, libtifiles2-devel >= 1:1.1.0, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop applications using the
 %{name} library.
@@ -37,8 +33,6 @@ HTML format.
 
 %prep
 %setup
-%patch0 -p0
-%patch1 -p0
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --libdir=%{_libdir} --disable-nls
@@ -77,6 +71,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
+Update to 1.1.0.
+Drop obsolete backported patches.
+Specify GPL version in License tag.
+Require libticables2 >= 1.2.0, libticonv >= 1.1.0, libtifiles2 >= 1.1.0.
+
 * Sun Oct 14 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.8-2
 Update ROM dump fix (actually works, also fixes SilverLink timeouts).
 Backport fix for TiLP bug #1808645 (SilverLink backup timeouts) from SVN.
