@@ -1,13 +1,13 @@
 Name: libtifiles2
 Epoch: 1
-Version: 1.0.8
+Version: 1.1.0
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
-License: GPL
-BuildRequires: libticonv-devel >= 1:1.0.4, zlib-devel, glib2-devel >= 2.6.0, tfdocgen
+License: GPLv2+
+BuildRequires: libticonv-devel >= 1:1.1.0, zlib-devel, glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Ti File Format management
 %description
@@ -18,7 +18,7 @@ Summary: Development files for %{name}
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
-Requires: libticonv-devel >= 1:1.0.4, glib2-devel >= 2.6.0
+Requires: libticonv-devel >= 1:1.1.0, glib2-devel >= 2.6.0
 %description devel
 This package contains the files necessary to develop applications using the
 %{name} library.
@@ -71,6 +71,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
+Update to 1.1.0.
+Specify GPL version in License tag.
+Require libticonv >= 1.1.0.
+
 * Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.8-1
 Update to 1.0.8.
 
