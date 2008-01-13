@@ -1,12 +1,12 @@
 Name: libticonv
 Epoch: 1
-Version: 1.0.5
+Version: 1.1.0
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
 Group: System Environment/Libraries
-License: GPL
+License: GPLv2+
 BuildRequires: glib2-devel >= 2.6.0, tfdocgen
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Summary: Library for handling TI link cables
@@ -72,6 +72,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
+Update to 1.1.0.
+Specify GPL version in License tag.
+
 * Sat Oct 13 2007 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.0.5-1
 Update to 1.0.5.
 
