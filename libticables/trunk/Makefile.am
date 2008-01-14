@@ -24,5 +24,6 @@ if OS_WIN32
 	@echo '  DirectLink TI-89 Titanium: $(pkgdatadir)/libusb/titanium.inf'
 	@echo '  DirectLink TI-84+: $(pkgdatadir)/libusb/ti84plus.inf'
 	@echo '  DirectLink TI-84+ SE: $(pkgdatadir)/libusb/ti84pse.inf'
+	@echo '  DirectLink TI-Nspire: $(pkgdatadir)/libusb/nspire.inf'
 	@echo '------------------------------------------------------------------------------'
 endif

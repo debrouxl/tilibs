@@ -726,6 +726,7 @@ install-exec-local:
 @OS_WIN32_TRUE@	@echo '  DirectLink TI-89 Titanium: $(pkgdatadir)/libusb/titanium.inf'
 @OS_WIN32_TRUE@	@echo '  DirectLink TI-84+: $(pkgdatadir)/libusb/ti84plus.inf'
 @OS_WIN32_TRUE@	@echo '  DirectLink TI-84+ SE: $(pkgdatadir)/libusb/ti84pse.inf'
+@OS_WIN32_TRUE@	@echo '  DirectLink TI-Nspire: $(pkgdatadir)/libusb/nspire.inf'
 @OS_WIN32_TRUE@	@echo '------------------------------------------------------------------------------'
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
