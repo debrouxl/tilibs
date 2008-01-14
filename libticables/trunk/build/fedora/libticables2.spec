@@ -1,7 +1,7 @@
 Name: libticables2
 Epoch: 1
 Version: 1.2.0
-Release: 1
+Release: 2
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
 Source: %{name}-%{version}.tar.bz2
@@ -55,6 +55,8 @@ ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003"
 ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", SYMLINK+="ticable-%%k"
 # TI-84+ SE DirectLink
 ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", SYMLINK+="ticable-%%k"
+# TI-Nspire DirectLink
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", SYMLINK+="ticable-%%k"
 EOF1
 mkdir -p $RPM_BUILD_ROOT/etc/security/console.perms.d
 cat >$RPM_BUILD_ROOT/etc/security/console.perms.d/60-libticables.perms <<EOF2
@@ -100,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Mon Jan 14 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.2.0-2
+Add the USB ID for the TI-Nspire in 60-libticables.rules.
+
 * Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.2.0-1
 Update to 1.2.0.
 Drop obsolete backported patch.
