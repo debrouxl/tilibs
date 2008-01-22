@@ -198,6 +198,40 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 /////////////----------------
 
+int cmd_s_dir_unknown(CalcHandle *h, const char *name)
+{
+	VirtualPacket* pkt;
+	uint8_t len = strlen(name) < 8 ? 8 : strlen(name);
+
+	ticalcs_info("  unknown directory list command in <%s>:", name);
+
+	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_UNKWOWN;
+
+	pkt->data[0] = 0x01;
+	put_str(pkt->data + 1, name);
+	
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_dir_unknown(CalcHandle *h)
+{
+	VirtualPacket* pkt = nsp_vtl_pkt_new();
+
+	ticalcs_info("  unknown directory list command reply received:");
+
+	TRYF(nsp_recv_data(h, pkt));
+
+	if(pkt->cmd != CMD_FM_UNKWOWN)
+		return ERR_CALC_ERROR3 + err_code(pkt->data[0]);
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
