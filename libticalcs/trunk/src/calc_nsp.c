@@ -44,35 +44,42 @@
 #include "nsp_vpkt.h"
 #include "nsp_cmd.h"
 
+int nsp_reset = 0;
+
 static int		is_ready	(CalcHandle* handle)
 {
-	static int reset = 0;
+	static int rom_11 = 0;
 
-	if(!reset)
+	if(!nsp_reset)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 
-		// starting at ROM 1.2, hand-held request LOGIN auth 3 seconds after device reset
+		// starting at ROM 1.2, hand-held request LOGIN connection three seconds after device reset
 		{
 			int old;
 			int ret;
 
-			ticalcs_info("  waiting for LOGIN request...");
+			ticalcs_info("  waiting for LOGIN request (OS >= 1.2 check)...");
 			old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
 
-			ret = cmd_r_login(handle);
+			ret = cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
 			if(ret)
 			{
+				ticalcs_infos("OS == 1.1");
 				ticables_options_set_timeout(handle->cable, old);
-				return ret;
+				rom_11 = !0;
+
+				TRYF(nsp_addr_request(handle));
+				TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 			}
-			// nack managed in nsp_recv_data()
-			//TRYF(nsp_send_nack(handle));
+			else
+			{
+				ticalcs_infos("OS >= 1.2");
+			}
 		}
 
-		PAUSE(500);
-		reset = !0;
+		nsp_reset = !0;
 	}
 
 	{
