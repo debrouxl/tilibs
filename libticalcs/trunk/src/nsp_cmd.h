@@ -58,6 +58,7 @@
 #define CMD_FM_DIRLIST_NEXT	0x0e
 #define CMD_FM_DIRLIST_DONE	0x0f
 #define CMD_FM_DIRLIST_ENT	0x10
+#define CMD_FM_UNKWOWN		0x20
 
 // OS Installation commands
 #define CMD_OS_INSTALL		0x03
@@ -80,6 +81,9 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 
 int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
 int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
+
+int cmd_s_dir_unknown(CalcHandle *h, const char *name);
+int cmd_r_dir_unknown(CalcHandle *h);
 
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name);
 int cmd_r_dir_enum_init(CalcHandle *h);
