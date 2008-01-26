@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-10 21:50+0100\n"
+"POT-Creation-Date: 2008-01-20 14:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -235,7 +235,7 @@ msgid "Cause: probing failed or invalid parameters."
 msgstr ""
 
 #: src/probe.c:45
-#, c-format
+#, possible-c-format
 msgid " %i: %i %i %i %i"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgid "Link cable probing:"
 msgstr ""
 
 #: src/ticables.c:128
-#, c-format
+#, possible-c-format
 msgid "ticables library version %s"
 msgstr ""
 
@@ -253,31 +253,31 @@ msgid "Link cable handle details:"
 msgstr ""
 
 #: src/ticables.c:334
-#, c-format
+#, possible-c-format
 msgid "  model   : %s"
 msgstr ""
 
 #: src/ticables.c:335
-#, c-format
+#, possible-c-format
 msgid "  port    : %s"
 msgstr ""
 
 #: src/ticables.c:336
-#, c-format
+#, possible-c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
 #: src/ticables.c:337
-#, c-format
+#, possible-c-format
 msgid "  delay   : %i us"
 msgstr ""
 
 #: src/ticables.c:340
-#, c-format
+#, possible-c-format
 msgid "  device  : %s"
 msgstr ""
 
 #: src/ticables.c:341
-#, c-format
+#, possible-c-format
 msgid "  address : 0x%03x"
 msgstr ""
