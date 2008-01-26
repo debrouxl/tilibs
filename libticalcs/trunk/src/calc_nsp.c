@@ -46,10 +46,33 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	// always reset device (work with ROM 1.1 & 1.2)
+	static int reset = 0;
+
+	if(!reset)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
+
+		// starting at ROM 1.2, hand-held request LOGIN auth 3 seconds after device reset
+		{
+			int old;
+			int ret;
+
+			ticalcs_info("  waiting for LOGIN request...");
+			old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
+
+			ret = cmd_r_login(handle);
+			if(ret)
+			{
+				ticables_options_set_timeout(handle->cable, old);
+				return ret;
+			}
+			// nack managed in nsp_recv_data()
+			//TRYF(nsp_send_nack(handle));
+		}
+
+		PAUSE(500);
+		reset = !0;
 	}
 
 	{

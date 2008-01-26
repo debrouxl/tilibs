@@ -112,10 +112,10 @@ uint16_t	nsp_dst_port = PORT_ADDR_REQUEST;
 
 int nsp_session_open(CalcHandle *h, uint16_t port)
 {
-	ticalcs_info("  opening session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
-
 	nsp_src_port++;
 	nsp_dst_port = port;
+
+	ticalcs_info("  opening session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
 	return 0;
 }
@@ -134,15 +134,14 @@ int nsp_session_close(CalcHandle *h)
 
 // Address Request/Assignment
 
-extern uint8_t nsp_seq;
-
 int nsp_addr_request(CalcHandle *h)
 {
+	extern uint8_t nsp_seq_pc;
 	RawPacket pkt = {0};
 
 	// Reset connection so that device send an address request packet
 	TRYC(h->cable->cable->reset(h->cable));
-	nsp_seq = 1;
+	nsp_seq_pc = 1;
 
 	ticalcs_info("  device address request:");
 
@@ -207,6 +206,24 @@ int nsp_send_nack(CalcHandle* h)
 	pkt.src_port = PORT_PKT_NACK;
 	pkt.dst_addr = NSP_DEV_ADDR;
 	pkt.dst_port = nsp_dst_port;
+	pkt.data[0] = MSB(PORT_LOGIN);
+	pkt.data[1] = LSB(PORT_LOGIN);
+	TRYF(nsp_send(h, &pkt));
+
+	return 0;
+}
+
+int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
+{
+	RawPacket pkt = {0};
+
+	ticalcs_info("  sending nAck:");
+
+	pkt.data_size = 2;
+	pkt.src_addr = NSP_SRC_ADDR;
+	pkt.src_port = PORT_PKT_NACK;
+	pkt.dst_addr = NSP_DEV_ADDR;
+	pkt.dst_port = port;
 	pkt.data[0] = MSB(PORT_LOGIN);
 	pkt.data[1] = LSB(PORT_LOGIN);
 	TRYF(nsp_send(h, &pkt));
@@ -331,8 +348,10 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 		h->updat->cnt1 += DATA_SIZE;
 		h->updat->pbar();
 
-		if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
-		TRYF(nsp_send_ack(h));
+		if(raw.dst_port == PORT_LOGIN)
+		{ TRYF(nsp_send_nack_ex(h, raw.src_port)); }
+		else if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
+		{ TRYF(nsp_send_ack(h)); }
 
 	} while(raw.data_size >= DATA_SIZE);
 
