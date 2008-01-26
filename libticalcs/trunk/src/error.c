@@ -357,26 +357,30 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+1:
-	    strcpy(error_msg, _("Msg: the directory does not exist."));
+	    strcpy(error_msg, _("Msg: OS installation failed. File is corrupted/wrong."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+2:
-	    strcpy(error_msg, _("Msg: the directory name is invalid."));
+	    strcpy(error_msg, _("Msg: the directory does not exist."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+3:
-	    strcpy(error_msg, _("Msg: not currently listing a directory."));
+	    strcpy(error_msg, _("Msg: the directory name is invalid."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+4:
-	    strcpy(error_msg, _("Msg: no more files to list."));
+	    strcpy(error_msg, _("Msg: not currently listing a directory."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+5:
-	    strcpy(error_msg, _("Msg: the file name is invalid."));
+	    strcpy(error_msg, _("Msg: no more files to list."));
 		*message = g_strdup(error_msg);
     break;
 	case ERR_CALC_ERROR3+6:
+	    strcpy(error_msg, _("Msg: the file name is invalid."));
+		*message = g_strdup(error_msg);
+    break;
+	case ERR_CALC_ERROR3+7:
 	    strcpy(error_msg, _("Msg: no file extension."));
 		*message = g_strdup(error_msg);
     break;

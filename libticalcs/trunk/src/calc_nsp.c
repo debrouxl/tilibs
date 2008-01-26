@@ -66,7 +66,7 @@ static int		is_ready	(CalcHandle* handle)
 			ret = cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
 			if(ret)
 			{
-				ticalcs_infos("OS == 1.1");
+				ticalcs_info("OS == 1.1");
 				ticables_options_set_timeout(handle->cable, old);
 				rom_11 = !0;
 
@@ -75,7 +75,7 @@ static int		is_ready	(CalcHandle* handle)
 			}
 			else
 			{
-				ticalcs_infos("OS >= 1.2");
+				ticalcs_info("OS >= 1.2");
 			}
 		}
 
