@@ -192,8 +192,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	g_node_append(*apps, root);
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
-	TRYF(cmd_s_dir_unknown(handle, "/"));
-	TRYF(cmd_r_dir_unknown(handle));
+	TRYF(cmd_s_dir_attributes(handle, "/"));
+	TRYF(cmd_r_dir_attributes(handle, NULL, NULL, NULL));
 	TRYF(nsp_session_close(handle));
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));

@@ -198,7 +198,7 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 /////////////----------------
 
-int cmd_s_dir_unknown(CalcHandle *h, const char *name)
+int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
 	uint8_t len = strlen(name) < 8 ? 8 : strlen(name);
@@ -217,7 +217,7 @@ int cmd_s_dir_unknown(CalcHandle *h, const char *name)
 	return 0;
 }
 
-int cmd_r_dir_unknown(CalcHandle *h)
+int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date)
 {
 	VirtualPacket* pkt = nsp_vtl_pkt_new();
 
@@ -227,6 +227,13 @@ int cmd_r_dir_unknown(CalcHandle *h)
 
 	if(pkt->cmd != CMD_FM_UNKWOWN)
 		return ERR_CALC_ERROR3 + err_code(pkt->data[0]);
+
+	if(size)
+		*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 0)));
+	if(date)
+		*date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 4)));
+	if(type)
+		*type = *(pkt->data + 8);
 
 	nsp_vtl_pkt_del(pkt);
 	return 0;

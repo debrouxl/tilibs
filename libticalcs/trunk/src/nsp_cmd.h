@@ -82,8 +82,8 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
 int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
-int cmd_s_dir_unknown(CalcHandle *h, const char *name);
-int cmd_r_dir_unknown(CalcHandle *h);
+int cmd_s_dir_attributes(CalcHandle *h, const char *name);
+int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date);
 
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name);
 int cmd_r_dir_enum_init(CalcHandle *h);
