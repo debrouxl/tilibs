@@ -526,7 +526,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_MODEL));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
-	strncpy(infos->product_name, (char*)data, 10);
+	strcpy(infos->product_name, (char*)data);
 	infos->mask |= INFOS_PRODUCT_NAME;
 
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
