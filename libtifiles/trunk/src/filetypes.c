@@ -455,6 +455,7 @@ static int tifiles_file_has_tig_header(const char *filename)
 }
 
 #define TNO_SIGNATURE	"TI-Nspire.tno "
+#define TNC_SIGNATURE	"TI-Nspire.tnc "
 
 TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 {
@@ -465,7 +466,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 	if (!strcmp(e, ""))
 	  return 0;
 
-	if(g_ascii_strcasecmp(e, "tno"))
+	if(g_ascii_strcasecmp(e, "tno")	&& g_ascii_strcasecmp(e, "tnc"))
 		return 0;
 
 	f = gfopen(filename, "rb");
@@ -473,7 +474,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 		return 0;
 
 	fread_n_chars(f, 14, str);
-	if(!strcmp(str, TNO_SIGNATURE)) 
+	if(!strcmp(str, TNO_SIGNATURE) || !strcmp(str, TNC_SIGNATURE)) 
 	{
 		fclose(f);
 		return !0;
@@ -1000,7 +1001,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
   if (!g_ascii_strcasecmp(ext, "tib"))
     return _("OS upgrade");
 
-  if(!g_ascii_strcasecmp(ext, "tno"))
+  if(!g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc"))
 	return _("OS upgrade");
 
   if (!tifiles_file_is_ti(filename))
@@ -1084,7 +1085,7 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
   if (!g_ascii_strcasecmp(ext, "tib"))
     return "OS upgrade";
 
-  if (!g_ascii_strcasecmp(ext, "tno"))
+  if (!g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc"))
     return "OS upgrade";
 
   if (!tifiles_file_is_ti(filename))
