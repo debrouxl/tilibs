@@ -1,6 +1,6 @@
 Name: libtifiles2
 Epoch: 1
-Version: 1.1.0
+Version: 1.1.1
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Fri Mar 28 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.1-1
+Update to 1.1.1.
+
 * Sun Jan 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.0-1
 Update to 1.1.0.
 Specify GPL version in License tag.
