@@ -13,7 +13,7 @@ Conflicts: libticonv2-dev
 Description: Texas Instruments calculators charsets library [development files]
  The libticonv is a library providing support for operations on Texas 
  Instruments calculators charsets. All charsets for all calculators are 
- supported; the library is also able to convert to/from UTF-8.
+ supported; the library is also able to convert to/from UTF-8/UTF-16.
  .
  This package provides the development files for the library, static library, 
  required headers and documentation.
@@ -26,6 +26,6 @@ Conflicts: libticonv2
 Description: Texas Instruments calculators charsets library
  The libticonv is a library providing support for operations on Texas
  Instruments calculators charsets. All charsets for all calculators are 
- supported; the library is also able to convert from/to UTF-8.
+ supported; the library is also able to convert from/to UTF-8/UTF-16.
  .
  This package provides the shared library.
