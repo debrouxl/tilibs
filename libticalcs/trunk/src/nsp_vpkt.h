@@ -65,8 +65,8 @@ typedef struct
 
 // Exports
 
-uint16_t nsp_src_port;
-uint16_t nsp_dst_port;
+extern uint16_t nsp_src_port;
+extern uint16_t nsp_dst_port;
 
 // Functions
 
