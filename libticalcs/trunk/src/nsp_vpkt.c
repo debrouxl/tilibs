@@ -140,6 +140,7 @@ int nsp_addr_request(CalcHandle *h)
 	RawPacket pkt = {0};
 
 	// Reset connection so that device send an address request packet
+	// Warning: you need a modified libusb-win32 library (see ticables2/src/win32/usb/libusb-win32.html)
 	TRYC(h->cable->cable->reset(h->cable));
 	nsp_seq_pc = 1;
 

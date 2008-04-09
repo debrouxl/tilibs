@@ -89,6 +89,7 @@
 #define CMD_DEL  0x88		// [* $] Delete variable/app
 #define CMD_EOT  0x92		// [   ] End Of Transmission: no more variables to send
 #define CMD_REQ  0xA2		// [* $] Request variable - includes a std var header
+#define CMD_ERR2 0xB4		// [   ] Checksum error: send last packet again
 #define CMD_IND  0xB7		// [* $] Request variable index
 #define CMD_RTS  0xC9		// [* $] Request to send - includes a padded var header
 

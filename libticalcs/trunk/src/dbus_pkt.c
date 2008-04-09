@@ -191,7 +191,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	//if(host_check && (*host != host_ids(handle))) 
 	//	return ERR_INVALID_HOST;
 
-	if(*cmd == CMD_ERR) 
+	if(*cmd == CMD_ERR ||*cmd == CMD_ERR2) 
 		return ERR_CHECKSUM;
 
 	switch (*cmd) 
@@ -253,6 +253,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	case CMD_CTS:	// short packet (no data)
 	case CMD_ACK:
 	case CMD_ERR:
+	case CMD_ERR2:
 	case CMD_RDY:
 	case CMD_SCR:
 	case CMD_RID:
