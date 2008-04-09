@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>Difference of behaviour on usb_reset between Linux and Windows</title>
+<link rel="important stylesheet" href="chrome://messenger/skin/messageBody.css">
+</head>
+<body>
+<table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part1"><tr><td><b>Sujet: </b>Difference of behaviour on usb_reset between Linux and Windows</td></tr><tr><td><b>De: </b>libusb-win32-devel-owner@lists.sourceforge.net</td></tr><tr><td><b>Date: </b>Wed, 14 Nov 2007 06:29:30 -0800</td></tr></table><table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part2"><tr><td><b>Pour :: </b>roms@lievin.net</td></tr></table><br>
+<div class="moz-text-plain"><pre wrap>You are not allowed to post to this mailing list, and your message has
+been automatically rejected.  If you think that your messages are
+being rejected in error, contact the mailing list owner at
+<a class="moz-txt-link-abbreviated" href="mailto:libusb-win32-devel-owner@lists.sourceforge.net">libusb-win32-devel-owner@lists.sourceforge.net</a>.
+
+</pre></div><br><hr width="90%" size=4><br><table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part1"><tr><td><b>Sujet: </b>Difference of behaviour on usb_reset between Linux and Windows</td></tr><tr><td><b>De: </b>Romain Li�vin <roms@lievin.net></td></tr><tr><td><b>Date: </b>Wed, 14 Nov 2007 15:29:28 +0100</td></tr></table><table border=0 cellspacing=0 cellpadding=0 width="100%" class="header-part2"><tr><td><b>Pour :: </b>libusb-win32-devel@lists.sourceforge.net</td></tr><tr><td><b>Copie à :: </b>Kevin Kofler <kevin.kofler@chello.at></td></tr></table><br>
+<div class="moz-text-flowed">Hi,
+<br>
+<br>I'm currently implementing support of the latest Texas Instruments'
+<br>graphing calculator for TiLP (<a class="moz-txt-link-abbreviated" href="http://www.tilp.info">www.tilp.info</a>). This hand-held works under
+<br>Linux but run into troubles with libusb-win32. What's difference? TI's
+<br>software raises an IOCTL_INTERNAL_USB_RESET_PORT to reset hand-held and
+<br>triggers device address request/assignation. I have the same with libusb
+<br>under Linux thru usb_reset(). libusb-win32 raises an
+<br>IOCTL_INTERNAL_USB_RESET_PORT immediately followed by an
+<br>IOCTL_INTERNAL_USB_CYCLE_PORT. I think this is the wrong behaviour (see
+<br>below) so I'm actually using a modified version of libusb-win32 driver
+<br>to prevent this...
+<br>
+<br>By comparing libusb-win32 and linux kernel behaviour from source code, I
+<br>can see:
+<br>1) linux: libusb_reset() call linux/kernel/drivers/usb/hub.c:
+<br>
+<br>/**
+<br>* usb_reset_device - perform a USB port reset to reinitialize a device
+<br>* @udev: device to reset (not in SUSPENDED or NOTATTACHED state)
+<br>*
+<br>* WARNING - don't use this routine to reset a composite device
+<br>* (one with multiple interfaces owned by separate drivers)!
+<br>* Use usb_reset_composite_device() instead.
+<br>*
+<br>* Do a port reset, reassign the device's address, and establish its
+<br>* former operating configuration.&nbsp; If the reset fails, or the device's
+<br>
+<br>=&gt; this is equivalent to RESET_PORT
+<br>
+<br>* descriptors change from their values before the reset, or the original
+<br>* configuration and altsettings cannot be restored, a flag will be set
+<br>* telling khubd to pretend the device has been disconnected and then
+<br>* re-connected.&nbsp; All drivers will be unbound, and the device will be
+<br>* re-enumerated and probed all over again.
+<br>
+<br>=&gt; this is equivalent to CYCLE_PORT <span class="moz-txt-underscore"><span class="moz-txt-tag">_</span>but<span class="moz-txt-tag">_</span></span> only if reset fails.
+<br>
+<br>*
+<br>* Returns 0 if the reset succeeded, -ENODEV if the device has been
+<br>
+<br>2) win32: libusb_reset() call src/drivers/reset_device.c:
+<br>
+<br>&lt;&lt;
+<br>status = call_usbd(dev, NULL, IOCTL_INTERNAL_USB_RESET_PORT, timeout);
+<br>
+<br>&nbsp;if(!NT_SUCCESS(status))
+<br>&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; DEBUG_ERROR("reset_device(): IOCTL_INTERNAL_USB_RESET_PORT failed: "
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "status: 0x%x", status);
+<br>&nbsp;&nbsp; }
+<br>
+<br>&nbsp;status = call_usbd(dev, NULL, IOCTL_INTERNAL_USB_CYCLE_PORT, timeout);
+<br>
+<br>&nbsp;if(!NT_SUCCESS(status))
+<br>&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; DEBUG_ERROR("reset_device(): IOCTL_INTERNAL_USB_CYCLE_PORT failed: "
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "status: 0x%x", status);
+<br>&nbsp;&nbsp; }
+<br><blockquote type=cite><blockquote type=cite>
+<br></blockquote></blockquote>
+<br>So, libusb-win32 raises both IOCTL. I will suggest to raises the second
+<br>IOCTL if the previous IOCTL fails. Like that:
+<br>
+<br>&lt;&lt;
+<br>if(!NT_SUCCESS(status))
+<br>&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp; DEBUG_ERROR("reset_device(): IOCTL_INTERNAL_USB_RESET_PORT failed: "
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "status: 0x%x", status);
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; status = call_usbd(dev, NULL, IOCTL_INTERNAL_USB_CYCLE_PORT, timeout);
+<br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp; if(!NT_SUCCESS(status))
+<br>&nbsp;&nbsp;&nbsp;&nbsp; {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEBUG_ERROR("reset_device(): IOCTL_INTERNAL_USB_CYCLE_PORT failed: "
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "status: 0x%x", status);
+<br>&nbsp;&nbsp;&nbsp;&nbsp; }
+<br>&nbsp;&nbsp; }
+<br><blockquote type=cite><blockquote type=cite>
+<br></blockquote></blockquote>
+<br>Regards, Romain.
+<br>
+<br>
+<br>
+<br></div></body>
+</html>
