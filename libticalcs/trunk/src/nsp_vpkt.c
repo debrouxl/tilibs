@@ -22,6 +22,15 @@
 /*
 	This unit manages virtual packets from/to NSPire (DirectLink).
 	Virtual packets are fragmented into one or more raw packets.
+
+	Please note this unit does not fully implement the NSpire protocol. It assumes
+	there is one Nspire which is not exposing services. This assumption allows to 
+	work in a linear fashion although we need sometimes some nasty hacks (LOGIN for
+	instance).
+
+	A better unit should implement a kind of daemon listening on all ports and launching
+	a thread for each connection attempt. This way is fully parallelized but need a state
+	machine and so more (complex) code. Maybe later...
 */
 
 #include <stdlib.h>
@@ -124,7 +133,7 @@ int nsp_session_close(CalcHandle *h)
 {
 	ticalcs_info("  closed session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
-	TRYF(nsp_disconnect(h));
+	TRYF(nsp_send_disconnect(h));
 	TRYF(nsp_recv_ack(h));
 
 	nsp_dst_port = PORT_ADDR_REQUEST;
@@ -258,7 +267,7 @@ int nsp_recv_ack(CalcHandle *h)
 
 // Service Disconnection
 
-int nsp_disconnect(CalcHandle *h)
+int nsp_send_disconnect(CalcHandle *h)
 {
 	RawPacket pkt = {0};
 
@@ -272,6 +281,41 @@ int nsp_disconnect(CalcHandle *h)
 	pkt.data[0] = MSB(nsp_src_port);
 	pkt.data[1] = LSB(nsp_src_port);
 	TRYF(nsp_send(h, &pkt));
+
+	return 0;
+}
+
+int nsp_recv_disconnect(CalcHandle *h)
+{
+	RawPacket pkt = {0};
+	uint16_t addr;
+
+	ticalcs_info("  receiving disconnect:");
+
+	TRYF(nsp_recv(h, &pkt));
+
+	if(pkt.src_port != PORT_DISCONNECT)
+		return ERR_INVALID_PACKET;
+
+	// nasty hack
+	nsp_dst_port = (pkt.data[0] << 8) | pkt.data[1];
+	addr = pkt.dst_port;
+
+	// nasty hack
+	{
+		RawPacket pkt = {0};
+
+		ticalcs_info("  sending ack:");
+		
+		pkt.data_size = 2;
+		pkt.src_addr = NSP_SRC_ADDR;
+		pkt.src_port = PORT_PKT_ACK2;
+		pkt.dst_addr = NSP_DEV_ADDR;
+		pkt.dst_port = nsp_dst_port;
+		pkt.data[0] = MSB(addr);
+		pkt.data[1] = LSB(addr);
+		TRYF(nsp_send(h, &pkt));
+	}
 
 	return 0;
 }

@@ -88,7 +88,8 @@ int nsp_send_nack(CalcHandle *h);
 int nsp_send_data(CalcHandle* h, VirtualPacket* pkt);
 int nsp_recv_data(CalcHandle* h, VirtualPacket* pkt);
 
-int nsp_disconnect(CalcHandle *h);
+int nsp_send_disconnect(CalcHandle *h);
+int nsp_recv_disconnect(CalcHandle *h);
 
 const char* nsp_sid2name(uint16_t id);
 

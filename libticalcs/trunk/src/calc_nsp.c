@@ -46,16 +46,25 @@
 
 int nsp_reset = 0;
 
+/*
+	How things behave depepnding on OS version...
+	- 1.1: no login request
+	- 1.2 & 1.3: hand-held request LOGIN connection three seconds after device reset
+	- 1.4: login request + service disconnect
+	
+  */
+
 static int		is_ready	(CalcHandle* handle)
 {
 	static int rom_11 = 0;
+	static int rom_14 = 0;
 
+	// checking for OS version and LOGIN packet
 	if(!nsp_reset)
 	{
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 
-		// starting at ROM 1.2, hand-held request LOGIN connection three seconds after device reset
 		{
 			int old;
 			int ret;
@@ -75,26 +84,40 @@ static int		is_ready	(CalcHandle* handle)
 			}
 			else
 			{
-				ticalcs_info("OS >= 1.2");
+				ret = nsp_recv_disconnect(handle);
+				if(ret)
+				{
+					ticalcs_info("OS = 1.3");
+					rom_14 = 0;
+				}
+				else
+				{
+					ticalcs_info("OS = 1.4");
+					rom_14 = !0;
+				}
+
 			}
 		}
 
 		nsp_reset = !0;
 	}
 
+	// Use ECHO packet as ready check
 	{
 		char str[] = "ready";
 		uint32_t size;
 		uint8_t *data;
 
-		// Use ECHO packet as ready check
 		TRYF(nsp_session_open(handle, SID_ECHO));
 
 		TRYF(cmd_s_echo(handle, strlen(str)+1, (uint8_t *)str));
+		printf("111\n");
 		TRYF(cmd_r_echo(handle, &size, &data));
 		g_free(data);
+		printf("222\n");
 
 		TRYF(nsp_session_close(handle));
+		printf("333\n");
 	}
 
 	return 0;
