@@ -87,7 +87,7 @@ static int		is_ready	(CalcHandle* handle)
 				ret = nsp_recv_disconnect(handle);
 				if(ret)
 				{
-					ticalcs_info("OS = 1.3");
+					ticalcs_info("OS = 1.2 or 1.3");
 					rom_14 = 0;
 				}
 				else
@@ -111,13 +111,10 @@ static int		is_ready	(CalcHandle* handle)
 		TRYF(nsp_session_open(handle, SID_ECHO));
 
 		TRYF(cmd_s_echo(handle, strlen(str)+1, (uint8_t *)str));
-		printf("111\n");
 		TRYF(cmd_r_echo(handle, &size, &data));
 		g_free(data);
-		printf("222\n");
 
 		TRYF(nsp_session_close(handle));
-		printf("333\n");
 	}
 
 	return 0;
