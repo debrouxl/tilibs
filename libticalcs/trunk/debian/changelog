@@ -2,6 +2,12 @@ libticalcs2 (1.1.2-1) stable; urgency=low
 
   * See ChangeLog.
 
+ -- Romain LIEVIN <roms@tilp.info>  Sat, 06 Sep 2008 10:40:27 +0200
+
+libticalcs2 (1.1.2-1) stable; urgency=low
+
+  * See ChangeLog.
+
  -- Romain LIEVIN <roms@tilp.info>  Fri, 28 Mar 2008 21:20:32 +0200
 
 libticalcs2 (1.1.0-1) stable; urgency=low
