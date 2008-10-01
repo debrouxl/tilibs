@@ -1,6 +1,6 @@
 Name: libticalcs2
 Epoch: 1
-Version: 1.1.2
+Version: 1.1.3
 Release: 1
 Vendor: LPG (http://lpg.ticalc.org)
 Packager: Kevin Kofler <Kevin@tigcc.ticalc.org>
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/doc/%{name}/html
 
 %changelog
+* Wed Oct 7 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.3-1
+Update to 1.1.3.
+
 * Fri Mar 28 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 1:1.1.2-1
 Update to 1.1.2.
 
