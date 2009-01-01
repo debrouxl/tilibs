@@ -2,6 +2,10 @@ SubVersion: $Id$
 
 Log:
 
+- 01/01/2009, version 1.2.1: roms
+	- modified ticables_string_to_model to be case unsensitive like
+	other functions
+	
 - 16/10/2007, version 1.2.0: roms
 	- reverted back a wrong commit done in rev. 3042 (31/10/2006 !!!): 
 	USB reset code had been removed from slv_reset.

@@ -60,31 +60,31 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
  **/
 TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 {
-	if(!strcmp(str, "null"))
+	if(!g_ascii_strcasecmp(str, "null"))
 		return CABLE_NUL;
-	else if(!strcmp(str, "GrayLink"))
+	else if(!g_ascii_strcasecmp(str, "GrayLink"))
 		return CABLE_GRY;
-	else if(!strcmp(str, "BlackLink"))
+	else if(!g_ascii_strcasecmp(str, "BlackLink"))
 		return CABLE_BLK;
-	else if(!strcmp(str, "Parallel"))
+	else if(!g_ascii_strcasecmp(str, "Parallel"))
 		return CABLE_PAR;
-	else if(!strcmp(str, "SilverLink"))
+	else if(!g_ascii_strcasecmp(str, "SilverLink"))
 		return CABLE_SLV;
-	else if(!strcmp(str, "DirectLink"))
+	else if(!g_ascii_strcasecmp(str, "DirectLink"))
 		return CABLE_USB;
-	else if(!strcmp(str, "VTi"))
+	else if(!g_ascii_strcasecmp(str, "VTi"))
 		return CABLE_VTI;
-	else if(!strcmp(str, "TiEmu"))
+	else if(!g_ascii_strcasecmp(str, "TiEmu"))
 		return CABLE_TIE;
-	else if(!strcmp(str, "TilEm"))
+	else if(!g_ascii_strcasecmp(str, "TilEm"))
 		return CABLE_TIE;
-	else if(!strcmp(str, "TiEmu/TilEm"))
+	else if(!g_ascii_strcasecmp(str, "TiEmu/TilEm"))
 		return CABLE_TIE;
-	else if(!strcmp(str, "virtual"))
+	else if(!g_ascii_strcasecmp(str, "virtual"))
 		return CABLE_VTL;
-	else if(!strcmp(str, "linkport"))
+	else if(!g_ascii_strcasecmp(str, "linkport"))
 		return CABLE_ILP;
-	else if(!strcmp(str, "UsbKernel"))
+	else if(!g_ascii_strcasecmp(str, "UsbKernel"))
 	    return CABLE_DEV;
 
 	return CABLE_NUL;
@@ -121,7 +121,7 @@ TIEXPORT1 const char *TICALL ticables_port_to_string(CablePort port)
  **/
 TIEXPORT1 CablePort TICALL ticables_string_to_port(const char *str)
 {
-	if(!strcmp(str, "null"))
+	if(!g_ascii_strcasecmp(str, "null"))
 		return PORT_0;
 	else if(!strcmp(str, "#1"))
 		return PORT_1;

@@ -174,7 +174,7 @@ static int hex_read(unsigned char *data)
 	if(feof(hex))
 		return -1;
 
-	ret = fscanf(hex, "%02X", data);
+	ret = fscanf(hex, "%02X", (unsigned char *)data);
 	if(ret < 1)
 		return -1;
 	fgetc(hex);
