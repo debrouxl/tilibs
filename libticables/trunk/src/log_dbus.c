@@ -43,14 +43,8 @@ static char *ofn = NULL;
 
 int log_dbus_start(void)
 {
-  // build filenames
-#ifdef __WIN32__
-	ifn = g_strconcat("C:\\", HEX_FILE, NULL);
-	ofn = g_strconcat("C:\\", LOG_FILE, NULL);
-#else
-	ifn = g_strconcat(g_get_home_dir(), "/", HEX_FILE, NULL);
-	ofn = g_strconcat(g_get_home_dir(), "/", LOG_FILE, NULL);
-#endif
+	ifn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
+	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, LOG_FILE, NULL);
 
   	return 0;
 }

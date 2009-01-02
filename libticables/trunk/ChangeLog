@@ -5,6 +5,7 @@ Log:
 - 01/01/2009, version 1.2.1: roms
 	- modified ticables_string_to_model to be case unsensitive like
 	other functions
+	- log files are stored now in the user's folder rather than a static location (Vista)
 	
 - 16/10/2007, version 1.2.0: roms
 	- reverted back a wrong commit done in rev. 3042 (31/10/2006 !!!): 

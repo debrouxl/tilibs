@@ -34,19 +34,14 @@
 #include "data_log.h"
 #include "ticables.h"
 
-#define HEX_FILE  "ticables-log.hex"
+#define HEX_FILE	"ticables-log.hex"
 
 static char *fn = NULL;
 static FILE *log = NULL;
 
 int log_hex_start(void)
 {
-  // build filenames
-#ifdef __WIN32__
-	fn = g_strconcat("C:\\", HEX_FILE, NULL);
-#else
-	fn = g_strconcat(g_get_home_dir(), "/", HEX_FILE, NULL);
-#endif
+	fn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
 
   	log = fopen(fn, "wt");
   	if (log == NULL) 

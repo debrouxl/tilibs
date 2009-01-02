@@ -33,6 +33,8 @@
 #define LOG_IN	0
 #define LOG_OUT	1
 
+#define LOG_DIR		".ticables"
+
 // Functions
 
 int log_start(CableHandle *h);

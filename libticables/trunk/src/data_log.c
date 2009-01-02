@@ -46,6 +46,12 @@
 
 int log_start(CableHandle *h)
 {
+	gchar *tmp;
+	
+	tmp = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, NULL);
+	g_mkdir(tmp, 0);
+	g_free(tmp);
+
 	log_hex_start();
 
 	if(h->model == CABLE_USB)
