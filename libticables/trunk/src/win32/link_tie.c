@@ -139,7 +139,7 @@ static int tie_open(CableHandle *h)
 	pRefCnt = (int *)MapViewOfFile(hRefCnt, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(int));
 	*pRefCnt = ret ? 2 : 1;
 
-	printf("pRefCnt = %i\n", *pRefCnt);
+	//printf("pRefCnt = %i\n", *pRefCnt);
 
 	return 0;
 }
