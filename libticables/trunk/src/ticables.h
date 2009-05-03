@@ -41,7 +41,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define libticables2_VERSION "1.2.0"
+# define libticables2_VERSION "1.3.0"
 #else
 # define libticables2_VERSION VERSION
 #endif
@@ -63,7 +63,7 @@ typedef enum
 {
 	CABLE_NUL = 0,
 	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
-	CABLE_VTI, CABLE_TIE, CABLE_VTL, CABLE_ILP, CABLE_DEV,
+	CABLE_VTI, CABLE_TIE, CABLE_ILP, CABLE_DEV,
 CABLE_MAX,
 } CableModel;
 

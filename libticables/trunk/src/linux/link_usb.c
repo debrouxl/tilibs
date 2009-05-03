@@ -688,7 +688,7 @@ int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 
   if (!io_pending)
     {
-      ret = usb_bulk_setup_async(dev, &context, ep);
+      ret = usb_bulk_setup_async(dev, &context, (unsigned char)ep);
 
       if(ret < 0)
         {

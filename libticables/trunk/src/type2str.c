@@ -44,8 +44,7 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
 	case CABLE_SLV: return "SilverLink";
 	case CABLE_USB: return "DirectLink";
 	case CABLE_VTI: return "VTi";
-	case CABLE_TIE: return "TiEmu/TilEm";
-	case CABLE_VTL: return "virtual";
+	case CABLE_TIE: return "TiEmu";
 	case CABLE_ILP: return "linkport";
 	case CABLE_DEV: return "UsbKernel";
 	default: return "unknown";
@@ -82,8 +81,8 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 		return CABLE_TIE;
 	else if(!g_ascii_strcasecmp(str, "TiEmu/TilEm"))
 		return CABLE_TIE;
-	else if(!g_ascii_strcasecmp(str, "virtual"))
-		return CABLE_VTL;
+	else if(!g_ascii_strcasecmp(str, "TiEmu"))
+		return CABLE_TIE;
 	else if(!g_ascii_strcasecmp(str, "linkport"))
 		return CABLE_ILP;
 	else if(!g_ascii_strcasecmp(str, "UsbKernel"))
