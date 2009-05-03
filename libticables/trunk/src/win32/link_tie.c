@@ -22,7 +22,9 @@
 /* "TiEmulator" virtual link cable unit */
 
 /* 
- *  This unit use two FIFOs (shm) between 2 program which use this lib.
+ *  This unit uses two circular buffer implemented as shared memory.
+ *  Names of shm are exchanged thru two FIFOs between the program which use this library.
+ *
  *  Convention used: 0 is an emulator and 1 is a linking program.
  *  One pipe is used for transferring information from 0 to 1 and the other
  *  pipe is used for transferring from 1 to 0.

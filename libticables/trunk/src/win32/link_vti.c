@@ -21,6 +21,11 @@
 
 /* "VTi" virtual link cable unit */
 
+/* 
+ *  This unit uses two circular buffer implemented as shared memory.
+ *  Names of shm are exchanged thru a messaging system.
+ */
+
 #include <stdio.h>
 #include <assert.h>
 #include <windows.h>
