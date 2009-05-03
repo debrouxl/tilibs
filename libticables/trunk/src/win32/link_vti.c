@@ -63,10 +63,10 @@ static int vti_prepare(CableHandle *h)
 	case PORT_0:	// automatic setting
 		h->address = 1; h->device = strdup("TiLP"); 
 		break;
-	case PORT_1:	// forced setting, for compat
+	case PORT_1:	// reserved because used by VTi
 		h->address = 0; h->device = strdup("VTi"); 
 		break;
-	case PORT_2: 
+	case PORT_2:	// 
 		h->address = 1; h->device = strdup("TiLP"); 
 		break;
 	default: return ERR_ILLEGAL_ARG;
@@ -107,7 +107,7 @@ static int vti_open(CableHandle *h)
     /* Get the current DLL handle */
     Handle = GetModuleHandle("ticables2.dll");
 	if(!Handle)
-	  Handle = GetModuleHandle("libticables2-1.dll");
+	  Handle = GetModuleHandle("libticables2-2.dll");
   
     if (!Handle) 
     {
