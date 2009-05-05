@@ -51,7 +51,7 @@ static int gry_prepare(CableHandle *h)
 
 	switch(h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyUSB0"); break;
+	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0"); break;
 	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/ttyS1"); break;
 	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/ttyS2"); break;
 	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/ttyS3"); break;
