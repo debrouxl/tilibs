@@ -271,11 +271,11 @@ case ERR_OUT_OF_MEMORY:
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR1+6:
-		strcpy(error_msg, _("Msg: invalid folder name."));
+		strcpy(error_msg, _("Msg: malformed RTS packet (AMS version conflict)."));
 		*message = g_strdup(error_msg);
     break;
   case ERR_CALC_ERROR1+7:
-		strcpy(error_msg, _("Msg: malformed RTS packet (AMS version conflict)."));
+		strcpy(error_msg, _("Msg: FLASH application rejected (signature does not match)."));
 		*message = g_strdup(error_msg);
     break;
 

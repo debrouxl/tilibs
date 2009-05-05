@@ -4,8 +4,8 @@
 //
 
 1 VERSIONINFO
- FILEVERSION 1,1,3,0
- PRODUCTVERSION 1,1,3,0
+ FILEVERSION 1,1,4,0
+ PRODUCTVERSION 1,1,4,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -23,14 +23,14 @@ BEGIN
             VALUE "Comments", "This lib is placed under GPL license. The license can be found on www.gnu.org\0"
             VALUE "CompanyName", "The TiLP Team\0"
             VALUE "FileDescription", "TI calculators library\0"
-            VALUE "FileVersion", "1.1.3\0"
+            VALUE "FileVersion", "1.1.4\0"
             VALUE "InternalName", "libticalcs2\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2008, Romain Liévin\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2009, Romain Liévin\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "libticalcs2-7.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "TI calculators library\0"
-            VALUE "ProductVersion", "1.1.3\0"
+            VALUE "ProductVersion", "1.1.4\0"
             VALUE "SpecialBuild", "Windows9x/NT4 version\0"
         END
     END
