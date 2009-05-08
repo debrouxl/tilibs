@@ -144,7 +144,7 @@ int dbus_decomp(const char *filename, int resync)
     file_size = st.st_size;
     
 	// allocate buffer
-    buffer = (unsigned char*)calloc(file_size/2, 1);
+    buffer = (unsigned char*)calloc(file_size/2 < 65536 ? 65526 : file_size >> 1, 1);
     memset(buffer, 0xff, file_size/2);
     if(buffer == NULL)
     {
