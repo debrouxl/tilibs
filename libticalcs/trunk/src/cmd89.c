@@ -67,7 +67,6 @@ static int err_code(uint8_t *data)
 	int i;
 	int code = data[2];
 
-	printf("pouet !\n");
 	ticalcs_info(" TI->PC: SKP (%02x)", data[0]);
 	for(i = 0; i < sizeof(dbus_errors) / sizeof(uint8_t); i++)
 		if(dbus_errors[i] == code)
