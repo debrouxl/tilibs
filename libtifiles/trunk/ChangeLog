@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- 29/05/2009, version 1.1.2: roms
+	- fixed possible buffer overflow
+	
 - 11/03/2007, version 1.1.1: roms
 	- added NSpire CAS OS file support
 

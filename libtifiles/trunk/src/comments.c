@@ -99,7 +99,7 @@ TIEXPORT2 const char* TICALL tifiles_comment_set_tigroup(void)
 	char *str = asctime(localtime(&t));
 
 	sprintf(comment, "TiGroup file dated %s", str);
-	comment[64] = 0;
+	comment[63] = 0;
 	
 	return comment;
 }
