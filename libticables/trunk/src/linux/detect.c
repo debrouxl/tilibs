@@ -471,6 +471,7 @@ int linux_check_tiusb(const char *devname)
 
     return 0;
 #else
+    fd = arg = -1;
     ticables_info(_("    tiusb support: not compiled."));
     return ERR_TTDEV;
 #endif
