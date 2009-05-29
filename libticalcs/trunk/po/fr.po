@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs 4.5.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-05-01 23:26+0200\n"
+"POT-Creation-Date: 2009-05-29 23:36+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -488,12 +488,12 @@ msgid "Msg: FLASH application rejected (bad target model)."
 msgstr "Msg: application rejetée (mauvaise calculatrice)."
 
 #: src/error.c:274
-msgid "Msg: invalid folder name."
-msgstr "Msg: nom de dossier invalide."
-
-#: src/error.c:278
 msgid "Msg: malformed RTS packet (AMS version conflict)."
 msgstr "Msg: paquet RTS incorrect (conflit de version sur AMS)."
+
+#: src/error.c:278
+msgid "Msg: FLASH application rejected (signature does not match)."
+msgstr "Msg: application rejetée (la signature ne correspond pas)."
 
 #: src/error.c:283 src/error.c:352
 msgid "Msg: hand-held returned an error (not caught)."
@@ -670,3 +670,6 @@ msgstr "libre"
 #: src/type2str.c:100 src/type2str.c:109
 msgid "used"
 msgstr "utilisé"
+
+#~ msgid "Msg: invalid folder name."
+#~ msgstr "Msg: nom de dossier invalide."
