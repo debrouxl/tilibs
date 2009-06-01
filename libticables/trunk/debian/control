@@ -5,11 +5,11 @@ Maintainer: Romain LIEVIN <roms@tilp.info>
 Build-Depends: debhelper (>> 5), pkg-config, libglib2.0-dev, tfdocgen, libusb-dev, gettext, autotools-dev
 Standards-Version: 3.7.3
 
-Package: libticables2-1-dev
+Package: libticables2-2-dev
 Section: libdevel
 Architecture: any
-Conflicts: libticables-dev, libticables2-dev, libticables3-dev
-Depends: libticables2-1 (= ${binary:Version}), pkg-config, libglib2.0-dev
+Conflicts: libticables-dev, libticables2-dev, libticables3-dev, libticables2-1-dev
+Depends: libticables2-2 (= ${binary:Version}), pkg-config, libglib2.0-dev
 Description: Texas Instruments link cables library [development files]
  The libticables is a library providing support for operations on Texas
  Instruments calculators link cables. All link cables are supported read/write.
@@ -17,10 +17,10 @@ Description: Texas Instruments link cables library [development files]
  This package provides the development files for the library, static library, 
  required headers and documentation.
 
-Package: libticables2-1
+Package: libticables2-2
 Section: libs
 Architecture: any
-Conflicts: libticables, libticables2, libticables3
+Conflicts: libticables, libticables2, libticables3, libticables2-1
 Depends: ${shlibs:Depends}
 Description: Texas Instruments link cables library
  The libticables is a library providing support for operations on Texas

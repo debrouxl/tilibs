@@ -1,3 +1,9 @@
+libticables2 (1.3.0-1) stable; urgency=low
+	
+  * Removed obsolete virtual link
+
+ -- Romain LIEVIN <roms@tilp.info>  Mon, 01 Jun 2009 18:45:58 +0200
+
 libticables2 (1.2.0-1) stable; urgency=low
 
   * Added NSpire link support.
