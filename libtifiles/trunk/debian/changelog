@@ -1,3 +1,9 @@
+libtifiles2 (1.1.2-1) stable; urgency=low
+
+  * Fixed possible buffer overflow.
+
+ -- Romain LIEVIN <roms@tilp.info>  Mon, 01 Jun 2009 18:50:24 +0200
+
 libtifiles2 (1.1.1-1) stable; urgency=low
 
   * See ChangeLog.
