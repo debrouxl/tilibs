@@ -157,6 +157,11 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	// fill-up buffer with 0xff (flash)
 	memset(data, 0xff, BLK_MAX);
 
+	*addr = flash_addr;
+	*type = flag;
+	*page = flash_page;
+	*size = 0;
+
 	// load data
 	for (i = 0; i < BLK_MAX; )
 	{
