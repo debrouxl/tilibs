@@ -1,0 +1,61 @@
+Return-Path: <benjamin.moody@gmail.com>
+X-Original-To: roms@lievin.net
+Delivered-To: roms@lievin.net
+Received: from mail-ew0-f207.google.com (mail-ew0-f207.google.com [209.85.219.207])
+	by lievin.net (Postfix) with ESMTP id D36491CF7D99
+	for <roms@lievin.net>; Wed, 17 Jun 2009 04:39:21 +0200 (CEST)
+Received: by ewy3 with SMTP id 3so46005ewy.41
+        for <roms@lievin.net>; Tue, 16 Jun 2009 19:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=In4Cjg6CabH3lhcb1QzEWVgg/4Ub8WapnhkphSlp8B8=;
+        b=LYI6wxzrf/lmuqHoUdJt3T3o0sTeXP+kdgvIqJPCiMIpkyfOihaZyWRN9z6fC2fGrU
+         CNHIvsiZ0O1kLcelvTkh+WtzlwfE7iy3yiURYViuPF3QJyU4yCnioFEF8IoKygtiHqQU
+         Aff4NGPOjslhFWTbQ9ZyVjGfmhEW9CawcP7qs=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        b=HUVRnXsS6u3MKaDTEgkUbCqOPArYJA6QQ5smkN39+TGDO7poVaZaCRiRgtAuPkLbe5
+         Roz/uVZtME3BK3+i7vnh/Rj47LTpLAM9FYzPYCM7um1WbTZK/bwP1vOOK3lb4MnIDZbA
+         J/0SzrqSjfZ9YIygsjSHUKT6lu6rjCpwp8LYQ=
+MIME-Version: 1.0
+Received: by 10.216.51.202 with SMTP id b52mr3035204wec.38.1245206361023; Tue, 
+	16 Jun 2009 19:39:21 -0700 (PDT)
+In-Reply-To: <4A37513B.4020407@lievin.net>
+References: <80bd11420906151155u46d817a2y45cc7d5ccff46b53@mail.gmail.com>
+	 <4A36A66D.4070406@lievin.net> <4A37513B.4020407@lievin.net>
+Date: Tue, 16 Jun 2009 22:39:20 -0400
+Message-ID: <a0f719f50906161939i2bee04b5q8b64a20967f2f71d@mail.gmail.com>
+Subject: Re: Rom dumps in libticalcs (was: libticalcs_1.1.3-1_amd64.changes 
+	REJECTED)
+From: Benjamin Moody <benjamin.moody@gmail.com>
+To: =?UTF-8?Q?Romain_Li=C3=A9vin?= <roms@lievin.net>
+Cc: floppusmaximus@users.sourceforge.net, Julien BLACHE <jb@jblache.org>, 
+	Thibault Duponchelle <t.duponchelle@gmail.com>, Lionel Debroux <lionel_debroux@yahoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Lievin-MailScanner-Information: Please contact postmaster@lievin.net for more information
+X-Lievin-MailScanner: Found to be clean
+X-Lievin-MailScanner-SpamCheck: n'est pas un polluriel,
+	SpamAssassin (not cached, score=1.709, requis 5, autolearn=disabled,
+	BAYES_50 0.00, DNS_FROM_RFC_POST 1.71)
+X-Lievin-MailScanner-SpamScore: 1
+X-MailScanner-From: benjamin.moody@gmail.com
+
+Hi Romain,
+
+I thought that I had released the ROM dumper under an X11 or BSD-type
+license.  If that's the case, there shouldn't be any problem using it
+with GPL code as far as I'm aware.  In any case, though, you certainly
+have my permission to relicense it as GPL or LGPL if you like.
+
+This reminds me, incidentally - I intended quite some time ago to
+write a direct USB version of the ROM dumper, but I never got around
+to it.  I'll try to finish that sometinme soon, seeing as I actually
+own a TI-84+ now. :)
+
+Benjamin
