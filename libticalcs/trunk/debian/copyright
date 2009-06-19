@@ -14,3 +14,25 @@ You are free to distribute this software under the terms of the GNU Lesser
 General Public License.
 On Debian systems, the complete text of the GNU Lesser General Public License
 can be found in /usr/share/common-licenses/LGPL file.
+
+As of June the 17th, 2009, the TI8x ROM dumper has been re-licensed under GPL:
+<<
+Received: by lievin.net (Postfix) with ESMTP id D36491CF7D99
+	for <roms@lievin.net>; Wed, 17 Jun 2009 04:39:21 +0200 (CEST)
+From: Benjamin Moody <benjamin.moody@gmail.com>
+To: Romain_Lievin <roms@lievin.net>
+
+Hi Romain,
+
+I thought that I had released the ROM dumper under an X11 or BSD-type
+license.  If that's the case, there shouldn't be any problem using it
+with GPL code as far as I'm aware.  In any case, though, you certainly
+have my permission to relicense it as GPL or LGPL if you like.
+
+This reminds me, incidentally - I intended quite some time ago to
+write a direct USB version of the ROM dumper, but I never got around
+to it.  I'll try to finish that sometinme soon, seeing as I actually
+own a TI-84+ now. :)
+
+Benjamin
+>>
