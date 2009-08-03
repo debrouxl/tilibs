@@ -308,6 +308,7 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
   uint16_t length;
   uint8_t strl;
   uint8_t flag;
+  char * varname_nofldname;
 
   TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
@@ -334,6 +335,13 @@ int ti89_recv_VAR_h(CalcHandle* handle, uint32_t * varsize, uint8_t * vartype, c
 
   ticalcs_info(" TI->PC: VAR (size=0x%08X=%i, id=%02X, name=%s, flag=%i)",
 	  *varsize, *varsize, *vartype, varname, flag);
+  varname_nofldname = tifiles_get_varname(varname);
+  if (varname_nofldname != varname)
+  {
+    // This variable name contains a folder name. Erase it.
+    ticalcs_info(" TI->PC: VAR: the variable name contains a folder name, stripping it.");
+    memmove(varname, varname_nofldname, strlen(varname_nofldname)+1);
+  }
 
   return 0;
 }
