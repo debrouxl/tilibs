@@ -198,10 +198,10 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
   l = strlen(s);
   if (l > n) 
   {
-    tifiles_error("string passed in 'write_string8' is too long (>n chars).\n");
-    tifiles_error( "s = %s, len(s) = %i\n", s, strlen(s));
-    hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
-    abort();
+    tifiles_critical("string passed in 'write_string8' is too long (>n chars).\n");
+    tifiles_critical( "s = %s, len(s) = %i\n", s, l);
+    hexdump((uint8_t *) s, (l < 9) ? 9 : l);
+    return -1;
   }
 
   for (i = 0; i < l; i++)
@@ -228,10 +228,10 @@ int fwrite_n_chars2(FILE * f, int n, const char *s)
   l = strlen(s);
   if (l > n) 
   {
-    tifiles_error("string passed in 'write_string8' is too long (>n chars).\n");
-    tifiles_error( "s = %s, len(s) = %i\n", s, strlen(s));
-    hexdump((uint8_t *) s, (strlen(s) < 9) ? 9 : strlen(s));
-    abort();
+    tifiles_critical("string passed in 'write_string8' is too long (>n chars).\n");
+    tifiles_critical( "s = %s, len(s) = %i\n", s, l);
+    hexdump((uint8_t *) s, (l < 9) ? 9 : l);
+    return -1;
   }
 
   for (i = 0; i < l; i++)

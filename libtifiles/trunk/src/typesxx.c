@@ -47,51 +47,38 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2type(data);
-    break;
   case CALC_TI82:
     return ti82_byte2type(data);
-    break;
   case CALC_TI83:
     return ti83_byte2type(data);
-    break;
   case CALC_TI83P:
-	  return ti83p_byte2type(data);
-	  break;
+    return ti83p_byte2type(data);
   case CALC_TI84P:
   case CALC_TI84P_USB:
-	return ti84p_byte2type(data);
-    break;
+    return ti84p_byte2type(data);
   case CALC_TI85:
     return ti85_byte2type(data);
-    break;
   case CALC_TI86:
     return ti86_byte2type(data);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
     return ti89_byte2type(data);
-    break;
-	case CALC_TI89T:
-	case CALC_TI89T_USB:
-	return ti89t_byte2type(data);
-    break;
+  case CALC_TI89T:
+  case CALC_TI89T_USB:
+    return ti89t_byte2type(data);
   case CALC_TI92:
     return ti92_byte2type(data);
-    break;
   case CALC_TI92P:
     return ti92p_byte2type(data);
-    break;
   case CALC_V200:
     return v200_byte2type(data);
-    break;
   case CALC_NSPIRE:
-	return nsp_byte2type(data);
+    return nsp_byte2type(data);
 #endif
   default:
-	  tifiles_error("tifiles_vartype2string: invalid calc_type argument.");
-	  return "";
-    break;
+    tifiles_critical("tifiles_vartype2string: invalid calc_type argument.");
+    return "";
   }
 }
 
@@ -111,47 +98,36 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_type2byte(s);
-    break;
   case CALC_TI82:
     return ti82_type2byte(s);
-    break;
   case CALC_TI83:
     return ti83_type2byte(s);
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
-	  case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return ti83p_type2byte(s);
-    break;
   case CALC_TI85:
     return ti85_type2byte(s);
-    break;
   case CALC_TI86:
     return ti86_type2byte(s);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
-case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return ti89_type2byte(s);
-    break;
   case CALC_TI92:
     return ti92_type2byte(s);
-    break;
   case CALC_TI92P:
     return ti92p_type2byte(s);
-    break;
   case CALC_V200:
     return v200_type2byte(s);
-    break;
   case CALC_NSPIRE:
-	return nsp_type2byte(s);
+    return nsp_type2byte(s);
 #endif
   default:
-    tifiles_error("tifiles_string2vartype: invalid calc_type argument.");
+    tifiles_critical("tifiles_string2vartype: invalid calc_type argument.");
     return 0;
-    break;
   }
 }
 
@@ -171,48 +147,36 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2fext(data);
-    break;
   case CALC_TI82:
     return ti82_byte2fext(data);
-    break;
   case CALC_TI83:
     return ti83_byte2fext(data);
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
   case CALC_TI84P_USB:
     return ti83p_byte2fext(data);
-    break;
   case CALC_TI85:
     return ti85_byte2fext(data);
-    break;
   case CALC_TI86:
     return ti86_byte2fext(data);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return ti89_byte2fext(data);
-    break;
   case CALC_TI92:
     return ti92_byte2fext(data);
-    break;
   case CALC_TI92P:
     return ti92p_byte2fext(data);
-    break;
   case CALC_V200:
     return v200_byte2fext(data);
-    break;
   case CALC_NSPIRE:
-	return nsp_byte2fext(data);
-    break;
+    return nsp_byte2fext(data);
 #endif
   default:
-    tifiles_error("tifiles_vartype2file: invalid calc_type argument.");
+    tifiles_critical("tifiles_vartype2fext: invalid calc_type argument.");
     return "";
-    break;
   }
 }
 
@@ -232,48 +196,36 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_fext2byte(s);
-    break;
   case CALC_TI82:
     return ti82_fext2byte(s);
-    break;
   case CALC_TI83:
     return ti83_fext2byte(s);
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
-	  case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return ti83p_fext2byte(s);
-    break;
   case CALC_TI85:
     return ti85_fext2byte(s);
-    break;
   case CALC_TI86:
     return ti86_fext2byte(s);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return ti89_fext2byte(s);
-    break;
   case CALC_TI92:
     return ti92_fext2byte(s);
-    break;
   case CALC_TI92P:
     return ti92p_fext2byte(s);
-    break;
   case CALC_V200:
     return v200_fext2byte(s);
-    break;
   case CALC_NSPIRE:
     return nsp_fext2byte(s);
-    break;
 #endif
   default:
-    tifiles_error("tifiles_file2vartype: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext2vartype: invalid calc_type argument.");
     return 0;
-    break;
   }
 }
 
@@ -294,48 +246,36 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2desc(vartype);
-    break;
   case CALC_TI82:
     return ti82_byte2desc(vartype);
-    break;
   case CALC_TI83:
     return ti83_byte2desc(vartype);
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
-	  case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return ti83p_byte2desc(vartype);
-    break;
   case CALC_TI85:
     return ti85_byte2desc(vartype);
-    break;
   case CALC_TI86:
     return ti86_byte2desc(vartype);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return ti89_byte2desc(vartype);
-    break;
   case CALC_TI92:
     return ti92_byte2desc(vartype);
-    break;
   case CALC_TI92P:
     return ti92p_byte2desc(vartype);
-    break;
   case CALC_V200:
     return v200_byte2desc(vartype);
-    break;
   case CALC_NSPIRE:
     return nsp_byte2desc(vartype);
-    break;
 #endif
   default:
-    tifiles_error("tifiles_vartype2desc: invalid calc_type argument.");
+    tifiles_critical("tifiles_vartype2type: invalid calc_type argument.");
     return "";
-    break;
   }
 }
 
@@ -356,48 +296,36 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
 #ifndef DISABLE_TI8X
   case CALC_TI73:
     return ti73_byte2icon(vartype);
-    break;
   case CALC_TI82:
     return ti82_byte2icon(vartype);
-    break;
   case CALC_TI83:
     return ti83_byte2icon(vartype);
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
-	case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return ti83p_byte2icon(vartype);
-    break;
   case CALC_TI85:
     return ti85_byte2icon(vartype);
-    break;
   case CALC_TI86:
     return ti86_byte2icon(vartype);
-    break;
 #endif
 #ifndef DISABLE_TI9X
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return ti89_byte2icon(vartype);
-    break;
   case CALC_TI92:
     return ti92_byte2icon(vartype);
-    break;
   case CALC_TI92P:
     return ti92p_byte2icon(vartype);
-    break;
   case CALC_V200:
     return v200_byte2icon(vartype);
-    break;
   case CALC_NSPIRE:
-	return nsp_byte2icon(vartype);
-    break;
+    return nsp_byte2icon(vartype);
 #endif
   default:
-    tifiles_error("tifiles_vartype2icon: invalid calc_type argument.");
+    tifiles_critical("tifiles_vartype2icon: invalid calc_type argument.");
     return "";
-    break;
   }
 }
 
@@ -482,7 +410,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
     return TI83_DIR;
   case CALC_TI83P:
   case CALC_TI84P:
-	  case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return TI83p_DIR;
   case CALC_TI85:
     return -1;
@@ -490,7 +418,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
     return TI86_DIR;
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return TI89_DIR;
   case CALC_TI92:
     return TI92_DIR;
@@ -499,9 +427,9 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_V200:
     return V200_DIR;
   case CALC_NSPIRE:
-	return NSP_DIR;
+    return NSP_DIR;
   default:
-    tifiles_error("tifiles_folder_type: invalid calc_type argument.");
+    tifiles_critical("tifiles_folder_type: invalid calc_type argument.");
     break;
   }
 
@@ -530,7 +458,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
     return -1;
   case CALC_TI83P:
   case CALC_TI84P:
-	case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return TI83p_APPL;
   case CALC_TI85:
     return -1;
@@ -547,9 +475,9 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_V200:
     return V200_APPL;
   case CALC_NSPIRE:
-	return -1;
+    return -1;
   default:
-    tifiles_error("tifiles_flash_type: invalid calc_type argument.");
+    tifiles_critical("tifiles_flash_type: invalid calc_type argument.");
     break;
   }
 
@@ -578,7 +506,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
     return -1;
   case CALC_TI83P:
   case CALC_TI84P:
-	case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return TI83p_IDLIST;
   case CALC_TI85:
     return -1;
@@ -586,7 +514,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
     return -1;
   case CALC_TI89:
   case CALC_TI89T:
-	  case CALC_TI89T_USB:
+  case CALC_TI89T_USB:
     return TI89_IDLIST;
   case CALC_TI92:
     return -1;
@@ -597,7 +525,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_NSPIRE:
     return -1;
   default:
-    tifiles_error("tifiles_idlist_type: invalid calc_type argument.");
+    tifiles_critical("tifiles_idlist_type: invalid calc_type argument.");
     break;
   }
 
@@ -630,16 +558,16 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_TI83:
     return "**TI83**";
   case CALC_TI83P:
-	  return "**TI83F*";
+    return "**TI83F*";
   case CALC_TI84P:
-	case CALC_TI84P_USB:
+  case CALC_TI84P_USB:
     return "**TI83F*";
   case CALC_TI85:
     return "**TI85**";
   case CALC_TI86:
     return "**TI86**";
   case CALC_TI89:
-	  return "**TI89**";
+    return "**TI89**";
   case CALC_TI89T:
   case CALC_TI89T_USB:
     return "**TI89**";
@@ -650,9 +578,9 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_V200:
     return "**TI92P*";
   case CALC_NSPIRE:
-	return "";
+    return "";
   default:
-    tifiles_error("tifiles_calctype2signature: invalid calc_type argument.");
+    tifiles_critical("tifiles_calctype2signature: invalid calc_type argument.");
     break;
   }
 

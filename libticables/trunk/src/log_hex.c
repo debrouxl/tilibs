@@ -46,7 +46,7 @@ int log_hex_start(void)
   	log = fopen(fn, "wt");
   	if (log == NULL) 
 	{
-    		ticables_error("Unable to open %s for logging.\n", fn);
+    		ticables_critical("Unable to open %s for logging.\n", fn);
     		return -1;
   	}
 

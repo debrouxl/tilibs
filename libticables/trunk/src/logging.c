@@ -66,6 +66,7 @@ void ticables_critical (const gchar *format, ...)
   va_end (args);
 }
 
+// NOTE: this function unconditionally abruptly aborts the program !
 void ticables_error (const gchar *format, ...)
 {
   va_list args;

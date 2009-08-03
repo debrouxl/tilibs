@@ -66,6 +66,7 @@ void tifiles_critical (const gchar *format, ...)
   va_end (args);
 }
 
+// NOTE: this function unconditionally abruptly aborts the program !
 void tifiles_error (const gchar *format, ...)
 {
   va_list args;

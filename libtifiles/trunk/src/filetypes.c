@@ -118,9 +118,9 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_group (CalcModel model)
   case CALC_V200:
     return "V2g";
   case CALC_NSPIRE:
-	  return "XXx";
+    return "XXx";
   default:
-    tifiles_error("tifiles_fext_of_group: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext_of_group: invalid calc_type argument.");
     break;
   }
 
@@ -164,13 +164,13 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_backup (CalcModel model)
   case CALC_V200:
     return "V2g";
   case CALC_TI84P_USB:
-	return "8Xg";
+    return "8Xg";
   case CALC_TI89T_USB:
-	  return "89g";
+    return "89g";
   case CALC_NSPIRE:
-	  return "XXx";
+    return "XXx";
   default:
-    tifiles_error("tifiles_fext_of_backup: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext_of_backup: invalid calc_type argument.");
     break;
   }
 
@@ -216,9 +216,9 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_app (CalcModel model)
   case CALC_V200:
     return "V2k";
   case CALC_NSPIRE:
-	return "XXx";
+    return "XXx";
   default:
-    tifiles_error("tifiles_fext_of_flash_app: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext_of_flash_app: invalid calc_type argument.");
     break;
   }
 
@@ -264,9 +264,9 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_os(CalcModel model)
   case CALC_V200:
     return "V2u";
   case CALC_NSPIRE:
-	return "tno";
+    return "tno";
   default:
-    tifiles_error("tifiles_fext_of_flash_os: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext_of_flash_os: invalid calc_type argument.");
     break;
   }
 
@@ -312,9 +312,9 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_certif(CalcModel model)
   case CALC_V200:
     return "V2q";
   case CALC_NSPIRE:
-	return "XXx";
+    return "XXx";
   default:
-    tifiles_error("tifiles_fext_of_flash_os: invalid calc_type argument.");
+    tifiles_critical("tifiles_fext_of_certif: invalid calc_type argument.");
     break;
   }
 
@@ -782,7 +782,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 
 	if(target > CALC_MAX)
 	{
-		tifiles_error("tifiles_file_test: invalid target argument! This is a bug.");
+		tifiles_critical("tifiles_file_test: invalid target argument! This is a bug.");
 		return 0;
 	}
 
