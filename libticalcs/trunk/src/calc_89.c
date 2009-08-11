@@ -133,16 +133,16 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	case CALC_TI89T:
 		sc->clipped_width = TI89_COLS_VISIBLE;
 		sc->clipped_height = TI89_ROWS_VISIBLE;
-    break;
+		break;
 	case CALC_TI92P:
 	case CALC_V200:
 		sc->clipped_width = TI89_COLS;
 		sc->clipped_height = TI89_ROWS;
-    break;
+		break;
 	default:
-	    sc->clipped_width = TI89_COLS;
-	    sc->clipped_height = TI89_ROWS;
-	    break;
+		sc->clipped_width = TI89_COLS;
+		sc->clipped_height = TI89_ROWS;
+		break;
 	}
 
 	TRYF(ti89_send_SCR());
@@ -935,9 +935,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	switch(buf[13])
 	{
 	case 1:
-	case 3: infos->hw_version = buf[5] + 1;
-	case 8: infos->hw_version = buf[5];
-	case 9: infos->hw_version = buf[5] + 1;
+	case 3: infos->hw_version = buf[5] + 1; break;
+	case 8: infos->hw_version = buf[5]; break;
+	case 9: infos->hw_version = buf[5] + 1; break;
 	}
 	switch(buf[13])
 	{

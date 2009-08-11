@@ -134,39 +134,28 @@ static uint8_t host_ids(CalcHandle *handle)
   {
   case CALC_TI73:
     return TI73_PC;
-    break;
   case CALC_TI82:
     return TI82_PC;
-    break;
   case CALC_TI83:
     return TI83_PC;
-    break;
   case CALC_TI83P:
   case CALC_TI84P:
     return TI83p_PC;
-    break;
   case CALC_TI85:
     return TI85_PC;
-    break;
   case CALC_TI86:
     return TI86_PC;
-    break;
   case CALC_TI89:
   case CALC_TI89T:
     return TI89_PC;
-    break;
   case CALC_TI92:
     return TI92_PC;
-    break;
   case CALC_TI92P:
     return TI92p_PC;
-    break;
   case CALC_V200:
     return V200_PC;
-    break;
   default:
-      return 0x00;
-      break;
+    return 0x00;
   }
   return 0x00;
 }

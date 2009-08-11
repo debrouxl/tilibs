@@ -246,10 +246,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     case REJ_EXIT:
     case REJ_SKIP:
       return ERR_ABORT;
-      break;
     case REJ_MEMORY:
       return ERR_OUT_OF_MEMORY;
-      break;
     default:			// RTS
       break;
     }
@@ -370,13 +368,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		{
 		case REJ_EXIT:
 		  return ERR_ABORT;
-		  break;
 		case REJ_SKIP:
 		  continue;
-		  break;
 		case REJ_MEMORY:
 		  return ERR_OUT_OF_MEMORY;
-		  break;
 		default:			// RTS
 		  break;
 		}

@@ -43,16 +43,12 @@ static uint8_t pc_ti9x(CalcModel model)
   case CALC_TI89:
   case CALC_TI89T:
     return PC_TI89;
-    break;
   case CALC_TI92P:
     return PC_TI92p;
-    break;
   case CALC_V200:
     return PC_V200;
-    break;
   default:
     return PC_TIXX;
-    break;
   }
   return 0;
 }
