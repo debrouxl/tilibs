@@ -383,6 +383,12 @@ int linux_check_parport(const char *devname)
     }
 
     ticables_info(_("    is useable: yes"));
+
+    if (ioctl(fd, PPRELEASE) == -1)
+    {
+	ticables_info("unable to release parallel device '%s'", devname);
+    }
+
     close(fd);
 #endif
 
