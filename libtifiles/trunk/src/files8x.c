@@ -380,10 +380,10 @@ tfrb:	// release on exit
 
 static int check_device_type(uint8_t id)
 {
-	static const uint8_t types[] = { DEVICE_TYPE_73, DEVICE_TYPE_83P };
+	static const uint8_t types[] = { 0, DEVICE_TYPE_73, DEVICE_TYPE_83P };
 	int i;
 
-	for(i = 0; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
 		if(types[i] == id)
 			return i;
 
@@ -392,10 +392,10 @@ static int check_device_type(uint8_t id)
 
 static int check_data_type(uint8_t id)
 {
-	static const uint8_t types[] = { TI83p_AMS, TI83p_APPL, TI83p_CERT, TI83p_LICENSE  };
+	static const uint8_t types[] = { 0, TI83p_AMS, TI83p_APPL, TI83p_CERT, TI83p_LICENSE };
 	int i;
 
-	for(i = 0; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
 		if(types[i] == id)
 			return i;
 
