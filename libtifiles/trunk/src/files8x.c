@@ -217,9 +217,19 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			sum += fgetc(f);
 	}
     if (ti83p_flag) 
-	{
-      entry->attr = (fgetc(f) == 0x80 ? ATTRB_ARCHIVED : ATTRB_NONE);
-      if(fgetc(f) == EOF) goto tfrr;
+    {
+      uint16_t attribute;
+      if(fread_word(f, &attribute) < 0) goto tfrr;
+      // Handle both the files created by TI-Connect and the files created by
+      // some broken versions of libtifiles.
+      if (((attribute & 0x8000) == 0x8000) || ((attribute & 0x80) == 0x80))
+      {
+        entry->attr = ATTRB_ARCHIVED;
+      }
+      else 
+      {
+        entry->attr = ATTRB_NONE;
+      }
     }
     if(fread_word(f, NULL) < 0) goto tfrr;
 
@@ -370,10 +380,10 @@ tfrb:	// release on exit
 
 static int check_device_type(uint8_t id)
 {
-	const uint8_t types[] = { 0, DEVICE_TYPE_73, DEVICE_TYPE_83P };
+	static const uint8_t types[] = { DEVICE_TYPE_73, DEVICE_TYPE_83P };
 	int i;
 
-	for(i = 1; i <= sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 0; i < sizeof(types)/sizeof(uint8_t); i++)
 		if(types[i] == id)
 			return i;
 
@@ -382,10 +392,10 @@ static int check_device_type(uint8_t id)
 
 static int check_data_type(uint8_t id)
 {
-	const uint8_t types[] = { 0, TI83p_AMS, TI83p_APPL, TI83p_CERT, TI83p_LICENSE  };
+	static const uint8_t types[] = { TI83p_AMS, TI83p_APPL, TI83p_CERT, TI83p_LICENSE  };
 	int i;
 
-	for(i = 1; i <= sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 0; i < sizeof(types)/sizeof(uint8_t); i++)
 		if(types[i] == id)
 			return i;
 
@@ -552,6 +562,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   uint32_t data_length;
   uint16_t packet_length = 0x0B;
   uint8_t name_length = 8;
+  uint16_t attr;
 
   if (fname != NULL) 
   {
@@ -643,8 +654,12 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     }
     else
     	if(fwrite_n_chars(f, 8, varname) < 0) goto tfwr;
+    // XXX non-zero version byte not handled (noted by Benjamin Moody).
     if (is_ti83p(content->model))
-      if(fwrite_word(f, (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x80 : 0x00)) < 0) goto tfwr;
+    {        
+      attr = (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x8000 : 0x00);
+      if(fwrite_word(f, attr) < 0) goto tfwr;
+    }
     if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
     if(fwrite(entry->data, 1, entry->size, f) < 0) goto tfwr;
 
@@ -660,6 +675,10 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
     sum += MSB(entry->size);
 	sum += LSB(entry->size);
     sum += tifiles_checksum(entry->data, entry->size);
+    if (is_ti83p(content->model))
+    {
+      sum += tifiles_checksum((uint8_t *)&attr, sizeof(attr));
+    }
   }
 
   //checksum is the sum of all bytes in the data section
@@ -970,7 +989,7 @@ int ti8x_content_display_flash(Ti8xFlash *content)
 		tifiles_info("license");
 		break;
 	  default:
-		tifiles_info("Unknown (mailto roms@lpg.ticalc.org)\n");
+		tifiles_info("Unknown (mailto tilp-users@lists.sf.net)\n");
 		break;
 	  }
 	  tifiles_info("Length:          %08X (%i)", ptr->data_length,

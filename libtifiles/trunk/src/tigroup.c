@@ -223,7 +223,7 @@ TIEXPORT2 int TICALL tifiles_te_sizeof_array(TigEntry** array)
 	int i;
 	TigEntry **p;
 
-	for(i = 0, p = array; *p; *p++, i++);
+	for(i = 0, p = array; *p; p++, i++);
 
 	return i;
 }
