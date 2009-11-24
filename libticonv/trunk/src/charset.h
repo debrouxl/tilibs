@@ -1,6 +1,4 @@
-/*  TiEmu - a TI calculator emulator
- *
- *  Character set conversion routine
+/*  libticonv - charset library, a part of the TILP project
  *  Copyright (c) 2006 Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
