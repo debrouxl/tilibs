@@ -60,21 +60,6 @@ extern "C" {
 #define ERROR_ABORT	256	/* fixed in error.h */
 
 /**
- * CalcModel:
- *
- * An enumeration which contains the following calculator types:
- **/
-#if !defined(__TIFILES_H__)
-typedef enum 
-{
-	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
-	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_MAX
-} CalcModel;
-#endif
-
-/**
  * CalcScreenFormat:
  *
  * An enumeration which contains the following calculator types:
