@@ -5,68 +5,77 @@
    | |   _| |_  | \___   / _____ \  | |___ | \__   ___| |
    |_|  |_____|  \____| /_/     \_\ |_____| \____||_____/
 
-   v0.1.2             by Romain Liévin
+This library is part of the TILP framework by Romain Liévin et al.
 
+See the AUTHORS file for more detailed authorship information.
 
-Persons who want reuse this library (Linux, Windows, Mac OS-X, FreeBSD)
-can take a look at the doc directory.
-
---------------------------------------------------------------------------
-Description
---------------------------------------------------------------------------
-
-Development platform: 
-
-  - Linux Debian Potatoe, 2.4.14 kernel
-
-  - Windows 95/98/Me & Windows NT4/2000/XP
-
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Requirements
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-  - A UNIX computer and C compiler (gcc) for the Linux version
-or
-  - A *BSD (FreeBSD) computer and C compiler (gcc)
+OS:
+  - any *nix with a reasonably modern C compiler (a current GCC will definitely
+    work)
+  or
+  - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
 
-  - the ticables library
-  - the tifiles  library
+Libraries:
+  - GLib 2 (required)
+  - libticables2 (required)
+  - libticonv (required)
+  - libtifiles2 (required)
 
---------------------------------------------------------------------------
+Tools for building from source:
+  - make (required)
+  - tfdocgen (optional, required to build API docs)
+
+-------------------------------------------------------------------------------
 Compilation
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-Untar the libticalcs-X.X.X.tar.gz archive (tar -xvzf),
-change directory to libticalcs directory.
+Untar the libticalcs2 archive, change directory to the libticalcs2 directory.
 
-Type "./configure"
+Type "./configure" (add --prefix option to install to a non-default location).
 
-Type "make", "make install" (requires the root privileges).
+Type "make" and then "make install". "make install" requires root privileges
+to install to the default, system-wide location.
 
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Availability
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
   http://lpg.ticalc.org/prj_tilp
 
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Copyright
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-ticalcs library is Copyright (C) 1999-2009 by the TiLP team 
-<tilp-users@lists.sf.net>
+Copyright (C) 1999-2009 the TiLP team <tilp-users@lists.sf.net>
+See AUTHORS for detailed authorship information.
 
-Copying is allowed under the terms of GNU General Public
-License (GPL). See the file COPYING for more details.
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
 
-Texas Instruments and TI are trademarks of  Texas Instruments Incorporated.
+(A special exception applies when linking the library into TilEm, see the
+COPYING file for details.)
+
+This library is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this library (in the COPYING file); if not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------------
+
+Texas Instruments and TI are trademarks of Texas Instruments Incorporated.
 For more informations: <http://education.ti.com/educationportal/sites/US/nonProductSingle/global_trademarks.html>
-This document has been written independantly of Texas Instruments.
+This document has been written independently of Texas Instruments.
 
---------------------------------------------------------------------------
-
-Please report any bugs, questions, ...  (please give me
-your platform, your calculator type (with ROM version)
-and your link cable model).
+Please report any bugs, questions, etc. on the SourceForge infrastructure
+(http://sourceforge.net/tilp). Please indicate your platform, your calculator
+type and ROM version.
 
 The TiLP team <tilp-users@lists.sf.net>

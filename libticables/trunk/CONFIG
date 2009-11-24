@@ -1,24 +1,30 @@
---------------------------------------------------------------------------
-		Quick-Start Guide for ticables2 set-up
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+                Quick-Start Guide for libticables2 set-up
+--------------------------------------------------------------------------------
 
 
-A burning issue with this library and Linux is good set-up of device access. 
-Linux is secure because it heavily relies on permissions. But, it may become
-a nightmare in some situations.
+A burning issue with this library, and GNU/Linux, is good set-up of device
+access. GNU/Linux is secure because it heavily relies on permissions... but it
+becomes harder to use in some situations.
 
-On the first run, you should always run your program as root. By this way, 
+This document describes methods for manual setup using standard *nix groups and
+a recent method for automatically giving access to locally logged on users.
+
+On the first run, you should always run your program as root. By this way,
 you will be almost sure to run it with success.
- 
-If you want to run your program as a simple user, you must take care of 
+
+If you want to run your program as a simple user, you must take care of
 permissions. This is explained below.
 
 
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 ParallelLink cable
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-The node is '/dev/parportX". You must have r/w permissions on this device. 
+The node is '/dev/parportX". You must have r/w permissions on this device, and
+the device must not be locked exclusively by any other parallel port driver
+(such as some CUPS drivers for parallel port printers) - otherwise libticables2
+won't be able to acquire and use the port.
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/parport?) or, better,
  - adding your user to the group 'lp' (edit /etc/group and add your
@@ -27,51 +33,59 @@ This can be done by:
      crw-rw-rw- 1 root lp 99, 0 2005-02-26 07:39 parport0
    Example 2:
      lp:x:7:romain
- - on some distributions (e.g. Fedora), it is also possible to set up the
-system so the user physically in front of the computer, if any, gets access to
-what's assumed to be his/her calculator automatically. A nice tool called
-pam_console takes care of that. The libticables2 Fedora RPM automatically
-installs the required udev and pam_console configurations for a regular user
-to be able to access the linked calculator (when logged in locally).
+- On some distributions (e.g. Fedora 12), an alternative, groupless setup
+  detailed in the last section can also be used.
 
---------------------------------------------------------------------------
+If you have a parallel port printer, for libticables2 to work, you may need to
+stop the CUPS printing service (the way to do this depends on your distribution)
+and unload the 'lp' kernel module (`rmmod lp` as root), so as to liberate the
+exclusive lock on the parallel port held by CUPS / the printer driver.
+
+--------------------------------------------------------------------------------
 BlackLink & GrayLink cables
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-The node is '/dev/ttySx". You must have r/w permissions on this device. 
+The node is '/dev/ttySx". You must have r/w permissions on this device.
 This can be done by:
  - giving up r/w permissions to others (chmod ugo+rw /dev/ttyS0) or, better,
  - adding your user to the group 'dialout' (edit /etc/group and add your
-   username after the ':'). (On Fedora, the group is called 'uucp'.)
+   username after the ':').
    Example 1:
      crw-rw-rw-  1 root dialout 4, 64 2006-02-08 13:40 /dev/ttyS0
    Example 2:
      dialout:x:20:romain
- - on some distributions (e.g. Fedora), it is also possible to set up the
-system so the user physically in front of the computer, if any, gets access to
-what's assumed to be his/her calculator automatically. A nice tool called
-pam_console takes care of that. The libticables2 Fedora RPM automatically
-installs the required udev and pam_console configurations for a regular user
-to be able to access the linked calculator (when logged in locally).
+- On some distributions (e.g. Fedora 12), an alternative, groupless setup
+  detailed in the last section can also be used.
 
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 SilverLink cable
---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-For SilverLink cable, things are more complicated... 
+For SilverLink cable, things are more complicated...
 
-1) You will find below a quick overview which applies to Debian systems:
+- The following technique can be used for manual setup (using POSIX groups,
+as used e.g. on Debian) on udev-using systems:
 
-1.a) If you are using udev (preferred):
+It may depend on your distribution, but you will have to add a rule to
+/etc/udev. As a template, you can create an
+/etc/udev/rules.d/20-ticables.rules file with the following rules:
+# SilverLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
+SYSFS{idProduct}=="e001", MODE="0660", GROUP="plugdev"
+# TI-84+ DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
+SYSFS{idProduct}=="e003", MODE="0660", GROUP="plugdev"
+# TI-89 Titanium DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
+SYSFS{idProduct}=="e004", MODE="0660", GROUP="plugdev"
+# TI-84+ SE DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
+SYSFS{idProduct}=="e008", MODE="0660", GROUP="plugdev"
+# TI-Nspire DirectLink
+ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
+SYSFS{idProduct}=="e012", MODE="0660", GROUP="plugdev"
 
-it may depends on your distribution but you will have to add a rule to 
-/etc/udev. As a template, you can copy and modify the 
-debian/udev/ticables.rules file to /etc/udev. Next, do a symlink of 
-/etc/udev/ticables.rules to /etc/udev/rules.d/020_ticables.rules.
-When the SilverLink cable is plugged, you should see several 'ticable-*' 
-entries in /dev.
-
-The template rely on a group called 'plugdev'. If it doesn't exist, you will
+The template relies on a group called 'plugdev'. If it doesn't exist, you will
 have to create it or choose another group which matches better your system.
 
 At last, you will have to add the user to the group 'plugdev' (edit /etc/group
@@ -79,49 +93,43 @@ and add your username after the ':'). Like this:
 
         plugdev:x:46:romain
 
-1.b) If you are using the USB filesystem (deprecated):
-<<
-libusb uses a pseudo-filesystem known as 'usbdevfs` or 'usbfs` to access
-the USB devices connected to your machine. This filesystem should be mounted
-under /proc/bus/usb for libusb to work.
+- On some distributions (e.g. Fedora 12), an alternative, groupless setup
+  detailed in the last section can also be used.
 
-It could be done using the following command:
-        mount -t usbfs none /proc/bus/usb
+--------------------------------------------------------------------------------
+Groupless setup for udev >= 143 with udev-acl and ConsoleKit
+--------------------------------------------------------------------------------
 
-An alternative and more permanent method would be to add
-        none /proc/bus/usb usbfs defaults 0 0
-to your /etc/fstab file. It will mount the usbfs for you automatically at
-boot time ; only root will be able to access the USB devices with this
-setup.
+The above manual setup methods require users to be manually added to groups to
+hand out device access. If this is not desired, on some distributions, it is
+also possible to set up the system so the user physically in front of the
+computer, if any, gets access to what's assumed to be his/her calculator
+automatically. The exact procedure varies depending on the individual
+distribution and its age. The following procedure works for systems using udev
+143 or newer with udev-acl enabled, such as Fedora 12.
 
-Several mount options are available, that allow you to set the permissions
-on the files created under /proc/bus/usb so that non-root users can use
-libusb applications:
- - devuid=xxx, devgid=xxx, devmode=xxx respectively set the uid, the gid
-   and the mode of the devices files, ie /proc/bus/usb/BBB/DDD
- - busuid=xxx, busgid=xxx, devmode=xxx respectively set the uid, the gid
-   and the mode of the bus files, ie /proc/bus/usb/BBB
- - listuid=xxx, listgid=xxx, listmode=xxx respectively set the uid, the gid
-   and the mode of /proc/bus/usb/devices
+How udev-acl works is that a nice system service called ConsoleKit keeps track
+of what user(s) is/are currently logged in locally. The udev-acl tool uses this
+information to hand out ACLs for these devices to those users.
 
- -- Aurelien Jarno <aurel32@debian.org>, Sun, 21 Mar 2004 01:01:44 +0100
->>
+To use this setup, create a /lib/udev/rules.d/69-libticables.rules file with
+the following contents:
 
-Clearly, add this to you fstab:
-	none /proc/bus/usb usbfs defaults,rw,listuid=1000,listgid=1000,devuid=1000,devgid=1000,busuid=1000,busgid=1000
+ACTION!="add", GOTO="libticables_end"
 
-where 1000 is the uid/gid of your user (you). -- Romain Lievin
+# serial device (assume TI calculator)
+KERNEL=="ttyS[0-3]", ENV{ACL_MANAGE}="1"
+# parallel device (assume TI calculator)
+SUBSYSTEM=="ppdev", ENV{ACL_MANAGE}="1"
+# SilverLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e001", ENV{ACL_MANAGE}="1"
+# TI-84+ DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e003", ENV{ACL_MANAGE}="1"
+# TI-89 Titanium DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e004", ENV{ACL_MANAGE}="1"
+# TI-84+ SE DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e008", ENV{ACL_MANAGE}="1"
+# TI-Nspire DirectLink
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", ATTR{idProduct}=="e012", ENV{ACL_MANAGE}="1"
 
-2) Fedora is set up differently. For one, /proc/bus/usb (or /dev/bus/usb
-as it is now called, but /proc/bus/usb still works as of Fedora Core 6)
-isn't mounted as a file system. (It's apparently taken care of by udev.)
-And secondly, you don't have to play with the permissions, because a
-nice tool called pam_console takes care of that for you. (The user
-physically in front of the computer, if any, gets access to what's
-assumed to be his/her calculator automatically.) The libticables2 Fedora
-RPM automatically installs the required udev and pam_console
-configurations for a regular user to be able to access the linked
-calculator (when logged in locally).
-
-To sum up, USB links Just Work in Fedora without any manual user
-intervention, as long as my Fedora RPMs are used. -- Kevin Kofler
+LABEL="libticables_end"

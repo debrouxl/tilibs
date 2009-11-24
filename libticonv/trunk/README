@@ -5,62 +5,74 @@
    | |   _| |_  | \___  | \_/ | | |   | |   \ \/ /
    |_|  |_____|  \____|  \___/  |_|   |_|    \__/
 
-   v0.0.3             by Romain Liévin
+This library is part of the TILP framework by Romain Liévin et al.
 
+See the AUTHORS file for more detailed authorship information.
 
-Persons who want reuse this library (Linux, Windows, Mac OS-X, FreeBSD)
-can take a look at the doc directory.
-
---------------------------------------------------------------------------
-Description
---------------------------------------------------------------------------
-
-Development platform: 
-
-  - Linux Debian Potatoe, 2.4.14 kernel
-
-  - Windows
-
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Requirements
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-  - A UNIX computer and C compiler (gcc) for the Linux version
-or
-  - A *BSD (FreeBSD) computer and C compiler (gcc)
-or 
-  - A WIN32 computer and C compiler (MSVC or MinGW)
-and
-  - the GLib library (http://www.gtk.org)
+OS:
+  - any *nix with a reasonably modern C compiler (a current GCC will definitely
+    work)
+  or
+  - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
 
---------------------------------------------------------------------------
+Libraries:
+  - GLib 2 (required)
+
+Tools for building from source:
+  - make (required)
+  - tfdocgen (optional, required to build API docs)
+
+-------------------------------------------------------------------------------
 Compilation
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-Untar the libticonv-X.X.X.tar.gz archive (tar -xvzf),
-change directory to libticonv directory.
+Untar the libticonv archive, change directory to the libticonv directory.
 
-Type "./configure"
+Type "./configure" (add --prefix option to install to a non-default location).
 
-Type "make", "make install" (requires the root privileges).
+Type "make" and then "make install". "make install" requires root privileges
+to install to the default, system-wide location.
 
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Availability
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
   http://lpg.ticalc.org/prj_tilp
 
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Copyright
---------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-ticonv library is Copyright (C) 1999-2009 by the TiLP team:
-<tilp-users@lists.sf.net>
+Copyright (C) 1999-2009 the TiLP team <tilp-users@lists.sf.net>
+See AUTHORS for detailed authorship information.
 
-Copying is allowed under the terms of GNU General Public
-License (GPL). See the file COPYING for more details.
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
 
---------------------------------------------------------------------------
+(A special exception applies when linking the library into TilEm, see the
+COPYING file for details.)
 
-Please report any bugs, questions, ...
+This library is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this library (in the COPYING file); if not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------------
+
+Texas Instruments and TI are trademarks of Texas Instruments Incorporated.
+For more informations: <http://education.ti.com/educationportal/sites/US/nonProductSingle/global_trademarks.html>
+This document has been written independently of Texas Instruments.
+
+Please report any bugs, questions, etc. on the SourceForge infrastructure
+(http://sourceforge.net/tilp). Please indicate your platform, your calculator
+type and ROM version.
+
 The TiLP team <tilp-users@lists.sf.net>
