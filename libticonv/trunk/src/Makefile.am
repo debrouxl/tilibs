@@ -17,6 +17,10 @@ libticonv_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
 libticonv_la_SOURCES = \
 	ticonv.c charset.c tokens.c filename.c
 
+if USE_ICONV
+  libticonv_la_SOURCES += iconv.c
+endif
+
 if OS_WIN32
   libticonv_la_DEPENDENCIES = ../build/mingw/ticonv-rc.o
   libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o

@@ -78,7 +78,6 @@ AC_SUBST(TIFILES_LIBS)
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h time.h unistd.h])
-AC_CHECK_HEADERS([tilp2/ticables.h tilp2/tifiles.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_BIGENDIAN

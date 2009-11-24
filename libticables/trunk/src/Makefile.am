@@ -35,7 +35,7 @@ if OS_WIN32
   libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o
 endif
 
-EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win64/*.c win64/*.h
+EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win32/dha/* win32/usb/* win64/*.c win64/*.h win64/rwp/*
 
 if OS_WIN32
 libusbdir = $(pkgdatadir)/libusb

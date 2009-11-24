@@ -45,7 +45,7 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(install_sh) -d
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -276,8 +276,8 @@ libticables2_la_SOURCES = *.h \
 	none.c
 
 @OS_WIN32_TRUE@libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
-EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win64/*.c \
-	win64/*.h $(am__append_2)
+EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win32/dha/* \
+	win32/usb/* win64/*.c win64/*.h win64/rwp/* $(am__append_2)
 @OS_WIN32_TRUE@libusbdir = $(pkgdatadir)/libusb
 @OS_WIN32_TRUE@dist_libusb_DATA = win32/usb/*.cat win32/usb/*.inf
 all: all-recursive
