@@ -18,16 +18,75 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
 <hr>
 <pre>&nbsp;<em>&nbsp;</em></pre>
 You will find in the <i>test</i> folder of the libary source archive a
-test/example
-program which uses this lib.<br>
-Below is listed a light version (error management has been removed) of
-this
+test/example program which uses this lib.<br>
+Below is a light version (error management has been removed) of this
 program to make it clearer:
-<pre># include &lt;tilp/ticables.h&gt;<br><br>static void print_lc_error(int errnum)<br>{<br>	char *msg;<br><br>	ticables_error_get(errnum, &amp;msg);<br>	fprintf(stderr, "Link cable error (code %i)...\n&lt;&lt;%s&gt;&gt;\n", <br>		errnum, msg);<br><br>	//free(msg);<br>}<br><br>int main(int argc, char **argv)<br>{<br>	CableHandle *handle;<br>	int err, i;<br>	uint8_t buf[4];<br><br>	// init lib<br>	ticables_library_init();<br><br>	// set cable<br>	handle = ticables_handle_new(CABLE_SLV, PORT_1);<br>	if(handle == NULL)<br>	    return -1;<br><br>	ticables_options_set_timeout(handle, 15);<br>	ticables_options_set_delay(handle, 10);<br>	ticables_handle_show(handle);<br><br>	// open cable<br>	err = ticables_cable_open(handle);<br>	if(err) print_lc_error(err);<br>	if(err) return -1;<br><br>	// do a simple test with a TI89/92+ calculator<br>	buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;		// RDY<br>	err = ticables_cable_send(handle, buf, 4);<br>	if(err) print_lc_error(err);<br>	 <br>	// display answer<br>	memset(buf, 0xff, 4);<br>	err = ticables_cable_recv(handle, buf, 4);<br>	if(err) print_lc_error(err);<br><br>	for(i = 0; i &lt; 4; i++)<br>		printf("%02x ", buf[i]);<br>	printf("\n");<br><br>	// close cable<br>	ticables_cable_close(handle);<br><br>	// release handle<br>	ticables_handle_del(handle);<br>	<br>	// exit lib<br>	ticables_library_exit();<br><br>  return 0;<br>}<br></pre>
-<br>
-That's all !
-<pre></pre>
+<pre># include &lt;stdio.h&gt;
+# include &lt;ticables.h&gt;
+
+static void print_lc_error(int errnum)
+{
+  char *msg;
+
+  ticables_error_get(errnum, &amp;msg);
+  fprintf(stderr, "Link cable error (code %i)...\n&lt;&lt;%s&gt;&gt;\n", 
+    errnum, msg);
+
+  //free(msg);
+}
+
+int main(int argc, char **argv)
+{
+  CableHandle *handle;
+  int err, i;
+  uint8_t buf[4];
+
+  // init lib
+  ticables_library_init();
+
+  // set cable
+  handle = ticables_handle_new(CABLE_SLV, PORT_1);
+  if(handle == NULL)
+      return -1;
+
+  ticables_options_set_timeout(handle, 15);
+  ticables_options_set_delay(handle, 10);
+  ticables_handle_show(handle);
+
+  // open cable
+  err = ticables_cable_open(handle);
+  if(err) print_lc_error(err);
+  if(err) return -1;
+
+  // do a simple test with a TI89/92+ calculator
+  buf[0] = 0x08; buf[1] = 0x68; buf[2] = 0x00; buf[3] = 0x00;    // RDY
+  err = ticables_cable_send(handle, buf, 4);
+  if(err) print_lc_error(err);
+   
+  // display answer
+  memset(buf, 0xff, 4);
+  err = ticables_cable_recv(handle, buf, 4);
+  if(err) print_lc_error(err);
+
+  for(i = 0; i &lt; 4; i++)
+    printf("%02x ", buf[i]);
+  printf("\n");
+
+  // close cable
+  ticables_cable_close(handle);
+
+  // release handle
+  ticables_handle_del(handle);
+  
+  // exit lib
+  ticables_library_exit();
+
+  return 0;
+}
+</pre>
+That's all !<br><br>
+<strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
+<pre>gcc -I/usr/include/tilp2 -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lticables2</pre>
 <h3><a href="index.html">Return to the main index</a> </h3>
-<br>
 </body>
 </html>

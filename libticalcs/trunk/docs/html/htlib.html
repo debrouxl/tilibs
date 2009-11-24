@@ -19,79 +19,64 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
 <pre>&nbsp;<em>&nbsp;</em></pre>
 You will find in the <i>test</i> folder of the library source archive
 a test/example program which uses this library.<br>
-Below is listed a light version (error management has been removed and
+Below is listed a light version (most error management has been removed and
 update functions are set to void) of this program to make it clearer:<br>
 <br>
-<table style="width: 100%; text-align: left;" border="0" cellpadding="2"
- cellspacing="2">
-  <tbody>
-    <tr>
-      <td style="vertical-align: top;">#include &lt;ticables.h&gt;<br>
-#include &lt;tifiles.h&gt;<br>
-#include &lt;ticalcs.h&gt;<br>
-      <br>
-static void print_lc_error(int errnum)<br>
-{<br>
-&nbsp;&nbsp;&nbsp; char *msg;<br>
-      <br>
-&nbsp;&nbsp;&nbsp; ticables_error_get(errnum, &amp;msg);<br>
-&nbsp;&nbsp;&nbsp; fprintf(stderr, "Link cable error (code
-%i)...\n&lt;&lt;%s&gt;&gt;\n", <br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; errnum, msg);<br>
-      <br>
-&nbsp;&nbsp;&nbsp; free(msg);<br>
-      <br>
-}<br>
-      <br>
-int main(int argc, char **argv)<br>
-{<br>
-&nbsp;&nbsp;&nbsp; CableHandle* cable;<br>
-&nbsp;&nbsp;&nbsp; CalcHandle* calc;<br>
-&nbsp;&nbsp;&nbsp; int err;<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // init libs<br>
-&nbsp;&nbsp;&nbsp; ticables_library_init();<br>
-&nbsp;&nbsp;&nbsp; ticalcs_library_init();<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // set cable<br>
-&nbsp;&nbsp;&nbsp; cable = ticables_handle_new(CABLE_BLK, PORT_2);<br>
-&nbsp;&nbsp;&nbsp; if(cable == NULL)<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -1;<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // set calc<br>
-&nbsp;&nbsp;&nbsp; calc = ticalcs_handle_new(CALC_TI83);<br>
-&nbsp;&nbsp;&nbsp; if(calc == NULL)<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -1;<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // attach cable to calc (and open cable)<br>
-&nbsp;&nbsp;&nbsp; err = ticalcs_cable_attach(calc, cable);<br>
-      <br>
-&nbsp;&nbsp;&nbsp; err = ticalcs_calc_isready(h);<br>
-&nbsp;&nbsp;&nbsp; if(err)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print_lc_error(err);<br>
-&nbsp;&nbsp;&nbsp; printf("Hand-held is %sready !\n", err ? "not " :
-"");<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // detach cable (made by handle_del, too)<br>
-&nbsp;&nbsp;&nbsp; err = ticalcs_cable_detach(calc);<br>
-      <br>
-&nbsp;&nbsp;&nbsp; // remove calc &amp; cable<br>
-&nbsp;&nbsp;&nbsp; ticalcs_handle_del(calc);<br>
-&nbsp;&nbsp;&nbsp; ticables_handle_del(cable);<br>
-      <br>
-&nbsp; return 0;<br>
-}<br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<br>
-That's all !
-<pre></pre>
+<pre>#include &lt;ticables.h&gt;
+#include &lt;tifiles.h&gt;
+#include &lt;ticalcs.h&gt;
+      
+static void print_lc_error(int errnum)
+{
+  char *msg;
+
+  ticables_error_get(errnum, &amp;msg);
+  fprintf(stderr, "Link cable error (code %i)...\n&lt;&lt;%s&gt;&gt;\n", errnum, msg);
+
+  free(msg);
+
+}
+
+int main(int argc, char **argv)
+{
+  CableHandle* cable;
+  CalcHandle* calc;
+  int err;
+
+  // init libs
+  ticables_library_init();
+  ticalcs_library_init();
+
+  // set cable
+  cable = ticables_handle_new(CABLE_BLK, PORT_2);
+  if(cable == NULL)
+    return -1;
+
+  // set calc
+  calc = ticalcs_handle_new(CALC_TI83);
+  if(calc == NULL)
+    return -1;
+
+  // attach cable to calc (and open cable)
+  err = ticalcs_cable_attach(calc, cable);
+
+  err = ticalcs_calc_isready(h);
+  if(err)
+     print_lc_error(err);
+  printf("Hand-held is %sready !\n", err ? "not " : "");
+
+  // detach cable (made by handle_del, too)
+  err = ticalcs_cable_detach(calc);
+
+  // remove calc &amp; cable
+  ticalcs_handle_del(calc);
+  ticables_handle_del(cable);
+
+  return 0;
+}</pre>
+That's all !<br><br>
+<strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
+<pre>gcc -I/usr/include/tilp2 -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lticalcs2</pre>
 <h3><a href="index.html">Return to the main index</a> </h3>
-<br>
-<br>
-<br>
-<br>
 </body>
 </html>

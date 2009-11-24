@@ -24,14 +24,23 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
 test/example  program which uses this library.<br>
   Below is listed a light version (error management has been removed) of
 this  program to make it clearer:  
-<pre># include &lt;tilp/tifiles.h&gt;<br># include &lt;tilp/macros.h&gt;<br><br>int main(int argc, char **argv)<br>{<br>  Ti9xFlash content;<br><br>  tifiles_init();<br><br>  ti9x_display_file("ticabfra.89k");<br>  ti9x_read_flash_file("ticabfra.89k", &amp;content);<br><br>  return 0;<br>}<br></pre>
-  <br>
-  That's all !   
-<pre></pre>
-   
+<pre>#include &lt;stdio.h&gt;
+#include &lt;tifiles.h&gt;
+
+int main(int argc, char **argv)
+{
+  FlashContent content;
+
+  tifiles_library_init();
+
+  tifiles_file_read_flash("ticabfra.89k", &amp;content);
+  tifiles_file_display_flash(&amp;content);
+
+  return 0;
+}</pre>
+That's all !<br><br>
+<strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
+<pre>gcc -I/usr/include/tilp2 -Wall -W &lt;...&gt;.c -o &lt;...&gt; -ltifiles2</pre>
 <h3><a href="index.html">Return to the main index</a> </h3>
-   <br>
-  <br>
- <br>
 </body>
 </html>
