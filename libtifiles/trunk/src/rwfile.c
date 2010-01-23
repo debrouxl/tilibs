@@ -33,8 +33,12 @@
 #include "logging.h"
 
 // cut'ed from GLib 2.6.6 because this code work but the g_fopen call doesn't ?!
+#ifndef G_WIN32_IS_NT_BASED
 #define G_WIN32_IS_NT_BASED() (g_win32_get_windows_version () < 0x80000000)
+#endif
+#ifndef G_WIN32_HAVE_WIDECHAR_API
 #define G_WIN32_HAVE_WIDECHAR_API() (G_WIN32_IS_NT_BASED ())
+#endif
 
 FILE *
 gfopen (const gchar *filename, const gchar *mode)

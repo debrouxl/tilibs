@@ -85,7 +85,7 @@ extern "C" {
 # else /* not __GNUC__ */
 #  ifdef _MSC_VER
 #   if _MSC_VER >= 1300
-#    define TILIBS_DEPRECATED __declspec((deprecated))
+#    define TILIBS_DEPRECATED __declspec(deprecated)
 #   else /* not _MSC_VER >= 1300 */
 #    define TILIBS_DEPRECATED
 #   endif /* _MSC_VER >= 1300 */
