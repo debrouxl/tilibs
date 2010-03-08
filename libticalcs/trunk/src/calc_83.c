@@ -448,7 +448,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	int i, err = 0;
-	uint16_t keys[] = {				
+	static const uint16_t keys[] = {				
 		0x40, 0x09, 0x09,			/* Quit, Clear, Clear, */
 		0xFE63, 0x97, 0xDA,			/* Send(, 9, prgm */
 		0xAB, 0xA8, 0xA6, 0x9D,		/* R, O, M, D */

@@ -43,7 +43,8 @@
 
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
-
+#include "rom84p.h"
+#include "romdump.h"
 #include "keys83p.h"
 
 // Screen coordinates of the TI83+
@@ -629,10 +630,37 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p));
+
 	return 0;
 }
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
+	int i;
+	static const uint16_t keys[] = { 
+		0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
+		0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
+		0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
+		0x86, 0x05 };             /* ), Enter */
+
+	// Launch program by remote control
+	PAUSE(200);
+	for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
+	{
+		TRYF(send_key(handle, keys[i]));
+		PAUSE(100);
+	}
+
+	// This fixes a 100% reproducable timeout: send_key normally requests an ACK,
+	// but when the program is running, no ACK is sent. Therefore, hit the Enter key
+	// without requesting an ACK.
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, 0x05));
+	TRYF(cmd_r_delay_ack(handle));
+	PAUSE(200);
+
+	// Get dump
+	TRYF(rd_dump(handle, filename));
+
 	return 0;
 }
 

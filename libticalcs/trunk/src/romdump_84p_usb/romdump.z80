@@ -1,0 +1,821 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; TI-84+ USB ROM Dumper
+;;;
+;;; Copyright (c) 2009, 2010 Brandon Wilson
+;;;
+;;; This program is free software; you can redistribute it and/or modify
+;;; it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 2 of the License, or
+;;; (at your option) any later version.
+;;; 
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;; 
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software
+;;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+.nolist
+#include "ti83plus.inc"
+PACKET_SIZE     equ     1024
+CMD_READY       equ     0AA55h
+CMD_OK          equ     0001h
+CMD_EXIT        equ     0002h
+CMD_SIZE        equ     0003h
+CMD_GETDATA     equ     0005h
+CMD_DATA        equ     0006h
+CMD_REPEAT      equ     0007h
+.list
+inputBuffer     equ     9C31h
+SPbackup        equ     appBackUpScreen
+outputBuffer    equ     appBackUpScreen+2
+.org userMem-2
+        .db 0BBh,6Dh
+        bcall(_runIndicOff)
+;I've commented out the call to unlock Flash below, in case
+;  it ever stops working with the OS version the user is trying to dump.
+;I don't believe that'll ever happen, but for safety's sake...
+;The purpose of unlocking Flash is to get an accurate dump of the certificate
+; page (page 3Eh/7Eh).
+;Feel free to uncomment it.
+;        call UnlockFlash
+        ld (SPbackup),sp
+        call clearScreen
+        call IsUSBAvailable
+        jr nc,startDump
+        call InitializePeriphUSB
+        jr nc,startDump
+throwError:
+        ld sp,(SPbackup)
+        call clearScreen
+        ld hl,sError
+        bcall(_PutS)
+        bcall(_getKey)
+clearScreen:
+        bcall(_clrLCDFull)
+        bcall(_homeUp)
+        res onInterrupt,(iy+onFlags)
+        ret
+startDump:
+        ld hl,sMessage
+        bcall(_PutS)
+        res 5,(iy+41h)
+getCommandsLoop:
+        ld hl,appData
+        call GetPacket
+        jr c,throwError
+        ld hl,(appData)
+;Exit dumper?
+        ld de,CMD_EXIT
+        bcall(_cphlde)
+        jr z,exitDumper
+;Requesting ROM dump size?
+        ld de,CMD_SIZE
+        bcall(_cphlde)
+        jr z,sizeRequested
+;Requesting ROM data?
+        ld de,CMD_GETDATA
+        bcall(_cphlde)
+        jr z,dataRequested
+;Are we ready?
+        ld de,CMD_READY
+        bcall(_cphlde)
+        jr z,readyReceived
+        jr getCommandsLoop
+
+exitDumper:
+        ld de,CMD_EXIT
+        ld bc,0
+        call SendPacket
+        jr clearScreen
+
+sizeRequested:
+        ld hl,outputBuffer
+        ld (hl),0
+        inc hl
+        ld (hl),0
+        inc hl
+        in a,(2)
+        and 80h
+        ld a,10h
+        jr z,srIsNotSE
+        add a,a
+srIsNotSE:
+        ld (hl),a
+        inc hl
+        ld (hl),0
+        ld a,81h
+        ld hl,outputBuffer-4000h
+        ld de,CMD_SIZE
+        ld bc,4
+        call SendPacket
+        jp c,throwError
+        jr getCommandsLoop
+
+readyReceived:
+        ld de,CMD_OK
+        ld bc,0
+        call SendPacket
+        jp c,throwError
+        jr getCommandsLoop
+
+dataRequested:
+        ld ix,appData+4
+        ld l,(ix+0)
+        ld h,(ix+1)
+        ld e,(ix+2)
+        ld d,(ix+3)
+        ;DEHL contains the base address
+        ld bc,0402h
+        ld (curRow),bc
+        ld a,e
+        call DispHexA
+        ld a,h
+        call DispHexA
+        ld a,l
+        call DispHexA
+        ;Figure out what Flash page this is
+        ld a,e
+        add a,a
+        add a,a
+drGetFlashPage:
+        ld de,4000h
+        or a
+        sbc hl,de
+        jr c,drGFPDone
+        inc a
+        jr drGetFlashPage
+drGFPDone:
+        add hl,de
+        ld de,4000h
+        add hl,de
+        ;See if this block is "empty"/same
+        push hl
+        ld (83EBh),a
+        in a,(6)
+        push af
+        ld a,(83EBh)
+        out (6),a
+        ld d,(hl)
+        ld bc,PACKET_SIZE
+drGFDLoop:
+        ld a,(hl)
+        cp d
+        jr nz,drGFDDone
+        inc hl
+        dec bc
+        ld a,b
+        or c
+        jr nz,drGFDLoop
+drGFDDone:
+        pop bc
+        ld a,b
+        out (6),a
+        pop hl
+        jr z,requestingEmptyPacket
+        ld a,(83EBh)
+        ld de,CMD_DATA
+        ld bc,PACKET_SIZE
+        call SendPacket
+        jp c,throwError
+        jp getCommandsLoop
+requestingEmptyPacket:
+        ld ix,OP1
+        ld (ix+0),PACKET_SIZE & 0FFh
+        ld (ix+1),(PACKET_SIZE & 0FF00h) >> 8
+        ld (ix+2),d
+        ld (ix+3),d
+        ld a,81h
+        ld hl,OP1-4000h
+        ld de,CMD_REPEAT
+        ld bc,4
+        call SendPacket
+        jp c,throwError
+        jp getCommandsLoop
+
+sMessage:
+        .db "Dumping",0CEh,"        "
+        .db "                "
+        .db "                "
+        .db "                "
+        .db "Press ",LlBrack,"ON] to   "
+        .db "abort.",0
+sError: .db "ERROR!          "
+        .db "                "
+        .db "There was an    "
+        .db "unknown USB     "
+        .db "error.          "
+        .db "                "
+        .db "Press any key to"
+        .db "quit.",0
+
+SendPacket:
+;Sends a TiLP ROM dump packet.
+;Inputs:        DE: command ID
+;               HL => buffer of data to send (if any) (4000h range)
+;               A: page of data to send (if any) (81h\80h for RAM)
+;               BC: number of bytes to send
+;Outputs:       Returns carry flag set if problems
+;Notes:         This routine is absolutely horrible. Somebody optimize it.
+        di
+        push bc
+        ld (83EBh),a
+        in a,(6)
+        push af
+        ld a,83h
+        out (6),a
+        push hl
+        ld hl,4000h
+        ld (hl),e
+        inc hl
+        ld (hl),d
+        inc hl
+        ld (hl),c
+        inc hl
+        ld (hl),b
+        inc hl
+        ex de,hl
+        pop hl
+        ;Copy BC bytes from HL to DE
+        ld a,b
+        or c
+        jr z,spSkipData
+        push bc
+spCopyLoop:
+        ld a,(83EBh)
+        out (6),a
+        ld a,(hl)
+        push af
+        ld a,83h
+        out (6),a
+        pop af
+        ld (de),a
+        inc hl
+        bit 7,h
+        jr z,spNC
+        res 7,h
+        set 6,h
+        ld a,(83EBh)
+        inc a
+        ld (83EBh),a
+spNC:   inc de
+        dec bc
+        ld a,b
+        or c
+        jr nz,spCopyLoop
+        pop bc
+spSkipData:
+        ;Calculate the checksum
+        inc bc
+        inc bc
+        inc bc
+        inc bc
+        ;Total BC bytes from 8000h
+        ld hl,4000h
+        ld de,0
+spGetChecksum:
+        ld a,(hl)
+        inc hl
+        add a,e
+        ld e,a
+        jr nc,spGCC
+        inc d
+spGCC:  dec bc
+        ld a,b
+        or c
+        jr nz,spGetChecksum
+        ld (hl),e
+        inc hl
+        ld (hl),d
+        pop af
+        out (6),a
+        pop de
+        inc de
+        inc de
+        inc de
+        inc de
+        inc de
+        inc de
+        ld hl,8000h
+        jp SendUSBData
+
+GetPacket:
+;Gets a TiLP ROM dump packet.
+;Inputs:        HL points to packet buffer
+;Outputs:       Returns carry flag set if problems
+        ;Get command and data length words
+        ld bc,4
+        push hl
+        call ReceiveUSBDataWait
+        pop hl
+        ret c
+        inc hl
+        inc hl
+        ld c,(hl)
+        inc hl
+        ld b,(hl)
+        inc hl
+        ld a,b
+        or c
+        jr z,gpSkipData
+        push hl
+        push bc
+        ;Data bytes
+        call ReceiveUSBDataWait
+        pop bc
+        pop hl
+        ret c
+        add hl,bc
+gpSkipData:
+        ;Checksum word
+        ld bc,2
+        jp ReceiveUSBDataWait
+        ;TODO: validate the PC's checksum?
+
+DispHexA:
+        push ix
+        push af
+        push hl
+        push bc
+        push af
+        rrca
+        rrca
+        rrca
+        rrca
+        call vdispha
+        pop af
+        call vdispha
+        pop bc
+        pop hl
+        pop af
+        pop ix
+        ret
+vdispha:and 15
+        cp 10
+        jr nc,vdhlet
+        add a,48
+        jr vdispd
+vdhlet: add a,55
+vdispd: bcall(_PutC)
+        ret
+
+;----------------------------------------------------------------------------
+;InitializePeriphUSB:
+;Initializes ourself as a USB peripheral connected to...something.
+;Inputs:        None
+;Outputs:       Carry flag set if any issues
+InitializePeriphUSB:
+        bcall(810Eh) ;_KillUSB
+        ret c
+        ld a,80h
+        out (57h),a
+        xor a
+        out (4Ch),a
+        ld a,1
+        out (5Bh),a
+        xor a
+        in a,(4Ch)
+        ld a,2
+        out (54h),a
+        ld a,20h
+        out (4Ah),a
+        xor a
+        out (4Bh),a
+        in a,(3Ah)
+        bit 3,a
+        jr z,port3AhReset1
+        ld a,20h
+        out (4Bh),a
+port3AhReset1:
+        xor a
+        out (54h),a
+        ld a,42h
+        out (36h),a
+        xor a
+        out (37h),a
+        ld a,1
+        out (38h),a
+timerWait:
+        in a,(4)
+        bit 7,a
+        jr z,timerWait
+        in a,(3Ah)
+        bit 3,a
+        jr z,port3AhReset2
+        ld a,44h
+        out (54h),a
+port3AhReset2:
+        ld a,0C4h
+        out (54h),a
+        ld a,8
+        out (4Ch),a
+        ld de,0FFFFh
+port5AhLoop:
+        dec de
+        ld a,d
+        or e
+        scf
+        ret z
+        in a,(4Ch)
+        cp 1Ah
+        jr z,port5AhDone
+        cp 5Ah
+        jr nz,port5AhLoop
+port5AhDone:
+        ld a,0FFh
+        out (87h),a
+        xor a
+        out (92h),a
+        in a,(87h)
+        ld a,0Eh
+        out (89h),a
+        ld a,5
+        out (8Bh),a
+        in a,(81h)
+        or
+        out (81h),a
+        in a,(54h)
+        or 1
+        out (54h),a
+        ld b,5
+frameCounterLoop:
+        ld de,0FFFFh
+frameCounterLoop2:
+        dec de
+        ld a,d
+        or e
+        jr z,counterExpired
+        in a,(8Ch)
+        or a
+        jr z,frameCounterLoop2
+        ret
+counterExpired:
+        djnz frameCounterLoop
+        scf
+        ret
+
+;----------------------------------------------------------------------------
+;IsUSBAvailable:
+;Returns whether USB communication MAY be available.
+;Inputs:        None
+;Outputs:       Carry flag set if USB is not available
+IsUSBAvailable:
+        in a,(2)
+        bit 5,a
+        scf
+        ret z
+        ld a,(4Dh)
+        or a
+        bit 5,a
+        ret z
+        bit 6,a
+        scf
+        ret nz
+        ccf
+        ret
+
+;----------------------------------------------------------------------------
+;SendUSBData:
+;Sends data over USB.
+;Inputs:        HL => data to send
+;               DE: number of bytes to send
+;Outputs:       DE bytes sent from HL
+;               Carry flag set if any issues
+SendUSBData:
+        set 2,(iy+40h)
+        res 0,(iy+43h)
+        bcall(50F2h)
+        res 0,(iy+41h)
+        ret
+
+;----------------------------------------------------------------------------
+;ReceiveUSBDataWait:
+;Receives data over USB (waits until data is received).
+;Inputs:        HL => buffer to store data to
+;               BC: number of bytes to receive
+;Outputs:       BC bytes received to HL
+;               Carry flag set if any issues
+;Make sure you know how much you need to be receiving before calling.
+;This is a blocking call and will not return until everything is received.
+ReceiveUSBDataWait:
+        ei
+        halt
+        in a,(4)
+        bit 3,a
+        scf
+        ret z
+        bit 5,(iy+41h)
+        jr z,ReceiveUSBDataWait
+
+;----------------------------------------------------------------------------
+;ReceiveUSBData:
+;Receives data over USB.
+;Inputs:        5,(iy+41h) set by OS.
+;               HL => buffer to store data to
+;               BC: number of bytes to receive
+;Outputs:       BC bytes received to HL
+;               Carry flag set if any issues
+;Make sure you know how much you need to be receiving before calling.
+ReceiveUSBData:
+	push bc
+	push af
+	xor a
+	ld (9834h),a
+	jr receive_data_ready
+receive_big_loop:
+	in a,(4)
+	bit 3,a
+	jr z,P2scfRet
+	bit 5,(iy+41h)
+	jr nz,receive_data_ready
+	in a,(84h)
+	bit 2,a
+	jr nz,receiving_data
+	bit 1,a
+	jr z,restart_receive_loop
+receiving_data:
+	set 5,(iy+41h)
+	xor a
+	ld (9C27h),a
+	jr receive_data_ready
+restart_receive_loop:
+        in a,(86h)
+	bit 5,a
+	jr nz,P2scfRet
+	jr receive_big_loop
+receive_data_ready:
+	push bc
+	push hl
+	ld hl,40h
+	or a
+	sbc hl,bc
+	pop hl
+	ld b,c
+        jr nc,receiveRest
+	ld b,40h
+receiveRest:
+	call ReceiveUSBData_small
+	ex de,hl
+	pop hl
+	jr c,P2scfRet
+	or a
+	ld b,0
+	sbc hl,bc
+	jr z,P2ret
+	ld b,h
+	ld c,l
+	ex de,hl
+	jr receive_big_loop
+P2ret:	pop bc
+	ld a,b
+	pop bc
+	ret
+P2scfRet:
+	pop af
+	pop bc
+	scf
+	ret
+ReceiveUSBData_small:
+        ld a,b
+        or a
+        ret z
+        ld a,40h
+        cp b
+        ret c
+        ld a,b
+        ld (9C80h),a
+        ld a,(9C27h)
+        or a
+        jr z,ReceiveUSBData_continue
+        cp b
+        jr nc,ReceiveUSBData_continue
+        ld b,a
+        ld (9C80h),a
+ReceiveUSBData_continue:
+        in a,(8Fh)
+        bit 2,a
+        jp z,calcIsPeripheral
+        xor a
+        out (5Bh),a
+        ld a,(9C27h)
+        or a
+        jr nz,startReceive
+        ld a,1
+        out (8Eh),a
+        ld a,21h
+        out (9Ah),a
+        xor a
+        in a,(9Ah)
+        ld a,8
+        out (93h),a
+        xor a
+        in a,(93h)
+        ld a,0FFh
+        out (89h),a
+        xor a
+        out (95h),a
+        in a,(89h)
+        ld a,0A1h
+        out (8Bh),a
+        in a,(94h)
+        bit 2,a
+        jp nz,receiveError
+        bit 6,a
+        jp nz,receiveError
+        ld a,1
+        out (5Bh),a
+        ld a,(9C27h)
+        or a
+        jr nz,startReceive
+        ld a,1
+        out (8Eh),a
+        in a,(94h)
+        in a,(96h)
+startReceive:
+        push af
+        ld a,(9C80h)
+        ld b,a
+        ld c,0
+receiveLoop:
+        in a,(0A1h)
+        ld (hl),a
+        inc hl
+        inc c
+        djnz receiveLoop
+        ld a,1
+        out (8Eh),a
+        in a,(94h)
+        bit 2,a
+        jr nz,p1ReceiveError
+        bit 6,a
+        jr nz,p1ReceiveError
+        pop af
+        sub c
+        ld (9C27h),a
+        set 5,(iy+41h)
+        ret nz
+        ld a,1
+        out (8Eh),a
+        ld a,21h
+        out (9Ah),a
+        ld a,8
+        out (93h),a
+        xor a
+        in a,(93h)
+        ld a,0Eh
+        out (89h),a
+        xor a
+        out (95h),a
+        res 5,(iy+41h)
+        xor a
+        ld (9C27h),a
+        res 0,(iy+41h)
+        ld a,20h
+        out (94h),a
+        ld a,1
+        out (5Bh),a
+        ret
+calcIsPeripheral:
+        ld a,2
+        out (8Eh),a
+        in a,(94h)
+        bit 6,a
+        jr z,startReceive2
+        and 0DFh
+        out (94h),a
+        pop af
+        bcall(5257h) ;_KillUSBDevice
+	jr receiveError
+startReceive2:
+        ld a,(9C27h)
+        or a
+        jr nz,startReceive3
+        in a,(96h)
+startReceive3:
+        push af
+        ld c,0
+receivePeriphLoop:
+        in a,(0A2h)
+        ld (hl),a
+        inc hl
+        inc c
+        djnz receivePeriphLoop
+        ld a,2
+        out (8Eh),a
+        pop af
+        sub c
+        ld (9C27h),a
+        ret nz
+        xor a
+        ld (9C27h),a
+        in a,(94h)
+        and 0FEh
+        out (94h),a
+        res 5,(iy+41h)
+        ld a,0A1h
+        ld (8Bh),a
+        jr endReceive
+p1ReceiveError:
+        pop af
+receiveError:
+        res 5,(iy+41h)
+        scf
+endReceive:
+        ei
+        ld a,1
+        out (5Bh),a
+        res 0,(iy+41h)
+        ret
+
+;----------------------------------------------------------------------------
+UnlockFlash:
+;Unlocks Flash protection.
+;Destroys: appBackUpScreen
+;          pagedCount
+;          pagedGetPtr
+;          arcInfo
+;          iMathPtr5
+;          pagedBuf
+;          ramCode
+        in a,(6)
+        push af
+        ld a,7Bh
+        call translatePage
+        out (6),a
+        ld hl,5092h
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        inc hl
+        ld a,(hl)
+        call translatePage
+        out (6),a
+        ex de,hl
+        ld a,0CCh
+        ld bc,0FFFFh
+        cpir
+        ld e,(hl)
+        inc hl
+        ld d,(hl)
+        push de
+        pop ix
+        ld hl,9898h
+        ld (hl),0C3h
+        inc hl
+        ld (hl),returnPoint & 11111111b
+        inc hl
+        ld (hl),returnPoint >> 8
+        ld hl,pagedBuf
+        ld (hl),98h
+        ld de,pagedBuf+1
+        ld bc,49
+        ldir
+        ld (iMathPtr5),sp
+        ld hl,(iMathPtr5)
+        ld de,9A00h
+        ld bc,50
+        ldir   
+        ld de,(iMathPtr5)
+        ld hl,-12
+        add hl,de
+        ld (iMathPtr5),hl
+        ld iy,0056h-25h
+        ld a,50
+        ld (pagedCount),a
+        ld a,8
+        ld (arcInfo),a
+        jp (ix)
+translatePage:
+        ld b,a
+        in a,(2)
+        and 80h
+        jr z,_is83P
+        in a,(21h)
+        and 3
+        ld a,b
+        ret nz
+        and 3Fh
+        ret
+_is83P: ld a,b
+        and 1Fh
+        ret
+returnPoint:
+        ld iy,flags
+        ld hl,(iMathPtr5)
+        ld de,12
+        add hl,de
+        ld sp,hl
+        ex de,hl
+        ld hl,9A00h
+        ld bc,50
+        ldir
+        pop af
+        out (6),a
+        ret
+.end
+end
