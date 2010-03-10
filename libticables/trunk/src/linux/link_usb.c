@@ -209,8 +209,10 @@ static struct usb_urb urb;
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
-#ifdef __WIN32__
+#if defined(__WIN32__)
 #include "../win32/detect.h"
+#elif defined(__BSD__)
+#include "../bsd/detect.h"
 #else
 #include "detect.h"
 #endif
@@ -442,8 +444,10 @@ static int slv_prepare(CableHandle *h)
 {
 	char str[64];
 
-#ifdef __WIN32__
+#if defined(__WIN32__)
 	TRYC(win32_check_libusb());
+#elif defined(__BSD__)
+	TRYC(bsd_check_libusb());
 #else
 	TRYC(linux_check_libusb());
 #endif
