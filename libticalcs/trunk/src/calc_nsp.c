@@ -59,9 +59,19 @@ static int		is_ready	(CalcHandle* handle)
 	static int rom_11 = 0;
 	static int rom_14 = 0;
 
+	// XXX debrouxl forcing a full sequence makes all operations a LOT slower (especially on
+	// older OS), but fixes the 100% reproducible loss of connection after a few "Status"
+	// operations or a single "List" operation, on my S-0907A non-CAS Nspire.
+	// Tested with OS 1.1.9253, 1.2.2398, 1.3.2407, 1.4.11653, 1.6.4379, 1.7.2471, 1.7.1.50.
+	//
+	// A better fix is needed in the mid- and long-term.
+
 	// checking for OS version and LOGIN packet
-	if(!nsp_reset)
+	//if(!nsp_reset)
 	{
+		// XXX debrouxl moving those two lines above the 'if(!nsp_reset)' test fixes connection
+		// loss, but linking with at least 1.7.1.50 does not work properly after that: at least
+		// directory listing and screenshot don't do anything beyond the "Status" probe.
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 
@@ -75,7 +85,7 @@ static int		is_ready	(CalcHandle* handle)
 			ret = cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
 			if(ret)
 			{
-				ticalcs_info("OS == 1.1");
+				ticalcs_info("OS = 1.1");
 				ticables_options_set_timeout(handle->cable, old);
 				rom_11 = !0;
 
@@ -92,14 +102,14 @@ static int		is_ready	(CalcHandle* handle)
 				}
 				else
 				{
-					ticalcs_info("OS = 1.4");
+					ticalcs_info("OS = 1.4 or later");
 					rom_14 = !0;
 				}
 
 			}
 		}
 
-		nsp_reset = !0;
+		//nsp_reset = !0;
 	}
 
 	// Use ECHO packet as ready check
