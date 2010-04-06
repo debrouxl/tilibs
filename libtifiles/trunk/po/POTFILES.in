@@ -4,6 +4,7 @@ src/comments.c
 src/error.c
 src/files8x.c
 src/files9x.c
+src/filesnsp.c
 src/filesxx.c
 src/filetypes.c
 src/grouped.c
@@ -25,6 +26,7 @@ src/types89.c
 src/types89t.c
 src/types92.c
 src/types92p.c
+src/typesnsp.c
 src/typesv2.c
 src/typesxx.c
 src/ve_fp.c

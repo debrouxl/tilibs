@@ -93,7 +93,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: invalid host ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		_("Cause: TiLP received an unexpected Machine ID, probably due to a transmission error."));
+		_("Cause: received an unexpected Machine ID from calculator, probably due to a transmission error."));
 		*message = g_strdup(error_msg);
 		break;
 
@@ -101,7 +101,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: invalid target ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		_("Cause: TiLP received an unexpected Target ID, probably due to a transmission error."));
+		_("Cause: received an unexpected Target ID from calculator, probably due to a transmission error."));
 		*message = g_strdup(error_msg);
 		break;
 
@@ -109,7 +109,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: invalid command ID."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		_("Cause: TiLP received an unexpected Command ID, probably due to a transmission error."));
+		_("Cause: received an unexpected Command ID from calculator, probably due to a transmission error."));
 		*message = g_strdup(error_msg);
 		break;
 
@@ -154,7 +154,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		break;
 
 	case ERR_NO_CABLE:
-		strcpy(error_msg, _("The cable can not be used."));
+		strcpy(error_msg, _("The cable cannot be used."));
 		strcat(error_msg, "\n");
 		strcat(error_msg, _("Cause: the cable has not been initialized due to a previous/current error."));
 		*message = g_strdup(error_msg);
@@ -200,7 +200,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	case ERR_PENDING_TRANSFER:
 		strcpy(error_msg,
-		_("A transfer is in progress. You can not start a new one."));
+		_("A transfer is in progress. You cannot start a new one."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		_("Cause: this should not happen. Probably a bug: drop us an email!"));
@@ -214,7 +214,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("The requested var does not exist."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
-		_("Cause: you attempted to download a variable which does not exist on the calculaotr any longer. Maybe you have manually deleted it ?"));
+		_("Cause: you attempted to download a variable which does not exist on the calculator any longer. Maybe you have manually deleted it ?"));
 		*message = g_strdup(error_msg);
 		break;
 
@@ -227,7 +227,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		break;
 
 	case ERR_INVALID_HANDLE:
-		strcpy(error_msg, _("Invalid TiCalcs handle."));
+		strcpy(error_msg, _("Invalid ticalcs handle."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
 		_("Cause: bad cable or calc model."));
@@ -242,7 +242,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR1+1:
-		strcpy(error_msg, _("Msg: can not delete application."));
+		strcpy(error_msg, _("Msg: cannot delete application."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR1+2:
@@ -250,11 +250,11 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR1+3:
-		strcpy(error_msg, _("Msg: can not overwrite variable (locked/archived)."));
+		strcpy(error_msg, _("Msg: cannot overwrite variable (locked/archived)."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR1+4:
-		strcpy(error_msg, _("Msg: can not delete variable (locked/archived)."));
+		strcpy(error_msg, _("Msg: cannot delete variable (locked/archived)."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR1+5:
@@ -282,7 +282,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+2:
-		strcpy(error_msg, _("Msg: can not delete var/app from archive."));
+		strcpy(error_msg, _("Msg: cannot delete var/app from archive."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+3:

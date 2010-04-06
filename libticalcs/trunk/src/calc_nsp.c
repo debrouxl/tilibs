@@ -21,7 +21,7 @@
  */
 
 /*
-	NSPire support thru DirectUsb link.
+	Nspire support thru DirectUsb link.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -654,9 +654,9 @@ extern int tixx_recv_backup(CalcHandle* handle, BackupContent* content);
 const CalcFncts calc_nsp = 
 {
 	CALC_NSPIRE,
-	"NSPire",
-	"NSpire handheld",
-	N_("NSPire thru DirectLink"),
+	"Nspire",
+	"Nspire handheld",
+	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",

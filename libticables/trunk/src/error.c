@@ -130,7 +130,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: DhaHelper driver and/or library not found."),
 			"\n",
-			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
+			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without administrator privileges."),
 			NULL);
 		break;
 
@@ -138,7 +138,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: RwPorts driver and/or library not found."),
 			"\n",
-			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without NT administrator privileges."),
+			_("Cause: the driver may have been not started yet; it may have been uninstalled; the library has been installed without administrator privileges."),
 			NULL);
 		break;
 
@@ -199,7 +199,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		*message = g_strconcat(
     		_("Msg: failed to get VTI handle."),
     		"\n",
-    		_("Cause: VTi may not be running. VTi must be launched before."),
+    		_("Cause: VTI may not be running. VTI must be launched before."),
 		NULL);
 		break;
 
@@ -260,7 +260,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 
 	case ERR_LIBUSBWIN32_NOT_PRESENT:
 		*message = g_strconcat(
-			_("Msg: unable to find the LPG's driver (libusb-win32)."),
+			_("Msg: unable to find the libusb-win32 driver."),
 			"\n",
 			_("Cause: the driver is not present and/or installed."),
 			NULL);

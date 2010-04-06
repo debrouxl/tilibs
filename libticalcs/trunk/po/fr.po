@@ -1,13 +1,13 @@
 # French locale for libticalcs.
 # Copyright (C) 2003 Sylvain Garsault
 # Copyright (C) 2007 Romain Liévin
-# This file is distributed under the same license as the libtifiles package.
-# 
+# This file is distributed under the same license as the libticalcs2 package.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: libticalcs 4.5.3\n"
+"Project-Id-Version: libticalcs2 1.1.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2009-08-11 15:11+0200\n"
+"POT-Creation-Date: 2010-03-22 19:46+0100\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -24,7 +24,7 @@ msgstr "Calculatrice vide"
 msgid "Dummy hand-held used when no calc is set"
 msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
 
-#: src/calc_73.c:214 src/calc_83.c:195 src/calc_84p.c:194 src/calc_86.c:184
+#: src/calc_73.c:214 src/calc_83.c:195 src/calc_84p.c:195 src/calc_86.c:184
 #, c-format
 msgid "Parsing %s"
 msgstr "Parcourt %s"
@@ -45,15 +45,15 @@ msgstr "Taille FLASH: %i octets."
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_73.c:789 src/calc_84p.c:672 src/calc_89.c:810 src/calc_89t.c:606
+#: src/calc_73.c:789 src/calc_84p.c:700 src/calc_89.c:810 src/calc_89t.c:606
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:818 src/calc_84p.c:716 src/calc_89.c:835 src/calc_89t.c:650
+#: src/calc_73.c:818 src/calc_84p.c:744 src/calc_89.c:835 src/calc_89t.c:650
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:768 src/calc_89.c:872
+#: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:796 src/calc_89.c:872
 #: src/calc_89t.c:704 src/calc_92.c:546
 #, c-format
 msgid "Deleting %s..."
@@ -108,25 +108,25 @@ msgstr "Attente de variable(s)..."
 msgid "Waiting for execing of program..."
 msgstr "En attente de l'exécution du programme..."
 
-#: src/calc_84p.c:805 src/calc_89t.c:789
+#: src/calc_84p.c:833 src/calc_89t.c:789
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:917
+#: src/calc_84p.c:945
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_89.c:227 src/calc_89.c:282 src/calc_92.c:200
+#: src/calc_89.c:227 src/calc_89.c:282 src/calc_92.c:200 src/calc_nsp.c:302
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
-msgstr "Nom: %8s | Type: %8s | Attr: %i  | Size: %08X"
+msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
 
 #: src/calc_89.c:252
 #, c-format
 msgid "Directory listing in %8s..."
 msgstr "Listage du dossier dans %8s..."
 
-#: src/calc_89.c:290 src/calc_89t.c:206 src/calc_92.c:213
+#: src/calc_89.c:290 src/calc_89t.c:206 src/calc_92.c:213 src/calc_nsp.c:310
 #, c-format
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
@@ -148,6 +148,20 @@ msgstr "TI-89 Titanium via DirectLink"
 #, c-format
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
+
+#: src/calc_nsp.c:256
+#, c-format
+msgid "Name: %s | Type: %i | Attr: %i  | Size: %08X"
+msgstr "Nom: %s | Type: %i | Attr: %i  | Taille: %08X"
+
+#: src/calc_nsp.c:272
+#, c-format
+msgid "Directory listing in <%s>..."
+msgstr "Listage du dossier dans <%s>..."
+
+#: src/calc_nsp.c:659
+msgid "Nspire thru DirectLink"
+msgstr "Nspire via DirectLink"
 
 #: src/calc_xx.c:79
 msgid "Checking hand-held status:"
@@ -290,7 +304,7 @@ msgstr "Msg: la calculatrice n'est pas prête."
 msgid ""
 "Cause: the calculator is busy (Var-Link menu, Window, ...). Press HOME..."
 msgstr ""
-"Cause: la calculatrice est occuppée (menu Var-Link, Window, ...). Presser la "
+"Cause: la calculatrice est occupée (menu Var-Link, Window, ...). Presser la "
 "touche HOME."
 
 #: src/error.c:86
@@ -307,11 +321,11 @@ msgstr "Msg: identifiant hôte invalide."
 
 #: src/error.c:96
 msgid ""
-"Cause: TiLP received an unexpected Machine ID, probably due to a "
+"Cause: received an unexpected Machine ID from calculator, probably due to a "
 "transmission error."
 msgstr ""
-"Cause: TiLP a reçu un mauvais identifiant machine, certainement causé par "
-"une erreur de transmission."
+"Cause: reçu un mauvais identifiant machine depuis la calculatrice, "
+"certainement causé par une erreur de transmission."
 
 #: src/error.c:101
 msgid "Msg: invalid target ID."
@@ -319,11 +333,11 @@ msgstr "Msg: identifiant cible invalide."
 
 #: src/error.c:104
 msgid ""
-"Cause: TiLP received an unexpected Target ID, probably due to a transmission "
-"error."
+"Cause: received an unexpected Target ID from calculator, probably due to a "
+"transmission error."
 msgstr ""
-"Cause: TiLP a reçu un identifiant cible invalide, certainement causé par une "
-"erreur de transmission."
+"Cause: reçu un identifiant cible invalide depuis la calculatrice, "
+"certainement causé par une erreur de transmission."
 
 #: src/error.c:109
 msgid "Msg: invalid command ID."
@@ -331,15 +345,15 @@ msgstr "Msg: identifiant de commande invalide."
 
 #: src/error.c:112
 msgid ""
-"Cause: TiLP received an unexpected Command ID, probably due to a "
+"Cause: received an unexpected Command ID from calculator, probably due to a "
 "transmission error."
 msgstr ""
-"Cause: TiLP a reçu un identifiant de commande invalide, certainement causé "
-"par une erreur de transmission."
+"Cause: reçu un identifiant de commande invalide depuis la calculatrice, "
+"certainement causé par une erreur de transmission."
 
 #: src/error.c:117
 msgid "Msg: not really an error, should not appear!"
-msgstr "Msg: Pas vraiment une erreur, ne devrait pas appara?e !"
+msgstr "Msg: Pas vraiment une erreur, ne devrait pas apparaître !"
 
 #: src/error.c:119
 msgid "Cause: a bug. Drop us an email!"
@@ -368,7 +382,7 @@ msgstr "Cause: une erreur de transmission."
 
 #: src/error.c:140
 msgid "NACK received."
-msgstr "NACK reçu."
+msgstr "NACK (refus) reçu."
 
 #: src/error.c:142
 msgid "Cause: the command has been refused."
@@ -379,7 +393,7 @@ msgid "Invalid packet."
 msgstr "Paquet invalide."
 
 #: src/error.c:157
-msgid "The cable can not be used."
+msgid "The cable cannot be used."
 msgstr "Le cable ne peut pas être utilisé."
 
 #: src/error.c:159
@@ -395,7 +409,7 @@ msgstr "Msg: Cette fonction n'existe pas pour votre calculatrice."
 msgid ""
 "Cause: the operation you attempted is not supported by your calculator model."
 msgstr ""
-"Cause: cette option n'est pas supportée par votre modèle de calculatrice."
+"Cause: cette opération n'est pas gérée par votre modèle de calculatrice."
 
 #: src/error.c:180
 msgid "Msg: calculator out of memory."
@@ -420,7 +434,7 @@ msgid "Msg: unable to open (writing) the file."
 msgstr "Msg: Impossible d'ouvrir (en écriture) le fichier."
 
 #: src/error.c:203
-msgid "A transfer is in progress. You can not start a new one."
+msgid "A transfer is in progress. You cannot start a new one."
 msgstr "Un transfert est en cours. Vous ne pouvez pas en démarrer un autre."
 
 #: src/error.c:206
@@ -436,7 +450,7 @@ msgstr "La variable demandée n'existe pas."
 #: src/error.c:217
 msgid ""
 "Cause: you attempted to download a variable which does not exist on the "
-"calculaotr any longer. Maybe you have manually deleted it ?"
+"calculator any longer. Maybe you have manually deleted it ?"
 msgstr ""
 "Cause: vous avez tenté de télécharger une variable qui n'existe plus sur la "
 "calculatrice. Vous l'avez peut-être effacée manuellement ?"
@@ -450,8 +464,8 @@ msgid "Cause: 0 variables stored onto your calculator."
 msgstr "Cause: aucune variable n'est stockée sur votre calculatrice."
 
 #: src/error.c:230
-msgid "Invalid TiCalcs handle."
-msgstr "descripteur invalide."
+msgid "Invalid ticalcs handle."
+msgstr "Descripteur ticalcs invalide."
 
 #: src/error.c:233
 msgid "Cause: bad cable or calc model."
@@ -468,7 +482,7 @@ msgstr ""
 "le rapporter."
 
 #: src/error.c:245
-msgid "Msg: can not delete application."
+msgid "Msg: cannot delete application."
 msgstr "Msg: ne peut pas effacer l'application."
 
 #: src/error.c:249
@@ -476,11 +490,11 @@ msgid "Msg: invalid variable name."
 msgstr "Msg: nom de variable invalide."
 
 #: src/error.c:253
-msgid "Msg: can not overwrite variable (locked/archived)."
+msgid "Msg: cannot overwrite variable (locked/archived)."
 msgstr "Msg: ne peut pas écraser la variable (verrouillée/archivée)."
 
 #: src/error.c:257
-msgid "Msg: can not delete variable (locked/archived)."
+msgid "Msg: cannot delete variable (locked/archived)."
 msgstr "Msg: ne peut pas effacer la variable (verrouillée/archivée)."
 
 #: src/error.c:261
@@ -504,7 +518,7 @@ msgid "Msg: invalid argument or name."
 msgstr "Msg: argument ou nom invalide."
 
 #: src/error.c:285
-msgid "Msg: can not delete var/app from archive."
+msgid "Msg: cannot delete var/app from archive."
 msgstr ""
 "Msg: ne peut pas effacer la variable ou l'application depuis la mémoire "
 "archive."

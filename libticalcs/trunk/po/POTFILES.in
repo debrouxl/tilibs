@@ -11,6 +11,7 @@ src/calc_86.c
 src/calc_89.c
 src/calc_89t.c
 src/calc_92.c
+src/calc_nsp.c
 src/calc_xx.c
 src/clock.c
 src/cmd73.c
@@ -25,6 +26,7 @@ src/dusb_rpkt.c
 src/dusb_vpkt.c
 src/error.c
 src/logging.c
+src/nsp_cmd.c
 src/probe.c
 src/romdump.c
 src/ticalcs.c

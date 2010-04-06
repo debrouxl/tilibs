@@ -70,7 +70,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 
 	case ERR_GROUP_SIZE:
 		*message = g_strconcat(
-			_("Msg: the size of a group file can not exceed 64KB."),
+			_("Msg: the size of a group file cannot exceed 64 KB."),
 			"\n",
 			_("Cause: too many variables/data."),
 			NULL);
@@ -105,7 +105,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 		*message = g_strconcat(
 			_("Msg: (Un)Zip error."),
 			"\n",
-			_("Cause: pfff, I don't know..."),
+			_("Cause: unknown..."),
 			NULL);
 	break;
 
