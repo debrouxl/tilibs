@@ -24,7 +24,7 @@
 	Calcs: TI-NSpire
 */
 
-#include <stdio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -63,7 +63,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
@@ -128,7 +128,7 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	if (!tifiles_file_is_tno(filename))
 		return ERR_INVALID_FILE;	
 
-	f = gfopen(filename, "rb");
+	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
 	    tifiles_info("Unable to open this file: %s\n", filename);
@@ -204,7 +204,7 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
 		*real_fname = g_strdup(filename);
   }
 
-  f = gfopen(filename, "wb");
+  f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);

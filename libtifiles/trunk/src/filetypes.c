@@ -20,7 +20,7 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -364,7 +364,7 @@ static int tifiles_file_has_ti_header(const char *filename)
 	char buf[9];
 	char *p;
 
-	f = gfopen(filename, "rb");
+	f = g_fopen(filename, "rb");
 	if (f == NULL)
 		return 0;
 	
@@ -407,7 +407,7 @@ static int tifiles_file_has_tib_header(const char *filename)
 	if(g_ascii_strcasecmp(e, "tib"))
 		return 0;
 
-	f = gfopen(filename, "rb");
+	f = g_fopen(filename, "rb");
 	if(f == NULL)
 		return 0;
 
@@ -438,7 +438,7 @@ static int tifiles_file_has_tig_header(const char *filename)
 	if(g_ascii_strcasecmp(e, "tig"))
 		return 0;
 
-	f = gfopen(filename, "rb");
+	f = g_fopen(filename, "rb");
 	if(f == NULL)
 		return 0;
 
@@ -469,7 +469,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 	if(g_ascii_strcasecmp(e, "tno")	&& g_ascii_strcasecmp(e, "tnc"))
 		return 0;
 
-	f = gfopen(filename, "rb");
+	f = g_fopen(filename, "rb");
 	if(f == NULL)
 		return 0;
 
@@ -825,7 +825,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			FILE *f;
 			uint8_t data[16];
 
-			f = gfopen(filename, "rb");
+			f = g_fopen(filename, "rb");
 			if(f == NULL)
 				return 0;
 

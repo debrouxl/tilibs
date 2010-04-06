@@ -28,7 +28,7 @@
 	some TI85/86 file issues (padded, not padded).
 */
 
-#include <stdio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -120,7 +120,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_warning( "Unable to open this file: %s\n", filename);
@@ -289,7 +289,7 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
@@ -424,7 +424,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
   if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;
 
-  f = gfopen(filename, "rb");
+  f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: %s", filename);
@@ -577,7 +577,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
       *real_fname = g_strdup(filename);
   }
 
-  f = gfopen(filename, "wb");
+  f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
@@ -707,7 +707,7 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   FILE *f;
   uint16_t data_length;
 
-  f = gfopen(filename, "wb");
+  f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info( "Unable to open this file: %s", filename);
@@ -800,7 +800,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 		*real_fname = g_strdup(filename);
   }
 
-  f = gfopen(filename, "wb");
+  f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
     tifiles_info("Unable to open this file: %s", filename);

@@ -23,7 +23,7 @@
   This unit contains some miscellaneous but useful functions.
 */
 
-#include <stdio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "stdints2.h"
@@ -31,74 +31,6 @@
 
 #include "tifiles.h"
 #include "logging.h"
-
-// cut'ed from GLib 2.6.6 because this code work but the g_fopen call doesn't ?!
-#ifndef G_WIN32_IS_NT_BASED
-#define G_WIN32_IS_NT_BASED() (g_win32_get_windows_version () < 0x80000000)
-#endif
-#ifndef G_WIN32_HAVE_WIDECHAR_API
-#define G_WIN32_HAVE_WIDECHAR_API() (G_WIN32_IS_NT_BASED ())
-#endif
-
-FILE *
-gfopen (const gchar *filename, const gchar *mode)
-{
-#ifdef __WIN32__
-  if (G_WIN32_HAVE_WIDECHAR_API ())
-    {
-      wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
-      wchar_t *wmode;
-      FILE *retval;
-      int save_errno;
-
-      if (wfilename == NULL)
-	{
-	  errno = -1;
-	  return NULL;
-	}
-
-      wmode = g_utf8_to_utf16 (mode, -1, NULL, NULL, NULL);
-
-      if (wmode == NULL)
-	{
-	  g_free (wfilename);
-	  errno = -1;
-	  return NULL;
-	}
-	
-      retval = _wfopen (wfilename, wmode);
-      save_errno = errno;
-
-      g_free (wfilename);
-      g_free (wmode);
-
-      errno = save_errno;
-      return retval;
-    }
-  else
-    {
-      gchar *cp_filename = g_locale_from_utf8 (filename, -1, NULL, NULL, NULL);
-      FILE *retval;
-      int save_errno;
-
-      if (cp_filename == NULL)
-	{
-	  errno = -1;
-	  return NULL;
-	}
-
-      retval = fopen (cp_filename, mode);
-      save_errno = errno;
-
-      g_free (cp_filename);
-
-      errno = save_errno;
-      return retval;
-    }
-#else
-  return fopen (filename, mode);
-#endif
-}
 
 /*
   Dump into hexadecimal format the content of a buffer

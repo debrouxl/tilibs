@@ -225,39 +225,6 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	return 0;
 }
 
-#if 0
-TIEXPORT2 int TICALL test_hex_read(void)
-{
-	const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\chembio.8Xk";
-	//const char *filename = "C:\\sources\\roms\\tifiles-2\\tests\\ti84p\\TI84Plus_OS.8Xu";
-	FILE *f;
-	uint16_t size, addr, page;
-	uint8_t type, data[BLK_MAX];
-	int ret;
-
-	f = gfopen(filename, "rb");
-	if (f == NULL) 
-	{
-		printf("Unable to open this file: %s", filename);
-		return -1;
-	}
-
-	fseek(f, 0x4e, SEEK_SET);
-
-	ret = hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
-
-	do
-	{
-		ret = hex_block_read(f, &size, &addr, &type, data, &page);
-	} 
-	while(!ret);
-
-	fclose(f);
-
-	return 0;
-}
-#endif
-
 static int write_byte(uint8_t b, FILE * f)
 {
   fprintf(f, "%02X", b);

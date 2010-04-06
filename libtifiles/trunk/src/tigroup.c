@@ -865,7 +865,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 		g_free(utf8);
 		g_free(gfe);
 
-		f = gfopen(fname, "wb");
+		f = g_fopen(fname, "wb");
 		if(f == NULL)
 		{
 			err = ERR_FILE_OPEN;
@@ -963,7 +963,7 @@ static int zip_write(zipFile *zf, const char *fname, int comp_level)
 		void* buf=NULL;
 
 		// missing tmp file !
-		f = gfopen(fname, "rb");
+		f = g_fopen(fname, "rb");
 		if(f == NULL)
 		{
 		  printf("error in opening tmp file %s\n", fname);

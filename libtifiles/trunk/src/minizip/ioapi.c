@@ -6,14 +6,12 @@
    Copyright (C) 1998-2005 Gilles Vollant
 */
 
-#include <stdio.h>
+#include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "zlib.h"
 #include "ioapi.h"
-
-#include <glib/gstdio.h>
 
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
@@ -64,8 +62,6 @@ int ZCALLBACK ferror_file_func OF((
    voidpf opaque,
    voidpf stream));
 
-extern FILE* gfopen (const char *filename, const char *mode);
-
 voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
    voidpf opaque;
    const char* filename;
@@ -83,7 +79,7 @@ voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
         mode_fopen = "wb";
 
     if ((filename!=NULL) && (mode_fopen != NULL))
-        file = gfopen(filename, mode_fopen);
+        file = g_fopen(filename, mode_fopen);
     return file;
 }
 
