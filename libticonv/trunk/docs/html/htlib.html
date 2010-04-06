@@ -23,7 +23,9 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
   You will find in the <i>test</i> folder of the libary source archive a
 test/example  program which uses this library.<br>
   Below is listed a light version of this program to make it clearer:
-<pre>#include &lt;glib.h&gt;
+<pre>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;glib.h&gt;
 #include &lt;ticonv.h&gt;
 
 int main(int argc, char **argv)
@@ -37,7 +39,9 @@ int main(int argc, char **argv)
 }</pre>
 That's all !<br><br>
 <strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
-<pre>gcc -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lglib-2.0 -lticonv</pre>
+<pre>gcc -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -Os -g -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lglib-2.0 -lticonv</pre>
+or better
+<pre>gcc -Os -g -Wall -W `pkg-config --cflags --libs ticonv` ticonv.c -o ticonv</pre>
 <h3><a href="index.html">Return to the main index</a> </h3>
 </body>
 </html>

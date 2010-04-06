@@ -3,10 +3,10 @@ dnl $Id$
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticables2, 1.3.0, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticables2, 1.3.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.3.0"
+VERSION="1.3.1"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -16,7 +16,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-LT_CURRENT=2
+LT_CURRENT=3
 LT_REVISION=0
 LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
@@ -68,10 +68,10 @@ AC_SUBST(GLIB_LIBS)
 # USB cable support
 AC_ARG_ENABLE(libusb,
   AC_HELP_STRING([--disable-libusb], [disable USB support]),
-  [use_libusb=$enableval], [use_libusb=yes])
+  [cab_cv_use_libusb=$enableval], [cab_cv_use_libusb=yes])
 AC_CACHE_CHECK([whether to disable USB],
-  [use_libusb], [use_libusb=no])
-if test x$use_libusb = xyes; then
+  [cab_cv_use_libusb], [cab_cv_use_libusb=no])
+if test x$cab_cv_use_libusb = xyes; then
   PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.10)
   AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
 else
@@ -196,10 +196,10 @@ esac
 # Logging
 AC_ARG_ENABLE(logging,
   AC_HELP_STRING([--enable-logging], [enable logging]),
-  [enable_logging=$enableval], [])
+  [cab_cv_enable_logging=$enableval], [])
 AC_CACHE_CHECK([whether to enable logging],
-  [enable_logging], [enable_logging=no])
-if test x$enable_logging = xyes; then
+  [cab_cv_enable_logging], [cab_cv_enable_logging=no])
+if test x$cab_cv_enable_logging = xyes; then
   AC_DEFINE(ENABLE_LOGGING, 1, [Define to 1 to enable logging.])
 fi
 
@@ -208,7 +208,7 @@ AC_OUTPUT
 
 echo "Now, you can type 'make' and 'make install'."
 
-if test x$enable_logging = xyes; then
+if test x$cab_cv_enable_logging = xyes; then
  echo ""
  echo "Logging has been enabled. Log files are generated in a user's"
  echo "home directory."

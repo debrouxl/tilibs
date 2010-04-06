@@ -19,10 +19,13 @@ CODE {FONT-FAMILY: Courier New; FONT-SIZE: 9pt}
 <pre>&nbsp;<em>&nbsp;</em></pre>
 You will find in the <i>test</i> folder of the library source archive
 a test/example program which uses this library.<br>
-Below is listed a light version (most error management has been removed and
+Below is a light version (most error management has been removed and
 update functions are set to void) of this program to make it clearer:<br>
 <br>
-<pre>#include &lt;ticables.h&gt;
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;glib.h&gt;
+#include &lt;ticables.h&gt;
 #include &lt;tifiles.h&gt;
 #include &lt;ticalcs.h&gt;
       
@@ -33,8 +36,7 @@ static void print_lc_error(int errnum)
   ticables_error_get(errnum, &amp;msg);
   fprintf(stderr, "Link cable error (code %i)...\n&lt;&lt;%s&gt;&gt;\n", errnum, msg);
 
-  free(msg);
-
+  g_free(msg);
 }
 
 int main(int argc, char **argv)
@@ -76,7 +78,9 @@ int main(int argc, char **argv)
 }</pre>
 That's all !<br><br>
 <strong>NOTE</strong>: for this example to work, you probably have to add compiler options related to the include path and library path, e.g.
-<pre>gcc -I/usr/include/tilp2 -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lticalcs2</pre>
+<pre>gcc -I/usr/include/tilp2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -Os -g -Wall -W &lt;...&gt;.c -o &lt;...&gt; -lglib-2.0 -lticalcs2</pre>
+or better
+<pre>gcc -Os -g -Wall -W `pkg-config --cflags --libs ticalcs2` ticalcs.c -o ticalcs</pre>
 <h3><a href="index.html">Return to the main index</a> </h3>
 </body>
 </html>

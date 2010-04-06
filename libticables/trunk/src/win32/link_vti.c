@@ -110,9 +110,9 @@ static int vti_open(CableHandle *h)
 	vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
   
     /* Get the current DLL handle */
-    Handle = GetModuleHandle("ticables2.dll");
+    Handle = GetModuleHandle("libticables2.dll");
 	if(!Handle)
-	  Handle = GetModuleHandle("libticables2-2.dll");
+	  Handle = GetModuleHandle("libticables2-3.dll");
   
     if (!Handle) 
     {

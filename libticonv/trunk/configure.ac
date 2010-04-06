@@ -3,10 +3,10 @@ dnl $Id: configure.ac 1798 2006-02-03 08:27:54Z roms $
 
 # Init.
 AC_PREREQ(2.57)
-AC_INIT(libticonv, 1.1.0, [tilp-users@lists.sourceforge.net])
+AC_INIT(libticonv, 1.1.1, [tilp-users@lists.sourceforge.net])
 
 dnl Release versioning info
-VERSION="1.1.0"
+VERSION="1.1.1"
 AC_SUBST(VERSION)
 
 dnl Library version.
@@ -16,7 +16,7 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-LT_CURRENT=3
+LT_CURRENT=4
 LT_REVISION=4
 LT_AGE=0
 LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
@@ -159,12 +159,6 @@ AC_ARG_ENABLE(iconv,
   [cab_cv_enable_iconv=$enableval], [])
 AC_CACHE_CHECK([whether to enable experimental iconv interface],
   [cab_cv_enable_iconv], [cab_cv_enable_iconv=no])
-#if test x$cab_cv_enable_logging = xyes; then
-#  use_iconv='yes'
-#else
-#  use_iconv=''
-#fi
-#AM_CONDITIONAL(USE_ICONV, test "$use_iconv")
 AM_CONDITIONAL(USE_ICONV, test x$cab_cv_enable_iconv = xyes)
 
 # Output.
