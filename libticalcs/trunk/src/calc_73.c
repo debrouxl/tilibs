@@ -715,7 +715,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		// but when the program is running, no ACK is sent. Therefore, hit the Enter key
 		// without requesting an ACK.
 		TRYF(ti73_send_KEY(keys[i]));
-		TRYF(ti73_recv_ACK(&keys[i])); // when the key is received
+		TRYF(ti73_recv_ACK(NULL)); // when the key is received
 		PAUSE(200);
 	}
 	else

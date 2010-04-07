@@ -376,7 +376,7 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 	else if(pkt->type != VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
-	if(((pkt->data[j=0] << 8) | pkt->data[j=1]) != nparams)
+	if(((pkt->data[0] << 8) | pkt->data[1]) != nparams)
 		return ERR_INVALID_PACKET;
 
 	for(i = 0, j = 2; i < nparams; i++)
