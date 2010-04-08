@@ -736,42 +736,68 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, 
 					uint8_t action, const char *args, uint16_t code)
 {
-	VirtualPacket* pkt;
+	VirtualPacket* pkt = NULL;
 	int pks;
 	int j = 0;
 
-	pks = 3;
-	if(args) pks += strlen(args); else pks += 2;
-	if(strlen(folder)) pks += strlen(folder)+1;
-	if(strlen(name)) pks += strlen(name)+1;
-	pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
-
-	pkt->data[j++] = strlen(folder);
-	if(strlen(folder))
-	{		
-		memcpy(pkt->data + j, folder, strlen(folder)+1);
-		j += strlen(folder)+1;
-	}
-
-	pkt->data[j++] = strlen(name);
-	if(strlen(name))
-	{		
-		memcpy(pkt->data + j, name, strlen(name)+1);
-		j += strlen(name)+1;
-	}
-	
-	pkt->data[j++] = action;
-
-	if(action != EID_KEY && args != NULL)
-		memcpy(pkt->data + j, args, strlen(args));
-	else if(action == EID_KEY || args == NULL)
+	if(h->model == CALC_TI89T_USB)
 	{
-		if(h->model == CALC_TI89T_USB)
+		pks = 3;
+		if(args) pks += strlen(args); else pks += 2;
+		if(strlen(folder)) pks += strlen(folder)+1;
+		if(strlen(name)) pks += strlen(name)+1;
+		pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
+
+		pkt->data[j++] = strlen(folder);
+		if(strlen(folder))
+		{
+			memcpy(pkt->data + j, folder, strlen(folder)+1);
+			j += strlen(folder)+1;
+		}
+
+		pkt->data[j++] = strlen(name);
+		if(strlen(name))
+		{		
+			memcpy(pkt->data + j, name, strlen(name)+1);
+			j += strlen(name)+1;
+		}
+		
+		pkt->data[j++] = action;
+
+		if(action != EID_KEY && args != NULL)
+		{
+			memcpy(pkt->data + j, args, strlen(args));
+		}
+		else if(action == EID_KEY || args == NULL)
 		{
 			pkt->data[j++] = MSB(code);
 			pkt->data[j++] = LSB(code);
 		}
-		else if(h->model == CALC_TI84P_USB)
+	}
+	else if(h->model == CALC_TI84P_USB)
+	{
+		pks = 3;
+		if(args) pks += strlen(args); else pks += 2;
+		if(strlen(name)) pks += strlen(name);
+		pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
+
+		// MSB first (like other commands anyway).
+		// Otherwise, a "EE 00 00 0D" packet is returned.
+		pkt->data[j++] = MSB(strlen(name));
+		pkt->data[j++] = LSB(strlen(name));
+		if(strlen(name))
+		{
+			memcpy(pkt->data + j, name, strlen(name));
+			j += strlen(name);
+		}
+		
+		pkt->data[j++] = action;
+
+		if(action != EID_KEY && args != NULL)
+		{
+			memcpy(pkt->data + j, args, strlen(args));
+		}
+		else if(action == EID_KEY || args == NULL)
 		{
 			pkt->data[j++] = LSB(code);
 			pkt->data[j++] = MSB(code);
@@ -781,10 +807,14 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 	TRYF(dusb_send_data(h, pkt));
 
 	dusb_vtl_pkt_del(pkt);
-	if(args)
-		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder, name, args);
-	else
+	if (action == EID_KEY)
+	{
 		ticalcs_info("   action=%i, keycode=%04x", action, code);
+	}
+	else
+	{
+		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder ? folder : "NULL", name ? name : "NULL", args ? args : "NULL");
+	}
 
 	return 0;
 }
@@ -822,7 +852,10 @@ int cmd_r_data_ack(CalcHandle *h)
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_DATA_ACK)
+	{
+		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", VPKT_DATA_ACK, pkt->type);
 		return ERR_INVALID_PACKET;
+	}
 
 	dusb_vtl_pkt_del(pkt);
 
@@ -840,7 +873,10 @@ int cmd_r_delay_ack(CalcHandle *h)
 	if(pkt->type == VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_DELAY_ACK)
+	{
+		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", VPKT_DELAY_ACK, pkt->type);
 		return ERR_INVALID_PACKET;
+	}
 
 	PAUSE(100);
 

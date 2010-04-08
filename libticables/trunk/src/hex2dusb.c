@@ -74,7 +74,7 @@ static const Opcode opcodes[] =
 	{ 0x000D, "Variable Contents" },
 	{ 0x000e, "Parameter Set"},
 	{ 0x0010, "Delete Variable"}, 
-	{ 0x0011, "Unknown"}, 
+	{ 0x0011, "Remote Control"}, 
 	{ 0x0012, "Acknowledgement of Mode Setting"}, 
 	{ 0xaa00, "Acknowledgement of Data"}, 
 	{ 0xbb00, "Acknowledgement of Parameter Request"},	

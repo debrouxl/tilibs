@@ -79,7 +79,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	{
 	case TI84p_ASM:  action = EID_ASM; break;
 	case TI84p_APPL: action = EID_APP; break;
-	default:		 action = EID_PRGM; break;
+	default:         action = EID_PRGM; break;
 	}
 
 	TRYF(cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
@@ -103,7 +103,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
-	
+
 	*bitmap = (uint8_t *)g_malloc(TI84P_COLS * TI84P_ROWS / 8);
 	if(*bitmap == NULL) 
 		return ERR_MALLOC;
@@ -120,7 +120,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	TreeInfo *ti;
 	int err;
 	CalcAttr **attr;
-	GNode *folder, *root;	
+	GNode *folder, *root;
 	char fldname[40], varname[40];
 	char *utf8;
 
@@ -285,17 +285,17 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
-    content->num_entries = 1;
+	content->num_entries = 1;
 
-    content->entries = tifiles_ve_create_array(1);	
-    ve = content->entries[0] = tifiles_ve_create();
-    memcpy(ve, vr, sizeof(VarEntry));
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
+	memcpy(ve, vr, sizeof(VarEntry));
 
 	ve->size = GINT32_FROM_BE(*((uint32_t *)(attrs[2]->data)));
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
-	
-	g_free(data);	
+
+	g_free(data);
 	ca_del_array(naids, attrs);
 	return 0;
 }
@@ -344,7 +344,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		FlashPage *fp = ptr->pages[i];
 
 		printf("page #%i: %04x %02x %02x %04x\n", i,
-			fp->addr, fp->page, fp->flag, fp->size);		
+			fp->addr, fp->page, fp->flag, fp->size);
 	}
 	printf("data length: %08x\n", ptr->data_length);
 
@@ -447,7 +447,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		fp->addr = data_addr;
 		fp->page = data_page++;
 		fp->flag = 0x80;
-		fp->size = FLASH_PAGE_SIZE;			
+		fp->size = FLASH_PAGE_SIZE;
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, FLASH_PAGE_SIZE);
 
@@ -460,7 +460,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		fp->addr = data_addr;
 		fp->page = data_page++;
 		fp->flag = 0x80;
-		fp->size = r;			
+		fp->size = r;
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, data + FLASH_PAGE_SIZE*page, r);
 
@@ -500,7 +500,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		FlashPage *fp = ptr->pages[i];
 
 		printf("page #%i: %04x %02x %02x %04x\n", i,
-			fp->addr, fp->page, fp->flag, fp->size);		
+			fp->addr, fp->page, fp->flag, fp->size);
 		//tifiles_hexdump(fp->data, 16);
 	}
 	printf("data length = %08x %i\n", ptr->data_length, ptr->data_length);
@@ -636,28 +636,34 @@ static int		dump_rom_1	(CalcHandle* handle)
 }
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
+#if 0
 	int i;
 	static const uint16_t keys[] = { 
 		0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
 		0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
 		0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
-		0x86, 0x05 };             /* ), Enter */
+		0x86 };                   /* ) */
 
 	// Launch program by remote control
 	PAUSE(200);
-	for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
+	for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
 	{
 		TRYF(send_key(handle, keys[i]));
 		PAUSE(100);
 	}
 
-	// This fixes a 100% reproducable timeout: send_key normally requests an ACK,
-	// but when the program is running, no ACK is sent. Therefore, hit the Enter key
-	// without requesting an ACK.
+	// This fixes a 100% reproducible timeout: send_key normally requests a data ACK,
+	// but when the program is running, no data ACK is sent. Therefore, hit the Enter
+	// key without requesting a data ACK, only the initial delay ACK.
 	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, 0x05));
 	TRYF(cmd_r_delay_ack(handle));
-	PAUSE(200);
-
+	PAUSE(400);
+#endif
+#if 1
+	TRYF(cmd_s_execute(handle, NULL, "ROMDUMP", EID_PRGM, NULL, 0));
+	TRYF(cmd_r_data_ack(handle));
+	PAUSE(400);
+#endif
 	// Get dump
 	TRYF(rd_dump(handle, filename));
 
@@ -688,23 +694,23 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 	cur.tm_year = clock->year - 1900;
 	cur.tm_mon = clock->month - 1;
-	cur.tm_mday = clock->day;	
+	cur.tm_mday = clock->day;
 	cur.tm_hour = clock->hours;
 	cur.tm_min = clock->minutes;
 	cur.tm_sec = clock->seconds;
 	cur.tm_isdst = 1;
 	c = mktime(&cur);
-	
+
 	calc_time = (uint32_t)difftime(c, r);
 
-    g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
-    update_label();
+	g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+	update_label();
 
 	param = cp_new(PID_CLK_SEC, 4);
 	param->data[0] = MSB(MSW(calc_time));
-    param->data[1] = LSB(MSW(calc_time));
-    param->data[2] = MSB(LSW(calc_time));
-    param->data[3] = LSB(LSW(calc_time));
+	param->data[1] = LSB(MSW(calc_time));
+	param->data[2] = MSB(LSW(calc_time));
+	param->data[3] = LSB(LSW(calc_time));
 	TRYF(cmd_s_param_set(handle, param));
 	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
@@ -723,7 +729,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 	param = cp_new(PID_CLK_ON, 1);
 	param->data[0] = clock->state;
-	TRYF(cmd_s_param_set(handle, param));	
+	TRYF(cmd_s_param_set(handle, param));
 	TRYF(cmd_r_data_ack(handle));
 	cp_del(param);
 
@@ -742,7 +748,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 
 	// get raw clock
 	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
-    update_label();
+	update_label();
 
 	params = cp_new_array(size);
 	TRYF(cmd_s_param_request(handle, size, pids));
@@ -777,8 +783,8 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	clock->minutes = cur->tm_min;
 	clock->seconds = cur->tm_sec;
 
-    clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
-    clock->time_format = params[2]->data[0] ? 24 : 12;
+	clock->date_format = params[1]->data[0] == 0 ? 3 : params[1]->data[0];
+	clock->time_format = params[2]->data[0] ? 24 : 12;
 	clock->state = params[3]->data[0];
 
 	cp_del_array(1, params);
@@ -800,7 +806,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr = ca_new_array(size);
 	attr[0] = ca_new(0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
-	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;	
+	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
 	attr[1] = ca_new(0x0013, 1);
 	attr[1]->data[0] = vr->attr == ATTRB_ARCHIVED ? 1 : 0;
 
@@ -831,7 +837,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	int i = 0;
 
 	g_snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
-    update_label();
+	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
 	params = cp_new_array(size);

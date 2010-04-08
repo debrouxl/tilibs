@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-03-22 19:46+0100\n"
+"POT-Creation-Date: 2010-04-08 20:26+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -45,16 +45,16 @@ msgstr "Taille FLASH: %i octets."
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_73.c:789 src/calc_84p.c:700 src/calc_89.c:810 src/calc_89t.c:606
+#: src/calc_73.c:789 src/calc_84p.c:706 src/calc_89.c:810 src/calc_89t.c:626
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:818 src/calc_84p.c:744 src/calc_89.c:835 src/calc_89t.c:650
+#: src/calc_73.c:818 src/calc_84p.c:750 src/calc_89.c:835 src/calc_89t.c:670
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:796 src/calc_89.c:872
-#: src/calc_89t.c:704 src/calc_92.c:546
+#: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
+#: src/calc_89t.c:724 src/calc_92.c:546
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -108,11 +108,11 @@ msgstr "Attente de variable(s)..."
 msgid "Waiting for execing of program..."
 msgstr "En attente de l'exécution du programme..."
 
-#: src/calc_84p.c:833 src/calc_89t.c:789
+#: src/calc_84p.c:839 src/calc_89t.c:809
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:945
+#: src/calc_84p.c:951
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
@@ -131,7 +131,7 @@ msgstr "Listage du dossier dans %8s..."
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:891 src/calc_89t.c:733 src/calc_92.c:583
+#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -140,7 +140,7 @@ msgstr "Création de %s..."
 msgid "V200 Portable Learning Tool"
 msgstr "V200 Portable Learning Tool"
 
-#: src/calc_89t.c:902
+#: src/calc_89t.c:922
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 
@@ -172,99 +172,99 @@ msgstr "Vérification du status:"
 msgid "Sending key %04x:"
 msgstr "Envoi de la touche %04x:"
 
-#: src/calc_xx.c:152
+#: src/calc_xx.c:151
 #, c-format
 msgid "Executing %s/%s with %s:"
 msgstr "Execution de %s/%s avec %s:"
 
-#: src/calc_xx.c:189
+#: src/calc_xx.c:188
 msgid "Requesting screenshot:"
 msgstr "Obtention capture écran:"
 
-#: src/calc_xx.c:227
+#: src/calc_xx.c:226
 msgid "Requesting folder & vars & apps listing:"
 msgstr "Obtention des dossiers & variables & applications:"
 
-#: src/calc_xx.c:271
+#: src/calc_xx.c:270
 msgid "Requesting RAM & FLASH free"
 msgstr "Obtention de la RAM & FLASH libres"
 
-#: src/calc_xx.c:306
+#: src/calc_xx.c:305
 msgid "Requesting backup:"
 msgstr "Réception sauvegarde:"
 
-#: src/calc_xx.c:341
+#: src/calc_xx.c:340
 msgid "Sending backup:"
 msgstr "Envoi sauvegarde:"
 
-#: src/calc_xx.c:378
+#: src/calc_xx.c:377
 msgid "Sending one or more variables:"
 msgstr "Envoi de variable(s):"
 
-#: src/calc_xx.c:416
+#: src/calc_xx.c:415
 #, c-format
 msgid "Requesting variable '%s':"
 msgstr "Réception de la variable '%s':"
 
-#: src/calc_xx.c:453
+#: src/calc_xx.c:452
 msgid "Sending variable (non-silent mode):"
 msgstr "Envoi de variable(s):"
 
-#: src/calc_xx.c:491
+#: src/calc_xx.c:490
 msgid "Receiving variable (non-silent mode):"
 msgstr "Réception de variable(s):"
 
-#: src/calc_xx.c:526
+#: src/calc_xx.c:525
 msgid "Sending FLASH application:"
 msgstr "Envoi d'une application FLASH:"
 
-#: src/calc_xx.c:563
+#: src/calc_xx.c:562
 msgid "Requesting receiving of FLASH application:"
 msgstr "Réception d'une application FLASH:"
 
-#: src/calc_xx.c:598
+#: src/calc_xx.c:597
 msgid "Sending FLASH os:"
 msgstr "Envoi d'un OS:"
 
-#: src/calc_xx.c:633
+#: src/calc_xx.c:632
 msgid "Requesting ID-LIST:"
 msgstr "Demande d'ID-LIST:"
 
-#: src/calc_xx.c:667
+#: src/calc_xx.c:666
 msgid "Sending ROM dumper:"
 msgstr "Envoi de l'extracteur de ROM:"
 
-#: src/calc_xx.c:704
+#: src/calc_xx.c:703
 msgid "Dumping ROM:"
 msgstr "Extraction ROM:"
 
-#: src/calc_xx.c:758
+#: src/calc_xx.c:757
 msgid "Setting clock:"
 msgstr "Mise à jour de l'horloge:"
 
-#: src/calc_xx.c:793
+#: src/calc_xx.c:792
 msgid "Getting clock:"
 msgstr "Réception de l'horloge:"
 
-#: src/calc_xx.c:828
+#: src/calc_xx.c:827
 msgid "Sending certificate:"
 msgstr "Envoi du certificat:"
 
-#: src/calc_xx.c:863
+#: src/calc_xx.c:862
 msgid "Requesting receiving of certificate:"
 msgstr "Réception du certificat:"
 
-#: src/calc_xx.c:1179
+#: src/calc_xx.c:1178
 #, c-format
 msgid "Creating folder '%s':"
 msgstr "Création du dossier '%s':"
 
-#: src/calc_xx.c:1213
+#: src/calc_xx.c:1212
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr "Suppression variable '%s':"
 
-#: src/calc_xx.c:1238
+#: src/calc_xx.c:1237
 msgid "Requesting version infos:"
 msgstr "Demande de version:"
 
