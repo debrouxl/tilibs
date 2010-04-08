@@ -2,6 +2,18 @@ SubVersion: $Id$
 	
 Log:
 
+- 08/04/2010, version 1.1.5: debrouxl
+	- TI-8x (Z80) ROM dumper source code relicensed to GPL, with Benjamin Moody's authorization.
+	- TI-68k: when receiving a variable, strip the folder name if any.
+	- added several missing "break;" in a switch() construct (calc_89.c).
+	  Reported by Patrick Pélissier.
+	- added DirectLink USB ROM dumper for 84+ contributed by Brandon Wilson.
+	- major fix: make Nspire connection reliable, at the expense of latency.
+	- fixed cmd_s_execute (DUSB command) for 84+, perform more testing for both 89T and 84+.
+	- renamed CMD_FM_UNKNOWN to CMD_FM_ATTRIBUTES.
+	- updated translations.
+	- updated to Autoconf 2.65.
+
 - 05/05/2009, version 1.1.4: roms
 	- added new DBUS error code (invalid FLASH app signature)
 

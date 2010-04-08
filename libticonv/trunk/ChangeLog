@@ -2,6 +2,11 @@ SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
 
 Log:
 
+- 08/04/2010, version 1.1.1: debrouxl
+	- fixed example.
+	- minor documentation updates.
+	- updated to Autoconf 2.65.
+
 - 04/10/2007, version 1.1.0: roms
 	- implemented NSpire support (NSpire encoding seems to be UTF-8)
 

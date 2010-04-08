@@ -2,6 +2,15 @@ SubVersion: $Id$
 
 Log:
 
+- 08/04/2010, version 1.1.3: debrouxl
+	- added a missing output value initialization, which can cause failure to send some 83+ FlashApps (bug #2792446).
+	  Patch by Benjamin Moody.
+	- downgraded "error" (which abruptly aborts the program) to "critical".
+	- major fixes for TI-83+ and TI-89 family file handling functions (groups, checksums).
+	- removed the local copy of an older version of g_fopen, it isn't necessary anymore.
+	- updated translations.
+	- updated to Autoconf 2.65.
+
 - 29/05/2009, version 1.1.2: roms
 	- fixed possible buffer overflow
 	
