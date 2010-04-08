@@ -206,7 +206,7 @@ int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 	ticalcs_info("  unknown directory list command in <%s>:", name);
 
 	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
-	pkt->cmd = CMD_FM_UNKWOWN;
+	pkt->cmd = CMD_FM_ATTRIBUTES;
 
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
@@ -225,7 +225,7 @@ int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t 
 
 	TRYF(nsp_recv_data(h, pkt));
 
-	if(pkt->cmd != CMD_FM_UNKWOWN)
+	if(pkt->cmd != CMD_FM_ATTRIBUTES)
 		return ERR_CALC_ERROR3 + err_code(pkt->data[0]);
 
 	if(size)

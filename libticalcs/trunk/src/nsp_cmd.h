@@ -58,7 +58,7 @@
 #define CMD_FM_DIRLIST_NEXT	0x0e
 #define CMD_FM_DIRLIST_DONE	0x0f
 #define CMD_FM_DIRLIST_ENT	0x10
-#define CMD_FM_UNKWOWN		0x20
+#define CMD_FM_ATTRIBUTES	0x20
 
 // OS Installation commands
 #define CMD_OS_INSTALL		0x03
