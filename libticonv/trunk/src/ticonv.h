@@ -49,7 +49,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCONV_VERSION "1.1.1"
+# define LIBCONV_VERSION "1.1.2"
 #else
 # define LIBCONV_VERSION VERSION
 #endif
