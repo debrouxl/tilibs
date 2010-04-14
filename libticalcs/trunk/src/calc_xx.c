@@ -242,9 +242,10 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle,
 }
 
 /**
- * ticalcs_calc_get_dirlist:
+ * ticalcs_calc_get_memfree:
  * @handle: a previously allocated handle
- * @memory: memory available
+ * @ram: RAM memory available
+ * @flash: Flash memory available
  *
  * Request free memory. Do a dirlist to update value.
  *
@@ -467,7 +468,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Receive one or more variable (non-silent mode).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, 
 											 FileContent* content, VarEntry** var)
@@ -503,7 +504,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Send a FLASH app.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* content)
 {
@@ -539,7 +540,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
  *
  * Request receiving of a FLASH app.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, 
 											VarRequest* var)
@@ -575,7 +576,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* con
  *
  * Send a FLASH os.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* content)
 {
@@ -610,7 +611,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
  *
  * Request ID-LIST of hand-held.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlist)
 {
@@ -644,7 +645,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
  *
  * Send a ROM dumping program to hand-held.
  *
- * Return value: 0 if no error, an error code otherwise.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 {
@@ -680,7 +681,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
  *
  * Start dumping (if possible).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, 
 										  const char *filename)
@@ -717,7 +718,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
  *
  * Deprecated: send a ROM dumping program to hand-held and start dumping (if possible).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
 										  const char *filename)
@@ -735,7 +736,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size
  *
  * Set date & time of hand-held (if AMS >= 2.09).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
 {
@@ -770,7 +771,7 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock
  *
  * Get date & time of hand-held (if AMS >= 2.09).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
 {
@@ -805,7 +806,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock
  *
  * Send a certificate.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* content)
 {
@@ -840,7 +841,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
  *
  * Request receiving of a FLASH app.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* content)
 {
@@ -1063,7 +1064,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
  *
  * Receive one or more variable (non-silent mode).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
 											 const char* filename, VarEntry** vr)
@@ -1094,7 +1095,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode
  *
  * Send a FLASH app or os.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* filename)
 {
@@ -1125,7 +1126,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
  *
  * Request receiving of a FLASH app.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, 
 											VarRequest* vr)
@@ -1190,7 +1191,7 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
  *
  * Request deleting of a variable (if possible ??).
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 {
@@ -1217,6 +1218,15 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 	return ret;
 }
 
+/**
+ * ticalcs_calc_get_version:
+ * @handle: a previously allocated handle
+ * @infos: where to store version information
+ *
+ * Request version info.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
 TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
 {
 	const CalcFncts *calc;
@@ -1249,7 +1259,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
  *
  * Send a certificate.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 {
@@ -1280,7 +1290,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
  *
  * Request certificate. Depending on extension, saves it as *.9Xq or *.cer.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 {
@@ -1345,7 +1355,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
  *
  * Send a FLASH app.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
 {
@@ -1376,7 +1386,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filen
  *
  * Send a TiGroup file.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
@@ -1407,7 +1417,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
  *
  * Receive a TiGroup file.
  *
- * Return value: 0 if ready else ERR_NOT_READY.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
