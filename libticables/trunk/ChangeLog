@@ -2,6 +2,9 @@ SubVersion: $Id$
 
 Log:
 
+- xx/xx/2010, version 1.3.2: debrouxl
+	- change encoding in .rc file.
+
 - 08/04/2010, version 1.3.1: debrouxl
 	- downgraded "error" (which abruptly aborts the program) to "critical"
 	- now releasing parallel port before closing it

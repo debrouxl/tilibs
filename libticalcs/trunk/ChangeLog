@@ -2,6 +2,9 @@ SubVersion: $Id$
 	
 Log:
 
+- xx/xx/2010, version 1.1.6: debrouxl
+	- change encoding in .rc file.
+
 - 08/04/2010, version 1.1.5: debrouxl
 	- TI-8x (Z80) ROM dumper source code relicensed to GPL, with Benjamin Moody's authorization.
 	- TI-68k: when receiving a variable, strip the folder name if any.
