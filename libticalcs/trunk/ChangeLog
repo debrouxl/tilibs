@@ -5,6 +5,8 @@ Log:
 - xx/xx/2010, version 1.1.6: debrouxl
 	- change encoding in .rc file.
 	- update the documentation of a number of functions in calc_xx.c.
+	- fix ticalcs_dirlist_ve_exist for 73, 82, 83, 83+ and 84+: match types (in addition to
+	  names) for those models (reported by Jon Sturm).
 
 - 08/04/2010, version 1.1.5: debrouxl
 	- TI-8x (Z80) ROM dumper source code relicensed to GPL, with Benjamin Moody's authorization.

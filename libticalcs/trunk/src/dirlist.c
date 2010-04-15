@@ -221,8 +221,12 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 			GNode *child = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
-			if (!strcmp(ve->name, s->name))
+			if (   !strcmp(ve->name, s->name)
+			    && (   !(info->model >= CALC_TI73 && info->model <= CALC_TI84P)
+			        || (ve->type == s->type)))
+			{
 				return ve;
+			}
 		}
 	}
 
