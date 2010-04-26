@@ -554,6 +554,29 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
+	char *utf8;
+	char *path;
+	int err;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
+	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
+	g_free(utf8);
+	update_label();
+
+	path = g_strconcat("/", vr->folder, NULL);
+
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	err = cmd_s_new_folder(handle, path);
+	g_free(path);
+	if (err)
+	{
+		return err;
+	}
+	TRYF(cmd_r_new_folder(handle));
+
+	TRYF(nsp_session_close(handle));
+
 	return 0;
 }
 
@@ -670,7 +693,7 @@ const CalcFncts calc_nsp =
 	"Nspire handheld",
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
-	OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	OPS_NEWFLD | OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,

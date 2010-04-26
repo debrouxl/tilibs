@@ -38,14 +38,14 @@
 /////////////----------------
 
 static uint8_t usb_errors[] = { 
-	0x04, 0x0a, 0x0f, 0x10, 0x11, 0x14, 0x15,
+	0x04, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x14, 0x15,
 };
 
 static int err_code(uint8_t code)
 {
 	int i;
 
-	for(i = 0; i < sizeof(usb_errors) / sizeof(uint16_t); i++)
+	for(i = 0; i < sizeof(usb_errors) / sizeof(uint8_t); i++)
 		if(usb_errors[i] == code)
 			return i+1;
 
@@ -427,6 +427,52 @@ int cmd_s_del_file(CalcHandle *h, const char *name)
 }
 
 int cmd_r_del_file(CalcHandle *h)
+{
+	return cmd_r_status(h, NULL);
+}
+
+int cmd_s_new_folder(CalcHandle *h, const char *name)
+{
+	VirtualPacket* pkt;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
+
+	ticalcs_info("  creating folder:");
+
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_NEW_FOLDER;
+	pkt->data[0] = 0x03;
+	put_str(pkt->data + 1, name);
+
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_new_folder(CalcHandle *h)
+{
+	return cmd_r_status(h, NULL);
+}
+
+int cmd_s_del_folder(CalcHandle *h, const char *name)
+{
+	VirtualPacket* pkt;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
+
+	ticalcs_info("  creating folder:");
+
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_DEL_FOLDER;
+	pkt->data[0] = 0x03;
+	put_str(pkt->data + 1, name);
+
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_del_folder(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
