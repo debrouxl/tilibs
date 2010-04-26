@@ -280,7 +280,8 @@ static int dump_rom(CalcHandle *h)
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_dump_rom(h, 0, filename));
+	TRYF(ticalcs_calc_dump_rom_1(h));
+	TRYF(ticalcs_calc_dump_rom_2(h, 0, filename));
 	return 0;
 }
 

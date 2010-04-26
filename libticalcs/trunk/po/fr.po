@@ -234,37 +234,37 @@ msgstr "Demande d'ID-LIST:"
 msgid "Sending ROM dumper:"
 msgstr "Envoi de l'extracteur de ROM:"
 
-#: src/calc_xx.c:704
+#: src/calc_xx.c:703
 msgid "Dumping ROM:"
 msgstr "Extraction ROM:"
 
-#: src/calc_xx.c:758
+#: src/calc_xx.c:738
 msgid "Setting clock:"
 msgstr "Mise à jour de l'horloge:"
 
-#: src/calc_xx.c:793
+#: src/calc_xx.c:773
 msgid "Getting clock:"
 msgstr "Réception de l'horloge:"
 
-#: src/calc_xx.c:828
+#: src/calc_xx.c:808
 msgid "Sending certificate:"
 msgstr "Envoi du certificat:"
 
-#: src/calc_xx.c:863
+#: src/calc_xx.c:843
 msgid "Requesting receiving of certificate:"
 msgstr "Réception du certificat:"
 
-#: src/calc_xx.c:1179
+#: src/calc_xx.c:1159
 #, c-format
 msgid "Creating folder '%s':"
 msgstr "Création du dossier '%s':"
 
-#: src/calc_xx.c:1213
+#: src/calc_xx.c:1193
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr "Suppression variable '%s':"
 
-#: src/calc_xx.c:1247
+#: src/calc_xx.c:1227
 msgid "Requesting version infos:"
 msgstr "Demande de version:"
 

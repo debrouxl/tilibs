@@ -683,8 +683,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, 
-										  const char *filename)
+TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	const CalcFncts *calc;
 	int ret = 0;
@@ -708,25 +707,6 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	handle->busy = 0;
 
 	return ret;
-}
-
-/**
- * ticalcs_calc_dump_rom:
- * @handle: a previously allocated handle
- * @size: optional size of dump
- * @filename: where to store the dump
- *
- * Deprecated: send a ROM dumping program to hand-held and start dumping (if possible).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle* handle, CalcDumpSize size, 
-										  const char *filename)
-{
-	TRYC(ticalcs_calc_dump_rom_1(handle));
-	TRYC(ticalcs_calc_dump_rom_2(handle, size, filename));
-
-	return 0;
 }
 
 /**

@@ -760,7 +760,6 @@ typedef struct
   /************************/
   /* Deprecated functions */
   /************************/
-	TILIBS_DEPRECATED TIEXPORT3 int TICALL ticalcs_calc_dump_rom(CalcHandle*, CalcDumpSize, const char *filename) ;
 
 #ifdef __cplusplus
 }
