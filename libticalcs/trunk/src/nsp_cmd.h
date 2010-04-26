@@ -54,6 +54,7 @@
 #define CMD_FM_OK			0x04
 #define CMD_FM_CONTENTS		0x05
 #define CMD_FM_GET_FILE		0x07
+#define CMD_FM_DEL_FILE		0x09
 #define CMD_FM_DIRLIST_INIT	0x0d
 #define CMD_FM_DIRLIST_NEXT	0x0e
 #define CMD_FM_DIRLIST_DONE	0x0f
@@ -99,6 +100,9 @@ int cmd_r_put_file(CalcHandle *h);
 
 int cmd_s_get_file(CalcHandle *h, const char *name);
 int cmd_r_get_file(CalcHandle *h, uint32_t *size);
+
+int cmd_s_del_file(CalcHandle *h, const char *name);
+int cmd_r_del_file(CalcHandle *h);
 
 int cmd_s_file_ok(CalcHandle *h);
 int cmd_r_file_ok(CalcHandle *h);

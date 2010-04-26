@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-14 19:08+0200\n"
+"POT-Creation-Date: 2010-04-25 17:29+0200\n"
 "PO-Revision-Date: 2004-04-14 09:16+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -54,7 +54,7 @@ msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
 #: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
-#: src/calc_89t.c:724 src/calc_92.c:546
+#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:534
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -159,7 +159,7 @@ msgstr "Nom: %s | Type: %i | Attr: %i  | Taille: %08X"
 msgid "Directory listing in <%s>..."
 msgstr "Listage du dossier dans <%s>..."
 
-#: src/calc_nsp.c:659
+#: src/calc_nsp.c:671
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 

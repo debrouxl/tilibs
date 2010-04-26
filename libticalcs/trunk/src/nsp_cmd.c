@@ -408,6 +408,29 @@ int cmd_r_get_file(CalcHandle *h, uint32_t *size)
 	return 0;
 }
 
+int cmd_s_del_file(CalcHandle *h, const char *name)
+{
+	VirtualPacket* pkt;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
+
+	ticalcs_info("  deleting variable:");
+
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_DEL_FILE;
+	pkt->data[0] = 0x01;
+	put_str(pkt->data + 1, name);
+
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_del_file(CalcHandle *h)
+{
+	return cmd_r_status(h, NULL);
+}
+
 int cmd_s_file_ok(CalcHandle *h)
 {
 	VirtualPacket* pkt;

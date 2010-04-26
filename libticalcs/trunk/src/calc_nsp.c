@@ -166,7 +166,7 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 			q += cnt;
 			i += cnt;
 		}
-	}	
+	}
 
 	return dst;
 }
@@ -191,7 +191,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	g_free(data);
 
 	if(*bitmap == NULL) 
-		return ERR_MALLOC;	
+		return ERR_MALLOC;
 
 	return 0;
 }
@@ -212,7 +212,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-    (*vars) = g_node_new(NULL);
+	(*vars) = g_node_new(NULL);
 	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
@@ -290,7 +290,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		
 			ext = tifiles_fext_get(varname);
 			strcpy(ve->folder, folder_name);
-			ve->size = varsize;			
+			ve->size = varsize;
 			ve->type = tifiles_fext2vartype(handle->model, ext);
 			ve->attr = ATTRB_NONE;
 			if(ext) *(ext-1) = '\0';
@@ -314,7 +314,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		TRYF(cmd_s_dir_enum_done(handle));
 		TRYF(cmd_r_dir_enum_done(handle));
-	}	
+	}
 
 	TRYF(nsp_session_close(handle));
 
@@ -340,9 +340,6 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 	g_free(data);
 	TRYF(nsp_session_close(handle));
-	
-	return 0;
-
 
 	return 0;
 }
@@ -359,7 +356,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *ve = content->entries[0];
 		gchar *path;
-		
+
 		if(ve->action == ACT_SKIP)
 			return 0;
 
@@ -413,11 +410,11 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
-    content->num_entries = 1;
+	content->num_entries = 1;
 
-    content->entries = tifiles_ve_create_array(1);	
-    ve = content->entries[0] = tifiles_ve_create();
-    memcpy(ve, vr, sizeof(VarEntry));
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
+	memcpy(ve, vr, sizeof(VarEntry));
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
@@ -509,13 +506,11 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
-
 	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-
 	return 0;
 }
 
@@ -526,22 +521,39 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 
 static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 {
-
-
 	return 0;
 }
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
+	char *utf8;
+	char *path;
+	int err;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
+	g_free(utf8);
+	update_label();
+
+	path = g_strconcat("/", vr->folder, "/", vr->name, ".", tifiles_vartype2fext(handle->model, vr->type), NULL);
+
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	err = cmd_s_del_file(handle, path);
+	g_free(path);
+	if (err)
+	{
+		return err;
+	}
+	TRYF(cmd_r_del_file(handle));
+
+	TRYF(nsp_session_close(handle));
 
 	return 0;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
-
-
-
 	return 0;
 }
 
@@ -631,7 +643,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 	strncpy(infos->product_id, (char*)(data + 84), 28);
-	infos->mask |= INFOS_PRODUCT_ID;	
+	infos->mask |= INFOS_PRODUCT_ID;
 
 	g_free(data);
 	TRYF(nsp_session_close(handle));
@@ -658,7 +670,7 @@ const CalcFncts calc_nsp =
 	"Nspire handheld",
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
-	FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,
