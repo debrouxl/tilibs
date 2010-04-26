@@ -58,10 +58,13 @@ static int err_code(uint8_t code)
 
 static int put_str(uint8_t *dst, const char *src)
 {
-	int i, j;
+	size_t i, j;
+	size_t len = strlen(src);
 
-	for(i = 0; i < (int)strlen(src); i++)
+	for(i = 0; i < len; i++)
+	{
 		dst[i] = src[i];
+	}
 	dst[i++] = '\0';
 
 	if(i < 9)
@@ -70,7 +73,9 @@ static int put_str(uint8_t *dst, const char *src)
 			dst[j] = '\0';
 	}
 	else
+	{
 		j = i;
+	}
 
 	return j;
 }
@@ -201,7 +206,7 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
-	uint8_t len = strlen(name) < 8 ? 8 : strlen(name);
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  unknown directory list command in <%s>:", name);
 
@@ -242,7 +247,7 @@ int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t 
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
-	uint8_t len = strlen(name) < 8 ? 8 : strlen(name);
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
@@ -338,10 +343,11 @@ int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 {
 	VirtualPacket* pkt;
 	int o;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  sending variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(6 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(6 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_PUT_FILE;
 	pkt->data[0] = 0x01;
 	o = put_str(pkt->data + 1, name);
@@ -366,10 +372,11 @@ int cmd_r_put_file(CalcHandle *h)
 int cmd_s_get_file(CalcHandle *h, const char *name)
 {
 	VirtualPacket* pkt;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  requesting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + strlen(name), NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_GET_FILE;
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
