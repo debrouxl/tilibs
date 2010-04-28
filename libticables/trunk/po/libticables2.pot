@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-03-22 19:59+0100\n"
+"POT-Creation-Date: 2010-04-28 11:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -242,41 +242,41 @@ msgstr ""
 msgid "Link cable probing:"
 msgstr ""
 
-#: src/ticables.c:128
+#: src/ticables.c:129
 #, c-format
 msgid "ticables library version %s"
 msgstr ""
 
-#: src/ticables.c:333
-msgid "Link cable handle details:"
-msgstr ""
-
 #: src/ticables.c:334
-#, c-format
-msgid "  model   : %s"
+msgid "Link cable handle details:"
 msgstr ""
 
 #: src/ticables.c:335
 #, c-format
-msgid "  port    : %s"
+msgid "  model   : %s"
 msgstr ""
 
 #: src/ticables.c:336
 #, c-format
-msgid "  timeout : %2.1fs"
+msgid "  port    : %s"
 msgstr ""
 
 #: src/ticables.c:337
 #, c-format
+msgid "  timeout : %2.1fs"
+msgstr ""
+
+#: src/ticables.c:338
+#, c-format
 msgid "  delay   : %i us"
 msgstr ""
 
-#: src/ticables.c:340
+#: src/ticables.c:341
 #, c-format
 msgid "  device  : %s"
 msgstr ""
 
-#: src/ticables.c:341
+#: src/ticables.c:342
 #, c-format
 msgid "  address : 0x%03x"
 msgstr ""

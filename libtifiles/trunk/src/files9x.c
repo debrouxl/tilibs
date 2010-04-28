@@ -257,7 +257,7 @@ static int check_device_type(uint8_t id)
 	static const uint8_t types[] = { 0, DEVICE_TYPE_89, DEVICE_TYPE_92P };
 	int i;
 
-	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 		if(types[i] == id)
 			return i;
 
@@ -269,7 +269,7 @@ static int check_data_type(uint8_t id)
 	static const uint8_t types[] = { 0, TI89_AMS, TI89_APPL, TI89_CERTIF, TI89_LICENSE };
 	int i;
 
-	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 		if(types[i] == id)
 			return i;
 
@@ -478,8 +478,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   for (i = 0; table[i] != NULL; i++) 
   {
     VarEntry *fentry;
-    int j, index = table[i][0];
-    fentry = content->entries[index];
+    int j, idx = table[i][0];
+    fentry = content->entries[idx];
 
     if (content->num_entries > 1)	// single var does not have folder entry
     {
@@ -494,8 +494,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
     for (j = 0; table[i][j] != -1; j++) 
 	{
-      int index = table[i][j];
-      VarEntry *entry = content->entries[index];
+      int idx2 = table[i][j];
+      VarEntry *entry = content->entries[idx2];
 	  uint8_t attr = ATTRB_NONE;
 
       if(fwrite_long(f, offset) < 0) goto tfwr;
@@ -520,8 +520,8 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
     for (j = 0; table[i][j] != -1; j++) 
 	{
-      int index = table[i][j];
-      VarEntry *entry = content->entries[index];
+      int idx = table[i][j];
+      VarEntry *entry = content->entries[idx];
       uint16_t sum;
 
       if(fwrite_long(f, 0) < 0) goto tfwr;

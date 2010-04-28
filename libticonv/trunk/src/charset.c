@@ -654,7 +654,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *ti)
 {
-	return "";
+	return (char *)"";
 }
 
 ///////////// TI82 /////////////
@@ -753,7 +753,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti)
 {
-	return "";
+	return (char *)"";
 }
 
 ///////////// TI83 /////////////
@@ -852,7 +852,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti)
 {
-	return "";
+	return (char *)"";
 }
 
 ///////////// TI83+/84+ /////////////
@@ -1151,7 +1151,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti)
 {
-	return "";
+	return (char *)"";
 }
 
 ///////////// TI86 /////////////
@@ -1250,7 +1250,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned s
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti)
 {
-	return "";
+	return (char *)"";
 }
 
 ///////////// TI84+ USB /////////////

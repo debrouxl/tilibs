@@ -434,31 +434,31 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	switch(model)
 	{
 		case CALC_TI73:
-			if(!strcmp("Window", src) || type == 0x0F)
+			if(!strcmp("Window", src_) || type == 0x0F)
 				return g_strdup("");
-			if(!strcmp("TblSet", src) || type == 0x11)
+			if(!strcmp("TblSet", src_) || type == 0x11)
 				return g_strdup("");
 		break;
 		case CALC_TI83:
 		case CALC_TI83P:
 		case CALC_TI84P:
-			if(!strcmp("Window", src) || type == 0x0F)
+			if(!strcmp("Window", src_) || type == 0x0F)
 				return g_strdup("");
-			if(!strcmp("RclWin", src) || type == 0x10)
+			if(!strcmp("RclWin", src_) || type == 0x10)
 				return g_strdup("");
-			if(!strcmp("TblSet", src) || type == 0x11)
+			if(!strcmp("TblSet", src_) || type == 0x11)
 				return g_strdup("");
 		break;
 		case CALC_TI86:
-			if(!strcmp("Func", src)  || type == 0x17)
+			if(!strcmp("Func", src_)  || type == 0x17)
 				return g_strdup("");
-			if(!strcmp("Pol", src)   || type == 0x18)
+			if(!strcmp("Pol", src_)   || type == 0x18)
 				return g_strdup("");
-			if(!strcmp("Param", src) || type == 0x19)
+			if(!strcmp("Param", src_) || type == 0x19)
 				return g_strdup("");
-			if(!strcmp("DifEq", src) || type == 0x1A)
+			if(!strcmp("DifEq", src_) || type == 0x1A)
 				return g_strdup("");
-			if(!strcmp("ZRCL", src)  || type == 0x1B)
+			if(!strcmp("ZRCL", src_)  || type == 0x1B)
 				return g_strdup("");
 		break;
 		default: 
@@ -471,7 +471,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 		gchar *str = g_malloc0(9);
 			
 		str[0] = 0x5D;
-		strncpy(str+1, src, 7);
+		strncpy(str+1, src_, 7);
 		str[8] = '\0';
 
 		return str;

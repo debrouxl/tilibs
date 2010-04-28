@@ -160,7 +160,7 @@ static int err_code(VirtualPacket *pkt)
 	int i;
 	int code = (pkt->data[0] << 8) | pkt->data[1];
 
-	for(i = 0; i < sizeof(usb_errors) / sizeof(uint16_t); i++)
+	for(i = 0; i < (int)(sizeof(usb_errors) / sizeof(usb_errors[0])); i++)
 		if(usb_errors[i] == code)
 			return i+1;
 

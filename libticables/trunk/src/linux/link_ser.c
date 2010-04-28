@@ -104,7 +104,8 @@ static int ser_reset(CableHandle *h)
 static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
-    int i, j;
+    unsigned int i;
+    uint32_t j;
     tiTIME clk;
     
     for(j = 0; j < len; j++)
@@ -163,7 +164,8 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int ser_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
-    int i, j;
+    unsigned int i;
+    uint32_t j;
     tiTIME clk;
     
     for(j = 0; j < len; j++)

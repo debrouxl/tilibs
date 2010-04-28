@@ -37,67 +37,67 @@
 #define HEX_FILE	"ticables-log.hex"
 
 static char *fn = NULL;
-static FILE *log = NULL;
+static FILE *logfile = NULL;
 
 int log_hex_start(void)
 {
 	fn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
 
-  	log = fopen(fn, "wt");
-  	if (log == NULL) 
+	logfile = fopen(fn, "wt");
+	if (logfile == NULL) 
 	{
-    		ticables_critical("Unable to open %s for logging.\n", fn);
-    		return -1;
-  	}
+		ticables_critical("Unable to open %s for logging.\n", fn);
+		return -1;
+	}
 
-	fprintf(log, "TiCables-2 data logger\n");	// needed by log_dbus.c
-	fprintf(log, "Version %s\n", ticables_version_get());
-	fprintf(log, "\n");
+	fprintf(logfile, "TiCables-2 data logger\n");	// needed by log_dbus.c
+	fprintf(logfile, "Version %s\n", ticables_version_get());
+	fprintf(logfile, "\n");
 
   	return 0;
 }
 
 int log_hex_1(int dir, uint8_t data)
 {
-  	static int array[20];
-  	static int i = 0;
-  	int j;
-  	int c;
+	static int array[20];
+	static int i = 0;
+	int j;
+	int c;
 
-  	if (log == NULL)
-    		return -1;
-  	
+	if (logfile == NULL)
+		return -1;
+	
 	array[i++] = data;
-  	fprintf(log, "%02X ", data);
+	fprintf(logfile, "%02X ", data);
 
-  	if ((i > 1 ) && !(i % 16)) 
+	if ((i > 1 ) && !(i % 16)) 
 	{
-    	fprintf(log, "| ");
-    	for (j = 0; j < 16; j++) 
+		fprintf(logfile, "| ");
+		for (j = 0; j < 16; j++) 
 		{
-      		c = array[j];
-      		if ((c < 32) || (c > 127))
-				fprintf(log, " ");
-      		else
-				fprintf(log, "%c", c);
-    	}
-    	fprintf(log, "\n");
-    	i = 0;
-  	}
+			c = array[j];
+			if ((c < 32) || (c > 127))
+				fprintf(logfile, " ");
+			else
+				fprintf(logfile, "%c", c);
+		}
+		fprintf(logfile, "\n");
+		i = 0;
+	}
 
-  	return 0;
+	return 0;
 }
 
 int log_hex_stop(void)
 {
-  	if (log != NULL)
+	if (logfile != NULL)
 	{
-    		fclose(log);
-			log = NULL;
+		fclose(logfile);
+		logfile = NULL;
 	}
 
-  	g_free(fn);
+	g_free(fn);
 	fn = NULL;
 
-  	return 0;
+	return 0;
 }

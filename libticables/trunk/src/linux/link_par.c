@@ -97,7 +97,8 @@ static int par_reset(CableHandle *h)
 static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
-    int i, j;
+    unsigned int i;
+    uint32_t j;
     tiTIME clk;
     
     for(j = 0; j < len; j++)
@@ -156,7 +157,8 @@ static int par_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int par_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int bit;
-    int i, j;
+    unsigned int i;
+    uint32_t j;
     tiTIME clk;
     
     for(j = 0; j < len; j++)

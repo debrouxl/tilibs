@@ -443,9 +443,6 @@ tfdf:
 
 // ---------------------------------------------------------------------------
 
-TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content);
-TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content);
-
 /**
  * tifiles_tigroup_contents:
  * @src_contents1: a pointer on an array of #FileContent structures or NULL. The array must be NULL-terminated.

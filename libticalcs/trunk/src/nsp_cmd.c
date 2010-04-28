@@ -45,7 +45,7 @@ static int err_code(uint8_t code)
 {
 	int i;
 
-	for(i = 0; i < sizeof(usb_errors) / sizeof(uint8_t); i++)
+	for(i = 0; i < (int)(sizeof(usb_errors) / sizeof(usb_errors[0])); i++)
 		if(usb_errors[i] == code)
 			return i+1;
 

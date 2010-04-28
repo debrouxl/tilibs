@@ -440,7 +440,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.83p", romDumpSize83, romDump83));
-    PAUSE(1500);
+	PAUSE(1500);
 
 	return 0;
 }
@@ -456,10 +456,10 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	};
 
 	// Launch program by remote control
-    for(i = 0; i < sizeof(keys) / sizeof(uint16_t); i++)
-    {
+	for(i = 0; i < (int)(sizeof(keys) / sizeof(keys[0])); i++)
+	{
 		TRYF(send_key(handle, keys[i]));
-        PAUSE(100);
+		PAUSE(100);
 	}
 
 	do

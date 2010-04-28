@@ -705,7 +705,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	{
 		// Launch program by remote control
 		PAUSE(200);
-		for(i = 0; i < sizeof(keys) / sizeof(uint16_t) - 1; i++)
+		for(i = 0; i < (int)(sizeof(keys) / sizeof(keys[0])) - 1; i++)
 		{
 			TRYF(send_key(handle, keys[i]));
 			PAUSE(100);

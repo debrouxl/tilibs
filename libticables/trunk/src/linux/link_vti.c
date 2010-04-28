@@ -171,7 +171,7 @@ static int vti_reset(CableHandle *h)
 static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int p = h->address;
-    int i;
+    uint32_t i;
     tiTIME clk;
     
     for(i = 0; i < len; i++)
@@ -194,7 +194,7 @@ static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
     int p = h->address;
-    int i;
+    uint32_t i;
     tiTIME clk;
     
     for(i = 0; i < len; i++)

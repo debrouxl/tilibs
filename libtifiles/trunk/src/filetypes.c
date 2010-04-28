@@ -335,7 +335,7 @@ TIEXPORT2 char *TICALL tifiles_fext_get(const char *filename)
 
   d = strrchr(filename, '.');
   if (d == NULL)
-    return "";
+    return (char *)"";
 
   return (++d);
 }

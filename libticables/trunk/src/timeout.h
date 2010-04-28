@@ -51,14 +51,14 @@ typedef unsigned long tiTIME;
 
 # define  TO_START(ref)          { (ref) = GetTickCount(); }
 # define  TO_CURRENT(ref)        ( GetTickCount() - (ref) )
-# define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (unsigned int)(100*max) )
+# define  TO_ELAPSED(ref, max)   ( TO_CURRENT(ref) > (100UL*(max)) )
 
 #else
 
 # include <time.h>
 # define  TO_START(ref)         { (ref) = ((1000*clock()) / CLOCKS_PER_SEC); }
 # define  TO_CURRENT(ref)       ( (1000*clock()) / CLOCKS_PER_SEC - (ref) )
-# define  TO_ELAPSED(ref, max)  ( TO_CURRENT(ref) > (100*(max)) )
+# define  TO_ELAPSED(ref, max)  ( TO_CURRENT(ref) > (100UL*(max)) )
 
 #endif
 

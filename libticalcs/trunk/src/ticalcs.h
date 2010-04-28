@@ -339,17 +339,17 @@ typedef struct
 
 typedef struct
 {
-	char		*key_name;
-	
-	char		*normal_name;
+	const char	*key_name;
+
+	const char	*normal_name;
 	uint16_t	normal_value;
-	char		*shift_name;
+	const char	*shift_name;
 	uint16_t	shift_value;
-	char		*second_name;
+	const char	*second_name;
 	uint16_t	second_value;
-	char		*diamond_name;
+	const char	*diamond_name;
 	uint16_t	diamond_value;
-	char		*alpha_name;
+	const char	*alpha_name;
 	uint16_t	alpha_value;
 } OldCalcKeys_;
 

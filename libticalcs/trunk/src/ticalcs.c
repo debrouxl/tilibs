@@ -30,6 +30,7 @@
 #if defined(__WIN32__)
 #include <windows.h>
 #endif
+#include <locale.h>
 
 #include "gettext.h"
 #include "ticalcs.h"
@@ -201,7 +202,7 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 	handle->model = model;
 
 	for(i = 0; calcs[i]; i++)
-		if(calcs[i]->model == model)
+		if(calcs[i]->model == (int const)model)
 		{
 			handle->calc = (CalcFncts *)calcs[i];
 			break;

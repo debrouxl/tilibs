@@ -64,7 +64,7 @@ static int err_code(uint8_t *data)
 	int code = data[2];
 
 	ticalcs_info(" TI->PC: SKP (%02x)", data[0]);
-	for(i = 0; i < sizeof(dbus_errors) / sizeof(uint8_t); i++)
+	for(i = 0; i < (int)(sizeof(dbus_errors) / sizeof(dbus_errors[0])); i++)
 		if(dbus_errors[i] == code)
 			return i+1;
 

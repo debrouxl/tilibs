@@ -234,9 +234,9 @@ static struct usb_urb urb;
 // device infos
 typedef struct
 {
-    uint16_t vid;
-    uint16_t pid;
-    char*    str;
+    uint16_t    vid;
+    uint16_t    pid;
+    const char* str;
 
     struct usb_device *dev;
 } usb_infos;
@@ -244,12 +244,12 @@ typedef struct
 // list of known devices
 static usb_infos tigl_infos[] =
 {
-        {0x0451, PID_TIGLUSB,  "TI-GRAPH LINK USB", NULL},
-		{0x0451, PID_TI84P,    "TI-84 Plus Hand-Held", NULL},
-        {0x0451, PID_TI89TM,   "TI-89 Titanium Hand-Held", NULL},
-        {0x0451, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
-		{0x0451, PID_NSPIRE,   "TI-Nspire Hand-Held", NULL},
-        { 0 }
+	{0x0451, PID_TIGLUSB,  "TI-GRAPH LINK USB",           NULL},
+	{0x0451, PID_TI84P,    "TI-84 Plus Hand-Held",        NULL},
+	{0x0451, PID_TI89TM,   "TI-89 Titanium Hand-Held",    NULL},
+	{0x0451, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
+	{0x0451, PID_NSPIRE,   "TI-Nspire Hand-Held",         NULL},
+	{0,      0,            NULL, NULL}
 };
 
 // list of devices found 
@@ -320,7 +320,7 @@ static int tigl_find(void)
 	{
 	    if ((dev->descriptor.idVendor == VID_TIGLUSB))
 	    {
-		for(i = 0; i < sizeof(tigl_infos) / sizeof(usb_infos); i++)
+		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(usb_infos)); i++)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
@@ -610,7 +610,7 @@ static int slv_bulk_read2(usb_dev_handle *dev, int ep, char *bytes, int size,
 			urb.flags = 0;
 			urb.buffer = bytes + bytesdone;
 			urb.buffer_length = requested;
-			urb.usercontext = (void *)ep;
+			urb.usercontext = (void *)(intptr_t)ep;
 			urb.signr = 0;
 			urb.actual_length = 0;
 			urb.number_of_packets = 0;	/* don't do isochronous yet */

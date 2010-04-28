@@ -68,16 +68,16 @@ static const char fifo_names[4][256] =
 
 static int shm_check(void)
 {
-    int shmid;
+    int shmid_;
 
     if ((ipc_key = ftok("/tmp", 0x1234)) == -1)
         return ERR_TIE_OPEN;
-    shmid = shmget(ipc_key, 1, IPC_CREAT | IPC_EXCL | 0666);
+    shmid_ = shmget(ipc_key, 1, IPC_CREAT | IPC_EXCL | 0666);
 
-    if((shmid == -1) && (errno == EEXIST))
+    if((shmid_ == -1) && (errno == EEXIST))
 	return 1;
     else
-	shmctl(shmid, IPC_RMID, NULL);
+	shmctl(shmid_, IPC_RMID, NULL);
    
     return 0;
 }

@@ -388,7 +388,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 		int i;
 
 		ticables_get_usb_devices(&list, &n);
-		i = cable->port-1 > n ? n-1 : cable->port-1;
+		i = (int)cable->port-1 > n ? n-1 : (int)cable->port-1;
 		switch(list[i])
 		{
 		case PID_TI89TM:   *model = CALC_TI89T_USB; ret = 0; break;

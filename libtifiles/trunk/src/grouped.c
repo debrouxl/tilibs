@@ -346,7 +346,7 @@ TIEXPORT2 int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *v
 	{
 		VarEntry *s = content->entries[i];
 
-		if(!strcmp(s->folder, ve->folder) && !strcmp(s->name, ve->name));
+		if(!strcmp(s->folder, ve->folder) && !strcmp(s->name, ve->name))
 			break;
 	}
 

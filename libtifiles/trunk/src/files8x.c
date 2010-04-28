@@ -383,7 +383,7 @@ static int check_device_type(uint8_t id)
 	static const uint8_t types[] = { 0, DEVICE_TYPE_73, DEVICE_TYPE_83P };
 	int i;
 
-	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 		if(types[i] == id)
 			return i;
 
@@ -395,7 +395,7 @@ static int check_data_type(uint8_t id)
 	static const uint8_t types[] = { 0, TI83p_AMS, TI83p_APPL, TI83p_CERT, TI83p_LICENSE };
 	int i;
 
-	for(i = 1; i < sizeof(types)/sizeof(uint8_t); i++)
+	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 		if(types[i] == id)
 			return i;
 
@@ -503,7 +503,7 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 				fp->page = page;
 				fp->flag = flag;
 				fp->size = size;
-				memcpy(fp->data, data, size);		
+				memcpy(fp->data, data, size);
 
 				content->data_length += size;
 			} 
@@ -588,7 +588,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 
   // write header
   if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
-  if(fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f) < 0) goto tfwr;
+  if(fwrite(content->model == CALC_TI85 ? fsignature85 : fsignature8x, 1, 3, f) < 3) goto tfwr;
   if(fwrite_n_bytes(f, 42, (uint8_t *)content->comment) < 0) goto tfwr;
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
@@ -661,7 +661,7 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
       if(fwrite_word(f, attr) < 0) goto tfwr;
     }
     if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
-    if(fwrite(entry->data, 1, entry->size, f) < 0) goto tfwr;
+    if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
 
     sum += packet_length;
     sum += MSB(entry->size);

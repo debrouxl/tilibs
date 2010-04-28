@@ -30,6 +30,7 @@
 #if defined(__WIN32__)
 #include <windows.h>
 #endif
+#include <locale.h>
 #ifdef __LINUX__
 #include <sys/utsname.h>
 #endif
@@ -203,7 +204,7 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 	handle->timeout = DFLT_TIMEOUT;
 
 	for(i = 0; cables[i]; i++)
-		if(cables[i]->model == model)
+		if(cables[i]->model == (const int)model)
 		{
 			handle->cable = (CableFncts *)cables[i];
 			break;
