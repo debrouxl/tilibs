@@ -234,7 +234,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 
-	case ERR_CALC_ERROR1:	// must be synch'ed with cmd89.c (static uint8_t dbus_errors[])
+	case ERR_CALC_ERROR1:	// must be synchronized with cmd89.c (static uint8_t dbus_errors[])
 		strcpy(error_msg, _("Msg: hand-held returned an error."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -270,7 +270,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 
-	case ERR_CALC_ERROR2:	// must be synch'ed with dusb_cmd.c (static uint16_t usb_errors[])
+	case ERR_CALC_ERROR2:	// must be synchronized with dusb_cmd.c (static uint16_t usb_errors[])
 		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -338,7 +338,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 
-	case ERR_CALC_ERROR3+0:
+	case ERR_CALC_ERROR3+0:	// must be synchronized with nsp_cmd.c (static uint8_t usb_errors[])
 		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
 		strcat(error_msg, "\n");
 		strcat(error_msg,
@@ -350,7 +350,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+2:
-		strcpy(error_msg, _("Msg: the directory does not exist."));
+		strcpy(error_msg, _("Msg: the variable or directory does not exist."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+3:
@@ -366,11 +366,19 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+6:
-		strcpy(error_msg, _("Msg: the file name is invalid."));
+		strcpy(error_msg, _("Msg: the directory name is invalid."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+7:
+		strcpy(error_msg, _("Msg: the file name is invalid."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+8:
 		strcpy(error_msg, _("Msg: no file extension."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+9:
+		strcpy(error_msg, _("Msg: forbidden characters in folder name."));
 		*message = g_strdup(error_msg);
 		break;
 

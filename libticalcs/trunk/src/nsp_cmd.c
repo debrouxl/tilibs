@@ -38,7 +38,7 @@
 /////////////----------------
 
 static uint8_t usb_errors[] = { 
-	0x04, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x14, 0x15,
+	0x04, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x14, 0x15, 0x16
 };
 
 static int err_code(uint8_t code)
@@ -49,8 +49,8 @@ static int err_code(uint8_t code)
 		if(usb_errors[i] == code)
 			return i+1;
 
-	ticalcs_warning("NSpire error code not found in list. Please report it at <tilp-devel@lists.sf.net>.");
-	
+	ticalcs_warning("NSpire error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", (int)code);
+
 	return 0;
 }
 
@@ -459,7 +459,7 @@ int cmd_s_del_folder(CalcHandle *h, const char *name)
 	VirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
-	ticalcs_info("  creating folder:");
+	ticalcs_info("  deleting folder:");
 
 	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DEL_FOLDER;

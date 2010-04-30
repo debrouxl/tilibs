@@ -164,7 +164,7 @@ static int err_code(VirtualPacket *pkt)
 		if(usb_errors[i] == code)
 			return i+1;
 
-	ticalcs_warning("USB error code not found in list. Please report it at <tilp-devel@lists.sf.net>.");
+	ticalcs_warning("USB error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", code);
 	
 	return 0;
 }

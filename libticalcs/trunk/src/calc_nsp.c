@@ -356,12 +356,15 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *ve = content->entries[0];
 		gchar *path;
+		int err;
 
 		if(ve->action == ACT_SKIP)
 			return 0;
 
 		if(!strlen(ve->folder))
 			return ERR_ABORT;
+
+		TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 		path = g_strconcat("/", ve->folder, "/", ve->name, ".", 
 			tifiles_vartype2fext(handle->model, ve->type), NULL);
@@ -371,9 +374,12 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		g_free(utf8);
 		update_label();
 
-		TRYF(nsp_session_open(handle, SID_FILE_MGMT));
-
-		TRYF(cmd_s_put_file(handle, path, ve->size));
+		err = cmd_s_put_file(handle, path, ve->size);
+		g_free(path);
+		if (err)
+		{
+			return err;
+		}
 		TRYF(cmd_r_put_file(handle));
 
 		TRYF(cmd_s_file_contents(handle, ve->size, ve->data));
@@ -391,17 +397,23 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint8_t *data;
 	VarEntry *ve;
 	char *utf8;
-
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
-	g_free(utf8);
-	update_label();
+	int err;
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	path = g_strconcat("/", vr->folder, "/", vr->name, ".", 
 		tifiles_vartype2fext(handle->model, vr->type), NULL);
-	TRYF(cmd_s_get_file(handle, path));
+	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
+
+	err = cmd_s_get_file(handle, path);
+	g_free(path);
+	if (err)
+	{
+		return err;
+	}
 	TRYF(cmd_r_get_file(handle, &(vr->size)));
 
 	TRYF(cmd_s_file_ok(handle));
@@ -421,7 +433,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	g_free(data);
 
 	TRYF(nsp_session_close(handle));
-	g_free(path);
 
 	return 0;
 }
@@ -530,14 +541,14 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *path;
 	int err;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	path = g_strconcat("/", vr->folder, "/", vr->name, ".",
+		tifiles_vartype2fext(handle->model, vr->type), NULL);
+	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
-
-	path = g_strconcat("/", vr->folder, "/", vr->name, ".", tifiles_vartype2fext(handle->model, vr->type), NULL);
-
-	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	err = cmd_s_del_file(handle, path);
 	g_free(path);
@@ -558,14 +569,13 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	char *path;
 	int err;
 
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	path = g_strconcat("/", vr->folder, NULL);
+	utf8 = ticonv_varname_to_utf8(handle->model, path, -1);
 	g_snprintf(update_->text, sizeof(update_->text), _("Creating %s..."), utf8);
 	g_free(utf8);
 	update_label();
-
-	path = g_strconcat("/", vr->folder, NULL);
-
-	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
 	err = cmd_s_new_folder(handle, path);
 	g_free(path);
