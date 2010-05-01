@@ -3,6 +3,7 @@
 
 /*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
+ *  Copyright (C) 2007  Kevin Kofler
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,7 +56,7 @@ static const char *get_attributes(mode_t attrib)
 	s[2] = 'r';
     if (attrib & S_IWUSR)
 	s[3] = 'w';
-    if (attrib & S_ISUID)
+    if (attrib & S_ISUID) 
     {
 	if (attrib & S_IXUSR)
 	    s[4] = 's';
@@ -69,7 +70,7 @@ static const char *get_attributes(mode_t attrib)
 	s[5] = 'r';
     if (attrib & S_IWGRP)
 	s[6] = 'w';
-    if (attrib & S_ISGID)
+    if (attrib & S_ISGID) 
     {
 	if (attrib & S_IXGRP)
 	    s[7] = 's';
@@ -83,7 +84,7 @@ static const char *get_attributes(mode_t attrib)
 	s[8] = 'r';
     if (attrib & S_IWOTH)
 	s[9] = 'w';
-    if (attrib & S_ISVTX)
+    if (attrib & S_ISVTX) 
     {
 	if (attrib & S_IXOTH)
 	    s[10] = 't';
@@ -100,10 +101,10 @@ static const char *get_attributes(mode_t attrib)
 static const char *get_user_name(uid_t uid)
 {
     struct passwd *pwuid;
-
+    
     if((pwuid = getpwuid(uid)) != NULL)
 	return pwuid->pw_name;
-
+    
     return "not found";
 }
 
@@ -113,15 +114,15 @@ static const char *get_user_name(uid_t uid)
 static const char *get_group_name(uid_t uid)
 {
     struct group *grpid;
-
+    
     if ((grpid = getgrgid(uid)) != NULL)
 	return grpid->gr_name;
-
+    
     return "not found";
 }
 
-/*
-   Attempt to find a specific string in /proc (vfs)
+/* 
+   Attempt to find a specific string in /proc (vfs) 
    - entry [in] : an entry such as '/proc/devices'
    - str [in) : an occurence to find (such as 'tipar')
 */
@@ -131,7 +132,7 @@ static int find_string_in_proc(char *entry, char *str)
 	FILE *f;
 	char buffer[80];
 	int found = 0;
-
+	
 	f = fopen(entry, "rt");
 	if (f == NULL)
 	{
@@ -139,19 +140,19 @@ static int find_string_in_proc(char *entry, char *str)
 	    return -1;
 	}
 
-	while (!feof(f))
+	while (!feof(f)) 
 	{
 		fscanf(f, "%s", buffer);
 		if (strstr(buffer, str))
 			found = 1;
 	}
 	fclose(f);
-
+	
 	return found;
 }
 #endif
 
-/*
+/* 
    Attempt to find if an user is attached to a group.
    - user [in] : a user name
    - group [in] : a group name
@@ -161,34 +162,34 @@ static int search_for_user_in_group(const char *user, const char *group)
     FILE *f;
     char buffer[256];
     const char *entry = "/etc/group";
-
+    
     f = fopen(entry, "rt");
-    if (f == NULL)
+    if (f == NULL) 
     {
 	ticables_warning(_("can't open '%s'."), entry);
 	return -1;
     }
-
-    while (!feof(f))
+    
+    while (!feof(f)) 
     {
 	if (!fgets(buffer, 256, f))
 		break;
-
-	if (strstr(buffer, group))
+	
+	if (strstr(buffer, group)) 
 	{
-	    if(strstr(buffer, user))
+	    if(strstr(buffer, user)) 
 	    {
 		fclose(f);
 		return 0;
-	    }
-	    else
+	    } 
+	    else 
 	    {
 		fclose(f);
 		return -1;
 	    }
 	}
     }
-
+    
     fclose(f);
     return -1;
 }
@@ -196,93 +197,118 @@ static int search_for_user_in_group(const char *user, const char *group)
 static int check_for_node_usability(const char *pathname)
 {
     struct stat st;
-
+    
     if(!access(pathname, F_OK))
     {
 	ticables_info(_("    node %s: exists"), pathname);
     }
-    else
+    else 
     {
-	ticables_info(_("    node %s: does not exists"), pathname);
+	ticables_info(_("    node %s: does not exist"), pathname);
 	ticables_info(_("    => you will have to create the node."));
-
+	
 	return -1;
     }
 
-    if(!stat(pathname, &st))
+    if(!access(pathname, R_OK | W_OK))
+    {
+       ticables_info(_("    node %s: accessible"), pathname);
+       return 0;
+    }
+    
+    if(!stat(pathname, &st)) 
     {
 	ticables_info(_("    permissions/user/group:%s%s %s"),
 		      get_attributes(st.st_mode),
 		      get_user_name(st.st_uid),
 		      get_group_name(st.st_gid));
-    }
-    else
+    } 
+    else 
     {
 	ticables_warning("can't stat '%s'.", pathname);
 	return -1;
-    }
-
-    if(getuid() == st.st_uid)
+    }	
+    
+    if(getuid() == st.st_uid) 
     {
-	ticables_info(_("    is user can r/w on device: yes"));
-	return 0;
-    }
-    else
+	ticables_info(_("    user can r/w on device: yes"));
+	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+    return -1;
+    } 
+    else 
     {
-	ticables_info(_("    is user can r/w on device: no"));
+	ticables_info(_("    user can r/w on device: no"));
     }
-
+    
     if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
     {
-	ticables_info(_("    are others can r/w on device: yes"));
+	ticables_info(_("    others can r/w on device: yes"));
     }
-    else
+    else 
     {
 	char *user, *group;
-
-	ticables_info(_("    are others can r/w on device: no"));
-
+	
+	ticables_info(_("    others can r/w on device: no"));
+	
 	user = strdup(get_user_name(getuid()));
 	group = strdup(get_group_name(st.st_gid));
-
+	
 	if(!search_for_user_in_group(user, group))
 	{
-	    ticables_info(_("    is the user '%s' in the group '%s': yes"),
-			  user, group);
+	    ticables_info(_("    is the user '%s' in the group '%s': yes"), 
+			  user, group); 
 	}
-	else
+	else 
 	{
 	    ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
 	    ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-	    ticables_info(_("    => you will have to restart you session, too"), group);
-	    free(user);
+	    ticables_info(_("    => you will have to restart your session, too"));
+	    free(user); 
 	    free(group);
-
-	    return -1;
+	    
+	    return -1;	
 	}
-
-	free(user);
+	
+	free(user); 
 	free(group);
-    }
-
-    return 0;
+    }	
+    
+	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+    return -1;
 }
 
 int bsd_check_root(void)
 {
     uid_t uid = getuid();
-
-    ticables_info(_("Check for super-user access: %s"),
+    
+    ticables_info(_("Check for super-user access: %s"), 
 		  uid ? "no" : "yes");
-
+    
     return (uid ? ERR_ROOT : 0);
 }
 
 int bsd_check_tty(const char *devname)
 {
+    int fd;
+
+    ticables_info(_("Check for tty support:"));
+    ticables_info(_("    tty support: available."));
+
+    // check for node usability
     ticables_info(_("Check for tty usability:"));
     if(check_for_node_usability(devname) == -1)
 	return ERR_TTDEV;
+
+    // check for device availability
+    fd = open(devname, 0);
+    if (fd == -1)
+    {
+        ticables_warning("unable to open serial device '%s'", devname);
+        return ERR_TTDEV;
+    }
+    
+    ticables_info(_("    is useable: yes"));
+    close(fd);
 
     return 0;
 }
@@ -294,5 +320,13 @@ int bsd_check_parport(const char *devname)
 
 int bsd_check_libusb(void)
 {
+	ticables_info(_("Check for lib-usb support:"));
+#if defined(HAVE_LIBUSB)
+	ticables_info(_("    usb support: available."));
+#else
+	ticables_info(_("    usb support: not compiled."));
+	return ERR_USBFS;
+#endif
+
     return 0;
 }
