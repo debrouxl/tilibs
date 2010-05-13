@@ -225,9 +225,6 @@ static struct usb_urb urb;
 
 #define VID_TIGLUSB  0x0451     /* Texas Instruments, Inc.            */
 
-#define TIGL_BULK_IN    0x81    /* IN  endpoint */
-#define TIGL_BULK_OUT   0x02    /* OUT endpoint */
-
 #define to      (100 * h->timeout)        // in ms
 
 /* Types */
@@ -265,7 +262,8 @@ typedef struct
     int               nBytesRead;
     uint8_t           rBuf[64];
     uint8_t*          rBufPtr;
-    
+    int               in_endpoint;
+    int               out_endpoint;
     int               max_ps;
 } usb_struct;
 
@@ -276,6 +274,8 @@ typedef struct
 #define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
 #define rBuf       (((usb_struct *)(h->priv2))->rBuf)
 #define rBufPtr    (((usb_struct *)(h->priv2))->rBufPtr)
+#define uInEnd     (((usb_struct *)(h->priv2))->in_endpoint)
+#define uOutEnd    (((usb_struct *)(h->priv2))->out_endpoint)
 
 /* Helpers (=driver API) */
 
@@ -389,15 +389,14 @@ static int tigl_open(int id, usb_dev_handle **udh)
 	ret = usb_set_configuration(*udh, 1);
         if (ret < 0)
         {
-            ticables_warning("usb_set_configuration (%s).\n",usb_strerror());
+            ticables_warning("usb_set_configuration (%s).\n", usb_strerror());
         }
 
 	/* configuration #1, interface #0 */
 	ret = usb_claim_interface(*udh, 0);
 	if (ret < 0) 
 	{
-	    ticables_warning("usb_claim_interface (%s).\n",
-			     usb_strerror());
+	    ticables_warning("usb_claim_interface (%s).\n", usb_strerror());
 	    return ERR_LIBUSB_CLAIM;
 	}
 
@@ -418,23 +417,23 @@ static int tigl_close(usb_dev_handle **udh)
     return 0;
 }
 
-static int tigl_reset(usb_dev_handle *udh)
+static int tigl_reset(CableHandle *h)
 {
 	int ret;
 
-  	// Reset out pipe
-  	ret = usb_clear_halt(udh, TIGL_BULK_OUT);
-  	if (ret < 0) 
+	// Reset out pipe
+	ret = usb_clear_halt(uHdl, uOutEnd);
+	if (ret < 0) 
 	{
-	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-  	}
+	    ticables_warning("usb_clear_halt of out pipe (%s).\n", usb_strerror());
+	}
 	
 	// Reset in pipe
-  	ret = usb_clear_halt(udh, TIGL_BULK_IN);
-  	if (ret < 0) 
+	ret = usb_clear_halt(uHdl, uInEnd);
+	if (ret < 0) 
 	{
-	    ticables_warning("usb_clear_halt (%s).\n", usb_strerror());
-  	}
+	    ticables_warning("usb_clear_halt of in pipe (%s).\n", usb_strerror());
+	}
 
 	return 0;
 }
@@ -466,6 +465,7 @@ static int slv_prepare(CableHandle *h)
 
 static int slv_open(CableHandle *h)
 {
+    int i;
     struct usb_config_descriptor *config;
     struct usb_interface *interface_;
     struct usb_interface_descriptor *interface;
@@ -473,7 +473,9 @@ static int slv_open(CableHandle *h)
 
     // open device
     TRYC(tigl_open(h->address, &uHdl));
-    uDev = tigl_devices[h->address].dev;    
+    uDev = tigl_devices[h->address].dev;
+    uInEnd  = 0x81;
+    uOutEnd = 0x02;
 
     // get max packet size
     config = &(uDev->config[0]);
@@ -481,6 +483,31 @@ static int slv_open(CableHandle *h)
     interface = &(interface_->altsetting[0]);
     endpoint = &(interface->endpoint[0]);
     max_ps = endpoint->wMaxPacketSize;
+    // Enumerate endpoints.
+    for (i = 0; i < interface->bNumEndpoints; i++)
+    {
+        if ((endpoint->bmAttributes & USB_ENDPOINT_TYPE_MASK) == USB_ENDPOINT_TYPE_BULK)
+        {
+            if (endpoint->bEndpointAddress & USB_ENDPOINT_DIR_MASK)
+            {
+                if (endpoint->bEndpointAddress != 0x83) // Some Nspire OS use that seemingly bogus endpoint.
+                {
+                    uInEnd = endpoint->bEndpointAddress;
+                    ticables_info("found bulk in endpoint 0x%02X\n", uInEnd);
+                }
+                else
+                {
+                    ticables_info("XXX: swallowing bulk in endpoint 0x83, advertised by Nspire (CAS and non-CAS) 1.x but seemingly not working\n");
+                }
+            }
+            else
+            {
+                uOutEnd = endpoint->bEndpointAddress;
+                ticables_info("found bulk out endpoint 0x%02X\n", uOutEnd);
+            }
+        }
+        endpoint++;
+    }
     nBytesRead = 0;
 
     return 0;
@@ -504,10 +531,10 @@ static int slv_reset(CableHandle *h)
 
 #if !defined(__BSD__)
 	/* Reset both endpoints (send an URB_FUNCTION_RESET_PIPE) */
-    TRYC(tigl_reset(uHdl));
+	TRYC(tigl_reset(h));
 
 	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
-    ret = usb_reset(uHdl);
+	ret = usb_reset(uHdl);
 	if (ret < 0) 
 	{
 		ticables_warning("usb_reset (%s).\n", usb_strerror());
@@ -523,7 +550,7 @@ static int slv_reset(CableHandle *h)
 #else
 		usleep(500000);
 #endif
-		TRYC(slv_close(h));		
+		TRYC(slv_close(h));
 
 		h->priv2 = (usb_struct *)calloc(1, sizeof(usb_struct));
 		TRYC(slv_open(h));
@@ -537,7 +564,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
 {
     int ret;
     
-    ret = usb_bulk_write(uHdl, TIGL_BULK_OUT, (char*)data, length, to);
+    ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, length, to);
     
     if(ret == -ETIMEDOUT) 
     {
@@ -749,10 +776,10 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 	do 
 	{
 #if defined(__LINUX__) || defined(__WIN32__)
-	    ret = slv_bulk_read2(uHdl, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, 
 				max_ps, to);
 #else
-	    ret = usb_bulk_read(uHdl, TIGL_BULK_IN, (char*)rBuf, 
+	    ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, 
 				max_ps, to);
 #endif
 
@@ -861,11 +888,11 @@ static int slv_check(CableHandle *h, int *status)
 	if (!io_pending)
 	{
 		urb.type = USB_URB_TYPE_BULK;
-		urb.endpoint = TIGL_BULK_IN;
+		urb.endpoint = uInEnd;
 		urb.flags = 0;
 		urb.buffer = (char*)rBuf;
 		urb.buffer_length = max_ps;
-		urb.usercontext = (void *)TIGL_BULK_IN;
+		urb.usercontext = (void *)(intptr_t)uInEnd;
 		urb.signr = 0;
 		urb.actual_length = 0;
 		urb.number_of_packets = 0;
@@ -915,7 +942,7 @@ static int slv_check(CableHandle *h, int *status)
 
 	if (!io_pending)
 	{
-		ret = usb_bulk_setup_async(uHdl, &context, TIGL_BULK_IN);
+		ret = usb_bulk_setup_async(uHdl, &context, uInEnd);
 		if (ret < 0)
 			return ERR_READ_ERROR;
 		ret = usb_submit_async(context, (char*)rBuf, max_ps);
