@@ -503,12 +503,12 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return 0;
 }
 
-static int		set_clock	(CalcHandle* handle, CalcClock* clock)
+static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	return 0;
 }
 
-static int		get_clock	(CalcHandle* handle, CalcClock* clock)
+static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	return 0;
 }

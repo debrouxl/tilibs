@@ -329,6 +329,7 @@ int dusb_decomp(const char *filename)
 {
 	char src_name[1024];
 	char dst_name[1024];
+	char line[256];
 	unsigned char data;
 	int i;
 
@@ -341,24 +342,21 @@ int dusb_decomp(const char *filename)
 	hex = fopen(src_name, "rt");
 	if(hex == NULL)
 	{
-		fprintf(stderr, "Unable to open this file: %s\n", src_name);
+		fprintf(stderr, "Unable to open input file: %s\n", src_name);
 		return -1;
 	}
 
 	logfile = fopen(dst_name, "wt");
 	if(logfile == NULL)
 	{
-		fprintf(stderr, "Unable to open this file: %s\n", dst_name);
+		fprintf(stderr, "Unable to open output file: %s\n", dst_name);
+		fclose(hex);
 		return -1;
 	}
 
-	{
-		char line[256];
-
-		fgets(line, sizeof(line), hex);
-		fgets(line, sizeof(line), hex);
-		fgets(line, sizeof(line), hex);
-	}
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
 
 	fprintf(logfile, "TI packet decompiler for D-USB, version 1.0\n");
 
@@ -374,6 +372,8 @@ int dusb_decomp(const char *filename)
 	for(i = 0; i < dcf; i++) fprintf(logfile, "%04x ", data_code_found[i]);
 	fprintf(logfile, "\n");
 
+exit:
+	fclose(logfile);
 	fclose(hex);
 
 	return 0;

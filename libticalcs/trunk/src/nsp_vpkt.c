@@ -303,15 +303,18 @@ int nsp_recv_disconnect(CalcHandle *h)
 
 	// nasty hack
 	{
-		RawPacket pkt = {0};
-
 		ticalcs_info("  sending ack:");
-		
+
+		pkt.unused = 0;
 		pkt.data_size = 2;
 		pkt.src_addr = NSP_SRC_ADDR;
 		pkt.src_port = PORT_PKT_ACK2;
 		pkt.dst_addr = NSP_DEV_ADDR;
 		pkt.dst_port = nsp_dst_port;
+		pkt.data_sum = 0;
+		pkt.ack = 0;
+		pkt.seq = 0;
+		pkt.hdr_sum = 0;
 		pkt.data[0] = MSB(addr);
 		pkt.data[1] = LSB(addr);
 		TRYF(nsp_send(h, &pkt));

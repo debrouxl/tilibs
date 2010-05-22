@@ -791,20 +791,20 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return 0;
 }
 
-static int		set_clock	(CalcHandle* handle, CalcClock* clock)
+static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
     uint8_t buffer[16] = { 0 };
     uint16_t status;
 
-    buffer[6] = clock->year >> 8;
-    buffer[7] = clock->year & 0x00ff;
-    buffer[8] = clock->month;
-    buffer[9] = clock->day;
-    buffer[10] = clock->hours;
-    buffer[11] = clock->minutes;
-    buffer[12] = clock->seconds;
-    buffer[13] = clock->date_format;
-    buffer[14] = clock->time_format;
+    buffer[6] = _clock->year >> 8;
+    buffer[7] = _clock->year & 0x00ff;
+    buffer[8] = _clock->month;
+    buffer[9] = _clock->day;
+    buffer[10] = _clock->hours;
+    buffer[11] = _clock->minutes;
+    buffer[12] = _clock->seconds;
+    buffer[13] = _clock->date_format;
+    buffer[14] = _clock->time_format;
     buffer[15] = 0xff;
 
     g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
@@ -825,7 +825,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	return 0;
 }
 
-static int		get_clock	(CalcHandle* handle, CalcClock* clock)
+static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint32_t varsize;
     uint8_t vartype;
@@ -850,14 +850,14 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
     TRYF(ti89_recv_EOT());
     TRYF(ti89_send_ACK());
 
-    clock->year = (buffer[6] << 8) | buffer[7];
-    clock->month = buffer[8];
-    clock->day = buffer[9];
-    clock->hours = buffer[10];
-    clock->minutes = buffer[11];
-    clock->seconds = buffer[12];
-    clock->date_format = buffer[13];
-    clock->time_format = buffer[14];
+    _clock->year = (buffer[6] << 8) | buffer[7];
+    _clock->month = buffer[8];
+    _clock->day = buffer[9];
+    _clock->hours = buffer[10];
+    _clock->minutes = buffer[11];
+    _clock->seconds = buffer[12];
+    _clock->date_format = buffer[13];
+    _clock->time_format = buffer[14];
 
 	return 0;
 }

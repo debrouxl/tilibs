@@ -428,7 +428,7 @@ int main(int argc, char **argv)
 	CableHandle* cable;
 	CalcHandle* calc;
 	int err, i;
-	int exit=0;
+	int do_exit=0;
 	int choice;
 
 	// init libs
@@ -463,14 +463,14 @@ restart:
 		printf("\n");
 
 		if(choice == 0)
-			exit = 1;
+			do_exit = 1;
 
 		// Process choice
 		if(fnct_menu[choice])
 			fnct_menu[choice](calc);
 		printf("\n");
 
-	} while(!exit);
+	} while(!do_exit);
 
 	// detach cable (made by handle_del, too)
 	err = ticalcs_cable_detach(calc);

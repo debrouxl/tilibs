@@ -43,7 +43,7 @@
 #define EXTRAS ((handle->model == CALC_TI83P) || (handle->model == CALC_TI84P) ? 2 : 0)
 
 /* Variable (std var header: NUL padded, fixed length) */
-int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname, uint8_t varattr)
+int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
 {
   uint8_t buffer[16];
 
@@ -180,7 +180,7 @@ int ti73_send_EOT_h(CalcHandle* handle)
 }
 
 /* Request variable (std var header: NUL padded, fixed length) */
-int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname,
+int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
   uint8_t buffer[16] = { 0 };
@@ -215,7 +215,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
-int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, char *appname,
+int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, const char *appname,
 		   uint8_t appattr)
 {
   uint8_t buffer[16] = { 0 };
@@ -234,7 +234,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, char
 }
 
 /* Request to send (std var header: NUL padded, fixed length) */
-int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname,
+int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
   uint8_t buffer[16];
@@ -273,7 +273,7 @@ int ti73_send_VER_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname,
+int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
 	uint8_t buffer[16] = { 0 };

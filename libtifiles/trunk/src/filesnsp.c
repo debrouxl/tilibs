@@ -126,12 +126,12 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	int c;
 
 	if (!tifiles_file_is_tno(filename))
-		return ERR_INVALID_FILE;	
+		return ERR_INVALID_FILE;
 
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
-	    tifiles_info("Unable to open this file: %s\n", filename);
+		tifiles_info("Unable to open this file: %s\n", filename);
 		return ERR_FILE_OPEN;
 	}
 
@@ -143,7 +143,10 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	fgetc(f);
 
 	for(c = 0; c != ' '; c=fgetc(f));
-	fscanf(f, "%i", &(content->data_length));
+	if (fscanf(f, "%i", &(content->data_length)) < 1)
+	{
+		goto tfrf;
+	}
 	rewind(f);
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
@@ -155,13 +158,13 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	}
 
 	content->next = NULL;
-	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;	
+	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 
 	fclose(f);
 	return 0;
 
 tfrf:	// release on exit
-    fclose(f);
+	fclose(f);
 	tifiles_content_delete_flash(content);
 	return ERR_FILE_IO;
 }

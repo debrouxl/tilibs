@@ -743,7 +743,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return 0;
 }
 
-static int		set_clock	(CalcHandle* handle, CalcClock* clock)
+static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint8_t buffer[16] = { 0 };
 	uint32_t calc_time;
@@ -766,12 +766,12 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	r = mktime(&ref);
 	//printf("%s\n", asctime(&ref));
 
-	cur.tm_year = clock->year - 1900;
-	cur.tm_mon = clock->month - 1;
-	cur.tm_mday = clock->day;	
-	cur.tm_hour = clock->hours;
-	cur.tm_min = clock->minutes;
-	cur.tm_sec = clock->seconds;
+	cur.tm_year = _clock->year - 1900;
+	cur.tm_mon = _clock->month - 1;
+	cur.tm_mday = _clock->day;	
+	cur.tm_hour = _clock->hours;
+	cur.tm_min = _clock->minutes;
+	cur.tm_sec = _clock->seconds;
 	cur.tm_isdst = 1;
 	c = mktime(&cur);
 	//printf("%s\n", asctime(&cur));
@@ -782,8 +782,8 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
     buffer[3] = LSB(MSW(calc_time));
     buffer[4] = MSB(LSW(calc_time));
     buffer[5] = LSB(LSW(calc_time));
-    buffer[6] = clock->date_format;
-    buffer[7] = clock->time_format;
+    buffer[6] = _clock->date_format;
+    buffer[7] = _clock->time_format;
     buffer[8] = 0xff;
 
     g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
@@ -803,7 +803,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* clock)
 	return 0;
 }
 
-static int		get_clock	(CalcHandle* handle, CalcClock* clock)
+static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint16_t varsize;
     uint8_t vartype;
@@ -851,15 +851,15 @@ static int		get_clock	(CalcHandle* handle, CalcClock* clock)
 	cur = localtime(&c);
 	//printf("%s\n", asctime(cur));
 
-	clock->year = cur->tm_year + 1900;
-	clock->month = cur->tm_mon + 1;
-	clock->day = cur->tm_mday;
-	clock->hours = cur->tm_hour;
-	clock->minutes = cur->tm_min;
-	clock->seconds = cur->tm_sec;
+	_clock->year = cur->tm_year + 1900;
+	_clock->month = cur->tm_mon + 1;
+	_clock->day = cur->tm_mday;
+	_clock->hours = cur->tm_hour;
+	_clock->minutes = cur->tm_min;
+	_clock->seconds = cur->tm_sec;
 
-    clock->date_format = buffer[6];
-    clock->time_format = buffer[7];
+    _clock->date_format = buffer[6];
+    _clock->time_format = buffer[7];
 
 	return 0;
 }

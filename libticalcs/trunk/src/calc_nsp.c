@@ -265,7 +265,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 	for(i = 0; i < (int)g_node_n_children(*vars); i++) 
 	{
-		GNode *folder = g_node_nth_child(*vars, i);
+		folder = g_node_nth_child(*vars, i);
 		char *folder_name = ((VarEntry *) (folder->data))->name;
 		char *u1, *u2;
 
@@ -525,12 +525,12 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	return 0;
 }
 
-static int		set_clock	(CalcHandle* handle, CalcClock* clock)
+static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	return 0;
 }
 
-static int		get_clock	(CalcHandle* handle, CalcClock* clock)
+static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	return 0;
 }

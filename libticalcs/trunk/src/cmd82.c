@@ -42,7 +42,7 @@
 #define TI8283_BKUP ((handle->model == CALC_TI82) ? TI82_BKUP : TI83_BKUP)
 
 /* Variable (std var header: NUL padded, fixed length) */
-int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[16];
 	char trans[17];
@@ -148,7 +148,7 @@ int ti82_send_EOT_h(CalcHandle* handle)
 }
 
 /* Request variable (std var header: NUL padded, fixed length) */
-int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[16] = { 0 };
   char trans[9];
@@ -168,23 +168,8 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Request to send (std var header: NUL padded, fixed length) */
-int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[16];
   char trans[9];
@@ -193,8 +178,6 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
-
-
 
   ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X=%i, id=%02X, name=%s)",
@@ -239,14 +222,6 @@ int ti82_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
   *vartype = buffer[2];
   memcpy(varname, buffer + 3, 8);
   varname[8] = '\0';
-
-
-
-
-
-
-
-
 
   ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
   ticalcs_info(" TI->PC: VAR (size=0x%04X=%i, id=%02X, name=%s)",

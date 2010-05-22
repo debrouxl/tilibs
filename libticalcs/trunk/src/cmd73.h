@@ -22,7 +22,7 @@
 #ifndef __TICALCS_CMD73__
 #define __TICALCS_CMD73__
 
-int ti73_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname, uint8_t varattr);
+int ti73_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 int ti73_send_VAR2_h(CalcHandle*, uint32_t length, uint8_t type, uint8_t flag, uint16_t offset, uint16_t page);
 int ti73_send_CTS_h(CalcHandle*);
 int ti73_send_XDP_h(CalcHandle*, int length, uint8_t * data);
@@ -34,11 +34,11 @@ int ti73_send_RDY_h(CalcHandle*);
 int ti73_send_SCR_h(CalcHandle*);
 int ti73_send_KEY_h(CalcHandle*, uint16_t scancode);
 int ti73_send_EOT_h(CalcHandle*);
-int ti73_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname, uint8_t varattr);
-int ti73_send_REQ2_h(CalcHandle*, uint16_t appsize, uint8_t apptype, char *appname, uint8_t appattr);
-int ti73_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname, uint8_t varattr);
+int ti73_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
+int ti73_send_REQ2_h(CalcHandle*, uint16_t appsize, uint8_t apptype, const char *appname, uint8_t appattr);
+int ti73_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 int ti73_send_VER_h(CalcHandle*);
-int ti73_send_DEL_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname, uint8_t varattr);
+int ti73_send_DEL_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 
 int ti73_recv_VAR_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr);
 int ti73_recv_VAR2_h(CalcHandle*, uint16_t * length, uint8_t * type, char *name, uint16_t * offset, uint16_t * page);

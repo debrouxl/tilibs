@@ -324,6 +324,7 @@ int nsp_decomp(const char *filename)
 {
 	char src_name[1024];
 	char dst_name[1024];
+	char line[256];
 	unsigned char data;
 	int i;
 
@@ -344,16 +345,13 @@ int nsp_decomp(const char *filename)
 	if(logfile == NULL)
 	{
 		fprintf(stderr, "Unable to open this file: %s\n", dst_name);
+		fclose(hex);
 		return -1;
 	}
 
-	{
-		char line[256];
-
-		fgets(line, sizeof(line), hex);
-		fgets(line, sizeof(line), hex);
-		fgets(line, sizeof(line), hex);
-	}
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
+	if (fgets(line, sizeof(line), hex) == NULL) goto exit;
 
 	fprintf(logfile, "TI packet decompiler for NSpire, version 1.0\n");
 
@@ -369,6 +367,8 @@ int nsp_decomp(const char *filename)
 	for(i = 0; i < af; i++) fprintf(logfile, "%04x ", addr_found[i]);
 	fprintf(logfile, "\n");
 
+exit:
+	fclose(logfile);
 	fclose(hex);
 
 	return 0;

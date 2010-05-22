@@ -298,7 +298,7 @@ typedef struct
 typedef struct
 {
 	CalcModel	model;
-	char*		type;
+	const char*	type;
 
 	int			mem_mask;	// tells which field is filled
 	uint32_t	mem_used;

@@ -718,7 +718,7 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock)
+TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _clock)
 {
 	const CalcFncts *calc;
 	int ret = 0;
@@ -738,7 +738,7 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock
 	ticalcs_info(_("Setting clock:"));
 	handle->busy = 1;
 	if(calc->set_clock)
-		ret = calc->set_clock(handle, clock);
+		ret = calc->set_clock(handle, _clock);
 	handle->busy = 0;
 
 	return ret;
@@ -753,7 +753,7 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* clock
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock)
+TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _clock)
 {
 	const CalcFncts *calc;
 	int ret = 0;
@@ -773,7 +773,7 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* clock
 	ticalcs_info(_("Getting clock:"));
 	handle->busy = 1;
 	if(calc->get_clock)
-		ret = calc->get_clock(handle, clock);
+		ret = calc->get_clock(handle, _clock);
 	handle->busy = 0;
 
 	return ret;

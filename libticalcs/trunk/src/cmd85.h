@@ -22,7 +22,7 @@
 #ifndef __TICALCS_CMD85__
 #define __TICALCS_CMD85__
 
-int ti85_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 int ti85_send_CTS_h(CalcHandle*);
 int ti85_send_XDP_h(CalcHandle*, int length, uint8_t * data);
 int ti85_send_SKP_h(CalcHandle*, uint8_t rej_code);
@@ -31,8 +31,8 @@ int ti85_send_ERR_h(CalcHandle*);
 int ti85_send_SCR_h(CalcHandle*);
 int ti85_send_KEY_h(CalcHandle*, uint16_t scancode);
 int ti85_send_EOT_h(CalcHandle*);
-int ti85_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
-int ti85_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, char *varname);
+int ti85_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+int ti85_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 
 int ti85_recv_VAR_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
 int ti85_recv_CTS_h(CalcHandle*);

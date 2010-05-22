@@ -378,8 +378,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	GNode *child;
 	VarEntry *ve;
 
-	char *folder;
-	
+	const char *folder;
+
 	if (tree == NULL)
 		return;
 
@@ -479,8 +479,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 	GNode *child = NULL;
 	VarEntry *ve;
 
-	char *folder;
-	
+	const char *folder;
+
 	if (tree == NULL)
 		return;
 

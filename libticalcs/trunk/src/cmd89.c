@@ -73,7 +73,7 @@ static int err_code(uint8_t *data)
 	return 0;
 }
 
-int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_VAR_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[32];
   char trans[17];
@@ -193,7 +193,7 @@ int ti89_send_EOT_h(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -218,7 +218,7 @@ int ti89_send_REQ_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char 
   return 0;
 }
 
-int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_RTS_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;
@@ -274,7 +274,7 @@ int ti89_send_VER_h(CalcHandle* handle)
   return 0;
 }
 
-int ti89_send_DEL_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, char *varname)
+int ti89_send_DEL_h(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[32] = { 0 };
   uint16_t len;

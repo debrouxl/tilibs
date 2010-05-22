@@ -42,7 +42,7 @@
 #define TI8586_BKUP ((handle->model == CALC_TI85) ? TI85_BKUP : TI86_BKUP)
 
 /* Variable (std var header: NUL padded, variable length) */
-int ti85_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[16];
   char trans[17];
@@ -148,7 +148,7 @@ int ti85_send_EOT_h(CalcHandle* handle)
 }
 
 /* Variable request (var header: NUL padded, fixed length) */
-int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[16] = { 0 };
   char trans[9];
@@ -184,7 +184,7 @@ int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 }
 
 /* Request to send (var header: SPC padded, fixed length) */
-int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char *varname)
+int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
   uint8_t buffer[16];
   char trans[9];
@@ -204,13 +204,6 @@ int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, char 
 
   return 0;
 }
-
-
-
-
-
-
-
 
 /* Variable (std var header: NUL padded, variable length) */
 int ti85_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)

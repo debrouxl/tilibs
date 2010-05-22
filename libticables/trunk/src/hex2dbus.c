@@ -118,81 +118,93 @@ int fill_buf(FILE *f, char data, int flush)
 */
 int dbus_decomp(const char *filename, int resync)
 {
-    char src_name[1024];
-    char dst_name[1024];
-    FILE *fi, *fo;
-    long file_size;
-    struct stat st;
-    unsigned char *buffer;
-    int i;
+	char src_name[1024];
+	char dst_name[1024];
+	FILE *fi = NULL, *fo = NULL;
+	long file_size;
+	struct stat st;
+	unsigned char *buffer;
+	int i;
 	unsigned int j;
-    int num_bytes;
+	int num_bytes;
 	char str[256];
 	unsigned char mid, cid;
 	unsigned int length;
 	int idx;
 	int ret = 0;
-    
-	// build filenames
-    strcpy(src_name, filename);
-    strcat(src_name, ".hex");
-    
-    strcpy(dst_name, filename);
-    strcat(dst_name, ".pkt");
-    
-    stat(src_name, &st);
-    file_size = st.st_size;
-    
-	// allocate buffer
-    buffer = (unsigned char*)calloc(file_size/2 < 65536 ? 65526 : file_size >> 1, 1);
-    memset(buffer, 0xff, file_size/2);
-    if(buffer == NULL)
-    {
-        fprintf(stderr, "calloc error.\n");
-        exit(-1);
-    }
-    
-	// open files
-    fi = fopen(src_name, "rt");
-    fo = fopen(dst_name, "wt");
-    
-    if(fi == NULL)
-    {
-        fprintf(stderr, "Unable to open this file: %s\n", src_name);
-        return -1;
-    }
 
-    fprintf(fo, "TI packet decompiler for D-BUS, version 1.2\n");
+	// build filenames
+	strcpy(src_name, filename);
+	strcat(src_name, ".hex");
+
+	strcpy(dst_name, filename);
+	strcat(dst_name, ".pkt");
+
+	stat(src_name, &st);
+	file_size = st.st_size;
+
+	// allocate buffer
+	buffer = (unsigned char*)calloc(file_size/2 < 65536 ? 65526 : file_size >> 1, 1);
+	memset(buffer, 0xff, file_size/2);
+	if(buffer == NULL)
+	{
+		fprintf(stderr, "calloc error.\n");
+		return -1;
+	}
+
+	// open files
+	fi = fopen(src_name, "rt");
+	if(fi == NULL)
+	{
+		fprintf(stderr, "Unable to open input file: %s\n", src_name);
+		free(buffer);
+		return -1;
+	}
+
+	fo = fopen(dst_name, "wt");
+	if(fo == NULL)
+	{
+		fprintf(stderr, "Unable to open output file: %s\n", dst_name);
+		fclose(fi);
+		free(buffer);
+		return -1;
+	}
+
+	fprintf(fo, "TI packet decompiler for D-BUS, version 1.2\n");
 
 	// skip comments
-	fgets(str, sizeof(str), fi);
-	fgets(str, sizeof(str), fi);
-	fgets(str, sizeof(str), fi);
+	if (fgets(str, sizeof(str), fi) == NULL) goto exit;
+	if (fgets(str, sizeof(str), fi) == NULL) goto exit;
+	if (fgets(str, sizeof(str), fi) == NULL) goto exit;
 
 	// read source file
 	for(i = 0; !feof(fi);)
-    {
-        for(j = 0; j < 16 && !feof(fi); j++)
+	{
+		for(j = 0; j < 16 && !feof(fi); j++)
 		{
-			fscanf(fi, "%02X", (unsigned int *)&(buffer[i+j]));
+			if (fscanf(fi, "%02X", (unsigned int *)&(buffer[i+j])) < 1)
+			{
+				ret = -1;
+				goto exit;
+			}
 			fgetc(fi);
 		}
-        i += j;
+		i += j;
 
-        for(j=0; j<18 && !feof(fi); j++)
+		for(j=0; j<18 && !feof(fi); j++)
 			fgetc(fi);
-    }
-    num_bytes = i-1; // -1 due to EOF char
-    fprintf(stdout, "%i bytes read.\n", num_bytes);
+	}
+	num_bytes = i-1; // -1 due to EOF char
+	fprintf(stdout, "%i bytes read.\n", num_bytes);
 
 	// process data
 	for(i = 0; i < num_bytes;)
-    {
+	{
 restart:
 		mid = buffer[i+0];
 		cid = buffer[i+1];
 		length = buffer[i+2];
-        length |= buffer[i+3] << 8;
+		length |= buffer[i+3] << 8;
 
 		// check for valid packet
 		if(is_a_machine_id(mid) == -1)
@@ -203,7 +215,7 @@ restart:
 
 		// check for valid packet
 		idx = is_a_command_id(cid);
-        if(idx == -1)
+		if(idx == -1)
 		{
 			ret = -2;
 			goto exit;
@@ -248,10 +260,10 @@ exit:
 	if(ret < 0)
 		fprintf(stdout, "Error %i\n", -ret);
 
-	free(buffer);
 	fclose(fi);
 	fclose(fo);
-    
+	free(buffer);
+
 	return ret;
 }
 
