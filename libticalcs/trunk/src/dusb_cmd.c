@@ -173,17 +173,22 @@ static int err_code(VirtualPacket *pkt)
 
 extern const VtlPktName vpkt_types[];
 
-#define CATCH_DELAY()					\
-	if(pkt->type == VPKT_DELAY_ACK)		\
-	{									\
-		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);	\
-		ticalcs_info("    delay = %u\n", delay);	\
-										\
-		PAUSE(delay/1000);				\
-										\
-		dusb_vtl_pkt_del(pkt);				\
-		pkt = dusb_vtl_pkt_new(0, 0);		\
-		TRYF(dusb_recv_data(h, pkt));	\
+#define CATCH_DELAY() \
+	if (pkt->type == VPKT_DELAY_ACK) \
+	{ \
+		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0); \
+		ticalcs_info("    delay = %u", delay); \
+		if (delay >= 200000) \
+		{ \
+			delay = 200000; \
+			ticalcs_info("    (absurdly high delay, clamping to a more reasonable value)"); \
+		} \
+\
+		PAUSE(delay/1000); \
+\
+		dusb_vtl_pkt_del(pkt); \
+		pkt = dusb_vtl_pkt_new(0, 0); \
+		TRYF(dusb_recv_data(h, pkt)); \
 	}
 
 // 0x0001: set mode or ping
