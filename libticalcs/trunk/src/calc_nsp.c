@@ -507,7 +507,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
 
-	strncpy((char *)id, (char*)(data + 84), 28);
+	strncpy((char *)id, (char*)(data + 82), 28);
 
 	g_free(data);
 	TRYF(nsp_session_close(handle));
@@ -672,10 +672,9 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->device_type = data[i];
 	infos->mask |= INFOS_DEVICE_TYPE;
 
-	i = 82;
-	strncpy(infos->main_calc_id, (char*)(data + 84), 28);
+	strncpy(infos->main_calc_id, (char*)(data + 82), 28);
 	infos->mask |= INFOS_MAIN_CALC_ID;
-	strncpy(infos->product_id, (char*)(data + 84), 28);
+	strncpy(infos->product_id, (char*)(data + 82), 28);
 	infos->mask |= INFOS_PRODUCT_ID;
 
 	g_free(data);
