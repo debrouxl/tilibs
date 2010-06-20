@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2010-04-30 21:55+0200\n"
+"POT-Creation-Date: 2010-06-20 14:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,12 +29,12 @@ msgstr ""
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:489 src/calc_73.c:947 src/calc_89.c:594 src/calc_89t.c:384
+#: src/calc_73.c:489 src/calc_73.c:949 src/calc_89.c:594 src/calc_89t.c:384
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:490 src/calc_73.c:948 src/calc_89.c:595 src/calc_89t.c:385
+#: src/calc_73.c:490 src/calc_73.c:950 src/calc_89.c:595 src/calc_89t.c:385
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
@@ -87,11 +87,11 @@ msgstr ""
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:975 src/calc_89.c:647
+#: src/calc_73.c:977 src/calc_89.c:647
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:985
+#: src/calc_73.c:988
 msgid "Receiving certificate"
 msgstr ""
 
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Directory listing in <%s>..."
 msgstr ""
 
-#: src/calc_nsp.c:704
+#: src/calc_nsp.c:703
 msgid "Nspire thru DirectLink"
 msgstr ""
 
@@ -555,31 +555,43 @@ msgstr ""
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr ""
 
-#: src/error.c:353
+#: src/error.c:354
+msgid "Msg: packet too large."
+msgstr ""
+
+#: src/error.c:358
 msgid "Msg: the variable or directory does not exist."
 msgstr ""
 
-#: src/error.c:357 src/error.c:369
+#: src/error.c:362
 msgid "Msg: the directory name is invalid."
 msgstr ""
 
-#: src/error.c:361
+#: src/error.c:366
 msgid "Msg: not currently listing a directory."
 msgstr ""
 
-#: src/error.c:365
+#: src/error.c:370
 msgid "Msg: no more files to list."
 msgstr ""
 
-#: src/error.c:373
+#: src/error.c:374
+msgid "Msg: the directory name already exists."
+msgstr ""
+
+#: src/error.c:379
+msgid "Msg: the destination (folder or file) path is too long."
+msgstr ""
+
+#: src/error.c:383
 msgid "Msg: the file name is invalid."
 msgstr ""
 
-#: src/error.c:377
+#: src/error.c:387
 msgid "Msg: no file extension."
 msgstr ""
 
-#: src/error.c:381
+#: src/error.c:391
 msgid "Msg: forbidden characters in folder name."
 msgstr ""
 

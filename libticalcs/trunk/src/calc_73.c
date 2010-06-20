@@ -943,37 +943,40 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 		if(ptr->data_type == TI83p_CERT)
 			break;
 
-	// send content
-	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
-	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
-
-	nblocks = ptr->data_length / size;
-	update_->max2 = nblocks;
-
-	TRYF(ti73_send_VAR2(size, ptr->data_type, 0x04, 0x4000, 0x00));
-	TRYF(ti73_recv_ACK(NULL));
-
-	TRYF(ti73_recv_CTS(10));
-	TRYF(ti73_send_ACK());
-
-	for(i = 0; i <= nblocks; i++) 
+	if (ptr != NULL)
 	{
-		uint32_t length = size;
+		// send content
+		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
+		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
 
-		TRYF(ti73_send_XDP(length, (ptr->data_part) + length * i))
+		nblocks = ptr->data_length / size;
+		update_->max2 = nblocks;
+
+		TRYF(ti73_send_VAR2(size, ptr->data_type, 0x04, 0x4000, 0x00));
 		TRYF(ti73_recv_ACK(NULL));
 
-		TRYF(ti73_recv_CTS(size));
+		TRYF(ti73_recv_CTS(10));
 		TRYF(ti73_send_ACK());
 
-		update_->cnt2 = i;
-		update_->pbar();
+		for(i = 0; i <= nblocks; i++) 
+		{
+			uint32_t length = size;
+
+			TRYF(ti73_send_XDP(length, (ptr->data_part) + length * i))
+			TRYF(ti73_recv_ACK(NULL));
+
+			TRYF(ti73_recv_CTS(size));
+			TRYF(ti73_send_ACK());
+
+			update_->cnt2 = i;
+			update_->pbar();
+		}
+
+		TRYF(ti73_send_EOT());
+
+		ticalcs_info(_("Header sent completely."));
+
 	}
-
-	TRYF(ti73_send_EOT());
-
-	ticalcs_info(_("Header sent completely."));
-
 	return 0;
 }
 

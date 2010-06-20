@@ -41,11 +41,11 @@
  **/
 TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
 {
-  return ((model == CALC_TI73) || (model == CALC_TI82) ||
-	  (model == CALC_TI82) || (model == CALC_TI83) ||
-	  (model == CALC_TI83P) || (model == CALC_TI84P) ||
-	  (model == CALC_TI85) || (model == CALC_TI86) ||
-	  (model == CALC_TI84P_USB));
+	return ((model == CALC_TI73) || (model == CALC_TI82) ||
+	        (model == CALC_TI82) || (model == CALC_TI83) ||
+	        (model == CALC_TI83P) || (model == CALC_TI84P) ||
+	        (model == CALC_TI85) || (model == CALC_TI86) ||
+	        (model == CALC_TI84P_USB));
 }
 
 /**
@@ -58,9 +58,9 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
 {
-  return ((model == CALC_TI89) || (model == CALC_TI89T) ||
-	  (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
-	  (model == CALC_TI89T_USB));
+	return ((model == CALC_TI89) || (model == CALC_TI89T) ||
+	        (model == CALC_TI92) || (model == CALC_TI92P) || (model == CALC_V200) ||
+	        (model == CALC_TI89T_USB));
 }
 
 /**
@@ -96,10 +96,10 @@ TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
  **/
 TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
 {
-  return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
-	  (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
-	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
-	  (calc_type == CALC_NSPIRE));
+	return ((calc_type == CALC_TI89) || (calc_type == CALC_TI89T) ||
+	        (calc_type == CALC_TI92) || (calc_type == CALC_TI92P) || 
+	        (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
+	        (calc_type == CALC_NSPIRE));
 }
 
 /**
@@ -112,12 +112,12 @@ TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
  **/
 TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
 {
-  return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
-	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
-	  (calc_type == CALC_TI89T) || (calc_type == CALC_TI89) || 
-	  (calc_type == CALC_TI92P) ||
-	  (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
-	  (calc_type == CALC_NSPIRE));
+	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
+	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
+	        (calc_type == CALC_TI89T) || (calc_type == CALC_TI89) || 
+	        (calc_type == CALC_TI92P) ||
+	        (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
+	        (calc_type == CALC_NSPIRE));
 }
 
 /**
@@ -130,10 +130,10 @@ TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
  **/
 TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
 {
-  return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
-	  (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
-	  (calc_type == CALC_TI84P) || (calc_type == CALC_TI85) ||
-	  (calc_type == CALC_TI86) || (calc_type == CALC_TI92));
+	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
+	        (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
+	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI85) ||
+	        (calc_type == CALC_TI86) || (calc_type == CALC_TI92));
 }
 
 /**
@@ -148,16 +148,16 @@ TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
  **/
 TIEXPORT2 uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
 {
-  int i;
-  uint16_t c = 0;
+	int i;
+	uint16_t c = 0;
 
-  if (buffer == NULL)
-    return 0;
+	if (buffer == NULL)
+		return 0;
 
-  for (i = 0; i < size; i++)
-    c += buffer[i];
+	for (i = 0; i < size; i++)
+		c += buffer[i];
 
-  return c;
+	return c;
 }
 
 TIEXPORT2 int tifiles_hexdump(uint8_t* ptr, unsigned int length)
@@ -175,12 +175,12 @@ TIEXPORT2 int tifiles_hexdump(uint8_t* ptr, unsigned int length)
  **/
 char *TICALL tifiles_get_varname(const char *full_name)
 {
-  char *bs = strchr(full_name, '\\');
+	char *bs = strchr(full_name, '\\');
 
-  if (bs == NULL)
-    return (char *) full_name;
-  else
-    return (++bs);
+	if (bs == NULL)
+		return (char *) full_name;
+	else
+		return (++bs);
 }
 
 /**
@@ -193,19 +193,19 @@ char *TICALL tifiles_get_varname(const char *full_name)
  **/
 char *TICALL tifiles_get_fldname(const char *full_name)
 {
-  static char folder[FLDNAME_MAX];
-  char *bs = strchr(full_name, '\\');
-  int i;
+	static char folder[FLDNAME_MAX];
+	char *bs = strchr(full_name, '\\');
+	int i;
 
-  if (bs == NULL)
-    strcpy(folder, "");
-  else 
-  {
-    i = strlen(full_name) - strlen(bs);
-    strncpy(folder, full_name, i);
-    folder[i] = '\0';
-  }
-  return folder;
+	if (bs == NULL)
+		strcpy(folder, "");
+	else
+	{
+		i = strlen(full_name) - strlen(bs);
+		strncpy(folder, full_name, i);
+		folder[i] = '\0';
+	}
+	return folder;
 }
 
 /**
@@ -223,25 +223,25 @@ char *TICALL tifiles_get_fldname(const char *full_name)
 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 				  const char *fldname, const char *varname)
 {
-  if (tifiles_has_folder(model)) 
-  {
-    if (strcmp(fldname, "")) 
+	if (tifiles_has_folder(model)) 
 	{
-      strcpy(full_name, fldname);
-      strcat(full_name, "\\");
-	  strcat(full_name, varname);
-    }
+		if (strcmp(fldname, "")) 
+		{
+			strcpy(full_name, fldname);
+			strcat(full_name, "\\");
+			strcat(full_name, varname);
+		}
+		else
+		{
+			strcpy(full_name, varname);
+		}
+	}
 	else
 	{
 		strcpy(full_name, varname);
 	}
-  } 
-  else
-  {
-	  strcpy(full_name, varname);
-  }
 
-  return full_name;
+	return full_name;
 }
 
 /**
@@ -265,7 +265,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		char *part2;
 		const char *part3;
 		char *tmp;
-		
+
 		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);
 
@@ -281,7 +281,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		char *part2;
 		const char *part3;
 		char *tmp;
-		
+
 		part1 = ticonv_varname_to_filename(model, ve->folder, -1);
 		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);

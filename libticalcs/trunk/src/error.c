@@ -349,35 +349,45 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: OS installation failed. File is corrupted/wrong."));
 		*message = g_strdup(error_msg);
 		break;
+	// The following one is returned when the filename does not fit in a 254-byte packet.
 	case ERR_CALC_ERROR3+2:
-		strcpy(error_msg, _("Msg: the variable or directory does not exist."));
+		strcpy(error_msg, _("Msg: packet too large."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+3:
-		strcpy(error_msg, _("Msg: the directory name is invalid."));
+		strcpy(error_msg, _("Msg: the variable or directory does not exist."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+4:
-		strcpy(error_msg, _("Msg: not currently listing a directory."));
-		*message = g_strdup(error_msg);
-		break;
-	case ERR_CALC_ERROR3+5:
-		strcpy(error_msg, _("Msg: no more files to list."));
-		*message = g_strdup(error_msg);
-		break;
-	case ERR_CALC_ERROR3+6:
 		strcpy(error_msg, _("Msg: the directory name is invalid."));
 		*message = g_strdup(error_msg);
 		break;
-	case ERR_CALC_ERROR3+7:
-		strcpy(error_msg, _("Msg: the file name is invalid."));
+	case ERR_CALC_ERROR3+5:
+		strcpy(error_msg, _("Msg: not currently listing a directory."));
 		*message = g_strdup(error_msg);
 		break;
+	case ERR_CALC_ERROR3+6:
+		strcpy(error_msg, _("Msg: no more files to list."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+7:
+		strcpy(error_msg, _("Msg: the directory name already exists."));
+		*message = g_strdup(error_msg);
+		break;
+	// The following one is returned with folder names >= 230 bytes long
 	case ERR_CALC_ERROR3+8:
-		strcpy(error_msg, _("Msg: no file extension."));
+		strcpy(error_msg, _("Msg: the destination (folder or file) path is too long."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR3+9:
+		strcpy(error_msg, _("Msg: the file name is invalid."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+10:
+		strcpy(error_msg, _("Msg: no file extension."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+11:
 		strcpy(error_msg, _("Msg: forbidden characters in folder name."));
 		*message = g_strdup(error_msg);
 		break;
