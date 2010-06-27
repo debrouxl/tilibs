@@ -478,9 +478,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	//    0x06						/* Enter		*/
 	//};               
 
-	// Send dumping program
-	TRYF(rd_send(handle, "romdump.86p", romDumpSize86, romDump86));
-
 	// Wait for user's action (execing program)
 	sprintf(handle->updat->text, _("Waiting for user's action..."));
 	handle->updat->label();
