@@ -59,6 +59,7 @@ AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT(external)
+AM_GNU_GETTEXT_VERSION([0.16])
 
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6.0)
 AC_SUBST(GLIB_CFLAGS)
