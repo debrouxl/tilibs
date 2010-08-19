@@ -16,14 +16,15 @@ dnl  * If you added things to the api, increment 'current',
 dnl    reset 'revision' and increment 'age'.
 dnl  * If you changed/removed things from the api, increment 'current',
 dnl    reset 'revision' and reset 'age'.
-LT_CURRENT=9
-LT_REVISION=3
-LT_AGE=0
-LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
-AC_SUBST(LT_LIBVERSION, $LT_CURRENT:$LT_REVISION:$LT_AGE)
+m4_define(LT_CURRENT, 9)
+m4_define(LT_REVISION, 3)
+m4_define(LT_AGE, 0)
+LT_LIBVERSION="LT_CURRENT():LT_REVISION():LT_AGE()"
+AC_SUBST(LT_LIBVERSION)
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PREFIX_DEFAULT(/usr/local)
 

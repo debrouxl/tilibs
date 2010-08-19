@@ -2648,11 +2648,10 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 VERSION="1.1.4"
 
 
-LT_CURRENT=7
-LT_REVISION=2
-LT_AGE=0
-LT_LIBVERSION="$LT_CURRENT:$LT_REVISION:$LT_AGE"
-LT_LIBVERSION=$LT_CURRENT:$LT_REVISION:$LT_AGE
+
+
+
+LT_LIBVERSION="7:2:0"
 
 
 am__api_version='1.10'
@@ -3149,6 +3148,7 @@ else
 fi
 
   MAINT=$MAINTAINER_MODE_TRUE
+
 
 
 
