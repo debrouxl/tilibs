@@ -57,6 +57,7 @@
 #define CMD_FM_DEL_FILE		0x09
 #define CMD_FM_NEW_FOLDER	0x0a
 #define CMD_FM_DEL_FOLDER	0x0b
+#define CMD_FM_COPY_FILE	0x0c
 #define CMD_FM_DIRLIST_INIT	0x0d
 #define CMD_FM_DIRLIST_NEXT	0x0e
 #define CMD_FM_DIRLIST_DONE	0x0f
@@ -111,6 +112,9 @@ int cmd_r_new_folder(CalcHandle *h);
 
 int cmd_s_del_folder(CalcHandle *h, const char *name);
 int cmd_r_del_folder(CalcHandle *h);
+
+int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2);
+int cmd_r_copy_file(CalcHandle *h);
 
 int cmd_s_file_ok(CalcHandle *h);
 int cmd_r_file_ok(CalcHandle *h);

@@ -522,7 +522,50 @@ static int		dump_rom_1	(CalcHandle* handle)
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	return 0;
+	uint32_t varsize;
+	uint8_t *data;
+	int err;
+	FILE *f;
+
+	ticalcs_info("FIXME: make ROM dumping work on OS 2.x");
+
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	f = fopen(filename, "wb");
+	if (f == NULL)
+	{
+		return ERR_OPEN_FILE;
+	}
+
+	err = cmd_s_get_file(handle, "../phoenix/install/TI-Nspire.tnc");
+	if (!err)
+	{
+		err = cmd_r_get_file(handle, &varsize);
+		if (!err)
+		{
+			err = cmd_s_file_ok(handle);
+			if (!err)
+			{
+				err = cmd_r_file_contents(handle, &varsize, &data);
+				if (!err)
+				{
+					err = cmd_s_status(handle, ERR_OK);
+					if (!err)
+					{
+						if (fwrite(data, varsize, 1, f) < 1)
+						{
+							err = ERR_SAVE_FILE;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	fclose(f);
+
+	nsp_session_close(handle);
+	return err;
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -702,7 +745,7 @@ const CalcFncts calc_nsp =
 	"Nspire handheld",
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
-	OPS_NEWFLD | OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
 		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
 	&is_ready,

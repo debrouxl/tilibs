@@ -477,6 +477,31 @@ int cmd_r_del_folder(CalcHandle *h)
 	return cmd_r_status(h, NULL);
 }
 
+int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2)
+{
+	VirtualPacket* pkt;
+	size_t len = strlen(name) < 8 ? 8 : strlen(name);
+	size_t len2 = strlen(name2) < 8 ? 8 : strlen(name2);
+
+	ticalcs_info("  copying file:");
+
+	pkt = nsp_vtl_pkt_new_ex(3 + len + len2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt->cmd = CMD_FM_COPY_FILE;
+	pkt->data[0] = 0x01;
+	put_str(pkt->data + 1, name);
+	put_str(pkt->data + 2 + len, name2);
+
+	TRYF(nsp_send_data(h, pkt));
+
+	nsp_vtl_pkt_del(pkt);
+	return 0;
+}
+
+int cmd_r_copy_file(CalcHandle *h)
+{
+	return cmd_r_status(h, NULL);
+}
+
 int cmd_s_file_ok(CalcHandle *h)
 {
 	VirtualPacket* pkt;
