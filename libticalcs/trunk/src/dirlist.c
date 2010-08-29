@@ -111,11 +111,15 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 {
 	GNode *vars = tree;
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 	int i, j, k;
 	char *utf8;
   
 	if (tree == NULL)
+		return;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return;
 
   printf(  "+------------------+----------+----+----+----------+----------+\n");
@@ -200,9 +204,13 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 {
 	int i, j;
 	GNode *vars = tree;
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 
-	if (tree == NULL)
+	if (tree == NULL || s == NULL)
+		return NULL;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return NULL;
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
@@ -246,9 +254,13 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 	int i, j;
 	GNode *vars = tree;
 	int nvars = 0;
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 
 	if (tree == NULL)
+		return 0;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return 0;
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
@@ -278,9 +290,13 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 	int i, j;
 	GNode *vars = tree;
 	uint32_t mem = 0;
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 
 	if (tree == NULL)
+		return 0;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return 0;
 
 	if (strcmp(info->type, VAR_NODE_NAME))
@@ -315,10 +331,15 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 {
 	int i, j;
 	uint32_t mem = 0;
-	TreeInfo *info1 = (TreeInfo *)(vars->data);
-	TreeInfo *info2 = (TreeInfo *)(apps->data);
+	TreeInfo *info1;
+	TreeInfo *info2;
 
-	if (!vars && !apps)
+	if (!vars || !apps)
+		return 0;
+
+	info1 = (TreeInfo *)(vars->data);
+	info2 = (TreeInfo *)(apps->data);
+	if (info1 == NULL ||  info2 == NULL)
 		return 0;
 
 	if (!strcmp(info1->type, VAR_NODE_NAME))
@@ -368,7 +389,7 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
  **/
 TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 {
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 	int i, j;
 	int found = 0;
 
@@ -380,7 +401,11 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 
 	const char *folder;
 
-	if (tree == NULL)
+	if (tree == NULL || entry == NULL)
+		return;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return;
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
@@ -469,7 +494,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
  **/
 TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 {
-	TreeInfo *info = (TreeInfo *)(tree->data);
+	TreeInfo *info;
 	int i, j;
 	int found = 0;
 
@@ -481,7 +506,11 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 
 	const char *folder;
 
-	if (tree == NULL)
+	if (tree == NULL || entry == NULL)
+		return;
+
+	info = (TreeInfo *)(tree->data);
+	if (info == NULL)
 		return;
 
 	if (strcmp(info->type, VAR_NODE_NAME))
@@ -510,7 +539,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 
 	if(!found && fe)
 		return;
-		
+
 	// next, delete variables beneath this folder
 	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
 	{
