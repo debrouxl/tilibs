@@ -378,35 +378,58 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 	RawPacket raw = {0};
 	long offset = 0;
 	uint32_t size = vtl->size;
+	int err = 0;
 
 	vtl->size = 0;
 	vtl->data = malloc(DATA_SIZE);
 
-	do
+	if (vtl->data)
 	{
-		TRYF(nsp_recv(h, &raw));
-		vtl->cmd = raw.data[0];
-		vtl->size += raw.data_size-1;
+		do
+		{
+			err = nsp_recv(h, &raw);
+			if (err)
+			{
+				break;
+			}
+			if (raw.data_size > 0)
+			{
+				vtl->cmd = raw.data[0];
+				vtl->size += raw.data_size-1;
 
-		vtl->data = realloc(vtl->data, vtl->size);
-		memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
-		offset += raw.data_size-1;
+				vtl->data = realloc(vtl->data, vtl->size);
+				memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
+				offset += raw.data_size-1;
 
-		h->updat->max1 = size ? size : vtl->size;
-		h->updat->cnt1 += DATA_SIZE;
-		h->updat->pbar();
+				h->updat->max1 = size ? size : vtl->size;
+				h->updat->cnt1 += DATA_SIZE;
+				h->updat->pbar();
+			}
 
-		if(raw.dst_port == PORT_LOGIN)
-		{ TRYF(nsp_send_nack_ex(h, raw.src_port)); }
-		else if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
-		{ TRYF(nsp_send_ack(h)); }
+			if(raw.dst_port == PORT_LOGIN)
+			{
+				err = nsp_send_nack_ex(h, raw.src_port);
+				if (err)
+				{
+					break;
+				}
+			}
+			else if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
+			{
+				err = nsp_send_ack(h);
+				if (err)
+				{
+					break;
+				}
+			}
 
-	} while(raw.data_size >= DATA_SIZE);
+		} while(raw.data_size >= DATA_SIZE);
+	}
 
 	vtl->src_addr = raw.src_addr;
 	vtl->src_port = raw.src_port;
 	vtl->dst_addr = raw.dst_addr;
 	vtl->dst_port = raw.dst_port;
 
-	return 0;
+	return err;
 }
