@@ -268,22 +268,22 @@ msgstr ""
 msgid "Requesting version infos:"
 msgstr ""
 
-#: src/dirlist.c:126
+#: src/dirlist.c:122
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr ""
 
-#: src/dirlist.c:186
+#: src/dirlist.c:182
 #, c-format
 msgid "| No variables     |\n"
 msgstr ""
 
-#: src/dirlist.c:188
+#: src/dirlist.c:184
 #, c-format
 msgid "| No applications  |\n"
 msgstr ""
 
-#: src/dirlist.c:190
+#: src/dirlist.c:186
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
 msgstr ""

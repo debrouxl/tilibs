@@ -268,22 +268,22 @@ msgstr "Suppression variable '%s':"
 msgid "Requesting version infos:"
 msgstr "Demande de version:"
 
-#: src/dirlist.c:126
+#: src/dirlist.c:122
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
-#: src/dirlist.c:186
+#: src/dirlist.c:182
 #, c-format
 msgid "| No variables     |\n"
 msgstr "| Pas de variable  |\n"
 
-#: src/dirlist.c:188
+#: src/dirlist.c:184
 #, c-format
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
 
-#: src/dirlist.c:190
+#: src/dirlist.c:186
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
 msgstr "+------------------+----------+----+----+----------+----------+"

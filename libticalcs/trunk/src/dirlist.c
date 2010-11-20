@@ -60,14 +60,10 @@
 
 static gboolean free_varentry(GNode* node, gpointer data)
 {
-	if(node)
+	if(node && node->data)
 	{
-		if(node->data)
-		{
-			VarEntry* ve = node->data;
-
-			tifiles_ve_delete(ve);
-		}
+		VarEntry* ve = node->data;
+		tifiles_ve_delete(ve);
 	}
 
 	return FALSE;
@@ -91,7 +87,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 		{
 			g_node_traverse(*tree, G_IN_ORDER, G_TRAVERSE_LEAVES, -1, free_varentry, NULL);
 		}
-			
+
 		ti = (TreeInfo *)((*tree)->data);
 		g_free((*tree)->data);
 		g_node_destroy(*tree);
@@ -446,13 +442,16 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	// folder doesn't exist? => create!
 	if((!found && fe) || 
 	   (!g_node_n_children(tree) && tifiles_has_folder(info->model)))
-	{	
+	{
 		fe = tifiles_ve_create();
-		strcpy(fe->name, entry->folder);
-		fe->type = TI89_DIR;
+		if (fe != NULL)
+		{
+			strcpy(fe->name, entry->folder);
+			fe->type = TI89_DIR;
 
-		parent = g_node_new(fe);
-		g_node_append(tree, parent);
+			parent = g_node_new(fe);
+			g_node_append(tree, parent);
+		}
 	}
 
 	if(!strcmp(entry->name, ""))
@@ -474,8 +473,11 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	if(!found)
 	{
 		ve = tifiles_ve_dup(entry);
-		child = g_node_new(ve);
-		g_node_append(parent, child);
+		if (ve != NULL)
+		{
+			child = g_node_new(ve);
+			g_node_append(parent, child);
+		}
 	}
 
 	if(fe && found)

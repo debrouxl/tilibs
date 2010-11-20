@@ -67,7 +67,10 @@ TIEXPORT2 void *tifiles_ve_alloc_data(size_t size)
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size)
 {
 	VarEntry* ve = tifiles_ve_create();
-	ve->data = (uint8_t *)g_malloc0(size);
+	if (ve != NULL)
+	{
+		ve->data = (uint8_t *)g_malloc0(size);
+	}
 
 	return ve;
 }
@@ -148,11 +151,13 @@ TIEXPORT2 void			TICALL tifiles_ve_delete_array(VarEntry** array)
  **/
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 {
-	int alloc = dst->data == NULL;
+	int alloc;
 
 	assert(src != NULL);
 	assert(dst != NULL);
-		
+
+	alloc = (dst->data == NULL);
+
 	memcpy(dst, src, sizeof(VarEntry));
 	if(alloc)
 	{
@@ -175,17 +180,21 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
  **/
 TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 {
-	VarEntry* dst = g_malloc0(sizeof(VarEntry));
+	VarEntry* dst;
 
 	assert(src != NULL);
 
-	memcpy(dst, src, sizeof(VarEntry));
-	dst->data = (uint8_t *)g_malloc0(dst->size);
-	if (dst->data == NULL)
-		return NULL;
+	dst = g_malloc0(sizeof(VarEntry));
+	if (dst != NULL)
+	{
+		memcpy(dst, src, sizeof(VarEntry));
+		dst->data = (uint8_t *)g_malloc0(dst->size);
 
-	if(src->data)
-		memcpy(dst->data, src->data, dst->size);
+		if(src->data != NULL && dst->data != NULL)
+		{
+			memcpy(dst->data, src->data, dst->size);
+		}
+	}
 
 	return dst;
 }
@@ -215,9 +224,12 @@ TIEXPORT2 FlashPage*	TICALL tifiles_fp_create(void)
 TIEXPORT2 void *tifiles_fp_alloc_data(size_t size)
 {
 	uint8_t *data;
-	
+
 	data = g_malloc0((size+1) * sizeof(uint8_t));
-	memset(data, 0xFF, size);
+	if (data != NULL)
+	{
+		memset(data, 0xFF, size);
+	}
 
 	return data;
 }
@@ -233,7 +245,10 @@ TIEXPORT2 void *tifiles_fp_alloc_data(size_t size)
 TIEXPORT2 FlashPage*	TICALL tifiles_fp_create_with_data(uint32_t size)
 {
 	FlashPage* ve = tifiles_fp_create();
-	ve->data = (uint8_t *)g_malloc0(size);
+	if (ve != NULL)
+	{
+		ve->data = (uint8_t *)g_malloc0(size);
+	}
 
 	return ve;
 }
