@@ -31,7 +31,6 @@
 #  include <config.h>
 #endif
 
-#include <assert.h>
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <stdlib.h>
@@ -201,11 +200,16 @@ TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
 {
 	TigEntry** ptr;
 
-	assert(array != NULL);
-
-	for(ptr = array; ptr; ptr++)
-		tifiles_te_delete(*ptr);
-	g_free(array);
+	if (array != NULL)
+	{
+		for(ptr = array; ptr; ptr++)
+			tifiles_te_delete(*ptr);
+		g_free(array);
+	}
+	else
+	{
+		tifiles_critical("tifiles_te_delete_array(NULL)\n");
+	}
 }
 
 /**

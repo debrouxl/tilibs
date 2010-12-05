@@ -16,85 +16,85 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/error.c:49
+#: src/error.c:53
 msgid "Msg: unable to allocate memory (malloc)."
 msgstr "Msg : impossible d'allouer de la mémoire (malloc)."
 
-#: src/error.c:51
+#: src/error.c:55
 msgid "Cause: memory too low ?"
 msgstr "Cause : pas assez de mémoire ?"
 
-#: src/error.c:57
+#: src/error.c:61
 msgid "Msg: unable to open file."
 msgstr "Msg : impossible d'ouvrir le fichier."
 
-#: src/error.c:59 src/error.c:67
+#: src/error.c:63 src/error.c:71
 msgid "Cause: either the file does not exist, either there is no room."
 msgstr ""
 "Cause : le fichier n'existe pas, ou il n'y a pas assez de place sur le "
 "disque."
 
-#: src/error.c:65
+#: src/error.c:69
 msgid "Msg: unable to close file."
 msgstr "Msg : impossible de fermer le fichier."
 
-#: src/error.c:73
+#: src/error.c:77
 msgid "Msg: the size of a group file cannot exceed 64 KB."
 msgstr "Msg : la taille d'un groupe ne peut pas dépasser 64 Ko."
 
-#: src/error.c:75
+#: src/error.c:79
 msgid "Cause: too many variables/data."
 msgstr "Cause : trop de variables/données."
 
-#: src/error.c:81
+#: src/error.c:85
 msgid "Msg: unknown calculator type."
 msgstr "Msg : type de calculatrice inconnu."
 
-#: src/error.c:83
+#: src/error.c:87
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
 "Cause : il s'agit probablement d'un bogue, signalez-le à tilp-users@lists.sf."
 "net."
 
-#: src/error.c:90
+#: src/error.c:94
 msgid "Msg: invalid file."
 msgstr "Msg : fichier non valide."
 
-#: src/error.c:92
+#: src/error.c:96
 msgid "Cause: it's probably not a TI formatted file."
 msgstr "Cause : il ne s'agit probablement pas d'un fichier TI."
 
-#: src/error.c:98
+#: src/error.c:102
 msgid "Msg: checksum error."
 msgstr "Msg : erreur de somme de contrôle (checksum)."
 
-#: src/error.c:100
+#: src/error.c:104
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
 "Cause : le fichier a une somme de contrôle incorrecte et est peut être "
 "corrompu."
 
-#: src/error.c:106
+#: src/error.c:110
 msgid "Msg: (Un)Zip error."
 msgstr "Msg : erreur ZIP/UNZIP."
 
-#: src/error.c:108
+#: src/error.c:112
 msgid "Cause: unknown..."
 msgstr "Cause : inconnue..."
 
-#: src/error.c:114
+#: src/error.c:118
 msgid "Msg: unsupported function."
 msgstr "Msg : fonction non supportée"
 
-#: src/error.c:116
+#: src/error.c:120
 msgid "Cause: the function you attempted to use is not available."
 msgstr "Cause : la fonction n'est pas disponible."
 
-#: src/error.c:122
+#: src/error.c:126
 msgid "Msg: I/O file error."
 msgstr "Msg : erreur d'E/S."
 
-#: src/error.c:124
+#: src/error.c:128
 msgid "Cause: file is corrupted or invalid."
 msgstr "Cause : le fichier est corrompu ou invalide"
 

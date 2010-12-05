@@ -98,10 +98,11 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
   FileContent *dst;
   int i, j, n;
 
-  if(src_contents[0]->model == CALC_NSPIRE)
-	  return ERR_BAD_CALC;
-
-  for (n = 0; src_contents[n] != NULL; n++);
+  for (n = 0; src_contents[n] != NULL; n++)
+  {
+    if(src_contents[n]->model == CALC_NSPIRE)
+      return ERR_BAD_CALC;
+  }
 
   dst = (FileContent *)g_malloc0(sizeof(FileContent));
   if (dst == NULL)
@@ -118,8 +119,8 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
   {
     FileContent *src = src_contents[i];
 
-	for(j = 0; j < src->num_entries; j++)
-		dst->entries[i] = tifiles_ve_dup(src->entries[j]);
+    for(j = 0; j < src->num_entries; j++)
+      dst->entries[i] = tifiles_ve_dup(src->entries[j]);
   }
 
   *dst_content = dst;
@@ -146,11 +147,10 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
   FileContent **dst;
 
   if(src->model == CALC_NSPIRE)
-	  return ERR_BAD_CALC;
+    return ERR_BAD_CALC;
 
   // allocate an array of FileContent structures (NULL terminated)
-  dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) *
-				      sizeof(FileContent *));
+  dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) * sizeof(FileContent *));
   if (dst == NULL)
     return ERR_MALLOC;
 
@@ -167,14 +167,12 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
 
     // allocate and duplicate entry
     dst[i]->entries = g_malloc0((1+1) * sizeof(VarEntry*));
-	dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
+    dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
 
     // update some fields
     dst[i]->num_entries = 1;
-    dst[i]->checksum +=
-		tifiles_checksum((uint8_t *) dst_entry, 15);
-    dst[i]->checksum +=
-		tifiles_checksum(dst_entry->data, dst_entry->size);
+    dst[i]->checksum += tifiles_checksum((uint8_t *) dst_entry, 15);
+    dst[i]->checksum += tifiles_checksum(dst_entry->data, dst_entry->size);
   }
   dst[i] = NULL;
 

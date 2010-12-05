@@ -31,7 +31,6 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
 #include <windows.h>
 
 #include "../ticables.h"
@@ -111,31 +110,31 @@ static int tie_open(CableHandle *h)
 
 	/* Create shared counter */
 	hRefCnt = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(int), (LPCTSTR) cnt_name);
-	if (hRefCnt == NULL) 
+	if (hRefCnt == NULL)
 		return ERR_TIE_OPENFILEMAPPING;
 	ret = GetLastError() == ERROR_ALREADY_EXISTS;
 
-    /* Create a FileMapping objects */
-    hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
-    if (hSendBuf == NULL) 
+	/* Create a FileMapping objects */
+	hSendBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 0]);
+	if (hSendBuf == NULL)
 		return ERR_TIE_OPENFILEMAPPING;
 
-    hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
-    if (hRecvBuf == NULL) 
+	hRecvBuf = CreateFileMapping((HANDLE) (-1), NULL, PAGE_READWRITE, 0, sizeof(LinkBuffer), (LPCTSTR) name[2 * p + 1]);
+	if (hRecvBuf == NULL)
 		return ERR_TIE_OPENFILEMAPPING;
 
-    /* Map them */
-    pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-    if (pSendBuf == NULL) 
+	/* Map them */
+	pSendBuf = (LinkBuffer *) MapViewOfFile(hSendBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+	if (pSendBuf == NULL)
 		return ERR_TIE_MAPVIEWOFFILE;
 
-    pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-    if (pRecvBuf == NULL) 
+	pRecvBuf = (LinkBuffer *) MapViewOfFile(hRecvBuf, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+	if (pRecvBuf == NULL)
 		return ERR_TIE_MAPVIEWOFFILE;
 
 	/* Reset buffers */
 	pSendBuf->start = pSendBuf->end = 0;
-    pRecvBuf->start = pRecvBuf->end = 0;
+	pRecvBuf->start = pRecvBuf->end = 0;
 
 	/* Increase ref counter */
 	pRefCnt = (int *)MapViewOfFile(hRefCnt, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(int));
@@ -149,53 +148,67 @@ static int tie_open(CableHandle *h)
 static int tie_close(CableHandle *h)
 {
 	/* Close mappings */
-  if (hSendBuf) 
-  {
-    UnmapViewOfFile(pSendBuf);
-	pSendBuf = NULL;
-	CloseHandle(hSendBuf);
-  }
+	if (hSendBuf)
+	{
+		UnmapViewOfFile(pSendBuf);
+		pSendBuf = NULL;
+		CloseHandle(hSendBuf);
+	}
 
-  if (hRecvBuf)
-  {
-    UnmapViewOfFile(pRecvBuf);
-	pRecvBuf = NULL;
-	CloseHandle(hRecvBuf);
-  }
+	if (hRecvBuf)
+	{
+		UnmapViewOfFile(pRecvBuf);
+		pRecvBuf = NULL;
+		CloseHandle(hRecvBuf);
+	}
 
-  /* Decrease ref counter */
-  assert(pRefCnt);
-  (*pRefCnt)--;
-  if(*pRefCnt == 0) 
-  {
-	  UnmapViewOfFile(pRecvBuf);
-	  CloseHandle(hRefCnt);
-  }
+	/* Decrease ref counter */
+	if (pRefCnt)
+	{
+		(*pRefCnt)--;
+		if(*pRefCnt == 0)
+		{
+			UnmapViewOfFile(pRecvBuf);
+			CloseHandle(hRefCnt);
+		}
+	}
+	else
+	{
+		ticables_critical("tie_close(): reference counter busted !\n");
+	}
 
-  return 0;
+	return 0;
 }
 
 static int tie_reset(CableHandle *h)
 {
-	assert(pRefCnt);
+	if (pRefCnt)
+	{
+		if (*pRefCnt < 2)
+			return 0;
 
-	if(*pRefCnt < 2)
-     return 0;
+		if(!hSendBuf) return 0;
+		if(!hRecvBuf) return 0;
 
-	if(!hSendBuf) return 0;
-	if(!hRecvBuf) return 0;
-
-	assert(pSendBuf);
-	assert(pRecvBuf);
-
-	pSendBuf->start = pSendBuf->end = 0;
-	pRecvBuf->start = pRecvBuf->end = 0;
+		if (pSendBuf)
+			pSendBuf->start = pSendBuf->end = 0;
+		else
+			ticables_critical("tie_reset(): send buffer busted !\n");
+		if (pRecvBuf)
+			pRecvBuf->start = pRecvBuf->end = 0;
+		else
+			ticables_critical("tie_reset(): receive buffer busted !\n");
+	}
+	else
+	{
+		ticables_critical("tie_reset(): reference counter busted !\n");
+	}
 
 	return 0;
 }
 
 static int tie_probe(CableHandle *h)
-{	
+{
 	return shm_check() ? 0 : ERR_PROBE_FAILED;
 }
 
@@ -204,27 +217,38 @@ static int tie_put(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	assert(pRefCnt);
-	if(*pRefCnt < 2)
-     return 0;
-
-	if(!hSendBuf) return 0;
-	assert(pSendBuf);
-
-	for(i = 0; i < len; i++)
+	if (pRefCnt)
 	{
-		TO_START(clk);
-		do 
-		{
-		  if (TO_ELAPSED(clk, h->timeout))
-			return ERR_WRITE_TIMEOUT;
-		}
-		while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
+		if(*pRefCnt < 2)
+			return 0;
 
-		pSendBuf->buf[pSendBuf->end] = data[i];
-		pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
+		if(!hSendBuf) return 0;
+		if (pSendBuf)
+		{
+			for(i = 0; i < len; i++)
+			{
+				TO_START(clk);
+				do
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+						return ERR_WRITE_TIMEOUT;
+				}
+				while (((pSendBuf->end + 1) & (BUFSIZE-1)) == pSendBuf->start);
+
+				pSendBuf->buf[pSendBuf->end] = data[i];
+				pSendBuf->end = (pSendBuf->end + 1) & (BUFSIZE-1);
+			}
+		}
+		else
+		{
+			ticables_critical("tie_put(): send buffer busted !\n");
+		}
 	}
-	
+	else
+	{
+		ticables_critical("tie_put(): reference counter busted !\n");
+	}
+
 	return 0;
 }
 
@@ -233,25 +257,36 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 	unsigned int i;
 	tiTIME clk;
 
-	assert(pRefCnt);
-	if(*pRefCnt < 2) 
-		return 0;
-
-	if(!hRecvBuf) return 0;
-	assert(pRecvBuf);
-
-	for(i = 0; i < len; i++)
+	if (pRefCnt)
 	{
-		TO_START(clk);
-		do 
-		{
-			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_READ_TIMEOUT;
-		}
-		while (pRecvBuf->start == pRecvBuf->end);
+		if(*pRefCnt < 2)
+			return 0;
 
-		data[i] = pRecvBuf->buf[pRecvBuf->start];
-		pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
+		if(!hRecvBuf) return 0;
+		if (pRecvBuf)
+		{
+			for(i = 0; i < len; i++)
+			{
+				TO_START(clk);
+				do
+				{
+					if (TO_ELAPSED(clk, h->timeout))
+						return ERR_READ_TIMEOUT;
+				}
+				while (pRecvBuf->start == pRecvBuf->end);
+
+				data[i] = pRecvBuf->buf[pRecvBuf->start];
+				pRecvBuf->start = (pRecvBuf->start + 1) & (BUFSIZE-1);
+			}
+		}
+		else
+		{
+			ticables_critical("tie_get(): receive buffer busted !\n");
+		}
+	}
+	else
+	{
+		ticables_critical("tie_get(): reference counter busted !\n");
 	}
 
 	return 0;
@@ -259,14 +294,25 @@ static int tie_get(CableHandle *h, uint8_t *data, uint32_t len)
 
 static int tie_check(CableHandle *h, int *status)
 {
-	assert(pRefCnt);
-	if(*pRefCnt < 2)
-     return 0;
+	if (pRefCnt)
+	{
+		if(*pRefCnt < 2)
+			return 0;
 
-	if(!hRecvBuf) return 0;
-	assert(pRecvBuf);
-
-	*status = !(pRecvBuf->start == pRecvBuf->end);
+		if(!hRecvBuf) return 0;
+		if (pRecvBuf)
+		{
+			*status = !(pRecvBuf->start == pRecvBuf->end);
+		}
+		else
+		{
+			ticables_critical("tie_check(): receive buffer busted !\n");
+		}
+	}
+	else
+	{
+		ticables_critical("tie_check(): reference counter busted !\n");
+	}
 
 	return 0;
 }

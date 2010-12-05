@@ -27,17 +27,17 @@
 typedef enum
 {
     ERR_NO_ERROR = 0,		// No error (returns 0)
-    
+
     ERR_BUSY,
     ERR_ILLEGAL_ARG,
-    
-	ERR_READ_ERROR,
+
+    ERR_READ_ERROR,
     ERR_READ_TIMEOUT=4,		// exported in ticables.h
     ERR_WRITE_ERROR,
     ERR_WRITE_TIMEOUT=6,	// exported in ticables.h
     ERR_PROBE_FAILED,
     ERR_FLUSH_ERROR,
-    
+
     ERR_GRY_CREATEFILE,
     ERR_GRY_SETUPCOMM,		//10
     ERR_GRY_GETCOMMSTATE, 
@@ -46,38 +46,38 @@ typedef enum
     ERR_GRY_SETCOMMTIMEOUT,
     ERR_GRY_PURGECOMM,
     ERR_GRY_SETCOMMMASK,
-    
+
     ERR_LIBUSBWIN32_NOT_PRESENT,
     ERR_FREE2,
     ERR_FREE3,
     ERR_DHA_NOT_FOUND,		//20
     ERR_RWP_NOT_FOUND, 
     ERR_FREE6,
-    
+
     ERR_VTI_FINDWINDOW,	// open
     ERR_VTI_OPENFILEMAPPING,
     ERR_VTI_MAPVIEWOFFILE,
-    
+
     ERR_TIE_OPENFILEMAPPING,	//open
     ERR_TIE_MAPVIEWOFFILE,
-    
+
     ERR_VTI_IPCKEY,	//open
     ERR_VTI_SHMGET,
     ERR_VTI_SHMAT,			//30
     ERR_VTI_SHMDT, //close
     ERR_VTI_SHMCTL,
-    
+
     ERR_TIE_OPEN,	//open
     ERR_TIE_CLOSE,
-    
+
     ERR_GRY_OPEN,
     ERR_GRY_IOCTL,
-    
+
     ERR_LIBUSB_OPEN,
     ERR_LIBUSB_CLAIM,
     ERR_LIBUSB_CONFIG,
     ERR_LIBUSB_RESET,		//40
-    
+
     ERR_FREE7, 
     ERR_ROOT,    
     ERR_TTDEV,
@@ -90,8 +90,9 @@ typedef enum
     ERR_PPT_OPEN,
     ERR_PPT_IOCTL, 
 
-	ERR_NO_CABLE = 50,		//50
-	ERR_NOT_OPEN,
+    ERR_NO_CABLE = 50,		//50
+    ERR_NOT_OPEN,
+    ERR_NO_LIBRARY,
 
 } CableError;
 

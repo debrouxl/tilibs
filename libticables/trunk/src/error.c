@@ -51,7 +51,11 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 {
 	char *tmp;
 
-	g_assert (message != NULL);
+	if (message == NULL)
+	{
+		ticables_critical("ticables_error_get(NULL)\n");
+		return number;
+	}
 
 	switch(number)
 	{
@@ -299,7 +303,15 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
-  	default:
+	case ERR_NO_LIBRARY:
+		*message = g_strconcat(
+			_("Msg: library DLL not found."),
+			"\n",
+			_("Cause: maybe you renamed the library DLL ?"),
+			NULL);
+		break;
+
+	default:
 	    // propagate error code
 	    return number;
     break;

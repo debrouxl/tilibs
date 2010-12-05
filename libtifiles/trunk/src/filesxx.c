@@ -23,7 +23,6 @@
   This unit contains a TI file independant API
 */
 
-#include <assert.h>
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +34,7 @@
 #include "files8x.h"
 #include "files9x.h"
 #include "filesnsp.h"
+#include "logging.h"
 
 /**
  * tifiles_content_create_regular:
@@ -48,8 +48,11 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 {
 	FileContent* content = g_malloc0(sizeof(FileContent));
 
-	content->model = content->model_dst = model;
-	strcpy(content->comment, tifiles_comment_set_single());
+	if (content != NULL)
+	{
+		content->model = content->model_dst = model;
+		strcpy(content->comment, tifiles_comment_set_single());
+	}
 
 	return content;
 }
@@ -63,23 +66,33 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 {
-  int i;
+	int i;
 
-  assert(content != NULL);
+	if (content != NULL)
+	{
+		for (i = 0; i < content->num_entries; i++) 
+		{
+			VarEntry *entry = content->entries[i];
 
-  for (i = 0; i < content->num_entries; i++) 
-  {
-    VarEntry *entry = content->entries[i];
+			if(entry != NULL)
+			{
+				g_free(entry->data);
+				g_free(entry);
+			}
+			else
+			{
+				tifiles_critical("tifiles_content_delete_regular(content with NULL entry)\n");
+			}
+		}
 
-	assert(entry != NULL);
-    g_free(entry->data);
-	g_free(entry);
-  }
-
-  g_free(content->entries);
-  g_free(content);
-
-  return 0;
+		g_free(content->entries);
+		g_free(content);
+	}
+	else
+	{
+		tifiles_critical("tifiles_content_delete_regular(NULL)\n");
+	}
+	return 0;
 }
 
 /**
@@ -91,18 +104,28 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
  **/
 TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 {
-	FileContent *dup;
+	FileContent *dup = NULL;
 	int i;
 
-	assert(content != NULL);
+	if (content != NULL)
+	{
+		dup = tifiles_content_create_regular(content->model);
+		if (dup != NULL)
+		{
+			memcpy(dup, content, sizeof(FileContent));
+			dup->entries = tifiles_ve_create_array(content->num_entries);
 
-	dup = tifiles_content_create_regular(content->model);
-	memcpy(dup, content, sizeof(FileContent));
-	dup->entries = tifiles_ve_create_array(content->num_entries);
-
-	for (i = 0; i < content->num_entries; i++) 
-		dup->entries[i] = tifiles_ve_dup(content->entries[i]);
-
+			if (dup->entries != NULL)
+			{
+				for (i = 0; i < content->num_entries; i++) 
+					dup->entries[i] = tifiles_ve_dup(content->entries[i]);
+			}
+		}
+	}
+	else
+	{
+		tifiles_critical("tifiles_content_dup_regular(NULL)\n");
+	}
 	return dup;
 }
 
@@ -130,7 +153,7 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
 #endif
-    if(content->model == CALC_NSPIRE)
+	if(content->model == CALC_NSPIRE)
 		return tnsp_file_read_regular(filename, (FileContent *)content);
 	else
 		return ERR_BAD_CALC;
@@ -212,8 +235,11 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 {
 	BackupContent* content = g_malloc0(sizeof(BackupContent));
 
-	content->model = model;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	if (content != NULL)
+	{
+		content->model = model;
+		strcpy(content->comment, tifiles_comment_set_backup());
+	}
 
 	return content;
 }
@@ -227,21 +253,26 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
 {
-  assert(content != NULL);
+	if (content != NULL)
+	{
+		if (tifiles_calc_is_ti9x(content->model))
+			g_free(content->data_part);
+		else if (tifiles_calc_is_ti8x(content->model))
+		{
+			g_free(content->data_part1);
+			g_free(content->data_part2);
+			g_free(content->data_part3);
+			g_free(content->data_part4);
+		}
 
-  if (tifiles_calc_is_ti9x(content->model))
-		g_free(content->data_part);
-  else if (tifiles_calc_is_ti8x(content->model))
-  {
-	  g_free(content->data_part1);
-	  g_free(content->data_part2);
-	  g_free(content->data_part3);
-	  g_free(content->data_part4);
-  }
+		g_free(content);
+	}
+	else
+	{
+		tifiles_critical("tifiles_content_delete_backup(NULL)\n");
+	}
 
-  g_free(content);
-
-  return 0;
+	return 0;
 }
 
 /**
@@ -268,7 +299,7 @@ TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *cont
 		return ti9x_file_read_backup(filename, content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -294,7 +325,7 @@ TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *con
 		return ti9x_file_write_backup(filename, content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -319,7 +350,7 @@ TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
 		return ti9x_content_display_backup(content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -336,21 +367,24 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 {
 	FlashContent* content = g_malloc0(sizeof(FlashContent));
 
-	content->model = model;
-	if(tifiles_calc_is_ti9x(content->model))
+	if (content != NULL)
 	{
-	  time_t tt;
-	  struct tm *lt;
+		content->model = model;
+		if(tifiles_calc_is_ti9x(content->model))
+		{
+			time_t tt;
+			struct tm *lt;
 
-	  time(&tt);
-	  lt = localtime(&tt);
-	  content->revision_major = 1;
-	  content->revision_minor = 0;
-	  content->flags = 0;
-	  content->object_type = 0;
-	  content->revision_day = lt->tm_mday;
-	  content->revision_month = lt->tm_mon;
-	  content->revision_year = lt->tm_year + 1900;
+			time(&tt);
+			lt = localtime(&tt);
+			content->revision_major = 1;
+			content->revision_minor = 0;
+			content->flags = 0;
+			content->object_type = 0;
+			content->revision_day = lt->tm_mday;
+			content->revision_month = lt->tm_mon;
+			content->revision_year = lt->tm_year + 1900;
+		}
 	}
 
 	return content;
@@ -366,39 +400,44 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
 	int i;
-	assert(content != NULL);
-
-#if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
+	if (content != NULL)
 	{
-		FlashContent *ptr;
-
-		g_free(content->data_part);
-
-		ptr = content->next;
-		while (ptr != NULL) 
+#if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
 		{
-			FlashContent *next = ptr->next;
+			FlashContent *ptr;
 
-			g_free(ptr->data_part);
-			g_free(ptr);
+			g_free(content->data_part);
 
-			for(i = 0; i < content->num_pages; i++)
+			ptr = content->next;
+			while (ptr != NULL) 
 			{
-				g_free(content->pages[i]->data);
-				g_free(content->pages[i]);
+				FlashContent *next = ptr->next;
+
+				g_free(ptr->data_part);
+				g_free(ptr);
+
+				for(i = 0; i < content->num_pages; i++)
+				{
+					g_free(content->pages[i]->data);
+					g_free(content->pages[i]);
+				}
+				g_free(content->pages);
+
+				ptr = next;
 			}
-			g_free(content->pages);
 
-			ptr = next;
+			g_free(content);
 		}
-
-		g_free(content);
-	}
 #else
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 #endif
+	}
+	else
+	{
+		tifiles_critical("tifiles_content_delete_flash(NULL)\n");
+	}
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -459,7 +498,7 @@ TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *cont
 		return ti9x_file_write_flash(filename, content, real_fname);
 	else
 #endif
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -492,45 +531,53 @@ TIEXPORT2 int tifiles_file_write_flash(const char *filename, FlashContent *conte
  **/
 TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 {
-	FlashContent *dup;
+	FlashContent *dup = NULL;
 	FlashContent *p, *q;
 
-	assert(content != NULL);
-
-	dup = tifiles_content_create_flash(content->model);
-	for(p = content, q = dup; p; p = p->next, q = q->next)
+	if (content != NULL)
 	{
-		memcpy(q, p, sizeof(FlashContent));
-		
-		// TI9x part
-		if(tifiles_calc_is_ti9x(content->model))
+		dup = tifiles_content_create_flash(content->model);
+		if (dup != NULL)
 		{
-			if(p->data_part)
+			for(p = content, q = dup; p; p = p->next, q = q->next)
 			{
-				q->data_part = (uint8_t *)g_malloc0(p->data_length+1);
-				memcpy(q->data_part, p->data_part, p->data_length+1);
+				memcpy(q, p, sizeof(FlashContent));
+
+				// TI9x part
+				if(tifiles_calc_is_ti9x(content->model))
+				{
+					if(p->data_part)
+					{
+						q->data_part = (uint8_t *)g_malloc0(p->data_length+1);
+						memcpy(q->data_part, p->data_part, p->data_length+1);
+					}
+				}
+
+				// TI8x part
+				if(tifiles_calc_is_ti8x(content->model))
+				{
+					int i;
+
+					// copy pages
+					q->pages = tifiles_fp_create_array(p->num_pages);
+					for(i = 0; i < content->num_pages; i++)
+					{
+						q->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
+						memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
+
+						q->pages[i]->data = (uint8_t *) g_malloc0(p->pages[i]->size);
+						memcpy(q->pages[i]->data, p->pages[i]->data, p->pages[i]->size);
+					}
+				}
+
+				if(p->next)
+					q->next = tifiles_content_create_flash(p->model);
 			}
 		}
-
-		// TI8x part
-		if(tifiles_calc_is_ti8x(content->model))
-		{
-			int i;
-
-			// copy pages
-			q->pages = tifiles_fp_create_array(p->num_pages);	
-			for(i = 0; i < content->num_pages; i++)
-			{
-				q->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
-				memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
-
-				q->pages[i]->data = (uint8_t *) g_malloc0(p->pages[i]->size);
-				memcpy(q->pages[i]->data, p->pages[i]->data, p->pages[i]->size);
-			}
-		}
-
-		if(p->next)
-			q->next = tifiles_content_create_flash(p->model);
+	}
+	else
+	{
+		tifiles_critical("tifiles_content_dup_flash(NULL)\n");
 	}
 
 	return dup;
@@ -556,7 +603,7 @@ TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
 		return ti9x_content_display_flash(content);
 	else
 #endif
-    return ERR_BAD_CALC;
+	return ERR_BAD_CALC;
 
 	return 0;
 }
@@ -571,21 +618,21 @@ TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
  **/
 TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
 {
-    if (tifiles_file_is_tigroup(filename))
-	return tifiles_file_display_tigroup(filename);
+	if (tifiles_file_is_tigroup(filename))
+		return tifiles_file_display_tigroup(filename);
 #if !defined(DISABLE_TI8X)
-    if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
-	return ti8x_file_display(filename);
-    else
+	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
+		return ti8x_file_display(filename);
+	else
 #endif
 #if !defined(DISABLE_TI9X)
 	if (tifiles_calc_is_ti9x(tifiles_file_get_model(filename)))
-	    return ti9x_file_display(filename);
+		return ti9x_file_display(filename);
 	else
 #endif
-	    return ERR_BAD_CALC;
-    
-    return 0;
+	return ERR_BAD_CALC;
+
+	return 0;
 }
 
 /*****************/
@@ -616,67 +663,66 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  **/
 TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 {
-  int num_folders = 0;
-  int i, j;
-  char **ptr, *folder_list[32768] = { 0 };
-  int **table;
+	int num_folders = 0;
+	int i, j;
+	char **ptr, *folder_list[32768] = { 0 };
+	int **table;
 
-  // determine how many folders we have
-  for (i = 0; i < content->num_entries; i++) 
-  {
-    VarEntry *entry = content->entries[i];
-
-    // scan for an existing folder entry
-    for (ptr = folder_list; *ptr != NULL; ptr++) 
+	// determine how many folders we have
+	for (i = 0; i < content->num_entries; i++) 
 	{
-      if (!strcmp(*ptr, entry->folder)) 
-	  {
-		//printf("break: %s\n", entry->folder);
-		break;
-      }
-    }
-    if (*ptr == NULL) 
-	{		// add new folder entry
-      folder_list[num_folders] = (char *) g_malloc0(10);
-      //printf("%i: adding '%s'\n", num_folders, entry->folder);
-      strcpy(folder_list[num_folders], entry->folder);
-      folder_list[num_folders + 1] = NULL;
-      num_folders++;
-      g_assert(num_folders <= content->num_entries);
-    }
-  }
-  if (tifiles_calc_is_ti8x(content->model))
-    num_folders++;
-  *nfolders = num_folders;
+		VarEntry *entry = content->entries[i];
 
-  // allocate the folder list
-  table = (int **) g_malloc0((num_folders + 1) * sizeof(int *));
-  table[num_folders] = NULL;
+		// scan for an existing folder entry
+		for (ptr = folder_list; *ptr != NULL; ptr++) 
+		{
+			if (!strcmp(*ptr, entry->folder)) 
+			{
+				//printf("break: %s\n", entry->folder);
+				break;
+			}
+		}
+		if (*ptr == NULL) 
+		{		// add new folder entry
+			folder_list[num_folders] = (char *) g_malloc0(257);
+			//printf("%i: adding '%s'\n", num_folders, entry->folder);
+			strcpy(folder_list[num_folders], entry->folder);
+			folder_list[num_folders + 1] = NULL;
+			num_folders++;
+		}
+	}
+	if (tifiles_calc_is_ti8x(content->model))
+		num_folders++;
+	*nfolders = num_folders;
 
-  // for each folder, determine how many variables we have
-  // and allocate array with indexes
-  for (j = 0; j < num_folders; j++) 
-  {
-    int k;
+	// allocate the folder list
+	table = (int **) g_malloc0((num_folders + 1) * sizeof(int *));
+	table[num_folders] = NULL;
 
-    for (i = 0, k = 0; i < content->num_entries; i++) 
+	// for each folder, determine how many variables we have
+	// and allocate array with indexes
+	for (j = 0; j < num_folders; j++) 
 	{
-      VarEntry *entry = content->entries[i];
+		int k;
 
-      if (!strcmp(folder_list[j], entry->folder)) 
-	  {
-		table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
-		table[j][k] = i;
-		//printf("%i %i: adding %i\n", j, k, i); 
-		table[j][k + 1] = -1;
-		k++;
-      }
-    }
-  }
+		for (i = 0, k = 0; i < content->num_entries; i++) 
+		{
+			VarEntry *entry = content->entries[i];
 
-  // g_free( memory
-  for (j = 0; j < num_folders + 1; j++)
-    g_free(folder_list[j]);
+			if (!strcmp(folder_list[j], entry->folder)) 
+			{
+				table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
+				table[j][k] = i;
+				//printf("%i %i: adding %i\n", j, k, i); 
+				table[j][k + 1] = -1;
+				k++;
+			}
+		}
+	}
 
-  return table;
+	// g_free( memory
+	for (j = 0; j < num_folders + 1; j++)
+		g_free(folder_list[j]);
+
+	return table;
 }

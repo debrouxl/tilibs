@@ -40,7 +40,11 @@
  **/
 TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 {
-	g_assert (message != NULL);
+	if (message == NULL)
+	{
+		tifiles_critical("tifiles_error_get(NULL)\n");
+		return number;
+	}
 
 	switch (number) 
 	{

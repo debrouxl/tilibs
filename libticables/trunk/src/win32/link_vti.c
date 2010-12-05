@@ -27,7 +27,6 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
 #include <windows.h>
 
 #include "../ticables.h"
@@ -86,17 +85,29 @@ static int vti_open(CableHandle *h)
 	char vLinkFileName[32];
 	char name[32];
 	HANDLE hVLinkFileMap = NULL;
-	HANDLE Handle;	
+	HANDLE Handle;
 	ATOM a;
 
 	/* Get an handle on the VTi window */
-    otherWnd = FindWindow("TEmuWnd", NULL);
-    if (!otherWnd)
+	otherWnd = FindWindow("TEmuWnd", NULL);
+	if (!otherWnd)
 		return ERR_VTI_FINDWINDOW;
 
-    /* Create a file mapping handle for the 'lib->VTi' communication channel */
-    for (i = 0;; i++) 
-    {
+	/* Get the current DLL handle */
+	Handle = GetModuleHandle("libticables2.dll");
+	if(!Handle)
+		Handle = GetModuleHandle("libticables2-4.dll");
+
+	if (!Handle)
+	{
+		ticables_critical(_("FATAL ERROR: unable to get an handle on the ticables-2 library."));
+		ticables_critical(_("Did you rename the library ?!"));
+		return ERR_NO_LIBRARY;
+	}
+
+	/* Create a file mapping handle for the 'lib->VTi' communication channel */
+	for (i = 0; ; i++)
+	{
 		sprintf(vLinkFileName, "Virtual Link %d", i);
 		hVLinkFileMap = CreateFileMapping((HANDLE) - 1, NULL,
 				      PAGE_READWRITE, 0,
@@ -104,54 +115,41 @@ static int vti_open(CableHandle *h)
   
 		if (GetLastError() != ERROR_ALREADY_EXISTS)
 			break;
-    }
-    
-    ticables_info("Virtual Link L->V %i", i);
-	vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-  
-    /* Get the current DLL handle */
-    Handle = GetModuleHandle("libticables2.dll");
-	if(!Handle)
-	  Handle = GetModuleHandle("libticables2-4.dll");
-  
-    if (!Handle) 
-    {
-      ticables_warning(_("Unable to get an handle on the ticables-2 library."));
-      ticables_warning(_("Did you rename the library ?!"));
-      ticables_warning(_("Fatal error. Program terminated."));
-      exit(-1);
 	}
-  
-    // Inform VTi of our virtual link so that it can enable it. It should returns 
-    // its virtual link name in a message.
+
+	ticables_info("Virtual Link L->V %i", i);
+	vSendBuf = (LinkBuffer *)MapViewOfFile(hVLinkFileMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+
+	// Inform VTI of our virtual link so that it can enable it. It should return
+	// its virtual link name in a message.
 	SendMessage(otherWnd, WM_HELLO, 0, (LPARAM) Handle);
   
-    /* Retrieve the VTi virtual link name */
-    //b = GetMessage(&msg, NULL, WM_HELLO, WM_SEND_BUFFER);
+	/* Retrieve the VTi virtual link name */
+	//b = GetMessage(&msg, NULL, WM_HELLO, WM_SEND_BUFFER);
 	//WaitMessage();                                                                                // Waits VTi answer
-  
-    /* Create a file mapping handle for the 'Vti->lib' communication channel */
-    ticables_info("Virtual Link V->L %i", i-1);
-    sprintf(name, "Virtual Link %d", i - 1);
-    hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
-    if (hMap) 
-    {
-      ticables_info(_("Opened %s"), name);
-      vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
-    } 
-    else
+
+	/* Create a file mapping handle for the 'Vti->lib' communication channel */
+	ticables_info("Virtual Link V->L %i", i-1);
+	sprintf(name, "Virtual Link %d", i - 1);
+	hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, name);
+	if (hMap)
+	{
+		ticables_info(_("Opened %s"), name);
+		vRecvBuf = (LinkBuffer *)MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(LinkBuffer));
+	}
+	else
 		return ERR_VTI_OPENFILEMAPPING;
-  
-    /* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
-    a = GlobalAddAtom(vLinkFileName);
-    SendMessage(otherWnd, WM_SEND_BUFFER, 0, (LPARAM) a);
+
+	/* Send to VTi the name of our virtual link. VTi should open it (lib -> Vti) */
+	a = GlobalAddAtom(vLinkFileName);
+	SendMessage(otherWnd, WM_SEND_BUFFER, 0, (LPARAM) a);
 	GlobalDeleteAtom(a);
-  
-    /* Enable linking (check the VTi's Virtual Link|Enable cable link' item) */
-    if (otherWnd)
+
+	/* Enable linking (check the VTi's Virtual Link|Enable cable link' item) */
+	if (otherWnd)
 		SendMessage(otherWnd, WM_ENABLE_LINK, 0, 0);
-  
-    vSendBuf->start = vSendBuf->end = 0;
+
+	vSendBuf->start = vSendBuf->end = 0;
 	vRecvBuf->start = vRecvBuf->end = 0;
 
 	return 0;
@@ -186,11 +184,14 @@ static int vti_reset(CableHandle *h)
 {
 	if(!hMap) return 0;
 
-	assert(vSendBuf);
-	assert(vRecvBuf);
-
-	vSendBuf->start = vSendBuf->end = 0;
-	vRecvBuf->start = vRecvBuf->end = 0;
+	if (vSendBuf)
+		vSendBuf->start = vSendBuf->end = 0;
+	else
+		ticables_critical("vti_reset(): send buffer busted !\n");
+	if (vRecvBuf)
+		vRecvBuf->start = vRecvBuf->end = 0;
+	else
+		ticables_critical("vti_reset(): receive buffer busted !\n");
 
 	return 0;
 }
@@ -213,20 +214,25 @@ static int vti_put(CableHandle *h, uint8_t *data, uint32_t len)
 	tiTIME clk;
 
 	if(!hMap) return 0;
-	assert(vSendBuf);
-
-	for(i = 0; i < len; i++)
+	if(vSendBuf)
 	{
-		TO_START(clk);
-		do 
+		for(i = 0; i < len; i++)
 		{
-			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_WRITE_TIMEOUT;
-		}
-		while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
+			TO_START(clk);
+			do
+			{
+				if (TO_ELAPSED(clk, h->timeout))
+					return ERR_WRITE_TIMEOUT;
+			}
+			while (((vSendBuf->end + 1) & (BUFSIZE-1)) == vSendBuf->start);
 
-		vSendBuf->buf[vSendBuf->end] = data[i];
-		vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);
+			vSendBuf->buf[vSendBuf->end] = data[i];
+			vSendBuf->end = (vSendBuf->end + 1) & (BUFSIZE-1);
+		}
+	}
+	else
+	{
+		ticables_critical("vti_put(): send buffer busted !\n");
 	}
 
 	return 0;
@@ -238,22 +244,27 @@ static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 	tiTIME clk;
 
 	if(!hMap) return 0;
-	assert(vRecvBuf);
-
-	/* Wait that the buffer has been filled */
-	for(i = 0; i < len; i++)
+	if(vRecvBuf)
 	{
-		TO_START(clk);
-		do 
+		/* Wait that the buffer has been filled */
+		for(i = 0; i < len; i++)
 		{
-			if (TO_ELAPSED(clk, h->timeout))
-				return ERR_READ_TIMEOUT;
-		}
-		while (vRecvBuf->start == vRecvBuf->end);
+			TO_START(clk);
+			do
+			{
+				if (TO_ELAPSED(clk, h->timeout))
+					return ERR_READ_TIMEOUT;
+			}
+			while (vRecvBuf->start == vRecvBuf->end);
 
-		/* And retrieve the data from the circular buffer */
-		data[i] = vRecvBuf->buf[vRecvBuf->start];
-		vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
+			/* And retrieve the data from the circular buffer */
+			data[i] = vRecvBuf->buf[vRecvBuf->start];
+			vRecvBuf->start = (vRecvBuf->start + 1) & (BUFSIZE-1);
+		}
+	}
+	else
+	{
+		ticables_critical("vti_get(): receive buffer busted !\n");
 	}
 
 	return 0;
@@ -262,9 +273,14 @@ static int vti_get(CableHandle *h, uint8_t *data, uint32_t len)
 static int vti_check(CableHandle *h, int *status)
 {
 	if(!hMap) return 0;
-	assert(vRecvBuf);
-
-	*status = !(vRecvBuf->start == vRecvBuf->end);
+	if(vRecvBuf)
+	{
+		*status = !(vRecvBuf->start == vRecvBuf->end);
+	}
+	else
+	{
+		ticables_critical("vti_check(): receive buffer busted !\n");
+	}
 
 	return 0;
 }

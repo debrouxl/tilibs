@@ -58,11 +58,11 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 	cpca_purge();
 	nsp_vtl_pkt_purge();
 
-	// force reset/address request
-	//ticalcs_info("force reset !\n");
-	nsp_reset = 0;
-
-	g_assert (message != NULL);
+	if (message == NULL)
+	{
+		ticalcs_critical("ticalcs_error_get(NULL)\n");
+		return number;
+	}
 
 	switch(number)
 	{

@@ -31,7 +31,6 @@
 #include <glib/gstdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include <ticonv.h>
 #include "tifiles.h"
