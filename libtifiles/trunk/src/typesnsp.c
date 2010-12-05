@@ -31,7 +31,7 @@
 const char *NSP_CONST[NSP_MAXTYPES + 1][4] = {
 	{"TNS", "tns", "Document", N_("TIicon1")},
 	{"DIR", "???", "Directory", N_("Directory")},
-	{NULL, NULL, NULL},
+	{NULL, NULL, NULL, NULL},
 };
 
 // Return the type corresponding to the value
@@ -57,7 +57,7 @@ uint8_t nsp_type2byte(const char *s)
 // Return the file extension corresponding to the value
 const char *nsp_byte2fext(uint8_t data)
 {
-	return (data < NSP_MAXTYPES) ? NSP_CONST[data][1] : "v2?";
+	return (data < NSP_MAXTYPES) ? NSP_CONST[data][1] : "";
 }
 
 // Return the value corresponding to the file extension

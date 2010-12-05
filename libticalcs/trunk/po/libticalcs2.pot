@@ -54,7 +54,7 @@ msgid "Getting clock..."
 msgstr ""
 
 #: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
-#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:592
+#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:622
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
@@ -116,7 +116,7 @@ msgstr ""
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_89.c:227 src/calc_89.c:282 src/calc_92.c:200 src/calc_nsp.c:302
+#: src/calc_89.c:227 src/calc_89.c:282 src/calc_92.c:200 src/calc_nsp.c:317
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
@@ -126,12 +126,12 @@ msgstr ""
 msgid "Directory listing in %8s..."
 msgstr ""
 
-#: src/calc_89.c:290 src/calc_89t.c:206 src/calc_92.c:213 src/calc_nsp.c:310
+#: src/calc_89.c:290 src/calc_89t.c:206 src/calc_92.c:213 src/calc_nsp.c:325
 #, c-format
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583 src/calc_nsp.c:619
+#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583 src/calc_nsp.c:649
 #, c-format
 msgid "Creating %s..."
 msgstr ""
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Directory listing in <%s>..."
 msgstr ""
 
-#: src/calc_nsp.c:746
+#: src/calc_nsp.c:776
 msgid "Nspire thru DirectLink"
 msgstr ""
 

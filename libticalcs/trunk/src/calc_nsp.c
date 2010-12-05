@@ -293,7 +293,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve->size = varsize;
 			ve->type = tifiles_fext2vartype(handle->model, ext);
 			ve->attr = ATTRB_NONE;
-			if(ext) *(ext-1) = '\0';
+			// Just a sanity check
+			if (ext)
+			{
+				// Did the file name have any non-empty extension ?
+				if (*ext)
+				{
+					// Do we know about this file type ?
+					if (ve->type < NSP_MAXTYPES)
+					{
+						// Then we can remove the exension.
+						*(ext-1) = '\0';
+					}
+					// else don't remove the extension.
+				}
+				// else there is no extension to remove.
+			}
 			strcpy(ve->name, varname);
 
 			node = g_node_new(ve);
@@ -348,6 +363,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	char *utf8;
 	uint8_t status;
+	const char * dot_if_any = ".";
 
 	update_->cnt2 = 0;
 	update_->max2 = 1;
@@ -366,7 +382,11 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 		TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
-		path = g_strconcat("/", ve->folder, "/", ve->name, ".", 
+		// Don't add a dot if this file type is unknown.
+		if (ve->type >= NSP_MAXTYPES)
+			dot_if_any = "";
+
+		path = g_strconcat("/", ve->folder, "/", ve->name, dot_if_any, 
 			tifiles_vartype2fext(handle->model, ve->type), NULL);
 
 		utf8 = ticonv_varname_to_utf8(handle->model, path, ve->type);
@@ -398,10 +418,15 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	VarEntry *ve;
 	char *utf8;
 	int err;
+	const char * dot_if_any = ".";
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
-	path = g_strconcat("/", vr->folder, "/", vr->name, ".", 
+	// Don't add a dot if this file type is unknown.
+	if (vr->type >= NSP_MAXTYPES)
+		dot_if_any = "";
+
+	path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any, 
 		tifiles_vartype2fext(handle->model, vr->type), NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
@@ -583,10 +608,15 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 	char *path;
 	int err;
+	const char * dot_if_any = ".";
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
-	path = g_strconcat("/", vr->folder, "/", vr->name, ".",
+	// Don't add a dot if this file type is unknown.
+	if (vr->type >= NSP_MAXTYPES)
+		dot_if_any = "";
+
+	path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any, 
 		tifiles_vartype2fext(handle->model, vr->type), NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
