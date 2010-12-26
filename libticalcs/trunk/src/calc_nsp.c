@@ -414,7 +414,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	char *path;
-	uint8_t *data;
+	uint8_t *data = NULL;
 	VarEntry *ve;
 	char *utf8;
 	int err;
@@ -442,7 +442,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(cmd_r_get_file(handle, &(vr->size)));
 
 	TRYF(cmd_s_file_ok(handle));
-	TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
+	if (vr->size)
+		TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
 	TRYF(cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
@@ -454,7 +455,10 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve, vr, sizeof(VarEntry));
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
-	memcpy(ve->data, data, ve->size);
+	if (data && ve->data)
+	{
+		memcpy(ve->data, data, ve->size);
+	}
 	g_free(data);
 
 	TRYF(nsp_session_close(handle));

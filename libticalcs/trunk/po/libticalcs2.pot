@@ -54,7 +54,7 @@ msgid "Getting clock..."
 msgstr ""
 
 #: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
-#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:622
+#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:626
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
@@ -131,7 +131,7 @@ msgstr ""
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583 src/calc_nsp.c:649
+#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583 src/calc_nsp.c:653
 #, c-format
 msgid "Creating %s..."
 msgstr ""
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Directory listing in <%s>..."
 msgstr ""
 
-#: src/calc_nsp.c:776
+#: src/calc_nsp.c:780
 msgid "Nspire thru DirectLink"
 msgstr ""
 
