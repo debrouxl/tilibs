@@ -70,26 +70,29 @@ It may depend on your distribution, but you will have to add a rule to
 /etc/udev. As a template, you can create an
 /etc/udev/rules.d/20-ticables.rules file with the following rules:
 # SilverLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
-SYSFS{idProduct}=="e001", MODE="0660", GROUP="plugdev"
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e001", MODE="0660", GROUP="plugdev"
 # TI-84+ DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
-SYSFS{idProduct}=="e003", MODE="0660", GROUP="plugdev"
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e003", MODE="0660", GROUP="plugdev"
 # TI-89 Titanium DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
-SYSFS{idProduct}=="e004", MODE="0660", GROUP="plugdev"
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e004", MODE="0660", GROUP="plugdev"
 # TI-84+ SE DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
-SYSFS{idProduct}=="e008", MODE="0660", GROUP="plugdev"
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e008", MODE="0660", GROUP="plugdev"
 # TI-Nspire DirectLink
-ACTION=="add", SUBSYSTEM=="usb_device", SYSFS{idVendor}=="0451",
-SYSFS{idProduct}=="e012", MODE="0660", GROUP="plugdev"
+ACTION=="add", SUBSYSTEM=="usb_device", ATTR{idVendor}=="0451",
+ATTR{idProduct}=="e012", MODE="0660", GROUP="plugdev"
+
+(Replace ATTR by SYSFS if your very old version of udev doesn't support ATTR).
 
 The template relies on a group called 'plugdev'. If it doesn't exist, you will
 have to create it or choose another group which matches better your system.
 
-At last, you will have to add the user to the group 'plugdev' (edit /etc/group
-and add your username after the ':'). Like this:
+You will have to add the user to the group 'plugdev' (by using one of the
+user/group management tools, or editing /etc/group to add your username after
+the ':'). For example, the line will become:
 
         plugdev:x:46:romain
 
