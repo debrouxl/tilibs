@@ -385,7 +385,7 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 
 	if (vtl->data)
 	{
-		do
+		for(;;)
 		{
 			err = nsp_recv(h, &raw);
 			if (err)
@@ -423,7 +423,11 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 				}
 			}
 
-		} while(raw.data_size >= DATA_SIZE);
+			if (raw.data_size < DATA_SIZE)
+				break;
+			if (size && vtl->size == size)
+				break;
+		}
 	}
 
 	vtl->src_addr = raw.src_addr;

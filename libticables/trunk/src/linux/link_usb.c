@@ -223,7 +223,7 @@ static struct usb_urb urb;
 
 #define MAX_CABLES   4
 
-#define VID_TIGLUSB  0x0451     /* Texas Instruments, Inc.            */
+#define VID_TI  0x0451     /* Texas Instruments, Inc.            */
 
 #define to      (100 * h->timeout)        // in ms
 
@@ -240,14 +240,14 @@ typedef struct
 } usb_infos;
 
 // list of known devices
-static usb_infos tigl_infos[] =
+static const usb_infos tigl_infos[] =
 {
-	{0x0451, PID_TIGLUSB,  "TI-GRAPH LINK USB",           NULL},
-	{0x0451, PID_TI84P,    "TI-84 Plus Hand-Held",        NULL},
-	{0x0451, PID_TI89TM,   "TI-89 Titanium Hand-Held",    NULL},
-	{0x0451, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
-	{0x0451, PID_NSPIRE,   "TI-Nspire Hand-Held",         NULL},
-	{0,      0,            NULL, NULL}
+	{VID_TI, PID_TIGLUSB,  "TI-GRAPH LINK USB",           NULL},
+	{VID_TI, PID_TI84P,    "TI-84 Plus Hand-Held",        NULL},
+	{VID_TI, PID_TI89TM,   "TI-89 Titanium Hand-Held",    NULL},
+	{VID_TI, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
+	{VID_TI, PID_NSPIRE,   "TI-Nspire Hand-Held",         NULL},
+	{0,           0,            NULL,                          NULL}
 };
 
 // list of devices found 
@@ -265,17 +265,19 @@ typedef struct
     int               in_endpoint;
     int               out_endpoint;
     int               max_ps;
+    int               was_max_size_packet;
 } usb_struct;
 
 // convenient macros
-#define uDev       (((usb_struct *)(h->priv2))->device)
-#define uHdl       (((usb_struct *)(h->priv2))->handle)
-#define max_ps     (((usb_struct *)(h->priv2))->max_ps)
-#define nBytesRead (((usb_struct *)(h->priv2))->nBytesRead)
-#define rBuf       (((usb_struct *)(h->priv2))->rBuf)
-#define rBufPtr    (((usb_struct *)(h->priv2))->rBufPtr)
-#define uInEnd     (((usb_struct *)(h->priv2))->in_endpoint)
-#define uOutEnd    (((usb_struct *)(h->priv2))->out_endpoint)
+#define uDev                (((usb_struct *)(h->priv2))->device)
+#define uHdl                (((usb_struct *)(h->priv2))->handle)
+#define max_ps              (((usb_struct *)(h->priv2))->max_ps)
+#define was_max_size_packet (((usb_struct *)(h->priv2))->was_max_size_packet)
+#define nBytesRead          (((usb_struct *)(h->priv2))->nBytesRead)
+#define rBuf                (((usb_struct *)(h->priv2))->rBuf)
+#define rBufPtr             (((usb_struct *)(h->priv2))->rBufPtr)
+#define uInEnd              (((usb_struct *)(h->priv2))->in_endpoint)
+#define uOutEnd             (((usb_struct *)(h->priv2))->out_endpoint)
 
 /* Helpers (=driver API) */
 
@@ -319,7 +321,7 @@ static int tigl_find(void)
     {
 	for (dev = bus->devices; dev; dev = dev->next)
 	{
-	    if ((dev->descriptor.idVendor == VID_TIGLUSB))
+	    if ((dev->descriptor.idVendor == VID_TI))
 	    {
 		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(usb_infos)); i++)
 		{
@@ -439,7 +441,6 @@ static int tigl_reset(CableHandle *h)
 }
 
 /* API */
-
 static int slv_prepare(CableHandle *h)
 {
 	char str[64];
@@ -509,6 +510,7 @@ static int slv_open(CableHandle *h)
         endpoint++;
     }
     nBytesRead = 0;
+    was_max_size_packet = 0;
 
     return 0;
 }
@@ -580,6 +582,14 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
     {
 	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
 	return ERR_WRITE_ERROR;
+    }
+
+    if (   (uDev->descriptor.idProduct == PID_NSPIRE)
+        && (length % 64 == 0)
+       )
+    {
+        ticables_info("XXX triggering an extra bulk write for buggy Nspire OS versions");
+        ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, 0, to);
     }
 
     return 0;
@@ -783,6 +793,11 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 				max_ps, to);
 #endif
 
+	    if (ret == max_ps)
+		was_max_size_packet = 1;
+	    else
+		was_max_size_packet = 0;
+
 	    if (TO_ELAPSED(clk, h->timeout))
 	    {
 		nBytesRead = 0;
@@ -831,8 +846,14 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
     // we can't do that in any other way because slv_get_ can returns
     // 1, 2, ..., len bytes.
     for(i = 0; i < (int)len; i++)
-	TRYC(slv_get_(h, data+i));
-    
+        TRYC(slv_get_(h, data+i));
+
+    if (uDev->descriptor.idProduct == PID_NSPIRE && was_max_size_packet != 0 && nBytesRead == 0)
+    {
+        ticables_info("XXX triggering an extra bulk read for buggy Nspire OS versions");
+        slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+    }
+
     return 0;
 }
 
