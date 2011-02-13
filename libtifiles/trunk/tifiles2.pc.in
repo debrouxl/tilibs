@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: TiFiles
 Description: TI file format management library
 Version: @VERSION@
-Requires: glib-2.0
-Libs: -L${libdir} -ltifiles2 -lticonv
+Requires: glib-2.0,ticonv
+Libs: -L${libdir} -ltifiles2
 Cflags: -I${includedir}/tilp2
