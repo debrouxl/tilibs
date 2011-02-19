@@ -265,9 +265,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 	for(i = 0; i < (int)g_node_n_children(*vars); i++) 
 	{
-		folder = g_node_nth_child(*vars, i);
-		char *folder_name = ((VarEntry *) (folder->data))->name;
+		char *folder_name;
 		char *u1, *u2;
+
+		folder = g_node_nth_child(*vars, i);
+		folder_name = ((VarEntry *) (folder->data))->name;
 
 		ticalcs_info(_("Directory listing in <%s>..."), folder_name);
 
