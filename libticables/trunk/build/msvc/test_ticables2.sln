@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_ticables2", "test_ticables2.vcproj", "{D1CD52A6-6A38-44CB-A5EB-840169211416}"
+	ProjectSection(ProjectDependencies) = postProject
+		{000D62B2-DF70-44EB-936C-CFEF0F33192D} = {000D62B2-DF70-44EB-936C-CFEF0F33192D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ticables2", "ticables2.vcproj", "{000D62B2-DF70-44EB-936C-CFEF0F33192D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1CD52A6-6A38-44CB-A5EB-840169211416}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D1CD52A6-6A38-44CB-A5EB-840169211416}.Debug|Win32.Build.0 = Debug|Win32
+		{D1CD52A6-6A38-44CB-A5EB-840169211416}.Release|Win32.ActiveCfg = Release|Win32
+		{D1CD52A6-6A38-44CB-A5EB-840169211416}.Release|Win32.Build.0 = Release|Win32
+		{000D62B2-DF70-44EB-936C-CFEF0F33192D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{000D62B2-DF70-44EB-936C-CFEF0F33192D}.Debug|Win32.Build.0 = Debug|Win32
+		{000D62B2-DF70-44EB-936C-CFEF0F33192D}.Release|Win32.ActiveCfg = Release|Win32
+		{000D62B2-DF70-44EB-936C-CFEF0F33192D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
