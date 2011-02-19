@@ -1,9 +1,15 @@
-SubVersion: $Id: ChangeLog 1826 2006-02-09 20:48:04Z roms $
+SubVersion: $Id$
 
-Log:
+Log of changes (libticonv):
 
-- xx/xx/2010, version 1.1.2: debrouxl
+- xx/xx/2011, version 1.1.2: debrouxl
 	- change encoding in .rc file.
+	- compiler warning fixes
+	- minor changes to make autotools definitions work with both libtool 1.x and 2.x.
+	- use AM_GNU_GETTEXT_VERSION to use a consistent version of gettext (namely 0.16, released in late 2006).
+	- reconfigure under Debian Squeeze with Autoconf 2.67 and Automake 1.11.1.
+	- add VS 2008 project/solution files
+	- documentation and comment updates.
 
 - 08/04/2010, version 1.1.1: debrouxl
 	- fixed example.

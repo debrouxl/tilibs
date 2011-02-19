@@ -91,7 +91,7 @@ static CableFncts const *const cables[] =
 int ticables_instance = 0;	// counts # of instances
 
 /**
- * tifiles_library_init:
+ * ticables_library_init:
  *
  * This function must be the first one to call. It inits library internals.
  *
@@ -153,7 +153,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 
 
 /**
- * tifiles_library_exit:
+ * ticables_library_exit:
  *
  * This function must be the last one to call. Used to release internal resources.
  *

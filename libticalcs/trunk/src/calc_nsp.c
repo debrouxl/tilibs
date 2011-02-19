@@ -75,6 +75,9 @@ static int		is_ready	(CalcHandle* handle)
 		TRYF(nsp_addr_request(handle));
 		TRYF(nsp_addr_assign(handle, NSP_DEV_ADDR));
 
+		// XXX after commenting the following block of code, sending many Status or Dirlist
+		// requests in short succession often triggers memory corruption (hangs, reboots,
+		// a variable amount of black pixels on the screen) on (at least) Nspire (CAS) OS 1.7...
 		{
 			int old;
 			int ret;

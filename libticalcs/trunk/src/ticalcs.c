@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: ticables.c 1045 2005-05-13 06:26:21Z roms $ */
+/* $Id$ */
 
-/*  libticables - hand-helds support library, a part of the TiLP project
+/*  libticalcs2 - hand-helds support library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify

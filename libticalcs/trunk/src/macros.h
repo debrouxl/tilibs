@@ -1,7 +1,7 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: macros.h 1087 2005-05-16 14:11:52Z roms $ */
+/* $Id$ */
 
-/*  libtifiles - Ti File Format library, a part of the TiLP project
+/*  libticalcs2 - hand-helds support library, a part of the TiLP project
  *  Copyright (C) 1999-2006  Romain Lievin
  *
  *  This program is free software; you can redistribute it and/or modify
