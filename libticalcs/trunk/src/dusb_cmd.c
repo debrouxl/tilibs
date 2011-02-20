@@ -178,9 +178,9 @@ extern const VtlPktName vpkt_types[];
 	{ \
 		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0); \
 		ticalcs_info("    delay = %u", delay); \
-		if (delay >= 200000) \
+		if (delay > 400000) \
 		{ \
-			delay = 200000; \
+			delay = 400000; \
 			ticalcs_info("    (absurdly high delay, clamping to a more reasonable value)"); \
 		} \
 \
