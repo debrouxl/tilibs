@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.1\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-02-13 14:00+0100\n"
+"POT-Creation-Date: 2011-02-20 14:46+0100\n"
 "PO-Revision-Date: 2007-02-23 16:08+0100\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -138,12 +138,12 @@ msgstr ""
 "Cause: vérifier que le câble est branché et/ou que la calculatrice est prête."
 
 #: src/error.c:165
-msgid "Msg: error occured while reading to the device."
-msgstr "Msg: erreur lors de la lecture sur le périphérique."
+msgid "Msg: error occured while reading from the device."
+msgstr "Msg: erreur lors de la lecture depuis le périphérique."
 
 #: src/error.c:171
-msgid "Msg: timeout occured while reading to the device."
-msgstr "Msg: délai dépassé lors de la lecture sur le périphérique."
+msgid "Msg: timeout occured while reading from the device."
+msgstr "Msg: délai dépassé lors de la lecture depuis le périphérique."
 
 #: src/error.c:179
 msgid "Msg: the probing of device failed."
@@ -262,30 +262,31 @@ msgstr ""
 "Cause: vérifiez que le câble est connecté et n'est pas bloqué. Essayez de le "
 "débrancher puis de le rebrancher."
 
-#: src/error.c:292
+#: src/error.c:293
 msgid "Msg: attempting to use a cable which has not been open before."
 msgstr "Msg: tentative d'utilisation d'un câble sans ouverture préalable."
 
-#: src/error.c:294
+#: src/error.c:295
 msgid "Cause: Internal error."
 msgstr "Cause: erreur interne."
 
-#: src/error.c:300
+#: src/error.c:301
 msgid "Msg: no cable found."
 msgstr "Msg: aucun câble trouvé."
 
-#: src/error.c:302
+#: src/error.c:303
 msgid "Cause: probing failed or invalid parameters."
 msgstr "Cause: la détection a échouée ou paramètres invalides."
 
-#: src/error.c:308
-#, fuzzy
-msgid "Msg: library DLL not found."
-msgstr "Msg: DLL de la librairie introuvable."
+#: src/error.c:309
+msgid "Msg: DLL not found."
+msgstr "Msg: DLL (bibliothèque dynamique de liens) introuvable."
 
-#: src/error.c:310
-msgid "Cause: maybe you renamed the library DLL ?"
-msgstr "Cause: peut-être avez-vous renommé le DLL de la librairie ?"
+#: src/error.c:311
+#, fuzzy
+msgid "Cause: maybe you renamed the DLL ?"
+msgstr ""
+"Cause: peut-être avez-vous renommé la DLL (bibliothèque dynamique de liens) ?"
 
 #: src/probe.c:45
 #, c-format

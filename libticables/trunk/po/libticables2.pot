@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-02-13 14:00+0100\n"
+"POT-Creation-Date: 2011-02-20 14:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,11 +112,11 @@ msgid "Cause: check that link cable is plugged and/or the calculator is ready."
 msgstr ""
 
 #: src/error.c:165
-msgid "Msg: error occured while reading to the device."
+msgid "Msg: error occured while reading from the device."
 msgstr ""
 
 #: src/error.c:171
-msgid "Msg: timeout occured while reading to the device."
+msgid "Msg: timeout occured while reading from the device."
 msgstr ""
 
 #: src/error.c:179
@@ -218,28 +218,28 @@ msgid ""
 "Cause: Check that cable is connected or not stalled. Try to unplug/plug it."
 msgstr ""
 
-#: src/error.c:292
+#: src/error.c:293
 msgid "Msg: attempting to use a cable which has not been open before."
 msgstr ""
 
-#: src/error.c:294
+#: src/error.c:295
 msgid "Cause: Internal error."
 msgstr ""
 
-#: src/error.c:300
+#: src/error.c:301
 msgid "Msg: no cable found."
 msgstr ""
 
-#: src/error.c:302
+#: src/error.c:303
 msgid "Cause: probing failed or invalid parameters."
 msgstr ""
 
-#: src/error.c:308
-msgid "Msg: library DLL not found."
+#: src/error.c:309
+msgid "Msg: DLL not found."
 msgstr ""
 
-#: src/error.c:310
-msgid "Cause: maybe you renamed the library DLL ?"
+#: src/error.c:311
+msgid "Cause: maybe you renamed the DLL ?"
 msgstr ""
 
 #: src/probe.c:45
