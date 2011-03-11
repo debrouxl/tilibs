@@ -73,7 +73,7 @@
 	IOCTL_INTERNAL_USB_RESET_PORT followed by an IOCTL_INTERNAL_USB_CYCLE_PORT.
 	NSpire simply needs an RESET_PORT.
 */
-                                     
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -247,7 +247,7 @@ static const usb_infos tigl_infos[] =
 	{VID_TI, PID_TI89TM,   "TI-89 Titanium Hand-Held",    NULL},
 	{VID_TI, PID_TI84P_SE, "TI-84 Plus Silver Hand-Held", NULL},
 	{VID_TI, PID_NSPIRE,   "TI-Nspire Hand-Held",         NULL},
-	{0,           0,            NULL,                          NULL}
+	{0,      0,            NULL,                          NULL}
 };
 
 // list of devices found 
@@ -313,7 +313,7 @@ static int tigl_find(void)
     struct usb_device *dev;
     int i, j;
 
-    memset(tigl_devices, 0, sizeof(tigl_devices) / sizeof(usb_infos));
+    memset(tigl_devices, 0, sizeof(tigl_devices) / sizeof(tigl_devices[0]));
     j = 0;
 
     /* loop taken from testlibusb.c */
@@ -323,7 +323,7 @@ static int tigl_find(void)
 	{
 	    if ((dev->descriptor.idVendor == VID_TI))
 	    {
-		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(usb_infos)); i++)
+		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); i++)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
@@ -570,26 +570,29 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
     
     if(ret == -ETIMEDOUT) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_TIMEOUT;
+        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+        return ERR_WRITE_TIMEOUT;
     } 
     else if(ret == -EPIPE) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
+        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+        return ERR_WRITE_ERROR;
     } 
     else if(ret < 0) 
     {
-	ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
-	return ERR_WRITE_ERROR;
+        ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+        return ERR_WRITE_ERROR;
     }
 
-    if (   (uDev->descriptor.idProduct == PID_NSPIRE)
-        && (length % 64 == 0)
-       )
+    if ((tigl_devices[h->address].pid == PID_NSPIRE) && (length % max_ps == 0))
     {
         ticables_info("XXX triggering an extra bulk write for buggy Nspire OS versions");
         ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, 0, to);
+        if (ret < 0)
+        {
+            ticables_warning("usb_bulk_write (%s).\n", usb_strerror());
+            return ERR_WRITE_ERROR;
+        }
     }
 
     return 0;
@@ -841,17 +844,25 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 
 static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 {
-    int i;
+    int i, ret;
 
     // we can't do that in any other way because slv_get_ can returns
     // 1, 2, ..., len bytes.
     for(i = 0; i < (int)len; i++)
         TRYC(slv_get_(h, data+i));
 
-    if (uDev->descriptor.idProduct == PID_NSPIRE && was_max_size_packet != 0 && nBytesRead == 0)
+    if (tigl_devices[h->address].pid == PID_NSPIRE && was_max_size_packet != 0 && nBytesRead == 0)
     {
         ticables_info("XXX triggering an extra bulk read for buggy Nspire OS versions");
-        slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+#if defined(__LINUX__) || defined(__WIN32__)
+        ret = slv_bulk_read2(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+#else
+        ret = usb_bulk_read(uHdl, uInEnd, (char*)rBuf, max_ps, to);
+#endif
+        if (ret < 0) {
+            ticables_warning("usb_bulk_read (%s).\n", usb_strerror());
+            return ERR_READ_ERROR;
+        }
     }
 
     return 0;
