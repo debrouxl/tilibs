@@ -41,8 +41,11 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 to enable libusb support. */
+/* Define to 1 to enable libusb 0.1.x support. */
 #undef HAVE_LIBUSB
+
+/* Define to 1 to enable EXPERIMENTAL libusb 1.0.x support. */
+#undef HAVE_LIBUSB_1_0
 
 /* Define to 1 if you have the <linux/parport.h> header file. */
 #undef HAVE_LINUX_PARPORT_H

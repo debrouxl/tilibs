@@ -33,6 +33,8 @@
 
 #ifdef HAVE_LIBUSB
 # include "linux/link_usb.c"
+#elif defined(HAVE_LIBUSB_1_0)
+# include "linux/link_usb1.c"
 #endif
 #ifdef HAVE_LINUX_TICABLE_H
 # include "linux/link_dev.c"

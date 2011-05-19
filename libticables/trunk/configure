@@ -758,6 +758,8 @@ OS_WIN32_TRUE
 LIBOBJS
 LIBUSB_LIBS
 LIBUSB_CFLAGS
+LIBUSB10_LIBS
+LIBUSB10_CFLAGS
 GLIB_LIBS
 GLIB_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -912,6 +914,7 @@ enable_rpath
 with_libiconv_prefix
 with_libintl_prefix
 enable_libusb
+enable_libusb10
 enable_logging
 '
       ac_precious_vars='build_alias
@@ -934,6 +937,8 @@ PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
 GLIB_CFLAGS
 GLIB_LIBS
+LIBUSB10_CFLAGS
+LIBUSB10_LIBS
 LIBUSB_CFLAGS
 LIBUSB_LIBS'
 
@@ -1567,7 +1572,8 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-nls           do not use Native Language Support
   --disable-rpath         do not hardcode runtime library paths
-  --disable-libusb        disable USB support
+  --disable-libusb        disable USB support through libusb 0.1.x
+  --enable-libusb10       enable EXPERIMENTAL USB support through libusb 1.0.x
   --enable-logging        enable logging
 
 Optional Packages:
@@ -1604,6 +1610,10 @@ Some influential environment variables:
               path overriding pkg-config's built-in search path
   GLIB_CFLAGS C compiler flags for GLIB, overriding pkg-config
   GLIB_LIBS   linker flags for GLIB, overriding pkg-config
+  LIBUSB10_CFLAGS
+              C compiler flags for LIBUSB10, overriding pkg-config
+  LIBUSB10_LIBS
+              linker flags for LIBUSB10, overriding pkg-config
   LIBUSB_CFLAGS
               C compiler flags for LIBUSB, overriding pkg-config
   LIBUSB_LIBS linker flags for LIBUSB, overriding pkg-config
@@ -4946,7 +4956,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4949 "configure"' > conftest.$ac_ext
+  echo '#line 4959 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7641,11 +7651,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7644: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7654: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7648: \$? = $ac_status" >&5
+   echo "$as_me:7658: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -7931,11 +7941,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7934: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7944: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7938: \$? = $ac_status" >&5
+   echo "$as_me:7948: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8035,11 +8045,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8038: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8048: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8042: \$? = $ac_status" >&5
+   echo "$as_me:8052: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -10073,7 +10083,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10076 "configure"
+#line 10086 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10173,7 +10183,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10176 "configure"
+#line 10186 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12514,11 +12524,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12517: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12527: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12521: \$? = $ac_status" >&5
+   echo "$as_me:12531: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -12618,11 +12628,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12621: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12631: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12625: \$? = $ac_status" >&5
+   echo "$as_me:12635: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -14216,11 +14226,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14219: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14229: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14223: \$? = $ac_status" >&5
+   echo "$as_me:14233: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14320,11 +14330,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14323: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14333: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14327: \$? = $ac_status" >&5
+   echo "$as_me:14337: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16494,11 +16504,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16497: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16507: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16501: \$? = $ac_status" >&5
+   echo "$as_me:16511: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16784,11 +16794,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16787: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16797: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16791: \$? = $ac_status" >&5
+   echo "$as_me:16801: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16888,11 +16898,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16891: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16901: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16895: \$? = $ac_status" >&5
+   echo "$as_me:16905: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -22185,6 +22195,7 @@ $as_echo "#define HAVE_DCGETTEXT 1" >>confdefs.h
 
 
 
+# Call explicitely before using PKG_*
 
 
 
@@ -22305,6 +22316,7 @@ $as_echo "no" >&6; }
 	fi
 fi
 
+
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GLIB" >&5
 $as_echo_n "checking for GLIB... " >&6; }
@@ -22404,8 +22416,8 @@ else
   cab_cv_use_libusb=yes
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to disable USB" >&5
-$as_echo_n "checking whether to disable USB... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable USB through libusb 0.1.x" >&5
+$as_echo_n "checking whether to enable USB through libusb 0.1.x... " >&6; }
 if test "${cab_cv_use_libusb+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
@@ -22413,38 +22425,57 @@ else
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $cab_cv_use_libusb" >&5
 $as_echo "$cab_cv_use_libusb" >&6; }
-if test x$cab_cv_use_libusb = xyes; then
+
+# Check whether --enable-libusb10 was given.
+if test "${enable_libusb10+set}" = set; then :
+  enableval=$enable_libusb10; cab_cv_use_libusb10=$enableval
+else
+  cab_cv_use_libusb10=no
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable USB through libusb 1.0.x" >&5
+$as_echo_n "checking whether to enable USB through libusb 1.0.x... " >&6; }
+if test "${cab_cv_use_libusb10+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  cab_cv_use_libusb10=no
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $cab_cv_use_libusb10" >&5
+$as_echo "$cab_cv_use_libusb10" >&6; }
+
+if test "x$cab_cv_use_libusb" != xno; then
+  if test "x$cab_cv_use_libusb10" != xno; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBUSB" >&5
-$as_echo_n "checking for LIBUSB... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBUSB10" >&5
+$as_echo_n "checking for LIBUSB10... " >&6; }
 
-if test -n "$LIBUSB_CFLAGS"; then
-    pkg_cv_LIBUSB_CFLAGS="$LIBUSB_CFLAGS"
+if test -n "$LIBUSB10_CFLAGS"; then
+    pkg_cv_LIBUSB10_CFLAGS="$LIBUSB10_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libusb >= 0.1.10\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libusb >= 0.1.10") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \" libusb-1.0 >= 1.0.0 \""; } >&5
+  ($PKG_CONFIG --exists --print-errors " libusb-1.0 >= 1.0.0 ") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBUSB_CFLAGS=`$PKG_CONFIG --cflags "libusb >= 0.1.10" 2>/dev/null`
+  pkg_cv_LIBUSB10_CFLAGS=`$PKG_CONFIG --cflags " libusb-1.0 >= 1.0.0 " 2>/dev/null`
 else
   pkg_failed=yes
 fi
  else
     pkg_failed=untried
 fi
-if test -n "$LIBUSB_LIBS"; then
-    pkg_cv_LIBUSB_LIBS="$LIBUSB_LIBS"
+if test -n "$LIBUSB10_LIBS"; then
+    pkg_cv_LIBUSB10_LIBS="$LIBUSB10_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libusb >= 0.1.10\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "libusb >= 0.1.10") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \" libusb-1.0 >= 1.0.0 \""; } >&5
+  ($PKG_CONFIG --exists --print-errors " libusb-1.0 >= 1.0.0 ") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_LIBUSB_LIBS=`$PKG_CONFIG --libs "libusb >= 0.1.10" 2>/dev/null`
+  pkg_cv_LIBUSB10_LIBS=`$PKG_CONFIG --libs " libusb-1.0 >= 1.0.0 " 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -22464,14 +22495,150 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        LIBUSB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "libusb >= 0.1.10" 2>&1`
+	        LIBUSB10_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors " libusb-1.0 >= 1.0.0 " 2>&1`
         else
-	        LIBUSB_PKG_ERRORS=`$PKG_CONFIG --print-errors "libusb >= 0.1.10" 2>&1`
+	        LIBUSB10_PKG_ERRORS=`$PKG_CONFIG --print-errors " libusb-1.0 >= 1.0.0 " 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$LIBUSB10_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements ( libusb-1.0 >= 1.0.0 ) were not met:
+
+$LIBUSB10_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBUSB10_CFLAGS
+and LIBUSB10_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables LIBUSB10_CFLAGS
+and LIBUSB10_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5 ; }
+else
+	LIBUSB10_CFLAGS=$pkg_cv_LIBUSB10_CFLAGS
+	LIBUSB10_LIBS=$pkg_cv_LIBUSB10_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	HAVE_USB=yes
+
+$as_echo "#define HAVE_LIBUSB_1_0 1" >>confdefs.h
+
+       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libusb_strerror in -lusb-1.0" >&5
+$as_echo_n "checking for libusb_strerror in -lusb-1.0... " >&6; }
+if test "${ac_cv_lib_usb_1_0_libusb_strerror+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lusb-1.0  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char libusb_strerror ();
+int
+main ()
+{
+return libusb_strerror ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_usb_1_0_libusb_strerror=yes
+else
+  ac_cv_lib_usb_1_0_libusb_strerror=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_usb_1_0_libusb_strerror" >&5
+$as_echo "$ac_cv_lib_usb_1_0_libusb_strerror" >&6; }
+if test "x$ac_cv_lib_usb_1_0_libusb_strerror" = x""yes; then :
+  HAVE_LIBUSB10_STRERROR=yes
+else
+  HAVE_LIBUSB10_STRERROR=no
+fi
+
+
+fi
+  else
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBUSB" >&5
+$as_echo_n "checking for LIBUSB... " >&6; }
+
+if test -n "$LIBUSB_CFLAGS"; then
+    pkg_cv_LIBUSB_CFLAGS="$LIBUSB_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \" libusb >= 0.1.12 \""; } >&5
+  ($PKG_CONFIG --exists --print-errors " libusb >= 0.1.12 ") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBUSB_CFLAGS=`$PKG_CONFIG --cflags " libusb >= 0.1.12 " 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$LIBUSB_LIBS"; then
+    pkg_cv_LIBUSB_LIBS="$LIBUSB_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \" libusb >= 0.1.12 \""; } >&5
+  ($PKG_CONFIG --exists --print-errors " libusb >= 0.1.12 ") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_LIBUSB_LIBS=`$PKG_CONFIG --libs " libusb >= 0.1.12 " 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        LIBUSB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors " libusb >= 0.1.12 " 2>&1`
+        else
+	        LIBUSB_PKG_ERRORS=`$PKG_CONFIG --print-errors " libusb >= 0.1.12 " 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$LIBUSB_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (libusb >= 0.1.10) were not met:
+	as_fn_error $? "Package requirements ( libusb >= 0.1.12 ) were not met:
 
 $LIBUSB_PKG_ERRORS
 
@@ -22501,15 +22668,18 @@ else
 	LIBUSB_LIBS=$pkg_cv_LIBUSB_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
-fi
+	HAVE_USB=yes
 
 $as_echo "#define HAVE_LIBUSB 1" >>confdefs.h
 
-else
-  LIBUSB_CFLAGS=
-  LIBUSB_LIBS=
+
 fi
+  fi
+fi
+
+
+
+
 
 
 

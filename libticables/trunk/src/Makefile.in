@@ -203,6 +203,8 @@ LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIBUSB10_CFLAGS = @LIBUSB10_CFLAGS@
+LIBUSB10_LIBS = @LIBUSB10_LIBS@
 LIBUSB_CFLAGS = @LIBUSB_CFLAGS@
 LIBUSB_LIBS = @LIBUSB_LIBS@
 LN_S = @LN_S@
@@ -305,9 +307,9 @@ libticablesinclude_HEADERS = ticables.h export1.h stdints1.h timeout.h
 # build instructions
 libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@ @LIBUSB_CFLAGS@ -DTICABLES_EXPORTS
+	@GLIB_CFLAGS@ @LIBUSB_CFLAGS@ @LIBUSB10_CFLAGS@ -DTICABLES_EXPORTS
 
-libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@
+libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@ @LIBUSB10_LIBS@
 libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@ \
 	$(am__append_1)
 libticables2_la_SOURCES = *.h \

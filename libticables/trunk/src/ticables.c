@@ -39,6 +39,8 @@
 # include "./win32/usb.h"
 #elif defined(HAVE_LIBUSB)
 # include <usb.h>
+#elif defined(HAVE_LIBUSB_1_0)
+# include <libusb.h>
 #endif
 
 #include "gettext.h"
@@ -64,10 +66,10 @@ static CableFncts const *const cables[] =
 #if !defined(NO_CABLE_PAR) && (defined(HAVE_LINUX_PARPORT_H) || defined(__WIN32__))
 	&cable_par,
 #endif
-#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(__WIN32__))
+#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
 	&cable_slv,
 #endif
-#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(__WIN32__))
+#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
 	&cable_raw,
 #endif
 #ifndef NO_CABLE_VTI
@@ -99,56 +101,67 @@ int ticables_instance = 0;	// counts # of instances
  **/
 TIEXPORT1 int TICALL ticables_library_init(void)
 {
-    char locale_dir[65536];
+	char locale_dir[65536];
+#if (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB10))
+	int ret;
+#endif
 
 #ifdef __WIN32__
-  	HANDLE hDll;
-  	int i;
+	HANDLE hDll;
+	int i;
 
 	hDll = GetModuleHandle("libticables2-4.dll");
-  	GetModuleFileName(hDll, locale_dir, 65535);
+	GetModuleFileName(hDll, locale_dir, 65535);
 
-  	for (i = strlen(locale_dir); i >= 0; i--) 
+	for (i = strlen(locale_dir); i >= 0; i--)
 	{
-    	if (locale_dir[i] == '\\')
-      		break;
-  	}
-  	locale_dir[i] = '\0';
+		if (locale_dir[i] == '\\')
+		{
+			break;
+		}
+	}
+	locale_dir[i] = '\0';
 
 #ifdef __MINGW32__
-   strcat(locale_dir, "\\..\\share\\locale");
+	strcat(locale_dir, "\\..\\share\\locale");
 #else
-   strcat(locale_dir, "\\locale");
+	strcat(locale_dir, "\\locale");
 #endif
 #else
 	strcpy(locale_dir, LOCALEDIR);
 #endif
 
 	if (ticables_instance)
+	{
 		return (++ticables_instance);
+	}
 	ticables_info(_("ticables library version %s"), libticables2_VERSION);
-  	errno = 0;
+	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	ticables_info("setlocale: %s", setlocale(LC_ALL, ""));
-  	ticables_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
-  	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	ticables_info("textdomain: %s", textdomain(PACKAGE));
+	ticables_info("setlocale: %s", setlocale(LC_ALL, ""));
+	ticables_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
+	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+	ticables_info("textdomain: %s", textdomain(PACKAGE));
 #endif
 #ifdef __LINUX__
 	{
-	    struct utsname buf;
-	    
-	    uname(&buf);
-	    ticables_info("kernel: %s", buf.release);
+		struct utsname buf;
+
+		uname(&buf);
+		ticables_info("kernel: %s", buf.release);
 	}
 #endif
 #if defined(HAVE_LIBUSB)
 	/* init the libusb */
 	usb_init();
+#elif defined(HAVE_LIBUSB_1_0)
+	/* init the libusb */
+	libusb_init(NULL);
+	libusb_set_debug(NULL, 3);
 #endif
 
-  	return (++ticables_instance);
+	return (++ticables_instance);
 }
 
 
@@ -162,7 +175,12 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 TIEXPORT1 int
 TICALL ticables_library_exit(void)
 {
-  	return (--ticables_instance);
+#if defined(HAVE_LIBUSB)
+	// No exit function for libusb 0.1.x.
+#elif defined(HAVE_LIBUSB_1_0)
+	libusb_exit(NULL); // XXX NULL ?
+#endif
+	return (--ticables_instance);
 }
 
 /***********/
@@ -204,14 +222,18 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 	handle->timeout = DFLT_TIMEOUT;
 
 	for(i = 0; cables[i]; i++)
+	{
 		if(cables[i]->model == (const int)model)
 		{
 			handle->cable = (CableFncts *)cables[i];
 			break;
 		}
+	}
 
 	if(handle->cable == NULL)
+	{
 		return NULL;
+	}
 
 	return handle;
 }
@@ -228,23 +250,17 @@ TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 {
 	if(handle)
 	{
-		if(handle->priv2)
-		{
-			free(handle->priv2);
-			handle->priv2 = NULL;
-		}
+		free(handle->priv2);
+		handle->priv2 = NULL;
 
-		if(handle->device)
-		{
-			free(handle->device);
-			handle->device = NULL;
-		}
+		free(handle->device);
+		handle->device = NULL;
 
-    	free(handle);
-	    handle = NULL;
+		free(handle);
+		handle = NULL;
 	}
 
-    return 0;
+	return 0;
 }
 
 /**
@@ -266,13 +282,19 @@ TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeo
 		const CableFncts *cable = handle->cable;
 
 		if(!handle->open)
+		{
 			return -1;
+		}
 		if(handle->busy)
+		{
 			return ERR_BUSY;
+		}
 
 		handle->busy = 1;
 		if(cable->timeout)
+		{
 			cable->timeout(handle);
+		}
 		handle->busy = 0;
 	}
 

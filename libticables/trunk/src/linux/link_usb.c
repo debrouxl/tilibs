@@ -31,7 +31,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TI-GRAPH LINK USB and direct USB cable support (lib-usb) */
+/* TI-GRAPH LINK USB and direct USB cable support (libusb 0.1.x) */
 
 /* 
    Some important remarks... (http://lpg.ticalc.org/prj_usb/index.html)

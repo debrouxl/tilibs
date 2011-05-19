@@ -63,25 +63,48 @@ AC_CHECK_TOOL(RC, windres, windres)
 AM_GNU_GETTEXT(external)
 AM_GNU_GETTEXT_VERSION([0.16])
 
+# Call explicitely before using PKG_*
+PKG_PROG_PKG_CONFIG
+
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.4.0)
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
 
 # USB cable support
 AC_ARG_ENABLE(libusb,
-  AC_HELP_STRING([--disable-libusb], [disable USB support]),
+  AC_HELP_STRING([--disable-libusb], [disable USB support through libusb 0.1.x]),
   [cab_cv_use_libusb=$enableval], [cab_cv_use_libusb=yes])
-AC_CACHE_CHECK([whether to disable USB],
+AC_CACHE_CHECK([whether to enable USB through libusb 0.1.x],
   [cab_cv_use_libusb], [cab_cv_use_libusb=no])
-if test x$cab_cv_use_libusb = xyes; then
-  PKG_CHECK_MODULES(LIBUSB, libusb >= 0.1.10)
-  AC_DEFINE(HAVE_LIBUSB, 1, [Define to 1 to enable libusb support.])
-else
-  LIBUSB_CFLAGS=
-  LIBUSB_LIBS=
+
+AC_ARG_ENABLE(libusb10,
+  AC_HELP_STRING([--enable-libusb10], [enable EXPERIMENTAL USB support through libusb 1.0.x]),
+  [cab_cv_use_libusb10=$enableval], [cab_cv_use_libusb10=no])
+AC_CACHE_CHECK([whether to enable USB through libusb 1.0.x],
+  [cab_cv_use_libusb10], [cab_cv_use_libusb10=no])
+
+if [test "x$cab_cv_use_libusb" != xno]; then
+  if [test "x$cab_cv_use_libusb10" != xno]; then
+    PKG_CHECK_MODULES([LIBUSB10], [ libusb-1.0 >= 1.0.0 ],
+      [HAVE_USB=yes
+       AC_DEFINE([HAVE_LIBUSB_1_0], [1],
+                 [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
+       AC_CHECK_LIB([usb-1.0], [libusb_strerror],
+                    [HAVE_LIBUSB10_STRERROR=yes], [HAVE_LIBUSB10_STRERROR=no])
+      ])
+  else
+    PKG_CHECK_MODULES([LIBUSB], [ libusb >= 0.1.12 ],
+      [HAVE_USB=yes
+       AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
+      ])
+  fi
 fi
+
+
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
+AC_SUBST(LIBUSB10_CFLAGS)
+AC_SUBST(LIBUSB10_LIBS)
 
 # Checks for header files.
 AC_HEADER_DIRENT

@@ -401,7 +401,7 @@ int linux_check_parport(const char *devname)
 int linux_check_libusb(void)
 {
 	ticables_info(_("Check for lib-usb support:"));
-#if defined(HAVE_LIBUSB)
+#if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
 	ticables_info(_("    usb support: available."));
 #else
 	ticables_info(_("    usb support: not compiled."));
