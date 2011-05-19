@@ -30,9 +30,11 @@ Log of changes (libticalcs):
 	- make it possible to receive 0-byte variables from a Nspire.
 	- fix Nspire transfers that fail if the file has certain sizes (SF.net bug #3056097).
 	- reconfigure under Debian Squeeze with Autoconf 2.67 and Automake 1.11.1.
-	- add VS 2008 project/solution files
+	- add VS 2008 project/solution files.
 	- fix a declaration after statement reported by Buckeye.
 	- documentation and comment updates.
+	- increase maximum delay value in CATCH_DELAY to 400K.
+	- fix compilation of dusb_vpkt.c with VPKT_DBG=2.
 
 - 08/04/2010, version 1.1.5: debrouxl
 	- TI-8x (Z80) ROM dumper source code relicensed to GPL, with Benjamin Moody's authorization.
