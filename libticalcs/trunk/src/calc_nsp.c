@@ -236,7 +236,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 	for(;;)
 	{
-		VarEntry *fe = tifiles_ve_create();
+		VarEntry *fe;
 		GNode *node;
 
 		TRYF(cmd_s_dir_enum_next(handle));
@@ -246,7 +246,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			break;
 		else if (err != 0)
 			return err;
-		
+
+		fe = tifiles_ve_create();
 		strcpy(fe->folder, varname);
 		strcpy(fe->name, varname);
 		fe->size = varsize;
@@ -256,9 +257,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		node = g_node_new(fe);
 		folder = g_node_append(*vars, node);
 
-		ticalcs_info(_("Name: %s | Type: %i | Attr: %i  | Size: %08X"), 
-			fe->name, 
-			fe->type,
+		ticalcs_info(_("Name: %s | Type: %8s | Attr: %i  | Size: %08X"),
+			fe->name,
+			tifiles_vartype2string(handle->model, fe->type),
 			fe->attr,
 			fe->size);
 	}
@@ -273,6 +274,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		folder = g_node_nth_child(*vars, i);
 		folder_name = ((VarEntry *) (folder->data))->name;
+		vartype = ((VarEntry *) (folder->data))->type;
+
+		// Skip entries whose type is 0 (TNS), for example themes.csv on OS 3.0+.
+		if (vartype == 0)
+		{
+			ticalcs_info(_("Not enumerating documents in %s because it's not a folder"), folder_name);
+			continue;
+		}
 
 		ticalcs_info(_("Directory listing in <%s>..."), folder_name);
 
@@ -292,7 +301,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				break;
 			else if (err != 0)
 				return err;
-		
+
 			ext = tifiles_fext_get(varname);
 			strcpy(ve->folder, folder_name);
 			ve->size = varsize;
