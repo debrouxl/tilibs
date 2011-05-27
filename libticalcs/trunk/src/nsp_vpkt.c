@@ -245,24 +245,45 @@ int nsp_recv_ack(CalcHandle *h)
 {
 	RawPacket pkt = {0};
 	uint16_t addr;
+	int ret = 0;
 
 	ticalcs_info("  receiving ack:");
 
 	TRYF(nsp_recv(h, &pkt));
-	
-	if(pkt.src_port != PORT_PKT_ACK2)
-		return ERR_INVALID_PACKET;
-	if(pkt.dst_port != nsp_src_port)
-		return ERR_INVALID_PACKET;
 
-	addr = (pkt.data[0] << 8) | pkt.data[1];
-	if(addr != nsp_dst_port)
-		return ERR_INVALID_PACKET;
+	if(pkt.src_port != PORT_PKT_ACK2)
+	{
+		printf("XXX weird src_port\n");
+		ret = ERR_INVALID_PACKET;
+	}
+	if(pkt.dst_port != nsp_src_port)
+	{
+		printf("XXX weird .dst_port\n");
+		ret = ERR_INVALID_PACKET;
+	}
+
+	if (pkt.data_size >= 2)
+	{
+		addr = (pkt.data[0] << 8) | pkt.data[1];
+		if(addr != nsp_dst_port)
+		{
+			printf("XXX weird addr\n");
+			ret = ERR_INVALID_PACKET;
+		}
+	}
+	else
+	{
+		printf("XXX weird addr\n");
+		ret = ERR_INVALID_PACKET;
+	}
 
 	if(pkt.ack != 0x0A)
-		return ERR_INVALID_PACKET;
+	{
+		printf("XXX weird .ack\n");
+		ret = ERR_INVALID_PACKET;
+	}
 
-	return 0;
+	return ret;
 }
 
 // Service Disconnection

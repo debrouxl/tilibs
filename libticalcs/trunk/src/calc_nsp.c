@@ -466,7 +466,13 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	}
 	g_free(data);
 
-	TRYF(nsp_session_close(handle));
+	// XXX don't check the result of this call, to enable reception of variables from Nspires running OS >= 1.7.
+	// Those versions send a martian packet:
+	// * a src port never seen before in the conversation;
+	// * an improper dest port;
+	// * a 1-byte payload containing 02 (i.e. an invalid address for the next packet).
+	// * .ack = 0x00 (instead of 0x0A).
+	nsp_session_close(handle);
 
 	return 0;
 }
