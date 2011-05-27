@@ -454,33 +454,50 @@ static int tifiles_file_has_tig_header(const char *filename)
 	return 0;
 }
 
-#define TNO_SIGNATURE	"TI-Nspire.tno "
-#define TNC_SIGNATURE	"TI-Nspire.tnc "
+#define TNO_SIGNATURE           "TI-Nspire.tno "
+#define TNO_NOSAMPLES_SIGNATURE "TI-Nspire.nosamples.tno "
+#define TNC_SIGNATURE           "TI-Nspire.tnc "
+//#define TCO_SIGNATURE           "TI-Nspire.tco "
+//#define TCC_SIGNATURE           "TI-Nspire.tcc "
 
 TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 {
 	FILE *f;
 	char str[128];
 	char *e = tifiles_fext_get(filename);
+	int ret = 0;
 
 	if (!strcmp(e, ""))
-	  return 0;
+	{
+		return ret;
+	}
 
-	if(g_ascii_strcasecmp(e, "tno")	&& g_ascii_strcasecmp(e, "tnc"))
-		return 0;
+	if(g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc"))
+	{
+		return ret;
+	}
 
 	f = g_fopen(filename, "rb");
 	if(f == NULL)
-		return 0;
-
-	fread_n_chars(f, 14, str);
-	if(!strcmp(str, TNO_SIGNATURE) || !strcmp(str, TNC_SIGNATURE)) 
 	{
-		fclose(f);
-		return !0;
+		return ret;
 	}
 
-	return 0;
+	if (fread_n_chars(f, 63, str) == 0)
+	{
+		if (   !strncmp(str, TNO_SIGNATURE, 14)
+		    || !strncmp(str, TNC_SIGNATURE, 14)
+		    || !strncmp(str, TNO_NOSAMPLES_SIGNATURE, 24)
+		    //|| !strncmp(str, TCO_SIGNATURE, 14)
+		    //|| !strncmp(str, TCC_SIGNATURE, 14)
+		   )
+		{
+			ret = !0;
+		}
+	}
+
+	fclose(f);
+	return ret;
 }
 
 /**************/
