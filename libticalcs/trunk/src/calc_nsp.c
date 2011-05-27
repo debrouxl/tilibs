@@ -86,10 +86,11 @@ static int		is_ready	(CalcHandle* handle)
 			old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
 
 			ret = cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
+
+			ticables_options_set_timeout(handle->cable, old);
 			if(ret)
 			{
 				ticalcs_info("OS = 1.1");
-				ticables_options_set_timeout(handle->cable, old);
 				rom_11 = !0;
 
 				TRYF(nsp_addr_request(handle));
