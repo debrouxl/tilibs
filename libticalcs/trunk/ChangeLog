@@ -35,6 +35,9 @@ Log of changes (libticalcs):
 	- documentation and comment updates.
 	- increase maximum delay value in CATCH_DELAY to 400K.
 	- fix compilation of dusb_vpkt.c with VPKT_DBG=2.
+	- hack to enable receiving variables from Nspires running OS >= 1.7, which return a martian ACK packet.
+	- when performing a dirlist operation on Nspires, don't try to enumerate as folders TNS documents at the root of the "My documents" folder (e.g. themes.csv on OS 3.0+).
+	- properly reset timeout in calc_nsp.c::is_ready.
 
 - 08/04/2010, version 1.1.5: debrouxl
 	- TI-8x (Z80) ROM dumper source code relicensed to GPL, with Benjamin Moody's authorization.

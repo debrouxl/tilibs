@@ -14,6 +14,7 @@ Log of changes (libtifiles):
 	- reconfigure under Debian Squeeze with Autoconf 2.67 and Automake 1.11.1.
 	- add VS 2008 project/solution files
 	- documentation and comment updates.
+	- support sample-less [Nspire] OS 3.0.1.1753.
 
 - 08/04/2010, version 1.1.3: debrouxl
 	- added a missing output value initialization, which can cause failure to send some 83+ FlashApps (bug #2792446).
