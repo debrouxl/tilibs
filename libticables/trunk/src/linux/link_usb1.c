@@ -5,8 +5,9 @@
  *  Copyright (c) 1999-2006 Romain Lievin
  *  Copyright (c) 2001 Julien Blache (original author)
  *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
- *  Copyright (c) 2007 Kevin Kofler (libusb-win32 slv_check support)
+ *  Copyright (c) 2007, 2011 Kevin Kofler (slv_check support)
  *  Copyright (c) 2011 Jon Sturm (libusb-1.0 support)
+ *  Copyright (c) 2011 Lionel Debroux (style fixes, corner case fixes)
  *
  *  Portions lifted from libusb (LGPL):
  *  Copyright (C) 2007-2008 Daniel Drake <dsd@gentoo.org>
@@ -40,7 +41,9 @@
 #include <errno.h>
 #include <libusb-1.0/libusb.h>
 
-#ifndef __WIN32__
+#ifdef __WIN32__
+#include <winsock2.h> /* struct timeval */
+#else
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -110,6 +113,11 @@ typedef struct
 	int      max_ps;
 	int      was_max_ps;
 } usb_struct;
+
+// variables for slv_check and slv_bulk_read
+static int io_pending = 0;
+static struct libusb_transfer *transfer;
+static int completed = 0;
 
 // convenient macros
 #define uDev       (((usb_struct *)(h->priv2))->device)
@@ -508,6 +516,96 @@ static int slv_put(CableHandle* h, uint8_t *data, uint32_t len)
 	return send_block(h, data, len);
 }
 
+static void bulk_transfer_cb(struct libusb_transfer *transfer2)
+{
+	// This comes from libusb.
+	int *completed2 = transfer2->user_data;
+	*completed2 = 1;
+	/* caller interprets results and frees transfer */
+}
+
+static int slv_bulk_read(struct libusb_device_handle *dev_handle,
+	unsigned char endpoint, unsigned char *buffer, int length,
+	int *transferred, unsigned int timeout)
+{
+	// This is a variant of libusb_bulk_transfer in libusb, edited to take
+	// the io_pending variable set in slv_check into account.
+	int r;
+
+	if (io_pending)
+	{
+		io_pending = FALSE;
+	}
+	else
+	{
+		completed = 0;
+		transfer = libusb_alloc_transfer(0);
+		if (!transfer)
+		{
+			return LIBUSB_ERROR_NO_MEM;
+		}
+
+		libusb_fill_bulk_transfer(transfer, dev_handle, endpoint,
+					  buffer, length, bulk_transfer_cb,
+					  &completed, timeout);
+
+		r = libusb_submit_transfer(transfer);
+		if (r < 0)
+		{
+			libusb_free_transfer(transfer);
+			return r;
+		}
+	}
+
+	while (!completed)
+	{
+		r = libusb_handle_events(NULL);
+		if (r < 0)
+		{
+			if (r == LIBUSB_ERROR_INTERRUPTED)
+			{
+				continue;
+			}
+			libusb_cancel_transfer(transfer);
+			while (!completed)
+			{
+				if (libusb_handle_events(NULL) < 0)
+				{
+					break;
+				}
+			}
+			libusb_free_transfer(transfer);
+			return r;
+		}
+	}
+
+	*transferred = transfer->actual_length;
+	switch (transfer->status)
+	{
+		case LIBUSB_TRANSFER_COMPLETED:
+			r = 0;
+			break;
+		case LIBUSB_TRANSFER_TIMED_OUT:
+			r = LIBUSB_ERROR_TIMEOUT;
+			break;
+		case LIBUSB_TRANSFER_STALL:
+			r = LIBUSB_ERROR_PIPE;
+			break;
+		case LIBUSB_TRANSFER_OVERFLOW:
+			r = LIBUSB_ERROR_OVERFLOW;
+			break;
+		case LIBUSB_TRANSFER_NO_DEVICE:
+			r = LIBUSB_ERROR_NO_DEVICE;
+			break;
+		default:
+			ticables_warning("slv_bulk_read: unrecognized status code %d", transfer->status);
+			r = LIBUSB_ERROR_OTHER;
+	}
+
+	libusb_free_transfer(transfer);
+	return r;
+}
+
 static int slv_get_(CableHandle *h, uint8_t *data)
 {
 	int ret = 0;
@@ -520,7 +618,7 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 		TO_START(clk);
 		do
 		{
-			ret = libusb_bulk_transfer(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
+			ret = slv_bulk_read(uHdl, uInEnd, (unsigned char*)rBuf, max_ps, &len, to);
 		}
 		while(!len && !ret);
 
@@ -535,13 +633,13 @@ static int slv_get_(CableHandle *h, uint8_t *data)
 
 		if (ret == LIBUSB_ERROR_TIMEOUT)
 		{
-			ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+			ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
 			nBytesRead = 0;
 			return ERR_READ_TIMEOUT;
 		}
 		else if (ret != 0)
 		{
-			ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+			ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
 			nBytesRead = 0;
 			return ERR_READ_ERROR;
 		}
@@ -587,17 +685,17 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
 		   )
 		{
 			ticables_info("XXX triggering an extra bulk read");
-			ret = libusb_bulk_transfer(uHdl, uInEnd, (unsigned char*)data, max_ps, &tmp, to);
+			ret = slv_bulk_read(uHdl, uInEnd, (unsigned char*)data, max_ps, &tmp, to);
 
 			if (ret == LIBUSB_ERROR_TIMEOUT)
 			{
-				ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+				ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
 				nBytesRead = 0;
 				return ERR_READ_TIMEOUT;
 			}
 			else if (ret != 0)
 			{
-				ticables_warning("libusb_bulk_transfer (%s).\n", tigl_strerror(ret));
+				ticables_warning("slv_bulk_read (%s).\n", tigl_strerror(ret));
 				nBytesRead = 0;
 				return ERR_READ_ERROR;
 			}
@@ -646,7 +744,84 @@ static int raw_probe(CableHandle *h)
 
 static int slv_check(CableHandle *h, int *status)
 {
-	// We are using the syncronous api for now so transfers finish right away.
+	// This really should be in libusb, but alas it isn't, so their code was
+	// adapted by Kevin Kofler for use here. It's required to get TiEmu 3 to
+	// work with the SilverLink.
+
+	int r;
+	struct timeval tv;
+
+	if(nBytesRead > 0)
+	{
+		*status = TRUE;
+		return 0;
+	}
+
+	if (!io_pending)
+	{
+		completed = 0;
+		transfer = libusb_alloc_transfer(0);
+		if (!transfer)
+		{
+			return LIBUSB_ERROR_NO_MEM;
+		}
+
+		libusb_fill_bulk_transfer(transfer, uHdl, uInEnd, rBuf,
+					  max_ps, bulk_transfer_cb,
+					  &completed, to);
+		transfer->type = LIBUSB_TRANSFER_TYPE_BULK;
+
+		r = libusb_submit_transfer(transfer);
+		if (r < 0)
+		{
+			libusb_free_transfer(transfer);
+			return r;
+		}
+
+		io_pending = TRUE;
+	}
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	r = libusb_handle_events_timeout(NULL, &tv);
+	if (r < 0)
+	{
+		if (r == LIBUSB_ERROR_INTERRUPTED)
+		{
+			return 0;
+		}
+		libusb_cancel_transfer(transfer);
+		while (!completed)
+		{
+			if (libusb_handle_events(NULL) < 0)
+			{
+				break;
+			}
+		}
+		libusb_free_transfer(transfer);
+		io_pending = FALSE;
+		return ERR_READ_ERROR;
+	}
+
+	if (completed && transfer->status != LIBUSB_TRANSFER_COMPLETED
+	    && transfer->status != LIBUSB_TRANSFER_TIMED_OUT)
+	{
+		libusb_free_transfer(transfer);
+		io_pending = FALSE;
+		return ERR_READ_ERROR;
+	}
+
+	if (transfer->actual_length > 0)
+	{
+		nBytesRead = transfer->actual_length;
+		rBufPtr = rBuf;
+		*status = STATUS_RX; // data available
+	}
+	if (completed)
+	{
+		io_pending = FALSE;
+		libusb_free_transfer(transfer);
+	}
 	return 0;
 }
 
