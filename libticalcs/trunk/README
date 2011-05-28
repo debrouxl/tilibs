@@ -21,9 +21,9 @@ OS:
 
 Libraries:
   - GLib 2 (required)
-  - libticables2 (required)
   - libticonv (required)
   - libtifiles2 (required)
+  - libticables2 (required)
 
 Tools for building from source:
   - make (required)
@@ -50,7 +50,7 @@ Availability
 Copyright
 -------------------------------------------------------------------------------
 
-Copyright (C) 1999-2009 the TiLP team <tilp-users@lists.sf.net>
+Copyright (C) 1999-2011 the TiLP team <tilp-users@lists.sf.net>
 See AUTHORS for detailed authorship information.
 
 This library is free software; you can redistribute it and/or modify it under

@@ -22,7 +22,8 @@ OS:
 
 Libraries:
   - GLib 2 (required)
-  - libusb 0.1 or libusb-win32 (optional, required to use USB cables)
+  - libusb 0.1 or libusb 1.0 on *nix, or libusb-win32 (optional, required to use
+    USB cables)
 
 Tools for building from source:
   - make (required)
@@ -36,11 +37,21 @@ Untar the libticables2 archive, change directory to the libticables2
 directory.
 
 Type "./configure" (add --prefix option to install to a non-default location).
+Add --enable-libusb10 if you want to build against the libusb 1.0 backend,
+which will become default in the future.
 
 Type "make" and then "make install". "make install" requires root privileges
 to install to the default, system-wide location.
 
-Note: some cable handlers can be disabled using #define NO_CABLE_XXX.
+NOTE: some cable handlers can be disabled using #define NO_CABLE_XXX.
+
+NOTE: building libticables against the libusb 1.0 compatibility layer for
+libusb 0.1 does not work, because some features required by libticables are
+not supported by this compatibility layer. You need to build either against
+libusb 0.1 proper, or use the libusb 1.0 backend.
+
+NOTE: on *nix, see the CONFIG file for device permission issues and how to
+solve them.
 
 -------------------------------------------------------------------------------
 Availability
@@ -52,7 +63,7 @@ Availability
 Copyright
 -------------------------------------------------------------------------------
 
-Copyright (C) 1999-2009 the TiLP team <tilp-users@lists.sf.net>
+Copyright (C) 1999-2011 the TiLP team <tilp-users@lists.sf.net>
 See AUTHORS for detailed authorship information.
 
 This library is free software; you can redistribute it and/or modify it under

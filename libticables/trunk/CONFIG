@@ -11,10 +11,10 @@ This document describes methods for manual setup using standard *nix groups and
 a recent method for automatically giving access to locally logged on users.
 
 On the first run, you should always run your program as root. By this way,
-you will be almost sure to run it with success.
+you will be almost sure to run it successfully.
 
-If you want to run your program as a simple user, you must take care of
-permissions. This is explained below.
+If you want to run your program as a regular (non-privileged) user, you need to
+take care of permissions. This is explained below.
 
 
 --------------------------------------------------------------------------------
@@ -117,6 +117,8 @@ information to hand out ACLs for these devices to those users.
 
 To use this setup, create a /lib/udev/rules.d/69-libticables.rules file with
 the following contents:
+
+NOTE: on udev >= 154, replace ENV{ACL_MANAGE}="1" by TAG+="udev-acl".
 
 ACTION!="add", GOTO="libticables_end"
 
