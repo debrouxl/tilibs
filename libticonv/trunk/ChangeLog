@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticonv):
 
-- xx/xx/2011, version 1.1.2: debrouxl
+- 28/05/2011, version 1.1.2: debrouxl
 	- change encoding in .rc file.
 	- compiler warning fixes
 	- minor changes to make autotools definitions work with both libtool 1.x and 2.x.
