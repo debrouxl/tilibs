@@ -315,6 +315,24 @@ static int tigl_open(int id, libusb_device_handle ** udh)
 
 static int tigl_close(libusb_device_handle **udh)
 {
+	// cancel any pending transfers to prevent a segfault in libusb
+	if (io_pending)
+	{
+		io_pending = FALSE;
+		if (!completed)
+		{
+			libusb_cancel_transfer(transfer);
+			while (!completed)
+			{
+				if (libusb_handle_events(NULL) < 0)
+				{
+					break;
+				}
+			}
+		}
+		libusb_free_transfer(transfer);
+	}
+
 	libusb_release_interface(*udh, 0);
 	libusb_close(*udh);
 	*udh = NULL;
@@ -763,7 +781,7 @@ static int slv_check(CableHandle *h, int *status)
 		transfer = libusb_alloc_transfer(0);
 		if (!transfer)
 		{
-			return LIBUSB_ERROR_NO_MEM;
+			return ERR_READ_ERROR;
 		}
 
 		libusb_fill_bulk_transfer(transfer, uHdl, uInEnd, rBuf,
@@ -775,7 +793,7 @@ static int slv_check(CableHandle *h, int *status)
 		if (r < 0)
 		{
 			libusb_free_transfer(transfer);
-			return r;
+			return ERR_READ_ERROR;
 		}
 
 		io_pending = TRUE;
