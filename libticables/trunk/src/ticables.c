@@ -110,7 +110,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	HANDLE hDll;
 	int i;
 
-	hDll = GetModuleHandle("libticables2-4.dll");
+	hDll = GetModuleHandle("libticables2-5.dll");
 	GetModuleFileName(hDll, locale_dir, 65535);
 
 	for (i = strlen(locale_dir); i >= 0; i--)

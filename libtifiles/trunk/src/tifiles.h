@@ -41,7 +41,7 @@
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBFILES_VERSION "1.1.4"
+# define LIBFILES_VERSION "1.1.5"
 #else
 # define LIBFILES_VERSION VERSION
 #endif
