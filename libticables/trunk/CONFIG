@@ -116,10 +116,12 @@ of what user(s) is/are currently logged in locally. The udev-acl tool uses this
 information to hand out ACLs for these devices to those users.
 
 To use this setup, create a /lib/udev/rules.d/69-libticables.rules file with
-the following contents:
+the contents listed below.
+IMPORTANT NOTE:
+    * on udev >= 154, replace ENV{ACL_MANAGE}="1" by TAG+="udev-acl".
+    * on udev >= 165, you can alternatively replace ENV{ACL_MANAGE}="1" by ENV{ID_PDA}="1".
 
-NOTE: on udev >= 154, replace ENV{ACL_MANAGE}="1" by TAG+="udev-acl".
-
+/lib/udev/rules.d/69-libticables.rules:
 ACTION!="add", GOTO="libticables_end"
 
 # serial device (assume TI calculator)
