@@ -391,6 +391,10 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: forbidden characters in folder name."));
 		*message = g_strdup(error_msg);
 		break;
+	case ERR_CALC_ERROR3+12:
+		strcpy(error_msg, _("Msg: anti-downgrade protection refuses this OS version."));
+		*message = g_strdup(error_msg);
+		break;
 
 	default:
 		// propagate error code

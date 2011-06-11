@@ -38,7 +38,7 @@
 /////////////----------------
 
 static uint8_t usb_errors[] = { 
-	0x04, 0x07, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
+	0x04, 0x07, 0x0a, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x80
 };
 
 static int err_code(uint8_t code)
@@ -49,7 +49,7 @@ static int err_code(uint8_t code)
 		if(usb_errors[i] == code)
 			return i+1;
 
-	ticalcs_warning("NSpire error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", (int)code);
+	ticalcs_warning("Nspire error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", (int)code);
 
 	return 0;
 }
