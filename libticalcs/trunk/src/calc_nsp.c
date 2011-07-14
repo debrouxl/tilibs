@@ -144,60 +144,136 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 	return 0;
 }
 
-static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size)
+static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size, int type)
 {
-	uint8_t *dst = g_malloc(sc->width * sc->height / 2);
-	uint8_t *q;
-	int i;
-
-	for(i = 0, q = dst; i < (int)size;)
+	if (type == 0)
 	{
-		int8_t rec = src[i++];
+		// Nspire (CAS) Clickpad & Touchpad, 4 bpp
+		uint8_t *dst = g_malloc(sc->width * sc->height / 2);
+		uint8_t *q;
+		uint32_t i;
 
-		if(rec >= 0)
+		for(i = 0, q = dst; i < size;)
 		{
-			uint8_t cnt = ((uint8_t )rec) + 1;
-			uint8_t val = src[i++];
+			int8_t rec = src[i++];
 
-			memset(q, val, cnt);
-			q += cnt;
-		}
-		else
-		{
-			uint8_t cnt = -(rec - 1);
+			if(rec >= 0)
+			{
+				// Positive count: "repeat 8-bit value" block.
+				uint8_t cnt = ((uint8_t)rec) + 1;
+				uint8_t val = src[i++];
 
-			memcpy(q, src+i, cnt);
-			q += cnt;
-			i += cnt;
+				memset(q, val, cnt);
+				q += cnt;
+			}
+			else
+			{
+				// Negative count: "verbatim" block of 8-bit values.
+				uint8_t cnt = ((uint8_t)-rec) + 1;
+
+				memcpy(q, src+i, cnt);
+				q += cnt;
+				i += cnt;
+			}
 		}
+
+		return dst;
 	}
+	else // if (type == 1)
+	{
+		// Nspire (CAS) CX, 16 bpp
+		uint8_t *dst = g_malloc(sc->width * sc->height * 2);
+		uint8_t *q;
+		uint32_t i;
 
-	return dst;
+		for(i = 0, q = dst; i < size;)
+		{
+			int8_t rec = src[i++];
+
+			if(rec >= 0)
+			{
+				// Positive count: "repeat 32-bit value" block.
+				uint8_t cnt = ((uint8_t)rec) + 1;
+				uint32_t val = *(uint32_t *)(src + i);
+
+				uint8_t j = 0;
+				for (j = 0; j < cnt; j++)
+				{
+					*((uint32_t *)q) = val;
+					q += 4;
+				}
+				i += 4;
+			}
+			else
+			{
+				// Negative count: "verbatim" block of 32-bit values.
+				uint8_t cnt = ((uint8_t)-rec) + 1;
+
+				memcpy(q, src+i, cnt * 4);
+				q += cnt * 4;
+				i += cnt * 4;
+			}
+		}
+
+		return dst;
+	}
 }
+
+// Forward declaration
+static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint32_t size = 0;
 	uint8_t cmd, *data;
+	int retval;
+	int type;
+	CalcInfos infos;
 
-	TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
+	// First of all, we have to identify the Nspire model.
+	retval = get_version(handle, &infos);
+	if (!retval)
+	{
+		if (infos.bits_per_pixel == 4)
+		{
+			// Nspire (CAS) Clickpad or Touchpad.
+			type = 0;
+		}
+		else if (infos.bits_per_pixel == 16)
+		{
+			// Nspire (CAS) CX.
+			type = 1;
+		}
+		else
+		{
+			ticalcs_critical(_("Unknown calculator model with %d bpp\n"), infos.bits_per_pixel);
+			return ERR_UNSUPPORTED; // THIS RETURNS !
+		}
 
-	TRYF(cmd_s_screen_rle(handle, 0));
-	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
-	sc->width = sc->clipped_width = (data[8] << 8) | data[9];
-	sc->height = sc->clipped_height = (data[10] << 8) | data[11];
-	size = GUINT32_FROM_BE(*((uint32_t *)(data)));
-	TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
+		// Do screenshot
+		TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
 
-	TRYF(nsp_session_close(handle));
+		TRYF(cmd_s_screen_rle(handle, 0));
+		TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
+		sc->width = sc->clipped_width = (data[8] << 8) | data[9];
+		sc->height = sc->clipped_height = (data[10] << 8) | data[11];
+		size = GUINT32_FROM_BE(*((uint32_t *)(data)));
+		TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
 
-	*bitmap = rle_uncompress(sc, data, size);
-	g_free(data);
+		TRYF(nsp_session_close(handle));
 
-	if(*bitmap == NULL) 
-		return ERR_MALLOC;
+		*bitmap = rle_uncompress(sc, data, size, type);
+		g_free(data);
 
-	return 0;
+		if(*bitmap == NULL)
+		{
+			return ERR_MALLOC;
+		}
+
+		retval = 0;
+	}
+
+	return retval;
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
