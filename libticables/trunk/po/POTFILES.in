@@ -1,8 +1,26 @@
 # List of source files containing translatable strings.
 
-src/data_log.c
+src/bsd/detect.c
+src/bsd/link_gry.c
+src/bsd/link_ser.c
 src/error.c
-src/logging.c
+src/link_nul.c
+src/linux/detect.c
+src/linux/ioports.c
+src/linux/link_dev.c
+src/linux/link_gry.c
+src/linux/link_par.c
+src/linux/link_ser.c
+src/linux/link_tie.c
+src/linux/link_usb1.c
+src/linux/link_usb.c
+src/linux/link_vti.c
+src/macos/detect.c
 src/probe.c
 src/ticables.c
-src/type2str.c
+src/win32/link_gry2.c
+src/win32/link_gry.c
+src/win32/link_par.c
+src/win32/link_ser.c
+src/win32/link_tie.c
+src/win32/link_vti.c

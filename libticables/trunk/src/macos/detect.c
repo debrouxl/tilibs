@@ -36,7 +36,6 @@
 #include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
 
 #include "../gettext.h"
 #include "../error.h"
@@ -204,7 +203,7 @@ static int check_for_node_usability(const char *pathname)
     }
     else
     {
-	ticables_info(_("    node %s: does not exists"), pathname);
+	ticables_info(_("    node %s: does not exist"), pathname);
 	ticables_info(_("    => you will have to create the node."));
 
 	return -1;
@@ -225,23 +224,23 @@ static int check_for_node_usability(const char *pathname)
 
     if(getuid() == st.st_uid)
     {
-	ticables_info(_("    is user can r/w on device: yes"));
+	ticables_info(_("    user can r/w on device: yes"));
 	return 0;
     }
     else
     {
-	ticables_info(_("    is user can r/w on device: no"));
+	ticables_info(_("    user can r/w on device: no"));
     }
 
     if((st.st_mode & S_IROTH) && (st.st_mode & S_IWOTH))
     {
-	ticables_info(_("    are others can r/w on device: yes"));
+	ticables_info(_("    others can r/w on device: yes"));
     }
     else
     {
 	char *user, *group;
 
-	ticables_info(_("    are others can r/w on device: no"));
+	ticables_info(_("    others can r/w on device: no"));
 
 	user = strdup(get_user_name(getuid()));
 	group = strdup(get_group_name(st.st_gid));
@@ -255,7 +254,7 @@ static int check_for_node_usability(const char *pathname)
 	{
 	    ticables_info(_("    is the user '%s' in the group '%s': no"), user, group);
 	    ticables_info(_("    => you should add your username at the group '%s' in '/etc/group'"), group);
-	    ticables_info(_("    => you will have to restart you session, too"), group);
+	    ticables_info(_("    => you will have to restart your session, too"), group);
 	    free(user);
 	    free(group);
 

@@ -36,7 +36,6 @@
 #include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
 
 #include "../gettext.h"
 #include "../error.h"
@@ -232,7 +231,7 @@ static int check_for_node_usability(const char *pathname)
     if(getuid() == st.st_uid) 
     {
 	ticables_info(_("    user can r/w on device: yes"));
-	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+	ticables_info(_("    => device is inaccessible for unknown reasons"));
     return -1;
     } 
     else 
@@ -273,7 +272,7 @@ static int check_for_node_usability(const char *pathname)
 	free(group);
     }	
     
-	ticables_info(_("    => device is inaccessible for unknown reasons (SELinux?)"));
+	ticables_info(_("    => device is inaccessible for unknown reasons"));
     return -1;
 }
 

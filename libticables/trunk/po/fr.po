@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticables2 1.3.1\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-03-11 20:24+0100\n"
+"POT-Creation-Date: 2011-07-14 14:53+0200\n"
 "PO-Revision-Date: 2007-02-23 16:08+0100\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@list.sf.net>\n"
@@ -17,6 +17,141 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/bsd/detect.c:168 src/linux/detect.c:184 src/macos/detect.c:168
+#, c-format
+msgid "can't open '%s'."
+msgstr "impossible d'ouvrir '%s'."
+
+#: src/bsd/detect.c:202 src/linux/detect.c:218 src/macos/detect.c:202
+#, c-format
+msgid "    node %s: exists"
+msgstr "    noeud %s: existe"
+
+#: src/bsd/detect.c:206 src/linux/detect.c:222 src/macos/detect.c:206
+#, c-format
+msgid "    node %s: does not exist"
+msgstr "    noeud %s: n'existe pas"
+
+#: src/bsd/detect.c:207 src/linux/detect.c:223 src/macos/detect.c:207
+msgid "    => you will have to create the node."
+msgstr "    => vous devrez créer le noeud."
+
+#: src/bsd/detect.c:214 src/linux/detect.c:230
+#, c-format
+msgid "    node %s: accessible"
+msgstr "    noeud %s: accessible"
+
+#: src/bsd/detect.c:220 src/linux/detect.c:236 src/macos/detect.c:214
+#, c-format
+msgid "    permissions/user/group:%s%s %s"
+msgstr "    permissions/utilisateur/groupe:%s%s %s"
+
+#: src/bsd/detect.c:233 src/linux/detect.c:249 src/macos/detect.c:227
+msgid "    user can r/w on device: yes"
+msgstr "    l'utilisateur peut lire/écrire sur le périphérique: oui"
+
+#: src/bsd/detect.c:234 src/bsd/detect.c:275 src/linux/detect.c:250
+#: src/linux/detect.c:291
+msgid "    => device is inaccessible for unknown reasons"
+msgstr "    => le périphérique est inaccessible pour des raisons inconnues"
+
+#: src/bsd/detect.c:239 src/linux/detect.c:255 src/macos/detect.c:232
+msgid "    user can r/w on device: no"
+msgstr "    l'utilisateur peut lire/écrire sur le périphérique: non"
+
+#: src/bsd/detect.c:244 src/linux/detect.c:260 src/macos/detect.c:237
+msgid "    others can r/w on device: yes"
+msgstr ""
+"    les autres utilisateurs peuvent lire/écrire sur le périphérique: oui"
+
+#: src/bsd/detect.c:250 src/linux/detect.c:266 src/macos/detect.c:243
+msgid "    others can r/w on device: no"
+msgstr ""
+"    les autres utilisateurs peuvent lire/écrire sur le périphérique: non"
+
+#: src/bsd/detect.c:257 src/linux/detect.c:273 src/macos/detect.c:250
+#, c-format
+msgid "    is the user '%s' in the group '%s': yes"
+msgstr "    est-ce que l'utilisateur '%s' est dans le groupe '%s': oui"
+
+#: src/bsd/detect.c:262 src/linux/detect.c:278 src/macos/detect.c:255
+#, c-format
+msgid "    is the user '%s' in the group '%s': no"
+msgstr "    est-ce que l'utilisateur '%s' est dans le groupe '%s': non"
+
+#: src/bsd/detect.c:263 src/linux/detect.c:279 src/macos/detect.c:256
+#, c-format
+msgid "    => you should add your username at the group '%s' in '/etc/group'"
+msgstr ""
+"    => vous devriez ajouter votre utilisateur dans le groupe '%s' dans '/etc/"
+"group'"
+
+#: src/bsd/detect.c:264 src/linux/detect.c:280 src/macos/detect.c:257
+msgid "    => you will have to restart your session, too"
+msgstr "    => vous devrez également redémarrer votre session"
+
+#: src/bsd/detect.c:283 src/linux/detect.c:299 src/macos/detect.c:275
+#, c-format
+msgid "Check for super-user access: %s"
+msgstr "Vérification de l'accès pour le super-utilisateur: %s"
+
+#: src/bsd/detect.c:293 src/linux/detect.c:310
+msgid "Check for tty support:"
+msgstr "Vérification du support terminal (tty):"
+
+#: src/bsd/detect.c:294 src/linux/detect.c:312
+msgid "    tty support: available."
+msgstr "    support tty: disponible."
+
+#: src/bsd/detect.c:297 src/linux/detect.c:319 src/macos/detect.c:283
+msgid "Check for tty usability:"
+msgstr "Vérification de l'utilisabilité du tty:"
+
+#: src/bsd/detect.c:309 src/linux/detect.c:350 src/linux/detect.c:390
+#: src/linux/detect.c:480
+msgid "    is useable: yes"
+msgstr "    est utilisable: oui"
+
+#: src/bsd/detect.c:322 src/linux/detect.c:408
+msgid "Check for lib-usb support:"
+msgstr "Vérification du support lib-usb:"
+
+#: src/bsd/detect.c:324 src/linux/detect.c:410
+msgid "    usb support: available."
+msgstr "    support usb: disponible."
+
+#: src/bsd/detect.c:326 src/linux/detect.c:412
+msgid "    usb support: not compiled."
+msgstr "    support usb: pas compilé."
+
+#: src/bsd/link_gry.c:86 src/linux/link_gry.c:90
+#, c-format
+msgid "unable to open this serial port: %s (wrong permissions).\n"
+msgstr "impossible d'ouvrir ce port série: %s (mauvaises permissions).\n"
+
+#: src/bsd/link_gry.c:88 src/linux/link_gry.c:92
+#, c-format
+msgid "unable to open this serial port: %s\n"
+msgstr "impossible d'ouvrir ce port série: %s\n"
+
+#: src/bsd/link_gry.c:292 src/linux/link_gry.c:296 src/win32/link_gry2.c:361
+#: src/win32/link_gry.c:367
+msgid "GrayLink"
+msgstr "GrayLink"
+
+#: src/bsd/link_gry.c:293 src/linux/link_gry.c:297 src/win32/link_gry2.c:362
+#: src/win32/link_gry.c:368
+msgid "GrayLink serial cable"
+msgstr "câble série GrayLink"
+
+#: src/bsd/link_ser.c:315 src/linux/link_ser.c:313 src/win32/link_ser.c:330
+msgid "BlackLink"
+msgstr "BlackLink"
+
+#: src/bsd/link_ser.c:316 src/linux/link_ser.c:314 src/win32/link_ser.c:331
+msgid "BlackLink or home-made serial cable"
+msgstr "câble série Blacklink ou fait maison"
 
 #: src/error.c:64
 msgid "Msg: link cable is busy."
@@ -283,10 +418,225 @@ msgid "Msg: DLL not found."
 msgstr "Msg: DLL (bibliothèque dynamique de liens) introuvable."
 
 #: src/error.c:311
-#, fuzzy
 msgid "Cause: maybe you renamed the DLL ?"
 msgstr ""
 "Cause: peut-être avez-vous renommé la DLL (bibliothèque dynamique de liens) ?"
+
+#: src/link_nul.c:100
+msgid "Dummy link"
+msgstr "Câble factice"
+
+#: src/link_nul.c:101
+msgid "Dummy link used when no cable is set"
+msgstr "Câble factice utilisé quand aucun câble n'est défini"
+
+#: src/link_nul.c:114
+msgid "Dummy link for TiEmu"
+msgstr "Câble factice pour TiEmu"
+
+#: src/link_nul.c:115
+msgid "Internal Link Port cable for TiEmu (internal use)"
+msgstr "Port de transfert interne pour TiEmu (à usage interne)"
+
+#: src/linux/detect.c:314
+msgid "    tty support: not compiled."
+msgstr "    support: pas compilé."
+
+#: src/linux/detect.c:322
+msgid "not usable"
+msgstr "pas utilisable"
+
+#: src/linux/detect.c:331
+#, c-format
+msgid "unable to open serial device '%s'"
+msgstr "impossible d'ouvrir le périphérique série '%s'"
+
+#: src/linux/detect.c:338
+#, c-format
+msgid "Error running TIOCGSERIAL ioctl - %s"
+msgstr "Erreur lors de l'exécution de l'ioctl TIOCGSERIAL - %s"
+
+#: src/linux/detect.c:345 src/linux/detect.c:385
+msgid "    is useable: no"
+msgstr "    est utilisable: non"
+
+#: src/linux/detect.c:361
+msgid "Check for parport support:"
+msgstr "Vérification du support port parallèle:"
+
+#: src/linux/detect.c:363
+msgid "    parport support: available."
+msgstr "    support parport: disponible."
+
+#: src/linux/detect.c:365
+msgid "    parport support: not compiled."
+msgstr "    support parport: pas compilé."
+
+#: src/linux/detect.c:370
+msgid "Check for parport usability:"
+msgstr "Vérification de l'utilisabilité du port parallèle:"
+
+#: src/linux/detect.c:416
+msgid "Check for lib-usb usability:"
+msgstr "Vérification de l'utilisabilité de lib-usb:"
+
+#: src/linux/detect.c:420 src/linux/detect.c:431 src/linux/detect.c:439
+#: src/linux/detect.c:442
+#, c-format
+msgid "    usb filesystem (%s): %s"
+msgstr "    système de fichiers usb (%s): %s"
+
+#: src/linux/detect.c:448
+#, c-format
+msgid "    usb filesystem (/[proc|dev]/bus/usb): %s"
+msgstr "    système de fichiers usb (/[proc|dev]/bus/usb): %s"
+
+#: src/linux/detect.c:449
+msgid "    => you must have udev or usbfs support."
+msgstr "    => il est nécessaire d'avoir le support udev ou usbfs."
+
+#: src/linux/detect.c:450
+msgid "    => take a look at the ticables2/CONFIG file."
+msgstr "    => regardez le fichier ticables2/CONFIG."
+
+#: src/linux/detect.c:464
+msgid "Check for tiusb usability:"
+msgstr "Vérification de l'utilisabilité de tiusb:"
+
+#: src/linux/detect.c:486
+msgid "    tiusb support: not compiled."
+msgstr "    support tiusb: pas compilé."
+
+#: src/linux/ioports.c:70
+msgid "ioctl failed on parallel device: can't claim exclusive access."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas réclamer l'accès exclusif."
+
+#: src/linux/ioports.c:77
+msgid "ioctl failed on parallel device: can't claim parport."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas réclamer le port "
+"parallèle."
+
+#: src/linux/ioports.c:86
+msgid "ioctl failed on parallel device: can't change transfer mode."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas changer le mode de "
+"transfert."
+
+#: src/linux/ioports.c:98
+msgid "ioctl failed on parallel device: can't release parport."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas relâcher le port "
+"parallèle."
+
+#: src/linux/ioports.c:112
+msgid "ioctl failed on parallel device: can't read status lines."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas lire les lignes d'état."
+
+#: src/linux/ioports.c:123
+msgid "ioctl failed on parallel device: can't write on data lines."
+msgstr ""
+"ioctl raté sur périphérique parallèle: ne peut pas écrire vers les lignes de "
+"données"
+
+#: src/linux/ioports.c:162 src/linux/ioports.c:178
+msgid "ioctl failed on serial device."
+msgstr "ioctl raté sur le périphérique série."
+
+#: src/linux/link_dev.c:117
+#, c-format
+msgid "unable to open this device: %s.\n"
+msgstr "impossible d'ouvrir ce périphérique: %s.\n"
+
+#: src/linux/link_dev.c:127
+msgid "unable to get max packet size (ioctl).\n"
+msgstr "impossible d'obtenir la taille maximale de paquet (ioctl).\n"
+
+#: src/linux/link_dev.c:141
+msgid "unable to set timeout (ioctl).\n"
+msgstr "impossible de définir le timeout (ioctl).\n"
+
+#: src/linux/link_dev.c:152 src/linux/link_dev.c:186
+msgid "unable to reset pipes (ioctl).\n"
+msgstr "impossible de réinitialiser les tuyaux (ioctl).\n"
+
+#: src/linux/link_dev.c:383
+msgid "Direct Link"
+msgstr "Direct Link"
+
+#: src/linux/link_dev.c:384
+msgid "Direct Link cable"
+msgstr "Câble direct"
+
+#: src/linux/link_par.c:306 src/win32/link_par.c:316
+msgid "Parallel"
+msgstr "Parallèle"
+
+#: src/linux/link_par.c:307 src/win32/link_par.c:317
+msgid "Home-made parallel cable"
+msgstr "Câble parallèle fait maison"
+
+#: src/linux/link_tie.c:135
+#, c-format
+msgid "error: %s\n"
+msgstr "erreur: %s\n"
+
+#: src/linux/link_tie.c:327 src/win32/link_tie.c:344
+msgid "TiEmu"
+msgstr "TiEmu"
+
+#: src/linux/link_tie.c:328 src/win32/link_tie.c:345
+msgid "Virtual link for TiEmu"
+msgstr "Câble virtuel pour TiEmu"
+
+#: src/linux/link_usb1.c:249
+#, c-format
+msgid " found %s on #%i, version <%x.%02x>\n"
+msgstr " trouvé %s sur #%i, version <%x.%02x>\n"
+
+#: src/linux/link_usb1.c:271
+msgid " no devices found!\n"
+msgstr " aucun périphérique trouvé !\n"
+
+#: src/linux/link_usb1.c:870 src/linux/link_usb.c:1047
+msgid "SilverLink"
+msgstr "SilverLink"
+
+#: src/linux/link_usb1.c:871 src/linux/link_usb.c:1048
+msgid "SilverLink (TI-GRAPH LINK USB) cable"
+msgstr "Câble SilverLink (TI-GRAPH LINK USB)"
+
+#: src/linux/link_usb1.c:884 src/linux/link_usb.c:1061
+msgid "DirectLink"
+msgstr "DirectLink"
+
+#: src/linux/link_usb1.c:885 src/linux/link_usb.c:1062
+msgid "DirectLink (DIRECT USB) cable"
+msgstr "Câble DirectLink (DIRECT USB)"
+
+#: src/linux/link_usb.c:355
+#, c-format
+msgid "usb_find_busses (%s).\n"
+msgstr "usb_find_busses (%s).\n"
+
+#: src/linux/link_usb.c:363
+#, c-format
+msgid "usb_find_devices (%s).\n"
+msgstr "usb_find_devices (%s).\n"
+
+#: src/linux/link_usb.c:371
+msgid "no devices found!\n"
+msgstr "aucun périphérique trouvé !\n"
+
+#: src/linux/link_vti.c:254 src/win32/link_vti.c:312
+msgid "Virtual TI"
+msgstr "Virtual TI"
+
+#: src/linux/link_vti.c:255 src/win32/link_vti.c:313
+msgid "Virtual link for VTi"
+msgstr "Câble virtuel pour VTi"
 
 #: src/probe.c:45
 #, c-format
@@ -335,3 +685,17 @@ msgstr "  périph  : %s"
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x"
+
+#: src/win32/link_vti.c:103
+msgid "FATAL ERROR: unable to get an handle on the ticables-2 library."
+msgstr ""
+"ERREUR FATALE: impossible d'obtenir un handle sur la librairie ticables-2."
+
+#: src/win32/link_vti.c:104
+msgid "Did you rename the library ?!"
+msgstr "Avez-vous renommé la librairie ?!"
+
+#: src/win32/link_vti.c:137
+#, c-format
+msgid "Opened %s"
+msgstr "Ouvert %s"
