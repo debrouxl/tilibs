@@ -808,17 +808,17 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_CLOCK_SPEED;
 
 	i = 36;
-	g_snprintf(infos->os_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+	g_snprintf(infos->os_version, sizeof(infos->os_version), "%1i.%1i.%04i",
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
 	infos->mask |= INFOS_OS_VERSION;
 
 	i = 40;
-	g_snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+	g_snprintf(infos->boot_version, sizeof(infos->boot_version), "%1i.%1i.%04i",
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
 	infos->mask |= INFOS_BOOT_VERSION;
 
 	i = 44;
-	g_snprintf(infos->boot2_version, sizeof(infos->boot_version), "%1i.%1i.%04i", 
+	g_snprintf(infos->boot2_version, sizeof(infos->boot2_version), "%1i.%1i.%04i",
 		data[i+0], data[i+1], (data[i+2] << 8) | data[i+3]);
 	infos->mask |= INFOS_BOOT2_VERSION;
 
