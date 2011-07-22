@@ -195,7 +195,7 @@ int dbus_decomp(const char *filename, int resync)
 			fgetc(fi);
 	}
 	num_bytes = i-1; // -1 due to EOF char
-	fprintf(stdout, "%i bytes read.\n", num_bytes);
+	printf("%i bytes read.\n", num_bytes);
 
 	// process data
 	for(i = 0; i < num_bytes;)
@@ -237,7 +237,7 @@ restart:
 			{
 				if(resync && buffer[i] == 0x98 && (buffer[i+1] == 0x15 ||  buffer[i+1] == 0x56))
 				{
-					fprintf(stdout, "Warning: there is packets in data !\n");
+					printf("Warning: there is packets in data !\n");
 					fprintf(fo, "Beware : length of previous packet is wrong !\n");
 					goto restart;
 				}
@@ -258,7 +258,7 @@ restart:
 
 exit:
 	if(ret < 0)
-		fprintf(stdout, "Error %i\n", -ret);
+		printf("Error %i\n", -ret);
 
 	fclose(fi);
 	fclose(fo);
