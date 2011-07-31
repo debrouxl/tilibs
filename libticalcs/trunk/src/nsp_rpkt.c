@@ -33,18 +33,18 @@
 #include "error.h"
 #include "macros.h"
 
-#define VPKT_DBG	2	// 1 = verbose, 2 = more verbose
+#define VPKT_DBG	1	// 1 = verbose, 2 = more verbose
 
 // CRC implementation from O. Armand (ExtendeD)
 static uint16_t compute_crc(uint8_t *data, uint32_t size)
 {
 	uint16_t acc = 0;
-	int i;
+	uint32_t i;
 
 	if(size == 0)
 		return 0;
 
-	for(i = 0; i < (int)size; i++)
+	for(i = 0; i < size; i++)
 	{
 		uint16_t first, second, third;
 
@@ -61,15 +61,39 @@ static uint16_t compute_crc(uint8_t *data, uint32_t size)
 
 static int hexdump(uint8_t *data, uint32_t size)
 {
+#if (VPKT_DBG == 1)
+	char str[64];
+	uint32_t i;
+
+	str[0] = 0;
+	if (size <= 12)
+	{
+		str[0] = ' '; str[1] = ' '; str[2] = ' '; str[3] = ' ';
+
+		for (i = 0; i < size; i++)
+		{
+			sprintf(&str[3*i+4], "%02X ", data[i]);
+		}
+	}
+	else
+	{
+		sprintf(str, "    %02X %02X %02X %02X %02X ..... %02X %02X %02X %02X %02X",
+		             data[0], data[1], data[2], data[3], data[4],
+		             data[size-5], data[size-4], data[size-3], data[size-2], data[size-1]);
+	}
+	ticalcs_info(str);
+#endif
 #if (VPKT_DBG == 2)
 	char *str = (char *)g_malloc(3*size + 8 + 10);
-	int i, j, k;
+	uint32_t i, j, k;
 	int step = 12;
 
 	for(k = 0; k < 4; k++)
-			str[k] = ' ';
+	{
+		str[k] = ' ';
+	}
 
-	for (i = j = 0; i < (int)size; i++, j++)
+	for (i = j = 0; i < size; i++, j++)
 	{
 		if(i && !(i % step))
 		{
@@ -77,10 +101,10 @@ static int hexdump(uint8_t *data, uint32_t size)
 			j = 0;
 		}
 
-		sprintf(&str[3*j+4], "%02X ", 0xff & data[i]);
+		sprintf(&str[3*j+4], "%02X ", data[i]);
 	}
 	ticalcs_info(str);
-	
+
 	g_free(str);
 #endif
   return 0;
