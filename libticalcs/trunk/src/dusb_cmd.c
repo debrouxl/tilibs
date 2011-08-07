@@ -281,13 +281,13 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 // 0x0004: OS header
 int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);	
+	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);
 }
 
 // 0x0005: OS data
 int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);	
+	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);
 }
 
 // 0x0004: OS header
@@ -334,7 +334,7 @@ int cmd_r_eot_ack(CalcHandle *h)
 		return ERR_CALC_ERROR2 + err_code(pkt);
 	else if(pkt->type != VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
-	
+
 	dusb_vtl_pkt_del(pkt);
 
 	return 0;
@@ -640,9 +640,9 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 	*data = g_malloc0(pkt->size);
 	memcpy(*data, pkt->data, pkt->size);
-	
+	ticalcs_info("   size=%i", pkt->size);
+
 	dusb_vtl_pkt_del(pkt);
-	ticalcs_info("   size=%i", size);
 
 	return 0;
 }
