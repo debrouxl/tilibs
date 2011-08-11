@@ -67,39 +67,49 @@ TIEXPORT2 const char *TICALL tifiles_model_to_string(CalcModel model)
  **/
 TIEXPORT2 CalcModel TICALL tifiles_string_to_model(const char *str)
 {
-	if(!g_ascii_strcasecmp(str, "TI73"))
+	if(!g_ascii_strcasecmp(str, "TI73") || !g_ascii_strcasecmp(str, "73"))
 		return CALC_TI73;
-	else if(!g_ascii_strcasecmp(str, "TI82"))
+	else if(!g_ascii_strcasecmp(str, "TI82") || !g_ascii_strcasecmp(str, "82"))
 		return CALC_TI82;
-	else if(!g_ascii_strcasecmp(str, "TI83"))
+	else if(!g_ascii_strcasecmp(str, "TI83") || !g_ascii_strcasecmp(str, "83"))
 		return CALC_TI83;
-	else if(!g_ascii_strcasecmp(str, "TI83+"))
+	else if(   !g_ascii_strncasecmp(str, "TI83+", 5)
+	        || !g_ascii_strncasecmp(str, "TI83p", 5)
+	        || !g_ascii_strncasecmp(str, "83+", 3)
+	        || !g_ascii_strncasecmp(str, "83p", 3)
+	       )
 		return CALC_TI83P;
-	else if(!g_ascii_strcasecmp(str, "TI84+"))
+	else if(   !g_ascii_strncasecmp(str, "TI84+", 5)
+	        || !g_ascii_strncasecmp(str, "TI84p", 5)
+	        || !g_ascii_strncasecmp(str, "84+", 3)
+	        || !g_ascii_strncasecmp(str, "84p", 3)
+	       )
 		return CALC_TI84P;
-	else if(!g_ascii_strcasecmp(str, "TI85"))
+	else if(!g_ascii_strcasecmp(str, "TI85") || !g_ascii_strcasecmp(str, "85"))
 		return CALC_TI85;
-	else if(!g_ascii_strcasecmp(str, "TI86"))
+	else if(!g_ascii_strcasecmp(str, "TI86") || !g_ascii_strcasecmp(str, "86"))
 		return CALC_TI86;
-	else if(!g_ascii_strcasecmp(str, "TI89"))
+	else if(!g_ascii_strcasecmp(str, "TI89") || !g_ascii_strcasecmp(str, "89"))
 		return CALC_TI89;
-	else if(!g_ascii_strcasecmp(str, "TI89t"))
+	else if(!g_ascii_strcasecmp(str, "TI89t") || !g_ascii_strcasecmp(str, "89t"))
 		return CALC_TI89T;
-	else if(!g_ascii_strcasecmp(str, "TI92"))
+	else if(!g_ascii_strcasecmp(str, "TI92") || !g_ascii_strcasecmp(str, "92"))
 		return CALC_TI92;
-	else if(!g_ascii_strcasecmp(str, "TI92+"))
+	else if(   !g_ascii_strncasecmp(str, "TI92+", 5)
+	        || !g_ascii_strncasecmp(str, "TI92p", 5)
+	        || !g_ascii_strncasecmp(str, "92+", 3)
+	        || !g_ascii_strncasecmp(str, "92p", 3)
+	       )
 		return CALC_TI92P;
-	else if(!g_ascii_strcasecmp(str, "V200"))
+	else if(!g_ascii_strcasecmp(str, "TIV200") || !g_ascii_strcasecmp(str, "V200"))
 		return CALC_V200;
-	else if(!g_ascii_strcasecmp(str, "TI84+ USB"))
+	else if(!g_ascii_strcasecmp(str, "TI84+ USB") || !g_ascii_strcasecmp(str, "84+ USB"))
 		return CALC_TI84P_USB;
-	else if(!g_ascii_strcasecmp(str, "TI89t USB"))
+	else if(!g_ascii_strcasecmp(str, "TI89t USB") || !g_ascii_strcasecmp(str, "89T USB"))
 		return CALC_TI89T_USB;
-	else if(!g_ascii_strcasecmp(str, "NSpire"))
+	else if(!g_ascii_strncasecmp(str, "TI NSpire", 9) || !g_ascii_strncasecmp(str, "NSpire", 6))
 		return CALC_NSPIRE;
-	else if(!g_ascii_strcasecmp(str, "NSpire"))
-		return CALC_NSPIRE;
-		
+
 	return CALC_NONE;
 }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-05-27 21:44+0200\n"
+"POT-Creation-Date: 2011-08-11 14:40+0200\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -118,55 +118,55 @@ msgstr "Groupe"
 msgid "tifiles library version %s"
 msgstr "librairie tifiles version %s"
 
-#: src/type2str.c:118 src/type2str.c:136
+#: src/type2str.c:128 src/type2str.c:146
 msgid "none     "
 msgstr "aucun    "
 
-#: src/type2str.c:119 src/type2str.c:138
+#: src/type2str.c:129 src/type2str.c:148
 msgid "locked   "
 msgstr "verrouil."
 
-#: src/type2str.c:120 src/type2str.c:140
+#: src/type2str.c:130 src/type2str.c:150
 msgid "archived "
 msgstr "archivé  "
 
-#: src/type2str.c:121 src/type2str.c:142
+#: src/type2str.c:131 src/type2str.c:152
 msgid "protected"
 msgstr "protégé  "
 
-#: src/type2str.c:160 src/type2str.c:182
+#: src/type2str.c:170 src/type2str.c:192
 msgid "single"
 msgstr "simple"
 
-#: src/type2str.c:161 src/type2str.c:184
+#: src/type2str.c:171 src/type2str.c:194
 msgid "group"
 msgstr "groupe"
 
-#: src/type2str.c:162 src/type2str.c:186
+#: src/type2str.c:172 src/type2str.c:196
 msgid "regular"
 msgstr "normal"
 
-#: src/type2str.c:163 src/type2str.c:188
+#: src/type2str.c:173 src/type2str.c:198
 msgid "backup"
 msgstr "sauvegarde"
 
-#: src/type2str.c:164 src/type2str.c:196
+#: src/type2str.c:174 src/type2str.c:206
 msgid "tigroup"
 msgstr "groupe"
 
-#: src/type2str.c:165 src/type2str.c:190
+#: src/type2str.c:175 src/type2str.c:200
 msgid "os"
 msgstr "os"
 
-#: src/type2str.c:166 src/type2str.c:192
+#: src/type2str.c:176 src/type2str.c:202
 msgid "application"
 msgstr "application"
 
-#: src/type2str.c:167 src/type2str.c:194
+#: src/type2str.c:177 src/type2str.c:204
 msgid "flash"
 msgstr "flash"
 
-#: src/type2str.c:168
+#: src/type2str.c:178
 msgid "unknown"
 msgstr "inconnu"
 
