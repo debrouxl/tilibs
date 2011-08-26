@@ -68,10 +68,6 @@
    Linux ONLY, not for other POSIX-like systems (it directly uses Linux kernel
    interfaces). Under Windows, we use the asynchronous API provided by the
    libusb-win32.
-
-  - NSpire support need a patched libusb library because libusb emits an
-	IOCTL_INTERNAL_USB_RESET_PORT followed by an IOCTL_INTERNAL_USB_CYCLE_PORT.
-	NSpire simply needs an RESET_PORT.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -536,7 +532,13 @@ static int slv_reset(CableHandle *h)
 	TRYC(tigl_reset(h));
 
 	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+#ifdef __WIN32__
+	/* Reset USB port (send an IOCTL_INTERNAL_USB_RESET_PORT) */
+	ret = usb_reset_ex(uHdl, USB_RESET_TYPE_RESET_PORT);
+#else
 	ret = usb_reset(uHdl);
+#endif
+
 	if (ret < 0) 
 	{
 		ticables_warning("usb_reset (%s).\n", usb_strerror());
