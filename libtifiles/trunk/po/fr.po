@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-08-11 14:40+0200\n"
+"POT-Creation-Date: 2011-09-06 14:53+0200\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -99,17 +99,21 @@ msgstr "Msg : erreur d'E/S."
 msgid "Cause: file is corrupted or invalid."
 msgstr "Cause : le fichier est corrompu ou invalide"
 
-#: src/filetypes.c:1019 src/filetypes.c:1022 src/types73.c:76
-#: src/types83p.c:70 src/types84p.c:70 src/types89.c:78 src/types89t.c:78
-#: src/types92p.c:80 src/typesv2.c:77
+#: src/filetypes.c:1025 src/filetypes.c:1028 src/filetypes.c:1108
+#: src/filetypes.c:1111 src/types73.c:76 src/types83p.c:70 src/types84p.c:70
+#: src/types89.c:78 src/types89t.c:78 src/types92p.c:80 src/typesv2.c:77
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.c:1039
+#: src/filetypes.c:1034 src/filetypes.c:1117
+msgid "TIGroup"
+msgstr "TIGroup"
+
+#: src/filetypes.c:1045 src/filetypes.c:1128
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.c:1041
+#: src/filetypes.c:1047 src/filetypes.c:1130
 msgid "Group"
 msgstr "Groupe"
 
