@@ -464,6 +464,8 @@ static int tifiles_file_has_tig_header(const char *filename)
 #define TNC_SIGNATURE           "TI-Nspire.tnc "
 #define TCO_SIGNATURE           "TI-Nspire.tco "
 #define TCC_SIGNATURE           "TI-Nspire.tcc "
+#define TMO_SIGNATURE           "TI-Nspire.tmo "
+#define TMC_SIGNATURE           "TI-Nspire.tmc "
 
 TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 {
@@ -477,7 +479,10 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 		return ret;
 	}
 
-	if(g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc") && g_ascii_strcasecmp(e, "tco") && g_ascii_strcasecmp(e, "tcc"))
+	if(   g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc")
+	   && g_ascii_strcasecmp(e, "tco") && g_ascii_strcasecmp(e, "tcc")
+	   && g_ascii_strcasecmp(e, "tmo") && g_ascii_strcasecmp(e, "tmc")
+	  )
 	{
 		return ret;
 	}
@@ -495,6 +500,8 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 		    || !strncmp(str, TNO_NOSAMPLES_SIGNATURE, 24)
 		    || !strncmp(str, TCO_SIGNATURE, 14)
 		    || !strncmp(str, TCC_SIGNATURE, 14)
+		    || !strncmp(str, TMO_SIGNATURE, 14)
+		    || !strncmp(str, TMC_SIGNATURE, 14)
 		   )
 		{
 			ret = !0;
@@ -973,7 +980,7 @@ TIEXPORT2 CalcModel TICALL tifiles_file_get_model(const char *filename)
 		type = CALC_V200;
 	//else if (!g_ascii_strcasecmp(str, "tib"))
 		//type = CALC_TI89;	// consider .tib as TI89
-	else if (!g_ascii_strcasecmp(str, "tn") || !g_ascii_strcasecmp(str, "tc"))
+	else if (!g_ascii_strcasecmp(str, "tn") || !g_ascii_strcasecmp(str, "tc") || !g_ascii_strcasecmp(str, "tm"))
 		type = CALC_NSPIRE;
 	else
 		type = CALC_NONE;
@@ -1024,7 +1031,10 @@ TIEXPORT2 const char *TICALL tifiles_file_get_type(const char *filename)
 	if (!g_ascii_strcasecmp(ext, "tib"))
 		return _("OS upgrade");
 
-	if(!g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc") || !g_ascii_strcasecmp(ext, "tco") || !g_ascii_strcasecmp(ext, "tcc"))
+	if(   !g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc")
+	   || !g_ascii_strcasecmp(ext, "tco") || !g_ascii_strcasecmp(ext, "tcc")
+	   || !g_ascii_strcasecmp(ext, "tmo") || !g_ascii_strcasecmp(ext, "tmc")
+	  )
 		return _("OS upgrade");
 
 	if (!tifiles_file_is_ti(filename))
@@ -1107,7 +1117,10 @@ TIEXPORT2 const char *TICALL tifiles_file_get_icon(const char *filename)
 	if (!g_ascii_strcasecmp(ext, "tib"))
 		return _("OS upgrade");
 
-	if (!g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc") || !g_ascii_strcasecmp(ext, "tco") || !g_ascii_strcasecmp(ext, "tcc"))
+	if (   !g_ascii_strcasecmp(ext, "tno") || !g_ascii_strcasecmp(ext, "tnc")
+	    || !g_ascii_strcasecmp(ext, "tco") || !g_ascii_strcasecmp(ext, "tcc")
+	    || !g_ascii_strcasecmp(ext, "tmo") || !g_ascii_strcasecmp(ext, "tmc")
+	   )
 		return _("OS upgrade");
 
 	if (!tifiles_file_is_ti(filename))
