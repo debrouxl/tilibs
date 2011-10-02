@@ -1,9 +1,9 @@
 /* ioapi.c -- IO base function header for compress/uncompress .zip
    files using zlib + zip or unzip API
 
-   Version 1.01e, February 12th, 2005
+   Version 1.01h, December 28th, 2009
 
-   Copyright (C) 1998-2005 Gilles Vollant
+   Copyright (C) 1998-2009 Gilles Vollant
 */
 
 #include <glib/gstdio.h>
@@ -12,6 +12,8 @@
 
 #include "zlib.h"
 #include "ioapi.h"
+
+
 
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
@@ -61,6 +63,7 @@ int ZCALLBACK fclose_file_func OF((
 int ZCALLBACK ferror_file_func OF((
    voidpf opaque,
    voidpf stream));
+
 
 voidpf ZCALLBACK fopen_file_func (opaque, filename, mode)
    voidpf opaque;
@@ -138,7 +141,8 @@ long ZCALLBACK fseek_file_func (opaque, stream, offset, origin)
     default: return -1;
     }
     ret = 0;
-    fseek((FILE *)stream, offset, fseek_origin);
+    if (fseek((FILE *)stream, offset, fseek_origin) != 0)
+        ret = -1;
     return ret;
 }
 
