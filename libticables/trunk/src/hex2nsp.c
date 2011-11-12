@@ -23,9 +23,12 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "logging.h"
 #include "stdints1.h"
 
 #define HEXDUMP_SIZE	12
+
+#define ARRAY_SIZE (256)
 
 /*
 	Format (see http://hackspire.unsads.com/USB_Protocol#Service_identifiers):
@@ -93,7 +96,7 @@ static const ServiceId sids[] =
 
 /* */
 
-static int is_a_sid(uint8_t id)
+/*static int is_a_sid(uint8_t id)
 {
   int i;
   
@@ -101,7 +104,7 @@ static int is_a_sid(uint8_t id)
     if(id == sids[i].value)
       break;
   return i;
-}
+}*/
 
 static const char* name_of_sid(uint16_t id)
 {
@@ -123,24 +126,35 @@ static const char* name_of_addr(uint16_t addr)
 	return "??";
 }
 
-static const char* ep_way(int ep)
+/*static const char* ep_way(int ep)
 {
 	if(ep == 0x01) return "TI>PC";
 	else if(ep == 0x02) return "PC>TI";
 	else return "XX>XX";
-}
+}*/
 
 /* */
 
 static int add_sid(uint16_t* array, uint16_t id, int *count)
 {
 	int i;
-	
 	for(i = 0; i < *count; i++)
 		if(array[i] == id)
 			return 0;
 
-	array[++i] = id;
+	if (i < ARRAY_SIZE - 1)
+	{
+		array[++i] = id;
+	}
+	else
+	{
+		static int warn_add_sid;
+		if (!warn_add_sid++)
+		{
+			ticables_warning("NSP protocol interpreter: no room left in sid_found array.");
+		}
+	}
+
 	*count = i;
 
 	return i;
@@ -154,7 +168,19 @@ static int add_addr(uint16_t* array, uint16_t addr, int *count)
 		if(array[i] == addr)
 			return 0;
 
-	array[++i] = addr;
+	if (i < ARRAY_SIZE - 1)
+	{
+		array[++i] = addr;
+	}
+	else
+	{
+		static int warn_add_addr;
+		if (!warn_add_addr++)
+		{
+			ticables_warning("NSP protocol interpreter: no room left in addr_found array.");
+		}
+	}
+
 	*count = i;
 
 	return i;
@@ -193,8 +219,8 @@ static int hex_read(unsigned char *data)
 	return 0;
 }
 
-static uint16_t sid_found[256] = { 0 };
-static uint16_t addr_found[256] = { 0 };
+static uint16_t sid_found[ARRAY_SIZE] = { 0 };
+static uint16_t addr_found[ARRAY_SIZE] = { 0 };
 static int sif=0, af=0;
 
 static int dusb_write(int dir, uint8_t data)

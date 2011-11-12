@@ -22,7 +22,10 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "logging.h"
 #include "stdints1.h"
+
+#define ARRAY_SIZE (256)
 
 /*
 	Format:
@@ -85,7 +88,7 @@ static const Opcode opcodes[] =
 
 /* */
 
-static int is_a_packet(uint8_t id)
+/*static int is_a_packet(uint8_t id)
 {
   int i;
   
@@ -93,7 +96,7 @@ static int is_a_packet(uint8_t id)
     if(id == packets[i].type)
       break;
   return i;
-}
+}*/
 
 static const char* name_of_packet(uint8_t id)
 {
@@ -105,7 +108,7 @@ static const char* name_of_packet(uint8_t id)
 	return "";
 }
 
-static int is_a_packet_with_data_header(uint8_t id)
+/*static int is_a_packet_with_data_header(uint8_t id)
 {
 	int i;
   
@@ -115,9 +118,9 @@ static int is_a_packet_with_data_header(uint8_t id)
 			return 1;
 
   return 0;
-}
+}*/
 
-static int is_a_opcode(uint16_t id)
+/*static int is_a_opcode(uint16_t id)
 {
   int i;
 
@@ -126,7 +129,7 @@ static int is_a_opcode(uint16_t id)
       break;
 
   return i;
-}
+}*/
 
 static const char* name_of_data(uint16_t id)
 {
@@ -151,12 +154,24 @@ static const char* ep_way(int ep)
 static int add_pkt_type(uint8_t* array, uint8_t type, int *count)
 {
 	int i;
-	
+
 	for(i = 0; i < *count; i++)
 		if(array[i] == type)
 			return 0;
 
-	array[++i] = type;
+	if (i < ARRAY_SIZE - 1)
+	{
+		array[++i] = type;
+	}
+	else
+	{
+		static int warn_add_pkt_type;
+		if (!warn_add_pkt_type++)
+		{
+			ticables_warning("DUSB protocol interpreter: no room left in pkt_type_found array.");
+		}
+	}
+
 	*count = i;
 
 	return i;
@@ -165,12 +180,24 @@ static int add_pkt_type(uint8_t* array, uint8_t type, int *count)
 static int add_data_code(uint16_t* array, uint16_t code, int *count)
 {
 	int i;
-	
+
 	for(i = 0; i < *count; i++)
 		if(array[i] == code)
 			return 0;
 
-	array[i++] = code;
+	if (i < ARRAY_SIZE - 1)
+	{
+		array[++i] = code;
+	}
+	else
+	{
+		static int warn_add_data_code;
+		if (!warn_add_data_code++)
+		{
+			ticables_warning("DUSB protocol interpreter: no room left in data_code_found array.");
+		}
+	}
+
 	*count = i;
 
 	return i;
@@ -209,8 +236,8 @@ static int hex_read(unsigned char *data)
 	return 0;
 }
 
-static uint8_t pkt_type_found[256] = { 0 };
-static uint16_t data_code_found[256] = { 0 };
+static uint8_t pkt_type_found[ARRAY_SIZE] = { 0 };
+static uint16_t data_code_found[ARRAY_SIZE] = { 0 };
 static int ptf=0, dcf=0;
 
 static int dusb_write(int dir, uint8_t data)
