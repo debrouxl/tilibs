@@ -586,9 +586,7 @@ static int send_block(CableHandle *h, uint8_t *data, int length)
         return ERR_WRITE_ERROR;
     }
 
-    if (   (tigl_devices[h->address].pid == PID_NSPIRE && length % max_ps == 0)
-        || (tigl_devices[h->address].pid == PID_TI89TM && length % max_ps == 0)
-       )
+    if (tigl_devices[h->address].pid == PID_NSPIRE && length % max_ps == 0)
     {
         ticables_info("XXX triggering an extra bulk write");
         ret = usb_bulk_write(uHdl, uOutEnd, (char*)data, 0, to);
@@ -856,9 +854,11 @@ static int slv_get(CableHandle* h, uint8_t *data, uint32_t len)
         TRYC(slv_get_(h, data+i));
 
     if (   (tigl_devices[h->address].pid == PID_NSPIRE   && was_max_size_packet != 0 && nBytesRead == 0)
-        || (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
-        || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
-        || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
+        || (len == 0 && (   (tigl_devices[h->address].pid == PID_TI89TM   && was_max_size_packet != 0 && nBytesRead == 0)
+                         || (tigl_devices[h->address].pid == PID_TI84P    && was_max_size_packet != 0 && nBytesRead == 0)
+                         || (tigl_devices[h->address].pid == PID_TI84P_SE && was_max_size_packet != 0 && nBytesRead == 0)
+                        )
+           )
        )
     {
         ticables_info("XXX triggering an extra bulk read");

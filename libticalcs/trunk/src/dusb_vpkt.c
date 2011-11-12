@@ -251,7 +251,35 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	return 0;
 }
 
-// Fragmenting of packets
+// Work around TI's OS behaviour: extra bulk write of 0 size required after the last raw packet in a transfer,
+// when some conditions are met.
+void workaround_send(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
+{
+	uint8_t buf[64];
+
+	ticalcs_info("workaround_send: vtl->size=%d\traw->size=%d", vtl->size, raw->size);
+
+	if (h->model == CALC_TI89T_USB)
+	{
+		// A 1076-byte (string) variable doesn't require this workaround, but bigger (string) variables do.
+		if (vtl->size > 1076 && ((raw->size + 5) % 64) == 0)
+		{
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticables_cable_send(h->cable, buf, 0);
+		}
+	}
+	else // if (h->model == CALC_TI84P_USB)
+	{
+		// A 244-byte (program) variable doesn't require this workaround, but bigger (program) variables do.
+		if (raw->type == RPKT_VIRT_DATA_LAST && vtl->size > 244 && (vtl->size % 250) == 244)
+		{
+			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticables_cable_send(h->cable, buf, 0);
+		}
+	}
+}
+
+// Fragmentation of packets
 
 int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 {
@@ -280,6 +308,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 #elif (VPKT_DBG == 1)
 		ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
 #endif
+		workaround_send(h, &raw, vtl);
 		TRYF(dusb_recv_acknowledge(h));
 	}
 	else
@@ -304,6 +333,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 #elif (VPKT_DBG == 1)
 		ticalcs_info("  PC->TI: %s", dusb_vpkt_type2name(vtl->type));
 #endif
+		//workaround_send(h, &raw, vtl);
 		TRYF(dusb_recv_acknowledge(h));
 
 		// other packets doesn't have data header but last one has a different type
@@ -330,17 +360,22 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		}
 
 		// send last chunk (type)
-		if(r)
+		//if(r)
 		{
 			raw.size = r;
 			raw.type = RPKT_VIRT_DATA_LAST;
 			memcpy(raw.data, vtl->data + offset, r);
 			offset += r;
-			
+
 			TRYF(dusb_send(h, &raw));
+
 #if (VPKT_DBG == 2)
 			ticalcs_info("  PC->TI: Virtual Packet Data Final");
 #endif
+			if (h->model != CALC_TI84P_USB)
+			{
+				workaround_send(h, &raw, vtl);
+			}
 			TRYF(dusb_recv_acknowledge(h));
 		}
 	}
@@ -348,10 +383,37 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 	return 0;
 }
 
+// Work around TI's OS behaviour: extra bulk read of 0 size required after the last raw packet in a transfer,
+// when some conditions are met.
+void workaround_recv(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
+{
+	uint8_t buf[64];
+
+	ticalcs_info("workaround_recv: vtl->size=%d\traw->size=%d", vtl->size, raw->size);
+
+	if (h->model == CALC_TI89T_USB)
+	{
+		if ((raw->size % 64) == 0)
+		{
+			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticables_cable_recv(h->cable, buf, 0);
+		}
+	}
+	else // if (h->model == CALC_TI84P_USB)
+	{
+		if (((raw->size + 5) % 64) == 0)
+		{
+			ticalcs_info("XXX triggering an extra bulk read\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
+			ticables_cable_recv(h->cable, buf, 0);
+		}
+	}
+}
+
 // beware: data field may be re-allocated in size !
 int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 {
 	RawPacket raw = { 0 };
+	uint8_t buf[64];
 	int i = 0;
 	long offset = 0;
 
@@ -393,9 +455,13 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			h->updat->pbar();
 		}
 
+		workaround_recv(h, &raw, vtl);
+
 		TRYF(dusb_send_acknowledge(h));
 
 	} while(raw.type != RPKT_VIRT_DATA_LAST);
+
+	//printf("dusb_recv_data: rpkt.size=%d\n", raw.size);
 
 	return 0;
 }

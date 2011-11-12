@@ -206,7 +206,16 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
 		if(handle->busy)
 			return ERR_BUSY;
 		if(!len)
-			return 0;
+		{
+			// Complain loudly, but don't return 0 immediately in such a case.
+			// Indeed, the DUSB file transfer code of the 84+(SE) & 89T wants writes
+			// of length 0 after writes of length 64, otherwise transfer hangs...
+			//
+			// The workaround for these models used to be done purely in libticables,
+			// but doing so broke ROM dumping... so the problem is probably not
+			// intrinsic to the USB controller and low-level USB stack.
+			ticables_critical("ticables_cable_send: len = 0\n");
+		}
 
 		handle->busy = 1;
 		handle->rate.count += len;
@@ -289,7 +298,10 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
 		if(handle->busy)
 			return ERR_BUSY;
 		if(!len)
-			return 0;
+		{
+			// See ticables_cable_send above.
+			ticables_critical("ticables_cable_recv: len = 0\n");
+		}
 
 		handle->busy = 1;
 		handle->rate.count += len;

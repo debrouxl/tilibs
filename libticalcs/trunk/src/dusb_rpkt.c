@@ -43,6 +43,7 @@ int dusb_send(CalcHandle* handle, RawPacket* pkt)
 	buf[4] = pkt->type;
 	memcpy(buf+5, pkt->data, pkt->size);
 
+	//printf("dusb_send: pkt->size=%d\n", pkt->size);
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_send(handle->cable, buf, size));
 	if(size >= 128)
@@ -70,6 +71,7 @@ int dusb_recv(CalcHandle* handle, RawPacket* pkt)
 	if(handle->model == CALC_TI89T_USB && pkt->size > 1023)
 		return ERR_INVALID_PACKET;
 
+	//printf("dusb_send: pkt->size=%d\n", pkt->size);
 	// Next, follows data
 	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->size));
 	if(pkt->size >= 128)
