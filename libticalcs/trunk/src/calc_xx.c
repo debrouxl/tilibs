@@ -44,7 +44,7 @@
 TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 {
 	const CalcFncts *calc;
-	
+
 	if(handle == NULL) return ERR_INVALID_HANDLE;
 	calc = handle->calc;
 
@@ -137,6 +137,11 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (ve == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_execute: ve is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -167,13 +172,17 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc,
-												 uint8_t** bitmap)
+TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (sc == NULL || bitmap == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_screen: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -204,14 +213,18 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoor
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, 
-											 GNode** vars, GNode **apps)
+TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **apps)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 	TreeInfo *ti;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (vars == NULL || apps == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_get_dirlist: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -257,6 +270,11 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (ram == NULL || flash == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_get_memfree: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -292,6 +310,11 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_backup: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -327,6 +350,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_backup: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -357,13 +385,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, 
-										  FileContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_var: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -395,13 +427,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, 
-											FileContent* content, VarRequest* vr)
+TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL || vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_var: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -432,13 +468,17 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, 
-											 FileContent* content)
+TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_var_ns: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -470,13 +510,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, 
-											 FileContent* content, VarEntry** var)
+TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** var)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL || var == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_var_ns: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -512,6 +556,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_app: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -542,13 +591,17 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, 
-											VarRequest* var)
+TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, VarRequest* var)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL || var == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_app: an argument is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -584,6 +637,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_os: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -619,6 +677,11 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (idlist == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_idlist: idlist is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -689,6 +752,11 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_dump_rom_2: filename is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -724,6 +792,11 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _cloc
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (_clock == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_set_clock: _clock is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -759,6 +832,11 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (_clock == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_get_clock: _clock is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -794,6 +872,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_cert: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -829,6 +912,11 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_cert: content is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -865,6 +953,13 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
 {
 	BackupContent *content1;
 	FileContent *content2;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_backup2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -909,6 +1004,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 	BackupContent *content1;
 	FileContent *content2;
 
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_backup2: filename is NULL");
+		return -1;
+	}
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -948,10 +1050,16 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, 
-										   const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, const char* filename)
 {
 	FileContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_var2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -981,10 +1089,16 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, 
-											const char* filename, VarRequest* vr)
+TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, const char* filename, VarRequest* vr)
 {
 	FileContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL || vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_var2: an argument is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1013,10 +1127,16 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode,
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, 
-											 const char* filename)
+TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, const char* filename)
 {
 	FileContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_var_ns2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1046,10 +1166,16 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, 
-											 const char* filename, VarEntry** vr)
+TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode, const char* filename, VarEntry** vr)
 {
 	FileContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL || vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_var_ns2: an argument is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1081,6 +1207,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
 {
 	FlashContent *content;
 
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_app2: filename is NULL");
+		return -1;
+	}
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1108,10 +1241,16 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, 
-											VarRequest* vr)
+TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* filename, VarRequest* vr)
 {
 	FlashContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL || vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_app2: an argument is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1141,10 +1280,15 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* file
  **/
 TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 {
-    const CalcFncts *calc;
-	int ret;
+	const CalcFncts *calc;
+	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_new_fld: vr is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -1158,10 +1302,11 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 
 	ticalcs_info(_("Creating folder '%s':"), vr->folder);
 	handle->busy = 1;
-	ret = calc->new_fld(handle, vr);
+	if (calc->new_fld)
+		ret = calc->new_fld(handle, vr);
 	handle->busy = 0;
 
-	return ret;	
+	return ret;
 }
 
 /**
@@ -1169,16 +1314,21 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
  * @handle: a previously allocated handle
  * @var: var to delete
  *
- * Request deleting of a variable (if possible ??).
+ * Request deleting of a variable (if possible).
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 {
 	const CalcFncts *calc;
-	int ret;
+	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (vr == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_del_var: vr is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	if(!handle->attached)
@@ -1192,7 +1342,8 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 
 	ticalcs_info(_("Deleting variable '%s':"), vr->name);
 	handle->busy = 1;
-	ret = calc->del_var(handle, vr);
+	if (calc->del_var)
+		ret = calc->del_var(handle, vr);
 	handle->busy = 0;
 
 	return ret;
@@ -1210,9 +1361,14 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
 {
 	const CalcFncts *calc;
-	int ret;
+	int ret = 0;
 
 	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (infos == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_get_version: infos is NULL");
+		return -1;
+	}
 	calc = handle->calc;
 
 	//if(!handle->attached)
@@ -1226,7 +1382,8 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 
 	ticalcs_info(_("Requesting version infos:"));
 	handle->busy = 1;
-	ret = calc->get_version(handle, infos);
+	if (calc->get_version)
+		ret = calc->get_version(handle, infos);
 	handle->busy = 0;
 
 	return ret;
@@ -1244,6 +1401,13 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_cert2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1265,8 +1429,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 /**
  * ticalcs_calc_recv_cert2:
  * @handle: a previously allocated handle
- * @content: where to store content
- * @var: FLASH app to request
+ * @filename: name of file
  *
  * Request certificate. Depending on extension, saves it as *.9Xq or *.cer.
  *
@@ -1275,7 +1438,14 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* filename)
 {
 	FlashContent *content;
-	char *ext = tifiles_fext_get(filename);
+	char *ext;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_cert2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1286,6 +1456,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 	if(handle->busy)
 		return ERR_BUSY;
 
+	ext = tifiles_fext_get(filename);
 	if(!strcmp(ext, "cer"))
 	{
 		// .cer format as generated by SDK
@@ -1341,6 +1512,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filen
 {
 	FlashContent *content;
 
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_os2: filename is NULL");
+		return -1;
+	}
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1372,6 +1550,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
 {
 	TigContent *content;
 
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_tigroup2: filename is NULL");
+		return -1;
+	}
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1402,6 +1587,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
 TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* filename, TigMode mode)
 {
 	TigContent *content;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (filename == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_recv_tigroup2: filename is NULL");
+		return -1;
+	}
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.3\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-09-08 12:38+0200\n"
+"POT-Creation-Date: 2011-11-12 08:42+0100\n"
 "PO-Revision-Date: 2004-04-14 09:54+0000\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -99,21 +99,21 @@ msgstr "Msg : erreur d'E/S."
 msgid "Cause: file is corrupted or invalid."
 msgstr "Cause : le fichier est corrompu ou invalide"
 
-#: src/filetypes.c:1032 src/filetypes.c:1038 src/filetypes.c:1118
-#: src/filetypes.c:1124 src/types73.c:76 src/types83p.c:70 src/types84p.c:70
+#: src/filetypes.c:1043 src/filetypes.c:1049 src/filetypes.c:1129
+#: src/filetypes.c:1135 src/types73.c:76 src/types83p.c:70 src/types84p.c:70
 #: src/types89.c:78 src/types89t.c:78 src/types92p.c:80 src/typesv2.c:77
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.c:1044 src/filetypes.c:1130
+#: src/filetypes.c:1055 src/filetypes.c:1141
 msgid "TIGroup"
 msgstr "TIGroup"
 
-#: src/filetypes.c:1055 src/filetypes.c:1141
+#: src/filetypes.c:1066 src/filetypes.c:1152
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.c:1057 src/filetypes.c:1143
+#: src/filetypes.c:1068 src/filetypes.c:1154
 msgid "Group"
 msgstr "Groupe"
 
@@ -122,55 +122,55 @@ msgstr "Groupe"
 msgid "tifiles library version %s"
 msgstr "librairie tifiles version %s"
 
-#: src/type2str.c:128 src/type2str.c:146
+#: src/type2str.c:131 src/type2str.c:151
 msgid "none     "
 msgstr "aucun    "
 
-#: src/type2str.c:129 src/type2str.c:148
+#: src/type2str.c:132 src/type2str.c:153
 msgid "locked   "
 msgstr "verrouil."
 
-#: src/type2str.c:130 src/type2str.c:150
+#: src/type2str.c:133 src/type2str.c:155
 msgid "archived "
 msgstr "archivé  "
 
-#: src/type2str.c:131 src/type2str.c:152
+#: src/type2str.c:134 src/type2str.c:157
 msgid "protected"
 msgstr "protégé  "
 
-#: src/type2str.c:170 src/type2str.c:192
+#: src/type2str.c:176 src/type2str.c:200
 msgid "single"
 msgstr "simple"
 
-#: src/type2str.c:171 src/type2str.c:194
+#: src/type2str.c:177 src/type2str.c:202
 msgid "group"
 msgstr "groupe"
 
-#: src/type2str.c:172 src/type2str.c:196
+#: src/type2str.c:178 src/type2str.c:204
 msgid "regular"
 msgstr "normal"
 
-#: src/type2str.c:173 src/type2str.c:198
+#: src/type2str.c:179 src/type2str.c:206
 msgid "backup"
 msgstr "sauvegarde"
 
-#: src/type2str.c:174 src/type2str.c:206
+#: src/type2str.c:180 src/type2str.c:214
 msgid "tigroup"
 msgstr "groupe"
 
-#: src/type2str.c:175 src/type2str.c:200
+#: src/type2str.c:181 src/type2str.c:208
 msgid "os"
 msgstr "os"
 
-#: src/type2str.c:176 src/type2str.c:202
+#: src/type2str.c:182 src/type2str.c:210
 msgid "application"
 msgstr "application"
 
-#: src/type2str.c:177 src/type2str.c:204
+#: src/type2str.c:183 src/type2str.c:212
 msgid "flash"
 msgstr "flash"
 
-#: src/type2str.c:178
+#: src/type2str.c:184
 msgid "unknown"
 msgstr "inconnu"
 

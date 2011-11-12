@@ -47,6 +47,13 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	FileContent **group;
 	FileContent *single;
 
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("tixx_recv_backup: content is NULL");
+		return -1;
+	}
+
 	// Do a directory list and check for something to backup
 	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
 	nvars = ticalcs_dirlist_ve_count(vars);
@@ -125,6 +132,13 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	GNode *vars, *apps;
 	int nvars = 0;
 	int napps = 0;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
+		return -1;
+	}
 
 	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
 
@@ -215,6 +229,13 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	int nvars = 0;
 	int napps = 0;
 	int b = 0;
+
+	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (content == NULL)
+	{
+		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
+		return -1;
+	}
 
 	update_->cnt3 = 0;
 	update_->pbar();

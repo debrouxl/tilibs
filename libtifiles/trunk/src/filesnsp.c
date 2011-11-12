@@ -62,6 +62,12 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
@@ -127,6 +133,12 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 	if (!tifiles_file_is_tno(filename))
 		return ERR_INVALID_FILE;
 
+	if (content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
@@ -190,6 +202,13 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
 {
   FILE *f;
   char *filename = NULL;
+  VarEntry *entry;
+
+  if (content->entries == NULL || content->entries[0] == NULL)
+  {
+    tifiles_warning("%s: skipping content with NULL content->entries or content->entries[0]", __FUNCTION__);
+    return ERR_FILE_IO;
+  }
 
   if (fname != NULL) 
   {
@@ -199,11 +218,9 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
   }
   else
   {
-	  VarEntry *ve = content->entries[0];
-	  filename = g_strconcat(ve->name, ".", 
-		tifiles_vartype2fext(content->model, ve->type), NULL);
-	  if (real_fname != NULL)
-		*real_fname = g_strdup(filename);
+    filename = tifiles_build_filename(content->model_dst, content->entries[0]);
+    if (real_fname != NULL)
+      *real_fname = g_strdup(filename);
   }
 
   f = g_fopen(filename, "wb");
@@ -215,19 +232,16 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
   }
   g_free(filename);
 
-  {
-	  VarEntry *entry = content->entries[0];
-		
-	  if(fwrite(entry->data, 1, entry->size, f) < entry->size) 
-		  goto tfwr;
-  }
+  entry = content->entries[0];
+  if(fwrite(entry->data, 1, entry->size, f) < entry->size) 
+    goto tfwr;
 
   fclose(f);
   return 0;
 
-tfwr:	// release on exit
-    fclose(f);
-	return ERR_FILE_IO;
+tfwr:  // release on exit
+  fclose(f);
+  return ERR_FILE_IO;
 }
 
 /**************/
@@ -246,6 +260,12 @@ int tnsp_content_display_regular(FileContent *content)
 {
   int i;
   char trans[17];
+
+  if (content == NULL)
+  {
+    tifiles_critical("%s(NULL)", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
 
   tifiles_info("Signature:         %s",
 	  tifiles_calctype2signature(content->model));
@@ -286,6 +306,12 @@ int tnsp_content_display_regular(FileContent *content)
 int tnsp_content_display_flash(FlashContent *content)
 {
 	FlashContent *ptr = content;
+
+    if (content == NULL)
+    {
+        tifiles_critical("%s(NULL)", __FUNCTION__);
+        return ERR_INVALID_FILE;
+    }
 
     tifiles_info("Signature:      %s",
 	    tifiles_calctype2signature(ptr->model));

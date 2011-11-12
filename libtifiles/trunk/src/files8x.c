@@ -63,7 +63,7 @@ static int is_ti83p(CalcModel model)
 
 static uint16_t compute_backup_sum(BackupContent* content)
 {
-	uint16_t sum= 0;
+  uint16_t sum= 0;
 
   sum += 9;
   sum += tifiles_checksum((uint8_t *)&(content->data_length1), 2);
@@ -118,6 +118,12 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
+
+  if (content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
 
   f = g_fopen(filename, "rb");
   if (f == NULL) 
@@ -288,6 +294,12 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
   if (!tifiles_file_is_backup(filename))
     return ERR_INVALID_FILE;
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
@@ -422,6 +434,12 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 
   if (!tifiles_file_is_flash(filename))
     return ERR_INVALID_FILE;
+
+  if (head == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
 
   f = g_fopen(filename, "rb");
   if (f == NULL) 
@@ -563,7 +581,13 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   uint8_t name_length = 8;
   uint16_t attr;
 
-  if (fname != NULL) 
+  if (content->entries == NULL)
+  {
+    tifiles_warning("%s: skipping content with NULL content->entries", __FUNCTION__);
+    return 0;
+  }
+
+  if (fname != NULL)
   {
     filename = g_strdup(fname);
     if (filename == NULL)
@@ -571,8 +595,20 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   } 
   else 
   {
-	filename = tifiles_build_filename(content->model_dst, content->entries[0]);
-	if (real_fname != NULL)
+    if (content->entries[0])
+    {
+      filename = tifiles_build_filename(content->model_dst, content->entries[0]);
+    }
+    else
+    {
+      tifiles_warning("%s: asked to build a filename from null content->entries[0], bailing out", __FUNCTION__);
+      if (real_fname != NULL)
+      {
+        *real_fname = NULL;
+      }
+      return 0;
+    }
+    if (real_fname != NULL)
       *real_fname = g_strdup(filename);
   }
 
@@ -592,14 +628,19 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
   for (i = 0, data_length = 0; i < content->num_entries; i++) 
   {
     VarEntry *entry = content->entries[i];
+    if (entry == NULL)
+    {
+      tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
+      continue;
+    }
 
-	if(content->model == CALC_TI82 || content->model == CALC_TI73)
+    if(content->model == CALC_TI82 || content->model == CALC_TI73)
       data_length += entry->size + 15;
-	if(content->model == CALC_TI83)
+    if(content->model == CALC_TI83)
       data_length += entry->size + 15;
-	else if(content->model == CALC_TI85)
-		data_length += entry->size + 8 + strlen(entry->name);
-	else if(content->model == CALC_TI86)
+    else if(content->model == CALC_TI85)
+      data_length += entry->size + 8 + strlen(entry->name);
+    else if(content->model == CALC_TI86)
       data_length += entry->size + 16;
     else if (is_ti83p(content->model))
       data_length += entry->size + 17;
@@ -706,6 +747,12 @@ int ti8x_file_write_backup(const char *filename, Ti8xBackup *content)
   FILE *f;
   uint16_t data_length;
 
+  if (filename == NULL || content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
@@ -776,6 +823,12 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
   int bytes_written = 0;
   long pos;
   char *filename;
+
+  if (head == NULL)
+  {
+    tifiles_critical("%s: head is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
 
   if (fname)
   {
@@ -883,6 +936,12 @@ int ti8x_content_display_regular(Ti8xRegular *content)
   int i;
   char trans[17];
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s(NULL)", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   tifiles_info("Signature:     %s",
 	  tifiles_calctype2signature(content->model));
   tifiles_info("Comment:       %s", content->comment);
@@ -919,6 +978,12 @@ int ti8x_content_display_regular(Ti8xRegular *content)
  **/
 int ti8x_content_display_backup(Ti8xBackup *content)
 {
+  if (content == NULL)
+  {
+    tifiles_critical("%s(NULL)", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   tifiles_info("Signature:      %s",
 	  tifiles_calctype2signature(content->model));
   tifiles_info("Comment:        %s", content->comment);

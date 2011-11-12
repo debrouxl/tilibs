@@ -70,32 +70,32 @@ static const char *TI_CLOCK_84[] =
  **/
 TIEXPORT3 const char *TICALL ticalcs_clock_format2date(CalcModel model, int value)
 {
-  int v;
+	int v;
 
-  if(tifiles_calc_is_ti9x(model))
-  {
-	  if (value < 1)
-		v = 1;
-	  else if (value > MAX_FORMAT_89)
-		v = MAX_FORMAT_89;
-	  else
-		v = value;
-
-	  return TI_CLOCK_89[v];
-  }
-  else if(tifiles_calc_is_ti8x(model))
-  {
+	if(tifiles_calc_is_ti9x(model))
+	{
 		if (value < 1)
-		v = 1;
-	  else if (value > MAX_FORMAT_84)
-		v = MAX_FORMAT_84;
-	  else
-		v = value;
+			v = 1;
+		else if (value > MAX_FORMAT_89)
+			v = MAX_FORMAT_89;
+		else
+			v = value;
 
-	  return TI_CLOCK_84[v];
-  }
+		return TI_CLOCK_89[v];
+	}
+	else if(tifiles_calc_is_ti8x(model))
+	{
+		if (value < 1)
+			v = 1;
+		else if (value > MAX_FORMAT_84)
+			v = MAX_FORMAT_84;
+		else
+			v = value;
 
-  return "";
+		return TI_CLOCK_84[v];
+	}
+
+	return "";
 }
 
 /**
@@ -110,30 +110,36 @@ TIEXPORT3 const char *TICALL ticalcs_clock_format2date(CalcModel model, int valu
  **/
 TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *format)
 {
-  int i = 1;
+	int i = 1;
 
-  if(tifiles_calc_is_ti9x(model))
-  {
-	  for (i = 1; i <= MAX_FORMAT_89; i++) 
-	  {
+	if (format == NULL)
+	{
+		ticalcs_critical("ticalcs_clock_date2format: format is NULL");
+		return 0;
+	}
+
+	if(tifiles_calc_is_ti9x(model))
+	{
+		for (i = 1; i <= MAX_FORMAT_89; i++) 
+		{
 		if (!strcasecmp(TI_CLOCK_89[i], format))
-		  break;
-	  }
-	  if (i > MAX_FORMAT_89)
-		return 1;
-  }
-  else if(tifiles_calc_is_ti8x(model))
-  {
-	  for (i = 1; i <= MAX_FORMAT_84; i++) 
-	  {
-		if (!strcasecmp(TI_CLOCK_84[i], format))
-		  break;
-	  }
-	  if (i > MAX_FORMAT_84)
-		return 1;
-  }
+			break;
+		}
+		if (i > MAX_FORMAT_89)
+			return 1;
+	}
+	else if(tifiles_calc_is_ti8x(model))
+	{
+		for (i = 1; i <= MAX_FORMAT_84; i++) 
+		{
+			if (!strcasecmp(TI_CLOCK_84[i], format))
+			break;
+		}
+		if (i > MAX_FORMAT_84)
+			return 1;
+	}
 
-  return i;
+	return i;
 }
 
 /**
@@ -147,10 +153,13 @@ TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *form
  **/
 TIEXPORT3 int TICALL ticalcs_clock_show(CalcModel model, CalcClock* s)
 {
-	ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
-	ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);
-	ticalcs_info("Time format: %02i", s->time_format);
-	ticalcs_info("Date format: %s", ticalcs_clock_format2date(model, s->date_format));
+	if (s != NULL)
+	{
+		ticalcs_info("Date: %02i/%02i/%02i", s->day, s->month, s->year);
+		ticalcs_info("Time: %02i/%02i/%02i", s->hours, s->minutes, s->seconds);
+		ticalcs_info("Time format: %02i", s->time_format);
+		ticalcs_info("Date format: %s", ticalcs_clock_format2date(model, s->date_format));
+	}
 
 	return 0;
 }

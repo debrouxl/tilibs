@@ -42,7 +42,7 @@
 /* 
 	Get the first byte sent by the calc (Machine ID)
 */
-int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
+static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 {
 	uint8_t host, cmd;
 	uint16_t length;
@@ -317,10 +317,20 @@ extern const CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model)
+TIEXPORT3 int TICALL ticalcs_probe_calc (CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
 	int err = 0;
+
+	if (cable == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (model == NULL)
+	{
+		ticalcs_critical("ticalcs_probe_calc: model is NULL");
+		return -1;
+	}
 
 	// Hack: we construct the structure here because we don't really need it.
 	// I want to use ticalcs functions with a non-fixed calculator
@@ -366,6 +376,16 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 	CalcHandle calc;
 	int err = 0;
 	int ret = ERR_NO_CALC;
+
+	if (cable == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (model == NULL)
+	{
+		ticalcs_critical("ticalcs_probe_calc: model is NULL");
+		return -1;
+	}
 
 	// Hack: we construct the structure here because we don't really need it.
 	// I want to use ticalcs functions with a non-fixed calculator
@@ -422,6 +442,12 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 	int err = 0;
 	CalcHandle calc;
 
+	if (model == NULL)
+	{
+		ticalcs_critical("ticalcs_probe_calc: model is NULL");
+		return -1;
+	}
+
 	// get handle
 	handle = ticables_handle_new(c_model, c_port);
 	ticables_options_set_timeout(handle, 10);
@@ -453,7 +479,7 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 		else
 			err = ticalcs_probe_calc_1(&calc, model);
 	}
-		
+
 	if(err)
 	{
 		ticables_cable_close(handle);

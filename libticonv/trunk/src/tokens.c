@@ -375,6 +375,11 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 {
 	char *dst;
 
+	if (src == NULL)
+	{
+		return g_strdup("________");
+	}
+
 	switch (model) 
 	{
 	case CALC_TI73:
@@ -404,7 +409,7 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 		return g_strdup(src);
 	default:
 		return g_strdup("________");
-  }
+	}
 }
 
 //---
@@ -430,6 +435,11 @@ static int shift(int v)
 TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned char type)
 {
 	const unsigned char *src = (const unsigned char *)src_;
+
+	if (src == NULL)
+	{
+		return g_strdup("");
+	}
 
 	switch(model)
 	{

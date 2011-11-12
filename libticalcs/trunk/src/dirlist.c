@@ -79,7 +79,7 @@ static gboolean free_varentry(GNode* node, gpointer data)
  **/
 TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 {
-	if (*tree != NULL) 
+	if (tree != NULL && *tree != NULL)
 	{
 		TreeInfo *ti;
 
@@ -110,9 +110,12 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 	TreeInfo *info;
 	int i, j, k;
 	char *utf8;
-  
+
 	if (tree == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_display(NULL)");
 		return;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
@@ -203,7 +206,10 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 	TreeInfo *info;
 
 	if (tree == NULL || s == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_ve_exist: an argument is NULL");
 		return NULL;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
@@ -253,7 +259,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 	TreeInfo *info;
 
 	if (tree == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_ve_count(NULL)");
 		return 0;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
@@ -289,7 +298,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 	TreeInfo *info;
 
 	if (tree == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_ram_used(NULL)");
 		return 0;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
@@ -331,7 +343,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 	TreeInfo *info2;
 
 	if (!vars || !apps)
+	{
+		ticalcs_critical("ticalcs_dirlist_flash_used: an argument is NULL");
 		return 0;
+	}
 
 	info1 = (TreeInfo *)(vars->data);
 	info2 = (TreeInfo *)(apps->data);
@@ -398,7 +413,10 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	const char *folder;
 
 	if (tree == NULL || entry == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_ve_add: an argument is NULL");
 		return;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
@@ -509,7 +527,10 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 	const char *folder;
 
 	if (tree == NULL || entry == NULL)
+	{
+		ticalcs_critical("ticalcs_dirlist_ve_del: an argument is NULL");
 		return;
+	}
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)

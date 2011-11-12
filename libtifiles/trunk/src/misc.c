@@ -30,6 +30,7 @@
 #include <ticonv.h>
 #include "tifiles.h"
 #include "rwfile.h"
+#include "logging.h"
 
 /**
  * tifiles_calc_is_ti8x:
@@ -175,12 +176,17 @@ TIEXPORT2 int tifiles_hexdump(uint8_t* ptr, unsigned int length)
  **/
 char *TICALL tifiles_get_varname(const char *full_name)
 {
-	char *bs = strchr(full_name, '\\');
+	if (full_name != NULL)
+	{
+		char *bs = strchr(full_name, '\\');
 
-	if (bs == NULL)
-		return (char *) full_name;
-	else
-		return (++bs);
+		if (bs == NULL)
+			return (char *) full_name;
+		else
+			return (++bs);
+	}
+	tifiles_critical("%s(NULL)", __FUNCTION__);
+	return NULL;
 }
 
 /**
@@ -194,18 +200,24 @@ char *TICALL tifiles_get_varname(const char *full_name)
 char *TICALL tifiles_get_fldname(const char *full_name)
 {
 	static char folder[FLDNAME_MAX];
-	char *bs = strchr(full_name, '\\');
+	char *bs;
 	int i;
 
-	if (bs == NULL)
-		strcpy(folder, "");
-	else
+	if (full_name != NULL)
 	{
-		i = strlen(full_name) - strlen(bs);
-		strncpy(folder, full_name, i);
-		folder[i] = '\0';
+		bs = strchr(full_name, '\\');
+		if (bs == NULL)
+			strcpy(folder, "");
+		else
+		{
+			i = strlen(full_name) - strlen(bs);
+			strncpy(folder, full_name, i);
+			folder[i] = '\0';
+		}
+		return folder;
 	}
-	return folder;
+	tifiles_critical("%s(NULL)", __FUNCTION__);
+	return NULL;
 }
 
 /**
@@ -223,6 +235,12 @@ char *TICALL tifiles_get_fldname(const char *full_name)
 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 				  const char *fldname, const char *varname)
 {
+	if (full_name == NULL || fldname == NULL || varname == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return NULL;
+	}
+
 	if (tifiles_has_folder(model)) 
 	{
 		if (strcmp(fldname, "")) 
@@ -258,6 +276,13 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
 {
 	char *filename;
+
+	if (ve == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return NULL;
+	}
+
 
 	if(tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, "") || 
 		(ve->type == tifiles_flash_type(model)))

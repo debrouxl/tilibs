@@ -81,7 +81,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 			}
 			else
 			{
-				tifiles_critical("tifiles_content_delete_regular(content with NULL entry)\n");
+				tifiles_critical("tifiles_content_delete_regular(content with NULL entry)");
 			}
 		}
 
@@ -90,7 +90,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_content_delete_regular(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 	return 0;
 }
@@ -124,7 +124,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_content_dup_regular(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 	return dup;
 }
@@ -143,6 +143,12 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  **/
 TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *content)
 {
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_regular(filename, (Ti8xRegular *)content);
@@ -177,6 +183,12 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
  **/
 TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *content, char **real_fname)
 {
+	if (content == NULL || (filename == NULL && real_fname == NULL))
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_regular(filename, (Ti8xRegular *)content, real_fname);
@@ -205,6 +217,12 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
  **/
 TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 {
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_regular(content);
@@ -269,7 +287,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_content_delete_backup(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return 0;
@@ -289,6 +307,12 @@ TIEXPORT2 int TICALL tifiles_content_delete_backup(BackupContent *content)
  **/
 TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *content)
 {
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_backup(filename, content);
@@ -315,6 +339,12 @@ TIEXPORT2 int tifiles_file_read_backup(const char *filename, BackupContent *cont
  **/
 TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *content)
 {
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_backup(filename, content);
@@ -340,6 +370,12 @@ TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *con
  **/
 TIEXPORT2 int TICALL tifiles_file_display_backup(BackupContent *content)
 {
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_backup(content);
@@ -434,7 +470,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_content_delete_flash(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return 0;
@@ -454,6 +490,12 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
  **/
 TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *content)
 {
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(tifiles_file_get_model(filename)))
 		return ti8x_file_read_flash(filename, content);
@@ -488,6 +530,12 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
  **/
 TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *content, char **real_fname)
 {
+	if (content == NULL || (filename == NULL && real_fname == NULL))
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_file_write_flash(filename, content, real_fname);
@@ -507,13 +555,9 @@ TIEXPORT2 int tifiles_file_write_flash2(const char *filename, FlashContent *cont
  * tifiles_file_write_flash:
  * @filename: name of flash file where to write or NULL.
  * @content: the file content to write.
- * @real_fname: pointer address or NULL. Must be freed if needed when no longer needed.
  *
  * Write a FLASH content to a file. If filename is set to NULL, the function build a filename 
- * from appname and allocates resulting filename in %real_fname.
- * %filename and %real_fname can be NULL but not both !
- *
- * %real_fname must be freed when no longer used.
+ * from appname.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -577,7 +621,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 	}
 	else
 	{
-		tifiles_critical("tifiles_content_dup_flash(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return dup;
@@ -593,6 +637,12 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  **/
 TIEXPORT2 int TICALL tifiles_file_display_flash(FlashContent *content)
 {
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 #if !defined(DISABLE_TI8X)
 	if (tifiles_calc_is_ti8x(content->model))
 		return ti8x_content_display_flash(content);
@@ -668,6 +718,12 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
 	char **ptr, *folder_list[32768] = { 0 };
 	int **table;
 
+	if (content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return NULL;
+	}
+
 	// determine how many folders we have
 	for (i = 0; i < content->num_entries; i++) 
 	{
@@ -693,7 +749,10 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
 	}
 	if (tifiles_calc_is_ti8x(content->model))
 		num_folders++;
-	*nfolders = num_folders;
+	if (nfolders != NULL)
+	{
+		*nfolders = num_folders;
+	}
 
 	// allocate the folder list
 	table = (int **) g_malloc0((num_folders + 1) * sizeof(int *));

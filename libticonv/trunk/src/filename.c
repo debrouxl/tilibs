@@ -81,6 +81,11 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 	unsigned short *utf16_dst, *q;
 	char *dst;
 
+	if (src == NULL)
+	{
+		return g_strdup("");
+	}
+
 	// detokenization to UTF-16
 	p = utf16_src = (unsigned short *)src;
 	q = utf16_dst = g_malloc0(18*ticonv_utf16_strlen(utf16_src)+2);
@@ -157,41 +162,41 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 				else
 				{
 					gunichar2 *str2;
-				glong ir, iw;
+					glong ir, iw;
 
-				switch(*p)
-				{
-					case 0x03bc: str = "_mu_"; break;
-					case 0x03b1: str = "_alpha_"; break;
-					case 0x03b2: str = "_beta_"; break;
-					case 0x0393: str = "_GAMMA_"; break;
-					case 0x03b3: str = "_gamma_"; break;
-					case 0x0394: str = "_DELTA_"; break;
-					case 0x03b4: str = "_delta_"; break;
-					case 0x03b5: str = "_epsilon_";break;
-					case 0x03b6: str = "_zeta_"; break;
-					case 0x03b8: str = "_theta_"; break;
-					case 0x03bb: str = "_lambda_"; break;
-					case 0x03be: str = "_ksi_"; break;
-					case 0x03a0: str = "_PI_"; break;
-					case 0x03c0: str = "_pi_"; break;
-					case 0x03c1: str = "_rho_"; break;
-					case 0x03a3: str = "_SIGMA_"; break; 
-					case 0x03c3: str = "_sigma_"; break; 
-					case 0x03c4: str = "_tau_"; break;
-					case 0x03d5: str = "_PHI_"; break;
-					case 0x03a8: str = "_PSI_"; break;
-					case 0x03a9: str = "_OMEGA_"; break; 
-					case 0x03c9: str = "_omega_"; break;
-					default: str = ""; break;
-				}
+					switch(*p)
+					{
+						case 0x03bc: str = "_mu_"; break;
+						case 0x03b1: str = "_alpha_"; break;
+						case 0x03b2: str = "_beta_"; break;
+						case 0x0393: str = "_GAMMA_"; break;
+						case 0x03b3: str = "_gamma_"; break;
+						case 0x0394: str = "_DELTA_"; break;
+						case 0x03b4: str = "_delta_"; break;
+						case 0x03b5: str = "_epsilon_";break;
+						case 0x03b6: str = "_zeta_"; break;
+						case 0x03b8: str = "_theta_"; break;
+						case 0x03bb: str = "_lambda_"; break;
+						case 0x03be: str = "_ksi_"; break;
+						case 0x03a0: str = "_PI_"; break;
+						case 0x03c0: str = "_pi_"; break;
+						case 0x03c1: str = "_rho_"; break;
+						case 0x03a3: str = "_SIGMA_"; break;
+						case 0x03c3: str = "_sigma_"; break;
+						case 0x03c4: str = "_tau_"; break;
+						case 0x03d5: str = "_PHI_"; break;
+						case 0x03a8: str = "_PSI_"; break;
+						case 0x03a9: str = "_OMEGA_"; break;
+						case 0x03c9: str = "_omega_"; break;
+						default: str = ""; break;
+					}
 
-				str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
-				memcpy(q, str2, (iw+1) * sizeof(gunichar2));
-				g_free(str2);
+					str2 = g_utf8_to_utf16(str, -1, &ir, &iw, NULL);
+					memcpy(q, str2, (iw+1) * sizeof(gunichar2));
+					g_free(str2);
 
-				q += iw;
-				p++;
+					q += iw;
+					p++;
 				}
 			}
 		}
@@ -231,7 +236,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 		g_free(utf8);
 	}
 
-	return dst;	
+	return dst;
 }
 
 /**
@@ -247,8 +252,13 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
  **/
 TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 {
-	 char *src, *p;
-	 char *dst, *q;
+	char *src, *p;
+	char *dst, *q;
+
+	if (src_ == NULL)
+	{
+		return g_strdup("");
+	}
 
 	// This conversion is needed and works only if the filename charset
 	// is UTF-8. Otherwise, the equivalent conversion is done in
@@ -301,6 +311,6 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 			*q++ = *p++;
 	}
 	*q = '\0';
-				
+
 	return dst;
 }

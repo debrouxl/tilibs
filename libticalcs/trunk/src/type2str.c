@@ -21,7 +21,9 @@
 
 #include <string.h>
 #include "gettext.h"
+
 #include "ticalcs.h"
+#include "logging.h"
 
 /**
  * ticalcs_model_to_string:
@@ -52,62 +54,79 @@ TIEXPORT3 CalcModel TICALL ticalcs_string_to_model(const char *str)
 
 TIEXPORT3 const char *TICALL ticalcs_scrfmt_to_string(CalcScreenFormat format)
 {
-  	switch (format) 
+	switch (format)
 	{
-  	case SCREEN_FULL: return _("full");
-  	case SCREEN_CLIPPED: return _("clipped");
-  	default: return _("unknown");
-  	}
+	case SCREEN_FULL: return _("full");
+	case SCREEN_CLIPPED: return _("clipped");
+	default: return _("unknown");
+	}
 }
 
-TIEXPORT3 CalcScreenFormat TICALL ticalc_string_to_scrfmt(const char *str)
+TIEXPORT3 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
 {
-  	if(!strcmp(str, _("full")))
-  		return SCREEN_FULL;
-  	else if(!strcmp(str, _("clipped")))
-  		return SCREEN_CLIPPED;
-  		
-  	return SCREEN_CLIPPED;
-}
-
-
-TIEXPORT3 const char *TICALL ticalc_pathtype_to_string(CalcPathType type)
-{
-  	switch (type) 
+	if (str != NULL)
 	{
-  	case PATH_FULL: return _("full");
-  	case PATH_LOCAL: return _("local");
-  	default: return _("unknown");
-  	}
-}
-
-TIEXPORT3 CalcPathType TICALL ticalc_string_to_pathtype(const char *str)
-{
-  	if(!strcmp(str, _("full")))
-  		return PATH_FULL;
-  	else if(!strcmp(str, _("local")))
-  		return PATH_LOCAL;
-  	
-  	return PATH_FULL;
-}
-
-
-TIEXPORT3 const char *TICALL ticalc_memtype_to_string(CalcMemType type)
-{
-  	switch (type) 
+		if(!strcmp(str, _("full")))
+			return SCREEN_FULL;
+		else if(!strcmp(str, _("clipped")))
+			return SCREEN_CLIPPED;
+	}
+	else
 	{
-  	case MEMORY_FREE: return _("free");
-  	case MEMORY_USED: return _("used");
-  	default: return _("unknown");
-  	}
+		ticalcs_critical("ticalcs_string_to_scrfmt(NULL)");
+	}
+
+	return SCREEN_CLIPPED;
 }
 
-TIEXPORT3 CalcMemType TICALL ticalc_string_to_memtype(const char *str)
+
+TIEXPORT3 const char *TICALL ticalcs_pathtype_to_string(CalcPathType type)
 {
-  	if(!strcmp(str, _("free")))
-  		return MEMORY_FREE;
-  	else if(!strcmp(str, _("used")))
-  		return MEMORY_USED;
-  	
-  	return MEMORY_NONE;
+	switch (type)
+	{
+	case PATH_FULL: return _("full");
+	case PATH_LOCAL: return _("local");
+	default: return _("unknown");
+	}
+}
+
+TIEXPORT3 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
+{
+	if (str != NULL)
+	{
+		if(!strcmp(str, _("full")))
+			return PATH_FULL;
+		else if(!strcmp(str, _("local")))
+			return PATH_LOCAL;
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_string_to_pathtype(NULL)");
+	}
+
+	return PATH_FULL;
+}
+
+
+TIEXPORT3 const char *TICALL ticalcs_memtype_to_string(CalcMemType type)
+{
+	switch (type)
+	{
+	case MEMORY_FREE: return _("free");
+	case MEMORY_USED: return _("used");
+	default: return _("unknown");
+	}
+}
+
+TIEXPORT3 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
+{
+	if (str != NULL)
+	{
+		if(!strcmp(str, _("free")))
+			return MEMORY_FREE;
+		else if(!strcmp(str, _("used")))
+			return MEMORY_USED;
+	}
+
+	return MEMORY_NONE;
 }

@@ -24,6 +24,7 @@
 
 #include "gettext.h"
 #include "ticables.h"
+#include "logging.h"
 
 /**
  * ticables_model_to_string:
@@ -61,6 +62,12 @@ TIEXPORT1 const char *TICALL ticables_model_to_string(CableModel model)
  **/
 TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 {
+	if (str == NULL)
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return CABLE_NUL;
+	}
+
 	if(!g_ascii_strcasecmp(str, "null"))
 		return CABLE_NUL;
 	else if(!g_ascii_strcasecmp(str, "GrayLink"))
@@ -86,7 +93,7 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
 	else if(!g_ascii_strcasecmp(str, "linkport"))
 		return CABLE_ILP;
 	else if(!g_ascii_strcasecmp(str, "UsbKernel"))
-	    return CABLE_DEV;
+		return CABLE_DEV;
 
 	return CABLE_NUL;
 }
@@ -101,14 +108,14 @@ TIEXPORT1 CableModel TICALL ticables_string_to_model(const char *str)
  **/
 TIEXPORT1 const char *TICALL ticables_port_to_string(CablePort port)
 {
-  	switch (port) 
+	switch (port)
 	{
 	case PORT_0: return "null";
 	case PORT_1: return "#1";
 	case PORT_2: return "#2";
 	case PORT_3: return "#3";
 	case PORT_4: return "#4";
-	default: return "unknown";	
+	default: return "unknown";
 	}
 }
 
@@ -122,6 +129,12 @@ TIEXPORT1 const char *TICALL ticables_port_to_string(CablePort port)
  **/
 TIEXPORT1 CablePort TICALL ticables_string_to_port(const char *str)
 {
+	if (str == NULL)
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return PORT_0;
+	}
+
 	if(!g_ascii_strcasecmp(str, "null"))
 		return PORT_0;
 	else if(!strcmp(str, "#1"))
@@ -146,14 +159,14 @@ TIEXPORT1 CablePort TICALL ticables_string_to_port(const char *str)
  **/
 TIEXPORT1 const char *TICALL ticables_usbpid_to_string(UsbPid pid)
 {
-  	switch (pid) 
+	switch (pid)
 	{
 	case PID_TIGLUSB: return "SilverLink";	// must match ticables name
 	case PID_TI89TM: return "TI89t";		// must match tifiles name
 	case PID_TI84P: return "TI84+";			// must match tifiles name
 	case PID_TI84P_SE: return "TI84+";		// remap
 	case PID_NSPIRE: return "NSpire";		// must match tifiles name
-	default: return "unknown";	
+	default: return "unknown";
 	}
 }
 
@@ -167,12 +180,20 @@ TIEXPORT1 const char *TICALL ticables_usbpid_to_string(UsbPid pid)
  **/
 TIEXPORT1 UsbPid TICALL ticables_string_to_usbpid(const char *str)
 {
+	if (str == NULL)
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return PID_UNKNOWN;
+	}
+
 	if(!strcmp(str, "SilverLink"))
 		return PID_TIGLUSB;
 	else if(!strcmp(str, "TI89t"))
 		return PID_TI89TM;
 	else if(!strcmp(str, "TI84+"))
 		return PID_TI84P;
+	else if(!strcmp(str, "TI84+SE"))
+		return PID_TI84P_SE;
 	else if(!strcmp(str, "NSpire"))
 		return PID_NSPIRE;
 

@@ -102,9 +102,6 @@ int ticables_instance = 0;	// counts # of instances
 TIEXPORT1 int TICALL ticables_library_init(void)
 {
 	char locale_dir[65536];
-#if (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB10))
-	int ret;
-#endif
 
 #ifdef __WIN32__
 	HANDLE hDll;
@@ -232,7 +229,8 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
 
 	if(handle->cable == NULL)
 	{
-		return NULL;
+		free(handle);
+		handle = NULL;
 	}
 
 	return handle;
@@ -248,7 +246,7 @@ TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel model, CablePort po
  **/
 TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 {
-	if(handle)
+	if (handle != NULL)
 	{
 		free(handle->priv2);
 		handle->priv2 = NULL;
@@ -258,6 +256,10 @@ TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
 
 		free(handle);
 		handle = NULL;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return 0;
@@ -274,12 +276,13 @@ TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
 {
-	int old_timeout = handle->timeout;
-	handle->timeout = timeout;
-
-	if(handle)
+	if (handle != NULL)
 	{
-		const CableFncts *cable = handle->cable;
+		const CableFncts *cable;
+		int old_timeout = handle->timeout;
+
+		handle->timeout = timeout;
+		cable = handle->cable;
 
 		if(!handle->open)
 		{
@@ -296,9 +299,14 @@ TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeo
 			cable->timeout(handle);
 		}
 		handle->busy = 0;
-	}
 
-	return old_timeout;
+		return old_timeout;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return 0;
+	}
 }
 
 /**
@@ -312,9 +320,17 @@ TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeo
  **/
 TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
 {
-	int old_delay = handle->delay;
-	handle->delay = delay;
-	return old_delay;
+	if (handle != NULL)
+	{
+		int old_delay = handle->delay;
+		handle->delay = delay;
+		return old_delay;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return 0;
+	}
 }
 
 /**
@@ -327,7 +343,15 @@ TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
  **/
 TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
 {
-	return handle->model;
+	if (handle != NULL)
+	{
+		return handle->model;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return 0;
+	}
 }
 
 /**
@@ -338,9 +362,17 @@ TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle* handle)
  *
  * Return value: a #CablePort value.
  **/
-TIEXPORT1 CablePort  TICALL ticables_get_port(CableHandle* handle)
+TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
 {
-	return handle->port;
+	if (handle != NULL)
+	{
+		return handle->port;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return 0;
+	}
 }
 
 /**
@@ -353,15 +385,22 @@ TIEXPORT1 CablePort  TICALL ticables_get_port(CableHandle* handle)
  **/
 TIEXPORT1 int TICALL ticables_handle_show(CableHandle* handle)
 {
-	ticables_info(_("Link cable handle details:"));
-	ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
-	ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
-	ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
-	ticables_info(_("  delay   : %i us"), handle->delay);
-	if(handle->device)
+	if (handle != NULL)
 	{
-		ticables_info(_("  device  : %s"), handle->device);
-		ticables_info(_("  address : 0x%03x"), handle->address);
+		ticables_info(_("Link cable handle details:"));
+		ticables_info(_("  model   : %s"), ticables_model_to_string(handle->model));
+		ticables_info(_("  port    : %s"), ticables_port_to_string(handle->port));
+		ticables_info(_("  timeout : %2.1fs"), (float)handle->timeout / 10);
+		ticables_info(_("  delay   : %i us"), handle->delay);
+		if(handle->device)
+		{
+			ticables_info(_("  device  : %s"), handle->device);
+			ticables_info(_("  address : 0x%03x"), handle->address);
+		}
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return 0;

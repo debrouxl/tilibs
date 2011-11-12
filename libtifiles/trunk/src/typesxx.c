@@ -77,7 +77,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
     return nsp_byte2type(data);
 #endif
   default:
-    tifiles_critical("tifiles_vartype2string: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
   }
 }
@@ -93,6 +93,12 @@ TIEXPORT2 const char *TICALL tifiles_vartype2string(CalcModel model, uint8_t dat
  **/
 TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
 {
+  if (s == NULL)
+  {
+    tifiles_critical("%s: invalid string !", __FUNCTION__);
+    return 0;
+  }
+
   switch (model) 
   {
 #ifndef DISABLE_TI8X
@@ -126,7 +132,7 @@ TIEXPORT2 uint8_t TICALL tifiles_string2vartype(CalcModel model, const char *s)
     return nsp_type2byte(s);
 #endif
   default:
-    tifiles_critical("tifiles_string2vartype: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
   }
 }
@@ -175,7 +181,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
     return nsp_byte2fext(data);
 #endif
   default:
-    tifiles_critical("tifiles_vartype2fext: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
   }
 }
@@ -191,6 +197,12 @@ TIEXPORT2 const char *TICALL tifiles_vartype2fext(CalcModel model, uint8_t data)
  **/
 TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
 {
+  if (s == NULL)
+  {
+    tifiles_critical("%s: invalid string !", __FUNCTION__);
+    return 0;
+  }
+
   switch (model) 
   {
 #ifndef DISABLE_TI8X
@@ -224,7 +236,7 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
     return nsp_fext2byte(s);
 #endif
   default:
-    tifiles_critical("tifiles_fext2vartype: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return 0;
   }
 }
@@ -241,7 +253,7 @@ TIEXPORT2 uint8_t TICALL tifiles_fext2vartype(CalcModel model, const char *s)
  **/
 TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t vartype)
 {
-	switch (model)
+  switch (model)
   {
 #ifndef DISABLE_TI8X
   case CALC_TI73:
@@ -274,7 +286,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2type(CalcModel model, uint8_t varty
     return nsp_byte2desc(vartype);
 #endif
   default:
-    tifiles_critical("tifiles_vartype2type: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
   }
 }
@@ -324,7 +336,7 @@ TIEXPORT2 const char *TICALL tifiles_vartype2icon(CalcModel model, uint8_t varty
     return nsp_byte2icon(vartype);
 #endif
   default:
-    tifiles_critical("tifiles_vartype2icon: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     return "";
   }
 }
@@ -429,7 +441,7 @@ TIEXPORT2 uint8_t TICALL tifiles_folder_type(CalcModel model)
   case CALC_NSPIRE:
     return NSP_DIR;
   default:
-    tifiles_critical("tifiles_folder_type: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
   }
 
@@ -477,7 +489,7 @@ TIEXPORT2 uint8_t TICALL tifiles_flash_type(CalcModel model)
   case CALC_NSPIRE:
     return -1;
   default:
-    tifiles_critical("tifiles_flash_type: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
   }
 
@@ -525,7 +537,7 @@ TIEXPORT2 uint8_t TICALL tifiles_idlist_type(CalcModel model)
   case CALC_NSPIRE:
     return -1;
   default:
-    tifiles_critical("tifiles_idlist_type: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
   }
 
@@ -580,7 +592,7 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
   case CALC_NSPIRE:
     return "";
   default:
-    tifiles_critical("tifiles_calctype2signature: invalid calc_type argument.");
+    tifiles_critical("%s: invalid model argument.", __FUNCTION__);
     break;
   }
 
@@ -597,27 +609,29 @@ TIEXPORT2 const char *TICALL tifiles_calctype2signature(CalcModel model)
  **/
 TIEXPORT2 CalcModel TICALL tifiles_signature2calctype(const char *s)
 {
-
-  if (!g_ascii_strcasecmp(s, "**TI73**"))
-    return CALC_TI73;
-  else if (!g_ascii_strcasecmp(s, "**TI82**"))
-    return CALC_TI82;
-  else if (!g_ascii_strcasecmp(s, "**TI83**"))
-    return CALC_TI83;
-  else if (!g_ascii_strcasecmp(s, "**TI83F*"))
-    return CALC_TI83P;
-  else if (!g_ascii_strcasecmp(s, "**TI85**"))
-    return CALC_TI85;
-  else if (!g_ascii_strcasecmp(s, "**TI86**"))
-    return CALC_TI86;
-  else if (!g_ascii_strcasecmp(s, "**TI89**"))
-    return CALC_TI89;
-  else if (!g_ascii_strcasecmp(s, "**TI92**"))
-    return CALC_TI92;
-  else if (!g_ascii_strcasecmp(s, "**TI92P*"))
-    return CALC_TI92P;
-  else if (!g_ascii_strcasecmp(s, "**V200**"))
-    return CALC_V200;
-  else
-    return CALC_NONE;
+  if (s != NULL)
+  {
+    if (!g_ascii_strcasecmp(s, "**TI73**"))
+      return CALC_TI73;
+    else if (!g_ascii_strcasecmp(s, "**TI82**"))
+      return CALC_TI82;
+    else if (!g_ascii_strcasecmp(s, "**TI83**"))
+      return CALC_TI83;
+    else if (!g_ascii_strcasecmp(s, "**TI83F*"))
+      return CALC_TI83P;
+    else if (!g_ascii_strcasecmp(s, "**TI85**"))
+      return CALC_TI85;
+    else if (!g_ascii_strcasecmp(s, "**TI86**"))
+      return CALC_TI86;
+    else if (!g_ascii_strcasecmp(s, "**TI89**"))
+      return CALC_TI89;
+    else if (!g_ascii_strcasecmp(s, "**TI92**"))
+      return CALC_TI92;
+    else if (!g_ascii_strcasecmp(s, "**TI92P*"))
+      return CALC_TI92P;
+    else if (!g_ascii_strcasecmp(s, "**V200**"))
+      return CALC_V200;
+  }
+  tifiles_critical("%s: invalid signature.", __FUNCTION__);
+  return CALC_NONE;
 }

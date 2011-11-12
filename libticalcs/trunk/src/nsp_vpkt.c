@@ -253,12 +253,12 @@ int nsp_recv_ack(CalcHandle *h)
 
 	if(pkt.src_port != PORT_PKT_ACK2)
 	{
-		printf("XXX weird src_port\n");
+		ticalcs_info("XXX weird src_port\n");
 		ret = ERR_INVALID_PACKET;
 	}
 	if(pkt.dst_port != nsp_src_port)
 	{
-		printf("XXX weird .dst_port\n");
+		ticalcs_info("XXX weird .dst_port\n");
 		ret = ERR_INVALID_PACKET;
 	}
 
@@ -267,19 +267,19 @@ int nsp_recv_ack(CalcHandle *h)
 		addr = (pkt.data[0] << 8) | pkt.data[1];
 		if(addr != nsp_dst_port)
 		{
-			printf("XXX weird addr\n");
+			ticalcs_info("XXX weird addr\n");
 			ret = ERR_INVALID_PACKET;
 		}
 	}
 	else
 	{
-		printf("XXX weird addr\n");
+		ticalcs_info("XXX weird addr\n");
 		ret = ERR_INVALID_PACKET;
 	}
 
 	if(pkt.ack != 0x0A)
 	{
-		printf("XXX weird .ack\n");
+		ticalcs_info("XXX weird .ack\n");
 		ret = ERR_INVALID_PACKET;
 	}
 

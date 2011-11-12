@@ -197,25 +197,34 @@ TIEXPORT3 const char *TICALL ticalcs_version_get(void)
 TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 {
 	CalcHandle *handle = (CalcHandle *)g_malloc0(sizeof(CalcHandle));
-	int i;
+	if (handle != NULL)
+	{
+		int i;
 
-	handle->model = model;
+		handle->model = model;
 
-	for(i = 0; calcs[i]; i++)
-		if(calcs[i]->model == (int const)model)
+		for(i = 0; calcs[i]; i++)
+			if(calcs[i]->model == (int const)model)
+			{
+				handle->calc = (CalcFncts *)calcs[i];
+				break;
+			}
+
+		if(handle->calc == NULL)
 		{
-			handle->calc = (CalcFncts *)calcs[i];
-			break;
+			g_free(handle);
+			return NULL;
 		}
-	
-	if(handle->calc == NULL)
-		return NULL;
 
-	handle->updat = (CalcUpdate *)&default_update;
+		handle->updat = (CalcUpdate *)&default_update;
 
-	handle->priv2 = (uint8_t *)g_malloc(65536 + 6);
-	if(handle->priv2 == NULL)
-		return NULL;
+		handle->priv2 = (uint8_t *)g_malloc(65536 + 6);
+		if(handle->priv2 == NULL)
+		{
+			g_free(handle);
+			return NULL;
+		}
+	}
 
 	return handle;
 }
@@ -232,17 +241,22 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
  **/
 TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
-	if(handle->attached)
-		ticalcs_cable_detach(handle);
+	if (handle != NULL)
+	{
+		if(handle->attached)
+			ticalcs_cable_detach(handle);
 
-    if(handle->priv2)
-	g_free(handle->priv2);
+		if(handle->priv2)
+			g_free(handle->priv2);
 
-    if(handle)
-	g_free(handle);
-    handle = NULL;
+		g_free(handle);
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_handle_del(NULL)");
+	}
 
-    return 0;
+	return 0;
 }
 
 /**
@@ -255,8 +269,15 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
 {
-	ticalcs_info(_("Link calc handle details:"));
-	ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
+	if (handle != NULL)
+	{
+		ticalcs_info(_("Link calc handle details:"));
+		ticalcs_info(_("  model   : %s"), ticalcs_model_to_string(handle->model));
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_handle_show(NULL)");
+	}
 
 	return 0;
 }
@@ -272,13 +293,21 @@ TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 {
-	handle->cable = cable;
-	handle->attached = !0;
+	if (handle != NULL)
+	{
+		handle->cable = cable;
+		handle->attached = !0;
 
-	TRYC(ticables_cable_open(cable));
-	handle->open = !0;
+		TRYC(ticables_cable_open(cable));
+		handle->open = !0;
 
-	return 0;
+		return 0;
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_cable_attach(NULL)");
+		return ERR_INVALID_HANDLE;
+	}
 }
 
 /**
@@ -292,14 +321,22 @@ TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable
  **/
 TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
-	TRYC(ticables_cable_close(handle->cable));
-	handle->open = 0;
-	
-	handle->attached = 0;
-	handle->cable = NULL;
-	handle = NULL;
+	if (handle != NULL)
+	{
+		TRYC(ticables_cable_close(handle->cable));
+		handle->open = 0;
 
-	return 0;
+		handle->attached = 0;
+		handle->cable = NULL;
+		handle = NULL;
+
+		return 0;
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_handle_show(NULL)");
+		return ERR_INVALID_HANDLE;
+	}
 }
 
 /**
@@ -309,12 +346,19 @@ TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
  *
  * Set the callbacks to use for the given handle.
  *
- * Return value: always 0.
+ * Return value: 0 if successful, an error code otherwise.
  **/
 TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle* handle, CalcUpdate* upd)
 {
-	if(handle)
+	if (handle != NULL)
+	{
 		handle->updat = upd;
+		return 0;
+	}
+	else
+	{
+		ticalcs_critical("ticalcs_update_set: handle is NULL");
+		return ERR_INVALID_HANDLE;
+	}
 
-	return 0;
 }

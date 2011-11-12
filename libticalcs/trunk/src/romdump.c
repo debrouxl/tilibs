@@ -38,7 +38,7 @@
 #define MAX_RETRY	3
 
 static unsigned int BLK_SIZE = 1024;// heuristic
-#define MIN_SIZE	256				// don't refresh is block is small
+#define MIN_SIZE	256				// don't refresh if block is small
 
 /* CMD | LEN | DATA | CHK */
 #define	CMD_IS_READY	0xAA55
@@ -93,7 +93,7 @@ static int cmd_is_valid(uint16_t cmd)
 	case CMD_EXIT:
 	case CMD_REQ_SIZE:
 	case CMD_ERROR:
-	case CMD_REQ_BLOCK:	
+	case CMD_REQ_BLOCK:
 	case CMD_DATA1:
 	case CMD_DATA2:
 		return 1;

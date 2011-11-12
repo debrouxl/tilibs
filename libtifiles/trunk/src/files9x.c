@@ -78,6 +78,12 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
   if (!tifiles_file_is_regular(filename))
     return ERR_INVALID_FILE;
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   f = g_fopen(filename, "rb");
   if (f == NULL) 
   {
@@ -203,6 +209,12 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
     return ERR_FILE_OPEN;
   }
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   if(fread_8_chars(f, signature) < 0) goto tfrb;
   content->model = tifiles_signature2calctype(signature);
   if (content->model == CALC_NONE)
@@ -296,6 +308,12 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 
 	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
 		return ERR_INVALID_FILE;
+
+	if (head == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
 	// detect file type (old or new format)
 	tib = tifiles_file_is_tib(filename);
@@ -430,7 +448,13 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   char default_folder[FLDNAME_MAX];
   char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
 
-  if (fname != NULL) 
+  if (content->entries == NULL)
+  {
+    tifiles_warning("%s: skipping content with NULL content->entries", __FUNCTION__);
+    return 0;
+  }
+
+  if (fname != NULL)
   {
     filename = g_strdup(fname);
     if (filename == NULL)
@@ -438,8 +462,20 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
   } 
   else 
   {
-	filename = tifiles_build_filename(content->model_dst, content->entries[0]);
-	if (real_fname != NULL)
+    if (content->entries[0])
+    {
+      filename = tifiles_build_filename(content->model_dst, content->entries[0]);
+    }
+    else
+    {
+      tifiles_warning("%s: asked to build a filename from null content->entries[0], bailing out", __FUNCTION__);
+      if (real_fname != NULL)
+      {
+        *real_fname = NULL;
+      }
+      return 0;
+    }
+    if (real_fname != NULL)
       *real_fname = g_strdup(filename);
   }
 
@@ -479,6 +515,12 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
     VarEntry *fentry;
     int j, idx = table[i][0];
     fentry = content->entries[idx];
+
+    if (fentry == NULL)
+    {
+      tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
+      continue;
+    }
 
     if (content->num_entries > 1)	// single var does not have folder entry
     {
@@ -556,6 +598,12 @@ int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 {
   FILE *f;
 
+  if (filename == NULL || content == NULL)
+  {
+    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   f = g_fopen(filename, "wb");
   if (f == NULL) 
   {
@@ -602,6 +650,12 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
   FILE *f;
   Ti9xFlash *content = head;
   char *filename;
+
+  if (head == NULL)
+  {
+    tifiles_critical("%s: head is NULL", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
 
   if (fname)
   {
@@ -678,6 +732,12 @@ int ti9x_content_display_regular(Ti9xRegular *content)
   int i;
   char trans[17];
 
+  if (content == NULL)
+  {
+    tifiles_critical("%s(NULL)", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   tifiles_info("Signature:         %s",
 	  tifiles_calctype2signature(content->model));
   tifiles_info("Comment:           %s", content->comment);
@@ -716,6 +776,12 @@ int ti9x_content_display_regular(Ti9xRegular *content)
  **/
 int ti9x_content_display_backup(Ti9xBackup *content)
 {
+  if (content == NULL)
+  {
+    tifiles_critical("%s(NULL)", __FUNCTION__);
+    return ERR_INVALID_FILE;
+  }
+
   tifiles_info("signature:      %s",
 	  tifiles_calctype2signature(content->model));
   tifiles_info("comment:        %s", content->comment);

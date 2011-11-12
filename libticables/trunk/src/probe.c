@@ -42,7 +42,7 @@ static void ticables_probing_show(int **array)
 
 	for(model = CABLE_NUL; model < CABLE_MAX; model++)
 	{
-		ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);	
+		ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);
 	}
 }
 
@@ -65,6 +65,12 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMeth
 	CableModel model;
 	int **array;
 	int found = 0;
+
+	if (result == NULL)
+	{
+		ticables_critical("%s: result is NULL", __FUNCTION__);
+		return ERR_PROBE_FAILED;
+	}
 
 	ticables_info(_("Link cable probing:"));
 
@@ -145,14 +151,21 @@ TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
 {
 	int i;
 
-	for(i = CABLE_GRY; i <= CABLE_TIE; i++)
-	  {
-	    free((*result)[i]);
-		(*result)[i] = NULL;
-	  }
+	if (result != NULL && *result != NULL)
+	{
+		for(i = CABLE_GRY; i <= CABLE_TIE; i++)
+		{
+			free((*result)[i]);
+			(*result)[i] = NULL;
+		}
 
-	free(*result);
-	*result = NULL;
+		free(*result);
+		*result = NULL;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+	}
 
 	return 0;
 }
@@ -194,26 +207,34 @@ extern int usb_probe_devices(int **list);
  **/
 TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 {
-#if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
-	int i, *p;
-	int ret = 0;
-
-	ret = usb_probe_devices(list);
-	if(ret)
+	if (list != NULL)
 	{
-	        *list = calloc(1, sizeof(int));
-	        if(len) *len = 0;
-		return ret;
-	}
+#if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
+		int i, *p;
+		int ret = 0;
 
-	for(p = *list, i = 0; *p; p++, i++);
-		//printf("%i: %04x\n", i, (*list)[i]);
+		ret = usb_probe_devices(list);
+		if(ret)
+		{
+			*list = calloc(1, sizeof(int));
+			if(len) *len = 0;
+			return ret;
+		}
 
-	if(len) *len = i;
+		for(p = *list, i = 0; *p; p++, i++);
+			//printf("%i: %04x\n", i, (*list)[i]);
+
+		if(len) *len = i;
 #else
-	*list = calloc(1, sizeof(int));
-	if(len) *len = 0;
+		*list = calloc(1, sizeof(int));
+		if(len) *len = 0;
 #endif
+	}
+	else
+	{
+		ticables_critical("%s: list is NULL", __FUNCTION__);
+		return -1;
+	}
 
 	return 0;
 }

@@ -120,7 +120,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_group (CalcModel model)
 		case CALC_NSPIRE:
 			return "XXx";
 		default:
-			tifiles_critical("tifiles_fext_of_group: invalid calc_type argument.");
+			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
@@ -169,7 +169,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_backup (CalcModel model)
 		case CALC_NSPIRE:
 			return "XXx";
 		default:
-			tifiles_critical("tifiles_fext_of_backup: invalid calc_type argument.");
+			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
@@ -217,7 +217,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_app (CalcModel model)
 		case CALC_NSPIRE:
 			return "XXx";
 		default:
-			tifiles_critical("tifiles_fext_of_flash_app: invalid calc_type argument.");
+			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
@@ -265,7 +265,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_flash_os(CalcModel model)
 		case CALC_NSPIRE:
 			return "tno";
 		default:
-			tifiles_critical("tifiles_fext_of_flash_os: invalid calc_type argument.");
+			tifiles_critical("%s: invalid model argument", __FUNCTION__);
 			break;
 	}
 
@@ -313,7 +313,7 @@ TIEXPORT2 const char *TICALL tifiles_fext_of_certif(CalcModel model)
 		case CALC_NSPIRE:
 			return "XXx";
 		default:
-			tifiles_critical("tifiles_fext_of_certif: invalid calc_type argument.");
+			tifiles_critical("%s: invalid calc_type argument", __FUNCTION__);
 			break;
 	}
 
@@ -339,6 +339,10 @@ TIEXPORT2 char *TICALL tifiles_fext_get(const char *filename)
 		{
 			return (++d);
 		}
+	}
+	else
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return (char *)"";
@@ -551,29 +555,36 @@ TIEXPORT2 int TICALL tifiles_file_is_ti(const char *filename)
 {
 	char *e;
 
-	// bug: check that file is not a FIFO
-	if (!is_regfile(filename))
-		return 0;
+	if (filename != NULL)
+	{
+		// bug: check that file is not a FIFO
+		if (!is_regfile(filename))
+			return 0;
 
-	if(tifiles_file_has_ti_header(filename))
-		return !0;
+		if(tifiles_file_has_ti_header(filename))
+			return !0;
 
-	if(tifiles_file_has_tib_header(filename))
-		return !0;
+		if(tifiles_file_has_tib_header(filename))
+			return !0;
 
-	if(tifiles_file_has_tig_header(filename))
-		return !0;
+		if(tifiles_file_has_tig_header(filename))
+			return !0;
 
-	if(tifiles_file_has_tno_header(filename))
-		return !0;
+		if(tifiles_file_has_tno_header(filename))
+			return !0;
 
-	e = tifiles_fext_get(filename);
+		e = tifiles_fext_get(filename);
 
-	if (!strcmp(e, ""))
-		return 0;
+		if (!strcmp(e, ""))
+			return 0;
 
-	if(!g_ascii_strcasecmp(e, "tns"))
-		return !0;
+		if(!g_ascii_strcasecmp(e, "tns"))
+			return !0;
+	}
+	else
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+	}
 
 	return 0;
 }
@@ -811,7 +822,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 
 	if(target > CALC_MAX)
 	{
-		tifiles_critical("tifiles_file_test: invalid target argument! This is a bug.");
+		tifiles_critical("%s: invalid target argument", __FUNCTION__);
 		return 0;
 	}
 

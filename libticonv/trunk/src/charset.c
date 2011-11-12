@@ -35,6 +35,63 @@
 #include "ticonv.h"
 #include "charset.h"
 
+///////////// Common functions /////////////
+static unsigned short* ticonv_nonusb_to_utf16(const unsigned long * charset, const char *ti, unsigned short *utf16)
+{
+	const unsigned char *p = (const unsigned char *)ti;
+	unsigned short *q = utf16;
+	unsigned long c;
+
+	if (p != NULL && q != NULL)
+	{
+		while (*p)
+		{
+			c=charset[*(p++)];
+			if (c<0x10000)
+			{
+				*(q++)=(unsigned short)c;
+			}
+			else
+			{
+				*(q++)=(unsigned short)(c>>16);
+				*(q++)=(unsigned short)(c&0xffff);
+			}
+		}
+		*q=0;
+	}
+
+	return utf16;
+}
+
+static unsigned short * ticonv_usb_to_utf16(const char *ti, unsigned short *utf16)
+{
+	unsigned short *tmp;
+
+	tmp = ticonv_utf8_to_utf16(ti);
+	if (utf16 != NULL)
+	{
+		memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
+	}
+	g_free(tmp);
+
+	return utf16;
+}
+
+static char* ticonv_utf16_to_usb(const unsigned short *utf16, char *ti)
+{
+	char *tmp;
+
+	tmp = ticonv_utf16_to_utf8(utf16);
+	if (ti != NULL)
+	{
+		strcpy(ti, tmp);
+	}
+	g_free(tmp);
+
+	return ti;
+}
+
+
 ///////////// TI89,92,92+,V200,Titanium /////////////
 
 TIEXPORT4 const unsigned long TICALL ti9x_charset[256] =
@@ -536,26 +593,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *t
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti9x_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti9x_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti9x_charset, ti, utf16);
 }
 
 ///////////// TI73 /////////////
@@ -621,26 +659,7 @@ TIEXPORT4 const unsigned long TICALL ti73_charset[256] = {
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti73_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti73_charset, ti, utf16);
 }
 
 /**
@@ -650,7 +669,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti73_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI73 charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: empty string (not implemented)
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *ti)
 {
@@ -720,26 +739,7 @@ TIEXPORT4 const unsigned long TICALL ti82_charset[256] = {
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti82_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti82_charset, ti, utf16);
 }
 
 /**
@@ -749,7 +749,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti82_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI82 charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: empty string (not implemented)
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti82(const unsigned short *utf16, char *ti)
 {
@@ -815,30 +815,11 @@ TIEXPORT4 const unsigned long TICALL ti83_charset[256] = {
  *
  * TI82 charset to UTF-16 conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti83_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti83_charset, ti, utf16);
 }
 
 /**
@@ -848,7 +829,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti83_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI83 charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: empty string (not implemented)
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti83(const unsigned short *utf16, char *ti)
 {
@@ -918,26 +899,7 @@ TIEXPORT4 const unsigned long TICALL ti83p_charset[256] = {
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti83p_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti83p_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti83p_charset, ti, utf16);
 }
 
 /**
@@ -1114,30 +1076,11 @@ TIEXPORT4 const unsigned long TICALL ti85_charset[256] = {
  *
  * TI85 charset to UTF-16 conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti85_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti85_charset, ti, utf16);
 }
 
 /**
@@ -1147,7 +1090,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti85_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI85 charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: empty string (not implemented)
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti85(const unsigned short *utf16, char *ti)
 {
@@ -1213,30 +1156,11 @@ TIEXPORT4 const unsigned long TICALL ti86_charset[256] = {
  *
  * TI86 charset to UTF-16 conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti86_charset[*(p++)];
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti86_charset, ti, utf16);
 }
 
 /**
@@ -1246,14 +1170,14 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti86_to_utf16(const char *ti, unsigned s
  *
  * UTF-16 to TI86 charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: empty string (not implemented)
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *ti)
 {
 	return (char *)"";
 }
 
-///////////// TI84+ USB /////////////
+///////////// TI84+ USB & Titanium USB /////////////
 
 /**
  * ticonv_ti84pusb_to_utf16:
@@ -1262,17 +1186,11 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti86(const unsigned short *utf16, char *t
  *
  * TI84+/USB charset to UTF-16 conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti84pusb_to_utf16(const char *ti, unsigned short *utf16)
 {
-	unsigned short *tmp;
-
-	tmp = ticonv_utf8_to_utf16(ti);
-	memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
-	g_free(tmp);
-
-	return utf16;
+	return ticonv_usb_to_utf16(ti, utf16);
 }
 
 /**
@@ -1282,20 +1200,12 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti84pusb_to_utf16(const char *ti, unsign
  *
  * UTF-16 to TI84+/USB charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti84pusb(const unsigned short *utf16, char *ti)
 {
-	char *tmp;
-
-	tmp = ticonv_utf16_to_utf8(utf16);
-	strcpy(ti, tmp);
-	g_free(tmp);
-
-	return ti;
+	return ticonv_utf16_to_usb(utf16, ti);
 }
-
-///////////// Titanium USB /////////////
 
 /**
  * ticonv_ti89tpusb_to_utf16:
@@ -1304,17 +1214,11 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti84pusb(const unsigned short *utf16, cha
  *
  * Titanium/USB charset to UTF-16 conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsigned short *utf16)
 {
-	unsigned short *tmp;
-
-	tmp = ticonv_utf8_to_utf16(ti);
-	memcpy(utf16, tmp, 2 * ticonv_utf16_strlen(tmp));
-	g_free(tmp);
-
-	return utf16;
+	return ticonv_usb_to_utf16(ti, utf16);
 }
 
 /**
@@ -1324,17 +1228,11 @@ TIEXPORT4 unsigned short* TICALL ticonv_ti89tusb_to_utf16(const char *ti, unsign
  *
  * UTF-16 to Titanium/USB charset conversion.
  *
- * Return value: returns the destination pointer or NULL if error.
+ * Return value: returns the destination pointer.
  **/
 TIEXPORT4 char* TICALL ticonv_utf16_to_ti89tusb(const unsigned short *utf16, char *ti)
 {
-	char *tmp;
-
-	tmp = ticonv_utf16_to_utf8(utf16);
-	strcpy(ti, tmp);
-	g_free(tmp);
-
-	return ti;
+	return ticonv_utf16_to_usb(utf16, ti);
 }
 
 ////////////////////////////////

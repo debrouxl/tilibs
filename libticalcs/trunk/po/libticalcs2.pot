@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-07-14 14:35+0200\n"
+"POT-Creation-Date: 2011-11-12 10:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,118 +183,118 @@ msgstr ""
 msgid "Sending key %04x:"
 msgstr ""
 
-#: src/calc_xx.c:151
+#: src/calc_xx.c:156
 #, c-format
 msgid "Executing %s/%s with %s:"
 msgstr ""
 
-#: src/calc_xx.c:188
+#: src/calc_xx.c:197
 msgid "Requesting screenshot:"
 msgstr ""
 
-#: src/calc_xx.c:226
+#: src/calc_xx.c:239
 msgid "Requesting folder & vars & apps listing:"
 msgstr ""
 
-#: src/calc_xx.c:271
+#: src/calc_xx.c:289
 msgid "Requesting RAM & FLASH free"
 msgstr ""
 
-#: src/calc_xx.c:306
+#: src/calc_xx.c:329
 msgid "Requesting backup:"
 msgstr ""
 
-#: src/calc_xx.c:341
+#: src/calc_xx.c:369
 msgid "Sending backup:"
 msgstr ""
 
-#: src/calc_xx.c:378
+#: src/calc_xx.c:410
 msgid "Sending one or more variables:"
 msgstr ""
 
-#: src/calc_xx.c:416
+#: src/calc_xx.c:452
 #, c-format
 msgid "Requesting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:453
+#: src/calc_xx.c:493
 msgid "Sending variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:491
+#: src/calc_xx.c:535
 msgid "Receiving variable (non-silent mode):"
 msgstr ""
 
-#: src/calc_xx.c:526
+#: src/calc_xx.c:575
 msgid "Sending FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:563
+#: src/calc_xx.c:616
 msgid "Requesting receiving of FLASH application:"
 msgstr ""
 
-#: src/calc_xx.c:598
+#: src/calc_xx.c:656
 msgid "Sending FLASH os:"
 msgstr ""
 
-#: src/calc_xx.c:633
+#: src/calc_xx.c:696
 msgid "Requesting ID-LIST:"
 msgstr ""
 
-#: src/calc_xx.c:667
+#: src/calc_xx.c:730
 msgid "Sending ROM dumper:"
 msgstr ""
 
-#: src/calc_xx.c:703
+#: src/calc_xx.c:771
 msgid "Dumping ROM:"
 msgstr ""
 
-#: src/calc_xx.c:738
+#: src/calc_xx.c:811
 msgid "Setting clock:"
 msgstr ""
 
-#: src/calc_xx.c:773
+#: src/calc_xx.c:851
 msgid "Getting clock:"
 msgstr ""
 
-#: src/calc_xx.c:808
+#: src/calc_xx.c:891
 msgid "Sending certificate:"
 msgstr ""
 
-#: src/calc_xx.c:843
+#: src/calc_xx.c:931
 msgid "Requesting receiving of certificate:"
 msgstr ""
 
-#: src/calc_xx.c:1159
+#: src/calc_xx.c:1303
 #, c-format
 msgid "Creating folder '%s':"
 msgstr ""
 
-#: src/calc_xx.c:1193
+#: src/calc_xx.c:1343
 #, c-format
 msgid "Deleting variable '%s':"
 msgstr ""
 
-#: src/calc_xx.c:1227
+#: src/calc_xx.c:1383
 msgid "Requesting version infos:"
 msgstr ""
 
-#: src/dirlist.c:122
+#: src/dirlist.c:125
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr ""
 
-#: src/dirlist.c:182
+#: src/dirlist.c:185
 #, c-format
 msgid "| No variables     |\n"
 msgstr ""
 
-#: src/dirlist.c:184
+#: src/dirlist.c:187
 #, c-format
 msgid "| No applications  |\n"
 msgstr ""
 
-#: src/dirlist.c:186
+#: src/dirlist.c:189
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
 msgstr ""
@@ -660,35 +660,35 @@ msgstr ""
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.c:258
+#: src/ticalcs.c:274
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.c:259
+#: src/ticalcs.c:275
 #, c-format
 msgid "  model   : %s"
 msgstr ""
 
-#: src/type2str.c:57 src/type2str.c:65 src/type2str.c:78 src/type2str.c:86
+#: src/type2str.c:59 src/type2str.c:69 src/type2str.c:87 src/type2str.c:97
 msgid "full"
 msgstr ""
 
-#: src/type2str.c:58 src/type2str.c:67
+#: src/type2str.c:60 src/type2str.c:71
 msgid "clipped"
 msgstr ""
 
-#: src/type2str.c:59 src/type2str.c:80 src/type2str.c:101
+#: src/type2str.c:61 src/type2str.c:89 src/type2str.c:117
 msgid "unknown"
 msgstr ""
 
-#: src/type2str.c:79 src/type2str.c:88
+#: src/type2str.c:88 src/type2str.c:99
 msgid "local"
 msgstr ""
 
-#: src/type2str.c:99 src/type2str.c:107
+#: src/type2str.c:115 src/type2str.c:125
 msgid "free"
 msgstr ""
 
-#: src/type2str.c:100 src/type2str.c:109
+#: src/type2str.c:116 src/type2str.c:127
 msgid "used"
 msgstr ""

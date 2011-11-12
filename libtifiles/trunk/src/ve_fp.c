@@ -121,7 +121,7 @@ TIEXPORT2 void			TICALL tifiles_ve_delete(VarEntry* ve)
 	}
 	else
 	{
-		tifiles_critical("tifiles_ve_delete(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 }
 
@@ -145,7 +145,7 @@ TIEXPORT2 void			TICALL tifiles_ve_delete_array(VarEntry** array)
 	}
 	else
 	{
-		tifiles_critical("tifiles_ve_delete_array(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 }
 
@@ -178,7 +178,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src)
 	}
 	else
 	{
-		tifiles_critical("tifiles_ve_copy() called with at least one NULL parameter\n");
+		tifiles_critical("%s(): an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 
@@ -213,7 +213,7 @@ TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src)
 	}
 	else
 	{
-		tifiles_critical("tifiles_ve_dup(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 
 	return dst;
@@ -304,7 +304,7 @@ TIEXPORT2 void			TICALL tifiles_fp_delete(FlashPage* fp)
 	}
 	else
 	{
-		tifiles_critical("tifiles_fp_delete(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 }
 
@@ -328,6 +328,6 @@ TIEXPORT2 void			TICALL tifiles_fp_delete_array(FlashPage** array)
 	}
 	else
 	{
-		tifiles_critical("tifiles_fp_delete_array(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 	}
 }

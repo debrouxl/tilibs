@@ -40,7 +40,7 @@
 
 /**
  * tifiles_content_create_group:
- * @n: number of variables to allocate
+ * @n_entries: number of variables to allocate
  *
  * Convenient function which create a NULL-terminated array of #FileContent 
  * structures (typically used to store a group file).
@@ -63,18 +63,25 @@ TIEXPORT2 FileContent** TICALL tifiles_content_create_group(int n_entries)
 TIEXPORT2 int TICALL tifiles_content_delete_group(FileContent **array)
 {
 	int i, n;
-	
-	// counter number of files to group
-	for (n = 0; array[n] != NULL; n++);
 
-	// release allocated memory in structures
-	for (i = 0; i < n; i++) 
+	if (array != NULL)
 	{
-	    tifiles_content_delete_regular(array[i]);
-	}
-	g_free(array);
+		// counter number of files to group
+		for (n = 0; array[n] != NULL; n++);
 
-  return 0;
+		// release allocated memory in structures
+		for (i = 0; i < n; i++)
+		{
+			tifiles_content_delete_regular(array[i]);
+		}
+		g_free(array);
+	}
+	else
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+	}
+
+	return 0;
 }
 
 /************************/
@@ -95,37 +102,51 @@ TIEXPORT2 int TICALL tifiles_content_delete_group(FileContent **array)
  **/
 TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content)
 {
-  FileContent *dst;
-  int i, j, n;
+	FileContent *dst;
+	int i, j, n;
 
-  for (n = 0; src_contents[n] != NULL; n++)
-  {
-    if(src_contents[n]->model == CALC_NSPIRE)
-      return ERR_BAD_CALC;
-  }
+	if (src_contents == NULL || dst_content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  dst = (FileContent *)g_malloc0(sizeof(FileContent));
-  if (dst == NULL)
-    return ERR_MALLOC;
+	for (n = 0; src_contents[n] != NULL; n++)
+	{
+		if(src_contents[n]->model == CALC_NSPIRE)
+		{
+			return ERR_BAD_CALC;
+		}
+	}
 
-  memcpy(dst, src_contents[0], sizeof(FileContent));
+	dst = (FileContent *)g_malloc0(sizeof(FileContent));
+	if (dst == NULL)
+		return ERR_MALLOC;
 
-  dst->num_entries = n;
-  dst->entries = g_malloc0((n + 1) * sizeof(VarEntry*));
-  if (dst->entries == NULL)
-    return ERR_MALLOC;
+	if (n > 0)
+	{
+		memcpy(dst, src_contents[0], sizeof(FileContent));
+	}
 
-  for (i = 0; i < n; i++) 
-  {
-    FileContent *src = src_contents[i];
+	dst->num_entries = n;
+	dst->entries = g_malloc0((n + 1) * sizeof(VarEntry*));
+	if (dst->entries == NULL)
+	{
+		free(dst);
+		return ERR_MALLOC;
+	}
 
-    for(j = 0; j < src->num_entries; j++)
-      dst->entries[i] = tifiles_ve_dup(src->entries[j]);
-  }
+	for (i = 0; i < n; i++)
+	{
+		FileContent *src = src_contents[i];
 
-  *dst_content = dst;
+		for(j = 0; j < src->num_entries; j++)
+			dst->entries[i] = tifiles_ve_dup(src->entries[j]);
+	}
 
-  return 0;
+	*dst_content = dst;
+
+	return 0;
 }
 
 /**
@@ -143,40 +164,46 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
  **/
 TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***dest)
 {
-  int i;
-  FileContent **dst;
+	int i;
+	FileContent **dst;
 
-  if(src->model == CALC_NSPIRE)
-    return ERR_BAD_CALC;
+	if (src == NULL || dest == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  // allocate an array of FileContent structures (NULL terminated)
-  dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) * sizeof(FileContent *));
-  if (dst == NULL)
-    return ERR_MALLOC;
+	if(src->model == CALC_NSPIRE)
+		return ERR_BAD_CALC;
 
-  // parse each entry and duplicate it into a single content  
-  for (i = 0; i < src->num_entries; i++) 
-  {
-    VarEntry *dst_entry = NULL;
+	// allocate an array of FileContent structures (NULL terminated)
+	dst = *dest = (FileContent **)g_malloc0((src->num_entries + 1) * sizeof(FileContent *));
+	if (dst == NULL)
+		return ERR_MALLOC;
 
-    // allocate and duplicate content
-    dst[i] = (FileContent *)g_malloc0(sizeof(FileContent));
-    if (dst[i] == NULL)
-      return ERR_MALLOC;
-    memcpy(dst[i], src, sizeof(FileContent));
+	// parse each entry and duplicate it into a single content
+	for (i = 0; i < src->num_entries; i++)
+	{
+		VarEntry *dst_entry = NULL;
 
-    // allocate and duplicate entry
-    dst[i]->entries = g_malloc0((1+1) * sizeof(VarEntry*));
-    dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
+		// allocate and duplicate content
+		dst[i] = (FileContent *)g_malloc0(sizeof(FileContent));
+		if (dst[i] == NULL)
+			return ERR_MALLOC;
+		memcpy(dst[i], src, sizeof(FileContent));
 
-    // update some fields
-    dst[i]->num_entries = 1;
-    dst[i]->checksum += tifiles_checksum((uint8_t *) dst_entry, 15);
-    dst[i]->checksum += tifiles_checksum(dst_entry->data, dst_entry->size);
-  }
-  dst[i] = NULL;
+		// allocate and duplicate entry
+		dst[i]->entries = g_malloc0((1+1) * sizeof(VarEntry*));
+		dst_entry = dst[i]->entries[0] = tifiles_ve_dup(src->entries[i]);
 
-  return 0;
+		// update some fields
+		dst[i]->num_entries = 1;
+		dst[i]->checksum += tifiles_checksum((uint8_t *) dst_entry, 15);
+		dst[i]->checksum += tifiles_checksum(dst_entry->data, dst_entry->size);
+	}
+	dst[i] = NULL;
+
+	return 0;
 }
 
 /*************************/
@@ -194,48 +221,54 @@ TIEXPORT2 int TICALL tifiles_ungroup_content(FileContent *src, FileContent ***de
  **/
 TIEXPORT2 int TICALL tifiles_group_files(char **src_filenames, const char *dst_filename)
 {
-  int i, n;
-  FileContent **src = NULL;
-  FileContent *dst = NULL;
-  int ret = 0;
+	int i, n;
+	FileContent **src = NULL;
+	FileContent *dst = NULL;
+	int ret = 0;
 
-  if(tifiles_file_get_model(src_filenames[0]) == CALC_NSPIRE)
-	  return ERR_BAD_CALC;
+	if (src_filenames == NULL || dst_filename == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  // counter number of files to group
-  for (n = 0; src_filenames[n] != NULL; n++);
+	if(tifiles_file_get_model(src_filenames[0]) == CALC_NSPIRE)
+		return ERR_BAD_CALC;
 
-  // allocate space for that
-  src = (FileContent **)g_malloc0((n + 1) * sizeof(FileContent *));
-  if (src == NULL)
-    return ERR_MALLOC;
+	// counter number of files to group
+	for (n = 0; src_filenames[n] != NULL; n++);
 
-  // allocate each structure and load file content
-  for (i = 0; i < n; i++) 
-  {
-    src[i] = (FileContent *)g_malloc0(sizeof(FileContent));
-    if (src[i] == NULL)
-      return ERR_MALLOC;
+	// allocate space for that
+	src = (FileContent **)g_malloc0((n + 1) * sizeof(FileContent *));
+	if (src == NULL)
+		return ERR_MALLOC;
 
-    ret = tifiles_file_read_regular(src_filenames[i], src[i]);
+	// allocate each structure and load file content
+	for (i = 0; i < n; i++)
+	{
+		src[i] = (FileContent *)g_malloc0(sizeof(FileContent));
+		if (src[i] == NULL)
+			return ERR_MALLOC;
+
+		ret = tifiles_file_read_regular(src_filenames[i], src[i]);
+		if(ret) goto tgf;
+	}
+	src[i] = NULL;
+
+	// group the array of structures
+	ret = tifiles_group_contents(src, &dst);
 	if(ret) goto tgf;
-  }
-  src[i] = NULL;
 
-  // group the array of structures
-  ret = tifiles_group_contents(src, &dst);
-  if(ret) goto tgf;
+	// write grouped file
+	ret = tifiles_file_write_regular(dst_filename, dst, NULL);
+	if(ret) goto tgf;
 
-  // write grouped file
-  ret = tifiles_file_write_regular(dst_filename, dst, NULL);
-  if(ret) goto tgf;
-
-  // release allocated memory
+	// release allocated memory
 tgf:
-  tifiles_content_delete_group(src);
-  tifiles_content_delete_regular(dst);
+	tifiles_content_delete_group(src);
+	tifiles_content_delete_regular(dst);
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -254,57 +287,63 @@ tgf:
  **/
 TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_filenames)
 {
-  FileContent *src = NULL;
-  FileContent **ptr, **dst = NULL;
-  char *real_name, **p;
-  int i, n;
-  int ret;
+	FileContent *src = NULL;
+	FileContent **ptr, **dst = NULL;
+	char *real_name, **p;
+	int i, n;
+	int ret;
 
-  if(tifiles_file_get_model(src_filename) == CALC_NSPIRE)
-	  return ERR_BAD_CALC;
+	if (src_filename == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  // read group file
-  src = tifiles_content_create_regular(CALC_NONE);
-  ret = tifiles_file_read_regular(src_filename, src);
-  if(ret) goto tuf;
+	if(tifiles_file_get_model(src_filename) == CALC_NSPIRE)
+		return ERR_BAD_CALC;
 
-  // ungroup structure
-  ret = tifiles_ungroup_content(src, &dst);
-  if(ret) goto tuf;
-
-  // count number of structures and allocates array of strings
-  for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
-  if(dst_filenames != NULL)
-	  *dst_filenames = (char **)g_malloc((n + 1) * sizeof(char *));
-
-  // store each structure content to file
-  for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
-  {
-    ret = tifiles_file_write_regular(NULL, *ptr, &real_name);
+	// read group file
+	src = tifiles_content_create_regular(CALC_NONE);
+	ret = tifiles_file_read_regular(src_filename, src);
 	if(ret) goto tuf;
 
+	// ungroup structure
+	ret = tifiles_ungroup_content(src, &dst);
+	if(ret) goto tuf;
+
+	// count number of structures and allocates array of strings
+	for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
 	if(dst_filenames != NULL)
-		*dst_filenames[i] = real_name;
-	else
-		g_free(real_name);
-  }
+		*dst_filenames = (char **)g_malloc((n + 1) * sizeof(char *));
 
-  // release allocated memory
-  tifiles_content_delete_regular(src);
-  tifiles_content_delete_group(dst);
+	// store each structure content to file
+	for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
+	{
+		ret = tifiles_file_write_regular(NULL, *ptr, &real_name);
+		if(ret) goto tuf;
 
-  return 0;
+		if(dst_filenames != NULL)
+			*dst_filenames[i] = real_name;
+		else
+			g_free(real_name);
+	}
+
+	// release allocated memory
+	tifiles_content_delete_regular(src);
+	tifiles_content_delete_group(dst);
+
+	return 0;
 
 tuf:
-  if(dst_filenames != NULL)
-  {
-	  for(p = *dst_filenames; *p; p++)
-		  g_free(*p);
-	  g_free(p);
-  }
-  tifiles_content_delete_regular(src);
-  tifiles_content_delete_group(dst);
-  return ret;
+	if(dst_filenames != NULL)
+	{
+		for(p = *dst_filenames; *p; p++)
+			g_free(*p);
+		g_free(p);
+	}
+	tifiles_content_delete_regular(src);
+	tifiles_content_delete_group(dst);
+	return ret;
 }
 
 /**
@@ -319,11 +358,24 @@ tuf:
  **/
 TIEXPORT2 int TICALL tifiles_content_add_entry(FileContent *content, VarEntry *ve)
 {
-	content->entries = tifiles_ve_resize_array(content->entries, content->num_entries + 1);
-    content->entries[content->num_entries] = ve;
-	content->num_entries++;
+	if (content != NULL)
+	{
+		content->entries = tifiles_ve_resize_array(content->entries, content->num_entries + 1);
+		if (ve == NULL)
+		{
+			tifiles_critical("%s: adding NULL VarEntry ???", __FUNCTION__);
+		}
+		content->entries[content->num_entries] = ve;
+		content->num_entries++;
 
-	return content->num_entries;
+		return content->num_entries;
+	}
+	else
+	{
+		tifiles_critical("%s: content is NULL", __FUNCTION__);
+	}
+
+	return 0;
 }
 
 /**
@@ -339,32 +391,46 @@ TIEXPORT2 int TICALL tifiles_content_del_entry(FileContent *content, VarEntry *v
 {
 	int i, j;
 
-	// Search for entry
-	for(i = 0; i < content->num_entries; i++)
+	if (content != NULL)
 	{
-		VarEntry *s = content->entries[i];
+		if (ve == NULL)
+		{
+			tifiles_critical("%s: deleting NULL VarEntry ???", __FUNCTION__);
+			return content->num_entries;
+		}
 
-		if(!strcmp(s->folder, ve->folder) && !strcmp(s->name, ve->name))
-			break;
+		// Search for entry
+		for(i = 0; i < content->num_entries; i++)
+		{
+			VarEntry *s = content->entries[i];
+
+			if(!strcmp(s->folder, ve->folder) && !strcmp(s->name, ve->name))
+				break;
+		}
+
+		// Not found ? Exit !
+		if(i == content->num_entries)
+			return -1;
+
+		// Release
+		tifiles_ve_delete(content->entries[i]);
+
+		// And shift
+		for(j = i; j < content->num_entries; j++)
+			content->entries[j] = content->entries[j+1];
+		content->entries[j] = NULL;
+
+		// And resize
+		content->entries = tifiles_ve_resize_array(content->entries, content->num_entries - 1);
+		content->num_entries--;
+
+		return content->num_entries;
 	}
-
-	// Not found ? Exit !
-	if(i == content->num_entries)
-		return -1;
-
-	// Release
-	tifiles_ve_delete(content->entries[i]);
-
-	// And shift
-	for(j = i; j < content->num_entries; j++)
-		content->entries[j] = content->entries[j+1];
-	content->entries[j] = NULL;
-
-	// And resize
-	content->entries = tifiles_ve_resize_array(content->entries, content->num_entries - 1);
-	content->num_entries--;
-
-	return content->num_entries;
+	else
+	{
+		tifiles_critical("%s: content is NULL", __FUNCTION__);
+		return 0;
+	}
 }
 
 /**
@@ -385,13 +451,19 @@ TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char
 	int i;
 	int ret = 0;
 
+	if (src_filename == NULL || dst_filename == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
 	// src can be single/group file and dst must be group file
 	if(!tifiles_file_is_group(dst_filename))
 		return -1;
 
 	src_model = tifiles_file_get_model(src_filename);
 	dst_model = tifiles_file_get_model(dst_filename);
-	
+
 	src_content = tifiles_content_create_regular(src_model);
 	dst_content = tifiles_content_create_regular(dst_model);
 
@@ -401,7 +473,7 @@ TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char
 	if(ret) goto tgaf;
 
 	for(i = 0; i < src_content->num_entries; i++)
-		tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));	
+		tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));
 
 	ret = tifiles_file_write_regular(dst_filename, dst_content, NULL);
 	if(ret) goto tgaf;
@@ -422,11 +494,17 @@ tgaf:
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT2 int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename)
+TIEXPORT2 int TICALL tifiles_group_del_file(VarEntry *entry, const char *dst_filename)
 {
 	CalcModel dst_model;
 	FileContent* dst_content = NULL;
 	int ret = 0;
+
+	if (entry == NULL || dst_filename == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
 	// src can be single/group file and dst must be group file
 	if(!tifiles_file_is_group(dst_filename))

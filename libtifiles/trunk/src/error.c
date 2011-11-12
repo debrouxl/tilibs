@@ -42,7 +42,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 {
 	if (message == NULL)
 	{
-		tifiles_critical("tifiles_error_get(NULL)\n");
+		tifiles_critical("%s(NULL)", __FUNCTION__);
 		return number;
 	}
 
