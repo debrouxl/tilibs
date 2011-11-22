@@ -57,6 +57,14 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 		if(type == 0x11)
 			return (dst = g_strdup_printf("TblSet"));
 		break;
+	case CALC_TI82:
+		if(type == 0x0B)
+			return (dst = g_strdup_printf("Window"));
+		if(type == 0x0C)
+			return (dst = g_strdup_printf("RclWin"));
+		if(type == 0x0D)
+			return (dst = g_strdup_printf("TblSet"));
+		break;
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
@@ -68,6 +76,7 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 		if(type == 0x11)
 			return (dst = g_strdup_printf("TblSet"));
 		break;
+	case CALC_TI85:
 	case CALC_TI86:
 		if(type == 0x17)
 			return (dst = g_strdup_printf("Func"));
@@ -449,6 +458,14 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 			if(!strcmp("TblSet", src_) || type == 0x11)
 				return g_strdup("");
 		break;
+		case CALC_TI82:
+			if(!strcmp("Window", src_) || type == 0x0B)
+				return g_strdup("");
+			if(!strcmp("RclWin", src_) || type == 0x0C)
+				return g_strdup("");
+			if(!strcmp("TblSet", src_) || type == 0x0D)
+				return g_strdup("");
+		break;
 		case CALC_TI83:
 		case CALC_TI83P:
 		case CALC_TI84P:
@@ -459,6 +476,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 			if(!strcmp("TblSet", src_) || type == 0x11)
 				return g_strdup("");
 		break;
+		case CALC_TI85:
 		case CALC_TI86:
 			if(!strcmp("Func", src_)  || type == 0x17)
 				return g_strdup("");
