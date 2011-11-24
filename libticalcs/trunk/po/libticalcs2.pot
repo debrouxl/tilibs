@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-11-12 10:58+0100\n"
+"POT-Creation-Date: 2011-11-23 08:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,74 +25,74 @@ msgstr ""
 msgid "Dummy hand-held used when no calc is set"
 msgstr ""
 
-#: src/calc_73.c:214 src/calc_83.c:195 src/calc_84p.c:195 src/calc_86.c:184
+#: src/calc_73.c:223 src/calc_83.c:195 src/calc_84p.c:195 src/calc_86.c:184
 #, c-format
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:489 src/calc_73.c:949 src/calc_89.c:594 src/calc_89t.c:384
+#: src/calc_73.c:498 src/calc_73.c:969 src/calc_89.c:594 src/calc_89t.c:384
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:490 src/calc_73.c:950 src/calc_89.c:595 src/calc_89t.c:385
+#: src/calc_73.c:499 src/calc_73.c:970 src/calc_89.c:595 src/calc_89t.c:385
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:724 src/calc_82.c:112 src/calc_82.c:255 src/calc_85.c:112
+#: src/calc_73.c:744 src/calc_82.c:112 src/calc_82.c:255 src/calc_85.c:112
 #: src/calc_85.c:255 src/calc_86.c:232 src/calc_86.c:482
 #, c-format
 msgid "Waiting for user's action..."
 msgstr ""
 
-#: src/calc_73.c:789 src/calc_84p.c:706 src/calc_89.c:810 src/calc_89t.c:626
+#: src/calc_73.c:809 src/calc_84p.c:706 src/calc_89.c:810 src/calc_89t.c:626
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:818 src/calc_84p.c:750 src/calc_89.c:835 src/calc_89t.c:670
+#: src/calc_73.c:838 src/calc_84p.c:750 src/calc_89.c:835 src/calc_89t.c:670
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:872 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
+#: src/calc_73.c:892 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
 #: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:723
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:927 src/calc_89.c:954 src/calc_92.c:624
+#: src/calc_73.c:947 src/calc_89.c:954 src/calc_92.c:624
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:928 src/calc_89.c:955
+#: src/calc_73.c:948 src/calc_89.c:955
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:929
+#: src/calc_73.c:949
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:930 src/calc_89.c:956 src/calc_92.c:625
+#: src/calc_73.c:950 src/calc_89.c:956 src/calc_92.c:625
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:930
+#: src/calc_73.c:950
 msgid "good"
 msgstr ""
 
-#: src/calc_73.c:930
+#: src/calc_73.c:950
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:977 src/calc_89.c:647
+#: src/calc_73.c:997 src/calc_89.c:647
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:988
+#: src/calc_73.c:1008
 msgid "Receiving certificate"
 msgstr ""
 

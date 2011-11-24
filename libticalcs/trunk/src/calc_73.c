@@ -204,6 +204,15 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		else if (err != 0)
 			return err;
 
+		if (ve->type == TI73_APPL)
+		{
+			/* Size is reported as a number of pages -- compute amount
+			   of space consumed (the actual application may be
+			   somewhat smaller.)  Note: the MSB of the "size" word is
+			   the application's starting page number. */
+			ve->size = (ve->size & 0xff) * 0x4000;
+		}
+
 		node = g_node_new(ve);
 		if (ve->type != TI73_APPL)
 			g_node_append(folder, node);
@@ -578,7 +587,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(ti73_recv_ACK(NULL));
 
 	update_->cnt2 = 0;
-	update_->max2 = handle->model == CALC_TI73 ? vr->size * 8 : vr->size;
+	update_->max2 = vr->size;
 
 	for(size = 0, first_block = 1, offset = 0;;)
 	{
@@ -594,7 +603,6 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		if(first_block)
 		{
 			old_page = data_page;
-			first_block = 0;
 
 			fp->addr = data_addr & 0x4000;
 			fp->page = data_page;
@@ -620,6 +628,18 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 
 		TRYF(ti73_recv_XDP((uint16_t *)&data_length, &buf[offset]));
 		TRYF(ti73_send_ACK());
+
+		if (first_block)
+		{
+			first_block = 0;
+
+			/* compute actual application size */
+			if (buf[0] == 0x80 && buf[1] == 0x0f)
+			{
+				uint32_t len = buf[2] << 24 | buf[3] << 16 | buf[4] << 8 | buf[5];
+				update_->max2 = len + 75;
+			}
+		}
 
 		size += data_length;
 		offset += data_length;
