@@ -455,7 +455,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	int i, j, k;
 	int size;
 	char *utf8;
-	int se = 1;
+	int se = 0;
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
@@ -471,8 +471,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	else
 		return -1;
 
-	// check for SilverEdition (not useable in boot mode, sic!)
-	if(ptr->data_type == TI83p_APPL)
+	// check for 83+ Silver Edition (not usable in boot mode, sic!)
+	if(handle->model != CALC_TI73 && ptr->data_type == TI83p_APPL)
 	{
 		CalcInfos infos = { 0 };
 
