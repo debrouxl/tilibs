@@ -61,7 +61,7 @@ AC_CHECK_TOOL(RC, windres, windres)
 
 # Checks for libraries.
 AM_GNU_GETTEXT(external)
-AM_GNU_GETTEXT_VERSION([0.16])
+AM_GNU_GETTEXT_VERSION([0.17])
 
 # Call explicitely before using PKG_*
 PKG_PROG_PKG_CONFIG
