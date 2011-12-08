@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.5\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2011-12-06 21:02+0100\n"
+"POT-Creation-Date: 2011-12-08 17:57+0100\n"
 "PO-Revision-Date: 2010-08-29 14:33+0200\n"
 "Last-Translator: Romain Liévin <roms@tilp.info>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -544,7 +544,7 @@ msgstr ""
 "Msg: utilisation du mode de base alors que la calculatrice est en mode boot "
 "(dégradé)."
 
-#: src/error.c:297
+#: src/error.c:297 src/error.c:353
 msgid "Msg: out of memory."
 msgstr "Msg: plus de mémoire."
 
@@ -584,52 +584,52 @@ msgstr "Msg: batterie faible."
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
 msgstr "Msg: calculatrice occuppée (mettez la calculatrice sur HOME)."
 
-#: src/error.c:353
+#: src/error.c:357
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr ""
 "Msg: l'installation de l'OS a échoué. Le fichier est corrompu ou invalide."
 
-#: src/error.c:358
+#: src/error.c:362
 msgid "Msg: packet too large."
 msgstr "Msg: paquet trop grand."
 
-#: src/error.c:362
+#: src/error.c:366
 msgid "Msg: the variable or directory does not exist."
 msgstr "Msg: la variable ou le répertoire n'existe pas."
 
-#: src/error.c:366
+#: src/error.c:370
 msgid "Msg: the directory name is invalid."
 msgstr "Msg: le nom de répertoire est invalide."
 
-#: src/error.c:370
+#: src/error.c:374
 msgid "Msg: not currently listing a directory."
 msgstr "Msg: pas en train de lister un répertoire."
 
-#: src/error.c:374
+#: src/error.c:378
 msgid "Msg: no more files to list."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.c:378
+#: src/error.c:382
 msgid "Msg: the directory name already exists."
 msgstr "Msg: le nom de répertoire existe déjà."
 
-#: src/error.c:383
+#: src/error.c:387
 msgid "Msg: the destination (folder or file) path is too long."
 msgstr "Msg: le chemin de destination (répertoire ou fichier) est invalide."
 
-#: src/error.c:387
+#: src/error.c:391
 msgid "Msg: the file name is invalid."
 msgstr "Msg: le nom de fichier est invalide."
 
-#: src/error.c:391
+#: src/error.c:395
 msgid "Msg: no file extension."
 msgstr "Msg: pas d'extension de fichier."
 
-#: src/error.c:395
+#: src/error.c:399
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: caractères interdits dans le nom de dossier."
 
-#: src/error.c:399
+#: src/error.c:403
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
