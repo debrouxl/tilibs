@@ -887,23 +887,55 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 	}
 	else if(content->data_type == TI83p_AMS || content->data_type == TI83p_APPL)
 	{
-		int r;
-		
-		// pad to 256 bytes
-		r = 0x20 - (content->pages[content->num_pages-1]->size & 0x1F);
-		content->pages[content->num_pages-1]->size += r;
-
 		// write
 		for (i = 0; i < content->num_pages; i++)
 		  {
+			  uint32_t app_length, page_length;
+			  int extra_bytes = 0;
+
+			  page_length = content->pages[i]->size;
+
+			  if (content->data_type == TI83p_APPL && i == content->num_pages - 1
+			      && content->pages[0]->data[0] == 0x80 && content->pages[0]->data[1] == 0x0f)
+			  {
+				  /* Flash app signing programs will usually add some
+				     padding to the end of the app, and some programs
+				     seem to expect that padding to be there.
+
+				     The following is designed to mimic the behavior
+				     of these programs, padding to 96 bytes beyond the
+				     end of the application proper. */
+
+				  /* get actual app length */
+				  app_length = 6 + (content->pages[0]->data[2] << 24
+				                    | content->pages[0]->data[3] << 16
+				                    | content->pages[0]->data[4] << 8
+				                    | content->pages[0]->data[5]);
+
+				  /* remove any existing padding */
+				  while (page_length > 0 && content->pages[i]->data[page_length - 1] == 0xff)
+					  page_length--;
+
+				  extra_bytes = app_length + 96 - i * 0x4000 - page_length;
+
+				  /* don't add padding beyond the end of the page */
+				  if (page_length + extra_bytes >= 0x3fff)
+					  extra_bytes = 0x3fff - page_length;
+
+				  if (extra_bytes < 0)
+					  extra_bytes = 0;
+				  else if (extra_bytes > 96)
+					  extra_bytes = 96;
+			  }
+
 			  bytes_written += hex_block_write(f, 
-				  content->pages[i]->size, content->pages[i]->addr,
+				  page_length, content->pages[i]->addr,
 				  content->pages[i]->flag, content->pages[i]->data, 
-				  content->pages[i]->page);
+				  content->pages[i]->page, extra_bytes);
 		  }
 
 		  // final block
-		  bytes_written += hex_block_write(f, 0, 0, 0, NULL, 0);
+		  bytes_written += hex_block_write(f, 0, 0, 0, NULL, 0, 0);
 		  if(fseek(f, -bytes_written - 4, SEEK_CUR)) goto tfwf;
 		  if(fwrite_long(f, bytes_written) < 0) goto tfwf;
 		  if(fseek(f, SEEK_END, 0L) ) goto tfwf;

@@ -285,18 +285,18 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_,
 	@type : a flag (0x80 or 0x00)
 	@page : page of block	
 	@data : the buffer where block is placed (16KB max)
+	@extra_bytes : number of additional 0xff bytes to add after the end of the data
 
 	Write a data block (page/segment) to FLASH file. 
 
 	Returns : number of chars written to file.
 */
-int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t *data, uint16_t page)
+int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t *data, uint16_t page, uint16_t extra_bytes)
 {
-	int i, bytes_written = 0;
+	int bytes_written = 0;
 	static int old_flag = 0x80;
-	int n = size / PKT_MAX;
-	int r = size % PKT_MAX;
-	uint8_t buf[3];
+	int n, m;
+	uint8_t buf[PKT_MAX];
 	int  new_section = 0;
 
 	// write end block
@@ -327,14 +327,26 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	}
 
 	// write a block (=page)
-	for(i = 0; i < n * PKT_MAX; i += PKT_MAX)
-		bytes_written += hex_packet_write(f, 
-		PKT_MAX, 
-		(uint16_t)(addr + i), 
-		HEX_DATA, 
-		data + i);
-	if(r > 0)
-		bytes_written += hex_packet_write(f, (uint8_t)r, (uint16_t)(addr + i), HEX_DATA, data + i);
+	while (size > 0 || extra_bytes > 0)
+	{
+		n = (size > PKT_MAX ? PKT_MAX : size);
+		if (n > 0)
+		{
+			memcpy(buf, data, n);
+			size -= n;
+			data += n;
+		}
+
+		m = (extra_bytes > PKT_MAX - n ? PKT_MAX - n : extra_bytes);
+		if (m > 0)
+		{
+			memset(buf + n, 0xff, m);
+			extra_bytes -= m;
+		}
+
+		bytes_written += hex_packet_write(f, n + m, addr, HEX_DATA, buf);
+		addr += n + m;
+	}
 	
 	return bytes_written;
 }

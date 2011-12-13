@@ -27,6 +27,6 @@
 #define PAGE_SIZE	16384	//(= FLASH_PAGE_SIZE)
 
 int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8_t *data, uint16_t *page);
-int hex_block_write(FILE *f, uint16_t size, uint16_t  addr, uint8_t  type, uint8_t *data, uint16_t  page);
+int hex_block_write(FILE *f, uint16_t size, uint16_t  addr, uint8_t  type, uint8_t *data, uint16_t  page, uint16_t extra_bytes);
 
 #endif
