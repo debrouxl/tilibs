@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libticalcs):
 
+- xx/xx/xxxx, version 1.1.8: debrouxl
+
 - 14/12/2011, version 1.1.7: debrouxl
 	- add error code returned by the Nspire when the anti-downgrade protection refuses an OS version older than the configured minimum version.
 	- add support for getting screenshots from Nspire CX calculators.

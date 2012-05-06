@@ -35,13 +35,13 @@ endif
 RC	?= windres
 
 dhahelper.$(OBJEXT): $(srcdir)/dhahelper.c $(srcdir)/dhahelper.h
-	$(CC) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -Wall -Os -c $(srcdir)/dhahelper.c -o dhahelper.$(OBJEXT)
 
 dhahelper-rc.$(OBJEXT): $(srcdir)/dhahelper.rc $(srcdir)/common.ver $(srcdir)/ntverp.h
 	$(RC) -I. dhahelper.rc $@
 
 base.tmp: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT)
-	$(CC) 	-Wl,--base-file,base.tmp \
+	$(CC) $(CFLAGS) -Wl,--base-file,base.tmp \
 		-Wl,--entry,_DriverEntry@8 \
 		-nostartfiles -nostdlib \
 		-o junk.tmp \
@@ -53,7 +53,7 @@ temp.exp: base.tmp
 	$(DLLTOOL) --dllname dhahelper.sys --base-file base.tmp --output-exp temp.exp
 
 dhahelper.sys: dhahelper.$(OBJEXT) dhahelper-rc.$(OBJEXT) temp.exp
-	$(CC)	-Wl,--subsystem,native \
+	$(CC) $(CFLAGS) -Wl,--subsystem,native \
 		-Wl,--image-base,0x10000 \
 		-Wl,--file-alignment,0x1000 \
 		-Wl,--section-alignment,0x1000 \

@@ -29,6 +29,9 @@
 #define STDCALL /* nothing */
 #endif
 #elif defined(__MINGW32__)
+#ifndef STDCALL
+#define STDCALL __attribute__((stdcall))
+#endif
 #include <ddk/ntddk.h>
 #define NO_SEH /* FIXME */
 #else
