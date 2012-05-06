@@ -849,7 +849,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_PRODUCT_NAME;
 	i++;
 
-	g_snprintf(infos->main_calc_id, 10, "%02X%02X%02X%02X%02X", 
+	g_snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
 		params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 	infos->mask |= INFOS_MAIN_CALC_ID;
 	strcpy(infos->product_id, infos->main_calc_id);
