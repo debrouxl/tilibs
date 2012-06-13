@@ -24,28 +24,28 @@
 
 // Convenient structures
 
-#define HEADER_SIZE		16
-#define DATA_SIZE		254
+#define NSP_HEADER_SIZE 16
+#define NSP_DATA_SIZE   254
 
 typedef struct
 {
-	uint16_t	unused;
-	uint16_t	src_addr;
-	uint16_t	src_port;
-	uint16_t	dst_addr;
-	uint16_t	dst_port;
-	uint16_t	data_sum;
-	uint8_t		data_size;
-	uint8_t		ack;
-	uint8_t		seq;
-	uint8_t		hdr_sum;
+    uint16_t  unused;
+    uint16_t  src_addr;
+    uint16_t  src_port;
+    uint16_t  dst_addr;
+    uint16_t  dst_port;
+    uint16_t  data_sum;
+    uint8_t   data_size;
+    uint8_t   ack;
+    uint8_t   seq;
+    uint8_t   hdr_sum;
 
-	uint8_t		data[DATA_SIZE];
-} RawPacket;
+    uint8_t   data[NSP_DATA_SIZE];
+} NSPRawPacket;
 
 // Functions
 
-int nsp_send(CalcHandle* cable, RawPacket* pkt);
-int nsp_recv(CalcHandle* cable, RawPacket* pkt);
+int nsp_send(CalcHandle* cable, NSPRawPacket* pkt);
+int nsp_recv(CalcHandle* cable, NSPRawPacket* pkt);
 
 #endif

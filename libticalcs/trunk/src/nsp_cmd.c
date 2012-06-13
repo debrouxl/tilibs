@@ -84,7 +84,7 @@ static int put_str(uint8_t *dst, const char *src)
 
 int cmd_r_login(CalcHandle *h)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving login:");
 
@@ -98,7 +98,7 @@ int cmd_r_login(CalcHandle *h)
 
 int cmd_s_status(CalcHandle *h, uint8_t status)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  sending status (%04x):", status);
 
@@ -114,7 +114,7 @@ int cmd_s_status(CalcHandle *h, uint8_t status)
 
 int cmd_r_status(CalcHandle *h, uint8_t *status)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 	uint8_t value;
 
 	ticalcs_info("  receiving status:");
@@ -139,11 +139,11 @@ int cmd_r_status(CalcHandle *h, uint8_t *status)
 
 int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_DEV_INFOS);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_DEV_INFOS);
 	pkt->cmd = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
@@ -153,7 +153,7 @@ int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 
 int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving device information:");
 
@@ -171,11 +171,11 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 
 int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  requesting RLE screenshot (cmd = %02x):", cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_SCREEN_RLE);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE);
 	pkt->cmd = cmd;
 	TRYF(nsp_send_data(h, pkt));
 
@@ -185,7 +185,7 @@ int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 
 int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving RLE screenshot:");
 
@@ -205,12 +205,12 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  unknown directory list command in <%s>:", name);
 
-	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_ATTRIBUTES;
 
 	pkt->data[0] = 0x01;
@@ -224,7 +224,7 @@ int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 
 int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  unknown directory list command reply received:");
 
@@ -246,12 +246,12 @@ int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t 
 
 int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  initiating directory listing in <%s>:", name);
 
-	pkt = nsp_vtl_pkt_new_ex(len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DIRLIST_INIT;
 	put_str(pkt->data, name);
 	
@@ -268,11 +268,11 @@ int cmd_r_dir_enum_init(CalcHandle *h)
 
 int cmd_s_dir_enum_next(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  requesting next directory entry:");
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DIRLIST_NEXT;
 
 	TRYF(nsp_send_data(h, pkt));
@@ -283,7 +283,7 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 
 int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 	uint8_t data_size;
 	uint32_t date;
 	int o;
@@ -319,11 +319,11 @@ int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type
 
 int cmd_s_dir_enum_done(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  closing directory listing:");
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DIRLIST_DONE;
 
 	TRYF(nsp_send_data(h, pkt));
@@ -341,13 +341,13 @@ int cmd_r_dir_enum_done(CalcHandle *h)
 
 int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	int o;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  sending variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(6 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(6 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_PUT_FILE;
 	pkt->data[0] = 0x01;
 	o = put_str(pkt->data + 1, name);
@@ -371,12 +371,12 @@ int cmd_r_put_file(CalcHandle *h)
 
 int cmd_s_get_file(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  requesting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_GET_FILE;
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
@@ -389,7 +389,7 @@ int cmd_s_get_file(CalcHandle *h, const char *name)
 
 int cmd_r_get_file(CalcHandle *h, uint32_t *size)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  file size:");
 
@@ -410,12 +410,12 @@ int cmd_r_get_file(CalcHandle *h, uint32_t *size)
 
 int cmd_s_del_file(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  deleting variable:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DEL_FILE;
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
@@ -433,12 +433,12 @@ int cmd_r_del_file(CalcHandle *h)
 
 int cmd_s_new_folder(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  creating folder:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_NEW_FOLDER;
 	pkt->data[0] = 0x03;
 	put_str(pkt->data + 1, name);
@@ -456,12 +456,12 @@ int cmd_r_new_folder(CalcHandle *h)
 
 int cmd_s_del_folder(CalcHandle *h, const char *name)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 
 	ticalcs_info("  deleting folder:");
 
-	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_DEL_FOLDER;
 	pkt->data[0] = 0x03;
 	put_str(pkt->data + 1, name);
@@ -479,13 +479,13 @@ int cmd_r_del_folder(CalcHandle *h)
 
 int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 	size_t len = strlen(name) < 8 ? 8 : strlen(name);
 	size_t len2 = strlen(name2) < 8 ? 8 : strlen(name2);
 
 	ticalcs_info("  copying file:");
 
-	pkt = nsp_vtl_pkt_new_ex(3 + len + len2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(3 + len + len2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_COPY_FILE;
 	pkt->data[0] = 0x01;
 	put_str(pkt->data + 1, name);
@@ -504,11 +504,11 @@ int cmd_r_copy_file(CalcHandle *h)
 
 int cmd_s_file_ok(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  sending file contents:");
 
-	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_OK;
 	TRYF(nsp_send_data(h, pkt));
 
@@ -518,7 +518,7 @@ int cmd_s_file_ok(CalcHandle *h)
 
 int cmd_r_file_ok(CalcHandle *h)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  file status:");
 
@@ -547,11 +547,11 @@ int cmd_r_file_ok(CalcHandle *h)
 
 int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  sending file contents:");
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_FILE_MGMT);
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	pkt->cmd = CMD_FM_CONTENTS;
 	memcpy(pkt->data, data, size);
 	TRYF(nsp_send_data(h, pkt));
@@ -562,7 +562,7 @@ int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data)
 
 int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving file contents:");
 
@@ -581,11 +581,11 @@ int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 int cmd_s_os_install(CalcHandle *h, uint32_t size)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  installing OS:");
 
-	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
+	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL);
 	pkt->cmd = CMD_OS_INSTALL;
 	pkt->data[0] = MSB(MSW(size));
 	pkt->data[1] = LSB(MSW(size));
@@ -599,7 +599,7 @@ int cmd_s_os_install(CalcHandle *h, uint32_t size)
 
 int cmd_r_os_install(CalcHandle *h)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving OS installation:");
 
@@ -615,11 +615,11 @@ int cmd_r_os_install(CalcHandle *h)
 int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  sending OS contents:");
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_OS_INSTALL);
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL);
 	pkt->cmd = CMD_OS_CONTENTS;
 	memcpy(pkt->data, data, size);
 	TRYF(nsp_send_data(h, pkt));
@@ -630,7 +630,7 @@ int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 
 int cmd_r_progress(CalcHandle *h, uint8_t *value)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  OS installation status:");
 
@@ -657,11 +657,11 @@ int cmd_r_progress(CalcHandle *h, uint8_t *value)
 
 int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 {
-	VirtualPacket* pkt;
+	NSPVirtualPacket* pkt;
 
 	ticalcs_info("  sending echo:");
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, PORT_ECHO);
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_ECHO);
 	pkt->cmd = 0;
 	if(data) memcpy(pkt->data, data, size);
 	TRYF(nsp_send_data(h, pkt));
@@ -672,7 +672,7 @@ int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 
 int cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
-	VirtualPacket* pkt = nsp_vtl_pkt_new();
+	NSPVirtualPacket* pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving echo:");
 

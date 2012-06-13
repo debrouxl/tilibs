@@ -46,7 +46,7 @@
 
 // Type to string
 
-static const ServiceName sid_types[] = 
+static const NSPServiceName sid_types[] = 
 {
 	{ 0x00FE, "Reception Acknowledgment" },
 	{ 0x00FF, "Reception Ack" },
@@ -65,7 +65,7 @@ static const ServiceName sid_types[] =
 
 const char* nsp_sid2name(uint16_t id)
 {
-	const ServiceName *p;
+	const NSPServiceName *p;
 
 	for(p = sid_types; p->name != NULL; p++)
 		if(p->id == id)
@@ -78,9 +78,9 @@ const char* nsp_sid2name(uint16_t id)
 
 static GList *vtl_pkt_list = NULL;
 
-VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
+NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
 {
-	VirtualPacket* vtl = g_malloc0(sizeof(VirtualPacket));
+	NSPVirtualPacket* vtl = g_malloc0(sizeof(NSPVirtualPacket));
 
 	vtl->src_addr = src_addr;
 	vtl->src_port = src_port;
@@ -94,12 +94,12 @@ VirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t sr
 	return vtl;
 }
 
-VirtualPacket*  nsp_vtl_pkt_new(void)
+NSPVirtualPacket*  nsp_vtl_pkt_new(void)
 {
 	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0);
 }
 
-void			nsp_vtl_pkt_del(VirtualPacket* vtl)
+void			nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
 {
 	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
@@ -117,7 +117,7 @@ void			nsp_vtl_pkt_purge(void)
 // Session Management
 
 uint16_t	nsp_src_port = 0x8001;
-uint16_t	nsp_dst_port = PORT_ADDR_REQUEST;
+uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
 int nsp_session_open(CalcHandle *h, uint16_t port)
 {
@@ -136,7 +136,7 @@ int nsp_session_close(CalcHandle *h)
 	TRYF(nsp_send_disconnect(h));
 	TRYF(nsp_recv_ack(h));
 
-	nsp_dst_port = PORT_ADDR_REQUEST;
+	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
 	return 0;
 }
@@ -146,7 +146,7 @@ int nsp_session_close(CalcHandle *h)
 int nsp_addr_request(CalcHandle *h)
 {
 	extern uint8_t nsp_seq_pc;
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	// Reset connection so that device send an address request packet
 	// Warning: you need a modified libusb-win32 library (see ticables2/src/win32/usb/libusb-win32.html)
@@ -157,9 +157,9 @@ int nsp_addr_request(CalcHandle *h)
 
 	TRYF(nsp_recv(h, &pkt));
 	
-	if(pkt.src_port != PORT_ADDR_ASSIGN)
+	if(pkt.src_port != NSP_PORT_ADDR_ASSIGN)
 		return ERR_INVALID_PACKET;
-	if(pkt.dst_port != PORT_ADDR_REQUEST)
+	if(pkt.dst_port != NSP_PORT_ADDR_REQUEST)
 		return ERR_INVALID_PACKET;
 
 	return 0;
@@ -167,15 +167,15 @@ int nsp_addr_request(CalcHandle *h)
 
 int nsp_addr_assign(CalcHandle *h, uint16_t addr)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	ticalcs_info("  assigning address %04x:", addr);
 
 	pkt.data_size = 4;
 	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = PORT_ADDR_ASSIGN;
+	pkt.src_port = NSP_PORT_ADDR_ASSIGN;
 	pkt.dst_addr = NSP_DEV_ADDR;
-	pkt.dst_port = PORT_ADDR_ASSIGN;
+	pkt.dst_port = NSP_PORT_ADDR_ASSIGN;
 	pkt.data[0] = MSB(addr);
 	pkt.data[1] = LSB(addr);
 	pkt.data[2] = 0xFF;
@@ -189,13 +189,13 @@ int nsp_addr_assign(CalcHandle *h, uint16_t addr)
 
 int nsp_send_ack(CalcHandle* h)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	ticalcs_info("  sending ack:");
 
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = PORT_PKT_ACK2;
+	pkt.src_port = NSP_PORT_PKT_ACK2;
 	pkt.dst_addr = NSP_DEV_ADDR;
 	pkt.dst_port = nsp_dst_port;
 	pkt.data[0] = MSB(nsp_src_port);
@@ -207,17 +207,17 @@ int nsp_send_ack(CalcHandle* h)
 
 int nsp_send_nack(CalcHandle* h)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	ticalcs_info("  sending nAck:");
 
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = PORT_PKT_NACK;
+	pkt.src_port = NSP_PORT_PKT_NACK;
 	pkt.dst_addr = NSP_DEV_ADDR;
 	pkt.dst_port = nsp_dst_port;
-	pkt.data[0] = MSB(PORT_LOGIN);
-	pkt.data[1] = LSB(PORT_LOGIN);
+	pkt.data[0] = MSB(NSP_PORT_LOGIN);
+	pkt.data[1] = LSB(NSP_PORT_LOGIN);
 	TRYF(nsp_send(h, &pkt));
 
 	return 0;
@@ -225,17 +225,17 @@ int nsp_send_nack(CalcHandle* h)
 
 int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	ticalcs_info("  sending nAck:");
 
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = PORT_PKT_NACK;
+	pkt.src_port = NSP_PORT_PKT_NACK;
 	pkt.dst_addr = NSP_DEV_ADDR;
 	pkt.dst_port = port;
-	pkt.data[0] = MSB(PORT_LOGIN);
-	pkt.data[1] = LSB(PORT_LOGIN);
+	pkt.data[0] = MSB(NSP_PORT_LOGIN);
+	pkt.data[1] = LSB(NSP_PORT_LOGIN);
 	TRYF(nsp_send(h, &pkt));
 
 	return 0;
@@ -243,7 +243,7 @@ int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 
 int nsp_recv_ack(CalcHandle *h)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 	uint16_t addr;
 	int ret = 0;
 
@@ -251,7 +251,7 @@ int nsp_recv_ack(CalcHandle *h)
 
 	TRYF(nsp_recv(h, &pkt));
 
-	if(pkt.src_port != PORT_PKT_ACK2)
+	if(pkt.src_port != NSP_PORT_PKT_ACK2)
 	{
 		ticalcs_info("XXX weird src_port\n");
 		ret = ERR_INVALID_PACKET;
@@ -290,13 +290,13 @@ int nsp_recv_ack(CalcHandle *h)
 
 int nsp_send_disconnect(CalcHandle *h)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 
 	ticalcs_info("  disconnecting from service #%04x:", nsp_dst_port);
 
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = PORT_DISCONNECT;
+	pkt.src_port = NSP_PORT_DISCONNECT;
 	pkt.dst_addr = NSP_DEV_ADDR;
 	pkt.dst_port = nsp_dst_port;
 	pkt.data[0] = MSB(nsp_src_port);
@@ -308,14 +308,14 @@ int nsp_send_disconnect(CalcHandle *h)
 
 int nsp_recv_disconnect(CalcHandle *h)
 {
-	RawPacket pkt = {0};
+	NSPRawPacket pkt = {0};
 	uint16_t addr;
 
 	ticalcs_info("  receiving disconnect:");
 
 	TRYF(nsp_recv(h, &pkt));
 
-	if(pkt.src_port != PORT_DISCONNECT)
+	if(pkt.src_port != NSP_PORT_DISCONNECT)
 		return ERR_INVALID_PACKET;
 
 	// nasty hack
@@ -329,7 +329,7 @@ int nsp_recv_disconnect(CalcHandle *h)
 		pkt.unused = 0;
 		pkt.data_size = 2;
 		pkt.src_addr = NSP_SRC_ADDR;
-		pkt.src_port = PORT_PKT_ACK2;
+		pkt.src_port = NSP_PORT_PKT_ACK2;
 		pkt.dst_addr = NSP_DEV_ADDR;
 		pkt.dst_port = nsp_dst_port;
 		pkt.data_sum = 0;
@@ -346,9 +346,9 @@ int nsp_recv_disconnect(CalcHandle *h)
 
 // Fragmenting of packets
 
-int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
+int nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 {
-	RawPacket raw = {0};
+	NSPRawPacket raw = {0};
 	int i, r, q;
 	long offset = 0;
 
@@ -357,23 +357,23 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 	raw.dst_addr = vtl->dst_addr;
 	raw.dst_port = vtl->dst_port;
 
-	q = (vtl->size - offset) / (DATA_SIZE-1);
-	r = (vtl->size - offset) % (DATA_SIZE-1);
+	q = (vtl->size - offset) / (NSP_DATA_SIZE-1);
+	r = (vtl->size - offset) % (NSP_DATA_SIZE-1);
 
 	for(i = 1; i <= q; i++)
 	{
-		raw.data_size = DATA_SIZE;
+		raw.data_size = NSP_DATA_SIZE;
 		raw.data[0] = vtl->cmd;
-		memcpy(raw.data + 1, vtl->data + offset, DATA_SIZE-1);
-		offset += DATA_SIZE-1;
+		memcpy(raw.data + 1, vtl->data + offset, NSP_DATA_SIZE-1);
+		offset += NSP_DATA_SIZE-1;
 
 		TRYF(nsp_send(h, &raw));
 		
-		if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
+		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
 			TRYF(nsp_recv_ack(h));
 
 		h->updat->max1 = vtl->size;
-		h->updat->cnt1 += DATA_SIZE;
+		h->updat->cnt1 += NSP_DATA_SIZE;
 		h->updat->pbar();
 	}
 
@@ -386,7 +386,7 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 		
 		TRYF(nsp_send(h, &raw));
 
-		if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
+		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
 			TRYF(nsp_recv_ack(h));
 	}	
 
@@ -394,15 +394,15 @@ int nsp_send_data(CalcHandle *h, VirtualPacket *vtl)
 }
 
 // Note: data field may be re-allocated.
-int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
+int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 {
-	RawPacket raw = {0};
+	NSPRawPacket raw = {0};
 	long offset = 0;
 	uint32_t size = vtl->size;
 	int err = 0;
 
 	vtl->size = 0;
-	vtl->data = malloc(DATA_SIZE);
+	vtl->data = malloc(NSP_DATA_SIZE);
 
 	if (vtl->data)
 	{
@@ -423,11 +423,11 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 				offset += raw.data_size-1;
 
 				h->updat->max1 = size ? size : vtl->size;
-				h->updat->cnt1 += DATA_SIZE;
+				h->updat->cnt1 += NSP_DATA_SIZE;
 				h->updat->pbar();
 			}
 
-			if(raw.dst_port == PORT_LOGIN)
+			if(raw.dst_port == NSP_PORT_LOGIN)
 			{
 				err = nsp_send_nack_ex(h, raw.src_port);
 				if (err)
@@ -435,7 +435,7 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 					break;
 				}
 			}
-			else if(raw.src_port != PORT_ADDR_ASSIGN && raw.dst_port != PORT_ADDR_REQUEST)
+			else if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
 			{
 				err = nsp_send_ack(h);
 				if (err)
@@ -444,7 +444,7 @@ int nsp_recv_data(CalcHandle* h, VirtualPacket* vtl)
 				}
 			}
 
-			if (raw.data_size < DATA_SIZE)
+			if (raw.data_size < NSP_DATA_SIZE)
 				break;
 			if (size && vtl->size == size)
 				break;

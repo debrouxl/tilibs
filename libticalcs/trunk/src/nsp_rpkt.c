@@ -114,10 +114,10 @@ uint8_t		nsp_seq_ti;
 uint8_t		nsp_seq_pc;
 uint8_t		nsp_seq;
 
-int nsp_send(CalcHandle* handle, RawPacket* pkt)
+int nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
-	uint8_t buf[sizeof(RawPacket)] = { 0 };
-	uint32_t size = pkt->data_size + HEADER_SIZE;
+	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
+	uint32_t size = pkt->data_size + NSP_HEADER_SIZE;
 	
 	pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
@@ -153,9 +153,9 @@ int nsp_send(CalcHandle* handle, RawPacket* pkt)
 	buf[12] = pkt->data_size;
 	buf[13] = pkt->ack;
 	buf[14] = pkt->seq;
-	buf[15] = pkt->hdr_sum = tifiles_checksum(buf, HEADER_SIZE-1) & 0xff;
+	buf[15] = pkt->hdr_sum = tifiles_checksum(buf, NSP_HEADER_SIZE-1) & 0xff;
 
-	memcpy(buf + HEADER_SIZE, pkt->data, pkt->data_size);
+	memcpy(buf + NSP_HEADER_SIZE, pkt->data, pkt->data_size);
 
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_send(handle->cable, buf, size));
@@ -168,12 +168,12 @@ int nsp_send(CalcHandle* handle, RawPacket* pkt)
 	return 0;
 }
 
-int nsp_recv(CalcHandle* handle, RawPacket* pkt)
+int nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
-	uint8_t buf[HEADER_SIZE];
+	uint8_t buf[NSP_HEADER_SIZE];
 
 	ticables_progress_reset(handle->cable);
-	TRYF(ticables_cable_recv(handle->cable, buf, HEADER_SIZE));
+	TRYF(ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE));
 
 	pkt->unused		= (buf[0] << 8) | buf[1];
 	pkt->src_addr	= (buf[2] << 8) | buf[3];

@@ -155,7 +155,7 @@ static uint16_t usb_errors[] = {
 	0x0011, 0x0012, 0x001c, 0x001d, 0x0022, 0x0029, 0x002b, 
 	0x002e, 0x0034 };
 
-static int err_code(VirtualPacket *pkt)
+static int err_code(DUSBVirtualPacket *pkt)
 {
 	int i;
 	int code = (pkt->data[0] << 8) | pkt->data[1];
@@ -171,10 +171,10 @@ static int err_code(VirtualPacket *pkt)
 
 /////////////----------------
 
-extern const VtlPktName vpkt_types[];
+extern const DUSBVtlPktName vpkt_types[];
 
 #define CATCH_DELAY() \
-	if (pkt->type == VPKT_DELAY_ACK) \
+	if (pkt->type == DUSB_VPKT_DELAY_ACK) \
 	{ \
 		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0); \
 		ticalcs_info("    delay = %u", delay); \
@@ -194,12 +194,12 @@ extern const VtlPktName vpkt_types[];
 // 0x0001: set mode or ping
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	TRYF(dusb_send_buf_size_request(h, DUSB_DFL_BUF_SIZE));
 	TRYF(dusb_recv_buf_size_alloc(h, NULL));
 
-	pkt = dusb_vtl_pkt_new(sizeof(mode), VPKT_PING);
+	pkt = dusb_vtl_pkt_new(sizeof(mode), DUSB_VPKT_PING);
 	pkt->data[0] = MSB(mode.arg1);
 	pkt->data[1] = LSB(mode.arg1);
 	pkt->data[2] = MSB(mode.arg2);
@@ -221,9 +221,9 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 // 0x0002: begin OS transfer
 int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(11, VPKT_OS_BEGIN);
+	pkt = dusb_vtl_pkt_new(11, DUSB_VPKT_OS_BEGIN);
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
 	pkt->data[9] = MSB(LSW(size));
@@ -239,16 +239,16 @@ int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 // 0x0003: acknowledgement of OS transfer
 int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_OS_ACK)
+	else if(pkt->type != DUSB_VPKT_OS_ACK)
 		return ERR_INVALID_PACKET;
 	
 	*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
@@ -261,7 +261,7 @@ int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 
 static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(4 + size, type);
 
@@ -281,21 +281,21 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 // 0x0004: OS header
 int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return s_os(VPKT_OS_HEADER, h, addr, page, flag, size, data);
+	return s_os(DUSB_VPKT_OS_HEADER, h, addr, page, flag, size, data);
 }
 
 // 0x0005: OS data
 int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
-	return s_os(VPKT_OS_DATA, h, addr, page, flag, size, data);
+	return s_os(DUSB_VPKT_OS_DATA, h, addr, page, flag, size, data);
 }
 
 // 0x0004: OS header
 int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(size, VPKT_OS_HEADER);
+	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_HEADER);
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
 
@@ -308,9 +308,9 @@ int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 // 0x0005: OS data
 int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(size, VPKT_OS_DATA);
+	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_DATA);
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
 
@@ -323,16 +323,16 @@ int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 // 0x0006: acknowledgement of EOT
 int cmd_r_eot_ack(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_EOT_ACK)
+	else if(pkt->type != DUSB_VPKT_EOT_ACK)
 		return ERR_INVALID_PACKET;
 
 	dusb_vtl_pkt_del(pkt);
@@ -343,10 +343,10 @@ int cmd_r_eot_ack(CalcHandle *h)
 // 0x0007: parameter request
 int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int i;
 
-	pkt = dusb_vtl_pkt_new((npids + 1) * sizeof(uint16_t), VPKT_PARM_REQ);
+	pkt = dusb_vtl_pkt_new((npids + 1) * sizeof(uint16_t), DUSB_VPKT_PARM_REQ);
 
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
@@ -368,7 +368,7 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 // 0x0008: parameter data
 int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int i, j;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
@@ -376,9 +376,9 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_PARM_DATA)
+	else if(pkt->type != DUSB_VPKT_PARM_DATA)
 		return ERR_INVALID_PACKET;
 
 	if(((pkt->data[0] << 8) | pkt->data[1]) != nparams)
@@ -408,11 +408,11 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 // 0x0009: request directory listing
 int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int i;
 	int j = 0;
 
-	pkt = dusb_vtl_pkt_new(4 + 2*naids + 7, VPKT_DIR_REQ);
+	pkt = dusb_vtl_pkt_new(4 + 2*naids + 7, DUSB_VPKT_DIR_REQ);
 
 	pkt->data[j++] = MSB(MSW(naids));
 	pkt->data[j++] = LSB(MSW(naids));
@@ -442,7 +442,7 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 // beware: attr array contents is allocated by function
 int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	uint8_t fld_len;
 	uint8_t var_len;
 	int nattr;
@@ -453,14 +453,14 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_EOT)
+	if(pkt->type == DUSB_VPKT_EOT)
 	{
 		dusb_vtl_pkt_del(pkt);
 		return ERR_EOT;
 	}
-	else if(pkt->type == VPKT_ERROR)
+	else if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_VAR_HDR)
+	else if(pkt->type != DUSB_VPKT_VAR_HDR)
 		return ERR_INVALID_PACKET;
 
 	j = 0;
@@ -506,7 +506,7 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 // 0x000B: request to send
 int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int pks;
 	int i;
 	int j = 0;
@@ -515,7 +515,7 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 	if(strlen(folder))
 		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
-	pkt = dusb_vtl_pkt_new(pks, VPKT_RTS);
+	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_RTS);
 
 	if(strlen(folder))
 	{
@@ -562,7 +562,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 						int naids, uint16_t *aids, 
 						int nattrs, const CalcAttr **attrs)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int pks;
 	int i;
 	int j = 0;
@@ -571,7 +571,7 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	if(strlen(folder)) pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 2;
-	pkt = dusb_vtl_pkt_new(pks, VPKT_VAR_REQ);
+	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_VAR_REQ);
 
 	if(strlen(folder))
 	{
@@ -623,16 +623,16 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 // 0x000D: variable contents (recv)
 int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_VAR_CNTS)
+	else if(pkt->type != DUSB_VPKT_VAR_CNTS)
 		return ERR_INVALID_PACKET;
 
 	if(size != NULL)
@@ -650,9 +650,9 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 // 0x000D: variable contents (send)
 int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(size, VPKT_VAR_CNTS);
+	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_VAR_CNTS);
 
 	memcpy(pkt->data, data, size);
 	TRYF(dusb_send_data(h, pkt));
@@ -666,9 +666,9 @@ int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 // 0x000E: parameter set
 int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(2 + 2 + param->size, VPKT_PARM_SET);
+	pkt = dusb_vtl_pkt_new(2 + 2 + param->size, DUSB_VPKT_PARM_SET);
 
 	pkt->data[0] = MSB(param->id);
 	pkt->data[1] = LSB(param->id);
@@ -687,7 +687,7 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 // 0x0010: variable delete
 int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 	int i;
 	int j = 0;
 	int pks;
@@ -697,7 +697,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 5;
-	pkt = dusb_vtl_pkt_new(pks, VPKT_DEL_VAR);
+	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_DEL_VAR);
 
 	if(strlen(folder))
 	{
@@ -741,7 +741,7 @@ int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int na
 int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, 
 					uint8_t action, const char *args, uint16_t code)
 {
-	VirtualPacket* pkt = NULL;
+	DUSBVirtualPacket* pkt = NULL;
 	int pks;
 	int j = 0;
 
@@ -751,7 +751,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 		if(args) pks += strlen(args); else pks += 2;
 		if(strlen(folder)) pks += strlen(folder)+1;
 		if(strlen(name)) pks += strlen(name)+1;
-		pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
+		pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_EXECUTE);
 
 		pkt->data[j++] = strlen(folder);
 		if(strlen(folder))
@@ -784,7 +784,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 		pks = 3;
 		if(args) pks += strlen(args); else pks += 2;
 		if(strlen(name)) pks += strlen(name);
-		pkt = dusb_vtl_pkt_new(pks, VPKT_EXECUTE);
+		pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_EXECUTE);
 
 		// MSB first (like other commands anyway).
 		// Otherwise, a "EE 00 00 0D" packet is returned.
@@ -827,16 +827,16 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 // 0x0012: acknowledgement of mode setting
 int cmd_r_mode_ack(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_MODE_SET)
+	else if(pkt->type != DUSB_VPKT_MODE_SET)
 		return ERR_INVALID_PACKET;
 
 	dusb_vtl_pkt_del(pkt);
@@ -847,18 +847,18 @@ int cmd_r_mode_ack(CalcHandle *h)
 // 0xAA00: acknowledgement of data
 int cmd_r_data_ack(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_DATA_ACK)
+	else if(pkt->type != DUSB_VPKT_DATA_ACK)
 	{
-		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", VPKT_DATA_ACK, pkt->type);
+		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DATA_ACK, pkt->type);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -870,16 +870,16 @@ int cmd_r_data_ack(CalcHandle *h)
 // 0xBB00: delay acknowledgement
 int cmd_r_delay_ack(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_DELAY_ACK)
+	else if(pkt->type != DUSB_VPKT_DELAY_ACK)
 	{
-		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", VPKT_DELAY_ACK, pkt->type);
+		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DELAY_ACK, pkt->type);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -893,9 +893,9 @@ int cmd_r_delay_ack(CalcHandle *h)
 // 0xDD00: end of transmission (send)
 int cmd_s_eot(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(0, VPKT_EOT);
+	pkt = dusb_vtl_pkt_new(0, DUSB_VPKT_EOT);
 	TRYF(dusb_send_data(h, pkt));
 
 	dusb_vtl_pkt_del(pkt);
@@ -906,16 +906,16 @@ int cmd_s_eot(CalcHandle *h)
 // 0xDD00: end of transmission (recv)
 int cmd_r_eot(CalcHandle *h)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 	TRYF(dusb_recv_data(h, pkt));
 
 	CATCH_DELAY();
 
-	if(pkt->type == VPKT_ERROR)
+	if(pkt->type == DUSB_VPKT_ERROR)
 		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != VPKT_EOT)
+	else if(pkt->type != DUSB_VPKT_EOT)
 		return ERR_INVALID_PACKET;
 
 	dusb_vtl_pkt_del(pkt);
@@ -926,9 +926,9 @@ int cmd_r_eot(CalcHandle *h)
 // 0xEE00: error
 int cmd_s_error(CalcHandle *h, uint16_t code)
 {
-	VirtualPacket* pkt;
+	DUSBVirtualPacket* pkt;
 
-	pkt = dusb_vtl_pkt_new(2, VPKT_ERROR);
+	pkt = dusb_vtl_pkt_new(2, DUSB_VPKT_ERROR);
 
 	pkt->data[0] = MSB(code);
 	pkt->data[1] = LSB(code);

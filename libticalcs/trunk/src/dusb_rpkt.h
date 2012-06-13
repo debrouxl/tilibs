@@ -24,31 +24,28 @@
 
 // Raw packet types
 
-#define RPKT_BUF_SIZE_REQ		1
-#define RPKT_BUF_SIZE_ALLOC		2
+#define DUSB_RPKT_BUF_SIZE_REQ   1
+#define DUSB_RPKT_BUF_SIZE_ALLOC 2
 
-#define RPKT_VIRT_DATA			3
-#define RPKT_VIRT_DATA_LAST		4
-#define RPKT_VIRT_DATA_ACK		5
+#define DUSB_RPKT_VIRT_DATA      3
+#define DUSB_RPKT_VIRT_DATA_LAST 4
+#define DUSB_RPKT_VIRT_DATA_ACK  5
 
 // Convenient structures
 
-#define PH_SIZE		(4+1)	// size + type
+#define DUSB_PH_SIZE             (4+1) // size + type
 
 typedef struct
 {
-	uint32_t	size;	// raw packet size
-	uint8_t		type;	// raw packet type
+    uint32_t  size;       // raw packet size
+    uint8_t   type;       // raw packet type
 
-	uint8_t		data[1023];	// raw packet data (should be allocated)
-} RawPacket;
+    uint8_t   data[1023]; // raw packet data
+} DUSBRawPacket;
 
 // Functions
 
-RawPacket*  raw_pkt_new(uint32_t size);
-void		raw_pkt_del(RawPacket* pkt);
-
-int dusb_send(CalcHandle* cable, RawPacket* pkt);
-int dusb_recv(CalcHandle* cable, RawPacket* pkt);
+int dusb_send(CalcHandle* cable, DUSBRawPacket* pkt);
+int dusb_recv(CalcHandle* cable, DUSBRawPacket* pkt);
 
 #endif

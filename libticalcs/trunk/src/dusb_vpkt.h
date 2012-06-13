@@ -24,7 +24,7 @@
 
 // Convenients structures
 
-#define DH_SIZE		(4+2)	// size + type
+#define DUSB_DH_SIZE		(4+2)	// size + type
 
 typedef struct
 {
@@ -32,43 +32,43 @@ typedef struct
 	uint16_t	type;		// virtual packet type
 
 	uint8_t		*data;		// virtual packet data
-} VirtualPacket;
+} DUSBVirtualPacket;
 
 typedef struct
 {
 	uint16_t	id;
 	const char *name;
-} VtlPktName;
+} DUSBVtlPktName;
 
 // Virtual packet types
 
-#define VPKT_PING		0x0001
-#define VPKT_OS_BEGIN	0x0002
-#define VPKT_OS_ACK		0x0003
-#define VPKT_OS_HEADER	0x0004
-#define VPKT_OS_DATA	0x0005
-#define VPKT_EOT_ACK	0x0006
-#define VPKT_PARM_REQ	0x0007
-#define VPKT_PARM_DATA	0x0008
-#define VPKT_DIR_REQ	0x0009
-#define VPKT_VAR_HDR	0x000A
-#define VPKT_RTS		0x000B
-#define VPKT_VAR_REQ	0x000C
-#define VPKT_VAR_CNTS	0x000D
-#define VPKT_PARM_SET	0x000E
-#define VPKT_DEL_VAR	0x0010
-#define VPKT_EXECUTE	0x0011
-#define VPKT_MODE_SET	0x0012
+#define DUSB_VPKT_PING		0x0001
+#define DUSB_VPKT_OS_BEGIN	0x0002
+#define DUSB_VPKT_OS_ACK		0x0003
+#define DUSB_VPKT_OS_HEADER	0x0004
+#define DUSB_VPKT_OS_DATA	0x0005
+#define DUSB_VPKT_EOT_ACK	0x0006
+#define DUSB_VPKT_PARM_REQ	0x0007
+#define DUSB_VPKT_PARM_DATA	0x0008
+#define DUSB_VPKT_DIR_REQ	0x0009
+#define DUSB_VPKT_VAR_HDR	0x000A
+#define DUSB_VPKT_RTS		0x000B
+#define DUSB_VPKT_VAR_REQ	0x000C
+#define DUSB_VPKT_VAR_CNTS	0x000D
+#define DUSB_VPKT_PARM_SET	0x000E
+#define DUSB_VPKT_DEL_VAR	0x0010
+#define DUSB_VPKT_EXECUTE	0x0011
+#define DUSB_VPKT_MODE_SET	0x0012
 
-#define VPKT_DATA_ACK	0xAA00
-#define VPKT_DELAY_ACK	0xBB00
-#define VPKT_EOT		0xDD00
-#define VPKT_ERROR		0xEE00
+#define DUSB_VPKT_DATA_ACK	0xAA00
+#define DUSB_VPKT_DELAY_ACK	0xBB00
+#define DUSB_VPKT_EOT		0xDD00
+#define DUSB_VPKT_ERROR		0xEE00
 
 // Functions
 
-VirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type);
-void			dusb_vtl_pkt_del(VirtualPacket* pkt);
+DUSBVirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type);
+void			dusb_vtl_pkt_del(DUSBVirtualPacket* pkt);
 void			dusb_vtl_pkt_purge(void);
 
 int dusb_send_buf_size_request(CalcHandle* h, uint32_t size);
@@ -77,8 +77,8 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size);
 int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size);
 int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size);
 
-int dusb_send_data(CalcHandle* h, VirtualPacket* pkt);
-int dusb_recv_data(CalcHandle* h, VirtualPacket* pkt);
+int dusb_send_data(CalcHandle* h, DUSBVirtualPacket* pkt);
+int dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* pkt);
 
 int dusb_send_acknowledge(CalcHandle* h);
 int dusb_recv_acknowledge(CalcHandle *h);

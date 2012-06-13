@@ -44,7 +44,7 @@ static unsigned int DATA_SIZE = 250;	// max length of data in raw packet
 
 // Type to string
 
-static const VtlPktName vpkt_types[] = 
+static const DUSBVtlPktName vpkt_types[] = 
 {
 	{ 0x0000, ""},
 	{ 0x0001, "Ping / Set Mode"},
@@ -74,7 +74,7 @@ static const VtlPktName vpkt_types[] =
 
 const char* dusb_vpkt_type2name(uint16_t id)
 {
-	const VtlPktName *p;
+	const DUSBVtlPktName *p;
 
 	for(p = vpkt_types; p->name != NULL; p++)
 		if(p->id == id)
@@ -87,19 +87,19 @@ const char* dusb_vpkt_type2name(uint16_t id)
 
 static GList *vtl_pkt_list = NULL;
 
-VirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type)
+DUSBVirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type)
 {
-	VirtualPacket* vtl = g_malloc0(sizeof(VirtualPacket));
+	DUSBVirtualPacket* vtl = g_malloc0(sizeof(DUSBVirtualPacket));
 
 	vtl->size = size;
 	vtl->type = type;
-	vtl->data = g_malloc0(size + DH_SIZE);
+	vtl->data = g_malloc0(size + DUSB_DH_SIZE);
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 	return vtl;
 }
 
-void			dusb_vtl_pkt_del(VirtualPacket* vtl)
+void			dusb_vtl_pkt_del(DUSBVirtualPacket* vtl)
 {
 	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
@@ -118,10 +118,10 @@ void			dusb_vtl_pkt_purge(void)
 
 int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 
 	raw.size = 4;
-	raw.type = RPKT_BUF_SIZE_REQ;
+	raw.type = DUSB_RPKT_BUF_SIZE_REQ;
 	raw.data[2] = MSB(size);
 	raw.data[3] = LSB(size);
 
@@ -133,7 +133,7 @@ int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 
 int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 {	
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 	uint32_t size;
 
 	TRYF(dusb_recv(h, &raw));
@@ -141,7 +141,7 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 	if(raw.size != 4)
 		return ERR_INVALID_PACKET;
 
-	if(raw.type != RPKT_BUF_SIZE_ALLOC)
+	if(raw.type != DUSB_RPKT_BUF_SIZE_ALLOC)
 		return ERR_INVALID_PACKET;
 
 	size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
@@ -156,7 +156,7 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 
 int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 	uint32_t tmp;
 
 	TRYF(dusb_recv(h, &raw));
@@ -164,7 +164,7 @@ int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 	if(raw.size != 4)
 		return ERR_INVALID_PACKET;
 
-	if(raw.type != RPKT_BUF_SIZE_REQ)
+	if(raw.type != DUSB_RPKT_BUF_SIZE_REQ)
 		return ERR_INVALID_PACKET;
 
 	tmp = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
@@ -177,10 +177,10 @@ int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 
 int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
 {	
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 
 	raw.size = 4;
-	raw.type = RPKT_BUF_SIZE_ALLOC;
+	raw.type = DUSB_RPKT_BUF_SIZE_ALLOC;
 	raw.data[2] = MSB(size);
 	raw.data[3] = LSB(size);
 
@@ -199,10 +199,10 @@ uint32_t dusb_get_buf_size(void)
 
 int dusb_send_acknowledge(CalcHandle* h)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 
 	raw.size = 2;
-	raw.type = RPKT_VIRT_DATA_ACK;
+	raw.type = DUSB_RPKT_VIRT_DATA_ACK;
 	raw.data[0] = 0xE0;
 	raw.data[1] = 0x00;
 
@@ -216,7 +216,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 
 int dusb_recv_acknowledge(CalcHandle *h)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 
 	TRYF(dusb_recv(h, &raw));
 #if (VPKT_DBG == 2)
@@ -227,7 +227,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 	if(raw.size != 2 && raw.size != 4)
 		return ERR_INVALID_PACKET;
 
-	if(raw.type == RPKT_BUF_SIZE_REQ)
+	if(raw.type == DUSB_RPKT_BUF_SIZE_REQ)
 	{
 		uint32_t size;
 
@@ -242,7 +242,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 		TRYF(dusb_recv(h, &raw));
 	}
 	
-	if(raw.type != RPKT_VIRT_DATA_ACK)
+	if(raw.type != DUSB_RPKT_VIRT_DATA_ACK)
 		return ERR_INVALID_PACKET;
 
 	if(raw.data[0] != 0xE0 && raw.data[1] != 0x00)
@@ -253,7 +253,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 
 // Work around TI's OS behaviour: extra bulk write of 0 size required after the last raw packet in a transfer,
 // when some conditions are met.
-void workaround_send(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
+void workaround_send(CalcHandle *h, DUSBRawPacket * raw, DUSBVirtualPacket * vtl)
 {
 	uint8_t buf[64];
 
@@ -271,7 +271,7 @@ void workaround_send(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
 	else // if (h->model == CALC_TI84P_USB)
 	{
 		// A 244-byte (program) variable doesn't require this workaround, but bigger (program) variables do.
-		if (raw->type == RPKT_VIRT_DATA_LAST && vtl->size > 244 && (vtl->size % 250) == 244)
+		if (raw->type == DUSB_RPKT_VIRT_DATA_LAST && vtl->size > 244 && (vtl->size % 250) == 244)
 		{
 			ticalcs_info("XXX triggering an extra bulk write\n\tvtl->size=%d\traw->size=%d", vtl->size, raw->size);
 			ticables_cable_send(h->cable, buf, 0);
@@ -281,17 +281,17 @@ void workaround_send(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
 
 // Fragmentation of packets
 
-int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
+int dusb_send_data(CalcHandle *h, DUSBVirtualPacket *vtl)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 	int i, r, q;
 	long offset;
 
-	if(vtl->size <= DATA_SIZE - DH_SIZE)
+	if(vtl->size <= DATA_SIZE - DUSB_DH_SIZE)
 	{
 		// we have a single packet which is the last one, too
-		raw.size = vtl->size + DH_SIZE;
-		raw.type = RPKT_VIRT_DATA_LAST;
+		raw.size = vtl->size + DUSB_DH_SIZE;
+		raw.type = DUSB_RPKT_VIRT_DATA_LAST;
 
 		raw.data[0] = MSB(MSW(vtl->size));
 		raw.data[1] = LSB(MSW(vtl->size));
@@ -299,7 +299,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		raw.data[3] = LSB(LSW(vtl->size));
 		raw.data[4] = MSB(vtl->type);
 		raw.data[5] = LSB(vtl->type);
-		memcpy(&raw.data[DH_SIZE], vtl->data, vtl->size);
+		memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, vtl->size);
 	
 		TRYF(dusb_send(h, &raw));
 #if (VPKT_DBG == 2)
@@ -315,7 +315,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 	{
 		// we have more than one packet: first packet has data header
 		raw.size = DATA_SIZE;
-		raw.type = RPKT_VIRT_DATA;
+		raw.type = DUSB_RPKT_VIRT_DATA;
 
 		raw.data[0] = MSB(MSW(vtl->size));
 		raw.data[1] = LSB(MSW(vtl->size));
@@ -323,8 +323,8 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		raw.data[3] = LSB(LSW(vtl->size));
 		raw.data[4] = MSB(vtl->type);
 		raw.data[5] = LSB(vtl->type);
-		memcpy(&raw.data[DH_SIZE], vtl->data, DATA_SIZE - DH_SIZE);
-		offset = DATA_SIZE - DH_SIZE;
+		memcpy(&raw.data[DUSB_DH_SIZE], vtl->data, DATA_SIZE - DUSB_DH_SIZE);
+		offset = DATA_SIZE - DUSB_DH_SIZE;
 
 		TRYF(dusb_send(h, &raw));
 #if (VPKT_DBG == 2)
@@ -344,7 +344,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		for(i = 1; i <= q; i++)
 		{
 			raw.size = DATA_SIZE;
-			raw.type = RPKT_VIRT_DATA;
+			raw.type = DUSB_RPKT_VIRT_DATA;
 			memcpy(raw.data, vtl->data + offset, DATA_SIZE);
 			offset += DATA_SIZE;
 
@@ -363,7 +363,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 		//if(r)
 		{
 			raw.size = r;
-			raw.type = RPKT_VIRT_DATA_LAST;
+			raw.type = DUSB_RPKT_VIRT_DATA_LAST;
 			memcpy(raw.data, vtl->data + offset, r);
 			offset += r;
 
@@ -385,7 +385,7 @@ int dusb_send_data(CalcHandle *h, VirtualPacket *vtl)
 
 // Work around TI's OS behaviour: extra bulk read of 0 size required after the last raw packet in a transfer,
 // when some conditions are met.
-void workaround_recv(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
+void workaround_recv(CalcHandle *h, DUSBRawPacket * raw, DUSBVirtualPacket * vtl)
 {
 	uint8_t buf[64];
 
@@ -410,9 +410,9 @@ void workaround_recv(CalcHandle *h, RawPacket * raw, VirtualPacket * vtl)
 }
 
 // beware: data field may be re-allocated in size !
-int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
+int dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 {
-	RawPacket raw = { 0 };
+	DUSBRawPacket raw = { 0 };
 	uint8_t buf[64];
 	int i = 0;
 	long offset = 0;
@@ -420,7 +420,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 	do
 	{
 		TRYF(dusb_recv(h, &raw));
-		if(raw.type != RPKT_VIRT_DATA && raw.type != RPKT_VIRT_DATA_LAST)
+		if(raw.type != DUSB_RPKT_VIRT_DATA && raw.type != DUSB_RPKT_VIRT_DATA_LAST)
 			return ERR_INVALID_PACKET;
 
 		if(!i++)
@@ -429,11 +429,11 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			vtl->size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
 			vtl->type = (uint16_t)((raw.data[4] << 8) | (raw.data[5] << 0));
 			vtl->data = realloc(vtl->data, vtl->size);
-			memcpy(vtl->data, &raw.data[DH_SIZE], raw.size - DH_SIZE);
-			offset = raw.size - DH_SIZE;
+			memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
+			offset = raw.size - DUSB_DH_SIZE;
 #if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
-				raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
+				raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
 				vtl->size, dusb_vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)
 			ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
@@ -447,7 +447,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 			memcpy(vtl->data + offset, raw.data, raw.size);
 			offset += raw.size;
 #if (VPKT_DBG == 2)
-			ticalcs_info("  TI->PC: %s", raw.type == RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
+			ticalcs_info("  TI->PC: %s", raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
 #endif
 
 			h->updat->max1 = vtl->size;
@@ -459,7 +459,7 @@ int dusb_recv_data(CalcHandle* h, VirtualPacket* vtl)
 
 		TRYF(dusb_send_acknowledge(h));
 
-	} while(raw.type != RPKT_VIRT_DATA_LAST);
+	} while(raw.type != DUSB_RPKT_VIRT_DATA_LAST);
 
 	//printf("dusb_recv_data: rpkt.size=%d\n", raw.size);
 
