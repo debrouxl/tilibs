@@ -176,7 +176,7 @@ typedef enum
 /**
  * CalcAction:
  *
- * An enumeration which contains the action taken on a variable:
+ * An enumeration which contains the action taken on a variable
  **/
 typedef enum 
 {
@@ -192,30 +192,30 @@ typedef enum
 typedef enum 
 {
 	INFOS_PRODUCT_NUMBER = (1 << 0), /* obsolete (never used) */
-	INFOS_PRODUCT_NAME	= (1 << 1),
-	INFOS_MAIN_CALC_ID	= (1 << 2),	 /* obsolete, replaced by INFOS_PRODUCT_ID */
-	INFOS_HW_VERSION	= (1 << 3),
-	INFOS_LANG_ID		= (1 << 4),
-	INFOS_SUB_LANG_ID	= (1 << 5),
-	INFOS_DEVICE_TYPE	= (1 << 6),
-	INFOS_BOOT_VERSION	= (1 << 7),
-	INFOS_OS_VERSION	= (1 << 8),
-	INFOS_RAM_PHYS		= (1 << 9),
-	INFOS_RAM_USER		= (1 << 10),
-	INFOS_RAM_FREE		= (1 << 11),
-	INFOS_FLASH_PHYS	= (1 << 12),
-	INFOS_FLASH_USER	= (1 << 13),
-	INFOS_FLASH_FREE	= (1 << 14),
-	INFOS_LCD_WIDTH		= (1 << 15),
-	INFOS_LCD_HEIGHT	= (1 << 16),
-	INFOS_BATTERY		= (1 << 17),	
-	INFOS_BOOT2_VERSION	= (1 << 18),
-	INFOS_RUN_LEVEL		= (1 << 19),
-	INFOS_BPP			= (1 << 20),
-	INFOS_CLOCK_SPEED	= (1 << 21),
-	INFOS_PRODUCT_ID	= (1 << 22),
+	INFOS_PRODUCT_NAME   = (1 << 1),
+	INFOS_MAIN_CALC_ID   = (1 << 2), /* obsolete, replaced by INFOS_PRODUCT_ID */
+	INFOS_HW_VERSION     = (1 << 3),
+	INFOS_LANG_ID        = (1 << 4),
+	INFOS_SUB_LANG_ID    = (1 << 5),
+	INFOS_DEVICE_TYPE    = (1 << 6),
+	INFOS_BOOT_VERSION   = (1 << 7),
+	INFOS_OS_VERSION     = (1 << 8),
+	INFOS_RAM_PHYS       = (1 << 9),
+	INFOS_RAM_USER       = (1 << 10),
+	INFOS_RAM_FREE       = (1 << 11),
+	INFOS_FLASH_PHYS     = (1 << 12),
+	INFOS_FLASH_USER     = (1 << 13),
+	INFOS_FLASH_FREE     = (1 << 14),
+	INFOS_LCD_WIDTH      = (1 << 15),
+	INFOS_LCD_HEIGHT     = (1 << 16),
+	INFOS_BATTERY        = (1 << 17),
+	INFOS_BOOT2_VERSION  = (1 << 18),
+	INFOS_RUN_LEVEL      = (1 << 19),
+	INFOS_BPP            = (1 << 20),
+	INFOS_CLOCK_SPEED    = (1 << 21),
+	INFOS_PRODUCT_ID     = (1 << 22),
 
-	INFOS_CALC_MODEL	= (1 << 31),
+	INFOS_CALC_MODEL     = (1 << 31),
 } InfosMask;
 
 /**
@@ -257,13 +257,55 @@ typedef enum
  **/
 typedef enum 
 {
-	TIG_NONE	= 0,
-	TIG_RAM		= (1 << 0),
+	TIG_NONE    = 0,
+	TIG_RAM     = (1 << 0),
 	TIG_ARCHIVE = (1 << 1),
-	TIG_FLASH	= (1 << 2),
-	TIG_BACKUP	= (1 << 3),
-	TIG_ALL		= 7,
+	TIG_FLASH   = (1 << 2),
+	TIG_BACKUP  = (1 << 3),
+	TIG_ALL     = 7,
 } TigMode;
+
+//! Size of the header of a \a DUSBRawPacket
+#define DUSB_HEADER_SIZE (4+1)
+
+/**
+ * DUSBRawPacket:
+ *
+ * Raw packet for the DUSB (84+(SE), 89T) protocol.
+ **/
+typedef struct
+{
+    uint32_t size;       ///< raw packet size
+    uint8_t  type;       ///< raw packet type
+
+    uint8_t  data[1023]; ///< raw packet data
+} DUSBRawPacket;
+
+//! Size of the header of a \a NSPRawPacket
+#define NSP_HEADER_SIZE (16)
+//! Size of the data contained in \a NSPRawPacket
+#define NSP_DATA_SIZE   (254)
+
+/**
+ * NSPRawPacket:
+ *
+ * Raw packet for the Nspire NavNet protocol.
+ **/
+typedef struct
+{
+    uint16_t  unused;
+    uint16_t  src_addr;
+    uint16_t  src_port;
+    uint16_t  dst_addr;
+    uint16_t  dst_port;
+    uint16_t  data_sum;
+    uint8_t   data_size;
+    uint8_t   ack;
+    uint8_t   seq;
+    uint8_t   hdr_sum;
+
+    uint8_t   data[NSP_DATA_SIZE];
+} NSPRawPacket;
 
 /**
  * CalcScreenCoord:
@@ -655,8 +697,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle*, uint16_t);
 	TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle*, VarEntry*, const char*);
 
-	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc,
-												 uint8_t** bitmap);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle *, CalcScreenCoord* sc, uint8_t** bitmap);
 
 	TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, GNode **apps);
 	TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram, uint32_t *flash);
@@ -739,14 +780,14 @@ typedef struct
 	TIEXPORT3 CalcMemType  TICALL ticalcs_string_to_memtype(const char *str);
 
 	// clock.c
-	TIEXPORT3 const char* TICALL ticalcs_clock_format2date(CalcModel model, int value);
-	TIEXPORT3 int		 TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
-	TIEXPORT3 int		 TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
+	TIEXPORT3 const char*  TICALL ticalcs_clock_format2date(CalcModel model, int value);
+	TIEXPORT3 int          TICALL ticalcs_clock_date2format(CalcModel model, const char *format);
+	TIEXPORT3 int          TICALL ticalcs_clock_show(CalcModel model, CalcClock* s);
 
 	// tikeys.c
-    TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73 (uint8_t ascii_code);
+	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_73 (uint8_t ascii_code);
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_83 (uint8_t ascii_code);
-    TIEXPORT3 const CalcKey* TICALL ticalcs_keys_83p(uint8_t ascii_code);
+	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_83p(uint8_t ascii_code);
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_86 (uint8_t ascii_code);
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_89 (uint8_t ascii_code);
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_92p(uint8_t ascii_code);
@@ -756,10 +797,22 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
 
 	TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all);
-		
-  /************************/
-  /* Deprecated functions */
-  /************************/
+
+	// dbus_pkt.c
+	TIEXPORT3 int TICALL dbus_send(CalcHandle* cable, uint8_t target, uint8_t cmd, uint16_t length, uint8_t* data);
+	TIEXPORT3 int TICALL dbus_recv(CalcHandle* cable, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
+
+	// dusb_rpkt.c
+	TIEXPORT3 int TICALL dusb_send(CalcHandle* cable, DUSBRawPacket* pkt);
+	TIEXPORT3 int TICALL dusb_recv(CalcHandle* cable, DUSBRawPacket* pkt);
+
+	// nsp_rpkt.c
+	TIEXPORT3 int TICALL nsp_send(CalcHandle* cable, NSPRawPacket* pkt);
+	TIEXPORT3 int TICALL nsp_recv(CalcHandle* cable, NSPRawPacket* pkt);
+
+	/************************/
+	/* Deprecated functions */
+	/************************/
 
 #ifdef __cplusplus
 }

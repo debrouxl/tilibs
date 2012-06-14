@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include "ticalcs.h"
-#include "nsp_rpkt.h"
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
@@ -114,7 +113,7 @@ uint8_t		nsp_seq_ti;
 uint8_t		nsp_seq_pc;
 uint8_t		nsp_seq;
 
-int nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
+TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
 	uint32_t size = pkt->data_size + NSP_HEADER_SIZE;
@@ -168,7 +167,7 @@ int nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	return 0;
 }
 
-int nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
+TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
 

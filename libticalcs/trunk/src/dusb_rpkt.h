@@ -33,19 +33,4 @@
 
 // Convenient structures
 
-#define DUSB_PH_SIZE             (4+1) // size + type
-
-typedef struct
-{
-    uint32_t  size;       // raw packet size
-    uint8_t   type;       // raw packet type
-
-    uint8_t   data[1023]; // raw packet data
-} DUSBRawPacket;
-
-// Functions
-
-int dusb_send(CalcHandle* cable, DUSBRawPacket* pkt);
-int dusb_recv(CalcHandle* cable, DUSBRawPacket* pkt);
-
 #endif

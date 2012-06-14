@@ -41,7 +41,6 @@
 #include "error.h"
 #include "macros.h"
 
-#include "nsp_rpkt.h"
 #include "nsp_vpkt.h"
 
 // Type to string

@@ -31,7 +31,7 @@
 #include "error.h"
 #include "macros.h"
 
-int dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
+TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[1023 + 5]= { 0 };
 	uint32_t size = pkt->size + 5;
@@ -55,7 +55,7 @@ int dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	return 0;
 }
 
-int dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
+TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
 
