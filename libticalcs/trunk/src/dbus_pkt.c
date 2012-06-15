@@ -32,25 +32,40 @@
 #include "macros.h"
 
 // We split packets into chucks to get control regularly and update statistics.
-static unsigned int BLK_SIZE;	// refresh pbars every 5%
-static unsigned int MIN_SIZE;	// don't refresh at all if packet is < 512 bytes
+static unsigned int BLK_SIZE; // refresh pbars every 5%
+static unsigned int MIN_SIZE; // don't refresh at all if packet is < 512 bytes
 
 /*
     Send a packet from PC (host) to TI (target):
     - target [in] : a machine ID uint8_t
-    - cmd [in]	  : a command ID uint8_t
+    - cmd [in]    : a command ID uint8_t
     - length [in] : length of buffer
-    - data [in]	  : data to send (or 0x00 if NULL)
-    - int [out]	  : an error code
+    - data [in]   : data to send (or 0x00 if NULL)
+    - int [out]   : an error code
 */
 TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
 {
 	int i;
 	uint16_t sum;
-	uint32_t length = (len == 0x0000) ? 65536 : len;	//  wrap around
-	uint8_t *buf = (uint8_t *)handle->priv2;			//[65536+6];
+	uint32_t length = (len == 0x0000) ? 65536 : len;   // wrap around
+	uint8_t *buf;
 	int r, q;
 	static int ref = 0;
+
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (data == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
+
+	buf = (uint8_t *)handle->priv2;                    //[65536+6];
+	if (buf == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
 
 	ticables_progress_reset(handle->cable);
 
@@ -169,6 +184,15 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	int r, q;
 	static int ref = 0;
 
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (host == NULL || cmd == NULL || length == NULL || data == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
+
 	// Any packet has always at least 4 bytes (MID, CID, LEN)
 	TRYF(ticables_cable_recv(handle->cable, buf, 4));
 
@@ -191,7 +215,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	case CMD_SID:
 	case CMD_REQ:
 	case CMD_IND:
-	case CMD_RTS:		
+	case CMD_RTS:
 		// compute chunks*
 		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
 		BLK_SIZE = *length / 20;
@@ -279,12 +303,17 @@ int dbus_recv_2(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* lengt
 	return dbus_recv_(handle, host, cmd, length, data, 0);
 }
 
-/* Fill-up a 8-chars buffer with NUL chars */
+//! Fill up to 8 chars the \a varname buffer with chars of value \a value.
 void pad_buffer(uint8_t *varname, uint8_t value)
 {
 	unsigned int i;
-	unsigned int len = strlen((char*)varname);
+	unsigned int len;
 
-	for (i = len; i < 8; i++)
-		varname[i] = value;
+	if (varname != NULL)
+	{
+		len = strlen((char*)varname);
+
+		for (i = len; i < 8; i++)
+			varname[i] = value;
+	}
 }

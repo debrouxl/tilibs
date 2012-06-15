@@ -116,8 +116,18 @@ uint8_t		nsp_seq;
 TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
-	uint32_t size = pkt->data_size + NSP_HEADER_SIZE;
-	
+	uint32_t size;
+
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (pkt == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
+
+	size = pkt->data_size + NSP_HEADER_SIZE;
 	pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
 	if(pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
@@ -170,6 +180,15 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
+
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (pkt == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
 
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE));

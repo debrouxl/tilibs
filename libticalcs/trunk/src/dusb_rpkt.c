@@ -33,6 +33,15 @@
 
 TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (pkt == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
+
 	uint8_t buf[1023 + 5]= { 0 };
 	uint32_t size = pkt->size + 5;
 
@@ -58,6 +67,15 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
+
+	if (handle == NULL)
+	{
+		return ERR_INVALID_HANDLE;
+	}
+	if (pkt == NULL)
+	{
+		return ERR_INVALID_PACKET;
+	}
 
 	// Any packet has always an header of 5 bytes (size & type)
 	ticables_progress_reset(handle->cable);
