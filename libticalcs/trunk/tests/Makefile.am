@@ -5,7 +5,12 @@ AM_CPPFLAGS = -I$(top_srcdir)/src \
 
 EXTRA_DIST = ticalcs2.supp vcheck
 
-noinst_PROGRAMS = test_ticalcs_2
+noinst_PROGRAMS = test_ticalcs_2 torture_ticalcs
 
 test_ticalcs_2_LDADD = $(top_builddir)/src/libticalcs2.la \
 	@TICABLES_LIBS@ @TIFILES_LIBS@ @TICONV_LIBS@
+
+torture_ticalcs_LDADD = $(top_builddir)/src/libticalcs2.la \
+	@TICABLES_LIBS@ @TIFILES_LIBS@ @TICONV_LIBS@
+
+TESTS = torture_ticalcs

@@ -1,13 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CPPFLAGS = -I$(top_srcdir)/src
+AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@
 
 EXTRA_DIST = tifiles2.supp vcheck
 
-noinst_PROGRAMS = test_tifiles_2
+noinst_PROGRAMS = test_tifiles_2 torture_tifiles
 
-test_tifiles_2_CPPFLAGS = @GLIB_CFLAGS@
 test_tifiles_2_LDADD = $(top_builddir)/src/libtifiles2.la @GLIB_LIBS@
+
+torture_tifiles_LDADD = $(top_builddir)/src/libtifiles2.la @GLIB_LIBS@
 
 dist-hook:
 	if test ! -d .svn; then \
@@ -24,3 +25,5 @@ dist-hook:
 		$(distdir)/test/ti86 \
 		$(distdir)/test/ti89 \
 		$(distdir)/test/ti92
+
+TESTS = torture_tifiles

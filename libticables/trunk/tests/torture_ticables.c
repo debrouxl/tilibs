@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <ticables.h>
+
+#define PRINTF(FUNCTION, TYPE, args...) \
+printf("%d\t" TYPE "\n", i, FUNCTION(args)); i++
+
+#define PRINTFVOID(FUNCTION, args...) \
+printf("%d\n", i); FUNCTION(args); i++
+
+#define INT "%d"
+#define PTR "%p"
+#define STR "\"%s\""
+#define VOID ""
+
+int main(int argc, char **argv)
+{
+    int i = 1;
+
+    ticables_library_init();
+// 1
+    PRINTF(ticables_handle_new, PTR, -1, -1);
+    PRINTF(ticables_handle_del, INT, NULL);
+    PRINTF(ticables_options_set_timeout, INT, NULL, -1);
+    PRINTF(ticables_options_set_delay, INT, NULL, -1);
+    PRINTF(ticables_get_model, INT, NULL);
+
+    PRINTF(ticables_get_port, INT, NULL);
+    PRINTF(ticables_handle_show, INT, NULL);
+    PRINTF(ticables_cable_open, INT, NULL);
+    PRINTF(ticables_cable_close, INT, NULL);
+    PRINTF(ticables_cable_reset, INT, NULL);
+// 11
+    PRINTF(ticables_cable_probe, INT, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_send, INT, NULL, (void *)0x12345678, -1);
+    PRINTF(ticables_cable_recv, INT, NULL, (void *)0x12345678, -1);
+    PRINTF(ticables_cable_check, INT, NULL, (void *)0x12345678);
+    PRINTF(ticables_cable_set_d0, INT, NULL, -1);
+
+    PRINTF(ticables_cable_set_d1, INT, NULL, -1);
+    PRINTF(ticables_cable_get_d0, INT, NULL);
+    PRINTF(ticables_cable_get_d1, INT, NULL);
+    PRINTF(ticables_progress_reset, INT, NULL);
+    PRINTF(ticables_progress_get, INT, NULL, NULL, NULL, NULL);
+// 21
+    PRINTF(ticables_cable_put, INT, NULL, -1);
+    PRINTF(ticables_cable_get, INT, NULL, (void *)0x12345678);
+    PRINTF(ticables_error_get, INT, -1, NULL);
+    PRINTF(ticables_model_to_string, STR, -1);
+    PRINTF(ticables_string_to_model, INT, NULL);
+
+    PRINTF(ticables_port_to_string, STR, -1);
+    PRINTF(ticables_string_to_port, INT, NULL);
+    PRINTF(ticables_usbpid_to_string, STR, -1);
+    PRINTF(ticables_string_to_usbpid, INT, NULL);
+    PRINTF(ticables_probing_do, INT, NULL, -1, -1);
+// 31
+    PRINTF(ticables_probing_finish, INT, NULL);
+    PRINTF(ticables_is_usb_enabled, INT);
+    PRINTF(ticables_get_usb_devices, INT, NULL, NULL);
+
+    ticables_library_exit();
+
+    return 0;
+}
