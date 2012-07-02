@@ -401,7 +401,7 @@ int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 	int err = 0;
 
 	vtl->size = 0;
-	vtl->data = malloc(NSP_DATA_SIZE);
+	vtl->data = g_malloc(NSP_DATA_SIZE);
 
 	if (vtl->data)
 	{
@@ -417,7 +417,7 @@ int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 				vtl->cmd = raw.data[0];
 				vtl->size += raw.data_size-1;
 
-				vtl->data = realloc(vtl->data, vtl->size);
+				vtl->data = g_realloc(vtl->data, vtl->size);
 				memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
 				offset += raw.data_size-1;
 

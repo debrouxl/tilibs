@@ -132,7 +132,7 @@ TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileCont
 	dst->entries = g_malloc0((n + 1) * sizeof(VarEntry*));
 	if (dst->entries == NULL)
 	{
-		free(dst);
+		g_free(dst);
 		return ERR_MALLOC;
 	}
 

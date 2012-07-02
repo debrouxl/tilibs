@@ -166,7 +166,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
     }
   }
   content->num_entries = j;
-  content->entries = realloc(content->entries, content->num_entries * sizeof(VarEntry*));
+  content->entries = g_realloc(content->entries, content->num_entries * sizeof(VarEntry*));
   //fread_long(f, &next_offset);
   //fseek(f, next_offset - 2, SEEK_SET);
   //fread_word(f, &(content->checksum));

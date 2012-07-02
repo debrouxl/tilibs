@@ -149,7 +149,7 @@ TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts)
  **/
 TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
 {
-	return realloc(array, (nelts + 1) * sizeof(TigEntry *));
+	return g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
 }
 
 /**
@@ -807,7 +807,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
  * @filename: the name of file to load.
  * @content: where to store content (may be re-allocated).
  *
- * This function load & TiGroup and place its content into content.
+ * This function loads a TiGroup from \a filename and places its content into \a content.
  *
  * The temporary folder is used by this function to store temporary files.
  * 
@@ -840,7 +840,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	}
 
 	// Allocate
-	buf = (void*)malloc(WRITEBUFFERSIZE);
+	buf = (void*)g_malloc(WRITEBUFFERSIZE);
 	if (buf==NULL)
 	{
 		printf("Error allocating memory\n");

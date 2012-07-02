@@ -101,7 +101,7 @@ TIEXPORT2 VarEntry**	TICALL tifiles_ve_create_array(int nelts)
  **/
 TIEXPORT2 VarEntry**	TICALL tifiles_ve_resize_array(VarEntry** array, int nelts)
 {
-	return realloc(array, (nelts + 1) * sizeof(VarEntry *));
+	return g_realloc(array, (nelts + 1) * sizeof(VarEntry *));
 }
 
 /**

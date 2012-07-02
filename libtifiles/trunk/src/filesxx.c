@@ -708,8 +708,8 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * This function may be difficult to understand but it avoids to use trees (and
  * linked list) which will require an implementation.
  *
- * Return value: a 2-dimensions allocated integer array. Must be freed when no
- * longer used.
+ * Return value: a 2-dimensions allocated integer array. Must be freed with g_free when
+ * no longer used.
  **/
 TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
 {
@@ -770,7 +770,7 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
 
 			if (!strcmp(folder_list[j], entry->folder)) 
 			{
-				table[j] = (int *) realloc(table[j], (k + 2) * sizeof(int));
+				table[j] = (int *) g_realloc(table[j], (k + 2) * sizeof(int));
 				table[j][k] = i;
 				//printf("%i %i: adding %i\n", j, k, i); 
 				table[j][k + 1] = -1;
