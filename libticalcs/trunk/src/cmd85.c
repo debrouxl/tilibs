@@ -28,6 +28,7 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
+#include "internal.h"
 #include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
@@ -176,7 +177,7 @@ int ti85_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   }
   else
   {
-    pad_buffer(buffer + 4, '\0');
+    pad_buffer_to_8_chars(buffer + 4, '\0');
     TRYF(dbus_send(handle, PC_TI8586, CMD_REQ, 4 + strlen(varname), buffer));
   }
 
@@ -194,7 +195,7 @@ int ti85_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   buffer[2] = vartype;
   buffer[3] = strlen(varname);
   memcpy(buffer + 4, varname, 8);
-  pad_buffer(buffer + 4, ' ');
+  pad_buffer_to_8_chars(buffer + 4, ' ');
 
   ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=%s)",

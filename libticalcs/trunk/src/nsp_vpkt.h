@@ -63,17 +63,11 @@ typedef struct
 #define NSP_PORT_OS_INSTALL		0x4080
 #define NSP_PORT_DISCONNECT		0x40DE
 
-// Exports
-
-extern uint16_t nsp_src_port;
-extern uint16_t nsp_dst_port;
-
 // Functions
 
 NSPVirtualPacket*  nsp_vtl_pkt_new(void);
 NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port);
-void			nsp_vtl_pkt_del(NSPVirtualPacket* pkt);
-void			nsp_vtl_pkt_purge(void);
+void nsp_vtl_pkt_del(NSPVirtualPacket* pkt);
 
 int nsp_session_open(CalcHandle *h, uint16_t port);
 int nsp_session_close(CalcHandle *h);

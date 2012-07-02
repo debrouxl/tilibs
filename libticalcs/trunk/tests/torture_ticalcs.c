@@ -112,22 +112,19 @@ int main(int argc, char **argv)
 
     PRINTF(ticalcs_probe, INT, -1, -1, NULL, -1);
     PRINTF(dbus_send, INT, NULL, 0, 0, 0, (void *)0x12345678);
-    PRINTF(dbus_send, INT, (void *)0x12345678, 0, 0, 0, NULL);
     PRINTF(dbus_recv, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dbus_recv, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-// 81
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+// 81
     PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(dbus_recv, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(dusb_send, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_send, INT, (void *)0x12345678, NULL);
-
     PRINTF(dusb_recv, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_recv, INT, (void *)0x12345678, NULL);
+
     PRINTF(nsp_send, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_send, INT, (void *)0x12345678, NULL);
     PRINTF(nsp_recv, INT, NULL, (void *)0x12345678);
-// 91
     PRINTF(nsp_recv, INT, (void *)0x12345678, NULL);
 
     ticalcs_library_exit();

@@ -234,6 +234,13 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 
+	case ERR_INVALID_PARAMETER:
+		strcpy(error_msg, _("Invalid parameter."));
+		strcat(error_msg, "\n");
+		strcat(error_msg, _("Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, check the arguments you're passing to the function."));
+		*message = g_strdup(error_msg);
+		break;
+
 	case ERR_CALC_ERROR1:	// must be synchronized with cmd89.c (static uint8_t dbus_errors[])
 		strcpy(error_msg, _("Msg: hand-held returned an error."));
 		strcat(error_msg, "\n");

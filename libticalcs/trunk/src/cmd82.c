@@ -28,6 +28,7 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
+#include "internal.h"
 #include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
@@ -59,7 +60,7 @@ int ti82_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 	if (vartype != TI8283_BKUP) 
 	{	
 		// backup: special header
-		pad_buffer(buffer + 3, '\0');
+		pad_buffer_to_8_chars(buffer + 3, '\0');
 		TRYF(dbus_send(handle, PC_TI8283, CMD_VAR, 11, buffer));
 	} 
 	else 
@@ -157,7 +158,7 @@ int ti82_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
-  pad_buffer(buffer + 3, '\0');
+  pad_buffer_to_8_chars(buffer + 3, '\0');
 
   ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
   ticalcs_info(" PC->TI: REQ (size=0x%04X=%i, id=%02X, name=%s)",
@@ -185,7 +186,7 @@ int ti82_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 
   if (vartype != TI8283_BKUP) 
   {	// backup: special header
-    pad_buffer(buffer + 3, '\0');
+    pad_buffer_to_8_chars(buffer + 3, '\0');
     TRYF(dbus_send(handle, PC_TI8283, CMD_RTS, 11, buffer));
   } 
   else 

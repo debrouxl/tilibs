@@ -99,18 +99,4 @@
 #define REJ_SKIP     2
 #define REJ_MEMORY   3
 
-/*************/
-/* Functions */
-/*************/
-
-// used for probing only
-int dbus_recv_2(CalcHandle* cable, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
-
-void pad_buffer(uint8_t *varname, uint8_t value);
-
-#ifndef WORDS_BIGENDIAN
-# define fixup(x) (x &= 0x0000ffff)
-#else
-# define fixup(x) (x >>= 16)
-#endif /* !G_BIG_ENDIAN */
 #endif

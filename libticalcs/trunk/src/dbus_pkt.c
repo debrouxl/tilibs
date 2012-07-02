@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
+#include "internal.h"
 #include "dbus_pkt.h"
 #include "logging.h"
 #include "error.h"
@@ -54,16 +55,13 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (data == NULL)
-	{
-		return ERR_INVALID_PACKET;
-	}
-
 	buf = (uint8_t *)handle->priv2;                    //[65536+6];
 	if (buf == NULL)
 	{
+		ticalcs_critical("%s: handle->priv2 is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 
@@ -186,10 +184,12 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (host == NULL || cmd == NULL || length == NULL || data == NULL)
+	if (host == NULL || cmd == NULL || length == NULL)
 	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -204,7 +204,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	//if(host_check && (*host != host_ids(handle))) 
 	//	return ERR_INVALID_HOST;
 
-	if(*cmd == CMD_ERR ||*cmd == CMD_ERR2) 
+	if(*cmd == CMD_ERR || *cmd == CMD_ERR2)
 		return ERR_CHECKSUM;
 
 	switch (*cmd) 
@@ -216,6 +216,12 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	case CMD_REQ:
 	case CMD_IND:
 	case CMD_RTS:
+		if (data == NULL)
+		{
+			ticalcs_critical("%s: data is NULL", __FUNCTION__);
+			return ERR_INVALID_CMD;
+		}
+
 		// compute chunks*
 		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
 		BLK_SIZE = *length / 20;
@@ -298,13 +304,14 @@ TIEXPORT3 int TICALL dbus_recv(CalcHandle* handle, uint8_t* host, uint8_t* cmd, 
 	return dbus_recv_(handle, host, cmd, length, data, !0);
 }
 
+// used only by probe.c
 int dbus_recv_2(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data)
 {
 	return dbus_recv_(handle, host, cmd, length, data, 0);
 }
 
 //! Fill up to 8 chars the \a varname buffer with chars of value \a value.
-void pad_buffer(uint8_t *varname, uint8_t value)
+void pad_buffer_to_8_chars(uint8_t *varname, uint8_t value)
 {
 	unsigned int i;
 	unsigned int len;

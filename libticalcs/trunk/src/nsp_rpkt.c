@@ -120,10 +120,12 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 	if (pkt == NULL)
 	{
+		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -183,10 +185,12 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 	if (pkt == NULL)
 	{
+		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
 
@@ -216,7 +220,7 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 		if(pkt->data_size >= 128)
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 	}
-			
+
 	if (handle->updat->cancel)
 		return ERR_ABORT;
 

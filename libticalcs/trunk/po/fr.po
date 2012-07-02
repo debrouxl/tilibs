@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-05-06 11:26+0200\n"
+"POT-Creation-Date: 2012-07-02 20:44+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -25,152 +25,152 @@ msgstr "Calculatrice vide"
 msgid "Dummy hand-held used when no calc is set"
 msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
 
-#: src/calc_73.c:223 src/calc_83.c:195 src/calc_84p.c:195 src/calc_86.c:184
+#: src/calc_73.c:224 src/calc_83.c:196 src/calc_84p.c:196 src/calc_86.c:185
 #, c-format
 msgid "Parsing %s"
 msgstr "Parcourt %s"
 
-#: src/calc_73.c:498 src/calc_73.c:969 src/calc_89.c:594 src/calc_89t.c:384
+#: src/calc_73.c:499 src/calc_73.c:970 src/calc_89.c:595 src/calc_89t.c:385
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr "Nom FLASH:  \"%s\""
 
-#: src/calc_73.c:499 src/calc_73.c:970 src/calc_89.c:595 src/calc_89t.c:385
+#: src/calc_73.c:500 src/calc_73.c:971 src/calc_89.c:596 src/calc_89t.c:386
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.c:744 src/calc_82.c:112 src/calc_82.c:255 src/calc_85.c:112
-#: src/calc_85.c:255 src/calc_86.c:232 src/calc_86.c:482
+#: src/calc_73.c:745 src/calc_82.c:113 src/calc_82.c:256 src/calc_85.c:113
+#: src/calc_85.c:256 src/calc_86.c:233 src/calc_86.c:483
 #, c-format
 msgid "Waiting for user's action..."
 msgstr "Attente d'une action de la part de l'utilisateur..."
 
-#: src/calc_73.c:809 src/calc_84p.c:706 src/calc_89.c:810 src/calc_89t.c:626
+#: src/calc_73.c:810 src/calc_84p.c:707 src/calc_89.c:811 src/calc_89t.c:627
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:838 src/calc_84p.c:750 src/calc_89.c:835 src/calc_89t.c:670
+#: src/calc_73.c:839 src/calc_84p.c:751 src/calc_89.c:836 src/calc_89t.c:671
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:892 src/calc_83.c:499 src/calc_84p.c:802 src/calc_89.c:872
-#: src/calc_89t.c:724 src/calc_92.c:546 src/calc_nsp.c:723
+#: src/calc_73.c:893 src/calc_83.c:500 src/calc_84p.c:803 src/calc_89.c:873
+#: src/calc_89t.c:725 src/calc_92.c:547 src/calc_nsp.c:724
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
 
-#: src/calc_73.c:947 src/calc_89.c:954 src/calc_92.c:624
+#: src/calc_73.c:948 src/calc_89.c:955 src/calc_92.c:625
 #, c-format
 msgid "  OS: %s"
 msgstr "  OS: %s"
 
-#: src/calc_73.c:948 src/calc_89.c:955
+#: src/calc_73.c:949 src/calc_89.c:956
 #, c-format
 msgid "  BIOS: %s"
 msgstr "  BIOS: %s"
 
-#: src/calc_73.c:949
+#: src/calc_73.c:950
 #, c-format
 msgid "  HW: %i"
 msgstr "  HW: %i"
 
-#: src/calc_73.c:950 src/calc_89.c:956 src/calc_92.c:625
+#: src/calc_73.c:951 src/calc_89.c:957 src/calc_92.c:626
 #, c-format
 msgid "  Battery: %s"
 msgstr " Batterie: %s"
 
-#: src/calc_73.c:950
+#: src/calc_73.c:951
 msgid "good"
 msgstr "bon"
 
-#: src/calc_73.c:950
+#: src/calc_73.c:951
 msgid "low"
 msgstr "bas"
 
-#: src/calc_73.c:997 src/calc_89.c:647
+#: src/calc_73.c:998 src/calc_89.c:648
 msgid "Header sent completely."
 msgstr "En-tête envoyé complètement"
 
-#: src/calc_73.c:1008
+#: src/calc_73.c:1009
 msgid "Receiving certificate"
 msgstr "Réception du certificat"
 
-#: src/calc_82.c:181 src/calc_85.c:181 src/calc_86.c:291
+#: src/calc_82.c:182 src/calc_85.c:182 src/calc_86.c:292
 msgid "Waiting for backup..."
 msgstr "En attente pour sauvegarder..."
 
-#: src/calc_82.c:310 src/calc_85.c:309
+#: src/calc_82.c:311 src/calc_85.c:310
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
-#: src/calc_82.c:397 src/calc_85.c:396
+#: src/calc_82.c:398 src/calc_85.c:397
 #, c-format
 msgid "Waiting for execing of program..."
 msgstr "En attente de l'exécution du programme..."
 
-#: src/calc_84p.c:839 src/calc_89t.c:809
+#: src/calc_84p.c:840 src/calc_89t.c:810
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:951
+#: src/calc_84p.c:952
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_89.c:227 src/calc_89.c:282 src/calc_92.c:200 src/calc_nsp.c:408
+#: src/calc_89.c:228 src/calc_89.c:283 src/calc_92.c:201 src/calc_nsp.c:409
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
 
-#: src/calc_89.c:252
+#: src/calc_89.c:253
 #, c-format
 msgid "Directory listing in %8s..."
 msgstr "Listage du dossier dans %8s..."
 
-#: src/calc_89.c:290 src/calc_89t.c:206 src/calc_92.c:213 src/calc_nsp.c:416
+#: src/calc_89.c:291 src/calc_89t.c:207 src/calc_92.c:214 src/calc_nsp.c:417
 #, c-format
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:891 src/calc_89t.c:753 src/calc_92.c:583 src/calc_nsp.c:750
+#: src/calc_89.c:892 src/calc_89t.c:754 src/calc_92.c:584 src/calc_nsp.c:751
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
 
-#: src/calc_89.c:1117
+#: src/calc_89.c:1118
 msgid "V200 Portable Learning Tool"
 msgstr "V200 Portable Learning Tool"
 
-#: src/calc_89t.c:922
+#: src/calc_89t.c:923
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 
-#: src/calc_92.c:283
+#: src/calc_92.c:284
 #, c-format
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_nsp.c:249
+#: src/calc_nsp.c:250
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
 msgstr "Modèle de calculatrice inconnu, avec %d bpp\n"
 
-#: src/calc_nsp.c:337
+#: src/calc_nsp.c:338
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %s | Type: %8s | Attr: %i  | Taille: %08X"
 
-#: src/calc_nsp.c:359
+#: src/calc_nsp.c:360
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder"
 msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire"
 
-#: src/calc_nsp.c:363
+#: src/calc_nsp.c:364
 #, c-format
 msgid "Directory listing in <%s>..."
 msgstr "Listage du dossier dans <%s>..."
 
-#: src/calc_nsp.c:877
+#: src/calc_nsp.c:878
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 
@@ -483,197 +483,209 @@ msgid "Cause: bad cable or calc model."
 msgstr "Cause: mauvais cable ou mauvaise calculatrice"
 
 #: src/error.c:238
+msgid "Invalid parameter."
+msgstr "Paramètre invalide."
+
+#: src/error.c:240
+msgid ""
+"Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, "
+"check the arguments you're passing to the function."
+msgstr ""
+"Cause: si vous voyez ceci dans le cadre d'une utilisation normale: envoyez-"
+"nous un e-mail ! Sinon, vérifiez les arguments que vous passez à lafonction."
+
+#: src/error.c:245
 msgid "Msg: hand-held returned an error."
 msgstr "Msg: la calculatrice a retourné une erreur."
 
-#: src/error.c:241 src/error.c:277 src/error.c:349
+#: src/error.c:248 src/error.c:284 src/error.c:356
 msgid "Cause: hand-held returned an uncaught error. Please report log."
 msgstr ""
 "Cause: la calculatrice a retourné une erreur non prise en charge. Veuillez "
 "le rapporter."
 
-#: src/error.c:245
+#: src/error.c:252
 msgid "Msg: cannot delete application."
 msgstr "Msg: ne peut pas effacer l'application."
 
-#: src/error.c:249
+#: src/error.c:256
 msgid "Msg: invalid variable name."
 msgstr "Msg: nom de variable invalide."
 
-#: src/error.c:253
+#: src/error.c:260
 msgid "Msg: cannot overwrite variable (locked/archived)."
 msgstr "Msg: ne peut pas écraser la variable (verrouillée/archivée)."
 
-#: src/error.c:257
+#: src/error.c:264
 msgid "Msg: cannot delete variable (locked/archived)."
 msgstr "Msg: ne peut pas effacer la variable (verrouillée/archivée)."
 
-#: src/error.c:261
+#: src/error.c:268
 msgid "Msg: FLASH application rejected (bad target model)."
 msgstr "Msg: application rejetée (mauvaise calculatrice)."
 
-#: src/error.c:265
+#: src/error.c:272
 msgid "Msg: malformed RTS packet (AMS version conflict)."
 msgstr "Msg: paquet RTS incorrect (conflit de version sur AMS)."
 
-#: src/error.c:269 src/error.c:337
+#: src/error.c:276 src/error.c:344
 msgid "Msg: FLASH application rejected (signature does not match)."
 msgstr "Msg: application rejetée (la signature ne correspond pas)."
 
-#: src/error.c:274 src/error.c:346
+#: src/error.c:281 src/error.c:353
 msgid "Msg: hand-held returned an error (not caught)."
 msgstr "Msg: la calculatrice a retourné une erreur (non prise en charge)."
 
-#: src/error.c:281
+#: src/error.c:288
 msgid "Msg: invalid argument or name."
 msgstr "Msg: argument ou nom invalide."
 
-#: src/error.c:285
+#: src/error.c:292
 msgid "Msg: cannot delete var/app from archive."
 msgstr ""
 "Msg: ne peut pas effacer la variable ou l'application depuis la mémoire "
 "archive."
 
-#: src/error.c:289
+#: src/error.c:296
 msgid "Msg: transmission error."
 msgstr "Msg: erreur de transmission."
 
-#: src/error.c:293
+#: src/error.c:300
 msgid "Msg: using basic mode while being in boot mode."
 msgstr ""
 "Msg: utilisation du mode de base alors que la calculatrice est en mode boot "
 "(dégradé)."
 
-#: src/error.c:297 src/error.c:353
+#: src/error.c:304 src/error.c:360
 msgid "Msg: out of memory."
 msgstr "Msg: plus de mémoire."
 
-#: src/error.c:301 src/error.c:305
+#: src/error.c:308 src/error.c:312
 msgid "Msg: invalid name."
 msgstr "Msg: nom invalide."
 
-#: src/error.c:309
+#: src/error.c:316
 msgid "Msg: busy?."
 msgstr "Msg: occuppé ?"
 
-#: src/error.c:313
+#: src/error.c:320
 msgid "Msg: can't overwrite, variable is locked."
 msgstr "Msg: ne peut pas écraser la variable (verrouillée)."
 
-#: src/error.c:317
+#: src/error.c:324
 msgid "Msg: mode token too small."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.c:321
+#: src/error.c:328
 msgid "Msg: mode token too large."
 msgstr "Msg: valeur du mode trop grande."
 
-#: src/error.c:325
+#: src/error.c:332
 msgid "Msg: invalid parameter ID."
 msgstr "Msg: identifiant de paramètre invalide."
 
-#: src/error.c:329
+#: src/error.c:336
 msgid "Msg: remote control?"
 msgstr "Msg: contrôle à distance ?"
 
-#: src/error.c:333
+#: src/error.c:340
 msgid "Msg: battery low."
 msgstr "Msg: batterie faible."
 
-#: src/error.c:341
+#: src/error.c:348
 msgid "Msg: hand-held is busy (set your calculator to HOME screen)."
 msgstr "Msg: calculatrice occuppée (mettez la calculatrice sur HOME)."
 
-#: src/error.c:357
+#: src/error.c:364
 msgid "Msg: OS installation failed. File is corrupted/wrong."
 msgstr ""
 "Msg: l'installation de l'OS a échoué. Le fichier est corrompu ou invalide."
 
-#: src/error.c:362
+#: src/error.c:369
 msgid "Msg: packet too large."
 msgstr "Msg: paquet trop grand."
 
-#: src/error.c:366
+#: src/error.c:373
 msgid "Msg: the variable or directory does not exist."
 msgstr "Msg: la variable ou le répertoire n'existe pas."
 
-#: src/error.c:370
+#: src/error.c:377
 msgid "Msg: the directory name is invalid."
 msgstr "Msg: le nom de répertoire est invalide."
 
-#: src/error.c:374
+#: src/error.c:381
 msgid "Msg: not currently listing a directory."
 msgstr "Msg: pas en train de lister un répertoire."
 
-#: src/error.c:378
+#: src/error.c:385
 msgid "Msg: no more files to list."
 msgstr "Msg: valeur du mode trop petite."
 
-#: src/error.c:382
+#: src/error.c:389
 msgid "Msg: the directory name already exists."
 msgstr "Msg: le nom de répertoire existe déjà."
 
-#: src/error.c:387
+#: src/error.c:394
 msgid "Msg: the destination (folder or file) path is too long."
 msgstr "Msg: le chemin de destination (répertoire ou fichier) est invalide."
 
-#: src/error.c:391
+#: src/error.c:398
 msgid "Msg: the file name is invalid."
 msgstr "Msg: le nom de fichier est invalide."
 
-#: src/error.c:395
+#: src/error.c:402
 msgid "Msg: no file extension."
 msgstr "Msg: pas d'extension de fichier."
 
-#: src/error.c:399
+#: src/error.c:406
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: caractères interdits dans le nom de dossier."
 
-#: src/error.c:403
+#: src/error.c:410
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
-#: src/probe.c:84
+#: src/probe.c:85
 msgid "Probing calculator...\n"
 msgstr "Recherche calculatrice...\n"
 
-#: src/probe.c:88
+#: src/probe.c:89
 msgid "Check for TI86... "
 msgstr "Essai avec TI86... "
 
-#: src/probe.c:109
+#: src/probe.c:110
 msgid "Check for TI85... "
 msgstr "Essai avec TI85... "
 
-#: src/probe.c:130
+#: src/probe.c:131
 msgid "Check for TI73... "
 msgstr "Essai avec TI83... "
 
-#: src/probe.c:151
+#: src/probe.c:152
 msgid "Check for TI83... "
 msgstr "Essai avec TI83... "
 
-#: src/probe.c:172
+#: src/probe.c:173
 msgid "Check for TI82... "
 msgstr "Essai avec TI82... "
 
-#: src/probe.c:220
+#: src/probe.c:221
 msgid "Check for TIXX... "
 msgstr "Essai avec TIXX... "
 
-#: src/probe.c:252
+#: src/probe.c:253
 msgid "Check for TI92... "
 msgstr "Essai avec TI92... "
 
-#: src/probe.c:282
+#: src/probe.c:283
 msgid "Check for TI9X... "
 msgstr "Essai avec TI9X... "
 
-#: src/probe.c:293
+#: src/probe.c:294
 msgid "Check for TI8X... "
 msgstr "Essai avec TI8X... "
 
-#: src/probe.c:303
+#: src/probe.c:304
 #, c-format
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"

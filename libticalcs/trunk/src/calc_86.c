@@ -36,6 +36,7 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
+#include "internal.h"
 #include "gettext.h"
 #include "logging.h"
 #include "error.h"

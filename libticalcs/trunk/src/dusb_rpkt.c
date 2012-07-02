@@ -33,17 +33,21 @@
 
 TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
+	uint8_t buf[1023 + 5]= { 0 };
+	uint32_t size;
+
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 	if (pkt == NULL)
 	{
+		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
 
-	uint8_t buf[1023 + 5]= { 0 };
-	uint32_t size = pkt->size + 5;
+	size = pkt->size + 5;
 
 	buf[0] = MSB(MSW(pkt->size));
 	buf[1] = LSB(MSW(pkt->size));
@@ -70,10 +74,12 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 
 	if (handle == NULL)
 	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 	if (pkt == NULL)
 	{
+		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
 

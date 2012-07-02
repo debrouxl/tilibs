@@ -68,8 +68,7 @@ typedef struct
 // Functions
 
 DUSBVirtualPacket*  dusb_vtl_pkt_new(uint32_t size, uint16_t type);
-void			dusb_vtl_pkt_del(DUSBVirtualPacket* pkt);
-void			dusb_vtl_pkt_purge(void);
+void dusb_vtl_pkt_del(DUSBVirtualPacket* pkt);
 
 int dusb_send_buf_size_request(CalcHandle* h, uint32_t size);
 int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size);

@@ -27,6 +27,7 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
+#include "internal.h"
 #include "dbus_pkt.h"
 #include "error.h"
 #include "logging.h"
@@ -59,7 +60,7 @@ int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 
   if (vartype != TI7383_BKUP) 
   {	// backup: special header
-    pad_buffer(buffer + 3, '\0');
+    pad_buffer_to_8_chars(buffer + 3, '\0');
     TRYF(dbus_send(handle, PC_TI7383, CMD_VAR, 11 + EXTRAS, buffer));
   } 
   else 
@@ -190,7 +191,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   buffer[1] = MSB(varsize);
   buffer[2] = vartype;
   memcpy(buffer + 3, varname, 8);
-  pad_buffer(buffer + 3, '\0');
+  pad_buffer_to_8_chars(buffer + 3, '\0');
   buffer[11] = 0x00;
   buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
@@ -224,7 +225,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, cons
   buffer[1] = MSB(appsize);
   buffer[2] = apptype;
   memcpy(buffer + 3, appname, 8);
-  pad_buffer(buffer + 3, '\0');
+  pad_buffer_to_8_chars(buffer + 3, '\0');
 
   ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=%s)",
 	  appsize, apptype, appname);
@@ -254,7 +255,7 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   if (vartype != TI7383_BKUP) 
   {	
 	  // backup: special header
-    pad_buffer(buffer + 3, '\0');
+    pad_buffer_to_8_chars(buffer + 3, '\0');
     TRYF(dbus_send(handle, PC_TI7383, CMD_RTS, 11 + EXTRAS, buffer));
   } 
   else 
@@ -283,7 +284,7 @@ int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype == TI83p_APPL ? 0x14 : vartype;
 	memcpy(buffer + 3, varname, 8);
-	pad_buffer(buffer + 3, '\0');
+	pad_buffer_to_8_chars(buffer + 3, '\0');
 	buffer[11] = 0x00;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
