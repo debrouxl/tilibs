@@ -77,12 +77,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->clipped_width = TI85_COLS;
 	sc->clipped_height = TI85_ROWS;
 
-	TRYF(ti85_send_SCR());
-	TRYF(ti85_recv_ACK(NULL));
+	TRYF(ti85_send_SCR(handle));
+	TRYF(ti85_recv_ACK(handle, NULL));
 
-	err = ti85_recv_XDP(&max_cnt, buf);	// pb with checksum
+	err = ti85_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
 	if (err != ERR_CHECKSUM) { TRYF(err) };
-	TRYF(ti85_send_ACK());
+	TRYF(ti85_send_ACK(handle));
 
 	*bitmap = (uint8_t *)g_malloc(TI85_COLS * TI85_ROWS / 8);
 	if(*bitmap == NULL) return ERR_MALLOC;
@@ -121,8 +121,8 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   varname[4] = LSB(content->mem_address);
   varname[5] = MSB(content->mem_address);
 
-  TRYF(ti85_send_VAR(content->data_length1, TI85_BKUP, varname));
-  TRYF(ti85_recv_ACK(&status));
+  TRYF(ti85_send_VAR(handle, content->data_length1, TI85_BKUP, varname));
+  TRYF(ti85_recv_ACK(handle, &status));
 
   do 
   {				
@@ -132,11 +132,11 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
     if (update_->cancel)
       return ERR_ABORT;
 
-    err = ti85_recv_SKP(&rej_code);
+    err = ti85_recv_SKP(handle, &rej_code);
   }
   while (err == ERROR_READ_TIMEOUT);
 
-  TRYF(ti85_send_ACK());
+  TRYF(ti85_send_ACK(handle));
   switch (rej_code) 
   {
   case REJ_EXIT:
@@ -155,22 +155,22 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
   update_->max2 = 3;
   update_->pbar();
 
-  TRYF(ti85_send_XDP(content->data_length1, content->data_part1));
-  TRYF(ti85_recv_ACK(&status));
+  TRYF(ti85_send_XDP(handle, content->data_length1, content->data_part1));
+  TRYF(ti85_recv_ACK(handle, &status));
   update_->cnt2++;
   update_->pbar();
 
-  TRYF(ti85_send_XDP(content->data_length2, content->data_part2));
-  TRYF(ti85_recv_ACK(&status));
+  TRYF(ti85_send_XDP(handle, content->data_length2, content->data_part2));
+  TRYF(ti85_recv_ACK(handle, &status));
   update_->cnt2++;
   update_->pbar();
 
-  TRYF(ti85_send_XDP(content->data_length3, content->data_part3));
-  TRYF(ti85_recv_ACK(&status));
+  TRYF(ti85_send_XDP(handle, content->data_length3, content->data_part3));
+  TRYF(ti85_recv_ACK(handle, &status));
   update_->cnt2++;
   update_->pbar();
 
-  TRYF(ti85_send_EOT());
+  TRYF(ti85_send_EOT(handle));
 
   return 0;
 }
@@ -185,14 +185,14 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   content->model = CALC_TI85;
   strcpy(content->comment, tifiles_comment_set_backup());
 
-  TRYF(ti85_recv_VAR(&(content->data_length1), &content->type, varname));
+  TRYF(ti85_recv_VAR(handle, &(content->data_length1), &content->type, varname));
   content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
   content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
   content->mem_address  = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
-  TRYF(ti85_send_ACK());
+  TRYF(ti85_send_ACK(handle));
 
-  TRYF(ti85_send_CTS());
-  TRYF(ti85_recv_ACK(NULL));
+  TRYF(ti85_send_CTS(handle));
+  TRYF(ti85_recv_ACK(handle, NULL));
 
   strcpy(update_->text, "");
   update_label();
@@ -202,20 +202,20 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
   update_->pbar();
 
   content->data_part1 = tifiles_ve_alloc_data(65536);
-  TRYF(ti85_recv_XDP(&content->data_length1, content->data_part1));
-  TRYF(ti85_send_ACK());
+  TRYF(ti85_recv_XDP(handle, &content->data_length1, content->data_part1));
+  TRYF(ti85_send_ACK(handle));
   update_->cnt2++;
   update_->pbar();
 
   content->data_part2 = tifiles_ve_alloc_data(65536);
-  TRYF(ti85_recv_XDP(&content->data_length2, content->data_part2));
-  TRYF(ti85_send_ACK());
+  TRYF(ti85_recv_XDP(handle, &content->data_length2, content->data_part2));
+  TRYF(ti85_send_ACK(handle));
   update_->cnt2++;
   update_->pbar();
 
   content->data_part3 = tifiles_ve_alloc_data(65536);
-  TRYF(ti85_recv_XDP(&content->data_length3, content->data_part3));
-  TRYF(ti85_send_ACK());
+  TRYF(ti85_recv_XDP(handle, &content->data_length3, content->data_part3));
+  TRYF(ti85_send_ACK(handle));
   update_->cnt2++;
   update_->pbar();
 
@@ -250,8 +250,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   {
     VarEntry *entry = content->entries[i];
 
-    TRYF(ti85_send_VAR((uint16_t)entry->size, entry->type, entry->name));
-    TRYF(ti85_recv_ACK(&status));
+    TRYF(ti85_send_VAR(handle, (uint16_t)entry->size, entry->type, entry->name));
+    TRYF(ti85_recv_ACK(handle, &status));
 
     g_snprintf(update_->text, sizeof(update_->text), _("Waiting for user's action..."));
     update_label();
@@ -261,11 +261,11 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       if (update_->cancel)
 		return ERR_ABORT;
 
-      err = ti85_recv_SKP(&rej_code);
+      err = ti85_recv_SKP(handle, &rej_code);
     }
     while (err == ERROR_READ_TIMEOUT);
 
-    TRYF(ti85_send_ACK());
+    TRYF(ti85_send_ACK(handle));
     switch (rej_code) 
 	{
     case REJ_EXIT:
@@ -283,8 +283,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	g_free(utf8);
     update_label();
 
-    TRYF(ti85_send_XDP(entry->size, entry->data));
-    TRYF(ti85_recv_ACK(&status));
+    TRYF(ti85_send_XDP(handle, entry->size, entry->data));
+    TRYF(ti85_recv_ACK(handle, &status));
 
 	update_->cnt2 = i+1;
 	update_->max2 = content->num_entries;
@@ -293,8 +293,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
   if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR)) 
   {
-    TRYF(ti85_send_EOT());
-    TRYF(ti85_recv_ACK(NULL));
+    TRYF(ti85_send_EOT(handle));
+    TRYF(ti85_recv_ACK(handle, NULL));
   }
 
   return 0;
@@ -325,18 +325,18 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
       if (update_->cancel)
 		return ERR_ABORT;
 
-      err = ti85_recv_VAR(&ve_size, &(ve->type), ve->name);
+      err = ti85_recv_VAR(handle, &ve_size, &(ve->type), ve->name);
       ve->size = ve_size;
     }
     while (err == ERROR_READ_TIMEOUT);
 
-    TRYF(ti85_send_ACK());
+    TRYF(ti85_send_ACK(handle));
     if (err == ERR_EOT) 
       goto exit;
     TRYF(err);
 
-    TRYF(ti85_send_CTS());
-    TRYF(ti85_recv_ACK(NULL));
+    TRYF(ti85_send_CTS(handle));
+    TRYF(ti85_recv_ACK(handle, NULL));
 
 	utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
     g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
@@ -344,9 +344,9 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     update_label();
 
     ve->data = tifiles_ve_alloc_data(ve->size);
-    TRYF(ti85_recv_XDP(&ve_size, ve->data));
+    TRYF(ti85_recv_XDP(handle, &ve_size, ve->data));
     ve->size = ve_size;
-    TRYF(ti85_send_ACK());
+    TRYF(ti85_send_ACK(handle));
   }
 
 exit:

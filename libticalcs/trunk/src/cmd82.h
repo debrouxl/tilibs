@@ -22,24 +22,24 @@
 #ifndef __TICALCS_CMD82__
 #define __TICALCS_CMD82__
 
-int ti82_send_VAR_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
-int ti82_send_CTS_h(CalcHandle*);
-int ti82_send_XDP_h(CalcHandle*, int length, uint8_t * data);
-int ti82_send_SKP_h(CalcHandle*, uint8_t rej_code);
-int ti82_send_ACK_h(CalcHandle*);
-int ti82_send_ERR_h(CalcHandle*);
-int ti82_send_SCR_h(CalcHandle*);
-int ti83_send_KEY_h(CalcHandle*, uint16_t scancode);
-int ti82_send_KEY_h(CalcHandle*, uint16_t scancode);
-int ti82_send_EOT_h(CalcHandle*);
-int ti82_send_REQ_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
-int ti82_send_RTS_h(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+int ti82_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+int ti82_send_CTS(CalcHandle*);
+int ti82_send_XDP(CalcHandle*, int length, uint8_t * data);
+int ti82_send_SKP(CalcHandle*, uint8_t rej_code);
+int ti82_send_ACK(CalcHandle*);
+int ti82_send_ERR(CalcHandle*);
+int ti82_send_SCR(CalcHandle*);
+int ti83_send_KEY(CalcHandle*, uint16_t scancode);
+int ti82_send_KEY(CalcHandle*, uint16_t scancode);
+int ti82_send_EOT(CalcHandle*);
+int ti82_send_REQ(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+int ti82_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 
-int ti82_recv_VAR_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
-int ti82_recv_CTS_h(CalcHandle*);
-int ti82_recv_SKP_h(CalcHandle*, uint8_t * rej_code);
-int ti82_recv_XDP_h(CalcHandle*, uint16_t * length, uint8_t * data);
-int ti82_recv_ACK_h(CalcHandle*, uint16_t * status);
-int ti82_recv_RTS_h(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+int ti82_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+int ti82_recv_CTS(CalcHandle*);
+int ti82_recv_SKP(CalcHandle*, uint8_t * rej_code);
+int ti82_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
+int ti82_recv_ACK(CalcHandle*, uint16_t * status);
+int ti82_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 #endif

@@ -44,7 +44,7 @@
 #define EXTRAS ((handle->model == CALC_TI83P) || (handle->model == CALC_TI84P) ? 2 : 0)
 
 /* Variable (std var header: NUL padded, fixed length) */
-int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
+int ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
 {
   uint8_t buffer[16];
 
@@ -72,7 +72,7 @@ int ti73_send_VAR_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
-int ti73_send_VAR2_h(CalcHandle* handle, uint32_t length, uint8_t type, uint8_t flag,
+int ti73_send_VAR2(CalcHandle* handle, uint32_t length, uint8_t type, uint8_t flag,
 		   uint16_t offset, uint16_t page)
 {
   uint8_t buffer[11];
@@ -96,7 +96,7 @@ int ti73_send_VAR2_h(CalcHandle* handle, uint32_t length, uint8_t type, uint8_t 
   return 0;
 }
 
-int ti73_send_CTS_h(CalcHandle* handle)
+int ti73_send_CTS(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: CTS");
   TRYF(dbus_send(handle, PC_TI7383, CMD_CTS, 0, NULL));
@@ -104,7 +104,7 @@ int ti73_send_CTS_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
+int ti73_send_XDP(CalcHandle* handle, int length, uint8_t * data)
 {
   ticalcs_info(" PC->TI: XDP (0x%04X bytes)", length);
   TRYF(dbus_send(handle, PC_TI7383, CMD_XDP, length, data));
@@ -117,7 +117,7 @@ int ti73_send_XDP_h(CalcHandle* handle, int length, uint8_t * data)
   - rej_code [in]: a rejection code
   - int [out]: an error code
  */
-int ti73_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
+int ti73_send_SKP(CalcHandle* handle, uint8_t rej_code)
 {
   TRYF(dbus_send(handle, PC_TI7383, CMD_SKP, 1, &rej_code));
   ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
@@ -125,7 +125,7 @@ int ti73_send_SKP_h(CalcHandle* handle, uint8_t rej_code)
   return 0;
 }
 
-int ti73_send_ACK_h(CalcHandle* handle)
+int ti73_send_ACK(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ACK");
   TRYF(dbus_send(handle, PC_TI7383, CMD_ACK, 2, NULL));
@@ -133,7 +133,7 @@ int ti73_send_ACK_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_ERR_h(CalcHandle* handle)
+int ti73_send_ERR(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: ERR");
   TRYF(dbus_send(handle, PC_TI7383, CMD_ERR, 2, NULL));
@@ -141,7 +141,7 @@ int ti73_send_ERR_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_RDY_h(CalcHandle* handle)
+int ti73_send_RDY(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: RDY?");
   TRYF(dbus_send(handle, PC_TI7383, CMD_RDY, 2, NULL));
@@ -149,7 +149,7 @@ int ti73_send_RDY_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_SCR_h(CalcHandle* handle)
+int ti73_send_SCR(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: SCR");
   TRYF(dbus_send(handle, PC_TI7383, CMD_SCR, 2, NULL));
@@ -157,7 +157,7 @@ int ti73_send_SCR_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_KEY_h(CalcHandle* handle, uint16_t scancode)
+int ti73_send_KEY(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
   
@@ -172,7 +172,7 @@ int ti73_send_KEY_h(CalcHandle* handle, uint16_t scancode)
 	return 0;
 }
 
-int ti73_send_EOT_h(CalcHandle* handle)
+int ti73_send_EOT(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: EOT");
   TRYF(dbus_send(handle, PC_TI7383, CMD_EOT, 2, NULL));
@@ -181,7 +181,7 @@ int ti73_send_EOT_h(CalcHandle* handle)
 }
 
 /* Request variable (std var header: NUL padded, fixed length) */
-int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
+int ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
   uint8_t buffer[16] = { 0 };
@@ -216,7 +216,7 @@ int ti73_send_REQ_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
-int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, const char *appname,
+int ti73_send_REQ2(CalcHandle* handle, uint16_t appsize, uint8_t apptype, const char *appname,
 		   uint8_t appattr)
 {
   uint8_t buffer[16] = { 0 };
@@ -235,7 +235,7 @@ int ti73_send_REQ2_h(CalcHandle* handle, uint16_t appsize, uint8_t apptype, cons
 }
 
 /* Request to send (std var header: NUL padded, fixed length) */
-int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
+int ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
   uint8_t buffer[16];
@@ -266,7 +266,7 @@ int ti73_send_RTS_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
   return 0;
 }
 
-int ti73_send_VER_h(CalcHandle* handle)
+int ti73_send_VER(CalcHandle* handle)
 {
   ticalcs_info(" PC->TI: VER");
   TRYF(dbus_send(handle, PC_TI7383, CMD_VER, 2, NULL));
@@ -274,7 +274,7 @@ int ti73_send_VER_h(CalcHandle* handle)
   return 0;
 }
 
-int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
+int ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname,
 		  uint8_t varattr)
 {
 	uint8_t buffer[16] = { 0 };
@@ -296,7 +296,7 @@ int ti73_send_DEL_h(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const
 }
 
 
-int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname,
+int ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname,
 		  uint8_t * varattr)
 {
   uint8_t host, cmd;
@@ -332,7 +332,7 @@ int ti73_recv_VAR_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, c
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
-int ti73_recv_VAR2_h(CalcHandle* handle, uint16_t * length, uint8_t * type, char *name,
+int ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8_t * type, char *name,
 		   uint16_t * offset, uint16_t * page)
 {
   uint8_t host, cmd;
@@ -367,7 +367,7 @@ int ti73_recv_VAR2_h(CalcHandle* handle, uint16_t * length, uint8_t * type, char
   return 0;
 }
 
-int ti73_recv_CTS_h(CalcHandle* handle, uint16_t length)
+int ti73_recv_CTS(CalcHandle* handle, uint16_t length)
 {
   uint8_t host, cmd;
   uint16_t len;
@@ -388,7 +388,7 @@ int ti73_recv_CTS_h(CalcHandle* handle, uint16_t length)
   return 0;
 }
 
-int ti73_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
+int ti73_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -411,7 +411,7 @@ int ti73_recv_SKP_h(CalcHandle* handle, uint8_t * rej_code)
   return 0;
 }
 
-int ti73_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
+int ti73_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
   uint8_t host, cmd;
 
@@ -431,7 +431,7 @@ int ti73_recv_XDP_h(CalcHandle* handle, uint16_t * length, uint8_t * data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti73_recv_ACK_h(CalcHandle* handle, uint16_t * status)
+int ti73_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
   uint8_t host, cmd;
   uint16_t length;
@@ -452,7 +452,7 @@ int ti73_recv_ACK_h(CalcHandle* handle, uint16_t * status)
   return 0;
 }
 
-int ti73_recv_RTS_h(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname,
+int ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname,
 		  uint8_t * varattr)
 {
   uint8_t host, cmd;

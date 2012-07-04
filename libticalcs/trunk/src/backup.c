@@ -156,14 +156,14 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		handle->model == CALC_TI89T || handle->model == CALC_V200) && (mode & TIG_BACKUP))
 	{
 		// erase memory
-		TRYF(ti89_send_VAR(0, TI89_BKUP, "main"));
-		TRYF(ti89_recv_ACK(NULL));
+		TRYF(ti89_send_VAR(handle, 0, TI89_BKUP, "main"));
+		TRYF(ti89_recv_ACK(handle, NULL));
 
-		TRYF(ti89_recv_CTS());
-		TRYF(ti89_send_ACK());
+		TRYF(ti89_recv_CTS(handle));
+		TRYF(ti89_send_ACK(handle));
 
-		TRYF(ti89_send_EOT());
-		TRYF(ti89_recv_ACK(NULL));
+		TRYF(ti89_send_EOT(handle));
+		TRYF(ti89_recv_ACK(handle, NULL));
 	}
 
 	// Send vars

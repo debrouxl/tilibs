@@ -22,28 +22,27 @@
 #ifndef __TICALCS_CMD92__
 #define __TICALCS_CMD92__
 
-int ti92_send_VAR_h(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
-int ti92_send_CTS_h(CalcHandle*);
-int ti92_send_XDP_h(CalcHandle*, int length, uint8_t * data);
-int ti92_send_SKP_h(CalcHandle*, uint8_t rej_code);
-int ti92_send_ACK_h(CalcHandle*);
-int ti92_send_ERR_h(CalcHandle*);
-int ti92_send_RDY_h(CalcHandle*);
-int ti92_send_SCR_h(CalcHandle*);
-int ti92_send_CNT_h(CalcHandle*);
-int ti92_send_KEY_h(CalcHandle*, uint16_t scancode);
-int ti92_send_EOT_h(CalcHandle*);
-int ti92_send_REQ_h(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
-int ti92_send_RTS_h(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
+int ti92_send_VAR(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
+int ti92_send_CTS(CalcHandle*);
+int ti92_send_XDP(CalcHandle*, int length, uint8_t * data);
+int ti92_send_SKP(CalcHandle*, uint8_t rej_code);
+int ti92_send_ACK(CalcHandle*);
+int ti92_send_ERR(CalcHandle*);
+int ti92_send_RDY(CalcHandle*);
+int ti92_send_SCR(CalcHandle*);
+int ti92_send_CNT(CalcHandle*);
+int ti92_send_KEY(CalcHandle*, uint16_t scancode);
+int ti92_send_EOT(CalcHandle*);
+int ti92_send_REQ(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
+int ti92_send_RTS(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
 
-int ti92_recv_VAR_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
-int ti92_recv_CTS_h(CalcHandle*);
-int ti92_recv_SKP_h(CalcHandle*, uint8_t * rej_code);
-int ti92_recv_XDP_h(CalcHandle*, uint32_t * length, uint8_t * data);
-int ti92_recv_ACK_h(CalcHandle*, uint16_t * status);
-int ti92_recv_CNT_h(CalcHandle*);
-int ti92_recv_EOT_h(CalcHandle*);
-int ti92_recv_RTS_h(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti92_recv_VAR(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
+int ti92_recv_CTS(CalcHandle*);
+int ti92_recv_SKP(CalcHandle*, uint8_t * rej_code);
+int ti92_recv_XDP(CalcHandle*, uint32_t * length, uint8_t * data);
+int ti92_recv_ACK(CalcHandle*, uint16_t * status);
+int ti92_recv_CNT(CalcHandle*);
+int ti92_recv_EOT(CalcHandle*);
+int ti92_recv_RTS(CalcHandle*, uint32_t * varsize, uint8_t * vartype, char *varname);
 
 #endif
-
