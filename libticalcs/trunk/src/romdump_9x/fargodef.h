@@ -54,3 +54,4 @@ enum Fonts {F_4x6, F_6x8, F_8x10};
 #define OSLinkReset tios__0006
 void OSLinkReset (void);
 
+#include <stdint.h>
