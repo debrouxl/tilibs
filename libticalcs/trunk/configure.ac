@@ -37,6 +37,11 @@ AC_CONFIG_FILES([
   docs/Makefile
   po/Makefile.in
   src/Makefile
+  src/tf2hex/Makefile
+  src/romdump_8x/Makefile
+  src/romdump_84p_usb/Makefile
+  src/romdump_9x/Makefile
+  src/romdump_89t_usb/Makefile
   tests/Makefile
   ticalcs2.pc
 ])
@@ -164,6 +169,27 @@ case $host_os in
 	fi
 	;;
 esac
+
+# Check for tools needed to build ROM dumpers
+
+# Find a C compiler for the build system (needed for compiling tf2hex)
+AC_ARG_VAR([CC_FOR_BUILD], [C compiler for programs to be run on the build system])
+AC_ARG_VAR([CFLAGS_FOR_BUILD], [C compiler flags for CC_FOR_BUILD])
+AC_MSG_CHECKING([for the host compiler])
+if test "x$build" == "x$host" ; then
+  # Not cross-compiling.
+  CC_FOR_BUILD=$CC
+  CFLAGS_FOR_BUILD=$CFLAGS
+  AC_MSG_RESULT([${CC_FOR_BUILD}])
+else
+  # Try to find the host CC among several choices
+  AC_CHECK_PROGS(CC_FOR_BUILD, [gcc cc clang c89 c99], [false])
+  if test "x$CC_FOR_BUILD" = "xfalse" ; then
+    AC_MSG_FAILURE([not found.])
+  else
+    AC_MSG_RESULT([${CC_FOR_BUILD}])
+  fi
+fi
 
 # Output.
 AC_OUTPUT

@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CFLAGS = -Wall
+AM_CFLAGS = -Wall -W
 
-EXTRA_DIST = romdump_* tf2hex
+SUBDIRS = tf2hex romdump_8x romdump_84p_usb romdump_9x romdump_89t_usb
 
 # libraries and files to compile and install
 lib_LTLIBRARIES = libticalcs2.la
