@@ -41,29 +41,37 @@
 
 GList *cpca_list = NULL;
 
-CalcParam*	cp_new(uint16_t id, uint16_t size)
+CalcParam* cp_new(uint16_t id, uint16_t size)
 {
-	CalcParam* cp = g_malloc0(sizeof(CalcParam));
+	CalcParam* cp = g_malloc0(sizeof(CalcParam)); // aborts the program if it fails.
 
 	cp->id = id;
 	cp->size = size;
-	cp->data = g_malloc0(size);
+	cp->data = g_malloc0(size); // aborts the program if it fails.
 
 	cpca_list = g_list_append(cpca_list, cp);
+
 	return cp;
 }
 
-void		cp_del(CalcParam* cp)
+void cp_del(CalcParam* cp)
 {
-	cpca_list = g_list_remove(cpca_list, cp);
+	if (cp != NULL)
+	{
+		cpca_list = g_list_remove(cpca_list, cp);
 
-	g_free(cp->data);
-	g_free(cp);
+		g_free(cp->data);
+		g_free(cp);
+	}
+	else
+	{
+		ticalcs_critical("%s: cp is NULL", __FUNCTION__);
+	}
 }
 
 CalcParam** cp_new_array(int size)
 {
-	CalcParam** array = g_malloc0((size+1) * sizeof(CalcParam *));
+	CalcParam** array = g_malloc0((size+1) * sizeof(CalcParam *)); // aborts the program if it fails.
 	return array;
 }
 
@@ -71,36 +79,54 @@ void cp_del_array(int size, CalcParam **params)
 {
 	int i;
 
-	for(i = 0; i < size && params[i]; i++)
-		cp_del(params[i]);
-	g_free(params);
+	if (params != NULL)
+	{
+		for(i = 0; i < size && params[i]; i++)
+		{
+			cp_del(params[i]);
+		}
+		g_free(params);
+	}
+	else
+	{
+		ticalcs_critical("%s: params is NULL", __FUNCTION__);
+	}
+
 }
 
 /////////////----------------
 
-CalcAttr*	ca_new(uint16_t id, uint16_t size)
+CalcAttr* ca_new(uint16_t id, uint16_t size)
 {
-	CalcAttr* cp = g_malloc0(sizeof(CalcAttr));
+	CalcAttr* cp = g_malloc0(sizeof(CalcAttr)); // aborts the program if it fails.
 
 	cp->id = id;
 	cp->size = size;
-	cp->data = g_malloc0(size);
+	cp->data = g_malloc0(size); // aborts the program if it fails.
 
 	cpca_list = g_list_append(cpca_list, cp);
+
 	return cp;
 }
 
-void		ca_del(CalcAttr* cp)
+void ca_del(CalcAttr* cp)
 {
-	cpca_list = g_list_remove(cpca_list, cp);
+	if (cp != NULL)
+	{
+		cpca_list = g_list_remove(cpca_list, cp);
 
-	g_free(cp->data);
-	g_free(cp);
+		g_free(cp->data);
+		g_free(cp);
+	}
+	else
+	{
+		ticalcs_critical("%s: cp is NULL", __FUNCTION__);
+	}
 }
 
 CalcAttr** ca_new_array(int size)
 {
-	CalcAttr** array = g_malloc0((size+1) * sizeof(CalcParam *));
+	CalcAttr** array = g_malloc0((size+1) * sizeof(CalcParam *)); // aborts the program if it fails.
 	return array;
 }
 
@@ -108,9 +134,18 @@ void ca_del_array(int size, CalcAttr **attrs)
 {
 	int i;
 
-	for(i = 0; i < size && attrs[i]; i++)
-		ca_del(attrs[i]);
-	g_free(attrs);
+	if (attrs != NULL)
+	{
+		for(i = 0; i < size && attrs[i]; i++)
+		{
+			ca_del(attrs[i]);
+		}
+		g_free(attrs);
+	}
+	else
+	{
+		ticalcs_critical("%s: attrs is NULL", __FUNCTION__);
+	}
 }
 
 void cpca_purge(void)
@@ -150,10 +185,10 @@ static void byteswap(uint8_t *data, uint32_t len)
 
 /////////////----------------
 
-static uint16_t usb_errors[] = { 
+static const uint16_t usb_errors[] = {
 	0x0004, 0x0006, 0x0008, 0x0009, 0x000c, 0x000d, 0x000e, 
-	0x0011, 0x0012, 0x001c, 0x001d, 0x0022, 0x0029, 0x002b, 
-	0x002e, 0x0034 };
+	0x0011, 0x0012, 0x001c, 0x001d, 0x0022, 0x0027, 0x0029, 
+	0x002b, 0x002e, 0x0034 };
 
 static int err_code(DUSBVirtualPacket *pkt)
 {
@@ -165,7 +200,7 @@ static int err_code(DUSBVirtualPacket *pkt)
 			return i+1;
 
 	ticalcs_warning("USB error code 0x%02x not found in list. Please report it at <tilp-devel@lists.sf.net>.", code);
-	
+
 	return 0;
 }
 
@@ -188,18 +223,31 @@ extern const DUSBVtlPktName vpkt_types[];
 \
 		dusb_vtl_pkt_del(pkt); \
 		pkt = dusb_vtl_pkt_new(0, 0); \
-		TRYF(dusb_recv_data(h, pkt)); \
+\
+		retval = dusb_recv_data(h, pkt); \
+		if (retval) \
+		{ \
+			goto end; \
+		} \
 	}
 
 // 0x0001: set mode or ping
 int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	TRYF(dusb_send_buf_size_request(h, DUSB_DFL_BUF_SIZE));
 	TRYF(dusb_recv_buf_size_alloc(h, NULL));
 
 	pkt = dusb_vtl_pkt_new(sizeof(mode), DUSB_VPKT_PING);
+
 	pkt->data[0] = MSB(mode.arg1);
 	pkt->data[1] = LSB(mode.arg1);
 	pkt->data[2] = MSB(mode.arg2);
@@ -210,58 +258,101 @@ int cmd_s_mode_set(CalcHandle *h, ModeSet mode)
 	pkt->data[7] = LSB(mode.arg4);
 	pkt->data[8] = MSB(mode.arg5);
 	pkt->data[9] = LSB(mode.arg5);
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
+
 	ticalcs_info("   %04x %04x %04x %04x %04x", mode.arg1, mode.arg2, mode.arg3, mode.arg4, mode.arg5);
 
-	return 0;
+	return retval;
 }
 
 // 0x0002: begin OS transfer
 int cmd_s_os_begin(CalcHandle *h, uint32_t size)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(11, DUSB_VPKT_OS_BEGIN);
+
 	pkt->data[7] = MSB(MSW(size));
 	pkt->data[8] = LSB(MSW(size));
 	pkt->data[9] = MSB(LSW(size));
 	pkt->data[10]= LSB(LSW(size));
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
+
 	ticalcs_info("   size = %08x (%i)", size, size);
 
-	return 0;
+	return retval;
 }
 
 // 0x0003: acknowledgement of OS transfer
 int cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_OS_ACK)
-		return ERR_INVALID_PACKET;
-	
-	*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
+	if (!retval)
+	{
+		CATCH_DELAY();
 
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_OS_ACK)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		if (size != NULL)
+		{
+			*size = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0);
+			ticalcs_info("   size = %08x (%i)", *size, *size);
+		}
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
-	ticalcs_info("   size = %08x (%i)", *size, *size);
 
-	return 0;
+	return retval;
 }
 
 static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (data == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(4 + size, type);
 
@@ -270,12 +361,12 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 	pkt->data[2] = page;
 	pkt->data[3] = flag;
 	memcpy(pkt->data+4, data, size);
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   addr=%04x, page=%02x, flag=%02x, size=%04x", addr, page, flag, size);
 
-	return 0;
+	return retval;
 }
 
 // 0x0004: OS header
@@ -294,50 +385,92 @@ int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint
 int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (data == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_HEADER);
+
 	memcpy(pkt->data, data, size);
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", size, size);
 
-	return 0;
+	return retval;
 }
 
 // 0x0005: OS data
 int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (data == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_DATA);
+
 	memcpy(pkt->data, data, size);
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size = %08x (%i)", size, size);
 
-	return 0;
+	return retval;
 }
 
 // 0x0006: acknowledgement of EOT
 int cmd_r_eot_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_EOT_ACK)
-		return ERR_INVALID_PACKET;
+	if (!retval)
+	{
+		CATCH_DELAY();
 
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+		}
+		else if(pkt->type != DUSB_VPKT_EOT_ACK)
+		{
+			retval = ERR_INVALID_PACKET;
+		}
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0x0007: parameter request
@@ -345,6 +478,18 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (pids == NULL)
+	{
+		ticalcs_critical("%s: pids is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new((npids + 1) * sizeof(uint16_t), DUSB_VPKT_PARM_REQ);
 
@@ -357,12 +502,12 @@ int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 		pkt->data[2*(i+1) + 1] = LSB(pids[i]);
 	}
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   npids=%i", npids);
 
-	return 0;
+	return retval;
 }
 
 // 0x0008: parameter data
@@ -370,39 +515,65 @@ int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params)
 {
 	DUSBVirtualPacket* pkt;
 	int i, j;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (params == NULL)
+	{
+		ticalcs_critical("%s: params is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_PARM_DATA)
-		return ERR_INVALID_PACKET;
-
-	if(((pkt->data[0] << 8) | pkt->data[1]) != nparams)
-		return ERR_INVALID_PACKET;
-
-	for(i = 0, j = 2; i < nparams; i++)
+	if (!retval)
 	{
-		CalcParam *s = params[i] = cp_new(0, 0);
-		
-		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
-		s->ok = !pkt->data[j++];
-		if(s->ok)
+		CATCH_DELAY();
+
+		if(pkt->type == DUSB_VPKT_ERROR)
 		{
-			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
-			s->data = (uint8_t *)g_malloc0(s->size);
-			memcpy(s->data, &pkt->data[j], s->size);
-			j += s->size;
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_PARM_DATA)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		if(((pkt->data[0] << 8) | pkt->data[1]) != nparams)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		for(i = 0, j = 2; i < nparams; i++)
+		{
+			CalcParam *s = params[i] = cp_new(0, 0);
+
+			s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
+			s->ok = !pkt->data[j++];
+			if(s->ok)
+			{
+				s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
+				s->data = (uint8_t *)g_malloc0(s->size);
+				memcpy(s->data, &pkt->data[j], s->size);
+				j += s->size;
+			}
 		}
 	}
-	
+
+end:
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   nparams=%i", nparams);
 
-	return 0;
+	return retval;
 }
 
 // 0x0009: request directory listing
@@ -411,6 +582,18 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 	DUSBVirtualPacket* pkt;
 	int i;
 	int j = 0;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (aids == NULL)
+	{
+		ticalcs_critical("%s: aids is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(4 + 2*naids + 7, DUSB_VPKT_DIR_REQ);
 
@@ -430,12 +613,12 @@ int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 	pkt->data[j++] = 0x00; pkt->data[j++] = 0x01;
 	pkt->data[j++] = 0x01;
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   naids=%i", naids);
 
-	return 0;
+	return retval;
 }
 
 // 0x000A: variable header (name is utf-8)
@@ -447,60 +630,83 @@ int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr)
 	uint8_t var_len;
 	int nattr;
 	int i, j;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (folder == NULL || name == NULL || attr == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_EOT)
+	if (!retval)
 	{
-		dusb_vtl_pkt_del(pkt);
-		return ERR_EOT;
-	}
-	else if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_VAR_HDR)
-		return ERR_INVALID_PACKET;
+		CATCH_DELAY();
 
-	j = 0;
-	fld_len = pkt->data[j++];
-	strcpy(folder, "");
-	if(fld_len)
-	{
-		memcpy(folder, &pkt->data[j], fld_len+1);
-		j += fld_len+1;
-	}
-	var_len = pkt->data[j++];
-	strcpy(name, "");
-	if(var_len)
-	{
-		memcpy(name, &pkt->data[j], var_len+1);
-		j += var_len+1;
-	}
-
-	nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
-	j += 2;
-	
-	for(i = 0; i < nattr; i++)
-	{
-		CalcAttr *s = attr[i] = ca_new(0, 0);
-
-		s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
-		s->ok = !pkt->data[j++];
-		if(s->ok)
+		if(pkt->type == DUSB_VPKT_EOT)
 		{
-			s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
-			s->data = (uint8_t *)g_malloc0(s->size);
-			memcpy(s->data, &pkt->data[j], s->size);
-			j += s->size;
+			retval = ERR_EOT;
+			goto end;
+		}
+		else if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_VAR_HDR)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		j = 0;
+		fld_len = pkt->data[j++];
+		strcpy(folder, "");
+		if(fld_len)
+		{
+			memcpy(folder, &pkt->data[j], fld_len+1);
+			j += fld_len+1;
+		}
+		var_len = pkt->data[j++];
+		strcpy(name, "");
+		if(var_len)
+		{
+			memcpy(name, &pkt->data[j], var_len+1);
+			j += var_len+1;
+		}
+
+		nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
+		j += 2;
+		
+		for(i = 0; i < nattr; i++)
+		{
+			CalcAttr *s = attr[i] = ca_new(0, 0);
+
+			s->id = pkt->data[j++] << 8; s->id |= pkt->data[j++];
+			s->ok = !pkt->data[j++];
+			if(s->ok)
+			{
+				s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
+				s->data = (uint8_t *)g_malloc0(s->size);
+				memcpy(s->data, &pkt->data[j], s->size);
+				j += s->size;
+			}
 		}
 	}
-	
+
+end:
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s", folder, name);
 
-	return 0;
+	return retval;
 }
 
 // 0x000B: request to send
@@ -510,11 +716,24 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 	int pks;
 	int i;
 	int j = 0;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (folder == NULL || name == NULL || attrs == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pks = 2 + strlen(name)+1 + 5 + 2;
 	if(strlen(folder))
 		pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
+
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_RTS);
 
 	if(strlen(folder))
@@ -524,12 +743,14 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 		j += strlen(folder)+1;
 	}
 	else
+	{
 		pkt->data[j++] = 0;
+	}
 
 	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
-	
+
 	pkt->data[j++] = MSB(MSW(size));
 	pkt->data[j++] = LSB(MSW(size));
 	pkt->data[j++] = MSB(LSW(size));
@@ -549,28 +770,39 @@ int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size
 		j += attrs[i]->size;
 	}
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s, size=%i, nattrs=%i", folder, name, size, nattrs);
 
-	return 0;
+	return retval;
 }
 
 // 0x000C: variable request
-int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, 
-						int naids, uint16_t *aids, 
-						int nattrs, const CalcAttr **attrs)
+int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;
 	int i;
 	int j = 0;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (folder == NULL || name == NULL || aids == NULL || attrs == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pks = 2 + strlen(name)+1 + 5 + 2 + 2*naids + 2;
 	if(strlen(folder)) pks += strlen(folder)+1;
 	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
 	pks += 2;
+
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_VAR_REQ);
 
 	if(strlen(folder))
@@ -585,8 +817,8 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	pkt->data[j++] = strlen(name);
 	memcpy(pkt->data + j, name, strlen(name)+1);
 	j += strlen(name)+1;
-	
-	pkt->data[j++] = 0x01; 
+
+	pkt->data[j++] = 0x01;
 	pkt->data[j++] = 0xFF; pkt->data[j++] = 0xFF;
 	pkt->data[j++] = 0xFF; pkt->data[j++] = 0xFF;
 
@@ -612,61 +844,117 @@ int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name,
 	}
 	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   folder=%s, name=%s, naids=%i, nattrs=%i", folder, name, naids, nattrs);
 
-	return 0;
+	return retval;
 }
 
 // 0x000D: variable contents (recv)
 int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (size == NULL || data == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_VAR_CNTS)
-		return ERR_INVALID_PACKET;
+	if (!retval)
+	{
+		CATCH_DELAY();
 
-	if(size != NULL)
-		*size = pkt->size;
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_VAR_CNTS)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
 
-	*data = g_malloc0(pkt->size);
-	memcpy(*data, pkt->data, pkt->size);
-	ticalcs_info("   size=%i", pkt->size);
+		if(size != NULL)
+		{
+			*size = pkt->size;
+		}
 
+		*data = g_malloc0(pkt->size);
+		if (*data != NULL)
+		{
+			memcpy(*data, pkt->data, pkt->size);
+		}
+		else
+		{
+			retval = ERR_MALLOC;
+		}
+		ticalcs_info("   size=%i", pkt->size);
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0x000D: variable contents (send)
 int cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (data == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_VAR_CNTS);
 
 	memcpy(pkt->data, data, size);
-	TRYF(dusb_send_data(h, pkt));
-	
+	retval = dusb_send_data(h, pkt);
+
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   size=%i", size);
 
-	return 0;
+	return retval;
 }
 
 // 0x000E: parameter set
 int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (param == NULL)
+	{
+		ticalcs_critical("%s: param is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pkt = dusb_vtl_pkt_new(2 + 2 + param->size, DUSB_VPKT_PARM_SET);
 
@@ -676,12 +964,12 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 	pkt->data[3] = LSB(param->size);
 	memcpy(pkt->data + 4, param->data, param->size);
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   pid=%04x, size=%04x", param->id, param->size);
 
-	return 0;
+	return retval;
 }
 
 // 0x0010: modify/rename/delete variable
@@ -695,7 +983,18 @@ int cmd_s_var_modify(CalcHandle *h,
 	int i;
 	int j = 0;
 	int pks;
-	int ret = 0;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (src_folder == NULL || src_name == NULL || src_attrs == NULL || dst_folder == NULL || dst_name == NULL || (n_dst_attrs != 0 && dst_attrs == NULL))
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	pks = 2 + strlen(src_name)+1 + 2;
 	if(strlen(src_folder))
@@ -721,7 +1020,9 @@ int cmd_s_var_modify(CalcHandle *h,
 		j += strlen(src_folder)+1;
 	}
 	else
+	{
 		pkt->data[j++] = 0;
+	}
 
 	pkt->data[j++] = strlen(src_name);
 	memcpy(pkt->data + j, src_name, strlen(src_name)+1);
@@ -773,27 +1074,39 @@ int cmd_s_var_modify(CalcHandle *h,
 
 	g_assert(j == pks);
 
-	ret = dusb_send_data(h, pkt);
+	retval = dusb_send_data(h, pkt);
 
 	ticalcs_info("   src_folder=%s, name=%s, nattrs=%i", src_folder, src_name, n_src_attrs);
 	ticalcs_info("   dst_folder=%s, name=%s, nattrs=%i", dst_folder, dst_name, n_dst_attrs);
 
 	dusb_vtl_pkt_del(pkt);
-	return ret;
+	return retval;
 }
 
 int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs)
 {
-	return cmd_s_var_modify(h, folder, name, nattrs, attrs, "", "", 0, NULL);
+	const CalcAttr * dummy;
+	return cmd_s_var_modify(h, folder, name, nattrs, attrs, "", "", 0, &dummy);
 }
 
 // 0x0011: remote control
-int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, 
-					uint8_t action, const char *args, uint16_t code)
+int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
 {
 	DUSBVirtualPacket* pkt = NULL;
 	int pks;
 	int j = 0;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (folder == NULL || name == NULL || args == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
 
 	if(h->model == CALC_TI89T_USB)
 	{
@@ -812,7 +1125,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 
 		pkt->data[j++] = strlen(name);
 		if(strlen(name))
-		{		
+		{
 			memcpy(pkt->data + j, name, strlen(name)+1);
 			j += strlen(name)+1;
 		}
@@ -859,7 +1172,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 		}
 	}
 
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	if (action == EID_KEY)
@@ -871,121 +1184,197 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name,
 		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder ? folder : "NULL", name ? name : "NULL", args ? args : "NULL");
 	}
 
-	return 0;
+	return retval;
 }
 
 // 0x0012: acknowledgement of mode setting
 int cmd_r_mode_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_MODE_SET)
-		return ERR_INVALID_PACKET;
+	if (!retval)
+	{
+		CATCH_DELAY();
 
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+		}
+		else if(pkt->type != DUSB_VPKT_MODE_SET)
+		{
+			retval = ERR_INVALID_PACKET;
+		}
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0xAA00: acknowledgement of data
 int cmd_r_data_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
 
-	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
-
-	CATCH_DELAY();
-
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_DATA_ACK)
+	if (h == NULL)
 	{
-		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DATA_ACK, pkt->type);
-		return ERR_INVALID_PACKET;
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
 	}
 
+	pkt = dusb_vtl_pkt_new(0, 0);
+
+	retval = dusb_recv_data(h, pkt);
+
+	if (!retval)
+	{
+		CATCH_DELAY();
+
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+		}
+		else if(pkt->type != DUSB_VPKT_DATA_ACK)
+		{
+			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DATA_ACK, pkt->type);
+			retval = ERR_INVALID_PACKET;
+		}
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0xBB00: delay acknowledgement
 int cmd_r_delay_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_DELAY_ACK)
+	retval = dusb_recv_data(h, pkt);
+
+	if (!retval)
 	{
-		ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DELAY_ACK, pkt->type);
-		return ERR_INVALID_PACKET;
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+		}
+		else if(pkt->type != DUSB_VPKT_DELAY_ACK)
+		{
+			ticalcs_info("cmd_r_data_ack: expected type 0x%4X, received type 0x%4X", DUSB_VPKT_DELAY_ACK, pkt->type);
+			retval = ERR_INVALID_PACKET;
+		}
 	}
 
 	PAUSE(100);
 
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0xDD00: end of transmission (send)
 int cmd_s_eot(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, DUSB_VPKT_EOT);
-	TRYF(dusb_send_data(h, pkt));
+
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0xDD00: end of transmission (recv)
 int cmd_r_eot(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(0, 0);
-	TRYF(dusb_recv_data(h, pkt));
 
-	CATCH_DELAY();
+	retval = dusb_recv_data(h, pkt);
 
-	if(pkt->type == DUSB_VPKT_ERROR)
-		return ERR_CALC_ERROR2 + err_code(pkt);
-	else if(pkt->type != DUSB_VPKT_EOT)
-		return ERR_INVALID_PACKET;
+	if (!retval)
+	{
+		CATCH_DELAY();
 
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_EOT)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+	}
+
+end:
 	dusb_vtl_pkt_del(pkt);
 
-	return 0;
+	return retval;
 }
 
 // 0xEE00: error
 int cmd_s_error(CalcHandle *h, uint16_t code)
 {
 	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	pkt = dusb_vtl_pkt_new(2, DUSB_VPKT_ERROR);
 
 	pkt->data[0] = MSB(code);
 	pkt->data[1] = LSB(code);
-	TRYF(dusb_send_data(h, pkt));
+	retval = dusb_send_data(h, pkt);
 
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   code = %04x", code);
 
-	return 0;
+	return retval;
 }

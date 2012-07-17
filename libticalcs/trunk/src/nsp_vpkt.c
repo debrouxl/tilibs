@@ -79,14 +79,14 @@ static GList *vtl_pkt_list = NULL;
 
 NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
 {
-	NSPVirtualPacket* vtl = g_malloc0(sizeof(NSPVirtualPacket));
+	NSPVirtualPacket* vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
 	vtl->src_addr = src_addr;
 	vtl->src_port = src_port;
 	vtl->dst_addr = dst_addr;
 	vtl->dst_port = dst_port;
 	vtl->size = size;
-	vtl->data = g_malloc0(size+1);
+	vtl->data = g_malloc0(size+1); // aborts the program if it fails.
 
 	vtl_pkt_list = g_list_append(vtl_pkt_list, vtl);
 
@@ -98,15 +98,22 @@ NSPVirtualPacket*  nsp_vtl_pkt_new(void)
 	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0);
 }
 
-void			nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
+void nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
 {
-	vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
+	if (vtl != NULL)
+	{
+		vtl_pkt_list = g_list_remove(vtl_pkt_list, vtl);
 
-	g_free(vtl->data);
-	g_free(vtl);
+		g_free(vtl->data);
+		g_free(vtl);
+	}
+	else
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+	}
 }
 
-void			nsp_vtl_pkt_purge(void)
+void nsp_vtl_pkt_purge(void)
 {
 	g_list_foreach(vtl_pkt_list, (GFunc)nsp_vtl_pkt_del, NULL);
 	g_list_free(vtl_pkt_list);
@@ -120,6 +127,12 @@ uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
 int nsp_session_open(CalcHandle *h, uint16_t port)
 {
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	nsp_src_port++;
 	nsp_dst_port = port;
 
@@ -130,6 +143,12 @@ int nsp_session_open(CalcHandle *h, uint16_t port)
 
 int nsp_session_close(CalcHandle *h)
 {
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	ticalcs_info("  closed session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
 	TRYF(nsp_send_disconnect(h));
@@ -147,8 +166,13 @@ int nsp_addr_request(CalcHandle *h)
 	extern uint8_t nsp_seq_pc;
 	NSPRawPacket pkt = {0};
 
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	// Reset connection so that device send an address request packet
-	// Warning: you need a modified libusb-win32 library (see ticables2/src/win32/usb/libusb-win32.html)
 	TRYC(h->cable->cable->reset(h->cable));
 	nsp_seq_pc = 1;
 
@@ -167,6 +191,12 @@ int nsp_addr_request(CalcHandle *h)
 int nsp_addr_assign(CalcHandle *h, uint16_t addr)
 {
 	NSPRawPacket pkt = {0};
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	ticalcs_info("  assigning address %04x:", addr);
 
@@ -190,6 +220,12 @@ int nsp_send_ack(CalcHandle* h)
 {
 	NSPRawPacket pkt = {0};
 
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	ticalcs_info("  sending ack:");
 
 	pkt.data_size = 2;
@@ -208,6 +244,12 @@ int nsp_send_nack(CalcHandle* h)
 {
 	NSPRawPacket pkt = {0};
 
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	ticalcs_info("  sending nAck:");
 
 	pkt.data_size = 2;
@@ -225,6 +267,12 @@ int nsp_send_nack(CalcHandle* h)
 int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 {
 	NSPRawPacket pkt = {0};
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	ticalcs_info("  sending nAck:");
 
@@ -245,6 +293,12 @@ int nsp_recv_ack(CalcHandle *h)
 	NSPRawPacket pkt = {0};
 	uint16_t addr;
 	int ret = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	ticalcs_info("  receiving ack:");
 
@@ -291,6 +345,12 @@ int nsp_send_disconnect(CalcHandle *h)
 {
 	NSPRawPacket pkt = {0};
 
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
 	ticalcs_info("  disconnecting from service #%04x:", nsp_dst_port);
 
 	pkt.data_size = 2;
@@ -309,6 +369,12 @@ int nsp_recv_disconnect(CalcHandle *h)
 {
 	NSPRawPacket pkt = {0};
 	uint16_t addr;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	ticalcs_info("  receiving disconnect:");
 
@@ -350,6 +416,17 @@ int nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 	NSPRawPacket raw = {0};
 	int i, r, q;
 	long offset = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (vtl == NULL)
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+		return ERR_INVALID_PACKET;
+	}
 
 	raw.src_addr = vtl->src_addr;
 	raw.src_port = vtl->src_port;
@@ -397,9 +474,21 @@ int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 {
 	NSPRawPacket raw = {0};
 	long offset = 0;
-	uint32_t size = vtl->size;
+	uint32_t size;
 	int err = 0;
 
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (vtl == NULL)
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+		return ERR_INVALID_PACKET;
+	}
+
+	size = vtl->size;
 	vtl->size = 0;
 	vtl->data = g_malloc(NSP_DATA_SIZE);
 

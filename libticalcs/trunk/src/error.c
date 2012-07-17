@@ -333,18 +333,22 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+13:
-		strcpy(error_msg, _("Msg: remote control?"));
+		strcpy(error_msg, _("Msg: wrong modify request?"));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+14:
-		strcpy(error_msg, _("Msg: battery low."));
+		strcpy(error_msg, _("Msg: remote control?"));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+15:
-		strcpy(error_msg, _("Msg: FLASH application rejected (signature does not match)."));
+		strcpy(error_msg, _("Msg: battery low."));
 		*message = g_strdup(error_msg);
 		break;
 	case ERR_CALC_ERROR2+16:
+		strcpy(error_msg, _("Msg: FLASH application rejected (signature does not match)."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR2+17:
 		strcpy(error_msg, _("Msg: hand-held is busy (set your calculator to HOME screen)."));
 		*message = g_strdup(error_msg);
 		break;
