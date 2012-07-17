@@ -721,7 +721,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	char *utf8;
 
 	tifiles_build_fullname(handle->model, varname, vr->folder, vr->name);
-	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	utf8 = ticonv_varname_to_utf8(handle->model, varname, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
 	g_free(utf8);
 	update_label();
@@ -738,6 +738,67 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	ca_del_array(size, attr);
 	return 0;
+}
+
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	CalcAttr **attrs;
+	int ret = 0;
+	char varname1[68], varname2[68];
+	char *utf81, *utf82;
+
+	tifiles_build_fullname(handle->model, varname1, oldname->folder, oldname->name);
+	tifiles_build_fullname(handle->model, varname2, newname->folder, newname->name);
+	utf81 = ticonv_varname_to_utf8(handle->model, varname1, oldname->type);
+	utf82 = ticonv_varname_to_utf8(handle->model, varname2, newname->type);
+	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	g_free(utf81);
+	g_free(utf82);
+	update_label();
+
+	attrs = ca_new_array(1);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
+
+	ret = cmd_s_var_modify(handle, oldname->folder, oldname->name, 1, CA(attrs), newname->folder, newname->name, 0, NULL);
+	if(!ret)
+		ret = cmd_r_data_ack(handle);
+
+	ca_del_array(1, attrs);
+	return ret;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
+	CalcAttr **srcattrs;
+	CalcAttr **dstattrs;
+	int ret = 0;
+	char *utf8;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->folder, -1);
+	g_snprintf(update_->text, sizeof(update_->text), _("Changing attributes of %s..."), utf8);
+	g_free(utf8);
+	update_label();
+
+	srcattrs = ca_new_array(1);
+	srcattrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x0C;
+	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
+
+	dstattrs = ca_new_array(2);
+	dstattrs[0] = ca_new(AID_ARCHIVED, 1);
+	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0x01 : 0x00);
+	dstattrs[1] = ca_new(AID_LOCKED, 1);
+	dstattrs[1]->data[0] = (attr == ATTRB_LOCKED ? 0x01 : 0x00);
+
+	ret = cmd_s_var_modify(handle, vr->folder, vr->name, 1, CA(srcattrs), vr->folder, vr->name, 2, CA(dstattrs));
+	if(!ret)
+		ret = cmd_r_data_ack(handle);
+
+	ca_del_array(1, srcattrs);
+	ca_del_array(2, dstattrs);
+	return ret;
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
@@ -767,8 +828,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	attrs[3] = ca_new(AID_LOCKED, 1);
 	attrs[3]->data[0] = 0;
 
-	TRYF(cmd_s_rts(handle, fldname, varname, sizeof(data), 
-		       nattrs, CA(attrs)));
+	TRYF(cmd_s_rts(handle, fldname, varname, sizeof(data), nattrs, CA(attrs)));
 	TRYF(cmd_r_data_ack(handle));
 	TRYF(cmd_s_var_content(handle, sizeof(data), data));
 	TRYF(cmd_r_data_ack(handle));
@@ -923,9 +983,10 @@ const CalcFncts calc_89t_usb =
 	N_("TI-89 Titanium thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS | OPS_ROMDUMP |
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -951,4 +1012,6 @@ const CalcFncts calc_89t_usb =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

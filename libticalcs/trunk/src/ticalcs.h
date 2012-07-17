@@ -163,6 +163,8 @@ typedef enum
   OPS_NEWFLD	= (1 << 11),
   OPS_DELVAR	= (1 << 12),
   OPS_OS		= (1 << 13),
+  OPS_RENAME    = (1 << 14),
+  OPS_CHATTR    = (1 << 21),
 
   FTS_SILENT	= (1 << 15),
   FTS_FOLDER	= (1 << 16),
@@ -227,6 +229,7 @@ typedef enum
 {
 	FNCT_IS_READY=0,
 	FNCT_SEND_KEY,
+	FNCT_EXECUTE,
 	FNCT_RECV_SCREEN,
 	FNCT_GET_DIRLIST,
 	FNCT_GET_MEMFREE,
@@ -240,7 +243,8 @@ typedef enum
 	FNCT_RECV_APP,
 	FNCT_SEND_OS,
 	FNCT_RECV_IDLIST,
-	FNCT_DUMP_ROM,
+	FNCT_DUMP_ROM1,
+	FNCT_DUMP_ROM2,
 	FNCT_SET_CLOCK,
 	FNCT_GET_CLOCK,
 	FNCT_DEL_VAR,
@@ -248,6 +252,9 @@ typedef enum
 	FNCT_GET_VERSION,
 	FNCT_SEND_CERT,
 	FNCT_RECV_CERT,
+	FNCT_RENAME,
+	FNCT_CHATTR,
+	FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
 /**
@@ -565,7 +572,7 @@ struct _CalcFncts
 	const char*		fullname;		
 	const char*		description;
 	const int		features;
-	const char*		counters[23];
+	const char*		counters[FNCT_LAST];
 
 	int		(*is_ready)		(CalcHandle*);
 
@@ -588,7 +595,7 @@ struct _CalcFncts
 
 	int		(*send_app)		(CalcHandle*, FlashContent*);
 	int		(*recv_app)		(CalcHandle*, FlashContent*, VarRequest*);
-	
+
 	int		(*send_os)		(CalcHandle*, FlashContent*);
 	int		(*recv_idlist)	(CalcHandle*, uint8_t*);
 
@@ -605,6 +612,9 @@ struct _CalcFncts
 
 	int		(*send_cert)	(CalcHandle*, FlashContent*);
 	int		(*recv_cert)	(CalcHandle*, FlashContent*);
+
+	int		(*rename_var)	(CalcHandle*, VarRequest*, VarRequest*);
+	int		(*change_attr)	(CalcHandle*, VarRequest*, FileAttr);
 };
 
 /**
@@ -625,7 +635,7 @@ struct _CalcFncts
  **/
 struct _CalcHandle
 {
-	CalcModel	model;	
+	CalcModel	model;
 	CalcFncts*	calc;
 	CalcUpdate*	updat;
 
@@ -725,6 +735,9 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle*, VarRequest*);
 	TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle*, VarRequest*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle*, VarRequest*, FileAttr);
+
 	TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle*, CalcInfos*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle*, FlashContent*);

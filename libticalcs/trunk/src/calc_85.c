@@ -430,6 +430,16 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	return 0;
 }
 
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	return 0;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
+	return 0;
+}
+
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	return 0;
@@ -459,7 +469,7 @@ const CalcFncts calc_85 =
 	OPS_SCREEN | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP | 
 	FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "", "", "2P1L", "1P1L", "", "",
-		"", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L" },
+		"", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -485,4 +495,6 @@ const CalcFncts calc_85 =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

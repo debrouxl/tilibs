@@ -818,6 +818,49 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	return 0;
 }
 
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	CalcAttr **attrs;
+	int ret = 0;
+
+	attrs = ca_new_array(1);
+	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
+
+	ret = cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
+	if(!ret)
+		ret = cmd_r_data_ack(handle);
+
+	ca_del_array(1, attrs);
+	return ret;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
+	CalcAttr **srcattrs;
+	CalcAttr **dstattrs;
+	int ret = 0;
+
+	srcattrs = ca_new_array(1);
+	srcattrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
+	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
+
+	dstattrs = ca_new_array(1);
+	dstattrs[0] = ca_new(AID_ARCHIVED, 1);
+	/* use 0xff here rather than 0x01 to work around an OS bug */
+	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
+
+	ret = cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
+	if(!ret)
+		ret = cmd_r_data_ack(handle);
+
+	ca_del_array(1, srcattrs);
+	ca_del_array(1, dstattrs);
+	return ret;
+}
+
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	return 0;
@@ -952,9 +995,10 @@ const CalcFncts calc_84p_usb =
 	N_("TI-84 Plus thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -980,4 +1024,6 @@ const CalcFncts calc_84p_usb =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

@@ -863,6 +863,16 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	return 0;
 }
 
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	return 0;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
+	return 0;
+}
+
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	char varname[18];
@@ -1004,7 +1014,7 @@ const CalcFncts calc_89 =
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1030,6 +1040,8 @@ const CalcFncts calc_89 =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };
 
 const CalcFncts calc_92p = 
@@ -1043,7 +1055,7 @@ const CalcFncts calc_92p =
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1069,6 +1081,8 @@ const CalcFncts calc_92p =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };
 
 const CalcFncts calc_89t = 
@@ -1082,7 +1096,7 @@ const CalcFncts calc_89t =
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1108,6 +1122,8 @@ const CalcFncts calc_89t =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };
 
 const CalcFncts calc_v2 = 
@@ -1121,7 +1137,7 @@ const CalcFncts calc_v2 =
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1147,4 +1163,6 @@ const CalcFncts calc_v2 =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

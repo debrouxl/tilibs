@@ -62,7 +62,7 @@ static const DUSBVtlPktName vpkt_types[] =
 	{ 0x000D, "Variable Contents"},
 	{ 0x000E, "Parameter Set"},
 	{ 0x000F, ""},
-	{ 0x0010, "Delete Variable"},
+	{ 0x0010, "Modify Variable"},
 	{ 0x0011, "Remote Control"},
 	{ 0x0012, "Acknowledgement of Mode Setting"},
 	{ 0xAA00, "Acknowledgement of Data"},

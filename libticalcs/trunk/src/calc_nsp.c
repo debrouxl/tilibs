@@ -654,7 +654,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	int err;
 	FILE *f;
 
-	ticalcs_info("FIXME: make ROM dumping work on OS 2.x");
+	ticalcs_info("FIXME: make ROM dumping work above OS 1.x");
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
@@ -705,6 +705,53 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	return 0;
 }
 
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	char *utf81, *utf82;
+	char *path1, *path2;
+	int err;
+	const char * dot_if_any = ".";
+
+	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
+
+	// Don't add a dot if this file type is unknown.
+	if (oldname->type >= NSP_MAXTYPES)
+		dot_if_any = "";
+	path1 = g_strconcat("/", oldname->folder, "/", oldname->name, dot_if_any,
+		tifiles_vartype2fext(handle->model, oldname->type), NULL);
+
+	dot_if_any = ".";
+	// Don't add a dot if this file type is unknown.
+	if (oldname->type >= NSP_MAXTYPES)
+		dot_if_any = "";
+	path2 = g_strconcat("/", newname->folder, "/", newname->name, dot_if_any,
+		tifiles_vartype2fext(handle->model, newname->type), NULL);
+	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
+	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
+	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	g_free(utf82);
+	g_free(utf81);
+	update_label();
+
+	err = cmd_s_rename_file(handle, path1, path2);
+	g_free(path2);
+	g_free(path1);
+	if (err)
+	{
+		return err;
+	}
+	TRYF(cmd_r_rename_file(handle));
+
+	TRYF(nsp_session_close(handle));
+
+	return 0;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
+	return 0;
+}
+
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	char *utf8;
@@ -718,7 +765,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	if (vr->type >= NSP_MAXTYPES)
 		dot_if_any = "";
 
-	path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any, 
+	path = g_strconcat("/", vr->folder, "/", vr->name, dot_if_any,
 		tifiles_vartype2fext(handle->model, vr->type), NULL);
 	utf8 = ticonv_varname_to_utf8(handle->model, path, vr->type);
 	g_snprintf(update_->text, sizeof(update_->text), _("Deleting %s..."), utf8);
@@ -877,9 +924,9 @@ const CalcFncts calc_nsp =
 	"Nspire handheld",
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
-	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
 	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -905,4 +952,6 @@ const CalcFncts calc_nsp =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

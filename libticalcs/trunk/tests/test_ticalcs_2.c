@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "ticables.h"
 #include "tifiles.h"
@@ -46,6 +47,45 @@
 #else
 # define SNULL	{}
 #endif
+
+static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
+{
+	char buf[256];
+	const char *s;
+	int ret;
+
+	memset(vr, 0, sizeof(VarRequest));
+
+	if(ticalcs_calc_features(h) & FTS_FOLDER)
+	{
+		printf("Enter%s folder name: ", prompt);
+		ret = scanf("%1023s", vr->folder);
+		if(ret < 1)
+			return 0;
+	}
+
+	printf("Enter%s variable name: ", prompt);
+	ret = scanf("%1023s", vr->name);
+	if(ret < 1)
+		return 0;
+
+	if(tifiles_calc_is_ti8x(h->model))
+	{
+		printf("Enter%s variable type: ", prompt);
+		ret = scanf("%255s", buf);
+		if(ret < 1)
+			return 0;
+
+		vr->type = tifiles_fext2vartype(h->model, buf);
+		s = tifiles_vartype2string(h->model, vr->type);
+		if(s == NULL || *s == 0)
+		{
+			vr->type = tifiles_string2vartype(h->model, buf);
+		}
+	}
+
+	return 1;
+}
 
 static void print_lc_error(int errnum)
 {
@@ -82,16 +122,8 @@ static int execute(CalcHandle *h)
 	VarEntry ve = SNULL;
 	int ret;
 
-	if(tifiles_calc_is_ti9x(h->model))
-        {
-            printf("Enter folder name: ");
-            ret = scanf("%1023s", ve.folder);
-            if(ret < 1) return 0;
-        }
-
-	printf("Enter variable name: ");
-	ret = scanf("%1023s", ve.name);
-	if(ret < 1) return 0;
+	if(!read_varname(h, &ve, ""))
+		return 0;
 	    
 	TRYF(ticalcs_calc_execute(h, &ve, ""));
 	return 0;
@@ -177,17 +209,7 @@ static int recv_var(CalcHandle* h)
 	if(ret < 1)
 		return 0;
 
-	if(tifiles_calc_is_ti9x(h->model))
-	{
-	    printf("Enter folder name: ");
-	    ret = scanf("%1023s", ve.folder);
-	    if(ret < 1)
-		return 0;
-	}
-
-	printf("Enter variable name: ");
-	ret = scanf("%1023s", ve.name);
-	if(ret < 1)
+	if(!read_varname(h, &ve, ""))
 		return 0;
 
 	TRYF(ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve));
@@ -306,18 +328,61 @@ static int del_var(CalcHandle* h)
 	VarEntry ve = SNULL;
 	int ret;
 
-	if(tifiles_calc_is_ti9x(h->model))
-        {
-            printf("Enter folder name: ");
-            ret = scanf("%1023s", ve.folder);
-            if(ret < 1) return 0;
-        }
-
-	printf("Enter variable name: ");
-	ret = scanf("%1023s", ve.name);
-	if(ret < 1) return 0;
+	if(!read_varname(h, &ve, ""))
+		return 0;
 	    
 	TRYF(ticalcs_calc_del_var(h, &ve));
+	return 0;
+}
+
+static int rename_var(CalcHandle* h)
+{
+	VarEntry src = SNULL;
+	VarEntry dst = SNULL;
+	int ret;
+
+	if(!read_varname(h, &src, " current"))
+		return 0;
+	if(!read_varname(h, &dst, " new"))
+		return 0;
+
+	TRYF(ticalcs_calc_rename_var(h, &src, &dst));
+	return 0;
+}
+
+static int archive_var(CalcHandle* h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(!read_varname(h, &ve, ""))
+		return 0;
+
+	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_ARCHIVED));
+	return 0;
+}
+
+static int unarchive_var(CalcHandle* h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(!read_varname(h, &ve, ""))
+		return 0;
+
+	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_NONE));
+	return 0;
+}
+
+static int lock_var(CalcHandle* h)
+{
+	VarEntry ve = SNULL;
+	int ret;
+
+	if(!read_varname(h, &ve, ""))
+		return 0;
+
+	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_LOCKED));
 	return 0;
 }
 
@@ -367,7 +432,7 @@ static int probe_calc(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	22
+#define NITEMS	26
 
 static const char *str_menu[NITEMS] = 
 {
@@ -390,6 +455,10 @@ static const char *str_menu[NITEMS] =
 	"Set clock",
 	"Get clock",
 	"Delete var",
+	"Rename var",
+	"Archive var",
+	"Unarchive var",
+	"Lock var",
 	"New folder",
 	"Get version",
 	"Probe calc",
@@ -418,6 +487,10 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	set_clock,
 	get_clock,
 	del_var,
+	rename_var,
+	archive_var,
+	unarchive_var,
+	lock_var,
 	new_folder,
 	get_version,
 	probe_calc,
@@ -425,23 +498,101 @@ static FNCT_MENU fnct_menu[NITEMS] =
 
 int main(int argc, char **argv)
 {
+	CableModel cable_model = CABLE_NUL;
+	int port_number = 1;
+	CalcModel calc_model = CALC_NONE;
 	CableHandle* cable;
 	CalcHandle* calc;
 	int err, i;
 	int do_exit=0;
 	int choice;
+	char* colon;
+
+	while((i = getopt(argc, argv, "c:m:")) != -1)
+	{
+		if(i == 'c')
+		{
+			colon = strchr(optarg, ':');
+			if(colon)
+			{
+				*colon = 0;
+				port_number = atoi(colon + 1);
+			}
+			cable_model = ticables_string_to_model(optarg);
+		}
+		else if(i == 'm')
+		{
+			calc_model = ticalcs_string_to_model(optarg);
+		}
+		else
+		{
+			fprintf(stderr, "Usage: %s [-c CABLE[:PORT]] [-m CALC]\n", argv[0]);
+			return 1;
+		}
+	}
 
 	// init libs
 	ticables_library_init();
 	ticalcs_library_init();
 
 	// set cable
-	cable = ticables_handle_new(CABLE_SLV, PORT_1);
+	if(cable_model == CABLE_NUL)
+	{
+		int *pids, npids;
+
+		ticables_get_usb_devices(&pids, &npids);
+
+		if(npids < 1)
+		{
+			fprintf(stderr, "No supported USB cable found\n");
+			return 1;
+		}
+
+		switch(pids[0])
+		{
+		case PID_TIGLUSB:
+			cable_model = CABLE_SLV;
+			break;
+
+		case PID_TI84P:
+		case PID_TI84P_SE:
+			cable_model = CABLE_USB;
+			calc_model = CALC_TI84P_USB;
+			break;
+
+		case PID_TI89TM:
+			cable_model = CABLE_USB;
+			calc_model = CALC_TI89T_USB;
+			break;
+
+		case PID_NSPIRE:
+			cable_model = CABLE_USB;
+			calc_model = CALC_NSPIRE;
+			break;
+
+		default:
+			fprintf(stderr, "Unrecognized PID %04x\n", pids[0]);
+			return 1;
+		}
+
+		free(pids);
+	}
+
+	cable = ticables_handle_new(cable_model, port_number);
 	if(cable == NULL)
 	    return -1;
 
 	// set calc
-	calc = ticalcs_handle_new(CALC_TI89T);
+	if(calc_model == CALC_NONE)
+	{
+		if(ticalcs_probe(cable_model, port_number, &calc_model, 1))
+		{
+			fprintf(stderr, "No calculator found\n");
+			return 1;
+		}
+	}
+
+	calc = ticalcs_handle_new(calc_model);
 	if(calc == NULL)
 		return -1;
 

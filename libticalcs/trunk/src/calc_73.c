@@ -866,9 +866,19 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	_clock->minutes = cur->tm_min;
 	_clock->seconds = cur->tm_sec;
 
-    _clock->date_format = buffer[6];
-    _clock->time_format = buffer[7];
+	_clock->date_format = buffer[6];
+	_clock->time_format = buffer[7];
 
+	return 0;
+}
+
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
+{
+	return 0;
+}
+
+static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
+{
 	return 0;
 }
 
@@ -1045,7 +1055,7 @@ const CalcFncts calc_73 =
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1067,10 +1077,12 @@ const CalcFncts calc_73 =
 	&set_clock,
 	&get_clock,
 	&del_var,
-        &new_folder,
-        &get_version,
+	&new_folder,
+	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };
 
 const CalcFncts calc_83p = 
@@ -1083,7 +1095,7 @@ const CalcFncts calc_83p =
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1109,6 +1121,8 @@ const CalcFncts calc_83p =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };
 
 const CalcFncts calc_84p = 
@@ -1121,7 +1135,7 @@ const CalcFncts calc_84p =
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L" },
+		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1147,4 +1161,6 @@ const CalcFncts calc_84p =
 	&get_version,
 	&send_cert,
 	&recv_cert,
+	&rename_var,
+	&change_attr
 };

@@ -154,6 +154,7 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
 
 int cmd_s_param_set(CalcHandle *h, const CalcParam *param);
 
+int cmd_s_var_modify(CalcHandle *h, const char *src_folder, const char *src_name, int n_src_attrs, const CalcAttr **src_attrs, const char *dst_folder, const char *dst_name, int n_dst_attrs, const CalcAttr **dst_attrs);
 int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs);
 int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code);
 

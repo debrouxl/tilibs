@@ -63,6 +63,7 @@
 #define CMD_FM_DIRLIST_DONE	0x0f
 #define CMD_FM_DIRLIST_ENT	0x10
 #define CMD_FM_ATTRIBUTES	0x20
+#define CMD_FM_RENAME_FILE	0x21
 
 // OS Installation commands
 #define CMD_OS_INSTALL		0x03
@@ -115,6 +116,9 @@ int cmd_r_del_folder(CalcHandle *h);
 
 int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2);
 int cmd_r_copy_file(CalcHandle *h);
+
+int cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2);
+int cmd_r_rename_file(CalcHandle *h);
 
 int cmd_s_file_ok(CalcHandle *h);
 int cmd_r_file_ok(CalcHandle *h);

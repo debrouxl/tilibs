@@ -684,57 +684,107 @@ int cmd_s_param_set(CalcHandle *h, const CalcParam *param)
 	return 0;
 }
 
-// 0x0010: variable delete
-int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs)
+// 0x0010: modify/rename/delete variable
+int cmd_s_var_modify(CalcHandle *h,
+                     const char *src_folder, const char *src_name,
+                     int n_src_attrs, const CalcAttr **src_attrs,
+                     const char *dst_folder, const char *dst_name,
+                     int n_dst_attrs, const CalcAttr **dst_attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
 	int j = 0;
 	int pks;
+	int ret = 0;
 
-	pks = 2 + strlen(name)+1 + 2;
-	if(strlen(folder))
-		pks += strlen(folder)+1;
-	for(i = 0; i < nattrs; i++) pks += 4 + attrs[i]->size;
+	pks = 2 + strlen(src_name)+1 + 2;
+	if(strlen(src_folder))
+		pks += strlen(src_folder)+1;
+	for(i = 0; i < n_src_attrs; i++)
+		pks += 4 + src_attrs[i]->size;
+
 	pks += 5;
+
+	if(strlen(dst_folder))
+		pks += strlen(dst_folder)+1;
+	if(strlen(dst_name))
+		pks += strlen(dst_name)+1;
+	for (i = 0; i < n_dst_attrs; i++)
+		pks += 4 + dst_attrs[i]->size;
+
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_DEL_VAR);
 
-	if(strlen(folder))
+	if(strlen(src_folder))
 	{
-		pkt->data[j++] = strlen(folder);
-		memcpy(pkt->data + j, folder, strlen(folder)+1);
-		j += strlen(folder)+1;
+		pkt->data[j++] = strlen(src_folder);
+		memcpy(pkt->data + j, src_folder, strlen(src_folder)+1);
+		j += strlen(src_folder)+1;
 	}
 	else
 		pkt->data[j++] = 0;
 
-	pkt->data[j++] = strlen(name);
-	memcpy(pkt->data + j, name, strlen(name)+1);
-	j += strlen(name)+1;
+	pkt->data[j++] = strlen(src_name);
+	memcpy(pkt->data + j, src_name, strlen(src_name)+1);
+	j += strlen(src_name)+1;
 
-	pkt->data[j++] = MSB(nattrs);
-	pkt->data[j++] = LSB(nattrs);
-	for(i = 0; i < nattrs; i++)
+	pkt->data[j++] = MSB(n_src_attrs);
+	pkt->data[j++] = LSB(n_src_attrs);
+	for(i = 0; i < n_src_attrs; i++)
 	{
-		pkt->data[j++] = MSB(attrs[i]->id);
-		pkt->data[j++] = LSB(attrs[i]->id);
-		pkt->data[j++] = MSB(attrs[i]->size);
-		pkt->data[j++] = LSB(attrs[i]->size);
-		memcpy(pkt->data + j, attrs[i]->data, attrs[i]->size);
-		byteswap(pkt->data + j, attrs[i]->size);
-		j += attrs[i]->size;
+		pkt->data[j++] = MSB(src_attrs[i]->id);
+		pkt->data[j++] = LSB(src_attrs[i]->id);
+		pkt->data[j++] = MSB(src_attrs[i]->size);
+		pkt->data[j++] = LSB(src_attrs[i]->size);
+		memcpy(pkt->data + j, src_attrs[i]->data, src_attrs[i]->size);
+		j += src_attrs[i]->size;
 	}
 
-	pkt->data[j++] = 0x01; pkt->data[j++] = 0x00;
-	pkt->data[j++] = 0x00; pkt->data[j++] = 0x00;
-	pkt->data[j++] = 0x00;
+	pkt->data[j++] = 0x01; /* ??? */
 
-	TRYF(dusb_send_data(h, pkt));
+	if(strlen(dst_folder))
+	{
+		pkt->data[j++] = strlen(dst_folder);
+		memcpy(pkt->data + j, dst_folder, strlen(dst_folder)+1);
+		j += strlen(dst_folder)+1;
+	}
+	else
+		pkt->data[j++] = 0;
+
+	if(strlen(dst_name))
+	{
+		pkt->data[j++] = strlen(dst_name);
+		memcpy(pkt->data + j, dst_name, strlen(dst_name)+1);
+		j += strlen(dst_name)+1;
+	}
+	else
+		pkt->data[j++] = 0;
+
+	pkt->data[j++] = MSB(n_dst_attrs);
+	pkt->data[j++] = LSB(n_dst_attrs);
+	for(i = 0; i < n_dst_attrs; i++)
+	{
+		pkt->data[j++] = MSB(dst_attrs[i]->id);
+		pkt->data[j++] = LSB(dst_attrs[i]->id);
+		pkt->data[j++] = MSB(dst_attrs[i]->size);
+		pkt->data[j++] = LSB(dst_attrs[i]->size);
+		memcpy(pkt->data + j, dst_attrs[i]->data, dst_attrs[i]->size);
+		j += dst_attrs[i]->size;
+	}
+
+	g_assert(j == pks);
+
+	ret = dusb_send_data(h, pkt);
+
+	ticalcs_info("   src_folder=%s, name=%s, nattrs=%i", src_folder, src_name, n_src_attrs);
+	ticalcs_info("   dst_folder=%s, name=%s, nattrs=%i", dst_folder, dst_name, n_dst_attrs);
 
 	dusb_vtl_pkt_del(pkt);
-	ticalcs_info("   folder=%s, name=%s, nattrs=%i", folder, name, nattrs);
+	return ret;
+}
 
-	return 0;
+int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs)
+{
+	return cmd_s_var_modify(h, folder, name, nattrs, attrs, "", "", 0, NULL);
 }
 
 // 0x0011: remote control
