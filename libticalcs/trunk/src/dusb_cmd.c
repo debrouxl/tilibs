@@ -863,9 +863,9 @@ int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (size == NULL || data == NULL)
+	if (data == NULL)
 	{
-		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
 	}
 

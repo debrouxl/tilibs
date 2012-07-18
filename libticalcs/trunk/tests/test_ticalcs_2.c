@@ -28,6 +28,7 @@
 #endif
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +54,8 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 	char buf[256];
 	const char *s;
 	int ret;
+	unsigned long val;
+	char * endptr;
 
 	memset(vr, 0, sizeof(VarRequest));
 
@@ -76,11 +79,20 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 		if(ret < 1)
 			return 0;
 
-		vr->type = tifiles_fext2vartype(h->model, buf);
-		s = tifiles_vartype2string(h->model, vr->type);
-		if(s == NULL || *s == 0)
+		// Special handling for types written in hex.
+		errno = 0;
+		vr->type = (uint8_t)strtoul(buf, &endptr, 16);
+
+		if (errno != 0)
 		{
-			vr->type = tifiles_string2vartype(h->model, buf);
+			// The string doesn't seem to be a valid numeric value.
+			// Let's try to parse a fext instead.
+			vr->type = tifiles_fext2vartype(h->model, buf);
+			s = tifiles_vartype2string(h->model, vr->type);
+			if(s == NULL || *s == 0)
+			{
+				vr->type = tifiles_string2vartype(h->model, buf);
+			}
 		}
 	}
 
