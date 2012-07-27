@@ -54,4 +54,6 @@ enum Fonts {F_4x6, F_6x8, F_8x10};
 #define OSLinkReset tios__0006
 void OSLinkReset (void);
 
-#include <stdint.h>
+typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
+typedef unsigned long uint32_t;

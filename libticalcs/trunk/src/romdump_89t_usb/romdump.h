@@ -34,10 +34,6 @@
 #define CMD_DATA2			0x0007
 #define CMD_NONE			0xffff
 
-typedef unsigned char 			uint8_t;
-typedef unsigned short int  uint16_t;
-typedef unsigned long int		uint32_t;
-
 #define MSB(v)	(v >> 8)
 #define LSB(v)	(v & 0xff)
 

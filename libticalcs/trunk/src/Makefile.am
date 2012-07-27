@@ -85,4 +85,21 @@ endif
 
 if BUILD_68K_ROM_DUMPERS
 
+BUILT_SOURCES += rom89.h rom89t.h rom92f2.h
+
+rom89.h: romdump_9x/romdump.89z $(tf2hex)
+	$(tf2hex) romdump_9x/romdump.89z $(srcdir)/rom89.h 89
+
+rom89t.h: romdump_89t_usb/romdump.89z $(tf2hex)
+	$(tf2hex) romdump_89t_usb/romdump.89z $(srcdir)/rom89t.h 89t
+
+rom92f2.h: romdump_9x/romdump.92p $(tf2hex)
+	$(tf2hex) romdump_9x/romdump.92p $(srcdir)/rom92f2.h 92
+
+romdump_9x/romdump.89z romdump_9x/romdump.92p:
+	cd romdump_9x && $(MAKE)
+
+romdump_89t_usb/romdump.89z:
+	cd romdump_89t_usb && $(MAKE)
+
 endif

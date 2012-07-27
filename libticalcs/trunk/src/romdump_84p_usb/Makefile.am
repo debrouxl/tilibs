@@ -1,4 +1,4 @@
-EXTRA_DIST = romdump.z80 dump84p.8xp
+EXTRA_DIST = romdump.z80
 CLEANFILES = *.bin *.lst *.8xp
 
 SPASMFLAGS = -N -T

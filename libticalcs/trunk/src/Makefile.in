@@ -55,6 +55,7 @@ host_triplet = @host@
 @OS_WIN32_FALSE@libticalcs2_la_DEPENDENCIES =
 @OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/ticalcs2-rc.o
 @BUILD_Z80_ROM_DUMPERS_TRUE@am__append_2 = rom73.h rom82.h rom83.h rom83p.h rom84p.h rom85.h rom86.h
+@BUILD_68K_ROM_DUMPERS_TRUE@am__append_3 = rom89.h rom89t.h rom92f2.h
 subdir = src
 DIST_COMMON = $(libticalcsinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -386,7 +387,7 @@ libticalcs2_la_SOURCES = *.h \
 
 @OS_WIN32_TRUE@libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o
 tf2hex = ./tf2hex/tf2hex
-BUILT_SOURCES = $(am__append_2)
+BUILT_SOURCES = $(am__append_2) $(am__append_3)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -1191,6 +1192,21 @@ uninstall-am: uninstall-libLTLIBRARIES \
 
 @BUILD_Z80_ROM_DUMPERS_TRUE@romdump_84p_usb/dump84p.8xp:
 @BUILD_Z80_ROM_DUMPERS_TRUE@	cd romdump_84p_usb && $(MAKE)
+
+@BUILD_68K_ROM_DUMPERS_TRUE@rom89.h: romdump_9x/romdump.89z $(tf2hex)
+@BUILD_68K_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_9x/romdump.89z $(srcdir)/rom89.h 89
+
+@BUILD_68K_ROM_DUMPERS_TRUE@rom89t.h: romdump_89t_usb/romdump.89z $(tf2hex)
+@BUILD_68K_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_89t_usb/romdump.89z $(srcdir)/rom89t.h 89t
+
+@BUILD_68K_ROM_DUMPERS_TRUE@rom92f2.h: romdump_9x/romdump.92p $(tf2hex)
+@BUILD_68K_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_9x/romdump.92p $(srcdir)/rom92f2.h 92
+
+@BUILD_68K_ROM_DUMPERS_TRUE@romdump_9x/romdump.89z romdump_9x/romdump.92p:
+@BUILD_68K_ROM_DUMPERS_TRUE@	cd romdump_9x && $(MAKE)
+
+@BUILD_68K_ROM_DUMPERS_TRUE@romdump_89t_usb/romdump.89z:
+@BUILD_68K_ROM_DUMPERS_TRUE@	cd romdump_89t_usb && $(MAKE)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
