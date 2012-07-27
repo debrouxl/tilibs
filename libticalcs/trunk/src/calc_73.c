@@ -692,61 +692,64 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
 	if(handle->model == CALC_TI73)
-		{ TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73)); }
+	{
+		TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73));
+	}
 	else
+	{
 		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
+	}
 
 	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int err, i;
-	static const uint16_t keys[] = { 
+	static const uint16_t keys_83p[] = {
 		0x40, 0x09, 0x09, 0xFC9C, /* Quit, Clear, Clear, Asm( */
 		0xDA, 0xAB, 0xA8, 0xA6,   /* prgm, R, O, M */
 		0x9D, 0xAE, 0xA6, 0xA9,   /* D, U, M, P */
 		0x86, 0x05 };             /* ), Enter */
 
-	// Launch program by remote control
-	if (handle->model != CALC_TI73)
-	{
-		// Launch program by remote control
-		PAUSE(200);
-		for(i = 0; i < (int)(sizeof(keys) / sizeof(keys[0])) - 1; i++)
-		{
-			TRYF(send_key(handle, keys[i]));
-			PAUSE(100);
-		}
+	static const uint16_t keys_73[] = {
+		0x40, 0x09, 0x09, 0xDA,   /* Quit, Clear, Clear, prgm */
+		0xAB, 0xA8, 0xA6, 0x9D,   /* R, O, M, D, */
+		0xAE, 0xA6, 0xA9, 0x05 }; /* U, M, P, Enter */
 
-		// This fixes a 100% reproducable timeout: send_key normally requests an ACK,
-		// but when the program is running, no ACK is sent. Therefore, hit the Enter key
-		// without requesting an ACK.
-		TRYF(ti73_send_KEY(handle, keys[i]));
-		TRYF(ti73_recv_ACK(handle, NULL)); // when the key is received
-		PAUSE(200);
+	const uint16_t *keys;
+	int nkeys, i;
+
+	if (handle->model == CALC_TI73)
+	{
+		keys = keys_73;
+		nkeys = G_N_ELEMENTS(keys_73);
 	}
 	else
 	{
-		// else wait for user's action
-		sprintf(update_->text, _("Waiting for user's action..."));
-		update_label();
-
-		do
-		{
-			handle->updat->refresh();
-			if (handle->updat->cancel)
-				return ERR_ABORT;
-			
-			//send RDY request ???
-			PAUSE(1000);
-			err = rd_is_ready(handle);
-		}
-		while (err == ERROR_READ_TIMEOUT);
+		keys = keys_83p;
+		nkeys = G_N_ELEMENTS(keys_83p);
 	}
+
+	// Launch program by remote control
+	PAUSE(200);
+	for(i = 0; i < nkeys - 1; i++)
+	{
+		TRYF(send_key(handle, keys[i]));
+		PAUSE(100);
+	}
+
+	// This fixes a 100% reproducable timeout: send_key normally requests an ACK,
+	// but when the program is running, no ACK is sent. Therefore, hit the Enter key
+	// without requesting an ACK.
+	TRYF(ti73_send_KEY(handle, keys[i]));
+	TRYF(ti73_recv_ACK(handle, NULL)); // when the key is received
+	PAUSE(200);
 
 	// Get dump
 	TRYF(rd_dump(handle, filename));
+
+	// (Normally there would be another ACK after the program exits,
+	// but the ROM dumper disables that behavior)
 
 	return 0;
 }

@@ -39,6 +39,12 @@ void pad_buffer_to_8_chars(uint8_t *varname, uint8_t value);
 
 
 
+// cmd82.c
+
+int ti82_send_asm_exec(CalcHandle*, VarEntry * var);
+
+
+
 // dusb_vpkt.c
 
 void dusb_vtl_pkt_purge(void);

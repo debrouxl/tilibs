@@ -107,6 +107,8 @@ typedef enum
   MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
   MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
 
+  MODE_SEND_EXEC_ASM = (1 << 3),    // Send and execute assembly (TI82/85 only; dangerous!)
+
   // Miscellaneous
   MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
   MODE_BACKUP		= (1 << 5),		// Keep archive attribute

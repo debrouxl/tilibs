@@ -62,6 +62,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti85_send_KEY(handle, key));
 	TRYF(ti85_recv_ACK(handle, &key));
+	TRYF(ti85_recv_ACK(handle, &key));
 
 	return 0;
 }
@@ -463,40 +464,36 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.86p", romDumpSize86, romDump86));
-	PAUSE(1000);
 
 	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int err;
-	//uint16_t keys[] = { 
-	//    0x76, 0x08, 0x08, 		/* Quit, Clear, Clear,	*/
-	//	  0x28, 0x3A, 0x34,	0x11,	/* A, S, M, (,			*/
-	//    0x39, 0x36, 0x34, 0x2B,   /* R, O, M, D	*/
-	//    0x56, 0x4E, 0x51, 0x12,	/* u, m, p, )	*/
-	//    0x06						/* Enter		*/
-	//};               
+	static const uint16_t keys[] = {
+		0x76, 0x08, 0x08,       /* Quit, Clear, Clear,	*/
+		0x28, 0x3A, 0x34, 0x11, /* A, S, M, (,			*/
+		0x39, 0x36, 0x34, 0x2B, /* R, O, M, D	*/
+		0x56, 0x4E, 0x51, 0x12, /* u, m, p, )	*/
+		0x06 };                 /* Enter		*/
+	uint16_t dummy;
+	int i;
 
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting for user's action..."));
-	handle->updat->label();
-
-	do
+	// Launch program by remote control
+	for(i = 0; i < (int) G_N_ELEMENTS(keys) - 1; i++)
 	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		
-		//send RDY request ???
-		PAUSE(1000);
-		err = rd_is_ready(handle);
+		TRYF(send_key(handle, keys[i]));
 	}
-	while (err == ERROR_READ_TIMEOUT);
+
+	TRYF(ti85_send_KEY(handle, keys[i]));
+	TRYF(ti85_recv_ACK(handle, &dummy));
+	PAUSE(200);
 
 	// Get dump
 	TRYF(rd_dump(handle, filename));
+
+	// (Normally there would be another ACK after the program exits,
+	// but the ROM dumper disables that behavior)
 
 	return 0;
 }

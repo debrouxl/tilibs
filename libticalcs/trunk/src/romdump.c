@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <glib/gstdio.h>
 
 #include "ticalcs.h"
 #include "dbus_pkt.h"
@@ -376,29 +377,33 @@ int rd_is_ready(CalcHandle* h)
 
 int rd_send(CalcHandle *h, const char *prgname, uint16_t size, uint8_t *data)
 {
-	FILE *f;
+	char *template, *tempfname;
+	int fd, ret;
 
-	f = fopen(prgname, "wb");
-	if (f == NULL)
-		return ERR_FILE_OPEN;
+	/* Write ROM dumper to a temporary file (note that the file must have
+	   the correct suffix or tifiles_file_read_regular will be
+	   confused) */
 
-	if(fwrite(data, sizeof(uint8_t), size, f) < size)
+	template = g_strconcat("rdXXXXXX", strrchr(prgname, '.'), NULL);
+	fd = g_file_open_tmp(template, &tempfname, NULL);
+	g_free(template);
+	if (fd == -1)
 	{
-		fclose(f);
-		unlink(prgname);
-		return ERR_SAVE_FILE;
+		return ERR_FILE_OPEN;
 	}
 
-	if(fclose(f))
+	ret = write(fd, data, size);
+	close(fd);
+	if (ret != size)
 	{
-		unlink(prgname);
-		return ERR_SAVE_FILE;
+		return ERR_FATAL_ERROR;
 	}
 
 	// Transfer program to calc
 	h->busy = 0;
-	TRYF(ticalcs_calc_send_var2(h, MODE_NORMAL, prgname));
-	unlink(prgname);
+	ret = ticalcs_calc_send_var2(h, MODE_SEND_EXEC_ASM, tempfname);
+	g_unlink(tempfname);
+	g_free(tempfname);
 
-	return 0;
+	return ret;
 }

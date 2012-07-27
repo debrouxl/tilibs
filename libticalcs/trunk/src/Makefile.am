@@ -52,7 +52,28 @@ BUILT_SOURCES =
 
 if BUILD_Z80_ROM_DUMPERS
 
-BUILT_SOURCES += rom84p.h
+BUILT_SOURCES += rom73.h rom82.h rom83.h rom83p.h rom84p.h rom85.h rom86.h
+
+rom73.h: romdump_8x/dump73.73p $(tf2hex)
+	$(tf2hex) romdump_8x/dump73.73p $(srcdir)/rom73.h 73
+
+rom82.h: romdump_8x/dump82.82y $(tf2hex)
+	$(tf2hex) romdump_8x/dump82.82y $(srcdir)/rom82.h 82
+
+rom83.h: romdump_8x/dump83.83p $(tf2hex)
+	$(tf2hex) romdump_8x/dump83.83p $(srcdir)/rom83.h 83
+
+rom83p.h: romdump_8x/dump83p.8xp $(tf2hex)
+	$(tf2hex) romdump_8x/dump83p.8xp $(srcdir)/rom83p.h 8Xp
+
+rom85.h: romdump_8x/dump85.85s $(tf2hex)
+	$(tf2hex) romdump_8x/dump85.85s $(srcdir)/rom85.h 85
+
+rom86.h: romdump_8x/dump86.86p $(tf2hex)
+	$(tf2hex) romdump_8x/dump86.86p $(srcdir)/rom86.h 86
+
+romdump_8x/dump73.73p romdump_8x/dump82.82y romdump_8x/dump83.83p romdump_8x/dump83p.8xp romdump_8x/dump85.85s romdump_8x/dump86.86p:
+	cd romdump_8x && $(MAKE)
 
 rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
 	$(tf2hex) romdump_84p_usb/dump84p.8xp $(srcdir)/rom84p.h 84p

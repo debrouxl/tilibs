@@ -441,14 +441,13 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.83p", romDumpSize83, romDump83));
-	PAUSE(1500);
 
 	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int i, err = 0;
+	int i;
 	static const uint16_t keys[] = {				
 		0x40, 0x09, 0x09,			/* Quit, Clear, Clear, */
 		0xFE63, 0x97, 0xDA,			/* Send(, 9, prgm */
@@ -462,18 +461,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		TRYF(send_key(handle, keys[i]));
 		PAUSE(100);
 	}
-
-	do
-	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		
-		//send RDY request ???
-		PAUSE(1000);
-		err = rd_is_ready(handle);
-	}
-	while (err == ERROR_READ_TIMEOUT);
 
 	// Get dump
 	TRYF(rd_dump(handle, filename));

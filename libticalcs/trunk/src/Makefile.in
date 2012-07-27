@@ -54,7 +54,7 @@ build_triplet = @build@
 host_triplet = @host@
 @OS_WIN32_FALSE@libticalcs2_la_DEPENDENCIES =
 @OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/ticalcs2-rc.o
-@BUILD_Z80_ROM_DUMPERS_TRUE@am__append_2 = rom84p.h
+@BUILD_Z80_ROM_DUMPERS_TRUE@am__append_2 = rom73.h rom82.h rom83.h rom83p.h rom84p.h rom85.h rom86.h
 subdir = src
 DIST_COMMON = $(libticalcsinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -1164,6 +1164,27 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES uninstall-libticalcsincludeHEADERS
 
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom73.h: romdump_8x/dump73.73p $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump73.73p $(srcdir)/rom73.h 73
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom82.h: romdump_8x/dump82.82y $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump82.82y $(srcdir)/rom82.h 82
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom83.h: romdump_8x/dump83.83p $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump83.83p $(srcdir)/rom83.h 83
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom83p.h: romdump_8x/dump83p.8xp $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump83p.8xp $(srcdir)/rom83p.h 8Xp
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom85.h: romdump_8x/dump85.85s $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump85.85s $(srcdir)/rom85.h 85
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom86.h: romdump_8x/dump86.86p $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_8x/dump86.86p $(srcdir)/rom86.h 86
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@romdump_8x/dump73.73p romdump_8x/dump82.82y romdump_8x/dump83.83p romdump_8x/dump83p.8xp romdump_8x/dump85.85s romdump_8x/dump86.86p:
+@BUILD_Z80_ROM_DUMPERS_TRUE@	cd romdump_8x && $(MAKE)
 
 @BUILD_Z80_ROM_DUMPERS_TRUE@rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
 @BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_84p_usb/dump84p.8xp $(srcdir)/rom84p.h 84p

@@ -197,6 +197,69 @@ int ti82_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const c
   return 0;
 }
 
+/* Send an invalid packet that causes the calc to execute assembly
+   code stored in the most recently transferred variable.
+
+   The program must perform whatever cleanup is necessary, including
+   restoring (FPS), (OPS), and (errSP).  You can do so by calling
+   ResetStacks, or by jumping to JForceCmdNoChar when you exit.  For
+   ROM-independent methods, see romdump.asm.
+*/
+int ti82_send_asm_exec(CalcHandle* handle, VarEntry * var)
+{
+	uint16_t ioData  = (handle->model == CALC_TI82 ? 0x81fd : 0x831e);
+	uint16_t errSP   = (handle->model == CALC_TI82 ? 0x821a : 0x8338);
+	uint16_t onSP    = (handle->model == CALC_TI82 ? 0x8143 : 0x81bc);
+	uint16_t tempMem = (handle->model == CALC_TI82 ? 0x8d0a : 0x8bdd);
+	uint16_t fpBase  = (handle->model == CALC_TI82 ? 0x8d0c : 0x8bdf);
+	uint8_t buffer[50];
+	uint16_t length, offset, endptr, es, sum;
+
+	if (handle->model != CALC_TI82 && handle->model != CALC_TI85)
+	{
+		ticalcs_critical("asm_exec not supported for this model");
+		return ERR_UNSUPPORTED;
+	}
+
+	buffer[0] = (handle->model == CALC_TI82 ? PC_TI82 : PC_TI85);
+	buffer[1] = CMD_VAR;
+
+	/* Warning: Heavy wizardry begins here. ;) */
+
+	length = errSP + 2 - ioData;
+	buffer[2] = LSB(length);
+	buffer[3] = MSB(length);
+
+	memset(buffer + 4, 0, length);
+
+	/* ld sp, (onSP) */
+	buffer[4] = 0xed; buffer[5] = 0x7b; buffer[6] = LSB(onSP); buffer[7] = MSB(onSP);
+	/* ld hl, (endptr) */
+	endptr = (var->name[0] == 0x24 ? fpBase : tempMem);
+	buffer[8] = 0x2a; buffer[9] = LSB(endptr); buffer[10] = MSB(endptr);
+	/* ld de, -program_size */
+	offset = -(var->size - 2);
+	buffer[11] = 0x11; buffer[12] = LSB(offset); buffer[13] = MSB(offset);
+	/* add hl, de */
+	buffer[14] = 0x19;
+	/* jp (hl) */
+	buffer[15] = 0xe9;
+
+	es = 4 + errSP - ioData;
+	buffer[es] = LSB(errSP - 11); buffer[es + 1] = MSB(errSP - 11);
+
+	buffer[es - 4] = (handle->model == CALC_TI82 ? 0x88 : 0);
+	buffer[es - 3] = LSB(ioData); buffer[es - 2] = MSB(ioData);
+
+	sum = tifiles_checksum(buffer + 4, length) + 0x5555;
+	buffer[4 + length] = LSB(sum);
+	buffer[4 + length + 1] = MSB(sum);
+
+	ticalcs_info(" PC->TI: VAR (exec assembly; program size = 0x%04X)", var->size);
+
+	return ticables_cable_send(handle->cable, buffer, length + 6);
+}
+
 int ti82_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname)
 {
   uint8_t host, cmd;
@@ -309,6 +372,27 @@ int ti82_recv_ACK(CalcHandle* handle, uint16_t * status)
     return ERR_INVALID_CMD;
 
   ticalcs_info(" TI->PC: ACK");
+
+  return 0;
+}
+
+int ti82_recv_ERR(CalcHandle* handle, uint16_t * status)
+{
+  uint8_t host, cmd;
+  uint16_t sts;
+  int ret;
+
+  ret = dbus_recv(handle, &host, &cmd, &sts, NULL);
+  if (ret && ret != ERR_CHECKSUM)
+    return ret;
+
+  if (status != NULL)
+    *status = sts;
+
+  if (cmd != CMD_ERR)
+    return ERR_INVALID_CMD;
+
+  ticalcs_info(" TI->PC: ERR");
 
   return 0;
 }

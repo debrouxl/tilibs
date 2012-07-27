@@ -43,6 +43,7 @@
 #include "macros.h"
 
 #include "dbus_pkt.h"
+#include "cmd82.h"
 #include "cmd85.h"
 #include "rom85.h"
 #include "romdump.h"
@@ -243,6 +244,12 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
   uint16_t status;
   char *utf8;
 
+  if ((mode & MODE_SEND_EXEC_ASM) && content->num_entries != 1)
+  {
+    ticalcs_critical("no variable to execute");
+    return -1;
+  }
+
   update_->cnt2 = 0;
   update_->max2 = content->num_entries;
 
@@ -271,6 +278,8 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
     case REJ_EXIT:
       return ERR_ABORT;
     case REJ_SKIP:
+      if (mode & MODE_SEND_EXEC_ASM)
+        return ERR_ABORT;
       continue;
     case REJ_MEMORY:
       return ERR_OUT_OF_MEMORY;
@@ -291,7 +300,13 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 	update_->pbar();
   }
 
-  if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR)) 
+  if (mode & MODE_SEND_EXEC_ASM)
+  {
+    TRYF(ti82_send_asm_exec(handle, content->entries[0]));
+    TRYF(ti82_recv_ERR(handle, &status));
+    TRYF(ti85_send_ACK(handle));
+  }
+  else if ((mode & MODE_SEND_ONE_VAR) || (mode & MODE_SEND_LAST_VAR))
   {
     TRYF(ti85_send_EOT(handle));
     TRYF(ti85_recv_ACK(handle, NULL));
@@ -384,31 +399,12 @@ static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
 	TRYF(rd_send(handle, "romdump.85s", romDumpSize85, romDump85));
-	PAUSE(1000);
 
 	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
-	int err;
-
-	// Wait for user's action (execing program)
-	sprintf(handle->updat->text, _("Waiting for execing of program..."));
-	handle->updat->label();
-
-	do
-	{
-		handle->updat->refresh();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-		
-		//send RDY request ???
-		PAUSE(1000);
-		err = rd_is_ready(handle);
-	}
-	while (err == ERROR_READ_TIMEOUT);
-
 	// Get dump
 	TRYF(rd_dump(handle, filename));
 

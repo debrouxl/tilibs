@@ -40,6 +40,7 @@ int ti82_recv_CTS(CalcHandle*);
 int ti82_recv_SKP(CalcHandle*, uint8_t * rej_code);
 int ti82_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
 int ti82_recv_ACK(CalcHandle*, uint16_t * status);
+int ti82_recv_ERR(CalcHandle*, uint16_t * status);
 int ti82_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 #endif
