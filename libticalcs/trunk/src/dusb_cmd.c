@@ -1102,7 +1102,7 @@ int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t a
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (folder == NULL || name == NULL || args == NULL)
+	if (folder == NULL || name == NULL)
 	{
 		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;

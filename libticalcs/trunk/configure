@@ -638,6 +638,12 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+BUILD_68K_ROM_DUMPERS_FALSE
+BUILD_68K_ROM_DUMPERS_TRUE
+BUILD_Z80_ROM_DUMPERS_FALSE
+BUILD_Z80_ROM_DUMPERS_TRUE
+TIPACK
+SPASM
 CFLAGS_FOR_BUILD
 CC_FOR_BUILD
 OS_WIN32_FALSE
@@ -803,6 +809,7 @@ enable_nls
 enable_rpath
 with_libiconv_prefix
 with_libintl_prefix
+enable_builtin_rom_dumpers
 '
       ac_precious_vars='build_alias
 host_alias
@@ -825,7 +832,9 @@ TICONV_LIBS
 TIFILES_CFLAGS
 TIFILES_LIBS
 CC_FOR_BUILD
-CFLAGS_FOR_BUILD'
+CFLAGS_FOR_BUILD
+SPASM
+TIPACK'
 
 
 # Initialize some variables set by options.
@@ -1455,6 +1464,8 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-nls           do not use Native Language Support
   --disable-rpath         do not hardcode runtime library paths
+  --disable-builtin-rom-dumpers
+                          do recompile ROM dumping utilities
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1501,6 +1512,8 @@ Some influential environment variables:
               C compiler for programs to be run on the build system
   CFLAGS_FOR_BUILD
               C compiler flags for CC_FOR_BUILD
+  SPASM       SPASM Z80 assembler
+  TIPACK      Tool for creating TI variable files
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -15697,6 +15710,118 @@ $as_echo "${CC_FOR_BUILD}" >&6; }
   fi
 fi
 
+# * Pass --disable-builtin-rom-dumpers to force the ROM dumpers to be
+#   recompiled. The default is not to recompile them (but maintainers should
+#   recompile them and watch out for changes !)
+
+# Check whether --enable-builtin-rom-dumpers was given.
+if test "${enable_builtin_rom_dumpers+set}" = set; then :
+  enableval=$enable_builtin_rom_dumpers;
+else
+  enable_builtin_rom_dumpers=yes
+fi
+
+
+
+
+have_spasm=no
+have_tipack=no
+have_tigcc=no
+: ${SPASM=spasm}
+: ${TIPACK=tipack}
+
+if test "x$enable_builtin_rom_dumpers" != "xyes" ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $SPASM works" >&5
+$as_echo_n "checking whether $SPASM works... " >&6; }
+  cat >conftest.asm <<EOF
+    .addinstr B_CALL * EF 3 NOP 1
+    .org 9d95h
+    B_CALL 4972h
+    ret
+EOF
+  if "$SPASM" conftest.asm conftest.bin >&5 2>&5 ; then
+    have_spasm=yes
+  fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_spasm" >&5
+$as_echo "$have_spasm" >&6; }
+
+  if test "x$have_spasm" = "xyes" ; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $TIPACK works" >&5
+$as_echo_n "checking whether $TIPACK works... " >&6; }
+    if "$TIPACK" conftest.bin -p -o conftest.8xp >&5 2>&5 ; then
+      have_tipack=yes
+    fi
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_tipack" >&5
+$as_echo "$have_tipack" >&6; }
+  fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether tigcc works" >&5
+$as_echo_n "checking whether tigcc works... " >&6; }
+  cat >conftest.c <<EOF
+#define USE_TI89
+#define USE_TI92P
+#define USE_V200
+
+#define MIN_AMS 100
+#define NO_AMS_CHECK
+#define SAVE_SCREEN
+
+#include <tigcclib.h>
+
+void _main(void) {
+    ClrScr();
+    DrawStr(0, 0, "Hello World !", A_NORMAL);
+    GKeyIn(NULL, 0);
+}
+EOF
+  if tigcc -Os -Wall -W -v conftest.c -o conftest >&5 2>&5 ; then
+    have_tigcc=yes
+  fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_tigcc" >&5
+$as_echo "$have_tigcc" >&6; }
+fi
+
+if test "x$have_spasm$have_tipack" = "xyesyes" ; then
+  build_z80_rom_dumpers=yes
+else
+  build_z80_rom_dumpers=no
+  if test "x$enable_builtin_rom_dumpers" = "xno" ; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "spasm and/or tipack are not installed or are not usable.
+See \`config.log' for more details" "$LINENO" 5; }
+  fi
+fi
+
+if test "x$have_tigcc" = "xyes" ; then
+  build_68k_rom_dumpers=yes
+else
+  build_68k_rom_dumpers=no
+  if test "x$enable_builtin_rom_dumpers" = "xno" ; then
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "tigcc is not installed or is not usable.
+See \`config.log' for more details" "$LINENO" 5; }
+  fi
+fi
+
+ if test "x$build_z80_rom_dumpers" = "xyes"; then
+  BUILD_Z80_ROM_DUMPERS_TRUE=
+  BUILD_Z80_ROM_DUMPERS_FALSE='#'
+else
+  BUILD_Z80_ROM_DUMPERS_TRUE='#'
+  BUILD_Z80_ROM_DUMPERS_FALSE=
+fi
+
+ if test "x$build_68k_rom_dumpers" = "xyes"; then
+  BUILD_68K_ROM_DUMPERS_TRUE=
+  BUILD_68K_ROM_DUMPERS_FALSE='#'
+else
+  BUILD_68K_ROM_DUMPERS_TRUE='#'
+  BUILD_68K_ROM_DUMPERS_FALSE=
+fi
+
+
 # Output.
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -15838,6 +15963,14 @@ fi
 
 if test -z "${OS_WIN32_TRUE}" && test -z "${OS_WIN32_FALSE}"; then
   as_fn_error $? "conditional \"OS_WIN32\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_Z80_ROM_DUMPERS_TRUE}" && test -z "${BUILD_Z80_ROM_DUMPERS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_Z80_ROM_DUMPERS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_68K_ROM_DUMPERS_TRUE}" && test -z "${BUILD_68K_ROM_DUMPERS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_68K_ROM_DUMPERS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

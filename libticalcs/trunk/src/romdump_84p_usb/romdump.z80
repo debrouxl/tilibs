@@ -3,6 +3,7 @@
 ;;; TI-84+ USB ROM Dumper
 ;;;
 ;;; Copyright (c) 2009, 2010 Brandon Wilson
+;;; Copyright (c) 2012 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -20,20 +21,45 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-.nolist
-#include "ti83plus.inc"
-PACKET_SIZE     equ     1024
-CMD_READY       equ     0AA55h
-CMD_OK          equ     0001h
-CMD_EXIT        equ     0002h
-CMD_SIZE        equ     0003h
-CMD_GETDATA     equ     0005h
-CMD_DATA        equ     0006h
-CMD_REPEAT      equ     0007h
-.list
-inputBuffer     equ     9C31h
-SPbackup        equ     appBackUpScreen
-outputBuffer    equ     appBackUpScreen+2
+ .nolist
+#define bcall(romcallname) rst 28h \ .dw romcallname
+
+_cphlde         = 400Ch
+_PutC           = 4504h
+_PutS           = 450Ah
+_clrLCDFull     = 4540h
+_homeUp         = 4558h
+_runIndicOff    = 4570h
+_getKey         = 4972h
+
+appData         = 8000h
+arcInfo         = 83EEh
+curRow          = 844Bh
+OP1             = 8478h
+iMathPtr5       = 84DBh
+flags           = 89F0h
+pagedCount      = 9834h
+pagedBuf        = 983Ah
+appBackUpScreen = 9872h
+userMem         = 9D95h
+
+onInterrupt     = 4
+onFlags         = 9h
+LlBrack         = 0C1h
+
+PACKET_SIZE     = 1024
+CMD_READY       = 0AA55h
+CMD_OK          = 0001h
+CMD_EXIT        = 0002h
+CMD_SIZE        = 0003h
+CMD_GETDATA     = 0005h
+CMD_DATA        = 0006h
+CMD_REPEAT      = 0007h
+ .list
+inputBuffer     = 9C31h
+SPbackup        = appBackUpScreen
+outputBuffer    = appBackUpScreen+2
+
 .org userMem-2
         .db 0BBh,6Dh
         bcall(_runIndicOff)
@@ -100,8 +126,8 @@ sizeRequested:
         inc hl
         ld (hl),0
         inc hl
-        in a,(2)
-        and 80h
+        in a,(21h)
+        and 3
         ld a,10h
         jr z,srIsNotSE
         add a,a
@@ -355,7 +381,8 @@ DispHexA:
         pop af
         pop ix
         ret
-vdispha:and 15
+vdispha:
+        and 15
         cp 10
         jr nc,vdhlet
         add a,48
@@ -437,7 +464,7 @@ port5AhDone:
         ld a,5
         out (8Bh),a
         in a,(81h)
-        or
+        or 0
         out (81h),a
         in a,(54h)
         or 1

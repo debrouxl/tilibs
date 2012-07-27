@@ -54,6 +54,7 @@ build_triplet = @build@
 host_triplet = @host@
 @OS_WIN32_FALSE@libticalcs2_la_DEPENDENCIES =
 @OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/ticalcs2-rc.o
+@BUILD_Z80_ROM_DUMPERS_TRUE@am__append_2 = rom84p.h
 subdir = src
 DIST_COMMON = $(libticalcsinclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -272,6 +273,7 @@ RC = @RC@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
+SPASM = @SPASM@
 STRIP = @STRIP@
 TFDOCGEN = @TFDOCGEN@
 TICABLES_CFLAGS = @TICABLES_CFLAGS@
@@ -280,6 +282,7 @@ TICONV_CFLAGS = @TICONV_CFLAGS@
 TICONV_LIBS = @TICONV_LIBS@
 TIFILES_CFLAGS = @TIFILES_CFLAGS@
 TIFILES_LIBS = @TIFILES_LIBS@
+TIPACK = @TIPACK@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -382,7 +385,10 @@ libticalcs2_la_SOURCES = *.h \
 	update.c
 
 @OS_WIN32_TRUE@libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o
-all: all-recursive
+tf2hex = ./tf2hex/tf2hex
+BUILT_SOURCES = $(am__append_2)
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .lo .o .obj
@@ -1025,14 +1031,16 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-recursive
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libticalcsincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-recursive
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -1062,6 +1070,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -1134,8 +1143,9 @@ ps-am:
 uninstall-am: uninstall-libLTLIBRARIES \
 	uninstall-libticalcsincludeHEADERS
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) all check \
+	ctags-recursive install install-am install-strip \
+	tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic \
@@ -1154,6 +1164,12 @@ uninstall-am: uninstall-libLTLIBRARIES \
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES uninstall-libticalcsincludeHEADERS
 
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
+@BUILD_Z80_ROM_DUMPERS_TRUE@	$(tf2hex) romdump_84p_usb/dump84p.8xp $(srcdir)/rom84p.h 84p
+
+@BUILD_Z80_ROM_DUMPERS_TRUE@romdump_84p_usb/dump84p.8xp:
+@BUILD_Z80_ROM_DUMPERS_TRUE@	cd romdump_84p_usb && $(MAKE)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -191,6 +191,88 @@ else
   fi
 fi
 
+# * Pass --disable-builtin-rom-dumpers to force the ROM dumpers to be
+#   recompiled. The default is not to recompile them (but maintainers should
+#   recompile them and watch out for changes !)
+
+AC_ARG_ENABLE([builtin-rom-dumpers],
+  AS_HELP_STRING([--disable-builtin-rom-dumpers], [do recompile ROM dumping utilities]),
+  [], [enable_builtin_rom_dumpers=yes])
+
+AC_ARG_VAR([SPASM], [SPASM Z80 assembler])
+AC_ARG_VAR([TIPACK], [Tool for creating TI variable files])
+have_spasm=no
+have_tipack=no
+have_tigcc=no
+: ${SPASM=spasm}
+: ${TIPACK=tipack}
+
+if test "x$enable_builtin_rom_dumpers" != "xyes" ; then
+  AC_MSG_CHECKING([whether $SPASM works])
+  cat >conftest.asm <<EOF
+    .addinstr B_CALL * EF 3 NOP 1
+    .org 9d95h
+    B_CALL 4972h
+    ret
+EOF
+  if "$SPASM" conftest.asm conftest.bin >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_spasm=yes
+  fi
+  AC_MSG_RESULT([$have_spasm])
+
+  if test "x$have_spasm" = "xyes" ; then
+    AC_MSG_CHECKING([whether $TIPACK works])
+    if "$TIPACK" conftest.bin -p -o conftest.8xp >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+      have_tipack=yes
+    fi
+    AC_MSG_RESULT([$have_tipack])
+  fi
+
+  AC_MSG_CHECKING([whether tigcc works])
+  cat >conftest.c <<EOF
+#define USE_TI89
+#define USE_TI92P
+#define USE_V200
+
+#define MIN_AMS 100
+#define NO_AMS_CHECK
+#define SAVE_SCREEN
+
+#include <tigcclib.h>
+
+void _main(void) {
+    ClrScr();
+    DrawStr(0, 0, "Hello World !", A_NORMAL);
+    GKeyIn(NULL, 0);
+}
+EOF
+  if tigcc -Os -Wall -W -v conftest.c -o conftest >&AS_MESSAGE_LOG_FD 2>&AS_MESSAGE_LOG_FD ; then
+    have_tigcc=yes
+  fi
+  AC_MSG_RESULT([$have_tigcc])
+fi
+
+if test "x$have_spasm$have_tipack" = "xyesyes" ; then
+  build_z80_rom_dumpers=yes
+else
+  build_z80_rom_dumpers=no
+  if test "x$enable_builtin_rom_dumpers" = "xno" ; then
+    AC_MSG_FAILURE([spasm and/or tipack are not installed or are not usable.])
+  fi
+fi
+
+if test "x$have_tigcc" = "xyes" ; then
+  build_68k_rom_dumpers=yes
+else
+  build_68k_rom_dumpers=no
+  if test "x$enable_builtin_rom_dumpers" = "xno" ; then
+    AC_MSG_FAILURE([tigcc is not installed or is not usable.])
+  fi
+fi
+
+AM_CONDITIONAL(BUILD_Z80_ROM_DUMPERS, test "x$build_z80_rom_dumpers" = "xyes")
+AM_CONDITIONAL(BUILD_68K_ROM_DUMPERS, test "x$build_68k_rom_dumpers" = "xyes")
+
 # Output.
 AC_OUTPUT
 

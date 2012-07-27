@@ -68,7 +68,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	PAUSE(25);	// this pause is needed between 2 keys
-	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, "", key));
 	TRYF(cmd_r_data_ack(handle));
 
 	return 0;

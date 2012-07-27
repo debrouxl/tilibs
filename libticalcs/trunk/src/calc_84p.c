@@ -65,7 +65,7 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, key));
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, "", key));
 	TRYF(cmd_r_delay_ack(handle));
 	TRYF(cmd_r_data_ack(handle));
 
@@ -656,12 +656,12 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// This fixes a 100% reproducible timeout: send_key normally requests a data ACK,
 	// but when the program is running, no data ACK is sent. Therefore, hit the Enter
 	// key without requesting a data ACK, only the initial delay ACK.
-	TRYF(cmd_s_execute(handle, "", "", EID_KEY, NULL, 0x05));
+	TRYF(cmd_s_execute(handle, "", "", EID_KEY, "", 0x05));
 	TRYF(cmd_r_delay_ack(handle));
 	PAUSE(400);
 #endif
 #if 1
-	TRYF(cmd_s_execute(handle, NULL, "ROMDUMP", EID_PRGM, NULL, 0));
+	TRYF(cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0));
 	TRYF(cmd_r_data_ack(handle));
 	PAUSE(400);
 #endif

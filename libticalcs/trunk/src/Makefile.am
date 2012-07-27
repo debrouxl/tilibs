@@ -45,3 +45,23 @@ if OS_WIN32
   libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o
   libticalcs2_la_LDFLAGS += -Wl,../build/mingw/ticalcs2-rc.o
 endif
+
+tf2hex = ./tf2hex/tf2hex
+
+BUILT_SOURCES =
+
+if BUILD_Z80_ROM_DUMPERS
+
+BUILT_SOURCES += rom84p.h
+
+rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
+	$(tf2hex) romdump_84p_usb/dump84p.8xp $(srcdir)/rom84p.h 84p
+
+romdump_84p_usb/dump84p.8xp:
+	cd romdump_84p_usb && $(MAKE)
+
+endif
+
+if BUILD_68K_ROM_DUMPERS
+
+endif
