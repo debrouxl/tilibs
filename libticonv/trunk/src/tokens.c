@@ -23,7 +23,7 @@
 	This unit contains raw varname to TI-charset conversion routines.
  
 	The detokenization is used to translate some raw varnames into TI-charset 
-	encoded varnames. Tokenization is the reverse way. 
+	encoded varnames. Tokenization is the reverse way.
 	Many functions depends on the calculator model and the variable type ID.
 
 	This is needed for the following calcs: 73/82/83/83+/84+.
@@ -211,7 +211,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		  else
 			dst = g_strdup_printf("w");
 		  break; 
-		
+
 		default: dst = g_strdup_printf("?"); break;
 		}
 		break;
@@ -489,7 +489,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 			if(!strcmp("ZRCL", src_)  || type == 0x1B)
 				return g_strdup("");
 		break;
-		default: 
+		default:
 		break;
 	}
 
@@ -497,7 +497,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	{
 		// Named Lists
 		gchar *str = g_malloc0(9);
-			
+
 		str[0] = 0x5D;
 		strncpy(str+1, src_, 7);
 		str[8] = '\0';
