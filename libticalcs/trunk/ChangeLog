@@ -2,7 +2,30 @@ SubVersion: $Id$
 
 Log of changes (libticalcs):
 
-- xx/xx/xxxx, version 1.1.8: debrouxl
+- xx/xx/2012, version 1.1.8: debrouxl
+	- fix off-by-one in calc_84p.c::get_version(), which led to the last character of the product ID being cut off. Reported by ParkeR.
+	- advertise ROM dumping support in CalcFncts calc_84p_usb.
+	- regenerate with Autoconf 2.69 and Automake 1.11.5.
+	- suppress name clashes between dusb_rpkt.h / nsp_rpkt.h and dusb_vpkt.h / nsp_vpkt.h.
+	- export dbus_recv, dbus_send, dusb_recv, dusb_send, nsp_recv and nsp_send, i.e. provide to external users the ability to send and receive raw packets.
+	- protect {dbus,dusb,nsp}_{recv,send} against NULL parameters.
+	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
+	- fix several malloc/realloc/free vs. g_malloc/g_malloc0/g_free mismatches.
+	- move a number of internal definitions to a new "internal.h" header; add several traces.
+	- rename a bunch of internal functions, and remove the corresponding internal macros.
+	- TI-68k ROM dumpers: remove redundant definitions of uint8_t, uint16_t and uint32_t.
+	- integrate tf2hex and the ROM dumpers into the autotools chain, by Benjamin Moody.
+	- add variable rename and variable attribute change functions, by Benjamin Moody; improve test_ticalcs_2; several drive-by fixes and improvements.
+	- DUSB / NSP: kill more NULL dereferences by sanitizing function arguments; get rid of a number of TRYF; add a DUSB error code.
+	- a fix for dusb_cmd, and an improvement to test_ticalcs_2.
+	- integrate a couple fixes to the 84+ DUSB ROM dumper by Benjamin Moody, and switch the source code and building process of that ROM dumper from tasm to spasm.
+	- integrate new TI-Z80 ROM dumper (with, among others, the ability to automatically dump 82 and 85, and the ability to unlock 73/83+/84+ Flash memory without an OS patch), and other ROM dumping improvements, by Benjamin Moody.
+	- integrate the TI-68k ROM dumpers into the automake definitions, and optimize them in the process.
+	- regenerate with Automake 1.11.6.
+	- use LF line endings throughout the sources.
+	- add initial, experimental TI-80 VSC support, by Randy Compton.
+	- convert README to UTF-8.
+
 
 - 14/12/2011, version 1.1.7: debrouxl
 	- add error code returned by the Nspire when the anti-downgrade protection refuses an OS version older than the configured minimum version.
