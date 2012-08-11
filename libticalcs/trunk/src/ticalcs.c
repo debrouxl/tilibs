@@ -95,6 +95,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_SPIRE
 	&calc_nsp,
 #endif
+#ifndef NO_TI80
+	&calc_80,
+#endif
 	NULL
 };
 

@@ -122,6 +122,7 @@ typedef enum
 typedef enum 
 {
 	ROMSIZE_AUTO  = 0,
+    ROMSIZE_48KB = 48, /* TI80 */
     ROMSIZE_128KB = 128, /* TI82, 85 */
     ROMSIZE_256KB = 256, /* TI83, 86 */
     ROMSIZE_512KB = 512, /* TI83+ */

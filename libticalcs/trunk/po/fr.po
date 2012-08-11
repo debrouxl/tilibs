@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-07-17 08:37+0200\n"
+"POT-Creation-Date: 2012-07-28 13:39+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -692,37 +692,41 @@ msgstr "Essai avec TI83... "
 msgid "Check for TI82... "
 msgstr "Essai avec TI82... "
 
-#: src/probe.c:221
+#: src/probe.c:196
+msgid "Check for TI80... "
+msgstr "Essai avec TI80... "
+
+#: src/probe.c:245
 msgid "Check for TIXX... "
 msgstr "Essai avec TIXX... "
 
-#: src/probe.c:253
+#: src/probe.c:277
 msgid "Check for TI92... "
 msgstr "Essai avec TI92... "
 
-#: src/probe.c:283
+#: src/probe.c:307
 msgid "Check for TI9X... "
 msgstr "Essai avec TI9X... "
 
-#: src/probe.c:294
+#: src/probe.c:318
 msgid "Check for TI8X... "
 msgstr "Essai avec TI8X... "
 
-#: src/probe.c:304
+#: src/probe.c:328
 #, c-format
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"
 
-#: src/ticalcs.c:144
+#: src/ticalcs.c:147
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.c:274
+#: src/ticalcs.c:277
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.c:275
+#: src/ticalcs.c:278
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"

@@ -350,13 +350,14 @@ static const char GROUP_FILE_EXT[CALC_MAX + 1][4] =
 	"XxX", 
 	"73g", "82g", "83g", "8Xg", "8Xg", "85g", "86g", 
 	"89g", "89g", "92g", "9Xg", "v2g", "???",
+	"???",
 };
 
 static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] = 
 {
 	"XxX", 
 	"73b", "82b", "83b", "8Xb", "8Xb", "85b", "86b", 
-	"89g", "89g", "92b", "9Xg", "v2g", 
+	"89g", "89g", "92b", "9Xg", "v2g", "???",
 	"???",
 };
 
@@ -364,7 +365,7 @@ static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] =
 {
 	"XxX", 
 	"73k", "???", "???", "8Xk", "8Xk", "???", "???",
-	"89k", "89k", "???", "9Xk", "v2k", 
+	"89k", "89k", "???", "9Xk", "v2k", "???",
 	"???",
 };
 
@@ -372,7 +373,7 @@ static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] =
 {
 	"XxX", 
 	"73u", "???", "???", "8Xu", "8Xu", "???", "???",
-	"89u", "89u", "???", "9Xu", "v2u", 
+	"89u", "89u", "???", "9Xu", "v2u", "???",
 	"tno",
 };
 
@@ -380,7 +381,7 @@ static const int TIXX_DIR[CALC_MAX + 1] =
 {
 	-1, 
 	TI73_DIR, -1, TI83_DIR, TI83p_DIR, TI84p_DIR, -1, TI86_DIR,
-	TI89_DIR, TI89_DIR, TI92_DIR, V200_DIR, 
+	TI89_DIR, TI89_DIR, TI92_DIR, V200_DIR, -1,
 	NSP_DIR,
 };
 
@@ -388,7 +389,7 @@ static const int TIXX_FLASH[CALC_MAX + 1] =
 {
 	-1, 
 	TI73_APPL, -1, -1, TI83p_APPL, TI84p_APPL, -1, -1,
-	TI89_APPL, TI89t_APPL, -1, TI92p_APPL, V200_APPL, 
+	TI89_APPL, TI89t_APPL, -1, TI92p_APPL, V200_APPL, -1,
 	-1,
 };
 
@@ -396,7 +397,7 @@ static const int TIXX_IDLIST[CALC_MAX + 1] =
 {
 	-1, 
 	TI73_IDLIST, -1, -1, TI83p_IDLIST, TI84p_IDLIST, -1, -1,
-	TI89_IDLIST, TI89t_IDLIST, -1, TI92p_IDLIST, V200_IDLIST,
+	TI89_IDLIST, TI89t_IDLIST, -1, TI92p_IDLIST, V200_IDLIST, -1,
 	-1,
 };
 

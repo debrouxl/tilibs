@@ -34,6 +34,9 @@
 #define PC_TI73  0x07
 #define TI73_PC  0x74
 
+#define PC_TI80  0x00
+#define TI80_PC  0x80
+
 #define PC_TI82  0x02
 #define TI82_PC  0x82
 

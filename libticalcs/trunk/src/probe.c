@@ -190,6 +190,30 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 		PAUSE(DEAD_TIME);
 	}
 
+	/* Test for a TI80 */
+#if 0
+#warning TI-80 DETECTION FAILS
+	ticalcs_info(_("Check for TI80... "));
+	ticalcs_info("%d\n", dbus_send(h, PC_TI80, CMD_SCR, 0, NULL));
+	err = tixx_recv_ACK(h, &data);
+
+	ticalcs_info("<%02X-%02X> ", PC_TI80, data);
+
+	if (!err && (data == TI80_PC)) 
+	{
+		ticalcs_info("OK !\n");
+		*model = CALC_TI80;
+
+		return 0;
+	} 
+	else 
+	{
+		ticalcs_info("NOK.\n");
+		ticables_cable_reset(handle->cable);
+		PAUSE(DEAD_TIME);
+	}
+#endif
+
 	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 }
 

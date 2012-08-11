@@ -111,7 +111,8 @@ am_libticalcs2_la_OBJECTS = libticalcs2_la-backup.lo \
 	libticalcs2_la-calc_86.lo libticalcs2_la-calc_89.lo \
 	libticalcs2_la-calc_92.lo libticalcs2_la-calc_84p.lo \
 	libticalcs2_la-calc_89t.lo libticalcs2_la-calc_nsp.lo \
-	libticalcs2_la-clock.lo libticalcs2_la-cmd73.lo \
+	libticalcs2_la-calc_80.lo libticalcs2_la-clock.lo \
+	libticalcs2_la-cmd73.lo libticalcs2_la-cmd80.lo \
 	libticalcs2_la-cmd82.lo libticalcs2_la-cmd85.lo \
 	libticalcs2_la-cmd89.lo libticalcs2_la-cmd92.lo \
 	libticalcs2_la-dusb_cmd.lo libticalcs2_la-nsp_cmd.lo \
@@ -369,8 +370,9 @@ libticalcs2_la_SOURCES = *.h \
 	calc_89.c calc_92.c \
 	calc_84p.c calc_89t.c \
 	calc_nsp.c \
+	calc_80.c \
 	clock.c \
-	cmd73.c cmd82.c cmd85.c cmd89.c cmd92.c dusb_cmd.c nsp_cmd.c \
+	cmd73.c cmd80.c cmd82.c cmd85.c cmd89.c cmd92.c dusb_cmd.c nsp_cmd.c \
 	dirlist.c \
 	error.c \
 	keys73.c keys83.c keys83p.c keys86.c keys89.c keys92p.c \
@@ -467,6 +469,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-backup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_00.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_73.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_80.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_82.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_83.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_84p.Plo@am__quote@
@@ -479,6 +482,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-calc_xx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd73.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd80.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd82.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd85.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticalcs2_la-cmd89.Plo@am__quote@
@@ -618,6 +622,13 @@ libticalcs2_la-calc_nsp.lo: calc_nsp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-calc_nsp.lo `test -f 'calc_nsp.c' || echo '$(srcdir)/'`calc_nsp.c
 
+libticalcs2_la-calc_80.lo: calc_80.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-calc_80.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-calc_80.Tpo -c -o libticalcs2_la-calc_80.lo `test -f 'calc_80.c' || echo '$(srcdir)/'`calc_80.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libticalcs2_la-calc_80.Tpo $(DEPDIR)/libticalcs2_la-calc_80.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='calc_80.c' object='libticalcs2_la-calc_80.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-calc_80.lo `test -f 'calc_80.c' || echo '$(srcdir)/'`calc_80.c
+
 libticalcs2_la-clock.lo: clock.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-clock.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-clock.Tpo -c -o libticalcs2_la-clock.lo `test -f 'clock.c' || echo '$(srcdir)/'`clock.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libticalcs2_la-clock.Tpo $(DEPDIR)/libticalcs2_la-clock.Plo
@@ -631,6 +642,13 @@ libticalcs2_la-cmd73.lo: cmd73.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cmd73.c' object='libticalcs2_la-cmd73.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-cmd73.lo `test -f 'cmd73.c' || echo '$(srcdir)/'`cmd73.c
+
+libticalcs2_la-cmd80.lo: cmd80.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-cmd80.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-cmd80.Tpo -c -o libticalcs2_la-cmd80.lo `test -f 'cmd80.c' || echo '$(srcdir)/'`cmd80.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libticalcs2_la-cmd80.Tpo $(DEPDIR)/libticalcs2_la-cmd80.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='cmd80.c' object='libticalcs2_la-cmd80.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticalcs2_la-cmd80.lo `test -f 'cmd80.c' || echo '$(srcdir)/'`cmd80.c
 
 libticalcs2_la-cmd82.lo: cmd82.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticalcs2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticalcs2_la-cmd82.lo -MD -MP -MF $(DEPDIR)/libticalcs2_la-cmd82.Tpo -c -o libticalcs2_la-cmd82.lo `test -f 'cmd82.c' || echo '$(srcdir)/'`cmd82.c

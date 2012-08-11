@@ -66,7 +66,7 @@ typedef enum
 	CALC_NONE = 0,
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_MAX
+	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80, CALC_MAX
 } CalcModel;
 #endif
 
@@ -147,6 +147,7 @@ extern "C" {
 
   // charset.c
   extern TIEXPORT4 const unsigned long TICALL ti73_charset[256];
+  extern TIEXPORT4 const unsigned long TICALL ti80_charset[256];
   extern TIEXPORT4 const unsigned long TICALL ti82_charset[256];
   extern TIEXPORT4 const unsigned long TICALL ti83_charset[256];
   extern TIEXPORT4 const unsigned long TICALL ti83p_charset[256];

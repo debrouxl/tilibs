@@ -45,6 +45,8 @@ extern const CalcFncts calc_89t_usb;
 
 extern const CalcFncts calc_nsp;
 
+extern const CalcFncts calc_80;
+
 #endif
 
 

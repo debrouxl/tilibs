@@ -676,6 +676,137 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti73(const unsigned short *utf16, char *t
 	return (char *)"";
 }
 
+///////////// TI80 /////////////
+
+TIEXPORT4 const unsigned long TICALL ti80_charset[256] = { 
+	' ',    0x2588, '_',    0x2191, 'A',    0x25b6, '%',    '(',
+	')',    '\"',   ',',    '!',    176,    '\'',   0x2b3,  180,
+
+	178,    'a',    'b',    'c',    'd',    'e',    'n',    'r', 
+	0x2423, 'x',    'y',    0x2081, 0x2080, 0x3c0,  0xffff, '=',
+
+	'X',    'Y',    'T',    'R',    0x3b8,  0x2025, 0x25a1, 0x207a,
+	0x2d9,  '{',    '}',    179,    '.',    0x1d07, 0x2044, ':',
+
+	'0',    '1',    '2',    '3',    '4',    '5',    '6',    '7', 
+	'8',    '9',    '=',    0x2260, '>',    0x2265, '<',    0x2264,
+
+	'?',    'A',    'B',    'C',    'D',    'E',    'F',    'G',
+	'H',    'I',    'J',    'K',    'L',    'M',    'N',    'O',
+
+	'P',    'Q',    'R',    'S',    'T',    'U',    'V',    'W',
+	'X',    'Y',    'Z',    0x3b8,  '+',    '-',    0x00d7, '/',
+
+	'^',    0x207b, 0x221a, 0x3a3,  0x3c3,  0x1e8b, 0x1e8f, 0x394,
+	0x1d1b, 0x2191, 0x2193, 0x2e3,  247,    '_',    '_',    '_',
+
+	'_',    '_',    '_',    '_',    '_',    0x2592, 0x2af0, 179,
+	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
+
+	' ',    0x2588, '_',    0x2191, 'A',    0x25b6, '%',    '(',
+	')',    '\"',   ',',    '!',    176,    '\'',   0x2b3,  180,
+
+	178,    'a',    'b',    'c',    'd',    'e',    'n',    'r', 
+	0x2423, 'x',    'y',    0x2081, 0x2080, 0x3c0,  0xffff, '=',
+
+	'X',    'Y',    'T',    'R',    0x3b8,  0x2025, 0x25a1, 0x207a,
+	0x2d9,  '{',    '}',    179,    '.',    0x1d07, 0x2044, ':',
+
+	'0',    '1',    '2',    '3',    '4',    '5',    '6',    '7', 
+	'8',    '9',    '=',    0x2260, '>',    0x2265, '<',    0x2264,
+
+	'?',    'A',    'B',    'C',    'D',    'E',    'F',    'G',
+	'H',    'I',    'J',    'K',    'L',    'M',    'N',    'O',
+
+	'P',    'Q',    'R',    'S',    'T',    'U',    'V',    'W',
+	'X',    'Y',    'Z',    0x3b8,  '+',    '-',    0x00d7, '/',
+
+	'^',    0x207b, 0x221a, 0x3a3,  0x3c3,  0x1e8b, 0x1e8f, 0x394,
+	0x1d1b, 0x2191, 0x2193, 0x2e3,  247,    '_',    '_',    '_',
+
+	'_',    '_',    '_',    '_',    '_',    0x2592, 0x2af0, 179,
+	'_',    '_',    '_',    '_',    '_',    '_',    '_',    '_',
+};
+
+/**
+ * ticonv_ti80_to_utf16:
+ * @ti: null terminated string (input)
+ * @utf16: null terminated string (output)
+ *
+ * TI80 charset to UTF-16 conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT4 unsigned short* TICALL ticonv_ti80_to_utf16(const char *ti, unsigned short *utf16)
+{
+	const unsigned char *p = (const unsigned char *)ti;
+	unsigned short *q = utf16;
+	unsigned long c;
+
+	while (*p) 
+	{
+		c=ti80_charset[*(p++)];
+		if (c==0xffff) ; // ignore second half of pi
+		if (c<0x10000) 
+		{
+			*(q++)=(unsigned short)c;
+		} 
+		else 
+		{
+			*(q++)=(unsigned short)(c>>16);
+			*(q++)=(unsigned short)(c&0xffff);
+		}
+	}
+	*q=0;
+
+	return utf16;
+}
+
+/**
+ * ticonv_utf16_to_ti80:
+ * @utf16: null terminated string (input)
+ * @ti: null terminated string (output)
+ *
+ * UTF-16 to TI80 charset conversion.
+ *
+ * Return value: returns the destination pointer or NULL if error.
+ **/
+TIEXPORT4 char* TICALL ticonv_utf16_to_ti80(const unsigned short *utf16, char *ti)
+{
+	const unsigned short *p = utf16;
+	unsigned char *q = (unsigned char *)ti;
+
+	while (*p) 
+	{
+	    if ((*p >= 48 && *p <= 57)
+			|| (*p >= 65 && *p <= 90)) 
+	    {
+		      *(q++)=(unsigned char)*(p++);
+	    } 
+	    else 
+		switch (*(p++)) 
+		{
+		case 0x03b8: *(q++) = 91; break;	// theta
+		case 0x3c0: *(q++) = 29; *(q++) = 30; break;	// pi
+		case 0x03a3: *(q++) = 99; break;	// capital sigma
+		case 0x03c3: *(q++) = 100; break;	// sigma
+#warning FINISH UTF-16-TO-TI-80 CONVERSION
+
+		case 0x2080: *(q++) = 28; break;	// subscript 10
+		case 0x2081: *(q++) = 27; break;
+
+		default:
+			if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
+			  p++;
+			*(q++) = 64;
+		break;
+		}
+	}
+	*q=0;
+
+	return ti;
+}
+
 ///////////// TI82 /////////////
 
 TIEXPORT4 const unsigned long TICALL ti82_charset[256] = { 

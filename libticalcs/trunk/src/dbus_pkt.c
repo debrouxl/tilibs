@@ -75,7 +75,15 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		buf[2] = 0x00;
 		buf[3] = 0x00;
 
-		TRYF(ticables_cable_send(handle->cable, buf, 4));
+		// TI80 does not use length
+		if(target == PC_TI80)
+		{
+			TRYF(ticables_cable_send(handle->cable, buf, 2));
+		}
+		else
+		{
+			TRYF(ticables_cable_send(handle->cable, buf, 4));
+		}
 	}
 	else 
 	{
@@ -147,6 +155,8 @@ static uint8_t host_ids(CalcHandle *handle)
   {
   case CALC_TI73:
     return TI73_PC;
+  case CALC_TI80:
+    return TI80_PC;
   case CALC_TI82:
     return TI82_PC;
   case CALC_TI83:
@@ -193,12 +203,20 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		return ERR_INVALID_PACKET;
 	}
 
-	// Any packet has always at least 4 bytes (MID, CID, LEN)
-	TRYF(ticables_cable_recv(handle->cable, buf, 4));
+	// Any packet has always at least 2 bytes (MID, CID)
+	TRYF(ticables_cable_recv(handle->cable, buf, 2));
 
 	*host = buf[0];
 	*cmd = buf[1];
-	*length = buf[2] | (buf[3] << 8);
+
+	// Any non-TI80 packet has a length; TI80 data packets also have a length
+	if(*host != TI80_PC || *cmd == CMD_XDP)
+	{
+		TRYF(ticables_cable_recv(handle->cable, buf, 2));
+
+		*length = buf[0] | (buf[1] << 8);
+	}
+	else *length = 0;
 
 	//removed for probing (pb here !)
 	//if(host_check && (*host != host_ids(handle))) 
