@@ -294,6 +294,22 @@ static int recv_flash(CalcHandle *h)
 	return 0;
 }
 
+static int send_os(CalcHandle *h)
+{
+	char filename[1024] = "";
+	int ret;
+	char * message;
+
+	printf("Enter filename: ");
+	ret = scanf("%1023s", filename);
+	if(ret < 1)
+		return 0;
+
+	TRYF(ticalcs_calc_send_os2(h, filename));
+
+	return 0;
+}
+
 static int recv_idlist(CalcHandle *h)
 {
 	uint8_t id[32];
@@ -444,7 +460,7 @@ static int probe_calc(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	26
+#define NITEMS	27
 
 static const char *str_menu[NITEMS] = 
 {
@@ -462,6 +478,7 @@ static const char *str_menu[NITEMS] =
 	"Recv var (ns)",
 	"Send flash",
 	"Recv flash",
+	"Send OS",
 	"Get ID-LIST",
 	"Dump ROM",
 	"Set clock",
@@ -494,6 +511,7 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	recv_var_ns,
 	send_flash,
 	recv_flash,
+	send_os,
 	recv_idlist,
 	dump_rom,
 	set_clock,

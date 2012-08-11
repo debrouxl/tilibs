@@ -470,6 +470,7 @@ static int tifiles_file_has_tig_header(const char *filename)
 #define TCC_SIGNATURE           "TI-Nspire.tcc "
 #define TMO_SIGNATURE           "TI-Nspire.tmo "
 #define TMC_SIGNATURE           "TI-Nspire.tmc "
+#define OSEXT1_SIGNATURE        "__OSEXT__1 "
 
 TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 {
@@ -506,6 +507,7 @@ TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
 		    || !strncmp(str, TCC_SIGNATURE, 14)
 		    || !strncmp(str, TMO_SIGNATURE, 14)
 		    || !strncmp(str, TMC_SIGNATURE, 14)
+		    || !strncmp(str, OSEXT1_SIGNATURE, 11)
 		   )
 		{
 			ret = !0;

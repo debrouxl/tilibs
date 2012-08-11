@@ -25,6 +25,7 @@ Log of changes (libticalcs):
 	- use LF line endings throughout the sources.
 	- add initial, experimental TI-80 VSC support, by Randy Compton.
 	- convert README to UTF-8.
+	- add a Nspire error code related to OS extensions on OS versions which do not support them; add OS sending to test_ticalcs_2.
 
 
 - 14/12/2011, version 1.1.7: debrouxl

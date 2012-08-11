@@ -410,7 +410,17 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		strcpy(error_msg, _("Msg: forbidden characters in folder name."));
 		*message = g_strdup(error_msg);
 		break;
+	// The following one (FF 20) is returned immediately by a e.g. CX CAS running 3.0.1.1753,
+	// when ones tries to send it ZiDian.tcc (English-Chinese dictionary) 3.1.0.392.
+	// A CX CAS running 3.1.0.392 sends FF 04 (OS refused because it's not suitable / corrupted / whatever) instead.
+	//
+	// 3.0.1.1753 behaves exactly the same if the magic in the header is edited from __OSEXT__1 to __OTEXT__1.
+	// Therefore, it seems that FF 20 is a generic error message, rather than just "this particular OS extension is refused".
 	case ERR_CALC_ERROR3+13:
+		strcpy(error_msg, _("Msg: OS upgrade type not recognized."));
+		*message = g_strdup(error_msg);
+		break;
+	case ERR_CALC_ERROR3+14:
 		strcpy(error_msg, _("Msg: anti-downgrade protection refuses this OS version."));
 		*message = g_strdup(error_msg);
 		break;

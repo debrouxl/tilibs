@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-07-28 13:39+0200\n"
+"POT-Creation-Date: 2012-08-11 17:48+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -664,7 +664,11 @@ msgstr "Msg: pas d'extension de fichier."
 msgid "Msg: forbidden characters in folder name."
 msgstr "Msg: caractères interdits dans le nom de dossier."
 
-#: src/error.c:414
+#: src/error.c:420
+msgid "Msg: OS upgrade type not recognized."
+msgstr "Msg: type de mise à jour de l'OS non reconnu."
+
+#: src/error.c:424
 msgid "Msg: anti-downgrade protection refuses this OS version."
 msgstr "Msg: la protection anti-retour refuse cette version d'OS"
 
