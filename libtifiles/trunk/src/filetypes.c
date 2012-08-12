@@ -955,7 +955,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
  * tifiles_file_get_model:
  * @filename: a filename as string.
  *
- * Returns the calculator model targetted for this file.
+ * Returns the calculator model targeted by this file.
  *
  * Return value: a model taken in #CalcModel.
  **/

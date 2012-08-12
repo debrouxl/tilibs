@@ -552,7 +552,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
  * @handle: a previously allocated handle
  * @mode:
  * @content: where to store variables
- * @var: informations on the received variable (if single) or NULL (if group)
+ * @var: information on the received variable (if single) or NULL (if group)
  *
  * Receive one or more variable (non-silent mode).
  *
@@ -1272,7 +1272,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
  * @handle: a previously allocated handle
  * @mode:
  * @filename: where to store variables
- * @var: informations on the received variable (if single) or NULL (if group)
+ * @var: information on the received variable (if single) or NULL (if group)
  *
  * Receive one or more variable (non-silent mode).
  *

@@ -379,7 +379,7 @@ TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
  * ticables_handle_show:
  * @handle: the handle
  *
- * Show informations stored in the handle.
+ * Show information stored in the handle.
  *
  * Return value: always 0.
  **/

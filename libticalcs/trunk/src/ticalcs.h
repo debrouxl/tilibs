@@ -633,7 +633,7 @@ struct _CalcFncts
  * @cable: handle on cable used with this model
  * @attached: set if a cable has been attached
  *
- * A structure used to store informations as an handle.
+ * A structure used to store information as a handle.
  * !!! This structure is for private use !!!
  **/
 struct _CalcHandle

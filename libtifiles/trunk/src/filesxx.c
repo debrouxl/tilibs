@@ -211,7 +211,7 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
  * tifiles_file_display_regular:
  * @content: the file content to show.
  *
- * Display file content informations.
+ * Display file content information.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -364,7 +364,7 @@ TIEXPORT2 int tifiles_file_write_backup(const char *filename, BackupContent *con
  * tifiles_file_display_backup:
  * @content: the file content to show.
  *
- * Display file content informations.
+ * Display file content information.
  *
  * Return value: an error code, 0 otherwise.
  **/
@@ -631,7 +631,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
  * tifiles_file_display_flash:
  * @content: the file content to show.
  *
- * Display file content informations.
+ * Display file content information.
  *
  * Return value: an error code, 0 otherwise.
  **/

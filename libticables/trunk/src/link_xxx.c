@@ -574,7 +574,7 @@ TIEXPORT1 int TICALL ticables_progress_reset(CableHandle* handle)
  * @msec: time needed for the operation
  * @rate: data rate
  *
- * Returns informations needed to compute the transfer rate of the link cable.
+ * Returns information needed to compute the transfer rate of the link cable.
  *
  * Return value: always 0.
  **/

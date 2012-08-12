@@ -207,7 +207,7 @@ struct _CableFncts
  * @open: set if cable has been open
  * @busy: set if cable is busy
  *
- * A structure used to store informations as an handle.
+ * A structure used to store information as an handle.
  * !!! This structure is for private use !!!
  **/
 struct _CableHandle

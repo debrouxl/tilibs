@@ -266,7 +266,7 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
  * ticalcs_handle_show:
  * @handle: the handle
  *
- * Show informations stored in the handle.
+ * Show information stored in the handle.
  *
  * Return value: always 0.
  **/
