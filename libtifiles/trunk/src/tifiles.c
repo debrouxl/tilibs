@@ -59,23 +59,25 @@ TIEXPORT2 int TICALL tifiles_library_init()
 	char locale_dir[65536];
 	
 #ifdef __WIN32__
-  	HANDLE hDll;
-  	int i;
-  	
-	hDll = GetModuleHandle("libtifiles2-9.dll");
-  	GetModuleFileName(hDll, locale_dir, 65535);
+	HANDLE hDll;
+	int i;
 
-  	for (i = strlen(locale_dir); i >= 0; i--) 
+	hDll = GetModuleHandle("libtifiles2-9.dll");
+	GetModuleFileName(hDll, locale_dir, 65535);
+
+	for (i = strlen(locale_dir); i >= 0; i--)
 	{
-    		if (locale_dir[i] == '\\')
-      			break;
-  	}  	
-  	locale_dir[i] = '\0';
+		if (locale_dir[i] == '\\')
+		{
+			break;
+		}
+	}
+	locale_dir[i] = '\0';
 
 #ifdef __MINGW32__
-   strcat(locale_dir, "\\..\\share\\locale");
+	strcat(locale_dir, "\\..\\share\\locale");
 #else
-   strcat(locale_dir, "\\locale");
+	strcat(locale_dir, "\\locale");
 #endif
 #else
 	strcpy(locale_dir, LOCALEDIR);
@@ -87,12 +89,12 @@ TIEXPORT2 int TICALL tifiles_library_init()
 
 #if defined(ENABLE_NLS)
 	tifiles_info("setlocale: %s", setlocale(LC_ALL, ""));
-  	tifiles_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
-  	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	tifiles_info("textdomain: %s", textdomain(PACKAGE));
+	tifiles_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
+	bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+	tifiles_info("textdomain: %s", textdomain(NULL));
 #endif
 
-  	return (++tifiles_instance);
+	return (++tifiles_instance);
 }
 
 /**
@@ -104,7 +106,7 @@ TIEXPORT2 int TICALL tifiles_library_init()
  **/
 TIEXPORT2 int TICALL tifiles_library_exit()
 {
-  	return (--tifiles_instance);
+	return (--tifiles_instance);
 }
 
 /***********/

@@ -28,6 +28,8 @@
 #include <glib.h>
 #include <errno.h>
 
+#include "config.h"
+
 #include "gettext.h"
 #include "export1.h"
 #include "error.h"

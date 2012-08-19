@@ -23,6 +23,8 @@
 #include <string.h>
 #include <glib.h>
 
+#include "config.h"
+
 #include "gettext.h"
 #include "export3.h"
 #include "error.h"

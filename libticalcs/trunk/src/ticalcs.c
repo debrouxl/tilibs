@@ -117,26 +117,28 @@ int ticalcs_instance = 0;	// counts # of instances
  **/
 TIEXPORT3 int TICALL ticalcs_library_init(void)
 {
-    char locale_dir[65536];
-	
+	char locale_dir[65536];
+
 #ifdef __WIN32__
-  	HANDLE hDll;
-  	int i;
-  	
+	HANDLE hDll;
+	int i;
+
 	hDll = GetModuleHandle("libticalcs2-11.dll");
-  	GetModuleFileName(hDll, locale_dir, 65535);
-  	
-  	for (i = strlen(locale_dir); i >= 0; i--) 
+	GetModuleFileName(hDll, locale_dir, 65535);
+
+	for (i = strlen(locale_dir); i >= 0; i--)
 	{
-    	if (locale_dir[i] == '\\')
-      		break;
-  	}  	
-  	locale_dir[i] = '\0';
+		if (locale_dir[i] == '\\')
+		{
+			break;
+		}
+	}
+	locale_dir[i] = '\0';
 
 #ifdef __MINGW32__
-   strcat(locale_dir, "\\..\\share\\locale");
+	strcat(locale_dir, "\\..\\share\\locale");
 #else
-   strcat(locale_dir, "\\locale");
+	strcat(locale_dir, "\\locale");
 #endif
 #else
 	strcpy(locale_dir, LOCALEDIR);
@@ -145,16 +147,16 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 	if (ticalcs_instance)
 		return (++ticalcs_instance);
 	ticalcs_info(_("ticalcs library version %s"), LIBCALCS_VERSION);
-  	errno = 0;
+	errno = 0;
 
 #if defined(ENABLE_NLS)
-  	ticalcs_info("setlocale: %s", setlocale(LC_ALL, ""));
-  	ticalcs_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
-  	//bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
-  	ticalcs_info("textdomain: %s", textdomain(PACKAGE));
+	ticalcs_info("setlocale: %s", setlocale(LC_ALL, ""));
+	ticalcs_info("bindtextdomain: %s", bindtextdomain(PACKAGE, locale_dir));
+	bind_textdomain_codeset(PACKAGE, "UTF-8"/*"ISO-8859-15"*/);
+	ticalcs_info("textdomain: %s", textdomain(NULL));
 #endif
 
-  	return (++ticalcs_instance);
+	return (++ticalcs_instance);
 }
 
 
@@ -168,7 +170,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 TIEXPORT3 int
 TICALL ticalcs_library_exit(void)
 {
-  	return (--ticalcs_instance);
+	return (--ticalcs_instance);
 }
 
 /***********/

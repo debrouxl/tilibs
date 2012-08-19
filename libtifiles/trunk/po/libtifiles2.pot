@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2012-08-11 09:10+0200\n"
+"POT-Creation-Date: 2012-08-15 17:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,79 +17,79 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/error.c:53
+#: src/error.c:55
 msgid "Msg: unable to allocate memory (malloc)."
 msgstr ""
 
-#: src/error.c:55
+#: src/error.c:57
 msgid "Cause: memory too low ?"
 msgstr ""
 
-#: src/error.c:61
+#: src/error.c:63
 msgid "Msg: unable to open file."
 msgstr ""
 
-#: src/error.c:63 src/error.c:71
+#: src/error.c:65 src/error.c:73
 msgid "Cause: either the file does not exist, either there is no room."
 msgstr ""
 
-#: src/error.c:69
+#: src/error.c:71
 msgid "Msg: unable to close file."
 msgstr ""
 
-#: src/error.c:77
+#: src/error.c:79
 msgid "Msg: the size of a group file cannot exceed 64 KB."
 msgstr ""
 
-#: src/error.c:79
+#: src/error.c:81
 msgid "Cause: too many variables/data."
 msgstr ""
 
-#: src/error.c:85
+#: src/error.c:87
 msgid "Msg: unknown calculator type."
 msgstr ""
 
-#: src/error.c:87
+#: src/error.c:89
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
 
-#: src/error.c:94
+#: src/error.c:96
 msgid "Msg: invalid file."
 msgstr ""
 
-#: src/error.c:96
+#: src/error.c:98
 msgid "Cause: it's probably not a TI formatted file."
 msgstr ""
 
-#: src/error.c:102
+#: src/error.c:104
 msgid "Msg: checksum error."
 msgstr ""
 
-#: src/error.c:104
+#: src/error.c:106
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
 
-#: src/error.c:110
+#: src/error.c:112
 msgid "Msg: (Un)Zip error."
 msgstr ""
 
-#: src/error.c:112
+#: src/error.c:114
 msgid "Cause: unknown..."
 msgstr ""
 
-#: src/error.c:118
+#: src/error.c:120
 msgid "Msg: unsupported function."
 msgstr ""
 
-#: src/error.c:120
+#: src/error.c:122
 msgid "Cause: the function you attempted to use is not available."
 msgstr ""
 
-#: src/error.c:126
+#: src/error.c:128
 msgid "Msg: I/O file error."
 msgstr ""
 
-#: src/error.c:128
+#: src/error.c:130
 msgid "Cause: file is corrupted or invalid."
 msgstr ""
 
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: src/tifiles.c:86
+#: src/tifiles.c:88
 #, c-format
 msgid "tifiles library version %s"
 msgstr ""
