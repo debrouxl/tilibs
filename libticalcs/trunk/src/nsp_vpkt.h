@@ -1,5 +1,5 @@
 /* Hey EMACS -*- linux-c -*- */
-/* $Id: cmd84p.h 2074 2006-03-31 08:36:06Z roms $ */
+/* $Id$ */
 
 /*  libticalcs - Ti Calculator library, a part of the TiLP project
  *  Copyright (C) 1999-2005  Romain Liévin
@@ -18,6 +18,9 @@
  *  along with this program; if not, write to the Free Software Foundation,
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
 
 #ifndef __NSP_VPKT__
 #define __NSP_VPKT__
@@ -45,46 +48,51 @@ typedef struct
 
 // Constants
 
-#define NSP_SRC_ADDR	0x6400
-#define NSP_DEV_ADDR	0x6401
+#define NSP_SRC_ADDR            0x6400
+#define NSP_DEV_ADDR            0x6401
 
-#define NSP_PORT_PKT_NACK		0x00D3
-#define NSP_PORT_PKT_ACK1		0x00FE
-#define NSP_PORT_PKT_ACK2		0x00FF
-#define NSP_PORT_NULL			0x4001
-#define NSP_PORT_ECHO			0x4002
-#define NSP_PORT_ADDR_REQUEST	0x4003
-#define NSP_PORT_ADDR_ASSIGN	0x4003
-#define NSP_PORT_DEV_INFOS		0x4020
-#define NSP_PORT_SCREENSHOT		0x4021
-#define NSP_PORT_SCREEN_RLE		0x4024
-#define NSP_PORT_LOGIN			0x4050
-#define NSP_PORT_FILE_MGMT		0x4060
-#define NSP_PORT_OS_INSTALL		0x4080
-#define NSP_PORT_DISCONNECT		0x40DE
+#define NSP_PORT_PKT_NACK       0x00D3
+#define NSP_PORT_PKT_ACK1       0x00FE
+#define NSP_PORT_PKT_ACK2       0x00FF
+
+#define NSP_PORT_NULL           0x4001
+#define NSP_PORT_ECHO           0x4002
+#define NSP_PORT_ADDR_REQUEST   0x4003
+#define NSP_PORT_ADDR_ASSIGN    0x4003
+
+#define NSP_PORT_DEV_INFOS      0x4020
+#define NSP_PORT_SCREENSHOT     0x4021
+#define NSP_PORT_SCREEN_RLE     0x4024
+
+#define NSP_PORT_LOGIN          0x4050
+
+#define NSP_PORT_FILE_MGMT      0x4060
+#define NSP_PORT_OS_INSTALL     0x4080
+#define NSP_PORT_DISCONNECT     0x40DE
 
 // Functions
 
-NSPVirtualPacket*  nsp_vtl_pkt_new(void);
-NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port);
-void nsp_vtl_pkt_del(NSPVirtualPacket* pkt);
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(void);
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port);
+TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* pkt);
 
-int nsp_session_open(CalcHandle *h, uint16_t port);
-int nsp_session_close(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_session_open(CalcHandle *h, uint16_t port);
+TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h);
 
-int nsp_addr_request(CalcHandle *h);
-int nsp_addr_assign(CalcHandle *h, uint16_t dev_addr);
+TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t dev_addr);
 
-int nsp_send_ack(CalcHandle *h);
-int nsp_recv_ack(CalcHandle *h);
-int nsp_send_nack(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_send_ack(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_send_nack(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle *h, uint16_t port);
 
-int nsp_send_data(CalcHandle* h, NSPVirtualPacket* pkt);
-int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* pkt);
+TIEXPORT3 int TICALL nsp_send_data(CalcHandle* h, NSPVirtualPacket* pkt);
+TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* pkt);
 
-int nsp_send_disconnect(CalcHandle *h);
-int nsp_recv_disconnect(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h);
 
-const char* nsp_sid2name(uint16_t id);
+TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id);
 
 #endif

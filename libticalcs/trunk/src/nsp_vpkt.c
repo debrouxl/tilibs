@@ -55,6 +55,7 @@ static const NSPServiceName sid_types[] =
 	{ 0x4020, "Device Information" },
 	{ 0x4021, "Screen Capture" },
 	{ 0x4024, "Screen Capture w/ RLE" },
+	{ 0x4042, "Keypresses" },
 	{ 0x4050, "Login" },
 	{ 0x4060, "File Management" },
 	{ 0x4080, "OS Installation" },
@@ -62,7 +63,7 @@ static const NSPServiceName sid_types[] =
 	{ -1, NULL},
 };
 
-const char* nsp_sid2name(uint16_t id)
+TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 {
 	const NSPServiceName *p;
 
@@ -77,7 +78,7 @@ const char* nsp_sid2name(uint16_t id)
 
 static GList *vtl_pkt_list = NULL;
 
-NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
 {
 	NSPVirtualPacket* vtl = g_malloc0(sizeof(NSPVirtualPacket)); // aborts the program if it fails.
 
@@ -93,12 +94,12 @@ NSPVirtualPacket*  nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t
 	return vtl;
 }
 
-NSPVirtualPacket*  nsp_vtl_pkt_new(void)
+TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(void)
 {
 	return nsp_vtl_pkt_new_ex(0, 0, 0, 0, 0);
 }
 
-void nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
+TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* vtl)
 {
 	if (vtl != NULL)
 	{
@@ -125,7 +126,7 @@ void nsp_vtl_pkt_purge(void)
 uint16_t	nsp_src_port = 0x8001;
 uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
-int nsp_session_open(CalcHandle *h, uint16_t port)
+TIEXPORT3 int TICALL nsp_session_open(CalcHandle *h, uint16_t port)
 {
 	if (h == NULL)
 	{
@@ -141,7 +142,7 @@ int nsp_session_open(CalcHandle *h, uint16_t port)
 	return 0;
 }
 
-int nsp_session_close(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h)
 {
 	if (h == NULL)
 	{
@@ -161,7 +162,7 @@ int nsp_session_close(CalcHandle *h)
 
 // Address Request/Assignment
 
-int nsp_addr_request(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h)
 {
 	extern uint8_t nsp_seq_pc;
 	NSPRawPacket pkt = {0};
@@ -188,7 +189,7 @@ int nsp_addr_request(CalcHandle *h)
 	return 0;
 }
 
-int nsp_addr_assign(CalcHandle *h, uint16_t addr)
+TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
 {
 	NSPRawPacket pkt = {0};
 
@@ -216,7 +217,7 @@ int nsp_addr_assign(CalcHandle *h, uint16_t addr)
 
 // Acknowledgement
 
-int nsp_send_ack(CalcHandle* h)
+TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
 {
 	NSPRawPacket pkt = {0};
 
@@ -240,7 +241,7 @@ int nsp_send_ack(CalcHandle* h)
 	return 0;
 }
 
-int nsp_send_nack(CalcHandle* h)
+TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
 {
 	NSPRawPacket pkt = {0};
 
@@ -264,7 +265,7 @@ int nsp_send_nack(CalcHandle* h)
 	return 0;
 }
 
-int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
+TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 {
 	NSPRawPacket pkt = {0};
 
@@ -288,7 +289,7 @@ int nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 	return 0;
 }
 
-int nsp_recv_ack(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 {
 	NSPRawPacket pkt = {0};
 	uint16_t addr;
@@ -341,7 +342,7 @@ int nsp_recv_ack(CalcHandle *h)
 
 // Service Disconnection
 
-int nsp_send_disconnect(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
 {
 	NSPRawPacket pkt = {0};
 
@@ -365,7 +366,7 @@ int nsp_send_disconnect(CalcHandle *h)
 	return 0;
 }
 
-int nsp_recv_disconnect(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h)
 {
 	NSPRawPacket pkt = {0};
 	uint16_t addr;
@@ -411,7 +412,7 @@ int nsp_recv_disconnect(CalcHandle *h)
 
 // Fragmenting of packets
 
-int nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
+TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 {
 	NSPRawPacket raw = {0};
 	int i, r, q;
@@ -470,7 +471,7 @@ int nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 }
 
 // Note: data field may be re-allocated.
-int nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
+TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 {
 	NSPRawPacket raw = {0};
 	long offset = 0;

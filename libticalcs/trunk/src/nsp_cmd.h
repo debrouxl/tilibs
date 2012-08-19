@@ -19,18 +19,26 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __NSP_CMDS__
 #define __NSP_CMDS__
 
 // Services IDs
-#define SID_NULL			0x4001
-#define SID_ECHO			0x4002
-#define SID_DEV_INFOS		0x4020
-#define SID_SCREENSHOT		0x4021
-#define SID_SCREEN_RLE		0x4024
-#define SID_LOGIN			0x4050
-#define SID_FILE_MGMT		0x4060
-#define SID_OS_INSTALL		0x4080
+#define SID_NULL                0x4001
+#define SID_ECHO                0x4002
+
+#define SID_DEV_INFOS           0x4020
+#define SID_SCREENSHOT          0x4021
+#define SID_SCREEN_RLE          0x4024
+
+#define SID_KEYPRESSES          0x4042
+
+#define SID_LOGIN               0x4050
+
+#define SID_FILE_MGMT           0x4060
+
+#define SID_OS_INSTALL          0x4080
 
 // Errors
 #define ERR_OK					0x00
@@ -76,63 +84,63 @@
 
 // Command wrappers
 
-int cmd_r_login(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_r_login(CalcHandle *h);
 
-int cmd_s_status(CalcHandle *h, uint8_t status);
-int cmd_r_status(CalcHandle *h, uint8_t *status);
+TIEXPORT3 int TICALL cmd_s_status(CalcHandle *h, uint8_t status);
+TIEXPORT3 int TICALL cmd_r_status(CalcHandle *h, uint8_t *status);
 
-int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
-int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
+TIEXPORT3 int TICALL cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
+TIEXPORT3 int TICALL cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
-int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
-int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
+TIEXPORT3 int TICALL cmd_s_screen_rle(CalcHandle *h, uint8_t cmd);
+TIEXPORT3 int TICALL cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
-int cmd_s_dir_attributes(CalcHandle *h, const char *name);
-int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date);
+TIEXPORT3 int TICALL cmd_s_dir_attributes(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date);
 
-int cmd_s_dir_enum_init(CalcHandle *h, const char *name);
-int cmd_r_dir_enum_init(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_dir_enum_init(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_dir_enum_init(CalcHandle *h);
 
-int cmd_s_dir_enum_next(CalcHandle *h);
-int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type);
+TIEXPORT3 int TICALL cmd_s_dir_enum_next(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type);
 
-int cmd_s_dir_enum_done(CalcHandle *h);
-int cmd_r_dir_enum_done(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_dir_enum_done(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_r_dir_enum_done(CalcHandle *h);
 
-int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size);
-int cmd_r_put_file(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size);
+TIEXPORT3 int TICALL cmd_r_put_file(CalcHandle *h);
 
-int cmd_s_get_file(CalcHandle *h, const char *name);
-int cmd_r_get_file(CalcHandle *h, uint32_t *size);
+TIEXPORT3 int TICALL cmd_s_get_file(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_get_file(CalcHandle *h, uint32_t *size);
 
-int cmd_s_del_file(CalcHandle *h, const char *name);
-int cmd_r_del_file(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_del_file(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_del_file(CalcHandle *h);
 
-int cmd_s_new_folder(CalcHandle *h, const char *name);
-int cmd_r_new_folder(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_new_folder(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_new_folder(CalcHandle *h);
 
-int cmd_s_del_folder(CalcHandle *h, const char *name);
-int cmd_r_del_folder(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_del_folder(CalcHandle *h, const char *name);
+TIEXPORT3 int TICALL cmd_r_del_folder(CalcHandle *h);
 
-int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2);
-int cmd_r_copy_file(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2);
+TIEXPORT3 int TICALL cmd_r_copy_file(CalcHandle *h);
 
-int cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2);
-int cmd_r_rename_file(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2);
+TIEXPORT3 int TICALL cmd_r_rename_file(CalcHandle *h);
 
-int cmd_s_file_ok(CalcHandle *h);
-int cmd_r_file_ok(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_file_ok(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_r_file_ok(CalcHandle *h);
 
-int cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data);
-int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data);
+TIEXPORT3 int TICALL cmd_s_file_contents(CalcHandle *h, uint32_t  size, uint8_t  *data);
+TIEXPORT3 int TICALL cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data);
 
-int cmd_s_os_install(CalcHandle *h, uint32_t size);
-int cmd_r_os_install(CalcHandle *h);
+TIEXPORT3 int TICALL cmd_s_os_install(CalcHandle *h, uint32_t size);
+TIEXPORT3 int TICALL cmd_r_os_install(CalcHandle *h);
 
-int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data);
-int cmd_r_progress(CalcHandle *h, uint8_t *value);
+TIEXPORT3 int TICALL cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data);
+TIEXPORT3 int TICALL cmd_r_progress(CalcHandle *h, uint8_t *value);
 
-int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
-int cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
+TIEXPORT3 int TICALL cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
+TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
 
 #endif

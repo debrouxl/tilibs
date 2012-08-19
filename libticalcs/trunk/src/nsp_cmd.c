@@ -83,7 +83,7 @@ static int put_str(uint8_t *dst, const char *src)
 
 /////////////----------------
 
-int cmd_r_login(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_login(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -107,7 +107,7 @@ int cmd_r_login(CalcHandle *h)
 
 /////////////----------------
 
-int cmd_s_status(CalcHandle *h, uint8_t status)
+TIEXPORT3 int TICALL cmd_s_status(CalcHandle *h, uint8_t status)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -131,7 +131,7 @@ int cmd_s_status(CalcHandle *h, uint8_t status)
 	return retval;
 }
 
-int cmd_r_status(CalcHandle *h, uint8_t *status)
+TIEXPORT3 int TICALL cmd_r_status(CalcHandle *h, uint8_t *status)
 {
 	NSPVirtualPacket* pkt;
 	uint8_t value;
@@ -177,7 +177,7 @@ end:
 
 /////////////----------------
 
-int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
+TIEXPORT3 int TICALL cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -200,7 +200,7 @@ int cmd_s_dev_infos(CalcHandle *h, uint8_t cmd)
 	return retval;
 }
 
-int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -230,7 +230,7 @@ int cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 
 /////////////----------------
 
-int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
+TIEXPORT3 int TICALL cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -253,7 +253,7 @@ int cmd_s_screen_rle(CalcHandle *h, uint8_t cmd)
 	return retval;
 }
 
-int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -290,7 +290,7 @@ int cmd_r_screen_rle(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data
 
 /////////////----------------
 
-int cmd_s_dir_attributes(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_dir_attributes(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -324,7 +324,7 @@ int cmd_s_dir_attributes(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date)
+TIEXPORT3 int TICALL cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t *type, uint32_t *date)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -368,7 +368,7 @@ end:
 	return retval;
 }
 
-int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -401,12 +401,12 @@ int cmd_s_dir_enum_init(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_dir_enum_init(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_dir_enum_init(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_dir_enum_next(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_s_dir_enum_next(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -436,7 +436,7 @@ int cmd_s_dir_enum_next(CalcHandle *h)
 	return retval;
 }
 
-int cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type)
+TIEXPORT3 int TICALL cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *size, uint8_t *type)
 {
 	NSPVirtualPacket* pkt;
 	uint8_t data_size;
@@ -497,7 +497,7 @@ end:
 	return retval;
 }
 
-int cmd_s_dir_enum_done(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_s_dir_enum_done(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -521,14 +521,14 @@ int cmd_s_dir_enum_done(CalcHandle *h)
 	return retval;
 }
 
-int cmd_r_dir_enum_done(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_dir_enum_done(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
 /////////////----------------
 
-int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
+TIEXPORT3 int TICALL cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 {
 	NSPVirtualPacket* pkt;
 	int o;
@@ -568,12 +568,12 @@ int cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size)
 	return retval;
 }
 
-int cmd_r_put_file(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_put_file(CalcHandle *h)
 {
 	return cmd_r_file_ok(h);
 }
 
-int cmd_s_get_file(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_get_file(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -606,7 +606,7 @@ int cmd_s_get_file(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_get_file(CalcHandle *h, uint32_t *size)
+TIEXPORT3 int TICALL cmd_r_get_file(CalcHandle *h, uint32_t *size)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -644,7 +644,7 @@ end:
 	return retval;
 }
 
-int cmd_s_del_file(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_del_file(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -677,12 +677,12 @@ int cmd_s_del_file(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_del_file(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_del_file(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_new_folder(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_new_folder(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -716,12 +716,12 @@ int cmd_s_new_folder(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_new_folder(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_new_folder(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_del_folder(CalcHandle *h, const char *name)
+TIEXPORT3 int TICALL cmd_s_del_folder(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -755,12 +755,12 @@ int cmd_s_del_folder(CalcHandle *h, const char *name)
 	return retval;
 }
 
-int cmd_r_del_folder(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_del_folder(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2)
+TIEXPORT3 int TICALL cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -797,12 +797,12 @@ int cmd_s_copy_file(CalcHandle *h, const char *name, const char *name2)
 	return retval;
 }
 
-int cmd_r_copy_file(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_copy_file(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2)
+TIEXPORT3 int TICALL cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2)
 {
 	NSPVirtualPacket* pkt;
 	size_t len;
@@ -838,12 +838,12 @@ int cmd_s_rename_file(CalcHandle *h, const char *name, const char *name2)
 	return retval;
 }
 
-int cmd_r_rename_file(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_rename_file(CalcHandle *h)
 {
 	return cmd_r_status(h, NULL);
 }
 
-int cmd_s_file_ok(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_s_file_ok(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -867,7 +867,7 @@ int cmd_s_file_ok(CalcHandle *h)
 	return retval;
 }
 
-int cmd_r_file_ok(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_file_ok(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -907,7 +907,7 @@ int cmd_r_file_ok(CalcHandle *h)
 	return retval;
 }
 
-int cmd_s_file_contents(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL cmd_s_file_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -936,7 +936,7 @@ int cmd_s_file_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 	return retval;
 }
 
-int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -973,7 +973,7 @@ int cmd_r_file_contents(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 /////////////----------------
 
-int cmd_s_os_install(CalcHandle *h, uint32_t size)
+TIEXPORT3 int TICALL cmd_s_os_install(CalcHandle *h, uint32_t size)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1000,7 +1000,7 @@ int cmd_s_os_install(CalcHandle *h, uint32_t size)
 	return retval;
 }
 
-int cmd_r_os_install(CalcHandle *h)
+TIEXPORT3 int TICALL cmd_r_os_install(CalcHandle *h)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1030,8 +1030,7 @@ int cmd_r_os_install(CalcHandle *h)
 	return retval;
 }
 
-int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
-
+TIEXPORT3 int TICALL cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1060,7 +1059,7 @@ int cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data)
 	return retval;
 }
 
-int cmd_r_progress(CalcHandle *h, uint8_t *value)
+TIEXPORT3 int TICALL cmd_r_progress(CalcHandle *h, uint8_t *value)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1104,7 +1103,7 @@ int cmd_r_progress(CalcHandle *h, uint8_t *value)
 
 /////////////----------------
 
-int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1131,7 +1130,7 @@ int cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 	return retval;
 }
 
-int cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
