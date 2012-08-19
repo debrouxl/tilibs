@@ -26,6 +26,11 @@ Log of changes (libticalcs):
 	- add initial, experimental TI-80 VSC support, by Randy Compton.
 	- convert README to UTF-8.
 	- add a Nspire error code related to OS extensions on OS versions which do not support them; add OS sending to test_ticalcs_2.
+	- fix some spelling errors (or at least, infrequent forms) reported by Lintian (through Albert "alberthro" Huang) and rpmlint (through TC01).
+	- fixes for i18n problems reported by Benjamin Moody.
+	- in order to promote code reuse by external users of the library (instead of copy-paste), export functions from nsp_cmd and nsp_vpkt into the public API (though backwards compatibility will not necessarily be maintained strongly).
+	- install keys83.h and keys86.h alongside the other headers.
+	- add Nspire remote control feature, to mirror functionality exposed by TI's code and used by nRemote. Showcase it in test_ticalcs_2.
 
 
 - 14/12/2011, version 1.1.7: debrouxl

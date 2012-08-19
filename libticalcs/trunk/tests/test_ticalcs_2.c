@@ -460,7 +460,19 @@ static int probe_calc(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	27
+static int nsp_send_key(CalcHandle *h)
+{
+	static const uint8_t HOME[] = {0x00, 0xFD, 0x00};
+	static const uint8_t A[] = {97, 102, 0};
+
+	cmd_s_keypress_event(h, HOME);
+	cmd_s_keypress_event(h, A);
+	cmd_s_keypress_event(h, HOME);
+
+	return 0;
+}
+
+#define NITEMS	28
 
 static const char *str_menu[NITEMS] = 
 {
@@ -491,6 +503,7 @@ static const char *str_menu[NITEMS] =
 	"New folder",
 	"Get version",
 	"Probe calc",
+	"Nspire-specific send key"
 };
 
 typedef int (*FNCT_MENU) (CalcHandle*);
@@ -524,6 +537,7 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	new_folder,
 	get_version,
 	probe_calc,
+	nsp_send_key
 };
 
 int main(int argc, char **argv)
@@ -560,6 +574,10 @@ int main(int argc, char **argv)
 			return 1;
 		}
 	}
+
+	// Force GLib 2.32+ to print info and debug messages like older versions did, unless this variable is already set.
+	// No effect on earlier GLib versions.
+	g_setenv("G_MESSAGES_DEBUG", "all", /* overwrite = */ FALSE);
 
 	// init libs
 	ticables_library_init();

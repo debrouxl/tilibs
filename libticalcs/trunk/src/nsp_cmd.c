@@ -1168,3 +1168,59 @@ TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 	return retval;
 }
+
+/////////////----------------
+
+TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, uint8_t keycode[3])
+{
+	NSPVirtualPacket * pkt1, * pkt2;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (keycode == NULL)
+	{
+		ticalcs_critical("%s: keycode is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
+
+	ticalcs_info("  sending keypress event:");
+
+	retval = nsp_session_open(h, SID_KEYPRESSES);
+	if (!retval)
+	{
+		pkt1 = nsp_vtl_pkt_new_ex(3, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES);
+		pkt2 = nsp_vtl_pkt_new_ex(25, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_KEYPRESSES);
+
+		pkt1->cmd = 0x01;
+		pkt1->data[2] = 0x80;
+		retval = nsp_send_data(h, pkt1);
+
+		if (!retval)
+		{
+			pkt2->cmd = 0;
+			pkt2->data[3] = 0x08;
+			pkt2->data[4] = 0x02;
+			pkt2->data[5] = keycode[0];
+			pkt2->data[7] = keycode[1];
+			pkt2->data[23] = keycode[2];
+
+			retval = nsp_send_data(h, pkt2);
+		}
+
+		nsp_vtl_pkt_del(pkt2);
+		nsp_vtl_pkt_del(pkt1);
+
+		if (!retval)
+		{
+			retval = nsp_session_close(h);
+		}
+	}
+
+	return retval;
+}
+
+// There doesn't seem to be a need for cmd_r_keypress_event.

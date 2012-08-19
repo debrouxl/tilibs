@@ -74,11 +74,13 @@ static const ServiceId sids[] =
 {
 	{ 0x00FE, "Reception Acknowledgment" },
 	{ 0x00FF, "Reception Ack" },
+	{ 0x4001, "Null" },
 	{ 0x4002, "Echo" },
 	{ 0x4003, "Device Address Request" },
 	{ 0x4020, "Device Information" },
 	{ 0x4021, "Screen Capture" },
 	{ 0x4024, "Screen Capture w/ RLE" },
+	{ 0x4042, "Keypresses" },
 	{ 0x4050, "Login" },
 	{ 0x4060, "File Management" },
 	{ 0x4080, "OS Installation" },

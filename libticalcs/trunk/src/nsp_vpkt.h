@@ -64,6 +64,8 @@ typedef struct
 #define NSP_PORT_SCREENSHOT     0x4021
 #define NSP_PORT_SCREEN_RLE     0x4024
 
+#define NSP_PORT_KEYPRESSES     0x4042
+
 #define NSP_PORT_LOGIN          0x4050
 
 #define NSP_PORT_FILE_MGMT      0x4060

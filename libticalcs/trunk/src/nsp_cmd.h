@@ -35,6 +35,7 @@
 #define SID_KEYPRESSES          0x4042
 
 #define SID_LOGIN               0x4050
+#define SID_MESSAGES            0x4051
 
 #define SID_FILE_MGMT           0x4060
 
@@ -142,5 +143,8 @@ TIEXPORT3 int TICALL cmd_r_progress(CalcHandle *h, uint8_t *value);
 
 TIEXPORT3 int TICALL cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
 TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
+
+TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, uint8_t keycode[3]);
+// There doesn't seem to be a need for cmd_r_keypress_event.
 
 #endif

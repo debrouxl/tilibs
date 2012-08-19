@@ -11,6 +11,8 @@ Log of changes (libtifiles):
 	- add initial, experimental TI-80 VSC support, by Randy Compton.
 	- convert README to UTF-8.
 	- add support for Nspire OS extensions, such as (and currently limited to) the English-Chinese dictionary.
+	- fix some spelling errors (or at least, infrequent forms) reported by Lintian (through Albert "alberthro" Huang) and rpmlint (through TC01).
+	- fixes for i18n problems reported by Benjamin Moody.
 
 - 14/12/2011, version 1.1.5: debrouxl
 	- add Nspire CX OS support (.tco & .tcc extensions).
