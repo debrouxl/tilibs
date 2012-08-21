@@ -366,4 +366,5 @@ const CableFncts cable_gry =
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,
+	NULL, NULL
 };

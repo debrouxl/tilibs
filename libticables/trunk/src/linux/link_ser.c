@@ -306,6 +306,18 @@ static int ser_get_white_wire(CableHandle *h)
 	return ((0x20 & ser_io_rd(dev_fd)) ? 1 : 0);
 }
 
+static int ser_set_raw(CableHandle *h, int state)
+{
+	ser_io_wr(dev_fd, swap_bits(state));
+	return 0;
+}
+
+static int ser_get_raw(CableHandle *h, int *state)
+{
+	*state = (ser_io_rd(dev_fd) >> 4) & 3;
+	return 0;
+}
+
 const CableFncts cable_ser = 
 {
 	CABLE_BLK,
@@ -318,4 +330,5 @@ const CableFncts cable_ser =
 	&ser_put, &ser_get, &ser_check,
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,
+	&ser_set_raw, &ser_get_raw
 };

@@ -299,6 +299,18 @@ static int par_get_white_wire(CableHandle *h)
     return ((0x20 & par_io_rd(dev_fd)) ? 1 : 0);
 }
 
+static int par_set_raw(CableHandle *h, int state)
+{
+	par_io_wr(dev_fd, swap_bits(state));
+	return 0;
+}
+
+static int par_get_raw(CableHandle *h, int *state)
+{
+	*state = (par_io_rd(dev_fd) >> 4) & 3;
+	return 0;
+}
+
 const CableFncts cable_par = 
 {
 	CABLE_PAR,
@@ -311,4 +323,5 @@ const CableFncts cable_par =
 	&par_put, &par_get, &par_check,
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,
+	&par_set_raw, &par_get_raw
 };

@@ -314,6 +314,12 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 			NULL);
 		break;
 
+		case ERR_RAW_IO_UNSUPPORTED:
+			*message = g_strconcat(
+			_("Msg: this cable does not support raw I/O."),
+			NULL);
+		break;
+
 		default:
 		// propagate error code
 		return number;

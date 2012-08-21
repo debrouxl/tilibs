@@ -384,7 +384,7 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
 	{
 		const CableFncts *cable = handle->cable;
 		int ret = 0;
-		
+
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
@@ -399,6 +399,89 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
 		{
 			ticables_critical("%s: status is NULL", __FUNCTION__);
 		}
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_set_raw:
+ * @handle: a previously allocated handle
+ * @state: bit mask of lines to pull low
+ *
+ * Set the raw cable state (if the hardware supports raw access.)  An
+ * input of 3 is the default state; 2 means to pull the D0 ("red")
+ * line low; 1 means to pull the D1 ("white") line low; 0 means both
+ * (never used in the TI link protocol.)
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+		if(!handle->cable->set_raw)
+			return ERR_RAW_IO_UNSUPPORTED;
+
+		handle->busy = 1;
+		ret = cable->set_raw(handle, state);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_get_raw:
+ * @handle: a previously allocated handle
+ * @state: pointer to variable to store current state
+ *
+ * Get the raw cable state (if the hardware supports raw access.)  A
+ * bit set in the output means the line is high (1 for the D0 or "red"
+ * line, 2 for the D1 or "white" line.)
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+		if(!handle->cable->get_raw)
+			return ERR_RAW_IO_UNSUPPORTED;
+
+		if(state == NULL)
+		{
+			ticables_critical("%s: state is NULL", __FUNCTION__);
+			return ERR_ILLEGAL_ARG;
+		}
+
+		handle->busy = 1;
+		ret = cable->get_raw(handle, state);
 		handle->busy = 0;
 
 		return ret;

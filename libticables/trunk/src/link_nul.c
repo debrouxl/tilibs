@@ -105,6 +105,7 @@ const CableFncts cable_nul =
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
+	NULL, NULL
 };
 
 /* no const ! */ CableFncts cable_ilp =
@@ -119,4 +120,5 @@ const CableFncts cable_nul =
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
+	NULL, NULL
 };

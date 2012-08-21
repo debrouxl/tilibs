@@ -388,6 +388,7 @@ const CableFncts cable_dev =
 	&dev_put, &dev_get, &dev_check,
 	&dev_set_red_wire, &dev_set_white_wire,
 	&dev_get_red_wire, &dev_get_white_wire,
+	NULL, NULL
 };
 
 //=======================

@@ -94,6 +94,8 @@ typedef enum
     ERR_NOT_OPEN,
     ERR_NO_LIBRARY,
 
+    ERR_RAW_IO_UNSUPPORTED
+
 } CableError;
 
 #endif

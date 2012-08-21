@@ -349,4 +349,5 @@ const CableFncts cable_tie =
 	&tie_put, &tie_get, &tie_check,
 	&tie_set_red_wire, &tie_set_white_wire,
 	&tie_get_red_wire, &tie_get_white_wire,
+	NULL, NULL
 };

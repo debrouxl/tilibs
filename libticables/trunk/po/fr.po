@@ -145,11 +145,11 @@ msgstr "GrayLink"
 msgid "GrayLink serial cable"
 msgstr "câble série GrayLink"
 
-#: src/bsd/link_ser.c:315 src/linux/link_ser.c:313 src/win32/link_ser.c:330
+#: src/bsd/link_ser.c:327 src/linux/link_ser.c:325 src/win32/link_ser.c:342
 msgid "BlackLink"
 msgstr "BlackLink"
 
-#: src/bsd/link_ser.c:316 src/linux/link_ser.c:314 src/win32/link_ser.c:331
+#: src/bsd/link_ser.c:328 src/linux/link_ser.c:326 src/win32/link_ser.c:343
 msgid "BlackLink or home-made serial cable"
 msgstr "câble série Blacklink ou fait maison"
 
@@ -422,6 +422,10 @@ msgid "Cause: maybe you renamed the DLL ?"
 msgstr ""
 "Cause: peut-être avez-vous renommé la DLL (bibliothèque dynamique de liens) ?"
 
+#: src/error.c:319
+msgid "Msg: this cable does not support raw I/O."
+msgstr "Msg: ce câble ne gère pas les E/S brutes bas niveau."
+
 #: src/link_nul.c:100
 msgid "Dummy link"
 msgstr "Câble factice"
@@ -430,11 +434,11 @@ msgstr "Câble factice"
 msgid "Dummy link used when no cable is set"
 msgstr "Câble factice utilisé quand aucun câble n'est défini"
 
-#: src/link_nul.c:114
+#: src/link_nul.c:115
 msgid "Dummy link for TiEmu"
 msgstr "Câble factice pour TiEmu"
 
-#: src/link_nul.c:115
+#: src/link_nul.c:116
 msgid "Internal Link Port cable for TiEmu (internal use)"
 msgstr "Port de transfert interne pour TiEmu (à usage interne)"
 
@@ -570,11 +574,11 @@ msgstr "Direct Link"
 msgid "Direct Link cable"
 msgstr "Câble direct"
 
-#: src/linux/link_par.c:306 src/win32/link_par.c:316
+#: src/linux/link_par.c:318 src/win32/link_par.c:328
 msgid "Parallel"
 msgstr "Parallèle"
 
-#: src/linux/link_par.c:307 src/win32/link_par.c:317
+#: src/linux/link_par.c:319 src/win32/link_par.c:329
 msgid "Home-made parallel cable"
 msgstr "Câble parallèle fait maison"
 
@@ -608,11 +612,11 @@ msgstr "SilverLink"
 msgid "SilverLink (TI-GRAPH LINK USB) cable"
 msgstr "Câble SilverLink (TI-GRAPH LINK USB)"
 
-#: src/linux/link_usb1.c:883 src/linux/link_usb.c:1063
+#: src/linux/link_usb1.c:884 src/linux/link_usb.c:1064
 msgid "DirectLink"
 msgstr "DirectLink"
 
-#: src/linux/link_usb1.c:884 src/linux/link_usb.c:1064
+#: src/linux/link_usb1.c:885 src/linux/link_usb.c:1065
 msgid "DirectLink (DIRECT USB) cable"
 msgstr "Câble DirectLink (DIRECT USB)"
 

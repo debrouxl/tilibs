@@ -160,6 +160,8 @@ typedef struct _CableHandle  CableHandle;
  * @set_d1: set D1/white wire
  * @get_d0 get D0/red wire
  * @get_d1 set D1/red wire
+ * @set_raw: set both wires
+ * @get_raw: read both wires
  *
  * A structure used for handling a link cable.
  * !!! This structure is for private use !!! 
@@ -189,6 +191,8 @@ struct _CableFncts
 	int (*set_d1)	(CableHandle *, int);
 	int (*get_d0)	(CableHandle *);
 	int (*get_d1)	(CableHandle *);
+	int (*set_raw)  (CableHandle *, int);
+	int (*get_raw)  (CableHandle *, int *);
 };
 
 /**
@@ -296,6 +300,9 @@ typedef struct
 
 	TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle*);
 	TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle*);
+
+	TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle*, int state);
+	TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle*, int *state);
 
 	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle*);
 	TIEXPORT1 int TICALL ticables_progress_get(CableHandle*, int* count, int* msec, float* rate);

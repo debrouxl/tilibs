@@ -874,6 +874,7 @@ const CableFncts cable_slv =
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
+	NULL, NULL
 };
 
 const CableFncts cable_raw =
@@ -888,6 +889,7 @@ const CableFncts cable_raw =
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
+	NULL, NULL
 };
 
 //=======================
