@@ -808,7 +808,7 @@ typedef struct
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_89 (uint8_t ascii_code);
 	TIEXPORT3 const CalcKey* TICALL ticalcs_keys_92p(uint8_t ascii_code);
 
-	//probe.c
+	// probe.c
 	TIEXPORT3 int TICALL ticalcs_probe_calc  (CableHandle* cable, CalcModel* model);
 	TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model);
 

@@ -373,211 +373,220 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *t
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
-  while (*p) {
-    if (*p<=10
-        || *p==12 || *p==13
-        || (*p>=32 && *p<=126)
-        || (*p>=161 && *p<=167)
-        || (*p>=169 && *p<=172)
-        || (*p>=174 && *p<=183)
-        || (*p>=185 && *p<=187)
-        || (*p>=191 && *p<=255)) {
-      *(q++)=(unsigned char)*(p++);
-    } else switch (*(p++)) {
-      case 0x2934:
-        *(q++)=11;
-        break;
-      case 0x2693:
-        *(q++)=14;
-        break;
-      case 0x2713:
-        *(q++)=15;
-        break;
-      case 0x25fe:
-        *(q++)=16;
-        break;
-      case 0x25c2:
-        *(q++)=17;
-        break;
-      case 0x25b8:
-        *(q++)=18;
-        break;
-      case 0x25b4:
-        *(q++)=19;
-        break;
-      case 0x25be:
-        *(q++)=20;
-        break;
-      case 0x2190:
-        *(q++)=21;
-        break;
-      case 0x2192:
-        *(q++)=22;
-        break;
-      case 0x2191:
-        *(q++)=23;
-        break;
-      case 0x2193:
-        *(q++)=24;
-        break;
-      case 0x25c0:
-        *(q++)=25;
-        break;
-      case 0x25b6:
-        *(q++)=26;
-        break;
-      case 0x2b06:
-        *(q++)=27;
-        break;
-      case 0x222a:
-        *(q++)=28;
-        break;
-      case 0x2229:
-        *(q++)=29;
-        break;
-      case 0x2282:
-        *(q++)=30;
-        break;
-      case 0x2208:
-        *(q++)=31;
-        break;
-      case 0x25c6:
-        *(q++)=127;
-        break;
-      case 0x3b1:
-        *(q++)=128;
-        break;
-      case 0x3b2:
-        *(q++)=129;
-        break;
-      case 0x393:
-        *(q++)=130;
-        break;
-      case 0x3b3:
-        *(q++)=131;
-        break;
-      case 0x394:
-        *(q++)=132;
-        break;
-      case 0x3b4:
-        *(q++)=133;
-        break;
-      case 0x3b5:
-        *(q++)=134;
-        break;
-      case 0x3b6:
-        *(q++)=135;
-        break;
-      case 0x3b8:
-        *(q++)=136;
-        break;
-      case 0x3bb:
-        *(q++)=137;
-        break;
-      case 0x3be:
-        *(q++)=138;
-        break;
-      case 0x3a0:
-        *(q++)=139;
-        break;
-      case 0x3c0:
-        *(q++)=140;
-        break;
-      case 0x3c1:
-        *(q++)=141;
-        break;
-      case 0x3a3:
-        *(q++)=142;
-        break;
-      case 0x3c3:
-        *(q++)=143;
-        break;
-      case 0x3c4:
-        *(q++)=144;
-        break;
-      case 0x3c6:
-        *(q++)=145;
-        break;
-      case 0x3c8:
-        *(q++)=146;
-        break;
-      case 0x3a9:
-        *(q++)=147;
-        break;
-      case 0x3c9:
-        *(q++)=148;
-        break;
-      case 0x212f:
-        *(q++)=150;
-        break;
-      case 0x2b3:
-        *(q++)=152;
-        break;
-      case 0x22ba:
-        *(q++)=153;
-        break;
-      case 0x2264:
-        *(q++)=156;
-        break;
-      case 0x2260:
-        *(q++)=157;
-        break;
-      case 0x2265:
-        *(q++)=158;
-        break;
-      case 0x2220:
-        *(q++)=159;
-        break;
-      case 0x2026:
-        *(q++)=160;
-        break;
-      case 0x221a:
-        *(q++)=168;
-        break;
-      case 0x2212:
-        *(q++)=173;
-        break;
-      case 0x207a:
-        *(q++)=184;
-        break;
-      case 0x2202:
-        *(q++)=188;
-        break;
-      case 0x222b:
-        *(q++)=189;
-        break;
-      case 0x221e:
-        *(q++)=190;
-        break;
-      case 0x305:
-        if (*p==0x78) {
-          *(q++)=154;
-          p++;
-        } else if (*p==0x79) {
-          *(q++)=155;
-          p++;
-        } else {
-          *(q++)='?';
-        }
-        break;
-      case 0xd875:
-        if (*p==0xdda4) {
-          *(q++)=149;
-          p++;
-          break;
-        } else if (*p==0xdc8a) {
-          *(q++)=151;
-          p++;
-          break;
-        }
-      default:
-        if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
-          p++;
-        *(q++)='?';
-        break;
-    }
-  }
-  *q=0;
+	if (utf16 == NULL || ti == NULL)
+	{
+		// Something's wrong with the arguments !
+		return NULL;
+	}
+
+	while (*p) {
+		if (   *p<=10
+		    || *p==12 || *p==13
+		    || (*p>=32 && *p<=126)
+		    || (*p>=161 && *p<=167)
+		    || (*p>=169 && *p<=172)
+		    || (*p>=174 && *p<=183)
+		    || (*p>=185 && *p<=187)
+		    || (*p>=191 && *p<=255)
+		   ) {
+			*(q++)=(unsigned char)*(p++);
+		} else {
+			switch (*(p++)) {
+				case 0x2934:
+					*(q++)=11;
+					break;
+				case 0x2693:
+					*(q++)=14;
+					break;
+				case 0x2713:
+					*(q++)=15;
+					break;
+				case 0x25fe:
+					*(q++)=16;
+					break;
+				case 0x25c2:
+					*(q++)=17;
+					break;
+				case 0x25b8:
+					*(q++)=18;
+					break;
+				case 0x25b4:
+					*(q++)=19;
+					break;
+				case 0x25be:
+					*(q++)=20;
+					break;
+				case 0x2190:
+					*(q++)=21;
+					break;
+				case 0x2192:
+					*(q++)=22;
+					break;
+				case 0x2191:
+					*(q++)=23;
+					break;
+				case 0x2193:
+					*(q++)=24;
+					break;
+				case 0x25c0:
+					*(q++)=25;
+					break;
+				case 0x25b6:
+					*(q++)=26;
+					break;
+				case 0x2b06:
+					*(q++)=27;
+					break;
+				case 0x222a:
+					*(q++)=28;
+					break;
+				case 0x2229:
+					*(q++)=29;
+					break;
+				case 0x2282:
+					*(q++)=30;
+					break;
+				case 0x2208:
+					*(q++)=31;
+					break;
+				case 0x25c6:
+					*(q++)=127;
+					break;
+				case 0x3b1:
+					*(q++)=128;
+					break;
+				case 0x3b2:
+					*(q++)=129;
+					break;
+				case 0x393:
+					*(q++)=130;
+					break;
+				case 0x3b3:
+					*(q++)=131;
+					break;
+				case 0x394:
+					*(q++)=132;
+					break;
+				case 0x3b4:
+					*(q++)=133;
+					break;
+				case 0x3b5:
+					*(q++)=134;
+					break;
+				case 0x3b6:
+					*(q++)=135;
+					break;
+				case 0x3b8:
+					*(q++)=136;
+					break;
+				case 0x3bb:
+					*(q++)=137;
+					break;
+				case 0x3be:
+					*(q++)=138;
+					break;
+				case 0x3a0:
+					*(q++)=139;
+					break;
+				case 0x3c0:
+					*(q++)=140;
+					break;
+				case 0x3c1:
+					*(q++)=141;
+					break;
+				case 0x3a3:
+					*(q++)=142;
+					break;
+				case 0x3c3:
+					*(q++)=143;
+					break;
+				case 0x3c4:
+					*(q++)=144;
+					break;
+				case 0x3c6:
+					*(q++)=145;
+					break;
+				case 0x3c8:
+					*(q++)=146;
+					break;
+				case 0x3a9:
+					*(q++)=147;
+					break;
+				case 0x3c9:
+					*(q++)=148;
+					break;
+				case 0x212f:
+					*(q++)=150;
+					break;
+				case 0x2b3:
+					*(q++)=152;
+					break;
+				case 0x22ba:
+					*(q++)=153;
+					break;
+				case 0x2264:
+					*(q++)=156;
+					break;
+				case 0x2260:
+					*(q++)=157;
+					break;
+				case 0x2265:
+					*(q++)=158;
+					break;
+				case 0x2220:
+					*(q++)=159;
+					break;
+				case 0x2026:
+					*(q++)=160;
+					break;
+				case 0x221a:
+					*(q++)=168;
+					break;
+				case 0x2212:
+					*(q++)=173;
+					break;
+				case 0x207a:
+					*(q++)=184;
+					break;
+				case 0x2202:
+					*(q++)=188;
+					break;
+				case 0x222b:
+					*(q++)=189;
+					break;
+				case 0x221e:
+					*(q++)=190;
+					break;
+				case 0x305:
+					if (*p==0x78) {
+						*(q++)=154;
+						p++;
+					} else if (*p==0x79) {
+						*(q++)=155;
+						p++;
+					} else {
+						*(q++)='?';
+					}
+					break;
+				case 0xd875:
+					if (*p==0xdda4) {
+						*(q++)=149;
+						p++;
+						break;
+					} else if (*p==0xdc8a) {
+						*(q++)=151;
+						p++;
+						break;
+					}
+				default:
+					if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
+						p++;
+					*(q++)='?';
+					break;
+			}
+		}
+	}
+	*q=0;
 
 	return ti;
 }
@@ -739,27 +748,7 @@ TIEXPORT4 const unsigned long TICALL ti80_charset[256] = {
  **/
 TIEXPORT4 unsigned short* TICALL ticonv_ti80_to_utf16(const char *ti, unsigned short *utf16)
 {
-	const unsigned char *p = (const unsigned char *)ti;
-	unsigned short *q = utf16;
-	unsigned long c;
-
-	while (*p) 
-	{
-		c=ti80_charset[*(p++)];
-		if (c==0xffff) ; // ignore second half of pi
-		if (c<0x10000) 
-		{
-			*(q++)=(unsigned short)c;
-		} 
-		else 
-		{
-			*(q++)=(unsigned short)(c>>16);
-			*(q++)=(unsigned short)(c&0xffff);
-		}
-	}
-	*q=0;
-
-	return utf16;
+	return ticonv_nonusb_to_utf16(ti80_charset, ti, utf16);
 }
 
 /**
@@ -776,30 +765,41 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti80(const unsigned short *utf16, char *t
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
+	if (utf16 == NULL || ti == NULL)
+	{
+		// Something's wrong with the arguments !
+		return NULL;
+	}
+
 	while (*p) 
 	{
-	    if ((*p >= 48 && *p <= 57)
-			|| (*p >= 65 && *p <= 90)) 
-	    {
-		      *(q++)=(unsigned char)*(p++);
-	    } 
-	    else 
-		switch (*(p++)) 
+		if (   (*p >= 48 && *p <= 57)
+		    || (*p >= 65 && *p <= 90)
+		   )
 		{
-		case 0x03b8: *(q++) = 91; break;	// theta
-		case 0x3c0: *(q++) = 29; *(q++) = 30; break;	// pi
-		case 0x03a3: *(q++) = 99; break;	// capital sigma
-		case 0x03c3: *(q++) = 100; break;	// sigma
+			*(q++)=(unsigned char)*(p++);
+		} 
+		else
+		{
+			switch (*(p++)) 
+			{
+				case 0x03b8: *(q++) = 91; break;	// theta
+				case 0x3c0: *(q++) = 29; *(q++) = 30; break;	// pi
+				case 0x03a3: *(q++) = 99; break;	// capital sigma
+				case 0x03c3: *(q++) = 100; break;	// sigma
 #warning FINISH UTF-16-TO-TI-80 CONVERSION
 
-		case 0x2080: *(q++) = 28; break;	// subscript 10
-		case 0x2081: *(q++) = 27; break;
+				case 0x2080: *(q++) = 28; break;	// subscript 10
+				case 0x2081: *(q++) = 27; break;
 
-		default:
-			if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
-			  p++;
-			*(q++) = 64;
-		break;
+				default:
+					if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
+					{
+						p++;
+					}
+					*(q++) = 64;
+				break;
+			}
 		}
 	}
 	*q=0;
@@ -1047,99 +1047,108 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti83p(const unsigned short *utf16, char *
 	const unsigned short *p = utf16;
 	unsigned char *q = (unsigned char *)ti;
 
-	while (*p) 
+	if (utf16 == NULL || ti == NULL)
 	{
-	    if ((*p >= 32 && *p <= 35)	// 36 out
-			|| (*p >= 37 && *p <= 90)	// 91 out
-			|| (*p >= 92 && *p <= 126)) 
-	    {
-		      *(q++)=(unsigned char)*(p++);
-	    } 
-	    else 
-		switch (*(p++)) 
+		// Something's wrong with the arguments !
+		return NULL;
+	}
+
+	while (*p)
+	{
+		if (   (*p >= 32 && *p <= 35)	// 36 out
+		    || (*p >= 37 && *p <= 90)	// 91 out
+		    || (*p >= 92 && *p <= 126)
+		   ) 
 		{
-		case 0x03b7: *(q++) = 1; break;		// eta
-		case 0x2074: *(q++) = 36; break;
-		case 0x03b8: *(q++) = 91; break;	// theta
-		
-		case 0x2080: *(q++) = 128; break;	// 0 to 9 in underscript
-		case 0x2081: *(q++) = 129; break;
-		case 0x2082: *(q++) = 130; break;
-		case 0x2083: *(q++) = 131; break;
-		case 0x2084: *(q++) = 132; break;
-		case 0x2085: *(q++) = 133; break;
-		case 0x2086: *(q++) = 134; break;
-		case 0x2087: *(q++) = 135; break;
-		case 0x2088: *(q++) = 136; break;
-		case 0x2089: *(q++) = 137; break;
+			*(q++)=(unsigned char)*(p++);
+		} 
+		else
+		{
+			switch (*(p++)) 
+			{
+				case 0x03b7: *(q++) = 1; break;		// eta
+				case 0x2074: *(q++) = 36; break;
+				case 0x03b8: *(q++) = 91; break;	// theta
 
-		case 192+1: *(q++) = 138; break;	// i18n characters
-		case 192+0: *(q++) = 139; break;
-		case 192+2: *(q++) = 140; break;
-		case 192+4: *(q++) = 141; break;
-		case 224+1: *(q++) = 142; break;
-		case 224+0: *(q++) = 143; break;
-		case 224+2: *(q++) = 144; break;
-		case 224+4: *(q++) = 145; break;
-		case 200+1: *(q++) = 146; break;
-		case 200+0: *(q++) = 147; break;
-		case 200+2: *(q++) = 148; break;
-		case 200+3: *(q++) = 149; break;
-		case 232+1: *(q++) = 150; break;
-		case 232+0: *(q++) = 151; break;
-		case 232+2: *(q++) = 152; break;
-		case 232+3: *(q++) = 153; break;
-		case 204+1: *(q++) = 154; break;
-		case 204+0: *(q++) = 155; break;
-		case 204+2: *(q++) = 156; break;
-		case 204+3: *(q++) = 157; break;
-		case 236+1: *(q++) = 158; break;
-		case 236+0: *(q++) = 159; break;
-		case 236+2: *(q++) = 160; break;
-		case 236+3: *(q++) = 161; break;
-		case 210+1: *(q++) = 162; break;
-		case 210+0: *(q++) = 163; break;
-		case 210+2: *(q++) = 164; break;
-		case 210+4: *(q++) = 165; break;
-		case 242+1: *(q++) = 166; break;
-		case 242+0: *(q++) = 167; break;
-		case 242+2: *(q++) = 168; break;
-		case 242+4: *(q++) = 169; break;
-		case 217+1: *(q++) = 170; break;
-		case 217+0: *(q++) = 171; break;
-		case 217+2: *(q++) = 172; break;
-		case 217+3: *(q++) = 173; break;
-		case 249+1: *(q++) = 174; break;
-		case 249+0: *(q++) = 175; break;
-		case 249+2: *(q++) = 176; break;
-		case 249+3: *(q++) = 177; break;
-		case 199 :	*(q++) = 178; break;
-		case 231:	*(q++) = 179; break;
-		case 209:	*(q++) = 180; break;
-		case 241:	*(q++) = 181; break;
+				case 0x2080: *(q++) = 128; break;	// 0 to 9 in underscript
+				case 0x2081: *(q++) = 129; break;
+				case 0x2082: *(q++) = 130; break;
+				case 0x2083: *(q++) = 131; break;
+				case 0x2084: *(q++) = 132; break;
+				case 0x2085: *(q++) = 133; break;
+				case 0x2086: *(q++) = 134; break;
+				case 0x2087: *(q++) = 135; break;
+				case 0x2088: *(q++) = 136; break;
+				case 0x2089: *(q++) = 137; break;
 
-		case 0x3b1: *(q++) = 187; break;	// greek characters
-		case 0x3b2: *(q++) = 188; break;
-		case 0x3b3: *(q++) = 189; break;
-		case 0x394: *(q++) = 190; break;
-		case 0x3b4: *(q++) = 191; break;
-		case 0x3b5: *(q++) = 192; break;
-		case '[':	*(q++) = 193; break;
-		case 0x3bb: *(q++) = 194; break;
-		case 0x3bc: *(q++) = 195; break;
-		case 0x3c0: *(q++) = 196; break;
-		case 0x3c1: *(q++) = 197; break;
-		case 0x3a3: *(q++) = 198; break;
-		case 0x3c3: *(q++) = 199; break;
-		case 0x3c4: *(q++) = 200; break;
-		case 0x3d5: *(q++) = 201; break;
-		case 0x3a9: *(q++) = 202; break;
+				case 192+1: *(q++) = 138; break;	// i18n characters
+				case 192+0: *(q++) = 139; break;
+				case 192+2: *(q++) = 140; break;
+				case 192+4: *(q++) = 141; break;
+				case 224+1: *(q++) = 142; break;
+				case 224+0: *(q++) = 143; break;
+				case 224+2: *(q++) = 144; break;
+				case 224+4: *(q++) = 145; break;
+				case 200+1: *(q++) = 146; break;
+				case 200+0: *(q++) = 147; break;
+				case 200+2: *(q++) = 148; break;
+				case 200+3: *(q++) = 149; break;
+				case 232+1: *(q++) = 150; break;
+				case 232+0: *(q++) = 151; break;
+				case 232+2: *(q++) = 152; break;
+				case 232+3: *(q++) = 153; break;
+				case 204+1: *(q++) = 154; break;
+				case 204+0: *(q++) = 155; break;
+				case 204+2: *(q++) = 156; break;
+				case 204+3: *(q++) = 157; break;
+				case 236+1: *(q++) = 158; break;
+				case 236+0: *(q++) = 159; break;
+				case 236+2: *(q++) = 160; break;
+				case 236+3: *(q++) = 161; break;
+				case 210+1: *(q++) = 162; break;
+				case 210+0: *(q++) = 163; break;
+				case 210+2: *(q++) = 164; break;
+				case 210+4: *(q++) = 165; break;
+				case 242+1: *(q++) = 166; break;
+				case 242+0: *(q++) = 167; break;
+				case 242+2: *(q++) = 168; break;
+				case 242+4: *(q++) = 169; break;
+				case 217+1: *(q++) = 170; break;
+				case 217+0: *(q++) = 171; break;
+				case 217+2: *(q++) = 172; break;
+				case 217+3: *(q++) = 173; break;
+				case 249+1: *(q++) = 174; break;
+				case 249+0: *(q++) = 175; break;
+				case 249+2: *(q++) = 176; break;
+				case 249+3: *(q++) = 177; break;
+				case 199 :	*(q++) = 178; break;
+				case 231:	*(q++) = 179; break;
+				case 209:	*(q++) = 180; break;
+				case 241:	*(q++) = 181; break;
 
-		default:
-			if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
-			  p++;
-			*(q++)='?';
-		break;
+				case 0x3b1: *(q++) = 187; break;	// greek characters
+				case 0x3b2: *(q++) = 188; break;
+				case 0x3b3: *(q++) = 189; break;
+				case 0x394: *(q++) = 190; break;
+				case 0x3b4: *(q++) = 191; break;
+				case 0x3b5: *(q++) = 192; break;
+				case '[':	*(q++) = 193; break;
+				case 0x3bb: *(q++) = 194; break;
+				case 0x3bc: *(q++) = 195; break;
+				case 0x3c0: *(q++) = 196; break;
+				case 0x3c1: *(q++) = 197; break;
+				case 0x3a3: *(q++) = 198; break;
+				case 0x3c3: *(q++) = 199; break;
+				case 0x3c4: *(q++) = 200; break;
+				case 0x3d5: *(q++) = 201; break;
+				case 0x3a9: *(q++) = 202; break;
+
+				default:
+					if (p[-1] >= 0xd800 && p[-1] <= 0xdbff)
+					  p++;
+					*(q++)='?';
+				break;
+			}
 		}
 	}
 	*q=0;

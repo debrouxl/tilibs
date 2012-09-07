@@ -88,6 +88,12 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 	const gchar* src = str;
 	GError *error = NULL;
 
+	if (str == NULL)
+	{
+		g_critical("%s: str is NULL", __FUNCTION__);
+		return NULL;
+	}
+
 	dst = g_utf8_to_utf16(src, -1, NULL, NULL, &error);
 	if(error) g_critical("%s", error->message);
 
@@ -107,6 +113,12 @@ TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
 	const gunichar2* src = str;
 	gchar* dst;
 	GError *error = NULL;
+
+	if (str == NULL)
+	{
+		g_critical("%s: str is NULL", __FUNCTION__);
+		return NULL;
+	}
 
 	dst = g_utf16_to_utf8(src, -1, NULL, NULL, &error);
 	if(error) g_critical("%s", error->message);

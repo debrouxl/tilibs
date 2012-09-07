@@ -464,21 +464,22 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 {
 	if (handle != NULL)
 	{
-		const CableFncts *cable = handle->cable;
+		const CableFncts *cable;
 		int ret = 0;
-
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-		if(!handle->cable->get_raw)
-			return ERR_RAW_IO_UNSUPPORTED;
 
 		if(state == NULL)
 		{
 			ticables_critical("%s: state is NULL", __FUNCTION__);
 			return ERR_ILLEGAL_ARG;
 		}
+
+		cable = handle->cable;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+		if(!handle->cable->get_raw)
+			return ERR_RAW_IO_UNSUPPORTED;
 
 		handle->busy = 1;
 		ret = cable->get_raw(handle, state);

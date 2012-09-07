@@ -211,6 +211,12 @@ TIEXPORT3 int TICALL cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size
 		return ERR_INVALID_HANDLE;
 	}
 
+	if (cmd == NULL || size == NULL || data == NULL)
+	{
+		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
+
 	pkt = nsp_vtl_pkt_new();
 
 	ticalcs_info("  receiving device information:");
