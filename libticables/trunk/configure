@@ -14937,10 +14937,7 @@ else
 	LIBUSB10_LIBS=$pkg_cv_LIBUSB10_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	HAVE_USB=yes
-
-$as_echo "#define HAVE_LIBUSB_1_0 1" >>confdefs.h
-
+	HAVE_LIBUSB10=yes
        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libusb_strerror in -lusb-1.0" >&5
 $as_echo_n "checking for libusb_strerror in -lusb-1.0... " >&6; }
 if ${ac_cv_lib_usb_1_0_libusb_strerror+:} false; then :
@@ -14986,6 +14983,15 @@ fi
 
 fi
   else
+    case $host_os in
+    *mingw*|*cygwin*)
+      # use builtin libusb_dyn.c to load libusb at runtime
+      HAVE_LIBUSB=yes
+      LIBUSB_CFLAGS='-I$(top_srcdir)/src/win32'
+      LIBUSB_LIBS=
+      ;;
+
+    *)
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBUSB" >&5
@@ -15075,15 +15081,22 @@ else
 	LIBUSB_LIBS=$pkg_cv_LIBUSB_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-	HAVE_USB=yes
-
-$as_echo "#define HAVE_LIBUSB 1" >>confdefs.h
-
-
+	HAVE_LIBUSB=yes
 fi
+      ;;
+    esac
   fi
 fi
 
+if test "x$HAVE_LIBUSB10" = xyes; then
+
+$as_echo "#define HAVE_LIBUSB_1_0 1" >>confdefs.h
+
+elif test "x$HAVE_LIBUSB" = xyes; then
+
+$as_echo "#define HAVE_LIBUSB 1" >>confdefs.h
+
+fi
 
 
 

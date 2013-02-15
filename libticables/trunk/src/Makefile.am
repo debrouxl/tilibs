@@ -31,6 +31,10 @@ libticables2_la_SOURCES = *.h \
 	none.c
 
 if OS_WIN32
+  libticables2_la_SOURCES += win32/libusb_dyn.c
+endif
+
+if OS_WIN32
   libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
   libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o
 endif

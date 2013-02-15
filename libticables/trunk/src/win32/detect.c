@@ -89,5 +89,8 @@ int win32_check_rwp(void)
 
 int win32_check_libusb(void)
 {
-	return 0;
+	if(usb_get_version() != NULL)
+		return 0;
+	else
+		return ERR_LIBUSBWIN32_NOT_PRESENT;
 }

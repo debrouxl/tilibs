@@ -53,9 +53,10 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@OS_WIN32_TRUE@am__append_1 = win32/libusb_dyn.c
 @OS_WIN32_FALSE@libticables2_la_DEPENDENCIES =
-@OS_WIN32_TRUE@am__append_1 = -Wl,../build/mingw/ticables2-rc.o
-@OS_WIN32_FALSE@am__append_2 = win32/usb/*.cat win32/usb/*.inf
+@OS_WIN32_TRUE@am__append_2 = -Wl,../build/mingw/ticables2-rc.o
+@OS_WIN32_FALSE@am__append_3 = win32/usb/*.cat win32/usb/*.inf
 subdir = src
 DIST_COMMON = $(am__dist_libusb_DATA_DIST) \
 	$(libticablesinclude_HEADERS) $(srcdir)/Makefile.am \
@@ -105,6 +106,13 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libusbdir)" \
 	"$(DESTDIR)$(libticablesincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
+am__libticables2_la_SOURCES_DIST = *.h data_log.c detect.c error.c \
+	ioports.c link_gry.c link_nul.c link_par.c link_blk.c \
+	link_usb.c link_tie.c link_vti.c link_xxx.c log_dbus.c \
+	log_dusb.c log_hex.c log_nsp.c hex2dbus.c hex2dusb.c hex2nsp.c \
+	logging.c probe.c ticables.c type2str.c none.c \
+	win32/libusb_dyn.c
+@OS_WIN32_TRUE@am__objects_1 = libticables2_la-libusb_dyn.lo
 am_libticables2_la_OBJECTS = libticables2_la-data_log.lo \
 	libticables2_la-detect.lo libticables2_la-error.lo \
 	libticables2_la-ioports.lo libticables2_la-link_gry.lo \
@@ -117,7 +125,7 @@ am_libticables2_la_OBJECTS = libticables2_la-data_log.lo \
 	libticables2_la-hex2dusb.lo libticables2_la-hex2nsp.lo \
 	libticables2_la-logging.lo libticables2_la-probe.lo \
 	libticables2_la-ticables.lo libticables2_la-type2str.lo \
-	libticables2_la-none.lo
+	libticables2_la-none.lo $(am__objects_1)
 libticables2_la_OBJECTS = $(am_libticables2_la_OBJECTS)
 libticables2_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -136,7 +144,7 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libticables2_la_SOURCES)
-DIST_SOURCES = $(libticables2_la_SOURCES)
+DIST_SOURCES = $(am__libticables2_la_SOURCES_DIST)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -345,25 +353,15 @@ libticables2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 
 libticables2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBUSB_LIBS@ @LIBUSB10_LIBS@
 libticables2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@ \
-	$(am__append_1)
-libticables2_la_SOURCES = *.h \
-	data_log.c \
-	detect.c \
-	error.c \
-	ioports.c \
-	link_gry.c link_nul.c link_par.c link_blk.c \
-	link_usb.c link_tie.c link_vti.c link_xxx.c \
-	log_dbus.c log_dusb.c log_hex.c log_nsp.c \
-	hex2dbus.c hex2dusb.c hex2nsp.c \
-	logging.c \
-	probe.c \
-	ticables.c \
-	type2str.c \
-	none.c
-
+	$(am__append_2)
+libticables2_la_SOURCES = *.h data_log.c detect.c error.c ioports.c \
+	link_gry.c link_nul.c link_par.c link_blk.c link_usb.c \
+	link_tie.c link_vti.c link_xxx.c log_dbus.c log_dusb.c \
+	log_hex.c log_nsp.c hex2dbus.c hex2dusb.c hex2nsp.c logging.c \
+	probe.c ticables.c type2str.c none.c $(am__append_1)
 @OS_WIN32_TRUE@libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
 EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win32/dha/* \
-	win32/usb/* win64/*.c win64/*.h win64/rwp/* $(am__append_2)
+	win32/usb/* win64/*.c win64/*.h win64/rwp/* $(am__append_3)
 @OS_WIN32_TRUE@libusbdir = $(pkgdatadir)/libusb
 @OS_WIN32_TRUE@dist_libusb_DATA = win32/usb/*.cat win32/usb/*.inf
 all: all-recursive
@@ -448,6 +446,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-hex2dusb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-hex2nsp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-ioports.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-libusb_dyn.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_blk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_gry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libticables2_la-link_nul.Plo@am__quote@
@@ -654,6 +653,13 @@ libticables2_la-none.lo: none.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='none.c' object='libticables2_la-none.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-none.lo `test -f 'none.c' || echo '$(srcdir)/'`none.c
+
+libticables2_la-libusb_dyn.lo: win32/libusb_dyn.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libticables2_la-libusb_dyn.lo -MD -MP -MF $(DEPDIR)/libticables2_la-libusb_dyn.Tpo -c -o libticables2_la-libusb_dyn.lo `test -f 'win32/libusb_dyn.c' || echo '$(srcdir)/'`win32/libusb_dyn.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libticables2_la-libusb_dyn.Tpo $(DEPDIR)/libticables2_la-libusb_dyn.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='win32/libusb_dyn.c' object='libticables2_la-libusb_dyn.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libticables2_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libticables2_la-libusb_dyn.lo `test -f 'win32/libusb_dyn.c' || echo '$(srcdir)/'`win32/libusb_dyn.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

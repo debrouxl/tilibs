@@ -86,20 +86,33 @@ AC_CACHE_CHECK([whether to enable USB through libusb 1.0.x],
 if [test "x$cab_cv_use_libusb" != xno]; then
   if [test "x$cab_cv_use_libusb10" != xno]; then
     PKG_CHECK_MODULES([LIBUSB10], [ libusb-1.0 >= 1.0.0 ],
-      [HAVE_USB=yes
-       AC_DEFINE([HAVE_LIBUSB_1_0], [1],
-                 [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
+      [HAVE_LIBUSB10=yes
        AC_CHECK_LIB([usb-1.0], [libusb_strerror],
                     [HAVE_LIBUSB10_STRERROR=yes], [HAVE_LIBUSB10_STRERROR=no])
       ])
   else
-    PKG_CHECK_MODULES([LIBUSB], [ libusb >= 0.1.12 ],
-      [HAVE_USB=yes
-       AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
-      ])
+    case $host_os in
+    *mingw*|*cygwin*)
+      # use builtin libusb_dyn.c to load libusb at runtime
+      HAVE_LIBUSB=yes
+      LIBUSB_CFLAGS='-I$(top_srcdir)/src/win32'
+      LIBUSB_LIBS=
+      ;;
+
+    *)
+      PKG_CHECK_MODULES([LIBUSB], [ libusb >= 0.1.12 ],
+        [HAVE_LIBUSB=yes])
+      ;;
+    esac
   fi
 fi
 
+if test "x$HAVE_LIBUSB10" = xyes; then
+  AC_DEFINE([HAVE_LIBUSB_1_0], [1],
+            [Define to 1 to enable EXPERIMENTAL libusb 1.0.x support.])
+elif test "x$HAVE_LIBUSB" = xyes; then
+  AC_DEFINE([HAVE_LIBUSB], [1], [Define to 1 to enable libusb 0.1.x support.])
+fi
 
 AC_SUBST(LIBUSB_CFLAGS)
 AC_SUBST(LIBUSB_LIBS)
