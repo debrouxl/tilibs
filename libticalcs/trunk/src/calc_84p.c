@@ -997,8 +997,33 @@ const CalcFncts calc_84p_usb =
 	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
-	{"", "", "1P", "1L", "", "2P", "2P", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
 	&is_ready,
 	&send_key,
 	&execute,

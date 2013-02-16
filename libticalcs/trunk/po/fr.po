@@ -131,7 +131,7 @@ msgstr "Lecture de %s/%s"
 msgid "Creating %s..."
 msgstr "Création de %s..."
 
-#: src/calc_89.c:1134
+#: src/calc_89.c:1209
 msgid "V200 Portable Learning Tool"
 msgstr "V200 Portable Learning Tool"
 

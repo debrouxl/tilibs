@@ -170,8 +170,33 @@ const CalcFncts calc_00 =
 	N_("Dummy hand-held"),
 	N_("Dummy hand-held used when no calc is set"),
 	FTS_NONE,
-	{"", "", "", "", "", "", "", "", "", "", "", "", "",
-	"", "", "", "", "", "", "", "", "", "", "", ""},
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "",     /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "",     /* dump_rom1 */
+	 "",     /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
 	&is_ready,
 	&send_key,
 	&execute,

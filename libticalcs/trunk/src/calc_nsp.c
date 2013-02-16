@@ -925,8 +925,33 @@ const CalcFncts calc_nsp =
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
 	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
-	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P1L", /* send_backup */
+	 "2P1L", /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
 	&is_ready,
 	&send_key,
 	&execute,

@@ -224,8 +224,33 @@ const CalcFncts calc_80 =
 	"TI-80",
 	"TI-80 ViewScreen",
 	OPS_SCREEN,
-	{"", "", "1P", "1L", "", "2P1L", "2P1L", "", "", "2P1L", "1P1L", "", "",
-		"", "1L", "2P1L", "", "", "1L", "1L", "", "1L", "1L", "", "" },
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "",     /* get_dirlist */
+	 "",     /* get_memfree */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
+	 "",     /* send_var */
+	 "",     /* recv_var */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "",     /* dump_rom1 */
+	 "",     /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "",     /* del_var */
+	 "",     /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
 	&is_ready,
 	&send_key,
 	&execute,

@@ -657,8 +657,33 @@ const CalcFncts calc_92 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_BACKUP,
-	{"", "", "1P", "1L", "", "2P", "1P1L", "2P1L", "1P1L", "2P1L", "1P1L", "", "",
-	"", "", "2P", "", "", "1L", "1L", "", "", "", "", "" },
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "1P1L", /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "",     /* send_app */
+	 "",     /* recv_app */
+	 "",     /* send_os */
+	 "",     /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "",     /* send_cert */
+	 "",     /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
 	&is_ready,
 	&send_key,
 	&execute,

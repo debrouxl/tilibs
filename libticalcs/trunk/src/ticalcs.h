@@ -260,6 +260,8 @@ typedef enum
 	FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
+#define FNCT_DUMP_ROM FNCT_DUMP_ROM2
+
 /**
  * TigMode:
  *

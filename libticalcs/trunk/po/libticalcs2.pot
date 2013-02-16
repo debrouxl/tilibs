@@ -131,7 +131,7 @@ msgstr ""
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_89.c:1134
+#: src/calc_89.c:1209
 msgid "V200 Portable Learning Tool"
 msgstr ""
 
