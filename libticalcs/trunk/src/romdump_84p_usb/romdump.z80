@@ -24,15 +24,23 @@
  .nolist
 #define bcall(romcallname) rst 28h \ .dw romcallname
 
+_LdHLind        = 4009h
 _cphlde         = 400Ch
 _PutC           = 4504h
 _PutS           = 450Ah
 _clrLCDFull     = 4540h
 _homeUp         = 4558h
 _runIndicOff    = 4570h
+_Mov18B         = 47DAh
 _getKey         = 4972h
+_GetBaseVer      = 4C6Fh
+_GetVariableData = 5092h
+_GetBootVer      = 80B7h
+_GetHWVer        = 80BAh
+_WriteAByteSafe  = 80C6h
 
 appData         = 8000h
+ramCode         = 8100h
 arcInfo         = 83EEh
 curRow          = 844Bh
 OP1             = 8478h
@@ -63,13 +71,14 @@ outputBuffer    = appBackUpScreen+2
 .org userMem-2
         .db 0BBh,6Dh
         bcall(_runIndicOff)
-;I've commented out the call to unlock Flash below, in case
-;  it ever stops working with the OS version the user is trying to dump.
-;I don't believe that'll ever happen, but for safety's sake...
-;The purpose of unlocking Flash is to get an accurate dump of the certificate
-; page (page 3Eh/7Eh).
-;Feel free to uncomment it.
-;        call UnlockFlash
+; Unlock Flash, if possible.
+; The purpose is to get an accurate dump of the certificate page (page 3Eh/7Eh).
+        in a,(6)
+        push af
+        call Unlock
+        pop af
+        out (6),a
+
         ld (SPbackup),sp
         call clearScreen
         call IsUSBAvailable
@@ -760,89 +769,150 @@ endReceive:
         ret
 
 ;----------------------------------------------------------------------------
-UnlockFlash:
-;Unlocks Flash protection.
-;Destroys: appBackUpScreen
-;          pagedCount
-;          pagedGetPtr
-;          arcInfo
-;          iMathPtr5
-;          pagedBuf
-;          ramCode
-        in a,(6)
-        push af
-        ld a,7Bh
-        call translatePage
-        out (6),a
-        ld hl,5092h
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        inc hl
-        ld a,(hl)
-        call translatePage
-        out (6),a
-        ex de,hl
-        ld a,0CCh
-        ld bc,0FFFFh
-        cpir
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        push de
-        pop ix
-        ld hl,9898h
-        ld (hl),0C3h
-        inc hl
-        ld (hl),returnPoint & 11111111b
-        inc hl
-        ld (hl),returnPoint >> 8
-        ld hl,pagedBuf
-        ld (hl),98h
-        ld de,pagedBuf+1
-        ld bc,49
-        ldir
-        ld (iMathPtr5),sp
-        ld hl,(iMathPtr5)
-        ld de,9A00h
-        ld bc,50
-        ldir   
-        ld de,(iMathPtr5)
-        ld hl,-12
-        add hl,de
-        ld (iMathPtr5),hl
-        ld iy,0056h-25h
-        ld a,50
-        ld (pagedCount),a
-        ld a,8
-        ld (arcInfo),a
-        jp (ix)
-translatePage:
-        ld b,a
-        in a,(2)
-        and 80h
-        jr z,_is83P
-        in a,(21h)
-        and 3
-        ld a,b
-        ret nz
-        and 3Fh
-        ret
-_is83P: ld a,b
-        and 1Fh
-        ret
-returnPoint:
-        ld iy,flags
-        ld hl,(iMathPtr5)
-        ld de,12
-        add hl,de
-        ld sp,hl
-        ex de,hl
-        ld hl,9A00h
-        ld bc,50
-        ldir
-        pop af
-        out (6),a
-        ret
+;;; Table of supported OS and boot code versions
+VersionTable:
+	.db 1,19, 1,01		; TI-83 Plus
+	.db 1,19, 1,00		; TI-83 Plus SE
+	.db 2,55, 1,03		; TI-84 Plus
+	.db 2,55, 1,03		; TI-84 Plus SE (odd versions)
+	.db 2,56, 1,03		; Nspire (even versions)
+
+;; Unlock:
+;;
+;; Write-enable Flash.
+;;
+;; Output:
+;; - Carry flag set if unlocking failed
+;;
+;; Destroys:
+;; - AF, BC, DE, HL
+;; - Port 6
+;; - Interrupts disabled
+;; - Interrupt mode set to 1
+
+Unlock:
+	;; Check if current OS/boot version is known to be supported
+	bcall(_GetBaseVer)
+	ld c, a
+	bcall(_GetHWVer)
+	ld l, a
+	add a, -4
+	ret c
+	inc a
+	jr nz, Unlock_NotNspire
+	bit 0, b
+	jr nz, Unlock_NotNspire
+	inc l
+Unlock_NotNspire:
+	ld h, 0
+	add hl, hl
+	add hl, hl
+	ld de, VersionTable
+	add hl, de
+	ld a, c
+	call CheckVersion
+	ret c
+	inc hl
+	bcall(_GetBootVer)
+	call CheckVersion
+	ret c
+
+	di
+	push iy
+	 ld de, 7B09h
+	 ld a, e
+	 ld (arcInfo), a
+	 out (6), a
+	 ld a, (de)
+	 ld b, a
+	 push bc
+	  push de
+	   call SetFlashPageD
+	   ld a, e
+	   bcall(_WriteAByteSafe)
+	   ld hl, Unlock_Recover - 2
+	   ld de, pagedBuf - 2
+	   bcall(_Mov18B)
+	   ld (pagedBuf + 2), sp
+	   call Unlock_Main
+	   pop af
+	  pop bc
+	 jr Unlock_Done
+
+Unlock_Main:
+	ld a, (_GetVariableData + 2)
+	ld d, a
+	ld hl, ramCode
+	ld bc, 304
+Unlock_Loop1:
+	ld a, 0EDh
+	cpir
+	ret nz
+	ld a, (hl)
+	sub 0A0h
+	jr nz, Unlock_Loop1
+	ld c, (hl)
+	ld b, a
+	inc hl
+	ld (iMathPtr5), hl
+	ld hl, (_GetVariableData)
+	inc a
+Unlock_Data:
+	ld (pagedCount), a
+	or a
+	call nz, SetFlashPageD
+Unlock_Loop2:
+	ld a, 3Ah
+	cpir
+	ret nz
+	ld de, Unlock_Data + 1
+Unlock_Loop3:
+	ld a,(de)
+	cp (hl)
+	jr nz, Unlock_Loop2
+	inc hl
+	inc de
+	cp 0C4h
+	jr nz, Unlock_Loop3
+	bcall(_LdHLind)
+	ld iy, 56h - 25h
+Unlock_Recover:
+	jp (hl)
+	   ld sp, 0
+	   pop hl
+	  pop af
+	 ld (hl), a
+Unlock_WriteByte:
+	 cp (hl)
+	 jr nz, Unlock_WriteByte
+	 ld (hl), 0F0h
+Unlock_Done:
+	 pop iy
+	ret
+
+SetFlashPageD:
+	in a, (2)
+	add a, a
+	ld a, 1Fh
+	jr nc, SetFlashPage_Mask
+	in a, (21h)
+	and 3
+	ld a, 7Fh
+	jr nz, SetFlashPage_Mask
+	rra
+SetFlashPage_Mask:
+	and d
+	out (6), a
+	ret
+
+CheckVersion:
+	cp (hl)
+	inc hl
+	ccf
+	ret nz
+	ld a, (hl)
+	cp b
+	ret
+
 .end
 end
