@@ -12,10 +12,10 @@ libtifilesinclude_HEADERS = \
 # build instructions
 libtifiles2_la_CPPFLAGS = -I$(top_srcdir)/intl \
 	-DLOCALEDIR=\"$(datadir)/locale\" \
-	@GLIB_CFLAGS@ @TICONV_CFLAGS@ -DTIFILES_EXPORTS
-libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @LIBZ@ @TICONV_LIBS@
+	@GLIB_CFLAGS@ @TICONV_CFLAGS@ @ARCHIVE_CFLAGS@ -DTIFILES_EXPORTS
+libtifiles2_la_LIBADD = @GLIB_LIBS@ @LTLIBINTL@ @ARCHIVE_LIBS@ @TICONV_LIBS@
 libtifiles2_la_LDFLAGS = -no-undefined -version-info @LT_LIBVERSION@
-libtifiles2_la_SOURCES = *.h minizip/*.h \
+libtifiles2_la_SOURCES = *.h \
 	comments.c \
 	error.c \
 	files8x.c files9x.c filesnsp.c filesxx.c \
@@ -33,16 +33,10 @@ libtifiles2_la_SOURCES = *.h minizip/*.h \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesnsp.c \
 	typesxx.c \
-	ve_fp.c \
-	minizip/ioapi.c   \
-        minizip/miniunz.c \
-        minizip/minizip.c \
-        minizip/unzip.c   \
-        minizip/zip.c
+	ve_fp.c
 
 if OS_WIN32
   libtifiles2_la_DEPENDENCIES = ../build/mingw/tifiles2-rc.o
   libtifiles2_la_LDFLAGS += -Wl,../build/mingw/tifiles2-rc.o
 endif
 
-EXTRA_DIST = minizip/*

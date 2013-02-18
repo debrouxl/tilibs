@@ -36,15 +36,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "minizip/zip.h"
-#include "minizip/unzip.h"
-
-/*
-#ifdef WIN32
-# define USEWIN32IOAPI
-# include "minizip/iowin32.h"
-#endif
-*/
+#include <archive.h>
+#include <archive_entry.h>
 
 #include <ticonv.h>
 #include "tifiles.h"
@@ -53,9 +46,6 @@
 #include "rwfile.h"
 
 #define WRITEBUFFERSIZE (8192)
-
-extern uLong filetime(char *f, tm_zip *tmzip, uLong *dt);
-extern int do_list(unzFile uf);
 
 /**
  * tifiles_te_create:
@@ -802,6 +792,30 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 	return 0;
 }
 
+/* Open a temporary file */
+static int open_temp_file(const char *orig_name, char **temp_name)
+{
+	const char *suffix;
+	char *template;
+	int fd;
+
+	*temp_name = NULL;
+	suffix = strrchr(orig_name, '.');
+	if (suffix && (strchr(suffix, '/') || strchr(suffix, '\\')))
+		suffix = NULL;
+	template = g_strconcat("tigXXXXXX", suffix, NULL);
+
+	fd = g_file_open_tmp(template, temp_name, NULL);
+
+	g_free(template);
+	if (fd == -1) {
+		g_free(*temp_name);
+		*temp_name = NULL;
+	}
+
+	return fd;
+}
+
 /**
  * tifiles_file_read_tigroup:
  * @filename: the name of file to load.
@@ -815,15 +829,11 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
  **/
 TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content)
 {
-	unzFile uf = NULL;
-	unz_global_info gi;
-	unz_file_info file_info;
-	int cnt, err = UNZ_OK;
-	char filename_inzip[256];
-	unsigned i;
-	void* buf = NULL;
-	const char *password = NULL;
-	int vi = 0, ai = 0;
+	FILE *tigf;
+	struct archive *arc;
+	struct archive_entry *entry;
+	const char *filename_inzip;
+	int err = 0;
 
 	if (filename == NULL || content == NULL)
 	{
@@ -832,104 +842,67 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	}
 
 	// Open ZIP archive
-	uf = unzOpen(filename);
-	if (uf == NULL)
+	tigf = g_fopen(filename, "rb");
+	if (tigf == NULL)
 	{
-		printf("Can't open this file: %s\n", filename);
+		return ERR_FILE_OPEN;
+	}
+
+	if (!(arc = archive_read_new())
+	    || archive_read_support_format_zip(arc) != ARCHIVE_OK
+	    || archive_read_open_FILE(arc, tigf) != ARCHIVE_OK)
+	{
+		if (arc)
+			archive_read_finish(arc);
+		fclose(tigf);
 		return ERR_FILE_ZIP;
 	}
 
-	// Allocate
-	buf = (void*)g_malloc(WRITEBUFFERSIZE);
-	if (buf==NULL)
-	{
-		printf("Error allocating memory\n");
-		goto tfrt_exit;
-	}
-
-	// Size of comment and number of files in archive
-	err = unzGetGlobalInfo (uf,&gi);
-	if (err!=UNZ_OK)
-	{
-		printf("error %d with zipfile in unzGetGlobalInfo \n",err);
-		goto tfrt_exit;
-	}        
-	//printf("# entries: %lu\n", gi.number_entry);
-
 	g_free(content->var_entries);
-	content->var_entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
+	content->var_entries = (TigEntry **)g_malloc0(1 * sizeof(TigEntry *));
 	content->n_vars = 0;
 
 	g_free(content->app_entries);
-	content->app_entries = (TigEntry **)g_malloc0((gi.number_entry + 1) * sizeof(TigEntry *));
+	content->app_entries = (TigEntry **)g_malloc0(1 * sizeof(TigEntry *));
 	content->n_apps = 0;
 
 	// Get comment
 	g_free(content->comment);
-	content->comment = (char *)g_malloc((gi.size_comment+1) * sizeof(char));
-	err = unzGetGlobalComment(uf, content->comment, gi.size_comment);
+	// FIXME: any way to get this from libarchive?
+	content->comment = g_strdup("");
 
 	// Parse archive for files
-	for (i = 0; i < gi.number_entry; i++)
+	while (archive_read_next_header(arc, &entry) == ARCHIVE_OK)
 	{
-		FILE *f;
 		gchar *fname;
-		gchar *utf8;
-		gchar *gfe;
+		int fd;
 
-		// get infos
-		err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
-		if (err!=UNZ_OK)
+		filename_inzip = archive_entry_pathname(entry);
+		if (!filename_inzip)
 		{
-			printf("error %d with zipfile in unzGetCurrentFileInfo\n",err);
-			goto tfrt_exit;
-		}
-		//printf("Extracting %s with %lu bytes\n", filename_inzip, file_info.uncompressed_size);
-
-		err = unzOpenCurrentFilePassword(uf,password);
-		if (err!=UNZ_OK)
-		{
-			printf("error %d with zipfile in unzOpenCurrentFilePassword\n",err);
-			goto tfrt_exit;
+			tifiles_warning("archive contains a file with no name");
+			archive_read_data_skip(arc);
+			continue;
 		}
 
-		// extract/uncompress into temporary file
-		utf8 = g_locale_to_utf8(filename_inzip, -1, NULL, NULL, NULL);
-		gfe = g_filename_from_utf8(utf8, -1, NULL, NULL, NULL);
-		fname = g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S, gfe, NULL);
-		g_free(utf8);
-		g_free(gfe);
-
-		f = g_fopen(fname, "wb");
-		if(f == NULL)
+		// create a temporary file
+		fd = open_temp_file(filename_inzip, &fname);
+		if (fd == -1)
 		{
-			err = ERR_FILE_OPEN;
+			err = ERR_FILE_IO;
 			goto tfrt_exit;
 		}
 
-		do
+		// extract data into temporary file
+		if (archive_read_data_into_fd(arc, fd) != ARCHIVE_OK)
 		{
-			err = unzReadCurrentFile(uf,buf,WRITEBUFFERSIZE);
-			if (err<0)
-			{
-				printf("error %d with zipfile in unzReadCurrentFile\n",err);
-				fclose(f);
-				goto tfrt_exit;
-			}
-			if (err>0)
-			{
-				cnt = fwrite(buf, 1, err, f);
-				if(cnt == -1)
-				{
-					printf("error in writing extracted file\n");
-					err=UNZ_ERRNO;
-					fclose(f);
-					goto tfrt_exit;
-				}
-			}
+			close(fd);
+			g_unlink(fname);
+			g_free(fname);
+			err = ERR_FILE_IO;
+			goto tfrt_exit;
 		}
-		while (err>0);
-		fclose(f);
+		close(fd);
 
 		// add to TigContent
 		{
@@ -944,10 +917,9 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				int ret;
 
 				ret = tifiles_file_read_regular(fname, entry->content.regular);
-				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if(ret) { g_free(entry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				content->var_entries[vi++] = entry;
-				content->n_vars++;
+				tifiles_content_add_te(content, entry);
 			}
 			else if(tifiles_file_is_flash(fname))
 			{
@@ -955,127 +927,105 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 				int ret;
 
 				ret = tifiles_file_read_flash(fname, entry->content.flash);
-				if(ret) { g_free(entry); unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if(ret) { g_free(entry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				content->app_entries[ai++] = entry;
-				content->n_apps++;
+				tifiles_content_add_te(content, entry);
 			}
 			else
 			{
 				// skip
 			}
 		}
-		unlink(fname);
+		g_unlink(fname);
 		g_free(fname);
-
-		// next file
-		if ((i+1) < gi.number_entry)
-		{
-			err = unzGoToNextFile(uf);
-			if (err!=UNZ_OK)
-			{
-				printf("error %d with zipfile in unzGoToNextFile\n",err);
-				goto tfrt_exit;
-			}
-		}
 	}
 
 	// Close
 tfrt_exit:
-	g_free(buf);
-	unzCloseCurrentFile(uf);
-	return err ? ERR_FILE_ZIP : 0;
+	archive_read_finish(arc);
+	fclose(tigf);
+	return err;
 }
 
-static int zip_write(zipFile *zf, const char *fname, int comp_level)
+static int zip_write(struct archive *arc, CalcModel model, const char *origfname, const char *tempfname)
 {
-	int err = ZIP_OK;
+	char *filenameinzip;
+	struct archive_entry *entry;
+	struct stat st;
+	int err = 0;
 	FILE *f = NULL;
-	zip_fileinfo zi;
-	char filenameinzip[256];
-	unsigned long crcFile=0;
 	int size_read;
 	void* buf=NULL;
 
-	if (zf == NULL)
+	if (arc == NULL)
 	{
-		tifiles_critical("zip_write: zf is NULL !");
+		tifiles_critical("zip_write: arc is NULL !");
 		return ERR_FILE_ZIP;
 	}
 
-	// missing tmp file !
-	f = g_fopen(fname, "rb");
-	if(f == NULL)
+	// Set metadata
+	entry = archive_entry_new();
+	if (entry == NULL)
 	{
-		printf("error in opening tmp file %s\n", fname);
-		err = ERR_FILE_OPEN;
-		goto zw_exit;
+		tifiles_critical("zip_write: cannot allocate archive entry");
+		return ERR_FILE_ZIP;
 	}
-	strcpy(filenameinzip, fname);
+
+	if (g_stat(tempfname, &st))
+	{
+		tifiles_critical("zip_write: cannot stat temporary file");
+		archive_entry_free(entry);
+		return ERR_FILE_IO;
+	}
+	archive_entry_copy_stat(entry, &st);
+
+	// ZIP archives don't like greek chars
+	filenameinzip = ticonv_gfe_to_zfe(model, origfname);
+	archive_entry_set_pathname(entry, filenameinzip);
+	g_free(filenameinzip);
+
+	// missing tmp file !
+	f = g_fopen(tempfname, "rb");
+	if (f == NULL)
+	{
+		tifiles_critical("zip_write: cannot read temporary file");
+		archive_entry_free(entry);
+		return ERR_FILE_IO;
+	}
+
+	if (archive_write_header(arc, entry) != ARCHIVE_OK)
+	{
+		archive_entry_free(entry);
+		return ERR_FILE_IO;
+	}
+	archive_entry_free(entry);
 
 	// Allocate buffer
 	buf = (void*)g_malloc(WRITEBUFFERSIZE);
-	if (buf==NULL)
-	{
-		printf("Error allocating memory\n");
-		goto zw_exit;
-	}
-
-	// update time stamp (to do ?)
-	zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
-	zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
-	zi.dosDate = 0;
-	zi.internal_fa = 0;
-	zi.external_fa = 0;
-	filetime(filenameinzip,&zi.tmz_date,&zi.dosDate);
-
-	err = zipOpenNewFileInZip3(*zf,filenameinzip,&zi,
-                                   NULL,0,NULL,0,NULL /* comment*/,
-                                   comp_level ? Z_DEFLATED : 0 /* comp method */,
-                                   1 /*comp level */,0,
-                                   -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
-                                   NULL /* no pwd*/,crcFile);
-	if (err != ZIP_OK)
-	{
-		printf("error in opening %s in zipfile\n",filenameinzip);
-		return ERR_FILE_ZIP;
-	}
 
 	do
 	{
 		// feed with our data
-		err = ZIP_OK;
 		size_read = fread(buf, 1, WRITEBUFFERSIZE, f);
 
 		if (size_read < WRITEBUFFERSIZE)
 		{
 			if (!feof(f))
 			{
-				printf("error in reading %s\n",filenameinzip);
-				err = ZIP_ERRNO;
-				goto zw_exit;
+				tifiles_critical("error in reading %s", tempfname);
+				err = ERR_FILE_IO;
 			}
 		}
 		if (size_read > 0)
 		{
-			err = zipWriteInFileInZip (*zf,buf,size_read);
-			if (err<0)
+			if (archive_write_data(arc, buf, size_read) != size_read)
 			{
-				printf("error in writing %s in the zipfile\n", filenameinzip);
-				goto zw_exit;
+				tifiles_critical("error in writing %s in the zipfile\n", origfname);
+				err = ERR_FILE_IO;
 			}
 		}
-	} while ((err == ZIP_OK) && (size_read>0));
+	} while (!err && (size_read>0));
 
-	// close file
-	err = zipCloseFileInZip(*zf);
-	if (err!=ZIP_OK)
-	{
-		printf("error in closing %s in the zipfile\n", filenameinzip);
-		goto zw_exit;
-	}
-
-zw_exit:
 	g_free(buf);
 	fclose(f);
 	return err;
@@ -1095,9 +1045,9 @@ zw_exit:
  **/
 TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent *content)
 {
-	zipFile zf;
-	int err = ZIP_OK;
-	gchar *old_dir = g_get_current_dir();
+	FILE *tigf;
+	struct archive *arc;
+	int err = 0;
 	TigEntry **ptr;
 
 	if (filename == NULL || content == NULL)
@@ -1106,68 +1056,87 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 		return -1;
 	}
 
-	// Open ZIP archive (and set comment)
-#ifdef USEWIN32IOAPI
-	zlib_filefunc_def ffunc;
-	fill_win32_filefunc(&ffunc);
-
-	zf = zipOpen2(filename, APPEND_STATUS_CREATE, &(content->comment), &ffunc);
-#else
-	zf = zipOpen(filename, APPEND_STATUS_CREATE);
-#endif
-	if (zf == NULL)
+	// Open ZIP archive
+	tigf = g_fopen(filename, "wb");
+	if (tigf == NULL)
 	{
-		printf("Can't open this file: %s\n", filename);
-		return ERR_FILE_ZIP;
+		return ERR_FILE_OPEN;
 	}
-	g_chdir(g_get_tmp_dir());
+
+	if (!(arc = archive_write_new()) || archive_write_set_format_zip(arc) != ARCHIVE_OK)
+	{
+		if (arc) {
+			archive_write_close(arc);
+			archive_write_finish(arc);
+		}
+		fclose(tigf);
+		return ERR_FILE_OPEN;
+	}
+
+	// tell libarchive not to pad output to 10240-byte blocks (why
+	// this is not the default for zip format, I have no idea)
+	archive_write_set_bytes_per_block(arc, 0);
+
+	if (content->comp_level > 0)
+		archive_write_set_options(arc, "compression=deflate");
+	else
+		archive_write_set_options(arc, "compression=store");
+
+	if (archive_write_open_FILE(arc, tigf) != ARCHIVE_OK)
+		err = ERR_FILE_OPEN;
 
 	// Parse entries and store
-	for(ptr = content->var_entries; *ptr; ptr++)
+	for(ptr = content->var_entries; *ptr && !err; ptr++)
 	{
 		TigEntry* entry = *ptr;
 		char *fname = NULL;
-
-		// ZIP archives don't like greek chars
-		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
+		int fd;
 
 		// write TI file into tmp folder
-		TRYC(tifiles_file_write_regular(fname, entry->content.regular, NULL));
-
-		err = zip_write(&zf, fname, content->comp_level);
-		g_free(fname);
-
-		if(err)
+		fd = open_temp_file(entry->filename, &fname);
+		if (fd == -1) {
+			g_free(fname);
+			err = ERR_FILE_OPEN;
 			break;
+		}
+		close(fd);
+
+		err = tifiles_file_write_regular(fname, entry->content.regular, NULL);
+		if (!err)
+			err = zip_write(arc, content->model, entry->filename, fname);
+
+		g_unlink(fname);
+		g_free(fname);
 	}
 
-	for(ptr = content->app_entries; *ptr; ptr++)
+	for(ptr = content->app_entries; *ptr && !err; ptr++)
 	{
 		TigEntry* entry = *ptr;
 		char *fname = NULL;
-
-		// ZIP archives don't like greek chars
-		fname = ticonv_gfe_to_zfe(content->model, entry->filename);
+		int fd;
 
 		// write TI file into tmp folder
-		TRYC(tifiles_file_write_flash(fname, entry->content.flash));
-
-		err = zip_write(&zf, fname, content->comp_level);
-		g_free(fname);
-
-		if(err)
+		fd = open_temp_file(entry->filename, &fname);
+		if (fd == -1) {
+			g_free(fname);
+			err = ERR_FILE_OPEN;
 			break;
+		}
+		close(fd);
+
+		err = tifiles_file_write_flash(fname, entry->content.flash);
+		if (!err)
+			err = zip_write(arc, content->model, entry->filename, fname);
+
+		g_unlink(fname);
+		g_free(fname);
 	}
 
 	// close archive
-	err = zipClose(zf,NULL);
-	if (err != ZIP_OK)
-	{
-		printf("error in closing %s\n",filename);
-		unlink(filename);
-	}
-
-	g_chdir(old_dir);
+	if (archive_write_close(arc) != ARCHIVE_OK)
+		err = ERR_FILE_IO;
+	archive_write_finish(arc);
+	fclose(tigf);
 	return err;
 }
 
@@ -1181,7 +1150,9 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
  **/
 TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 {
-	unzFile uf = NULL;
+	FILE *tigf;
+	struct archive *arc;
+	struct archive_entry *entry;
 
 	if (filename == NULL)
 	{
@@ -1189,15 +1160,35 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 		return -1;
 	}
 
-	uf = unzOpen(filename);
-	if (uf==NULL)
+	tigf = g_fopen(filename, "rb");
+	if (tigf == NULL)
+		return ERR_FILE_OPEN;
+
+	if (!(arc = archive_read_new())
+	    || archive_read_support_format_zip(arc) != ARCHIVE_OK
+	    || archive_read_open_FILE(arc, tigf) != ARCHIVE_OK)
 	{
-		tifiles_warning("Can't open this file: %s", filename);
-		return -1;
+		if (arc)
+			archive_read_finish(arc);
+		fclose(tigf);
+		return ERR_FILE_ZIP;
 	}
 
-	do_list(uf);
-	unzCloseCurrentFile(uf);
+	tifiles_info("TIGroup file contents:");
+	tifiles_info(" Size    Name");
+	tifiles_info(" ------  ------");
 
+	while (archive_read_next_header(arc, &entry) == ARCHIVE_OK)
+	{
+		const char *name = archive_entry_pathname(entry);
+		char *dispname = g_filename_display_name(name);
+		unsigned long size = (unsigned long) archive_entry_size(entry);
+		tifiles_info(" %-7lu %s", size, dispname);
+		archive_read_data_skip(arc);
+		g_free(dispname);
+	}
+
+	archive_read_finish(arc);
+	fclose(tigf);
 	return 0;
 }
