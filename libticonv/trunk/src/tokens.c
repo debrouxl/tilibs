@@ -194,6 +194,8 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x80: 
 		  if(model == CALC_TI82)
 			dst = g_strdup_printf("U%c", '\xd7'); 
+		  else if(model == CALC_TI73)
+			dst = g_strdup_printf("C\x81");
 		  else
 			dst = g_strdup_printf("u");
 		  break;
@@ -201,6 +203,8 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x81:
 		  if(model == CALC_TI82)
 			dst = g_strdup_printf("V%c", '\xd7'); 
+		  else if(model == CALC_TI73)
+			dst = g_strdup_printf("C\x82");
 		  else
 			dst = g_strdup_printf("v");
 		  break;
@@ -208,26 +212,39 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x82:
 		  if(model == CALC_TI82)
 			dst = g_strdup_printf("W%c", '\xd7'); 
+		  else if(model == CALC_TI73)
+			dst = g_strdup_printf("C\x83");
 		  else
 			dst = g_strdup_printf("w");
 		  break; 
+
+		case 0x83:
+		  if(model == CALC_TI73)
+			dst = g_strdup_printf("C\x84");
+		  else
+			dst = g_strdup_printf("?");
+		  break;
 
 		default: dst = g_strdup_printf("?"); break;
 		}
 		break;
 
     case 0x60:			/* Pictures */
-		if (tok2 != 0x09)
-			dst = g_strdup_printf("Pic%c", tok2 + '\x81');
+	    if (model == CALC_TI73)
+			dst = g_strdup_printf("Pic%d", tok2);
+	    else if (tok2 != 0x09)
+			dst = g_strdup_printf("Pic%d", tok2 + 1);
 		else
-			dst = g_strdup_printf("Pic%c", '\x80');
+			dst = g_strdup_printf("Pic0");
 		break;
 
     case 0x61:			/* GDB */
-		if (tok2 != 0x09)
-			dst = g_strdup_printf("GDB%c", tok2 + '\x81');
+	    if (model == CALC_TI73)
+			dst = g_strdup_printf("GDB%d", tok2);
+	    else if (tok2 != 0x09)
+			dst = g_strdup_printf("GDB%d", tok2 + 1);
 		else
-			dst = g_strdup_printf("GDB%c", '\x80');
+			dst = g_strdup_printf("GDB0");
 		break;
 
     case 0x62:
@@ -355,10 +372,12 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		break;
 
     case 0xAA:
-		if (tok2 != 0x09)
-			dst = g_strdup_printf("Str%c", tok2 + '\x81');
+	    if (model == CALC_TI73)
+			dst = g_strdup_printf("Str%d", tok2);
+	    else if (tok2 != 0x09)
+			dst = g_strdup_printf("Str%d", tok2 + 1);
 		else
-			dst = g_strdup_printf("Str%c", '\x80');
+			dst = g_strdup_printf("Str0");
 		break;
     
 	default:
@@ -513,7 +532,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	else if(src[0] == 'L' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
 	{
 		// lists
-		return g_strdup_printf("%c%c", 0x5D, shift(src[1] - 0x80));
+		return g_strdup_printf("%c%c", 0x5D, (model == CALC_TI73 ? src[1] - 0x80 : shift(src[1] - 0x80)));
 	} 
 	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
 	{
@@ -535,6 +554,11 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 		// polar equations
 		return g_strdup_printf("%c%c", 0x5E, 0x40 + (src[1] - 0x81));
 	}
+	else if(model == CALC_TI73 && src[0] == 'C' && (src[1] >= 128 && src[1] <= 131) && strlen(src_) == 2)
+	{
+		// constant equations
+		return g_strdup_printf("%c%c", 0x5E, 0x80 + shift(src[1] - 0x80));
+	}
 	else if(src[0] == 2 && strlen(src_) == 1)
 	{
 		return g_strdup_printf("%c%c", 0x5E, 0x80);
@@ -550,17 +574,17 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	else if(src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// pictures
-		return g_strdup_printf("%c%c", 0x60, shift(src[3] - '0'));
+		return g_strdup_printf("%c%c", 0x60, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
 	else if(src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// gdb
-		return g_strdup_printf("%c%c", 0x61, shift(src[3] - '0'));
+		return g_strdup_printf("%c%c", 0x61, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
 	else if(src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// strings
-		return g_strdup_printf("%c%c", 0xAA, shift(src[3] - '0'));
+		return g_strdup_printf("%c%c", 0xAA, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
 
 	return g_strdup(src_);
