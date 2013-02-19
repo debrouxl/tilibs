@@ -131,9 +131,10 @@ static int send_key(CalcHandle *h)
 
 static int execute(CalcHandle *h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 	    
@@ -200,13 +201,31 @@ static int send_var(CalcHandle* h)
 {
 	char filename[1024] = "";
 	int ret;
+	FileContent *content;
+	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_send_var2(h, MODE_NORMAL, filename));
+	if (h->model == CALC_NSPIRE)
+	{
+		memset(&ve, 0, sizeof(ve));
+		if(!read_varname(h, &ve, ""))
+			return 0;
+	}
+
+	content = tifiles_content_create_regular(h->model);
+	TRYF(tifiles_file_read_regular(filename, content));
+	if (h->model == CALC_NSPIRE)
+	{
+		strcpy(content->entries[0]->folder, ve.folder);
+		strcpy(content->entries[0]->name, ve.name);
+	}
+	TRYF(ticalcs_calc_send_var(h, MODE_NORMAL, content));
+	TRYF(tifiles_content_delete_regular(content));
+
 	return 0;
 }
 
@@ -214,13 +233,14 @@ static int recv_var(CalcHandle* h)
 {
 	char filename[1024] = "";
 	int ret;
-	VarEntry ve = SNULL;
+	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
@@ -278,13 +298,14 @@ static int recv_flash(CalcHandle *h)
 {
 	char filename[1024] = "";
 	int ret;
-	VarEntry ve = SNULL;
+	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
+	memset(&ve, 0, sizeof(ve));
 	printf("Enter application name: ");
 	ret = scanf("%1023s", ve.name);
 	if(ret < 1)
@@ -353,9 +374,10 @@ static int get_clock(CalcHandle *h)
 
 static int del_var(CalcHandle* h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 	    
@@ -365,12 +387,14 @@ static int del_var(CalcHandle* h)
 
 static int rename_var(CalcHandle* h)
 {
-	VarEntry src = SNULL;
-	VarEntry dst = SNULL;
+	VarEntry src;
+	VarEntry dst;
 	int ret;
 
+	memset(&src, 0, sizeof(src));
 	if(!read_varname(h, &src, " current"))
 		return 0;
+	memset(&dst, 0, sizeof(dst));
 	if(!read_varname(h, &dst, " new"))
 		return 0;
 
@@ -380,9 +404,10 @@ static int rename_var(CalcHandle* h)
 
 static int archive_var(CalcHandle* h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
@@ -392,9 +417,10 @@ static int archive_var(CalcHandle* h)
 
 static int unarchive_var(CalcHandle* h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
@@ -404,9 +430,10 @@ static int unarchive_var(CalcHandle* h)
 
 static int lock_var(CalcHandle* h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
@@ -416,16 +443,17 @@ static int lock_var(CalcHandle* h)
 
 static int new_folder(CalcHandle* h)
 {
-	VarEntry ve = SNULL;
+	VarEntry ve;
 	int ret;
 
+	memset(&ve, 0, sizeof(ve));
 	if(tifiles_calc_is_ti9x(h->model))
-        {
-            printf("Enter folder name: ");
-            ret = scanf("%1023s", ve.folder);
-            if(ret < 1) return 0;
-        }
-	    
+	{
+		printf("Enter folder name: ");
+		ret = scanf("%1023s", ve.folder);
+		if(ret < 1) return 0;
+	}
+
 	TRYF(ticalcs_calc_new_fld(h, &ve));
 	return 0;
 }
