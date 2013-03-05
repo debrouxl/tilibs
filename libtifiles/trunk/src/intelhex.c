@@ -31,26 +31,35 @@
 #include "macros.h"
 #include "intelhex.h"
 #include "export2.h"
+#include "logging.h"
 
 /* Constants */
 
-#define HEX_DATA	0x00	// data packet
-#define HEX_END		0x01	// end of section (1 for app, 3 for OS)
-#define HEX_PAGE	0x02	// page change
-#define HEX_EOF		0x03	// end of file (custom)
+#define HEX_DATA        0x00     // data packet
+#define HEX_END         0x01     // end of section (1 for app, 3 for OS)
+#define HEX_PAGE        0x02     // page change
+#define HEX_EOF         0x03     // end of file (custom)
 
-#define PKT_MAX		32		// 32 bytes max
-#define BLK_MAX		16384	// 16KB max
+#define PKT_MAX         32       // 32 bytes max
+#define BLK_MAX         16384    // 16KB max
 
 
 /* TI8X+ FLASH files contains text data. */
 static uint8_t read_byte(FILE * f)
 {
-  unsigned int b;
+	unsigned int b;
 
-  if (fscanf(f, "%02X", &b) < 1)
-    b = 0; /* FIXME: 0 is better than random garbage, but real error handling needed! */
-  return b;
+	if (fscanf(f, "%02X", &b) < 1)
+	{
+		static int warn_read_byte = 0;
+		if (!warn_read_byte)
+		{
+			tifiles_warning("intelhex: couldn't read byte");
+			warn_read_byte++;
+		}
+		b = 0; /* 0 is better than random garbage */
+	}
+	return (uint8_t)b;
 }
 
 /*
@@ -70,58 +79,64 @@ static uint8_t read_byte(FILE * f)
 */
 static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type, uint8_t *data)
 {
-  int c, i;
-  uint8_t sum, checksum;
+	int c, i;
+	uint8_t sum, checksum;
+	uint16_t localaddr;
 
-  sum = 0;
-  c = fgetc(f);
-  if (c != ':')
-  {
-	  printf("Unexpected char: <%c> = %02X\n", c, c);
-	  return -1;
-  }
+	sum = 0;
+	c = fgetc(f);
+	if (c != ':')
+	{
+		printf("Unexpected char: <%c> = %02X\n", c, c);
+		return -1;
+	}
 
-  *size = read_byte(f);
-  *addr = read_byte(f) << 8;
-  *addr |= read_byte(f);
-  *type = read_byte(f);
+	*size = read_byte(f);
+	localaddr = ((uint16_t)(read_byte(f))) << 8;
+	localaddr |= read_byte(f);
+	*addr = localaddr;
+	*type = read_byte(f);
 
-  if(*size > PKT_MAX)
-	  return -2;
+	if(*size > PKT_MAX)
+	{
+		return -2;
+	}
 
-  sum = *size + MSB(*addr) + LSB(*addr) + *type;
+	sum = *size + MSB(*addr) + LSB(*addr) + *type;
 
-  for (i = 0; i < *size; i++) 
-  {
-    data[i] = read_byte(f);
-    sum += data[i];
-  }
+	for (i = 0; i < *size; i++) 
+	{
+		data[i] = read_byte(f);
+		sum += data[i];
+	}
 
-  checksum = read_byte(f);	// verify checksum of block
-  if (LSB(sum + checksum))
-    return -3;
+	checksum = read_byte(f); // verify checksum of block
+	if (LSB(sum + checksum))
+	{
+		return -3;
+	}
 
-  {
-	  // check for end of file without mangling data checksum
-	  int c1, c2, c3;
-	  long pos = ftell(f);
+	{
+		// check for end of file without mangling data checksum
+		int c1, c2, c3;
+		long pos = ftell(f);
 
-	  c1 = fgetc(f);
-	  c2 = fgetc(f);
-	  c3 = fgetc(f);	//EOF checking is set to keep compatibility with old generated FLASH files (buggy)
+		c1 = fgetc(f);
+		c2 = fgetc(f);
+		c3 = fgetc(f); // EOF checking is set to keep compatibility with old generated FLASH files (buggy)
 
-	  if(((c1 != 0x0d) && (c2 != 0x0a)) || (c3 == EOF))	
-	  {
-		// end of file
-		*type = HEX_EOF;
-		fseek(f, pos, SEEK_SET);
-		return 0;
-	  }
+		if(((c1 != 0x0d) && (c2 != 0x0a)) || (c3 == EOF))
+		{
+			// end of file
+			*type = HEX_EOF;
+			fseek(f, pos, SEEK_SET);
+			return 0;
+		}
 
-	  fseek(f, pos+2, SEEK_SET);
-  }
+		fseek(f, pos+2, SEEK_SET);
+	}
 
-  return 0;
+	return 0;
 }
 
 /*
@@ -130,7 +145,7 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 	@size : size of block
 	@addr : address of block
 	@type : a flag (0x80 or 0x00)
-	@page : page of block	
+	@page : page of block
 	@data : the buffer where block is placed (16KB max)
 
 	Read a data block (page or segment) from FLASH file. 
@@ -172,7 +187,10 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		// read packet
 		ret = hex_packet_read(f, &pkt_size, &pkt_addr, &pkt_type, pkt_data);
-		if(ret < 0)	return ret;
+		if(ret < 0)
+		{
+			return ret; // THIS RETURNS !
+		}
 
 		// new block ? Set address
 		if(new_page)
@@ -208,7 +226,7 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 		case HEX_PAGE: 
 			// new page
-			flash_page = (pkt_data[0] << 8) | pkt_data[1];
+			flash_page = (((uint16_t)(pkt_data[0])) << 8) | pkt_data[1];
 			new_page = !0;
 			break;
 
@@ -227,8 +245,8 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 
 static int write_byte(uint8_t b, FILE * f)
 {
-  fprintf(f, "%02X", b);
-  return 2;
+	fprintf(f, "%02X", b);
+	return 2;
 }
 
 /*
@@ -248,33 +266,33 @@ static int write_byte(uint8_t b, FILE * f)
 */
 static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_, uint8_t *data)
 {
-  int i;
-  int sum;
-  int num = 0;
-  uint8_t type = (type_ == HEX_EOF ? HEX_END : type_);
+	int i;
+	int sum;
+	int num = 0;
+	uint8_t type = (type_ == HEX_EOF ? HEX_END : type_);
 
-  fputc(':', f); num++;
-  num += write_byte((uint8_t)size, f);
-  num += write_byte(MSB(addr), f);
-  num += write_byte(LSB(addr), f);
-  num += write_byte(type, f);
+	fputc(':', f); num++;
+	num += write_byte((uint8_t)size, f);
+	num += write_byte(MSB(addr), f);
+	num += write_byte(LSB(addr), f);
+	num += write_byte(type, f);
 
-  sum = size + MSB(addr) + LSB(addr) + type;
-  for (i = 0; i < size; i++) 
-  {
-    num += write_byte(data[i], f);
-    sum += data[i];
-  }
+	sum = size + MSB(addr) + LSB(addr) + type;
+	for (i = 0; i < size; i++) 
+	{
+		num += write_byte(data[i], f);
+		sum += data[i];
+	}
 
-  num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
+	num += write_byte((uint8_t)(0x100 - LSB(sum)), f);
 
-  if(type_ != HEX_EOF)
-  {
-	  fputc(0x0D, f);	num++;	// CR
-	  fputc(0x0A, f); num++;	// LF
-  }
+	if(type_ != HEX_EOF)
+	{
+		fputc(0x0D, f);	num++; // CR
+		fputc(0x0A, f); num++; // LF
+	}
 
-  return num;
+	return num;
 }
 
 /*
@@ -283,7 +301,7 @@ static int hex_packet_write(FILE *f, uint8_t size, uint16_t addr, uint8_t type_,
 	@size : size of block
 	@addr : address of block
 	@type : a flag (0x80 or 0x00)
-	@page : page of block	
+	@page : page of block
 	@data : the buffer where block is placed (16KB max)
 	@extra_bytes : number of additional 0xff bytes to add after the end of the data
 
@@ -297,15 +315,19 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 	static int old_flag = 0x80;
 	int n, m;
 	uint8_t buf[PKT_MAX];
-	int  new_section = 0;
+	int new_section = 0;
 
 	// write end block
 	if(!size && !addr && !type && !data && !page)
+	{
 		return hex_packet_write(f, 0, 0x0000, HEX_EOF, NULL);
+	}
 
 	// new section (FLASH OS only)
 	if(old_flag == 0x80 && type == 0x00)
+	{
 		new_section = !0;
+	}
 
 	if(old_flag != type)
 	{
@@ -347,6 +369,6 @@ int hex_block_write(FILE *f, uint16_t size, uint16_t addr, uint8_t type, uint8_t
 		bytes_written += hex_packet_write(f, n + m, addr, HEX_DATA, buf);
 		addr += n + m;
 	}
-	
+
 	return bytes_written;
 }

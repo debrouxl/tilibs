@@ -240,7 +240,7 @@ static int tigl_find(void)
 			fprintf(stderr, "failed to get device descriptor");
 			return r;
 		}
-		if ((desc.idVendor == VID_TI))
+		if (desc.idVendor == VID_TI)
 		{
 			for(k = 0; k < (int)(sizeof(tigl_infos) / sizeof(usb_infos)); k++)
 			{

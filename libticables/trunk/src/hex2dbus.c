@@ -204,7 +204,7 @@ restart:
 		mid = buffer[i+0];
 		cid = buffer[i+1];
 		length = buffer[i+2];
-		length |= buffer[i+3] << 8;
+		length |= ((int)(buffer[i+3])) << 8;
 
 		// check for valid packet
 		if(is_a_machine_id(mid) == -1)

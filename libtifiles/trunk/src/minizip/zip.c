@@ -325,8 +325,8 @@ local uLong ziplocal_TmzDateToDosDate(ptm,dosDate)
     else if (year>=80)
         year-=80;
     return
-      (uLong) (((ptm->tm_mday) + (32 * (ptm->tm_mon+1)) + (512 * year)) << 16) |
-        ((ptm->tm_sec/2) + (32* ptm->tm_min) + (2048 * (uLong)ptm->tm_hour));
+       ((uLong)(((ptm->tm_mday) + (32 * (ptm->tm_mon+1)) + (512 * year)) << 16)) |
+        ((uLong)((ptm->tm_sec/2) + (32* ptm->tm_min) + (2048 * (uLong)ptm->tm_hour)));
 }
 
 
@@ -765,9 +765,9 @@ extern int ZEXPORT zipOpenNewFileInZip4 (file, filename, zipfi,
     zi->ci.flag = flagBase;
     if ((level==8) || (level==9))
       zi->ci.flag |= 2;
-    if ((level==2))
+    if (level==2)
       zi->ci.flag |= 4;
-    if ((level==1))
+    if (level==1)
       zi->ci.flag |= 6;
     if (password != NULL)
       zi->ci.flag |= 1;

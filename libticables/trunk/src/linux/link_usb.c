@@ -317,7 +317,7 @@ static int tigl_find(void)
     {
 	for (dev = bus->devices; dev; dev = dev->next)
 	{
-	    if ((dev->descriptor.idVendor == VID_TI))
+	    if (dev->descriptor.idVendor == VID_TI)
 	    {
 		for(i = 0; i < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); i++)
 		{

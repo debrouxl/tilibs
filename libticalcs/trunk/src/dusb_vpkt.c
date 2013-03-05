@@ -126,7 +126,7 @@ void dusb_vtl_pkt_purge(void)
 
 int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 
 	if (h == NULL)
 	{
@@ -134,6 +134,7 @@ int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
 	raw.type = DUSB_RPKT_BUF_SIZE_REQ;
 	raw.data[2] = MSB(size);
@@ -147,7 +148,7 @@ int dusb_send_buf_size_request(CalcHandle* h, uint32_t size)
 
 int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 	uint32_t size;
 
 	if (h == NULL)
@@ -156,6 +157,7 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	TRYF(dusb_recv(h, &raw));
 
 	if(raw.size != 4)
@@ -176,7 +178,7 @@ int dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size_)
 
 int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 	uint32_t tmp;
 
 	if (h == NULL)
@@ -185,6 +187,7 @@ int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	TRYF(dusb_recv(h, &raw));
 
 	if(raw.size != 4)
@@ -203,7 +206,7 @@ int dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size)
 
 int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 
 	if (h == NULL)
 	{
@@ -211,6 +214,7 @@ int dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
 	raw.type = DUSB_RPKT_BUF_SIZE_ALLOC;
 	raw.data[2] = MSB(size);
@@ -231,7 +235,7 @@ uint32_t dusb_get_buf_size(void)
 
 int dusb_send_acknowledge(CalcHandle* h)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 
 	if (h == NULL)
 	{
@@ -239,6 +243,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	raw.size = 2;
 	raw.type = DUSB_RPKT_VIRT_DATA_ACK;
 	raw.data[0] = 0xE0;
@@ -254,7 +259,7 @@ int dusb_send_acknowledge(CalcHandle* h)
 
 int dusb_recv_acknowledge(CalcHandle *h)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 
 	if (h == NULL)
 	{
@@ -262,6 +267,7 @@ int dusb_recv_acknowledge(CalcHandle *h)
 		return ERR_INVALID_HANDLE;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	TRYF(dusb_recv(h, &raw));
 #if (VPKT_DBG == 2)
 	ticalcs_info("  TI->PC: Virtual Packet Data Acknowledgement");
@@ -327,7 +333,7 @@ static void workaround_send(CalcHandle *h, DUSBRawPacket *raw, DUSBVirtualPacket
 
 int dusb_send_data(CalcHandle *h, DUSBVirtualPacket *vtl)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 	int i, r, q;
 	long offset;
 
@@ -341,6 +347,8 @@ int dusb_send_data(CalcHandle *h, DUSBVirtualPacket *vtl)
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
+
+	memset(&raw, 0, sizeof(raw));
 
 	if(vtl->size <= DATA_SIZE - DUSB_DH_SIZE)
 	{
@@ -467,7 +475,7 @@ static void workaround_recv(CalcHandle *h, DUSBRawPacket * raw, DUSBVirtualPacke
 // beware: data field may be re-allocated in size !
 int dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 {
-	DUSBRawPacket raw = { 0 };
+	DUSBRawPacket raw;
 	int i = 0;
 	long offset = 0;
 
@@ -481,6 +489,8 @@ int dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
+
+	memset(&raw, 0, sizeof(raw));
 
 	do
 	{

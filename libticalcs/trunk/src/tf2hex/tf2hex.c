@@ -11,7 +11,7 @@ int main(int argc, char **argv)
 	const char *dst_name;
 	FILE *fi, *fo;
 	struct stat st;
-	long length;
+	long length, lenread;
 	static unsigned char data[65536];
 	int i, j;
 	const char *pat;
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	if(argc != 4)
 	{
 		fprintf(stderr, "Usage: tf2hex input_file output_file suffix\n");
-		return -1;
+		return 1;
 	}
 
 	src_name = argv[1];
@@ -31,37 +31,45 @@ int main(int argc, char **argv)
 	if(fi == NULL)
 	{
 		fprintf(stderr, "Unable to open input file.\n");
-		return -1;
+		return 1;
 	}
 
 	fstat(fileno(fi), &st);
 	length = st.st_size;
 
-	fread(data, sizeof(char), length, fi);
-	fprintf(stdout, "Read %ld bytes.\n", length);
+	lenread = fread(data, sizeof(char), length, fi);
+	fprintf(stdout, "Read %ld bytes.\n", lenread);
 
 	fclose(fi);
 
-	// write output file
-	fo = fopen(dst_name, "wt");
-	if(fo == NULL)
+	if (lenread == length)
 	{
-		fprintf(stderr, "Unable to open output file.\n");
-		return -1;
-	}
-
-	fprintf(fo, "static unsigned char romDump%s[] = {\n", pat);
-	for(i = 0; i < length; i += STEP)
-	{
-		for(j = 0; (j < STEP) && (i+j < length); j++)
+		// write output file
+		fo = fopen(dst_name, "wt");
+		if(fo == NULL)
 		{
-			fprintf(fo, "0x%02x, ", data[i + j]);
+			fprintf(stderr, "Unable to open output file.\n");
+			return 1;
 		}
-		fprintf(fo, "\n");
-	}
-	fprintf(fo, "};\nstatic unsigned int romDumpSize%s = %ld;\n", pat, length);
 
-	fclose(fo);
+		fprintf(fo, "static unsigned char romDump%s[] = {\n", pat);
+		for(i = 0; i < length; i += STEP)
+		{
+			for(j = 0; (j < STEP) && (i+j < length); j++)
+			{
+				fprintf(fo, "0x%02x, ", data[i + j]);
+			}
+			fprintf(fo, "\n");
+		}
+		fprintf(fo, "};\nstatic unsigned int romDumpSize%s = %ld;\n", pat, length);
+
+		fclose(fo);
+	}
+	else
+	{
+		fprintf(stderr, "Was unable to read the entire input file.\n");
+		return 1;
+	}
 
 	return 0;
 }

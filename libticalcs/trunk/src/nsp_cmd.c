@@ -356,11 +356,19 @@ TIEXPORT3 int TICALL cmd_r_dir_attributes(CalcHandle *h, uint32_t *size, uint8_t
 
 		if(size)
 		{
-			*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 0)));
+			//*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 0)));
+			*size = (  (((uint32_t)pkt->data[0]) << 24)
+			         | (((uint32_t)pkt->data[1]) << 16)
+			         | (((uint32_t)pkt->data[2]) <<  8)
+			         | (((uint32_t)pkt->data[3])      ));
 		}
 		if(date)
 		{
-			*date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 4)));
+			//*date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 4)));
+			*date = (  (((uint32_t)pkt->data[4]) << 24)
+			         | (((uint32_t)pkt->data[5]) << 16)
+			         | (((uint32_t)pkt->data[6]) <<  8)
+			         | (((uint32_t)pkt->data[7])      ));
 		}
 		if(type)
 		{
@@ -446,7 +454,7 @@ TIEXPORT3 int TICALL cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *si
 {
 	NSPVirtualPacket* pkt;
 	uint8_t data_size;
-	uint32_t date;
+	//uint32_t date;
 	int o;
 	int retval = 0;
 
@@ -488,9 +496,13 @@ TIEXPORT3 int TICALL cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t *si
 
 		if(size)
 		{
-			*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o)));
+			// *size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o)));
+			*size = (  (((uint32_t)pkt->data[o    ]) << 24)
+			         | (((uint32_t)pkt->data[o + 1]) << 16)
+			         | (((uint32_t)pkt->data[o + 2]) <<  8)
+			         | (((uint32_t)pkt->data[o + 3])      ));
 		}
-		date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o + 4)));
+		//date = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + o + 4)));
 		if(type)
 		{
 			*type = pkt->data[o + 8];
@@ -640,7 +652,11 @@ TIEXPORT3 int TICALL cmd_r_get_file(CalcHandle *h, uint32_t *size)
 
 		if(size)
 		{
-			*size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 10)));
+			// *size = GUINT32_FROM_BE(*((uint32_t *)(pkt->data + 10)));
+			*size = (  (((uint32_t)pkt->data[10]) << 24)
+			         | (((uint32_t)pkt->data[11]) << 16)
+			         | (((uint32_t)pkt->data[12]) <<  8)
+			         | (((uint32_t)pkt->data[13])      ));
 		}
 	}
 
@@ -1177,7 +1193,7 @@ TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
 
 /////////////----------------
 
-TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, uint8_t keycode[3])
+TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, const uint8_t keycode[3])
 {
 	NSPVirtualPacket * pkt1, * pkt2;
 	int retval = 0;

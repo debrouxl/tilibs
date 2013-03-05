@@ -126,7 +126,7 @@ void ca_del(CalcAttr* cp)
 
 CalcAttr** ca_new_array(int size)
 {
-	CalcAttr** array = g_malloc0((size+1) * sizeof(CalcParam *)); // aborts the program if it fails.
+	CalcAttr** array = g_malloc0((size+1) * sizeof(CalcAttr *)); // aborts the program if it fails.
 	return array;
 }
 

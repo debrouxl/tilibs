@@ -224,7 +224,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s"), utf8);
 		g_free(utf8);
 		update_label();
-  }
+	}
 
 	return 0;
 }
@@ -312,9 +312,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_VAR(handle, &content->data_length1, &content->type, varname, &attr));
-	content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
-	content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
-	content->mem_address  = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
+	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
+	content->data_length3 = (uint16_t)varname[2] | (((uint16_t)(varname[3])) << 8);
+	content->mem_address  = (uint16_t)varname[4] | (((uint16_t)(varname[5])) << 8);
 	TRYF(ti73_send_ACK(handle));
 
 	TRYF(ti73_send_CTS(handle));
@@ -402,38 +402,38 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-    VarEntry *ve;
-    char *utf8;
-    uint16_t ve_size;
+	VarEntry *ve;
+	char *utf8;
+	uint16_t ve_size;
 
-    content->model = handle->model;
+	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
-    content->num_entries = 1;
+	content->num_entries = 1;
 
-    content->entries = tifiles_ve_create_array(1);	
-    ve = content->entries[0] = tifiles_ve_create();
-    memcpy(ve, vr, sizeof(VarEntry));
+	content->entries = tifiles_ve_create_array(1);
+	ve = content->entries[0] = tifiles_ve_create();
+	memcpy(ve, vr, sizeof(VarEntry));
 
-    utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
-    g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
 	g_free(utf8);
-    update_label();
+	update_label();
 
-    // silent request
-    TRYF(ti73_send_REQ(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	// silent request
+	TRYF(ti73_send_REQ(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    TRYF(ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &vr->attr));
-    ve->size = ve_size;
-    TRYF(ti73_send_ACK(handle));
+	TRYF(ti73_recv_VAR(handle, &ve_size, &ve->type, ve->name, &vr->attr));
+	ve->size = ve_size;
+	TRYF(ti73_send_ACK(handle));
 
-    TRYF(ti73_send_CTS(handle));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_send_CTS(handle));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    ve->data = tifiles_ve_alloc_data(ve->size);
-    TRYF(ti73_recv_XDP(handle, &ve_size, ve->data));
-    ve->size = ve_size;
-    TRYF(ti73_send_ACK(handle));
+	ve->data = tifiles_ve_alloc_data(ve->size);
+	TRYF(ti73_recv_XDP(handle, &ve_size, ve->data));
+	ve->size = ve_size;
+	TRYF(ti73_send_ACK(handle));
 
 	return 0;
 }
@@ -475,7 +475,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	// check for 83+ Silver Edition (not usable in boot mode, sic!)
 	if(handle->model != CALC_TI73 && ptr->data_type == TI83p_APPL)
 	{
-		CalcInfos infos = { 0 };
+		CalcInfos infos;
 
 		TRYF(get_version(handle, &infos));
 		se = infos.hw_version & 1;
@@ -600,7 +600,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			fp->addr = data_addr & 0x4000;
 			fp->page = old_page;
 			fp->flag = 0x80;
-			fp->size = offset;			
+			fp->size = offset;
 			fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 			memcpy(fp->data, buf, fp->size);
 
@@ -614,7 +614,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		TRYF(ti73_send_CTS(handle));
 		TRYF(ti73_recv_ACK(handle, NULL));
 
-		TRYF(ti73_recv_XDP(handle, (uint16_t *)&data_length, &buf[offset]));
+		TRYF(ti73_recv_XDP(handle, &data_length, &buf[offset]));
 		TRYF(ti73_send_ACK(handle));
 
 		if (first_block)
@@ -624,7 +624,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 			/* compute actual application size */
 			if (buf[0] == 0x80 && buf[1] == 0x0f)
 			{
-				uint32_t len = buf[2] << 24 | buf[3] << 16 | buf[4] << 8 | buf[5];
+				uint32_t len = ((uint32_t)(buf[2])) << 24 | ((uint32_t)(buf[3])) << 16 | ((uint32_t)(buf[4])) << 8 | (uint32_t)(buf[5]);
 				update_->max2 = len + 75;
 			}
 		}
@@ -641,7 +641,7 @@ exit:
 		fp->addr = data_addr & 0x4000;
 		fp->page = old_page;
 		fp->flag = 0x80;
-		fp->size = offset;			
+		fp->size = offset;
 		fp->data = tifiles_fp_alloc_data(FLASH_PAGE_SIZE);
 		memcpy(fp->data, buf, fp->size);
 		page++;
@@ -779,7 +779,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 
 	cur.tm_year = _clock->year - 1900;
 	cur.tm_mon = _clock->month - 1;
-	cur.tm_mday = _clock->day;	
+	cur.tm_mday = _clock->day;
 	cur.tm_hour = _clock->hours;
 	cur.tm_min = _clock->minutes;
 	cur.tm_sec = _clock->seconds;
@@ -789,27 +789,27 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	
 	calc_time = (uint32_t)difftime(c, r);
 
-    buffer[2] = MSB(MSW(calc_time));
-    buffer[3] = LSB(MSW(calc_time));
-    buffer[4] = MSB(LSW(calc_time));
-    buffer[5] = LSB(LSW(calc_time));
-    buffer[6] = _clock->date_format;
-    buffer[7] = _clock->time_format;
-    buffer[8] = 0xff;
+	buffer[2] = MSB(MSW(calc_time));
+	buffer[3] = LSB(MSW(calc_time));
+	buffer[4] = MSB(LSW(calc_time));
+	buffer[5] = LSB(LSW(calc_time));
+	buffer[6] = _clock->date_format;
+	buffer[7] = _clock->time_format;
+	buffer[8] = 0xff;
 
-    g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
-    update_label();
+	g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
+	update_label();
 
 	TRYF(ti73_send_RTS(handle, 13, TI73_CLK, "\0x08", 0x00));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    TRYF(ti73_recv_CTS(handle, 13));
-    TRYF(ti73_send_ACK(handle));
+	TRYF(ti73_recv_CTS(handle, 13));
+	TRYF(ti73_send_ACK(handle));
 
-    TRYF(ti73_send_XDP(handle, 9, buffer));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_send_XDP(handle, 9, buffer));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    TRYF(ti73_send_EOT(handle));
+	TRYF(ti73_send_EOT(handle));
 
 	return 0;
 }
@@ -817,31 +817,31 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint16_t varsize;
-    uint8_t vartype;
+	uint8_t vartype;
 	uint8_t varattr;
-    char varname[9];
-    uint8_t buffer[32];
+	char varname[9];
+	uint8_t buffer[32];
 	uint32_t calc_time;
 
 	struct tm ref, *cur;
 	time_t r, c, now;
 
-    g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
-    update_label();
+	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
+	update_label();
 
 	TRYF(ti73_send_REQ(handle, 0x0000, TI73_CLK, "\0x08", 0x00));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr));
-    TRYF(ti73_send_ACK(handle));
+	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr));
+	TRYF(ti73_send_ACK(handle));
 
-    TRYF(ti73_send_CTS(handle));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_send_CTS(handle));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
-    TRYF(ti73_recv_XDP(handle, &varsize, buffer));
-    TRYF(ti73_send_ACK(handle));
+	TRYF(ti73_recv_XDP(handle, &varsize, buffer));
+	TRYF(ti73_send_ACK(handle));
 
-	calc_time = (buffer[2] << 24) | (buffer[3] << 16) | (buffer[4] << 8) | buffer[5];
+	calc_time = (((uint32_t)(buffer[2])) << 24) | (((uint32_t)(buffer[3])) << 16) | (((uint32_t)(buffer[4])) << 8) | (uint32_t)(buffer[5]);
 	//printf("<%08x>\n", time);
 
 	time(&now);	// retrieve current DST setting
@@ -915,10 +915,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_send_CTS(handle));
-    TRYF(ti73_recv_ACK(handle, NULL));
+	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_XDP(handle, &length, buf));
-    TRYF(ti73_send_ACK(handle));
+	TRYF(ti73_send_ACK(handle));
 
 	memset(infos, 0, sizeof(CalcInfos));
 	if(handle->model == CALC_TI73)

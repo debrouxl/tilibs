@@ -66,7 +66,7 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
 		entry = (TigEntry *)g_malloc0(sizeof(TigEntry));
 		if (entry != NULL)
 		{
-			entry->filename = g_strdup(g_basename(filename));
+			entry->filename = g_path_get_basename(filename);
 			entry->type = type;
 
 			if(type == TIFILE_FLASH)
@@ -913,23 +913,23 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 
 			if(tifiles_file_is_regular(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
+				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 				int ret;
 
-				ret = tifiles_file_read_regular(fname, entry->content.regular);
-				if(ret) { g_free(entry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				ret = tifiles_file_read_regular(fname, tigentry->content.regular);
+				if(ret) { g_free(tigentry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				tifiles_content_add_te(content, entry);
+				tifiles_content_add_te(content, tigentry);
 			}
 			else if(tifiles_file_is_flash(fname))
 			{
-				TigEntry *entry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
+				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 				int ret;
 
-				ret = tifiles_file_read_flash(fname, entry->content.flash);
-				if(ret) { g_free(entry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				ret = tifiles_file_read_flash(fname, tigentry->content.flash);
+				if(ret) { g_free(tigentry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
 
-				tifiles_content_add_te(content, entry);
+				tifiles_content_add_te(content, tigentry);
 			}
 			else
 			{

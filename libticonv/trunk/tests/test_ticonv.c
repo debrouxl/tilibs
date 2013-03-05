@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 		ti82_varname[2] = 0;
 
 		ti92_varname[0] = (char)132;	// delta
-		ti92_varname[1] = (char)'é';
+		ti92_varname[1] = (char)0xE9; // e acute.
 		ti92_varname[2] = 0;
 
 		ti84p_varname[0] = 'L';			// L1 in TI-UTF-8

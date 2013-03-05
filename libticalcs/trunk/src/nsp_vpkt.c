@@ -165,13 +165,15 @@ TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h)
 TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h)
 {
 	extern uint8_t nsp_seq_pc;
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
+
+	memset(&pkt, 0, sizeof(pkt));
 
 	// Reset connection so that device send an address request packet
 	TRYC(h->cable->cable->reset(h->cable));
@@ -191,7 +193,7 @@ TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h)
 
 TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
@@ -201,6 +203,7 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
 
 	ticalcs_info("  assigning address %04x:", addr);
 
+	memset(&pkt, 0, sizeof(pkt));
 	pkt.data_size = 4;
 	pkt.src_addr = NSP_SRC_ADDR;
 	pkt.src_port = NSP_PORT_ADDR_ASSIGN;
@@ -219,7 +222,7 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
 
 TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
@@ -229,6 +232,7 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
 
 	ticalcs_info("  sending ack:");
 
+	memset(&pkt, 0, sizeof(pkt));
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
 	pkt.src_port = NSP_PORT_PKT_ACK2;
@@ -243,7 +247,7 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
 
 TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
@@ -253,6 +257,7 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
 
 	ticalcs_info("  sending nAck:");
 
+	memset(&pkt, 0, sizeof(pkt));
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
 	pkt.src_port = NSP_PORT_PKT_NACK;
@@ -267,7 +272,7 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
 
 TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
@@ -277,6 +282,7 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 
 	ticalcs_info("  sending nAck:");
 
+	memset(&pkt, 0, sizeof(pkt));
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
 	pkt.src_port = NSP_PORT_PKT_NACK;
@@ -291,7 +297,7 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 
 TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 	uint16_t addr;
 	int ret = 0;
 
@@ -302,6 +308,8 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 	}
 
 	ticalcs_info("  receiving ack:");
+
+	memset(&pkt, 0, sizeof(pkt));
 
 	TRYF(nsp_recv(h, &pkt));
 
@@ -344,7 +352,7 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 
 TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 
 	if (h == NULL)
 	{
@@ -354,6 +362,7 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
 
 	ticalcs_info("  disconnecting from service #%04x:", nsp_dst_port);
 
+	memset(&pkt, 0, sizeof(pkt));
 	pkt.data_size = 2;
 	pkt.src_addr = NSP_SRC_ADDR;
 	pkt.src_port = NSP_PORT_DISCONNECT;
@@ -368,7 +377,7 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
 
 TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h)
 {
-	NSPRawPacket pkt = {0};
+	NSPRawPacket pkt;
 	uint16_t addr;
 
 	if (h == NULL)
@@ -378,6 +387,8 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h)
 	}
 
 	ticalcs_info("  receiving disconnect:");
+
+	memset(&pkt, 0, sizeof(pkt));
 
 	TRYF(nsp_recv(h, &pkt));
 
@@ -414,7 +425,7 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h)
 
 TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 {
-	NSPRawPacket raw = {0};
+	NSPRawPacket raw;
 	int i, r, q;
 	long offset = 0;
 
@@ -429,6 +440,7 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 		return ERR_INVALID_PACKET;
 	}
 
+	memset(&raw, 0, sizeof(raw));
 	raw.src_addr = vtl->src_addr;
 	raw.src_port = vtl->src_port;
 	raw.dst_addr = vtl->dst_addr;
@@ -473,7 +485,7 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 // Note: data field may be re-allocated.
 TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 {
-	NSPRawPacket raw = {0};
+	NSPRawPacket raw;
 	long offset = 0;
 	uint32_t size;
 	int err = 0;
@@ -488,6 +500,8 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
 		return ERR_INVALID_PACKET;
 	}
+
+	memset(&raw, 0, sizeof(raw));
 
 	size = vtl->size;
 	vtl->size = 0;

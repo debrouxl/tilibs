@@ -227,7 +227,7 @@ static int sif=0, af=0;
 
 static int dusb_write(int dir, uint8_t data)
 {
-	static int array[20];
+	static uint8_t array[20];
   	static int i = 0;
 	static unsigned long state = 1;
 	static uint16_t src_addr, src_id;
@@ -250,7 +250,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 3:			// source address
 		break;
 	case 4: 
-		src_addr = (array[2] << 8) | (array[3] << 0);
+		src_addr = (((uint16_t)(array[2])) << 8) | ((uint16_t)(array[3]));
 		fprintf(logfile, "%04x:", src_addr);
 		add_addr(addr_found, src_addr, &af);
 		break;
@@ -258,7 +258,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 5:			// source service id
 		break;
 	case 6: 
-		src_id = (array[4] << 8) | (array[5] << 0);
+		src_id = (((uint16_t)(array[4])) << 8) | ((uint16_t)(array[5]));
 		fprintf(logfile, "%04x->", src_id);
 		add_sid(sid_found, src_id, &sif);
 		break;
@@ -266,7 +266,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 7:			// destination address
 		break;
 	case 8: 
-		dst_addr = (array[6] << 8) | (array[7] << 0);
+		dst_addr = (((uint16_t)(array[6])) << 8) | ((uint16_t)(array[7]));
 		fprintf(logfile, "%04x:", dst_addr);
 		add_addr(addr_found, dst_addr, &af);
 		break;
@@ -274,7 +274,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 9:			// destination service id
 		break;
 	case 10: 
-		dst_id = (array[8] << 8) | (array[9] << 0);
+		dst_id = (((uint16_t)(array[8])) << 8) | ((uint16_t)(array[9]));
 		fprintf(logfile, "%04x ", dst_id);
 		add_sid(sid_found, src_id, &sif);
 		break;

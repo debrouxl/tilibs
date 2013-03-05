@@ -144,7 +144,7 @@ TIEXPORT3 int TICALL cmd_r_progress(CalcHandle *h, uint8_t *value);
 TIEXPORT3 int TICALL cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
 TIEXPORT3 int TICALL cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
 
-TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, uint8_t keycode[3]);
+TIEXPORT3 int TICALL cmd_s_keypress_event(CalcHandle *h, const uint8_t keycode[3]);
 // There doesn't seem to be a need for cmd_r_keypress_event.
 
 #endif

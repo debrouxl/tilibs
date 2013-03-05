@@ -133,11 +133,15 @@ static const char* name_of_packet(uint8_t id)
 
 static const char* name_of_data(uint16_t id)
 {
-	int i;
+	unsigned int i;
   
-	for(i=0; opcodes[i].name; i++)
+	for(i=0; opcodes[i].name != NULL; i++)
+	{
 		if(id == opcodes[i].type)
+		{
 			return opcodes[i].name;
+		}
+	}
 
 	return "unknown";
 }
@@ -151,54 +155,61 @@ static const char* ep_way(int ep)
 
 /* */
 
-static int add_pkt_type(uint8_t* array, uint8_t type, int *count)
-{
-	int i;
+static uint8_t pkt_type_found[ARRAY_SIZE] = { 0 };
+static uint16_t data_code_found[ARRAY_SIZE] = { 0 };
+static unsigned int ptf=0, dcf=0;
 
-	for(i = 0; i < *count; i++)
-		if(array[i] == type)
+
+static int add_pkt_type(uint8_t type)
+{
+	unsigned int i;
+
+	for(i = 0; i < ptf; i++)
+		if(pkt_type_found[i] == type)
 			return 0;
 
-	if (i < ARRAY_SIZE - 1)
+	if (i < (sizeof(pkt_type_found)/sizeof(pkt_type_found[0])) - 1)
 	{
-		array[++i] = type;
+		pkt_type_found[++i] = type;
 	}
 	else
 	{
-		static int warn_add_pkt_type;
-		if (!warn_add_pkt_type++)
+		static int warn_add_pkt_type = 0;
+		if (!warn_add_pkt_type)
 		{
 			ticables_warning("DUSB protocol interpreter: no room left in pkt_type_found array.");
+			warn_add_pkt_type++;
 		}
 	}
 
-	*count = i;
+	ptf = i;
 
 	return i;
 }
 
-static int add_data_code(uint16_t* array, uint16_t code, int *count)
+static int add_data_code(uint16_t code)
 {
-	int i;
+	unsigned int i;
 
-	for(i = 0; i < *count; i++)
-		if(array[i] == code)
+	for(i = 0; i < dcf; i++)
+		if(data_code_found[i] == code)
 			return 0;
 
-	if (i < ARRAY_SIZE - 1)
+	if (i < (sizeof(data_code_found)/sizeof(data_code_found[0])) - 1)
 	{
-		array[++i] = code;
+		data_code_found[++i] = code;
 	}
 	else
 	{
-		static int warn_add_data_code;
-		if (!warn_add_data_code++)
+		static int warn_add_data_code = 0;
+		if (!warn_add_data_code)
 		{
 			ticables_warning("DUSB protocol interpreter: no room left in data_code_found array.");
+			warn_add_data_code++;
 		}
 	}
 
-	*count = i;
+	dcf = i;
 
 	return i;
 }
@@ -236,13 +247,9 @@ static int hex_read(unsigned char *data)
 	return 0;
 }
 
-static uint8_t pkt_type_found[ARRAY_SIZE] = { 0 };
-static uint16_t data_code_found[ARRAY_SIZE] = { 0 };
-static int ptf=0, dcf=0;
-
 static int dusb_write(int dir, uint8_t data)
 {
-	static int array[20];
+	static uint8_t array[20];
   	static int i = 0;
 	static unsigned long state = 1;
 	static uint32_t raw_size;
@@ -264,7 +271,7 @@ static int dusb_write(int dir, uint8_t data)
 	case 2: break;
 	case 3: break;
 	case 4: 
-		raw_size = (array[0] << 24) | (array[1] << 16) | (array[2] << 8) | (array[3] << 0);
+		raw_size = (((uint32_t)(array[0])) << 24) | (((uint32_t)(array[1])) << 16) | (((uint32_t)(array[2])) << 8) | ((uint32_t)(array[3]));
 		fprintf(logfile, "%08x ", (unsigned int)raw_size);
 		break;
 	case 5: 
@@ -273,14 +280,14 @@ static int dusb_write(int dir, uint8_t data)
 
 		fprintf(logfile, "\t\t\t\t\t\t\t");
 		fprintf(logfile, "| %s: %s\n", ep_way(dir), name_of_packet(raw_type));
-		add_pkt_type(pkt_type_found, raw_type, &ptf);
+		add_pkt_type(raw_type);
 
 		break;
 	case 6: break;
 	case 7:
 		if(raw_type == 5)
 		{
-			uint16_t tmp = (array[5] << 8) | (array[6] << 0);
+			uint16_t tmp = (((uint32_t)(array[5])) << 8) | ((uint32_t)(array[6]));
 			fprintf(logfile, "\t[%04x]\n", tmp);
 			state = 0;
 		}
@@ -289,13 +296,13 @@ static int dusb_write(int dir, uint8_t data)
 	case 9:
 		if(raw_type == 1 || raw_type == 2)
 		{
-			uint32_t tmp = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
+			uint32_t tmp = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
 			fprintf(logfile, "\t[%08x]\n", (unsigned int)tmp);
 			state = 0;
 		}
 		else if(first && ((raw_type == 3) || (raw_type == 4)))
 		{
-			vtl_size = (array[5] << 24) | (array[6] << 16) | (array[7] << 8) | (array[8] << 0);
+			vtl_size = (((uint32_t)(array[5])) << 24) | (((uint32_t)(array[6])) << 16) | (((uint32_t)(array[7])) << 8) | ((uint32_t)(array[8]));
 			fprintf(logfile, "\t%08x ", (unsigned int)vtl_size);
 			cnt = 0;
 			first = (raw_type == 3) ? 0 : 1;
@@ -311,16 +318,16 @@ static int dusb_write(int dir, uint8_t data)
 
 			state = 12;
 			goto push;
-		}			
+		}
 		break;
 	case 10: break;
 	case 11:
-		vtl_type = (array[9] << 8) | (array[10] << 0);
+		vtl_type = (((uint32_t)(array[9])) << 8) | ((uint32_t)(array[10]));
 		fprintf(logfile, "{%04x}", vtl_type);
-		
+
 		fprintf(logfile, "\t\t\t\t\t\t");
 		fprintf(logfile, "| %s: %s\n\t\t", "CMD", name_of_data(vtl_type));
-		add_data_code(data_code_found, vtl_type, &dcf);
+		add_data_code(vtl_type);
 
 		if(!vtl_size)
 		{
@@ -358,7 +365,7 @@ int dusb_decomp(const char *filename)
 	char dst_name[1024];
 	char line[256];
 	unsigned char data;
-	int i;
+	unsigned int i;
 
 	strcpy(src_name, filename);
 	strcat(src_name, ".hex");

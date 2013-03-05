@@ -286,9 +286,9 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti82_recv_ACK(handle, &unused));
 
 	TRYF(ti82_recv_VAR(handle, &(content->data_length1), &content->type, varname));
-	content->data_length2 = (uint8_t)varname[0] | ((uint8_t)varname[1] << 8);
-	content->data_length3 = (uint8_t)varname[2] | ((uint8_t)varname[3] << 8);
-	content->mem_address  = (uint8_t)varname[4] | ((uint8_t)varname[5] << 8);
+	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
+	content->data_length3 = (uint16_t)varname[2] | (((uint16_t)(varname[3])) << 8);
+	content->mem_address  = (uint16_t)varname[4] | (((uint16_t)(varname[5])) << 8);
 	TRYF(ti82_send_ACK(handle));
 
 	TRYF(ti82_send_CTS(handle));

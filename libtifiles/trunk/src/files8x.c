@@ -907,10 +907,10 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 				     end of the application proper. */
 
 				  /* get actual app length */
-				  app_length = 6 + (content->pages[0]->data[2] << 24
-				                    | content->pages[0]->data[3] << 16
-				                    | content->pages[0]->data[4] << 8
-				                    | content->pages[0]->data[5]);
+				  app_length = 6 + (  (((uint32_t)(content->pages[0]->data[2])) << 24)
+				                    | (((uint32_t)(content->pages[0]->data[3])) << 16)
+				                    | (((uint32_t)(content->pages[0]->data[4])) <<  8)
+				                    | ((uint32_t)(content->pages[0]->data[5])));
 
 				  /* remove any existing padding */
 				  while (page_length > 0 && content->pages[i]->data[page_length - 1] == 0xff)

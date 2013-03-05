@@ -181,8 +181,13 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			return err;
 
 		strcpy(ve->name, varname);
-		ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
-		ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
+		//ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
+		ve->size = (  (((uint32_t)(attr[0]->data[0])) << 24)
+		            | (((uint32_t)(attr[0]->data[1])) << 16)
+		            | (((uint32_t)(attr[0]->data[2])) <<  8)
+		            | (((uint32_t)(attr[0]->data[3]))      ));
+		//ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
+		ve->type = (uint32_t)(attr[1]->data[3]);
 		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
 		ca_del_array(size, attr);
 
@@ -211,8 +216,16 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	TRYF(cmd_s_param_request(handle, size, pids));
 	TRYF(cmd_r_param_data(handle, size, params));
 
-	*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
-	*flash = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[1]->data)));
+	//*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
+	*ram = (  (((uint32_t)(params[0]->data[4])) << 24)
+	        | (((uint32_t)(params[0]->data[5])) << 16)
+	        | (((uint32_t)(params[0]->data[6])) <<  8)
+	        | (((uint32_t)(params[0]->data[7]))      ));
+	//*flash = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[1]->data)));
+	*flash = (  (((uint32_t)(params[1]->data[4])) << 24)
+	          | (((uint32_t)(params[1]->data[5])) << 16)
+	          | (((uint32_t)(params[1]->data[6])) <<  8)
+	          | (((uint32_t)(params[1]->data[7]))      ));
 
 	cp_del_array(size, params);
 	return 0;
@@ -292,7 +305,12 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve = content->entries[0] = tifiles_ve_create();
 	memcpy(ve, vr, sizeof(VarEntry));
 
-	ve->size = GINT32_FROM_BE(*((uint32_t *)(attrs[2]->data)));
+	//ve->size = GINT32_FROM_BE(*((uint32_t *)(attrs[2]->data)));
+	ve->size = (  (((uint32_t)(attrs[2]->data[0])) << 24)
+	            | (((uint32_t)(attrs[2]->data[1])) << 16)
+	            | (((uint32_t)(attrs[2]->data[2])) <<  8)
+	            | (((uint32_t)(attrs[2]->data[3]))      ));
+
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
 
@@ -599,7 +617,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	const int nattrs = 1;
 	char folder[40], name[40];
 	uint8_t *data;
-	int i, varsize;
+	uint32_t i, varsize;
 
 	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
@@ -614,7 +632,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	ca_del_array(nattrs, attrs);
 	attrs = ca_new_array(naids);
 	TRYF(cmd_r_var_header(handle, folder, name, attrs));
-	TRYF(cmd_r_var_content(handle, (uint32_t *)&varsize, &data));
+	TRYF(cmd_r_var_content(handle, &varsize, &data));
 
 	i = data[9];
 	data[9] = data[10];
@@ -924,30 +942,82 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_OS_VERSION;
 	i++;
 
-	infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->ram_phys = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                   | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                   | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                   | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                   | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                   | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                   | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                   | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_RAM_PHYS;
 	i++;
-	infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->ram_user = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                   | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                   | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                   | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                   | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                   | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                   | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                   | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_RAM_USER;
 	i++;
-	infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->ram_free = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                   | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                   | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                   | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                   | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                   | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                   | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                   | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_RAM_FREE;
 	i++;
 
-	infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->flash_phys = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                     | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                     | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                     | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                     | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                     | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                     | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                     | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_FLASH_PHYS;
 	i++;
-	infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->flash_user = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                     | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                     | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                     | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                     | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                     | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                     | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                     | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_FLASH_USER;
 	i++;
-	infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	//infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params[i]->data)));
+	infos->flash_free = (  (((uint64_t)(params[i]->data[ 0])) << 56)
+	                     | (((uint64_t)(params[i]->data[ 1])) << 48)
+	                     | (((uint64_t)(params[i]->data[ 2])) << 40)
+	                     | (((uint64_t)(params[i]->data[ 3])) << 32)
+	                     | (((uint64_t)(params[i]->data[ 4])) << 24)
+	                     | (((uint64_t)(params[i]->data[ 5])) << 16)
+	                     | (((uint64_t)(params[i]->data[ 6])) <<  8)
+	                     | (((uint64_t)(params[i]->data[ 7]))      ));
 	infos->mask |= INFOS_FLASH_FREE;
 	i++;
 
-	infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	//infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	infos->lcd_width = (  (((uint16_t)(params[i]->data[ 0])) <<  8)
+	                    | (((uint16_t)(params[i]->data[ 1]))      ));
 	infos->mask |= INFOS_LCD_WIDTH;
 	i++;
-	infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	//infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params[i]->data)));
+	infos->lcd_height = (  (((uint16_t)(params[i]->data[ 0])) <<  8)
+	                     | (((uint16_t)(params[i]->data[ 1]))      ));
 	infos->mask |= INFOS_LCD_HEIGHT;
 	i++;
 
