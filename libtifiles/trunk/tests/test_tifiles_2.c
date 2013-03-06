@@ -157,7 +157,7 @@ static int test_ti83_ungroup_support(void);
 static int test_ti84p_backup_support(void);
 static int test_ti84p_regular_support(void);
 static int test_ti84p_group_support(void);
-static int test_ti84p_ungroup_support(void);	
+static int test_ti84p_ungroup_support(void);
 static int test_ti84p_flash_support(void);  
 
 static int test_ti85_regular_support(void);
@@ -1097,8 +1097,8 @@ int test_ti8x_group_merge()
 
 int test_tigroup()
 {
-	TigContent *content = { 0 };
-	TigEntry te = { 0 };
+	TigContent *content = NULL;
+	TigEntry te = { NULL, 0, { NULL } };
 
 	// SVN can't handle file like 'pépé'. You will have to rename it from pepe to pépé and
 	// uncomment line below and another line.

@@ -48,7 +48,7 @@ TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 	if(handle == NULL)
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
+		return FTS_NONE;
 	}
 	calc = handle->calc;
 
