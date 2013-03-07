@@ -254,8 +254,8 @@ TIEXPORT4 const unsigned long TICALL ti9x_charset[256] =
  0xd875dc8a, //i (non-BMP character)
  0x2b3, //r
  0x22ba, //T
- 0x03050078, //x bar (requires composing)
- 0x03050079, //y bar (requires composing)
+ 0x00780305, //x bar (requires composition)
+ 0x00790305, //y bar (requires composition)
  0x2264,
  0x2260,
  0x2265,
