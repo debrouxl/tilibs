@@ -86,6 +86,7 @@
 #define CMD_ERR  0x5A		// [   ] Checksum error: send last packet again
 #define CMD_RDY  0x68		// [ #$] Test if calc is ready
 #define CMD_SCR  0x6D		// [  $] Request screenshot
+#define CMD_DMP  0x6F		// [  $] Request memory dump
 #define CMD_RID  0x74		// [ #$] Request calc ID
 #define CMD_CNT  0x78		// [  $] Continue
 #define CMD_KEY  0x87		// [  $] Send key

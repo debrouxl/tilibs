@@ -10,7 +10,8 @@ libticalcsincludedir = $(includedir)/tilp2
 libticalcsinclude_HEADERS = \
 	ticalcs.h export3.h stdints3.h \
 	keys73.h keys83.h keys83p.h keys86.h keys89.h keys92p.h \
-	nsp_vpkt.h nsp_cmd.h
+	nsp_vpkt.h nsp_cmd.h dbus_pkt.h dusb_rpkt.h \
+	cmd73.h
 
 # build instructions
 libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \

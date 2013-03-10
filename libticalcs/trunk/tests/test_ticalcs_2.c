@@ -38,6 +38,7 @@
 #include "tifiles.h"
 #include "../src/ticalcs.h"
 #include "../src/nsp_cmd.h"
+#include "../src/cmd73.h"
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 
@@ -477,7 +478,7 @@ static int probe_calc(CalcHandle *h)
 	CalcModel model;
 
 	printf("Enter cable & port for probing (c p): ");
-	ret = scanf("%i %i", &m, &p);
+	ret = scanf("%d %d", &m, &p);
 	if(ret < 2)
 		return 0;
 
@@ -501,7 +502,44 @@ static int nsp_send_key(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	28
+static int ti83pfamily_dump(CalcHandle *h)
+{
+	char filename[1024] = "";
+	uint8_t buffer[0x4100];
+	int page;
+	int ret;
+	uint16_t length;
+	FILE *f;
+
+	printf("Enter page number for dumping: ");
+	ret = scanf("%d", &page);
+	if(ret < 1)
+		return 0;
+
+	printf("Enter filename: ");
+	ret = scanf("%1023s", filename);
+	if(ret < 1)
+		return 0;
+
+	f = fopen(filename, "wb");
+	if (f != NULL)
+	{
+		memset(buffer, 0, sizeof(buffer));
+
+		if (   (ti73_send_DUMP(h, (uint16_t)page) == 0)
+		    && (ti73_recv_ACK(h, NULL) == 0)
+		    && (ti73_recv_XDP(h, &length, buffer) == 0)
+		    && (ti73_send_ACK(h) == 0))
+		{
+			fwrite(buffer, length, 1, f);
+		}
+		fclose(f);
+	}
+
+	return 0;
+}
+
+#define NITEMS	29
 
 static const char *str_menu[NITEMS] = 
 {
@@ -532,7 +570,8 @@ static const char *str_menu[NITEMS] =
 	"New folder",
 	"Get version",
 	"Probe calc",
-	"Nspire-specific send key"
+	"Nspire-specific send key",
+	"83+-family-specific memory dump"
 };
 
 typedef int (*FNCT_MENU) (CalcHandle*);
@@ -566,7 +605,8 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	new_folder,
 	get_version,
 	probe_calc,
-	nsp_send_key
+	nsp_send_key,
+	ti83pfamily_dump
 };
 
 int main(int argc, char **argv)
