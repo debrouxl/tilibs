@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libtifiles):
 
-- xx/xx/2012, version 1.1.6: debrouxl
+- xx/xx/2013, version 1.1.6: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- fix several malloc/realloc/free vs. g_malloc/g_malloc0/g_free mismatches.
@@ -13,6 +13,9 @@ Log of changes (libtifiles):
 	- add support for Nspire OS extensions, such as (and currently limited to) the English-Chinese dictionary.
 	- fix some spelling errors (or at least, infrequent forms) reported by Lintian (through Albert "alberthro" Huang) and rpmlint (through TC01).
 	- fixes for i18n problems reported by Benjamin Moody.
+	- for dealing with ZIP files, use an external libarchive instead of an embedded minizip.
+	- fix a number of problems related to unaligned reads/writes and left shifts of count >= width of type; fix more compiler warnings reported by clang.
+	- fix more compiler warnings reported (or made more visible) by clang.
 
 - 14/12/2011, version 1.1.5: debrouxl
 	- add Nspire CX OS support (.tco & .tcc extensions).
