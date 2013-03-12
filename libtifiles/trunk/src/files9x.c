@@ -64,118 +64,126 @@ static int fsignature[2] = { 1, 0 };
  **/
 int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 {
-  FILE *f;
-  long cur_pos = 0;
-  char default_folder[FLDNAME_MAX];
-  char current_folder[FLDNAME_MAX];
-  uint32_t curr_offset = 0;
-  uint32_t next_offset = 0;
-  uint16_t tmp;
-  int i, j;
-  char signature[9];
-  char varname[VARNAME_MAX];
+	FILE *f;
+	long cur_pos = 0;
+	char default_folder[FLDNAME_MAX];
+	char current_folder[FLDNAME_MAX];
+	uint32_t curr_offset = 0;
+	uint32_t next_offset = 0;
+	uint16_t tmp;
+	int i, j;
+	char signature[9];
+	char varname[VARNAME_MAX];
 
-  if (!tifiles_file_is_regular(filename))
-    return ERR_INVALID_FILE;
-
-  if (content == NULL)
-  {
-    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
-
-  f = g_fopen(filename, "rb");
-  if (f == NULL) 
-  {
-    tifiles_info( "Unable to open this file: %s", filename);
-    return ERR_FILE_OPEN;
-  }
-
-  if(fread_8_chars(f, signature) < 0) goto tffr;
-  content->model = tifiles_signature2calctype(signature);
-  if (content->model == CALC_NONE)
-    return ERR_INVALID_FILE;
-  if(content->model_dst == CALC_NONE) content->model_dst = content->model;
-
-  if(fread_word(f, NULL) < 0) goto tffr;
-  if(fread_8_chars(f, default_folder) < 0) goto tffr;
-  ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder, -1);
-  strcpy(current_folder, content->default_folder);
-  if(fread_n_chars(f, 40, content->comment) < 0) goto tffr;
-  if(fread_word(f, &tmp) < 0) goto tffr;
-  content->num_entries = tmp;
-
-  content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
-  if (content->entries == NULL) 
-  {
-    fclose(f);
-    return ERR_MALLOC;
-  }
-
-  for (i = 0, j = 0; i < content->num_entries; i++) 
-  {
-    VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
-
-    if(fread_long(f, &curr_offset) < 0) goto tffr;
-    if(fread_8_chars(f, varname) < 0)  goto tffr;
-	ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
-    if(fread_byte(f, &(entry->type)) < 0) goto tffr;
-    if(fread_byte(f, &(entry->attr)) < 0) goto tffr;
-    entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
-    if(fread_word(f, NULL) < 0) goto tffr;
-
-    if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
+	if (!tifiles_file_is_regular(filename))
 	{
-      strcpy(current_folder, entry->name);
-      g_free(entry);
-      continue;			// folder: skip entry
-    } 
-	else 
-	{
-	  uint16_t checksum, sum = 0;
+		return ERR_INVALID_FILE;
+	}
 
-      j++;
-      strcpy(entry->folder, current_folder);
-      cur_pos = ftell(f);
-	  if(cur_pos == -1L) goto tffr;
-      if(fread_long(f, &next_offset) < 0) goto tffr;
-      entry->size = next_offset - curr_offset - 4 - 2;
-      entry->data = (uint8_t *)g_malloc0(entry->size);
-      if (entry->data == NULL) 
-	  {
+	if (content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+	f = g_fopen(filename, "rb");
+	if (f == NULL) 
+	{
+		tifiles_info( "Unable to open this file: %s", filename);
+		return ERR_FILE_OPEN;
+	}
+
+	if(fread_8_chars(f, signature) < 0) goto tffr;
+	content->model = tifiles_signature2calctype(signature);
+	if (content->model == CALC_NONE)
+	{
+		return ERR_INVALID_FILE;
+	}
+	if(content->model_dst == CALC_NONE)
+	{
+		content->model_dst = content->model;
+	}
+
+	if(fread_word(f, NULL) < 0) goto tffr;
+	if(fread_8_chars(f, default_folder) < 0) goto tffr;
+	ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder, -1);
+	strcpy(current_folder, content->default_folder);
+	if(fread_n_chars(f, 40, content->comment) < 0) goto tffr;
+	if(fread_word(f, &tmp) < 0) goto tffr;
+	content->num_entries = tmp;
+
+	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
+	if (content->entries == NULL) 
+	{
 		fclose(f);
-		tifiles_content_delete_regular(content);
 		return ERR_MALLOC;
-      }
+	}
 
-      if(fseek(f, curr_offset, SEEK_SET)) goto tffr;
-      if(fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
-      if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
+	for (i = 0, j = 0; i < content->num_entries; i++) 
+	{
+		VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
 
-      if(fread_word(f, &checksum) < 0) goto tffr;
-      if(fseek(f, cur_pos, SEEK_SET)) goto tffr;
+		if(fread_long(f, &curr_offset) < 0) goto tffr;
+		if(fread_8_chars(f, varname) < 0)  goto tffr;
+		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
+		if(fread_byte(f, &(entry->type)) < 0) goto tffr;
+		if(fread_byte(f, &(entry->attr)) < 0) goto tffr;
+		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
+		if(fread_word(f, NULL) < 0) goto tffr;
 
-	  sum = tifiles_checksum(entry->data, entry->size);
-	  if(sum != checksum)
-	  {
-		  fclose(f);
-		  tifiles_content_delete_regular(content);
-	      return ERR_FILE_CHECKSUM;
-	  }
-	  content->checksum += sum;	// sum of all checksums but unused
-    }
-  }
-  content->num_entries = j;
-  content->entries = g_realloc(content->entries, content->num_entries * sizeof(VarEntry*));
-  //fread_long(f, &next_offset);
-  //fseek(f, next_offset - 2, SEEK_SET);
-  //fread_word(f, &(content->checksum));
+		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
+		{
+			strcpy(current_folder, entry->name);
+			g_free(entry);
+			continue;			// folder: skip entry
+		}
+		else 
+		{
+			uint16_t checksum, sum = 0;
 
-  fclose(f);
-  return 0;
+			j++;
+			strcpy(entry->folder, current_folder);
+			cur_pos = ftell(f);
+			if(cur_pos == -1L) goto tffr;
+			if(fread_long(f, &next_offset) < 0) goto tffr;
+			entry->size = next_offset - curr_offset - 4 - 2;
+			entry->data = (uint8_t *)g_malloc0(entry->size);
+			if (entry->data == NULL) 
+			{
+				fclose(f);
+				tifiles_content_delete_regular(content);
+				return ERR_MALLOC;
+			}
+
+			if(fseek(f, curr_offset, SEEK_SET)) goto tffr;
+			if(fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
+			if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
+
+			if(fread_word(f, &checksum) < 0) goto tffr;
+			if(fseek(f, cur_pos, SEEK_SET)) goto tffr;
+
+			sum = tifiles_checksum(entry->data, entry->size);
+			if(sum != checksum)
+			{
+				fclose(f);
+				tifiles_content_delete_regular(content);
+				return ERR_FILE_CHECKSUM;
+			}
+			content->checksum += sum;	// sum of all checksums but unused
+		}
+	}
+	content->num_entries = j;
+	content->entries = g_realloc(content->entries, content->num_entries * sizeof(VarEntry*));
+	//fread_long(f, &next_offset);
+	//fseek(f, next_offset - 2, SEEK_SET);
+	//fread_word(f, &(content->checksum));
+
+	fclose(f);
+	return 0;
 
 tffr:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
+	fclose(f);
 	tifiles_content_delete_regular(content);
 	return ERR_FILE_IO;
 }
@@ -194,71 +202,76 @@ tffr:	// release on exit
  **/
 int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 {
-  FILE *f;
-  uint32_t file_size;
-  char signature[9];
-  uint16_t sum;
+	FILE *f;
+	uint32_t file_size;
+	char signature[9];
+	uint16_t sum;
 
-  if (!tifiles_file_is_backup(filename))
-    return ERR_INVALID_FILE;
+	if (!tifiles_file_is_backup(filename))
+	{
+		return ERR_INVALID_FILE;
+	}
 
-  f = g_fopen(filename, "rb");
-  if (f == NULL) 
-  {
-    tifiles_info( "Unable to open this file: %s", filename);
-    return ERR_FILE_OPEN;
-  }
+	f = g_fopen(filename, "rb");
+	if (f == NULL) 
+	{
+		tifiles_info( "Unable to open this file: %s", filename);
+		return ERR_FILE_OPEN;
+	}
 
-  if (content == NULL)
-  {
-    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
+	if (content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  if(fread_8_chars(f, signature) < 0) goto tfrb;
-  content->model = tifiles_signature2calctype(signature);
-  if (content->model == CALC_NONE)
-    return ERR_INVALID_FILE;
+	if(fread_8_chars(f, signature) < 0) goto tfrb;
+	content->model = tifiles_signature2calctype(signature);
+	if (content->model == CALC_NONE)
+	{
+		return ERR_INVALID_FILE;
+	}
 
-  if(fread_word(f, NULL) < 0) goto tfrb;
-  if(fread_8_chars(f, NULL) < 0) goto tfrb;
-  if(fread_n_chars(f, 40, content->comment) < 0) goto tfrb;
-  if(fread_word(f, NULL) < 0) goto tfrb;
-  if(fread_long(f, NULL) < 0) goto tfrb;
-  if(fread_8_chars(f, content->rom_version) < 0) goto tfrb;
-  if(fread_byte(f, &(content->type)) < 0) goto tfrb;
-  if(fread_byte(f, NULL) < 0) goto tfrb;
-  if(fread_word(f, NULL) < 0) goto tfrb;
-  if(fread_long(f, &file_size) < 0) goto tfrb;
-  content->data_length = file_size - 0x52 - 2;
-  if(fread_word(f, NULL) < 0) goto tfrb;
+	if(fread_word(f, NULL) < 0) goto tfrb;
+	if(fread_8_chars(f, NULL) < 0) goto tfrb;
+	if(fread_n_chars(f, 40, content->comment) < 0) goto tfrb;
+	if(fread_word(f, NULL) < 0) goto tfrb;
+	if(fread_long(f, NULL) < 0) goto tfrb;
+	if(fread_8_chars(f, content->rom_version) < 0) goto tfrb;
+	if(fread_byte(f, &(content->type)) < 0) goto tfrb;
+	if(fread_byte(f, NULL) < 0) goto tfrb;
+	if(fread_word(f, NULL) < 0) goto tfrb;
+	if(fread_long(f, &file_size) < 0) goto tfrb;
+	content->data_length = file_size - 0x52 - 2;
+	if(fread_word(f, NULL) < 0) goto tfrb;
 
-  content->data_part = (uint8_t *)g_malloc0(content->data_length);
-  if (content->data_part == NULL) 
-  {
-    fclose(f);
-	tifiles_content_delete_backup(content);
-    return ERR_MALLOC;
-  }
+	content->data_part = (uint8_t *)g_malloc0(content->data_length);
+	if (content->data_part == NULL) 
+	{
+		fclose(f);
+		tifiles_content_delete_backup(content);
+		return ERR_MALLOC;
+	}
 
-  if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
-  if(fread_word(f, &(content->checksum)) < 0) goto tfrb;
+	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
+	if(fread_word(f, &(content->checksum)) < 0) goto tfrb;
 
-  sum = tifiles_checksum(content->data_part, content->data_length);
+	sum = tifiles_checksum(content->data_part, content->data_length);
 #if defined(CHECKSUM_ENABLED)
-  if(sum != content->checksum)
-  {
-	  fclose(f);
-	  tifiles_content_delete_backup(content);
-	  return ERR_FILE_CHECKSUM;
-  }
+	if(sum != content->checksum)
+	{
+		fclose(f);
+		tifiles_content_delete_backup(content);
+		return ERR_FILE_CHECKSUM;
+	}
 #endif
 
-  fclose(f);
-  return 0;
+	fclose(f);
+	return 0;
 
 tfrb:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
+	fclose(f);
 	tifiles_content_delete_backup(content);
 	return ERR_FILE_IO;
 }
@@ -269,8 +282,12 @@ static int check_device_type(uint8_t id)
 	int i;
 
 	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	{
 		if(types[i] == id)
+		{
 			return i;
+		}
+	}
 
 	return 0;
 }
@@ -281,8 +298,12 @@ static int check_data_type(uint8_t id)
 	int i;
 
 	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	{
 		if(types[i] == id)
+		{
 			return i;
+		}
+	}
 
 	return 0;
 }
@@ -307,7 +328,9 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	char signature[9];
 
 	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
+	{
 		return ERR_INVALID_FILE;
+	}
 
 	if (head == NULL)
 	{
@@ -321,7 +344,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
-	    tifiles_info("Unable to open this file: %s\n", filename);
+		tifiles_info("Unable to open this file: %s\n", filename);
 		return ERR_FILE_OPEN;
 	}  
 
@@ -345,12 +368,12 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 		switch(content->data_part[8])
 		{
-		case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
-		case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
-		// value added by the TI community according to HWID parameter
-		// doesn't have any 'legal' existence.
-		case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
-		case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
+			case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
+			case 3: content->device_type = DEVICE_TYPE_89; break;	// TI89
+			// value added by the TI community according to HWID parameter
+			// doesn't have any 'legal' existence.
+			case 8: content->device_type = DEVICE_TYPE_92P; break;	// V200PLT
+			case 9: content->device_type = DEVICE_TYPE_89; break;	// Titanium
 		}
 
 		content->next = NULL;
@@ -359,28 +382,32 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	{
 		for (content = head;; content = content->next) 
 		{
-		    if(fread_8_chars(f, signature) < 0) goto tfrf;
-		    content->model = tifiles_file_get_model(filename);
-		    if(fread_byte(f, &(content->revision_major)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->revision_minor)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->flags)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->object_type)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->revision_day)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->revision_month)) < 0) goto tfrf;
-		    if(fread_word(f, &(content->revision_year)) < 0) goto tfrf;
-		    if(fskip(f, 1) < 0) goto tfrf;
-		    if(fread_8_chars(f, content->name) < 0) goto tfrf;
-		    if(fskip(f, 23) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->device_type)) < 0) goto tfrf;
-		    if(fread_byte(f, &(content->data_type)) < 0) goto tfrf;
-		    if(fskip(f, 23) < 0) goto tfrf;
+			if(fread_8_chars(f, signature) < 0) goto tfrf;
+			content->model = tifiles_file_get_model(filename);
+			if(fread_byte(f, &(content->revision_major)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->revision_minor)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->flags)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->object_type)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->revision_day)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->revision_month)) < 0) goto tfrf;
+			if(fread_word(f, &(content->revision_year)) < 0) goto tfrf;
+			if(fskip(f, 1) < 0) goto tfrf;
+			if(fread_8_chars(f, content->name) < 0) goto tfrf;
+			if(fskip(f, 23) < 0) goto tfrf;
+			if(fread_byte(f, &(content->device_type)) < 0) goto tfrf;
+			if(fread_byte(f, &(content->data_type)) < 0) goto tfrf;
+			if(fskip(f, 23) < 0) goto tfrf;
 			if(fread_byte(f, &(content->hw_id)) < 0) goto tfrf;
-		    if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
+			if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
 
 			if(content->data_type != TI89_LICENSE && !check_device_type(content->device_type))
+			{
 				return ERR_INVALID_FILE;
+			}
 			if(!check_data_type(content->data_type))
+			{
 				return ERR_INVALID_FILE;
+			}
 
 			content->data_part = (uint8_t *)g_malloc0(content->data_length);
 			if (content->data_part == NULL) 
@@ -395,9 +422,13 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 
 			// check for end of file
 			if(fread_8_chars(f, signature) < 0)
+			{
 				break;
+			}
 			if(strcmp(signature, "**TIFL**") || feof(f))
+			{
 				break;
+			}
 			if(fseek(f, -8, SEEK_CUR)) goto tfrf;
 
 			content->next = (Ti9xFlash *)g_malloc0(sizeof(Ti9xFlash));
@@ -414,7 +445,8 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	return 0;
 
 tfrf:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
+	fclose(f);
 	tifiles_content_delete_flash(content);
 	return ERR_FILE_IO;
 }
@@ -439,149 +471,160 @@ tfrf:	// release on exit
  **/
 int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real_fname)
 {
-  FILE *f;
-  int i;
-  char *filename = NULL;
-  uint32_t offset = 0x52;
-  int **table;
-  int num_folders;
-  char default_folder[FLDNAME_MAX];
-  char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
+	FILE *f;
+	int i;
+	char *filename = NULL;
+	uint32_t offset = 0x52;
+	int **table;
+	int num_folders;
+	char default_folder[FLDNAME_MAX];
+	char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
 
-  if (content->entries == NULL)
-  {
-    tifiles_warning("%s: skipping content with NULL content->entries", __FUNCTION__);
-    return 0;
-  }
-
-  if (fname != NULL)
-  {
-    filename = g_strdup(fname);
-    if (filename == NULL)
-      return ERR_MALLOC;
-  } 
-  else 
-  {
-    if (content->entries[0])
-    {
-      filename = tifiles_build_filename(content->model_dst, content->entries[0]);
-    }
-    else
-    {
-      tifiles_warning("%s: asked to build a filename from null content->entries[0], bailing out", __FUNCTION__);
-      if (real_fname != NULL)
-      {
-        *real_fname = NULL;
-      }
-      return 0;
-    }
-    if (real_fname != NULL)
-      *real_fname = g_strdup(filename);
-  }
-
-  f = g_fopen(filename, "wb");
-  if (f == NULL) 
-  {
-    tifiles_info( "Unable to open this file: %s", filename);
-    g_free(filename);
-    return ERR_FILE_OPEN;
-  }
-  g_free(filename);
-
-  // build the table of folder & variable entries  
-  table = tifiles_create_table_of_entries((FileContent *)content, &num_folders);
-  if (table == NULL)
-	  return ERR_MALLOC;
-
-  // write header
-  if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
-  if(fwrite(fsignature, 1, 2, f) < 2) goto tfwr;
-  if (content->num_entries == 1)	// folder entry for single var is placed here
-    strcpy(content->default_folder, content->entries[0]->folder);
-  ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder, -1);
-  if(fwrite_8_chars(f, default_folder) < 0) goto tfwr;
-  if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
-  if (content->num_entries > 1) 
-  {
-    if(fwrite_word(f, (uint16_t) (content->num_entries + num_folders)) < 0) goto tfwr;
-    offset += 16 * (content->num_entries + num_folders - 1);
-  } 
-  else
-    if(fwrite_word(f, 1) < 0) goto tfwr;
-
-  // write table of entries
-  for (i = 0; table[i] != NULL; i++) 
-  {
-    VarEntry *fentry;
-    int j, idx = table[i][0];
-    fentry = content->entries[idx];
-
-    if (fentry == NULL)
-    {
-      tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
-      continue;
-    }
-
-    if (content->num_entries > 1)	// single var does not have folder entry
-    {
-      if(fwrite_long(f, offset) < 0) goto tfwr;
-	  ticonv_varname_to_tifile_s(content->model, fentry->folder, fldname, -1);
-      if(fwrite_8_chars(f, fldname) < 0) goto tfwr;
-      if(fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model)) < 0) goto tfwr;
-      if(fwrite_byte(f, 0x00) < 0) goto tfwr;
-      for (j = 0; table[i][j] != -1; j++);
-      if(fwrite_word(f, (uint16_t) j) < 0) goto tfwr;
-    }
-
-    for (j = 0; table[i][j] != -1; j++) 
+	if (content->entries == NULL)
 	{
-      int idx2 = table[i][j];
-      VarEntry *entry = content->entries[idx2];
-	  uint8_t attr = ATTRB_NONE;
+		tifiles_warning("%s: skipping content with NULL content->entries", __FUNCTION__);
+		return 0;
+	}
 
-      if(fwrite_long(f, offset) < 0) goto tfwr;
-	  ticonv_varname_to_tifile_s(content->model, entry->name, varname, entry->type);
-      if(fwrite_8_chars(f, varname) < 0) goto tfwr;
-      if(fwrite_byte(f, entry->type) < 0) goto tfwr;
-      attr = (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
-      if(fwrite_byte(f, attr) < 0) goto tfwr;
-      if(fwrite_word(f, 0) < 0) goto tfwr;
-
-      offset += entry->size + 4 + 2;
-    }
-  }
-
-  if(fwrite_long(f, offset) < 0) goto tfwr;
-  if(fwrite_word(f, 0x5aa5) < 0) goto tfwr;
-
-  // write data
-  for (i = 0; table[i] != NULL; i++) 
-  {
-    int j;
-
-    for (j = 0; table[i][j] != -1; j++) 
+	if (fname != NULL)
 	{
-      int idx = table[i][j];
-      VarEntry *entry = content->entries[idx];
-      uint16_t sum;
+		filename = g_strdup(fname);
+		if (filename == NULL)
+		{
+			return ERR_MALLOC;
+		}
+	} 
+	else 
+	{
+		if (content->entries[0])
+		{
+			filename = tifiles_build_filename(content->model_dst, content->entries[0]);
+		}
+		else
+		{
+			tifiles_warning("%s: asked to build a filename from null content->entries[0], bailing out", __FUNCTION__);
+			if (real_fname != NULL)
+			{
+				*real_fname = NULL;
+			}
+			return 0;
+		}
+		if (real_fname != NULL)
+		{
+			*real_fname = g_strdup(filename);
+		}
+	}
 
-      if(fwrite_long(f, 0) < 0) goto tfwr;
-      if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
-      sum = tifiles_checksum(entry->data, entry->size);
-      if(fwrite_word(f, sum) < 0) goto tfwr;
-    }
-  }
+	f = g_fopen(filename, "wb");
+	if (f == NULL) 
+	{
+		tifiles_info( "Unable to open this file: %s", filename);
+		g_free(filename);
+		return ERR_FILE_OPEN;
+	}
+	g_free(filename);
 
-  // g_free( memory
-  for (i = 0; i < num_folders; i++)
-    g_free(table[i]);
-  g_free(table);
+	// build the table of folder & variable entries  
+	table = tifiles_create_table_of_entries((FileContent *)content, &num_folders);
+	if (table == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
-  fclose(f);
-  return 0;
+	// write header
+	if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
+	if(fwrite(fsignature, 1, 2, f) < 2) goto tfwr;
+	if (content->num_entries == 1)	// folder entry for single var is placed here
+	{
+		strcpy(content->default_folder, content->entries[0]->folder);
+	}
+	ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder, -1);
+	if(fwrite_8_chars(f, default_folder) < 0) goto tfwr;
+	if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
+	if (content->num_entries > 1) 
+	{
+		if(fwrite_word(f, (uint16_t) (content->num_entries + num_folders)) < 0) goto tfwr;
+		offset += 16 * (content->num_entries + num_folders - 1);
+	} 
+	else
+	{
+		if(fwrite_word(f, 1) < 0) goto tfwr;
+	}
+
+	// write table of entries
+	for (i = 0; table[i] != NULL; i++) 
+	{
+		VarEntry *fentry;
+		int j, idx = table[i][0];
+		fentry = content->entries[idx];
+
+		if (fentry == NULL)
+		{
+			tifiles_warning("%s: skipping null content entry %d", __FUNCTION__, i);
+			continue;
+		}
+
+		if (content->num_entries > 1)	// single var does not have folder entry
+		{
+			if(fwrite_long(f, offset) < 0) goto tfwr;
+			ticonv_varname_to_tifile_s(content->model, fentry->folder, fldname, -1);
+			if(fwrite_8_chars(f, fldname) < 0) goto tfwr;
+			if(fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model)) < 0) goto tfwr;
+			if(fwrite_byte(f, 0x00) < 0) goto tfwr;
+			for (j = 0; table[i][j] != -1; j++);
+			if(fwrite_word(f, (uint16_t) j) < 0) goto tfwr;
+		}
+
+		for (j = 0; table[i][j] != -1; j++) 
+		{
+			int idx2 = table[i][j];
+			VarEntry *entry = content->entries[idx2];
+			uint8_t attr = ATTRB_NONE;
+
+			if(fwrite_long(f, offset) < 0) goto tfwr;
+			ticonv_varname_to_tifile_s(content->model, entry->name, varname, entry->type);
+			if(fwrite_8_chars(f, varname) < 0) goto tfwr;
+			if(fwrite_byte(f, entry->type) < 0) goto tfwr;
+			attr = (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
+			if(fwrite_byte(f, attr) < 0) goto tfwr;
+			if(fwrite_word(f, 0) < 0) goto tfwr;
+
+			offset += entry->size + 4 + 2;
+		}
+	}
+
+	if(fwrite_long(f, offset) < 0) goto tfwr;
+	if(fwrite_word(f, 0x5aa5) < 0) goto tfwr;
+
+	// write data
+	for (i = 0; table[i] != NULL; i++) 
+	{
+		int j;
+
+		for (j = 0; table[i][j] != -1; j++) 
+		{
+			int idx = table[i][j];
+			VarEntry *entry = content->entries[idx];
+			uint16_t sum;
+
+			if(fwrite_long(f, 0) < 0) goto tfwr;
+			if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
+			sum = tifiles_checksum(entry->data, entry->size);
+			if(fwrite_word(f, sum) < 0) goto tfwr;
+		}
+	}
+
+	// g_free( memory
+	for (i = 0; i < num_folders; i++)
+	g_free(table[i]);
+	g_free(table);
+
+	fclose(f);
+	return 0;
 
 tfwr:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	fclose(f);
 	return ERR_FILE_IO;
 }
 
@@ -596,43 +639,43 @@ tfwr:	// release on exit
  **/
 int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 {
-  FILE *f;
+	FILE *f;
 
-  if (filename == NULL || content == NULL)
-  {
-    tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
+	if (filename == NULL || content == NULL)
+	{
+		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  f = g_fopen(filename, "wb");
-  if (f == NULL) 
-  {
-    tifiles_info("Unable to open this file: %s", filename);
-    return ERR_FILE_OPEN;
-  }
+	f = g_fopen(filename, "wb");
+	if (f == NULL) 
+	{
+		tifiles_info("Unable to open this file: %s", filename);
+		return ERR_FILE_OPEN;
+	}
 
-  if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
-  if(fwrite(fsignature, 1, 2, f) < 2) goto tfwb;
-  if(fwrite_8_chars(f, "") < 0) goto tfwb;
-  if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwb;
-  if(fwrite_word(f, 1) < 0) goto tfwb;
-  if(fwrite_long(f, 0x52) < 0) goto tfwb;
-  if(fwrite_8_chars(f, content->rom_version) < 0) goto tfwb;
-  if(fwrite_word(f, content->type) < 0) goto tfwb;
-  if(fwrite_word(f, 0) < 0) goto tfwb;
-  if(fwrite_long(f, content->data_length + 0x52 + 2) < 0) goto tfwb;
-  if(fwrite_word(f, 0x5aa5) < 0) goto tfwb;
-  if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwb;
+	if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
+	if(fwrite(fsignature, 1, 2, f) < 2) goto tfwb;
+	if(fwrite_8_chars(f, "") < 0) goto tfwb;
+	if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwb;
+	if(fwrite_word(f, 1) < 0) goto tfwb;
+	if(fwrite_long(f, 0x52) < 0) goto tfwb;
+	if(fwrite_8_chars(f, content->rom_version) < 0) goto tfwb;
+	if(fwrite_word(f, content->type) < 0) goto tfwb;
+	if(fwrite_word(f, 0) < 0) goto tfwb;
+	if(fwrite_long(f, content->data_length + 0x52 + 2) < 0) goto tfwb;
+	if(fwrite_word(f, 0x5aa5) < 0) goto tfwb;
+	if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwb;
 
-  content->checksum =
-      tifiles_checksum(content->data_part, content->data_length);
-  if(fwrite_word(f, content->checksum) < 0) goto tfwb;
+	content->checksum = tifiles_checksum(content->data_part, content->data_length);
+	if(fwrite_word(f, content->checksum) < 0) goto tfwb;
 
-  fclose(f);
-  return 0;
+	fclose(f);
+	return 0;
 
 tfwb:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	fclose(f);
 	return ERR_FILE_IO;
 }
 
@@ -647,71 +690,80 @@ tfwb:	// release on exit
  **/
 int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 {
-  FILE *f;
-  Ti9xFlash *content = head;
-  char *filename;
+	FILE *f;
+	Ti9xFlash *content = head;
+	char *filename;
 
-  if (head == NULL)
-  {
-    tifiles_critical("%s: head is NULL", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
+	if (head == NULL)
+	{
+		tifiles_critical("%s: head is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  if (fname)
-  {
-	  filename = g_strdup(fname);
-	  if(filename == NULL)
-		  return ERR_MALLOC;
-  }
-  else
-  {
-	  VarEntry ve;
+	if (fname)
+	{
+		filename = g_strdup(fname);
+		if(filename == NULL)
+		{
+			return ERR_MALLOC;
+		}
+	}
+	else
+	{
+		VarEntry ve;
 
-	  for (content = head; content != NULL; content = content->next)
-		if(content->data_type == TI89_AMS || content->data_type == TI89_APPL)
-			break;
+		for (content = head; content != NULL; content = content->next)
+		{
+			if(content->data_type == TI89_AMS || content->data_type == TI89_APPL)
+			{
+				break;
+			}
+		}
 
-	  strcpy(ve.name, content->name);
-	  ve.type = content->data_type;
+		strcpy(ve.name, content->name);
+		ve.type = content->data_type;
 
-	  filename = tifiles_build_filename(content->model, &ve);
-	  if (real_fname != NULL)
-		*real_fname = g_strdup(filename);
-  }
+		filename = tifiles_build_filename(content->model, &ve);
+		if (real_fname != NULL)
+		{
+			*real_fname = g_strdup(filename);
+		}
+	}
 
-  f = g_fopen(filename, "wb");
-  if (f == NULL) 
-  {
-    tifiles_info("Unable to open this file: %s", filename);
-    return ERR_FILE_OPEN;
-  }
+	f = g_fopen(filename, "wb");
+	if (f == NULL) 
+	{
+		tifiles_info("Unable to open this file: %s", filename);
+		return ERR_FILE_OPEN;
+	}
 
-  for (content = head; content != NULL; content = content->next) 
-  {
-    if(fwrite_8_chars(f, "**TIFL**") < 0) goto tfwf;
-    if(fwrite_byte(f, content->revision_major) < 0) goto tfwf;
-    if(fwrite_byte(f, content->revision_minor) < 0) goto tfwf;
-    if(fwrite_byte(f, content->flags) < 0) goto tfwf;
-    if(fwrite_byte(f, content->object_type) < 0) goto tfwf;
-    if(fwrite_byte(f, content->revision_day) < 0) goto tfwf;
-    if(fwrite_byte(f, content->revision_month) < 0) goto tfwf;
-    if(fwrite_word(f, content->revision_year) < 0) goto tfwf;
-    if(fwrite_byte(f, (uint8_t) strlen(content->name)) < 0) goto tfwf;
-    if(fwrite_8_chars(f, content->name) < 0) goto tfwf;
-    if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
-    if(fwrite_byte(f, content->device_type) < 0) goto tfwf;
-    if(fwrite_byte(f, content->data_type) < 0) goto tfwf;
-    if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
-	if(fwrite_byte(f, content->hw_id) < 0)  goto tfwf;
-    if(fwrite_long(f, content->data_length) < 0) goto tfwf;
-    if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
-  }
+	for (content = head; content != NULL; content = content->next) 
+	{
+		if(fwrite_8_chars(f, "**TIFL**") < 0) goto tfwf;
+		if(fwrite_byte(f, content->revision_major) < 0) goto tfwf;
+		if(fwrite_byte(f, content->revision_minor) < 0) goto tfwf;
+		if(fwrite_byte(f, content->flags) < 0) goto tfwf;
+		if(fwrite_byte(f, content->object_type) < 0) goto tfwf;
+		if(fwrite_byte(f, content->revision_day) < 0) goto tfwf;
+		if(fwrite_byte(f, content->revision_month) < 0) goto tfwf;
+		if(fwrite_word(f, content->revision_year) < 0) goto tfwf;
+		if(fwrite_byte(f, (uint8_t) strlen(content->name)) < 0) goto tfwf;
+		if(fwrite_8_chars(f, content->name) < 0) goto tfwf;
+		if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
+		if(fwrite_byte(f, content->device_type) < 0) goto tfwf;
+		if(fwrite_byte(f, content->data_type) < 0) goto tfwf;
+		if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
+		if(fwrite_byte(f, content->hw_id) < 0)  goto tfwf;
+		if(fwrite_long(f, content->data_length) < 0) goto tfwf;
+		if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
+	}
 
-  fclose(f);
-  return 0;
+	fclose(f);
+	return 0;
 
 tfwf:	// release on exit
-    fclose(f);
+	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	fclose(f);
 	return ERR_FILE_IO;
 }
 
@@ -729,41 +781,36 @@ tfwf:	// release on exit
  **/
 int ti9x_content_display_regular(Ti9xRegular *content)
 {
-  int i;
-  char trans[17];
+	int i;
+	char trans[17];
 
-  if (content == NULL)
-  {
-    tifiles_critical("%s(NULL)", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  tifiles_info("Signature:         %s",
-	  tifiles_calctype2signature(content->model));
-  tifiles_info("Comment:           %s", content->comment);
-  tifiles_info("Default folder:    %s", content->default_folder);
-  tifiles_info("Number of entries: %i", content->num_entries);
+	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
+	tifiles_info("Comment:           %s", content->comment);
+	tifiles_info("Default folder:    %s", content->default_folder);
+	tifiles_info("Number of entries: %i", content->num_entries);
 
-  for (i = 0; i < content->num_entries /*&& i<5 */ ; i++) 
-  {
-    tifiles_info("Entry #%i", i);
-    tifiles_info("  folder:    %s", content->entries[i]->folder);
-    tifiles_info("  name:      %s",
-	    ticonv_varname_to_utf8_s(content->model, content->entries[i]->name, 
-			trans, content->entries[i]->type));
-    tifiles_info("  type:      %02X (%s)",
-	    content->entries[i]->type,
-	    tifiles_vartype2string(content->model, content->entries[i]->type));
-    tifiles_info("  attr:      %s",
-	    tifiles_attribute_to_string(content->entries[i]->attr));
-    tifiles_info("  length:    %04X (%i)",
-	    content->entries[i]->size, content->entries[i]->size);
-  }
+	for (i = 0; i < content->num_entries; i++) 
+	{
+		if (content->entries[i] != NULL)
+		{
+			tifiles_info("Entry #%i", i);
+			tifiles_info("  folder:    %s", content->entries[i]->folder);
+			tifiles_info("  name:      %s", ticonv_varname_to_utf8_s(content->model, content->entries[i]->name,  trans, content->entries[i]->type));
+			tifiles_info("  type:      %02X (%s)", content->entries[i]->type, tifiles_vartype2string(content->model, content->entries[i]->type));
+			tifiles_info("  attr:      %s", tifiles_attribute_to_string(content->entries[i]->attr));
+			tifiles_info("  length:    %04X (%i)", content->entries[i]->size, content->entries[i]->size);
+		}
+	}
 
-  tifiles_info("Checksum:    %04X (%i) ", content->checksum,
-	  content->checksum);
+	tifiles_info("Checksum:    %04X (%i) ", content->checksum, content->checksum);
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -776,25 +823,21 @@ int ti9x_content_display_regular(Ti9xRegular *content)
  **/
 int ti9x_content_display_backup(Ti9xBackup *content)
 {
-  if (content == NULL)
-  {
-    tifiles_critical("%s(NULL)", __FUNCTION__);
-    return ERR_INVALID_FILE;
-  }
+	if (content == NULL)
+	{
+		tifiles_critical("%s(NULL)", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
 
-  tifiles_info("signature:      %s",
-	  tifiles_calctype2signature(content->model));
-  tifiles_info("comment:        %s", content->comment);
-  tifiles_info("ROM version:    %s", content->rom_version);
-  tifiles_info("type:           %02X (%s)",
-	  content->type, tifiles_vartype2string(content->model, content->type));
-  tifiles_info("data length:    %08X (%i)",
-	  content->data_length, content->data_length);
+	tifiles_info("signature:      %s", tifiles_calctype2signature(content->model));
+	tifiles_info("comment:        %s", content->comment);
+	tifiles_info("ROM version:    %s", content->rom_version);
+	tifiles_info("type:           %02X (%s)", content->type, tifiles_vartype2string(content->model, content->type));
+	tifiles_info("data length:    %08X (%i)", content->data_length, content->data_length);
 
-  tifiles_info("checksum:       %04X (%i) ", content->checksum,
-	  content->checksum);
+	tifiles_info("checksum:       %04X (%i) ", content->checksum, content->checksum);
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -807,47 +850,41 @@ int ti9x_content_display_backup(Ti9xBackup *content)
  **/
 int ti9x_content_display_flash(Ti9xFlash *content)
 {
-  Ti9xFlash *ptr;
+	Ti9xFlash *ptr;
 
-  for (ptr = content; ptr != NULL; ptr = ptr->next) 
-  {
-    tifiles_info("Signature:      %s",
-	    tifiles_calctype2signature(ptr->model));
-    tifiles_info("Revision:       %i.%i",
-	    ptr->revision_major, ptr->revision_minor);
-    tifiles_info("Flags:          %02X", ptr->flags);
-    tifiles_info("Object type:    %02X", ptr->object_type);
-    tifiles_info("Date:           %02X/%02X/%02X%02X",
-	    ptr->revision_day, ptr->revision_month,
-	    ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
-    tifiles_info("Name:           %s", ptr->name);
-    tifiles_info("Device type:    %s",
-	    ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
-    switch (ptr->data_type) 
+	for (ptr = content; ptr != NULL; ptr = ptr->next) 
 	{
-    case 0x23:
-      tifiles_info("Data type:      OS data");
-      break;
-    case 0x24:
-      tifiles_info("Data type:      APP data");
-      break;
-	case 0x20:
-    case 0x25:
-      tifiles_info("Data type:      certificate");
-      break;
-    case 0x3E:
-      tifiles_info("Data type:      license");
-      break;
-    default:
-      tifiles_info("Unknown (mailto tilp-users@lists.sf.net)");
-      break;
-    }
-    tifiles_info("Length:         %08X (%i)", ptr->data_length,
-	    ptr->data_length);
-    tifiles_info("");
-  }
+		tifiles_info("Signature:      %s", tifiles_calctype2signature(ptr->model));
+		tifiles_info("Revision:       %i.%i", ptr->revision_major, ptr->revision_minor);
+		tifiles_info("Flags:          %02X", ptr->flags);
+		tifiles_info("Object type:    %02X", ptr->object_type);
+		tifiles_info("Date:           %02X/%02X/%02X%02X", ptr->revision_day, ptr->revision_month, ptr->revision_year & 0xff, (ptr->revision_year & 0xff00) >> 8);
+		tifiles_info("Name:           %s", ptr->name);
+		tifiles_info("Device type:    %s", ptr->device_type == DEVICE_TYPE_89 ? "ti89" : "ti92+");
+		switch (ptr->data_type) 
+		{
+			case 0x23:
+				tifiles_info("Data type:      OS data");
+				break;
+			case 0x24:
+				tifiles_info("Data type:      APP data");
+				break;
+			case 0x20:
+			case 0x25:
+				tifiles_info("Data type:      certificate");
+				break;
+			case 0x3E:
+				tifiles_info("Data type:      license");
+				break;
+			default:
+				tifiles_info("Unknown (send mail to tilp-users@lists.sf.net)");
+				break;
+		}
+		tifiles_info("Length:         %08X (%i)", ptr->data_length, ptr->data_length);
+		tifiles_info("");
+	}
 
-  return 0;
+	return 0;
 }
 
 /**
@@ -860,39 +897,39 @@ int ti9x_content_display_flash(Ti9xFlash *content)
  **/
 int ti9x_file_display(const char *filename)
 {
-  Ti9xRegular *content1;
-  Ti9xBackup *content2;
-  Ti9xFlash *content3;
+	Ti9xRegular *content1;
+	Ti9xBackup *content2;
+	Ti9xFlash *content3;
 
-  // the testing order is important: regular before backup (due to TI89/92+)
-  if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) 
-  {
-	content3 = tifiles_content_create_flash(CALC_TI92);
-    ti9x_file_read_flash(filename, content3);
-    ti9x_content_display_flash(content3);
-    tifiles_content_delete_flash(content3);
-  } 
-  else if (tifiles_file_is_regular(filename)) 
-  {
-	content1 = tifiles_content_create_regular(CALC_TI92);
-    ti9x_file_read_regular(filename, content1);
-    ti9x_content_display_regular(content1);
-    tifiles_content_delete_regular(content1);
-  } 
-  else if (tifiles_file_is_backup(filename)) 
-  {
-	content2 = tifiles_content_create_backup(CALC_TI92);
-    ti9x_file_read_backup(filename, content2);
-    ti9x_content_display_backup(content2);
-    tifiles_content_delete_backup(content2);
-  } 
-  else
-  {
-      tifiles_info("Unknown file type !");
-      return ERR_BAD_FILE;
-  }
+	// the testing order is important: regular before backup (due to TI89/92+)
+	if (tifiles_file_is_flash(filename) || tifiles_file_is_tib(filename)) 
+	{
+		content3 = tifiles_content_create_flash(CALC_TI92);
+		ti9x_file_read_flash(filename, content3);
+		ti9x_content_display_flash(content3);
+		tifiles_content_delete_flash(content3);
+	} 
+	else if (tifiles_file_is_regular(filename)) 
+	{
+		content1 = tifiles_content_create_regular(CALC_TI92);
+		ti9x_file_read_regular(filename, content1);
+		ti9x_content_display_regular(content1);
+		tifiles_content_delete_regular(content1);
+	} 
+	else if (tifiles_file_is_backup(filename)) 
+	{
+		content2 = tifiles_content_create_backup(CALC_TI92);
+		ti9x_file_read_backup(filename, content2);
+		ti9x_content_display_backup(content2);
+		tifiles_content_delete_backup(content2);
+	} 
+	else
+	{
+		tifiles_info("Unknown file type !");
+		return ERR_BAD_FILE;
+	}
 
-  return 0;
+	return 0;
 }
 
 #endif

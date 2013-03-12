@@ -137,7 +137,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
  * Load the single/group file into a FileContent structure.
  *
  * Structure content must be freed with #tifiles_content_delete_regular when
- * no longer used.
+ * no longer used. If error occurs, the structure content is released for you.
  *
  * Return value: an error code, 0 otherwise.
  **/
