@@ -697,7 +697,10 @@ int main(int argc, char **argv)
 
 	cable = ticables_handle_new(cable_model, port_number);
 	if(cable == NULL)
-	    return -1;
+	{
+		fprintf(stderr, "ticables_handle_new failed\n");
+		return -1;
+	}
 
 	// set calc
 	if(calc_model == CALC_NONE)
@@ -711,7 +714,10 @@ int main(int argc, char **argv)
 
 	calc = ticalcs_handle_new(calc_model);
 	if(calc == NULL)
+	{
+		fprintf(stderr, "ticalcs_handle_new failed\n");
 		return -1;
+	}
 
 	// attach cable to calc (and open cable)
 	err = ticalcs_cable_attach(calc, cable);
@@ -747,5 +753,5 @@ restart:
 	ticalcs_handle_del(calc);
 	ticables_handle_del(cable);
 
-  return 0;
+	return 0;
 }

@@ -38,6 +38,7 @@ Log of changes (libticalcs):
 	- fix a number of problems related to unaligned reads/writes and left shifts of count >= width of type; fix more compiler warnings reported by clang.
 	- fix more compiler warnings reported (or made more visible) by clang.
 	- add 83+ family DBUS memory dump command; while at it, reformat, harden and export functions from cmd73.c.
+	- when communicating with 84+ through DUSB, allow variables with the same name but different types. Patch by Benjamin Moody. Additionally, add a couple debugging traces in test_ticalcs_2.
 
 - 14/12/2011, version 1.1.7: debrouxl
 	- add error code returned by the Nspire when the anti-downgrade protection refuses an OS version older than the configured minimum version.

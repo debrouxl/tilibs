@@ -232,7 +232,7 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 			VarEntry *ve = (VarEntry *) (child->data);
 
 			if (   !strcmp(ve->name, s->name)
-			    && (   !(info->model >= CALC_TI73 && info->model <= CALC_TI84P)
+			    && (   !((info->model >= CALC_TI73 && info->model <= CALC_TI84P) || info->model == CALC_TI84P_USB)
 			        || (ve->type == s->type)))
 			{
 				return ve;
