@@ -939,6 +939,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	case 1: infos->model = CALC_TI83P; break;
 	case 2: infos->model = CALC_TI84P; break;
 	case 3: infos->model = CALC_TI84P; break;
+	case 5: infos->model = CALC_TI84P; break; // 84+CSE
+	default: infos->model = CALC_TI84P; break; // If new models ever arise, they'll probably be 84+ anyway.
 	}
 	infos->language_id = buf[6];
 	infos->sub_lang_id = buf[7];

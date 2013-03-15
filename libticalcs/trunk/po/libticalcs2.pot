@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2013-02-25 08:21+0100\n"
+"POT-Creation-Date: 2013-03-14 08:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,12 +30,12 @@ msgstr ""
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:486 src/calc_73.c:970 src/calc_89.c:595 src/calc_89t.c:398
+#: src/calc_73.c:486 src/calc_73.c:972 src/calc_89.c:595 src/calc_89t.c:398
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:487 src/calc_73.c:971 src/calc_89.c:596 src/calc_89t.c:399
+#: src/calc_73.c:487 src/calc_73.c:973 src/calc_89.c:596 src/calc_89t.c:399
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
@@ -54,39 +54,39 @@ msgstr ""
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:948 src/calc_89.c:965 src/calc_92.c:635
+#: src/calc_73.c:950 src/calc_89.c:965 src/calc_92.c:635
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:949 src/calc_89.c:966
+#: src/calc_73.c:951 src/calc_89.c:966
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:950
+#: src/calc_73.c:952
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:951 src/calc_89.c:967 src/calc_92.c:636
+#: src/calc_73.c:953 src/calc_89.c:967 src/calc_92.c:636
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:951
+#: src/calc_73.c:953
 msgid "good"
 msgstr ""
 
-#: src/calc_73.c:951
+#: src/calc_73.c:953
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:998 src/calc_89.c:648
+#: src/calc_73.c:1000 src/calc_89.c:648
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:1009
+#: src/calc_73.c:1011
 msgid "Receiving certificate"
 msgstr ""
 
