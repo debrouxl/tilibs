@@ -26,6 +26,8 @@
 #include <string.h>
 #ifndef __WIN32__
 #include <unistd.h>
+#else
+#include <conio.h>
 #endif
 
 #include "../src/ticables.h"

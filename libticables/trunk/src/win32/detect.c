@@ -30,6 +30,8 @@
 #include "../win32/dha.h"
 #include "../win64/rwp.h"
 
+#include "../win32/usb.h"
+
 #ifdef __MINGW32__
 #include "../win32/dha.c"
 #include "../win64/rwp.c"
