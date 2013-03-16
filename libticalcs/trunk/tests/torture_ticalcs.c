@@ -2,6 +2,7 @@
 #include <ticalcs.h>
 #include <nsp_cmd.h>
 #include <nsp_vpkt.h>
+#include <dusb_vpkt.h>
 
 #define PRINTF(FUNCTION, TYPE, args...) \
 printf("%d\t" TYPE "\n", i, FUNCTION(args)); i++
@@ -303,6 +304,23 @@ int main(int argc, char **argv)
     PRINTF(nsp_cmd_r_echo, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, NULL, (void *)0x12345678);
     PRINTF(nsp_cmd_s_keypress_event, INT, (void *)0x12345678, NULL);
+// dusb_vpkt.c
+    PRINTF(dusb_vtl_pkt_new, PTR, 0, 0);
+    PRINTFVOID(dusb_vtl_pkt_del, NULL);
+    PRINTF(dusb_send_buf_size_request, INT, NULL, 0);
+    PRINTF(dusb_recv_buf_size_alloc, INT, NULL, (void *)0x12345678);
+    PRINTF(dusb_recv_buf_size_request, INT, NULL, (void *)0x12345678);
+// 231
+    PRINTF(dusb_send_buf_size_alloc, INT, NULL, 0);
+    PRINTF(dusb_send_data, INT, NULL, (void *)0x12345678);
+    PRINTF(dusb_send_data, INT, (void *)0x12345678, NULL);
+    PRINTF(dusb_recv_data, INT, NULL, (void *)0x12345678);
+    PRINTF(dusb_recv_data, INT, (void *)0x12345678, NULL);
+
+    PRINTF(dusb_send_acknowledge, INT, NULL);
+    PRINTF(dusb_recv_acknowledge, INT, NULL);
+    PRINTF(dusb_vpkt_type2name, STR, 0);
+    PRINTF(dusb_get_buf_size, INT);
 
     ticalcs_library_exit();
 
