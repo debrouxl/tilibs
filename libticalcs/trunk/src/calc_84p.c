@@ -54,10 +54,10 @@
 
 static int		is_ready	(CalcHandle* handle)
 {
-	ModeSet mode = MODE_NORMAL;
+	DUSBModeSet mode = MODE_NORMAL;
 
-	TRYF(cmd_s_mode_set(handle, mode));
-	TRYF(cmd_r_mode_ack(handle));
+	TRYF(dusb_cmd_s_mode_set(handle, mode));
+	TRYF(dusb_cmd_r_mode_ack(handle));
 	// use PID_HOMESCREEN to return status ?
 
 	return 0;
@@ -65,9 +65,9 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(cmd_s_execute(handle, "", "", EID_KEY, "", key));
-	TRYF(cmd_r_delay_ack(handle));
-	TRYF(cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_execute(handle, "", "", EID_KEY, "", key));
+	TRYF(dusb_cmd_r_delay_ack(handle));
+	TRYF(dusb_cmd_r_data_ack(handle));
 
 	return 0;
 }
@@ -83,8 +83,8 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	default:         action = EID_PRGM; break;
 	}
 
-	TRYF(cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
-	TRYF(cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
+	TRYF(dusb_cmd_r_data_ack(handle));
 
 	return 0;
 }
@@ -92,16 +92,16 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t pid[] = { PID_SCREENSHOT };
-	CalcParam **param;
+	DUSBCalcParam **param;
 
 	sc->width = TI84P_COLS;
 	sc->height = TI84P_ROWS;
 	sc->clipped_width = TI84P_COLS;
 	sc->clipped_height = TI84P_ROWS;
 
-	param = cp_new_array(1);
-	TRYF(cmd_s_param_request(handle, 1, pid));
-	TRYF(cmd_r_param_data(handle, 1, param));
+	param = dusb_cp_new_array(1);
+	TRYF(dusb_cmd_s_param_request(handle, 1, pid));
+	TRYF(dusb_cmd_r_param_data(handle, 1, param));
 	if(!param[0]->ok)
 		return ERR_INVALID_PACKET;
 
@@ -110,7 +110,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		return ERR_MALLOC;
 	memcpy(*bitmap, param[0]->data, TI84P_COLS * TI84P_ROWS / 8);
 
-	cp_del_array(1, param);
+	dusb_cp_del_array(1, param);
 	return 0;
 }
 
@@ -120,7 +120,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	const int size = sizeof(aids) / sizeof(uint16_t);
 	TreeInfo *ti;
 	int err;
-	CalcAttr **attr;
+	DUSBCalcAttr **attr;
 	GNode *folder, *root;
 	char fldname[40], varname[40];
 	char *utf8;
@@ -167,14 +167,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		g_node_append(folder, node);
 	}
 
-	TRYF(cmd_s_dirlist_request(handle, size, aids));
+	TRYF(dusb_cmd_s_dirlist_request(handle, size, aids));
 	do
 	{
 		VarEntry *ve = tifiles_ve_create();
 		GNode *node;
 
-		attr = ca_new_array(size);
-		err = cmd_r_var_header(handle, fldname, varname, attr);
+		attr = dusb_ca_new_array(size);
+		err = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 		if (err == ERR_EOT)
 			break;
 		else if (err != 0)
@@ -189,7 +189,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		//ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[1]->data))) & 0xff;
 		ve->type = (uint32_t)(attr[1]->data[3]);
 		ve->attr = attr[2]->data[0] ? ATTRB_ARCHIVED : ATTRB_NONE;
-		ca_del_array(size, attr);
+		dusb_ca_del_array(size, attr);
 
 		node = g_node_new(ve);
 		if (ve->type != TI73_APPL)
@@ -210,11 +210,11 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
 	uint16_t pids[] = { PID_FREE_RAM, PID_FREE_FLASH };
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	CalcParam **params;
+	DUSBCalcParam **params;
 
-	params = cp_new_array(size);
-	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_data(handle, size, params));
+	params = dusb_cp_new_array(size);
+	TRYF(dusb_cmd_s_param_request(handle, size, pids));
+	TRYF(dusb_cmd_r_param_data(handle, size, params));
 
 	//*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
 	*ram = (  (((uint32_t)(params[0]->data[4])) << 24)
@@ -227,7 +227,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	          | (((uint32_t)(params[1]->data[6])) <<  8)
 	          | (((uint32_t)(params[1]->data[7]))      ));
 
-	cp_del_array(size, params);
+	dusb_cp_del_array(size, params);
 	return 0;
 }
 
@@ -235,7 +235,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	int i;
 	char *utf8;
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	const int nattrs = 3;
 
 	for (i = 0; i < content->num_entries; i++) 
@@ -250,19 +250,19 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		g_free(utf8);
 		update_label();
 
-		attrs = ca_new_array(nattrs);
-		attrs[0] = ca_new(AID_VAR_TYPE, 4);
+		attrs = dusb_ca_new_array(nattrs);
+		attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
 		attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 		attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ve->type;
-		attrs[1] = ca_new(AID_ARCHIVED, 1);
+		attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
-		attrs[2] = ca_new(AID_VAR_VERSION, 4);
+		attrs[2] = dusb_ca_new(AID_VAR_VERSION, 4);
 
-		TRYF(cmd_s_rts(handle,"",ve->name,ve->size,nattrs,CA(attrs)));
-		TRYF(cmd_r_data_ack(handle));
-		TRYF(cmd_s_var_content(handle, ve->size, ve->data));
-		TRYF(cmd_r_data_ack(handle));
-		TRYF(cmd_s_eot(handle));
+		TRYF(dusb_cmd_s_rts(handle,"",ve->name,ve->size,nattrs,CA(attrs)));
+		TRYF(dusb_cmd_r_data_ack(handle));
+		TRYF(dusb_cmd_s_var_content(handle, ve->size, ve->data));
+		TRYF(dusb_cmd_r_data_ack(handle));
+		TRYF(dusb_cmd_s_eot(handle));
 
 		PAUSE(50);	// needed
 	}
@@ -274,7 +274,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 {
 	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION, AID_VAR_SIZE };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
@@ -286,16 +286,16 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	g_free(utf8);
 	update_label();
 
-	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd_s_var_request(handle,"",vr->name,naids,aids,nattrs,CA(attrs)));
-	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(naids);
-	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
-	TRYF(cmd_r_var_content(handle, NULL, &data));
+	TRYF(dusb_cmd_s_var_request(handle,"",vr->name,naids,aids,nattrs,CA(attrs)));
+	dusb_ca_del_array(nattrs, attrs);
+	attrs = dusb_ca_new_array(naids);
+	TRYF(dusb_cmd_r_var_header(handle, fldname, varname, attrs));
+	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -315,7 +315,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	memcpy(ve->data, data, ve->size);
 
 	g_free(data);
-	ca_del_array(naids, attrs);
+	dusb_ca_del_array(naids, attrs);
 	return 0;
 }
 
@@ -340,7 +340,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	FlashContent *ptr;
 	int i;
 	char *utf8;
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	const int nattrs = 2;
 
 	uint8_t *data;
@@ -398,18 +398,18 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	g_free(utf8);
 	update_label();
 
-	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID_VAR_TYPE, 4);
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
-	attrs[1] = ca_new(AID_ARCHIVED, 1);
+	attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
 	attrs[1]->data[0] = 0;
-	
-	TRYF(cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs)));
-	TRYF(cmd_r_data_ack(handle));
-	TRYF(cmd_s_var_content(handle, size, data));
-	TRYF(cmd_r_data_ack(handle));
-	TRYF(cmd_s_eot(handle));
+
+	TRYF(dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs)));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_var_content(handle, size, data));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_eot(handle));
 
 	return 0;
 }
@@ -418,7 +418,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 {
 	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
@@ -434,17 +434,17 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	g_free(utf8);
 	update_label();
 
-	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(cmd_s_var_request(handle, "", vr->name, naids, aids, 
+	TRYF(dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, 
 			       nattrs, CA(attrs)));
-	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(naids);
-	TRYF(cmd_r_var_header(handle, fldname, varname, attrs));
-	TRYF(cmd_r_var_content(handle, NULL, &data));
+	dusb_ca_del_array(nattrs, attrs);
+	attrs = dusb_ca_new_array(naids);
+	TRYF(dusb_cmd_r_var_header(handle, fldname, varname, attrs));
+	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
 	strcpy(content->name, vr->name);
@@ -488,14 +488,14 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	}
 	content->num_pages = page+1;
 
-	g_free(data);	
-	ca_del_array(naids, attrs);
+	g_free(data);
+	dusb_ca_del_array(naids, attrs);
 	return 0;
 }
 
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
-	ModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
+	DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
 	uint32_t pkt_size = 266;
 	uint32_t os_size = 0;
 	FlashContent *ptr;
@@ -539,33 +539,33 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	printf("os_size new = %i\n", os_size);
 
 	// switch to BASIC mode
-	TRYF(cmd_s_mode_set(handle, mode));
-	TRYF(cmd_r_mode_ack(handle));
+	TRYF(dusb_cmd_s_mode_set(handle, mode));
+	TRYF(dusb_cmd_r_mode_ack(handle));
 
 	// test for boot mode
 	{
 		uint16_t pids[] = { PID_OS_MODE };
 		const int size = sizeof(pids) / sizeof(uint16_t);
-		CalcParam **params;
+		DUSBCalcParam **params;
 
-		params = cp_new_array(size);
-		TRYF(cmd_s_param_request(handle, size, pids));
-		TRYF(cmd_r_param_data(handle, size, params));
+		params = dusb_cp_new_array(size);
+		TRYF(dusb_cmd_s_param_request(handle, size, pids));
+		TRYF(dusb_cmd_r_param_data(handle, size, params));
 		boot = !params[0]->data[0];
 	}
 
 	// start OS transfer
-	TRYF(cmd_s_os_begin(handle, os_size));
+	TRYF(dusb_cmd_s_os_begin(handle, os_size));
 	if(!boot)
 	{
 		TRYF(dusb_recv_buf_size_request(handle, &pkt_size));
 		TRYF(dusb_send_buf_size_alloc(handle, pkt_size));
 	}
-	TRYF(cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
+	TRYF(dusb_cmd_r_os_ack(handle, &pkt_size));	// this pkt_size is important
 
 	// send OS header/signature
-	TRYF(cmd_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size-4, ptr->pages[0]->data));
-	TRYF(cmd_r_os_ack(handle, &pkt_size));
+	TRYF(dusb_cmd_s_os_header(handle, 0x4000, 0x7A, 0x80, pkt_size-4, ptr->pages[0]->data));
+	TRYF(dusb_cmd_r_os_ack(handle, &pkt_size));
 
 	// send OS data
 	update_->cnt2 = 0;
@@ -579,22 +579,22 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 		if(i == 0)	// need relocation
 		{
-			TRYF(cmd_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd_r_data_ack(handle));
+			TRYF(dusb_cmd_s_os_data(handle, 0x4000, 0x7A, 0x80, pkt_size-4, fp->data));
+			TRYF(dusb_cmd_r_data_ack(handle));
 		}
 		else if(i == ptr->num_pages-1)	// idem
 		{
-			TRYF(cmd_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
-			TRYF(cmd_r_data_ack(handle));
+			TRYF(dusb_cmd_s_os_data(handle, 0x4100, 0x7A, 0x80, pkt_size-4, fp->data));
+			TRYF(dusb_cmd_r_data_ack(handle));
 		}
 		else
 		{
 			for(j = 0; j < fp->size; j += 256/*(pkt_size-4)*/)
 			{
-				TRYF(cmd_s_os_data(handle, 
+				TRYF(dusb_cmd_s_os_data(handle, 
 					(uint16_t)(fp->addr + j), (uint8_t)fp->page, fp->flag, 
 					pkt_size-4, fp->data + j));
-				TRYF(cmd_r_data_ack(handle));
+				TRYF(dusb_cmd_r_data_ack(handle));
 			}
 		}
 
@@ -602,9 +602,9 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		update_->pbar();
 	}
 	
-	TRYF(cmd_s_eot(handle));
+	TRYF(dusb_cmd_s_eot(handle));
 	PAUSE(500);
-	TRYF(cmd_r_eot_ack(handle));
+	TRYF(dusb_cmd_r_eot_ack(handle));
 
 	return 0;
 }
@@ -613,7 +613,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 {
 	uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
 	const int naids = sizeof(aids) / sizeof(uint16_t);
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	const int nattrs = 1;
 	char folder[40], name[40];
 	uint8_t *data;
@@ -622,17 +622,17 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
 
-	attrs = ca_new_array(nattrs);
-	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = TI83p_IDLIST;
 
-	TRYF(cmd_s_var_request(handle, "", "IDList", naids, aids, 
+	TRYF(dusb_cmd_s_var_request(handle, "", "IDList", naids, aids, 
 			       nattrs, CA(attrs)));
-	ca_del_array(nattrs, attrs);
-	attrs = ca_new_array(naids);
-	TRYF(cmd_r_var_header(handle, folder, name, attrs));
-	TRYF(cmd_r_var_content(handle, &varsize, &data));
+	dusb_ca_del_array(nattrs, attrs);
+	attrs = dusb_ca_new_array(naids);
+	TRYF(dusb_cmd_r_var_header(handle, folder, name, attrs));
+	TRYF(dusb_cmd_r_var_content(handle, &varsize, &data));
 
 	i = data[9];
 	data[9] = data[10];
@@ -643,7 +643,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	id[7*2] = '\0';
 
 	g_free(data);
-	ca_del_array(naids, attrs);
+	dusb_ca_del_array(naids, attrs);
 	return 0;
 }
 
@@ -674,13 +674,13 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// This fixes a 100% reproducible timeout: send_key normally requests a data ACK,
 	// but when the program is running, no data ACK is sent. Therefore, hit the Enter
 	// key without requesting a data ACK, only the initial delay ACK.
-	TRYF(cmd_s_execute(handle, "", "", EID_KEY, "", 0x05));
-	TRYF(cmd_r_delay_ack(handle));
+	TRYF(dusb_cmd_s_execute(handle, "", "", EID_KEY, "", 0x05));
+	TRYF(dusb_cmd_r_delay_ack(handle));
 	PAUSE(400);
 #endif
 #if 1
-	TRYF(cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0));
-	TRYF(cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0));
+	TRYF(dusb_cmd_r_data_ack(handle));
 	PAUSE(400);
 #endif
 	// Get dump
@@ -691,7 +691,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 {
-	CalcParam *param;
+	DUSBCalcParam *param;
 
 	uint32_t calc_time;
 	struct tm ref, cur;
@@ -725,32 +725,32 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	g_snprintf(update_->text, sizeof(update_->text), _("Setting clock..."));
 	update_label();
 
-	param = cp_new(PID_CLK_SEC, 4);
+	param = dusb_cp_new(PID_CLK_SEC, 4);
 	param->data[0] = MSB(MSW(calc_time));
 	param->data[1] = LSB(MSW(calc_time));
 	param->data[2] = MSB(LSW(calc_time));
 	param->data[3] = LSB(LSW(calc_time));
-	TRYF(cmd_s_param_set(handle, param));
-	TRYF(cmd_r_data_ack(handle));
-	cp_del(param);
+	TRYF(dusb_cmd_s_param_set(handle, param));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	dusb_cp_del(param);
 
-	param = cp_new(PID_CLK_DATE_FMT, 1);
+	param = dusb_cp_new(PID_CLK_DATE_FMT, 1);
 	param->data[0] = _clock->date_format == 3 ? 0 : _clock->date_format;
-	TRYF(cmd_s_param_set(handle, param));
-	TRYF(cmd_r_data_ack(handle));
-	cp_del(param);
+	TRYF(dusb_cmd_s_param_set(handle, param));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	dusb_cp_del(param);
 
-	param = cp_new(PID_CLK_TIME_FMT, 1);
+	param = dusb_cp_new(PID_CLK_TIME_FMT, 1);
 	param->data[0] = _clock->time_format == 24 ? 1 : 0;
-	TRYF(cmd_s_param_set(handle, param));
-	TRYF(cmd_r_data_ack(handle));
-	cp_del(param);
+	TRYF(dusb_cmd_s_param_set(handle, param));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	dusb_cp_del(param);
 
-	param = cp_new(PID_CLK_ON, 1);
+	param = dusb_cp_new(PID_CLK_ON, 1);
 	param->data[0] = _clock->state;
-	TRYF(cmd_s_param_set(handle, param));
-	TRYF(cmd_r_data_ack(handle));
-	cp_del(param);
+	TRYF(dusb_cmd_s_param_set(handle, param));
+	TRYF(dusb_cmd_r_data_ack(handle));
+	dusb_cp_del(param);
 
 	return 0;
 }
@@ -759,7 +759,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 {
 	uint16_t pids[4] = { PID_CLK_SEC, PID_CLK_DATE_FMT, PID_CLK_TIME_FMT, PID_CLK_ON };
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	CalcParam **params;
+	DUSBCalcParam **params;
 
 	uint32_t calc_time;
 	struct tm ref, *cur;
@@ -769,9 +769,9 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	g_snprintf(update_->text, sizeof(update_->text), _("Getting clock..."));
 	update_label();
 
-	params = cp_new_array(size);
-	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_data(handle, size, params));
+	params = dusb_cp_new_array(size);
+	TRYF(dusb_cmd_s_param_request(handle, size, pids));
+	TRYF(dusb_cmd_r_param_data(handle, size, params));
 	if(!params[0]->ok)
 		return ERR_INVALID_PACKET;
 	
@@ -806,14 +806,14 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	_clock->time_format = params[2]->data[0] ? 24 : 12;
 	_clock->state = params[3]->data[0];
 
-	cp_del_array(1, params);
+	dusb_cp_del_array(1, params);
 
 	return 0;
 }
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
-	CalcAttr **attr;
+	DUSBCalcAttr **attr;
 	const int size = 2;
 	char *utf8;
 
@@ -822,60 +822,60 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	g_free(utf8);
 	update_label();
 
-	attr = ca_new_array(size);
-	attr[0] = ca_new(0x0011, 4);
+	attr = dusb_ca_new_array(size);
+	attr[0] = dusb_ca_new(0x0011, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0B;
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
-	attr[1] = ca_new(0x0013, 1);
+	attr[1] = dusb_ca_new(0x0013, 1);
 	attr[1]->data[0] = vr->attr == ATTRB_ARCHIVED ? 1 : 0;
 
-	TRYF(cmd_s_var_delete(handle, "", vr->name, size, CA(attr)));
-	TRYF(cmd_r_data_ack(handle));
+	TRYF(dusb_cmd_s_var_delete(handle, "", vr->name, size, CA(attr)));
+	TRYF(dusb_cmd_r_data_ack(handle));
 
-	ca_del_array(size, attr);
+	dusb_ca_del_array(size, attr);
 	return 0;
 }
 
 static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
 {
-	CalcAttr **attrs;
+	DUSBCalcAttr **attrs;
 	int ret = 0;
 
-	attrs = ca_new_array(1);
-	attrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	attrs = dusb_ca_new_array(1);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x07;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = oldname->type;
 
-	ret = cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
+	ret = dusb_cmd_s_var_modify(handle, "", oldname->name, 1, CA(attrs), "", newname->name, 0, NULL);
 	if(!ret)
-		ret = cmd_r_data_ack(handle);
+		ret = dusb_cmd_r_data_ack(handle);
 
-	ca_del_array(1, attrs);
+	dusb_ca_del_array(1, attrs);
 	return ret;
 }
 
 static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 {
-	CalcAttr **srcattrs;
-	CalcAttr **dstattrs;
+	DUSBCalcAttr **srcattrs;
+	DUSBCalcAttr **dstattrs;
 	int ret = 0;
 
-	srcattrs = ca_new_array(1);
-	srcattrs[0] = ca_new(AID_VAR_TYPE2, 4);
+	srcattrs = dusb_ca_new_array(1);
+	srcattrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	srcattrs[0]->data[0] = 0xF0; srcattrs[0]->data[1] = 0x07;
 	srcattrs[0]->data[2] = 0x00; srcattrs[0]->data[3] = vr->type;
 
-	dstattrs = ca_new_array(1);
-	dstattrs[0] = ca_new(AID_ARCHIVED, 1);
+	dstattrs = dusb_ca_new_array(1);
+	dstattrs[0] = dusb_ca_new(AID_ARCHIVED, 1);
 	/* use 0xff here rather than 0x01 to work around an OS bug */
 	dstattrs[0]->data[0] = (attr == ATTRB_ARCHIVED ? 0xff : 0x00);
 
-	ret = cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
+	ret = dusb_cmd_s_var_modify(handle, "", vr->name, 1, CA(srcattrs), "", vr->name, 1, CA(dstattrs));
 	if(!ret)
-		ret = cmd_r_data_ack(handle);
+		ret = dusb_cmd_r_data_ack(handle);
 
-	ca_del_array(1, srcattrs);
-	ca_del_array(1, dstattrs);
+	dusb_ca_del_array(1, srcattrs);
+	dusb_ca_del_array(1, dstattrs);
 	return ret;
 }
 
@@ -892,20 +892,20 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 		PID_BOOT_VERSION, PID_OS_VERSION, 
 		PID_PHYS_RAM, PID_USER_RAM, PID_FREE_RAM,
 		PID_PHYS_FLASH, PID_USER_FLASH, PID_FREE_FLASH,
-		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY, PID_OS_MODE,
+		PID_LCD_WIDTH, PID_LCD_HEIGHT, PID_BATTERY, PID_OS_MODE
 	};
 	const int size = sizeof(pids) / sizeof(uint16_t);
-	CalcParam **params;
+	DUSBCalcParam **params;
 	int i = 0;
 
 	g_snprintf(update_->text, sizeof(update_->text), _("Getting version..."));
 	update_label();
 
 	memset(infos, 0, sizeof(CalcInfos));
-	params = cp_new_array(size);
+	params = dusb_cp_new_array(size);
 
-	TRYF(cmd_s_param_request(handle, size, pids));
-	TRYF(cmd_r_param_data(handle, size, params));
+	TRYF(dusb_cmd_s_param_request(handle, size, pids));
+	TRYF(dusb_cmd_r_param_data(handle, size, params));
 
 	strncpy(infos->product_name, (char*)params[i]->data, params[i]->size);
 	infos->mask |= INFOS_PRODUCT_NAME;
@@ -1041,7 +1041,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	}
 	infos->mask |= INFOS_CALC_MODEL;
 
-	cp_del_array(size, params);
+	dusb_cp_del_array(size, params);
 	return 0;
 }
 

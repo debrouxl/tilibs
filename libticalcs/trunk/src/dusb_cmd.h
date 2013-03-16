@@ -97,7 +97,7 @@ typedef struct
 	uint16_t	arg3;
 	uint16_t	arg4;
 	uint16_t	arg5;
-} ModeSet;
+} DUSBModeSet;
 
 typedef struct
 {
@@ -105,7 +105,7 @@ typedef struct
 	uint8_t		ok;
 	uint16_t	size;
 	uint8_t*	data;
-} CalcParam;
+} DUSBCalcParam;
 
 typedef struct
 {
@@ -113,60 +113,60 @@ typedef struct
 	uint8_t		ok;
 	uint16_t	size;
 	uint8_t*	data;
-} CalcAttr;
+} DUSBCalcAttr;
 
 // Helpers
-CalcParam*	cp_new(uint16_t id, uint16_t size);
-void		cp_del(CalcParam* cp);
-CalcParam** cp_new_array(int size);
-void		cp_del_array(int size, CalcParam **params);
+DUSBCalcParam*  dusb_cp_new(uint16_t id, uint16_t size);
+void            dusb_cp_del(DUSBCalcParam* cp);
+DUSBCalcParam** dusb_cp_new_array(int size);
+void            dusb_cp_del_array(int size, DUSBCalcParam **params);
 
-CalcAttr*	ca_new(uint16_t id, uint16_t size);
-void		ca_del(CalcAttr* cp);
-CalcAttr**	ca_new_array(int size);
-void		ca_del_array(int size, CalcAttr **attrs);
+DUSBCalcAttr*   dusb_ca_new(uint16_t id, uint16_t size);
+void            dusb_ca_del(DUSBCalcAttr* cp);
+DUSBCalcAttr**  dusb_ca_new_array(int size);
+void            dusb_ca_del_array(int size, DUSBCalcAttr **attrs);
 
 // Command wrappers
-int cmd_s_mode_set(CalcHandle *h, ModeSet mode);
+int dusb_cmd_s_mode_set(CalcHandle *h, DUSBModeSet mode);
 
-int cmd_s_os_begin(CalcHandle *h, uint32_t size);
-int cmd_r_os_ack(CalcHandle *h, uint32_t *size);
+int dusb_cmd_s_os_begin(CalcHandle *h, uint32_t size);
+int dusb_cmd_r_os_ack(CalcHandle *h, uint32_t *size);
 
-int cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
-int cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+int dusb_cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
+int dusb_cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data);
 
-int cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data);
-int cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data);
+int dusb_cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data);
+int dusb_cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data);
 
-int cmd_r_eot_ack(CalcHandle *h);
+int dusb_cmd_r_eot_ack(CalcHandle *h);
 
-int cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids);
-int cmd_r_param_data(CalcHandle *h, int nparams, CalcParam **params);
+int dusb_cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids);
+int dusb_cmd_r_param_data(CalcHandle *h, int nparams, DUSBCalcParam **params);
 
-int cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);
-int cmd_r_var_header(CalcHandle *h, char *folder, char *name, CalcAttr **attr);
+int dusb_cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids);
+int dusb_cmd_r_var_header(CalcHandle *h, char *folder, char *name, DUSBCalcAttr **attr);
 
-int cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const CalcAttr **attrs);
-int cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const CalcAttr **attrs);
+int dusb_cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs);
+int dusb_cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs);
 
-int cmd_s_var_content(CalcHandle *h, uint32_t  size, uint8_t  *data);
-int cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
+int dusb_cmd_s_var_content(CalcHandle *h, uint32_t  size, uint8_t  *data);
+int dusb_cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data);
 
-int cmd_s_param_set(CalcHandle *h, const CalcParam *param);
+int dusb_cmd_s_param_set(CalcHandle *h, const DUSBCalcParam *param);
 
-int cmd_s_var_modify(CalcHandle *h, const char *src_folder, const char *src_name, int n_src_attrs, const CalcAttr **src_attrs, const char *dst_folder, const char *dst_name, int n_dst_attrs, const CalcAttr **dst_attrs);
-int cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const CalcAttr **attrs);
-int cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code);
+int dusb_cmd_s_var_modify(CalcHandle *h, const char *src_folder, const char *src_name, int n_src_attrs, const DUSBCalcAttr **src_attrs, const char *dst_folder, const char *dst_name, int n_dst_attrs, const DUSBCalcAttr **dst_attrs);
+int dusb_cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const DUSBCalcAttr **attrs);
+int dusb_cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code);
 
-int cmd_r_mode_ack(CalcHandle *h);
-int cmd_r_data_ack(CalcHandle *h);
+int dusb_cmd_r_mode_ack(CalcHandle *h);
+int dusb_cmd_r_data_ack(CalcHandle *h);
 
-int cmd_r_delay_ack(CalcHandle *h);
+int dusb_cmd_r_delay_ack(CalcHandle *h);
 
-int cmd_s_eot(CalcHandle *h);
-int cmd_r_eot(CalcHandle *h);
+int dusb_cmd_s_eot(CalcHandle *h);
+int dusb_cmd_r_eot(CalcHandle *h);
 
-int cmd_s_error(CalcHandle *h, uint16_t code);
+int dusb_cmd_s_error(CalcHandle *h, uint16_t code);
 
 
 #endif

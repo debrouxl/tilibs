@@ -495,9 +495,9 @@ static int nsp_send_key(CalcHandle *h)
 	static const uint8_t HOME[] = {0x00, 0xFD, 0x00};
 	static const uint8_t A[] = {97, 102, 0};
 
-	cmd_s_keypress_event(h, HOME);
-	cmd_s_keypress_event(h, A);
-	cmd_s_keypress_event(h, HOME);
+	nsp_cmd_s_keypress_event(h, HOME);
+	nsp_cmd_s_keypress_event(h, A);
+	nsp_cmd_s_keypress_event(h, HOME);
 
 	return 0;
 }

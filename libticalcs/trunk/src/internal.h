@@ -61,8 +61,8 @@ void nsp_vtl_pkt_purge(void);
 
 // dusb_cmd.c
 
-#define CA(x)   (const CalcAttr **)(x)
-#define CP(x)   (const CalcParam **)(x)
+#define CA(x)   (const DUSBCalcAttr **)(x)
+#define CP(x)   (const DUSBCalcParam **)(x)
 
 
 

@@ -227,82 +227,82 @@ int main(int argc, char **argv)
 // 161
     PRINTF(nsp_recv_disconnect, INT, NULL);
 // nsp_cmd.c
-    PRINTF(cmd_r_login, INT, NULL);
-    PRINTF(cmd_s_status, INT, NULL, 0);
-    PRINTF(cmd_r_status, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_dev_infos, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_login, INT, NULL);
+    PRINTF(nsp_cmd_s_status, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_status, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dev_infos, INT, NULL, 0);
 
-    PRINTF(cmd_r_dev_infos, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_r_dev_infos, INT, (void *)0x12345678, (void *)0x12345678, NULL, NULL);
-    PRINTF(cmd_r_dev_infos, INT, (void *)0x12345678, NULL, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_dev_infos, INT, (void *)0x12345678, NULL, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_screen_rle, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_dev_infos, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, (void *)0x12345678, NULL, NULL);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, NULL, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dev_infos, INT, (void *)0x12345678, NULL, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_screen_rle, INT, NULL, 0);
 // 171
-    PRINTF(cmd_r_screen_rle, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_r_screen_rle, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-    PRINTF(cmd_s_dir_attributes, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_screen_rle, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_dir_attributes, INT, NULL, (void *)0x12345678);
 
-    PRINTF(cmd_s_dir_attributes, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_dir_attributes, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_s_dir_enum_init, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_dir_enum_init, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_dir_enum_init, INT, NULL);
+    PRINTF(nsp_cmd_s_dir_attributes, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dir_attributes, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_init, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_init, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_init, INT, NULL);
 // 181
-    PRINTF(cmd_s_dir_enum_next, INT, NULL);
-    PRINTF(cmd_r_dir_enum_next, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_r_dir_enum_next, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_s_dir_enum_done, INT, NULL);
-    PRINTF(cmd_r_dir_enum_done, INT, NULL);
+    PRINTF(nsp_cmd_s_dir_enum_next, INT, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_next, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_dir_enum_next, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_dir_enum_done, INT, NULL);
+    PRINTF(nsp_cmd_r_dir_enum_done, INT, NULL);
 
-    PRINTF(cmd_s_put_file, INT, NULL, (void *)0x12345678, 0);
-    PRINTF(cmd_s_put_file, INT, (void *)0x12345678, NULL, 0);
-    PRINTF(cmd_r_put_file, INT, NULL);
-    PRINTF(cmd_s_get_file, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_get_file, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_put_file, INT, NULL, (void *)0x12345678, 0);
+    PRINTF(nsp_cmd_s_put_file, INT, (void *)0x12345678, NULL, 0);
+    PRINTF(nsp_cmd_r_put_file, INT, NULL);
+    PRINTF(nsp_cmd_s_get_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_get_file, INT, (void *)0x12345678, NULL);
 // 191
-    PRINTF(cmd_r_get_file, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_del_file, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_del_file, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_del_file, INT, NULL);
-    PRINTF(cmd_s_new_folder, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_get_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_file, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_file, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_del_file, INT, NULL);
+    PRINTF(nsp_cmd_s_new_folder, INT, NULL, (void *)0x12345678);
 
-    PRINTF(cmd_s_new_folder, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_new_folder, INT, NULL);
-    PRINTF(cmd_s_del_folder, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_del_folder, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_del_folder, INT, NULL);
+    PRINTF(nsp_cmd_s_new_folder, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_new_folder, INT, NULL);
+    PRINTF(nsp_cmd_s_del_folder, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_del_folder, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_del_folder, INT, NULL);
 // 201
-    PRINTF(cmd_s_copy_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_s_copy_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_copy_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_copy_file, INT, NULL);
-    PRINTF(cmd_s_rename_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_copy_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_copy_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_copy_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_copy_file, INT, NULL);
+    PRINTF(nsp_cmd_s_rename_file, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     
-    PRINTF(cmd_s_rename_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_rename_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
-    PRINTF(cmd_r_rename_file, INT, NULL);
-    PRINTF(cmd_s_file_ok, INT, NULL);
-    PRINTF(cmd_r_file_ok, INT, NULL);
+    PRINTF(nsp_cmd_s_rename_file, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_rename_file, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_rename_file, INT, NULL);
+    PRINTF(nsp_cmd_s_file_ok, INT, NULL);
+    PRINTF(nsp_cmd_r_file_ok, INT, NULL);
 // 211
-    PRINTF(cmd_s_file_contents, INT, NULL, 0, (void *)0x12345678);
-    PRINTF(cmd_s_file_contents, INT, (void *)0x12345678, 0, NULL);
-    PRINTF(cmd_r_file_contents, INT, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_r_file_contents, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-    PRINTF(cmd_r_file_contents, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_file_contents, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_file_contents, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(nsp_cmd_r_file_contents, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_file_contents, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_file_contents, INT, (void *)0x12345678, (void *)0x12345678, NULL);
 
-    PRINTF(cmd_s_os_install, INT, NULL, 0);
-    PRINTF(cmd_r_os_install, INT, NULL);
-    PRINTF(cmd_s_os_contents, INT, NULL, 0, (void *)0x12345678);
-    PRINTF(cmd_s_os_contents, INT, (void *)0x12345678, 0, NULL);
-    PRINTF(cmd_r_progress, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_os_install, INT, NULL, 0);
+    PRINTF(nsp_cmd_r_os_install, INT, NULL);
+    PRINTF(nsp_cmd_s_os_contents, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_os_contents, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(nsp_cmd_r_progress, INT, NULL, (void *)0x12345678);
 // 221
-    PRINTF(cmd_r_progress, INT, (void *)0x12345678, NULL);
-    PRINTF(cmd_s_echo, INT, NULL, 0, (void *)0x12345678);
-    PRINTF(cmd_r_echo, INT, NULL, (void *)0x12345678, (void *)0x12345678);
-    PRINTF(cmd_s_keypress_event, INT, NULL, (void *)0x12345678);
-    PRINTF(cmd_s_keypress_event, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_r_progress, INT, (void *)0x12345678, NULL);
+    PRINTF(nsp_cmd_s_echo, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(nsp_cmd_r_echo, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_keypress_event, INT, NULL, (void *)0x12345678);
+    PRINTF(nsp_cmd_s_keypress_event, INT, (void *)0x12345678, NULL);
 
     ticalcs_library_exit();
 

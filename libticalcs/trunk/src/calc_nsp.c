@@ -86,7 +86,7 @@ static int		is_ready	(CalcHandle* handle)
 			ticalcs_info("  waiting for LOGIN request (OS >= 1.2 check)...");
 			old = ticables_options_set_timeout(handle->cable, 40);	// 3s mini
 
-			ret = cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
+			ret = nsp_cmd_r_login(handle);	// no call to TRYF(nsp_send_nack(handle)) because nack is managed in nsp_recv_data()
 
 			ticables_options_set_timeout(handle->cable, old);
 			if(ret)
@@ -125,8 +125,8 @@ static int		is_ready	(CalcHandle* handle)
 
 		TRYF(nsp_session_open(handle, SID_ECHO));
 
-		TRYF(cmd_s_echo(handle, strlen(str)+1, (uint8_t *)str));
-		TRYF(cmd_r_echo(handle, &size, &data));
+		TRYF(nsp_cmd_s_echo(handle, strlen(str)+1, (uint8_t *)str));
+		TRYF(nsp_cmd_r_echo(handle, &size, &data));
 		g_free(data);
 
 		TRYF(nsp_session_close(handle));
@@ -256,8 +256,8 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		// Do screenshot
 		TRYF(nsp_session_open(handle, SID_SCREEN_RLE));
 
-		TRYF(cmd_s_screen_rle(handle, 0));
-		TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
+		TRYF(nsp_cmd_s_screen_rle(handle, 0));
+		TRYF(nsp_cmd_r_screen_rle(handle, &cmd, &size, &data));
 		sc->width = sc->clipped_width = (data[8] << 8) | data[9];
 		sc->height = sc->clipped_height = (data[10] << 8) | data[11];
 		//size = GUINT32_FROM_BE(*((uint32_t *)(data)));
@@ -265,7 +265,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		        | (((uint32_t)data[1]) << 16)
 		        | (((uint32_t)data[2]) <<  8)
 		        | (((uint32_t)data[3])      ));
-		TRYF(cmd_r_screen_rle(handle, &cmd, &size, &data));
+		TRYF(nsp_cmd_r_screen_rle(handle, &cmd, &size, &data));
 
 		TRYF(nsp_session_close(handle));
 
@@ -309,22 +309,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	g_node_append(*apps, root);
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
-	TRYF(cmd_s_dir_attributes(handle, "/"));
-	TRYF(cmd_r_dir_attributes(handle, NULL, NULL, NULL));
+	TRYF(nsp_cmd_s_dir_attributes(handle, "/"));
+	TRYF(nsp_cmd_r_dir_attributes(handle, NULL, NULL, NULL));
 	TRYF(nsp_session_close(handle));
 
 	TRYF(nsp_session_open(handle, SID_FILE_MGMT));
 
-	TRYF(cmd_s_dir_enum_init(handle, "/"));
-	TRYF(cmd_r_dir_enum_init(handle));
+	TRYF(nsp_cmd_s_dir_enum_init(handle, "/"));
+	TRYF(nsp_cmd_r_dir_enum_init(handle));
 
 	for(;;)
 	{
 		VarEntry *fe;
 		GNode *node;
 
-		TRYF(cmd_s_dir_enum_next(handle));
-		err = cmd_r_dir_enum_next(handle, varname, &varsize, &vartype);
+		TRYF(nsp_cmd_s_dir_enum_next(handle));
+		err = nsp_cmd_r_dir_enum_next(handle, varname, &varsize, &vartype);
 
 		if (err == ERR_EOT)
 			break;
@@ -348,8 +348,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			fe->size);
 	}
 
-	TRYF(cmd_s_dir_enum_done(handle));
-	TRYF(cmd_r_dir_enum_done(handle));
+	TRYF(nsp_cmd_s_dir_enum_done(handle));
+	TRYF(nsp_cmd_r_dir_enum_done(handle));
 
 	for(i = 0; i < (int)g_node_n_children(*vars); i++) 
 	{
@@ -369,8 +369,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		ticalcs_info(_("Directory listing in <%s>..."), folder_name);
 
-		TRYF(cmd_s_dir_enum_init(handle, folder_name));
-		TRYF(cmd_r_dir_enum_init(handle));
+		TRYF(nsp_cmd_s_dir_enum_init(handle, folder_name));
+		TRYF(nsp_cmd_r_dir_enum_init(handle));
 
 		for(;;)
 		{
@@ -378,8 +378,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			GNode *node;
 			char *ext;
 
-			TRYF(cmd_s_dir_enum_next(handle));
-			err = cmd_r_dir_enum_next(handle, varname, &varsize, &vartype);
+			TRYF(nsp_cmd_s_dir_enum_next(handle));
+			err = nsp_cmd_r_dir_enum_next(handle, varname, &varsize, &vartype);
 
 			if (err == ERR_EOT)
 				break;
@@ -425,8 +425,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			update_label();
 		}
 
-		TRYF(cmd_s_dir_enum_done(handle));
-		TRYF(cmd_r_dir_enum_done(handle));
+		TRYF(nsp_cmd_s_dir_enum_done(handle));
+		TRYF(nsp_cmd_r_dir_enum_done(handle));
 	}
 
 	TRYF(nsp_session_close(handle));
@@ -442,8 +442,8 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
-	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION));
+	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	//i = 0;
 	//*flash = (uint32_t)GUINT64_FROM_BE(*((uint64_t *)(data + i)));
@@ -500,16 +500,16 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		g_free(utf8);
 		update_label();
 
-		err = cmd_s_put_file(handle, path, ve->size);
+		err = nsp_cmd_s_put_file(handle, path, ve->size);
 		g_free(path);
 		if (err)
 		{
 			return err;
 		}
-		TRYF(cmd_r_put_file(handle));
+		TRYF(nsp_cmd_r_put_file(handle));
 
-		TRYF(cmd_s_file_contents(handle, ve->size, ve->data));
-		TRYF(cmd_r_status(handle, &status));
+		TRYF(nsp_cmd_s_file_contents(handle, ve->size, ve->data));
+		TRYF(nsp_cmd_r_status(handle, &status));
 
 		TRYF(nsp_session_close(handle));
 	}
@@ -539,18 +539,18 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	g_free(utf8);
 	update_label();
 
-	err = cmd_s_get_file(handle, path);
+	err = nsp_cmd_s_get_file(handle, path);
 	g_free(path);
 	if (err)
 	{
 		return err;
 	}
-	TRYF(cmd_r_get_file(handle, &(vr->size)));
+	TRYF(nsp_cmd_r_get_file(handle, &(vr->size)));
 
-	TRYF(cmd_s_file_ok(handle));
+	TRYF(nsp_cmd_s_file_ok(handle));
 	if (vr->size)
-		TRYF(cmd_r_file_contents(handle, &(vr->size), &data));
-	TRYF(cmd_s_status(handle, ERR_OK));
+		TRYF(nsp_cmd_r_file_contents(handle, &(vr->size), &data));
+	TRYF(nsp_cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_single());
@@ -614,12 +614,12 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	TRYF(nsp_session_open(handle, SID_OS_INSTALL));
 
-	TRYF(cmd_s_os_install(handle, content->data_length));
-	TRYF(cmd_r_os_install(handle));
+	TRYF(nsp_cmd_s_os_install(handle, content->data_length));
+	TRYF(nsp_cmd_r_os_install(handle));
 
-	TRYF(cmd_s_os_contents(handle, 253, content->data_part));
-	TRYF(cmd_r_status(handle, &status));
-	TRYF(cmd_s_os_contents(handle, content->data_length - 253, content->data_part + 253));
+	TRYF(nsp_cmd_s_os_contents(handle, 253, content->data_part));
+	TRYF(nsp_cmd_r_status(handle, &status));
+	TRYF(nsp_cmd_s_os_contents(handle, content->data_length - 253, content->data_part + 253));
 
 	update_->cnt2 = 0;
 	update_->max2 = 100;
@@ -627,7 +627,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	do
 	{
-		TRYF(cmd_r_progress(handle, &value));
+		TRYF(nsp_cmd_r_progress(handle, &value));
 
 		update_->cnt2 = value;
 		update_->pbar();
@@ -645,8 +645,8 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 
 	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
-	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION));
+	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strncpy((char *)id, (char*)(data + 82), 28);
 
@@ -678,19 +678,19 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 		return ERR_OPEN_FILE;
 	}
 
-	err = cmd_s_get_file(handle, "../phoenix/install/TI-Nspire.tnc");
+	err = nsp_cmd_s_get_file(handle, "../phoenix/install/TI-Nspire.tnc");
 	if (!err)
 	{
-		err = cmd_r_get_file(handle, &varsize);
+		err = nsp_cmd_r_get_file(handle, &varsize);
 		if (!err)
 		{
-			err = cmd_s_file_ok(handle);
+			err = nsp_cmd_s_file_ok(handle);
 			if (!err)
 			{
-				err = cmd_r_file_contents(handle, &varsize, &data);
+				err = nsp_cmd_r_file_contents(handle, &varsize, &data);
 				if (!err)
 				{
-					err = cmd_s_status(handle, ERR_OK);
+					err = nsp_cmd_s_status(handle, ERR_OK);
 					if (!err)
 					{
 						if (fwrite(data, varsize, 1, f) < 1)
@@ -747,14 +747,14 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	g_free(utf81);
 	update_label();
 
-	err = cmd_s_rename_file(handle, path1, path2);
+	err = nsp_cmd_s_rename_file(handle, path1, path2);
 	g_free(path2);
 	g_free(path1);
 	if (err)
 	{
 		return err;
 	}
-	TRYF(cmd_r_rename_file(handle));
+	TRYF(nsp_cmd_r_rename_file(handle));
 
 	TRYF(nsp_session_close(handle));
 
@@ -786,13 +786,13 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	g_free(utf8);
 	update_label();
 
-	err = cmd_s_del_file(handle, path);
+	err = nsp_cmd_s_del_file(handle, path);
 	g_free(path);
 	if (err)
 	{
 		return err;
 	}
-	TRYF(cmd_r_del_file(handle));
+	TRYF(nsp_cmd_r_del_file(handle));
 
 	TRYF(nsp_session_close(handle));
 
@@ -813,13 +813,13 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	g_free(utf8);
 	update_label();
 
-	err = cmd_s_new_folder(handle, path);
+	err = nsp_cmd_s_new_folder(handle, path);
 	g_free(path);
 	if (err)
 	{
 		return err;
 	}
-	TRYF(cmd_r_new_folder(handle));
+	TRYF(nsp_cmd_r_new_folder(handle));
 
 	TRYF(nsp_session_close(handle));
 
@@ -834,14 +834,14 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	TRYF(nsp_session_open(handle, SID_DEV_INFOS));
 
-	TRYF(cmd_s_dev_infos(handle, CMD_DI_MODEL));
-	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_MODEL));
+	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	strcpy(infos->product_name, (char*)data);
 	infos->mask |= INFOS_PRODUCT_NAME;
 
-	TRYF(cmd_s_dev_infos(handle, CMD_DI_VERSION));
-	TRYF(cmd_r_dev_infos(handle, &cmd, &size, &data));
+	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION));
+	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));
 
 	infos->model = CALC_NSPIRE;
 
