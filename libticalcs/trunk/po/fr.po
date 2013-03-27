@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2013-03-14 08:47+0100\n"
+"POT-Creation-Date: 2013-03-19 20:38+0100\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -40,15 +40,15 @@ msgstr "Nom FLASH:  \"%s\""
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.c:800 src/calc_84p.c:725 src/calc_89.c:811 src/calc_89t.c:640
+#: src/calc_73.c:800 src/calc_84p.c:730 src/calc_89.c:811 src/calc_89t.c:640
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:829 src/calc_84p.c:769 src/calc_89.c:836 src/calc_89t.c:684
+#: src/calc_73.c:829 src/calc_84p.c:774 src/calc_89.c:836 src/calc_89t.c:684
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:893 src/calc_83.c:487 src/calc_84p.c:821 src/calc_89.c:883
+#: src/calc_73.c:893 src/calc_83.c:487 src/calc_84p.c:826 src/calc_89.c:883
 #: src/calc_89t.c:738 src/calc_92.c:557 src/calc_nsp.c:785
 #, c-format
 msgid "Deleting %s..."
@@ -103,11 +103,11 @@ msgstr "En attente pour sauvegarder..."
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
-#: src/calc_84p.c:901 src/calc_89t.c:883
+#: src/calc_84p.c:906 src/calc_89t.c:883
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:1065
+#: src/calc_84p.c:1070
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 

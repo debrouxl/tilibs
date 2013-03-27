@@ -255,6 +255,11 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[11] = 0x00;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
+	/* Kludge to support 84+CSE Pic files.  Please do not rely on this
+	   behavior; it will go away in the future. */
+	if (vartype == 0x07 && varsize == 0x55bb)
+		buffer[11] = 0x0a;
+
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
 	ticalcs_info(" PC->TI: RTS (size=0x%04X, id=%02X, name=%s, attr=%i)", varsize, vartype, trans, varattr);
 

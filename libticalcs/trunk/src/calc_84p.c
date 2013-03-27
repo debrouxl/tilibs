@@ -258,6 +258,11 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		attrs[1]->data[0] = ve->attr == ATTRB_ARCHIVED ? 1 : 0;
 		attrs[2] = dusb_ca_new(AID_VAR_VERSION, 4);
 
+		/* Kludge to support 84+CSE Pic files.  Please do not rely on
+		   this behavior; it will go away in the future. */
+		if (ve->type == 0x07 && ve->size == 0x55bb)
+			attrs[2]->data[3] = 0x0a;
+
 		TRYF(dusb_cmd_s_rts(handle,"",ve->name,ve->size,nattrs,CA(attrs)));
 		TRYF(dusb_cmd_r_data_ack(handle));
 		TRYF(dusb_cmd_s_var_content(handle, ve->size, ve->data));
