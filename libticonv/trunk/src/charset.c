@@ -382,7 +382,8 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *t
 	while (*p) {
 		if (   *p<=10
 		    || *p==12 || *p==13
-		    || (*p>=32 && *p<=126)
+		    || (*p>=32 && *p<=119)
+		    || (*p>=122 && *p<=126)
 		    || (*p>=161 && *p<=167)
 		    || (*p>=169 && *p<=172)
 		    || (*p>=174 && *p<=183)
@@ -557,15 +558,20 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_ti9x(const unsigned short *utf16, char *t
 				case 0x221e:
 					*(q++)=190;
 					break;
-				case 0x305:
-					if (*p==0x78) {
-						*(q++)=154;
-						p++;
-					} else if (*p==0x79) {
-						*(q++)=155;
+				case 0x78:
+					if (*p==0x0305) {
+						*(q++)=154; // xbar
 						p++;
 					} else {
-						*(q++)='?';
+						*(q++)='x';
+					}
+					break;
+				case 0x79:
+					if (*p==0x0305) {
+						*(q++)=155; // ybar
+						p++;
+					} else {
+						*(q++)='y';
 					}
 					break;
 				case 0xd875:
