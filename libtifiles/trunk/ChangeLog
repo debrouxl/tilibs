@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libtifiles):
 
-- xx/xx/2013, version 1.1.6: debrouxl
+- xx/0x/2013, version 1.1.6: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- fix several malloc/realloc/free vs. g_malloc/g_malloc0/g_free mismatches.

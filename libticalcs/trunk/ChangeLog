@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticalcs):
 
-- xx/xx/2013, version 1.1.8: debrouxl
+- xx/0x/2013, version 1.1.8: debrouxl
 	- fix off-by-one in calc_84p.c::get_version(), which led to the last character of the product ID being cut off. Reported by ParkeR.
 	- advertise ROM dumping support in CalcFncts calc_84p_usb.
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
@@ -39,6 +39,11 @@ Log of changes (libticalcs):
 	- fix more compiler warnings reported (or made more visible) by clang.
 	- add 83+ family DBUS memory dump command; while at it, reformat, harden and export functions from cmd73.c.
 	- when communicating with 84+ through DUSB, allow variables with the same name but different types. Patch by Benjamin Moody. Additionally, add a couple debugging traces in test_ticalcs_2.
+	- add known 84+CSE hardware version, and plausible default model for unknown hardware versions. Reported by Benjamin Moody.
+	- add prefixes to a number of functions and struct names, and adjust callers.
+	- export dusb_vpkt functions and header, add torture test.
+	- temporary kludge for sending 84+CSE Pic files. Patch by Benjamin Moody.
+	- export dbus_cmd functions, add torture tests for dusb_cmd functions.
 
 - 14/12/2011, version 1.1.7: debrouxl
 	- add error code returned by the Nspire when the anti-downgrade protection refuses an OS version older than the configured minimum version.

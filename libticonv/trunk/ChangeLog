@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticonv):
 
-- xx/xx/2013, version 1.1.4: debrouxl
+- xx/0x/2013, version 1.1.4: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- regenerate with Automake 1.1.6.

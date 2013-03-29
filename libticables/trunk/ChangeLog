@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticables):
 
-- xx/xx/2013, version 1.3.4: debrouxl
+- xx/0x/2013, version 1.3.4: debrouxl
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- apply downstream Debian patches by Aurelien Jarno <aurel32@debian.org> for fixing FTBFS on sh390x (Debian bug #641092), sh4 (Debian bug #567679) and sparc64 (Debian bug #596601).
 	- regenerate with Automake 1.11.6.
@@ -15,6 +15,8 @@ Log of changes (libticables):
 	- expand torture tests, and perform minor fixes.
 	- on Windows, load libusb-win32 dynamically if available, and fail gracefully if it's missing. This way, it's possible to make driver-less emulator (tilem, tiemu) installers, which don't require elevated privileges. Change cross-compilation maintainer script.
 	- fix a number of problems related to unaligned reads/writes and left shifts of count >= width of type; fix more compiler warnings reported by clang.
+	- fix a couple warnings turned errors [by the addition of -Werror=implicit-function-declaration to the maintainer scripts] in the Windows code.
+	- try to fix an elusive BSOD, reported by multiple persons, possibly introduced by SVN r4428: don't pass $CFLAGS and $CPPFLAGS to $CC when compiling dhahelper.
 
 - 14/12/2011, version 1.3.3: debrouxl
 	- more fixes in the libusb 1.0 backend, following the introduction of the asynchronous code.
