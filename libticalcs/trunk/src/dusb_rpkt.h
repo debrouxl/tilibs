@@ -19,6 +19,8 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __DUSB_RPKT__
 #define __DUSB_RPKT__
 
@@ -30,7 +32,5 @@
 #define DUSB_RPKT_VIRT_DATA      3
 #define DUSB_RPKT_VIRT_DATA_LAST 4
 #define DUSB_RPKT_VIRT_DATA_ACK  5
-
-// Convenient structures
 
 #endif

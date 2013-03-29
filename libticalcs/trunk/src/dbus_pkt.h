@@ -19,6 +19,8 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __TICALCS_DBUS__
 #define __TICALCS_DBUS__
 

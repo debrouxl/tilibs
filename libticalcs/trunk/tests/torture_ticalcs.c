@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <ticalcs.h>
-#include <nsp_cmd.h>
 #include <nsp_vpkt.h>
+#include <nsp_cmd.h>
 #include <dusb_vpkt.h>
+#include <dusb_cmd.h>
 
 #define PRINTF(FUNCTION, TYPE, args...) \
 printf("%d\t" TYPE "\n", i, FUNCTION(args)); i++
@@ -18,6 +19,7 @@ printf("%d\n", i); FUNCTION(args); i++
 int main(int argc, char **argv)
 {
     int i = 1;
+    DUSBModeSet mode = MODE_STARTUP;
 
     ticalcs_library_init();
 // 1
@@ -321,6 +323,85 @@ int main(int argc, char **argv)
     PRINTF(dusb_recv_acknowledge, INT, NULL);
     PRINTF(dusb_vpkt_type2name, STR, 0);
     PRINTF(dusb_get_buf_size, INT);
+// dbus_cmd.c
+    PRINTF(dusb_cp_new, PTR, 0, 0);
+// 241
+    PRINTFVOID(dusb_cp_del, NULL);
+    PRINTF(dusb_cp_new_array, PTR, 0);
+    PRINTFVOID(dusb_cp_del_array, 0, NULL);
+    PRINTF(dusb_ca_new, PTR, 0, 0);
+    PRINTFVOID(dusb_ca_del, NULL);
+
+    PRINTF(dusb_ca_new_array, PTR, 0);
+    PRINTFVOID(dusb_ca_del_array, 0, NULL);
+    PRINTF(dusb_cmd_s_mode_set, INT, NULL, mode);
+    PRINTF(dusb_cmd_s_os_begin, INT, NULL, 0);
+    PRINTF(dusb_cmd_r_os_ack, INT, NULL, (void *)0x12345678);
+// 251
+    PRINTF(dusb_cmd_s_os_header, INT, NULL, 0, 0, 0, 0, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_os_header, INT, (void *)0x12345678, 0, 0, 0, 0, NULL);
+    PRINTF(dusb_cmd_s_os_data, INT, NULL, 0, 0, 0, 0, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_os_data, INT, (void *)0x12345678, 0, 0, 0, 0, NULL);
+    PRINTF(dusb_cmd_s_os_header_89, INT, NULL, 0, (void *)0x12345678);
+
+    PRINTF(dusb_cmd_s_os_header_89, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(dusb_cmd_s_os_data_89, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_os_data_89, INT, (void *)0x12345678, 0, NULL);
+    PRINTF(dusb_cmd_r_eot_ack, INT, NULL);
+    PRINTF(dusb_cmd_s_param_request, INT, NULL, 1, (void *)0x12345678);
+// 261
+    PRINTF(dusb_cmd_s_param_request, INT, (void *)0x12345678, 1, NULL);
+    PRINTF(dusb_cmd_r_param_data, INT, NULL, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_param_data, INT, (void *)0x12345678, 1, NULL);
+    PRINTF(dusb_cmd_s_dirlist_request, INT, NULL, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_dirlist_request, INT, (void *)0x12345678, 1, NULL);
+
+    PRINTF(dusb_cmd_r_var_header, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(dusb_cmd_s_rts, INT, NULL, (void *)0x12345678, (void *)0x12345678, 0, 1, (void *)0x12345678);
+// 271
+    PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, NULL, (void *)0x12345678, 0, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, (void *)0x12345678, NULL, 0, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 0, 1, NULL);
+    PRINTF(dusb_cmd_s_var_request, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678, 1, (void *)0x12345678);
+
+    PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, 1, NULL);
+    PRINTF(dusb_cmd_s_var_content, INT, NULL, 0, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_content, INT, (void *)0x12345678, 0, NULL);
+// 281
+    PRINTF(dusb_cmd_r_var_content, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_var_content, INT, (void *)0x12345678, (void *)0x12345678, NULL);
+    PRINTF(dusb_cmd_s_param_set, INT, NULL, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_param_set, INT, (void *)0x12345678, NULL);
+    PRINTF(dusb_cmd_s_var_modify, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
+
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678);
+// 291
+    PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL);
+    PRINTF(dusb_cmd_s_var_delete, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678);
+    PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL);
+
+    PRINTF(dusb_cmd_s_execute, INT, NULL, (void *)0x12345678, (void *)0x12345678, 0, (void *)0x12345678, 0);  // It's OK to have args = NULL
+    PRINTF(dusb_cmd_s_execute, INT, (void *)0x12345678, NULL, (void *)0x12345678, 0, (void *)0x12345678, 0);
+    PRINTF(dusb_cmd_s_execute, INT, (void *)0x12345678, (void *)0x12345678, NULL, 0, (void *)0x12345678, 0);
+    PRINTF(dusb_cmd_r_mode_ack, INT, NULL);
+    PRINTF(dusb_cmd_r_data_ack, INT, NULL);
+// 301
+    PRINTF(dusb_cmd_r_delay_ack, INT, NULL);
+    PRINTF(dusb_cmd_s_eot, INT, NULL);
+    PRINTF(dusb_cmd_r_eot, INT, NULL);
+    PRINTF(dusb_cmd_s_error, INT, NULL, 0);
 
     ticalcs_library_exit();
 

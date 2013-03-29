@@ -41,7 +41,7 @@
 
 GList *cpca_list = NULL;
 
-DUSBCalcParam* dusb_cp_new(uint16_t id, uint16_t size)
+TIEXPORT3 DUSBCalcParam* TICALL dusb_cp_new(uint16_t id, uint16_t size)
 {
 	DUSBCalcParam* cp = g_malloc0(sizeof(DUSBCalcParam)); // aborts the program if it fails.
 
@@ -54,7 +54,7 @@ DUSBCalcParam* dusb_cp_new(uint16_t id, uint16_t size)
 	return cp;
 }
 
-void dusb_cp_del(DUSBCalcParam* cp)
+TIEXPORT3 void TICALL dusb_cp_del(DUSBCalcParam* cp)
 {
 	if (cp != NULL)
 	{
@@ -69,13 +69,13 @@ void dusb_cp_del(DUSBCalcParam* cp)
 	}
 }
 
-DUSBCalcParam** dusb_cp_new_array(int size)
+TIEXPORT3 DUSBCalcParam** TICALL dusb_cp_new_array(int size)
 {
 	DUSBCalcParam** array = g_malloc0((size+1) * sizeof(DUSBCalcParam *)); // aborts the program if it fails.
 	return array;
 }
 
-void dusb_cp_del_array(int size, DUSBCalcParam **params)
+TIEXPORT3 void TICALL dusb_cp_del_array(int size, DUSBCalcParam **params)
 {
 	int i;
 
@@ -96,7 +96,7 @@ void dusb_cp_del_array(int size, DUSBCalcParam **params)
 
 /////////////----------------
 
-DUSBCalcAttr* dusb_ca_new(uint16_t id, uint16_t size)
+TIEXPORT3 DUSBCalcAttr* TICALL dusb_ca_new(uint16_t id, uint16_t size)
 {
 	DUSBCalcAttr* cp = g_malloc0(sizeof(DUSBCalcAttr)); // aborts the program if it fails.
 
@@ -109,7 +109,7 @@ DUSBCalcAttr* dusb_ca_new(uint16_t id, uint16_t size)
 	return cp;
 }
 
-void dusb_ca_del(DUSBCalcAttr* cp)
+TIEXPORT3 void TICALL dusb_ca_del(DUSBCalcAttr* cp)
 {
 	if (cp != NULL)
 	{
@@ -124,13 +124,13 @@ void dusb_ca_del(DUSBCalcAttr* cp)
 	}
 }
 
-DUSBCalcAttr** dusb_ca_new_array(int size)
+TIEXPORT3 DUSBCalcAttr** TICALL dusb_ca_new_array(int size)
 {
 	DUSBCalcAttr** array = g_malloc0((size+1) * sizeof(DUSBCalcAttr *)); // aborts the program if it fails.
 	return array;
 }
 
-void dusb_ca_del_array(int size, DUSBCalcAttr **attrs)
+TIEXPORT3 void TICALL dusb_ca_del_array(int size, DUSBCalcAttr **attrs)
 {
 	int i;
 
@@ -232,7 +232,7 @@ extern const DUSBVtlPktName vpkt_types[];
 	}
 
 // 0x0001: set mode or ping
-int dusb_cmd_s_mode_set(CalcHandle *h, DUSBModeSet mode)
+TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *h, DUSBModeSet mode)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -268,7 +268,7 @@ int dusb_cmd_s_mode_set(CalcHandle *h, DUSBModeSet mode)
 }
 
 // 0x0002: begin OS transfer
-int dusb_cmd_s_os_begin(CalcHandle *h, uint32_t size)
+TIEXPORT3 int TICALL dusb_cmd_s_os_begin(CalcHandle *h, uint32_t size)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -295,7 +295,7 @@ int dusb_cmd_s_os_begin(CalcHandle *h, uint32_t size)
 }
 
 // 0x0003: acknowledgement of OS transfer
-int dusb_cmd_r_os_ack(CalcHandle *h, uint32_t *size)
+TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *h, uint32_t *size)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -370,19 +370,19 @@ static int s_os(uint8_t type, CalcHandle *h, uint16_t addr, uint8_t page, uint8_
 }
 
 // 0x0004: OS header
-int dusb_cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL dusb_cmd_s_os_header(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(DUSB_VPKT_OS_HEADER, h, addr, page, flag, size, data);
 }
 
 // 0x0005: OS data
-int dusb_cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL dusb_cmd_s_os_data(CalcHandle *h, uint16_t addr, uint8_t page, uint8_t flag, uint32_t size, uint8_t *data)
 {
 	return s_os(DUSB_VPKT_OS_DATA, h, addr, page, flag, size, data);
 }
 
 // 0x0004: OS header
-int dusb_cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -410,7 +410,7 @@ int dusb_cmd_s_os_header_89(CalcHandle *h, uint32_t size, uint8_t *data)
 }
 
 // 0x0005: OS data
-int dusb_cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -438,7 +438,7 @@ int dusb_cmd_s_os_data_89(CalcHandle *h, uint32_t size, uint8_t *data)
 }
 
 // 0x0006: acknowledgement of EOT
-int dusb_cmd_r_eot_ack(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -474,7 +474,7 @@ end:
 }
 
 // 0x0007: parameter request
-int dusb_cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
+TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
@@ -485,13 +485,13 @@ int dusb_cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (pids == NULL)
+	if (npids != 0 && pids == NULL)
 	{
 		ticalcs_critical("%s: pids is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
 	}
 
-	pkt = dusb_vtl_pkt_new((npids + 1) * sizeof(uint16_t), DUSB_VPKT_PARM_REQ);
+	pkt = dusb_vtl_pkt_new(2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ);
 
 	pkt->data[0] = MSB(npids);
 	pkt->data[1] = LSB(npids);
@@ -511,7 +511,7 @@ int dusb_cmd_s_param_request(CalcHandle *h, int npids, uint16_t *pids)
 }
 
 // 0x0008: parameter data
-int dusb_cmd_r_param_data(CalcHandle *h, int nparams, DUSBCalcParam **params)
+TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *h, int nparams, DUSBCalcParam **params)
 {
 	DUSBVirtualPacket* pkt;
 	int i, j;
@@ -577,7 +577,7 @@ end:
 }
 
 // 0x0009: request directory listing
-int dusb_cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
+TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
@@ -589,7 +589,7 @@ int dusb_cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (aids == NULL)
+	if (naids != 0 && aids == NULL)
 	{
 		ticalcs_critical("%s: aids is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
@@ -623,7 +623,7 @@ int dusb_cmd_s_dirlist_request(CalcHandle *h, int naids, uint16_t *aids)
 
 // 0x000A: variable header (name is utf-8)
 // beware: attr array contents is allocated by function
-int dusb_cmd_r_var_header(CalcHandle *h, char *folder, char *name, DUSBCalcAttr **attr)
+TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *h, char *folder, char *name, DUSBCalcAttr **attr)
 {
 	DUSBVirtualPacket* pkt;
 	uint8_t fld_len;
@@ -710,7 +710,7 @@ end:
 }
 
 // 0x000B: request to send
-int dusb_cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs)
+TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;
@@ -723,7 +723,7 @@ int dusb_cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (folder == NULL || name == NULL || attrs == NULL)
+	if (folder == NULL || name == NULL || (nattrs != 0 && attrs == NULL))
 	{
 		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
@@ -779,7 +779,7 @@ int dusb_cmd_s_rts(CalcHandle *h, const char *folder, const char *name, uint32_t
 }
 
 // 0x000C: variable request
-int dusb_cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs)
+TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;
@@ -792,7 +792,7 @@ int dusb_cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, 
 		ticalcs_critical("%s: h is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	if (folder == NULL || name == NULL || aids == NULL || attrs == NULL)
+	if (folder == NULL || name == NULL || (naids != 0 && aids == NULL) || (nattrs != 0 && attrs == NULL))
 	{
 		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
@@ -853,7 +853,7 @@ int dusb_cmd_s_var_request(CalcHandle *h, const char *folder, const char *name, 
 }
 
 // 0x000D: variable contents (recv)
-int dusb_cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -912,7 +912,7 @@ end:
 }
 
 // 0x000D: variable contents (send)
-int dusb_cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -940,7 +940,7 @@ int dusb_cmd_s_var_content(CalcHandle *h, uint32_t size, uint8_t *data)
 }
 
 // 0x000E: parameter set
-int dusb_cmd_s_param_set(CalcHandle *h, const DUSBCalcParam *param)
+TIEXPORT3 int TICALL dusb_cmd_s_param_set(CalcHandle *h, const DUSBCalcParam *param)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -973,7 +973,7 @@ int dusb_cmd_s_param_set(CalcHandle *h, const DUSBCalcParam *param)
 }
 
 // 0x0010: modify/rename/delete variable
-int dusb_cmd_s_var_modify(CalcHandle *h,
+TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *h,
                      const char *src_folder, const char *src_name,
                      int n_src_attrs, const DUSBCalcAttr **src_attrs,
                      const char *dst_folder, const char *dst_name,
@@ -1083,14 +1083,14 @@ int dusb_cmd_s_var_modify(CalcHandle *h,
 	return retval;
 }
 
-int dusb_cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const DUSBCalcAttr **attrs)
+TIEXPORT3 int TICALL dusb_cmd_s_var_delete(CalcHandle *h, const char *folder, const char *name, int nattrs, const DUSBCalcAttr **attrs)
 {
 	const DUSBCalcAttr * dummy;
 	return dusb_cmd_s_var_modify(h, folder, name, nattrs, attrs, "", "", 0, &dummy);
 }
 
 // 0x0011: remote control
-int dusb_cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
+TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint8_t action, const char *args, uint16_t code)
 {
 	DUSBVirtualPacket* pkt = NULL;
 	int pks;
@@ -1188,7 +1188,7 @@ int dusb_cmd_s_execute(CalcHandle *h, const char *folder, const char *name, uint
 }
 
 // 0x0012: acknowledgement of mode setting
-int dusb_cmd_r_mode_ack(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_r_mode_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1224,7 +1224,7 @@ end:
 }
 
 // 0xAA00: acknowledgement of data
-int dusb_cmd_r_data_ack(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_r_data_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1261,7 +1261,7 @@ end:
 }
 
 // 0xBB00: delay acknowledgement
-int dusb_cmd_r_delay_ack(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1297,7 +1297,7 @@ int dusb_cmd_r_delay_ack(CalcHandle *h)
 }
 
 // 0xDD00: end of transmission (send)
-int dusb_cmd_s_eot(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_s_eot(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1318,7 +1318,7 @@ int dusb_cmd_s_eot(CalcHandle *h)
 }
 
 // 0xDD00: end of transmission (recv)
-int dusb_cmd_r_eot(CalcHandle *h)
+TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *h)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
@@ -1356,7 +1356,7 @@ end:
 }
 
 // 0xEE00: error
-int dusb_cmd_s_error(CalcHandle *h, uint16_t code)
+TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *h, uint16_t code)
 {
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
