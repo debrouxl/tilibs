@@ -232,43 +232,66 @@ TIEXPORT2 int TICALL tifiles_group_files(char **src_filenames, const char *dst_f
 		return ERR_INVALID_FILE;
 	}
 
-	if(tifiles_file_get_model(src_filenames[0]) == CALC_NSPIRE)
-		return ERR_BAD_CALC;
-
-	// counter number of files to group
-	for (n = 0; src_filenames[n] != NULL; n++);
+	// count number of files to group, while performing several checks
+	for (n = 0; src_filenames[n] != NULL; n++)
+	{
+		if (!tifiles_file_is_ti(src_filenames[n]))
+		{
+			return ERR_INVALID_FILE;
+		}
+		if (tifiles_file_get_model(src_filenames[n]) == CALC_NSPIRE)
+		{
+			return ERR_BAD_CALC;
+		}
+	}
 
 	// allocate space for that
 	src = (FileContent **)g_malloc0((n + 1) * sizeof(FileContent *));
 	if (src == NULL)
+	{
 		return ERR_MALLOC;
+	}
 
 	// allocate each structure and load file content
 	for (i = 0; i < n; i++)
 	{
 		src[i] = (FileContent *)g_malloc0(sizeof(FileContent));
 		if (src[i] == NULL)
-			return ERR_MALLOC;
+		{
+			ret = ERR_MALLOC;
+			goto tgf2;
+		}
 
 		ret = tifiles_file_read_regular(src_filenames[i], src[i]);
-		if(ret) goto tgf;
+		if(ret)
+		{
+			goto tgf2;
+		}
 	}
 	src[i] = NULL;
 
 	// group the array of structures
 	ret = tifiles_group_contents(src, &dst);
-	if(ret) goto tgf;
+	if(ret)
+	{
+		goto tgf;
+	}
 
 	// write grouped file
 	ret = tifiles_file_write_regular(dst_filename, dst, NULL);
-	if(ret) goto tgf;
+	if(ret)
+	{
+		goto tgf;
+	}
 
+	ret = 0;
 	// release allocated memory
 tgf:
-	tifiles_content_delete_group(src);
 	tifiles_content_delete_regular(dst);
+tgf2:
+	tifiles_content_delete_group(src);
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -300,47 +323,67 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	}
 
 	if(tifiles_file_get_model(src_filename) == CALC_NSPIRE)
+	{
 		return ERR_BAD_CALC;
+	}
 
 	// read group file
 	src = tifiles_content_create_regular(CALC_NONE);
 	ret = tifiles_file_read_regular(src_filename, src);
-	if(ret) goto tuf;
+	if(ret)
+	{
+		goto tuf2;
+	}
 
 	// ungroup structure
 	ret = tifiles_ungroup_content(src, &dst);
-	if(ret) goto tuf;
+	if(ret)
+	{
+		goto tuf2;
+	}
 
 	// count number of structures and allocates array of strings
 	for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
 	if(dst_filenames != NULL)
-		*dst_filenames = (char **)g_malloc((n + 1) * sizeof(char *));
+	{
+		*dst_filenames = (char **)g_malloc0((n + 1) * sizeof(char *));
+	}
 
 	// store each structure content to file
 	for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
 	{
 		ret = tifiles_file_write_regular(NULL, *ptr, &real_name);
-		if(ret) goto tuf;
+		if(ret)
+		{
+			goto tuf;
+		}
 
 		if(dst_filenames != NULL)
-			*dst_filenames[i] = real_name;
+		{
+			(*dst_filenames)[i] = real_name;
+		}
 		else
+		{
 			g_free(real_name);
+		}
 	}
 
-	// release allocated memory
-	tifiles_content_delete_regular(src);
-	tifiles_content_delete_group(dst);
-
-	return 0;
+	ret = 0;
+	goto tuf2;
 
 tuf:
 	if(dst_filenames != NULL)
 	{
 		for(p = *dst_filenames; *p; p++)
+		{
 			g_free(*p);
-		g_free(p);
+		}
+		g_free(*dst_filenames);
+		*dst_filenames = NULL;
 	}
+
+tuf2:
+	// release allocated memory
 	tifiles_content_delete_regular(src);
 	tifiles_content_delete_group(dst);
 	return ret;
