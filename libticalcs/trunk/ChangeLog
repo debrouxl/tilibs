@@ -45,6 +45,7 @@ Log of changes (libticalcs):
 	- temporary kludge for sending 84+CSE Pic files. Patch by Benjamin Moody.
 	- export dbus_cmd functions, add torture tests for dusb_cmd functions.
 	- add several known command DBUS IDs (documented by Benjamin Moody and Brandon Wilson), this patch mostly by Jon Sturm.
+	- nsp_cmd: add the 0x06 command, whose externally visible effect is to trigger a dialog whose title is "Transfers complete" and text is "All files have been transferred".
 
 - 14/12/2011, version 1.1.7: debrouxl
 	- add error code returned by the Nspire when the anti-downgrade protection refuses an OS version older than the configured minimum version.

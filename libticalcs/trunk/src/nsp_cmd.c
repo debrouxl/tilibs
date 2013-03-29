@@ -591,6 +591,33 @@ TIEXPORT3 int TICALL nsp_cmd_r_put_file(CalcHandle *h)
 	return nsp_cmd_r_file_ok(h);
 }
 
+TIEXPORT3 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *h)
+{
+	NSPVirtualPacket* pkt;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
+
+	ticalcs_info("  sending EOT:");
+
+	pkt->cmd = CMD_FM_PUT_FILE_EOT;
+	pkt->data[0] = 0x01;
+
+	retval = nsp_send_data(h, pkt);
+
+	nsp_vtl_pkt_del(pkt);
+
+	return retval;
+}
+
+// No nsp_cmd_r_put_file_eot because the calculator doesn't seem to reply to CMD_FM_PUT_FILE_EOT.
+
 TIEXPORT3 int TICALL nsp_cmd_s_get_file(CalcHandle *h, const char *name)
 {
 	NSPVirtualPacket* pkt;

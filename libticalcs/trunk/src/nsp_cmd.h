@@ -62,6 +62,7 @@
 #define CMD_FM_PUT_FILE		0x03
 #define CMD_FM_OK			0x04
 #define CMD_FM_CONTENTS		0x05
+#define CMD_FM_PUT_FILE_EOT	0x06
 #define CMD_FM_GET_FILE		0x07
 #define CMD_FM_DEL_FILE		0x09
 #define CMD_FM_NEW_FOLDER	0x0a
@@ -110,6 +111,9 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_done(CalcHandle *h);
 
 TIEXPORT3 int TICALL nsp_cmd_s_put_file(CalcHandle *h, const char *name, uint32_t size);
 TIEXPORT3 int TICALL nsp_cmd_r_put_file(CalcHandle *h);
+
+TIEXPORT3 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *h);
+// No nsp_cmd_r_put_file_eot because the calculator doesn't seem to reply to CMD_FM_PUT_FILE_EOT.
 
 TIEXPORT3 int TICALL nsp_cmd_s_get_file(CalcHandle *h, const char *name);
 TIEXPORT3 int TICALL nsp_cmd_r_get_file(CalcHandle *h, uint32_t *size);
