@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticalcs):
 
-- xx/0x/2013, version 1.1.8: debrouxl
+- 31/03/2013, version 1.1.8: debrouxl
 	- fix off-by-one in calc_84p.c::get_version(), which led to the last character of the product ID being cut off. Reported by ParkeR.
 	- advertise ROM dumping support in CalcFncts calc_84p_usb.
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.

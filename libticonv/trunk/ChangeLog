@@ -2,7 +2,7 @@ SubVersion: $Id$
 
 Log of changes (libticonv):
 
-- xx/0x/2013, version 1.1.4: debrouxl
+- 31/03/2013, version 1.1.4: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- regenerate with Automake 1.1.6.
@@ -13,6 +13,7 @@ Log of changes (libticonv):
 	- fix two detokenization issues. This patch by Benjamin Moody.
 	- fix a number of problems related to unaligned reads/writes and left shifts of count >= width of type; fix more compiler warnings reported by clang.
 	- fix xbar and ybar TI-68k charset definitions: the combining overline should be after x and y.
+	- fix ticonv_utf16_to_ti9x wrt. xbar and ybar. Followup to r4481 [previous line].
 
 - 14/12/2011, version 1.1.3: debrouxl
 	- upgrade COPYING files and FSF addresses embedded in files, so as to make rpmlint happier.
