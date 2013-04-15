@@ -1,8 +1,0 @@
-[Main]
-Name=DFLT_TIMEOUT
-Type=Define
-Header=cabl_def.h
-Definition=#define DFLT_TIMEOUT  15
-
-[Summary]
-Defines a default timeout of 1.5 seconds.
