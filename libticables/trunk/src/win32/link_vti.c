@@ -96,7 +96,7 @@ static int vti_open(CableHandle *h)
 	/* Get the current DLL handle */
 	Handle = GetModuleHandle("libticables2.dll");
 	if(!Handle)
-		Handle = GetModuleHandle("libticables2-6.dll");
+		Handle = GetModuleHandle("libticables2-7.dll");
 
 	if (!Handle)
 	{

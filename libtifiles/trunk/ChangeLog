@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libtifiles):
 
+- xx/xx/201x, version 1.1.7: debrouxl
+
 - 31/03/2013, version 1.1.6: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.

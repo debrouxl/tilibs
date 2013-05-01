@@ -43,7 +43,7 @@ extern "C" {
 /* Versioning */
 
 #ifdef __WIN32__
-# define LIBCALCS_VERSION "1.1.8"
+# define LIBCALCS_VERSION "1.1.9"
 #else
 # define LIBCALCS_VERSION VERSION
 #endif

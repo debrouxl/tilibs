@@ -2,6 +2,8 @@ SubVersion: $Id$
 
 Log of changes (libticables):
 
+- xx/xx/201x, version 1.3.5: debrouxl
+
 - 31/03/2013, version 1.3.4: debrouxl
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.
 	- apply downstream Debian patches by Aurelien Jarno <aurel32@debian.org> for fixing FTBFS on sh390x (Debian bug #641092), sh4 (Debian bug #567679) and sparc64 (Debian bug #596601).
