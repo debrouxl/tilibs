@@ -147,6 +147,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI82: return ticonv_utf16_to_ti82(utf16, ti); break;
 			case CALC_TI83: return ticonv_utf16_to_ti83(utf16, ti); break;
 			case CALC_TI83P:
+			case CALC_TI84PC:
 			case CALC_TI84P:return ticonv_utf16_to_ti83p(utf16, ti); break;
 			case CALC_TI85: return ticonv_utf16_to_ti85(utf16, ti); break;
 			case CALC_TI89:
@@ -154,6 +155,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI92:
 			case CALC_TI92P:
 			case CALC_V200: return ticonv_utf16_to_ti9x(utf16, ti); break;
+			case CALC_TI84PC_USB:
 			case CALC_TI84P_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 			case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 			case CALC_NSPIRE:
@@ -222,6 +224,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI82: return ticonv_ti82_to_utf16(ti, utf16); break;
 			case CALC_TI83: return ticonv_ti83_to_utf16(ti, utf16); break;
 			case CALC_TI83P:
+			case CALC_TI84PC:
 			case CALC_TI84P:return ticonv_ti83p_to_utf16(ti, utf16); break;
 			case CALC_TI85: return ticonv_ti85_to_utf16(ti, utf16); break;
 			case CALC_TI86: return ticonv_ti86_to_utf16(ti, utf16); break;
@@ -230,6 +233,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI92:
 			case CALC_TI92P:
 			case CALC_V200: return ticonv_ti9x_to_utf16(ti, utf16); break;
+			case CALC_TI84PC_USB:
 			case CALC_TI84P_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 			case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 			case CALC_NSPIRE:
@@ -483,7 +487,7 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 	}
 
 	// Do TI-UTF-8 -> UTF-16,UTF-16 -> TI-8x/9x charset
-	if(model == CALC_TI84P_USB)
+	if(model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P_USB, src);
 		
@@ -559,7 +563,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		return NULL;
 	}
 
-	if(model == CALC_TI84P_USB)
+	if(model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
 	{
 		ti = ticonv_varname_detokenize(CALC_TI84P, src, type);
 

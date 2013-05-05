@@ -68,7 +68,9 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
+	case CALC_TI84PC:
 	case CALC_TI84P_USB:
+	case CALC_TI84PC_USB:
 		if(type == 0x0F)
 			return (dst = g_strdup_printf("Window"));
 		if(type == 0x10)
@@ -106,6 +108,20 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 
 	switch (tok1) 
     {
+    case 0x3C:			/* Image: Image1 to Image0 */
+	    if(type == 0x1A)
+		{
+			if(tok2 != 0x09)
+				dst = g_strdup_printf("Image%d", tok2 + 1);
+			else
+				dst = g_strdup_printf("Image0");
+		}
+		else
+		{
+			dst = g_strndup(src, 8);
+		}
+		break;
+
     case 0x5C:			/* Matrix: [A] to [E] or [J] */
 		switch(tok2)
 		{
@@ -415,6 +431,7 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_TI83:
 	case CALC_TI83P:
 	case CALC_TI84P:
+	case CALC_TI84PC:
 		dst = detokenize_vartype(model, src, type);
 		if(dst)
 			return dst;
@@ -431,6 +448,7 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_V200:
 		return g_strdup(src);
 	case CALC_TI84P_USB:
+	case CALC_TI84PC_USB:
 	case CALC_TI89T_USB:
 		return g_strdup(src);
 	case CALC_NSPIRE:
@@ -488,6 +506,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 		case CALC_TI83:
 		case CALC_TI83P:
 		case CALC_TI84P:
+		case CALC_TI84PC:
 			if(!strcmp("Window", src_) || type == 0x0F)
 				return g_strdup("");
 			if(!strcmp("RclWin", src_) || type == 0x10)
@@ -512,7 +531,7 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 		break;
 	}
 
-	if(type == 0x01 && (model == CALC_TI83P || model == CALC_TI84P))
+	if(type == 0x01 && (model == CALC_TI83P || model == CALC_TI84P || model == CALC_TI84PC))
 	{
 		// Named Lists
 		gchar *str = g_malloc0(9);
@@ -585,6 +604,11 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 	{
 		// strings
 		return g_strdup_printf("%c%c", 0xAA, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
+	}
+	else if(type == 0x1A && !strncmp((const char*) src, "Image", 5) && src[5] >= '0' && src[5] <= '9')
+	{
+		// images
+		return g_strdup_printf("%c%c", 0x3C, shift(src[5] - '0'));
 	}
 
 	return g_strdup(src_);
