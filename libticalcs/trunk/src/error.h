@@ -64,6 +64,7 @@ typedef enum
 	ERR_NO_CALC,			// No calc probed
 	ERR_INVALID_HANDLE,		// Invalid handle
 	ERR_INVALID_PARAMETER,
+	ERR_INVALID_SCREENSHOT,
 
 // --- 300 to 349 are reserved for hand-held status (DUSB)
 

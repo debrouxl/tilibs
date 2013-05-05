@@ -71,6 +71,18 @@ typedef enum
 } CalcScreenFormat;
 
 /**
+ * CalcPixelFormat:
+ *
+ * An enumeration which defines the format of screenshot images:
+ */
+typedef enum
+{
+	CALC_PIXFMT_MONO,           // Monochrome (1 bpp)
+	CALC_PIXFMT_GRAY_4,         // Grayscale (4 bpp - Nspire)
+	CALC_PIXFMT_RGB_5_6_5       // RGB (16 bpp - Nspire CX / 84+CSE)
+} CalcPixelFormat;
+
+/**
  * CalcPathType:
  *
  * An enumeration which contains the path type:
@@ -326,6 +338,7 @@ typedef struct
  * @height: real height
  * @clipped_width: clipped width (89 for instance)
  * @clipped_height: clipped height (89 for instance)
+ * @pixel_format: format of pixel data (#CalcPixelFormat)
  *
  * A structure used for storing screen size.
  **/
@@ -338,6 +351,8 @@ typedef struct
 
 	unsigned int clipped_width;
 	unsigned int clipped_height;
+
+	CalcPixelFormat pixel_format;
 } CalcScreenCoord;
 
 /**

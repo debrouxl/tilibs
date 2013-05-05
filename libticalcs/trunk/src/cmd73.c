@@ -505,7 +505,12 @@ TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_
 
 	TRYF(dbus_recv(handle, &host, &cmd, length, data));
 
-	if (cmd != CMD_XDP)
+	if (cmd == CMD_EOT)
+	{
+		ticalcs_info(" TI->PC: EOT");
+		return ERR_EOT;
+	}
+	else if (cmd != CMD_XDP)
 	{
 		return ERR_INVALID_CMD;
 	}

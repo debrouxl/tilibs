@@ -39,6 +39,12 @@ void pad_buffer_to_8_chars(uint8_t *varname, uint8_t value);
 
 
 
+// calc_84p.c
+
+int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length);
+
+
+
 // cmd82.c
 
 int ti82_send_asm_exec(CalcHandle*, VarEntry * var);

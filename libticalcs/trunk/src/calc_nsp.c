@@ -241,11 +241,13 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		{
 			// Nspire (CAS) Clickpad or Touchpad.
 			type = 0;
+			sc->pixel_format = CALC_PIXFMT_GRAY_4;
 		}
 		else if (infos.bits_per_pixel == 16)
 		{
 			// Nspire (CAS) CX.
 			type = 1;
+			sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
 		}
 		else
 		{

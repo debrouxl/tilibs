@@ -55,6 +55,8 @@
 // Screen coordinates of the TI83+
 #define TI73_ROWS  64
 #define TI73_COLS  96
+#define TI84PC_ROWS 240
+#define TI84PC_COLS 320
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -109,28 +111,88 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
-	uint16_t max_cnt;
+	uint16_t pktsize;
 	int err;
-	uint8_t buf[TI73_COLS * TI73_ROWS / 8];
-
-	sc->width = TI73_COLS;
-	sc->height = TI73_ROWS;
-	sc->clipped_width = TI73_COLS;
-	sc->clipped_height = TI73_ROWS;
+	uint8_t *buf = handle->priv2;
+	uint8_t *data = NULL;
+	uint32_t size;
 
 	TRYF(ti73_send_SCR(handle));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
-	err = ti73_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
+	err = ti73_recv_XDP(handle, &pktsize, buf);	// pb with checksum
 	if (err != ERR_CHECKSUM) { TRYF(err) };
-	TRYF(ti73_send_ACK(handle));
+	data = g_memdup(buf, pktsize);
 
-	*bitmap = (uint8_t *)g_malloc(TI73_COLS * TI73_ROWS / 8);
-	if(*bitmap == NULL)
-		return ERR_MALLOC;
-	memcpy(*bitmap, buf, TI73_COLS * TI73_ROWS  / 8);
+	err = ti73_send_ACK(handle);
+	if (err)
+	{
+		g_free(data);
+		return err;
+	}
 
-	return 0;
+	if (pktsize == TI73_COLS * TI73_ROWS / 8)
+	{
+		/* TI-73 / 83+ / 84+ */
+		sc->width = TI73_COLS;
+		sc->height = TI73_ROWS;
+		sc->clipped_width = TI73_COLS;
+		sc->clipped_height = TI73_ROWS;
+		sc->pixel_format = CALC_PIXFMT_MONO;
+		*bitmap = data;
+		return 0;
+	}
+	else
+	{
+		/* TI-84+CSE */
+		sc->width = TI84PC_COLS;
+		sc->height = TI84PC_ROWS;
+		sc->clipped_width = TI84PC_COLS;
+		sc->clipped_height = TI84PC_ROWS;
+		sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+
+		size = pktsize;
+
+		while (1)
+		{
+			err = ti73_recv_XDP(handle, &pktsize, buf);
+			if (err == ERR_EOT)
+			{
+				err = ti73_send_ACK(handle);
+				if (err)
+					goto done;
+				break;
+			}
+			else if (err)
+			{
+				goto done;
+			}
+
+			data = g_realloc(data, size + pktsize);
+			memcpy(data + size, buf, pktsize);
+			size += pktsize;
+
+			err = ti73_send_ACK(handle);
+			if (err)
+				goto done;
+
+			update_->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
+			update_->cnt1 = size;
+			update_->pbar();
+		}
+
+		*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
+		err = ti84pc_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
+		if (err)
+		{
+			g_free(*bitmap);
+			*bitmap = NULL;
+		}
+
+	done:
+		g_free(data);
+		return err;
+	}
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)

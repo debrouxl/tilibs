@@ -145,6 +145,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		sc->clipped_height = TI89_ROWS;
 		break;
 	}
+	sc->pixel_format = CALC_PIXFMT_MONO;
 
 	TRYF(ti89_send_SCR(handle));
 	TRYF(ti89_recv_ACK(handle, NULL));

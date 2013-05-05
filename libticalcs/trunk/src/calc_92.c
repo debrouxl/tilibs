@@ -114,6 +114,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->height = TI92_ROWS;
 	sc->clipped_width = TI92_COLS;
 	sc->clipped_height = TI92_ROWS;
+	sc->pixel_format = CALC_PIXFMT_MONO;
 
 	TRYF(ti92_send_SCR(handle));
 	TRYF(ti92_recv_ACK(handle, NULL));

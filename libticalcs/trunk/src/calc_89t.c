@@ -100,6 +100,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	sc->height = TI89T_ROWS;
 	sc->clipped_width = TI89T_COLS_VISIBLE;
 	sc->clipped_height = TI89T_ROWS_VISIBLE;
+	sc->pixel_format = CALC_PIXFMT_MONO;
     
 	param = dusb_cp_new_array(1);
 	TRYF(dusb_cmd_s_param_request(handle, 1, pid));

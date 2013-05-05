@@ -52,6 +52,8 @@
 // Screen coordinates of the TI83+
 #define TI84P_ROWS  64
 #define TI84P_COLS  96
+#define TI84PC_ROWS 240
+#define TI84PC_COLS 320
 
 static int		is_ready	(CalcHandle* handle)
 {
@@ -90,29 +92,228 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	return 0;
 }
 
+/* Unpack an image compressed using the 84+CSE RLE compression algorithm */
+int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length)
+{
+	const uint8_t *palette;
+	unsigned int palette_size, i, c, n;
+
+	if (src[0] != 1)
+		return ERR_INVALID_SCREENSHOT;
+	src++;
+	src_length--;
+
+	palette_size = src[src_length - 1];
+	if (src_length <= palette_size * 2 + 1)
+		return ERR_INVALID_SCREENSHOT;
+
+	src_length -= palette_size * 2 + 1;
+	palette = src + src_length - 2;
+
+	while (src_length > 0)
+	{
+		if ((src[0] & 0xf0) != 0)
+		{
+			for (i = 0; i < 2; i ++)
+			{
+				c = (i == 0 ? src[0] >> 4 : src[0] & 0x0f);
+				if (c == 0)
+					break;
+
+				if (c > palette_size)
+					return ERR_INVALID_SCREENSHOT;
+
+				if (dest_length < 2)
+					return ERR_INVALID_SCREENSHOT;
+
+				dest[0] = palette[2 * c];
+				dest[1] = palette[2 * c + 1];
+				dest += 2;
+				dest_length -= 2;
+			}
+			src++;
+			src_length--;
+		}
+		else if (src_length >= 2 && (src[0] & 0x0f) != 0)
+		{
+			c = src[0];
+			n = src[1];
+
+			if (c > palette_size)
+				return ERR_INVALID_SCREENSHOT;
+
+			if (dest_length < 2 * n)
+				return ERR_INVALID_SCREENSHOT;
+
+			for (i = 0; i < n; i++)
+			{
+				dest[0] = palette[2 * c];
+				dest[1] = palette[2 * c + 1];
+				dest += 2;
+				dest_length -= 2;
+			}
+
+			src += 2;
+			src_length -= 2;
+		}
+		else if (src_length >= 2 && src[0] == 0 && src[1] == 0)
+		{
+			src += 2;
+			src_length -= 2;
+			goto byte_mode;
+		}
+		else
+		{
+			return ERR_INVALID_SCREENSHOT;
+		}
+	}
+	goto finish;
+
+ byte_mode:
+	while (src_length > 0)
+	{
+		if (src[0] != 0)
+		{
+			c = src[0];
+
+			if (c > palette_size)
+				return ERR_INVALID_SCREENSHOT;
+
+			if (dest_length < 2)
+				return ERR_INVALID_SCREENSHOT;
+
+			dest[0] = palette[2 * c];
+			dest[1] = palette[2 * c + 1];
+			dest += 2;
+			dest_length -= 2;
+
+			src++;
+			src_length--;
+		}
+		else if (src_length >= 3 && src[1] != 0)
+		{
+			c = src[1];
+			n = src[2];
+
+			if (c > palette_size)
+				return ERR_INVALID_SCREENSHOT;
+
+			if (dest_length < 2 * n)
+				return ERR_INVALID_SCREENSHOT;
+
+			for (i = 0; i < n; i++)
+			{
+				dest[0] = palette[2 * c];
+				dest[1] = palette[2 * c + 1];
+				dest += 2;
+				dest_length -= 2;
+			}
+
+			src += 3;
+			src_length -= 3;
+		}
+		else if (src_length >= 3 && src[0] == 0 && src[1] == 0 && src[2] == 0)
+		{
+			src += 3;
+			src_length -= 3;
+			goto word_mode;
+		}
+		else
+		{
+			return ERR_INVALID_SCREENSHOT;
+		}
+	}
+	goto finish;
+
+ word_mode:
+	while (src_length > 0)
+	{
+		if (src_length < 2)
+			return ERR_INVALID_SCREENSHOT;
+
+		if (src[0] != 0x01 || src[1] != 0x00)
+		{
+			if (dest_length < 2)
+				return ERR_INVALID_SCREENSHOT;
+
+			dest[0] = src[0];
+			dest[1] = src[1];
+			dest += 2;
+			dest_length -= 2;
+			src += 2;
+			src_length -= 2;
+		}
+		else
+		{
+			if (src_length < 5)
+				return ERR_INVALID_SCREENSHOT;
+
+			n = src[4];
+
+			if (dest_length < 2 * n)
+				return ERR_INVALID_SCREENSHOT;
+
+			for (i = 0; i < n; i++)
+			{
+				dest[0] = src[2];
+				dest[1] = src[3];
+				dest += 2;
+				dest_length -= 2;
+			}
+
+			src += 5;
+			src_length -= 5;
+		}
+	}
+
+ finish:
+	if (src_length != 0 || dest_length != 0)
+		return ERR_INVALID_SCREENSHOT;
+	else
+		return 0;
+}
+
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
 	uint16_t pid[] = { PID_SCREENSHOT };
-	DUSBCalcParam **param;
+	uint32_t size;
+	uint8_t *data;
 
-	sc->width = TI84P_COLS;
-	sc->height = TI84P_ROWS;
-	sc->clipped_width = TI84P_COLS;
-	sc->clipped_height = TI84P_ROWS;
-
-	param = dusb_cp_new_array(1);
 	TRYF(dusb_cmd_s_param_request(handle, 1, pid));
-	TRYF(dusb_cmd_r_param_data(handle, 1, param));
-	if(!param[0]->ok)
-		return ERR_INVALID_PACKET;
+	TRYF(dusb_cmd_r_screenshot(handle, &size, &data));
 
-	*bitmap = (uint8_t *)g_malloc(TI84P_COLS * TI84P_ROWS / 8);
-	if(*bitmap == NULL) 
-		return ERR_MALLOC;
-	memcpy(*bitmap, param[0]->data, TI84P_COLS * TI84P_ROWS / 8);
+	if (size == TI84P_ROWS * TI84P_COLS / 8)
+	{
+		/* TI-84+ */
+		sc->width = TI84P_COLS;
+		sc->height = TI84P_ROWS;
+		sc->clipped_width = TI84P_COLS;
+		sc->clipped_height = TI84P_ROWS;
+		sc->pixel_format = CALC_PIXFMT_MONO;
+		*bitmap = data;
+		return 0;
+	}
+	else
+	{
+		/* TI-84+CSE */
+		size -= 4;
+		*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
+		if (ti84pc_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size))
+		{
+			g_free(*bitmap);
+			g_free(data);
+			*bitmap = NULL;
+			return ERR_INVALID_SCREENSHOT;
+		}
+		g_free(data);
 
-	dusb_cp_del_array(1, param);
-	return 0;
+		sc->width = TI84PC_COLS;
+		sc->height = TI84PC_ROWS;
+		sc->clipped_width = TI84PC_COLS;
+		sc->clipped_height = TI84PC_ROWS;
+		sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+		return 0;
+	}
 }
 
 static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)

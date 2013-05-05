@@ -243,6 +243,13 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		*message = g_strdup(error_msg);
 		break;
 
+	case ERR_INVALID_SCREENSHOT:
+		strcpy(error_msg, _("Unknown screenshot format."));
+		strcat(error_msg, "\n");
+		strcat(error_msg, _("Cause: a transmission error, or unsupported calculator version."));
+		*message = g_strdup(error_msg);
+		break;
+
 	case ERR_CALC_ERROR1:	// must be synchronized with cmd89.c (static uint8_t dbus_errors[])
 		strcpy(error_msg, _("Msg: hand-held returned an error."));
 		strcat(error_msg, "\n");
