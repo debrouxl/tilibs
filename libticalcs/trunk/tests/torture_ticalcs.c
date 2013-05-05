@@ -357,53 +357,56 @@ int main(int argc, char **argv)
     PRINTF(dusb_cmd_r_param_data, INT, NULL, 1, (void *)0x12345678);
 
     PRINTF(dusb_cmd_r_param_data, INT, (void *)0x12345678, 1, NULL);
+    PRINTF(dusb_cmd_r_screenshot, INT, NULL, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_screenshot, INT, (void *)0x12345678, NULL, (void *)0x12345678);
+    PRINTF(dusb_cmd_r_screenshot, INT, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(dusb_cmd_s_dirlist_request, INT, NULL, 1, (void *)0x12345678);
+// 271
     PRINTF(dusb_cmd_s_dirlist_request, INT, (void *)0x12345678, 1, NULL);
     PRINTF(dusb_cmd_r_var_header, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-// 271
     PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(dusb_cmd_r_var_header, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
+
     PRINTF(dusb_cmd_s_rts, INT, NULL, (void *)0x12345678, (void *)0x12345678, 0, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, NULL, (void *)0x12345678, 0, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, (void *)0x12345678, NULL, 0, 1, (void *)0x12345678);
-
     PRINTF(dusb_cmd_s_rts, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 0, 1, NULL);
     PRINTF(dusb_cmd_s_var_request, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, 1, (void *)0x12345678);
+// 281
     PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL, 1, (void *)0x12345678);
-// 281
     PRINTF(dusb_cmd_s_var_request, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, 1, NULL);
     PRINTF(dusb_cmd_s_var_content, INT, NULL, 0, (void *)0x12345678);
+
     PRINTF(dusb_cmd_s_var_content, INT, (void *)0x12345678, 0, NULL);
     PRINTF(dusb_cmd_r_var_content, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(dusb_cmd_r_var_content, INT, (void *)0x12345678, (void *)0x12345678, NULL);
-
     PRINTF(dusb_cmd_s_param_set, INT, NULL, (void *)0x12345678);
     PRINTF(dusb_cmd_s_param_set, INT, (void *)0x12345678, NULL);
+// 291
     PRINTF(dusb_cmd_s_var_modify, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
-// 291
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678);
+
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_modify, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL);
     PRINTF(dusb_cmd_s_var_delete, INT, NULL, (void *)0x12345678, (void *)0x12345678, 1, (void *)0x12345678);
-
     PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, NULL, (void *)0x12345678, 1, (void *)0x12345678);
     PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, (void *)0x12345678, NULL, 1, (void *)0x12345678);
+// 301
     PRINTF(dusb_cmd_s_var_delete, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, 1, NULL);
     PRINTF(dusb_cmd_s_execute, INT, NULL, (void *)0x12345678, (void *)0x12345678, 0, (void *)0x12345678, 0);  // It's OK to have args = NULL
     PRINTF(dusb_cmd_s_execute, INT, (void *)0x12345678, NULL, (void *)0x12345678, 0, (void *)0x12345678, 0);
-// 301
     PRINTF(dusb_cmd_s_execute, INT, (void *)0x12345678, (void *)0x12345678, NULL, 0, (void *)0x12345678, 0);
     PRINTF(dusb_cmd_r_mode_ack, INT, NULL);
+
     PRINTF(dusb_cmd_r_data_ack, INT, NULL);
     PRINTF(dusb_cmd_r_delay_ack, INT, NULL);
     PRINTF(dusb_cmd_s_eot, INT, NULL);
-
     PRINTF(dusb_cmd_r_eot, INT, NULL);
     PRINTF(dusb_cmd_s_error, INT, NULL, 0);
 

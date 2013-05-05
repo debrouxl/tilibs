@@ -208,7 +208,9 @@ static int err_code(DUSBVirtualPacket *pkt)
 
 extern const DUSBVtlPktName vpkt_types[];
 
-#define CATCH_DELAY() \
+#define CATCH_DELAY() CATCH_DELAY_VARSIZE(NULL, 0)
+
+#define CATCH_DELAY_VARSIZE(ds, es)                   \
 	if (pkt->type == DUSB_VPKT_DELAY_ACK) \
 	{ \
 		uint32_t delay = (pkt->data[0] << 24) | (pkt->data[1] << 16) | (pkt->data[2] << 8) | (pkt->data[3] << 0); \
@@ -224,7 +226,7 @@ extern const DUSBVtlPktName vpkt_types[];
 		dusb_vtl_pkt_del(pkt); \
 		pkt = dusb_vtl_pkt_new(0, 0); \
 \
-		retval = dusb_recv_data(h, pkt); \
+		retval = (ds == NULL ? dusb_recv_data(h, pkt) : dusb_recv_data_varsize(h, pkt, ds, es)); \
 		if (retval) \
 		{ \
 			goto end; \
@@ -572,6 +574,66 @@ TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *h, int nparams, DUSBCalcP
 end:
 	dusb_vtl_pkt_del(pkt);
 	ticalcs_info("   nparams=%i", nparams);
+
+	return retval;
+}
+
+// 0x0008 (variant): screenshot data (TI-84 Plus C)
+TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *h, uint32_t *size, uint8_t **data)
+{
+	DUSBVirtualPacket* pkt;
+	uint32_t declared_size;
+	int retval = 0;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (size == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
+	if (data == NULL)
+	{
+		ticalcs_critical("%s: data is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
+	}
+
+	pkt = dusb_vtl_pkt_new(0, 0);
+
+	retval = dusb_recv_data_varsize(h, pkt, &declared_size, 153600);
+
+	if (!retval)
+	{
+		CATCH_DELAY_VARSIZE(&declared_size, 153600);
+
+		if(pkt->type == DUSB_VPKT_ERROR)
+		{
+			retval = ERR_CALC_ERROR2 + err_code(pkt);
+			goto end;
+		}
+		else if(pkt->type != DUSB_VPKT_PARM_DATA)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		if(((pkt->data[0] << 8) | pkt->data[1]) != 1
+		   || ((pkt->data[2] << 8) | pkt->data[3]) != PID_SCREENSHOT
+		   || pkt->data[4] != 0)
+		{
+			retval = ERR_INVALID_PACKET;
+			goto end;
+		}
+
+		*size = pkt->size - 7;
+		*data = g_memdup(pkt->data + 7, pkt->size - 7);
+	}
+
+ end:
+	dusb_vtl_pkt_del(pkt);
 
 	return retval;
 }
