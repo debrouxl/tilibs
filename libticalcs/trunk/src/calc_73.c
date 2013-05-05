@@ -48,6 +48,7 @@
 #include "cmd73.h"
 #include "rom73.h"
 #include "rom83p.h"
+#include "rom84pc.h"
 #include "romdump.h"
 #include "keys83p.h"
 
@@ -697,7 +698,17 @@ static int		dump_rom_1	(CalcHandle* handle)
 	}
 	else
 	{
-		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
+		CalcInfos infos;
+
+		TRYF(get_version(handle, &infos));
+		if (infos.hw_version < 5)
+		{
+			TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
+		}
+		else
+		{
+			TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc));
+		}
 	}
 
 	return 0;
@@ -743,7 +754,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// without requesting an ACK.
 	TRYF(ti73_send_KEY(handle, keys[i]));
 	TRYF(ti73_recv_ACK(handle, NULL)); // when the key is received
-	PAUSE(200);
+	PAUSE(1000);
 
 	// Get dump
 	TRYF(rd_dump(handle, filename));

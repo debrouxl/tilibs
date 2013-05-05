@@ -3,7 +3,7 @@
 ;;; TI-84+ USB ROM Dumper
 ;;;
 ;;; Copyright (c) 2009, 2010 Brandon Wilson
-;;; Copyright (c) 2012 Benjamin Moody
+;;; Copyright (c) 2012, 2013 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
  .nolist
 #define bcall(romcallname) rst 28h \ .dw romcallname
 
+#ifdef TI84P
 _LdHLind        = 4009h
 _cphlde         = 400Ch
 _PutC           = 4504h
@@ -35,9 +36,12 @@ _Mov18B         = 47DAh
 _getKey         = 4972h
 _GetBaseVer      = 4C6Fh
 _GetVariableData = 5092h
+_SendUSBData     = 50F2h
+_KillUSBDevice   = 5257h
 _GetBootVer      = 80B7h
 _GetHWVer        = 80BAh
 _WriteAByteSafe  = 80C6h
+_KillUSB         = 810Eh
 
 appData         = 8000h
 ramCode         = 8100h
@@ -50,6 +54,50 @@ pagedCount      = 9834h
 pagedBuf        = 983Ah
 appBackUpScreen = 9872h
 userMem         = 9D95h
+
+outPageNum      = 83EBh
+inputBuffer     = 9C31h
+usbReadCount    = 9C80h
+usbQueuedCount  = 9C27h
+
+#define SAVE_MEM_PAGE           in a,(6) \ push af
+#define RESTORE_MEM_PAGE        pop af \ out (6),a
+#define RESTORE_MEM_PAGE_SAVEF  pop bc \ ld a,b \ out (6),a
+#define SET_FLASH_PAGE_A        out (6), a
+#endif
+
+#ifdef TI84PC
+_LdHLind        = 4009h
+_cphlde         = 400Ch
+_PutC           = 44FBh
+_PutS           = 4501h
+_clrLCDFull     = 4537h
+_homeUp         = 454Fh
+_runIndicOff    = 4567h
+_getKey         = 495Dh
+_SendUSBData    = 50D4h
+_KillUSBDevice  = 5236h
+_KillUSB        = 810Eh
+
+appData         = 08000h
+curRow          = 08459h
+OP1             = 084AEh
+pagedCount      = 09E15h
+appBackUpScreen = 0A0B0h ; note: this might be wrong
+userMem         = 0A60Bh
+
+outPageNum      = appBackUpScreen+50
+usbReadCount    = 09F61h
+usbQueuedCount  = 09F08h
+
+#define SAVE_MEM_PAGE           in a,(0Eh) \ push af \ in a,(6) \ push af
+#define RESTORE_MEM_PAGE        pop af \ out (6),a \ pop af \ out (0Eh),a
+#define RESTORE_MEM_PAGE_SAVEF  pop bc \ ld a,b \ out (6),a \ pop bc \ ld a,b \ out (0Eh),a
+#define SET_FLASH_PAGE_A        rlca \ out (0Eh),a \ srl a \ out (6),a
+#endif
+
+appTextSave = 1
+appFlags    = 0Dh
 
 onInterrupt     = 4
 onFlags         = 9h
@@ -64,20 +112,30 @@ CMD_GETDATA     = 0005h
 CMD_DATA        = 0006h
 CMD_REPEAT      = 0007h
  .list
-inputBuffer     = 9C31h
+
 SPbackup        = appBackUpScreen
 outputBuffer    = appBackUpScreen+2
 
 .org userMem-2
+#ifdef TI84P
         .db 0BBh,6Dh
+#endif
+#ifdef TI84PC
+        .db 0EFh,69h
+		res appTextSave,(iy+appFlags)
+		ld a,1
+		out (20h),a
+#endif
         bcall(_runIndicOff)
 ; Unlock Flash, if possible.
 ; The purpose is to get an accurate dump of the certificate page (page 3Eh/7Eh).
+#ifdef TI84P
         in a,(6)
         push af
         call Unlock
         pop af
         out (6),a
+#endif
 
         ld (SPbackup),sp
         call clearScreen
@@ -135,6 +193,9 @@ sizeRequested:
         inc hl
         ld (hl),0
         inc hl
+#ifdef TI84PC
+        ld (hl),40h
+#else
         in a,(21h)
         and 3
         ld a,10h
@@ -142,6 +203,7 @@ sizeRequested:
         add a,a
 srIsNotSE:
         ld (hl),a
+#endif
         inc hl
         ld (hl),0
         ld a,81h
@@ -191,11 +253,10 @@ drGFPDone:
         add hl,de
         ;See if this block is "empty"/same
         push hl
-        ld (83EBh),a
-        in a,(6)
-        push af
-        ld a,(83EBh)
-        out (6),a
+        ld (outPageNum),a
+        SAVE_MEM_PAGE
+        ld a,(outPageNum)
+        SET_FLASH_PAGE_A
         ld d,(hl)
         ld bc,PACKET_SIZE
 drGFDLoop:
@@ -208,15 +269,13 @@ drGFDLoop:
         or c
         jr nz,drGFDLoop
 drGFDDone:
-        pop bc
-        ld a,b
-        out (6),a
+        RESTORE_MEM_PAGE_SAVEF
         pop hl
         jr z,requestingEmptyPacket
-        ld a,(83EBh)
+        ld a,(outPageNum)
         ld de,CMD_DATA
         ld bc,PACKET_SIZE
-        call SendPacket
+        call SendFlashPacket
         jp c,throwError
         jp getCommandsLoop
 requestingEmptyPacket:
@@ -249,6 +308,11 @@ sError: .db "ERROR!          "
         .db "Press any key to"
         .db "quit.",0
 
+SendFlashPacket:
+#ifdef TI84PC
+        rlca
+        srl a
+#endif
 SendPacket:
 ;Sends a TiLP ROM dump packet.
 ;Inputs:        DE: command ID
@@ -259,9 +323,12 @@ SendPacket:
 ;Notes:         This routine is absolutely horrible. Somebody optimize it.
         di
         push bc
-        ld (83EBh),a
-        in a,(6)
-        push af
+        ld (outPageNum),a
+        SAVE_MEM_PAGE
+#ifdef TI84PC
+        sbc a,a
+        out (0Eh),a
+#endif
         ld a,83h
         out (6),a
         push hl
@@ -282,7 +349,7 @@ SendPacket:
         jr z,spSkipData
         push bc
 spCopyLoop:
-        ld a,(83EBh)
+        ld a,(outPageNum)
         out (6),a
         ld a,(hl)
         push af
@@ -295,9 +362,9 @@ spCopyLoop:
         jr z,spNC
         res 7,h
         set 6,h
-        ld a,(83EBh)
+        ld a,(outPageNum)
         inc a
-        ld (83EBh),a
+        ld (outPageNum),a
 spNC:   inc de
         dec bc
         ld a,b
@@ -327,8 +394,7 @@ spGCC:  dec bc
         ld (hl),e
         inc hl
         ld (hl),d
-        pop af
-        out (6),a
+        RESTORE_MEM_PAGE
         pop de
         inc de
         inc de
@@ -406,7 +472,7 @@ vdispd: bcall(_PutC)
 ;Inputs:        None
 ;Outputs:       Carry flag set if any issues
 InitializePeriphUSB:
-        bcall(810Eh) ;_KillUSB
+        bcall(_KillUSB)
         ret c
         ld a,80h
         out (57h),a
@@ -525,7 +591,7 @@ IsUSBAvailable:
 SendUSBData:
         set 2,(iy+40h)
         res 0,(iy+43h)
-        bcall(50F2h)
+        bcall(_SendUSBData)
         res 0,(iy+41h)
         ret
 
@@ -561,7 +627,7 @@ ReceiveUSBData:
 	push bc
 	push af
 	xor a
-	ld (9834h),a
+	ld (pagedCount),a
 	jr receive_data_ready
 receive_big_loop:
 	in a,(4)
@@ -577,7 +643,7 @@ receive_big_loop:
 receiving_data:
 	set 5,(iy+41h)
 	xor a
-	ld (9C27h),a
+	ld (usbQueuedCount),a
 	jr receive_data_ready
 restart_receive_loop:
         in a,(86h)
@@ -624,21 +690,21 @@ ReceiveUSBData_small:
         cp b
         ret c
         ld a,b
-        ld (9C80h),a
-        ld a,(9C27h)
+        ld (usbReadCount),a
+        ld a,(usbQueuedCount)
         or a
         jr z,ReceiveUSBData_continue
         cp b
         jr nc,ReceiveUSBData_continue
         ld b,a
-        ld (9C80h),a
+        ld (usbReadCount),a
 ReceiveUSBData_continue:
         in a,(8Fh)
         bit 2,a
         jp z,calcIsPeripheral
         xor a
         out (5Bh),a
-        ld a,(9C27h)
+        ld a,(usbQueuedCount)
         or a
         jr nz,startReceive
         ld a,1
@@ -665,7 +731,7 @@ ReceiveUSBData_continue:
         jp nz,receiveError
         ld a,1
         out (5Bh),a
-        ld a,(9C27h)
+        ld a,(usbQueuedCount)
         or a
         jr nz,startReceive
         ld a,1
@@ -674,7 +740,7 @@ ReceiveUSBData_continue:
         in a,(96h)
 startReceive:
         push af
-        ld a,(9C80h)
+        ld a,(usbReadCount)
         ld b,a
         ld c,0
 receiveLoop:
@@ -692,7 +758,7 @@ receiveLoop:
         jr nz,p1ReceiveError
         pop af
         sub c
-        ld (9C27h),a
+        ld (usbQueuedCount),a
         set 5,(iy+41h)
         ret nz
         ld a,1
@@ -709,7 +775,7 @@ receiveLoop:
         out (95h),a
         res 5,(iy+41h)
         xor a
-        ld (9C27h),a
+        ld (usbQueuedCount),a
         res 0,(iy+41h)
         ld a,20h
         out (94h),a
@@ -725,10 +791,10 @@ calcIsPeripheral:
         and 0DFh
         out (94h),a
         pop af
-        bcall(5257h) ;_KillUSBDevice
+        bcall(_KillUSBDevice)
 	jr receiveError
 startReceive2:
-        ld a,(9C27h)
+        ld a,(usbQueuedCount)
         or a
         jr nz,startReceive3
         in a,(96h)
@@ -745,10 +811,10 @@ receivePeriphLoop:
         out (8Eh),a
         pop af
         sub c
-        ld (9C27h),a
+        ld (usbQueuedCount),a
         ret nz
         xor a
-        ld (9C27h),a
+        ld (usbQueuedCount),a
         in a,(94h)
         and 0FEh
         out (94h),a
@@ -769,6 +835,9 @@ endReceive:
         ret
 
 ;----------------------------------------------------------------------------
+
+#ifdef TI84P
+	
 ;;; Table of supported OS and boot code versions
 VersionTable:
 	.db 1,19, 1,01		; TI-83 Plus
@@ -913,6 +982,8 @@ CheckVersion:
 	ld a, (hl)
 	cp b
 	ret
+
+#endif
 
 .end
 end

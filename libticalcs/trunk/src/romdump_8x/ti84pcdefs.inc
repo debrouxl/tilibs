@@ -4,7 +4,7 @@
 ;;;
 ;;; TI-73/82/83/83+/84+/85/86 ROM Dumper
 ;;;
-;;; Copyright (c) 2012 Benjamin Moody
+;;; Copyright (c) 2012-2013 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 ;;; Memory mapping
 
 memPort equ 6
+memExtPort equ 0Eh
 
 ;;; Link port
 
@@ -35,19 +36,16 @@ LINK_D1L          equ 2
 
 ;;; RAM addresses
 
-ramCode      equ 8100h
-arcInfo      equ 83EEh
-pagedCount   equ 9834h
-pagedBuf     equ 983Ah
-curRow       equ 844Bh
-curCol       equ 844Ch
-iMathPtr5    equ 84DBh
-saveSScreen  equ 86ECh
+saveSScreen equ 8798h
+curRow equ 8459h
 
 ;;; Flags
 
 apdFlags       equ 08h
 apdRunning     equ 3
+
+appFlags       equ 0Dh
+appTextSave    equ 1
 
 remoteKeyFlag  equ 1Fh
 remoteKeyPress equ 5
@@ -57,21 +55,14 @@ remoteKeyPress equ 5
 APP_PUSH_ERRORH equ 59h
 APP_POP_ERRORH  equ 5Ch
 
-_ClrScrnFull      equ 4546h
-_DispHL           equ 4507h
-_GetBaseVer       equ 4C6Fh
-_GetBootVer       equ 80B7h
-_GetHWVer         equ 80BAh
-_GetCSC           equ 4018h
-_GetVariableData  equ 5092h
-_LdHLind          equ 4009h
-_Mov18B		  equ 47DAh
-_PutC             equ 4504h
-_PutS             equ 450Ah
-_RecAByteIO       equ 4F03h
-_RunIndicOff      equ 4570h
-_SendAByte        equ 4EE5h
-_WriteAByteSafe   equ 80C6h
+_ClrScrnFull equ 453Dh
+_DispHL equ 44FEh
+_GetCSC equ 4018h
+_PutC equ 44FBh
+_PutS equ 4501h
+_RecAByteIO equ 4EE8h
+_RunIndicOff equ 4567h
+_SendAByte equ 4ECAh
 
 ;;; Macros
 
@@ -83,12 +74,11 @@ _WriteAByteSafe   equ 80C6h
 #define PUT_DECIMAL     B_CALL _DispHL
 #define PUT_STRING      B_CALL _PutS
 #define RUN_INDIC_OFF   B_CALL _RunIndicOff
-#define SET_ROM_PAGE    out (memPort), a
+#define SET_ROM_PAGE    rlca \ out (memExtPort), a \ srl a \ out (memPort), a
 
 #define EXIT_KEY_STR    db 0C1h, "MODE]"
 
 ;;; Miscellaneous
 
-#define CALC_FLASH
 #define CALC_LINK_ASSIST
-#define CALC_ROM_SIZE 0
+#define CALC_ROM_SIZE 4096

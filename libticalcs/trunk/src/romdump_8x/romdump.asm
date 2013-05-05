@@ -190,6 +190,31 @@ start:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;; TI-84 Plus C
+;;;
+
+#ifdef TI84PC
+
+;;; This program can be launched using the command "Asm(prgmROMDUMP".
+
+#include "ti84pcdefs.inc"
+
+#define safe_mem saveSScreen
+
+	;; Header for Asm(
+	org 0A609h
+	db 0EFh, 69h
+
+	ld a, 1
+	out (20h), a
+
+	res appTextSave, (iy + appFlags)
+	res remoteKeyPress, (iy + remoteKeyFlag)
+
+#endif ; TI84PC
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;; TI-85
 ;;;
 
@@ -293,7 +318,11 @@ CallHL:	jp (hl)
  #ifdef TI83P
   #include "link83p.asm"
  #else
-  #include "linksw.asm"
+  #ifdef TI84PC
+   #include "link83p.asm"
+  #else
+   #include "linksw.asm"
+  #endif
  #endif
 #endif
 

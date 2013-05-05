@@ -419,12 +419,17 @@ uninstall-am:
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am
 
 
-@BUILD_Z80_ROM_DUMPERS_TRUE@all: dump84p.8xp
+@BUILD_Z80_ROM_DUMPERS_TRUE@all: dump84p.8xp dump84pcu.8xp
 
 dump84p.bin: romdump.z80
-	$(SPASM) $(SPASMFLAGS) -A $(srcdir)/romdump.z80 dump84p.bin
+	$(SPASM) $(SPASMFLAGS) -A -DTI84P $(srcdir)/romdump.z80 dump84p.bin
 dump84p.8xp: dump84p.bin
 	$(TIPACK) -n 'ROMDUMP' dump84p.bin -p -o dump84p.8xp
+
+dump84pcu.bin: romdump.z80
+	$(SPASM) $(SPASMFLAGS) -A -DTI84PC $(srcdir)/romdump.z80 dump84pcu.bin
+dump84pcu.8xp: dump84pcu.bin
+	$(TIPACK) -n 'ROMDUMP' dump84pcu.bin -p -o dump84pcu.8xp
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

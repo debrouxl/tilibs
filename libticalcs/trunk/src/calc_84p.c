@@ -45,6 +45,7 @@
 #include "dusb_vpkt.h"
 #include "dusb_cmd.h"
 #include "rom84p.h"
+#include "rom84pcu.h"
 #include "romdump.h"
 #include "keys83p.h"
 
@@ -652,9 +653,21 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	return 0;
 }
 
+static int		get_version	(CalcHandle* handle, CalcInfos* infos);
+
 static int		dump_rom_1	(CalcHandle* handle)
 {
-	TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p));
+	CalcInfos infos;
+
+	TRYF(get_version(handle, &infos));
+	if (infos.hw_version < 5)
+	{
+		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p));
+	}
+	else
+	{
+		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu));
+	}
 
 	return 0;
 }
@@ -686,7 +699,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 #if 1
 	TRYF(dusb_cmd_s_execute(handle, "", "ROMDUMP", EID_PRGM, "", 0));
 	TRYF(dusb_cmd_r_data_ack(handle));
-	PAUSE(400);
+	PAUSE(3000);
 #endif
 	// Get dump
 	TRYF(rd_dump(handle, filename));

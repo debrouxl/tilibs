@@ -228,7 +228,7 @@ top_srcdir = @top_srcdir@
 EXTRA_DIST = *.asm *.inc
 CLEANFILES = *.bin *.lst *.73p *.82y *.83p *.8xp *.85s *.86p
 SPASMFLAGS = -N -T
-rom_dumpers = dump73.73p dump82.82y dump83.83p dump83p.8xp dump85.85s dump86.86p
+rom_dumpers = dump73.73p dump82.82y dump83.83p dump83p.8xp dump84pc.8xp dump85.85s dump86.86p
 all: all-am
 
 .SUFFIXES:
@@ -439,6 +439,10 @@ dump83p.bin: romdump.asm romdump.inc ti83pdefs.inc defs.inc main.asm \
  unlock83p.asm packet.asm link.asm link83p.asm data.asm
 	$(SPASM) $(SPASMFLAGS) -A -DTI83P -I $(srcdir) $(srcdir)/romdump.asm dump83p.bin
 
+dump84pc.bin: romdump.asm romdump.inc ti84pcdefs.inc defs.inc main.asm \
+ packet.asm link.asm link83p.asm data.asm
+	$(SPASM) $(SPASMFLAGS) -A -DTI84PC -I $(srcdir) $(srcdir)/romdump.asm dump84pc.bin
+
 dump85.bin: romdump.asm romdump.inc ti85defs.inc defs.inc main.asm \
  packet.asm link.asm linksw.asm display.asm display85.asm data.asm \
  font.asm
@@ -459,6 +463,9 @@ dump83.83p: dump83.bin
 
 dump83p.8xp: dump83p.bin
 	$(TIPACK) -n 'ROMDUMP' dump83p.bin -p -o dump83p.8xp
+
+dump84pc.8xp: dump84pc.bin
+	$(TIPACK) -n 'ROMDUMP' dump84pc.bin -p -o dump84pc.8xp
 
 dump85.85s: dump85.bin
 	$(TIPACK) -n '$$RD' dump85.bin -o dump85.85s

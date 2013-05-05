@@ -4,7 +4,7 @@
 ;;;
 ;;; TI-73/82/83/83+/84+/85/86 ROM Dumper
 ;;;
-;;; Copyright (c) 2012 Benjamin Moody
+;;; Copyright (c) 2012-2013 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -30,6 +30,10 @@ Main:
 	and 10h
 	or LINK_RESET
 	ld (defaultLinkState), a
+ #endif
+ #ifdef TI84PC
+	in a, (memExtPort)
+	ld (defaultMemExt), a
  #endif
 
  #ifdef TI82
@@ -219,6 +223,10 @@ BlockRequest_SetPacket:
  #ifdef TI83
 	ld a, (defaultLinkState)
 	out (linkPort), a
+ #endif
+ #ifdef TI84PC
+	ld a,(defaultMemExt)
+	out (memExtPort), a
  #endif
 	ld a, (defaultMemPage)
 	out (memPort), a

@@ -127,7 +127,7 @@ LinkReceiveB_Error:
 LinkError:
 	ld b, 255
 	push af
- #ifdef TI83P
+ #ifdef CALC_LINK_ASSIST
 	 in a, (2)
 	 and 80h
 	 out (8), a
@@ -145,7 +145,7 @@ LinkDelay_Loop:
 	 halt
 	 halt
 	 djnz LinkDelay_Loop
- #ifdef TI83P
+ #ifdef CALC_LINK_ASSIST
 	 xor a
 	 out (8), a
  #endif

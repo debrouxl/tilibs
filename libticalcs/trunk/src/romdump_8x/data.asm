@@ -4,7 +4,7 @@
 ;;;
 ;;; TI-73/82/83/83+/84+/85/86 ROM Dumper
 ;;;
-;;; Copyright (c) 2012 Benjamin Moody
+;;; Copyright (c) 2012-2013 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -28,6 +28,11 @@ DumpingROMString:	db "Dumping ROM...", 0
 ErrorString:		db "Errors:", 0
 
 KString:		db "0K of "
+
+ #if CALC_ROM_SIZE == 4096
+			db "4096K"
+ROMSize:		dw 0000h, 0040h
+ #endif
 
  #if CALC_ROM_SIZE == 512
 			db "512K"

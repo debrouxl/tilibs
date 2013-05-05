@@ -4,7 +4,7 @@
 ;;;
 ;;; TI-73/82/83/83+/84+/85/86 ROM Dumper
 ;;;
-;;; Copyright (c) 2012 Benjamin Moody
+;;; Copyright (c) 2012-2013 Benjamin Moody
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 defaultMemPage    equ safe_mem			; 1  Original ROM page
 defaultLinkState  equ defaultMemPage + 1	; 1  Original link port value (83)
+defaultMemExt     equ defaultLinkState		; 1  Original ROM bank (84PC)
 linkD0L	          equ defaultLinkState		; 1  Link port value for a 0 (82)
 linkD1L           equ linkD0L + 1		; 1  Link port value for a 1 (82)
 
