@@ -473,11 +473,11 @@ static void workaround_recv(CalcHandle *h, DUSBRawPacket * raw, DUSBVirtualPacke
 }
 
 // beware: data field may be re-allocated in size !
-TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
+TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* h, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size)
 {
 	DUSBRawPacket raw;
 	int i = 0;
-	long offset = 0;
+	unsigned long alloc_size;
 
 	if (h == NULL)
 	{
@@ -487,7 +487,12 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 	if (vtl == NULL)
 	{
 		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
+		return ERR_INVALID_PARAMETER;
+	}
+	if (declared_size == NULL)
+	{
+		ticalcs_critical("%s: declared_size is NULL", __FUNCTION__);
+		return ERR_INVALID_PARAMETER;
 	}
 
 	memset(&raw, 0, sizeof(raw));
@@ -501,15 +506,23 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 		if(!i++)
 		{
 			// first packet has a data header
-			vtl->size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+			if (raw.size < DUSB_DH_SIZE)
+				return ERR_INVALID_PACKET;
+
+			*declared_size = (raw.data[0] << 24) | (raw.data[1] << 16) | (raw.data[2] << 8) | (raw.data[3] << 0);
+			alloc_size = (*declared_size > 10000 ? 10000 : *declared_size);
+
+			if (alloc_size < raw.size - DUSB_DH_SIZE)
+				alloc_size = raw.size - DUSB_DH_SIZE;
+
 			vtl->type = (uint16_t)((raw.data[4] << 8) | (raw.data[5] << 0));
-			vtl->data = g_realloc(vtl->data, vtl->size);
+			vtl->data = g_realloc(vtl->data, alloc_size);
 			memcpy(vtl->data, &raw.data[DUSB_DH_SIZE], raw.size - DUSB_DH_SIZE);
-			offset = raw.size - DUSB_DH_SIZE;
+			vtl->size = raw.size - DUSB_DH_SIZE;
 #if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s\n\t\t(size = %08x, type = %s)", 
 				raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation",
-				vtl->size, dusb_vpkt_type2name(vtl->type));
+				*declared_size, dusb_vpkt_type2name(vtl->type));
 #elif (VPKT_DBG == 1)
 			ticalcs_info("  TI->PC: %s", dusb_vpkt_type2name(vtl->type));
 #endif
@@ -519,14 +532,32 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 		else
 		{
 			// others have more data
-			memcpy(vtl->data + offset, raw.data, raw.size);
-			offset += raw.size;
+
+			if (vtl->size + raw.size > alloc_size)
+			{
+				if (vtl->size + raw.size <= est_size)
+					alloc_size = est_size;
+				else
+					alloc_size = (vtl->size + raw.size) * 2;
+				vtl->data = g_realloc(vtl->data, alloc_size);
+			}
+
+			memcpy(vtl->data + vtl->size, raw.data, raw.size);
+			vtl->size += raw.size;
 #if (VPKT_DBG == 2)
 			ticalcs_info("  TI->PC: %s", raw.type == DUSB_RPKT_VIRT_DATA_LAST ? "Virtual Packet Data Final" : "Virtual Packet Data with Continuation");
 #endif
 
-			h->updat->max1 = vtl->size;
-			h->updat->cnt1 += DATA_SIZE;
+			if (raw.type == DUSB_RPKT_VIRT_DATA_LAST)
+				h->updat->max1 = vtl->size;
+			else if (vtl->size < *declared_size)
+				h->updat->max1 = *declared_size;
+			else if (vtl->size < est_size)
+				h->updat->max1 = est_size;
+			else
+				h->updat->max1 = vtl->size + raw.size;
+
+			h->updat->cnt1 = vtl->size;
 			h->updat->pbar();
 		}
 
@@ -537,6 +568,33 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
 	} while(raw.type != DUSB_RPKT_VIRT_DATA_LAST);
 
 	//printf("dusb_recv_data: rpkt.size=%d\n", raw.size);
+
+	return 0;
+}
+
+TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* vtl)
+{
+	uint32_t declared_size;
+
+	if (h == NULL)
+	{
+		ticalcs_critical("%s: h is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+	if (vtl == NULL)
+	{
+		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
+		return ERR_INVALID_PACKET;
+	}
+
+	TRYF(dusb_recv_data_varsize(h, vtl, &declared_size, 0));
+
+	if (declared_size != vtl->size)
+	{
+		ticalcs_warning("invalid packet (declared size = %d, actual size = %d)",
+		                declared_size, vtl->size);
+		return ERR_INVALID_PACKET;
+	}
 
 	return 0;
 }

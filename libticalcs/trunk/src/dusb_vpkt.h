@@ -80,6 +80,7 @@ TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size);
 
 TIEXPORT3 int TICALL dusb_send_data(CalcHandle* h, DUSBVirtualPacket* pkt);
 TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* pkt);
+TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* h, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size);
 
 TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* h);
 TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *h);
