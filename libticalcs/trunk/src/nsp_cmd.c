@@ -1139,12 +1139,13 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *h, uint8_t *value)
 			ticalcs_info("  %i/100", *value);
 			break;
 		case CMD_STATUS:
-			nsp_vtl_pkt_del(pkt);
 			retval = ERR_CALC_ERROR3 + err_code(*value);
+			break;
 		default:
-			nsp_vtl_pkt_del(pkt);
 			retval = ERR_INVALID_PACKET;
+			break;
 		}
+		nsp_vtl_pkt_del(pkt);
 	}
 
 	return retval;
