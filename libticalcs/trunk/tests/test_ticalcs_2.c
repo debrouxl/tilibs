@@ -702,7 +702,7 @@ int main(int argc, char **argv)
 	CalcHandle* calc;
 	int err, i;
 	int do_exit=0;
-	int choice;
+	unsigned int choice;
 	char* colon;
 
 	while((i = getopt(argc, argv, "c:m:")) != -1)
@@ -815,7 +815,7 @@ restart:
 			printf("%2i. %s\n", i, str_menu[i]);
 		printf("Your choice: ");
 
-		err = scanf("%i", &choice);
+		err = scanf("%u", &choice);
 		if(err < 1)
 			goto restart;
 		printf("\n");
@@ -824,7 +824,7 @@ restart:
 			do_exit = 1;
 
 		// Process choice
-		if(fnct_menu[choice])
+		if(choice < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])) && fnct_menu[choice])
 			fnct_menu[choice](calc);
 		printf("\n");
 
