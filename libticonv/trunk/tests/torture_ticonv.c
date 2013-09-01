@@ -6,7 +6,7 @@
 #define xstr(s) str(s)
 
 #define PRINTF(FUNCTION, TYPE, args...) \
-printf("%d\t" TYPE "\n", i, FUNCTION(args)); i++
+fprintf(stderr, "%d\t" TYPE "\n", i, FUNCTION(args)); i++
 
 #define SIZE "%zd"
 #define PTR "%p"

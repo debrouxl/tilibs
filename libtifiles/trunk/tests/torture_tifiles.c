@@ -2,10 +2,10 @@
 #include <tifiles.h>
 
 #define PRINTF(FUNCTION, TYPE, args...) \
-printf("%d\t" TYPE "\n", i, FUNCTION(args)); i++
+fprintf(stderr, "%d\t" TYPE "\n", i, FUNCTION(args)); i++
 
 #define PRINTFVOID(FUNCTION, args...) \
-printf("%d\n", i); FUNCTION(args); i++
+fprintf(stderr, "%d\n", i); FUNCTION(args); i++
 
 #define INT "%d"
 #define PTR "%p"
