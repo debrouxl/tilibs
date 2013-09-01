@@ -1153,7 +1153,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *h, uint8_t *value)
 
 /////////////----------------
 
-TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
+TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *h, uint32_t size, uint8_t *data, uint16_t sid, uint8_t cmd)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1164,11 +1164,11 @@ TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 		return ERR_INVALID_HANDLE;
 	}
 
-	ticalcs_info("  sending echo:");
+	ticalcs_info("  sending generic data of size %lu (%lX) with command %02X:", (unsigned long)size, (unsigned long)size, cmd);
 
-	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_ECHO);
+	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, sid);
 
-	pkt->cmd = 0;
+	pkt->cmd = cmd;
 	if(data)
 	{
 		memcpy(pkt->data, data, size);
@@ -1180,7 +1180,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
 	return retval;
 }
 
-TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
+TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *h, uint32_t *size, uint8_t **data)
 {
 	NSPVirtualPacket* pkt;
 	int retval = 0;
@@ -1193,7 +1193,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **dat
 
 	pkt = nsp_vtl_pkt_new();
 
-	ticalcs_info("  receiving echo:");
+	ticalcs_info("  receiving generic data:");
 
 	retval = nsp_recv_data(h, pkt);
 	if(size)
@@ -1217,6 +1217,20 @@ TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **dat
 	nsp_vtl_pkt_del(pkt);
 
 	return retval;
+}
+
+/////////////----------------
+
+TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data)
+{
+	ticalcs_info("  sending echo:");
+	return nsp_cmd_s_generic_data(h, size, data, NSP_PORT_ECHO, 0);
+}
+
+TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data)
+{
+	ticalcs_info("  receiving echo:");
+	return nsp_cmd_r_generic_data(h, size, data);
 }
 
 /////////////----------------

@@ -91,6 +91,12 @@ TIEXPORT3 int TICALL nsp_cmd_r_login(CalcHandle *h);
 TIEXPORT3 int TICALL nsp_cmd_s_status(CalcHandle *h, uint8_t status);
 TIEXPORT3 int TICALL nsp_cmd_r_status(CalcHandle *h, uint8_t *status);
 
+TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *h, uint32_t size, uint8_t *data, uint16_t sid, uint8_t cmd);
+TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *h, uint32_t *size, uint8_t **data);
+
+TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
+TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
+
 TIEXPORT3 int TICALL nsp_cmd_s_dev_infos(CalcHandle *h, uint8_t cmd);
 TIEXPORT3 int TICALL nsp_cmd_r_dev_infos(CalcHandle *h, uint8_t *cmd, uint32_t *size, uint8_t **data);
 
@@ -144,9 +150,6 @@ TIEXPORT3 int TICALL nsp_cmd_r_os_install(CalcHandle *h);
 
 TIEXPORT3 int TICALL nsp_cmd_s_os_contents(CalcHandle *h, uint32_t size, uint8_t *data);
 TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *h, uint8_t *value);
-
-TIEXPORT3 int TICALL nsp_cmd_s_echo(CalcHandle *h, uint32_t size, uint8_t *data);
-TIEXPORT3 int TICALL nsp_cmd_r_echo(CalcHandle *h, uint32_t *size, uint8_t **data);
 
 TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *h, const uint8_t keycode[3]);
 // There doesn't seem to be a need for nsp_cmd_r_keypress_event.
