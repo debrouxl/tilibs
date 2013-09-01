@@ -401,6 +401,89 @@ TIEXPORT3 int TICALL ti73_send_DUMP(CalcHandle* handle, uint16_t page)
 	return dbus_send(handle, PC_TI83p, CMD_DMP, 8, buffer);
 }
 
+TIEXPORT3 int TICALL ti73_send_EKE(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: EKE");
+	return dbus_send(handle, PC_TI7383, CMD_EKE, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_DKE(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: DKE");
+	return dbus_send(handle, PC_TI7383, CMD_DKE, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_ELD(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: ELD");
+	return dbus_send(handle, PC_TI7383, CMD_ELD, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_DLD(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: DLD");
+	return dbus_send(handle, PC_TI7383, CMD_DLD, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_GID(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: GID");
+	return dbus_send(handle, PC_TI7383, CMD_GID, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_RID(CalcHandle* handle)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: RID");
+	return dbus_send(handle, PC_TI7383, CMD_RID, 2, NULL);
+}
+
+TIEXPORT3 int TICALL ti73_send_SID(CalcHandle* handle, uint8_t * data)
+{
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
+
+	ticalcs_info(" PC->TI: SID");
+	return dbus_send(handle, PC_TI7383, CMD_SID, 32, data);
+}
 
 TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr)
 {
@@ -608,6 +691,26 @@ TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_
 	return 0;
 }
 
+TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle* handle, uint16_t * length, uint8_t * data)
+{
+	uint8_t host, cmd;
+
+	TRYF(dbus_recv(handle, &host, &cmd, length, data));
+
+	if (cmd == CMD_EOT)
+	{
+		ticalcs_info(" TI->PC: EOT");
+		return ERR_EOT;
+	}
+	else if (cmd != CMD_SID)
+	{
+		return ERR_INVALID_CMD;
+	}
+
+	ticalcs_info(" TI->PC: SID (%04X bytes)", *length);
+
+	return 0;
+}
 /*
   Receive acknowledge
   - status [in/out]: if NULL is passed, the function checks that 00 00 has

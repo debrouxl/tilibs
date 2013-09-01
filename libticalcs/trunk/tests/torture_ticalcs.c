@@ -443,82 +443,90 @@ int main(int argc, char **argv)
     PRINTF(ti73_send_DEL, INT, NULL, 0, 0, (void *)0x12345678, 0);
     PRINTF(ti73_send_DEL, INT, (void *)0x12345678, 0, 0, NULL, 0);
     PRINTF(ti73_send_DUMP, INT, NULL, 0);
-    PRINTF(ti73_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+    PRINTF(ti73_send_EKE, INT, NULL);
 
+    PRINTF(ti73_send_DKE, INT, NULL);
+    PRINTF(ti73_send_ELD, INT, NULL);
+    PRINTF(ti73_send_DLD, INT, NULL);
+    PRINTF(ti73_send_GID, INT, NULL);
+    PRINTF(ti73_send_RID, INT, NULL);
+// 341
+    PRINTF(ti73_send_SID, INT, NULL, (void *)0x12345678);
+    PRINTF(ti73_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
+
     PRINTF(ti73_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
     PRINTF(ti73_recv_VAR2, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
-// 341
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+// 351
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_VAR2, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-
     PRINTF(ti73_recv_CTS, INT, NULL, 0);
     PRINTF(ti73_recv_SKP, INT, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_SKP, INT, (void *)0x12345678, NULL);
+
     PRINTF(ti73_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-// 351
     PRINTF(ti73_recv_ACK, INT, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
+// 361
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
-
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 // cmd89.c
     PRINTF(ti89_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti89_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
+
     PRINTF(ti89_send_CTS, INT, NULL);
     PRINTF(ti89_send_XDP, INT, NULL, 0, (void *)0x12345678);
-// 361
     PRINTF(ti89_send_SKP, INT, NULL, 0);
     PRINTF(ti89_send_ACK, INT, NULL);
     PRINTF(ti89_send_ERR, INT, NULL);
+// 371
     PRINTF(ti89_send_RDY, INT, NULL);
     PRINTF(ti89_send_SCR, INT, NULL);
-
     PRINTF(ti89_send_CNT, INT, NULL);
     PRINTF(ti89_send_KEY, INT, NULL, 0);
     PRINTF(ti89_send_EOT, INT, NULL);
+
     PRINTF(ti89_send_REQ, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti89_send_REQ, INT, (void *)0x12345678, 0, 0, NULL);
-// 371
     PRINTF(ti89_send_RTS, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti89_send_RTS, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti89_send_RTS2, INT, NULL, 0, 0, 0);
+// 381
     PRINTF(ti89_send_VER, INT, NULL);
     PRINTF(ti89_send_DEL, INT, NULL, 0, 0, (void *)0x12345678);
-
     PRINTF(ti89_send_DEL, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti89_recv_VAR, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti89_recv_VAR, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
+
     PRINTF(ti89_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti89_recv_VAR, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-// 381
     PRINTF(ti89_recv_CTS, INT, NULL);
     PRINTF(ti89_recv_SKP, INT, NULL, (void *)0x12345678);
     PRINTF(ti89_recv_SKP, INT, (void *)0x12345678, NULL);
+// 391
     PRINTF(ti89_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti89_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-
     PRINTF(ti89_send_ACK, INT, NULL);
     PRINTF(ti89_recv_CNT, INT, NULL);
     PRINTF(ti89_recv_EOT, INT, NULL);
+
     PRINTF(ti89_recv_RTS, INT, NULL, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
-// 391
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
 // cmd80.c
     PRINTF(ti80_send_SCR, INT, NULL);
+// 401
     PRINTF(ti80_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti80_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
-
     PRINTF(ti80_recv_ACK, INT, NULL, (void *)0x12345678);
 
     ticalcs_library_exit();

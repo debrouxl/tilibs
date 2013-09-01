@@ -41,12 +41,20 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartyp
 TIEXPORT3 int TICALL ti73_send_VER(CalcHandle*);
 TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 TIEXPORT3 int TICALL ti73_send_DUMP(CalcHandle*, uint16_t page);
+TIEXPORT3 int TICALL ti73_send_EKE(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_DKE(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_ELD(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_DLD(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_GID(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_RID(CalcHandle*);
+TIEXPORT3 int TICALL ti73_send_SID(CalcHandle*, uint8_t * data);
 
 TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr);
 TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle*, uint16_t * length, uint8_t * type, char *name, uint16_t * offset, uint16_t * page);
 TIEXPORT3 int TICALL ti73_recv_CTS(CalcHandle*, uint16_t length);
 TIEXPORT3 int TICALL ti73_recv_SKP(CalcHandle*, uint8_t * rej_code);
 TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
+TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle*, uint16_t * length, uint8_t * data);
 TIEXPORT3 int TICALL ti73_recv_ACK(CalcHandle*, uint16_t * status);
 TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname, uint8_t * varattr);
 

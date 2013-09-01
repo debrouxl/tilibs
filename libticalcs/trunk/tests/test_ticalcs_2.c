@@ -45,18 +45,11 @@
 #undef VERSION
 #define VERSION "Test program"
 
-#ifdef _MSC_VER
-# define SNULL	{ 0 }
-#else
-# define SNULL	{}
-#endif
-
 static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 {
 	char buf[256];
 	const char *s;
 	int ret;
-	unsigned long val;
 	char * endptr;
 
 	memset(vr, 0, sizeof(VarRequest));
@@ -127,26 +120,23 @@ static int send_key(CalcHandle *h)
 {
 	const CalcKey *key = ticalcs_keys_92p('A');
 
-	TRYF(ticalcs_calc_send_key(h, key->normal.value));
-	return 0;
+	return ticalcs_calc_send_key(h, key->normal.value);
 }
 
 static int execute(CalcHandle *h)
 {
 	VarEntry ve;
-	int ret;
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
-	    
-	TRYF(ticalcs_calc_execute(h, &ve, ""));
-	return 0;
+
+	return ticalcs_calc_execute(h, &ve, "");
 }
 
 static int recv_screen(CalcHandle *h)
 {
-	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0 };
+	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0, CALC_PIXFMT_MONO };
 	uint8_t* bitmap = NULL;
 
 	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
@@ -179,8 +169,7 @@ static int send_backup(CalcHandle* h)
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_backup(h->model));
 
-	TRYF(ticalcs_calc_send_backup2(h, filename));
-	return 0;
+	return ticalcs_calc_send_backup2(h, filename);
 }
 
 static int recv_backup(CalcHandle* h)
@@ -195,8 +184,7 @@ static int recv_backup(CalcHandle* h)
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_backup(h->model));
 
-	TRYF(ticalcs_calc_recv_backup2(h, filename));
-	return 0;
+	return ticalcs_calc_recv_backup2(h, filename);
 }
 
 static int send_var(CalcHandle* h)
@@ -246,8 +234,7 @@ static int recv_var(CalcHandle* h)
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
-	TRYF(ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve));
-	return 0;
+	return ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve);
 }
 
 static int send_var_ns(CalcHandle* h)
@@ -260,8 +247,7 @@ static int send_var_ns(CalcHandle* h)
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_send_var_ns2(h, MODE_NORMAL, filename));
-	return 0;
+	return ticalcs_calc_send_var_ns2(h, MODE_NORMAL, filename);
 }
 
 static int recv_var_ns(CalcHandle* h)
@@ -275,9 +261,7 @@ static int recv_var_ns(CalcHandle* h)
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_recv_var_ns2(h, MODE_NORMAL, filename, &ve));
-
-	return 0;
+	return ticalcs_calc_recv_var_ns2(h, MODE_NORMAL, filename, &ve);
 }
 
 static int send_flash(CalcHandle *h)
@@ -292,8 +276,7 @@ static int send_flash(CalcHandle *h)
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_flash_app(h->model));
 
-	TRYF(ticalcs_calc_send_app2(h, filename));
-	return 0;
+	return ticalcs_calc_send_app2(h, filename);
 }
 
 static int recv_flash(CalcHandle *h)
@@ -313,24 +296,20 @@ static int recv_flash(CalcHandle *h)
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_recv_app2(h, filename, &ve));
-	return 0;
+	return ticalcs_calc_recv_app2(h, filename, &ve);
 }
 
 static int send_os(CalcHandle *h)
 {
 	char filename[1024] = "";
 	int ret;
-	char * message;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if(ret < 1)
 		return 0;
 
-	TRYF(ticalcs_calc_send_os2(h, filename));
-
-	return 0;
+	return ticalcs_calc_send_os2(h, filename);
 }
 
 static int recv_idlist(CalcHandle *h)
@@ -377,21 +356,18 @@ static int get_clock(CalcHandle *h)
 static int del_var(CalcHandle* h)
 {
 	VarEntry ve;
-	int ret;
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
-	    
-	TRYF(ticalcs_calc_del_var(h, &ve));
-	return 0;
+
+	return ticalcs_calc_del_var(h, &ve);
 }
 
 static int rename_var(CalcHandle* h)
 {
 	VarEntry src;
 	VarEntry dst;
-	int ret;
 
 	memset(&src, 0, sizeof(src));
 	if(!read_varname(h, &src, " current"))
@@ -400,47 +376,40 @@ static int rename_var(CalcHandle* h)
 	if(!read_varname(h, &dst, " new"))
 		return 0;
 
-	TRYF(ticalcs_calc_rename_var(h, &src, &dst));
-	return 0;
+	return ticalcs_calc_rename_var(h, &src, &dst);
 }
 
 static int archive_var(CalcHandle* h)
 {
 	VarEntry ve;
-	int ret;
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
-	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_ARCHIVED));
-	return 0;
+	return ticalcs_calc_change_attr(h, &ve, ATTRB_ARCHIVED);
 }
 
 static int unarchive_var(CalcHandle* h)
 {
 	VarEntry ve;
-	int ret;
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
-	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_NONE));
-	return 0;
+	return ticalcs_calc_change_attr(h, &ve, ATTRB_NONE);
 }
 
 static int lock_var(CalcHandle* h)
 {
 	VarEntry ve;
-	int ret;
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
 		return 0;
 
-	TRYF(ticalcs_calc_change_attr(h, &ve, ATTRB_LOCKED));
-	return 0;
+	return ticalcs_calc_change_attr(h, &ve, ATTRB_LOCKED);
 }
 
 static int new_folder(CalcHandle* h)
@@ -456,18 +425,14 @@ static int new_folder(CalcHandle* h)
 		if(ret < 1) return 0;
 	}
 
-	TRYF(ticalcs_calc_new_fld(h, &ve));
-	return 0;
+	return ticalcs_calc_new_fld(h, &ve);
 }
 
 static int get_version(CalcHandle *h)
 {
 	CalcInfos infos;
 
-	TRYF(ticalcs_calc_get_version(h, &infos));
-	//ticalcs_clock_show(h->model, &clk);
-
-	return 0;
+	return ticalcs_calc_get_version(h, &infos);
 }
 
 static int probe_calc(CalcHandle *h)
@@ -539,7 +504,112 @@ static int ti83pfamily_dump(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	29
+static int ti83pfamily_eke(CalcHandle *h)
+{
+	if (   (ti73_send_EKE(h) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0))
+	{
+		printf("EKE successfully sent\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_dke(CalcHandle *h)
+{
+	if (   (ti73_send_DKE(h) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0))
+	{
+		printf("DKE successfully sent\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_eld(CalcHandle *h)
+{
+	if (   (ti73_send_ELD(h) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0))
+	{
+		printf("ELD successfully sent\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_dld(CalcHandle *h)
+{
+	if (   (ti73_send_DLD(h) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0))
+	{
+		printf("DLD successfully sent\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_gid(CalcHandle *h)
+{
+	uint8_t buffer[0x10];
+	uint16_t length;
+	uint16_t i;
+
+	if (   (ti73_send_GID(h) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0)
+	    && (ti73_recv_XDP(h, &length, buffer) == 0)
+	    && (ti73_send_ACK(h) == 0))
+	{
+		printf("GID successfully sent\n");
+		for (i = 0; i < length; i++)
+		{
+			printf("%02X ", buffer[i]);
+		}
+		puts("\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_rid(CalcHandle *h)
+{
+	uint8_t buffer[0x30];
+	uint16_t length;
+	uint16_t i;
+
+	if (   (ti73_send_RID(h) == 0)
+	    && (ti73_recv_SID(h, &length, buffer) == 0)
+	    && (ti73_send_ACK(h) == 0))
+	{
+		printf("RID/SID successful\n");
+		for (i = 0; i < length; i++)
+		{
+			printf("%02X ", buffer[i]);
+		}
+		puts("\n");
+	}
+
+	return 0;
+}
+
+static int ti83pfamily_sid(CalcHandle *h)
+{
+	static uint8_t DATA[] = {
+		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+		0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10,
+		0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+		0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F, 0x20
+	};
+
+	if (   (ti73_send_SID(h, DATA) == 0)
+	    && (ti73_recv_ACK(h, NULL) == 0))
+	{
+		printf("SID successful\n");
+	}
+
+	return 0;
+}
+
+#define NITEMS	36
 
 static const char *str_menu[NITEMS] = 
 {
@@ -571,7 +641,14 @@ static const char *str_menu[NITEMS] =
 	"Get version",
 	"Probe calc",
 	"Nspire-specific send key",
-	"83+-family-specific memory dump"
+	"83+-family-specific memory dump",
+	"83+-family-specific enable key echo",
+	"83+-family-specific disable key echo",
+	"83+-family-specific enable lockdown",
+	"83+-family-specific disable lockdown",
+	"83+-family-specific get standard calculator ID",
+	"83+-family-specific retrieve some 32-byte memory area",
+	"83+-family-specific set some 32-byte memory area",
 };
 
 typedef int (*FNCT_MENU) (CalcHandle*);
@@ -606,7 +683,14 @@ static FNCT_MENU fnct_menu[NITEMS] =
 	get_version,
 	probe_calc,
 	nsp_send_key,
-	ti83pfamily_dump
+	ti83pfamily_dump,
+	ti83pfamily_eke,
+	ti83pfamily_dke,
+	ti83pfamily_eld,
+	ti83pfamily_dld,
+	ti83pfamily_gid,
+	ti83pfamily_rid,
+	ti83pfamily_sid
 };
 
 int main(int argc, char **argv)
