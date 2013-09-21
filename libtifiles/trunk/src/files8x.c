@@ -201,7 +201,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 				if(fskip(f, 8 - name_length) < 0) goto tfrr;
 			}
 		}
-		else if (is_ti83p(content->model))
+		else if (ti83p_flag)
 		{
 			if(fskip(f, 13) < 0) goto tfrr;
 		}
