@@ -377,6 +377,7 @@ static int tifiles_file_has_ti_header(const char *filename)
 		f = g_fopen(filename, "rb");
 		if (f != NULL)
 		{
+			memset(buf, 0, sizeof(buf));
 			fread_8_chars(f, buf);
 			fclose(f);
 			for(p = buf; *p != '\0'; p++)
