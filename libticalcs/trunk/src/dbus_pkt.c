@@ -58,6 +58,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
+
 	buf = (uint8_t *)handle->priv2;                    //[65536+6];
 	if (buf == NULL)
 	{

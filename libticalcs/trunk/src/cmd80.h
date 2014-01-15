@@ -19,12 +19,14 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __TICALCS_CMD80__
 #define __TICALCS_CMD80__
 
-int ti80_send_SCR(CalcHandle*);
+TIEXPORT3 int TICALL ti80_send_SCR(CalcHandle*);
 
-int ti80_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
-int ti80_recv_ACK(CalcHandle*, uint16_t * status);
+TIEXPORT3 int TICALL ti80_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
+TIEXPORT3 int TICALL ti80_recv_ACK(CalcHandle*, uint16_t * status);
 
 #endif

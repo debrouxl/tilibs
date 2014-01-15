@@ -37,26 +37,38 @@
 #pragma warning( disable : 4761 )
 #endif
 
-int ti80_send_SCR(CalcHandle* handle)
+TIEXPORT3 int TICALL ti80_send_SCR(CalcHandle* handle)
 {
-  ticalcs_info(" PC->TI: SCR");
-  TRYF(dbus_send(handle, PC_TI80, CMD_SCR, 0, NULL));
-
-  return 0;
+	ticalcs_info(" PC->TI: SCR");
+	return dbus_send(handle, PC_TI80, CMD_SCR, 0, NULL);
 }
 
-int ti80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
+TIEXPORT3 int TICALL ti80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
-  uint8_t host, cmd;
+	uint8_t host, cmd;
+	int ret;
 
-  TRYF(dbus_recv(handle, &host, &cmd, length, data));
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
-  if (cmd != CMD_XDP)
-    return ERR_INVALID_CMD;
+	ret = dbus_recv(handle, &host, &cmd, length, data);
+	if (ret == 0)
+	{
+		if (cmd != CMD_XDP)
+		{
+			ret = ERR_INVALID_CMD;
+		}
 
-  ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
+		if (length != NULL)
+		{
+			ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
+		}
+	}
 
-  return 0;
+	return ret;
 }
 
 /*
@@ -65,22 +77,47 @@ int ti80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data)
   been received. Otherwise, it put in status the received value.
   - int [out]: an error code
 */
-int ti80_recv_ACK(CalcHandle* handle, uint16_t * status)
+TIEXPORT3 int TICALL ti80_recv_ACK(CalcHandle* handle, uint16_t * status)
 {
-  uint8_t host, cmd;
-  uint16_t sts;
+	uint8_t host, cmd;
+	uint16_t sts;
+	int ret;
 
-  TRYF(dbus_recv(handle, &host, &cmd, &sts, NULL));
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
-  if (status != NULL)
-    *status = sts;
-  else if (sts != 0x0000)
-    return ERR_NACK;
+	ret = dbus_recv(handle, &host, &cmd, &sts, NULL);
+	if (ret == 0)
+	{
+		if (status != NULL)
+		{
+			*status = sts;
 
-  if (cmd != CMD_ACK)
-    return ERR_INVALID_CMD;
+			if (cmd != CMD_ACK)
+			{
+				ret = ERR_INVALID_CMD;
+			}
+		}
+		else
+		{
+			if (sts != 0x0000)
+			{
+				ret = ERR_NACK;
+			}
+			else
+			{
+				if (cmd != CMD_ACK)
+				{
+					ret = ERR_INVALID_CMD;
+				}
+			}
+		}
 
-  ticalcs_info(" TI->PC: ACK");
+		ticalcs_info(" TI->PC: ACK");
+	}
 
-  return 0;
+	return ret;
 }

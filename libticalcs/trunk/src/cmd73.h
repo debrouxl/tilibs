@@ -19,6 +19,8 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __TICALCS_CMD73__
 #define __TICALCS_CMD73__
 
@@ -26,7 +28,6 @@ TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartyp
 TIEXPORT3 int TICALL ti73_send_VAR2(CalcHandle*, uint32_t length, uint8_t type, uint8_t flag, uint16_t offset, uint16_t page);
 TIEXPORT3 int TICALL ti73_send_CTS(CalcHandle*);
 TIEXPORT3 int TICALL ti73_send_XDP(CalcHandle*, int length, uint8_t * data);
-TIEXPORT3 int TICALL ti73_send_FLSH(CalcHandle*);
 TIEXPORT3 int TICALL ti73_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti73_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti73_send_ERR(CalcHandle*);
