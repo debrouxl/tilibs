@@ -547,8 +547,9 @@ int ti8x_file_read_flash(const char *filename, Ti8xFlash *head)
 			hex_block_read(f, NULL, NULL, NULL, NULL, NULL);
 			content->pages = NULL;
 
-			// we should determine the number of pages, to do...
-			content->pages = g_malloc0((50+1) * sizeof(Ti8xFlashPage *));
+			// TODO: either determine the number of pages, or modify this code
+			// if TI ever makes a TI-Z80 model with more than 256 Flash pages...
+			content->pages = g_malloc0((256+1) * sizeof(Ti8xFlashPage *));
 			if (content->pages == NULL)
 			{
 				return ERR_MALLOC;
