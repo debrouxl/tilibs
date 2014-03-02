@@ -404,6 +404,71 @@ static int tifiles_file_has_ti_header(const char *filename)
 	return 0;
 }
 
+static int model_to_dev_type(CalcModel model)
+{
+	switch (model) {
+	case CALC_TI73:
+		return DEVICE_TYPE_73;
+
+	case CALC_TI83P:
+	case CALC_TI84P:
+	case CALC_TI84P_USB:
+	case CALC_TI84PC:
+	case CALC_TI84PC_USB:
+		return DEVICE_TYPE_83P;
+
+	case CALC_TI89:
+	case CALC_TI89T:
+	case CALC_TI89T_USB:
+		return DEVICE_TYPE_89;
+
+	case CALC_TI92P:
+	case CALC_V200:
+		return DEVICE_TYPE_92P;
+
+	default:
+		return -1;
+	}
+}
+
+static int tifiles_file_has_tifl_header(const char *filename, int *dev_type, int *data_type)
+{
+	FILE *f;
+	uint8_t buf[78];
+	uint32_t len;
+	int ok = 0;
+
+	if (filename == NULL)
+		return 0;
+
+	f = g_fopen(filename, "rb");
+	if (f == NULL)
+		return 0;
+
+	while (fread(buf, 1, 78, f) == 78)
+	{
+		if (strncmp((char *) buf, "**TIFL**", 8))
+			break;
+
+		ok = 1;
+
+		/* if there are multiple entries (old OS files with license
+		   agreement, old app files with certificate), return the type
+		   of the last entry */
+		if (dev_type != NULL)
+			*dev_type = buf[48];
+		if (data_type != NULL)
+			*data_type = buf[49];
+
+		len = (buf[74] | buf[75] << 8 | buf[76] << 16 | buf[77] << 24);
+		if (fseek(f, len, SEEK_CUR))
+			break;
+	}
+
+	fclose(f);
+	return ok;
+}
+
 #define TIB_SIGNATURE	"Advanced Mathematics Software"
 
 static int tifiles_file_has_tib_header(const char *filename)
@@ -696,11 +761,7 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
 {
-	int i;
-	char *e = tifiles_fext_get(filename);
-
-	if (!strcmp(e, ""))
-		return 0;
+	int type;
 
 	if (!tifiles_file_is_ti(filename))
 		return 0;
@@ -711,11 +772,8 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
 	if(tifiles_file_is_tno(filename))
 		return !0;
 
-	for (i = 1; i < CALC_MAX + 1; i++)
-	{
-		if (!g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[i]))
-			return !0;
-	}
+	if (tifiles_file_has_tifl_header(filename, NULL, &type) && type == TI83p_AMS)
+		return !0;
 
 	return 0;
 }
@@ -730,20 +788,13 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
 {
-	int i;
-	char *e = tifiles_fext_get(filename);
-
-	if (!strcmp(e, ""))
-		return 0;
+	int type;
 
 	if (!tifiles_file_is_ti(filename))
 		return 0;
 
-	for (i = 1; i < CALC_MAX + 1; i++)
-	{
-		if (!g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[i]))
-			return !0;
-	}
+	if (tifiles_file_has_tifl_header(filename, NULL, &type) && type == TI83p_APPL)
+		return !0;
 
 	return 0;
 }
@@ -758,7 +809,9 @@ TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
 {
-	return tifiles_file_is_os(filename) || tifiles_file_is_app(filename);
+	return (tifiles_file_is_tib(filename) ||
+	        tifiles_file_is_tno(filename) ||
+	        tifiles_file_has_tifl_header(filename, NULL, NULL));
 }
 
 /**
@@ -815,6 +868,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
 TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
 	char *e;
+	int ctype, dtype;
 
 	if (!tifiles_file_is_ti(filename))
 		return 0;
@@ -861,9 +915,9 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	
 	if(type & TIFILE_OS)
 	{
-		if(target && !g_ascii_strcasecmp(e, FLASH_OS_FILE_EXT[target]))
+		if(target && tifiles_file_has_tifl_header(filename, &ctype, &dtype))
 		{
-			return !0;
+			return (ctype == model_to_dev_type(target) && dtype == TI83p_AMS);
 		}
 		else if(target && tifiles_file_is_tib(filename))
 		{
@@ -893,8 +947,8 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	
 	if(type & TIFILE_APP)
 	{
-		if(target && !g_ascii_strcasecmp(e, FLASH_APP_FILE_EXT[target]))
-			return !0;
+		if(target && tifiles_file_has_tifl_header(filename, &ctype, &dtype))
+			return (ctype == model_to_dev_type(target) && dtype == TI83p_APPL);
 		else
 			return tifiles_file_is_app(filename);
 	}
