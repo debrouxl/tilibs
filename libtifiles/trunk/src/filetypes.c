@@ -51,30 +51,6 @@ static const char BACKUP_FILE_EXT[CALC_MAX + 1][4] =
 	"XXx",
 };
 
-static const char FLASH_APP_FILE_EXT[CALC_MAX + 1][4] =
-{
-	"XXx",
-	"73k", "XXx", "XXx", "8Xk", "8Xk", "XXx", "XXx",
-	"89k", "89k", "XXx", "9Xk", "V2k", "8Xk", "89k",
-	"XXx",
-};
-
-static const char FLASH_OS_FILE_EXT[CALC_MAX + 1][4] =
-{
-	"XXx",
-	"73u", "XXx", "XXx", "8Xu", "8Xu", "XXx", "XXx",
-	"89u", "89u", "XXx", "9Xu", "V2u", "8Xu", "89u",
-	"tno",
-};
-
-static const char CERTIF_FILE_EXT[CALC_MAX + 1][4] =
-{
-	"XXx",
-	"73q", "XXx", "XXx", "8Xq", "8Xq", "XXx", "XXx",
-	"89q", "89q", "XXx", "9Xq", "V2q", "8Xq", "89q",
-	"XXx",
-};
-
 /*******************/
 /* File extensions */
 /*******************/
