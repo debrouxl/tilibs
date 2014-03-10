@@ -123,6 +123,7 @@ typedef enum
  * @name: name of variable (raw on-calc encoding)
  * @type: vartype ID
  * @attr: TI83+/89/92+ only (ATTRB_NONE or ARCHIVED)
+ * @version: version compatibility level (TI83+/84+ only)
  * @size: size of data (uint16_t for TI8x)
  * @data: pure data
  * @action: used by ticalcs library (must be set to 0)
@@ -136,6 +137,7 @@ typedef struct
 
 	uint8_t		type;
 	uint8_t		attr;
+	uint8_t		version;
 	uint32_t	size;
 	uint8_t*	data;
 

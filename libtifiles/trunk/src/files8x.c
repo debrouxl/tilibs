@@ -251,14 +251,25 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 			if(fread_word(f, &attribute) < 0) goto tfrr;
 			// Handle both the files created by TI-Connect and the files created by
 			// some broken versions of libtifiles.
-			if (((attribute & 0x8000) == 0x8000) || ((attribute & 0x80) == 0x80))
+			if (attribute == 0x80)
 			{
 				entry->attr = ATTRB_ARCHIVED;
+				entry->version = 0;
 			}
 			else
 			{
-				entry->attr = ATTRB_NONE;
+				entry->attr = ((attribute & 0x8000) ? ATTRB_ARCHIVED : ATTRB_NONE);
+				entry->version = attribute & 0xff;
 			}
+
+			// Handle broken 84+CSE Pic files created by older versions of libtifiles.
+			if (entry->type == TI84p_PIC && entry->size == 0x55bb && entry->version == 0)
+			{
+				entry->version = 10;
+			}
+
+			sum += MSB(attribute);
+			sum += LSB(attribute);
 		}
 		if(fread_word(f, NULL) < 0) goto tfrr;
 
@@ -780,11 +791,12 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		{
 			if(fwrite_n_chars(f, 8, varname) < 0) goto tfwr;
 		}
-		// XXX non-zero version byte not handled (noted by Benjamin Moody).
 		if (is_ti83p(content->model))
 		{
-			attr = (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x8000 : 0x00);
+			attr = (uint16_t)((entry->attr == ATTRB_ARCHIVED) ? 0x8000 : 0x00) + entry->version;
 			if(fwrite_word(f, attr) < 0) goto tfwr;
+			sum += MSB(attr);
+			sum += LSB(attr);
 		}
 		if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;
 		if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
