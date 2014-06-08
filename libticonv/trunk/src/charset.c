@@ -97,21 +97,21 @@ static char* ticonv_utf16_to_usb(const unsigned short *utf16, char *ti)
 TIEXPORT4 const unsigned long TICALL ti9x_charset[256] =
 {
 // control chars
- 0,
- 1,
- 2,
- 3,
- 4,
- 5,
- 6,
- 7,
- 8,
- 9,
- 10,
+ 0, // 0x2592 is prettier
+ 1, // 0x2401 is prettier
+ 2, // 0x2402 is prettier
+ 3, // 0x2403 is prettier
+ 4, // 0x2404 is prettier
+ 5, // 0x2405 is prettier
+ 6, // 0x2406 is prettier
+ 7, // 0x2407, 0xd83ddd14 are prettier
+ 8, // 0x232b is prettier
+ 9, // 0x21e5 is prettier
+ 10, // 0x21b4 is prettier
  0x2934,
- 12,
- 13,
- 0x2693, // "locked" symbol (doesn't exist in Unicode) <-> anchor
+ 12, // 0x219f (upwards version of 0x21a1 form feed) is prettier
+ 13, // 0x21b5 is prettier
+ 0x2693, // For now, using anchor symbol U+2693 to represent locked, but should switch to 0xd83ddd12 (U+1F512) when Unicode 6.0+ is more widely implemented.
  0x2713,
  0x25fe,
  0x25c2,
@@ -253,7 +253,7 @@ TIEXPORT4 const unsigned long TICALL ti9x_charset[256] =
  0x212f, //e
  0xd875dc8a, //i (non-BMP character)
  0x2b3, //r
- 0x22ba, //T
+ 0x22ba, //T - questionable.
  0x00780305, //x bar (requires composition)
  0x00790305, //y bar (requires composition)
  0x2264,
@@ -281,7 +281,7 @@ TIEXPORT4 const unsigned long TICALL ti9x_charset[256] =
  177,
  178,
  179,
- 180, //^-1, but there is no such character in Unicode
+ 180, //^-1, but there is no such character in Unicode 0xB9 is superscript 1
  181,
  182,
  183,
