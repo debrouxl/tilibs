@@ -141,12 +141,16 @@ dnl AC_CANONICAL_HOST
 case "$host" in
   i[[3456]]86-*-*bsd*)   ARCH="-D__BSD__ -D__I386__" ;;
   *-*-*bsd*)             ARCH="-D__BSD__" ;;
+  aarch64-*-linux-*)     ARCH="-D__LINUX__" ;;
   alpha*-*-linux-*)      ARCH="-D__ALPHA__ -D__LINUX__" ;;
   alpha*-*-*-*)          ARCH="-D__ALPHA__ -D__LINUX__" ;;
   arm*-*-linux-*)        ARCH="-D__ARM__ -D__LINUX__" ;;
   hppa*)                 ARCH="-D__LINUX__" ;;
   i[[3456]]86-*-linux-*) ARCH="-D__I386__ -D__LINUX__" ;;
   i[[3456]]86-*-hurd-*)  ARCH="-D__I386__ -D__LINUX__" ;;
+  i[[3456]]86-*-gnu-*)   ARCH="-D__I386__ -D__LINUX__" ;;
+  i[[3456]]86-*-k*bsd-gnu*-*) ARCH="-D__I386__ -D__LINUX__" ;;
+  k*bsd-gnu*|gnu*)       ARCH="-D__LINUX__" ;;
   i[[3456]]86-*-mingw*)  ARCH="-D__WIN32__ -D__MINGW32__" ;;
   i[[3456]]86-apple-darwin*) ARCH="-D__I386__ -D__MACOSX__" ;;
   x86_64-*-linux-*)      ARCH="-D__LINUX__" ;;
