@@ -81,7 +81,7 @@ static int err_code(uint8_t *data)
 TIEXPORT3 int TICALL ti89_send_VAR(CalcHandle* handle, uint32_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[32];
-	char trans[17];
+	char trans[127];
 	uint8_t extra = (vartype == TI9X_BKUP) ? 0 : 1;
 
 	if (handle == NULL)
@@ -130,7 +130,7 @@ TIEXPORT3 int TICALL ti89_send_XDP(CalcHandle* handle, uint32_t length, uint8_t 
 		return ERR_INVALID_HANDLE;
 	}
 
-	ticalcs_info(" PC->TI: XDP (0x%04X = %i)", length, length);
+	ticalcs_info(" PC->TI: XDP (0x%04X = %i bytes)", length, length);
 	return dbus_send(handle, PC_TI9X, CMD_XDP, length, data);
 }
 
@@ -401,20 +401,18 @@ TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
 	}
-	buffer = (uint8_t *)handle->priv2;
 
+	buffer = (uint8_t *)handle->priv2;
 	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
 	if (cmd == CMD_EOT)
 	{
 		return ERR_EOT;		// not really an error
 	}
-
 	if (cmd == CMD_SKP)
 	{
 		return ERR_CALC_ERROR1 + err_code(buffer);
 	}
-
 	if (cmd != CMD_VAR)
 	{
 		return ERR_INVALID_CMD;
@@ -455,20 +453,18 @@ TIEXPORT3 int TICALL ti89_recv_CTS(CalcHandle* handle)
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	buffer = (uint8_t *)handle->priv2;
 
+	buffer = (uint8_t *)handle->priv2;
 	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
 	if (cmd == CMD_SKP)
 	{
 		return ERR_CALC_ERROR1 + err_code(buffer);
 	}
-
-	if (cmd != CMD_CTS)
+	else if (cmd != CMD_CTS)
 	{
 		return ERR_INVALID_CMD;
 	}
-
 	if (length != 0x0000)
 	{
 		return ERR_CTS_ERROR;
@@ -577,8 +573,8 @@ TIEXPORT3 int TICALL ti89_recv_ACK(CalcHandle* handle, uint16_t * status)
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
-	buffer = (uint8_t *)handle->priv2;
 
+	buffer = (uint8_t *)handle->priv2;
 	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
 	if (cmd == CMD_SKP)
@@ -673,8 +669,8 @@ TIEXPORT3 int TICALL ti89_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8
 		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_PARAMETER;
 	}
-	buffer = (uint8_t *)handle->priv2;
 
+	buffer = (uint8_t *)handle->priv2;
 	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
 
 	if (cmd == CMD_EOT)

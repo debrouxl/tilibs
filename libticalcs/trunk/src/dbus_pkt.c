@@ -328,18 +328,3 @@ int dbus_recv_2(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t* lengt
 {
 	return dbus_recv_(handle, host, cmd, length, data, 0);
 }
-
-//! Fill up to 8 chars the \a varname buffer with chars of value \a value.
-void pad_buffer_to_8_chars(uint8_t *varname, uint8_t value)
-{
-	unsigned int i;
-	unsigned int len;
-
-	if (varname != NULL)
-	{
-		len = strlen((char*)varname);
-
-		for (i = len; i < 8; i++)
-			varname[i] = value;
-	}
-}

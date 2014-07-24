@@ -169,7 +169,7 @@ int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t 
 	}
 	goto finish;
 
- byte_mode:
+byte_mode:
 	while (src_length > 0)
 	{
 		if (src[0] != 0)
@@ -225,7 +225,7 @@ int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t 
 	}
 	goto finish;
 
- word_mode:
+word_mode:
 	while (src_length > 0)
 	{
 		if (src_length < 2)
@@ -266,7 +266,7 @@ int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t 
 		}
 	}
 
- finish:
+finish:
 	if (src_length != 0 || dest_length != 0)
 		return ERR_INVALID_SCREENSHOT;
 	else
@@ -528,8 +528,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
-	return 0;
+	return send_var(handle, MODE_BACKUP, (FileContent *)content);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -863,14 +862,12 @@ static int		dump_rom_1	(CalcHandle* handle)
 	TRYF(get_version(handle, &infos));
 	if (infos.hw_version < 5)
 	{
-		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p));
+		return rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
 	}
 	else
 	{
-		TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu));
+		return rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
 	}
-
-	return 0;
 }
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
@@ -903,9 +900,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(3000);
 #endif
 	// Get dump
-	TRYF(rd_dump(handle, filename));
-
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)

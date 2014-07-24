@@ -62,7 +62,7 @@ TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
-	memcpy(buffer + 3, varname, 8);
+	strncpy((char *)buffer + 3, varname, 8);
 	buffer[11] = 0x00;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
@@ -71,7 +71,6 @@ TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t
 	if (vartype != TI7383_BKUP)
 	{
 		// backup: special header
-		pad_buffer_to_8_chars(buffer + 3, '\0');
 		TRYF(dbus_send(handle, PC_TI7383, CMD_VAR, 11 + EXTRAS, buffer));
 	} 
 	else 
@@ -129,7 +128,7 @@ TIEXPORT3 int TICALL ti73_send_XDP(CalcHandle* handle, int length, uint8_t * dat
 		return ERR_INVALID_HANDLE;
 	}
 
-	ticalcs_info(" PC->TI: XDP (0x%04X bytes)", length);
+	ticalcs_info(" PC->TI: XDP (0x%04X = %i bytes)", length, length);
 	return dbus_send(handle, PC_TI7383, CMD_XDP, length, data);
 }
 
@@ -147,7 +146,6 @@ TIEXPORT3 int TICALL ti73_send_SKP(CalcHandle* handle, uint8_t rej_code)
 	}
 
 	ticalcs_info(" PC->TI: SKP (rejection code = %i)", rej_code);
-
 	return dbus_send(handle, PC_TI7383, CMD_SKP, 1, &rej_code);
 }
 
@@ -234,7 +232,7 @@ TIEXPORT3 int TICALL ti73_send_EOT(CalcHandle* handle)
 TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
 {
 	uint8_t buffer[16] = { 0 };
-	char trans[17];
+	char trans[127];
 
 	if (handle == NULL)
 	{
@@ -250,8 +248,7 @@ TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
-	memcpy(buffer + 3, varname, 8);
-	pad_buffer_to_8_chars(buffer + 3, '\0');
+	strncpy((char *)buffer + 3, varname, 8);
 	buffer[11] = 0x00;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
@@ -260,18 +257,16 @@ TIEXPORT3 int TICALL ti73_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t
 
 	if (vartype != TI83p_IDLIST && vartype != TI83p_GETCERT) 
 	{
-		TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer));
+		return dbus_send(handle, PC_TI7383, CMD_REQ, 11 + EXTRAS, buffer);
 	}
 	else if(vartype != TI83p_GETCERT && handle->model != CALC_TI73)
 	{
-		TRYF(dbus_send(handle, PC_TI7383, CMD_REQ, 11, buffer));
+		return dbus_send(handle, PC_TI7383, CMD_REQ, 11, buffer);
 	}
 	else
 	{
-		TRYF(dbus_send(handle, PC_TI73, CMD_REQ, 3, buffer));
+		return dbus_send(handle, PC_TI73, CMD_REQ, 3, buffer);
 	}
-
-	return 0;
 }
 
 /* FLASH (special var header: size, id, flag, offset, page) */
@@ -293,8 +288,7 @@ TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle* handle, uint16_t appsize, uint8_
 	buffer[0] = LSB(appsize);
 	buffer[1] = MSB(appsize);
 	buffer[2] = apptype;
-	memcpy(buffer + 3, appname, 8);
-	pad_buffer_to_8_chars(buffer + 3, '\0');
+	strncpy((char *)buffer + 3, appname, 8);
 
 	ticalcs_info(" PC->TI: REQ (size=0x%04X, id=%02X, name=%s)", appsize, apptype, appname);
 	return dbus_send(handle, PC_TI7383, CMD_REQ, 11, buffer);
@@ -304,7 +298,7 @@ TIEXPORT3 int TICALL ti73_send_REQ2(CalcHandle* handle, uint16_t appsize, uint8_
 TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
 {
 	uint8_t buffer[16];
-	char trans[9];
+	char trans[127];
 
 	if (handle == NULL)
 	{
@@ -320,7 +314,7 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype;
-	memcpy(buffer + 3, varname, 8);
+	strncpy((char *)buffer + 3, varname, 8);
 	buffer[11] = 0x00;
 	buffer[12] = (varattr == ATTRB_ARCHIVED) ? 0x80 : 0x00;
 
@@ -335,15 +329,12 @@ TIEXPORT3 int TICALL ti73_send_RTS(CalcHandle* handle, uint16_t varsize, uint8_t
 	if (vartype != TI7383_BKUP) 
 	{
 		// backup: special header
-		pad_buffer_to_8_chars(buffer + 3, '\0');
-		TRYF(dbus_send(handle, PC_TI7383, CMD_RTS, 11 + EXTRAS, buffer));
+		return dbus_send(handle, PC_TI7383, CMD_RTS, 11 + EXTRAS, buffer);
 	}
 	else
 	{
-		TRYF(dbus_send(handle, PC_TI7383, CMD_RTS, 9, buffer));
+		return dbus_send(handle, PC_TI7383, CMD_RTS, 9, buffer);
 	}
-
-	return 0;
 }
 
 TIEXPORT3 int TICALL ti73_send_VER(CalcHandle* handle)
@@ -361,7 +352,7 @@ TIEXPORT3 int TICALL ti73_send_VER(CalcHandle* handle)
 TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr)
 {
 	uint8_t buffer[16] = { 0 };
-	char trans[9];
+	char trans[127];
 
 	if (handle == NULL)
 	{
@@ -377,8 +368,7 @@ TIEXPORT3 int TICALL ti73_send_DEL(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[0] = LSB(varsize);
 	buffer[1] = MSB(varsize);
 	buffer[2] = vartype == TI83p_APPL ? 0x14 : vartype;
-	memcpy(buffer + 3, varname, 8);
-	pad_buffer_to_8_chars(buffer + 3, '\0');
+	strncpy((char *)buffer + 3, varname, 8);
 	buffer[11] = 0x00;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
@@ -490,7 +480,7 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t host, cmd;
 	uint8_t *buffer;
 	uint16_t length;
-	char trans[9];
+	char trans[127];
 
 	if (handle == NULL)
 	{
@@ -528,12 +518,12 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 
 	*varsize = buffer[0] | (buffer[1] << 8);
 	*vartype = buffer[2];
-	memcpy(varname, buffer + 3, 8);
+	strncpy(varname, (char *)buffer + 3, 8);
 	varname[8] = '\0';
 	*varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
-	ticalcs_info(" TI->PC: VAR (size=0x%04X, id=%02X, name=%s, attrb=%i)", *varsize, *vartype, trans, *varattr);
+	ticalcs_info(" TI->PC: VAR (size=0x%04X=%i, id=%02X, name=%s, attrb=%i)", *varsize, *varsize, *vartype, trans, *varattr);
 
 	return 0;
 }
@@ -581,7 +571,7 @@ TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8
 
 	*length = buffer[0] | (buffer[1] << 8);
 	*type = buffer[2];
-	memcpy(name, buffer + 3, 3);
+	strncpy(name, (char *)buffer + 3, 3);
 	name[3] = '\0';
 	*offset = buffer[6] | (buffer[7] << 8);
 	*page = buffer[8] | (buffer[9] << 8);
@@ -649,7 +639,7 @@ TIEXPORT3 int TICALL ti73_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 
 	if (cmd == CMD_CTS) 
 	{
-		ticalcs_info("CTS");
+		ticalcs_info(" TI->PC: CTS");
 		return 0;
 	}
 
@@ -686,7 +676,7 @@ TIEXPORT3 int TICALL ti73_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_
 		return ERR_INVALID_CMD;
 	}
 
-	ticalcs_info(" TI->PC: XDP (%04X bytes)", *length);
+	ticalcs_info(" TI->PC: XDP (%04X=%i bytes)", *length, *length);
 
 	return 0;
 }
@@ -711,6 +701,7 @@ TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle* handle, uint16_t * length, uint8_
 
 	return 0;
 }
+
 /*
   Receive acknowledge
   - status [in/out]: if NULL is passed, the function checks that 00 00 has
@@ -755,7 +746,7 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 {
 	uint8_t host, cmd;
 	uint8_t *buffer;
-	char trans[9];
+	char trans[127];
 
 	if (handle == NULL)
 	{
@@ -778,12 +769,12 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 
 	*varsize = buffer[0] | (buffer[1] << 8);
 	*vartype = buffer[2];
-	memcpy(varname, buffer + 3, 8);
+	strncpy(varname, (char *)buffer + 3, 8);
 	varname[8] = '\0';
 	*varattr = (buffer[12] & 0x80) ? ATTRB_ARCHIVED : ATTRB_NONE;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, *vartype);
-	ticalcs_info(" TI->PC: RTS (size=0x%04X, id=%02X, name=%s, attrb=%i)", *varsize, *vartype, trans, *varattr);
+	ticalcs_info(" TI->PC: RTS (size=0x%04X=%i, id=%02X, name=%s, attrb=%i)", *varsize, *varsize, *vartype, trans, *varattr);
 
 	return 0;
 }

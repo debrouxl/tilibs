@@ -11,7 +11,7 @@ libticalcsinclude_HEADERS = \
 	ticalcs.h export3.h stdints3.h \
 	keys73.h keys83.h keys83p.h keys86.h keys89.h keys92p.h \
 	dbus_pkt.h dusb_rpkt.h dusb_vpkt.h dusb_cmd.h nsp_vpkt.h nsp_cmd.h \
-	cmd73.h cmd89.h cmd80.h
+	cmd73.h cmd80.h cmd82.h cmd85.h cmd89.h cmd92.h
 
 # build instructions
 libticalcs2_la_CPPFLAGS = -I$(top_srcdir)/intl \

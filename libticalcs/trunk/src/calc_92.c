@@ -66,7 +66,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 	TRYF(ti92_send_KEY(handle, key));
 	TRYF(ti92_recv_ACK(handle, &key));
 	PAUSE(50);
-	
+
 	return 0;
 }
 
@@ -84,21 +84,21 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	for(i = 0; i < strlen(ve->folder); i++)
 		TRYF(send_key(handle, (ve->folder)[i]));
 
-    if(strcmp(ve->folder, ""))
+	if(strcmp(ve->folder, ""))
 		TRYF(send_key(handle, '\\'));
 
 	for(i = 0; i < strlen(ve->name); i++)
 		TRYF(send_key(handle, (ve->name)[i]));
 
-    TRYF(send_key(handle, KEY92P_LP));
+	TRYF(send_key(handle, KEY92P_LP));
 	if(args)
 	{
 		for(i = 0; i < strlen(args); i++)
 			TRYF(send_key(handle, args[i]));
 	}
-    TRYF(send_key(handle, KEY92P_RP));
+	TRYF(send_key(handle, KEY92P_RP));
 
-    TRYF(send_key(handle, KEY92P_ENTER));
+	TRYF(send_key(handle, KEY92P_ENTER));
 	PAUSE(200);
 
 	return 0;
@@ -143,7 +143,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	char *utf8;
 
 	// get list of folders & FLASH apps
-    (*vars) = g_node_new(NULL);
+	(*vars) = g_node_new(NULL);
 	ti = (TreeInfo *)g_malloc(sizeof(TreeInfo));
 	ti->model = handle->model;
 	ti->type = VAR_NODE_NAME;
@@ -155,7 +155,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-	TRYF(ti92_send_REQ(handle, 0, TI92_RDIR, ""));
+	TRYF(ti92_send_REQ(handle, 0, TI92_RDIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti92_recv_ACK(handle, NULL));
 	TRYF(ti92_recv_VAR(handle, &info.size, &info.type, info.name));
 
@@ -175,7 +175,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->type = buffer[12];
 		ve->attr = buffer[13];
 		ve->size = buffer[14] | (buffer[15] << 8) | (buffer[16] << 16) | (buffer[17] << 24);
-		strcpy(ve->folder, "");
+		ve->folder[0] = 0;
 
 		if (ve->type == TI92_DIR) 
 		{
@@ -409,8 +409,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 {
 	uint32_t unused;
 	int nvar, err;
-    char tipath[18];
-    char *tiname;
+	char tipath[18];
+	char *tiname;
 	char *utf8;
 
 	content->model = handle->model;
@@ -433,17 +433,17 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			content->num_entries = nvar;
 
 		// from Christian (TI can send varname or fldname/varname)
-        if ((tiname = strchr(tipath, '\\')) != NULL) 
+		if ((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
-            strcpy(ve->folder, tipath);
-            strcpy(ve->name, tiname + 1);
-        }
-        else 
+			strcpy(ve->folder, tipath);
+			strcpy(ve->name, tiname + 1);
+		}
+		else 
 		{
-            strcpy(ve->folder, "main");
-            strcpy(ve->name, tipath);
-        }
+			strcpy(ve->folder, "main");
+			strcpy(ve->name, tipath);
+		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
@@ -504,21 +504,21 @@ static int		dump_rom_1	(CalcHandle* handle)
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
 {
 	// Launch program by remote control
-    TRYF(send_key(handle, 'm'));
-    TRYF(send_key(handle, 'a'));
-    TRYF(send_key(handle, 'i'));
-    TRYF(send_key(handle, 'n'));
-    TRYF(send_key(handle, '\\'));
-    TRYF(send_key(handle, 'r'));
-    TRYF(send_key(handle, 'o'));
-    TRYF(send_key(handle, 'm'));
-    TRYF(send_key(handle, 'd'));
-    TRYF(send_key(handle, 'u'));
-    TRYF(send_key(handle, 'm'));
-    TRYF(send_key(handle, 'p'));
-    TRYF(send_key(handle, KEY92P_LP));
-    TRYF(send_key(handle, KEY92P_RP));
-    TRYF(send_key(handle, KEY92P_ENTER));
+	TRYF(send_key(handle, 'm'));
+	TRYF(send_key(handle, 'a'));
+	TRYF(send_key(handle, 'i'));
+	TRYF(send_key(handle, 'n'));
+	TRYF(send_key(handle, '\\'));
+	TRYF(send_key(handle, 'r'));
+	TRYF(send_key(handle, 'o'));
+	TRYF(send_key(handle, 'm'));
+	TRYF(send_key(handle, 'd'));
+	TRYF(send_key(handle, 'u'));
+	TRYF(send_key(handle, 'm'));
+	TRYF(send_key(handle, 'p'));
+	TRYF(send_key(handle, KEY92P_LP));
+	TRYF(send_key(handle, KEY92P_RP));
+	TRYF(send_key(handle, KEY92P_ENTER));
 	PAUSE(200);
 
 	// Get dump

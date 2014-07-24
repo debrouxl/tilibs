@@ -120,7 +120,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	ti->type = APP_NODE_NAME;
 	(*apps)->data = ti;
 
-	TRYF(ti85_send_REQ(handle, 0x0000, TI86_DIR, ""));
+	TRYF(ti85_send_REQ(handle, 0x0000, TI86_DIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti85_recv_ACK(handle, &unused));
 
 	TRYF(ti85_recv_XDP(handle, &unused, mem));
@@ -198,7 +198,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	uint8_t hl, ll, lh;
 	uint8_t mem[8];
 
-	TRYF(ti85_send_REQ(handle, 0x0000, TI86_DIR, ""));
+	TRYF(ti85_send_REQ(handle, 0x0000, TI86_DIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti85_recv_ACK(handle, &unused));
 
 	TRYF(ti85_recv_XDP(handle, &unused, mem));
@@ -257,7 +257,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 			break;
 	}
 
-	strcpy(update_->text, "");
+	update_->text[0] = 0;
 	update_label();
 
 	update_->cnt2 = 0;
@@ -308,7 +308,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti85_send_CTS(handle));
 	TRYF(ti85_recv_ACK(handle, NULL));
 
-	strcpy(update_->text, "");
+	update_->text[0] = 0;
 	update_label();
 
 	update_->cnt2 = 0;
@@ -469,9 +469,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
-	TRYF(rd_send(handle, "romdump.86p", romDumpSize86, romDump86));
-
-	return 0;
+	return rd_send(handle, "romdump.86p", romDumpSize86, romDump86);
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -496,12 +494,10 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(200);
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
+	return rd_dump(handle, filename);
 
 	// (Normally there would be another ACK after the program exits,
 	// but the ROM dumper disables that behavior)
-
-	return 0;
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)

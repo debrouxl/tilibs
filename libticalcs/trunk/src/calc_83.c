@@ -60,7 +60,7 @@ static int		is_ready	(CalcHandle* handle)
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
-	TRYF(ti83_send_KEY(handle, key));
+	TRYF(ti82_send_KEY(handle, key));
 	TRYF(ti82_recv_ACK(handle, &key));
 
 	return 0;
@@ -143,7 +143,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	TRYF(ti82_send_REQ(handle, 0x0000, TI83_DIR, ""));
+	TRYF(ti82_send_REQ(handle, 0x0000, TI83_DIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti82_recv_ACK(handle, &unused));
 
 	TRYF(ti82_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -204,10 +204,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 {
-	uint16_t unused;	
+	uint16_t unused;
 	uint32_t memory;
 
-	TRYF(ti82_send_REQ(handle, 0x0000, TI83_DIR, ""));
+	TRYF(ti82_send_REQ(handle, 0x0000, TI83_DIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti82_recv_ACK(handle, &unused));
 
 	TRYF(ti82_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -221,24 +221,24 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-    uint16_t length;
-    char varname[9];
-    uint8_t rej_code;
-    uint16_t status;
+	uint16_t length;
+	char varname[9];
+	uint8_t rej_code;
+	uint16_t status;
 
-    length = content->data_length1;
-    varname[0] = LSB(content->data_length2);
-    varname[1] = MSB(content->data_length2);
-    varname[2] = LSB(content->data_length3);
-    varname[3] = MSB(content->data_length3);
-    varname[4] = LSB(content->mem_address);
-    varname[5] = MSB(content->mem_address);
+	length = content->data_length1;
+	varname[0] = LSB(content->data_length2);
+	varname[1] = MSB(content->data_length2);
+	varname[2] = LSB(content->data_length3);
+	varname[3] = MSB(content->data_length3);
+	varname[4] = LSB(content->mem_address);
+	varname[5] = MSB(content->mem_address);
 
-    TRYF(ti82_send_RTS(handle, content->data_length1, TI83_BKUP, varname));
-    TRYF(ti82_recv_ACK(handle, &status));
+	TRYF(ti82_send_RTS(handle, content->data_length1, TI83_BKUP, varname));
+	TRYF(ti82_recv_ACK(handle, &status));
 
-    TRYF(ti82_recv_SKP(handle, &rej_code))
-    TRYF(ti82_send_ACK(handle));
+	TRYF(ti82_recv_SKP(handle, &rej_code))
+	TRYF(ti82_send_ACK(handle));
 
 	switch (rej_code) 
 	{
@@ -283,7 +283,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	content->model = CALC_TI83;
 	strcpy(content->comment, tifiles_comment_set_backup());
 
-	TRYF(ti82_send_REQ(handle, 0x0000, TI83_BKUP, ""));
+	TRYF(ti82_send_REQ(handle, 0x0000, TI83_BKUP, "\0\0\0\0\0\0\0"));
 	TRYF(ti82_recv_ACK(handle, &unused));
 
 	TRYF(ti82_recv_VAR(handle, &(content->data_length1), &content->type, varname));
@@ -347,13 +347,13 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		switch (rej_code) 
 		{
 		case REJ_EXIT:
-		  return ERR_ABORT;
+			return ERR_ABORT;
 		case REJ_SKIP:
-		  continue;
+			continue;
 		case REJ_MEMORY:
-		  return ERR_OUT_OF_MEMORY;
+			return ERR_OUT_OF_MEMORY;
 		default:			// RTS
-		  break;
+			break;
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, entry->name, entry->type);
@@ -370,17 +370,17 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		update_->cnt2 = i+1;
 		update_->max2 = content->num_entries;
 		update_->pbar();
-  }
+	}
 
-  return 0;
+	return 0;
 }
 
 static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
 {
-  uint16_t unused;
-  VarEntry *ve;
-  char *utf8;
-  uint16_t ve_size;
+	uint16_t unused;
+	VarEntry *ve;
+	char *utf8;
+	uint16_t ve_size;
 
 	content->model = CALC_TI83;
 	strcpy(content->comment, tifiles_comment_set_single());

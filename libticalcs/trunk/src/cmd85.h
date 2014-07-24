@@ -19,26 +19,28 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+// /!\ NOTE: for this file, backwards compatibility will not necessarily be maintained as strongly as it is for ticalcs.h !
+
 #ifndef __TICALCS_CMD85__
 #define __TICALCS_CMD85__
 
-int ti85_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
-int ti85_send_CTS(CalcHandle*);
-int ti85_send_XDP(CalcHandle*, int length, uint8_t * data);
-int ti85_send_SKP(CalcHandle*, uint8_t rej_code);
-int ti85_send_ACK(CalcHandle*);
-int ti85_send_ERR(CalcHandle*);
-int ti85_send_SCR(CalcHandle*);
-int ti85_send_KEY(CalcHandle*, uint16_t scancode);
-int ti85_send_EOT(CalcHandle*);
-int ti85_send_REQ(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
-int ti85_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+TIEXPORT3 int TICALL ti85_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+TIEXPORT3 int TICALL ti85_send_CTS(CalcHandle*);
+TIEXPORT3 int TICALL ti85_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti85_send_SKP(CalcHandle*, uint8_t rej_code);
+TIEXPORT3 int TICALL ti85_send_ACK(CalcHandle*);
+TIEXPORT3 int TICALL ti85_send_ERR(CalcHandle*);
+TIEXPORT3 int TICALL ti85_send_SCR(CalcHandle*);
+TIEXPORT3 int TICALL ti85_send_KEY(CalcHandle*, uint16_t scancode);
+TIEXPORT3 int TICALL ti85_send_EOT(CalcHandle*);
+TIEXPORT3 int TICALL ti85_send_REQ(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
+TIEXPORT3 int TICALL ti85_send_RTS(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 
-int ti85_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
-int ti85_recv_CTS(CalcHandle*);
-int ti85_recv_SKP(CalcHandle*, uint8_t * rej_code);
-int ti85_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
-int ti85_recv_ACK(CalcHandle*, uint16_t * status);
-int ti85_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
+TIEXPORT3 int TICALL ti85_recv_CTS(CalcHandle*);
+TIEXPORT3 int TICALL ti85_recv_SKP(CalcHandle*, uint8_t * rej_code);
+TIEXPORT3 int TICALL ti85_recv_XDP(CalcHandle*, uint16_t * length, uint8_t * data);
+TIEXPORT3 int TICALL ti85_recv_ACK(CalcHandle*, uint16_t * status);
+TIEXPORT3 int TICALL ti85_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * vartype, char *varname);
 
 #endif

@@ -200,7 +200,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	TreeInfo *ti;
 	uint16_t unused;
 	uint32_t memory;
-	GNode *folder, *root;	
+	GNode *folder, *root;
 	char *utf8;
 
 	(*apps) = g_node_new(NULL);
@@ -215,7 +215,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	ti->type = VAR_NODE_NAME;
 	(*vars)->data = ti;
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -297,7 +297,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	uint16_t unused;
 	uint32_t memory;
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_DIR, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_XDP(handle, &unused, (uint8_t *)&memory));
@@ -371,7 +371,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	content->model = handle->model;
 	strcpy(content->comment, tifiles_comment_set_backup());
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_BKUP, "", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ti73_recv_VAR(handle, &content->data_length1, &content->type, varname, &attr));
@@ -458,7 +458,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		update_->cnt2 = i+1;
 		update_->max2 = content->num_entries;
 		update_->pbar();
-  }
+	}
 
 	return 0;
 }
@@ -543,8 +543,6 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		TRYF(get_version(handle, &infos));
 		se = infos.hw_version & 1;
 	}
-
-
 
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 	ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
@@ -728,7 +726,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	g_snprintf(update_->text, sizeof(update_->text), "ID-LIST");
 	update_label();
 
-	TRYF(ti73_send_REQ(handle, 0x0000, TI73_IDLIST, "", 0x00));
+	TRYF(ti73_send_REQ(handle, 0x0000, TI73_IDLIST, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, &unused));
 
 	TRYF(ti73_recv_VAR(handle, &varsize, &vartype, varname, &varattr));
@@ -756,7 +754,7 @@ static int		dump_rom_1	(CalcHandle* handle)
 	// Send dumping program
 	if(handle->model == CALC_TI73)
 	{
-		TRYF(rd_send(handle, "romdump.73p", romDumpSize73, romDump73));
+		return rd_send(handle, "romdump.73p", romDumpSize73, romDump73);
 	}
 	else
 	{
@@ -765,15 +763,13 @@ static int		dump_rom_1	(CalcHandle* handle)
 		TRYF(get_version(handle, &infos));
 		if (infos.hw_version < 5)
 		{
-			TRYF(rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp));
+			return rd_send(handle, "romdump.8Xp", romDumpSize8Xp, romDump8Xp);
 		}
 		else
 		{
-			TRYF(rd_send(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc));
+			return rd_send(handle, "romdump.8Xp", romDumpSize84pc, romDump84pc);
 		}
 	}
-
-	return 0;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -1085,13 +1081,13 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	update_label();
 
 	content->model = handle->model;
-	strcpy(content->name, "");
+	content->name[0] = 0;
 	content->data_type = TI83p_CERT;
 	content->device_type = 0x73;
 	content->num_pages = 0;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
 
-	TRYF(ti73_send_REQ2(handle, 0x00, TI83p_GETCERT, "", 0x00));
+	TRYF(ti73_send_REQ2(handle, 0x00, TI83p_GETCERT, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	TRYF(ticables_cable_recv(handle->cable, buf, 4));	//VAR w/ no header

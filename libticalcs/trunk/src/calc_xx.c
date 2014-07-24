@@ -1733,7 +1733,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 		TRYF(ticalcs_calc_recv_cert(handle, content));
 		TRYF(tifiles_file_write_flash(filename, content));
 		TRYF(tifiles_content_delete_flash(content));
-	}	
+	}
 
 	return 0;
 }
