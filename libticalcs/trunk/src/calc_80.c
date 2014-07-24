@@ -42,7 +42,7 @@
 #include "macros.h"
 
 #include "dbus_pkt.h"
-#include "cmd80.h"
+#include "cmdz80.h"
 //#include "rom80.h"
 #include "romdump.h"
 

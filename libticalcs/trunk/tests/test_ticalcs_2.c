@@ -38,7 +38,7 @@
 #include "tifiles.h"
 #include "../src/ticalcs.h"
 #include "../src/nsp_cmd.h"
-#include "../src/cmd73.h"
+#include "../src/cmdz80.h"
 
 #define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
 

@@ -24,6 +24,10 @@
 #ifndef __NSP_CMDS__
 #define __NSP_CMDS__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Services IDs
 #define SID_NULL                0x4001
 #define SID_ECHO                0x4002
@@ -153,5 +157,9 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *h, uint8_t *value);
 
 TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *h, const uint8_t keycode[3]);
 // There doesn't seem to be a need for nsp_cmd_r_keypress_event.
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

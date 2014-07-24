@@ -25,7 +25,11 @@
 #ifndef __NSP_VPKT__
 #define __NSP_VPKT__
 
-// Convenients structures
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Convenient structures
 
 typedef struct
 {
@@ -96,5 +100,9 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h);
 TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h);
 
 TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

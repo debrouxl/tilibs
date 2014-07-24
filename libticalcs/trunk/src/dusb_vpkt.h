@@ -24,6 +24,10 @@
 #ifndef __DUSB_VPKT__
 #define __DUSB_VPKT__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Convenients structures
 
 #define DUSB_DH_SIZE		(4+2)	// size + type
@@ -88,5 +92,9 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *h);
 TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id);
 
 TIEXPORT3 uint32_t TICALL dusb_get_buf_size(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

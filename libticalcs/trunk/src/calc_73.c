@@ -45,7 +45,7 @@
 #include "macros.h"
 
 #include "dbus_pkt.h"
-#include "cmd73.h"
+#include "cmdz80.h"
 #include "rom73.h"
 #include "rom83p.h"
 #include "rom84pc.h"

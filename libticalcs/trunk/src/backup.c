@@ -36,7 +36,7 @@
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
-#include "cmd89.h"
+#include "cmd68k.h"
 
 int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 {

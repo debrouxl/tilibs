@@ -42,7 +42,7 @@
 #include "pause.h"
 #include "macros.h"
 
-#include "cmd92.h"
+#include "cmd68k.h"
 #include "keys92p.h"
 #include "rom92f2.h"
 #include "romdump.h"

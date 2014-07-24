@@ -44,7 +44,7 @@
 #include "macros.h"
 
 #include "dbus_pkt.h"
-#include "cmd85.h"
+#include "cmdz80.h"
 #include "rom86.h"
 #include "romdump.h"
 #include "keys86.h"

@@ -4,12 +4,8 @@
 #include <nsp_cmd.h>
 #include <dusb_vpkt.h>
 #include <dusb_cmd.h>
-#include <cmd73.h>
-#include <cmd89.h>
-#include <cmd80.h>
-#include <cmd82.h>
-#include <cmd85.h>
-#include <cmd92.h>
+#include <cmdz80.h>
+#include <cmd68k.h>
 
 #define PRINTF(FUNCTION, TYPE, args...) \
 fprintf(stderr, "%d\t" TYPE "\n", i, FUNCTION(args)); i++

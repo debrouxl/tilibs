@@ -24,6 +24,10 @@
 #ifndef __DUSB_CMDS__
 #define __DUSB_CMDS__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DUSB_DFL_BUF_SIZE	1024
 
 // Parameter IDs
@@ -171,5 +175,8 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *h);
 
 TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *h, uint16_t code);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
