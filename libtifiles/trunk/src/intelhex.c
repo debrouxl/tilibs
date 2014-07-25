@@ -118,16 +118,36 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 
 	{
 		// check for end of file without mangling data checksum
-		int c1, c2, c3;
 		long pos = ftell(f);
 
-		c1 = fgetc(f);
-		c2 = fgetc(f);
-		c3 = fgetc(f); // EOF checking is set to keep compatibility with old generated FLASH files (buggy)
+		c = fgetc(f);
 
-		if(((c1 != 0x0d) && (c2 != 0x0a)) || (c3 == EOF))
+		if (c == 0x0d) // CR
 		{
-			// end of file
+			c = fgetc(f);
+			if (c == 0x0a) // LF
+			{
+read_lf:
+				c = fgetc(f);
+				if (c == EOF) // EOF checking is set to keep compatibility with old generated FLASH files (buggy)
+				{
+					goto eof;
+				}
+			}
+			else // Unconditional else: either c is EOF, or the format is invalid.
+			{
+				goto eof;
+			}
+		}
+		else if (c == 0x0a) // LF
+		{
+			pos--;
+			goto read_lf;
+		}
+		else
+		{
+eof:
+			// Invalid format / end of file.
 			*type = HEX_EOF;
 			fseek(f, pos, SEEK_SET);
 			return 0;
