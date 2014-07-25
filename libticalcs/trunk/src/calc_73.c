@@ -516,24 +516,36 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
-	int i, j, k;
+	int i, j;
 	int size;
 	char *utf8;
-	int se = 0;
+	int cpu15mhz = 0;
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	{
 		if(ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+		{
 			break;
+		}
+	}
 	if(ptr == NULL)
+	{
 		return -1;
+	}
 
 	if(ptr->data_type == TI83p_AMS)
+	{
 		size = 0x100;
+	}
 	else if(ptr->data_type == TI83p_APPL)
+	{
 		size = 0x80;
+	}
 	else
+	{
 		return -1;
+	}
 
 	// check for 83+ Silver Edition (not usable in boot mode, sic!)
 	if(handle->model != CALC_TI73 && ptr->data_type == TI83p_APPL)
@@ -541,7 +553,13 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		CalcInfos infos;
 
 		TRYF(get_version(handle, &infos));
-		se = infos.hw_version & 1;
+		cpu15mhz = infos.hw_version & 1;
+
+		if (!infos.battery)
+		{
+			ticalcs_info(_("Battery low, stopping flash app transfer"));
+			return -1;
+		}
 	}
 
 	ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
@@ -555,7 +573,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	update_->cnt2 = 0;
 	update_->max2 = ptr->data_length;
 
-	for (k = i = 0; i < ptr->num_pages; i++) 
+	for (i = 0; i < ptr->num_pages; i++)
 	{
 		FlashPage *fp = ptr->pages[i];
 
@@ -571,9 +589,13 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			TRYF(ti73_recv_ACK(handle, NULL));
 
 			if(handle->model == CALC_TI73 && ptr->data_type == TI83p_APPL)
-				{TRYF(ti73_recv_CTS(handle, 0));}	// is depending of OS version?
+			{
+				TRYF(ti73_recv_CTS(handle, 0));
+			}	// is depending of OS version?
 			else
-				{TRYF(ti73_recv_CTS(handle, 10));}
+			{
+				TRYF(ti73_recv_CTS(handle, 10));
+			}
 			TRYF(ti73_send_ACK(handle));
 
 			TRYF(ti73_send_XDP(handle, size, data));
@@ -584,15 +606,20 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		}
 
 		/* Note: 
-			TI83+/SE and TI84+/SE don't need a pause (otherwise transfer fails).
-			TI73,TI83+,TI84+ need a pause (otherwise transfer fails).
+			TI83+SE, TI84+ and TI84+SE don't need a pause (otherwise transfer fails).
+			TI73 and TI83+ need a pause (otherwise transfer fails).
+			Delay also causes OS transfers to fail on the 15Mhz calcs and unneeded for OS's
 		*/
-		if(!se)
+		if(!cpu15mhz && ptr->data_type == TI83p_APPL)
 		{
 			if (i == 1)
-			  PAUSE(1000);		// This pause is NEEDED !
+			{
+				PAUSE(1000);		// This pause is NEEDED !
+			}
 			if (i == ptr->num_pages - 2)
-			  PAUSE(2500);		// This pause is NEEDED !
+			{
+				PAUSE(2500);		// This pause is NEEDED !
+			}
 		}
 	}
 
