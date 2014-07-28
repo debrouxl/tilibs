@@ -431,9 +431,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		TRYF(nsp_cmd_r_dir_enum_done(handle));
 	}
 
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
@@ -462,9 +460,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	        | (((uint32_t)data[23])      ));
 
 	g_free(data);
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -635,9 +631,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 		update_->pbar();
 	} while(value < 100 );
 
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
@@ -653,9 +647,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	strncpy((char *)id, (char*)(data + 82), 28);
 
 	g_free(data);
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		dump_rom_1	(CalcHandle* handle)
@@ -758,9 +750,7 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 	}
 	TRYF(nsp_cmd_r_rename_file(handle));
 
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
@@ -796,9 +786,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	}
 	TRYF(nsp_cmd_r_del_file(handle));
 
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
@@ -823,9 +811,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	}
 	TRYF(nsp_cmd_r_new_folder(handle));
 
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
@@ -959,9 +945,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_PRODUCT_ID;
 
 	g_free(data);
-	TRYF(nsp_session_close(handle));
-
-	return 0;
+	return nsp_session_close(handle);
 }
 
 static int		send_cert	(CalcHandle* handle, FlashContent* content)

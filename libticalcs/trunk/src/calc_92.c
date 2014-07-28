@@ -218,9 +218,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		update_->label();
 	}
 
-	TRYF(ti92_send_ACK(handle));
-
-	return 0;
+	return ti92_send_ACK(handle);
 }
 
 static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
@@ -258,9 +256,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 		update_pbar();
 	}
 
-	TRYF(ti92_send_EOT(handle));
-
-	return 0;
+	return ti92_send_EOT(handle);
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
@@ -395,9 +391,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(ti92_send_ACK(handle));
 
 	TRYF(ti92_recv_EOT(handle));
-	TRYF(ti92_send_ACK(handle));
-
-	return 0;
+	return ti92_send_ACK(handle);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -486,6 +480,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	int err;
 	// Go back to homescreen
 	PAUSE(200);
 	TRYF(send_key(handle, (KEY92P_CTRL + KEY92P_Q)));
@@ -494,10 +489,10 @@ static int		dump_rom_1	(CalcHandle* handle)
 	PAUSE(200);
 
 	// Send dumping program
-	TRYF(rd_send(handle, "romdump.92p", romDumpSize92, romDump92));
+	err = rd_send(handle, "romdump.92p", romDumpSize92, romDump92);
 	PAUSE(1000);
 
-	return 0;
+	return err;
 }
 
 // same code as calc_89.c
@@ -522,9 +517,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(200);
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
-
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -611,9 +604,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	// delete 'a1234567' variable
 	strcpy(vr->name, "a1234567");
-	TRYF(del_var(handle, vr));
-
-	return 0;
+	return del_var(handle, vr);
 }
 
 static int		get_version(CalcHandle* handle, CalcInfos* infos)

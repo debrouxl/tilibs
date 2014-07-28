@@ -1177,9 +1177,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, c
 	content = tifiles_content_create_regular(handle->model);
 	TRYF(tifiles_file_read_regular(filename, content));
 	TRYF(ticalcs_calc_send_var(handle, mode, content));
-	TRYF(tifiles_content_delete_regular(content));
-
-	return 0;
+	return tifiles_content_delete_regular(content);
 }
 
 /**
@@ -1220,9 +1218,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, c
 	content = tifiles_content_create_regular(handle->model);
 	TRYF(ticalcs_calc_recv_var(handle, mode, content, vr));
 	TRYF(tifiles_file_write_regular(filename, content, NULL));
-	TRYF(tifiles_content_delete_regular(content));
-
-	return 0;
+	return tifiles_content_delete_regular(content);
 }
 
 /**
@@ -1262,9 +1258,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
 	content = tifiles_content_create_regular(handle->model);
 	TRYF(tifiles_file_read_regular(filename, content));
 	TRYF(ticalcs_calc_send_var_ns(handle, mode, content));
-	TRYF(tifiles_content_delete_regular(content));
-
-	return 0;
+	return tifiles_content_delete_regular(content);
 }
 
 /**
@@ -1305,9 +1299,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode
 	content = tifiles_content_create_regular(handle->model);
 	TRYF(ticalcs_calc_recv_var_ns(handle, mode, content, vr));
 	TRYF(tifiles_file_write_regular(filename, content, NULL));
-	TRYF(tifiles_content_delete_regular(content));
-
-	return 0;
+	return tifiles_content_delete_regular(content);
 }
 
 /**
@@ -1346,9 +1338,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
 	content = tifiles_content_create_flash(handle->model);
 	TRYF(tifiles_file_read_flash(filename, content));
 	TRYF(ticalcs_calc_send_app(handle, content));
-	TRYF(tifiles_content_delete_flash(content));
-
-	return 0;
+	return tifiles_content_delete_flash(content);
 }
 
 /**
@@ -1388,9 +1378,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* file
 	content = tifiles_content_create_flash(handle->model);
 	TRYF(ticalcs_calc_recv_app(handle, content, vr));
 	TRYF(tifiles_file_write_flash(filename, content));
-	TRYF(tifiles_content_delete_flash(content));
-
-	return 0;
+	return tifiles_content_delete_flash(content);
 }
 
 /**
@@ -1656,9 +1644,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 	content = tifiles_content_create_flash(handle->model);
 	TRYF(tifiles_file_read_flash(filename, content));
 	TRYF(ticalcs_calc_send_cert(handle, content));
-	TRYF(tifiles_content_delete_flash(content));
-
-	return 0;
+	return tifiles_content_delete_flash(content);
 }
 
 /**
@@ -1774,9 +1760,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filen
 	content = tifiles_content_create_flash(handle->model);
 	TRYF(tifiles_file_read_flash(filename, content));
 	TRYF(ticalcs_calc_send_os(handle, content));
-	TRYF(tifiles_content_delete_flash(content));
-
-	return 0;
+	return tifiles_content_delete_flash(content);
 }
 
 /**
@@ -1816,9 +1800,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
 	content = tifiles_content_create_tigroup(handle->model, 0);
 	TRYF(tifiles_file_read_tigroup(filename, content));
 	TRYF(ticalcs_calc_send_tigroup(handle, content, mode));
-	TRYF(tifiles_content_delete_tigroup(content));
-
-	return 0;
+	return tifiles_content_delete_tigroup(content);
 }
 
 /**
@@ -1858,7 +1840,5 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* 
 	content = tifiles_content_create_tigroup(handle->model, 0);
 	TRYF(ticalcs_calc_recv_tigroup(handle, content, mode));
 	TRYF(tifiles_file_write_tigroup(filename, content));
-	TRYF(tifiles_content_delete_tigroup(content));
-
-	return 0;
+	return tifiles_content_delete_tigroup(content);
 }

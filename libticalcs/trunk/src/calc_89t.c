@@ -60,18 +60,14 @@ static int		is_ready	(CalcHandle* handle)
 	DUSBModeSet mode = MODE_NORMAL;
 
 	TRYF(dusb_cmd_s_mode_set(handle, mode));
-	TRYF(dusb_cmd_r_mode_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_mode_ack(handle);
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	PAUSE(25);	// this pause is needed between 2 keys
 	TRYF(dusb_cmd_s_execute(handle, "", "", EID_KEY, "", key));
-	TRYF(dusb_cmd_r_data_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_data_ack(handle);
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
@@ -86,9 +82,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 	}
 
 	TRYF(dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
-	TRYF(dusb_cmd_r_data_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_data_ack(handle);
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
@@ -369,8 +363,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 static int		send_backup	(CalcHandle* handle, BackupContent* content)
 {
-	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
-	return 0;
+	return send_var(handle, MODE_BACKUP, (FileContent *)content);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -528,9 +521,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	
 	TRYF(dusb_cmd_s_eot(handle));
 	PAUSE(500);
-	TRYF(dusb_cmd_r_eot_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_eot_ack(handle);
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
@@ -558,6 +549,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	DUSBCalcParam *param;
+	int err;
 
 	// Go back to HOME screen
 	param = dusb_cp_new(PID_HOMESCREEN, 1);
@@ -567,10 +559,10 @@ static int		dump_rom_1	(CalcHandle* handle)
 	dusb_cp_del(param);
 
 	// Send dumping program
-	TRYF(rd_send(handle, "romdump.89z", romDumpSize89t, romDump89t));
+	err = rd_send(handle, "romdump.89z", romDumpSize89t, romDump89t);
 	PAUSE(1000);
 
-	return 0;
+	return err;
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -600,9 +592,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 #endif
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
-
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -857,9 +847,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	// delete 'a1234567' variable
 	strcpy(vr->name, "a1234567");
-	TRYF(del_var(handle, vr));
-
-	return 0;
+	return del_var(handle, vr);
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)

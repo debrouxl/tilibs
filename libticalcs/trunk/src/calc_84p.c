@@ -60,19 +60,15 @@ static int		is_ready	(CalcHandle* handle)
 	DUSBModeSet mode = MODE_NORMAL;
 
 	TRYF(dusb_cmd_s_mode_set(handle, mode));
-	TRYF(dusb_cmd_r_mode_ack(handle));
 	// use PID_HOMESCREEN to return status ?
-
-	return 0;
+	return dusb_cmd_r_mode_ack(handle);
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(dusb_cmd_s_execute(handle, "", "", EID_KEY, "", key));
 	TRYF(dusb_cmd_r_delay_ack(handle));
-	TRYF(dusb_cmd_r_data_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_data_ack(handle);
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
@@ -87,9 +83,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
 	}
 
 	TRYF(dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
-	TRYF(dusb_cmd_r_data_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_data_ack(handle);
 }
 
 /* Unpack an image compressed using the 84+CSE RLE compression algorithm */
@@ -615,9 +609,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	TRYF(dusb_cmd_r_data_ack(handle));
 	TRYF(dusb_cmd_s_var_content(handle, size, data));
 	TRYF(dusb_cmd_r_data_ack(handle));
-	TRYF(dusb_cmd_s_eot(handle));
-
-	return 0;
+	return dusb_cmd_s_eot(handle);
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
@@ -810,9 +802,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	
 	TRYF(dusb_cmd_s_eot(handle));
 	PAUSE(500);
-	TRYF(dusb_cmd_r_eot_ack(handle));
-
-	return 0;
+	return dusb_cmd_r_eot_ack(handle);
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* id)

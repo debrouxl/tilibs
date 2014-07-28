@@ -72,9 +72,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti73_send_KEY(handle, key));
 	TRYF(ti73_recv_ACK(handle, &key));	// when the key is received
-	TRYF(ti73_recv_ACK(handle, NULL));	// after it completes the resulting action
-
-	return 0;
+	return ti73_recv_ACK(handle, NULL);	// after it completes the resulting action
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
@@ -358,9 +356,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	update_->cnt2++;
 	update_->pbar();
 
-	TRYF(ti73_send_ACK(handle));
-
-	return 0;
+	return ti73_send_ACK(handle);
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
@@ -496,9 +492,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	TRYF(ti73_recv_XDP(handle, &ve_size, ve->data));
 	ve->size = ve_size;
-	TRYF(ti73_send_ACK(handle));
-
-	return 0;
+	return ti73_send_ACK(handle);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -624,9 +618,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 
 	TRYF(ti73_send_EOT(handle));
-	TRYF(ti73_recv_ACK(handle, NULL));
-
-	return 0;
+	return ti73_recv_ACK(handle, NULL);
 }
 
 static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
@@ -842,12 +834,11 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(1000);
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
 
 	// (Normally there would be another ACK after the program exits,
 	// but the ROM dumper disables that behavior)
 
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -905,9 +896,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	TRYF(ti73_send_XDP(handle, 9, buffer));
 	TRYF(ti73_recv_ACK(handle, NULL));
 
-	TRYF(ti73_send_EOT(handle));
-
-	return 0;
+	return ti73_send_EOT(handle);
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -992,9 +981,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	TRYF(ti73_send_DEL(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));
 	TRYF(ti73_recv_ACK(handle, NULL));
-	TRYF(ti73_recv_ACK(handle, NULL));
-
-	return 0;
+	return ti73_recv_ACK(handle, NULL);
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)

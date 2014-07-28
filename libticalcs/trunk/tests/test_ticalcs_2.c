@@ -40,8 +40,6 @@
 #include "../src/nsp_cmd.h"
 #include "../src/cmdz80.h"
 
-#define TRYF(x) { int aaa_; if((aaa_ = (x))) return aaa_; }
-
 #undef VERSION
 #define VERSION "Test program"
 
@@ -54,25 +52,31 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 
 	memset(vr, 0, sizeof(VarRequest));
 
-	if(ticalcs_calc_features(h) & FTS_FOLDER)
+	if (ticalcs_calc_features(h) & FTS_FOLDER)
 	{
 		printf("Enter%s folder name: ", prompt);
 		ret = scanf("%1023s", vr->folder);
-		if(ret < 1)
+		if (ret < 1)
+		{
 			return 0;
+		}
 	}
 
 	printf("Enter%s variable name: ", prompt);
 	ret = scanf("%1023s", vr->name);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
-	if(tifiles_calc_is_ti8x(h->model))
+	if (tifiles_calc_is_ti8x(h->model))
 	{
 		printf("Enter%s variable type: ", prompt);
 		ret = scanf("%255s", buf);
-		if(ret < 1)
+		if (ret < 1)
+		{
 			return 0;
+		}
 
 		// Special handling for types written in hex.
 		errno = 0;
@@ -84,7 +88,7 @@ static int read_varname(CalcHandle* h, VarRequest *vr, const char *prompt)
 			// Let's try to parse a fext instead.
 			vr->type = tifiles_fext2vartype(h->model, buf);
 			s = tifiles_vartype2string(h->model, vr->type);
-			if(s == NULL || *s == 0)
+			if (s == NULL || *s == 0)
 			{
 				vr->type = tifiles_string2vartype(h->model, buf);
 			}
@@ -99,19 +103,17 @@ static void print_lc_error(int errnum)
 	char *msg;
 
 	ticables_error_get(errnum, &msg);
-	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", 
-		errnum, msg);
+	fprintf(stderr, "Link cable error (code %i)...\n<<%s>>\n", errnum, msg);
 
 	free(msg);
-
 }
 
 static int is_ready(CalcHandle* h)
 {
-	int err;
+	int ret;
 
-	err = ticalcs_calc_isready(h);
-	printf("Hand-held is %sready !\n", err ? "not " : "");
+	ret = ticalcs_calc_isready(h);
+	printf("Hand-held is %sready !\n", ret ? "not " : "");
 
 	return 0;
 }
@@ -129,7 +131,9 @@ static int execute(CalcHandle *h)
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_execute(h, &ve, "");
 }
@@ -138,34 +142,41 @@ static int recv_screen(CalcHandle *h)
 {
 	CalcScreenCoord sc = { SCREEN_CLIPPED, 0, 0, 0, 0, CALC_PIXFMT_MONO };
 	uint8_t* bitmap = NULL;
+	int ret;
 
-	TRYF(ticalcs_calc_recv_screen(h, &sc, &bitmap));
+	ret = ticalcs_calc_recv_screen(h, &sc, &bitmap);
 	//free(bitmap);
-	return 0;
+	return ret;
 }
 
 static int get_dirlist(CalcHandle *h)
 {
 	GNode *vars, *apps;
+	int ret;
 
-	TRYF(ticalcs_calc_get_dirlist(h, &vars, &apps));
-	ticalcs_dirlist_display(vars);
-	ticalcs_dirlist_display(apps);
-	ticalcs_dirlist_destroy(&vars);
-	ticalcs_dirlist_destroy(&apps);
+	ret = ticalcs_calc_get_dirlist(h, &vars, &apps);
+	if (!ret)
+	{
+		ticalcs_dirlist_display(vars);
+		ticalcs_dirlist_display(apps);
+		ticalcs_dirlist_destroy(&vars);
+		ticalcs_dirlist_destroy(&apps);
+	}
 
-	return 0;
+	return ret;
 }
 
 static int send_backup(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_backup(h->model));
 
@@ -174,13 +185,15 @@ static int send_backup(CalcHandle* h)
 
 static int recv_backup(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_backup(h->model));
 
@@ -189,90 +202,117 @@ static int recv_backup(CalcHandle* h)
 
 static int send_var(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 	FileContent *content;
 	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	if (h->model == CALC_NSPIRE)
 	{
 		memset(&ve, 0, sizeof(ve));
 		if(!read_varname(h, &ve, ""))
+		{
 			return 0;
+		}
 	}
 
 	content = tifiles_content_create_regular(h->model);
-	TRYF(tifiles_file_read_regular(filename, content));
-	if (h->model == CALC_NSPIRE)
+	if (content != NULL)
 	{
-		strcpy(content->entries[0]->folder, ve.folder);
-		strcpy(content->entries[0]->name, ve.name);
+		ret = tifiles_file_read_regular(filename, content);
+		if (!ret)
+		{
+			if (h->model == CALC_NSPIRE)
+			{
+				strcpy(content->entries[0]->folder, ve.folder);
+				strcpy(content->entries[0]->name, ve.name);
+			}
+			ret = ticalcs_calc_send_var(h, MODE_NORMAL, content);
+			if (!ret)
+			{
+				ret = tifiles_content_delete_regular(content);
+			}
+		}
 	}
-	TRYF(ticalcs_calc_send_var(h, MODE_NORMAL, content));
-	TRYF(tifiles_content_delete_regular(content));
+	else
+	{
+		ret = -1;
+	}
 
-	return 0;
+	return ret;
 }
 
 static int recv_var(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	memset(&ve, 0, sizeof(ve));
 	if(!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_recv_var2(h, MODE_NORMAL, filename, &ve);
 }
 
 static int send_var_ns(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_send_var_ns2(h, MODE_NORMAL, filename);
 }
 
 static int recv_var_ns(CalcHandle* h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 	VarRequest *ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_recv_var_ns2(h, MODE_NORMAL, filename, &ve);
 }
 
 static int send_flash(CalcHandle *h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 	strcat(filename, ".");
 	strcat(filename, tifiles_fext_of_flash_app(h->model));
 
@@ -281,33 +321,39 @@ static int send_flash(CalcHandle *h)
 
 static int recv_flash(CalcHandle *h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 	VarEntry ve;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	memset(&ve, 0, sizeof(ve));
 	printf("Enter application name: ");
 	ret = scanf("%1023s", ve.name);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_recv_app2(h, filename, &ve);
 }
 
 static int send_os(CalcHandle *h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_send_os2(h, filename);
 }
@@ -315,26 +361,35 @@ static int send_os(CalcHandle *h)
 static int recv_idlist(CalcHandle *h)
 {
 	uint8_t id[32];
+	int ret;
 
-	TRYF(ticalcs_calc_recv_idlist(h, id));
-	printf("IDLIST: <%s>", id);
+	ret = ticalcs_calc_recv_idlist(h, id);
+	if (!ret)
+	{
+		printf("IDLIST: <%s>", id);
+	}
 
-	return 0;
+	return ret;
 }
 
 static int dump_rom(CalcHandle *h)
 {
-	char filename[1024] = "";
+	char filename[1030] = "";
 	int ret;
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
-	TRYF(ticalcs_calc_dump_rom_1(h));
-	TRYF(ticalcs_calc_dump_rom_2(h, 0, filename));
-	return 0;
+	ret = ticalcs_calc_dump_rom_1(h);
+	if (!ret)
+	{
+		ret = ticalcs_calc_dump_rom_2(h, 0, filename);
+	}
+	return ret;
 }
 
 static int set_clock(CalcHandle *h)
@@ -346,11 +401,15 @@ static int set_clock(CalcHandle *h)
 static int get_clock(CalcHandle *h)
 {
 	CalcClock clk;
+	int ret;
 
-	TRYF(ticalcs_calc_get_clock(h, &clk));
-	ticalcs_clock_show(h->model, &clk);
+	ret = ticalcs_calc_get_clock(h, &clk);
+	if (!ret)
+	{
+		ticalcs_clock_show(h->model, &clk);
+	}
 
-	return 0;
+	return ret;
 }
 
 static int del_var(CalcHandle* h)
@@ -358,8 +417,10 @@ static int del_var(CalcHandle* h)
 	VarEntry ve;
 
 	memset(&ve, 0, sizeof(ve));
-	if(!read_varname(h, &ve, ""))
+	if (!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_del_var(h, &ve);
 }
@@ -370,11 +431,15 @@ static int rename_var(CalcHandle* h)
 	VarEntry dst;
 
 	memset(&src, 0, sizeof(src));
-	if(!read_varname(h, &src, " current"))
+	if (!read_varname(h, &src, " current"))
+	{
 		return 0;
+	}
 	memset(&dst, 0, sizeof(dst));
-	if(!read_varname(h, &dst, " new"))
+	if (!read_varname(h, &dst, " new"))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_rename_var(h, &src, &dst);
 }
@@ -384,8 +449,10 @@ static int archive_var(CalcHandle* h)
 	VarEntry ve;
 
 	memset(&ve, 0, sizeof(ve));
-	if(!read_varname(h, &ve, ""))
+	if (!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_change_attr(h, &ve, ATTRB_ARCHIVED);
 }
@@ -395,8 +462,10 @@ static int unarchive_var(CalcHandle* h)
 	VarEntry ve;
 
 	memset(&ve, 0, sizeof(ve));
-	if(!read_varname(h, &ve, ""))
+	if (!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_change_attr(h, &ve, ATTRB_NONE);
 }
@@ -406,8 +475,10 @@ static int lock_var(CalcHandle* h)
 	VarEntry ve;
 
 	memset(&ve, 0, sizeof(ve));
-	if(!read_varname(h, &ve, ""))
+	if (!read_varname(h, &ve, ""))
+	{
 		return 0;
+	}
 
 	return ticalcs_calc_change_attr(h, &ve, ATTRB_LOCKED);
 }
@@ -418,11 +489,14 @@ static int new_folder(CalcHandle* h)
 	int ret;
 
 	memset(&ve, 0, sizeof(ve));
-	if(tifiles_calc_is_ti9x(h->model))
+	if (!tifiles_calc_is_ti8x(h->model))
 	{
 		printf("Enter folder name: ");
 		ret = scanf("%1023s", ve.folder);
-		if(ret < 1) return 0;
+		if (ret < 1)
+		{
+			return 0;
+		}
 	}
 
 	return ticalcs_calc_new_fld(h, &ve);
@@ -444,8 +518,10 @@ static int probe_calc(CalcHandle *h)
 
 	printf("Enter cable & port for probing (c p): ");
 	ret = scanf("%d %d", &m, &p);
-	if(ret < 2)
+	if (ret < 2)
+	{
 		return 0;
+	}
 
 	ticalcs_probe((CableModel)m, (CablePort)p, &model, !0);
 	//ticalcs_probe_calc(h->cable, &model);
@@ -478,13 +554,17 @@ static int ti83pfamily_dump(CalcHandle *h)
 
 	printf("Enter page number for dumping: ");
 	ret = scanf("%d", &page);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
-	if(ret < 1)
+	if (ret < 1)
+	{
 		return 0;
+	}
 
 	f = fopen(filename, "wb");
 	if (f != NULL)
@@ -707,17 +787,17 @@ int main(int argc, char **argv)
 
 	while((i = getopt(argc, argv, "c:m:")) != -1)
 	{
-		if(i == 'c')
+		if (i == 'c')
 		{
 			colon = strchr(optarg, ':');
-			if(colon)
+			if (colon)
 			{
 				*colon = 0;
 				port_number = atoi(colon + 1);
 			}
 			cable_model = ticables_string_to_model(optarg);
 		}
-		else if(i == 'm')
+		else if (i == 'm')
 		{
 			calc_model = ticalcs_string_to_model(optarg);
 		}
@@ -737,13 +817,13 @@ int main(int argc, char **argv)
 	ticalcs_library_init();
 
 	// set cable
-	if(cable_model == CABLE_NUL)
+	if (cable_model == CABLE_NUL)
 	{
 		int *pids, npids;
 
 		ticables_get_usb_devices(&pids, &npids);
 
-		if(npids < 1)
+		if (npids < 1)
 		{
 			fprintf(stderr, "No supported USB cable found\n");
 			return 1;
@@ -780,16 +860,16 @@ int main(int argc, char **argv)
 	}
 
 	cable = ticables_handle_new(cable_model, port_number);
-	if(cable == NULL)
+	if (cable == NULL)
 	{
 		fprintf(stderr, "ticables_handle_new failed\n");
 		return -1;
 	}
 
 	// set calc
-	if(calc_model == CALC_NONE)
+	if (calc_model == CALC_NONE)
 	{
-		if(ticalcs_probe(cable_model, port_number, &calc_model, 1))
+		if (ticalcs_probe(cable_model, port_number, &calc_model, 1))
 		{
 			fprintf(stderr, "No calculator found\n");
 			return 1;
@@ -797,7 +877,7 @@ int main(int argc, char **argv)
 	}
 
 	calc = ticalcs_handle_new(calc_model);
-	if(calc == NULL)
+	if (calc == NULL)
 	{
 		fprintf(stderr, "ticalcs_handle_new failed\n");
 		return -1;
@@ -816,15 +896,15 @@ restart:
 		printf("Your choice: ");
 
 		err = scanf("%u", &choice);
-		if(err < 1)
+		if (err < 1)
 			goto restart;
 		printf("\n");
 
-		if(choice == 0)
+		if (choice == 0)
 			do_exit = 1;
 
 		// Process choice
-		if(choice < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])) && fnct_menu[choice])
+		if (choice < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])) && fnct_menu[choice])
 			fnct_menu[choice](calc);
 		printf("\n");
 

@@ -179,9 +179,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	update_->cnt2++;
 	update_->pbar();
 
-	TRYF(ti85_send_EOT(handle));
-
-	return 0;
+	return ti85_send_EOT(handle);
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)

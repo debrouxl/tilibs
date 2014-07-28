@@ -61,9 +61,7 @@ static int		is_ready	(CalcHandle* handle)
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti82_send_KEY(handle, key));
-	TRYF(ti82_recv_ACK(handle, &key));
-
-	return 0;
+	return ti82_recv_ACK(handle, &key);
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
@@ -270,9 +268,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	update_->cnt2++;
 	update_->pbar();
 
-	TRYF(ti82_send_ACK(handle));
-
-	return 0;
+	return ti82_send_ACK(handle);
 }
 
 static int		recv_backup	(CalcHandle* handle, BackupContent* content)
@@ -408,9 +404,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	TRYF(ti82_recv_XDP(handle, &ve_size, ve->data));
 	ve->size = ve_size;
-	TRYF(ti82_send_ACK(handle));
-
-	return 0;
+	return ti82_send_ACK(handle);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -441,9 +435,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
-	TRYF(rd_send(handle, "romdump.83p", romDumpSize83, romDump83));
-
-	return 0;
+	return rd_send(handle, "romdump.83p", romDumpSize83, romDump83);
 }
 
 static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filename)
@@ -464,9 +456,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	}
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
-
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)

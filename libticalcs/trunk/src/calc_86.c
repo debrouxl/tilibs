@@ -62,9 +62,7 @@ static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti85_send_KEY(handle, key));
 	TRYF(ti85_recv_ACK(handle, &key));
-	TRYF(ti85_recv_ACK(handle, &key));
-
-	return 0;
+	return ti85_recv_ACK(handle, &key);
 }
 
 static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
@@ -436,9 +434,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	TRYF(ti85_recv_XDP(handle, &ve_size, ve->data));
 	ve->size = ve_size;
-	TRYF(ti85_send_ACK(handle));
-
-	return 0;
+	return ti85_send_ACK(handle);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)

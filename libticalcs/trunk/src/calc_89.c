@@ -453,9 +453,7 @@ static int		send_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti89_recv_ACK(handle, NULL));
 
 	// next, send var(s)
-	TRYF(send_var(handle, MODE_BACKUP, (FileContent *)content));
-
-	return 0;
+	return send_var(handle, MODE_BACKUP, (FileContent *)content);
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -706,9 +704,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		update_->pbar();
 	}
 
-	TRYF(ti89_send_ACK(handle));
-
-	return 0;
+	return ti89_send_ACK(handle);
 }
 
 static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
@@ -735,13 +731,12 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	TRYF(ti89_send_ACK(handle));
 
 	TRYF(ti89_recv_EOT(handle));
-	TRYF(ti89_send_ACK(handle));
-
-	return 0;
+	return ti89_send_ACK(handle);
 }
 
 static int		dump_rom_1	(CalcHandle* handle)
 {
+	int err;
 	// Go back to homescreen
 	PAUSE(200);
 	if(handle->model == CALC_TI89 || handle->model == CALC_TI89T)
@@ -760,10 +755,10 @@ static int		dump_rom_1	(CalcHandle* handle)
 	PAUSE(200);
 
 	// Send dumping program
-	TRYF(rd_send(handle, "romdump.89z", romDumpSize89, romDump89));
+	err = rd_send(handle, "romdump.89z", romDumpSize89, romDump89);
 	PAUSE(1000);
 
-	return 0;
+	return err;
 }
 
 // same code as calc_92.c
@@ -788,9 +783,7 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	PAUSE(200);
 
 	// Get dump
-	TRYF(rd_dump(handle, filename));
-
-	return 0;
+	return rd_dump(handle, filename);
 }
 
 static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -822,9 +815,7 @@ static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
 	TRYF(ti89_recv_ACK(handle, NULL));
 
 	TRYF(ti89_send_EOT(handle));
-	TRYF(ti89_recv_ACK(handle, &status));
-
-	return 0;
+	return ti89_recv_ACK(handle, &status);
 }
 
 static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
@@ -887,9 +878,7 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 
 	TRYF(ti89_send_DEL(handle, vr->size, vr->type, varname));
 	TRYF(ti89_recv_ACK(handle, NULL));
-	TRYF(ti89_recv_ACK(handle, NULL));
-
-	return 0;
+	return ti89_recv_ACK(handle, NULL);
 }
 
 static int		new_folder  (CalcHandle* handle, VarRequest* vr)
@@ -921,9 +910,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 
 	// delete 'a1234567' variable
 	strcpy(vr->name, "a1234567");
-	TRYF(del_var(handle, vr));
-
-	return 0;
+	return del_var(handle, vr);
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
