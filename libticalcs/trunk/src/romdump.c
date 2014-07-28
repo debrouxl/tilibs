@@ -34,7 +34,6 @@
 #include "error.h"
 #include "macros.h"
 #include "pause.h"
-#include "cmd73.h"
 
 #define MAX_RETRY	3
 
@@ -79,9 +78,7 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	buf[len+4+0] = LSB(sum);
 	buf[len+4+1] = MSB(sum);
 
-	TRYF(ticables_cable_send(handle->cable, buf, len+6));
-
-	return 0;
+	return ticables_cable_send(handle->cable, buf, len+6);
 }
 
 static int cmd_is_valid(uint16_t cmd)
@@ -109,97 +106,117 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 {
 	int i, r, q;
 	uint16_t sum, chksum;
+	int err;
 
 	// Any packet has always at least 4 bytes (cmd, len)
-	TRYF(ticables_cable_recv(handle->cable, buf, 4));
-
-	*cmd = (buf[1] << 8) | buf[0];
-	*len = (buf[3] << 8) | buf[2];
-
-	if(!cmd_is_valid(*cmd))
-		return ERR_INVALID_CMD;
-
-	if(*cmd == CMD_ERROR)
-		return ERR_ROM_ERROR;
-
-	// compute chunks
-	BLK_SIZE = *len / 20;
-	if(BLK_SIZE == 0) BLK_SIZE = 1;
-
-	q = *len / BLK_SIZE;
-	r = *len % BLK_SIZE;
-	handle->updat->max1 = *len;
-	handle->updat->cnt1 = 0;
-
-	// recv full chunks
-	for(i = 0; i < q; i++)
+	err = ticables_cable_recv(handle->cable, buf, 4);
+	if (!err)
 	{
-		TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], BLK_SIZE));
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-		handle->updat->cnt1 += BLK_SIZE;
-		if(*len > MIN_SIZE)
-			handle->updat->pbar();
-		//if (handle->updat->cancel) 
-		//	return ERR_ABORT;
+
+		*cmd = (buf[1] << 8) | buf[0];
+		*len = (buf[3] << 8) | buf[2];
+
+		if (!cmd_is_valid(*cmd))
+		{
+			err = ERR_INVALID_CMD;
+			goto exit;
+		}
+
+		if (*cmd == CMD_ERROR)
+		{
+			err = ERR_ROM_ERROR;
+			goto exit;
+		}
+
+		// compute chunks
+		BLK_SIZE = *len / 20;
+		if (BLK_SIZE == 0) BLK_SIZE = 1;
+
+		q = *len / BLK_SIZE;
+		r = *len % BLK_SIZE;
+		handle->updat->max1 = *len;
+		handle->updat->cnt1 = 0;
+
+		// recv full chunks
+		for(i = 0; i < q; i++)
+		{
+			err = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], BLK_SIZE);
+			if (err)
+			{
+				goto exit;
+			}
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			handle->updat->cnt1 += BLK_SIZE;
+			if(*len > MIN_SIZE)
+				handle->updat->pbar();
+			//if (handle->updat->cancel) 
+			//	return ERR_ABORT;
+		}
+
+		// recv last chunk
+		{
+			err = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], (uint16_t)(r+2));
+			if (err)
+			{
+				goto exit;
+			}
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			handle->updat->cnt1 += 1;
+			if(*len > MIN_SIZE)
+				handle->updat->pbar();
+			if (handle->updat->cancel)
+				return ERR_ABORT;
+		}
+
+		// verify checksum
+		chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
+		sum = tifiles_checksum(buf, *len + 4);
+		//printf("<%04x %04x>\n", sum, chksum);
+
+		if (chksum != sum)
+		{
+			return ERR_CHECKSUM;
+		}
+
+		if (data)
+		{
+			memcpy(data, buf+4, *len);
+		}
 	}
 
-	// recv last chunk
-	{
-		TRYF(ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], (uint16_t)(r+2)));
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-		handle->updat->cnt1 += 1;
-		if(*len > MIN_SIZE)
-			handle->updat->pbar();
-		if (handle->updat->cancel)
-			return ERR_ABORT;
-	}
-
-	// verify checksum
-	chksum = (buf[*len+4 + 1] << 8) | buf[*len+4 + 0];
-	sum = tifiles_checksum(buf, *len + 4);
-	//printf("<%04x %04x>\n", sum, chksum);
-
-	if (chksum != sum)
-		return ERR_CHECKSUM;
-
-	if(data)
-		memcpy(data, buf+4, *len);
-
-	return 0;
+exit:
+	return err;
 }
 
 // --- Command Layer
 
-int rom_send_RDY(CalcHandle* handle)
+static int rom_send_RDY(CalcHandle* handle)
 {
-  ticalcs_info(" PC->TI: IS_READY");
-  TRYF(send_pkt(handle, CMD_IS_READY, 0, NULL));
-
-  return 0;
+	ticalcs_info(" PC->TI: IS_READY");
+	return send_pkt(handle, CMD_IS_READY, 0, NULL);
 }
 
-int rom_recv_RDY(CalcHandle* handle)
+static int rom_recv_RDY(CalcHandle* handle)
 {
 	uint16_t cmd, len;
+	int err;
 
-	TRYF(recv_pkt(handle, &cmd, &len, NULL));
-	ticalcs_info(" TI->PC: %s", cmd ? "OK" : "KO");
+	err = recv_pkt(handle, &cmd, &len, NULL);
+	ticalcs_info(" TI->PC: %s", err ? "ERROR" : (cmd ? "OK" : "KO"));
 
-	return 0;
+	return err;
 }
 
-int rom_send_EXIT(CalcHandle* handle)
+static int rom_send_EXIT(CalcHandle* handle)
 {
-  ticalcs_info(" PC->TI: EXIT");
-  TRYF(send_pkt(handle, CMD_EXIT, 0, NULL));
-
-  return 0;
+	ticalcs_info(" PC->TI: EXIT");
+	return send_pkt(handle, CMD_EXIT, 0, NULL);
 }
 
-int rom_recv_EXIT(CalcHandle* handle)
+static int rom_recv_EXIT(CalcHandle* handle)
 {
 	uint16_t cmd, len;
-	int err = 0;
+	int err;
 
 	err = recv_pkt(handle, &cmd, &len, NULL);
 	ticalcs_info(" TI->PC: EXIT");
@@ -207,77 +224,83 @@ int rom_recv_EXIT(CalcHandle* handle)
 	return err;
 }
 
-int rom_send_SIZE(CalcHandle* handle)
+static int rom_send_SIZE(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: REQ_SIZE");
-	TRYF(send_pkt(handle, CMD_REQ_SIZE, 0, NULL));
-
-	return 0;
+	return send_pkt(handle, CMD_REQ_SIZE, 0, NULL);
 }
 
-int rom_recv_SIZE(CalcHandle* handle, uint32_t* size)
+static int rom_recv_SIZE(CalcHandle* handle, uint32_t* size)
 {
 	uint16_t cmd, len;
+	int err;
 
-	TRYF(recv_pkt(handle, &cmd, &len, (uint8_t *)size));
+	err = recv_pkt(handle, &cmd, &len, (uint8_t *)size);
 	ticalcs_info(" TI->PC: SIZE (0x%08x bytes)", *size);
 
-	return 0;
+	return err;
 }
 
-int rom_send_DATA(CalcHandle* handle, uint32_t addr)
+static int rom_send_DATA(CalcHandle* handle, uint32_t addr)
 {
 	ticalcs_info(" PC->TI: REQ_BLOCK at @%08x", addr);
-	TRYF(send_pkt(handle, CMD_REQ_BLOCK, 4, (uint8_t *)&addr));
-
-	return 0;
+	return send_pkt(handle, CMD_REQ_BLOCK, 4, (uint8_t *)&addr);
 }
 
-int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
+static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 {
 	uint16_t cmd;
 	uint16_t rpt;
+	int err;
 
-	TRYF(recv_pkt(handle, &cmd, size, data));
-	if(cmd == CMD_DATA1)
+	err = recv_pkt(handle, &cmd, size, data);
+	if (!err)
 	{
-		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
-		std_blk++;
-		return 0;
-	}
-	else if(cmd == CMD_DATA2)
-	{
-		*size = (data[1] << 8) | data[0];
-		rpt = (data[3] << 8) | data[2];
-		memset(data, rpt, *size);
-		ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
-		sav_blk++;
-		return 0;
+		if(cmd == CMD_DATA1)
+		{
+			ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+			std_blk++;
+		}
+		else if(cmd == CMD_DATA2)
+		{
+			*size = (data[1] << 8) | data[0];
+			rpt = (data[3] << 8) | data[2];
+			memset(data, rpt, *size);
+			ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+			sav_blk++;
+		}
+		else
+		{
+			err = ERR_INVALID_CMD;
+		}
 	}
 
-	return -1;
+	return err;
 }
 
-int rom_send_ERR(CalcHandle* handle)
+static int rom_send_ERR(CalcHandle* handle)
 {
-  ticalcs_info(" PC->TI: ERROR");
-  TRYF(send_pkt(handle, CMD_ERROR, 0, NULL));
-
-  return 0;
+	ticalcs_info(" PC->TI: ERROR");
+	return send_pkt(handle, CMD_ERROR, 0, NULL);
 }
 
 // --- Dumping Layer
 
-int rd_dump(CalcHandle* h, const char *filename)
+int rd_dump(CalcHandle* handle, const char *filename)
 {
 	FILE *f;
-	CalcHandle* handle = h;
 	int err = 0;
 	uint32_t size;
 	uint32_t addr;
 	uint16_t length;
 	uint32_t i;
 	uint8_t data[65536];
+
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
@@ -289,15 +312,26 @@ int rd_dump(CalcHandle* h, const char *filename)
 	// check if ready
 	for(i = 0; i < 3; i++)
 	{
-		err = rom_send_RDY(h);
-		TRYF(rom_recv_RDY(h));
+		err = rom_send_RDY(handle);
+		if (rom_recv_RDY(handle))
+		{
+			goto exit; // Bail out.
+		}
 		if(!err)
-			break;
+		{
+			break; // Proceed further.
+		}
 	}
 
 	// request ROM size
-	TRYF(rom_send_SIZE(h));
-	TRYF(rom_recv_SIZE(h, &size));
+	if (rom_send_SIZE(handle))
+	{
+		goto exit;
+	}
+	if (rom_recv_SIZE(handle, &size))
+	{
+		goto exit;
+	}
 
 	// get packets
 	std_blk = sav_blk = 0;
@@ -313,9 +347,9 @@ int rd_dump(CalcHandle* h, const char *filename)
 
 			for(i = 0; i < MAX_RETRY; i++)
 			{
-				err = rom_send_RDY(h);
+				err = rom_send_RDY(handle);
 				if(err) continue;
-				err = rom_recv_RDY(h);
+				err = rom_recv_RDY(handle);
 				if(err) continue;
 			}
 			if(i == MAX_RETRY && err)
@@ -323,7 +357,7 @@ int rd_dump(CalcHandle* h, const char *filename)
 			err = 0;
 		}
 
-		if(tifiles_calc_is_ti9x(h->model) && addr >= 0x10000 && addr < 0x12000)
+		if(tifiles_calc_is_ti9x(handle->model) && addr >= 0x10000 && addr < 0x12000)
 		{
 			// certificate is read protected: skip
 			memset(data, 0xff, length);
@@ -334,9 +368,9 @@ int rd_dump(CalcHandle* h, const char *filename)
 		}
 
 		// receive data
-		err = rom_send_DATA(h, addr);
+		err = rom_send_DATA(handle, addr);
 		if(err) continue;
-		err = rom_recv_DATA(h, &length, data);
+		err = rom_recv_DATA(handle, &length, data);
 		if(err) continue;
 
 		if (fwrite(data, length, 1, f) < 1)
@@ -352,34 +386,50 @@ int rd_dump(CalcHandle* h, const char *filename)
 
 	// finished
 exit:
-	if(h->model == CALC_TI83P || h->model == CALC_TI84P)
+	fclose(f);
+
+	if (!err)
 	{
-		//TRYF(ti73_recv_ACK(NULL));	// ACK sent after ENTER key when dumper exits
+		PAUSE(200);
+		err = rom_send_EXIT(handle);
+		if (!err)
+		{
+			err = rom_recv_EXIT(handle);
+		}
+		PAUSE(1000);
 	}
 
-	PAUSE(200);
-	TRYF(rom_send_EXIT(h));
-	TRYF(rom_recv_EXIT(h));
-	PAUSE(1000);
-
-	fclose(f);
 	return err;
 }
 
-int rd_is_ready(CalcHandle* h)
+int rd_is_ready(CalcHandle* handle)
 {
+	int err;
 
-	TRYF(rom_send_RDY(h));
-	TRYF(rom_recv_RDY(h));
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 
-	return 0;
+	err = rom_send_RDY(handle);
+	if (!err)
+	{
+		err = rom_recv_RDY(handle);
+	}
+	return err;
 }
 
-int rd_send(CalcHandle *h, const char *prgname, uint16_t size, uint8_t *data)
+int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
 {
 	char *template, *tempfname;
 	int fd, ret;
 
+	if (handle == NULL)
+	{
+		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_INVALID_HANDLE;
+	}
 	/* Write ROM dumper to a temporary file (note that the file must have
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */
@@ -400,8 +450,8 @@ int rd_send(CalcHandle *h, const char *prgname, uint16_t size, uint8_t *data)
 	}
 
 	// Transfer program to calc
-	h->busy = 0;
-	ret = ticalcs_calc_send_var2(h, MODE_SEND_EXEC_ASM, tempfname);
+	handle->busy = 0;
+	ret = ticalcs_calc_send_var2(handle, MODE_SEND_EXEC_ASM, tempfname);
 	g_unlink(tempfname);
 	g_free(tempfname);
 
