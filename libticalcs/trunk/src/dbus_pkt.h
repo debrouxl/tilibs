@@ -31,46 +31,70 @@
 
 // Machine IDs (host <-> target)
 
-#define PC_TIXX  0x00
+#define PC_TIXX   0x00
 
-#define PC_TI73  0x07
-#define TI73_PC  0x74
+#define PC_TI73   0x07
+#define TI73_PC   0x74
+#define CBL_TI73  0x12
+#define TI73_CBL  0x95
 
-#define PC_TI80  0x00
-#define TI80_PC  0x80
+#define PC_TI80   0x00
+#define TI80_PC   0x80
 
-#define PC_TI82  0x02
-#define TI82_PC  0x82
+#define PC_TI82   0x02
+#define TI82_PC   0x82
+#define CBL_TI82  0x12
+#define TI82_CBL  0x82
 
-#define PC_TI83  0x03
-#define TI83_PC  0x83
+#define PC_TI83   0x03
+#define TI83_PC   0x83
+#define CBL_TI83  0x12
+#define TI83_CBL  0x95
 
-#define PC_TI83p 0x23
-#define TI83p_PC 0x73
+#define PC_TI83p  0x23
+#define TI83p_PC  0x73
+#define CBL_TI83p 0x12
+#define TI83p_CBL 0x95
 
-#define PC_TI84p 0x23
-#define TI84p_PC 0x73
+#define PC_TI84p  0x23
+#define TI84p_PC  0x73
+#define CBL_TI84p 0x12
+#define TI84p_CBL 0x95
 
-#define PC_TI85  0x05
-#define TI85_PC  0x85
+#define PC_TI85   0x05
+#define TI85_PC   0x85
+#define CBL_TI85  0x15
+#define TI85_CBL  0x85
 
-#define PC_TI86  0x06
-#define TI86_PC  0x86
+#define PC_TI86   0x06
+#define TI86_PC   0x86
+#define CBL_TI86  0x15
+#define TI86_CBL  0x85
 
-#define PC_TI89  0x08
-#define TI89_PC  0x98
+#define PC_TI89   0x08
+#define TI89_PC   0x98
+#define CBL_TI89  0x19
+#define TI89_CBL  0x89
 
-#define PC_TI89t 0x08
-#define TI89t_PC 0x98
+#define PC_TI89t  0x08
+#define TI89t_PC  0x98
+#define CBL_TI89t 0x19
+#define TI89t_CBL 0x89
 
-#define PC_TI92  0x09
-#define TI92_PC  0x89
+#define PC_TI92   0x09
+#define TI92_PC   0x89
+#define CBL_TI92  0x19
+#define TI92_CBL  0x89
 
-#define PC_TI92p 0x08
-#define TI92p_PC 0x88
+#define PC_TI92p  0x08
+#define TI92p_PC  0x88
+#define CBL_TI92p 0x19
+#define TI92p_CBL 0x89
 
-#define PC_V200  0x08
-#define V200_PC  0x88
+#define PC_V200   0x08
+#define V200_PC   0x88
+#define CBL_V200  0x19
+#define V200_CBL  0x89
 
 // Command IDs
 /*
