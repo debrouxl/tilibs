@@ -32,63 +32,63 @@
 #include "ticables.h"
 #include "gettext.h"
 
-int nul_prepare(CableHandle *h)
+static int nul_prepare(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_probe(CableHandle *h)
+static int nul_probe(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_open(CableHandle *h)
+static int nul_open(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_close(CableHandle *h)
+static int nul_close(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_reset(CableHandle *h)
+static int nul_reset(CableHandle *h)
 {
 	return 0;
 }
 
-int nul_put(CableHandle *h, uint8_t *data, uint32_t len)
+static int nul_put(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }
 
-int nul_get(CableHandle *h, uint8_t *data, uint32_t len)
+static int nul_get(CableHandle *h, uint8_t *data, uint32_t len)
 {
 	return 0;
 }
 
-int nul_check(CableHandle *h, int *status)
+static int nul_check(CableHandle *h, int *status)
 {
 	*status = STATUS_NONE;
 	return 0;
 }
 
-int nul_set_red_wire(CableHandle *h, int b)
+static int nul_set_red_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_set_white_wire(CableHandle *h, int b)
+static int nul_set_white_wire(CableHandle *h, int b)
 {
 	return 0;
 }
 
-int nul_get_red_wire(CableHandle *h)
+static int nul_get_red_wire(CableHandle *h)
 {
 	return 1;
 }
 
-int nul_get_white_wire(CableHandle *h)
+static int nul_get_white_wire(CableHandle *h)
 {
 	return 1;
 }

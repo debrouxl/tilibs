@@ -45,21 +45,35 @@
 #define dev_fd      (GPOINTER_TO_INT(h->priv))
 #define termset     ((struct termios *)(h->priv2))
 
+#if defined(__BSD__)
+#if defined(__NetBSD__)
+#define DEVNAME "dty0"
+#else /* FreeBSD */
+#define DEVNAME "cuad"
+#endif
+#else
+#define DEVNAME "ttyS"
+#endif
+
 static int gry_prepare(CableHandle *h)
 {
 	int ret;
 
-	switch(h->port)
+	switch (h->port)
 	{
-	case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/ttyS0"); break;
-	case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/ttyS1"); break;
-	case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/ttyS2"); break;
-	case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/ttyS3"); break;
-	default: return ERR_ILLEGAL_ARG;
+		case PORT_1: h->address = 0x3f8; h->device = strdup("/dev/"DEVNAME"0"); break;
+		case PORT_2: h->address = 0x2f8; h->device = strdup("/dev/"DEVNAME"1"); break;
+		case PORT_3: h->address = 0x3e8; h->device = strdup("/dev/"DEVNAME"2"); break;
+		case PORT_4: h->address = 0x3e8; h->device = strdup("/dev/"DEVNAME"3"); break;
+		default: return ERR_ILLEGAL_ARG;
 	}
 	h->priv2 = (struct termios *)calloc(1, sizeof(struct termios));
 
+#if defined(__BSD__)
+	ret = bsd_check_tty(h->device);
+#else
 	ret = linux_check_tty(h->device);
+#endif
 	if(ret)
 	{
 		free(h->device); h->device = NULL;

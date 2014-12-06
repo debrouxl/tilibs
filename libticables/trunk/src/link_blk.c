@@ -31,7 +31,7 @@
 #include "linux/link_ser.c"
 
 #elif defined(__BSD__)
-#include "bsd/link_ser.c"
+#include "linux/link_ser.c"
 
 #elif defined(__WIN32__)
 #include "win32/link_ser.c"
