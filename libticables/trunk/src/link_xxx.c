@@ -43,107 +43,24 @@ TIEXPORT1 int TICALL ticables_cable_open(CableHandle* handle)
 	if (handle != NULL)
 	{
 		const CableFncts *cable = handle->cable;
-
-		TRYC(handle->cable->prepare(handle));
-
-		TRYC((cable->open)(handle));
-
-		handle->open = 1;
-		START_LOGGING(handle);
-		return 0;
-	}
-	else
-	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_reset:
- * @handle: a previously allocated handle
- *
- * Reset link cable status (flush buffers, set ready).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
 		int ret = 0;
 
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 
-		handle->busy = 1;
-		if(cable->reset)
-			ret = cable->reset(handle);
-		handle->busy = 0;
+		if(cable->prepare)
+			ret = cable->prepare(handle);
 
+		if(!ret)
+		{
+			ret = (cable->open)(handle);
+			if (!ret)
+			{
+				handle->open = 1;
+				START_LOGGING(handle);
+			}
+		}
 		return ret;
-	}
-	else
-	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_probe:
- * @handle: a previously allocated handle
- * @result: cable found (!0) or not (0)
- *
- * Attempt to probe if a cable is present. Open device if not opened.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int opened = handle->open;
-		int ret;
-
-		// Check if device is already opened
-		if(!opened && cable->need_open)
-		{
-			TRYC(ticables_cable_open(handle));
-		}
-		else if(!opened && !cable->need_open)
-		{
-			TRYC(handle->cable->prepare(handle));
-		}
-
-		// Do the check itself
-		ret = cable->probe(handle);
-		if (result != NULL)
-		{
-			*result = !ret;
-		}
-		else
-		{
-			ticables_critical("%s: result is NULL", __FUNCTION__);
-		}
-
-		// If it was opened for this, close it
-		if(!opened && cable->need_open)
-		{
-			TRYC(ticables_cable_close(handle));
-		}
-		else if(!opened && !cable->need_open)
-		{
-			free(handle->device); handle->device = NULL;
-			free(handle->priv2); handle->priv2 = NULL;
-		}
-
-		handle = NULL;
-		return 0;
 	}
 	else
 	{
@@ -167,6 +84,9 @@ TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
 	{
 		const CableFncts *cable = handle->cable;
 
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+
 		STOP_LOGGING(handle);
 		if(handle->open)
 		{
@@ -179,7 +99,108 @@ TIEXPORT1 int TICALL ticables_cable_close(CableHandle* handle)
 	}
 	else
 	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_reset:
+ * @handle: a previously allocated handle
+ *
+ * Reset link cable status (flush buffers, set ready).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		if(cable->reset)
+			ret = cable->reset(handle);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_probe:
+ * @handle: a previously allocated handle
+ * @result: cable found (!0) or not (0)
+ *
+ * Attempt to probe if a cable is present. Open device if not opened.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_probe(CableHandle* handle, int* result)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int opened = handle->open;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+
+		// Check if device is already opened
+		if(!opened && cable->need_open)
+		{
+			ret = ticables_cable_open(handle);
+		}
+		else if(!opened && !cable->need_open)
+		{
+			ret = cable->prepare(handle);
+		}
+
+		if (!ret)
+		{
+			// Do the check itself
+			ret = cable->probe(handle);
+			if (result != NULL)
+			{
+				*result = !ret;
+			}
+			else
+			{
+				ticables_critical("%s: result is NULL", __FUNCTION__);
+			}
+
+			// If it was opened for this, close it
+			if(!opened && cable->need_open)
+			{
+				ret = ticables_cable_close(handle);
+			}
+			else if(!opened && !cable->need_open)
+			{
+				free(handle->device); handle->device = NULL;
+				free(handle->priv2); handle->priv2 = NULL;
+			}
+		}
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_NO_CABLE;
 	}
 }
@@ -201,6 +222,8 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
 		const CableFncts *cable = handle->cable;
 		int ret = 0;
 
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
@@ -240,43 +263,6 @@ TIEXPORT1 int TICALL ticables_cable_send(CableHandle* handle, uint8_t *data, uin
 }
 
 /**
- * ticables_cable_put:
- * @handle: a previously allocated handle
- * @data: data to send
- *
- * Send one byte from PC to hand-held.
- * Convenient function implemented for compatibility.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		handle->rate.count += 1;
-		ret = cable->send(handle, &data, 1);
-		LOG_1_DATA(handle, LOG_OUT, data);
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
  * ticables_cable_recv:
  * @handle: a previously allocated handle
  * @data: buffer where data can be placed
@@ -293,6 +279,8 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
 		const CableFncts *cable = handle->cable;
 		int ret = 0;
 
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
@@ -326,50 +314,6 @@ TIEXPORT1 int TICALL ticables_cable_recv(CableHandle* handle, uint8_t *data, uin
 }
 
 /**
- * ticables_cable_get:
- * @handle: a previously allocated handle
- * @data: data to receive
- *
- * Receive one byte from hand-held to PC.
- * Convenient function implemented for compatibility.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-		
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		handle->rate.count += 1;
-		if (data != NULL)
-		{
-			ret = cable->recv(handle, data, 1);
-			LOG_1_DATA(handle, LOG_IN, *data);
-		}
-		else
-		{
-			ticables_critical("%s: data is NULL", __FUNCTION__);
-		}
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return -1;
-	}
-}
-
-/**
  * ticables_cable_check:
  * @handle: a previously allocated handle
  * @status: status is placed here
@@ -385,6 +329,8 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
 		const CableFncts *cable = handle->cable;
 		int ret = 0;
 
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
@@ -399,6 +345,148 @@ TIEXPORT1 int TICALL ticables_cable_check(CableHandle* handle, CableStatus *stat
 		{
 			ticables_critical("%s: status is NULL", __FUNCTION__);
 		}
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_set_d0:
+ * @handle: a previously allocated handle
+ * @state: logical state (0 or 1) of D0 wire.
+ *
+ * Set the electrical state of the D0 wire (if possible).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		ret = cable->set_d0(handle, state);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_set_d1:
+ * @handle: a previously allocated handle
+ * @state: logical state (0 or 1) of D1 wire.
+ *
+ * Set the electrical state of the D1 wire (if possible).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		ret = cable->set_d1(handle, state);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_get_d0:
+ * @handle: a previously allocated handle
+ *
+ * Get the electrical state of the D0 wire (if possible).
+ *
+ * Return value: 0 or 1.
+ **/
+TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		ret = cable->get_d0(handle);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_get_d1:
+ * @handle: a previously allocated handle
+ *
+ * Get the electrical state of the D1 wire (if possible).
+ *
+ * Return value: 0 or 1.
+ **/
+TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		ret = cable->get_d1(handle);
 		handle->busy = 0;
 
 		return ret;
@@ -429,11 +517,13 @@ TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle* handle, int state)
 		const CableFncts *cable = handle->cable;
 		int ret = 0;
 
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
 			return ERR_BUSY;
-		if(!handle->cable->set_raw)
+		if(!cable->set_raw)
 			return ERR_RAW_IO_UNSUPPORTED;
 
 		handle->busy = 1;
@@ -474,11 +564,13 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 		}
 
 		cable = handle->cable;
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
 		if(!handle->open)
 			return ERR_NOT_OPEN;
 		if(handle->busy)
 			return ERR_BUSY;
-		if(!handle->cable->get_raw)
+		if(!cable->get_raw)
 			return ERR_RAW_IO_UNSUPPORTED;
 
 		handle->busy = 1;
@@ -490,140 +582,6 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 	else
 	{
 		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_set_d0:
- * @handle: a previously allocated handle
- * @state: logical state (0 or 1) of D0 wire.
- *
- * Set the electrical state of the D0 wire (if possible).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle* handle, int state)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-		
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		ret = cable->set_d0(handle, state);
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_set_d1:
- * @handle: a previously allocated handle
- * @state: logical state (0 or 1) of D1 wire.
- *
- * Set the electrical state of the D1 wire (if possible).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle* handle, int state)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-		
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		ret = cable->set_d1(handle, state);
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_get_d0:
- * @handle: a previously allocated handle
- *
- * Get the electrical state of the D0 wire (if possible).
- *
- * Return value: 0 or 1.
- **/
-TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle* handle)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-		
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		ret = cable->get_d0(handle);
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
-		return ERR_NO_CABLE;
-	}
-}
-
-/**
- * ticables_cable_get_d1:
- * @handle: a previously allocated handle
- *
- * Get the electrical state of the D1 wire (if possible).
- *
- * Return value: 0 or 1.
- **/
-TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle* handle)
-{
-	if (handle != NULL)
-	{
-		const CableFncts *cable = handle->cable;
-		int ret = 0;
-		
-		if(!handle->open)
-			return ERR_NOT_OPEN;
-		if(handle->busy)
-			return ERR_BUSY;
-
-		handle->busy = 1;
-		ret = cable->get_d1(handle);
-		handle->busy = 0;
-
-		return ret;
-	}
-	else
-	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
 		return ERR_NO_CABLE;
 	}
 }
@@ -646,7 +604,7 @@ TIEXPORT1 int TICALL ticables_progress_reset(CableHandle* handle)
 	}
 	else
 	{
-		ticables_critical("%s(NULL)", __FUNCTION__);
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
 		return ERR_NO_CABLE;
 	}
 }
@@ -688,6 +646,91 @@ TIEXPORT1 int TICALL ticables_progress_get(CableHandle* handle, int* count, int*
 #endif
 
 		return 0;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return -1;
+	}
+}
+
+/**
+ * ticables_cable_put:
+ * @handle: a previously allocated handle
+ * @data: data to send
+ *
+ * Send one byte from PC to hand-held.
+ * Convenient function implemented for compatibility.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_put(CableHandle* handle, uint8_t data)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		handle->rate.count += 1;
+		ret = cable->send(handle, &data, 1);
+		LOG_1_DATA(handle, LOG_OUT, data);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
+ * ticables_cable_get:
+ * @handle: a previously allocated handle
+ * @data: data to receive
+ *
+ * Receive one byte from hand-held to PC.
+ * Convenient function implemented for compatibility.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_get(CableHandle* handle, uint8_t *data)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable = handle->cable;
+		int ret = 0;
+
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(!handle->open)
+			return ERR_NOT_OPEN;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		handle->rate.count += 1;
+		if (data != NULL)
+		{
+			ret = cable->recv(handle, data, 1);
+			LOG_1_DATA(handle, LOG_IN, *data);
+		}
+		else
+		{
+			ticables_critical("%s: data is NULL", __FUNCTION__);
+		}
+		handle->busy = 0;
+
+		return ret;
 	}
 	else
 	{

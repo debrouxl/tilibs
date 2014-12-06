@@ -52,6 +52,9 @@ TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle* handle)
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return FTS_NONE;
+
 	return calc->features;
 }
 
@@ -74,6 +77,9 @@ TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 		return ERR_INVALID_HANDLE;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -113,6 +119,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 		return ERR_INVALID_HANDLE;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -160,6 +169,9 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -204,6 +216,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoor
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -250,6 +265,9 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -305,6 +323,9 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -348,6 +369,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -393,6 +417,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -437,6 +464,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -484,6 +514,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, Fi
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -528,6 +561,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -575,6 +611,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -618,6 +657,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -664,6 +706,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* con
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -707,6 +752,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -752,6 +800,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -789,6 +840,9 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 		return ERR_INVALID_HANDLE;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -835,6 +889,9 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -878,6 +935,9 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _cloc
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -923,6 +983,9 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -967,6 +1030,9 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1010,6 +1076,9 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1407,6 +1476,9 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1450,6 +1522,9 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1495,6 +1570,9 @@ TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* old
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	if(!handle->attached)
 		return ERR_NO_CABLE;
@@ -1545,6 +1623,9 @@ TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr
 	}
 	calc = handle->calc;
 
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
+
 	if(!handle->attached)
 		return ERR_NO_CABLE;
 
@@ -1589,6 +1670,9 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 		return ERR_INVALID_PARAMETER;
 	}
 	calc = handle->calc;
+
+	if(!calc)
+		return ERR_INVALID_PARAMETER;
 
 	//if(!handle->attached)
 	//	return ERR_NO_CABLE;
