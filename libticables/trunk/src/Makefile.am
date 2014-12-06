@@ -30,22 +30,19 @@ libticables2_la_SOURCES = *.h \
 	type2str.c \
 	none.c
 
-if OS_WIN32
-  libticables2_la_SOURCES += win32/libusb_dyn.c
-endif
-
-if OS_WIN32
-  libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
-  libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o
-endif
-
 EXTRA_DIST = bsd/* linux/* macos/* win32/*.c win32/*.h win32/dha/* win32/usb/* win64/*.c win64/*.h win64/rwp/*
 
 if OS_WIN32
-libusbdir = $(pkgdatadir)/libusb
-dist_libusb_DATA = win32/usb/*.cat win32/usb/*.inf
+  libticables2_la_SOURCES += win32/libusb_dyn.c
+
+  libticables2_la_DEPENDENCIES = ../build/mingw/ticables2-rc.o
+  libticables2_la_LDFLAGS += -Wl,../build/mingw/ticables2-rc.o -Wl,--output-def,libticables2.def
+  EXTRA_DIST += libticables2.def
+
+  libusbdir = $(pkgdatadir)/libusb
+  dist_libusb_DATA = win32/usb/*.cat win32/usb/*.inf
 else
-EXTRA_DIST += win32/usb/*.cat win32/usb/*.inf
+  EXTRA_DIST += win32/usb/*.cat win32/usb/*.inf
 endif
 
 wc:

@@ -46,7 +46,8 @@ libticalcs2_la_SOURCES = *.h \
 
 if OS_WIN32
   libticalcs2_la_DEPENDENCIES = ../build/mingw/ticalcs2-rc.o
-  libticalcs2_la_LDFLAGS += -Wl,../build/mingw/ticalcs2-rc.o
+  libticalcs2_la_LDFLAGS += -Wl,../build/mingw/ticalcs2-rc.o -Wl,--output-def,libticalcs2.def
+  EXTRA_DIST = libticalcs2.def
 endif
 
 tf2hex = ./tf2hex/tf2hex

@@ -23,7 +23,8 @@ endif
 
 if OS_WIN32
   libticonv_la_DEPENDENCIES = ../build/mingw/ticonv-rc.o
-  libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o
+  libticonv_la_LDFLAGS += -Wl,../build/mingw/ticonv-rc.o -Wl,--output-def,libticonv.def
+  EXTRA_DIST = libticonv.def
 endif
 
 if !USE_ICONV

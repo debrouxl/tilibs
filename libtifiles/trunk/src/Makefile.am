@@ -37,6 +37,6 @@ libtifiles2_la_SOURCES = *.h \
 
 if OS_WIN32
   libtifiles2_la_DEPENDENCIES = ../build/mingw/tifiles2-rc.o
-  libtifiles2_la_LDFLAGS += -Wl,../build/mingw/tifiles2-rc.o
+  libtifiles2_la_LDFLAGS += -Wl,../build/mingw/tifiles2-rc.o -Wl,--output-def,libtifiles2.def
+  EXTRA_DIST = libtifiles2.def
 endif
-
