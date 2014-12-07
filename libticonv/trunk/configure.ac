@@ -1,5 +1,4 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 1798 2006-02-03 08:27:54Z roms $
 
 # Init.
 AC_PREREQ(2.57)
@@ -22,7 +21,7 @@ m4_define(LT_AGE, 0)
 LT_LIBVERSION="LT_CURRENT():LT_REVISION():LT_AGE()"
 AC_SUBST(LT_LIBVERSION)
 
-AM_INIT_AUTOMAKE([dist-bzip2])
+AM_INIT_AUTOMAKE([dist-bzip2 subdir-objects])
 AM_MAINTAINER_MODE
 AC_CONFIG_MACRO_DIR([m4])
 
