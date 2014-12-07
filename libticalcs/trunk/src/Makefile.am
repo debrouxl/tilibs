@@ -78,7 +78,7 @@ rom85.h: romdump_8x/dump85.85s $(tf2hex)
 rom86.h: romdump_8x/dump86.86p $(tf2hex)
 	$(tf2hex) romdump_8x/dump86.86p $(srcdir)/rom86.h 86
 
-romdump_8x/dump73.73p romdump_8x/dump82.82y romdump_8x/dump83.83p romdump_8x/dump83p.8xp romdump_8x/dump85.85s romdump_8x/dump86.86p:
+romdump_8x/dump73.73p romdump_8x/dump82.82y romdump_8x/dump83.83p romdump_8x/dump83p.8xp romdump_8x/dump85.85s romdump_8x/dump86.86p romdump_8x/dump84pc.8xp:
 	cd romdump_8x && $(MAKE)
 
 rom84p.h: romdump_84p_usb/dump84p.8xp $(tf2hex)
@@ -105,7 +105,10 @@ rom89t.h: romdump_89t_usb/romdump.89z $(tf2hex)
 rom92f2.h: romdump_9x/romdump.92p $(tf2hex)
 	$(tf2hex) romdump_9x/romdump.92p $(srcdir)/rom92f2.h 92
 
-romdump_9x/romdump.89z romdump_9x/romdump.92p:
+romdump_9x/romdump.89z:
+	cd romdump_9x && $(MAKE)
+
+romdump_9x/romdump.92p: romdump_9x/romdump.89z
 	cd romdump_9x && $(MAKE)
 
 romdump_89t_usb/romdump.89z:
