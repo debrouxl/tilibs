@@ -708,16 +708,16 @@ msgstr ""
 msgid "Calculator type: %s"
 msgstr ""
 
-#: src/ticalcs.c:149
+#: src/ticalcs.c:198
 #, c-format
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.c:279
+#: src/ticalcs.c:340
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.c:280
+#: src/ticalcs.c:341
 #, c-format
 msgid "  model   : %s"
 msgstr ""

@@ -53,9 +53,6 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI82
 	&calc_82,
 #endif
-#ifndef NO_TI82S
-	&calc_83/*&calc_82s*/,
-#endif
 #ifndef NO_TI83
 	&calc_83,
 #endif
@@ -74,6 +71,9 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI89
 	&calc_89,
 #endif
+#ifndef NO_TI89T
+	&calc_89t,
+#endif
 #ifndef NO_TI92
 	&calc_92,
 #endif
@@ -83,16 +83,13 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_V200
 	&calc_v2,
 #endif
-#ifndef NO_TI89T
-	&calc_89t,
-#endif
 #ifndef NO_TI84P_USB
 	&calc_84p_usb,
 #endif
 #ifndef NO_TI89T_USB
 	&calc_89t_usb,
 #endif
-#ifndef NO_SPIRE
+#ifndef NO_NSPIRE
 	&calc_nsp,
 #endif
 #ifndef NO_TI80
@@ -100,6 +97,58 @@ static CalcFncts const *const calcs[] =
 #endif
 	NULL
 };
+
+static const uint32_t supported_calcs =
+	  (1U << CALC_NONE)
+#ifndef NO_TI73
+	| (1U << CALC_TI73)
+#endif
+#ifndef NO_TI82
+	| (1U << CALC_TI82)
+#endif
+#ifndef NO_TI83
+	| (1U << CALC_TI83)
+#endif
+#ifndef NO_TI83P
+	| (1U << CALC_TI83P)
+#endif
+#ifndef NO_TI84P
+	| (1U << CALC_TI84P)
+#endif
+#ifndef NO_TI85
+	| (1U << CALC_TI85)
+#endif
+#ifndef NO_TI86
+	| (1U << CALC_TI86)
+#endif
+#ifndef NO_TI89
+	| (1U << CALC_TI89)
+#endif
+#ifndef NO_TI89T
+	| (1U << CALC_TI89T)
+#endif
+#ifndef NO_TI92
+	| (1U << CALC_TI92)
+#endif
+#ifndef NO_TI92P
+	| (1U << CALC_TI92P)
+#endif
+#ifndef NO_V200
+	| (1U << CALC_V200)
+#endif
+#ifndef NO_TI84P_USB
+	| (1U << CALC_TI84P_USB)
+#endif
+#ifndef NO_TI89T_USB
+	| (1U << CALC_TI89T_USB)
+#endif
+#ifndef NO_NSPIRE
+	| (1U << CALC_NSPIRE)
+#endif
+#ifndef NO_TI80
+	| (1U << CALC_TI80)
+#endif
+;
 
 /****************/
 /* Entry points */
@@ -167,8 +216,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
  *
  * Return value: the instance count.
  **/
-TIEXPORT3 int
-TICALL ticalcs_library_exit(void)
+TIEXPORT3 int TICALL ticalcs_library_exit(void)
 {
 	return (--ticalcs_instance);
 }
@@ -187,6 +235,19 @@ TICALL ticalcs_library_exit(void)
 TIEXPORT3 const char *TICALL ticalcs_version_get(void)
 {
 	return LIBCALCS_VERSION;
+}
+
+/**
+ * ticalcs_supported_calcs:
+ *
+ * This function returns the calcs built into the current binary.
+ *
+ * Return value: an integer containing a binary OR of (1 << CALC_*) values,
+ * where CALC_* values are defined in enum CalcModel.
+ **/
+TIEXPORT3 uint32_t TICALL ticalcs_supported_calcs (void)
+{
+	return supported_calcs;
 }
 
 /**

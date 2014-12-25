@@ -655,41 +655,41 @@ msgstr " %i: %i %i %i %i"
 msgid "Link cable probing:"
 msgstr "Recherche de câble de connexion:"
 
-#: src/ticables.c:135
+#: src/ticables.c:164
 #, c-format
 msgid "ticables library version %s"
 msgstr "librairie ticables version %s"
 
-#: src/ticables.c:390
+#: src/ticables.c:431
 msgid "Link cable handle details:"
 msgstr "Détails sur le descripteur du câble de connexion:"
 
-#: src/ticables.c:391
+#: src/ticables.c:432
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
 
-#: src/ticables.c:392
+#: src/ticables.c:433
 #, c-format
 msgid "  port    : %s"
 msgstr "  port    : %s"
 
-#: src/ticables.c:393
+#: src/ticables.c:434
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr "  timeout  : %2.1fs"
 
-#: src/ticables.c:394
+#: src/ticables.c:435
 #, c-format
 msgid "  delay   : %i us"
 msgstr "  délai   : %i us"
 
-#: src/ticables.c:397
+#: src/ticables.c:438
 #, c-format
 msgid "  device  : %s"
 msgstr "  périph  : %s"
 
-#: src/ticables.c:398
+#: src/ticables.c:439
 #, c-format
 msgid "  address : 0x%03x"
 msgstr "  adresse : 0x%03x"

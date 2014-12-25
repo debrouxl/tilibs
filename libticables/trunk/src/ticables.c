@@ -85,6 +85,35 @@ static CableFncts const *const cables[] =
 	NULL
 };
 
+static const uint32_t supported_cables =
+	  (1U << CABLE_NUL)
+#ifndef NO_CABLE_GRY
+	| (1U << CABLE_GRY)
+#endif
+#if !defined(NO_CABLE_BLK) && !defined(__MACOSX__)
+	| (1U << CABLE_BLK)
+#endif
+#if !defined(NO_CABLE_PAR) && (defined(HAVE_LINUX_PARPORT_H) || defined(__WIN32__))
+	| (1U << CABLE_PAR)
+#endif
+#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
+	| (1U << CABLE_SLV)
+#endif
+#if !defined(NO_CABLE_SLV) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0) || defined(__WIN32__))
+	| (1U << CABLE_USB)
+#endif
+#ifndef NO_CABLE_VTI
+	| (1U << CABLE_VTI)
+#endif
+#ifndef NO_CABLE_TIE
+	| (1U << CABLE_TIE)
+#endif
+	| (1U << CABLE_ILP)
+#if !defined(NO_CABLE_SLV) && defined(HAVE_LINUX_TICABLE_H)
+	| (1U << CABLE_DEV)
+#endif
+;
+
 /****************/
 /* Entry points */
 /****************/
@@ -169,8 +198,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
  *
  * Return value: the instance count.
  **/
-TIEXPORT1 int
-TICALL ticables_library_exit(void)
+TIEXPORT1 int TICALL ticables_library_exit(void)
 {
 #if defined(HAVE_LIBUSB)
 	// No exit function for libusb 0.1.x.
@@ -194,6 +222,19 @@ TICALL ticables_library_exit(void)
 TIEXPORT1 const char *TICALL ticables_version_get(void)
 {
 	return libticables2_VERSION;
+}
+
+/**
+ * ticables_supported_cables:
+ *
+ * This function returns the cables built into the current binary.
+ *
+ * Return value: an integer containing a binary OR of (1 << CABLE_*) values,
+ * where CABLE_* values are defined in enum CableModel.
+ **/
+TIEXPORT1 uint32_t TICALL ticables_supported_cables (void)
+{
+	return supported_cables;
 }
 
 /**

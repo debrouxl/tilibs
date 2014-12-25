@@ -64,7 +64,7 @@ typedef enum
 	CABLE_NUL = 0,
 	CABLE_GRY, CABLE_BLK, CABLE_PAR, CABLE_SLV, CABLE_USB,
 	CABLE_VTI, CABLE_TIE, CABLE_ILP, CABLE_DEV,
-CABLE_MAX,
+	CABLE_MAX
 } CableModel;
 
 /**
@@ -168,12 +168,12 @@ typedef struct _CableHandle  CableHandle;
  **/
 struct _CableFncts
 {
-	const int		model;			
-	const char*		name;			
-	const char*		fullname;		
-	const char*		description;	
+	const int		model;
+	const char*		name;
+	const char*		fullname;
+	const char*		description;
 
-	const int		need_open;		
+	const int		need_open;
 
 	int (*prepare)	(CableHandle *);
 
@@ -216,23 +216,23 @@ struct _CableFncts
  **/
 struct _CableHandle
 {
-	CableModel		model;	
-	CablePort		port;	
+	CableModel		model;
+	CablePort		port;
 	unsigned int	timeout;
-	unsigned int	delay;	
+	unsigned int	delay;
 
-	char *			device;	
+	char *			device;
 	unsigned int	address;
 
-	CableFncts*		cable;	
-	DataRate		rate;	
+	CableFncts*		cable;
+	DataRate		rate;
 
-	void*			priv;	
-	void*			priv2;	
-	void*			priv3;	
+	void*			priv;
+	void*			priv2;
+	void*			priv3;
 
-	int				open;	
-	int				busy;	
+	int				open;
+	int				busy;
 };
 
 /**
@@ -270,57 +270,59 @@ typedef struct
 	/*********************/
 
 	// ticables.c
-	TIEXPORT1 const char* TICALL ticables_version_get (void);
+	TIEXPORT1 const char * TICALL ticables_version_get (void);
+	TIEXPORT1 uint32_t TICALL ticables_supported_cables (void);
 
-	TIEXPORT1 CableHandle* TICALL ticables_handle_new(CableModel, CablePort);
-	TIEXPORT1 int        TICALL ticables_handle_del(CableHandle*);
+	TIEXPORT1 CableHandle * TICALL ticables_handle_new(CableModel model, CablePort port);
+	TIEXPORT1 int        TICALL ticables_handle_del(CableHandle *handle);
 
-	TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle*, int);
-	TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle*, int);
+	TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle *handle, int timeout);
+	TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle *handle, int delay);
 
-	TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle*);
-	TIEXPORT1 CablePort  TICALL ticables_get_port(CableHandle*);
+	TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle *handle);
+	TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle *handle);
 
-	TIEXPORT1 int TICALL ticables_handle_show(CableHandle*);
+	TIEXPORT1 int TICALL ticables_handle_show(CableHandle *handle);
 
 	// link_xxx.c
-	TIEXPORT1 int TICALL ticables_cable_open(CableHandle*);
-	TIEXPORT1 int TICALL ticables_cable_close(CableHandle*);
+	TIEXPORT1 int TICALL ticables_cable_open(CableHandle *handle);
+	TIEXPORT1 int TICALL ticables_cable_close(CableHandle *handle);
 
-	TIEXPORT1 int TICALL ticables_cable_reset(CableHandle* handle);
-	TIEXPORT1 int TICALL ticables_cable_probe(CableHandle*, int* result);
+	TIEXPORT1 int TICALL ticables_cable_reset(CableHandle *handle);
+	TIEXPORT1 int TICALL ticables_cable_probe(CableHandle *handle, int *result);
 
-	TIEXPORT1 int TICALL ticables_cable_send(CableHandle*, uint8_t *data, uint32_t len);
-	TIEXPORT1 int TICALL ticables_cable_recv(CableHandle*, uint8_t *data, uint32_t len);
+	TIEXPORT1 int TICALL ticables_cable_send(CableHandle *handle, uint8_t *data, uint32_t len);
+	TIEXPORT1 int TICALL ticables_cable_recv(CableHandle *handle, uint8_t *data, uint32_t len);
 
-	TIEXPORT1 int TICALL ticables_cable_check(CableHandle*, CableStatus*);
+	TIEXPORT1 int TICALL ticables_cable_check(CableHandle *handle, CableStatus *status);
 
-	TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle*, int state);
-	TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle*, int state);
+	TIEXPORT1 int TICALL ticables_cable_set_d0(CableHandle *handle, int state);
+	TIEXPORT1 int TICALL ticables_cable_set_d1(CableHandle *handle, int state);
 
-	TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle*);
-	TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle*);
+	TIEXPORT1 int TICALL ticables_cable_get_d0(CableHandle *handle);
+	TIEXPORT1 int TICALL ticables_cable_get_d1(CableHandle *handle);
 
-	TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle*, int state);
-	TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle*, int *state);
+	TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle *handle, int state);
+	TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle *handle, int *state);
 
-	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle*);
-	TIEXPORT1 int TICALL ticables_progress_get(CableHandle*, int* count, int* msec, float* rate);
 
-	TIEXPORT1 int TICALL ticables_cable_put(CableHandle*, uint8_t data);
-	TIEXPORT1 int TICALL ticables_cable_get(CableHandle*, uint8_t *data);
+	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle *handle);
+	TIEXPORT1 int TICALL ticables_progress_get(CableHandle *handle, int *count, int *msec, float *rate);
+
+	TIEXPORT1 int TICALL ticables_cable_put(CableHandle *handle, uint8_t data);
+	TIEXPORT1 int TICALL ticables_cable_get(CableHandle *handle, uint8_t *data);
 
 	// error.c
 	TIEXPORT1 int         TICALL ticables_error_get (int number, char **message);
 
 	// type2str.c
-	TIEXPORT1 const char* TICALL ticables_model_to_string(CableModel model);
+	TIEXPORT1 const char * TICALL ticables_model_to_string(CableModel model);
 	TIEXPORT1 CableModel  TICALL ticables_string_to_model (const char *str);
 
-	TIEXPORT1 const char* TICALL ticables_port_to_string(CablePort port);
+	TIEXPORT1 const char * TICALL ticables_port_to_string(CablePort port);
 	TIEXPORT1 CablePort   TICALL ticables_string_to_port(const char *str);
 
-	TIEXPORT1 const char* TICALL ticables_usbpid_to_string(UsbPid pid);
+	TIEXPORT1 const char * TICALL ticables_usbpid_to_string(UsbPid pid);
 	TIEXPORT1 UsbPid		 TICALL ticables_string_to_usbpid(const char *str);
 
 	// probe.c

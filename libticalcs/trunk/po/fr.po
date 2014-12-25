@@ -734,16 +734,16 @@ msgstr "Essai avec TI8X... "
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"
 
-#: src/ticalcs.c:149
+#: src/ticalcs.c:198
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.c:279
+#: src/ticalcs.c:340
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.c:280
+#: src/ticalcs.c:341
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"
