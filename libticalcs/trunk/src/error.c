@@ -53,8 +53,6 @@ extern int nsp_reset;
  **/
 TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 {
-	char error_msg[2048];
-
 	// free memory
 	dusb_vtl_pkt_purge();
 	dusb_cpca_purge();
@@ -85,81 +83,86 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		break;
 
 	case ERR_CHECKSUM:
-		strcpy(error_msg, _("Msg: checksum error."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a transmission error. Try again."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: checksum error."),
+		"\n",
+		_("Cause: a transmission error. Try again."),
+		NULL);
 		break;
 
 	case ERR_INVALID_HOST:
-		strcpy(error_msg, _("Msg: invalid host ID."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: received an unexpected Machine ID from calculator, probably due to a transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: invalid host ID."),
+		"\n",
+		_("Cause: received an unexpected Machine ID from calculator, probably due to a transmission error."),
+		NULL);
 		break;
 
 	case ERR_INVALID_TARGET:
-		strcpy(error_msg, _("Msg: invalid target ID."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: received an unexpected Target ID from calculator, probably due to a transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: invalid target ID."),
+		"\n",
+		_("Cause: received an unexpected Target ID from calculator, probably due to a transmission error."),
+		NULL);
 		break;
 
 	case ERR_INVALID_CMD:
-		strcpy(error_msg, _("Msg: invalid command ID."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: received an unexpected Command ID from calculator, probably due to a transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: invalid command ID."),
+		"\n",
+		_("Cause: received an unexpected Command ID from calculator, probably due to a transmission error."),
+		NULL);
 		break;
 
 	case ERR_EOT:
-		strcpy(error_msg, _("Msg: not really an error, should not appear!"));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a bug. Drop us an email!"));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: not really an error, should not appear!"),
+		"\n",
+		_("Cause: a bug. Drop us an email!"),
+		NULL);
 		break;
 
 	case ERR_VAR_REJECTED:
-		strcpy(error_msg,
-		_("Msg: contents has been refused."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: you attempted to send a variable which is locked/archived on the target calculator. The calculator may be out of memory. The certificate may be invalid or already installed."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: contents has been refused."),
+		"\n",
+		_("Cause: you attempted to send a variable which is locked/archived on the target calculator. The calculator may be out of memory. The certificate may be invalid or already installed."),
+		NULL);
 		break;
 
 	case ERR_CTS_ERROR:
-		strcpy(error_msg, _("Invalid CTS packet."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Invalid CTS packet."),
+		"\n",
+		_("Cause: a transmission error."),
+		NULL);
 		break;
 
 	case ERR_NACK:
-		strcpy(error_msg, _("NACK received."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: the command has been refused."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("NACK received."),
+		"\n",
+		_("Cause: the command has been refused."),
+		NULL);
 		break;
 
 	case ERR_INVALID_PACKET:
-		strcpy(error_msg, _("Invalid packet."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Invalid packet."),
+		"\n",
+		_("Cause: a transmission error."),
+		NULL);
 		break;
 
 	case ERR_MALLOC:
 		break;
 
 	case ERR_NO_CABLE:
-		strcpy(error_msg, _("The cable cannot be used."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: the cable has not been initialized due to a previous/current error."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("The cable cannot be used."),
+		"\n",
+		_("Cause: the cable has not been initialized due to a previous/current error."),
+		NULL);
 		break;
 
 	case ERR_BUSY:
@@ -170,254 +173,256 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 
 	case ERR_VOID_FUNCTION:
 	case ERR_UNSUPPORTED:
-		strcpy(error_msg,
-		_("Msg: this function does not exist for this calculator."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: the operation you attempted is not supported by your calculator model."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: this function does not exist for this calculator."),
+		"\n",
+		_("Cause: the operation you attempted is not supported by your calculator model."),
+		NULL);
 		break;
 
 	case ERR_OUT_OF_MEMORY:
-		strcpy(error_msg, _("Msg: calculator out of memory."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: the calculator does not have memory enough for doing the operation."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: calculator out of memory."),
+		"\n",
+		_("Cause: the calculator does not have memory enough for doing the operation."),
+		NULL);
 		break;
 
 	case ERR_OPEN_FILE:
-		strcpy(error_msg, _("Msg: unable to open (reading) the file."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: disk space or permissions."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: unable to open (reading) the file."),
+		"\n",
+		_("Cause: disk space or permissions."),
+		NULL);
 		break;
 
 	case ERR_SAVE_FILE:
-		strcpy(error_msg, _("Msg: unable to open (writing) the file."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: disk space or permissions."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: unable to open (writing) the file."),
+		"\n",
+		_("Cause: disk space or permissions."),
+		NULL);
 		break;
 
 	case ERR_PENDING_TRANSFER:
-		strcpy(error_msg,
-		_("A transfer is in progress. You cannot start a new one."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: this should not happen. Probably a bug: drop us an email!"));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("A transfer is in progress. You cannot start a new one."),
+		"\n",
+		_("Cause: this should not happen. Probably a bug: drop us an email!"),
+		NULL);
 		break;
 
 	case ERR_FATAL_ERROR:
 		break;
 
 	case ERR_MISSING_VAR:
-		strcpy(error_msg, _("The requested var does not exist."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: you attempted to download a variable which does not exist on the calculator any longer. Maybe you have manually deleted it ?"));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("The requested var does not exist."),
+		"\n",
+		_("Cause: you attempted to download a variable which does not exist on the calculator any longer. Maybe you have manually deleted it ?"),
+		NULL);
 		break;
 
 	case ERR_NO_VARS:
-		strcpy(error_msg, _("There is nothing to backup."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: 0 variables stored onto your calculator."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("There is nothing to backup."),
+		"\n",
+		_("Cause: 0 variables stored onto your calculator."),
+		NULL);
 		break;
 
 	case ERR_INVALID_HANDLE:
-		strcpy(error_msg, _("Invalid ticalcs handle."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: bad cable or calc model."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Invalid ticalcs handle."),
+		"\n",
+		_("Cause: bad cable or calc model."),
+		NULL);
 		break;
 
 	case ERR_INVALID_PARAMETER:
-		strcpy(error_msg, _("Invalid parameter."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, check the arguments you're passing to the function."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Invalid parameter."),
+		"\n",
+		_("Cause: if you see this in normal usage, a bug: drop us an email ! Otherwise, check the arguments you're passing to the function."),
+		NULL);
 		break;
 
 	case ERR_INVALID_SCREENSHOT:
-		strcpy(error_msg, _("Unknown screenshot format."));
-		strcat(error_msg, "\n");
-		strcat(error_msg, _("Cause: a transmission error, or unsupported calculator version."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Unknown screenshot format."),
+		"\n",
+		_("Cause: a transmission error, or unsupported calculator version."),
+		NULL);
 		break;
 
 	case ERR_CALC_ERROR1:	// must be synchronized with cmd89.c (static uint8_t dbus_errors[])
-		strcpy(error_msg, _("Msg: hand-held returned an error."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: hand-held returned an uncaught error. Please report log."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: hand-held returned an error."),
+		"\n",
+		_("Cause: hand-held returned an uncaught error. Please report log."),
+		NULL);
 		break;
 	case ERR_CALC_ERROR1+1:
-		strcpy(error_msg, _("Msg: cannot delete application."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: cannot delete application."));
 		break;
 	case ERR_CALC_ERROR1+2:
-		strcpy(error_msg, _("Msg: invalid variable name."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: invalid variable name."));
 		break;
 	case ERR_CALC_ERROR1+3:
-		strcpy(error_msg, _("Msg: cannot overwrite variable (locked/archived)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: cannot overwrite variable (locked/archived)."));
 		break;
 	case ERR_CALC_ERROR1+4:
-		strcpy(error_msg, _("Msg: cannot delete variable (locked/archived)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: cannot delete variable (locked/archived)."));
 		break;
 	case ERR_CALC_ERROR1+5:
-		strcpy(error_msg, _("Msg: FLASH application rejected (bad target model)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: FLASH application rejected (bad target model)."));
 		break;
 	case ERR_CALC_ERROR1+6:
-		strcpy(error_msg, _("Msg: malformed RTS packet (AMS version conflict)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: malformed RTS packet (AMS version conflict)."));
 		break;
 	case ERR_CALC_ERROR1+7:
-		strcpy(error_msg, _("Msg: FLASH application rejected (signature does not match)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: FLASH application rejected (signature does not match)."));
 		break;
 
 	case ERR_CALC_ERROR2:	// must be synchronized with dusb_cmd.c (static uint16_t usb_errors[])
-		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: hand-held returned an uncaught error. Please report log."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: hand-held returned an error (not caught)."),
+		"\n",
+		_("Cause: hand-held returned an uncaught error. Please report log."),
+		NULL);
 		break;
 	case ERR_CALC_ERROR2+1:
-		strcpy(error_msg, _("Msg: invalid argument or name."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: invalid argument or name."));
 		break;
 	case ERR_CALC_ERROR2+2:
-		strcpy(error_msg, _("Msg: cannot delete var/app from archive."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: cannot delete var/app from archive."));
 		break;
 	case ERR_CALC_ERROR2+3:
-		strcpy(error_msg, _("Msg: transmission error."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: transmission error."));
 		break;
 	case ERR_CALC_ERROR2+4:
-		strcpy(error_msg, _("Msg: using basic mode while being in boot mode."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: using basic mode while being in boot mode."));
 		break;
 	case ERR_CALC_ERROR2+5:
-		strcpy(error_msg, _("Msg: out of memory."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: out of memory."));
 		break;
 	case ERR_CALC_ERROR2+6:
-		strcpy(error_msg, _("Msg: invalid name."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: invalid name."));
 		break;
 	case ERR_CALC_ERROR2+7:
-		strcpy(error_msg, _("Msg: invalid name."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: invalid name."));
 		break;
 	case ERR_CALC_ERROR2+8:
-		strcpy(error_msg, _("Msg: busy?."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: busy?"));
 		break;
 	case ERR_CALC_ERROR2+9:
-		strcpy(error_msg, _("Msg: can't overwrite, variable is locked."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: can't overwrite, variable is locked."));
 		break;
 	case ERR_CALC_ERROR2+10:
-		strcpy(error_msg, _("Msg: mode token too small."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: mode token too small."));
 		break;
 	case ERR_CALC_ERROR2+11:
-		strcpy(error_msg, _("Msg: mode token too large."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: mode token too large."));
 		break;
 	case ERR_CALC_ERROR2+12:
-		strcpy(error_msg, _("Msg: invalid parameter ID."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: invalid parameter ID."));
 		break;
 	case ERR_CALC_ERROR2+13:
-		strcpy(error_msg, _("Msg: wrong modify request?"));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: wrong modify request?"));
 		break;
 	case ERR_CALC_ERROR2+14:
-		strcpy(error_msg, _("Msg: remote control?"));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: remote control?"));
 		break;
 	case ERR_CALC_ERROR2+15:
-		strcpy(error_msg, _("Msg: battery low."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: battery low."));
 		break;
 	case ERR_CALC_ERROR2+16:
-		strcpy(error_msg, _("Msg: FLASH application rejected (signature does not match)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: FLASH application rejected (signature does not match)."));
 		break;
 	case ERR_CALC_ERROR2+17:
-		strcpy(error_msg, _("Msg: hand-held is busy (set your calculator to HOME screen)."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: hand-held is busy (set your calculator to HOME screen)."));
 		break;
 
 	case ERR_CALC_ERROR3+0:	// must be synchronized with nsp_cmd.c (static uint8_t usb_errors[])
-		strcpy(error_msg, _("Msg: hand-held returned an error (not caught)."));
-		strcat(error_msg, "\n");
-		strcat(error_msg,
-		_("Cause: hand-held returned an uncaught error. Please report log."));
-		*message = g_strdup(error_msg);
+		*message = g_strconcat(
+		_("Msg: hand-held returned an error (not caught)."),
+		"\n",
+		_("Cause: hand-held returned an uncaught error. Please report log."),
+		NULL);
 		break;
 	case ERR_CALC_ERROR3+1:
-		strcpy(error_msg, _("Msg: out of memory."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: out of memory."));
 		break;
 	case ERR_CALC_ERROR3+2:
-		strcpy(error_msg, _("Msg: OS installation failed. File is corrupted/wrong."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: OS installation failed. File is corrupted/wrong."));
 		break;
 	// The following one is returned when the filename does not fit in a 254-byte packet.
 	case ERR_CALC_ERROR3+3:
-		strcpy(error_msg, _("Msg: packet too large."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: packet too large."));
 		break;
 	case ERR_CALC_ERROR3+4:
-		strcpy(error_msg, _("Msg: the variable or directory does not exist."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: the variable or directory does not exist."));
 		break;
 	case ERR_CALC_ERROR3+5:
-		strcpy(error_msg, _("Msg: the directory name is invalid."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: the directory name is invalid."));
 		break;
 	case ERR_CALC_ERROR3+6:
-		strcpy(error_msg, _("Msg: not currently listing a directory."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: not currently listing a directory."));
 		break;
 	case ERR_CALC_ERROR3+7:
-		strcpy(error_msg, _("Msg: no more files to list."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: no more files to list."));
 		break;
 	case ERR_CALC_ERROR3+8:
-		strcpy(error_msg, _("Msg: the directory name already exists."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: the directory name already exists."));
 		break;
 	// The following one is returned with folder names >= 230 bytes long
 	case ERR_CALC_ERROR3+9:
-		strcpy(error_msg, _("Msg: the destination (folder or file) path is too long."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: the destination (folder or file) path is too long."));
 		break;
 	case ERR_CALC_ERROR3+10:
-		strcpy(error_msg, _("Msg: the file name is invalid."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: the file name is invalid."));
 		break;
 	case ERR_CALC_ERROR3+11:
-		strcpy(error_msg, _("Msg: no file extension."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: no file extension."));
 		break;
 	case ERR_CALC_ERROR3+12:
-		strcpy(error_msg, _("Msg: forbidden characters in folder name."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: forbidden characters in folder name."));
 		break;
 	// The following one (FF 20) is returned immediately by a e.g. CX CAS running 3.0.1.1753,
 	// when ones tries to send it ZiDian.tcc (English-Chinese dictionary) 3.1.0.392.
@@ -426,12 +431,12 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 	// 3.0.1.1753 behaves exactly the same if the magic in the header is edited from __OSEXT__1 to __OTEXT__1.
 	// Therefore, it seems that FF 20 is a generic error message, rather than just "this particular OS extension is refused".
 	case ERR_CALC_ERROR3+13:
-		strcpy(error_msg, _("Msg: OS upgrade type not recognized."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: OS upgrade type not recognized."));
 		break;
 	case ERR_CALC_ERROR3+14:
-		strcpy(error_msg, _("Msg: anti-downgrade protection refuses this OS version."));
-		*message = g_strdup(error_msg);
+		*message = g_strdup(
+		_("Msg: anti-downgrade protection refuses this OS version."));
 		break;
 
 	default:

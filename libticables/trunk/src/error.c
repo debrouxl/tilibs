@@ -51,8 +51,6 @@
  **/
 TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 {
-	char *tmp;
-
 	if (message == NULL)
 	{
 		ticables_critical("ticables_error_get(NULL)\n");
@@ -149,9 +147,8 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		break;
 
 		case ERR_WRITE_ERROR:
-			*message = g_strconcat(
-			_("Msg: error occured while writing to the device."),
-			NULL);
+			*message = g_strdup(
+			_("Msg: error occured while writing to the device."));
 		break;
 
 		case ERR_WRITE_TIMEOUT:
@@ -163,9 +160,8 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		break;
 
 		case ERR_READ_ERROR:
-			*message = g_strconcat(
-			_("Msg: error occured while reading from the device."),
-			NULL);
+			*message = g_strdup(
+			_("Msg: error occured while reading from the device."));
 		break;
 
 		case ERR_READ_TIMEOUT:
@@ -317,7 +313,8 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 		case ERR_RAW_IO_UNSUPPORTED:
 			*message = g_strconcat(
 			_("Msg: this cable does not support raw I/O."),
-			NULL);
+			"\n",
+			_("Cause: unsupported operation type on cable"));
 		break;
 
 		default:
@@ -330,7 +327,7 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	if (errno != 0) 
 	{
 		gchar *str;
-		tmp = *message;
+		char * tmp = *message;
 		
 		str = g_strdup_printf(" (errno = %i)", errno);
 		*message = g_strconcat(tmp, "\n", "System: ", strerror(errno), str, "\n", NULL);
@@ -342,9 +339,9 @@ TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
 	{
 		LPVOID lpMsgBuf;
 		gchar *str;
-		tmp = *message;
+		char * tmp = *message;
 
-	FormatMessage(
+		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER |
 			FORMAT_MESSAGE_FROM_SYSTEM |
 			FORMAT_MESSAGE_IGNORE_INSERTS,

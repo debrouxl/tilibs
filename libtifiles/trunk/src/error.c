@@ -56,7 +56,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: memory too low ?"), 
 			NULL);
-    break;
+	break;
 
 	case ERR_FILE_OPEN:
 		*message = g_strconcat(
@@ -64,7 +64,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: either the file does not exist, either there is no room."),
 			NULL);
-    break;
+	break;
 
 	case ERR_FILE_CLOSE:
 		*message = g_strconcat(
@@ -72,7 +72,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: either the file does not exist, either there is no room."),
 			NULL);
-    break;
+	break;
 
 	case ERR_GROUP_SIZE:
 		*message = g_strconcat(
@@ -80,7 +80,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: too many variables/data."),
 			NULL);
-    break;
+	break;
 
 	case ERR_BAD_CALC:
 		*message = g_strconcat(
@@ -88,7 +88,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."),
 			NULL);
-    break;
+	break;
 
 	case ERR_INVALID_FILE:
 	case ERR_BAD_FILE:
@@ -97,7 +97,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: it's probably not a TI formatted file."),
 			NULL);
-    break;
+	break;
 
 	case ERR_FILE_CHECKSUM:
 		*message = g_strconcat(
@@ -105,7 +105,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: the file has an incorrect checksum and may be corrupted."),
 			NULL);
-    break;
+	break;
 
 	case ERR_FILE_ZIP:
 		*message = g_strconcat(
@@ -121,7 +121,7 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: the function you attempted to use is not available."),
 			NULL);
-		break;
+	break;
 
 	case ERR_FILE_IO:
 		*message = g_strconcat(
@@ -129,13 +129,12 @@ TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
 			"\n",
 			_("Cause: file is corrupted or invalid."),
 			NULL);
-		break;
+	break;
 
 
 	default:
 		// propagate error code
 		return number;
-    break;
 	}
 
 	return 0;
