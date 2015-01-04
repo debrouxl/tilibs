@@ -587,6 +587,49 @@ TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle* handle, int *state)
 }
 
 /**
+ * ticables_cable_set_device:
+ * @handle: a previously allocated handle
+ * @device: new device information
+ *
+ * Sets cable device if that makes sense.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle* handle, const char * device)
+{
+	if (handle != NULL)
+	{
+		const CableFncts *cable;
+		int ret = 0;
+
+		if(device == NULL)
+		{
+			ticables_critical("%s: device is NULL", __FUNCTION__);
+			return ERR_ILLEGAL_ARG;
+		}
+
+		cable = handle->cable;
+		if(!cable)
+			return ERR_ILLEGAL_ARG;
+		if(handle->open)
+			return ERR_BUSY;
+		if(handle->busy)
+			return ERR_BUSY;
+
+		handle->busy = 1;
+		ret = cable->set_device(handle, device);
+		handle->busy = 0;
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: handle is NULL", __FUNCTION__);
+		return ERR_NO_CABLE;
+	}
+}
+
+/**
  * ticables_cable_progress_reset:
  * @handle: a previously allocated handle
  *

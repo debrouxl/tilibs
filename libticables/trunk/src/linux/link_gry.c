@@ -303,6 +303,24 @@ static int gry_timeout(CableHandle *h)
     return 0;
 }
 
+static int gry_set_device(CableHandle *h, const char * device)
+{
+	if (device != NULL)
+	{
+		char * device2 = strdup(device);
+		if (device2 != NULL)
+		{
+			h->device = device2;
+		}
+		else
+		{
+			ticables_warning(_("unable to set device %s.\n"), device);
+		}
+		return 0;
+	}
+	return ERR_ILLEGAL_ARG;
+}
+
 const CableFncts cable_gry = 
 {
 	CABLE_GRY,
@@ -315,5 +333,6 @@ const CableFncts cable_gry =
 	&gry_put, &gry_get, &gry_check,
 	&gry_set_red_wire, &gry_set_white_wire,
 	&gry_get_red_wire, &gry_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&gry_set_device
 };

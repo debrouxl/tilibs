@@ -321,6 +321,24 @@ static int par_get_raw(CableHandle *h, int *state)
 	return 0;
 }
 
+static int par_set_device(CableHandle *h, const char * device)
+{
+	if (device != NULL)
+	{
+		char * device2 = strdup(device);
+		if (device2 != NULL)
+		{
+			h->device = device2;
+		}
+		else
+		{
+			ticables_warning(_("unable to set device %s.\n"), device);
+		}
+		return 0;
+	}
+	return ERR_ILLEGAL_ARG;
+}
+
 const CableFncts cable_par = 
 {
 	CABLE_PAR,
@@ -333,5 +351,6 @@ const CableFncts cable_par =
 	&par_put, &par_get, &par_check,
 	&par_set_red_wire, &par_set_white_wire,
 	&par_get_red_wire, &par_get_white_wire,
-	&par_set_raw, &par_get_raw
+	&par_set_raw, &par_get_raw,
+	&par_set_device
 };

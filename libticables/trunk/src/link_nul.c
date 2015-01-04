@@ -93,6 +93,11 @@ static int nul_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int nul_set_device(CableHandle *h, const char * device)
+{
+	return 0;
+}
+
 const CableFncts cable_nul = 
 {
 	CABLE_NUL,
@@ -105,7 +110,8 @@ const CableFncts cable_nul =
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&nul_set_device
 };
 
 /* no const ! */ CableFncts cable_ilp =
@@ -120,5 +126,6 @@ const CableFncts cable_nul =
 	&nul_put, &nul_get, &nul_check,
 	&nul_set_red_wire, &nul_set_white_wire,
 	&nul_get_red_wire, &nul_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&nul_set_device
 };

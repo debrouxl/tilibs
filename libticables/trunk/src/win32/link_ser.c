@@ -335,6 +335,24 @@ static int ser_get_raw(CableHandle *h, int *state)
 	return 0;
 }
 
+static int ser_set_device(CableHandle *h, const char * device)
+{
+	if (device != NULL)
+	{
+		char * device2 = strdup(device);
+		if (device2 != NULL)
+		{
+			h->device = device2;
+		}
+		else
+		{
+			ticables_warning(_("unable to set device %s.\n"), device);
+		}
+		return 0;
+	}
+	return ERR_ILLEGAL_ARG;
+}
+
 const CableFncts cable_ser = 
 {
 	CABLE_BLK,
@@ -347,5 +365,6 @@ const CableFncts cable_ser =
 	&ser_put, &ser_get, &ser_check,
 	&ser_set_red_wire, &ser_set_white_wire,
 	&ser_get_red_wire, &ser_get_white_wire,
-	&ser_set_raw, &ser_get_raw
+	&ser_set_raw, &ser_get_raw,
+	&ser_set_device
 };

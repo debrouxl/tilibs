@@ -320,6 +320,11 @@ static int tie_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int tie_set_device(CableHandle *h, const char * device)
+{
+	return 0;
+}
+
 const CableFncts cable_tie = 
 {
 	CABLE_TIE,
@@ -332,5 +337,6 @@ const CableFncts cable_tie =
 	&tie_put, &tie_get, &tie_check,
 	&tie_set_red_wire, &tie_set_white_wire,
 	&tie_get_red_wire, &tie_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&tie_set_device
 };

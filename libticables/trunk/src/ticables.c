@@ -417,6 +417,27 @@ TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle* handle)
 }
 
 /**
+ * ticables_get_device:
+ * @handle: the handle
+ *
+ * Retrieve device port.
+ *
+ * Return value: a char pointer.
+ **/
+TIEXPORT1 const char * TICALL ticables_get_device(CableHandle* handle)
+{
+	if (handle != NULL)
+	{
+		return handle->device;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return 0;
+	}
+}
+
+/**
  * ticables_handle_show:
  * @handle: the handle
  *

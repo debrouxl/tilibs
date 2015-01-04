@@ -193,6 +193,7 @@ struct _CableFncts
 	int (*get_d1)	(CableHandle *);
 	int (*set_raw)  (CableHandle *, int);
 	int (*get_raw)  (CableHandle *, int *);
+	int (*set_device) (CableHandle*, const char*);
 };
 
 /**
@@ -281,6 +282,7 @@ typedef struct
 
 	TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle *handle);
 	TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle *handle);
+	TIEXPORT1 const char * TICALL ticables_get_device(CableHandle *handle);
 
 	TIEXPORT1 int TICALL ticables_handle_show(CableHandle *handle);
 
@@ -304,6 +306,8 @@ typedef struct
 
 	TIEXPORT1 int TICALL ticables_cable_set_raw(CableHandle *handle, int state);
 	TIEXPORT1 int TICALL ticables_cable_get_raw(CableHandle *handle, int *state);
+
+	TIEXPORT1 int TICALL ticables_cable_set_device(CableHandle *handle, const char *device);
 
 
 	TIEXPORT1 int TICALL ticables_progress_reset(CableHandle *handle);

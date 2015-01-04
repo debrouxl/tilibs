@@ -305,6 +305,11 @@ static int vti_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int vti_set_device(CableHandle *h, const char * device)
+{
+	return 0;
+}
+
 const CableFncts cable_vti = 
 {
 	CABLE_VTI,
@@ -317,5 +322,6 @@ const CableFncts cable_vti =
 	&vti_put, &vti_get, &vti_check,
 	&vti_set_red_wire, &vti_set_white_wire,
 	&vti_get_red_wire, &vti_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&vti_set_device
 };

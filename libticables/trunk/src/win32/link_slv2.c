@@ -405,6 +405,11 @@ static int slv_get_white_wire(CableHandle *h)
 	return 1;
 }
 
+static int slv_set_device(CableHandle *h, const char * device)
+{
+	return 0;
+}
+
 const CableFncts cable_slv = 
 {
 	CABLE_SLV,
@@ -417,7 +422,8 @@ const CableFncts cable_slv =
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&slv_set_device
 };
 
 const CableFncts cable_raw = 
@@ -432,5 +438,6 @@ const CableFncts cable_raw =
 	&slv_put, &slv_get, &slv_check,
 	&slv_set_red_wire, &slv_set_white_wire,
 	&slv_get_red_wire, &slv_get_white_wire,
-	NULL, NULL
+	NULL, NULL,
+	&slv_set_device
 };
