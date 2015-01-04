@@ -1,13 +1,10 @@
 # List of source files containing translatable strings.
 
 src/bsd/detect.c
-src/bsd/link_gry.c
-src/bsd/link_ser.c
 src/error.c
 src/link_nul.c
 src/linux/detect.c
 src/linux/ioports.c
-src/linux/link_dev.c
 src/linux/link_gry.c
 src/linux/link_par.c
 src/linux/link_ser.c

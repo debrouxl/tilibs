@@ -79,9 +79,6 @@ static CableFncts const *const cables[] =
 	&cable_tie,
 #endif
 	&cable_ilp,
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LINUX_TICABLE_H)
-	&cable_dev,
-#endif
 	NULL
 };
 
@@ -109,9 +106,6 @@ static const uint32_t supported_cables =
 	| (1U << CABLE_TIE)
 #endif
 	| (1U << CABLE_ILP)
-#if !defined(NO_CABLE_SLV) && defined(HAVE_LINUX_TICABLE_H)
-	| (1U << CABLE_DEV)
-#endif
 ;
 
 /****************/

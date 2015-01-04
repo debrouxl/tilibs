@@ -28,6 +28,5 @@ int linux_check_root(void);
 int linux_check_tty(const char *devname);
 int linux_check_parport(const char *devname);
 int linux_check_libusb(void);
-int linux_check_tiusb(const char *devname);
 
 #endif

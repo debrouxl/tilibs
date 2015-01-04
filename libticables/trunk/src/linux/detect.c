@@ -45,12 +45,6 @@
 #ifdef HAVE_LINUX_SERIAL_H
 #include <linux/serial.h>
 #endif
-#ifdef HAVE_LINUX_TICABLE_H
-# include <linux/ticable.h>     //ioctl codes
-# ifndef IOCTL_TIUSB_GET_MAXPS
-#  define IOCTL_TIUSB_GET_MAXPS      _IOR('N', 0x23, int) /* max packet size */
-# endif
-#endif
 #include <dirent.h>
 
 #include "../gettext.h"
@@ -453,37 +447,4 @@ int linux_check_libusb(void)
     }
 
     return 0;
-}
-
-int linux_check_tiusb(const char *devname)
-{
-    int fd;
-    int arg;
-
-    // check for node usability
-    ticables_info(_("Check for tiusb usability:"));
-    if(check_for_node_usability(devname) == -1)
-        return ERR_TTDEV;
-
-#ifdef HAVE_LINUX_TICABLE_H
-    // check for device availability
-    fd = open(devname, 0);
-    if (fd == -1)
-    {
-        ticables_warning("unable to open USB device '%s'", devname);
-        return ERR_TTDEV;
-    }
-
-    if (ioctl(fd, IOCTL_TIUSB_GET_MAXPS, &arg) == -1)
-        return ERR_TTDEV;
-
-    ticables_info(_("    is useable: yes"));
-    close(fd);
-
-    return 0;
-#else
-    fd = arg = -1;
-    ticables_info(_("    tiusb support: not compiled."));
-    return ERR_TTDEV;
-#endif
 }
