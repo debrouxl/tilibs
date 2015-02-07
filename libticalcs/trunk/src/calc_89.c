@@ -222,7 +222,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		fe->name[8] = '\0';
 		fe->type = buffer[j + 8];
 		fe->attr = buffer[j + 9];
-		fe->size = buffer[j + 10] | (buffer[j + 11] << 8) | (buffer[j + 12] << 16);	// | (buffer[j+13] << 24);
+		fe->size = (  (((uint32_t)buffer[j + 10])      )
+		            | (((uint32_t)buffer[j + 11]) <<  8)
+		            | (((uint32_t)buffer[j + 12]) << 16)); // | (((uint32_t)buffer[j + 13]) << 24);
 		j += 14 + extra;
 		fe->folder[0] = 0;
 
@@ -277,9 +279,12 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ve->name[8] = '\0';
 			ve->type = buffer[j + 8];
 			ve->attr = buffer[j + 9];
-			ve->size = buffer[j + 10] | (buffer[j + 11] << 8) | (buffer[j + 12] << 16);	// | (buffer[j+13] << 24);
+			ve->size = (  (((uint32_t)buffer[j + 10])      )
+			            | (((uint32_t)buffer[j + 11]) <<  8)
+			            | (((uint32_t)buffer[j + 12]) << 16)); // | (((uint32_t)buffer[j + 13]) << 24);
 			j += 14 + extra;
-			strcpy(ve->folder, folder_name);
+			strncpy(ve->folder, folder_name, sizeof(ve->folder));
+			ve->folder[sizeof(ve->folder) - 1] = 0;
 
 			ticalcs_info(_("Name: %8s | Type: %8s | Attr: %i  | Size: %08X"), 
 			ve->name, 
@@ -298,7 +303,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				VarEntry arg;
 
 				memset(&arg, 0, sizeof(arg));
-				strcpy(arg.name, ve->name);
+				strncpy(arg.name, ve->name, sizeof(arg.name) - 1);
+				arg.name[sizeof(arg.name) - 1] = 0;
 				if(!ticalcs_dirlist_ve_exist(*apps, &arg))
 				{
 					ve->folder[0] = 0;
@@ -353,9 +359,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 
 		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
-		{	
+		{
 			// local & not backup
-			strcpy(varname, entry->name);
+			strncpy(varname, entry->name, sizeof(varname) - 1);
+			varname[sizeof(varname) - 1] = 0;
 		} 
 		else 
 		{
@@ -476,9 +483,10 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 			continue;
 
 		if((mode & MODE_LOCAL_PATH) && !(mode & MODE_BACKUP)) 
-		{	
+		{
 			// local & not backup
-			strcpy(varname, entry->name);
+			strncpy(varname, entry->name, sizeof(varname) - 1);
+			varname[sizeof(varname) - 1] = 0;
 		} 
 		else 
 		{
@@ -532,27 +540,36 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
 		ve = content->entries[nvar-1] = tifiles_ve_create();
-		strcpy(ve->folder, "main");
+		strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
+		ve->folder[sizeof(ve->folder) - 1] = 0;
 
 		err = ti89_recv_VAR(handle, &ve->size, &ve->type, tipath);
 		TRYF(ti89_send_ACK(handle));
 
 		if(err == ERR_EOT)	// end of transmission
-			goto exit;
-		else
-			content->num_entries = nvar;
-
-		// from Christian (TI can send varname or fldname/varname)
-		if((tiname = strchr(tipath, '\\')) != NULL) 
 		{
-			*tiname = '\0';
-			strcpy(ve->folder, tipath);
-			strcpy(ve->name, tiname + 1);
+			goto exit;
 		}
 		else
 		{
-			strcpy(ve->folder, "main");
-			strcpy(ve->name, tipath);
+			content->num_entries = nvar;
+		}
+
+		// from Christian (calculator can send varname or fldname/varname)
+		if((tiname = strchr(tipath, '\\')) != NULL) 
+		{
+			*tiname = '\0';
+			strncpy(ve->folder, tipath, sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
+			strncpy(ve->name, tiname + 1, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
+		}
+		else
+		{
+			strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
+			strncpy(ve->name, tipath, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
@@ -909,7 +926,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	PAUSE(250);
 
 	// delete 'a1234567' variable
-	strcpy(vr->name, "a1234567");
+	strncpy(vr->name, "a1234567", sizeof(vr->name) - 1);
+	vr->name[sizeof(vr->name) - 1] = 0;
 	return del_var(handle, vr);
 }
 

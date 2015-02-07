@@ -192,7 +192,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update_label();
 
 	content->model = CALC_TI82;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 
 	TRYF(ti82_recv_VAR(handle, &(content->data_length1), &content->type, varname));
 	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
@@ -386,12 +387,14 @@ exit:
 	content->num_entries = nvar;
 	if(nvar == 1)
 	{
-		strcpy(content->comment, tifiles_comment_set_single());
+		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+		content->comment[sizeof(content->comment) - 1] = 0;
 		*vr = tifiles_ve_dup(content->entries[0]);
 	}
 	else
 	{
-		strcpy(content->comment, tifiles_comment_set_group());
+		strncpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
+		content->comment[sizeof(content->comment) - 1] = 0;
 		*vr = NULL;
 	}
 

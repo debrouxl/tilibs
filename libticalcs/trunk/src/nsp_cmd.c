@@ -491,7 +491,8 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *h, char* name, uint32_t
 		}
 
 		data_size = pkt->data[1] + 2;
-		strcpy(name, (char *)pkt->data + 2);
+		strncpy(name, (char *)pkt->data + 2, data_size);
+		name[data_size] = 0;
 		o = data_size - 10;
 
 		if(size)

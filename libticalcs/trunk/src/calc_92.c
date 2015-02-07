@@ -179,16 +179,17 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		if (ve->type == TI92_DIR) 
 		{
-			strcpy(folder_name, ve->name);
+			strncpy(folder_name, ve->name, sizeof(folder_name) - 1);
+			folder_name[sizeof(folder_name) - 1] = 0;
 			node = g_node_new(ve);
 			folder = g_node_append(*vars, node);
 		} 
 		else 
 		{
-			strcpy(ve->folder, folder_name);
+			strncpy(ve->folder, folder_name, sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
 
-			if(!strcmp(ve->folder, "main") && 
-					(!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+			if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
 			{
 				tifiles_ve_delete(ve);
 			}
@@ -271,7 +272,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	TRYF(ti92_recv_ACK(handle, &unused2));
 
 	content->model = CALC_TI92;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->data_part = tifiles_ve_alloc_data(128 * 1024);
 	content->type = TI92_BKUP;
 	content->data_length = 0;
@@ -320,9 +322,14 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 
 		if (mode & MODE_LOCAL_PATH)
-		  strcpy(varname, entry->name);
-		else 
+		{
+			strncpy(varname, entry->name, sizeof(varname) - 1);
+			varname[sizeof(varname) - 1] = 0;
+		}
+		else
+		{
 			tifiles_build_fullname(handle->model, varname, entry->folder, entry->name);
+		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, entry->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
@@ -361,7 +368,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	char *utf8;
 
 	content->model = CALC_TI92;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();
@@ -416,7 +424,8 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 		content->entries = tifiles_ve_resize_array(content->entries, nvar+1);
 		ve = content->entries[nvar-1] = tifiles_ve_create();;
-		strcpy(ve->folder, "main");	
+		strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
+		ve->folder[sizeof(ve->folder) - 1] = 0;
 
 		err = ti92_recv_VAR(handle, &ve->size, &ve->type, tipath);
 		TRYF(ti92_send_ACK(handle));
@@ -430,13 +439,17 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		if ((tiname = strchr(tipath, '\\')) != NULL) 
 		{
 			*tiname = '\0';
-			strcpy(ve->folder, tipath);
-			strcpy(ve->name, tiname + 1);
+			strncpy(ve->folder, tipath, sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
+			strncpy(ve->name, tiname + 1, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
 		}
 		else 
 		{
-			strcpy(ve->folder, "main");
-			strcpy(ve->name, tipath);
+			strncpy(ve->folder, "main", sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
+			strncpy(ve->name, tipath, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
 		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
@@ -603,7 +616,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	TRYF(ti92_recv_ACK(handle, NULL));
 
 	// delete 'a1234567' variable
-	strcpy(vr->name, "a1234567");
+	strncpy(vr->name, "a1234567", sizeof(vr->name) - 1);
+	vr->name[sizeof(vr->name) - 1] = 0;
 	return del_var(handle, vr);
 }
 

@@ -456,7 +456,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 			}
 		}
 	}
-		
+
 	// folder doesn't exist? => create!
 	if((!found && fe) || 
 	   (!g_node_n_children(tree) && tifiles_has_folder(info->model)))
@@ -464,7 +464,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		fe = tifiles_ve_create();
 		if (fe != NULL)
 		{
-			strcpy(fe->name, entry->folder);
+			strncpy(fe->name, entry->folder, sizeof(fe->name) - 1);
+			fe->name[sizeof(fe->name) - 1] = 0;
 			fe->type = TI89_DIR;
 
 			parent = g_node_new(fe);
@@ -473,7 +474,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	}
 
 	if(!strcmp(entry->name, ""))
+	{
 		return;
+	}
 
 	// next, add variables beneath this folder
 	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
@@ -499,7 +502,9 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	}
 
 	if(fe && found)
+	{
 		fe->size++;
+	}
 }
 
 

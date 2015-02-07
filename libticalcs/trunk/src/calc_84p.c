@@ -345,19 +345,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		VarEntry *ve;
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "Window");
+		strncpy(ve->name, "Window", sizeof(ve->name) - 1);
+		ve->name[sizeof(ve->name) - 1] = 0;
 		ve->type = TI84p_WINDW;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "RclWin");
+		strncpy(ve->name, "RclWin", sizeof(ve->name) - 1);
+		ve->name[sizeof(ve->name) - 1] = 0;
 		ve->type = TI84p_ZSTO;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
 
 		ve = tifiles_ve_create();
-		strcpy(ve->name, "TblSet");
+		strncpy(ve->name, "TblSet", sizeof(ve->name) - 1);
+		ve->name[sizeof(ve->name) - 1] = 0;
 		ve->type = TI84p_TABLE;
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -376,7 +379,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		else if (err != 0)
 			return err;
 
-		strcpy(ve->name, varname);
+		strncpy(ve->name, varname, sizeof(ve->name) - 1);
+		ve->name[sizeof(ve->name) - 1] = 0;
 		//ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data)));
 		ve->size = (  (((uint32_t)(attr[0]->data[0])) << 24)
 		            | (((uint32_t)(attr[0]->data[1])) << 16)
@@ -499,7 +503,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 
 	content->entries = tifiles_ve_create_array(1);
@@ -645,7 +650,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
-	strcpy(content->name, vr->name);
+	strncpy(content->name, vr->name, sizeof(content->name) - 1);
+	content->name[sizeof(content->name) - 1] = 0;
 	content->data_type = vr->type;
 	content->device_type = DEVICE_TYPE_83P;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max
@@ -1118,7 +1124,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	g_snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
 		params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 	infos->mask |= INFOS_MAIN_CALC_ID;
-	strcpy(infos->product_id, infos->main_calc_id);
+	strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
+	infos->product_id[sizeof(infos->product_id) - 1] = 0;
 	infos->mask |= INFOS_PRODUCT_ID;
 	i++;
 

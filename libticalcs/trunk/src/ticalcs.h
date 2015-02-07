@@ -113,17 +113,17 @@ typedef enum
  **/
 typedef enum 
 {
-  MODE_NORMAL = 0,
+	MODE_NORMAL = 0,
 
-  // For sending vars
-  MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
-  MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
+	// For sending vars
+	MODE_SEND_ONE_VAR  = (1 << 1),	// Send single var or first var of group (TI82/85 only)
+	MODE_SEND_LAST_VAR = (1 << 2),	// Send last var of group file (TI82/85 only)
 
-  MODE_SEND_EXEC_ASM = (1 << 3),    // Send and execute assembly (TI82/85 only; dangerous!)
+	MODE_SEND_EXEC_ASM = (1 << 3),    // Send and execute assembly (TI82/85 only; dangerous!)
 
-  // Miscellaneous
-  MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
-  MODE_BACKUP		= (1 << 5),		// Keep archive attribute
+	// Miscellaneous
+	MODE_LOCAL_PATH	= (1 << 4),		// Local path (full by default)
+	MODE_BACKUP		= (1 << 5),		// Keep archive attribute
 } CalcMode;
 
 /**
@@ -134,13 +134,13 @@ typedef enum
 typedef enum 
 {
 	ROMSIZE_AUTO  = 0,
-    ROMSIZE_48KB = 48, /* TI80 */
-    ROMSIZE_128KB = 128, /* TI82, 85 */
-    ROMSIZE_256KB = 256, /* TI83, 86 */
-    ROMSIZE_512KB = 512, /* TI83+ */
-    ROMSIZE_1MB	= 1024,  /* TI84+, TI92 */
-    ROMSIZE_2MB	= 2048,  /* TI8x+ (SE), TI89, 92-II, 92+ */ 
-    ROMSIZE_4MB	= 4096,  /* TI89t, V200 */
+	ROMSIZE_48KB = 48, /* TI80 */
+	ROMSIZE_128KB = 128, /* TI82, 85 */
+	ROMSIZE_256KB = 256, /* TI83, 86 */
+	ROMSIZE_512KB = 512, /* TI83+ */
+	ROMSIZE_1MB	= 1024,  /* TI84+, TI92 */
+	ROMSIZE_2MB	= 2048,  /* TI83+SE, TI-84+SE, TI89, 92-II, 92+ */
+	ROMSIZE_4MB	= 4096,  /* TI-84+CSE, TI89t, V200 */
 } CalcDumpSize;
 
 /**
@@ -162,31 +162,31 @@ typedef enum
  **/
 typedef enum 
 {
-  FTS_NONE = 0,
+	FTS_NONE = 0,
 
-  OPS_ISREADY	= (1 << 0),
-  OPS_KEYS		= (1 << 1),
-  OPS_SCREEN	= (1 << 2),
-  OPS_DIRLIST	= (1 << 3),
-  OPS_BACKUP	= (1 << 4),
-  OPS_VARS		= (1 << 5),
-  OPS_FLASH		= (1 << 6),
-  OPS_IDLIST	= (1 << 7),
-  OPS_CLOCK		= (1 << 8),
-  OPS_ROMDUMP	= (1 << 9),
-  OPS_VERSION	= (1 << 10),
-  OPS_NEWFLD	= (1 << 11),
-  OPS_DELVAR	= (1 << 12),
-  OPS_OS		= (1 << 13),
-  OPS_RENAME    = (1 << 14),
-  OPS_CHATTR    = (1 << 21),
+	OPS_ISREADY	= (1 << 0),
+	OPS_KEYS		= (1 << 1),
+	OPS_SCREEN	= (1 << 2),
+	OPS_DIRLIST	= (1 << 3),
+	OPS_BACKUP	= (1 << 4),
+	OPS_VARS		= (1 << 5),
+	OPS_FLASH		= (1 << 6),
+	OPS_IDLIST	= (1 << 7),
+	OPS_CLOCK		= (1 << 8),
+	OPS_ROMDUMP	= (1 << 9),
+	OPS_VERSION	= (1 << 10),
+	OPS_NEWFLD	= (1 << 11),
+	OPS_DELVAR	= (1 << 12),
+	OPS_OS		= (1 << 13),
+	OPS_RENAME    = (1 << 14),
+	OPS_CHATTR    = (1 << 21),
 
-  FTS_SILENT	= (1 << 15),
-  FTS_FOLDER	= (1 << 16),
-  FTS_MEMFREE	= (1 << 17),
-  FTS_FLASH		= (1 << 18),
-  FTS_CERT		= (1 << 19),
-  FTS_BACKUP	= (1 << 20),
+	FTS_SILENT	= (1 << 15),
+	FTS_FOLDER	= (1 << 16),
+	FTS_MEMFREE	= (1 << 17),
+	FTS_FLASH		= (1 << 18),
+	FTS_CERT		= (1 << 19),
+	FTS_BACKUP	= (1 << 20),
 
 } CalcFeatures;
 
@@ -299,10 +299,10 @@ typedef enum
  **/
 typedef struct
 {
-    uint32_t size;       ///< raw packet size
-    uint8_t  type;       ///< raw packet type
+	uint32_t size;       ///< raw packet size
+	uint8_t  type;       ///< raw packet type
 
-    uint8_t  data[1023]; ///< raw packet data
+	uint8_t  data[1023]; ///< raw packet data
 } DUSBRawPacket;
 
 //! Size of the header of a \a NSPRawPacket
@@ -317,18 +317,18 @@ typedef struct
  **/
 typedef struct
 {
-    uint16_t  unused;
-    uint16_t  src_addr;
-    uint16_t  src_port;
-    uint16_t  dst_addr;
-    uint16_t  dst_port;
-    uint16_t  data_sum;
-    uint8_t   data_size;
-    uint8_t   ack;
-    uint8_t   seq;
-    uint8_t   hdr_sum;
+	uint16_t  unused;
+	uint16_t  src_addr;
+	uint16_t  src_port;
+	uint16_t  dst_addr;
+	uint16_t  dst_port;
+	uint16_t  data_sum;
+	uint8_t   data_size;
+	uint8_t   ack;
+	uint8_t   seq;
+	uint8_t   hdr_sum;
 
-    uint8_t   data[NSP_DATA_SIZE];
+	uint8_t   data[NSP_DATA_SIZE];
 } NSPRawPacket;
 
 /**
@@ -437,18 +437,18 @@ typedef struct
  **/
 typedef struct 
 {
-  uint16_t	year;
-  uint8_t	month;
-  uint8_t	day;
+	uint16_t	year;
+	uint8_t	month;
+	uint8_t	day;
 
-  uint8_t	hours;
-  uint8_t	minutes;
-  uint8_t	seconds;
+	uint8_t	hours;
+	uint8_t	minutes;
+	uint8_t	seconds;
 
-  uint8_t	time_format;
-  uint8_t	date_format;
+	uint8_t	time_format;
+	uint8_t	date_format;
 
-  int		state;
+	int		state;
 } CalcClock;
 
 /**
@@ -480,7 +480,7 @@ typedef struct
 	int		cancel;
 
 	float	rate;
-    int		cnt1;
+	int		cnt1;
 	int		max1;
 
 	int		cnt2;
@@ -587,9 +587,9 @@ typedef struct
  **/
 struct _CalcFncts
 {
-	const int		model;			
-	const char*		name;			
-	const char*		fullname;		
+	const int		model;
+	const char*		name;
+	const char*		fullname;
 	const char*		description;
 	const int		features;
 	const char*		counters[FNCT_LAST];
@@ -665,7 +665,7 @@ struct _CalcHandle
 
 	int			open;
 	int			busy;
-	
+
 	CableHandle* cable;
 	int			attached;
 };
@@ -688,7 +688,6 @@ typedef struct
 	int			cable_delay;
 
 	CalcModel	calc_model;
-	
 } DeviceOptions;
 
 // namespace scheme: library_class_function like ticalcs_fext_get
@@ -696,7 +695,7 @@ typedef struct
 	/****************/
 	/* Entry points */
 	/****************/
-  
+
 	TIEXPORT3 int TICALL ticalcs_library_init(void);
 	TIEXPORT3 int TICALL ticalcs_library_exit(void);
 
@@ -770,13 +769,13 @@ typedef struct
 	// calc_xx.c: convenient functions
 	TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle *handle, const char*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle *handle, const char*);
-	
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle *handle, CalcMode, const char*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle *handle, CalcMode, const char*, VarRequest*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle *handle, CalcMode, const char*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle *handle, CalcMode, const char*, VarEntry**);
-	
+
 	TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle *handle, const char*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle *handle, const char*, VarRequest*);
 

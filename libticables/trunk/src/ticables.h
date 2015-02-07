@@ -248,13 +248,12 @@ struct _CableHandle
  **/
 typedef struct
 {
-    CableModel      model;
-    CablePort       port;
-    int             timeout;
-    int             delay;
+	CableModel      model;
+	CablePort       port;
+	int             timeout;
+	int             delay;
 
-    int             calc; // unused
-
+	int             calc; // unused
 } CableOptions;
 
 // namespace scheme: library_class_function like ticables_fext_get
@@ -262,7 +261,7 @@ typedef struct
 	/****************/
 	/* Entry points */
 	/****************/
-  
+
 	TIEXPORT1 int TICALL ticables_library_init(void);
 	TIEXPORT1 int TICALL ticables_library_exit(void);
 
@@ -321,13 +320,13 @@ typedef struct
 
 	// type2str.c
 	TIEXPORT1 const char * TICALL ticables_model_to_string(CableModel model);
-	TIEXPORT1 CableModel  TICALL ticables_string_to_model (const char *str);
+	TIEXPORT1 CableModel   TICALL ticables_string_to_model (const char *str);
 
 	TIEXPORT1 const char * TICALL ticables_port_to_string(CablePort port);
-	TIEXPORT1 CablePort   TICALL ticables_string_to_port(const char *str);
+	TIEXPORT1 CablePort    TICALL ticables_string_to_port(const char *str);
 
 	TIEXPORT1 const char * TICALL ticables_usbpid_to_string(UsbPid pid);
-	TIEXPORT1 UsbPid		 TICALL ticables_string_to_usbpid(const char *str);
+	TIEXPORT1 UsbPid       TICALL ticables_string_to_usbpid(const char *str);
 
 	// probe.c
 	TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);
@@ -336,10 +335,10 @@ typedef struct
 	TIEXPORT1 int TICALL ticables_is_usb_enabled(void);
 
 	TIEXPORT1 int TICALL ticables_get_usb_devices(int **array, int *len);
-  
-  /************************/
-  /* Deprecated functions */
-  /************************/
+
+	/************************/
+	/* Deprecated functions */
+	/************************/
 
 #ifdef __cplusplus
 }

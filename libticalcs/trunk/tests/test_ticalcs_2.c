@@ -168,9 +168,10 @@ static int get_dirlist(CalcHandle *h)
 
 static int send_backup(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -185,9 +186,10 @@ static int send_backup(CalcHandle* h)
 
 static int recv_backup(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -202,11 +204,12 @@ static int recv_backup(CalcHandle* h)
 
 static int send_var(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 	FileContent *content;
 	VarEntry ve;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -231,8 +234,10 @@ static int send_var(CalcHandle* h)
 		{
 			if (h->model == CALC_NSPIRE)
 			{
-				strcpy(content->entries[0]->folder, ve.folder);
-				strcpy(content->entries[0]->name, ve.name);
+				strncpy(content->entries[0]->folder, ve.folder, sizeof(content->entries[0]->folder) - 1);
+				content->entries[0]->folder[sizeof(content->entries[0]->folder) - 1] = 0;
+				strncpy(content->entries[0]->name, ve.name, sizeof(content->entries[0]->name) - 1);
+				content->entries[0]->name[sizeof(content->entries[0]->name) - 1] = 0;
 			}
 			ret = ticalcs_calc_send_var(h, MODE_NORMAL, content);
 			if (!ret)
@@ -251,10 +256,11 @@ static int send_var(CalcHandle* h)
 
 static int recv_var(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 	VarEntry ve;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -273,9 +279,10 @@ static int recv_var(CalcHandle* h)
 
 static int send_var_ns(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -288,10 +295,11 @@ static int send_var_ns(CalcHandle* h)
 
 static int recv_var_ns(CalcHandle* h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 	VarRequest *ve;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -321,10 +329,11 @@ static int send_flash(CalcHandle *h)
 
 static int recv_flash(CalcHandle *h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 	VarEntry ve;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -345,9 +354,10 @@ static int recv_flash(CalcHandle *h)
 
 static int send_os(CalcHandle *h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -374,9 +384,10 @@ static int recv_idlist(CalcHandle *h)
 
 static int dump_rom(CalcHandle *h)
 {
-	char filename[1030] = "";
+	char filename[1030];
 	int ret;
 
+	filename[0] = 0;
 	printf("Enter filename: ");
 	ret = scanf("%1023s", filename);
 	if (ret < 1)
@@ -394,7 +405,7 @@ static int dump_rom(CalcHandle *h)
 
 static int set_clock(CalcHandle *h)
 {
-	printf("Not implemented yet !\n");
+	printf("Entering clock parameters not implemented yet !\n");
 	return 0;
 }
 
@@ -545,13 +556,14 @@ static int nsp_send_key(CalcHandle *h)
 
 static int ti83pfamily_dump(CalcHandle *h)
 {
-	char filename[1024] = "";
+	char filename[1024];
 	uint8_t buffer[0x4100];
 	int page;
 	int ret;
 	uint16_t length;
 	FILE *f;
 
+	filename[0] = 0;
 	printf("Enter page number for dumping: ");
 	ret = scanf("%d", &page);
 	if (ret < 1)
@@ -689,88 +701,50 @@ static int ti83pfamily_sid(CalcHandle *h)
 	return 0;
 }
 
-#define NITEMS	36
-
-static const char *str_menu[NITEMS] = 
-{
-	"Exit",
-	"Check whether calc is ready",
-	"Send a key",
-	"Execute program",
-	"Do a screenshot",
-	"Listing",
-	"Send backup",
-	"Recv backup",
-	"Send var",
-	"Recv var",
-	"Send var (ns)",
-	"Recv var (ns)",
-	"Send flash",
-	"Recv flash",
-	"Send OS",
-	"Get ID-LIST",
-	"Dump ROM",
-	"Set clock",
-	"Get clock",
-	"Delete var",
-	"Rename var",
-	"Archive var",
-	"Unarchive var",
-	"Lock var",
-	"New folder",
-	"Get version",
-	"Probe calc",
-	"Nspire-specific send key",
-	"83+-family-specific memory dump",
-	"83+-family-specific enable key echo",
-	"83+-family-specific disable key echo",
-	"83+-family-specific enable lockdown",
-	"83+-family-specific disable lockdown",
-	"83+-family-specific get standard calculator ID",
-	"83+-family-specific retrieve some 32-byte memory area",
-	"83+-family-specific set some 32-byte memory area",
-};
-
 typedef int (*FNCT_MENU) (CalcHandle*);
 
-static FNCT_MENU fnct_menu[NITEMS] = 
+static struct
 {
-	NULL,
-	is_ready,
-	send_key,
-	execute,
-	recv_screen,
-	get_dirlist,
-	send_backup,
-	recv_backup,
-	send_var,
-	recv_var,
-	send_var_ns,
-	recv_var_ns,
-	send_flash,
-	recv_flash,
-	send_os,
-	recv_idlist,
-	dump_rom,
-	set_clock,
-	get_clock,
-	del_var,
-	rename_var,
-	archive_var,
-	unarchive_var,
-	lock_var,
-	new_folder,
-	get_version,
-	probe_calc,
-	nsp_send_key,
-	ti83pfamily_dump,
-	ti83pfamily_eke,
-	ti83pfamily_dke,
-	ti83pfamily_eld,
-	ti83pfamily_dld,
-	ti83pfamily_gid,
-	ti83pfamily_rid,
-	ti83pfamily_sid
+	const char * desc;
+	FNCT_MENU fnct;
+} fnct_menu[] =
+{
+	{ "Exit", NULL },
+	{ "Check whether calc is ready", is_ready },
+	{ "Send a key", send_key },
+	{ "Execute program", execute },
+	{ "Do a screenshot", recv_screen },
+	{ "Listing", get_dirlist },
+	{ "Send backup", send_backup },
+	{ "Recv backup", recv_backup },
+	{ "Send var", send_var },
+	{ "Recv var", recv_var },
+	{ "Send var (ns)", send_var_ns },
+	{ "Recv var (ns)", recv_var_ns },
+	{ "Send flash", send_flash },
+	{ "Recv flash", recv_flash },
+	{ "Send OS", send_os },
+	{ "Get ID-LIST", recv_idlist },
+	{ "Dump ROM", dump_rom },
+	{ "Set clock", set_clock },
+	{ "Get clock", get_clock },
+	{ "Delete var", del_var },
+	{ "Rename var", rename_var },
+	{ "Archive var", archive_var },
+	{ "Unarchive var", unarchive_var },
+	{ "Lock var", lock_var },
+	{ "New folder", new_folder },
+	{ "Get version", get_version },
+	{ "Probe calc", probe_calc },
+	{ "Nspire-specific send key", nsp_send_key },
+	{ "83+-family-specific memory dump", ti83pfamily_dump },
+	{ "83+-family-specific enable key echo", ti83pfamily_eke },
+	{ "83+-family-specific disable key echo", ti83pfamily_dke },
+	{ "83+-family-specific enable lockdown", ti83pfamily_eld },
+	{ "83+-family-specific disable lockdown", ti83pfamily_dld },
+	{ "83+-family-specific get standard calculator ID", ti83pfamily_gid },
+	{ "83+-family-specific retrieve some 32-byte memory area", ti83pfamily_rid },
+	{ "83+-family-specific set some 32-byte memory area", ti83pfamily_sid }
 };
 
 int main(int argc, char **argv)
@@ -778,8 +752,8 @@ int main(int argc, char **argv)
 	CableModel cable_model = CABLE_NUL;
 	int port_number = 1;
 	CalcModel calc_model = CALC_NONE;
-	CableHandle* cable;
-	CalcHandle* calc;
+	CableHandle* cable = NULL;
+	CalcHandle* calc = NULL;
 	int err, i;
 	int do_exit=0;
 	unsigned int choice;
@@ -853,7 +827,7 @@ int main(int argc, char **argv)
 
 		default:
 			fprintf(stderr, "Unrecognized PID %04x\n", pids[0]);
-			return 1;
+			goto end;
 		}
 
 		free(pids);
@@ -888,24 +862,31 @@ int main(int argc, char **argv)
 
 	do
 	{
-restart:
 		// Display menu
 		printf("Choose an action:\n");
-		for(i = 0; i < NITEMS; i++)
-			printf("%2i. %s\n", i, str_menu[i]);
+		for(i = 0; i < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])); i++)
+		{
+			printf("%2i. %s\n", i, fnct_menu[i].desc);
+		}
 		printf("Your choice: ");
 
 		err = scanf("%u", &choice);
 		if (err < 1)
-			goto restart;
+		{
+			continue;
+		}
 		printf("\n");
 
 		if (choice == 0)
+		{
 			do_exit = 1;
+		}
 
 		// Process choice
-		if (choice < (int)(sizeof(fnct_menu)/sizeof(fnct_menu[0])) && fnct_menu[choice])
-			fnct_menu[choice](calc);
+		if (choice < sizeof(fnct_menu)/sizeof(fnct_menu[0]) && fnct_menu[choice].fnct)
+		{
+			(fnct_menu[choice].fnct)(calc);
+		}
 		printf("\n");
 
 	} while(!do_exit);
@@ -913,6 +894,7 @@ restart:
 	// detach cable (made by handle_del, too)
 	err = ticalcs_cable_detach(calc);
 
+end:
 	// remove calc & cable
 	ticalcs_handle_del(calc);
 	ticables_handle_del(cable);

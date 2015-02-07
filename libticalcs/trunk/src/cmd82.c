@@ -158,7 +158,7 @@ TIEXPORT3 int TICALL ti82_send_SCR(CalcHandle* handle)
 TIEXPORT3 int TICALL ti82_send_KEY(CalcHandle* handle, uint16_t scancode)
 {
 	uint8_t buf[5];
-  
+
 	if (handle == NULL)
 	{
 		ticalcs_critical("%s: handle is NULL", __FUNCTION__);

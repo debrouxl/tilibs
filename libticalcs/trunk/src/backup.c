@@ -48,7 +48,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	FileContent **group;
 	FileContent *single;
 
-	if(handle == NULL) return ERR_INVALID_HANDLE;
+	if (handle == NULL) return ERR_INVALID_HANDLE;
 	if (content == NULL)
 	{
 		ticalcs_critical("tixx_recv_backup: content is NULL");
@@ -107,7 +107,8 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 
 		memcpy(content, single, sizeof(FileContent));
 		cnt->entries = single->entries;
-		strcpy(cnt->comment, tifiles_comment_set_group());
+		strncpy(cnt->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
+		cnt->comment[sizeof(content->comment) - 1] = 0;
 	}
 
 	return 0;
@@ -200,7 +201,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 
 			// can't overwrite apps so check before sending app
 			memset(&ve, 0, sizeof(VarEntry));
-			strcpy(ve.name, te->content.flash->name);
+			strncpy(ve.name, te->content.flash->name, sizeof(ve.name) - 1);
+			ve.name[sizeof(ve.name) - 1] = 0;
 			if(!ticalcs_dirlist_ve_exist(apps, &ve))
 				TRYF(handle->calc->send_app(handle, te->content.flash));
 		}

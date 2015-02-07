@@ -365,7 +365,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint8_t attr;
 
 	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 
 	TRYF(ti73_send_REQ(handle, 0x0000, TI73_BKUP, "\0\0\0\0\0\0\0", 0x00));
 	TRYF(ti73_recv_ACK(handle, NULL));
@@ -466,7 +467,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 
 	content->entries = tifiles_ve_create_array(1);
@@ -642,7 +644,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_label();
 
 	content->model = handle->model;
-	strcpy(content->name, vr->name);
+	strncpy(content->name, vr->name, sizeof(content->name) - 1);
+	content->name[sizeof(content->name) - 1] = 0;
 	content->data_type = vr->type;
 	content->device_type = handle->model == CALC_TI73 ? DEVICE_TYPE_73 : DEVICE_TYPE_83P;
 	content->num_pages = 2048;	// TI83+ has 512 KB of FLASH max

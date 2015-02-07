@@ -731,21 +731,21 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *h, char *folder, char *na
 
 		j = 0;
 		fld_len = pkt->data[j++];
-		strcpy(folder, "");
+		folder[0] = 0;
 		if(fld_len)
 		{
 			memcpy(folder, &pkt->data[j], fld_len+1);
 			j += fld_len+1;
 		}
 		var_len = pkt->data[j++];
-		strcpy(name, "");
+		name[0] = 0;
 		if(var_len)
 		{
 			memcpy(name, &pkt->data[j], var_len+1);
 			j += var_len+1;
 		}
 
-		nattr = (pkt->data[j+0] << 8) | pkt->data[j+1];
+		nattr = (((int)pkt->data[j+0]) << 8) | pkt->data[j+1];
 		j += 2;
 		
 		for(i = 0; i < nattr; i++)
@@ -756,7 +756,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *h, char *folder, char *na
 			s->ok = !pkt->data[j++];
 			if(s->ok)
 			{
-				s->size = pkt->data[j++] << 8; s->size |= pkt->data[j++];
+				s->size = ((int)pkt->data[j++]) << 8; s->size |= pkt->data[j++];
 				s->data = (uint8_t *)g_malloc0(s->size);
 				memcpy(s->data, &pkt->data[j], s->size);
 				j += s->size;

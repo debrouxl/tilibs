@@ -277,7 +277,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	uint16_t unused;
 
 	content->model = CALC_TI83;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 
 	TRYF(ti82_send_REQ(handle, 0x0000, TI83_BKUP, "\0\0\0\0\0\0\0"));
 	TRYF(ti82_recv_ACK(handle, &unused));
@@ -379,7 +380,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = CALC_TI83;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();

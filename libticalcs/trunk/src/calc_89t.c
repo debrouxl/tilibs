@@ -161,8 +161,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		else if (err != 0)
 			return err;
 
-		strcpy(ve->folder, fldname);
-		strcpy(ve->name, varname);
+		strncpy(ve->folder, fldname, sizeof(ve->folder) - 1);
+		ve->folder[sizeof(ve->folder) - 1] = 0;
+		strncpy(ve->name, varname, sizeof(ve->name) - 1);
+		ve->name[sizeof(ve->name) - 1] = 0;
 		//ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[3]->data)));
 		ve->size = (  (((uint32_t)(attr[3]->data[0])) << 24)
 		            | (((uint32_t)(attr[3]->data[1])) << 16)
@@ -173,12 +175,14 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->attr = attr[1]->data[0] ? ATTRB_ARCHIVED : attr[4]->data[0] ? ATTRB_LOCKED : ATTRB_NONE;
 		dusb_ca_del_array(size, attr);
 
-		if(ve->type == TI89_DIR)
+		if (ve->type == TI89_DIR)
 		{
-			strcpy(folder_name, ve->folder);
-			strcpy(ve->name, ve->folder);
-			strcpy(ve->folder, "");
-			
+			strncpy(folder_name, ve->folder, sizeof(folder_name) - 1);
+			folder_name[sizeof(folder_name) - 1] = 0;
+			strncpy(ve->name, ve->folder, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
+			ve->folder[0] = 0;
+
 			node = g_node_new(ve);
 			folder = g_node_append(*vars, node);
 		}
@@ -261,7 +265,10 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			tifiles_build_fullname(handle->model, varname, ve->folder, ve->name);
 		}
 		else
-			strcpy(varname, ve->name);
+		{
+			strncpy(varname, ve->name, sizeof(varname) - 1);
+			varname[sizeof(varname) - 1] = 0;
+		}
 
 		utf8 = ticonv_varname_to_utf8(handle->model, varname, ve->type);
 		g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
@@ -346,7 +353,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 
 	content->entries = tifiles_ve_create_array(1);
@@ -355,7 +363,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	ve->data = tifiles_ve_alloc_data(ve->size);
 	memcpy(ve->data, data, ve->size);
-	g_free(data);	
+	g_free(data);
 
 	dusb_ca_del_array(naids, attrs);
 	return 0;
@@ -447,7 +455,8 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	TRYF(dusb_cmd_r_var_content(handle, NULL, &data));
 
 	content->model = handle->model;
-	strcpy(content->name, vr->name);
+	strncpy(content->name, vr->name, sizeof(content->name) - 1);
+	content->name[sizeof(content->name) - 1] = 0;
 	content->data_length = vr->size;
 	content->data_part = (uint8_t *)tifiles_ve_alloc_data(vr->size);
 	content->data_type = vr->type;
@@ -809,7 +818,6 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 {
 	uint8_t data[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x23 };
 	char *fldname = vr->folder;
-	char varname[40] = "a1234567";
 	DUSBCalcParam *param;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 4;
@@ -832,7 +840,7 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	attrs[3] = dusb_ca_new(AID_LOCKED, 1);
 	attrs[3]->data[0] = 0;
 
-	TRYF(dusb_cmd_s_rts(handle, fldname, varname, sizeof(data), nattrs, CA(attrs)));
+	TRYF(dusb_cmd_s_rts(handle, fldname, "a1234567", sizeof(data), nattrs, CA(attrs)));
 	TRYF(dusb_cmd_r_data_ack(handle));
 	TRYF(dusb_cmd_s_var_content(handle, sizeof(data), data));
 	TRYF(dusb_cmd_r_data_ack(handle));
@@ -846,7 +854,8 @@ static int		new_folder  (CalcHandle* handle, VarRequest* vr)
 	dusb_cp_del(param);
 
 	// delete 'a1234567' variable
-	strcpy(vr->name, "a1234567");
+	strncpy(vr->name, "a1234567", sizeof(vr->name) - 1);
+	vr->name[sizeof(vr->name) - 1] = 0;
 	return del_var(handle, vr);
 }
 
@@ -890,7 +899,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	strncpy(infos->main_calc_id+10, (char*)&(params1[i]->data[13]), 4);
 	infos->main_calc_id[14] = '\0';
 	infos->mask |= INFOS_MAIN_CALC_ID;
-	strcpy(infos->product_id, infos->main_calc_id);
+	strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
+	infos->product_id[sizeof(infos->product_id) - 1] = 0;
 	infos->mask |= INFOS_PRODUCT_ID;
 	i++;
 

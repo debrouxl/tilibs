@@ -334,8 +334,10 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			return err;
 
 		fe = tifiles_ve_create();
-		strcpy(fe->folder, varname);
-		strcpy(fe->name, varname);
+		strncpy(fe->folder, varname, sizeof(fe->folder) - 1);
+		fe->folder[sizeof(fe->folder) - 1] = 0;
+		strncpy(fe->name, varname, sizeof(fe->name) - 1);
+		fe->name[sizeof(fe->name) - 1] = 0;
 		fe->size = varsize;
 		fe->type = vartype;
 		fe->attr = ATTRB_NONE;
@@ -389,7 +391,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				return err;
 
 			ext = tifiles_fext_get(varname);
-			strcpy(ve->folder, folder_name);
+			strncpy(ve->folder, folder_name, sizeof(ve->folder) - 1);
+			ve->folder[sizeof(ve->folder) - 1] = 0;
 			ve->size = varsize;
 			ve->type = tifiles_fext2vartype(handle->model, ext);
 			ve->attr = ATTRB_NONE;
@@ -409,7 +412,8 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 				}
 				// else there is no extension to remove.
 			}
-			strcpy(ve->name, varname);
+			strncpy(ve->name, varname, sizeof(ve->name) - 1);
+			ve->name[sizeof(ve->name) - 1] = 0;
 
 			node = g_node_new(ve);
 			g_node_append(folder, node);
@@ -551,7 +555,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	TRYF(nsp_cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 
 	content->entries = tifiles_ve_create_array(1);
@@ -825,7 +830,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_MODEL));
 	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));
 
-	strcpy(infos->product_name, (char*)data);
+	strncpy(infos->product_name, (char*)data, sizeof(infos->product_name) - 1);
+	infos->product_name[sizeof(infos->product_name) - 1] = 0;
 	infos->mask |= INFOS_PRODUCT_NAME;
 
 	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION));

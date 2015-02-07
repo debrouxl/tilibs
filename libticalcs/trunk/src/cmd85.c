@@ -64,7 +64,7 @@ TIEXPORT3 int TICALL ti85_send_VAR(CalcHandle* handle, uint16_t varsize, uint8_t
 	buffer[2] = vartype;
 
 	ticonv_varname_to_utf8_s(handle->model, varname, trans, vartype);
-	ticalcs_info(" PC->TI: VAR (size=0x%04X, id=%02X, name=%s)", varsize, vartype, trans);
+	ticalcs_info(" PC->TI: VAR (size=0x%04X=%i, id=%02X, name=%s)", varsize, varsize, vartype, trans);
 
 	if (vartype != TI8586_BKUP) 
 	{
@@ -193,7 +193,7 @@ TIEXPORT3 int TICALL ti85_send_EOT(CalcHandle* handle)
 	return dbus_send(handle, PC_TI8586, CMD_EOT, 2, NULL);
 }
 
-/* Variable request (var header: NUL padded, fixed length) */
+/* Request variable (std var header: NUL padded, fixed length) */
 TIEXPORT3 int TICALL ti85_send_REQ(CalcHandle* handle, uint16_t varsize, uint8_t vartype, const char *varname)
 {
 	uint8_t buffer[16] = { 0 };

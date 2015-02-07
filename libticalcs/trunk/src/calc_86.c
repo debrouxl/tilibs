@@ -295,7 +295,8 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 	update_label();
 
 	content->model = CALC_TI86;
-	strcpy(content->comment, tifiles_comment_set_backup());
+	strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 
 	TRYF(ti85_recv_VAR(handle, &(content->data_length1), &content->type, varname));
 	content->data_length2 = (uint16_t)varname[0] | (((uint16_t)(varname[1])) << 8);
@@ -409,7 +410,8 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	uint16_t ve_size;
 
 	content->model = CALC_TI86;
-	strcpy(content->comment, tifiles_comment_set_single());
+	strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+	content->comment[sizeof(content->comment) - 1] = 0;
 	content->num_entries = 1;
 	content->entries = tifiles_ve_create_array(1);
 	ve = content->entries[0] = tifiles_ve_create();

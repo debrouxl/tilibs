@@ -166,14 +166,14 @@ int ticalcs_instance = 0;	// counts # of instances
  **/
 TIEXPORT3 int TICALL ticalcs_library_init(void)
 {
-	char locale_dir[65536];
+	char locale_dir[65536 + 20];
 
 #ifdef __WIN32__
 	HANDLE hDll;
 	int i;
 
 	hDll = GetModuleHandle("libticalcs2-12.dll");
-	GetModuleFileName(hDll, locale_dir, 65535);
+	GetModuleFileName(hDll, locale_dir, sizeof(locale_dir) - 21);
 
 	for (i = strlen(locale_dir); i >= 0; i--)
 	{
@@ -190,7 +190,7 @@ TIEXPORT3 int TICALL ticalcs_library_init(void)
 	strcat(locale_dir, "\\locale");
 #endif
 #else
-	strcpy(locale_dir, LOCALEDIR);
+	strncpy(locale_dir, LOCALEDIR, sizeof(locale_dir) - 21);
 #endif
 
 	if (ticalcs_instance)
