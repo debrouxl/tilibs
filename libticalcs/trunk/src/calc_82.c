@@ -306,7 +306,7 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 		g_free(utf8);
 		update_label();
 
-		TRYF(ti82_send_XDP(handle, entry->size, entry->data));
+		TRYF(ti82_send_XDP(handle, (uint16_t)entry->size, entry->data));
 		TRYF(ti82_recv_ACK(handle, &status));
 
 		update_->cnt2 = i+1;

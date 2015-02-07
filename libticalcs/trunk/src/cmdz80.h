@@ -40,7 +40,7 @@ TIEXPORT3 int TICALL ti80_recv_ACK(CalcHandle*, uint16_t * status);
 TIEXPORT3 int TICALL ti73_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname, uint8_t varattr);
 TIEXPORT3 int TICALL ti73_send_VAR2(CalcHandle*, uint32_t length, uint8_t type, uint8_t flag, uint16_t offset, uint16_t page);
 TIEXPORT3 int TICALL ti73_send_CTS(CalcHandle*);
-TIEXPORT3 int TICALL ti73_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti73_send_XDP(CalcHandle*, uint16_t length, uint8_t * data);
 TIEXPORT3 int TICALL ti73_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti73_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti73_send_ERR(CalcHandle*);
@@ -76,7 +76,7 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * va
 /* TI-82, send functions */
 TIEXPORT3 int TICALL ti82_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti82_send_CTS(CalcHandle*);
-TIEXPORT3 int TICALL ti82_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti82_send_XDP(CalcHandle*, uint16_t length, uint8_t * data);
 TIEXPORT3 int TICALL ti82_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti82_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti82_send_ERR(CalcHandle*);
@@ -99,7 +99,7 @@ TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle*, uint16_t * varsize, uint8_t * va
 /* TI-85 & TI-86, send functions */
 TIEXPORT3 int TICALL ti85_send_VAR(CalcHandle*, uint16_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti85_send_CTS(CalcHandle*);
-TIEXPORT3 int TICALL ti85_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti85_send_XDP(CalcHandle*, uint16_t length, uint8_t * data);
 TIEXPORT3 int TICALL ti85_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti85_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti85_send_ERR(CalcHandle*);

@@ -726,7 +726,7 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
 	TRYF(ti89_recv_ACK(handle, NULL));
 
 	TRYF(ti89_recv_XDP(handle, &varsize, idlist));
-	memcpy(idlist, idlist+8, varsize - 8);
+	memcpy(idlist, idlist + 8, varsize - 8);
 	idlist[varsize - 8] = '\0';
 	TRYF(ti89_send_ACK(handle));
 

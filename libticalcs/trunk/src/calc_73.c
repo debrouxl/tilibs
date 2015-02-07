@@ -445,7 +445,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 		g_free(utf8);
 		update_label();
 
-		TRYF(ti73_send_XDP(handle, entry->size, entry->data));
+		TRYF(ti73_send_XDP(handle, (uint16_t)entry->size, entry->data));
 		TRYF(ti73_recv_ACK(handle, NULL));
 
 		TRYF(ti73_send_EOT(handle));
@@ -511,7 +511,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
 	int i, j;
-	int size;
+	uint16_t size;
 	char *utf8;
 	int cpu15mhz = 0;
 
@@ -1066,7 +1066,7 @@ static int		send_cert	(CalcHandle* handle, FlashContent* content)
 
 		for(i = 0; i <= nblocks; i++) 
 		{
-			uint32_t length = size;
+			uint16_t length = size;
 
 			TRYF(ti73_send_XDP(handle, length, (ptr->data_part) + length * i))
 			TRYF(ti73_recv_ACK(handle, NULL));

@@ -97,7 +97,7 @@ TIEXPORT3 int TICALL ti85_send_CTS(CalcHandle* handle)
 	return dbus_send(handle, PC_TI8586, CMD_CTS, 0, NULL);
 }
 
-TIEXPORT3 int TICALL ti85_send_XDP(CalcHandle* handle, int length, uint8_t * data)
+TIEXPORT3 int TICALL ti85_send_XDP(CalcHandle* handle, uint16_t length, uint8_t * data)
 {
 	if (handle == NULL)
 	{

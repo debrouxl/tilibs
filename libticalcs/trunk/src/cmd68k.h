@@ -31,7 +31,7 @@ extern "C" {
 /* TI-89 family, send functions */
 TIEXPORT3 int TICALL ti89_send_VAR(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti89_send_CTS(CalcHandle*);
-TIEXPORT3 int TICALL ti89_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti89_send_XDP(CalcHandle*, uint32_t length, uint8_t * data);
 TIEXPORT3 int TICALL ti89_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti89_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti89_send_ERR(CalcHandle*);
@@ -60,7 +60,7 @@ TIEXPORT3 int TICALL ti89_recv_RTS(CalcHandle*, uint32_t * varsize, uint8_t * va
 /* TI-92, send functions */
 TIEXPORT3 int TICALL ti92_send_VAR(CalcHandle*, uint32_t varsize, uint8_t vartype, const char *varname);
 TIEXPORT3 int TICALL ti92_send_CTS(CalcHandle*);
-TIEXPORT3 int TICALL ti92_send_XDP(CalcHandle*, int length, uint8_t * data);
+TIEXPORT3 int TICALL ti92_send_XDP(CalcHandle*, uint32_t length, uint8_t * data);
 TIEXPORT3 int TICALL ti92_send_SKP(CalcHandle*, uint8_t rej_code);
 TIEXPORT3 int TICALL ti92_send_ACK(CalcHandle*);
 TIEXPORT3 int TICALL ti92_send_ERR(CalcHandle*);
