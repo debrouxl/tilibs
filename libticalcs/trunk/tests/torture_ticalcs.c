@@ -477,7 +477,7 @@ int main(int argc, char **argv)
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti73_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-// cmd89.c
+// cmd68k.c
     PRINTF(ti89_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti89_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
 
@@ -596,7 +596,7 @@ int main(int argc, char **argv)
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti85_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-// cmd92.c
+// cmd68k.c again
     PRINTF(ti92_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
 // 461
     PRINTF(ti92_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);

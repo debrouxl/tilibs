@@ -255,7 +255,7 @@ TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
 		NULL);
 		break;
 
-	case ERR_CALC_ERROR1:	// must be synchronized with cmd89.c (static uint8_t dbus_errors[])
+	case ERR_CALC_ERROR1:	// must be synchronized with cmd68k.c (static uint8_t dbus_errors[])
 		*message = g_strconcat(
 		_("Msg: hand-held returned an error."),
 		"\n",

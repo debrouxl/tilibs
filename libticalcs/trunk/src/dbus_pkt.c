@@ -44,7 +44,7 @@ static unsigned int MIN_SIZE; // don't refresh at all if packet is < 512 bytes
     - data [in]   : data to send (or 0x00 if NULL)
     - int [out]   : an error code
 */
-TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, uint8_t* data)
+TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, uint16_t len, const uint8_t* data)
 {
 	int i;
 	uint16_t sum;

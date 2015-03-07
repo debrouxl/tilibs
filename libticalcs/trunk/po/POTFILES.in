@@ -17,8 +17,7 @@ src/clock.c
 src/cmd73.c
 src/cmd82.c
 src/cmd85.c
-src/cmd89.c
-src/cmd92.c
+src/cmd68k.c
 src/dbus_pkt.c
 src/dirlist.c
 src/dusb_cmd.c
