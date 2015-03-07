@@ -415,7 +415,7 @@ int main(int argc, char **argv)
 // 311
     PRINTF(dusb_cmd_r_eot, INT, NULL);
     PRINTF(dusb_cmd_s_error, INT, NULL, 0);
-// cmd73.c
+// cmdz80.c
     PRINTF(ti73_send_VAR, INT, NULL, 0, 0, (void *)0x12345678, 0);
     PRINTF(ti73_send_VAR, INT, (void *)0x12345678, 0, 0, NULL, 0);
     PRINTF(ti73_send_VAR2, INT, NULL, 0, 0, 0, 0, 0);
@@ -521,13 +521,12 @@ int main(int argc, char **argv)
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti89_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-// cmd80.c
+// cmdz80.c
     PRINTF(ti80_send_SCR, INT, NULL);
 // 401
     PRINTF(ti80_recv_XDP, INT, NULL, (void *)0x12345678, (void *)0x12345678);
     PRINTF(ti80_recv_XDP, INT, (void *)0x12345678, NULL, (void *)0x12345678);
     PRINTF(ti80_recv_ACK, INT, NULL, (void *)0x12345678);
-// cmd82.c
     PRINTF(ti82_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti82_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
 
@@ -562,7 +561,6 @@ int main(int argc, char **argv)
     PRINTF(ti82_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, NULL, (void *)0x12345678);
 // 431
     PRINTF(ti82_recv_RTS, INT, (void *)0x12345678, (void *)0x12345678, (void *)0x12345678, NULL);
-// cmd85.c
     PRINTF(ti85_send_VAR, INT, NULL, 0, 0, (void *)0x12345678);
     PRINTF(ti85_send_VAR, INT, (void *)0x12345678, 0, 0, NULL);
     PRINTF(ti85_send_CTS, INT, NULL);

@@ -43,7 +43,7 @@ int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t 
 
 
 
-// cmd82.c
+// cmdz80.c
 
 int ti82_send_asm_exec(CalcHandle*, VarEntry * var);
 

@@ -14,9 +14,7 @@ src/calc_92.c
 src/calc_nsp.c
 src/calc_xx.c
 src/clock.c
-src/cmd73.c
-src/cmd82.c
-src/cmd85.c
+src/cmdz80.c
 src/cmd68k.c
 src/dbus_pkt.c
 src/dirlist.c
