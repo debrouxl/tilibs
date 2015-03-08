@@ -78,7 +78,6 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
  **/
 static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 {
-	CalcHandle* h = handle;
 	int err;
 	uint8_t data;
 
@@ -87,8 +86,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI86 before a TI85 */
 	ticalcs_info(_("Check for TI86... "));
-	TRYF(dbus_send(h, PC_TI86, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
+	TRYF(dbus_send(handle, PC_TI86, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI86, data);
 
@@ -108,8 +107,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI85 */
 	ticalcs_info(_("Check for TI85... "));
-	TRYF(dbus_send(h, PC_TI85, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
+	TRYF(dbus_send(handle, PC_TI85, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI85, data);
 
@@ -129,8 +128,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI73 before a TI83 */
 	ticalcs_info(_("Check for TI73... "));
-	TRYF(dbus_send(h, PC_TI73, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
+	TRYF(dbus_send(handle, PC_TI73, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI73, data);
 
@@ -150,8 +149,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI83 before a TI82 */
 	ticalcs_info(_("Check for TI83... "));
-	TRYF(dbus_send(h, PC_TI83, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
+	TRYF(dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI83, data);
 
@@ -171,8 +170,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 
 	/* Test for a TI82 */
 	ticalcs_info(_("Check for TI82... "));
-	TRYF(dbus_send(h, PC_TI83, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(h, &data);
+	TRYF(dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI82, data);
 
@@ -194,8 +193,8 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 #if 0
 #warning TI-80 DETECTION FAILS
 	ticalcs_info(_("Check for TI80... "));
-	ticalcs_info("%d\n", dbus_send(h, PC_TI80, CMD_SCR, 0, NULL));
-	err = tixx_recv_ACK(h, &data);
+	ticalcs_info("%d\n", dbus_send(handle, PC_TI80, CMD_SCR, 0, NULL));
+	err = tixx_recv_ACK(handle, &data);
 
 	ticalcs_info("<%02X-%02X> ", PC_TI80, data);
 

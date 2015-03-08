@@ -198,7 +198,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 	root = g_node_new(NULL);
 	g_node_append(*apps, root);
 
-	TRYF(ti89_send_REQ(handle, TI89_FDIR << 24, TI89_RDIR, "\0\0\0\0\0\0\0"));
+	TRYF(ti89_send_REQ(handle, ((uint32_t)TI89_FDIR) << 24, TI89_RDIR, "\0\0\0\0\0\0\0"));
 	TRYF(ti89_recv_ACK(handle, NULL));
 
 	TRYF(ti89_recv_VAR(handle, &info.size, &info.type, info.name));
@@ -255,7 +255,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 
 		ticalcs_info(_("Directory listing in %8s..."), folder_name);
 
-		TRYF(ti89_send_REQ(handle, TI89_LDIR << 24, TI89_RDIR, folder_name));
+		TRYF(ti89_send_REQ(handle, ((uint32_t)TI89_LDIR) << 24, TI89_RDIR, folder_name));
 		TRYF(ti89_recv_ACK(handle, NULL));
 
 		TRYF(ti89_recv_VAR(handle, &info.size, &info.type, info.name));
@@ -860,7 +860,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	TRYF(ti89_recv_EOT(handle));
 	TRYF(ti89_send_ACK(handle));
 
-	_clock->year = (buffer[6] << 8) | buffer[7];
+	_clock->year = (((uint16_t)buffer[6]) << 8) | buffer[7];
 	_clock->month = buffer[8];
 	_clock->day = buffer[9];
 	_clock->hours = buffer[10];

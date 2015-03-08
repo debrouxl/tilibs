@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
+#include "internal.h"
 #include "dusb_rpkt.h"
 #include "logging.h"
 #include "error.h"
@@ -36,11 +37,7 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	uint8_t buf[1023 + 5]= { 0 };
 	uint32_t size;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 	if (pkt == NULL)
 	{
 		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
@@ -72,11 +69,7 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 	if (pkt == NULL)
 	{
 		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);

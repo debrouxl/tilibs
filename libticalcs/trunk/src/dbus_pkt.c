@@ -53,11 +53,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 	int r, q;
 	static int ref = 0;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	buf = (uint8_t *)handle->priv2;                    //[65536+6];
 	if (buf == NULL)
@@ -193,16 +189,10 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	int r, q;
 	static int ref = 0;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
-	if (host == NULL || cmd == NULL || length == NULL)
-	{
-		ticalcs_critical("%s: an argument is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_HANDLE(handle)
+	VALIDATE_NONNULL(host)
+	VALIDATE_NONNULL(cmd)
+	VALIDATE_NONNULL(length)
 
 	// Any packet has always at least 2 bytes (MID, CID)
 	TRYF(ticables_cable_recv(handle->cable, buf, 2));
@@ -215,9 +205,12 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	{
 		TRYF(ticables_cable_recv(handle->cable, buf, 2));
 
-		*length = buf[0] | (buf[1] << 8);
+		*length = buf[0] | ((uint16_t)buf[1] << 8);
 	}
-	else *length = 0;
+	else
+	{
+		*length = 0;
+	}
 
 	//removed for probing (pb here !)
 	//if(host_check && (*host != host_ids(handle))) 
@@ -252,17 +245,21 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		handle->updat->cnt1 = 0;
 
 		// recv full chunks
-		for(i = 0; i < q; i++)
+		for (i = 0; i < q; i++)
 		{
 			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE));
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += BLK_SIZE;
-			if(*length > MIN_SIZE) 
+			if (*length > MIN_SIZE)
+			{
 				handle->updat->pbar();
+			}
 
 			if (handle->updat->cancel)
+			{
 				return ERR_ABORT;
+			}
 		}
 
 		// recv last chunk
@@ -283,7 +280,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		}
 
 		// verify checksum
-		chksum = buf[0] | (buf[1] << 8);
+		chksum = buf[0] | ((uint16_t)buf[1] << 8);
 		if (chksum != tifiles_checksum(data, *length))
 			return ERR_CHECKSUM;
 

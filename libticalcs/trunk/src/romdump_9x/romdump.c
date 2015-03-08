@@ -1,4 +1,4 @@
-///* Hey EMACS -*- linux-c -*- */
+/* Hey EMACS -*- linux-c -*- */
 
 /*  RomDumper - an TI89/92/92+/V200PLT/Titanium ROM dumper
  *

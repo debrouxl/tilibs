@@ -28,6 +28,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
@@ -40,14 +41,16 @@ static uint16_t compute_crc(uint8_t *data, uint32_t size)
 	uint16_t acc = 0;
 	uint32_t i;
 
-	if(size == 0)
+	if (size == 0)
+	{
 		return 0;
+	}
 
-	for(i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		uint16_t first, second, third;
 
-		first = (data[i] << 8) | (acc >> 8); 
+		first = (((uint16_t)data[i]) << 8) | (acc >> 8);
 		acc &= 0xff;
 		second = (((acc & 0x0f) << 4) ^ acc) << 8;
 		third = second >> 5;
@@ -87,14 +90,14 @@ static int hexdump(uint8_t *data, uint32_t size)
 	uint32_t i, j, k;
 	int step = 12;
 
-	for(k = 0; k < 4; k++)
+	for (k = 0; k < 4; k++)
 	{
 		str[k] = ' ';
 	}
 
 	for (i = j = 0; i < size; i++, j++)
 	{
-		if(i && !(i % step))
+		if (i && !(i % step))
 		{
 			ticalcs_info(str);
 			j = 0;
@@ -118,37 +121,34 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
 	uint32_t size;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
-	if (pkt == NULL)
-	{
-		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_HANDLE(handle)
+	VALIDATE_NONNULL(pkt)
 
 	size = pkt->data_size + NSP_HEADER_SIZE;
 	pkt->data_sum = compute_crc(pkt->data, pkt->data_size);
 
-	if(pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
+	if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
 	{
 		pkt->ack = 0x0a;
 		pkt->seq = nsp_seq;
 	}
 	else
 	{
-		if(!nsp_seq_pc) nsp_seq_pc++;
+		if (!nsp_seq_pc)
+		{
+			nsp_seq_pc++;
+		}
 		pkt->seq = nsp_seq_pc;
 	}
 
 	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
 			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, 
 			pkt->ack, pkt->seq, pkt->hdr_sum, pkt->data_sum, pkt->data_size);
-	if(pkt->data_size)
+	if (pkt->data_size)
+	{
 		hexdump(pkt->data, pkt->data_size);
-	
+	}
+
 	buf[0] = 0x54;
 	buf[1] = 0xFD;
 	buf[2] = MSB(pkt->src_addr);
@@ -171,10 +171,14 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_send(handle->cable, buf, size));
 	if(size >= 128)
+	{
 		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	}
 
 	if (handle->updat->cancel)
+	{
 		return ERR_ABORT;
+	}
 
 	return 0;
 }
@@ -183,52 +187,54 @@ TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
-	if (pkt == NULL)
-	{
-		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_HANDLE(handle)
+	VALIDATE_NONNULL(pkt)
 
 	ticables_progress_reset(handle->cable);
 	TRYF(ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE));
 
-	pkt->unused		= (buf[0] << 8) | buf[1];
-	pkt->src_addr	= (buf[2] << 8) | buf[3];
-	pkt->src_port	= (buf[4] << 8) | buf[5];
-	pkt->dst_addr	= (buf[6] << 8) | buf[7];
-	pkt->dst_port	= (buf[8] << 8) | buf[9];
-	pkt->data_sum	= (buf[10] << 8) | buf[11];
+	pkt->unused		= (((uint16_t)buf[0]) << 8) | buf[1];
+	pkt->src_addr	= (((uint16_t)buf[2]) << 8) | buf[3];
+	pkt->src_port	= (((uint16_t)buf[4]) << 8) | buf[5];
+	pkt->dst_addr	= (((uint16_t)buf[6]) << 8) | buf[7];
+	pkt->dst_port	= (((uint16_t)buf[8]) << 8) | buf[9];
+	pkt->data_sum	= (((uint16_t)buf[10]) << 8) | buf[11];
 	pkt->data_size	= buf[12];
 	pkt->ack		= buf[13];
 	pkt->seq		= buf[14];
 	pkt->hdr_sum	= buf[15];
 
-	if(pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
+	if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
+	{
 		nsp_seq_pc++;
+	}
 	else
+	{
 		nsp_seq = pkt->seq;
+	}
 
 	// Next, follows data
-	if(pkt->data_size)
+	if (pkt->data_size)
 	{
 		TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->data_size));
-		if(pkt->data_size >= 128)
+		if (pkt->data_size >= 128)
+		{
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+		}
 	}
 
 	if (handle->updat->cancel)
+	{
 		return ERR_ABORT;
+	}
 
 	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
 			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, 
 			pkt->ack, pkt->seq, pkt->hdr_sum, pkt->data_sum, pkt->data_size);
-	if(pkt->data_size)
+	if (pkt->data_size)
+	{
 		hexdump(pkt->data, pkt->data_size);
+	}
 
 	return 0;
 }

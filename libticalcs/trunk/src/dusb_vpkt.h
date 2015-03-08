@@ -76,18 +76,18 @@ typedef struct
 TIEXPORT3 DUSBVirtualPacket* TICALL dusb_vtl_pkt_new(uint32_t size, uint16_t type);
 TIEXPORT3 void TICALL dusb_vtl_pkt_del(DUSBVirtualPacket* pkt);
 
-TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* h, uint32_t size);
-TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* h, uint32_t *size);
+TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle *handle, uint32_t size);
+TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle *handle, uint32_t *size);
 
-TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* h, uint32_t *size);
-TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* h, uint32_t size);
+TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle *handle, uint32_t *size);
+TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle *handle, uint32_t size);
 
-TIEXPORT3 int TICALL dusb_send_data(CalcHandle* h, DUSBVirtualPacket* pkt);
-TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* h, DUSBVirtualPacket* pkt);
-TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* h, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size);
+TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket* pkt);
+TIEXPORT3 int TICALL dusb_recv_data(CalcHandle *handle, DUSBVirtualPacket* pkt);
+TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle *handle, DUSBVirtualPacket* vtl, uint32_t* declared_size, uint32_t est_size);
 
-TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* h);
-TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *h);
+TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle *handle);
+TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle);
 
 TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id);
 

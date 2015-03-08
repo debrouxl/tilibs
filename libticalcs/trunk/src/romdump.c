@@ -29,6 +29,7 @@
 #include <glib/gstdio.h>
 
 #include "ticalcs.h"
+#include "internal.h"
 #include "dbus_pkt.h"
 #include "logging.h"
 #include "error.h"
@@ -296,11 +297,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	uint32_t i;
 	uint8_t data[65536];
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
@@ -406,11 +403,7 @@ int rd_is_ready(CalcHandle* handle)
 {
 	int err;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	err = rom_send_RDY(handle);
 	if (!err)
@@ -425,11 +418,7 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	char *template, *tempfname;
 	int fd, ret;
 
-	if (handle == NULL)
-	{
-		ticalcs_critical("%s: handle is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 	/* Write ROM dumper to a temporary file (note that the file must have
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */

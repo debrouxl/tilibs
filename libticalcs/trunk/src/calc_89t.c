@@ -74,11 +74,11 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 {
 	uint8_t action;
 
-	switch(ve->type)
+	switch (ve->type)
 	{
-	case TI89t_ASM:  action = EID_ASM; break;
-	case TI89t_APPL: action = EID_APP; break;
-	default:         action = EID_PRGM; break;
+		case TI89t_ASM:  action = EID_ASM; break;
+		case TI89t_APPL: action = EID_APP; break;
+		default:         action = EID_PRGM; break;
 	}
 
 	TRYF(dusb_cmd_s_execute(handle, ve->folder, ve->name, action, args, 0));
@@ -99,21 +99,29 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	param = dusb_cp_new_array(1);
 	TRYF(dusb_cmd_s_param_request(handle, 1, pid));
 	TRYF(dusb_cmd_r_param_data(handle, 1, param));
-	if(!param[0]->ok)
+	if (!param[0]->ok || param[0]->size < TI89T_COLS * TI89T_ROWS / 8)
+	{
 		return ERR_INVALID_PACKET;
+	}
 	
 	*bitmap = (uint8_t *)g_malloc(TI89T_COLS * TI89T_ROWS / 8);
-	if(*bitmap == NULL) 
+	if (*bitmap == NULL)
+	{
 		return ERR_MALLOC;
+	}
 	memcpy(*bitmap, param[0]->data, TI89T_COLS * TI89T_ROWS / 8);
 
-	if(sc->format == SCREEN_CLIPPED)
+	if (sc->format == SCREEN_CLIPPED)
 	{
 		int i, j, k;
 
 		for(i = 0, j = 0; j < TI89T_ROWS_VISIBLE; j++)
+		{
 			for(k = 0; k < (TI89T_COLS_VISIBLE >> 3); k++)
+			{
 				(*bitmap)[i++] = (*bitmap)[j * (TI89T_COLS >> 3) + k];
+			}
+		}
 	}
 
 	dusb_cp_del_array(1, param);
@@ -157,20 +165,22 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		attr = dusb_ca_new_array(size);
 		err = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 		if (err == ERR_EOT)
+		{
 			break;
+		}
 		else if (err != 0)
+		{
 			return err;
+		}
 
 		strncpy(ve->folder, fldname, sizeof(ve->folder) - 1);
 		ve->folder[sizeof(ve->folder) - 1] = 0;
 		strncpy(ve->name, varname, sizeof(ve->name) - 1);
 		ve->name[sizeof(ve->name) - 1] = 0;
-		//ve->size = GINT32_FROM_BE(*((uint32_t *)(attr[3]->data)));
 		ve->size = (  (((uint32_t)(attr[3]->data[0])) << 24)
 		            | (((uint32_t)(attr[3]->data[1])) << 16)
 		            | (((uint32_t)(attr[3]->data[2])) <<  8)
 		            | (((uint32_t)(attr[3]->data[3]))      ));
-		//ve->type = GINT32_FROM_BE(*((uint32_t *)(attr[0]->data))) & 0xff;
 		ve->type = (uint32_t)(attr[0]->data[3]);
 		ve->attr = attr[1]->data[0] ? ATTRB_ARCHIVED : attr[4]->data[0] ? ATTRB_LOCKED : ATTRB_NONE;
 		dusb_ca_del_array(size, attr);
@@ -189,14 +199,20 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		else
 		{
 			if(!strcmp(ve->folder, "main") && (!strcmp(ve->name, "regcoef") || !strcmp(ve->name, "regeq")))
+			{
 				tifiles_ve_delete(ve);
+			}
 			else
 			{
 				node = g_node_new(ve);
 				if (ve->type != TI73_APPL)
+				{
 					g_node_append(folder, node);
+				}
 				else
+				{
 					g_node_append(root, node);
+				}
 			}
 		}
 /*
@@ -208,9 +224,9 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 */
 		u1 = ticonv_varname_to_utf8(handle->model, ((VarEntry *) (folder->data))->name, -1);
 		u2 = ticonv_varname_to_utf8(handle->model, ve->name, ve->type);
-			g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
-			g_free(u1); g_free(u2);
-			update_label();
+		g_snprintf(update_->text, sizeof(update_->text), _("Parsing %s/%s"), u1, u2);
+		g_free(u1); g_free(u2);
+		update_label();
 	}
 
 	return 0;
@@ -226,12 +242,10 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 	TRYF(dusb_cmd_s_param_request(handle, size, pids));
 	TRYF(dusb_cmd_r_param_data(handle, size, params));
 
-	//*ram = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[0]->data)));
 	*ram = (  (((uint32_t)(params[0]->data[4])) << 24)
 	        | (((uint32_t)(params[0]->data[5])) << 16)
 	        | (((uint32_t)(params[0]->data[6])) <<  8)
 	        | (((uint32_t)(params[0]->data[7]))      ));
-	//*flash = (uint32_t)GINT64_FROM_BE(*((uint64_t *)(params[1]->data)));
 	*flash = (  (((uint32_t)(params[1]->data[4])) << 24)
 	          | (((uint32_t)(params[1]->data[5])) << 16)
 	          | (((uint32_t)(params[1]->data[6])) <<  8)
@@ -256,11 +270,13 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 	{
 		VarEntry *ve = content->entries[i];
 		char varname[18];
-		
-		if(ve->action == ACT_SKIP)
-			continue;
 
-		if(ve->folder)
+		if (ve->action == ACT_SKIP)
+		{
+			continue;
+		}
+
+		if (ve->folder)
 		{
 			tifiles_build_fullname(handle->model, varname, ve->folder, ve->name);
 		}
@@ -297,14 +313,16 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			Moreover, buffer has to be smaller. Ti-Connect always use 0x3A which is very small for big variables.
 			I prefer using an heuristic value to optimize data rate.
 		*/
-		if(ve->size & 1)
+		if (ve->size & 1)
 		{
 			pkt_size = ve->size / 10;
 			pkt_size >>= 1;
 			pkt_size <<= 1;
 
-			if(pkt_size < 0x3a)
+			if (pkt_size < 0x3a)
+			{
 				pkt_size = 0x3a;
+			}
 
 			TRYF(dusb_send_buf_size_request(handle, pkt_size));
 			TRYF(dusb_recv_buf_size_alloc(handle, NULL));
@@ -345,8 +363,7 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(dusb_cmd_s_var_request(handle, vr->folder, vr->name, naids, aids, 
-			       nattrs, CA(attrs)));
+	TRYF(dusb_cmd_s_var_request(handle, vr->folder, vr->name, naids, aids, nattrs, CA(attrs)));
 	dusb_ca_del_array(nattrs, attrs);
 	attrs = dusb_ca_new_array(naids);
 	TRYF(dusb_cmd_r_var_header(handle, fldname, varname, attrs));
@@ -392,10 +409,12 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	const int nattrs = 4;
 
 	// send all headers except license
-	for(ptr = content; ptr != NULL; ptr = ptr->next)
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
 	{
-		if(ptr->data_type == TI89_LICENSE)
+		if (ptr->data_type == TI89_LICENSE)
+		{
 			continue;
+		}
 
 		ticalcs_info(_("FLASH name: \"%s\""), ptr->name);
 		ticalcs_info(_("FLASH size: %i bytes."), ptr->data_length);
@@ -415,9 +434,8 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 		attrs[2]->data[3] = 1;
 		attrs[3] = dusb_ca_new(AID_LOCKED, 1);
 		attrs[3]->data[0] = 0;
-		
-		TRYF(dusb_cmd_s_rts(handle, "", ptr->name, ptr->data_length, 
-			       nattrs, CA(attrs)));
+
+		TRYF(dusb_cmd_s_rts(handle, "", ptr->name, ptr->data_length, nattrs, CA(attrs)));
 		TRYF(dusb_cmd_r_data_ack(handle));
 		TRYF(dusb_cmd_s_var_content(handle, ptr->data_length, ptr->data_part));
 		TRYF(dusb_cmd_r_data_ack(handle));
@@ -447,8 +465,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0C;
 	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
 
-	TRYF(dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, 
-			       nattrs, CA(attrs)));
+	TRYF(dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs)));
 	dusb_ca_del_array(nattrs, attrs);
 	attrs = dusb_ca_new_array(naids);
 	TRYF(dusb_cmd_r_var_header(handle, fldname, varname, attrs));
@@ -481,12 +498,20 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// search for data header
 	for (ptr = content; ptr != NULL; ptr = ptr->next)
-		if(ptr->data_type == TI89_AMS || ptr->data_type == TI89_APPL)
+	{
+		if (ptr->data_type == TI89_AMS || ptr->data_type == TI89_APPL)
+		{
 			break;
-	if(ptr == NULL)
+		}
+	}
+	if (ptr == NULL)
+	{
 		return -1;
-	if(ptr->data_type != TI89_AMS)
+	}
+	if (ptr->data_type != TI89_AMS)
+	{
 		return -1;
+	}
 
 	// search for OS header (offset & size)
 	hdr_offset = 2+4;
@@ -544,8 +569,10 @@ static int		recv_idlist	(CalcHandle* handle, uint8_t* id)
 	param = dusb_cp_new_array(1);
 	TRYF(dusb_cmd_s_param_request(handle, 1, pid));
 	TRYF(dusb_cmd_r_param_data(handle, 1, param));
-	if(!param[0]->ok)
+	if (!param[0]->ok)
+	{
 		return ERR_INVALID_PACKET;
+	}
 
 	memcpy(&id[0], &(param[0]->data[1]), 5);
 	memcpy(&id[5], &(param[0]->data[7]), 5);
@@ -687,12 +714,13 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	params = dusb_cp_new_array(size);
 	TRYF(dusb_cmd_s_param_request(handle, size, pids));
 	TRYF(dusb_cmd_r_param_data(handle, size, params));
-	if(!params[0]->ok)
+	if (!params[0]->ok)
+	{
 		return ERR_INVALID_PACKET;
-	
+	}
+
 	// and computes
-	calc_time = (params[0]->data[0] << 24) | (params[0]->data[1] << 16) | 
-				(params[0]->data[2] <<  8) | (params[0]->data[3] <<  0);
+	calc_time = (((uint32_t)params[0]->data[0]) << 24) | (((uint32_t)params[0]->data[1]) << 16) | (((uint32_t)params[0]->data[2]) <<  8) | (params[0]->data[3] <<  0);
 
 	time(&now);	// retrieve current DST setting
 	memcpy(&ref, localtime(&now), sizeof(struct tm));;
@@ -776,7 +804,9 @@ static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* new
 
 	ret = dusb_cmd_s_var_modify(handle, oldname->folder, oldname->name, 1, CA(attrs), newname->folder, newname->name, 0, NULL);
 	if(!ret)
+	{
 		ret = dusb_cmd_r_data_ack(handle);
+	}
 
 	dusb_ca_del_array(1, attrs);
 	return ret;
@@ -806,8 +836,10 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	dstattrs[1]->data[0] = (attr == ATTRB_LOCKED ? 0x01 : 0x00);
 
 	ret = dusb_cmd_s_var_modify(handle, vr->folder, vr->name, 1, CA(srcattrs), vr->folder, vr->name, 2, CA(dstattrs));
-	if(!ret)
+	if (!ret)
+	{
 		ret = dusb_cmd_r_data_ack(handle);
+	}
 
 	dusb_ca_del_array(1, srcattrs);
 	dusb_ca_del_array(2, dstattrs);
@@ -904,7 +936,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_PRODUCT_ID;
 	i++;
 
-	infos->hw_version = ((params1[i]->data[0] << 8) | params1[i]->data[1]) + 1;
+	infos->hw_version = ((((uint16_t)params1[i]->data[0]) << 8) | params1[i]->data[1]) + 1;
 	infos->mask |= INFOS_HW_VERSION; // hw version or model ?
 	i++;
 
@@ -928,7 +960,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_OS_VERSION;
 	i++;
 
-	//infos->ram_phys = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->ram_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -939,7 +970,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	                   | (((uint64_t)(params1[i]->data[ 7]))      ));
 	infos->mask |= INFOS_RAM_PHYS;
 	i++;
-	//infos->ram_user = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->ram_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -950,7 +980,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	                   | (((uint64_t)(params1[i]->data[ 7]))      ));
 	infos->mask |= INFOS_RAM_USER;
 	i++;
-	//infos->ram_free = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->ram_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                   | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                   | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -962,7 +991,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_RAM_FREE;
 	i++;
 
-	//infos->flash_phys = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->flash_phys = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -973,7 +1001,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	                     | (((uint64_t)(params1[i]->data[ 7]))      ));
 	infos->mask |= INFOS_FLASH_PHYS;
 	i++;
-	//infos->flash_user = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->flash_user = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -984,7 +1011,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	                     | (((uint64_t)(params1[i]->data[ 7]))      ));
 	infos->mask |= INFOS_FLASH_USER;
 	i++;
-	//infos->flash_free = GINT64_FROM_BE(*((uint64_t *)(params1[i]->data)));
 	infos->flash_free = (  (((uint64_t)(params1[i]->data[ 0])) << 56)
 	                     | (((uint64_t)(params1[i]->data[ 1])) << 48)
 	                     | (((uint64_t)(params1[i]->data[ 2])) << 40)
@@ -996,12 +1022,10 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	infos->mask |= INFOS_FLASH_FREE;
 	i++;
 
-	//infos->lcd_width = GINT16_FROM_BE(*((uint16_t *)(params1[i]->data)));
 	infos->lcd_width = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
 	                    | (((uint16_t)params1[i]->data[ 1])      ));
 	infos->mask |= INFOS_LCD_WIDTH;
 	i++;
-	//infos->lcd_height = GINT16_FROM_BE(*((uint16_t *)(params1[i]->data)));
 	infos->lcd_height = (  (((uint16_t)params1[i]->data[ 0]) <<  8)
 	                     | (((uint16_t)params1[i]->data[ 1])      ));
 	infos->mask |= INFOS_LCD_HEIGHT;

@@ -174,7 +174,7 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->name[8] = '\0';
 		ve->type = buffer[12];
 		ve->attr = buffer[13];
-		ve->size = buffer[14] | (buffer[15] << 8) | (buffer[16] << 16) | (buffer[17] << 24);
+		ve->size = buffer[14] | (((uint32_t)buffer[15]) << 8) | (((uint32_t)buffer[16]) << 16) | (((uint32_t)buffer[17]) << 24);
 		ve->folder[0] = 0;
 
 		if (ve->type == TI92_DIR) 

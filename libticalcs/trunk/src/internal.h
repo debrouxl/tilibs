@@ -25,6 +25,71 @@
 #ifndef __TICALCS_INTERNAL__
 #define __TICALCS_INTERNAL__
 
+#define VALIDATE_NONNULL(ptr) \
+	if (ptr == NULL) \
+	{ \
+		ticalcs_critical("%s: " #ptr " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+#define VALIDATE_HANDLE(handle) \
+	if (handle == NULL) \
+	{ \
+		ticalcs_critical("%s: " #handle " is NULL", __FUNCTION__); \
+		return ERR_INVALID_HANDLE; \
+	}
+#define VALIDATE_CALCFNCTS(calc) \
+	if (calc == NULL) \
+	{ \
+		ticalcs_critical("%s: " # calc " is NULL", __FUNCTION__); \
+		return ERR_INVALID_HANDLE; \
+	}
+#define VALIDATE_BACKUPCONTENT(content) \
+	if (content == NULL) \
+	{ \
+		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+#define VALIDATE_FILECONTENT(content) \
+	if (content == NULL) \
+	{ \
+		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+#define VALIDATE_FLASHCONTENT(content) \
+	if (content == NULL) \
+	{ \
+		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+#define VALIDATE_VARENTRY(var) \
+	if (var == NULL) \
+	{ \
+		ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+#define VALIDATE_VARREQUEST(var) \
+	if (var == NULL) \
+	{ \
+		ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
+
+#define RETURN_IF_HANDLE_NOT_ATTACHED(handle) \
+	if (!handle->attached) \
+	{ \
+		return ERR_NO_CABLE; \
+	}
+#define RETURN_IF_HANDLE_NOT_OPEN(handle) \
+	if (!handle->open) \
+	{ \
+		return ERR_NO_CABLE; \
+	}
+#define RETURN_IF_HANDLE_BUSY(handle) \
+	if (handle->busy) \
+	{ \
+		return ERR_BUSY; \
+	}
+
 // dbus_pkt.c
 
 int dbus_recv_2(CalcHandle* cable, uint8_t* host, uint8_t* cmd, uint16_t* length, uint8_t* data);
@@ -68,6 +133,12 @@ void nsp_vtl_pkt_purge(void);
 #define CA(x)   (const DUSBCalcAttr **)(x)
 #define CP(x)   (const DUSBCalcParam **)(x)
 
+#define VALIDATE_ATTRS(nattrs, attrs) \
+	if (nattrs != 0 && attrs == NULL) \
+	{ \
+		ticalcs_critical("%s: " #attrs " is NULL", __FUNCTION__); \
+		return ERR_INVALID_PARAMETER; \
+	}
 
 
 #endif // __TICALCS_INTERNAL__

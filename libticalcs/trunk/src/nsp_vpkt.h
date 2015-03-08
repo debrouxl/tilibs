@@ -82,22 +82,22 @@ TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new(void);
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port);
 TIEXPORT3 void TICALL nsp_vtl_pkt_del(NSPVirtualPacket* pkt);
 
-TIEXPORT3 int TICALL nsp_session_open(CalcHandle *h, uint16_t port);
-TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port);
+TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle);
 
-TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h);
-TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t dev_addr);
+TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle);
+TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t dev_addr);
 
-TIEXPORT3 int TICALL nsp_send_ack(CalcHandle *h);
-TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h);
-TIEXPORT3 int TICALL nsp_send_nack(CalcHandle *h);
-TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle *h, uint16_t port);
+TIEXPORT3 int TICALL nsp_send_ack(CalcHandle *handle);
+TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle);
+TIEXPORT3 int TICALL nsp_send_nack(CalcHandle *handle);
+TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle *handle, uint16_t port);
 
-TIEXPORT3 int TICALL nsp_send_data(CalcHandle* h, NSPVirtualPacket* pkt);
-TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* pkt);
+TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket* pkt);
+TIEXPORT3 int TICALL nsp_recv_data(CalcHandle *handle, NSPVirtualPacket* pkt);
 
-TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h);
-TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h);
+TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle);
+TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle);
 
 TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id);
 

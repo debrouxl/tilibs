@@ -48,7 +48,7 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 	FileContent **group;
 	FileContent *single;
 
-	if (handle == NULL) return ERR_INVALID_HANDLE;
+	VALIDATE_HANDLE(handle)
 	if (content == NULL)
 	{
 		ticalcs_critical("tixx_recv_backup: content is NULL");
@@ -135,7 +135,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	int nvars = 0;
 	int napps = 0;
 
-	if(handle == NULL) return ERR_INVALID_HANDLE;
+	VALIDATE_HANDLE(handle)
 	if (content == NULL)
 	{
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
@@ -233,7 +233,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 	int napps = 0;
 	int b = 0;
 
-	if(handle == NULL) return ERR_INVALID_HANDLE;
+	VALIDATE_HANDLE(handle)
 	if (content == NULL)
 	{
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");

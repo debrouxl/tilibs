@@ -37,6 +37,7 @@
 #include <string.h>
 
 #include "ticalcs.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "macros.h"
@@ -68,8 +69,12 @@ TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 	const NSPServiceName *p;
 
 	for(p = sid_types; p->name != NULL; p++)
+	{
 		if(p->id == id)
+		{
 			return p->name;
+		}
+	}
 
 	return "unknown: not listed";
 }
@@ -126,13 +131,9 @@ void nsp_vtl_pkt_purge(void)
 uint16_t	nsp_src_port = 0x8001;
 uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
-TIEXPORT3 int TICALL nsp_session_open(CalcHandle *h, uint16_t port)
+TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 {
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	nsp_src_port++;
 	nsp_dst_port = port;
@@ -142,18 +143,14 @@ TIEXPORT3 int TICALL nsp_session_open(CalcHandle *h, uint16_t port)
 	return 0;
 }
 
-TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 {
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  closed session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
-	TRYF(nsp_send_disconnect(h));
-	TRYF(nsp_recv_ack(h));
+	TRYF(nsp_send_disconnect(handle));
+	TRYF(nsp_recv_ack(handle));
 
 	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
@@ -162,44 +159,40 @@ TIEXPORT3 int TICALL nsp_session_close(CalcHandle *h)
 
 // Address Request/Assignment
 
-TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
 {
 	extern uint8_t nsp_seq_pc;
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	memset(&pkt, 0, sizeof(pkt));
 
 	// Reset connection so that device send an address request packet
-	TRYC(h->cable->cable->reset(h->cable));
+	TRYC(handle->cable->cable->reset(handle->cable));
 	nsp_seq_pc = 1;
 
 	ticalcs_info("  device address request:");
 
-	TRYF(nsp_recv(h, &pkt));
-	
-	if(pkt.src_port != NSP_PORT_ADDR_ASSIGN)
+	TRYF(nsp_recv(handle, &pkt));
+
+	if (pkt.src_port != NSP_PORT_ADDR_ASSIGN)
+	{
 		return ERR_INVALID_PACKET;
-	if(pkt.dst_port != NSP_PORT_ADDR_REQUEST)
+	}
+	if (pkt.dst_port != NSP_PORT_ADDR_REQUEST)
+	{
 		return ERR_INVALID_PACKET;
+	}
 
 	return 0;
 }
 
-TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
+TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
 {
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  assigning address %04x:", addr);
 
@@ -213,22 +206,17 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *h, uint16_t addr)
 	pkt.data[1] = LSB(addr);
 	pkt.data[2] = 0xFF;
 	pkt.data[3] = 0x00;
-	TRYF(nsp_send(h, &pkt));
 
-	return 0;
+	return nsp_send(handle, &pkt);
 }
 
 // Acknowledgement
 
-TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
+TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
 {
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  sending ack:");
 
@@ -240,20 +228,15 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* h)
 	pkt.dst_port = nsp_dst_port;
 	pkt.data[0] = MSB(nsp_src_port);
 	pkt.data[1] = LSB(nsp_src_port);
-	TRYF(nsp_send(h, &pkt));
 
-	return 0;
+	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
+TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
 {
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  sending nAck:");
 
@@ -265,20 +248,15 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* h)
 	pkt.dst_port = nsp_dst_port;
 	pkt.data[0] = MSB(NSP_PORT_LOGIN);
 	pkt.data[1] = LSB(NSP_PORT_LOGIN);
-	TRYF(nsp_send(h, &pkt));
 
-	return 0;
+	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
+TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 {
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  sending nAck:");
 
@@ -290,35 +268,30 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* h, uint16_t port)
 	pkt.dst_port = port;
 	pkt.data[0] = MSB(NSP_PORT_LOGIN);
 	pkt.data[1] = LSB(NSP_PORT_LOGIN);
-	TRYF(nsp_send(h, &pkt));
 
-	return 0;
+	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	uint16_t addr;
 	int ret = 0;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  receiving ack:");
 
 	memset(&pkt, 0, sizeof(pkt));
 
-	TRYF(nsp_recv(h, &pkt));
+	TRYF(nsp_recv(handle, &pkt));
 
-	if(pkt.src_port != NSP_PORT_PKT_ACK2)
+	if (pkt.src_port != NSP_PORT_PKT_ACK2)
 	{
 		ticalcs_info("XXX weird src_port\n");
 		ret = ERR_INVALID_PACKET;
 	}
-	if(pkt.dst_port != nsp_src_port)
+	if (pkt.dst_port != nsp_src_port)
 	{
 		ticalcs_info("XXX weird .dst_port\n");
 		ret = ERR_INVALID_PACKET;
@@ -326,8 +299,8 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 
 	if (pkt.data_size >= 2)
 	{
-		addr = (pkt.data[0] << 8) | pkt.data[1];
-		if(addr != nsp_dst_port)
+		addr = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
+		if (addr != nsp_dst_port)
 		{
 			ticalcs_info("XXX weird addr\n");
 			ret = ERR_INVALID_PACKET;
@@ -339,7 +312,7 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 		ret = ERR_INVALID_PACKET;
 	}
 
-	if(pkt.ack != 0x0A)
+	if (pkt.ack != 0x0A)
 	{
 		ticalcs_info("XXX weird .ack\n");
 		ret = ERR_INVALID_PACKET;
@@ -350,15 +323,11 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *h)
 
 // Service Disconnection
 
-TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  disconnecting from service #%04x:", nsp_dst_port);
 
@@ -370,75 +339,59 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *h)
 	pkt.dst_port = nsp_dst_port;
 	pkt.data[0] = MSB(nsp_src_port);
 	pkt.data[1] = LSB(nsp_src_port);
-	TRYF(nsp_send(h, &pkt));
 
-	return 0;
+	return nsp_send(handle, &pkt);
 }
 
-TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *h)
+TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	uint16_t addr;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
+	VALIDATE_HANDLE(handle)
 
 	ticalcs_info("  receiving disconnect:");
 
 	memset(&pkt, 0, sizeof(pkt));
 
-	TRYF(nsp_recv(h, &pkt));
+	TRYF(nsp_recv(handle, &pkt));
 
-	if(pkt.src_port != NSP_PORT_DISCONNECT)
-		return ERR_INVALID_PACKET;
-
-	// nasty hack
-	nsp_dst_port = (pkt.data[0] << 8) | pkt.data[1];
-	addr = pkt.dst_port;
-
-	// nasty hack
+	if (pkt.src_port != NSP_PORT_DISCONNECT)
 	{
-		ticalcs_info("  sending ack:");
-
-		pkt.unused = 0;
-		pkt.data_size = 2;
-		pkt.src_addr = NSP_SRC_ADDR;
-		pkt.src_port = NSP_PORT_PKT_ACK2;
-		pkt.dst_addr = NSP_DEV_ADDR;
-		pkt.dst_port = nsp_dst_port;
-		pkt.data_sum = 0;
-		pkt.ack = 0;
-		pkt.seq = 0;
-		pkt.hdr_sum = 0;
-		pkt.data[0] = MSB(addr);
-		pkt.data[1] = LSB(addr);
-		TRYF(nsp_send(h, &pkt));
+		return ERR_INVALID_PACKET;
 	}
 
-	return 0;
+	// nasty hacks
+	nsp_dst_port = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
+	addr = pkt.dst_port;
+
+	ticalcs_info("  sending ack:");
+
+	pkt.unused = 0;
+	pkt.data_size = 2;
+	pkt.src_addr = NSP_SRC_ADDR;
+	pkt.src_port = NSP_PORT_PKT_ACK2;
+	pkt.dst_addr = NSP_DEV_ADDR;
+	pkt.dst_port = nsp_dst_port;
+	pkt.data_sum = 0;
+	pkt.ack = 0;
+	pkt.seq = 0;
+	pkt.hdr_sum = 0;
+	pkt.data[0] = MSB(addr);
+	pkt.data[1] = LSB(addr);
+	return nsp_send(handle, &pkt);
 }
 
 // Fragmenting of packets
 
-TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
+TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 {
 	NSPRawPacket raw;
 	int i, r, q;
 	long offset = 0;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
-	if (vtl == NULL)
-	{
-		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_HANDLE(handle)
+	VALIDATE_NONNULL(vtl)
 
 	memset(&raw, 0, sizeof(raw));
 	raw.src_addr = vtl->src_addr;
@@ -456,14 +409,16 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 		memcpy(raw.data + 1, vtl->data + offset, NSP_DATA_SIZE-1);
 		offset += NSP_DATA_SIZE-1;
 
-		TRYF(nsp_send(h, &raw));
+		TRYF(nsp_send(handle, &raw));
 		
 		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
-			TRYF(nsp_recv_ack(h));
+		{
+			TRYF(nsp_recv_ack(handle));
+		}
 
-		h->updat->max1 = vtl->size;
-		h->updat->cnt1 += NSP_DATA_SIZE;
-		h->updat->pbar();
+		handle->updat->max1 = vtl->size;
+		handle->updat->cnt1 += NSP_DATA_SIZE;
+		handle->updat->pbar();
 	}
 
 	if(r || !vtl->size)
@@ -472,34 +427,28 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *h, NSPVirtualPacket *vtl)
 		raw.data[0] = vtl->cmd;
 		memcpy(raw.data + 1, vtl->data + offset, r);
 		offset += r;
-		
-		TRYF(nsp_send(h, &raw));
+
+		TRYF(nsp_send(handle, &raw));
 
 		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
-			TRYF(nsp_recv_ack(h));
-	}	
+		{
+			TRYF(nsp_recv_ack(handle));
+		}
+	}
 
 	return 0;
 }
 
 // Note: data field may be re-allocated.
-TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
+TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 {
 	NSPRawPacket raw;
 	long offset = 0;
 	uint32_t size;
 	int err = 0;
 
-	if (h == NULL)
-	{
-		ticalcs_critical("%s: h is NULL", __FUNCTION__);
-		return ERR_INVALID_HANDLE;
-	}
-	if (vtl == NULL)
-	{
-		ticalcs_critical("%s: vtl is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_HANDLE(handle)
+	VALIDATE_NONNULL(vtl)
 
 	memset(&raw, 0, sizeof(raw));
 
@@ -509,9 +458,9 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 
 	if (vtl->data)
 	{
-		for(;;)
+		for (;;)
 		{
-			err = nsp_recv(h, &raw);
+			err = nsp_recv(handle, &raw);
 			if (err)
 			{
 				break;
@@ -525,22 +474,22 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 				memcpy(vtl->data + offset, &(raw.data[1]), raw.data_size-1);
 				offset += raw.data_size-1;
 
-				h->updat->max1 = size ? size : vtl->size;
-				h->updat->cnt1 += NSP_DATA_SIZE;
-				h->updat->pbar();
+				handle->updat->max1 = size ? size : vtl->size;
+				handle->updat->cnt1 += NSP_DATA_SIZE;
+				handle->updat->pbar();
 			}
 
-			if(raw.dst_port == NSP_PORT_LOGIN)
+			if (raw.dst_port == NSP_PORT_LOGIN)
 			{
-				err = nsp_send_nack_ex(h, raw.src_port);
+				err = nsp_send_nack_ex(handle, raw.src_port);
 				if (err)
 				{
 					break;
 				}
 			}
-			else if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+			else if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
 			{
-				err = nsp_send_ack(h);
+				err = nsp_send_ack(handle);
 				if (err)
 				{
 					break;
@@ -548,9 +497,13 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* h, NSPVirtualPacket* vtl)
 			}
 
 			if (raw.data_size < NSP_DATA_SIZE)
+			{
 				break;
+			}
 			if (size && vtl->size == size)
+			{
 				break;
+			}
 		}
 	}
 
