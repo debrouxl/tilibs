@@ -146,15 +146,15 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, ui
 
 TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle);
 
-TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, uint16_t *pids);
+TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, const uint16_t *pids);
 TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, int nparams, DUSBCalcParam **params);
 TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **data);
 
-TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, uint16_t *aids);
+TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, const uint16_t *aids);
 TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, char *name, DUSBCalcAttr **attr);
 
 TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, const char *name, uint32_t size, int nattrs, const DUSBCalcAttr **attrs);
-TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs);
+TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, int naids, const uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs);
 
 TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t  size, uint8_t  *data);
 TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, uint8_t **data);

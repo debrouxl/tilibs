@@ -246,26 +246,33 @@ TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, DUSBModeSet mode)
 
 	VALIDATE_HANDLE(handle)
 
-	TRYF(dusb_send_buf_size_request(handle, DUSB_DFL_BUF_SIZE));
-	TRYF(dusb_recv_buf_size_alloc(handle, NULL));
+	retval = dusb_send_buf_size_request(handle, DUSB_DFL_BUF_SIZE);
+	if (!retval)
+	{
+		retval = dusb_recv_buf_size_alloc(handle, NULL);
+		if (!retval)
+		{
 
-	pkt = dusb_vtl_pkt_new(sizeof(mode), DUSB_VPKT_PING);
+			pkt = dusb_vtl_pkt_new(sizeof(mode), DUSB_VPKT_PING);
 
-	pkt->data[0] = MSB(mode.arg1);
-	pkt->data[1] = LSB(mode.arg1);
-	pkt->data[2] = MSB(mode.arg2);
-	pkt->data[3] = LSB(mode.arg2);
-	pkt->data[4] = MSB(mode.arg3);
-	pkt->data[5] = LSB(mode.arg3);
-	pkt->data[6] = MSB(mode.arg4);
-	pkt->data[7] = LSB(mode.arg4);
-	pkt->data[8] = MSB(mode.arg5);
-	pkt->data[9] = LSB(mode.arg5);
-	retval = dusb_send_data(handle, pkt);
+			pkt->data[0] = MSB(mode.arg1);
+			pkt->data[1] = LSB(mode.arg1);
+			pkt->data[2] = MSB(mode.arg2);
+			pkt->data[3] = LSB(mode.arg2);
+			pkt->data[4] = MSB(mode.arg3);
+			pkt->data[5] = LSB(mode.arg3);
+			pkt->data[6] = MSB(mode.arg4);
+			pkt->data[7] = LSB(mode.arg4);
+			pkt->data[8] = MSB(mode.arg5);
+			pkt->data[9] = LSB(mode.arg5);
 
-	dusb_vtl_pkt_del(pkt);
+			retval = dusb_send_data(handle, pkt);
 
-	ticalcs_info("   %04x %04x %04x %04x %04x", mode.arg1, mode.arg2, mode.arg3, mode.arg4, mode.arg5);
+			dusb_vtl_pkt_del(pkt);
+
+			ticalcs_info("   %04x %04x %04x %04x %04x", mode.arg1, mode.arg2, mode.arg3, mode.arg4, mode.arg5);
+		}
+	}
 
 	return retval;
 }
@@ -441,7 +448,7 @@ end:
 }
 
 // 0x0007: parameter request
-TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, uint16_t *pids)
+TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, const uint16_t *pids)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
@@ -576,7 +583,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 }
 
 // 0x0009: request directory listing
-TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, uint16_t *aids)
+TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, const uint16_t *aids)
 {
 	DUSBVirtualPacket* pkt;
 	int i;
@@ -758,7 +765,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 }
 
 // 0x000C: variable request
-TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, int naids, uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs)
+TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *folder, const char *name, int naids, const uint16_t *aids, int nattrs, const DUSBCalcAttr **attrs)
 {
 	DUSBVirtualPacket* pkt;
 	int pks;

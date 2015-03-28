@@ -34,70 +34,99 @@
 
 TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 {
-	uint8_t buf[1023 + 5]= { 0 };
+	uint8_t buf[1023 + 5];
 	uint32_t size;
+	int ret;
 
 	VALIDATE_HANDLE(handle)
-	if (pkt == NULL)
+	VALIDATE_NONNULL(pkt)
+
+	memset(buf, 0, sizeof(buf));
+	size = pkt->size;
+
+	if (size > 1023)
 	{
-		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
+		size = 1023;
 	}
 
-	size = pkt->size + 5;
-
-	buf[0] = MSB(MSW(pkt->size));
-	buf[1] = LSB(MSW(pkt->size));
-	buf[2] = MSB(LSW(pkt->size));
-	buf[3] = LSB(LSW(pkt->size));
+	buf[0] = MSB(MSW(size));
+	buf[1] = LSB(MSW(size));
+	buf[2] = MSB(LSW(size));
+	buf[3] = LSB(LSW(size));
 	buf[4] = pkt->type;
-	memcpy(buf+5, pkt->data, pkt->size);
+	memcpy(buf+5, pkt->data, size);
 
 	//printf("dusb_send: pkt->size=%d\n", pkt->size);
 	ticables_progress_reset(handle->cable);
-	TRYF(ticables_cable_send(handle->cable, buf, size));
-	if(size >= 128)
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+	ret = ticables_cable_send(handle->cable, buf, size + 5);
+	if (!ret)
+	{
+		if (size >= 128)
+		{
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+		}
 
-	if (handle->updat->cancel)
-		return ERR_ABORT;
+		if (handle->updat->cancel)
+		{
+			ret = ERR_ABORT;
+		}
+	}
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 {
 	uint8_t buf[5];
+	int ret;
 
 	VALIDATE_HANDLE(handle)
-	if (pkt == NULL)
-	{
-		ticalcs_critical("%s: pkt is NULL", __FUNCTION__);
-		return ERR_INVALID_PACKET;
-	}
+	VALIDATE_NONNULL(pkt)
 
 	// Any packet has always an header of 5 bytes (size & type)
 	ticables_progress_reset(handle->cable);
-	TRYF(ticables_cable_recv(handle->cable, buf, 5));
+	ret = ticables_cable_recv(handle->cable, buf, 5);
+	while (!ret)
+	{
 
-	pkt->size = buf[3] | (buf[2] << 8) | (buf[1] << 16) | (buf[0] << 24);
-	pkt->type = buf[4];
+		pkt->size = buf[3] | (((uint32_t)buf[2]) << 8) | (((uint32_t)buf[1]) << 16) | (((uint32_t)buf[0]) << 24);
+		pkt->type = buf[4];
 
-	if(handle->model == CALC_TI84P_USB && pkt->size > 250)
-		return ERR_INVALID_PACKET;
-	if(handle->model == CALC_TI89T_USB && pkt->size > 1023)
-		return ERR_INVALID_PACKET;
+		if (handle->model == CALC_TI84P_USB)
+		{
+			if (pkt->size > 250)
+			{
+				ret = ERR_INVALID_PACKET;
+				break;
+			}
+		}
+		else if (handle->model == CALC_TI89T_USB)
+		{
+			if (pkt->size > 1023)
+			{
+				ret = ERR_INVALID_PACKET;
+				break;
+			}
+		}
+		// else do nothing for now.
 
-	//printf("dusb_send: pkt->size=%d\n", pkt->size);
-	// Next, follows data
-	TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->size));
-	if(pkt->size >= 128)
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			
-	if (handle->updat->cancel)
-		return ERR_ABORT;
+		//printf("dusb_send: pkt->size=%d\n", pkt->size);
+		// Next, follows data
+		ret = ticables_cable_recv(handle->cable, pkt->data, pkt->size);
+		if (!ret)
+		{
+			if (pkt->size >= 128)
+			{
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			}
 
-	return 0;
+			if (handle->updat->cancel)
+			{
+				ret = ERR_ABORT;
+			}
+		}
+		break;
+	}
+
+	return ret;
 }
-
-
