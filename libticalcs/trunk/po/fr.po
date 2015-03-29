@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-03-28 15:56+0100\n"
+"POT-Creation-Date: 2015-03-29 19:59+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -25,7 +25,7 @@ msgstr "Calculatrice vide"
 msgid "Dummy hand-held used when no calc is set"
 msgstr "Calculatrice vide utilisée quand aucune calculatrice n'est spécifiée"
 
-#: src/calc_73.c:285 src/calc_83.c:195 src/calc_84p.c:470 src/calc_86.c:185
+#: src/calc_73.c:285 src/calc_83.c:195 src/calc_84p.c:475 src/calc_86.c:185
 #, c-format
 msgid "Parsing %s"
 msgstr "Parcourt %s"
@@ -34,26 +34,26 @@ msgstr "Parcourt %s"
 msgid "Battery low, stopping flash app transfer"
 msgstr "Batterie faible, arrêt du transfert de l'application Flash"
 
-#: src/calc_73.c:561 src/calc_73.c:1058 src/calc_89.c:611 src/calc_89t.c:503
+#: src/calc_73.c:561 src/calc_73.c:1058 src/calc_89.c:611 src/calc_89t.c:508
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr "Nom FLASH:  \"%s\""
 
-#: src/calc_73.c:562 src/calc_73.c:1059 src/calc_89.c:612 src/calc_89t.c:504
+#: src/calc_73.c:562 src/calc_73.c:1059 src/calc_89.c:612 src/calc_89t.c:509
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr "Taille FLASH: %i octets."
 
-#: src/calc_73.c:890 src/calc_84p.c:1200 src/calc_89.c:822 src/calc_89t.c:835
+#: src/calc_73.c:890 src/calc_84p.c:1205 src/calc_89.c:822 src/calc_89t.c:840
 msgid "Setting clock..."
 msgstr "Mise à jour de l'horloge..."
 
-#: src/calc_73.c:917 src/calc_84p.c:1277 src/calc_89.c:845 src/calc_89t.c:914
+#: src/calc_73.c:917 src/calc_84p.c:1282 src/calc_89.c:845 src/calc_89t.c:919
 msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
-#: src/calc_73.c:981 src/calc_83.c:480 src/calc_84p.c:1338 src/calc_89.c:892
-#: src/calc_89t.c:977 src/calc_92.c:564 src/calc_nsp.c:777
+#: src/calc_73.c:981 src/calc_83.c:480 src/calc_84p.c:1343 src/calc_89.c:892
+#: src/calc_89t.c:982 src/calc_92.c:564 src/calc_nsp.c:777
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -107,11 +107,11 @@ msgstr "En attente pour sauvegarder..."
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
-#: src/calc_84p.c:1427 src/calc_89t.c:1168
+#: src/calc_84p.c:1432 src/calc_89t.c:1173
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:1589
+#: src/calc_84p.c:1594
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
@@ -125,12 +125,12 @@ msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
 msgid "Directory listing in %8s..."
 msgstr "Listage du dossier dans %8s..."
 
-#: src/calc_89.c:297 src/calc_89t.c:256 src/calc_92.c:216 src/calc_nsp.c:428
+#: src/calc_89.c:297 src/calc_89t.c:261 src/calc_92.c:216 src/calc_nsp.c:428
 #, c-format
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:909 src/calc_89t.c:1074 src/calc_92.c:601 src/calc_nsp.c:802
+#: src/calc_89.c:909 src/calc_89t.c:1079 src/calc_92.c:601 src/calc_nsp.c:802
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -139,17 +139,17 @@ msgstr "Création de %s..."
 msgid "V200 Portable Learning Tool"
 msgstr "V200 Portable Learning Tool"
 
-#: src/calc_89t.c:1009 src/calc_nsp.c:739
+#: src/calc_89t.c:1014 src/calc_nsp.c:739
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
 
-#: src/calc_89t.c:1037
+#: src/calc_89t.c:1042
 #, c-format
 msgid "Changing attributes of %s..."
 msgstr "Changement des attributs de %s..."
 
-#: src/calc_89t.c:1349
+#: src/calc_89t.c:1354
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 

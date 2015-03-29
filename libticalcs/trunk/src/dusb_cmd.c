@@ -252,7 +252,6 @@ TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, DUSBModeSet mode)
 		retval = dusb_recv_buf_size_alloc(handle, NULL);
 		if (!retval)
 		{
-
 			pkt = dusb_vtl_pkt_new(sizeof(mode), DUSB_VPKT_PING);
 
 			pkt->data[0] = MSB(mode.arg1);

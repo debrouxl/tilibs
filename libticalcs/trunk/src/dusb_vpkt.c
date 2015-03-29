@@ -293,7 +293,6 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 		ticalcs_info("  TI->PC: Virtual Packet Data Acknowledgement");
 #endif
 
-		raw.size = raw.size;
 		if (raw.size != 2 && raw.size != 4)
 		{
 			ret = ERR_INVALID_PACKET;

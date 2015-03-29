@@ -442,6 +442,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 			if (ret)
 			{
+				// Not a real error.
+				if (ret == ERR_EOT)
+				{
+					ret = 0;
+				}
 				dusb_ca_del_array(size, attr);
 				break;
 			}
@@ -1581,7 +1586,7 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 
 extern int tixx_recv_backup(CalcHandle* handle, BackupContent* content);
 
-const CalcFncts calc_84p_usb = 
+const CalcFncts calc_84p_usb =
 {
 	CALC_TI84P_USB,
 	"TI84+",

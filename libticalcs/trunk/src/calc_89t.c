@@ -198,6 +198,11 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 			ret = dusb_cmd_r_var_header(handle, fldname, varname, attr);
 			if (ret)
 			{
+				// Not a real error.
+				if (ret == ERR_EOT)
+				{
+					ret = 0;
+				}
 				dusb_ca_del_array(size, attr);
 				break;
 			}
