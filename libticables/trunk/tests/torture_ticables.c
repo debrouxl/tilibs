@@ -70,6 +70,7 @@ int main(int argc, char **argv)
     PRINTF(ticables_probing_finish, INT, NULL);
     PRINTF(ticables_is_usb_enabled, INT);
     PRINTF(ticables_get_usb_devices, INT, NULL, NULL);
+    PRINTF(ticables_free_usb_devices, INT, NULL);
 
     ticables_library_exit();
 

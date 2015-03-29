@@ -335,6 +335,7 @@ typedef struct
 	TIEXPORT1 int TICALL ticables_is_usb_enabled(void);
 
 	TIEXPORT1 int TICALL ticables_get_usb_devices(int **array, int *len);
+	TIEXPORT1 int TICALL ticables_free_usb_devices(int *array);
 
 	/************************/
 	/* Deprecated functions */

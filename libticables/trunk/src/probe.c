@@ -98,6 +98,8 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMeth
 			if(list[i])
 				found = !0;
 		}
+
+		ticables_free_usb_devices(list);
 	}
 
 	if((method & PROBE_FIRST) && found)
@@ -236,5 +238,16 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 		return -1;
 	}
 
+	return 0;
+}
+
+/**
+ * \brief Frees an array of USB devices
+ * \param array the array previously allocated by ticables_get_usb_devices()
+ * \return Always 0
+ */
+TIEXPORT1 int TICALL ticables_free_usb_devices(int *array)
+{
+	free(array);
 	return 0;
 }
