@@ -38,8 +38,8 @@ TIEXPORT3 int TICALL dusb_send(CalcHandle* handle, DUSBRawPacket* pkt)
 	uint32_t size;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(pkt)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(pkt);
 
 	memset(buf, 0, sizeof(buf));
 	size = pkt->size;
@@ -80,8 +80,8 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 	uint8_t buf[5];
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(pkt)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(pkt);
 
 	// Any packet has always an header of 5 bytes (size & type)
 	ticables_progress_reset(handle->cable);

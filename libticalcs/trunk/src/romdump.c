@@ -303,7 +303,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	uint32_t i;
 	uint8_t data[65536];
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
@@ -433,7 +433,7 @@ int rd_is_ready(CalcHandle* handle)
 {
 	int ret;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ret = rom_send_RDY(handle);
 	if (!ret)
@@ -448,7 +448,7 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	char *template, *tempfname;
 	int fd, ret;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 	/* Write ROM dumper to a temporary file (note that the file must have
 	   the correct suffix or tifiles_file_read_regular will be
 	   confused) */

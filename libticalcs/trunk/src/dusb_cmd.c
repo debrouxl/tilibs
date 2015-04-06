@@ -244,7 +244,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_mode_set(CalcHandle *handle, DUSBModeSet mode)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	retval = dusb_send_buf_size_request(handle, DUSB_DFL_BUF_SIZE);
 	if (!retval)
@@ -282,7 +282,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_begin(CalcHandle *handle, uint32_t size)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(11, DUSB_VPKT_OS_BEGIN);
 
@@ -305,7 +305,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_os_ack(CalcHandle *handle, uint32_t *size)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -344,8 +344,8 @@ static int s_os(uint8_t type, CalcHandle *handle, uint16_t addr, uint8_t page, u
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(4 + size, type);
 
@@ -380,8 +380,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, 
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_HEADER);
 
@@ -400,8 +400,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, ui
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_OS_DATA);
 
@@ -420,7 +420,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -453,8 +453,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_request(CalcHandle *handle, int npids, con
 	int i;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_ATTRS(npids, pids)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_ATTRS(npids, pids);
 
 	pkt = dusb_vtl_pkt_new(2 + npids * sizeof(uint16_t), DUSB_VPKT_PARM_REQ);
 
@@ -482,8 +482,8 @@ TIEXPORT3 int TICALL dusb_cmd_r_param_data(CalcHandle *handle, int nparams, DUSB
 	int i, j;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(params)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(params);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -540,9 +540,9 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 	uint32_t declared_size;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(size)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(size);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -589,8 +589,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_dirlist_request(CalcHandle *handle, int naids, c
 	int j = 0;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_ATTRS(naids, aids)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_ATTRS(naids, aids);
 
 	pkt = dusb_vtl_pkt_new(4 + 2*naids + 7, DUSB_VPKT_DIR_REQ);
 
@@ -629,10 +629,10 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_header(CalcHandle *handle, char *folder, cha
 	int i, j;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(folder)
-	VALIDATE_NONNULL(name)
-	VALIDATE_NONNULL(attr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(folder);
+	VALIDATE_NONNULL(name);
+	VALIDATE_NONNULL(attr);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -709,10 +709,10 @@ TIEXPORT3 int TICALL dusb_cmd_s_rts(CalcHandle *handle, const char *folder, cons
 	int j = 0;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(folder)
-	VALIDATE_NONNULL(name)
-	VALIDATE_ATTRS(nattrs, attrs)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(folder);
+	VALIDATE_NONNULL(name);
+	VALIDATE_ATTRS(nattrs, attrs);
 
 	pks = 2 + strlen(name)+1 + 5 + 2;
 	if(strlen(folder))
@@ -772,11 +772,11 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_request(CalcHandle *handle, const char *fold
 	int j = 0;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(folder)
-	VALIDATE_NONNULL(name)
-	VALIDATE_ATTRS(naids, aids)
-	VALIDATE_ATTRS(nattrs, attrs)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(folder);
+	VALIDATE_NONNULL(name);
+	VALIDATE_ATTRS(naids, aids);
+	VALIDATE_ATTRS(nattrs, attrs);
 
 	pks = 2 + strlen(name)+1 + 5 + 2 + 2*naids + 2;
 	if(strlen(folder)) pks += strlen(folder)+1;
@@ -838,8 +838,8 @@ TIEXPORT3 int TICALL dusb_cmd_r_var_content(CalcHandle *handle, uint32_t *size, 
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -889,8 +889,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_content(CalcHandle *handle, uint32_t size, u
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = dusb_vtl_pkt_new(size, DUSB_VPKT_VAR_CNTS);
 
@@ -909,8 +909,8 @@ TIEXPORT3 int TICALL dusb_cmd_s_param_set(CalcHandle *handle, const DUSBCalcPara
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(param)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(param);
 
 	pkt = dusb_vtl_pkt_new(2 + 2 + param->size, DUSB_VPKT_PARM_SET);
 
@@ -941,13 +941,13 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 	int pks;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(src_folder)
-	VALIDATE_NONNULL(src_name)
-	VALIDATE_NONNULL(src_attrs)
-	VALIDATE_NONNULL(dst_folder)
-	VALIDATE_NONNULL(dst_name)
-	VALIDATE_ATTRS(n_dst_attrs, dst_attrs)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(src_folder);
+	VALIDATE_NONNULL(src_name);
+	VALIDATE_NONNULL(src_attrs);
+	VALIDATE_NONNULL(dst_folder);
+	VALIDATE_NONNULL(dst_name);
+	VALIDATE_ATTRS(n_dst_attrs, dst_attrs);
 
 	pks = 2 + strlen(src_name)+1 + 2;
 	if (strlen(src_folder))
@@ -1062,9 +1062,9 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	int j = 0;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(folder)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(folder);
+	VALIDATE_NONNULL(name);
 
 	if (handle->model == CALC_TI89T_USB)
 	{
@@ -1155,7 +1155,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_mode_ack(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -1187,7 +1187,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_data_ack(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -1220,7 +1220,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_delay_ack(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -1252,7 +1252,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_eot(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, DUSB_VPKT_EOT);
 
@@ -1269,7 +1269,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_eot(CalcHandle *handle)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(0, 0);
 
@@ -1303,7 +1303,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_error(CalcHandle *handle, uint16_t code)
 	DUSBVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = dusb_vtl_pkt_new(2, DUSB_VPKT_ERROR);
 

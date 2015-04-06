@@ -134,7 +134,7 @@ TIEXPORT3 int TICALL dusb_send_buf_size_request(CalcHandle* handle, uint32_t siz
 	DUSBRawPacket raw;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
@@ -157,7 +157,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_alloc(CalcHandle* handle, uint32_t *size
 	uint32_t tmp;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	do
@@ -199,7 +199,7 @@ TIEXPORT3 int TICALL dusb_recv_buf_size_request(CalcHandle* handle, uint32_t *si
 	uint32_t tmp;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	do
@@ -231,7 +231,7 @@ TIEXPORT3 int TICALL dusb_send_buf_size_alloc(CalcHandle* handle, uint32_t size)
 	DUSBRawPacket raw;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 4;
@@ -260,7 +260,7 @@ TIEXPORT3 int TICALL dusb_send_acknowledge(CalcHandle* handle)
 	DUSBRawPacket raw;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	raw.size = 2;
@@ -284,7 +284,7 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle)
 	DUSBRawPacket raw;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&raw, 0, sizeof(raw));
 	do
@@ -387,8 +387,8 @@ TIEXPORT3 int TICALL dusb_send_data(CalcHandle *handle, DUSBVirtualPacket *vtl)
 	long offset;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vtl)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vtl);
 
 	memset(&raw, 0, sizeof(raw));
 
@@ -557,9 +557,9 @@ TIEXPORT3 int TICALL dusb_recv_data_varsize(CalcHandle* handle, DUSBVirtualPacke
 	unsigned long alloc_size;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vtl)
-	VALIDATE_NONNULL(declared_size)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vtl);
+	VALIDATE_NONNULL(declared_size);
 
 	memset(&raw, 0, sizeof(raw));
 
@@ -674,8 +674,8 @@ TIEXPORT3 int TICALL dusb_recv_data(CalcHandle* handle, DUSBVirtualPacket* vtl)
 	uint32_t declared_size;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vtl)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vtl);
 
 	ret = dusb_recv_data_varsize(handle, vtl, &declared_size, 0);
 	if (!ret)

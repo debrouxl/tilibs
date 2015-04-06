@@ -94,7 +94,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_login(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -114,7 +114,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_status(CalcHandle *handle, uint8_t status)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, nsp_dst_port);
 
@@ -135,7 +135,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_status(CalcHandle *handle, uint8_t *status)
 	uint8_t value;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -176,7 +176,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dev_infos(CalcHandle *handle, uint8_t cmd)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  requesting device information (cmd = %02x):", cmd);
 
@@ -195,10 +195,10 @@ TIEXPORT3 int TICALL nsp_cmd_r_dev_infos(CalcHandle *handle, uint8_t *cmd, uint3
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(cmd)
-	VALIDATE_NONNULL(size)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(cmd);
+	VALIDATE_NONNULL(size);
+	VALIDATE_NONNULL(data);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -224,7 +224,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_screen_rle(CalcHandle *handle, uint8_t cmd)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_SCREEN_RLE);
 
@@ -243,10 +243,10 @@ TIEXPORT3 int TICALL nsp_cmd_r_screen_rle(CalcHandle *handle, uint8_t *cmd, uint
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(cmd)
-	VALIDATE_NONNULL(size)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(cmd);
+	VALIDATE_NONNULL(size);
+	VALIDATE_NONNULL(data);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -275,8 +275,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_attributes(CalcHandle *handle, const char *na
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	pkt = nsp_vtl_pkt_new_ex(1 + len + 1, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
@@ -300,7 +300,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_attributes(CalcHandle *handle, uint32_t *size
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -347,8 +347,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_init(CalcHandle *handle, const char *nam
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
@@ -376,7 +376,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_next(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 	if (pkt != NULL)
@@ -405,8 +405,8 @@ TIEXPORT3 int TICALL nsp_cmd_r_dir_enum_next(CalcHandle *handle, char* name, uin
 	int o;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -458,7 +458,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_dir_enum_done(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 
@@ -487,8 +487,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file(CalcHandle *handle, const char *name, ui
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	pkt = nsp_vtl_pkt_new_ex(6 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
@@ -522,7 +522,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_put_file_eot(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(2, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 
@@ -546,8 +546,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_get_file(CalcHandle *handle, const char *name)
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
@@ -570,7 +570,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_get_file(CalcHandle *handle, uint32_t *size)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -608,8 +608,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_file(CalcHandle *handle, const char *name)
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	pkt = nsp_vtl_pkt_new_ex(2 + len, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
@@ -638,8 +638,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_new_folder(CalcHandle *handle, const char *name)
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
@@ -669,8 +669,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_del_folder(CalcHandle *handle, const char *name)
 	size_t len;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 
@@ -701,9 +701,9 @@ TIEXPORT3 int TICALL nsp_cmd_s_copy_file(CalcHandle *handle, const char *name, c
 	size_t len2;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
-	VALIDATE_NONNULL(name2)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
+	VALIDATE_NONNULL(name2);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	len2 = strlen(name2) < 8 ? 8 : strlen(name2);
@@ -736,9 +736,9 @@ TIEXPORT3 int TICALL nsp_cmd_s_rename_file(CalcHandle *handle, const char *name,
 	size_t len2;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(name)
-	VALIDATE_NONNULL(name2)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(name);
+	VALIDATE_NONNULL(name2);
 
 	len = strlen(name) < 8 ? 8 : strlen(name);
 	len2 = strlen(name2) < 8 ? 8 : strlen(name2);
@@ -768,7 +768,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_file_ok(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(0, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 
@@ -788,7 +788,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_ok(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -824,8 +824,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_file_contents(CalcHandle *handle, uint32_t size, 
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_FILE_MGMT);
 
@@ -845,9 +845,9 @@ TIEXPORT3 int TICALL nsp_cmd_r_file_contents(CalcHandle *handle, uint32_t *size,
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(size)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(size);
+	VALIDATE_NONNULL(data);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -875,7 +875,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_os_install(CalcHandle *handle, uint32_t size)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new_ex(4, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL);
 
@@ -898,7 +898,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_os_install(CalcHandle *handle)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -924,8 +924,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_os_contents(CalcHandle *handle, uint32_t size, ui
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(data)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
 
 	pkt = nsp_vtl_pkt_new_ex(size, NSP_SRC_ADDR, nsp_src_port, NSP_DEV_ADDR, NSP_PORT_OS_INSTALL);
 
@@ -945,8 +945,8 @@ TIEXPORT3 int TICALL nsp_cmd_r_progress(CalcHandle *handle, uint8_t *value)
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(value)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(value);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -982,7 +982,7 @@ TIEXPORT3 int TICALL nsp_cmd_s_generic_data(CalcHandle *handle, uint32_t size, u
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  sending generic data of size %lu (%lX) with command %02X:", (unsigned long)size, (unsigned long)size, cmd);
 
@@ -1005,7 +1005,7 @@ TIEXPORT3 int TICALL nsp_cmd_r_generic_data(CalcHandle *handle, uint32_t *size, 
 	NSPVirtualPacket* pkt;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	pkt = nsp_vtl_pkt_new();
 
@@ -1056,8 +1056,8 @@ TIEXPORT3 int TICALL nsp_cmd_s_keypress_event(CalcHandle *handle, const uint8_t 
 	NSPVirtualPacket * pkt1, * pkt2;
 	int retval = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(keycode)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(keycode);
 
 	ticalcs_info("  sending keypress event:");
 

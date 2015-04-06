@@ -26,69 +26,102 @@
 #define __TICALCS_INTERNAL__
 
 #define VALIDATE_NONNULL(ptr) \
-	if (ptr == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #ptr " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (ptr == NULL) \
+		{ \
+			ticalcs_critical("%s: " #ptr " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_HANDLE(handle) \
-	if (handle == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #handle " is NULL", __FUNCTION__); \
-		return ERR_INVALID_HANDLE; \
-	}
+		if (handle == NULL) \
+		{ \
+			ticalcs_critical("%s: " #handle " is NULL", __FUNCTION__); \
+			return ERR_INVALID_HANDLE; \
+		} \
+	} while(0);
 #define VALIDATE_CALCFNCTS(calc) \
-	if (calc == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " # calc " is NULL", __FUNCTION__); \
-		return ERR_INVALID_HANDLE; \
-	}
+		if (calc == NULL) \
+		{ \
+			ticalcs_critical("%s: " # calc " is NULL", __FUNCTION__); \
+			return ERR_INVALID_HANDLE; \
+		} \
+	} while(0);
 #define VALIDATE_BACKUPCONTENT(content) \
-	if (content == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (content == NULL) \
+		{ \
+			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_FILECONTENT(content) \
-	if (content == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (content == NULL) \
+		{ \
+			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_FLASHCONTENT(content) \
-	if (content == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (content == NULL) \
+		{ \
+			ticalcs_critical("%s: " #content " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_VARENTRY(var) \
-	if (var == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (var == NULL) \
+		{ \
+			ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 #define VALIDATE_VARREQUEST(var) \
-	if (var == NULL) \
+	do \
 	{ \
-		ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
-		return ERR_INVALID_PARAMETER; \
-	}
+		if (var == NULL) \
+		{ \
+			ticalcs_critical("%s: " #var " is NULL", __FUNCTION__); \
+			return ERR_INVALID_PARAMETER; \
+		} \
+	} while(0);
 
 #define RETURN_IF_HANDLE_NOT_ATTACHED(handle) \
-	if (!handle->attached) \
+	do \
 	{ \
-		return ERR_NO_CABLE; \
-	}
+		if (!handle->attached) \
+		{ \
+			return ERR_NO_CABLE; \
+		} \
+	} while(0);
 #define RETURN_IF_HANDLE_NOT_OPEN(handle) \
-	if (!handle->open) \
+	do \
 	{ \
-		return ERR_NO_CABLE; \
-	}
+		if (!handle->open) \
+		{ \
+			return ERR_NO_CABLE; \
+		} \
+	} while(0);
 #define RETURN_IF_HANDLE_BUSY(handle) \
-	if (handle->busy) \
+	do \
 	{ \
-		return ERR_BUSY; \
-	}
+		if (handle->busy) \
+		{ \
+			return ERR_BUSY; \
+		} \
+	} while(0);
 
 // dbus_pkt.c
 

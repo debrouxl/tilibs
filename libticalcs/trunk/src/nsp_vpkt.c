@@ -133,7 +133,7 @@ uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
 TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 {
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	nsp_src_port++;
 	nsp_dst_port = port;
@@ -145,7 +145,7 @@ TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 
 TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 {
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  closed session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
@@ -164,7 +164,7 @@ TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
 	extern uint8_t nsp_seq_pc;
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	memset(&pkt, 0, sizeof(pkt));
 
@@ -192,7 +192,7 @@ TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
 {
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  assigning address %04x:", addr);
 
@@ -216,7 +216,7 @@ TIEXPORT3 int TICALL nsp_send_ack(CalcHandle* handle)
 {
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  sending ack:");
 
@@ -236,7 +236,7 @@ TIEXPORT3 int TICALL nsp_send_nack(CalcHandle* handle)
 {
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  sending nAck:");
 
@@ -256,7 +256,7 @@ TIEXPORT3 int TICALL nsp_send_nack_ex(CalcHandle* handle, uint16_t port)
 {
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  sending nAck:");
 
@@ -278,7 +278,7 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
 	uint16_t addr;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  receiving ack:");
 
@@ -327,7 +327,7 @@ TIEXPORT3 int TICALL nsp_send_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  disconnecting from service #%04x:", nsp_dst_port);
 
@@ -348,7 +348,7 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 	NSPRawPacket pkt;
 	uint16_t addr;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  receiving disconnect:");
 
@@ -390,8 +390,8 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	int i, r, q;
 	long offset = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vtl)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vtl);
 
 	memset(&raw, 0, sizeof(raw));
 	raw.src_addr = vtl->src_addr;
@@ -447,8 +447,8 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	uint32_t size;
 	int err = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vtl)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vtl);
 
 	memset(&raw, 0, sizeof(raw));
 

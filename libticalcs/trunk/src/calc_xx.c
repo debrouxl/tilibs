@@ -74,14 +74,14 @@ TIEXPORT3 int TICALL ticalcs_calc_isready(CalcHandle* handle)
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Checking hand-held status:"));
 	handle->busy = 1;
@@ -108,14 +108,14 @@ TIEXPORT3 int TICALL ticalcs_calc_send_key(CalcHandle* handle, uint16_t key)
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending key %04x:"), key);
 	handle->busy = 1;
@@ -144,15 +144,15 @@ TIEXPORT3 int TICALL ticalcs_calc_execute(CalcHandle* handle, VarEntry* ve, cons
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_VARENTRY(ve)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARENTRY(ve);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Executing %s/%s with %s:"), ve->folder, ve->name, args);
 	handle->busy = 1;
@@ -180,16 +180,16 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_screen(CalcHandle* handle, CalcScreenCoor
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(sc)
-	VALIDATE_NONNULL(bitmap)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(sc);
+	VALIDATE_NONNULL(bitmap);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting screenshot:"));
 	handle->busy = 1;
@@ -218,16 +218,16 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 	int ret = 0;
 	TreeInfo *ti;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(vars)
-	VALIDATE_NONNULL(apps)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(vars);
+	VALIDATE_NONNULL(apps);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	*vars = NULL;
 	*apps = NULL;
@@ -275,16 +275,16 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(ram)
-	VALIDATE_NONNULL(flash)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(ram);
+	VALIDATE_NONNULL(flash);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting RAM & FLASH free"));
 	handle->busy = 1;
@@ -311,15 +311,15 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent*
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_BACKUPCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_BACKUPCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting backup:"));
 	handle->busy = 1;
@@ -346,15 +346,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_BACKUPCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_BACKUPCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);;
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending backup:"));
 	handle->busy = 1;
@@ -382,15 +382,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var(CalcHandle* handle, CalcMode mode, Fi
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FILECONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FILECONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending one or more variables:"));
 	handle->busy = 1;
@@ -419,16 +419,16 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var(CalcHandle* handle, CalcMode mode, Fi
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FILECONTENT(content)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FILECONTENT(content);
+	VALIDATE_VARREQUEST(vr);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting variable '%s':"), vr->name);
 	handle->busy = 1;
@@ -456,15 +456,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns(CalcHandle* handle, CalcMode mode,
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FILECONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FILECONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending variable (non-silent mode):"));
 	handle->busy = 1;
@@ -493,16 +493,16 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns(CalcHandle* handle, CalcMode mode,
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FILECONTENT(content)
-	VALIDATE_VARENTRY(var)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FILECONTENT(content);
+	VALIDATE_VARENTRY(var);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Receiving variable (non-silent mode):"));
 	handle->busy = 1;
@@ -529,15 +529,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FLASHCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending FLASH application:"));
 	handle->busy = 1;
@@ -560,27 +560,27 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app(CalcHandle* handle, FlashContent* con
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, VarRequest* var)
+TIEXPORT3 int TICALL ticalcs_calc_recv_app(CalcHandle* handle, FlashContent* content, VarRequest* vr)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FLASHCONTENT(content)
-	VALIDATE_VARREQUEST(var)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
+	VALIDATE_VARREQUEST(vr);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting receiving of FLASH application:"));
 	handle->busy = 1;
 	if (calc->recv_app)
 	{
-		ret = calc->recv_app(handle, content, var);
+		ret = calc->recv_app(handle, content, vr);
 	}
 	handle->busy = 0;
 
@@ -601,15 +601,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FLASHCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending FLASH os:"));
 	handle->busy = 1;
@@ -636,15 +636,15 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_idlist(CalcHandle* handle, uint8_t* idlis
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(idlist)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(idlist);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting ID-LIST:"));
 	handle->busy = 1;
@@ -670,14 +670,14 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_1(CalcHandle* handle)
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
+	VALIDATE_HANDLE(handle);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending ROM dumper:"));
 	handle->busy = 1;
@@ -705,15 +705,15 @@ TIEXPORT3 int TICALL ticalcs_calc_dump_rom_2(CalcHandle* handle, CalcDumpSize si
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Dumping ROM:"));
 	handle->busy = 1;
@@ -740,15 +740,15 @@ TIEXPORT3 int TICALL ticalcs_calc_set_clock(CalcHandle* handle, CalcClock* _cloc
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(_clock)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(_clock);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Setting clock:"));
 	handle->busy = 1;
@@ -775,15 +775,15 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(_clock)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(_clock);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Getting clock:"));
 	handle->busy = 1;
@@ -810,15 +810,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle* handle, FlashContent* co
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FLASHCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Sending certificate:"));
 	handle->busy = 1;
@@ -845,15 +845,15 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_FLASHCONTENT(content)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FLASHCONTENT(content);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting receiving of certificate:"));
 	handle->busy = 1;
@@ -880,15 +880,15 @@ TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Creating folder '%s':"), vr->folder);
 	handle->busy = 1;
@@ -915,15 +915,15 @@ TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Deleting variable '%s':"), vr->name);
 	handle->busy = 1;
@@ -951,16 +951,16 @@ TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* old
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_VARREQUEST(oldname)
-	VALIDATE_VARREQUEST(newname)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(oldname);
+	VALIDATE_VARREQUEST(newname);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	if (oldname->folder[0] && newname->folder[0])
 	{
@@ -996,15 +996,15 @@ TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Setting variable '%s' to %s:"), vr->name, tifiles_attribute_to_string(attr));
 
@@ -1032,15 +1032,15 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 	const CalcFncts *calc;
 	int ret = 0;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(infos)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(infos);
 
 	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc)
+	VALIDATE_CALCFNCTS(calc);
 
-	//RETURN_IF_HANDLE_NOT_ATTACHED(handle) // Disabled after '2005 probing changes.
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	//RETURN_IF_HANDLE_NOT_ATTACHED(handle); // Disabled after '2005 probing changes.
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	ticalcs_info(_("Requesting version info:"));
 	handle->busy = 1;
@@ -1072,12 +1072,12 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
 	FileContent *content2;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	if (ticalcs_calc_features(handle) & FTS_BACKUP)
 	{
@@ -1120,12 +1120,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 	FileContent *content2;
 	int ret = ERR_FILE_OPEN;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	if (ticalcs_calc_features(handle) & FTS_BACKUP)
 	{
@@ -1174,12 +1174,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, c
 	FileContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_regular(handle->model);
 	ret = tifiles_file_read_regular(filename, content);
@@ -1208,13 +1208,13 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, c
 	FileContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+	VALIDATE_VARREQUEST(vr);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_regular(handle->model);
 	ret = ticalcs_calc_recv_var(handle, mode, content, vr);
@@ -1242,12 +1242,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
 	FileContent *content;
 	int ret = ERR_FILE_OPEN;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_regular(handle->model);
 	if (content != NULL)
@@ -1279,13 +1279,13 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var_ns2(CalcHandle* handle, CalcMode mode
 	FileContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
-	VALIDATE_VARENTRY(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+	VALIDATE_VARENTRY(vr);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_regular(handle->model);
 	ret = ticalcs_calc_recv_var_ns(handle, mode, content, vr);
@@ -1312,12 +1312,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
 	FlashContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_flash(handle->model);
 	ret = tifiles_file_read_flash(filename, content);
@@ -1345,13 +1345,13 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_app2(CalcHandle* handle, const char* file
 	FlashContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
-	VALIDATE_VARREQUEST(vr)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+	VALIDATE_VARREQUEST(vr);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_flash(handle->model);
 	ret = ticalcs_calc_recv_app(handle, content, vr);
@@ -1378,12 +1378,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 	FlashContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_flash(handle->model);
 	ret = tifiles_file_read_flash(filename, content);
@@ -1411,12 +1411,12 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 	char *ext;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	do {
 		ext = tifiles_fext_get(filename);
@@ -1487,12 +1487,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filen
 	FlashContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_flash(handle->model);
 	ret = tifiles_file_read_flash(filename, content);
@@ -1520,12 +1520,12 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup2(CalcHandle* handle, const char* 
 	TigContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_tigroup(handle->model, 0);
 	ret = tifiles_file_read_tigroup(filename, content);
@@ -1553,12 +1553,12 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup2(CalcHandle* handle, const char* 
 	TigContent *content;
 	int ret;
 
-	VALIDATE_HANDLE(handle)
-	VALIDATE_NONNULL(filename)
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle)
-	RETURN_IF_HANDLE_NOT_OPEN(handle)
-	RETURN_IF_HANDLE_BUSY(handle)
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
 
 	content = tifiles_content_create_tigroup(handle->model, 0);
 	ret = ticalcs_calc_recv_tigroup(handle, content, mode);
