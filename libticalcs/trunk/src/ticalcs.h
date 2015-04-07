@@ -156,6 +156,37 @@ typedef enum
 } CalcShellType;
 
 /**
+ * CalcProductIDs:
+ *
+ * An enumeration which contains the product IDs used by TI graphing calculators:
+ **/
+typedef enum
+{
+	PRODUCT_ID_NONE = 0x00,
+	PRODUCT_ID_TI92P = 0x01,
+	PRODUCT_ID_TI73 = 0x02,
+	PRODUCT_ID_TI89 = 0x03,
+	PRODUCT_ID_TI83P = 0x04,
+	// No known calculator uses 0x05
+	// No known calculator uses 0x06
+	// No known calculator uses 0x07
+	PRODUCT_ID_TIV200 = 0x08,
+	PRODUCT_ID_TI89T = 0x09,
+	PRODUCT_ID_TI84P = 0x0A,
+	PRODUCT_ID_TI82A = 0x0B,
+	PRODUCT_ID_NSPIRE_CAS = 0x0C, // The Nspire CAS+ prototypes also uses 0x0C, but libti*/tilp do not handle their unique communication protocol.
+	PRODUCT_ID_LABCRADLE = 0x0D, // Included for completeness, not handled by libticalcs.
+	PRODUCT_ID_NSPIRE_NONCAS = 0x0E,
+	PRODUCT_ID_NSPIRE_CX_CAS = 0x0F, // Yes, two completely different models use ID 0x0F.
+	PRODUCT_ID_TI84PCSE = 0x0F,
+	PRODUCT_ID_NSPIRE_CX_NONCAS = 0x10,
+	PRODUCT_ID_NSPIRE_CM_CAS = 0x11,
+	PRODUCT_ID_NSPIRE_CM_NONCAS = 0x12,
+	PRODUCT_ID_TI83PCE = 0x13, // These two similar models use the same ID as well.
+	PRODUCT_ID_TI84PCE = 0x13
+} CalcProductIDs;
+
+/**
  * CalcOperations:
  *
  * An enumeration which contains the different supported operations:

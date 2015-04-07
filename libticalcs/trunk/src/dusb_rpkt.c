@@ -92,23 +92,28 @@ TIEXPORT3 int TICALL dusb_recv(CalcHandle* handle, DUSBRawPacket* pkt)
 		pkt->size = buf[3] | (((uint32_t)buf[2]) << 8) | (((uint32_t)buf[1]) << 16) | (((uint32_t)buf[0]) << 24);
 		pkt->type = buf[4];
 
-		if (handle->model == CALC_TI84P_USB)
+		if (   (handle->model == CALC_TI84P_USB || handle->model == CALC_TI84PC_USB || handle->model == CALC_TI82A_USB)
+		    && pkt->size > 250)
 		{
-			if (pkt->size > 250)
-			{
-				ret = ERR_INVALID_PACKET;
-				break;
-			}
+			ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
+		}
+		else if (   (handle->model == CALC_TI83PCE_USB || handle->model == CALC_TI84PCE_USB)
+		         && pkt->size > 1018)
+		{
+			ticalcs_warning("Raw packet is unexpectedly large: %u bytes", pkt->size);
 		}
 		else if (handle->model == CALC_TI89T_USB)
 		{
-			if (pkt->size > 1023)
-			{
-				ret = ERR_INVALID_PACKET;
-				break;
-			}
+			// Fall through.
 		}
 		// else do nothing for now.
+
+		if (pkt->size > sizeof(pkt->data))
+		{
+			ticalcs_critical("Raw packet is too large: %u bytes", pkt->size);
+			ret = ERR_INVALID_PACKET;
+			break;
+		}
 
 		//printf("dusb_send: pkt->size=%d\n", pkt->size);
 		// Next, follows data

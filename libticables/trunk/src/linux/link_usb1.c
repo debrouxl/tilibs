@@ -178,42 +178,33 @@ const char* tigl_strerror(enum libusb_error errcode)
 }
 #endif
 
-static const char* tigl_get_product(struct libusb_device *dev)
+static void tigl_get_product(unsigned char * string, size_t maxlen, struct libusb_device *dev)
 {
 	libusb_device_handle *han;
 	int ret;
-	static unsigned char string[64];
-
 	struct libusb_device_descriptor desc;
 	int r = libusb_get_device_descriptor(dev, &desc);
+
+	string[0] = 0;
+
 	if (r < 0)
 	{
 		ticables_error("failed to get device descriptor");
-		return "";
 	}
 
 	if (desc.iProduct)
 	{
 		if (!libusb_open(dev, &han))
 		{
-			ret = libusb_get_string_descriptor_ascii(han, desc.iProduct, string, sizeof(string));
+			ret = libusb_get_string_descriptor_ascii(han, desc.iProduct, string, maxlen);
 			libusb_close(han);
-			if (ret > 0)
-			{
-				return (const char *) string;
-			}
-			else
+			if (ret <= 0)
 			{
 				ticables_warning("libusb_get_string_descriptor_ascii (%s).\n", tigl_strerror(ret));
-				return "";
 			}
 		}
-		else
-		{
-			return "";
-		}
+		// else do nothing.
 	}
-	return (const char *)string;
 }
 
 static int tigl_find(void)
@@ -242,12 +233,14 @@ static int tigl_find(void)
 		}
 		if (desc.idVendor == VID_TI)
 		{
-			for(k = 0; k < (int)(sizeof(tigl_infos) / sizeof(usb_infos)); k++)
+			for(k = 0; k < (int)(sizeof(tigl_infos) / sizeof(tigl_infos[0])); k++)
 			{
 				if(desc.idProduct == tigl_infos[k].pid)
 				{
+					unsigned char string[64+1];
+					tigl_get_product(string, sizeof(string) - 1, device);
 					ticables_info(_(" found %s on #%i, version <%x.%02x>\n"),
-						      tigl_get_product(device), j+1,
+						      string, j+1,
 						      desc.bcdDevice >> 8,
 						      desc.bcdDevice & 0xff);
 

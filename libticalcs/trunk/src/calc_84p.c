@@ -109,7 +109,7 @@ static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
 }
 
 /* Unpack an image compressed using the 84+CSE RLE compression algorithm */
-int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length)
+int ti84pcse_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length)
 {
 	const uint8_t *palette;
 	unsigned int palette_size, i, c, n;
@@ -336,22 +336,33 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		ret = dusb_cmd_r_screenshot(handle, &size, &data);
 		if (!ret)
 		{
-			if (size == TI84P_ROWS * TI84P_COLS / 8)
+			switch (handle->model)
 			{
-				/* TI-84+ */
-				sc->width = TI84P_COLS;
-				sc->height = TI84P_ROWS;
-				sc->clipped_width = TI84P_COLS;
-				sc->clipped_height = TI84P_ROWS;
-				sc->pixel_format = CALC_PIXFMT_MONO;
-				*bitmap = data;
+			case CALC_TI84P_USB:
+			case CALC_TI82A_USB:
+			{
+				if (size == TI84P_ROWS * TI84P_COLS / 8)
+				{
+					*bitmap = data;
+					sc->width = TI84P_COLS;
+					sc->height = TI84P_ROWS;
+					sc->clipped_width = TI84P_COLS;
+					sc->clipped_height = TI84P_ROWS;
+					sc->pixel_format = CALC_PIXFMT_MONO;
+				}
+				else
+				{
+					g_free(data);
+					*bitmap = NULL;
+					ret = ERR_INVALID_SCREENSHOT;
+				}
+				break;
 			}
-			else
+			case CALC_TI84PC_USB:
 			{
-				/* TI-84+CSE */
 				size -= 4;
 				*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
-				ret = ti84pc_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
+				ret = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
 				g_free(data);
 				if (ret)
 				{
@@ -367,6 +378,31 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 					sc->clipped_height = TI84PC_ROWS;
 					sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
 				}
+				break;
+			}
+			case CALC_TI83PCE_USB:
+			case CALC_TI84PCE_USB:
+			{
+				if (size == TI84PC_ROWS * TI84PC_COLS * 2)
+				{
+					// 83PCE, 84PCE
+					*bitmap = data;
+					sc->width = TI84PC_COLS;
+					sc->height = TI84PC_ROWS;
+					sc->clipped_width = TI84PC_COLS;
+					sc->clipped_height = TI84PC_ROWS;
+					sc->pixel_format = CALC_PIXFMT_RGB_5_6_5;
+					break;
+				}
+				// else fall through.
+			}
+			default:
+			{
+				g_free(data);
+				*bitmap = NULL;
+				ret = ERR_INVALID_SCREENSHOT;
+				break;
+			}
 			}
 		}
 	}
@@ -1101,13 +1137,18 @@ static int		dump_rom_1	(CalcHandle* handle)
 	ret = get_version(handle, &infos);
 	if (!ret)
 	{
-		if (infos.hw_version < 5)
+		if (infos.model == CALC_TI84P_USB)
 		{
 			ret = rd_send(handle, "romdump.8Xp", romDumpSize84p, romDump84p);
 		}
-		else
+		else if (infos.model == CALC_TI84PC_USB)
 		{
 			ret = rd_send(handle, "romdump.8Xp", romDumpSize84pcu, romDump84pcu);
+		}
+		else
+		{
+			// TODO 83+CE/84+CE/84+CE-T ROM dumping support.
+			ret = 0;
 		}
 	}
 
@@ -1435,18 +1476,23 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	memset(infos, 0, sizeof(CalcInfos));
 	params = dusb_cp_new_array(size);
 
+	// TODO rewrite this function to ask for parameters in multiple phases, starting with 0x0001 and 0x000A, then
+	// model-dependent sets of parameters. That's how TI-Connect CE 5.x does.
 	ret = dusb_cmd_s_param_request(handle, size, pids);
 	if (!ret)
 	{
 		ret = dusb_cmd_r_param_data(handle, size, params);
 		if (!ret)
 		{
+			uint8_t product_id;
+
 			strncpy(infos->product_name, (char*)params[i]->data, params[i]->size);
 			infos->mask |= INFOS_PRODUCT_NAME;
 			i++;
 
+			product_id = params[i]->data[0];
 			g_snprintf(infos->main_calc_id, 11, "%02X%02X%02X%02X%02X",
-				params[i]->data[0], params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
+				product_id, params[i]->data[1], params[i]->data[2], params[i]->data[3], params[i]->data[4]);
 			infos->mask |= INFOS_MAIN_CALC_ID;
 			strncpy(infos->product_id, infos->main_calc_id, sizeof(infos->product_id) - 1);
 			infos->product_id[sizeof(infos->product_id) - 1] = 0;
@@ -1454,7 +1500,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			i++;
 
 			infos->hw_version = (((uint16_t)params[i]->data[0]) << 8) | params[i]->data[1];
-			infos->mask |= INFOS_HW_VERSION; // hw version or model ?
+			infos->mask |= INFOS_HW_VERSION;
 			i++;
 
 			infos->language_id = params[i]->data[0];
@@ -1559,12 +1605,52 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 			infos->mask |= INFOS_RUN_LEVEL;
 			i++;
 
-			switch (infos->hw_version)
+			switch (product_id)
 			{
-				case 0: infos->model = CALC_TI83P; break;
-				case 1: infos->model = CALC_TI83P; break;
-				case 2: infos->model = CALC_TI84P; break;
-				case 3: infos->model = CALC_TI84P; break;
+				case PRODUCT_ID_TI84P:
+				{
+					infos->model = CALC_TI84P_USB;
+					if (infos->hw_version >= 4)
+					{
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
+					break;
+				}
+				case PRODUCT_ID_TI82A:
+				{
+					infos->model = CALC_TI82A_USB;
+					if (infos->hw_version >= 4)
+					{
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
+					break;
+				}
+				case PRODUCT_ID_TI84PCSE:
+				{
+					infos->model = CALC_TI84PC_USB;
+					if (infos->hw_version < 4)
+					{
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
+					break;
+				}
+				case PRODUCT_ID_TI83PCE: // and case PRODUCT_ID_TI84PCE:
+				{
+					// TODO handle the field which indicates 83PCE / 84+CE.
+					infos->model = CALC_TI83PCE_USB;
+					if (infos->hw_version < 6)
+					{
+						ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					}
+					break;
+				}
+				default:
+				{
+					// Default to generic 84+(SE).
+					infos->model = CALC_TI84P_USB;
+					ticalcs_warning(_("Unhandled 84+ family member with product_id=%d hw_version=%d"), product_id, infos->hw_version);
+					break;
+				}
 			}
 			infos->mask |= INFOS_CALC_MODEL;
 		}
@@ -1594,6 +1680,270 @@ const CalcFncts calc_84p_usb =
 	N_("TI-84 Plus thru DirectLink"),
 	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&tixx_recv_backup,
+	&send_var,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
+	&send_cert,
+	&recv_cert,
+	&rename_var,
+	&change_attr
+};
+
+const CalcFncts calc_84pcse_usb =
+{
+	CALC_TI84PC_USB,
+	"TI84+CSE",
+	"TI-84 Plus C Silver Edition",
+	N_("TI-84 Plus C Silver Edition thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
+	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&tixx_recv_backup,
+	&send_var,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
+	&send_cert,
+	&recv_cert,
+	&rename_var,
+	&change_attr
+};
+
+const CalcFncts calc_83pce_usb =
+{
+	CALC_TI83PCE_USB,
+	"TI83PCE",
+	"TI-83 Premium CE",
+	N_("TI-83 Premium CE thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ /*OPS_OS |*/
+	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&tixx_recv_backup,
+	&send_var,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
+	&send_cert,
+	&recv_cert,
+	&rename_var,
+	&change_attr
+};
+
+const CalcFncts calc_84pce_usb =
+{
+	CALC_TI84PCE_USB,
+	"TI84+CE",
+	"TI-84 Plus CE",
+	N_("TI-84 Plus CE thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ /*OPS_OS |*/
+	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
+	OPS_RENAME | OPS_CHATTR |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&tixx_recv_backup,
+	&send_var,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_os,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
+	&send_cert,
+	&recv_cert,
+	&rename_var,
+	&change_attr
+};
+
+const CalcFncts calc_82a_usb =
+{
+	CALC_TI82A_USB,
+	"TI82A",
+	"TI-82 Advanced",
+	N_("TI-82 Advanced thru DirectLink"),
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ OPS_OS |
+	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
 	{"",     /* is_ready */

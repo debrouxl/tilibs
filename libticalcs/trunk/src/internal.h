@@ -104,7 +104,7 @@ int dbus_recv_2(CalcHandle* cable, uint8_t* host, uint8_t* cmd, uint16_t* length
 
 // calc_84p.c
 
-int ti84pc_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length);
+int ti84pcse_decompress_screen(uint8_t *dest, uint32_t dest_length, const uint8_t *src, uint32_t src_length);
 
 
 

@@ -95,6 +95,21 @@ static CalcFncts const *const calcs[] =
 #ifndef NO_TI80
 	&calc_80,
 #endif
+#ifndef NO_TI84PC
+	&calc_84pcse,
+#endif
+#ifndef NO_TI84PC_USB
+	&calc_84pcse_usb,
+#endif
+#ifndef NO_TI83PCE_USB
+	&calc_83pce_usb,
+#endif
+#ifndef NO_TI84PCE_USB
+	&calc_84pce_usb,
+#endif
+#ifndef NO_TI82A_USB
+	&calc_82a_usb,
+#endif
 	NULL
 };
 
@@ -147,6 +162,21 @@ static const uint32_t supported_calcs =
 #endif
 #ifndef NO_TI80
 	| (1U << CALC_TI80)
+#endif
+#ifndef NO_TI84PC
+	| (1U << CALC_TI84PC)
+#endif
+#ifndef NO_TI84PC_USB
+	| (1U << CALC_TI84PC_USB)
+#endif
+#ifndef NO_TI83PCE_USB
+	| (1U << CALC_TI83PCE_USB)
+#endif
+#ifndef NO_TI84PCE_USB
+	| (1U << CALC_TI84PCE_USB)
+#endif
+#ifndef NO_TI82A_USB
+	| (1U << CALC_TI82A_USB)
 #endif
 ;
 

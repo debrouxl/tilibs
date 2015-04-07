@@ -533,7 +533,7 @@ end:
 	return retval;
 }
 
-// 0x0008 (variant): screenshot data (TI-84 Plus C)
+// 0x0008 (variant): screenshot data (for TI-84 Plus C support)
 TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, uint8_t **data)
 {
 	DUSBVirtualPacket* pkt;
@@ -575,7 +575,7 @@ TIEXPORT3 int TICALL dusb_cmd_r_screenshot(CalcHandle *handle, uint32_t *size, u
 		*data = g_memdup(pkt->data + 7, pkt->size - 7);
 	}
 
- end:
+end:
 	dusb_vtl_pkt_del(pkt);
 
 	return retval;
@@ -1100,7 +1100,11 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 			pkt->data[j++] = LSB(code);
 		}
 	}
-	else if (handle->model == CALC_TI84P_USB)
+	else if (   handle->model == CALC_TI84P_USB
+		 || handle->model == CALC_TI84PC_USB
+		 || handle->model == CALC_TI83PCE_USB
+		 || handle->model == CALC_TI84PCE_USB
+		 || handle->model == CALC_TI82A_USB)
 	{
 		pks = 3;
 		if(args) pks += strlen(args); else pks += 2;

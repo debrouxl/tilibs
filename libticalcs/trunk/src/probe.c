@@ -48,16 +48,22 @@ static int tixx_recv_ACK(CalcHandle* handle, uint8_t* mid)
 	uint8_t host, cmd;
 	uint16_t length;
 	uint8_t buffer[5];
+	int ret;
 
-	TRYF(dbus_recv_2(handle, &host, &cmd, &length, buffer));
-	ticalcs_info(" TI->PC: ACK");
+	ret = dbus_recv_2(handle, &host, &cmd, &length, buffer);
+	if (!ret)
+	{
+		ticalcs_info(" TI->PC: ACK");
 
-	*mid = host;
+		*mid = host;
 
-	if (cmd == CMD_SKP)
-		return ERR_VAR_REJECTED;
+		if (cmd == CMD_SKP)
+		{
+			ret = ERR_VAR_REJECTED;
+		}
+	}
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -81,137 +87,158 @@ static int ticalcs_probe_calc_2(CalcHandle* handle, CalcModel* model)
 	int err;
 	uint8_t data;
 
-	ticalcs_info(_("Probing calculator...\n"));
-	*model = CALC_NONE;
-
-	/* Test for a TI86 before a TI85 */
-	ticalcs_info(_("Check for TI86... "));
-	TRYF(dbus_send(handle, PC_TI86, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(handle, &data);
-
-	ticalcs_info("<%02X-%02X> ", PC_TI86, data);
-
-	if (!err && (data == TI86_PC)) 
+	do
 	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI86;
+		ticalcs_info(_("Probing calculator...\n"));
+		*model = CALC_NONE;
 
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
+		/* Test for a TI86 before a TI85 */
+		ticalcs_info(_("Check for TI86... "));
+		err = dbus_send(handle, PC_TI86, CMD_SCR, 2, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-	/* Test for a TI85 */
-	ticalcs_info(_("Check for TI85... "));
-	TRYF(dbus_send(handle, PC_TI85, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(handle, &data);
+		ticalcs_info("<%02X-%02X> ", PC_TI86, data);
 
-	ticalcs_info("<%02X-%02X> ", PC_TI85, data);
+		if (!err && (data == TI86_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI86;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 
-	if (!err && (data == TI85_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI85;
+		/* Test for a TI85 */
+		ticalcs_info(_("Check for TI85... "));
+		err = dbus_send(handle, PC_TI85, CMD_SCR, 2, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
+		ticalcs_info("<%02X-%02X> ", PC_TI85, data);
 
-	/* Test for a TI73 before a TI83 */
-	ticalcs_info(_("Check for TI73... "));
-	TRYF(dbus_send(handle, PC_TI73, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(handle, &data);
+		if (!err && (data == TI85_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI85;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 
-	ticalcs_info("<%02X-%02X> ", PC_TI73, data);
+		/* Test for a TI73 before a TI83 */
+		ticalcs_info(_("Check for TI73... "));
+		err = dbus_send(handle, PC_TI73, CMD_SCR, 2, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-	if (!err && (data == TI73_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI73;
+		ticalcs_info("<%02X-%02X> ", PC_TI73, data);
 
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
+		if (!err && (data == TI73_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI73;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 
-	/* Test for a TI83 before a TI82 */
-	ticalcs_info(_("Check for TI83... "));
-	TRYF(dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(handle, &data);
+		/* Test for a TI83 before a TI82 */
+		ticalcs_info(_("Check for TI83... "));
+		err = dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-	ticalcs_info("<%02X-%02X> ", PC_TI83, data);
+		ticalcs_info("<%02X-%02X> ", PC_TI83, data);
 
-	if (!err && (data == TI83_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI83;
+		if (!err && (data == TI83_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI83;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
+		/* Test for a TI82 */
+		ticalcs_info(_("Check for TI82... "));
+		err = dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-	/* Test for a TI82 */
-	ticalcs_info(_("Check for TI82... "));
-	TRYF(dbus_send(handle, PC_TI83, CMD_SCR, 2, NULL));
-	err = tixx_recv_ACK(handle, &data);
+		ticalcs_info("<%02X-%02X> ", PC_TI82, data);
 
-	ticalcs_info("<%02X-%02X> ", PC_TI82, data);
+		if (!err && (data == TI82_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI82;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 
-	if (!err && (data == TI82_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI82;
-
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
-
-	/* Test for a TI80 */
 #if 0
+		/* Test for a TI80 */
 #warning TI-80 DETECTION FAILS
-	ticalcs_info(_("Check for TI80... "));
-	ticalcs_info("%d\n", dbus_send(handle, PC_TI80, CMD_SCR, 0, NULL));
-	err = tixx_recv_ACK(handle, &data);
+		ticalcs_info(_("Check for TI80... "));
+		err = dbus_send(handle, PC_TI80, CMD_SCR, 0, NULL);
+		if (err)
+		{
+			break;
+		}
+		err = tixx_recv_ACK(handle, &data);
 
-	ticalcs_info("<%02X-%02X> ", PC_TI80, data);
+		ticalcs_info("<%02X-%02X> ", PC_TI80, data);
 
-	if (!err && (data == TI80_PC)) 
-	{
-		ticalcs_info("OK !\n");
-		*model = CALC_TI80;
-
-		return 0;
-	} 
-	else 
-	{
-		ticalcs_info("NOK.\n");
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);
-	}
+		if (!err && (data == TI80_PC))
+		{
+			ticalcs_info("OK !\n");
+			*model = CALC_TI80;
+			break;
+		}
+		else
+		{
+			ticalcs_info("NOK.\n");
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);
+		}
 #endif
+	} while(0);
 
 	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 }
@@ -233,100 +260,137 @@ static int ticalcs_probe_calc_1(CalcHandle* handle, CalcModel* model)
 	uint8_t host, cmd;
 	uint16_t status;
 	uint8_t buffer[256];
-	int i, err;
-	CalcInfos infos;
+	int i, ret;
 
 	// init value
 	*model = CALC_NONE;
 
-	// test for FLASH hand-helds (00 68 00 00 -> XX 56 00 00)
-	// where XX is 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
-	ticalcs_info(_("Check for TIXX... "));
-	for(i = 0; i < 2; i++)
-	{		
-		ticalcs_info(" PC->TI: RDY?");
-		err = dbus_send(handle, PC_TIXX, CMD_RDY, 2, NULL);
-		if(err) continue;
-
-		err = dbus_recv_2(handle, &host, &cmd, &status, buffer);
-		ticalcs_info(" TI->PC: ACK");
-		if(err) continue;
-
-		break;
-	}
-
-	// test for TI73
-	if(!err)
+	do
 	{
-		if(host == TI73_PC)
-		{
-			*model = CALC_TI73;
-			return 0;
-		}
-		else if(host == TI92_PC)
-		{
-			*model = CALC_TI92;
-			return 0;
-		}
-	}
-	
-	// test for TI92 (09 68 00 00 -> 89 56 00 00)
-	else if(err)
-	{
-		ticalcs_info(_("Check for TI92... "));
-		ticables_cable_reset(handle->cable);
-		PAUSE(DEAD_TIME);	// needed !
+		CalcInfos infos;
 
-		for(i = 0; i < 2; i++)
+		// test for FLASH hand-helds (00 68 00 00 -> XX 56 00 00)
+		// where XX is 0x98: TI89/89t, 0x88: TI92+/V200, 0x73: TI83+/84+, 0x74: TI73
+		ticalcs_info(_("Check for TIXX... "));
+		for (i = 0; i < 2; i++)
 		{
 			ticalcs_info(" PC->TI: RDY?");
-			err = dbus_send(handle, PC_TI92, CMD_RDY, 2, NULL);
-			if(err) continue;
+			ret = dbus_send(handle, PC_TIXX, CMD_RDY, 2, NULL);
+			if (ret)
+			{
+				continue;
+			}
 
-			err = dbus_recv_2(handle, &host, &cmd, &status, buffer);
+			ret = dbus_recv_2(handle, &host, &cmd, &status, buffer);
 			ticalcs_info(" TI->PC: ACK");
-			if(err) continue;
+			if (ret)
+			{
+				continue;
+			}
 
 			break;
 		}
 
-		if(!err)
-			*model = CALC_TI92;
-	}
+		// test for TI73
+		if (!ret)
+		{
+			if (host == TI73_PC)
+			{
+				*model = CALC_TI73;
+				break;
+			}
+			else if (host == TI92_PC)
+			{
+				*model = CALC_TI92;
+				break;
+			}
+		}
 
-	if (cmd != CMD_ACK)
-		return ERR_INVALID_CMD;
+		// test for TI92 (09 68 00 00 -> 89 56 00 00)
+		else if (ret)
+		{
+			ticalcs_info(_("Check for TI92... "));
+			ticables_cable_reset(handle->cable);
+			PAUSE(DEAD_TIME);	// needed !
 
-	if ((status & 1) != 0)
-		return ERR_NOT_READY;
-	
-	// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
-	if(!err && (host != TI73_PC) && (host != TI83p_PC))
-	{
-		ticalcs_info(_("Check for TI9X... "));
+			for (i = 0; i < 2; i++)
+			{
+				ticalcs_info(" PC->TI: RDY?");
+				ret = dbus_send(handle, PC_TI92, CMD_RDY, 2, NULL);
+				if (ret)
+				{
+					continue;
+				}
 
-		handle->model = CALC_TI89;
-		handle->calc = (CalcFncts *)&calc_89;
+				ret = dbus_recv_2(handle, &host, &cmd, &status, buffer);
+				ticalcs_info(" TI->PC: ACK");
+				if (ret)
+				{
+					continue;
+				}
 
-		memset(&infos, 0, sizeof(CalcInfos));		
-		TRYF(ticalcs_calc_get_version(handle, &infos));
-		*model = infos.model;
-	}
-	else
-	{
-		ticalcs_info(_("Check for TI8X... "));
+				break;
+			}
 
-		handle->model = CALC_TI83P;
-		handle->calc = (CalcFncts *)&calc_83p;
+			if (!ret)
+			{
+				*model = CALC_TI92;
+			}
+		}
 
-		memset(&infos, 0, sizeof(CalcInfos));
-		TRYF(ticalcs_calc_get_version(handle, &infos));
-		*model = infos.model;
-	}
+		if (cmd != CMD_ACK)
+		{
+			ret = ERR_INVALID_CMD;
+			break;
+		}
+
+		if ((status & 1) != 0)
+		{
+			ret = ERR_NOT_READY;
+			break;
+		}
+
+		// test for TI9x FLASH hand-helds again (request version and analyze HW_ID)
+		if(!ret && (host != TI73_PC) && (host != TI83p_PC))
+		{
+			ticalcs_info(_("Check for TI9X... "));
+
+			handle->model = CALC_TI89;
+			handle->calc = (CalcFncts *)&calc_89;
+
+			memset(&infos, 0, sizeof(CalcInfos));
+			ret = ticalcs_calc_get_version(handle, &infos);
+			if (ret)
+			{
+				break;
+			}
+			*model = infos.model;
+		}
+		else
+		{
+			ticalcs_info(_("Check for TI8X... "));
+
+			handle->model = CALC_TI83P;
+			handle->calc = (CalcFncts *)&calc_83p;
+
+			memset(&infos, 0, sizeof(CalcInfos));
+			ret = ticalcs_calc_get_version(handle, &infos);
+			if (ret)
+			{
+				break;
+			}
+			*model = infos.model;
+		}
+	} while(0);
 
 	ticalcs_info(_("Calculator type: %s"), tifiles_model_to_string(*model));
 
-	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
+	if (!ret)
+	{
+		ret = (*model == CALC_NONE) ? ERR_NO_CALC : 0;
+	}
+
+	return ret;
 }
 
 extern const CalcUpdate default_update;
@@ -341,48 +405,44 @@ extern const CalcUpdate default_update;
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_probe_calc (CableHandle* cable, CalcModel* model)
+TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
-	int err = 0;
+	int ret = 0;
 
-	if (cable == NULL)
-	{
-		return ERR_INVALID_HANDLE;
-	}
-	if (model == NULL)
-	{
-		ticalcs_critical("ticalcs_probe_calc: model is NULL");
-		return -1;
-	}
+	VALIDATE_NONNULL(cable);
+	VALIDATE_NONNULL(model);
 
-	// Hack: we construct the structure here because we don't really need it.
-	// I want to use ticalcs functions with a non-fixed calculator
-	memset(&calc, 0, sizeof(CalcHandle));
-	calc.model = *model = CALC_NONE;
-	calc.updat = (CalcUpdate *)&default_update;
-	calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
-	calc.cable = cable;
-	calc.open = !0;
-
-	// first: search for FLASH hand-helds (fast)
-	err = ticalcs_probe_calc_1(&calc, model);
-	if(!err && (*model != CALC_NONE))
+	do
 	{
+		// Hack: we construct the structure here because we don't really need it.
+		// I want to use ticalcs functions with a non-fixed calculator
+		memset(&calc, 0, sizeof(CalcHandle));
+		calc.model = *model = CALC_NONE;
+		calc.updat = (CalcUpdate *)&default_update;
+		calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
+		calc.cable = cable;
+		calc.open = !0;
+
+		// first: search for FLASH hand-helds (fast)
+		ret = ticalcs_probe_calc_1(&calc, model);
+		if (!ret && (*model != CALC_NONE))
+		{
+			g_free(calc.priv2);
+			break;
+		}
+
+		// second: search for other calcs (slow)
+		ret = ticalcs_probe_calc_2(&calc, model);
 		g_free(calc.priv2);
-		return 0;
-	}
+	} while(0);
 
-	// second: search for other calcs (slow)
-	err = ticalcs_probe_calc_2(&calc, model);
-	if(err)
+	if (!ret)
 	{
-		g_free(calc.priv2);
-		return err;
+		ret = (*model == CALC_NONE) ? ERR_NO_CALC : 0;
 	}
 
-	g_free(calc.priv2);
-	return (*model == CALC_NONE) ? ERR_NO_CALC : 0;
+	return ret;
 }
 
 /**
@@ -398,52 +458,86 @@ TIEXPORT3 int TICALL ticalcs_probe_calc (CableHandle* cable, CalcModel* model)
 TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model)
 {
 	CalcHandle calc;
-	int err = 0;
 	int ret = ERR_NO_CALC;
 
-	if (cable == NULL)
-	{
-		return ERR_INVALID_HANDLE;
-	}
-	if (model == NULL)
-	{
-		ticalcs_critical("ticalcs_probe_calc: model is NULL");
-		return -1;
-	}
+	VALIDATE_NONNULL(cable);
+	VALIDATE_NONNULL(model);
 
-	// Hack: we construct the structure here because we don't really need it.
-	// I want to use ticalcs functions with a non-fixed calculator
-	memset(&calc, 0, sizeof(CalcHandle));
-	calc.model = *model = CALC_NONE;
-	calc.updat = (CalcUpdate *)&default_update;
-	calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
-	calc.cable = cable;
-	calc.open = !0;
-
-	if(cable->model == CABLE_SLV)
+	do
 	{
-		err = ticalcs_probe_calc_1(&calc, model);
-		if(!err && (*model != CALC_NONE))
-			ret = 0;
-	}
-	else if(cable->model == CABLE_USB)
-	{
-		int n, *list;
-		int i;
+		// Hack: we construct the structure here because we don't really need it.
+		// I want to use ticalcs functions with a non-fixed calculator
+		memset(&calc, 0, sizeof(CalcHandle));
+		calc.model = *model = CALC_NONE;
+		calc.updat = (CalcUpdate *)&default_update;
+		calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
+		calc.cable = cable;
+		calc.open = !0;
 
-		ticables_get_usb_devices(&list, &n);
-		i = (int)cable->port-1 > n ? n-1 : (int)cable->port-1;
-		switch(list[i])
+		if (cable->model == CABLE_SLV)
 		{
-		case PID_TI89TM:   *model = CALC_TI89T_USB; ret = 0; break;
-		case PID_TI84P:    *model = CALC_TI84P_USB; ret = 0; break;
-		case PID_TI84P_SE: *model = CALC_TI84P_USB; ret = 0; break;
-		case PID_NSPIRE:   *model = CALC_NSPIRE; ret = 0; break;
-		default: break;
+			ret = ticalcs_probe_calc_1(&calc, model);
 		}
-	}
+		else if (cable->model == CABLE_USB)
+		{
+			int n, *list = NULL;
+			int i;
 
-	g_free(calc.priv2);
+			ret = ticables_get_usb_devices(&list, &n);
+			if (!ret)
+			{
+				i = (int)cable->port-1 > n ? n-1 : (int)cable->port-1;
+				switch(list[i])
+				{
+				case PID_TI89TM:   *model = CALC_TI89T_USB; ret = 0; break;
+				case PID_TI84P:
+				case PID_TI84P_SE:
+				{
+					// TI had the great idea of using the same PID for:
+					// * 84+, 82A;
+					// * 84+SE, 84+CSE, 83PCE/84+CE/84+CE-T.
+					// Fortunately, these models have different hardware revisions, so just ask
+					CalcInfos infos;
+					memset(&infos, 0, sizeof(CalcInfos));
+
+					// Manual cable attachment, the hard way.
+					// We can't call ticalcs_cable_attach() because the cable is already open.
+					calc.model = CALC_TI84P_USB;
+					calc.calc = (CalcFncts *)&calc_84p_usb;
+					calc.cable = cable;
+					calc.attached = !0;
+					calc.open = !0;
+
+					ret = ticalcs_calc_isready(&calc);
+					if (!ret)
+					{
+						ret = ticalcs_calc_get_version(&calc, &infos);
+						if (!ret)
+						{
+							ticalcs_info("probing found model %d (%s)", infos.model, ticalcs_model_to_string(infos.model));
+							*model = infos.model;
+						}
+						else
+						{
+							ticalcs_warning("Error %d determining the device's model", ret);
+						}
+					}
+					else
+					{
+						ticalcs_warning("Error %d determining whether the device was ready", ret);
+					}
+					break;
+				}
+				case PID_NSPIRE:   *model = CALC_NSPIRE; ret = 0; break;
+				default: break;
+				}
+			}
+			ticables_free_usb_devices(list);
+		}
+
+		g_free(calc.priv2);
+	} while(0);
+
 	return ret;
 }
 
@@ -463,14 +557,10 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcModel* model, int all)
 {
 	CableHandle *handle;
-	int err = 0;
+	int ret = 0;
 	CalcHandle calc;
 
-	if (model == NULL)
-	{
-		ticalcs_critical("ticalcs_probe_calc: model is NULL");
-		return -1;
-	}
+	VALIDATE_NONNULL(model);
 
 	// get handle
 	handle = ticables_handle_new(c_model, c_port);
@@ -485,35 +575,38 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 	calc.cable = handle;
 	calc.open = !0;
 
-	// open cable
-	err = ticables_cable_open(handle);
-	if(err)
+	do
 	{
-		ticables_handle_del(handle);
-		return err;
-	}
+		// open cable
+		ret = ticables_cable_open(handle);
+		if (ret)
+		{
+			ticables_handle_del(handle);
+			break;
+		}
 
-	// probe
-	if(c_model == CABLE_USB)
-		err = ticalcs_probe_usb_calc(handle, model);
-	else
-	{
-		if(all)
-			err = ticalcs_probe_calc(handle, model);
+
+		// probe
+		if (c_model == CABLE_USB)
+		{
+			ret = ticalcs_probe_usb_calc(handle, model);
+		}
 		else
-			err = ticalcs_probe_calc_1(&calc, model);
-	}
+		{
+			if (all)
+			{
+				ret = ticalcs_probe_calc(handle, model);
+			}
+			else
+			{
+				ret = ticalcs_probe_calc_1(&calc, model);
+			}
+		}
 
-	if(err)
-	{
+		// close
 		ticables_cable_close(handle);
 		ticables_handle_del(handle);
-		return err;
-	}
+	} while(0);
 
-	// close
-	ticables_cable_close(handle);
-	ticables_handle_del(handle);
-
-	return err;
+	return ret;
 }

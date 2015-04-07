@@ -180,7 +180,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 		}
 
 		*bitmap = g_malloc(TI84PC_ROWS * TI84PC_COLS * 2);
-		err = ti84pc_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
+		err = ti84pcse_decompress_screen(*bitmap, TI84PC_ROWS * TI84PC_COLS * 2, data, size);
 		if (err)
 		{
 			g_free(*bitmap);
@@ -1025,8 +1025,8 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	case 1: infos->model = CALC_TI83P; break;
 	case 2: infos->model = CALC_TI84P; break;
 	case 3: infos->model = CALC_TI84P; break;
-	case 5: infos->model = CALC_TI84P; break; // 84+CSE
-	default: infos->model = CALC_TI84P; break; // If new models ever arise, they'll probably be 84+ anyway.
+	case 5: infos->model = CALC_TI84PC; break;
+	default: infos->model = CALC_TI84PC; break; // If new models ever arise, they'll probably be 84+CSE or newer anyway.
 	}
 	infos->language_id = buf[6];
 	infos->sub_lang_id = buf[7];
@@ -1136,13 +1136,13 @@ exit:
 	return 0;
 }
 
-const CalcFncts calc_73 = 
+const CalcFncts calc_73 =
 {
 	CALC_TI73,
 	"TI73",
 	"TI-73",
 	"TI-73",
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
 	{"",     /* is_ready */
@@ -1201,13 +1201,13 @@ const CalcFncts calc_73 =
 	&change_attr
 };
 
-const CalcFncts calc_83p = 
+const CalcFncts calc_83p =
 {
 	CALC_TI83P,
 	"TI83+",
 	"TI-83 Plus",
 	"TI-83 Plus",
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	{"",     /* is_ready */
@@ -1266,13 +1266,78 @@ const CalcFncts calc_83p =
 	&change_attr
 };
 
-const CalcFncts calc_84p = 
+const CalcFncts calc_84p =
 {
 	CALC_TI84P,
 	"TI84+",
 	"TI-84 Plus",
 	"TI-84 Plus",
-	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
+	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
+	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P",   /* send_backup */
+	 "2P",   /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom1 */
+	 "2P",   /* dump_rom2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 ""      /* chattr */ },
+	&is_ready,
+	&send_key,
+	&execute,
+	&recv_screen,
+	&get_dirlist,
+	&get_memfree,
+	&send_backup,
+	&recv_backup,
+	&send_var,
+	&recv_var,
+	&send_var_ns,
+	&recv_var_ns,
+	&send_flash,
+	&recv_flash,
+	&send_flash,
+	&recv_idlist,
+	&dump_rom_1,
+	&dump_rom_2,
+	&set_clock,
+	&get_clock,
+	&del_var,
+	&new_folder,
+	&get_version,
+	&send_cert,
+	&recv_cert,
+	&rename_var,
+	&change_attr
+};
+
+const CalcFncts calc_84pcse =
+{
+	CALC_TI84PC,
+	"TI84+CSE",
+	"TI-84 Plus Color Silver Edition",
+	"TI-84 Plus Color Silver Edition",
+	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
 	{"",     /* is_ready */

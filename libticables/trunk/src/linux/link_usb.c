@@ -277,29 +277,22 @@ typedef struct
 
 /* Helpers (=driver API) */
 
-static const char* tigl_get_product(struct usb_device *dev)
+static void tigl_get_product(unsigned char * string, size_t maxlen, struct usb_device *dev)
 {
-#if defined(__BSD__)
-    /* The code below causes problems on FreeBSD (libusb bug?). */
-    return "";
-#else
+/* The code below causes problems on FreeBSD (libusb bug?). */
+#ifndef __BSD__
     struct usb_dev_handle *han;
     int ret;
-    static char string[64];
+
+    string[0] = 0;
 
     if (dev->descriptor.iProduct)
     {
 	han = usb_open(dev);
 	ret = usb_get_string_simple(han, dev->descriptor.iProduct, 
-				    string, sizeof(string));
+				    string, maxlen);
 	usb_close(han);
-	if (ret > 0)
-	    return string;
-	else
-	    return "";
     }
-
-    return string;
 #endif
 }
 
@@ -323,8 +316,10 @@ static int tigl_find(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
+			unsigned char string[64+1];
+			tigl_get_product(string, sizeof(string) - 1, dev);
 			ticables_info(" found %s on #%i, version <%x.%02x>",
-				      tigl_get_product(dev), j+1,
+				      string, j+1,
 				      dev->descriptor.bcdDevice >> 8,
 				      dev->descriptor.bcdDevice & 0xff);
 

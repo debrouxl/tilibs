@@ -71,8 +71,10 @@ static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* dat
 	buf[3] = MSB(len);
 
 	// data
-	if(data)
+	if (data)
+	{
 		memcpy(buf+4, data, len);
+	}
 
 	// checksum
 	sum = tifiles_checksum(buf, 4 + len);
@@ -99,33 +101,31 @@ static int cmd_is_valid(uint16_t cmd)
 	default:
 		return 0;
 	}
-
-	return 0;
 }
 
 static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* data)
 {
 	int i, r, q;
 	uint16_t sum, chksum;
-	int err;
+	int ret;
 
 	// Any packet has always at least 4 bytes (cmd, len)
-	err = ticables_cable_recv(handle->cable, buf, 4);
-	if (!err)
+	ret = ticables_cable_recv(handle->cable, buf, 4);
+	if (!ret)
 	{
 
-		*cmd = (buf[1] << 8) | buf[0];
-		*len = (buf[3] << 8) | buf[2];
+		*cmd = (((uint16_t)buf[1]) << 8) | buf[0];
+		*len = (((uint16_t)buf[3]) << 8) | buf[2];
 
 		if (!cmd_is_valid(*cmd))
 		{
-			err = ERR_INVALID_CMD;
+			ret = ERR_INVALID_CMD;
 			goto exit;
 		}
 
 		if (*cmd == CMD_ERROR)
 		{
-			err = ERR_ROM_ERROR;
+			ret = ERR_ROM_ERROR;
 			goto exit;
 		}
 
@@ -141,8 +141,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 		// recv full chunks
 		for(i = 0; i < q; i++)
 		{
-			err = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], BLK_SIZE);
-			if (err)
+			ret = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], BLK_SIZE);
+			if (ret)
 			{
 				goto exit;
 			}
@@ -156,17 +156,22 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 
 		// recv last chunk
 		{
-			err = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], (uint16_t)(r+2));
-			if (err)
+			ret = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], (uint16_t)(r+2));
+			if (ret)
 			{
 				goto exit;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
 			if(*len > MIN_SIZE)
+			{
 				handle->updat->pbar();
+			}
 			if (handle->updat->cancel)
-				return ERR_ABORT;
+			{
+				ret = ERR_ABORT;
+				goto exit;
+			}
 		}
 
 		// verify checksum
@@ -176,7 +181,8 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 
 		if (chksum != sum)
 		{
-			return ERR_CHECKSUM;
+			ret = ERR_CHECKSUM;
+			goto exit;
 		}
 
 		if (data)
@@ -186,7 +192,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 	}
 
 exit:
-	return err;
+	return ret;
 }
 
 // --- Command Layer
@@ -200,12 +206,12 @@ static int rom_send_RDY(CalcHandle* handle)
 static int rom_recv_RDY(CalcHandle* handle)
 {
 	uint16_t cmd, len;
-	int err;
+	int ret;
 
-	err = recv_pkt(handle, &cmd, &len, NULL);
-	ticalcs_info(" TI->PC: %s", err ? "ERROR" : (cmd ? "OK" : "KO"));
+	ret = recv_pkt(handle, &cmd, &len, NULL);
+	ticalcs_info(" TI->PC: %s", ret ? "ERROR" : (cmd ? "OK" : "KO"));
 
-	return err;
+	return ret;
 }
 
 static int rom_send_EXIT(CalcHandle* handle)
@@ -217,12 +223,12 @@ static int rom_send_EXIT(CalcHandle* handle)
 static int rom_recv_EXIT(CalcHandle* handle)
 {
 	uint16_t cmd, len;
-	int err;
+	int ret;
 
-	err = recv_pkt(handle, &cmd, &len, NULL);
+	ret = recv_pkt(handle, &cmd, &len, NULL);
 	ticalcs_info(" TI->PC: EXIT");
 
-	return err;
+	return ret;
 }
 
 static int rom_send_SIZE(CalcHandle* handle)
@@ -234,12 +240,12 @@ static int rom_send_SIZE(CalcHandle* handle)
 static int rom_recv_SIZE(CalcHandle* handle, uint32_t* size)
 {
 	uint16_t cmd, len;
-	int err;
+	int ret;
 
-	err = recv_pkt(handle, &cmd, &len, (uint8_t *)size);
+	ret = recv_pkt(handle, &cmd, &len, (uint8_t *)size);
 	ticalcs_info(" TI->PC: SIZE (0x%08x bytes)", *size);
 
-	return err;
+	return ret;
 }
 
 static int rom_send_DATA(CalcHandle* handle, uint32_t addr)
@@ -252,31 +258,31 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 {
 	uint16_t cmd;
 	uint16_t rpt;
-	int err;
+	int ret;
 
-	err = recv_pkt(handle, &cmd, size, data);
-	if (!err)
+	ret = recv_pkt(handle, &cmd, size, data);
+	if (!ret)
 	{
-		if(cmd == CMD_DATA1)
+		if (cmd == CMD_DATA1)
 		{
-			ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+			ticalcs_info(" TI->PC: BLOCK WITHOUT REPEATED DATA (0x%04x bytes)", *size);
 			std_blk++;
 		}
-		else if(cmd == CMD_DATA2)
+		else if (cmd == CMD_DATA2)
 		{
-			*size = (data[1] << 8) | data[0];
-			rpt = (data[3] << 8) | data[2];
+			*size = (((uint16_t)data[1]) << 8) | data[0];
+			rpt = (((uint16_t)data[3]) << 8) | data[2];
 			memset(data, rpt, *size);
-			ticalcs_info(" TI->PC: BLOCK (0x%04x bytes)", *size);
+			ticalcs_info(" TI->PC: BLOCK WITH REPEATED DATA (0x%04x bytes)", *size);
 			sav_blk++;
 		}
 		else
 		{
-			err = ERR_INVALID_CMD;
+			ret = ERR_INVALID_CMD;
 		}
 	}
 
-	return err;
+	return ret;
 }
 
 static int rom_send_ERR(CalcHandle* handle)
@@ -290,7 +296,7 @@ static int rom_send_ERR(CalcHandle* handle)
 int rd_dump(CalcHandle* handle, const char *filename)
 {
 	FILE *f;
-	int err = 0;
+	int ret = 0;
 	uint32_t size;
 	uint32_t addr;
 	uint16_t length;
@@ -301,7 +307,9 @@ int rd_dump(CalcHandle* handle, const char *filename)
 
 	f = fopen(filename, "wb");
 	if (f == NULL)
+	{
 		return ERR_OPEN_FILE;
+	}
 
 	sprintf(update_->text, "Receiving data...");
 	update_label();
@@ -309,12 +317,12 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	// check if ready
 	for(i = 0; i < 3; i++)
 	{
-		err = rom_send_RDY(handle);
+		ret = rom_send_RDY(handle);
 		if (rom_recv_RDY(handle))
 		{
 			goto exit; // Bail out.
 		}
-		if(!err)
+		if (!ret)
 		{
 			break; // Proceed further.
 		}
@@ -332,26 +340,36 @@ int rd_dump(CalcHandle* handle, const char *filename)
 
 	// get packets
 	std_blk = sav_blk = 0;
-	for(addr = 0x0000; addr < size; )
+	for (addr = 0x0000; addr < size; )
 	{
-		if(err == ERR_ABORT)
+		if (ret == ERR_ABORT)
+		{
 			goto exit;
+		}
 
 		// resync if error
-		if(err)
+		if (ret)
 		{
 			PAUSE(500);
 
 			for(i = 0; i < MAX_RETRY; i++)
 			{
-				err = rom_send_RDY(handle);
-				if(err) continue;
-				err = rom_recv_RDY(handle);
-				if(err) continue;
+				ret = rom_send_RDY(handle);
+				if (ret)
+				{
+					continue;
+				}
+				ret = rom_recv_RDY(handle);
+				if (ret)
+				{
+					continue;
+				}
 			}
-			if(i == MAX_RETRY && err)
+			if (i == MAX_RETRY && ret)
+			{
 				goto exit;
-			err = 0;
+			}
+			ret = 0;
 		}
 
 		if(tifiles_calc_is_ti9x(handle->model) && addr >= 0x10000 && addr < 0x12000)
@@ -359,19 +377,31 @@ int rd_dump(CalcHandle* handle, const char *filename)
 			// certificate is read protected: skip
 			memset(data, 0xff, length);
 			if (fwrite(data, length, 1, f) < 1)
-				return ERR_SAVE_FILE;
+			{
+				ret = ERR_SAVE_FILE;
+				goto exit;
+			}
 			addr += length;
 			continue;
 		}
 
 		// receive data
-		err = rom_send_DATA(handle, addr);
-		if(err) continue;
-		err = rom_recv_DATA(handle, &length, data);
-		if(err) continue;
+		ret = rom_send_DATA(handle, addr);
+		if (ret)
+		{
+			continue;
+		}
+		ret = rom_recv_DATA(handle, &length, data);
+		if (ret)
+		{
+			continue;
+		}
 
 		if (fwrite(data, length, 1, f) < 1)
-			return ERR_SAVE_FILE;
+		{
+			ret = ERR_SAVE_FILE;
+			goto exit;
+		}
 		addr += length;
 
 		update_->cnt2 = addr;
@@ -385,32 +415,32 @@ int rd_dump(CalcHandle* handle, const char *filename)
 exit:
 	fclose(f);
 
-	if (!err)
+	if (!ret)
 	{
 		PAUSE(200);
-		err = rom_send_EXIT(handle);
-		if (!err)
+		ret = rom_send_EXIT(handle);
+		if (!ret)
 		{
-			err = rom_recv_EXIT(handle);
+			ret = rom_recv_EXIT(handle);
 		}
 		PAUSE(1000);
 	}
 
-	return err;
+	return ret;
 }
 
 int rd_is_ready(CalcHandle* handle)
 {
-	int err;
+	int ret;
 
 	VALIDATE_HANDLE(handle)
 
-	err = rom_send_RDY(handle);
-	if (!err)
+	ret = rom_send_RDY(handle);
+	if (!ret)
 	{
-		err = rom_recv_RDY(handle);
+		ret = rom_recv_RDY(handle);
 	}
-	return err;
+	return ret;
 }
 
 int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data)
@@ -428,21 +458,27 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 	g_free(template);
 	if (fd == -1)
 	{
-		return ERR_FILE_OPEN;
+		ret = ERR_FILE_OPEN;
+		goto end;
 	}
 
 	ret = write(fd, data, size);
 	close(fd);
-	if (ret != size)
+	if (ret == size)
 	{
-		return ERR_FATAL_ERROR;
+		// Transfer program to calc
+		handle->busy = 0;
+		ret = ticalcs_calc_send_var2(handle, MODE_SEND_EXEC_ASM, tempfname);
+	}
+	else
+	{
+		ret = ERR_FATAL_ERROR;
 	}
 
-	// Transfer program to calc
-	handle->busy = 0;
-	ret = ticalcs_calc_send_var2(handle, MODE_SEND_EXEC_ASM, tempfname);
 	g_unlink(tempfname);
 	g_free(tempfname);
 
+
+end:
 	return ret;
 }
