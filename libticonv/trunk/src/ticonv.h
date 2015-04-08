@@ -54,7 +54,6 @@
 # define LIBCONV_VERSION VERSION
 #endif
 
-#if !defined(__TIFILES_H__)
 /**
  * CalcModel:
  *
@@ -69,7 +68,6 @@ typedef enum
 	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80,
 	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_MAX
 } CalcModel;
-#endif
 
 #if defined(TICONV_ICONV_INTERFACE)
 /**

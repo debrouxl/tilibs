@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <ticonv.h>
+
 #include "export2.h"
 #include "stdints2.h"
 #include "typesxx.h"
@@ -52,22 +54,6 @@
 #define FLDNAME_MAX		1024
 #define VARNAME_MAX		1024
 #define FULNAME_MAX		2048
-
-/**
- * CalcModel:
- *
- * An enumeration which contains the following calculator types:
- **/
-#if !defined(__TICONV_H__)
-typedef enum 
-{
-	CALC_NONE = 0,
-	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
-	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
-	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80,
-	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_MAX
-} CalcModel;
-#endif
 
 #define FILES_NCALCS	CALC_MAX	// # of supported calcs
 

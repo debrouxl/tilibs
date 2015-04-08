@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src @GLIB_CFLAGS@ @TICONV_CFLAGS@
 
 EXTRA_DIST = tifiles2.supp vcheck
 
