@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-04-08 22:00+0200\n"
+"POT-Creation-Date: 2015-04-09 12:17+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -53,7 +53,7 @@ msgid "Getting clock..."
 msgstr "Réception de l'horloge..."
 
 #: src/calc_73.c:981 src/calc_83.c:480 src/calc_84p.c:1384 src/calc_89.c:892
-#: src/calc_89t.c:982 src/calc_92.c:564 src/calc_nsp.c:779
+#: src/calc_89t.c:982 src/calc_92.c:564 src/calc_nsp.c:968
 #, c-format
 msgid "Deleting %s..."
 msgstr "Suppression de %s..."
@@ -137,7 +137,7 @@ msgstr "TI-84 Plus CE via DirectLink"
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
-#: src/calc_89.c:231 src/calc_89.c:289 src/calc_92.c:203 src/calc_nsp.c:418
+#: src/calc_89.c:231 src/calc_89.c:289 src/calc_92.c:203
 #, c-format
 msgid "Name: %8s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
@@ -147,12 +147,12 @@ msgstr "Nom: %8s | Type: %8s | Attr: %i  | Taille: %08X"
 msgid "Directory listing in %8s..."
 msgstr "Listage du dossier dans %8s..."
 
-#: src/calc_89.c:297 src/calc_89t.c:261 src/calc_92.c:216 src/calc_nsp.c:426
+#: src/calc_89.c:297 src/calc_89t.c:261 src/calc_92.c:216
 #, c-format
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:909 src/calc_89t.c:1079 src/calc_92.c:601 src/calc_nsp.c:804
+#: src/calc_89.c:909 src/calc_89t.c:1079 src/calc_92.c:601 src/calc_nsp.c:998
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -161,7 +161,7 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.c:1014 src/calc_nsp.c:741
+#: src/calc_89t.c:1014 src/calc_nsp.c:931
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
@@ -180,27 +180,27 @@ msgstr "TI-89 Titanium via DirectLink"
 msgid "Block #%2i"
 msgstr "Bloc n°%2i"
 
-#: src/calc_nsp.c:252
+#: src/calc_nsp.c:321
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
 msgstr "Modèle de calculatrice inconnu, avec %d bpp\n"
 
-#: src/calc_nsp.c:345
+#: src/calc_nsp.c:444
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr "Nom: %s | Type: %8s | Attr: %i  | Taille: %08X"
 
-#: src/calc_nsp.c:367
+#: src/calc_nsp.c:477
 #, c-format
-msgid "Not enumerating documents in %s because it's not a folder"
-msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire"
+msgid "Not enumerating documents in %s because it's not a folder\n"
+msgstr "N'énumère pas les documents dans %s car ce n'est pas un répertoire\n"
 
-#: src/calc_nsp.c:371
+#: src/calc_nsp.c:494
 #, c-format
-msgid "Directory listing in <%s>..."
-msgstr "Listage du dossier dans <%s>..."
+msgid "Directory listing in <%s>...\n"
+msgstr "Listage du dossier dans <%s>...\n"
 
-#: src/calc_nsp.c:948
+#: src/calc_nsp.c:1169
 msgid "Nspire thru DirectLink"
 msgstr "Nspire via DirectLink"
 
@@ -324,22 +324,22 @@ msgstr "Définition de la variable '%s' en %s:"
 msgid "Requesting version info:"
 msgstr "Demande de version:"
 
-#: src/dirlist.c:125
+#: src/dirlist.c:194
 #, c-format
 msgid "| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"
 msgstr "|Nom Bin.          |Nom Trad. |Attr|Type| Taille   | Parent   |\n"
 
-#: src/dirlist.c:185
+#: src/dirlist.c:204
 #, c-format
 msgid "| No variables     |\n"
 msgstr "| Pas de variable  |\n"
 
-#: src/dirlist.c:187
+#: src/dirlist.c:208
 #, c-format
 msgid "| No applications  |\n"
 msgstr "| Pas d'application|\n"
 
-#: src/dirlist.c:189
+#: src/dirlist.c:212
 #, c-format
 msgid "+------------------+----------+----+----+----------+----------+"
 msgstr "+------------------+----------+----+----+----------+----------+"
@@ -756,16 +756,16 @@ msgstr "Essai avec TI8X... "
 msgid "Calculator type: %s"
 msgstr " Type de calculatrice: %s"
 
-#: src/ticalcs.c:228
+#: src/ticalcs.c:229
 #, c-format
 msgid "ticalcs library version %s"
 msgstr "librairie ticalcs version %s"
 
-#: src/ticalcs.c:370
+#: src/ticalcs.c:371
 msgid "Link calc handle details:"
 msgstr "Détails du descripteur de calculatrice:"
 
-#: src/ticalcs.c:371
+#: src/ticalcs.c:372
 #, c-format
 msgid "  model   : %s"
 msgstr "  modèle  : %s"

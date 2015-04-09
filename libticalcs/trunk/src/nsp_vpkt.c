@@ -68,9 +68,9 @@ TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 {
 	const NSPServiceName *p;
 
-	for(p = sid_types; p->name != NULL; p++)
+	for (p = sid_types; p->name != NULL; p++)
 	{
-		if(p->id == id)
+		if (p->id == id)
 		{
 			return p->name;
 		}
@@ -81,6 +81,7 @@ TIEXPORT3 const char* TICALL nsp_sid2name(uint16_t id)
 
 // Creation/Destruction/Garbage Collecting of packets
 
+// XXX should this variable be per-handle ?
 static GList *vtl_pkt_list = NULL;
 
 TIEXPORT3 NSPVirtualPacket* TICALL nsp_vtl_pkt_new_ex(uint32_t size, uint16_t src_addr, uint16_t src_port, uint16_t dst_addr, uint16_t dst_port)
@@ -128,6 +129,7 @@ void nsp_vtl_pkt_purge(void)
 
 // Session Management
 
+// XXX these variables should be per-handle.
 uint16_t	nsp_src_port = 0x8001;
 uint16_t	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
 
@@ -145,16 +147,23 @@ TIEXPORT3 int TICALL nsp_session_open(CalcHandle *handle, uint16_t port)
 
 TIEXPORT3 int TICALL nsp_session_close(CalcHandle *handle)
 {
+	int ret;
+
 	VALIDATE_HANDLE(handle);
 
 	ticalcs_info("  closed session from port #%04x to port #%04x:", nsp_src_port, nsp_dst_port);
 
-	TRYF(nsp_send_disconnect(handle));
-	TRYF(nsp_recv_ack(handle));
+	ret = nsp_send_disconnect(handle);
+	if (!ret)
+	{
+		ret = nsp_recv_ack(handle);
+		if (!ret)
+		{
+			nsp_dst_port = NSP_PORT_ADDR_REQUEST;
+		}
+	}
 
-	nsp_dst_port = NSP_PORT_ADDR_REQUEST;
-
-	return 0;
+	return ret;
 }
 
 // Address Request/Assignment
@@ -163,29 +172,32 @@ TIEXPORT3 int TICALL nsp_addr_request(CalcHandle *handle)
 {
 	extern uint8_t nsp_seq_pc;
 	NSPRawPacket pkt;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
 	memset(&pkt, 0, sizeof(pkt));
 
 	// Reset connection so that device send an address request packet
-	TRYC(handle->cable->cable->reset(handle->cable));
-	nsp_seq_pc = 1;
-
-	ticalcs_info("  device address request:");
-
-	TRYF(nsp_recv(handle, &pkt));
-
-	if (pkt.src_port != NSP_PORT_ADDR_ASSIGN)
+	ret = handle->cable->cable->reset(handle->cable);
+	if (!ret)
 	{
-		return ERR_INVALID_PACKET;
-	}
-	if (pkt.dst_port != NSP_PORT_ADDR_REQUEST)
-	{
-		return ERR_INVALID_PACKET;
+		nsp_seq_pc = 1;
+
+		ticalcs_info("  device address request:");
+
+		ret = nsp_recv(handle, &pkt);
+		if (!ret)
+		{
+			if (   pkt.src_port != NSP_PORT_ADDR_ASSIGN
+			    || pkt.dst_port != NSP_PORT_ADDR_REQUEST)
+			{
+				ret = ERR_INVALID_PACKET;
+			}
+		}
 	}
 
-	return 0;
+	return ret;
 }
 
 TIEXPORT3 int TICALL nsp_addr_assign(CalcHandle *handle, uint16_t addr)
@@ -284,38 +296,40 @@ TIEXPORT3 int TICALL nsp_recv_ack(CalcHandle *handle)
 
 	memset(&pkt, 0, sizeof(pkt));
 
-	TRYF(nsp_recv(handle, &pkt));
+	ret = nsp_recv(handle, &pkt);
+	if (!ret)
+	{
+		if (pkt.src_port != NSP_PORT_PKT_ACK2)
+		{
+			ticalcs_info("XXX weird src_port\n");
+			ret = ERR_INVALID_PACKET;
+		}
+		if (pkt.dst_port != nsp_src_port)
+		{
+			ticalcs_info("XXX weird .dst_port\n");
+			ret = ERR_INVALID_PACKET;
+		}
 
-	if (pkt.src_port != NSP_PORT_PKT_ACK2)
-	{
-		ticalcs_info("XXX weird src_port\n");
-		ret = ERR_INVALID_PACKET;
-	}
-	if (pkt.dst_port != nsp_src_port)
-	{
-		ticalcs_info("XXX weird .dst_port\n");
-		ret = ERR_INVALID_PACKET;
-	}
-
-	if (pkt.data_size >= 2)
-	{
-		addr = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
-		if (addr != nsp_dst_port)
+		if (pkt.data_size >= 2)
+		{
+			addr = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
+			if (addr != nsp_dst_port)
+			{
+				ticalcs_info("XXX weird addr\n");
+				ret = ERR_INVALID_PACKET;
+			}
+		}
+		else
 		{
 			ticalcs_info("XXX weird addr\n");
 			ret = ERR_INVALID_PACKET;
 		}
-	}
-	else
-	{
-		ticalcs_info("XXX weird addr\n");
-		ret = ERR_INVALID_PACKET;
-	}
 
-	if (pkt.ack != 0x0A)
-	{
-		ticalcs_info("XXX weird .ack\n");
-		ret = ERR_INVALID_PACKET;
+		if (pkt.ack != 0x0A)
+		{
+			ticalcs_info("XXX weird .ack\n");
+			ret = ERR_INVALID_PACKET;
+		}
 	}
 
 	return ret;
@@ -347,6 +361,7 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 {
 	NSPRawPacket pkt;
 	uint16_t addr;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -354,32 +369,39 @@ TIEXPORT3 int TICALL nsp_recv_disconnect(CalcHandle *handle)
 
 	memset(&pkt, 0, sizeof(pkt));
 
-	TRYF(nsp_recv(handle, &pkt));
-
-	if (pkt.src_port != NSP_PORT_DISCONNECT)
+	ret = nsp_recv(handle, &pkt);
+	if (!ret)
 	{
-		return ERR_INVALID_PACKET;
+
+		if (pkt.src_port != NSP_PORT_DISCONNECT)
+		{
+			ret = ERR_INVALID_PACKET;
+		}
+		else
+		{
+			// nasty hacks
+			nsp_dst_port = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
+			addr = pkt.dst_port;
+
+			ticalcs_info("  sending ack:");
+
+			pkt.unused = 0;
+			pkt.data_size = 2;
+			pkt.src_addr = NSP_SRC_ADDR;
+			pkt.src_port = NSP_PORT_PKT_ACK2;
+			pkt.dst_addr = NSP_DEV_ADDR;
+			pkt.dst_port = nsp_dst_port;
+			pkt.data_sum = 0;
+			pkt.ack = 0;
+			pkt.seq = 0;
+			pkt.hdr_sum = 0;
+			pkt.data[0] = MSB(addr);
+			pkt.data[1] = LSB(addr);
+			ret = nsp_send(handle, &pkt);
+		}
 	}
 
-	// nasty hacks
-	nsp_dst_port = (((uint16_t)pkt.data[0]) << 8) | pkt.data[1];
-	addr = pkt.dst_port;
-
-	ticalcs_info("  sending ack:");
-
-	pkt.unused = 0;
-	pkt.data_size = 2;
-	pkt.src_addr = NSP_SRC_ADDR;
-	pkt.src_port = NSP_PORT_PKT_ACK2;
-	pkt.dst_addr = NSP_DEV_ADDR;
-	pkt.dst_port = nsp_dst_port;
-	pkt.data_sum = 0;
-	pkt.ack = 0;
-	pkt.seq = 0;
-	pkt.hdr_sum = 0;
-	pkt.data[0] = MSB(addr);
-	pkt.data[1] = LSB(addr);
-	return nsp_send(handle, &pkt);
+	return ret;
 }
 
 // Fragmenting of packets
@@ -389,6 +411,7 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	NSPRawPacket raw;
 	int i, r, q;
 	long offset = 0;
+	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
@@ -402,18 +425,26 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 	q = (vtl->size - offset) / (NSP_DATA_SIZE-1);
 	r = (vtl->size - offset) % (NSP_DATA_SIZE-1);
 
-	for(i = 1; i <= q; i++)
+	for (i = 1; i <= q; i++)
 	{
 		raw.data_size = NSP_DATA_SIZE;
 		raw.data[0] = vtl->cmd;
 		memcpy(raw.data + 1, vtl->data + offset, NSP_DATA_SIZE-1);
 		offset += NSP_DATA_SIZE-1;
 
-		TRYF(nsp_send(handle, &raw));
-		
-		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+		ret = nsp_send(handle, &raw);
+		if (ret)
 		{
-			TRYF(nsp_recv_ack(handle));
+			break;
+		}
+
+		if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+		{
+			ret = nsp_recv_ack(handle);
+			if (ret)
+			{
+				break;
+			}
 		}
 
 		handle->updat->max1 = vtl->size;
@@ -421,22 +452,27 @@ TIEXPORT3 int TICALL nsp_send_data(CalcHandle *handle, NSPVirtualPacket *vtl)
 		handle->updat->pbar();
 	}
 
-	if(r || !vtl->size)
+	if (!ret)
 	{
-		raw.data_size = r + 1;
-		raw.data[0] = vtl->cmd;
-		memcpy(raw.data + 1, vtl->data + offset, r);
-		offset += r;
-
-		TRYF(nsp_send(handle, &raw));
-
-		if(raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+		if (r || !vtl->size)
 		{
-			TRYF(nsp_recv_ack(handle));
+			raw.data_size = r + 1;
+			raw.data[0] = vtl->cmd;
+			memcpy(raw.data + 1, vtl->data + offset, r);
+			offset += r;
+
+			ret = nsp_send(handle, &raw);
+			if (!ret)
+			{
+				if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
+				{
+					ret = nsp_recv_ack(handle);
+				}
+			}
 		}
 	}
 
-	return 0;
+	return ret;
 }
 
 // Note: data field may be re-allocated.
@@ -445,7 +481,7 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	NSPRawPacket raw;
 	long offset = 0;
 	uint32_t size;
-	int err = 0;
+	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(vtl);
@@ -460,8 +496,8 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	{
 		for (;;)
 		{
-			err = nsp_recv(handle, &raw);
-			if (err)
+			ret = nsp_recv(handle, &raw);
+			if (ret)
 			{
 				break;
 			}
@@ -481,16 +517,16 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 
 			if (raw.dst_port == NSP_PORT_LOGIN)
 			{
-				err = nsp_send_nack_ex(handle, raw.src_port);
-				if (err)
+				ret = nsp_send_nack_ex(handle, raw.src_port);
+				if (ret)
 				{
 					break;
 				}
 			}
 			else if (raw.src_port != NSP_PORT_ADDR_ASSIGN && raw.dst_port != NSP_PORT_ADDR_REQUEST)
 			{
-				err = nsp_send_ack(handle);
-				if (err)
+				ret = nsp_send_ack(handle);
+				if (ret)
 				{
 					break;
 				}
@@ -512,5 +548,5 @@ TIEXPORT3 int TICALL nsp_recv_data(CalcHandle* handle, NSPVirtualPacket* vtl)
 	vtl->dst_addr = raw.dst_addr;
 	vtl->dst_port = raw.dst_port;
 
-	return err;
+	return ret;
 }

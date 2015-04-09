@@ -109,9 +109,10 @@ static int hexdump(uint8_t *data, uint32_t size)
 
 	g_free(str);
 #endif
-  return 0;
+	return 0;
 }
 
+// XXX these variables should be per-handle.
 uint8_t		nsp_seq_ti;
 uint8_t		nsp_seq_pc;
 uint8_t		nsp_seq;
@@ -120,6 +121,7 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[sizeof(NSPRawPacket)] = { 0 };
 	uint32_t size;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
@@ -169,73 +171,86 @@ TIEXPORT3 int TICALL nsp_send(CalcHandle* handle, NSPRawPacket* pkt)
 	memcpy(buf + NSP_HEADER_SIZE, pkt->data, pkt->data_size);
 
 	ticables_progress_reset(handle->cable);
-	TRYF(ticables_cable_send(handle->cable, buf, size));
-	if(size >= 128)
+	ret = ticables_cable_send(handle->cable, buf, size);
+	if (!ret)
 	{
-		ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+		if (size >= 128)
+		{
+			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+		}
+
+		if (handle->updat->cancel)
+		{
+			ret = ERR_ABORT;
+		}
 	}
 
-	if (handle->updat->cancel)
-	{
-		return ERR_ABORT;
-	}
-
-	return 0;
+	return ret;
 }
 
 TIEXPORT3 int TICALL nsp_recv(CalcHandle* handle, NSPRawPacket* pkt)
 {
 	uint8_t buf[NSP_HEADER_SIZE];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(pkt);
 
 	ticables_progress_reset(handle->cable);
-	TRYF(ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE));
-
-	pkt->unused		= (((uint16_t)buf[0]) << 8) | buf[1];
-	pkt->src_addr	= (((uint16_t)buf[2]) << 8) | buf[3];
-	pkt->src_port	= (((uint16_t)buf[4]) << 8) | buf[5];
-	pkt->dst_addr	= (((uint16_t)buf[6]) << 8) | buf[7];
-	pkt->dst_port	= (((uint16_t)buf[8]) << 8) | buf[9];
-	pkt->data_sum	= (((uint16_t)buf[10]) << 8) | buf[11];
-	pkt->data_size	= buf[12];
-	pkt->ack		= buf[13];
-	pkt->seq		= buf[14];
-	pkt->hdr_sum	= buf[15];
-
-	if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
+	ret = ticables_cable_recv(handle->cable, buf, NSP_HEADER_SIZE);
+	while (!ret)
 	{
-		nsp_seq_pc++;
-	}
-	else
-	{
-		nsp_seq = pkt->seq;
-	}
+		pkt->unused    = (((uint16_t)buf[0]) << 8) | buf[1];
+		pkt->src_addr  = (((uint16_t)buf[2]) << 8) | buf[3];
+		pkt->src_port  = (((uint16_t)buf[4]) << 8) | buf[5];
+		pkt->dst_addr  = (((uint16_t)buf[6]) << 8) | buf[7];
+		pkt->dst_port  = (((uint16_t)buf[8]) << 8) | buf[9];
+		pkt->data_sum  = (((uint16_t)buf[10]) << 8) | buf[11];
+		pkt->data_size = buf[12];
+		pkt->ack       = buf[13];
+		pkt->seq       = buf[14];
+		pkt->hdr_sum   = buf[15];
 
-	// Next, follows data
-	if (pkt->data_size)
-	{
-		TRYF(ticables_cable_recv(handle->cable, pkt->data, pkt->data_size));
-		if (pkt->data_size >= 128)
+		if (pkt->src_port == 0x00fe || pkt->src_port == 0x00ff || pkt->src_port == 0x00d3)
 		{
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			nsp_seq_pc++;
 		}
+		else
+		{
+			nsp_seq = pkt->seq;
+		}
+
+		// Next, follows data
+		if (pkt->data_size)
+		{
+			ret = ticables_cable_recv(handle->cable, pkt->data, pkt->data_size);
+			if (ret)
+			{
+				break;
+			}
+
+			if (pkt->data_size >= 128)
+			{
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			}
+		}
+
+		if (handle->updat->cancel)
+		{
+			ret = ERR_ABORT;
+			break;
+		}
+
+		ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)",
+		             pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port,
+		             pkt->ack, pkt->seq, pkt->hdr_sum, pkt->data_sum, pkt->data_size);
+		if (pkt->data_size)
+		{
+			hexdump(pkt->data, pkt->data_size);
+		}
+
+		break;
 	}
 
-	if (handle->updat->cancel)
-	{
-		return ERR_ABORT;
-	}
-
-	ticalcs_info("   %04x:%04x->%04x:%04x AK=%02x SQ=%02x HC=%02x DC=%04x (%i bytes)", 
-			pkt->src_addr, pkt->src_port, pkt->dst_addr, pkt->dst_port, 
-			pkt->ack, pkt->seq, pkt->hdr_sum, pkt->data_sum, pkt->data_size);
-	if (pkt->data_size)
-	{
-		hexdump(pkt->data, pkt->data_size);
-	}
-
-	return 0;
+	return ret;
 }
-

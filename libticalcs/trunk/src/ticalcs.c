@@ -34,6 +34,7 @@
 
 #include "gettext.h"
 #include "ticalcs.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "calc_xx.h"
@@ -389,21 +390,20 @@ TIEXPORT3 int TICALL ticalcs_handle_show(CalcHandle* handle)
  **/
 TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable)
 {
-	if (handle != NULL)
-	{
-		handle->cable = cable;
-		handle->attached = !0;
+	int ret;
 
-		TRYC(ticables_cable_open(cable));
+	VALIDATE_HANDLE(handle);
+
+	handle->cable = cable;
+	handle->attached = !0;
+
+	ret = ticables_cable_open(cable);
+	if (!ret)
+	{
 		handle->open = !0;
+	}
 
-		return 0;
-	}
-	else
-	{
-		ticalcs_critical("ticalcs_cable_attach(NULL)");
-		return ERR_INVALID_HANDLE;
-	}
+	return ret;
 }
 
 /**
@@ -417,22 +417,20 @@ TIEXPORT3 int TICALL ticalcs_cable_attach(CalcHandle* handle, CableHandle* cable
  **/
 TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle* handle)
 {
-	if (handle != NULL)
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+
+	ret = ticables_cable_close(handle->cable);
+	if (!ret)
 	{
-		TRYC(ticables_cable_close(handle->cable));
 		handle->open = 0;
 
 		handle->attached = 0;
 		handle->cable = NULL;
-		handle = NULL;
+	}
 
-		return 0;
-	}
-	else
-	{
-		ticalcs_critical("ticalcs_handle_show(NULL)");
-		return ERR_INVALID_HANDLE;
-	}
+	return ret;
 }
 
 /**

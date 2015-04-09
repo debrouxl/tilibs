@@ -32,8 +32,9 @@
 #include <string.h>
 
 #include <ticonv.h>
-#include "gettext.h"
 #include "ticalcs.h"
+#include "internal.h"
+#include "gettext.h"
 #include "logging.h"
 
 /* Dirlist format:
@@ -89,11 +90,78 @@ TIEXPORT3 void TICALL ticalcs_dirlist_destroy(GNode** tree)
 		}
 
 		ti = (TreeInfo *)((*tree)->data);
-		g_free((*tree)->data);
+		g_free(ti);
 		g_node_destroy(*tree);
 
 		*tree = NULL;
 	}
+}
+
+static void display_node(TreeInfo * info, VarEntry * ve, unsigned char type)
+{
+	char * utf8 = ticonv_varname_to_utf8(info->model, ve->name, type);
+	int k;
+
+	printf("| ");
+	for (k = 0; k < 8; k++)
+	{
+		printf("%02X", (uint8_t) (ve->name)[k]);
+	}
+	printf(" | ");
+	printf("%8s", utf8);
+	printf(" | ");
+	printf("%2i", ve->attr);
+	printf(" | ");
+	printf("%02X", ve->type);
+	printf(" | ");
+	printf("%08X", ve->size);
+	printf(" | ");
+	printf("%8s", ve->folder);
+	printf(" |");
+	printf("\n");
+
+	g_free(utf8);
+}
+
+static void display_tree(TreeInfo * info, GNode * vars)
+{
+	int i;
+
+	//ticalcs_info("vars has %d children", (int)g_node_n_children(vars));
+	for (i = 0; i < (int)g_node_n_children(vars); i++) // parse children
+	{
+		GNode *parent = g_node_nth_child(vars, i);
+		VarEntry *fe = (VarEntry *) (parent->data);
+		int j;
+
+		if (fe != NULL)
+		{
+			display_node(info, fe, -1);
+		}
+
+		//ticalcs_info("parent has %d children", (int)g_node_n_children(parent));
+		if (info->model != CALC_NSPIRE)
+		{
+			for (j = 0; j < (int)g_node_n_children(parent); j++)
+			{
+				GNode *child = g_node_nth_child(parent, j);
+				VarEntry *ve = (VarEntry *) (child->data);
+
+				display_node(info, ve, ve->type);
+			}
+		}
+		else
+		{
+			// Recurse into sub-folder if necessary.
+			if (fe != NULL && fe->type == NSP_DIR)
+			{
+				//ticalcs_info("Recurse");
+				display_tree(info, parent);
+			}
+		}
+		//ticalcs_info("finished enumerating %d children of parent", (int)g_node_n_children(parent));
+	}
+	//ticalcs_info("finished enumerating %d children of vars", (int)g_node_n_children(vars));
 }
 
 /**
@@ -108,8 +176,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 {
 	GNode *vars = tree;
 	TreeInfo *info;
-	int i, j, k;
-	char *utf8;
+	int i;
 
 	if (tree == NULL)
 	{
@@ -119,75 +186,31 @@ TIEXPORT3 void TICALL ticalcs_dirlist_display(GNode* tree)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
-		return;
-
-  printf(  "+------------------+----------+----+----+----------+----------+\n");
-  printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
-  printf(  "+------------------+----------+----+----+----------+----------+\n");
-
-  for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
-  {
-    GNode *parent = g_node_nth_child(vars, i);
-    VarEntry *fe = (VarEntry *) (parent->data);
-
-    if (fe != NULL) 
 	{
-		utf8 = ticonv_varname_to_utf8(info->model, fe->name, -1);
+		return;
+	}
 
-      printf("| ");
-      for (k = 0; k < 8; k++)
-		printf("%02X", (uint8_t) (fe->name)[k]);
-      printf(" | ");	
-      printf("%8s", utf8);
-      printf(" | ");
-      printf("%2i", fe->attr);
-      printf(" | ");
-      printf("%02X", fe->type);
-      printf(" | ");
-      printf("%08X", fe->size);
-      printf(" | ");
-      printf("%8s", fe->folder);
-      printf(" |");
-	  printf("\n");
+	printf(  "+------------------+----------+----+----+----------+----------+\n");
+	printf(_("| B. name          | T. name  |Attr|Type| Size     | Folder   |\n"));
+	printf(  "+------------------+----------+----+----+----------+----------+\n");
 
-	  g_free(utf8);
-    }
+	i = (int)g_node_n_children(vars);
+	//ticalcs_info("Root has %d children", i);
+	display_tree(info, vars);
+	if (!i)
+	{
+		if(!strcmp(info->type, VAR_NODE_NAME))
+		{
+			printf(_("| No variables     |\n"));
+		}
+		else if(!strcmp(info->type, APP_NODE_NAME))
+		{
+			printf(_("| No applications  |\n"));
+		}
+	}
 
-    for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
-    {
-      GNode *child = g_node_nth_child(parent, j);
-      VarEntry *ve = (VarEntry *) (child->data);
-
-	  utf8 = ticonv_varname_to_utf8(info->model, ve->name, ve->type);
-
-      printf("| ");
-      for (k = 0; k < 8; k++) 
-		printf("%02X", (uint8_t) (ve->name)[k]);
-      printf(" | ");
-      printf("%8s", utf8);
-      printf(" | ");
-      printf("%2i", ve->attr);
-      printf(" | ");
-      printf("%02X", ve->type);
-      printf(" | ");
-      printf("%08X", ve->size);
-      printf(" | ");
-      printf("%8s", ve->folder);
-      printf(" |");
-	  printf("\n");
-
-	  g_free(utf8);
-    }
-  }
-  if (!i)
-  {
-	  if(!strcmp(info->type, VAR_NODE_NAME))
-		printf(_("| No variables     |\n"));
-	  else if(!strcmp(info->type, APP_NODE_NAME))
-		printf(_("| No applications  |\n"));
-  }
-  printf(_("+------------------+----------+----+----+----------+----------+"));
-  printf("\n");
+	printf(_("+------------------+----------+----+----+----------+----------+"));
+	printf("\n");
 }
 
 /**
@@ -213,10 +236,14 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
+	{
 		return NULL;
+	}
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
+	{
 		return NULL;
+	}
 
 	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
@@ -224,7 +251,9 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
 		VarEntry *fe = (VarEntry *) (parent->data);
 
 		if ((fe != NULL) && strcmp(fe->name, s->folder))
+		{
 			continue;
+		}
 
 		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
 		{
@@ -268,17 +297,23 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
+	{
 		return 0;
+	}
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
+	{
 		return 0;
+	}
 
 	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
 		GNode *parent = g_node_nth_child(vars, i);
 
 		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
+		{
 			nvars++;
+		}
 	}
 
 	return nvars;
@@ -307,10 +342,14 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
+	{
 		return 0;
+	}
 
 	if (strcmp(info->type, VAR_NODE_NAME))
+	{
 		return 0;
+	}
 	
 	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
 	{
@@ -321,8 +360,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree)
 			GNode *child = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (child->data);
 
-			if(ve->attr != ATTRB_ARCHIVED)
+			if (ve->attr != ATTRB_ARCHIVED)
+			{
 				mem += ve->size;
+			}
 		}
 	}
 
@@ -344,7 +385,7 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 	TreeInfo *info1;
 	TreeInfo *info2;
 
-	if (!vars || !apps)
+	if (vars == NULL || apps == NULL)
 	{
 		ticalcs_critical("ticalcs_dirlist_flash_used: an argument is NULL");
 		return 0;
@@ -353,7 +394,9 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 	info1 = (TreeInfo *)(vars->data);
 	info2 = (TreeInfo *)(apps->data);
 	if (info1 == NULL ||  info2 == NULL)
+	{
 		return 0;
+	}
 
 	if (!strcmp(info1->type, VAR_NODE_NAME))
 	{
@@ -366,8 +409,10 @@ TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps)
 				GNode *child = g_node_nth_child(parent, j);
 				VarEntry *ve = (VarEntry *) (child->data);
 
-				if(ve->attr == ATTRB_ARCHIVED)
+				if (ve->attr == ATTRB_ARCHIVED)
+				{
 					mem += ve->size;
+				}
 			}
 		}
 	}
@@ -422,25 +467,33 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
+	{
 		return;
+	}
 
 	if (strcmp(info->type, VAR_NODE_NAME) && strcmp(info->type, APP_NODE_NAME))
+	{
 		return;
+	}
 
-	if(!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+	if (!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+	{
 		folder = "main";
+	}
 	else
+	{
 		folder = entry->folder;
+	}
 
 	// If TI8x tree is empty, create pseudo-folder (NULL)
-	if(!g_node_n_children(tree) && !tifiles_has_folder(info->model))
+	if (!g_node_n_children(tree) && !tifiles_has_folder(info->model))
 	{
 		parent = g_node_new(NULL);
 		g_node_append(tree, parent);
 	}
 
 	// Check for one folder at least...
-	if(g_node_n_children(tree) > 0)
+	if (g_node_n_children(tree) > 0)
 	{
 		// Parse folders
 		for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
@@ -448,8 +501,10 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 			parent = g_node_nth_child(tree, i);
 			fe = (VarEntry *) (parent->data);
 
-			if(fe == NULL)
+			if (fe == NULL)
+			{
 				break;
+			}
 
 			if(!strcmp(fe->name, folder))
 			{
@@ -460,8 +515,8 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 	}
 
 	// folder doesn't exist? => create!
-	if((!found && fe) || 
-	   (!g_node_n_children(tree) && tifiles_has_folder(info->model)))
+	if ((!found && fe) ||
+	    (!g_node_n_children(tree) && tifiles_has_folder(info->model)))
 	{
 		fe = tifiles_ve_create();
 		if (fe != NULL)
@@ -475,13 +530,13 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		}
 	}
 
-	if(!strcmp(entry->name, ""))
+	if (!strcmp(entry->name, ""))
 	{
 		return;
 	}
 
 	// next, add variables beneath this folder
-	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
+	for (found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
 	{
 		child = g_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
@@ -493,7 +548,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		}
 	}
 
-	if(!found)
+	if (!found)
 	{
 		ve = tifiles_ve_dup(entry);
 		if (ve != NULL)
@@ -503,7 +558,7 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry)
 		}
 	}
 
-	if(fe && found)
+	if (fe && found)
 	{
 		fe->size++;
 	}
@@ -541,15 +596,23 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 
 	info = (TreeInfo *)(tree->data);
 	if (info == NULL)
+	{
 		return;
+	}
 
 	if (strcmp(info->type, VAR_NODE_NAME))
+	{
 		return;
+	}
 
-	if(!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+	if (!strcmp(entry->folder, "") && tifiles_has_folder(info->model))
+	{
 		folder = "main";
+	}
 	else
+	{
 		folder = entry->folder;
+	}
 
 	// Parse folders
 	for (found = 0, i = 0; i < (int)g_node_n_children(tree); i++)
@@ -557,38 +620,44 @@ TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry)
 		parent = g_node_nth_child(tree, i);
 		fe = (VarEntry *) (parent->data);
 
-		if(fe == NULL)
+		if (fe == NULL)
+		{
 			break;
+		}
 
-		if(!strcmp(fe->name, folder))
+		if (!strcmp(fe->name, folder))
 		{
 			found = !0;
 			break;
 		}
 	}
 
-	if(!found && fe)
+	if (!found && fe)
+	{
 		return;
+	}
 
 	// next, delete variables beneath this folder
-	for(found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
+	for (found = 0, j = 0; j < (int)g_node_n_children(parent); j++)
 	{
 		child = g_node_nth_child(parent, j);
 		ve = (VarEntry *) (child->data);
 
-		if(!strcmp(ve->name, entry->name))
+		if (!strcmp(ve->name, entry->name))
 		{
 			found = !0;
 			break;
 		}
 	}
 
-	if(found)
+	if (found)
 	{
 		tifiles_ve_delete(child->data);
 		g_node_destroy(child);
 	}
 
-	if(fe && found)
+	if (fe && found)
+	{
 		fe->size--;
+	}
 }
