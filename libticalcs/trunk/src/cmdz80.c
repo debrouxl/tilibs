@@ -44,7 +44,7 @@
 #define PC_TI7383 ((handle->model == CALC_TI73) ? PC_TI73 : PC_TI83p)
 #define TI7383_PC ((handle->model == CALC_TI73) ? TI73_PC : TI83p_PC)
 #define TI7383_BKUP ((handle->model == CALC_TI73) ? TI73_BKUP : TI83p_BKUP)
-#define EXTRAS ((handle->model == CALC_TI83P) || (handle->model == CALC_TI84P) ? 2 : 0)
+#define EXTRAS ((handle->model == CALC_TI73) ? 0 : 2)
 
 // Share some commands between TI82 & 83
 #define PC_TI8283 ((handle->model == CALC_TI82) ? PC_TI82 : PC_TI83)
