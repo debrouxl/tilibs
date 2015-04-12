@@ -356,11 +356,11 @@ int nsp_decomp(const char *filename)
 	unsigned char data;
 	int i;
 
-	strcpy(src_name, filename);
-	strcat(src_name, ".hex");
+	snprintf(src_name, sizeof(src_name) - 1, "%s.hex", filename);
+	src_name[sizeof(src_name) - 1] = 0;
 
-	strcpy(dst_name, filename);
-	strcat(dst_name, ".pkt");
+	snprintf(dst_name, sizeof(dst_name) - 1, "%s.pkt", filename);
+	dst_name[sizeof(dst_name) - 1] = 0;
 
 	hex = fopen(src_name, "rt");
 	if(hex == NULL)

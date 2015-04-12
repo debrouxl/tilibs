@@ -207,7 +207,9 @@ char *TICALL tifiles_get_fldname(const char *full_name)
 	{
 		bs = strchr(full_name, '\\');
 		if (bs == NULL)
-			strcpy(folder, "");
+		{
+			folder[0] = 0;
+		}
 		else
 		{
 			i = strlen(full_name) - strlen(bs);
@@ -232,8 +234,7 @@ char *TICALL tifiles_get_fldname(const char *full_name)
  *
  * Return value: a full path as string like 'fldname\varname'.
  **/
-char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
-				  const char *fldname, const char *varname)
+char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
 {
 	if (full_name == NULL || fldname == NULL || varname == NULL)
 	{
@@ -243,11 +244,9 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name,
 
 	if (tifiles_has_folder(model)) 
 	{
-		if (strcmp(fldname, "")) 
+		if (fldname[0] == 0)
 		{
-			strcpy(full_name, fldname);
-			strcat(full_name, "\\");
-			strcat(full_name, varname);
+			sprintf(full_name, "%s\\%s", fldname, varname);
 		}
 		else
 		{
@@ -315,7 +314,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		g_free(part1);
 		g_free(part2);
 
-		filename = strdup(tmp);
+		filename = g_strdup(tmp);
 		g_free(tmp);
 	}
 

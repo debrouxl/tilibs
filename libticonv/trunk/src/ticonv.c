@@ -65,7 +65,10 @@ TIEXPORT4 size_t TICALL ticonv_utf16_strlen(const unsigned short *str)
 	if (str != NULL)
 	{
 		const unsigned short *p = str;
-		while (*(p++)) l++;
+		while (*(p++))
+		{
+			l++;
+		}
 	}
 	else
 	{
@@ -95,7 +98,10 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 	}
 
 	dst = g_utf8_to_utf16(src, -1, NULL, NULL, &error);
-	if(error) g_critical("%s", error->message);
+	if (error)
+	{
+		g_critical("%s", error->message);
+	}
 
 	return dst;
 }
@@ -121,7 +127,10 @@ TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
 	}
 
 	dst = g_utf16_to_utf8(src, -1, NULL, NULL, &error);
-	if(error) g_critical("%s", error->message);
+	if (error)
+	{
+		g_critical("%s", error->message);
+	}
 
 	return dst;
 }
@@ -140,7 +149,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 {
 	if (utf16 != NULL && ti != NULL)
 	{
-		switch(model)
+		switch (model)
 		{
 			case CALC_TI73: return ticonv_utf16_to_ti73(utf16, ti); break;
 			case CALC_TI80: return ticonv_utf16_to_ti80(utf16, ti); break;
@@ -159,17 +168,20 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI84P_USB: return ticonv_utf16_to_ti84pusb(utf16, ti); break;
 			case CALC_TI89T_USB: return ticonv_utf16_to_ti89tusb(utf16, ti); break;
 			case CALC_NSPIRE:
-				{
+			{
 				char *tmp = ticonv_utf16_to_utf8(utf16);
 				strcpy(ti, tmp);
 				g_free(tmp);
 				return ti;
-				}
-				break;
-			default: return strcpy(ti, "");
+			}
+			break;
+			default:
+			{
+				ti[0] = 0;
+				return ti;
+			}
+			break;
 		}
-
-		return strcpy(ti, "");
 	}
 	else
 	{
@@ -217,7 +229,7 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 {
 	if (ti != NULL && utf16 != NULL)
 	{
-		switch(model)
+		switch (model)
 		{
 			case CALC_TI73: return ticonv_ti73_to_utf16(ti, utf16); break;
 			case CALC_TI80: return ticonv_ti80_to_utf16(ti, utf16); break;
@@ -237,17 +249,15 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			case CALC_TI84P_USB: return ticonv_ti84pusb_to_utf16(ti, utf16); break;
 			case CALC_TI89T_USB: return ticonv_ti89tusb_to_utf16(ti, utf16); break;
 			case CALC_NSPIRE:
-				{
+			{
 				unsigned short *tmp = ticonv_utf8_to_utf16(ti);
 				memcpy(utf16, tmp, 2*ticonv_utf16_strlen(tmp));
 				g_free(tmp);
 				return utf16;
-				}
-				break;
+			}
+			break;
 			default: return memcpy(utf16, "\0", 2);
 		}
-
-		return memcpy(utf16, "\0", 2);
 	}
 	else
 	{
@@ -487,17 +497,17 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 	}
 
 	// Do TI-UTF-8 -> UTF-16,UTF-16 -> TI-8x/9x charset
-	if(model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
+	if (model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P_USB, src);
-		
+
 		ti = ticonv_charset_utf16_to_ti(CALC_TI84P, utf16);
 		g_free(utf16);
-		
+
 		dst = ticonv_varname_tokenize(CALC_TI84P, ti, type);
 		g_free(ti);
 	}
-	else if(model == CALC_TI89T_USB)
+	else if (model == CALC_TI89T_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T_USB, src);
 
@@ -507,7 +517,9 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 		dst = ti;
 	}
 	else
+	{
 		dst = g_strdup(src);
+	}
 
 	return dst;
 }
@@ -563,7 +575,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		return NULL;
 	}
 
-	if(model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
+	if (model == CALC_TI84P_USB || model == CALC_TI84PC_USB)
 	{
 		ti = ticonv_varname_detokenize(CALC_TI84P, src, type);
 
@@ -573,7 +585,7 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		dst = ticonv_charset_utf16_to_ti(CALC_TI84P_USB, utf16);
 		g_free(utf16);
 	}
-	else if(model == CALC_TI89T_USB)
+	else if (model == CALC_TI89T_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T, src);
 
@@ -581,8 +593,10 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile(CalcModel model, const char *s
 		g_free(utf16);
 	}
 	else
+	{
 		dst = g_strdup(src);
-	
+	}
+
 	return dst;
 }
 

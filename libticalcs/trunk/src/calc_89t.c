@@ -318,7 +318,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 			continue;
 		}
 
-		if (ve->folder)
+		if (ve->folder[0])
 		{
 			tifiles_build_fullname(handle->model, varname, ve->folder, ve->name);
 		}

@@ -139,8 +139,10 @@ TIEXPORT2 void			TICALL tifiles_ve_delete_array(VarEntry** array)
 
 	if (array != NULL)
 	{
-		for(ptr = array; *ptr; ptr++)
+		for (ptr = array; *ptr; ptr++)
+		{
 			tifiles_ve_delete(*ptr);
+		}
 		g_free(array);
 	}
 	else
@@ -322,8 +324,10 @@ TIEXPORT2 void			TICALL tifiles_fp_delete_array(FlashPage** array)
 
 	if (array != NULL)
 	{
-		for(ptr = array; ptr; ptr++)
+		for (ptr = array; *ptr; ptr++)
+		{
 			tifiles_fp_delete(*ptr);
+		}
 		g_free(array);
 	}
 	else

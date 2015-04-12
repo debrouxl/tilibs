@@ -552,6 +552,7 @@ extern "C" {
 
 	// undocumented
 	TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders);
+	TIEXPORT2 void tifiles_free_table_of_entries(int ** table);
 
 	/************************/
 	/* Deprecated functions */

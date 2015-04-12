@@ -331,14 +331,14 @@ int ti8x_file_read_backup(const char *filename, Ti8xBackup *content)
 	char signature[9];
 	uint16_t sum;
 
-	if (!tifiles_file_is_backup(filename))
-	{
-		return ERR_INVALID_FILE;
-	}
-
 	if (content == NULL)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
+		return ERR_INVALID_FILE;
+	}
+
+	if (!tifiles_file_is_backup(filename))
+	{
 		return ERR_INVALID_FILE;
 	}
 
@@ -698,7 +698,6 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		g_free(filename);
 		return ERR_FILE_OPEN;
 	}
-	g_free(filename);
 
 	// write header
 	if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
@@ -827,11 +826,13 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 	content->checksum = sum;
 	if(fwrite_word(f, content->checksum) < 0) goto tfwr;
 
+	g_free(filename);
 	fclose(f);
 	return 0;
 
 tfwr:	// release on exit
 	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	g_free(filename);
 	fclose(f);
 	return ERR_FILE_IO;
 }
@@ -958,7 +959,8 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 			}
 		}
 
-		strcpy(ve.name, content->name);
+		strncpy(ve.name, content->name, sizeof(ve.name) - 1);
+		ve.name[sizeof(ve.name) - 1] = 0;
 		ve.type = content->data_type;
 
 		filename = tifiles_build_filename(content->model, &ve);
@@ -972,6 +974,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 	if (f == NULL) 
 	{
 		tifiles_info("Unable to open this file: %s", filename);
+		g_free(filename);
 		return ERR_FILE_OPEN;
 	}
 
@@ -1066,11 +1069,13 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 		}
 	}
 
+	g_free(filename);
 	fclose(f);
 	return 0;
 
 tfwf:	// release on exit
 	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	g_free(filename);
 	fclose(f);
 	return ERR_FILE_IO;
 }
@@ -1219,27 +1224,37 @@ int ti8x_file_display(const char *filename)
 	Ti8xRegular *content1;
 	Ti8xBackup *content2;
 	Ti8xFlash *content3;
+	int ret;
 
 	if (tifiles_file_is_flash(filename)) 
 	{
 		content3 = tifiles_content_create_flash(CALC_TI83P);
-		ti8x_file_read_flash(filename, content3);
-		ti8x_content_display_flash(content3);
-		tifiles_content_delete_flash(content3);
+		ret = ti8x_file_read_flash(filename, content3);
+		if (!ret)
+		{
+			ti8x_content_display_flash(content3);
+			tifiles_content_delete_flash(content3);
+		}
 	} 
 	else if (tifiles_file_is_regular(filename)) 
 	{
 		content1 = tifiles_content_create_regular(CALC_NONE);
-		ti8x_file_read_regular(filename, content1);
-		ti8x_content_display_regular(content1);
-		tifiles_content_delete_regular(content1);
+		ret = ti8x_file_read_regular(filename, content1);
+		if (!ret)
+		{
+			ti8x_content_display_regular(content1);
+			tifiles_content_delete_regular(content1);
+		}
 	} 
 	else if (tifiles_file_is_backup(filename)) 
 	{
 		content2 = tifiles_content_create_backup(CALC_NONE);
-		ti8x_file_read_backup(filename, content2);
-		ti8x_content_display_backup(content2);
-		tifiles_content_delete_backup(content2);
+		ret = ti8x_file_read_backup(filename, content2);
+		if (!ret)
+		{
+			ti8x_content_display_backup(content2);
+			tifiles_content_delete_backup(content2);
+		}
 	}
 	else 
 	{
@@ -1247,7 +1262,7 @@ int ti8x_file_display(const char *filename)
 		return ERR_BAD_FILE;
 	}
 
-	return 0;
+	return ret;
 }
 
 #endif

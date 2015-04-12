@@ -156,8 +156,10 @@ TIEXPORT2 void			TICALL tifiles_te_delete_array(TigEntry** array)
 
 	if (array != NULL)
 	{
-		for(ptr = array; ptr; ptr++)
+		for(ptr = array; *ptr; ptr++)
+		{
 			tifiles_te_delete(*ptr);
+		}
 		g_free(array);
 	}
 	else
@@ -354,6 +356,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const ch
 			content = tifiles_content_create_tigroup(CALC_NONE, 0);
 			tifiles_file_write_tigroup(dst_filename, content);
 			tifiles_content_delete_tigroup(content);
+			content = NULL;
 		}
 	}
 
@@ -392,7 +395,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const ch
 	return 0;
 
 ttaf:	// release on exit
-    tifiles_te_delete(te);
+	tifiles_te_delete(te);
 	tifiles_content_delete_tigroup(content);
 	return ret;
 }
@@ -494,11 +497,16 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 			FlashContent *ptr;
 
 			for (ptr = src_contents2[i]; ptr; ptr = ptr->next)
-				if(ptr->data_type == tifiles_flash_type(model))
+			{
+				if (ptr->data_type == tifiles_flash_type(model))
+				{
 					break;
-			
-			strcpy(ve.folder, "");
-			strcpy(ve.name, ptr->name);
+				}
+			}
+
+			ve.folder[0] = 0;
+			strncpy(ve.name, ptr->name, sizeof(ve.name) - 1);
+			ve.name[sizeof(ve.name) - 1] = 0;
 			ve.type = ptr->data_type;
 			te->filename = tifiles_build_filename(model, &ve);
 			te->type = TIFILE_FLASH;
@@ -990,13 +998,15 @@ static int zip_write(struct archive *arc, CalcModel model, const char *origfname
 	{
 		tifiles_critical("zip_write: cannot read temporary file");
 		archive_entry_free(entry);
-		return ERR_FILE_IO;
+		err = ERR_FILE_IO;
+		goto end2;
 	}
 
 	if (archive_write_header(arc, entry) != ARCHIVE_OK)
 	{
 		archive_entry_free(entry);
-		return ERR_FILE_IO;
+		err = ERR_FILE_IO;
+		goto end;
 	}
 	archive_entry_free(entry);
 
@@ -1027,7 +1037,9 @@ static int zip_write(struct archive *arc, CalcModel model, const char *origfname
 	} while (!err && (size_read>0));
 
 	g_free(buf);
+end:
 	fclose(f);
+end2:
 	return err;
 }
 

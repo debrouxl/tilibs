@@ -67,7 +67,7 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	if (content == NULL)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
-	return ERR_INVALID_FILE;
+		return ERR_INVALID_FILE;
 	}
 
 	f = g_fopen(filename, "rb");
@@ -91,8 +91,9 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		entry->type = tifiles_fext2vartype(content->model, ext);
 		if(ext) *(ext-1) = '\0';
 
-		strcpy(entry->folder, "");
-		strcpy(entry->name, basename);
+		entry->folder[0] = 0;
+		strncpy(entry->name, basename, sizeof(entry->name) - 1);
+		entry->name[sizeof(entry->name) - 1] = 0;
 		g_free(basename);
 
 		entry->attr = ATTRB_NONE;
@@ -238,7 +239,6 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
 		g_free(filename);
 		return ERR_FILE_OPEN;
 	}
-	g_free(filename);
 
 	entry = content->entries[0];
 	if(fwrite(entry->data, 1, entry->size, f) < entry->size)
@@ -246,11 +246,13 @@ int tnsp_file_write_regular(const char *fname, FileContent *content, char **real
 		goto tfwr;
 	}
 
+	g_free(filename);
 	fclose(f);
 	return 0;
 
 tfwr:  // release on exit
 	tifiles_critical("%s: error writing file %s", __FUNCTION__, filename);
+	g_free(filename);
 	fclose(f);
 	return ERR_FILE_IO;
 }
@@ -349,21 +351,27 @@ int tnsp_file_display(const char *filename)
 {
 	FileContent *content1;
 	FlashContent *content3;
+	int ret;
 
-	// the testing order is important: regular before backup (due to TI89/92+)
 	if (tifiles_file_is_os(filename)) 
 	{
 		content3 = tifiles_content_create_flash(CALC_NSPIRE);
-		tnsp_file_read_flash(filename, content3);
-		tnsp_content_display_flash(content3);
-		tifiles_content_delete_flash(content3);
+		ret = tnsp_file_read_flash(filename, content3);
+		if (!ret)
+		{
+			tnsp_content_display_flash(content3);
+			tifiles_content_delete_flash(content3);
+		}
 	}
 	else if (tifiles_file_is_regular(filename)) 
 	{
-		content1 = tifiles_content_create_regular(CALC_TI92);
-		tnsp_file_read_regular(filename, content1);
-		tnsp_content_display_regular(content1);
-		tifiles_content_delete_regular(content1);
+		content1 = tifiles_content_create_regular(CALC_NSPIRE);
+		ret = tnsp_file_read_regular(filename, content1);
+		if (!ret)
+		{
+			tnsp_content_display_regular(content1);
+			tifiles_content_delete_regular(content1);
+		}
 	}
 	else
 	{
@@ -371,5 +379,5 @@ int tnsp_file_display(const char *filename)
 		return ERR_BAD_FILE;
 	}
 
-	return 0;
+	return ret;
 }

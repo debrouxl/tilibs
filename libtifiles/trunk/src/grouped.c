@@ -322,7 +322,7 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 		return ERR_INVALID_FILE;
 	}
 
-	if(tifiles_file_get_model(src_filename) == CALC_NSPIRE)
+	if (tifiles_file_get_model(src_filename) == CALC_NSPIRE)
 	{
 		return ERR_BAD_CALC;
 	}
@@ -330,9 +330,9 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	// read group file
 	src = tifiles_content_create_regular(CALC_NONE);
 	ret = tifiles_file_read_regular(src_filename, src);
-	if(ret)
+	if (ret)
 	{
-		goto tuf2;
+		goto tuf3;
 	}
 
 	// ungroup structure
@@ -343,8 +343,8 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	}
 
 	// count number of structures and allocates array of strings
-	for(ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
-	if(dst_filenames != NULL)
+	for (ptr = dst, n = 0; *ptr != NULL; ptr++, n++);
+	if (dst_filenames != NULL)
 	{
 		*dst_filenames = (char **)g_malloc0((n + 1) * sizeof(char *));
 	}
@@ -353,12 +353,12 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	for (ptr = dst, i = 0; *ptr != NULL; ptr++, i++)
 	{
 		ret = tifiles_file_write_regular(NULL, *ptr, &real_name);
-		if(ret)
+		if (ret)
 		{
 			goto tuf;
 		}
 
-		if(dst_filenames != NULL)
+		if (dst_filenames != NULL)
 		{
 			(*dst_filenames)[i] = real_name;
 		}
@@ -372,9 +372,9 @@ TIEXPORT2 int TICALL tifiles_ungroup_file(const char *src_filename, char ***dst_
 	goto tuf2;
 
 tuf:
-	if(dst_filenames != NULL)
+	if (dst_filenames != NULL)
 	{
-		for(p = *dst_filenames; *p; p++)
+		for (p = *dst_filenames; *p; p++)
 		{
 			g_free(*p);
 		}
@@ -385,6 +385,7 @@ tuf:
 tuf2:
 	// release allocated memory
 	tifiles_content_delete_regular(src);
+tuf3:
 	tifiles_content_delete_group(dst);
 	return ret;
 }
@@ -501,8 +502,10 @@ TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char
 	}
 
 	// src can be single/group file and dst must be group file
-	if(!tifiles_file_is_group(dst_filename))
+	if (!tifiles_file_is_group(dst_filename))
+	{
 		return -1;
+	}
 
 	src_model = tifiles_file_get_model(src_filename);
 	dst_model = tifiles_file_get_model(dst_filename);
@@ -511,19 +514,27 @@ TIEXPORT2 int TICALL tifiles_group_add_file(const char *src_filename, const char
 	dst_content = tifiles_content_create_regular(dst_model);
 
 	ret = tifiles_file_read_regular(src_filename, src_content);
-	if(ret) goto tgaf;
-	ret = tifiles_file_read_regular(dst_filename, dst_content);
-	if(ret) goto tgaf;
+	if (!ret)
+	{
+		ret = tifiles_file_read_regular(dst_filename, dst_content);
+		if (!ret)
+		{
+			for(i = 0; i < src_content->num_entries; i++)
+			{
+				tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));
+			}
 
-	for(i = 0; i < src_content->num_entries; i++)
-		tifiles_content_add_entry(dst_content, tifiles_ve_dup(src_content->entries[i]));
+			ret = tifiles_file_write_regular(dst_filename, dst_content, NULL);
 
-	ret = tifiles_file_write_regular(dst_filename, dst_content, NULL);
-	if(ret) goto tgaf;
+			tifiles_content_delete_regular(dst_content);
+		}
 
-tgaf:
-	tifiles_content_delete_regular(src_content);
-	tifiles_content_delete_regular(dst_content);
+		tifiles_content_delete_regular(src_content);
+	}
+	else
+	{
+		tifiles_content_delete_regular(dst_content);
+	}
 
 	return ret;
 }
@@ -551,20 +562,22 @@ TIEXPORT2 int TICALL tifiles_group_del_file(VarEntry *entry, const char *dst_fil
 
 	// src can be single/group file and dst must be group file
 	if(!tifiles_file_is_group(dst_filename))
+	{
 		return -1;
+	}
 
 	dst_model = tifiles_file_get_model(dst_filename);
 	dst_content = tifiles_content_create_regular(dst_model);
 	ret = tifiles_file_read_regular(dst_filename, dst_content);
-	if(ret) goto tgdf;
+	if (!ret)
+	{
+		tifiles_content_del_entry(dst_content, entry);
+		tifiles_file_display_regular(dst_content);
 
-	tifiles_content_del_entry(dst_content, entry);
-	tifiles_file_display_regular(dst_content);
+		ret = tifiles_file_write_regular(dst_filename, dst_content, NULL);
 
-	ret = tifiles_file_write_regular(dst_filename, dst_content, NULL);
-	if(ret) goto tgdf;
+		tifiles_content_delete_regular(dst_content);
+	}
 
-tgdf:
-	tifiles_content_delete_regular(dst_content);
 	return ret;
 }

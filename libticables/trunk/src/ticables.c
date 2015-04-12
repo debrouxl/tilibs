@@ -148,7 +148,7 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	strcat(locale_dir, "\\locale");
 #endif
 #else
-	strcpy(locale_dir, LOCALEDIR);
+	strncpy(locale_dir, LOCALEDIR, sizeof(locale_dir) - 21);
 #endif
 
 	if (ticables_instance)

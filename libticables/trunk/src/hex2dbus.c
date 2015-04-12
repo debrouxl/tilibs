@@ -134,11 +134,11 @@ int dbus_decomp(const char *filename, int resync)
 	int ret = 0;
 
 	// build filenames
-	strcpy(src_name, filename);
-	strcat(src_name, ".hex");
+	snprintf(src_name, sizeof(src_name) - 1, "%s.hex", filename);
+	src_name[sizeof(src_name) - 1] = 0;
 
-	strcpy(dst_name, filename);
-	strcat(dst_name, ".pkt");
+	snprintf(dst_name, sizeof(dst_name) - 1, "%s.pkt", filename);
+	dst_name[sizeof(dst_name) - 1] = 0;
 
 	stat(src_name, &st);
 	file_size = st.st_size;

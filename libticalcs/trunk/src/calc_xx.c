@@ -229,6 +229,9 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 	RETURN_IF_HANDLE_NOT_OPEN(handle)
 	RETURN_IF_HANDLE_BUSY(handle)
 
+	*vars = NULL;
+	*apps = NULL;
+
 	ticalcs_info(_("Requesting folder & vars & apps listing:"));
 	handle->busy = 1;
 	if (calc->get_dirlist)
@@ -239,13 +242,19 @@ TIEXPORT3 int TICALL ticalcs_calc_get_dirlist(CalcHandle* handle, GNode** vars, 
 
 	if (!ret)
 	{
-		ti = (*vars)->data;
-		ti->mem_mask |= MEMORY_USED;
-		ti->mem_used = ticalcs_dirlist_ram_used(*vars);
+		if (*vars != NULL)
+		{
+			ti = (*vars)->data;
+			ti->mem_mask |= MEMORY_USED;
+			ti->mem_used = ticalcs_dirlist_ram_used(*vars);
+		}
 
-		ti = (*apps)->data;
-		ti->mem_mask |= MEMORY_USED;
-		ti->mem_used = ticalcs_dirlist_flash_used(*vars, *apps);
+		if (*apps != NULL)
+		{
+			ti = (*apps)->data;
+			ti->mem_mask |= MEMORY_USED;
+			ti->mem_used = ticalcs_dirlist_flash_used(*vars, *apps);
+		}
 	}
 
 	return ret;
@@ -604,7 +613,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_os(CalcHandle* handle, FlashContent* cont
 
 	ticalcs_info(_("Sending FLASH os:"));
 	handle->busy = 1;
-	if (calc->send_app)
+	if (calc->send_os)
 	{
 		ret = calc->send_os(handle, content);
 	}
@@ -953,7 +962,7 @@ TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle* handle, VarRequest* old
 	RETURN_IF_HANDLE_NOT_OPEN(handle)
 	RETURN_IF_HANDLE_BUSY(handle)
 
-	if (oldname->folder && oldname->folder[0] && newname->folder && newname->folder[0])
+	if (oldname->folder[0] && newname->folder[0])
 	{
 		ticalcs_info(_("Renaming variable '%s/%s' to '%s/%s':"), oldname->folder, oldname->name, newname->folder, newname->name);
 	}
@@ -1109,7 +1118,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 {
 	BackupContent *content1;
 	FileContent *content2;
-	int ret;
+	int ret = ERR_FILE_OPEN;
 
 	VALIDATE_HANDLE(handle)
 	VALIDATE_NONNULL(filename)
@@ -1122,23 +1131,29 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 	{
 		// true backup capability
 		content1 = tifiles_content_create_backup(handle->model);
-		ret = tifiles_file_read_backup(filename, content1);
-		if (!ret)
+		if (content1 != NULL)
 		{
-			ret = ticalcs_calc_send_backup(handle, content1);
+			ret = tifiles_file_read_backup(filename, content1);
+			if (!ret)
+			{
+				ret = ticalcs_calc_send_backup(handle, content1);
+				tifiles_content_delete_backup(content1);
+			}
 		}
-		tifiles_content_delete_backup(content1);
 	}
 	else
 	{
 		// pseudo-backup
 		content2 = tifiles_content_create_regular(handle->model);
-		ret = tifiles_file_read_regular(filename, content2);
-		if (!ret)
+		if (content2 != NULL)
 		{
-			ret = ticalcs_calc_send_backup(handle, (BackupContent *)content2);
+			ret = tifiles_file_read_regular(filename, content2);
+			if (!ret)
+			{
+				ret = ticalcs_calc_send_backup(handle, (BackupContent *)content2);
+				tifiles_content_delete_regular(content2);
+			}
 		}
-		tifiles_content_delete_regular(content2);
 	}
 
 	return ret;
@@ -1171,8 +1186,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var2(CalcHandle* handle, CalcMode mode, c
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_var(handle, mode, content);
+		tifiles_content_delete_regular(content);
 	}
-	tifiles_content_delete_regular(content);
 
 	return ret;
 }
@@ -1225,7 +1240,7 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_var2(CalcHandle* handle, CalcMode mode, c
 TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode, const char* filename)
 {
 	FileContent *content;
-	int ret;
+	int ret = ERR_FILE_OPEN;
 
 	VALIDATE_HANDLE(handle)
 	VALIDATE_NONNULL(filename)
@@ -1235,12 +1250,15 @@ TIEXPORT3 int TICALL ticalcs_calc_send_var_ns2(CalcHandle* handle, CalcMode mode
 	RETURN_IF_HANDLE_BUSY(handle)
 
 	content = tifiles_content_create_regular(handle->model);
-	ret = tifiles_file_read_regular(filename, content);
-	if (!ret)
+	if (content != NULL)
 	{
-		ret = ticalcs_calc_send_var_ns(handle, mode, content);
+		ret = tifiles_file_read_regular(filename, content);
+		if (!ret)
+		{
+			ret = ticalcs_calc_send_var_ns(handle, mode, content);
+			tifiles_content_delete_regular(content);
+		}
 	}
-	tifiles_content_delete_regular(content);
 
 	return ret;
 }

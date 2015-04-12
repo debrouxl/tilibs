@@ -137,7 +137,7 @@ static int ser_put(CableHandle *h, uint8_t *data, uint32_t len)
 	    
 		ser_io_wr(dev_fd, 3);
 		TO_START(clk);
-		while ((ser_io_rd(dev_fd) & 0x10) == 0x00);
+		while ((ser_io_rd(dev_fd) & 0x10) == 0x00)
 		{
 		    if (TO_ELAPSED(clk, h->timeout))
 			return ERR_WRITE_TIMEOUT;

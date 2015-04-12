@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 // 151
     PRINTFVOID(tifiles_fp_delete_array, NULL);
     PRINTF(tifiles_create_table_of_entries, PTR, NULL, NULL);
-    PRINTF(tifiles_create_table_of_entries, PTR, NULL, NULL);
+    PRINTFVOID(tifiles_free_table_of_entries, NULL);
 
     tifiles_library_exit();
 

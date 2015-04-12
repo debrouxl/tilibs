@@ -129,10 +129,8 @@ static int		is_ready	(CalcHandle* handle)
 		TRYF(nsp_cmd_r_echo(handle, &size, &data));
 		g_free(data);
 
-		TRYF(nsp_session_close(handle));
+		return nsp_session_close(handle);
 	}
-
-	return 0;
 }
 
 static int		send_key	(CalcHandle* handle, uint16_t key)
@@ -154,11 +152,11 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 		uint8_t *q;
 		uint32_t i;
 
-		for(i = 0, q = dst; i < size;)
+		for (i = 0, q = dst; i < size;)
 		{
 			int8_t rec = src[i++];
 
-			if(rec >= 0)
+			if (rec >= 0)
 			{
 				// Positive count: "repeat 8-bit value" block.
 				uint8_t cnt = ((uint8_t)rec) + 1;
@@ -187,11 +185,11 @@ static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t
 		uint8_t *q;
 		uint32_t i;
 
-		for(i = 0, q = dst; i < size;)
+		for (i = 0, q = dst; i < size;)
 		{
 			int8_t rec = src[i++];
 
-			if(rec >= 0)
+			if (rec >= 0)
 			{
 				// Positive count: "repeat 32-bit value" block.
 				uint8_t cnt = ((uint8_t)rec) + 1;
@@ -546,7 +544,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 
 	TRYF(nsp_cmd_s_file_ok(handle));
 	if (vr->size)
+	{
 		TRYF(nsp_cmd_r_file_contents(handle, &(vr->size), &data));
+	}
 	TRYF(nsp_cmd_s_status(handle, ERR_OK));
 
 	content->model = handle->model;
@@ -605,8 +605,10 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
 	uint8_t status, value;
 
-	if(content == NULL)
+	if (content == NULL)
+	{
 		return -1;
+	}
 
 	tifiles_hexdump(content->data_part + content->data_length - 16, 16);
 
@@ -629,7 +631,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 		update_->cnt2 = value;
 		update_->pbar();
-	} while(value < 100 );
+	} while (value < 100);
 
 	return nsp_session_close(handle);
 }
@@ -827,7 +829,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 
 	strncpy(infos->product_name, (char*)data, sizeof(infos->product_name) - 1);
 	infos->product_name[sizeof(infos->product_name) - 1] = 0;
-	infos->mask |= INFOS_PRODUCT_NAME;
+	infos->mask = INFOS_PRODUCT_NAME;
 
 	TRYF(nsp_cmd_s_dev_infos(handle, CMD_DI_VERSION));
 	TRYF(nsp_cmd_r_dev_infos(handle, &cmd, &size, &data));

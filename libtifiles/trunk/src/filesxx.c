@@ -51,7 +51,8 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 	if (content != NULL)
 	{
 		content->model = content->model_dst = model;
-		strcpy(content->comment, tifiles_comment_set_single());
+		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
+		content->comment[sizeof(content->comment) - 1] = 0;
 	}
 
 	return content;
@@ -256,7 +257,8 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 	if (content != NULL)
 	{
 		content->model = model;
-		strcpy(content->comment, tifiles_comment_set_backup());
+		strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
+		content->comment[sizeof(content->comment) - 1] = 0;
 	}
 
 	return content;
@@ -742,7 +744,8 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
 		{		// add new folder entry
 			folder_list[num_folders] = (char *) g_malloc0(257);
 			//printf("%i: adding '%s'\n", num_folders, entry->folder);
-			strcpy(folder_list[num_folders], entry->folder);
+			strncpy(folder_list[num_folders], entry->folder, sizeof(folder_list[num_folders]) - 1);
+			folder_list[num_folders][sizeof(folder_list[num_folders]) - 1] = 0;
 			folder_list[num_folders + 1] = NULL;
 			num_folders++;
 		}
@@ -781,7 +784,23 @@ TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfold
 
 	// g_free( memory
 	for (j = 0; j < num_folders + 1; j++)
+	{
 		g_free(folder_list[j]);
+	}
 
 	return table;
+}
+
+TIEXPORT2 void tifiles_free_table_of_entries(int ** table)
+{
+	if (table != NULL)
+	{
+		int ** ptr = table;
+		while (*ptr != NULL)
+		{
+			g_free(*ptr);
+			ptr++;
+		}
+		g_free(table);
+	}
 }

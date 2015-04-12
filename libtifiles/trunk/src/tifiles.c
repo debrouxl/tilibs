@@ -80,7 +80,7 @@ TIEXPORT2 int TICALL tifiles_library_init()
 	strcat(locale_dir, "\\locale");
 #endif
 #else
-	strcpy(locale_dir, LOCALEDIR);
+	strncpy(locale_dir, LOCALEDIR, sizeof(locale_dir) - 21);
 #endif
 
 	if (tifiles_instance)
