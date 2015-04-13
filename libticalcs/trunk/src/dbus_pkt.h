@@ -137,5 +137,6 @@
 #define REJ_EXIT     1
 #define REJ_SKIP     2
 #define REJ_MEMORY   3
+#define REJ_VERSION  4
 
 #endif
