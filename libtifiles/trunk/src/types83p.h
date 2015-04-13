@@ -59,10 +59,9 @@
 
 // libtifiles: for internal use only, not exported !
 
-extern const char *TI83p_CONST[TI83p_MAXTYPES + 1][4];
-
 const char *ti83p_byte2type(uint8_t data);
 uint8_t ti83p_type2byte(const char *s);
+
 const char *ti83p_byte2fext(uint8_t data);
 uint8_t ti83p_fext2byte(const char *s);
 

@@ -58,7 +58,9 @@ static int is_ti8586(CalcModel model)
 
 static int is_ti83p(CalcModel model)
 {
-	return ((model == CALC_TI83P) || (model == CALC_TI84P) || (model == CALC_TI84P_USB));
+	return ((model == CALC_TI83P) || (model == CALC_TI84P) || (model == CALC_TI84P_USB)
+	        || (model == CALC_TI84PC) || (model == CALC_TI84PC_USB)
+	        || (model == CALC_TI83PCE_USB) || (model == CALC_TI84PCE_USB) || (model == CALC_TI82A_USB));
 }
 
 static uint16_t compute_backup_sum(BackupContent* content)
@@ -746,27 +748,22 @@ int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real
 		VarEntry *entry = content->entries[i];
 		char varname[VARNAME_MAX];
 
-		switch (content->model) 
+		if (content->model == CALC_TI85)
 		{
-			case CALC_TI85:
-				packet_length = 4 + strlen(entry->name);	//offset to data length
-				break;
-			case CALC_TI86:
-				packet_length = 0x0C;
-				break;
-			case CALC_TI83P:
-			case CALC_TI84P:
-			case CALC_TI84P_USB:
-				packet_length = 0x0D;
-				break;
-			case CALC_TI73:
-			case CALC_TI82:
-			case CALC_TI83:
-				packet_length = 0x0B;
-				break;
-			default:
-				break;
+			packet_length = 4 + strlen(entry->name);	//offset to data length
 		}
+		else if (content->model == CALC_TI86)
+		{
+			packet_length = 0x0C;
+		}
+		else if (is_ti83p(content->model))
+		{
+			packet_length = 0x0D;
+		}
+		else
+		{
+			packet_length = 0x0B;
+ 		}
 
 		if(fwrite_word(f, packet_length) < 0) goto tfwr;
 		if(fwrite_word(f, (uint16_t)entry->size) < 0) goto tfwr;

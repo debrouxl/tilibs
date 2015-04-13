@@ -65,7 +65,7 @@ typedef enum
 	CALC_TI73, CALC_TI82, CALC_TI83, CALC_TI83P, CALC_TI84P, CALC_TI85, CALC_TI86,
 	CALC_TI89, CALC_TI89T, CALC_TI92, CALC_TI92P, CALC_V200,
 	CALC_TI84P_USB, CALC_TI89T_USB, CALC_NSPIRE, CALC_TI80,
-	CALC_TI84PC, CALC_TI84PC_USB, CALC_MAX
+	CALC_TI84PC, CALC_TI84PC_USB, CALC_TI83PCE_USB, CALC_TI84PCE_USB, CALC_TI82A_USB, CALC_MAX
 } CalcModel;
 #endif
 
@@ -148,7 +148,7 @@ typedef struct
  * FileContent:
  * @model: calculator model
  * @default_folder: name of the default folder (TI9x only)
- * @comment: comment aembedded in file (like "Single file received by TiLP")
+ * @comment: comment embedded in file (like "Single file received by TiLP")
  * @num_entries: number of variables stored after
  * @entries: a NULL-terminated array of #TiVarEntry structures
  * @checksum: checksum of file

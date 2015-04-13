@@ -33,7 +33,7 @@ libtifiles2_la_SOURCES = *.h \
 	tifiles.c \
 	tigroup.c \
 	type2str.c \
-	types73.c types82.c types83.c types83p.c types84p.c \
+	types73.c types82.c types83.c types83p.c \
 	types85.c types86.c \
 	types89.c types89t.c types92.c types92p.c typesv2.c \
 	typesnsp.c \

@@ -48,6 +48,7 @@
 #define TI84p_APPV   0x15
 #define TI84p_GROUP  0x17
 #define TI84p_DIR    0x19
+#define TI84p_IMAGE  0x1A
 #define TI84p_AMS    0x23
 #define TI84p_APPL   0x24
 #define TI84p_CERTIF 0x25	//deprecated
@@ -59,14 +60,30 @@
 
 // libtifiles: for internal use only, not exported !
 
-extern const char *TI84p_CONST[TI84p_MAXTYPES + 1][4];
-
 const char *ti84p_byte2type(uint8_t data);
+const char *ti84pc_byte2type(uint8_t data);
+const char *ti83pce_byte2type(uint8_t data);
+const char *ti84pce_byte2type(uint8_t data);
 uint8_t ti84p_type2byte(const char *s);
+uint8_t ti84pc_type2byte(const char *s);
+uint8_t ti83pce_type2byte(const char *s);
+uint8_t ti84pce_type2byte(const char *s);
 const char *ti84p_byte2fext(uint8_t data);
+const char *ti84pc_byte2fext(uint8_t data);
+const char *ti83pce_byte2fext(uint8_t data);
+const char *ti84pce_byte2fext(uint8_t data);
 uint8_t ti84p_fext2byte(const char *s);
+uint8_t ti84pc_fext2byte(const char *s);
+uint8_t ti83pce_fext2byte(const char *s);
+uint8_t ti84pce_fext2byte(const char *s);
 
 const char *ti84p_byte2desc(uint8_t data);
+const char *ti84pc_byte2desc(uint8_t data);
+const char *ti83pce_byte2desc(uint8_t data);
+const char *ti84pce_byte2desc(uint8_t data);
 const char *ti84p_byte2icon(uint8_t data);
+const char *ti84pc_byte2icon(uint8_t data);
+const char *ti83pce_byte2icon(uint8_t data);
+const char *ti84pce_byte2icon(uint8_t data);
 
 #endif

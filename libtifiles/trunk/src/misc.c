@@ -46,7 +46,9 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti8x(CalcModel model)
 	        (model == CALC_TI82) || (model == CALC_TI83) ||
 	        (model == CALC_TI83P) || (model == CALC_TI84P) ||
 	        (model == CALC_TI85) || (model == CALC_TI86) ||
-	        (model == CALC_TI84P_USB));
+	        (model == CALC_TI84P_USB) || (model == CALC_TI84PC) ||
+	        (model == CALC_TI84PC_USB) || (model == CALC_TI83PCE_USB) ||
+	        (model == CALC_TI84PCE_USB) ||(model == CALC_TI82A_USB));
 }
 
 /**
@@ -114,9 +116,11 @@ TIEXPORT2 int TICALL tifiles_has_folder(CalcModel calc_type)
 TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
 {
 	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI83P) ||
-	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) || 
-	        (calc_type == CALC_TI89T) || (calc_type == CALC_TI89) || 
-	        (calc_type == CALC_TI92P) ||
+	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84P_USB) ||
+	        (calc_type == CALC_TI84PC) || (calc_type == CALC_TI84PC_USB) ||
+	        (calc_type == CALC_TI83PCE_USB) || (calc_type == CALC_TI84PCE_USB) ||
+	        (calc_type == CALC_TI82A_USB) || (calc_type == CALC_TI89T) ||
+	        (calc_type == CALC_TI89) || (calc_type == CALC_TI92P) ||
 	        (calc_type == CALC_V200) || (calc_type == CALC_TI89T_USB) ||
 	        (calc_type == CALC_NSPIRE));
 }
@@ -132,9 +136,11 @@ TIEXPORT2 int TICALL tifiles_is_flash(CalcModel calc_type)
 TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
 {
 	return ((calc_type == CALC_TI73) || (calc_type == CALC_TI82) ||
-	        (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) || 
-	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI85) ||
-	        (calc_type == CALC_TI86) || (calc_type == CALC_TI92));
+	        (calc_type == CALC_TI83) || (calc_type == CALC_TI83P) ||
+	        (calc_type == CALC_TI84P) || (calc_type == CALC_TI84PC) ||
+	        (calc_type == CALC_TI84PC_USB) || (calc_type == CALC_TI82A_USB) ||
+	        (calc_type == CALC_TI85) ||(calc_type == CALC_TI86) ||
+	        (calc_type == CALC_TI92));
 }
 
 /**
