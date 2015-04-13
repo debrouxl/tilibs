@@ -42,6 +42,6 @@ int fwrite_byte(FILE * f, uint8_t data);
 int fwrite_word(FILE * f, uint16_t data);
 int fwrite_long(FILE * f, uint32_t data);
 
-int hexdump(uint8_t * ptr, int len);
+int hexdump(const uint8_t * ptr, unsigned int len);
 
 #endif

@@ -1007,8 +1007,6 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return ret;
 }
 
-extern int tixx_recv_backup(CalcHandle* handle, BackupContent* content);
-
 const CalcFncts calc_89 = 
 {
 	CALC_TI89,

@@ -52,6 +52,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 	uint8_t *buf;
 	int r, q;
 	static int ref = 0;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
@@ -64,7 +65,7 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 
 	ticables_progress_reset(handle->cable);
 
-	if(data == NULL)
+	if (data == NULL)
 	{
 		// short packet (no data)
 		buf[0] = target;
@@ -72,15 +73,8 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		buf[2] = 0x00;
 		buf[3] = 0x00;
 
-		// TI80 does not use length
-		if(target == PC_TI80)
-		{
-			TRYF(ticables_cable_send(handle->cable, buf, 2));
-		}
-		else
-		{
-			TRYF(ticables_cable_send(handle->cable, buf, 4));
-		}
+		// The TI-80 does not use length
+		ret = ticables_cable_send(handle->cable, buf, (target == PC_TI80) ? 2 : 4);
 	}
 	else 
 	{
@@ -101,8 +95,14 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		// compute chunks
 		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
 		BLK_SIZE = (length + 6) / 20;		// 5%
-		if(BLK_SIZE == 0) BLK_SIZE = length + 6;
-		if(BLK_SIZE < 32) BLK_SIZE = 128;	// SilverLink doesn't like small block (< 32)
+		if (BLK_SIZE == 0)
+		{
+			BLK_SIZE = length + 6;
+		}
+		if (BLK_SIZE < 32)
+		{
+			BLK_SIZE = 128;	// SilverLink doesn't like small block (< 32)
+		}
 
 		q = (length + 6) / BLK_SIZE;
 		r = (length + 6) % BLK_SIZE;
@@ -110,74 +110,95 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		handle->updat->max1 = length + 6;
 		handle->updat->cnt1 = 0;
 
+		ret = 0;
+
 		// send full chunks
-		for(i = 0; i < q; i++)
+		for (i = 0; i < q; i++)
 		{
-			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE));
+			ret = ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE);
+			if (ret)
+			{
+				break;
+			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += BLK_SIZE;
-			if(length > MIN_SIZE)
+			if (length > MIN_SIZE)
+			{
 				handle->updat->pbar();
+			}
 
 			if (handle->updat->cancel)
-				return ERR_ABORT;
+			{
+				ret = ERR_ABORT;
+				break;
+			}
 		}
 
 		// send last chunk
+		if (!ret)
 		{
-			TRYF(ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r));
-			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+			ret = ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r);
+			if (!ret)
+			{
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
-			handle->updat->cnt1 += 1;
-			if(length > MIN_SIZE)
-				handle->updat->pbar();
+				handle->updat->cnt1 += 1;
+				if (length > MIN_SIZE)
+				{
+					handle->updat->pbar();
+				}
 
-			if (handle->updat->cancel)
-				return ERR_ABORT;
+				if (handle->updat->cancel)
+				{
+					ret = ERR_ABORT;
+				}
+			}
 		}
 	}
 
 	// force periodic refresh
-	if(!(ref++ % 4))
+	if (!ret && !(ref++ % 4))
+	{
 		handle->updat->refresh();
+	}
 
-	return 0;
+	return ret;
 }
 
 #if 0
 static uint8_t host_ids(CalcHandle *handle)
 {
-  switch (handle->model) 
-  {
-  case CALC_TI73:
-    return TI73_PC;
-  case CALC_TI80:
-    return TI80_PC;
-  case CALC_TI82:
-    return TI82_PC;
-  case CALC_TI83:
-    return TI83_PC;
-  case CALC_TI83P:
-  case CALC_TI84P:
-    return TI83p_PC;
-  case CALC_TI85:
-    return TI85_PC;
-  case CALC_TI86:
-    return TI86_PC;
-  case CALC_TI89:
-  case CALC_TI89T:
-    return TI89_PC;
-  case CALC_TI92:
-    return TI92_PC;
-  case CALC_TI92P:
-    return TI92p_PC;
-  case CALC_V200:
-    return V200_PC;
-  default:
-    return 0x00;
-  }
-  return 0x00;
+	switch (handle->model)
+	{
+	case CALC_TI73:
+		return TI73_PC;
+	case CALC_TI80:
+		return TI80_PC;
+	case CALC_TI82:
+		return TI82_PC;
+	case CALC_TI83:
+		return TI83_PC;
+	case CALC_TI83P:
+	case CALC_TI84P:
+		return TI83p_PC;
+	case CALC_TI85:
+		return TI85_PC;
+	case CALC_TI86:
+		return TI86_PC;
+	case CALC_TI89:
+	case CALC_TI89T:
+		return TI89_PC;
+	case CALC_TI92:
+		return TI92_PC;
+	case CALC_TI92P:
+		return TI92p_PC;
+	case CALC_V200:
+		return V200_PC;
+	default:
+		return 0x00;
+	}
+	return 0x00;
 }
 #endif
 
@@ -188,6 +209,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	uint8_t buf[4];
 	int r, q;
 	static int ref = 0;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(host);
@@ -195,15 +217,23 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	VALIDATE_NONNULL(length);
 
 	// Any packet has always at least 2 bytes (MID, CID)
-	TRYF(ticables_cable_recv(handle->cable, buf, 2));
+	ret = ticables_cable_recv(handle->cable, buf, 2);
+	if (ret)
+	{
+		return ret;
+	}
 
 	*host = buf[0];
 	*cmd = buf[1];
 
-	// Any non-TI80 packet has a length; TI80 data packets also have a length
-	if(*host != TI80_PC || *cmd == CMD_XDP)
+	// Any non-TI-80 packet has a length; TI-80 data packets also have a length
+	if (*host != TI80_PC || *cmd == CMD_XDP)
 	{
-		TRYF(ticables_cable_recv(handle->cable, buf, 2));
+		ret = ticables_cable_recv(handle->cable, buf, 2);
+		if (ret)
+		{
+			return ret; // THIS RETURNS !
+		}
 
 		*length = buf[0] | ((uint16_t)buf[1] << 8);
 	}
@@ -216,8 +246,10 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	//if(host_check && (*host != host_ids(handle))) 
 	//	return ERR_INVALID_HOST;
 
-	if(*cmd == CMD_ERR || *cmd == CMD_ERR2)
-		return ERR_CHECKSUM;
+	if (*cmd == CMD_ERR || *cmd == CMD_ERR2)
+	{
+		return ERR_CHECKSUM; // THIS RETURNS !
+	}
 
 	switch (*cmd) 
 	{
@@ -231,7 +263,8 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		if (data == NULL)
 		{
 			ticalcs_critical("%s: data is NULL", __FUNCTION__);
-			return ERR_INVALID_CMD;
+			ret = ERR_INVALID_PARAMETER;
+			break;
 		}
 
 		// compute chunks*
@@ -244,10 +277,15 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		handle->updat->max1 = *length;
 		handle->updat->cnt1 = 0;
 
+		ret = 0;
 		// recv full chunks
 		for (i = 0; i < q; i++)
 		{
-			TRYF(ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE));
+			ret = ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE);
+			if (ret)
+			{
+				break;
+			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 			handle->updat->cnt1 += BLK_SIZE;
@@ -258,31 +296,47 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 
 			if (handle->updat->cancel)
 			{
-				return ERR_ABORT;
+				ret = ERR_ABORT;
+				break;
 			}
 		}
 
 		// recv last chunk
+		if (!ret)
 		{
-			TRYF(ticables_cable_recv(handle->cable, 
-						 &data[i*BLK_SIZE], 
-						 (uint16_t)r));
-			ticables_progress_get(handle->cable, NULL, NULL, 
-					      &handle->updat->rate);
-			TRYF(ticables_cable_recv(handle->cable, buf, 2));
+			ret = ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)r);
+			if (!ret)
+			{
+				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
+				ret = ticables_cable_recv(handle->cable, buf, 2);
+				if (!ret)
+				{
+					handle->updat->cnt1++;
+					if (*length > MIN_SIZE)
+					{
+						handle->updat->pbar();
+					}
 
-			handle->updat->cnt1 += 1;
-			if(*length > MIN_SIZE) 
-				handle->updat->pbar();
+					if (handle->updat->cancel)
+					{
+						ret = ERR_ABORT;
+						break;
+					}
+				}
+			}
+		}
 
-			if (handle->updat->cancel)
-				return ERR_ABORT;
+		if (ret)
+		{
+			break;
 		}
 
 		// verify checksum
 		chksum = buf[0] | ((uint16_t)buf[1] << 8);
 		if (chksum != tifiles_checksum(data, *length))
-			return ERR_CHECKSUM;
+		{
+			ret = ERR_CHECKSUM;
+		}
 
 		break;
 	case CMD_CTS:	// short packet (no data)
@@ -297,14 +351,16 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 	case CMD_CNT:
 		break;
 	default:
-		return ERR_INVALID_CMD;
+		return ERR_INVALID_CMD; // THIS RETURNS !
 	}
 
-	// force periodic refresh
-	if(!(ref++ % 4))
+	if (!ret && !(ref++ % 4))
+	{
+		// force periodic refresh
 		handle->updat->refresh();
+	}
 
-	return 0;
+	return ret;
 }
 
 /*

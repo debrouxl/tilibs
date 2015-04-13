@@ -79,12 +79,18 @@ TIEXPORT2 int TICALL tifiles_calc_is_ti9x(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_calc_are_compat(CalcModel model, CalcModel ref)
 {
-	if(tifiles_calc_is_ti8x(model) && tifiles_calc_is_ti8x(ref))
+	if (tifiles_calc_is_ti8x(model) && tifiles_calc_is_ti8x(ref))
+	{
 		return !0;
-	else if(tifiles_calc_is_ti9x(model) && tifiles_calc_is_ti9x(ref))
+	}
+	else if (tifiles_calc_is_ti9x(model) && tifiles_calc_is_ti9x(ref))
+	{
 		return !0;
-	else if((model == CALC_NSPIRE) && (ref == CALC_NSPIRE))
+	}
+	else if ((model == CALC_NSPIRE) && (ref == CALC_NSPIRE))
+	{
 		return !0;
+	}
 
 	return 0;
 }
@@ -153,21 +159,25 @@ TIEXPORT2 int TICALL tifiles_has_backup(CalcModel calc_type)
  *
  * Return value: the ckecksum.
  **/
-TIEXPORT2 uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size)
+TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size)
 {
-	int i;
+	unsigned int i;
 	uint16_t c = 0;
 
 	if (buffer == NULL)
+	{
 		return 0;
+	}
 
 	for (i = 0; i < size; i++)
+	{
 		c += buffer[i];
+	}
 
 	return c;
 }
 
-TIEXPORT2 int tifiles_hexdump(uint8_t* ptr, unsigned int length)
+TIEXPORT2 int tifiles_hexdump(const uint8_t* ptr, unsigned int length)
 {
 	return hexdump(ptr, length);
 }
@@ -187,9 +197,13 @@ char *TICALL tifiles_get_varname(const char *full_name)
 		char *bs = strchr(full_name, '\\');
 
 		if (bs == NULL)
+		{
 			return (char *) full_name;
+		}
 		else
+		{
 			return (++bs);
+		}
 	}
 	tifiles_critical("%s(NULL)", __FUNCTION__);
 	return NULL;
@@ -288,9 +302,7 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 		return NULL;
 	}
 
-
-	if(tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, "") || 
-		(ve->type == tifiles_flash_type(model)))
+	if (tifiles_calc_is_ti8x(model) || !strcmp(ve->folder, "") || (ve->type == tifiles_flash_type(model)))
 	{
 		char *part2;
 		const char *part3;

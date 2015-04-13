@@ -41,12 +41,13 @@
 int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 {
 	int i, j, k;
-	int i_max, j_max;
+	int i_max;
 	GNode *vars, *apps;
 	int nvars, ivars = 0;
 	int b = 0;
 	FileContent **group;
 	FileContent *single;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	if (content == NULL)
@@ -54,12 +55,19 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 		ticalcs_critical("tixx_recv_backup: content is NULL");
 		return -1;
 	}
+	VALIDATE_CALCFNCTS(handle->calc);
 
 	// Do a directory list and check for something to backup
-	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
+	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	if (ret)
+	{
+		return ret;
+	}
 	nvars = ticalcs_dirlist_ve_count(vars);
-	if(!nvars)
+	if (!nvars)
+	{
 		return ERR_NO_VARS;
+	}
 
 	update_->cnt2 = update_->cnt3 = 0;
 	update_->max2 = update_->max3 = nvars;
@@ -75,12 +83,12 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 
 	// Receive all vars except for FLASH apps
 	i_max = g_node_n_children(vars);
-	for(i = 0; i < i_max; i++) 
+	for (i = 0; i < i_max; i++)
 	{
 		GNode *parent = g_node_nth_child(vars, i);
 
-		j_max = g_node_n_children(parent);
-		for(j = 0; j < j_max; j++) 
+		int j_max = g_node_n_children(parent);
+		for (j = 0; j < j_max; j++)
 		{
 			GNode *node = g_node_nth_child(parent, j);
 			VarEntry *ve = (VarEntry *) (node->data);
@@ -89,29 +97,40 @@ int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
 			update_->pbar();
 
 			// we need to group files !
-			TRYF(handle->calc->is_ready(handle));
+			ret = handle->calc->is_ready(handle);
+			if (ret)
+			{
+				goto end;
+			}
 			group[k] = tifiles_content_create_regular(handle->model);
-			TRYF(handle->calc->recv_var(handle, 0, group[k++], ve));
+			ret = handle->calc->recv_var(handle, 0, group[k++], ve);
+			if (ret)
+			{
+				goto end;
+			}
 		}
 	}
 
+end:
 	ticalcs_dirlist_destroy(&vars);
 	ticalcs_dirlist_destroy(&apps);
 
-	tifiles_group_contents(group, &single);
-	tifiles_content_delete_group(group);
-
-	// Swap content and single because we have a pointer on an allocated content
+	if (!ret)
 	{
 		FileContent* cnt = (FileContent *)content;
 
+		tifiles_group_contents(group, &single);
+
+		// Swap content and single because we have a pointer on an allocated content
 		memcpy(content, single, sizeof(FileContent));
 		cnt->entries = single->entries;
 		strncpy(cnt->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
 		cnt->comment[sizeof(content->comment) - 1] = 0;
 	}
 
-	return 0;
+	tifiles_content_delete_group(group);
+
+	return ret;
 }
 
 /*
@@ -134,6 +153,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 	GNode *vars, *apps;
 	int nvars = 0;
 	int napps = 0;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	if (content == NULL)
@@ -141,77 +161,121 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
 		return -1;
 	}
+	VALIDATE_CALCFNCTS(handle->calc);
 
-	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
+	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	if (ret)
+	{
+		return ret;
+	}
 
-	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+	if ((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+	{
 		nvars = content->n_vars;
-	if(mode & TIG_FLASH)
+	}
+	if (mode & TIG_FLASH)
+	{
 		napps = content->n_apps;
+	}
 
 	update_->cnt3 = 0;
 	update_->max3 = nvars + napps;
 	update_->pbar();
 
-	if((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
+	if ((handle->model == CALC_TI89 || handle->model == CALC_TI92P ||
 		handle->model == CALC_TI89T || handle->model == CALC_V200) && (mode & TIG_BACKUP))
 	{
 		// erase memory
-		TRYF(ti89_send_VAR(handle, 0, TI89_BKUP, "main"));
-		TRYF(ti89_recv_ACK(handle, NULL));
-
-		TRYF(ti89_recv_CTS(handle));
-		TRYF(ti89_send_ACK(handle));
-
-		TRYF(ti89_send_EOT(handle));
-		TRYF(ti89_recv_ACK(handle, NULL));
-	}
-
-	// Send vars
-	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
-	{
-		for(ptr = content->var_entries; *ptr; ptr++)
+		ret = ti89_send_VAR(handle, 0, TI89_BKUP, "main");
+		if (!ret)
 		{
-			TigEntry *te = *ptr;
-
-			update_->cnt3++;
-			update_->pbar();
-
-			if((te->content.regular->entries[0]->attr == ATTRB_ARCHIVED) && !(mode & TIG_ARCHIVE))
-				continue;
-			if((te->content.regular->entries[0]->attr != ATTRB_ARCHIVED) && !(mode & TIG_RAM))
-				continue;
-
-			TRYF(handle->calc->send_var(handle, MODE_BACKUP, te->content.regular));
+			ret = ti89_recv_ACK(handle, NULL);
+			if (!ret)
+			{
+				ret = ti89_recv_CTS(handle);
+				if (!ret)
+				{
+					ret = ti89_send_ACK(handle);
+					if (!ret)
+					{
+						ret = ti89_send_EOT(handle);
+						if (!ret)
+						{
+							ret = ti89_recv_ACK(handle, NULL);
+						}
+					}
+				}
+			}
 		}
 	}
 
-	TRYF(handle->calc->is_ready(handle));
-
-	// Send apps
-	if(mode & TIG_FLASH)
+	if (!ret)
 	{
-		for(ptr = content->app_entries; *ptr; ptr++)
+		// Send vars
+		if ((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 		{
-			TigEntry *te = *ptr;
-			VarEntry ve;
+			for (ptr = content->var_entries; *ptr; ptr++)
+			{
+				TigEntry *te = *ptr;
 
-			update_->cnt3++;
-			update_->pbar();
+				update_->cnt3++;
+				update_->pbar();
 
-			// can't overwrite apps so check before sending app
-			memset(&ve, 0, sizeof(VarEntry));
-			strncpy(ve.name, te->content.flash->name, sizeof(ve.name) - 1);
-			ve.name[sizeof(ve.name) - 1] = 0;
-			if(!ticalcs_dirlist_ve_exist(apps, &ve))
-				TRYF(handle->calc->send_app(handle, te->content.flash));
+				if ((te->content.regular->entries[0]->attr == ATTRB_ARCHIVED) && !(mode & TIG_ARCHIVE))
+				{
+					continue;
+				}
+				if ((te->content.regular->entries[0]->attr != ATTRB_ARCHIVED) && !(mode & TIG_RAM))
+				{
+					continue;
+				}
+
+				ret = handle->calc->send_var(handle, MODE_BACKUP, te->content.regular);
+				if (ret)
+				{
+					break;
+				}
+			}
+		}
+
+		if (!ret)
+		{
+			ret = handle->calc->is_ready(handle);
+			if (!ret)
+			{
+				// Send apps
+				if (mode & TIG_FLASH)
+				{
+					for (ptr = content->app_entries; *ptr; ptr++)
+					{
+						TigEntry *te = *ptr;
+						VarEntry ve;
+
+						update_->cnt3++;
+						update_->pbar();
+
+						// can't overwrite apps so check before sending app
+						memset(&ve, 0, sizeof(VarEntry));
+						strncpy(ve.name, te->content.flash->name, sizeof(ve.name) - 1);
+						ve.name[sizeof(ve.name) - 1] = 0;
+						if (!ticalcs_dirlist_ve_exist(apps, &ve))
+						{
+							ret = handle->calc->send_app(handle, te->content.flash);
+							if (ret)
+							{
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
 	ticalcs_dirlist_destroy(&vars);
 	ticalcs_dirlist_destroy(&apps);
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -227,11 +291,11 @@ TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle* handle, TigContent* c
 TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* content, TigMode mode)
 {
 	int i, j;
-	int i_max, j_max;
 	GNode *vars, *apps;
 	int nvars = 0;
 	int napps = 0;
 	int b = 0;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	if (content == NULL)
@@ -239,109 +303,144 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 		ticalcs_critical("ticalcs_calc_send_tigroup: content is NULL");
 		return -1;
 	}
+	VALIDATE_CALCFNCTS(handle->calc);
 
 	update_->cnt3 = 0;
 	update_->pbar();
 
 	// Do a directory list and check for something to backup
-	TRYF(handle->calc->get_dirlist(handle, &vars, &apps));
-	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+	ret = handle->calc->get_dirlist(handle, &vars, &apps);
+	if (ret)
+	{
+		return ret;
+	}
+
+	if ((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
+	{
 		nvars = ticalcs_dirlist_ve_count(vars);
-	if(mode & TIG_FLASH)
+	}
+	if (mode & TIG_FLASH)
+	{
 		napps = ticalcs_dirlist_ve_count(apps);
+	}
 
 	update_->cnt3 = 0;
 	update_->max3 = nvars + napps;
 	update_->pbar();
 
-	if(!nvars && !napps)
-		return ERR_NO_VARS;
+	if (!nvars && !napps)
+	{
+		ret = ERR_NO_VARS; // THIS RETURNS !
+		goto end;
+	}
 
 	// Check whether the last folder is empty
 	b = g_node_n_children(g_node_nth_child(vars, g_node_n_children(vars) - 1));
 	PAUSE(100); // needed by TI84+/USB
 
 	// Receive all vars
-	i_max = g_node_n_children(vars);
-	if((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
-	for(i = 0; i < i_max; i++) 
+	if ((mode & TIG_RAM) || (mode & TIG_ARCHIVE))
 	{
-		GNode *parent = g_node_nth_child(vars, i);
-
-		j_max = g_node_n_children(parent);
-		for(j = 0; j < j_max; j++) 
+		int i_max = g_node_n_children(vars);
+		for (i = 0; i < i_max; i++)
 		{
-			GNode *node = g_node_nth_child(parent, j);
-			VarEntry *ve = (VarEntry *) (node->data);
-			TigEntry *te;
-			char *filename;
-			char *varname;
-			char *fldname;
+			GNode *parent = g_node_nth_child(vars, i);
 
-			PAUSE(100);
-			TRYF(handle->calc->is_ready(handle));
-			PAUSE(100);
-
-			update_->cnt3++;
-			update_->pbar();
-
-			if(((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED)) ||
-			   ((mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED))
+			int j_max = g_node_n_children(parent);
+			for (j = 0; j < j_max; j++)
 			{
-				fldname = ticonv_varname_to_filename(handle->model, ve->folder, -1);
-				varname = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
-				if(handle->calc->features & FTS_FOLDER)
-					filename = g_strconcat(fldname, ".", varname, ".", 
-						tifiles_vartype2fext(handle->model, ve->type), NULL);
-				else
-					filename = g_strconcat(varname, ".", 
-						tifiles_vartype2fext(handle->model, ve->type), NULL);
-				g_free(fldname);
-				g_free(varname);
+				GNode *node = g_node_nth_child(parent, j);
+				VarEntry *ve = (VarEntry *) (node->data);
+				TigEntry *te;
 
-				te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
+				PAUSE(100);
+				ret = handle->calc->is_ready(handle);
+				if (ret)
+				{
+					goto end;
+				}
+				PAUSE(100);
+
+				update_->cnt3++;
+				update_->pbar();
+
+				if (((mode & TIG_ARCHIVE) && (ve->attr == ATTRB_ARCHIVED)) ||
+				    ((mode & TIG_RAM) && ve->attr != ATTRB_ARCHIVED))
+				{
+					char *filename;
+					char *varname = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
+					char *fldname = ticonv_varname_to_filename(handle->model, ve->folder, -1);
+					if (handle->calc->features & FTS_FOLDER)
+					{
+						filename = g_strconcat(fldname, ".", varname, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+					}
+					else
+					{
+						filename = g_strconcat(varname, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+					}
+					g_free(varname);
+					g_free(fldname);
+
+					te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
+					g_free(filename);
+
+					ret = handle->calc->recv_var(handle, 0, te->content.regular, ve);
+					if (ret)
+					{
+						goto end;
+					}
+					tifiles_content_add_te(content, te);
+				}
+			}
+		}
+	}
+
+	// Receive all apps
+	if (mode & TIG_FLASH)
+	{
+		int i_max = g_node_n_children(apps);
+		for(i = 0; i < i_max; i++) 
+		{
+			GNode *parent = g_node_nth_child(apps, i);
+
+			int j_max = g_node_n_children(parent);
+			for (j = 0; j < j_max; j++) 
+			{
+				GNode *node = g_node_nth_child(parent, j);
+				VarEntry *ve = (VarEntry *) (node->data);
+				TigEntry *te;
+				char *filename;
+				char *basename;
+
+				ret = handle->calc->is_ready(handle);
+				if (ret)
+				{
+					goto end;
+				}
+
+				update_->cnt3++;
+				update_->pbar();
+
+				basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
+				filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
+				g_free(basename);
+
+				te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
 				g_free(filename);
 
-				TRYF(handle->calc->recv_var(handle, 0, te->content.regular, ve));
+				ret = handle->calc->recv_app(handle, te->content.flash, ve);
+				if (ret)
+				{
+					tifiles_te_delete(te);
+					goto end;
+				}
 				tifiles_content_add_te(content, te);
 			}
 		}
 	}
+end:
+	ticalcs_dirlist_destroy(&apps);
 	ticalcs_dirlist_destroy(&vars);
 
-	// Receive all apps
-	i_max = g_node_n_children(apps);
-	if(mode & TIG_FLASH)
-	for(i = 0; i < i_max; i++) 
-	{
-		GNode *parent = g_node_nth_child(apps, i);
-
-		j_max = g_node_n_children(parent);
-		for(j = 0; j < j_max; j++) 
-		{
-			GNode *node = g_node_nth_child(parent, j);
-			VarEntry *ve = (VarEntry *) (node->data);
-			TigEntry *te;
-			char *filename;
-			char *basename;
-
-			TRYF(handle->calc->is_ready(handle));
-
-			update_->cnt3++;
-			update_->pbar();
-
-			basename = ticonv_varname_to_filename(handle->model, ve->name, ve->type);
-			filename = g_strconcat(basename, ".", tifiles_vartype2fext(handle->model, ve->type), NULL);
-			g_free(basename);
-
-			te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
-			g_free(filename);
-
-			TRYF(handle->calc->recv_app(handle, te->content.flash, ve));
-			tifiles_content_add_te(content, te);
-		}
-	}	
-	ticalcs_dirlist_destroy(&apps);
-
-	return 0;
+	return ret;
 }

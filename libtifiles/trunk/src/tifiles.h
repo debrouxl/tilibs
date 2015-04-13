@@ -427,8 +427,8 @@ extern "C" {
 	TIEXPORT2 int TICALL tifiles_is_flash (CalcModel model);
 	TIEXPORT2 int TICALL tifiles_has_backup(CalcModel model);
 
-	TIEXPORT2 uint16_t TICALL tifiles_checksum(uint8_t * buffer, int size);
-	TIEXPORT2 int             tifiles_hexdump(uint8_t* ptr, unsigned int length);
+	TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size);
+	TIEXPORT2 int             tifiles_hexdump(const uint8_t* ptr, unsigned int length);
 
 	TIEXPORT2 char* TICALL tifiles_get_varname(const char *full_name);
 	TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);

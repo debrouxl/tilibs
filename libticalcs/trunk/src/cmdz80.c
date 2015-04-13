@@ -795,6 +795,7 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t *buffer;
 	uint16_t length;
 	char trans[127];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -803,7 +804,11 @@ TIEXPORT3 int TICALL ti73_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varattr);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -843,6 +848,7 @@ TIEXPORT3 int TICALL ti82_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t *buffer;
 	uint16_t length;
 	char trans[127];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -850,7 +856,11 @@ TIEXPORT3 int TICALL ti82_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -889,6 +899,7 @@ TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t *buffer;
 	uint16_t length;
 	char trans[127];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -896,7 +907,11 @@ TIEXPORT3 int TICALL ti85_recv_VAR(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -945,6 +960,7 @@ TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8
 	uint8_t host, cmd;
 	uint8_t *buffer;
 	uint16_t len;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(length);
@@ -954,7 +970,11 @@ TIEXPORT3 int TICALL ti73_recv_VAR2(CalcHandle* handle, uint16_t * length, uint8
 	VALIDATE_NONNULL(page);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &len, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &len, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -995,11 +1015,16 @@ static int tiz80_recv_CTS(CalcHandle* handle, uint16_t length)
 	uint8_t host, cmd;
 	uint16_t len;
 	uint8_t *buffer;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &len, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &len, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_SKP)
 	{
@@ -1041,13 +1066,18 @@ static int tiz80_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 	uint8_t host, cmd;
 	uint16_t length;
 	uint8_t *buffer;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(rej_code);
 
 	buffer = (uint8_t *)handle->priv2;
 	*rej_code = 0;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_CTS)
 	{
@@ -1085,10 +1115,15 @@ TIEXPORT3 int TICALL ti85_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 TIEXPORT3 int TICALL tiz80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data, uint8_t is_73)
 {
 	uint8_t host, cmd;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	TRYF(dbus_recv(handle, &host, &cmd, length, data));
+	ret = dbus_recv(handle, &host, &cmd, length, data);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (is_73 && cmd == CMD_EOT)
 	{
@@ -1128,8 +1163,13 @@ TIEXPORT3 int TICALL ti80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_
 TIEXPORT3 int TICALL ti73_recv_SID(CalcHandle* handle, uint16_t * length, uint8_t * data)
 {
 	uint8_t host, cmd;
+	int ret;
 
-	TRYF(dbus_recv(handle, &host, &cmd, length, data));
+	ret = dbus_recv(handle, &host, &cmd, length, data);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -1156,11 +1196,16 @@ static int tiz80_recv_ACK(CalcHandle* handle, uint16_t * status)
 	uint8_t host, cmd;
 	uint16_t length;
 	uint8_t *buffer;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (status != NULL)
 	{
@@ -1237,6 +1282,7 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t host, cmd;
 	uint8_t *buffer;
 	char trans[127];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -1245,7 +1291,11 @@ TIEXPORT3 int TICALL ti73_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varattr);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, varsize, buffer));
+	ret = dbus_recv(handle, &host, &cmd, varsize, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd != CMD_RTS)
 	{
@@ -1269,6 +1319,7 @@ TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t host, cmd;
 	uint8_t *buffer;
 	char trans[127];
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -1276,7 +1327,11 @@ TIEXPORT3 int TICALL ti82_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, varsize, buffer));
+	ret = dbus_recv(handle, &host, &cmd, varsize, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd != CMD_RTS)
 	{
@@ -1300,6 +1355,7 @@ TIEXPORT3 int TICALL ti85_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	uint8_t *buffer;
 	char trans[127];
 	uint8_t strl;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -1307,7 +1363,11 @@ TIEXPORT3 int TICALL ti85_recv_RTS(CalcHandle* handle, uint16_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, varsize, buffer));
+	ret = dbus_recv(handle, &host, &cmd, varsize, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd != CMD_RTS)
 	{

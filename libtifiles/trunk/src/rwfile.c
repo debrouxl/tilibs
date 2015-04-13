@@ -38,12 +38,12 @@
   - len [in]: the number of bytes to dump
   - [out]: always 0
  */
-int hexdump(uint8_t * ptr, int len)
+int hexdump(const uint8_t * ptr, unsigned int len)
 {
 	char *str;
 	if (ptr != NULL)
 	{
-		int i;
+		unsigned int i;
 
 		str = (char *)g_malloc(3*len + 8);
 		for (i = 0; i < len; i++)

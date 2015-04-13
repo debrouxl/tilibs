@@ -37,25 +37,25 @@
 
 static const char *TI_CLOCK_89[] = 
 {
-  "",
-  "MM/DD/YY",
-  "DD/MM/YY",
-  "MM.DD.YY",
-  "DD.MM.YY",
-  "YY.MM.DD",
-  "MM-DD-YY",
-  "DD-MM-YY",
-  "YY-MM-DD",
-  ""
+	"",
+	"MM/DD/YY",
+	"DD/MM/YY",
+	"MM.DD.YY",
+	"DD.MM.YY",
+	"YY.MM.DD",
+	"MM-DD-YY",
+	"DD-MM-YY",
+	"YY-MM-DD",
+	""
 };
 
 static const char *TI_CLOCK_84[] = 
 {
-  "",
-  "M/D/Y",
-  "D/M/Y",
-  "Y/M/D",
-  ""
+	"",
+	"M/D/Y",
+	"D/M/Y",
+	"Y/M/D",
+	""
 };
 
 /**
@@ -72,25 +72,37 @@ TIEXPORT3 const char *TICALL ticalcs_clock_format2date(CalcModel model, int valu
 {
 	int v;
 
-	if(tifiles_calc_is_ti9x(model))
+	if (tifiles_calc_is_ti9x(model))
 	{
 		if (value < 1)
+		{
 			v = 1;
+		}
 		else if (value > MAX_FORMAT_89)
+		{
 			v = MAX_FORMAT_89;
+		}
 		else
+		{
 			v = value;
+		}
 
 		return TI_CLOCK_89[v];
 	}
-	else if(tifiles_calc_is_ti8x(model))
+	else if (tifiles_calc_is_ti8x(model))
 	{
 		if (value < 1)
+		{
 			v = 1;
+		}
 		else if (value > MAX_FORMAT_84)
+		{
 			v = MAX_FORMAT_84;
+		}
 		else
+		{
 			v = value;
+		}
 
 		return TI_CLOCK_84[v];
 	}
@@ -118,25 +130,33 @@ TIEXPORT3 int TICALL ticalcs_clock_date2format(CalcModel model, const char *form
 		return 0;
 	}
 
-	if(tifiles_calc_is_ti9x(model))
+	if (tifiles_calc_is_ti9x(model))
 	{
 		for (i = 1; i <= MAX_FORMAT_89; i++) 
 		{
-		if (!strcasecmp(TI_CLOCK_89[i], format))
-			break;
+			if (!strcasecmp(TI_CLOCK_89[i], format))
+			{
+				break;
+			}
 		}
 		if (i > MAX_FORMAT_89)
+		{
 			return 1;
+		}
 	}
-	else if(tifiles_calc_is_ti8x(model))
+	else if (tifiles_calc_is_ti8x(model))
 	{
 		for (i = 1; i <= MAX_FORMAT_84; i++) 
 		{
 			if (!strcasecmp(TI_CLOCK_84[i], format))
-			break;
+			{
+				break;
+			}
 		}
 		if (i > MAX_FORMAT_84)
+		{
 			return 1;
+		}
 	}
 
 	return i;

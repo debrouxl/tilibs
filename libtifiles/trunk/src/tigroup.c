@@ -70,9 +70,13 @@ TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass typ
 			entry->type = type;
 
 			if(type == TIFILE_FLASH)
+			{
 				entry->content.flash = tifiles_content_create_flash(model);
-			else if(type & TIFILE_REGULAR)
+			}
+			else if (type & TIFILE_REGULAR)
+			{
 				entry->content.regular = tifiles_content_create_regular(model);
+			}
 		}
 	}
 	else
@@ -98,10 +102,14 @@ TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 	{
 		g_free(entry->filename);
 
-		if(entry->type == TIFILE_FLASH)
+		if (entry->type == TIFILE_FLASH)
+		{
 			tifiles_content_delete_flash(entry->content.flash);
+		}
 		else if(entry->type & TIFILE_REGULAR)
+		{
 			tifiles_content_delete_regular(entry->content.regular);
+		}
 
 		g_free(entry);
 	}
@@ -263,35 +271,43 @@ TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	}
 
 	// Search for entry
-	for(i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
+	for (i = 0; i < content->n_vars && (te->type & TIFILE_REGULAR); i++)
 	{
 		TigEntry *s = content->var_entries[i];
 
 		if(!strcmp(s->filename, te->filename))
+		{
 			break;
+		}
 	}
 
-	for(j = 0; j < content->n_apps && (te->type & TIFILE_FLASH); j++)
+	for (j = 0; j < content->n_apps && (te->type & TIFILE_FLASH); j++)
 	{
 		TigEntry *s = content->app_entries[i];
 
-		if(!strcmp(s->filename, te->filename))
+		if (!strcmp(s->filename, te->filename))
+		{
 			break;
+		}
 	}
 
 	// Not found ? Exit !
-	if((i == content->n_vars) && (j == content->n_apps))
+	if ((i == content->n_vars) && (j == content->n_apps))
+	{
 		return -1;
+	}
 
 	// Release
-	if(i < content->n_vars)
+	if (i < content->n_vars)
 	{
 		// Delete
 		tifiles_te_delete(content->var_entries[i]);
 
 		// And shift
 		for(k = i; k < content->n_vars; k++)
+		{
 			content->var_entries[k] = content->var_entries[k+1];
+		}
 		content->var_entries[k] = NULL;
 
 		// And resize
@@ -301,14 +317,16 @@ TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 		return content->n_vars;
 	}
 
-	if(j < content->n_apps)
+	if (j < content->n_apps)
 	{
 		// Delete
 		tifiles_te_delete(content->app_entries[j]);
 
 		// And shift
 		for(k = j; k < content->n_apps; k++)
+		{
 			content->app_entries[k] = content->app_entries[k+1];
+		}
 		content->app_entries[k] = NULL;
 
 		// And resize
@@ -349,9 +367,9 @@ TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const ch
 	}
 
 	// group file is created if non existent
-	if(!stricmp(tifiles_fext_get(dst_filename), "tig"))
+	if (!stricmp(tifiles_fext_get(dst_filename), "tig"))
 	{
-		if(!g_file_test(dst_filename, G_FILE_TEST_EXISTS))
+		if (!g_file_test(dst_filename, G_FILE_TEST_EXISTS))
 		{
 			content = tifiles_content_create_tigroup(CALC_NONE, 0);
 			tifiles_file_write_tigroup(dst_filename, content);
@@ -361,34 +379,48 @@ TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const ch
 	}
 
 	// src can't be a TiGroup file but dst should be
-	if(!(tifiles_file_is_ti(src_filename) && !tifiles_file_is_tigroup(src_filename) &&
+	if (!(tifiles_file_is_ti(src_filename) && !tifiles_file_is_tigroup(src_filename) &&
 		tifiles_file_is_tigroup(dst_filename)))
+	{
 		return -1;
+	}
 
 	// load src file
 	model = tifiles_file_get_model(src_filename);
 	type = tifiles_file_get_class(src_filename);
-	
+
 	te = tifiles_te_create(src_filename, type, model);
 	if(type == TIFILE_FLASH)
 	{ 
 		ret = tifiles_file_read_flash(src_filename, te->content.flash);
-		if(ret) goto ttaf;
+		if (ret)
+		{
+			goto ttaf;
+		}
 	}
-	else if(type & TIFILE_REGULAR)
+	else if (type & TIFILE_REGULAR)
 	{ 
 		ret = tifiles_file_read_regular(src_filename, te->content.regular);
-		if(ret) goto ttaf;
+		if (ret)
+		{
+			goto ttaf;
+		}
 	}
 
 	// load dst file
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
 	ret = tifiles_file_read_tigroup(dst_filename, content);
-	if(ret) goto ttaf;
+	if (ret)
+	{
+		goto ttaf;
+	}
 
 	tifiles_content_add_te(content, te);
 	ret = tifiles_file_write_tigroup(dst_filename, content);
-	if(ret) goto ttaf;
+	if (ret)
+	{
+		goto ttaf;
+	}
 
 	tifiles_content_delete_tigroup(content);
 
@@ -412,7 +444,7 @@ ttaf:	// release on exit
 TIEXPORT2 int TICALL tifiles_tigroup_del_file(TigEntry *entry, const char *filename)
 {
 	TigContent* content = NULL;
-	int err = 0;
+	int ret = 0;
 
 	if (entry == NULL || filename == NULL)
 	{
@@ -421,16 +453,15 @@ TIEXPORT2 int TICALL tifiles_tigroup_del_file(TigEntry *entry, const char *filen
 	}
 
 	content = tifiles_content_create_tigroup(CALC_NONE, 0);
-	err = tifiles_file_read_tigroup(filename, content);
-	if(err) goto tfdf;
+	ret = tifiles_file_read_tigroup(filename, content);
+	if (!ret)
+	{
+		(void)tifiles_content_del_te(content, entry);
+		ret = tifiles_file_write_tigroup(filename, content);
+	}
 
-	tifiles_content_del_te(content, entry);
-	err = tifiles_file_write_tigroup(filename, content);
-	if(err) goto tfdf;
-
-tfdf:
 	tifiles_content_delete_tigroup(content);
-	return 0;
+	return ret;
 }
 
 // ---------------------------------------------------------------------------
@@ -452,8 +483,10 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 	int i, m=0, n=0;
 	CalcModel model = CALC_NONE;
 
-	if(src_contents1 == NULL && src_contents2 == NULL)
+	if (src_contents1 == NULL && src_contents2 == NULL)
+	{
 		return -1;
+	}
 
 	if (dst_content == NULL)
 	{
@@ -461,17 +494,29 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 		return -1;
 	}
 
-	if(src_contents1)
+	if (src_contents1)
+	{
 		for (m = 0; src_contents1[m] != NULL; m++);
-	if(src_contents2)
+	}
+	if (src_contents2)
+	{
 		for (n = 0; src_contents2[n] != NULL; n++);
+	}
 
-	if(src_contents2)
-		if(*src_contents2)
+	if (src_contents2)
+	{
+		if (*src_contents2)
+		{
 			model = src_contents2[0]->model;
-	if(src_contents1)
-		if(*src_contents1)
+		}
+	}
+	if (src_contents1)
+	{
+		if (*src_contents1)
+		{
 			model = src_contents1[0]->model;	// FileContent is more precise than FlashContent
+		}
+	}
 
 	content = tifiles_content_create_tigroup(model, m+n);
 
@@ -490,7 +535,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 
 	if(src_contents2)
 	{
-		for(i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			TigEntry *te = (TigEntry *)g_malloc0(sizeof(TigEntry));
 			VarEntry ve;
@@ -546,26 +591,26 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 	}
 
 	// allocate an array of FileContent/FlashContent structures (NULL terminated)
+	dst1 = (FileContent **)g_malloc0((src->n_vars+1) * sizeof(FileContent *));
+	if (dst1 == NULL)
 	{
-		dst1 = (FileContent **)g_malloc0((src->n_vars+1) * sizeof(FileContent *));
-		if (dst1 == NULL)
-			return ERR_MALLOC;
+		return ERR_MALLOC;
 	}
+	dst2 = (FlashContent **)g_malloc0((src->n_apps+1) * sizeof(FlashContent *));
+	if (dst2 == NULL)
 	{
-		dst2 = (FlashContent **)g_malloc0((src->n_apps+1) * sizeof(FlashContent *));
-		if (dst2 == NULL)
-			return ERR_MALLOC;
+		return ERR_MALLOC;
 	}
 
 	// parse each entry and duplicate it into a single content
-	for(i = 0; i < src->n_vars; i++)
+	for (i = 0; i < src->n_vars; i++)
 	{
 		TigEntry *te = src->var_entries[i];
 
 		dst1[i] = tifiles_content_dup_regular(te->content.regular);
 	}
 
-	for(j = 0; j < src->n_apps; j++)
+	for (j = 0; j < src->n_apps; j++)
 	{
 		TigEntry *te = src->app_entries[j];
 
@@ -603,54 +648,74 @@ TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst
 	}
 
 	// counts number of files to group and allocate space for that
-	for(k = m = n = 0; src_filenames[k]; k++)
+	for (k = m = n = 0; src_filenames[k]; k++)
 	{
 		if(tifiles_file_is_regular(src_filenames[k]))
+		{
 			m++;
-		else if(tifiles_file_is_flash(src_filenames[k]))
+		}
+		else if (tifiles_file_is_flash(src_filenames[k]))
+		{
 			n++;
+		}
 	}
 	model = tifiles_file_get_model(src_filenames[0]);
 
 	// allocate space for that
 	src1 = (FileContent **)g_malloc0((m + 1) * sizeof(FileContent *));
 	if (src1 == NULL)
+	{
 		return ERR_MALLOC;
+	}
 
 	src2 = (FlashContent **)g_malloc0((n + 1) * sizeof(FlashContent *));
 	if (src2 == NULL)
-		return ERR_MALLOC;
-
-	for(i = j = k = 0; k < m+n; k++)
 	{
-		if(tifiles_file_is_regular(src_filenames[k]))
+		return ERR_MALLOC;
+	}
+
+	for (i = j = k = 0; k < m+n; k++)
+	{
+		if (tifiles_file_is_regular(src_filenames[k]))
 		{
 			src1[i] = tifiles_content_create_regular(model);
 			ret = tifiles_file_read_regular(src_filenames[k], src1[i]);
-			if(ret) goto tgf;
+			if (ret)
+			{
+				goto tgf;
+			}
 			i++;
 		}
-		else if(tifiles_file_is_flash(src_filenames[k]))
+		else if (tifiles_file_is_flash(src_filenames[k]))
 		{
 			src2[j] = tifiles_content_create_flash(model);
 			ret = tifiles_file_read_flash(src_filenames[k], src2[j]);
-			if(ret) goto tgf;
+			if (ret)
+			{
+				goto tgf;
+			}
 			j++;
 		}
 	}
 
 	ret = tifiles_tigroup_contents(src1, src2, &dst);
-	if(ret) goto tgf;
+	if (ret)
+	{
+		goto tgf;
+	}
 
 	ret = tifiles_file_write_tigroup(dst_filename, dst);
-	if(ret) goto tgf;
 
 tgf:
 	for(i = 0; i < m; i++)
+	{
 		g_free(src1[i]);
+	}
 	g_free(src1);
 	for(i = 0; i < n; i++)
+	{
 		g_free(src2[i]);
+	}
 	g_free(src2);
 	tifiles_content_delete_tigroup(dst);
 
@@ -689,50 +754,76 @@ TIEXPORT2 int TICALL tifiles_untigroup_file(const char *src_filename, char ***ds
 	// read TiGroup file
 	src = tifiles_content_create_tigroup(CALC_NONE, 0);
 	ret = tifiles_file_read_tigroup(src_filename, src);
-	if(ret) goto tuf;
+	if (ret)
+	{
+		goto tuf;
+	}
 
 	// ungroup structure
 	ret = tifiles_untigroup_content(src, &dst1, &dst2);
-	if(ret) goto tuf;
+	if (ret)
+	{
+		goto tuf;
+	}
 
 	// count number of structures and allocates array of strings
-	if(dst_filenames != NULL)
+	if (dst_filenames != NULL)
+	{
 		*dst_filenames = (char **)g_malloc((src->n_vars + src->n_apps + 1) * sizeof(char *));
+	}
 
 	// store each structure content to file
 	for (ptr1 = dst1, i = 0; *ptr1 != NULL || i < src->n_vars; ptr1++, i++)
 	{
 		ret = tifiles_file_write_regular(NULL, *ptr1, &real_name);
-		if(ret) goto tuf;
+		if (ret)
+		{
+			goto tuf;
+		}
 
-		if(dst_filenames != NULL)
+		if (dst_filenames != NULL)
+		{
 			*dst_filenames[i] = real_name;
+		}
 		else
+		{
 			g_free(real_name);
+		}
 	}
 
 	for (ptr2 = dst2, j = 0; *ptr2 != NULL || j < src->n_apps; ptr2++, j++)
 	{
 		ret = tifiles_file_write_flash2(NULL, *ptr2, &real_name);
-		if(ret) goto tuf;
+		if (ret)
+		{
+			goto tuf;
+		}
 
-		if(dst_filenames != NULL)
+		if (dst_filenames != NULL)
+		{
 			*dst_filenames[i+j] = real_name;
+		}
 		else
+		{
 			g_free(real_name);
+		}
 	}
 
 	// release allocated memory
 tuf:
-	if(dst1)
+	if (dst1)
 	{
 		for(ptr1 = dst1; *ptr1; ptr1++)
+		{
 			tifiles_content_delete_regular(*ptr1);
+		}
 	}
-	if(dst2)
+	if (dst2)
 	{
 		for(ptr2 = dst2; *ptr2; ptr2++)
+		{
 			tifiles_content_delete_flash(*ptr2);
+		}
 	}
 	tifiles_content_delete_tigroup(src);
 
@@ -810,7 +901,9 @@ static int open_temp_file(const char *orig_name, char **temp_name)
 	*temp_name = NULL;
 	suffix = strrchr(orig_name, '.');
 	if (suffix && (strchr(suffix, '/') || strchr(suffix, '\\')))
+	{
 		suffix = NULL;
+	}
 	template = g_strconcat("tigXXXXXX", suffix, NULL);
 
 	fd = g_file_open_tmp(template, temp_name, NULL);
@@ -841,7 +934,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	struct archive *arc;
 	struct archive_entry *entry;
 	const char *filename_inzip;
-	int err = 0;
+	int ret = 0;
 
 	if (filename == NULL || content == NULL)
 	{
@@ -861,7 +954,9 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 	    || archive_read_open_FILE(arc, tigf) != ARCHIVE_OK)
 	{
 		if (arc)
+		{
 			archive_read_finish(arc);
+		}
 		fclose(tigf);
 		return ERR_FILE_ZIP;
 	}
@@ -897,7 +992,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 		fd = open_temp_file(filename_inzip, &fname);
 		if (fd == -1)
 		{
-			err = ERR_FILE_IO;
+			ret = ERR_FILE_IO;
 			goto tfrt_exit;
 		}
 
@@ -907,7 +1002,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 			close(fd);
 			g_unlink(fname);
 			g_free(fname);
-			err = ERR_FILE_IO;
+			ret = ERR_FILE_IO;
 			goto tfrt_exit;
 		}
 		close(fd);
@@ -916,26 +1011,38 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 		{
 			int model = tifiles_file_get_model(fname);
 
-			if(content->model == CALC_NONE)
+			if (content->model == CALC_NONE)
+			{
 				content->model = model;
+			}
 
-			if(tifiles_file_is_regular(fname))
+			if (tifiles_file_is_regular(fname))
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
-				int ret;
 
 				ret = tifiles_file_read_regular(fname, tigentry->content.regular);
-				if(ret) { g_free(tigentry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if (ret)
+				{
+					g_free(tigentry);
+					g_unlink(fname);
+					g_free(fname);
+					break;
+				}
 
 				tifiles_content_add_te(content, tigentry);
 			}
-			else if(tifiles_file_is_flash(fname))
+			else if (tifiles_file_is_flash(fname))
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
-				int ret;
 
 				ret = tifiles_file_read_flash(fname, tigentry->content.flash);
-				if(ret) { g_free(tigentry); g_unlink(fname); g_free(fname); err = ret; goto tfrt_exit; }
+				if (ret)
+				{
+					g_free(tigentry);
+					g_unlink(fname);
+					g_free(fname);
+					break;
+				}
 
 				tifiles_content_add_te(content, tigentry);
 			}
@@ -952,7 +1059,7 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 tfrt_exit:
 	archive_read_finish(arc);
 	fclose(tigf);
-	return err;
+	return ret;
 }
 
 static int zip_write(struct archive *arc, CalcModel model, const char *origfname, const char *tempfname)
@@ -1077,7 +1184,8 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 	if (!(arc = archive_write_new()) || archive_write_set_format_zip(arc) != ARCHIVE_OK)
 	{
-		if (arc) {
+		if (arc)
+		{
 			archive_write_close(arc);
 			archive_write_finish(arc);
 		}
@@ -1090,15 +1198,21 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 	archive_write_set_bytes_per_block(arc, 0);
 
 	if (content->comp_level > 0)
+	{
 		archive_write_set_options(arc, "compression=deflate");
+	}
 	else
+	{
 		archive_write_set_options(arc, "compression=store");
+	}
 
 	if (archive_write_open_FILE(arc, tigf) != ARCHIVE_OK)
+	{
 		err = ERR_FILE_OPEN;
+	}
 
 	// Parse entries and store
-	for(ptr = content->var_entries; *ptr && !err; ptr++)
+	for (ptr = content->var_entries; *ptr && !err; ptr++)
 	{
 		TigEntry* entry = *ptr;
 		char *fname = NULL;
@@ -1106,7 +1220,8 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 		// write TI file into tmp folder
 		fd = open_temp_file(entry->filename, &fname);
-		if (fd == -1) {
+		if (fd == -1)
+		{
 			g_free(fname);
 			err = ERR_FILE_OPEN;
 			break;
@@ -1115,7 +1230,9 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 		err = tifiles_file_write_regular(fname, entry->content.regular, NULL);
 		if (!err)
+		{
 			err = zip_write(arc, content->model, entry->filename, fname);
+		}
 
 		g_unlink(fname);
 		g_free(fname);
@@ -1129,7 +1246,8 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 		// write TI file into tmp folder
 		fd = open_temp_file(entry->filename, &fname);
-		if (fd == -1) {
+		if (fd == -1)
+		{
 			g_free(fname);
 			err = ERR_FILE_OPEN;
 			break;
@@ -1138,7 +1256,9 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 		err = tifiles_file_write_flash(fname, entry->content.flash);
 		if (!err)
+		{
 			err = zip_write(arc, content->model, entry->filename, fname);
+		}
 
 		g_unlink(fname);
 		g_free(fname);
@@ -1146,7 +1266,9 @@ TIEXPORT2 int TICALL tifiles_file_write_tigroup(const char *filename, TigContent
 
 	// close archive
 	if (archive_write_close(arc) != ARCHIVE_OK)
+	{
 		err = ERR_FILE_IO;
+	}
 	archive_write_finish(arc);
 	fclose(tigf);
 	return err;
@@ -1174,14 +1296,18 @@ TIEXPORT2 int TICALL tifiles_file_display_tigroup(const char *filename)
 
 	tigf = g_fopen(filename, "rb");
 	if (tigf == NULL)
+	{
 		return ERR_FILE_OPEN;
+	}
 
 	if (!(arc = archive_read_new())
 	    || archive_read_support_format_zip(arc) != ARCHIVE_OK
 	    || archive_read_open_FILE(arc, tigf) != ARCHIVE_OK)
 	{
 		if (arc)
+		{
 			archive_read_finish(arc);
+		}
 		fclose(tigf);
 		return ERR_FILE_ZIP;
 	}

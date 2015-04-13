@@ -352,7 +352,7 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);;
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 

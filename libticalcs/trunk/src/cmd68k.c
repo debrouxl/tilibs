@@ -524,6 +524,7 @@ TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 	uint8_t strl;
 	uint8_t flag;
 	char * varname_nofldname;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -531,7 +532,11 @@ TIEXPORT3 int TICALL ti89_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -577,6 +582,7 @@ TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 	uint8_t *buffer;
 	uint16_t length;
 	uint8_t strl;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -584,7 +590,11 @@ TIEXPORT3 int TICALL ti92_recv_VAR(CalcHandle* handle, uint32_t * varsize, uint8
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -622,11 +632,16 @@ static int ti68k_recv_CTS(CalcHandle* handle, uint8_t is_92)
 	uint8_t host, cmd;
 	uint16_t length;
 	uint8_t *buffer;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_SKP)
 	{
@@ -753,11 +768,16 @@ static int ti68k_recv_ACK(CalcHandle* handle, uint16_t * status, uint8_t is_92)
 	uint8_t host, cmd;
 	uint16_t length;
 	uint8_t *buffer;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (!is_92 && cmd == CMD_SKP)
 	{
@@ -798,10 +818,15 @@ static int ti68k_recv_CNT(CalcHandle* handle)
 {
 	uint8_t host, cmd;
 	uint16_t sts;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	TRYF(dbus_recv(handle, &host, &cmd, &sts, NULL));
+	ret = dbus_recv(handle, &host, &cmd, &sts, NULL);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{
@@ -833,10 +858,15 @@ static int ti68k_recv_EOT(CalcHandle* handle)
 {
 	uint8_t host, cmd;
 	uint16_t length;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 
-	TRYF(dbus_recv(handle, &host, &cmd, &length, NULL));
+	ret = dbus_recv(handle, &host, &cmd, &length, NULL);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd != CMD_EOT)
 	{
@@ -865,6 +895,7 @@ static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vart
 	uint8_t *buffer;
 	uint16_t length;
 	uint8_t strl;
+	int ret;
 
 	VALIDATE_HANDLE(handle);
 	VALIDATE_NONNULL(varsize);
@@ -872,7 +903,11 @@ static int ti68k_recv_RTS(CalcHandle* handle, uint32_t * varsize, uint8_t * vart
 	VALIDATE_NONNULL(varname);
 
 	buffer = (uint8_t *)handle->priv2;
-	TRYF(dbus_recv(handle, &host, &cmd, &length, buffer));
+	ret = dbus_recv(handle, &host, &cmd, &length, buffer);
+	if (ret)
+	{
+		return ret;
+	}
 
 	if (cmd == CMD_EOT)
 	{

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-04-09 12:17+0200\n"
+"POT-Creation-Date: 2015-04-09 17:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -744,26 +744,26 @@ msgstr ""
 msgid "  model   : %s"
 msgstr ""
 
-#: src/type2str.c:59 src/type2str.c:69 src/type2str.c:87 src/type2str.c:97
+#: src/type2str.c:59 src/type2str.c:69 src/type2str.c:91 src/type2str.c:101
 msgid "full"
 msgstr ""
 
-#: src/type2str.c:60 src/type2str.c:71
+#: src/type2str.c:60 src/type2str.c:73
 msgid "clipped"
 msgstr ""
 
-#: src/type2str.c:61 src/type2str.c:89 src/type2str.c:117
+#: src/type2str.c:61 src/type2str.c:93 src/type2str.c:125
 msgid "unknown"
 msgstr ""
 
-#: src/type2str.c:88 src/type2str.c:99
+#: src/type2str.c:92 src/type2str.c:105
 msgid "local"
 msgstr ""
 
-#: src/type2str.c:115 src/type2str.c:125
+#: src/type2str.c:123 src/type2str.c:133
 msgid "free"
 msgstr ""
 
-#: src/type2str.c:116 src/type2str.c:127
+#: src/type2str.c:124 src/type2str.c:137
 msgid "used"
 msgstr ""

@@ -1670,8 +1670,6 @@ static int		recv_cert	(CalcHandle* handle, FlashContent* content)
 	return 0;
 }
 
-extern int tixx_recv_backup(CalcHandle* handle, BackupContent* content);
-
 const CalcFncts calc_84p_usb =
 {
 	CALC_TI84P_USB,

@@ -66,10 +66,14 @@ TIEXPORT3 CalcScreenFormat TICALL ticalcs_string_to_scrfmt(const char *str)
 {
 	if (str != NULL)
 	{
-		if(!strcmp(str, _("full")))
+		if (!strcmp(str, _("full")))
+		{
 			return SCREEN_FULL;
-		else if(!strcmp(str, _("clipped")))
+		}
+		else if (!strcmp(str, _("clipped")))
+		{
 			return SCREEN_CLIPPED;
+		}
 	}
 	else
 	{
@@ -94,10 +98,14 @@ TIEXPORT3 CalcPathType TICALL ticalcs_string_to_pathtype(const char *str)
 {
 	if (str != NULL)
 	{
-		if(!strcmp(str, _("full")))
+		if (!strcmp(str, _("full")))
+		{
 			return PATH_FULL;
-		else if(!strcmp(str, _("local")))
+		}
+		else if (!strcmp(str, _("local")))
+		{
 			return PATH_LOCAL;
+		}
 	}
 	else
 	{
@@ -122,10 +130,14 @@ TIEXPORT3 CalcMemType TICALL ticalcs_string_to_memtype(const char *str)
 {
 	if (str != NULL)
 	{
-		if(!strcmp(str, _("free")))
+		if (!strcmp(str, _("free")))
+		{
 			return MEMORY_FREE;
-		else if(!strcmp(str, _("used")))
+		}
+		else if (!strcmp(str, _("used")))
+		{
 			return MEMORY_USED;
+		}
 	}
 
 	return MEMORY_NONE;
