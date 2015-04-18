@@ -17,6 +17,10 @@ stamp-h?
 .libs/
 *.l[ao]
 *~
+ABOUT-NLS
+INSTALL
+compile
+test-driver
 
 *.gmo
 Makevars.template
