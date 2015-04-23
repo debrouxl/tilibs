@@ -1066,72 +1066,49 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	VALIDATE_NONNULL(folder);
 	VALIDATE_NONNULL(name);
 
-	if (handle->model == CALC_TI89T_USB)
+	pks = 3;
+	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
 	{
-		pks = 3;
-		if(args) pks += strlen(args); else pks += 2;
-		if(strlen(folder)) pks += strlen(folder)+1;
-		if(strlen(name)) pks += strlen(name)+1;
-		pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_EXECUTE);
-
-		pkt->data[j++] = strlen(folder);
-		if(strlen(folder))
-		{
-			memcpy(pkt->data + j, folder, strlen(folder)+1);
-			j += strlen(folder)+1;
-		}
-
-		pkt->data[j++] = strlen(name);
-		if(strlen(name))
-		{
-			memcpy(pkt->data + j, name, strlen(name)+1);
-			j += strlen(name)+1;
-		}
-		
-		pkt->data[j++] = action;
-
-		if(action != EID_KEY && args != NULL)
-		{
-			memcpy(pkt->data + j, args, strlen(args));
-		}
-		else if(action == EID_KEY || args == NULL)
-		{
-			pkt->data[j++] = MSB(code);
-			pkt->data[j++] = LSB(code);
-		}
+		pks += strlen(folder) + 1;
 	}
-	else if (   handle->model == CALC_TI84P_USB
-		 || handle->model == CALC_TI84PC_USB
-		 || handle->model == CALC_TI83PCE_USB
-		 || handle->model == CALC_TI84PCE_USB
-		 || handle->model == CALC_TI82A_USB)
+	if (name[0] != 0)
 	{
-		pks = 3;
-		if(args) pks += strlen(args); else pks += 2;
-		if(strlen(name)) pks += strlen(name);
-		pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_EXECUTE);
+		pks += strlen(name) + 1;
+	}
+	if (args)
+	{
+		pks += strlen(args);
+	}
+	if (action == EID_KEY)
+	{
+		pks += 2;
+	}
+	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_EXECUTE);
 
-		// MSB first (like other commands anyway).
-		// Otherwise, a "EE 00 00 0D" packet is returned.
-		pkt->data[j++] = MSB(strlen(name));
-		pkt->data[j++] = LSB(strlen(name));
-		if(strlen(name))
-		{
-			memcpy(pkt->data + j, name, strlen(name));
-			j += strlen(name);
-		}
-		
-		pkt->data[j++] = action;
+	pkt->data[j++] = strlen(folder);
+	if (handle->model == CALC_TI89T_USB && folder[0] != 0)
+	{
+		memcpy(pkt->data + j, folder, strlen(folder) + 1);
+		j += strlen(folder) + 1;
+	}
 
-		if(action != EID_KEY && args != NULL)
-		{
-			memcpy(pkt->data + j, args, strlen(args));
-		}
-		else if(action == EID_KEY || args == NULL)
-		{
-			pkt->data[j++] = LSB(code);
-			pkt->data[j++] = MSB(code);
-		}
+	pkt->data[j++] = strlen(name);
+	if (name[0] != 0)
+	{
+		memcpy(pkt->data + j, name, strlen(name) + 1);
+		j += strlen(name) + 1;
+	}
+
+	pkt->data[j++] = action;
+
+	if (args)
+	{
+		memcpy(pkt->data + j, args, strlen(args));
+	}
+	if (action == EID_KEY)
+	{
+		pkt->data[j++] = MSB(code);
+		pkt->data[j++] = LSB(code);
 	}
 
 	retval = dusb_send_data(handle, pkt);
