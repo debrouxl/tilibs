@@ -1212,7 +1212,7 @@ const CalcFncts calc_v2 =
 	CALC_V200,
 	"V200",
 	"V200PLT",
-	N_("V200 Portable Learning Tool"),
+	N_("V200 Personal Learning Tool"),
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | 
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |

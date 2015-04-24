@@ -158,8 +158,8 @@ msgid "Creating %s..."
 msgstr "Création de %s..."
 
 #: src/calc_89.c:1215
-msgid "V200 Portable Learning Tool"
-msgstr "V200 Portable Learning Tool"
+msgid "V200 Personal Learning Tool"
+msgstr "V200 Personal Learning Tool"
 
 #: src/calc_89t.c:1014 src/calc_nsp.c:741
 #, c-format
