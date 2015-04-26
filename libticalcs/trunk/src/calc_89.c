@@ -678,7 +678,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	update_label();
 
 	content->model = handle->model;
-	content->data_part = (uint8_t *)tifiles_ve_alloc_data(2 * 1024 * 1024);	// 2MB max
+	content->data_part = (uint8_t *)tifiles_ve_alloc_data(4 * 1024 * 1024);	// 4MB max
 	content->data_type = vr->type;
 	switch(handle->model)
 	{

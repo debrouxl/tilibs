@@ -701,11 +701,15 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	}
 	if (ptr == NULL)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
 	}
 	if (ptr->data_type != TI83p_APPL)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
+	}
+	if (ptr->pages == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
 	}
 
 #if 0
@@ -888,11 +892,15 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	}
 	if (ptr == NULL)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
 	}
 	if (ptr->data_type != TI83p_AMS)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
+	}
+	if (ptr->pages == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
 	}
 
 #if 0

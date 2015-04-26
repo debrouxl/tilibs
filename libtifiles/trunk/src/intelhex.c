@@ -181,12 +181,16 @@ int hex_block_read(FILE *f, uint16_t *size, uint16_t *addr, uint8_t *type, uint8
 	int i;
 	int new_page = 0;
 
-	// reset condition: all args set to NULL
-	if(!size && !addr && !type && !data && !page)
+	// reset condition
+	if (f == NULL)
 	{
 		flag = 0x80;
 		flash_page = flash_addr = 0;
 		return 0;
+	}
+	if (size == NULL || addr == NULL || type == NULL || data == NULL || page == NULL)
+	{
+		return -1;
 	}
 
 	// fill-up buffer with 0xff (flash)

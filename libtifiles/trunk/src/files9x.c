@@ -93,24 +93,24 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		return ERR_FILE_OPEN;
 	}
 
-	if(fread_8_chars(f, signature) < 0) goto tffr;
+	if (fread_8_chars(f, signature) < 0) goto tffr;
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
 		return ERR_INVALID_FILE;
 	}
-	if(content->model_dst == CALC_NONE)
+	if (content->model_dst == CALC_NONE)
 	{
 		content->model_dst = content->model;
 	}
 
-	if(fread_word(f, NULL) < 0) goto tffr;
-	if(fread_8_chars(f, default_folder) < 0) goto tffr;
+	if (fread_word(f, NULL) < 0) goto tffr;
+	if (fread_8_chars(f, default_folder) < 0) goto tffr;
 	ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder, -1);
 	strncpy(current_folder, content->default_folder, sizeof(current_folder) - 1);
 	current_folder[sizeof(current_folder) - 1] = 0;
-	if(fread_n_chars(f, 40, content->comment) < 0) goto tffr;
-	if(fread_word(f, &tmp) < 0) goto tffr;
+	if (fread_n_chars(f, 40, content->comment) < 0) goto tffr;
+	if (fread_word(f, &tmp) < 0) goto tffr;
 	content->num_entries = tmp;
 
 	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
@@ -124,13 +124,13 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	{
 		VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
 
-		if(fread_long(f, &curr_offset) < 0) goto tffr;
-		if(fread_8_chars(f, varname) < 0)  goto tffr;
+		if (fread_long(f, &curr_offset) < 0) goto tffr;
+		if (fread_8_chars(f, varname) < 0)  goto tffr;
 		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
-		if(fread_byte(f, &(entry->type)) < 0) goto tffr;
-		if(fread_byte(f, &(entry->attr)) < 0) goto tffr;
+		if (fread_byte(f, &(entry->type)) < 0) goto tffr;
+		if (fread_byte(f, &(entry->attr)) < 0) goto tffr;
 		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
-		if(fread_word(f, NULL) < 0) goto tffr;
+		if (fread_word(f, NULL) < 0) goto tffr;
 
 		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 		{
@@ -147,8 +147,8 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			strncpy(entry->folder, current_folder, sizeof(entry->folder) - 1);
 			current_folder[sizeof(entry->folder) - 1] = 0;
 			cur_pos = ftell(f);
-			if(cur_pos == -1L) goto tffr;
-			if(fread_long(f, &next_offset) < 0) goto tffr;
+			if (cur_pos == -1L) goto tffr;
+			if (fread_long(f, &next_offset) < 0) goto tffr;
 			entry->size = next_offset - curr_offset - 4 - 2;
 			entry->data = (uint8_t *)g_malloc0(entry->size);
 			if (entry->data == NULL) 
@@ -158,15 +158,15 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 				return ERR_MALLOC;
 			}
 
-			if(fseek(f, curr_offset, SEEK_SET)) goto tffr;
-			if(fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
-			if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
+			if (fseek(f, curr_offset, SEEK_SET)) goto tffr;
+			if (fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
+			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
 
-			if(fread_word(f, &checksum) < 0) goto tffr;
-			if(fseek(f, cur_pos, SEEK_SET)) goto tffr;
+			if (fread_word(f, &checksum) < 0) goto tffr;
+			if (fseek(f, cur_pos, SEEK_SET)) goto tffr;
 
 			sum = tifiles_checksum(entry->data, entry->size);
-			if(sum != checksum)
+			if (sum != checksum)
 			{
 				fclose(f);
 				tifiles_content_delete_regular(content);
@@ -228,25 +228,25 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 		return ERR_FILE_OPEN;
 	}
 
-	if(fread_8_chars(f, signature) < 0) goto tfrb;
+	if (fread_8_chars(f, signature) < 0) goto tfrb;
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
 		return ERR_INVALID_FILE;
 	}
 
-	if(fread_word(f, NULL) < 0) goto tfrb;
-	if(fread_8_chars(f, NULL) < 0) goto tfrb;
-	if(fread_n_chars(f, 40, content->comment) < 0) goto tfrb;
-	if(fread_word(f, NULL) < 0) goto tfrb;
-	if(fread_long(f, NULL) < 0) goto tfrb;
-	if(fread_8_chars(f, content->rom_version) < 0) goto tfrb;
-	if(fread_byte(f, &(content->type)) < 0) goto tfrb;
-	if(fread_byte(f, NULL) < 0) goto tfrb;
-	if(fread_word(f, NULL) < 0) goto tfrb;
-	if(fread_long(f, &file_size) < 0) goto tfrb;
+	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_8_chars(f, NULL) < 0) goto tfrb;
+	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrb;
+	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_long(f, NULL) < 0) goto tfrb;
+	if (fread_8_chars(f, content->rom_version) < 0) goto tfrb;
+	if (fread_byte(f, &(content->type)) < 0) goto tfrb;
+	if (fread_byte(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_long(f, &file_size) < 0) goto tfrb;
 	content->data_length = file_size - 0x52 - 2;
-	if(fread_word(f, NULL) < 0) goto tfrb;
+	if (fread_word(f, NULL) < 0) goto tfrb;
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
 	if (content->data_part == NULL) 
@@ -256,12 +256,12 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 		return ERR_MALLOC;
 	}
 
-	if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
-	if(fread_word(f, &(content->checksum)) < 0) goto tfrb;
+	if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
+	if (fread_word(f, &(content->checksum)) < 0) goto tfrb;
 
 	sum = tifiles_checksum(content->data_part, content->data_length);
 #if defined(CHECKSUM_ENABLED)
-	if(sum != content->checksum)
+	if (sum != content->checksum)
 	{
 		fclose(f);
 		tifiles_content_delete_backup(content);
@@ -284,9 +284,9 @@ static int check_device_type(uint8_t id)
 	static const uint8_t types[] = { 0, DEVICE_TYPE_89, DEVICE_TYPE_92P };
 	int i;
 
-	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	for (i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 	{
-		if(types[i] == id)
+		if (types[i] == id)
 		{
 			return i;
 		}
@@ -300,9 +300,9 @@ static int check_data_type(uint8_t id)
 	static const uint8_t types[] = { 0, TI89_AMS, TI89_APPL, TI89_CERTIF, TI89_LICENSE };
 	int i;
 
-	for(i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
+	for (i = 1; i < (int)(sizeof(types)/sizeof(types[0])); i++)
 	{
-		if(types[i] == id)
+		if (types[i] == id)
 		{
 			return i;
 		}
@@ -354,9 +354,9 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	if (tib) 
 	{	// tib is an old format but mainly used by developers
 		memset(content, 0, sizeof(Ti9xFlash));
-		if(fseek(f, 0, SEEK_END)) goto tfrf;
+		if (fseek(f, 0, SEEK_END)) goto tfrf;
 		content->data_length = (uint32_t) ftell(f);
-		if(fseek(f, 0, SEEK_SET)) goto tfrf;
+		if (fseek(f, 0, SEEK_SET)) goto tfrf;
 
 		strncpy(content->name, "basecode", sizeof(content->name) - 1);
 		content->name[sizeof(content->name) - 1] = 0;
@@ -369,7 +369,7 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			return ERR_MALLOC;
 		}
 
-		if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+		if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 		switch(content->data_part[8])
 		{
 			case 1: content->device_type = DEVICE_TYPE_92P; break;	// TI92+
@@ -386,54 +386,64 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	{
 		for (content = head;; content = content->next) 
 		{
-			if(fread_8_chars(f, signature) < 0) goto tfrf;
+			if (fread_8_chars(f, signature) < 0) goto tfrf;
 			content->model = tifiles_file_get_model(filename);
-			if(fread_byte(f, &(content->revision_major)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->revision_minor)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->flags)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->object_type)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->revision_day)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->revision_month)) < 0) goto tfrf;
-			if(fread_word(f, &(content->revision_year)) < 0) goto tfrf;
-			if(fskip(f, 1) < 0) goto tfrf;
-			if(fread_8_chars(f, content->name) < 0) goto tfrf;
-			if(fskip(f, 23) < 0) goto tfrf;
-			if(fread_byte(f, &(content->device_type)) < 0) goto tfrf;
-			if(fread_byte(f, &(content->data_type)) < 0) goto tfrf;
-			if(fskip(f, 23) < 0) goto tfrf;
-			if(fread_byte(f, &(content->hw_id)) < 0) goto tfrf;
-			if(fread_long(f, &(content->data_length)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->revision_major)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->revision_minor)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->flags)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->object_type)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->revision_day)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->revision_month)) < 0) goto tfrf;
+			if (fread_word(f, &(content->revision_year)) < 0) goto tfrf;
+			if (fskip(f, 1) < 0) goto tfrf;
+			if (fread_8_chars(f, content->name) < 0) goto tfrf;
+			if (fskip(f, 23) < 0) goto tfrf;
+			if (fread_byte(f, &(content->device_type)) < 0) goto tfrf;
+			if (fread_byte(f, &(content->data_type)) < 0) goto tfrf;
+			if (fskip(f, 23) < 0) goto tfrf;
+			if (fread_byte(f, &(content->hw_id)) < 0) goto tfrf;
+			if (fread_long(f, &(content->data_length)) < 0) goto tfrf;
 
-			if(content->data_type != TI89_LICENSE && !check_device_type(content->device_type))
+			if (content->data_type != TI89_LICENSE && !check_device_type(content->device_type))
 			{
 				return ERR_INVALID_FILE;
 			}
-			if(!check_data_type(content->data_type))
+			if (!check_data_type(content->data_type))
 			{
+				return ERR_INVALID_FILE;
+			}
+			if (content->data_length > 4U * 1024 * 1024 - 65536U)
+			{
+				// Data length larger than Flash memory size - boot code sector size doesn't look right.
 				return ERR_INVALID_FILE;
 			}
 
 			content->data_part = (uint8_t *)g_malloc0(content->data_length);
-			if (content->data_part == NULL) 
+			if (content->data_part == NULL)
 			{
 				fclose(f);
 				tifiles_content_delete_flash(content);
 				return ERR_MALLOC;
 			}
 
-			if(fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+			if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
+			if (   (content->data_type == TI83p_AMS && content->data_part[0] != 0x80)
+			    || (content->data_type == TI83p_APPL && content->data_part[0] != 0x81))
+			{
+				return ERR_INVALID_FILE;
+			}
 			content->next = NULL;
 
 			// check for end of file
-			if(fread_8_chars(f, signature) < 0)
+			if (fread_8_chars(f, signature) < 0)
 			{
 				break;
 			}
-			if(strcmp(signature, "**TIFL**") || feof(f))
+			if (strcmp(signature, "**TIFL**") || feof(f))
 			{
 				break;
 			}
-			if(fseek(f, -8, SEEK_CUR)) goto tfrf;
+			if (fseek(f, -8, SEEK_CUR)) goto tfrf;
 
 			content->next = (Ti9xFlash *)g_malloc0(sizeof(Ti9xFlash));
 			if (content->next == NULL) 
@@ -537,24 +547,24 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 	}
 
 	// write header
-	if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
-	if(fwrite(fsignature, 1, 2, f) < 2) goto tfwr;
+	if (fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwr;
+	if (fwrite(fsignature, 1, 2, f) < 2) goto tfwr;
 	if (content->num_entries == 1)	// folder entry for single var is placed here
 	{
 		strncpy(content->default_folder, content->entries[0]->folder, sizeof(content->default_folder) - 1);
 		content->default_folder[sizeof(content->default_folder) - 1] = 0;
 	}
 	ticonv_varname_to_tifile_s(content->model, content->default_folder, default_folder, -1);
-	if(fwrite_8_chars(f, default_folder) < 0) goto tfwr;
-	if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
+	if (fwrite_8_chars(f, default_folder) < 0) goto tfwr;
+	if (fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwr;
 	if (content->num_entries > 1) 
 	{
-		if(fwrite_word(f, (uint16_t) (content->num_entries + num_folders)) < 0) goto tfwr;
+		if (fwrite_word(f, (uint16_t) (content->num_entries + num_folders)) < 0) goto tfwr;
 		offset += 16 * (content->num_entries + num_folders - 1);
 	} 
 	else
 	{
-		if(fwrite_word(f, 1) < 0) goto tfwr;
+		if (fwrite_word(f, 1) < 0) goto tfwr;
 	}
 
 	// write table of entries
@@ -572,13 +582,13 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 
 		if (content->num_entries > 1)	// single var does not have folder entry
 		{
-			if(fwrite_long(f, offset) < 0) goto tfwr;
+			if (fwrite_long(f, offset) < 0) goto tfwr;
 			ticonv_varname_to_tifile_s(content->model, fentry->folder, fldname, -1);
-			if(fwrite_8_chars(f, fldname) < 0) goto tfwr;
-			if(fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model)) < 0) goto tfwr;
-			if(fwrite_byte(f, 0x00) < 0) goto tfwr;
+			if (fwrite_8_chars(f, fldname) < 0) goto tfwr;
+			if (fwrite_byte(f, (uint8_t)tifiles_folder_type(content->model)) < 0) goto tfwr;
+			if (fwrite_byte(f, 0x00) < 0) goto tfwr;
 			for (j = 0; table[i][j] != -1; j++);
-			if(fwrite_word(f, (uint16_t) j) < 0) goto tfwr;
+			if (fwrite_word(f, (uint16_t) j) < 0) goto tfwr;
 		}
 
 		for (j = 0; table[i][j] != -1; j++) 
@@ -587,20 +597,20 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 			VarEntry *entry = content->entries[idx2];
 			uint8_t attr = ATTRB_NONE;
 
-			if(fwrite_long(f, offset) < 0) goto tfwr;
+			if (fwrite_long(f, offset) < 0) goto tfwr;
 			ticonv_varname_to_tifile_s(content->model, entry->name, varname, entry->type);
-			if(fwrite_8_chars(f, varname) < 0) goto tfwr;
-			if(fwrite_byte(f, entry->type) < 0) goto tfwr;
+			if (fwrite_8_chars(f, varname) < 0) goto tfwr;
+			if (fwrite_byte(f, entry->type) < 0) goto tfwr;
 			attr = (entry->attr == ATTRB_ARCHIVED) ? 3 : entry->attr;
-			if(fwrite_byte(f, attr) < 0) goto tfwr;
-			if(fwrite_word(f, 0) < 0) goto tfwr;
+			if (fwrite_byte(f, attr) < 0) goto tfwr;
+			if (fwrite_word(f, 0) < 0) goto tfwr;
 
 			offset += entry->size + 4 + 2;
 		}
 	}
 
-	if(fwrite_long(f, offset) < 0) goto tfwr;
-	if(fwrite_word(f, 0x5aa5) < 0) goto tfwr;
+	if (fwrite_long(f, offset) < 0) goto tfwr;
+	if (fwrite_word(f, 0x5aa5) < 0) goto tfwr;
 
 	// write data
 	for (i = 0; table[i] != NULL; i++) 
@@ -613,10 +623,10 @@ int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real
 			VarEntry *entry = content->entries[idx];
 			uint16_t sum;
 
-			if(fwrite_long(f, 0) < 0) goto tfwr;
-			if(fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
+			if (fwrite_long(f, 0) < 0) goto tfwr;
+			if (fwrite(entry->data, 1, entry->size, f) < entry->size) goto tfwr;
 			sum = tifiles_checksum(entry->data, entry->size);
-			if(fwrite_word(f, sum) < 0) goto tfwr;
+			if (fwrite_word(f, sum) < 0) goto tfwr;
 		}
 	}
 
@@ -659,21 +669,21 @@ int ti9x_file_write_backup(const char *filename, Ti9xBackup *content)
 		return ERR_FILE_OPEN;
 	}
 
-	if(fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
-	if(fwrite(fsignature, 1, 2, f) < 2) goto tfwb;
-	if(fwrite_8_chars(f, "") < 0) goto tfwb;
-	if(fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwb;
-	if(fwrite_word(f, 1) < 0) goto tfwb;
-	if(fwrite_long(f, 0x52) < 0) goto tfwb;
-	if(fwrite_8_chars(f, content->rom_version) < 0) goto tfwb;
-	if(fwrite_word(f, content->type) < 0) goto tfwb;
-	if(fwrite_word(f, 0) < 0) goto tfwb;
-	if(fwrite_long(f, content->data_length + 0x52 + 2) < 0) goto tfwb;
-	if(fwrite_word(f, 0x5aa5) < 0) goto tfwb;
-	if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwb;
+	if (fwrite_8_chars(f, tifiles_calctype2signature(content->model)) < 0) goto tfwb;
+	if (fwrite(fsignature, 1, 2, f) < 2) goto tfwb;
+	if (fwrite_8_chars(f, "") < 0) goto tfwb;
+	if (fwrite_n_bytes(f, 40, (uint8_t *)content->comment) < 0) goto tfwb;
+	if (fwrite_word(f, 1) < 0) goto tfwb;
+	if (fwrite_long(f, 0x52) < 0) goto tfwb;
+	if (fwrite_8_chars(f, content->rom_version) < 0) goto tfwb;
+	if (fwrite_word(f, content->type) < 0) goto tfwb;
+	if (fwrite_word(f, 0) < 0) goto tfwb;
+	if (fwrite_long(f, content->data_length + 0x52 + 2) < 0) goto tfwb;
+	if (fwrite_word(f, 0x5aa5) < 0) goto tfwb;
+	if (fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwb;
 
 	content->checksum = tifiles_checksum(content->data_part, content->data_length);
-	if(fwrite_word(f, content->checksum) < 0) goto tfwb;
+	if (fwrite_word(f, content->checksum) < 0) goto tfwb;
 
 	fclose(f);
 	return 0;
@@ -719,7 +729,7 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 
 		for (content = head; content != NULL; content = content->next)
 		{
-			if(content->data_type == TI89_AMS || content->data_type == TI89_APPL)
+			if (content->data_type == TI89_AMS || content->data_type == TI89_APPL)
 			{
 				break;
 			}
@@ -746,23 +756,23 @@ int ti9x_file_write_flash(const char *fname, Ti9xFlash *head, char **real_fname)
 
 	for (content = head; content != NULL; content = content->next) 
 	{
-		if(fwrite_8_chars(f, "**TIFL**") < 0) goto tfwf;
-		if(fwrite_byte(f, content->revision_major) < 0) goto tfwf;
-		if(fwrite_byte(f, content->revision_minor) < 0) goto tfwf;
-		if(fwrite_byte(f, content->flags) < 0) goto tfwf;
-		if(fwrite_byte(f, content->object_type) < 0) goto tfwf;
-		if(fwrite_byte(f, content->revision_day) < 0) goto tfwf;
-		if(fwrite_byte(f, content->revision_month) < 0) goto tfwf;
-		if(fwrite_word(f, content->revision_year) < 0) goto tfwf;
-		if(fwrite_byte(f, (uint8_t) strlen(content->name)) < 0) goto tfwf;
-		if(fwrite_8_chars(f, content->name) < 0) goto tfwf;
-		if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
-		if(fwrite_byte(f, content->device_type) < 0) goto tfwf;
-		if(fwrite_byte(f, content->data_type) < 0) goto tfwf;
-		if(fwrite_n_chars(f, 23, "") < 0) goto tfwf;
-		if(fwrite_byte(f, content->hw_id) < 0)  goto tfwf;
-		if(fwrite_long(f, content->data_length) < 0) goto tfwf;
-		if(fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
+		if (fwrite_8_chars(f, "**TIFL**") < 0) goto tfwf;
+		if (fwrite_byte(f, content->revision_major) < 0) goto tfwf;
+		if (fwrite_byte(f, content->revision_minor) < 0) goto tfwf;
+		if (fwrite_byte(f, content->flags) < 0) goto tfwf;
+		if (fwrite_byte(f, content->object_type) < 0) goto tfwf;
+		if (fwrite_byte(f, content->revision_day) < 0) goto tfwf;
+		if (fwrite_byte(f, content->revision_month) < 0) goto tfwf;
+		if (fwrite_word(f, content->revision_year) < 0) goto tfwf;
+		if (fwrite_byte(f, (uint8_t) strlen(content->name)) < 0) goto tfwf;
+		if (fwrite_8_chars(f, content->name) < 0) goto tfwf;
+		if (fwrite_n_chars(f, 23, "") < 0) goto tfwf;
+		if (fwrite_byte(f, content->device_type) < 0) goto tfwf;
+		if (fwrite_byte(f, content->data_type) < 0) goto tfwf;
+		if (fwrite_n_chars(f, 23, "") < 0) goto tfwf;
+		if (fwrite_byte(f, content->hw_id) < 0)  goto tfwf;
+		if (fwrite_long(f, content->data_length) < 0) goto tfwf;
+		if (fwrite(content->data_part, 1, content->data_length, f) < content->data_length) goto tfwf;
 	}
 
 	g_free(filename);

@@ -616,11 +616,15 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	}
 	if (ptr == NULL)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
 	}
 	if (ptr->data_type != TI89_AMS)
 	{
-		return -1;
+		return ERR_INVALID_PARAMETER;
+	}
+	if (ptr->data_part == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
 	}
 
 	// search for OS header (offset & size)
