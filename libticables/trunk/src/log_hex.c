@@ -32,57 +32,78 @@
 
 #include "logging.h"
 #include "data_log.h"
-#include "ticables.h"
+#include "log_hex.h"
 
-#define HEX_FILE	"ticables-log.hex"
-
-static char *fn = NULL;
+static char *ofn = NULL;
 static FILE *logfile = NULL;
 
 int log_hex_start(void)
 {
-	fn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
+	int ret;
 
-	logfile = fopen(fn, "wt");
-	if (logfile == NULL) 
+	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
+
+	logfile = fopen(ofn, "wt");
+	if (logfile != NULL)
 	{
-		ticables_critical("Unable to open %s for logging.\n", fn);
-		return -1;
+		fprintf(logfile, "TiCables-2 data logger\n");	// needed by log_dbus.c
+		fprintf(logfile, "Version %s\n", ticables_version_get());
+		fprintf(logfile, "\n");
+		ret = 0;
+	}
+	else
+	{
+		ticables_critical("Unable to open %s for logging.\n", ofn);
+		ret = 1;
 	}
 
-	fprintf(logfile, "TiCables-2 data logger\n");	// needed by log_dbus.c
-	fprintf(logfile, "Version %s\n", ticables_version_get());
-	fprintf(logfile, "\n");
-
-  	return 0;
+	return ret;
 }
 
 int log_hex_1(int dir, uint8_t data)
 {
 	static int array[20];
 	static int i = 0;
-	int j;
-	int c;
 
 	if (logfile == NULL)
-		return -1;
-	
+	{
+		return 1;
+	}
+
 	array[i++] = data;
 	fprintf(logfile, "%02X ", data);
 
-	if ((i > 1 ) && !(i % 16)) 
+	if ((i != 0) && !(i % 16))
 	{
+		int j;
+		int c;
 		fprintf(logfile, "| ");
 		for (j = 0; j < 16; j++) 
 		{
 			c = array[j];
 			if ((c < 32) || (c > 127))
+			{
 				fprintf(logfile, " ");
+			}
 			else
+			{
 				fprintf(logfile, "%c", c);
+			}
 		}
 		fprintf(logfile, "\n");
 		i = 0;
+	}
+
+	return 0;
+}
+
+int log_hex_N(int dir, const uint8_t * data, uint32_t len)
+{
+	uint32_t i = 0;
+
+	for (i = 0; i < len; i++)
+	{
+		log_hex_1(dir, data[i]);
 	}
 
 	return 0;
@@ -96,8 +117,8 @@ int log_hex_stop(void)
 		logfile = NULL;
 	}
 
-	g_free(fn);
-	fn = NULL;
+	g_free(ofn);
+	ofn = NULL;
 
 	return 0;
 }

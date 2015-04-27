@@ -48,73 +48,85 @@
 int log_start(CableHandle *h)
 {
 	gchar *tmp;
-	
+	int ret;
+
 	tmp = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, NULL);
-	g_mkdir(tmp, 0750);
+	if (!g_mkdir_with_parents(tmp, 0750))
+	{
+		ret = log_hex_start();
+		if (!ret)
+		{
+			if (h->model == CABLE_USB)
+			{
+				ret = log_dusb_start();
+				if (!ret)
+				{
+					ret = log_nsp_start();
+				}
+			}
+			else
+			{
+				ret = log_dbus_start();
+			}
+		}
+	}
+	else
+	{
+		ticables_critical("Failed to create folder for logs");
+		ret = 1;
+	}
 	g_free(tmp);
 
-	log_hex_start();
-
-	if(h->model == CABLE_USB)
-	{
-		log_dusb_start();
-		log_nsp_start();
-	}
-	if(h->model != CABLE_USB)
-	{
-		log_dbus_start();
-	}
-
-  	return 0;
+	return ret;
 }
 
 int log_1(CableHandle *h, int dir, uint8_t data)
 {
 	log_hex_1(dir, data);
 
-	if(h->model == CABLE_USB)
+	if (h->model == CABLE_USB)
 	{
 		log_dusb_1(dir, data);
 		log_nsp_1(dir, data);
 	}
-	if(h->model != CABLE_USB)
+	else
 	{
 		log_dbus_1(dir, data);
 	}
 
-  	return 0;
+	return 0;
 }
 
-int log_N(CableHandle *h, int dir, uint8_t *data, int len)
+int log_N(CableHandle *h, int dir, const uint8_t *data, uint32_t len)
 {
-	int i;
+	log_hex_N(dir, data, len);
 
-	//printf("<%i> ", len);
-	for(i = 0; i < len; i++)
+	if (h->model == CABLE_USB)
 	{
-		
-		log_hex_1(dir, data[i]);
-		log_dusb_1(dir, data[i]);
-		log_dbus_1(dir, data[i]);
-		log_nsp_1(dir, data[i]);
+		log_dusb_N(dir, data, len);
+		log_nsp_N(dir, data, len);
 	}
-  	
-  	return 0;
+	else
+	{
+		log_dbus_N(dir, data, len);
+	}
+
+	return 0;
 }
 
 int log_stop(CableHandle *h)
 {
 	log_hex_stop();
 
-	if(h->model == CABLE_USB)
+	if (h->model == CABLE_USB)
 	{
 		log_dusb_stop();
 		log_nsp_stop();
 	}
-	if(h->model != CABLE_USB)
+	else
 	{
 		log_dbus_stop();
 	}
 
-  	return 0;
+	return 0;
 }

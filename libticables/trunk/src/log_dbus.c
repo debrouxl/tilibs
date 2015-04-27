@@ -34,9 +34,9 @@
 
 #include "logging.h"
 #include "data_log.h"
+#include "log_dbus.h"
 
-#define HEX_FILE	"ticables-log.hex"
-#define LOG_FILE	"ticables-dbus.pkt"
+#define LOG_DBUS_FILE	"ticables-dbus.pkt"
 
 static char *ifn = NULL;
 static char *ofn = NULL;
@@ -44,14 +44,19 @@ static char *ofn = NULL;
 int log_dbus_start(void)
 {
 	ifn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
-	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, LOG_FILE, NULL);
+	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, LOG_DBUS_FILE, NULL);
 
-  	return 0;
+	return 0;
 }
 
 int log_dbus_1(int dir, uint8_t data)
 {
-  	return 0;
+	return 0;
+}
+
+int log_dbus_N(int dir, const uint8_t * data, uint32_t len)
+{
+	return 0;
 }
 
 extern int dbus_decomp(const char *filename, int resync);
@@ -59,15 +64,23 @@ extern int dbus_decomp(const char *filename, int resync);
 int log_dbus_stop(void)
 {
 	char *r;
+	char * ifn2;
 
-	if(!ifn || ! ofn)
+	if (!ifn || ! ofn)
+	{
 		return 0;
+	}
 
 	r = strrchr(ifn, '.');
-	if(r) *r = '\0';
+	if (r)
+	{
+		*r = '\0';
+	}
 
 	dbus_decomp(ifn, 0);
-	strcat(ifn, ".pkt");
+	ifn2 = g_strconcat(ifn, ".pkt", NULL);
+	g_free(ifn);
+	ifn = ifn2;
 
 	g_unlink(ofn);
 	g_rename(ifn, ofn);
@@ -77,5 +90,5 @@ int log_dbus_stop(void)
 	g_free(ofn); 
 	ofn = NULL;
 
-  	return 0;
+	return 0;
 }

@@ -34,9 +34,9 @@
 
 #include "logging.h"
 #include "data_log.h"
+#include "log_nsp.h"
 
-#define HEX_FILE	"ticables-log.hex"
-#define LOG_FILE	"ticables-nsp.pkt"
+#define LOG_NSP_FILE	"ticables-nsp.pkt"
 
 static char *ifn = NULL;
 static char *ofn = NULL;
@@ -44,30 +44,43 @@ static char *ofn = NULL;
 int log_nsp_start(void)
 {
 	ifn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, HEX_FILE, NULL);
-	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, LOG_FILE, NULL);
+	ofn = g_strconcat(g_get_home_dir(), G_DIR_SEPARATOR_S, LOG_DIR, G_DIR_SEPARATOR_S, LOG_NSP_FILE, NULL);
 
-  	return 0;
+	return 0;
 }
 
 int log_nsp_1(int dir, uint8_t data)
 {
-  	return 0;
+	return 0;
+}
+
+int log_nsp_N(int dir, const uint8_t * data, uint32_t len)
+{
+	return 0;
 }
 
 extern int nsp_decomp(const char *filename);
 
 int log_nsp_stop(void)
 {
-  	char *r;
+	char *r;
+	char * ifn2;
 
-	if(!ifn || ! ofn)
+	if (!ifn || ! ofn)
+	{
 		return 0;
+	}
 
 	r = strrchr(ifn, '.');
-	if(r) *r = '\0';
+	if (r)
+	{
+		*r = '\0';
+	}
 
 	nsp_decomp(ifn);
-	strcat(ifn, ".pkt");
+	ifn2 = g_strconcat(ifn, ".pkt", NULL);
+	g_free(ifn);
+	ifn = ifn2;
 
 	g_unlink(ofn);
 	g_rename(ifn, ofn);
@@ -77,5 +90,5 @@ int log_nsp_stop(void)
 	g_free(ofn); 
 	ofn = NULL;
 
-  	return 0;
+	return 0;
 }
