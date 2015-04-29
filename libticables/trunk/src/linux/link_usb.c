@@ -214,6 +214,7 @@ static struct usb_urb urb;
 #include "detect.h"
 #endif
 #include "../timeout.h"
+#include "../internal.h"
 
 /* Constants */
 
@@ -247,7 +248,8 @@ static const usb_infos tigl_infos[] =
 };
 
 // list of devices found 
-static usb_infos tigl_devices[MAX_CABLES+1];
+static USBCableInfo tigl_devices[MAX_CABLES+1];
+static int tigl_n_devices;
 
 // internal structure for holding data
 typedef struct
@@ -277,7 +279,7 @@ typedef struct
 
 /* Helpers (=driver API) */
 
-static void tigl_get_product(unsigned char * string, size_t maxlen, struct usb_device *dev)
+static void tigl_get_product(char * string, size_t maxlen, struct usb_device *dev)
 {
 /* The code below causes problems on FreeBSD (libusb bug?). */
 #ifndef __BSD__
@@ -302,8 +304,8 @@ static int tigl_find(void)
     struct usb_device *dev;
     int i, j;
 
-    memset(tigl_devices, 0, sizeof(tigl_devices) / sizeof(tigl_devices[0]));
-    j = 0;
+    memset(tigl_devices, 0, sizeof(tigl_devices));
+    j = tigl_n_devices = 0;
 
     /* loop taken from testlibusb.c */
     for (bus = usb_busses; bus; bus = bus->next)
@@ -316,16 +318,23 @@ static int tigl_find(void)
 		{
 		    if(dev->descriptor.idProduct == tigl_infos[i].pid)
 		    {
-			unsigned char string[64+1];
-			tigl_get_product(string, sizeof(string) - 1, dev);
-			ticables_info(" found %s on #%i, version <%x.%02x>",
-				      string, j+1,
-				      dev->descriptor.bcdDevice >> 8,
-				      dev->descriptor.bcdDevice & 0xff);
+			tigl_devices[j].vid = dev->descriptor.idVendor;
+			tigl_devices[j].pid = dev->descriptor.idProduct;
+			tigl_devices[j].version = dev->descriptor.bcdDevice;
 
-			memcpy(&tigl_devices[j], &tigl_infos[i], 
-			       sizeof(usb_infos));
+			tigl_get_product(tigl_devices[j].product_str, sizeof(tigl_devices[j].product_str), dev);
+			ticables_info(" found %s on #%i, version <%x.%02x>",
+			              tigl_devices[j].product_str, j+1,
+			              dev->descriptor.bcdDevice >> 8,
+			              dev->descriptor.bcdDevice & 0xff);
+
 			tigl_devices[j++].dev = dev;
+			tigl_n_devices = j;
+
+			if (j >= MAX_CABLES)
+			{
+			    return j;
+			}
 		    }
 		}
 	    }
@@ -1076,23 +1085,19 @@ const CableFncts cable_raw =
 
 //=======================
 
-TIEXPORT1 int TICALL usb_probe_devices1(int **list);
-
-TIEXPORT1 int TICALL usb_probe_devices(int **list)
+// returns list of detected devices
+int usb_probe_device_info(const USBCableInfo **list, int *count)
 {
-  return usb_probe_devices1(list);
-}
-
-// returns number of devices and list of PIDs (dynamically allocated)
-TIEXPORT1 int TICALL usb_probe_devices1(int **list)
-{
-	int i;
-
-    TRYC(tigl_enum());
-
-    *list = (int *)calloc(MAX_CABLES+1, sizeof(int));
-    for(i = 0; i < MAX_CABLES; i++)
-        (*list)[i] = tigl_devices[i].pid;
-
-    return 0;
+	int ret;
+	if (!(ret = tigl_enum()))
+	{
+		*list = tigl_devices;
+		*count = tigl_n_devices;
+	}
+	else
+	{
+		*list = NULL;
+		*count = 0;
+	}
+	return ret;
 }

@@ -31,18 +31,34 @@
 #include "logging.h"
 #include "ticables.h"
 #include "error.h"
+#include "internal.h"
 
 #include "linux/detect.h"
 #include "win32/detect.h"
 #include "bsd/detect.h"
 
-static void ticables_probing_show(int **array)
+TIEXPORT1 void TICALL ticables_probing_show(int **array)
 {
-	CableModel model;
-
-	for(model = CABLE_NUL; model < CABLE_MAX; model++)
+	if (array != NULL)
 	{
-		ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);
+		CableModel model;
+
+		for (model = CABLE_NUL; model < CABLE_MAX; model++)
+		{
+			int * arraymodel = array[model];
+			if (arraymodel != NULL)
+			{
+				ticables_info(_(" %i: %i %i %i %i"), model, array[model][1], array[model][2], array[model][3], array[model][4]);
+			}
+			else
+			{
+				ticables_info("%i: null", model);
+			}
+		}
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
 	}
 }
 
@@ -71,62 +87,84 @@ TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMeth
 		ticables_critical("%s: result is NULL", __FUNCTION__);
 		return ERR_PROBE_FAILED;
 	}
+	*result = NULL;
 
 	ticables_info(_("Link cable probing:"));
 
 	array = (int **)calloc(CABLE_MAX + 1, sizeof(int *));
-	for(model = CABLE_NUL; model <= CABLE_MAX; model++)
-	    array[model] = (int *)calloc(5, sizeof(int));
+	if (array == NULL)
+	{
+		return ERR_PROBE_FAILED; // THIS RETURNS !
+	}
+
+	for (model = CABLE_NUL; model <= CABLE_MAX; model++)
+	{
+		array[model] = (int *)calloc(5, sizeof(int));
+		if (array[model] == NULL)
+		{
+			for (model = CABLE_NUL; model <= CABLE_MAX; model++)
+			{
+				free(array[model]);
+			}
+			free(array);
+			return ERR_PROBE_FAILED; // THIS RETURNS !
+		}
+	}
 
 	// look for USB devices (faster)
-	if(method & PROBE_USB)
+	if (method & PROBE_USB)
 	{
 		int *list, n, i;
 
 		ticables_get_usb_devices(&list, &n);
 
-		for(i = 0; i < n; i++)
+		for (i = 0; i < n; i++)
 		{
 			port = i+1;
 
-			if(list[i] == PID_TIGLUSB)
+			if (list[i] == PID_TIGLUSB)
+			{
 				array[CABLE_SLV][port] = !0;
+			}
 
-			if(list[i])
+			if (list[i])
+			{
 				array[CABLE_USB][port] = !0;
-
-			if(list[i])
 				found = !0;
+			}
 		}
 
 		ticables_free_usb_devices(list);
 	}
 
-	if((method & PROBE_FIRST) && found)
+	if ((method & PROBE_FIRST) && found)
 	{
 		*result = array;
 		return found ? 0 : ERR_NO_CABLE;
 	}
 
 	// look for DBUS devices (slower)
-	if(method & PROBE_DBUS)
+	if (method & PROBE_DBUS)
 	{
-		for(model = CABLE_GRY; model <= CABLE_PAR; model++)
+		for (model = CABLE_GRY; model <= CABLE_PAR; model++)
 		{
-			for(port = PORT_1; port <= PORT_4; port++)
+			for (port = PORT_1; port <= PORT_4; port++)
 			{
 				CableHandle* handle;
 				int err, ret;
 
 				handle = ticables_handle_new(model, port);
-				if(handle)
+				if (handle != NULL)
 				{
 					ticables_options_set_timeout(handle, timeout);
 					err = ticables_cable_probe(handle, &ret);
 					array[model][port] = (ret && !err) ? 1: 0;
-					if(array[model][port]) found = !0;
+					if (array[model][port])
+					{
+						found = !0;
+					}
 
-					if(found && (method & PROBE_FIRST))
+					if (found && (method & PROBE_FIRST))
 					{
 						ticables_handle_del(handle);
 						break;
@@ -155,7 +193,7 @@ TIEXPORT1 int TICALL ticables_probing_finish(int ***result)
 
 	if (result != NULL && *result != NULL)
 	{
-		for(i = CABLE_GRY; i <= CABLE_TIE; i++)
+		for (i = CABLE_GRY; i <= CABLE_TIE; i++)
 		{
 			free((*result)[i]);
 			(*result)[i] = NULL;
@@ -194,8 +232,6 @@ TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
 	return 0;
 }
 
-extern int usb_probe_devices(int **list);
-
 /**
  * ticables_get_usb_devices:
  * @array: address of a NULL-terminated allocated array of integers (PIDs).
@@ -211,34 +247,30 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 {
 	if (list != NULL)
 	{
-#if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
-		int i, *p;
 		int ret = 0;
+		const USBCableInfo *info = NULL;
+		int i, n = 0;
 
-		ret = usb_probe_devices(list);
-		if(ret)
+#if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
+		ret = usb_probe_device_info(&info, &n);
+#endif
+		*list = calloc(1 + n, sizeof(int));
+		for (i = 0; i < n; i++)
 		{
-			*list = calloc(1, sizeof(int));
-			if(len) *len = 0;
-			return ret;
+			(*list)[i] = info[i].pid;
+		}
+		if (len)
+		{
+			*len = i;
 		}
 
-		for(p = *list, i = 0; *p; p++, i++);
-			//printf("%i: %04x\n", i, (*list)[i]);
-
-		if(len) *len = i;
-#else
-		*list = calloc(1, sizeof(int));
-		if(len) *len = 0;
-#endif
+		return ret;
 	}
 	else
 	{
 		ticables_critical("%s: list is NULL", __FUNCTION__);
 		return -1;
 	}
-
-	return 0;
 }
 
 /**
@@ -249,5 +281,142 @@ TIEXPORT1 int TICALL ticables_get_usb_devices(int **list, int *len)
 TIEXPORT1 int TICALL ticables_free_usb_devices(int *array)
 {
 	free(array);
+	return 0;
+}
+
+static void translate_usb_device_info(CableDeviceInfo *info, const USBCableInfo *usbinfo)
+{
+	if (usbinfo->pid == PID_TIGLUSB)
+	{
+		info->family = CABLE_FAMILY_DBUS;
+		info->variant = CABLE_VARIANT_TIGLUSB;
+	}
+	else if (usbinfo->pid == PID_TI84P)
+	{
+		info->family = CABLE_FAMILY_USB_TI8X;
+		if (!strcmp(usbinfo->product_str, "TI-84 Plus"))
+		{
+			info->variant = CABLE_VARIANT_TI84P;
+		}
+		else if (!strcmp(usbinfo->product_str, "TI-82 Advanced"))
+		{
+			info->variant = CABLE_VARIANT_TI82A;
+		}
+		else if (usbinfo->version <= 0x0110)
+		{
+			info->variant = CABLE_VARIANT_TI84P;
+		}
+		else if (usbinfo->version == 0x0190)
+		{
+			info->variant = CABLE_VARIANT_TI82A;
+		}
+		else
+		{
+			info->variant = CABLE_VARIANT_UNKNOWN;
+		}
+	}
+	else if (usbinfo->pid == PID_TI84P_SE)
+	{
+		info->family = CABLE_FAMILY_USB_TI8X;
+		if (!strcmp(usbinfo->product_str, "TI-84 Plus Silver Edition"))
+		{
+			info->variant = CABLE_VARIANT_TI84PSE;
+		}
+		else if (!strcmp(usbinfo->product_str, "TI-84 Plus C Silver Edition"))
+		{
+			info->variant = CABLE_VARIANT_TI84PCSE;
+		}
+		else if (!strcmp(usbinfo->product_str, "TI-84 Plus CE"))
+		{
+			info->variant = CABLE_VARIANT_TI84PCE;
+		}
+		else if (!strcmp(usbinfo->product_str, "TI-83 Premium CE"))
+		{
+			info->variant = CABLE_VARIANT_TI83PCE;
+		}
+		else if (usbinfo->version <= 0x0110)
+		{
+			info->variant = CABLE_VARIANT_TI84PSE;
+		}
+		else if (usbinfo->version == 0x0120)
+		{
+			info->variant = CABLE_VARIANT_TI84PCSE;
+		}
+		else if (usbinfo->version == 0x0220)
+		{
+			info->variant = CABLE_VARIANT_TI84PCE;
+		}
+		else
+		{
+			info->variant = CABLE_VARIANT_UNKNOWN;
+		}
+	}
+	else if (usbinfo->pid == PID_TI89TM)
+	{
+		info->family = CABLE_FAMILY_USB_TI9X;
+		info->variant = CABLE_VARIANT_TI89TM;
+	}
+	else if (usbinfo->pid == PID_NSPIRE)
+	{
+		info->family = CABLE_FAMILY_USB_NSPIRE;
+		info->variant = CABLE_VARIANT_NSPIRE;
+	}
+	else
+	{
+		ticables_critical("unknown PID %x", usbinfo->pid);
+		info->family = CABLE_FAMILY_UNKNOWN;
+		info->variant = CABLE_VARIANT_UNKNOWN;
+	}
+}
+
+/**
+ * ticables_get_usb_device_info:
+ * @array: address of a newly allocated array of CableDeviceInfo structures
+ * @length: number of detected USB devices.
+ *
+ * Returns the list of detected USB devices. Note that list is in the
+ * same order as PORT#x.
+ * The array must be freed when no longer used.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_get_usb_device_info(CableDeviceInfo **list, int *len)
+{
+	if (list != NULL)
+	{
+		int ret = 0;
+		const USBCableInfo *usbinfo = NULL;
+		int i, n = 0;
+
+#if defined(__WIN32__) || (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
+		ret = usb_probe_device_info(&usbinfo, &n);
+#endif
+		*list = calloc(1 + n, sizeof(CableDeviceInfo));
+		for (i = 0; i < n; i++)
+		{
+			translate_usb_device_info(&(*list)[i], &usbinfo[i]);
+		}
+		if (len)
+		{
+			*len = i;
+		}
+
+		return ret;
+	}
+	else
+	{
+		ticables_critical("%s: list is NULL", __FUNCTION__);
+		return -1;
+	}
+}
+
+/**
+ * \brief Frees an array of USB device information
+ * \param array the array previously allocated by ticables_get_usb_device_info()
+ * \return Always 0
+ */
+TIEXPORT1 int TICALL ticables_free_usb_device_info(CableDeviceInfo *list)
+{
+	free(list);
 	return 0;
 }

@@ -120,6 +120,42 @@ typedef enum
 } ProbingMethod;
 
 /**
+ * CableFamily:
+ *
+ * Defines the various types of devices supported and which can be
+ * detected automatically; each family is generally incompatible with
+ * the others in terms of protocol, file formats, or both.
+ */
+typedef enum
+{
+	CABLE_FAMILY_UNKNOWN = 0,
+	CABLE_FAMILY_DBUS,          /* Traditional TI link protocol */
+	CABLE_FAMILY_USB_TI8X,      /* Direct USB for TI-84 Plus, CSE, CE, etc. */
+	CABLE_FAMILY_USB_TI9X,      /* Direct USB for TI-89 Titanium */
+	CABLE_FAMILY_USB_NSPIRE     /* Direct USB for TI-Nspire series */
+} CableFamily;
+
+/**
+ * CableVariant:
+ *
+ * Defines the various sub-types (for a given CableFamily) that are
+ * supported and can be detected automatically.
+ */
+typedef enum
+{
+	CABLE_VARIANT_UNKNOWN = 0,
+	CABLE_VARIANT_TIGLUSB,      /* CABLE_FAMILY_DBUS */
+	CABLE_VARIANT_TI84P,        /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PSE,      /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PCSE,     /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI84PCE,      /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI83PCE,      /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI82A,        /* CABLE_FAMILY_USB_TI8X */
+	CABLE_VARIANT_TI89TM,       /* CABLE_FAMILY_USB_TI9X */
+	CABLE_VARIANT_NSPIRE        /* CABLE_FAMILY_USB_NSPIRE */
+} CableVariant;
+
+/**
  * DataRate:
  * @count: number of bytes transferred
  * @start: the time when transfer started
@@ -237,6 +273,19 @@ struct _CableHandle
 };
 
 /**
+ * CableDeviceInfo:
+ * @family: calculator family
+ * @variant: calculator variant
+ *
+ * Information returned for each cable by ticables_get_usb_device_info.
+ */
+typedef struct
+{
+	CableFamily     family;
+	CableVariant    variant;
+} CableDeviceInfo;
+
+/**
  * CableOptions:
  * @cable_model: model
  * @cable_port: port
@@ -331,8 +380,12 @@ typedef struct
 	// probe.c
 	TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);
 	TIEXPORT1 int TICALL ticables_probing_finish(int ***result);
+	TIEXPORT1 void TICALL ticables_probing_show(int **array);
 
 	TIEXPORT1 int TICALL ticables_is_usb_enabled(void);
+
+	TIEXPORT1 int TICALL ticables_get_usb_device_info(CableDeviceInfo **array, int *len);
+	TIEXPORT1 int TICALL ticables_free_usb_device_info(CableDeviceInfo *array);
 
 	TIEXPORT1 int TICALL ticables_get_usb_devices(int **array, int *len);
 	TIEXPORT1 int TICALL ticables_free_usb_devices(int *array);
