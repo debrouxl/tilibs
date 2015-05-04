@@ -114,6 +114,9 @@ static const uint32_t supported_cables =
 
 // not static, must be shared between instances
 int ticables_instance = 0;	// counts # of instances
+#ifdef HAVE_LIBUSB_1_0
+int libusb_working = -1;
+#endif
 
 /**
  * ticables_library_init:
@@ -173,12 +176,14 @@ TIEXPORT1 int TICALL ticables_library_init(void)
 	}
 #endif
 #if defined(HAVE_LIBUSB)
-	/* init the libusb */
+	// init libusb
 	usb_init();
 #elif defined(HAVE_LIBUSB_1_0)
-	/* init the libusb */
-	libusb_init(NULL);
-	libusb_set_debug(NULL, 3);
+	// init libusb, keeping track of success / failure status
+	libusb_working = libusb_init(NULL);
+	if (libusb_working == LIBUSB_SUCCESS) {
+		libusb_set_debug(NULL, 3);
+	}
 #endif
 
 	return (++ticables_instance);
@@ -197,7 +202,10 @@ TIEXPORT1 int TICALL ticables_library_exit(void)
 #if defined(HAVE_LIBUSB)
 	// No exit function for libusb 0.1.x.
 #elif defined(HAVE_LIBUSB_1_0)
-	libusb_exit(NULL); // XXX NULL ?
+	// Must not call libusb_exit() if libusb_init() failed, or call it multiple times.
+	if (ticables_instance == 1 && libusb_working == LIBUSB_SUCCESS) {
+		libusb_exit(NULL);
+	}
 #endif
 	return (--ticables_instance);
 }
