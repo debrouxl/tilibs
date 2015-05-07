@@ -101,6 +101,7 @@ const CalcFncts calc_80 =
 	"TI-80",
 	"TI-80 ViewScreen",
 	OPS_SCREEN,
+	PRODUCT_ID_NONE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

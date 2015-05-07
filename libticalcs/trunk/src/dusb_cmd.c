@@ -414,6 +414,30 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, ui
 	return retval;
 }
 
+// 0x0005: OS data
+TIEXPORT3 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t size, uint8_t *data)
+{
+	DUSBVirtualPacket* pkt;
+	int retval = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(data);
+
+	pkt = dusb_vtl_pkt_new(4 + size, DUSB_VPKT_OS_DATA);
+
+	pkt->data[0] = (addr      ) & 0xFF;
+	pkt->data[1] = (addr >>  8) & 0xFF;
+	pkt->data[2] = (addr >> 16) & 0xFF;
+	pkt->data[3] = (addr >> 24) & 0xFF;
+	memcpy(pkt->data+4, data, size);
+	retval = dusb_send_data(handle, pkt);
+
+	dusb_vtl_pkt_del(pkt);
+	ticalcs_info("   addr=%08x, size=%04x", addr, size);
+
+	return retval;
+}
+
 // 0x0006: acknowledgement of EOT
 TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle)
 {
@@ -1120,7 +1144,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_execute(CalcHandle *handle, const char *folder, 
 	}
 	else
 	{
-		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder ? folder : "NULL", name ? name : "NULL", args ? args : "NULL");
+		ticalcs_info("   action=%i, folder=%s, name=%s, args=%s", action, folder, name, args ? args : "NULL");
 	}
 
 	return retval;

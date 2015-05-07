@@ -699,15 +699,9 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 			break;
 		}
 	}
-	if (ptr == NULL)
-	{
-		return ERR_INVALID_PARAMETER;
-	}
-	if (ptr->data_type != TI83p_APPL)
-	{
-		return ERR_INVALID_PARAMETER;
-	}
-	if (ptr->pages == NULL)
+	if (   ptr == NULL
+	    || ptr->data_type != TI83p_APPL
+	    || ptr->pages == NULL)
 	{
 		return ERR_INVALID_PARAMETER;
 	}
@@ -719,14 +713,17 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 	{
 		FlashPage *fp = ptr->pages[i];
 
-		printf("page #%i: %04x %02x %02x %04x\n", i,
-			fp->addr, fp->page, fp->flag, fp->size);
+		printf("page #%i: %04x %02x %02x %04x\n", i, fp->addr, fp->page, fp->flag, fp->size);
 	}
 	printf("data length: %08x\n", ptr->data_length);
 #endif
 
 	size = ptr->num_pages * FLASH_PAGE_SIZE;
 	data = tifiles_fp_alloc_data(size);	// must be rounded-up
+	if (data == NULL)
+	{
+		return ERR_MALLOC;
+	}
 
 	update_->cnt2 = 0;
 	update_->max2 = ptr->num_pages;
@@ -775,7 +772,75 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 				{
 					ret = dusb_cmd_s_eot(handle);
 				}
-				g_free(data);
+			}
+		}
+	}
+
+	g_free(data);
+
+	return ret;
+}
+
+static int		send_flash_834pce	(CalcHandle* handle, FlashContent* content)
+{
+	FlashContent *ptr;
+	char *utf8;
+	DUSBCalcAttr **attrs;
+	const int nattrs = 2;
+	int ret = 0;
+
+	uint8_t *data;
+	uint32_t size;
+
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	{
+		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+		{
+			break;
+		}
+	}
+	if (   ptr == NULL
+	    || ptr->data_type != TI83p_APPL
+	    || ptr->data_part == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
+
+	size = ptr->data_length;
+	data = ptr->data_part;
+
+	update_->cnt2 = 0;
+	update_->max2 = 0;
+
+	// send
+	utf8 = ticonv_varname_to_utf8(handle->model, ptr->name, ptr->data_type);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
+
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = ptr->data_type;
+	attrs[1] = dusb_ca_new(AID_ARCHIVED, 1);
+	attrs[1]->data[0] = 1;
+
+	ret = dusb_cmd_s_rts(handle, "", ptr->name, size, nattrs, CA(attrs));
+	dusb_ca_del_array(nattrs, attrs);
+	if (!ret)
+	{
+		ret = dusb_cmd_r_data_ack(handle);
+		if (!ret)
+		{
+			ret = dusb_cmd_s_var_content(handle, size, data);
+			if (!ret)
+			{
+				ret = dusb_cmd_r_data_ack(handle);
+				if (!ret)
+				{
+					ret = dusb_cmd_s_eot(handle);
+				}
 			}
 		}
 	}
@@ -864,6 +929,58 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 				content->num_pages = page+1;
 
 				g_free(data);
+			}
+		}
+		dusb_ca_del_array(naids, attrs);
+	}
+
+	return ret;
+}
+
+static int		recv_flash_834pce	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
+{
+	static const uint16_t aids[] = { AID_ARCHIVED, AID_VAR_VERSION };
+	const int naids = sizeof(aids) / sizeof(uint16_t);
+	DUSBCalcAttr **attrs;
+	const int nattrs = 1;
+	char fldname[40], varname[40];
+	uint8_t *data;
+	uint32_t data_length;
+	char *utf8;
+	int ret;
+
+	utf8 = ticonv_varname_to_utf8(handle->model, vr->name, vr->type);
+	g_snprintf(update_->text, sizeof(update_->text), "%s", utf8);
+	g_free(utf8);
+	update_label();
+
+	attrs = dusb_ca_new_array(nattrs);
+	attrs[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
+	attrs[0]->data[0] = 0xF0; attrs[0]->data[1] = 0x0F;
+	attrs[0]->data[2] = 0x00; attrs[0]->data[3] = vr->type;
+
+	ret = dusb_cmd_s_var_request(handle, "", vr->name, naids, aids, nattrs, CA(attrs));
+	dusb_ca_del_array(nattrs, attrs);
+	if (!ret)
+	{
+		attrs = dusb_ca_new_array(naids);
+		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
+		if (!ret)
+		{
+			ret = dusb_cmd_r_var_content(handle, &data_length, &data);
+			if (!ret)
+			{
+
+				content->model = handle->model;
+				strncpy(content->name, vr->name, sizeof(content->name) - 1);
+				content->name[sizeof(content->name) - 1] = 0;
+				content->data_type = vr->type;
+				content->device_type = DEVICE_TYPE_83P;
+				content->data_length = data_length;
+				content->data_part = data; // Borrow this memory block.
+				content->hw_id = handle->calc->product_id;
+
+				// Do NOT g_free(data);
 			}
 		}
 		dusb_ca_del_array(naids, attrs);
@@ -1063,6 +1180,133 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 			update_->cnt2 = i;
 			update_->pbar();
 		}
+
+		ret = dusb_cmd_s_eot(handle);
+		if (ret)
+		{
+			break;
+		}
+		PAUSE(500);
+		ret = dusb_cmd_r_eot_ack(handle);
+	} while(0);
+end:
+
+	return ret;
+}
+
+static int		send_os_834pce    (CalcHandle* handle, FlashContent* content)
+{
+	DUSBModeSet mode = { 2, 1, 0, 0, 0x0fa0 }; //MODE_BASIC;
+	uint32_t pkt_size = 0x3ff;
+	uint32_t hdr_size = 0;
+	uint32_t hdr_offset = 0;
+	const uint32_t memory_offset = 0x30000U;
+	FlashContent *ptr;
+	uint8_t *d;
+	int i, r, q;
+	int ret;
+
+	// search for data header
+	for (ptr = content; ptr != NULL; ptr = ptr->next)
+	{
+		if (ptr->data_type == TI83p_AMS || ptr->data_type == TI83p_APPL)
+		{
+			break;
+		}
+	}
+	if (ptr == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
+	if (ptr->data_type != TI83p_AMS)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
+	if (ptr->data_part == NULL)
+	{
+		return ERR_INVALID_PARAMETER;
+	}
+
+	// search for OS header (offset & size)
+	hdr_offset = 0;
+	for(i = 0, d = ptr->data_part; (d[i] != 0xFF) || (d[i+1] != 0xFF) || (d[i+2] != 0xFF) || (d[i+3] != 0xFF); i++);
+	hdr_size = i - hdr_offset;
+
+	do
+	{
+		// switch to BASIC mode
+		ret = dusb_cmd_s_mode_set(handle, mode);
+		if (ret)
+		{
+			break;
+		}
+		ret = dusb_cmd_r_mode_ack(handle);
+		if (ret)
+		{
+			break;
+		}
+
+		// start OS transfer
+		ret = dusb_cmd_s_os_begin(handle, ptr->data_length);
+		if (ret)
+		{
+			break;
+		}
+		ret = dusb_cmd_r_os_ack(handle, &pkt_size);
+		if (ret)
+		{
+			break;
+		}
+
+		// send OS header/signature
+		ret = dusb_cmd_s_os_header_89(handle, hdr_size, ptr->data_part + hdr_offset);
+		if (ret)
+		{
+			break;
+		}
+		ret = dusb_cmd_r_os_ack(handle, &pkt_size);
+		if (ret)
+		{
+			break;
+		}
+
+		// send OS data
+		q = ptr->data_length / (pkt_size - 4);
+		r = ptr->data_length % (pkt_size - 4);
+
+		update_->cnt2 = 0;
+		update_->max2 = q;
+
+		for (i = 0; i < q; i++)
+		{
+			ret = dusb_cmd_s_os_data_834pce(handle, memory_offset + i*(pkt_size - 4), (pkt_size - 4), ptr->data_part + i*(pkt_size - 4));
+			if (ret)
+			{
+				goto end;
+			}
+			ret = dusb_cmd_r_data_ack(handle);
+			if (ret)
+			{
+				goto end;
+			}
+
+			update_->cnt2 = i;
+			update_->pbar();
+		}
+
+		ret = dusb_cmd_s_os_data_834pce(handle, memory_offset + q*(pkt_size - 4), r, ptr->data_part + i*(pkt_size - 4));
+		if (ret)
+		{
+			break;
+		}
+		ret = dusb_cmd_r_data_ack(handle);
+		if (ret)
+		{
+			break;
+		}
+
+		update_->cnt2 = i;
+		update_->pbar();
 
 		ret = dusb_cmd_s_eot(handle);
 		if (ret)
@@ -1664,6 +1908,7 @@ const CalcFncts calc_84p_usb =
 	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI84P,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1734,6 +1979,7 @@ const CalcFncts calc_84pcse_usb =
 	OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI84PCSE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1800,10 +2046,11 @@ const CalcFncts calc_83pce_usb =
 	"TI83PCE",
 	"TI-83 Premium CE",
 	N_("TI-83 Premium CE thru DirectLink"),
-	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ /*OPS_OS |*/
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI83PCE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1845,9 +2092,9 @@ const CalcFncts calc_83pce_usb =
 	&recv_var,
 	&noop_send_var_ns,
 	&noop_recv_var_ns,
-	&send_flash,
-	&recv_flash,
-	&send_os,
+	&send_flash_834pce,
+	&recv_flash_834pce,
+	&send_os_834pce,
 	&recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
@@ -1870,10 +2117,11 @@ const CalcFncts calc_84pce_usb =
 	"TI84+CE",
 	"TI-84 Plus CE",
 	N_("TI-84 Plus CE thru DirectLink"),
-	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | /*OPS_FLASH |*/ /*OPS_OS |*/
+	OPS_ISREADY | OPS_SCREEN | OPS_DIRLIST | OPS_VARS | OPS_FLASH | OPS_OS |
 	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | /*OPS_KEYS |*/
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI84PCE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1915,9 +2163,9 @@ const CalcFncts calc_84pce_usb =
 	&recv_var,
 	&noop_send_var_ns,
 	&noop_recv_var_ns,
-	&send_flash,
-	&recv_flash,
-	&send_os,
+	&send_flash_834pce,
+	&recv_flash_834pce,
+	&send_os_834pce,
 	&recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
@@ -1944,6 +2192,7 @@ const CalcFncts calc_82a_usb =
 	OPS_IDLIST | /*OPS_ROMDUMP |*/ OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH,
+	PRODUCT_ID_TI82A,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

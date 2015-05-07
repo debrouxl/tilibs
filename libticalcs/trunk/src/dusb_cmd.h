@@ -143,6 +143,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_os_data(CalcHandle *handle, uint16_t addr, uint8
 
 TIEXPORT3 int TICALL dusb_cmd_s_os_header_89(CalcHandle *handle, uint32_t size, uint8_t *data);
 TIEXPORT3 int TICALL dusb_cmd_s_os_data_89(CalcHandle *handle, uint32_t size, uint8_t *data);
+TIEXPORT3 int TICALL dusb_cmd_s_os_data_834pce(CalcHandle *handle, uint32_t addr, uint32_t size, uint8_t *data);
 
 TIEXPORT3 int TICALL dusb_cmd_r_eot_ack(CalcHandle *handle);
 

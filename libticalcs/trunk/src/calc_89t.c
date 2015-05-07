@@ -553,6 +553,7 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 	const int nattrs = 1;
 	char fldname[40], varname[40];
 	uint8_t *data;
+	uint32_t data_length;
 	char *utf8;
 	int ret;
 
@@ -574,19 +575,19 @@ static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* v
 		ret = dusb_cmd_r_var_header(handle, fldname, varname, attrs);
 		if (!ret)
 		{
-			ret = dusb_cmd_r_var_content(handle, NULL, &data);
+			ret = dusb_cmd_r_var_content(handle, &data_length, &data);
 			if (!ret)
 			{
 				content->model = handle->model;
 				strncpy(content->name, vr->name, sizeof(content->name) - 1);
 				content->name[sizeof(content->name) - 1] = 0;
-				content->data_length = vr->size;
-				content->data_part = (uint8_t *)tifiles_ve_alloc_data(vr->size);
 				content->data_type = vr->type;
 				content->device_type = DEVICE_TYPE_89;
+				content->data_length = data_length;
+				content->data_part = data; // Borrow this memory block.
+				content->hw_id = handle->calc->product_id;
 
-				memcpy(content->data_part, data, content->data_length);
-				g_free(data);
+				// Do NOT g_free(data);
 			}
 		}
 		dusb_ca_del_array(naids, attrs);
@@ -629,7 +630,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 
 	// search for OS header (offset & size)
 	hdr_offset = 2+4;
-	for(i = 6, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
+	for(i = hdr_offset, d = ptr->data_part; (d[i] != 0xCC) || (d[i+1] != 0xCC) || (d[i+2] != 0xCC) || (d[i+3] != 0xCC); i++);
 	hdr_size = i - hdr_offset - 6;
 
 	do
@@ -1338,6 +1339,7 @@ const CalcFncts calc_89t_usb =
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_FOLDER,
+	PRODUCT_ID_TI89T,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

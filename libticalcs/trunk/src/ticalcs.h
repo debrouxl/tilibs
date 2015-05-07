@@ -629,6 +629,7 @@ struct _CalcFncts
 	const char*		fullname;
 	const char*		description;
 	const int		features;
+	const CalcProductIDs	product_id;
 	const char*		counters[FNCT_LAST];
 
 	int		(*is_ready)		(CalcHandle*);

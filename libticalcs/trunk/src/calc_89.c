@@ -1007,6 +1007,7 @@ const CalcFncts calc_89 =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	PRODUCT_ID_TI89,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1077,6 +1078,7 @@ const CalcFncts calc_92p =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	PRODUCT_ID_TI92P,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1147,6 +1149,7 @@ const CalcFncts calc_89t =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP | 
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	PRODUCT_ID_TI89T,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1217,6 +1220,7 @@ const CalcFncts calc_v2 =
 	OPS_FLASH | OPS_IDLIST | OPS_CLOCK | OPS_ROMDUMP |
 	OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_FOLDER | FTS_FLASH | FTS_CERT,
+	PRODUCT_ID_TIV200,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

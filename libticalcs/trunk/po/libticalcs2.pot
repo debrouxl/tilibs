@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-04-22 22:07+0200\n"
+"POT-Creation-Date: 2015-05-07 20:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,16 +44,16 @@ msgstr ""
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:880 src/calc_84p.c:1237 src/calc_89.c:822 src/calc_89t.c:830
+#: src/calc_73.c:880 src/calc_84p.c:1489 src/calc_89.c:822 src/calc_89t.c:835
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:907 src/calc_84p.c:1314 src/calc_89.c:845 src/calc_89t.c:909
+#: src/calc_73.c:907 src/calc_84p.c:1566 src/calc_89.c:845 src/calc_89t.c:914
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:961 src/calc_83.c:440 src/calc_84p.c:1375 src/calc_89.c:882
-#: src/calc_89t.c:972 src/calc_92.c:555 src/calc_nsp.c:884
+#: src/calc_73.c:961 src/calc_83.c:440 src/calc_84p.c:1627 src/calc_89.c:882
+#: src/calc_89t.c:977 src/calc_92.c:555 src/calc_nsp.c:884
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
@@ -107,33 +107,33 @@ msgstr ""
 msgid "Waiting for var(s)..."
 msgstr ""
 
-#: src/calc_84p.c:1459 src/calc_89t.c:1163
+#: src/calc_84p.c:1711 src/calc_89t.c:1168
 msgid "Getting version..."
 msgstr ""
 
-#: src/calc_84p.c:1601 src/calc_84p.c:1610 src/calc_84p.c:1619
-#: src/calc_84p.c:1629 src/calc_84p.c:1637
+#: src/calc_84p.c:1853 src/calc_84p.c:1862 src/calc_84p.c:1871
+#: src/calc_84p.c:1881 src/calc_84p.c:1889
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr ""
 
-#: src/calc_84p.c:1654
+#: src/calc_84p.c:1906
 msgid "TI-84 Plus thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:1724
+#: src/calc_84p.c:1977
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:1794
+#: src/calc_84p.c:2048
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:1864
+#: src/calc_84p.c:2119
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr ""
 
-#: src/calc_84p.c:1934
+#: src/calc_84p.c:2190
 msgid "TI-82 Advanced thru DirectLink"
 msgstr ""
 
@@ -152,26 +152,26 @@ msgstr ""
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_89.c:899 src/calc_89t.c:1069 src/calc_92.c:594 src/calc_nsp.c:914
+#: src/calc_89.c:899 src/calc_89t.c:1074 src/calc_92.c:594 src/calc_nsp.c:914
 #, c-format
 msgid "Creating %s..."
 msgstr ""
 
-#: src/calc_89.c:1215
+#: src/calc_89.c:1218
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.c:1004 src/calc_nsp.c:1084
+#: src/calc_89t.c:1009 src/calc_nsp.c:1084
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
 
-#: src/calc_89t.c:1032
+#: src/calc_89t.c:1037
 #, c-format
 msgid "Changing attributes of %s..."
 msgstr ""
 
-#: src/calc_89t.c:1332
+#: src/calc_89t.c:1337
 msgid "TI-89 Titanium thru DirectLink"
 msgstr ""
 

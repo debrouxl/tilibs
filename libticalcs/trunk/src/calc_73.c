@@ -1120,6 +1120,7 @@ const CalcFncts calc_73 =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_BACKUP,
+	PRODUCT_ID_TI73,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1189,6 +1190,7 @@ const CalcFncts calc_83p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	PRODUCT_ID_TI83P,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1258,6 +1260,7 @@ const CalcFncts calc_84p =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	PRODUCT_ID_TI84P,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
@@ -1327,6 +1330,7 @@ const CalcFncts calc_84pcse =
 	OPS_ISREADY | OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS |
 	OPS_FLASH | OPS_IDLIST | OPS_ROMDUMP | OPS_CLOCK | OPS_DELVAR | OPS_VERSION | OPS_OS |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_CERT | FTS_BACKUP,
+	PRODUCT_ID_TI84PCSE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

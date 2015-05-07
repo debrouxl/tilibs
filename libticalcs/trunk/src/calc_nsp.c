@@ -1107,6 +1107,7 @@ const CalcFncts calc_nsp =
 	N_("Nspire thru DirectLink"),
 	OPS_ISREADY | OPS_VERSION | OPS_SCREEN | OPS_IDLIST | OPS_DIRLIST | OPS_VARS | OPS_OS |
 	OPS_ROMDUMP | OPS_NEWFLD | OPS_DELVAR | OPS_RENAME | FTS_SILENT | FTS_MEMFREE | FTS_FOLDER,
+	PRODUCT_ID_NSPIRE_CAS, // FIXME the Nspire series spans multiple product IDs.
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */

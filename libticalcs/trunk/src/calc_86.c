@@ -481,6 +481,7 @@ const CalcFncts calc_86 =
 	"TI-86",
 	OPS_KEYS | OPS_SCREEN | OPS_DIRLIST | OPS_BACKUP | OPS_VARS | OPS_ROMDUMP |
 	FTS_SILENT | FTS_MEMFREE | FTS_BACKUP,
+	PRODUCT_ID_NONE,
 	{"",     /* is_ready */
 	 "",     /* send_key */
 	 "",     /* execute */
