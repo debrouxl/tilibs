@@ -28,3 +28,4 @@ Makevars.template
 .DS_Store
 Thumbs.db
 
+*.pot
