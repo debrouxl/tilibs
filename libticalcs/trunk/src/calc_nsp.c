@@ -35,8 +35,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -196,16 +196,6 @@ static int		is_ready	(CalcHandle* handle)
 	} while(0);
 
 	return ret;
-}
-
-static int		send_key	(CalcHandle* handle, uint16_t key)
-{
-	return 0;
-}
-
-static int		execute		(CalcHandle* handle, VarEntry *ve, const char *args)
-{
-	return 0;
 }
 
 static uint8_t* rle_uncompress(CalcScreenCoord* sc, const uint8_t *src, uint32_t size, int type)
@@ -724,31 +714,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return ret;
 }
 
-static int		send_backup	(CalcHandle* handle, BackupContent* content)
-{
-	return 0;
-}
-
-static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
-{
-	return 0;
-}
-
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
-{
-	return 0;
-}
-
-static int		send_flash	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
-{
-	return 0;
-}
-
 static int		send_os    (CalcHandle* handle, FlashContent* content)
 {
 	int ret;
@@ -900,55 +865,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	fclose(f);
 
 	return ret;
-}
-
-static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
-{
-	char *utf81, *utf82;
-	char *path1, *path2;
-	int ret;
-
-	ret = nsp_session_open(handle, SID_FILE_MGMT);
-	if (ret)
-	{
-		return ret;
-	}
-
-	path1 = build_path(handle->model, oldname);
-	path2 = build_path(handle->model, newname);
-	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
-	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
-	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
-	g_free(utf82);
-	g_free(utf81);
-	update_label();
-
-	ret = nsp_cmd_s_rename_file(handle, path1, path2);
-	g_free(path2);
-	g_free(path1);
-	if (!ret)
-	{
-		ret = nsp_cmd_r_rename_file(handle);
-	}
-
-	DO_CLOSE_SESSION(handle);
-
-	return ret;
-}
-
-static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
-{
-	return 0;
 }
 
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
@@ -1149,14 +1065,38 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return ret;
 }
 
-static int		send_cert	(CalcHandle* handle, FlashContent* content)
+static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
 {
-	return 0;
-}
+	char *utf81, *utf82;
+	char *path1, *path2;
+	int ret;
 
-static int		recv_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
+	ret = nsp_session_open(handle, SID_FILE_MGMT);
+	if (ret)
+	{
+		return ret;
+	}
+
+	path1 = build_path(handle->model, oldname);
+	path2 = build_path(handle->model, newname);
+	utf81 = ticonv_varname_to_utf8(handle->model, path1, oldname->type);
+	utf82 = ticonv_varname_to_utf8(handle->model, path2, newname->type);
+	g_snprintf(update_->text, sizeof(update_->text), _("Renaming %s to %s..."), utf81, utf82);
+	g_free(utf82);
+	g_free(utf81);
+	update_label();
+
+	ret = nsp_cmd_s_rename_file(handle, path1, path2);
+	g_free(path2);
+	g_free(path1);
+	if (!ret)
+	{
+		ret = nsp_cmd_r_rename_file(handle);
+	}
+
+	DO_CLOSE_SESSION(handle);
+
+	return ret;
 }
 
 const CalcFncts calc_nsp = 
@@ -1173,8 +1113,8 @@ const CalcFncts calc_nsp =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P1L", /* send_backup */
-	 "2P1L", /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
 	 "2P1L", /* send_var_ns */
@@ -1183,8 +1123,8 @@ const CalcFncts calc_nsp =
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1193,32 +1133,36 @@ const CalcFncts calc_nsp =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P1L", /* send_all_vars_backup */
+	 "2P1L"  /* recv_all_vars_backup */ },
 	&is_ready,
-	&send_key,
-	&execute,
+	&noop_send_key,
+	&noop_execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
-	&send_flash,
-	&recv_flash,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
 	&send_os,
 	&recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
-	&set_clock,
-	&get_clock,
+	&noop_set_clock,
+	&noop_get_clock,
 	&del_var,
 	&new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&tixx_recv_all_vars_backup,
 };

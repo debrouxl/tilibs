@@ -30,9 +30,9 @@
 
 #include "ticalcs.h"
 #include "internal.h"
-#include "error.h"
-#include "logging.h"
 #include "gettext.h"
+#include "logging.h"
+#include "error.h"
 
 /**
  * ticalcs_calc_features:
@@ -298,41 +298,6 @@ TIEXPORT3 int TICALL ticalcs_calc_get_memfree(CalcHandle* handle, uint32_t* ram,
 }
 
 /**
- * ticalcs_calc_recv_backup:
- * @handle: a previously allocated handle
- * @content: backup content
- *
- * Request a backup and receive it.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
-{
-	const CalcFncts *calc;
-	int ret = 0;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_BACKUPCONTENT(content);
-
-	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	ticalcs_info(_("Requesting backup:"));
-	handle->busy = 1;
-	if (calc->recv_backup)
-	{
-		ret = calc->recv_backup(handle, content);
-	}
-	handle->busy = 0;
-
-	return ret;
-}
-
-/**
  * ticalcs_calc_send_backup:
  * @handle: a previously allocated handle
  * @content: backup content
@@ -361,6 +326,41 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup(CalcHandle* handle, BackupContent*
 	if (calc->send_backup)
 	{
 		ret = calc->send_backup(handle, content);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_recv_backup:
+ * @handle: a previously allocated handle
+ * @content: backup content
+ *
+ * Request a backup and receive it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_recv_backup(CalcHandle* handle, BackupContent* content)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_BACKUPCONTENT(content);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Requesting backup:"));
+	handle->busy = 1;
+	if (calc->recv_backup)
+	{
+		ret = calc->recv_backup(handle, content);
 	}
 	handle->busy = 0;
 
@@ -797,6 +797,111 @@ TIEXPORT3 int TICALL ticalcs_calc_get_clock(CalcHandle* handle, CalcClock* _cloc
 }
 
 /**
+ * ticalcs_calc_del_var:
+ * @handle: a previously allocated handle
+ * @var: var to delete
+ *
+ * Request deleting of a variable (if possible).
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Deleting variable '%s':"), vr->name);
+	handle->busy = 1;
+	if (calc->del_var)
+	{
+		ret = calc->del_var(handle, vr);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_new_fld:
+ * @handle: a previously allocated handle
+ * @vr: name of folder to create (vr->folder)
+ *
+ * Request creation of a folder. Beware: %vr.name may be modified !
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_VARREQUEST(vr);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Creating folder '%s':"), vr->folder);
+	handle->busy = 1;
+	if (calc->new_fld)
+	{
+		ret = calc->new_fld(handle, vr);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_get_version:
+ * @handle: a previously allocated handle
+ * @infos: where to store version information
+ *
+ * Request version info.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(infos);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	//RETURN_IF_HANDLE_NOT_ATTACHED(handle); // Disabled after '2005 probing changes.
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Requesting version info:"));
+	handle->busy = 1;
+	if (calc->get_version)
+	{
+		ret = calc->get_version(handle, infos);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
  * ticalcs_calc_send_cert:
  * @handle: a previously allocated handle
  * @content: content to send
@@ -860,76 +965,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle* handle, FlashContent* co
 	if (calc->recv_cert)
 	{
 		ret = calc->recv_cert(handle, content);
-	}
-	handle->busy = 0;
-
-	return ret;
-}
-
-/**
- * ticalcs_calc_new_fld:
- * @handle: a previously allocated handle
- * @vr: name of folder to create (vr->folder)
- *
- * Request creation of a folder. Beware: %vr.name may be modified !
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle* handle, VarRequest* vr)
-{
-	const CalcFncts *calc;
-	int ret = 0;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_VARREQUEST(vr);
-
-	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	ticalcs_info(_("Creating folder '%s':"), vr->folder);
-	handle->busy = 1;
-	if (calc->new_fld)
-	{
-		ret = calc->new_fld(handle, vr);
-	}
-	handle->busy = 0;
-
-	return ret;
-}
-
-/**
- * ticalcs_calc_del_var:
- * @handle: a previously allocated handle
- * @var: var to delete
- *
- * Request deleting of a variable (if possible).
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle* handle, VarRequest* vr)
-{
-	const CalcFncts *calc;
-	int ret = 0;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_VARREQUEST(vr);
-
-	calc = handle->calc;
-	VALIDATE_CALCFNCTS(calc);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	ticalcs_info(_("Deleting variable '%s':"), vr->name);
-	handle->busy = 1;
-	if (calc->del_var)
-	{
-		ret = calc->del_var(handle, vr);
 	}
 	handle->busy = 0;
 
@@ -1019,34 +1054,69 @@ TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle* handle, VarRequest* vr
 }
 
 /**
- * ticalcs_calc_get_version:
+ * ticalcs_calc_send_all_vars_backup:
  * @handle: a previously allocated handle
- * @infos: where to store version information
+ * @content: backup content
  *
- * Request version info.
+ * Send a fake backup, for the models which support it.
  *
  * Return value: 0 if successful, an error code otherwise.
  **/
-TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* infos)
+TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle* handle, FileContent* content)
 {
 	const CalcFncts *calc;
 	int ret = 0;
 
 	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(infos);
+	VALIDATE_FILECONTENT(content);
 
 	calc = handle->calc;
 	VALIDATE_CALCFNCTS(calc);
 
-	//RETURN_IF_HANDLE_NOT_ATTACHED(handle); // Disabled after '2005 probing changes.
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
 	RETURN_IF_HANDLE_NOT_OPEN(handle);
 	RETURN_IF_HANDLE_BUSY(handle);
 
-	ticalcs_info(_("Requesting version info:"));
+	ticalcs_info(_("Sending fake (all vars) backup:"));
 	handle->busy = 1;
-	if (calc->get_version)
+	if (calc->send_all_vars_backup)
 	{
-		ret = calc->get_version(handle, infos);
+		ret = calc->send_all_vars_backup(handle, content);
+	}
+	handle->busy = 0;
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_recv_all_vars_backup:
+ * @handle: a previously allocated handle
+ * @content: backup content
+ *
+ * Request a fake backup (list of vars and apps) and receive it.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
+{
+	const CalcFncts *calc;
+	int ret = 0;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_FILECONTENT(content);
+
+	calc = handle->calc;
+	VALIDATE_CALCFNCTS(calc);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	ticalcs_info(_("Requesting fake (all vars) backup:"));
+	handle->busy = 1;
+	if (calc->recv_all_vars_backup)
+	{
+		ret = calc->recv_all_vars_backup(handle, content);
 	}
 	handle->busy = 0;
 
@@ -1056,54 +1126,6 @@ TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle* handle, CalcInfos* inf
 
 // ---
 
-
-/**
- * ticalcs_calc_recv_backup2:
- * @handle: a previously allocated handle
- * @filename: name of file where to store backup
- *
- * Request a backup and receive it to file.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
-{
-	BackupContent *content1;
-	FileContent *content2;
-	int ret;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(filename);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	if (ticalcs_calc_features(handle) & FTS_BACKUP)
-	{
-		// true backup capability
-		content1 = tifiles_content_create_backup(handle->model);
-		ret = ticalcs_calc_recv_backup(handle, content1);
-		if (!ret)
-		{
-			ret = tifiles_file_write_backup(filename, content1);
-		}
-		tifiles_content_delete_backup(content1);
-	}
-	else
-	{
-		// pseudo-backup
-		content2 = tifiles_content_create_regular(handle->model);
-		ret = ticalcs_calc_recv_backup(handle, (BackupContent *)content2);
-		if (!ret)
-		{
-			ret = tifiles_file_write_regular(filename, content2, NULL);
-		}
-		tifiles_content_delete_regular(content2);
-	}
-
-	return ret;
-}
 
 /**
  * ticalcs_calc_send_backup2:
@@ -1116,8 +1138,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *f
  **/
 TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* filename)
 {
-	BackupContent *content1;
-	FileContent *content2;
 	int ret = ERR_FILE_OPEN;
 
 	VALIDATE_HANDLE(handle);
@@ -1130,30 +1150,76 @@ TIEXPORT3 int TICALL ticalcs_calc_send_backup2(CalcHandle* handle, const char* f
 	if (ticalcs_calc_features(handle) & FTS_BACKUP)
 	{
 		// true backup capability
-		content1 = tifiles_content_create_backup(handle->model);
-		if (content1 != NULL)
+		BackupContent * content = tifiles_content_create_backup(handle->model);
+		if (content != NULL)
 		{
-			ret = tifiles_file_read_backup(filename, content1);
+			ret = tifiles_file_read_backup(filename, content);
 			if (!ret)
 			{
-				ret = ticalcs_calc_send_backup(handle, content1);
-				tifiles_content_delete_backup(content1);
+				ret = ticalcs_calc_send_backup(handle, content);
+				tifiles_content_delete_backup(content);
 			}
 		}
 	}
 	else
 	{
 		// pseudo-backup
-		content2 = tifiles_content_create_regular(handle->model);
-		if (content2 != NULL)
+		FileContent * content = tifiles_content_create_regular(handle->model);
+		if (content != NULL)
 		{
-			ret = tifiles_file_read_regular(filename, content2);
+			ret = tifiles_file_read_regular(filename, content);
 			if (!ret)
 			{
-				ret = ticalcs_calc_send_backup(handle, (BackupContent *)content2);
-				tifiles_content_delete_regular(content2);
+				ret = ticalcs_calc_send_all_vars_backup(handle, content);
+				tifiles_content_delete_regular(content);
 			}
 		}
+	}
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_recv_backup2:
+ * @handle: a previously allocated handle
+ * @filename: name of file where to store backup
+ *
+ * Request a backup and receive it to file.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_recv_backup2(CalcHandle* handle, const char *filename)
+{
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	if (ticalcs_calc_features(handle) & FTS_BACKUP)
+	{
+		// true backup capability
+		BackupContent * content = tifiles_content_create_backup(handle->model);
+		ret = ticalcs_calc_recv_backup(handle, content);
+		if (!ret)
+		{
+			ret = tifiles_file_write_backup(filename, content);
+		}
+		tifiles_content_delete_backup(content);
+	}
+	else
+	{
+		// pseudo-backup
+		FileContent * content = tifiles_content_create_regular(handle->model);
+		ret = ticalcs_calc_recv_all_vars_backup(handle, content);
+		if (!ret)
+		{
+			ret = tifiles_file_write_regular(filename, content, NULL);
+		}
+		tifiles_content_delete_regular(content);
 	}
 
 	return ret;
@@ -1324,8 +1390,8 @@ TIEXPORT3 int TICALL ticalcs_calc_send_app2(CalcHandle* handle, const char* file
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_app(handle, content);
+		tifiles_content_delete_flash(content);
 	}
-	tifiles_content_delete_flash(content);
 
 	return ret;
 }
@@ -1390,8 +1456,40 @@ TIEXPORT3 int TICALL ticalcs_calc_send_cert2(CalcHandle* handle, const char* fil
 	if (!ret)
 	{
 		ret = ticalcs_calc_send_cert(handle, content);
+		tifiles_content_delete_flash(content);
 	}
-	tifiles_content_delete_flash(content);
+
+	return ret;
+}
+
+/**
+ * ticalcs_calc_send_os2:
+ * @handle: a previously allocated handle
+ * @filename: name of file
+ *
+ * Send a FLASH app.
+ *
+ * Return value: 0 if successful, an error code otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
+{
+	FlashContent *content;
+	int ret;
+
+	VALIDATE_HANDLE(handle);
+	VALIDATE_NONNULL(filename);
+
+	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
+	RETURN_IF_HANDLE_NOT_OPEN(handle);
+	RETURN_IF_HANDLE_BUSY(handle);
+
+	content = tifiles_content_create_flash(handle->model);
+	ret = tifiles_file_read_flash(filename, content);
+	if (!ret)
+	{
+		ret = ticalcs_calc_send_os(handle, content);
+		tifiles_content_delete_flash(content);
+	}
 
 	return ret;
 }
@@ -1468,38 +1566,6 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_cert2(CalcHandle* handle, const char* fil
 		}
 	} while(0);
 
-	tifiles_content_delete_flash(content);
-
-	return ret;
-}
-
-/**
- * ticalcs_calc_send_os2:
- * @handle: a previously allocated handle
- * @filename: name of file
- *
- * Send a FLASH app.
- *
- * Return value: 0 if successful, an error code otherwise.
- **/
-TIEXPORT3 int TICALL ticalcs_calc_send_os2(CalcHandle* handle, const char* filename)
-{
-	FlashContent *content;
-	int ret;
-
-	VALIDATE_HANDLE(handle);
-	VALIDATE_NONNULL(filename);
-
-	RETURN_IF_HANDLE_NOT_ATTACHED(handle);
-	RETURN_IF_HANDLE_NOT_OPEN(handle);
-	RETURN_IF_HANDLE_BUSY(handle);
-
-	content = tifiles_content_create_flash(handle->model);
-	ret = tifiles_file_read_flash(filename, content);
-	if (!ret)
-	{
-		ret = ticalcs_calc_send_os(handle, content);
-	}
 	tifiles_content_delete_flash(content);
 
 	return ret;

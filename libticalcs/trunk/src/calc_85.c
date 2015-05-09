@@ -35,8 +35,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -50,21 +50,6 @@
 // Screen coordinates of the TI86
 #define TI85_ROWS  64
 #define TI85_COLS  128
-
-static int		is_ready	(CalcHandle* handle)
-{
-	return 0;
-}
-
-static int		send_key	(CalcHandle* handle, uint16_t key)
-{
-	return 0;
-}
-
-static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
-{
-	return 0;
-}
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
 {
@@ -89,17 +74,12 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti85_send_ACK(handle));
 
 	*bitmap = (uint8_t *)g_malloc(TI85_COLS * TI85_ROWS / 8);
-	if(*bitmap == NULL)
+	if (*bitmap == NULL)
 	{
 		return ERR_MALLOC;
 	}
 	memcpy(*bitmap, buf, TI85_COLS * TI85_ROWS / 8);
 
-	return 0;
-}
-
-static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
-{
 	return 0;
 }
 
@@ -236,11 +216,6 @@ static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
 	return send_var_ns(handle, mode, content);
-}
-
-static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, VarRequest* vr)
-{
-	return 0;
 }
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
@@ -383,7 +358,7 @@ static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content
 
 exit:
 	content->num_entries = nvar;
-	if(nvar == 1)
+	if (nvar == 1)
 	{
 		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
 		content->comment[sizeof(content->comment) - 1] = 0;
@@ -399,21 +374,6 @@ exit:
 	return 0;
 }
 
-static int		send_flash	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
-{
-	return 0;
-}
-
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
@@ -424,51 +384,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 {
 	// Get dump
 	return rd_dump(handle, filename);
-}
-
-static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		del_var		(CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
-{
-	return 0;
-}
-
-static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
-{
-	return 0;
-}
-
-static int		new_folder  (CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		get_version	(CalcHandle* handle, CalcInfos* infos)
-{
-	return 0;
-}
-
-static int		send_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
 }
 
 const CalcFncts calc_85 = 
@@ -495,8 +410,8 @@ const CalcFncts calc_85 =
 	 "",     /* recv_app */
 	 "",     /* send_os */
 	 "",     /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "",     /* del_var */
@@ -505,32 +420,36 @@ const CalcFncts calc_85 =
 	 "",     /* send_cert */
 	 "",     /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
-	&is_ready,
-	&send_key,
-	&execute,
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
+	&noop_is_ready,
+	&noop_send_key,
+	&noop_execute,
 	&recv_screen,
-	&get_dirlist,
+	&noop_get_dirlist,
 	&get_memfree,
 	&send_backup,
 	&recv_backup,
 	&send_var,
-	&recv_var,
+	&noop_recv_var,
 	&send_var_ns,
 	&recv_var_ns,
-	&send_flash,
-	&recv_flash,
-	&send_flash,
-	&recv_idlist,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
-	&set_clock,
-	&get_clock,
-	&del_var,
-	&new_folder,
-	&get_version,
-	&send_cert,
-	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&noop_get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };

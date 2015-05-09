@@ -35,8 +35,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -674,19 +674,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return ret;
 }
 
-static int		send_backup	(CalcHandle* handle, BackupContent* content)
+static int		send_all_vars_backup	(CalcHandle* handle, FileContent* content)
 {
-	return send_var(handle, MODE_BACKUP, (FileContent *)content);
-}
-
-static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
-{
-	return 0;
-}
-
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
-{
-	return 0;
+	return send_var(handle, MODE_BACKUP, content);
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
@@ -781,6 +771,7 @@ static int		send_flash	(CalcHandle* handle, FlashContent* content)
 				{
 					ret = dusb_cmd_s_eot(handle);
 				}
+				g_free(data);
 			}
 		}
 	}
@@ -1450,11 +1441,6 @@ static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
 	return ret;
 }
 
-static int		new_folder  (CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 {
 	static const uint16_t pids[] = { 
@@ -1660,16 +1646,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return ret;
 }
 
-static int		send_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
 const CalcFncts calc_84p_usb =
 {
 	CALC_TI84P_USB,
@@ -1686,18 +1662,18 @@ const CalcFncts calc_84p_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P",   /* send_backup */
-	 "2P",   /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
 	 "2P1L", /* send_app */
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1706,19 +1682,21 @@ const CalcFncts calc_84p_usb =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1728,12 +1706,14 @@ const CalcFncts calc_84p_usb =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };
 
 const CalcFncts calc_84pcse_usb =
@@ -1752,18 +1732,18 @@ const CalcFncts calc_84pcse_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P",   /* send_backup */
-	 "2P",   /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
 	 "2P1L", /* send_app */
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1772,19 +1752,21 @@ const CalcFncts calc_84pcse_usb =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1794,12 +1776,14 @@ const CalcFncts calc_84pcse_usb =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };
 
 const CalcFncts calc_83pce_usb =
@@ -1818,18 +1802,18 @@ const CalcFncts calc_83pce_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P",   /* send_backup */
-	 "2P",   /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
 	 "2P1L", /* send_app */
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1838,19 +1822,21 @@ const CalcFncts calc_83pce_usb =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1860,12 +1846,14 @@ const CalcFncts calc_83pce_usb =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };
 
 const CalcFncts calc_84pce_usb =
@@ -1884,18 +1872,18 @@ const CalcFncts calc_84pce_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P",   /* send_backup */
-	 "2P",   /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
 	 "2P1L", /* send_app */
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1904,19 +1892,21 @@ const CalcFncts calc_84pce_usb =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1926,12 +1916,14 @@ const CalcFncts calc_84pce_usb =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };
 
 const CalcFncts calc_82a_usb =
@@ -1950,18 +1942,18 @@ const CalcFncts calc_82a_usb =
 	 "1P",   /* recv_screen */
 	 "1L",   /* get_dirlist */
 	 "",     /* get_memfree */
-	 "2P",   /* send_backup */
-	 "2P",   /* recv_backup */
+	 "",     /* send_backup */
+	 "",     /* recv_backup */
 	 "2P1L", /* send_var */
 	 "1P1L", /* recv_var */
-	 "2P1L", /* send_var_ns */
-	 "1P1L", /* recv_var_ns */
+	 "",     /* send_var_ns */
+	 "",     /* recv_var_ns */
 	 "2P1L", /* send_app */
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1970,19 +1962,21 @@ const CalcFncts calc_82a_usb =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "2P",   /* send_all_vars_backup */
+	 "2P",   /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1992,10 +1986,12 @@ const CalcFncts calc_82a_usb =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };

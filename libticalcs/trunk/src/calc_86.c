@@ -36,8 +36,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -53,21 +53,11 @@
 #define TI86_ROWS  64
 #define TI86_COLS  128
 
-static int		is_ready	(CalcHandle* handle)
-{
-	return 0;
-}
-
 static int		send_key	(CalcHandle* handle, uint16_t key)
 {
 	TRYF(ti85_send_KEY(handle, key));
 	TRYF(ti85_recv_ACK(handle, &key));
 	return ti85_recv_ACK(handle, &key);
-}
-
-static int		execute		(CalcHandle* handle, VarEntry *ve, const char* args)
-{
-	return 0;
 }
 
 static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitmap)
@@ -86,11 +76,17 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti85_recv_ACK(handle, NULL));
 
 	err = ti85_recv_XDP(handle, &max_cnt, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM) { TRYF(err) };
+	if (err != ERR_CHECKSUM)
+	{
+		TRYF(err)
+	}
 	TRYF(ti85_send_ACK(handle));
 
 	*bitmap = (uint8_t *)g_malloc(TI86_COLS * TI86_ROWS / 8);
-	if(*bitmap == NULL) return ERR_MALLOC;
+	if (*bitmap == NULL)
+	{
+		return ERR_MALLOC;
+	}
 	memcpy(*bitmap, buf, TI86_COLS * TI86_ROWS / 8);
 
 	return 0;
@@ -174,9 +170,13 @@ static int		get_dirlist	(CalcHandle* handle, GNode** vars, GNode** apps)
 		ve->size = ve_size;
 		TRYF(ti85_send_ACK(handle));
 		if (err == ERR_EOT)
+		{
 			break;
+		}
 		else if (err != 0)
+		{
 			return err;
+		}
 
 		node = g_node_new(ve);
 		g_node_append(folder, node);
@@ -439,31 +439,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return ti85_send_ACK(handle);
 }
 
-static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
-{
-	return 0;
-}
-
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
-{
-	return 0;
-}
-
-static int		send_flash	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_flash	(CalcHandle* handle, FlashContent* content, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		recv_idlist	(CalcHandle* handle, uint8_t* idlist)
-{
-	return 0;
-}
-
 static int		dump_rom_1	(CalcHandle* handle)
 {
 	// Send dumping program
@@ -498,51 +473,6 @@ static int		dump_rom_2	(CalcHandle* handle, CalcDumpSize size, const char *filen
 	// but the ROM dumper disables that behavior)
 }
 
-static int		set_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
-{
-	return 0;
-}
-
-static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
-{
-	return 0;
-}
-
-static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
-{
-	return 0;
-}
-
-static int		del_var		(CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		new_folder  (CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
-}
-
-static int		get_version	(CalcHandle* handle, CalcInfos* infos)
-{
-	return 0;
-}
-
-static int		send_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
 const CalcFncts calc_86 = 
 {
 	CALC_TI86,
@@ -567,8 +497,8 @@ const CalcFncts calc_86 =
 	 "",     /* recv_app */
 	 "",     /* send_os */
 	 "",     /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "",     /* del_var */
@@ -577,10 +507,12 @@ const CalcFncts calc_86 =
 	 "",     /* send_cert */
 	 "",     /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
-	&is_ready,
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
+	&noop_is_ready,
 	&send_key,
-	&execute,
+	&noop_execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
@@ -588,21 +520,23 @@ const CalcFncts calc_86 =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
-	&send_flash,
-	&recv_flash,
-	&send_flash,
-	&recv_idlist,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
+	&noop_send_flash,
+	&noop_recv_flash,
+	&noop_send_os,
+	&noop_recv_idlist,
 	&dump_rom_1,
 	&dump_rom_2,
-	&set_clock,
-	&get_clock,
-	&del_var,
-	&new_folder,
-	&get_version,
-	&send_cert,
-	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_set_clock,
+	&noop_get_clock,
+	&noop_del_var,
+	&noop_new_folder,
+	&noop_get_version,
+	&noop_send_cert,
+	&noop_recv_cert,
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };

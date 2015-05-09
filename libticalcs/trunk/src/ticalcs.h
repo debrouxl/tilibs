@@ -301,6 +301,8 @@ typedef enum
 	FNCT_RECV_CERT,
 	FNCT_RENAME,
 	FNCT_CHATTR,
+	FNCT_SEND_ALL_VARS_BACKUP,
+	FNCT_RECV_ALL_VARS_BACKUP,
 	FNCT_LAST // Keep this one last
 } CalcFnctsIdx;
 
@@ -589,17 +591,13 @@ typedef struct
  * @description: description of hand-held like "TI89 calculator"
  * @features: supported operations (CalcOperations)
  * @counters: defines which CalcUpdate counters have to be refreshed (indexed by CalcFnctsIdx)
- * @silent: TRUE if hand-held has silent technology, 0 otherwise
- * @folder: TRUE if hand-held can store folders
- * @memory: memory used/free on hand-held (CalcMemType)
- * @flash: calculator has FLASH ROM
  * @is_ready: check whether calculator is ready
  * @send_key: send key value
  * @execute: remotely execute a program or application
  * @recv_screen: request a screendump
  * @get_dirlist: request a listing of variables, folders (if any) and apps (if any)
- * @recv_backup: request a backup
  * @send_backup: send a backup
+ * @recv_backup: request a backup
  * @send_var: send a variable (silent mode)
  * @recv_var: request a variable silent mode)
  * @send_var_ns: send a variable (non-silent mode)
@@ -607,12 +605,19 @@ typedef struct
  * @send_flash: send a FLASH app/os
  * @recv_flash: request a FLASH app/os
  * @recv_idlist: request hand-held IDLIST
- * @dump_rom: dump the hand-held ROM
+ * @dump_rom_1: dump the hand-held ROM: send dumper (if any)
+ * @dump_rom_2: dump the hand-held ROM: launch dumper
  * @set_clock: set date/time
  * @get_clock: get date/time
  * @del_var: delete variable
  * @new_fld: create new folder (if supported)
- * @get_version: returns BIOS & OS version
+ * @get_version: returns Boot code & OS version
+ * @send_cert: send certificate stuff
+ * @recv_cert: receive certificate stuff
+ * @rename_var: rename a variable
+ * @change_attr: change attributes of a variable
+ * @send_all_vars_backup: send a fake backup (set of files and FlashApps)
+ * @recv_all_vars_backup: request a fake backup (set of files and FlashApps)
  *
  * A structure used for handling a hand-held.
  * !!! This structure is for private use !!!
@@ -667,6 +672,10 @@ struct _CalcFncts
 
 	int		(*rename_var)	(CalcHandle*, VarRequest*, VarRequest*);
 	int		(*change_attr)	(CalcHandle*, VarRequest*, FileAttr);
+
+	int		(*send_all_vars_backup)	(CalcHandle*, FileContent*);
+	int		(*recv_all_vars_backup)	(CalcHandle*, FileContent*);
+
 };
 
 /**
@@ -787,13 +796,17 @@ typedef struct
 
 	TIEXPORT3 int TICALL ticalcs_calc_new_fld(CalcHandle *handle, VarRequest*);
 	TIEXPORT3 int TICALL ticalcs_calc_del_var(CalcHandle *handle, VarRequest*);
-	TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle *handle, VarRequest*, VarRequest*);
-	TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle *handle, VarRequest*, FileAttr);
 
 	TIEXPORT3 int TICALL ticalcs_calc_get_version(CalcHandle *handle, CalcInfos*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_cert(CalcHandle *handle, FlashContent*);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_cert(CalcHandle *handle, FlashContent*);
+
+	TIEXPORT3 int TICALL ticalcs_calc_rename_var(CalcHandle *handle, VarRequest*, VarRequest*);
+	TIEXPORT3 int TICALL ticalcs_calc_change_attr(CalcHandle *handle, VarRequest*, FileAttr);
+
+	TIEXPORT3 int TICALL ticalcs_calc_send_all_vars_backup(CalcHandle *handle, FileContent*);
+	TIEXPORT3 int TICALL ticalcs_calc_recv_all_vars_backup(CalcHandle *handle, FileContent*);
 
 	TIEXPORT3 int TICALL ticalcs_calc_send_tigroup(CalcHandle *handle, TigContent*, TigMode);
 	TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle *handle, TigContent*, TigMode);

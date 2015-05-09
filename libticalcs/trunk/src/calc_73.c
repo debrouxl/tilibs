@@ -37,8 +37,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -497,16 +497,6 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return ti73_send_ACK(handle);
 }
 
-static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
-{
-	return 0;
-}
-
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
-{
-	return 0;
-}
-
 static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
@@ -963,16 +953,6 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 	return 0;
 }
 
-static int		rename_var	(CalcHandle* handle, VarRequest* oldname, VarRequest* newname)
-{
-	return 0;
-}
-
-static int		change_attr	(CalcHandle* handle, VarRequest* vr, FileAttr attr)
-{
-	return 0;
-}
-
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	char *utf8;
@@ -985,11 +965,6 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	TRYF(ti73_send_DEL(handle, (uint16_t)vr->size, vr->type, vr->name, vr->attr));
 	TRYF(ti73_recv_ACK(handle, NULL));
 	return ti73_recv_ACK(handle, NULL);
-}
-
-static int		new_folder  (CalcHandle* handle, VarRequest* vr)
-{
-	return 0;
 }
 
 static int		get_version	(CalcHandle* handle, CalcInfos* infos)
@@ -1161,8 +1136,8 @@ const CalcFncts calc_73 =
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1171,7 +1146,9 @@ const CalcFncts calc_73 =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1182,8 +1159,8 @@ const CalcFncts calc_73 =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_flash,
@@ -1193,12 +1170,14 @@ const CalcFncts calc_73 =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
 	&send_cert,
 	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };
 
 const CalcFncts calc_83p =
@@ -1226,8 +1205,8 @@ const CalcFncts calc_83p =
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1236,7 +1215,9 @@ const CalcFncts calc_83p =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1247,8 +1228,8 @@ const CalcFncts calc_83p =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_flash,
@@ -1258,12 +1239,14 @@ const CalcFncts calc_83p =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
 	&send_cert,
 	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };
 
 const CalcFncts calc_84p =
@@ -1291,8 +1274,8 @@ const CalcFncts calc_84p =
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1301,7 +1284,9 @@ const CalcFncts calc_84p =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1312,8 +1297,8 @@ const CalcFncts calc_84p =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_flash,
@@ -1323,12 +1308,14 @@ const CalcFncts calc_84p =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
 	&send_cert,
 	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };
 
 const CalcFncts calc_84pcse =
@@ -1356,8 +1343,8 @@ const CalcFncts calc_84pcse =
 	 "2P1L", /* recv_app */
 	 "2P",   /* send_os */
 	 "1L",   /* recv_idlist */
-	 "2P",   /* dump_rom1 */
-	 "2P",   /* dump_rom2 */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
 	 "",     /* set_clock */
 	 "",     /* get_clock */
 	 "1L",   /* del_var */
@@ -1366,7 +1353,9 @@ const CalcFncts calc_84pcse =
 	 "1L",   /* send_cert */
 	 "1L",   /* recv_cert */
 	 "",     /* rename */
-	 ""      /* chattr */ },
+	 "",     /* chattr */
+	 "",     /* send_all_vars_backup */
+	 ""      /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
@@ -1377,8 +1366,8 @@ const CalcFncts calc_84pcse =
 	&recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_flash,
@@ -1388,10 +1377,12 @@ const CalcFncts calc_84pcse =
 	&set_clock,
 	&get_clock,
 	&del_var,
-	&new_folder,
+	&noop_new_folder,
 	&get_version,
 	&send_cert,
 	&recv_cert,
-	&rename_var,
-	&change_attr
+	&noop_rename_var,
+	&noop_change_attr,
+	&noop_send_all_vars_backup,
+	&noop_recv_all_vars_backup
 };

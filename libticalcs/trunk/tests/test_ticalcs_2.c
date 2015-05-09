@@ -240,10 +240,7 @@ static int send_var(CalcHandle* h)
 				content->entries[0]->name[sizeof(content->entries[0]->name) - 1] = 0;
 			}
 			ret = ticalcs_calc_send_var(h, MODE_NORMAL, content);
-			if (!ret)
-			{
-				ret = tifiles_content_delete_regular(content);
-			}
+			tifiles_content_delete_regular(content);
 		}
 	}
 	else

@@ -38,7 +38,7 @@
 #include "pause.h"
 #include "cmd68k.h"
 
-int tixx_recv_backup(CalcHandle* handle, BackupContent* content)
+int tixx_recv_all_vars_backup(CalcHandle* handle, FileContent* content)
 {
 	int i, j, k;
 	int i_max;
@@ -117,15 +117,21 @@ end:
 
 	if (!ret)
 	{
-		FileContent* cnt = (FileContent *)content;
+		FileContent * cnt;
+		ret = tifiles_group_contents(group, &cnt);
+		if (!ret)
+		{
+			cnt->model = content->model;
 
-		tifiles_group_contents(group, &single);
+			// Steal contents of cnt, then clean up.
+			memcpy(content, cnt, sizeof(*content));
+			cnt->num_entries = 0;
+			cnt->entries = NULL;
+			tifiles_content_delete_regular(cnt);
 
-		// Swap content and single because we have a pointer on an allocated content
-		memcpy(content, single, sizeof(FileContent));
-		cnt->entries = single->entries;
-		strncpy(cnt->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
-		cnt->comment[sizeof(content->comment) - 1] = 0;
+			strncpy(content->comment, tifiles_comment_set_group(), sizeof(content->comment) - 1);
+			content->comment[sizeof(content->comment) - 1] = 0;
+		}
 	}
 
 	tifiles_content_delete_group(group);

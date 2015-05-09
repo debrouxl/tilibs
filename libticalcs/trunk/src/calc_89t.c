@@ -35,8 +35,8 @@
 
 #include <ticonv.h>
 #include "ticalcs.h"
-#include "internal.h"
 #include "gettext.h"
+#include "internal.h"
 #include "logging.h"
 #include "error.h"
 #include "pause.h"
@@ -474,19 +474,9 @@ static int		recv_var	(CalcHandle* handle, CalcMode mode, FileContent* content, V
 	return ret;
 }
 
-static int		send_backup	(CalcHandle* handle, BackupContent* content)
+static int		send_all_vars_backup	(CalcHandle* handle, FileContent* content)
 {
-	return send_var(handle, MODE_BACKUP, (FileContent *)content);
-}
-
-static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
-{
-	return 0;
-}
-
-static int		recv_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content, VarEntry** ve)
-{
-	return 0;
+	return send_var(handle, MODE_BACKUP, content);
 }
 
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
@@ -1334,16 +1324,6 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos)
 	return ret;
 }
 
-static int		send_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
-static int		recv_cert	(CalcHandle* handle, FlashContent* content)
-{
-	return 0;
-}
-
 const CalcFncts calc_89t_usb = 
 {
 	CALC_TI89T_USB,
@@ -1354,20 +1334,47 @@ const CalcFncts calc_89t_usb =
 	OPS_IDLIST | OPS_CLOCK | OPS_DELVAR | OPS_NEWFLD | OPS_VERSION | OPS_BACKUP | OPS_KEYS |
 	OPS_RENAME | OPS_CHATTR |
 	FTS_SILENT | FTS_MEMFREE | FTS_FLASH | FTS_FOLDER,
-	{"", "", "1P", "1L", "", "2P1L", "2P1L", "2P1L", "1P1L", "2P1L", "1P1L", "2P1L", "2P1L",
-		"2P", "1L", "2P", "", "", "1L", "1L", "", "1L", "1L", "", "" },
+	{"",     /* is_ready */
+	 "",     /* send_key */
+	 "",     /* execute */
+	 "1P",   /* recv_screen */
+	 "1L",   /* get_dirlist */
+	 "",     /* get_memfree */
+	 "2P1L", /* send_backup */
+	 "2P1L", /* recv_backup */
+	 "2P1L", /* send_var */
+	 "1P1L", /* recv_var */
+	 "2P1L", /* send_var_ns */
+	 "1P1L", /* recv_var_ns */
+	 "2P1L", /* send_app */
+	 "2P1L", /* recv_app */
+	 "2P",   /* send_os */
+	 "1L",   /* recv_idlist */
+	 "2P",   /* dump_rom_1 */
+	 "2P",   /* dump_rom_2 */
+	 "",     /* set_clock */
+	 "",     /* get_clock */
+	 "1L",   /* del_var */
+	 "1L",   /* new_folder */
+	 "",     /* get_version */
+	 "1L",   /* send_cert */
+	 "1L",   /* recv_cert */
+	 "",     /* rename */
+	 "",     /* chattr */
+	 "2P1L", /* send_all_vars_backup */
+	 "2P1L"  /* recv_all_vars_backup */ },
 	&is_ready,
 	&send_key,
 	&execute,
 	&recv_screen,
 	&get_dirlist,
 	&get_memfree,
-	&send_backup,
-	&tixx_recv_backup,
+	&noop_send_backup,
+	&noop_recv_backup,
 	&send_var,
 	&recv_var,
-	&send_var_ns,
-	&recv_var_ns,
+	&noop_send_var_ns,
+	&noop_recv_var_ns,
 	&send_flash,
 	&recv_flash,
 	&send_os,
@@ -1379,8 +1386,10 @@ const CalcFncts calc_89t_usb =
 	&del_var,
 	&new_folder,
 	&get_version,
-	&send_cert,
-	&recv_cert,
+	&noop_send_cert,
+	&noop_recv_cert,
 	&rename_var,
-	&change_attr
+	&change_attr,
+	&send_all_vars_backup,
+	&tixx_recv_all_vars_backup
 };
