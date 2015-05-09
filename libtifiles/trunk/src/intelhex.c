@@ -120,6 +120,11 @@ static int hex_packet_read(FILE *f, uint8_t *size, uint16_t *addr, uint8_t *type
 		// check for end of file without mangling data checksum
 		long pos = ftell(f);
 
+		if (pos < 0)
+		{
+			return -4;
+		}
+
 		c = fgetc(f);
 
 		if (c == 0x0d) // CR
@@ -149,11 +154,17 @@ read_lf:
 eof:
 			// Invalid format / end of file.
 			*type = HEX_EOF;
-			fseek(f, pos, SEEK_SET);
+			if (fseek(f, pos, SEEK_SET) < 0)
+			{
+				return -4;
+			}
 			return 0;
 		}
 
-		fseek(f, pos+2, SEEK_SET);
+		if (fseek(f, pos+2, SEEK_SET) < 0)
+		{
+			return -4;
+		}
 	}
 
 	return 0;

@@ -413,7 +413,11 @@ static int tifiles_file_has_ti_header(const char *filename)
 		if (f != NULL)
 		{
 			memset(buf, 0, sizeof(buf));
-			fread_8_chars(f, buf);
+			if (fread_8_chars(f, buf) < 0)
+			{
+				// Fall through. This warning is too noisy for files < 8 bytes.
+				//tifiles_warning("Failed to read from file");
+			}
 			fclose(f);
 			for (p = buf; *p != '\0'; p++)
 			{
@@ -1084,6 +1088,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			ret = tifiles_file_read_tigroup(filename, content);
 			if (ret)
 			{
+				tifiles_content_delete_tigroup(content);
 				return 0;
 			}
 

@@ -106,7 +106,7 @@ TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
 		{
 			tifiles_content_delete_flash(entry->content.flash);
 		}
-		else if(entry->type & TIFILE_REGULAR)
+		else if (entry->type & TIFILE_REGULAR)
 		{
 			tifiles_content_delete_regular(entry->content.regular);
 		}
@@ -228,7 +228,7 @@ TIEXPORT2 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 		return 0;
 	}
 
-	if(te->type == TIFILE_FLASH)
+	if (te->type == TIFILE_FLASH)
 	{
 		int n = content->n_apps;
 
@@ -240,7 +240,7 @@ TIEXPORT2 int TICALL tifiles_content_add_te(TigContent *content, TigEntry *te)
 
 		return n;
 	}
-	else if(te->type & TIFILE_REGULAR)
+	else if (te->type & TIFILE_REGULAR)
 	{
 		int n = content->n_vars;
 
@@ -280,7 +280,7 @@ TIEXPORT2 int TICALL tifiles_content_del_te(TigContent *content, TigEntry *te)
 	{
 		TigEntry *s = content->var_entries[i];
 
-		if(!strcmp(s->filename, te->filename))
+		if (!strcmp(s->filename, te->filename))
 		{
 			break;
 		}
@@ -395,7 +395,12 @@ TIEXPORT2 int TICALL tifiles_tigroup_add_file(const char *src_filename, const ch
 	type = tifiles_file_get_class(src_filename);
 
 	te = tifiles_te_create(src_filename, type, model);
-	if(type == TIFILE_FLASH)
+	if (te == NULL)
+	{
+		ret = ERR_BAD_FILE;
+		goto ttaf;
+	}
+	if (type == TIFILE_FLASH)
 	{ 
 		ret = tifiles_file_read_flash(src_filename, te->content.flash);
 		if (ret)
@@ -525,7 +530,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 
 	content = tifiles_content_create_tigroup(model, m+n);
 
-	if(src_contents1)
+	if (src_contents1)
 	{
 		for(i = 0; i < m; i++)
 		{
@@ -538,7 +543,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_contents(FileContent **src_contents1, Flash
 		}
 	}
 
-	if(src_contents2)
+	if (src_contents2)
 	{
 		for (i = 0; i < n; i++)
 		{
@@ -604,6 +609,7 @@ TIEXPORT2 int TICALL tifiles_untigroup_content(TigContent *src_content, FileCont
 	dst2 = (FlashContent **)g_malloc0((src->n_apps+1) * sizeof(FlashContent *));
 	if (dst2 == NULL)
 	{
+		g_free(dst1);
 		return ERR_MALLOC;
 	}
 
@@ -655,7 +661,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst
 	// counts number of files to group and allocate space for that
 	for (k = m = n = 0; src_filenames[k]; k++)
 	{
-		if(tifiles_file_is_regular(src_filenames[k]))
+		if (tifiles_file_is_regular(src_filenames[k]))
 		{
 			m++;
 		}
@@ -676,6 +682,7 @@ TIEXPORT2 int TICALL tifiles_tigroup_files(char **src_filenames, const char *dst
 	src2 = (FlashContent **)g_malloc0((n + 1) * sizeof(FlashContent *));
 	if (src2 == NULL)
 	{
+		g_free(src1);
 		return ERR_MALLOC;
 	}
 
@@ -939,6 +946,7 @@ static int open_temp_file(const char *orig_name, char **temp_name)
  * @content: where to store content (may be re-allocated).
  *
  * This function loads a TiGroup from \a filename and places its content into \a content.
+ * If an error occurs, the structure content is *NOT* released for you.
  *
  * The temporary folder is used by this function to store temporary files.
  * 
@@ -1036,31 +1044,37 @@ TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent 
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 
-				ret = tifiles_file_read_regular(fname, tigentry->content.regular);
-				if (ret)
+				if (tigentry != NULL)
 				{
-					g_free(tigentry);
-					g_unlink(fname);
-					g_free(fname);
-					break;
-				}
+					ret = tifiles_file_read_regular(fname, tigentry->content.regular);
+					if (ret)
+					{
+						g_free(tigentry);
+						g_unlink(fname);
+						g_free(fname);
+						break;
+					}
 
-				tifiles_content_add_te(content, tigentry);
+					tifiles_content_add_te(content, tigentry);
+				}
 			}
 			else if (tifiles_file_is_flash(fname))
 			{
 				TigEntry *tigentry = tifiles_te_create(filename_inzip, tifiles_file_get_class(fname), content->model);
 
-				ret = tifiles_file_read_flash(fname, tigentry->content.flash);
-				if (ret)
+				if (tigentry != NULL)
 				{
-					g_free(tigentry);
-					g_unlink(fname);
-					g_free(fname);
-					break;
-				}
+					ret = tifiles_file_read_flash(fname, tigentry->content.flash);
+					if (ret)
+					{
+						g_free(tigentry);
+						g_unlink(fname);
+						g_free(fname);
+						break;
+					}
 
-				tifiles_content_add_te(content, tigentry);
+					tifiles_content_add_te(content, tigentry);
+				}
 			}
 			else
 			{

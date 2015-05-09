@@ -214,7 +214,7 @@ static int test_tixx_regular_support_single(const char * message,
                                             const char * output_file)
 {
 	FileContent *content;
-	char *unused;
+	char *unused = NULL;
 	int ret = -1;
 
 	printf("%s", message);
@@ -231,6 +231,7 @@ static int test_tixx_regular_support_single(const char * message,
 			{
 				ret = compare_files(PATH(input_file), PATH2(output_file));
 			}
+			tifiles_filename_free(unused);
 			tifiles_content_delete_regular(content);
 		}
 	}
@@ -244,7 +245,7 @@ static int test_tixx_regular_support_group(const char * message,
                                             const char * output_group)
 {
 	FileContent *content;
-	char *unused;
+	char *unused = NULL;
 	int ret = -1;
 
 	printf("%s", message);
@@ -261,6 +262,7 @@ static int test_tixx_regular_support_group(const char * message,
 			{
 				compare_files(PATH(input_group), PATH2(output_group));
 			}
+			tifiles_filename_free(unused);
 			tifiles_content_delete_regular(content);
 		}
 	}
@@ -845,8 +847,8 @@ static int test_tigroup()
 		if (!ret)
 		{
 			ret = tifiles_file_write_tigroup(PATH("tig/test2_.tig"), content);
-			tifiles_content_delete_tigroup(content);
 		}
+		tifiles_content_delete_tigroup(content);
 	}
 
 	if (!ret)

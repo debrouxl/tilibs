@@ -65,20 +65,17 @@ static int fsignature[2] = { 1, 0 };
 int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 {
 	FILE *f;
-	long cur_pos = 0;
+	long cur_pos;
 	char default_folder[FLDNAME_MAX];
 	char current_folder[FLDNAME_MAX];
 	uint32_t curr_offset = 0;
 	uint32_t next_offset = 0;
+	uint32_t file_size;
 	uint16_t tmp;
 	int i, j;
 	char signature[9];
 	char varname[VARNAME_MAX];
-
-	if (!tifiles_file_is_regular(filename))
-	{
-		return ERR_INVALID_FILE;
-	}
+	int ret = ERR_FILE_IO;
 
 	if (content == NULL)
 	{
@@ -86,51 +83,78 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 		return ERR_INVALID_FILE;
 	}
 
+	if (!tifiles_file_is_regular(filename))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrr2;
+	}
+
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
-		tifiles_info( "Unable to open this file: %s", filename);
-		return ERR_FILE_OPEN;
+		ret = ERR_FILE_OPEN;
+		goto tfrr2;
 	}
 
-	if (fread_8_chars(f, signature) < 0) goto tffr;
+	// Get file size, then rewind.
+	if (fseek(f, 0, SEEK_END) < 0) goto tfrr;
+	cur_pos = ftell(f);
+	if (cur_pos < 0) goto tfrr;
+	if (fseek(f, 0, SEEK_SET) < 0) goto tfrr;
+
+	// The TI-68k series' members have at best 4 MB of Flash (TODO: modify this code if this no longer holds).
+	// Regular / group files larger than that size are highly dubious, files larger than twice that size are insane.
+	if (cur_pos >= (8L << 20))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrr;
+	}
+	file_size = (uint32_t)cur_pos;
+
+	if (fread_8_chars(f, signature) < 0) goto tfrr;
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
-		return ERR_INVALID_FILE;
+		ret = ERR_INVALID_FILE;
+		goto tfrr;
 	}
 	if (content->model_dst == CALC_NONE)
 	{
 		content->model_dst = content->model;
 	}
 
-	if (fread_word(f, NULL) < 0) goto tffr;
-	if (fread_8_chars(f, default_folder) < 0) goto tffr;
+	if (fread_word(f, NULL) < 0) goto tfrr;
+	if (fread_8_chars(f, default_folder) < 0) goto tfrr;
 	ticonv_varname_from_tifile_s(content->model_dst, default_folder, content->default_folder, -1);
 	strncpy(current_folder, content->default_folder, sizeof(current_folder) - 1);
 	current_folder[sizeof(current_folder) - 1] = 0;
-	if (fread_n_chars(f, 40, content->comment) < 0) goto tffr;
-	if (fread_word(f, &tmp) < 0) goto tffr;
+	if (fread_n_chars(f, 40, content->comment) < 0) goto tfrr;
+	if (fread_word(f, &tmp) < 0) goto tfrr;
 	content->num_entries = tmp;
 
 	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 	if (content->entries == NULL) 
 	{
-		fclose(f);
-		return ERR_MALLOC;
+		ret = ERR_MALLOC;
+		goto tfrr;
 	}
 
 	for (i = 0, j = 0; i < content->num_entries; i++) 
 	{
 		VarEntry *entry = content->entries[j] = g_malloc0(sizeof(VarEntry));
 
-		if (fread_long(f, &curr_offset) < 0) goto tffr;
-		if (fread_8_chars(f, varname) < 0)  goto tffr;
+		if (fread_long(f, &curr_offset) < 0) goto tfrr;
+		if (curr_offset > file_size)
+		{
+			ret = ERR_INVALID_FILE;
+			goto tfrr;
+		}
+		if (fread_8_chars(f, varname) < 0)  goto tfrr;
 		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
-		if (fread_byte(f, &(entry->type)) < 0) goto tffr;
-		if (fread_byte(f, &(entry->attr)) < 0) goto tffr;
+		if (fread_byte(f, &(entry->type)) < 0) goto tfrr;
+		if (fread_byte(f, &(entry->attr)) < 0) goto tfrr;
 		entry->attr = (entry->attr == 2 || entry->attr == 3) ? ATTRB_ARCHIVED : entry->attr;
-		if (fread_word(f, NULL) < 0) goto tffr;
+		if (fread_word(f, NULL) < 0) goto tfrr;
 
 		if (entry->type == TI92_DIR) // same as TI89_DIR, TI89t_DIR, ...
 		{
@@ -147,30 +171,38 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 			strncpy(entry->folder, current_folder, sizeof(entry->folder) - 1);
 			current_folder[sizeof(entry->folder) - 1] = 0;
 			cur_pos = ftell(f);
-			if (cur_pos == -1L) goto tffr;
-			if (fread_long(f, &next_offset) < 0) goto tffr;
+			if (cur_pos < 0) goto tfrr;
+			if (fread_long(f, &next_offset) < 0) goto tfrr;
+			if (next_offset > file_size)
+			{
+				ret = ERR_INVALID_FILE;
+				goto tfrr;
+			}
 			entry->size = next_offset - curr_offset - 4 - 2;
+			if (entry->size > file_size)
+			{
+				ret = ERR_INVALID_FILE;
+				goto tfrr;
+			}
 			entry->data = (uint8_t *)g_malloc0(entry->size);
 			if (entry->data == NULL) 
 			{
-				fclose(f);
-				tifiles_content_delete_regular(content);
-				return ERR_MALLOC;
+				ret = ERR_MALLOC;
+				goto tfrr;
 			}
 
-			if (fseek(f, curr_offset, SEEK_SET)) goto tffr;
-			if (fread_long(f, NULL) < 0) goto tffr;	// 4 bytes (NULL)
-			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
+			if (fseek(f, curr_offset, SEEK_SET)) goto tfrr;
+			if (fread_long(f, NULL) < 0) goto tfrr;	// 4 bytes (NULL)
+			if (fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr;
 
-			if (fread_word(f, &checksum) < 0) goto tffr;
-			if (fseek(f, cur_pos, SEEK_SET)) goto tffr;
+			if (fread_word(f, &checksum) < 0) goto tfrr;
+			if (fseek(f, cur_pos, SEEK_SET)) goto tfrr;
 
 			sum = tifiles_checksum(entry->data, entry->size);
 			if (sum != checksum)
 			{
-				fclose(f);
-				tifiles_content_delete_regular(content);
-				return ERR_FILE_CHECKSUM;
+				ret = ERR_FILE_CHECKSUM;
+				goto tfrr;
 			}
 			content->checksum += sum;	// sum of all checksums but unused
 		}
@@ -184,11 +216,12 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	fclose(f);
 	return 0;
 
-tffr:	// release on exit
+tfrr:	// release on exit
 	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
 	fclose(f);
+tfrr2:
 	tifiles_content_delete_regular(content);
-	return ERR_FILE_IO;
+	return ret;
 }
 
 /**
@@ -206,9 +239,11 @@ tffr:	// release on exit
 int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 {
 	FILE *f;
+	long cur_pos = 0;
 	uint32_t file_size;
 	char signature[9];
 	uint16_t sum;
+	int ret = ERR_FILE_IO;
 
 	if (content == NULL)
 	{
@@ -218,21 +253,37 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 
 	if (!tifiles_file_is_backup(filename))
 	{
-		return ERR_INVALID_FILE;
+		ret = ERR_INVALID_FILE;
+		goto tfrb2;
 	}
 
 	f = g_fopen(filename, "rb");
 	if (f == NULL) 
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
-		return ERR_FILE_OPEN;
+		ret = ERR_FILE_OPEN;
+		goto tfrb2;
+	}
+
+	// Get file size, then rewind.
+	if (fseek(f, 0, SEEK_END) < 0) goto tfrb;
+	cur_pos = ftell(f);
+	if (cur_pos < 0) goto tfrb;
+	if (fseek(f, 0, SEEK_SET) < 0) goto tfrb;
+
+	// The TI-68k series' members have at best 4 MB of Flash (TODO: modify this code if this no longer holds).
+	// Backup files larger than that size are highly dubious, files larger than twice that size are insane.
+	if (cur_pos >= (8L << 20))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrb;
 	}
 
 	if (fread_8_chars(f, signature) < 0) goto tfrb;
 	content->model = tifiles_signature2calctype(signature);
 	if (content->model == CALC_NONE)
 	{
-		return ERR_INVALID_FILE;
+		ret = ERR_INVALID_FILE;
 	}
 
 	if (fread_word(f, NULL) < 0) goto tfrb;
@@ -245,15 +296,19 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 	if (fread_byte(f, NULL) < 0) goto tfrb;
 	if (fread_word(f, NULL) < 0) goto tfrb;
 	if (fread_long(f, &file_size) < 0) goto tfrb;
+	if (file_size > (uint32_t)cur_pos)
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrb;
+	}
 	content->data_length = file_size - 0x52 - 2;
 	if (fread_word(f, NULL) < 0) goto tfrb;
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
 	if (content->data_part == NULL) 
 	{
-		fclose(f);
-		tifiles_content_delete_backup(content);
-		return ERR_MALLOC;
+		ret = ERR_MALLOC;
+		goto tfrb;
 	}
 
 	if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrb;
@@ -263,9 +318,8 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 #if defined(CHECKSUM_ENABLED)
 	if (sum != content->checksum)
 	{
-		fclose(f);
-		tifiles_content_delete_backup(content);
-		return ERR_FILE_CHECKSUM;
+		ret = ERR_FILE_CHECKSUM;
+		goto tfrb;
 	}
 #endif
 
@@ -275,8 +329,9 @@ int ti9x_file_read_backup(const char *filename, Ti9xBackup *content)
 tfrb:	// release on exit
 	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
 	fclose(f);
+tfrb2:
 	tifiles_content_delete_backup(content);
-	return ERR_FILE_IO;
+	return ret;
 }
 
 static int check_device_type(uint8_t id)
@@ -327,18 +382,21 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 {
 	FILE *f;
 	Ti9xFlash *content = head;
+	long cur_pos = 0;
 	int tib = 0;
 	char signature[9];
-
-	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
-	{
-		return ERR_INVALID_FILE;
-	}
+	int ret = ERR_FILE_IO;
 
 	if (head == NULL)
 	{
 		tifiles_critical("%s: an argument is NULL", __FUNCTION__);
 		return ERR_INVALID_FILE;
+	}
+
+	if (!tifiles_file_is_flash(filename) && !tifiles_file_is_tib(filename))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrf2;
 	}
 
 	// detect file type (old or new format)
@@ -348,15 +406,29 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 	if (f == NULL) 
 	{
 		tifiles_info("Unable to open this file: %s\n", filename);
-		return ERR_FILE_OPEN;
+		ret = ERR_FILE_OPEN;
+		goto tfrf2;
 	}  
 
+	if (fseek(f, 0, SEEK_END)) goto tfrf;
+	cur_pos = ftell(f);
+	if (cur_pos < 0) goto tfrf;
+	if (fseek(f, 0, SEEK_SET)) goto tfrf;
+
+	// The TI-68k series' members have at best 4 MB of Flash.
+	// TIB files larger than that size are insane.
+	if (cur_pos >= (4L << 20))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrf;
+	}
+
 	if (tib) 
-	{	// tib is an old format but mainly used by developers
+	{
+		// tib is an old format but mainly used by developers
 		memset(content, 0, sizeof(Ti9xFlash));
-		if (fseek(f, 0, SEEK_END)) goto tfrf;
-		content->data_length = (uint32_t) ftell(f);
-		if (fseek(f, 0, SEEK_SET)) goto tfrf;
+
+		content->data_length = (uint32_t)cur_pos;
 
 		strncpy(content->name, "basecode", sizeof(content->name) - 1);
 		content->name[sizeof(content->name) - 1] = 0;
@@ -365,8 +437,8 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 		content->data_part = (uint8_t *)g_malloc0(content->data_length);
 		if (content->data_part == NULL) 
 		{
-			fclose(f);
-			return ERR_MALLOC;
+			ret = ERR_MALLOC;
+			goto tfrf;
 		}
 
 		if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
@@ -406,31 +478,35 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 
 			if (content->data_type != TI89_LICENSE && !check_device_type(content->device_type))
 			{
-				return ERR_INVALID_FILE;
+				ret = ERR_INVALID_FILE;
+				goto tfrf;
 			}
 			if (!check_data_type(content->data_type))
 			{
-				return ERR_INVALID_FILE;
+				ret = ERR_INVALID_FILE;
+				goto tfrf;
 			}
+			// TODO: modify this code if TI ever makes a TI-eZ80 model with more than 4 MB of Flash memory...
 			if (content->data_length > 4U * 1024 * 1024 - 65536U)
 			{
 				// Data length larger than Flash memory size - boot code sector size doesn't look right.
-				return ERR_INVALID_FILE;
+				ret = ERR_INVALID_FILE;
+				goto tfrf;
 			}
 
 			content->data_part = (uint8_t *)g_malloc0(content->data_length);
 			if (content->data_part == NULL)
 			{
-				fclose(f);
-				tifiles_content_delete_flash(content);
-				return ERR_MALLOC;
+				ret = ERR_MALLOC;
+				goto tfrf;
 			}
 
 			if (fread(content->data_part, 1, content->data_length, f) < content->data_length) goto tfrf;
 			if (   (content->data_type == TI83p_AMS && content->data_part[0] != 0x80)
 			    || (content->data_type == TI83p_APPL && content->data_part[0] != 0x81))
 			{
-				return ERR_INVALID_FILE;
+				ret = ERR_INVALID_FILE;
+				goto tfrf;
 			}
 			content->next = NULL;
 
@@ -448,9 +524,8 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 			content->next = (Ti9xFlash *)g_malloc0(sizeof(Ti9xFlash));
 			if (content->next == NULL) 
 			{
-				fclose(f);
-				tifiles_content_delete_flash(content);
-				return ERR_MALLOC;
+				ret = ERR_MALLOC;
+				goto tfrf;
 			}
 		}
 	}
@@ -461,8 +536,9 @@ int ti9x_file_read_flash(const char *filename, Ti9xFlash *head)
 tfrf:	// release on exit
 	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
 	fclose(f);
+tfrf2:
 	tifiles_content_delete_flash(content);
-	return ERR_FILE_IO;
+	return ret;
 }
 
 /***********/
@@ -814,7 +890,7 @@ int ti9x_content_display_regular(Ti9xRegular *content)
 	tifiles_info("Default folder:    %s", content->default_folder);
 	tifiles_info("Number of entries: %i", content->num_entries);
 
-	for (i = 0; i < content->num_entries; i++) 
+	for (i = 0; i < content->num_entries; i++)
 	{
 		if (content->entries[i] != NULL)
 		{

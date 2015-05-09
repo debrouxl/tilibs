@@ -58,11 +58,7 @@
 int tnsp_file_read_regular(const char *filename, FileContent *content)
 {
 	FILE *f;
-
-	if (!tifiles_file_is_regular(filename))
-	{
-		return ERR_INVALID_FILE;
-	}
+	int ret = ERR_FILE_IO;
 
 	if (content == NULL)
 	{
@@ -70,11 +66,18 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		return ERR_INVALID_FILE;
 	}
 
+	if (!tifiles_file_is_regular(filename))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrr2;
+	}
+
 	f = g_fopen(filename, "rb");
 	if (f == NULL)
 	{
 		tifiles_info( "Unable to open this file: %s", filename);
-		return ERR_FILE_OPEN;
+		ret = ERR_FILE_OPEN;
+		goto tfrr2;
 	}
 
 	content->model = CALC_NSPIRE;
@@ -83,13 +86,14 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	content->entries = g_malloc0((content->num_entries + 1) * sizeof(VarEntry*));
 
 	{
+		long cur_pos;
 		VarEntry *entry = content->entries[0] = g_malloc0(sizeof(VarEntry));
 
 		gchar *basename = g_path_get_basename(filename);
 		gchar *ext = tifiles_fext_get(basename);
 
 		entry->type = tifiles_fext2vartype(content->model, ext);
-		if(ext) *(ext-1) = '\0';
+		if (ext && ext[0]) *(ext-1) = '\0';
 
 		entry->folder[0] = 0;
 		strncpy(entry->name, basename, sizeof(entry->name) - 1);
@@ -97,12 +101,22 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 		g_free(basename);
 
 		entry->attr = ATTRB_NONE;
-		fseek(f, 0, SEEK_END);
-		entry->size = (uint32_t)ftell(f);
-		fseek(f, 0, SEEK_SET);
+		if (fseek(f, 0, SEEK_END) < 0) goto tfrr;
+		cur_pos = ftell(f);
+		if (cur_pos < 0) goto tfrr;
+		if (fseek(f, 0, SEEK_SET) < 0) goto tfrr;
+
+		// The Nspire series' members have at best 128 MB of Flash (TODO: modify this code if this no longer holds).
+		// Regular files larger than that size are insane.
+		if (cur_pos >= (128L << 20))
+		{
+			ret = ERR_INVALID_FILE;
+			goto tfrr;
+		}
+		entry->size = (uint32_t)cur_pos;
 
 		entry->data = (uint8_t *)g_malloc0(entry->size);  
-		if(fread(entry->data, 1, entry->size, f) < entry->size) goto tffr;
+		if(fread(entry->data, 1, entry->size, f) < entry->size) goto tfrr;
 	}
 
 	content->num_entries++;
@@ -110,11 +124,12 @@ int tnsp_file_read_regular(const char *filename, FileContent *content)
 	fclose(f);
 	return 0;
 
-tffr:	// release on exit
+tfrr:	// release on exit
 	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
 	fclose(f);
+tfrr2:
 	tifiles_content_delete_regular(content);
-	return ERR_FILE_IO;
+	return ret;
 }
 
 /**
@@ -133,9 +148,9 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 {
 	FILE *f;
 	int c;
-
-	if (!tifiles_file_is_tno(filename))
-		return ERR_INVALID_FILE;
+	long cur_pos;
+	uint32_t file_size;
+	int ret = ERR_FILE_IO;
 
 	if (content == NULL)
 	{
@@ -143,26 +158,95 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 		return ERR_INVALID_FILE;
 	}
 
-	f = g_fopen(filename, "rb");
-	if (f == NULL) 
+	if (!tifiles_file_is_tno(filename))
 	{
-		tifiles_info("Unable to open this file: %s\n", filename);
-		return ERR_FILE_OPEN;
+		ret = ERR_INVALID_FILE;
+		goto tfrf2;
 	}
 
-	content->model = CALC_NSPIRE;
-	for(c = 0; c != ' '; c=fgetc(f));
-	content->revision_major = fgetc(f);
-	fgetc(f);
-	content->revision_minor = fgetc(f);
-	fgetc(f);
+	f = g_fopen(filename, "rb");
+	if (f == NULL)
+	{
+		tifiles_info("Unable to open this file: %s\n", filename);
+		ret = ERR_FILE_OPEN;
+		goto tfrf2;
+	}
 
-	for(c = 0; c != ' '; c=fgetc(f));
+	if (fseek(f, 0, SEEK_END) < 0) goto tfrf;
+	cur_pos = ftell(f);
+	if (cur_pos < 0) goto tfrf;
+	if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
+	// The Nspire series' members have at best 128 MB of Flash (TODO: modify this code if this no longer holds).
+	// Flash files larger than that size are insane.
+	if (cur_pos >= (128L << 20))
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrf;
+	}
+	file_size = (uint32_t)cur_pos;
+
+	content->model = CALC_NSPIRE;
+
+	// Skip chars.
+	c = 0;
+	while (c != ' ')
+	{
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+	}
+
+	// Read revision major.
+	c = fgetc(f);
+	if (c == EOF)
+	{
+		goto tfrf;
+	}
+	content->revision_major = c;
+
+	// Skip char.
+	c = fgetc(f);
+	if (c == EOF)
+	{
+		goto tfrf;
+	}
+
+	// Read revision minor.
+	c = fgetc(f);
+	if (c == EOF)
+	{
+		goto tfrf;
+	}
+	content->revision_minor = c;
+
+	// Skip chars.
+	c = fgetc(f);
+	if (c == EOF)
+	{
+		goto tfrf;
+	}
+
+	c = 0;
+	while (c != ' ')
+	{
+		c = fgetc(f);
+		if (c == EOF)
+		{
+			goto tfrf;
+		}
+	}
 	if (fscanf(f, "%i", &(content->data_length)) < 1)
 	{
 		goto tfrf;
 	}
-	rewind(f);
+	if (content->data_length > file_size)
+	{
+		ret = ERR_INVALID_FILE;
+		goto tfrf;
+	}
+	if (fseek(f, 0, SEEK_SET) < 0) goto tfrf;
 
 	content->data_part = (uint8_t *)g_malloc0(content->data_length);
 	if (content->data_part == NULL) 
@@ -181,8 +265,9 @@ int tnsp_file_read_flash(const char *filename, FlashContent *content)
 tfrf:	// release on exit
 	tifiles_critical("%s: error reading / understanding file %s", __FUNCTION__, filename);
 	fclose(f);
+tfrf2:
 	tifiles_content_delete_flash(content);
-	return ERR_FILE_IO;
+	return ret;
 }
 
 /***********/

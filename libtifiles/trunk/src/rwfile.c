@@ -78,12 +78,15 @@ int fread_n_bytes(FILE * f, int n, uint8_t *s)
 	{
 		for (i = 0; i < n; i++)
 		{
-			fgetc(f);
+			if (fgetc(f) == EOF)
+			{
+				return -1;
+			}
 		}
 	}
 	else
 	{
-		if(fread(s, 1, n, f) < (size_t)n)
+		if (fread(s, 1, n, f) < (size_t)n)
 		{
 			return -1;
 		}
@@ -100,7 +103,7 @@ int fread_n_bytes(FILE * f, int n, uint8_t *s)
 */
 int fwrite_n_bytes(FILE * f, int n, const uint8_t *s)
 {
-	if(fwrite(s, 1, n, f) < (size_t)n)
+	if (fwrite(s, 1, n, f) < (size_t)n)
 	{
 		return -1;
 	}
@@ -121,13 +124,13 @@ int fwrite_n_bytes(FILE * f, int n, const uint8_t *s)
 int fread_n_chars(FILE * f, int n, char *s)
 {
 	int i;
-	
-	if(fread_n_bytes(f, n, (uint8_t *)s) < 0)
+
+	if (fread_n_bytes(f, n, (uint8_t *)s) < 0)
 	{
 		return -1;
 	}
 
-	if(s != NULL)
+	if (s != NULL)
 	{
 		// set NULL terminator
 		s[n] = '\0';
@@ -163,14 +166,14 @@ int fwrite_n_chars(FILE * f, int n, const char *s)
 
 	for (i = 0; i < l; i++)
 	{
-		if(fputc(s[i], f) == EOF)
+		if (fputc(s[i], f) == EOF)
 		{
 			return -1;
 		}
 	}
 	for (i = l; i < n; i++)
 	{
-		if(fputc(0x00, f) == EOF)
+		if (fputc(0x00, f) == EOF)
 		{
 			return -1;
 		}
@@ -201,14 +204,14 @@ int fwrite_n_chars2(FILE * f, int n, const char *s)
 
 	for (i = 0; i < l; i++)
 	{
-		if(fputc(s[i], f) == EOF)
+		if (fputc(s[i], f) == EOF)
 		{
 			return -1;
 		}
 	}
 	for (i = l; i < n; i++)
 	{
-		if(fputc(0x20, f) == EOF)
+		if (fputc(0x20, f) == EOF)
 		{
 			return -1;
 		}

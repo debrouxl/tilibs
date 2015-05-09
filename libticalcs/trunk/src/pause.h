@@ -26,7 +26,7 @@
 
 #define PAUSE_BETWEEN_VARS	250	// 250ms
 
-#if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__)
+#if defined(__LINUX__) || defined(__MACOSX__) || defined(__BSD__) || defined(__ANDROID__)
 # include <unistd.h>
 # define PAUSE(x)  usleep(1000*(x));
 #elif defined(__WIN32__)

@@ -389,13 +389,21 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 					te = tifiles_te_create(filename, TIFILE_SINGLE, handle->model);
 					g_free(filename);
-
-					ret = handle->calc->recv_var(handle, 0, te->content.regular, ve);
-					if (ret)
+					if (te != NULL)
 					{
+						ret = handle->calc->recv_var(handle, 0, te->content.regular, ve);
+						if (ret)
+						{
+							tifiles_te_delete(te);
+							goto end;
+						}
+						tifiles_content_add_te(content, te);
+					}
+					else
+					{
+						ret = ERR_MALLOC;
 						goto end;
 					}
-					tifiles_content_add_te(content, te);
 				}
 			}
 		}
@@ -433,14 +441,21 @@ TIEXPORT3 int TICALL ticalcs_calc_recv_tigroup(CalcHandle* handle, TigContent* c
 
 				te = tifiles_te_create(filename, TIFILE_FLASH, handle->model);
 				g_free(filename);
-
-				ret = handle->calc->recv_app(handle, te->content.flash, ve);
-				if (ret)
+				if (te != NULL)
 				{
-					tifiles_te_delete(te);
+					ret = handle->calc->recv_app(handle, te->content.flash, ve);
+					if (ret)
+					{
+						tifiles_te_delete(te);
+						goto end;
+					}
+					tifiles_content_add_te(content, te);
+				}
+				else
+				{
+					ret = ERR_MALLOC;
 					goto end;
 				}
-				tifiles_content_add_te(content, te);
 			}
 		}
 	}
