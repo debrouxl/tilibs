@@ -432,6 +432,48 @@ TIEXPORT1 const char * TICALL ticables_get_device(CableHandle* handle)
 }
 
 /**
+ * ticables_get_timeout:
+ * @handle: the handle
+ *
+ * Retrieve timeout.
+ *
+ * Return value: an unsigned integer;
+ **/
+TIEXPORT1 unsigned int TICALL ticables_get_timeout(CableHandle *handle)
+{
+	if (handle != NULL)
+	{
+		return handle->timeout;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return 0;
+	}
+}
+
+/**
+ * ticables_get_delay:
+ * @handle: the handle
+ *
+ * Retrieve timeout.
+ *
+ * Return value: an unsigned integer;
+ **/
+TIEXPORT1 unsigned int TICALL ticables_get_delay(CableHandle *handle)
+{
+	if (handle != NULL)
+	{
+		return handle->delay;
+	}
+	else
+	{
+		ticables_critical("%s(NULL)", __FUNCTION__);
+		return 0;
+	}
+}
+
+/**
  * ticables_handle_show:
  * @handle: the handle
  *

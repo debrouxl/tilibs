@@ -48,10 +48,8 @@ const unsigned long* charsets[8];
 int main(int argc, char **argv)
 {
 	int i, j;
-	int n = 0;
+	unsigned int n = 0;
 	int is_utf8 = g_get_charset(NULL);
-
-	goto pass2;
 
 	charsets[0] = ti73_charset;
 	charsets[1] = ti82_charset;
@@ -66,10 +64,14 @@ int main(int argc, char **argv)
 	printf("--\n");
 
 	printf("Choose your charset: ");
-	if(!scanf("%i", &n))
-	    n = 0;
-	if(n >= 7)
-	    n = 6;
+	if (!scanf("%u", &n))
+	{
+		n = 0;
+	}
+	if (n >= 7)
+	{
+		n = 6;
+	}
 
 	printf("  0 1 2 3 4 5 6 7 8 9 A B C D E F\n");
 
@@ -78,36 +80,38 @@ int main(int argc, char **argv)
 		printf("%x ", i);
 		for(j = 0; j < 16; j++)
 		{
-		    unsigned long wc = charsets[n][16*i+j];
-		    gchar *str = NULL;
+			unsigned long wc = charsets[n][16*i+j];
+			gchar *str = NULL;
 
-		    if(wc && wc != '\n')
-		    {
+			if (wc && wc != '\n')
+			{
 				gunichar2 buf[4] = { 0 };
 
 				buf[0] = (gunichar2)wc;
 				str = ticonv_utf16_to_utf8(buf);
 
-				if(!is_utf8 && str)
+				if (!is_utf8 && str)
 				{
 					gchar *tmp = g_locale_from_utf8(str, -1, NULL, NULL, NULL);
-					g_free(str);
+					ticonv_utf8_free(str);
 					str = tmp;
 				}
-		    }
-		    else
-		    {
+			}
+			else
+			{
 				str = NULL;
-		    }
+			}
 
-		    if(str)
+			if (str)
+			{
 				printf("%s ", str);
-		    
-		    g_free(str);
+			}
+
+			ticonv_utf8_free(str);
 		}
 		printf("\n");
 	}
-	pass2:
+
 	{
 		char ti82_varname[9] = { 0 };
 		char ti92_varname[9] = { 0 };
@@ -131,47 +135,39 @@ int main(int argc, char **argv)
 
 		// TI -> UTF-8
 		utf8 = ticonv_varname_to_utf8(CALC_TI82, ti82_varname, -1);
-		printf("UTF-8 varname: <%s> (%i)\n", ti82_varname, 
-		       (int)strlen(ti82_varname));
-		g_free(utf8);
+		printf("UTF-8 varname: <%s> (%i)\n", ti82_varname, (int)strlen(ti82_varname));
+		ticonv_utf8_free(utf8);
 
 		utf8 = ticonv_varname_to_utf8(CALC_TI92, ti92_varname, -1);
-		printf("UTF-8 varname: <%s> (%i)\n", ti92_varname, 
-		       (int)strlen(ti92_varname));
-		g_free(utf8);
+		printf("UTF-8 varname: <%s> (%i)\n", ti92_varname, (int)strlen(ti92_varname));
+		ticonv_utf8_free(utf8);
 
-		utf8 = ticonv_varname_to_utf8(CALC_TI84P_USB, ti84p_varname,
-					      -1);
-		printf("UTF-8 varname: <%s> (%i)\n", ti84p_varname, 
-		       (int)strlen(ti84p_varname));
-		g_free(utf8);
+		utf8 = ticonv_varname_to_utf8(CALC_TI84P_USB, ti84p_varname, -1);
+		printf("UTF-8 varname: <%s> (%i)\n", ti84p_varname, (int)strlen(ti84p_varname));
+		ticonv_utf8_free(utf8);
 
 
 		// TI -> filename
-		printf("raw varname: <%s> (%i)\n", ti92_varname, 
-		       (int)strlen(ti92_varname));
+		printf("raw varname: <%s> (%i)\n", ti92_varname, (int)strlen(ti92_varname));
 		filename = ticonv_varname_to_filename(CALC_TI92, ti92_varname, -1);
 		printf("filename: <%s>\n", filename);
-		g_free(filename);
+		ticonv_gfe_free(filename);
 
-		printf("raw varname: <%s> (%i)\n", ti82_varname, 
-		       (int)strlen(ti82_varname));
+		printf("raw varname: <%s> (%i)\n", ti82_varname, (int)strlen(ti82_varname));
 		filename = ticonv_varname_to_filename(CALC_TI82, ti82_varname, -1);
 		printf("filename: <%s>\n", filename);
-		g_free(filename);
+		ticonv_gfe_free(filename);
 
-		printf("raw varname: <%s> (%i)\n", ti84p_varname, 
-		       (int)strlen(ti84p_varname));
+		printf("raw varname: <%s> (%i)\n", ti84p_varname, (int)strlen(ti84p_varname));
 		filename = ticonv_varname_to_filename(CALC_TI84P_USB, ti84p_varname, -1);
 		printf("filename: <%s>\n", filename);
-		g_free(filename);
+		ticonv_gfe_free(filename);
 
 		// varname -> varname
-		printf("raw varname: <%s> (%i)\n", ti84p_varname, 
-		       (int)strlen(ti84p_varname));
+		printf("raw varname: <%s> (%i)\n", ti84p_varname, (int)strlen(ti84p_varname));
 		varname = ticonv_varname_to_tifile(CALC_TI84P_USB, ti84p_varname, -1);
 		printf("varname: <%s>\n", varname);
-		g_free(varname);
+		ticonv_gfe_free(varname);
 	}
 
 #ifdef __WIN32__

@@ -126,7 +126,7 @@ TIEXPORT2 int TICALL tifiles_te_delete(TigEntry* entry)
  * @nelts: size of NULL-terminated array (number of #TigEntry structures).
  *
  * Allocate a NULL-terminated array of #TigEntry structures. You have to allocate
- * each elements of the array by yourself.
+ * each element of the array by yourself.
  *
  * Return value: the array or NULL if error.
  **/
@@ -141,13 +141,18 @@ TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts)
  * @nelts: size of NULL-terminated array (number of #TigEntry structures).
  *
  * Re-allocate a NULL-terminated array of #TigEntry structures. You have to allocate
- * each elements of the array by yourself.
+ * each element of the array by yourself.
  *
  * Return value: the array or NULL if error.
  **/
 TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry** array, int nelts)
 {
-	return g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
+	TigEntry ** ptr = g_realloc(array, (nelts + 1) * sizeof(TigEntry *));
+	if (ptr != NULL)
+	{
+		ptr[nelts] = NULL;
+	}
+	return ptr;
 }
 
 /**
@@ -870,17 +875,28 @@ TIEXPORT2 int TICALL tifiles_content_delete_tigroup(TigContent *content)
 
 	if (content != NULL)
 	{
-		for(i = 0; i < content->n_vars; i++)
+		if (content->var_entries != NULL)
 		{
-			TigEntry* entry = content->var_entries[i];
-			tifiles_te_delete(entry);
+			for (i = 0; i < content->n_vars; i++)
+			{
+				TigEntry* entry = content->var_entries[i];
+				tifiles_te_delete(entry);
+			}
+			g_free(content->var_entries);
 		}
 
-		for(i = 0; i < content->n_apps; i++)
+		if (content->app_entries != NULL)
 		{
-			TigEntry* entry = content->app_entries[i];
-			tifiles_te_delete(entry);
+			for (i = 0; i < content->n_apps; i++)
+			{
+				TigEntry* entry = content->app_entries[i];
+				tifiles_te_delete(entry);
+			}
+			g_free(content->app_entries);
 		}
+
+		g_free(content->comment);
+
 		g_free(content);
 	}
 	else

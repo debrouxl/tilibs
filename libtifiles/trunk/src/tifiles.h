@@ -359,6 +359,7 @@ extern "C" {
 
 	// error.c
 	TIEXPORT2 int         TICALL tifiles_error_get (int number, char **message);
+	TIEXPORT2 int         TICALL tifiles_error_free (char *message);
 
 	// type2str.c
 	TIEXPORT2 const char* TICALL tifiles_model_to_string (CalcModel type);
@@ -379,6 +380,7 @@ extern "C" {
 
 	TIEXPORT2 char* TICALL tifiles_fext_get (const char *filename);
 	TIEXPORT2 char* TICALL tifiles_fext_dup (const char *filename);
+	TIEXPORT2 void  TICALL tifiles_fext_free (char *filename);
 
 	TIEXPORT2 int TICALL tifiles_file_is_ti (const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_is_single (const char *filename);
@@ -434,6 +436,7 @@ extern "C" {
 	TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);
 	TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname);
 	TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve);
+	TIEXPORT2 void  TICALL tifiles_filename_free(char * filename);
 
 	// filesXX.c
 	TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model);
@@ -508,7 +511,7 @@ extern "C" {
 	TIEXPORT2 void		TICALL tifiles_te_delete_array(TigEntry**);
 	TIEXPORT2 int			TICALL tifiles_te_sizeof_array(TigEntry**);
 
-	// comment.c
+	// comments.c
 	TIEXPORT2 const char* TICALL tifiles_comment_set_single(void);
 	TIEXPORT2 const char* TICALL tifiles_comment_set_group(void);
 	TIEXPORT2 const char* TICALL tifiles_comment_set_backup(void);
@@ -519,7 +522,9 @@ extern "C" {
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_create_with_data(uint32_t size);
 	TIEXPORT2 void		TICALL tifiles_ve_delete(VarEntry*);
 
-	TIEXPORT2 void*		tifiles_ve_alloc_data(size_t size);
+	TIEXPORT2 void*		TICALL tifiles_ve_alloc_data(size_t size);
+	TIEXPORT2 VarEntry*	TICALL tifiles_ve_realloc_data(VarEntry* ve, size_t size);
+	TIEXPORT2 void		TICALL tifiles_ve_free_data(void * data);
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src);
 
@@ -532,8 +537,11 @@ extern "C" {
 	TIEXPORT2 void		TICALL tifiles_fp_delete(FlashPage*);
 
 	TIEXPORT2 void*		TICALL tifiles_fp_alloc_data(size_t size);
+	TIEXPORT2 FlashPage*	TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size);
+	TIEXPORT2 void		TICALL tifiles_fp_free_data(void * data);
 
 	TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(int nelts);
+	TIEXPORT2 FlashPage**	TICALL tifiles_fp_resize_array(FlashPage**, int nelts);
 	TIEXPORT2 void		TICALL tifiles_fp_delete_array(FlashPage**);
 
 	// undocumented

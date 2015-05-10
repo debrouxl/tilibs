@@ -107,6 +107,17 @@ TIEXPORT4 unsigned short* ticonv_utf8_to_utf16(const char *str)
 }
 
 /**
+ * ticonv_utf16_free:
+ * @str: previously allocated UTF-16 string to be freed.
+ *
+ * This function frees an UTF-16 string previously allocated by e.g. ticonv_utf8_to_utf16().
+ **/
+TIEXPORT4 void TICALL ticonv_utf16_free(unsigned short *str)
+{
+	g_free((void *)str);
+}
+
+/**
  * ticonv_utf16_to_utf8:
  * @src: null terminated UTF-16 string
  *
@@ -136,6 +147,17 @@ TIEXPORT4 char* ticonv_utf16_to_utf8(const unsigned short *str)
 }
 
 /**
+ * ticonv_utf8_free:
+ * @str: previously allocated UTF-8 string to be freed.
+ *
+ * This function frees an UTF-8 string previously allocated by e.g. ticonv_utf16_to_utf8().
+ **/
+TIEXPORT4 void TICALL ticonv_utf8_free(char *str)
+{
+	g_free((void *)str);
+}
+
+/**
  * ticonv_charset_utf16_to_ti_s:
  * @model: calculator model
  * @utf16: null terminated string (input)
@@ -157,7 +179,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			case CALC_TI83: return ticonv_utf16_to_ti83(utf16, ti); break;
 			case CALC_TI83P:
 			case CALC_TI84PC:
-			case CALC_TI84P:return ticonv_utf16_to_ti83p(utf16, ti); break;
+			case CALC_TI84P: return ticonv_utf16_to_ti83p(utf16, ti); break;
 			case CALC_TI85: return ticonv_utf16_to_ti85(utf16, ti); break;
 			case CALC_TI89:
 			case CALC_TI89T:
@@ -174,7 +196,7 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti_s(CalcModel model, const unsig
 			{
 				char *tmp = ticonv_utf16_to_utf8(utf16);
 				strcpy(ti, tmp);
-				g_free(tmp);
+				ticonv_utf8_free(tmp);
 				return ti;
 			}
 			break;
@@ -208,14 +230,33 @@ TIEXPORT4 char* TICALL ticonv_charset_utf16_to_ti(CalcModel model, const unsigne
 	if (utf16 != NULL)
 	{
 		char * ti = g_malloc0(4*ticonv_utf16_strlen(utf16) + 1);	// upper bound
-		ticonv_charset_utf16_to_ti_s(model, utf16, ti);
-		return ti;
+		char * out = ticonv_charset_utf16_to_ti_s(model, utf16, ti);
+		if (out != NULL)
+		{
+			return out;
+		}
+		else
+		{
+			g_free(ti);
+			return NULL;
+		}
 	}
 	else
 	{
 		g_critical("%s: utf16 is NULL", __FUNCTION__);
 		return NULL;
 	}
+}
+
+/**
+ * ticonv_ti_free:
+ * @str: previously allocated TI string to be freed.
+ *
+ * This function frees a string in TI format previously allocated by e.g. ticonv_charset_utf16_to_ti().
+ **/
+TIEXPORT4 void TICALL ticonv_ti_free(char *str)
+{
+	g_free((void *)str);
 }
 
 /**
@@ -258,11 +299,11 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16_s(CalcModel model, c
 			{
 				unsigned short *tmp = ticonv_utf8_to_utf16(ti);
 				memcpy(utf16, tmp, 2*ticonv_utf16_strlen(tmp));
-				g_free(tmp);
+				ticonv_utf16_free(tmp);
 				return utf16;
 			}
 			break;
-			default: return memcpy(utf16, "\0", 2);
+			default: utf16[0] = 0; return utf16;
 		}
 	}
 	else
@@ -286,12 +327,52 @@ TIEXPORT4 unsigned short* TICALL ticonv_charset_ti_to_utf16(CalcModel model, con
 	if (ti != NULL)
 	{
 		unsigned short * utf16 = g_malloc0(4 * strlen(ti) + 2);	// upper bound
-		ticonv_charset_ti_to_utf16_s(model, ti, utf16);
-		return utf16;
+		unsigned short * out = ticonv_charset_ti_to_utf16_s(model, ti, utf16);
+		if (out != NULL)
+		{
+			return out;
+		}
+		else
+		{
+			g_free(utf16);
+			return NULL;
+		}
+
 	}
 	else
 	{
 		g_critical("%s: ti is NULL", __FUNCTION__);
+		return NULL;
+	}
+}
+
+/**
+ * ticonv_varname_to_utf16_s:
+ * @model: a calculator model.
+ * @src: a name of variable to detokenize and translate (17 chars max).
+ * @dst: a buffer where to placed the result (big enough).
+ * @vartype: the type of variable.
+ *
+ * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
+ * variable (like L1) but uses a special encoded way. This functions expands the name 
+ * and converts it to UTF-16.
+ *
+ * Static version.
+ *
+ * Return value: the %dst string or NULL if error.
+ **/
+TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type)
+{
+	if (src != NULL && dst != NULL)
+	{
+		char * tmp = ticonv_varname_detokenize(model, src, type);
+		unsigned short * utf16 = ticonv_charset_ti_to_utf16_s(model, tmp, dst);
+		g_free(tmp);
+		return utf16;
+	}
+	else
+	{
+		g_critical("%s: an argument is NULL", __FUNCTION__);
 		return NULL;
 	}
 }
@@ -318,37 +399,6 @@ TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16(CalcModel model, const 
 		unsigned short * utf16 = ticonv_charset_ti_to_utf16(model, tmp);
 		g_free(tmp);
 		return utf16;
-	}
-	else
-	{
-		g_critical("%s: an argument is NULL", __FUNCTION__);
-		return NULL;
-	}
-}
-
-/**
- * ticonv_varname_to_utf16_s:
- * @model: a calculator model.
- * @src: a name of variable to detokenize and translate (17 chars max).
- * @dst: a buffer where to placed the result (big enough).
- * @vartype: the type of variable.
- *
- * Some calculators (like TI73/82/83/83+/84+) does not return the real name of the 
- * variable (like L1) but uses a special encoded way. This functions expands the name 
- * and converts it to UTF-16.
- * 
- * Static version.
- *
- * Return value: the %dst string or NULL if error.
- **/
-TIEXPORT4 unsigned short* TICALL ticonv_varname_to_utf16_s(CalcModel model, const char *src, unsigned short *dst, unsigned char type)
-{
-	if (src != NULL && dst != NULL)
-	{
-		char * tmp = ticonv_varname_detokenize(model, src, type);
-		ticonv_charset_ti_to_utf16_s(model, tmp, dst);
-		g_free(tmp);
-		return dst;
 	}
 	else
 	{
@@ -407,9 +457,16 @@ TIEXPORT4 char* TICALL ticonv_varname_to_utf8_s(CalcModel model, const char *src
 	if (src != NULL && dst != NULL)
 	{
 		char * tmp = ticonv_varname_to_utf8(model, src, type);
-		strcpy(dst, tmp);
-		g_free(tmp);
-		return dst;
+		if (tmp != NULL)
+		{
+			strcpy(dst, tmp);
+			g_free(tmp);
+			return dst;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{
@@ -468,9 +525,16 @@ TIEXPORT4 char* TICALL ticonv_varname_to_filename_s(CalcModel model, const char 
 	if (src != NULL && dst != NULL)
 	{
 		char * tmp = ticonv_varname_to_filename(model, src, type);
-		strcpy(dst, tmp);
-		g_free(tmp);
-		return dst;
+		if (tmp != NULL)
+		{
+			strcpy(dst, tmp);
+			g_free(tmp);
+			return dst;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{
@@ -508,17 +572,17 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI84P_USB, src);
 
 		ti = ticonv_charset_utf16_to_ti(CALC_TI84P, utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 
 		dst = ticonv_varname_tokenize(CALC_TI84P, ti, type);
-		g_free(ti);
+		ticonv_ti_free(ti);
 	}
 	else if (model == CALC_TI89T_USB)
 	{
 		utf16 = ticonv_charset_ti_to_utf16(CALC_TI89T_USB, src);
 
 		ti = ticonv_charset_utf16_to_ti(CALC_TI89T, utf16);
-		g_free(utf16);
+		ticonv_utf16_free(utf16);
 
 		dst = ti;
 	}
@@ -540,16 +604,23 @@ TIEXPORT4 char* TICALL ticonv_varname_to_tifile(CalcModel model, const char *src
  * Needed because USB hand-helds use TI-UTF-8 while TI files are still encoded in
  * raw varname encoding.
  *
- * Return value: %dst as a newly allocated string or NULL if error.
+ * Return value: %dst or NULL if error.
  **/ 
 TIEXPORT4 char* TICALL ticonv_varname_to_tifile_s(CalcModel model, const char *src, char *dst, unsigned char type)
 {
 	if (src != NULL && dst != NULL)
 	{
 		char * tmp = ticonv_varname_to_tifile(model, src, type);
-		strcpy(dst, tmp);
-		g_free(tmp);
-		return dst;
+		if (tmp)
+		{
+			strcpy(dst, tmp);
+			g_free(tmp);
+			return dst;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{
@@ -623,9 +694,16 @@ TIEXPORT4 char* TICALL ticonv_varname_from_tifile_s(CalcModel model, const char 
 	if (src != NULL && dst != NULL)
 	{
 		char * tmp = ticonv_varname_from_tifile(model, src, type);
-		strcpy(dst, tmp);
-		g_free(tmp);
-		return dst;
+		if (tmp != NULL)
+		{
+			strcpy(dst, tmp);
+			g_free(tmp);
+			return dst;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	else
 	{

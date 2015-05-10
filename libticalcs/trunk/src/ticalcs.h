@@ -745,9 +745,6 @@ typedef struct
 	/* General functions */
 	/*********************/
 
-	// error.c
-	TIEXPORT3 int         TICALL ticalcs_error_get (int number, char **message);
-
 	// ticalcs.c
 	TIEXPORT3 const char* TICALL ticalcs_version_get (void);
 	TIEXPORT3 uint32_t    TICALL ticalcs_supported_calcs (void);
@@ -760,6 +757,10 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_cable_detach(CalcHandle *handle);
 
 	TIEXPORT3 int TICALL ticalcs_update_set(CalcHandle *handle, CalcUpdate*);
+
+	// error.c
+	TIEXPORT3 int         TICALL ticalcs_error_get (int number, char **message);
+	TIEXPORT3 int         TICALL ticalcs_error_free (char *message);
 
 	// calc_xx.c
 	TIEXPORT3 CalcFeatures TICALL ticalcs_calc_features(CalcHandle *handle);

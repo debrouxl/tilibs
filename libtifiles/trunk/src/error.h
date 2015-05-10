@@ -37,7 +37,8 @@ typedef enum {
 	ERR_FILE_CHECKSUM,		// Checksum file error
 	ERR_FILE_ZIP,			// (Un)Zip internal error
 	ERR_UNSUPPORTED,		// Function not supported
-	ERR_FILE_IO				// Stream error
+	ERR_FILE_IO,				// Stream error
+	ERR_INVALID_PARAM		// Invalid parameter.
 } FileError;
 
 #endif

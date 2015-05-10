@@ -50,6 +50,10 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
 
 	if (content != NULL)
 	{
+		if ((unsigned int)model >= CALC_MAX)
+		{
+			tifiles_warning("Invalid calculator model");
+		}
 		content->model = content->model_dst = model;
 		strncpy(content->comment, tifiles_comment_set_single(), sizeof(content->comment) - 1);
 		content->comment[sizeof(content->comment) - 1] = 0;
@@ -256,6 +260,10 @@ TIEXPORT2 BackupContent* TICALL tifiles_content_create_backup(CalcModel model)
 
 	if (content != NULL)
 	{
+		if ((unsigned int)model >= CALC_MAX)
+		{
+			tifiles_warning("Invalid calculator model");
+		}
 		content->model = model;
 		strncpy(content->comment, tifiles_comment_set_backup(), sizeof(content->comment) - 1);
 		content->comment[sizeof(content->comment) - 1] = 0;
@@ -407,6 +415,10 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 
 	if (content != NULL)
 	{
+		if ((unsigned int)model >= CALC_MAX)
+		{
+			tifiles_warning("Invalid calculator model");
+		}
 		content->model = model;
 		if(tifiles_calc_is_ti9x(content->model))
 		{

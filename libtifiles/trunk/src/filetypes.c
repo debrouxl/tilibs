@@ -379,11 +379,22 @@ TIEXPORT2 char *TICALL tifiles_fext_get(const char *filename)
  * Returns a copy of file extension part.
  *
  * Return value: a file extension without dot as string (like "89g").
- * Need to be freed when no longer needed.
+ * Needs to be freed with tifiles_fext_free() when no longer needed.
  **/
 TIEXPORT2 char *TICALL tifiles_fext_dup(const char *filename)
 {
 	return g_strdup(tifiles_fext_get(filename));
+}
+
+/**
+ * tifiles_fext_free:
+ * @filename: a filename as string.
+ *
+ * Frees a file extension part previously allocated with tifiles_fext_dup().
+ **/
+TIEXPORT2 void TICALL tifiles_fext_free(char *filename)
+{
+	g_free(filename);
 }
 
 /**********************/

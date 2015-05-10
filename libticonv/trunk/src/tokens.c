@@ -52,18 +52,28 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 	switch(model)
 	{
 	case CALC_TI73:
-		if(type == 0x0F)
-			return (dst = g_strdup_printf("Window"));
-		if(type == 0x11)
-			return (dst = g_strdup_printf("TblSet"));
+		if (type == 0x0F)
+		{
+			return (dst = g_strdup("Window"));
+		}
+		if (type == 0x11)
+		{
+			return (dst = g_strdup("TblSet"));
+		}
 		break;
 	case CALC_TI82:
-		if(type == 0x0B)
-			return (dst = g_strdup_printf("Window"));
-		if(type == 0x0C)
-			return (dst = g_strdup_printf("RclWin"));
-		if(type == 0x0D)
-			return (dst = g_strdup_printf("TblSet"));
+		if (type == 0x0B)
+		{
+			return (dst = g_strdup("Window"));
+		}
+		if (type == 0x0C)
+		{
+			return (dst = g_strdup("RclWin"));
+		}
+		if (type == 0x0D)
+		{
+			return (dst = g_strdup("TblSet"));
+		}
 		break;
 	case CALC_TI83:
 	case CALC_TI83P:
@@ -74,25 +84,41 @@ static char *detokenize_vartype(CalcModel model, const char *src, unsigned char 
 	case CALC_TI83PCE_USB:
 	case CALC_TI84PCE_USB:
 	case CALC_TI82A_USB:
-		if(type == 0x0F)
-			return (dst = g_strdup_printf("Window"));
-		if(type == 0x10)
-			return (dst = g_strdup_printf("RclWin"));
-		if(type == 0x11)
-			return (dst = g_strdup_printf("TblSet"));
+		if (type == 0x0F)
+		{
+			return (dst = g_strdup("Window"));
+		}
+		if (type == 0x10)
+		{
+			return (dst = g_strdup("RclWin"));
+		}
+		if (type == 0x11)
+		{
+			return (dst = g_strdup("TblSet"));
+		}
 		break;
 	case CALC_TI85:
 	case CALC_TI86:
-		if(type == 0x17)
-			return (dst = g_strdup_printf("Func"));
-		if(type == 0x18)
-			return (dst = g_strdup_printf("Pol"));
-		if(type == 0x19)
-			return (dst = g_strdup_printf("Param"));
-		if(type == 0x1A)
-			return (dst = g_strdup_printf("DifEq"));
-		if(type == 0x1B)
-			return (dst = g_strdup_printf("ZRCL"));
+		if (type == 0x17)
+		{
+			return (dst = g_strdup("Func"));
+		}
+		if (type == 0x18)
+		{
+			return (dst = g_strdup("Pol"));
+		}
+		if (type == 0x19)
+		{
+			return (dst = g_strdup("Param"));
+		}
+		if (type == 0x1A)
+		{
+			return (dst = g_strdup("DifEq"));
+		}
+		if (type == 0x1B)
+		{
+			return (dst = g_strdup("ZRCL"));
+		}
 		break;
 	default: 
 		break;
@@ -110,14 +136,18 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 	char *dst;
 
 	switch (tok1) 
-    {
-    case 0x3C:			/* Image: Image1 to Image0 */
-	    if(type == 0x1A)
+	{
+	case 0x3C:			/* Image: Image1 to Image0 */
+		if (type == 0x1A)
 		{
-			if(tok2 != 0x09)
+			if (tok2 != 0x09)
+			{
 				dst = g_strdup_printf("Image%d", tok2 + 1);
+			}
 			else
-				dst = g_strdup_printf("Image0");
+			{
+				dst = g_strdup("Image0");
+			}
 		}
 		else
 		{
@@ -125,7 +155,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		}
 		break;
 
-    case 0x5C:			/* Matrix: [A] to [E] or [J] */
+	case 0x5C:			/* Matrix: [A] to [E] or [J] */
 		switch(tok2)
 		{
 		case 0x00: dst = g_strdup_printf("%cA]", '\xc1'); break;
@@ -143,11 +173,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		}
 		break;
 
-    case 0x5D:			/* List: L1 to L6 or L1 to L0 */
-		if(model == CALC_TI73)
+	case 0x5D:			/* List: L1 to L6 or L1 to L0 */
+		if (model == CALC_TI73)
 		{
 			// TI73 begins at L0
-			dst = g_strdup_printf("L%c", src[1] + '\x80');	
+			dst = g_strdup_printf("L%c", src[1] + '\x80');
 		}
 		else 
 		{
@@ -166,17 +196,19 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 			case 0x09: dst = g_strdup_printf("L%c", '\x80'); break;
 
 			case 0x40: dst = g_strdup("IDList"); break;
-			  
+
 			default: // named list (TI84+/USB)
-			  dst = g_malloc0(9);
-			  for (i = 0; i < 7; i++)
-				dst[i] = src[i + 1];
-			  break;
+				dst = g_malloc0(9);
+				for (i = 0; i < 7; i++)
+				{
+					dst[i] = src[i + 1];
+				}
+				break;
 			}
 		}
 		break;
-		
-    case 0x5E:			/* Equations: Y1 to Y0, X1t, ... */
+
+	case 0x5E:			/* Equations: Y1 to Y0, X1t, ... */
 		switch(tok2)
 		{
 		case 0x10: dst = g_strdup_printf("Y%c", '\x81'); break;
@@ -210,63 +242,97 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x44: dst = g_strdup_printf("r%c", '\x85'); break;
 		case 0x45: dst = g_strdup_printf("r%c", '\x86'); break;
 
-		case 0x80: 
-		  if(model == CALC_TI82)
-			dst = g_strdup_printf("U%c", '\xd7'); 
-		  else if(model == CALC_TI73)
-			dst = g_strdup_printf("C\x81");
-		  else
-			dst = g_strdup_printf("u");
-		  break;
+		case 0x80:
+			if (model == CALC_TI82)
+			{
+				dst = g_strdup_printf("U%c", '\xd7');
+			}
+			else if (model == CALC_TI73)
+			{
+				dst = g_strdup_printf("C\x81");
+			}
+			else
+			{
+				dst = g_strdup("u");
+			}
+			break;
 
 		case 0x81:
-		  if(model == CALC_TI82)
-			dst = g_strdup_printf("V%c", '\xd7'); 
-		  else if(model == CALC_TI73)
-			dst = g_strdup_printf("C\x82");
-		  else
-			dst = g_strdup_printf("v");
-		  break;
+			if (model == CALC_TI82)
+			{
+				dst = g_strdup_printf("V%c", '\xd7');
+			}
+			else if (model == CALC_TI73)
+			{
+				dst = g_strdup_printf("C\x82");
+			}
+			else
+			{
+				dst = g_strdup("v");
+			}
+			break;
 
 		case 0x82:
-		  if(model == CALC_TI82)
-			dst = g_strdup_printf("W%c", '\xd7'); 
-		  else if(model == CALC_TI73)
-			dst = g_strdup_printf("C\x83");
-		  else
-			dst = g_strdup_printf("w");
-		  break; 
+			if (model == CALC_TI82)
+			{
+				dst = g_strdup_printf("W%c", '\xd7');
+			}
+			else if (model == CALC_TI73)
+			{
+				dst = g_strdup_printf("C\x83");
+			}
+			else
+			{
+				dst = g_strdup("w");
+			}
+			break;
 
 		case 0x83:
-		  if(model == CALC_TI73)
-			dst = g_strdup_printf("C\x84");
-		  else
-			dst = g_strdup_printf("?");
-		  break;
+			if (model == CALC_TI73)
+			{
+				dst = g_strdup_printf("C\x84");
+			}
+			else
+			{
+				dst = g_strdup("?");
+			}
+			break;
 
-		default: dst = g_strdup_printf("?"); break;
+		default: dst = g_strdup("?"); break;
 		}
 		break;
 
-    case 0x60:			/* Pictures */
-	    if (model == CALC_TI73)
+	case 0x60:			/* Pictures */
+		if (model == CALC_TI73)
+		{
 			dst = g_strdup_printf("Pic%d", tok2);
-	    else if (tok2 != 0x09)
+		}
+		else if (tok2 != 0x09)
+		{
 			dst = g_strdup_printf("Pic%d", tok2 + 1);
+		}
 		else
-			dst = g_strdup_printf("Pic0");
+		{
+			dst = g_strdup("Pic0");
+		}
 		break;
 
-    case 0x61:			/* GDB */
-	    if (model == CALC_TI73)
+	case 0x61:			/* GDB */
+		if (model == CALC_TI73)
+		{
 			dst = g_strdup_printf("GDB%d", tok2);
-	    else if (tok2 != 0x09)
+		}
+		else if (tok2 != 0x09)
+		{
 			dst = g_strdup_printf("GDB%d", tok2 + 1);
+		}
 		else
-			dst = g_strdup_printf("GDB0");
+		{
+			dst = g_strdup("GDB0");
+		}
 		break;
 
-    case 0x62:
+	case 0x62:
 		switch(tok2)
 		{
 		case 0x01: dst = g_strdup_printf("ReqEq"); break;
@@ -329,11 +395,11 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x3a: dst = g_strdup_printf("df"); break;
 		case 0x3b: dst = g_strdup_printf("SS"); break;
 		case 0x3c: dst = g_strdup_printf("MS"); break;
-		default: dst = g_strdup_printf("_"); break;
+		default: dst = g_strdup("_"); break;
 		}
 		break;
 
-    case 0x63:
+	case 0x63:
 		switch(tok2)
 		{
 		case 0x00: dst = g_strdup_printf("ZXscl"); break;
@@ -386,27 +452,33 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
 		case 0x2f: dst = g_strdup_printf("FV"); break;
 		case 0x30: dst = g_strdup_printf("Xres"); break;
 		case 0x31: dst = g_strdup_printf("ZXres"); break;
-		default: dst = g_strdup_printf("_"); break;
+		default: dst = g_strdup("_"); break;
 		}
 		break;
 
-    case 0xAA:
-	    if (model == CALC_TI73)
+	case 0xAA:
+		if (model == CALC_TI73)
+		{
 			dst = g_strdup_printf("Str%d", tok2);
-	    else if (tok2 != 0x09)
+		}
+		else if (tok2 != 0x09)
+		{
 			dst = g_strdup_printf("Str%d", tok2 + 1);
+		}
 		else
-			dst = g_strdup_printf("Str0");
+		{
+			dst = g_strdup("Str0");
+		}
 		break;
-    
+
 	default:
 		dst = g_strdup("12345678");
 		strncpy(dst, src, 8);
 		dst[8] = '\0';
 		break;
-    }
+	}
 
-    return dst;
+	return dst;
 }
 
 /**
@@ -416,7 +488,7 @@ static char *detokenize_varname(CalcModel model, const char *src, unsigned char 
  *
  * This function translates a binary variable name (as used on TI8x) into a human readable one.
  *
- * Return value: a newly allocated string. Must be freed when no longer used.
+ * Return value: a newly allocated string. Must be freed using ticonv_varname_free() when no longer used.
  **/
 TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *src, unsigned char type)
 {
@@ -436,14 +508,18 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 	case CALC_TI84P:
 	case CALC_TI84PC:
 		dst = detokenize_vartype(model, src, type);
-		if(dst)
+		if (dst)
+		{
 			return dst;
+		}
 		return detokenize_varname(model, src, type);
 	case CALC_TI85:
 	case CALC_TI86:
 		dst = detokenize_vartype(model, src, type);
-		if(dst)
+		if (dst)
+		{
 			return dst;
+		}
 	case CALC_TI89:
 	case CALC_TI89T:
 	case CALC_TI92:
@@ -468,10 +544,7 @@ TIEXPORT4 char* TICALL ticonv_varname_detokenize(CalcModel model, const char *sr
 
 static int shift(int v)
 {
-	if(v == 0)
-		return 9;
-	else 
-		return v-1; 
+	return (v == 0) ? 9 : v-1;
 }
 
 //FIXME: does not work with named list because we should pass the vartype, too
@@ -480,9 +553,9 @@ static int shift(int v)
  * @model: hand-held model
  * @src: binary string to tokenize
  *
- * This function tries andtranslates a human readable variable name into a binary name (as used on TI8x).
+ * This function tries and translates a human-readable variable name into a binary name (as used on TI8x).
  *
- * Return value: a newly allocated string. Must be freed when no longer used.
+ * Return value: a newly allocated string. Must be freed using ticonv_varname_free() when no longer used.
  **/
 TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_, unsigned char type)
 {
@@ -490,54 +563,80 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 
 	if (src == NULL)
 	{
-		return g_strdup("");
+		return NULL;
 	}
 
 	switch(model)
 	{
 		case CALC_TI73:
-			if(!strcmp("Window", src_) || type == 0x0F)
+			if (!strcmp("Window", src_) || type == 0x0F)
+			{
 				return g_strdup("");
-			if(!strcmp("TblSet", src_) || type == 0x11)
+			}
+			if (!strcmp("TblSet", src_) || type == 0x11)
+			{
 				return g_strdup("");
+			}
 		break;
 		case CALC_TI82:
-			if(!strcmp("Window", src_) || type == 0x0B)
+			if (!strcmp("Window", src_) || type == 0x0B)
+			{
 				return g_strdup("");
-			if(!strcmp("RclWin", src_) || type == 0x0C)
+			}
+			if (!strcmp("RclWin", src_) || type == 0x0C)
+			{
 				return g_strdup("");
-			if(!strcmp("TblSet", src_) || type == 0x0D)
+			}
+			if (!strcmp("TblSet", src_) || type == 0x0D)
+			{
 				return g_strdup("");
+			}
 		break;
 		case CALC_TI83:
 		case CALC_TI83P:
 		case CALC_TI84P:
 		case CALC_TI84PC:
-			if(!strcmp("Window", src_) || type == 0x0F)
+			if (!strcmp("Window", src_) || type == 0x0F)
+			{
 				return g_strdup("");
-			if(!strcmp("RclWin", src_) || type == 0x10)
+			}
+			if (!strcmp("RclWin", src_) || type == 0x10)
+			{
 				return g_strdup("");
-			if(!strcmp("TblSet", src_) || type == 0x11)
+			}
+			if (!strcmp("TblSet", src_) || type == 0x11)
+			{
 				return g_strdup("");
+			}
 		break;
 		case CALC_TI85:
 		case CALC_TI86:
-			if(!strcmp("Func", src_)  || type == 0x17)
+			if (!strcmp("Func", src_)  || type == 0x17)
+			{
 				return g_strdup("");
-			if(!strcmp("Pol", src_)   || type == 0x18)
+			}
+			if (!strcmp("Pol", src_)   || type == 0x18)
+			{
 				return g_strdup("");
-			if(!strcmp("Param", src_) || type == 0x19)
+			}
+			if (!strcmp("Param", src_) || type == 0x19)
+			{
 				return g_strdup("");
-			if(!strcmp("DifEq", src_) || type == 0x1A)
+			}
+			if (!strcmp("DifEq", src_) || type == 0x1A)
+			{
 				return g_strdup("");
-			if(!strcmp("ZRCL", src_)  || type == 0x1B)
+			}
+			if (!strcmp("ZRCL", src_)  || type == 0x1B)
+			{
 				return g_strdup("");
+			}
 		break;
 		default:
 		break;
 	}
 
-	if(type == 0x01 && (model == CALC_TI83P || model == CALC_TI84P || model == CALC_TI84PC))
+	if (type == 0x01 && (model == CALC_TI83P || model == CALC_TI84P || model == CALC_TI84PC))
 	{
 		// Named Lists
 		gchar *str = g_malloc0(9);
@@ -549,73 +648,84 @@ TIEXPORT4 char* TICALL ticonv_varname_tokenize(CalcModel model, const char *src_
 		return str;
 	}
 
-	if(src[0] == '[' && src[2] == ']' && strlen(src_) == 3)
+	if (src[0] == '[' && src[2] == ']' && strlen(src_) == 3)
 	{
 		// matrices
 		return g_strdup_printf("%c%c", 0x5C, src[1] - 'A');
 	}
-	else if(src[0] == 'L' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
+	else if (src[0] == 'L' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
 	{
 		// lists
 		return g_strdup_printf("%c%c", 0x5D, (model == CALC_TI73 ? src[1] - 0x80 : shift(src[1] - 0x80)));
 	} 
-	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
+	else if (src[0] == 'Y' && (src[1] >= 128 && src[1] <= 137) && strlen(src_) == 2)
 	{
 		// cartesian equations
 		return g_strdup_printf("%c%c", 0x5E, 0x10 + shift(src[1] - 0x80));
 	}
-	else if(src[0] == 'X' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 3)
+	else if (src[0] == 'X' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 3)
 	{
 		// parametric equations
 		return g_strdup_printf("%c%c", 0x5E, 0x20 + 2*(src[1] - 0x81)+0);
 	}
-	else if(src[0] == 'Y' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 3)
+	else if (src[0] == 'Y' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 3)
 	{
 		// parametric equations
 		return g_strdup_printf("%c%c", 0x5E, 0x20 + 2*(src[1] - 0x81)+1);
 	}
-	else if(src[0] == 'r' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 2)
+	else if (src[0] == 'r' && (src[1] >= 128 && src[1] <= 133) && strlen(src_) == 2)
 	{
 		// polar equations
 		return g_strdup_printf("%c%c", 0x5E, 0x40 + (src[1] - 0x81));
 	}
-	else if(model == CALC_TI73 && src[0] == 'C' && (src[1] >= 128 && src[1] <= 131) && strlen(src_) == 2)
+	else if (model == CALC_TI73 && src[0] == 'C' && (src[1] >= 128 && src[1] <= 131) && strlen(src_) == 2)
 	{
 		// constant equations
 		return g_strdup_printf("%c%c", 0x5E, 0x80 + shift(src[1] - 0x80));
 	}
-	else if(src[0] == 2 && strlen(src_) == 1)
+	else if (src[0] == 2 && strlen(src_) == 1)
 	{
 		return g_strdup_printf("%c%c", 0x5E, 0x80);
 	}
-	else if(src[0] == 3 && strlen(src_) == 1)
+	else if (src[0] == 3 && strlen(src_) == 1)
 	{
 		return g_strdup_printf("%c%c", 0x5E, 0x81);
 	}	
-	else if(src[0] == 4 && strlen(src_) == 1)
+	else if (src[0] == 4 && strlen(src_) == 1)
 	{
 		return g_strdup_printf("%c%c", 0x5E, 0x82);
 	}
-	else if(src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
+	else if (src[0] == 'P' && src[1] == 'i' && src[2] == 'c' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// pictures
 		return g_strdup_printf("%c%c", 0x60, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
-	else if(src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
+	else if (src[0] == 'G' && src[1] == 'D' && src[2] == 'B' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// gdb
 		return g_strdup_printf("%c%c", 0x61, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
-	else if(src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
+	else if (src[0] == 'S' && src[1] == 't' && src[2] == 'r' && src[3] >= '0' && src[3] <= '9' && strlen(src_) == 4)
 	{
 		// strings
 		return g_strdup_printf("%c%c", 0xAA, (model == CALC_TI73 ? src[3] - '0' : shift(src[3] - '0')));
 	}
-	else if(type == 0x1A && !strncmp((const char*) src, "Image", 5) && src[5] >= '0' && src[5] <= '9')
+	else if (type == 0x1A && !strncmp((const char*) src, "Image", 5) && src[5] >= '0' && src[5] <= '9')
 	{
 		// images
 		return g_strdup_printf("%c%c", 0x3C, shift(src[5] - '0'));
 	}
 
 	return g_strdup(src_);
+}
+
+/**
+ * ticonv_varname_free:
+ * @varname: previously allocated varname string to be freed.
+ *
+ * This function frees a varname previously allocated by ticonv_varname_detokenize() or ticonv_varname_tokenize().
+ **/
+TIEXPORT4 void TICALL ticonv_varname_free(char * varname)
+{
+	g_free(varname);
 }

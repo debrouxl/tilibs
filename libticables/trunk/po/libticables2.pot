@@ -572,36 +572,36 @@ msgstr ""
 msgid "ticables library version %s"
 msgstr ""
 
-#: src/ticables.c:446
+#: src/ticables.c:488
 msgid "Link cable handle details:"
 msgstr ""
 
-#: src/ticables.c:447
+#: src/ticables.c:489
 #, c-format
 msgid "  model   : %s"
 msgstr ""
 
-#: src/ticables.c:448
+#: src/ticables.c:490
 #, c-format
 msgid "  port    : %s"
 msgstr ""
 
-#: src/ticables.c:449
+#: src/ticables.c:491
 #, c-format
 msgid "  timeout : %2.1fs"
 msgstr ""
 
-#: src/ticables.c:450
+#: src/ticables.c:492
 #, c-format
 msgid "  delay   : %i us"
 msgstr ""
 
-#: src/ticables.c:453
+#: src/ticables.c:495
 #, c-format
 msgid "  device  : %s"
 msgstr ""
 
-#: src/ticables.c:454
+#: src/ticables.c:496
 #, c-format
 msgid "  address : 0x%03x"
 msgstr ""

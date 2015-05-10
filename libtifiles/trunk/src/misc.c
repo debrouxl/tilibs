@@ -290,7 +290,7 @@ char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char
  * Example: real number x on TI89 in the 'main' folder will give 'main.x.89e'.
  * Note: this function is useable with FLASH apps, too (but you have to fill the #VarEntry structure yourself).
  *
- * Return value: a newly allocated string which must be freed when no longer used.
+ * Return value: a newly allocated string which must be freed with tifiles_filename_free() when no longer used.
  **/
 TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *ve)
 {
@@ -306,35 +306,38 @@ TIEXPORT2 char* TICALL tifiles_build_filename(CalcModel model, const VarEntry *v
 	{
 		char *part2;
 		const char *part3;
-		char *tmp;
 
 		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);
 
-		tmp = g_strconcat(part2, ".", part3, NULL);
+		filename = g_strconcat(part2, ".", part3, NULL);
 		g_free(part2);
-
-		filename = g_strdup(tmp);
-		g_free(tmp);
 	}
 	else
 	{
 		char *part1;
 		char *part2;
 		const char *part3;
-		char *tmp;
 
 		part1 = ticonv_varname_to_filename(model, ve->folder, -1);
 		part2 = ticonv_varname_to_filename(model, ve->name, ve->type);
 		part3 = tifiles_vartype2fext(model, ve->type);
 
-		tmp = g_strconcat(part1, ".", part2, ".", part3, NULL);
+		filename = g_strconcat(part1, ".", part2, ".", part3, NULL);
 		g_free(part1);
 		g_free(part2);
-
-		filename = g_strdup(tmp);
-		g_free(tmp);
 	}
 
 	return filename;
+}
+
+/**
+ * tifiles_filename_free:
+ * @filename: a previously allocated file name.
+ *
+ * Free a file name previously allocated by tifiles_build_filename().
+ **/
+TIEXPORT2 void TICALL tifiles_filename_free(char * filename)
+{
+	g_free(filename);
 }

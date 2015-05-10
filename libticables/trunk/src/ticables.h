@@ -331,8 +331,14 @@ typedef struct
 	TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle *handle);
 	TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle *handle);
 	TIEXPORT1 const char * TICALL ticables_get_device(CableHandle *handle);
+	TIEXPORT1 unsigned int TICALL ticables_get_timeout(CableHandle *handle);
+	TIEXPORT1 unsigned int TICALL ticables_get_delay(CableHandle *handle);
 
 	TIEXPORT1 int TICALL ticables_handle_show(CableHandle *handle);
+
+	// error.c
+	TIEXPORT1 int         TICALL ticables_error_get (int number, char **message);
+	TIEXPORT1 int         TICALL ticables_error_free (char *message);
 
 	// link_xxx.c
 	TIEXPORT1 int TICALL ticables_cable_open(CableHandle *handle);
@@ -363,9 +369,6 @@ typedef struct
 
 	TIEXPORT1 int TICALL ticables_cable_put(CableHandle *handle, uint8_t data);
 	TIEXPORT1 int TICALL ticables_cable_get(CableHandle *handle, uint8_t *data);
-
-	// error.c
-	TIEXPORT1 int         TICALL ticables_error_get (int number, char **message);
 
 	// type2str.c
 	TIEXPORT1 const char * TICALL ticables_model_to_string(CableModel model);

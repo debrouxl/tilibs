@@ -330,7 +330,7 @@ TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 	{
 		gchar *str;
 		char * tmp = *message;
-		
+
 		str = g_strdup_printf(" (errno = %i)", errno);
 		*message = g_strconcat(tmp, "\n", "System: ", strerror(errno), str, "\n", NULL);
 		g_free(tmp);
@@ -361,5 +361,24 @@ TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 	}
 #endif
 
+	return 0;
+}
+
+/**
+ * ticables_error_free:
+ * @message: a message previously allocated by ticables_error_get()
+ *
+ * Free the given message string allocated by ticables_error_get();
+ *
+ * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
+ **/
+TIEXPORT1 int TICALL ticables_error_free(char *message)
+{
+	if (message == NULL)
+	{
+		ticables_critical("ticables_error_free(NULL)\n");
+		return ERR_ILLEGAL_ARG;
+	}
+	g_free(message);
 	return 0;
 }

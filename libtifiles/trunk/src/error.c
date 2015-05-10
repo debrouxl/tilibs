@@ -132,11 +132,37 @@ TIEXPORT2 int TICALL tifiles_error_get(int number, char **message)
 			NULL);
 	break;
 
+	case ERR_INVALID_PARAM:
+		*message = g_strconcat(
+			_("Msg: invalid parameter."),
+			"\n",
+			_("Cause: the program which uses this library is buggy. Fire-up the developer!"),
+			NULL);
+	break;
 
 	default:
 		// propagate error code
 		return number;
 	}
 
+	return 0;
+}
+
+/**
+ * tifiles_error_free:
+ * @message: a message previously allocated by tifiles_error_get()
+ *
+ * Free the given message string allocated by tifiles_error_get();
+ *
+ * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
+ **/
+TIEXPORT2 int TICALL tifiles_error_free(char *message)
+{
+	if (message == NULL)
+	{
+		tifiles_critical("tifiles_error_free(NULL)\n");
+		return ERR_INVALID_PARAM;
+	}
+	g_free(message);
 	return 0;
 }

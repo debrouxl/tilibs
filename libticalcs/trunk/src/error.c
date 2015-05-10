@@ -445,3 +445,22 @@ TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
 
 	return 0;
 }
+
+/**
+ * ticalcs_error_free:
+ * @message: a message previously allocated by ticalcs_error_get()
+ *
+ * Free the given message string allocated by ticalcs_error_get();
+ *
+ * Return value: 0 if the argument was valid and the message was freed, nonzero otherwise.
+ **/
+TIEXPORT3 int TICALL ticalcs_error_free(char *message)
+{
+	if (message == NULL)
+	{
+		ticalcs_critical("ticalcs_error_free(NULL)\n");
+		return ERR_INVALID_PARAMETER;
+	}
+	g_free(message);
+	return 0;
+}

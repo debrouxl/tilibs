@@ -69,7 +69,7 @@ static int tifiles_calc_is_ti8x(CalcModel model)
  * if locale is different of UTF-8) because greek characters are often missed or mis-converted
  * when converting to locale.
  *
- * Return value: %dst as a newly allocated string.
+ * Return value: %dst as a newly allocated string or NULL if error.
  **/ 
 TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short *src)
 {
@@ -85,7 +85,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 
 	if (src == NULL)
 	{
-		return g_strdup("");
+		return NULL;
 	}
 
 	// detokenization to UTF-16
@@ -95,11 +95,11 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 	// conversion from UTF-16 to UTF-16
 	if(tifiles_calc_is_ti9x(model) && !is_utf8)
 	{
-		while(*p)
+		while (*p)
 		{
 			unsigned long msb = *p & 0xff00;
 
-			if(!msb)
+			if (!msb)
 			{
 				*q++ = *p++ & 0xff;
 			}
@@ -108,7 +108,7 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 				gunichar2 *str2;
 				glong ir, iw;
 
-				switch(*p)
+				switch (*p)
 				{
 					case 0x03bc: str = "_mu_"; break;
 					case 0x03b1: str = "_alpha_"; break;
@@ -145,19 +145,19 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 		}
 		*q = '\0';
 	}
-	else if(tifiles_calc_is_ti8x(model) && !is_utf8)
+	else if (tifiles_calc_is_ti8x(model) && !is_utf8)
 	{
-		while(*p)
+		while (*p)
 		{
 			unsigned long msb = *p & 0xff00;
 
-			if(!msb)
+			if (!msb)
 			{
 				*q++ = *p++ & 0xff;
 			}
 			else
 			{
-				if(*p >= 0x2080 && *p <= 0x2089)
+				if (*p >= 0x2080 && *p <= 0x2089)
 				{
 					*q++ = (*p++ - 0x2080) + '0';
 				}
@@ -206,25 +206,29 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 	}
 	else
 	{
-		while(*p) 
+		while (*p)
 		{
 #ifdef __WIN32__
 			if(*p >= 0x2080 && *p <= 0x2089)
 			{
 				*q++ = (*p++ - 0x2080) + '0';
 			}
-			else		
+			else
 #endif
-			*q++ = *p++;
+			{
+				*q++ = *p++;
+			}
 		}
 		*q = '\0';
 	}
 
 	// '/' is not allowed in filenames
-	for(q = utf16_dst; *q; q++)
+	for (q = utf16_dst; *q; q++)
 	{
-		if(*q == '/') 
+		if (*q == '/')
+		{
 			*q = '_';
+		}
 	}
 
 	// UTF-16 to UTF-8 to GFE encoding
@@ -239,6 +243,17 @@ TIEXPORT4 char* TICALL ticonv_utf16_to_gfe(CalcModel model, const unsigned short
 	}
 
 	return dst;
+}
+
+/**
+ * ticonv_gfe_free:
+ * @src: previously allocated gfe string to be freed.
+ *
+ * This function frees a gfe previously allocated by ticonv_utf16_to_gfe().
+ **/
+TIEXPORT4 void TICALL ticonv_gfe_free(char *src)
+{
+	g_free(src);
 }
 
 /**
@@ -315,4 +330,15 @@ TIEXPORT4 char* TICALL ticonv_gfe_to_zfe(CalcModel model, const char *src_)
 	*q = '\0';
 
 	return dst;
+}
+
+/**
+ * ticonv_gfe_free:
+ * @src: previously allocated zfe string to be freed.
+ *
+ * This function frees a zfe previously allocated by ticonv_gfe_to_zfe().
+ **/
+TIEXPORT4 void TICALL ticonv_zfe_free(char *src)
+{
+	g_free(src);
 }
