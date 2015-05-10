@@ -114,7 +114,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 	FILE *f;
 	uint16_t tmp = 0x000B;
 	long offset = 0;
-	int i, j;
+	unsigned int i, j;
 	int ti83p_flag = 0;
 	uint8_t name_length = 8;	// ti85/86 only
 	uint16_t data_size, sum = 0;
@@ -289,7 +289,7 @@ int ti8x_file_read_regular(const char *filename, Ti8xRegular *content)
 		ticonv_varname_from_tifile_s(content->model_dst, varname, entry->name, entry->type);
 		if ((content->model == CALC_TI86) && padded86)
 		{
-			for (j = 0; j < 8-name_length; j++)
+			for (j = 0; j < 8U - name_length; j++)
 			{
 				sum += fgetc(f);
 			}
@@ -781,7 +781,7 @@ tfrf2:
 int ti8x_file_write_regular(const char *fname, Ti8xRegular *content, char **real_fname)
 {
 	FILE *f;
-	int i;
+	unsigned int i;
 	uint16_t sum = 0;
 	char *filename = NULL;
 	uint32_t data_length;
@@ -1068,7 +1068,7 @@ int ti8x_file_write_flash(const char *fname, Ti8xFlash *head, char **real_fname)
 {
 	FILE *f;
 	Ti8xFlash *content = head;
-	int i;
+	unsigned int i;
 	int bytes_written = 0;
 	long pos;
 	char *filename;
@@ -1251,7 +1251,7 @@ tfwf:	// release on exit
  **/
 int ti8x_content_display_regular(Ti8xRegular *content)
 {
-	int i;
+	unsigned int i;
 	char trans[17];
 
 	if (content == NULL)
@@ -1262,7 +1262,7 @@ int ti8x_content_display_regular(Ti8xRegular *content)
 
 	tifiles_info("Signature:     %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:       %s", content->comment);
-	tifiles_info("# of entries:  %i", content->num_entries);
+	tifiles_info("# of entries:  %u", content->num_entries);
 
 	for (i = 0; i < content->num_entries; i++) 
 	{

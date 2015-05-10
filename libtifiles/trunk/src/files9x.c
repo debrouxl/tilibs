@@ -72,7 +72,7 @@ int ti9x_file_read_regular(const char *filename, Ti9xRegular *content)
 	uint32_t next_offset = 0;
 	uint32_t file_size;
 	uint16_t tmp;
-	int i, j;
+	unsigned int i, j;
 	char signature[9];
 	char varname[VARNAME_MAX];
 	int ret = ERR_FILE_IO;
@@ -562,11 +562,11 @@ tfrf2:
 int ti9x_file_write_regular(const char *fname, Ti9xRegular *content, char **real_fname)
 {
 	FILE *f;
-	int i;
+	unsigned int i;
 	char *filename = NULL;
 	uint32_t offset = 0x52;
 	int **table;
-	int num_folders;
+	unsigned int num_folders;
 	char default_folder[FLDNAME_MAX];
 	char fldname[FLDNAME_MAX], varname[VARNAME_MAX];
 
@@ -876,7 +876,7 @@ tfwf:	// release on exit
  **/
 int ti9x_content_display_regular(Ti9xRegular *content)
 {
-	int i;
+	unsigned int i;
 	char trans[17];
 
 	if (content == NULL)
@@ -888,7 +888,7 @@ int ti9x_content_display_regular(Ti9xRegular *content)
 	tifiles_info("Signature:         %s", tifiles_calctype2signature(content->model));
 	tifiles_info("Comment:           %s", content->comment);
 	tifiles_info("Default folder:    %s", content->default_folder);
-	tifiles_info("Number of entries: %i", content->num_entries);
+	tifiles_info("Number of entries: %u", content->num_entries);
 
 	for (i = 0; i < content->num_entries; i++)
 	{

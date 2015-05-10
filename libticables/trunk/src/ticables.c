@@ -317,12 +317,12 @@ TIEXPORT1 int TICALL ticables_handle_del(CableHandle* handle)
  *
  * Return value: the previous timeout.
  **/
-TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeout)
+TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle* handle, unsigned int timeout)
 {
 	if (handle != NULL)
 	{
 		const CableFncts *cable;
-		int old_timeout = handle->timeout;
+		unsigned int old_timeout = handle->timeout;
 
 		handle->timeout = timeout;
 		cable = handle->cable;
@@ -361,11 +361,11 @@ TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle* handle, int timeo
  *
  * Return value: the previous delay.
  **/
-TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle* handle, int delay)
+TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle* handle, unsigned int delay)
 {
 	if (handle != NULL)
 	{
-		int old_delay = handle->delay;
+		unsigned int old_delay = handle->delay;
 		handle->delay = delay;
 		return old_delay;
 	}

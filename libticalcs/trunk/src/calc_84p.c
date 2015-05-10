@@ -548,7 +548,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	char *utf8;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 3;
@@ -682,7 +682,7 @@ static int		send_all_vars_backup	(CalcHandle* handle, FileContent* content)
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
-	int i;
+	unsigned int i;
 	char *utf8;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 2;
@@ -995,7 +995,7 @@ static int		send_os    (CalcHandle* handle, FlashContent* content)
 	uint32_t pkt_size = 266;
 	uint32_t os_size = 0;
 	FlashContent *ptr;
-	int i, j;
+	unsigned int i, j;
 	int boot = 0;
 	int ret;
 

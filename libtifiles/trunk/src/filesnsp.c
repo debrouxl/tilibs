@@ -356,7 +356,7 @@ tfwr:  // release on exit
  **/
 int tnsp_content_display_regular(FileContent *content)
 {
-	int i;
+	unsigned int i;
 	char trans[17];
 
 	if (content == NULL)

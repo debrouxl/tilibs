@@ -117,7 +117,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_create_with_data(uint32_t size)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 VarEntry** TICALL tifiles_ve_create_array(int nelts)
+TIEXPORT2 VarEntry** TICALL tifiles_ve_create_array(unsigned int nelts)
 {
 	return g_malloc0((nelts + 1) * sizeof(VarEntry *));
 }
@@ -132,7 +132,7 @@ TIEXPORT2 VarEntry** TICALL tifiles_ve_create_array(int nelts)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, int nelts)
+TIEXPORT2 VarEntry** TICALL tifiles_ve_resize_array(VarEntry** array, unsigned int nelts)
 {
 	VarEntry ** ptr = g_realloc(array, (nelts + 1) * sizeof(VarEntry *));
 	if (ptr != NULL)
@@ -245,7 +245,7 @@ TIEXPORT2 VarEntry* TICALL tifiles_ve_dup(VarEntry* src)
 			memcpy(dst, src, sizeof(VarEntry));
 			dst->data = (uint8_t *)g_malloc0(dst->size);
 
-			if(src->data != NULL && dst->data != NULL)
+			if (src->data != NULL && dst->data != NULL)
 			{
 				memcpy(dst->data, src->data, dst->size);
 			}
@@ -355,7 +355,7 @@ TIEXPORT2 FlashPage* TICALL tifiles_fp_create_with_data(uint32_t size)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 FlashPage** TICALL tifiles_fp_create_array(int nelts)
+TIEXPORT2 FlashPage** TICALL tifiles_fp_create_array(unsigned int nelts)
 {
 	return g_malloc0((nelts + 1) * sizeof(FlashPage*));
 }
@@ -370,7 +370,7 @@ TIEXPORT2 FlashPage** TICALL tifiles_fp_create_array(int nelts)
  *
  * Return value: the array or NULL if error.
  **/
-TIEXPORT2 FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, int nelts)
+TIEXPORT2 FlashPage** TICALL tifiles_fp_resize_array(FlashPage** array, unsigned int nelts)
 {
 	FlashPage ** ptr = g_realloc(array, (nelts + 1) * sizeof(FlashPage *));
 	if (ptr != NULL)

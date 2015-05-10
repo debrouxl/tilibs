@@ -298,7 +298,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t* flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	char *utf8;
 	DUSBCalcAttr **attrs;
 	const int nattrs = 4;

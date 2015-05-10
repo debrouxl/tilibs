@@ -282,11 +282,11 @@ TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *s)
  *
  * Return value: the number of entries.
  **/
-TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
+TIEXPORT3 unsigned int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 {
-	int i, j;
+	unsigned int i, j;
 	GNode *vars = tree;
-	int nvars = 0;
+	unsigned int nvars = 0;
 	TreeInfo *info;
 
 	if (tree == NULL)
@@ -306,11 +306,11 @@ TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree)
 		return 0;
 	}
 
-	for (i = 0; i < (int)g_node_n_children(vars); i++)	// parse folders
+	for (i = 0; i < g_node_n_children(vars); i++)	// parse folders
 	{
 		GNode *parent = g_node_nth_child(vars, i);
 
-		for (j = 0; j < (int)g_node_n_children(parent); j++)	//parse variables
+		for (j = 0; j < g_node_n_children(parent); j++)	//parse variables
 		{
 			nvars++;
 		}

@@ -416,7 +416,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	uint8_t rej_code;
 	char *utf8;
 
@@ -509,7 +509,7 @@ static int		get_version	(CalcHandle* handle, CalcInfos* infos);
 static int		send_flash	(CalcHandle* handle, FlashContent* content)
 {
 	FlashContent *ptr;
-	int i, j;
+	unsigned int i, j;
 	uint16_t size;
 	char *utf8;
 	int cpu15mhz = 0;

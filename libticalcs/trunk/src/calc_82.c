@@ -222,7 +222,7 @@ static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	int err;
 	uint8_t rej_code;
 	uint16_t status;

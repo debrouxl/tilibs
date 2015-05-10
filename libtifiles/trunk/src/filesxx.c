@@ -71,7 +71,7 @@ TIEXPORT2 FileContent* TICALL tifiles_content_create_regular(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 {
-	int i;
+	unsigned int i;
 
 	if (content != NULL)
 	{
@@ -79,7 +79,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 		{
 			VarEntry *entry = content->entries[i];
 
-			if(entry != NULL)
+			if (entry != NULL)
 			{
 				g_free(entry->data);
 				g_free(entry);
@@ -110,7 +110,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_regular(FileContent *content)
 TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 {
 	FileContent *dup = NULL;
-	int i;
+	unsigned int i;
 
 	if (content != NULL)
 	{
@@ -122,8 +122,21 @@ TIEXPORT2 FileContent* TICALL tifiles_content_dup_regular(FileContent *content)
 
 			if (dup->entries != NULL)
 			{
-				for (i = 0; i < content->num_entries; i++) 
+				for (i = 0; i < content->num_entries; i++)
+				{
 					dup->entries[i] = tifiles_ve_dup(content->entries[i]);
+					if (dup->entries[i] == NULL)
+					{
+						tifiles_content_delete_regular(dup);
+						dup = NULL;
+						break;
+					}
+				}
+			}
+			else
+			{
+				tifiles_content_delete_regular(dup);
+				dup = NULL;
 			}
 		}
 	}
@@ -164,7 +177,7 @@ TIEXPORT2 int tifiles_file_read_regular(const char *filename, FileContent *conte
 		return ti9x_file_read_regular(filename, (Ti9xRegular *)content);
 	else
 #endif
-	if(content->model == CALC_NSPIRE)
+	if (content->model == CALC_NSPIRE)
 		return tnsp_file_read_regular(filename, (FileContent *)content);
 	else
 		return ERR_BAD_CALC;
@@ -204,7 +217,7 @@ TIEXPORT2 int tifiles_file_write_regular(const char *filename, FileContent *cont
 		return ti9x_file_write_regular(filename, (Ti9xRegular *)content, real_fname);
 	else
 #endif
-	if(content->model == CALC_NSPIRE)
+	if (content->model == CALC_NSPIRE)
 		return tnsp_file_write_regular(filename, (FileContent *)content, real_fname);
 	else
 		return ERR_BAD_CALC;
@@ -238,7 +251,7 @@ TIEXPORT2 int TICALL tifiles_file_display_regular(FileContent *content)
 		return ti9x_content_display_regular(content);
 	else
 #endif
-	if(content->model == CALC_NSPIRE)
+	if (content->model == CALC_NSPIRE)
 		return tnsp_content_display_regular(content);
 	else
 		return ERR_BAD_CALC;
@@ -420,7 +433,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
 			tifiles_warning("Invalid calculator model");
 		}
 		content->model = model;
-		if(tifiles_calc_is_ti9x(content->model))
+		if (tifiles_calc_is_ti9x(content->model))
 		{
 			time_t tt;
 			struct tm *lt;
@@ -449,7 +462,7 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_create_flash(CalcModel model)
  **/
 TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 {
-	int i;
+	unsigned int i;
 	if (content != NULL)
 	{
 #if !defined(DISABLE_TI8X) && !defined(DISABLE_TI9X)
@@ -466,7 +479,7 @@ TIEXPORT2 int TICALL tifiles_content_delete_flash(FlashContent *content)
 				g_free(ptr->data_part);
 				g_free(ptr);
 
-				for(i = 0; i < content->num_pages; i++)
+				for (i = 0; i < content->num_pages; i++)
 				{
 					g_free(content->pages[i]->data);
 					g_free(content->pages[i]);
@@ -520,7 +533,7 @@ TIEXPORT2 int tifiles_file_read_flash(const char *filename, FlashContent *conten
 		return ti9x_file_read_flash(filename, content);
 	else
 #endif
-	if(content->model == CALC_NSPIRE)
+	if (content->model == CALC_NSPIRE)
 		return tnsp_file_read_flash(filename, content);
 	else
 		return ERR_BAD_CALC;
@@ -597,14 +610,14 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 		dup = tifiles_content_create_flash(content->model);
 		if (dup != NULL)
 		{
-			for(p = content, q = dup; p; p = p->next, q = q->next)
+			for (p = content, q = dup; p; p = p->next, q = q->next)
 			{
 				memcpy(q, p, sizeof(FlashContent));
 
 				// TI9x part
-				if(tifiles_calc_is_ti9x(content->model))
+				if (tifiles_calc_is_ti9x(content->model))
 				{
-					if(p->data_part)
+					if (p->data_part)
 					{
 						q->data_part = (uint8_t *)g_malloc0(p->data_length+1);
 						memcpy(q->data_part, p->data_part, p->data_length+1);
@@ -612,13 +625,13 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 				}
 
 				// TI8x part
-				if(tifiles_calc_is_ti8x(content->model))
+				if (tifiles_calc_is_ti8x(content->model))
 				{
-					int i;
+					unsigned int i;
 
 					// copy pages
 					q->pages = tifiles_fp_create_array(p->num_pages);
-					for(i = 0; i < content->num_pages; i++)
+					for (i = 0; i < content->num_pages; i++)
 					{
 						q->pages[i] = (FlashPage *)g_malloc0(sizeof(FlashPage));
 						memcpy(q->pages[i], p->pages[i], sizeof(FlashPage));
@@ -628,8 +641,10 @@ TIEXPORT2 FlashContent* TICALL tifiles_content_dup_flash(FlashContent *content)
 					}
 				}
 
-				if(p->next)
+				if (p->next)
+				{
 					q->next = tifiles_content_create_flash(p->model);
+				}
 			}
 		}
 	}
@@ -725,10 +740,10 @@ TIEXPORT2 int TICALL tifiles_file_display(const char *filename)
  * Return value: a 2-dimensions allocated integer array. Must be freed with g_free when
  * no longer used.
  **/
-TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders)
+TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders)
 {
-	int num_folders = 0;
-	int i, j;
+	unsigned int num_folders = 0;
+	unsigned int i, j;
 	char **ptr, *folder_list[32768] = { 0 };
 	int **table;
 

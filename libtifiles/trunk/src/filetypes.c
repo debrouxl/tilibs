@@ -1077,7 +1077,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 			// and to parse the TigEntry structures.
 			TigContent *content;
 			int ret, ok=0;
-			int k;
+			unsigned int k;
 
 			if (!tifiles_file_has_tig_header(filename))
 			{

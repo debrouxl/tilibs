@@ -315,7 +315,7 @@ static int		recv_backup	(CalcHandle* handle, BackupContent* content)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	uint8_t rej_code;
 	uint16_t status;
 	char *utf8;

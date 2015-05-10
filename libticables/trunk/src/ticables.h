@@ -299,8 +299,8 @@ typedef struct
 {
 	CableModel      model;
 	CablePort       port;
-	int             timeout;
-	int             delay;
+	unsigned int    timeout;
+	unsigned int    delay;
 
 	int             calc; // unused
 } CableOptions;
@@ -319,14 +319,14 @@ typedef struct
 	/*********************/
 
 	// ticables.c
-	TIEXPORT1 const char * TICALL ticables_version_get (void);
-	TIEXPORT1 uint32_t TICALL ticables_supported_cables (void);
+	TIEXPORT1 const char * TICALL ticables_version_get(void);
+	TIEXPORT1 uint32_t TICALL ticables_supported_cables(void);
 
 	TIEXPORT1 CableHandle * TICALL ticables_handle_new(CableModel model, CablePort port);
 	TIEXPORT1 int        TICALL ticables_handle_del(CableHandle *handle);
 
-	TIEXPORT1 int TICALL ticables_options_set_timeout(CableHandle *handle, int timeout);
-	TIEXPORT1 int TICALL ticables_options_set_delay(CableHandle *handle, int delay);
+	TIEXPORT1 unsigned int TICALL ticables_options_set_timeout(CableHandle *handle, unsigned int timeout);
+	TIEXPORT1 unsigned int TICALL ticables_options_set_delay(CableHandle *handle, unsigned int delay);
 
 	TIEXPORT1 CableModel TICALL ticables_get_model(CableHandle *handle);
 	TIEXPORT1 CablePort TICALL ticables_get_port(CableHandle *handle);
@@ -337,8 +337,8 @@ typedef struct
 	TIEXPORT1 int TICALL ticables_handle_show(CableHandle *handle);
 
 	// error.c
-	TIEXPORT1 int         TICALL ticables_error_get (int number, char **message);
-	TIEXPORT1 int         TICALL ticables_error_free (char *message);
+	TIEXPORT1 int         TICALL ticables_error_get(int number, char **message);
+	TIEXPORT1 int         TICALL ticables_error_free(char *message);
 
 	// link_xxx.c
 	TIEXPORT1 int TICALL ticables_cable_open(CableHandle *handle);
@@ -381,7 +381,7 @@ typedef struct
 	TIEXPORT1 UsbPid       TICALL ticables_string_to_usbpid(const char *str);
 
 	// probe.c
-	TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method);
+	TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method);
 	TIEXPORT1 int TICALL ticables_probing_finish(int ***result);
 	TIEXPORT1 void TICALL ticables_probing_show(int **array);
 

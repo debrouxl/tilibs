@@ -341,7 +341,7 @@ static int		get_memfree	(CalcHandle* handle, uint32_t* ram, uint32_t *flash)
 
 static int		send_var	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	uint16_t status;
 	char *utf8;
 
@@ -465,7 +465,7 @@ static int		send_all_vars_backup	(CalcHandle* handle, FileContent* content)
 
 static int		send_var_ns	(CalcHandle* handle, CalcMode mode, FileContent* content)
 {
-	int i;
+	unsigned int i;
 	uint16_t status;
 	char *utf8;
 

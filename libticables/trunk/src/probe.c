@@ -76,7 +76,7 @@ TIEXPORT1 void TICALL ticables_probing_show(int **array)
  *
  * Return value: 0 if successful, ERR_NO_CABLE if no cables found.
  **/
-TIEXPORT1 int TICALL ticables_probing_do(int ***result, int timeout, ProbingMethod method)
+TIEXPORT1 int TICALL ticables_probing_do(int ***result, unsigned int timeout, ProbingMethod method)
 {
 	CablePort port;
 	CableModel model;

@@ -850,7 +850,7 @@ typedef struct
 	TIEXPORT3 int TICALL ticalcs_dirlist_ram_used(GNode* tree);
 	TIEXPORT3 int TICALL ticalcs_dirlist_flash_used(GNode* vars, GNode* apps);
 
-	TIEXPORT3 int TICALL ticalcs_dirlist_ve_count(GNode* tree);
+	TIEXPORT3 unsigned int TICALL ticalcs_dirlist_ve_count(GNode* tree);
 	TIEXPORT3 VarEntry *TICALL ticalcs_dirlist_ve_exist(GNode* tree, VarEntry *entry);
 	TIEXPORT3 void TICALL ticalcs_dirlist_ve_add(GNode* tree, VarEntry *entry);
 	TIEXPORT3 void TICALL ticalcs_dirlist_ve_del(GNode* tree, VarEntry *entry);

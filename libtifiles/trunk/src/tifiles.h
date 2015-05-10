@@ -154,7 +154,7 @@ typedef struct
 	char			default_folder[FLDNAME_MAX];	// TI9x only
 	char			comment[43];					// Ti8x: 42 max, Ti9x: 40 max
 
-	int			num_entries;
+	unsigned int	num_entries;
 	VarEntry**	entries;
 
 	uint16_t		checksum;
@@ -293,7 +293,7 @@ struct _FlashContent
 	uint32_t		data_length;
 
 	uint8_t*		data_part;	// TI9x only
-	int			num_pages;	// TI8x only
+	unsigned int			num_pages;	// TI8x only
 	FlashPage**	pages;		// TI8x only
 
 	FlashContent*	next;		// TI9x only
@@ -327,10 +327,10 @@ typedef struct
 	int				comp_level;
 
 	TigEntry**		var_entries;
-	int				n_vars;
+	unsigned int		n_vars;
 
 	TigEntry**		app_entries;
-	int				n_apps;
+	unsigned int		n_apps;
 
 	CalcModel			model_dst;
 } TigContent;
@@ -430,7 +430,7 @@ extern "C" {
 	TIEXPORT2 int TICALL tifiles_has_backup(CalcModel model);
 
 	TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int size);
-	TIEXPORT2 int             tifiles_hexdump(const uint8_t* ptr, unsigned int length);
+	TIEXPORT2 int TICALL      tifiles_hexdump(const uint8_t* ptr, unsigned int length);
 
 	TIEXPORT2 char* TICALL tifiles_get_varname(const char *full_name);
 	TIEXPORT2 char* TICALL tifiles_get_fldname(const char *full_name);
@@ -464,7 +464,7 @@ extern "C" {
 	TIEXPORT2 int TICALL tifiles_file_display(const char *filename);
 
 	// grouped.c
-	TIEXPORT2 FileContent** TICALL tifiles_content_create_group(int n_entries);
+	TIEXPORT2 FileContent** TICALL tifiles_content_create_group(unsigned int n_entries);
 	TIEXPORT2 int           TICALL tifiles_content_delete_group(FileContent **array);
 
 	TIEXPORT2 int TICALL tifiles_group_contents(FileContent **src_contents, FileContent **dst_content);
@@ -481,7 +481,7 @@ extern "C" {
 	TIEXPORT2 int TICALL tifiles_group_del_file(VarEntry *entry,          const char *dst_filename);
 
 	// tigroup.c -> filesXX.c
-	TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, int);
+	TIEXPORT2 TigContent* TICALL tifiles_content_create_tigroup(CalcModel model, unsigned int);
 	TIEXPORT2 int         TICALL tifiles_content_delete_tigroup(TigContent *content);
 
 	TIEXPORT2 int TICALL tifiles_file_read_tigroup(const char *filename, TigContent *content);
@@ -506,8 +506,8 @@ extern "C" {
 	TIEXPORT2 TigEntry* TICALL tifiles_te_create(const char *filename, FileClass type, CalcModel model);
 	TIEXPORT2 int		  TICALL tifiles_te_delete(TigEntry* entry);
 
-	TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(int nelts);
-	TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, int nelts);
+	TIEXPORT2 TigEntry**	TICALL tifiles_te_create_array(unsigned int nelts);
+	TIEXPORT2 TigEntry**	TICALL tifiles_te_resize_array(TigEntry**, unsigned int nelts);
 	TIEXPORT2 void		TICALL tifiles_te_delete_array(TigEntry**);
 	TIEXPORT2 int			TICALL tifiles_te_sizeof_array(TigEntry**);
 
@@ -528,8 +528,8 @@ extern "C" {
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_copy(VarEntry* dst, VarEntry* src);
 	TIEXPORT2 VarEntry*	TICALL tifiles_ve_dup(VarEntry* src);
 
-	TIEXPORT2 VarEntry**	TICALL tifiles_ve_create_array(int nelts);
-	TIEXPORT2 VarEntry**	TICALL tifiles_ve_resize_array(VarEntry**, int nelts);
+	TIEXPORT2 VarEntry**	TICALL tifiles_ve_create_array(unsigned int nelts);
+	TIEXPORT2 VarEntry**	TICALL tifiles_ve_resize_array(VarEntry**, unsigned int nelts);
 	TIEXPORT2 void		TICALL tifiles_ve_delete_array(VarEntry**);
 
 	TIEXPORT2 FlashPage*	TICALL tifiles_fp_create(void);
@@ -540,12 +540,12 @@ extern "C" {
 	TIEXPORT2 FlashPage*	TICALL tifiles_fp_realloc_data(FlashPage* fp, size_t size);
 	TIEXPORT2 void		TICALL tifiles_fp_free_data(void * data);
 
-	TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(int nelts);
-	TIEXPORT2 FlashPage**	TICALL tifiles_fp_resize_array(FlashPage**, int nelts);
+	TIEXPORT2 FlashPage**	TICALL tifiles_fp_create_array(unsigned int nelts);
+	TIEXPORT2 FlashPage**	TICALL tifiles_fp_resize_array(FlashPage**, unsigned int nelts);
 	TIEXPORT2 void		TICALL tifiles_fp_delete_array(FlashPage**);
 
 	// undocumented
-	TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, int *nfolders);
+	TIEXPORT2 int** tifiles_create_table_of_entries(FileContent *content, unsigned int *nfolders);
 	TIEXPORT2 void tifiles_free_table_of_entries(int ** table);
 
 	/************************/
