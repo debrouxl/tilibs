@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.8\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-05-08 10:47+0200\n"
+"POT-Creation-Date: 2015-05-12 09:03+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -107,33 +107,33 @@ msgstr "En attente pour sauvegarder..."
 msgid "Waiting for var(s)..."
 msgstr "Attente de variable(s)..."
 
-#: src/calc_84p.c:1711 src/calc_89t.c:1168
+#: src/calc_84p.c:1709 src/calc_89t.c:1166
 msgid "Getting version..."
 msgstr "Récupération de la version..."
 
-#: src/calc_84p.c:1853 src/calc_84p.c:1862 src/calc_84p.c:1871
-#: src/calc_84p.c:1881 src/calc_84p.c:1889
+#: src/calc_84p.c:1851 src/calc_84p.c:1860 src/calc_84p.c:1869
+#: src/calc_84p.c:1879 src/calc_84p.c:1887
 #, c-format
 msgid "Unhandled 84+ family member with product_id=%d hw_version=%d"
 msgstr "Membre inconnu de la famille 84+ avec product_id=%d hw_version=%d"
 
-#: src/calc_84p.c:1906
+#: src/calc_84p.c:1904
 msgid "TI-84 Plus thru DirectLink"
 msgstr "TI-84 Plus via DirectLink"
 
-#: src/calc_84p.c:1977
+#: src/calc_84p.c:1975
 msgid "TI-84 Plus C Silver Edition thru DirectLink"
 msgstr "TI-84 Plus C Silver Edition via DirectLink"
 
-#: src/calc_84p.c:2048
+#: src/calc_84p.c:2046
 msgid "TI-83 Premium CE thru DirectLink"
 msgstr "TI-83 Premium CE via DirectLink"
 
-#: src/calc_84p.c:2119
+#: src/calc_84p.c:2117
 msgid "TI-84 Plus CE thru DirectLink"
 msgstr "TI-84 Plus CE via DirectLink"
 
-#: src/calc_84p.c:2190
+#: src/calc_84p.c:2188
 msgid "TI-82 Advanced thru DirectLink"
 msgstr "TI-82 Advanced via DirectLink"
 
@@ -152,7 +152,7 @@ msgstr "Listage du dossier dans %8s..."
 msgid "Parsing %s/%s"
 msgstr "Lecture de %s/%s"
 
-#: src/calc_89.c:899 src/calc_89t.c:1074 src/calc_92.c:594 src/calc_nsp.c:915
+#: src/calc_89.c:899 src/calc_89t.c:1072 src/calc_92.c:594 src/calc_nsp.c:915
 #, c-format
 msgid "Creating %s..."
 msgstr "Création de %s..."
@@ -161,17 +161,17 @@ msgstr "Création de %s..."
 msgid "V200 Personal Learning Tool"
 msgstr "V200 Personal Learning Tool"
 
-#: src/calc_89t.c:1009 src/calc_nsp.c:1085
+#: src/calc_89t.c:1007 src/calc_nsp.c:1085
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr "Renommage de %s en %s..."
 
-#: src/calc_89t.c:1037
+#: src/calc_89t.c:1035
 #, c-format
 msgid "Changing attributes of %s..."
 msgstr "Changement des attributs de %s..."
 
-#: src/calc_89t.c:1337
+#: src/calc_89t.c:1335
 msgid "TI-89 Titanium thru DirectLink"
 msgstr "TI-89 Titanium via DirectLink"
 

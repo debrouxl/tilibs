@@ -967,7 +967,7 @@ static int		get_clock	(CalcHandle* handle, CalcClock* _clock)
 static int		del_var		(CalcHandle* handle, VarRequest* vr)
 {
 	DUSBCalcAttr **attr;
-	const int size = 2;
+	const int size = 1;
 	char varname[68];
 	char *utf8;
 	int ret;
@@ -982,8 +982,6 @@ static int		del_var		(CalcHandle* handle, VarRequest* vr)
 	attr[0] = dusb_ca_new(AID_VAR_TYPE2, 4);
 	attr[0]->data[0] = 0xF0; attr[0]->data[1] = 0x0C;
 	attr[0]->data[2] = 0x00; attr[0]->data[3] = vr->type;
-	attr[1] = dusb_ca_new(AID_UNKNOWN_13, 1);
-	attr[1]->data[0] = 0;
 
 	ret = dusb_cmd_s_var_delete(handle, vr->folder, vr->name, size, CA(attr));
 	dusb_ca_del_array(size, attr);
