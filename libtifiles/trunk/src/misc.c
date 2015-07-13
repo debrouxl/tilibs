@@ -177,9 +177,41 @@ TIEXPORT2 uint16_t TICALL tifiles_checksum(const uint8_t * buffer, unsigned int 
 	return c;
 }
 
-TIEXPORT2 int tifiles_hexdump(const uint8_t* ptr, unsigned int length)
+/**
+ * tifiles_hexdump:
+ * @ptr: a pointer on some data to dump
+ * @len: the number of bytes to dump
+ *
+ * Dump the content of a buffer into hexadecimal format.
+ * Return value: always 0
+ **/
+TIEXPORT2 int TICALL tifiles_hexdump(const uint8_t * ptr, unsigned int len)
 {
-	return hexdump(ptr, length);
+	char *str;
+	if (ptr != NULL)
+	{
+		unsigned int i;
+		unsigned int alloc_len = (len < 1024) ? len : 1024;
+
+		str = (char *)g_malloc(3 * alloc_len + 14);
+		for (i = 0; i < alloc_len; i++)
+		{
+			sprintf(&str[3 * i], "%02X ", ptr[i]);
+		}
+		if (alloc_len < len)
+		{
+			sprintf(&str[3 * alloc_len], "[...] (%u)", len);
+		}
+		else
+		{
+			sprintf(&str[3 * alloc_len], "(%u)", len);
+		}
+
+		tifiles_info(str);
+		g_free(str);
+	}
+
+	return 0;
 }
 
 /**
@@ -190,7 +222,7 @@ TIEXPORT2 int tifiles_hexdump(const uint8_t* ptr, unsigned int length)
  *
  * Return value: varname as string. It should not be modified (static).
  **/
-char *TICALL tifiles_get_varname(const char *full_name)
+TIEXPORT2 char *TICALL tifiles_get_varname(const char *full_name)
 {
 	if (full_name != NULL)
 	{
@@ -217,7 +249,7 @@ char *TICALL tifiles_get_varname(const char *full_name)
  *
  * Return value: folder name as string. It should not be modified (static).
  **/
-char *TICALL tifiles_get_fldname(const char *full_name)
+TIEXPORT2 char *TICALL tifiles_get_fldname(const char *full_name)
 {
 	static char folder[FLDNAME_MAX];
 	char *bs;
@@ -254,7 +286,7 @@ char *TICALL tifiles_get_fldname(const char *full_name)
  *
  * Return value: a full path as string like 'fldname\varname'.
  **/
-char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
+TIEXPORT2 char* TICALL tifiles_build_fullname(CalcModel model, char *full_name, const char *fldname, const char *varname)
 {
 	if (full_name == NULL || fldname == NULL || varname == NULL)
 	{
