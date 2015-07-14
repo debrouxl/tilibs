@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libticalcs2 1.1.9\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-05-07 20:49+0200\n"
+"POT-Creation-Date: 2015-05-08 10:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,72 +25,72 @@ msgstr ""
 msgid "Dummy hand-held used when no calc is set"
 msgstr ""
 
-#: src/calc_73.c:285 src/calc_83.c:190 src/calc_84p.c:511 src/calc_86.c:185
+#: src/calc_73.c:292 src/calc_83.c:190 src/calc_84p.c:511 src/calc_86.c:185
 #, c-format
 msgid "Parsing %s"
 msgstr ""
 
-#: src/calc_73.c:546
+#: src/calc_73.c:553
 msgid "Battery low, stopping flash app transfer"
 msgstr ""
 
-#: src/calc_73.c:551 src/calc_73.c:1033 src/calc_89.c:611 src/calc_89t.c:498
+#: src/calc_73.c:558 src/calc_73.c:1040 src/calc_89.c:611 src/calc_89t.c:498
 #, c-format
 msgid "FLASH name: \"%s\""
 msgstr ""
 
-#: src/calc_73.c:552 src/calc_73.c:1034 src/calc_89.c:612 src/calc_89t.c:499
+#: src/calc_73.c:559 src/calc_73.c:1041 src/calc_89.c:612 src/calc_89t.c:499
 #, c-format
 msgid "FLASH size: %i bytes."
 msgstr ""
 
-#: src/calc_73.c:880 src/calc_84p.c:1489 src/calc_89.c:822 src/calc_89t.c:835
+#: src/calc_73.c:887 src/calc_84p.c:1489 src/calc_89.c:822 src/calc_89t.c:835
 msgid "Setting clock..."
 msgstr ""
 
-#: src/calc_73.c:907 src/calc_84p.c:1566 src/calc_89.c:845 src/calc_89t.c:914
+#: src/calc_73.c:914 src/calc_84p.c:1566 src/calc_89.c:845 src/calc_89t.c:914
 msgid "Getting clock..."
 msgstr ""
 
-#: src/calc_73.c:961 src/calc_83.c:440 src/calc_84p.c:1627 src/calc_89.c:882
-#: src/calc_89t.c:977 src/calc_92.c:555 src/calc_nsp.c:884
+#: src/calc_73.c:968 src/calc_83.c:440 src/calc_84p.c:1627 src/calc_89.c:882
+#: src/calc_89t.c:977 src/calc_92.c:555 src/calc_nsp.c:885
 #, c-format
 msgid "Deleting %s..."
 msgstr ""
 
-#: src/calc_73.c:1011 src/calc_89.c:961 src/calc_92.c:634
+#: src/calc_73.c:1018 src/calc_89.c:961 src/calc_92.c:634
 #, c-format
 msgid "  OS: %s"
 msgstr ""
 
-#: src/calc_73.c:1012 src/calc_89.c:962
+#: src/calc_73.c:1019 src/calc_89.c:962
 #, c-format
 msgid "  BIOS: %s"
 msgstr ""
 
-#: src/calc_73.c:1013
+#: src/calc_73.c:1020
 #, c-format
 msgid "  HW: %i"
 msgstr ""
 
-#: src/calc_73.c:1014 src/calc_89.c:963 src/calc_92.c:635
+#: src/calc_73.c:1021 src/calc_89.c:963 src/calc_92.c:635
 #, c-format
 msgid "  Battery: %s"
 msgstr ""
 
-#: src/calc_73.c:1014
+#: src/calc_73.c:1021
 msgid "good"
 msgstr ""
 
-#: src/calc_73.c:1014
+#: src/calc_73.c:1021
 msgid "low"
 msgstr ""
 
-#: src/calc_73.c:1061 src/calc_89.c:664
+#: src/calc_73.c:1068 src/calc_89.c:664
 msgid "Header sent completely."
 msgstr ""
 
-#: src/calc_73.c:1072
+#: src/calc_73.c:1079
 msgid "Receiving certificate"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Parsing %s/%s"
 msgstr ""
 
-#: src/calc_89.c:899 src/calc_89t.c:1074 src/calc_92.c:594 src/calc_nsp.c:914
+#: src/calc_89.c:899 src/calc_89t.c:1074 src/calc_92.c:594 src/calc_nsp.c:915
 #, c-format
 msgid "Creating %s..."
 msgstr ""
@@ -161,7 +161,7 @@ msgstr ""
 msgid "V200 Personal Learning Tool"
 msgstr ""
 
-#: src/calc_89t.c:1009 src/calc_nsp.c:1084
+#: src/calc_89t.c:1009 src/calc_nsp.c:1085
 #, c-format
 msgid "Renaming %s to %s..."
 msgstr ""
@@ -180,27 +180,27 @@ msgstr ""
 msgid "Block #%2i"
 msgstr ""
 
-#: src/calc_nsp.c:311
+#: src/calc_nsp.c:312
 #, c-format
 msgid "Unknown calculator model with %d bpp\n"
 msgstr ""
 
-#: src/calc_nsp.c:434
+#: src/calc_nsp.c:435
 #, c-format
 msgid "Name: %s | Type: %8s | Attr: %i  | Size: %08X"
 msgstr ""
 
-#: src/calc_nsp.c:467
+#: src/calc_nsp.c:468
 #, c-format
 msgid "Not enumerating documents in %s because it's not a folder\n"
 msgstr ""
 
-#: src/calc_nsp.c:484
+#: src/calc_nsp.c:485
 #, c-format
 msgid "Directory listing in <%s>...\n"
 msgstr ""
 
-#: src/calc_nsp.c:1107
+#: src/calc_nsp.c:1108
 msgid "Nspire thru DirectLink"
 msgstr ""
 
@@ -743,11 +743,11 @@ msgstr ""
 msgid "ticalcs library version %s"
 msgstr ""
 
-#: src/ticalcs.c:371
+#: src/ticalcs.c:377
 msgid "Link calc handle details:"
 msgstr ""
 
-#: src/ticalcs.c:372
+#: src/ticalcs.c:378
 #, c-format
 msgid "  model   : %s"
 msgstr ""

@@ -39,9 +39,6 @@
 
 #define MAX_RETRY	3
 
-static unsigned int BLK_SIZE = 1024;// heuristic
-#define MIN_SIZE	256				// don't refresh if block is small
-
 /* CMD | LEN | DATA | CHK */
 #define	CMD_IS_READY	0xAA55
 #define CMD_KO			0x0000
@@ -53,15 +50,12 @@ static unsigned int BLK_SIZE = 1024;// heuristic
 #define CMD_DATA1		0x0006
 #define CMD_DATA2		0x0007
 
-static uint8_t buf[65536 + 3*2];
-static int std_blk = 0;
-static int sav_blk = 0;
-
 // --- Packet Layer
 
 static int send_pkt(CalcHandle* handle, uint16_t cmd, uint16_t len, uint8_t* data)
 {
 	uint16_t sum;
+	uint8_t * buf = handle->buffer;
 
 	// command
 	buf[0] = LSB(cmd);
@@ -109,6 +103,7 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 	int i, r, q;
 	uint16_t sum, chksum;
 	int ret;
+	uint8_t * buf = handle->buffer;
 
 	// Any packet has always at least 4 bytes (cmd, len)
 	ret = ticables_cable_recv(handle->cable, buf, 4);
@@ -131,40 +126,46 @@ static int recv_pkt(CalcHandle* handle, uint16_t* cmd, uint16_t* len, uint8_t* d
 		}
 
 		// compute chunks
-		BLK_SIZE = *len / 20;
-		if (BLK_SIZE == 0) BLK_SIZE = 1;
+		handle->priv.progress_min_size = 256;
+		handle->priv.progress_blk_size = *len / 20;
+		if (handle->priv.progress_blk_size == 0)
+		{
+			handle->priv.progress_blk_size = 1;
+		}
 
-		q = *len / BLK_SIZE;
-		r = *len % BLK_SIZE;
+		q = *len / handle->priv.progress_blk_size;
+		r = *len % handle->priv.progress_blk_size;
 		handle->updat->max1 = *len;
 		handle->updat->cnt1 = 0;
 
 		// recv full chunks
 		for(i = 0; i < q; i++)
 		{
-			ret = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], BLK_SIZE);
+			ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], handle->priv.progress_blk_size);
 			if (ret)
 			{
 				goto exit;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
-			handle->updat->cnt1 += BLK_SIZE;
-			if(*len > MIN_SIZE)
+			handle->updat->cnt1 += handle->priv.progress_blk_size;
+			if (*len > handle->priv.progress_min_size)
+			{
 				handle->updat->pbar();
+			}
 			//if (handle->updat->cancel) 
 			//	return ERR_ABORT;
 		}
 
 		// recv last chunk
 		{
-			ret = ticables_cable_recv(handle->cable, &buf[i*BLK_SIZE + 4], (uint16_t)(r+2));
+			ret = ticables_cable_recv(handle->cable, &buf[i*handle->priv.progress_blk_size + 4], (uint16_t)(r+2));
 			if (ret)
 			{
 				goto exit;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 			handle->updat->cnt1 += 1;
-			if(*len > MIN_SIZE)
+			if (*len > handle->priv.progress_min_size)
 			{
 				handle->updat->pbar();
 			}
@@ -267,7 +268,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 		if (cmd == CMD_DATA1)
 		{
 			ticalcs_info(" TI->PC: BLOCK WITHOUT REPEATED DATA (0x%04x bytes)", *size);
-			std_blk++;
+			handle->priv.romdump_std_blk++;
 		}
 		else if (cmd == CMD_DATA2)
 		{
@@ -275,7 +276,7 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 			rpt = (((uint16_t)data[3]) << 8) | data[2];
 			memset(data, rpt, *size);
 			ticalcs_info(" TI->PC: BLOCK WITH REPEATED DATA (0x%04x bytes)", *size);
-			sav_blk++;
+			handle->priv.romdump_sav_blk++;
 		}
 		else
 		{
@@ -286,11 +287,11 @@ static int rom_recv_DATA(CalcHandle* handle, uint16_t* size, uint8_t* data)
 	return ret;
 }
 
-static int rom_send_ERR(CalcHandle* handle)
+/*static int rom_send_ERR(CalcHandle* handle)
 {
 	ticalcs_info(" PC->TI: ERROR");
 	return send_pkt(handle, CMD_ERROR, 0, NULL);
-}
+}*/
 
 // --- Dumping Layer
 
@@ -340,7 +341,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 	}
 
 	// get packets
-	std_blk = sav_blk = 0;
+	handle->priv.romdump_std_blk = handle->priv.romdump_sav_blk = 0;
 	for (addr = 0x0000; addr < size; )
 	{
 		if (ret == ERR_ABORT)
@@ -410,7 +411,7 @@ int rd_dump(CalcHandle* handle, const char *filename)
 		update_->pbar();
 	}
 
-	ticalcs_info("Saved %i blocks on %i blocks\n", sav_blk, sav_blk + std_blk);
+	ticalcs_info("Saved %i blocks on %i blocks\n", handle->priv.romdump_sav_blk, handle->priv.romdump_sav_blk + handle->priv.romdump_std_blk);
 
 	// finished
 exit:
@@ -478,7 +479,6 @@ int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *dat
 
 	g_unlink(tempfname);
 	g_free(tempfname);
-
 
 end:
 	return ret;

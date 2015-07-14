@@ -420,7 +420,7 @@ TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 		memset(&calc, 0, sizeof(CalcHandle));
 		calc.model = *model = CALC_NONE;
 		calc.updat = (CalcUpdate *)&default_update;
-		calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
+		calc.buffer = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
 
@@ -428,13 +428,13 @@ TIEXPORT3 int TICALL ticalcs_probe_calc(CableHandle* cable, CalcModel* model)
 		ret = ticalcs_probe_calc_1(&calc, model);
 		if (!ret && (*model != CALC_NONE))
 		{
-			g_free(calc.priv2);
+			g_free(calc.buffer);
 			break;
 		}
 
 		// second: search for other calcs (slow)
 		ret = ticalcs_probe_calc_2(&calc, model);
-		g_free(calc.priv2);
+		g_free(calc.buffer);
 	} while(0);
 
 	if (!ret)
@@ -470,7 +470,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 		memset(&calc, 0, sizeof(CalcHandle));
 		calc.model = *model = CALC_NONE;
 		calc.updat = (CalcUpdate *)&default_update;
-		calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
+		calc.buffer = (uint8_t *)g_malloc(65536 + 6);
 		calc.cable = cable;
 		calc.open = !0;
 
@@ -535,7 +535,7 @@ TIEXPORT3 int TICALL ticalcs_probe_usb_calc(CableHandle* cable, CalcModel* model
 			ticables_free_usb_devices(list);
 		}
 
-		g_free(calc.priv2);
+		g_free(calc.buffer);
 	} while(0);
 
 	return ret;
@@ -571,7 +571,7 @@ TIEXPORT3 int TICALL ticalcs_probe(CableModel c_model, CablePort c_port, CalcMod
 	memset(&calc, 0, sizeof(CalcHandle));
 	calc.model = *model = CALC_NONE;
 	calc.updat = (CalcUpdate *)&default_update;
-	calc.priv2 = (uint8_t *)g_malloc(65536 + 4);
+	calc.buffer = (uint8_t *)g_malloc(65536 + 6);
 	calc.cable = handle;
 	calc.open = !0;
 

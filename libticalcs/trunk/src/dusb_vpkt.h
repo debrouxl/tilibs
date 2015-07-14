@@ -91,7 +91,8 @@ TIEXPORT3 int TICALL dusb_recv_acknowledge(CalcHandle *handle);
 
 TIEXPORT3 const char* TICALL dusb_vpkt_type2name(uint16_t id);
 
-TIEXPORT3 uint32_t TICALL dusb_get_buf_size(void);
+TIEXPORT3 int TICALL dusb_get_buf_size(CalcHandle *handle, uint32_t * size);
+TIEXPORT3 int TICALL dusb_set_buf_size(CalcHandle *handle, unsigned int size);
 
 #ifdef __cplusplus
 }

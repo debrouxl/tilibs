@@ -32,9 +32,7 @@
 #include "error.h"
 #include "macros.h"
 
-// We split packets into chucks to get control regularly and update statistics.
-static unsigned int BLK_SIZE; // refresh pbars every 5%
-static unsigned int MIN_SIZE; // don't refresh at all if packet is < 512 bytes
+// We split packets into chunks to get control regularly and update statistics.
 
 /*
     Send a packet from PC (host) to TI (target):
@@ -56,10 +54,10 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 
 	VALIDATE_HANDLE(handle);
 
-	buf = (uint8_t *)handle->priv2;                    //[65536+6];
+	buf = (uint8_t *)handle->buffer;                    //[65536+6];
 	if (buf == NULL)
 	{
-		ticalcs_critical("%s: handle->priv2 is NULL", __FUNCTION__);
+		ticalcs_critical("%s: handle->buffer is NULL", __FUNCTION__);
 		return ERR_INVALID_HANDLE;
 	}
 
@@ -93,19 +91,19 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		buf[length+4+1] = MSB(sum);
 
 		// compute chunks
-		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
-		BLK_SIZE = (length + 6) / 20;		// 5%
-		if (BLK_SIZE == 0)
+		handle->priv.progress_min_size = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
+		handle->priv.progress_blk_size = (length + 6) / 20;		// 5%
+		if (handle->priv.progress_blk_size == 0)
 		{
-			BLK_SIZE = length + 6;
+			handle->priv.progress_blk_size = length + 6;
 		}
-		if (BLK_SIZE < 32)
+		if (handle->priv.progress_blk_size < 32)
 		{
-			BLK_SIZE = 128;	// SilverLink doesn't like small block (< 32)
+			handle->priv.progress_blk_size = 128;	// SilverLink doesn't like small block (< 32)
 		}
 
-		q = (length + 6) / BLK_SIZE;
-		r = (length + 6) % BLK_SIZE;
+		q = (length + 6) / handle->priv.progress_blk_size;
+		r = (length + 6) % handle->priv.progress_blk_size;
 
 		handle->updat->max1 = length + 6;
 		handle->updat->cnt1 = 0;
@@ -115,15 +113,15 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		// send full chunks
 		for (i = 0; i < q; i++)
 		{
-			ret = ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], BLK_SIZE);
+			ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
 			if (ret)
 			{
 				break;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
-			handle->updat->cnt1 += BLK_SIZE;
-			if (length > MIN_SIZE)
+			handle->updat->cnt1 += handle->priv.progress_blk_size;
+			if (length > handle->priv.progress_min_size)
 			{
 				handle->updat->pbar();
 			}
@@ -138,13 +136,13 @@ TIEXPORT3 int TICALL dbus_send(CalcHandle* handle, uint8_t target, uint8_t cmd, 
 		// send last chunk
 		if (!ret)
 		{
-			ret = ticables_cable_send(handle->cable, &buf[i*BLK_SIZE], (uint16_t)r);
+			ret = ticables_cable_send(handle->cable, &buf[i*handle->priv.progress_blk_size], (uint16_t)r);
 			if (!ret)
 			{
 				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
 				handle->updat->cnt1 += 1;
-				if (length > MIN_SIZE)
+				if (length > handle->priv.progress_min_size)
 				{
 					handle->updat->pbar();
 				}
@@ -268,12 +266,15 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		}
 
 		// compute chunks*
-		MIN_SIZE = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
-		BLK_SIZE = *length / 20;
-		if(BLK_SIZE == 0) BLK_SIZE = 1;
+		handle->priv.progress_min_size = (handle->cable->model == CABLE_GRY) ? 512 : 2048;
+		handle->priv.progress_blk_size = *length / 20;
+		if (handle->priv.progress_blk_size == 0)
+		{
+			handle->priv.progress_blk_size = 1;
+		}
 
-		q = *length / BLK_SIZE;
-		r = *length % BLK_SIZE;
+		q = *length / handle->priv.progress_blk_size;
+		r = *length % handle->priv.progress_blk_size;
 		handle->updat->max1 = *length;
 		handle->updat->cnt1 = 0;
 
@@ -281,15 +282,15 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		// recv full chunks
 		for (i = 0; i < q; i++)
 		{
-			ret = ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], BLK_SIZE);
+			ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], handle->priv.progress_blk_size);
 			if (ret)
 			{
 				break;
 			}
 			ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
 
-			handle->updat->cnt1 += BLK_SIZE;
-			if (*length > MIN_SIZE)
+			handle->updat->cnt1 += handle->priv.progress_blk_size;
+			if (*length > handle->priv.progress_min_size)
 			{
 				handle->updat->pbar();
 			}
@@ -304,7 +305,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 		// recv last chunk
 		if (!ret)
 		{
-			ret = ticables_cable_recv(handle->cable, &data[i*BLK_SIZE], (uint16_t)r);
+			ret = ticables_cable_recv(handle->cable, &data[i*handle->priv.progress_blk_size], (uint16_t)r);
 			if (!ret)
 			{
 				ticables_progress_get(handle->cable, NULL, NULL, &handle->updat->rate);
@@ -312,7 +313,7 @@ static int dbus_recv_(CalcHandle* handle, uint8_t* host, uint8_t* cmd, uint16_t*
 				if (!ret)
 				{
 					handle->updat->cnt1++;
-					if (*length > MIN_SIZE)
+					if (*length > handle->priv.progress_min_size)
 					{
 						handle->updat->pbar();
 					}

@@ -111,7 +111,7 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 {
 	uint16_t pktsize;
 	int err;
-	uint8_t *buf = handle->priv2;
+	uint8_t *buf = handle->buffer;
 	uint8_t *data = NULL;
 	uint32_t size;
 
@@ -119,7 +119,10 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 	TRYF(ti73_recv_ACK(handle, NULL));
 
 	err = ti73_recv_XDP(handle, &pktsize, buf);	// pb with checksum
-	if (err != ERR_CHECKSUM) { TRYF(err) };
+	if (err && err != ERR_CHECKSUM)
+	{
+		return err;
+	};
 	data = g_memdup(buf, pktsize);
 
 	err = ti73_send_ACK(handle);
@@ -158,7 +161,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 			{
 				err = ti73_send_ACK(handle);
 				if (err)
+				{
 					goto done;
+				}
 				break;
 			}
 			else if (err)
@@ -172,7 +177,9 @@ static int		recv_screen	(CalcHandle* handle, CalcScreenCoord* sc, uint8_t** bitm
 
 			err = ti73_send_ACK(handle);
 			if (err)
+			{
 				goto done;
+			}
 
 			update_->max1 = TI84PC_COLS * TI84PC_ROWS * 2;
 			update_->cnt1 = size;

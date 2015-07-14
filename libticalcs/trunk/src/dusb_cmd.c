@@ -994,7 +994,9 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		pks += strlen(dst_name)+1;
 	}
 	for (i = 0; i < n_dst_attrs; i++)
+	{
 		pks += 4 + dst_attrs[i]->size;
+	}
 
 	pkt = dusb_vtl_pkt_new(pks, DUSB_VPKT_DEL_VAR);
 
@@ -1015,7 +1017,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 
 	pkt->data[j++] = MSB(n_src_attrs);
 	pkt->data[j++] = LSB(n_src_attrs);
-	for(i = 0; i < n_src_attrs; i++)
+	for (i = 0; i < n_src_attrs; i++)
 	{
 		pkt->data[j++] = MSB(src_attrs[i]->id);
 		pkt->data[j++] = LSB(src_attrs[i]->id);
@@ -1027,7 +1029,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 
 	pkt->data[j++] = 0x01; /* ??? */
 
-	if(strlen(dst_folder))
+	if (strlen(dst_folder))
 	{
 		pkt->data[j++] = strlen(dst_folder);
 		memcpy(pkt->data + j, dst_folder, strlen(dst_folder)+1);
@@ -1038,7 +1040,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		pkt->data[j++] = 0;
 	}
 
-	if(strlen(dst_name))
+	if (strlen(dst_name))
 	{
 		pkt->data[j++] = strlen(dst_name);
 		memcpy(pkt->data + j, dst_name, strlen(dst_name)+1);
@@ -1051,7 +1053,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 
 	pkt->data[j++] = MSB(n_dst_attrs);
 	pkt->data[j++] = LSB(n_dst_attrs);
-	for(i = 0; i < n_dst_attrs; i++)
+	for (i = 0; i < n_dst_attrs; i++)
 	{
 		pkt->data[j++] = MSB(dst_attrs[i]->id);
 		pkt->data[j++] = LSB(dst_attrs[i]->id);
@@ -1061,9 +1063,16 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 		j += dst_attrs[i]->size;
 	}
 
-	g_assert(j == pks);
-
-	retval = dusb_send_data(handle, pkt);
+	if (j == pks)
+	{
+		retval = dusb_send_data(handle, pkt);
+	}
+	else
+	{
+		// Really shouldn't occur.
+		ticalcs_warning("Discrepancy in packet generation, not sending it");
+		retval = ERR_INVALID_PACKET;
+	}
 
 	ticalcs_info("   src_folder=%s, name=%s, nattrs=%i", src_folder, src_name, n_src_attrs);
 	ticalcs_info("   dst_folder=%s, name=%s, nattrs=%i", dst_folder, dst_name, n_dst_attrs);
@@ -1074,8 +1083,7 @@ TIEXPORT3 int TICALL dusb_cmd_s_var_modify(CalcHandle *handle,
 
 TIEXPORT3 int TICALL dusb_cmd_s_var_delete(CalcHandle *handle, const char *folder, const char *name, int nattrs, const DUSBCalcAttr **attrs)
 {
-	const DUSBCalcAttr * dummy;
-	return dusb_cmd_s_var_modify(handle, folder, name, nattrs, attrs, "", "", 0, &dummy);
+	return dusb_cmd_s_var_modify(handle, folder, name, nattrs, attrs, "", "", 0, NULL);
 }
 
 // 0x0011: remote control

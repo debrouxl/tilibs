@@ -100,8 +100,9 @@ static gchar * build_path(CalcModel model, VarRequest * vr)
 
 static int		is_ready	(CalcHandle* handle)
 {
-	static int rom_11 = 0;
-	static int rom_14 = 0;
+	// If re-enabled, these ones should be moved to handle->priv.
+	//static int rom_11 = 0;
+	//static int rom_14 = 0;
 	int ret;
 
 	// XXX debrouxl forcing a full sequence makes all operations a LOT slower (especially on
@@ -147,7 +148,7 @@ static int		is_ready	(CalcHandle* handle)
 		if (ret)
 		{
 			ticalcs_info("OS = 1.1");
-			rom_11 = !0;
+			//rom_11 = !0;
 
 			ret = nsp_addr_request(handle);
 			if (ret)
@@ -166,12 +167,12 @@ static int		is_ready	(CalcHandle* handle)
 			if (ret)
 			{
 				ticalcs_info("OS = 1.2 or 1.3");
-				rom_14 = 0;
+				//rom_14 = 0;
 			}
 			else
 			{
 				ticalcs_info("OS = 1.4 or later");
-				rom_14 = !0;
+				//rom_14 = !0;
 			}
 		}
 

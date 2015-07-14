@@ -684,13 +684,14 @@ struct _CalcFncts
  * @model: cable model
  * @calc: calculator functions
  * @update: callbacks for GUI interaction
- * @priv: opaque data for internal/private use (static)
- * @priv2: idem (allocated)
- * @priv3: idem (static)
+ * @unused1: unused member kept for API compatibility purposes
+ * @buffer: allocated data buffer for internal use
+ * @unused2: unused member kept for API compatibility purposes
  * @open: device has been opened
  * @busy: transfer is in progress
  * @cable: handle on cable used with this model
  * @attached: set if a cable has been attached
+ * @priv: private per-handle data
  *
  * A structure used to store information as a handle.
  * !!! This structure is for private use !!!
@@ -701,15 +702,23 @@ struct _CalcHandle
 	CalcFncts*	calc;
 	CalcUpdate*	updat;
 
-	void*		priv;	// free of use
-	void*		priv2;	// used for sending buffer (packets.c)
-	void*		priv3;	// free of use
+	void*		unused1;
+	void*		buffer; // used as data buffer
+	void*		unused2;
 
 	int			open;
 	int			busy;
 
 	CableHandle* cable;
 	int			attached;
+
+	struct {
+		uint32_t dusb_rpkt_maxlen; // max length of data in raw packet
+		unsigned int progress_blk_size; // refresh pbars every once in a while.
+		unsigned int progress_min_size; // don't refresh if packet is smaller than some amount.
+		unsigned int romdump_std_blk; // number of full-size blocks
+		unsigned int romdump_sav_blk; // number of compressed blocks
+	} priv;
 };
 
 /**

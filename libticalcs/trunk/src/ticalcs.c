@@ -300,14 +300,16 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 		handle->model = model;
 
-		for(i = 0; calcs[i]; i++)
-			if(calcs[i]->model == (int const)model)
+		for (i = 0; calcs[i]; i++)
+		{
+			if (calcs[i]->model == (int const)model)
 			{
 				handle->calc = (CalcFncts *)calcs[i];
 				break;
 			}
+		}
 
-		if(handle->calc == NULL)
+		if (handle->calc == NULL)
 		{
 			g_free(handle);
 			return NULL;
@@ -315,8 +317,8 @@ TIEXPORT3 CalcHandle* TICALL ticalcs_handle_new(CalcModel model)
 
 		handle->updat = (CalcUpdate *)&default_update;
 
-		handle->priv2 = (uint8_t *)g_malloc(65536 + 6);
-		if(handle->priv2 == NULL)
+		handle->buffer = (uint8_t *)g_malloc(65536 + 6);
+		if (handle->buffer == NULL)
 		{
 			g_free(handle);
 			return NULL;
@@ -340,11 +342,15 @@ TIEXPORT3 int TICALL ticalcs_handle_del(CalcHandle* handle)
 {
 	if (handle != NULL)
 	{
-		if(handle->attached)
+		if (handle->attached)
+		{
 			ticalcs_cable_detach(handle);
+		}
 
-		if(handle->priv2)
-			g_free(handle->priv2);
+		if (handle->buffer)
+		{
+			g_free(handle->buffer);
+		}
 
 		g_free(handle);
 	}
