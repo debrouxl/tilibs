@@ -59,12 +59,34 @@
 
 extern const char *TI85_CONST[TI85_MAXTYPES + 1][4];
 
-const char *ti85_byte2type(uint8_t data);
+// Return the type corresponding to the value
+static inline const char *ti85_byte2type(uint8_t data)
+{
+	//if(data >= TI85_MAXTYPES) tifiles_warning(_("ti85_byte2type: unknown type (%02x)."), data);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][0] : "";
+}
+
+// Return the value corresponding to the type
 uint8_t ti85_type2byte(const char *s);
-const char *ti85_byte2fext(uint8_t data);
+
+// Return the file extension corresponding to the value
+static inline const char *ti85_byte2fext(uint8_t data)
+{
+	//if(data >= TI85_MAXTYPES) tifiles_warning(_("ti85_byte2fext: unknown type (%02x)."), data);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][1] : "85?";
+}
+
+// Return the value corresponding to the file extension
 uint8_t ti85_fext2byte(const char *s);
 
+// Return the descriptive associated with the vartype
 const char *ti85_byte2desc(uint8_t data);
-const char *ti85_byte2icon(uint8_t data);
+
+// Return the icon name associated with the vartype
+static inline const char *ti85_byte2icon(uint8_t data)
+{
+	//if(data >= TI85_MAXTYPES) tifiles_warning(_("ti85_byte2icon: unknown type (%02x)."), data);
+	return (data < TI85_MAXTYPES) ? TI85_CONST[data][3] : "Unknown";
+}
 
 #endif

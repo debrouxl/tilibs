@@ -44,8 +44,6 @@
 #define TI73_TAB    0x11	//deprecated
 #define TI73_TABLE	0x11
 #define TI73_BKUP   0x13
-
-
 #define TI73_DIR    0x19
 #define TI73_AVAR	0x1A
 #define TI73_AMS    0x23
@@ -57,12 +55,34 @@
 
 extern const char *TI73_CONST[TI73_MAXTYPES + 1][4];
 
-const char *ti73_byte2type(uint8_t data);
+// Return the type corresponding to the value
+static inline const char *ti73_byte2type(uint8_t data)
+{
+	//if(data >= TI73_MAXTYPES) tifiles_warning(_("ti73_byte2type: unknown type (%02x)."), data);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][0] : "";
+}
+
+// Return the value corresponding to the type
 uint8_t ti73_type2byte(const char *s);
-const char *ti73_byte2fext(uint8_t data);
+
+// Return the file extension corresponding to the value
+static inline const char *ti73_byte2fext(uint8_t data)
+{
+	//if(data >= TI73_MAXTYPES) tifiles_warning(_("ti73_byte2fext: unknown type (%02x)."), data);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][1] : "73?";
+}
+
+// Return the value corresponding to the file extension
 uint8_t ti73_fext2byte(const char *s);
 
-const char *ti73_byte2icon(uint8_t data);
+// Return the descriptive associated with the vartype
 const char *ti73_byte2desc(uint8_t data);
+
+// Return the icon name associated with the vartype
+static inline const char *ti73_byte2icon(uint8_t data)
+{
+	//if(data >= TI73_MAXTYPES) tifiles_warning(_("ti73_byte2icon: unknown type (%02x)."), data);
+	return (data < TI73_MAXTYPES) ? TI73_CONST[data][3] : "Unknown";
+}
 
 #endif

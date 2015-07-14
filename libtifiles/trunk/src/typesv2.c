@@ -87,18 +87,9 @@ const char *V200_CONST[V200_MAXTYPES + 1][4] = {
   {"", "v2?", "Unknown", N_("Unknown")},
   {"", "v2?", "Unknown", N_("Unknown")},
   {"", "v2?", "Unknown", N_("Unknown")},
-
-  {NULL, NULL, NULL},
+  {NULL, NULL, NULL, NULL}
 };
 
-// Return the type corresponding to the value
-const char *v200_byte2type(uint8_t data)
-{
-	//if(data >= V200_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < V200_MAXTYPES) ? V200_CONST[data][0] : "";
-}
-
-// Return the value corresponding to the type
 uint8_t v200_type2byte(const char *s)
 {
 	int i;
@@ -106,21 +97,15 @@ uint8_t v200_type2byte(const char *s)
 	for (i = 0; i < V200_MAXTYPES; i++) 
 	{
 		if (!strcmp(V200_CONST[i][0], s))
+		{
 			break;
+		}
 	}
 
-	//if (i == V200_MAXTYPES) tifiles_warning( _("v200_type2byte: unknown type."));
+	//if (i == V200_MAXTYPES) tifiles_warning(_("v200_type2byte: unknown type."));
 	return i;
 }
 
-// Return the file extension corresponding to the value
-const char *v200_byte2fext(uint8_t data)
-{
-	//if(data >= V200_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < V200_MAXTYPES) ? V200_CONST[data][1] : "v2?";
-}
-
-// Return the value corresponding to the file extension
 uint8_t v200_fext2byte(const char *s)
 {
 	int i;
@@ -128,25 +113,19 @@ uint8_t v200_fext2byte(const char *s)
 	for (i = 0; i < V200_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(V200_CONST[i][1], s))
+		{
 			break;
+		}
 	}
 
-	//if (i == V200_MAXTYPES)	tifiles_warning( _("v200_fext2byte: unknown type.\n"));
+	//if (i == V200_MAXTYPES) tifiles_warning(_("v200_fext2byte: unknown type."));
 	return i;
 }
 
-// Return the descriptive associated with the vartype
 const char *v200_byte2desc(uint8_t data)
 {
-	//if(data >= V200_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
+	//if(data >= V200_MAXTYPES) tifiles_warning(_("v200_byte2desc: unknown type (%02x)."), data);
 	return (data < V200_MAXTYPES) ? V200_CONST[data][2] : _("Unknown");
-}
-
-// Return the icon name associated with the vartype
-const char *v200_byte2icon(uint8_t data)
-{
-	//if(data >= V200_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < V200_MAXTYPES) ? V200_CONST[data][3] : "Unknown";
 }
 
 #endif

@@ -31,15 +31,7 @@
 #include "types84p.h"
 #include "logging.h"
 
-struct {
-	const char * type;
-	const char * fext83p;
-	const char * fext84pc;
-	const char * fext83pce;
-	const char * fext84pce;
-	const char * icon;
-	const char * desc;
-} TI83p_CONST[TI83p_MAXTYPES + 1] =
+TI83p_DATA TI83p_CONST[TI83p_MAXTYPES + 1] =
 {
 	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, // 0
 	{"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
@@ -89,33 +81,9 @@ struct {
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 45, 0x2D
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
 	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-	{NULL,     NULL,    NULL,    NULL,    NULL,    NULL,           NULL},
+	{NULL,     NULL,    NULL,    NULL,    NULL,    NULL,           NULL}
 };
 
-// Return the type corresponding to the value
-const char *ti83p_byte2type(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].type : "";
-}
-const char *ti84p_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-const char *ti84pc_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-const char *ti83pce_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-const char *ti84pce_byte2type(uint8_t data)
-{
-	return ti83p_byte2type(data);
-}
-
-// Return the value corresponding to the type
 uint8_t ti83p_type2byte(const char *s)
 {
 	int i;
@@ -123,54 +91,17 @@ uint8_t ti83p_type2byte(const char *s)
 	for (i = 0; i < TI83p_MAXTYPES; i++) 
 	{
 		if (!strcmp(TI83p_CONST[i].type, s))
+		{
 			break;
+		}
 	}
 
-	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2type: unknown type.\n"));
+	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2type: unknown type."));
 
 	return i;
 }
-uint8_t ti84p_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-uint8_t ti84pc_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-uint8_t ti83pce_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
-uint8_t ti84pce_type2byte(const char *s)
-{
-	return ti83p_type2byte(s);
-}
 
-// Return the file extension corresponding to the value
-const char *ti83p_byte2fext(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext83p : "8X?";
-}
-const char *ti84p_byte2fext(uint8_t data)
-{
-	return ti83p_byte2fext(data);
-}
-const char *ti84pc_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext84pc : "8C?";
-}
-const char *ti83pce_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext83pce : "8C?";
-}
-const char *ti84pce_byte2fext(uint8_t data)
-{
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].fext84pce : "8C?";
-}
 
-// Return the value corresponding to the file extension
 uint8_t ti83p_fext2byte(const char *s)
 {
 	int i;
@@ -178,16 +109,15 @@ uint8_t ti83p_fext2byte(const char *s)
 	for (i = 0; i < TI83p_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext83p, s))
+		{
 			break;
+		}
 	}
 
-	//if (i == TI83p_MAXTYPES)	tifiles_warning(("ti83p_fext2byte: unknown type.\n"));
+	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83p_fext2byte: unknown type."));
 	return i;
 }
-uint8_t ti84p_fext2byte(const char *s)
-{
-	return ti83p_fext2byte(s);
-}
+
 uint8_t ti84pc_fext2byte(const char *s)
 {
 	int i;
@@ -195,11 +125,15 @@ uint8_t ti84pc_fext2byte(const char *s)
 	for (i = 0; i < TI83p_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext84pc, s))
+		{
 			break;
+		}
 	}
 
+	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti84pc_fext2byte: unknown type."));
 	return i;
 }
+
 uint8_t ti83pce_fext2byte(const char *s)
 {
 	int i;
@@ -207,11 +141,15 @@ uint8_t ti83pce_fext2byte(const char *s)
 	for (i = 0; i < TI83p_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext83pce, s))
+		{
 			break;
+		}
 	}
 
+	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti83pce_fext2byte: unknown type."));
 	return i;
 }
+
 uint8_t ti84pce_fext2byte(const char *s)
 {
 	int i;
@@ -219,57 +157,20 @@ uint8_t ti84pce_fext2byte(const char *s)
 	for (i = 0; i < TI83p_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI83p_CONST[i].fext84pce, s))
+		{
 			break;
+		}
 	}
 
+	//if (i == TI83p_MAXTYPES) tifiles_warning(_("ti84pce_fext2byte: unknown type."));
 	return i;
 }
 
 
-// Return the descriptive associated with the vartype
 const char *ti83p_byte2desc(uint8_t data)
 {
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI83p_MAXTYPES) ? _(TI83p_CONST[data].desc) : _("Unknown");
-}
-const char *ti84p_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-const char *ti84pc_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-const char *ti83pce_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-const char *ti84pce_byte2desc(uint8_t data)
-{
-	return ti83p_byte2desc(data);
-}
-
-// Return the icon name associated with the vartype
-const char *ti83p_byte2icon(uint8_t data)
-{
-	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].icon : "Unknown";
-}
-const char *ti84p_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-const char *ti84pc_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-const char *ti83pce_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
-}
-const char *ti84pce_byte2icon(uint8_t data)
-{
-	return ti83p_byte2icon(data);
+	//if(data >= TI83p_MAXTYPES) tifiles_warning(_("ti83p_byte2desc: unknown type (%02x)."), data);
+	return (data < TI83p_MAXTYPES) ? TI83p_CONST[data].desc : _("Unknown");
 }
 
 #endif

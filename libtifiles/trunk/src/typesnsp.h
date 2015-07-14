@@ -33,12 +33,34 @@
 
 extern const char *NSP_CONST[NSP_MAXTYPES + 1][4];
 
-const char *nsp_byte2type(uint8_t data);
-uint8_t		nsp_type2byte(const char *s);
-const char *nsp_byte2fext(uint8_t data);
-uint8_t		nsp_fext2byte(const char *s);
+// Return the type corresponding to the value
+static inline const char *nsp_byte2type(uint8_t data)
+{
+	//if(data >= NSP_MAXTYPES) tifiles_warning(_("nsp_byte2type: unknown type (%02x)."), data);
+	return (data < NSP_MAXTYPES) ? NSP_CONST[data][0] : "";
+}
 
+// Return the value corresponding to the type
+uint8_t nsp_type2byte(const char *s);
+
+// Return the file extension corresponding to the value
+static inline const char *nsp_byte2fext(uint8_t data)
+{
+	//if(data >= NSP_MAXTYPES) tifiles_warning(_("nsp_byte2fext: unknown type (%02x)."), data);
+	return (data < NSP_MAXTYPES) ? NSP_CONST[data][1] : "";
+}
+
+// Return the value corresponding to the file extension
+uint8_t nsp_fext2byte(const char *s);
+
+// Return the descriptive associated with the vartype
 const char *nsp_byte2desc(uint8_t data);
-const char *nsp_byte2icon(uint8_t data);
+
+// Return the icon name associated with the vartype
+static inline const char *nsp_byte2icon(uint8_t data)
+{
+	//if(data >= NSP_MAXTYPES) tifiles_warning(_("nsp_byte2icon: unknown type (%02x)."), data);
+	return (data < NSP_MAXTYPES) ? NSP_CONST[data][3] : "Unknown";
+}
 
 #endif

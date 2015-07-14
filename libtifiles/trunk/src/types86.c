@@ -80,18 +80,9 @@ const char *TI86_CONST[TI86_MAXTYPES + 1][4] =
   {"", "86?", "Unknown", N_("Unknown")},
   {"", "86?", "Unknown", N_("Unknown")},
   {"", "86?", "Unknown", N_("Unknown")},
-
-  {NULL, NULL, NULL},
+  {NULL, NULL, NULL, NULL},
 };
 
-// Return the type corresponding to the value
-const char *ti86_byte2type(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][0] : "";
-}
-
-// Return the value corresponding to the type
 uint8_t ti86_type2byte(const char *s)
 {
 	int i;
@@ -99,21 +90,15 @@ uint8_t ti86_type2byte(const char *s)
 	for (i = 0; i < TI86_MAXTYPES; i++) 
 	{
 		if (!strcmp(TI86_CONST[i][0], s))
+		{
 			break;
+		}
 	}
 
 	//if (i == TI86_MAXTYPES) tifiles_warning(_("ti86_type2byte: unknown type."));
-  return i;
+	return i;
 }
 
-// Return the file extension corresponding to the value
-const char *ti86_byte2fext(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][1] : "86?";
-}
-
-// Return the value corresponding to the file extension
 uint8_t ti86_fext2byte(const char *s)
 {
 	int i;
@@ -121,25 +106,19 @@ uint8_t ti86_fext2byte(const char *s)
 	for (i = 0; i < TI86_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI86_CONST[i][1], s))
+		{
 			break;
+		}
 	}
 
 	//if (i == TI86_MAXTYPES) tifiles_warning(_("ti86_fext2byte: unknown type."));
 	return i;
 }
 
-// Return the descriptive associated with the vartype
 const char *ti86_byte2desc(uint8_t data)
 {
-	//if(data >= TI86_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
+	//if(data >= TI86_MAXTYPES) tifiles_warning(_("ti86_byte2desc: unknown type (%02x)."), data);
 	return (data < TI86_MAXTYPES) ? TI86_CONST[data][2] : _("Unknown");
-}
-
-// Return the icon name associated with the vartype
-const char *ti86_byte2icon(uint8_t data)
-{
-	//if(data >= TI86_MAXTYPES)	tifiles_warning(_("typesxx: unknown type (%02x).\n"), data);
-	return (data < TI86_MAXTYPES) ? TI86_CONST[data][3] : "Unknown";
 }
 
 #endif

@@ -23,8 +23,6 @@
   Variable type ID and file extensions
 */
 
-static int warnings = 0;
-
 #ifndef DISABLE_TI9X
 
 #include <string.h>
@@ -90,40 +88,25 @@ const char *TI92p_CONST[TI92p_MAXTYPES + 1][4] =
   {"", "9x?", "Unknown", N_("Unknown")},
   {"", "9x?", "Unknown", N_("Unknown")},
   {"", "9x?", "Unknown", N_("Unknown")},
-
-  {NULL, NULL, NULL},
+  {NULL, NULL, NULL, NULL}
 };
 
-// Return the type corresponding to the value
-const char *ti92p_byte2type(uint8_t data)
-{
-	if(warnings && (data >= TI92p_MAXTYPES)) tifiles_warning(_("types92p: unknown type (%02x).\n"), data);
-	return (data < TI92p_MAXTYPES) ? TI92p_CONST[data][0] : "";
-}
-
-// Return the value corresponding to the type
 uint8_t ti92p_type2byte(const char *s)
 {
 	int i;
 
 	for (i = 0; i < TI92p_MAXTYPES; i++) 
 	{
-	    if (!strcmp(TI92p_CONST[i][0], s))
+		if (!strcmp(TI92p_CONST[i][0], s))
+		{
 			break;
+		}
 	}
 
-	//if (i == TI92p_MAXTYPES)	tifiles_warning(_("ti92p_type2byte: unknown type."));
+	//if (i == TI92p_MAXTYPES) tifiles_warning(_("ti92p_type2byte: unknown type."));
 	return i;
 }
 
-// Return the file extension corresponding to the value
-const char *ti92p_byte2fext(uint8_t data)
-{
-	if(warnings && (data >= TI92p_MAXTYPES)) tifiles_warning(_("types92p: unknown type (%02x).\n"), data);
-	return (data < TI92p_MAXTYPES) ? TI92p_CONST[data][1] : "9x?";
-}
-
-// Return the value corresponding to the file extension
 uint8_t ti92p_fext2byte(const char *s)
 {
 	int i;
@@ -131,25 +114,19 @@ uint8_t ti92p_fext2byte(const char *s)
 	for (i = 0; i < TI92p_MAXTYPES; i++) 
 	{
 		if (!g_ascii_strcasecmp(TI92p_CONST[i][1], s))
+		{
 			break;
+		}
 	}
 
-	//if (i == TI92p_MAXTYPES) tifiles_warning( _("unknown type. It is a bug. Please report this information.\n"));
+	//if (i == TI92_MAXTYPES) tifiles_warning(_("ti92p_fext2byte: unknown type."));
 	return i;
 }
 
-// Return the descriptive associated with the vartype
 const char *ti92p_byte2desc(uint8_t data)
 {
-	if(warnings && (data >= TI92p_MAXTYPES)) tifiles_warning(_("types92p: unknown type (%02x).\n"), data);
+	//if(data >= TI92p_MAXTYPES) tifiles_warning(_("ti92p_byte2desc: unknown type (%02x)."), data);
 	return (data < TI92p_MAXTYPES) ? TI92p_CONST[data][2] : _("Unknown");
-}
-
-// Return the icon name associated with the vartype
-const char *ti92p_byte2icon(uint8_t data)
-{
-	if(warnings && (data >= TI92p_MAXTYPES)) tifiles_warning(_("types92p: unknown type (%02x).\n"), data);
-	return (data < TI92p_MAXTYPES) ? TI92p_CONST[data][3] : "Unknown";
 }
 
 #endif
