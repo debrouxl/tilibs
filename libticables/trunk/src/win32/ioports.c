@@ -225,7 +225,7 @@ int win32_comport_open(char *comPort, PHANDLE hCom)
   dcb.fParity = FALSE;		// Parity checking disabled
   dcb.fOutxCtsFlow = FALSE;	// No output flow control
   dcb.fOutxDsrFlow = FALSE;	// Idem
-  dcb.fDtrControl = DTR_CONTROL_DISABLE;	// Provide power supply
+  dcb.fDtrControl = DTR_CONTROL_ENABLE;	// Provide power supply
   dcb.fDsrSensitivity = FALSE;	// ignore DSR status
   dcb.fOutX = FALSE;		// no XON/XOFF flow control
   dcb.fInX = FALSE;		// idem
