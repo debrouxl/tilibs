@@ -14,8 +14,8 @@ Requirements
 -------------------------------------------------------------------------------
 
 OS:
-  - any *nix with a reasonably modern C compiler (a current GCC will definitely
-    work)
+  - any *nix with a reasonably modern C compiler (a current GCC or Clang will
+    definitely work)
   or
   - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
 
@@ -26,6 +26,7 @@ Libraries:
   - libticables2 (required)
 
 Tools for building from source:
+  - autoreconf (required)
   - make (required)
   - tfdocgen (optional, required to build API docs)
 
@@ -34,6 +35,8 @@ Compilation
 -------------------------------------------------------------------------------
 
 Untar the libticalcs2 archive, change directory to the libticalcs2 directory.
+
+Type "autoreconf -i -f" to generate the autotools files.
 
 Type "./configure" (add --prefix option to install to a non-default location).
 

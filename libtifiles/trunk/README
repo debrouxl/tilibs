@@ -14,17 +14,18 @@ Requirements
 -------------------------------------------------------------------------------
 
 OS:
-  - any *nix with a reasonably modern C compiler (a current GCC will definitely
-    work)
+  - any *nix with a reasonably modern C compiler (a current GCC or Clang will
+    definitely work)
   or
   - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
 
 Libraries:
   - GLib 2 (required)
-  - zlib (required)
+  - libarchive (required)
   - libticonv (required)
 
 Tools for building from source:
+  - autoreconf (required)
   - make (required)
   - tfdocgen (optional, required to build API docs)
 
@@ -33,6 +34,8 @@ Compilation
 -------------------------------------------------------------------------------
 
 Untar the libtifiles2 archive, change directory to the libtifiles2 directory.
+
+Type "autoreconf -i -f" to generate the autotools files.
 
 Type "./configure" (add --prefix option to install to a non-default location).
 

@@ -14,8 +14,8 @@ Requirements
 -------------------------------------------------------------------------------
 
 OS:
-  - any *nix with a reasonably modern C compiler (a current GCC will definitely
-    work)
+  - any *nix with a reasonably modern C compiler (a current GCC or Clang will
+    definitely work)
     See the CONFIG file for device permission issues and how to solve them.
   or
   - Microsoft Windows, MSVC or MSYS+MinGW required for compiling from source
@@ -26,6 +26,7 @@ Libraries:
     USB cables)
 
 Tools for building from source:
+  - autoreconf (required)
   - make (required)
   - tfdocgen (optional, required to build API docs)
 
@@ -33,8 +34,9 @@ Tools for building from source:
 Compilation
 -------------------------------------------------------------------------------
 
-Untar the libticables2 archive, change directory to the libticables2
-directory.
+Untar the libticables2 archive, change directory to the libticables2 directory.
+
+Type "autoreconf -i -f" to generate the autotools files.
 
 Type "./configure" (add --prefix option to install to a non-default location).
 Add --enable-libusb10 if you want to build against the libusb 1.0 backend,
@@ -46,7 +48,7 @@ to install to the default, system-wide location.
 NOTE: some cable handlers can be disabled using #define NO_CABLE_XXX.
 
 NOTE: building libticables against the libusb 1.0 compatibility layer for
-libusb 0.1 does not work, because some features required by libticables are
+libusb 0.1 does *not* work, because some features required by libticables are
 not supported by this compatibility layer. You need to build either against
 libusb 0.1 proper, or use the libusb 1.0 backend.
 
