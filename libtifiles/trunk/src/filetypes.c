@@ -402,11 +402,20 @@ TIEXPORT2 void TICALL tifiles_fext_free(char *filename)
 /* Signature checking */
 /**********************/
 
-static int tifiles_file_has_ti_header(const char *filename)
+/**
+ * tifiles_file_has_ti_header:
+ * @filename: a filename as string.
+ *
+ * Check whether file has a TI magic number in the header.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename)
 {
 	FILE *f;
 	char buf[9];
 	char *p;
+	int ret = 0;
 
 	if (filename != NULL)
 	{
@@ -414,34 +423,254 @@ static int tifiles_file_has_ti_header(const char *filename)
 		if (f != NULL)
 		{
 			memset(buf, 0, sizeof(buf));
-			if (fread_8_chars(f, buf) < 0)
+			if (fread_8_chars(f, buf) == 0)
 			{
-				// Fall through. This warning is too noisy for files < 8 bytes.
-				//tifiles_warning("Failed to read from file");
+				for (p = buf; *p != '\0'; p++)
+				{
+					*p = toupper(*p);
+				}
+
+				if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
+				    !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
+				    !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
+				    !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
+				    !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
+				    !strcmp(buf, "**TIFL**") ||
+				    !strncmp(buf, "*TI", 3))
+				{
+					ret = !0;
+				}
 			}
 			fclose(f);
-			for (p = buf; *p != '\0'; p++)
-			{
-				*p = toupper(*p);
-			}
-
-			if (!strcmp(buf, "**TI73**") || !strcmp(buf, "**TI82**") ||
-			    !strcmp(buf, "**TI83**") || !strcmp(buf, "**TI83F*") ||
-			    !strcmp(buf, "**TI85**") || !strcmp(buf, "**TI86**") ||
-			    !strcmp(buf, "**TI89**") || !strcmp(buf, "**TI92**") ||
-			    !strcmp(buf, "**TI92P*") || !strcmp(buf, "**V200**") ||
-			    !strcmp(buf, "**TIFL**") ||
-			    !strncmp(buf, "*TI", 3))
-			{
-				return !0;
-			}
 		}
 	}
 
-	return 0;
+	return ret;
 }
 
-static int model_to_dev_type(CalcModel model)
+#define TIB_SIGNATURE	"Advanced Mathematics Software"
+
+/**
+ * tifiles_file_has_tib_header:
+ * @filename: a filename as string.
+ *
+ * Check whether file has a TIB magic number in the header.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_has_tib_header(const char *filename)
+{
+	FILE *f;
+	char str[64];
+	int ret = 0;
+
+	if (filename != NULL)
+	{
+#ifdef CHECK_FILE_EXTENSIONS
+		char *e = tifiles_fext_get(filename);
+
+		if (   e[0] == 0
+		    || g_ascii_strcasecmp(e, "tib"))
+		{
+			return 0;
+		}
+#endif
+
+		f = g_fopen(filename, "rb");
+		if (f != NULL)
+		{
+			if (fread_n_chars(f, 22 + sizeof(TIB_SIGNATURE) + 1, str) == 0)
+			{
+				str[22 + sizeof(TIB_SIGNATURE) + 1] = '\0';
+				if (!strcmp(str + 22, TIB_SIGNATURE))
+				{
+					ret = !0;
+				}
+			}
+			fclose(f);
+		}
+	}
+
+	return ret;
+}
+
+#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
+#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
+
+/**
+ * tifiles_file_has_tig_header:
+ * @filename: a filename as string.
+ *
+ * Check whether file has a ZIP file header.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_has_tig_header(const char *filename)
+{
+	FILE *f;
+	char str[5];
+	int ret = 0;
+
+	if (filename != NULL)
+	{
+#ifdef CHECK_FILE_EXTENSIONS
+		char *e = tifiles_fext_get(filename);
+
+		if (   e[0] == 0
+		    || g_ascii_strcasecmp(e, "tig"))
+		{
+			return 0;
+		}
+#endif
+
+		f = g_fopen(filename, "rb");
+		if (f != NULL)
+		{
+			if (fread_n_chars(f, strlen(TIG_SIGNATURE), str) == 0)
+			{
+				str[strlen(TIG_SIGNATURE)] = '\0';
+				if (!strcmp(str, TIG_SIGNATURE) || !strcmp(str, TIG_SIGNATURE2))
+				{
+					ret = !0;
+				}
+			}
+			fclose(f);
+		}
+	}
+
+	return ret;
+}
+
+/**
+ * tifiles_file_has_tifl_header:
+ * @filename: a filename as string.
+ *
+ * Check whether file has a TI Flash file magic number in the header, and
+ * fill device type and data type for the last entry in the file.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type)
+{
+	FILE *f;
+	uint8_t buf[78];
+	uint32_t len;
+	int ret = 0;
+
+	if (filename != NULL)
+	{
+		f = g_fopen(filename, "rb");
+		if (f != NULL)
+		{
+			while (fread(buf, 1, 78, f) == 78)
+			{
+				if (strncmp((char *) buf, "**TIFL**", 8))
+				{
+					break;
+				}
+
+				ret = 1;
+
+				/* if there are multiple entries (old OS files with license
+				   agreement, old app files with certificate), return the type
+				   of the last entry */
+				if (dev_type != NULL)
+				{
+					*dev_type = buf[48];
+				}
+				if (data_type != NULL)
+				{
+					*data_type = buf[49];
+				}
+
+				len = buf[74] | (((uint32_t)buf[75]) << 8) | (((uint32_t)buf[76]) << 16) | (((uint32_t)buf[77]) << 24);
+				if (fseek(f, len, SEEK_CUR))
+				{
+					break;
+				}
+			}
+
+			fclose(f);
+		}
+	}
+
+	return ret;
+}
+
+#define TNO_SIGNATURE           "TI-Nspire.tno "
+#define TNO_NOSAMPLES_SIGNATURE "TI-Nspire.nosamples.tno "
+#define TNC_SIGNATURE           "TI-Nspire.tnc "
+#define TCO_SIGNATURE           "TI-Nspire.tco "
+#define TCC_SIGNATURE           "TI-Nspire.tcc "
+#define TMO_SIGNATURE           "TI-Nspire.tmo "
+#define TMC_SIGNATURE           "TI-Nspire.tmc "
+#define OSEXT1_SIGNATURE        "__OSEXT__1 "
+
+/**
+ * tifiles_file_has_tno_header:
+ * @filename: a filename as string.
+ *
+ * Check whether file has a Nspire OS / OS extension file header.
+ *
+ * Return value: a boolean value.
+ **/
+TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
+{
+	FILE *f;
+	char str[128];
+	int ret = 0;
+
+	if (filename != NULL)
+	{
+#ifdef CHECK_FILE_EXTENSIONS
+		char *e = tifiles_fext_get(filename);
+
+		if (   e[0] == 0
+		    || (   g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc")
+			&& g_ascii_strcasecmp(e, "tco") && g_ascii_strcasecmp(e, "tcc")
+			&& g_ascii_strcasecmp(e, "tmo") && g_ascii_strcasecmp(e, "tmc")
+		       )
+		   )
+		{
+			return 0;
+		}
+#endif
+
+		f = g_fopen(filename, "rb");
+		if (f != NULL)
+		{
+			if (fread_n_chars(f, 63, str) == 0)
+			{
+				if (   !strncmp(str, TNO_SIGNATURE, 14)
+				    || !strncmp(str, TNC_SIGNATURE, 14)
+				    || !strncmp(str, TNO_NOSAMPLES_SIGNATURE, 24)
+				    || !strncmp(str, TCO_SIGNATURE, 14)
+				    || !strncmp(str, TCC_SIGNATURE, 14)
+				    || !strncmp(str, TMO_SIGNATURE, 14)
+				    || !strncmp(str, TMC_SIGNATURE, 14)
+				    || !strncmp(str, OSEXT1_SIGNATURE, 11)
+				   )
+				{
+					ret = !0;
+				}
+			}
+
+			fclose(f);
+		}
+	}
+
+	return ret;
+}
+
+/**
+ * tifiles_model_to_dev_type:
+ * @model: a calculator model
+ *
+ * Converts the calculator model to FlashApp DeviceType.
+ *
+ * Return value: FlashApp DeviceType if that calculator model supports FlashApps, -1 otherwise.
+ **/
+TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model)
 {
 	switch (model) {
 	case CALC_TI73:
@@ -471,166 +700,6 @@ static int model_to_dev_type(CalcModel model)
 	}
 }
 
-static int tifiles_file_has_tifl_header(const char *filename, int *dev_type, int *data_type)
-{
-	FILE *f;
-	uint8_t buf[78];
-	uint32_t len;
-	int ok = 0;
-
-	f = g_fopen(filename, "rb");
-	if (f != NULL)
-	{
-		while (fread(buf, 1, 78, f) == 78)
-		{
-			if (strncmp((char *) buf, "**TIFL**", 8))
-			{
-				break;
-			}
-
-			ok = 1;
-
-			/* if there are multiple entries (old OS files with license
-			   agreement, old app files with certificate), return the type
-			   of the last entry */
-			if (dev_type != NULL)
-			{
-				*dev_type = buf[48];
-			}
-			if (data_type != NULL)
-			{
-				*data_type = buf[49];
-			}
-
-			len = buf[74] | (((uint32_t)buf[75]) << 8) | (((uint32_t)buf[76]) << 16) | (((uint32_t)buf[77]) << 24);
-			if (fseek(f, len, SEEK_CUR))
-			{
-				break;
-			}
-		}
-
-		fclose(f);
-	}
-	return ok;
-}
-
-#define TIB_SIGNATURE	"Advanced Mathematics Software"
-
-static int tifiles_file_has_tib_header(const char *filename)
-{
-	FILE *f;
-	char str[128];
-#ifdef CHECK_FILE_EXTENSIONS
-	char *e = tifiles_fext_get(filename);
-
-	if (   e[0] == 0
-	    || g_ascii_strcasecmp(e, "tib"))
-	{
-		return 0;
-	}
-#endif
-
-	f = g_fopen(filename, "rb");
-	if (f != NULL)
-	{
-		fread_n_chars(f, 22, str);
-		fread_n_chars(f, strlen(TIB_SIGNATURE), str);
-		fclose(f);
-		str[strlen(TIB_SIGNATURE)] = '\0';
-		if (!strcmp(str, TIB_SIGNATURE))
-		{
-			return !0;
-		}
-	}
-
-	return 0;
-}
-
-#define TIG_SIGNATURE	"PK\x03\x04"	// 0x04034b50
-#define TIG_SIGNATURE2	"PK\x05\x06"	// 0x06054b50
-
-static int tifiles_file_has_tig_header(const char *filename)
-{
-	FILE *f;
-	char str[5];
-#ifdef CHECK_FILE_EXTENSIONS
-	char *e = tifiles_fext_get(filename);
-
-	if (   e[0] == 0
-	    || g_ascii_strcasecmp(e, "tig"))
-	{
-		return 0;
-	}
-#endif
-
-	f = g_fopen(filename, "rb");
-	if (f != NULL)
-	{
-		fread_n_chars(f, strlen(TIG_SIGNATURE), str);
-		fclose(f);
-		str[strlen(TIG_SIGNATURE)] = '\0';
-		if (!strcmp(str, TIG_SIGNATURE) || !strcmp(str, TIG_SIGNATURE2))
-		{
-			return !0;
-		}
-	}
-
-	return 0;
-}
-
-#define TNO_SIGNATURE           "TI-Nspire.tno "
-#define TNO_NOSAMPLES_SIGNATURE "TI-Nspire.nosamples.tno "
-#define TNC_SIGNATURE           "TI-Nspire.tnc "
-#define TCO_SIGNATURE           "TI-Nspire.tco "
-#define TCC_SIGNATURE           "TI-Nspire.tcc "
-#define TMO_SIGNATURE           "TI-Nspire.tmo "
-#define TMC_SIGNATURE           "TI-Nspire.tmc "
-#define OSEXT1_SIGNATURE        "__OSEXT__1 "
-
-static int tifiles_file_has_tno_header(const char *filename)
-{
-	FILE *f;
-	char str[128];
-	int ret = 0;
-
-#ifdef CHECK_FILE_EXTENSIONS
-	char *e = tifiles_fext_get(filename);
-
-	if (   e[0] == 0
-	    || (   g_ascii_strcasecmp(e, "tno") && g_ascii_strcasecmp(e, "tnc")
-	        && g_ascii_strcasecmp(e, "tco") && g_ascii_strcasecmp(e, "tcc")
-	        && g_ascii_strcasecmp(e, "tmo") && g_ascii_strcasecmp(e, "tmc")
-	       )
-	   )
-	{
-		return 0;
-	}
-#endif
-
-	f = g_fopen(filename, "rb");
-	if (f != NULL)
-	{
-		if (fread_n_chars(f, 63, str) == 0)
-		{
-			if (   !strncmp(str, TNO_SIGNATURE, 14)
-			    || !strncmp(str, TNC_SIGNATURE, 14)
-			    || !strncmp(str, TNO_NOSAMPLES_SIGNATURE, 24)
-			    || !strncmp(str, TCO_SIGNATURE, 14)
-			    || !strncmp(str, TCC_SIGNATURE, 14)
-			    || !strncmp(str, TMO_SIGNATURE, 14)
-			    || !strncmp(str, TMC_SIGNATURE, 14)
-			    || !strncmp(str, OSEXT1_SIGNATURE, 11)
-			   )
-			{
-				ret = !0;
-			}
-		}
-
-		fclose(f);
-	}
-
-	return ret;
-}
 
 /**************/
 /* File types */
@@ -840,7 +909,7 @@ TIEXPORT2 int TICALL tifiles_file_is_backup(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
 {
-	int type;
+	uint8_t type;
 
 	if (!tifiles_file_is_ti(filename))
 	{
@@ -867,7 +936,7 @@ TIEXPORT2 int TICALL tifiles_file_is_os(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_app(const char *filename)
 {
-	int type;
+	uint8_t type;
 
 	if (!tifiles_file_is_ti(filename))
 	{
@@ -907,7 +976,7 @@ TIEXPORT2 int TICALL tifiles_file_is_flash(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
 {
-	return (filename != NULL && tifiles_file_has_tib_header(filename));
+	return tifiles_file_has_tib_header(filename);
 }
 
 /**
@@ -920,7 +989,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
 {
-	return (filename != NULL && tifiles_file_has_tig_header(filename));
+	return tifiles_file_has_tig_header(filename);
 }
 
 /**
@@ -933,7 +1002,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
  **/
 TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
 {
-	return (filename != NULL && tifiles_file_has_tno_header(filename));
+	return tifiles_file_has_tno_header(filename);
 }
 
 /**
@@ -954,7 +1023,7 @@ TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)
 TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target)
 {
 	char *e = tifiles_fext_get(filename);
-	int ctype, dtype;
+	uint8_t ctype, dtype;
 
 #ifdef CHECK_FILE_EXTENSIONS
 	if (e[0] == 0)
@@ -1019,7 +1088,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	{
 		if (target && tifiles_file_has_tifl_header(filename, &ctype, &dtype))
 		{
-			return (ctype == model_to_dev_type(target) && dtype == TI83p_AMS);
+			return (ctype == tifiles_model_to_dev_type(target) && dtype == TI83p_AMS);
 		}
 		else if (target && tifiles_file_is_tib(filename))
 		{
@@ -1085,7 +1154,7 @@ TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, Cal
 	{
 		if(target && tifiles_file_has_tifl_header(filename, &ctype, &dtype))
 		{
-			return (ctype == model_to_dev_type(target) && dtype == TI83p_APPL);
+			return (ctype == tifiles_model_to_dev_type(target) && dtype == TI83p_APPL);
 		}
 		else
 		{

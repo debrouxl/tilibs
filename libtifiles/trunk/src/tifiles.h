@@ -91,12 +91,12 @@ typedef enum
 /**
  * DeviceType:
  *
- * An enumeration which contains soem device IDs for FLASH apps:
+ * An enumeration which contains some device IDs for FLASH apps:
  **/
 typedef enum
 {
 	DEVICE_TYPE_83P = 0x73,
-	DEVICE_TYPE_73	= 0x74,
+	DEVICE_TYPE_73  = 0x74,
 	DEVICE_TYPE_89  = 0x98,
 	DEVICE_TYPE_92P = 0x88,
 } DeviceType;
@@ -393,6 +393,14 @@ extern "C" {
 	TIEXPORT2 int TICALL tifiles_file_is_flash (const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_is_tigroup (const char *filename);
 	TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename);
+
+	TIEXPORT2 int TICALL tifiles_file_has_ti_header(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tib_header(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tig_header(const char *filename);
+	TIEXPORT2 int TICALL tifiles_file_has_tifl_header(const char *filename, uint8_t *dev_type, uint8_t *data_type);
+	TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename);
+
+	TIEXPORT2 int TICALL tifiles_model_to_dev_type(CalcModel model);
 
 	TIEXPORT2 int TICALL tifiles_file_test(const char *filename, FileClass type, CalcModel target);
 
