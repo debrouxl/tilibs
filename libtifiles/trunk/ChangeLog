@@ -3,6 +3,27 @@ SubVersion: $Id$
 Log of changes (libtifiles):
 
 - xx/xx/201x, version 1.1.7: debrouxl
+	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
+	- switch to a single, unconditional definition of CalcModel in ticonv.h, include ticonv.h from tifiles.h. The libtifiles binaries have depended on libticonv for years. Suggested by Benjamin Moody.
+	- add initial support for 83PCE / 84+CE / 84+CE-T and 82A calc models, improve support for the 84+CSE (legacy I/O and USB) models, with a sprinkling of refactoring.
+	- fix dozens of more (UAF, DF, OOB accesses) or less (tiny memory leaks, dead code) severe issues reported by Coverity Scan. In the process, overhaul test_tifiles_2.c (not that it can actually run in a meaningful way), and add tifiles_free_table_of_entries() API. Several other issues found by code inspection.
+	- remove some now-unused lists of file extensions.
+	- use TIFL header to identify apps and OSes.
+	- handle version compatibility byte for 83+/84+ variables.
+	- remove some unused and outdated data arrays.
+	- fix handling of TI-83 files mislabeled as 83+ and vice versa.
+	- Add .gitignore, remove globbing from libtifiles makefile.am, fix a warning in libticables error.c, remove unneeded config.h.in
+	- review error files. Have ticalcs_error_get() uniformly use g_strconcat/g_strdup like tifiles_error_get() and ticables_error_get(), instead of strcpy+strcat+g_strdup with a statically-sized buffer on the stack.
+	- produce export (def) files on Win32.
+	- remove more auto-generated / copied files from the repository; upgrade gettext dependency to 0.18 (from May 2010).
+	- attempt to support Intel Hex files with CR and LF line endings, since TI-Connect supports OS files with LF line endings. Reported by SirCmpwn.
+	- fix buffer overflow spotted by AddressSanitizer.
+	- in torture tests, print local traces to stderr instead of stdout. This restores `make check` output with recent autotools versions.
+	- remove auto-generated configure & Makefile.in from the repository.
+	- in order to prevent implicit overlinking, use more Requires.private in pkgconfig definitions, instead of Requires. Patch mainly by Tijl Coosemans.
+	- fix memory corruption with large FlashApps. Reported by fortytwo and fb39ca4, patch by fortytwo (modified the comment).
+	- fix wrong loop exit condition in tifiles_ve_delete_array(), noticed while making the hpfiles part of libhpcalcs.
+	- add 84+CSE calc models, and image types.
 
 - 31/03/2013, version 1.1.6: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.

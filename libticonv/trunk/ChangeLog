@@ -3,6 +3,17 @@ SubVersion: $Id$
 Log of changes (libticonv):
 
 - xx/xx/201x, version 1.1.5: debrouxl
+	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
+	- switch to a single, unconditional definition of CalcModel in ticonv.h, include ticonv.h from tifiles.h. The libtifiles binaries have depended on libticonv for years. Suggested by Benjamin Moody.
+	- add initial support for 83PCE / 84+CE / 84+CE-T and 82A calc models, improve support for the 84+CSE (legacy I/O and USB) models, with a sprinkling of refactoring.
+	- Add .gitignore, remove globbing from libtifiles makefile.am, fix a warning in libticables error.c, remove unneeded config.h.in
+	- produce export (def) files on Win32.
+	- remove more auto-generated / copied files from the repository; upgrade gettext dependency to 0.18 (from May 2010).
+	- apply downstream Debian patches for AArch64/Linux and GNU/Hurd compatibility from Albert Huang <alberth.debian@gmail.com> and Adam Conrad <adconrad@ubuntu.com>.
+	- in ti9x_charset, add a number of comments about Unicode characters which render better than the current choices. Discussed with Excale.
+	- remove auto-generated configure & Makefile.in from the repository.
+	- in order to prevent implicit overlinking, use more Requires.private in pkgconfig definitions, instead of Requires. Patch mainly by Tijl Coosemans.
+	- add 84+CSE calc models, and image types.
 
 - 31/03/2013, version 1.1.4: debrouxl
 	- regenerate with Autoconf 2.69 and Automake 1.11.5.

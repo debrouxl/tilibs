@@ -3,6 +3,25 @@ SubVersion: $Id$
 Log of changes (libticables):
 
 - xx/xx/201x, version 1.3.5: debrouxl
+	- on Windows, enable DTR power supply, to fix operation of some third-party GrayLink cables.
+	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
+	- new API for probing USB devices.
+	- minor non-functional improvements to data logging.
+	- add some 83PCE / 84+CE / 84+CE-T and 82A support, and perform the usual software engineering work.
+	- fix dozens of more (UAF, DF, OOB accesses) or less (tiny memory leaks, dead code) severe issues reported by Coverity Scan. Several other issues found by code inspection.
+	- add ticables_free_usb_devices() as counterpart to ticables_get_usb_devices(); use it to fix a minor memory leak in ticables_probing_do(); make it part of the public API; add torture test.
+	- Add .gitignore, remove globbing from libtifiles makefile.am, fix a warning in libticables error.c, remove unneeded config.h.in
+	- kick out remaining code for long-dead Linux-specific cable based on special device /dev/tiusb*.
+	- add ticables_get_device() and ticables_set_device() APIs and corresponding functions in CableFncts. Suggested by Jonimus.
+	- merge bsd/link_gry and bsd/link_ser into linux/link_gry and linux/link_ser, thereby reducing code duplication.
+	- attempt to cope with NULL CableFncts pointers in improper CableHandle structs; get rid of a number of TRYC.
+	- add ticables_supported_cables() API, suggested by Jonimus.
+	- review error files. Have ticalcs_error_get() uniformly use g_strconcat/g_strdup like tifiles_error_get() and ticables_error_get(), instead of strcpy+strcat+g_strdup with a statically-sized buffer on the stack.
+	- produce export (def) files on Win32.
+	- remove more auto-generated / copied files from the repository; upgrade gettext dependency to 0.18 (from May 2010).
+	- in torture tests, print local traces to stderr instead of stdout. This restores `make check` output with recent autotools versions.
+	- remove auto-generated configure & Makefile.in from the repository.
+	- in order to prevent implicit overlinking, use more Requires.private in pkgconfig definitions, instead of Requires. Patch mainly by Tijl Coosemans.
 
 - 31/03/2013, version 1.3.4: debrouxl
 	- add "torture test" programs for testing how functions of the public API react to NULL parameters.

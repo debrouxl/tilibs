@@ -3,6 +3,46 @@ SubVersion: $Id$
 Log of changes (libticalcs):
 
 - xx/xx/201x, version 1.1.9: debrouxl
+	- in the README, mention that autoreconf needs to be run before ./configure can run. Reported by SirCmpwn.
+	- use the correct full name for the V200 PLT. Reported by Adrien "Adriweb" Bertrand.
+	- export ERROR_EOT alongside ERROR_ABORT, it can be useful for some clients of the library. Suggested by Benjamin Moody.
+	- fix packet size for DUSB remote keypresses.
+	- when using VALIDATE_*() and RETURN_IF_*() macros, postfix them by ;, and for good measure, wrap them into do { ... } while(0);. Suggested by Adrien "Adriweb" Bertrand and Benjamin Moody.
+	- add some 83PCE / 84+CE / 84+CE-T and 82A support, and perform the usual software engineering work.
+	- fix dozens of more (UAF, DF, OOB accesses) or less (tiny memory leaks, dead code) severe issues reported by Coverity Scan. Several other issues found by code inspection.
+	- define REJ_VERSION in dbus_pkt.h.
+	- fix packet size for TI84PC variable headers.
+	- restore special-casing of ERR_EOT return value from dusb_cmd_r_var_header(), lost in a recent commit. Reported by Hooloovoo.
+	- Add .gitignore, remove globbing from libtifiles makefile.am, fix a warning in libticables error.c, remove unneeded config.h.in
+	- get rid of TRYF in DUSB code and DUSB calc code, fixing a number of minor memory leaks and constifying pid / aid arrays in the process.
+	- reduce code duplication by factoring sanity checks to new VALIDATE_*() and RETURN_IF_HANDLE_*() macros; several drive-by fixes, e.g. many remaining left shifts with count larger than width of type, or minor memory leaks caused by TRYF.
+	- reduce code duplication by consolidating cmd73.c, cmd80.c, cmd82.c and cmd85.c into a single cmdz80.c file. Constify a data pointer argument to several functions.
+	- reduce code duplication by consolidating cmd89.c and cmd92.c into a single cmd68k.c file. Constify a data pointer argument to several functions.
+	- replace all remaining calls to strcpy() by strncpy(), even where no overflow would occur; several drive-by fixes, e.g. left shifts with count larger than type width, or initialization of local char arrays by empty constant strings.
+	- fix the prototype of multiple ti*_XDP functions, reported by Michael Tautschnig (TILP SF bug #216).
+	- attempt to cope with NULL CalcFncts pointers in improper CalcHandle structs; get rid of a number of TRYC.
+	- add a bunch of machine IDs for communicating with CBL devices, found by CVSoft, Kerm and others.
+	- add ticalcs_supported_calcs() API, suggested by Jonimus.
+	- review error files. Have ticalcs_error_get() uniformly use g_strconcat/g_strdup like tifiles_error_get() and ticables_error_get(), instead of strcpy+strcat+g_strdup with a statically-sized buffer on the stack.
+	- produce export (def) files on Win32.
+	- build fixes for parallel make.
+	- remove more auto-generated / copied files from the repository; upgrade gettext dependency to 0.18 (from May 2010).
+	- in src, simplify TRYF(f(...)); return 0; to return f(...); in test_ticalcs_2, get rid of TRYF().
+	- fix romdump.c build after cmd73.h disappeared (the include wasn't needed anymore, at that); while at it, reformat the code, get rid of TRYF(...), make most functions from romdump.c static.
+	- fix OS transfer on multiple TI-Z80 models. Patch by Jon Sturm, testing by him, Lionel and possibly others.
+	- refactor headers exporting internal ti*_{send,recv}_* functions; add extern "C" for C++ mode to multiple exported headers.
+	- kill a bunch of memory errors spotted by AddressSanitizer in the TI-Z80 and TI-68k calc_* and cmd* files; harden cmd82, cmd85, cmd92 and export the corresponding headers; add torture tests for newly exported functions.
+	- in test_ticalcs_2, make sure not to read past the bounds of the array of function pointers.
+	- add support for several DBUS commands for the 83+ family: sending EKE, DKE, ELD, DLD, GID, RID and SID, and receiving SID. Use them in test_ticalcs_2, add them to torture test.
+	- harden and export cmd73, cmd80 and cmd89 functions; expand torture test.
+	- in torture tests, print local traces to stderr instead of stdout. This restores `make check` output with recent autotools versions.
+	- add two commands for sending and reading generic data in NavNet format from a Nspire, similar to TI's TI_NN_Write and TI_NN_Read; reimplement echo commands using the new commands; add the new functions to torture test.
+	- remove auto-generated configure & Makefile.in from the repository.
+	- fix a double free reported by aeTIos in the Nspire OS sending code, and a nearby memory leak while at it.
+	- add support for 84+CSE screenshots.
+	- add dusb_cmd_r_screenshot function, and torture tests.
+	- add dusb_recv_data_varsize function, and torture tests.
+	- add 84+CSE ROM dumping support, for both legacy I/O and DirectLink.
 
 - 31/03/2013, version 1.1.8: debrouxl
 	- fix off-by-one in calc_84p.c::get_version(), which led to the last character of the product ID being cut off. Reported by ParkeR.
