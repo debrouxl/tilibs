@@ -35,6 +35,7 @@
 #include "logging.h"
 #include "data_log.h"
 #include "log_dusb.h"
+#include "internal.h"
 
 #define LOG_DUSB_FILE	"ticables-dusb.pkt"
 
@@ -58,8 +59,6 @@ int log_dusb_N(int dir, const uint8_t * data, uint32_t len)
 {
 	return 0;
 }
-
-extern int dusb_decomp(const char *filename);
 
 int log_dusb_stop(void)
 {

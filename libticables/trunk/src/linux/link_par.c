@@ -32,6 +32,8 @@
 #include "../gettext.h"
 #include "detect.h"
 #include "ioports.h"
+#include "../bsd/detect.h"
+#include "../macos/detect.h"
 
 #define dev_fd  (GPOINTER_TO_INT(h->priv))
 
@@ -51,7 +53,13 @@ static int par_prepare(CableHandle *h)
 	}
 
 	// detect stuffs
+#if defined(__MACOSX__)
+	ret = macosx_check_parport(h->device);
+#elif defined(__BSD__)
+	ret = bsd_check_parport(h->device);
+#else
 	ret = linux_check_parport(h->device);
+#endif
 	if(ret)
 	{
 		free(h->device); h->device = NULL;

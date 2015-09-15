@@ -572,7 +572,7 @@ static int tifiles_file_has_tig_header(const char *filename)
 #define TMC_SIGNATURE           "TI-Nspire.tmc "
 #define OSEXT1_SIGNATURE        "__OSEXT__1 "
 
-TIEXPORT2 int TICALL tifiles_file_has_tno_header(const char *filename)
+static int tifiles_file_has_tno_header(const char *filename)
 {
 	FILE *f;
 	char str[128];
@@ -890,11 +890,6 @@ TIEXPORT2 int TICALL tifiles_file_is_tib(const char *filename)
 TIEXPORT2 int TICALL tifiles_file_is_tigroup(const char *filename)
 {
 	return tifiles_file_has_tig_header(filename);
-}
-
-TIEXPORT2 int TICALL tifiles_file_is_tig(const char *filename)
-{
-	return tifiles_file_is_tigroup(filename);
 }
 
 TIEXPORT2 int TICALL tifiles_file_is_tno(const char *filename)

@@ -25,15 +25,14 @@
 
 #include "config.h"
 
+#include "ticalcs.h"
 #include "gettext.h"
 #include "export3.h"
 #include "error.h"
 #include "logging.h"
+#include "internal.h"
 
 // extern helpers
-extern void dusb_vtl_pkt_purge(void);
-extern void nsp_vtl_pkt_purge(void);
-extern void dusb_cpca_purge(void);
 
 extern int nsp_reset;
 
@@ -51,7 +50,7 @@ extern int nsp_reset;
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT3 int TICALL ticalcs_error_get(CalcError number, char **message)
+TIEXPORT3 int TICALL ticalcs_error_get(int number, char **message)
 {
 	// free memory
 	dusb_vtl_pkt_purge();

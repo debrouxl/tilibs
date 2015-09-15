@@ -31,6 +31,7 @@
 
 #include "tifiles.h"
 #include "logging.h"
+#include "rwfile.h"
 
 /*
   Dump into hexadecimal format the content of a buffer

@@ -40,6 +40,7 @@
 #include "../gettext.h"
 #include "../error.h"
 #include "../logging.h"
+#include "detect.h"
 
 /*
   Returns mode string from mode value.
@@ -119,37 +120,6 @@ static const char *get_group_name(uid_t uid)
     
     return "not found";
 }
-
-/* 
-   Attempt to find a specific string in /proc (vfs) 
-   - entry [in] : an entry such as '/proc/devices'
-   - str [in) : an occurence to find (such as 'tipar')
-*/
-#if 0
-static int find_string_in_proc(char *entry, char *str)
-{
-	FILE *f;
-	char buffer[80];
-	int found = 0;
-	
-	f = fopen(entry, "rt");
-	if (f == NULL)
-	{
-	    ticables_warning("can't open '%s'", entry);
-	    return -1;
-	}
-
-	while (!feof(f)) 
-	{
-		fscanf(f, "%s", buffer);
-		if (strstr(buffer, str))
-			found = 1;
-	}
-	fclose(f);
-	
-	return found;
-}
-#endif
 
 /* 
    Attempt to find if an user is attached to a group.
@@ -319,13 +289,12 @@ int bsd_check_parport(const char *devname)
 
 int bsd_check_libusb(void)
 {
-	ticables_info(_("Check for lib-usb support:"));
+	ticables_info(_("Check for libusb support:"));
 #if defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0)
 	ticables_info(_("    usb support: available."));
+	return 0;
 #else
 	ticables_info(_("    usb support: not compiled."));
 	return ERR_USBFS;
 #endif
-
-    return 0;
 }

@@ -30,6 +30,7 @@
 
 #include "config.h"
 
+#include "ticables.h"
 #include "gettext.h"
 #include "export1.h"
 #include "error.h"
@@ -49,7 +50,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT1 int TICALL ticables_error_get(CableError number, char **message)
+TIEXPORT1 int TICALL ticables_error_get(int number, char **message)
 {
 	if (message == NULL)
 	{

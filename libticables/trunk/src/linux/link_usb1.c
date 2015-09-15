@@ -4,7 +4,7 @@
 /*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (c) 1999-2006 Romain Lievin
  *  Copyright (c) 2001 Julien Blache (original author)
- *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
+ *  Copyright (c) 2007 Romain Lievin (libusb-win32 support)
  *  Copyright (c) 2007, 2011 Kevin Kofler (slv_check support)
  *  Copyright (c) 2011 Jon Sturm (libusb-1.0 support)
  *  Copyright (c) 2011 Lionel Debroux (style fixes, corner case fixes)
@@ -39,7 +39,11 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
+#ifdef __BSD__
+#include <libusb.h>
+#else
 #include <libusb-1.0/libusb.h>
+#endif
 
 #ifdef __WIN32__
 #include <winsock2.h> /* struct timeval */
@@ -58,6 +62,8 @@
 #include "../gettext.h"
 #if defined(__WIN32__)
 #include "../win32/detect.h"
+#elif defined(__MACOSX__)
+#include "../macos/detect.h"
 #elif defined(__BSD__)
 #include "../bsd/detect.h"
 #else
@@ -133,7 +139,7 @@ static int completed = 0;
 #define uOutEnd    (((usb_struct *)(h->priv2))->out_endpoint)
 
 #if HAVE_LIBUSB10_STRERROR
-const char* tigl_strerror(enum libusb_error errcode)
+static const char* tigl_strerror(enum libusb_error errcode)
 {
 	return libusb_strerror(errorcode);
 }
@@ -143,7 +149,7 @@ const char* tigl_strerror(enum libusb_error errcode)
  * libusb-1.0 but as most distros will not be shipping that for a while
  * this will have to do. ~ Jon 2011/02/08
  */
-const char* tigl_strerror(enum libusb_error errcode)
+static const char* tigl_strerror(enum libusb_error errcode)
 {
 	switch (errcode)
 	{
@@ -374,6 +380,8 @@ static int slv_prepare(CableHandle *h)
 
 #if defined(__WIN32__)
 	TRYC(win32_check_libusb());
+#elif defined(__MACOSX__)
+	TRYC(macosx_check_libusb());
 #elif defined(__BSD__)
 	TRYC(bsd_check_libusb());
 #else

@@ -22,6 +22,9 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include "stdints1.h"
+#include "internal.h"
+
 static const unsigned char machine_id[] =
 {
   0x00, 0x02, 0x03, 0x05, 0x06, 0x07, 0x08, 0x08, 0x09, 0x23,
@@ -59,7 +62,7 @@ static const int cmd_with_data[] =
 	!0, !0, -1
 };
 
-int is_a_machine_id(unsigned char id)
+static int is_a_machine_id(unsigned char id)
 {
   int i;
   
@@ -69,7 +72,7 @@ int is_a_machine_id(unsigned char id)
   return i;
 }
 
-int is_a_command_id(unsigned char id)
+static int is_a_command_id(unsigned char id)
 {
   int i;
 
@@ -82,7 +85,7 @@ int is_a_command_id(unsigned char id)
 
 #define WIDTH	12
 
-int fill_buf(FILE *f, char data, int flush)
+static int fill_buf(FILE *f, char data, int flush)
 {
 	static char buf[WIDTH];
 	static unsigned int cnt = 0;

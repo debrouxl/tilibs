@@ -206,5 +206,6 @@ void nsp_vtl_pkt_purge(void);
 		return ERR_INVALID_PARAMETER; \
 	}
 
+void dusb_cpca_purge(void);
 
 #endif // __TICALCS_INTERNAL__

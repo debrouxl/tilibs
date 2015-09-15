@@ -4,7 +4,7 @@
 /*  libticables2 - link cable library, a part of the TiLP project
  *  Copyright (c) 1999-2006 Romain Lievin
  *  Copyright (c) 2001 Julien Blache (original author)
- *  Copyright (c) 2007 Romain Liévin (libusb-win32 support)
+ *  Copyright (c) 2007 Romain Lievin (libusb-win32 support)
  *  Copyright (c) 2007 Kevin Kofler (libusb-win32 slv_check support)
  *
  *  Portions lifted from libusb (LGPL):
@@ -208,6 +208,8 @@ static struct usb_urb urb;
 #include "../gettext.h"
 #if defined(__WIN32__)
 #include "../win32/detect.h"
+#elif defined(__MACOSX__)
+#include "../macos/detect.h"
 #elif defined(__BSD__)
 #include "../bsd/detect.h"
 #else
@@ -447,6 +449,8 @@ static int slv_prepare(CableHandle *h)
 
 #if defined(__WIN32__)
 	TRYC(win32_check_libusb());
+#elif defined(__MACOSX__)
+	TRYC(macosx_check_libusb());
 #elif defined(__BSD__)
 	TRYC(bsd_check_libusb());
 #else

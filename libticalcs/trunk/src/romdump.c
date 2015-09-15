@@ -35,6 +35,7 @@
 #include "error.h"
 #include "macros.h"
 #include "pause.h"
+#include "romdump.h"
 
 #define MAX_RETRY	3
 

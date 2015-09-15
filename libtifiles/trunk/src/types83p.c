@@ -28,68 +28,68 @@
 #include <string.h>
 #include "gettext.h"
 #include "types83p.h"
+#include "types84p.h"
 #include "logging.h"
 
 struct {
-        const char * type;
-        const char * fext83p;
-        const char * fext84pc;
-        const char * fext83pce;
-        const char * fext84pce;
-        const char * icon;
-        const char * desc;
+	const char * type;
+	const char * fext83p;
+	const char * fext84pc;
+	const char * fext83pce;
+	const char * fext84pce;
+	const char * icon;
+	const char * desc;
 } TI83p_CONST[TI83p_MAXTYPES + 1] =
 {
-  {"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, // 0
-  {"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
-  {"MAT",    "8Xm",   "8Xm",   "8Xm",   "8Xm",   "Matrix",       N_("Matrix")},
-  {"EQU",    "8Xe",   "8Xe",   "8Xe",   "8Xe",   "Equation",     N_("Equation")}, // Also 8Xy
-  {"STR",    "8Xs",   "8Xs",   "8Xs",   "8Xs",   "String",       N_("String")},
-  {"PRGM",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},  // 5
-  {"PPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},
-  {"PIC",    "8Xi",   "8Ci",   "8Ci",   "8Ci",   "Picture",      N_("Picture")},
-  {"GDB",    "8Xd",   "8Xd",   "8Xd",   "8Xd",   "GDB",          N_("GDB")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 10, 0xA
-  {"EQU",    "8Xe",   "8Xe",   "8Xe",   "8Xe",   "Equation",     N_("Equation")}, /* NewEqu */ // Also 8Xy
-  {"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
-  {"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-  {"WINDW",  "8Xw",   "8Xw",   "8Xw",   "8Xw",   "Window Setup", N_("Window Setup")}, // 15, 0xF
-  {"ZSTO",   "8Xz",   "8Xz",   "8Xz",   "8Xz",   "Zoom",         N_("Zoom")},
-  {"TABLE",  "8Xt",   "8Xt",   "8Xt",   "8Xt",   "Table Setup",  N_("Table Setup")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-  {"BKUP",   "8Xb",   "8Xb",   "8Xb",   "8Xb",   "Backup",       N_("Backup")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 20, 0x14
-  {"APPV",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "App Var",      N_("App Var")},
-  {"TPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")}, /* TempProg */
-  {"GRP",    "8Xo",   "8Xo",   "8Xo",   "8Xo",   "Group Var",    N_("Group Var")}, // Also 8Xg
-  {"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, /* Fraction */
-  {"DIR",    "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 25, 0x19
-  {"IMAGE",  "8Xa",   "8Ca",   "8Ca",   "8Ca",   "Image",        N_("Image")},
-  {"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
-  {"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
-  {"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
-  {"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")}, // 30, 0x1E
-  {"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
-  {"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
-  {"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
-  {"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
-  {"AMS",    "8Xu",   "8Cu",   "8Pu",   "8Eu",   "OS upgrade",   N_("OS upgrade")}, // 35, 0x23
-  {"APPL",   "8Xk", "8Ck", "8Pk", "8Ek", "Application", N_("Application")},
-  {"CERT",   "8Xq", "8Cq", "8Pq", "8Eq", "Certificate", N_("Certificate")},
-  {"IDLIST", "8Xidl", "8Cidl", "8Pidl", "8Eidl", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")}, // 40, 0x28
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")}, // 45, 0x2D
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-  {"",       "8X?", "8X?", "8X?", "8X?", "Unknown", N_("Unknown")},
-
-  {NULL, NULL, NULL},
+	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, // 0
+	{"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
+	{"MAT",    "8Xm",   "8Xm",   "8Xm",   "8Xm",   "Matrix",       N_("Matrix")},
+	{"EQU",    "8Xe",   "8Xe",   "8Xe",   "8Xe",   "Equation",     N_("Equation")}, // Also 8Xy
+	{"STR",    "8Xs",   "8Xs",   "8Xs",   "8Xs",   "String",       N_("String")},
+	{"PRGM",   "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},  // 5
+	{"PPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")},
+	{"PIC",    "8Xi",   "8Ci",   "8Ci",   "8Ci",   "Picture",      N_("Picture")},
+	{"GDB",    "8Xd",   "8Xd",   "8Xd",   "8Xd",   "GDB",          N_("GDB")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 10, 0xA
+	{"EQU",    "8Xe",   "8Xe",   "8Xe",   "8Xe",   "Equation",     N_("Equation")}, /* NewEqu */ // Also 8Xy
+	{"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
+	{"LIST",   "8Xl",   "8Xl",   "8Xl",   "8Xl",   "List",         N_("List")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"WINDW",  "8Xw",   "8Xw",   "8Xw",   "8Xw",   "Window Setup", N_("Window Setup")}, // 15, 0xF
+	{"ZSTO",   "8Xz",   "8Xz",   "8Xz",   "8Xz",   "Zoom",         N_("Zoom")},
+	{"TABLE",  "8Xt",   "8Xt",   "8Xt",   "8Xt",   "Table Setup",  N_("Table Setup")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"BKUP",   "8Xb",   "8Xb",   "8Xb",   "8Xb",   "Backup",       N_("Backup")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 20, 0x14
+	{"APPV",   "8Xv",   "8Xv",   "8Xv",   "8Xv",   "App Var",      N_("App Var")},
+	{"TPRGM",  "8Xp",   "8Xp",   "8Xp",   "8Xp",   "Program",      N_("Program")}, /* TempProg */
+	{"GRP",    "8Xo",   "8Xo",   "8Xo",   "8Xo",   "Group Var",    N_("Group Var")}, // Also 8Xg
+	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")}, /* Fraction */
+	{"DIR",    "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 25, 0x19
+	{"IMAGE",  "8Xa",   "8Ca",   "8Ca",   "8Ca",   "Image",        N_("Image")},
+	{"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
+	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
+	{"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
+	{"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")}, // 30, 0x1E
+	{"CPLX",   "8Xc",   "8Xc",   "8Xc",   "8Xc",   "Complex",      N_("Complex")},
+	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
+	{"REAL",   "8Xn",   "8Xn",   "8Xn",   "8Xn",   "Real",         N_("Real")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"AMS",    "8Xu",   "8Cu",   "8Pu",   "8Eu",   "OS upgrade",   N_("OS upgrade")}, // 35, 0x23
+	{"APPL",   "8Xk",   "8Ck",   "8Pk",   "8Ek",   "Application",  N_("Application")},
+	{"CERT",   "8Xq",   "8Cq",   "8Pq",   "8Eq",   "Certificate",  N_("Certificate")},
+	{"IDLIST", "8Xidl", "8Cidl", "8Pidl", "8Eidl", "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 40, 0x28
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")}, // 45, 0x2D
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{"",       "8X?",   "8X?",   "8X?",   "8X?",   "Unknown",      N_("Unknown")},
+	{NULL,     NULL,    NULL,    NULL,    NULL,    NULL,           NULL},
 };
 
 // Return the type corresponding to the value

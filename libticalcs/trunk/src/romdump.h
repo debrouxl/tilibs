@@ -24,6 +24,6 @@
 
 int rd_dump(CalcHandle* handle, const char *filename);
 int rd_is_ready(CalcHandle* handle);
-int rd_send(CalcHandle *handle, const char *prgname, unsigned int size, unsigned char *data);
+int rd_send(CalcHandle *handle, const char *prgname, uint16_t size, uint8_t *data);
 
 #endif

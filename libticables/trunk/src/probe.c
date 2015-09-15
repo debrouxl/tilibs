@@ -36,6 +36,7 @@
 #include "linux/detect.h"
 #include "win32/detect.h"
 #include "bsd/detect.h"
+#include "macos/detect.h"
 
 TIEXPORT1 void TICALL ticables_probing_show(int **array)
 {
@@ -221,15 +222,15 @@ TIEXPORT1 int TICALL ticables_is_usb_enabled(void)
 {
 #if defined(__WIN32__)
 	return !win32_check_libusb();
-#elif defined(__LINUX__) && (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
+#elif defined(__MACOSX__)
+	return !macosx_check_libusb();
+#elif defined(__BSD__)
+	return !bsd_check_libusb();
+#elif defined(__LINUX__)
 	return !linux_check_libusb();
-#elif (defined(HAVE_LIBUSB) || defined(HAVE_LIBUSB_1_0))
-	return 1;
 #else
 	return 0;
 #endif
-
-	return 0;
 }
 
 /**

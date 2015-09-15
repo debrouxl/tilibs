@@ -34,8 +34,10 @@
 #include "../logging.h"
 #include "../error.h"
 #include "../gettext.h"
-#include "detect.h"
 #include "ioports.h"
+#include "detect.h"
+#include "../bsd/detect.h"
+#include "../macos/detect.h"
 
 #define dev_fd  (GPOINTER_TO_INT(h->priv))
 
@@ -63,7 +65,9 @@ static int ser_prepare(CableHandle *h)
 	}
 
 	// detect stuff
-#if defined(__BSD__)
+#if defined(__MACOSX__)
+	ret = macosx_check_tty(h->device);
+#elif defined(__BSD__)
 	ret = bsd_check_tty(h->device);
 #else
 	ret = linux_check_tty(h->device);

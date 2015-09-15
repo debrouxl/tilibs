@@ -25,6 +25,7 @@
 
 #include "logging.h"
 #include "stdints1.h"
+#include "internal.h"
 
 #define HEXDUMP_SIZE	12
 

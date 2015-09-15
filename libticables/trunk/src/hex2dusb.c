@@ -24,6 +24,7 @@
 
 #include "logging.h"
 #include "stdints1.h"
+#include "internal.h"
 
 #define ARRAY_SIZE (256)
 

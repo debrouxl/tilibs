@@ -35,6 +35,7 @@
 #include "error.h"
 #include "logging.h"
 #include "macros.h"
+#include "cmdz80.h"
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4761 )
@@ -1112,7 +1113,7 @@ TIEXPORT3 int TICALL ti85_recv_SKP(CalcHandle* handle, uint8_t * rej_code)
 }
 
 /* XDP */
-TIEXPORT3 int TICALL tiz80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data, uint8_t is_73)
+static int tiz80_recv_XDP(CalcHandle* handle, uint16_t * length, uint8_t * data, uint8_t is_73)
 {
 	uint8_t host, cmd;
 	int ret;

@@ -32,4 +32,8 @@ typedef struct {
 
 int usb_probe_device_info(const USBCableInfo **list, int *count);
 
+int dbus_decomp(const char *filename, int resync);
+int dusb_decomp(const char *filename);
+int nsp_decomp(const char *filename);
+
 #endif

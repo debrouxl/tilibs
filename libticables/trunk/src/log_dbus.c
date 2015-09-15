@@ -35,6 +35,7 @@
 #include "logging.h"
 #include "data_log.h"
 #include "log_dbus.h"
+#include "internal.h"
 
 #define LOG_DBUS_FILE	"ticables-dbus.pkt"
 
@@ -58,8 +59,6 @@ int log_dbus_N(int dir, const uint8_t * data, uint32_t len)
 {
 	return 0;
 }
-
-extern int dbus_decomp(const char *filename, int resync);
 
 int log_dbus_stop(void)
 {

@@ -35,6 +35,7 @@
 #include "logging.h"
 #include "data_log.h"
 #include "log_nsp.h"
+#include "internal.h"
 
 #define LOG_NSP_FILE	"ticables-nsp.pkt"
 
@@ -58,8 +59,6 @@ int log_nsp_N(int dir, const uint8_t * data, uint32_t len)
 {
 	return 0;
 }
-
-extern int nsp_decomp(const char *filename);
 
 int log_nsp_stop(void)
 {

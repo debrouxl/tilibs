@@ -19,14 +19,14 @@
  *  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __LINUX_DETECT_H__
-#define __LINUX_DETECT_H__
+#ifndef __MACOSX_DETECT_H__
+#define __MACOSX_DETECT_H__
 
 #include <stdio.h>
 
-int check_for_root(void);
-int check_for_tty(const char *devname);
-int check_for_parport(const char *devname);
-int check_for_libusb(void);
+int macosx_check_root(void);
+int macosx_check_tty(const char *devname);
+int macosx_check_parport(const char *devname);
+int macosx_check_libusb(void);
 
 #endif

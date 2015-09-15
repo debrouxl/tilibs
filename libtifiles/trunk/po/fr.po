@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libtifiles2 1.1.6\n"
 "Report-Msgid-Bugs-To: tilp-users@lists.sourceforge.net\n"
-"POT-Creation-Date: 2015-04-13 21:31+0200\n"
+"POT-Creation-Date: 2015-05-11 12:01+0200\n"
 "PO-Revision-Date: 2011-12-13 19:16+0100\n"
 "Last-Translator: Lionel Debroux <lionel_debroux@yahoo.fr>\n"
 "Language-Team: Français <tilp-users@lists.sf.net>\n"
@@ -17,103 +17,103 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/error.c:55
+#: src/error.c:56
 msgid "Msg: unable to allocate memory (malloc)."
 msgstr "Msg : impossible d'allouer de la mémoire (malloc)."
 
-#: src/error.c:57
+#: src/error.c:58
 msgid "Cause: memory too low ?"
 msgstr "Cause : pas assez de mémoire ?"
 
-#: src/error.c:63
+#: src/error.c:64
 msgid "Msg: unable to open file."
 msgstr "Msg : impossible d'ouvrir le fichier."
 
-#: src/error.c:65 src/error.c:73
+#: src/error.c:66 src/error.c:74
 msgid "Cause: either the file does not exist, either there is no room."
 msgstr ""
 "Cause : le fichier n'existe pas, ou il n'y a pas assez de place sur le "
 "disque."
 
-#: src/error.c:71
+#: src/error.c:72
 msgid "Msg: unable to close file."
 msgstr "Msg : impossible de fermer le fichier."
 
-#: src/error.c:79
+#: src/error.c:80
 msgid "Msg: the size of a group file cannot exceed 64 KB."
 msgstr "Msg : la taille d'un groupe ne peut pas dépasser 64 Ko."
 
-#: src/error.c:81
+#: src/error.c:82
 msgid "Cause: too many variables/data."
 msgstr "Cause : trop de variables/données."
 
-#: src/error.c:87
+#: src/error.c:88
 msgid "Msg: unknown calculator type."
 msgstr "Msg : type de calculatrice inconnu."
 
-#: src/error.c:89
+#: src/error.c:90
 msgid "Cause: probably due to a bug, mail to: tilp-users@lists.sf.net."
 msgstr ""
 "Cause : il s'agit probablement d'un bogue, signalez-le à tilp-users@lists.sf."
 "net."
 
-#: src/error.c:96
+#: src/error.c:97
 msgid "Msg: invalid file."
 msgstr "Msg : fichier non valide."
 
-#: src/error.c:98
+#: src/error.c:99
 msgid "Cause: it's probably not a TI formatted file."
 msgstr "Cause : il ne s'agit probablement pas d'un fichier TI."
 
-#: src/error.c:104
+#: src/error.c:105
 msgid "Msg: checksum error."
 msgstr "Msg : erreur de somme de contrôle (checksum)."
 
-#: src/error.c:106
+#: src/error.c:107
 msgid "Cause: the file has an incorrect checksum and may be corrupted."
 msgstr ""
 "Cause : le fichier a une somme de contrôle incorrecte et est peut être "
 "corrompu."
 
-#: src/error.c:112
+#: src/error.c:113
 msgid "Msg: (Un)Zip error."
 msgstr "Msg : erreur ZIP/UNZIP."
 
-#: src/error.c:114
+#: src/error.c:115
 msgid "Cause: unknown..."
 msgstr "Cause : inconnue..."
 
-#: src/error.c:120
+#: src/error.c:121
 msgid "Msg: unsupported function."
 msgstr "Msg : fonction non supportée"
 
-#: src/error.c:122
+#: src/error.c:123
 msgid "Cause: the function you attempted to use is not available."
 msgstr "Cause : la fonction n'est pas disponible."
 
-#: src/error.c:128
+#: src/error.c:129
 msgid "Msg: I/O file error."
 msgstr "Msg : erreur d'E/S."
 
-#: src/error.c:130
+#: src/error.c:131
 msgid "Cause: file is corrupted or invalid."
 msgstr "Cause : le fichier est corrompu ou invalide"
 
-#: src/filetypes.c:1264 src/filetypes.c:1362 src/types73.c:76
-#: src/types83p.c:78 src/types89.c:78 src/types89t.c:78 src/types92p.c:80
+#: src/filetypes.c:1259 src/filetypes.c:1357 src/types73.c:76
+#: src/types83p.c:79 src/types89.c:78 src/types89t.c:78 src/types92p.c:80
 #: src/typesv2.c:77
 msgid "OS upgrade"
 msgstr "maj OS"
 
-#: src/filetypes.c:1274 src/filetypes.c:1372
+#: src/filetypes.c:1269 src/filetypes.c:1367
 msgid "TIGroup"
 msgstr "TIGroup"
 
-#: src/filetypes.c:1286 src/filetypes.c:1384
+#: src/filetypes.c:1281 src/filetypes.c:1379
 msgid "Group/Backup"
 msgstr "Groupe/sauvegarde"
 
-#: src/filetypes.c:1288 src/filetypes.c:1386
+#: src/filetypes.c:1283 src/filetypes.c:1381
 msgid "Group"
 msgstr "Groupe"
 
@@ -174,37 +174,37 @@ msgstr "flash"
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/types73.c:41 src/types82.c:35 src/types83.c:35 src/types83p.c:43
-#: src/types83p.c:67 src/types83p.c:71 src/types83p.c:75 src/types83p.c:76
+#: src/types73.c:41 src/types82.c:35 src/types83.c:35 src/types83p.c:44
+#: src/types83p.c:68 src/types83p.c:72 src/types83p.c:76 src/types83p.c:77
 #: src/types85.c:35 src/types86.c:35
 msgid "Real"
 msgstr "Réel"
 
-#: src/types73.c:42 src/types82.c:36 src/types83.c:36 src/types83p.c:44
-#: src/types83p.c:56 src/types85.c:39 src/types86.c:39 src/types89.c:47
+#: src/types73.c:42 src/types82.c:36 src/types83.c:36 src/types83p.c:45
+#: src/types83p.c:57 src/types85.c:39 src/types86.c:39 src/types89.c:47
 #: src/types89t.c:47 src/types92.c:47 src/types92p.c:49 src/typesv2.c:46
 msgid "List"
 msgstr "Liste"
 
-#: src/types73.c:43 src/types82.c:37 src/types83.c:37 src/types83p.c:45
+#: src/types73.c:43 src/types82.c:37 src/types83.c:37 src/types83p.c:46
 #: src/types85.c:41 src/types86.c:41 src/types89.c:49 src/types89t.c:49
 #: src/types92.c:49 src/types92p.c:51 src/typesv2.c:48
 msgid "Matrix"
 msgstr "Matrice"
 
-#: src/types73.c:44 src/types83p.c:46 src/types83p.c:54 src/types85.c:45
+#: src/types73.c:44 src/types83p.c:47 src/types83p.c:55 src/types85.c:45
 #: src/types86.c:45
 msgid "Equation"
 msgstr "Équation"
 
-#: src/types73.c:45 src/types83.c:39 src/types83p.c:47 src/types85.c:47
+#: src/types73.c:45 src/types83.c:39 src/types83p.c:48 src/types85.c:47
 #: src/types86.c:47 src/types89.c:55 src/types89t.c:55 src/types92.c:55
 #: src/types92p.c:57 src/typesv2.c:54
 msgid "String"
 msgstr "Chaîne"
 
-#: src/types73.c:46 src/types82.c:40 src/types83.c:40 src/types83p.c:48
-#: src/types83p.c:49 src/types83p.c:65 src/types85.c:53 src/types86.c:53
+#: src/types73.c:46 src/types82.c:40 src/types83.c:40 src/types83p.c:49
+#: src/types83p.c:50 src/types83p.c:66 src/types85.c:53 src/types86.c:53
 #: src/types89.c:61 src/types89t.c:61 src/types92.c:61 src/types92p.c:63
 #: src/typesv2.c:60
 msgid "Program"
@@ -215,13 +215,13 @@ msgstr "Programme"
 msgid "Asm Program"
 msgstr "Programme Asm"
 
-#: src/types73.c:48 src/types82.c:42 src/types83.c:42 src/types83p.c:50
+#: src/types73.c:48 src/types82.c:42 src/types83.c:42 src/types83p.c:51
 #: src/types85.c:52 src/types86.c:52 src/types89.c:59 src/types89t.c:59
 #: src/types92.c:59 src/types92p.c:61 src/typesv2.c:58
 msgid "Picture"
 msgstr "Image"
 
-#: src/types73.c:49 src/types82.c:43 src/types83.c:43 src/types83p.c:51
+#: src/types73.c:49 src/types82.c:43 src/types83.c:43 src/types83p.c:52
 #: src/types85.c:48 src/types85.c:49 src/types85.c:50 src/types85.c:51
 #: src/types86.c:48 src/types86.c:49 src/types86.c:50 src/types86.c:51
 #: src/types89.c:56 src/types89t.c:56 src/types92.c:56 src/types92p.c:58
@@ -254,11 +254,11 @@ msgstr "GDB"
 #: src/types83.c:71 src/types83.c:72 src/types83.c:73 src/types83.c:74
 #: src/types83.c:75 src/types83.c:76 src/types83.c:77 src/types83.c:78
 #: src/types83.c:79 src/types83.c:80 src/types83.c:81 src/types83.c:82
-#: src/types83.c:135 src/types83p.c:52 src/types83p.c:53 src/types83p.c:57
-#: src/types83p.c:61 src/types83p.c:63 src/types83p.c:68 src/types83p.c:77
-#: src/types83p.c:81 src/types83p.c:82 src/types83p.c:83 src/types83p.c:84
-#: src/types83p.c:85 src/types83p.c:86 src/types83p.c:87 src/types83p.c:88
-#: src/types83p.c:89 src/types83p.c:90 src/types83p.c:233 src/types85.c:46
+#: src/types83.c:135 src/types83p.c:53 src/types83p.c:54 src/types83p.c:58
+#: src/types83p.c:62 src/types83p.c:64 src/types83p.c:69 src/types83p.c:78
+#: src/types83p.c:82 src/types83p.c:83 src/types83p.c:84 src/types83p.c:85
+#: src/types83p.c:86 src/types83p.c:87 src/types83p.c:88 src/types83p.c:89
+#: src/types83p.c:90 src/types83p.c:91 src/types83p.c:233 src/types85.c:46
 #: src/types85.c:57 src/types85.c:63 src/types85.c:65 src/types85.c:66
 #: src/types85.c:67 src/types85.c:68 src/types85.c:69 src/types85.c:70
 #: src/types85.c:71 src/types85.c:72 src/types85.c:73 src/types85.c:74
@@ -312,42 +312,42 @@ msgid "Unknown"
 msgstr "Inconnu"
 
 #: src/types73.c:52 src/types73.c:56 src/types82.c:46 src/types83.c:50
-#: src/types83p.c:58 src/types85.c:58 src/types86.c:58 src/types86.c:59
+#: src/types83p.c:59 src/types85.c:58 src/types86.c:58 src/types86.c:59
 #: src/types86.c:60 src/types86.c:61 src/types86.c:62
 msgid "Window Setup"
 msgstr "Config fenêtre"
 
-#: src/types73.c:53 src/types83.c:47 src/types83p.c:55 src/types83p.c:70
-#: src/types83p.c:72 src/types83p.c:73 src/types83p.c:74 src/types85.c:36
+#: src/types73.c:53 src/types83.c:47 src/types83p.c:56 src/types83p.c:71
+#: src/types83p.c:73 src/types83p.c:74 src/types83p.c:75 src/types85.c:36
 #: src/types86.c:36
 msgid "Complex"
 msgstr "Complexe"
 
-#: src/types73.c:57 src/types82.c:47 src/types83.c:51 src/types83p.c:59
+#: src/types73.c:57 src/types82.c:47 src/types83.c:51 src/types83p.c:60
 #: src/types85.c:62
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/types73.c:58 src/types82.c:48 src/types83.c:52 src/types83p.c:60
+#: src/types73.c:58 src/types82.c:48 src/types83.c:52 src/types83p.c:61
 msgid "Table Setup"
 msgstr "Config Table"
 
-#: src/types73.c:60 src/types82.c:50 src/types83.c:54 src/types83p.c:62
+#: src/types73.c:60 src/types82.c:50 src/types83.c:54 src/types83p.c:63
 #: src/types85.c:64 src/types86.c:64 src/types89.c:72 src/types89t.c:72
 #: src/types92.c:72 src/types92p.c:74 src/typesv2.c:71
 msgid "Backup"
 msgstr "Sauvegarde"
 
-#: src/types73.c:67 src/types83p.c:64
+#: src/types73.c:67 src/types83p.c:65
 msgid "App Var"
 msgstr "Variable Application"
 
-#: src/types73.c:77 src/types83p.c:79 src/types89.c:79 src/types89t.c:79
+#: src/types73.c:77 src/types83p.c:80 src/types89.c:79 src/types89t.c:79
 #: src/types92p.c:81 src/typesv2.c:78
 msgid "Application"
 msgstr "Application"
 
-#: src/types73.c:78 src/types83p.c:80 src/types89.c:80 src/types89t.c:80
+#: src/types73.c:78 src/types83p.c:81 src/types89.c:80 src/types89t.c:80
 #: src/types92p.c:82 src/typesv2.c:79
 msgid "Certificate"
 msgstr "Certificat"
@@ -364,11 +364,11 @@ msgstr "Programme Protégé"
 msgid "LCD"
 msgstr "LCD"
 
-#: src/types83p.c:66
+#: src/types83p.c:67
 msgid "Group Var"
 msgstr "Groupe de Variables"
 
-#: src/types83p.c:69
+#: src/types83p.c:70
 msgid "Image"
 msgstr "Image (de fond)"
 

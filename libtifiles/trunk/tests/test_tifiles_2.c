@@ -1011,7 +1011,7 @@ int main(int argc, char **argv)
 	printf("tifiles_file_is_tib: %i\n", ret);
 
 	ret = tifiles_file_is_tigroup(PATH("misc/test.tig"));
-	printf("tifiles_file_is_tig: %i\n", ret);
+	printf("tifiles_file_is_tigroup: %i\n", ret);
 	printf("--\n");
 
 	// test typesxx.c

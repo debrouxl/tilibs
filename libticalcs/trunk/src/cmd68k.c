@@ -33,6 +33,7 @@
 #include "error.h"
 #include "logging.h"
 #include "macros.h"
+#include "cmd68k.h"
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4761 4244)

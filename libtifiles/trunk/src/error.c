@@ -25,6 +25,7 @@
 
 #include "config.h"
 
+#include "tifiles.h"
 #include "gettext.h"
 #include "export2.h"
 #include "error.h"
@@ -40,7 +41,7 @@
  *
  * Return value: 0 if error has been caught, the error number otherwise (propagation).
  **/
-TIEXPORT2 int TICALL tifiles_error_get(FileError number, char **message)
+TIEXPORT2 int TICALL tifiles_error_get(int number, char **message)
 {
 	if (message == NULL)
 	{
